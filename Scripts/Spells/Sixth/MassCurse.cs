@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Misc;
 using Server.Targeting;
 using Server.Network;
@@ -41,7 +42,7 @@ namespace Server.Spells.Sixth
 
 				SpellHelper.GetSurfaceTop( ref p );
 
-				ArrayList targets = new ArrayList();
+				List<Mobile> targets = new List<Mobile>();
 
 				Map map = Caster.Map;
 
@@ -63,7 +64,7 @@ namespace Server.Spells.Sixth
 
 				for ( int i = 0; i < targets.Count; ++i )
 				{
-					Mobile m = (Mobile)targets[i];
+					Mobile m = targets[i];
 
 					Caster.DoHarmful( m );
 

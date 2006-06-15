@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
 using Server.Network;
@@ -34,7 +35,7 @@ namespace Server.Spells.Chivalry
 		{
 			if ( CheckSequence() )
 			{
-				ArrayList targets = new ArrayList();
+				List<Mobile> targets = new List<Mobile>();
 
 				foreach ( Mobile m in Caster.GetMobilesInRange( 3 ) ) // TODO: Validate range
 				{
@@ -62,7 +63,7 @@ namespace Server.Spells.Chivalry
 
 				for ( int i = 0; i < targets.Count; ++i )
 				{
-					Mobile m = (Mobile)targets[i];
+					Mobile m = targets[i];
 
 					if ( !m.Alive )
 					{

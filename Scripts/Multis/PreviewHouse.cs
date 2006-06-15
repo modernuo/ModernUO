@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 
@@ -7,12 +8,12 @@ namespace Server.Multis
 {
 	public class PreviewHouse : BaseMulti
 	{
-		private ArrayList m_Components;
+		private List<Item> m_Components;
 		private Timer m_Timer;
 
 		public PreviewHouse( int multiID ) : base( multiID | 0x4000 )
 		{
-			m_Components = new ArrayList();
+			m_Components = new List<Item>();
 
 			MultiComponentList mcl = this.Components;
 
@@ -47,7 +48,7 @@ namespace Server.Multis
 
 			for ( int i = 0; i < m_Components.Count; ++i )
 			{
-				Item item = (Item)m_Components[i];
+				Item item = m_Components[i];
 
 				item.MoveToWorld( new Point3D( item.X + xOffset, item.Y + yOffset, item.Z + zOffset ), this.Map );
 			}
@@ -62,7 +63,7 @@ namespace Server.Multis
 
 			for ( int i = 0; i < m_Components.Count; ++i )
 			{
-				Item item = (Item)m_Components[i];
+				Item item = m_Components[i];
 
 				item.Map = this.Map;
 			}
@@ -77,7 +78,7 @@ namespace Server.Multis
 
 			for ( int i = 0; i < m_Components.Count; ++i )
 			{
-				Item item = (Item)m_Components[i];
+				Item item = m_Components[i];
 
 				item.Delete();
 			}
@@ -103,7 +104,7 @@ namespace Server.Multis
 
 			writer.Write( (int) 0 ); // version
 
-			writer.WriteItemList( m_Components );
+			writer.Write( m_Components );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -116,7 +117,7 @@ namespace Server.Multis
 			{
 				case 0:
 				{
-					m_Components = reader.ReadItemList();
+					m_Components = reader.ReadStrongItemList();
 
 					break;
 				}

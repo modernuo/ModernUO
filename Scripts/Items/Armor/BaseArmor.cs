@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Engines.Craft;
 using Server.Factions;
@@ -1520,7 +1521,7 @@ namespace Server.Items
 
 		public override void OnSingleClick( Mobile from )
 		{
-			ArrayList attrs = new ArrayList();
+			List<EquipInfoAttribute> attrs = new List<EquipInfoAttribute>();
 
 			if ( DisplayLootType )
 			{
@@ -1538,7 +1539,7 @@ namespace Server.Items
 			if ( m_Quality == ArmorQuality.Exceptional )
 				attrs.Add( new EquipInfoAttribute( 1018305 - (int)m_Quality ) );
 
-			if ( m_Identified )
+			if ( m_Identified || from.AccessLevel >= AccessLevel.GameMaster)
 			{
 				if ( m_Durability != ArmorDurabilityLevel.Regular )
 					attrs.Add( new EquipInfoAttribute( 1038000 + (int)m_Durability ) );
@@ -1547,9 +1548,7 @@ namespace Server.Items
 					attrs.Add( new EquipInfoAttribute( 1038005 + (int)m_Protection ) );
 			}
 			else if ( m_Durability != ArmorDurabilityLevel.Regular || (m_Protection > ArmorProtectionLevel.Regular && m_Protection <= ArmorProtectionLevel.Invulnerability) )
-			{
 				attrs.Add( new EquipInfoAttribute( 1038000 ) ); // Unidentified
-			}
 
 			int number;
 
@@ -1566,7 +1565,7 @@ namespace Server.Items
 			if ( attrs.Count == 0 && Crafter == null && Name != null )
 				return;
 
-			EquipmentInfo eqInfo = new EquipmentInfo( number, m_Crafter, false, (EquipInfoAttribute[])attrs.ToArray( typeof( EquipInfoAttribute ) ) );
+			EquipmentInfo eqInfo = new EquipmentInfo( number, m_Crafter, false, attrs.ToArray() );
 
 			from.Send( new DisplayEquipmentInfo( this, eqInfo ) );
 		}

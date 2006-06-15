@@ -3264,7 +3264,7 @@ namespace Server.Items
 			if ( m_Quality == WeaponQuality.Exceptional )
 				attrs.Add( new EquipInfoAttribute( 1018305 - (int)m_Quality ) );
 
-			if ( m_Identified )
+			if ( m_Identified || from.AccessLevel >= AccessLevel.GameMaster )
 			{
 				if( m_Slayer != SlayerName.None )
 				{
@@ -3290,9 +3290,7 @@ namespace Server.Items
 					attrs.Add( new EquipInfoAttribute( 1038010 + (int)m_AccuracyLevel ) );
 			}
 			else if( m_Slayer != SlayerName.None || m_Slayer2 != SlayerName.None || m_DurabilityLevel != WeaponDurabilityLevel.Regular || m_DamageLevel != WeaponDamageLevel.Regular || m_AccuracyLevel != WeaponAccuracyLevel.Regular )
-			{
 				attrs.Add( new EquipInfoAttribute( 1038000 ) ); // Unidentified
-			}
 
 			if ( m_Poison != null && m_PoisonCharges > 0 )
 				attrs.Add( new EquipInfoAttribute( 1017383, m_PoisonCharges ) );

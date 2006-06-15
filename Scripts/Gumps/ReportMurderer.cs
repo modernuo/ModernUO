@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Misc;
 using Server.Gumps;
@@ -11,7 +12,7 @@ namespace Server.Gumps
 	public class ReportMurdererGump : Gump
 	{
 		private int m_Idx;
-		private ArrayList m_Killers;
+		private List<Mobile> m_Killers;
 		private Mobile m_Victum;
 
 		public static void Initialize()
@@ -23,8 +24,8 @@ namespace Server.Gumps
 		{
 			Mobile m = e.Mobile;
 
-			ArrayList killers = new ArrayList();
-			ArrayList toGive = new ArrayList();
+			List<Mobile> killers = new List<Mobile>();
+			List<Mobile> toGive  = new List<Mobile>();
 
 			foreach ( AggressorInfo ai in m.Aggressors )
 			{
@@ -74,9 +75,9 @@ namespace Server.Gumps
 		private class GumpTimer : Timer
 		{
 			private Mobile m_Victim;
-			private ArrayList m_Killers;
+			private List<Mobile> m_Killers;
 
-			public GumpTimer( Mobile victim, ArrayList killers ) : base( TimeSpan.FromSeconds( 4.0 ) )
+			public GumpTimer( Mobile victim, List<Mobile> killers ) : base( TimeSpan.FromSeconds( 4.0 ) )
 			{
 				m_Victim = victim;
 				m_Killers = killers;
@@ -88,11 +89,11 @@ namespace Server.Gumps
 			}
 		}
 
-		public ReportMurdererGump( Mobile victum, ArrayList killers ) : this( victum, killers, 0 )
+		public ReportMurdererGump( Mobile victum, List<Mobile> killers ) : this( victum, killers, 0 )
 		{
 		}
 
-		private ReportMurdererGump( Mobile victum, ArrayList killers, int idx ) : base( 0, 0 )
+		private ReportMurdererGump( Mobile victum, List<Mobile> killers, int idx ) : base( 0, 0 )
 		{
 			m_Killers = killers;
 			m_Victum = victum;
@@ -137,7 +138,7 @@ namespace Server.Gumps
 			{
 				case 1: 
 				{            
-					Mobile killer = (Mobile)m_Killers[m_Idx];
+					Mobile killer = m_Killers[m_Idx];
 					if ( killer != null && !killer.Deleted )
 					{
 						killer.Kills++;
