@@ -192,7 +192,7 @@ namespace Server.Commands
 
 		public static string GetFileName( string root, string name, string ext )
 		{
-			if ( name.IndexOfAny( ReplaceChars ) ) {
+			if ( name.IndexOfAny( ReplaceChars ) >= 0 ) {
 				StringBuilder sb = new StringBuilder( name );
 
 				for ( int i = 0; i < ReplaceChars.Length; ++i ) {

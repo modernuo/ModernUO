@@ -545,7 +545,7 @@ namespace Server
 		public Direction Direction{ get{ return m_Direction; } }
 		public bool Blocked{ get{ return m_Blocked; } set{ m_Blocked = value; } }
 
-		private static Queue m_Pool<MovementEventArgs> = new Queue<MovementEventArgs>();
+		private static Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
 
 		public static MovementEventArgs Create( Mobile mobile, Direction dir )
 		{
