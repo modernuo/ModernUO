@@ -4,6 +4,7 @@ using Server;
 using Server.Items;
 using Server.Engines.Craft;
 using Mat = Server.Engines.BulkOrders.BulkMaterialType;
+using System.Collections.Generic;
 
 namespace Server.Engines.BulkOrders
 {
@@ -33,9 +34,9 @@ namespace Server.Engines.BulkOrders
 			return SmithRewardCalculator.Instance.ComputeGold( this );
 		}
 
-		public override ArrayList ComputeRewards( bool full )
+		public override List<Item> ComputeRewards( bool full )
 		{
-			ArrayList list = new ArrayList();
+			List<Item> list = new List<Item>();
 
 			RewardGroup rewardGroup = SmithRewardCalculator.Instance.LookupRewards( SmithRewardCalculator.Instance.ComputePoints( this ) );
 

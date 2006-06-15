@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Collections;
 using Server;
+using System.Collections.Generic;
 
 namespace Server.Commands.Generic
 {
@@ -317,15 +318,15 @@ namespace Server.Commands.Generic
 			impl.Register();
 		}
 
-		private static ArrayList m_Implementors;
+		private static List<BaseCommandImplementor> m_Implementors;
 
-		public static ArrayList Implementors
+		public static List<BaseCommandImplementor> Implementors
 		{
 			get
 			{
 				if ( m_Implementors == null )
 				{
-					m_Implementors = new ArrayList();
+					m_Implementors = new List<BaseCommandImplementor>();
 					RegisterImplementors();
 				}
 

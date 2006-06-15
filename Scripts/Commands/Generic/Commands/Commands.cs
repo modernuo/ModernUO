@@ -66,11 +66,11 @@ namespace Server.Commands.Generic
 		{
 			m_AllCommands.Add( command );
 
-			ArrayList impls = BaseCommandImplementor.Implementors;
+			List<BaseCommandImplementor> impls = BaseCommandImplementor.Implementors;
 
 			for ( int i = 0; i < impls.Count; ++i )
 			{
-				BaseCommandImplementor impl = (BaseCommandImplementor)impls[i];
+				BaseCommandImplementor impl = impls[i];
 
 				if ( (command.Supports & impl.SupportRequirement) != 0 )
 					impl.Register( command );

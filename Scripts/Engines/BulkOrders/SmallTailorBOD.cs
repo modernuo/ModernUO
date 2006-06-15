@@ -3,6 +3,7 @@ using System.Collections;
 using Server;
 using Server.Items;
 using Server.Engines.Craft;
+using System.Collections.Generic;
 
 namespace Server.Engines.BulkOrders
 {
@@ -26,9 +27,9 @@ namespace Server.Engines.BulkOrders
 			return TailorRewardCalculator.Instance.ComputeGold( this );
 		}
 
-		public override ArrayList ComputeRewards( bool full )
+		public override List<Item> ComputeRewards( bool full )
 		{
-			ArrayList list = new ArrayList();
+			List<Item> list = new List<Item>();
 
 			RewardGroup rewardGroup = TailorRewardCalculator.Instance.LookupRewards( TailorRewardCalculator.Instance.ComputePoints( this ) );
 

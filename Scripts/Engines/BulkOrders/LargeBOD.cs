@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Server;
 using Server.Items;
+using System.Collections.Generic;
 
 namespace Server.Engines.BulkOrders
 {
@@ -39,7 +40,7 @@ namespace Server.Engines.BulkOrders
 			}
 		}
 
-		public abstract ArrayList ComputeRewards( bool full );
+		public abstract List<Item> ComputeRewards( bool full );
 		public abstract int ComputeGold();
 		public abstract int ComputeFame();
 
@@ -49,16 +50,16 @@ namespace Server.Engines.BulkOrders
 			gold = ComputeGold();
 			fame = ComputeFame();
 
-			ArrayList rewards = ComputeRewards( false );
+			List<Item> rewards = ComputeRewards( false );
 
 			if ( rewards.Count > 0 )
 			{
-				reward = (Item)rewards[Utility.Random( rewards.Count )];
+				reward = rewards[Utility.Random( rewards.Count )];
 
 				for ( int i = 0; i < rewards.Count; ++i )
 				{
 					if ( rewards[i] != reward )
-						((Item)rewards[i]).Delete();
+						rewards[i].Delete();
 				}
 			}
 		}
