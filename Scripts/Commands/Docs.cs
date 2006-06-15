@@ -301,7 +301,8 @@ namespace Server.Commands
 			string fullName = realType.FullName;
 			string aliased = null;// = realType.Name;
 
-			TypeInfo info = (TypeInfo)m_Types[realType];
+			TypeInfo info = null;
+			m_Types.TryGetValue( realType, out info );
 
 			if( info != null )
 			{
@@ -1417,7 +1418,8 @@ namespace Server.Commands
 
 						lastIndex = index;
 
-						SpeechEntry entry = table[index];
+						SpeechEntry entry = null;
+						table.TryGetValue( index, out entry );	
 
 						if( entry == null )
 							table[index] = entry = new SpeechEntry( index );
@@ -1707,7 +1709,8 @@ namespace Server.Commands
 				TypeInfo info = new TypeInfo( type );
 				m_Types[type] = info;
 
-				List<TypeInfo> nspaces = m_Namespaces[nspace];
+				List<TypeInfo> nspaces = null;
+				m_Namespaces.TryGetValue( nspace, out nspaces );
 
 				if( nspaces == null )
 					m_Namespaces[nspace] = nspaces = new List<TypeInfo>();
@@ -1718,7 +1721,8 @@ namespace Server.Commands
 
 				if( baseType != null && InAssemblies( baseType, asms ) )
 				{
-					TypeInfo baseInfo = m_Types[baseType];
+					TypeInfo baseInfo = null;
+					m_Types.TryGetValue( baseType, out baseInfo );
 
 					if( baseInfo == null )
 						m_Types[baseType] = baseInfo = new TypeInfo( baseType );
@@ -1733,7 +1737,8 @@ namespace Server.Commands
 
 				if( decType != null )
 				{
-					TypeInfo decInfo = m_Types[decType];
+					TypeInfo decInfo = null;
+					m_Types.TryGetValue( decType, out decInfo );
 
 					if( decInfo == null )
 						m_Types[decType] = decInfo = new TypeInfo( decType );
@@ -1751,7 +1756,8 @@ namespace Server.Commands
 					if( !InAssemblies( iface, asms ) )
 						continue;
 
-					TypeInfo ifaceInfo = m_Types[iface];
+					TypeInfo ifaceInfo = null;
+					m_Types.TryGetValue( iface, out ifaceInfo );
 
 					if( ifaceInfo == null )
 						m_Types[iface] = ifaceInfo = new TypeInfo( iface );
@@ -1893,7 +1899,8 @@ namespace Server.Commands
 				{
 					html.Write( " <a " );
 
-					TypeInfo typeInfo = (TypeInfo)m_Types[parms[j].ParameterType];
+					TypeInfo typeInfo = null;
+					m_Types.TryGetValue( parms[j].ParameterType, out typeInfo );
 
 					if( typeInfo != null )
 						html.Write( "href=\"types/{0}\" ", typeInfo.m_FileName );
@@ -2111,7 +2118,8 @@ namespace Server.Commands
 
 				typeHtml.Write( '(' );
 
-				TypeInfo decInfo = (TypeInfo)m_Types[decType];
+				TypeInfo decInfo = null;
+				m_Types.TryGetValue( decType, out decInfo );
 
 				if( decInfo == null )
 					typeHtml.Write( decType.Name );
@@ -2132,7 +2140,8 @@ namespace Server.Commands
 			{
 				typeHtml.Write( " : " );
 
-				TypeInfo baseInfo = (TypeInfo)m_Types[baseType];
+				TypeInfo baseInfo = null;
+				m_Types.TryGetValue( baseType, out baseInfo );
 
 				if( baseInfo == null )
 					typeHtml.Write( baseType.Name );
@@ -2150,7 +2159,8 @@ namespace Server.Commands
 				for( int i = 0; i < ifaces.Length; ++i )
 				{
 					Type iface = ifaces[i];
-					TypeInfo ifaceInfo = (TypeInfo)m_Types[iface];
+					TypeInfo ifaceInfo = null;
+					m_Types.TryGetValue( iface, out ifaceInfo );
 
 					if( extendCount != 0 )
 						typeHtml.Write( ", " );
