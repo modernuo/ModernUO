@@ -1224,7 +1224,7 @@ namespace Server.Gumps
 								if( pattern == null )	//if is IP Address
 								{
 									contains = loginList[i].Equals( addr );
-									break;
+									continue;
 								}
 
 								contains = Utility.IPMatchCIDR( pattern, loginList[i] );

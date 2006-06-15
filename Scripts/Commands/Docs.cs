@@ -181,8 +181,7 @@ namespace Server.Commands
 
 				m_Interfaces = type.GetInterfaces();
 
-				m_TypeName = type.Name.Replace( '<', '(' );
-				m_TypeName = m_TypeName.Replace( '>', ')' );
+				m_TypeName = type.Name;
 				m_FileName = Docs.GetFileName( "docs/types/", m_TypeName, ".html" );
 
 				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
@@ -193,7 +192,7 @@ namespace Server.Commands
 
 		public static string GetFileName( string root, string name, string ext )
 		{
-			if ( name.IndexOfAny( ReplaceChars ) >= 0 ) {
+			if ( name.IndexOfAny( ReplaceChars ) ) {
 				StringBuilder sb = new StringBuilder( name );
 
 				for ( int i = 0; i < ReplaceChars.Length; ++i ) {
