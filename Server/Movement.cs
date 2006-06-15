@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Movement.cs 20 2006-01-15 23:50:35Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

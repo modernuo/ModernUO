@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Skills.cs 109 2006-02-12 11:45:37Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: NetState.cs 156 2006-06-11 09:36:25Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: AggressorInfo.cs 68 2006-01-23 03:15:37Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 

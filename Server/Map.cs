@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Map.cs 145 2006-06-09 02:40:53Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 

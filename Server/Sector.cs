@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Sector.cs 124 2006-03-07 07:01:19Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 

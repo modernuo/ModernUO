@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: ContextMenu.cs 136 2006-05-08 09:03:33Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: PacketHandlers.cs 128 2006-03-08 20:41:33Z zippy $
+ *   $Id$
  *
  ***************************************************************************/
 

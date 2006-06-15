@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Region.cs 151 2006-06-11 02:57:01Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 

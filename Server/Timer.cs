@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Timer.cs 113 2006-02-12 23:07:32Z krrios $
+ *   $Id$
  *
  ***************************************************************************/
 

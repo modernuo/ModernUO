@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: ScriptCompiler.cs 130 2006-04-11 01:06:32Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

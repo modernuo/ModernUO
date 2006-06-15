@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Serialization.cs 153 2006-06-11 05:22:23Z krrios $
+ *   $Id$
  *
  ***************************************************************************/
 

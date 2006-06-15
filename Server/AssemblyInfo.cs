@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: AssemblyInfo.cs 138 2006-05-15 01:50:59Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

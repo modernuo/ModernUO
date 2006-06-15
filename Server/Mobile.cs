@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Mobile.cs 150 2006-06-11 02:38:48Z krrios $
+ *   $Id$
  *
  ***************************************************************************/
 

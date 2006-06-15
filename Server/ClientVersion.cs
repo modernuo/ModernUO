@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: ClientVersion.cs 56 2006-01-22 04:45:18Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

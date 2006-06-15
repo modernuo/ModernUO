@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Compression.cs 131 2006-04-21 03:29:53Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 

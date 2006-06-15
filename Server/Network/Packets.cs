@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Packets.cs 142 2006-06-08 17:27:25Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 

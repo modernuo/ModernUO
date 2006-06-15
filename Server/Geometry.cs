@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: Geometry.cs 36 2006-01-18 10:19:46Z krrios $
+ *   $Id$
  *
  ***************************************************************************/
 

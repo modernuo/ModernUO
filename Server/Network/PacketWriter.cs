@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: PacketWriter.cs 43 2006-01-20 05:39:57Z krrios $
+ *   $Id$
  *
  ***************************************************************************/
 
