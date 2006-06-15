@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Network;
 using Server.HuePickers;
@@ -190,7 +191,7 @@ namespace Server.Gumps
 			m_Sea = new ArrayList();
 			m_Human = new ArrayList();
 
-			ArrayList entries = Docs.LoadBodies();
+			List<BodyEntry> entries = Docs.LoadBodies();
 
 			for ( int i = 0; i < entries.Count; ++i )
 			{
