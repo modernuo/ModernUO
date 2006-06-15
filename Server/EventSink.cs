@@ -545,7 +545,7 @@ namespace Server
 		public Direction Direction{ get{ return m_Direction; } }
 		public bool Blocked{ get{ return m_Blocked; } set{ m_Blocked = value; } }
 
-		private static Queue m_Pool = new Queue();
+		private static Queue m_Pool<MovementEventArgs> = new Queue<MovementEventArgs>();
 
 		public static MovementEventArgs Create( Mobile mobile, Direction dir )
 		{
@@ -553,7 +553,7 @@ namespace Server
 
 			if ( m_Pool.Count > 0 )
 			{
-				args = (MovementEventArgs)m_Pool.Dequeue();
+				args = m_Pool.Dequeue();
 
 				args.m_Mobile = mobile;
 				args.m_Direction = dir;
