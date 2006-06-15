@@ -1581,9 +1581,9 @@ namespace Server.Commands
 
 				List<BaseCommandImplementor> commandImpls = BaseCommandImplementor.Implementors;
 
-				for( int i = 0; i < commands.Count; ++i )
+				for( int i = 0; i < commandImpls.Count; ++i )
 				{
-					BaseCommandImplementor command = (BaseCommandImplementor)commandImpls[i];
+					BaseCommandImplementor command = commandImpls[i];
 
 					string usage = command.Usage;
 					string desc = command.Description;
