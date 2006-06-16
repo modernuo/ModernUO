@@ -380,7 +380,7 @@ namespace Server.Engines.Craft
 					index = AddCraft( typeof( RuneCarvingKnife ), 1011081, 1072915, 70.0, 120.0, typeof( IronIngot ), 1044036, 9, 1044037 );
 					AddRes( index, typeof( DreadHornMane ), 1032682, 1, 1053098 );
 					AddRes( index, typeof( Putrefication ), 1032678, 10, 1053098 );
-					AddRes( index, typeof( Muculent ), 1032678, 10, 1053098 );
+					AddRes( index, typeof( Muculent ), 1032680, 10, 1053098 );
 					AddRecipe( index, 0 );
 					ForceNonExceptional( index );
 					SetNeededExpansion( index, Expansion.ML );
