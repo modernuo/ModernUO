@@ -338,7 +338,9 @@ namespace Server {
 			if ( s.Length > 0 )
 				Console.WriteLine( "Core: Running with arguments: {0}", s );
 
-			int processorCount = Utility.ToInt32( Environment.GetEnvironmentVariable( "NUMBER_OF_PROCESSORS" ) );
+			string pCount = Environment.GetEnvironmentVariable( "NUMBER_OF_PROCESSORS" );
+
+			int processorCount = ( pCount != null ? Utility.ToInt32( pCount ) : 1 );
 
 			if ( processorCount > 1 )
 				m_MultiProcessor = true;
