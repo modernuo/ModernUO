@@ -338,14 +338,12 @@ namespace Server {
 			if ( s.Length > 0 )
 				Console.WriteLine( "Core: Running with arguments: {0}", s );
 
-			string pCount = Environment.GetEnvironmentVariable( "NUMBER_OF_PROCESSORS" );
-
-			int processorCount = ( pCount != null ? Utility.ToInt32( pCount ) : 1 );
+			int processorCount = Environment.ProcessorCount;
 
 			if ( processorCount > 1 )
 				m_MultiProcessor = true;
 
-			if ( processorCount > 1 || Is64Bit )
+			if ( m_MultiProcessor || Is64Bit )
 				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", processorCount, processorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
 
 			m_ProcessorCount = processorCount;
