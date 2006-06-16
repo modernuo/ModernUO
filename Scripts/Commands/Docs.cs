@@ -148,17 +148,6 @@ namespace Server.Commands
 			}
 		}
 
-		private class NamespaceComparer : IComparer
-		{
-			public int Compare( object x, object y )
-			{
-				DictionaryEntry a = (DictionaryEntry)x;
-				DictionaryEntry b = (DictionaryEntry)y;
-
-				return ((string)a.Key).CompareTo( (string)b.Key );
-			}
-		}
-
 		private class TypeInfo
 		{
 			public Type m_Type, m_BaseType, m_Declaring;
@@ -176,13 +165,15 @@ namespace Server.Commands
 
 				m_Interfaces = type.GetInterfaces();
 
-				m_TypeName = type.Name;
-				m_FileName = Docs.GetFileName( "docs/types/", m_TypeName, ".html" );
+				m_TypeName = GetGenericTypeName( m_Type );
+
+				m_FileName = Docs.GetFileName( "docs/types/", GetGenericTypeName( m_Type, "-", "-" ), ".html" );
 
 				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
 			}
 		}
 
+		#region FileSystem
 		private static readonly char[] ReplaceChars = "<>".ToCharArray();
 
 		public static string GetFileName( string root, string name, string ext )
@@ -210,6 +201,37 @@ namespace Server.Commands
 			return file;
 		}
 
+		private static string m_RootDirectory = Path.GetDirectoryName( Environment.GetCommandLineArgs()[0] );
+
+		private static void EnsureDirectory( string path )
+		{
+			path = Path.Combine( m_RootDirectory, path );
+
+			if( !Directory.Exists( path ) )
+				Directory.CreateDirectory( path );
+		}
+
+		private static void DeleteDirectory( string path )
+		{
+			path = Path.Combine( m_RootDirectory, path );
+
+			if( Directory.Exists( path ) )
+				Directory.Delete( path, true );
+		}
+
+		private static StreamWriter GetWriter( string root, string name )
+		{
+			return new StreamWriter( Path.Combine( Path.Combine( m_RootDirectory, root ), name ) );
+		}
+
+		private static StreamWriter GetWriter( string path )
+		{
+			return new StreamWriter( Path.Combine( m_RootDirectory, path ) );
+		}
+		#endregion
+
+		#region GetPair
+
 		private static string[,] m_Aliases = new string[,]
 			{
 				{ "System.Object",	"<font color=\"blue\">object</font>" },
@@ -229,10 +251,6 @@ namespace Server.Commands
 				{ "System.Char",	"<font color=\"blue\">char</font>" },
 				{ "System.Void",	"<font color=\"blue\">void</font>" }
 			};
-
-		private static string m_RootDirectory = Path.GetDirectoryName( Environment.GetCommandLineArgs()[0] );
-
-		private const string RefString = "<font color=\"blue\">ref</font> ";
 
 		private static int m_AliasLength = m_Aliases.GetLength( 0 );
 
@@ -326,24 +344,12 @@ namespace Server.Commands
 			return String.Concat( prepend, aliased, append, name );
 		}
 
+		#endregion
+
 		private static Dictionary<Type, TypeInfo> m_Types;
 		private static Dictionary<string, List<TypeInfo>> m_Namespaces;
 
-		private static void EnsureDirectory( string path )
-		{
-			path = Path.Combine( m_RootDirectory, path );
-
-			if( !Directory.Exists( path ) )
-				Directory.CreateDirectory( path );
-		}
-
-		private static void DeleteDirectory( string path )
-		{
-			path = Path.Combine( m_RootDirectory, path );
-
-			if( Directory.Exists( path ) )
-				Directory.Delete( path, true );
-		}
+		#region Root documentation
 
 		private static void Document()
 		{
@@ -441,6 +447,10 @@ namespace Server.Commands
 				html.WriteLine( "</html>" );
 			}
 		}
+
+		#endregion
+
+		#region BODs
 
 		private const int Iron = 0xCCCCDD;
 		private const int DullCopper = 0xAAAAAA;
@@ -1178,6 +1188,9 @@ namespace Server.Commands
 
 		#endregion
 
+		#endregion
+
+		#region Bodies
 		public static List<BodyEntry> LoadBodies()
 		{
 			List<BodyEntry> list = new List<BodyEntry>();
@@ -1283,7 +1296,9 @@ namespace Server.Commands
 				html.WriteLine( "</html>" );
 			}
 		}
+		#endregion
 
+		#region Speech
 		private static void DocumentKeywords()
 		{
 			List<Dictionary<int, SpeechEntry>> tables = LoadSpeechFile();
@@ -1431,6 +1446,9 @@ namespace Server.Commands
 
 			return tables;
 		}
+		#endregion
+
+		#region Commands
 
 		private class DocCommandEntry
 		{
@@ -1693,6 +1711,8 @@ namespace Server.Commands
 			html.WriteLine( "</tr>" );
 		}
 
+		#endregion
+
 		private static void LoadTypes( Assembly a, Assembly[] asms )
 		{
 			Type[] types = a.GetTypes();
@@ -1781,16 +1801,7 @@ namespace Server.Commands
 			return false;
 		}
 
-		private static StreamWriter GetWriter( string root, string name )
-		{
-			return new StreamWriter( Path.Combine( Path.Combine( m_RootDirectory, root ), name ) );
-		}
-
-		private static StreamWriter GetWriter( string path )
-		{
-			return new StreamWriter( Path.Combine( m_RootDirectory, path ) );
-		}
-
+		#region Constructable Objects
 		private static Type typeofItem = typeof( Item ), typeofMobile = typeof( Mobile ), typeofMap = typeof( Map );
 		private static Type typeofCustomEnum = typeof( CustomEnumAttribute );
 
@@ -1912,6 +1923,10 @@ namespace Server.Commands
 			html.WriteLine( "</td></tr>" );
 		}
 
+		#endregion
+
+		#region Tooltips
+
 		private const string HtmlNewLine = "&#13;";
 
 		private static object[,] m_Tooltips = new object[,]
@@ -1996,6 +2011,11 @@ namespace Server.Commands
 			return "";
 		}
 
+		#endregion
+
+		#region Const Strings
+
+		private const string RefString = "<font color=\"blue\">ref</font> ";
 		private const string GetString = " <font color=\"blue\">get</font>;";
 		private const string SetString = " <font color=\"blue\">set</font>;";
 
@@ -2005,6 +2025,7 @@ namespace Server.Commands
 		private const string VirtString  = "<font color=\"blue\">virtual</font> ";
 		private const string CtorString  ="(<font color=\"blue\">ctor</font>) ";
 		private const string StaticString = "(<font color=\"blue\">static</font>) ";
+		#endregion
 
 		private static void DocumentLoadedTypes()
 		{
@@ -2336,8 +2357,49 @@ namespace Server.Commands
 
 			html.WriteLine( ")<br>" );
 		}
+
+		public static string GetGenericTypeName( Type type )
+		{
+			return GetGenericTypeName( type, "&lt;", "&gt;" );
+		}
+
+		public static string GetGenericTypeName( Type type, string leftGenericBracket, string rightGenericBracket )
+		{
+			string name = type.Name;
+
+			if( type.IsGenericType )
+			{
+				int index = name.IndexOf( '`' );
+
+				if( index > 0 )
+				{
+					StringBuilder sb = new StringBuilder( name.Substring( 0, index ) );
+
+					sb.Append( leftGenericBracket );
+
+					Type[] typeArguments = type.GetGenericArguments();
+
+					for( int i = 0; i < typeArguments.Length; i++ )
+					{
+						if( i != 0 )
+							sb.Append( ',' );
+
+						sb.Append( typeArguments[i].Name );
+					}
+
+					sb.Append( rightGenericBracket );
+
+					name = sb.ToString();
+
+				}
+			}
+
+			return name;
+		}
+
 	}
 
+	#region BodyEntry & BodyType
 	public enum ModelBodyType
 	{
 		Invalid=-1,
@@ -2393,4 +2455,5 @@ namespace Server.Commands
 			return v;
 		}
 	}
+	#endregion
 }
