@@ -24,29 +24,24 @@ using System.Collections.Generic;
 using Server.Items;
 using Server.Network;
 
-namespace Server
-{
-	public class RegionRect : IComparable
-	{
+namespace Server {
+	public class RegionRect : IComparable {
 		private Region m_Region;
 		private Rectangle3D m_Rect;
 
-		public Region Region{ get{ return m_Region; } }
-		public Rectangle3D Rect{ get{ return m_Rect; } }
+		public Region Region { get { return m_Region; } }
+		public Rectangle3D Rect { get { return m_Rect; } }
 
-		public RegionRect( Region region, Rectangle3D rect )
-		{
+		public RegionRect( Region region, Rectangle3D rect ) {
 			m_Region = region;
 			m_Rect = rect;
 		}
 
-		public bool Contains( Point3D loc )
-		{
+		public bool Contains( Point3D loc ) {
 			return m_Rect.Contains( loc );
 		}
 
-		int IComparable.CompareTo( object obj )
-		{
+		int IComparable.CompareTo( object obj ) {
 			if ( obj == null )
 				return 1;
 
@@ -55,13 +50,12 @@ namespace Server
 			if ( regRect == null )
 				throw new ArgumentException( "obj is not a RegionRect", "obj" );
 
-			return ((IComparable)m_Region).CompareTo( regRect.m_Region );
+			return ( ( IComparable ) m_Region ).CompareTo( regRect.m_Region );
 		}
 	}
 
 
-	public class Sector
-	{
+	public class Sector {
 		private int m_X, m_Y;
 		private Map m_Owner;
 		private List<Mobile> m_Mobiles;
@@ -79,195 +73,173 @@ namespace Server
 		private static List<BaseMulti> m_DefaultMultiList = new List<BaseMulti>();
 		private static List<RegionRect> m_DefaultRectList = new List<RegionRect>();
 
-		public Sector( int x, int y, Map owner )
-		{
+		public Sector( int x, int y, Map owner ) {
 			m_X = x;
 			m_Y = y;
 			m_Owner = owner;
 			m_Active = false;
 		}
 
-		public void OnClientChange( NetState oldState, NetState newState )
-		{
-			if ( m_Clients != null )
-			{
-				m_Clients.Remove( oldState );
-				
-				if ( newState == null && m_Clients.Count == 0 )
-				{
-					m_Clients = null;
-					return;
-				}
+		private void Add<T>( ref List<T> list, T value ) {
+			if ( list == null ) {
+				list = new List<T>();
 			}
 
-			if ( newState != null )
-			{
-				if ( m_Clients == null )
-					m_Clients = new List<NetState>();
+			list.Add( value );
+		}
 
-				m_Clients.Add( newState );
+		private void Remove<T>( ref List<T> list, T value ) {
+			if ( list != null ) {
+				list.Remove( value );
+
+				if ( list.Count == 0 ) {
+					list = null;
+				}
 			}
 		}
 
-		public void OnEnter( Mobile m )
-		{
-			if ( m_Mobiles == null )
-				m_Mobiles = new List<Mobile>();
+		private void Replace<T>( ref List<T> list, T oldValue, T newValue ) {
+			if ( oldValue != null && newValue != null ) {
+				int index = ( list != null ? list.IndexOf( oldValue ) : -1 );
 
-			m_Mobiles.Add( m );
-
-			if ( m.NetState != null )
-			{
-				if ( m_Clients == null )
-					m_Clients = new List<NetState>();
-
-				m_Clients.Add( m.NetState );
+				if ( index >= 0 ) {
+					list[index] = newValue;
+				} else {
+					Add( ref list, newValue );
+				}
+			} else if ( oldValue != null ) {
+				Remove( ref list, oldValue );
+			} else if ( newValue != null ) {
+				Add( ref list, newValue );
 			}
-	
-			if ( m.Player )
-			{
-				if ( m_Players == null )
-				{
-					m_Players = new List<Mobile>();
+		}
+
+		public void OnClientChange( NetState oldState, NetState newState ) {
+			Replace( ref m_Clients, oldState, newState );
+		}
+
+		public void OnEnter( Item item ) {
+			Add( ref m_Items, item );
+		}
+
+		public void OnLeave( Item item ) {
+			Remove( ref m_Items, item );
+		}
+
+		public void OnEnter( Mobile mob ) {
+			Add( ref m_Mobiles, mob );
+
+			if ( mob.NetState != null ) {
+				Add( ref m_Clients, mob.NetState );
+			}
+
+			if ( mob.Player ) {
+				if ( m_Players == null ) {
 					m_Owner.ActivateSectors( m_X, m_Y );
 				}
 
-				m_Players.Add( m );		
+				Add( ref m_Players, mob );
 			}
 		}
 
-		public void OnEnter( Item item )
-		{
-			if ( m_Items == null )
-				m_Items = new List<Item>();
+		public void OnLeave( Mobile mob ) {
+			Remove( ref m_Mobiles, mob );
 
-			m_Items.Add( item );
+			if ( mob.NetState != null ) {
+				Remove( ref m_Clients, mob.NetState );
+			}
+
+			if ( mob.Player && m_Players != null ) {
+				Remove( ref m_Players, mob );
+
+				if ( m_Players == null ) {
+					m_Owner.DeactivateSectors( m_X, m_Y );
+				}
+			}
 		}
 
-		public void OnEnter( Region r, Rectangle3D rect )
-		{
-			if ( m_RegionRects == null )
-				m_RegionRects = new List<RegionRect>();
+		public void OnEnter( Region region, Rectangle3D rect ) {
+			Add( ref m_RegionRects, new RegionRect( region, rect ) );
 
-			RegionRect regRect = new RegionRect( r, rect );
-
-			m_RegionRects.Add( regRect );
 			m_RegionRects.Sort();
 
-			if ( m_Mobiles != null && m_Mobiles.Count > 0 )
-			{
-				List<Mobile> list = new List<Mobile>( m_Mobiles );
-
-				for ( int i = 0; i < list.Count; ++i )
-					list[i].UpdateRegion();
-			}
+			UpdateMobileRegions();
 		}
 
-		public void OnMultiEnter( BaseMulti m )
-		{
-			if ( m_Multis == null )
-				m_Multis = new List<BaseMulti>();
+		public void OnLeave( Region region ) {
+			if ( m_RegionRects != null ) {
+				for ( int i = m_RegionRects.Count - 1; i >= 0; i-- ) {
+					RegionRect regRect = m_RegionRects[i];
 
-			m_Multis.Add( m );
-		}
+					if ( regRect.Region == region ) {
+						m_RegionRects.RemoveAt( i );
+					}
+				}
 
-		public void OnMultiLeave( BaseMulti m )
-		{
-			m_Multis.Remove( m );
-
-			if ( m_Multis.Count == 0 )
-				m_Multis = null;
-		}
-
-		public void OnLeave( Region r )
-		{
-			for ( int i = m_RegionRects.Count - 1; i >= 0; i-- )
-			{
-				RegionRect regRect = m_RegionRects[i];
-
-				if ( regRect.Region == r )
-					m_RegionRects.RemoveAt( i );
-			}
-
-			if ( m_Mobiles != null && m_Mobiles.Count > 0 )
-			{
-				List<Mobile> list = new List<Mobile>( m_Mobiles );
-
-				for ( int i = 0; i < list.Count; ++i )
-					list[i].UpdateRegion();
-			}
-
-			if ( m_RegionRects.Count == 0 )
-				m_RegionRects = null;
-		}
-
-		public void OnLeave( Mobile m )
-		{
-			m_Mobiles.Remove( m );
-
-			if ( m_Clients != null && m.NetState != null )
-			{
-				m_Clients.Remove( m.NetState );
-
-				if ( m_Clients.Count == 0 )
-					m_Clients = null;
-			}
-
-			if ( m.Player )
-			{
-				m_Players.Remove( m );
-
-				if ( m_Players.Count == 0 )
-				{
-					m_Owner.DeactivateSectors( m_X, m_Y );
-					m_Players = null;
+				if ( m_RegionRects.Count == 0 ) {
+					m_RegionRects = null;
 				}
 			}
 
-			if ( m_Mobiles.Count == 0 )
-				m_Mobiles = null;
+			UpdateMobileRegions();
 		}
 
-		public void OnLeave( Item item )
-		{
-			m_Items.Remove( item );
-			
-			if ( m_Items.Count == 0 )
-				m_Items = null;
+		private void UpdateMobileRegions() {
+			if ( m_Mobiles != null ) {
+				List<Mobile> sandbox = new List<Mobile>( m_Mobiles );
+
+				foreach ( Mobile mob in sandbox ) {
+					mob.UpdateRegion();
+				}
+			}
 		}
 
-		public void Activate()
-		{
-			if ( !Active && m_Owner != Map.Internal )
-			{
-				for ( int i = 0; m_Items != null && i < m_Items.Count; i++ )
-					m_Items[i].OnSectorActivate();
+		public void OnMultiEnter( BaseMulti multi ) {
+			Add( ref m_Multis, multi );
+		}
 
-				for ( int i = 0; m_Mobiles != null && i < m_Mobiles.Count; i++ )
-					m_Mobiles[i].OnSectorActivate();
+		public void OnMultiLeave( BaseMulti multi ) {
+			Remove( ref m_Multis, multi );
+		}
+
+		public void Activate() {
+			if ( !Active && m_Owner != Map.Internal ) {
+				if ( m_Items != null ) {
+					foreach ( Item item in m_Items ) {
+						item.OnSectorActivate();
+					}
+				}
+
+				if ( m_Mobiles != null ) {
+					foreach ( Mobile mob in m_Mobiles ) {
+						mob.OnSectorActivate();
+					}
+				}
 
 				m_Active = true;
 			}
 		}
 
-		public void Deactivate()
-		{
-			if ( Active )
-			{
-				for ( int i = 0; m_Items != null && i < m_Items.Count; i++ )
-					m_Items[i].OnSectorDeactivate();
+		public void Deactivate() {
+			if ( Active ) {
+				if ( m_Items != null ) {
+					foreach ( Item item in m_Items ) {
+						item.OnSectorDeactivate();
+					}
+				}
 
-				for ( int i = 0; m_Mobiles != null && i < m_Mobiles.Count; i++ )
-					m_Mobiles[i].OnSectorDeactivate();
+				if ( m_Mobiles != null ) {
+					foreach ( Mobile mob in m_Mobiles ) {
+						mob.OnSectorDeactivate();
+					}
+				}
 
 				m_Active = false;
 			}
 		}
 
-		public List<RegionRect> RegionRects
-		{
-			get
-			{
+		public List<RegionRect> RegionRects {
+			get {
 				if ( m_RegionRects == null )
 					return m_DefaultRectList;
 
@@ -275,10 +247,8 @@ namespace Server
 			}
 		}
 
-		public List<BaseMulti> Multis
-		{
-			get
-			{
+		public List<BaseMulti> Multis {
+			get {
 				if ( m_Multis == null )
 					return m_DefaultMultiList;
 
@@ -286,10 +256,8 @@ namespace Server
 			}
 		}
 
-		public List<Mobile> Mobiles
-		{
-			get
-			{
+		public List<Mobile> Mobiles {
+			get {
 				if ( m_Mobiles == null )
 					return m_DefaultMobileList;
 
@@ -297,10 +265,8 @@ namespace Server
 			}
 		}
 
-		public List<Item> Items
-		{
-			get
-			{
+		public List<Item> Items {
+			get {
 				if ( m_Items == null )
 					return m_DefaultItemList;
 
@@ -308,10 +274,8 @@ namespace Server
 			}
 		}
 
-		public List<NetState> Clients
-		{
-			get
-			{
+		public List<NetState> Clients {
+			get {
 				if ( m_Clients == null )
 					return m_DefaultClientList;
 
@@ -319,10 +283,8 @@ namespace Server
 			}
 		}
 
-		public List<Mobile> Players
-		{
-			get
-			{
+		public List<Mobile> Players {
+			get {
 				if ( m_Players == null )
 					return m_DefaultMobileList;
 
@@ -330,34 +292,26 @@ namespace Server
 			}
 		}
 
-		public bool Active 
-		{ 
-			get
-			{ 
-				return ( m_Active && m_Owner != Map.Internal ); 
-			} 
+		public bool Active {
+			get {
+				return ( m_Active && m_Owner != Map.Internal );
+			}
 		}
 
-		public Map Owner
-		{
-			get
-			{
+		public Map Owner {
+			get {
 				return m_Owner;
 			}
 		}
 
-		public int X
-		{
-			get
-			{
+		public int X {
+			get {
 				return m_X;
 			}
 		}
 
-		public int Y
-		{
-			get
-			{
+		public int Y {
+			get {
 				return m_Y;
 			}
 		}
