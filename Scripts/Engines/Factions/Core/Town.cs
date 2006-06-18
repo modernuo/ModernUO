@@ -441,16 +441,22 @@ namespace Server.Factions
 
 		public void Capture( Faction f )
 		{
-			f.Silver += SilverCaptureBonus;
-
 			if ( m_State.Owner == f )
 				return;
 
 			if ( m_State.Owner == null ) // going from unowned to owned
+			{
 				LastIncome = DateTime.Now;
+				f.Silver += SilverCaptureBonus;
+			}
 			else if ( f == null ) // going from owned to unowned
+			{
 				LastIncome = DateTime.MinValue;
-			// otherwise changing hands, income timer doesn't change
+			}
+			else // otherwise changing hands, income timer doesn't change
+			{
+				f.Silver += SilverCaptureBonus;
+			}
 
 			m_State.Owner = f;
 
