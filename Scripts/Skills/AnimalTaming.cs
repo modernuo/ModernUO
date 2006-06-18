@@ -197,11 +197,18 @@ namespace Server.SkillHandlers
 			}
 			public static void AdjustSkillCaps( BaseCreature bc )
 			{
+				int totalCapIncrease = 0;
+
 				for ( int i = 0; i < bc.Skills.Length; ++i )
 				{
-					if ( bc.Skills[i].Base > bc.Skills[i].Cap ) 
+					if( bc.Skills[i].Base > bc.Skills[i].Cap )
+					{
+						totalCapIncrease += (bc.Skills[i].BaseFixedPoint - bc.Skills[i].CapFixedPoint);
 						bc.Skills[i].Cap = bc.Skills[i].Base;
+					}
 				}
+
+				bc.SkillsCap += totalCapIncrease;
 			}
 
 			private class InternalTimer : Timer

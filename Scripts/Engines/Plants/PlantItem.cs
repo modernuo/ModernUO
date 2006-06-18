@@ -273,7 +273,7 @@ namespace Server.Engines.Plants
 				else
 				{
 					// a decorative ~1_COLOR~ ~2_TYPE~ plant
-					list.Add( 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
+					list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
 				}
 			}
 			else if ( m_PlantStatus >= PlantStatus.Seed )
