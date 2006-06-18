@@ -482,7 +482,7 @@ namespace Server.Network
 				m_CreatedCallback( this );
 		}
 
-		public void Send( Packet p )
+		public virtual void Send( Packet p )
 		{
 			if ( m_Socket == null || m_BlockAllPackets )
 			{
@@ -730,7 +730,7 @@ namespace Server.Network
 
 		private bool m_Disposing;
 
-		public void Dispose( bool flush )
+		public virtual void Dispose( bool flush )
 		{
 			if ( m_Socket == null || m_Disposing )
 				return;
