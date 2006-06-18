@@ -3177,12 +3177,12 @@ namespace Server.Mobiles
 
 		private void InternalChangeHair( bool hair, int id, ref int storeID, ref int storeHue )
 		{
-    		if ( storeID == -1 )
-    		{
-        		storeID = hair ? HairItemID : FacialHairItemID;
-        		storeHue = hair ? HairHue : FacialHairHue;
-    		}
-    		CreateHair( hair, id, 0 );
+			if ( storeID == -1 )
+			{
+				storeID = hair ? HairItemID : FacialHairItemID;
+				storeHue = hair ? HairHue : FacialHairHue;
+			}
+			CreateHair( hair, id, 0 );
 		}
 		#endregion
 
