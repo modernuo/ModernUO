@@ -3738,18 +3738,18 @@ namespace Server.Mobiles
 			return false;
 		}
 
+		public virtual void AcquireRecipe( Recipe r )
+		{
+			if( r != null )
+				AcquireRecipe( r.ID );
+		}
+
 		public virtual void AcquireRecipe( int recipeID )
 		{
 			if( m_AcquiredRecipes == null )
 				m_AcquiredRecipes = new Dictionary<int, bool>();
 
-			m_AcquiredRecipes.Add( recipeID, true );
-		}
-
-		public virtual void AcquireRecipe( Recipe r )
-		{
-			if( r != null )
-				AcquireRecipe( r.ID );
+			m_AcquiredRecipes[recipeID] = true;
 		}
 
 		public virtual void ResetRecipes()
