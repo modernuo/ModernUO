@@ -204,7 +204,7 @@ namespace Server {
 			int length = writer.CommitTo( mobileData, mobileIndex, mob.m_TypeRef, mob.Serial );
 
 			if ( metrics != null ) {
-				metrics.OnItemSaved( length );
+				metrics.OnMobileSaved( length );
 			}
 		}
 
