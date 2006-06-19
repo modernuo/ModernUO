@@ -3568,9 +3568,6 @@ namespace Server.Network
 			if ( (m_State & State.Buffered) != 0 )
 				m_Buffers.ReleaseBuffer( m_CompiledBuffer );
 
-			PacketWriter.ReleaseInstance( m_Stream );
-			m_Stream = null;
-
 			m_State &= ~(State.Static | State.Acquired | State.Buffered);
 
 			m_CompiledBuffer = null;
@@ -3674,8 +3671,8 @@ namespace Server.Network
 				Buffer.BlockCopy( old, 0, m_CompiledBuffer, 0, length );
 			}
 
-			//PacketWriter.ReleaseInstance( m_Stream );
-			//m_Stream = null;
+			PacketWriter.ReleaseInstance( m_Stream );
+			m_Stream = null;
 		}
 	}
 }
