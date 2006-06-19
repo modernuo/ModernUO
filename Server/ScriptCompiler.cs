@@ -218,6 +218,9 @@ namespace Server
 				if( defines != null )
 					parms.CompilerOptions = string.Format( "/D:{0}", defines );
 
+				if( Core.HaltOnWarning )
+					parms.WarningLevel = 4;
+
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, files );
 				m_AdditionalReferences.Add( path );
 
@@ -337,6 +340,9 @@ namespace Server
 
 				if( defines != null )
 					parms.CompilerOptions = String.Format( "/D:{0}", defines );
+
+				if( Core.HaltOnWarning )
+					parms.WarningLevel = 4;
 
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, files );
 				m_AdditionalReferences.Add( path );

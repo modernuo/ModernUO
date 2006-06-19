@@ -50,6 +50,7 @@ namespace Server
 		private static bool m_Service;
 		private static bool m_Debug;
 		private static bool m_Cache = true;
+		private static bool m_HaltOnWarning;
 		private static MultiTextWriter m_MultiConOut;
 
 		private static bool m_Profiling;
@@ -96,6 +97,7 @@ namespace Server
 
 		public static bool Service { get { return m_Service; } }
 		public static bool Debug { get { return m_Debug; } }
+		internal static bool HaltOnWarning { get { return m_HaltOnWarning; } }
 		public static List<string> DataDirectories { get { return m_DataDirectories; } }
 		public static Assembly Assembly { get { return m_Assembly; } set { m_Assembly = value; } }
 		public static Process Process { get { return m_Process; } }
@@ -343,6 +345,9 @@ namespace Server
 					Profiling = true;
 				else if( Insensitive.Equals( args[i], "-nocache" ) )
 					m_Cache = false;
+				else if( Insensitive.Equals( args[i], "-haltonwarning" ) )
+					m_HaltOnWarning = true;
+
 			}
 
 			try
@@ -483,6 +488,9 @@ namespace Server
 
 				if( !m_Cache )
 					Utility.Seperate( sb, "-nocache", " " );
+
+				if( m_HaltOnWarning )
+					Utility.Seperate( sb, "-haltonwarning", " " );
 
 				return sb.ToString();
 			}
