@@ -1450,7 +1450,7 @@ namespace Server.Commands
 
 		#region Commands
 
-		private class DocCommandEntry
+		public class DocCommandEntry
 		{
 			private AccessLevel m_AccessLevel;
 			private string m_Name;
@@ -1474,7 +1474,7 @@ namespace Server.Commands
 			}
 		}
 
-		private class CommandEntrySorter : IComparer<DocCommandEntry>
+		public class CommandEntrySorter : IComparer<DocCommandEntry>
 		{
 			public int Compare( DocCommandEntry a, DocCommandEntry b )
 			{
@@ -1662,7 +1662,7 @@ namespace Server.Commands
 			}
 		}
 
-		private static void Clean( List<CommandEntry> list )
+		public static void Clean( List<CommandEntry> list )
 		{
 			for( int i = 0; i < list.Count; ++i )
 			{
