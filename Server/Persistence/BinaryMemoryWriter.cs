@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Server {
-	public class BinaryMemoryWriter : BinaryFileWriter {
+	public sealed class BinaryMemoryWriter : BinaryFileWriter {
 		private MemoryStream stream;
 
 		protected override int BufferSize {

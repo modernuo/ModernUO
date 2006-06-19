@@ -330,6 +330,9 @@ namespace Server
 			Console.WriteLine( "done" );
 		}
 
+		private static AutoResetEvent m_Signal = new AutoResetEvent( true );
+		public static void Set() { m_Signal.Set(); }
+
 		public static void Main( string[] args )
 		{
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler( CurrentDomain_UnhandledException );
@@ -439,7 +442,7 @@ namespace Server
 
 				while( !m_Closing )
 				{
-					Thread.Sleep( m_MultiProcessor ? 0 : 1 );
+					m_Signal.WaitOne();
 
 					Mobile.ProcessDeltaQueue();
 					Item.ProcessDeltaQueue();

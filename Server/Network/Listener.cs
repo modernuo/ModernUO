@@ -153,6 +153,8 @@ namespace Server.Network
 			{
 				IAsyncResult res = listener.BeginAccept( m_OnAccept, listener );
 			}
+
+			Core.Set();
 		}
 
 		public Socket[] Slice()

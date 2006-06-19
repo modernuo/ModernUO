@@ -9642,6 +9642,8 @@ namespace Server
 
 				m_DeltaQueue.Enqueue( this );
 			}
+
+			Core.Set();
 		}
 
 		public Direction GetDirectionTo( int x, int y )

@@ -359,6 +359,7 @@ namespace Server
 			public static void Change( Timer t, int newIndex, bool isAdd )
 			{
 				m_ChangeQueue.Enqueue( TimerChangeEntry.GetInstance( t, newIndex, isAdd ) );
+				m_Signal.Set();
 			}
 
 			public static void AddTimer( Timer t )
@@ -407,18 +408,23 @@ namespace Server
 				}
 			}
 
+			private static AutoResetEvent m_Signal = new AutoResetEvent( true );
+
 			public void TimerMain()
 			{
 				DateTime now;
 				int i, j;
+				bool loaded;
 
 				while ( !Core.Closing )
 				{
-					Thread.Sleep( 10 );
+					m_Signal.WaitOne( 10, false );
 
 					ProcessChangeQueue();
 
-					for (i=0;i<m_Timers.Length;i++)
+					loaded = false;
+
+					for ( i = 0; i < m_Timers.Length; i++)
 					{
 						now = DateTime.Now;
 						if ( now < m_NextPriorities[i] )
@@ -426,7 +432,7 @@ namespace Server
 
 						m_NextPriorities[i] = now + m_PriorityDelays[i];
 
-						for (j=0;j< m_Timers[i].Count;j++)
+						for ( j = 0; j < m_Timers[i].Count; j++)
 						{
 							Timer t = m_Timers[i][j];
 
@@ -436,6 +442,8 @@ namespace Server
 
 								lock ( m_Queue )
 									m_Queue.Enqueue( t );
+
+								loaded = true;
 									
 								if ( t.m_Count != 0 && (++t.m_Index >= t.m_Count) )
 								{
@@ -448,6 +456,9 @@ namespace Server
 							}
 						}
 					}
+
+					if ( loaded )
+						Core.Set();
 				}
 			}
 		}
