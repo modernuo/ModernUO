@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
-using Server.Misc;
-using Server.Items;
 using Server.Accounting;
+using Server.Items;
 
 namespace Server.Misc
 {
@@ -15,7 +14,7 @@ namespace Server.Misc
 
 	public class GiftGiving
 	{
-		private static ArrayList m_Givers = new ArrayList();
+		private static List<GiftGiver> m_Givers = new List<GiftGiver>();
 
 		public static void Register( GiftGiver giver )
 		{
@@ -38,7 +37,7 @@ namespace Server.Misc
 
 			for ( int i = 0; i < m_Givers.Count; ++i )
 			{
-				GiftGiver giver = (GiftGiver) m_Givers[i];
+				GiftGiver giver = m_Givers[i];
 
 				if ( now < giver.Start || now >= giver.Finish )
 					continue; // not in the correct timefream

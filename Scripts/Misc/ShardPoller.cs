@@ -1,6 +1,6 @@
 using System;
 using System.Net;
-using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Server;
@@ -166,7 +166,7 @@ namespace Server.Misc
 			EventSink.Login += new LoginEventHandler( EventSink_Login );
 		}
 
-		private static ArrayList m_ActivePollers = new ArrayList();
+		private static List<ShardPoller> m_ActivePollers = new List<ShardPoller>();
 
 		private static void EventSink_Login( LoginEventArgs e )
 		{
@@ -188,7 +188,7 @@ namespace Server.Misc
 
 			for ( int i = 0; i < m_ActivePollers.Count; ++i )
 			{
-				ShardPoller poller = (ShardPoller)m_ActivePollers[i];
+				ShardPoller poller = m_ActivePollers[i];
 
 				if ( poller.Deleted || !poller.Active )
 					continue;
@@ -219,7 +219,7 @@ namespace Server.Misc
 		{
 			object[] states = (object[])state;
 			Mobile from = (Mobile)states[0];
-			Queue queue = (Queue)states[1];
+			Queue<ShardPoller> queue = (Queue<ShardPoller>)states[1];
 
 			from.SendGump( new ShardPollGump( from, this, false, queue ) );
 		}
@@ -402,14 +402,14 @@ namespace Server.Misc
 		private Mobile m_From;
 		private ShardPoller m_Poller;
 		private bool m_Editing;
-		private Queue m_Polls;
+		private Queue<ShardPoller> m_Polls;
 
 		public bool Editing{ get{ return m_Editing; } }
 
 		public void QueuePoll( ShardPoller poller )
 		{
 			if ( m_Polls == null )
-				m_Polls = new Queue( 4 );
+				m_Polls = new Queue<ShardPoller>( 4 );
 
 			m_Polls.Enqueue( poller );
 		}
@@ -426,7 +426,7 @@ namespace Server.Misc
 
 		private const int LabelColor32 = 0xFFFFFF;
 
-		public ShardPollGump( Mobile from, ShardPoller poller, bool editing, Queue polls ) : base( 50, 50 )
+		public ShardPollGump( Mobile from, ShardPoller poller, bool editing, Queue<ShardPoller> polls ) : base( 50, 50 )
 		{
 			m_From = from;
 			m_Poller = poller;
@@ -522,7 +522,7 @@ namespace Server.Misc
 		{
 			if ( m_Polls != null && m_Polls.Count > 0 )
 			{
-				ShardPoller poller = (ShardPoller)m_Polls.Dequeue();
+				ShardPoller poller = m_Polls.Dequeue();
 
 				if ( poller != null )
 					Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( poller.SendQueuedPoll_Callback ), new object[]{ m_From, m_Polls } );

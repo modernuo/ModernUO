@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Multis;
 using Server.Mobiles;
 using Server.Network;
-using System.Collections.Generic;
 using Server.ContextMenus;
 
 namespace Server.Items

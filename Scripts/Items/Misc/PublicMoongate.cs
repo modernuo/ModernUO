@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Network;
@@ -121,7 +121,7 @@ namespace Server.Items
 
 		private static void DeleteAll()
 		{
-			ArrayList list = new ArrayList();
+			List<PublicMoongate> list = new List<PublicMoongate>();
 
 			foreach ( Item item in World.Items.Values )
 			{
@@ -129,8 +129,8 @@ namespace Server.Items
 					list.Add( item );
 			}
 
-			foreach ( Item item in list )
-				item.Delete();
+			foreach ( PublicMoongate pmg in list )
+				pmg.Delete();
 
 			if ( list.Count > 0 )
 				World.Broadcast( 0x35, true, "{0} moongates removed.", list.Count );
@@ -284,7 +284,7 @@ namespace Server.Items
 				} );
 
 		public static readonly PMList[] UORLists		= new PMList[] { Trammel, Felucca };
-		public static readonly PMList[] UORlistsYoung	= new PMList[] { Trammel };
+		public static readonly PMList[] UORListsYoung	= new PMList[] { Trammel };
 		public static readonly PMList[] LBRLists		= new PMList[] { Trammel, Felucca, Ilshenar };
 		public static readonly PMList[] LBRListsYoung	= new PMList[] { Trammel, Ilshenar };
 		public static readonly PMList[] AOSLists		= new PMList[] { Trammel, Felucca, Ilshenar, Malas };
@@ -330,7 +330,7 @@ namespace Server.Items
 					else if ( (flags & 0x4) != 0 )
 						checkLists = young ? PMList.LBRListsYoung : PMList.LBRLists;
 					else
-						checkLists = young ? PMList.UORlistsYoung : PMList.UORLists;
+						checkLists = young ? PMList.UORListsYoung : PMList.UORLists;
 				}
 			}
 			else

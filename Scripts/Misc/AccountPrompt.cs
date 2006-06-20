@@ -6,13 +6,12 @@ namespace Server.Misc
 {
 	public class AccountPrompt
 	{
-		// This script prompts the console for a username and password when 0 accounts have been loaded
 		public static void Initialize()
 		{
 			if ( Accounts.Count == 0 && !Core.Service )
 			{
 				Console.WriteLine( "This server has no accounts." );
-				Console.Write( "Do you want to create an administrator account now? (y/n)" );
+				Console.Write( "Do you want to create the owner account now? (y/n)" );
 
 				if( Console.ReadKey( true ).Key == ConsoleKey.Y )
 				{

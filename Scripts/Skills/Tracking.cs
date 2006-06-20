@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Network;
@@ -255,9 +255,9 @@ namespace Server.SkillHandlers
 			return m.Player;
 		}
 
-		private ArrayList m_List;
+		private List<Mobile> m_List;
 
-		private TrackWhoGump( Mobile from, ArrayList list, int range ) : base( 20, 30 )
+		private TrackWhoGump( Mobile from, List<Mobile> list, int range ) : base( 20, 30 )
 		{
 			m_From = from;
 			m_List = list;
@@ -288,7 +288,7 @@ namespace Server.SkillHandlers
 
 			for ( int i = 0; i < list.Count && i < 12; ++i )
 			{
-				Mobile m = (Mobile)list[i];
+				Mobile m = list[i];
 
 				AddItem( 20 + ((i % 4) * 100), 20 + ((i / 4) * 155), ShrinkTable.Lookup( m ) );
 				AddButton( 20 + ((i % 4) * 100), 130 + ((i / 4) * 155), 4005, 4007, i + 1, GumpButtonType.Reply, 0 );
@@ -304,7 +304,7 @@ namespace Server.SkillHandlers
 
 			if ( index >= 0 && index < m_List.Count && index < 12 )
 			{
-				Mobile m = (Mobile)m_List[index];
+				Mobile m = m_List[index];
 
 				m_From.QuestArrow = new TrackArrow( m_From, m, m_Range * 2 );
 
