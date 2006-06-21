@@ -417,15 +417,23 @@ namespace Server.Commands
 			}
 			else if ( item is BaseLight )
 			{
-				bool unlit = false;
+				bool unlit, unprotected = false;
 
-				for ( int i = 0; !unlit && i < m_Params.Length; ++i )
-					unlit = ( m_Params[i] == "Unlit" );
+				for ( int i = 0; i < m_Params.Length; ++i )
+				{
+					if ( !unlit && m_Params[i] == "Unlit" )
+						unlit = true;
+					else if ( !unprotected && m_Params[i] == "Unprotected" )
+						unprotected = true;
+					
+					if ( unlit && unprotected )
+						break;
+				}
 
 				if ( !unlit )
 					((BaseLight)item).Ignite();
-
-				((BaseLight)item).Protected = true;
+				if ( !unprotected )
+					((BaseLight)item).Protected = true;
 
 				if ( m_ItemID > 0 )
 					item.ItemID = m_ItemID;
