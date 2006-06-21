@@ -1076,7 +1076,7 @@ namespace Server.Multis
 
 			if ( owner != null )
 			{
-				List<BaseHouse list = null;
+				List<BaseHouse> list = null;
 				m_Table.TryGetValue( owner, out list );
 
 				if ( list == null )
@@ -2480,7 +2480,7 @@ namespace Server.Multis
 
 					if ( m_Owner != null )
 					{
-						List<BaseHouse list = null;
+						List<BaseHouse> list = null;
 						m_Table.TryGetValue( m_Owner, out list );
 
 						if ( list == null )
@@ -2589,7 +2589,7 @@ namespace Server.Multis
 			{
 				if ( m_Owner != null )
 				{
-					List<BaseHouse list = null;
+					List<BaseHouse> list = null;
 					m_Table.TryGetValue( m_Owner, out list );
 
 					if ( list == null )
@@ -2603,7 +2603,7 @@ namespace Server.Multis
 
 				if ( m_Owner != null )
 				{
-					List<BaseHouse list = null;
+					List<BaseHouse> list = null;
 					m_Table.TryGetValue( m_Owner, out list );
 
 					if ( list == null )
@@ -2839,7 +2839,7 @@ namespace Server.Multis
 
 			if ( m_Owner != null )
 			{
-				List<BaseHouse list = null;
+				List<BaseHouse> list = null;
 				m_Table.TryGetValue( m_Owner, out list );
 				
 				if ( list == null )
@@ -2972,7 +2972,7 @@ namespace Server.Multis
 			if ( m == null )
 				return false;
 
-			List<BaseHouse list = null;
+			List<BaseHouse> list = null;
 			m_Table.TryGetValue( m, out list );
 
 			if ( list == null )

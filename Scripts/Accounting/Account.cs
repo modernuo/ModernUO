@@ -9,6 +9,7 @@ using System.Xml;
 using Server;
 using Server.Misc;
 using Server.Mobiles;
+using Server.Multis;
 using Server.Network;
 
 namespace Server.Accounting
@@ -41,7 +42,7 @@ namespace Server.Accounting
 				if ( m == null )
 					continue;
 
-				List<BaseHouse> list = Multis.BaseHouse.GetHouses( m );
+				List<BaseHouse> list = BaseHouse.GetHouses( m );
 
 				for ( int j = 0; j < list.Count; ++j )
 					list[j].Delete();
