@@ -470,7 +470,7 @@ namespace Server.Accounting
 		{
 			EventSink.Connected += new ConnectedEventHandler( EventSink_Connected );
 			EventSink.Disconnected += new DisconnectedEventHandler( EventSink_Disconnected );
-			EventSink.Login += new LoginEventHandler( EventSing_Login );
+			EventSink.Login += new LoginEventHandler( EventSink_Login );
 		}
 
 		private static void EventSink_Connected( ConnectedEventArgs e )
@@ -507,7 +507,7 @@ namespace Server.Accounting
 			acc.m_TotalGameTime += DateTime.Now - m.SessionStart;
 		}
 
-		private static void EventSing_Login( LoginEventArgs e )
+		private static void EventSink_Login( LoginEventArgs e )
 		{
 			PlayerMobile m = e.Mobile as PlayerMobile;
 
