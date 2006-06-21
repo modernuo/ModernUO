@@ -127,7 +127,7 @@ namespace Server.SkillHandlers
 				new TrackTypeDelegate( IsPlayer )
 			};
 
-		private class InternalSorter : IComparer
+		private class InternalSorter : IComparer<Mobile>
 		{
 			private Mobile m_From;
 
@@ -136,7 +136,7 @@ namespace Server.SkillHandlers
 				m_From = from;
 			}
 
-			public int Compare( object x, object y )
+			public int Compare( Mobile x, Mobile y )
 			{
 				if ( x == null && y == null )
 					return 0;
@@ -145,13 +145,7 @@ namespace Server.SkillHandlers
 				else if ( y == null )
 					return 1;
 
-				Mobile a = x as Mobile;
-				Mobile b = y as Mobile;
-
-				if ( a == null || b == null )
-					throw new ArgumentException();
-
-				return m_From.GetDistanceToSqrt( a ).CompareTo( m_From.GetDistanceToSqrt( b ) );
+				return m_From.GetDistanceToSqrt( x ).CompareTo( m_From.GetDistanceToSqrt( y ) );
 			}
 		}
 
