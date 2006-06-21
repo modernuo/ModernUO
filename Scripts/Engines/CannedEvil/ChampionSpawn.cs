@@ -5,6 +5,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Regions;
+using System.Collections.Generic;
 
 namespace Server.Engines.CannedEvil
 {
@@ -13,9 +14,9 @@ namespace Server.Engines.CannedEvil
 		private bool m_Active;
 		private bool m_RandomizeType;
 		private ChampionSpawnType m_Type;
-		private ArrayList m_Creatures;
-		private ArrayList m_RedSkulls;
-		private ArrayList m_WhiteSkulls;
+		private List<Mobile> m_Creatures;
+		private List<Item> m_RedSkulls;
+		private List<Item> m_WhiteSkulls;
 		private ChampionPlatform m_Platform;
 		private ChampionAltar m_Altar;
 		private int m_Kills;
@@ -58,9 +59,9 @@ namespace Server.Engines.CannedEvil
 			Movable = false;
 			Visible = false;
 
-			m_Creatures = new ArrayList();
-			m_RedSkulls = new ArrayList();
-			m_WhiteSkulls = new ArrayList();
+			m_Creatures = new List<Mobile>();
+			m_RedSkulls = new List<Item>();
+			m_WhiteSkulls = new List<Item>();
 
 			m_Platform = new ChampionPlatform( this );
 			m_Altar = new ChampionAltar( this );
@@ -243,7 +244,7 @@ namespace Server.Engines.CannedEvil
 			{
 				for( int i = m_RedSkulls.Count - 1; i >= value; --i )
 				{
-					((Item)m_RedSkulls[i]).Delete();
+					m_RedSkulls[i].Delete();
 					m_RedSkulls.RemoveAt( i );
 				}
 
@@ -276,7 +277,7 @@ namespace Server.Engines.CannedEvil
 		{
 			for( int i = m_WhiteSkulls.Count - 1; i >= val; --i )
 			{
-				((Item)m_WhiteSkulls[i]).Delete();
+				m_WhiteSkulls[i].Delete();
 				m_WhiteSkulls.RemoveAt( i );
 			}
 
@@ -412,7 +413,7 @@ namespace Server.Engines.CannedEvil
 
 				for ( int i = 0; i < m_Creatures.Count; ++i )
 				{
-					Mobile m = (Mobile)m_Creatures[i];
+					Mobile m = m_Creatures[i];
 
 					if ( m.Deleted )
 					{
@@ -773,13 +774,13 @@ namespace Server.Engines.CannedEvil
 			if( m_RedSkulls != null )
 			{
 				for( int i = 0; i < m_RedSkulls.Count; ++i )
-					((Item)m_RedSkulls[i]).Location = GetRedSkullLocation( i );
+					m_RedSkulls[i].Location = GetRedSkullLocation( i );
 			}
 
 			if( m_WhiteSkulls != null )
 			{
 				for( int i = 0; i < m_WhiteSkulls.Count; ++i )
-					((Item)m_WhiteSkulls[i]).Location = GetWhiteSkullLocation( i );
+					m_WhiteSkulls[i].Location = GetWhiteSkullLocation( i );
 			}
 
 			m_SpawnArea.X += Location.X - oldLoc.X;
@@ -805,13 +806,13 @@ namespace Server.Engines.CannedEvil
 			if( m_RedSkulls != null )
 			{
 				for( int i = 0; i < m_RedSkulls.Count; ++i )
-					((Item)m_RedSkulls[i]).Map = Map;
+					m_RedSkulls[i].Map = Map;
 			}
 
 			if( m_WhiteSkulls != null )
 			{
 				for( int i = 0; i < m_WhiteSkulls.Count; ++i )
-					((Item)m_WhiteSkulls[i]).Map = Map;
+					m_WhiteSkulls[i].Map = Map;
 			}
 
 			UpdateRegion();
@@ -833,7 +834,7 @@ namespace Server.Engines.CannedEvil
 			if( m_RedSkulls != null )
 			{
 				for( int i = 0; i < m_RedSkulls.Count; ++i )
-					((Item)m_RedSkulls[i]).Delete();
+					m_RedSkulls[i].Delete();
 
 				m_RedSkulls.Clear();
 			}
@@ -841,7 +842,7 @@ namespace Server.Engines.CannedEvil
 			if( m_WhiteSkulls != null )
 			{
 				for( int i = 0; i < m_WhiteSkulls.Count; ++i )
-					((Item)m_WhiteSkulls[i]).Delete();
+					m_WhiteSkulls[i].Delete();
 
 				m_WhiteSkulls.Clear();
 			}
@@ -850,7 +851,7 @@ namespace Server.Engines.CannedEvil
 			{
 				for( int i = 0; i < m_Creatures.Count; ++i )
 				{
-					Mobile mob = (Mobile)m_Creatures[i];
+					Mobile mob = m_Creatures[i];
 
 					if( !mob.Player )
 						mob.Delete();
@@ -878,7 +879,7 @@ namespace Server.Engines.CannedEvil
 			writer.Write( (int)4 ); // version
 
 			writer.Write( m_ConfinedRoaming );
-			writer.Write( m_Idol );
+			writer.WriteItem<IdolOfTheChampion>( m_Idol );
 			writer.Write( m_HasBeenAdvanced );
 			writer.Write( m_SpawnArea );
 
@@ -889,11 +890,11 @@ namespace Server.Engines.CannedEvil
 
 			writer.Write( (bool)m_Active );
 			writer.Write( (int)m_Type );
-			writer.WriteMobileList( m_Creatures, true );
-			writer.WriteItemList( m_RedSkulls, true );
-			writer.WriteItemList( m_WhiteSkulls, true );
-			writer.Write( m_Platform );
-			writer.Write( m_Altar );
+			writer.Write( m_Creatures, true );
+			writer.Write( m_RedSkulls, true );
+			writer.Write( m_WhiteSkulls, true );
+			writer.WriteItem<ChampionPlatform>( m_Platform );
+			writer.WriteItem<ChampionAltar>( m_Altar );
 			writer.Write( m_ExpireDelay );
 			writer.WriteDeltaTime( m_ExpireTime );
 			writer.Write( m_Champion );
@@ -916,7 +917,7 @@ namespace Server.Engines.CannedEvil
 				case 4:
 				{
 					m_ConfinedRoaming = reader.ReadBool();
-					m_Idol = reader.ReadItem() as IdolOfTheChampion;
+					m_Idol = reader.ReadItem<IdolOfTheChampion>();
 					m_HasBeenAdvanced = reader.ReadBool();
 
 					goto case 3;
@@ -953,11 +954,11 @@ namespace Server.Engines.CannedEvil
 
 					bool active = reader.ReadBool();
 					m_Type = (ChampionSpawnType)reader.ReadInt();
-					m_Creatures = reader.ReadMobileList();
-					m_RedSkulls = reader.ReadItemList();
-					m_WhiteSkulls = reader.ReadItemList();
-					m_Platform = reader.ReadItem() as ChampionPlatform;
-					m_Altar = reader.ReadItem() as ChampionAltar;
+					m_Creatures = reader.ReadStrongMobileList();
+					m_RedSkulls = reader.ReadStrongItemList();
+					m_WhiteSkulls = reader.ReadStrongItemList();
+					m_Platform = reader.ReadItem<ChampionPlatform>();
+					m_Altar = reader.ReadItem<ChampionAltar>();
 					m_ExpireDelay = reader.ReadTimeSpan();
 					m_ExpireTime = reader.ReadDeltaTime();
 					m_Champion = reader.ReadMobile();

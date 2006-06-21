@@ -6,6 +6,7 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
 using Server.Commands;
+using System.Collections.Generic;
 
 namespace Server.Engines.Doom
 {
@@ -30,10 +31,10 @@ namespace Server.Engines.Doom
 		private BaseDoor m_Door;
 		private BaseAddon m_Addon;
 		private GauntletSpawner m_Sequence;
-		private ArrayList m_Creatures;
+		private List<Mobile> m_Creatures;
 
 		private Rectangle2D m_RegionBounds;
-		private ArrayList m_Traps;
+		private List<BaseTrap> m_Traps;
 
 		private Region m_Region;
 
@@ -75,7 +76,7 @@ namespace Server.Engines.Doom
 
 				for ( int i = 0; i < m_Creatures.Count; ++i )
 				{
-					Mobile mob = (Mobile)m_Creatures[i];
+					Mobile mob = m_Creatures[i];
 
 					if ( !mob.Deleted )
 						return false;
@@ -163,13 +164,13 @@ namespace Server.Engines.Doom
 
 		private Timer m_Timer;
 
-		public ArrayList Creatures
+		public List<Mobile> Creatures
 		{
 			get{ return m_Creatures; }
 			set{ m_Creatures = value; }
 		}
 
-		public ArrayList Traps
+		public List<BaseTrap> Traps
 		{
 			get{ return m_Traps; }
 			set{ m_Traps = value; }
@@ -212,7 +213,7 @@ namespace Server.Engines.Doom
 		public virtual void ClearTraps()
 		{
 			for ( int i = 0; i < m_Traps.Count; ++i )
-				((Item)m_Traps[i]).Delete();
+				m_Traps[i].Delete();
 
 			m_Traps.Clear();
 		}
@@ -224,7 +225,7 @@ namespace Server.Engines.Doom
 			if ( map == null )
 				return;
 
-			Item trap = null;
+			BaseTrap trap = null;
 
 			int random = Utility.Random( 100 );
 
@@ -310,7 +311,7 @@ namespace Server.Engines.Doom
 		public virtual void ClearCreatures()
 		{
 			for ( int i = 0; i < m_Creatures.Count; ++i )
-				((Mobile)m_Creatures[i]).Delete();
+				m_Creatures[i].Delete();
 
 			m_Creatures.Clear();
 		}
@@ -419,8 +420,8 @@ namespace Server.Engines.Doom
 			Movable = false;
 
 			m_TypeName = typeName;
-			m_Creatures = new ArrayList();
-			m_Traps = new ArrayList();
+			m_Creatures = new List<Mobile>();
+			m_Traps = new List<BaseTrap>();
 		}
 
 		public GauntletSpawner( Serial serial ) : base( serial )
@@ -435,14 +436,14 @@ namespace Server.Engines.Doom
 
 			writer.Write( m_RegionBounds );
 
-			writer.WriteItemList( m_Traps, false );
+			writer.WriteItemList<BaseTrap>( m_Traps, false );
 
-			writer.WriteMobileList( m_Creatures, false );
+			writer.Write( m_Creatures, false );
 
 			writer.Write( m_TypeName );
-			writer.Write( m_Door );
-			writer.Write( m_Addon );
-			writer.Write( m_Sequence );
+			writer.WriteItem<BaseDoor>( m_Door );
+			writer.WriteItem<BaseAddon>( m_Addon );
+			writer.WriteItem<GauntletSpawner>( m_Sequence );
 
 			writer.Write( (int) m_State );
 		}
@@ -458,7 +459,7 @@ namespace Server.Engines.Doom
 				case 1:
 				{
 					m_RegionBounds = reader.ReadRect2D();
-					m_Traps = reader.ReadItemList();
+					m_Traps = reader.ReadStrongItemList<BaseTrap>();
 
 					goto case 0;
 				}
@@ -466,16 +467,16 @@ namespace Server.Engines.Doom
 				{
 					if ( version < 1 )
 					{
-						m_Traps = new ArrayList();
+						m_Traps = new List<BaseTrap>();
 						m_RegionBounds = new Rectangle2D( X - 40, Y - 40, 80, 80 );
 					}
 
-					m_Creatures = reader.ReadMobileList();
+					m_Creatures = reader.ReadStrongMobileList();
 
 					m_TypeName = reader.ReadString();
-					m_Door = reader.ReadItem() as BaseDoor;
-					m_Addon = reader.ReadItem() as BaseAddon;
-					m_Sequence = reader.ReadItem() as GauntletSpawner;
+					m_Door = reader.ReadItem<BaseDoor>(); ;
+					m_Addon = reader.ReadItem<BaseAddon>(); ;
+					m_Sequence = reader.ReadItem<GauntletSpawner>();
 
 					State = (GauntletSpawnerState)reader.ReadInt();
 

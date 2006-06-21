@@ -1133,9 +1133,9 @@ namespace Server.Guilds
 			writer.WriteGuildList( m_WarDeclarations, true );
 			writer.WriteGuildList( m_WarInvitations, true );
 
-			writer.WriteMobileList( m_Members, true );
-			writer.WriteMobileList( m_Candidates, true );
-			writer.WriteMobileList( m_Accepted, true );
+			writer.Write( m_Members, true );
+			writer.Write( m_Candidates, true );
+			writer.Write( m_Accepted, true );
 
 			writer.Write( m_Guildstone );
 			writer.Write( m_Teleporter );

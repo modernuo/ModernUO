@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Server;
 using Server.Targeting;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -9,16 +10,16 @@ namespace Server.Items
 	{
 		public static readonly int MaxKeys = 20;
 
-		private ArrayList m_Keys;
+		private List<Key> m_Keys;
 
-		public ArrayList Keys{ get{ return m_Keys; } }
+		public List<Key> Keys { get { return m_Keys; } }
 
 		[Constructable]
 		public KeyRing() : base( 0x1011 )
 		{
 			Weight = 1.0; // They seem to have no weight on OSI ?!
 
-			m_Keys = new ArrayList();
+			m_Keys = new List<Key>();
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
@@ -131,7 +132,7 @@ namespace Server.Items
 
 			for ( int i = m_Keys.Count - 1; i >= 0; i-- )
 			{
-				Key key = (Key) m_Keys[i];
+				Key key = m_Keys[i];
 
 				if ( !key.Deleted && !cont.TryDropItem( from, key, true ) )
 					break;
@@ -146,7 +147,7 @@ namespace Server.Items
 		{
 			for ( int i = m_Keys.Count - 1; i >= 0; i-- )
 			{
-				Key key = (Key) m_Keys[i];
+				Key key = m_Keys[i];
 
 				if ( key.KeyValue == keyValue )
 				{
@@ -191,7 +192,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.WriteItemList( m_Keys );
+			writer.WriteItemList<Key>( m_Keys );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -200,7 +201,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Keys = reader.ReadItemList();
+			m_Keys = reader.ReadStrongItemList<Key>();
 		}
 	}
 }

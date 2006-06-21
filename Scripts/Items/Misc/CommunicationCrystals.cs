@@ -3,6 +3,7 @@ using System.Collections;
 using Server;
 using Server.Network;
 using Server.Targeting;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -51,7 +52,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1060740; } } // communication crystal
 
 		private int m_Charges;
-		private ArrayList m_Receivers;
+		private List<ReceiverCrystal> m_Receivers;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
@@ -75,7 +76,7 @@ namespace Server.Items
 			}
 		}
 
-		public ArrayList Receivers
+		public List<ReceiverCrystal> Receivers
 		{
 			get{ return m_Receivers; }
 		}
@@ -92,7 +93,7 @@ namespace Server.Items
 
 			m_Charges = charges;
 
-			m_Receivers = new ArrayList();
+			m_Receivers = new List<ReceiverCrystal>();
 		}
 
 		public BroadcastCrystal( Serial serial ) : base( serial )
@@ -233,7 +234,7 @@ namespace Server.Items
 				}
 				else if ( targeted == from )
 				{
-					foreach ( ReceiverCrystal receiver in new ArrayList( m_Crystal.Receivers ) )
+					foreach( ReceiverCrystal receiver in new List<ReceiverCrystal>( m_Crystal.Receivers ) )
 					{
 						receiver.Sender = null;
 					}
@@ -286,7 +287,7 @@ namespace Server.Items
 			writer.WriteEncodedInt( 0 ); // version
 
 			writer.WriteEncodedInt( m_Charges );
-			writer.WriteItemList( m_Receivers );
+			writer.WriteItemList<ReceiverCrystal>( m_Receivers );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -296,7 +297,7 @@ namespace Server.Items
 			int version = reader.ReadEncodedInt();
 
 			m_Charges = reader.ReadEncodedInt();
-			m_Receivers = reader.ReadItemList();
+			m_Receivers = reader.ReadStrongItemList<ReceiverCrystal>();
 		}
 	}
 
@@ -468,7 +469,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( (Item) m_Sender );
+			writer.WriteItem<BroadcastCrystal>( m_Sender );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -477,7 +478,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Sender = (BroadcastCrystal) reader.ReadItem();
+			m_Sender = reader.ReadItem<BroadcastCrystal>();
 		}
 	}
 }

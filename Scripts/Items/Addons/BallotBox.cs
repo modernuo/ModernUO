@@ -5,6 +5,7 @@ using Server.Multis;
 using Server.Gumps;
 using Server.Network;
 using Server.Prompts;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -15,20 +16,20 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1041006; } } // a ballot box
 
 		private string[] m_Topic;
-		private ArrayList m_Yes;
-		private ArrayList m_No;
+		private List<Mobile> m_Yes;
+		private List<Mobile> m_No;
 
 		public string[] Topic
 		{
 			get{ return m_Topic; }
 		}
 
-		public ArrayList Yes
+		public List<Mobile> Yes
 		{
 			get{ return m_Yes; }
 		}
 
-		public ArrayList No
+		public List<Mobile> No
 		{
 			get{ return m_No; }
 		}
@@ -37,8 +38,8 @@ namespace Server.Items
 		public BallotBox() : base( 0x9A8 )
 		{
 			m_Topic = new string[0];
-			m_Yes = new ArrayList();
-			m_No = new ArrayList();
+			m_Yes = new List<Mobile>();
+			m_No = new List<Mobile>();
 		}
 
 		public BallotBox( Serial serial ) : base( serial )
@@ -311,8 +312,8 @@ namespace Server.Items
 			for ( int i = 0; i < m_Topic.Length; i++ )
 				writer.Write( (string) m_Topic[i] );
 
-			writer.WriteMobileList( m_Yes, true );
-			writer.WriteMobileList( m_No, true );
+			writer.Write( m_Yes, true );
+			writer.Write( m_No, true );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -326,8 +327,8 @@ namespace Server.Items
 			for ( int i = 0; i < m_Topic.Length; i++ )
 				m_Topic[i] = reader.ReadString();
 
-			m_Yes = reader.ReadMobileList();
-			m_No = reader.ReadMobileList();
+			m_Yes = reader.ReadStrongMobileList();
+			m_No = reader.ReadStrongMobileList();
 		}
 	}
 

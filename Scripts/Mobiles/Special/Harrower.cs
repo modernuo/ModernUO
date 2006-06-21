@@ -11,7 +11,7 @@ namespace Server.Mobiles
 	{
 		private bool m_TrueForm;
 		private Item m_GateItem;
-		private ArrayList m_Tentacles;
+		private List<HarrowerTentacles> m_Tentacles;
 		private Timer m_Timer;
 
 		private class SpawnEntry
@@ -106,7 +106,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.EvalInt, 120.0 );
 			SetSkill( SkillName.Meditation, 120.0 );
 
-			m_Tentacles = new ArrayList();
+			m_Tentacles = new List<HarrowerTentacles>();
 
 			m_Timer = new TeleportTimer( this );
 			m_Timer.Start();
@@ -187,7 +187,7 @@ namespace Server.Mobiles
 					if ( !ok )
 						continue;
 
-					BaseCreature spawn = new HarrowerTentacles( this );
+					HarrowerTentacles spawn = new HarrowerTentacles( this );
 
 					spawn.Team = this.Team;
 
@@ -226,7 +226,7 @@ namespace Server.Mobiles
 
 			writer.Write( m_TrueForm );
 			writer.Write( m_GateItem );
-			writer.WriteMobileList( m_Tentacles );
+			writer.WriteMobileList<HarrowerTentacles>( m_Tentacles );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -241,7 +241,7 @@ namespace Server.Mobiles
 				{
 					m_TrueForm = reader.ReadBool();
 					m_GateItem = reader.ReadItem();
-					m_Tentacles = reader.ReadMobileList();
+					m_Tentacles = reader.ReadStrongMobileList<HarrowerTentacles>();
 
 					m_Timer = new TeleportTimer( this );
 					m_Timer.Start();
@@ -363,7 +363,7 @@ namespace Server.Mobiles
 
 					for ( int i = 0; i < m_Tentacles.Count; ++i )
 					{
-						Mobile m = (Mobile)m_Tentacles[i];
+						Mobile m = m_Tentacles[i];
 
 						if ( !m.Deleted )
 							m.Kill();

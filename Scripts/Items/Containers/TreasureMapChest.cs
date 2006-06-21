@@ -33,7 +33,7 @@ namespace Server.Items
 		private Mobile m_Owner;
 		private bool m_Temporary;
 
-		private ArrayList m_Guardians;
+		private List<Mobile> m_Guardians;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Level{ get{ return m_Level; } set{ m_Level = value; } }
@@ -47,7 +47,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Temporary{ get{ return m_Temporary; } set{ m_Temporary = value; } }
 
-		public ArrayList Guardians{ get{ return m_Guardians; } }
+		public List<Mobile> Guardians { get { return m_Guardians; } }
 
 		[Constructable]
 		public TreasureMapChest( int level ) : this( null, level, false )
@@ -61,7 +61,7 @@ namespace Server.Items
 			m_DeleteTime = DateTime.Now + TimeSpan.FromHours( 3.0 );
 
 			m_Temporary = temporary;
-			m_Guardians = new ArrayList();
+			m_Guardians = new List<Mobile>();
 
 			m_Timer = new DeleteTimer( this, m_DeleteTime );
 			m_Timer.Start();
@@ -342,7 +342,7 @@ namespace Server.Items
 
 			writer.Write( (int) 2 ); // version
 
-			writer.WriteMobileList( m_Guardians, true );
+			writer.Write( m_Guardians, true );
 			writer.Write( (bool) m_Temporary );
 
 			writer.Write( m_Owner );
@@ -362,7 +362,7 @@ namespace Server.Items
 			{
 				case 2:
 				{
-					m_Guardians = reader.ReadMobileList();
+					m_Guardians = reader.ReadStrongMobileList();
 					m_Temporary = reader.ReadBool();
 
 					goto case 1;
@@ -380,7 +380,7 @@ namespace Server.Items
 					m_Lifted = reader.ReadItemList();
 
 					if ( version < 2 )
-						m_Guardians = new ArrayList();
+						m_Guardians = new List<Mobile>();
 
 					break;
 				}

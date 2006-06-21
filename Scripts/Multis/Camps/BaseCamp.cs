@@ -3,12 +3,14 @@ using System.Collections;
 using Server;
 using Server.Items;
 using Server.Mobiles;
+using System.Collections.Generic;
 
 namespace Server.Multis
 {
 	public abstract class BaseCamp : BaseMulti
 	{
-		private ArrayList m_Items, m_Mobiles;
+		private List<Item> m_Items;
+		private List<Mobile> m_Mobiles;
 		private DateTime m_DecayTime;
 		private Timer m_DecayTimer;
 
@@ -17,8 +19,8 @@ namespace Server.Multis
 
 		public BaseCamp( int multiID ) : base( multiID | 0x4000 )
 		{
-			m_Items = new ArrayList();
-			m_Mobiles = new ArrayList();
+			m_Items = new List<Item>();
+			m_Mobiles = new List<Mobile>();
 			RefreshDecay( true );
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckAddComponents ) );
@@ -104,10 +106,10 @@ namespace Server.Multis
 			base.OnAfterDelete();
 
 			for ( int i = 0; i < m_Items.Count; ++i )
-				((Item)m_Items[i]).Delete();
+				m_Items[i].Delete();
 
 			for ( int i = 0; i < m_Mobiles.Count; ++i )
-				((Mobile)m_Mobiles[i]).Delete();
+				m_Mobiles[i].Delete();
 
 			m_Items.Clear();
 			m_Mobiles.Clear();
@@ -123,8 +125,8 @@ namespace Server.Multis
 
 			writer.Write( (int) 0 ); // version
 
-			writer.WriteItemList( m_Items, true );
-			writer.WriteMobileList( m_Mobiles, true );
+			writer.Write( m_Items, true );
+			writer.Write( m_Mobiles, true );
 			writer.WriteDeltaTime( m_DecayTime );
 		}
 
@@ -138,8 +140,8 @@ namespace Server.Multis
 			{
 				case 0:
 				{
-					m_Items = reader.ReadItemList();
-					m_Mobiles = reader.ReadMobileList();
+					m_Items = reader.ReadStrongItemList();
+					m_Mobiles = reader.ReadStrongMobileList();
 					m_DecayTime = reader.ReadDeltaTime();
 
 					RefreshDecay( false );
