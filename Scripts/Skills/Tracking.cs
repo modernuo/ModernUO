@@ -41,7 +41,7 @@ namespace Server.SkillHandlers
 			}
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, TrackingInfo> m_Table = new Dictionary<Mobile, TrackingInfo>();
 
 		public static void AddInfo( Mobile tracker, Mobile target )
 		{
@@ -53,7 +53,8 @@ namespace Server.SkillHandlers
 		{
 			// Note: This is not reset as of publish 35.
 
-			TrackingInfo info = m_Table[tracker] as TrackingInfo;
+			TrackingInfo info = null;
+			m_Table.TryGetValue( tracker, out info );
 
 			if ( info == null || info.m_Target != target || info.m_Map != target.Map )
 				return 0.0;

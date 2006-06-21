@@ -128,21 +128,21 @@ namespace Server.Gumps
 			}
 		}
 
-		public TextEntryLimited( int x,	int	y, int width, int height, int hue, int id, string initialText, int size	)
+		public TextEntryLimited( int x,	int	y, int width, int height, int hue, int entryID, string initialText, int size )
 		{
 			m_X	= x;
 			m_Y	= y;
 			m_Width	= width;
 			m_Height = height;
 			m_Hue =	hue;
-			m_EntryID =	id;
+			m_EntryID =	entryID;
 			m_InitialText =	initialText;
 			m_Size = size;
 		}
 
 		public override	string Compile()
 		{
-			return String.Format( "{{ textentrylimited {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}	}}", m_X, m_Y, m_Width,	m_Height, m_Hue, m_ID, Parent.Intern( m_InitialText	), m_Size );
+			return String.Format( "{{ textentrylimited {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}	}}", m_X, m_Y, m_Width,	m_Height, m_Hue, m_EntryID, Parent.Intern( m_InitialText ), m_Size );
 		}
 
 		private	static byte[] m_LayoutName = Gump.StringToBuffer( "textentrylimited" );
