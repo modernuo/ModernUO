@@ -79,7 +79,7 @@ namespace Server.Spells
 
 			for ( int i = 0; i < sector.Multis.Count; ++i )
 			{
-				BaseMulti multi = (BaseMulti) sector.Multis[i];
+				BaseMulti multi = sector.Multis[i];
 
 				if ( multi is BaseHouse )
 				{

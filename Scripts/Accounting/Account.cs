@@ -41,10 +41,10 @@ namespace Server.Accounting
 				if ( m == null )
 					continue;
 
-				ArrayList list = Multis.BaseHouse.GetHouses( m );
+				List<BaseHouse> list = Multis.BaseHouse.GetHouses( m );
 
 				for ( int j = 0; j < list.Count; ++j )
-					( (Item) list[j] ).Delete();
+					list[j].Delete();
 
 				m.Delete();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Multis;
@@ -29,19 +30,19 @@ namespace Server.Gumps
 				from.SendGump( new ViewHousesGump( from, GetHouses( (Mobile)targeted ), null ) );
 		}
 
-		private class HouseComparer : IComparer
+		private class HouseComparer : IComparer<BaseHouse>
 		{
-			public static readonly IComparer Instance = new HouseComparer();
+			public static readonly IComparer<BaseHouse> Instance = new HouseComparer();
 
-			public int Compare( object x, object y )
+			public int Compare( BaseHouse x, BaseHouse y )
 			{
-				return ((BaseHouse)x).BuiltOn.CompareTo( ((BaseHouse)y).BuiltOn );
+				return x.BuiltOn.CompareTo( y.BuiltOn );
 			}
 		}
 
-		public static ArrayList GetHouses( Mobile owner )
+		public static List<BaseHouse> GetHouses( Mobile owner )
 		{
-			ArrayList list = new ArrayList();
+			List<BaseHouse> list = new List<BaseHouse>();
 
 			Account acct = owner.Account as Account;
 
@@ -66,10 +67,10 @@ namespace Server.Gumps
 		}
 
 		private Mobile m_From;
-		private ArrayList m_List;
+		private List<BaseHouse> m_List;
 		private BaseHouse m_Selection;
 
-		public ViewHousesGump( Mobile from, ArrayList list, BaseHouse sel ) : base( 50, 40 )
+		public ViewHousesGump( Mobile from, List<BaseHouse> list, BaseHouse sel ) : base( 50, 40 )
 		{
 			m_From = from;
 			m_List = list;
@@ -109,7 +110,7 @@ namespace Server.Gumps
 							AddButton( 190, 17, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page-1 );
 					}
 
-					object name = FindHouseName( (BaseHouse)list[i] );
+					object name = FindHouseName( list[i] );
 
 					AddHtml( 15, 40 + ((i % 15) * 20),  20, 20, Color( String.Format( "{0}.", i+1 ), White ), false, false );
 
@@ -192,7 +193,7 @@ namespace Server.Gumps
 				int v = info.ButtonID - 1;
 
 				if ( v >= 0 && v < m_List.Count )
-					m_From.SendGump( new ViewHousesGump( m_From, m_List, (BaseHouse)m_List[v] ) );
+					m_From.SendGump( new ViewHousesGump( m_From, m_List, m_List[v] ) );
 			}
 			else if ( !m_Selection.Deleted )
 			{

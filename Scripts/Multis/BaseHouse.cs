@@ -29,7 +29,7 @@ namespace Server.Multis
 		public static void Decay_OnTick()
 		{
 			for ( int i = 0; i < m_AllHouses.Count; ++i )
-				((BaseHouse)m_AllHouses[i]).CheckDecay();
+				m_AllHouses[i].CheckDecay();
 		}
 
 		private DateTime m_LastRefreshed;
@@ -83,7 +83,7 @@ namespace Server.Multis
 				if ( (acct.LastLogin + TimeSpan.FromDays( 90.0 )) < DateTime.Now )
 					return DecayType.Condemned;
 
-				ArrayList allHouses = new ArrayList( 2 );
+				List<BaseHouse> allHouses = new List<BaseHouse>( 2 );
 
 				for ( int i = 0; i < acct.Length; ++i )
 				{
@@ -97,7 +97,7 @@ namespace Server.Multis
 
 				for ( int i = 0; i < allHouses.Count; ++i )
 				{
-					BaseHouse check = (BaseHouse)allHouses[i];
+					BaseHouse check = allHouses[i];
 
 					if ( newest == null || IsNewer( check, newest ) )
 						newest = check;
@@ -246,7 +246,7 @@ namespace Server.Multis
 
 		private Point3D m_RelativeBanLocation;
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, List<BaseHouse>> m_Table = new Dictionary<Mobile, List<BaseHouse>>();
 
 		public virtual bool IsAosRules{ get{ return Core.AOS; } }
 
@@ -820,19 +820,20 @@ namespace Server.Multis
 			return ( house != null && (house.IsSecure( item ) || house.IsLockedDown( item )) );
 		}
 
-		public static ArrayList GetHouses( Mobile m )
+		public static List<BaseHouse> GetHouses( Mobile m )
 		{
-			ArrayList list = new ArrayList();
+			List<BaseHouse> list = new List<BaseHouse>();
 
 			if ( m != null )
 			{
-				ArrayList exists = (ArrayList)m_Table[m];
+				List<BaseHouse> exists = null;
+				m_Table.TryGetValue( m, out exists );
 
 				if ( exists != null )
 				{
 					for ( int i = 0; i < exists.Count; ++i )
 					{
-						BaseHouse house = exists[i] as BaseHouse;
+						BaseHouse house = exists[i];
 
 						if ( house != null && !house.Deleted && house.Owner == m )
 							list.Add( house );
@@ -1040,7 +1041,7 @@ namespace Server.Multis
 			return SecureAccessResult.Insecure;
 		}
 
-		private static ArrayList m_AllHouses = new ArrayList();
+		private static List<BaseHouse> m_AllHouses = new List<BaseHouse>();
 
 		public BaseHouse( int multiID, Mobile owner, int MaxLockDown, int MaxSecure ) : base( multiID | 0x4000 )
 		{
@@ -1075,10 +1076,11 @@ namespace Server.Multis
 
 			if ( owner != null )
 			{
-				ArrayList list = (ArrayList)m_Table[owner];
+				List<BaseHouse list = null;
+				m_Table.TryGetValue( owner, out list );
 
 				if ( list == null )
-					m_Table[owner] = list = new ArrayList();
+					m_Table[owner] = list = new List<BaseHouse>();
 
 				list.Add( this );
 			}
@@ -2478,10 +2480,11 @@ namespace Server.Multis
 
 					if ( m_Owner != null )
 					{
-						ArrayList list = (ArrayList)m_Table[m_Owner];
+						List<BaseHouse list = null;
+						m_Table.TryGetValue( m_Owner, out list );
 
 						if ( list == null )
-							m_Table[m_Owner] = list = new ArrayList();
+							m_Table[m_Owner] = list = new List<BaseHouse>();
 
 						list.Add( this );
 					}
@@ -2533,7 +2536,7 @@ namespace Server.Multis
 
 		public static void HandleDeletion( Mobile mob )
 		{
-			ArrayList houses = GetHouses( mob );
+			List<BaseHouse> houses = GetHouses( mob );
 
 			if ( houses.Count == 0 )
 				return;
@@ -2549,7 +2552,7 @@ namespace Server.Multis
 
 			for ( int i = 0; i < houses.Count; ++i )
 			{
-				BaseHouse house = houses[i] as BaseHouse;
+				BaseHouse house = houses[i];
 
 				bool canClaim = false;
 
@@ -2586,10 +2589,11 @@ namespace Server.Multis
 			{
 				if ( m_Owner != null )
 				{
-					ArrayList list = (ArrayList)m_Table[m_Owner];
+					List<BaseHouse list = null;
+					m_Table.TryGetValue( m_Owner, out list );
 
 					if ( list == null )
-						m_Table[m_Owner] = list = new ArrayList();
+						m_Table[m_Owner] = list = new List<BaseHouse>();
 
 					list.Remove( this );
 					m_Owner.Delta( MobileDelta.Noto );
@@ -2599,10 +2603,11 @@ namespace Server.Multis
 
 				if ( m_Owner != null )
 				{
-					ArrayList list = (ArrayList)m_Table[m_Owner];
+					List<BaseHouse list = null;
+					m_Table.TryGetValue( m_Owner, out list );
 
 					if ( list == null )
-						m_Table[m_Owner] = list = new ArrayList();
+						m_Table[m_Owner] = list = new List<BaseHouse>();
 
 					list.Add( this );
 					m_Owner.Delta( MobileDelta.Noto );
@@ -2834,10 +2839,11 @@ namespace Server.Multis
 
 			if ( m_Owner != null )
 			{
-				ArrayList list = (ArrayList)m_Table[m_Owner];
-
+				List<BaseHouse list = null;
+				m_Table.TryGetValue( m_Owner, out list );
+				
 				if ( list == null )
-					m_Table[m_Owner] = list = new ArrayList();
+					m_Table[m_Owner] = list = new List<BaseHouse>();
 
 				list.Remove( this );
 			}
@@ -2966,14 +2972,15 @@ namespace Server.Multis
 			if ( m == null )
 				return false;
 
-			ArrayList list = (ArrayList)m_Table[m];
+			List<BaseHouse list = null;
+			m_Table.TryGetValue( m, out list );
 
 			if ( list == null )
 				return false;
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
-				BaseHouse h = (BaseHouse)list[i];
+				BaseHouse h = list[i];
 
 				if ( !h.Deleted )
 					return true;
