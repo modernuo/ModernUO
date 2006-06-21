@@ -168,7 +168,7 @@ namespace Server.SkillHandlers
 
 			int range = 10 + (int)(from.Skills[SkillName.Tracking].Value / 10);
 
-			ArrayList list = new ArrayList();
+			List<Mobile> list = new List<Mobile>();
 
 			foreach ( Mobile m in from.GetMobilesInRange( range ) )
 			{

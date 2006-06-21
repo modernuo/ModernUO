@@ -417,7 +417,7 @@ namespace Server.Commands
 			}
 			else if ( item is BaseLight )
 			{
-				bool unlit, unprotected = false;
+				bool unlit = false, unprotected = false;
 
 				for ( int i = 0; i < m_Params.Length; ++i )
 				{

@@ -121,7 +121,7 @@ namespace Server.Items
 
 		private static void DeleteAll()
 		{
-			List<PublicMoongate> list = new List<PublicMoongate>();
+			List<Item> list = new List<Item>();
 
 			foreach ( Item item in World.Items.Values )
 			{
@@ -129,8 +129,8 @@ namespace Server.Items
 					list.Add( item );
 			}
 
-			foreach ( PublicMoongate pmg in list )
-				pmg.Delete();
+			foreach ( Item item in list )
+				item.Delete();
 
 			if ( list.Count > 0 )
 				World.Broadcast( 0x35, true, "{0} moongates removed.", list.Count );
