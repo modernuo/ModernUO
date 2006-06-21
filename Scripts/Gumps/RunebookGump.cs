@@ -48,7 +48,7 @@ namespace Server.Gumps
 			// Background image
 			AddImage( 100, 10, 2200 );
 
-			// Two seperators
+			// Two separators
 			for ( int i = 0; i < 2; ++i )
 			{
 				int xOffset = 125 + (i * 165);

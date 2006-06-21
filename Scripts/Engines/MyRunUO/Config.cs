@@ -28,7 +28,7 @@ namespace Server.Engines.MyRunUO
 		// Text encoding used
 		public static Encoding EncodingIO = Encoding.ASCII;
 
-		// Database communication is done in a seperate thread. This value is the 'priority' of that thread, or, how much CPU it will try to use
+		// Database communication is done in a separate thread. This value is the 'priority' of that thread, or, how much CPU it will try to use
 		public static ThreadPriority DatabaseThreadPriority = ThreadPriority.BelowNormal;
 
 		// Any character with an AccessLevel equal to or higher than this will not be displayed

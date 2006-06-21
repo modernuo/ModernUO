@@ -8,7 +8,7 @@ namespace Server.Misc
 	public class DataPath
 	{
 		/* If you have not installed Ultima Online,
-		 * or wish the server to use a seperate set of datafiles,
+		 * or wish the server to use a separate set of datafiles,
 		 * change the 'CustomPath' value, example:
 		 * 
 		 * private const string CustomPath = @"C:\Program Files\Ultima Online";

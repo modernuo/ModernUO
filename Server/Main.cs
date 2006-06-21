@@ -481,19 +481,19 @@ namespace Server
 				StringBuilder sb = new StringBuilder();
 
 				if( Core.Debug )
-					Utility.Seperate( sb, "-debug", " " );
+					Utility.Separate( sb, "-debug", " " );
 
 				if( Core.Service )
-					Utility.Seperate( sb, "-service", " " );
+					Utility.Separate( sb, "-service", " " );
 
 				if( Core.Profiling )
-					Utility.Seperate( sb, "-profile", " " );
+					Utility.Separate( sb, "-profile", " " );
 
 				if( !m_Cache )
-					Utility.Seperate( sb, "-nocache", " " );
+					Utility.Separate( sb, "-nocache", " " );
 
 				if( m_HaltOnWarning )
-					Utility.Seperate( sb, "-haltonwarning", " " );
+					Utility.Separate( sb, "-haltonwarning", " " );
 
 				return sb.ToString();
 			}

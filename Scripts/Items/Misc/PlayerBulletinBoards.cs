@@ -599,7 +599,7 @@ namespace Server.Items
 			if ( page >= 1 && page <= board.Messages.Count )
 				message = (PlayerBBMessage)board.Messages[page - 1];
 
-			AddImageTiled( 150, 220, 240, 1, 2700 ); // Seperator
+			AddImageTiled( 150, 220, 240, 1, 2700 ); // Separator
 
 			AddHtmlLocalized( 150, 180, 100, 20, 1062405, 16715, false, false ); // Posted On:
 			AddHtmlLocalized( 150, 200, 100, 20, 1062406, 16715, false, false ); // Posted By:

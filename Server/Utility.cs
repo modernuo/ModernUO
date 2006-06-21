@@ -59,10 +59,10 @@ namespace Server
 			}
 		}
 
-		public static void Seperate( StringBuilder sb, string value, string seperator )
+		public static void Separate( StringBuilder sb, string value, string separator )
 		{
 			if ( sb.Length > 0 )
-				sb.Append( seperator );
+				sb.Append( separator );
 
 			sb.Append( value );
 		}
