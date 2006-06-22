@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Targeting;
 
@@ -72,7 +72,7 @@ namespace Server.Items
 
 					Server.Spells.SpellHelper.GetSurfaceTop( ref p );
 
-					ArrayList houses = null;
+					List<BaseHouse> houses = null;
 
 					AddonFitResult res = addon.CouldFit( p, map, from, ref houses );
 

@@ -65,7 +65,7 @@ namespace Server.Items
 				{
 					for ( int i = 0; hue == 0 && i < m_Components.Count; ++i )
 					{
-						AddonComponent c = (AddonComponent)m_Components[i];
+						AddonComponent c = m_Components[i];
 
 						if ( c.Hue != 0 )
 							hue = c.Hue;
@@ -109,17 +109,17 @@ namespace Server.Items
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
-			ArrayList houses = null;
+			List<BaseHouse> houses = null;
 
 			return ( CouldFit( p, map, null, ref houses ) == AddonFitResult.Valid );
 		}
 
-		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref ArrayList houseList )
+		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref List<BaseHouse> houseList )
 		{
 			if ( Deleted )
 				return AddonFitResult.Blocked;
 
-			ArrayList houses = new ArrayList();
+			List<BaseHouse> houses = new List<BaseHouse>();
 
 			foreach ( AddonComponent c in m_Components )
 			{
@@ -168,7 +168,7 @@ namespace Server.Items
 			return AddonFitResult.Valid;
 		}
 
-		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, ArrayList list )
+		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, List<BaseHouse> list )
 		{
 			if ( from == null || from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
