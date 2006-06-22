@@ -2745,7 +2745,7 @@ namespace Server.Gumps
 				InvokeCommand( "Save" );
 
 			if ( restart )
-				Process.Start( Core.ExePath );
+				Process.Start( Core.ExePath, Core.Arguments );
 
 			Core.Process.Kill();
 		}
