@@ -73,7 +73,7 @@ namespace Server.Items
 
 					Server.Spells.SpellHelper.GetSurfaceTop( ref p );
 
-					List<BaseHouse> houses = new List<BaseHouse>;
+					List<BaseHouse> houses = new List<BaseHouse>();
 
 					AddonFitResult res = addon.CouldFit( p, map, from, ref houses );
 
