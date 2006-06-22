@@ -114,12 +114,10 @@ namespace Server.Items
 			return ( CouldFit( p, map, null, ref houses ) == AddonFitResult.Valid );
 		}
 
-		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref List<BaseHouse> houseList )
+		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref List<BaseHouse> houses )
 		{
 			if ( Deleted )
 				return AddonFitResult.Blocked;
-
-			List<BaseHouse> houses = new List<BaseHouse>();
 
 			foreach ( AddonComponent c in m_Components )
 			{
@@ -164,11 +162,10 @@ namespace Server.Items
 				}
 			}
 
-			houseList = houses;
 			return AddonFitResult.Valid;
 		}
 
-		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, List<BaseHouse> list )
+		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, ref List<BaseHouse> list )
 		{
 			if ( from == null || from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
