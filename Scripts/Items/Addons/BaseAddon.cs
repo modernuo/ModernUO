@@ -125,7 +125,7 @@ namespace Server.Items
 
 				if ( !map.CanFit( p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, ( c.Z == 0 ) ) )
 					return AddonFitResult.Blocked;
-				else if ( !CheckHouse( from, p3D, map, c.ItemData.Height, houses ) )
+				else if ( !CheckHouse( from, p3D, map, c.ItemData.Height, ref houses ) )
 					return AddonFitResult.NotInHouse;
 
 				if ( c.NeedsWall )
