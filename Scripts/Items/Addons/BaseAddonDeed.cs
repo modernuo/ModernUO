@@ -94,11 +94,8 @@ namespace Server.Items
 					{
 						m_Deed.Delete();
 
-						if ( houses != null )
-						{
-							foreach ( BaseHouse h in houses )
-								h.Addons.Add( addon );
-						}
+						foreach ( BaseHouse h in houses )
+							h.Addons.Add( addon );
 					}
 					else
 					{

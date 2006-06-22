@@ -167,12 +167,9 @@ namespace Server.Items
 
 		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, ref List<BaseHouse> list )
 		{
-			if ( from == null || from.AccessLevel >= AccessLevel.GameMaster )
-				return true;
-
 			BaseHouse house = BaseHouse.FindHouseAt( p, map, height );
 
-			if ( house == null || !house.IsOwner( from ) )
+			if ( from == null || house == null || !house.IsOwner( from ) )
 				return false;
 
 			if ( !list.Contains( house ) )
