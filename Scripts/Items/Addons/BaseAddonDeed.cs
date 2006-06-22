@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server;
+using Server.Multis;
 using Server.Targeting;
 
 namespace Server.Items
@@ -95,7 +96,7 @@ namespace Server.Items
 
 						if ( houses != null )
 						{
-							foreach ( Server.Multis.BaseHouse h in houses )
+							foreach ( BaseHouse h in houses )
 								h.Addons.Add( addon );
 						}
 					}
