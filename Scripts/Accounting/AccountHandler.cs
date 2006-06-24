@@ -1,12 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Server;
-using Server.Network;
 using Server.Accounting;
-using Server.Engines.Help;
-using System.Collections;
 using Server.Commands;
+using Server.Engines.Help;
+using Server.Network;
 
 namespace Server.Misc
 {
@@ -205,45 +205,35 @@ namespace Server.Misc
 
 		public static bool CanCreate( IPAddress ip )
 		{
-			if ( IPTables[ip] == null ) //Sanity
+			if ( !IPTable.ContainsKey( ip ) )
 				return true;
-				
-				
-			return ((int)IPTables[ip] < MaxAccountsPerIP);
-				
-			/*
-			if ( (int)IPTables[ip] >= MaxAccountsPerIP )
-				return false;
-			else
-				return true;
-			*/
+
+			return ( IPTable[ip] < MaxAccountsPerIP );
 		}
 
-		private static Hashtable m_IPTables;
+		private static Dictionary<IPAddress, Int32> m_IPTable;
 
-		public static Hashtable IPTables
+		public static Dictionary<IPAddress, Int32> IPTable
 		{
 			get
 			{
-				if ( m_IPTables == null )
+				if ( m_IPTable == null )
 				{
-					m_IPTables = new Hashtable();
+					m_IPTable = new Dictionary<IPAddress, Int32>();
 
 					foreach ( Account a in Accounts.GetAccounts() )
-					{
 						if ( a.LoginIPs.Length > 0 )
 						{
 							IPAddress ip = a.LoginIPs[0];
 
-							if ( m_IPTables[ip] == null )
-								m_IPTables[ip] = 1;
+							if ( m_IPTable.ContainsKey( ip ) )
+								m_IPTable[ip]++;
 							else
-								m_IPTables[ip] = (int)m_IPTables[ip] + 1;
+								m_IPTable[ip] = 1;
 						}
-					}
 				}
 
-				return m_IPTables;
+				return m_IPTable;
 			}
 		}	
 
@@ -299,7 +289,7 @@ namespace Server.Misc
 
 			if ( acct == null )
 			{
-				if ( AutoAccountCreation && un.Trim().Length > 0 )	//To prevent someone from mkaing an account of just '' or a bunch of meaningless spaces 
+				if ( AutoAccountCreation && un.Trim().Length > 0 )	//To prevent someone from making an account of just '' or a bunch of meaningless spaces 
 				{
 					e.State.Account = acct = CreateAccount( e.State, un, pw );
 					e.Accepted = acct == null ? false : acct.CheckAccess( e.State );

@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using Server.Items;
-using System.Collections;
-using Server.Spells.Necromancy;
-using Server.Spells.Chivalry;
 using Server.Spells.Bushido;
+using Server.Spells.Chivalry;
+using Server.Items;
+using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 
 namespace Server.Spells
@@ -33,15 +33,18 @@ namespace Server.Spells
 					m_Count = 0;
 
 					for ( int i = 0; i < m_Types.Length; ++i )
-					{
 						if ( m_Types[i] != null )
 							++m_Count;
-					}
 				}
 
 				return m_Count;
 			}
 		}
+
+		private static Dictionary<Type, Int32> m_IDsFromTypes = new Dictionary<Type, Int32>( m_Types.Length );
+		
+		private static Dictionary<Int32, SpecialMove> m_SpecialMoves = new Dictionary<Int32, SpecialMove>();
+		public static Dictionary<Int32, SpecialMove> SpecialMoves { get { return m_SpecialMoves; } }
 
 		public static int GetRegistryNumber( ISpell s )
 		{
@@ -53,19 +56,13 @@ namespace Server.Spells
 			return GetRegistryNumber( s.GetType() );
 		}
 
-		private static Hashtable m_IDsFromTypes = new Hashtable( m_Types.Length );
-
 		public static int GetRegistryNumber( Type type )
 		{
-			if( m_IDsFromTypes.Contains( type ) )
-				return (int)m_IDsFromTypes[type];
+			if( m_IDsFromTypes.ContainsKey( type ) )
+				return m_IDsFromTypes[type];
 
 			return -1;
 		}
-
-		private static Hashtable m_SpecialMoves = new Hashtable();
-
-		public static Hashtable SpecialMoves { get { return m_SpecialMoves; } }
 
 		public static void Register( int spellID, Type type )
 		{
@@ -77,7 +74,7 @@ namespace Server.Spells
 
 			m_Types[spellID] = type;
 
-			if( m_IDsFromTypes[type] == null )
+			if( !m_IDsFromTypes.ContainsKey( type ) )
 				m_IDsFromTypes.Add( type, spellID );
 
 			if( type.IsSubclassOf( typeof( SpecialMove ) ) )
@@ -104,13 +101,10 @@ namespace Server.Spells
 
 			Type t = m_Types[spellID];
 
-			if ( t == null || !t.IsSubclassOf( typeof( SpecialMove ) ) )	//Ensure correct registration
+			if ( t == null || !t.IsSubclassOf( typeof( SpecialMove ) ) || !m_SpecialMoves.ContainsKey( spellID ) )
 				return null;
 
-			if( m_SpecialMoves.ContainsKey( spellID ) )
-				return m_SpecialMoves[spellID] as SpecialMove;
-
-			return null;
+			return m_SpecialMoves[spellID];
 		}
 
 		private static object[] m_Params = new object[2];

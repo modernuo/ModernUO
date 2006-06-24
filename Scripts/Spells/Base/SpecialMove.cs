@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Mobiles;
@@ -165,17 +165,15 @@ namespace Server.Spells
 			m.CheckSkill( MoveSkill, RequiredSkill, RequiredSkill + 37.5 );
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, SpecialMove> m_Table = new Dictionary<Mobile, SpecialMove>();
 
-		public static Hashtable Table{ get{ return m_Table; } }
+		public static Dictionary<Mobile, SpecialMove> Table{ get{ return m_Table; } }
 
 		public static void ClearAllMoves( Mobile m )
 		{
-			foreach ( DictionaryEntry de in SpellRegistry.SpecialMoves )
+			foreach ( KeyValuePair<Int32, SpecialMove> kvp in SpellRegistry.SpecialMoves )
 			{
-				SpecialMove move = (SpecialMove)de.Value;
-
-				int moveID = SpellRegistry.GetRegistryNumber( move );
+				int moveID = kvp.Key;
 
 				if ( moveID != -1 )
 					m.Send( new ToggleSpecialAbility( moveID + 1, false ) );
@@ -195,7 +193,8 @@ namespace Server.Spells
 				return null;
 			}
 
-			SpecialMove move = (SpecialMove)m_Table[m];
+			SpecialMove move = null;
+			m_Table.TryGetValue( m, out move );
 
 			if ( move != null && move.ValidatesDuringHit && !move.Validate( m ) )
 			{
@@ -248,7 +247,8 @@ namespace Server.Spells
 
 		public static void ClearCurrentMove( Mobile m )
 		{
-			SpecialMove move = (SpecialMove)m_Table[m];
+			SpecialMove move = null;
+			m_Table.TryGetValue( m, out move );
 
 			if ( move != null )
 			{
@@ -268,7 +268,7 @@ namespace Server.Spells
 		}
 
 
-		private static Hashtable m_PlayersTable = new Hashtable();
+		private static Dictionary<Mobile, SpecialMoveContext> m_PlayersTable = new Dictionary<Mobile, SpecialMoveContext>();
 
 		private static void AddContext( Mobile m, SpecialMoveContext context )
 		{
@@ -289,12 +289,13 @@ namespace Server.Spells
 
 		private static SpecialMoveContext GetContext( Mobile m )
 		{
-			return ( m_PlayersTable[m] as SpecialMoveContext );
+			return ( m_PlayersTable.ContainsKey( m ) ? m_PlayersTable[m] : null );
 		}
 
 		public static bool GetContext( Mobile m, Type type )
 		{
-			SpecialMoveContext context = m_PlayersTable[m] as SpecialMoveContext;
+			SpecialMoveContext context = null;
+			m_PlayersTable.TryGetValue( m, out context );
 
 			if ( context == null )
 				return false;

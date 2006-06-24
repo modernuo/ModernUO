@@ -1,44 +1,43 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
+using Server.Items;
+using Server.Mobiles;
 using Server.Spells;
 using Server.Spells.Necromancy;
-using Server.Mobiles;
-using Server.Items;
-using Server.Spells.Ninjitsu;
 
 namespace Server.Spells.Ninjitsu
 {
 	public class MirrorImage : NinjaSpell
 	{
-		private static Hashtable m_CloneCount = new Hashtable();
+		private static Dictionary<Mobile, Int32> m_CloneCount = new Dictionary<Mobile, Int32>();
 
 		public static bool HasClone( Mobile m )
 		{
-			return (m_CloneCount.Contains( m ) && ((int)m_CloneCount[m]) > 0);
+			return m_CloneCount.ContainsKey( m );
 		}
 
 		public static void AddClone( Mobile m )
 		{
-			if( m == null )
+			if ( m == null )
 				return;
 
-			if( m_CloneCount.Contains( m ) )
-				m_CloneCount[m] = ((int)m_CloneCount[m] +1);
+			if ( m_CloneCount.ContainsKey( m ) )
+				m_CloneCount[m]++;
 			else
-				m_CloneCount.Add( m, 1 );
+				m_CloneCount[m] = 1;
 		}
 
 		public static void RemoveClone( Mobile m )
 		{
-			if( m == null )
+			if ( m == null )
 				return;
 
-			if( m_CloneCount.Contains( m ) )
+			if ( m_CloneCount.ContainsKey( m ) )
 			{
-				m_CloneCount[m] = ((int)m_CloneCount[m] -1);
+				m_CloneCount[m]--;
 
-				if( ((int)m_CloneCount[m]) <= 0 )
+				if ( m_CloneCount[m] == 0 )
 					m_CloneCount.Remove( m );
 			}
 		}

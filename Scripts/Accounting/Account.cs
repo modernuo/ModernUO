@@ -909,12 +909,10 @@ namespace Server.Accounting
 				return;
 
 			if ( m_LoginIPs.Length == 0 )
-			{
-				if ( AccountHandler.IPTables[ipAddress] == null )
-					AccountHandler.IPTables[ipAddress] = 1;
+				if ( AccountHandler.IPTable.ContainsKey( ipAddress ) )
+					AccountHandler.IPTable[ipAddress]++;
 				else
-					AccountHandler.IPTables[ipAddress] = (int) AccountHandler.IPTables[ipAddress] + 1;
-			}
+					AccountHandler.IPTable[ipAddress] = 1;
 
 			bool contains = false;
 
