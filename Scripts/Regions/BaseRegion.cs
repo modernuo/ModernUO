@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Xml;
 using Server;
-using System.Collections.Generic;
 
 namespace Server.Regions
 {
@@ -127,8 +127,8 @@ namespace Server.Regions
 		private int[] m_RectangleWeights;
 		private int m_TotalWeight;
 
-		private static ArrayList m_Buffer1 = new ArrayList();
-		private static ArrayList m_Buffer2 = new ArrayList();
+		private static List<Rectangle3D> m_RectBuffer1 = new List<Rectangle3D>();
+		private static List<Rectangle3D> m_RectBuffer2 = new List<Rectangle3D>();
 
 		private void InitRectangles()
 		{
@@ -138,55 +138,55 @@ namespace Server.Regions
 			// Test if area rectangles are overlapping, and in that case break them into smaller non overlapping rectangles
 			for ( int i = 0; i < this.Area.Length; i++ )
 			{
-				m_Buffer2.Add( this.Area[i] );
+				m_RectBuffer2.Add( this.Area[i] );
 
-				for ( int j = 0; j < m_Buffer1.Count && m_Buffer2.Count > 0; j++ )
+				for ( int j = 0; j < m_RectBuffer1.Count && m_RectBuffer2.Count > 0; j++ )
 				{
-					Rectangle3D comp = (Rectangle3D) m_Buffer1[j];
+					Rectangle3D comp = m_RectBuffer1[j];
 
-					for ( int k = m_Buffer2.Count - 1; k >= 0; k-- )
+					for ( int k = m_RectBuffer2.Count - 1; k >= 0; k-- )
 					{
-						Rectangle3D rect = (Rectangle3D) m_Buffer2[k];
+						Rectangle3D rect = m_RectBuffer2[k];
 
 						int l1 = rect.Start.X, r1 = rect.End.X, t1 = rect.Start.Y, b1 = rect.End.Y;
 						int l2 = comp.Start.X, r2 = comp.End.X, t2 = comp.Start.Y, b2 = comp.End.Y;
 
 						if ( l1 < r2 && r1 > l2 && t1 < b2 && b1 > t2 )
 						{
-							m_Buffer2.RemoveAt( k );
+							m_RectBuffer2.RemoveAt( k );
 
 							int sz = rect.Start.Z;
 							int ez = rect.End.X;
 
 							if ( l1 < l2 )
 							{
-								m_Buffer2.Add( new Rectangle3D( new Point3D( l1, t1, sz ), new Point3D( l2, b1, ez ) ) );
+								m_RectBuffer2.Add( new Rectangle3D( new Point3D( l1, t1, sz ), new Point3D( l2, b1, ez ) ) );
 							}
 
 							if ( r1 > r2 )
 							{
-								m_Buffer2.Add( new Rectangle3D( new Point3D( r2, t1, sz ), new Point3D( r1, b1, ez ) ) );
+								m_RectBuffer2.Add( new Rectangle3D( new Point3D( r2, t1, sz ), new Point3D( r1, b1, ez ) ) );
 							}
 
 							if ( t1 < t2 )
 							{
-								m_Buffer2.Add( new Rectangle3D( new Point3D( Math.Max( l1, l2 ), t1, sz ), new Point3D( Math.Min( r1, r2 ), t2, ez ) ) );
+								m_RectBuffer2.Add( new Rectangle3D( new Point3D( Math.Max( l1, l2 ), t1, sz ), new Point3D( Math.Min( r1, r2 ), t2, ez ) ) );
 							}
 
 							if ( b1 > b2 )
 							{
-								m_Buffer2.Add( new Rectangle3D( new Point3D( Math.Max( l1, l2 ), b2, sz ), new Point3D( Math.Min( r1, r2 ), b1, ez ) ) );
+								m_RectBuffer2.Add( new Rectangle3D( new Point3D( Math.Max( l1, l2 ), b2, sz ), new Point3D( Math.Min( r1, r2 ), b1, ez ) ) );
 							}
 						}
 					}
 				}
 
-				m_Buffer1.AddRange( m_Buffer2 );
-				m_Buffer2.Clear();
+				m_RectBuffer1.AddRange( m_RectBuffer2 );
+				m_RectBuffer2.Clear();
 			}
 
-			m_Rectangles = (Rectangle3D[]) m_Buffer1.ToArray( typeof( Rectangle3D ) );
-			m_Buffer1.Clear();
+			m_Rectangles = m_RectBuffer1.ToArray();
+			m_RectBuffer1.Clear();
 
 			m_RectangleWeights = new int[m_Rectangles.Length];
 			for ( int i = 0; i < m_Rectangles.Length; i++ )
@@ -198,6 +198,9 @@ namespace Server.Regions
 				m_TotalWeight += weight;
 			}
 		}
+
+		private static List<Int32> m_SpawnBuffer1 = new List<Int32>();
+		private static List<Item>  m_SpawnBuffer2 = new List<Item>();
 
 		public Point3D RandomSpawnLocation( int spawnHeight, bool land, bool water, Point3D home, int range )
 		{
@@ -266,7 +269,6 @@ namespace Server.Regions
 				if ( x < 0 || y < 0 || x >= map.Width || y >= map.Height )
 					continue;
 
-
 				Tile lt = map.Tiles.GetLandTile( x, y );
 
 				int ltLowZ = 0, ltAvgZ = 0, ltTopZ = 0;
@@ -276,18 +278,11 @@ namespace Server.Regions
 				bool ltImpassable = ( (ltFlags & TileFlag.Impassable) != 0 );
 
 				if ( !lt.Ignored && ltAvgZ >= minZ && ltAvgZ < maxZ )
-				{
 					if ( (ltFlags & TileFlag.Wet) != 0 )
-					{
 						if ( water )
-							m_Buffer1.Add( ltAvgZ );
-					}
+							m_SpawnBuffer1.Add( ltAvgZ );
 					else if ( land && !ltImpassable )
-					{
-						m_Buffer1.Add( ltAvgZ );
-					}
-				}
-
+						m_SpawnBuffer1.Add( ltAvgZ );
 
 				Tile[] staticTiles = map.Tiles.GetStaticTiles( x, y, true );
 
@@ -298,17 +293,11 @@ namespace Server.Regions
 					int tileZ = tile.Z + id.CalcHeight;
 
 					if ( tileZ >= minZ && tileZ < maxZ )
-					{
 						if ( (id.Flags & TileFlag.Wet) != 0 )
-						{
 							if ( water )
-								m_Buffer1.Add( tileZ );
-						}
+								m_SpawnBuffer1.Add( tileZ );
 						else if ( land && id.Surface && !id.Impassable )
-						{
-							m_Buffer1.Add( tileZ );
-						}
-					}
+							m_SpawnBuffer1.Add( tileZ );
 				}
 
 
@@ -320,7 +309,7 @@ namespace Server.Regions
 
 					if ( item.ItemID < 0x4000 && item.AtWorldPoint( x, y ) )
 					{
-						m_Buffer2.Add( item );
+						m_SpawnBuffer2.Add( item );
 
 						if ( !item.Movable )
 						{
@@ -328,26 +317,20 @@ namespace Server.Regions
 							int itemZ = item.Z + id.CalcHeight;
 
 							if ( itemZ >= minZ && itemZ < maxZ )
-							{
 								if ( (id.Flags & TileFlag.Wet) != 0 )
-								{
 									if ( water )
-										m_Buffer1.Add( itemZ );
-								}
+										m_SpawnBuffer1.Add( itemZ );
 								else if ( land && id.Surface && !id.Impassable )
-								{
-									m_Buffer1.Add( itemZ );
-								}
-							}
+									m_SpawnBuffer1.Add( itemZ );
 						}
 					}
 				}
 
 
-				if ( m_Buffer1.Count == 0 )
+				if ( m_SpawnBuffer1.Count == 0 )
 				{
-					m_Buffer1.Clear();
-					m_Buffer2.Clear();
+					m_SpawnBuffer1.Clear();
+					m_SpawnBuffer2.Clear();
 					continue;
 				}
 
@@ -358,9 +341,9 @@ namespace Server.Regions
 					{
 						z = int.MaxValue;
 
-						for ( int j = 0; j < m_Buffer1.Count; j++ )
+						for ( int j = 0; j < m_SpawnBuffer1.Count; j++ )
 						{
-							int l = (int) m_Buffer1[j];
+							int l = m_SpawnBuffer1[j];
 
 							if ( l < z )
 								z = l;
@@ -372,9 +355,9 @@ namespace Server.Regions
 					{
 						z = int.MinValue;
 
-						for ( int j = 0; j < m_Buffer1.Count; j++ )
+						for ( int j = 0; j < m_SpawnBuffer1.Count; j++ )
 						{
-							int l = (int) m_Buffer1[j];
+							int l = m_SpawnBuffer1[j];
 
 							if ( l > z )
 								z = l;
@@ -384,29 +367,28 @@ namespace Server.Regions
 					}
 					default: // SpawnZLevel.Random
 					{
-						int index = Utility.Random( m_Buffer1.Count );
-						z = (int) m_Buffer1[index];
+						int index = Utility.Random( m_SpawnBuffer1.Count );
+						z = m_SpawnBuffer1[index];
 
 						break;
 					}
 				}
 
-				m_Buffer1.Clear();
+				m_SpawnBuffer1.Clear();
 
 
 				if ( !Region.Find( new Point3D( x, y, z ), map ).AcceptsSpawnsFrom( this ) )
 				{
-					m_Buffer2.Clear();
+					m_SpawnBuffer2.Clear();
 					continue;
 				}
-
 
 				int top = z + spawnHeight;
 
 				bool ok = true;
-				for ( int j = 0; j < m_Buffer2.Count; j++ )
+				for ( int j = 0; j < m_SpawnBuffer2.Count; j++ )
 				{
-					Item item = (Item) m_Buffer2[j];
+					Item item = m_SpawnBuffer2[j];
 					ItemData id = item.ItemData;
 
 					if ( ( id.Surface || id.Impassable ) && item.Z + id.CalcHeight > z && item.Z < top )
@@ -416,15 +398,13 @@ namespace Server.Regions
 					}
 				}
 
-				m_Buffer2.Clear();
+				m_SpawnBuffer2.Clear();
 
 				if ( !ok )
 					continue;
 
-
 				if ( ltImpassable && ltAvgZ > z && ltLowZ < top )
 					continue;
-
 
 				for ( int j = 0; j < staticTiles.Length; j++ )
 				{
@@ -441,21 +421,17 @@ namespace Server.Regions
 				if ( !ok )
 					continue;
 
-
 				for ( int j = 0; j < sector.Mobiles.Count; j++ )
 				{
-					Mobile m = (Mobile) sector.Mobiles[j];
+					Mobile m = sector.Mobiles[j];
 
 					if ( m.X == x && m.Y == y && ( m.AccessLevel == AccessLevel.Player || !m.Hidden ) )
-					{
 						if ( m.Z + 16 > z && m.Z < top )
 						{
 							ok = false;
 							break;
 						}
-					}
 				}
-
 
 				if ( ok )
 					return new Point3D( x, y, z );

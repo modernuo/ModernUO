@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
@@ -39,13 +39,11 @@ namespace Server.Spells.Necromancy
 
 				if ( map != null )
 				{
-					ArrayList targets = new ArrayList();
+					List<Mobile> targets = new List<Mobile>();
 
 					foreach ( Mobile m in Caster.GetMobilesInRange( 5 ) )
-					{
 						if ( Caster != m && Caster.InLOS( m ) && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
 							targets.Add( m );
-					}
 
 					Effects.PlaySound( Caster.Location, map, 0x1FB );
 					Effects.PlaySound( Caster.Location, map, 0x10B );
@@ -53,7 +51,7 @@ namespace Server.Spells.Necromancy
 
 					for ( int i = 0; i < targets.Count; ++i )
 					{
-						Mobile m = (Mobile)targets[i];
+						Mobile m = targets[i];
 
 						Caster.DoHarmful( m );
 						m.FixedParticles( 0x374A, 1, 15, 9502, 97, 3, (EffectLayer)255 );

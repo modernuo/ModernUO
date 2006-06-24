@@ -329,13 +329,11 @@ namespace Server.Commands
 
 		public static void ReplaceBankers_OnCommand( CommandEventArgs e )
 		{
-			ArrayList list = new ArrayList();
+			List<Mobile> list = new List<Mobile>();
 
 			foreach ( Mobile m in World.Mobiles.Values )
-			{
 				if ( (m is Banker) && !(m is BaseCreature) )
 					list.Add( m );
-			}
 
 			foreach ( Mobile m in list )
 			{
@@ -1312,24 +1310,22 @@ namespace Server.Commands
 		{
 			Mobile m = e.Mobile;
 
-			ArrayList list = new ArrayList();
+			List<CommandEntry> list = new List<CommandEntry>();
 
 			foreach ( CommandEntry entry in CommandSystem.Entries.Values )
-			{
 				if ( m.AccessLevel >= entry.AccessLevel )
 					list.Add( entry );
-			}
 
 			list.Sort();
 
 			StringBuilder sb = new StringBuilder();
 
 			if ( list.Count > 0 )
-				sb.Append( ((CommandEntry)list[0]).Command );
+				sb.Append( list[0].Command );
 
 			for ( int i = 1; i < list.Count; ++i )
 			{
-				string v = ((CommandEntry)list[i]).Command;
+				string v = list[i].Command;
 
 				if ( (sb.Length + 1 + v.Length) >= 256 )
 				{

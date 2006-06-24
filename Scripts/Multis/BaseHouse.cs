@@ -543,9 +543,9 @@ namespace Server.Multis
 			}
 		}
 
-		public ArrayList GetHouseEntities()
+		public List<IEntity> GetHouseEntities()
 		{
-			ArrayList list = new ArrayList();
+			List<IEntity> list = new List<IEntity>();
 
 			if ( MovingCrate != null )
 				MovingCrate.Hide();
@@ -725,40 +725,38 @@ namespace Server.Multis
 			MovingCrate.DropItem( item );
 		}
 
-		public ArrayList GetItems()
+		public List<Item> GetItems()
 		{
 			if( this.Map == null || this.Map == Map.Internal )
-				return new ArrayList();
+				return new List<Item>();
 
 			Point2D start = new Point2D( this.X + Components.Min.X, this.Y + Components.Min.Y );
 			Point2D end = new Point2D( this.X + Components.Max.X + 1, this.Y + Components.Max.Y + 1 );
 			Rectangle2D rect = new Rectangle2D( start, end );
 
-			ArrayList list = new ArrayList();
+			List<Item> list = new List<Item>();
 
 			IPooledEnumerable eable = this.Map.GetItemsInBounds( rect );
+			
 			foreach ( Item item in eable )
-			{
 				if ( item.Movable && IsInside( item ) )
 					list.Add( item );
-			}
+
 			eable.Free();
 
 			return list;
 		}
 
-		public ArrayList GetMobiles()
+		public List<Mobile> GetMobiles()
 		{
 			if( this.Map == null || this.Map == Map.Internal )
-				return new ArrayList();
+				return new List<Mobile>();
 
-			ArrayList list = new ArrayList();
+			List<Mobile> list = new List<Mobile>();
 
 			foreach ( Mobile mobile in Region.GetMobiles() )
-			{
 				if ( IsInside( mobile ) )
 					list.Add( mobile );
-			}
 
 			return list;
 		}

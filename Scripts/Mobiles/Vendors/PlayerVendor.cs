@@ -623,20 +623,16 @@ namespace Server.Mobiles
 			}
 		}
 
-		protected ArrayList GetItems()
+		protected List<Item> GetItems()
 		{
-			ArrayList list = new ArrayList();
+			List<Item> list = new List<Item>();
 
 			foreach ( Item item in this.Items )
-			{
 				if ( item.Movable && item != this.Backpack && item.Layer != Layer.Hair && item.Layer != Layer.FacialHair )
 					list.Add( item );
-			}
 
 			if ( this.Backpack != null )
-			{
 				list.AddRange( this.Backpack.Items );
-			}
 
 			return list;
 		}
@@ -661,7 +657,7 @@ namespace Server.Mobiles
 			 *       -> do nothing (we can't do anything).
 			 */
 
-			ArrayList list = GetItems();
+			List<Item> list = GetItems();
 
 			if ( list.Count > 0 || HoldGold > 0 ) // No case 1
 			{

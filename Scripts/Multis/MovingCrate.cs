@@ -200,17 +200,13 @@ namespace Server.Multis
 				m_InternalizeTimer = null;
 			}
 
-			ArrayList toRemove = new ArrayList();
+			List<Item> toRemove = new List<Item>();
 			foreach ( Item item in this.Items )
-			{
 				if ( item is PackingBox && item.Items.Count == 0 )
 					toRemove.Add( item );
-			}
 
 			foreach ( Item item in toRemove )
-			{
 				item.Delete();
-			}
 
 			if ( this.TotalItems == 0 )
 				Delete();

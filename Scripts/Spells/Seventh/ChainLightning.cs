@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
@@ -44,7 +44,7 @@ namespace Server.Spells.Seventh
 				if ( p is Item )
 					p = ((Item)p).GetWorldLocation();
 
-				ArrayList targets = new ArrayList();
+				List<Mobile> targets = new List<Mobile>();
 
 				Map map = Caster.Map;
 
@@ -90,7 +90,7 @@ namespace Server.Spells.Seventh
 
 					for ( int i = 0; i < targets.Count; ++i )
 					{
-						Mobile m = (Mobile)targets[i];
+						Mobile m = targets[i];
 
 						double toDeal = damage;
 

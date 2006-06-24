@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
@@ -52,17 +52,15 @@ namespace Server.Spells.Necromancy
 
 				if ( map != null )
 				{
-					ArrayList targets = new ArrayList();
+					List<Mobile> targets = new List<Mobile>();
 
 					foreach ( Mobile targ in m.GetMobilesInRange( 2 ) )
-					{
 						if ( (Caster == targ || SpellHelper.ValidIndirectTarget( Caster, targ )) && Caster.CanBeHarmful( targ, false ) )
 							targets.Add( targ );
-					}
 
 					for ( int i = 0; i < targets.Count; ++i )
 					{
-						Mobile targ = (Mobile)targets[i];
+						Mobile targ = targets[i];
 
 						int num;
 

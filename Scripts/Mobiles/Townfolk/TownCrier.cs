@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Prompts;
 using Server.Gumps;
@@ -13,7 +13,7 @@ namespace Server.Mobiles
 {
 	public interface ITownCrierEntryList
 	{
-		ArrayList Entries{ get; }
+		List<TownCrierEntry> Entries{ get; }
 		TownCrierEntry GetRandomEntry();
 		TownCrierEntry AddEntry( string[] lines, TimeSpan duration );
 		void RemoveEntry( TownCrierEntry entry );
@@ -52,9 +52,9 @@ namespace Server.Mobiles
 		{
 		}
 
-		private ArrayList m_Entries;
+		private List<TownCrierEntry> m_Entries;
 
-		public ArrayList Entries
+		public List<TownCrierEntry> Entries
 		{
 			get{ return m_Entries; }
 		}
@@ -69,7 +69,7 @@ namespace Server.Mobiles
 				if ( i >= m_Entries.Count )
 					continue;
 
-				TownCrierEntry tce = (TownCrierEntry)m_Entries[i];
+				TownCrierEntry tce = m_Entries[i];
 
 				if ( tce.Expired )
 					RemoveEntry( tce );
@@ -78,22 +78,22 @@ namespace Server.Mobiles
 			if ( m_Entries == null || m_Entries.Count == 0 )
 				return null;
 
-			return (TownCrierEntry)m_Entries[Utility.Random( m_Entries.Count )];
+			return m_Entries[Utility.Random( m_Entries.Count )];
 		}
 
 		public TownCrierEntry AddEntry( string[] lines, TimeSpan duration )
 		{
 			if ( m_Entries == null )
-				m_Entries = new ArrayList();
+				m_Entries = new List<TownCrierEntry>();
 
 			TownCrierEntry tce = new TownCrierEntry( lines, duration );
 
 			m_Entries.Add( tce );
 
-			ArrayList instances = TownCrier.Instances;
+			List<TownCrier> instances = TownCrier.Instances;
 
 			for ( int i = 0; i < instances.Count; ++i )
-				((TownCrier)instances[i]).ForceBeginAutoShout();
+				instances[i].ForceBeginAutoShout();
 
 			return tce;
 		}
@@ -158,7 +158,7 @@ namespace Server.Mobiles
 			from.SendMessage( "Duration set to: {0}", ts );
 			from.SendMessage( "Enter the first line to shout:" );
 
-			from.Prompt = new TownCrierLinesPrompt( m_Owner, null, new ArrayList(), ts );
+			from.Prompt = new TownCrierLinesPrompt( m_Owner, null, new List<String>(), ts );
 		}
 
 		public override void OnCancel( Mobile from )
@@ -172,10 +172,10 @@ namespace Server.Mobiles
 	{
 		private ITownCrierEntryList m_Owner;
 		private TownCrierEntry m_Entry;
-		private ArrayList m_Lines;
+		private List<String> m_Lines;
 		private TimeSpan m_Duration;
 
-		public TownCrierLinesPrompt( ITownCrierEntryList owner, TownCrierEntry entry, ArrayList lines, TimeSpan duration )
+		public TownCrierLinesPrompt( ITownCrierEntryList owner, TownCrierEntry entry, List<String> lines, TimeSpan duration )
 		{
 			m_Owner = owner;
 			m_Entry = entry;
@@ -198,7 +198,7 @@ namespace Server.Mobiles
 
 			if ( m_Lines.Count > 0 )
 			{
-				m_Owner.AddEntry( (string[])m_Lines.ToArray( typeof( string ) ), m_Duration );
+				m_Owner.AddEntry( m_Lines.ToArray(), m_Duration );
 				from.SendMessage( "Message has been set." );
 			}
 			else
@@ -227,12 +227,12 @@ namespace Server.Mobiles
 			}
 			else if ( info.ButtonID > 1 )
 			{
-				ArrayList entries = m_Owner.Entries;
+				List<TownCrierEntry> entries = m_Owner.Entries;
 				int index = info.ButtonID - 2;
 
 				if ( entries != null && index < entries.Count )
 				{
-					TownCrierEntry tce = (TownCrierEntry)entries[index];
+					TownCrierEntry tce = entries[index];
 					TimeSpan ts = tce.ExpireTime - DateTime.Now;
 
 					if ( ts < TimeSpan.Zero )
@@ -240,7 +240,7 @@ namespace Server.Mobiles
 
 					m_From.SendMessage( "Editing entry #{0}.", index + 1 );
 					m_From.SendMessage( "Enter the first line to shout:" );
-					m_From.Prompt = new TownCrierLinesPrompt( m_Owner, tce, new ArrayList(), ts );
+					m_From.Prompt = new TownCrierLinesPrompt( m_Owner, tce, new List<String>(), ts );
 				}
 			}
 		}
@@ -254,7 +254,7 @@ namespace Server.Mobiles
 
 			AddPage( 0 );
 
-			ArrayList entries = owner.Entries;
+			List<TownCrierEntry> entries = owner.Entries;
 
 			owner.GetRandomEntry(); // force expiration checks
 
@@ -323,11 +323,11 @@ namespace Server.Mobiles
 
 	public class TownCrier : Mobile, ITownCrierEntryList
 	{
-		private ArrayList m_Entries;
+		private List<TownCrierEntry> m_Entries;
 		private Timer m_NewsTimer;
 		private Timer m_AutoShoutTimer;
 
-		public ArrayList Entries
+		public List<TownCrierEntry> Entries
 		{
 			get{ return m_Entries; }
 		}
@@ -342,7 +342,7 @@ namespace Server.Mobiles
 				if ( i >= m_Entries.Count )
 					continue;
 
-				TownCrierEntry tce = (TownCrierEntry)m_Entries[i];
+				TownCrierEntry tce = m_Entries[i];
 
 				if ( tce.Expired )
 					RemoveEntry( tce );
@@ -354,7 +354,7 @@ namespace Server.Mobiles
 			TownCrierEntry entry = GlobalTownCrierEntryList.Instance.GetRandomEntry();
 
 			if ( entry == null || Utility.RandomBool() )
-				entry = (TownCrierEntry)m_Entries[Utility.Random( m_Entries.Count )];
+				entry = m_Entries[Utility.Random( m_Entries.Count )];
 
 			return entry;
 		}
@@ -368,7 +368,7 @@ namespace Server.Mobiles
 		public TownCrierEntry AddEntry( string[] lines, TimeSpan duration )
 		{
 			if ( m_Entries == null )
-				m_Entries = new ArrayList();
+				m_Entries = new List<TownCrierEntry>();
 
 			TownCrierEntry tce = new TownCrierEntry( lines, duration );
 
@@ -472,9 +472,9 @@ namespace Server.Mobiles
 			}
 		}
 
-		private static ArrayList m_Instances = new ArrayList();
+		private static List<TownCrier> m_Instances = new List<TownCrier>();
 
-		public static ArrayList Instances
+		public static List<TownCrier> Instances
 		{
 			get{ return m_Instances; }
 		}

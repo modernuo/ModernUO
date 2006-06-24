@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Misc;
 using Server.Network;
 using Server.Items;
@@ -42,7 +42,7 @@ namespace Server.Spells.Seventh
 
 				SpellHelper.GetSurfaceTop( ref p );
 
-				ArrayList targets = new ArrayList();
+				List<Mobile> targets = new List<Mobile>();
 
 				Map map = Caster.Map;
 
@@ -51,17 +51,15 @@ namespace Server.Spells.Seventh
 					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), 8 );
 
 					foreach ( Mobile m in eable )
-					{
 						if ( m is BaseCreature && (m as BaseCreature).IsDispellable && Caster.CanBeHarmful( m, false ) )
 							targets.Add( m );
-					}
 
 					eable.Free();
 				}
 
 				for ( int i = 0; i < targets.Count; ++i )
 				{
-					Mobile m = (Mobile)targets[i];
+					Mobile m = targets[i];
 
 					BaseCreature bc = m as BaseCreature;
 

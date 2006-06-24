@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Movement;
@@ -144,9 +145,9 @@ namespace Server.Multis
 
 		public virtual BaseDockedBoat DockedBoat{ get{ return null; } }
 
-		private static ArrayList m_Instances = new ArrayList();
+		private static List<BaseBoat> m_Instances = new List<BaseBoat>();
 
-		public static ArrayList Boats{ get{ return m_Instances; } }
+		public static List<BaseBoat> Boats{ get{ return m_Instances; } }
 
 		public BaseBoat() : base( 0x4000 )
 		{
@@ -1642,7 +1643,7 @@ namespace Server.Multis
 		public static void UpdateAllComponents()
 		{
 			for ( int i = m_Instances.Count - 1; i >= 0; --i )
-				((BaseBoat)m_Instances[i]).UpdateComponents();
+				m_Instances[i].UpdateComponents();
 		}
 
 		public static void Initialize()

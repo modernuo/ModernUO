@@ -536,34 +536,26 @@ namespace Server
 			}
 		}
 
-		public ArrayList GetTilesAt( Point2D p, bool items, bool land, bool statics )
+		public List<Tile> GetTilesAt( Point2D p, bool items, bool land, bool statics )
 		{
-			ArrayList list = new ArrayList();
+			List<Tile> list = new List<Tile>();
 
 			if ( this == Map.Internal )
 				return list;
 
 			if ( land )
-			{
 				list.Add( Tiles.GetLandTile( p.m_X, p.m_Y ) );
-			}
 
 			if ( statics )
-			{
 				list.AddRange( Tiles.GetStaticTiles( p.m_X, p.m_Y, true ) );
-			}
 
 			if ( items )
 			{
 				Sector sector = GetSector( p );
 
 				foreach ( Item item in sector.Items )
-				{
 					if ( item.AtWorldPoint( p.m_X, p.m_Y ) )
-					{
 						list.Add( new Tile( (short) ( ( item.ItemID & 0x3FFF ) + 0x4000 ), (sbyte) item.Z ) );
-					}
-				}
 			}
 
 			return list;

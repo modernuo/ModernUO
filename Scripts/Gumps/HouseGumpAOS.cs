@@ -1,13 +1,13 @@
 using System;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Prompts;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Multis.Deeds;
 using Server.Items;
-using System.Collections.Generic;
 
 namespace Server.Gumps
 {
@@ -756,8 +756,8 @@ namespace Server.Gumps
 							house.MovingCrate = null;
 						}
 
-						ArrayList items = house.GetItems();
-						ArrayList mobiles = house.GetMobiles();
+						List<Item> items = house.GetItems();
+						List<Mobile> mobiles = house.GetMobiles();
 
 						newHouse.MoveToWorld( new Point3D( house.X + house.ConvertOffsetX, house.Y + house.ConvertOffsetY, house.Z + house.ConvertOffsetZ ), house.Map );
 						house.Delete();

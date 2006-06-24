@@ -642,13 +642,13 @@ namespace Server.Items
 			{
 				Item[] typedItems = FindItemsByType( types[i], recurse );
 
-				ArrayList groups = new ArrayList();
+				List<List<Item>> groups = new List<List<Item>>();
 				int idx = 0;
 
 				while ( idx < typedItems.Length )
 				{
 					Item a = typedItems[idx++];
-					ArrayList group = new ArrayList();
+					List<Item> group = new List<Item>();
 
 					group.Add( a );
 
@@ -675,7 +675,7 @@ namespace Server.Items
 
 				for ( int j = 0; j < groups.Count; ++j )
 				{
-					items[i][j] = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
+					items[i][j] = groups[j].ToArray();
 
 					for ( int k = 0; k < items[i][j].Length; ++k )
 						totals[i][j] += items[i][j][k].Amount;
