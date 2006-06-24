@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Mobiles;
 using Server.Targeting;
@@ -195,7 +195,7 @@ namespace Server.Spells.Necromancy
 				if ( c.Owner != null )
 					type = c.Owner.GetType();
 
-				if ( c.ItemID != 0x2006 || c.Channeled || type == typeof( PlayerMobile ) || type == null || (c.Owner != null && c.Owner.Fame < 100) || ((c.Owner != null) && (c.Owner is BaseCreature) && (((BaseCreature)c.Owner).Summoned || ((BaseCreature)c.Owner).IsBonded)) )
+				if ( c.ItemID != 0x2006 || c.Channeled || type == typeof( PlayerMobile ) || type == null || ( c.Owner != null && c.Owner.Fame < 100 ) || ( ( c.Owner != null ) && ( c.Owner is BaseCreature ) && ( ((BaseCreature)c.Owner).Summoned || ((BaseCreature)c.Owner).IsBonded)) )
 				{
 					Caster.SendLocalizedMessage( 1061085 ); // There's not enough life force there to animate.
 				}
@@ -229,14 +229,15 @@ namespace Server.Spells.Necromancy
 			FinishSequence();
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, List<Mobile>> m_Table = new Dictionary<Mobile, List<Mobile>>();
 
 		public static void Unregister( Mobile master, Mobile summoned )
 		{
 			if ( master == null )
 				return;
 
-			ArrayList list = (ArrayList)m_Table[master];
+			List<Mobile> list = null;
+			m_Table.TryGetValue( master, out list );
 
 			if ( list == null )
 				return;
@@ -252,17 +253,18 @@ namespace Server.Spells.Necromancy
 			if ( master == null )
 				return;
 
-			ArrayList list = (ArrayList)m_Table[master];
+			List<Mobile> list = null;
+			m_Table.TryGetValue( master, out list );
 
 			if ( list == null )
-				m_Table[master] = list = new ArrayList();
+				m_Table[master] = list = new List<Mobile>();
 
 			for ( int i = list.Count - 1; i >= 0; --i )
 			{
 				if ( i >= list.Count )
 					continue;
 
-				Mobile mob = (Mobile)list[i];
+				Mobile mob = list[i];
 
 				if ( mob.Deleted )
 					list.RemoveAt( i-- );
@@ -271,7 +273,7 @@ namespace Server.Spells.Necromancy
 			list.Add( summoned );
 
 			if ( list.Count > 3 )
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ((Mobile)list[0]).Kill ) );
+				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( list[0].Kill ) );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( Summoned_Damage ), summoned );
 		}

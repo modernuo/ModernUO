@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Mobiles;
@@ -27,7 +27,7 @@ namespace Server.Spells.Bushido
 
 			BaseWeapon weapon = attacker.Weapon as BaseWeapon;
 
-			ArrayList targets = new ArrayList();
+			List<Mobile> targets = new List<Mobile>();
 
 			foreach ( Mobile m in attacker.GetMobilesInRange( weapon.MaxRange ) )
 			{
@@ -45,7 +45,7 @@ namespace Server.Spells.Bushido
 				if ( !CheckMana( attacker, true ) )
 					return;
 
-				Mobile target = (Mobile)targets[Utility.Random( targets.Count )];
+				Mobile target = targets[Utility.Random( targets.Count )];
 
 				double damageBonus = attacker.Skills[SkillName.Bushido].Value / 100.0;
 

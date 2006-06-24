@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
@@ -31,13 +31,11 @@ namespace Server.Spells.Chivalry
 		{
 			if ( CheckSequence() )
 			{
-				ArrayList targets = new ArrayList();
+				List<Mobile> targets = new List<Mobile>();
 
 				foreach ( Mobile m in Caster.GetMobilesInRange( 3 ) )
-				{
 					if ( Caster != m && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
 						targets.Add( m );
-				}
 
 				Caster.PlaySound( 0x212 );
 				Caster.PlaySound( 0x206 );
@@ -47,7 +45,7 @@ namespace Server.Spells.Chivalry
 
 				for ( int i = 0; i < targets.Count; ++i )
 				{
-					Mobile m = (Mobile)targets[i];
+					Mobile m = targets[i];
 
 					int damage = ComputePowerValue( 10 ) + Utility.RandomMinMax( 0, 2 );
 

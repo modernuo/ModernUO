@@ -432,20 +432,16 @@ namespace Server.Mobiles
 
 		private void UpgradeFromVersion0( object newVendorSystem )
 		{
-			ArrayList toRemove = new ArrayList();
+			List<Item> toRemove = new List<Item>();
 
 			foreach ( VendorItem vi in m_SellItems.Values )
-			{
 				if ( !CanBeVendorItem( vi.Item ) )
 					toRemove.Add( vi.Item );
 				else
 					vi.Description = Utility.FixHtml( vi.Description );
-			}
 
 			foreach ( Item item in toRemove )
-			{
 				RemoveVendorItem( item );
-			}
 
 			House = BaseHouse.FindHouseAt( this );
 

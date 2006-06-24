@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
@@ -41,7 +41,7 @@ namespace Server.Spells.Fourth
 
 				SpellHelper.GetSurfaceTop( ref p );
 
-				ArrayList targets = new ArrayList();
+				List<Mobile> targets = new List<Mobile>();
 
 				Map map = Caster.Map;
 
@@ -64,9 +64,9 @@ namespace Server.Spells.Fourth
 
 					for ( int i = 0; i < targets.Count; ++i )
 					{
-						Mobile m = (Mobile)targets[i];
+						Mobile m = targets[i];
 
-						if ( m == Caster || (party != null && party.Contains( m )) )
+						if ( m == Caster || ( party != null && party.Contains( m ) ) )
 						{
 							Caster.DoBeneficial( m );
 							Spells.Second.ProtectionSpell.Toggle( Caster, m );
@@ -83,7 +83,7 @@ namespace Server.Spells.Fourth
 					{
 						for ( int i = 0; i < targets.Count; ++i )
 						{
-							Mobile m = (Mobile)targets[i];
+							Mobile m = targets[i];
 
 							if ( m.BeginAction( typeof( ArchProtectionSpell ) ) )
 							{
