@@ -439,7 +439,9 @@ namespace Server.Mobiles
 		{
 			global = LightCycle.ComputeLevelFor( this );
 
-			if ( this.LightLevel < 21 && AosAttributes.GetValue( this, AosAttribute.NightSight ) > 0 )
+			bool racialNightSight = (Core.ML && this.Race == Race.Elf);
+
+			if ( this.LightLevel < 21 && ( AosAttributes.GetValue( this, AosAttribute.NightSight ) > 0 || racialNightSight ))
 				personal = 21;
 			else
 				personal = this.LightLevel;

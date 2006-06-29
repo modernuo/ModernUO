@@ -1029,12 +1029,13 @@ namespace Server.Items
 			BaseShield shield = defender.FindItemOnLayer( Layer.TwoHanded ) as BaseShield;
 
 			double parry = defender.Skills[SkillName.Parry].Value;
-			double parryNonRacial = defender.Skills[SkillName.Parry].NonRacialValue;
+			double bushidoNonRacial = defender.Skills[SkillName.Bushido].NonRacialValue;
 			double bushido = defender.Skills[SkillName.Bushido].Value;
 
 			if ( shield != null )
 			{
-				double chance = (parryNonRacial - bushido) / 400.0;	//As per OSI, no negitive effect from the Racial stuffs, ie, 120 bushido and '0' parry with humans
+				double chance = (parry - bushidoNonRacial) / 400.0;	//As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+
 
 				// Parry over 100 grants a 5% bonus.
 				if ( parry >= 100.0 )

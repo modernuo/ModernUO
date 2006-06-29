@@ -49,7 +49,7 @@ namespace Server.Engines.Harvest
 			m_Vein = m_DefaultVein;
 		}
 
-		public void Consume( HarvestDefinition def, int amount )
+		public void Consume( HarvestDefinition def, int amount, Mobile from )
 		{
 			CheckRespawn();
 
@@ -60,7 +60,12 @@ namespace Server.Engines.Harvest
 				double rnd = Utility.RandomDouble();
 
 				m_Current = m_Maximum - amount;
-				m_NextRespawn = DateTime.Now + TimeSpan.FromMinutes( min + (rnd * (max - min)) );
+
+				double minutes = min + (rnd * (max - min));
+				if( def.RaceBonus && from.Race == Race.Elf )	//def.RaceBonus = Core.ML
+					minutes *= .75;	//25% off the time.  
+
+				m_NextRespawn = DateTime.Now + TimeSpan.FromMinutes( minutes );
 			}
 			else
 			{

@@ -22,6 +22,7 @@ namespace Server.Engines.Harvest
 		private object m_NoResourcesMessage, m_OutOfRangeMessage, m_TimedOutOfRangeMessage, m_DoubleHarvestMessage, m_FailMessage, m_PackFullMessage, m_ToolBrokeMessage;
 		private HarvestResource[] m_Resources;
 		private HarvestVein[] m_Veins;
+		private bool m_RaceBonus;
 
 		public int BankWidth{ get{ return m_BankWidth; } set{ m_BankWidth = value; } }
 		public int BankHeight{ get{ return m_BankHeight; } set{ m_BankHeight = value; } }
@@ -50,6 +51,7 @@ namespace Server.Engines.Harvest
 		public object ToolBrokeMessage{ get{ return m_ToolBrokeMessage; } set{ m_ToolBrokeMessage = value; } }
 		public HarvestResource[] Resources{ get{ return m_Resources; } set{ m_Resources = value; } }
 		public HarvestVein[] Veins{ get{ return m_Veins; } set{ m_Veins = value; } }
+		public bool RaceBonus { get { return m_RaceBonus; } set { m_RaceBonus = value; } }
 
 		private Hashtable m_BanksByMap;
 

@@ -101,7 +101,7 @@ namespace Server.Targets
 					}
 					else
 					{
-						bank.Consume( def, 5 );
+						bank.Consume( def, 5, from );
 
 						Item item = new Kindling();
 

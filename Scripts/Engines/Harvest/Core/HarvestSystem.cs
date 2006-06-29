@@ -163,15 +163,29 @@ namespace Server.Engines.Harvest
 					}
 					else
 					{
+						//The whole harvest system is kludgy and I'm sure this is just adding to it.
 						if ( item.Stackable )
 						{
-							if ( map == Map.Felucca && bank.Current >= def.ConsumedPerFeluccaHarvest )
-								item.Amount = def.ConsumedPerFeluccaHarvest;
+							int amount = def.ConsumedPerHarvest;
+							int feluccaAmount = def.ConsumedPerFeluccaHarvest;
+
+							int racialAmount = (int)Math.Ceiling( amount * 1.1 );
+							int feluccaRacialAmount = (int)Math.Ceiling( feluccaAmount * 1.1 );
+
+							bool eligableForRacialBonus = ( def.RaceBonus && from.Race == Race.Human );
+							bool inFelucca = (map == Map.Felucca);
+
+							if( eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount )
+								item.Amount = feluccaRacialAmount;
+							else if( inFelucca && bank.Current >= feluccaAmount )
+								item.Amount = feluccaAmount;
+							else if( eligableForRacialBonus && bank.Current >= racialAmount )
+								item.Amount = racialAmount;
 							else
-								item.Amount = def.ConsumedPerHarvest;
+								item.Amount = amount;
 						}
 
-						bank.Consume( def, item.Amount );
+						bank.Consume( def, item.Amount, from );
 
 						if ( Give( from, item, def.PlaceAtFeetIfFull ) )
 						{
@@ -283,7 +297,9 @@ namespace Server.Engines.Harvest
 
 		public virtual HarvestResource MutateResource( Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, HarvestVein vein, HarvestResource primary, HarvestResource fallback )
 		{
-			if ( vein.ChanceToFallback > Utility.RandomDouble() )
+			bool racialBonus = (def.RaceBonus && from.Race == Race.Elf );
+
+			if( vein.ChanceToFallback > (Utility.RandomDouble() + (racialBonus ? .20 : 0)) )
 				return fallback;
 
 			double skillValue = from.Skills[def.Skill].Value;

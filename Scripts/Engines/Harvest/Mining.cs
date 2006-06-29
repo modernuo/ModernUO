@@ -110,6 +110,8 @@ namespace Server.Engines.Harvest
 			oreAndStone.Resources = res;
 			oreAndStone.Veins = veins;
 
+			oreAndStone.RaceBonus = Core.ML;
+
 			Definitions.Add( oreAndStone );
 			#endregion
 
@@ -177,7 +179,8 @@ namespace Server.Engines.Harvest
 		{
 			if ( def == m_OreAndStone )
 			{
-				if ( from is PlayerMobile && ((PlayerMobile)from).StoneMining && ((PlayerMobile)from).ToggleMiningStone && from.Skills[SkillName.Mining].Base >= 100.0 && 0.1 > Utility.RandomDouble() )
+				PlayerMobile pm = from as PlayerMobile;
+				if ( pm != null && pm.StoneMining && pm.ToggleMiningStone && from.Skills[SkillName.Mining].Base >= 100.0 && 0.1 > Utility.RandomDouble() )
 					return resource.Types[1];
 
 				return resource.Types[0];
