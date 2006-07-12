@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Targeting;
@@ -8,13 +9,13 @@ namespace Server.Engines.Harvest
 {
 	public abstract class HarvestSystem
 	{
-		private ArrayList m_Definitions;
+		private List<HarvestDefinition> m_Definitions;
 
-		public ArrayList Definitions{ get{ return m_Definitions; } }
+		public List<HarvestDefinition> Definitions { get { return m_Definitions; } }
 
 		public HarvestSystem()
 		{
-			m_Definitions = new ArrayList();
+			m_Definitions = new List<HarvestDefinition>();
 		}
 
 		public virtual bool CheckTool( Mobile from, Item tool )
@@ -377,7 +378,7 @@ namespace Server.Engines.Harvest
 
 			for ( int i = 0; def == null && i < m_Definitions.Count; ++i )
 			{
-				HarvestDefinition check = (HarvestDefinition)m_Definitions[i];
+				HarvestDefinition check = m_Definitions[i];
 
 				if ( check.Validate( tileID ) )
 					def = check;
