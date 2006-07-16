@@ -3,6 +3,7 @@ using Server;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -463,8 +464,8 @@ namespace Server.Factions
 			base.Delete();
 		}
 
-		private static SigilCollection m_Sigils = new SigilCollection();
+		private static List<Sigil> m_Sigils = new List<Sigil>();
 
-		public static SigilCollection Sigils{ get{ return m_Sigils; } }
+		public static List<Sigil> Sigils{ get{ return m_Sigils; } }
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -8,10 +9,10 @@ namespace Server.Factions
 		private Mobile m_Commander;
 		private int m_Tithe;
 		private int m_Silver;
-		private PlayerStateCollection m_Members;
+		private List<PlayerState> m_Members;
 		private Election m_Election;
-		private FactionItemCollection m_FactionItems;
-		private FactionTrapCollection m_FactionTraps;
+		private List<FactionItem> m_FactionItems;
+		private List<BaseFactionTrap> m_FactionTraps;
 
 		private const int BroadcastsPerPeriod = 2;
 		private static readonly TimeSpan BroadcastPeriod = TimeSpan.FromHours( 1.0 );
@@ -44,13 +45,13 @@ namespace Server.Factions
 			}
 		}
 
-		public FactionItemCollection FactionItems
+		public List<FactionItem> FactionItems
 		{
 			get{ return m_FactionItems; }
 			set{ m_FactionItems = value; }
 		}
 
-		public FactionTrapCollection Traps
+		public List<BaseFactionTrap> Traps
 		{
 			get{ return m_FactionTraps; }
 			set{ m_FactionTraps = value; }
@@ -101,7 +102,7 @@ namespace Server.Factions
 			set{ m_Silver = value; }
 		}
 
-		public PlayerStateCollection Members
+		public List<PlayerState> Members
 		{
 			get{ return m_Members; }
 			set{ m_Members = value; }
@@ -111,10 +112,10 @@ namespace Server.Factions
 		{
 			m_Faction = faction;
 			m_Tithe = 50;
-			m_Members = new PlayerStateCollection();
+			m_Members = new List<PlayerState>();
 			m_Election = new Election( faction );
-			m_FactionItems = new FactionItemCollection();
-			m_FactionTraps = new FactionTrapCollection();
+			m_FactionItems = new List<FactionItem>();
+			m_FactionTraps = new List<BaseFactionTrap>();
 		}
 
 		public FactionState( GenericReader reader )
@@ -164,7 +165,7 @@ namespace Server.Factions
 
 					int memberCount = reader.ReadEncodedInt();
 
-					m_Members = new PlayerStateCollection();
+					m_Members = new List<PlayerState>();
 
 					for ( int i = 0; i < memberCount; ++i )
 					{
@@ -177,7 +178,7 @@ namespace Server.Factions
 					m_Faction.State = this;
 					m_Faction.UpdateRanks();
 
-					m_FactionItems = new FactionItemCollection();
+					m_FactionItems = new List<FactionItem>();
 
 					if ( version >= 2 )
 					{
@@ -194,7 +195,7 @@ namespace Server.Factions
 						}
 					}
 
-					m_FactionTraps = new FactionTrapCollection();
+					m_FactionTraps = new List<BaseFactionTrap>();
 
 					if ( version >= 3 )
 					{

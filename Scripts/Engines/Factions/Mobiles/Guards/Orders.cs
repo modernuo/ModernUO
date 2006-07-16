@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Factions.AI
 {
@@ -60,7 +61,7 @@ namespace Server.Factions.AI
 	{
 		private BaseFactionGuard m_Guard;
 
-		private ArrayList m_Reactions;
+		private List<Reaction> m_Reactions;
 		private MovementType m_Movement;
 		private Mobile m_Follow;
 
@@ -75,7 +76,7 @@ namespace Server.Factions.AI
 
 			for ( int i = 0; i < m_Reactions.Count; ++i )
 			{
-				reaction = (Reaction) m_Reactions[i];
+				reaction = m_Reactions[i];
 
 				if ( reaction.Faction == faction )
 					return reaction;
@@ -97,7 +98,7 @@ namespace Server.Factions.AI
 		public Orders( BaseFactionGuard guard )
 		{
 			m_Guard = guard;
-			m_Reactions = new ArrayList();
+			m_Reactions = new List<Reaction>();
 			m_Movement = MovementType.Patrol;
 		}
 
@@ -117,7 +118,7 @@ namespace Server.Factions.AI
 				case 0:
 				{
 					int count = reader.ReadEncodedInt();
-					m_Reactions = new ArrayList( count );
+					m_Reactions = new List<Reaction>( count );
 
 					for ( int i = 0; i < count; ++i )
 						m_Reactions.Add( new Reaction( reader ) );
@@ -138,7 +139,7 @@ namespace Server.Factions.AI
 			writer.WriteEncodedInt( (int) m_Reactions.Count );
 
 			for ( int i = 0; i < m_Reactions.Count; ++i )
-				((Reaction)m_Reactions[i]).Serialize( writer );
+				m_Reactions[i].Serialize( writer );
 
 			writer.WriteEncodedInt( (int) m_Movement );
 		}

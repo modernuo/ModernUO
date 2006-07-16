@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -41,7 +42,7 @@ namespace Server.Factions
 
 			writer.Write( (int) 0 ); // version
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
@@ -49,7 +50,7 @@ namespace Server.Factions
 				factions[i].State.Serialize( writer );
 			}
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{

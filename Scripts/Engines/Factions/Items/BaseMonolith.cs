@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -124,9 +125,9 @@ namespace Server.Factions
 			}
 		}
 
-		private static MonolithCollection m_Monoliths = new MonolithCollection();
+		private static List<BaseMonolith> m_Monoliths = new List<BaseMonolith>();
 
-		public static MonolithCollection Monoliths
+		public static List<BaseMonolith> Monoliths
 		{
 			get{ return m_Monoliths; }
 			set{ m_Monoliths = value; }

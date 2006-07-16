@@ -3,6 +3,7 @@ using System.Net;
 using System.Collections;
 using Server;
 using Server.Mobiles;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -16,14 +17,14 @@ namespace Server.Factions
 		public const int CandidateRank = 5;
 
 		private Faction m_Faction;
-		private CandidateCollection m_Candidates;
+		private List<Candidate> m_Candidates;
 
 		private ElectionState m_State;
 		private DateTime m_LastStateTime;
 
 		public Faction Faction{ get{ return m_Faction; } }
 
-		public CandidateCollection Candidates{ get{ return m_Candidates; } }
+		public List<Candidate> Candidates { get { return m_Candidates; } }
 
 		public ElectionState State{ get{ return m_State; } set{ m_State = value; m_LastStateTime = DateTime.Now; } }
 		public DateTime LastStateTime{ get{ return m_LastStateTime; } }
@@ -79,7 +80,7 @@ namespace Server.Factions
 		public Election( Faction faction )
 		{
 			m_Faction = faction;
-			m_Candidates = new CandidateCollection();
+			m_Candidates = new List<Candidate>();
 
 			StartTimer();
 		}
@@ -97,7 +98,7 @@ namespace Server.Factions
 					m_LastStateTime = reader.ReadDateTime();
 					m_State = (ElectionState)reader.ReadEncodedInt();
 
-					m_Candidates = new CandidateCollection();
+					m_Candidates = new List<Candidate>();
 
 					int count = reader.ReadEncodedInt();
 
@@ -146,11 +147,11 @@ namespace Server.Factions
 			{
 				for ( int i = 0; i < m_Candidates.Count; ++i )
 				{
-					ArrayList voters = m_Candidates[i].Voters;
+					List<Voter> voters = m_Candidates[i].Voters;
 
 					for ( int j = 0; j < voters.Count; ++j )
 					{
-						Voter voter = (Voter)voters[j];
+						Voter voter = voters[j];
 
 						if ( voter.From == mob )
 							voters.RemoveAt( j-- );
@@ -233,11 +234,11 @@ namespace Server.Factions
 		{
 			for ( int i = 0; i < m_Candidates.Count; ++i )
 			{
-				ArrayList voters = m_Candidates[i].Voters;
+				List<Voter> voters = m_Candidates[i].Voters;
 
 				for ( int j = 0; j < voters.Count; ++j )
 				{
-					Voter voter = (Voter)voters[j];
+					Voter voter = voters[j];
 
 					if ( voter.From == mob )
 						return m_Candidates[i];
@@ -479,10 +480,10 @@ namespace Server.Factions
 	public class Candidate
 	{
 		private Mobile m_Mobile;
-		private ArrayList m_Voters;
+		private List<Voter> m_Voters;
 
 		public Mobile Mobile{ get{ return m_Mobile; } }
-		public ArrayList Voters{ get{ return m_Voters; } }
+		public List<Voter> Voters { get { return m_Voters; } }
 
 		public int Votes{ get{ return m_Voters.Count; } }
 
@@ -500,7 +501,7 @@ namespace Server.Factions
 		public Candidate( Mobile mob )
 		{
 			m_Mobile = mob;
-			m_Voters = new ArrayList();
+			m_Voters = new List<Voter>();
 		}
 
 		public Candidate( GenericReader reader )
@@ -514,7 +515,7 @@ namespace Server.Factions
 					m_Mobile = reader.ReadMobile();
 
 					int count = reader.ReadEncodedInt();
-					m_Voters = new ArrayList( count );
+					m_Voters = new List<Voter>( count );
 
 					for ( int i = 0; i < count; ++i )
 					{
@@ -530,11 +531,11 @@ namespace Server.Factions
 				{
 					m_Mobile = reader.ReadMobile();
 
-					ArrayList mobs = reader.ReadMobileList();
-					m_Voters = new ArrayList( mobs.Count );
+					List<Mobile> mobs = reader.ReadStrongMobileList();
+					m_Voters = new List<Voter>( mobs.Count );
 
 					for ( int i = 0; i < mobs.Count; ++i )
-						m_Voters.Add( new Voter( (Mobile)mobs[i], m_Mobile ) );
+						m_Voters.Add( new Voter( mobs[i], m_Mobile ) );
 
 					break;
 				}

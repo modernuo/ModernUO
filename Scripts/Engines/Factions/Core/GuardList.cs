@@ -1,15 +1,16 @@
 using System;
 using Server;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
 	public class GuardList
 	{
 		private GuardDefinition m_Definition;
-		private FactionGuardCollection m_Guards;
+		private List<BaseFactionGuard> m_Guards;
 
 		public GuardDefinition Definition{ get{ return m_Definition; } }
-		public FactionGuardCollection Guards{ get{ return m_Guards; } }
+		public List<BaseFactionGuard> Guards{ get{ return m_Guards; } }
 
 		public BaseFactionGuard Construct()
 		{
@@ -20,7 +21,7 @@ namespace Server.Factions
 		public GuardList( GuardDefinition definition )
 		{
 			m_Definition = definition;
-			m_Guards = new FactionGuardCollection();
+			m_Guards = new List<BaseFactionGuard>();
 		}
 	}
 }

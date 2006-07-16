@@ -4,6 +4,7 @@ using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -87,7 +88,7 @@ namespace Server.Factions
 
 			AddHtmlLocalized( 20, 30, 200, 25, 1011540, false, false ); // BUY SHOPKEEPERS
 
-			VendorListCollection vendorLists = town.VendorLists;
+			List<VendorList> vendorLists = town.VendorLists;
 
 			for ( int i = 0; i < vendorLists.Count; ++i )
 			{
@@ -238,7 +239,7 @@ namespace Server.Factions
 				}
 				case 1: // make vendor
 				{
-					VendorListCollection vendorLists = m_Town.VendorLists;
+					List<VendorList> vendorLists = m_Town.VendorLists;
 
 					if ( index >= 0 && index < vendorLists.Count )
 					{

@@ -1,15 +1,16 @@
 using System;
 using Server;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
 	public class VendorList
 	{
 		private VendorDefinition m_Definition;
-		private FactionVendorCollection m_Vendors;
+		private List<BaseFactionVendor> m_Vendors;
 
 		public VendorDefinition Definition{ get{ return m_Definition; } }
-		public FactionVendorCollection Vendors{ get{ return m_Vendors; } }
+		public List<BaseFactionVendor> Vendors { get { return m_Vendors; } }
 
 		public BaseFactionVendor Construct( Town town, Faction faction )
 		{
@@ -20,7 +21,7 @@ namespace Server.Factions
 		public VendorList( VendorDefinition definition )
 		{
 			m_Definition = definition;
-			m_Vendors = new FactionVendorCollection();
+			m_Vendors = new List<BaseFactionVendor>();
 		}
 	}
 }

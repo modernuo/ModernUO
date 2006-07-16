@@ -3,6 +3,7 @@ using Server;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -87,7 +88,7 @@ namespace Server.Factions
 
 			AddHtmlLocalized( 20, 30, 250, 20, 1011430, false, false ); // CITY STATUS
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{
@@ -309,7 +310,7 @@ namespace Server.Factions
 					if ( !m_Faction.IsCommander( m_From ) )
 						return;
 
-					TownCollection towns = Town.Towns;
+					List<Town> towns = Town.Towns;
 
 					if ( index >= 0 && index < towns.Count )
 					{

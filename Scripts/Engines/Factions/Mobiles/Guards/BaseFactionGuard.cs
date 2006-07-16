@@ -216,7 +216,7 @@ namespace Server.Factions
 								understood = true;
 							}
 
-							FactionCollection factions = Faction.Factions;
+							List<Faction> factions = Faction.Factions;
 
 							for ( int i = 0; i < factions.Count; ++i )
 							{

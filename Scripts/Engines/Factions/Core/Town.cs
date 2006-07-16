@@ -4,6 +4,7 @@ using Server;
 using Server.Targeting;
 using Server.Mobiles;
 using Server.Commands;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -74,7 +75,7 @@ namespace Server.Factions
 			if ( reg.Map != Faction.Facet )
 				return null;
 
-			TownCollection towns = Towns;
+			List<Town> towns = Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{
@@ -91,7 +92,7 @@ namespace Server.Factions
 		{
 			get
 			{
-				VendorListCollection vendorLists = VendorLists;
+				List<VendorList> vendorLists = VendorLists;
 				int upkeep = 0;
 
 				for ( int i = 0; i < vendorLists.Count; ++i )
@@ -105,7 +106,7 @@ namespace Server.Factions
 		{
 			get
 			{
-				GuardListCollection guardLists = GuardLists;
+				List<GuardList> guardLists = GuardLists;
 				int upkeep = 0;
 
 				for ( int i = 0; i < guardLists.Count; ++i )
@@ -129,7 +130,7 @@ namespace Server.Factions
 		{
 			get
 			{
-				MonolithCollection monoliths = BaseMonolith.Monoliths;
+				List<BaseMonolith> monoliths = BaseMonolith.Monoliths;
 
 				foreach ( BaseMonolith monolith in monoliths )
 				{
@@ -258,12 +259,12 @@ namespace Server.Factions
 		{
 			ArrayList list = new ArrayList();
 
-			VendorListCollection vendorLists = VendorLists;
+			List<VendorList> vendorLists = VendorLists;
 
 			for ( int i = 0; i < vendorLists.Count; ++i )
 				list.AddRange( vendorLists[i].Vendors );
 
-			GuardListCollection guardLists = GuardLists;
+			List<GuardList> guardLists = GuardLists;
 
 			for ( int i = 0; i < guardLists.Count; ++i )
 				list.AddRange( guardLists[i].Guards );
@@ -271,16 +272,16 @@ namespace Server.Factions
 			return list;
 		}
 
-		private VendorListCollection m_VendorLists;
-		private GuardListCollection m_GuardLists;
+		private List<VendorList> m_VendorLists;
+		private List<GuardList> m_GuardLists;
 
-		public VendorListCollection VendorLists
+		public List<VendorList> VendorLists
 		{
 			get{ return m_VendorLists; }
 			set{ m_VendorLists = value; }
 		}
 
-		public GuardListCollection GuardLists
+		public List<GuardList> GuardLists
 		{
 			get{ return m_GuardLists; }
 			set{ m_GuardLists = value; }
@@ -290,7 +291,7 @@ namespace Server.Factions
 		{
 			GuardDefinition[] defs = ( Owner == null ? new GuardDefinition[0] : Owner.Definition.Guards );
 
-			m_GuardLists = new GuardListCollection();
+			m_GuardLists = new List<GuardList>();
 
 			for ( int i = 0; i < defs.Length; ++i )
 				m_GuardLists.Add( new GuardList( defs[i] ) );
@@ -298,7 +299,7 @@ namespace Server.Factions
 
 		public GuardList FindGuardList( Type type )
 		{
-			GuardListCollection guardLists = GuardLists;
+			List<GuardList> guardLists = GuardLists;
 
 			for ( int i = 0; i < guardLists.Count; ++i )
 			{
@@ -315,7 +316,7 @@ namespace Server.Factions
 		{
 			VendorDefinition[] defs = VendorDefinition.Definitions;
 
-			m_VendorLists = new VendorListCollection();
+			m_VendorLists = new List<VendorList>();
 
 			for ( int i = 0; i < defs.Length; ++i )
 				m_VendorLists.Add( new VendorList( defs[i] ) );
@@ -323,7 +324,7 @@ namespace Server.Factions
 
 		public VendorList FindVendorList( Type type )
 		{
-			VendorListCollection vendorLists = VendorLists;
+			List<VendorList> vendorLists = VendorLists;
 
 			for ( int i = 0; i < vendorLists.Count; ++i )
 			{
@@ -400,7 +401,7 @@ namespace Server.Factions
 
 		public static void Initialize()
 		{
-			TownCollection towns = Towns;
+			List<Town> towns = Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{
@@ -435,7 +436,7 @@ namespace Server.Factions
 			return ( mob.AccessLevel >= AccessLevel.GameMaster || mob == Finance );
 		}
 
-		public static TownCollection Towns{ get{ return Reflector.Towns; } }
+		public static List<Town> Towns { get { return Reflector.Towns; } }
 
 		public const int SilverCaptureBonus = 10000;
 
@@ -468,23 +469,23 @@ namespace Server.Factions
 			if ( monolith != null )
 				monolith.Faction = f;
 
-			VendorListCollection vendorLists = VendorLists;
+			List<VendorList> vendorLists = VendorLists;
 
 			for ( int i = 0; i < vendorLists.Count; ++i )
 			{
 				VendorList vendorList = vendorLists[i];
-				FactionVendorCollection vendors = vendorList.Vendors;
+				List<BaseFactionVendor> vendors = vendorList.Vendors;
 
 				for ( int j = vendors.Count - 1; j >= 0; --j )
 					vendors[j].Delete();
 			}
 
-			GuardListCollection guardLists = GuardLists;
+			List<GuardList> guardLists = GuardLists;
 
 			for ( int i = 0; i < guardLists.Count; ++i )
 			{
 				GuardList guardList = guardLists[i];
-				FactionGuardCollection guards = guardList.Guards;
+				List<BaseFactionGuard> guards = guardList.Guards;
 
 				for ( int j = guards.Count - 1; j >= 0; --j )
 					guards[j].Delete();
@@ -522,7 +523,7 @@ namespace Server.Factions
 
 		public static Town Parse( string name )
 		{
-			TownCollection towns = Towns;
+			List<Town> towns = Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{

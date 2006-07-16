@@ -7,6 +7,7 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Factions;
 using Server.Accounting;
+using System.Collections.Generic;
 
 namespace Server.Engines.Reports
 {
@@ -233,7 +234,7 @@ namespace Server.Engines.Reports
 		{
 			PieChart chart = new PieChart( "Faction Membership", "graphs_faction_membership", true );
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 				chart.Items.Add( factions[i].Definition.FriendlyName, factions[i].Members.Count );
@@ -252,7 +253,7 @@ namespace Server.Engines.Reports
 
 			ArrayList list = new ArrayList();
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
@@ -303,12 +304,12 @@ namespace Server.Engines.Reports
 			report.Columns.Add( "15%", "center", "Kill Points" );
 			report.Columns.Add( "15%", "center", "Silver" );
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
 				Faction faction = factions[i];
-				PlayerStateCollection members = faction.Members;
+				List<PlayerState> members = faction.Members;
 
 				int totalKillPoints = 0;
 				int totalMerchants = 0;
@@ -344,7 +345,7 @@ namespace Server.Engines.Reports
 			report.Columns.Add( "35%", "center", "Controller" );
 			report.Columns.Add( "30%", "center", "Capturable" );
 
-			SigilCollection sigils = Sigil.Sigils;
+			List<Sigil> sigils = Sigil.Sigils;
 
 			for ( int i = 0; i < sigils.Count; ++i )
 			{
@@ -389,7 +390,7 @@ namespace Server.Engines.Reports
 			report.Columns.Add( "13%", "center", "Silver" );
 			report.Columns.Add( "13%", "center", "Prices" );
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{

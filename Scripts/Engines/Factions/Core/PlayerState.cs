@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Mobiles;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -8,25 +9,25 @@ namespace Server.Factions
 	{
 		private Mobile m_Mobile;
 		private Faction m_Faction;
-		private PlayerStateCollection m_Owner;
+		private List<PlayerState> m_Owner;
 		private int m_KillPoints;
 		private DateTime m_Leaving;
 		private MerchantTitle m_MerchantTitle;
 		private RankDefinition m_Rank;
-		private SilverGivenCollection m_SilverGiven;
+		private List<SilverGivenEntry> m_SilverGiven;
 
 		private Town m_Sheriff;
 		private Town m_Finance;
 
 		public Mobile Mobile{ get{ return m_Mobile; } }
 		public Faction Faction{ get{ return m_Faction; } }
-		public PlayerStateCollection Owner{ get{ return m_Owner; } }
+		public List<PlayerState> Owner { get { return m_Owner; } }
 		public int KillPoints{ get{ return m_KillPoints; } set{ m_KillPoints = value; } }
 		public MerchantTitle MerchantTitle{ get{ return m_MerchantTitle; } set{ m_MerchantTitle = value; Invalidate(); } }
 		public RankDefinition Rank{ get{ return m_Rank; } set{ m_Rank = value; Invalidate(); } }
 		public Town Sheriff{ get{ return m_Sheriff; } set{ m_Sheriff = value; Invalidate(); } }
 		public Town Finance{ get{ return m_Finance; } set{ m_Finance = value; Invalidate(); } }
-		public SilverGivenCollection SilverGiven{ get{ return m_SilverGiven; } }
+		public List<SilverGivenEntry> SilverGiven { get { return m_SilverGiven; } }
 
 		public DateTime Leaving{ get{ return m_Leaving; } set{ m_Leaving = value; } }
 		public bool IsLeaving{ get{ return ( m_Leaving > DateTime.MinValue ); } }
@@ -52,7 +53,7 @@ namespace Server.Factions
 		public void OnGivenSilverTo( Mobile mob )
 		{
 			if ( m_SilverGiven == null )
-				m_SilverGiven = new SilverGivenCollection();
+				m_SilverGiven = new List<SilverGivenEntry>();
 
 			m_SilverGiven.Add( new SilverGivenEntry( mob ) );
 		}
@@ -69,7 +70,7 @@ namespace Server.Factions
 				((PlayerMobile)m_Mobile).FactionPlayerState = this;
 		}
 
-		public PlayerState( Mobile mob, Faction faction, PlayerStateCollection owner )
+		public PlayerState( Mobile mob, Faction faction, List<PlayerState> owner )
 		{
 			m_Mobile = mob;
 			m_Faction = faction;
@@ -81,7 +82,7 @@ namespace Server.Factions
 			Invalidate();
 		}
 
-		public PlayerState( GenericReader reader, Faction faction, PlayerStateCollection owner )
+		public PlayerState( GenericReader reader, Faction faction, List<PlayerState> owner )
 		{
 			m_Faction = faction;
 			m_Owner = owner;

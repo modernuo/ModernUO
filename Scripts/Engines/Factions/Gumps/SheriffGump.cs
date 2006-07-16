@@ -4,6 +4,7 @@ using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -80,7 +81,7 @@ namespace Server.Factions
 
 			AddHtmlLocalized( 20, 30, 300, 25, 1011494, false, false ); // HIRE GUARDS
 
-			GuardListCollection guardLists = town.GuardLists;
+			List<GuardList> guardLists = town.GuardLists;
 
 			for ( int i = 0; i < guardLists.Count; ++i )
 			{

@@ -9,6 +9,7 @@ using Server.Targeting;
 using Server.Accounting;
 using Server.Commands;
 using Server.Commands.Generic;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -65,7 +66,7 @@ namespace Server.Factions
 			set{ m_State.Silver = value; }
 		}
 
-		public PlayerStateCollection Members
+		public List<PlayerState> Members
 		{
 			get{ return m_State.Members; }
 			set{ m_State.Members = value; }
@@ -85,7 +86,7 @@ namespace Server.Factions
 
 		public void Broadcast( int hue, string text )
 		{
-			PlayerStateCollection members = Members;
+			List<PlayerState> members = Members;
 
 			for ( int i = 0; i < members.Count; ++i )
 				members[i].Mobile.SendMessage( hue, text );
@@ -93,7 +94,7 @@ namespace Server.Factions
 
 		public void Broadcast( int number )
 		{
-			PlayerStateCollection members = Members;
+			List<PlayerState> members = Members;
 
 			for ( int i = 0; i < members.Count; ++i )
 				members[i].Mobile.SendLocalizedMessage( number );
@@ -428,7 +429,7 @@ namespace Server.Factions
 					pm.SendLocalizedMessage( 1018031 ); // In the interest of faction stability, this faction declines to accept new members for now.
 				else
 				{
-					ArrayList members = new ArrayList( guild.Members );
+					List<Mobile> members = new List<Mobile>( guild.Members );
 
 					for ( int i = 0; i < members.Count; ++i )
 					{
@@ -497,9 +498,9 @@ namespace Server.Factions
 
 		public void UpdateRanks()
 		{
-			PlayerStateCollection members = Members;
+			List<PlayerState> members = Members;
 
-			ArrayList list = new ArrayList( members );
+			List<PlayerState> list = new List<PlayerState>( members );
 
 			list.Sort();
 
@@ -507,7 +508,7 @@ namespace Server.Factions
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
-				PlayerState pl = (PlayerState)list[i];
+				PlayerState pl = list[i];
 
 				int percent;
 
@@ -553,12 +554,12 @@ namespace Server.Factions
 
 		public static void FactionTownReset_OnCommand( CommandEventArgs e )
 		{
-			MonolithCollection monoliths = BaseMonolith.Monoliths;
+			List<BaseMonolith> monoliths = BaseMonolith.Monoliths;
 
 			for ( int i = 0; i < monoliths.Count; ++i )
 				monoliths[i].Sigil = null;
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{
@@ -569,7 +570,7 @@ namespace Server.Factions
 				towns[i].Owner = null;
 			}
 
-			SigilCollection sigils = Sigil.Sigils;
+			List<Sigil> sigils = Sigil.Sigils;
 
 			for ( int i = 0; i < sigils.Count; ++i )
 			{
@@ -583,17 +584,17 @@ namespace Server.Factions
 				sigils[i].ReturnHome();
 			}
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
 				Faction f = factions[i];
 
-				ArrayList list = new ArrayList( f.State.FactionItems );
+				List<FactionItem> list = new List<FactionItem>( f.State.FactionItems );
 
 				for ( int j = 0; j < list.Count; ++j )
 				{
-					FactionItem fi = (FactionItem)list[j];
+					FactionItem fi = list[j];
 
 					if ( fi.Expiration == DateTime.MinValue )
 						fi.Item.Delete();
@@ -605,12 +606,12 @@ namespace Server.Factions
 
 		public static void FactionReset_OnCommand( CommandEventArgs e )
 		{
-			MonolithCollection monoliths = BaseMonolith.Monoliths;
+			List<BaseMonolith> monoliths = BaseMonolith.Monoliths;
 
 			for ( int i = 0; i < monoliths.Count; ++i )
 				monoliths[i].Sigil = null;
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			for ( int i = 0; i < towns.Count; ++i )
 			{
@@ -621,7 +622,7 @@ namespace Server.Factions
 				towns[i].Owner = null;
 			}
 
-			SigilCollection sigils = Sigil.Sigils;
+			List<Sigil> sigils = Sigil.Sigils;
 
 			for ( int i = 0; i < sigils.Count; ++i )
 			{
@@ -635,22 +636,22 @@ namespace Server.Factions
 				sigils[i].ReturnHome();
 			}
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
 				Faction f = factions[i];
 
-				ArrayList list = new ArrayList( f.Members );
+				List<PlayerState> playerStateList = new List<PlayerState>( f.Members );
 
-				for ( int j = 0; j < list.Count; ++j )
-					f.RemoveMember( ((PlayerState)list[j]).Mobile );
+				for( int j = 0; j < playerStateList.Count; ++j )
+					f.RemoveMember( playerStateList[j].Mobile );
 
-				list = new ArrayList( f.State.FactionItems );
+				List<FactionItem> factionItemList = new List<FactionItem>( f.State.FactionItems );
 
-				for ( int j = 0; j < list.Count; ++j )
+				for( int j = 0; j < factionItemList.Count; ++j )
 				{
-					FactionItem fi = (FactionItem)list[j];
+					FactionItem fi = (FactionItem)factionItemList[j];
 
 					if ( fi.Expiration == DateTime.MinValue )
 						fi.Item.Delete();
@@ -658,10 +659,10 @@ namespace Server.Factions
 						fi.Detach();
 				}
 
-				list = new ArrayList( f.Traps );
+				List<BaseFactionTrap> factionTrapList = new List<BaseFactionTrap>( f.Traps );
 
-				for ( int j = 0; j < list.Count; ++j )
-					((BaseFactionTrap)list[j]).Delete();
+				for( int j = 0; j < factionTrapList.Count; ++j )
+					factionTrapList[j].Delete();
 			}
 		}
 
@@ -800,7 +801,7 @@ namespace Server.Factions
 
 		public static void ProcessTick()
 		{
-			SigilCollection sigils = Sigil.Sigils;
+			List<Sigil> sigils = Sigil.Sigils;
 
 			for ( int i = 0; i < sigils.Count; ++i )
 			{
@@ -936,7 +937,7 @@ namespace Server.Factions
 
 		public virtual int MaximumTraps{ get{ return 15; } }
 
-		public FactionTrapCollection Traps
+		public List<BaseFactionTrap> Traps
 		{
 			get{ return m_State.Traps; }
 			set{ m_State.Traps = value; }
@@ -947,7 +948,7 @@ namespace Server.Factions
 
 		public static Faction FindSmallestFaction()
 		{
-			FactionCollection factions = Factions;
+			List<Faction> factions = Factions;
 			Faction smallest = null;
 
 			for ( int i = 0; i < factions.Count; ++i )
@@ -963,7 +964,7 @@ namespace Server.Factions
 
 		public static bool StabilityActive()
 		{
-			FactionCollection factions = Factions;
+			List<Faction> factions = Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
@@ -1191,7 +1192,7 @@ namespace Server.Factions
 			writer.WriteEncodedInt( (int) (idx + 1) );
 		}
 
-		public static FactionCollection Factions{ get{ return Reflector.Factions; } }
+		public static List<Faction> Factions{ get{ return Reflector.Factions; } }
 
 		public static Faction ReadReference( GenericReader reader )
 		{
@@ -1239,7 +1240,7 @@ namespace Server.Factions
 
 		public static Faction Parse( string name )
 		{
-			FactionCollection factions = Factions;
+			List<Faction> factions = Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{

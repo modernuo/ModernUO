@@ -2,16 +2,17 @@ using System;
 using System.Reflection;
 using System.Collections;
 using Server;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
 	public class Reflector
 	{
-		private static ArrayList m_Types = new ArrayList();
+		private static List<Type> m_Types = new List<Type>();
 
-		private static TownCollection m_Towns;
+		private static List<Town> m_Towns;
 
-		public static TownCollection Towns
+		public static List<Town> Towns
 		{
 			get
 			{
@@ -22,9 +23,9 @@ namespace Server.Factions
 			}
 		}
 
-		private static FactionCollection m_Factions;
+		private static List<Faction> m_Factions;
 
-		public static FactionCollection Factions
+		public static List<Faction> Factions
 		{
 			get
 			{
@@ -71,11 +72,11 @@ namespace Server.Factions
 				else
 					m_Types.Add( ScriptCompiler.FindTypeByFullName( typeName, false ) );
 
-				return (Type) m_Types[m_Types.Count - 1];
+				return m_Types[m_Types.Count - 1];
 			}
 			else
 			{
-				return (Type)m_Types[index - 1];
+				return m_Types[index - 1];
 			}
 		}
 
@@ -87,8 +88,8 @@ namespace Server.Factions
 
 		private static void ProcessTypes()
 		{
-			m_Factions = new FactionCollection();
-			m_Towns = new TownCollection();
+			m_Factions = new List<Faction>();
+			m_Towns = new List<Town>();
 
 			Assembly[] asms = ScriptCompiler.Assemblies;
 

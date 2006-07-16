@@ -1,5 +1,6 @@
 using System;
 using Server.Commands;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -14,12 +15,12 @@ namespace Server.Factions
 		{
 			new FactionPersistance();
 
-			FactionCollection factions = Faction.Factions;
+			List<Faction> factions = Faction.Factions;
 
 			foreach ( Faction faction in factions )
 				Generate( faction );
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			foreach ( Town town in towns )
 				Generate( town );
@@ -46,7 +47,7 @@ namespace Server.Factions
 		{
 			Map facet = Faction.Facet;
 
-			TownCollection towns = Town.Towns;
+			List<Town> towns = Town.Towns;
 
 			StrongholdDefinition stronghold = faction.Definition.Stronghold;
 
