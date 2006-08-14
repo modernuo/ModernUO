@@ -81,7 +81,22 @@ namespace Server
 		Moonglow,
 		Zento,
 		TokunoDungeon,
-		Taiko
+		Taiko,
+		DreadHornArea,
+		ElfCity,
+		GrizzleDungeon,
+		MelisandesLair,
+		ParoxysmusLair,
+		GwennoConversation,
+		GoodEndGame,
+		GoodVsEvil,
+		GreatEarthSerpents,
+		Humanoids_U9,
+		MinocNegative,
+		Paws,
+		SelimsBar,
+		SerpentIsleCombat_U7,
+		ValoriaShips
 	}
 
 

@@ -35,7 +35,7 @@ namespace Server
 	public abstract class GenericReader
 	{
 		public GenericReader() { }
-		
+
 		public abstract string ReadString();
 		public abstract DateTime ReadDateTime();
 		public abstract TimeSpan ReadTimeSpan();
@@ -59,6 +59,7 @@ namespace Server
 		public abstract Point3D ReadPoint3D();
 		public abstract Point2D ReadPoint2D();
 		public abstract Rectangle2D ReadRect2D();
+		public abstract Rectangle3D ReadRect3D();
 		public abstract Map ReadMap();
 
 		public abstract Item ReadItem();
@@ -94,7 +95,7 @@ namespace Server
 		public abstract void Close();
 
 		public abstract long Position { get; }
-		
+
 		public abstract void Write( string value );
 		public abstract void Write( DateTime value );
 		public abstract void Write( TimeSpan value );
@@ -104,7 +105,7 @@ namespace Server
 		public abstract void Write( int value );
 		public abstract void Write( uint value );
 		public abstract void Write( short value );
-		public abstract void Write( ushort value);
+		public abstract void Write( ushort value );
 		public abstract void Write( double value );
 		public abstract void Write( float value );
 		public abstract void Write( char value );
@@ -119,6 +120,7 @@ namespace Server
 		public abstract void Write( Point3D value );
 		public abstract void Write( Point2D value );
 		public abstract void Write( Rectangle2D value );
+		public abstract void Write( Rectangle3D value );
 		public abstract void Write( Map value );
 
 		public abstract void Write( Item value );
@@ -166,8 +168,10 @@ namespace Server
 		private bool PrefixStrings;
 		private Stream m_File;
 
-		protected virtual int BufferSize {
-			get {
+		protected virtual int BufferSize
+		{
+			get
+			{
 				return 64 * 1024;
 			}
 		}
@@ -178,8 +182,8 @@ namespace Server
 
 		private Encoding m_Encoding;
 
-		public BinaryFileWriter( Stream strm, bool prefixStr ) 
-		{ 
+		public BinaryFileWriter( Stream strm, bool prefixStr )
+		{
 			PrefixStrings = prefixStr;
 			m_Encoding = Utility.UTF8;
 			m_Buffer = new byte[BufferSize];
@@ -196,7 +200,7 @@ namespace Server
 
 		public void Flush()
 		{
-			if ( m_Index > 0 )
+			if( m_Index > 0 )
 			{
 				m_Position += m_Index;
 
@@ -219,7 +223,7 @@ namespace Server
 		{
 			get
 			{
-				if ( m_Index > 0 )
+				if( m_Index > 0 )
 					Flush();
 
 				return m_File;
@@ -228,7 +232,7 @@ namespace Server
 
 		public override void Close()
 		{
-			if ( m_Index > 0 )
+			if( m_Index > 0 )
 				Flush();
 
 			m_File.Close();
@@ -236,26 +240,26 @@ namespace Server
 
 		public override void WriteEncodedInt( int value )
 		{
-			uint v = (uint) value;
+			uint v = (uint)value;
 
-			while ( v >= 0x80 ) 
+			while( v >= 0x80 )
 			{
-				if ( (m_Index + 1) > m_Buffer.Length )
+				if( (m_Index + 1) > m_Buffer.Length )
 					Flush();
 
-				m_Buffer[m_Index++] = (byte) (v | 0x80);
+				m_Buffer[m_Index++] = (byte)(v | 0x80);
 				v >>= 7;
 			}
 
-			if ( ( m_Index + 1 ) > m_Buffer.Length )
+			if( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index++] = (byte) v;
+			m_Buffer[m_Index++] = (byte)v;
 		}
 
 		private byte[] m_CharacterBuffer;
 		private int m_MaxBufferChars;
-		private const int LargeByteBufferSize = 256;  
+		private const int LargeByteBufferSize = 256;
 
 		internal void InternalWriteString( string value )
 		{
@@ -263,23 +267,23 @@ namespace Server
 
 			WriteEncodedInt( length );
 
-			if ( m_CharacterBuffer == null )
+			if( m_CharacterBuffer == null )
 			{
 				m_CharacterBuffer = new byte[LargeByteBufferSize];
 				m_MaxBufferChars = LargeByteBufferSize / m_Encoding.GetMaxByteCount( 1 );
 			}
 
-			if ( length > LargeByteBufferSize )
+			if( length > LargeByteBufferSize )
 			{
 				int current = 0;
 				int charsLeft = value.Length;
 
-				while ( charsLeft > 0 )
+				while( charsLeft > 0 )
 				{
-					int charCount = ( charsLeft > m_MaxBufferChars ) ? m_MaxBufferChars : charsLeft;
+					int charCount = (charsLeft > m_MaxBufferChars) ? m_MaxBufferChars : charsLeft;
 					int byteLength = m_Encoding.GetBytes( value, current, charCount, m_CharacterBuffer, 0 );
 
-					if ( ( m_Index + byteLength ) > m_Buffer.Length )
+					if( (m_Index + byteLength) > m_Buffer.Length )
 						Flush();
 
 					Buffer.BlockCopy( m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength );
@@ -293,7 +297,7 @@ namespace Server
 			{
 				int byteLength = m_Encoding.GetBytes( value, 0, value.Length, m_CharacterBuffer, 0 );
 
-				if ( ( m_Index + byteLength ) > m_Buffer.Length )
+				if( (m_Index + byteLength) > m_Buffer.Length )
 					Flush();
 
 				Buffer.BlockCopy( m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength );
@@ -303,18 +307,18 @@ namespace Server
 
 		public override void Write( string value )
 		{
-			if ( PrefixStrings )
+			if( PrefixStrings )
 			{
-				if ( value == null ) 
+				if( value == null )
 				{
-					if ( ( m_Index + 1 ) > m_Buffer.Length )
+					if( (m_Index + 1) > m_Buffer.Length )
 						Flush();
 
 					m_Buffer[m_Index++] = 0;
 				}
-				else 
+				else
 				{
-					if ( ( m_Index + 1 ) > m_Buffer.Length )
+					if( (m_Index + 1) > m_Buffer.Length )
 						Flush();
 
 					m_Buffer[m_Index++] = 1;
@@ -340,8 +344,8 @@ namespace Server
 
 			TimeSpan d;
 
-			try{ d = new TimeSpan( ticks-now ); }
-			catch{ if ( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
+			try { d = new TimeSpan( ticks-now ); }
+			catch { if( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
 
 			Write( d );
 		}
@@ -360,16 +364,16 @@ namespace Server
 		{
 			int[] bits = Decimal.GetBits( value );
 
-			for ( int i = 0; i < bits.Length; ++i )
+			for( int i = 0; i < bits.Length; ++i )
 				Write( bits[i] );
 		}
 
 		public override void Write( long value )
 		{
-			if ( ( m_Index + 8 ) > m_Buffer.Length )
+			if( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index    ] = (byte) value;
+			m_Buffer[m_Index] = (byte)value;
 			m_Buffer[m_Index + 1] = (byte)(value >> 8);
 			m_Buffer[m_Index + 2] = (byte)(value >> 16);
 			m_Buffer[m_Index + 3] = (byte)(value >> 24);
@@ -382,10 +386,10 @@ namespace Server
 
 		public override void Write( ulong value )
 		{
-			if ( ( m_Index + 8 ) > m_Buffer.Length )
+			if( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index    ] = (byte) value;
+			m_Buffer[m_Index] = (byte)value;
 			m_Buffer[m_Index + 1] = (byte)(value >> 8);
 			m_Buffer[m_Index + 2] = (byte)(value >> 16);
 			m_Buffer[m_Index + 3] = (byte)(value >> 24);
@@ -398,10 +402,10 @@ namespace Server
 
 		public override void Write( int value )
 		{
-			if ( ( m_Index + 4 ) > m_Buffer.Length )
+			if( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index    ] = (byte) value;
+			m_Buffer[m_Index] = (byte)value;
 			m_Buffer[m_Index + 1] = (byte)(value >> 8);
 			m_Buffer[m_Index + 2] = (byte)(value >> 16);
 			m_Buffer[m_Index + 3] = (byte)(value >> 24);
@@ -410,10 +414,10 @@ namespace Server
 
 		public override void Write( uint value )
 		{
-			if ( ( m_Index + 4 ) > m_Buffer.Length )
+			if( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index    ] = (byte) value;
+			m_Buffer[m_Index] = (byte)value;
 			m_Buffer[m_Index + 1] = (byte)(value >> 8);
 			m_Buffer[m_Index + 2] = (byte)(value >> 16);
 			m_Buffer[m_Index + 3] = (byte)(value >> 24);
@@ -422,42 +426,42 @@ namespace Server
 
 		public override void Write( short value )
 		{
-			if ( ( m_Index + 2 ) > m_Buffer.Length )
+			if( (m_Index + 2) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index    ] = (byte) value;
+			m_Buffer[m_Index] = (byte)value;
 			m_Buffer[m_Index + 1] = (byte)(value >> 8);
 			m_Index += 2;
 		}
 
 		public override void Write( ushort value )
 		{
-			if ( ( m_Index + 2 ) > m_Buffer.Length )
+			if( (m_Index + 2) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index    ] = (byte) value;
+			m_Buffer[m_Index] = (byte)value;
 			m_Buffer[m_Index + 1] = (byte)(value >> 8);
 			m_Index += 2;
 		}
 
 		public unsafe override void Write( double value )
 		{
-			if ( ( m_Index + 8 ) > m_Buffer.Length )
+			if( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
-			fixed ( byte *pBuffer = m_Buffer )
-				*((double *)(pBuffer + m_Index)) = value;
+			fixed( byte* pBuffer = m_Buffer )
+				*((double*)(pBuffer + m_Index)) = value;
 
 			m_Index += 8;
 		}
 
 		public unsafe override void Write( float value )
 		{
-			if ( ( m_Index + 4 ) > m_Buffer.Length )
+			if( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
-			fixed ( byte *pBuffer = m_Buffer )
-				*((float *)(pBuffer + m_Index)) = value;
+			fixed( byte* pBuffer = m_Buffer )
+				*((float*)(pBuffer + m_Index)) = value;
 
 			m_Index += 4;
 		}
@@ -466,7 +470,7 @@ namespace Server
 
 		public override void Write( char value )
 		{
-			if ( ( m_Index + 8 ) > m_Buffer.Length )
+			if( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
 			m_SingleCharBuffer[0] = value;
@@ -477,7 +481,7 @@ namespace Server
 
 		public override void Write( byte value )
 		{
-			if ( ( m_Index + 1 ) > m_Buffer.Length )
+			if( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index++] = value;
@@ -485,18 +489,18 @@ namespace Server
 
 		public override void Write( sbyte value )
 		{
-			if ( ( m_Index + 1 ) > m_Buffer.Length )
+			if( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index++] = (byte) value;
+			m_Buffer[m_Index++] = (byte)value;
 		}
 
 		public override void Write( bool value )
 		{
-			if ( ( m_Index + 1 ) > m_Buffer.Length )
+			if( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
-			m_Buffer[m_Index++] = (byte) (value ? 1 : 0);
+			m_Buffer[m_Index++] = (byte)(value ? 1 : 0);
 		}
 
 		public override void Write( Point3D value )
@@ -518,9 +522,15 @@ namespace Server
 			Write( value.End );
 		}
 
+		public override void Write( Rectangle3D value )
+		{
+			Write( value.Start );
+			Write( value.End );
+		}
+
 		public override void Write( Map value )
 		{
-			if ( value != null )
+			if( value != null )
 				Write( (byte)value.MapIndex );
 			else
 				Write( (byte)0xFF );
@@ -528,7 +538,7 @@ namespace Server
 
 		public override void Write( Item value )
 		{
-			if ( value == null || value.Deleted )
+			if( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -536,7 +546,7 @@ namespace Server
 
 		public override void Write( Mobile value )
 		{
-			if ( value == null || value.Deleted )
+			if( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -544,7 +554,7 @@ namespace Server
 
 		public override void Write( BaseGuild value )
 		{
-			if ( value == null )
+			if( value == null )
 				Write( 0 );
 			else
 				Write( value.Id );
@@ -572,11 +582,11 @@ namespace Server
 
 		public override void WriteMobileList( ArrayList list, bool tidy )
 		{
-			if ( tidy )
+			if( tidy )
 			{
-				for ( int i = 0; i < list.Count; )
+				for( int i = 0; i < list.Count; )
 				{
-					if ( ((Mobile)list[i]).Deleted )
+					if( ((Mobile)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -585,7 +595,7 @@ namespace Server
 
 			Write( list.Count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for( int i = 0; i < list.Count; ++i )
 				Write( (Mobile)list[i] );
 		}
 
@@ -596,11 +606,11 @@ namespace Server
 
 		public override void WriteItemList( ArrayList list, bool tidy )
 		{
-			if ( tidy )
+			if( tidy )
 			{
-				for ( int i = 0; i < list.Count; )
+				for( int i = 0; i < list.Count; )
 				{
-					if ( ((Item)list[i]).Deleted )
+					if( ((Item)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -609,7 +619,7 @@ namespace Server
 
 			Write( list.Count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for( int i = 0; i < list.Count; ++i )
 				Write( (Item)list[i] );
 		}
 
@@ -620,11 +630,11 @@ namespace Server
 
 		public override void WriteGuildList( ArrayList list, bool tidy )
 		{
-			if ( tidy )
+			if( tidy )
 			{
-				for ( int i = 0; i < list.Count; )
+				for( int i = 0; i < list.Count; )
 				{
-					if ( ((BaseGuild)list[i]).Disbanded )
+					if( ((BaseGuild)list[i]).Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -633,7 +643,7 @@ namespace Server
 
 			Write( list.Count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for( int i = 0; i < list.Count; ++i )
 				Write( (BaseGuild)list[i] );
 		}
 
@@ -681,7 +691,7 @@ namespace Server
 			Write( list.Count );
 
 			for( int i = 0; i < list.Count; ++i )
-				Write( list[i] );			
+				Write( list[i] );
 		}
 
 		public override void Write( List<Mobile> list )
@@ -782,7 +792,7 @@ namespace Server
 
 		public override void Write( Race value )
 		{
-			if ( value != null )
+			if( value != null )
 				Write( (byte)value.RaceIndex );
 			else
 				Write( (byte)0xFF );
@@ -815,7 +825,7 @@ namespace Server
 
 		public override string ReadString()
 		{
-			if ( ReadByte() != 0 )
+			if( ReadByte() != 0 )
 				return m_File.ReadString();
 			else
 				return null;
@@ -826,13 +836,13 @@ namespace Server
 			long ticks = m_File.ReadInt64();
 			long now = DateTime.Now.Ticks;
 
-			if ( ticks > 0 && (ticks+now) < 0 )
+			if( ticks > 0 && (ticks+now) < 0 )
 				return DateTime.MaxValue;
-			else if ( ticks < 0 && (ticks+now) < 0 )
+			else if( ticks < 0 && (ticks+now) < 0 )
 				return DateTime.MinValue;
 
-			try{ return new DateTime( now+ticks ); }
-			catch{ if ( ticks > 0 ) return DateTime.MaxValue; else return DateTime.MinValue; }
+			try { return new DateTime( now+ticks ); }
+			catch { if( ticks > 0 ) return DateTime.MaxValue; else return DateTime.MinValue; }
 		}
 
 		public override IPAddress ReadIPAddress()
@@ -850,7 +860,7 @@ namespace Server
 				b = m_File.ReadByte();
 				v |= (b & 0x7F) << shift;
 				shift += 7;
-			} while ( b >= 0x80 );
+			} while( b >= 0x80 );
 
 			return v;
 		}
@@ -945,6 +955,11 @@ namespace Server
 			return new Rectangle2D( ReadPoint2D(), ReadPoint2D() );
 		}
 
+		public override Rectangle3D ReadRect3D()
+		{
+			return new Rectangle3D( ReadPoint3D(), ReadPoint3D() );
+		}
+
 		public override Map ReadMap()
 		{
 			return Map.Maps[ReadByte()];
@@ -986,11 +1001,11 @@ namespace Server
 
 			ArrayList list = new ArrayList( count );
 
-			for ( int i = 0; i < count; ++i )
+			for( int i = 0; i < count; ++i )
 			{
 				Item item = ReadItem();
 
-				if ( item != null )
+				if( item != null )
 					list.Add( item );
 			}
 
@@ -1003,11 +1018,11 @@ namespace Server
 
 			ArrayList list = new ArrayList( count );
 
-			for ( int i = 0; i < count; ++i )
+			for( int i = 0; i < count; ++i )
 			{
 				Mobile m = ReadMobile();
 
-				if ( m != null )
+				if( m != null )
 					list.Add( m );
 			}
 
@@ -1020,11 +1035,11 @@ namespace Server
 
 			ArrayList list = new ArrayList( count );
 
-			for ( int i = 0; i < count; ++i )
+			for( int i = 0; i < count; ++i )
 			{
 				BaseGuild g = ReadGuild();
 
-				if ( g != null )
+				if( g != null )
 					list.Add( g );
 			}
 
@@ -1163,7 +1178,8 @@ namespace Server
 		private Queue m_WriteQueue;
 		private Thread m_WorkerThread;
 
-		public AsyncWriter( string filename, bool prefix ) : this(filename, 1048576, prefix)//1 mb buffer
+		public AsyncWriter( string filename, bool prefix )
+			: this( filename, 1048576, prefix )//1 mb buffer
 		{
 		}
 
@@ -1183,7 +1199,7 @@ namespace Server
 		{
 			m_WriteQueue.Enqueue( mem );
 
-			if ( m_WorkerThread == null || !m_WorkerThread.IsAlive )
+			if( m_WorkerThread == null || !m_WorkerThread.IsAlive )
 			{
 				m_WorkerThread = new Thread( new ThreadStart( new WorkerThread( this ).Worker ) );
 				m_WorkerThread.Priority = ThreadPriority.BelowNormal;
@@ -1203,15 +1219,15 @@ namespace Server
 			public void Worker()
 			{
 				AsyncWriter.m_ThreadCount++;
-				while ( m_Owner.m_WriteQueue.Count > 0 )
+				while( m_Owner.m_WriteQueue.Count > 0 )
 				{
 					MemoryStream mem = (MemoryStream)m_Owner.m_WriteQueue.Dequeue();
 
-					if ( mem != null && mem.Length > 0 )
+					if( mem != null && mem.Length > 0 )
 						mem.WriteTo( m_Owner.m_File );
 				}
 
-				if ( m_Owner.m_Closed )
+				if( m_Owner.m_Closed )
 					m_Owner.m_File.Close();
 				AsyncWriter.m_ThreadCount--;
 			}
@@ -1222,7 +1238,7 @@ namespace Server
 			long curlen = m_Mem.Length;
 			m_CurPos += curlen - m_LastPos;
 			m_LastPos = curlen;
-			if ( curlen >= BufferSize )
+			if( curlen >= BufferSize )
 			{
 				Enqueue( m_Mem );
 				m_Mem = new MemoryStream( BufferSize + 1024 );
@@ -1239,7 +1255,7 @@ namespace Server
 			}
 			set
 			{
-				if ( m_Mem.Length > 0 )
+				if( m_Mem.Length > 0 )
 					Enqueue( m_Mem );
 
 				m_Mem = value;
@@ -1272,13 +1288,13 @@ namespace Server
 
 		public override void Write( string value )
 		{
-			if ( PrefixStrings )
+			if( PrefixStrings )
 			{
-				if ( value == null ) 
+				if( value == null )
 				{
 					m_Bin.Write( (byte)0 );
 				}
-				else 
+				else
 				{
 					m_Bin.Write( (byte)1 );
 					m_Bin.Write( value );
@@ -1298,8 +1314,8 @@ namespace Server
 
 			TimeSpan d;
 
-			try{ d = new TimeSpan( ticks-now ); }
-			catch{ if ( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
+			try { d = new TimeSpan( ticks-now ); }
+			catch { if( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
 
 			Write( d );
 		}
@@ -1336,15 +1352,15 @@ namespace Server
 
 		public override void WriteEncodedInt( int value )
 		{
-			uint v = (uint) value;
+			uint v = (uint)value;
 
-			while ( v >= 0x80 ) 
+			while( v >= 0x80 )
 			{
-				m_Bin.Write( (byte) (v | 0x80) );
+				m_Bin.Write( (byte)(v | 0x80) );
 				v >>= 7;
 			}
 
-			m_Bin.Write( (byte) v);
+			m_Bin.Write( (byte)v );
 			OnWrite();
 		}
 
@@ -1366,7 +1382,7 @@ namespace Server
 			OnWrite();
 		}
 
-		public override void Write( ushort value)
+		public override void Write( ushort value )
 		{
 			m_Bin.Write( value );
 			OnWrite();
@@ -1427,9 +1443,15 @@ namespace Server
 			Write( value.End );
 		}
 
+		public override void Write( Rectangle3D value )
+		{
+			Write( value.Start );
+			Write( value.End );
+		}
+
 		public override void Write( Map value )
 		{
-			if ( value != null )
+			if( value != null )
 				Write( (byte)value.MapIndex );
 			else
 				Write( (byte)0xFF );
@@ -1437,7 +1459,7 @@ namespace Server
 
 		public override void Write( Race value )
 		{
-			if ( value != null )
+			if( value != null )
 				Write( (byte)value.RaceIndex );
 			else
 				Write( (byte)0xFF );
@@ -1445,7 +1467,7 @@ namespace Server
 
 		public override void Write( Item value )
 		{
-			if ( value == null || value.Deleted )
+			if( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -1453,7 +1475,7 @@ namespace Server
 
 		public override void Write( Mobile value )
 		{
-			if ( value == null || value.Deleted )
+			if( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -1461,7 +1483,7 @@ namespace Server
 
 		public override void Write( BaseGuild value )
 		{
-			if ( value == null )
+			if( value == null )
 				Write( 0 );
 			else
 				Write( value.Id );
@@ -1489,11 +1511,11 @@ namespace Server
 
 		public override void WriteMobileList( ArrayList list, bool tidy )
 		{
-			if ( tidy )
+			if( tidy )
 			{
-				for ( int i = 0; i < list.Count; )
+				for( int i = 0; i < list.Count; )
 				{
-					if ( ((Mobile)list[i]).Deleted )
+					if( ((Mobile)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1502,7 +1524,7 @@ namespace Server
 
 			Write( list.Count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for( int i = 0; i < list.Count; ++i )
 				Write( (Mobile)list[i] );
 		}
 
@@ -1513,11 +1535,11 @@ namespace Server
 
 		public override void WriteItemList( ArrayList list, bool tidy )
 		{
-			if ( tidy )
+			if( tidy )
 			{
-				for ( int i = 0; i < list.Count; )
+				for( int i = 0; i < list.Count; )
 				{
-					if ( ((Item)list[i]).Deleted )
+					if( ((Item)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1526,7 +1548,7 @@ namespace Server
 
 			Write( list.Count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for( int i = 0; i < list.Count; ++i )
 				Write( (Item)list[i] );
 		}
 
@@ -1537,11 +1559,11 @@ namespace Server
 
 		public override void WriteGuildList( ArrayList list, bool tidy )
 		{
-			if ( tidy )
+			if( tidy )
 			{
-				for ( int i = 0; i < list.Count; )
+				for( int i = 0; i < list.Count; )
 				{
-					if ( ((BaseGuild)list[i]).Disbanded )
+					if( ((BaseGuild)list[i]).Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1550,7 +1572,7 @@ namespace Server
 
 			Write( list.Count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for( int i = 0; i < list.Count; ++i )
 				Write( (BaseGuild)list[i] );
 		}
 
@@ -1698,7 +1720,8 @@ namespace Server
 		}
 	}
 
-	public interface ISerializable {
+	public interface ISerializable
+	{
 		int TypeReference { get; }
 		int SerialIdentity { get; }
 		void Serialize( GenericWriter writer );

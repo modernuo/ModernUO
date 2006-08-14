@@ -34,8 +34,6 @@ namespace Server.Mobiles
 		{
 			base.InitOutfit();
 
-			AddItem( Utility.RandomBool() ? (Item)new QuarterStaff() : (Item)new ShepherdsCrook() );
-
 			Item item = FindItemOnLayer( Layer.Pants );
 
 			if ( item != null )

@@ -43,9 +43,9 @@ namespace Server.Items
 			from.Target = new BladedItemTarget( this );
 		}
 
-		public override void OnHit( Mobile attacker, Mobile defender )
+		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
 		{
-			base.OnHit( attacker, defender );
+			base.OnHit( attacker, defender, damageBonus );
 
 			if ( !Core.AOS && Poison != null && PoisonCharges > 0 )
 			{

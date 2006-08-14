@@ -50,6 +50,7 @@ namespace Server.Items
 		public RecipeScroll( int recipeID )
 			: base( 0x2831 )
 		{
+			m_RecipeID = recipeID;
 		}
 
 		public RecipeScroll( Serial serial )

@@ -65,7 +65,7 @@ namespace Server
 				typeof( Bow ),					typeof( Crossbow ),				typeof( HeavyCrossbow )
 			};
 
-		public static Type[] RangedWeaponTypes{ get{ return m_WeaponTypes; } }
+		public static Type[] RangedWeaponTypes{ get{ return m_RangedWeaponTypes; } }
 
 		private static Type[] m_SEArmorTypes = new Type[]
 			{

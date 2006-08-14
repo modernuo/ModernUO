@@ -51,8 +51,7 @@ namespace Server.Engines.Craft
 				{
 					if( targeted is PlayerMobile )
 					{
-						foreach( KeyValuePair<int, Recipe> kvp in m_Recipes )
-							((PlayerMobile)targeted).AcquireRecipe( kvp.Key );
+						((PlayerMobile)targeted).ResetRecipes();
 
 						m.SendMessage( "They forget all their recipies." );
 					}

@@ -131,8 +131,8 @@ namespace Server.Accounting
 		/// </summary>
 		public string NewCryptPassword
 		{
-			get { return m_CryptPassword; }
-			set { m_CryptPassword = value; }
+			get { return m_NewCryptPassword; }
+			set { m_NewCryptPassword = value; }
 		}
 
 		/// <summary>

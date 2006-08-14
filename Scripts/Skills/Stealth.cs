@@ -38,8 +38,17 @@ namespace Server.SkillHandlers
 			{
 				BaseArmor armor = m.Items[i] as BaseArmor;
 
-				if( armor != null && armor.ArmorAttributes.MageArmor == 0 )
-					ar += m_ArmorTable[(int)armor.MaterialType, (int)armor.BodyPosition];
+				if( armor == null )
+					continue;
+
+				int materialType = (int)armor.MaterialType;
+				int bodyPosition = (int)armor.BodyPosition;
+
+				if( materialType >= m_ArmorTable.GetLength( 0 ) || bodyPosition >= m_ArmorTable.GetLength( 1 ) )
+					continue;
+
+				if( armor.ArmorAttributes.MageArmor == 0 )
+					ar += m_ArmorTable[materialType, bodyPosition];
 			}
 
 			return ar;

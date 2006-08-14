@@ -1264,7 +1264,7 @@ namespace Server.Misc
 			return item;
 		}
 
-		private static void		AddSkillItems( SkillName skill, Mobile m )
+		private static void	AddSkillItems( SkillName skill, Mobile m )
 		{
 			bool elf = (m.Race == Race.Elf);
 

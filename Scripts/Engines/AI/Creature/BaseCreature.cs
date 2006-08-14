@@ -4271,7 +4271,7 @@ namespace Server.Mobiles
 		{
 			bool ret = base.CanBeRenamedBy( from );
 
-			if ( Controlled && from == ControlMaster )
+			if ( Controlled && from == ControlMaster && !from.Region.IsPartOf( typeof( Jail ) ) )
 				ret = true;
 
 			return ret;

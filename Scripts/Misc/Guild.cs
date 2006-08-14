@@ -961,6 +961,8 @@ namespace Server.Guilds
 			}
 			set
 			{
+				this.AddMember( value ); //Also removes from old guild.
+
 				if( m_Leader is PlayerMobile && m_Leader.Guild == this )
 					((PlayerMobile)m_Leader).GuildRank = RankDefinition.Member;
 
