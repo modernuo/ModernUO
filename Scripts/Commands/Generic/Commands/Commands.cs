@@ -365,6 +365,9 @@ namespace Server.Commands.Generic
 
 		public override void ExecuteList( CommandEventArgs e, ArrayList list )
 		{
+			if ( e.Arguments.Length == 0 )
+				return;
+
 			ArrayList packs = new ArrayList( list.Count );
 
 			for ( int i = 0; i < list.Count; ++i )
