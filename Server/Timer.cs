@@ -41,6 +41,7 @@ namespace Server
 
 	public delegate void TimerCallback();
 	public delegate void TimerStateCallback( object state );
+	public delegate void TimerStateCallback<T>( T state );
 
 	public class TimerProfile
 	{
@@ -614,6 +615,31 @@ namespace Server
 			return t;
 		}
 
+
+		public static Timer DelayCall<T>( TimeSpan delay, TimerStateCallback<T> callback, T state )
+		{
+			return DelayCall( delay, TimeSpan.Zero, 1, callback, state );
+		}
+
+		public static Timer DelayCall<T>( TimeSpan delay, TimeSpan interval, TimerStateCallback<T> callback, T state )
+		{
+			return DelayCall( delay, interval, 0, callback, state );
+		}
+
+		public static Timer DelayCall<T>( TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state )
+		{
+			Timer t = new DelayStateCallTimer<T>( delay, interval, count, callback, state );
+
+			if( count == 1 )
+				t.Priority = ComputePriority( delay );
+			else
+				t.Priority = ComputePriority( interval );
+
+			t.Start();
+
+			return t;
+		}
+
 		private class DelayCallTimer : Timer
 		{
 			private TimerCallback m_Callback;
@@ -660,6 +686,36 @@ namespace Server
 			protected override void OnTick()
 			{
 				if ( m_Callback != null )
+					m_Callback( m_State );
+			}
+
+			public override string ToString()
+			{
+				return String.Format( "DelayStateCall[{0}]", FormatDelegate( m_Callback ) );
+			}
+		}
+
+		private class DelayStateCallTimer<T> : Timer
+		{
+			private TimerStateCallback<T> m_Callback;
+			private T m_State;
+
+			public TimerStateCallback<T> Callback { get { return m_Callback; } }
+
+			public override bool DefRegCreation { get { return false; } }
+
+			public DelayStateCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state )
+				: base( delay, interval, count )
+			{
+				m_Callback = callback;
+				m_State = state;
+
+				RegCreation();
+			}
+
+			protected override void OnTick()
+			{
+				if( m_Callback != null )
 					m_Callback( m_State );
 			}
 
