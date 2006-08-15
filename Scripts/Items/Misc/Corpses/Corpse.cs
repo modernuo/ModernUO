@@ -721,6 +721,8 @@ namespace Server.Items
 		{
 			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) )
 			{
+
+				#region Self Looting
 				bool selfLoot = ( checkSelfLoot && ( from == m_Owner ) );
 
 				if ( selfLoot )
@@ -800,9 +802,12 @@ namespace Server.Items
 						from.SendLocalizedMessage( 1062472 ); // You gather some of your belongings. The rest remain on the corpse.
 				}
 
+				#endregion
+
 				if ( !CheckLoot( from ) )
 					return;
 
+				#region Quests
 				PlayerMobile player = from as PlayerMobile;
 
 				if ( player != null )
@@ -856,6 +861,8 @@ namespace Server.Items
 						}
 					}
 				}
+
+				#endregion
 
 				base.OnDoubleClick( from );
 

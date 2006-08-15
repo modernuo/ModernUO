@@ -76,12 +76,12 @@ namespace Server.Items
 			}
 		}
 
-		public override void OnHit( Mobile attacker, Mobile defender )
+		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
 		{
 			if ( attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) && 0.4 >= Utility.RandomDouble() )
 				defender.AddToBackpack( Ammo );
 
-			base.OnHit( attacker, defender );
+			base.OnHit( attacker, defender, damageBonus );
 		}
 
 		public override void OnMiss( Mobile attacker, Mobile defender )

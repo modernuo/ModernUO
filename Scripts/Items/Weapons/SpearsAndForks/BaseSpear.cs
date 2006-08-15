@@ -35,9 +35,9 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override void OnHit( Mobile attacker, Mobile defender )
+		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
 		{
-			base.OnHit( attacker, defender );
+			base.OnHit( attacker, defender, damageBonus );
 
 			if ( !Core.AOS && Layer == Layer.TwoHanded && (attacker.Skills[SkillName.Anatomy].Value / 400.0) >= Utility.RandomDouble() )
 			{
