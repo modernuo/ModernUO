@@ -4,6 +4,7 @@ using Server;
 using Server.Gumps;
 using Server.Network;
 using Server.Spells.Necromancy;
+using Server.Spells;
 
 namespace Server.SkillHandlers
 {
@@ -51,8 +52,6 @@ namespace Server.SkillHandlers
 
 		public static double GetStalkingBonus( Mobile tracker, Mobile target )
 		{
-			// Note: This is not reset as of publish 35.
-
 			TrackingInfo info = null;
 			m_Table.TryGetValue( tracker, out info );
 
@@ -62,8 +61,16 @@ namespace Server.SkillHandlers
 			int xDelta = info.m_Location.X - target.X;
 			int yDelta = info.m_Location.Y - target.Y;
 
-			return Math.Sqrt( (xDelta * xDelta) + (yDelta * yDelta) );
+			double bonus = Math.Sqrt( (xDelta * xDelta) + (yDelta * yDelta) );
+
+			m_Table.Remove( tracker );	//Reset as of Pub 40, counting it as bug for Core.SE.
+
+			if( Core.ML )
+				return Math.Min( bonus, 10 + tracker.Skills.Tracking.Value/10 );
+
+			return bonus;
 		}
+
 
 		public static void ClearTrackingInfo( Mobile tracker )
 		{

@@ -444,6 +444,7 @@ namespace Server.Multis
 		public void Refresh()
 		{
 			m_DecayTime = DateTime.Now + BoatDecayDelay;
+
 			if( m_TillerMan != null )
 				m_TillerMan.InvalidateProperties();
 		}

@@ -111,7 +111,7 @@ namespace Server.Ethics
 
 					foreach ( Item item in e.Mobile.GetItemsInRange( 2 ) )
 					{
-						if ( item is Items.AnkhEast || item is Items.AnkhWest )
+						if ( item is Items.AnkhNorth || item is Items.AnkhWest )
 						{
 							isNearAnkh = true;
 							break;

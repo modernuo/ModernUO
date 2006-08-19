@@ -1032,6 +1032,82 @@ namespace Server.Items
 			}
 		}
 
+
+
+
+		public List<T> FindItemsByType<T>() where T : Item
+		{
+			return FindItemsByType<T>( true );
+		}
+
+		public List<T> FindItemsByType<T>( bool recurse ) where T : Item
+		{
+			if( m_FindItemsList.Count > 0 )
+				m_FindItemsList.Clear();
+
+			List<T> list = new List<T>();
+			
+			RecurseFindItemsByType<T>( this, recurse, list );
+
+			return list;
+		}
+
+		private static void RecurseFindItemsByType<T>( Item current, bool recurse, List<T> list ) where T : Item
+		{
+			if( current != null && current.Items.Count > 0 )
+			{
+				List<Item> items = current.Items;
+
+				for( int i = 0; i < items.Count; ++i )
+				{
+					Item item = items[i];
+
+					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
+						list.Add( (T)item );
+
+					if( recurse && item is Container )
+						RecurseFindItemsByType<T>( item, recurse, list );
+				}
+			}
+		}
+
+		public T FindItemByType<T>() where T : Item
+		{
+			return FindItemByType<T>( true );
+		}
+
+		public T FindItemByType<T>( bool recurse ) where T : Item
+		{
+			return RecurseFindItemByType<T>( this, recurse );
+		}
+
+		private static T RecurseFindItemByType<T>( Item current, bool recurse ) where T : Item
+		{
+			if( current != null && current.Items.Count > 0 )
+			{
+				List<Item> list = current.Items;
+
+				for( int i = 0; i < list.Count; ++i )
+				{
+					Item item = list[i];
+
+					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
+					{
+						return (T)item;
+					}
+					else if( recurse && item is Container )
+					{
+						T check = RecurseFindItemByType<T>( item, recurse );
+
+						if( check != null )
+							return check;
+					}
+				}
+			}
+
+			return null;
+		}
+
 		public Item[] FindItemsByType( Type[] types )
 		{
 			return FindItemsByType( types, true );

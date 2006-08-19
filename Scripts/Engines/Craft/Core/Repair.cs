@@ -99,6 +99,19 @@ namespace Server.Engines.Craft
 				return true;
 			}
 
+			private bool IsSpecialClothing( BaseClothing clothing )
+			{
+				// Armor repairable but not craftable
+
+				if( m_CraftSystem is DefTailoring )
+				{
+					return (clothing is BearMask)
+						|| (clothing is DeerMask);
+				}
+
+				return false;
+			}
+
 			private bool IsSpecialWeapon( BaseWeapon weapon )
 			{
 				// Weapons repairable but not craftable
@@ -345,7 +358,7 @@ namespace Server.Engines.Craft
 							toWeaken = 3;
 					}
 
-					if ( m_CraftSystem.CraftItems.SearchForSubclass( clothing.GetType() ) == null )
+					if ( m_CraftSystem.CraftItems.SearchForSubclass( clothing.GetType() ) == null && !IsSpecialClothing( clothing ))
 					{
 						number = (usingDeed) ? 1061136 : 1044277; // That item cannot be repaired. // You cannot repair that item with this type of repair contract.
 					}

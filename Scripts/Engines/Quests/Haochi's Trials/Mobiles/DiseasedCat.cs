@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Samurai
 		[Constructable]
 		public DiseasedCat() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a deseased cat";
+			Name = "a diseased cat";
 			Body = 0xC9;
 			Hue = Utility.RandomAnimalHue();
 			BaseSoundID = 0x69;
@@ -51,6 +51,9 @@ namespace Server.Engines.Quests.Samurai
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+
+			if( Name == "a deseased cat" )
+				Name = "a diseased cat";
 		}
 	}
 }

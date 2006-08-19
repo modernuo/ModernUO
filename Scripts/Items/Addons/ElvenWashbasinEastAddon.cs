@@ -11,7 +11,7 @@ namespace Server.Items
 		public ElvenWashBasinEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x30DF ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x30E0 ), 0, -1, 0 );
+			AddComponent( new AddonComponent( 0x30E0 ), 0, 1, 0 );
 		}
 
 		public ElvenWashBasinEastAddon( Serial serial ) : base( serial )

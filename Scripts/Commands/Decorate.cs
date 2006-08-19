@@ -70,7 +70,7 @@ namespace Server.Commands
 		private static Type typeofLocalizedStatic = typeof( LocalizedStatic );
 		private static Type typeofBaseDoor = typeof( BaseDoor );
 		private static Type typeofAnkhWest = typeof( AnkhWest );
-		private static Type typeofAnkhEast = typeof( AnkhEast );
+		private static Type typeofAnkhNorth = typeof( AnkhNorth );
 		private static Type typeofBeverage = typeof( BaseBeverage );
 		private static Type typeofLocalizedSign = typeof( LocalizedSign );
 		private static Type typeofMarkContainer = typeof( MarkContainer );
@@ -129,7 +129,7 @@ namespace Server.Commands
 
 					item = new LocalizedSign( m_ItemID, labelNumber );
 				}
-				else if ( m_Type == typeofAnkhWest || m_Type == typeofAnkhEast )
+				else if ( m_Type == typeofAnkhWest || m_Type == typeofAnkhNorth )
 				{
 					bool bloodied = false;
 
@@ -139,7 +139,7 @@ namespace Server.Commands
 					if ( m_Type == typeofAnkhWest )
 						item = new AnkhWest( bloodied );
 					else
-						item = new AnkhEast( bloodied );
+						item = new AnkhNorth( bloodied );
 				}
 				else if ( m_Type == typeofMarkContainer )
 				{

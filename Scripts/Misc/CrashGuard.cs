@@ -195,6 +195,10 @@ namespace Server.Misc
 					try { op.WriteLine( "Items: {0}", World.Items.Count ); }
 					catch {}
 
+					op.WriteLine( "Exception:" );
+					op.WriteLine( e.Exception );
+					op.WriteLine();
+
 					op.WriteLine( "Clients:" );
 
 					try
@@ -226,11 +230,6 @@ namespace Server.Misc
 					{
 						op.WriteLine( "- Failed" );
 					}
-
-					op.WriteLine();
-
-					op.WriteLine( "Exception:" );
-					op.WriteLine( e.Exception );
 				}
 
 				Console.WriteLine( "done" );

@@ -365,10 +365,10 @@ namespace Server.Engines.Craft
 					index = AddCraft( typeof( ElvenSpellblade ), 1011081, 1031564, 70.0, 120.0, typeof( IronIngot ), 1044036, 14, 1044037 );
 					SetNeededExpansion( index, Expansion.ML );
 
-					index = AddCraft( typeof( AssassinSpike ), 1011081, 1031564, 70.0, 120.0, typeof( IronIngot ), 1044036, 9, 1044037 );
+					index = AddCraft( typeof( AssassinSpike ), 1011081, 1031565, 70.0, 120.0, typeof( IronIngot ), 1044036, 9, 1044037 );
 					SetNeededExpansion( index, Expansion.ML );
 
-					index = AddCraft( typeof( Leafblade ), 1011081, 1031565, 70.0, 120.0, typeof( IronIngot ), 1044036, 12, 1044037 );
+					index = AddCraft( typeof( Leafblade ), 1011081, 1031566, 70.0, 120.0, typeof( IronIngot ), 1044036, 12, 1044037 );
 					SetNeededExpansion( index, Expansion.ML );
 
 					index = AddCraft( typeof( RuneBlade ), 1011081, 1031570, 70.0, 120.0, typeof( IronIngot ), 1044036, 15, 1044037 );

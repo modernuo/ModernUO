@@ -377,7 +377,7 @@ namespace Server.Gumps
 					int maxLockdowns = house.GetAosMaxLockdowns();
 					int curLockdowns = house.GetAosCurLockdowns();
 
-					int bonusStorage = (int)((house.BonusStorageScalar - 1) * 100);
+					int bonusStorage = (int)((house.BonusStorageScalar * 100)-100);
 
 					if( bonusStorage > 0 )
 					{

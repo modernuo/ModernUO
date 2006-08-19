@@ -10,7 +10,8 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Poison Strike", "In Vas Nox",
-				SpellCircle.Fourth, // 0.5 + 1.0 = 1.5s base cast delay
+				(Core.ML ? SpellCircle.Fifth :  // 0.5 + 1.25 = 1.75s base cast delay
+				SpellCircle.Fourth), // 0.5 + 1.0 = 1.5s base cast delay
 				203,
 				9031,
 				Reagent.NoxCrystal
@@ -46,7 +47,7 @@ namespace Server.Spells.Necromancy
 				Effects.SendLocationParticles( EffectItem.Create( m.Location, m.Map, EffectItem.DefaultDuration ), 0x36B0, 1, 14, 63, 7, 9915, 0 );
 				Effects.PlaySound( m.Location, m.Map, 0x229 );
 
-				double damage = Utility.RandomMinMax( 36, 40 ) * ((300 + (GetDamageSkill( Caster ) * 9)) / 1000);
+				double damage = Utility.RandomMinMax( (Core.ML ? 32 : 36), 40 ) * ((300 + (GetDamageSkill( Caster ) * 9)) / 1000);
 
 				Map map = m.Map;
 

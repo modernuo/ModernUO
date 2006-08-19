@@ -41,7 +41,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 
 			if ( Slayer == SlayerName.None )
-				Slayer = SlayerName.DaemonDismissal;
+				Slayer = SlayerName.Exorcism;
 		}
 	}
 }

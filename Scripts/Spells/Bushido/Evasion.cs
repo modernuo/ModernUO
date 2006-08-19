@@ -21,14 +21,28 @@ namespace Server.Spells.Bushido
 
 		public override bool CheckCast()
 		{
-			if ( Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null )
+
+			if( Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null )
 				return base.CheckCast();
 
-			if ( Caster.FindItemOnLayer( Layer.OneHanded ) as BaseWeapon != null )
-				return base.CheckCast();
+			//Intentional having a Shield check override all.
 
-			if ( Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseWeapon != null )
+			BaseWeapon weap = Caster.FindItemOnLayer( Layer.OneHanded ) as BaseWeapon;
+
+			if( weap == null )
+				weap = Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseWeapon;
+
+			if( weap != null )
+			{
+				if( Core.ML && Caster.Skills[weap.Skill].Value < 50 )
+				{
+					//Does UBW affect this?
+					Caster.SendLocalizedMessage( 1076206 ); // Your skill with your equipped weapon must be 50 or higher to use Evasion.
+					return false;
+				}
+
 				return base.CheckCast();
+			}
 
 			Caster.SendLocalizedMessage( 1062944 ); // You must have a weapon or a shield equipped to use this ability!
 			return false;

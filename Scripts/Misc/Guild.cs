@@ -1053,17 +1053,24 @@ namespace Server.Guilds
 
 		public bool IsWar( Guild g )
 		{
+			if( g == null )
+				return false;
+
 			if( NewGuildSystem )
 			{
 				if( FindActiveWar( g ) != null )
 					return true;
 
-				if( Alliance != null && this != Alliance.Leader && Alliance.Leader != null && Alliance.IsMember( this ) )
-					if( Alliance.Leader.FindActiveWar( g ) != null )
+				AllianceInfo thisAlliace = this.Alliance;
+
+				if( thisAlliace != null && this != thisAlliace.Leader && thisAlliace.Leader != null && thisAlliace.IsMember( this ) )
+					if( thisAlliace.Leader.FindActiveWar( g ) != null )
 						return true;
 
-				if( g.Alliance != null && g.Alliance.Leader != null && g.Alliance.Leader != g && g.Alliance.IsMember( g ) )
-					if( FindActiveWar( g.Alliance.Leader ) != null )
+				AllianceInfo otherAlliance = g.Alliance;
+
+				if( otherAlliance != null && otherAlliance.Leader != null && otherAlliance.Leader != g && otherAlliance.IsMember( g ) )
+					if( FindActiveWar( otherAlliance.Leader ) != null )
 						return true;
 
 				return false;
@@ -1206,7 +1213,11 @@ namespace Server.Guilds
 				}
 				case 0:
 				{
-					Leader = reader.ReadMobile();
+					m_Leader = reader.ReadMobile();
+
+					if( m_Leader is PlayerMobile )
+						((PlayerMobile)m_Leader).GuildRank = RankDefinition.Leader;
+
 					m_Name = reader.ReadString();
 					m_Abbreviation = reader.ReadString();
 

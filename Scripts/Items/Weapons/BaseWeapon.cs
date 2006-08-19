@@ -1389,9 +1389,9 @@ namespace Server.Items
 			if ( (m_Slayer == SlayerName.Silver || m_Slayer2 == SlayerName.Silver) && context != null && context.Type != typeof( HorrificBeastSpell ) )
 				factor *= 1.25; // Every necromancer transformation other than horrific beast takes an additional 25% damage
 
-			if ( attacker is PlayerMobile )
+			if ( attacker is PlayerMobile && !(Core.ML && defender is PlayerMobile ))
 			{
-				PlayerMobile pmAttacker = (PlayerMobile) attacker;
+				PlayerMobile pmAttacker = (PlayerMobile) attacker;				
 
 				if ( pmAttacker.HonorActive && pmAttacker.InRange( defender, 1 ) )
 					factor *= 1.25;
@@ -1797,7 +1797,7 @@ namespace Server.Items
 
 			foreach ( Mobile m in from.GetMobilesInRange( 10 ) )
 			{
-				if ( from != m && defender != m && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) && from.InLOS( m ) )
+				if ( from != m && defender != m && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) && ( !Core.ML || from.InLOS( m ) ) )
 					list.Add( m );
 			}
 

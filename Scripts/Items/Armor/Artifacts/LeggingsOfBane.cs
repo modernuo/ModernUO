@@ -18,6 +18,7 @@ namespace Server.Items
 		{
 			Hue = 0x4F5;
 			ArmorAttributes.DurabilityBonus = 100;
+			this.HitPoints = this.MaxHitPoints = 255;	//Cause the Durability bonus and such and the min/max hits as well as all other hits being whole #'s...
 			Attributes.BonusStam = 8;
 			Attributes.AttackChance = 20;
 		}
@@ -30,7 +31,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 );
+			writer.Write( (int) 2 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
@@ -38,6 +39,12 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if( version <= 1 )
+			{
+				if( this.HitPoints > 255 || this.MaxHitPoints > 255 )
+					this.HitPoints = this.MaxHitPoints = 255;
+			}
 
 			if ( version < 1 )
 			{

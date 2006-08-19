@@ -63,9 +63,18 @@ namespace Server.Items
 			{
 				int amount = 10 + (int)(10.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 5);
 				
-				AOS.Damage( defender, attacker, amount, 100, 0, 0, 0, 0 );                     			    
+				AOS.Damage( defender, attacker, amount, 100, 0, 0, 0, 0 );
 
-				defender.Paralyze( TimeSpan.FromSeconds( 3.0 ) );
+				if( Server.Items.ParalyzingBlow.IsImmune( defender ) )	//Does it still do damage?
+				{
+					attacker.SendLocalizedMessage( 1070804 ); // Your target resists paralysis.
+					defender.SendLocalizedMessage( 1070813 ); // You resist paralysis.
+				}
+				else
+				{
+					defender.Paralyze( TimeSpan.FromSeconds( 3.0 ) );
+					Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );
+				}
 			}
 		}
 	}

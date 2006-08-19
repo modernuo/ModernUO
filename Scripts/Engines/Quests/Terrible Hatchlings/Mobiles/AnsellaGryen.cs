@@ -134,5 +134,7 @@ namespace Server.Engines.Quests.Zento
 
 			int version = reader.ReadEncodedInt();
 		}
+
+		public override void TurnToTokuno() { }
 	}
 }

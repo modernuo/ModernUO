@@ -265,24 +265,26 @@ namespace Server.Items
 		}
 	}
 
-	public class AnkhEast : Item
+	[TypeAlias( "Server.Items.AnkhEast" )]
+	public class AnkhNorth : Item
 	{
 		private InternalItem m_Item;
 
 		[Constructable]
-		public AnkhEast() : this( false )
+		public AnkhNorth() : this( false )
 		{
 		}
 
 		[Constructable]
-		public AnkhEast( bool bloodied ) : base( bloodied ? 0x1E5D : 0x4 )
+		public AnkhNorth( bool bloodied ) : base( bloodied ? 0x1E5D : 0x4 )
 		{
 			Movable = false;
 
 			m_Item = new InternalItem( bloodied, this );
 		}
 
-		public AnkhEast( Serial serial ) : base( serial )
+		public AnkhNorth( Serial serial )
+			: base( serial )
 		{
 		}
 
@@ -352,9 +354,10 @@ namespace Server.Items
 
 		private class InternalItem : Item
 		{
-			private AnkhEast m_Item;
+			private AnkhNorth m_Item;
 
-			public InternalItem( bool bloodied, AnkhEast item ) : base( bloodied ? 0x1E5C : 0x5 )
+			public InternalItem( bool bloodied, AnkhNorth item )
+				: base( bloodied ? 0x1E5C : 0x5 )
 			{
 				Movable = false;
 
@@ -426,7 +429,7 @@ namespace Server.Items
 
 				int version = reader.ReadInt();
 
-				m_Item = reader.ReadItem() as AnkhEast;
+				m_Item = reader.ReadItem() as AnkhNorth;
 			}
 		}
 	}

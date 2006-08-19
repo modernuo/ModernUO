@@ -149,6 +149,12 @@ namespace Server
 				return;
 			}
 
+			if( Core.ML && target is PlayerMobile )
+			{
+				source.SendLocalizedMessage( 1075614 ); // You cannot honor other players.
+				return;
+			}
+
 			if ( source.SentHonorContext != null )
 				source.SentHonorContext.Cancel();
 

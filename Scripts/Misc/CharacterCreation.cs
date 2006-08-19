@@ -1428,6 +1428,13 @@ namespace Server.Misc
 					PackItem( new Pitcher( BeverageType.Water ) );
 					break;
 				}
+				case SkillName.Chivalry:
+				{
+					if( Core.ML )
+						PackItem( new BookOfChivalry( (ulong)0x3FF ) );
+
+					break;
+				}
 				case SkillName.DetectHidden:
 				{
 					EquipItem( new Cloak( 0x455 ) );
@@ -1568,6 +1575,19 @@ namespace Server.Misc
 				case SkillName.Musicianship:
 				{
 					PackInstrument();
+					break;
+				}
+				case SkillName.Necromancy:
+				{
+					if( Core.ML )
+					{
+						Container regs = new BagOfNecroReagents( 50 );
+
+						PackItem( regs );
+
+						regs.LootType = LootType.Regular;
+					}
+
 					break;
 				}
 				case SkillName.Ninjitsu:

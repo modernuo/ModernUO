@@ -61,7 +61,10 @@ namespace Server.Spells.Seventh
 			}
 			else if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
-				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
+				if( Core.ML )
+					EndPolymorph( Caster );
+				else 
+					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				return false;
 			}
 			else if ( m_NewBody == 0 )
@@ -92,7 +95,10 @@ namespace Server.Spells.Seventh
 			}
 			else if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
-				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
+				if( Core.ML )
+					EndPolymorph( Caster );
+				else
+					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 			}
 			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster ) )
 			{
@@ -134,13 +140,16 @@ namespace Server.Spells.Seventh
 						BaseArmor.ValidateMobile( Caster );
 						BaseClothing.ValidateMobile( Caster );
 
-						StopTimer( Caster );
+						if( !Core.ML )
+						{
+							StopTimer( Caster );
 
-						Timer t = new InternalTimer( Caster );
+							Timer t = new InternalTimer( Caster );
 
-						m_Timers[Caster] = t;
+							m_Timers[Caster] = t;
 
-						t.Start();
+							t.Start();
+						}
 					}
 				}
 				else
@@ -167,6 +176,19 @@ namespace Server.Spells.Seventh
 			return ( t != null );
 		}
 
+		private static void EndPolymorph( Mobile m )
+		{
+			if( !m.CanBeginAction( typeof( PolymorphSpell ) ) )
+			{
+				m.BodyMod = 0;
+				m.HueMod = -1;
+				m.EndAction( typeof( PolymorphSpell ) );
+
+				BaseArmor.ValidateMobile( m );
+				BaseClothing.ValidateMobile( m );
+			}
+		}
+
 		private class InternalTimer : Timer
 		{
 			private Mobile m_Owner;
@@ -186,15 +208,7 @@ namespace Server.Spells.Seventh
 
 			protected override void OnTick()
 			{
-				if ( !m_Owner.CanBeginAction( typeof( PolymorphSpell ) ) )
-				{
-					m_Owner.BodyMod = 0;
-					m_Owner.HueMod = -1;
-					m_Owner.EndAction( typeof( PolymorphSpell ) );
-
-					BaseArmor.ValidateMobile( m_Owner );
-					BaseClothing.ValidateMobile( m_Owner );
-				}
+				EndPolymorph( m_Owner );
 			}
 		}
 	}

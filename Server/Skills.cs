@@ -364,9 +364,6 @@ namespace Server
 
 				if( raceBonus > value )
 					value = raceBonus;
-				
-				if ( value > Cap )	//The offchance someone sets their Cap lower than the racial skill bonus
-					value = Cap;
 
 				return value;
 			}
