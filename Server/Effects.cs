@@ -59,7 +59,7 @@ namespace Server
 
 		public static void PlaySound( IPoint3D p, Map map, int soundID )
 		{
-			if ( soundID == -1 )
+			if ( soundID <= -1 )
 				return;
 
 			if ( map != null )
