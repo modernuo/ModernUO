@@ -352,6 +352,7 @@ namespace Server.Items
 			m_Item = reader.ReadItem() as InternalItem;
 		}
 
+		[TypeAlias( "Server.Items.AnkhEast+InternalItem" )]
 		private class InternalItem : Item
 		{
 			private AnkhNorth m_Item;
