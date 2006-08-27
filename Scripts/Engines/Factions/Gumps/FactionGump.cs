@@ -33,18 +33,7 @@ namespace Server.Factions
 
 		public static bool Exists( Mobile mob )
 		{
-			NetState ns = mob.NetState;
-
-			if ( ns == null )
-				return false;
-
-			for ( int i = 0; i < ns.Gumps.Count; ++i )
-			{
-				if ( ns.Gumps[i] is FactionGump )
-					return true;
-			}
-
-			return false;
+			return ( mob.FindGump( typeof( FactionGump ) ) != null );
 		}
 
 		public void AddHtmlText( int x, int y, int width, int height, TextDefinition text, bool back, bool scroll )

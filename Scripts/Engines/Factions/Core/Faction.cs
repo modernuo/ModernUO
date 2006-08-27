@@ -900,12 +900,13 @@ namespace Server.Factions
 			ClearSkillLoss( (Mobile) state );
 		}
 
-		public static void ClearSkillLoss( Mobile mob )
+		public static bool ClearSkillLoss( Mobile mob )
 		{
 			SkillLossContext context = (SkillLossContext)m_SkillLoss[mob];
 
-			if ( context == null )
-				return;
+			if ( context == null ) {
+				return false;
+			}
 
 			m_SkillLoss.Remove( mob );
 
@@ -915,6 +916,8 @@ namespace Server.Factions
 				mob.RemoveSkillMod( (SkillMod) mods[i] );
 
 			context.m_Timer.Stop();
+
+			return true;
 		}
 		#endregion
 

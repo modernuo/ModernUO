@@ -1079,21 +1079,12 @@ namespace Server.Mobiles
 
 			if ( ns != null )
 			{
-				List<Gump> gumps = ns.Gumps;
-
-				for ( int i = 0; i < gumps.Count; ++i )
-				{
-					if ( gumps[i] is ResurrectGump )
-					{
-						if ( Alive )
-						{
-							CloseGump( typeof( ResurrectGump ) );
-						}
-						else
-						{
-							SendLocalizedMessage( 500111 ); // You are frozen and cannot move.
-							return false;
-						}
+				if ( HasGump( typeof( ResurrectGump ) ) ) {
+					if ( Alive ) {
+						CloseGump( typeof( ResurrectGump ) );
+					} else {
+						SendLocalizedMessage( 500111 ); // You are frozen and cannot move.
+						return false;
 					}
 				}
 			}

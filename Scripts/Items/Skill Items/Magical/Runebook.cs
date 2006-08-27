@@ -237,19 +237,13 @@ namespace Server.Items
 		{
 			NetState ns = toCheck.NetState;
 
-			if ( ns == null )
-				return false;
+			if ( ns != null ) {
+				foreach ( Gump gump in ns.Gumps ) {
+					RunebookGump bookGump = gump as RunebookGump;
 
-			List<Gump> gumps = ns.Gumps;
-
-			for ( int i = 0; i < gumps.Count; ++i )
-			{
-				if ( gumps[i] is RunebookGump )
-				{
-					RunebookGump gump = (RunebookGump)gumps[i];
-
-					if ( gump.Book == this )
+					if ( bookGump != null && bookGump.Book == this ) {
 						return true;
+					}
 				}
 			}
 
