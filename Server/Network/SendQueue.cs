@@ -45,13 +45,6 @@ namespace Server.Network {
 				}
 			}
 
-			public static void Release( Gram e ) {
-				lock ( _pool ) {
-					_pool.Push( e );
-					ReleaseBuffer( e._buffer );
-				}
-			}
-
 			private byte[] _buffer;
 			private int _length;
 
