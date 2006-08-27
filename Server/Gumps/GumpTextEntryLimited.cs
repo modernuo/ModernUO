@@ -22,7 +22,7 @@ using System;
 using Server.Network;
 
 namespace Server.Gumps {
-	public class TextEntryLimited : GumpEntry {
+	public class GumpTextEntryLimited : GumpEntry {
 		private int m_X, m_Y;
 		private int m_Width, m_Height;
 		private int m_Hue;
@@ -102,7 +102,7 @@ namespace Server.Gumps {
 			}
 		}
 
-		public TextEntryLimited( int x, int y, int width, int height, int hue, int entryID, string initialText, int size ) {
+		public GumpTextEntryLimited( int x, int y, int width, int height, int hue, int entryID, string initialText, int size ) {
 			m_X = x;
 			m_Y = y;
 			m_Width = width;

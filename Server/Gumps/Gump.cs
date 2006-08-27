@@ -306,6 +306,10 @@ namespace Server.Gumps
 			Add( new GumpTextEntry( x, y, width, height, hue, entryID, initialText ) );
 		}
 
+		public void AddTextEntry( int x, int y, int width, int height, int hue, int entryID, string initialText, int size ) {
+			Add( new GumpTextEntryLimited( x, y, width, height, hue, entryID, initialText, size ) );
+		}
+
 		public void Add( GumpEntry g )
 		{
 			if ( g.Parent != this )
