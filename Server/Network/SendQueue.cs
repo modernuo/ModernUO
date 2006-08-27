@@ -23,52 +23,79 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Server.Network
-{
-	public enum SendEnqueueResult
-	{
-		Begin,
-		Delay,
-		Overflow
-	}
+namespace Server.Network {
+	public class SendQueue {
+		public class Gram {
+			private static Stack<Gram> _pool = new Stack<Gram>();
 
-	public class SendQueue
-	{
-		private class Entry
-		{
-			public byte[] m_Buffer;
-			public int m_Length;
+			public static Gram Acquire() {
+				lock ( _pool ) {
+					Gram gram;
 
-			private Entry( byte[] buffer, int length )
-			{
-				m_Buffer = buffer;
-				m_Length = length;
-			}
+					if ( _pool.Count > 0 ) {
+						gram = _pool.Pop();
+					} else {
+						gram = new Gram();
+					}
 
-			private static Stack<Entry> m_Pool = new Stack<Entry>();
+					gram._buffer = AcquireBuffer();
+					gram._length = 0;
 
-			public static Entry Pool( byte[] buffer, int length )
-			{
-				lock ( m_Pool )
-				{
-					if ( m_Pool.Count == 0 )
-						return new Entry( buffer, length );
-
-					Entry e = m_Pool.Pop();
-
-					e.m_Buffer = buffer;
-					e.m_Length = length;
-
-					return e;
+					return gram;
 				}
 			}
 
-			public static void Release( Entry e )
-			{
-				lock ( m_Pool )
-				{
-					m_Pool.Push( e );
-					ReleaseBuffer( e.m_Buffer );
+			public static void Release( Gram e ) {
+				lock ( _pool ) {
+					_pool.Push( e );
+					ReleaseBuffer( e._buffer );
+				}
+			}
+
+			private byte[] _buffer;
+			private int _length;
+
+			public byte[] Buffer {
+				get {
+					return _buffer;
+				}
+			}
+
+			public int Length {
+				get {
+					return _length;
+				}
+			}
+
+			public int Available {
+				get {
+					return ( _buffer.Length - _length );
+				}
+			}
+
+			public bool IsFull {
+				get {
+					return ( _length == _buffer.Length );
+				}
+			}
+
+			private Gram() {
+			}
+
+			public int Write( byte[] buffer, int offset, int length ) {
+				int write = Math.Min( length, this.Available );
+
+				System.Buffer.BlockCopy( buffer, offset, _buffer, _length, write );
+
+				_length += write;
+
+				return write;
+			}
+
+			public void Release() {
+				lock ( _pool ) {
+					_pool.Push( this );
+					ReleaseBuffer( _buffer );
 				}
 			}
 		}
@@ -76,11 +103,11 @@ namespace Server.Network
 		private static int m_CoalesceBufferSize = 512;
 		private static BufferPool m_UnusedBuffers = new BufferPool( "Coalesced", 2048, m_CoalesceBufferSize );
 
-		public static int CoalesceBufferSize
-		{
-			get{ return m_CoalesceBufferSize; }
-			set
-			{
+		public static int CoalesceBufferSize {
+			get {
+				return m_CoalesceBufferSize;
+			}
+			set {
 				if ( m_CoalesceBufferSize == value )
 					return;
 
@@ -92,132 +119,126 @@ namespace Server.Network
 			}
 		}
 
-		public static byte[] GetUnusedBuffer()
-		{
+		public static byte[] AcquireBuffer() {
 			return m_UnusedBuffers.AcquireBuffer();
 		}
 
-		public static void ReleaseBuffer( byte[] buffer )
-		{
-			if ( buffer == null )
-				Console.WriteLine( "Warning: Attempting to release null packet buffer" );
-			else if ( buffer.Length == m_CoalesceBufferSize )
+		public static void ReleaseBuffer( byte[] buffer ) {
+			if ( buffer != null && buffer.Length == m_CoalesceBufferSize ) {
 				m_UnusedBuffers.ReleaseBuffer( buffer );
+			}
 		}
 
-		private Queue<Entry> m_Queue;
+		private Queue<Gram> _pending;
 
-		private Entry m_Buffered;
+		private Gram _buffered;
 
-		public bool IsFlushReady{ get{ return ( m_Queue.Count == 0 && m_Buffered != null ); } }
-		public bool IsEmpty{ get{ return ( m_Queue.Count == 0 && m_Buffered == null ); } }
+		public bool IsFlushReady {
+			get {
+				return ( _pending.Count == 0 && _buffered != null );
+			}
+		}
 
-		public void Clear()
-		{
-			if ( m_Buffered != null )
-			{
-				Entry.Release( m_Buffered );
-				m_Buffered = null;
+		public bool IsEmpty {
+			get {
+				return ( _pending.Count == 0 && _buffered == null );
+			}
+		}
+
+		public SendQueue() {
+			_pending = new Queue<Gram>();
+		}
+
+		public Gram CheckFlushReady() {
+			Gram gram = null;
+
+			if ( _pending.Count == 0 && _buffered != null ) {
+				gram = _buffered;
+
+				_pending.Enqueue( _buffered );
+				_buffered = null;
 			}
 
-			while ( m_Queue.Count > 0 )
-				Entry.Release( m_Queue.Dequeue() );
+			return gram;
 		}
 
-		public byte[] CheckFlushReady( ref int length )
-		{
-			Entry buffered = m_Buffered;
+		public Gram Dequeue() {
+			Gram gram = null;
 
-			if ( m_Queue.Count == 0 && buffered != null )
-			{
-				m_Buffered = null;
+			if ( _pending.Count > 0 ) {
+				_pending.Dequeue().Release();
 
-				m_Queue.Enqueue( buffered );
-				length = buffered.m_Length;
-				return buffered.m_Buffer;
-			}
-
-			return null;
-		}
-
-		public SendQueue()
-		{
-			m_Queue = new Queue<Entry>();
-		}
-
-		public byte[] Peek( ref int length )
-		{
-			if ( m_Queue.Count > 0 )
-			{
-				Entry entry = m_Queue.Peek();
-
-				length = entry.m_Length;
-				return entry.m_Buffer;
-			}
-
-			return null;
-		}
-
-		public byte[] Dequeue( ref int length )
-		{
-			Entry.Release( m_Queue.Dequeue() );
-
-			if ( m_Queue.Count > 0 )
-			{
-				Entry entry = m_Queue.Peek();
-
-				length = entry.m_Length;
-				return entry.m_Buffer;
-			}
-
-			return null;
-		}
-
-		private const int PendingCap = 96*1024;
-
-		public SendEnqueueResult Enqueue( byte[] buffer, int length )
-		{
-			if ( buffer == null )
-			{
-				Console.WriteLine( "Warning: Attempting to send null packet buffer" );
-				return SendEnqueueResult.Delay;
-			}
-
-			int existingBytes = ( m_Queue.Count * m_CoalesceBufferSize ) + ( m_Buffered == null ? 0 : m_Buffered.m_Length );
-
-			if ( (existingBytes + length) > PendingCap )
-				return SendEnqueueResult.Overflow;
-
-			int offset = 0; // offset into buffer
-			int remaining = length; // byte count remaining
-
-			bool startNow = false; // should we start sending the first chunk?
-
-			while ( remaining > 0 )
-			{
-				if ( m_Buffered == null ) // nothing yet buffered
-					m_Buffered = Entry.Pool( GetUnusedBuffer(), 0 );
-
-				byte[] page = m_Buffered.m_Buffer; // buffer page
-				int pageSpace = page.Length - m_Buffered.m_Length; // available bytes in page
-				int byteCount = ( remaining > pageSpace ? pageSpace : remaining ); // how many we can copy over
-
-				Buffer.BlockCopy( buffer, offset, page, m_Buffered.m_Length, byteCount ); // copy the data
-
-				// apply offsets
-				m_Buffered.m_Length += byteCount;
-				offset += byteCount;
-				remaining -= byteCount;
-
-				if ( m_Buffered.m_Length == page.Length ) // page full
-				{
-					startNow = ( startNow || m_Queue.Count == 0 );
-					m_Queue.Enqueue( m_Buffered );
-					m_Buffered = null;
+				if ( _pending.Count > 0 ) {
+					gram = _pending.Peek();
 				}
 			}
 
-			return ( startNow ? SendEnqueueResult.Begin : SendEnqueueResult.Delay );
+			return gram;
+		}
+
+		private const int PendingCap = 96 * 1024;
+
+		public Gram Enqueue( byte[] buffer, int length ) {
+			return Enqueue( buffer, 0, length );
+		}
+
+		public Gram Enqueue( byte[] buffer, int offset, int length ) {
+			if ( buffer == null ) {
+				throw new ArgumentNullException( "buffer" );
+			} else if ( !(offset >= 0 && offset < buffer.Length) ) {
+				throw new ArgumentOutOfRangeException( "offset", offset, "Offset must be greater than or equal to zero and less than the size of the buffer." );
+			} else if ( length < 0 || length > buffer.Length ) {
+				throw new ArgumentOutOfRangeException( "length", length, "Length cannot be less than zero or greater than the size of the buffer." );
+			} else if ( ( buffer.Length - offset ) < length ) {
+				throw new ArgumentException( "Offset and length do not point to a valid segment within the buffer." );
+			}
+
+			int existingBytes = ( _pending.Count * m_CoalesceBufferSize ) + ( _buffered == null ? 0 : _buffered.Length );
+
+			if ( ( existingBytes + length ) > PendingCap ) {
+				throw new CapacityExceededException();
+			}
+
+			Gram gram = null;
+
+			while ( length > 0 ) {
+				if ( _buffered == null ) { // nothing yet buffered
+					_buffered = Gram.Acquire();
+				}
+
+				int bytesWritten = _buffered.Write( buffer, offset, length );
+
+				offset += bytesWritten;
+				length -= bytesWritten;
+
+				if ( _buffered.IsFull ) {
+					if ( _pending.Count == 0 ) {
+						gram = _buffered;
+					}
+
+					_pending.Enqueue( _buffered );
+					_buffered = null;
+				}
+			}
+
+			return gram;
+		}
+
+		public void Clear() {
+			if ( _buffered != null ) {
+				_buffered.Release();
+				_buffered = null;
+			}
+
+			while ( _pending.Count > 0 ) {
+				_pending.Dequeue().Release();
+			}
+		}
+	}
+
+	public sealed class CapacityExceededException : Exception {
+		public CapacityExceededException()
+			: base( "Too much data pending." ) {
 		}
 	}
 }

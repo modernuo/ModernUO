@@ -527,25 +527,18 @@ namespace Server.Network
 				from.Attack( m );
 		}
 
-		public static void HuePickerResponse( NetState state, PacketReader pvSrc )
-		{
+		public static void HuePickerResponse( NetState state, PacketReader pvSrc ) {
 			int serial = pvSrc.ReadInt32();
 			int value = pvSrc.ReadInt16();
 			int hue = pvSrc.ReadInt16() & 0x3FFF;
 
 			hue = Utility.ClipDyedHue( hue );
 
-			List<HuePicker> pickers = state.HuePickers;
+			foreach ( HuePicker huePicker in state.HuePickers ) {
+				if ( huePicker.Serial == serial ) {
+					state.RemoveHuePicker( huePicker );
 
-			for ( int i = 0; i < pickers.Count; ++i )
-			{
-				HuePicker p = pickers[i];
-
-				if ( p.Serial == serial )
-				{
-					state.RemoveHuePicker( i );
-
-					p.OnResponse( hue );
+					huePicker.OnResponse( hue );
 
 					break;
 				}
@@ -858,30 +851,26 @@ namespace Server.Network
 			}
 		}
 
-		public static void MenuResponse( NetState state, PacketReader pvSrc )
-		{
+		public static void MenuResponse( NetState state, PacketReader pvSrc ) {
 			int serial = pvSrc.ReadInt32();
 			int menuID = pvSrc.ReadInt16(); // unused in our implementation
-			int index  = pvSrc.ReadInt16();
+			int index = pvSrc.ReadInt16();
 			int itemID = pvSrc.ReadInt16();
-			int hue    = pvSrc.ReadInt16();
+			int hue = pvSrc.ReadInt16();
 
-			List<IMenu> menus = state.Menus;
+			index -= 1; // convert from 1-based to 0-based
 
-			for ( int i = 0; i < menus.Count; ++i )
-			{
-				IMenu menu = menus[i];
+			foreach ( IMenu menu in state.Menus ) {
+				if ( menu.Serial == serial ) {
+					state.RemoveMenu( menu );
 
-				if ( menu.Serial == serial )
-				{
-					if ( index > 0 && index <= menu.EntryLength )
-						menu.OnResponse( state, index - 1 );
-					else
+					if ( index >= 0 && index < menu.EntryLength ) {
+						menu.OnResponse( state, index );
+					} else {
 						menu.OnCancel( state );
+					}
 
-					state.RemoveMenu( i );
-
-					return;
+					break;
 				}
 			}
 		}
@@ -1088,25 +1077,17 @@ namespace Server.Network
 			}
 		}
 
-		public static void DisplayGumpResponse( NetState state, PacketReader pvSrc )
-		{
+		public static void DisplayGumpResponse( NetState state, PacketReader pvSrc ) {
 			int serial = pvSrc.ReadInt32();
 			int typeID = pvSrc.ReadInt32();
 			int buttonID = pvSrc.ReadInt32();
 
-			List<Gump> gumps = state.Gumps;
-
-			for ( int i = 0; i < gumps.Count; ++i )
-			{
-				Gump gump = gumps[i];
-
-				if ( gump.Serial == serial && gump.TypeID == typeID )
-				{
+			foreach ( Gump gump in state.Gumps ) {
+				if ( gump.Serial == serial && gump.TypeID == typeID ) {
 					int switchCount = pvSrc.ReadInt32();
 
-					if ( switchCount < 0 || switchCount > gump.m_Switches )
-					{
-						Console.WriteLine( "Client: {0}: Invalid gump response, disconnecting...", state );
+					if ( switchCount < 0 || switchCount > gump.m_Switches ) {
+						state.WriteConsole( "Invalid gump response, disconnecting..." );
 						state.Dispose();
 						return;
 					}
@@ -1118,51 +1099,51 @@ namespace Server.Network
 
 					int textCount = pvSrc.ReadInt32();
 
-					if ( textCount < 0 || textCount > gump.m_TextEntries )
-					{
-						Console.WriteLine( "Client: {0}: Invalid gump response, disconnecting...", state );
+					if ( textCount < 0 || textCount > gump.m_TextEntries ) {
+						state.WriteConsole( "Invalid gump response, disconnecting..." );
 						state.Dispose();
 						return;
 					}
 
 					TextRelay[] textEntries = new TextRelay[textCount];
 
-					for ( int j = 0; j < textEntries.Length; ++j )
-					{
+					for ( int j = 0; j < textEntries.Length; ++j ) {
 						int entryID = pvSrc.ReadUInt16();
 						int textLength = pvSrc.ReadUInt16();
 
-						if ( textLength > 239 )
+						if ( textLength > 239 ) {
+							state.WriteConsole( "Invalid gump response, disconnecting..." );
+							state.Dispose();
 							return;
+						}
 
 						string text = pvSrc.ReadUnicodeStringSafe( textLength );
 						textEntries[j] = new TextRelay( entryID, text );
 					}
 
-					state.RemoveGump( i );
+					state.RemoveGump( gump );
+
 					gump.OnResponse( state, new RelayInfo( buttonID, switches, textEntries ) );
 
 					return;
 				}
 			}
 
-			if ( typeID == 461 ) // Virtue gump
-			{
+			if ( typeID == 461 ) { // Virtue gump
 				int switchCount = pvSrc.ReadInt32();
 
-				if ( buttonID == 1 && switchCount > 0 )
-				{
+				if ( buttonID == 1 && switchCount > 0 ) {
 					Mobile beheld = World.FindMobile( pvSrc.ReadInt32() );
 
-					if ( beheld != null )
+					if ( beheld != null ) {
 						EventSink.InvokeVirtueGumpRequest( new VirtueGumpRequestEventArgs( state.Mobile, beheld ) );
-				}
-				else
-				{
+					}
+				} else {
 					Mobile beheld = World.FindMobile( serial );
 
-					if ( beheld != null )
+					if ( beheld != null ) {
 						EventSink.InvokeVirtueItemRequest( new VirtueItemRequestEventArgs( state.Mobile, beheld, buttonID ) );
+					}
 				}
 			}
 		}

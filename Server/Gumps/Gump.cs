@@ -418,5 +418,8 @@ namespace Server.Gumps
 		public virtual void OnResponse( NetState sender, RelayInfo info )
 		{
 		}
+
+		public virtual void OnServerClose( NetState owner ) {
+		}
 	}
 }

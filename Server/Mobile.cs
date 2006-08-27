@@ -6435,222 +6435,138 @@ namespace Server
 			}
 		}
 
-		public bool Send( Packet p )
-		{
+		public bool Send( Packet p ) {
 			return Send( p, false );
 		}
 
-		public bool Send( Packet p, bool throwOnOffline )
-		{
-			if( m_NetState != null )
-			{
+		public bool Send( Packet p, bool throwOnOffline ) {
+			if ( m_NetState != null ) {
 				m_NetState.Send( p );
 				return true;
-			}
-			else if( throwOnOffline )
-			{
+			} else if ( throwOnOffline ) {
 				throw new MobileNotConnectedException( this, "Packet could not be sent." );
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
 
-		public bool SendHuePicker( HuePicker p )
-		{
+		public bool SendHuePicker( HuePicker p ) {
 			return SendHuePicker( p, false );
 		}
 
-		public bool SendHuePicker( HuePicker p, bool throwOnOffline )
-		{
-			if( m_NetState != null )
-			{
+		public bool SendHuePicker( HuePicker p, bool throwOnOffline ) {
+			if ( m_NetState != null ) {
 				p.SendTo( m_NetState );
 				return true;
-			}
-			else if( throwOnOffline )
-			{
+			} else if ( throwOnOffline ) {
 				throw new MobileNotConnectedException( this, "Hue picker could not be sent." );
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
 
-		public Gump FindGump( Type type )
-		{
+		public Gump FindGump( Type type ) {
 			NetState ns = m_NetState;
 
-			if( ns != null )
-			{
-				List<Gump> gumps = ns.Gumps;
-
-				for( int i = 0; i < gumps.Count; ++i )
-				{
-					if( gumps[i].GetType() == type )
-						return gumps[i];
+			if ( ns != null ) {
+				foreach ( Gump gump in ns.Gumps ) {
+					if ( type.IsAssignableFrom( gump.GetType() ) ) {
+						return gump;
+					}
 				}
 			}
 
 			return null;
 		}
 
-		private static readonly ClientVersion m_SendsReponseOnForcedGumpClose = new ClientVersion( "4.0.9b" );
-
-		public bool CloseGump( Type type )
-		{
-			return CloseGump( type, 0, false );
-		}
-
-		public bool CloseGump( Type type, int buttonID )
-		{
-			return CloseGump( type, buttonID, false );
-		}
-
-		public bool CloseGump( Type type, int buttonID, bool throwOnOffline )
-		{
-			if( m_NetState != null )
-			{
-				if( HasGump( type ) )
-					m_NetState.Send( new CloseGump( Gump.GetTypeID( type ), buttonID ) );
-
+		public bool CloseGump( Type type ) {
+			if ( m_NetState != null ) {
 				Gump gump = FindGump( type );
 
-				if( gump != null )
-				{
-					m_NetState.Send( new CloseGump( Gump.GetTypeID( type ), buttonID ) );
+				if ( gump != null ) {
+					m_NetState.Send( new CloseGump( gump.TypeID, 0 ) );
 
-					if( m_NetState.Version > m_SendsReponseOnForcedGumpClose )
-					{
-						m_NetState.Gumps.Remove( gump );
-						gump.OnResponse( m_NetState, new RelayInfo( buttonID, new int[0], new TextRelay[0] ) );
-					}
+					m_NetState.RemoveGump( gump );
+
+					gump.OnServerClose( m_NetState );
 				}
 
 				return true;
-			}
-			else if( throwOnOffline )
-			{
-				throw new MobileNotConnectedException( this, "Gump close packet could not be sent." );
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
 
-		public bool CloseAllGumps()
-		{
-			return CloseAllGumps( false );
+		[Obsolete( "Use CloseGump( Type ) instead." )]
+		public bool CloseGump( Type type, int buttonID ) {
+			return CloseGump( type );
 		}
 
-		public bool CloseAllGumps( bool throwOnOffline )
-		{
+		[Obsolete( "Use CloseGump( Type ) instead." )]
+		public bool CloseGump( Type type, int buttonID, bool throwOnOffline ) {
+			return CloseGump( type );
+		}
+
+		public bool CloseAllGumps() {
 			NetState ns = m_NetState;
 
-			if( ns != null )
-			{
-				List<Gump> gumps = ns.Gumps;
+			if ( ns != null ) {
+				List<Gump> gumps = new List<Gump>( ns.Gumps );
 
-				for( int i = 0; i < gumps.Count; ++i )
-					ns.Send( new CloseGump( gumps[i].TypeID, 0 ) );
+				ns.ClearGumps();
 
-				for( int i = gumps.Count - 1; i >= 0; --i )
-				{
-					Gump gump = gumps[i];
-
+				foreach ( Gump gump in gumps ) {
 					ns.Send( new CloseGump( gump.TypeID, 0 ) );
 
-					if( ns.Version > m_SendsReponseOnForcedGumpClose )
-					{
-						ns.Gumps.Remove( gump );
-						gump.OnResponse( ns, new RelayInfo( 0, new int[0], new TextRelay[0] ) );
-					}
+					gump.OnServerClose( ns );
 				}
 
 				return true;
-			}
-			else if( throwOnOffline )
-			{
-				throw new MobileNotConnectedException( this, "Gump close packets could not be sent." );
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
 
-		public bool HasGump( Type type )
-		{
-			return HasGump( type, false );
+		[Obsolete( "Use CloseAllGumps() instead.", false )]
+		public bool CloseAllGumps( bool throwOnOffline ) {
+			return CloseAllGumps();
 		}
 
-		public bool HasGump( Type type, bool throwOnOffline )
-		{
-			NetState ns = m_NetState;
-
-			if( ns != null )
-			{
-				bool contains = false;
-				List<Gump> gumps = ns.Gumps;
-
-				for( int i = 0; !contains && i < gumps.Count; ++i )
-					contains = (gumps[i].GetType() == type);
-
-				return contains;
-			}
-			else if( throwOnOffline )
-			{
-				throw new MobileNotConnectedException( this, "Mobile is not connected." );
-			}
-			else
-			{
-				return false;
-			}
+		public bool HasGump( Type type ) {
+			return ( FindGump( type ) != null );
 		}
 
-		public bool SendGump( Gump g )
-		{
+		[Obsolete( "Use HasGump( Type ) instead.", false )]
+		public bool HasGump( Type type, bool throwOnOffline ) {
+			return HasGump( type );
+		}
+
+		public bool SendGump( Gump g ) {
 			return SendGump( g, false );
 		}
 
-		public bool SendGump( Gump g, bool throwOnOffline )
-		{
-			if( m_NetState != null )
-			{
+		public bool SendGump( Gump g, bool throwOnOffline ) {
+			if ( m_NetState != null ) {
 				g.SendTo( m_NetState );
 				return true;
-			}
-			else if( throwOnOffline )
-			{
+			} else if ( throwOnOffline ) {
 				throw new MobileNotConnectedException( this, "Gump could not be sent." );
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
 
-		public bool SendMenu( IMenu m )
-		{
+		public bool SendMenu( IMenu m ) {
 			return SendMenu( m, false );
 		}
 
-		public bool SendMenu( IMenu m, bool throwOnOffline )
-		{
-			if( m_NetState != null )
-			{
+		public bool SendMenu( IMenu m, bool throwOnOffline ) {
+			if ( m_NetState != null ) {
 				m.SendTo( m_NetState );
 				return true;
-			}
-			else if( throwOnOffline )
-			{
+			} else if ( throwOnOffline ) {
 				throw new MobileNotConnectedException( this, "Menu could not be sent." );
-			}
-			else
-			{
+			} else {
 				return false;
 			}
 		}
