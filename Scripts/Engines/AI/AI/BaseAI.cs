@@ -2642,22 +2642,23 @@ namespace Server.Mobiles
 			m_Timer.Start();
 		}
 
+		private DateTime m_NextDetectHidden;
+
+		public virtual bool CanDetectHidden { get { return m_Mobile.Skills[SkillName.DetectHidden].Value > 0; } }
+
 		/*
 		 *  The Timer object
 		 */
 		private class AITimer : Timer
 		{
 			private BaseAI m_Owner;
-			private DateTime m_NextDetectHidden;
-			private bool m_bDetectHidden;
 
 			public AITimer( BaseAI owner )
 				: base( TimeSpan.FromSeconds( Utility.RandomDouble() ), TimeSpan.FromSeconds( Math.Max( 0.0, owner.m_Mobile.CurrentSpeed ) ) )
 			{
 				m_Owner = owner;
 
-				m_bDetectHidden = false;
-				m_NextDetectHidden = DateTime.Now;
+				m_Owner.m_NextDetectHidden = DateTime.Now;
 
 				Priority = TimerPriority.FiftyMS;
 			}
@@ -2723,7 +2724,7 @@ namespace Server.Mobiles
 					}
 				}
 
-				if( m_bDetectHidden && DateTime.Now > m_NextDetectHidden )
+				if( m_Owner.CanDetectHidden && DateTime.Now > m_Owner.m_NextDetectHidden )
 				{
 					m_Owner.DetectHidden();
 
@@ -2736,11 +2737,7 @@ namespace Server.Mobiles
 					int min = delay * (9 / 10); // 13s at 1000 int, 33s at 400 int, 54s at <250 int
 					int max = delay * (10 / 9); // 16s at 1000 int, 41s at 400 int, 66s at <250 int
 
-					m_NextDetectHidden = DateTime.Now + TimeSpan.FromSeconds( Utility.RandomMinMax( min, max ) );
-				}
-				else
-				{
-					m_bDetectHidden = m_Owner.m_Mobile.Skills[SkillName.DetectHidden].Value > 0;
+					m_Owner.m_NextDetectHidden = DateTime.Now + TimeSpan.FromSeconds( Utility.RandomMinMax( min, max ) );
 				}
 			}
 		}

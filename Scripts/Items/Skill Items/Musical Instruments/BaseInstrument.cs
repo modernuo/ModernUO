@@ -262,7 +262,7 @@ namespace Server.Items
 			val += targ.SkillsTotal / 10;
 
 			if ( val > 700 )
-				val = 700 + ((val - 700) * (3 / 11));
+				val = 700 + (int)((val - 700) * (3.0 / 11));
 
 			BaseCreature bc = targ as BaseCreature;
 

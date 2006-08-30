@@ -1278,7 +1278,7 @@ namespace Server.Items
 			set{ m_InDoubleStrike = value; }
 		}
 
-		public virtual void OnHit( Mobile attacker, Mobile defender )
+		public void OnHit( Mobile attacker, Mobile defender )
 		{
 			OnHit( attacker, defender, 1.0 );
 		}
@@ -1871,62 +1871,6 @@ namespace Server.Items
 						defender.Z ), defender.Map );
 				}
 			}
-
-			/* if ( damage <= 2 )
-				return;
-
-			Direction d = defender.GetDirectionTo( attacker );
-
-			int maxCount = damage / 15;
-
-			if ( maxCount < 1 )
-				maxCount = 1;
-			else if ( maxCount > 4 )
-				maxCount = 4;
-
-			for( int i = 0; i < Utility.Random( 1, maxCount ); ++i )
-			{
-				int x = defender.X;
-				int y = defender.Y;
-
-				switch( d )
-				{
-					case Direction.North:
-						x += Utility.Random( -1, 3 );
-						y += Utility.Random( 2 );
-						break;
-					case Direction.East:
-						y += Utility.Random( -1, 3 );
-						x += Utility.Random( -1, 2 );
-						break;
-					case Direction.West:
-						y += Utility.Random( -1, 3 );
-						x += Utility.Random( 2 );
-						break;
-					case Direction.South:
-						x += Utility.Random( -1, 3 );
-						y += Utility.Random( -1, 2 );
-						break;
-					case Direction.Up:
-						x += Utility.Random( 2 );
-						y += Utility.Random( 2 );
-						break;
-					case Direction.Down:
-						x += Utility.Random( -1, 2 );
-						y += Utility.Random( -1, 2 );
-						break;
-					case Direction.Left:
-						x += Utility.Random( 2 );
-						y += Utility.Random( -1, 2 );
-						break;
-					case Direction.Right:
-						x += Utility.Random( -1, 2 );
-						y += Utility.Random( 2 );
-						break;
-				}
-
-				new Blood().MoveToWorld( new Point3D( x, y, defender.Z ), defender.Map );
-			}*/
 		}
 
 		public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )

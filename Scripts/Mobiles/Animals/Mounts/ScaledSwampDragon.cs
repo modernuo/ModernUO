@@ -44,7 +44,7 @@ namespace Server.Mobiles
 			MinTameSkill = 93.9;
 		}
 
-		public override double GetControlChance( Mobile m )
+		public override double GetControlChance( Mobile m, bool useBaseSkill )
 		{
 			return 1.0;
 		}

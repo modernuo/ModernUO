@@ -86,12 +86,14 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 4 );
 		}
 
-		public override double GetControlChance( Mobile m )
+		public override double GetControlChance( Mobile m, bool useBaseSkill )
 		{
-			if ( m.Skills.Bushido.Value >= 90.0 )
+			double skill = (useBaseSkill? m.Skills.Bushido.Base : m.Skills.Bushido.Value);
+			
+			if ( skill >= 90.0 )
 				return 1.0;
 
-			return base.GetControlChance( m );
+			return base.GetControlChance( m, useBaseSkill );
 		}
 
 		public override int TreasureMapLevel{ get{ return 3; } }

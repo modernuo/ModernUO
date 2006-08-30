@@ -262,5 +262,7 @@ namespace Server.Mobiles
 
 			return true;
 		}
+		
+		public override bool CanDetectHidden { get { return false; } }
 	}
 }

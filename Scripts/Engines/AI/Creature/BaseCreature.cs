@@ -800,7 +800,12 @@ namespace Server.Mobiles
 			return ( GetControlChance( m ) > 0.0 );
 		}
 
-		public virtual double GetControlChance( Mobile m )
+		public double GetControlChance( Mobile m )
+		{
+			return GetControlChance( m, false );
+		}
+
+		public virtual double GetControlChance( Mobile m, bool useBaseSkill )
 		{
 			if ( m_dMinTameSkill <= 29.1 || m_bSummoned || m.AccessLevel >= AccessLevel.GameMaster )
 				return 1.0;
@@ -810,8 +815,9 @@ namespace Server.Mobiles
 			if ( dMinTameSkill > -24.9 && Server.SkillHandlers.AnimalTaming.CheckMastery( m, this ) )
 				dMinTameSkill = -24.9;
 
-			int taming = (int)(m.Skills[SkillName.AnimalTaming].Value * 10);
-			int lore = (int)(m.Skills[SkillName.AnimalLore].Value * 10);
+			int taming = (int)((useBaseSkill ? m.Skills[SkillName.AnimalTaming].Base : m.Skills[SkillName.AnimalTaming].Value ) * 10);
+			int lore = (int)((useBaseSkill ? m.Skills[SkillName.AnimalLore].Base : m.Skills[SkillName.AnimalLore].Value )* 10);
+
 			int difficulty = (int)(dMinTameSkill * 10);
 			int weighted = ((taming * 4) + lore) / 5;
 			int bonus = weighted - difficulty;
@@ -1876,7 +1882,7 @@ namespace Server.Mobiles
 
 							if ( master != null && master == from )	//So friends can't start the bonding process
 							{
-								if ( m_dMinTameSkill <= 29.1 || master.Skills[SkillName.AnimalTaming].Value >= m_dMinTameSkill || GetControlChance( master ) >= 1.0 )
+								if ( m_dMinTameSkill <= 29.1 || master.Skills[SkillName.AnimalTaming].Base >= m_dMinTameSkill || GetControlChance( master, true ) >= 1.0 )
 								{
 									if ( BondingBegin == DateTime.MinValue )
 									{
