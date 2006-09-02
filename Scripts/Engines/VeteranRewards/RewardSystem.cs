@@ -260,6 +260,8 @@ namespace Server.Engines.VeteranRewards
 						new RewardEntry( monsterStatues, 1006035, typeof( MonsterStatuette ), MonsterStatuetteType.Ratman ),
 						new RewardEntry( monsterStatues, 1006036, typeof( MonsterStatuette ), MonsterStatuetteType.Skeleton ),
 						new RewardEntry( monsterStatues, 1006037, typeof( MonsterStatuette ), MonsterStatuetteType.Troll )
+						//TODO: RedSoulstone
+						//Need to reorganize this to OSI.
 					} ),
 					new RewardList( RewardInterval, 2, new RewardEntry[]
 					{
@@ -318,6 +320,10 @@ namespace Server.Engines.VeteranRewards
 						new RewardEntry( etherealSteeds, 1049748, typeof( EtherealBeetle ) )
 						/*new RewardEntry(    houseAddOns, 0, typeof( AnkhDecoration ) )*/
 					} ),
+					//TODO: 6th year player statue MArkers
+					//TODO: 7th year Decorative CAnnon
+					//TODO: 8th year Weapon Engraving Tool
+					//TODO: 9th year Ridable polar bear
 				};
 		}
 

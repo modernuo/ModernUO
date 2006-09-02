@@ -20,11 +20,6 @@ namespace Server.Items
 		public override void OnDoubleClick( Mobile from )
 		{
 			Fishing.System.BeginHarvesting( from, this );
-			
-			Item item = from.FindItemOnLayer( Layer.OneHanded );
-
-			if( item != null )
-				from.RemoveItem( item );
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )

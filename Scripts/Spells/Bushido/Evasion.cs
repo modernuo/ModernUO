@@ -34,9 +34,9 @@ namespace Server.Spells.Bushido
 
 			if( weap != null )
 			{
-				if( Core.ML && Caster.Skills[weap.Skill].Value < 50 )
+				if( Core.ML && Caster.Skills[weap.Skill].Base < 50 )
 				{
-					//Does UBW affect this?
+					//UBW and Mage weapon have no bearing on this, nor do skill items and such.
 					Caster.SendLocalizedMessage( 1076206 ); // Your skill with your equipped weapon must be 50 or higher to use Evasion.
 					return false;
 				}

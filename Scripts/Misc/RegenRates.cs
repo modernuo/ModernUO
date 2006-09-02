@@ -16,7 +16,6 @@ namespace Server.Misc
 			Mobile.DefaultHitsRate = TimeSpan.FromSeconds( 11.0 );
 			Mobile.DefaultStamRate = TimeSpan.FromSeconds(  7.0 );
 			Mobile.DefaultManaRate = TimeSpan.FromSeconds(  7.0 );
-//TODO: Pub 42 regen limits
 
 			Mobile.ManaRegenRateHandler = new RegenRateHandler( Mobile_ManaRegenRate );
 
@@ -68,11 +67,14 @@ namespace Server.Misc
 				points += from.Skills[SkillName.Ninjitsu].Fixed / 300;
 			//TODO: What's the new increased rate?
 
-			if( Core.ML && from.Race == Race.Human )
+			if( Core.ML && from.Race == Race.Human )	//Is this affected by the cap?
 				points += 2;
 
 			if ( points < 0 )
 				points = 0;
+
+			if( Core.ML && from is PlayerMobile )	//does racial bonus go before/after?
+				points = Math.Min ( points, 18 );
 
 			return TimeSpan.FromSeconds( 1.0 / (0.1 * (1 + points)) );
 		}
@@ -86,16 +88,21 @@ namespace Server.Misc
 
 			int points =(int)(from.Skills[SkillName.Focus].Value * 0.1);
 
-			points +=  AosAttributes.GetValue( from, AosAttribute.RegenStam );
+			if( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
+				points += 40;
+
+			int cappedPoints = AosAttributes.GetValue( from, AosAttribute.RegenStam );
 
 			if ( CheckTransform( from, typeof( VampiricEmbraceSpell ) ) )
-				points += 15;
+				cappedPoints += 15;
 
 			if ( CheckAnimal( from, typeof( Kirin ) ) )
-				points += 20;
+				cappedPoints += 20;
 
-			if ( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
-				points += 40;
+			if( Core.ML && from is PlayerMobile )
+				cappedPoints = Math.Min( cappedPoints, 24 );
+
+			points += cappedPoints;
 
 			if ( points < -1 )
 				points = -1;
@@ -129,15 +136,20 @@ namespace Server.Misc
 
 				double totalPoints = focusPoints + medPoints + (from.Meditating ? (medPoints > 13.0 ? 13.0 : medPoints) : 0.0);
 
-				totalPoints += AosAttributes.GetValue( from, AosAttribute.RegenMana );
+				if( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
+					totalPoints += 40;
+
+				int cappedPoints = AosAttributes.GetValue( from, AosAttribute.RegenMana );
 
 				if ( CheckTransform( from, typeof( VampiricEmbraceSpell ) ) )
-					totalPoints += 3;
+					cappedPoints += 3;
 				else if ( CheckTransform( from, typeof( LichFormSpell ) ) )
-					totalPoints += 13;
+					cappedPoints += 13;
 
-				if ( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
-					totalPoints += 40;
+				if( Core.ML && from is PlayerMobile )
+					cappedPoints = Math.Min( cappedPoints, 18 );
+
+				totalPoints += cappedPoints;
 
 				if ( totalPoints < -1 )
 					totalPoints = -1;

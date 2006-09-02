@@ -66,11 +66,15 @@ namespace Server.Engines.Quests
 				{
 					SendLocalizedMessageTo( from, 500309 ); // Nothing Happens.
 				}
-				else if ( m_PlayTimer != null )
+				else if( Core.ML && from.Map != Map.Trammel && from.Map != Map.Malas )
+				{
+					from.SendLocalizedMessage( 1076154 ); // You can only use this in Trammel and Malas.
+				}
+				else if( m_PlayTimer != null )
 				{
 					SendLocalizedMessageTo( from, 1042144 ); // This is currently in use.
 				}
-				else if ( Charges > 0 )
+				else if( Charges > 0 )
 				{
 					from.Animate( 34, 7, 1, true, false, 0 );
 					from.PlaySound( 0xFF );

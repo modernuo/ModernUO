@@ -273,6 +273,8 @@ namespace Server.Mobiles
 			}
 		}
 
+		public virtual int EtherealHue { get { return 0x4001; } }
+
 		public void UnmountMe()
 		{
 			Container bp = m_Rider.Backpack;
@@ -281,7 +283,7 @@ namespace Server.Mobiles
 			Layer = Layer.Invalid;
 			Movable = true;
 
-			if ( Hue == 0x4001 )
+			if( Hue == EtherealHue )
 				Hue = 0;
 
 			if ( bp != null )
@@ -310,7 +312,7 @@ namespace Server.Mobiles
 			Movable = false;
 
 			if ( Hue == 0 )
-				Hue = 0x4001;
+				Hue = EtherealHue;
 
 			ProcessDelta();
 			m_Rider.ProcessDelta();
@@ -672,6 +674,38 @@ namespace Server.Mobiles
 
 			if ( Name == "an ethereal swamp dragon" )
 				Name = null;
+		}
+	}
+
+	public class ChargerOfTheFallen : EtherealMount
+	{
+		public override int LabelNumber { get { return 1074816; } } // Charger of the Fallen Statuette
+
+		[Constructable]
+		public ChargerOfTheFallen()
+			: base( 0x2D9C, 0x3E92 )
+		{
+		}
+
+		public override int EtherealHue { get { return 0; } }
+
+		public ChargerOfTheFallen( Serial serial )
+			: base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.Write( (int)0 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadInt();
 		}
 	}
 }

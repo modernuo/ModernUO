@@ -2769,6 +2769,8 @@ namespace Server.Mobiles
 			BaseHouse.HandleDeletion( this );
 		}
 
+		public override bool NewGuildDisplay { get { return Server.Guilds.Guild.NewGuildSystem; } }
+
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
