@@ -2585,12 +2585,20 @@ namespace Server
 			return 18;
 		}
 
-		public virtual void SendInfoTo( NetState state )
-		{
-			state.Send( WorldPacket );
+		public void SendInfoTo( NetState state ) {
+			SendInfoTo( state, ObjectPropertyList.Enabled );
+		}
 
-			if ( ObjectPropertyList.Enabled )
+		public virtual void SendInfoTo( NetState state, bool sendOplPacket ) {
+			state.Send( GetWorldPacketFor( state ) );
+
+			if ( sendOplPacket ) {
 				state.Send( OPLPacket );
+			}
+		}
+
+		protected virtual Packet GetWorldPacketFor( NetState state ) {
+			return this.WorldPacket;
 		}
 
 		public virtual bool IsVirtualItem{ get{ return false; } }
@@ -2902,7 +2910,7 @@ namespace Server
 
 									ns.Send( p );
 
-									if ( ObjectPropertyList.Enabled )
+									if ( sendOPLUpdate )
 										ns.Send( OPLPacket );
 								}
 							}
@@ -2939,7 +2947,7 @@ namespace Server
 
 											ns.Send( p );
 
-											if ( ObjectPropertyList.Enabled )
+											if ( sendOPLUpdate )
 												ns.Send( OPLPacket );
 										}
 									}
@@ -2977,7 +2985,7 @@ namespace Server
 
 											ns.Send( p );
 
-											if ( ObjectPropertyList.Enabled )
+											if ( sendOPLUpdate )
 												ns.Send( OPLPacket );
 										}
 									}
@@ -3001,35 +3009,28 @@ namespace Server
 
 					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-					foreach ( NetState state in eable )
-					{
+					foreach ( NetState state in eable ) {
 						Mobile m = state.Mobile;
 
-						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
-						{
-							//if ( sendOPLUpdate )
-							//	state.Send( RemovePacket );
-
-							if ( m_Parent == null )
-							{
-								SendInfoTo( state );
-							}
-							else
-							{
-								if ( p == null )
-								{
-									if ( m_Parent is Item )
+						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
+							if ( m_Parent == null ) {
+								SendInfoTo( state, sendOPLUpdate );
+							} else {
+								if ( p == null ) {
+									if ( m_Parent is Item ) {
 										p = new ContainerContentUpdate( this );
-									else if ( m_Parent is Mobile )
+									} else if ( m_Parent is Mobile ) {
 										p = new EquipUpdate( this );
+									}
 
 									p.Acquire();
 								}
 
 								state.Send( p );
 
-								if ( ObjectPropertyList.Enabled )
+								if ( sendOPLUpdate ) {
 									state.Send( OPLPacket );
+								}
 							}
 						}
 					}
@@ -3062,7 +3063,7 @@ namespace Server
 
 								state.Send( p );
 
-								if ( ObjectPropertyList.Enabled )
+								if ( sendOPLUpdate )
 									state.Send( OPLPacket );
 							}
 						}
