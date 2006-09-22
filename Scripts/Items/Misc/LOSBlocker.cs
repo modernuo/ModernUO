@@ -27,17 +27,14 @@ namespace Server.Items
 		{
 		}
 
-		public override void SendInfoTo( NetState state )
-		{
+		protected override Packet GetWorldPacketFor( NetState state ) {
 			Mobile mob = state.Mobile;
 
-			if ( mob != null && mob.AccessLevel >= AccessLevel.GameMaster )
-				state.Send( new GMItemPacket( this ) );
-			else
-				state.Send( WorldPacket );
+			if ( mob != null && mob.AccessLevel >= AccessLevel.GameMaster ) {
+				return new GMItemPacket( this );
+			}
 
-			if ( ObjectPropertyList.Enabled )
-				state.Send( OPLPacket );
+			return base.GetWorldPacketFor( state );
 		}
 
 		public override void Serialize( GenericWriter writer )

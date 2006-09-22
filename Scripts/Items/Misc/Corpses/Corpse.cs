@@ -545,9 +545,9 @@ namespace Server.Items
 			}
 		}
 
-		public override void SendInfoTo( NetState state )
+		public override void SendInfoTo( NetState state, bool sendOplPacket )
 		{
-			base.SendInfoTo( state );
+			base.SendInfoTo( state, sendOplPacket );
 
 			if ( ItemID == 0x2006 )
 			{

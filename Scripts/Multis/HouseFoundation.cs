@@ -620,9 +620,9 @@ namespace Server.Multis
 			DesignState.SendDetailedInfoTo( m.NetState );
 		}
 
-		public override void SendInfoTo( NetState state )
+		public override void SendInfoTo( NetState state, bool sendOplPacket )
 		{
-			base.SendInfoTo( state );
+			base.SendInfoTo( state, sendOplPacket );
 
 			DesignContext context = DesignContext.Find( state.Mobile );
 			DesignState stateToSend;
