@@ -22,13 +22,11 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Server.Network
-{
+namespace Server.Network {
 	/// <summary>
 	/// Handles outgoing packet compression for the network.
 	/// </summary>
-	public class Compression
-	{
+	public class Compression {
 		private static int[] m_Table = new int[514]
 		{
 			0x2, 0x000,	0x5, 0x01F,	0x6, 0x022,	0x7, 0x034,	0x7, 0x075,	0x6, 0x028,	0x6, 0x03B,	0x7, 0x032,
@@ -66,20 +64,26 @@ namespace Server.Network
 			0x4, 0x00D
 		};
 
-		private static byte[] m_OutputBuffer = new byte[0x40000];
+		// UO packets may not exceed 64kb in length
+		private const int BufferSize = 0x10000;
+
+		// Optimal compression ratio is 2 / 8.
+		private const int MinimalCodeLength = 2;
+
+		// If our input exceeds this length, we cannot possibly compress it in 
+		private const int EarlyOverflow = ( BufferSize * 8 ) / MinimalCodeLength;
+
+		private static byte[] m_OutputBuffer = new byte[BufferSize];
 		private static object m_SyncRoot = new object();
 
-		public unsafe static void Compress( byte[] input, int length, out byte[] output, out int outputLength )
-		{
-			if ( length >= m_OutputBuffer.Length )
-			{
+		public unsafe static void Compress( byte[] input, int length, out byte[] output, out int outputLength ) {
+			if ( length >= EarlyOverflow ) {
 				output = null;
 				outputLength = length;
 				return;
 			}
 
-			lock ( m_SyncRoot )
-			{
+			lock ( m_SyncRoot ) {
 				int holdCount = 0;
 				int holdValue = 0;
 
@@ -93,26 +97,28 @@ namespace Server.Network
 
 				int outputCount = 0;
 
-				fixed ( int *pTable = m_Table )
-				{
-					fixed ( byte *pOutputBuffer = m_OutputBuffer )
-					{
-						while ( inputIndex < inputLength )
-						{
+				fixed ( int* pTable = m_Table ) {
+					fixed ( byte* pOutputBuffer = m_OutputBuffer ) {
+						while ( inputIndex < inputLength ) {
 							byteValue = input[inputIndex++] << 1;
 
 							packCount = pTable[byteValue];
 							packValue = pTable[byteValue | 1];
 
 							holdValue <<= packCount;
-							holdValue  |= packValue;
-							holdCount  += packCount;
+							holdValue |= packValue;
+							holdCount += packCount;
 
-							while ( holdCount >= 8 )
-							{
+							if ( ( outputCount + ( holdCount / 8 ) ) >= BufferSize ) {
+								output = null;
+								outputLength = length;
+								return;
+							}
+
+							while ( holdCount >= 8 ) {
 								holdCount -= 8;
 
-								pOutputBuffer[outputCount++] = (byte)(holdValue >> holdCount);
+								pOutputBuffer[outputCount++] = ( byte ) ( holdValue >> holdCount );
 							}
 						}
 
@@ -120,18 +126,24 @@ namespace Server.Network
 						packValue = pTable[0x201];
 
 						holdValue <<= packCount;
-						holdValue  |= packValue;
-						holdCount  += packCount;
+						holdValue |= packValue;
+						holdCount += packCount;
 
-						while ( holdCount >= 8 )
-						{
-							holdCount -= 8;
-
-							pOutputBuffer[outputCount++] = (byte)(holdValue >> holdCount);
+						if ( ( outputCount + ( ( holdCount + 7 ) / 8 ) ) >= BufferSize ) {
+							output = null;
+							outputLength = length;
+							return;
 						}
 
-						if ( holdCount > 0 )
-							pOutputBuffer[outputCount++] = (byte)(holdValue << (8 - holdCount));
+						while ( holdCount >= 8 ) {
+							holdCount -= 8;
+
+							pOutputBuffer[outputCount++] = ( byte ) ( holdValue >> holdCount );
+						}
+
+						if ( holdCount > 0 ) {
+							pOutputBuffer[outputCount++] = ( byte ) ( holdValue << ( 8 - holdCount ) );
+						}
 					}
 				}
 
@@ -142,33 +154,30 @@ namespace Server.Network
 
 		public static readonly ICompressor Compressor;
 
-		static Compression()
-		{
+		static Compression() {
 			if ( Core.Is64Bit )
 				Compressor = new Compressor64();
 			else
 				Compressor = new Compressor32();
 		}
 
-		public static ZLibError Pack( byte[] dest, ref int destLength, byte[] source, int sourceLength )
-		{
+		public static ZLibError Pack( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return Compressor.Compress( dest, ref destLength, source, sourceLength );
 		}
 
-		public static ZLibError Pack( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality )
-		{
+		public static ZLibError Pack( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality ) {
 			return Compressor.Compress( dest, ref destLength, source, sourceLength, quality );
 		}
 
-		public static ZLibError Unpack( byte[] dest, ref int destLength, byte[] source, int sourceLength )
-		{
+		public static ZLibError Unpack( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return Compressor.Decompress( dest, ref destLength, source, sourceLength );
 		}
 	}
 
-	public interface ICompressor
-	{
-		string Version { get; }
+	public interface ICompressor {
+		string Version {
+			get;
+		}
 
 		ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength );
 		ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality );
@@ -176,8 +185,7 @@ namespace Server.Network
 		ZLibError Decompress( byte[] dest, ref int destLength, byte[] source, int sourceLength );
 	}
 
-	public sealed class Compressor32 : ICompressor
-	{
+	public sealed class Compressor32 : ICompressor {
 		[DllImport( "zlib32" )]
 		private static extern string zlibVersion();
 
@@ -190,33 +198,29 @@ namespace Server.Network
 		[DllImport( "zlib32" )]
 		private static extern ZLibError uncompress( byte[] dest, ref int destLen, byte[] source, int sourceLen );
 
-		public Compressor32()
-		{
+		public Compressor32() {
 		}
 
-		public string Version
-		{
-			get { return zlibVersion(); }
+		public string Version {
+			get {
+				return zlibVersion();
+			}
 		}
 
-		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength )
-		{
+		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return compress( dest, ref destLength, source, sourceLength );
 		}
 
-		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality )
-		{
+		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality ) {
 			return compress2( dest, ref destLength, source, sourceLength, quality );
 		}
 
-		public ZLibError Decompress( byte[] dest, ref int destLength, byte[] source, int sourceLength )
-		{
+		public ZLibError Decompress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return uncompress( dest, ref destLength, source, sourceLength );
 		}
 	}
 
-	public sealed class Compressor64 : ICompressor
-	{
+	public sealed class Compressor64 : ICompressor {
 		[DllImport( "zlib64" )]
 		private static extern string zlibVersion();
 
@@ -229,53 +233,48 @@ namespace Server.Network
 		[DllImport( "zlib64" )]
 		private static extern ZLibError uncompress( byte[] dest, ref int destLen, byte[] source, int sourceLen );
 
-		public Compressor64()
-		{
+		public Compressor64() {
 		}
 
-		public string Version
-		{
-			get { return zlibVersion(); }
+		public string Version {
+			get {
+				return zlibVersion();
+			}
 		}
 
-		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength )
-		{
+		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return compress( dest, ref destLength, source, sourceLength );
 		}
 
-		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality )
-		{
+		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality ) {
 			return compress2( dest, ref destLength, source, sourceLength, quality );
 		}
 
-		public ZLibError Decompress( byte[] dest, ref int destLength, byte[] source, int sourceLength )
-		{
+		public ZLibError Decompress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return uncompress( dest, ref destLength, source, sourceLength );
 		}
 	}
 
-	public enum ZLibError : int
-	{
-		VersionError	= -6,
-		BufferError		= -5,
-		MemoryError		= -4,
-		DataError		= -3,
-		StreamError		= -2,
-		FileError		= -1,
+	public enum ZLibError : int {
+		VersionError = -6,
+		BufferError = -5,
+		MemoryError = -4,
+		DataError = -3,
+		StreamError = -2,
+		FileError = -1,
 
-		Okay				= 0,
+		Okay = 0,
 
-		StreamEnd		= 1,
-		NeedDictionary	= 2
+		StreamEnd = 1,
+		NeedDictionary = 2
 	}
 
-	public enum ZLibQuality : int
-	{
-		Default	= -1,
+	public enum ZLibQuality : int {
+		Default = -1,
 
-		None		= 0,
+		None = 0,
 
-		Speed		= 1,
-		Size		= 9
+		Speed = 1,
+		Size = 9
 	}
 }

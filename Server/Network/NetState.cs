@@ -567,6 +567,12 @@ namespace Server.Network {
 					prof.Record( length, DateTime.Now - start );
 				}
 			} else {
+				Console.WriteLine( "Client: {0}: null buffer send, disconnecting...", this );
+				using ( StreamWriter op = new StreamWriter( "null_send.log", true ) )
+				{
+					op.WriteLine( "{0} Client: {1}: null buffer send, disconnecting...", DateTime.Now, this );
+					op.WriteLine( new System.Diagnostics.StackTrace() );
+				}
 				Dispose();
 			}
 		}

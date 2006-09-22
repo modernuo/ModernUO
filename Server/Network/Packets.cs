@@ -3649,7 +3649,14 @@ namespace Server.Network
 				Compression.Compress( m_CompiledBuffer, length, out m_CompiledBuffer, out length );
 			
 				if ( m_CompiledBuffer == null )
+				{
 					Console.WriteLine( "Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})", m_PacketID, GetType().Name, length );
+					using ( StreamWriter op = new StreamWriter( "compression_overflow.log", true ) )
+					{
+						op.WriteLine( "{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})", DateTime.Now, m_PacketID, GetType().Name, length );
+						op.WriteLine( new System.Diagnostics.StackTrace() );
+					}
+				}
 			}
 
 			if ( m_CompiledBuffer != null )
