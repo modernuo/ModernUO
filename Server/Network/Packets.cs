@@ -3646,7 +3646,10 @@ namespace Server.Network
 
 			if ( compress )
 			{
-				Compression.Compress( m_CompiledBuffer, length, out m_CompiledBuffer, out length );
+				m_CompiledBuffer = Compression.Compress(
+					m_CompiledBuffer, 0, length,
+					ref length
+				);
 			
 				if ( m_CompiledBuffer == null )
 				{

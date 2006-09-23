@@ -27,7 +27,7 @@ namespace Server.Network {
 	/// Handles outgoing packet compression for the network.
 	/// </summary>
 	public class Compression {
-		private static int[] m_Table = new int[514]
+		private static int[] _huffmanTable = new int[514]
 		{
 			0x2, 0x000,	0x5, 0x01F,	0x6, 0x022,	0x7, 0x034,	0x7, 0x075,	0x6, 0x028,	0x6, 0x03B,	0x7, 0x032,
 			0x8, 0x0E0,	0x8, 0x062,	0x7, 0x056,	0x8, 0x079,	0x9, 0x19D,	0x8, 0x097,	0x6, 0x02A,	0x7, 0x057,
@@ -64,91 +64,113 @@ namespace Server.Network {
 			0x4, 0x00D
 		};
 
+		private const int CountIndex = 0;
+		private const int ValueIndex = 1;
+
 		// UO packets may not exceed 64kb in length
 		private const int BufferSize = 0x10000;
 
-		// Optimal compression ratio is 2 / 8.
+		// Optimal compression ratio is 2 / 8;  worst compression ratio is 11 / 8
 		private const int MinimalCodeLength = 2;
+		private const int MaximalCodeLength = 11;
 
-		// If our input exceeds this length, we cannot possibly compress it in 
-		private const int EarlyOverflow = ( BufferSize * 8 ) / MinimalCodeLength;
+		// Fixed overhead, in bits, per compression call
+		private const int TerminalCodeLength = 4;
 
-		private static byte[] m_OutputBuffer = new byte[BufferSize];
-		private static object m_SyncRoot = new object();
+		// If our input exceeds this length, we cannot possibly compress it within the buffer
+		private const int DefiniteOverflow = ( ( BufferSize * 8 ) - TerminalCodeLength ) / MinimalCodeLength;
 
-		public unsafe static void Compress( byte[] input, int length, out byte[] output, out int outputLength ) {
-			if ( length >= EarlyOverflow ) {
-				output = null;
-				outputLength = length;
-				return;
+		// If our input exceeds this length, we may potentially overflow the buffer
+		private const int PossibleOverflow = ( ( BufferSize * 8 ) - TerminalCodeLength ) / MaximalCodeLength;
+
+		private static object _syncRoot = new object();
+
+		private static byte[] _outputBuffer = new byte[BufferSize];
+
+		[Obsolete( "Use Compress( byte[], int, int, ref int ) instead.", false )]
+		public static void Compress( byte[] input, int length, out byte[] output, out int outputLength ) {
+			outputLength = 0;
+			output = Compress( input, 0, length, ref outputLength );
+		}
+
+		public unsafe static byte[] Compress( byte[] input, int offset, int count, ref int length ) {
+			if ( input == null ) {
+				throw new ArgumentNullException( "input" );
+			} else if ( offset < 0 || offset >= input.Length ) {
+				throw new ArgumentOutOfRangeException( "offset" );
+			} else if ( count < 0 || count > input.Length ) {
+				throw new ArgumentOutOfRangeException( "count" );
+			} else if ( ( input.Length - offset ) < count ) {
+				throw new ArgumentException();
 			}
 
-			lock ( m_SyncRoot ) {
-				int holdCount = 0;
-				int holdValue = 0;
+			length = 0;
 
-				int packCount = 0;
-				int packValue = 0;
+			if ( count > DefiniteOverflow ) {
+				return null;
+			}
 
-				int byteValue = 0;
+			lock ( _syncRoot ) {
+				int bitCount = 0;
+				int bitValue = 0;
 
-				int inputLength = length;
-				int inputIndex = 0;
+				fixed ( int* pTable = _huffmanTable ) {
+					int* pEntry;
 
-				int outputCount = 0;
+					fixed ( byte* pInputBuffer = input ) {
+						byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
 
-				fixed ( int* pTable = m_Table ) {
-					fixed ( byte* pOutputBuffer = m_OutputBuffer ) {
-						while ( inputIndex < inputLength ) {
-							byteValue = input[inputIndex++] << 1;
+						fixed ( byte* pOutputBuffer = _outputBuffer ) {
+							byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
 
-							packCount = pTable[byteValue];
-							packValue = pTable[byteValue | 1];
+							while ( pInput < pInputEnd ) {
+								pEntry = &pTable[*pInput++ << 1];
 
-							holdValue <<= packCount;
-							holdValue |= packValue;
-							holdCount += packCount;
+								bitCount += pEntry[CountIndex];
 
-							if ( ( outputCount + ( holdCount / 8 ) ) >= BufferSize ) {
-								output = null;
-								outputLength = length;
-								return;
+								bitValue <<= pEntry[CountIndex];
+								bitValue |= pEntry[ValueIndex];
+
+								while ( bitCount >= 8 ) {
+									bitCount -= 8;
+
+									if ( pOutput < pOutputEnd ) {
+										*pOutput++ = ( byte ) ( bitValue >> bitCount );
+									} else {
+										return null;
+									}
+								}
 							}
 
-							while ( holdCount >= 8 ) {
-								holdCount -= 8;
+							// terminal code
+							pEntry = &pTable[0x200];
 
-								pOutputBuffer[outputCount++] = ( byte ) ( holdValue >> holdCount );
+							bitCount += pEntry[CountIndex];
+
+							bitValue <<= pEntry[CountIndex];
+							bitValue |= pEntry[ValueIndex];
+
+							// align on byte boundary
+							if ( ( bitCount & 7 ) != 0 ) {
+								bitValue <<= ( 8 - ( bitCount & 7 ) );
+								bitCount += ( 8 - ( bitCount & 7 ) );
 							}
-						}
 
-						packCount = pTable[0x200];
-						packValue = pTable[0x201];
+							while ( bitCount >= 8 ) {
+								bitCount -= 8;
 
-						holdValue <<= packCount;
-						holdValue |= packValue;
-						holdCount += packCount;
+								if ( pOutput < pOutputEnd ) {
+									*pOutput++ = ( byte ) ( bitValue >> bitCount );
+								} else {
+									return null;
+								}
+							}
 
-						if ( ( outputCount + ( ( holdCount + 7 ) / 8 ) ) >= BufferSize ) {
-							output = null;
-							outputLength = length;
-							return;
-						}
-
-						while ( holdCount >= 8 ) {
-							holdCount -= 8;
-
-							pOutputBuffer[outputCount++] = ( byte ) ( holdValue >> holdCount );
-						}
-
-						if ( holdCount > 0 ) {
-							pOutputBuffer[outputCount++] = ( byte ) ( holdValue << ( 8 - holdCount ) );
+							length = ( int ) ( pOutput - pOutputBuffer );
+							return _outputBuffer;
 						}
 					}
 				}
-
-				output = m_OutputBuffer;
-				outputLength = outputCount;
 			}
 		}
 
