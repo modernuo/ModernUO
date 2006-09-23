@@ -101,6 +101,8 @@ namespace Server.Items
 	[FlipableAttribute( 0x2B68, 0x315F )]
 	public class WoodlandBelt : BaseWaist
 	{
+		public override Race RequiredRace { get { return Race.Elf; } }
+
 		[Constructable]
 		public WoodlandBelt() : this( 0 )
 		{

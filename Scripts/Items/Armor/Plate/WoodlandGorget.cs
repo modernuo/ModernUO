@@ -21,11 +21,11 @@ namespace Server.Items
 		public override int ArmorBase{ get{ return 40; } }
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
+		public override Race RequiredRace { get { return Race.Elf; } }
 
 		[Constructable]
 		public WoodlandGorget() : base( 0x2B69 )
 		{
-			Weight = 2.0;
 		}
 
 		public WoodlandGorget( Serial serial ) : base( serial )
@@ -36,7 +36,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 0 ); // version
+			writer.WriteEncodedInt( 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -44,6 +44,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+
+			if( version == 0 )
+				Weight = -1;
 		}
 	}
 }

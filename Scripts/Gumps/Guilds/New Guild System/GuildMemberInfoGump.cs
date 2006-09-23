@@ -150,11 +150,11 @@ namespace Server.Guilds
 				{
 					if( m_Member == pm.GuildFealty && guild.Leader != m_Member )
 						pm.SendLocalizedMessage( 1063158 ); // You have cleared your vote for guild leader.
-					else if( playerRank.GetFlag( RankFlags.CanVote ) )
+					else if( guild.CanVote( m_Member ) )//( playerRank.GetFlag( RankFlags.CanVote ) )
 					{
 						if( m_Member == guild.Leader )
 							pm.SendLocalizedMessage( 1063424 ); // You can't vote for the current guild leader.
-						else if( guild.CanBeVotedFor( m_Member ) )
+						else if( !guild.CanBeVotedFor( m_Member ) )
 							pm.SendLocalizedMessage( 1063425 ); // You can't vote for an inactive guild member.
 						else
 						{

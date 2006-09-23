@@ -1467,7 +1467,7 @@ namespace Server.Guilds
 					return false;
 			}
 
-			return ( m == null || m.Deleted || m.Guild != this );
+			return ( m != null && !m.Deleted && m.Guild == this );
 		}
 		public bool CanBeVotedFor( Mobile m )
 		{
@@ -1478,12 +1478,13 @@ namespace Server.Guilds
 					return false;
 			}
 
-			return ( m == null || m.Deleted || m.Guild != this );
+			return ( m != null && !m.Deleted && m.Guild == this );
 		}
 
 		public void CalculateGuildmaster()
 		{
-			Hashtable votes = new Hashtable();
+			//Hashtable votes = new Hashtable();
+			Dictionary<Mobile, int> votes = new Dictionary<Mobile, int>();
 
 			int votingMembers = 0;
 
@@ -1508,10 +1509,19 @@ namespace Server.Guilds
 				if ( m == null )
 					continue;
 
+				int v;
+
+				if( !votes.TryGetValue( m, out v ) )
+					votes[m] = 1;
+				else
+					votes[m] = v + 1;
+
+				/*
 				if ( votes[m] == null )
 					votes[m] = (int)1;
 				else
 					votes[m] = (int)(votes[m]) + 1;
+				 * */
 				
 				votingMembers++;
 			}
@@ -1519,10 +1529,10 @@ namespace Server.Guilds
 			Mobile winner = null;
 			int highVotes = 0;
 
-			foreach ( DictionaryEntry de in votes )
+			foreach ( KeyValuePair<Mobile, int> kvp in votes )
 			{
-				Mobile m = (Mobile)de.Key;
-				int val = (int)de.Value;
+				Mobile m = (Mobile)kvp.Key;
+				int val = (int)kvp.Value;
 
 				if ( winner == null || val > highVotes )
 				{

@@ -21,6 +21,7 @@ namespace Server.Items
 		public override int ArmorBase{ get{ return 40; } }
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
+		public override Race RequiredRace { get { return Race.Elf; } }
 
 		[Constructable]
 		public WoodlandChest() : base( 0x2B67 )
