@@ -932,7 +932,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				m_Mobile.DebugSay( "I stop being on guard" );
+				m_Mobile.DebugSay( "I stopped being on guard" );
 				Action = ActionType.Wander;
 			}
 
@@ -1439,7 +1439,7 @@ namespace Server.Mobiles
 				}
 
 				if( combatant != null )
-					m_Mobile.DebugSay( "Crap, my master has been attacked! I will atack one of those bastards!" );
+					m_Mobile.DebugSay( "Crap, my master has been attacked! I will attack one of those bastards!" );
 			}
 
 			if( combatant != null && combatant != m_Mobile && combatant != m_Mobile.ControlMaster && !combatant.Deleted && combatant.Alive && !combatant.IsDeadBondedPet && m_Mobile.CanSee( combatant ) && m_Mobile.CanBeHarmful( combatant, false ) && combatant.Map == m_Mobile.Map )

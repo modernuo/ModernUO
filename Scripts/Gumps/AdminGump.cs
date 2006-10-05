@@ -1119,7 +1119,7 @@ namespace Server.Gumps
 
 						AccountComment c = a.Comments[i];
 
-						sb.AppendFormat( "[{0}]<BR>{1}", c.AddedBy, c.Content );
+						sb.AppendFormat( "[{0} on {1}]<BR>{2}", c.AddedBy, c.LastModified,c.Content );
 					}
 
 					AddHtml( 20, 180, 380, 190, sb.ToString(), true, true );
@@ -2793,7 +2793,7 @@ namespace Server.Gumps
 			{
 				if ( m_Account != null )
 				{
-					m_Account.Comments.Add( new AccountComment( from.Name, text ) );
+					m_Account.Comments.Add( new AccountComment( from.RawName, text ) );
 					from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Comments, 0, null, "Comment added.", m_Account ) );
 				}
 			}

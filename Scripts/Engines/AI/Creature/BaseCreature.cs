@@ -4767,7 +4767,7 @@ namespace Server.Mobiles
 					}
 
 					// added lines to check if a wild creature in a house region has to be removed or not
-					if ( !c.Controlled && ( c.Region.IsPartOf( typeof( HouseRegion ) ) && c.CanBeDamaged() || hasHourElapsed && c.RemoveIfUntamed && c.Spawner == null ) )
+					if ( (!c.Controlled && ( c.Region.IsPartOf( typeof( HouseRegion ) ) && c.CanBeDamaged()) || (hasHourElapsed && c.RemoveIfUntamed && c.Spawner == null )) )
 					{
 						c.RemoveStep++;
 

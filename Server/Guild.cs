@@ -50,6 +50,7 @@ namespace Server.Guilds
 			m_GuildList.Add( m_Id, this );
 		}
 
+		[CommandProperty( AccessLevel.Counselor )]
 		public int Id { get { return m_Id; } }
 
 		int ISerializable.TypeReference {
@@ -134,6 +135,11 @@ namespace Server.Guilds
 			}
 
 			return results;
+		}
+
+		public override string ToString()
+		{
+			return String.Format( "0x{0:X} \"{1} [{2}]\"", m_Id, Name, Abbreviation );
 		}
 }
 }

@@ -65,8 +65,8 @@ namespace Server.Spells.Second
 
 				mods = new object[2]
 					{
-						new ResistanceMod( ResistanceType.Physical, -15 + (int)(caster.Skills[SkillName.Inscribe].Value / 20) ),
-						new DefaultSkillMod( SkillName.MagicResist, true, -35 + (int)(caster.Skills[SkillName.Inscribe].Value / 20) )
+						new ResistanceMod( ResistanceType.Physical, -15 + Math.Min( (int)(caster.Skills[SkillName.Inscribe].Value / 20), 15 ) ),
+						new DefaultSkillMod( SkillName.MagicResist, true, -35 + Math.Min( (int)(caster.Skills[SkillName.Inscribe].Value / 20), 35 ) )
 					};
 
 				m_Table[target] = mods;

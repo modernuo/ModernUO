@@ -99,6 +99,8 @@ namespace Server.Guilds
 		public void CalculateAllianceLeader()
 		{
 			m_Leader = ((m_Members.Count >= 2) ? m_Members[Utility.Random( m_Members.Count )] : null);
+
+
 		}
 
 		public void CheckLeader()
@@ -591,7 +593,36 @@ namespace Server.Guilds
 		[Description( "Opens a menu where you can view and edit guild properties of a targeted player or guild stone.  If the new Guild system is active, also brings up the guild gump." )]
 		private static void GuildProps_OnCommand( CommandEventArgs e )
 		{
-			e.Mobile.Target = new GuildPropsTarget();
+			string arg = e.ArgString.Trim();
+			Mobile from = e.Mobile;
+
+			if( arg.Length == 0 )
+			{
+				e.Mobile.Target = new GuildPropsTarget();
+			}
+			else
+			{
+				Guild g = null;
+
+				int id = Utility.GetInt32( arg, -1 );
+				if( id != -1 )
+					g = Guild.Find( id ) as Guild;
+
+				if( g == null )
+				{
+					g = Guild.FindByAbbrev( arg ) as Guild;
+
+					if( g == null )
+						g = Guild.FindByName( arg ) as Guild;
+				}
+
+				if( g != null )
+					from.SendGump( new PropertiesGump( from, g ) );
+
+				if( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && from is PlayerMobile )
+					from.SendGump( new GuildInfoGump( (PlayerMobile)from, g ) );
+			}
+
 		}
 
 		private class GuildPropsTarget : Target
@@ -708,6 +739,61 @@ namespace Server.Guilds
 					m_AllianceInfo = null;
 					m_AllianceLeader = null;
 				}
+			}
+		}
+
+		[CommandProperty( AccessLevel.Counselor )]
+		public string AllianceName
+		{
+			get
+			{
+				AllianceInfo al = this.Alliance;
+				if( al != null )
+					return al.Name;
+
+				return null;
+			}
+		}
+
+		[CommandProperty( AccessLevel.Counselor )]
+		public Guild AllianceLeader
+		{
+			get
+			{
+				AllianceInfo al = this.Alliance;
+
+				if( al != null )
+					return al.Leader;
+
+				return null;
+			}
+		}
+
+		[CommandProperty( AccessLevel.Counselor )]
+		public bool IsAllianceMember
+		{
+			get
+			{
+				AllianceInfo al = this.Alliance;
+
+				if( al != null )
+					return al.IsMember( this );
+
+				return false;
+			}
+		}
+
+		[CommandProperty( AccessLevel.Counselor )]
+		public bool IsAlliancePendingMember
+		{
+			get
+			{
+				AllianceInfo al = this.Alliance;
+
+				if( al != null )
+					return al.IsPendingMember( this );
+
+				return false;
 			}
 		}
 
