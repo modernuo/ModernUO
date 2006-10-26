@@ -222,6 +222,9 @@ namespace Server.Mobiles
 
 		public void AddUnholyBone( Mobile target, double chanceToThrow )
 		{
+			if( this.Map == null )
+				return;
+
 			if ( chanceToThrow >= Utility.RandomDouble() )
 			{
 				Direction = GetDirectionTo( target );

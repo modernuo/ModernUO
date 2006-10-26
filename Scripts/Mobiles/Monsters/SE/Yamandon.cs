@@ -81,6 +81,9 @@ namespace Server.Mobiles
 
 		private void DoCounter( Mobile attacker )
 		{
+			if( this.Map == null )
+				return;
+
 			if ( attacker is BaseCreature && ((BaseCreature)attacker).BardProvoked )
 				return;
 

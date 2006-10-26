@@ -132,6 +132,9 @@ namespace Server.Mobiles
 
 		public void CheckQueen()
 		{
+			if( this.Map == null )
+				return;
+
 			if ( !m_SpawnedQueen )
 			{
 				this.Say( 1042153 ); // Come forth my queen!

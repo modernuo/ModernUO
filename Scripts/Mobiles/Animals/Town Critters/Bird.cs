@@ -44,8 +44,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 4.0, 6.0 );
 			SetSkill( SkillName.MagicResist, 4.0, 5.0 );
 
-			SetFameLevel( 1 );
-			SetKarmaLevel( 0 );
+			Fame = 150;
+			Karma = 0;
 
 			Tamable = true;
 			ControlSlots = 1;
@@ -105,8 +105,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 4.0, 6.0 );
 			SetSkill( SkillName.MagicResist, 4.0, 5.0 );
 
-			SetFameLevel( 1 );
-			SetKarmaLevel( 0 );
+			Fame = 150;
+			Karma = 0;
 
 			Tamable = true;
 			ControlSlots = 1;

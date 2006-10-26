@@ -70,6 +70,9 @@ namespace Server.Mobiles
 
 		public void DrainLife()
 		{
+			if( this.Map == null )
+				return;
+
 			ArrayList list = new ArrayList();
 
 			foreach ( Mobile m in this.GetMobilesInRange( 2 ) )

@@ -115,6 +115,9 @@ namespace Server.Mobiles
 
 		public void BeginSavageDance()
 		{
+			if( this.Map == null )
+				return;
+
 			ArrayList list = new ArrayList();
 
 			foreach ( Mobile m in this.GetMobilesInRange( 8 ) )

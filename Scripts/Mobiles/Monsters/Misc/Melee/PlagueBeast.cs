@@ -53,7 +53,7 @@ namespace Server.Mobiles
 
 		public override void OnDamagedBySpell( Mobile caster )
 		{
-			if ( caster != this && 0.25 > Utility.RandomDouble() )
+			if ( this.Map != null && caster != this && 0.25 > Utility.RandomDouble() )
 			{
 				BaseCreature spawn = new PlagueSpawn( this );
 
@@ -71,7 +71,7 @@ namespace Server.Mobiles
 
 		public override void OnGotMeleeAttack( Mobile attacker )
 		{
-			if ( attacker != this && 0.25 > Utility.RandomDouble() )
+			if ( this.Map != null && attacker != this && 0.25 > Utility.RandomDouble() )
 			{
 				BaseCreature spawn = new PlagueSpawn( this );
 
