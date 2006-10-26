@@ -328,12 +328,44 @@ namespace Server.Commands
 			}
 			else
 			{
-				for( int i = 0; i < m_AliasLength; ++i )
+				if( realType.IsGenericType )
 				{
-					if( m_Aliases[i, 0] == fullName )
+					StringBuilder sb = new StringBuilder( "" );
+
+					bool firstpass  = true;
+
+					foreach( Type paramType in realType.GetGenericArguments() )
 					{
-						aliased = m_Aliases[i, 1];
-						break;
+						if( !firstpass ) sb.Append( ',' ); else firstpass=false;
+
+						bool aliasFound = false;
+
+						for( int i = 0; i < m_AliasLength; ++i )
+						{
+							if( m_Aliases[i, 0] == fullName )
+							{
+								sb.Append( m_Aliases[i, 1] );
+								aliasFound = true;
+								break;
+							}
+						}
+
+						if( !aliasFound ) sb.Append( paramType.Name );
+					}
+
+					aliased = sb.ToString();
+
+					aliased = realType.Name.Substring( 0, realType.Name.IndexOf( '`' ) ) + "&lt;" + aliased + "&gt;";
+				}
+				else
+				{
+					for( int i = 0; i < m_AliasLength; ++i )
+					{
+						if( m_Aliases[i, 0] == fullName )
+						{
+							aliased = m_Aliases[i, 1];
+							break;
+						}
 					}
 				}
 
@@ -1434,7 +1466,7 @@ namespace Server.Commands
 						lastIndex = index;
 
 						SpeechEntry entry = null;
-						table.TryGetValue( index, out entry );	
+						table.TryGetValue( index, out entry );
 
 						if( entry == null )
 							table[index] = entry = new SpeechEntry( index );
@@ -2189,7 +2221,7 @@ namespace Server.Commands
 					++extendCount;
 
 					if( ifaceInfo == null )
-						typeHtml.Write( iface.Name );
+						typeHtml.Write( GetGenericTypeName( iface ) );
 					else
 						typeHtml.Write( "<a href=\"{0}\">{1}</a>", ifaceInfo.m_FileName, ifaceInfo.m_TypeName );
 				}
