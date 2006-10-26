@@ -2616,6 +2616,8 @@ namespace Server
 					( m_Parent as Item ).UpdateTotal( sender, type, delta );
 				else if ( m_Parent is Mobile )
 					( m_Parent as Mobile ).UpdateTotal( sender, type, delta );
+				else if ( this.HeldBy != null )
+					( this.HeldBy as Mobile ).UpdateTotal( sender, type, delta );			
 			}
 		}
 

@@ -115,7 +115,7 @@ namespace Server.Items
 					maxWeight = ((Container)Parent).MaxWeight;
 
 					if ( maxWeight > 0 )
-						maxWeight = Math.Min( maxWeight, DefaultMaxWeight );
+						maxWeight = Math.Max( maxWeight, DefaultMaxWeight );
 				}
 				else
 				{
