@@ -23,19 +23,29 @@ namespace Server.Commands
 		private static void DocGen_OnCommand( CommandEventArgs e )
 		{
 			World.Broadcast( 0x35, true, "Documentation is being generated, please wait." );
+			Console.WriteLine( "Documentation is being generated, please wait." );
 
 			Network.NetState.FlushAll();
 			Network.NetState.Pause();
 
 			DateTime startTime = DateTime.Now;
 
-			Document();
+			bool generated = Document();
 
 			DateTime endTime = DateTime.Now;
 
 			Network.NetState.Resume();
 
-			World.Broadcast( 0x35, true, "Documentation has been completed. The entire process took {0:F1} seconds.", (endTime - startTime).TotalSeconds );
+			if( generated )
+			{
+				World.Broadcast( 0x35, true, "Documentation has been completed. The entire process took {0:F1} seconds.", (endTime - startTime).TotalSeconds );
+				Console.WriteLine( "Documentation complete." );
+			}
+			else
+			{
+				World.Broadcast( 0x35, true, "Docmentation failed: Documentation directories are locked and in use. Please close all open files and directories and try again." );
+				Console.WriteLine( "Documentation failed." );
+			}
 		}
 
 		private class MemberComparer : IComparer
@@ -144,17 +154,16 @@ namespace Server.Commands
 				else if( y == null )
 					return 1;
 
-				return x.m_TypeName.CompareTo( y.m_TypeName );
+				return x.TypeName.CompareTo( y.TypeName );
 			}
 		}
 
 		private class TypeInfo
 		{
 			public Type m_Type, m_BaseType, m_Declaring;
-			public string m_FileName, m_TypeName;
 			public List<TypeInfo> m_Derived, m_Nested;
 			public Type[] m_Interfaces;
-			public StreamWriter m_Writer;
+			private string m_FileName, m_TypeName, m_LinkName;
 
 			public TypeInfo( Type type )
 			{
@@ -162,14 +171,22 @@ namespace Server.Commands
 
 				m_BaseType = type.BaseType;
 				m_Declaring = type.DeclaringType;
-
 				m_Interfaces = type.GetInterfaces();
 
-				m_TypeName = GetGenericTypeName( m_Type );
+				FormatGeneric( m_Type, ref m_TypeName, ref m_FileName, ref m_LinkName );
 
-				m_FileName = Docs.GetFileName( "docs/types/", GetGenericTypeName( m_Type, "-", "-" ), ".html" );
+				//				Console.WriteLine( ">> inline typeinfo: "+m_TypeName );
+				//				m_TypeName = GetGenericTypeName( m_Type );
+				//				m_FileName = Docs.GetFileName( "docs/types/", GetGenericTypeName( m_Type, "-", "-" ), ".html" );
+				//				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
+			}
 
-				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
+			public string FileName { get { return m_FileName; } }
+			public string TypeName { get { return m_TypeName; } }
+
+			public string LinkName( string dirRoot )
+			{
+				return m_LinkName.Replace( "@directory@", dirRoot );
 			}
 		}
 
@@ -249,7 +266,22 @@ namespace Server.Commands
 				{ "System.Double",	"<font color=\"blue\">double</font>" },
 				{ "System.Decimal",	"<font color=\"blue\">decimal</font>" },
 				{ "System.Char",	"<font color=\"blue\">char</font>" },
-				{ "System.Void",	"<font color=\"blue\">void</font>" }
+				{ "System.Void",	"<font color=\"blue\">void</font>" },
+			};
+		// For stuff we don't want to links to
+		private static string[] m_DontLink = new string[]
+		{
+				"List",
+				"Stack",
+				"Queue",
+				"Dictionary",
+				"LinkedList",
+				"SortedList",
+				"SortedDictionary",
+				"IComparable",
+				"IComparer",
+				"ICloneable",
+				"Type"
 			};
 
 		private static int m_AliasLength = m_Aliases.GetLength( 0 );
@@ -324,38 +356,21 @@ namespace Server.Commands
 
 			if( info != null )
 			{
-				aliased = String.Format( "<a href=\"{0}\">{1}</a>", info.m_FileName, info.m_TypeName );
+				aliased = "<!-- DBG-0 -->"+info.LinkName( null );
+				//aliased = String.Format( "<a href=\"{0}\">{1}</a>", info.m_FileName, info.m_TypeName );
 			}
 			else
 			{
+				//FormatGeneric( );
 				if( realType.IsGenericType )
 				{
-					StringBuilder sb = new StringBuilder( "" );
+					string typeName = "";
+					string fileName = "";
+					string linkName = "";
 
-					bool firstpass  = true;
-
-					foreach( Type paramType in realType.GetGenericArguments() )
-					{
-						if( !firstpass ) sb.Append( ',' ); else firstpass=false;
-
-						bool aliasFound = false;
-
-						for( int i = 0; i < m_AliasLength; ++i )
-						{
-							if( m_Aliases[i, 0] == fullName )
-							{
-								sb.Append( m_Aliases[i, 1] );
-								aliasFound = true;
-								break;
-							}
-						}
-
-						if( !aliasFound ) sb.Append( paramType.Name );
-					}
-
-					aliased = sb.ToString();
-
-					aliased = realType.Name.Substring( 0, realType.Name.IndexOf( '`' ) ) + "&lt;" + aliased + "&gt;";
+					FormatGeneric( realType, ref typeName, ref fileName, ref linkName );
+					linkName = linkName.Replace( "@directory@", null );
+					aliased = linkName;
 				}
 				else
 				{
@@ -373,7 +388,9 @@ namespace Server.Commands
 					aliased = realType.Name;
 			}
 
-			return String.Concat( prepend, aliased, append, name );
+			string retval = String.Concat( prepend, aliased, append, name );
+			//Console.WriteLine(">> getpair: "+retval);
+			return retval;
 		}
 
 		#endregion
@@ -383,9 +400,11 @@ namespace Server.Commands
 
 		#region Root documentation
 
-		private static void Document()
+		private static bool Document()
 		{
-			DeleteDirectory( "docs/" );
+			try { DeleteDirectory( "docs/" ); }
+			catch( System.IO.IOException e ) { return false; }
+
 			EnsureDirectory( "docs/" );
 			EnsureDirectory( "docs/namespaces/" );
 			EnsureDirectory( "docs/types/" );
@@ -417,6 +436,8 @@ namespace Server.Commands
 
 			DocumentLoadedTypes();
 			DocumentConstructableObjects();
+
+			return true;
 		}
 
 		private static void AddIndexLink( StreamWriter html, string filePath, string label, string desc )
@@ -1946,7 +1967,7 @@ namespace Server.Commands
 					m_Types.TryGetValue( parms[j].ParameterType, out typeInfo );
 
 					if( typeInfo != null )
-						html.Write( "href=\"types/{0}\" ", typeInfo.m_FileName );
+						html.Write( "href=\"types/{0}\" ", typeInfo.FileName );
 
 					html.Write( "title=\"{0}\">{1}</a>", GetTooltipFor( parms[j] ), parms[j].Name );
 				}
@@ -2112,13 +2133,13 @@ namespace Server.Commands
 		private static void SaveType( TypeInfo info, StreamWriter nsHtml, string nsFileName, string nsName )
 		{
 			if( info.m_Declaring == null )
-				nsHtml.WriteLine( "      <a href=\"../types/{0}\">{1}<br>", info.m_FileName, info.m_TypeName );
+				nsHtml.WriteLine( "      <!-- DBG-ST -->"+info.LinkName( "../types/" ) + "<br>" );
 
-			using( StreamWriter typeHtml = info.m_Writer )
+			using( StreamWriter typeHtml = Docs.GetWriter( info.FileName ) )
 			{
 				typeHtml.WriteLine( "<html>" );
 				typeHtml.WriteLine( "   <head>" );
-				typeHtml.WriteLine( "      <title>RunUO Documentation - Class Overview - {0}</title>", info.m_TypeName );
+				typeHtml.WriteLine( "      <title>RunUO Documentation - Class Overview - {0}</title>", info.TypeName );
 				typeHtml.WriteLine( "   </head>" );
 				typeHtml.WriteLine( "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">" );
 				typeHtml.WriteLine( "      <h4><a href=\"../namespaces/{0}\">Back to {1}</a></h4>", nsFileName, nsName );
@@ -2137,7 +2158,7 @@ namespace Server.Commands
 		{
 			Type type = info.m_Type;
 
-			typeHtml.WriteLine( "      <h2>{0} (Enum)</h2>", info.m_TypeName );
+			typeHtml.WriteLine( "      <h2>{0} (Enum)</h2>", info.TypeName );
 
 			string[] names = Enum.GetNames( type );
 
@@ -2177,12 +2198,13 @@ namespace Server.Commands
 				if( decInfo == null )
 					typeHtml.Write( decType.Name );
 				else
-					typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
+					//typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
+					typeHtml.Write( decInfo.LinkName( null ) );
 
 				typeHtml.Write( ") - " );
 			}
 
-			typeHtml.Write( info.m_TypeName );
+			typeHtml.Write( info.TypeName );
 
 			Type[] ifaces = info.m_Interfaces;
 			Type baseType = info.m_BaseType;
@@ -2199,7 +2221,9 @@ namespace Server.Commands
 				if( baseInfo == null )
 					typeHtml.Write( baseType.Name );
 				else
-					typeHtml.Write( "<a href=\"{0}\">{1}</a>", baseInfo.m_FileName, baseInfo.m_TypeName );
+				{
+					typeHtml.Write( "<!-- DBG-1 -->"+baseInfo.LinkName( null ) );
+				}
 
 				++extendCount;
 			}
@@ -2221,9 +2245,18 @@ namespace Server.Commands
 					++extendCount;
 
 					if( ifaceInfo == null )
-						typeHtml.Write( GetGenericTypeName( iface ) );
+					{
+						string typeName = "";
+						string fileName = "";
+						string linkName = "";
+						FormatGeneric( iface, ref typeName, ref fileName, ref linkName );
+						linkName = linkName.Replace( "@directory@", null );
+						typeHtml.Write( "<!-- DBG-2.1 -->"+linkName );
+					}
 					else
-						typeHtml.Write( "<a href=\"{0}\">{1}</a>", ifaceInfo.m_FileName, ifaceInfo.m_TypeName );
+					{
+						typeHtml.Write( "<!-- DBG-2.2 -->"+ifaceInfo.LinkName( null ) );
+					}
 				}
 			}
 
@@ -2244,7 +2277,8 @@ namespace Server.Commands
 					if( i != 0 )
 						typeHtml.Write( ", " );
 
-					typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
+					//typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
+					typeHtml.Write( "<!-- DBG-3 -->"+derivedInfo.LinkName( null ) );
 				}
 
 				typeHtml.WriteLine( "</h4>" );
@@ -2265,7 +2299,8 @@ namespace Server.Commands
 					if( i != 0 )
 						typeHtml.Write( ", " );
 
-					typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
+					//typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
+					typeHtml.Write( "<!-- DBG-4 -->"+nestedInfo.LinkName( null ) );
 				}
 
 				typeHtml.WriteLine( "</h4>" );
@@ -2282,7 +2317,7 @@ namespace Server.Commands
 				if( mi is PropertyInfo )
 					WriteProperty( (PropertyInfo)mi, typeHtml );
 				else if( mi is ConstructorInfo )
-					WriteCtor( info.m_TypeName, (ConstructorInfo)mi, typeHtml );
+					WriteCtor( info.TypeName, (ConstructorInfo)mi, typeHtml );
 				else if( mi is MethodInfo )
 					WriteMethod( (MethodInfo)mi, typeHtml );
 			}
@@ -2390,45 +2425,149 @@ namespace Server.Commands
 			html.WriteLine( ")<br>" );
 		}
 
-		public static string GetGenericTypeName( Type type )
-		{
-			return GetGenericTypeName( type, "&lt;", "&gt;" );
-		}
+		/*
+				public static string GetGenericTypeName( Type type )
+				{
+					return GetGenericTypeName( type, "&lt;", "&gt;" );
+				}
 
-		public static string GetGenericTypeName( Type type, string leftGenericBracket, string rightGenericBracket )
+				public static string GetGenericTypeName( Type type, string leftGenericBracket, string rightGenericBracket )
+				{
+					string name = type.Name;
+
+					if( type.IsGenericType )
+					{
+						int index = name.IndexOf( '`' );
+
+						if( index > 0 )
+						{
+							StringBuilder sb = new StringBuilder( name.Substring( 0, index ) );
+
+							sb.Append( leftGenericBracket );
+
+							Type[] typeArguments = type.GetGenericArguments();
+
+							for( int i = 0; i < typeArguments.Length; i++ )
+							{
+								if( i != 0 )
+									sb.Append( ',' );
+
+								sb.Append( typeArguments[i].Name );
+							}
+
+							sb.Append( rightGenericBracket );
+
+							name = sb.ToString();
+
+						}
+					}
+					return name;
+				}
+		*/
+
+		public static void FormatGeneric( Type type, ref string typeName, ref string fileName, ref string linkName )
 		{
-			string name = type.Name;
+			string name = null;
+			string fnam = null;
+			string link = null;
 
 			if( type.IsGenericType )
 			{
-				int index = name.IndexOf( '`' );
+				int index = type.Name.IndexOf( '`' );
+				string rootType = type.Name.Substring( 0, index );
 
 				if( index > 0 )
 				{
-					StringBuilder sb = new StringBuilder( name.Substring( 0, index ) );
+					StringBuilder nameBuilder = new StringBuilder( rootType );
+					StringBuilder fnamBuilder = new StringBuilder( "docs/types/" + Docs.SanitizeType( rootType ) );
+					StringBuilder linkBuilder;
+					if( DontLink( rootType ) )
+						linkBuilder = new StringBuilder( "<font color=\"blue\">" + rootType + "</font>" );
+					else
+						linkBuilder = new StringBuilder( "<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>" );
 
-					sb.Append( leftGenericBracket );
+					nameBuilder.Append( "&lt;" );
+					fnamBuilder.Append( "-" );
+					linkBuilder.Append( "&lt;" );
 
 					Type[] typeArguments = type.GetGenericArguments();
 
 					for( int i = 0; i < typeArguments.Length; i++ )
 					{
 						if( i != 0 )
-							sb.Append( ',' );
+						{
+							nameBuilder.Append( ',' );
+							fnamBuilder.Append( ',' );
+							linkBuilder.Append( ',' );
+						}
 
-						sb.Append( typeArguments[i].Name );
+						string sanitizedName = Docs.SanitizeType( typeArguments[i].Name );
+						string aliasedName   = Docs.AliasForName( sanitizedName );
+
+						nameBuilder.Append( sanitizedName );
+						fnamBuilder.Append( "T" );
+						if( DontLink( typeArguments[i].Name ) )
+							linkBuilder.Append( "<font color=\"blue\">" + aliasedName + "</font>" );
+						else
+							linkBuilder.Append( "<a href=\"" + "@directory@" + aliasedName + ".html\">" + aliasedName + "</a>" );
 					}
 
-					sb.Append( rightGenericBracket );
+					nameBuilder.Append( "&gt;" );
+					fnamBuilder.Append( "-" );
+					linkBuilder.Append( "&gt;" );
 
-					name = sb.ToString();
-
+					name = nameBuilder.ToString();
+					fnam = fnamBuilder.ToString();
+					link = linkBuilder.ToString();
 				}
 			}
+			if( name == null ) typeName = type.Name;
+			else typeName = name;
 
+			if( fnam == null ) fileName = "docs/types/" + Docs.SanitizeType( type.Name ) + ".html";
+			else fileName = fnam + ".html";
+
+			if( link == null )
+			{
+				if( DontLink( type.Name ) )
+					linkName =  "<font color=\"blue\">" + Docs.SanitizeType( type.Name ) + "</font>";
+				else
+					linkName =  "<a href=\"" + "@directory@" + Docs.SanitizeType( type.Name ) + ".html\">" + Docs.SanitizeType( type.Name ) + "</a>";
+			}
+			else linkName = link;
+
+			//Console.WriteLine( typeName+":"+fileName+":"+linkName );
+		}
+
+		public static string SanitizeType( string name )
+		{
+			bool anonymousType = false;
+			if( name.Contains( "<" ) ) anonymousType = true;
+			StringBuilder sb = new StringBuilder( name );
+			for( int i = 0; i < ReplaceChars.Length; ++i ) { sb.Replace( ReplaceChars[i], '-' ); }
+
+			if( anonymousType ) return "(Anonymous-Type)"+sb.ToString();
+			else return sb.ToString();
+		}
+
+		public static string AliasForName( string name )
+		{
+			for( int i = 0; i < m_AliasLength; ++i )
+			{
+				if( m_Aliases[i, 0] == name )
+				{
+					return m_Aliases[i, 1];
+				}
+			}
 			return name;
 		}
 
+		public static bool DontLink( string name )
+		{
+			foreach( string dontLink in m_DontLink )
+				if( dontLink == name ) return true;
+			return false;
+		}
 	}
 
 	#region BodyEntry & BodyType

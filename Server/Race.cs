@@ -106,7 +106,7 @@ namespace Server
 
 		private Expansion m_RequiredExpansion;
 
-		public Expansion RequiredExpasnion { get { return m_RequiredExpansion; } }
+		public Expansion RequiredExpansion { get { return m_RequiredExpansion; } }
 
 		public int MaleBody { get { return m_MaleBody; } }
 		public int MaleGhostBody { get { return m_MaleGhostBody; } }
