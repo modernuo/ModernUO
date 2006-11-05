@@ -28,6 +28,7 @@ namespace Server.Multis
 			MetalChest chest = new MetalChest();
 
 			chest.ItemID = 0xE7C;
+            chest.LiftOverride = true;
 			chest.DropItem( new Key( KeyType.Iron, gate.KeyValue ) );
 
 			TreasureMapChest.Fill( chest, 2 );
