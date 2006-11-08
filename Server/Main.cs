@@ -459,7 +459,7 @@ namespace Server
 					if( (++sample % sampleInterval) == 0 )
 					{
 						now = DateTime.Now;
-						m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] =
+						m_CyclesPerSecond[Math.Max( 0, m_CycleIndex++ % m_CyclesPerSecond.Length )] =
 							ticksPerSecond / (now.Ticks - last.Ticks);
 						last = now;
 					}
