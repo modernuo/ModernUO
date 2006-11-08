@@ -287,12 +287,12 @@ namespace Server
 
 		public static bool Closing { get { return m_Closing; } set { m_Closing = value; } }
 
-		private static int m_CycleIndex;
+		private static uint m_CycleIndex;
 		private static float[] m_CyclesPerSecond = new float[100];
 
 		public static float CyclesPerSecond
 		{
-			get { return m_CyclesPerSecond[Math.Max( 0, (m_CycleIndex - 1) % m_CyclesPerSecond.Length )]; }
+			get { return m_CyclesPerSecond[((uint)(m_CycleIndex - 1)) % m_CyclesPerSecond.Length]; }
 		}
 
 		public static float AverageCPS
@@ -459,7 +459,7 @@ namespace Server
 					if( (++sample % sampleInterval) == 0 )
 					{
 						now = DateTime.Now;
-						m_CyclesPerSecond[Math.Max( 0, m_CycleIndex++ % m_CyclesPerSecond.Length )] =
+						m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] =
 							ticksPerSecond / (now.Ticks - last.Ticks);
 						last = now;
 					}
