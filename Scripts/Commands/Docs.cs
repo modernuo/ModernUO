@@ -403,7 +403,7 @@ namespace Server.Commands
 		private static bool Document()
 		{
 			try { DeleteDirectory( "docs/" ); }
-			catch( System.IO.IOException e ) { return false; }
+			catch { return false; }
 
 			EnsureDirectory( "docs/" );
 			EnsureDirectory( "docs/namespaces/" );
