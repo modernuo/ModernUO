@@ -153,7 +153,23 @@ namespace Server.Items
 
 					DropItem( item );
 				}
-				else if ( item is BaseJewel )
+				else if( item is BaseHat )
+				{
+					BaseHat hat = (BaseHat)item;
+
+					if( Core.AOS )
+					{
+						int attributeCount;
+						int min, max;
+
+						GetRandomAOSStats( out attributeCount, out min, out  max );
+
+						BaseRunicTool.ApplyAttributesTo( hat, attributeCount, min, max );
+					}
+
+					DropItem( item );
+				}
+				else if( item is BaseJewel )
 				{
 					int attributeCount;
 					int min, max;
