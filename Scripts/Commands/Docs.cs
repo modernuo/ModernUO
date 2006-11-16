@@ -268,21 +268,6 @@ namespace Server.Commands
 				{ "System.Char",	"<font color=\"blue\">char</font>" },
 				{ "System.Void",	"<font color=\"blue\">void</font>" },
 			};
-		// For stuff we don't want to links to
-		private static string[] m_DontLink = new string[]
-		{
-				"List",
-				"Stack",
-				"Queue",
-				"Dictionary",
-				"LinkedList",
-				"SortedList",
-				"SortedDictionary",
-				"IComparable",
-				"IComparer",
-				"ICloneable",
-				"Type"
-			};
 
 		private static int m_AliasLength = m_Aliases.GetLength( 0 );
 
@@ -2154,6 +2139,7 @@ namespace Server.Commands
 			}
 		}
 
+		#region Write[...]
 		private static void WriteEnum( TypeInfo info, StreamWriter typeHtml )
 		{
 			Type type = info.m_Type;
@@ -2424,46 +2410,7 @@ namespace Server.Commands
 
 			html.WriteLine( ")<br>" );
 		}
-
-		/*
-				public static string GetGenericTypeName( Type type )
-				{
-					return GetGenericTypeName( type, "&lt;", "&gt;" );
-				}
-
-				public static string GetGenericTypeName( Type type, string leftGenericBracket, string rightGenericBracket )
-				{
-					string name = type.Name;
-
-					if( type.IsGenericType )
-					{
-						int index = name.IndexOf( '`' );
-
-						if( index > 0 )
-						{
-							StringBuilder sb = new StringBuilder( name.Substring( 0, index ) );
-
-							sb.Append( leftGenericBracket );
-
-							Type[] typeArguments = type.GetGenericArguments();
-
-							for( int i = 0; i < typeArguments.Length; i++ )
-							{
-								if( i != 0 )
-									sb.Append( ',' );
-
-								sb.Append( typeArguments[i].Name );
-							}
-
-							sb.Append( rightGenericBracket );
-
-							name = sb.ToString();
-
-						}
-					}
-					return name;
-				}
-		*/
+		#endregion
 
 		public static void FormatGeneric( Type type, ref string typeName, ref string fileName, ref string linkName )
 		{
@@ -2481,7 +2428,7 @@ namespace Server.Commands
 					StringBuilder nameBuilder = new StringBuilder( rootType );
 					StringBuilder fnamBuilder = new StringBuilder( "docs/types/" + Docs.SanitizeType( rootType ) );
 					StringBuilder linkBuilder;
-					if( DontLink( rootType ) )
+					if( DontLink( type ) )//if( DontLink( rootType ) )
 						linkBuilder = new StringBuilder( "<font color=\"blue\">" + rootType + "</font>" );
 					else
 						linkBuilder = new StringBuilder( "<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>" );
@@ -2506,7 +2453,7 @@ namespace Server.Commands
 
 						nameBuilder.Append( sanitizedName );
 						fnamBuilder.Append( "T" );
-						if( DontLink( typeArguments[i].Name ) )
+						if( DontLink( typeArguments[i] ) )//if( DontLink( typeArguments[i].Name ) )
 							linkBuilder.Append( "<font color=\"blue\">" + aliasedName + "</font>" );
 						else
 							linkBuilder.Append( "<a href=\"" + "@directory@" + aliasedName + ".html\">" + aliasedName + "</a>" );
@@ -2529,7 +2476,7 @@ namespace Server.Commands
 
 			if( link == null )
 			{
-				if( DontLink( type.Name ) )
+				if( DontLink( type ) ) //if( DontLink( type.Name ) )
 					linkName =  "<font color=\"blue\">" + Docs.SanitizeType( type.Name ) + "</font>";
 				else
 					linkName =  "<a href=\"" + "@directory@" + Docs.SanitizeType( type.Name ) + ".html\">" + Docs.SanitizeType( type.Name ) + "</a>";
@@ -2562,11 +2509,39 @@ namespace Server.Commands
 			return name;
 		}
 
+		/*
+		// For stuff we don't want to links to
+		private static string[] m_DontLink = new string[]
+		{
+				"List",
+				"Stack",
+				"Queue",
+				"Dictionary",
+				"LinkedList",
+				"SortedList",
+				"SortedDictionary",
+				"IComparable",
+				"IComparer",
+				"ICloneable",
+				"Type"
+		};
+
 		public static bool DontLink( string name )
 		{
 			foreach( string dontLink in m_DontLink )
 				if( dontLink == name ) return true;
 			return false;
+		}
+		*/
+		public static bool DontLink( Type type )
+		{
+			if( type.Namespace.StartsWith( "Server" ) )
+				return false;
+
+			if( m_Namespaces == null )
+				return false;		//sanity
+
+			return  !m_Namespaces.ContainsKey( type.Namespace );
 		}
 	}
 

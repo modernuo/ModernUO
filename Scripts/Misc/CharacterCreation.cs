@@ -889,7 +889,7 @@ namespace Server.Misc
 		{
 			name = name.Trim();
 
-			if ( !NameVerification.Validate( name, 2, 16, true, true, true, 1, NameVerification.SpaceDashPeriodQuote ) )
+			if ( !NameVerification.Validate( name, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote ) )
 				name = "Generic Player";
 
 			m.Name = name;
