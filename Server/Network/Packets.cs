@@ -1983,7 +1983,8 @@ namespace Server.Network
 			m_Stream.Write( (int) m_Gump.X );
 			m_Stream.Write( (int) m_Gump.Y );
 
-			// Note: layout seems to be null terminated on OSI, but it works either ways
+			// Note: layout MUST be null terminated (don't listen to krrios)
+			m_Layout.WriteByte( (byte) 0 );
 			WritePacked( m_Layout );
 
 			m_Stream.Write( (int) m_StringCount );
