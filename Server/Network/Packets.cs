@@ -1984,7 +1984,7 @@ namespace Server.Network
 			m_Stream.Write( (int) m_Gump.Y );
 
 			// Note: layout MUST be null terminated (don't listen to krrios)
-			m_Layout.WriteByte( (byte) 0 );
+			m_Layout.Write( (byte) 0 );
 			WritePacked( m_Layout );
 
 			m_Stream.Write( (int) m_StringCount );
