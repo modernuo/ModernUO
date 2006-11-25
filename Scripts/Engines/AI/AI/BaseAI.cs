@@ -520,6 +520,7 @@ namespace Server.Mobiles
 								return;
 							}
 							case 0x166: // all guard
+							case 0x16B: // all guard me
 							{
 								if( !isOwner )
 									break;
@@ -547,18 +548,6 @@ namespace Server.Mobiles
 									break;
 
 								BeginPickTarget( e.Mobile, OrderType.Attack );
-								return;
-							}
-							case 0x16B: // all guard me
-							{
-								if( !isOwner )
-									break;
-
-								if( m_Mobile.CheckControlChance( e.Mobile ) )
-								{
-									m_Mobile.ControlTarget = e.Mobile;
-									m_Mobile.ControlOrder = OrderType.Guard;
-								}
 								return;
 							}
 							case 0x16C: // all follow me

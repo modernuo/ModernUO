@@ -127,6 +127,8 @@ namespace Server.Items
 
 				from.Direction = from.GetDirectionTo( target );
 
+				from.RevealingAction();
+
 				if ( from.Body.IsHuman )
 					from.Animate( from.Mounted ? 26 : 9, 7, 1, true, false, 0 );
 
