@@ -79,9 +79,9 @@ namespace Server.Guilds
 	#region Alliances
 	public class AllianceInfo
 	{
-		private static Hashtable m_Alliances = new Hashtable();
+		private static Dictionary<string, AllianceInfo> m_Alliances = new Dictionary<string, AllianceInfo>();
 
-		public static Hashtable Alliances
+		public static Dictionary<string, AllianceInfo> Alliances
 		{
 			get{ return m_Alliances; }
 		}
@@ -99,8 +99,6 @@ namespace Server.Guilds
 		public void CalculateAllianceLeader()
 		{
 			m_Leader = ((m_Members.Count >= 2) ? m_Members[Utility.Random( m_Members.Count )] : null);
-
-
 		}
 
 		public void CheckLeader()
@@ -160,7 +158,7 @@ namespace Server.Guilds
 			leader.Alliance = this;
 			partner.Alliance = this;
 
-			if( !m_Alliances.Contains( m_Name.ToLower() ) )
+			if( !m_Alliances.ContainsKey( m_Name.ToLower() ) )
 				m_Alliances.Add( m_Name.ToLower(), this );
 		}
 
@@ -174,7 +172,7 @@ namespace Server.Guilds
 			writer.WriteGuildList( m_Members, true );
 			writer.WriteGuildList( m_PendingMembers, true );
 
-			if( !m_Alliances.Contains( m_Name.ToLower() ) )
+			if( !m_Alliances.ContainsKey( m_Name.ToLower() ) )
 				m_Alliances.Add( m_Name.ToLower(), this );
 		}
 
@@ -220,9 +218,6 @@ namespace Server.Guilds
 
 		public void RemoveGuild( Guild g )
 		{
-			if( g.Alliance != this )
-				return;
-
 			if( m_PendingMembers.Contains( g ) )
 			{
 				m_PendingMembers.Remove( g );
@@ -267,7 +262,12 @@ namespace Server.Guilds
 			for( int i =0; i < m_Members.Count; i++ )
 				m_Members[i].Alliance = null;
 
-			if( m_Alliances[m_Name.ToLower()] == this )
+
+			AllianceInfo aInfo = null;
+
+			m_Alliances.TryGetValue( m_Name.ToLower(), out aInfo );
+
+			if( aInfo == this )
 				m_Alliances.Remove( m_Name.ToLower() );
 		}
 
