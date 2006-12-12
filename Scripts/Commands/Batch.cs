@@ -355,7 +355,7 @@ namespace Server.Commands
 				if ( entry != null )
 					sc.Object = entry.Text;
 
-				if ( sc.Command == "" && sc.Object == "" )
+				if ( sc.Command.Length == 0 && sc.Object.Length == 0 )
 					m_Batch.BatchCommands.RemoveAt( i );
 			}
 

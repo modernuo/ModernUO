@@ -96,12 +96,12 @@ namespace Server.Items
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{
-			list.Add( 1054000, m_Charges.ToString() + ( m_Inscription == "" ? "\t " : " :\t" + m_Inscription ) ); // a bracelet of binding : ~1_val~ ~2_val~
+			list.Add( 1054000, m_Charges.ToString() + ( m_Inscription.Length == 0 ? "\t " : " :\t" + m_Inscription ) ); // a bracelet of binding : ~1_val~ ~2_val~
 		}
 
 		public override void OnSingleClick( Mobile from )
 		{
-			LabelTo( from, 1054000, m_Charges.ToString() + ( m_Inscription == "" ? "\t " : " :\t" + m_Inscription ) ); // a bracelet of binding : ~1_val~ ~2_val~
+			LabelTo( from, 1054000, m_Charges.ToString() + ( m_Inscription.Length == 0 ? "\t " : " :\t" + m_Inscription ) ); // a bracelet of binding : ~1_val~ ~2_val~
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )

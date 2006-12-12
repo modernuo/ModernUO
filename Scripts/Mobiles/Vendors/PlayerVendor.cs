@@ -232,7 +232,7 @@ namespace Server.Mobiles
 					else
 						item.LabelTo( from, 1043304, vi.Price.ToString() ); // Price: ~1_COST~
 
-					if ( vi.Description != null && vi.Description != "" )
+					if ( !String.IsNullOrEmpty( vi.Description ) )
 					{
 						// The localized message (1043305) is no longer valid - <br>Seller's Description:<br>"~1_DESC~"
 						item.LabelTo( from, "Description: {0}", vi.Description );
@@ -961,7 +961,7 @@ namespace Server.Mobiles
 			if ( vi != null )
 			{
 				string name;
-				if ( item.Name != null && item.Name != "" )
+				if ( !String.IsNullOrEmpty( item.Name ) )
 					name = item.Name;
 				else
 					name = "#" + item.LabelNumber.ToString();

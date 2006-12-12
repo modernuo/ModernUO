@@ -46,7 +46,7 @@ namespace Server.Misc
 					footer = "This profile has been locked.";
 			}
 
-			if ( footer == "" && beholder == beheld )
+			if ( footer.Length == 0 && beholder == beheld )
 				footer = GetAccountDuration( beheld );
 
 			string body = beheld.Profile;

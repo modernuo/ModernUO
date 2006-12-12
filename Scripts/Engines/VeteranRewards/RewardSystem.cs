@@ -138,7 +138,7 @@ namespace Server.Engines.VeteranRewards
 
 			string tag = acct.GetTag( "numRewardsChosen" );
 
-			if ( tag == null || tag == "" )
+			if ( String.IsNullOrEmpty( tag ) )
 				cur = 0;
 			else
 				cur = Utility.ToInt32( tag );

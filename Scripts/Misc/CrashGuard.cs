@@ -69,7 +69,7 @@ namespace Server.Misc
 
 		private static string Combine( string path1, string path2 )
 		{
-			if ( path1 == "" )
+			if ( path1.Length == 0 )
 				return path2;
 
 			return Path.Combine( path1, path2 );

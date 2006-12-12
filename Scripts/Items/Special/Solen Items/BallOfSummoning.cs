@@ -95,12 +95,12 @@ namespace Server.Items
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{
-			list.Add( 1054131, m_Charges.ToString() + ( m_PetName == "" ? "\t " : "\t" + m_PetName ) ); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+			list.Add( 1054131, m_Charges.ToString() + ( m_PetName.Length == 0 ? "\t " : "\t" + m_PetName ) ); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
 		}
 
 		public override void OnSingleClick( Mobile from )
 		{
-			LabelTo( from, 1054131, m_Charges.ToString() + ( m_PetName == "" ? "\t " : "\t" + m_PetName ) ); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+			LabelTo( from, 1054131, m_Charges.ToString() + ( m_PetName.Length == 0 ? "\t " : "\t" + m_PetName ) ); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
 		}
 
 		private delegate void BallCallback( Mobile from );

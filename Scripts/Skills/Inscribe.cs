@@ -46,7 +46,7 @@ namespace Server.SkillHandlers
 			{
 				foreach ( string line in page.Lines )
 				{
-					if ( line.Trim() != "" )
+					if ( line.Trim().Length != 0 )
 						return false;
 				}
 			}
