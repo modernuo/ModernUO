@@ -104,7 +104,10 @@ namespace Server.Gumps
 					if ( xml.NodeType == XmlNodeType.Element && xml.Name == "object" )
 						nodes.Add( new CAGObject( this, xml ) );
 					else if ( xml.NodeType == XmlNodeType.Element && xml.Name == "category" )
-						nodes.Add( new CAGCategory( this, xml ) );
+					{
+						if( !xml.IsEmptyElement )
+							nodes.Add( new CAGCategory( this, xml ) );
+					}
 					else
 						xml.Skip();
 				}
@@ -155,6 +158,11 @@ namespace Server.Gumps
 	{
 		public static bool OldStyle = PropsConfig.OldStyle;
 
+		public static readonly int EntryHeight = 24;//PropsConfig.EntryHeight;
+
+		public static readonly int OffsetSize = PropsConfig.OffsetSize;
+		public static readonly int BorderSize = PropsConfig.BorderSize;
+
 		public static readonly int GumpOffsetX = PropsConfig.GumpOffsetX;
 		public static readonly int GumpOffsetY = PropsConfig.GumpOffsetY;
 
@@ -181,11 +189,6 @@ namespace Server.Gumps
 		public static readonly int NextOffsetX = PropsConfig.NextOffsetX, NextOffsetY = PropsConfig.NextOffsetY + (((EntryHeight - 20) / 2) / 2);
 		public static readonly int NextButtonID1 = PropsConfig.NextButtonID1;
 		public static readonly int NextButtonID2 = PropsConfig.NextButtonID2;
-
-		public static readonly int OffsetSize = PropsConfig.OffsetSize;
-
-		public static readonly int EntryHeight = 24;//PropsConfig.EntryHeight;
-		public static readonly int BorderSize = PropsConfig.BorderSize;
 
 		private static bool PrevLabel = false, NextLabel = false;
 
