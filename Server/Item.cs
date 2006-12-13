@@ -2912,7 +2912,7 @@ namespace Server
 
 									ns.Send( p );
 
-									if ( sendOPLUpdate )
+									if ( ObjectPropertyList.Enabled )
 										ns.Send( OPLPacket );
 								}
 							}
@@ -2949,7 +2949,7 @@ namespace Server
 
 											ns.Send( p );
 
-											if ( sendOPLUpdate )
+											if ( ObjectPropertyList.Enabled )
 												ns.Send( OPLPacket );
 										}
 									}
@@ -2987,7 +2987,7 @@ namespace Server
 
 											ns.Send( p );
 
-											if ( sendOPLUpdate )
+											if ( ObjectPropertyList.Enabled )
 												ns.Send( OPLPacket );
 										}
 									}
@@ -3016,7 +3016,7 @@ namespace Server
 
 						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
 							if ( m_Parent == null ) {
-								SendInfoTo( state, sendOPLUpdate );
+								SendInfoTo( state, ObjectPropertyList.Enabled );
 							} else {
 								if ( p == null ) {
 									if ( m_Parent is Item ) {
@@ -3030,7 +3030,7 @@ namespace Server
 
 								state.Send( p );
 
-								if ( sendOPLUpdate ) {
+								if ( ObjectPropertyList.Enabled ) {
 									state.Send( OPLPacket );
 								}
 							}
@@ -3065,7 +3065,7 @@ namespace Server
 
 								state.Send( p );
 
-								if ( sendOPLUpdate )
+								if ( ObjectPropertyList.Enabled )
 									state.Send( OPLPacket );
 							}
 						}

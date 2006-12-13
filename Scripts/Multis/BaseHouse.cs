@@ -511,13 +511,35 @@ namespace Server.Multis
 				if ( !addon.Deleted )
 				{
 					Item deed = null;
+					bool retainDeedHue = false;	//if the items aren't hued but the deed itself is
+					int hue = 0;
 
-					if ( addon is IAddon )
+					if( addon is IAddon )
+					{
 						deed = ((IAddon)addon).Deed;
+
+						if( addon is BaseAddon && ((BaseAddon)addon).RetainDeedHue)	//There are things that are IAddon which aren't BaseAddon
+						{
+							BaseAddon ba = (BaseAddon)addon;
+							retainDeedHue = true;
+
+							for( int i = 0; hue == 0 && i < ba.Components.Count; ++i )
+							{
+								AddonComponent c = ba.Components[i];
+
+								if( c.Hue != 0 )
+									hue = c.Hue;
+							}
+						}
+					}
 
 					if ( deed != null )
 					{
 						addon.Delete();
+
+						if( retainDeedHue )
+							deed.Hue = hue;
+
 						DropToMovingCrate( deed );
 					}
 					else
@@ -673,9 +695,30 @@ namespace Server.Multis
 							if ( item is StrongBox )
 								relocateItem = ((StrongBox)item).ConvertToStandardContainer();
 
-							if ( item is IAddon )
+							if( item is IAddon )
 							{
-								relocateItem = ((IAddon)item).Deed;
+								Item deed = ((IAddon)item).Deed;
+								bool retainDeedHue = false;	//if the items aren't hued but the deed itself is
+								int hue = 0;
+
+								if( item is BaseAddon && ((BaseAddon)item).RetainDeedHue )	//There are things that are IAddon which aren't BaseAddon
+								{
+									BaseAddon ba = (BaseAddon)item;
+									retainDeedHue = true;
+
+									for( int i = 0; hue == 0 && i < ba.Components.Count; ++i )
+									{
+										AddonComponent c = ba.Components[i];
+
+										if( c.Hue != 0 )
+											hue = c.Hue;
+									}
+								}
+
+								if( deed != null && retainDeedHue )
+									deed.Hue = hue;
+
+								relocateItem = deed;
 								item.Delete();
 							}
 
@@ -2937,12 +2980,33 @@ namespace Server.Multis
 
 					if ( item != null )
 					{
-						if ( !item.Deleted && item is IAddon )
+						if( !item.Deleted && item is IAddon )
 						{
-							Item deed = ((IAddon)item).Deed;
 
-							if ( deed != null )
+							Item deed = ((IAddon)item).Deed;
+							bool retainDeedHue = false;	//if the items aren't hued but the deed itself is
+							int hue = 0;
+
+							if( item is BaseAddon && ((BaseAddon)item).RetainDeedHue )	//There are things that are IAddon which aren't BaseAddon
+							{
+								BaseAddon ba = (BaseAddon)item;
+								retainDeedHue = true;
+
+								for( int j = 0; hue == 0 && j < ba.Components.Count; ++j )
+								{
+									AddonComponent c = ba.Components[j];
+
+									if( c.Hue != 0 )
+										hue = c.Hue;
+								}
+							}
+
+							if( deed != null )
+							{
+								if( retainDeedHue )
+									deed.Hue = hue;
 								deed.MoveToWorld( item.Location, item.Map );
+							}
 						}
 
 						item.Delete();
