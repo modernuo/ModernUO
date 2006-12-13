@@ -1467,6 +1467,7 @@ namespace Server.Multis
 				int amt = 1 + item.TotalItems;
 
 				Item rootItem = item.RootParent as Item;
+				Item parentItem = item.Parent as Item;
 
 				if ( checkIsInside && item.RootParent is Mobile )
 				{
@@ -1484,7 +1485,7 @@ namespace Server.Multis
 				{
 					m.SendLocalizedMessage( 501737 ); // You need not lock down items in a secure container.
 				}
-				else if ( rootItem != null && !IsLockedDown( rootItem ) )
+				else if ( parentItem != null && !IsLockedDown( parentItem ) )
 				{
 					m.SendLocalizedMessage( 501736 ); // You must lockdown the container first!
 				}
