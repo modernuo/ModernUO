@@ -63,7 +63,7 @@ namespace Server.Guilds
 				AddButton( 40, 251, 0x4B9, 0x4BA, 4, GumpButtonType.Reply, 0 );	//Charter Edit button
 
 			s = guild.Website;
-			if( s == null || s == "" )
+			if( string.IsNullOrEmpty( s ) )
 				s = "Guild website not yet set.";
 			AddHtml( 65, 306, 480, 30, s, true, false );
 			if( isLeader )

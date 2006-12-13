@@ -1055,7 +1055,7 @@ namespace Server.Commands
 					break;
 			}
 
-			if ( line == null || line.Length == 0 )
+			if ( string.IsNullOrEmpty( line ) )
 				return null;
 
 			DecorationList list = new DecorationList();

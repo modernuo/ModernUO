@@ -477,13 +477,16 @@ namespace Server.Network
 			{
 				string name = info.Crafter.Name;
 
-				if ( name == null ) name = "";
-
-				int length = (ushort)name.Length;
-
 				m_Stream.Write( (int) -3 );
-				m_Stream.Write( (ushort) length );
-				m_Stream.WriteAsciiFixed( name, length );
+
+				if ( name == null ) 
+					m_Stream.Write( (ushort) 0 );
+				else
+				{
+					int length = name.Length;
+					m_Stream.Write( (ushort) length );
+					m_Stream.WriteAsciiFixed( name, length );
+				}
 			}
 
 			if ( info.Unidentified )
@@ -695,12 +698,14 @@ namespace Server.Network
 
 			string question = menu.Question;
 
-			if ( question == null ) question = "";
-
-			int questionLength = (byte)question.Length;
-
-			m_Stream.Write( (byte) questionLength );
-			m_Stream.WriteAsciiFixed( question, questionLength );
+			if ( question == null )
+				m_Stream.Write( (byte) 0 );
+			else
+			{
+				int questionLength = question.Length;
+				m_Stream.Write( (byte) questionLength );
+				m_Stream.WriteAsciiFixed( question, questionLength );
+			}
 
 			ItemListEntry[] entries = menu.Entries;
 
@@ -717,12 +722,14 @@ namespace Server.Network
 
 				string name = e.Name;
 
-				if ( name == null ) name = "";
-
-				int nameLength = (byte)name.Length;
-
-				m_Stream.Write( (byte) nameLength );
-				m_Stream.WriteAsciiFixed( name, nameLength );
+				if ( name == null )
+					m_Stream.Write( (byte) 0 );
+				else
+				{
+					int nameLength = name.Length;
+					m_Stream.Write( (byte) nameLength );
+					m_Stream.WriteAsciiFixed( name, nameLength );
+				}
 			}
 		}
 	}
@@ -738,12 +745,14 @@ namespace Server.Network
 
 			string question = menu.Question;
 
-			if ( question == null ) question = "";
-
-			int questionLength = (byte)question.Length;
-
-			m_Stream.Write( (byte) questionLength );
-			m_Stream.WriteAsciiFixed( question, questionLength );
+			if ( question == null ) 
+				m_Stream.Write( (byte) 0 );
+			else
+			{
+				int questionLength = question.Length;
+				m_Stream.Write( (byte) questionLength );
+				m_Stream.WriteAsciiFixed( question, questionLength );
+			}
 
 			string[] answers = menu.Answers;
 
@@ -757,12 +766,14 @@ namespace Server.Network
 
 				string answer = answers[i];
 
-				if ( answer == null ) answer = "";
-
-				int answerLength = (byte)answer.Length;
-
-				m_Stream.Write( (byte) answerLength );
-				m_Stream.WriteAsciiFixed( answer, answerLength );
+				if ( answer == null ) 
+					m_Stream.Write( (byte) 0 );
+				else
+				{
+					int answerLength = answer.Length;
+					m_Stream.Write( (byte) answerLength );
+					m_Stream.WriteAsciiFixed( answer, answerLength );
+				}
 			}
 		}
 	}
@@ -2889,7 +2900,7 @@ namespace Server.Network
 	{
 		public UnicodeMessage( Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name, string text ) : base( 0xAE )
 		{
-			if ( lang == null || lang == "" ) lang = "ENU";
+			if ( string.IsNullOrEmpty( lang ) ) lang = "ENU";
 			if ( name == null ) name = "";
 			if ( text == null ) text = "";
 

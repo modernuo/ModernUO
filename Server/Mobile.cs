@@ -4666,7 +4666,7 @@ namespace Server
 
 			text = regArgs.Speech;
 
-			if( text == null || text.Length == 0 )
+			if( string.IsNullOrEmpty( text ) )
 				return;
 
 			if( m_Hears == null )

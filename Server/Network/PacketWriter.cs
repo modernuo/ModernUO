@@ -207,7 +207,19 @@ namespace Server.Network
 				value = String.Empty;
 			}
 
-			byte[] buffer = Encoding.ASCII.GetBytes( value );
+			int length = value.Length;
+
+			m_Stream.SetLength( m_Stream.Length + size );
+
+			if ( length >= size )
+				m_Stream.Position += Encoding.ASCII.GetBytes( value, 0, size, m_Stream.GetBuffer(), (int)m_Stream.Position );
+			else
+			{
+				Encoding.ASCII.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+				m_Stream.Position += size;
+			}
+
+			/*byte[] buffer = Encoding.ASCII.GetBytes( value );
 
 			if ( buffer.Length >= size )
 			{
@@ -217,7 +229,7 @@ namespace Server.Network
 			{
 				m_Stream.Write( buffer, 0, buffer.Length );
 				Fill( size - buffer.Length );
-			}
+			}*/
 		}
 
 		/// <summary>
@@ -231,10 +243,17 @@ namespace Server.Network
 				value = String.Empty;
 			}
 
-			byte[] buffer = Encoding.ASCII.GetBytes( value );
+			int length = value.Length;
+
+			m_Stream.SetLength( m_Stream.Length + length + 1 );
+
+			Encoding.ASCII.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+			m_Stream.Position += length + 1;
+
+			/*byte[] buffer = Encoding.ASCII.GetBytes( value );
 
 			m_Stream.Write( buffer, 0, buffer.Length );
-			m_Stream.WriteByte( 0 );
+			m_Stream.WriteByte( 0 );*/
 		}
 
 		/// <summary>
@@ -248,13 +267,20 @@ namespace Server.Network
 				value = String.Empty;
 			}
 
-			byte[] buffer = Encoding.Unicode.GetBytes( value );
+			int length = value.Length;
+
+			m_Stream.SetLength( m_Stream.Length + ( ( length + 1 ) * 2 ) );
+
+			m_Stream.Position += Encoding.Unicode.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+			m_Stream.Position += 2;
+
+			/*byte[] buffer = Encoding.Unicode.GetBytes( value );
 
 			m_Stream.Write( buffer, 0, buffer.Length );
 
 			m_Buffer[0] = 0;
 			m_Buffer[1] = 0;
-			m_Stream.Write( m_Buffer, 0, 2 );
+			m_Stream.Write( m_Buffer, 0, 2 );*/
 		}
 
 		/// <summary>
@@ -270,6 +296,20 @@ namespace Server.Network
 
 			size *= 2;
 
+			int length = value.Length;
+
+			m_Stream.SetLength( m_Stream.Length + size );
+
+			if ( ( length * 2 ) >= size )
+				m_Stream.Position += Encoding.Unicode.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+			else
+			{
+				Encoding.Unicode.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+				m_Stream.Position += size;
+			}
+
+			/*size *= 2;
+
 			byte[] buffer = Encoding.Unicode.GetBytes( value );
 
 			if ( buffer.Length >= size )
@@ -280,7 +320,7 @@ namespace Server.Network
 			{
 				m_Stream.Write( buffer, 0, buffer.Length );
 				Fill( size - buffer.Length );
-			}
+			}*/
 		}
 
 		/// <summary>
@@ -294,13 +334,20 @@ namespace Server.Network
 				value = String.Empty;
 			}
 
-			byte[] buffer = Encoding.BigEndianUnicode.GetBytes( value );
+			int length = value.Length;
+
+			m_Stream.SetLength( m_Stream.Length + ( ( length + 1 ) * 2 ) );
+
+			m_Stream.Position += Encoding.BigEndianUnicode.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+			m_Stream.Position += 2;
+
+			/*byte[] buffer = Encoding.BigEndianUnicode.GetBytes( value );
 
 			m_Stream.Write( buffer, 0, buffer.Length );
 
 			m_Buffer[0] = 0;
 			m_Buffer[1] = 0;
-			m_Stream.Write( m_Buffer, 0, 2 );
+			m_Stream.Write( m_Buffer, 0, 2 );*/
 		}
 
 		/// <summary>
@@ -316,6 +363,20 @@ namespace Server.Network
 
 			size *= 2;
 
+			int length = value.Length;
+
+			m_Stream.SetLength( m_Stream.Length + size );
+
+			if ( ( length * 2 ) >= size )
+				m_Stream.Position += Encoding.BigEndianUnicode.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+			else
+			{
+				Encoding.BigEndianUnicode.GetBytes( value, 0, length, m_Stream.GetBuffer(), (int)m_Stream.Position );
+				m_Stream.Position += size;
+			}
+
+			/*size *= 2;
+
 			byte[] buffer = Encoding.BigEndianUnicode.GetBytes( value );
 
 			if ( buffer.Length >= size )
@@ -326,7 +387,7 @@ namespace Server.Network
 			{
 				m_Stream.Write( buffer, 0, buffer.Length );
 				Fill( size - buffer.Length );
-			}
+			}*/
 		}
 
 		/// <summary>
