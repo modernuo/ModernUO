@@ -1274,6 +1274,8 @@ namespace Server.Gumps
 
 						if ( online )
 							AddLabelCropped( 252, offset, 120, 20, GreenHue, "Online" );
+						else if( a.Banned )
+							AddLabelCropped( 252, offset, 120, 20, RedHue, "Banned" );
 						else
 							AddLabelCropped( 252, offset, 120, 20, RedHue, "Offline" );
 
