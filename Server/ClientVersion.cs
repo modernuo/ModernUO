@@ -222,8 +222,16 @@ namespace Server
 			builder.Append( '.' );
 			builder.Append( m_Revision );
 
-			if ( m_Patch > 0 )
-				builder.Append( (char)('a' + (m_Patch - 1)) );
+			if( m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6 )	//Anything before 5.0.7
+			{
+				if( m_Patch > 0 )
+					builder.Append( (char)('a' + (m_Patch - 1)) );
+			}
+			else
+			{
+				builder.Append( '.' );
+				builder.Append( m_Patch );
+			}
 
 			if ( m_Type != ClientType.Regular )
 			{
@@ -249,18 +257,22 @@ namespace Server
 				while ( br3 < fmt.Length && Char.IsDigit( fmt, br3 ) )
 					br3++;
 
-				//m_Major = int.Parse( fmt.Substring( 0, br1 ) );
-				//m_Minor = int.Parse( fmt.Substring( br1 + 1, br2 - br1 - 1 ) );
-				//m_Revision = int.Parse( fmt.Substring( br2 + 1, br3 - br2 - 1 ) );
-
 				m_Major = Utility.ToInt32( fmt.Substring( 0, br1 ) );
 				m_Minor = Utility.ToInt32( fmt.Substring( br1 + 1, br2 - br1 - 1 ) );
 				m_Revision = Utility.ToInt32( fmt.Substring( br2 + 1, br3 - br2 - 1 ) );
 
-				if ( br3 < fmt.Length && !Char.IsWhiteSpace( fmt, br3 ) )
-					m_Patch = (fmt[br3] - 'a') + 1;
-				else
-					m_Patch = 0;
+				if( br3 < fmt.Length )
+				{
+					if( m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6 )	//Anything before 5.0.7
+					{
+						if( !Char.IsWhiteSpace( fmt, br3 ) )
+							m_Patch = (fmt[br3] - 'a') + 1;
+					}
+					else
+					{
+						m_Patch = Utility.ToInt32( fmt.Substring( br3+1, fmt.Length - br3 - 1 ) );
+					}
+				}
 
 				if ( fmt.IndexOf( "god" ) >= 0 || fmt.IndexOf( "gq" ) >= 0 )
 					m_Type = ClientType.God;
