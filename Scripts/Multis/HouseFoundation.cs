@@ -1,14 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Collections;
 using Server;
+using Server.Commands;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
-using Server.Commands;
 
 namespace Server.Multis
 {
@@ -32,13 +32,13 @@ namespace Server.Multis
 		private Item m_Signpost;       // Item supporting the hanger.
 		private int m_SignpostGraphic; // ItemID number of the chosen signpost.
 		private int m_LastRevision;    // Latest revision number.
-		private ArrayList m_Fixtures;  // List of fixtures (teleporters and doors) associated with this house.
+		private List<Item> m_Fixtures; // List of fixtures (teleporters and doors) associated with this house.
 		private FoundationType m_Type; // Graphic type of this foundation.
 		private Mobile m_Customizer;   // Who is currently customizing this -or- null if not customizing.
 
 		public FoundationType Type { get { return m_Type; } set { m_Type = value; } }
 		public int LastRevision { get { return m_LastRevision; } set { m_LastRevision = value; } }
-		public ArrayList Fixtures { get { return m_Fixtures; } }
+		public List<Item> Fixtures { get { return m_Fixtures; } }
 		public Item SignHanger { get { return m_SignHanger; } }
 		public Item Signpost { get { return m_Signpost; } }
 		public int SignpostGraphic { get { return m_SignpostGraphic; } set { m_SignpostGraphic = value; } }
@@ -126,7 +126,7 @@ namespace Server.Multis
 
 			for( int i = 0; i < m_Fixtures.Count; ++i )
 			{
-				Item item = (Item)m_Fixtures[i];
+				Item item = m_Fixtures[i];
 
 				if( item != null )
 					item.Delete();
@@ -154,7 +154,7 @@ namespace Server.Multis
 
 			for( int i = 0; i < m_Fixtures.Count; ++i )
 			{
-				Item item = (Item)m_Fixtures[i];
+				Item item = m_Fixtures[i];
 
 				if( Doors.Contains( item ) )
 					continue;
@@ -177,7 +177,7 @@ namespace Server.Multis
 				return;
 
 			for( int i = 0; i < m_Fixtures.Count; ++i )
-				((Item)m_Fixtures[i]).Map = this.Map;
+				m_Fixtures[i].Map = this.Map;
 		}
 
 		public void ClearFixtures( Mobile from )
@@ -189,7 +189,7 @@ namespace Server.Multis
 
 			for( int i = 0; i < m_Fixtures.Count; ++i )
 			{
-				((Item)m_Fixtures[i]).Delete();
+				m_Fixtures[i].Delete();
 				Doors.Remove( m_Fixtures[i] );
 			}
 
@@ -199,7 +199,7 @@ namespace Server.Multis
 		public void AddFixtures( Mobile from, MultiTileEntry[] list )
 		{
 			if( m_Fixtures == null )
-				m_Fixtures = new ArrayList();
+				m_Fixtures = new List<Item>();
 
 			uint keyValue = 0;
 
@@ -367,7 +367,7 @@ namespace Server.Multis
 
 			for( int i = 0; i < m_Fixtures.Count; ++i )
 			{
-				Item fixture = (Item)m_Fixtures[i];
+				Item fixture = m_Fixtures[i];
 
 				if( fixture is HouseTeleporter )
 				{
@@ -575,7 +575,7 @@ namespace Server.Multis
 		{
 			m_SignpostGraphic = 9;
 
-			m_Fixtures = new ArrayList();
+			m_Fixtures = new List<Item>();
 
 			int x = Components.Min.X;
 			int y = Components.Height - 1 - Components.Center.Y;
@@ -647,7 +647,7 @@ namespace Server.Multis
 			writer.Write( m_SignHanger );
 
 			writer.Write( (int)m_LastRevision );
-			writer.WriteItemList( m_Fixtures, true );
+			writer.Write( m_Fixtures, true );
 
 			CurrentState.Serialize( writer );
 			DesignState.Serialize( writer );
@@ -702,7 +702,7 @@ namespace Server.Multis
 						m_SignpostGraphic = 9;
 
 					m_LastRevision = reader.ReadInt();
-					m_Fixtures = reader.ReadItemList();
+					m_Fixtures = reader.ReadStrongItemList();
 
 					m_Current = new DesignState( this, reader );
 					m_Design = new DesignState( this, reader );
@@ -1957,16 +1957,19 @@ namespace Server.Multis
 			m_Level = 1;
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, DesignContext> m_Table = new Dictionary<Mobile, DesignContext>();
 
-		public static Hashtable Table { get { return m_Table; } }
+		public static Dictionary<Mobile, DesignContext> Table { get { return m_Table; } }
 
 		public static DesignContext Find( Mobile from )
 		{
 			if( from == null )
 				return null;
 
-			return (DesignContext)m_Table[from];
+			DesignContext d;
+			m_Table.TryGetValue( from, out d );
+			
+			return d;
 		}
 
 		public static bool Check( Mobile m )
@@ -1989,7 +1992,7 @@ namespace Server.Multis
 
 			m_Table[from] = c;
 
-			if( from is PlayerMobile )
+			if ( from is PlayerMobile )
 				((PlayerMobile)from).DesignContext = c;
 
 			foundation.Customizer = from;
@@ -2002,11 +2005,11 @@ namespace Server.Multis
 			if( state == null )
 				return;
 
-			ArrayList fixtures = foundation.Fixtures;
+			List<Item> fixtures = foundation.Fixtures;
 
 			for( int i = 0; fixtures != null && i < fixtures.Count; ++i )
 			{
-				Item item = (Item)fixtures[i];
+				Item item = fixtures[i];
 
 				state.Send( item.RemovePacket );
 			}
@@ -2017,10 +2020,10 @@ namespace Server.Multis
 
 		public static void Remove( Mobile from )
 		{
-			if( from == null )
-				return;
+			DesignContext context = Find( from );
 
-			DesignContext context = (DesignContext)m_Table[from];
+			if ( context == null )
+				return;
 
 			m_Table.Remove( from );
 
@@ -2037,11 +2040,11 @@ namespace Server.Multis
 			if( state == null )
 				return;
 
-			ArrayList fixtures = context.Foundation.Fixtures;
+			List<Item> fixtures = context.Foundation.Fixtures;
 
 			for( int i = 0; fixtures != null && i < fixtures.Count; ++i )
 			{
-				Item item = (Item)fixtures[i];
+				Item item = fixtures[i];
 
 				item.SendInfoTo( state );
 			}

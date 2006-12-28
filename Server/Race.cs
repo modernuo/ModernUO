@@ -19,9 +19,9 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
-using Server.Network;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Server.Network;
 
 namespace Server
 {
@@ -37,9 +37,9 @@ namespace Server
 		public static Race Human { get { return m_Races[0]; } }
 		public static Race Elf { get { return m_Races[1]; } }
 
-		private static ArrayList m_AllRaces = new ArrayList();
+		private static List<Race> m_AllRaces = new List<Race>( 2 );
 
-		public static ArrayList AllRaces { get { return m_AllRaces; } }
+		public static List<Race> AllRaces { get { return m_AllRaces; } }
 
 		private int m_RaceID, m_RaceIndex;
 
@@ -90,7 +90,7 @@ namespace Server
 
 			for( int i = 0; i < m_AllRaces.Count; ++i )
 			{
-				Race race = (Race)m_AllRaces[i];
+				Race race = m_AllRaces[i];
 
 				m_RaceNames[i] = race.Name;
 				m_RaceValues[i] = race;

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Multis;
 
@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		private string m_ShopName;
 		private Mobile m_Owner;
 
-		private ArrayList m_Items;
+		private List<Item> m_Items;
 		private int m_Gold;
 
 		private DateTime m_ExpireTime;
@@ -27,7 +27,7 @@ namespace Server.Mobiles
 			m_VendorName = vendorName;
 			m_ShopName = shopName;
 
-			m_Items = new ArrayList();
+			m_Items = new List<Item>();
 
 			m_ExpireTime = DateTime.Now + GracePeriod;
 			m_ExpireTimer = new ExpireTimer( this, GracePeriod );
@@ -58,7 +58,7 @@ namespace Server.Mobiles
 			set{ m_Owner = value; }
 		}
 
-		public ArrayList Items
+		public List<Item> Items
 		{
 			get{ return m_Items; }
 		}
@@ -104,7 +104,7 @@ namespace Server.Mobiles
 			writer.Write( (string) m_VendorName );
 			writer.Write( (string) m_ShopName );
 
-			writer.WriteItemList( m_Items, true );
+			writer.Write( m_Items, true );
 			writer.Write( (int) m_Gold );
 
 			writer.WriteDeltaTime( m_ExpireTime );
@@ -120,7 +120,7 @@ namespace Server.Mobiles
 			m_VendorName = reader.ReadString();
 			m_ShopName = reader.ReadString();
 
-			m_Items = reader.ReadItemList();
+			m_Items = reader.ReadStrongItemList();
 			m_Gold = reader.ReadInt();
 
 			m_ExpireTime = reader.ReadDeltaTime();

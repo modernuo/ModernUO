@@ -109,12 +109,10 @@ namespace Server.Items
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
-			List<BaseHouse> houses = null;
-
-			return ( CouldFit( p, map, null, ref houses ) == AddonFitResult.Valid );
+			return ( CouldFit( p, map, null, null ) == AddonFitResult.Valid );
 		}
 
-		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref List<BaseHouse> houses )
+		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref BaseHouse house )
 		{
 			if ( Deleted )
 				return AddonFitResult.Blocked;
@@ -125,7 +123,7 @@ namespace Server.Items
 
 				if ( !map.CanFit( p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, ( c.Z == 0 ) ) )
 					return AddonFitResult.Blocked;
-				else if ( !CheckHouse( from, p3D, map, c.ItemData.Height, ref houses ) )
+				else if ( !CheckHouse( from, p3D, map, c.ItemData.Height, ref house ) )
 					return AddonFitResult.NotInHouse;
 
 				if ( c.NeedsWall )
@@ -137,43 +135,37 @@ namespace Server.Items
 				}
 			}
 
-			foreach ( BaseHouse house in houses )
+			ArrayList doors = house.Doors;
+
+			for ( int i = 0; i < doors.Count; ++i )
 			{
-				ArrayList doors = house.Doors;
+				BaseDoor door = doors[i] as BaseDoor;
 
-				for ( int i = 0; i < doors.Count; ++i )
+				if ( door != null && door.Open )
+					return AddonFitResult.DoorsNotClosed;
+
+				Point3D doorLoc = door.GetWorldLocation();
+				int doorHeight = door.ItemData.CalcHeight;
+
+				foreach ( AddonComponent c in m_Components )
 				{
-					BaseDoor door = doors[i] as BaseDoor;
-
-					if ( door != null && door.Open )
-						return AddonFitResult.DoorsNotClosed;
-
-					Point3D doorLoc = door.GetWorldLocation();
-					int doorHeight = door.ItemData.CalcHeight;
-
-					foreach ( AddonComponent c in m_Components )
-					{
-						Point3D addonLoc = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
-						int addonHeight = c.ItemData.CalcHeight;
-
-						if ( Utility.InRange( doorLoc, addonLoc, 1 ) && (addonLoc.Z == doorLoc.Z || ((addonLoc.Z + addonHeight) > doorLoc.Z && (doorLoc.Z + doorHeight) > addonLoc.Z)) )
-							return AddonFitResult.DoorTooClose;
-					}
+					Point3D addonLoc = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
+					int addonHeight = c.ItemData.CalcHeight;
+						
+					if ( Utility.InRange( doorLoc, addonLoc, 1 ) && (addonLoc.Z == doorLoc.Z || ((addonLoc.Z + addonHeight) > doorLoc.Z && (doorLoc.Z + doorHeight) > addonLoc.Z)) )
+						return AddonFitResult.DoorTooClose;
 				}
 			}
 
 			return AddonFitResult.Valid;
 		}
 
-		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, ref List<BaseHouse> list )
+		public static bool CheckHouse( Mobile from, Point3D p, Map map, int height, ref BaseHouse house )
 		{
-			BaseHouse house = BaseHouse.FindHouseAt( p, map, height );
+			house = BaseHouse.FindHouseAt( p, map, height );
 
 			if ( from == null || house == null || !house.IsOwner( from ) )
 				return false;
-
-			if ( !list.Contains( house ) )
-				list.Add( house );
 
 			return true;
 		}

@@ -368,7 +368,7 @@ namespace Server.Commands.Generic
 			if ( e.Arguments.Length == 0 )
 				return;
 
-			ArrayList packs = new ArrayList( list.Count );
+			List<Container> packs = new List<Container>( list.Count );
 
 			for ( int i = 0; i < list.Count; ++i )
 			{

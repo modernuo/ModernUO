@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using Server;
-using Server.Network;
 using Server.Gumps;
+using Server.Network;
 
 namespace Server.Gumps
 {
@@ -245,114 +244,6 @@ namespace Server.Gumps
 					break;
 				}
 			}
-		}
-
-		public static bool MoveToLocation( Mobile m, string text )
-		{
-			string[] args = text.Split( '.' );
-
-			if ( args.Length == 0 )
-				return false;
-
-			for ( int i = 0; i < args.Length; ++i )
-				args[i].Trim();
-
-			ArrayList trees = new ArrayList();
-
-			// The mobile's map is to be checked first.
-			if ( m.Map == Map.Ilshenar )
-				trees.Add( Ilshenar );
-			else if ( m.Map == Map.Felucca )
-				trees.Add( Felucca );
-			else if ( m.Map == Map.Trammel )
-				trees.Add( Trammel );
-			else if ( m.Map == Map.Malas )
-				trees.Add( Malas );
-			else
-				trees.Add( Tokuno );
-
-			// The other maps follow.
-			if ( !trees.Contains( Trammel ) )
-				trees.Add( Trammel );
-
-			if ( !trees.Contains( Felucca ) )
-				trees.Add( Felucca );
-
-			if ( !trees.Contains( Ilshenar ) )
-				trees.Add( Ilshenar );
-
-			if ( !trees.Contains( Malas ) )
-				trees.Add( Malas );
-
-			if ( !trees.Contains( Tokuno ) )
-				trees.Add( Tokuno );
-
-			LocationTree tree;
-
-			for ( int i = 0; i < trees.Count; ++i )
-			{
-				tree = (LocationTree)trees[i];
-
-				// If a specific tree was requested, it's the only one we need to parse.
-				if ( Insensitive.Equals( args[0], tree.Map.Name ) )
-				{
-					if ( args.Length < 2 )
-						return false;
-
-					return ParseNode( tree.Root, args, 1, m, tree.Map );
-				}
-			}
-
-			for ( int i = 0; i < trees.Count; ++i )
-			{
-				tree = (LocationTree)trees[i];
-
-				// Parse all trees.
-				if ( ParseNode( tree.Root, args, 0, m, tree.Map ) )
-					return true;
-			}
-
-			return false;
-		}
-
-		public static bool ParseNode( ParentNode node, string[] args, int argsIndex, Mobile m, Map map )
-		{
-			if ( args[argsIndex].Length == 0 )
-				return false;
-
-			for ( int i = 0; i < node.Children.Length; ++i )
-			{
-				object child = node.Children[i];
-
-				if ( child is ParentNode )
-				{
-					if ( Insensitive.Equals( ((ParentNode)child).Name, args[argsIndex] ) )
-					{
-						if ( (argsIndex + 1) >= args.Length )
-							return false;
-
-						if ( args[argsIndex + 1].Length == 0 )
-							return false;
-
-						return ParseNode( (ParentNode)child, args, argsIndex + 1, m, map );
-					}
-					else
-					{
-						if ( ParseNode( (ParentNode)child, args, argsIndex, m, map ) )
-							return true;
-					}
-				}
-				else if ( child is ChildNode )
-				{
-					if ( Insensitive.Equals( ((ChildNode)child).Name, args[argsIndex] ) )
-					{
-						m.MoveToWorld( ((ChildNode)child).Location, map );
-						return true;
-					}
-				}
-			}
-
-			return false;
 		}
 	}
 }

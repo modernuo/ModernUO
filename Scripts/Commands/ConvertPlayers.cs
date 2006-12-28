@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Server;
@@ -19,7 +18,7 @@ namespace Server.Commands
 		public static void Convert_OnCommand( CommandEventArgs e )
 		{
 			e.Mobile.SendMessage( "Converting all players to PlayerMobile.  You will be disconnected.  Please Restart the server after the world has finished saving." );
-			ArrayList mobs = new ArrayList( World.Mobiles.Values );
+			List<Mobile> mobs = new List<Mobile>( World.Mobiles.Values );
 			int count = 0;
 			
 			foreach ( Mobile m in mobs )

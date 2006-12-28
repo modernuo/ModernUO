@@ -1,7 +1,7 @@
 using System;
-using System.Text;
+using System.Collections.Generic;
 using System.Reflection;
-using System.Collections;
+using System.Text;
 using Server;
 using Server.Items;
 using Server.Network;
@@ -25,7 +25,7 @@ namespace Server.Commands
 			Invoke( from, start, end, args, null );
 		}
 
-		public static void Invoke( Mobile from, Point3D start, Point3D end, string[] args, ArrayList packs )
+		public static void Invoke( Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs )
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -108,7 +108,7 @@ namespace Server.Commands
 			Array.Copy( old, 1, args, 0, args.Length );
 		}
 
-		public static int BuildObjects( Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props, ArrayList packs )
+		public static int BuildObjects( Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props, List<Container> packs )
 		{
 			Utility.FixPoints( ref start, ref end );
 
@@ -270,7 +270,7 @@ namespace Server.Commands
 			return built;
 		}
 
-		public static int Build( Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, ArrayList packs )
+		public static int Build( Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, List<Container> packs )
 		{
 			try
 			{
@@ -299,7 +299,7 @@ namespace Server.Commands
 
 						if ( built is Item )
 						{
-							Container pack = (Container)packs[i];
+							Container pack = packs[i];
 
 							pack.DropItem( (Item)built );
 						}

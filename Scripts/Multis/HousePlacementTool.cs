@@ -557,7 +557,7 @@ namespace Server.Items
 		{
 			for ( int i = 0; i < entries.Length; ++i )
 			{
-				HousePlacementEntry e = (HousePlacementEntry)entries[i];
+				HousePlacementEntry e = entries[i];
 
 				object obj = m_Table[e.m_Type];
 

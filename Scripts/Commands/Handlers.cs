@@ -1125,10 +1125,6 @@ namespace Server.Commands
 				return;
 			}
 
-			if ( GoGump.MoveToLocation( from, e.ArgString ) )
-					return;
-
-
 			if ( e.Length == 1 )
 			{
 				try

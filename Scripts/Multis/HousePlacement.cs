@@ -73,10 +73,11 @@ namespace Server.Multis
 			Point3D start = new Point3D( center.X + mcl.Min.X, center.Y + mcl.Min.Y, center.Z );
 
 			// These are storage lists. They hold items and mobiles found in the map for further processing
-			ArrayList items = new ArrayList(), mobiles = new ArrayList();
+			List<Item> items = new List<Item>();
+			List<Mobile> mobiles = new List<Mobile>();
 
 			// These are also storage lists. They hold location values indicating the yard and border locations.
-			ArrayList yard = new ArrayList(), borders = new ArrayList();
+			List<Point2D> yard = new List<Point2D>(), borders = new List<Point2D>();
 
 			/* RULES:
 			 * 
@@ -132,7 +133,7 @@ namespace Server.Multis
 
 					for ( int i = 0; i < sector.Mobiles.Count; ++i )
 					{
-						Mobile m = (Mobile)sector.Mobiles[i];
+						Mobile m = sector.Mobiles[i];
 
 						if ( m.X == tileX && m.Y == tileY )
 							mobiles.Add( m );
@@ -184,7 +185,7 @@ namespace Server.Multis
 
 						for ( int j = 0; j < items.Count; ++j )
 						{
-							Item item = (Item)items[j];
+							Item item = items[j];
 							ItemData id = item.ItemData;
 
 							if ( addTileTop > item.Z && (item.Z + id.CalcHeight) > addTileZ )
@@ -205,7 +206,7 @@ namespace Server.Multis
 
 						for ( int j = 0; j < mobiles.Count; ++j )
 						{
-							Mobile m = (Mobile)mobiles[j];
+							Mobile m = mobiles[j];
 
 							if ( addTileTop > m.Z && (m.Z + 16) > addTileZ )
 								toMove.Add( m );
@@ -272,7 +273,7 @@ namespace Server.Multis
 
 			for ( int i = 0; i < borders.Count; ++i )
 			{
-				Point2D borderPoint = (Point2D)borders[i];
+				Point2D borderPoint = borders[i];
 
 				Tile landTile = map.Tiles.GetLandTile( borderPoint.X, borderPoint.Y );
 				int landID = landTile.ID & 0x3FFF;
@@ -316,7 +317,7 @@ namespace Server.Multis
 
 			for ( int i = 0; i < yard.Count; ++i )
 			{
-				Point2D yardPoint = (Point2D)yard[i];
+				Point2D yardPoint = yard[i];
 
 				IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
 

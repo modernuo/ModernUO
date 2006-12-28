@@ -73,9 +73,9 @@ namespace Server.Items
 
 					Server.Spells.SpellHelper.GetSurfaceTop( ref p );
 
-					List<BaseHouse> houses = new List<BaseHouse>();
+					List<BaseHouse> house;
 
-					AddonFitResult res = addon.CouldFit( p, map, from, ref houses );
+					AddonFitResult res = addon.CouldFit( p, map, from, ref house );
 
 					if ( res == AddonFitResult.Valid )
 						addon.MoveToWorld( new Point3D( p ), map );
@@ -93,9 +93,7 @@ namespace Server.Items
 					if ( res == AddonFitResult.Valid )
 					{
 						m_Deed.Delete();
-
-						foreach ( BaseHouse h in houses )
-							h.Addons.Add( addon );
+						house.Addons.Add( addon );
 					}
 					else
 					{

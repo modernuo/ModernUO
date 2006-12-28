@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Collections;
 
 namespace Server.Multis
 {
@@ -142,7 +142,7 @@ namespace Server.Multis
 				for ( int i = 0; i < m_Columns.Length; ++i )
 					m_Columns[i] = new ColumnInfo( i, types[i], names[i] );
 
-				ArrayList records = new ArrayList();
+				List<DataRecord> records = new List<DataRecord>();
 
 				string[] values;
 
@@ -172,7 +172,7 @@ namespace Server.Multis
 					records.Add( new DataRecord( this, data ) );
 				}
 
-				m_Records = (DataRecord[]) records.ToArray( typeof( DataRecord ) );
+				m_Records = records.ToArray();
 			}
 		}
 

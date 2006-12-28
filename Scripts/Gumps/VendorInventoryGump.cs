@@ -75,7 +75,7 @@ namespace Server.Gumps
 			int givenToBankBox = 0;
 			for ( int i = inventory.Items.Count - 1; i >= 0; i-- )
 			{
-				Item item = (Item) inventory.Items[i];
+				Item item = inventory.Items[i];
 
 				if ( item.Deleted )
 				{

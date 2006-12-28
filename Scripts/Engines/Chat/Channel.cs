@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 
 namespace Server.Engines.Chat
@@ -8,7 +8,7 @@ namespace Server.Engines.Chat
 	{
 		private string m_Name;
 		private string m_Password;
-		private ArrayList m_Users, m_Banned, m_Moderators, m_Voices;
+		private List<ChatUser> m_Users, m_Banned, m_Moderators, m_Voices;
 		private bool m_VoiceRestricted;
 		private bool m_AlwaysAvailable;
 
@@ -16,10 +16,10 @@ namespace Server.Engines.Chat
 		{
 			m_Name = name;
 
-			m_Users = new ArrayList();
-			m_Banned = new ArrayList();
-			m_Moderators = new ArrayList();
-			m_Voices = new ArrayList();
+			m_Users = new List<ChatUser>();
+			m_Banned = new List<ChatUser>();
+			m_Moderators = new List<ChatUser>();
+			m_Voices = new List<ChatUser>();
 		}
 
 		public Channel( string name, string password ) : this( name )
@@ -381,7 +381,7 @@ namespace Server.Engines.Chat
 		{
 			for ( int i = 0; i < m_Users.Count; ++i )
 			{
-				ChatUser user = (ChatUser)m_Users[i];
+				ChatUser user = m_Users[i];
 
 				if ( user == initiator )
 					continue;
@@ -397,7 +397,7 @@ namespace Server.Engines.Chat
 		{
 			for ( int i = 0; i < m_Users.Count; ++i )
 			{
-				ChatUser user = (ChatUser)m_Users[i];
+				ChatUser user = m_Users[i];
 
 				if ( user.IsIgnored( from ) )
 					continue;
@@ -438,7 +438,7 @@ namespace Server.Engines.Chat
 		{
 			for ( int i = 0; i < m_Users.Count; ++i )
 			{
-				ChatUser user = (ChatUser)m_Users[i];
+				ChatUser user = m_Users[i];
 
 				if ( user == initiator )
 					continue;
@@ -454,15 +454,15 @@ namespace Server.Engines.Chat
 		{
 			for ( int i = 0; i < m_Users.Count; ++i )
 			{
-				ChatUser user = (ChatUser)m_Users[i];
+				ChatUser user = m_Users[i];
 
 				ChatSystem.SendCommandTo( to.Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
 			} 
 		}
 
-		private static ArrayList m_Channels = new ArrayList();
+		private static List<Channel> m_Channels = new List<Channel>();
 
-		public static ArrayList Channels
+		public static List<Channel> Channels
 		{
 			get
 			{
@@ -474,7 +474,7 @@ namespace Server.Engines.Chat
 		{
 			for ( int i = 0; i < m_Channels.Count; ++i )
 			{
-				Channel channel = (Channel)m_Channels[i];
+				Channel channel = m_Channels[i];
 
 				if ( !channel.IsBanned( user ) )
 					ChatSystem.SendCommandTo( user.Mobile, ChatCommand.AddChannel, channel.Name, "0" );
@@ -526,7 +526,7 @@ namespace Server.Engines.Chat
 		{
 			for ( int i = 0; i < m_Channels.Count; ++i )
 			{
-				Channel channel = (Channel)m_Channels[i];
+				Channel channel = m_Channels[i];
 
 				if ( channel.m_Name == name )
 					return channel;
