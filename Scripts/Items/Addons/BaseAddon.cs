@@ -109,7 +109,8 @@ namespace Server.Items
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
-			return ( CouldFit( p, map, null, null ) == AddonFitResult.Valid );
+			BaseHouse h = null;
+			return ( CouldFit( p, map, null, ref h ) == AddonFitResult.Valid );
 		}
 
 		public AddonFitResult CouldFit( IPoint3D p, Map map, Mobile from, ref BaseHouse house )

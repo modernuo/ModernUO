@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -2408,8 +2409,10 @@ namespace Server.Multis
 
 				while( count > 0 )
 				{
+					SendQueueEntry sqe = null;
+
 					lock ( m_SendQueueSyncRoot )
-						SendQueueEntry sqe = m_SendQueue.Dequeue();
+						sqe = m_SendQueue.Dequeue();
 
 					try
 					{
