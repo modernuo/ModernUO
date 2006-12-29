@@ -2379,13 +2379,15 @@ namespace Server.Multis
 			}
 		}
 
-		private static Queue m_SendQueue;
+		private static Queue<SendQueueEntry> m_SendQueue;
+		private static object m_SendQueueSyncRoot;
 		private static AutoResetEvent m_Sync;
 		private static Thread m_Thread;
 
 		static DesignStateDetailed()
 		{
-			m_SendQueue = Queue.Synchronized( new Queue() );
+			m_SendQueue = new Queue<SendQueueEntry>();
+			m_SendQueueSyncRoot = ((ICollection)m_SendQueue).SyncRoot;
 			m_Sync = new AutoResetEvent( false );
 
 			m_Thread = new Thread( new ThreadStart( CompressionThread ) );
@@ -2399,9 +2401,15 @@ namespace Server.Multis
 			{
 				m_Sync.WaitOne();
 
-				while( m_SendQueue.Count > 0 )
+				int count;
+
+				lock ( m_SendQueueSyncRoot )
+					count = m_SendQueue.Count;
+
+				while( count > 0 )
 				{
-					SendQueueEntry sqe = (SendQueueEntry)m_SendQueue.Dequeue();
+					lock ( m_SendQueueSyncRoot )
+						SendQueueEntry sqe = m_SendQueue.Dequeue();
 
 					try
 					{
@@ -2437,6 +2445,11 @@ namespace Server.Multis
 						{
 						}
 					}
+					finally
+					{
+						lock ( m_SendQueueSyncRoot )
+							count = m_SendQueue.Count;
+					}
 
 					//sqe.m_NetState.Send( new DesignStateDetailed( sqe.m_Serial, sqe.m_Revision, sqe.m_xMin, sqe.m_yMin, sqe.m_xMax, sqe.m_yMax, sqe.m_Tiles ) );
 				}
@@ -2454,7 +2467,8 @@ namespace Server.Multis
 
 		public static void SendDetails( NetState ns, HouseFoundation house, DesignState state )
 		{
-			m_SendQueue.Enqueue( new SendQueueEntry( ns, house, state ) );
+			lock ( m_SendQueueSyncRoot )
+				m_SendQueue.Enqueue( new SendQueueEntry( ns, house, state ) );
 			m_Sync.Set();
 		}
 	}
