@@ -22,7 +22,7 @@ namespace Server.Misc
 		[Description( "Checks the result of NameValidation on the specified name." )]
 		public static void ValidateName_OnCommand( CommandEventArgs e )
 		{
-			if ( Validate( e.ArgString, 2, 16, true, true, true, 1, SpaceDashPeriodQuote ) )
+			if ( Validate( e.ArgString, 2, 16, true, false, true, 1, SpaceDashPeriodQuote ) )
 				e.Mobile.SendMessage( 0x59, "That name is considered valid." );
 			else
 				e.Mobile.SendMessage( 0x22, "That name is considered invalid." );
