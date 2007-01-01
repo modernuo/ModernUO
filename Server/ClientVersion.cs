@@ -149,6 +149,10 @@ namespace Server
 			}
 		}
 
+		public ClientVersion( int maj, int min, int rev, int pat ) : this( maj, min, rev, pat, ClientType.Regular )
+		{
+		}
+
 		public ClientVersion( int maj, int min, int rev, int pat, ClientType type )
 		{
 			m_Major = maj;
