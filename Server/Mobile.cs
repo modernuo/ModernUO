@@ -3120,7 +3120,7 @@ namespace Server
 					if( !InternalOnMove( d ) )
 						return false;
 
-					if( m_FwdEnabled && m_NetState != null && m_AccessLevel < m_FwdAccessOverride && (!m_FwdUOTDOverride || (m_NetState.Version != null && m_NetState.Version.Type != ClientType.UOTD)) )
+					if( m_FwdEnabled && m_NetState != null && m_AccessLevel < m_FwdAccessOverride && (!m_FwdUOTDOverride || !m_NetState.IsUOTDClient) )
 					{
 						if( m_MoveRecords == null )
 							m_MoveRecords = new Queue<MovementRecord>( 6 );

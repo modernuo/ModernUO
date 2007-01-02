@@ -1736,7 +1736,6 @@ namespace Server.Network
 		public static void ClientVersion( NetState state, PacketReader pvSrc )
 		{
 			CV version = state.Version = new CV( pvSrc.ReadString() );
-
 			string kickMessage = null;
 
 			if ( CV.Required != null && version < CV.Required )
@@ -1749,7 +1748,7 @@ namespace Server.Network
 					kickMessage = "This server does not allow god clients to connect.";
 				else if ( !CV.AllowRegular && version.Type == ClientType.Regular )
 					kickMessage = "This server does not allow regular clients to connect.";
-				else if ( !CV.AllowUOTD && version.Type == ClientType.UOTD )
+				else if ( !CV.AllowUOTD && state.IsUOTDClient )
 					kickMessage = "This server does not allow UO:TD clients to connect.";
 
 				if ( !CV.AllowGod && !CV.AllowRegular && !CV.AllowUOTD )

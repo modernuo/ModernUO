@@ -201,6 +201,14 @@ namespace Server.Network {
 			}
 		}
 
+		public bool IsUOTDClient
+		{
+			get
+			{
+				return ((m_Flags & 0x100) != 0 || (m_Version != null && m_Version.Type == ClientType.UOTD));
+			}
+		}
+
 		public List<SecureTrade> Trades {
 			get {
 				return m_Trades;
