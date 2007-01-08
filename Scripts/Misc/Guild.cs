@@ -676,7 +676,7 @@ namespace Server.Guilds
 		public static void EventSink_GuildGumpRequest( GuildGumpRequestArgs args )
 		{
 			PlayerMobile pm = args.Mobile as PlayerMobile;
-			if( !(NewGuildSystem || pm == null) )
+			if( !NewGuildSystem || pm == null )
 				return;
 			
 			if( pm.Guild == null )
