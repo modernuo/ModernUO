@@ -340,17 +340,17 @@ namespace Server.Multis
 
 						door = new GenericHouseDoor( facing, 0x319C + 4 * type + mod * 2, 0xEA, 0xF1, false );
 					}
-						
-						/*
-						* ASayre HATE doors.  ASayre SMASH
-					  	WestCCW	EastCW	SoutCCW	NorthCW
-						0x31AE*	0x31AC	0x2D48*	0x2D46*	Elvan Wood Door
-						0x2d65*	0x31a0	0x2d63*	0x31a2	Elvan White Wooden Door 1
-						0x2d69*	0x31a4	0x2d67*	0x31a6	Elvan Ornate Door
-						0x2d6d*	0x31aa	0x2d6b*	0x31a8	Elvan Kia Wood Door 2
-						0x2fe4*	0x319c	0x2fe2*	0x319e	Elvan Moon Door
-					  * 
-					  * */
+					else if( itemID >= 0x367B && itemID < 0x369B )
+					{
+						int type = (itemID - 0x367B) / 16;
+						DoorFacing facing = (DoorFacing)(((itemID - 0x367B) / 2) % 8);
+
+						switch( type )
+						{
+							case 0: door = new GenericHouseDoor( facing, 0x367B, 0xED, 0xF4 ); break;	//crystal
+							case 1: door = new GenericHouseDoor( facing, 0x368B, 0xEC, 0x3E7 ); break;	//shadow
+						}
+					}
 
 					if( door != null )
 					{
@@ -1888,6 +1888,8 @@ namespace Server.Multis
 			else if( itemID >= 0x2D63 && itemID < 0x2D70 )
 				return true;
 			else if( itemID >= 0x319C && itemID < 0x31AF )
+				return true;
+			else if( itemID >= 0x367B && itemID < 0x369B )
 				return true;
 
 			return false;
