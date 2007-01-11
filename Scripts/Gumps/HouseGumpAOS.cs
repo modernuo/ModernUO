@@ -174,7 +174,7 @@ namespace Server.Gumps
 
 		private static int[] m_FoundationNumbers = (Core.ML ? new int[]
 			{
-				20, 189, 765, 65, 101, 0x2DF7, 0x2DFB
+				20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676
 			}: 
 			new int[]
 			{
@@ -1255,16 +1255,28 @@ namespace Server.Gumps
 					{
 						FoundationType newType;
 
-						switch ( index )
+						if( Core.ML && index >= 5 )
 						{
-							case 0: newType = FoundationType.DarkWood; break;
-							case 1: newType = FoundationType.LightWood; break;
-							case 2: newType = FoundationType.Dungeon; break;
-							case 3: newType = FoundationType.Brick; break;
-							case 4: newType = FoundationType.Stone; break;
-							case 5: if( Core.ML ) newType = FoundationType.ElvenGrey; else return; break;
-							case 6: if( Core.ML ) newType = FoundationType.ElvenNatural; else return; break;
-							default: return;
+							switch( index )
+							{
+								case 5: newType = FoundationType.ElvenGrey;
+								case 6: newType = FoundationType.ElvenNatural;
+								case 7: newType = FoundationType.Crystal;
+								case 8: newType = FoundationType.Shadow;
+								default: return;
+							}
+						}
+						else
+						{
+							switch( index )
+							{
+								case 0: newType = FoundationType.DarkWood; break;
+								case 1: newType = FoundationType.LightWood; break;
+								case 2: newType = FoundationType.Dungeon; break;
+								case 3: newType = FoundationType.Brick; break;
+								case 4: newType = FoundationType.Stone; break;
+								default: return;
+							}
 						}
 
 						foundation.Type = newType;

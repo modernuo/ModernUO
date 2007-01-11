@@ -21,7 +21,9 @@ namespace Server.Multis
 		Dungeon,
 		Brick,
 		ElvenGrey,
-		ElvenNatural
+		ElvenNatural,
+		Crystal,
+		Shadow
 	}
 
 	public class HouseFoundation : BaseHouse
@@ -446,6 +448,9 @@ namespace Server.Multis
 
 				case FoundationType.ElvenGrey: corner = 0x2DF7; east = 0x2DF9; south = 0x2DFA; post = 0x2DF8; break;
 				case FoundationType.ElvenNatural: corner = 0x2DFB; east = 0x2DFD; south = 0x2DFE; post = 0x2DFC; break;
+
+				case FoundationType.Crystal: corner = 0x3672; east = 0x3671; south = 0x3670; post = 0x3673; break;
+				case FoundationType.Shadow: corner = 0x3676; east = 0x3675; south = 0x3634; post = 0x3677; break;
 			}
 		}
 
@@ -1076,7 +1081,7 @@ namespace Server.Multis
 			{
 				0x3EE, 0x709, 0x71E, 0x721,
 				0x738, 0x750, 0x76C, 0x788,
-				0x7A3, 0x7BA
+				0x7A3, 0x7BA, 0x35D2, 0x3609
 			};
 
 		private static int[] m_StairSeqs = new int[]
