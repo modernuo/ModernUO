@@ -1259,10 +1259,10 @@ namespace Server.Gumps
 						{
 							switch( index )
 							{
-								case 5: newType = FoundationType.ElvenGrey;
-								case 6: newType = FoundationType.ElvenNatural;
-								case 7: newType = FoundationType.Crystal;
-								case 8: newType = FoundationType.Shadow;
+								case 5: newType = FoundationType.ElvenGrey; break;
+								case 6: newType = FoundationType.ElvenNatural; break;
+								case 7: newType = FoundationType.Crystal; break;
+								case 8: newType = FoundationType.Shadow; break; 
 								default: return;
 							}
 						}
