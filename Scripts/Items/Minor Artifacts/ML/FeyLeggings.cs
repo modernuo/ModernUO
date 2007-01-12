@@ -14,6 +14,10 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 4; } }
 		public override int BaseEnergyResistance{ get{ return 19; } }
 
+		public override int InitMinHits{ get{ return 255; } }
+		public override int InitMaxHits{ get { return 255; } }
+
+
 		[Constructable]
 		public FeyLeggings()
 		{
@@ -23,13 +27,7 @@ namespace Server.Items
 			ArmorAttributes.MageArmor = 1;
 		}
 
-		public override Race RequiredRace
-		{
-			get
-			{
-				return Race.Elf;
-			}
-		}
+		public override Race RequiredRace { get { return Race.Elf; } }
 
 		public FeyLeggings( Serial serial ) : base( serial )
 		{
