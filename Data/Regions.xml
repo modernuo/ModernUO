@@ -1703,11 +1703,11 @@
 			<rect x="160" y="736" width="32" height="32" />
 			<go x="171" y="750" z="-28" />
 		</region>
-		<region priority="50" name="Entrace to Central Ilshenar 1">
+		<region priority="50" name="Entrance to Central Ilshenar 1">
 			<rect x="1136" y="584" width="16" height="16" />
 			<go x="1141" y="594" z="-80" />
 		</region>
-		<region priority="50" name="Entrace to Central Ilshenar 2">
+		<region priority="50" name="Entrance to Central Ilshenar 2">
 			<rect x="1232" y="576" width="8" height="16" />
 			<go x="1238" y="583" z="-19" />
 		</region>
@@ -1773,7 +1773,7 @@
 			<go x="1363" y="1055" z="-13" />
 			<guards disabled="true" />
 		</region>
-		<region priority="2" name="Entrace Spectre Dungeon">
+		<region priority="2" name="Entrance Spectre Dungeon">
 			<rect x="1360" y="1030" width="6" height="4" />
 			<go x="1363" y="1033" z="-8" />
 		</region>
@@ -1782,7 +1782,7 @@
 			<go x="1983" y="1107" z="-18" />
 			<entrance x="1362" y="1031" />
 		</region>
-		<region priority="2" name="Entrace Blood Dungeon">
+		<region priority="2" name="Entrance Blood Dungeon">
 			<rect x="1736" y="1224" width="24" height="16" />
 			<go x="1747" y="1227" z="-1" />
 		</region>
@@ -1791,7 +1791,7 @@
 			<go x="2114" y="839" z="-28" />
 			<entrance x="1745" y="1236" />
 		</region>
-		<region priority="2" name="Entrace Mushroom Cave">
+		<region priority="2" name="Entrance Mushroom Cave">
 			<rect x="1448" y="1320" width="16" height="16" />
 			<go x="1460" y="1329" z="-25" />
 		</region>
@@ -1804,7 +1804,7 @@
 			<go x="1212" y="1144" z="-25" />
 			<guards disabled="true" />
 		</region>
-		<region priority="2" name="Entrace Rat Cave">
+		<region priority="2" name="Entrance Rat Cave">
 			<rect x="1024" y="1152" width="8" height="8" />
 			<go x="1031" y="1154" z="-24" />
 		</region>
@@ -1832,7 +1832,7 @@
 				<logoutDelay active="false" />
 			</region>
 		</region>
-		<region priority="2" name="Entrace Serpentin Passage">
+		<region priority="2" name="Entrance Serpentine Passage">
 			<rect x="800" y="864" width="16" height="16" />
 			<go x="808" y="872" z="5" />
 		</region>
@@ -1850,7 +1850,7 @@
 			<rect x="0" y="800" width="192" height="400" />
 			<go x="11" y="881" z="-29" />
 		</region>
-		<region priority="2" name="Entrace Lizards Passage">
+		<region priority="2" name="Entrance Lizards Passage">
 			<rect x="312" y="1328" width="8" height="8" />
 			<go x="314" y="1331" z="-37" />
 		</region>
@@ -1893,7 +1893,7 @@
 			<go x="429" y="108" z="-28" />
 			<entrance x="546" y="455" />
 		</region>
-		<region priority="50" name="Entrace Ancient Lair">
+		<region priority="50" name="Entrance Ancient Lair">
 			<rect x="936" y="488" width="8" height="8" />
 			<go x="940" y="503" z="-30" />
 		</region>

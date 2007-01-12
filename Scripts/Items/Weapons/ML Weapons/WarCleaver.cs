@@ -26,6 +26,10 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } } // TODO
 		public override int InitMaxHits{ get{ return 60; } } // TODO
 
+		public override SkillName DefSkill{ get{ return SkillName.Fencing; } }
+		public override WeaponType DefType{ get{ return WeaponType.Piercing; } }
+		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
+
 		[Constructable]
 		public WarCleaver() : base( 0x2D2F )
 		{
