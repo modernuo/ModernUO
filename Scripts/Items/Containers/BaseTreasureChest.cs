@@ -54,17 +54,13 @@ namespace Server.Items
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public override bool Locked {
-			get { return m_Locked; }
+			get { return base.Locked; }
 			set {
-				if ( m_Locked != value ) {
-					m_Locked = value;
+				if ( base.Locked != value ) {
+					base.Locked = value;
 					
-					if ( !m_Locked )
+					if ( !value )
 						StartResetTimer();
-					else
-						m_Picker = null;
-
-					InvalidateProperties();
 				}
 			}
 		}

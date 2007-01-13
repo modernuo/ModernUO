@@ -44,7 +44,7 @@ namespace Server.Spells.Third
 				if ( m_Owner.CheckSequence() ) {
 					SpellHelper.Turn( from, o );
 
-					Effects.SendLocationParticles( EffectItem.Create( loc, from.Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5024 );
+					Effects.SendLocationParticles( EffectItem.Create( (Point3D)loc, from.Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5024 );
 
 					Effects.PlaySound( loc, from.Map, 0x1FF );
 
@@ -72,9 +72,7 @@ namespace Server.Spells.Third
 							}
 							else
 								from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503099 ); // My spell does not seem to have an effect on that lock.
-						}
-						else
-							
+						}		
 					}
 				}
 
