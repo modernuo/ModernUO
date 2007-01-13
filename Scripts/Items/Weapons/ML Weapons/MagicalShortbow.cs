@@ -15,13 +15,13 @@ namespace Server.Items
 		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.PsychicAttack; } }
 
 		public override int AosStrengthReq{ get{ return 45; } }
-		public override int AosMinDamage{ get{ return 14; } }
-		public override int AosMaxDamage{ get{ return 16; } }
+		public override int AosMinDamage{ get{ return 9; } }
+		public override int AosMaxDamage{ get{ return 13; } }
 		public override int AosSpeed{ get{ return 38; } }
 
 		public override int OldStrengthReq{ get{ return 45; } }
-		public override int OldMinDamage{ get{ return 14; } }
-		public override int OldMaxDamage{ get{ return 16; } }
+		public override int OldMinDamage{ get{ return 9; } }
+		public override int OldMaxDamage{ get{ return 13; } }
 		public override int OldSpeed{ get{ return 38; } }
 
 		public override int DefMaxRange{ get{ return 10; } }

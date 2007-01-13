@@ -105,7 +105,8 @@ namespace Server.Items
 			t.Stop();
 			m_Table.Remove( m );
 
-			m.SendLocalizedMessage( 1060167 ); // The bleeding wounds have healed, you are no longer bleeding!
+			if ( message )
+				m.SendLocalizedMessage( 1060167 ); // The bleeding wounds have healed, you are no longer bleeding!
 		}
 
 		private class InternalTimer : Timer

@@ -312,7 +312,7 @@ namespace Server.Regions
 					from.SendLocalizedMessage( 502094 ); // You must be in your house to do this.
 				}
 			}
-			else if ( e.HasKeyword( 0x27 ) ) // I wish to place a strong box
+			else if ( e.HasKeyword( 0x27 ) ) // I wish to place a strongbox
 			{
 				if ( isOwner )
 				{

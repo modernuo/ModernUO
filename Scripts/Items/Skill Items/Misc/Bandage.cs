@@ -303,7 +303,7 @@ namespace Server.Items
 			}
 			else if ( BleedAttack.IsBleeding( m_Patient ) )
 			{
-				healerNumber = -1;
+				healerNumber = 1060088; // You bind the wound and stop the bleeding
 				patientNumber = 1060167; // The bleeding wounds have healed, you are no longer bleeding!
 
 				BleedAttack.EndBleed( m_Patient, true );

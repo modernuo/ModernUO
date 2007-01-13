@@ -207,7 +207,7 @@ namespace Server.Regions
 		{
 			InternalDeleteSpawnedObjects();
 
-			for ( int i = 0; !this.Complete && i < m_Max * 2; i++ )
+			for ( int i = 0; !this.Complete && i < m_Max; i++ )
 				Spawn();
 
 			m_Running = true;
