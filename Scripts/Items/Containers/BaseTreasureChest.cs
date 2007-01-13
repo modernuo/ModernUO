@@ -52,6 +52,23 @@ namespace Server.Items
 			}
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public override bool Locked {
+			get { return m_Locked; }
+			set {
+				if ( m_Locked != value ) {
+					m_Locked = value;
+					
+					if ( !m_Locked )
+						StartResetTimer();
+					else
+						m_Picker = null;
+
+					InvalidateProperties();
+				}
+			}
+		}
+
 		public override bool IsDecoContainer
 		{
 			get{ return false; }
@@ -189,13 +206,6 @@ namespace Server.Items
 			}
 
 			DropItem( new Gold( MinGold, MaxGold ) );
-		}
-
-		public override void LockPick( Mobile from )
-		{
-			base.LockPick( from );
-
-			StartResetTimer();
 		}
 
 		public void ClearContents()

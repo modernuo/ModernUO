@@ -25,56 +25,6 @@ namespace Server.Spells.Third
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public void Target( LockableContainer targ )
-		{
-			if ( Multis.BaseHouse.CheckSecured( targ ) )
-			{
-				// You cannot cast this on a secure item.
-				Caster.SendLocalizedMessage( 503098 );
-			}
-			else if ( CheckSequence() )
-			{
-				SpellHelper.Turn( Caster, targ );
-
-				Point3D loc = targ.GetWorldLocation();
-
-				Effects.SendLocationParticles(
-					EffectItem.Create( loc, targ.Map, EffectItem.DefaultDuration ),
-					0x376A, 9, 32, 5024 );
-
-				Effects.PlaySound( loc, targ.Map, 0x1FF );
-
-				if ( targ.Locked && targ.LockLevel != 0 )
-				{
-					double magery = Caster.Skills[SkillName.Magery].Value;
-					int level = (int)(magery * 0.8) - 4;
-
-					if ( level >= targ.RequiredSkill && !(targ is TreasureMapChest && ((TreasureMapChest)targ).Level > 2) )
-					{
-						targ.Locked = false;
-
-						if ( targ.LockLevel == -255 )
-							targ.LockLevel = targ.RequiredSkill - 10;
-
-						if ( targ.LockLevel == 0 )
-							targ.LockLevel = -1;
-					}
-					else
-					{
-						// My spell does not seem to have an effect on that lock.
-						Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503099 );
-					}
-				}
-				else
-				{
-					// That did not need to be unlocked.
-					Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503101 );
-				}
-			}
-
-			FinishSequence();
-		}
-
 		private class InternalTarget : Target
 		{
 			private UnlockSpell m_Owner;
@@ -86,12 +36,49 @@ namespace Server.Spells.Third
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				if ( o is LockableContainer )
-					m_Owner.Target( (LockableContainer)o );
-				else
-					from.SendLocalizedMessage( 501666 ); // You can't unlock that!
+				IPoint3D loc = o as IPoint3D;
 
-				// TODO: Really we can cast on anything, even mobiles, but it will effect and say 'That did not need to be unlocked'
+				if ( loc == null )
+					return;
+
+				if ( m_Owner.CheckSequence() ) {
+					SpellHelper.Turn( from, o );
+
+					Effects.SendLocationParticles( EffectItem.Create( loc, from.Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5024 );
+
+					Effects.PlaySound( loc, from.Map, 0x1FF );
+
+					if ( o is Mobile )
+						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503101 ); // That did not need to be unlocked.
+					else if ( !( o is LockableContainer ) )
+						from.SendLocalizedMessage( 501666 ); // You can't unlock that!
+					else {
+						LockableContainer cont = (LockableContainer)o;
+
+						if ( Multis.BaseHouse.CheckSecured( cont ) ) 
+							from.SendLocalizedMessage( 503098 ); // You cannot cast this on a secure item.
+						else if ( !cont.Locked )
+							from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503101 ); // That did not need to be unlocked.
+						else if ( cont.LockLevel == 0 )
+							from.SendLocalizedMessage( 501666 ); // You can't unlock that!
+						else {
+							int level = (int)(from.Skills[SkillName.Magery].Value * 0.8) - 4;
+
+							if ( level >= cont.RequiredSkill && !(cont is TreasureMapChest && ((TreasureMapChest)cont).Level > 2) ) {
+								cont.Locked = false;
+
+								if ( cont.LockLevel == -255 )
+									cont.LockLevel = cont.RequiredSkill - 10;
+							}
+							else
+								from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503099 ); // My spell does not seem to have an effect on that lock.
+						}
+						else
+							
+					}
+				}
+
+				m_Owner.FinishSequence();
 			}
 
 			protected override void OnTargetFinish( Mobile from )
