@@ -278,9 +278,10 @@ namespace Server.Regions
 				bool ltImpassable = ( (ltFlags & TileFlag.Impassable) != 0 );
 
 				if ( !lt.Ignored && ltAvgZ >= minZ && ltAvgZ < maxZ )
-					if ( (ltFlags & TileFlag.Wet) != 0 )
+					if ( (ltFlags & TileFlag.Wet) != 0 ) {
 						if ( water )
 							m_SpawnBuffer1.Add( ltAvgZ );
+					}
 					else if ( land && !ltImpassable )
 						m_SpawnBuffer1.Add( ltAvgZ );
 
@@ -293,9 +294,10 @@ namespace Server.Regions
 					int tileZ = tile.Z + id.CalcHeight;
 
 					if ( tileZ >= minZ && tileZ < maxZ )
-						if ( (id.Flags & TileFlag.Wet) != 0 )
+						if ( (id.Flags & TileFlag.Wet) != 0 ) {
 							if ( water )
 								m_SpawnBuffer1.Add( tileZ );
+						}
 						else if ( land && id.Surface && !id.Impassable )
 							m_SpawnBuffer1.Add( tileZ );
 				}
@@ -317,9 +319,10 @@ namespace Server.Regions
 							int itemZ = item.Z + id.CalcHeight;
 
 							if ( itemZ >= minZ && itemZ < maxZ )
-								if ( (id.Flags & TileFlag.Wet) != 0 )
+								if ( (id.Flags & TileFlag.Wet) != 0 ) {
 									if ( water )
 										m_SpawnBuffer1.Add( itemZ );
+								}
 								else if ( land && id.Surface && !id.Impassable )
 									m_SpawnBuffer1.Add( itemZ );
 						}
