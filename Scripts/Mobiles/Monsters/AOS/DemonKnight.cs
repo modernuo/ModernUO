@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a daemon knight corpse" )]
+	[CorpseName( "a demon knight corpse" )]
 	public class DemonKnight : BaseCreature
 	{
 		public override bool IgnoreYoungProtection { get { return Core.ML; } }
