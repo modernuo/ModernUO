@@ -82,7 +82,7 @@ namespace Server.Spells
 				}
 			}
 
-			contexts.Add( new DelayedDamageContext( target, type, timer );
+			contexts.Add( new DelayedDamageContext( target, type, timer ) );
 		}
 
         public void RemoveDelayedDamageContext( Mobile target )
