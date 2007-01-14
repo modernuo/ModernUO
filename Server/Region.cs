@@ -742,12 +742,18 @@ namespace Server
 			return true;
 		}
 
-		public virtual bool OnDeath( Mobile m )
+		public virtual bool OnBeforeDeath( Mobile m )
 		{
 			if ( m_Parent != null )
-				return m_Parent.OnDeath( m );
+				return m_Parent.OnBeforeDeath( m );
 
 			return true;
+		}
+
+		public virtual void OnDeath( Mobile m )
+		{
+			if ( m_Parent != null )
+				m_Parent.OnDeath( m );
 		}
 
 		public virtual bool OnDamage( Mobile m, ref int Damage )

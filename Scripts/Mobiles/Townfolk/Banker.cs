@@ -104,7 +104,7 @@ namespace Server.Mobiles
 			if ( box == null )
 				return false;
 
-			ArrayList items = new ArrayList();
+			List<Item> items = new List<Item>();
 
 			while ( amount > 0 )
 			{

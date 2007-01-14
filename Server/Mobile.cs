@@ -3741,7 +3741,7 @@ namespace Server
 				return;
 			else if( m_Deleted )
 				return;
-			else if( !Region.OnDeath( this ) )
+			else if( !Region.OnBeforeDeath( this ) )
 				return;
 			else if( !OnBeforeDeath() )
 				return;
@@ -3900,6 +3900,7 @@ namespace Server
 				eable.Free();
 			}
 
+			Region.OnDeath( this );
 			OnDeath( c );
 		}
 

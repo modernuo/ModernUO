@@ -876,7 +876,7 @@ namespace Server.Spells
 				m_Spell = s;
 
 				if ( m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking )
-					m_Spell.StartDelayedDamageContext( from, this );
+					m_Spell.StartDelayedDamageContext( target, this );
 
 				Priority = TimerPriority.TwentyFiveMS;
 			}
@@ -891,7 +891,7 @@ namespace Server.Spells
 
 				m_Target.Damage( m_Damage );
 				if ( m_Spell != null )
-					m_Spell.RemoveDelayedDamageContext( m_From );
+					m_Spell.RemoveDelayedDamageContext( m_Target );
 			}
 		}
 
@@ -917,7 +917,7 @@ namespace Server.Spells
 				m_DFA = dfa;
 				m_Spell = s;
 				if ( m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking )
-					m_Spell.StartDelayedDamageContext( from, this );
+					m_Spell.StartDelayedDamageContext( target, this );
 
 				Priority = TimerPriority.TwentyFiveMS;
 			}
@@ -938,7 +938,7 @@ namespace Server.Spells
 					( (BaseCreature) m_Target ).OnDamagedBySpell( m_From );
 
 				if ( m_Spell != null )
-					m_Spell.RemoveDelayedDamageContext( m_From );
+					m_Spell.RemoveDelayedDamageContext( m_Target );
 
 			}
 		}

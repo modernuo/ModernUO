@@ -46,38 +46,64 @@ namespace Server.Spells
         //the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
 		//of course, two MA's won't.
 
-		private static Dictionary<Type, Dictionary<Mobile, Timer>> m_ContextTable = new Dictionary<Type, Dictionary<Mobile, Timer>>();
+		private static Dictionary<Mobile, List<DelayedDamageContext>> m_ContextTable = new Dictionary<Mobile, List<DelayedDamageContext>>();
 
-        public void StartDelayedDamageContext( Mobile m, Timer t )
+		private class DelayedDamageContext {
+			public Mobile Target;
+			public Type Type;
+			public Timer Timer;
+
+			public DelayedDamageContext( Mobile target, Type type, Timer timer ) {
+				Target = target;
+				Type = type;
+				Timer = timer;
+			}
+		}
+			
+        public void StartDelayedDamageContext( Mobile target, Timer timer )
         {
             if( DelayedDamageStacking )
                 return; //Sanity
 
-			Dictionary<Mobile, Timer> contexts;
+			List<DelayedDamageContext> contexts;
+			Type type = this.GetType();
 
-			if( !m_ContextTable.TryGetValue( GetType(), out contexts ) )
-			{
-				contexts = new Dictionary<Mobile, Timer>();
-				m_ContextTable.Add( GetType(), contexts );
+			if( !m_ContextTable.TryGetValue( m_Caster, out contexts ) )
+				contexts = new List<DelayedDamageContext>();
+			else {
+				for ( int i = 0; i < contexts.Count; i++ ) {
+					DelayedDamageContext ddc = contexts[i];
+
+					if ( ddc.Target == target && ddc.Type == type ) {
+						ddc.Timer.Stop();
+						contexts.RemoveAt( i );
+						break;
+					}
+				}
 			}
 
-			if( contexts.ContainsKey( m ) )
-            {
-				contexts[m].Stop();
-				contexts.Remove( m );
-            }
+			contexts.Add( new DelayedDamageContext( target, type, timer );
+		}
 
-			contexts.Add( m, t );
-        }
-
-        public void RemoveDelayedDamageContext( Mobile m )
+        public void RemoveDelayedDamageContext( Mobile target )
         {
-			Dictionary<Mobile, Timer> contexts;
+			List<DelayedDamageContext> contexts;
+			Type type = this.GetType();
 
-			if( !m_ContextTable.TryGetValue( GetType(), out contexts ) )
+			if( !m_ContextTable.TryGetValue( m_Caster, out contexts ) )
 				return;
 
-            contexts.Remove( m );
+			for ( int i = 0; i < contexts.Count; i++ ) {
+				DelayedDamageContext ddc = contexts[i];
+
+				if ( ddc.Target == target && ddc.Type == type ) {
+					contexts.RemoveAt( i );
+					break;
+				}
+			}
+
+			if ( contexts.Count == 0 )
+				m_ContextTable.Remove( m_Caster );
         }
 
 		public Spell( Mobile caster, Item scroll, SpellInfo info )

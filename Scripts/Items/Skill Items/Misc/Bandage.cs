@@ -1,17 +1,18 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
-using Server.Mobiles;
+using Server.Gumps;
 using Server.Items;
+using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
-using Server.Gumps;
-using System.Collections.Generic;
 
 namespace Server.Items
 {
 	public class Bandage : Item, IDyable
 	{
+		public static int Range = ( Core.AOS ? 2 : 1 ); 
+
 		public override double DefaultWeight
 		{
 			get { return 0.1; }
@@ -59,7 +60,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.InRange( GetWorldLocation(), Core.AOS ? 2 : 1 ) )
+			if ( from.InRange( GetWorldLocation(), Range ) )
 			{
 				from.RevealingAction();
 
@@ -72,11 +73,12 @@ namespace Server.Items
 				from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
 			}
 		}
+
 		private class InternalTarget : Target
 		{
 			private Bandage m_Bandage;
 
-			public InternalTarget( Bandage bandage ) : base( 1, false, TargetFlags.Beneficial )
+			public InternalTarget( Bandage bandage ) : base( Bandage.Range, false, TargetFlags.Beneficial )
 			{
 				m_Bandage = bandage;
 			}
@@ -88,9 +90,9 @@ namespace Server.Items
 
 				if ( targeted is Mobile )
 				{
-					if ( from.InRange( m_Bandage.GetWorldLocation(), Core.AOS ? 2 : 1 ) )
+					if ( from.InRange( m_Bandage.GetWorldLocation(), Bandage.Range ) )
 					{
-						if ( BandageContext.BeginHeal( from, (Mobile) targeted ) != null )
+						if ( BandageContext.BeginHeal( from, (Mobile)targeted ) != null )
 						{
 							m_Bandage.Consume();
 						}
@@ -145,11 +147,13 @@ namespace Server.Items
 			m_Timer = null;
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, BandageContext> m_Table = new Dictionary<Mobile, BandageContext>();
 
 		public static BandageContext GetContext( Mobile healer )
 		{
-			return (BandageContext)m_Table[healer];
+			BandageContext bc = null;
+			m_Table.TryGetValue( healer, out bc );
+			return bc;
 		}
 
 		public static SkillName GetPrimarySkill( Mobile m )
@@ -187,7 +191,7 @@ namespace Server.Items
 				patientNumber = -1;
 				playSound = false;
 			}
-			else if ( !m_Healer.InRange( m_Patient, Core.AOS ? 2 : 1 ) )
+			else if ( !m_Healer.InRange( m_Patient, Bandage.Range ) )
 			{
 				healerNumber = 500963; // You did not stay close enough to heal your target.
 				patientNumber = -1;
