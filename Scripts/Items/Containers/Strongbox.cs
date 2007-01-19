@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Multis;
 using Server.Network;
@@ -152,7 +152,7 @@ namespace Server.Items
 		public Container ConvertToStandardContainer()
 		{
 			Container metalBox = new MetalBox();
-			ArrayList subItems = new ArrayList( Items );
+			List<Item> subItems = new List<Item>( Items );
 
 			foreach ( Item subItem in subItems )
 			{

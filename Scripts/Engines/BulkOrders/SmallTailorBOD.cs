@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Items;
-using Server.Engines.Craft;
 using System.Collections.Generic;
+using Server;
+using Server.Engines.Craft;
+using Server.Items;
 
 namespace Server.Engines.BulkOrders
 {
@@ -124,7 +123,7 @@ namespace Server.Engines.BulkOrders
 
 				CraftSystem system = DefTailoring.CraftSystem;
 
-				ArrayList validEntries = new ArrayList();
+				List<SmallBulkEntry> validEntries = new List<SmallBulkEntry>();
 
 				for ( int i = 0; i < entries.Length; ++i )
 				{
@@ -148,7 +147,7 @@ namespace Server.Engines.BulkOrders
 
 				if ( validEntries.Count > 0 )
 				{
-					SmallBulkEntry entry = (SmallBulkEntry)validEntries[Utility.Random( validEntries.Count )];
+					SmallBulkEntry entry = validEntries[Utility.Random( validEntries.Count )];
 					return new SmallTailorBOD( entry, material, amountMax, reqExceptional );
 				}
 			}

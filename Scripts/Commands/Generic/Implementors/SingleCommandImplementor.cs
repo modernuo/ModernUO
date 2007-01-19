@@ -26,7 +26,7 @@ namespace Server.Commands.Generic
 
 		public void Redirect( CommandEventArgs e )
 		{
-			BaseCommand command = (BaseCommand)Commands[e.Command];
+			BaseCommand command = Commands[e.Command];
 
 			if ( command == null )
 				e.Mobile.SendMessage( "That is either an invalid command name or one that does not support this modifier." );

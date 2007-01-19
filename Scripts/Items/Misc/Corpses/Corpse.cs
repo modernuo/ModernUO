@@ -387,16 +387,16 @@ namespace Server.Items
 
 			writer.WriteDeltaTime( m_TimeOfDeath );
 
-			ArrayList list = ( m_RestoreTable == null ? null : new ArrayList( m_RestoreTable ) );
+			List<KeyValuePair<Item, Point3D>> list = ( m_RestoreTable == null ? null : new List<KeyValuePair<Item, Point3D>>( m_RestoreTable ) );
 			int count = ( list == null ? 0 : list.Count );
 
 			writer.Write( count );
 
-			for ( int i = 0; list != null && i < list.Count; ++i )
+			for ( int i = 0; i < list.Count; ++i )
 			{
-				DictionaryEntry de = (DictionaryEntry)list[i];
-				Item item = (Item)de.Key;
-				Point3D loc = (Point3D)de.Value;
+				KeyValuePair<Item, Point3D> kvp = list[i];
+				Item item = kvp.Key;
+				Point3D loc = kvp.Value;
 
 				writer.Write( item );
 
@@ -644,20 +644,14 @@ namespace Server.Items
 				list.Add( new OpenCorpseEntry() );
 		}
 
-		private Hashtable m_RestoreTable;
+		private Dictionary<Item, Point3D> m_RestoreTable;
 
 		public bool GetRestoreInfo( Item item, ref Point3D loc )
 		{
 			if ( m_RestoreTable == null || item == null )
 				return false;
 
-			object obj = m_RestoreTable[item];
-
-			if ( obj == null )
-				return false;
-
-			loc = (Point3D)obj;
-			return true;
+			return m_RestoreTable.TryGetValue( item, out loc );
 		}
 
 		public void SetRestoreInfo( Item item, Point3D loc )
@@ -666,7 +660,7 @@ namespace Server.Items
 				return;
 
 			if ( m_RestoreTable == null )
-				m_RestoreTable = new Hashtable();
+				m_RestoreTable = new Dictionary<Item, Point3D>();
 
 			m_RestoreTable[item] = loc;
 		}

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.Harvest
 {
@@ -53,9 +53,9 @@ namespace Server.Engines.Harvest
 		public HarvestVein[] Veins{ get{ return m_Veins; } set{ m_Veins = value; } }
 		public bool RaceBonus { get { return m_RaceBonus; } set { m_RaceBonus = value; } }
 
-		private Hashtable m_BanksByMap;
+		private Dictionary<Map, Dictionary<Point2D, HarvestBank>> m_BanksByMap;
 
-		public Hashtable Banks{ get{ return m_BanksByMap; } set{ m_BanksByMap = value; } }
+		public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get{ return m_BanksByMap; } set{ m_BanksByMap = value; } }
 
 		public void SendMessageTo( Mobile from, object message )
 		{
@@ -73,13 +73,15 @@ namespace Server.Engines.Harvest
 			x /= m_BankWidth;
 			y /= m_BankHeight;
 
-			Hashtable banks = (Hashtable)m_BanksByMap[map];
+			Dictionary<Point2D, HarvestBank> banks = null;
+			m_BanksByMap.TryGetValue( map, out banks );
 
 			if ( banks == null )
-				m_BanksByMap[map] = banks = new Hashtable();
+				m_BanksByMap[map] = banks = new Dictionary<Point2D, HarvestBank>();
 
 			Point2D key = new Point2D( x, y );
-			HarvestBank bank = (HarvestBank)banks[key];
+			HarvestBank bank = null;
+			banks.TryGetValue( key, out bank );
 
 			if ( bank == null )
 				banks[key] = bank = new HarvestBank( this, GetVeinAt( map, x, y ) );
@@ -108,7 +110,7 @@ namespace Server.Engines.Harvest
 
 		public HarvestDefinition()
 		{
-			m_BanksByMap = new Hashtable();
+			m_BanksByMap = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
 		}
 
 		public bool Validate( int tileID )

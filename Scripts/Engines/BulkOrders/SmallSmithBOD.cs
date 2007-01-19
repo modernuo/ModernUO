@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Items;
-using Server.Engines.Craft;
-using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 using System.Collections.Generic;
+using Server;
+using Server.Engines.Craft;
+using Server.Items;
+using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 
 namespace Server.Engines.BulkOrders
 {
@@ -132,7 +131,7 @@ namespace Server.Engines.BulkOrders
 
 				CraftSystem system = DefBlacksmithy.CraftSystem;
 
-				ArrayList validEntries = new ArrayList();
+				List<SmallBulkEntry> validEntries = new List<SmallBulkEntry>();
 
 				for ( int i = 0; i < entries.Length; ++i )
 				{
@@ -156,7 +155,7 @@ namespace Server.Engines.BulkOrders
 
 				if ( validEntries.Count > 0 )
 				{
-					SmallBulkEntry entry = (SmallBulkEntry)validEntries[Utility.Random( validEntries.Count )];
+					SmallBulkEntry entry = validEntries[Utility.Random( validEntries.Count )];
 					return new SmallSmithBOD( entry, material, amountMax, reqExceptional );
 				}
 			}

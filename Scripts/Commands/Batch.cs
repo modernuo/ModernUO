@@ -63,7 +63,7 @@ namespace Server.Commands
 
 					bc.GetDetails( out commandString, out argString, out args );
 
-					BaseCommand command = (BaseCommand)m_Scope.Commands[commandString];
+					BaseCommand command = m_Scope.Commands[commandString];
 
 					commands[i] = command;
 					eventArgs[i] = new CommandEventArgs( e.Mobile, commandString, argString, args );
@@ -415,7 +415,7 @@ namespace Server.Commands
 			/* Options */
 			for ( int i = 0; i < BaseCommandImplementor.Implementors.Count; ++i )
 			{
-				BaseCommandImplementor impl = (BaseCommandImplementor)BaseCommandImplementor.Implementors[i];
+				BaseCommandImplementor impl = BaseCommandImplementor.Implementors[i];
 
 				if ( m_From.AccessLevel < impl.AccessLevel )
 					continue;
@@ -441,7 +441,7 @@ namespace Server.Commands
 					{
 						if ( index < BaseCommandImplementor.Implementors.Count )
 						{
-							BaseCommandImplementor impl = (BaseCommandImplementor)BaseCommandImplementor.Implementors[index];
+							BaseCommandImplementor impl = BaseCommandImplementor.Implementors[index];
 
 							if ( m_From.AccessLevel >= impl.AccessLevel )
 								m_Batch.Scope = impl;

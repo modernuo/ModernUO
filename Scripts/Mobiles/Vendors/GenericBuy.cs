@@ -253,8 +253,6 @@ namespace Server.Mobiles
 
 		public GenericBuyInfo( string name, Type type, int price, int amount, int itemID, int hue, object[] args )
 		{
-			amount = 20;
-
 			m_Type = type;
 			m_Price = price;
 			m_MaxAmount = m_Amount = amount;

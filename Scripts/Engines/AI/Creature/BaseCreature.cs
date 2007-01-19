@@ -4706,11 +4706,11 @@ namespace Server.Mobiles
 		private DateTime m_NextHourlyCheck;
 
 		protected override void OnTick() 
-		{ 
-			bool hasHourElapsed = ( DateTime.Now >= m_NextHourlyCheck );
-
-			if ( hasHourElapsed )
+		{
+			if ( DateTime.Now >= m_NextHourlyCheck )
 				m_NextHourlyCheck = DateTime.Now + TimeSpan.FromHours( 1.0 );
+			else
+				return;
 
 			List<BaseCreature> toRelease = new List<BaseCreature>();
 
@@ -4751,9 +4751,7 @@ namespace Server.Mobiles
 						
 						if ( c.Map != Map.Internal )
 						{
-							// Every hour all pets lose 10% of max loyalty.
-							if ( hasHourElapsed )
-								c.Loyalty -= (BaseCreature.MaxLoyalty / 10);
+							c.Loyalty -= (BaseCreature.MaxLoyalty / 10);
 
 							if( c.Loyalty < (BaseCreature.MaxLoyalty / 10) )
 							{
@@ -4767,7 +4765,7 @@ namespace Server.Mobiles
 					}
 
 					// added lines to check if a wild creature in a house region has to be removed or not
-					if ( (!c.Controlled && ( c.Region.IsPartOf( typeof( HouseRegion ) ) && c.CanBeDamaged()) || (hasHourElapsed && c.RemoveIfUntamed && c.Spawner == null )) )
+					if ( (!c.Controlled && ( c.Region.IsPartOf( typeof( HouseRegion ) ) && c.CanBeDamaged()) || ( c.RemoveIfUntamed && c.Spawner == null )) )
 					{
 						c.RemoveStep++;
 

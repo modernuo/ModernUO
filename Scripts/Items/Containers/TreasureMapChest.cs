@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server;
+using Server.ContextMenus;
+using Server.Engines.PartySystem;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
-using Server.ContextMenus;
-using Server.Engines.PartySystem;
 
 namespace Server.Items
 {
@@ -274,7 +273,7 @@ namespace Server.Items
 			}
 		}
 
-		private ArrayList m_Lifted = new ArrayList();
+		private List<Item> m_Lifted = new List<Item>();
 
 		private bool CheckLoot( Mobile m, bool criminalAction )
 		{
@@ -365,7 +364,7 @@ namespace Server.Items
 
 			writer.Write( (int) m_Level );
 			writer.WriteDeltaTime( m_DeleteTime );
-			writer.WriteItemList( m_Lifted, true );
+			writer.Write( m_Lifted, true );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -393,7 +392,7 @@ namespace Server.Items
 				{
 					m_Level = reader.ReadInt();
 					m_DeleteTime = reader.ReadDeltaTime();
-					m_Lifted = reader.ReadItemList();
+					m_Lifted = reader.ReadStrongItemList();
 
 					if ( version < 2 )
 						m_Guardians = new List<Mobile>();

@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using System.Collections;
 using Server;
 
 namespace Server.Gumps
@@ -10,11 +10,11 @@ namespace Server.Gumps
 	{
 		private Map m_Map;
 		private ParentNode m_Root;
-		private Hashtable m_LastBranch;
+		private Dictionary<Mobile, ParentNode> m_LastBranch;
 
 		public LocationTree( string fileName, Map map )
 		{
-			m_LastBranch = new Hashtable();
+			m_LastBranch = new Dictionary<Mobile, ParentNode>();
 			m_Map = map;
 
 			string path = Path.Combine( "Data/Locations/", fileName );
@@ -31,7 +31,7 @@ namespace Server.Gumps
 			}
 		}
 
-		public Hashtable LastBranch
+		public Dictionary<Mobile, ParentNode> LastBranch
 		{
 			get
 			{

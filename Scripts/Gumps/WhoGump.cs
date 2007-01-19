@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Commands;
 using Server.Mobiles;
@@ -75,38 +74,28 @@ namespace Server.Gumps
 		private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
 
 		private Mobile m_Owner;
-		private ArrayList m_Mobiles;
+		private List<Mobile> m_Mobiles;
 		private int m_Page;
 
-		private class InternalComparer : IComparer
+		private class InternalComparer : IComparer<Mobile>
 		{
-			public static readonly IComparer Instance = new InternalComparer();
+			public static readonly IComparer<Mobile> Instance = new InternalComparer();
 
 			public InternalComparer()
 			{
 			}
 
-			public int Compare( object x, object y )
+			public int Compare( Mobile x, Mobile y )
 			{
-				if ( x == null && y == null )
-					return 0;
-				else if ( x == null )
-					return -1;
-				else if ( y == null )
-					return 1;
-
-				Mobile a = x as Mobile;
-				Mobile b = y as Mobile;
-
-				if ( a == null || b == null )
+				if ( x == null || y == null )
 					throw new ArgumentException();
 
-				if ( a.AccessLevel > b.AccessLevel )
+				if ( x.AccessLevel > y.AccessLevel )
 					return -1;
-				else if ( a.AccessLevel < b.AccessLevel )
+				else if ( x.AccessLevel < y.AccessLevel )
 					return 1;
 				else
-					return Insensitive.Compare( a.Name, b.Name );
+					return Insensitive.Compare( x.Name, y.Name );
 			}
 		}
 
@@ -114,7 +103,7 @@ namespace Server.Gumps
 		{
 		}
 
-		public WhoGump( Mobile owner, ArrayList list, int page ) : base( GumpOffsetX, GumpOffsetY )
+		public WhoGump( Mobile owner, List<Mobile> list, int page ) : base( GumpOffsetX, GumpOffsetY )
 		{
 			owner.CloseGump( typeof( WhoGump ) );
 
@@ -124,14 +113,14 @@ namespace Server.Gumps
 			Initialize( page );
 		}
 
-		public static ArrayList BuildList( Mobile owner, string filter )
+		public static List<Mobile> BuildList( Mobile owner, string filter )
 		{
 			if ( filter != null && (filter = filter.Trim()).Length == 0 )
 				filter = null;
 			else
 				filter = filter.ToLower();
 
-			ArrayList list = new ArrayList();
+			List<Mobile> list = new List<Mobile>();
 			List<NetState> states = NetState.Instances;
 
 			for ( int i = 0; i < states.Count; ++i )
@@ -213,7 +202,7 @@ namespace Server.Gumps
 				x = BorderSize + OffsetSize;
 				y += EntryHeight + OffsetSize;
 
-				Mobile m = (Mobile)m_Mobiles[index];
+				Mobile m = m_Mobiles[index];
 
 				AddImageTiled( x, y, EntryWidth, EntryHeight, EntryGumpID );
 				AddLabelCropped( x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, GetHueFor( m ), m.Deleted ? "(deleted)" : m.Name );
@@ -280,7 +269,7 @@ namespace Server.Gumps
 
 					if ( index >= 0 && index < m_Mobiles.Count )
 					{
-						Mobile m = (Mobile)m_Mobiles[index];
+						Mobile m = m_Mobiles[index];
 
 						if ( m.Deleted )
 						{

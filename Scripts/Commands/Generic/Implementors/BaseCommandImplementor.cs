@@ -1,8 +1,8 @@
 using System;
-using System.Text;
 using System.Collections;
-using Server;
 using System.Collections.Generic;
+using System.Text;
+using Server;
 
 namespace Server.Commands.Generic
 {
@@ -45,7 +45,7 @@ namespace Server.Commands.Generic
 		private string[] m_Accessors;
 		private AccessLevel m_AccessLevel;
 		private CommandSupport m_SupportRequirement;
-		private Hashtable m_Commands;
+		private Dictionary<string, BaseCommand> m_Commands;
 		private string m_Usage;
 		private string m_Description;
 		private bool m_SupportsConditionals;
@@ -86,14 +86,14 @@ namespace Server.Commands.Generic
 			set{ m_SupportRequirement = value; }
 		}
 
-		public Hashtable Commands
+		public Dictionary<string, BaseCommand> Commands
 		{
 			get{ return m_Commands; }
 		}
 
 		public BaseCommandImplementor()
 		{
-			m_Commands = new Hashtable( StringComparer.OrdinalIgnoreCase );
+			m_Commands = new Dictionary<string, BaseCommand>( StringComparer.OrdinalIgnoreCase );
 		}
 
 		public virtual void Compile( Mobile from, BaseCommand command, ref string[] args, ref object obj )
@@ -276,7 +276,7 @@ namespace Server.Commands.Generic
 		{
 			if ( e.Length >= 1 )
 			{
-				BaseCommand command = (BaseCommand)m_Commands[e.GetString( 0 )];
+				BaseCommand command = m_Commands[e.GetString( 0 )];
 
 				if ( command == null )
 				{

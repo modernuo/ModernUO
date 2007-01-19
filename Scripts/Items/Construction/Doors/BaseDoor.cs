@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Commands;
 using Server.Network;
@@ -90,7 +89,7 @@ namespace Server.Items
 		[Description( "Chain-links two or more targeted doors together." )]
 		private static void ChainLink_OnCommand( CommandEventArgs e )
 		{
-			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetStateCallback( ChainLink_OnTarget ), new ArrayList() );
+			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetStateCallback( ChainLink_OnTarget ), new List<BaseDoor>() );
 			e.Mobile.SendMessage( "Target the first of a sequence of doors to link." );
 		}
 
@@ -105,14 +104,14 @@ namespace Server.Items
 			}
 			else
 			{
-				ArrayList list = (ArrayList)state;
+				List<BaseDoor> list = (List<BaseDoor>)state;
 
 				if ( list.Count > 0 && list[0] == door )
 				{
 					if ( list.Count >= 2 )
 					{
 						for ( int i = 0; i < list.Count; ++i )
-							((BaseDoor)list[i]).Link = ((BaseDoor)list[(i + 1) % list.Count]);
+							list[i].Link = list[(i + 1) % list.Count];
 
 						from.SendMessage( "The chain of doors have been linked." );
 					}
@@ -403,9 +402,9 @@ namespace Server.Items
 
 		public virtual bool UseChainedFunctionality{ get{ return false; } }
 
-		public ArrayList GetChain()
+		public List<BaseDoor> GetChain()
 		{
-			ArrayList list = new ArrayList();
+			List<BaseDoor> list = new List<BaseDoor>();
 			BaseDoor c = this;
 
 			do
@@ -422,12 +421,12 @@ namespace Server.Items
 			if ( !UseChainedFunctionality )
 				return CanClose();
 
-			ArrayList list = GetChain();
+			List<BaseDoor> list = GetChain();
 
 			bool freeToClose = true;
 
 			for ( int i = 0; freeToClose && i < list.Count; ++i )
-				freeToClose = ((BaseDoor)list[i]).CanClose();
+				freeToClose = list[i].CanClose();
 
 			return freeToClose;
 		}
@@ -490,10 +489,10 @@ namespace Server.Items
 			{
 				bool open = !m_Open;
 
-				ArrayList list = GetChain();
+				List<BaseDoor> list = GetChain();
 
 				for ( int i = 0; i < list.Count; ++i )
-					((BaseDoor)list[i]).Open = open;
+					list[i].Open = open;
 			}
 			else
 			{
