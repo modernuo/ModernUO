@@ -1322,7 +1322,7 @@ namespace Server.Multis
 
 				BankBox box = m.BankBox;
 
-				if ( box == null || !box.TryDropItem( m, bankKey, false ) )
+				if ( !box.TryDropItem( m, bankKey, false ) )
 					bankKey.Delete();
 
 				m.AddToBackpack( packKey );

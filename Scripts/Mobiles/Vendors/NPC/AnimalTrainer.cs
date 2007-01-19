@@ -295,7 +295,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				Container bank = from.BankBox;
+				Container bank = from.FindBankNoCreate();
 
 				if ( bank != null && bank.ConsumeTotal( typeof( Gold ), 30 ) )
 				{

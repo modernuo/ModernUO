@@ -215,7 +215,7 @@ namespace Server.Items
 					{
 						from.SendLocalizedMessage( 1062089 ); // You cannot use that here.
 					}
-					else if ( from.BankBox == null || !from.BankBox.TryDropItem( from, item, false ) )
+					else if ( !from.BankBox.TryDropItem( from, item, false ) )
 					{
 						MessageHelper.SendLocalizedMessageTo( m_Bag, from, 1054110, 0x59 ); // Your bank box is full.
 					}

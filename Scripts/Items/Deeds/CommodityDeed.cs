@@ -115,7 +115,7 @@ namespace Server.Items
 		{
 			int number;
 
-			BankBox box = from.BankBox;
+			BankBox box = from.FindBankNoCreate();
 
 			if ( m_Commodity != null )
 			{
@@ -169,7 +169,7 @@ namespace Server.Items
 				}
 				else if ( targeted is Item )
 				{
-					BankBox box = from.BankBox;
+					BankBox box = from.FindBankNoCreate();
 
 					if ( box != null && m_Deed.IsChildOf( box ) && ((Item)targeted).IsChildOf( box ) )
 					{

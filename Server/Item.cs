@@ -558,7 +558,7 @@ namespace Server
 		Weight		= 0x80
 	}
 
-	public class Item : IPoint3D, IEntity, IHued, IComparable, IComparable<Item>, IComparable<IEntity>, ISerializable
+	public class Item : IEntity, IHued, IComparable<Item>, ISerializable
 	{
 		//public static readonly EmptyArrayList EmptyItems = new EmptyArrayList();
 		public static readonly List<Item> EmptyItems = new List<Item>( 0 );
@@ -1397,14 +1397,6 @@ namespace Server
 			{
 				Map = map;
 				Location = location;
-			}
-		}
-
-		Point3D IEntity.Location
-		{
-			get
-			{
-				return m_Location;
 			}
 		}
 
@@ -3149,7 +3141,7 @@ namespace Server
 				for ( int i = items.Count - 1; i >= 0; --i )
 				{
 					if ( i < items.Count )
-						( (Item) items[i] ).OnParentDeleted( this );
+						items[i].OnParentDeleted( this );
 				}
 			}
 

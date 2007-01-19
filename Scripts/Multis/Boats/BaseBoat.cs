@@ -327,7 +327,7 @@ namespace Server.Multis
 
 			BankBox box = m.BankBox;
 
-			if ( box == null || !box.TryDropItem( m, bankKey, false ) )
+			if ( !box.TryDropItem( m, bankKey, false ) )
 				bankKey.Delete();
 			else
 				m.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502484 ); // A ship's key is now in my safety deposit box.

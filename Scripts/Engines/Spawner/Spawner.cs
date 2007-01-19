@@ -1,9 +1,9 @@
 using System;
-using System.IO;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using Server;
 using Server.Items;
-using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -16,7 +16,7 @@ namespace Server.Mobiles
 		private TimeSpan m_MinDelay;
 		private TimeSpan m_MaxDelay;
 		private List<string> m_CreaturesName;
-		private ArrayList m_Creatures;
+		private List<IEntity> m_Creatures;
 		private DateTime m_End;
 		private InternalTimer m_Timer;
 		private bool m_Running;
@@ -188,7 +188,7 @@ namespace Server.Mobiles
 			m_Team = team;
 			m_HomeRange = homeRange;
 			m_CreaturesName = creaturesName;
-			m_Creatures = new ArrayList();
+			m_Creatures = new List<IEntity>();
 			DoTimer( TimeSpan.FromSeconds( 1 ) );
 		}
 			
@@ -222,7 +222,7 @@ namespace Server.Mobiles
 				list.Add( 1060661, "speed\t{0} to {1}", m_MinDelay, m_MaxDelay ); // ~1_val~: ~2_val~
 
 				for ( int i = 0; i < 2 && i < m_CreaturesName.Count; ++i )
-					list.Add( 1060662 + i, "{0}\t{1}", m_CreaturesName[i], CountCreatures( (string)m_CreaturesName[i] ) );
+					list.Add( 1060662 + i, "{0}\t{1}", m_CreaturesName[i], CountCreatures( m_CreaturesName[i] ) );
 			}
 			else
 			{
@@ -267,11 +267,11 @@ namespace Server.Mobiles
 
 			for ( int i = 0; i < m_Creatures.Count; ++i )
 			{
-				object o = m_Creatures[i];
+				IEntity e = m_Creatures[i];
 
-				if ( o is Item )
+				if ( e is Item )
 				{
-					Item item = (Item)o;
+					Item item = (Item)e;
 
 					if ( item.Deleted || item.Parent != null )
 					{
@@ -280,9 +280,9 @@ namespace Server.Mobiles
 						removed = true;
 					}
 				}
-				else if ( o is Mobile )
+				else if ( e is Mobile )
 				{
-					Mobile m = (Mobile)o;
+					Mobile m = (Mobile)e;
 
 					if ( m.Deleted )
 					{
@@ -292,7 +292,8 @@ namespace Server.Mobiles
 					}
 					else if ( m is BaseCreature )
 					{
-						if ( ((BaseCreature)m).Controlled || ((BaseCreature)m).IsStabled )
+						BaseCreature bc = (BaseCreature)m;
+						if ( bc.Controlled || bc.IsStabled )
 						{
 							m_Creatures.RemoveAt( i );
 							--i;
@@ -353,7 +354,7 @@ namespace Server.Mobiles
 		{
 			for ( int i = 0; i < m_CreaturesName.Count; i++ )
 			{
-				if ( (string)m_CreaturesName[i] == creatureName )
+				if ( m_CreaturesName[i] == creatureName )
 				{
 					Spawn( i );
 					break;
@@ -373,7 +374,7 @@ namespace Server.Mobiles
 			if ( m_Creatures.Count >= m_Count )
 				return;
 
-			Type type = SpawnerType.GetType( (string)m_CreaturesName[index] );
+			Type type = SpawnerType.GetType( m_CreaturesName[index] );
 
 			if ( type != null )
 			{
@@ -525,19 +526,12 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			creatureName = creatureName.ToLower();
-
 			for ( int i = 0; i < m_Creatures.Count; ++i )
 			{
-				object o = m_Creatures[i];
+				IEntity e = m_Creatures[i];
 
-				if ( Insensitive.Equals( creatureName, o.GetType().Name ) )
-				{
-					if ( o is Item )
-						((Item)o).Delete();
-					else if ( o is Mobile )
-						((Mobile)o).Delete();
-				}
+				if ( Insensitive.Equals( creatureName, e.GetType().Name ) )
+						e.Delete();
 			}
 
 			InvalidateProperties();
@@ -548,14 +542,7 @@ namespace Server.Mobiles
 			Defrag();
 
 			for ( int i = 0; i < m_Creatures.Count; ++i )
-			{
-				object o = m_Creatures[i];
-
-				if ( o is Item )
-					((Item)o).Delete();
-				else if ( o is Mobile )
-					((Mobile)o).Delete();
-			}
+				m_Creatures[i].Delete();
 
 			InvalidateProperties();
 		}
@@ -566,17 +553,17 @@ namespace Server.Mobiles
 
 			for ( int i = 0; i < m_Creatures.Count; ++i )
 			{
-				object o = m_Creatures[i];
+				IEntity e = m_Creatures[i];
 
-				if ( o is Mobile )
+				if ( e is Mobile )
 				{
-					Mobile m = (Mobile)o;
+					Mobile m = (Mobile)e;
 
 					m.MoveToWorld( Location, Map );
 				}
-				else if ( o is Item )
+				else if ( e is Item )
 				{
-					Item item = (Item)o;
+					Item item = (Item)e;
 
 					item.MoveToWorld( Location, Map );
 				}
@@ -622,12 +609,12 @@ namespace Server.Mobiles
 
 			for ( int i = 0; i < m_Creatures.Count; ++i )
 			{
-				object o = m_Creatures[i];
+				IEntity e = m_Creatures[i];
 
-				if ( o is Item )
-					writer.Write( (Item)o );
-				else if ( o is Mobile )
-					writer.Write( (Mobile)o );
+				if ( e is Item )
+					writer.Write( (Item)e );
+				else if ( e is Mobile )
+					writer.Write( (Mobile)e );
 				else
 					writer.Write( Serial.MinusOne );
 			}
@@ -699,7 +686,7 @@ namespace Server.Mobiles
 
 					int count = reader.ReadInt();
 
-					m_Creatures = new ArrayList( count );
+					m_Creatures = new List<IEntity>( count );
 
 					for ( int i = 0; i < count; ++i )
 					{

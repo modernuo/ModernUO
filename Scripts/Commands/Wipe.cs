@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
-using Server.Targeting;
 using Server.Items;
 using Server.Multis;
+using Server.Targeting;
 
 namespace Server.Commands
 {
@@ -72,7 +72,7 @@ namespace Server.Commands
 			bool multis = ( (type & WipeType.Multis) != 0 );
 			bool items = ( (type & WipeType.Items) != 0 );
 
-			ArrayList toDelete = new ArrayList();
+			List<IEntity> toDelete = new List<IEntity>();
 
 			Rectangle2D rect = new Rectangle2D( start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1 );
 
@@ -87,7 +87,7 @@ namespace Server.Commands
 			else
 				return;
 
-			foreach ( object obj in eable )
+			foreach ( IEntity obj in eable )
 			{
 				if ( items && (obj is Item) && !((obj is BaseMulti) || (obj is HouseSign)) )
 					toDelete.Add( obj );
@@ -100,12 +100,7 @@ namespace Server.Commands
 			eable.Free();
 
 			for ( int i = 0; i < toDelete.Count; ++i )
-			{
-				if ( toDelete[i] is Item )
-					((Item)toDelete[i]).Delete();
-				else if ( toDelete[i] is Mobile )
-					((Mobile)toDelete[i]).Delete();
-			}
+				toDelete[i].Delete();
 		}
 	}
 }

@@ -76,8 +76,7 @@ namespace Server.Commands
 
 			Type type = ScriptCompiler.FindTypeByName( name );
 
-			if ( type == null )
-			{
+			if ( !IsEntity( type ) ) {
 				from.SendMessage( "No type with that name was found." );
 				return;
 			}
@@ -239,7 +238,7 @@ namespace Server.Commands
 			}
 		}
 
-		public static object Build( Mobile from, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, ref bool sendError )
+		public static IEntity Build( Mobile from, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, ref bool sendError )
 		{
 			object built = ctor.Invoke( values );
 
@@ -267,7 +266,7 @@ namespace Server.Commands
 					sendError = false;
 			}
 
-			return built;
+			return (IEntity)built;
 		}
 
 		public static int Build( Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, List<Container> packs )
@@ -290,23 +289,16 @@ namespace Server.Commands
 				{
 					for ( int i = 0; i < packs.Count; ++i )
 					{
-						object built = Build( from, ctor, values, props, realProps, ref sendError );
+						IEntity built = Build( from, ctor, values, props, realProps, ref sendError );
 
-						if( built is IEntity )
-							sb.AppendFormat( "0x{0:X}; ", ((IEntity)built).Serial.Value );
-						else
-							continue;
-
-						if ( built is Item )
-						{
+						sb.AppendFormat( "0x{0:X}; ", built.Serial.Value );
+	
+						if ( built is Item ) {
 							Container pack = packs[i];
-
 							pack.DropItem( (Item)built );
 						}
-						else if ( built is Mobile )
-						{
+						else if ( built is Mobile ) {
 							Mobile m = (Mobile)built;
-
 							m.MoveToWorld( new Point3D( start.X, start.Y, start.Z ), map );
 						}
 					}
@@ -317,23 +309,16 @@ namespace Server.Commands
 					{
 						for ( int y = start.Y; y <= end.Y; ++y )
 						{
-							object built = Build( from, ctor, values, props, realProps, ref sendError );
+							IEntity built = Build( from, ctor, values, props, realProps, ref sendError );
 
-							if( built is IEntity )
-								sb.AppendFormat( "0x{0:X}; ", ((IEntity)built).Serial.Value );
-							else
-								continue;
+							sb.AppendFormat( "0x{0:X}; ", built.Serial.Value );
 
-							if ( built is Item )
-							{
+							if ( built is Item ) {
 								Item item = (Item)built;
-
 								item.MoveToWorld( new Point3D( x, y, start.Z ), map );
 							}
-							else if ( built is Mobile )
-							{
+							else if ( built is Mobile ) {
 								Mobile m = (Mobile)built;
-
 								m.MoveToWorld( new Point3D( x, y, start.Z ), map );
 							}
 						}
@@ -419,7 +404,8 @@ namespace Server.Commands
 					else if ( p is Mobile )
 						p = ((Mobile)p).Location;
 
-					Add.Invoke( from, new Point3D( p ), new Point3D( p ), m_Args );
+					Point3D point = new Point3D( p );
+					Add.Invoke( from, point, point, m_Args );
 				}
 			}
 		}
@@ -527,6 +513,13 @@ namespace Server.Commands
 			{
 				e.Mobile.SendMessage( "Format: TileZ <z> <type> [params] [set {<propertyName> <value> ...}]" );
 			}
+		}
+
+		private static Type m_EntityType = typeof( IEntity );
+
+		public static bool IsEntity( Type t )
+		{
+			return m_EntityType.IsAssignableFrom( t );
 		}
 
 		private static Type m_ConstructableType = typeof( ConstructableAttribute );

@@ -400,9 +400,11 @@ namespace Server.Engines.Plants
 				}
 			}
 
-			if ( from.BankBox != null )
+			BankBox bank = from.FindBankNoCreate();
+
+			if ( bank != null )
 			{
-				Item[] plants = from.BankBox.FindItemsByType( typeof( PlantItem ) );
+				Item[] plants = bank.FindItemsByType( typeof( PlantItem ) );
 
 				foreach ( PlantItem plant in plants )
 				{

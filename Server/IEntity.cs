@@ -27,9 +27,12 @@ namespace Server
 		Serial Serial{ get; }
 		Point3D Location{ get; }
 		Map Map{ get; }
+
+		void Delete();
+		void ProcessDelta();
 	}
 
-	public class Entity : IEntity, IComparable, IComparable<Entity>, IComparable<IEntity>
+	public class Entity : IEntity, IComparable<Entity>
 	{
 		public int CompareTo( IEntity other )
 		{
@@ -63,52 +66,48 @@ namespace Server
 			m_Map = map;
 		}
 
-		public Serial Serial
-		{
-			get
-			{
+		public Serial Serial {
+			get {
 				return m_Serial;
 			}
 		}
 
-		public Point3D Location
-		{
-			get
-			{
+		public Point3D Location {
+			get {
 				return m_Location;
 			}
 		}
 
-		public int X
-		{
-			get
-			{
+		public int X {
+			get {
 				return m_Location.X;
 			}
 		}
 
-		public int Y
-		{
-			get
-			{
+		public int Y {
+			get {
 				return m_Location.Y;
 			}
 		}
 
-		public int Z
-		{
-			get
-			{
+		public int Z {
+			get {
 				return m_Location.Z;
 			}
 		}
 
-		public Map Map
-		{
-			get
-			{
+		public Map Map {
+			get {
 				return m_Map;
 			}
+		}
+
+		public void Delete()
+		{
+		}
+
+		public void ProcessDelta()
+		{
 		}
 	}
 }

@@ -101,10 +101,7 @@ namespace Server
 			if ( map == null )
 				return;
 
-			if ( e is Item )
-				((Item)e).ProcessDelta();
-			else if ( e is Mobile )
-				((Mobile)e).ProcessDelta();
+			e.ProcessDelta();
 
 			Packet preEffect = null, boltEffect = null, playSound = null;
 

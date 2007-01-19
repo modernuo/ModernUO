@@ -109,7 +109,7 @@ namespace Server.Gumps
 					{
 						BankBox box = m_Mobile.BankBox;
 
-						if ( box != null && box.TryDropItem( m_Mobile, toGive, false ) )
+						if ( box.TryDropItem( m_Mobile, toGive, false ) )
 						{
 							if ( toGive is BankCheck )
 								m_Mobile.SendLocalizedMessage( 1060397, ((BankCheck)toGive).Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.

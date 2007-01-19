@@ -205,21 +205,14 @@ namespace Server.Commands
 		{
 			if ( okay )
 			{
-				ArrayList list = (ArrayList)state;
+				List<IEntity> list = (List<IEntity>)state;
 
 				CommandLogging.WriteLine( from, "{0} {1} deleting {2} objects", from.AccessLevel, CommandLogging.Format( from ), list.Count );
 
 				NetState.Pause();
 
 				for ( int i = 0; i < list.Count; ++i )
-				{
-					object obj = list[i];
-
-					if ( obj is Item )
-						((Item)obj).Delete();
-					else if ( obj is Mobile )
-						((Mobile)obj).Delete();
-				}
+					list[i].Delete();
 
 				NetState.Resume();
 
@@ -243,19 +236,15 @@ namespace Server.Commands
 				return;
 			}
 
-			ArrayList list = new ArrayList();
+			List<IEntity> list = new List<IEntity>();
 
 			foreach ( Item item in World.Items.Values )
-			{
 				if ( item.Map == map && item.Parent == null )
 					list.Add( item );
-			}
 
 			foreach ( Mobile m in World.Mobiles.Values )
-			{
 				if ( m.Map == map && !m.Player )
 					list.Add( m );
-			}
 
 			if ( list.Count > 0 )
 			{

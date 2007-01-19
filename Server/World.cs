@@ -46,7 +46,7 @@ namespace Server {
 		private static bool m_Loading;
 		private static bool m_Loaded;
 		private static bool m_Saving;
-		private static ArrayList m_DeleteList;
+		private static List<IEntity> m_DeleteList;
 
 		public static bool Saving { get { return m_Saving; } }
 		public static bool Loaded { get { return m_Loaded; } }
@@ -71,11 +71,11 @@ namespace Server {
 			get { return m_Items; }
 		}
 
-		public static bool OnDelete( object o ) {
+		public static bool OnDelete( IEntity entity ) {
 			if ( !m_Loading )
 				return true;
 
-			m_DeleteList.Add( o );
+			m_DeleteList.Add( entity );
 
 			return false;
 		}
@@ -277,7 +277,7 @@ namespace Server {
 			Stopwatch watch = Stopwatch.StartNew();
 
 			m_Loading = true;
-			m_DeleteList = new ArrayList();
+			m_DeleteList = new List<IEntity>();
 
 			int mobileCount = 0, itemCount = 0, guildCount = 0;
 
@@ -630,12 +630,7 @@ namespace Server {
 			m_Loading = false;
 
 			for ( int i = 0; i < m_DeleteList.Count; ++i ) {
-				object o = m_DeleteList[i];
-
-				if ( o is Item )
-					( ( Item ) o ).Delete();
-				else if ( o is Mobile )
-					( ( Mobile ) o ).Delete();
+				m_DeleteList[i].Delete();
 			}
 
 			m_DeleteList.Clear();

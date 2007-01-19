@@ -154,7 +154,9 @@ namespace Server.Engines.Plants
 
 				if ( owner.Backpack != null && IsChildOf( owner.Backpack ) )
 					return true;
-				if ( owner.BankBox != null && IsChildOf( owner.BankBox ) )
+
+				BankBox bank = owner.FindBankNoCreate();
+				if ( bank != null && IsChildOf( bank ) )
 					return true;
 
 				return false;
@@ -317,7 +319,7 @@ namespace Server.Engines.Plants
 		public bool IsUsableBy( Mobile from )
 		{
 			Item root = RootParent as Item;
-			return IsChildOf( from.Backpack ) || IsChildOf( from.BankBox ) || IsLockedDown && IsAccessibleTo( from ) || root != null && root.IsSecure && root.IsAccessibleTo( from );
+			return IsChildOf( from.Backpack ) || IsChildOf( from.FindBankNoCreate() ) || IsLockedDown && IsAccessibleTo( from ) || root != null && root.IsSecure && root.IsAccessibleTo( from );
 		}
 
 		public override void OnDoubleClick( Mobile from )

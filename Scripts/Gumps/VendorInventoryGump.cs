@@ -90,7 +90,7 @@ namespace Server.Gumps
 					inventory.Items.RemoveAt( i );
 					givenToBackpack += 1 + item.TotalItems;
 				}
-				else if ( from.BankBox != null && from.BankBox.TryDropItem( from, item, false ) )
+				else if ( from.BankBox.TryDropItem( from, item, false ) )
 				{
 					inventory.Items.RemoveAt( i );
 					givenToBankBox += 1 + item.TotalItems;

@@ -78,7 +78,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			BankBox box = from.BankBox;
+			BankBox box = from.FindBankNoCreate();
 
 			if ( box != null && IsChildOf( box ) )
 			{

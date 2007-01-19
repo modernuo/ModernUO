@@ -23,10 +23,7 @@ namespace Server.ContextMenus
 			}
 			else
 			{
-				BankBox box = this.Owner.From.BankBox;
-
-				if ( box != null )
-					box.Open();
+				this.Owner.From.BankBox.Open();
 			}
 		}
 	}

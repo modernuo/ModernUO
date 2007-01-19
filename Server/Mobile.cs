@@ -496,7 +496,7 @@ namespace Server
 	/// <summary>
 	/// Base class representing players, npcs, and creatures.
 	/// </summary>
-	public class Mobile : IEntity, IPoint3D, IHued, IComparable, IComparable<Mobile>, ISerializable
+	public class Mobile : IEntity, IHued, IComparable<Mobile>, ISerializable
 	{
 		public int CompareTo( IEntity other )
 		{
@@ -8526,14 +8526,6 @@ namespace Server
 			}
 		}
 
-		Point3D IEntity.Location
-		{
-			get
-			{
-				return m_Location;
-			}
-		}
-
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
 		public Point3D Location
 		{
@@ -9941,7 +9933,7 @@ namespace Server
 			int index = 0;
 
 			while( m_DeltaQueue.Count > 0 && index++ < count )
-				(m_DeltaQueue.Dequeue()).ProcessDelta();
+				m_DeltaQueue.Dequeue().ProcessDelta();
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]

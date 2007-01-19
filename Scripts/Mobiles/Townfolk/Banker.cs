@@ -36,7 +36,7 @@ namespace Server.Mobiles
 		{
 			int balance = 0;
 
-			Container bank = from.BankBox;
+			Container bank = from.FindBankNoCreate();
 
 			if ( bank != null )
 			{
@@ -100,7 +100,7 @@ namespace Server.Mobiles
 
 		public static bool Deposit( Mobile from, int amount )
 		{
-			BankBox box = from.BankBox;
+			BankBox box = from.FindBankNoCreate();
 			if ( box == null )
 				return false;
 
@@ -146,7 +146,7 @@ namespace Server.Mobiles
 
 		public static int DepositUpTo( Mobile from, int amount )
 		{
-			BankBox box = from.BankBox;
+			BankBox box = from.FindBankNoCreate();
 			if ( box == null )
 				return 0;
 
@@ -265,7 +265,7 @@ namespace Server.Mobiles
 								}
 								else if ( amount > 0 )
 								{
-									BankBox box = e.Mobile.BankBox;
+									BankBox box = e.Mobile.FindBankNoCreate();
 
 									if ( box == null || !box.ConsumeTotal( typeof( Gold ), amount ) )
 									{
@@ -292,12 +292,12 @@ namespace Server.Mobiles
 								break;
 							}
 
-							BankBox box = e.Mobile.BankBox;
+							BankBox box = e.Mobile.FindBankNoCreate();
 
 							if ( box != null )
-							{
 								this.Say( 1042759, box.TotalGold.ToString() ); // Thy current bank balance is ~1_AMOUNT~ gold.
-							}
+							else
+								this.Say( 1042759, "0" ); // Thy current bank balance is ~1_AMOUNT~ gold.
 
 							break;
 						}
@@ -311,10 +311,7 @@ namespace Server.Mobiles
 								break;
 							}
 
-							BankBox box = e.Mobile.BankBox;
-
-							if ( box != null )
-								box.Open();
+							e.Mobile.BankBox.Open();
 
 							break;
 						}
@@ -357,7 +354,7 @@ namespace Server.Mobiles
 
 									BankBox box = e.Mobile.BankBox;
 
-									if ( box == null || !box.TryDropItem( e.Mobile, check, false ) )
+									if ( !box.TryDropItem( e.Mobile, check, false ) )
 									{
 										this.Say( 500386 ); // There's not enough room in your bankbox for the check!
 										check.Delete();

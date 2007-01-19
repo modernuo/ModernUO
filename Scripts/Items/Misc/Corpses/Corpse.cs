@@ -392,7 +392,7 @@ namespace Server.Items
 
 			writer.Write( count );
 
-			for ( int i = 0; i < list.Count; ++i )
+			for ( int i = 0; i < count; ++i )
 			{
 				KeyValuePair<Item, Point3D> kvp = list[i];
 				Item item = kvp.Key;

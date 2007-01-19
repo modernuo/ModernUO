@@ -306,7 +306,7 @@ namespace Server.Mobiles
 
 				Gold gold = new Gold( 500, 1000 );
 
-				if ( cont == null || !cont.TryDropItem( escorter, gold, false ) )
+				if ( !cont.TryDropItem( escorter, gold, false ) )
 					gold.MoveToWorld( escorter.Location, escorter.Map );
 
 				StopFollow();

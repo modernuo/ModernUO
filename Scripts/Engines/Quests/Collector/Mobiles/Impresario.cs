@@ -147,7 +147,9 @@ namespace Server.Engines.Quests.Collector
 
 						if ( obj != null && !obj.Completed )
 						{
-							if ( player.BankBox != null && player.BankBox.ConsumeTotal( typeof( Gold ), 10 ) )
+							BankBox bank = player.FindBankNoCreate();
+
+							if ( bank != null && bank.ConsumeTotal( typeof( Gold ), 10 ) )
 							{
 								obj.Complete();
 							}

@@ -131,10 +131,7 @@ namespace Server.Engines.Quests.Doom
 
 			if ( obj != null && obj.CurProgress > 0 )
 			{
-				BankBox box = From.BankBox;
-
-				if ( box != null )
-					box.DropItem( new DaemonBone( obj.CurProgress ) );
+				From.BankBox.DropItem( new DaemonBone( obj.CurProgress ) );
 
 				From.SendLocalizedMessage( 1050030 ); // The Daemon bones that you have thus far given to Victoria have been returned to you.
 			}

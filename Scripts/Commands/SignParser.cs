@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Server;
 using Server.Items;
@@ -42,7 +42,7 @@ namespace Server.Commands
 
 			if ( File.Exists( cfg ) )
 			{
-				ArrayList list = new ArrayList();
+				List<SignEntry> list = new List<SignEntry>();
 				from.SendMessage( "Generating signs, please wait." );
 
 				using ( StreamReader ip = new StreamReader( cfg ) )
@@ -71,7 +71,7 @@ namespace Server.Commands
 
 				for ( int i = 0; i < list.Count; ++i )
 				{
-					SignEntry e = (SignEntry)list[i];
+					SignEntry e = list[i];
 					Map[] maps = null;
 
 					switch ( e.m_Map )
@@ -96,7 +96,7 @@ namespace Server.Commands
 			}
 		}
 
-		private static Queue m_ToDelete = new Queue();
+		private static Queue<Item> m_ToDelete = new Queue<Item>();
 
 		public static void Add_Static( int itemID, Point3D location, Map map, string name )
 		{
@@ -111,7 +111,7 @@ namespace Server.Commands
 			eable.Free();
 
 			while ( m_ToDelete.Count > 0 )
-				((Item)m_ToDelete.Dequeue()).Delete();
+				m_ToDelete.Dequeue().Delete();
 
 			Item sign;
 
