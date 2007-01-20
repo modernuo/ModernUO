@@ -242,16 +242,7 @@ namespace Server.Multis
 					{
 						int type = (itemID - 0x314) / 16;
 						DoorFacing facing = (DoorFacing)(((itemID - 0x314) / 2) % 8);
-
-						//TODO: Change this to just do a 0x314 + type*16
-						switch( type )
-						{
-							case 0: door = new GenericHouseDoor( facing, 0x314, 0xED, 0xF4 ); break;
-							case 1: door = new GenericHouseDoor( facing, 0x324, 0xED, 0xF4 ); break;
-							case 2: door = new GenericHouseDoor( facing, 0x334, 0xED, 0xF4 ); break;
-							case 3: door = new GenericHouseDoor( facing, 0x344, 0xED, 0xF4 ); break;
-							case 4: door = new GenericHouseDoor( facing, 0x354, 0xED, 0xF4 ); break;
-						}
+						door = new GenericHouseDoor( facing, 0x314 + ( type * 16 ), 0xED, 0xF4 );
 					}
 					else if( itemID >= 0x824 && itemID < 0x834 )
 					{

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Engines.Craft
@@ -42,7 +42,7 @@ namespace Server.Engines.Craft
 
 		public virtual CraftECA ECA{ get{ return CraftECA.ChanceMinusSixty; } }
 
-		private Hashtable m_ContextTable = new Hashtable();
+		private Dictionary<Mobile, CraftContext> m_ContextTable = new Dictionary<Mobile, CraftContext>();
 
 		public abstract double GetChanceAtMin( CraftItem item );
 
@@ -62,7 +62,8 @@ namespace Server.Engines.Craft
 				return null;
 			}
 
-			CraftContext c = (CraftContext)m_ContextTable[m];
+			CraftContext c = null;
+			m_ContextTable.TryGetValue( m, out c );
 
 			if ( c == null )
 				m_ContextTable[m] = c = new CraftContext();

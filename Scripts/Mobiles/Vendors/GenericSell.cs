@@ -1,12 +1,12 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
 	public class GenericSellInfo : IShopSellInfo
 	{
-		private Hashtable m_Table = new Hashtable();
+		private Dictionary<Type, int> m_Table = new Dictionary<Type, int>();
 		private Type[] m_Types;
 
 		public GenericSellInfo()
@@ -21,10 +21,10 @@ namespace Server.Mobiles
 
 		public int GetSellPriceFor( Item item )
 		{
-			int price = (int)m_Table[item.GetType()];
+			int price = 0;
+			m_Table.TryGetValue( item.GetType(), out price );
 
-			if ( item is BaseArmor )
-			{
+			if ( item is BaseArmor ) {
 				BaseArmor armor = (BaseArmor)item;
 
 				if ( armor.Quality == ArmorQuality.Low )
@@ -39,9 +39,7 @@ namespace Server.Mobiles
 				if ( price < 1 )
 					price = 1;
 			}
-
-			else if ( item is BaseWeapon )
-			{
+			else if ( item is BaseWeapon ) {
 				BaseWeapon weapon = (BaseWeapon)item;
 
 				if ( weapon.Quality == WeaponQuality.Low )
@@ -56,8 +54,7 @@ namespace Server.Mobiles
 				if ( price < 1 )
 					price = 1;
 			}
-			else if ( item is BaseBeverage )
-			{
+			else if ( item is BaseBeverage ) {
 				int price1 = price, price2 = price;
 
 				if ( item is Pitcher )
@@ -123,12 +120,7 @@ namespace Server.Mobiles
 
 		public bool IsInList( Type type )
 		{
-			Object o = m_Table[type];
-
-			if ( o == null )
-				return false;
-			else
-				return true;
+			return m_Table.ContainsKey( type );
 		}
 	}
 }

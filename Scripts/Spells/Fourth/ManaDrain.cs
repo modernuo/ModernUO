@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
-using Server.Targeting;
+using System.Collections.Generic;
 using Server.Network;
+using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
@@ -26,7 +26,7 @@ namespace Server.Spells.Fourth
 			Caster.Target = new InternalTarget( this );
 		}
 
-		private Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
 		private void AosDelay_Callback( object state )
 		{
@@ -72,7 +72,7 @@ namespace Server.Spells.Fourth
 					else if ( toDrain > m.Mana )
 						toDrain = m.Mana;
 
-					if ( m_Table.Contains( m ) )
+					if ( m_Table.ContainsKey( m ) )
 						toDrain = 0;
 
 					m.FixedParticles( 0x3789, 10, 25, 5032, EffectLayer.Head );

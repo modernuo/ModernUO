@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Network;
@@ -50,8 +50,7 @@ namespace Server.Items
 
 		public PuzzleChestSolution()
 		{
-			for ( int i = 0; i < m_Cylinders.Length; i++ )
-			{
+			for ( int i = 0; i < m_Cylinders.Length; i++ ) {
 				m_Cylinders[i] = RandomCylinder();
 			}
 		}
@@ -67,8 +66,7 @@ namespace Server.Items
 
 		public PuzzleChestSolution( PuzzleChestSolution solution )
 		{
-			for ( int i = 0; i < m_Cylinders.Length; i++ )
-			{
+			for ( int i = 0; i < m_Cylinders.Length; i++ ) {
 				m_Cylinders[i] = solution.m_Cylinders[i];
 			}
 		}
@@ -183,7 +181,7 @@ namespace Server.Items
 
 		private PuzzleChestSolution m_Solution;
 		private PuzzleChestCylinder[] m_Hints = new PuzzleChestCylinder[HintsCount];
-		private Hashtable m_Guesses = new Hashtable();
+		private Dictionary<Mobile, PuzzleChestSolutionAndTime> m_Guesses = new Dictionary<Mobile, PuzzleChestSolutionAndTime>();
 
 		public PuzzleChestSolution Solution
 		{
@@ -212,17 +210,15 @@ namespace Server.Items
 
 		private void InitHints()
 		{
-			ArrayList list = new ArrayList( Solution.Cylinders.Length - 1 );
+			List<PuzzleChestCylinder> list = new List<PuzzleChestCylinder>( Solution.Cylinders.Length - 1 );
 			for ( int i = 1; i < Solution.Cylinders.Length; i++ )
-			{
 				list.Add( Solution.Cylinders[i] );
-			}
 
 			m_Hints = new PuzzleChestCylinder[HintsCount];
-			for ( int i = 0; i < m_Hints.Length; i++ )
-			{
+			
+			for ( int i = 0; i < m_Hints.Length; i++ ) {
 				int pos = Utility.Random( list.Count );
-				m_Hints[i] = (PuzzleChestCylinder)list[pos];
+				m_Hints[i] = list[pos];
 				list.RemoveAt( pos );
 			}
 		}
@@ -256,7 +252,9 @@ namespace Server.Items
 
 		public PuzzleChestSolutionAndTime GetLastGuess( Mobile m )
 		{
-			return (PuzzleChestSolutionAndTime)m_Guesses[m];
+			PuzzleChestSolutionAndTime pcst = null;
+			m_Guesses.TryGetValue( m, out pcst );
+			return pcst;
 		}
 
 		public void SubmitSolution( Mobile m, PuzzleChestSolution solution )
@@ -561,16 +559,14 @@ namespace Server.Items
 		{
 			DropItem( new Gold( 600, 900 ) );
 
-			ArrayList gems = new ArrayList();
+			List<Item> gems = new List<Item>();
 			for ( int i = 0; i < 9; i++ )
 			{
 				Item gem = Loot.RandomGem();
 				Type gemType = gem.GetType();
 
-				foreach ( Item listGem in gems )
-				{
-					if ( listGem.GetType() == gemType )
-					{
+				foreach ( Item listGem in gems ) {
+					if ( listGem.GetType() == gemType ) {
 						listGem.Amount++;
 						gem.Delete();
 						break;
@@ -582,10 +578,7 @@ namespace Server.Items
 			}
 
 			foreach ( Item gem in gems )
-			{
 				DropItem( gem );
-			}
-
 
 			if ( 0.2 > Utility.RandomDouble() )
 				DropItem( new BagOfReagents( 50 ) );
@@ -676,18 +669,15 @@ namespace Server.Items
 
 		public void CleanupGuesses()
 		{
-			ArrayList toDelete = new ArrayList();
+			List<Mobile> toDelete = new List<Mobile>();
 
-			foreach ( DictionaryEntry entry in m_Guesses )
-			{
-				if ( DateTime.Now - ((PuzzleChestSolutionAndTime)entry.Value).When > CleanupTime )
-					toDelete.Add( entry.Key );
+			foreach ( KeyValuePair<Mobile, PuzzleChestSolutionAndTime> kvp in m_Guesses ) {
+				if ( DateTime.Now - kvp.Value.When > CleanupTime )
+					toDelete.Add( kvp.Key );
 			}
 
 			foreach ( Mobile m in toDelete )
-			{
 				m_Guesses.Remove( m );
-			}
 		}
 
 		public PuzzleChest( Serial serial ) : base( serial )
@@ -711,10 +701,9 @@ namespace Server.Items
 			}
 
 			writer.WriteEncodedInt( (int) m_Guesses.Count );
-			foreach ( DictionaryEntry entry in m_Guesses )
-			{
-				writer.Write( (Mobile) entry.Key );
-				((PuzzleChestSolutionAndTime)entry.Value).Serialize( writer );
+			foreach ( KeyValuePair<Mobile, PuzzleChestSolutionAndTime> kvp in m_Guesses ) {
+				writer.Write( kvp.Key );
+				kvp.Value.Serialize( writer );
 			}
 		}
 

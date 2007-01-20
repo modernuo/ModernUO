@@ -15,7 +15,7 @@ namespace Server.Mobiles
 			m_Entry = entry;
 		}
 
-		public override object GetObject()
+		public override IEntity GetEntity()
 		{
 			return new PresetMap( m_Entry );
 		}

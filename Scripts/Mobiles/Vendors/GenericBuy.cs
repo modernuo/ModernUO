@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Network;
@@ -12,10 +12,8 @@ namespace Server.Mobiles
 		{
 			private static DisplayCache m_Cache;
 
-			public static DisplayCache Cache
-			{
-				get
-				{
+			public static DisplayCache Cache {
+				get {
 					if ( m_Cache == null || m_Cache.Deleted )
 						m_Cache = new DisplayCache();
 
@@ -23,29 +21,31 @@ namespace Server.Mobiles
 				}
 			}
 
-			private Hashtable m_Table;
-			private ArrayList m_Mobiles;
+			private Dictionary<Type, IEntity> m_Table;
+			private List<Mobile> m_Mobiles;
 
 			public DisplayCache() : base( 0 )
 			{
-				m_Table = new Hashtable();
-				m_Mobiles = new ArrayList();
+				m_Table = new Dictionary<Type, IEntity>();
+				m_Mobiles = new List<Mobile>();
 			}
 
-			public object Lookup( Type key )
+			public IEntity Lookup( Type key )
 			{
-				return m_Table[key];
+				IEntity e = null;
+				m_Table.TryGetValue( key, out e );
+				return e;
 			}
 
-			public void Store( Type key, object obj, bool cache )
+			public void Store( Type key, IEntity obj, bool cache )
 			{
 				if ( cache )
 					m_Table[key] = obj;
 
 				if ( obj is Item )
-					AddItem( (Item) obj );
+					AddItem( (Item)obj );
 				else if ( obj is Mobile )
-					m_Mobiles.Add( obj );
+					m_Mobiles.Add( (Mobile)obj );
 			}
 
 			public DisplayCache( Serial serial ) : base( serial )
@@ -57,15 +57,13 @@ namespace Server.Mobiles
 				base.OnAfterDelete();
 
 				for ( int i = 0; i < m_Mobiles.Count; ++i )
-					((Mobile)m_Mobiles[i]).Delete();
+					m_Mobiles[i].Delete();
 
 				m_Mobiles.Clear();
 
 				for ( int i = Items.Count - 1; i >= 0; --i )
-				{
 					if ( i < Items.Count )
-						((Item)Items[i]).Delete();
-				}
+						Items[i].Delete();
 
 				if ( m_Cache == this )
 					m_Cache = null;
@@ -77,7 +75,7 @@ namespace Server.Mobiles
 
 				writer.Write( (int) 0 ); // version
 
-				writer.WriteMobileList( m_Mobiles, true );
+				writer.Write( m_Mobiles );
 			}
 
 			public override void Deserialize( GenericReader reader )
@@ -86,25 +84,23 @@ namespace Server.Mobiles
 
 				int version = reader.ReadInt();
 
-				m_Mobiles = reader.ReadMobileList();
+				m_Mobiles = reader.ReadStrongMobileList();
 
 				for ( int i = 0; i < m_Mobiles.Count; ++i )
-					((Mobile)m_Mobiles[i]).Delete();
+					m_Mobiles[i].Delete();
 
 				m_Mobiles.Clear();
 
 				for ( int i = Items.Count - 1; i >= 0; --i )
-				{
 					if ( i < Items.Count )
-						((Item)Items[i]).Delete();
-				}
+						Items[i].Delete();
 
 				if ( m_Cache == null )
 					m_Cache = this;
 				else
 					Delete();
 
-				m_Table = new Hashtable();
+				m_Table = new Dictionary<Type, IEntity>();
 			}
 		}
 
@@ -115,48 +111,44 @@ namespace Server.Mobiles
 		private int m_ItemID;
 		private int m_Hue;
 		private object[] m_Args;
-		private object m_DisplayObject;
+		private IEntity m_DisplayEntity;
 
 		public virtual int ControlSlots{ get{ return 0; } }
 
 		public virtual bool CanCacheDisplay{ get{ return false; } } //return ( m_Args == null || m_Args.Length == 0 ); } 
 
-		private bool IsDeleted( object obj )
+		private bool IsDeleted( IEntity obj )
 		{
 			if ( obj is Item )
-				return (obj as Item).Deleted;
+				return ((Item)obj).Deleted;
 			else if ( obj is Mobile )
-				return (obj as Mobile).Deleted;
+				return ((Mobile)obj).Deleted;
 
 			return false;
 		}
 
-		public void DeleteDisplayObject()
+		public void DeleteDisplayEntity()
 		{
-			if ( m_DisplayObject is Item )
-				(m_DisplayObject as Item).Delete();
-			else if ( m_DisplayObject is Mobile )
-				(m_DisplayObject as Mobile).Delete();
-
-			m_DisplayObject = null;
+			m_DisplayEntity.Delete();
+			m_DisplayEntity = null;
 		}
 
-		public object GetDisplayObject()
+		public IEntity GetDisplayEntity()
 		{
-			if ( m_DisplayObject != null && !IsDeleted( m_DisplayObject ) )
-				return m_DisplayObject;
+			if ( m_DisplayEntity != null && !IsDeleted( m_DisplayEntity ) )
+				return m_DisplayEntity;
 
 			bool canCache = this.CanCacheDisplay;
 
 			if ( canCache )
-				m_DisplayObject = DisplayCache.Cache.Lookup( m_Type );
+				m_DisplayEntity = DisplayCache.Cache.Lookup( m_Type );
 
-			if ( m_DisplayObject == null || IsDeleted( m_DisplayObject ) )
-				m_DisplayObject = GetObject();
+			if ( m_DisplayEntity == null || IsDeleted( m_DisplayEntity ) )
+				m_DisplayEntity = GetEntity();
 
-			DisplayCache.Cache.Store( m_Type, m_DisplayObject, canCache );
+			DisplayCache.Cache.Store( m_Type, m_DisplayEntity, canCache );
 
-			return m_DisplayObject;
+			return m_DisplayEntity;
 		}
 
 		public Type Type
@@ -267,12 +259,12 @@ namespace Server.Mobiles
 		}
 
 		//get a new instance of an object (we just bought it)
-		public virtual object GetObject()
+		public virtual IEntity GetEntity()
 		{
 			if ( m_Args == null || m_Args.Length == 0 )
-				return Activator.CreateInstance( m_Type );
+				return (IEntity)Activator.CreateInstance( m_Type );
 
-			return Activator.CreateInstance( m_Type, m_Args );
+			return (IEntity)Activator.CreateInstance( m_Type, m_Args );
 			//return (Item)Activator.CreateInstance( m_Type );
 		}
 

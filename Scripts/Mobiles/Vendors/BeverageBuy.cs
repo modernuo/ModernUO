@@ -26,9 +26,9 @@ namespace Server.Mobiles
 				Name = (1042965 + (int)content).ToString();
 		}
 
-		public override object GetObject()
+		public override IEntity GetEntity()
 		{
-			return Activator.CreateInstance( Type, new object[]{ m_Content } );
+			return (IEntity)Activator.CreateInstance( Type, new object[]{ m_Content } );
 		}
 	}
 }
