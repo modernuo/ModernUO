@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Server;
@@ -280,7 +279,7 @@ namespace Server.Misc
 		private string[] m_Keywords;
 		private string[] m_Responses;
 
-		private Hashtable m_KeywordHash;
+		private Dictionary<string, string> m_KeywordHash;
 
 		private int m_Hue;
 		private int m_Sound;
@@ -299,7 +298,7 @@ namespace Server.Misc
 			set
 			{
 				m_Keywords = value;
-				m_KeywordHash = new Hashtable( m_Keywords.Length, StringComparer.OrdinalIgnoreCase );
+				m_KeywordHash = new Dictionary<string, string>( m_Keywords.Length, StringComparer.OrdinalIgnoreCase );
 				for ( int i = 0; i < m_Keywords.Length; ++i )
 					m_KeywordHash[m_Keywords[i]] = m_Keywords[i];
 			}
@@ -402,12 +401,12 @@ namespace Server.Misc
 			mob.Say( sentancesInEnglish[Utility.Random( sentancesInEnglish.Length )] );
 		}
 
-		private string GetRandomResponseWord( ArrayList keywordsFound )
+		private string GetRandomResponseWord( List<string> keywordsFound )
 		{
 			int random = Utility.Random( keywordsFound.Count + m_Responses.Length );
 
 			if ( random < keywordsFound.Count )
-				return (string)keywordsFound[random];
+				return keywordsFound[random];
 
 			return m_Responses[random - keywordsFound.Count];
 		}
@@ -430,11 +429,12 @@ namespace Server.Misc
 				return false;
 
 			string[] split = text.Split( ' ' );
-			ArrayList keywordsFound = new ArrayList();
+			List<string> keywordsFound = new List<string>();
 
 			for ( int i = 0; i < split.Length; ++i )
 			{
-				string keyword = (string) m_KeywordHash[split[i]];
+				string keyword;
+				m_KeywordHash.TryGetValue( split[i], out keyword );
 
 				if ( keyword != null )
 					keywordsFound.Add( keyword );
@@ -447,7 +447,7 @@ namespace Server.Misc
 				if ( Utility.RandomBool() )
 					responseWord = GetRandomResponseWord( keywordsFound );
 				else
-					responseWord = (string)keywordsFound[Utility.Random( keywordsFound.Count )];
+					responseWord = keywordsFound[Utility.Random( keywordsFound.Count )];
 
 				string secondResponseWord = GetRandomResponseWord( keywordsFound );
 

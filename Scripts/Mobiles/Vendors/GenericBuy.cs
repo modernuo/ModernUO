@@ -129,6 +129,9 @@ namespace Server.Mobiles
 
 		public void DeleteDisplayEntity()
 		{
+			if ( m_DisplayEntity == null )
+				return;
+
 			m_DisplayEntity.Delete();
 			m_DisplayEntity = null;
 		}
