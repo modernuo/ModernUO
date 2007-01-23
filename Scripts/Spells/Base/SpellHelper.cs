@@ -8,6 +8,7 @@ using Server.Mobiles;
 using Server.Targeting;
 using Server.Engines.PartySystem;
 using Server.Misc;
+using Server.Spells.Bushido;
 
 namespace Server
 {
@@ -15,7 +16,7 @@ namespace Server
 	{
 		public static void Nullify( Mobile from )
 		{
-			if ( !from.CanBeginAction( typeof( DefensiveSpell ) ) )
+			if( !from.CanBeginAction( typeof( DefensiveSpell ) ) )
 				new InternalTimer( from ).Start();
 		}
 
@@ -59,10 +60,10 @@ namespace Server.Spells
 
 		public static TimeSpan GetDamageDelayForSpell( Spell sp )
 		{
-			if ( !sp.DelayedDamage )
+			if( !sp.DelayedDamage )
 				return TimeSpan.Zero;
 
-			return ( Core.AOS ? AosDamageDelay : OldDamageDelay );
+			return (Core.AOS ? AosDamageDelay : OldDamageDelay);
 		}
 
 		public static bool CheckMulti( Point3D p, Map map )
@@ -72,21 +73,21 @@ namespace Server.Spells
 
 		public static bool CheckMulti( Point3D p, Map map, bool houses )
 		{
-			if ( map == null || map == Map.Internal )
+			if( map == null || map == Map.Internal )
 				return false;
 
 			Sector sector = map.GetSector( p.X, p.Y );
 
-			for ( int i = 0; i < sector.Multis.Count; ++i )
+			for( int i = 0; i < sector.Multis.Count; ++i )
 			{
 				BaseMulti multi = sector.Multis[i];
 
-				if ( multi is BaseHouse )
+				if( multi is BaseHouse )
 				{
-					if ( houses && ( (BaseHouse) multi ).IsInside( p, 16 ) )
+					if( houses && ((BaseHouse)multi).IsInside( p, 16 ) )
 						return true;
 				}
-				else if ( multi.Contains( p ) )
+				else if( multi.Contains( p ) )
 				{
 					return true;
 				}
@@ -99,17 +100,17 @@ namespace Server.Spells
 		{
 			IPoint3D target = to as IPoint3D;
 
-			if ( target == null )
+			if( target == null )
 				return;
 
-			if ( target is Item )
+			if( target is Item )
 			{
-				Item item = (Item) target;
+				Item item = (Item)target;
 
-				if ( item.RootParent != from )
+				if( item.RootParent != from )
 					from.Direction = from.GetDirectionTo( item.GetWorldLocation() );
 			}
-			else if ( from != target )
+			else if( from != target )
 			{
 				from.Direction = from.GetDirectionTo( target );
 			}
@@ -120,24 +121,24 @@ namespace Server.Spells
 
 		public static bool CheckCombat( Mobile m )
 		{
-			if ( !RestrictTravelCombat )
+			if( !RestrictTravelCombat )
 				return false;
 
-			for ( int i = 0; i < m.Aggressed.Count; ++i )
+			for( int i = 0; i < m.Aggressed.Count; ++i )
 			{
 				AggressorInfo info = m.Aggressed[i];
 
-				if ( info.Defender.Player && ( DateTime.Now - info.LastCombatTime ) < CombatHeatDelay )
+				if( info.Defender.Player && (DateTime.Now - info.LastCombatTime) < CombatHeatDelay )
 					return true;
 			}
 
-			if ( Core.Expansion == Expansion.AOS )
+			if( Core.Expansion == Expansion.AOS )
 			{
-				for ( int i = 0; i < m.Aggressors.Count; ++i )
+				for( int i = 0; i < m.Aggressors.Count; ++i )
 				{
 					AggressorInfo info = m.Aggressors[i];
 
-					if ( info.Attacker.Player && ( DateTime.Now - info.LastCombatTime ) < CombatHeatDelay )
+					if( info.Attacker.Player && (DateTime.Now - info.LastCombatTime) < CombatHeatDelay )
 						return true;
 				}
 			}
@@ -147,14 +148,14 @@ namespace Server.Spells
 
 		public static bool AdjustField( ref Point3D p, Map map, int height, bool mobsBlock )
 		{
-			if ( map == null )
+			if( map == null )
 				return false;
 
-			for ( int offset = 0; offset < 10; ++offset )
+			for( int offset = 0; offset < 10; ++offset )
 			{
 				Point3D loc = new Point3D( p.X, p.Y, p.Z - offset );
 
-				if ( map.CanFit( loc, height, true, mobsBlock ) )
+				if( map.CanFit( loc, height, true, mobsBlock ) )
 				{
 					p = loc;
 					return true;
@@ -166,16 +167,16 @@ namespace Server.Spells
 
 		public static void GetSurfaceTop( ref IPoint3D p )
 		{
-			if ( p is Item )
+			if( p is Item )
 			{
-				p = ( (Item) p ).GetSurfaceTop();
+				p = ((Item)p).GetSurfaceTop();
 			}
-			else if ( p is StaticTarget )
+			else if( p is StaticTarget )
 			{
-				StaticTarget t = (StaticTarget) p;
+				StaticTarget t = (StaticTarget)p;
 				int z = t.Z;
 
-				if ( ( t.Flags & TileFlag.Surface ) == 0 )
+				if( (t.Flags & TileFlag.Surface) == 0 )
 					z -= TileData.ItemTable[t.ItemID & 0x3FFF].CalcHeight;
 
 				p = new Point3D( t.X, t.Y, z );
@@ -184,9 +185,9 @@ namespace Server.Spells
 
 		public static bool AddStatOffset( Mobile m, StatType type, int offset, TimeSpan duration )
 		{
-			if ( offset > 0 )
+			if( offset > 0 )
 				return AddStatBonus( m, m, type, offset, duration );
-			else if ( offset < 0 )
+			else if( offset < 0 )
 				return AddStatCurse( m, m, type, -offset, duration );
 
 			return true;
@@ -204,12 +205,12 @@ namespace Server.Spells
 
 			StatMod mod = target.GetStatMod( name );
 
-			if ( mod != null && mod.Offset < 0 )
+			if( mod != null && mod.Offset < 0 )
 			{
 				target.AddStatMod( new StatMod( type, name, mod.Offset + offset, duration ) );
 				return true;
 			}
-			else if ( mod == null || mod.Offset < offset )
+			else if( mod == null || mod.Offset < offset )
 			{
 				target.AddStatMod( new StatMod( type, name, offset, duration ) );
 				return true;
@@ -230,12 +231,12 @@ namespace Server.Spells
 
 			StatMod mod = target.GetStatMod( name );
 
-			if ( mod != null && mod.Offset > 0 )
+			if( mod != null && mod.Offset > 0 )
 			{
 				target.AddStatMod( new StatMod( type, name, mod.Offset + offset, duration ) );
 				return true;
 			}
-			else if ( mod == null || mod.Offset > offset )
+			else if( mod == null || mod.Offset > offset )
 			{
 				target.AddStatMod( new StatMod( type, name, offset, duration ) );
 				return true;
@@ -246,8 +247,8 @@ namespace Server.Spells
 
 		public static TimeSpan GetDuration( Mobile caster, Mobile target )
 		{
-			if ( Core.AOS )
-				return TimeSpan.FromSeconds( ( ( 6 * caster.Skills.EvalInt.Fixed ) / 50 ) + 1 );
+			if( Core.AOS )
+				return TimeSpan.FromSeconds( ((6 * caster.Skills.EvalInt.Fixed) / 50) + 1 );
 
 			return TimeSpan.FromSeconds( caster.Skills[SkillName.Magery].Value * 1.2 );
 		}
@@ -279,49 +280,49 @@ namespace Server.Spells
 
 		public static int GetOffset( Mobile caster, Mobile target, StatType type, bool curse )
 		{
-			if ( Core.AOS )
+			if( Core.AOS )
 			{
-				if ( !m_DisableSkillCheck )
+				if( !m_DisableSkillCheck )
 				{
 					caster.CheckSkill( SkillName.EvalInt, 0.0, 120.0 );
 
-					if ( curse )
+					if( curse )
 						target.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );
 				}
 
 				double percent = GetOffsetScalar( caster, target, curse );
 
-				switch ( type )
+				switch( type )
 				{
 					case StatType.Str:
-						return (int) ( target.RawStr * percent );
+						return (int)(target.RawStr * percent);
 					case StatType.Dex:
-						return (int) ( target.RawDex * percent );
+						return (int)(target.RawDex * percent);
 					case StatType.Int:
-						return (int) ( target.RawInt * percent );
+						return (int)(target.RawInt * percent);
 				}
 			}
 
-			return 1 + (int) ( caster.Skills[SkillName.Magery].Value * 0.1 );
+			return 1 + (int)(caster.Skills[SkillName.Magery].Value * 0.1);
 		}
 
 		public static Guild GetGuildFor( Mobile m )
 		{
 			Guild g = m.Guild as Guild;
 
-			if ( g == null && m is BaseCreature )
+			if( g == null && m is BaseCreature )
 			{
-				BaseCreature c = (BaseCreature) m;
+				BaseCreature c = (BaseCreature)m;
 				m = c.ControlMaster;
 
-				if ( m != null )
+				if( m != null )
 					g = m.Guild as Guild;
 
-				if ( g == null )
+				if( g == null )
 				{
 					m = c.SummonMaster;
 
-					if ( m != null )
+					if( m != null )
 						g = m.Guild as Guild;
 				}
 			}
@@ -331,59 +332,59 @@ namespace Server.Spells
 
 		public static bool ValidIndirectTarget( Mobile from, Mobile to )
 		{
-			if ( from == to )
+			if( from == to )
 				return true;
 
-			if ( to.Hidden && to.AccessLevel > from.AccessLevel )
+			if( to.Hidden && to.AccessLevel > from.AccessLevel )
 				return false;
 
 			Guild fromGuild = GetGuildFor( from );
 			Guild toGuild = GetGuildFor( to );
 
-			if ( fromGuild != null && toGuild != null && ( fromGuild == toGuild || fromGuild.IsAlly( toGuild ) ) )
+			if( fromGuild != null && toGuild != null && (fromGuild == toGuild || fromGuild.IsAlly( toGuild )) )
 				return false;
 
 			Party p = Party.Get( from );
 
-			if ( p != null && p.Contains( to ) )
+			if( p != null && p.Contains( to ) )
 				return false;
 
-			if ( to is BaseCreature )
+			if( to is BaseCreature )
 			{
-				BaseCreature c = (BaseCreature) to;
+				BaseCreature c = (BaseCreature)to;
 
-				if ( c.Controlled || c.Summoned )
+				if( c.Controlled || c.Summoned )
 				{
-					if ( c.ControlMaster == from || c.SummonMaster == from )
+					if( c.ControlMaster == from || c.SummonMaster == from )
 						return false;
 
-					if ( p != null && ( p.Contains( c.ControlMaster ) || p.Contains( c.SummonMaster ) ) )
+					if( p != null && (p.Contains( c.ControlMaster ) || p.Contains( c.SummonMaster )) )
 						return false;
 				}
 			}
 
-			if ( from is BaseCreature )
+			if( from is BaseCreature )
 			{
-				BaseCreature c = (BaseCreature) from;
+				BaseCreature c = (BaseCreature)from;
 
-				if ( c.Controlled || c.Summoned )
+				if( c.Controlled || c.Summoned )
 				{
-					if ( c.ControlMaster == to || c.SummonMaster == to )
+					if( c.ControlMaster == to || c.SummonMaster == to )
 						return false;
 
 					p = Party.Get( to );
 
-					if ( p != null && ( p.Contains( c.ControlMaster ) || p.Contains( c.SummonMaster ) ) )
+					if( p != null && (p.Contains( c.ControlMaster ) || p.Contains( c.SummonMaster )) )
 						return false;
 				}
 			}
 
-			if ( to is BaseCreature && !( (BaseCreature) to ).Controlled && ( (BaseCreature) to ).InitialInnocent )
+			if( to is BaseCreature && !((BaseCreature)to).Controlled && ((BaseCreature)to).InitialInnocent )
 				return true;
 
 			int noto = Notoriety.Compute( from, to );
 
-			return ( noto != Notoriety.Innocent || from.Kills >= 5 );
+			return (noto != Notoriety.Innocent || from.Kills >= 5);
 		}
 
 		private static int[] m_Offsets = new int[]
@@ -402,34 +403,34 @@ namespace Server.Spells
 		{
 			Map map = caster.Map;
 
-			if ( map == null )
+			if( map == null )
 				return;
 
-			double scale = 1.0 + ( ( caster.Skills[SkillName.Magery].Value - 100.0 ) / 200.0 );
+			double scale = 1.0 + ((caster.Skills[SkillName.Magery].Value - 100.0) / 200.0);
 
-			if ( scaleDuration )
+			if( scaleDuration )
 				duration = TimeSpan.FromSeconds( duration.TotalSeconds * scale );
 
-			if ( scaleStats )
+			if( scaleStats )
 			{
-				creature.RawStr = (int) ( creature.RawStr * scale );
+				creature.RawStr = (int)(creature.RawStr * scale);
 				creature.Hits = creature.HitsMax;
 
-				creature.RawDex = (int) ( creature.RawDex * scale );
+				creature.RawDex = (int)(creature.RawDex * scale);
 				creature.Stam = creature.StamMax;
 
-				creature.RawInt = (int) ( creature.RawInt * scale );
+				creature.RawInt = (int)(creature.RawInt * scale);
 				creature.Mana = creature.ManaMax;
 			}
 
 			int offset = Utility.Random( 8 ) * 2;
 
-			for ( int i = 0; i < m_Offsets.Length; i += 2 )
+			for( int i = 0; i < m_Offsets.Length; i += 2 )
 			{
-				int x = caster.X + m_Offsets[( offset + i ) % m_Offsets.Length];
-				int y = caster.Y + m_Offsets[( offset + i + 1 ) % m_Offsets.Length];
+				int x = caster.X + m_Offsets[(offset + i) % m_Offsets.Length];
+				int y = caster.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
 
-				if ( map.CanSpawnMobile( x, y, caster.Z ) )
+				if( map.CanSpawnMobile( x, y, caster.Z ) )
 				{
 					BaseCreature.Summon( creature, caster, new Point3D( x, y, caster.Z ), sound, duration );
 					return;
@@ -438,7 +439,7 @@ namespace Server.Spells
 				{
 					int z = map.GetAverageZ( x, y );
 
-					if ( map.CanSpawnMobile( x, y, z ) )
+					if( map.CanSpawnMobile( x, y, z ) )
 					{
 						BaseCreature.Summon( creature, caster, new Point3D( x, y, z ), sound, duration );
 						return;
@@ -472,18 +473,18 @@ namespace Server.Spells
 		private static bool[,] m_Rules = new bool[,]
 			{
 						/*T2A(Fel)		Ilshenar		Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel), CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	Stronghold,		ChampionSpawn, Dungeons(Tokuno[Malas]) */
-/* Recall From */	{ false,			true,			true,			false,		false,			true,				false,		false,					false,				false,				true,				true,				true	 },
-/* Recall To */	{ false,			false,		false,		false,		false,			false,			false,		false,					false,				false,				false,			false,			false	 },
-/* Gate From */	{ false,			false,		false,		false,		false,			false,			false,		false,					false,				false,				false,			false,			false	 },
-/* Gate To */		{ false,			false,		false,		false,		false,			false,			false,		false,					false,				false,				false,			false,			false	 },
-/* Mark In */		{ false,			false,		false,		false,		false,			false,			false,		false,					false,				false,				false,			false,			false	 },
-/* Tele From */	{ true,			true,			true,			true,			true,				true,				true,			false,					true,					true,					false,			true,				true	 },
-/* Tele To */		{ true,			true,			true,			true,			true,				true,				true,			false,					true,					false,				false, 			true,				true	 },
+/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			true,			true	 },
+/* Recall To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
+/* Gate From */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
+/* Gate To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
+/* Mark In */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
+/* Tele From */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				true,				false,			true,			true	 },
+/* Tele To */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				false,				false, 			true,			true	 },
 			};
 
 		public static bool CheckTravel( Mobile caster, TravelCheckType type )
 		{
-			if ( CheckTravel( caster, caster.Map, caster.Location, type ) )
+			if( CheckTravel( caster, caster.Map, caster.Location, type ) )
 				return true;
 
 			SendInvalidMessage( caster, type );
@@ -492,9 +493,9 @@ namespace Server.Spells
 
 		public static void SendInvalidMessage( Mobile caster, TravelCheckType type )
 		{
-			if ( type == TravelCheckType.RecallTo || type == TravelCheckType.GateTo )
+			if( type == TravelCheckType.RecallTo || type == TravelCheckType.GateTo )
 				caster.SendLocalizedMessage( 1019004 ); // You are not allowed to travel there.
-			else if ( type == TravelCheckType.TeleportTo )
+			else if( type == TravelCheckType.TeleportTo )
 				caster.SendLocalizedMessage( 501035 ); // You cannot teleport from here to the destination.
 			else
 				caster.SendLocalizedMessage( 501802 ); // Thy spell doth not appear to work...
@@ -510,9 +511,9 @@ namespace Server.Spells
 
 		public static bool CheckTravel( Mobile caster, Map map, Point3D loc, TravelCheckType type )
 		{
-			if ( IsInvalid( map, loc ) ) // null, internal, out of bounds
+			if( IsInvalid( map, loc ) ) // null, internal, out of bounds
 			{
-				if ( caster != null )
+				if( caster != null )
 					SendInvalidMessage( caster, type );
 
 				return false;
@@ -521,13 +522,13 @@ namespace Server.Spells
 			m_TravelCaster = caster;
 			m_TravelType = type;
 
-			int v = (int) type;
+			int v = (int)type;
 			bool isValid = true;
 
-			for ( int i = 0; isValid && i < m_Validators.Length; ++i )
-				isValid = ( m_Rules[v, i] || !m_Validators[i]( map, loc ) );
+			for( int i = 0; isValid && i < m_Validators.Length; ++i )
+				isValid = (m_Rules[v, i] || !m_Validators[i]( map, loc ));
 
-			if ( !isValid && caster != null )
+			if( !isValid && caster != null )
 				SendInvalidMessage( caster, type );
 
 			return isValid;
@@ -537,74 +538,74 @@ namespace Server.Spells
 		{
 			int x = loc.X, y = loc.Y;
 
-			return ( x >= 5120 && y >= 0 && x < 5376 && y < 256 );
+			return (x >= 5120 && y >= 0 && x < 5376 && y < 256);
 		}
 
 		public static bool IsFeluccaWind( Map map, Point3D loc )
 		{
-			return ( map == Map.Felucca && IsWindLoc( loc ) );
+			return (map == Map.Felucca && IsWindLoc( loc ));
 		}
 
 		public static bool IsTrammelWind( Map map, Point3D loc )
 		{
-			return ( map == Map.Trammel && IsWindLoc( loc ) );
+			return (map == Map.Trammel && IsWindLoc( loc ));
 		}
 
 		public static bool IsIlshenar( Map map, Point3D loc )
 		{
-			return ( map == Map.Ilshenar );
+			return (map == Map.Ilshenar);
 		}
 
 		public static bool IsSolenHiveLoc( Point3D loc )
 		{
 			int x = loc.X, y = loc.Y;
 
-			return ( x >= 5640 && y >= 1776 && x < 5935 && y < 2039 );
+			return (x >= 5640 && y >= 1776 && x < 5935 && y < 2039);
 		}
 
 		public static bool IsTrammelSolenHive( Map map, Point3D loc )
 		{
-			return ( map == Map.Trammel && IsSolenHiveLoc( loc ) );
+			return (map == Map.Trammel && IsSolenHiveLoc( loc ));
 		}
 
 		public static bool IsFeluccaSolenHive( Map map, Point3D loc )
 		{
-			return ( map == Map.Felucca && IsSolenHiveLoc( loc ) );
+			return (map == Map.Felucca && IsSolenHiveLoc( loc ));
 		}
 
 		public static bool IsFeluccaT2A( Map map, Point3D loc )
 		{
 			int x = loc.X, y = loc.Y;
 
-			return ( map == Map.Felucca && x >= 5120 && y >= 2304 && x < 6144 && y < 4096 );
+			return (map == Map.Felucca && x >= 5120 && y >= 2304 && x < 6144 && y < 4096);
 		}
 
 		public static bool IsAnyT2A( Map map, Point3D loc )
 		{
 			int x = loc.X, y = loc.Y;
 
-			return ( ( map == Map.Trammel || map == Map.Felucca ) && x >= 5120 && y >= 2304 && x < 6144 && y < 4096 );
+			return ((map == Map.Trammel || map == Map.Felucca) && x >= 5120 && y >= 2304 && x < 6144 && y < 4096);
 		}
 
 		public static bool IsFeluccaDungeon( Map map, Point3D loc )
 		{
 			Region region = Region.Find( loc, map );
-			return ( region.IsPartOf( typeof( DungeonRegion ) ) && region.Map == Map.Felucca );
+			return (region.IsPartOf( typeof( DungeonRegion ) ) && region.Map == Map.Felucca);
 		}
 
 		public static bool IsCrystalCave( Map map, Point3D loc )
 		{
-			if ( map != Map.Malas )
+			if( map != Map.Malas )
 				return false;
 
 			int x = loc.X, y = loc.Y, z = loc.Z;
 
-			bool r1 = ( x >= 1182 && y >= 437 && x < 1211 && y < 470 );
-			bool r2 = ( x >= 1156 && y >= 470 && x < 1211 && y < 503 );
-			bool r3 = ( x >= 1176 && y >= 503 && x < 1208 && y < 509 );
-			bool r4 = ( x >= 1188 && y >= 509 && x < 1201 && y < 513 );
+			bool r1 = (x >= 1182 && y >= 437 && x < 1211 && y < 470);
+			bool r2 = (x >= 1156 && y >= 470 && x < 1211 && y < 503);
+			bool r3 = (x >= 1176 && y >= 503 && x < 1208 && y < 509);
+			bool r4 = (x >= 1188 && y >= 509 && x < 1201 && y < 513);
 
-			return ( z < -80 && ( r1 || r2 || r3 || r4 ) );
+			return (z < -80 && (r1 || r2 || r3 || r4));
 		}
 
 		public static bool IsFactionStronghold( Map map, Point3D loc )
@@ -616,25 +617,25 @@ namespace Server.Spells
 					return false;
 			}*/
 
-			return ( Region.Find( loc, map ).IsPartOf( typeof( Factions.StrongholdRegion ) ) );
+			return (Region.Find( loc, map ).IsPartOf( typeof( Factions.StrongholdRegion ) ));
 		}
 
 		public static bool IsChampionSpawn( Map map, Point3D loc )
 		{
-			return ( Region.Find( loc, map ).IsPartOf( typeof( Engines.CannedEvil.ChampionSpawnRegion ) ) );
+			return (Region.Find( loc, map ).IsPartOf( typeof( Engines.CannedEvil.ChampionSpawnRegion ) ));
 		}
 
 		public static bool IsDoomFerry( Map map, Point3D loc )
 		{
-			if ( map != Map.Malas )
+			if( map != Map.Malas )
 				return false;
 
 			int x = loc.X, y = loc.Y;
 
-			if ( x >= 426 && y >= 314 && x <= 430 && y <= 331 )
+			if( x >= 426 && y >= 314 && x <= 430 && y <= 331 )
 				return true;
 
-			if ( x >= 406 && y >= 247 && x <= 410 && y <= 264 )
+			if( x >= 406 && y >= 247 && x <= 410 && y <= 264 )
 				return true;
 
 			return false;
@@ -643,42 +644,42 @@ namespace Server.Spells
 		public static bool IsTokunoDungeon( Map map, Point3D loc )
 		{
 			//The tokuno dungeons are really inside malas
-			if ( map != Map.Malas )
+			if( map != Map.Malas )
 				return false;
 
 			int x = loc.X, y = loc.Y, z = loc.Z;
 
-			bool r1 = ( x >= 0 && y >= 0 && x <= 128 && y <= 128 );
-			bool r2 = ( x >= 45 && y >= 320 && x < 195 && y < 710 );
+			bool r1 = (x >= 0 && y >= 0 && x <= 128 && y <= 128);
+			bool r2 = (x >= 45 && y >= 320 && x < 195 && y < 710);
 
-			return ( r1 || r2 );
+			return (r1 || r2);
 		}
 
 		public static bool IsDoomGauntlet( Map map, Point3D loc )
 		{
-			if ( map != Map.Malas )
+			if( map != Map.Malas )
 				return false;
 
 			int x = loc.X - 256, y = loc.Y - 304;
 
-			return ( x >= 0 && y >= 0 && x < 256 && y < 256 );
+			return (x >= 0 && y >= 0 && x < 256 && y < 256);
 		}
 
 		public static bool IsInvalid( Map map, Point3D loc )
 		{
-			if ( map == null || map == Map.Internal )
+			if( map == null || map == Map.Internal )
 				return true;
 
 			int x = loc.X, y = loc.Y;
 
-			return ( x < 0 || y < 0 || x >= map.Width || y >= map.Height );
+			return (x < 0 || y < 0 || x >= map.Width || y >= map.Height);
 		}
 
 		//towns
 		public static bool IsTown( IPoint3D loc, Mobile caster )
 		{
-			if ( loc is Item )
-				loc = ( (Item) loc ).GetWorldLocation();
+			if( loc is Item )
+				loc = ((Item)loc).GetWorldLocation();
 
 			return IsTown( new Point3D( loc ), caster );
 		}
@@ -687,25 +688,25 @@ namespace Server.Spells
 		{
 			Map map = caster.Map;
 
-			if ( map == null )
+			if( map == null )
 				return false;
 
-			GuardedRegion reg = (GuardedRegion) Region.Find( loc, map ).GetRegion( typeof( GuardedRegion ) );
+			GuardedRegion reg = (GuardedRegion)Region.Find( loc, map ).GetRegion( typeof( GuardedRegion ) );
 
-			return ( reg != null && !reg.IsDisabled() );
+			return (reg != null && !reg.IsDisabled());
 		}
 
 		public static bool CheckTown( IPoint3D loc, Mobile caster )
 		{
-			if ( loc is Item )
-				loc = ( (Item) loc ).GetWorldLocation();
+			if( loc is Item )
+				loc = ((Item)loc).GetWorldLocation();
 
 			return CheckTown( new Point3D( loc ), caster );
 		}
 
 		public static bool CheckTown( Point3D loc, Mobile caster )
 		{
-			if ( IsTown( loc, caster ) )
+			if( IsTown( loc, caster ) )
 			{
 				caster.SendLocalizedMessage( 500946 ); // You cannot cast this in town!
 				return false;
@@ -722,7 +723,7 @@ namespace Server.Spells
 
 		public static void CheckReflect( int circle, ref Mobile caster, ref Mobile target )
 		{
-			if ( target.MagicDamageAbsorb > 0 )
+			if( target.MagicDamageAbsorb > 0 )
 			{
 				++circle;
 
@@ -730,18 +731,18 @@ namespace Server.Spells
 
 				// This order isn't very intuitive, but you have to nullify reflect before target gets switched
 
-				bool reflect = ( target.MagicDamageAbsorb >= 0 );
+				bool reflect = (target.MagicDamageAbsorb >= 0);
 
-				if ( target is BaseCreature )
-					( (BaseCreature) target ).CheckReflect( caster, ref reflect );
+				if( target is BaseCreature )
+					((BaseCreature)target).CheckReflect( caster, ref reflect );
 
-				if ( target.MagicDamageAbsorb <= 0 )
+				if( target.MagicDamageAbsorb <= 0 )
 				{
 					target.MagicDamageAbsorb = 0;
 					DefensiveSpell.Nullify( target );
 				}
 
-				if ( reflect )
+				if( reflect )
 				{
 					target.FixedEffect( 0x37B9, 10, 5 );
 
@@ -750,13 +751,13 @@ namespace Server.Spells
 					target = temp;
 				}
 			}
-			else if ( target is BaseCreature )
+			else if( target is BaseCreature )
 			{
 				bool reflect = false;
 
-				( (BaseCreature) target ).CheckReflect( caster, ref reflect );
+				((BaseCreature)target).CheckReflect( caster, ref reflect );
 
-				if ( reflect )
+				if( reflect )
 				{
 					target.FixedEffect( 0x37B9, 10, 5 );
 
@@ -786,15 +787,18 @@ namespace Server.Spells
 
 		public static void Damage( Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage )
 		{
-			int iDamage = (int) damage;
+			int iDamage = (int)damage;
 
-			if ( delay == TimeSpan.Zero )
+			if( Evasion.CheckSpellEvasion( target ) )
+				iDamage = 0;
+
+			if( delay == TimeSpan.Zero )
 			{
-				if ( from is BaseCreature )
-					( (BaseCreature) from ).AlterSpellDamageTo( target, ref iDamage );
+				if( from is BaseCreature )
+					((BaseCreature)from).AlterSpellDamageTo( target, ref iDamage );
 
-				if ( target is BaseCreature )
-					( (BaseCreature) target ).AlterSpellDamageFrom( from, ref iDamage );
+				if( target is BaseCreature )
+					((BaseCreature)target).AlterSpellDamageFrom( from, ref iDamage );
 
 				target.Damage( iDamage, from );
 			}
@@ -803,8 +807,8 @@ namespace Server.Spells
 				new SpellDamageTimer( spell, target, from, iDamage, delay ).Start();
 			}
 
-			if ( target is BaseCreature && from != null && delay == TimeSpan.Zero )
-				( (BaseCreature) target ).OnDamagedBySpell( from );
+			if( target is BaseCreature && from != null && delay == TimeSpan.Zero )
+				((BaseCreature)target).OnDamagedBySpell( from );
 		}
 
 		public static void Damage( Spell spell, Mobile target, double damage, int phys, int fire, int cold, int pois, int nrgy )
@@ -838,15 +842,18 @@ namespace Server.Spells
 
 		public static void Damage( Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage, int phys, int fire, int cold, int pois, int nrgy, DFAlgorithm dfa )
 		{
-			int iDamage = (int) damage;
+			int iDamage = (int)damage;
 
-			if ( delay == TimeSpan.Zero )
+			if( Evasion.CheckSpellEvasion( target ) )
+				iDamage = 0;
+
+			if( delay == TimeSpan.Zero )
 			{
-				if ( from is BaseCreature )
-					( (BaseCreature) from ).AlterSpellDamageTo( target, ref iDamage );
+				if( from is BaseCreature )
+					((BaseCreature)from).AlterSpellDamageTo( target, ref iDamage );
 
-				if ( target is BaseCreature )
-					( (BaseCreature) target ).AlterSpellDamageFrom( from, ref iDamage );
+				if( target is BaseCreature )
+					((BaseCreature)target).AlterSpellDamageFrom( from, ref iDamage );
 
 				WeightOverloading.DFA = dfa;
 				AOS.Damage( target, from, iDamage, phys, fire, cold, pois, nrgy );
@@ -857,8 +864,8 @@ namespace Server.Spells
 				new SpellDamageTimerAOS( spell, target, from, iDamage, phys, fire, cold, pois, nrgy, delay, dfa ).Start();
 			}
 
-			if ( target is BaseCreature && from != null && delay == TimeSpan.Zero )
-				( (BaseCreature) target ).OnDamagedBySpell( from );
+			if( target is BaseCreature && from != null && delay == TimeSpan.Zero )
+				((BaseCreature)target).OnDamagedBySpell( from );
 		}
 
 		private class SpellDamageTimer : Timer
@@ -875,7 +882,7 @@ namespace Server.Spells
 				m_Damage = damage;
 				m_Spell = s;
 
-				if ( m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking )
+				if( m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking )
 					m_Spell.StartDelayedDamageContext( target, this );
 
 				Priority = TimerPriority.TwentyFiveMS;
@@ -883,14 +890,14 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_From is BaseCreature )
-					( (BaseCreature) m_From ).AlterSpellDamageTo( m_Target, ref m_Damage );
+				if( m_From is BaseCreature )
+					((BaseCreature)m_From).AlterSpellDamageTo( m_Target, ref m_Damage );
 
-				if ( m_Target is BaseCreature )
-					( (BaseCreature) m_Target ).AlterSpellDamageFrom( m_From, ref m_Damage );
+				if( m_Target is BaseCreature )
+					((BaseCreature)m_Target).AlterSpellDamageFrom( m_From, ref m_Damage );
 
 				m_Target.Damage( m_Damage );
-				if ( m_Spell != null )
+				if( m_Spell != null )
 					m_Spell.RemoveDelayedDamageContext( m_Target );
 			}
 		}
@@ -916,7 +923,7 @@ namespace Server.Spells
 				m_Nrgy = nrgy;
 				m_DFA = dfa;
 				m_Spell = s;
-				if ( m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking )
+				if( m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking )
 					m_Spell.StartDelayedDamageContext( target, this );
 
 				Priority = TimerPriority.TwentyFiveMS;
@@ -924,20 +931,20 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_From is BaseCreature && m_Target != null )
-					( (BaseCreature) m_From ).AlterSpellDamageTo( m_Target, ref m_Damage );
+				if( m_From is BaseCreature && m_Target != null )
+					((BaseCreature)m_From).AlterSpellDamageTo( m_Target, ref m_Damage );
 
-				if ( m_Target is BaseCreature && m_From != null )
-					( (BaseCreature) m_Target ).AlterSpellDamageFrom( m_From, ref m_Damage );
+				if( m_Target is BaseCreature && m_From != null )
+					((BaseCreature)m_Target).AlterSpellDamageFrom( m_From, ref m_Damage );
 
 				WeightOverloading.DFA = m_DFA;
 				AOS.Damage( m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy );
 				WeightOverloading.DFA = DFAlgorithm.Standard;
 
-				if ( m_Target is BaseCreature && m_From != null )
-					( (BaseCreature) m_Target ).OnDamagedBySpell( m_From );
+				if( m_Target is BaseCreature && m_From != null )
+					((BaseCreature)m_Target).OnDamagedBySpell( m_From );
 
-				if ( m_Spell != null )
+				if( m_Spell != null )
 					m_Spell.RemoveDelayedDamageContext( m_Target );
 
 			}

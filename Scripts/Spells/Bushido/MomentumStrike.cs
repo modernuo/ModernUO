@@ -57,6 +57,8 @@ namespace Server.Spells.Bushido
 
 				target.FixedParticles( 0x37B9, 1, 4, 0x251D, 0, 0, EffectLayer.Waist );
 
+                attacker.PlaySound( 0x510 );
+
 				weapon.OnSwing( attacker, target, damageBonus );
 
 				CheckGain( attacker );

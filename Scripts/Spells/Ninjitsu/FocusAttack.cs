@@ -68,6 +68,7 @@ namespace Server.Spells.Ninjitsu
 			ClearCurrentMove( attacker );
 
 			attacker.SendLocalizedMessage( 1063098 ); // You focus all of your abilities and strike with deadly force!
+            attacker.PlaySound( 0x510 );
 
 			CheckGain( attacker );
 		}

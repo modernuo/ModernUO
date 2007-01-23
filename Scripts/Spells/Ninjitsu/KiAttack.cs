@@ -71,8 +71,13 @@ namespace Server.Spells.Ninjitsu
 			}
 			else
 			{
+				attacker.FixedParticles( 0x37BE, 1, 5, 0x26BD, 0x0, 0x1, EffectLayer.Waist );
+				attacker.PlaySound( 0x510 );
+
 				attacker.SendLocalizedMessage( 1063100 ); // Your quick flight to your target causes extra damage as you strike!
 				defender.FixedParticles( 0x37BE, 1, 5, 0x26BD, 0, 0x1, EffectLayer.Waist );
+
+                CheckGain( attacker );
 			}
 
 			ClearCurrentMove( attacker );

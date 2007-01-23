@@ -1,7 +1,5 @@
 using System;
 using Server;
-using Server.Items;
-using Server.Engines.Harvest;
 
 namespace Server.Items
 {

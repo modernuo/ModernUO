@@ -53,6 +53,9 @@ namespace Server.Spells.Bushido
 			attacker.SendLocalizedMessage( 1063168 ); // You attack with lightning precision!
 			defender.SendLocalizedMessage( 1063169 ); // Your opponent's quick strike causes extra damage!
 
+            defender.FixedParticles( 0x3818, 1, 11, 0x13A8, 0, 0, EffectLayer.Waist );
+            defender.PlaySound( 0x51D );
+
 			CheckGain( attacker );
 
 			SetContext( attacker );

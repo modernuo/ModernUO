@@ -53,12 +53,12 @@ namespace Server.Spells.Ninjitsu
 
 			if( m_Table.Contains( defender ) )
 			{
-				attacker.SendLocalizedMessage( 1063092 ); // Your opponent lands another Death Strike!
+				defender.SendLocalizedMessage( 1063092 ); // Your opponent lands another Death Strike!
 
 				info = (DeathStrikeInfo)m_Table[defender];
 
 				if( info.m_Steps > 0 )
-					damageBonus = info.m_Attacker.Skills[SkillName.Ninjitsu].Fixed / 150;
+					damageBonus = attacker.Skills[SkillName.Ninjitsu].Fixed / 150;
 
 				if( info.m_Timer != null )
 					info.m_Timer.Stop();
@@ -67,15 +67,16 @@ namespace Server.Spells.Ninjitsu
 			}
 			else
 			{
-				attacker.SendLocalizedMessage( 1063094 ); // You inflict a Death Strike upon your opponent!
 				defender.SendLocalizedMessage( 1063093 ); // You have been hit by a Death Strike!  Move with caution!
 			}
 
+			attacker.SendLocalizedMessage( 1063094 ); // You inflict a Death Strike upon your opponent!
+
 			defender.FixedParticles( 0x374A, 1, 17, 0x26BC, EffectLayer.Waist );
-			attacker.PlaySound( 0x50D );
+			attacker.PlaySound( attacker.Female ? 0x50D : 0x50E );
 
 			info = new DeathStrikeInfo( defender, attacker, damageBonus );
-			info.m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( ProcessDeathStrike ), info );
+			info.m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( ProcessDeathStrike ), defender );
 
 			m_Table[defender] = info;
 
@@ -108,12 +109,18 @@ namespace Server.Spells.Ninjitsu
 			if( info == null )
 				return;
 
-			info.m_Steps++;
+			if( ++info.m_Steps >= 5 )
+				ProcessDeathStrike( m );
 		}
 
 		private static void ProcessDeathStrike( object state )
 		{
-			DeathStrikeInfo info = (DeathStrikeInfo)state;
+			Mobile defender = (Mobile)state;
+
+			DeathStrikeInfo info = m_Table[defender] as DeathStrikeInfo;
+
+			if( info == null )
+				return;
 
 			double ninjitsu = info.m_Attacker.Skills[SkillName.Ninjitsu].Fixed;
 			int divisor = (info.m_Steps >= 5) ? 30 : 80;
@@ -132,6 +139,10 @@ namespace Server.Spells.Ninjitsu
 			//info.m_Target.Damage( damage, info.m_Attacker );
 
 			AOS.Damage( info.m_Target, info.m_Attacker, damage, true, 100, 0, 0, 0, 0 );
+
+			if( info.m_Timer != null )
+				info.m_Timer.Stop();
+
 			m_Table.Remove( info.m_Target );
 		}
 	}
