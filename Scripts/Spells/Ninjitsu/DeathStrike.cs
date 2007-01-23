@@ -119,7 +119,7 @@ namespace Server.Spells.Ninjitsu
 
 			DeathStrikeInfo info = m_Table[defender] as DeathStrikeInfo;
 
-			if( info == null )
+			if( info == null )	//sanity
 				return;
 
 			double ninjitsu = info.m_Attacker.Skills[SkillName.Ninjitsu].Fixed;
