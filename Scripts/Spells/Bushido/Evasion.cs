@@ -126,7 +126,7 @@ namespace Server.Spells.Bushido
 			double seconds = 3;
 
 			if( m.Skills.Bushido.Value > 60 )
-				seconds += m.Skills.Bushido.Value / 20;
+				seconds += (m.Skills.Bushido.Value - 60) / 20;
 
 			if( m.Skills.Anatomy.Value >= 100.0 && m.Skills.Tactics.Value >= 100.0 &&  m.Skills.Bushido.Value > 100.0 )	//Bushido being HIGHER than 100 for bonus is intended
 				seconds++;
