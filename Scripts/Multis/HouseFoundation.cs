@@ -441,7 +441,7 @@ namespace Server.Multis
 				case FoundationType.ElvenNatural: corner = 0x2DFB; east = 0x2DFD; south = 0x2DFE; post = 0x2DFC; break;
 
 				case FoundationType.Crystal: corner = 0x3672; east = 0x3671; south = 0x3670; post = 0x3673; break;
-				case FoundationType.Shadow: corner = 0x3676; east = 0x3675; south = 0x3634; post = 0x3677; break;
+				case FoundationType.Shadow: corner = 0x3676; east = 0x3675; south = 0x3674; post = 0x3677; break;
 			}
 		}
 
@@ -1096,10 +1096,13 @@ namespace Server.Multis
 				delta = (m_BlockIDs[i] - id);
 
 			return (delta == 0);
+
+			//if ID matches one of the the items in m_BlockIDs, return true
 		}
 
 		public static bool IsStair( int id, ref int dir )
 		{
+			//dir n=0 w=1 s=2 e=3
 			id &= 0x3FFF;
 			int delta = -4;
 

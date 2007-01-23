@@ -42,7 +42,7 @@ namespace Server.Mobiles
 			int level;
 			double random = Utility.RandomDouble();
 
-			if ( 0.1 >= random )
+			if ( 0.05 >= random )
 				level = 20;
 			else if ( 0.4 >= random )
 				level = 15;

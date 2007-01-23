@@ -72,7 +72,7 @@ namespace Server.Mobiles
 
 			foreach ( Mobile m in this.GetMobilesInRange( 5 ) )
 			{
-				if ( m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 )
+				if ( m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor )
 					list.Add( m );
 			}
 

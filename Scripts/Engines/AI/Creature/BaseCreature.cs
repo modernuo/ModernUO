@@ -4065,8 +4065,10 @@ namespace Server.Mobiles
 
 			if ( rights.Count > 0 )
 			{
+				rights[0].m_Damage = (int)(rights[0].m_Damage * 1.25);	//This would be the first valid person attacking it.  Gets a 25% bonus.  Per 1/19/07 Five on Friday
+
 				if ( rights.Count > 1 )
-					rights.Sort();
+					rights.Sort();			//Sort by damage
 
 				int topDamage = rights[0].m_Damage;
 				int minDamage;
