@@ -282,6 +282,9 @@ namespace Server.Items
 			if ( Deleted || m_TriggerType == EffectTriggerType.None )
 				return;
 
+			if( trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).AccessLevel > AccessLevel.Player )
+				return;
+
 			if ( m_SoundID > 0 )
 				Timer.DelayCall( m_SoundDelay, new TimerStateCallback( PlaySound ), trigger );
 
