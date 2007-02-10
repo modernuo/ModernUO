@@ -1545,7 +1545,7 @@ namespace Server.Gumps
 				from.SendGump( new NoticeGump( 1060637, 30720, String.Format( "You have {0} the account{1}.", ban ? "banned" : "deleted", rads.Count == 1 ? "" : "s" ), 0xFFC000, 420, 280, new NoticeGumpCallback( ResendGump_Callback ), new object[]{ list, rads, ban ? page : 0 } ) );
 
 				if ( ban )
-					from.SendGump( new BanDurationGump( list ) );
+					from.SendGump( new BanDurationGump( rads ) );
 			}
 			else
 			{
@@ -2503,8 +2503,7 @@ namespace Server.Gumps
 							{
 								CommandLogging.WriteLine( from, "{0} {1} removing {2} from firewall list", from.AccessLevel, CommandLogging.Format( from ), m_State );
 
-								Firewall.List.Remove( m_State );
-								Firewall.Save();
+								Firewall.Remove( m_State );
 								from.SendGump( new AdminGump( from, AdminGumpPage.Firewall, 0, null, String.Format( "{0} : Removed from firewall.", m_State ), null ) );
 							}
 

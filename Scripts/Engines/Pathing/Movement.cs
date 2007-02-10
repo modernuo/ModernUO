@@ -85,9 +85,9 @@ namespace Server.Movement
 			bool landBlocks = (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0;
 			bool considerLand = !landTile.Ignored;
 
-			if ( landBlocks && canSwim && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) != 0 )
+			if ( landBlocks && canSwim && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) != 0 )	//Impassable, Can Swim, and Is water.  Don't block it.
 				landBlocks = false;
-			else if ( cantWalk && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) == 0 )
+			else if ( cantWalk && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Wet) == 0 )	//Can't walk and it's not water
 				landBlocks = true;
 
 			int landZ = 0, landCenter = 0, landTop = 0;
@@ -101,6 +101,7 @@ namespace Server.Movement
 
 			bool ignoreDoors = ( m_AlwaysIgnoreDoors || !m.Alive || m.Body.BodyID == 0x3DB || m.IsDeadBondedPet );
 
+			#region Tiles
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
 				Tile tile = tiles[i];
@@ -152,7 +153,9 @@ namespace Server.Movement
 					}
 				}
 			}
+			#endregion
 
+			#region Items
 			for ( int i = 0; i < items.Count; ++i )
 			{
 				Item item = items[i];
@@ -204,6 +207,8 @@ namespace Server.Movement
 					}
 				}
 			}
+
+			#endregion
 
 			if ( considerLand && !landBlocks && stepTop >= landZ )
 			{

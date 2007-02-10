@@ -128,7 +128,7 @@ namespace Server
         {
             string[] str = cidr.Split( '/' );
 
-            if ( str.Length < 2 )
+            if ( str.Length != 2 )
                 return false;
 
             IPAddress cidrPrefix;
@@ -151,11 +151,25 @@ namespace Server
 
             uint mask = uint.MaxValue << cidrLength;
 
-            long cidrValue = Utility.GetLongAddressValue( cidrPrefix );
-            long ipValue   = Utility.GetLongAddressValue( ip );
+			uint cidrValue = Utility.OrderedAddressValue( cidrPrefix );
+			uint ipValue   = Utility.OrderedAddressValue( ip );
 
             return ( ( cidrValue & mask ) == ( ipValue & mask ) );
         }
+
+		private static uint OrderedAddressValue( IPAddress address )
+		{
+			uint value = 0;
+
+			byte[] bytes = address.GetAddressBytes();
+
+			for( int i=0; i < bytes.Length; i++ )
+			{
+				value |= ((uint)bytes[i]) << (bytes.Length-1 -i)*8;
+			}
+
+			return value;
+		}
 
 		public static bool IPMatch( string val, IPAddress ip, ref bool valid )
 		{
@@ -256,7 +270,7 @@ namespace Server
 							}
 							else
 							{
-								valid = false;
+								valid = false;	//high & lowpart would be 0 if it got to here.
 							}
 						}
 					}
@@ -321,24 +335,6 @@ namespace Server
 				int.TryParse( value, out i );
 
 			return i;
-
-			/*
-			try
-			{
-				if ( value.StartsWith( "0x" ) )
-				{
-					return Convert.ToInt32( value.Substring( 2 ), 16 );
-				}
-				else
-				{
-					return Convert.ToInt32( value );
-				}
-			}
-			catch
-			{
-				return 0;
-			}
-			 * */
         }
         #endregion
 
