@@ -1049,13 +1049,7 @@ namespace Server
 			}
 		}
 
-		private enum SectorEnumeratorType
-		{
-			Mobiles,
-			Items,
-			Clients
-		}
-
+		#region Enumerables
 		public class NullEnumerable : IPooledEnumerable
 		{
 			private InternalEnumerator m_Enumerator;
@@ -1158,6 +1152,15 @@ namespace Server
 			{
 				Free();
 			}
+		}
+		#endregion
+
+		#region Enumerators
+		private enum SectorEnumeratorType
+		{
+			Mobiles,
+			Items,
+			Clients
 		}
 
 		private class TypedEnumerator : IPooledEnumerator, IDisposable
@@ -1725,6 +1728,283 @@ namespace Server
 				Free();
 			}
 		}
+		#endregion
+
+		public Point3D GetPoint( object o, bool eye )
+		{
+			Point3D p;
+
+			if( o is Mobile )
+			{
+				p = ((Mobile)o).Location;
+				p.Z += 14;//eye ? 15 : 10;
+			}
+			else if( o is Item )
+			{
+				p = ((Item)o).GetWorldLocation();
+				p.Z += (((Item)o).ItemData.Height / 2) + 1;
+			}
+			else if( o is Point3D )
+			{
+				p = (Point3D)o;
+			}
+			else if( o is LandTarget )
+			{
+				p = ((LandTarget)o).Location;
+
+				int low = 0, avg = 0, top = 0;
+				GetAverageZ( p.X, p.Y, ref low, ref avg, ref top );
+
+				p.Z = top + 1;
+			}
+			else if( o is StaticTarget )
+			{
+				StaticTarget st = (StaticTarget)o;
+				ItemData id = TileData.ItemTable[st.ItemID & 0x3FFF];
+
+				p = new Point3D( st.X, st.Y, st.Z - id.CalcHeight + (id.Height / 2) + 1 );
+			}
+			else if( o is IPoint3D )
+			{
+				p = new Point3D( (IPoint3D)o );
+			}
+			else
+			{
+				Console.WriteLine( "Warning: Invalid object ({0}) in line of sight", o );
+				p = Point3D.Zero;
+			}
+
+			return p;
+		}
+
+		#region Line Of Sight
+		private static int m_MaxLOSDistance = 25;
+
+		public static int MaxLOSDistance
+		{
+			get { return m_MaxLOSDistance; }
+			set { m_MaxLOSDistance = value; }
+		}
+
+		public bool LineOfSight( Point3D org, Point3D dest )
+		{
+			if( this == Map.Internal )
+				return false;
+
+			if( !Utility.InRange( org, dest, m_MaxLOSDistance ) )
+				return false;
+
+			Point3D start = org;
+			Point3D end = dest;
+
+			if( org.X > dest.X || (org.X == dest.X && org.Y > dest.Y) || (org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z) )
+			{
+				Point3D swap = org;
+				org = dest;
+				dest = swap;
+			}
+
+			double rise, run, zslp;
+			double sq3d;
+			double x, y, z;
+			int xd, yd, zd;
+			int ix, iy, iz;
+			int height;
+			bool found;
+			Point3D p;
+			Point3DList path = m_PathList;
+			TileFlag flags;
+
+			if( org == dest )
+				return true;
+
+			if( path.Count > 0 )
+				path.Clear();
+
+			xd = dest.m_X - org.m_X;
+			yd = dest.m_Y - org.m_Y;
+			zd = dest.m_Z - org.m_Z;
+			zslp = Math.Sqrt( xd * xd + yd * yd );
+			if( zd != 0 )
+				sq3d = Math.Sqrt( zslp * zslp + zd * zd );
+			else
+				sq3d = zslp;
+
+			rise = ((float)yd) / sq3d;
+			run = ((float)xd) / sq3d;
+			zslp = ((float)zd) / sq3d;
+
+			y = org.m_Y;
+			z = org.m_Z;
+			x = org.m_X;
+			while( Utility.NumberBetween( x, dest.m_X, org.m_X, 0.5 ) && Utility.NumberBetween( y, dest.m_Y, org.m_Y, 0.5 ) && Utility.NumberBetween( z, dest.m_Z, org.m_Z, 0.5 ) )
+			{
+				ix = (int)Math.Round( x );
+				iy = (int)Math.Round( y );
+				iz = (int)Math.Round( z );
+				if( path.Count > 0 )
+				{
+					p = path.Last;
+
+					if( p.m_X != ix || p.m_Y != iy || p.m_Z != iz )
+						path.Add( ix, iy, iz );
+				}
+				else
+				{
+					path.Add( ix, iy, iz );
+				}
+				x += run;
+				y += rise;
+				z += zslp;
+			}
+
+			if( path.Count == 0 )
+				return true;//<--should never happen, but to be safe.
+
+			p = path.Last;
+
+			if( p != dest )
+				path.Add( dest );
+
+			Point3D pTop = org, pBottom = dest;
+			Utility.FixPoints( ref pTop, ref pBottom );
+
+			int pathCount = path.Count;
+
+			for( int i = 0; i < pathCount; ++i )
+			{
+				Point3D point = path[i];
+
+				Tile landTile = Tiles.GetLandTile( point.X, point.Y );
+				int landZ = 0, landAvg = 0, landTop = 0;
+				GetAverageZ( point.m_X, point.m_Y, ref landZ, ref landAvg, ref landTop );
+
+				if( landZ <= point.m_Z && landTop >= point.m_Z && (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > end.m_Z || landTop < end.m_Z) && !landTile.Ignored )
+					return false;
+
+				/* --Do land tiles need to be checked?  There is never land between two people, always statics.--
+				Tile landTile = Tiles.GetLandTile( point.X, point.Y );
+				if ( landTile.Z-1 >= point.Z && landTile.Z+1 <= point.Z && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0 )
+					return false;
+				*/
+
+				Tile[] statics = Tiles.GetStaticTiles( point.m_X, point.m_Y, true );
+
+				bool contains = false;
+				int ltID = landTile.ID;
+
+				for( int j = 0; !contains && j < m_InvalidLandTiles.Length; ++j )
+					contains = (ltID == m_InvalidLandTiles[j]);
+
+				if( contains && statics.Length == 0 )
+				{
+					IPooledEnumerable eable = GetItemsInRange( point, 0 );
+
+					foreach( Item item in eable )
+					{
+						if( item.Visible )
+							contains = false;
+
+						if( !contains )
+							break;
+					}
+
+					eable.Free();
+
+					if( contains )
+						return false;
+				}
+
+				for( int j = 0; j < statics.Length; ++j )
+				{
+					Tile t = statics[j];
+
+					ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
+
+					flags = id.Flags;
+					height = id.CalcHeight;
+
+					if( t.Z <= point.Z && t.Z + height >= point.Z && (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0 )
+					{
+						if( point.m_X == end.m_X && point.m_Y == end.m_Y && t.Z <= end.m_Z && t.Z + height >= end.m_Z )
+							continue;
+
+						return false;
+					}
+
+					/*if ( t.Z <= point.Z && t.Z+height >= point.Z && (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0
+						&& ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )*/
+					/*{
+						//Console.WriteLine( "LoS: Blocked by Static \"{0}\" Z:{1} T:{3} P:{2} F:x{4:X}", TileData.ItemTable[t.ID&0x3FFF].Name, t.Z, point, t.Z+height, flags );
+						//Console.WriteLine( "if ( {0} && {1} && {2} && ( {3} || {4} || {5} || ({6} && {7} && {8}) ) )", t.Z <= point.Z, t.Z+height >= point.Z, (flags&TileFlag.Window)==0, (flags&TileFlag.Impassable)!=0, (flags&TileFlag.Wall)!=0, (flags&TileFlag.Roof)!=0, (flags&TileFlag.Surface)!=0, t.Z != dest.Z, zd != 0 ) ;
+						return false;
+					}*/
+				}
+			}
+
+			Rectangle2D rect = new Rectangle2D( pTop.m_X, pTop.m_Y, (pBottom.m_X - pTop.m_X) + 1, (pBottom.m_Y - pTop.m_Y) + 1 );
+
+			IPooledEnumerable area = GetItemsInBounds( rect );
+
+			foreach( Item i in area )
+			{
+				if( !i.Visible )
+					continue;
+
+				if( i.ItemID >= 0x4000 )
+					continue;
+
+				ItemData id = i.ItemData;
+				flags = id.Flags;
+
+				if( (flags & (TileFlag.Window | TileFlag.NoShoot)) == 0 )
+					continue;
+
+				height = id.CalcHeight;
+
+				found = false;
+
+				int count = path.Count;
+
+				for( int j = 0; j < count; ++j )
+				{
+					Point3D point = path[j];
+					Point3D loc = i.Location;
+
+					//if ( t.Z <= point.Z && t.Z+height >= point.Z && ( height != 0 || ( t.Z == dest.Z && zd != 0 ) ) )
+					if( loc.m_X == point.m_X && loc.m_Y == point.m_Y &&
+						loc.m_Z <= point.m_Z && loc.m_Z + height >= point.m_Z )
+					{
+						if( loc.m_X == end.m_X && loc.m_Y == end.m_Y && loc.m_Z <= end.m_Z && loc.m_Z + height >= end.m_Z )
+							continue;
+
+						found = true;
+						break;
+					}
+				}
+
+				if( !found )
+					continue;
+
+				area.Free();
+				return false;
+
+				/*if ( (flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0 )
+
+				//flags = TileData.ItemTable[i.ItemID&0x3FFF].Flags;
+				//if ( (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )
+				{
+					//height = TileData.ItemTable[i.ItemID&0x3FFF].Height;
+					//Console.WriteLine( "LoS: Blocked by ITEM \"{0}\" P:{1} T:{2} F:x{3:X}", TileData.ItemTable[i.ItemID&0x3FFF].Name, i.Location, i.Location.Z+height, flags );
+					area.Free();
+					return false;
+				}*/
+			}
+
+			area.Free();
+
+			return true;
+		}
 
 		public bool LineOfSight( object from, object dest )
 		{
@@ -1734,53 +2014,6 @@ namespace Server
 				return true;
 
 			return LineOfSight( GetPoint( from, true ), GetPoint( dest, false ) );
-		}
-
-		public Point3D GetPoint( object o, bool eye )
-		{
-			Point3D p;
-
-			if ( o is Mobile )
-			{
-				p = ( (Mobile) o ).Location;
-				p.Z += 14;//eye ? 15 : 10;
-			}
-			else if ( o is Item )
-			{
-				p = ( (Item) o ).GetWorldLocation();
-				p.Z += ( ( (Item) o ).ItemData.Height / 2 ) + 1;
-			}
-			else if ( o is Point3D )
-			{
-				p = (Point3D) o;
-			}
-			else if ( o is LandTarget )
-			{
-				p = ( (LandTarget) o ).Location;
-
-				int low = 0, avg = 0, top = 0;
-				GetAverageZ( p.X, p.Y, ref low, ref avg, ref top );
-
-				p.Z = top + 1;
-			}
-			else if ( o is StaticTarget )
-			{
-				StaticTarget st = (StaticTarget) o;
-				ItemData id = TileData.ItemTable[st.ItemID & 0x3FFF];
-
-				p = new Point3D( st.X, st.Y, st.Z - id.CalcHeight + ( id.Height / 2 ) + 1 );
-			}
-			else if ( o is IPoint3D )
-			{
-				p = new Point3D( (IPoint3D) o );
-			}
-			else
-			{
-				Console.WriteLine( "Warning: Invalid object ({0}) in line of sight", o );
-				p = Point3D.Zero;
-			}
-
-			return p;
 		}
 
 		public bool LineOfSight( Mobile from, Point3D target )
@@ -1808,6 +2041,7 @@ namespace Server
 
 			return LineOfSight( eye, target );
 		}
+		#endregion
 
 		private static int[] m_InvalidLandTiles = new int[] { 0x244 };
 
@@ -1818,235 +2052,6 @@ namespace Server
 		}
 
 		private static Point3DList m_PathList = new Point3DList();
-
-		private static int m_MaxLOSDistance = 25;
-
-		public static int MaxLOSDistance
-		{
-			get { return m_MaxLOSDistance; }
-			set { m_MaxLOSDistance = value; }
-		}
-
-		public bool LineOfSight( Point3D org, Point3D dest )
-		{
-			if ( this == Map.Internal )
-				return false;
-
-			if ( !Utility.InRange( org, dest, m_MaxLOSDistance ) )
-				return false;
-
-			Point3D start = org;
-			Point3D end = dest;
-
-			if ( org.X > dest.X || ( org.X == dest.X && org.Y > dest.Y ) || ( org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z ) )
-			{
-				Point3D swap = org;
-				org = dest;
-				dest = swap;
-			}
-
-			double rise, run, zslp;
-			double sq3d;
-			double x, y, z;
-			int xd, yd, zd;
-			int ix, iy, iz;
-			int height;
-			bool found;
-			Point3D p;
-			Point3DList path = m_PathList;
-			TileFlag flags;
-
-			if ( org == dest )
-				return true;
-
-			if ( path.Count > 0 )
-				path.Clear();
-
-			xd = dest.m_X - org.m_X;
-			yd = dest.m_Y - org.m_Y;
-			zd = dest.m_Z - org.m_Z;
-			zslp = Math.Sqrt( xd * xd + yd * yd );
-			if ( zd != 0 )
-				sq3d = Math.Sqrt( zslp * zslp + zd * zd );
-			else
-				sq3d = zslp;
-
-			rise = ( (float) yd ) / sq3d;
-			run = ( (float) xd ) / sq3d;
-			zslp = ( (float) zd ) / sq3d;
-
-			y = org.m_Y;
-			z = org.m_Z;
-			x = org.m_X;
-			while ( Utility.NumberBetween( x, dest.m_X, org.m_X, 0.5 ) && Utility.NumberBetween( y, dest.m_Y, org.m_Y, 0.5 ) && Utility.NumberBetween( z, dest.m_Z, org.m_Z, 0.5 ) )
-			{
-				ix = (int) Math.Round( x );
-				iy = (int) Math.Round( y );
-				iz = (int) Math.Round( z );
-				if ( path.Count > 0 )
-				{
-					p = path.Last;
-
-					if ( p.m_X != ix || p.m_Y != iy || p.m_Z != iz )
-						path.Add( ix, iy, iz );
-				}
-				else
-				{
-					path.Add( ix, iy, iz );
-				}
-				x += run;
-				y += rise;
-				z += zslp;
-			}
-
-			if ( path.Count == 0 )
-				return true;//<--should never happen, but to be safe.
-
-			p = path.Last;
-
-			if ( p != dest )
-				path.Add( dest );
-
-			Point3D pTop = org, pBottom = dest;
-			Utility.FixPoints( ref pTop, ref pBottom );
-
-			int pathCount = path.Count;
-
-			for ( int i = 0; i < pathCount; ++i )
-			{
-				Point3D point = path[i];
-
-				Tile landTile = Tiles.GetLandTile( point.X, point.Y );
-				int landZ = 0, landAvg = 0, landTop = 0;
-				GetAverageZ( point.m_X, point.m_Y, ref landZ, ref landAvg, ref landTop );
-
-				if ( landZ <= point.m_Z && landTop >= point.m_Z && ( point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > end.m_Z || landTop < end.m_Z ) && !landTile.Ignored )
-					return false;
-
-				/* --Do land tiles need to be checked?  There is never land between two people, always statics.--
-				Tile landTile = Tiles.GetLandTile( point.X, point.Y );
-				if ( landTile.Z-1 >= point.Z && landTile.Z+1 <= point.Z && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0 )
-					return false;
-				*/
-
-				Tile[] statics = Tiles.GetStaticTiles( point.m_X, point.m_Y, true );
-
-				bool contains = false;
-				int ltID = landTile.ID;
-
-				for ( int j = 0; !contains && j < m_InvalidLandTiles.Length; ++j )
-					contains = ( ltID == m_InvalidLandTiles[j] );
-
-				if ( contains && statics.Length == 0 )
-				{
-					IPooledEnumerable eable = GetItemsInRange( point, 0 );
-
-					foreach ( Item item in eable )
-					{
-						if ( item.Visible )
-							contains = false;
-
-						if ( !contains )
-							break;
-					}
-
-					eable.Free();
-
-					if ( contains )
-						return false;
-				}
-
-				for ( int j = 0; j < statics.Length; ++j )
-				{
-					Tile t = statics[j];
-
-					ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
-
-					flags = id.Flags;
-					height = id.CalcHeight;
-
-					if ( t.Z <= point.Z && t.Z + height >= point.Z && ( flags & ( TileFlag.Window | TileFlag.NoShoot ) ) != 0 )
-					{
-						if ( point.m_X == end.m_X && point.m_Y == end.m_Y && t.Z <= end.m_Z && t.Z + height >= end.m_Z )
-							continue;
-
-						return false;
-					}
-
-					/*if ( t.Z <= point.Z && t.Z+height >= point.Z && (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0
-						&& ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )*/
-					/*{
-						//Console.WriteLine( "LoS: Blocked by Static \"{0}\" Z:{1} T:{3} P:{2} F:x{4:X}", TileData.ItemTable[t.ID&0x3FFF].Name, t.Z, point, t.Z+height, flags );
-						//Console.WriteLine( "if ( {0} && {1} && {2} && ( {3} || {4} || {5} || ({6} && {7} && {8}) ) )", t.Z <= point.Z, t.Z+height >= point.Z, (flags&TileFlag.Window)==0, (flags&TileFlag.Impassable)!=0, (flags&TileFlag.Wall)!=0, (flags&TileFlag.Roof)!=0, (flags&TileFlag.Surface)!=0, t.Z != dest.Z, zd != 0 ) ;
-						return false;
-					}*/
-				}
-			}
-
-			Rectangle2D rect = new Rectangle2D( pTop.m_X, pTop.m_Y, ( pBottom.m_X - pTop.m_X ) + 1, ( pBottom.m_Y - pTop.m_Y ) + 1 );
-
-			IPooledEnumerable area = GetItemsInBounds( rect );
-
-			foreach ( Item i in area )
-			{
-				if ( !i.Visible )
-					continue;
-
-				if ( i.ItemID >= 0x4000 )
-					continue;
-
-				ItemData id = i.ItemData;
-				flags = id.Flags;
-
-				if ( ( flags & ( TileFlag.Window | TileFlag.NoShoot ) ) == 0 )
-					continue;
-
-				height = id.CalcHeight;
-
-				found = false;
-
-				int count = path.Count;
-
-				for ( int j = 0; j < count; ++j )
-				{
-					Point3D point = path[j];
-					Point3D loc = i.Location;
-
-					//if ( t.Z <= point.Z && t.Z+height >= point.Z && ( height != 0 || ( t.Z == dest.Z && zd != 0 ) ) )
-					if ( loc.m_X == point.m_X && loc.m_Y == point.m_Y &&
-						loc.m_Z <= point.m_Z && loc.m_Z + height >= point.m_Z )
-					{
-						if ( loc.m_X == end.m_X && loc.m_Y == end.m_Y && loc.m_Z <= end.m_Z && loc.m_Z + height >= end.m_Z )
-							continue;
-
-						found = true;
-						break;
-					}
-				}
-
-				if ( !found )
-					continue;
-
-				area.Free();
-				return false;
-
-				/*if ( (flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0 )
-
-				//flags = TileData.ItemTable[i.ItemID&0x3FFF].Flags;
-				//if ( (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )
-				{
-					//height = TileData.ItemTable[i.ItemID&0x3FFF].Height;
-					//Console.WriteLine( "LoS: Blocked by ITEM \"{0}\" P:{1} T:{2} F:x{3:X}", TileData.ItemTable[i.ItemID&0x3FFF].Name, i.Location, i.Location.Z+height, flags );
-					area.Free();
-					return false;
-				}*/
-			}
-
-			area.Free();
-
-			return true;
-		}
-
 		public int CompareTo( Map other )
 		{
 			if ( other == null )
