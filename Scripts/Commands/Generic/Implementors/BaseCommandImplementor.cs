@@ -276,7 +276,8 @@ namespace Server.Commands.Generic
 		{
 			if ( e.Length >= 1 )
 			{
-				BaseCommand command = m_Commands[e.GetString( 0 )];
+				BaseCommand command = null;
+				m_Commands.TryGetValue( e.GetString( 0 ), out command );
 
 				if ( command == null )
 				{
