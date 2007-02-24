@@ -3455,7 +3455,6 @@ namespace Server
 				Mana = 0;
 
 				BodyMod = 0;
-				//Body = m_Female ? 0x191 : 0x190;
 				Body = this.Race.AliveBody( this );
 
 				ProcessDeltaQueue();

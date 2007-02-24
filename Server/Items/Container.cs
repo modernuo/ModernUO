@@ -280,6 +280,8 @@ namespace Server.Items
 			}
 		}
 
+		#region Consume[...]
+
 		public bool ConsumeTotalGrouped( Type type, int amount, bool recurse, OnItemConsumed callback, CheckItemGroup grouper )
 		{
 			if ( grouper == null )
@@ -471,163 +473,6 @@ namespace Server.Items
 			return -1;
 		}
 
-		public int GetBestGroupAmount( Type type, bool recurse, CheckItemGroup grouper )
-		{
-			if ( grouper == null )
-				throw new ArgumentNullException();
-
-			int best = 0;
-
-			Item[] typedItems = FindItemsByType( type, recurse );
-
-			List<List<Item>> groups = new List<List<Item>>();
-			int idx = 0;
-
-			while ( idx < typedItems.Length )
-			{
-				Item a = typedItems[idx++];
-				List<Item> group = new List<Item>();
-
-				group.Add( a );
-
-				while ( idx < typedItems.Length )
-				{
-					Item b = typedItems[idx];
-					int v = grouper( a, b );
-
-					if ( v == 0 )
-						group.Add( b );
-					else
-						break;
-
-					++idx;
-				}
-
-				groups.Add( group );
-			}
-
-			for ( int i = 0; i < groups.Count; ++i )
-			{
-				Item[] items = groups[i].ToArray();
-
-				//Item[] items = (Item[])(((ArrayList)groups[i]).ToArray( typeof( Item ) ));
-				int total = 0;
-
-				for ( int j = 0; j < items.Length; ++j )
-					total += items[j].Amount;
-
-				if ( total >= best )
-					best = total;
-			}
-
-			return best;
-		}
-
-		public int GetBestGroupAmount( Type[] types, bool recurse, CheckItemGroup grouper )
-		{
-			if ( grouper == null )
-				throw new ArgumentNullException();
-
-			int best = 0;
-
-			Item[] typedItems = FindItemsByType( types, recurse );
-
-			List<List<Item>> groups = new List<List<Item>>();
-			int idx = 0;
-
-			while ( idx < typedItems.Length )
-			{
-				Item a = typedItems[idx++];
-				List<Item> group = new List<Item>();
-
-				group.Add( a );
-
-				while ( idx < typedItems.Length )
-				{
-					Item b = typedItems[idx];
-					int v = grouper( a, b );
-
-					if ( v == 0 )
-						group.Add( b );
-					else
-						break;
-
-					++idx;
-				}
-
-				groups.Add( group );
-			}
-
-			for ( int j = 0; j < groups.Count; ++j )
-			{
-				Item[] items = groups[j].ToArray();
-				//Item[] items = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
-				int total = 0;
-
-				for ( int k = 0; k < items.Length; ++k )
-					total += items[k].Amount;
-
-				if ( total >= best )
-					best = total;
-			}
-
-			return best;
-		}
-
-		public int GetBestGroupAmount( Type[][] types, bool recurse, CheckItemGroup grouper )
-		{
-			if ( grouper == null )
-				throw new ArgumentNullException();
-
-			int best = 0;
-
-			for ( int i = 0; i < types.Length; ++i )
-			{
-				Item[] typedItems = FindItemsByType( types[i], recurse );
-
-				List<List<Item>> groups = new List<List<Item>>();
-				int idx = 0;
-
-				while ( idx < typedItems.Length )
-				{
-					Item a = typedItems[idx++];
-					List<Item> group = new List<Item>();
-
-					group.Add( a );
-
-					while ( idx < typedItems.Length )
-					{
-						Item b = typedItems[idx];
-						int v = grouper( a, b );
-
-						if ( v == 0 )
-							group.Add( b );
-						else
-							break;
-
-						++idx;
-					}
-
-					groups.Add( group );
-				}
-
-				for ( int j = 0; j < groups.Count; ++j )
-				{
-					Item[] items = groups[j].ToArray();
-					//Item[] items = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
-					int total = 0;
-
-					for ( int k = 0; k < items.Length; ++k )
-						total += items[k].Amount;
-
-					if ( total >= best )
-						best = total;
-				}
-			}
-
-			return best;
-		}
-
 		public int ConsumeTotalGrouped( Type[][] types, int[] amounts, bool recurse, OnItemConsumed callback, CheckItemGroup grouper )
 		{
 			if ( types.Length != amounts.Length )
@@ -789,8 +634,6 @@ namespace Server.Items
 			return -1;
 		}
 
-
-
 		public int ConsumeTotal( Type[] types, int[] amounts )
 		{
 			return ConsumeTotal( types, amounts, true, null );
@@ -852,6 +695,276 @@ namespace Server.Items
 			return -1;
 		}
 
+		public bool ConsumeTotal( Type type, int amount )
+		{
+			return ConsumeTotal( type, amount, true, null );
+		}
+
+		public bool ConsumeTotal( Type type, int amount, bool recurse )
+		{
+			return ConsumeTotal( type, amount, recurse, null );
+		}
+
+		public bool ConsumeTotal( Type type, int amount, bool recurse, OnItemConsumed callback )
+		{
+			Item[] items = FindItemsByType( type, recurse );
+
+			// First pass, compute total
+			int total = 0;
+
+			for( int i = 0; i < items.Length; ++i )
+				total += items[i].Amount;
+
+			if( total >= amount )
+			{
+				// We've enough, so consume it
+
+				int need = amount;
+
+				for( int i = 0; i < items.Length; ++i )
+				{
+					Item item = items[i];
+
+					int theirAmount = item.Amount;
+
+					if( theirAmount < need )
+					{
+						if( callback != null )
+							callback( item, theirAmount );
+
+						item.Delete();
+						need -= theirAmount;
+					}
+					else
+					{
+						if( callback != null )
+							callback( item, need );
+
+						item.Consume( need );
+
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		public int ConsumeUpTo( Type type, int amount )
+		{
+			return ConsumeUpTo( type, amount, true );
+		}
+
+		public int ConsumeUpTo( Type type, int amount, bool recurse )
+		{
+			int consumed = 0;
+
+			Queue<Item> toDelete = new Queue<Item>();
+
+			RecurseConsumeUpTo( this, type, amount, recurse, ref consumed, toDelete );
+
+			while( toDelete.Count > 0 )
+				toDelete.Dequeue().Delete();
+
+			return consumed;
+		}
+
+		private static void RecurseConsumeUpTo( Item current, Type type, int amount, bool recurse, ref int consumed, Queue<Item> toDelete )
+		{
+			if( current != null && current.Items.Count > 0 )
+			{
+				List<Item> list = current.Items;
+
+				for( int i = 0; i < list.Count; ++i )
+				{
+					Item item = list[i];
+
+					if( type.IsAssignableFrom( item.GetType() ) )
+					{
+						int need = amount - consumed;
+						int theirAmount = item.Amount;
+
+						if( theirAmount <= need )
+						{
+							toDelete.Enqueue( item );
+							consumed += theirAmount;
+						}
+						else
+						{
+							item.Amount -= need;
+							consumed += need;
+
+							return;
+						}
+					}
+					else if( recurse && item is Container )
+					{
+						RecurseConsumeUpTo( item, type, amount, recurse, ref consumed, toDelete );
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region Get[BestGroup]Amount
+		public int GetBestGroupAmount( Type type, bool recurse, CheckItemGroup grouper )
+		{
+			if( grouper == null )
+				throw new ArgumentNullException();
+
+			int best = 0;
+
+			Item[] typedItems = FindItemsByType( type, recurse );
+
+			List<List<Item>> groups = new List<List<Item>>();
+			int idx = 0;
+
+			while( idx < typedItems.Length )
+			{
+				Item a = typedItems[idx++];
+				List<Item> group = new List<Item>();
+
+				group.Add( a );
+
+				while( idx < typedItems.Length )
+				{
+					Item b = typedItems[idx];
+					int v = grouper( a, b );
+
+					if( v == 0 )
+						group.Add( b );
+					else
+						break;
+
+					++idx;
+				}
+
+				groups.Add( group );
+			}
+
+			for( int i = 0; i < groups.Count; ++i )
+			{
+				Item[] items = groups[i].ToArray();
+
+				//Item[] items = (Item[])(((ArrayList)groups[i]).ToArray( typeof( Item ) ));
+				int total = 0;
+
+				for( int j = 0; j < items.Length; ++j )
+					total += items[j].Amount;
+
+				if( total >= best )
+					best = total;
+			}
+
+			return best;
+		}
+
+		public int GetBestGroupAmount( Type[] types, bool recurse, CheckItemGroup grouper )
+		{
+			if( grouper == null )
+				throw new ArgumentNullException();
+
+			int best = 0;
+
+			Item[] typedItems = FindItemsByType( types, recurse );
+
+			List<List<Item>> groups = new List<List<Item>>();
+			int idx = 0;
+
+			while( idx < typedItems.Length )
+			{
+				Item a = typedItems[idx++];
+				List<Item> group = new List<Item>();
+
+				group.Add( a );
+
+				while( idx < typedItems.Length )
+				{
+					Item b = typedItems[idx];
+					int v = grouper( a, b );
+
+					if( v == 0 )
+						group.Add( b );
+					else
+						break;
+
+					++idx;
+				}
+
+				groups.Add( group );
+			}
+
+			for( int j = 0; j < groups.Count; ++j )
+			{
+				Item[] items = groups[j].ToArray();
+				//Item[] items = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
+				int total = 0;
+
+				for( int k = 0; k < items.Length; ++k )
+					total += items[k].Amount;
+
+				if( total >= best )
+					best = total;
+			}
+
+			return best;
+		}
+
+		public int GetBestGroupAmount( Type[][] types, bool recurse, CheckItemGroup grouper )
+		{
+			if( grouper == null )
+				throw new ArgumentNullException();
+
+			int best = 0;
+
+			for( int i = 0; i < types.Length; ++i )
+			{
+				Item[] typedItems = FindItemsByType( types[i], recurse );
+
+				List<List<Item>> groups = new List<List<Item>>();
+				int idx = 0;
+
+				while( idx < typedItems.Length )
+				{
+					Item a = typedItems[idx++];
+					List<Item> group = new List<Item>();
+
+					group.Add( a );
+
+					while( idx < typedItems.Length )
+					{
+						Item b = typedItems[idx];
+						int v = grouper( a, b );
+
+						if( v == 0 )
+							group.Add( b );
+						else
+							break;
+
+						++idx;
+					}
+
+					groups.Add( group );
+				}
+
+				for( int j = 0; j < groups.Count; ++j )
+				{
+					Item[] items = groups[j].ToArray();
+					//Item[] items = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
+					int total = 0;
+
+					for( int k = 0; k < items.Length; ++k )
+						total += items[k].Amount;
+
+					if( total >= best )
+						best = total;
+				}
+			}
+
+			return best;
+		}
+
 		public int GetAmount( Type type )
 		{
 			return GetAmount( type, true );
@@ -885,119 +998,11 @@ namespace Server.Items
 
 			return amount;
 		}
-
-		public bool ConsumeTotal( Type type, int amount )
-		{
-			return ConsumeTotal( type, amount, true, null );
-		}
-
-		public bool ConsumeTotal( Type type, int amount, bool recurse )
-		{
-			return ConsumeTotal( type, amount, recurse, null );
-		}
-
-		public bool ConsumeTotal( Type type, int amount, bool recurse, OnItemConsumed callback )
-		{
-			Item[] items = FindItemsByType( type, recurse );
-
-			// First pass, compute total
-			int total = 0;
-
-			for ( int i = 0; i < items.Length; ++i )
-				total += items[i].Amount;
-
-			if ( total >= amount )
-			{
-				// We've enough, so consume it
-
-				int need = amount;
-
-				for ( int i = 0; i < items.Length; ++i )
-				{
-					Item item = items[i];
-
-					int theirAmount = item.Amount;
-
-					if ( theirAmount < need )
-					{
-						if ( callback != null )
-							callback( item, theirAmount );
-
-						item.Delete();
-						need -= theirAmount;
-					}
-					else
-					{
-						if ( callback != null )
-							callback( item, need );
-
-						item.Consume( need );
-
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
-		public int ConsumeUpTo( Type type, int amount )
-		{
-			return ConsumeUpTo( type, amount, true );
-		}
-
-		public int ConsumeUpTo( Type type, int amount, bool recurse )
-		{
-			int consumed = 0;
-
-			Queue<Item> toDelete = new Queue<Item>();
-
-			RecurseConsumeUpTo( this, type, amount, recurse, ref consumed, toDelete );
-
-			while ( toDelete.Count > 0 )
-				toDelete.Dequeue().Delete();
-
-			return consumed;
-		}
-
-		private static void RecurseConsumeUpTo( Item current, Type type, int amount, bool recurse, ref int consumed, Queue<Item> toDelete )
-		{
-			if ( current != null && current.Items.Count > 0 )
-			{
-				List<Item> list = current.Items;
-
-				for ( int i = 0; i < list.Count; ++i )
-				{
-					Item item = list[i];
-
-					if ( type.IsAssignableFrom( item.GetType() ) )
-					{
-						int need = amount - consumed;
-						int theirAmount = item.Amount;
-
-						if ( theirAmount <= need )
-						{
-							toDelete.Enqueue( item );
-							consumed += theirAmount;
-						}
-						else
-						{
-							item.Amount -= need;
-							consumed += need;
-
-							return;
-						}
-					}
-					else if ( recurse && item is Container )
-					{
-						RecurseConsumeUpTo( item, type, amount, recurse, ref consumed, toDelete );
-					}
-				}
-			}
-		}
+		#endregion
 
 		private static List<Item> m_FindItemsList = new List<Item>();
 
+		#region Non-Generic FindItem[s] by Type
 		public Item[] FindItemsByType( Type type )
 		{
 			return FindItemsByType( type, true );
@@ -1032,82 +1037,6 @@ namespace Server.Items
 			}
 		}
 
-
-
-
-		public List<T> FindItemsByType<T>() where T : Item
-		{
-			return FindItemsByType<T>( true );
-		}
-
-		public List<T> FindItemsByType<T>( bool recurse ) where T : Item
-		{
-			if( m_FindItemsList.Count > 0 )
-				m_FindItemsList.Clear();
-
-			List<T> list = new List<T>();
-			
-			RecurseFindItemsByType<T>( this, recurse, list );
-
-			return list;
-		}
-
-		private static void RecurseFindItemsByType<T>( Item current, bool recurse, List<T> list ) where T : Item
-		{
-			if( current != null && current.Items.Count > 0 )
-			{
-				List<Item> items = current.Items;
-
-				for( int i = 0; i < items.Count; ++i )
-				{
-					Item item = items[i];
-
-					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
-						list.Add( (T)item );
-
-					if( recurse && item is Container )
-						RecurseFindItemsByType<T>( item, recurse, list );
-				}
-			}
-		}
-
-		public T FindItemByType<T>() where T : Item
-		{
-			return FindItemByType<T>( true );
-		}
-
-		public T FindItemByType<T>( bool recurse ) where T : Item
-		{
-			return RecurseFindItemByType<T>( this, recurse );
-		}
-
-		private static T RecurseFindItemByType<T>( Item current, bool recurse ) where T : Item
-		{
-			if( current != null && current.Items.Count > 0 )
-			{
-				List<Item> list = current.Items;
-
-				for( int i = 0; i < list.Count; ++i )
-				{
-					Item item = list[i];
-
-					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
-					{
-						return (T)item;
-					}
-					else if( recurse && item is Container )
-					{
-						T check = RecurseFindItemByType<T>( item, recurse );
-
-						if( check != null )
-							return check;
-					}
-				}
-			}
-
-			return null;
-		}
-
 		public Item[] FindItemsByType( Type[] types )
 		{
 			return FindItemsByType( types, true );
@@ -1115,7 +1044,7 @@ namespace Server.Items
 
 		public Item[] FindItemsByType( Type[] types, bool recurse )
 		{
-			if ( m_FindItemsList.Count > 0 )
+			if( m_FindItemsList.Count > 0 )
 				m_FindItemsList.Clear();
 
 			RecurseFindItemsByType( this, types, recurse, m_FindItemsList );
@@ -1125,18 +1054,18 @@ namespace Server.Items
 
 		private static void RecurseFindItemsByType( Item current, Type[] types, bool recurse, List<Item> list )
 		{
-			if ( current != null && current.Items.Count > 0 )
+			if( current != null && current.Items.Count > 0 )
 			{
 				List<Item> items = current.Items;
 
-				for ( int i = 0; i < items.Count; ++i )
+				for( int i = 0; i < items.Count; ++i )
 				{
 					Item item = items[i];
 
-					if ( InTypeList( item, types ) )
+					if( InTypeList( item, types ) )
 						list.Add( item );
 
-					if ( recurse && item is Container )
+					if( recurse && item is Container )
 						RecurseFindItemsByType( item, types, recurse, list );
 				}
 			}
@@ -1154,23 +1083,23 @@ namespace Server.Items
 
 		private static Item RecurseFindItemByType( Item current, Type type, bool recurse )
 		{
-			if ( current != null && current.Items.Count > 0 )
+			if( current != null && current.Items.Count > 0 )
 			{
 				List<Item> list = current.Items;
 
-				for ( int i = 0; i < list.Count; ++i )
+				for( int i = 0; i < list.Count; ++i )
 				{
 					Item item = list[i];
 
-					if ( type.IsAssignableFrom( item.GetType() ) )
+					if( type.IsAssignableFrom( item.GetType() ) )
 					{
 						return item;
 					}
-					else if ( recurse && item is Container )
+					else if( recurse && item is Container )
 					{
 						Item check = RecurseFindItemByType( item, type, recurse );
 
-						if ( check != null )
+						if( check != null )
 							return check;
 					}
 				}
@@ -1191,23 +1120,23 @@ namespace Server.Items
 
 		private static Item RecurseFindItemByType( Item current, Type[] types, bool recurse )
 		{
-			if ( current != null && current.Items.Count > 0 )
+			if( current != null && current.Items.Count > 0 )
 			{
 				List<Item> list = current.Items;
 
-				for ( int i = 0; i < list.Count; ++i )
+				for( int i = 0; i < list.Count; ++i )
 				{
 					Item item = list[i];
 
-					if ( InTypeList( item, types ) )
+					if( InTypeList( item, types ) )
 					{
 						return item;
 					}
-					else if ( recurse && item is Container )
+					else if( recurse && item is Container )
 					{
 						Item check = RecurseFindItemByType( item, types, recurse );
 
-						if ( check != null )
+						if( check != null )
 							return check;
 					}
 				}
@@ -1215,6 +1144,113 @@ namespace Server.Items
 
 			return null;
 		}
+
+		#endregion
+
+		#region Generic FindItem[s] by Type
+		public List<T> FindItemsByType<T>() where T : Item
+		{
+			return FindItemsByType<T>( true, null );
+		}
+
+		public List<T> FindItemsByType<T>( bool recurse ) where T : Item
+		{
+			return FindItemsByType<T>( recurse, null );
+		}
+
+		public List<T> FindItemsByType<T>( Predicate<T> predicate ) where T : Item
+		{
+			return FindItemsByType<T>( true, predicate ); 
+		}
+
+		public List<T> FindItemsByType<T>( bool recurse, Predicate<T> predicate ) where T : Item
+		{
+			if( m_FindItemsList.Count > 0 )
+				m_FindItemsList.Clear();
+
+			List<T> list = new List<T>();
+			
+			RecurseFindItemsByType<T>( this, recurse, list, predicate );
+
+			return list;
+		}
+
+		private static void RecurseFindItemsByType<T>( Item current, bool recurse, List<T> list, Predicate<T> predicate ) where T : Item
+		{
+			if( current != null && current.Items.Count > 0 )
+			{
+				List<Item> items = current.Items;
+
+				for( int i = 0; i < items.Count; ++i )
+				{
+					Item item = items[i];
+
+					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
+					{
+						T typedItem = (T)item;
+
+						if( predicate == null || predicate( typedItem ) )
+							list.Add( typedItem );
+					}
+
+					if( recurse && item is Container )
+						RecurseFindItemsByType<T>( item, recurse, list, predicate );
+				}
+			}
+		}
+
+		public T FindItemByType<T>() where T : Item
+		{
+			return FindItemByType<T>( true );
+		}
+
+
+		public T FindItemByType<T>( Predicate<T> predicate ) where T : Item
+		{
+			return FindItemByType<T>( true, predicate );
+		}
+
+		public T FindItemByType<T>( bool recurse ) where T : Item
+		{
+			return FindItemByType<T>( recurse, null );
+		}
+
+		public T FindItemByType<T>( bool recurse, Predicate<T> predicate ) where T : Item
+		{
+			return RecurseFindItemByType<T>( this, recurse, predicate );
+		}
+
+		private static T RecurseFindItemByType<T>( Item current, bool recurse, Predicate<T> predicate ) where T : Item
+		{
+			if( current != null && current.Items.Count > 0 )
+			{
+				List<Item> list = current.Items;
+
+				for( int i = 0; i < list.Count; ++i )
+				{
+					Item item = list[i];
+
+					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
+					{
+						T typedItem = (T)item;
+
+						if( predicate == null || predicate( typedItem ) )
+							return typedItem;
+					}
+					else if( recurse && item is Container )
+					{
+						T check = RecurseFindItemByType<T>( item, recurse, predicate );
+
+						if( check != null )
+							return check;
+					}
+				}
+			}
+
+			return null;
+		}
+		#endregion
+
 
 		private static bool InTypeList( Item item, Type[] types )
 		{
