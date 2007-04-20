@@ -21,7 +21,7 @@ namespace Server.Misc
 				{
 					FileVersionInfo info = FileVersionInfo.GetVersionInfo( path );
 
-					if( info.FileMajorPart != 0 || info.FileMinorPart != 0 || info.FileMinorPart != 0 || info.FilePrivatePart != 0 )
+					if ( info.FileMajorPart != 0 || info.FileMinorPart != 0 || info.FileBuildPart != 0 || info.FilePrivatePart != 0 )
 					{
 						ClientVersion.Required = new ClientVersion( info.FileMajorPart, info.FileMinorPart, info.FileBuildPart, info.FilePrivatePart );
 						Console.WriteLine( "Restricting client version to {0}", ClientVersion.Required );
