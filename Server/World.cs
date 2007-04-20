@@ -46,7 +46,8 @@ namespace Server {
 		private static bool m_Loading;
 		private static bool m_Loaded;
 		private static bool m_Saving;
-		private static List<IEntity> m_DeleteList;
+
+		private static Queue<IEntity> _addQueue, _deleteQueue;
 
 		public static bool Saving { get { return m_Saving; } }
 		public static bool Loaded { get { return m_Loaded; } }
@@ -72,12 +73,17 @@ namespace Server {
 		}
 
 		public static bool OnDelete( IEntity entity ) {
-			if ( !m_Loading )
-				return true;
+			if ( m_Saving || m_Loading ) {
+				if ( m_Saving ) {
+					AppendSafetyLog( "delete", entity );
+				}
 
-			m_DeleteList.Add( entity );
+				_deleteQueue.Enqueue( entity );
 
-			return false;
+				return false;
+			}
+
+			return true;
 		}
 
 		public static void Broadcast( int hue, bool ascii, string text ) {
@@ -277,7 +283,9 @@ namespace Server {
 			Stopwatch watch = Stopwatch.StartNew();
 
 			m_Loading = true;
-			m_DeleteList = new List<IEntity>();
+
+			_addQueue = new Queue<IEntity>();
+			_deleteQueue = new Queue<IEntity>();
 
 			int mobileCount = 0, itemCount = 0, guildCount = 0;
 
@@ -629,11 +637,7 @@ namespace Server {
 
 			m_Loading = false;
 
-			for ( int i = 0; i < m_DeleteList.Count; ++i ) {
-				m_DeleteList[i].Delete();
-			}
-
-			m_DeleteList.Clear();
+			ProcessSafetyQueues();
 
 			foreach ( Item item in m_Items.Values ) {
 				if ( item.Parent == null )
@@ -652,6 +656,60 @@ namespace Server {
 			watch.Stop();
 
 			Console.WriteLine( "done ({1} items, {2} mobiles) ({0:F2} seconds)", watch.Elapsed.TotalSeconds, m_Items.Count, m_Mobiles.Count );
+		}
+
+		private static void ProcessSafetyQueues() {
+			while ( _addQueue.Count > 0 ) {
+				IEntity entity = _addQueue.Dequeue();
+
+				Item item = entity as Item;
+
+				if ( item != null ) {
+					AddItem( item );
+				} else {
+					Mobile mob = entity as Mobile;
+
+					if ( mob != null ) {
+						AddMobile( mob );
+					}
+				}
+			}
+
+			while ( _deleteQueue.Count > 0 ) {
+				IEntity entity = _deleteQueue.Dequeue();
+
+				Item item = entity as Item;
+
+				if ( item != null ) {
+					item.Delete();
+				} else {
+					Mobile mob = entity as Mobile;
+
+					if ( mob != null ) {
+						mob.Delete();
+					}
+				}
+			}
+		}
+
+		private static void AppendSafetyLog( string action, IEntity entity ) {
+			string message = String.Format( "Warning: Attempted to {1} {2} during world save." +
+				"{0}This action could cause inconsistent state." +
+				"{0}It is strongly advised that the offending scripts be corrected.",
+				Environment.NewLine,
+				action, entity
+			);
+
+			Console.WriteLine( message );
+
+			try {
+				using ( StreamWriter op = new StreamWriter( "world-save-errors.log", true ) ) {
+					op.WriteLine( "{0}\t{1}", DateTime.Now, message );
+					op.WriteLine( new StackTrace( 2 ).ToString() );
+					op.WriteLine();
+				}
+			} catch {
+			}
 		}
 
 		private static void SaveIndex<T>( List<T> list, string path ) where T : IEntityEntry {
@@ -717,7 +775,7 @@ namespace Server {
 
 
 			/*using ( SaveMetrics metrics = new SaveMetrics() ) {*/
-				strategy.Save( null );
+			strategy.Save( null );
 			/*}*/
 
 			try {
@@ -728,12 +786,14 @@ namespace Server {
 
 			watch.Stop();
 
+			m_Saving = false;
+			ProcessSafetyQueues();
+
 			Console.WriteLine( "done in {0:F2} seconds.", watch.Elapsed.TotalSeconds );
 
 			if ( message )
 				Broadcast( 0x35, true, "World save complete. The entire process took {0:F1} seconds.", watch.Elapsed.TotalSeconds );
 
-			m_Saving = false;
 			NetState.Resume();
 		}
 
@@ -758,7 +818,12 @@ namespace Server {
 		}
 
 		public static void AddMobile( Mobile m ) {
-			m_Mobiles[m.Serial] = m;
+			if ( m_Saving ) {
+				AppendSafetyLog( "add", m );
+				_addQueue.Enqueue( m );
+			} else {
+				m_Mobiles[m.Serial] = m;
+			}
 		}
 
 		public static Item FindItem( Serial serial ) {
@@ -770,7 +835,12 @@ namespace Server {
 		}
 
 		public static void AddItem( Item item ) {
-			m_Items[item.Serial] = item;
+			if ( m_Saving ) {
+				AppendSafetyLog( "add", item );
+				_addQueue.Enqueue( item );
+			} else {
+				m_Items[item.Serial] = item;
+			}
 		}
 
 		public static void RemoveMobile( Mobile m ) {
