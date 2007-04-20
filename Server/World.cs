@@ -787,7 +787,10 @@ namespace Server {
 			watch.Stop();
 
 			m_Saving = false;
+
 			ProcessSafetyQueues();
+
+			strategy.ProcessDecay();
 
 			Console.WriteLine( "done in {0:F2} seconds.", watch.Elapsed.TotalSeconds );
 

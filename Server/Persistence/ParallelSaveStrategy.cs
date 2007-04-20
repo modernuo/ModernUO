@@ -39,6 +39,8 @@ namespace Server {
 
 		public ParallelSaveStrategy( int processorCount ) {
 			this.processorCount = processorCount;
+
+			_decayQueue = new Queue<Item>();
 		}
 
 		private int GetThreadCount() {
@@ -51,7 +53,7 @@ namespace Server {
 		private SequentialFileWriter mobileData, mobileIndex;
 		private SequentialFileWriter guildData, guildIndex;
 
-		private List<Item> decaying;
+		private Queue<Item> _decayQueue;
 
 		private Consumer[] consumers;
 		private int cycle;
@@ -95,12 +97,14 @@ namespace Server {
 			Commit();
 
 			CloseFiles();
+		}
 
-			if ( decaying != null ) {
-				foreach ( Item item in decaying ) {
-					if ( item.OnDecay() ) {
-						item.Delete();
-					}
+		public override void ProcessDecay() {
+			while ( _decayQueue.Count > 0 ) {
+				Item item = _decayQueue.Dequeue();
+
+				if ( item.OnDecay() ) {
+					item.Delete();
 				}
 			}
 		}
@@ -192,11 +196,7 @@ namespace Server {
 			}
 
 			if ( item.Decays && item.Parent == null && item.Map != Map.Internal && DateTime.Now > ( item.LastMoved + item.DecayTime ) ) {
-				if ( decaying == null ) {
-					decaying = new List<Item>();
-				}
-
-				decaying.Add( item );
+				_decayQueue.Enqueue( item );
 			}
 		}
 

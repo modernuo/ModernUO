@@ -34,7 +34,10 @@ namespace Server {
 			get { return "Standard"; }
 		}
 
+		private Queue<Item> _decayQueue;
+
 		public StandardSaveStrategy() {
+			_decayQueue = new Queue<Item>();
 		}
 
 		public override void Save( SaveMetrics metrics ) {
@@ -109,8 +112,9 @@ namespace Server {
 
 			idx.Write( ( int ) items.Count );
 			foreach ( Item item in items.Values ) {
-				if ( item.Decays && item.Parent == null && item.Map != Map.Internal && ( item.LastMoved + item.DecayTime ) <= DateTime.Now )
-					decaying.Add( item );
+				if ( item.Decays && item.Parent == null && item.Map != Map.Internal && ( item.LastMoved + item.DecayTime ) <= DateTime.Now ) {
+					_decayQueue.Enqueue( item );
+				}
 
 				long start = bin.Position;
 
@@ -136,13 +140,6 @@ namespace Server {
 			idx.Close();
 			tdb.Close();
 			bin.Close();
-
-			for ( int i = 0; i < decaying.Count; ++i ) {
-				Item item = decaying[i];
-
-				if ( item.OnDecay() )
-					item.Delete();
-			}
 		}
 
 		protected void SaveGuilds( SaveMetrics metrics ) {
@@ -176,6 +173,16 @@ namespace Server {
 
 			idx.Close();
 			bin.Close();
+		}
+
+		public override void ProcessDecay() {
+			while ( _decayQueue.Count > 0 ) {
+				Item item = _decayQueue.Dequeue();
+
+				if ( item.OnDecay() ) {
+					item.Delete();
+				}
+			}
 		}
 	}
 }
