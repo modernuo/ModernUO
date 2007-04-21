@@ -996,6 +996,25 @@ namespace Server
 		}
 
 		/// <summary>
+		/// Overridable. Determines whether the item will show <see cref="AddWeightProperty" />. 
+		/// </summary>
+		public virtual bool DisplayWeight { get { return ( Core.Expansion >= Expansion.ML ); } }
+
+		/// <summary>
+		/// Overridable. Displays cliloc 1072788-1072789. 
+		/// </summary>
+		public virtual void AddWeightProperty( ObjectPropertyList list )
+		{
+			int weight = this.PileWeight + this.TotalWeight;
+
+			if ( weight == 1 ) {
+				list.Add( 1072788, weight.ToString() ); //Weight: ~1_WEIGHT~ stone
+			} else {
+				list.Add( 1072789, weight.ToString() ); //Weight: ~1_WEIGHT~ stones
+			}
+		}
+
+		/// <summary>
 		/// Overridable. Adds header properties. By default, this invokes <see cref="AddNameProperty" />, <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if <see cref="DisplayLootType" />).
 		/// </summary>
 		public virtual void AddNameProperties( ObjectPropertyList list )
@@ -1014,6 +1033,10 @@ namespace Server
 
 			if ( DisplayLootType )
 				AddLootTypeProperty( list );
+
+			if ( DisplayWeight ) {
+				AddWeightProperty( list );
+			}
 
 			AppendChildNameProperties( list );
 		}
