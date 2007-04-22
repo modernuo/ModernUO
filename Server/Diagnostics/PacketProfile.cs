@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: PacketProfile.cs 4 2006-06-15 04:28:39Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 
@@ -79,9 +79,9 @@ namespace Server.Diagnostics {
 			return prof;
 		}
 
-		private int _created;
+		private long _created;
 
-		public int Created {
+		public long Created {
 			get {
 				return _created;
 			}

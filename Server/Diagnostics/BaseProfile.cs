@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: PacketProfile.cs 4 2006-06-15 04:28:39Z mark $
+ *   $Id$
  *
  ***************************************************************************/
 
@@ -40,7 +40,7 @@ namespace Server.Diagnostics {
 
 		private string _name;
 
-		private int _count;
+		private long _count;
 
 		private TimeSpan _totalTime;
 		private TimeSpan _peakTime;
@@ -53,7 +53,7 @@ namespace Server.Diagnostics {
 			}
 		}
 
-		public int Count {
+		public long Count {
 			get {
 				return _count;
 			}
