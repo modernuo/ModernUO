@@ -32,6 +32,7 @@ using Server.Items;
 using Server.Gumps;
 using Server.Menus;
 using Server.HuePickers;
+using Server.Diagnostics;
 
 namespace Server.Network {
 	public interface IPacketEncoder {
@@ -534,8 +535,7 @@ namespace Server.Network {
 				return;
 			}
 
-			PacketProfile prof = PacketProfile.GetOutgoingProfile( ( byte ) p.PacketID );
-			DateTime start = ( prof == null ? DateTime.MinValue : DateTime.Now );
+			PacketSendProfile prof = PacketSendProfile.Acquire( p.GetType() );
 
 			int length;
 			byte[] buffer = p.Compile( m_CompressionEnabled, out length );
@@ -544,6 +544,10 @@ namespace Server.Network {
 				if ( buffer.Length <= 0 || length <= 0 ) {
 					p.OnSend();
 					return;
+				}
+
+				if ( prof != null ) {
+					prof.Start();
 				}
 
 				if ( m_Encoder != null ) {
@@ -572,7 +576,7 @@ namespace Server.Network {
 				p.OnSend();
 
 				if ( prof != null ) {
-					prof.Record( length, DateTime.Now - start );
+					prof.Finish( length );
 				}
 			} else {
 				Console.WriteLine( "Client: {0}: null buffer send, disconnecting...", this );

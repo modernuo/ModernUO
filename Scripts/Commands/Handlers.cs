@@ -17,6 +17,7 @@ using Server.Targeting;
 using Server.Targets;
 using Server.Gumps;
 using Server.Commands.Generic;
+using Server.Diagnostics;
 
 namespace Server.Commands
 {
@@ -75,8 +76,7 @@ namespace Server.Commands
 			Register( "ProfileWorld", AccessLevel.Administrator, new CommandEventHandler( ProfileWorld_OnCommand ) );
 			Register( "TraceInternal", AccessLevel.Administrator, new CommandEventHandler( TraceInternal_OnCommand ) );
 			Register( "TraceExpanded", AccessLevel.Administrator, new CommandEventHandler( TraceExpanded_OnCommand ) );
-			Register( "PacketProfiles", AccessLevel.Administrator, new CommandEventHandler( PacketProfiles_OnCommand ) );
-			Register( "TimerProfiles", AccessLevel.Administrator, new CommandEventHandler( TimerProfiles_OnCommand ) );
+			Register( "WriteProfiles", AccessLevel.Administrator, new CommandEventHandler( WriteProfiles_OnCommand ) );
 			Register( "SetProfiles", AccessLevel.Administrator, new CommandEventHandler( SetProfiles_OnCommand ) );
 
 			Register( "Light", AccessLevel.Counselor, new CommandEventHandler( Light_OnCommand ) );
@@ -447,84 +447,35 @@ namespace Server.Commands
 			}
 		}
 
-		[Usage( "PacketProfiles" )]
-		[Description( "Generates a log file containing performance information pertaining to networking data packets." )]
-		public static void PacketProfiles_OnCommand( CommandEventArgs e )
+		[Usage( "WriteProfiles" )]
+		[Description( "Generates a log files containing performance diagnostic information." )]
+		public static void WriteProfiles_OnCommand( CommandEventArgs e )
 		{
 			try
 			{
-				using ( StreamWriter sw = new StreamWriter( "packetprofiles.log", true ) )
+				using ( StreamWriter sw = new StreamWriter( "profiles.log", true ) )
 				{
 					sw.WriteLine( "# Dump on {0:f}", DateTime.Now );
 					sw.WriteLine( "# Core profiling for " + Core.ProfileTime );
 
-					PacketProfile[] profiles = PacketProfile.OutgoingProfiles;
-
-					int totalSeconds = (int) Core.ProfileTime.TotalSeconds;
-
-					if ( totalSeconds < 1 )
-						totalSeconds = 1;
-
-					sw.WriteLine();
-					sw.WriteLine( "# Outgoing:" );
-
-					for ( int i = 0; i < profiles.Length; ++i )
-					{
-						PacketProfile prof = profiles[i];
-
-						if ( prof == null )
-							continue;
-
-						sw.WriteLine( "0x{0,-10:X2} {6,10} {1,-10} {2,10} {3,-10:F2} {4,10:F5} {5,-10:F5} {7,10} {8,-10} {9,10} {10,10:F5} {11:F5}", i, prof.Count, prof.TotalByteLength, prof.AverageByteLength, prof.TotalProcTime.TotalSeconds, prof.AverageProcTime.TotalSeconds, prof.Constructed, prof.Constructed / totalSeconds, prof.Count / totalSeconds, prof.TotalByteLength / totalSeconds, prof.TotalProcTime.TotalSeconds / totalSeconds, prof.PeakProcTime.TotalSeconds );
-					}
-
-					profiles = PacketProfile.IncomingProfiles;
-
-					sw.WriteLine();
-					sw.WriteLine( "# Incoming:" );
-
-					for ( int i = 0; i < profiles.Length; ++i )
-					{
-						PacketProfile prof = profiles[i];
-
-						if ( prof == null )
-							continue;
-
-						sw.WriteLine( "0x{0,-10:X2} {1,-10} {2,10} {3,-10:F2} {4,10:F5} {5:F5} {6:F5}", i, prof.Count, prof.TotalByteLength, prof.AverageByteLength, prof.TotalProcTime.TotalSeconds, prof.AverageProcTime.TotalSeconds, prof.PeakProcTime.TotalSeconds );
-					}
-
-					sw.WriteLine();
-					sw.WriteLine();
-				}
-			}
-			catch
-			{
-			}
-		}
-
-		[Usage( "TimerProfiles" )]
-		[Description( "Generates a log file containing performance information pertaining to timers." )]
-		public static void TimerProfiles_OnCommand( CommandEventArgs e )
-		{
-			try
-			{
-				using ( StreamWriter sw = new StreamWriter( "timerprofiles.log", true ) )
-				{
-					Dictionary<string, TimerProfile> profiles = Timer.Profiles;
-
-					sw.WriteLine( "# Dump on {0:f}", DateTime.Now );
-					sw.WriteLine( "# Core profiling for " + Core.ProfileTime );
+					sw.WriteLine( "# Packet send" );
+					BaseProfile.WriteAll( sw, PacketSendProfile.Profiles );
 					sw.WriteLine();
 
-					foreach ( KeyValuePair<string, TimerProfile> kvp in profiles )
-					{
-						string name = kvp.Key;
-						TimerProfile prof = kvp.Value;
-
-						sw.WriteLine( "{6,-100}{0,-12}{1,12} {2,-12}{3,12} {4,-12:F5}{5:F5} {7:F5}", prof.Created, prof.Started, prof.Stopped, prof.Ticked, prof.TotalProcTime.TotalSeconds, prof.AverageProcTime.TotalSeconds, name, prof.PeakProcTime.TotalSeconds );
-					}
-
+					sw.WriteLine( "# Packet receive" );
+					BaseProfile.WriteAll( sw, PacketReceiveProfile.Profiles );
 					sw.WriteLine();
+
+					sw.WriteLine( "# Timer" );
+					BaseProfile.WriteAll( sw, TimerProfile.Profiles );
+					sw.WriteLine();
+
+					sw.WriteLine( "# Gump response" );
+					BaseProfile.WriteAll( sw, GumpProfile.Profiles );
+					sw.WriteLine();
+
+					sw.WriteLine( "# Target response" );
+					BaseProfile.WriteAll( sw, TargetProfile.Profiles );
 					sw.WriteLine();
 				}
 			}

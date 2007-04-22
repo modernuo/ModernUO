@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Server.Diagnostics;
 
 namespace Server
 {
@@ -42,92 +43,6 @@ namespace Server
 	public delegate void TimerCallback();
 	public delegate void TimerStateCallback( object state );
 	public delegate void TimerStateCallback<T>( T state );
-
-	public class TimerProfile
-	{
-		private int m_Created;
-		private int m_Started;
-		private int m_Stopped;
-		private int m_Ticked;
-		private TimeSpan m_TotalProcTime;
-		private TimeSpan m_PeakProcTime;
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public int Created
-		{
-			get{ return m_Created; }
-		}
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public int Started
-		{
-			get{ return m_Started; }
-		}
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public int Stopped
-		{
-			get{ return m_Stopped; }
-		}
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public int Ticked
-		{
-			get{ return m_Ticked; }
-		}
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public TimeSpan TotalProcTime
-		{
-			get{ return m_TotalProcTime; }
-		}
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public TimeSpan PeakProcTime
-		{
-			get{ return m_PeakProcTime; }
-		}
-
-		[CommandProperty( AccessLevel.Administrator )]
-		public TimeSpan AverageProcTime
-		{
-			get
-			{
-				if ( m_Ticked == 0 )
-					return TimeSpan.Zero;
-
-				return TimeSpan.FromTicks( m_TotalProcTime.Ticks / m_Ticked );
-			}
-		}
-
-		public void RegCreation()
-		{
-			++m_Created;
-		}
-
-		public void RegStart()
-		{
-			++m_Started;
-		}
-
-		public void RegStopped()
-		{
-			++m_Stopped;
-		}
-
-		public void RegTicked( TimeSpan procTime )
-		{
-			++m_Ticked;
-			m_TotalProcTime += procTime;
-
-			if ( procTime > m_PeakProcTime )
-				m_PeakProcTime = procTime;
-		}
-
-		public TimerProfile()
-		{
-		}
-	}
 
 	public class Timer
 	{
@@ -218,27 +133,19 @@ namespace Server
 			}
 		}
 
-		private static Dictionary<string, TimerProfile> m_Profiles = new Dictionary<string, TimerProfile>();
-
-		public static Dictionary<string, TimerProfile> Profiles{ get{ return m_Profiles; } }
-
 		public TimerProfile GetProfile()
 		{
-			if ( !Core.Profiling )
+			if ( !Core.Profiling ) {
 				return null;
+			}
 
 			string name = ToString();
 
-			if ( name == null )
+			if ( name == null ) {
 				name = "null";
+			}
 
-			TimerProfile prof = null;
-			m_Profiles.TryGetValue( name, out prof );
-
-			if ( prof == null )
-				m_Profiles[name] = prof = new TimerProfile();
-
-			return prof;
+			return TimerProfile.Acquire( name );
 		}
 
 		public class TimerThread
@@ -481,19 +388,13 @@ namespace Server
 
 				int index = 0;
 
-				Stopwatch watch = null;
-
 				while ( index < m_BreakCount && m_Queue.Count != 0 )
 				{
 					Timer t = m_Queue.Dequeue();
 					TimerProfile prof = t.GetProfile();
 
 					if ( prof != null ) {
-						if ( watch == null ) {
-							watch = Stopwatch.StartNew();
-						} else {
-							watch.Start();
-						}
+						prof.Start();
 					}
 
 					t.OnTick();
@@ -501,8 +402,7 @@ namespace Server
 					++index;
 
 					if ( prof != null ) {
-						prof.RegTicked( watch.Elapsed );
-						watch.Reset();
+						prof.Finish();
 					}
 				}
 			}
@@ -525,8 +425,9 @@ namespace Server
 		{
 			TimerProfile prof = GetProfile();
 
-			if ( prof != null )
-				prof.RegCreation();
+			if ( prof != null ) {
+				prof.Created++;
+			}
 		}
 
 		public Timer( TimeSpan delay, TimeSpan interval, int count )
@@ -734,8 +635,9 @@ namespace Server
 
 				TimerProfile prof = GetProfile();
 
-				if ( prof != null )
-					prof.RegStart();
+				if ( prof != null ) {
+					prof.Started++;
+				}
 			}
 		}
 
@@ -748,8 +650,9 @@ namespace Server
 
 				TimerProfile prof = GetProfile();
 
-				if ( prof != null )
-					prof.RegStopped();
+				if ( prof != null ) {
+					prof.Stopped++;
+				}
 			}
 		}
 

@@ -34,6 +34,7 @@ using Server.Menus.Questions;
 using Server.Prompts;
 using Server.HuePickers;
 using Server.ContextMenus;
+using Server.Diagnostics;
 
 namespace Server.Network
 {
@@ -3460,10 +3461,11 @@ namespace Server.Network
 		{
 			m_PacketID = packetID;
 
-			PacketProfile prof = PacketProfile.GetOutgoingProfile( (byte)packetID );
+			PacketSendProfile prof = PacketSendProfile.Acquire( GetType() );
 
-			if ( prof != null )
-				prof.RegConstruct();
+			if ( prof != null ) {
+				prof.Created++;
+			}
 		}
 
 		public void EnsureCapacity( int length )
@@ -3479,12 +3481,13 @@ namespace Server.Network
 			m_Length = length;
 
 			m_Stream = PacketWriter.CreateInstance( length );// new PacketWriter( length );
-			m_Stream.Write( (byte) packetID );
+			m_Stream.Write( ( byte ) packetID );
 
-			PacketProfile prof = PacketProfile.GetOutgoingProfile( (byte)packetID );
+			PacketSendProfile prof = PacketSendProfile.Acquire( GetType() );
 
-			if ( prof != null )
-				prof.RegConstruct();
+			if ( prof != null ) {
+				prof.Created++;
+			}
 		}
 
 		public PacketWriter UnderlyingStream

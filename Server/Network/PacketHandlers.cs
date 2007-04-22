@@ -34,6 +34,7 @@ using Server.Movement;
 using Server.Prompts;
 using Server.HuePickers;
 using Server.ContextMenus;
+using Server.Diagnostics;
 using CV = Server.ClientVersion;
 
 namespace Server.Network
@@ -1010,69 +1011,81 @@ namespace Server.Network
 
 			if ( t != null )
 			{
-				if ( x == -1 && y == -1 && !serial.IsValid )
-				{
-					// User pressed escape
-					t.Cancel( from, TargetCancelType.Canceled );
+				TargetProfile prof = TargetProfile.Acquire( t.GetType() );
+
+				if ( prof != null ) {
+					prof.Start();
 				}
-				else
-				{
-					object toTarget;
 
-					if ( type == 1 )
+				try {
+					if ( x == -1 && y == -1 && !serial.IsValid )
 					{
-						if ( graphic == 0 )
-						{
-							toTarget = new LandTarget( new Point3D( x, y, z ), from.Map );
-						}
-						else
-						{
-							Map map = from.Map;
+						// User pressed escape
+						t.Cancel( from, TargetCancelType.Canceled );
+					}
+					else
+					{
+						object toTarget;
 
-							if ( map == null || map == Map.Internal )
+						if ( type == 1 )
+						{
+							if ( graphic == 0 )
 							{
-								t.Cancel( from, TargetCancelType.Canceled );
-								return;
+								toTarget = new LandTarget( new Point3D( x, y, z ), from.Map );
 							}
 							else
 							{
-								Tile[] tiles = map.Tiles.GetStaticTiles( x, y, !t.DisallowMultis );
+								Map map = from.Map;
 
-								bool valid = false;
-
-								for ( int i = 0; !valid && i < tiles.Length; ++i )
-								{
-									if ( tiles[i].Z == z && (tiles[i].ID & 0x3FFF) == (graphic & 0x3FFF) )
-										valid = true;
-								}
-
-								if ( !valid )
+								if ( map == null || map == Map.Internal )
 								{
 									t.Cancel( from, TargetCancelType.Canceled );
 									return;
 								}
 								else
 								{
-									toTarget = new StaticTarget( new Point3D( x, y, z ), graphic );
+									Tile[] tiles = map.Tiles.GetStaticTiles( x, y, !t.DisallowMultis );
+
+									bool valid = false;
+
+									for ( int i = 0; !valid && i < tiles.Length; ++i )
+									{
+										if ( tiles[i].Z == z && (tiles[i].ID & 0x3FFF) == (graphic & 0x3FFF) )
+											valid = true;
+									}
+
+									if ( !valid )
+									{
+										t.Cancel( from, TargetCancelType.Canceled );
+										return;
+									}
+									else
+									{
+										toTarget = new StaticTarget( new Point3D( x, y, z ), graphic );
+									}
 								}
 							}
 						}
-					}
-					else if ( serial.IsMobile )
-					{
-						toTarget = World.FindMobile( serial );
-					}
-					else if ( serial.IsItem )
-					{
-						toTarget = World.FindItem( serial );
-					}
-					else
-					{
-						t.Cancel( from, TargetCancelType.Canceled );
-						return;
-					}
+						else if ( serial.IsMobile )
+						{
+							toTarget = World.FindMobile( serial );
+						}
+						else if ( serial.IsItem )
+						{
+							toTarget = World.FindItem( serial );
+						}
+						else
+						{
+							t.Cancel( from, TargetCancelType.Canceled );
+							return;
+						}
 
-					t.Invoke( from, toTarget );
+						t.Invoke( from, toTarget );
+					}
+				} finally {
+					if ( prof != null ) {
+						prof.Finish();
+					}
 				}
 			}
 		}
@@ -1123,7 +1136,17 @@ namespace Server.Network
 
 					state.RemoveGump( gump );
 
+					GumpProfile prof = GumpProfile.Acquire( gump.GetType() );
+
+					if ( prof != null ) {
+						prof.Start();
+					}
+
 					gump.OnResponse( state, new RelayInfo( buttonID, switches, textEntries ) );
+
+					if ( prof != null ) {
+						prof.Finish();
+					}
 
 					return;
 				}

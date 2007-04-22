@@ -26,6 +26,7 @@ using System.Net;
 using System.Net.Sockets;
 using Server;
 using Server.Network;
+using Server.Diagnostics;
 
 namespace Server.Network
 {
@@ -221,8 +222,11 @@ namespace Server.Network
 								return false;
 							}
 
-							PacketProfile profile = PacketProfile.GetIncomingProfile( packetID );
-							DateTime start = ( profile == null ? DateTime.MinValue : DateTime.Now );
+							PacketReceiveProfile prof = PacketReceiveProfile.Acquire( packetID );
+
+							if ( prof != null ) {
+								prof.Start();
+							}
 
 							byte[] packetBuffer;
 
@@ -241,8 +245,9 @@ namespace Server.Network
 							if ( BufferSize >= packetLength )
 								m_Buffers.ReleaseBuffer( packetBuffer );
 
-							if ( profile != null )
-								profile.Record( packetLength, DateTime.Now - start );
+							if ( prof != null ) {
+								prof.Finish( packetLength );
+							}
 						}
 					}
 					else
