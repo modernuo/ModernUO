@@ -1465,7 +1465,7 @@ namespace Server
 		public bool BeginAction( object toLock )
 		{
 			if ( _actions == null ) {
-				_actions = new ArrayList( 2 );
+				_actions = new List<object>( 2 );
 
 				_actions.Add( toLock );
 
