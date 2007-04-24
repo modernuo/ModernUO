@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Factions;
@@ -75,56 +76,48 @@ namespace Server.Engines.Craft
 
 			m_Recipe = new Recipe( id, system, this );
 		}
-	
 
-		private static Hashtable m_ItemIDs = new Hashtable();
+
+		private static Dictionary<Type, int> _itemIds = new Dictionary<Type, int>();
 		
-		public static int ItemIDOf( Type type )
-		{
-			object obj = m_ItemIDs[type];
+		public static int ItemIDOf( Type type ) {
+			int itemId;
 
-			if ( obj != null )
-				return (int)obj;
-
-			int itemID = 0;
-
-			if ( type == typeof( FactionExplosionTrap ) )
-				itemID = 14034;
-			else if ( type == typeof( FactionGasTrap ) )
-				itemID = 4523;
-			else if ( type == typeof( FactionSawTrap ) )
-				itemID = 4359;
-			else if ( type == typeof( FactionSpikeTrap ) )
-				itemID = 4517;
-
-			if ( itemID == 0 )
-			{
-				object[] attrs = type.GetCustomAttributes( typeof( CraftItemIDAttribute ), false );
-
-				if ( attrs.Length > 0 )
-				{
-					CraftItemIDAttribute craftItemID = (CraftItemIDAttribute) attrs[0];
-					itemID = craftItemID.ItemID;
+			if ( !_itemIds.TryGetValue( type, out itemId ) ) {
+				if ( type == typeof( FactionExplosionTrap ) ) {
+					itemId = 14034;
+				} else if ( type == typeof( FactionGasTrap ) ) {
+					itemId = 4523;
+				} else if ( type == typeof( FactionSawTrap ) ) {
+					itemId = 4359;
+				} else if ( type == typeof( FactionSpikeTrap ) ) {
+					itemId = 4517;
 				}
+
+				if ( itemId == 0 ) {
+					object[] attrs = type.GetCustomAttributes( typeof( CraftItemIDAttribute ), false );
+
+					if ( attrs.Length > 0 ) {
+						CraftItemIDAttribute craftItemID = ( CraftItemIDAttribute ) attrs[0];
+						itemId = craftItemID.ItemID;
+					}
+				}
+
+				if ( itemId == 0 ) {
+					Item item = null;
+
+					try { item = Activator.CreateInstance( type ) as Item; } catch { }
+
+					if ( item != null ) {
+						itemId = item.ItemID;
+						item.Delete();
+					}
+				}
+
+				_itemIds[type] = itemId;
 			}
 
-			if ( itemID == 0 )
-			{
-				Item item = null;
-
-				try{ item = Activator.CreateInstance( type ) as Item; }
-				catch{}
-
-				if ( item != null )
-				{
-					itemID = item.ItemID;
-					item.Delete();
-				}
-			}
-
-			m_ItemIDs[type] = itemID;
-
-			return itemID;
+			return itemId;
 		}
 
 		public CraftItem( Type type, TextDefinition groupName, TextDefinition name )

@@ -1648,7 +1648,7 @@ namespace Server
 
 		public void InvalidateProperties()
 		{
-			if ( !Core.AOS )
+			if ( !ObjectPropertyList.Enabled )
 				return;
 
 			if ( m_Map != null && m_Map != Map.Internal && !World.Loading )

@@ -754,7 +754,7 @@ namespace Server
 		private int m_MeleeDamageAbsorb;
 		private int m_MagicDamageAbsorb;
 		private int m_Followers, m_FollowersMax;
-		private ArrayList m_Actions;
+		private List<object> _actions; // prefer List<object> over ArrayList for more specific profiling information
 		private Queue<MovementRecord> m_MoveRecords;
 		private int m_WarmodeChanges = 0;
 		private DateTime m_NextWarmodeChange;
@@ -1464,17 +1464,14 @@ namespace Server
 
 		public bool BeginAction( object toLock )
 		{
-			if( m_Actions == null )
-			{
-				m_Actions = new ArrayList( 2 );
+			if ( _actions == null ) {
+				_actions = new ArrayList( 2 );
 
-				m_Actions.Add( toLock );
+				_actions.Add( toLock );
 
 				return true;
-			}
-			else if( !m_Actions.Contains( toLock ) )
-			{
-				m_Actions.Add( toLock );
+			} else if ( !_actions.Contains( toLock ) ) {
+				_actions.Add( toLock );
 
 				return true;
 			}
@@ -1484,17 +1481,17 @@ namespace Server
 
 		public bool CanBeginAction( object toLock )
 		{
-			return (m_Actions == null || !m_Actions.Contains( toLock ));
+			return ( _actions == null || !_actions.Contains( toLock ) );
 		}
 
 		public void EndAction( object toLock )
 		{
-			if( m_Actions != null )
-			{
-				m_Actions.Remove( toLock );
+			if ( _actions != null ) {
+				_actions.Remove( toLock );
 
-				if( m_Actions.Count == 0 )
-					m_Actions = null;
+				if ( _actions.Count == 0 ) {
+					_actions = null;
+				}
 			}
 		}
 
@@ -8643,7 +8640,7 @@ namespace Server
 
 		public void InvalidateProperties()
 		{
-			if( !Core.AOS )
+			if( !ObjectPropertyList.Enabled )
 				return;
 
 			if( m_Map != null && m_Map != Map.Internal && !World.Loading )
@@ -9636,7 +9633,7 @@ namespace Server
 			bool sendUpdate = false, sendRemove = false;
 			bool sendPublicStats = false, sendPrivateStats = false;
 			bool sendMoving = false, sendNonlocalMoving = false;
-			bool sendOPLUpdate = Core.AOS && (delta & MobileDelta.Properties) != 0;
+			bool sendOPLUpdate = ObjectPropertyList.Enabled && (delta & MobileDelta.Properties) != 0;
 
 			bool sendHair = false, sendFacialHair = false, removeHair = false, removeFacialHair = false;
 

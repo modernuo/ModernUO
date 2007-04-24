@@ -549,7 +549,7 @@ namespace Server.Mobiles
 			list = new ArrayList( buyInfo.Length );
 			Container cont = this.BuyPack;
 
-			ArrayList opls = new ArrayList();
+			List<ObjectPropertyList> opls = null;
 
 			for (int idx=0;idx<buyInfo.Length;idx++)
 			{
@@ -565,10 +565,17 @@ namespace Server.Mobiles
 				list.Add( new BuyItemState( buyItem.Name, cont.Serial, disp == null ? (Serial) 0x7FC0FFEE : disp.Serial, buyItem.Price, buyItem.Amount, buyItem.ItemID, buyItem.Hue ) );
 				count++;
 
-				if ( disp is Item )
-					opls.Add( (disp as Item).PropertyList );
-				else if ( disp is Mobile )
-					opls.Add( (disp as Mobile).PropertyList );
+				if ( ObjectPropertyList.Enabled ) {
+					if ( opls == null ) {
+						opls = new List<ObjectPropertyList>();
+					}
+
+					if ( disp is Item ) {
+						opls.Add( ( ( Item ) disp ).PropertyList );
+					} else if ( disp is Mobile ) {
+						opls.Add( ( ( Mobile ) disp ).PropertyList );
+					}
+				}
 			}
 
 			List<Item> playerItems = cont.Items;
@@ -606,7 +613,13 @@ namespace Server.Mobiles
 					list.Add( new BuyItemState( name, cont.Serial, item.Serial, price, item.Amount, item.ItemID, item.Hue ) );
 					count++;
 
-					opls.Add( item.PropertyList );
+					if ( ObjectPropertyList.Enabled ) {
+						if ( opls == null ) {
+							opls = new List<ObjectPropertyList>();
+						}
+
+						opls.Add( item.PropertyList );
+					}
 				}
 			}
 
@@ -625,8 +638,11 @@ namespace Server.Mobiles
 				from.Send( new DisplayBuyList( this ) );
 				from.Send( new MobileStatusExtended( from ) );//make sure their gold amount is sent
 
-				for ( int i = 0; i < opls.Count; ++i )
-					from.Send( opls[i] as Packet );
+				if ( ObjectPropertyList.Enabled && opls != null ) {
+					for ( int i = 0; i < opls.Count; ++i ) {
+						from.Send( opls[i] );
+					}
+				}
 
 				SayTo( from, 500186 ); // Greetings.  Have a look around.
 			}
