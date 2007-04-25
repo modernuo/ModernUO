@@ -245,6 +245,9 @@ namespace Server
 					{
 					}
 
+					if ( SocketPool.Created )
+						SocketPool.Destroy();
+
 					Console.WriteLine( "This exception is fatal, press return to exit" );
 					Console.ReadLine();
 				}
@@ -326,6 +329,9 @@ namespace Server
 
 			if( timerThread.ThreadState != System.Threading.ThreadState.Unstarted )
 				timerThread.Join();
+
+			if( SocketPool.Created )
+				SocketPool.Destroy();
 
 			Console.WriteLine( "done" );
 		}
@@ -419,6 +425,8 @@ namespace Server
 				if( Console.ReadKey( true ).Key != ConsoleKey.R )
 					return;
 			}
+
+			SocketPool.Create();
 
 			MessagePump ms = m_MessagePump = new MessagePump( new Listener( Listener.Port ) );
 

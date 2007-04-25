@@ -31,19 +31,14 @@ namespace Server.Network
 	{
 		private Socket m_Listener;
 		private bool m_Disposed;
-		private int m_ThisPort;
 
 		private Queue<Socket> m_Accepted;
 		private object m_AcceptedSyncRoot;
 
 		private AsyncCallback m_OnAccept;
+		private AsyncCallback m_OnDisconnect;
 
 		private static Socket[] m_EmptySockets = new Socket[0];
-
-		public int UsedPort
-		{
-			get{ return m_ThisPort; }
-		}
 
 		private static int m_Port = 2593;
 
@@ -61,11 +56,11 @@ namespace Server.Network
 
 		public Listener( int port )
 		{
-			m_ThisPort = port;
 			m_Disposed = false;
 			m_Accepted = new Queue<Socket>();
 			m_AcceptedSyncRoot = ((ICollection)m_Accepted).SyncRoot;
 			m_OnAccept = new AsyncCallback( OnAccept );
+			m_OnDisconnect = new AsyncCallback( OnDisconnect );
 
 			m_Listener = Bind( IPAddress.Any, port );
 
@@ -89,7 +84,7 @@ namespace Server.Network
 		{
 			IPEndPoint ipep = new IPEndPoint( ip, port );
 
-			Socket s = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+			Socket s = SocketPool.AcquireSocket();
 
 			try
 			{
@@ -99,7 +94,7 @@ namespace Server.Network
 				s.Bind( ipep );
 				s.Listen( 8 );
 
-				IAsyncResult res = s.BeginAccept( m_OnAccept, s );
+				IAsyncResult res = s.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, s );
 
 				return s;
 			}
@@ -111,8 +106,7 @@ namespace Server.Network
 				try { s.Shutdown( SocketShutdown.Both ); } 
 				catch{}
 
-				try { s.Close(); }
-				catch{}
+				s.BeginDisconnect( true, m_OnDisconnect, s );
 
 				return null;
 			}
@@ -120,30 +114,24 @@ namespace Server.Network
 
 		private void OnAccept( IAsyncResult asyncResult )
 		{
-			Socket listener = asyncResult.AsyncState as Socket;
+			Socket listener = (Socket)asyncResult.AsyncState;
 
 			try
 			{
 				Socket socket = listener.EndAccept( asyncResult );
 
-				if ( socket != null )
-				{
-					SocketConnectEventArgs e = new SocketConnectEventArgs( socket );
-					EventSink.InvokeSocketConnect( e );
+				SocketConnectEventArgs e = new SocketConnectEventArgs( socket );
+				EventSink.InvokeSocketConnect( e );
 
-					if ( e.AllowConnection )
-					{
-						lock ( m_AcceptedSyncRoot )
-							m_Accepted.Enqueue( socket );
-					}
-					else
-					{
-						try { socket.Shutdown( SocketShutdown.Both ); }
-						catch { }
+				if ( e.AllowConnection ) {
+					lock ( m_AcceptedSyncRoot )
+						m_Accepted.Enqueue( socket );
+				}
+				else {
+					try { socket.Shutdown( SocketShutdown.Both ); }
+					catch { }
 
-						try { socket.Close(); }
-						catch { }
-					}
+					socket.BeginDisconnect( true, m_OnDisconnect, socket );
 				}
 			}
 			catch
@@ -151,10 +139,19 @@ namespace Server.Network
 			}
 			finally
 			{
-				IAsyncResult res = listener.BeginAccept( m_OnAccept, listener );
+				IAsyncResult res = listener.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, listener );
 			}
 
 			Core.Set();
+		}
+
+		private void OnDisconnect( IAsyncResult asyncResult )
+		{
+			Socket s = (Socket)asyncResult.AsyncState;
+
+			s.EndDisconnect( asyncResult );
+
+			SocketPool.ReleaseSocket( s );
 		}
 
 		public Socket[] Slice()
@@ -184,8 +181,7 @@ namespace Server.Network
 					try { m_Listener.Shutdown( SocketShutdown.Both ); }
 					catch {}
 
-					try { m_Listener.Close(); }
-					catch {}
+					m_Listener.BeginDisconnect( true, m_OnDisconnect, m_Listener );
 
 					m_Listener = null;
 				}

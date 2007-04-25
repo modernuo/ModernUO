@@ -50,7 +50,7 @@ namespace Server.Network {
 		private SendQueue m_SendQueue;
 		private bool m_Seeded;
 		private bool m_Running;
-		private AsyncCallback m_OnReceive, m_OnSend;
+		private AsyncCallback m_OnReceive, m_OnSend, m_OnDisconnect;
 		private MessagePump m_MessagePump;
 		private ServerInfo[] m_ServerInfo;
 		private IAccount m_Account;
@@ -118,7 +118,7 @@ namespace Server.Network {
 		private void InternalBeginReceive() {
 			m_AsyncState |= AsyncState.Pending;
 
-			m_Socket.BeginReceive( m_RecvBuffer, 0, m_RecvBuffer.Length, SocketFlags.None, m_OnReceive, null );
+			m_Socket.BeginReceive( m_RecvBuffer, 0, m_RecvBuffer.Length, SocketFlags.None, m_OnReceive, m_Socket );
 		}
 
 		public static void Resume() {
@@ -563,7 +563,7 @@ namespace Server.Network {
 
 					if ( gram != null ) {
 						try {
-							m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, null );
+							m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket );
 						} catch {
 							Dispose( false );
 						}
@@ -610,7 +610,7 @@ namespace Server.Network {
 
 			if ( gram != null ) {
 				try {
-					m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, null );
+					m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket );
 					return true;
 				} catch {
 					Dispose( false );
@@ -632,12 +632,10 @@ namespace Server.Network {
 		}
 
 		private void OnSend( IAsyncResult asyncResult ) {
-			if ( m_Socket == null ) {
-				return;
-			}
+			Socket s = (Socket)asyncResult.AsyncState;
 
 			try {
-				int bytes = m_Socket.EndSend( asyncResult );
+				int bytes = s.EndSend( asyncResult );
 
 				if ( bytes <= 0 ) {
 					Dispose( false );
@@ -657,7 +655,7 @@ namespace Server.Network {
 				}
 
 				if ( gram != null ) {
-					m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, null );
+					s.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s );
 				}
 			} catch {
 				Dispose( false );
@@ -667,6 +665,7 @@ namespace Server.Network {
 		public void Start() {
 			m_OnReceive = new AsyncCallback( OnReceive );
 			m_OnSend = new AsyncCallback( OnSend );
+			m_OnDisconnect = new AsyncCallback( OnDisconnect );
 
 			m_Running = true;
 
@@ -707,12 +706,10 @@ namespace Server.Network {
 		}
 
 		private void OnReceive( IAsyncResult asyncResult ) {
-			if ( m_Socket == null ) {
-				return;
-			}
+			Socket s = (Socket)asyncResult.AsyncState;
 
 			try {
-				int byteCount = m_Socket.EndReceive( asyncResult );
+				int byteCount = s.EndReceive( asyncResult );
 
 				if ( byteCount > 0 ) {
 					m_NextCheckActivity = DateTime.Now + TimeSpan.FromMinutes( 1.2 );
@@ -742,6 +739,15 @@ namespace Server.Network {
 			}
 		}
 
+		public void OnDisconnect( IAsyncResult asyncResult )
+		{
+			Socket s = (Socket)asyncResult.AsyncState;
+
+			s.EndDisconnect( asyncResult );
+
+			SocketPool.ReleaseSocket( s );
+		}
+
 		public void Dispose() {
 			Dispose( true );
 		}
@@ -763,10 +769,7 @@ namespace Server.Network {
 			} catch {
 			}
 
-			try {
-				m_Socket.Close();
-			} catch {
-			}
+			m_Socket.BeginDisconnect( true, m_OnDisconnect, m_Socket );
 
 			if ( m_RecvBuffer != null )
 				m_ReceiveBufferPool.ReleaseBuffer( m_RecvBuffer );
@@ -777,6 +780,7 @@ namespace Server.Network {
 			m_RecvBuffer = null;
 			m_OnReceive = null;
 			m_OnSend = null;
+			m_OnDisconnect = null;
 			m_Running = false;
 
 			m_Disposed.Enqueue( this );

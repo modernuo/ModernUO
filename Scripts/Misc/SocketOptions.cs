@@ -12,14 +12,17 @@ namespace Server
 	{
 		private const bool NagleEnabled = false; // Should the Nagle algorithm be enabled? This may reduce performance
 		private const int CoalesceBufferSize = 512; // MSS that the core will use when buffering packets
+		private const int PooledSockets = 32; // The number of sockets to initially pool. Ideal value is expected client count. 
 
 		private static int[] m_AdditionalPorts = new int[0];
 		//private static int[] m_AdditionalPorts = new int[]{ 2594 };
 
 		public static void Initialize()
 		{
-			EventSink.SocketConnect += new SocketConnectEventHandler( EventSink_SocketConnect );
 			SendQueue.CoalesceBufferSize = CoalesceBufferSize;
+			SocketPool.InitialCapacity = PooledSockets;
+
+			EventSink.SocketConnect += new SocketConnectEventHandler( EventSink_SocketConnect );
 
 			if ( m_AdditionalPorts.Length > 0 )
 				EventSink.ServerStarted += new ServerStartedEventHandler( EventSink_ServerStarted );
