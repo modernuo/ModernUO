@@ -94,6 +94,8 @@ namespace Server.Network
 			if ( s == null )
 				return;
 
+			s.Close();
+
 			lock ( m_FreeSockets )
 				m_FreeSockets.Enqueue( s );
 		}

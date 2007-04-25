@@ -752,6 +752,25 @@ namespace Server.Network {
 			Dispose( true );
 		}
 
+		public static void TraceException( Exception ex ) {
+			try {
+				using ( StreamWriter op = new StreamWriter( "network-errors.log", true ) ) {
+					op.WriteLine( "# {0}", DateTime.UtcNow );
+
+					op.WriteLine( ex );
+
+					op.WriteLine();
+					op.WriteLine();
+				}
+			} catch {
+			}
+
+			try {
+				Console.WriteLine( ex );
+			} catch {
+			}
+		}
+
 		private bool m_Disposing;
 
 		public virtual void Dispose( bool flush ) {

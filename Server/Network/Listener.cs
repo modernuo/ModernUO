@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using Server;
 
 namespace Server.Network
@@ -103,55 +104,87 @@ namespace Server.Network
 				Console.WriteLine( "Listener bind exception:" );
 				Console.WriteLine( e );
 
-				try { s.Shutdown( SocketShutdown.Both ); } 
-				catch{}
-
-				s.BeginDisconnect( true, m_OnDisconnect, s );
-
 				return null;
 			}
 		}
 
-		private void OnAccept( IAsyncResult asyncResult )
-		{
-			Socket listener = (Socket)asyncResult.AsyncState;
+		private void OnAccept( IAsyncResult asyncResult ) {
+			Socket listener = (Socket) asyncResult.AsyncState;
 
-			try
-			{
-				Socket socket = listener.EndAccept( asyncResult );
+			Socket accepted = null;
 
-				SocketConnectEventArgs e = new SocketConnectEventArgs( socket );
-				EventSink.InvokeSocketConnect( e );
+			try {
+				accepted = listener.EndAccept( asyncResult );
+			} catch ( SocketException ex ) {
+				NetState.TraceException( ex );
+			} catch ( ObjectDisposedException ) {
+				return;
+			}
 
-				if ( e.AllowConnection ) {
-					lock ( m_AcceptedSyncRoot )
-						m_Accepted.Enqueue( socket );
-				}
-				else {
-					try { socket.Shutdown( SocketShutdown.Both ); }
-					catch { }
-
-					socket.BeginDisconnect( true, m_OnDisconnect, socket );
+			if ( accepted != null ) {
+				if ( VerifySocket( accepted ) ) {
+					Enqueue( accepted );
+				} else {
+					Release( accepted );
 				}
 			}
-			catch
-			{
+
+			try {
+				listener.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, listener );
+			} catch ( SocketException ex ) {
+				NetState.TraceException( ex );
+			} catch ( ObjectDisposedException ) {
 			}
-			finally
-			{
-				IAsyncResult res = listener.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, listener );
+		}
+
+		private bool VerifySocket( Socket socket ) {
+			try {
+				SocketConnectEventArgs args = new SocketConnectEventArgs( socket );
+
+				EventSink.InvokeSocketConnect( args );
+
+				return args.AllowConnection;
+			} catch ( Exception ex ) {
+				NetState.TraceException( ex );
+
+				return false;
+			}
+		}
+
+		private void Enqueue( Socket socket ) {
+			lock ( m_AcceptedSyncRoot ) {
+				m_Accepted.Enqueue( socket );
 			}
 
 			Core.Set();
 		}
 
-		private void OnDisconnect( IAsyncResult asyncResult )
-		{
-			Socket s = (Socket)asyncResult.AsyncState;
+		private void Release( Socket socket ) {
+			try {
+				socket.Shutdown( SocketShutdown.Both );
+			} catch ( SocketException ex ) {
+				NetState.TraceException( ex );
+			}
 
-			s.EndDisconnect( asyncResult );
+			try {
+				socket.BeginDisconnect( true, m_OnDisconnect, socket );
+			} catch ( SocketException ex ) {
+				NetState.TraceException( ex );
+			}
+		}
 
-			SocketPool.ReleaseSocket( s );
+		private void OnDisconnect( IAsyncResult asyncResult ) {
+			Socket socket = (Socket) asyncResult.AsyncState;
+
+			try {
+				socket.EndDisconnect( asyncResult );
+
+				SocketPool.ReleaseSocket( socket );
+			} catch ( SocketException ex ) {
+				NetState.TraceException( ex );
+			} catch ( ObjectDisposedException ex ) {
+				NetState.TraceException( ex );
+			}
 		}
 
 		public Socket[] Slice()
@@ -170,21 +203,13 @@ namespace Server.Network
 			return array;
 		}
 
-		public void Dispose()
-		{
-			if ( !m_Disposed )
-			{
-				m_Disposed = true;
+		public void Dispose() {
+			m_Disposed = true;
 
-				if ( m_Listener != null )
-				{
-					try { m_Listener.Shutdown( SocketShutdown.Both ); }
-					catch {}
+			Socket socket = Interlocked.Exchange<Socket>( ref m_Listener, null );
 
-					m_Listener.BeginDisconnect( true, m_OnDisconnect, m_Listener );
-
-					m_Listener = null;
-				}
+			if ( socket != null ) {
+				socket.Close();
 			}
 		}
 	}
