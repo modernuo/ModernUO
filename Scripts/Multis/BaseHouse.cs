@@ -83,7 +83,7 @@ namespace Server.Multis
 				if ( (acct.LastLogin + TimeSpan.FromDays( 90.0 )) < DateTime.Now )
 					return DecayType.Condemned;
 
-				List<BaseHouse> allHouses = new List<BaseHouse>( 2 );
+				List<BaseHouse> allHouses = new List<BaseHouse>();
 
 				for ( int i = 0; i < acct.Length; ++i )
 				{

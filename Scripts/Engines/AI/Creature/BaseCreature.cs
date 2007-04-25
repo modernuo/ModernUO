@@ -672,7 +672,7 @@ namespace Server.Mobiles
 		public virtual void AddPetFriend( Mobile m )
 		{
 			if ( m_Friends == null )
-				m_Friends = new List<Mobile>( 8 );
+				m_Friends = new List<Mobile>();
 
 			m_Friends.Add( m );
 		}

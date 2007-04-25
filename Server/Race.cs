@@ -37,7 +37,7 @@ namespace Server
 		public static Race Human { get { return m_Races[0]; } }
 		public static Race Elf { get { return m_Races[1]; } }
 
-		private static List<Race> m_AllRaces = new List<Race>( 2 );
+		private static List<Race> m_AllRaces = new List<Race>();
 
 		public static List<Race> AllRaces { get { return m_AllRaces; } }
 

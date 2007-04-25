@@ -919,8 +919,9 @@ namespace Server
 
 		public virtual void AddResistanceMod( ResistanceMod toAdd )
 		{
-			if( m_ResistMods == null )
-				m_ResistMods = new List<ResistanceMod>( 2 );
+			if ( m_ResistMods == null ) {
+				m_ResistMods = new List<ResistanceMod>();
+			}
 
 			m_ResistMods.Add( toAdd );
 			UpdateResistances();
@@ -1465,7 +1466,7 @@ namespace Server
 		public bool BeginAction( object toLock )
 		{
 			if ( _actions == null ) {
-				_actions = new List<object>( 2 );
+				_actions = new List<object>();
 
 				_actions.Add( toLock );
 
@@ -9490,10 +9491,10 @@ namespace Server
 		{
 			m_Region = Map.Internal.DefaultRegion;
 			m_Serial = serial;
-			m_Aggressors = new List<AggressorInfo>( 1 );
-			m_Aggressed = new List<AggressorInfo>( 1 );
+			m_Aggressors = new List<AggressorInfo>();
+			m_Aggressed = new List<AggressorInfo>();
 			m_NextSkillTime = DateTime.MinValue;
-			m_DamageEntries = new List<DamageEntry>( 1 );
+			m_DamageEntries = new List<DamageEntry>();
 
 			Type ourType = this.GetType();
 			m_TypeRef = World.m_MobileTypes.IndexOf( ourType );
@@ -9529,16 +9530,16 @@ namespace Server
 			m_StatCap = 225;
 			m_FollowersMax = 5;
 			m_Skills = new Skills( this );
-			m_Items = new List<Item>( 1 );
-			m_StatMods = new List<StatMod>( 1 );
-			m_SkillMods = new List<SkillMod>( 1 );
+			m_Items = new List<Item>();
+			m_StatMods = new List<StatMod>();
+			m_SkillMods = new List<SkillMod>();
 			Map = Map.Internal;
 			m_AutoPageNotify = true;
-			m_Aggressors = new List<AggressorInfo>( 1 );
-			m_Aggressed = new List<AggressorInfo>( 1 );
+			m_Aggressors = new List<AggressorInfo>();
+			m_Aggressed = new List<AggressorInfo>();
 			m_Virtues = new VirtueInfo();
-			m_Stabled = new List<Mobile>( 1 );
-			m_DamageEntries = new List<DamageEntry>( 1 );
+			m_Stabled = new List<Mobile>();
+			m_DamageEntries = new List<DamageEntry>();
 
 			m_NextSkillTime = DateTime.MinValue;
 			m_CreationTime = DateTime.Now;

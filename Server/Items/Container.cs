@@ -1645,8 +1645,9 @@ namespace Server.Items
 
 				if ( !contains )
 				{
-					if ( m_Openers == null )
-						m_Openers = new List<Mobile>( 4 );
+					if ( m_Openers == null ) {
+						m_Openers = new List<Mobile>();
+					}
 
 					m_Openers.Add( to );
 				}

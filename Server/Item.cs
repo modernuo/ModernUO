@@ -560,8 +560,7 @@ namespace Server
 
 	public class Item : IEntity, IHued, IComparable<Item>, ISerializable
 	{
-		//public static readonly EmptyArrayList EmptyItems = new EmptyArrayList();
-		public static readonly List<Item> EmptyItems = new List<Item>( 0 );
+		public static readonly List<Item> EmptyItems = new List<Item>();
 
 		public int CompareTo( IEntity other )
 		{
@@ -802,15 +801,16 @@ namespace Server
 			{
 				Container cont = this as Container;
 
-				if ( cont.m_Items == null )
-					cont.m_Items = new List<Item>( 4 );
+				if ( cont.m_Items == null ) {
+					cont.m_Items = new List<Item>();
+				}
 
 				return cont.m_Items;
 			}
 
 			CompactInfo info = AcquireCompactInfo();
 
-			info.m_Items = new List<Item>( 4 );
+			info.m_Items = new List<Item>();
 
 			return info.m_Items;
 		}

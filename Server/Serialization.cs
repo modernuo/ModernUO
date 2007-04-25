@@ -999,153 +999,141 @@ namespace Server
 		{
 			int count = ReadInt();
 
-			ArrayList list = new ArrayList( count );
+			if ( count > 0 ) {
+				ArrayList list = new ArrayList( count );
 
-			for( int i = 0; i < count; ++i )
-			{
-				Item item = ReadItem();
+				for ( int i = 0; i < count; ++i ) {
+					Item item = ReadItem();
 
-				if( item != null )
-					list.Add( item );
+					if ( item != null ) {
+						list.Add( item );
+					}
+				}
+
+				return list;
+			} else {
+				return new ArrayList();
 			}
-
-			return list;
 		}
 
 		public override ArrayList ReadMobileList()
 		{
 			int count = ReadInt();
 
-			ArrayList list = new ArrayList( count );
+			if ( count > 0 ) {
+				ArrayList list = new ArrayList( count );
 
-			for( int i = 0; i < count; ++i )
-			{
-				Mobile m = ReadMobile();
+				for ( int i = 0; i < count; ++i ) {
+					Mobile m = ReadMobile();
 
-				if( m != null )
-					list.Add( m );
+					if ( m != null ) {
+						list.Add( m );
+					}
+				}
+
+				return list;
+			} else {
+				return new ArrayList();
 			}
-
-			return list;
 		}
 
 		public override ArrayList ReadGuildList()
 		{
 			int count = ReadInt();
 
-			ArrayList list = new ArrayList( count );
+			if ( count > 0 ) {
+				ArrayList list = new ArrayList( count );
 
-			for( int i = 0; i < count; ++i )
-			{
-				BaseGuild g = ReadGuild();
+				for ( int i = 0; i < count; ++i ) {
+					BaseGuild g = ReadGuild();
 
-				if( g != null )
-					list.Add( g );
+					if ( g != null ) {
+						list.Add( g );
+					}
+				}
+
+				return list;
+			} else {
+				return new ArrayList();
 			}
-
-			return list;
 		}
 
 		public override List<Item> ReadStrongItemList()
 		{
-			int count = ReadInt();
-
-			List<Item> list = new List<Item>( count );
-
-			for( int i = 0; i < count; ++i )
-			{
-				Item item = ReadItem();
-
-				if( item != null )
-					list.Add( item );
-			}
-
-			return list;
+			return ReadStrongItemList<Item>();
 		}
 
 		public override List<T> ReadStrongItemList<T>()
 		{
 			int count = ReadInt();
 
-			List<T> list = new List<T>( count );
+			if ( count > 0 ) {
+				List<T> list = new List<T>( count );
 
-			for( int i = 0; i < count; ++i )
-			{
-				T item = ReadItem() as T;
+				for ( int i = 0; i < count; ++i ) {
+					T item = ReadItem() as T;
 
-				if( item != null )
-					list.Add( item );
+					if ( item != null ) {
+						list.Add( item );
+					}
+				}
+
+				return list;
+			} else {
+				return new List<T>();
 			}
-
-			return list;
 		}
 
 		public override List<Mobile> ReadStrongMobileList()
 		{
-			int count = ReadInt();
-
-			List<Mobile> list = new List<Mobile>( count );
-
-			for( int i = 0; i < count; ++i )
-			{
-				Mobile m = ReadMobile();
-
-				if( m != null )
-					list.Add( m );
-			}
-
-			return list;
+			return ReadStrongMobileList<Mobile>();
 		}
 
 		public override List<T> ReadStrongMobileList<T>()
 		{
 			int count = ReadInt();
 
-			List<T> list = new List<T>( count );
+			if ( count > 0 ) {
+				List<T> list = new List<T>( count );
 
-			for( int i = 0; i < count; ++i )
-			{
-				T m = ReadMobile() as T;
+				for ( int i = 0; i < count; ++i ) {
+					T m = ReadMobile() as T;
 
-				if( m != null )
-					list.Add( m );
+					if ( m != null ) {
+						list.Add( m );
+					}
+				}
+
+				return list;
+			} else {
+				return new List<T>();
 			}
-
-			return list;
 		}
 
 		public override List<BaseGuild> ReadStrongGuildList()
 		{
-			int count = ReadInt();
-
-			List<BaseGuild> list = new List<BaseGuild>( count );
-
-			for( int i = 0; i < count; ++i )
-			{
-				BaseGuild g = ReadGuild();
-
-				if( g != null )
-					list.Add( g );
-			}
-
-			return list;
+			return ReadStrongGuildList<BaseGuild>();
 		}
 
 		public override List<T> ReadStrongGuildList<T>()
 		{
 			int count = ReadInt();
 
-			List<T> list = new List<T>( count );
+			if ( count > 0 ) {
+				List<T> list = new List<T>( count );
 
-			for( int i = 0; i < count; ++i )
-			{
-				T g = ReadGuild() as T;
+				for ( int i = 0; i < count; ++i ) {
+					T g = ReadGuild() as T;
 
-				if( g != null )
-					list.Add( g );
+					if ( g != null ) {
+						list.Add( g );
+					}
+				}
+
+				return list;
+			} else {
+				return new List<T>();
 			}
-
-			return list;
 		}
 
 		public override bool End()
