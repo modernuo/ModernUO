@@ -120,7 +120,7 @@ namespace Server.Misc
 
 			try
 			{
-				IPAddress ipAddress = ((IPEndPoint)ns.Socket.RemoteEndPoint).Address;
+				IPAddress ipAddress = ns.Address;
 
 				if ( Utility.IPMatchClassC( accessList[0], ipAddress ) )
 				{

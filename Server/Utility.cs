@@ -82,6 +82,27 @@ namespace Server
 			str = Intern( str );
 		}
 
+		private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
+
+		public static IPAddress Intern( IPAddress ipAddress ) {
+			if ( _ipAddressTable == null ) {
+				_ipAddressTable = new Dictionary<IPAddress, IPAddress>();
+			}
+
+			IPAddress interned;
+
+			if ( !_ipAddressTable.TryGetValue( ipAddress, out interned ) ) {
+				interned = ipAddress;
+				_ipAddressTable[ipAddress] = interned;
+			}
+
+			return interned;
+		}
+
+		public static void Intern( ref IPAddress ipAddress ) {
+			ipAddress = Intern( ipAddress );
+		}
+
 		public static bool IsValidIP( string text )
 		{
 			bool valid = true;

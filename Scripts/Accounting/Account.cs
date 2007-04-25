@@ -740,7 +740,7 @@ namespace Server.Accounting
 
 						if( IPAddress.TryParse( Utility.GetText( ip, null ), out address ) )
 						{
-							list[count] = address;
+							list[count] = Utility.Intern( address );
 							count++;
 						}
 					}
@@ -881,10 +881,7 @@ namespace Server.Accounting
 					return false;
 			}
 
-			IPAddress ipAddress;
-
-			try { ipAddress = ( (IPEndPoint) ns.Socket.RemoteEndPoint ).Address; }
-			catch { return false; }
+			IPAddress ipAddress = ns.Address;
 
 			bool accessAllowed = ( m_IPRestrictions.Length == 0 || IPLimiter.IsExempt( ipAddress ) );
 

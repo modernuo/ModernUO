@@ -377,7 +377,7 @@ namespace Server.Misc
 					m_Voters = new IPAddress[reader.ReadInt()];
 
 					for ( int i = 0; i < m_Voters.Length; ++i )
-						m_Voters[i] = reader.ReadIPAddress();
+						m_Voters[i] = Utility.Intern( reader.ReadIPAddress() );
 
 					break;
 				}

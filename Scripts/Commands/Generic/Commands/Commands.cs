@@ -956,7 +956,7 @@ namespace Server.Commands.Generic
 
 				try
 				{
-					Firewall.Add( ((IPEndPoint)state.Socket.RemoteEndPoint).Address );
+					Firewall.Add( state.Address );
 					AddResponse( "They have been firewalled." );
 				}
 				catch ( Exception ex )

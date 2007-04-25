@@ -74,9 +74,7 @@ namespace Server.Misc
 
 		private static bool IsLocalMachine( NetState state )
 		{
-			Socket sock = state.Socket;
-
-			IPAddress theirAddress = ((IPEndPoint)sock.RemoteEndPoint).Address;
+			IPAddress theirAddress = state.Address;
 
 			if ( IPAddress.IsLoopback( theirAddress ) )
 				return true;

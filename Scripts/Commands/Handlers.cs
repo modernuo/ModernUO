@@ -993,36 +993,6 @@ namespace Server.Commands
 			e.Mobile.Target = new PickMoveTarget();
 		}
 
-		private class FirewallTarget : Target
-		{
-			public FirewallTarget() : base( -1, false, TargetFlags.None )
-			{
-			}
-
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( targeted is Mobile )
-				{
-					Mobile targ = (Mobile)targeted;
-
-					NetState state = targ.NetState;
-
-					if ( state != null )
-					{
-						CommandLogging.WriteLine( from, "{0} {1} firewalling {2}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( targeted ) );
-
-						try
-						{
-							Firewall.Add( ((IPEndPoint)state.Socket.RemoteEndPoint).Address );
-						}
-						catch
-						{
-						}
-					}
-				}
-			}
-		}
-
 		[Usage( "Save" )]
 		[Description( "Saves the world." )]
 		private static void Save_OnCommand( CommandEventArgs e )

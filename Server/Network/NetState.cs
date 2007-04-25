@@ -515,7 +515,7 @@ namespace Server.Network {
 			m_Instances.Add( this );
 
 			try {
-				m_Address = ( ( IPEndPoint ) m_Socket.RemoteEndPoint ).Address;
+				m_Address = Utility.Intern( ( ( IPEndPoint ) m_Socket.RemoteEndPoint ).Address );
 				m_ToString = m_Address.ToString();
 			} catch {
 				m_Address = IPAddress.None;

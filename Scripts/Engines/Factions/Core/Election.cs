@@ -459,7 +459,7 @@ namespace Server.Factions
 				case 0:
 				{
 					m_From = reader.ReadMobile();
-					m_Address = reader.ReadIPAddress();
+					m_Address = Utility.Intern( reader.ReadIPAddress() );
 					m_Time = reader.ReadDateTime();
 
 					break;
