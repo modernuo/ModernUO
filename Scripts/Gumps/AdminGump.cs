@@ -2050,7 +2050,9 @@ namespace Server.Gumps
 
 							if ( match == null || match.Length == 0 )
 							{
-								notice = "You must enter a username to search.";
+								results.Add( Accounts.GetAccounts() );
+								results.Sort( AccountComparer.Instance );
+								//notice = "You must enter a username to search.";
 							}
 							else
 							{
