@@ -2042,7 +2042,7 @@ namespace Server.Gumps
 						}
 						case 7:
 						{
-							ArrayList results = new ArrayList();
+							ArrayList results;
 
 							TextRelay matchEntry = info.GetTextEntry( 0 );
 							string match = ( matchEntry == null ? null : matchEntry.Text.Trim().ToLower() );
@@ -2050,12 +2050,13 @@ namespace Server.Gumps
 
 							if ( match == null || match.Length == 0 )
 							{
-								results.Add( Accounts.GetAccounts() );
+								results = new ArrayList( (ICollection)Accounts.GetAccounts() );
 								results.Sort( AccountComparer.Instance );
 								//notice = "You must enter a username to search.";
 							}
 							else
 							{
+								results = new ArrayList();
 								foreach ( Account check in Accounts.GetAccounts() )
 								{
 									if ( check.Username.ToLower().IndexOf( match ) >= 0 )
