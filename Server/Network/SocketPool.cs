@@ -91,13 +91,13 @@ namespace Server.Network
 
 		public static void ReleaseSocket( Socket s )
 		{
-			if ( s == null )
+			/*if ( s == null )
 				return;
 
 			s.Close();
 
 			lock ( m_FreeSockets )
-				m_FreeSockets.Enqueue( s );
+				m_FreeSockets.Enqueue( s );*/
 		}
 	}
 }

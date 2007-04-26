@@ -50,7 +50,7 @@ namespace Server.Network {
 		private SendQueue m_SendQueue;
 		private bool m_Seeded;
 		private bool m_Running;
-		private AsyncCallback m_OnReceive, m_OnSend, m_OnDisconnect;
+		private AsyncCallback m_OnReceive, m_OnSend;
 		private MessagePump m_MessagePump;
 		private ServerInfo[] m_ServerInfo;
 		private IAccount m_Account;
@@ -137,7 +137,8 @@ namespace Server.Network {
 					try {
 						if ( ( ns.m_AsyncState & AsyncState.Pending ) == 0 )
 							ns.InternalBeginReceive();
-					} catch {
+					} catch ( Exception ex ) {
+						TraceException( ex );
 						ns.Dispose( false );
 					}
 				}
@@ -517,7 +518,8 @@ namespace Server.Network {
 			try {
 				m_Address = Utility.Intern( ( ( IPEndPoint ) m_Socket.RemoteEndPoint ).Address );
 				m_ToString = m_Address.ToString();
-			} catch {
+			} catch ( Exception ex ) {
+				TraceException( ex );
 				m_Address = IPAddress.None;
 				m_ToString = "(error)";
 			}
@@ -564,7 +566,8 @@ namespace Server.Network {
 					if ( gram != null ) {
 						try {
 							m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket );
-						} catch {
+						} catch ( Exception ex ) {
+							TraceException( ex );
 							Dispose( false );
 						}
 					}
@@ -612,7 +615,8 @@ namespace Server.Network {
 				try {
 					m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket );
 					return true;
-				} catch {
+				} catch ( Exception ex ) {
+					TraceException( ex );
 					Dispose( false );
 				}
 			}
@@ -655,9 +659,14 @@ namespace Server.Network {
 				}
 
 				if ( gram != null ) {
-					s.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s );
+					try {
+						s.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s );
+					} catch ( Exception ex ) {
+						TraceException( ex );
+						Dispose( false );
+					}
 				}
-			} catch {
+			} catch ( Exception ){
 				Dispose( false );
 			}
 		}
@@ -665,7 +674,6 @@ namespace Server.Network {
 		public void Start() {
 			m_OnReceive = new AsyncCallback( OnReceive );
 			m_OnSend = new AsyncCallback( OnSend );
-			m_OnDisconnect = new AsyncCallback( OnDisconnect );
 
 			m_Running = true;
 
@@ -679,7 +687,8 @@ namespace Server.Network {
 						InternalBeginReceive();
 					}
 				}
-			} catch {
+			} catch ( Exception ex ) {
+				TraceException( ex );
 				Dispose( false );
 			}
 		}
@@ -728,7 +737,12 @@ namespace Server.Network {
 						m_AsyncState &= ~AsyncState.Pending;
 
 						if ( ( m_AsyncState & AsyncState.Paused ) == 0 ) {
-							InternalBeginReceive();
+							try {
+								InternalBeginReceive();
+							} catch ( Exception ex ) {
+								TraceException( ex );
+								Dispose( false );
+							}
 						}
 					}
 				} else {
@@ -739,15 +753,6 @@ namespace Server.Network {
 			}
 		}
 
-		public void OnDisconnect( IAsyncResult asyncResult )
-		{
-			Socket s = (Socket)asyncResult.AsyncState;
-
-			s.EndDisconnect( asyncResult );
-
-			SocketPool.ReleaseSocket( s );
-		}
-
 		public void Dispose() {
 			Dispose( true );
 		}
@@ -755,7 +760,7 @@ namespace Server.Network {
 		public static void TraceException( Exception ex ) {
 			try {
 				using ( StreamWriter op = new StreamWriter( "network-errors.log", true ) ) {
-					op.WriteLine( "# {0}", DateTime.UtcNow );
+					op.WriteLine( "# {0}", DateTime.Now );
 
 					op.WriteLine( ex );
 
@@ -785,10 +790,17 @@ namespace Server.Network {
 
 			try {
 				m_Socket.Shutdown( SocketShutdown.Both );
-			} catch {
+			} catch ( SocketException ex ) {
+				TraceException( ex );
 			}
 
-			m_Socket.BeginDisconnect( true, m_OnDisconnect, m_Socket );
+			try {
+				m_Socket.Close();
+
+				SocketPool.ReleaseSocket( m_Socket );
+			} catch ( SocketException ex ) {
+				TraceException( ex );
+			}
 
 			if ( m_RecvBuffer != null )
 				m_ReceiveBufferPool.ReleaseBuffer( m_RecvBuffer );
@@ -799,7 +811,6 @@ namespace Server.Network {
 			m_RecvBuffer = null;
 			m_OnReceive = null;
 			m_OnSend = null;
-			m_OnDisconnect = null;
 			m_Running = false;
 
 			m_Disposed.Enqueue( this );
@@ -819,7 +830,8 @@ namespace Server.Network {
 				for ( int i = 0; i < m_Instances.Count; ++i ) {
 					m_Instances[i].CheckAlive();
 				}
-			} catch {
+			} catch ( Exception ex ) {
+				TraceException( ex );
 			}
 		}
 

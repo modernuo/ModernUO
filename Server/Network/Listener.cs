@@ -31,13 +31,11 @@ namespace Server.Network
 	public class Listener : IDisposable
 	{
 		private Socket m_Listener;
-		private bool m_Disposed;
 
 		private Queue<Socket> m_Accepted;
 		private object m_AcceptedSyncRoot;
 
 		private AsyncCallback m_OnAccept;
-		private AsyncCallback m_OnDisconnect;
 
 		private static Socket[] m_EmptySockets = new Socket[0];
 
@@ -57,11 +55,9 @@ namespace Server.Network
 
 		public Listener( int port )
 		{
-			m_Disposed = false;
 			m_Accepted = new Queue<Socket>();
 			m_AcceptedSyncRoot = ((ICollection)m_Accepted).SyncRoot;
 			m_OnAccept = new AsyncCallback( OnAccept );
-			m_OnDisconnect = new AsyncCallback( OnDisconnect );
 
 			m_Listener = Bind( IPAddress.Any, port );
 
@@ -167,22 +163,10 @@ namespace Server.Network
 			}
 
 			try {
-				socket.BeginDisconnect( true, m_OnDisconnect, socket );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			}
-		}
-
-		private void OnDisconnect( IAsyncResult asyncResult ) {
-			Socket socket = (Socket) asyncResult.AsyncState;
-
-			try {
-				socket.EndDisconnect( asyncResult );
+				socket.Close();
 
 				SocketPool.ReleaseSocket( socket );
 			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ex ) {
 				NetState.TraceException( ex );
 			}
 		}
@@ -204,8 +188,6 @@ namespace Server.Network
 		}
 
 		public void Dispose() {
-			m_Disposed = true;
-
 			Socket socket = Interlocked.Exchange<Socket>( ref m_Listener, null );
 
 			if ( socket != null ) {
