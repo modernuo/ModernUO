@@ -879,6 +879,13 @@
 			<rect x="3314" y="2345" width="500" height="750" />
 			<go x="3627" y="2606" z="0" />
 			<smartNoHousing active="true" />
+			<region type="TownRegion" name="New Haven">
+				<rune name="New Haven City" />
+				<rect x="3423" y="2480" width="111" height="143" />
+				<go x="3503" y="2574" z="14" />
+				<music name="Ocllo" />
+			</region>
+			<!--
 			<region type="TownRegion" name="Haven">
 				<rune name="Haven City" />
 				<rect x="3590" y="2460" width="118" height="225" />
@@ -1129,6 +1136,7 @@
 					</spawning>
 				</region>
 			</region>
+			-->
 		</region>
 		<region type="TownRegion" priority="50" name="Trinsic">
 			<rect x="1856" y="2636" width="75" height="28" />
