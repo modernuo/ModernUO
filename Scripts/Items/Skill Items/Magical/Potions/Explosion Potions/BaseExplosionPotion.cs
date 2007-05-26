@@ -200,6 +200,11 @@ namespace Server.Items
 
 				Effects.SendMovingEffect( from, to, m_Potion.ItemID & 0x3FFF, 7, 0, false, false, m_Potion.Hue, 0 );
 
+				if( m_Potion.Amount > 1 )
+				{
+					Mobile.LiftItemDupe( m_Potion, 1 );
+				}
+
 				m_Potion.Internalize();
 				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( m_Potion.Reposition_OnTick ), new object[]{ from, p, map } );
 			}
@@ -210,7 +215,7 @@ namespace Server.Items
 			if ( Deleted )
 				return;
 
-			Delete();
+			Consume();
 
 			for ( int i = 0; m_Users != null && i < m_Users.Count; ++i )
 			{

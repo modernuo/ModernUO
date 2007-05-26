@@ -6,16 +6,17 @@ using Server.Items;
 
 namespace Server.Spells.Third
 {
-	public class TelekinesisSpell : Spell
+	public class TelekinesisSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Telekinesis", "Ort Por Ylem",
-				SpellCircle.Third,
 				203,
 				9031,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public TelekinesisSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

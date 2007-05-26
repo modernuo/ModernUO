@@ -10,17 +10,18 @@ using Server.Spells.Seventh;
 
 namespace Server.Spells.Fifth
 {
-	public class IncognitoSpell : Spell
+	public class IncognitoSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Incognito", "Kal In Ex",
-				SpellCircle.Fifth,
 				206,
 				9002,
 				Reagent.Bloodmoss,
 				Reagent.Garlic,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public IncognitoSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

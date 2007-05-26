@@ -209,19 +209,30 @@ namespace Server.Items
 			if ( item is BasePotion )
 			{
 				BasePotion pot = (BasePotion)item;
+                int toHold = Math.Min( 100 - m_Held, pot.Amount );
 
-				if ( m_Held == 0 )
+                
+				if ( toHold <= 0 )
 				{
-					if ( GiveBottle( from ) )
+					from.SendLocalizedMessage( 502233 ); // The keg will not hold any more!
+					return false;
+				}
+				else if ( m_Held == 0 )
+				{
+					if ( GiveBottle( from, toHold ) )
 					{
 						m_Type = pot.PotionEffect;
-						Held = 1;
+						Held = toHold;
 
 						from.PlaySound( 0x240 );
 
 						from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
 
-						item.Delete();
+                        item.Consume( toHold );
+
+						if( !item.Deleted )
+							item.Bounce( from );
+
 						return true;
 					}
 					else
@@ -235,23 +246,21 @@ namespace Server.Items
 					from.SendLocalizedMessage( 502236 ); // You decide that it would be a bad idea to mix different types of potions.
 					return false;
 				}
-				else if ( m_Held >= 100 )
-				{
-					from.SendLocalizedMessage( 502233 ); // The keg will not hold any more!
-					return false;
-				}
 				else
 				{
-					if ( GiveBottle( from ) )
+					if ( GiveBottle( from, toHold ) )
 					{
-						++Held;
-						item.Delete();
+						Held += toHold;
 
 						from.PlaySound( 0x240 );
 
 						from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
 
-						item.Delete();
+						item.Consume( toHold );
+
+						if( !item.Deleted )
+							item.Bounce( from );
+
 						return true;
 					}
 					else
@@ -268,11 +277,11 @@ namespace Server.Items
 			}
 		}
 
-		public bool GiveBottle( Mobile m )
+		public bool GiveBottle( Mobile m, int amount )
 		{
 			Container pack = m.Backpack;
 
-			Bottle bottle = new Bottle();
+			Bottle bottle = new Bottle( amount );
 
 			if ( pack == null || !pack.TryDropItem( m, bottle, false ) )
 			{

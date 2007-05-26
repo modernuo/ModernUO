@@ -5,17 +5,18 @@ using Server.Network;
 
 namespace Server.Spells.Fourth
 {
-	public class CurseSpell : Spell
+	public class CurseSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Curse", "Des Sanct",
-				SpellCircle.Fourth,
 				227,
 				9031,
 				Reagent.Nightshade,
 				Reagent.Garlic,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		public CurseSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

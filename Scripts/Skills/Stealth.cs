@@ -65,20 +65,25 @@ namespace Server.SkillHandlers
 				m.SendLocalizedMessage( 502726 ); // You are not hidden well enough.  Become better at hiding.
 				m.RevealingAction();
 			}
+			else if( !m.CanBeginAction( typeof( Stealth ) ) )
+			{
+				m.SendLocalizedMessage( 1063086 ); // You cannot use this skill right now.
+				m.RevealingAction();
+			}
 			else
 			{
 				int armorRating = GetArmorRating( m );
 
-				if ( armorRating >= (Core.AOS ? 42 : 26) )	//I have a hunch '42' was chosen cause someone's a fan of DNA
+				if( armorRating >= (Core.AOS ? 42 : 26) )	//I have a hunch '42' was chosen cause someone's a fan of DNA
 				{
 					m.SendLocalizedMessage( 502727 ); // You could not hope to move quietly wearing this much armor.
 					m.RevealingAction();
 				}
-				else if ( m.CheckSkill( SkillName.Stealth, -20.0 + (armorRating * 2), (Core.AOS ? 60.0 : 80.0) + (armorRating * 2) ) )
+				else if( m.CheckSkill( SkillName.Stealth, -20.0 + (armorRating * 2), (Core.AOS ? 60.0 : 80.0) + (armorRating * 2) ) )
 				{
 					int steps = (int)(m.Skills[SkillName.Stealth].Value / (Core.AOS ? 5.0 : 10.0));
 
-					if ( steps < 1 )
+					if( steps < 1 )
 						steps = 1;
 
 					m.AllowedStealthSteps = steps;

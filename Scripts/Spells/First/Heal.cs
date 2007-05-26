@@ -6,17 +6,18 @@ using Server.Mobiles;
 
 namespace Server.Spells.First
 {
-	public class HealSpell : Spell
+	public class HealSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Heal", "In Mani",
-				SpellCircle.First,
 				224,
 				9061,
 				Reagent.Garlic,
 				Reagent.Ginseng,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public HealSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -69,7 +70,8 @@ namespace Server.Spells.First
 					toHeal += Utility.Random( 1, 5 );
 				}
 
-				m.Heal( toHeal );
+				//m.Heal( toHeal, Caster );
+				SpellHelper.Heal( toHeal, m, Caster );
 
 				m.FixedParticles( 0x376A, 9, 32, 5005, EffectLayer.Waist );
 				m.PlaySound( 0x1F2 );

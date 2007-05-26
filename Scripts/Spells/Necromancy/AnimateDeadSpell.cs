@@ -13,12 +13,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Animate Dead", "Uus Corp",
-				SpellCircle.Fourth, // 0.5 + 1.0 = 1.5s base cast delay
 				203,
 				9031,
 				Reagent.GraveDust,
 				Reagent.DaemonBlood
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 40.0; } }
 		public override int RequiredMana{ get{ return 23; } }

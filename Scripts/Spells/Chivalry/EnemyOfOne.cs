@@ -12,10 +12,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Enemy of One", "Forul Solum",
-				SpellCircle.Second, // 0 + 0.5 = 0.5s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.5 ); } }
 
 		public override double RequiredSkill{ get{ return 45.0; } }
 		public override int RequiredMana{ get{ return 20; } }

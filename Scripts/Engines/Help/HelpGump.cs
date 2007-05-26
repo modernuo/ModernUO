@@ -298,7 +298,7 @@ namespace Server.Engines.Help
 						}
 						else
 						{
-							from.MoveToWorld( new Point3D( 3618, 2587, 0 ), Map.Trammel );
+							from.MoveToWorld( new Point3D( 3503, 2574, 14 ), Map.Trammel );
 						}
 					}
 

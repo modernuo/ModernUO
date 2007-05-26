@@ -11,10 +11,11 @@ namespace Server.Spells.Bushido
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Evasion", null,
-				SpellCircle.First, // 0 + 0.25 = 0.25s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.25 ); } }
 
 		public override double RequiredSkill { get { return 60.0; } }
 		public override int RequiredMana { get { return 10; } }

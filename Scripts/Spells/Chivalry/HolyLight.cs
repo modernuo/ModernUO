@@ -10,10 +10,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Holy Light", "Augus Luminos",
-				SpellCircle.Seventh, // 0 + 1.75 = 1.75s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.75 ); } }
 
 		public override double RequiredSkill{ get{ return 55.0; } }
 		public override int RequiredMana{ get{ return 10; } }

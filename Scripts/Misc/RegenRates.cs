@@ -42,7 +42,7 @@ namespace Server.Misc
 
 		private static bool CheckTransform( Mobile m, Type type )
 		{
-			return TransformationSpell.UnderTransformation( m, type );
+			return TransformationSpellHelper.UnderTransformation( m, type );
 		}
 
 		private static bool CheckAnimal( Mobile m, Type type )

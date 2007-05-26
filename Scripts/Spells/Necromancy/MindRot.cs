@@ -10,13 +10,14 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mind Rot", "Wis An Ben",
-				SpellCircle.Fourth, // 0.5 + 1.0 = 1.5s base cast delay
 				203,
 				9031,
 				Reagent.BatWing,
 				Reagent.PigIron,
 				Reagent.DaemonBlood
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 30.0; } }
 		public override int RequiredMana{ get{ return 17; } }
@@ -50,6 +51,7 @@ namespace Server.Spells.Necromancy
 				m.FixedParticles( 0x373A, 1, 17, 9903, 15, 4, EffectLayer.Head );
 
 				TimeSpan duration = TimeSpan.FromSeconds( (((GetDamageSkill( Caster ) - GetResistSkill( m )) / 5.0) + 20.0) * (m.Player ? 1.0 : 2.0 ) );
+				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );	//Skill check for gain
 
 				if ( m.Player )
 					SetMindRotScalar( Caster, m, 1.25, duration );

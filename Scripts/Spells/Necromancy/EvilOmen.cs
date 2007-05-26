@@ -11,12 +11,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Evil Omen", "Pas Tym An Sanct",
-				SpellCircle.First, // 0.5 + 0.25 = 0.75s base cast delay
 				203,
 				9031,
 				Reagent.BatWing,
 				Reagent.NoxCrystal
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.75 ); } }
 
 		public override double RequiredSkill{ get{ return 20.0; } }
 		public override int RequiredMana{ get{ return 11; } }

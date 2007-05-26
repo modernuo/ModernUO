@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Engines.Craft;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -51,7 +52,7 @@ namespace Server.Items
 		{
 			m_PotionEffect = effect;
 
-			Stackable = false;
+			Stackable = Core.ML;
 			Weight = 1.0;
 		}
 
@@ -94,7 +95,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 
 			writer.Write( (int) m_PotionEffect );
 		}
@@ -107,12 +108,16 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 1:
 				case 0:
 				{
 					m_PotionEffect = (PotionEffect)reader.ReadInt();
 					break;
 				}
 			}
+
+			if( version ==  0 )
+				Stackable = Core.ML;
 		}
 
 		public abstract void Drink( Mobile from );
@@ -156,6 +161,15 @@ namespace Server.Items
 
 			return AOS.Scale( v, 100 + AosAttributes.GetValue( m, AosAttribute.EnhancePotions ) );
 		}
+
+		public override bool StackWith( Mobile from, Item dropped, bool playSound )
+		{
+			if( dropped is BasePotion && ((BasePotion)dropped).m_PotionEffect == m_PotionEffect )
+				return base.StackWith( from, dropped, playSound );
+
+			return false;
+		}
+
 		#region ICraftable Members
 
 		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
@@ -166,11 +180,11 @@ namespace Server.Items
 
 				if ( pack != null )
 				{
-					Item[] kegs = pack.FindItemsByType( typeof( PotionKeg ), true );
+					List<PotionKeg> kegs = pack.FindItemsByType<PotionKeg>();
 
-					for ( int i = 0; i < kegs.Length; ++i )
+					for ( int i = 0; i < kegs.Count; ++i )
 					{
-						PotionKeg keg = kegs[i] as PotionKeg;
+						PotionKeg keg = kegs[i];
 
 						if ( keg == null )
 							continue;
@@ -183,7 +197,7 @@ namespace Server.Items
 
 						++keg.Held;
 
-						Delete();
+						Consume();
 						from.AddToBackpack( new Bottle() );
 
 						return -1; // signal placed in keg

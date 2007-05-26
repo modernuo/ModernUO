@@ -6,11 +6,10 @@ using Server.Misc;
 
 namespace Server.Spells.Sixth
 {
-	public class ParalyzeFieldSpell : Spell
+	public class ParalyzeFieldSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Paralyze Field", "In Ex Grav",
-				SpellCircle.Sixth,
 				230,
 				9012,
 				false,
@@ -18,6 +17,8 @@ namespace Server.Spells.Sixth
 				Reagent.Ginseng,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public ParalyzeFieldSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

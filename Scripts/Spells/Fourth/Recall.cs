@@ -9,17 +9,18 @@ using Server.Spells.Necromancy;
 
 namespace Server.Spells.Fourth
 {
-	public class RecallSpell : Spell
+	public class RecallSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Recall", "Kal Ort Por",
-				SpellCircle.Fourth,
 				239,
 				9031,
 				Reagent.BlackPearl,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		private RunebookEntry m_Entry;
 		private Runebook m_Book;
@@ -36,7 +37,7 @@ namespace Server.Spells.Fourth
 
 		public override void GetCastSkills( out double min, out double max )
 		{
-			if ( TransformationSpell.UnderTransformation( Caster, typeof( WraithFormSpell ) ) )
+			if ( TransformationSpellHelper.UnderTransformation( Caster, typeof( WraithFormSpell ) ) )
 				min = max = 0;
 			else if( Core.SE && m_Book != null )	//recall using Runebook charge
 				min = max = 0;

@@ -12,10 +12,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Dispel Evil", "Dispiro Malas",
-				SpellCircle.First, // 0 + 0.25 = 0.25s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.25 ); } }
 
 		public override double RequiredSkill{ get{ return 35.0; } }
 		public override int RequiredMana{ get{ return 10; } }
@@ -93,7 +94,8 @@ namespace Server.Spells.Chivalry
 						}
 					}
 
-					if ( TransformationSpell.GetContext( m ) != null )
+					TransformContext context = TransformationSpellHelper.GetContext( m );
+					if( context != null && context.Spell is NecromancerSpell )	//Trees are not evil!	TODO: OSI confirm?
 					{
 						// transformed ..
 

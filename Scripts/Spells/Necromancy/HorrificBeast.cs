@@ -10,12 +10,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Horrific Beast", "Rel Xen Vas Bal",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.BatWing,
 				Reagent.DaemonBlood
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 40.0; } }
 		public override int RequiredMana{ get{ return 11; } }
@@ -26,10 +27,17 @@ namespace Server.Spells.Necromancy
 		{
 		}
 
-		public override void PlayEffect( Mobile m )
+		public override void DoEffect( Mobile m )
 		{
 			m.PlaySound( 0x165 );
 			m.FixedParticles( 0x3728, 1, 13, 9918, 92, 3, EffectLayer.Head );
+
+			m.Delta( MobileDelta.WeaponDamage );
+		}
+
+		public override void RemoveEffect( Mobile m )
+		{
+			m.Delta( MobileDelta.WeaponDamage );
 		}
 	}
 }

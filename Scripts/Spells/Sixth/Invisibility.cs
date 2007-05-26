@@ -6,16 +6,17 @@ using Server.Items;
 
 namespace Server.Spells.Sixth
 {
-	public class InvisibilitySpell : Spell
+	public class InvisibilitySpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Invisibility", "An Lor Xen",
-				SpellCircle.Sixth,
 				206,
 				9002,
 				Reagent.Bloodmoss,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public InvisibilitySpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

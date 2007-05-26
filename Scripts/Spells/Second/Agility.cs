@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class AgilitySpell : Spell
+	public class AgilitySpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Agility", "Ex Uus",
-				SpellCircle.Second,
 				212,
 				9061,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public AgilitySpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

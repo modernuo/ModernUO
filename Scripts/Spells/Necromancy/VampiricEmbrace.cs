@@ -10,13 +10,14 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Vampiric Embrace", "Rel Xen An Sanct",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.BatWing,
 				Reagent.NoxCrystal,
 				Reagent.PigIron
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 99.0; } }
 		public override int RequiredMana{ get{ return 23; } }
@@ -43,7 +44,7 @@ namespace Server.Spells.Necromancy
 			}
 		}
 
-		public override void PlayEffect( Mobile m )
+		public override void DoEffect( Mobile m )
 		{
 			Effects.SendLocationParticles( EffectItem.Create( m.Location, m.Map, EffectItem.DefaultDuration ), 0x373A, 1, 17, 1108, 7, 9914, 0 );
 			Effects.SendLocationParticles( EffectItem.Create( m.Location, m.Map, EffectItem.DefaultDuration ), 0x376A, 1, 22, 67, 7, 9502, 0 );

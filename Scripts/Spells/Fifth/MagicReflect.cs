@@ -6,17 +6,18 @@ using Server.Network;
 
 namespace Server.Spells.Fifth
 {
-	public class MagicReflectSpell : Spell
+	public class MagicReflectSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Magic Reflection", "In Jux Sanct",
-				SpellCircle.Fifth,
 				242,
 				9012,
 				Reagent.Garlic,
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public MagicReflectSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

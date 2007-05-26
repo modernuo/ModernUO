@@ -21,7 +21,7 @@ namespace Server.Misc
 			m_Givers.Add( giver );
 		}
 
-		public static void Configure()
+		public static void Initialize()
 		{
 			EventSink.Login += new LoginEventHandler( EventSink_Login );
 		}

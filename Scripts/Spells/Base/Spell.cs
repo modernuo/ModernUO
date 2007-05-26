@@ -7,6 +7,8 @@ using Server.Spells.Second;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using System.Collections.Generic;
+using Server.Spells.Spellweaving;
+using Server.Spells.Bushido;
 
 namespace Server.Spells
 {
@@ -23,7 +25,6 @@ namespace Server.Spells
 		public SpellInfo Info{ get{ return m_Info; } }
 		public string Name{ get{ return m_Info.Name; } }
 		public string Mantra{ get{ return m_Info.Mantra; } }
-		public SpellCircle Circle{ get{ return m_Info.Circle; } }
 		public Type[] Reagents{ get{ return m_Info.Reagents; } }
 		public Item Scroll{ get{ return m_Scroll; } }
 		public DateTime StartCastTime { get { return m_StartCastTime; } }
@@ -46,65 +47,55 @@ namespace Server.Spells
         //the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
 		//of course, two MA's won't.
 
-		private static Dictionary<Mobile, List<DelayedDamageContext>> m_ContextTable = new Dictionary<Mobile, List<DelayedDamageContext>>();
+		private static Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable = new Dictionary<Type, DelayedDamageContextWrapper>();
 
-		private class DelayedDamageContext {
-			public Mobile Target;
-			public Type Type;
-			public Timer Timer;
+		private class DelayedDamageContextWrapper
+		{
+			private Dictionary<Mobile, Timer> m_Contexts = new Dictionary<Mobile, Timer>();
 
-			public DelayedDamageContext( Mobile target, Type type, Timer timer ) {
-				Target = target;
-				Type = type;
-				Timer = timer;
-			}
-		}
-			
-        public void StartDelayedDamageContext( Mobile target, Timer timer )
-        {
-            if( DelayedDamageStacking )
-                return; //Sanity
-
-			List<DelayedDamageContext> contexts;
-			Type type = this.GetType();
-
-			if( !m_ContextTable.TryGetValue( m_Caster, out contexts ) )
-				contexts = new List<DelayedDamageContext>();
-			else {
-				for ( int i = 0; i < contexts.Count; i++ ) {
-					DelayedDamageContext ddc = contexts[i];
-
-					if ( ddc.Target == target && ddc.Type == type ) {
-						ddc.Timer.Stop();
-						contexts.RemoveAt( i );
-						break;
-					}
+			public void Add( Mobile m, Timer t )
+			{
+				Timer oldTimer;
+				if( m_Contexts.TryGetValue( m, out oldTimer ) )
+				{
+					oldTimer.Stop();
+					m_Contexts.Remove( m );
 				}
+
+				m_Contexts.Add( m, t );
 			}
 
-			contexts.Add( new DelayedDamageContext( target, type, timer ) );
+			public void Remove( Mobile m )
+			{
+				m_Contexts.Remove( m );
+			}
 		}
 
-        public void RemoveDelayedDamageContext( Mobile target )
-        {
-			List<DelayedDamageContext> contexts;
-			Type type = this.GetType();
+		public void StartDelayedDamageContext( Mobile m, Timer t )
+		{
+			if( DelayedDamageStacking )
+				return; //Sanity
 
-			if( !m_ContextTable.TryGetValue( m_Caster, out contexts ) )
+			DelayedDamageContextWrapper contexts;
+
+			if( !m_ContextTable.TryGetValue( GetType(), out contexts ) )
+			{
+				contexts = new DelayedDamageContextWrapper();
+				m_ContextTable.Add( GetType(), contexts );
+			}
+
+			contexts.Add( m, t );
+		}
+
+		public void RemoveDelayedDamageContext( Mobile m )
+		{
+			DelayedDamageContextWrapper contexts;
+
+			if( !m_ContextTable.TryGetValue( GetType(), out contexts ) )
 				return;
 
-			for ( int i = 0; i < contexts.Count; i++ ) {
-				DelayedDamageContext ddc = contexts[i];
-
-				if ( ddc.Target == target && ddc.Type == type ) {
-					contexts.RemoveAt( i );
-					break;
-				}
-			}
-
-			if ( contexts.Count == 0 )
-				m_ContextTable.Remove( m_Caster );
-        }
+			contexts.Remove( m );
+		}
 
 		public Spell( Mobile caster, Item scroll, SpellInfo info )
 		{
@@ -146,7 +137,13 @@ namespace Server.Spells
 			// PvP spell damage increase cap of 15% from an item’s magic property
 			if ( playerVsPlayer && sdiBonus > 15 )
 				sdiBonus = 15;
+
 			damageBonus += sdiBonus;
+
+			TransformContext context = TransformationSpellHelper.GetContext( Caster );
+
+			if( context != null && context.Spell is ReaperFormSpell )
+				damageBonus += ((ReaperFormSpell)context.Spell).SpellDamageBonus;
 
 			damage = AOS.Scale( damage, 100 + damageBonus );
 
@@ -159,27 +156,6 @@ namespace Server.Spells
 
 			return damage / 100;
 		}
-
-		/*
-		public virtual double GetAosDamage( int min, int random, double div )
-		{
-			double scale = 1.0;
-
-			scale += GetInscribeSkill( m_Caster ) * 0.001;
-
-			if ( Caster.Player )
-			{
-				scale += Caster.Int * 0.001;
-				scale += AosAttributes.GetValue( m_Caster, AosAttribute.SpellDamage ) * 0.01;
-			}
-
-			int baseDamage = min + (int)(GetDamageSkill( m_Caster ) / div);
-
-			double damage = Utility.RandomMinMax( baseDamage, baseDamage + random );
-
-			return damage * scale;
-		}
-		*/
 
 		public virtual bool IsCasting{ get{ return m_State == SpellState.Casting; } }
 
@@ -263,34 +239,7 @@ namespace Server.Spells
 			if ( pack.ConsumeTotal( m_Info.Reagents, m_Info.Amounts ) == -1 )
 				return true;
 
-			if ( GetType().BaseType == typeof( Spell ) )
-			{
-				if ( ArcaneGem.ConsumeCharges( m_Caster, ( Core.SE ? 1 : 1 + (int)Circle ) ) )
-					return true;
-			}
-
 			return false;
-		}
-
-		public virtual bool CheckResisted( Mobile target )
-		{
-			double n = GetResistPercent( target );
-
-			n /= 100.0;
-
-			if ( n <= 0.0 )
-				return false;
-
-			if ( n >= 1.0 )
-				return true;
-
-			int maxSkill = (1 + (int)Circle) * 10;
-			maxSkill += (1 + ((int)Circle / 6)) * 25;
-
-			if ( target.Skills[SkillName.MagicResist].Value < maxSkill )
-				target.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );
-
-			return ( n >= Utility.RandomDouble() );
 		}
 
 		public virtual double GetInscribeSkill( Mobile m )
@@ -323,39 +272,9 @@ namespace Server.Spells
 			return m.Skills[DamageSkill].Value;
 		}
 
-		public virtual int GetResistFixed( Mobile m )
-		{
-			int maxSkill = (1 + (int)Circle) * 10;
-			maxSkill += (1 + ((int)Circle / 6)) * 25;
-
-			if ( m.Skills[SkillName.MagicResist].Value < maxSkill )
-				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );
-
-			return m.Skills[SkillName.MagicResist].Fixed;
-		}
-
 		public virtual double GetResistSkill( Mobile m )
 		{
-			int maxSkill = (1 + (int)Circle) * 10;
-			maxSkill += (1 + ((int)Circle / 6)) * 25;
-
-			if ( m.Skills[SkillName.MagicResist].Value < maxSkill )
-				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );
-
 			return m.Skills[SkillName.MagicResist].Value;
-		}
-
-		public virtual double GetResistPercentForCircle( Mobile target, SpellCircle circle )
-		{
-			double firstPercent = target.Skills[SkillName.MagicResist].Value / 5.0;
-			double secondPercent = target.Skills[SkillName.MagicResist].Value - (((m_Caster.Skills[CastSkill].Value - 20.0) / 5.0) + (1 + (int)circle) * 5.0);
-
-			return ( firstPercent > secondPercent ? firstPercent : secondPercent ) / 2.0; // Seems should be about half of what stratics says.
-		}
-
-		public virtual double GetResistPercent( Mobile target )
-		{
-			return GetResistPercentForCircle( target, m_Info.Circle );
 		}
 
 		public virtual double GetDamageScalar( Mobile target )
@@ -397,6 +316,9 @@ namespace Server.Spells
 
 			target.Region.SpellDamageScalar( m_Caster, target, ref scalar );
 
+			if( Evasion.CheckSpellEvasion( target ) )	//Only single target spells an be evaded
+				scalar = 0;
+
 			return scalar;
 		}
 
@@ -417,7 +339,7 @@ namespace Server.Spells
 				}
 
 
-				TransformContext context = TransformationSpell.GetContext( defender );
+				TransformContext context = TransformationSpellHelper.GetContext( defender );
 
 				if( (atkBook.Slayer == SlayerName.Silver || atkBook.Slayer2 == SlayerName.Silver) && context != null && context.Type != typeof( HorrificBeastSpell ) )
 					scalar +=.25; // Every necromancer transformation other than horrific beast take an additional 25% damage
@@ -481,7 +403,7 @@ namespace Server.Spells
 
 			if ( m_State == SpellState.Casting )
 			{
-				if ( !firstCircle && Circle == SpellCircle.First && !Core.AOS )
+				if( !firstCircle && !Core.AOS && this is MagerySpell &&  ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
 				m_State = SpellState.None;
@@ -502,7 +424,7 @@ namespace Server.Spells
 			}
 			else if ( m_State == SpellState.Sequencing )
 			{
-				if ( !firstCircle && Circle == SpellCircle.First && !Core.AOS )
+				if( !firstCircle && !Core.AOS && this is MagerySpell &&  ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
 				m_State = SpellState.None;
@@ -564,7 +486,7 @@ namespace Server.Spells
 			{
 				m_Caster.SendLocalizedMessage( 502642 ); // You are already casting a spell.
 			}
-			else if ( BlockedByHorrificBeast && TransformationSpell.UnderTransformation( m_Caster, typeof( HorrificBeastSpell ) ) || ( BlockedByAnimalForm && AnimalForm.UnderTransformation( m_Caster ) ))
+			else if ( BlockedByHorrificBeast && TransformationSpellHelper.UnderTransformation( m_Caster, typeof( HorrificBeastSpell ) ) || ( BlockedByAnimalForm && AnimalForm.UnderTransformation( m_Caster ) ))
 			{
 				m_Caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
 			}
@@ -636,19 +558,9 @@ namespace Server.Spells
 		{
 		}
 
-		private const double ChanceOffset = 20.0, ChanceLength = 100.0 / 7.0;
-
 		public virtual void GetCastSkills( out double min, out double max )
 		{
-			int circle = (int)m_Info.Circle;
-
-			if ( m_Scroll != null )
-				circle -= 2;
-
-			double avg = ChanceLength * circle;
-
-			min = avg - ChanceOffset;
-			max = avg + ChanceOffset;
+			min = max = 0;	//Intended but not required for overriding.
 		}
 
 		public virtual bool CheckFizzle()
@@ -663,15 +575,7 @@ namespace Server.Spells
 			return Caster.CheckSkill( CastSkill, minSkill, maxSkill );
 		}
 
-		private static int[] m_ManaTable = new int[]{ 4, 6, 9, 11, 14, 20, 40, 50 };
-
-		public virtual int GetMana()
-		{
-			if ( m_Scroll is BaseWand )
-				return 0;
-
-			return m_ManaTable[(int)Circle];
-		}
+		public abstract int GetMana();
 
 		public virtual int ScaleMana( int mana )
 		{
@@ -704,7 +608,6 @@ namespace Server.Spells
 		}
 
 		public virtual int CastRecoveryBase{ get{ return 6; } }
-		public virtual int CastRecoveryCircleScalar{ get{ return 0; } }
 		public virtual int CastRecoveryFastScalar{ get{ return 1; } }
 		public virtual int CastRecoveryPerSecond{ get{ return 4; } }
 		public virtual int CastRecoveryMinimum{ get{ return 0; } }
@@ -716,10 +619,11 @@ namespace Server.Spells
 
 			int fcr = AosAttributes.GetValue( m_Caster, AosAttribute.CastRecovery );
 
-			int circleDelay = CastRecoveryCircleScalar * (1 + (int)Circle); // Note: Circle is 0-based so we must offset
+			fcr -= ThunderstormSpell.GetCastRecoveryMalus( m_Caster );
+
 			int fcrDelay = -(CastRecoveryFastScalar * fcr);
 
-			int delay = CastRecoveryBase + circleDelay + fcrDelay;
+			int delay = CastRecoveryBase + fcrDelay;
 
 			if ( delay < CastRecoveryMinimum )
 				delay = CastRecoveryMinimum;
@@ -727,19 +631,23 @@ namespace Server.Spells
 			return TimeSpan.FromSeconds( (double)delay / CastRecoveryPerSecond );
 		}
 
-		public virtual int CastDelayBase{ get{ return 3; } }
-		public virtual int CastDelayCircleScalar{ get{ return 1; } }
-		public virtual int CastDelayFastScalar{ get{ return 1; } }
-		public virtual int CastDelayPerSecond{ get{ return 4; } }
-		public virtual int CastDelayMinimum{ get{ return 1; } }
+
+
+		public abstract TimeSpan CastDelayBase { get; }
+
+		public virtual double CastDelayFastScalar { get { return 1; } }
+		public virtual double CastDelaySecondsPerTick { get { return 0.25; } }
+		public virtual TimeSpan CastDelayMinimum { get { return TimeSpan.FromSeconds( 0.25 ); } }
+
+		//public virtual int CastDelayBase{ get{ return 3; } }
+		//public virtual int CastDelayFastScalar{ get{ return 1; } }
+		//public virtual int CastDelayPerSecond{ get{ return 4; } }
+		//public virtual int CastDelayMinimum{ get{ return 1; } }
 
 		public virtual TimeSpan GetCastDelay()
 		{
 			if ( m_Scroll is BaseWand )
 				return TimeSpan.Zero;
-
-			if ( !Core.AOS )
-				return TimeSpan.FromSeconds( 0.5 + (0.25 * (int)Circle) );
 
 			// Faster casting cap of 2 (if not using the protection spell) 
 			// Faster casting cap of 0 (if using the protection spell) 
@@ -758,17 +666,21 @@ namespace Server.Spells
 			if ( ProtectionSpell.Registry.Contains( m_Caster ) )
 				fc -= 2;
 
-			// Circle is 0-based but we must not offset, first circle spells are cast at base delay.
-			int circleDelay = CastDelayCircleScalar * (int)Circle;
+			if( EssenceOfWindSpell.IsDebuffed( m_Caster ) )
+				fc -= EssenceOfWindSpell.GetFCMalus( m_Caster );
 
-			int fcDelay = -(CastDelayFastScalar * fc);
+			TimeSpan baseDelay = CastDelayBase;
 
-			int delay = CastDelayBase + circleDelay + fcDelay;
+			TimeSpan fcDelay = TimeSpan.FromSeconds( -(CastDelayFastScalar * fc * CastDelaySecondsPerTick) );
+
+			//int delay = CastDelayBase + circleDelay + fcDelay;
+			TimeSpan delay = baseDelay + fcDelay;
 
 			if ( delay < CastDelayMinimum )
 				delay = CastDelayMinimum;
 
-			return TimeSpan.FromSeconds( (double)delay / CastDelayPerSecond );
+			//return TimeSpan.FromSeconds( (double)delay / CastDelayPerSecond );
+			return delay;
 		}
 
 		public virtual void FinishSequence()
@@ -840,7 +752,7 @@ namespace Server.Spells
 				if ( karma != 0 )
 					Misc.Titles.AwardKarma( Caster, karma, true );
 
-				if ( TransformationSpell.UnderTransformation( m_Caster, typeof( VampiricEmbraceSpell ) ) )
+				if( TransformationSpellHelper.UnderTransformation( m_Caster, typeof( VampiricEmbraceSpell ) ) )
 				{
 					bool garlic = false;
 

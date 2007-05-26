@@ -4,15 +4,16 @@ using Server.Network;
 
 namespace Server.Spells.Third
 {
-	public class FireballSpell : Spell
+	public class FireballSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Fireball", "Vas Flam",
-				SpellCircle.Third,
 				203,
 				9041,
 				Reagent.BlackPearl
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public FireballSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

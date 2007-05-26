@@ -11,6 +11,7 @@ using Server.Spells.Ninjitsu;
 using Server.Factions;
 using Server.Engines.Craft;
 using System.Collections.Generic;
+using Server.Spells.Spellweaving;
 
 namespace Server.Items
 {
@@ -865,11 +866,19 @@ namespace Server.Items
 				if( Feint.Registry.Contains( m ) )
 					bonus -= ((Feint.FeintTimer)Feint.Registry[m]).SwingSpeedReduction;
 
+				TransformContext context = TransformationSpellHelper.GetContext( m );
+
+				if( context != null && context.Spell is ReaperFormSpell )
+					bonus += ((ReaperFormSpell)context.Spell).SwingSpeedBonus;
+
 				int discordanceEffect = 0;
 
 				// Discordance gives a malus of -0/-28% to swing speed.
 				if ( SkillHandlers.Discordance.GetEffect( m, ref discordanceEffect ) )
 					bonus -= discordanceEffect;
+
+				if( EssenceOfWindSpell.IsDebuffed( m ) )
+					bonus -= EssenceOfWindSpell.GetSSIMalus( m );
 
 				if ( bonus > 60 )
 					bonus = 60;
@@ -1323,18 +1332,26 @@ namespace Server.Items
 			 * The following damage bonuses multiply damage by a factor.
 			 * Capped at x3 (300%).
 			 */
-			double factor = 1.0;
+			//double factor = 1.0;
+			int percentageBonus = 0;
 
 			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 			SpecialMove move = SpecialMove.GetCurrentMove( attacker );
 
-			if ( a != null )
-				factor *= a.DamageScalar;
+			if( a != null )
+			{
+				//factor *= a.DamageScalar;
+				percentageBonus += (int)(a.DamageScalar * 100) - 100;
+			}
 
-			if ( move != null )
-				factor *= move.GetDamageScalar( attacker, defender );
+			if( move != null )
+			{
+				//factor *= move.GetDamageScalar( attacker, defender );
+				percentageBonus += (int)(move.GetDamageScalar( attacker, defender ) * 100) - 100;
+			}
 
-			factor *= damageBonus;
+			//factor *= damageBonus;
+			percentageBonus += (int)(damageBonus * 100) - 100;
 
 			CheckSlayerResult cs = CheckSlayers( attacker, defender );
 
@@ -1343,7 +1360,8 @@ namespace Server.Items
 				if ( cs == CheckSlayerResult.Slayer )
 					defender.FixedEffect( 0x37B9, 10, 5 );
 
-				factor *= 2.0;
+				//factor *= 2.0;
+				percentageBonus += 100;
 			}
 
 			if ( !attacker.Player )
@@ -1352,8 +1370,11 @@ namespace Server.Items
 				{
 					PlayerMobile pm = (PlayerMobile)defender;
 
-					if ( pm.EnemyOfOneType != null && pm.EnemyOfOneType != attacker.GetType() )
-						factor *= 2.0;
+					if( pm.EnemyOfOneType != null && pm.EnemyOfOneType != attacker.GetType() )
+					{
+						//factor *= 2.0;
+						percentageBonus += 100;
+					}
 				}
 			}
 			else if ( !defender.Player )
@@ -1371,39 +1392,58 @@ namespace Server.Items
 					if ( pm.EnemyOfOneType == defender.GetType() )
 					{
 						defender.FixedEffect( 0x37B9, 10, 5, 1160, 0 );
-						factor *= 1.5;
+						//factor *= 1.5;
+						percentageBonus += 50;
 					}
 				}
 			}
 
 			int packInstinctBonus = GetPackInstinctBonus( attacker, defender );
 
-			if ( packInstinctBonus != 0 )
-				factor *= 1.0 + (double)packInstinctBonus / 100.0;
+			if( packInstinctBonus != 0 )
+			{
+				//factor *= 1.0 + (double)packInstinctBonus / 100.0;
+				percentageBonus += packInstinctBonus;
+			}
 
-			if ( m_InDoubleStrike )
-				factor *= 0.9; // 10% loss when attacking with double-strike
+			if( m_InDoubleStrike )
+			{
+				//factor *= 0.9; // 10% loss when attacking with double-strike
+				percentageBonus -= 10;
+			}
 
-			TransformContext context = TransformationSpell.GetContext( defender );
+			TransformContext context = TransformationSpellHelper.GetContext( defender );
 
-			if ( (m_Slayer == SlayerName.Silver || m_Slayer2 == SlayerName.Silver) && context != null && context.Type != typeof( HorrificBeastSpell ) )
-				factor *= 1.25; // Every necromancer transformation other than horrific beast takes an additional 25% damage
+			if( (m_Slayer == SlayerName.Silver || m_Slayer2 == SlayerName.Silver) && context != null && context.Spell is NecromancerSpell && context.Type != typeof( HorrificBeastSpell ) )
+			{
+				//factor *= 1.25; // Every necromancer transformation other than horrific beast takes an additional 25% damage
+				percentageBonus += 25;
+			}
 
 			if ( attacker is PlayerMobile && !(Core.ML && defender is PlayerMobile ))
 			{
-				PlayerMobile pmAttacker = (PlayerMobile) attacker;				
+				PlayerMobile pmAttacker = (PlayerMobile) attacker;
 
-				if ( pmAttacker.HonorActive && pmAttacker.InRange( defender, 1 ) )
-					factor *= 1.25;
+				if( pmAttacker.HonorActive && pmAttacker.InRange( defender, 1 ) )
+				{
+					//factor *= 1.25;
+					percentageBonus += 25;
+				}
 
-				if ( pmAttacker.SentHonorContext != null && pmAttacker.SentHonorContext.Target == defender )
-					pmAttacker.SentHonorContext.ApplyPerfectionDamageBonus( ref factor );
+				if( pmAttacker.SentHonorContext != null && pmAttacker.SentHonorContext.Target == defender )
+				{
+					//pmAttacker.SentHonorContext.ApplyPerfectionDamageBonus( ref factor );
+					percentageBonus += pmAttacker.SentHonorContext.PerfectionDamageBonus;
+				}
 			}
 
-			if ( factor > 3.0 )
-				factor = 3.0;
+			//if ( factor > 3.0 )
+			//	factor = 3.0;
 
-			damage = (int)(damage * factor);
+			percentageBonus = Math.Min( percentageBonus, 300 );
+
+			//damage = (int)(damage * factor);
+			damage = AOS.Scale( damage, 100 + percentageBonus );
 			#endregion
 
 			if ( attacker is BaseCreature )
@@ -1496,7 +1536,7 @@ namespace Server.Items
 				if ( m_Cursed )
 					lifeLeech += 50; // Additional 50% life leech for cursed weapons (necro spell)
 
-				context = TransformationSpell.GetContext( attacker );
+				context = TransformationSpellHelper.GetContext( attacker );
 
 				if ( context != null && context.Type == typeof( VampiricEmbraceSpell ) )
 					lifeLeech += 20; // Vampiric embrace gives an additional 20% life leech
@@ -1666,6 +1706,11 @@ namespace Server.Items
 
 				// SDI bonus
 				damageBonus += AosAttributes.GetValue( attacker, AosAttribute.SpellDamage );
+
+				TransformContext context = TransformationSpellHelper.GetContext( attacker );
+
+				if( context != null && context.Spell is ReaperFormSpell )
+					damageBonus += ((ReaperFormSpell)context.Spell).SpellDamageBonus;
 			}
 
 			damage = AOS.Scale( damage, 100 + damageBonus );
@@ -1753,7 +1798,7 @@ namespace Server.Items
 
 			attacker.DoHarmful( defender );
 
-			Spells.Spell sp = new Spells.Sixth.DispelSpell( attacker, null );
+			Spells.MagerySpell sp = new Spells.Sixth.DispelSpell( attacker, null );
 
 			if ( sp.CheckResisted( defender ) )
 			{
@@ -2092,7 +2137,7 @@ namespace Server.Items
 			int damageBonus = AosAttributes.GetValue( attacker, AosAttribute.WeaponDamage );
 
 			// Horrific Beast transformation gives a +25% bonus to damage.
-			if ( TransformationSpell.UnderTransformation( attacker, typeof( HorrificBeastSpell ) ) )
+			if( TransformationSpellHelper.UnderTransformation( attacker, typeof( HorrificBeastSpell ) ) )
 				damageBonus += 25;
 
 			// Divine Fury gives a +10% bonus to damage.
@@ -3296,12 +3341,18 @@ namespace Server.Items
 				if ( tool is BaseRunicTool )
 					((BaseRunicTool)tool).ApplyAttributesTo( this );
 
-				if ( quality == 2 )
+				if ( Quality == WeaponQuality.Exceptional )
 				{
 					if ( Attributes.WeaponDamage > 35 )
 						Attributes.WeaponDamage -= 20;
 					else
 						Attributes.WeaponDamage = 15;
+
+					if( Core.ML )
+					{
+						Attributes.WeaponDamage += (int)(from.Skills.ArmsLore.Value / 20);
+						from.CheckSkill( SkillName.ArmsLore, 0, 100 );
+					}
 				}
 			}
 			else if ( tool is BaseRunicTool )

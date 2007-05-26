@@ -102,12 +102,12 @@ namespace Server.Commands
 			{
 				if ( e.Length == 1 && !e.GetBoolean( 0 ) )
 				{
-					from.Send( SpeedBoost.Disabled );
+					from.Send( SpeedControl.Disable );
 					from.SendMessage( "Speed boost has been disabled." );
 				}
 				else
 				{
-					from.Send( SpeedBoost.Enabled );
+					from.Send( SpeedControl.MountSpeed );
 					from.SendMessage( "Speed boost has been enabled." );
 				}
 			}

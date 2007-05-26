@@ -634,23 +634,19 @@ namespace Server.Network
 		}
 	}
 
-	public sealed class SpeedBoost : Packet
+	public sealed class SpeedControl : Packet
 	{
-		public static readonly Packet Enabled = Packet.SetStatic( new SpeedBoost( true ) );
-		public static readonly Packet Disabled = Packet.SetStatic( new SpeedBoost( false ) );
+		public static readonly Packet WalkSpeed = Packet.SetStatic( new SpeedControl( 2 ) );
+		public static readonly Packet MountSpeed = Packet.SetStatic( new SpeedControl( 1 ) );
+		public static readonly Packet Disable = Packet.SetStatic( new SpeedControl( 0 ) );
 
-		public static Packet Instantiate( bool enable )
-		{
-			return (enable ? Enabled : Disabled);
-		}
-
-		public SpeedBoost( bool enable )
+		public SpeedControl( int speedControl )
 			: base( 0xBF )
 		{
 			EnsureCapacity( 3 );
 
 			m_Stream.Write( (short)0x26 );
-			m_Stream.Write( (bool)enable );
+			m_Stream.Write( (byte)speedControl );
 		}
 	}
 

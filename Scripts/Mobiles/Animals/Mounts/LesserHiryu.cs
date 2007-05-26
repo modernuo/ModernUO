@@ -13,13 +13,43 @@ namespace Server.Mobiles
 			return WeaponAbility.Dismount;
 		}
 
-		public override bool StatLossAfterTame{ get{ return true; } }
+		public override bool StatLossAfterTame { get { return true; } }
+
+		private static int GetHue()
+		{
+			int rand = Utility.Random( 527 );
+
+			/*
+
+			500	527	No Hue Color	94.88%	0
+			10	527	Green			1.90%	0x8295
+			10	527	Green			1.90%	0x8163	(Very Close to Above Green)	//this one is an approximation
+			5	527	Dark Green		0.95%	0x87D4
+			1	527	Valorite		0.19%	0x88AB
+			1	527	Midnight Blue	0.19%	0x8258
+
+			 * */
+
+			if( rand <= 0 )
+				return 0x8258;
+			else if( rand <= 1 )
+				return 0x88AB;
+			else if( rand <= 6 )
+				return 0x87D4;
+			else if( rand <= 16 )
+				return 0x8163;
+			else if( rand <= 26 )
+				return 0x8295;
+
+
+			return 0;
+		}
 
 		[Constructable]
-		public LesserHiryu() : base( "a lesser hiryu", 243, 0x3E94, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-			{
-			if ( 0.05 > Utility.RandomDouble() )
-				Hue = Utility.RandomList( 0x32, 0x37, 0x3C, 0x3D, 0x123, 0x294, 0x295, 0x47F, 0x482, 0x487, 0x48D, 0x490, 0x495, 0x55C, 0x8A0, 0x899, 0x89F ) | 0x8000;
+		public LesserHiryu()
+			: base( "a lesser hiryu", 243, 0x3E94, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		{
+			Hue = GetHue();
 
 			SetStr( 301, 410 );
 			SetDex( 171, 270 );
@@ -50,7 +80,7 @@ namespace Server.Mobiles
 			ControlSlots = 3;
 			MinTameSkill = 98.7;
 
-			if ( Utility.RandomDouble() < .33 )
+			if( Utility.RandomDouble() < .33 )
 				PackItem( Engines.Plants.Seed.RandomBonsaiSeed() );
 		}
 
@@ -89,24 +119,24 @@ namespace Server.Mobiles
 		public override double GetControlChance( Mobile m, bool useBaseSkill )
 		{
 			double skill = (useBaseSkill? m.Skills.Bushido.Base : m.Skills.Bushido.Value);
-			
-			if ( skill >= 90.0 )
+
+			if( skill >= 90.0 )
 				return 1.0;
 
 			return base.GetControlChance( m, useBaseSkill );
 		}
 
-		public override int TreasureMapLevel{ get{ return 3; } }
-		public override int Meat{ get{ return 16; } }
-		public override int Hides{ get{ return 60; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override int TreasureMapLevel { get { return 3; } }
+		public override int Meat { get { return 16; } }
+		public override int Hides { get { return 60; } }
+		public override FoodType FavoriteFood { get { return FoodType.Meat; } }
 		public override bool CanAngerOnTame { get { return true; } }
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if ( 0.1 > Utility.RandomDouble() )
+			if( 0.1 > Utility.RandomDouble() )
 			{
 				/* Grasping Claw
 				 * Start cliloc: 1070836
@@ -117,7 +147,7 @@ namespace Server.Mobiles
 
 				ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
-				if ( timer != null )
+				if( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070837 ); // The creature lands another blow in your weakened state.
@@ -145,7 +175,8 @@ namespace Server.Mobiles
 			private Mobile m_Mobile;
 			private ResistanceMod m_Mod;
 
-			public ExpireTimer( Mobile m, ResistanceMod mod, TimeSpan delay ) : base( delay )
+			public ExpireTimer( Mobile m, ResistanceMod mod, TimeSpan delay )
+				: base( delay )
 			{
 				m_Mobile = m;
 				m_Mod = mod;
@@ -166,20 +197,27 @@ namespace Server.Mobiles
 			}
 		}
 
-		public LesserHiryu( Serial serial ) : base( serial )
+		public LesserHiryu( Serial serial )
+			: base( serial )
 		{
 		}
 
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int)1 );
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if( version == 0 )
+				Timer.DelayCall( TimeSpan.Zero, delegate { Hue = GetHue(); } );
+
+			if( version <= 1 )
+				Timer.DelayCall( TimeSpan.Zero, delegate { InternalItem.Hue = this.Hue; } );
 		}
 	}
 }

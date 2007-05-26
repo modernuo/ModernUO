@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Third
 {
-	public class BlessSpell : Spell
+	public class BlessSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Bless", "Rel Sanct",
-				SpellCircle.Third,
 				203,
 				9061,
 				Reagent.Garlic,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public BlessSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -8,11 +8,10 @@ using Server.Mobiles;
 
 namespace Server.Spells.Seventh
 {
-	public class MassDispelSpell : Spell
+	public class MassDispelSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mass Dispel", "Vas An Ort",
-				SpellCircle.Seventh,
 				263,
 				9002,
 				Reagent.Garlic,
@@ -20,6 +19,8 @@ namespace Server.Spells.Seventh
 				Reagent.BlackPearl,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		public MassDispelSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

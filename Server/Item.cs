@@ -687,7 +687,8 @@ namespace Server
 			Stackable		= 0x08,
 			InQueue			= 0x10,
 			Insured			= 0x20,
-			PayedInsurance	= 0x40
+			PayedInsurance	= 0x40,
+			QuestItem		= 0x80
 		}
 
 		private class CompactInfo
@@ -1034,11 +1035,22 @@ namespace Server
 			if ( DisplayLootType )
 				AddLootTypeProperty( list );
 
-			if ( DisplayWeight ) {
+			if ( DisplayWeight )
 				AddWeightProperty( list );
-			}
+
+			if( QuestItem )
+				AddQuestItemProperty( list );
+
 
 			AppendChildNameProperties( list );
+		}
+
+		/// <summary>
+		/// Overridable. Adds the "Quest Item" property to the given <see cref="ObjectPropertyList" />.
+		/// </summary>
+		public virtual void AddQuestItemProperty( ObjectPropertyList list )
+		{
+			list.Add( 1072351 ); // Quest Item
 		}
 
 		/// <summary>
@@ -1204,6 +1216,8 @@ namespace Server
 				return DeathMoveResult.MoveToBackpack;
 			else if ( CheckNewbied() && parent.Kills < 5 )
 				return DeathMoveResult.MoveToBackpack;
+			else if( parent.Player && Nontransferable )
+				return DeathMoveResult.MoveToBackpack;
 			else
 				return DeathMoveResult.MoveToCorpse;
 		}
@@ -1217,6 +1231,8 @@ namespace Server
 			else if ( CheckBlessed( parent ) )
 				return DeathMoveResult.MoveToBackpack;
 			else if ( CheckNewbied() && parent.Kills < 5 )
+				return DeathMoveResult.MoveToBackpack;
+			else if( parent.Player && Nontransferable )
 				return DeathMoveResult.MoveToBackpack;
 			else
 				return DeathMoveResult.MoveToCorpse;
@@ -1491,7 +1507,7 @@ namespace Server
 			}
 		}
 
-		public virtual bool StackWith( Mobile from, Item dropped )
+		public bool StackWith( Mobile from, Item dropped )
 		{
 			return StackWith( from, dropped, true );
 		}
@@ -1969,7 +1985,7 @@ namespace Server
 				}
 			}
 
-			ImplFlag implFlags = ( m_Flags & ( ImplFlag.Visible | ImplFlag.Movable | ImplFlag.Stackable | ImplFlag.Insured | ImplFlag.PayedInsurance ) );
+			ImplFlag implFlags = ( m_Flags & ( ImplFlag.Visible | ImplFlag.Movable | ImplFlag.Stackable | ImplFlag.Insured | ImplFlag.PayedInsurance | ImplFlag.QuestItem ) );
 
 			if ( implFlags != ( ImplFlag.Visible | ImplFlag.Movable ) )
 				flags |= SaveFlag.ImplFlags;
@@ -2738,7 +2754,7 @@ namespace Server
 		{
 			get
 			{
-				return m_Hue;
+				return (QuestItem ? QuestItemHue : m_Hue);
 			}
 			set
 			{
@@ -2750,6 +2766,22 @@ namespace Server
 					Delta( ItemDelta.Update );
 				}
 			}
+		}
+
+		public virtual int QuestItemHue
+		{
+			get { return 0x04EA; }	//HMMMM... For EA?
+		}
+
+		public virtual bool Nontransferable
+		{
+			get { return QuestItem; }
+		}
+
+		public virtual void HandleInvalidTransfer( Mobile from )
+		{
+			if( QuestItem )
+				from.SendLocalizedMessage( 1074769 ); // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -2805,6 +2837,30 @@ namespace Server
 
 				return p;
 			}
+		}
+
+		public bool ParentsContain<T>() where T : Item
+		{
+			object p = m_Parent;
+
+			while( p is Item )
+			{
+				if( p is T )
+					return true;
+
+				Item item = (Item)p;
+
+				if( item.m_Parent == null )
+				{
+					break;
+				}
+				else
+				{
+					p = item.m_Parent;
+				}
+			}
+
+			return false;
 		}
 
 		public virtual void AddItem( Item item )
@@ -3289,7 +3345,7 @@ namespace Server
 			}
 		}
 
-      public virtual void OnAfterDuped( Item newItem )
+		public virtual void OnAfterDuped( Item newItem )
       {
       }
 
@@ -3351,6 +3407,8 @@ namespace Server
 				return p;
 			}
 		}
+
+		#region Location Location Location!
 
 		public virtual void OnLocationChange( Point3D oldLocation )
 		{
@@ -3463,6 +3521,7 @@ namespace Server
 			get{ return m_Location.m_Z; }
 			set{ Location = new Point3D( m_Location.m_X, m_Location.m_Y, value ); }
 		}
+		#endregion
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int ItemID
@@ -3633,6 +3692,12 @@ namespace Server
 
 		public virtual bool OnDroppedToMobile( Mobile from, Mobile target )
 		{
+			if( Nontransferable && from.Player && from.AccessLevel <= AccessLevel.GameMaster )
+			{
+				HandleInvalidTransfer( from );
+				return false;
+			}
+
 			return true;
 		}
 
@@ -3656,8 +3721,15 @@ namespace Server
 
 		public virtual bool OnDroppedInto( Mobile from, Container target, Point3D p )
 		{
-			if ( !from.OnDroppedItemInto( this, target, p ) )
+			if( !from.OnDroppedItemInto( this, target, p ) )
+			{
 				return false;
+			}
+			else if( Nontransferable && from.Player && target != from.Backpack && from.AccessLevel <= AccessLevel.GameMaster )
+			{
+				HandleInvalidTransfer( from );
+				return false;
+			}
 
 			return target.OnDragDropInto( from, this, p );
 		}
@@ -3674,6 +3746,11 @@ namespace Server
 				return false;
 			else if ( !from.OnDroppedItemOnto( this, target ) )
 				return false;
+			else if( Nontransferable && from.Player && from.AccessLevel <= AccessLevel.GameMaster )
+			{
+				HandleInvalidTransfer( from );
+				return false;
+			}
 			else
 				return target.OnDragDrop( from, this );
 		}
@@ -3703,6 +3780,12 @@ namespace Server
 
 		public virtual bool OnDroppedToWorld( Mobile from, Point3D p )
 		{
+			if( Nontransferable && from.Player && from.AccessLevel <= AccessLevel.GameMaster )
+			{
+				HandleInvalidTransfer( from );
+				return false;
+			}
+
 			return true;
 		}
 
@@ -4023,6 +4106,8 @@ namespace Server
 			to.Send( new MessageLocalizedAffix( Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", affixType, affix, args ) );
 		}
 
+		#region OnDoubleClick[...]
+
 		public virtual void OnDoubleClick( Mobile from )
 		{
 		}
@@ -4049,6 +4134,7 @@ namespace Server
 		{
 			from.SendLocalizedMessage( 500447 ); // That is not accessible.
 		}
+		#endregion
 
 		public virtual void OnSnoop( Mobile from )
 		{
@@ -4330,6 +4416,22 @@ namespace Server
 				this.Delete();
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool QuestItem
+		{
+			get { return GetFlag( ImplFlag.QuestItem ); }
+			set 
+			{ 
+				SetFlag( ImplFlag.QuestItem, value ); 
+
+				InvalidateProperties();
+
+				Packet.Release( ref m_WorldPacket );
+
+				Delta( ItemDelta.Update );
+			}
+		}
+
 		public bool Insured
 		{
 			get{ return GetFlag( ImplFlag.Insured ); }
@@ -4454,41 +4556,4 @@ namespace Server
 		{
 		}
 	}
-	/*	public class EmptyArrayList : ArrayList
-	{
-		public override bool IsReadOnly{ get{ return true; } }
-		public override bool IsFixedSize{ get{ return true; } }
-
-		private void OnPopulate()
-		{
-			Console.WriteLine( "Warning: Attempted to populate a static empty ArrayList" );
-			Console.WriteLine( new System.Diagnostics.StackTrace() );
-		}
-
-		public override int Add( object value )
-		{
-			OnPopulate();
-			return -1;
-		}
-
-		public override void AddRange( ICollection c )
-		{
-			OnPopulate();
-		}
-
-		public override void InsertRange( int index, ICollection c )
-		{
-			OnPopulate();
-		}
-
-		public override void Insert( int index, object value )
-		{
-			OnPopulate();
-		}
-
-		public override void SetRange( int index, ICollection c )
-		{
-			OnPopulate();
-		}
-	}*/
 }

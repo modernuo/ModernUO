@@ -5,17 +5,18 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-	public class ManaDrainSpell : Spell
+	public class ManaDrainSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mana Drain", "Ort Rel",
-				SpellCircle.Fourth,
 				215,
 				9031,
 				Reagent.BlackPearl,
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		public ManaDrainSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

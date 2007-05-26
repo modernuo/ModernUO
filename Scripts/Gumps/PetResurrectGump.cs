@@ -9,12 +9,19 @@ namespace Server.Gumps
 	public class PetResurrectGump : Gump
 	{
 		private BaseCreature m_Pet;
+		private double m_HitsScalar;
 
-		public PetResurrectGump( Mobile from, BaseCreature pet ) : base( 50, 50 )
+		public PetResurrectGump( Mobile from, BaseCreature pet )
+			: this( from, pet, 0.0 )
+		{
+		}
+
+		public PetResurrectGump( Mobile from, BaseCreature pet, double hitsScalar ) : base( 50, 50 )
 		{
 			from.CloseGump( typeof( PetResurrectGump ) );
 
 			m_Pet = pet;
+			m_HitsScalar = hitsScalar;
 
 			AddPage( 0 );
 
@@ -48,6 +55,11 @@ namespace Server.Gumps
 					from.SendLocalizedMessage( 503256 ); // You fail to resurrect the creature.
 					return;
 				}
+				else if( m_Pet.Region != null && m_Pet.Region.IsPartOf( "Khaldun" ) )	//TODO: Confirm for pets, as per Bandage's script.
+				{
+					from.SendLocalizedMessage( 1010395 ); // The veil of death in this area is too strong and resists thy efforts to restore life.
+					return;
+				}
 
 				m_Pet.PlaySound( 0x214 );
 				m_Pet.FixedEffect( 0x376A, 10, 16 );
@@ -62,6 +74,9 @@ namespace Server.Gumps
 
 				for ( int i = 0; i < m_Pet.Skills.Length; ++i )	//Decrease all skills on pet.
 					m_Pet.Skills[i].Base -= decreaseAmount;
+
+				if( !m_Pet.IsDeadPet && m_HitsScalar > 0 )
+					m_Pet.Hits = (int)(m_Pet.HitsMax * m_HitsScalar);
 			}
 
 		}

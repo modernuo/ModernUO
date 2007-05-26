@@ -468,6 +468,8 @@ namespace Server
 			return TimerPriority.EveryTick;
 		}
 
+		#region DelayCall(..)
+
 		public static Timer DelayCall( TimeSpan delay, TimerCallback callback )
 		{
 			return DelayCall( delay, TimeSpan.Zero, 1, callback );
@@ -515,8 +517,9 @@ namespace Server
 
 			return t;
 		}
+		#endregion
 
-
+		#region DelayCall<T>(..)
 		public static Timer DelayCall<T>( TimeSpan delay, TimerStateCallback<T> callback, T state )
 		{
 			return DelayCall( delay, TimeSpan.Zero, 1, callback, state );
@@ -540,7 +543,9 @@ namespace Server
 
 			return t;
 		}
+		#endregion
 
+		#region DelayCall Timers
 		private class DelayCallTimer : Timer
 		{
 			private TimerCallback m_Callback;
@@ -625,6 +630,7 @@ namespace Server
 				return String.Format( "DelayStateCall[{0}]", FormatDelegate( m_Callback ) );
 			}
 		}
+		#endregion
 
 		public void Start()
 		{

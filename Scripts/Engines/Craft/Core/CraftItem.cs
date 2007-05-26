@@ -5,6 +5,7 @@ using Server;
 using Server.Items;
 using Server.Factions;
 using Server.Mobiles;
+using Server.Commands;
 
 namespace Server.Engines.Craft
 {
@@ -679,11 +680,11 @@ namespace Server.Engines.Craft
 			{
 				// Runebooks are a special case, they need a blank recall rune
 
-				Item[] runes = ourPack.FindItemsByType( typeof( RecallRune ) );
+				List<RecallRune> runes = ourPack.FindItemsByType<RecallRune>();
 
-				for ( int i = 0; i < runes.Length; ++i )
+				for ( int i = 0; i < runes.Count; ++i )
 				{
-					RecallRune rune = runes[i] as RecallRune;
+					RecallRune rune = runes[i];
 
 					if ( rune != null && !rune.Marked )
 					{
@@ -1114,6 +1115,9 @@ namespace Server.Engines.Craft
 					}
 
 					from.AddToBackpack( item );
+
+					if( from.AccessLevel > AccessLevel.Player )
+						CommandLogging.WriteLine( from, "Crafting {0} with craft system {1}", CommandLogging.Format( item ), craftSystem.GetType().Name );
 
 					//from.PlaySound( 0x57 );
 				}

@@ -72,6 +72,22 @@ namespace Server
 	public delegate BaseGuild CreateGuildHandler( CreateGuildEventArgs e );
 	public delegate void GuildGumpRequestHandler( GuildGumpRequestArgs e );
 	public delegate void QuestGumpRequestHandler( QuestGumpRequestArgs e );
+	public delegate void ClientVersionRecievedHandler( ClientVersionRecievedArgs e );
+
+	public class ClientVersionRecievedArgs : EventArgs
+	{
+		private NetState m_State;
+		private ClientVersion m_Version;
+
+		public NetState State { get { return m_State; } }
+		public ClientVersion Version { get { return m_Version; } }
+
+		public ClientVersionRecievedArgs( NetState state, ClientVersion cv )
+		{
+			m_State = state;
+			m_Version = cv;
+		}
+	}
 
 	public class CreateGuildEventArgs : EventArgs
 	{
@@ -816,6 +832,13 @@ namespace Server
 		public static event ServerStartedEventHandler ServerStarted;
 		public static event GuildGumpRequestHandler GuildGumpRequest;
 		public static event QuestGumpRequestHandler QuestGumpRequest;
+		public static event ClientVersionRecievedHandler ClientVersionRecieved;
+
+		public static void InvokeClientVersionRecieved( ClientVersionRecievedArgs e )
+		{
+			if( ClientVersionRecieved != null )
+				ClientVersionRecieved( e );
+		}
 
 		public static void InvokeServerStarted()
 		{

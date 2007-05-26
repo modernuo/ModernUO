@@ -4,15 +4,16 @@ using Server.Network;
 
 namespace Server.Spells.Third
 {
-	public class PoisonSpell : Spell
+	public class PoisonSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Poison", "In Nox",
-				SpellCircle.Third,
 				203,
 				9051,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public PoisonSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

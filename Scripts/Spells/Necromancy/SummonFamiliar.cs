@@ -12,13 +12,14 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Summon Familiar", "Kal Xen Bal",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.BatWing,
 				Reagent.GraveDust,
 				Reagent.DaemonBlood
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 30.0; } }
 		public override int RequiredMana{ get{ return 17; } }

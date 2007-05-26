@@ -5,11 +5,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-	public class EnergyVortexSpell : Spell
+	public class EnergyVortexSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Energy Vortex", "Vas Corp Por",
-				SpellCircle.Eighth,
 				260,
 				9032,
 				false,
@@ -18,6 +17,8 @@ namespace Server.Spells.Eighth
 				Reagent.MandrakeRoot,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
 
 		public EnergyVortexSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

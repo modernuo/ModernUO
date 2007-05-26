@@ -6,17 +6,18 @@ using Server.Regions;
 
 namespace Server.Spells.Sixth
 {
-	public class MarkSpell : Spell
+	public class MarkSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mark", "Kal Por Ylem",
-				SpellCircle.Sixth,
 				218,
 				9002,
 				Reagent.BlackPearl,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public MarkSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -141,7 +141,8 @@ namespace Server.Misc
 				|| item is TreasureMap || item is MessageInABottle
 				|| item is BaseArmor || item is BaseWeapon
 				|| item is BaseClothing
-				|| (item is BaseJewel && Core.AOS) )
+				|| (item is BaseJewel && Core.AOS) 
+				|| (item is BasePotion && Core.ML))
 				return true;
 
 			return false;

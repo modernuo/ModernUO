@@ -5,17 +5,18 @@ using Server.Items;
 
 namespace Server.Spells.Third
 {
-	public class MagicLockSpell : Spell
+	public class MagicLockSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Magic Lock", "An Por",
-				SpellCircle.Third,
 				215,
 				9001,
 				Reagent.Garlic,
 				Reagent.Bloodmoss,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public MagicLockSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

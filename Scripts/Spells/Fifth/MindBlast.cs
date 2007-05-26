@@ -4,11 +4,10 @@ using Server.Network;
 
 namespace Server.Spells.Fifth
 {
-	public class MindBlastSpell : Spell
+	public class MindBlastSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mind Blast", "Por Corp Wis",
-				SpellCircle.Fifth,
 				218,
 				Core.AOS ? 9002 : 9032,
 				Reagent.BlackPearl,
@@ -16,6 +15,8 @@ namespace Server.Spells.Fifth
 				Reagent.Nightshade,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public MindBlastSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

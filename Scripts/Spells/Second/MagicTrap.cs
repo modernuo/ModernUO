@@ -5,17 +5,18 @@ using Server.Items;
 
 namespace Server.Spells.Second
 {
-	public class MagicTrapSpell : Spell
+	public class MagicTrapSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Magic Trap", "In Jux",
-				SpellCircle.Second,
 				212,
 				9001,
 				Reagent.Garlic,
 				Reagent.SpidersSilk,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public MagicTrapSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

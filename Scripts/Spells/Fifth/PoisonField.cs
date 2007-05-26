@@ -7,11 +7,10 @@ using Server.Items;
 
 namespace Server.Spells.Fifth
 {
-	public class PoisonFieldSpell : Spell
+	public class PoisonFieldSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Poison Field", "In Nox Grav",
-				SpellCircle.Fifth,
 				230,
 				9052,
 				false,
@@ -19,6 +18,8 @@ namespace Server.Spells.Fifth
 				Reagent.Nightshade,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public PoisonFieldSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

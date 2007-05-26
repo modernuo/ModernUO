@@ -9,6 +9,13 @@ namespace Server.Gumps
 	{
 		private WarningGumpCallback m_Callback;
 		private object m_State;
+		private bool m_CancelButton;
+
+		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state, bool cancelButton )
+			: this( header, headerColor, content, contentColor, width, height, callback, state )
+		{
+			m_CancelButton = cancelButton;
+		}
 
 		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state ) : base( (640 - width) / 2, (480 - height) / 2 )
 		{
@@ -39,8 +46,11 @@ namespace Server.Gumps
 			AddButton( 10, height - 30, 4005, 4007, 1, GumpButtonType.Reply, 0 );
 			AddHtmlLocalized( 40, height - 30, 170, 20, 1011036, 32767, false, false ); // OKAY
 
-			AddButton( 10 + ((width - 20) / 2), height - 30, 4005, 4007, 0, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 40 + ((width - 20) / 2), height - 30, 170, 20, 1011012, 32767, false, false ); // CANCEL
+			if( m_CancelButton )
+			{
+				AddButton( 10 + ((width - 20) / 2), height - 30, 4005, 4007, 0, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 40 + ((width - 20) / 2), height - 30, 170, 20, 1011012, 32767, false, false ); // CANCEL
+			}
 		}
 
 		public override void OnResponse( Server.Network.NetState sender, RelayInfo info )

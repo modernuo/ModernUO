@@ -10,12 +10,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Pain Spike", "In Sar",
-				SpellCircle.Second, // 0.5 + 0.5 = 1s base cast delay
 				203,
 				9031,
 				Reagent.GraveDust,
 				Reagent.PigIron
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
 
 		public override double RequiredSkill{ get{ return 20.0; } }
 		public override int RequiredMana{ get{ return 5; } }
@@ -37,7 +38,7 @@ namespace Server.Spells.Necromancy
 			{
 				SpellHelper.Turn( Caster, m );
 
-				SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );
+				//SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m ); //Irrelevent asfter AoS
 
 				/* Temporarily causes intense physical pain to the target, dealing direct damage.
 				 * After 10 seconds the spell wears off, and if the target is still alive, 
@@ -49,6 +50,7 @@ namespace Server.Spells.Necromancy
 				m.PlaySound( 0x210 );
 
 				double damage = ((GetDamageSkill( Caster ) - GetResistSkill( m )) / 10) + (m.Player ? 18 : 30);
+				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );	//Skill check for gain
 
 				if ( damage < 1 )
 					damage = 1;

@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Sixth
 {
-	public class EnergyBoltSpell : Spell
+	public class EnergyBoltSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Energy Bolt", "Corp Por",
-				SpellCircle.Sixth,
 				230,
 				9022,
 				Reagent.BlackPearl,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public EnergyBoltSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

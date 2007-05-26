@@ -58,7 +58,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( (int) 3 ); // version
 
 			writer.Write( (int) m_Level );
 
@@ -73,6 +73,7 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
 				case 2:
 				{
 					m_Level = reader.ReadInt();
@@ -92,6 +93,9 @@ namespace Server.Items
 
 			if ( version < 2 )
 				m_Level = GetRandomLevel();
+
+			if( version < 3 && m_TargetMap == Map.Tokuno )
+				m_TargetMap = Map.Trammel;
 		}
 
 		public override void OnDoubleClick( Mobile from )

@@ -5,16 +5,17 @@ using Server;
 
 namespace Server.Spells.First
 {
-	public class NightSightSpell : Spell
+	public class NightSightSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Night Sight", "In Lor",
-				SpellCircle.First,
 				236,
 				9031,
 				Reagent.SulfurousAsh,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public NightSightSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

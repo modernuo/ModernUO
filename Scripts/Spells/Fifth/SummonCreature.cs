@@ -5,17 +5,18 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-	public class SummonCreatureSpell : Spell
+	public class SummonCreatureSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Summon Creature", "Kal Xen",
-				SpellCircle.Fifth,
 				266,
 				9040,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public SummonCreatureSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

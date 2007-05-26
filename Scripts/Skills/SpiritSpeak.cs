@@ -74,7 +74,7 @@ namespace Server.SkillHandlers
 
 		private class SpiritSpeakSpell : Spell
 		{
-			private static SpellInfo m_Info = new SpellInfo( "Spirit Speak", "", SpellCircle.Second, 269 );
+			private static SpellInfo m_Info = new SpellInfo( "Spirit Speak", "", 269 );
 
 			public override bool BlockedByHorrificBeast{ get{ return false; } }
 
@@ -84,10 +84,8 @@ namespace Server.SkillHandlers
 
 			public override bool ClearHandsOnCast{ get{ return false; } }
 
-			public override TimeSpan GetCastDelay()
-			{
-				return TimeSpan.FromSeconds( 1.0 );
-			}
+			public override double CastDelayFastScalar { get { return 0; } }
+			public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
 
 			public override int GetMana()
 			{

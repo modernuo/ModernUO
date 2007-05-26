@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Server;
 using Server.Items;
+using System.Collections.Generic;
 
 namespace Server.Engines.Plants
 {
@@ -391,7 +392,7 @@ namespace Server.Engines.Plants
 
 			if ( from.Backpack != null )
 			{
-				Item[] plants = from.Backpack.FindItemsByType( typeof( PlantItem ) );
+				List<PlantItem> plants = from.Backpack.FindItemsByType<PlantItem>();
 
 				foreach ( PlantItem plant in plants )
 				{
@@ -404,7 +405,7 @@ namespace Server.Engines.Plants
 
 			if ( bank != null )
 			{
-				Item[] plants = bank.FindItemsByType( typeof( PlantItem ) );
+				List<PlantItem> plants = bank.FindItemsByType<PlantItem>();
 
 				foreach ( PlantItem plant in plants )
 				{

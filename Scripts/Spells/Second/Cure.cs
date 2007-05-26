@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class CureSpell : Spell
+	public class CureSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Cure", "An Nox",
-				SpellCircle.Second,
 				212,
 				9061,
 				Reagent.Garlic,
 				Reagent.Ginseng
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public CureSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

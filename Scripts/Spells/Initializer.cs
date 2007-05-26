@@ -142,6 +142,26 @@ namespace Server.Spells
 					Register( 506, typeof( Ninjitsu.Shadowjump ) );
 					Register( 507, typeof( Ninjitsu.MirrorImage ) );
 				}
+
+				if( Core.ML )
+				{
+					Register( 600, typeof( Spellweaving.ArcaneCircleSpell ) );
+					Register( 601, typeof( Spellweaving.GiftOfRenewalSpell ) );
+					//Register( 602, typeof( Spellweaving.ImmolatingWeaponSpell ) );
+					Register( 603, typeof( Spellweaving.AttuneWeaponSpell ) );
+					Register( 604, typeof( Spellweaving.ThunderstormSpell ) );
+					Register( 605, typeof( Spellweaving.NatureFurySpell ) );
+					Register( 606, typeof( Spellweaving.SummonFeySpell ) );
+					Register( 607, typeof( Spellweaving.SummonFiendSpell ) );
+					Register( 608, typeof( Spellweaving.ReaperFormSpell ) );
+					//Register( 609, typeof( Spellweaving.WildfireSpell ) );
+					Register( 610, typeof( Spellweaving.EssenceOfWindSpell ) );
+					//Register( 611, typeof( Spellweaving.DryadAllureSpell ) );
+					Register( 612, typeof( Spellweaving.EtherealVoyageSpell ) );
+					Register( 613, typeof( Spellweaving.WordOfDeathSpell ) );
+					Register( 614, typeof( Spellweaving.GiftOfLifeSpell ) );
+					//Register( 615, typeof( Spellweaving.ArcaneEmpowermentSpell ) );
+				}
 			}
 		}
 

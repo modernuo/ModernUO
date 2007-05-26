@@ -10,13 +10,14 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Wither", "Kal Vas An Flam",
-				SpellCircle.Third, // 0.5 + 0.75 = 1.25s base cast delay
 				203,
 				9031,
 				Reagent.NoxCrystal,
 				Reagent.GraveDust,
 				Reagent.PigIron
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.25 ); } }
 
 		public override double RequiredSkill{ get{ return 60.0; } }
 		public override int RequiredMana{ get{ return 23; } }

@@ -5,20 +5,21 @@ using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class ProtectionSpell : Spell
+	public class ProtectionSpell : MagerySpell
 	{
 		private static Hashtable m_Registry = new Hashtable();
 		public static Hashtable Registry { get { return m_Registry; } }
 
 		private static SpellInfo m_Info = new SpellInfo(
 				"Protection", "Uus Sanct",
-				SpellCircle.Second,
 				236,
 				9011,
 				Reagent.Garlic,
 				Reagent.Ginseng,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public ProtectionSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

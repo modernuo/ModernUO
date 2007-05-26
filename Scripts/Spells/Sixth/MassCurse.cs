@@ -7,11 +7,10 @@ using Server.Network;
 
 namespace Server.Spells.Sixth
 {
-	public class MassCurseSpell : Spell
+	public class MassCurseSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mass Curse", "Vas Des Sanct",
-				SpellCircle.Sixth,
 				218,
 				9031,
 				false,
@@ -20,6 +19,8 @@ namespace Server.Spells.Sixth
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public MassCurseSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

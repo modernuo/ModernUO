@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.First
 {
-	public class FeeblemindSpell : Spell
+	public class FeeblemindSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Feeblemind", "Rel Wis",
-				SpellCircle.First,
 				212,
 				9031,
 				Reagent.Ginseng,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public FeeblemindSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

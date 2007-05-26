@@ -221,11 +221,11 @@ namespace Server.SkillHandlers
 			int divisor = hiding + stealth;
 
 			// Necromancy forms affect tracking difficulty 
-			if ( TransformationSpell.UnderTransformation( m, typeof( HorrificBeastSpell ) ) )
+			if ( TransformationSpellHelper.UnderTransformation( m, typeof( HorrificBeastSpell ) ) )
 				divisor -= 200;
-			else if ( TransformationSpell.UnderTransformation( m, typeof( VampiricEmbraceSpell ) ) && divisor < 500 )
+			else if ( TransformationSpellHelper.UnderTransformation( m, typeof( VampiricEmbraceSpell ) ) && divisor < 500 )
 				divisor = 500;
-			else if ( TransformationSpell.UnderTransformation( m, typeof( WraithFormSpell ) ) && divisor <= 2000 )
+			else if ( TransformationSpellHelper.UnderTransformation( m, typeof( WraithFormSpell ) ) && divisor <= 2000 )
 				divisor += 200;
 
 			int chance;

@@ -11,6 +11,8 @@ using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
 using MoveImpl=Server.Movement.MovementImpl;
+using Server.Spells;
+using Server.Spells.Spellweaving;
 
 namespace Server.Mobiles
 {
@@ -1486,7 +1488,7 @@ namespace Server.Mobiles
 						if( aggr.IsDeadBondedPet || !aggr.Alive )
 							continue;
 
-						double aggrScore = m_Mobile.GetValueFrom( aggr, FightMode.Closest, false );
+						double aggrScore = m_Mobile.GetFightModeRanking( aggr, FightMode.Closest, false );
 
 						if( (newCombatant == null || aggrScore > newScore) && m_Mobile.InLOS( aggr ) )
 						{
@@ -2484,6 +2486,10 @@ namespace Server.Mobiles
 					if ( bFacFoe && !m_Mobile.IsEnemy( m ) )
 						continue;
 
+					//Ignore anyone under EtherealVoyage
+					if( TransformationSpellHelper.UnderTransformation( m, typeof( EtherealVoyageSpell ) ) )
+						continue;
+
 					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil )
 					{
 						// Only acquire this mobile if it attacked us, or if it's evil.
@@ -2516,7 +2522,7 @@ namespace Server.Mobiles
 					if ( bFacFoe && !bFacFriend && !m_Mobile.CanBeHarmful( m, false ) )
 						continue;
 
-					theirVal = m_Mobile.GetValueFrom( m, acqType, bPlayerOnly );
+					theirVal = m_Mobile.GetFightModeRanking( m, acqType, bPlayerOnly );
 
 					if( theirVal > val && m_Mobile.InLOS( m ) )
 					{

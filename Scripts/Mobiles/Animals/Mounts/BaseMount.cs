@@ -19,6 +19,8 @@ namespace Server.Mobiles
 			set { m_NextMountAbility = value; }
 		}
 
+		protected Item InternalItem { get { return m_InternalItem; } }
+
 		public virtual bool AllowMaleRider{ get{ return true; } }
 		public virtual bool AllowFemaleRider{ get{ return true; } }
 

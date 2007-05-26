@@ -10,12 +10,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Strangle", "In Bal Nox",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				209,
 				9031,
 				Reagent.DaemonBlood,
 				Reagent.NoxCrystal
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 65.0; } }
 		public override int RequiredMana{ get{ return 29; } }
@@ -35,7 +36,7 @@ namespace Server.Spells.Necromancy
 			{
 				SpellHelper.Turn( Caster, m );
 
-				SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );
+				//SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );	//Irrelevent after AoS
 
 				/* Temporarily chokes off the air suply of the target with poisonous fumes.
 				 * The target is inflicted with poison damage over time.

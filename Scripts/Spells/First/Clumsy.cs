@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.First
 {
-	public class ClumsySpell : Spell
+	public class ClumsySpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Clumsy", "Uus Jux",
-				SpellCircle.First,
 				212,
 				9031,
 				Reagent.Bloodmoss,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public ClumsySpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

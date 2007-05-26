@@ -6,11 +6,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-	public class ChainLightningSpell : Spell
+	public class ChainLightningSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Chain Lightning", "Vas Ort Grav",
-				SpellCircle.Seventh,
 				209,
 				9022,
 				false,
@@ -19,6 +18,8 @@ namespace Server.Spells.Seventh
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		public ChainLightningSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

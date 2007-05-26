@@ -55,6 +55,8 @@ namespace Server.Items
 			set{ m_TimeOfDeath = value; }
 		}
 
+		public override bool DisplayWeight { get { return false; } }
+
 		public HairInfo Hair { get { return m_Hair; } }
 		public FacialHairInfo FacialHair { get { return m_FacialHair; } }
 

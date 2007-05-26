@@ -5187,16 +5187,23 @@ namespace Server
 
 		public void Heal( int amount )
 		{
-			Heal( amount, true );
+			Heal( amount, this, true );
 		}
 
-		public void Heal( int amount, bool message )
+		public void Heal( int amount, Mobile from )
+		{
+			Heal( amount, from, true );
+		}
+
+		public void Heal( int amount, Mobile from, bool message )
 		{
 			if( !Alive || IsDeadBondedPet )
 				return;
 
 			if( !Region.OnHeal( this, ref amount ) )
 				return;
+
+			OnHeal( ref amount, from );
 
 			if( (Hits + amount) > HitsMax )
 			{
@@ -5207,6 +5214,10 @@ namespace Server
 
 			if( message && amount > 0 && m_NetState != null )
 				m_NetState.Send( new MessageLocalizedAffix( Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008158, "", AffixType.Append | AffixType.System, amount.ToString(), "" ) );
+		}
+
+		public virtual void OnHeal( ref int amount, Mobile from )
+		{
 		}
 
 		public void UsedStuckMenu()

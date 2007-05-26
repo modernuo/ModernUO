@@ -9,6 +9,10 @@ using Server.Targeting;
 using Server.Engines.PartySystem;
 using Server.Misc;
 using Server.Spells.Bushido;
+using Server.Spells.Ninjitsu;
+using System.Collections.Generic;
+using Server.Spells.Seventh;
+using Server.Spells.Fifth;
 
 namespace Server
 {
@@ -423,6 +427,16 @@ namespace Server.Spells
 				creature.Mana = creature.ManaMax;
 			}
 
+			Point3D p = new Point3D( caster );
+
+			if( SpellHelper.FindValidSpawnLocation( map, ref p, true ) )
+			{
+				BaseCreature.Summon( creature, caster, p, sound, duration );
+				return;
+			}
+
+
+			/*
 			int offset = Utility.Random( 8 ) * 2;
 
 			for( int i = 0; i < m_Offsets.Length; i += 2 )
@@ -446,9 +460,59 @@ namespace Server.Spells
 					}
 				}
 			}
+			 * */
 
 			creature.Delete();
 			caster.SendLocalizedMessage( 501942 ); // That location is blocked.
+		}
+
+		public static bool FindValidSpawnLocation( Map map, ref Point3D p, bool surroundingsOnly )
+		{
+			if( map == null )	//sanity
+				return false;
+
+			if( !surroundingsOnly )
+			{
+				if( map.CanSpawnMobile( p ) )	//p's fine.
+				{
+					p = new Point3D( p );
+					return true;
+				}
+
+				int z = map.GetAverageZ( p.X, p.Y );
+
+				if( map.CanSpawnMobile( p.X, p.Y, z ) )
+				{
+					p = new Point3D( p.X, p.Y, z );
+					return true;
+				}
+			}
+
+			int offset = Utility.Random( 8 ) * 2;
+
+			for( int i = 0; i < m_Offsets.Length; i += 2 )
+			{
+				int x = p.X + m_Offsets[(offset + i) % m_Offsets.Length];
+				int y = p.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
+
+				if( map.CanSpawnMobile( x, y, p.Z ) )
+				{
+					p = new Point3D( x, y, p.Z );
+					return true;
+				}
+				else
+				{
+					int z = map.GetAverageZ( x, y );
+
+					if( map.CanSpawnMobile( x, y, z ) )
+					{
+						p = new Point3D( x, y, z );
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		private delegate bool TravelValidator( Map map, Point3D loc );
@@ -789,9 +853,6 @@ namespace Server.Spells
 		{
 			int iDamage = (int)damage;
 
-			if( Evasion.CheckSpellEvasion( target ) )
-				iDamage = 0;
-
 			if( delay == TimeSpan.Zero )
 			{
 				if( from is BaseCreature )
@@ -844,9 +905,6 @@ namespace Server.Spells
 		{
 			int iDamage = (int)damage;
 
-			if( Evasion.CheckSpellEvasion( target ) )
-				iDamage = 0;
-
 			if( delay == TimeSpan.Zero )
 			{
 				if( from is BaseCreature )
@@ -866,6 +924,16 @@ namespace Server.Spells
 
 			if( target is BaseCreature && from != null && delay == TimeSpan.Zero )
 				((BaseCreature)target).OnDamagedBySpell( from );
+		}
+
+		public static void Heal( int amount, Mobile target, Mobile from )
+		{
+			Heal( amount, target, from, true );
+		}
+		public static void Heal( int amount, Mobile target, Mobile from, bool message )
+		{
+			//TODO: All Healing *spells* go through ArcaneEmpowerment
+			target.Heal( amount, from, message );
 		}
 
 		private class SpellDamageTimer : Timer
@@ -947,6 +1015,246 @@ namespace Server.Spells
 				if( m_Spell != null )
 					m_Spell.RemoveDelayedDamageContext( m_Target );
 
+			}
+		}
+	}
+
+	public class TransformationSpellHelper
+	{
+		#region Context Stuff
+		private static Dictionary<Mobile, TransformContext> m_Table = new Dictionary<Mobile, TransformContext>();
+
+		public static void AddContext( Mobile m, TransformContext context )
+		{
+			m_Table[m] = context;
+		}
+
+		public static void RemoveContext( Mobile m, bool resetGraphics )
+		{
+			TransformContext context = GetContext( m );
+
+			if( context != null )
+				RemoveContext( m, context, resetGraphics );
+		}
+
+		public static void RemoveContext( Mobile m, TransformContext context, bool resetGraphics )
+		{
+			if( m_Table.ContainsKey( m ) )
+			{
+				m_Table.Remove( m );
+
+				List<ResistanceMod> mods = context.Mods;
+
+				for( int i = 0; i < mods.Count; ++i )
+					m.RemoveResistanceMod( mods[i] );
+
+				if( resetGraphics )
+				{
+					m.HueMod = -1;
+					m.BodyMod = 0;
+				}
+
+				context.Timer.Stop();
+				context.Spell.RemoveEffect( m );
+			}
+		}
+
+		public static TransformContext GetContext( Mobile m )
+		{
+			TransformContext context = null;
+
+			m_Table.TryGetValue( m, out context );
+
+			return context;
+		}
+
+		public static bool UnderTransformation( Mobile m )
+		{
+			return (GetContext( m ) != null);
+		}
+
+		public static bool UnderTransformation( Mobile m, Type type )
+		{
+			TransformContext context = GetContext( m );
+
+			return (context != null && context.Type == type);
+		}
+		#endregion
+
+		public static bool CheckCast( Mobile caster, Spell spell )
+		{
+			if( Factions.Sigil.ExistsOn( caster ) )
+			{
+				caster.SendLocalizedMessage( 1061632 ); // You can't do that while carrying the sigil.
+				return false;
+			}
+			else if( !caster.CanBeginAction( typeof( PolymorphSpell ) ) )
+			{
+				caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
+				return false;
+			}
+			else if( AnimalForm.UnderTransformation( caster ) )
+			{
+				caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
+				return false;
+			}
+
+			return true;
+		}
+
+		public static bool OnCast( Mobile caster, Spell spell )
+		{
+			ITransformationSpell transformSpell = spell as ITransformationSpell;
+
+			if( transformSpell == null )
+				return false;
+
+			if( Factions.Sigil.ExistsOn( caster ) )
+			{
+				caster.SendLocalizedMessage( 1061632 ); // You can't do that while carrying the sigil.
+			}
+			else if( !caster.CanBeginAction( typeof( PolymorphSpell ) ) )
+			{
+				caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
+			}
+			else if( AnimalForm.UnderTransformation( caster ) )
+			{
+				caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
+			}
+			else if( !caster.CanBeginAction( typeof( IncognitoSpell ) ) || (caster.IsBodyMod && GetContext( caster ) == null) )
+			{
+				spell.DoFizzle();
+			}
+			else if( spell.CheckSequence() )
+			{
+				TransformContext context = GetContext( caster );
+				Type ourType = spell.GetType();
+
+				bool wasTransformed = (context != null);
+				bool ourTransform = (wasTransformed && context.Type == ourType);
+
+				if( wasTransformed )
+				{
+					RemoveContext( caster, context, ourTransform );
+
+					if( ourTransform )
+					{
+						caster.PlaySound( 0xFA );
+						caster.FixedParticles( 0x3728, 1, 13, 5042, EffectLayer.Waist );
+					}
+				}
+
+				if( !ourTransform )
+				{
+					List<ResistanceMod> mods = new List<ResistanceMod>();
+
+					if( transformSpell.PhysResistOffset != 0 )
+						mods.Add( new ResistanceMod( ResistanceType.Physical, transformSpell.PhysResistOffset ) );
+
+					if( transformSpell.FireResistOffset != 0 )
+						mods.Add( new ResistanceMod( ResistanceType.Fire, transformSpell.FireResistOffset ) );
+
+					if( transformSpell.ColdResistOffset != 0 )
+						mods.Add( new ResistanceMod( ResistanceType.Cold, transformSpell.ColdResistOffset ) );
+
+					if( transformSpell.PoisResistOffset != 0 )
+						mods.Add( new ResistanceMod( ResistanceType.Poison, transformSpell.PoisResistOffset ) );
+
+					if( transformSpell.NrgyResistOffset != 0 )
+						mods.Add( new ResistanceMod( ResistanceType.Energy, transformSpell.NrgyResistOffset ) );
+
+					if( !((Body)transformSpell.Body).IsHuman )
+					{
+						Mobiles.IMount mt = caster.Mount;
+
+						if( mt != null )
+							mt.Rider = null;
+					}
+
+					caster.BodyMod = transformSpell.Body;
+					caster.HueMod = transformSpell.Hue;
+
+					for( int i = 0; i < mods.Count; ++i )
+						caster.AddResistanceMod( mods[i] );
+
+					transformSpell.DoEffect( caster );
+
+					Timer timer = new TransformTimer( caster, transformSpell );
+					timer.Start();
+
+					AddContext( caster, new TransformContext( timer, mods, ourType, transformSpell ) );
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	public interface ITransformationSpell
+	{
+		int Body { get; }
+		int Hue { get; }
+
+		int PhysResistOffset { get; }
+		int FireResistOffset { get; }
+		int ColdResistOffset { get; }
+		int PoisResistOffset { get; }
+		int NrgyResistOffset { get; }
+
+		double TickRate { get; }
+		void OnTick( Mobile m );
+
+		void DoEffect( Mobile m );
+		void RemoveEffect( Mobile m );
+	}
+
+
+	public class TransformContext
+	{
+		private Timer m_Timer;
+		private List<ResistanceMod> m_Mods;
+		private Type m_Type;
+		private ITransformationSpell m_Spell;
+
+		public Timer Timer { get { return m_Timer; } }
+		public List<ResistanceMod> Mods { get { return m_Mods; } }
+		public Type Type { get { return m_Type; } }
+		public ITransformationSpell Spell { get { return m_Spell; } }
+
+		public TransformContext( Timer timer, List<ResistanceMod> mods, Type type, ITransformationSpell spell )
+		{
+			m_Timer = timer;
+			m_Mods = mods;
+			m_Type = type;
+			m_Spell = spell;
+		}
+	}
+
+	public class TransformTimer : Timer
+	{
+		private Mobile m_Mobile;
+		private ITransformationSpell m_Spell;
+
+		public TransformTimer( Mobile from, ITransformationSpell spell )
+			: base( TimeSpan.FromSeconds( spell.TickRate ), TimeSpan.FromSeconds( spell.TickRate ) )
+		{
+			m_Mobile = from;
+			m_Spell = spell;
+
+			Priority = TimerPriority.TwoFiftyMS;
+		}
+
+		protected override void OnTick()
+		{
+			if( m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Body != m_Spell.Body || m_Mobile.Hue != m_Spell.Hue )
+			{
+				TransformationSpellHelper.RemoveContext( m_Mobile, true );
+				Stop();
+			}
+			else
+			{
+				m_Spell.OnTick( m_Mobile );
 			}
 		}
 	}

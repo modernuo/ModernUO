@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Mobiles;
+using Server.Spells;
 
 namespace Server.Items
 {
@@ -35,7 +36,7 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 501699 ); // You cannot disguise yourself while polymorphed.
 				}
-				else if ( Spells.Necromancy.TransformationSpell.UnderTransformation( from ) )
+				else if( TransformationSpellHelper.UnderTransformation( from ) )
 				{
 					from.SendLocalizedMessage( 501699 ); // You cannot disguise yourself while polymorphed.
 				}

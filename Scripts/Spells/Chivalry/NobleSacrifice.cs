@@ -16,10 +16,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Noble Sacrifice", "Dium Prostra",
-				SpellCircle.Sixth, // 0 + 1.5 = 1.5s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 65.0; } }
 		public override int RequiredMana{ get{ return 20; } }
@@ -109,7 +110,7 @@ namespace Server.Spells.Chivalry
 								toHeal = 24;
 
 							Caster.DoBeneficial( m );
-							m.Heal( toHeal );
+							m.Heal( toHeal, Caster );
 							sendEffect = true;
 						}
 

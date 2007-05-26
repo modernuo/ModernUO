@@ -4,15 +4,16 @@ using Server.Network;
 
 namespace Server.Spells.First
 {
-	public class MagicArrowSpell : Spell
+	public class MagicArrowSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Magic Arrow", "In Por Ylem",
-				SpellCircle.First,
 				212,
 				9041,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public MagicArrowSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

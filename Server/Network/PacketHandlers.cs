@@ -1759,66 +1759,8 @@ namespace Server.Network
 		public static void ClientVersion( NetState state, PacketReader pvSrc )
 		{
 			CV version = state.Version = new CV( pvSrc.ReadString() );
-			string kickMessage = null;
 
-			if ( CV.Required != null && version < CV.Required )
-			{
-				kickMessage = String.Format( "This server requires your client version be at least {0}.", CV.Required );
-			}
-			else if ( !CV.AllowGod || !CV.AllowRegular || !CV.AllowUOTD )
-			{
-				if ( !CV.AllowGod && version.Type == ClientType.God )
-					kickMessage = "This server does not allow god clients to connect.";
-				else if ( !CV.AllowRegular && version.Type == ClientType.Regular )
-					kickMessage = "This server does not allow regular clients to connect.";
-				else if ( !CV.AllowUOTD && state.IsUOTDClient )
-					kickMessage = "This server does not allow UO:TD clients to connect.";
-
-				if ( !CV.AllowGod && !CV.AllowRegular && !CV.AllowUOTD )
-				{
-					kickMessage = "This server does not allow any clients to connect.";
-				}
-				else if ( CV.AllowGod && !CV.AllowRegular && !CV.AllowUOTD && version.Type != ClientType.God )
-				{
-					kickMessage = "This server requires you to use the god client.";
-				}
-				else if ( kickMessage != null )
-				{
-					if ( CV.AllowRegular && CV.AllowUOTD )
-						kickMessage += " You can use regular or UO:TD clients.";
-					else if ( CV.AllowRegular )
-						kickMessage += " You can use regular clients.";
-					else if ( CV.AllowUOTD )
-						kickMessage += " You can use UO:TD clients.";
-				}
-			}
-
-			if ( kickMessage != null )
-			{
-				state.Mobile.SendMessage( 0x22, kickMessage );
-				state.Mobile.SendMessage( 0x22, "You will be disconnected in {0} seconds.", CV.KickDelay.TotalSeconds );
-
-				new KickTimer( state, CV.KickDelay ).Start();
-			}
-		}
-
-		private class KickTimer : Timer
-		{
-			private NetState m_State;
-
-			public KickTimer( NetState state, TimeSpan delay ) : base( delay )
-			{
-				m_State = state;
-			}
-
-			protected override void OnTick()
-			{
-				if ( m_State.Socket != null )
-				{
-					Console.WriteLine( "Client: {0}: Disconnecting, bad version", m_State );
-					m_State.Dispose();
-				}
-			}
+			EventSink.InvokeClientVersionRecieved( new ClientVersionRecievedArgs( state, version ) );
 		}
 
 		public static void MobileQuery( NetState state, PacketReader pvSrc )

@@ -155,11 +155,15 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !this.IsChildOf( from.Backpack ) )
+			if( from.Region.IsPartOf( typeof( Regions.Jail ) ) )
+			{
+				from.SendMessage( "You may not do that in jail." );
+			}
+			else if( !this.IsChildOf( from.Backpack ) )
 			{
 				MessageHelper.SendLocalizedMessageTo( this, from, 1054107, 0x59 ); // The bag of sending must be in your backpack.
 			}
-			else if ( this.Charges == 0 )
+			else if( this.Charges == 0 )
 			{
 				MessageHelper.SendLocalizedMessageTo( this, from, 1042544, 0x59 ); // This item is out of charges.
 			}
@@ -183,7 +187,11 @@ namespace Server.Items
 				if ( m_Bag.Deleted )
 					return;
 
-				if ( !m_Bag.IsChildOf( from.Backpack ) )
+				if( from.Region.IsPartOf( typeof( Regions.Jail ) ) )
+				{
+					from.SendMessage( "You may not do that in jail." );
+				}
+				else if( !m_Bag.IsChildOf( from.Backpack ) )
 				{
 					MessageHelper.SendLocalizedMessageTo( m_Bag, from, 1054107, 0x59 ); // The bag of sending must be in your backpack.
 				}

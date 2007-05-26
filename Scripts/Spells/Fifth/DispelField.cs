@@ -6,11 +6,10 @@ using Server.Misc;
 
 namespace Server.Spells.Fifth
 {
-	public class DispelFieldSpell : Spell
+	public class DispelFieldSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Dispel Field", "An Grav",
-				SpellCircle.Fifth,
 				206,
 				9002,
 				Reagent.BlackPearl,
@@ -18,6 +17,8 @@ namespace Server.Spells.Fifth
 				Reagent.SulfurousAsh,
 				Reagent.Garlic
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public DispelFieldSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

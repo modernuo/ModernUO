@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Server.Guilds
 {
-	public class GuildRosterGump : BaseGuildListGump<PlayerMobile>	//TODO: Convert to <PlayerMobile>
+	public class GuildRosterGump : BaseGuildListGump<PlayerMobile>
 	{
 		#region Comparers
 		private class NameComparer : IComparer<PlayerMobile>

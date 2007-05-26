@@ -4,11 +4,10 @@ using Server.Network;
 
 namespace Server.Spells.Seventh
 {
-	public class ManaVampireSpell : Spell
+	public class ManaVampireSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Mana Vampire", "Ort Sanct",
-				SpellCircle.Seventh,
 				221,
 				9032,
 				Reagent.BlackPearl,
@@ -16,6 +15,8 @@ namespace Server.Spells.Seventh
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		public ManaVampireSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

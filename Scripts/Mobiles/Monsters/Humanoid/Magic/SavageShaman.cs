@@ -180,7 +180,7 @@ namespace Server.Mobiles
 							int toHeal = (int)(Skills[SkillName.Magery].Value * 0.4);
 							toHeal += Utility.Random( 1, 10 );
 
-							m.Heal( toHeal );
+							m.Heal( toHeal, this );
 
 							m.FixedParticles( 0x376A, 9, 32, 5030, EffectLayer.Waist );
 							m.PlaySound( 0x202 );

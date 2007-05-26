@@ -16,7 +16,7 @@ namespace Server.Spells.Chivalry
 
 		public override bool ClearHandsOnCast{ get{ return false; } }
 
-		public override int CastDelayBase{ get{ return 1; } }
+		//public override int CastDelayBase{ get{ return 1; } }
 
 		public override int CastRecoveryBase{ get{ return 7; } }
 

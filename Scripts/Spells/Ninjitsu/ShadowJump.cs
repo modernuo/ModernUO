@@ -11,10 +11,11 @@ namespace Server.Spells.Ninjitsu
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 			"Shadowjump", null,
-			SpellCircle.Fourth, // 1.0s base cast delay
 			-1,
 			9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
 
 		public override double RequiredSkill{ get{ return 50.0; } }
 		public override int RequiredMana{ get{ return 15; } }

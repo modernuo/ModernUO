@@ -10,12 +10,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Corpse Skin", "In Agle Corp Ylem",
-				SpellCircle.Fourth, // 0.5 + 1.0 = 1.5s base cast delay
 				203,
 				9051,
 				Reagent.BatWing,
 				Reagent.GraveDust
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 20.0; } }
 		public override int RequiredMana{ get{ return 11; } }
@@ -59,6 +60,7 @@ namespace Server.Spells.Necromancy
 
 				double ss = GetDamageSkill( Caster );
 				double mr = ( Caster == m ? 0.0 : GetResistSkill( m ) );
+				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );	//Skill check for gain
 
 				TimeSpan duration = TimeSpan.FromSeconds( ((ss - mr) / 2.5) + 40.0 );
 

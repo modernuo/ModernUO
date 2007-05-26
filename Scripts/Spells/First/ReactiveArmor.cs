@@ -5,17 +5,18 @@ using Server.Network;
 
 namespace Server.Spells.First
 {
-	public class ReactiveArmorSpell : Spell
+	public class ReactiveArmorSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Reactive Armor", "Flam Sanct",
-				SpellCircle.First,
 				236,
 				9011,
 				Reagent.Garlic,
 				Reagent.SpidersSilk,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public ReactiveArmorSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

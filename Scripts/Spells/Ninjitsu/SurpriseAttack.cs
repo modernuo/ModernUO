@@ -10,14 +10,12 @@ namespace Server.Spells.Ninjitsu
 {
 	public class SurpriseAttack : NinjaMove
 	{
-		// TODO: Cannot hide for 5s
-
 		public SurpriseAttack()
 		{
 		}
 
 		public override int BaseMana{ get{ return 20; } }
-		public override double RequiredSkill{ get{ return 30.0; } }
+		public override double RequiredSkill{ get{ return Core.ML ? 60.0 : 30.0; } }
 
 		public override TextDefinition AbilityMessage{ get{ return new TextDefinition( 1063128 ); } } // You prepare to surprise your prey.
 
@@ -34,7 +32,16 @@ namespace Server.Spells.Ninjitsu
 
 		public override bool OnBeforeSwing( Mobile attacker, Mobile defender )
 		{
-			return Validate( attacker ) && CheckMana( attacker, true );
+			bool valid = Validate( attacker ) && CheckMana( attacker, true );
+
+			if( valid )
+			{
+				attacker.BeginAction( typeof( Stealth ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), delegate { attacker.EndAction( typeof( Stealth ) ); } );
+			}
+
+			return valid;
+
 		}
 
 		public override bool ValidatesDuringHit { get { return false; } }

@@ -249,7 +249,7 @@ namespace Server.Items
 			if ( m.Backpack == null )
 				return false;
 
-			Item[] items = m.Backpack.FindItemsByType( typeof( BaseHarvestTool ) );
+			List<BaseHarvestTool> items = m.Backpack.FindItemsByType<BaseHarvestTool>();
 
 			foreach ( BaseHarvestTool tool in items )
 			{

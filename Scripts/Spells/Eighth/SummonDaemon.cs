@@ -5,11 +5,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-	public class SummonDaemonSpell : Spell
+	public class SummonDaemonSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Summon Daemon", "Kal Vas Xen Corp",
-				SpellCircle.Eighth,
 				269,
 				9050,
 				false,
@@ -18,6 +17,8 @@ namespace Server.Spells.Eighth
 				Reagent.SpidersSilk,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
 
 		public SummonDaemonSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class CunningSpell : Spell
+	public class CunningSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Cunning", "Uus Wis",
-				SpellCircle.Second,
 				212,
 				9061,
 				Reagent.MandrakeRoot,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public CunningSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

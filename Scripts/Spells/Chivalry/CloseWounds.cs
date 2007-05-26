@@ -11,10 +11,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Close Wounds", "Obsu Vulni",
-				SpellCircle.Sixth, // 0 + 1.5 = 1.5s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 0.0; } }
 		public override int RequiredMana{ get{ return 10; } }
@@ -71,7 +72,9 @@ namespace Server.Spells.Chivalry
 				if ( (m.Hits + toHeal) > m.HitsMax )
 					toHeal = m.HitsMax - m.Hits;
 
-				m.Hits += toHeal;
+				//m.Hits += toHeal;	//Was previosuly due to the message
+				//m.Heal( toHeal, Caster, false );
+				SpellHelper.Heal( toHeal, m, Caster, false );
 
 				m.SendLocalizedMessage( 1060203, toHeal.ToString() ); // You have had ~1_HEALED_AMOUNT~ hit points of damage healed.
 

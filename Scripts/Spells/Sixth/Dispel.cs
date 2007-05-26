@@ -7,17 +7,18 @@ using Server.Mobiles;
 
 namespace Server.Spells.Sixth
 {
-	public class DispelSpell : Spell
+	public class DispelSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Dispel", "An Ort",
-				SpellCircle.Sixth,
 				218,
 				9002,
 				Reagent.Garlic,
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public DispelSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

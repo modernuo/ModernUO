@@ -9,17 +9,18 @@ using Server.Mobiles;
 
 namespace Server.Spells.Seventh
 {
-	public class GateTravelSpell : Spell
+	public class GateTravelSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Gate Travel", "Vas Rel Por",
-				SpellCircle.Seventh,
 				263,
 				9032,
 				Reagent.BlackPearl,
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		private RunebookEntry m_Entry;
 

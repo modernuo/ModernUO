@@ -68,7 +68,7 @@ namespace Server.Items
 			{
 				from.SendLocalizedMessage( 1010465 ); // You cannot disguise yourself while holding a sigil
 			}
-			else if ( TransformationSpell.UnderTransformation( from ) )
+			else if ( TransformationSpellHelper.UnderTransformation( from ) )
 			{
 				// You cannot disguise yourself while in that form.
 				from.SendLocalizedMessage( 1061634 );

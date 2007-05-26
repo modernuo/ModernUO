@@ -3,17 +3,18 @@ using Server.Items;
 
 namespace Server.Spells.First
 {
-	public class CreateFoodSpell : Spell
+	public class CreateFoodSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Create Food", "In Mani Ylem",
-				SpellCircle.First,
 				224,
 				9011,
 				Reagent.Garlic,
 				Reagent.Ginseng,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public CreateFoodSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

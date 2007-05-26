@@ -7,11 +7,10 @@ using Server.Engines.PartySystem;
 
 namespace Server.Spells.Fourth
 {
-	public class ArchProtectionSpell : Spell
+	public class ArchProtectionSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Arch Protection", "Vas Uus Sanct",
-				SpellCircle.Fourth,
 				Core.AOS ? 239 : 215,
 				9011,
 				Reagent.Garlic,
@@ -19,6 +18,8 @@ namespace Server.Spells.Fourth
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		public ArchProtectionSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -6,11 +6,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-	public class MeteorSwarmSpell : Spell
+	public class MeteorSwarmSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Meteor Swarm", "Flam Kal Des Ylem",
-				SpellCircle.Seventh,
 				233,
 				9042,
 				false,
@@ -19,6 +18,8 @@ namespace Server.Spells.Seventh
 				Reagent.SulfurousAsh,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		public MeteorSwarmSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

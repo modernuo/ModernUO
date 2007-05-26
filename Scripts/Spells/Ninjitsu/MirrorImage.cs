@@ -11,7 +11,7 @@ namespace Server.Spells.Ninjitsu
 {
 	public class MirrorImage : NinjaSpell
 	{
-		private static Dictionary<Mobile, Int32> m_CloneCount = new Dictionary<Mobile, Int32>();
+		private static Dictionary<Mobile, int> m_CloneCount = new Dictionary<Mobile, int>();
 
 		public static bool HasClone( Mobile m )
 		{
@@ -45,12 +45,13 @@ namespace Server.Spells.Ninjitsu
 
 		private static SpellInfo m_Info = new SpellInfo(
 			"Mirror Image", null,
-			SpellCircle.Sixth, // 1.5s base cast delay
 			-1,
 			9002
 			);
 
-		public override double RequiredSkill{ get{ return 40.0; } }
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+
+		public override double RequiredSkill{ get{ return Core.ML ? 20.0 : 40.0; } }
 		public override int RequiredMana{ get{ return 10; } }
 
 		public override bool BlockedByAnimalForm{ get{ return false; } }
@@ -71,7 +72,7 @@ namespace Server.Spells.Ninjitsu
 				Caster.SendLocalizedMessage( 1063133 ); // You cannot summon a mirror image because you have too many followers.
 				return false;
 			}
-			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster, typeof( HorrificBeastSpell ) ) )
+			else if( TransformationSpellHelper.UnderTransformation( Caster, typeof( HorrificBeastSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
 				return false;
@@ -102,7 +103,7 @@ namespace Server.Spells.Ninjitsu
 			{
 				Caster.SendLocalizedMessage( 1063133 ); // You cannot summon a mirror image because you have too many followers.
 			}
-			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster, typeof( HorrificBeastSpell ) ) )
+			else if( TransformationSpellHelper.UnderTransformation( Caster, typeof( HorrificBeastSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
 			}

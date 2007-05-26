@@ -12,10 +12,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Sacred Journey", "Sanctum Viatas",
-				SpellCircle.Sixth, // 0 + 1.5 = 1.5s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 15.0; } }
 		public override int RequiredMana{ get{ return 10; } }

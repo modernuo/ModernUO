@@ -4,17 +4,18 @@ using Server.Network;
 
 namespace Server.Spells.Fifth
 {
-	public class ParalyzeSpell : Spell
+	public class ParalyzeSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Paralyze", "An Ex Por",
-				SpellCircle.Fifth,
 				218,
 				9012,
 				Reagent.Garlic,
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public ParalyzeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -45,7 +46,7 @@ namespace Server.Spells.Fifth
 				
 				if ( Core.AOS )
 				{
-					int secs = (GetDamageFixed( Caster ) / 100) - (GetResistFixed( m ) / 100);
+					int secs = (int)((GetDamageSkill( Caster ) / 10) - (GetResistSkill( m ) / 10));
 					
 					if( !Core.SE )
 						secs += 2;

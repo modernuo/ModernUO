@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Spells;
 
 namespace Server.Items
 {
@@ -83,7 +84,7 @@ namespace Server.Items
 
 		public override void Drink( Mobile from )
 		{
-			if ( Spells.Necromancy.TransformationSpell.UnderTransformation( from, typeof( Spells.Necromancy.VampiricEmbraceSpell ) ) )
+			if ( TransformationSpellHelper.UnderTransformation( from, typeof( Spells.Necromancy.VampiricEmbraceSpell ) ) )
 			{
 				from.SendLocalizedMessage( 1061652 ); // The garlic in the potion would surely kill you.
 			}

@@ -11,7 +11,7 @@ namespace Server.Spells
 {
 	public class SpellRegistry
 	{
-		private static Type[] m_Types = new Type[600];
+		private static Type[] m_Types = new Type[700];
 		private static int m_Count;
 
 		public static Type[] Types
@@ -146,7 +146,8 @@ namespace Server.Spells
 				"Necromancy",
 				"Chivalry",
 				"Bushido",
-				"Ninjitsu"
+				"Ninjitsu",
+				"SpellWeaving"
 			};
 
 		public static Spell NewSpell( string name, Mobile caster, Item scroll )

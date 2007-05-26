@@ -87,7 +87,7 @@ namespace Server
 
 			protected override void OnTick()
 			{
-				if ( (Core.AOS && m_Poison.Level < 4 && TransformationSpell.UnderTransformation( m_Mobile, typeof( VampiricEmbraceSpell ) )) ||
+				if ( (Core.AOS && m_Poison.Level < 4 && TransformationSpellHelper.UnderTransformation( m_Mobile, typeof( VampiricEmbraceSpell ) )) ||
 					(m_Poison.Level < 3 && OrangePetals.UnderEffect( m_Mobile )) ||
 					AnimalForm.UnderTransformation( m_Mobile, typeof( Unicorn ) ) )
 				{

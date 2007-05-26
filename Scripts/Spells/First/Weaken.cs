@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.First
 {
-	public class WeakenSpell : Spell
+	public class WeakenSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Weaken", "Des Mani",
-				SpellCircle.First,
 				212,
 				9031,
 				Reagent.Garlic,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.First; } }
 
 		public WeakenSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

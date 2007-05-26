@@ -128,6 +128,11 @@ namespace Server.Regions
 			m_GuardType = DefaultGuardType;
 		}
 
+		public GuardedRegion( string name, Map map, int priority, params Rectangle2D[] area )
+			: base( name, map, priority, area )
+		{
+			m_GuardType = DefaultGuardType;
+		}
 		public GuardedRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{
 			XmlElement el = xml["guards"];

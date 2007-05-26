@@ -12,23 +12,15 @@ namespace Server
 
 		public static void Initialize()
 		{
-			//To Ensure that it's sent only AFTER we get the client's version, and right after.
 			if( Enabled )
 			{
-				PacketHandlers.Register( 0xBD, 0, true, new OnPacketReceive
-					(
-						delegate( NetState state, PacketReader pvSrc )
-						{
-							PacketHandlers.ClientVersion( state, pvSrc );
-
-							PlayerMobile pm = state.Mobile as PlayerMobile;
-
-							if( pm != null )
-							{
-								Timer.DelayCall( TimeSpan.Zero, new TimerCallback( pm.ResendBuffs ) );
-							}
-						}
-					) );
+				EventSink.ClientVersionRecieved += new ClientVersionRecievedHandler( delegate( ClientVersionRecievedArgs args )
+				{
+					PlayerMobile pm = args.State.Mobile as PlayerMobile;
+					
+					if( pm != null )
+						Timer.DelayCall( TimeSpan.Zero, pm.ResendBuffs );
+				} );
 			}
 		}
 
@@ -143,6 +135,19 @@ namespace Server
 		{
 			m_Args = args;
 		}
+
+		public BuffInfo( BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args, bool retainThroughDeath )
+			: this( iconID, titleCliloc, titleCliloc + 1, length, m, args, retainThroughDeath )
+		{
+		}
+
+		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m, TextDefinition args, bool retainThroughDeath )
+			: this( iconID, titleCliloc, secondaryCliloc, length, m )
+		{
+			m_Args = args;
+			m_RetainThroughDeath = retainThroughDeath;
+		}
+
 		#endregion
 
 		#region Convience Methods
@@ -192,7 +197,7 @@ namespace Server
 		Mindrot,			//*
 		PainSpike,			//*
 		Strangle,
-		GiftOfRenewal,
+		GiftOfRenewal,		//*
 		AttuneWeapon,
 		Thunderstorm,
 		EssenceOfWind,

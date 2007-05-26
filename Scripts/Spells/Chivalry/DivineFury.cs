@@ -10,10 +10,11 @@ namespace Server.Spells.Chivalry
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Divine Fury", "Divinum Furis",
-				SpellCircle.Fourth, // 0 + 1.0 = 1s base cast delay
 				-1,
 				9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
 
 		public override double RequiredSkill{ get{ return 25.0; } }
 		public override int RequiredMana{ get{ return 15; } }

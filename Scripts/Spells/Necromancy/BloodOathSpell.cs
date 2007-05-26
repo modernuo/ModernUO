@@ -10,11 +10,12 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Blood Oath", "In Jux Mani Xen",
-				SpellCircle.Fourth, // 0.5 + 1.0 = 1.5s base cast delay
 				203,
 				9031,
 				Reagent.DaemonBlood
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 20.0; } }
 		public override int RequiredMana{ get{ return 13; } }
@@ -69,6 +70,7 @@ namespace Server.Spells.Necromancy
 				m.FixedParticles( 0x3728, 1, 13, 9502, 33, 7, (EffectLayer)255 );
 
 				TimeSpan duration = TimeSpan.FromSeconds( ((GetDamageSkill( Caster ) - GetResistSkill( m )) / 8) + 8 );
+				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );	//Skill check for gain
 
 				new ExpireTimer( Caster, m, duration ).Start();
 			}

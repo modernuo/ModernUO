@@ -6,16 +6,17 @@ using Server.Items;
 
 namespace Server.Spells.Third
 {
-	public class TeleportSpell : Spell
+	public class TeleportSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Teleport", "Rel Por",
-				SpellCircle.Third,
 				215,
 				9031,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public TeleportSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

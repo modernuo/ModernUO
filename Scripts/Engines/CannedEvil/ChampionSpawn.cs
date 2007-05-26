@@ -1011,7 +1011,7 @@ namespace Server.Engines.CannedEvil
 		public override void AlterLightLevel( Mobile m, ref int global, ref int personal )
 		{
 			base.AlterLightLevel( m, ref global, ref personal );
-			global = Math.Max( global, 1 + m_Spawn.Level );	//This is a gusstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
+			global = Math.Max( global, 1 + m_Spawn.Level );	//This is a guesstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
 		}
 	}
 

@@ -5,16 +5,17 @@ using Server.Items;
 
 namespace Server.Spells.Third
 {
-	public class UnlockSpell : Spell
+	public class UnlockSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Unlock Spell", "Ex Por",
-				SpellCircle.Third,
 				215,
 				9001,
 				Reagent.Bloodmoss,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public UnlockSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

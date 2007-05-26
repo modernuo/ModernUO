@@ -5,11 +5,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-	public class WaterElementalSpell : Spell
+	public class WaterElementalSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Water Elemental", "Kal Vas Xen An Flam",
-				SpellCircle.Eighth,
 				269,
 				9070,
 				false,
@@ -17,6 +16,8 @@ namespace Server.Spells.Eighth
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
 
 		public WaterElementalSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

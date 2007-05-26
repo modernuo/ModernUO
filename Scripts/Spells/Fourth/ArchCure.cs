@@ -6,17 +6,18 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-	public class ArchCureSpell : Spell
+	public class ArchCureSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Arch Cure", "Vas An Nox",
-				SpellCircle.Fourth,
 				215,
 				9061,
 				Reagent.Garlic,
 				Reagent.Ginseng,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		public ArchCureSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -28,7 +29,7 @@ namespace Server.Spells.Fourth
 		}
 
 		// Archcure is now 1/4th of a second faster
-		public override int CastDelayBase{ get{ return base.CastDelayBase - 1; } }
+		public override TimeSpan CastDelayBase{ get{ return base.CastDelayBase - TimeSpan.FromSeconds( 0.25 ); } }
 
 		public void Target( IPoint3D p )
 		{

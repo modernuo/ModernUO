@@ -102,7 +102,42 @@ namespace Server.Items
 				SkillName.Bushido
 			};
 
-		public static SkillName[] Skills{ get{ return ( Core.SE ? m_SESkills : Core.AOS ? m_AOSSkills : m_Skills ); } }
+		private static SkillName[] m_MLSkills = new SkillName[]
+			{
+				SkillName.Blacksmith,
+				SkillName.Tailoring,
+				SkillName.Swords,
+				SkillName.Fencing,
+				SkillName.Macing,
+				SkillName.Archery,
+				SkillName.Wrestling,
+				SkillName.Parry,
+				SkillName.Tactics,
+				SkillName.Anatomy,
+				SkillName.Healing,
+				SkillName.Magery,
+				SkillName.Meditation,
+				SkillName.EvalInt,
+				SkillName.MagicResist,
+				SkillName.AnimalTaming,
+				SkillName.AnimalLore,
+				SkillName.Veterinary,
+				SkillName.Musicianship,
+				SkillName.Provocation,
+				SkillName.Discordance,
+				SkillName.Peacemaking,
+				SkillName.Chivalry,
+				SkillName.Focus,
+				SkillName.Necromancy,
+				SkillName.Stealing,
+				SkillName.Stealth,
+				SkillName.SpiritSpeak,
+				SkillName.Ninjitsu,
+				SkillName.Bushido,
+				SkillName.Spellweaving
+			};
+
+		public static SkillName[] Skills{ get{ return ( Core.ML ? m_MLSkills : Core.SE ? m_SESkills : Core.AOS ? m_AOSSkills : m_Skills ); } }
 
 		public static PowerScroll CreateRandom( int min, int max )
 		{

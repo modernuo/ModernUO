@@ -5,11 +5,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-	public class BladeSpiritsSpell : Spell
+	public class BladeSpiritsSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Blade Spirits", "In Jux Hur Ylem", 
-				SpellCircle.Fifth,
 				266,
 				9040,
 				false,
@@ -17,6 +16,8 @@ namespace Server.Spells.Fifth
 				Reagent.MandrakeRoot,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
 
 		public BladeSpiritsSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

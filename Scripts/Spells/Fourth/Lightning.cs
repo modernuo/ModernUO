@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Fourth
 {
-	public class LightningSpell : Spell
+	public class LightningSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Lightning", "Por Ort Grav",
-				SpellCircle.Fourth,
 				239,
 				9021,
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		public LightningSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

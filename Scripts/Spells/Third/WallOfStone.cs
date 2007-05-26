@@ -6,17 +6,18 @@ using Server.Items;
 
 namespace Server.Spells.Third
 {
-	public class WallOfStoneSpell : Spell
+	public class WallOfStoneSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Wall of Stone", "In Sanct Ylem",
-				SpellCircle.Third,
 				227,
 				9011,
 				false,
 				Reagent.Bloodmoss,
 				Reagent.Garlic
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Third; } }
 
 		public WallOfStoneSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

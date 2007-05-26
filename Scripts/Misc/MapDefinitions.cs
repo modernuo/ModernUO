@@ -16,7 +16,7 @@ namespace Server.Misc
 			 */
 
 			RegisterMap( 0, 0, 0, 7168, 4096, 4, "Felucca",		MapRules.FeluccaRules );
-			RegisterMap( 1, 1, 0, 7168, 4096, 0, "Trammel",		MapRules.TrammelRules );
+			RegisterMap( 1, 1, 1, 7168, 4096, 0, "Trammel",		MapRules.TrammelRules );
 			RegisterMap( 2, 2, 2, 2304, 1600, 1, "Ilshenar",	MapRules.TrammelRules );
 			RegisterMap( 3, 3, 3, 2560, 2048, 1, "Malas",		MapRules.TrammelRules );
 			RegisterMap( 4, 4, 4, 1448, 1448, 1, "Tokuno",		MapRules.TrammelRules );
@@ -35,6 +35,8 @@ namespace Server.Misc
 			 *  - <name> : Reference name for the map, used in props gump, get/set commands, region loading, etc
 			 *  - <rules> : Rules and restrictions associated with the map. See documentation for details
 			*/
+
+			TileMatrixPatch.Enabled = false;	//OSI client patch 6.0.0.0
 		}
 
 		public static void RegisterMap( int mapIndex, int mapID, int fileIndex, int width, int height, int season, string name, MapRules rules )

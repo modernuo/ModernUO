@@ -23,6 +23,7 @@ using Server.Regions;
 using Server.Accounting;
 using Server.Engines.CannedEvil;
 using Server.Engines.Craft;
+using Server.Spells.Spellweaving;
 
 namespace Server.Mobiles
 {
@@ -1691,7 +1692,7 @@ namespace Server.Mobiles
 
 		public override bool CheckShove( Mobile shoved )
 		{
-			if( TransformationSpell.UnderTransformation( this, typeof( WraithFormSpell ) ) )
+			if( TransformationSpellHelper.UnderTransformation( this, typeof( WraithFormSpell ) ) )
 				return true;
 			else
 				return base.CheckShove( shoved );
@@ -2133,7 +2134,7 @@ namespace Server.Mobiles
 					{
 						//g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
 						g.Alliance.AllianceChat( this, text );
-						SendToStaffMessage( this, "[Alliance]: {0}", this.Name, text );
+						SendToStaffMessage( this, "[Alliance]: {0}", text );
 
 						m_AllianceMessageHue = hue;
 					}
@@ -3043,13 +3044,18 @@ namespace Server.Mobiles
 			if ( checkTurning && (dir & Direction.Mask) != (this.Direction & Direction.Mask) )
 				return TimeSpan.FromSeconds( 0.1 );	// We are NOT actually moving (just a direction change)
 
+			TransformContext context = TransformationSpellHelper.GetContext( this );
+
+			if( context != null && context.Type == typeof( ReaperFormSpell ) )
+				return Mobile.WalkFoot;
+
 			bool running = ( (dir & Direction.Running) != 0 );
 
 			bool onHorse = ( this.Mount != null );
 
-			AnimalFormContext context = AnimalForm.GetContext( this );
+			AnimalFormContext animalContext = AnimalForm.GetContext( this );
 
-			if ( onHorse || (context != null && context.SpeedBoost) )
+			if( onHorse || (animalContext != null && animalContext.SpeedBoost) )
 				return ( running ? Mobile.RunMount : Mobile.WalkMount );
 
 			return ( running ? Mobile.RunFoot : Mobile.WalkFoot );
@@ -3188,6 +3194,8 @@ namespace Server.Mobiles
 
 		public DateTime LastSacrificeGain{ get{ return m_LastSacrificeGain; } set{ m_LastSacrificeGain = value; } }
 		public DateTime LastSacrificeLoss{ get{ return m_LastSacrificeLoss; } set{ m_LastSacrificeLoss = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public int AvailableResurrects{ get{ return m_AvailableResurrects; } set{ m_AvailableResurrects = value; } }
 
 		private DateTime m_NextJustAward;

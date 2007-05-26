@@ -7,16 +7,17 @@ using Server.Network;
 
 namespace Server.Spells.Sixth
 {
-	public class RevealSpell : Spell
+	public class RevealSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Reveal", "Wis Quas",
-				SpellCircle.Sixth,
 				206,
 				9002,
 				Reagent.Bloodmoss,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public RevealSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

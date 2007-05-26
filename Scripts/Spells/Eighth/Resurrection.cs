@@ -5,17 +5,18 @@ using Server.Gumps;
 
 namespace Server.Spells.Eighth
 {
-	public class ResurrectionSpell : Spell
+	public class ResurrectionSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Resurrection", "An Corp",
-				SpellCircle.Eighth,
 				245,
 				9062,
 				Reagent.Bloodmoss,
 				Reagent.Garlic,
 				Reagent.Ginseng
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
 
 		public ResurrectionSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

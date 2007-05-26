@@ -6,11 +6,10 @@ using Server.Mobiles;
 
 namespace Server.Spells.Fourth
 {
-	public class GreaterHealSpell : Spell
+	public class GreaterHealSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Greater Heal", "In Vas Mani",
-				SpellCircle.Fourth,
 				204,
 				9061,
 				Reagent.Garlic,
@@ -18,6 +17,8 @@ namespace Server.Spells.Fourth
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
 
 		public GreaterHealSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -59,7 +60,8 @@ namespace Server.Spells.Fourth
 				int toHeal = (int)(Caster.Skills[SkillName.Magery].Value * 0.4);
 				toHeal += Utility.Random( 1, 10 );
 
-				m.Heal( toHeal );
+				//m.Heal( toHeal, Caster );
+				SpellHelper.Heal( toHeal, m, Caster );
 
 				m.FixedParticles( 0x376A, 9, 32, 5030, EffectLayer.Waist );
 				m.PlaySound( 0x202 );

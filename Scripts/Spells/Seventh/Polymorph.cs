@@ -8,17 +8,18 @@ using Server.Spells.Fifth;
 
 namespace Server.Spells.Seventh
 {
-	public class PolymorphSpell : Spell
+	public class PolymorphSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Polymorph", "Vas Ylem Rel",
-				SpellCircle.Seventh,
 				221,
 				9002,
 				Reagent.Bloodmoss,
 				Reagent.SpidersSilk,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		private int m_NewBody;
 
@@ -44,7 +45,7 @@ namespace Server.Spells.Seventh
 				Caster.SendLocalizedMessage( 1010521 ); // You cannot polymorph while you have a Town Sigil
 				return false;
 			}
-			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster ) )
+			else if( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1061633 ); // You cannot polymorph while in that form.
 				return false;
@@ -100,7 +101,7 @@ namespace Server.Spells.Seventh
 				else
 					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 			}
-			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster ) )
+			else if( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1061633 ); // You cannot polymorph while in that form.
 			}

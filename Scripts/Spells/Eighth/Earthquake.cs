@@ -6,11 +6,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-	public class EarthquakeSpell : Spell
+	public class EarthquakeSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Earthquake", "In Vas Por",
-				SpellCircle.Eighth,
 				233,
 				9012,
 				false,
@@ -19,6 +18,8 @@ namespace Server.Spells.Eighth
 				Reagent.MandrakeRoot,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
 
 		public EarthquakeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

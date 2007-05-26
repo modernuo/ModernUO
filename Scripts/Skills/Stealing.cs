@@ -9,6 +9,8 @@ using Server.Factions;
 using Server.Spells.Seventh;
 using Server.Spells.Fifth;
 using Server.Spells.Necromancy;
+using Server.Spells;
+using Server.Spells.Ninjitsu;
 
 namespace Server.SkillHandlers
 {
@@ -111,11 +113,11 @@ namespace Server.SkillHandlers
 						{
 							m_Thief.SendLocalizedMessage( 1010582 ); //	You cannot steal the sigil while polymorphed				
 						}
-						else if ( TransformationSpell.UnderTransformation( m_Thief ) )
+						else if( TransformationSpellHelper.UnderTransformation( m_Thief ) )
 						{
 							m_Thief.SendLocalizedMessage( 1061622 ); // You cannot steal the sigil while in that form.
 						}
-						else if ( Spells.Ninjitsu.AnimalForm.UnderTransformation( m_Thief ) )
+						else if ( AnimalForm.UnderTransformation( m_Thief ) )
 						{
 							m_Thief.SendLocalizedMessage( 1063222 ); // You cannot steal the sigil while mimicking an animal.
 						}

@@ -100,7 +100,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 3 ); // version
+			writer.Write( (int) 4 ); // version
 
 			writer.Write( m_Level );
 
@@ -117,6 +117,7 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 4:
 				case 3:
 				case 2:
 				{
@@ -150,6 +151,9 @@ namespace Server.Items
 
 			if ( version < 3 )
 				UpdateHue();
+
+			if( version < 4 && m_TargetMap == Map.Tokuno )
+				m_TargetMap = Map.Trammel;
 		}
 		
 		public override void OnDoubleClick( Mobile from )

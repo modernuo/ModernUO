@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class StrengthSpell : Spell
+	public class StrengthSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Strength", "Uus Mani",
-				SpellCircle.Second,
 				212,
 				9061,
 				Reagent.MandrakeRoot,
 				Reagent.Nightshade
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public StrengthSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

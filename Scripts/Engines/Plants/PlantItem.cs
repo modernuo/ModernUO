@@ -431,7 +431,7 @@ namespace Server.Engines.Plants
 				int message;
 				if ( ApplyPotion( potion.PotionEffect, false, out message ) )
 				{
-					potion.Delete();
+					potion.Consume();
 					from.PlaySound( 0x240 );
 					from.AddToBackpack( new Bottle() );
 				}

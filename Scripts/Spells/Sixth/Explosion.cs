@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Sixth
 {
-	public class ExplosionSpell : Spell
+	public class ExplosionSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Explosion", "Vas Ort Flam",
-				SpellCircle.Sixth,
 				230,
 				9041,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
 
 		public ExplosionSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )
@@ -52,11 +53,11 @@ namespace Server.Spells.Sixth
 
 		private class InternalTimer : Timer
 		{
-			private Spell m_Spell;
+			private MagerySpell m_Spell;
 			private Mobile m_Target;
 			private Mobile m_Attacker, m_Defender;
 
-			public InternalTimer( Spell spell, Mobile attacker, Mobile defender, Mobile target )
+			public InternalTimer( MagerySpell spell, Mobile attacker, Mobile defender, Mobile target )
 				: base( TimeSpan.FromSeconds( Core.AOS ? 3.0 : 2.5 ) )
 			{
 				m_Spell = spell;

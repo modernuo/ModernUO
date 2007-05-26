@@ -11,13 +11,14 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Vengeful Spirit", "Kal Xen Bal Beh",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.BatWing,
 				Reagent.GraveDust,
 				Reagent.PigIron
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 80.0; } }
 		public override int RequiredMana{ get{ return 41; } }

@@ -15,7 +15,7 @@ namespace Server.Engines.Help
 		public static readonly bool Enabled = true;
 
 		// How long should we maintain each speech entry?
-		public static readonly TimeSpan EntryDuration = TimeSpan.FromMinutes( 10.0 );
+		public static readonly TimeSpan EntryDuration = TimeSpan.FromMinutes( 20.0 );
 
 		// What is the maximum number of entries a log can contain? (0 -> no limit)
 		public static readonly int MaxLength = 0;
@@ -49,7 +49,7 @@ namespace Server.Engines.Help
 				{
 					from.SendMessage( "Speech logs aren't supported on that target." );
 				}
-				else if ( from != targeted && from.AccessLevel <= pm.AccessLevel )
+				else if ( from != targeted && from.AccessLevel <= pm.AccessLevel && from.AccessLevel != AccessLevel.Owner )
 				{
 					from.SendMessage( "You don't have the required access level to view {0} speech log.", pm.Female ? "her" : "his" );
 				}

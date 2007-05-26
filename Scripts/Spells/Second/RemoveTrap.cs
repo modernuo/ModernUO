@@ -5,16 +5,17 @@ using Server.Items;
 
 namespace Server.Spells.Second
 {
-	public class RemoveTrapSpell : Spell
+	public class RemoveTrapSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Remove Trap", "An Jux",
-				SpellCircle.Second,
 				212,
 				9001,
 				Reagent.Bloodmoss,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Second; } }
 
 		public RemoveTrapSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

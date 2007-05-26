@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		public override double DispelDifficulty { get { return 80.0; } }
 		public override double DispelFocus { get { return 20.0; } }
 
-		public override double GetValueFrom( Mobile m, FightMode acqType, bool bPlayerOnly )
+		public override double GetFightModeRanking( Mobile m, FightMode acqType, bool bPlayerOnly )
 		{
 			return ( m.Int + m.Skills[SkillName.Magery].Value ) / Math.Max( GetDistanceToSqrt( m ), 1.0 );
 		}
@@ -25,14 +25,16 @@ namespace Server.Mobiles
 		{
 			Name = "an energy vortex";
 
-			if ( Core.SE && 0.02 > Utility.RandomDouble() ) // Tested on OSI, but is this right? Who knows.
+			if( Core.SE && 0.02 > Utility.RandomDouble() ) // Tested on OSI, but is this right? Who knows.
 			{
 				// Llama vortex!
 				Body = 0xDC;
 				Hue = 0x76;
 			}
 			else
-			Body = 164;
+			{
+				Body = 164;
+			}
 
 			SetStr( 200 );
 			SetDex( 200 );

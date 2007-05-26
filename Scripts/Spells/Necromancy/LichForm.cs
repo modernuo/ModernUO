@@ -10,13 +10,14 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Lich Form", "Rel Xen Corp Ort",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.GraveDust,
 				Reagent.DaemonBlood,
 				Reagent.NoxCrystal
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 70.0; } }
 		public override int RequiredMana{ get{ return 23; } }
@@ -33,7 +34,7 @@ namespace Server.Spells.Necromancy
 		{
 		}
 
-		public override void PlayEffect( Mobile m )
+		public override void DoEffect( Mobile m )
 		{
 			m.PlaySound( 0x19C );
 			m.FixedParticles( 0x3709, 1, 30, 9904, 1108, 6, EffectLayer.RightFoot );

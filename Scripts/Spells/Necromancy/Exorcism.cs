@@ -14,12 +14,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Exorcism", "Ort Corp Grav",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.NoxCrystal,
 				Reagent.GraveDust
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill { get { return 80.0; } }
 		public override int RequiredMana { get { return 40; } }
@@ -42,7 +43,7 @@ namespace Server.Spells.Necromancy
 
 		public override bool DelayedDamage { get { return false; } }
 
-		private const int Range = 18;
+		private static readonly int Range = (Core.ML ? 48 : 18);
 
 		public override int ComputeKarmaAward()
 		{
@@ -59,10 +60,6 @@ namespace Server.Spells.Necromancy
 			}
 			else if( CheckSequence() )
 			{
-				/* Creates a withering frost around the Caster,
-				 * which deals Cold Damage to all valid targets in a radius of 5 tiles.
-				 */
-
 				Map map = Caster.Map;
 
 				if( map != null )
@@ -73,17 +70,11 @@ namespace Server.Spells.Necromancy
 						if( IsValidTarget( m ) )
 							targets.Add( m );
 
-					//Effects.PlaySound( Caster.Location, map, 0x1FB );
-					//Effects.PlaySound( Caster.Location, map, 0x10B );
-					//Effects.SendLocationParticles( EffectItem.Create( Caster.Location, map, EffectItem.DefaultDuration ), 0x37CC, 1, 40, 97, 3, 9917, 0 );
-
 					for( int i = 0; i < targets.Count; ++i )
 					{
 						Mobile m = targets[i];
 
-						//m.FixedParticles( 0x374A, 1, 15, 9502, 97, 3, (EffectLayer)255 );
-
-						//Suprisingly, no effects
+						//Suprisingly, no sparkle type effects
 
 						m.Location = GetNearestShrine( m );
 					}
@@ -97,10 +88,6 @@ namespace Server.Spells.Necromancy
 		{
 			if( !m.Player || m.Alive )
 				return false;
-			/*
-			if( m.Corpse != null && m.Corpse.Map == m.Map )
-				return false;
-			 * */
 
 			Corpse c = m.Corpse as Corpse;
 			Map map = m.Map;

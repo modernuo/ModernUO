@@ -61,7 +61,8 @@ namespace Server.Misc
 
 			if ( Core.AOS )
 			{
-				CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
+				//CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
+				CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );
 				StartingCities[StartingCities.Length - 1] = haven;
 			}
 		}

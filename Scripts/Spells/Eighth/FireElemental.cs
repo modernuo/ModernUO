@@ -5,11 +5,10 @@ using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-	public class FireElementalSpell : Spell
+	public class FireElementalSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Fire Elemental", "Kal Vas Xen Flam",
-				SpellCircle.Eighth,
 				269,
 				9050,
 				false,
@@ -18,6 +17,8 @@ namespace Server.Spells.Eighth
 				Reagent.SpidersSilk,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
 
 		public FireElementalSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

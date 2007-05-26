@@ -6,11 +6,10 @@ using Server.Items;
 
 namespace Server.Spells.Seventh
 {
-	public class EnergyFieldSpell : Spell
+	public class EnergyFieldSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Energy Field", "In Sanct Grav",
-				SpellCircle.Seventh,
 				221,
 				9022,
 				false,
@@ -19,6 +18,8 @@ namespace Server.Spells.Seventh
 				Reagent.SpidersSilk,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		public EnergyFieldSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

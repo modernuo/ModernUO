@@ -369,16 +369,14 @@ namespace Server
 			}
 		}
 
-		public void ApplyPerfectionDamageBonus( ref double factor )
+		public int PerfectionDamageBonus
 		{
-			if ( m_Perfection > 0 )
-				factor *= 1.0 + (m_Perfection / 100.0);
+			get { return m_Perfection; }
 		}
 
-		public void ApplyPerfectionLuckBonus( ref int luck )
+		public int PerfectionLuckBonus
 		{
-			if ( m_Perfection > 0 )
-				luck += (m_Perfection * m_Perfection) / 10;
+			get{ return (m_Perfection * m_Perfection) / 10; }
 		}
 
 		public bool CheckDistance()

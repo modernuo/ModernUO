@@ -10,12 +10,13 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Wraith Form", "Rel Xen Um",
-				SpellCircle.Sixth, // 0.5 + 1.5 = 2s base cast delay
 				203,
 				9031,
 				Reagent.NoxCrystal,
 				Reagent.PigIron
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
 
 		public override double RequiredSkill{ get{ return 20.0; } }
 		public override int RequiredMana{ get{ return 17; } }
@@ -33,7 +34,7 @@ namespace Server.Spells.Necromancy
 		{
 		}
 
-		public override void PlayEffect( Mobile m )
+		public override void DoEffect( Mobile m )
 		{
 			m.PlaySound( 0x17F );
 			m.FixedParticles( 0x374A, 1, 15, 9902, 1108, 4, EffectLayer.Waist );

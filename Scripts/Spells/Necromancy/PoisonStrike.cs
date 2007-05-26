@@ -10,17 +10,18 @@ namespace Server.Spells.Necromancy
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Poison Strike", "In Vas Nox",
-				(Core.ML ? SpellCircle.Fifth :  // 0.5 + 1.25 = 1.75s base cast delay
-				SpellCircle.Fourth), // 0.5 + 1.0 = 1.5s base cast delay
 				203,
 				9031,
 				Reagent.NoxCrystal
 			);
 
-		public override double RequiredSkill{ get{ return 50.0; } }
-		public override int RequiredMana{ get{ return 17; } }
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( (Core.ML ? 1.75 : 1.5) ); } }
 
-		public PoisonStrikeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
+		public override double RequiredSkill { get { return 50.0; } }
+		public override int RequiredMana { get { return 17; } }
+
+		public PoisonStrikeSpell( Mobile caster, Item scroll )
+			: base( caster, scroll, m_Info )
 		{
 		}
 
@@ -29,11 +30,11 @@ namespace Server.Spells.Necromancy
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public override bool DelayedDamage{ get{ return false; } }
+		public override bool DelayedDamage { get { return false; } }
 
 		public void Target( Mobile m )
 		{
-			if ( CheckHSequence( m ) )
+			if( CheckHSequence( m ) )
 			{
 				SpellHelper.Turn( Caster, m );
 
@@ -42,7 +43,7 @@ namespace Server.Spells.Necromancy
 				 * One tile from main target receives 50% damage, two tiles from target receives 33% damage.
 				 */
 
-				CheckResisted( m ); // Check magic resist for skill, but do not use return value
+				//CheckResisted( m ); // Check magic resist for skill, but do not use return value	//reports from OSI:  Necro spells don't give Resist gain
 
 				Effects.SendLocationParticles( EffectItem.Create( m.Location, m.Map, EffectItem.DefaultDuration ), 0x36B0, 1, 14, 63, 7, 9915, 0 );
 				Effects.PlaySound( m.Location, m.Map, 0x229 );
@@ -51,23 +52,23 @@ namespace Server.Spells.Necromancy
 
 				Map map = m.Map;
 
-				if ( map != null )
+				if( map != null )
 				{
 					List<Mobile> targets = new List<Mobile>();
 
-					foreach ( Mobile targ in m.GetMobilesInRange( 2 ) )
-						if ( (Caster == targ || SpellHelper.ValidIndirectTarget( Caster, targ )) && Caster.CanBeHarmful( targ, false ) )
+					foreach( Mobile targ in m.GetMobilesInRange( 2 ) )
+						if( (Caster == targ || SpellHelper.ValidIndirectTarget( Caster, targ )) && Caster.CanBeHarmful( targ, false ) )
 							targets.Add( targ );
 
-					for ( int i = 0; i < targets.Count; ++i )
+					for( int i = 0; i < targets.Count; ++i )
 					{
 						Mobile targ = targets[i];
 
 						int num;
 
-						if ( targ.InRange( m.Location, 0 ) )
+						if( targ.InRange( m.Location, 0 ) )
 							num = 1;
-						else if ( targ.InRange( m.Location, 1 ) )
+						else if( targ.InRange( m.Location, 1 ) )
 							num = 2;
 						else
 							num = 3;
@@ -85,15 +86,16 @@ namespace Server.Spells.Necromancy
 		{
 			private PoisonStrikeSpell m_Owner;
 
-			public InternalTarget( PoisonStrikeSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( PoisonStrikeSpell owner )
+				: base( 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				if ( o is Mobile )
-					m_Owner.Target( (Mobile) o );
+				if( o is Mobile )
+					m_Owner.Target( (Mobile)o );
 			}
 
 			protected override void OnTargetFinish( Mobile from )

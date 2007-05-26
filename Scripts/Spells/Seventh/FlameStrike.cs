@@ -4,16 +4,17 @@ using Server.Network;
 
 namespace Server.Spells.Seventh
 {
-	public class FlameStrikeSpell : Spell
+	public class FlameStrikeSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Flame Strike", "Kal Vas Flam",
-				SpellCircle.Seventh,
 				245,
 				9042,
 				Reagent.SpidersSilk,
 				Reagent.SulfurousAsh
 			);
+
+		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
 
 		public FlameStrikeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

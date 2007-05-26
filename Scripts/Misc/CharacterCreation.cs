@@ -733,8 +733,20 @@ namespace Server.Misc
 				m_Mobile.SendLocalizedMessage( m_Message );
 			}
 		}
+
+		private static readonly ClientVersion m_NewHavenClient = new ClientVersion( "6.0.0.0" );
+		private static readonly CityInfo m_NewHavenInfo = new CityInfo( "New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel );
+
 		private static CityInfo GetStartLocation( CharacterCreatedEventArgs args, bool isYoung )
 		{
+			if( Core.ML )
+			{
+				//if( args.State != null && args.State.Version >= m_NewHavenClient )
+				return m_NewHavenInfo;	//We don't get the client Version until AFTER Character creation
+
+				//return args.City;  TODO: Uncomment when the old quest system is actually phased out
+			}
+
 			bool useHaven = isYoung;
 
 			int flags = args.State == null ? 0 : args.State.Flags;
@@ -766,7 +778,7 @@ namespace Server.Misc
 				}
 				case 5:	//Paladin
 				{
-					return new CityInfo( "Haven", "Uzeraan's Mansion", 3578, 2589, 0, Map.Trammel );
+					return m_NewHavenInfo;
 				}
 				case 6:	//Samurai
 				{
@@ -815,7 +827,7 @@ namespace Server.Misc
 			}
 
 			if( useHaven )
-				return new CityInfo( "Haven", "Uzeraan's Mansion", 3582, 2587, 0, Map.Trammel );
+				return m_NewHavenInfo;
 			else
 				return args.City;
 		}
@@ -1101,6 +1113,8 @@ namespace Server.Misc
 					PackItem( book );
 
 					book.LootType = LootType.Blessed;
+
+					addSkillItems = false;
 
 					break;
 				}

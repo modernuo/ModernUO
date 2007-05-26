@@ -57,7 +57,7 @@ namespace Server.Mobiles
 			if ( Map != Map.Felucca )
 				return;
 
-			ArrayList toGive = new ArrayList();
+			List<Mobile> toGive = new List<Mobile>();
 			List<DamageStore> rights = BaseCreature.GetLootingRights( this.DamageEntries, this.HitsMax );
 
 			for ( int i = rights.Count - 1; i >= 0; --i )
@@ -73,7 +73,7 @@ namespace Server.Mobiles
 
 			for( int i = 0; i < toGive.Count; i++ )
 			{
-				Mobile m = (Mobile)toGive[i];
+				Mobile m = toGive[i];
 
 				if( !(m is PlayerMobile) )
 					continue;
@@ -97,64 +97,72 @@ namespace Server.Mobiles
 			for ( int i = 0; i < toGive.Count; ++i )
 			{
 				int rand = Utility.Random( toGive.Count );
-				object hold = toGive[i];
+				Mobile hold = toGive[i];
 				toGive[i] = toGive[rand];
 				toGive[rand] = hold;
 			}
 
 			for ( int i = 0; i < 6; ++i )
 			{
-				Mobile m = (Mobile)toGive[i % toGive.Count];
+				Mobile m = toGive[i % toGive.Count];
 
 				PowerScroll ps = CreateRandomPowerScroll();
 
-				m.SendLocalizedMessage( 1049524 ); // You have received a scroll of power!
+				GivePowerScrollTo( m, ps );
+			}
+		}
 
-				if ( !Core.SE || m.Alive )
-					m.AddToBackpack( ps );
+		public static void GivePowerScrollTo( Mobile m, PowerScroll ps )
+		{
+			if( ps == null || m == null )	//sanity
+				return;
+
+			m.SendLocalizedMessage( 1049524 ); // You have received a scroll of power!
+
+			if( !Core.SE || m.Alive )
+				m.AddToBackpack( ps );
+			else
+			{
+				if( m.Corpse != null && !m.Corpse.Deleted )
+					m.Corpse.DropItem( ps );
 				else
-				{
-					if ( m.Corpse != null && !m.Corpse.Deleted )
-						((Container)m.Corpse).DropItem( ps );
-					else
-						m.AddToBackpack( ps );
-				}
+					m.AddToBackpack( ps );
+			}
 
-				if ( m is PlayerMobile )
-				{
-					PlayerMobile pm = (PlayerMobile)m;
+			if( m is PlayerMobile )
+			{
+				PlayerMobile pm = (PlayerMobile)m;
 
-					for ( int j = 0; j < pm.JusticeProtectors.Count; ++j )
+				for( int j = 0; j < pm.JusticeProtectors.Count; ++j )
+				{
+					Mobile prot = pm.JusticeProtectors[j];
+
+					if( prot.Map != m.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( m, prot ) )
+						continue;
+
+					int chance = 0;
+
+					switch( VirtueHelper.GetLevel( prot, VirtueName.Justice ) )
 					{
-						Mobile prot = (Mobile)pm.JusticeProtectors[j];
+						case VirtueLevel.Seeker: chance = 60; break;
+						case VirtueLevel.Follower: chance = 80; break;
+						case VirtueLevel.Knight: chance = 100; break;
+					}
 
-						if ( prot.Map != m.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( m, prot ) )
-							continue;
+					if( chance > Utility.Random( 100 ) )
+					{
+						PowerScroll powerScroll = new PowerScroll( ps.Skill, ps.Value );
 
-						int chance = 0;
+						prot.SendLocalizedMessage( 1049368 ); // You have been rewarded for your dedication to Justice!
 
-						switch ( VirtueHelper.GetLevel( prot, VirtueName.Justice ) )
+						if( !Core.SE || prot.Alive )
+							prot.AddToBackpack( powerScroll );
+						else
 						{
-							case VirtueLevel.Seeker: chance = 60; break;
-							case VirtueLevel.Follower: chance = 80; break;
-							case VirtueLevel.Knight: chance = 100; break;
-						}
-
-						if ( chance > Utility.Random( 100 ) )
-						{
-							ps = CreateRandomPowerScroll();
-
-							prot.SendLocalizedMessage( 1049368 ); // You have been rewarded for your dedication to Justice!
-
-							if ( !Core.SE || prot.Alive )
-								prot.AddToBackpack( ps );
+							if( prot.Corpse != null && !prot.Corpse.Deleted )
+								prot.Corpse.DropItem( powerScroll );
 							else
-							{
-								if ( prot.Corpse != null && !prot.Corpse.Deleted )
-									((Container)prot.Corpse).DropItem( ps );
-								else
-									prot.AddToBackpack( ps );
-							}
+								prot.AddToBackpack( powerScroll );
 						}
 					}
 				}

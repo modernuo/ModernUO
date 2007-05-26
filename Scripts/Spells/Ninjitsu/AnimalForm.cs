@@ -22,15 +22,16 @@ namespace Server.Spells.Ninjitsu
 			AnimalFormContext context = AnimalForm.GetContext( e.Mobile );
 
 			if( context != null && context.SpeedBoost )
-				e.Mobile.Send( SpeedBoost.Enabled );
+				e.Mobile.Send( SpeedControl.MountSpeed );
 		}
 
 		private static SpellInfo m_Info = new SpellInfo(
 			"Animal Form", null,
-			SpellCircle.Fourth, // 1.0s base cast delay
 			-1,
 			9002
 			);
+
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
 
 		public override double RequiredSkill{ get{ return 0.0; } }
 		public override int RequiredMana{ get{ return (Core.ML ? 10 : 0); } }
@@ -49,7 +50,7 @@ namespace Server.Spells.Ninjitsu
 				Caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 				return false;
 			}
-			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster ) )
+			else if ( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1063219 ); // You cannot mimic an animal while in that form.
 				return false;
@@ -82,7 +83,7 @@ namespace Server.Spells.Ninjitsu
 			{
 				Caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 			}
-			else if ( Necromancy.TransformationSpell.UnderTransformation( Caster ) )
+			else if( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1063219 ); // You cannot mimic an animal while in that form.
 			}
@@ -154,6 +155,13 @@ namespace Server.Spells.Ninjitsu
 				return MorphResult.NoSkill;
 			}
 
+			/*
+			if( !m.CheckSkill( SkillName.Ninjitsu, entry.ReqSkill, entry.ReqSkill + 37.5 ) )
+				return MorphResult.Fail;
+			 * 
+			 * On OSI,it seems you can only gain starting at '0' using Animal form.  
+			*/
+			
 			double ninjitsu = m.Skills.Ninjitsu.Value;
 
 			if ( ninjitsu < entry.ReqSkill + 37.5 )
@@ -174,7 +182,7 @@ namespace Server.Spells.Ninjitsu
 				m.HueMod = entry.HueMod;
 
 			if ( entry.SpeedBoost )
-				m.Send( SpeedBoost.Instantiate( true ) );
+				m.Send( SpeedControl.MountSpeed );
 
 			SkillMod mod = null;
 
@@ -216,7 +224,7 @@ namespace Server.Spells.Ninjitsu
 			m_Table.Remove( m );
 
 			if ( context.SpeedBoost )
-				m.Send( SpeedBoost.Instantiate( false ) );
+				m.Send( SpeedControl.Disable );
 
 			SkillMod mod = context.Mod;
 

@@ -4,6 +4,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Collector;
+using System.Collections.Generic;
 
 namespace Server.Engines.Harvest
 {
@@ -200,11 +201,11 @@ namespace Server.Engines.Harvest
 
 			if ( pack != null )
 			{
-				Item[] messages = pack.FindItemsByType( typeof( SOS ) );
+				List<SOS> messages = pack.FindItemsByType<SOS>();
 
-				for ( int i = 0; i < messages.Length; ++i )
+				for ( int i = 0; i < messages.Count; ++i )
 				{
-					SOS sos = (SOS)messages[i];
+					SOS sos = messages[i];
 
 					if ( from.Map == sos.TargetMap && from.InRange( sos.TargetLocation, 60 ) )
 						return true;
@@ -228,18 +229,18 @@ namespace Server.Engines.Harvest
 			}
 			else if ( type == typeof( MessageInABottle ) )
 			{
-				return new MessageInABottle( SafeMap( from.Map ) );
+				return new MessageInABottle( from.Map == Map.Felucca ? Map.Felucca : Map.Trammel );
 			}
 
 			Container pack = from.Backpack;
 
 			if ( pack != null )
 			{
-				Item[] messages = pack.FindItemsByType( typeof( SOS ) );
+				List<SOS> messages = pack.FindItemsByType<SOS>();
 
-				for ( int i = 0; i < messages.Length; ++i )
+				for ( int i = 0; i < messages.Count; ++i )
 				{
-					SOS sos = (SOS)messages[i];
+					SOS sos = messages[i];
 
 					if ( from.Map == sos.TargetMap && from.InRange( sos.TargetLocation, 60 ) )
 					{
