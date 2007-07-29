@@ -160,7 +160,7 @@ namespace Server.Network
 				{
 					int packetID = buffer.GetPacketID();
 
-					if ( !ns.SentFirstPacket && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 && packetID != 0x91 && packetID != 0xA4 )
+					if ( !ns.SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 && packetID != 0x91 && packetID != 0xA4 )
 					{
 						Console.WriteLine( "Client: {0}: Encrypted client detected, disconnecting", ns );
 						ns.Dispose();
