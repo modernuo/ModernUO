@@ -214,21 +214,31 @@ namespace Server.Misc
 			}
 			else if ( showSkillTitle && beheld.Player )
 			{
-				Skill highest = GetHighestSkill( beheld );// beheld.Skills.Highest;
+				string skillTitle = GetSkillTitle( beheld );
 
-				if ( highest != null && highest.BaseFixedPoint >= 300 )
-				{
-					string skillLevel = GetSkillLevel( highest );
-					string skillTitle = highest.Info.Title;
-
-					if ( beheld.Female && skillTitle.EndsWith( "man" ) )
-						skillTitle = skillTitle.Substring( 0, skillTitle.Length - 3 ) + "woman";
-
-					title.AppendFormat( ", {0} {1}", skillLevel, skillTitle );
+				if ( skillTitle != null ) {
+					title.Append( ", " ).Append( skillTitle );
 				}
 			}
 
 			return title.ToString();
+		}
+
+		public static string GetSkillTitle( Mobile mob ) {
+			Skill highest = GetHighestSkill( mob );// beheld.Skills.Highest;
+
+			if ( highest != null && highest.BaseFixedPoint >= 300 )
+			{
+				string skillLevel = GetSkillLevel( highest );
+				string skillTitle = highest.Info.Title;
+
+				if ( mob.Female && skillTitle.EndsWith( "man" ) )
+					skillTitle = skillTitle.Substring( 0, skillTitle.Length - 3 ) + "woman";
+
+				return String.Concat( skillLevel, " ", skillTitle );
+			}
+
+			return null;
 		}
 
 		private static Skill GetHighestSkill( Mobile m )

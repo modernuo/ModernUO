@@ -853,9 +853,10 @@ namespace Server.Accounting
 		/// <returns>True if allowed, false if not.</returns>
 		public bool HasAccess( NetState ns )
 		{
-			if ( ns == null )
-				return false;
+			return ( ns != null && HasAccess( ns.Address ) );
+		}
 
+		public bool HasAccess( IPAddress ipAddress ) {
 			AccessLevel level = Misc.AccountHandler.LockdownLevel;
 
 			if ( level > AccessLevel.Player )
@@ -881,8 +882,6 @@ namespace Server.Accounting
 					return false;
 			}
 
-			IPAddress ipAddress = ns.Address;
-
 			bool accessAllowed = ( m_IPRestrictions.Length == 0 || IPLimiter.IsExempt( ipAddress ) );
 
 			for ( int i = 0; !accessAllowed && i < m_IPRestrictions.Length; ++i )
@@ -897,19 +896,21 @@ namespace Server.Accounting
 		/// <param name="ns">NetState instance to record.</param>
 		public void LogAccess( NetState ns )
 		{
-			if ( ns == null )
-				return;
+			if ( ns != null ) {
+				LogAccess( ns.Address );
+			}
+		}
 
-			IPAddress ipAddress = ns.Address;
-
+		public void LogAccess( IPAddress ipAddress ) {
 			if ( IPLimiter.IsExempt( ipAddress ) )
 				return;
 
-			if ( m_LoginIPs.Length == 0 )
+			if ( m_LoginIPs.Length == 0 ) {
 				if ( AccountHandler.IPTable.ContainsKey( ipAddress ) )
 					AccountHandler.IPTable[ipAddress]++;
 				else
 					AccountHandler.IPTable[ipAddress] = 1;
+			}
 
 			bool contains = false;
 
@@ -935,11 +936,17 @@ namespace Server.Accounting
 		/// <returns>True if allowed, false if not.</returns>
 		public bool CheckAccess( NetState ns )
 		{
-			if ( !HasAccess( ns ) )
-				return false;
+			return ( ns != null && CheckAccess( ns.Address ) );
+		}
 
-			LogAccess( ns );
-			return true;
+		public bool CheckAccess( IPAddress ipAddress ) {
+			bool hasAccess = this.HasAccess( ipAddress );
+
+			if ( hasAccess ) {
+				LogAccess( ipAddress );
+			}
+
+			return hasAccess;
 		}
 
 		/// <summary>
