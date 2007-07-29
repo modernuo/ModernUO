@@ -2727,20 +2727,17 @@ namespace Server.Gumps
 
 		private void Shutdown( bool restart, bool save )
 		{
-			CommandLogging.WriteLine( m_From, "{0} {1} shuting down server (Restart: {2}) (Save: {3})", m_From.AccessLevel, CommandLogging.Format( m_From ), restart, save );
+			CommandLogging.WriteLine( m_From, "{0} {1} shutting down server (Restart: {2}) (Save: {3})", m_From.AccessLevel, CommandLogging.Format( m_From ), restart, save );
 
 			if ( save )
 				InvokeCommand( "Save" );
 
-			if ( restart )
-				Process.Start( Core.ExePath, Core.Arguments );
-
-			Core.Process.Kill();
+			Core.Kill( restart );
 		}
 
-		private void InvokeCommand( string ip )
+		private void InvokeCommand( string c )
 		{
-			CommandSystem.Handle( m_From, String.Format( "{0}{1}", CommandSystem.Prefix, ip ) );
+			CommandSystem.Handle( m_From, String.Format( "{0}{1}", CommandSystem.Prefix, c ) );
 		}
 
 		public static void GetAccountInfo( Account a, out AccessLevel accessLevel, out bool online )

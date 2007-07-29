@@ -276,8 +276,10 @@ namespace Server
 		{
 			if( World.Saving )
 				return true;
+			
+			Kill();
 
-			return false;
+			return true;
 		}
 #endif
 
@@ -287,8 +289,7 @@ namespace Server
 		}
 
 		private static bool m_Closing;
-
-		public static bool Closing { get { return m_Closing; } set { m_Closing = value; } }
+		public static bool Closing { get { return m_Closing; } }
 
 		private static uint m_CycleIndex;
 		private static float[] m_CyclesPerSecond = new float[100];
@@ -315,6 +316,21 @@ namespace Server
 			}
 		}
 
+		public static void Kill()
+		{
+			Kill( false );
+		}
+
+		public static void Kill( bool restart )
+		{
+			HandleClosed();
+
+			if ( restart )
+				Process.Start( ExePath, Arguments );
+
+			m_Process.Kill();
+		}
+
 		private static void HandleClosed()
 		{
 			if( m_Closing )
@@ -326,9 +342,6 @@ namespace Server
 
 			if( !m_Crashed )
 				EventSink.InvokeShutdown( new ShutdownEventArgs() );
-
-			if( timerThread.ThreadState != System.Threading.ThreadState.Unstarted )
-				timerThread.Join();
 
 			if( SocketPool.Created )
 				SocketPool.Destroy();
@@ -448,7 +461,7 @@ namespace Server
 
 				int sample = 0;
 
-				while( !m_Closing )
+				while( true )
 				{
 					m_Signal.WaitOne();
 
@@ -477,9 +490,6 @@ namespace Server
 			{
 				CurrentDomain_UnhandledException( null, new UnhandledExceptionEventArgs( e, true ) );
 			}
-
-			if( timerThread.IsAlive )
-				timerThread.Abort();
 		}
 
 		public static string Arguments

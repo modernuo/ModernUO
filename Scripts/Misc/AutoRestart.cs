@@ -61,8 +61,7 @@ namespace Server.Misc
 
 		private void Restart_Callback()
 		{
-			Process.Start( Core.ExePath, Core.Arguments );
-			Core.Process.Kill();
+			Core.Kill( true );
 		}
 
 		protected override void OnTick()

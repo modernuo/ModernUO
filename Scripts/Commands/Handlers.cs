@@ -207,7 +207,7 @@ namespace Server.Commands
 			{
 				List<IEntity> list = (List<IEntity>)state;
 
-				CommandLogging.WriteLine( from, "{0} {1} deleting {2} objects", from.AccessLevel, CommandLogging.Format( from ), list.Count );
+				CommandLogging.WriteLine( from, "{0} {1} deleting {2} object{3}", from.AccessLevel, CommandLogging.Format( from ), list.Count, list.Count == 1 ? "" : "s" );
 
 				NetState.Pause();
 
@@ -248,7 +248,7 @@ namespace Server.Commands
 
 			if ( list.Count > 0 )
 			{
-				CommandLogging.WriteLine( e.Mobile, "{0} {1} starting facet clear of {2} ({3} objects)", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), map, list.Count );
+				CommandLogging.WriteLine( e.Mobile, "{0} {1} starting facet clear of {2} ({3} object{4})", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), map, list.Count, list.Count == 1 ? "" : "s" );
 
 				e.Mobile.SendGump(
 					new WarningGump( 1060635, 30720,
@@ -396,7 +396,7 @@ namespace Server.Commands
 				{
 					m_Mobile = m;
 
-					CommandLogging.WriteLine( from, "{0} {1} getting equip for {2}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( m ) );
+					CommandLogging.WriteLine( from, "{0} {1} viewing equipment of {2}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( m ) );
 				}
 
 				public override void OnResponse( NetState state, int index )
@@ -429,17 +429,17 @@ namespace Server.Commands
 					{
 						if ( index == 0 )
 						{
-							CommandLogging.WriteLine( state.Mobile, "{0} {1} moving equip item {2} of {3}", state.Mobile.AccessLevel, CommandLogging.Format( state.Mobile ), CommandLogging.Format( m_Item ), CommandLogging.Format( m_Mobile ) );
+							CommandLogging.WriteLine( state.Mobile, "{0} {1} moving equipment item {2} of {3}", state.Mobile.AccessLevel, CommandLogging.Format( state.Mobile ), CommandLogging.Format( m_Item ), CommandLogging.Format( m_Mobile ) );
 							state.Mobile.Target = new MoveTarget( m_Item );
 						}
 						else if ( index == 1 )
 						{
-							CommandLogging.WriteLine( state.Mobile, "{0} {1} deleting equip item {2} of {3}", state.Mobile.AccessLevel, CommandLogging.Format( state.Mobile ), CommandLogging.Format( m_Item ), CommandLogging.Format( m_Mobile ) );
+							CommandLogging.WriteLine( state.Mobile, "{0} {1} deleting equipment item {2} of {3}", state.Mobile.AccessLevel, CommandLogging.Format( state.Mobile ), CommandLogging.Format( m_Item ), CommandLogging.Format( m_Mobile ) );
 							m_Item.Delete();
 						}
 						else if ( index == 2 )
 						{
-							CommandLogging.WriteLine( state.Mobile, "{0} {1} opening props for equip item {2} of {3}", state.Mobile.AccessLevel, CommandLogging.Format( state.Mobile ), CommandLogging.Format( m_Item ), CommandLogging.Format( m_Mobile ) );
+							CommandLogging.WriteLine( state.Mobile, "{0} {1} opening properties for equipment item {2} of {3}", state.Mobile.AccessLevel, CommandLogging.Format( state.Mobile ), CommandLogging.Format( m_Item ), CommandLogging.Format( m_Mobile ) );
 							state.Mobile.SendGump( new PropertiesGump( state.Mobile, m_Item ) );
 						}
 					}
@@ -1275,34 +1275,6 @@ namespace Server.Commands
 
 				if ( m != null && m.AccessLevel >= ac )
 					m.SendMessage( hue, message );
-			}
-		}
-
-		private class DeleteItemByLayerTarget : Target
-		{
-			private Layer m_Layer;
-
-			public DeleteItemByLayerTarget( Layer layer ) : base( -1, false, TargetFlags.None )
-			{
-				m_Layer = layer;
-			}
-
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( targeted is Mobile )
-				{
-					Item item = ((Mobile)targeted).FindItemOnLayer( m_Layer );
-
-					if ( item != null )
-					{
-						CommandLogging.WriteLine( from, "{0} {1} deleting item on layer {2} of {3}", from.AccessLevel, CommandLogging.Format( from ), m_Layer, CommandLogging.Format( targeted ) );
-						item.Delete();
-					}
-				}
-				else
-				{
-					from.SendMessage( "Target a mobile." );
-				}
 			}
 		}
 
