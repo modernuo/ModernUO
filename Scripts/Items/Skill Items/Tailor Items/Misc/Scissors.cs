@@ -55,7 +55,7 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( m_Item.Deleted || !m_Item.Movable )
+				if ( m_Item.Deleted )
 					return;
 
 				/*if ( targeted is Item && !((Item)targeted).IsStandardLoot() )
@@ -70,6 +70,9 @@ namespace Server.Items
 				else if( Core.SE && Utility.RandomDouble() > .20 && (from.Direction & Direction.Running) != 0 && ( DateTime.Now - from.LastMoveTime ) < from.ComputeMovementSpeed( from.Direction ) )
 				{
 					from.SendLocalizedMessage( 1063305 ); // Didn't your parents ever tell you not to run with scissors in your hand?!
+				}
+				else if ( targeted is Item && !((Item)targeted).Movable ) {
+					return;
 				}
 				else if( targeted is IScissorable )
 				{
