@@ -1531,6 +1531,41 @@ namespace Server.Network
 		}
 	}
 
+	public sealed class SpellbookContent6017 : Packet
+	{
+		public SpellbookContent6017( int count, int offset, ulong content, Item item ) : base( 0x3C )
+		{
+			this.EnsureCapacity( 5 + (count * 20) );
+
+			int written = 0;
+
+			m_Stream.Write( (ushort) 0 );
+
+			ulong mask = 1;
+
+			for ( int i = 0; i < 64; ++i, mask <<= 1 )
+			{
+				if ( (content & mask) != 0 )
+				{
+					m_Stream.Write( (int) (0x7FFFFFFF - i) );
+					m_Stream.Write( (ushort) 0 );
+					m_Stream.Write( (byte) 0 );
+					m_Stream.Write( (ushort) (i + offset) );
+					m_Stream.Write( (short) 0 );
+					m_Stream.Write( (short) 0 );
+					m_Stream.Write( (byte) 0 ); // Grid Location?
+					m_Stream.Write( (int) item.Serial );
+					m_Stream.Write( (short) 0 );
+
+					++written;
+				}
+			}
+
+			m_Stream.Seek( 3, SeekOrigin.Begin );
+			m_Stream.Write( (ushort) written );
+		}
+	}
+
 	public sealed class ContainerDisplay : Packet
 	{
 		public ContainerDisplay( Container c ) : base( 0x24, 7 )

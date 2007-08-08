@@ -497,10 +497,23 @@ namespace Server.Items
 
 			to.Send( new DisplaySpellbook( this ) );
 
-			if ( Core.AOS && to.NetState != null && to.NetState.Version != null && to.NetState.Version >= Version_400a )
-				to.Send( new NewSpellbookContent( this, ItemID, BookOffset + 1, m_Content ) );
-			else
-				to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
+			if ( to.NetState == null )
+				return;
+
+			if ( Core.AOS ) {
+				if ( to.NetState.Version != null && to.NetState.Version >= Version_400a ) {
+					to.Send( new NewSpellbookContent( this, ItemID, BookOffset + 1, m_Content ) );
+				} else {
+					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
+				}
+			}
+			else {
+				if ( to.NetState.IsPost6017 ) {
+					to.Send( new SpellbookContent6017( m_Count, BookOffset + 1, m_Content, this ) );
+				} else {
+					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
+				}
+			}
 		}
 
 		private Mobile m_Crafter;
