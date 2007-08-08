@@ -55,7 +55,7 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( m_Item.Deleted )
+				if ( m_Item.Deleted || !m_Item.Movable )
 					return;
 
 				/*if ( targeted is Item && !((Item)targeted).IsStandardLoot() )
