@@ -11,16 +11,16 @@ namespace Server.Gumps
 		private object m_State;
 		private bool m_CancelButton;
 
-		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state, bool cancelButton )
-			: this( header, headerColor, content, contentColor, width, height, callback, state )
+		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state )
+			: this( header, headerColor, content, contentColor, width, height, callback, state, false )
 		{
-			m_CancelButton = cancelButton;
 		}
 
-		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state ) : base( (640 - width) / 2, (480 - height) / 2 )
+		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state, bool cancelButton ) : base( (640 - width) / 2, (480 - height) / 2 )
 		{
 			m_Callback = callback;
 			m_State = state;
+			m_CancelButton = cancelButton;
 
 			Closable = false;
 

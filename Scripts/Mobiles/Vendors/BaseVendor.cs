@@ -633,7 +633,10 @@ namespace Server.Mobiles
 
 				SendPacksTo( from );
 				
-				from.Send( new VendorBuyContent( list ) );
+				if ( from.NetState.IsPost6017 )
+					from.Send( new VendorBuyContent6017( list ) );
+				else
+					from.Send( new VendorBuyContent( list ) );
 				from.Send( new VendorBuyList( this, list ) );
 				from.Send( new DisplayBuyList( this ) );
 				from.Send( new MobileStatusExtended( from ) );//make sure their gold amount is sent

@@ -198,6 +198,22 @@ namespace Server.Network
 		}
 	}
 
+	public sealed class SecureTradeEquip6017 : Packet
+	{
+		public SecureTradeEquip6017( Item item, Mobile m ) : base( 0x25, 21 )
+		{
+			m_Stream.Write( (int) item.Serial );
+			m_Stream.Write( (short) item.ItemID );
+			m_Stream.Write( (byte) 0 );
+			m_Stream.Write( (short) item.Amount );
+			m_Stream.Write( (short) item.X );
+			m_Stream.Write( (short) item.Y );
+			m_Stream.Write( (byte) 0 ); // Grid Location?
+			m_Stream.Write( (int) m.Serial );
+			m_Stream.Write( (short) item.Hue );
+		}
+	}
+
 	public sealed class MapPatches : Packet
 	{
 		public MapPatches() : base( 0xBF )
@@ -255,6 +271,35 @@ namespace Server.Network
 				m_Stream.Write( (ushort)bis.Amount );
 				m_Stream.Write( (short)(i+1) );//x
 				m_Stream.Write( (short)1 );//y
+				m_Stream.Write( (int)bis.ContainerSerial );
+				m_Stream.Write( (ushort)bis.Hue );
+			}
+		}
+	}
+
+		public sealed class VendorBuyContent6017 : Packet
+	{
+		public VendorBuyContent6017( ArrayList list ) : base( 0x3c )
+		{
+			this.EnsureCapacity( list.Count*20 + 5 );
+
+			m_Stream.Write( (short)list.Count );
+
+			//The client sorts these by their X/Y value.
+			//OSI sends these in wierd order.  X/Y highest to lowest and serial loest to highest
+			//These are already sorted by serial (done by the vendor class) but we have to send them by x/y
+			//(the x74 packet is sent in 'correct' order.)
+			for ( int i = list.Count - 1; i >= 0; --i )
+			{
+				BuyItemState bis = (BuyItemState)list[i];
+		
+				m_Stream.Write( (int)bis.MySerial );
+				m_Stream.Write( (ushort)(bis.ItemID & 0x3FFF) );
+				m_Stream.Write( (byte)0 );//itemid offset
+				m_Stream.Write( (ushort)bis.Amount );
+				m_Stream.Write( (short)(i+1) );//x
+				m_Stream.Write( (short)1 );//y
+				m_Stream.Write( (byte)0 ); // Grid Location?
 				m_Stream.Write( (int)bis.ContainerSerial );
 				m_Stream.Write( (ushort)bis.Hue );
 			}
@@ -1527,6 +1572,39 @@ namespace Server.Network
 		}
 	}
 
+		public sealed class ContainerContentUpdate6017 : Packet
+	{
+		public ContainerContentUpdate6017( Item item ) : base( 0x25, 21 )
+		{
+			Serial parentSerial;
+
+			if ( item.Parent is Item )
+			{
+				parentSerial = ((Item)item.Parent).Serial;
+			}
+			else
+			{
+				Console.WriteLine( "Warning: ContainerContentUpdate on item with !(parent is Item)" );
+				parentSerial = Serial.Zero;
+			}
+
+			ushort cid = (ushort) item.ItemID;
+
+			if ( cid > 0x3FFF )
+				cid = 0x9D7;
+
+			m_Stream.Write( (int) item.Serial );
+			m_Stream.Write( (short) cid );
+			m_Stream.Write( (byte) 0 ); // signed, itemID offset
+			m_Stream.Write( (ushort) item.Amount );
+			m_Stream.Write( (short) item.X );
+			m_Stream.Write( (short) item.Y );
+			m_Stream.Write( (byte) 0 ); // Grid Location?
+			m_Stream.Write( (int) parentSerial );
+			m_Stream.Write( (ushort) item.Hue );
+		}
+	}
+
 	public sealed class ContainerContent : Packet
 	{
 		public ContainerContent( Mobile beholder, Item beheld ) : base( 0x3C )
@@ -1561,6 +1639,53 @@ namespace Server.Network
 					m_Stream.Write( (ushort) child.Amount );
 					m_Stream.Write( (short) loc.m_X );
 					m_Stream.Write( (short) loc.m_Y );
+					m_Stream.Write( (int) beheld.Serial );
+					m_Stream.Write( (ushort) child.Hue );
+
+					++written;
+				}
+			}
+
+			m_Stream.Seek( pos, SeekOrigin.Begin );
+			m_Stream.Write( (ushort) written );
+		}
+	}
+
+		public sealed class ContainerContent6017 : Packet
+	{
+		public ContainerContent6017( Mobile beholder, Item beheld ) : base( 0x3C )
+		{
+			List<Item> items = beheld.Items;
+			int count = items.Count;
+
+			this.EnsureCapacity( 5 + (count * 20) );
+
+			long pos = m_Stream.Position;
+
+			int written = 0;
+
+			m_Stream.Write( (ushort) 0 );
+
+			for ( int i = 0; i < count; ++i )
+			{
+				Item child = items[i];
+
+				if ( !child.Deleted && beholder.CanSee( child ) )
+				{
+					Point3D loc = child.Location;
+
+					ushort cid = (ushort) child.ItemID;
+
+					if ( cid > 0x3FFF )
+						cid = 0x9D7;
+
+					m_Stream.Write( (int) child.Serial );
+					m_Stream.Write( (ushort) cid );
+					m_Stream.Write( (byte) 0 ); // signed, itemID offset
+					m_Stream.Write( (ushort) child.Amount );
+					m_Stream.Write( (short) loc.m_X );
+					m_Stream.Write( (short) loc.m_Y );
+					m_Stream.Write( (byte) 0 ); // Grid Location?
 					m_Stream.Write( (int) beheld.Serial );
 					m_Stream.Write( (ushort) child.Hue );
 

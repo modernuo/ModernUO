@@ -157,8 +157,14 @@ namespace Server.Items
 			if ( CheckRange( from ) )
 			{
 				Cleanup();
-				from.Send( new BBDisplayBoard( this ) );
-				from.Send( new ContainerContent( from, this ) );
+
+				NetState state = from.NetState;
+
+				state.Send( new BBDisplayBoard( this ) );
+				if ( state.IsPost6017 )
+					state.Send( new ContainerContent6017( from, this ) );
+				else
+					state.Send( new ContainerContent( from, this ) );
 			}
 			else
 			{

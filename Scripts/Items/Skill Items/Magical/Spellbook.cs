@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using Server;
-using Server.Targeting;
-using Server.Network;
-using Server.Spells;
 using Server.Commands;
 using Server.Engines.Craft;
+using Server.Network;
+using Server.Spells;
+using Server.Targeting;
 
 namespace Server.Items
 {
@@ -484,7 +484,10 @@ namespace Server.Items
 			else if ( Parent is Item )
 			{
 				// What will happen if the client doesn't know about our parent?
-				to.Send( new ContainerContentUpdate( this ) );
+				if ( to.NetState.IsPost6017 )
+					to.Send( new ContainerContentUpdate6017( this ) );
+				else
+					to.Send( new ContainerContentUpdate( this ) );
 			}
 			else if ( Parent is Mobile )
 			{

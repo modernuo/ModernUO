@@ -167,7 +167,7 @@ namespace Server.Network
 						break;
 					}
 
-					PacketHandler handler = PacketHandlers.GetHandler( packetID );
+					PacketHandler handler = ns.GetHandler( packetID );
 
 					if ( handler == null )
 					{

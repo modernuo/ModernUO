@@ -4290,9 +4290,12 @@ namespace Server
 			{
 				state.Send( new LiftRej( reject ) );
 
-				if( item.Parent is Item )
-					state.Send( new ContainerContentUpdate( item ) );
-				else if( item.Parent is Mobile )
+				if( item.Parent is Item ) {
+					if ( state.IsPost6017 )
+						state.Send( new ContainerContentUpdate6017( item ) );
+					else
+						state.Send( new ContainerContentUpdate( item ) );
+				} else if( item.Parent is Mobile )
 					state.Send( new EquipUpdate( item ) );
 				else
 					item.SendInfoTo( state );
