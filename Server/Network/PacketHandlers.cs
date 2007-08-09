@@ -251,6 +251,19 @@ namespace Server.Network
 				m_EncodedHandlersHigh.Remove( packetID );
 		}
 
+		public static void RegisterThrottler( int packetID, ThrottlePacketCallback t )
+		{
+			PacketHandler ph = GetHandler( packetID );
+
+			if ( ph != null )
+				ph.ThrottleCallback = t;
+
+			ph = Get6017Handler( packetID );
+
+			if ( ph != null )
+				ph.ThrottleCallback = t;
+		}
+
 		private static void UnhandledBF( NetState state, PacketReader pvSrc )
 		{
 		}

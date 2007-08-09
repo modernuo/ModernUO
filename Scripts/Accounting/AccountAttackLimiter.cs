@@ -17,19 +17,9 @@ namespace Server.Accounting
 			if ( !Enabled )
 				return;
 
-			RegisterThrottler( 0x80 );
-			RegisterThrottler( 0x91 );
-			RegisterThrottler( 0xCF );
-		}
-
-		public static void RegisterThrottler( int packetID )
-		{
-			PacketHandler ph = PacketHandlers.GetHandler( packetID );
-
-			if ( ph == null )
-				return;
-
-			ph.ThrottleCallback = new ThrottlePacketCallback( Throttle_Callback );
+			PacketHandlers.RegisterThrottler( 0x80, new ThrottlePacketCallback( Throttle_Callback ) ) );
+			PacketHandlers.RegisterThrottler( 0x91, new ThrottlePacketCallback( Throttle_Callback ) ) );
+			PacketHandlers.RegisterThrottler( 0xCF, new ThrottlePacketCallback( Throttle_Callback ) ) );
 		}
 
 		public static bool Throttle_Callback( NetState ns )
