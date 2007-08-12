@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Collections;
 using Server;
+using Server.Commands.Generic;
 using Server.Network;
 using Server.Prompts;
 using Server.Commands;
