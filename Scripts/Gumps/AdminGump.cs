@@ -515,7 +515,7 @@ namespace Server.Gumps
 				{
 					if ( m_List == null )
 					{
-						m_List = new ArrayList( (ICollection)NetState.Instances );
+						m_List = new ArrayList( NetState.Instances );
 						m_List.Sort( NetStateComparer.Instance );
 					}
 
@@ -1119,7 +1119,7 @@ namespace Server.Gumps
 
 						AccountComment c = a.Comments[i];
 
-						sb.AppendFormat( "[{0} on {1}]<BR>{2}", c.AddedBy, c.LastModified,c.Content );
+						sb.AppendFormat( "[{0} on {1}]<BR>{2}", c.AddedBy, c.LastModified, c.Content );
 					}
 
 					AddHtml( 20, 180, 380, 190, sb.ToString(), true, true );

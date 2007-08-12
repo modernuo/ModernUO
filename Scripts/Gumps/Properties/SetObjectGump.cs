@@ -267,7 +267,7 @@ namespace Server.Gumps
 
 					if ( obj == null )
 						m_Mobile.SendMessage( "The property is null and so you cannot view its properties." );
-					else if ( !Server.Commands.Generic.BaseCommand.IsAccessible( m_Mobile, obj ) )
+					else if ( !BaseCommand.IsAccessible( m_Mobile, obj ) )
 						m_Mobile.SendMessage( "You may not view their properties." );
 					else
 						viewProps = obj;

@@ -48,7 +48,7 @@ namespace Server.Misc
 				{
 					++count;
 
-					if ( count >= MaxAddresses )
+					if ( count > MaxAddresses )
 						return false;
 				}
 			}

@@ -173,8 +173,8 @@ namespace Server.SkillHandlers
 			{
 				int y = 276;
 
-			if ( Core.SE )
-			{
+				if ( Core.SE )
+				{
 					double bd = Items.BaseInstrument.GetBaseDifficulty( c );
 					if ( c.Uncalmable )
 						bd = 0;
@@ -183,7 +183,7 @@ namespace Server.SkillHandlers
 					AddHtml( 320, y, 35, 18, FormatDouble( bd ), false, false );
 
 					y += 18;
-			}
+				}
 
 				AddImage( 128, y + 2, 2086 );
 				AddHtmlLocalized( 147, y, 160, 18, 1049594, 200, false, false ); // Loyalty Rating

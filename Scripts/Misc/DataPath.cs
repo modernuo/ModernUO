@@ -45,16 +45,6 @@ namespace Server.Misc
 			if ( pathTD != null ) 
 				Core.DataDirectories.Add( pathTD ); 
 
-
-			if ( CustomPath != null )
-				Core.DataDirectories.Add( CustomPath );
-
-			if ( pathReg != null )
-				Core.DataDirectories.Add( pathReg );
-
-			if ( pathTD != null )
-				Core.DataDirectories.Add( pathTD );
-
 			if ( Core.DataDirectories.Count == 0 )
 			{
 				Console.WriteLine( "Enter the Ultima Online directory:" );

@@ -179,7 +179,7 @@ namespace Server.Misc
 
 		private static bool AllowGain( Mobile from, Skill skill, object obj )
 		{
-			if ( from is PlayerMobile && AntiMacroCode && UseAntiMacro[skill.Info.SkillID] )
+			if ( AntiMacroCode && from is PlayerMobile && UseAntiMacro[skill.Info.SkillID] )
 				return ((PlayerMobile)from).AntiMacroCheck( skill, obj );
 			else
 				return true;

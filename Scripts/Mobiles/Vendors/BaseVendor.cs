@@ -632,6 +632,9 @@ namespace Server.Mobiles
 				list.Sort( new BuyItemStateComparer() );
 
 				SendPacksTo( from );
+
+				if ( from.NetState == null )
+					return;
 				
 				if ( from.NetState.IsPost6017 )
 					from.Send( new VendorBuyContent6017( list ) );

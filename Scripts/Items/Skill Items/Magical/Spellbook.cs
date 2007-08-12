@@ -483,6 +483,9 @@ namespace Server.Items
 			}
 			else if ( Parent is Item )
 			{
+				if ( to.NetState == null )
+					return;
+
 				// What will happen if the client doesn't know about our parent?
 				if ( to.NetState.IsPost6017 )
 					to.Send( new ContainerContentUpdate6017( this ) );

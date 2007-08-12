@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Server;
 using Server.Items;
-using Server.Gumps;
 using Server.Network;
 using Server.Mobiles;
 
@@ -186,7 +185,7 @@ namespace Server.Gumps
 					}
 				}
 
-				if( m_FromSacrifice && !from.Criminal && from is PlayerMobile )
+				if( m_FromSacrifice && from is PlayerMobile )
 				{
 					((PlayerMobile)from).AvailableResurrects -= 1;
 
@@ -236,7 +235,6 @@ namespace Server.Gumps
 							from.Skills[s].Base *= loss;
 					}
 				}
-
 
 				if( from.Alive && m_HitsScalar > 0 )
 					from.Hits = (int)(from.HitsMax * m_HitsScalar);

@@ -57,28 +57,28 @@ namespace Server.SkillHandlers
 		}
 
 		public static void ScaleStats( BaseCreature bc, double scalar )
-			{
-				if ( bc.RawStr > 0 )
-					bc.RawStr = (int)Math.Max( 1, bc.RawStr * scalar );
+		{
+			if ( bc.RawStr > 0 )
+				bc.RawStr = (int)Math.Max( 1, bc.RawStr * scalar );
 
-				if ( bc.RawDex > 0 )
-					bc.RawDex = (int)Math.Max( 1, bc.RawDex * scalar );
+			if ( bc.RawDex > 0 )
+				bc.RawDex = (int)Math.Max( 1, bc.RawDex * scalar );
 
 			if ( bc.RawInt > 0 )
 				bc.RawInt = (int)Math.Max( 1, bc.RawInt * scalar );
 
-				if ( bc.HitsMaxSeed > 0 )
-				{
-					bc.HitsMaxSeed = (int)Math.Max( 1, bc.HitsMaxSeed * scalar );
-					bc.Hits = bc.Hits;
+			if ( bc.HitsMaxSeed > 0 )
+			{
+				bc.HitsMaxSeed = (int)Math.Max( 1, bc.HitsMaxSeed * scalar );
+				bc.Hits = bc.Hits;
 				}
 
-				if ( bc.StamMaxSeed > 0 )
-				{
-					bc.StamMaxSeed = (int)Math.Max( 1, bc.StamMaxSeed * scalar );
-					bc.Stam = bc.Stam;
-				}
+			if ( bc.StamMaxSeed > 0 )
+			{
+				bc.StamMaxSeed = (int)Math.Max( 1, bc.StamMaxSeed * scalar );
+				bc.Stam = bc.Stam;
 			}
+		}
 
 		public static void ScaleSkills( BaseCreature bc, double scalar )
 		{

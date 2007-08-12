@@ -209,14 +209,17 @@ namespace Server
 			m_From = new SecureTradeInfo( this, from, new SecureTradeContainer( this ) );
 			m_To = new SecureTradeInfo( this, to, new SecureTradeContainer( this ) );
 
+			bool from6017 = ( from.NetState == null ? false : from.NetState.IsPost6017 );
+			bool to6017   = ( to.NetState == null ? false : to.NetState.IsPost6017 );
+
 			from.Send( new MobileStatus( from, to ) );
 			from.Send( new UpdateSecureTrade( m_From.Container, false, false ) );
-			if ( from.NetState.IsPost6017 )
+			if ( from6017 )
 				from.Send( new SecureTradeEquip6017( m_To.Container, to ) );
 			else
 				from.Send( new SecureTradeEquip( m_To.Container, to ) );
 			from.Send( new UpdateSecureTrade( m_From.Container, false, false ) );
-			if ( from.NetState.IsPost6017 )
+			if ( from6017 )
 				from.Send( new SecureTradeEquip6017( m_From.Container, from ) );
 			else
 				from.Send( new SecureTradeEquip( m_From.Container, from ) );
@@ -225,12 +228,12 @@ namespace Server
 
 			to.Send( new MobileStatus( to, from ) );
 			to.Send( new UpdateSecureTrade( m_To.Container, false, false ) );
-			if ( to.NetState.IsPost6017 )
+			if ( to6017 )
 				to.Send( new SecureTradeEquip6017( m_From.Container, from ) );
 			else
 				to.Send( new SecureTradeEquip( m_From.Container, from ) );
 			to.Send( new UpdateSecureTrade( m_To.Container, false, false ) );
-			if ( to.NetState.IsPost6017 )
+			if ( to6017 )
 				to.Send( new SecureTradeEquip6017( m_To.Container, to ) );
 			else
 				to.Send( new SecureTradeEquip( m_To.Container, to ) );

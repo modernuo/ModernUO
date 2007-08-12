@@ -134,7 +134,6 @@ namespace Server.Gumps
 						toSet = TimeSpan.Zero;
 					}
 
-					
 					shouldSet = shouldSend = successfulParse;
 
 					break;

@@ -127,7 +127,7 @@ namespace Server.Accounting
 		}
 
 		/// <summary>
-		/// Account username and password hashed with MD5. May be null.
+		/// Account username and password hashed with SHA1. May be null.
 		/// </summary>
 		public string NewCryptPassword
 		{

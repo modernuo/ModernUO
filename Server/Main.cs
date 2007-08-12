@@ -461,10 +461,8 @@ namespace Server
 
 				int sample = 0;
 
-				while( true )
+				while( m_Signal.WaitOne() )
 				{
-					m_Signal.WaitOne();
-
 					Mobile.ProcessDeltaQueue();
 					Item.ProcessDeltaQueue();
 

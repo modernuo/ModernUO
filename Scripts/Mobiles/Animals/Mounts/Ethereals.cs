@@ -178,7 +178,7 @@ namespace Server.Mobiles
 			writer.Write( (int)3 ); // version
 
 			writer.Write( m_IsDonationItem );
-			writer.Write( (bool)m_IsRewardItem );
+			writer.Write( m_IsRewardItem );
 
 			writer.Write( (int)m_MountedID );
 			writer.Write( (int)m_RegularID );

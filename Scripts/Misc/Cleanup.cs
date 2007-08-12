@@ -127,7 +127,7 @@ namespace Server.Misc
 			}
 		}
 
-		public static bool IsBuggable(Item item)
+		public static bool IsBuggable( Item item )
 		{
 			if ( item is Fists )
 				return false;
