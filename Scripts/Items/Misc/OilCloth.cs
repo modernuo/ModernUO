@@ -27,8 +27,6 @@ namespace Server.Items
 			Amount = amount;
 		}
 
-		
-
 		public bool Dye( Mobile from, DyeTub sender )
 		{
 			if ( Deleted )

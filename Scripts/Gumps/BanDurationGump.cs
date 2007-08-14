@@ -225,27 +225,34 @@ namespace Server.Gumps
 				default: return;
 			}
 
-			if ( shouldSet )
-			{
-				string comment = ( c != null && c.Text.Trim().Length > 0 ) ? c.Text.Trim(): "No Comment";
+			if ( shouldSet ) {
+				string comment = null;
+				
+				if ( c != null ) {
+					comment = c.Text.Trim();
 
+					if ( comment.Length == 0 )
+						comment = null;
+				}
 
 				for ( int i = 0; i < m_List.Count; ++i )
 				{
 					Account a = (Account)m_List[i];
 
 					a.SetBanTags( from, DateTime.Now, duration );
-					a.Comments.Add( new AccountComment( from.RawName, String.Format( "Ban of {0} duration: {1}", (( duration == TimeSpan.MaxValue )? "infinite" : duration.ToString()), comment ) ) );
+
+					if ( comment != null )
+						a.Comments.Add( new AccountComment( from.RawName, String.Format( "Duration: {0}, Comment: {1}", (( duration == TimeSpan.MaxValue )? "Infinite" : duration.ToString()), comment ) ) );
 				}
 
 				if ( duration == TimeSpan.MaxValue )
-					from.SendMessage( "Duration is infinite." );
+					from.SendMessage( "Ban Duration: Infinite" );
 				else
-					from.SendMessage( "Duration is {0}.", duration );
+					from.SendMessage( "Ban Duration: {0}", duration );
 			}
 			else
 			{
-				from.SendMessage( "Values improperly formatted." );
+				from.SendMessage( "Time values were improperly formatted." );
 				from.SendGump( new BanDurationGump( m_List ) );
 			}
 		}

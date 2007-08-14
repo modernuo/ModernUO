@@ -94,7 +94,7 @@ namespace Server.Misc
 			if ( m_Backups.Length == 0 )
 				return;
 
-			string root = Path.Combine( Core.BaseDirectory, "Backups\\Automatic" );
+			string root = Path.Combine( Core.BaseDirectory, "Backups/Automatic" );
 
 			if ( !Directory.Exists( root ) )
 				Directory.CreateDirectory( root );

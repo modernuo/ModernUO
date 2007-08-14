@@ -171,7 +171,6 @@ namespace Server.Items
 			base.Hue = 0x481;
 			base.Weight = 1.0;
 
-
 			m_Skill = skill;
 			m_Value = value;
 			if ( m_Value > 105.0 )

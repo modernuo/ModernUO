@@ -19,7 +19,7 @@ namespace Server.Items
 		{
 			get
 			{
-				return String.Format( Amount == 1 ? "{0} piece of leather" : "{0} pieces of leather", Amount );
+				return String.Format( Amount == 1 ? "{0} piece of {1} leather" : "{0} pieces of {1} leather", Amount, CraftResources.GetName( m_Resource ).ToLower() );	
 			}
 		}
 

@@ -21,9 +21,8 @@ namespace Server.Items
 		protected override Packet GetWorldPacketFor( NetState state ) {
 			Mobile mob = state.Mobile;
 
-			if ( mob != null && mob.AccessLevel >= AccessLevel.GameMaster ) {
+			if ( mob != null && mob.AccessLevel >= AccessLevel.GameMaster )
 				return new GMItemPacket( this );
-			}
 
 			return base.GetWorldPacketFor( state );
 		}

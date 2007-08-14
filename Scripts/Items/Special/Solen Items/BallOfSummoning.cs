@@ -109,7 +109,7 @@ namespace Server.Items
 		{
 			base.GetContextMenuEntries( from, list );
 
-			if ( from.Alive && from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( from.Alive && this.RootParent == from )
 			{
 				if ( Pet == null )
 				{
@@ -144,7 +144,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( this.RootParent == from ) // TODO: Previous implementation allowed use on ground, without house protection checks. What is the correct behavior?
 			{
 				if ( Pet == null )
 				{
@@ -157,7 +157,7 @@ namespace Server.Items
 			}
 			else
 			{
-				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
+				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1042001 ); // That must be in your pack for you to use it.
 			}
 		}
 
@@ -165,7 +165,7 @@ namespace Server.Items
 		{
 			BaseCreature pet = this.Pet;
 
-			if ( Deleted || pet != null )
+			if ( Deleted || pet != null || this.RootParent != from )
 				return;
 
 			from.SendLocalizedMessage( 1054114 ); // Target your pet that you wish to link to this Crystal Ball of Pet Summoning.
@@ -186,9 +186,9 @@ namespace Server.Items
 				if ( m_Ball.Deleted || m_Ball.Pet != null )
 					return;
 
-				if ( !from.InRange( m_Ball.GetWorldLocation(), 2 ) )
+				if ( m_Ball.RootParent != from )
 				{
-					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
+					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1042001 ); // That must be in your pack for you to use it.
 				}
 				else if ( targeted is BaseCreature )
 				{
@@ -224,7 +224,7 @@ namespace Server.Items
 		{
 			BaseCreature pet = this.Pet;
 
-			if ( Deleted || pet == null )
+			if ( Deleted || pet == null || this.RootParent != from )
 				return;
 
 			if ( Charges == 0 )
@@ -277,7 +277,7 @@ namespace Server.Items
 
 		public void UnlinkPet( Mobile from )
 		{
-			if ( !Deleted && Pet != null )
+			if ( !Deleted && Pet != null && this.RootParent == from )
 			{
 				Pet = null;
 

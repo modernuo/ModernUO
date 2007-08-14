@@ -146,20 +146,6 @@ namespace Server.Items
 
 			m_NoBones = true;
 			BeginDecay( m_BoneDecayTime );
-
-			/*DecayedCorpse c = new DecayedCorpse( Name );
-
-			c.MoveToWorld( Location, Map );
-
-			ArrayList list = Items;
-
-			for ( int i = list.Count - 1; i >= 0; --i )
-			{
-				if ( i < list.Count )
-					c.AddItem( (Item)list[i] );
-			}
-
-			Delete();*/
 		}
 
 		private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes( 7.0 );
