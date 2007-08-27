@@ -346,6 +346,8 @@ namespace Server
 			if( SocketPool.Created )
 				SocketPool.Destroy();
 
+			Timer.Set();
+
 			Console.WriteLine( "done" );
 		}
 

@@ -5,7 +5,7 @@ using System.Collections;
 using Server.Accounting;
 using Server.Network;
 
-namespace Server.Admin
+namespace Server.RemoteAdmin
 {
 	public class AdminNetwork
 	{

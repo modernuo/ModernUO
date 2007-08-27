@@ -12,7 +12,7 @@ namespace Server.Gumps
 		private bool m_CancelButton;
 
 		public WarningGump( int header, int headerColor, object content, int contentColor, int width, int height, WarningGumpCallback callback, object state )
-			: this( header, headerColor, content, contentColor, width, height, callback, state, false )
+			: this( header, headerColor, content, contentColor, width, height, callback, state, true )
 		{
 		}
 

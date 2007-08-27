@@ -10,7 +10,7 @@ namespace Server.Items
 		public abstract Item CreateItemFor( Mobile from );
 
 		public abstract TextDefinition ItemName{ get; }
-		public abstract TextDefinition ItemRecieveMessage { get; }
+		public abstract TextDefinition ItemReceiveMessage { get; }
 		public abstract TextDefinition ItemGumpName { get; }
 
 		public PromotionalToken() : base( 0x2AAA )
@@ -110,7 +110,7 @@ namespace Server.Items
 					if( i != null )
 					{
 						from.BankBox.AddItem( i );
-						TextDefinition.SendMessageTo( from, m_Token.ItemRecieveMessage );
+						TextDefinition.SendMessageTo( from, m_Token.ItemReceiveMessage );
 						m_Token.Delete();
 					}
 				}
@@ -131,7 +131,7 @@ namespace Server.Items
 
 		public override TextDefinition ItemGumpName{ get{ return 1070999; } }// <center>Soulstone Fragment</center>
 		public override TextDefinition ItemName { get { return 1071000; } }//soulstone fragment
-		public override TextDefinition ItemRecieveMessage{ get{ return 1070976; } } // A soulstone fragment has been created in your bank box.
+		public override TextDefinition ItemReceiveMessage{ get{ return 1070976; } } // A soulstone fragment has been created in your bank box.
 
 		[Constructable]
 		public SoulstoneFragmentToken() : base()

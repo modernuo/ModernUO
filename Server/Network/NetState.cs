@@ -512,7 +512,8 @@ namespace Server.Network {
 
 		private static BufferPool m_ReceiveBufferPool = new BufferPool( "Receive", 2048, 2048 );
 
-		public NetState( Socket socket, MessagePump messagePump ) {
+		public NetState( Socket socket, MessagePump messagePump )
+		{
 			m_Socket = socket;
 			m_Buffer = new ByteQueue();
 			m_Seeded = false;
@@ -541,7 +542,8 @@ namespace Server.Network {
 
 			m_ConnectedOn = DateTime.Now;
 
-			if ( m_CreatedCallback != null ) {
+			if ( m_CreatedCallback != null )
+			{
 				m_CreatedCallback( this );
 			}
 		}

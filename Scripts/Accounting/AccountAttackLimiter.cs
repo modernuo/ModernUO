@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using Server;
@@ -66,6 +67,21 @@ namespace Server.Accounting
 
 			accessLog.Counts += 1;
 			accessLog.RefreshAccessTime();
+
+			if ( accessLog.Counts >= 3 ) {
+				try {
+					using ( StreamWriter op = new StreamWriter( "throttle.log", true ) ) {
+						op.WriteLine(
+							"{0}\t{1}\t{2}",
+							DateTime.Now,
+							ns,
+							accessLog.Counts
+						);
+					}
+				}
+				catch {
+				}
+			}
 		}
 
 		public static TimeSpan ComputeThrottle( int counts )

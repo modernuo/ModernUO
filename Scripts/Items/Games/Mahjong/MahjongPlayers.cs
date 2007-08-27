@@ -380,7 +380,7 @@ namespace Server.Engines.Mahjong
 				to.Send( new MahjongPlayersInfo( m_Game, to ) );
 			}
 
-			SendLocalizedMessage( 1062774, string.Format( "{0}\t{1}\t{2}", from.Name, to.Name, amount ) ); // ~1_giver~ gives ~2_reciever~ ~3_number~ points.
+			SendLocalizedMessage( 1062774, string.Format( "{0}\t{1}\t{2}", from.Name, to.Name, amount ) ); // ~1_giver~ gives ~2_receiver~ ~3_number~ points.
 		}
 
 		public void OpenSeat( int index )

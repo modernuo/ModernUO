@@ -552,7 +552,7 @@ namespace Server.Gumps
 
 						if ( m == null )
 						{
-							if ( Admin.AdminNetwork.IsAuth( ns ) )
+							if ( RemoteAdmin.AdminNetwork.IsAuth( ns ) )
 								AddLabelCropped( 12, offset, 81, 20, LabelHue, "(remote admin)" );
 							else
 								AddLabelCropped( 12, offset, 81, 20, LabelHue, "(logging in)" );

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using Server.Network;
 using Server.Gumps;
+using Server.Mobiles;
 
 namespace Server.Misc
 {
@@ -14,16 +15,20 @@ namespace Server.Misc
 			Ignore,
 			Warn,
 			Annoy,
+			LenientKick,
 			Kick
 		}
 
 		private static bool m_DetectClientRequirement = true;
-		private static OldClientResponse m_OldClientResponse = OldClientResponse.Annoy;
+		private static OldClientResponse m_OldClientResponse = OldClientResponse.LenientKick;
 
 		private static ClientVersion m_Required;
 		private static bool m_AllowRegular = true, m_AllowUOTD = true, m_AllowGod = true;
 
-		private static TimeSpan m_KickDelay = TimeSpan.FromSeconds( 10.0 );
+		private static TimeSpan m_AgeLeniency = TimeSpan.FromDays( 10 );
+		private static TimeSpan m_GameTimeLeniency = TimeSpan.FromHours( 25 );
+
+		private static TimeSpan m_KickDelay = TimeSpan.FromSeconds( 20.0 );
 
 		public static ClientVersion Required
 		{
@@ -87,7 +92,7 @@ namespace Server.Misc
 
 		public static void Initialize()
 		{
-			EventSink.ClientVersionRecieved += new ClientVersionRecievedHandler( EventSink_ClientVersionRecieved );
+			EventSink.ClientVersionReceived += new ClientVersionReceivedHandler( EventSink_ClientVersionReceived );
 
 			//ClientVersion.Required = null;
 			//Required = new ClientVersion( "6.0.0.0" );
@@ -115,13 +120,13 @@ namespace Server.Misc
 			}
 		}
 
-		private static void EventSink_ClientVersionRecieved( ClientVersionRecievedArgs e )
+		private static void EventSink_ClientVersionReceived( ClientVersionReceivedArgs e )
 		{
 			string kickMessage = null;
 			NetState state = e.State;
 			ClientVersion version = e.Version;
 
-			if( Required != null && m_OldClientResponse == OldClientResponse.Kick && version < Required )
+			if( Required != null && version < Required && ( m_OldClientResponse == OldClientResponse.Kick ||( m_OldClientResponse == OldClientResponse.LenientKick && (DateTime.Now - state.Mobile.CreationTime) > m_AgeLeniency && state.Mobile is PlayerMobile && ((PlayerMobile)state.Mobile).GameTime > m_GameTimeLeniency )))
 			{
 				kickMessage = String.Format( "This server requires your client version be at least {0}.", Required );
 			}
@@ -177,6 +182,7 @@ namespace Server.Misc
 						state.Mobile.SendMessage( 0x22, "This server reccomends that your client version be at least {0}.", Required );
 						break;
 					}
+					case OldClientResponse.LenientKick:
 					case OldClientResponse.Annoy:
 					{
 						SendAnnoyGump( state.Mobile );
@@ -194,10 +200,16 @@ namespace Server.Misc
 					delegate( Mobile mob, bool selection, object o )
 					{
 						m.SendMessage( "You will be reminded of this again." );
-						Timer.DelayCall( TimeSpan.FromMinutes( 20 ), delegate { SendAnnoyGump( m ); } );
+
+						if ( m_OldClientResponse == OldClientResponse.LenientKick )
+							m.SendMessage( "Old clients will be kicked after {0} days of character age and {1} hours of play time", m_AgeLeniency, m_GameTimeLeniency );
+
+						Timer.DelayCall( TimeSpan.FromMinutes( Utility.Random( 5, 15 ) ), delegate { SendAnnoyGump( m ); } );
 					}, null, false );
 
 				g.Dragable = false;
+                g.Closable = false;
+                g.Resizable = false;
 
 				m.SendGump( g );
 			}

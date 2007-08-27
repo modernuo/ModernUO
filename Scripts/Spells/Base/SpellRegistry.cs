@@ -147,7 +147,7 @@ namespace Server.Spells
 				"Chivalry",
 				"Bushido",
 				"Ninjitsu",
-				"SpellWeaving"
+				"Spellweaving"
 			};
 
 		public static Spell NewSpell( string name, Mobile caster, Item scroll )

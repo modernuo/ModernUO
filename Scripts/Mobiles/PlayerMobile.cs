@@ -3042,10 +3042,10 @@ namespace Server.Mobiles
 
 			TransformContext context = TransformationSpellHelper.GetContext( this );
 
-			if( context != null && context.Type == typeof( ReaperFormSpell ) )
+			if ( context != null && context.Type == typeof( ReaperFormSpell ) )
 				return Mobile.WalkFoot;
 
-			bool running = ( (dir & Direction.Running) != 0 );
+            bool running = ( (dir & Direction.Running) != 0 );
 
 			bool onHorse = ( this.Mount != null );
 

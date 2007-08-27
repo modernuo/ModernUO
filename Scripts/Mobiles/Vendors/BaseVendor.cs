@@ -66,7 +66,7 @@ namespace Server.Mobiles
 			return TimeSpan.Zero;
 		}
 
-		public virtual void OnSuccessfulBulkOrderRecieve( Mobile from )
+		public virtual void OnSuccessfulBulkOrderReceive( Mobile from )
 		{
 		}
 
@@ -774,7 +774,7 @@ namespace Server.Mobiles
 
 				Titles.AwardFame( from, fame, true );
 
-				OnSuccessfulBulkOrderRecieve( from );
+				OnSuccessfulBulkOrderReceive( from );
 
 				dropped.Delete();
 				return true;

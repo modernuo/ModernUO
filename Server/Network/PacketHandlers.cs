@@ -1811,7 +1811,7 @@ namespace Server.Network
 		{
 			CV version = state.Version = new CV( pvSrc.ReadString() );
 
-			EventSink.InvokeClientVersionRecieved( new ClientVersionRecievedArgs( state, version ) );
+			EventSink.InvokeClientVersionReceived( new ClientVersionReceivedArgs( state, version ) );
 		}
 
 		public static void MobileQuery( NetState state, PacketReader pvSrc )

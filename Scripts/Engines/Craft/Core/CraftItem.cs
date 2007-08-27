@@ -624,15 +624,6 @@ namespace Server.Engines.Craft
 				if ( types[i] == null )
 					types[i] = new Type[]{ baseType };
 
-				/*if ( !retainedColor && RetainsColorFrom( craftSystem, baseType ) )
-				{
-					retainedColor = true;
-					Item resItem = ourPack.FindItemByType( types[i] );
-
-					if ( resItem != null )
-						resHue = resItem.Hue;
-				}*/
-
 				amounts[i] = craftRes.Amount;
 
 				// For stackable items that can ben crafted more than one at a time

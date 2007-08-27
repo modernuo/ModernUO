@@ -20,7 +20,7 @@ namespace Server.Misc
 		 * private const string Address = "shard.host.com";
 		 */
 
-		public static readonly string Address = null;
+        public static readonly string Address = null;
 
 		public const string ServerName = "RunUO TC";
 

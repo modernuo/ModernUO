@@ -317,6 +317,7 @@ namespace Server
 			}
 
 			private static AutoResetEvent m_Signal = new AutoResetEvent( true );
+			public static void Set() { m_Signal.Set(); }
 
 			public void TimerMain()
 			{
@@ -324,10 +325,8 @@ namespace Server
 				int i, j;
 				bool loaded;
 
-				while ( !Core.Closing )
+				while ( m_Signal.WaitOne( 10, false ) && !Core.Closing )
 				{
-					m_Signal.WaitOne( 10, false );
-
 					ProcessChangeQueue();
 
 					loaded = false;

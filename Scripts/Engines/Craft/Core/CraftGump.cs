@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 using Server.Items;
@@ -116,20 +117,33 @@ namespace Server.Engines.Craft
 
 				int resIndex = ( context == null ? -1 : context.LastResourceIndex );
 
+                Type resourceType = craftSystem.CraftSubRes.ResType;
+
 				if ( resIndex > -1 )
 				{
 					CraftSubRes subResource = craftSystem.CraftSubRes.GetAt( resIndex );
 
 					nameString = subResource.NameString;
 					nameNumber = subResource.NameNumber;
+                    resourceType = subResource.ItemType;
 				}
+
+                int resourceCount = 0;
+
+                if ( from.Backpack != null )
+                {
+                    Item[] items = from.Backpack.FindItemsByType( resourceType, true );
+
+                    for ( int i = 0; i < items.Length; ++i )
+                        resourceCount += items[i].Amount;
+                }
 
 				AddButton( 15, 362, 4005, 4007, GetButtonID( 6, 0 ), GumpButtonType.Reply, 0 );
 
 				if ( nameNumber > 0 )
-					AddHtmlLocalized( 50, 365, 250, 18, nameNumber, LabelColor, false, false );
+					AddHtmlLocalized( 50, 365, 250, 18, nameNumber, resourceCount.ToString(), LabelColor, false, false );
 				else
-					AddLabel( 50, 362, LabelHue, nameString );
+                    AddLabel( 50, 362, LabelHue, String.Format( "{0} ({1} Available)", nameString, resourceCount ) );
 			}
 			// ****************************************
 
@@ -141,20 +155,33 @@ namespace Server.Engines.Craft
 
 				int resIndex = ( context == null ? -1 : context.LastResourceIndex2 );
 
+                Type resourceType = craftSystem.CraftSubRes.ResType;
+
 				if ( resIndex > -1 )
 				{
 					CraftSubRes subResource = craftSystem.CraftSubRes2.GetAt( resIndex );
 
 					nameString = subResource.NameString;
 					nameNumber = subResource.NameNumber;
+                    resourceType = subResource.ItemType;
 				}
+
+                int resourceCount = 0;
+
+                if ( from.Backpack != null )
+                {
+                    Item[] items = from.Backpack.FindItemsByType( resourceType, true );
+
+                    for ( int i = 0; i < items.Length; ++i )
+                        resourceCount += items[i].Amount;
+                }
 
 				AddButton( 15, 382, 4005, 4007, GetButtonID( 6, 7 ), GumpButtonType.Reply, 0 );
 
 				if ( nameNumber > 0 )
-					AddHtmlLocalized( 50, 385, 250, 18, nameNumber, LabelColor, false, false );
+                    AddHtmlLocalized( 50, 385, 250, 18, nameNumber, resourceCount.ToString(), LabelColor, false, false );
 				else
-					AddLabel( 50, 385, LabelHue, nameString );
+                    AddLabel( 50, 385, LabelHue, String.Format( "{0} ({1} Available)", nameString, resourceCount ) );
 			}
 			// ****************************************
 

@@ -14,7 +14,7 @@ namespace Server
 		{
 			if( Enabled )
 			{
-				EventSink.ClientVersionRecieved += new ClientVersionRecievedHandler( delegate( ClientVersionRecievedArgs args )
+				EventSink.ClientVersionReceived += new ClientVersionReceivedHandler( delegate( ClientVersionReceivedArgs args )
 				{
 					PlayerMobile pm = args.State.Mobile as PlayerMobile;
 					

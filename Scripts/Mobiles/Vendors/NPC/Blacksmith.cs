@@ -122,7 +122,7 @@ namespace Server.Mobiles
 			return TimeSpan.Zero;
 		}
 
-		public override void OnSuccessfulBulkOrderRecieve( Mobile from )
+		public override void OnSuccessfulBulkOrderReceive( Mobile from )
 		{
 			if( Core.SE && from is PlayerMobile )
 				((PlayerMobile)from).NextSmithBulkOrder = TimeSpan.Zero;

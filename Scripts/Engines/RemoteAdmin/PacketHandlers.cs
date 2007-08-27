@@ -6,7 +6,7 @@ using Server.Accounting;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Admin
+namespace Server.RemoteAdmin
 {
 	public class RemoteAdminHandlers
 	{
