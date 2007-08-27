@@ -42,7 +42,7 @@ namespace Server.Gumps
 
 		public void AddTypeButton( int x, int y, int buttonID, string text, ModelBodyType type )
 		{
-			bool isSelection = ( m_OurType == type );
+			bool isSelection = (m_OurType == type);
 
 			AddButton( x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID, GumpButtonType.Reply, 0 );
 			AddHtml( x + 35, y, 200, 20, Color( text, isSelection ? SelectedColor32 : LabelColor32 ), false, false );
@@ -71,7 +71,7 @@ namespace Server.Gumps
 			AddImageTiled( 10, 35, 505, 283, 0xA40 );
 			AddAlphaRegion( 10, 35, 505, 283 );
 
-			AddTypeButton(  10, 10, 1, "Monster", ModelBodyType.Monsters );
+			AddTypeButton( 10, 10, 1, "Monster", ModelBodyType.Monsters );
 			AddTypeButton( 130, 10, 2, "Animal", ModelBodyType.Animals );
 			AddTypeButton( 250, 10, 3, "Marine", ModelBodyType.Sea );
 			AddTypeButton( 370, 10, 4, "Human", ModelBodyType.Human );
@@ -79,17 +79,17 @@ namespace Server.Gumps
 			AddImage( 480, 12, 0x25EA );
 			AddImage( 497, 12, 0x25E6 );
 
-			if ( ourList == null )
+			if( ourList == null )
 			{
 				AddLabel( 15, 40, 0x480, "Choose a body type above." );
 			}
-			else if ( ourList.Count == 0 )
+			else if( ourList.Count == 0 )
 			{
 				AddLabel( 15, 40, 0x480, "The server must have UO:3D installed to use this feature." );
 			}
 			else
 			{
-				for ( int i = 0, index = (ourPage * 12); i < 12 && index >= 0 && index < ourList.Count; ++i, ++index )
+				for( int i = 0, index = (ourPage * 12); i < 12 && index >= 0 && index < ourList.Count; ++i, ++index )
 				{
 					InternalEntry entry = (InternalEntry)ourList[index];
 					int itemID = entry.ItemID;
@@ -112,10 +112,10 @@ namespace Server.Gumps
 					AddHtml( x + 0, y + 0, 108, 21, Color( Center( entry.DisplayName ), TextColor32 ), false, false );
 				}
 
-				if ( ourPage > 0 )
+				if( ourPage > 0 )
 					AddButton( 480, 12, 0x15E3, 0x15E7, 5, GumpButtonType.Reply, 0 );
 
-				if ( (ourPage + 1) * 12 < ourList.Count )
+				if( (ourPage + 1) * 12 < ourList.Count )
 					AddButton( 497, 12, 0x15E1, 0x15E5, 6, GumpButtonType.Reply, 0 );
 			}
 		}
@@ -124,19 +124,19 @@ namespace Server.Gumps
 		{
 			int index = info.ButtonID - 1;
 
-			if ( index == -1 )
+			if( index == -1 )
 			{
 				m_Mobile.SendGump( new PropertiesGump( m_Mobile, m_Object, m_Stack, m_List, m_Page ) );
 			}
-			else if ( index >= 0 && index < 4 )
+			else if( index >= 0 && index < 4 )
 			{
-				if ( m_Monster == null )
+				if( m_Monster == null )
 					LoadLists();
 
 				ModelBodyType type;
 				ArrayList list;
 
-				switch ( index )
+				switch( index )
 				{
 					default:
 					case 0: type = ModelBodyType.Monsters; list = m_Monster; break;
@@ -147,15 +147,15 @@ namespace Server.Gumps
 
 				m_Mobile.SendGump( new SetBodyGump( m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List, 0, list, type ) );
 			}
-			else if ( m_OurList != null )
+			else if( m_OurList != null )
 			{
 				index -= 4;
 
-				if ( index == 0 && m_OurPage > 0 )
+				if( index == 0 && m_OurPage > 0 )
 				{
 					m_Mobile.SendGump( new SetBodyGump( m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List, m_OurPage - 1, m_OurList, m_OurType ) );
 				}
-				else if ( index == 1 && ((m_OurPage + 1) * 12) < m_OurList.Count )
+				else if( index == 1 && ((m_OurPage + 1) * 12) < m_OurList.Count )
 				{
 					m_Mobile.SendGump( new SetBodyGump( m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List, m_OurPage + 1, m_OurList, m_OurType ) );
 				}
@@ -163,7 +163,7 @@ namespace Server.Gumps
 				{
 					index -= 2;
 
-					if ( index >= 0 && index < m_OurList.Count )
+					if( index >= 0 && index < m_OurList.Count )
 					{
 						try
 						{
@@ -195,17 +195,17 @@ namespace Server.Gumps
 
 			List<BodyEntry> entries = Docs.LoadBodies();
 
-			for ( int i = 0; i < entries.Count; ++i )
+			for( int i = 0; i < entries.Count; ++i )
 			{
 				BodyEntry oldEntry = (BodyEntry)entries[i];
 				int bodyID = oldEntry.Body.BodyID;
 
-				if ( ((Body)bodyID).IsEmpty )
+				if( ((Body)bodyID).IsEmpty )
 					continue;
 
 				ArrayList list = null;
 
-				switch ( oldEntry.BodyType )
+				switch( oldEntry.BodyType )
 				{
 					case ModelBodyType.Monsters: list = m_Monster; break;
 					case ModelBodyType.Animals: list = m_Animal; break;
@@ -213,12 +213,12 @@ namespace Server.Gumps
 					case ModelBodyType.Human: list = m_Human; break;
 				}
 
-				if ( list == null )
+				if( list == null )
 					continue;
 
 				int itemID = ShrinkTable.Lookup( bodyID, -1 );
 
-				if ( itemID != -1 )
+				if( itemID != -1 )
 					list.Add( new InternalEntry( bodyID, itemID, oldEntry.Name ) );
 			}
 
@@ -235,10 +235,10 @@ namespace Server.Gumps
 			private string m_Name;
 			private string m_DisplayName;
 
-			public int Body{ get{ return m_Body; } }
-			public int ItemID{ get{ return m_ItemID; } }
-			public string Name{ get{ return m_Name; } }
-			public string DisplayName{ get{ return m_DisplayName; } }
+			public int Body { get { return m_Body; } }
+			public int ItemID { get { return m_ItemID; } }
+			public string Name { get { return m_Name; } }
+			public string DisplayName { get { return m_DisplayName; } }
 
 			private static string[] m_GroupNames = new string[]
 				{
@@ -267,9 +267,9 @@ namespace Server.Gumps
 
 				m_DisplayName = name.ToLower();
 
-				for ( int i = 0; i < m_GroupNames.Length; ++i )
+				for( int i = 0; i < m_GroupNames.Length; ++i )
 				{
-					if ( m_DisplayName.StartsWith( m_GroupNames[i] ) )
+					if( m_DisplayName.StartsWith( m_GroupNames[i] ) )
 					{
 						m_DisplayName = m_DisplayName.Substring( m_GroupNames[i].Length );
 						break;
@@ -285,7 +285,7 @@ namespace Server.Gumps
 
 				int v = m_Name.CompareTo( comp.m_Name );
 
-				if ( v == 0 )
+				if( v == 0 )
 					m_Body.CompareTo( comp.m_Body );
 
 				return v;
