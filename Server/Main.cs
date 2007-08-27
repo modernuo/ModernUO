@@ -346,7 +346,7 @@ namespace Server
 			if( SocketPool.Created )
 				SocketPool.Destroy();
 
-			Timer.Set();
+			Timer.TimerThread.Set();
 
 			Console.WriteLine( "done" );
 		}

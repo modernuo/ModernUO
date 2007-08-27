@@ -13,7 +13,7 @@ namespace Server.Misc
 		public static bool Enabled = true;
 		public static bool SocketBlock = true; // true to block at connection, false to block at login request
 
-		public const int MaxAddresses = 10;
+		public static int MaxAddresses = 10;
 		
 		public static IPAddress[] Exemptions = new IPAddress[]	//For hosting services where there are cases where IPs can be proxied
 		{
@@ -42,7 +42,7 @@ namespace Server.Misc
 
 			for ( int i = 0; i < netStates.Count; ++i )
 			{
-				NetState compState = (NetState)netStates[i];
+				NetState compState = netStates[i];
 
 				if ( ourAddress.Equals( compState.Address ) )
 				{

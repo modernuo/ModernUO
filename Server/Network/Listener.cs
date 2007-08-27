@@ -70,7 +70,7 @@ namespace Server.Network
 				IPAddress[] ip = iphe.AddressList;
 
 				for ( int i = 0; i < ip.Length; ++i )
-						Console.WriteLine( "Address: {0}:{1}", ip[i], port );
+					Console.WriteLine( "Address: {0}:{1}", ip[i], port );
 			}
 			catch
 			{

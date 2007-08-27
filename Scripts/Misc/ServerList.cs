@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using Server;
@@ -20,27 +21,47 @@ namespace Server.Misc
 		 * private const string Address = "shard.host.com";
 		 */
 
-        public static readonly string Address = null;
+		public static readonly string Address = null;
+		public static readonly string ServerName = "RunUO TC";
 
-		public const string ServerName = "RunUO TC";
+		public static readonly bool AutoDetect = true;
 
 		public static void Initialize()
 		{
 			Listener.Port = 2593;
 
+			if ( Address == null ) {
+				if ( AutoDetect )
+					AutoDetection();
+			}
+			else {
+				Resolve( Address, out m_PublicAddress );
+			}
+
 			EventSink.ServerList += new ServerListEventHandler( EventSink_ServerList );
 		}
 
-		public static void EventSink_ServerList( ServerListEventArgs e )
+		private static IPAddress m_PublicAddress;
+
+		private static void EventSink_ServerList( ServerListEventArgs e )
 		{
 			try
 			{
-				IPAddress ipAddr;
+				NetState ns = e.State;
+				Socket s = ns.Socket;
 
-				if ( Resolve( Address != null && !IsLocalMachine( e.State ) ? Address : Dns.GetHostName(), out ipAddr ) )
-					e.AddServer( ServerName, new IPEndPoint( ipAddr, Listener.Port ) );
-				else
-					e.Rejected = true;
+				IPEndPoint ipep = (IPEndPoint)s.LocalEndPoint;
+
+				IPAddress localAddress = ipep.Address;	
+				int localPort = ipep.Port; 
+
+				if ( IsPrivateNetwork( localAddress ) ) {
+					ipep = (IPEndPoint)s.RemoteEndPoint;
+					if ( !IsPrivateNetwork( ipep.Address ) && m_PublicAddress != null )
+						localAddress = m_PublicAddress;
+				}
+
+				e.AddServer( ServerName, new IPEndPoint( localAddress, localPort ) );
 			}
 			catch
 			{
@@ -48,45 +69,88 @@ namespace Server.Misc
 			}
 		}
 
-		public static bool Resolve( string addr, out IPAddress outValue )
+		private static void AutoDetection()
 		{
+			if ( !HasPublicIPAddress() ) {
+				Console.Write( "ServerList: Auto-detecting public IP address..." );
+				m_PublicAddress = FindPublicAddress();
+				
+				if ( m_PublicAddress != null )
+					Console.WriteLine( "done ({0})", m_PublicAddress.ToString() );
+				else
+					Console.WriteLine( "failed" );
+			}
+		}
 
+		private static bool Resolve( string addr, out IPAddress outValue )
+		{
             if ( IPAddress.TryParse( addr, out outValue ) )
                 return true;
 
-			try
-			{
+			try {
 				IPHostEntry iphe = Dns.GetHostEntry( addr );
 
-				if ( iphe.AddressList.Length > 0 )
-				{
+				if ( iphe.AddressList.Length > 0 ) {
 					outValue = iphe.AddressList[iphe.AddressList.Length - 1];
 					return true;
 				}
 			}
-			catch
-			{
-			}
+			catch {}
 
-			outValue = IPAddress.None;
 			return false;
 		}
 
-		private static bool IsLocalMachine( NetState state )
+		private static bool HasPublicIPAddress()
 		{
-			IPAddress theirAddress = state.Address;
-
-			if ( IPAddress.IsLoopback( theirAddress ) )
-				return true;
-
-			bool contains = false;
-
 			IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
 
-			for ( int i = 0; !contains && i < iphe.AddressList.Length; ++i )
-				contains = theirAddress.Equals( iphe.AddressList[i] );
+			IPAddress[] ips = iphe.AddressList;
 
-			return contains;
+			for ( int i = 0; i < ips.Length; ++i )
+				if ( !IsPrivateNetwork( ips[i] ) )
+					return true;
+
+			return false;
+		}
+
+		private static bool IsPrivateNetwork( IPAddress ip )
+		{
+			// 10.0.0.0/8
+			// 172.16.0.0/12
+			// 192.168.0.0/16
+
+			if ( Utility.IPMatch( "192.168.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "10.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "172.16-31.*", ip ) )
+				return true;
+			else
+				return false;
+		}
+
+		private static IPAddress FindPublicAddress()
+		{
+			try {
+				WebRequest req = HttpWebRequest.Create( "http://www.runuo.com/ip.php" );
+				req.Timeout = 15000;
+
+				WebResponse res = req.GetResponse();
+
+				Stream s = res.GetResponseStream();
+
+				StreamReader sr = new StreamReader( s ); 
+
+				IPAddress ip = IPAddress.Parse( sr.ReadLine() );
+
+				sr.Close();
+				s.Close();
+				res.Close();
+
+				return ip;
+			} catch {
+				return null;
+			}
 		}
 	}
 }
