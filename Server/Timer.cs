@@ -316,7 +316,7 @@ namespace Server
 				}
 			}
 
-			private static AutoResetEvent m_Signal = new AutoResetEvent( true );
+			private static AutoResetEvent m_Signal = new AutoResetEvent( false );
 			public static void Set() { m_Signal.Set(); }
 
 			public void TimerMain()
@@ -325,7 +325,7 @@ namespace Server
 				int i, j;
 				bool loaded;
 
-				while ( m_Signal.WaitOne( 10, false ) && !Core.Closing )
+				while ( !Core.Closing )
 				{
 					ProcessChangeQueue();
 
@@ -367,6 +367,8 @@ namespace Server
 					if ( loaded )
 						Core.Set();
 				}
+
+				m_Signal.WaitOne( 10, false );
 			}
 		}
 
