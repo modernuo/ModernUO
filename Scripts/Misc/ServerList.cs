@@ -9,16 +9,36 @@ namespace Server.Misc
 {
 	public class ServerList
 	{
-		/* Address:
+		/* 
+		 * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses
+		 * are private network addresses and AutoDetect is 'true' then RunUO will attempt to discover your public IP address
+		 * for you automatically.
+		 *
+		 * If you do not plan on allowing clients outside of your LAN to connect, you can set AutoDetect to 'false' and leave
+		 * Address set to 'null'.
 		 * 
-		 * The default setting, a value of 'null', will attempt to detect your IP address automatically:
-		 * private const string Address = null;
+		 * If your public IP address cannot be determined, you must change the value of Address to your public IP address
+		 * manually to allow clients outside of your LAN to connect to your server. Address can be either an IP address or
+		 * a hostname that will be resolved when RunUO starts.
 		 * 
-		 * This detection, however, does not work for servers behind routers. If you're running behind a router, put in your IP:
-		 * private const string Address = "12.34.56.78";
+		 * If you want players outside your LAN to be able to connect to your server and you are behind a router, you must also
+		 * forward TCP port 2593 to your private IP address. The procedure for doing this varies by manufacturer but generally
+		 * involves configuration of the router through your web browser.
+		 *
+		 * ServerList will direct connecting clients depending on both the address they are connecting from and the address and
+		 * port they are connecting to. If it is determined that both ends of a connection are private IP addresses, ServerList
+		 * will direct the client to the local private IP address. If a client is connecting to a local public IP address, they
+		 * will be directed to whichever address and port they initially connected to. This allows multihomed servers to function
+		 * properly and fully supports listening on multiple ports. If a client with a public IP address is connecting to a
+		 * locally private address, the server will direct the client to either the AutoDetected IP address or the manually entered
+		 * IP address or hostname, whichever is applicable. Loopback clients will be directed to loopback.
 		 * 
-		 * If you need to resolve a DNS host name, you can do that too:
-		 * private const string Address = "shard.host.com";
+		 * If you would like to change the default port RunUO listens on, you can do so by modifying the 'Listener.Port' assignment
+		 * found below. If you would like to listen on additional ports (i.e. 22, 23, 80, for clients behind highly restrictive egress
+		 * firewalls) you can do so by modifying the file SocketOptions.cs found in this directory.
+		 *
+		 * RunUO currently has no provision to bind on specific interfaces. If you need to run multiple instances of RunUO, you must
+		 * bind the listener to a unique port.
 		 */
 
 		public static readonly string Address = null;
@@ -82,7 +102,7 @@ namespace Server.Misc
 			}
 		}
 
-		private static bool Resolve( string addr, out IPAddress outValue )
+		private static void Resolve( string addr, out IPAddress outValue )
 		{
             if ( IPAddress.TryParse( addr, out outValue ) )
                 return true;
@@ -90,14 +110,11 @@ namespace Server.Misc
 			try {
 				IPHostEntry iphe = Dns.GetHostEntry( addr );
 
-				if ( iphe.AddressList.Length > 0 ) {
+				if ( iphe.AddressList.Length > 0 )
 					outValue = iphe.AddressList[iphe.AddressList.Length - 1];
-					return true;
-				}
 			}
-			catch {}
-
-			return false;
+			catch {
+			}
 		}
 
 		private static bool HasPublicIPAddress()
