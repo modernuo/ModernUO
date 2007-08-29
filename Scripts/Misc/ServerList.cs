@@ -105,7 +105,7 @@ namespace Server.Misc
 		private static void Resolve( string addr, out IPAddress outValue )
 		{
             if ( IPAddress.TryParse( addr, out outValue ) )
-                return true;
+                return;
 
 			try {
 				IPHostEntry iphe = Dns.GetHostEntry( addr );
