@@ -82,14 +82,14 @@ namespace Server
 			StringBuilder sb = null;
 
 #if MONO
-			AppendDefine( ref sb, "MONO" );
+			AppendDefine( ref sb, "/d:MONO" );
 #endif
 
 			//These two defines are legacy, ie, depreciated.
 			if( Core.Is64Bit )
-				AppendDefine( ref sb, "x64" );
+				AppendDefine( ref sb, "/d:x64" );
 
-			AppendDefine( ref sb, "Framework_2_0" );
+			AppendDefine( ref sb, "/d:Framework_2_0" );
 
 			return (sb == null ? null : sb.ToString());
 		}
@@ -99,7 +99,7 @@ namespace Server
 			if( sb == null )
 				sb = new StringBuilder();
 			else
-				sb.Append( ';' );
+				sb.Append( ' ' );
 
 			sb.Append( define );
 		}
@@ -216,7 +216,7 @@ namespace Server
 				string defines = GetDefines();
 
 				if( defines != null )
-					parms.CompilerOptions = string.Format( "/D:{0}", defines );
+					parms.CompilerOptions = defines;
 
 				if( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
@@ -226,11 +226,23 @@ namespace Server
 
 				Display( results );
 
+#if !MONO
 				if( results.Errors.Count > 0 )
 				{
 					assembly = null;
 					return false;
 				}
+#else
+				if( results.Errors.Count > 0 ) {
+					foreach( CompilerError err in results.Errors ) {
+						if ( !err.IsWarning ) {
+							assembly = null;
+							return false;
+						}
+					}
+				}
+#endif
+
 
 				if( cache && Path.GetFileName( path ) == "Scripts.CS.dll" )
 				{

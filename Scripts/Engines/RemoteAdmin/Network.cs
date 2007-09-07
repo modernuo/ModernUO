@@ -19,7 +19,9 @@ namespace Server.RemoteAdmin
 		{
 			PacketHandlers.Register( 0xF1, 0, false, new OnPacketReceive( OnReceive ) );
 
+#if !MONO
 			Core.MultiConsoleOut.Add( new EventTextWriter( new EventTextWriter.OnConsoleChar( OnConsoleChar ), new EventTextWriter.OnConsoleLine( OnConsoleLine ), new EventTextWriter.OnConsoleStr( OnConsoleString ) ) );
+#endif
 			Timer.DelayCall( TimeSpan.FromMinutes( 2.5 ), TimeSpan.FromMinutes( 2.5 ), new TimerCallback( CleanUp ) );
 		}
 

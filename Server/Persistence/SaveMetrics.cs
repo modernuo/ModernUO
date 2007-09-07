@@ -75,7 +75,9 @@ namespace Server {
 					)
 				);
 
+#if !MONO
 				PerformanceCounterCategory.Create( PerformanceCategoryName, PerformanceCategoryDesc, PerformanceCounterCategoryType.SingleInstance, counters );
+#endif
 			}
 
 			numberOfWorldSaves = new PerformanceCounter( PerformanceCategoryName, "Save - Count", false );

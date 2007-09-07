@@ -86,7 +86,9 @@ namespace Server.Network
 			try
 			{
 				s.LingerState.Enabled = false;
+#if !MONO
 				s.ExclusiveAddressUse = false;
+#endif
 
 				s.Bind( ipep );
 				s.Listen( 8 );
