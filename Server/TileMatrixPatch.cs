@@ -211,6 +211,7 @@ namespace Server
 										*pCopyCur = *pCopyBuffer;
 										pCopyCur = pCopyCur + 1;
 										pCopyBuffer = pCopyBuffer + 1;
+									}
 								}
 #endif
 
