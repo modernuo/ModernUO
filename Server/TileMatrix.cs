@@ -19,9 +19,9 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Server
 {
@@ -51,7 +51,7 @@ namespace Server
 		private int[][] m_LandPatches;
 
 #if !MONO
-		[System.Runtime.InteropServices.DllImport( "Kernel32" )]
+		[DllImport( "Kernel32" )]
 		private unsafe static extern int _lread( IntPtr hFile, void *lpBuffer, int wBytes );
 #endif
 

@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Server;
@@ -269,7 +269,7 @@ namespace Server
 		private delegate bool ConsoleEventHandler( ConsoleEventType type );
 		private static ConsoleEventHandler m_ConsoleEventHandler;
 
-		[System.Runtime.InteropServices.DllImport( "Kernel32.dll" )]
+		[DllImport( "Kernel32" )]
 		private static extern bool SetConsoleCtrlHandler( ConsoleEventHandler callback, bool add );
 
 		private static bool OnConsoleEvent( ConsoleEventType type )
