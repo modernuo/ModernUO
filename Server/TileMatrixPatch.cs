@@ -189,7 +189,7 @@ namespace Server
 							if ( m_TileBuffer.Length < tileCount )
 								m_TileBuffer = new StaticTile[tileCount];
 
-							StaticTile[] staTiles = m_TileBuffer;//new StaticTile[tileCount];
+							StaticTile[] staTiles = m_TileBuffer;
 
 							fixed ( StaticTile *pTiles = staTiles )
 							{
@@ -220,7 +220,7 @@ namespace Server
 								while ( pCur < pEnd )
 								{
 									lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( (short)((pCur->m_ID & 0x3FFF) + 0x4000), pCur->m_Z );
-									++pCur;
+									pCur = pCur + 1;
 								}
 
 								Tile[][][] tiles = new Tile[8][][];
