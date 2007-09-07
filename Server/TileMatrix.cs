@@ -422,8 +422,11 @@ namespace Server
 							StaticTile *pCopyEnd = pCopyBuffer + count;
 							StaticTile *pCopyCur = pTiles;
 
-							while ( pCopyBuffer < pCopyEnd )
-								*pCopyCur++ = *pCopyBuffer++;
+							while ( pCopyBuffer < pCopyEnd ) {
+								*pCopyCur = *pCopyBuffer;
+								pCopyCur = pCopyCur + 1;
+								pCopyBuffer = pCopyBuffer + 1;
+							}
 						}
 #endif
 
@@ -447,7 +450,7 @@ namespace Server
 						while ( pCur < pEnd )
 						{
 							lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( (short)((pCur->m_ID & 0x3FFF) + 0x4000), pCur->m_Z );
-							++pCur;
+							pCur = pCur + 1;
 						}
 
 						Tile[][][] tiles = new Tile[8][][];
@@ -509,8 +512,11 @@ namespace Server
 						Tile *pEnd = pBuffer + 64;
 						Tile *pCur = pTiles;
 
-						while ( pBuffer < pEnd )
-							*pCur++ = *pBuffer++;
+						while ( pBuffer < pEnd ) {
+							*pCur = *pBuffer;
+							pCur = pCur + 1;
+							pBuffer = pBuffer + 1;
+						}
 					}
 #endif
 				}

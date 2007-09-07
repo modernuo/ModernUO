@@ -118,8 +118,11 @@ namespace Server
 								Tile *pEnd = pBuffer + 64;
 								Tile *pCur = pTiles;
 
-								while ( pBuffer < pEnd )
-									*pCur++ = *pBuffer++;
+								while ( pBuffer < pEnd ) {
+									*pCur = *pBuffer;
+									pCur = pCur + 1;
+									pBuffer = pBuffer + 1;
+								}
 							}
 #endif
 						}
