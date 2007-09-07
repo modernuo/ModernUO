@@ -221,7 +221,12 @@ namespace Server
 				if( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
 
+#if !MONO
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, files );
+#else
+				parms.CompilerOptions = String.Format( "{0} /recurse:Scripts/*.cs", parms.CompilerOptions );
+				CompilerResults results = provider.CompileAssemblyFromFile( parms, "" );
+#endif
 				m_AdditionalReferences.Add( path );
 
 				Display( results );
