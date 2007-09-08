@@ -7706,8 +7706,17 @@ namespace Server
 						else
 							SendRemovePacket( false );
 					}
+
+					OnWarmodeChanged();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Overridable. Virtual event invoked after the Warmode property has changed.
+		/// </summary>
+		public virtual void OnWarmodeChanged()
+		{
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
