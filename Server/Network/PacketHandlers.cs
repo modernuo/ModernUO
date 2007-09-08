@@ -964,10 +964,13 @@ namespace Server.Network
 			Mobile from = state.Mobile;
 			Item item = from.Holding;
 
+			bool valid = ( item != null && item.HeldBy == from && item.Map == Map.Internal );
+
 			from.Holding = null;
 
-			if ( item == null || item.Deleted || item.HeldBy != from || item.Map != Map.Internal )
+			if ( !valid ) {
 				return;
+			}
 
 			pvSrc.Seek( 5, SeekOrigin.Current );
 			Mobile to = World.FindMobile( pvSrc.ReadInt32() );

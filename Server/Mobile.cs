@@ -4392,10 +4392,13 @@ namespace Server
 			Mobile from = this;
 			Item item = from.Holding;
 
+			bool valid = ( item != null && item.HeldBy == from && item.Map == Map.Internal );
+
 			from.Holding = null;
 
-			if ( item == null || item.HeldBy != from || item.Map != Map.Internal )
+			if ( !valid ) {
 				return false;
+			}
 
 			bool bounced = true;
 
@@ -4419,10 +4422,13 @@ namespace Server
 			Mobile from = this;
 			Item item = from.Holding;
 
+			bool valid = ( item != null && item.HeldBy == from && item.Map == Map.Internal );
+
 			from.Holding = null;
 
-			if ( item == null || item.HeldBy != from || item.Map != Map.Internal )
+			if ( !valid ) {
 				return false;
+			}
 
 			bool bounced = true;
 
@@ -4446,10 +4452,13 @@ namespace Server
 			Mobile from = this;
 			Item item = from.Holding;
 
+			bool valid = ( item != null && item.HeldBy == from && item.Map == Map.Internal );
+
 			from.Holding = null;
 
-			if ( item == null || item.HeldBy != from || item.Map != Map.Internal )
+			if ( !valid ) {
 				return false;
+			}
 
 			bool bounced = true;
 
