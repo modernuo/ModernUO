@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -147,49 +148,210 @@ namespace Server
 
         public static bool IPMatchCIDR( string cidr, IPAddress ip )
         {
+			if ( ip.AddressFamily == AddressFamily.InterNetworkV6 )
+				return false;	//Just worry about IPv4 for now
+
+
+			/*
             string[] str = cidr.Split( '/' );
 
             if ( str.Length != 2 )
                 return false;
 
+			/* **************************************************
             IPAddress cidrPrefix;
 
             if ( !IPAddress.TryParse( str[0], out cidrPrefix ) )
                 return false;
+			 * */
+
+			/*
+			string[] dotSplit = str[0].Split( '.' );
+
+			if ( dotSplit.Length != 4 )		//At this point and time, and for speed sake, we'll only worry about IPv4
+				return false;
+
+			byte[] bytes = new byte[4];
+
+			for ( int i = 0; i < 4; i++ )
+			{
+				byte.TryParse( dotSplit[i], out bytes[i] );
+			}
+
+			uint cidrPrefix = OrderedAddressValue( bytes );
 
             int cidrLength = Utility.ToInt32( str[1] );
+			//The below solution is the fastest solution of the three
+
+			*/
+
+			byte[] bytes = new byte[4];
+			string[] split = cidr.Split( '.' );
+			bool cidrBits = false;
+			int cidrLength = 0;
+
+			for ( int i = 0; i < 4; i++ )
+			{
+				int part = 0;
+
+				int partBase = 10;
+
+				string pattern = split[i];
+
+				for ( int j = 0; j < pattern.Length; j++ )
+				{
+					char c = (char)pattern[j];
+
+
+					if ( c == 'x' || c == 'X' )
+					{
+						partBase = 16;
+					}
+					else if ( c >= '0' && c <= '9' )
+					{
+						int offset = c - '0';
+
+						if ( cidrBits )
+						{
+							cidrLength *= partBase;
+							cidrLength += offset;
+						}
+						else
+						{
+							part *= partBase;
+							part += offset;
+						}
+					}
+					else if ( c >= 'a' && c <= 'f' )
+					{
+						int offset = 10 + ( c - 'a' );
+
+						if ( cidrBits )
+						{
+							cidrLength *= partBase;
+							cidrLength += offset;
+						}
+						else
+						{
+							part *= partBase;
+							part += offset;
+						}
+					}
+					else if ( c >= 'A' && c <= 'F' )
+					{
+						int offset = 10 + ( c - 'A' );
+
+						if ( cidrBits )
+						{
+							cidrLength *= partBase;
+							cidrLength += offset;
+						}
+						else
+						{
+							part *= partBase;
+							part += offset;
+						}
+					}
+					else if ( c == '/' )
+					{
+						if ( cidrBits || i != 3 )	//If there's two '/' or the '/' isn't in the last byte
+						{
+							return false;
+						}
+
+						partBase = 10;
+						cidrBits = true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+
+				bytes[i] = (byte)part;
+			}
+
+			uint cidrPrefix = OrderedAddressValue( bytes );
 
             return IPMatchCIDR( cidrPrefix, ip, cidrLength );
         }
 
         public static bool IPMatchCIDR( IPAddress cidrPrefix, IPAddress ip, int cidrLength )
         {
-            if ( cidrPrefix == null || ip == null )
+            if ( cidrPrefix == null || ip == null || cidrPrefix.AddressFamily == AddressFamily.InterNetworkV6 )	//Ignore IPv6 for now
                 return false;
 
-            if ( cidrLength <= 0 || cidrLength >= 32 )   //if invalid cidr Length, just compare IPs
-                return ip.Equals( cidrPrefix );
+			uint cidrValue = SwapUnsignedInt( (uint)GetLongAddressValue( cidrPrefix ) );
+			uint ipValue   = SwapUnsignedInt( (uint)GetLongAddressValue( ip ) );
 
-            uint mask = uint.MaxValue << cidrLength;
-
-			uint cidrValue = Utility.OrderedAddressValue( cidrPrefix );
-			uint ipValue   = Utility.OrderedAddressValue( ip );
-
-            return ( ( cidrValue & mask ) == ( ipValue & mask ) );
+			return IPMatchCIDR( cidrValue, ipValue, cidrLength );
         }
 
-		private static uint OrderedAddressValue( IPAddress address )
+		public static bool IPMatchCIDR( uint cidrPrefixValue, IPAddress ip, int cidrLength )
 		{
-			uint value = 0;
+			if ( ip == null || ip.AddressFamily == AddressFamily.InterNetworkV6)
+				return false;
 
-			byte[] bytes = address.GetAddressBytes();
+			uint ipValue = SwapUnsignedInt( (uint)GetLongAddressValue( ip ) );
 
-			for( int i=0; i < bytes.Length; i++ )
+			return IPMatchCIDR( cidrPrefixValue, ipValue, cidrLength );
+		}
+
+		public static bool IPMatchCIDR( uint cidrPrefixValue, uint ipValue, int cidrLength )
+		{
+			if ( cidrLength <= 0 || cidrLength >= 32 )   //if invalid cidr Length, just compare IPs
+				return cidrPrefixValue == ipValue;
+
+			uint mask = uint.MaxValue << 32-cidrLength;
+
+			return ( ( cidrPrefixValue & mask ) == ( ipValue & mask ) );
+		}
+
+		private static uint OrderedAddressValue( byte[] bytes )
+		{
+			if ( bytes.Length != 4 )
+				return 0;
+
+			return (uint)(((( bytes[0] << 0x18 ) | (bytes[1] << 0x10)) | (bytes[2] << 8)) | bytes[3]) & ((uint)0xffffffff);
+		}
+
+		private static uint SwapUnsignedInt( uint source )
+		{
+			return (uint)( ( ( ( source & 0x000000FF ) << 0x18 )
+			| ( ( source & 0x0000FF00 ) << 8 )
+			| ( ( source & 0x00FF0000 ) >> 8 )
+			| ( ( source & 0xFF000000 ) >> 0x18 ) ) );
+		} 
+
+		public static bool TryConvertIPv6toIPv4( ref IPAddress address )
+		{
+			if ( !Socket.OSSupportsIPv6 || address.AddressFamily == AddressFamily.InterNetwork )
+				return true;
+
+			byte[] addr = address.GetAddressBytes();
+			if ( addr.Length == 16 )	//sanity 0 - 15 //10 11 //12 13 14 15
 			{
-				value |= ((uint)bytes[i]) << (bytes.Length-1 -i)*8;
+				if ( addr[10] != 0xFF || addr[11] != 0xFF )
+					return false;
+
+				for ( int i = 0; i < 10; i++ )
+				{
+					if ( addr[i] != 0 )
+						return false;
+				}
+
+				byte[] v4Addr = new byte[4];
+
+				for ( int i = 0; i < 4; i++ )
+				{
+					v4Addr[i] = addr[12 + i];
+				}
+
+				address = new IPAddress( v4Addr );
+				return true;
 			}
 
-			return value;
+			return false;
 		}
 
 		public static bool IPMatch( string val, IPAddress ip, ref bool valid )
@@ -447,7 +609,6 @@ namespace Server
 			return address.Address;
 #pragma warning restore 618
         }
-
         #endregion
 
         public static double RandomDouble()
