@@ -3346,8 +3346,8 @@ namespace Server
 		}
 
 		public virtual void OnAfterDuped( Item newItem )
-      {
-      }
+		{
+		}
 
 		public virtual bool OnDragLift( Mobile from )
 		{
@@ -4289,6 +4289,11 @@ namespace Server
 				((Mobile)m_Parent).OnItemUsed( from, item );
 		}
 
+		public bool CheckItemUse( Mobile from )
+		{
+			return CheckItemUse( from, this );
+		}
+
 		public virtual bool CheckItemUse( Mobile from, Item item )
 		{
 			if ( m_Parent is Item )
@@ -4305,6 +4310,13 @@ namespace Server
 				((Item)m_Parent).OnItemLifted( from, item );
 			else if ( m_Parent is Mobile )
 				((Mobile)m_Parent).OnItemLifted( from, item );
+		}
+
+		public bool CheckLift( Mobile from )
+		{
+			LRReason reject = LRReason.Inspecific;
+
+			return CheckLift( from, this, ref reject );
 		}
 
 		public virtual bool CheckLift( Mobile from, Item item, ref LRReason reject )

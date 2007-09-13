@@ -174,6 +174,17 @@ namespace Server.Items
 			return base.CheckLift( from, item, ref reject );
 		}
 
+		public override bool CheckItemUse( Mobile from, Item item )
+		{
+			if ( item != this && from.AccessLevel < AccessLevel.GameMaster && IsDecoContainer )
+			{
+				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
+				return false;
+			}
+
+			return base.CheckItemUse( from, item );
+		}
+
 		public bool CheckHold( Mobile m, Item item, bool message )
 		{
 			return CheckHold( m, item, message, true, 0, 0 );

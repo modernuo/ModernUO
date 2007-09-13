@@ -19,8 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Server
@@ -158,8 +156,21 @@ namespace Server
 	[AttributeUsage( AttributeTargets.Constructor )]
 	public class ConstructableAttribute : Attribute
 	{
-		public ConstructableAttribute()
+		private AccessLevel m_AccessLevel;
+
+		public AccessLevel AccessLevel
 		{
+			get { return m_AccessLevel; }
+			set { m_AccessLevel = value; }
+		}
+
+		public ConstructableAttribute() : this( AccessLevel.Player )	//Lowest accesslevel for current functionality (Level determined by access to [add)
+		{
+		}
+
+		public ConstructableAttribute( AccessLevel accessLevel )
+		{
+			m_AccessLevel = accessLevel;
 		}
 	}
 

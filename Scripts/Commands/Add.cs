@@ -157,7 +157,7 @@ namespace Server.Commands
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if ( !IsConstructable( ctor ) )
+				if ( !IsConstructable( ctor, from.AccessLevel ) )
 					continue;
 
 				ParameterInfo[] paramList = ctor.GetParameters();
@@ -345,7 +345,7 @@ namespace Server.Commands
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if ( !IsConstructable( ctor ) )
+				if ( !IsConstructable( ctor, from.AccessLevel ) )
 					continue;
 
 				if ( !foundCtor )
@@ -524,9 +524,14 @@ namespace Server.Commands
 
 		private static Type m_ConstructableType = typeof( ConstructableAttribute );
 
-		public static bool IsConstructable( ConstructorInfo ctor )
+		public static bool IsConstructable( ConstructorInfo ctor, AccessLevel accessLevel )
 		{
-			return ctor.IsDefined( m_ConstructableType, false );
+			object[] attrs = ctor.GetCustomAttributes( m_ConstructableType, false );
+
+			if ( attrs.Length == 0 )
+				return false;
+
+			return accessLevel >= ((ConstructableAttribute)attrs[0]).AccessLevel;
 		}
 
 		private static Type m_EnumType = typeof( Enum );

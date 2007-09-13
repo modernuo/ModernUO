@@ -16,7 +16,7 @@ namespace Server.ContextMenus
 
 		public override void OnClick()
 		{
-			if ( m_Food.Deleted || !m_Food.Movable || !m_From.CheckAlive() )
+			if ( m_Food.Deleted || !m_Food.Movable || !m_From.CheckAlive() || !m_Food.CheckItemUse( m_From ) )
 				return;
 
 			m_Food.Eat( m_From );

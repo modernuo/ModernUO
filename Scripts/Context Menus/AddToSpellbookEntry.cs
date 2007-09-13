@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Network;
 using Server.Targeting;
 
 namespace Server.ContextMenus
@@ -29,7 +30,7 @@ namespace Server.ContextMenus
 			{
 				if ( targeted is Spellbook )
 				{
-					if ( from.CheckAlive() && !m_Scroll.Deleted && m_Scroll.Movable && m_Scroll.Amount >= 1 )
+					if ( from.CheckAlive() && !m_Scroll.Deleted && m_Scroll.Movable && m_Scroll.Amount >= 1 && m_Scroll.CheckItemUse( from ) )
 					{
 						Spellbook book = (Spellbook)targeted;
 
