@@ -224,7 +224,7 @@ namespace Server
 #if !MONO
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, files );
 #else
-				parms.CompilerOptions = String.Format( "{0} /recurse:Scripts/*.cs", parms.CompilerOptions );
+				parms.CompilerOptions = String.Format( "{0} /nowarn:169,219,414 /recurse:Scripts/*.cs", parms.CompilerOptions );
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, "" );
 #endif
 				m_AdditionalReferences.Add( path );
