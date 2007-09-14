@@ -113,11 +113,11 @@ namespace Server.Commands.Generic
 
 			ObjectConditional cond = ObjectConditional.Empty;
 
-			foreach ( BaseExtension check in ext.List )
+			foreach ( BaseExtension check in ext )
 			{
 				if ( check is WhereExtension )
 				{
-					cond = ((WhereExtension)check).Conditional;
+					cond = ( check as WhereExtension ).Conditional;
 
 					break;
 				}

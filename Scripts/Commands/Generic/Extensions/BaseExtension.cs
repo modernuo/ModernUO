@@ -64,22 +64,17 @@ namespace Server.Commands.Generic
 		}
 	}
 
-	public sealed class Extensions
+	public sealed class Extensions : List<BaseExtension>
 	{
-		private List<BaseExtension> _List;
-
-		public List<BaseExtension> List { get { return _List; } }
-
 		public Extensions()
 		{
-			_List = new List<BaseExtension>();
 		}
 
 		public bool IsValid( object obj )
 		{
-			for ( int i = 0; i < _List.Count; ++i )
+			for ( int i = 0; i < this.Count; ++i )
 			{
-				if ( !_List[i].IsValid( obj ) )
+				if ( !this[i].IsValid( obj ) )
 					return false;
 			}
 
@@ -88,8 +83,8 @@ namespace Server.Commands.Generic
 
 		public void Filter( ArrayList list )
 		{
-			for ( int i = 0; i < _List.Count; ++i )
-				_List[i].Filter( list );
+			for ( int i = 0; i < this.Count; ++i )
+				this[i].Filter( list );
 		}
 
 		public static Extensions Parse( Mobile from, ref string[] args )
@@ -117,19 +112,19 @@ namespace Server.Commands.Generic
 				if ( ext is WhereExtension )
 					baseType = ( ext as WhereExtension ).Conditional.Type;
 
-				parsed.List.Add( ext );
+				parsed.Add( ext );
 
 				size = i;
 			}
 
-			parsed.List.Sort( delegate( BaseExtension a, BaseExtension b )
+			parsed.Sort( delegate( BaseExtension a, BaseExtension b )
 			{
 				return ( a.Order - b.Order );
 			} );
 
 			AssemblyEmitter emitter = null;
 
-			foreach ( BaseExtension update in parsed.List )
+			foreach ( BaseExtension update in parsed )
 				update.Optimize( from, baseType, ref emitter );
 
 			if ( size != args.Length )
