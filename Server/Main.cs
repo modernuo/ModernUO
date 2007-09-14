@@ -260,7 +260,6 @@ namespace Server
 			}
 		}
 
-#if !MONO
 		private enum ConsoleEventType
 		{
 			CTRL_C_EVENT,
@@ -285,7 +284,6 @@ namespace Server
 
 			return true;
 		}
-#endif
 
 		private static void CurrentDomain_ProcessExit( object sender, EventArgs e )
 		{
@@ -396,11 +394,6 @@ namespace Server
 			{
 			}
 
-#if !MONO
-			m_ConsoleEventHandler = new ConsoleEventHandler( OnConsoleEvent );
-			SetConsoleCtrlHandler( m_ConsoleEventHandler, true );
-#endif
-
 			m_Thread = Thread.CurrentThread;
 			m_Process = Process.GetCurrentProcess();
 			m_Assembly = Assembly.GetEntryAssembly();
@@ -438,6 +431,10 @@ namespace Server
 			if ( ( platform == 4 ) || ( platform == 128 ) ) { // MS 4, MONO 128
 				m_Unix = true;
 				Console.WriteLine( "Core: Unix environment detected" );
+			}
+			else {
+				m_ConsoleEventHandler = new ConsoleEventHandler( OnConsoleEvent );
+				SetConsoleCtrlHandler( m_ConsoleEventHandler, true );
 			}
 
 			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
