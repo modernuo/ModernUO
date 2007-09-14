@@ -109,8 +109,12 @@ namespace Server
 		private static bool m_MultiProcessor;
 		private static int m_ProcessorCount;
 
-		public static bool MultiProcessor { get { return m_MultiProcessor; } set { m_MultiProcessor = value; } }
-		public static int ProcessorCount { get { return m_ProcessorCount; } set { m_ProcessorCount = value; } }
+		public static bool MultiProcessor { get { return m_MultiProcessor; } }
+		public static int ProcessorCount { get { return m_ProcessorCount; } }
+
+		private static bool m_Unix;
+		
+		public static bool Unix { get { return m_Unix; } }
 
 		public static string FindDataFile( string path )
 		{
@@ -422,15 +426,19 @@ namespace Server
 			if( s.Length > 0 )
 				Console.WriteLine( "Core: Running with arguments: {0}", s );
 
-			int processorCount = Environment.ProcessorCount;
+			m_ProcessorCount = Environment.ProcessorCount;
 
-			if( processorCount > 1 )
+			if( m_ProcessorCount > 1 )
 				m_MultiProcessor = true;
 
 			if( m_MultiProcessor || Is64Bit )
 				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", processorCount, processorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
 
-			m_ProcessorCount = processorCount;
+			int platform = (int)Environment.OSVersion.Platform;
+			if ( ( platform == 4 ) || ( platform == 128 ) ) { // MS 4, MONO 128
+				m_Unix = true;
+				Console.WriteLine( "Core: Unix environment detected" );
+			}
 
 			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
 			{

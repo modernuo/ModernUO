@@ -177,7 +177,9 @@ namespace Server.Network {
 		public static readonly ICompressor Compressor;
 
 		static Compression() {
-			if ( Core.Is64Bit )
+			if ( Core.Unix )
+				Compressor = new CompressorUnix();
+			else if ( Core.Is64Bit )
 				Compressor = new Compressor64();
 			else
 				Compressor = new Compressor32();
@@ -256,6 +258,41 @@ namespace Server.Network {
 		private static extern ZLibError uncompress( byte[] dest, ref int destLen, byte[] source, int sourceLen );
 
 		public Compressor64() {
+		}
+
+		public string Version {
+			get {
+				return zlibVersion();
+			}
+		}
+
+		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
+			return compress( dest, ref destLength, source, sourceLength );
+		}
+
+		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality ) {
+			return compress2( dest, ref destLength, source, sourceLength, quality );
+		}
+
+		public ZLibError Decompress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
+			return uncompress( dest, ref destLength, source, sourceLength );
+		}
+	}
+
+	public sealed class CompressorUnix : ICompressor {
+		[DllImport( "libz" )]
+		private static extern string zlibVersion();
+
+		[DllImport( "libz" )]
+		private static extern ZLibError compress( byte[] dest, ref int destLength, byte[] source, int sourceLength );
+
+		[DllImport( "libz" )]
+		private static extern ZLibError compress2( byte[] dest, ref int destLength, byte[] source, int sourceLength, ZLibQuality quality );
+
+		[DllImport( "libz" )]
+		private static extern ZLibError uncompress( byte[] dest, ref int destLen, byte[] source, int sourceLen );
+
+		public CompressorUnix() {
 		}
 
 		public string Version {
