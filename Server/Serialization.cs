@@ -1,3 +1,4 @@
+//07MAR2007 Update for Linux - seirge
 /***************************************************************************
  *                             Serialization.cs
  *                            -------------------
@@ -65,10 +66,16 @@ namespace Server
 		public abstract Item ReadItem();
 		public abstract Mobile ReadMobile();
 		public abstract BaseGuild ReadGuild();
-
+#if MONO
+		public abstract T ReadItemG<T>() where T : Item;
+		public abstract T ReadMobileG<T>() where T : Mobile;
+		public abstract T ReadGuildG<T>() where T : BaseGuild;
+#else
 		public abstract T ReadItem<T>() where T : Item;
 		public abstract T ReadMobile<T>() where T : Mobile;
 		public abstract T ReadGuild<T>() where T : BaseGuild;
+#endif
+
 
 		public abstract ArrayList ReadItemList();
 		public abstract ArrayList ReadMobileList();
@@ -979,161 +986,192 @@ namespace Server
 		{
 			return BaseGuild.Find( ReadInt() );
 		}
-
+#if MONO
+		public override T ReadItemG<T>()
+		{
+			return ReadItem() as T;
+		}
+#else
 		public override T ReadItem<T>()
 		{
 			return ReadItem() as T;
 		}
+#endif
 
+#if MONO
+		public override T ReadMobileG<T>()
+		{
+			return ReadMobile() as T;
+		}
+#else
 		public override T ReadMobile<T>()
 		{
 			return ReadMobile() as T;
 		}
+#endif
 
+#if MONO
+		public override T ReadGuildG<T>()
+		{
+			return ReadGuild() as T;
+		}
+#else
 		public override T ReadGuild<T>()
 		{
 			return ReadGuild() as T;
 		}
-
+#endif
 		public override ArrayList ReadItemList()
 		{
 			int count = ReadInt();
 
-			if ( count > 0 ) {
-				ArrayList list = new ArrayList( count );
+			ArrayList list = new ArrayList( count );
 
-				for ( int i = 0; i < count; ++i ) {
-					Item item = ReadItem();
+			for( int i = 0; i < count; ++i )
+			{
+				Item item = ReadItem();
 
-					if ( item != null ) {
-						list.Add( item );
-					}
-				}
-
-				return list;
-			} else {
-				return new ArrayList();
+				if( item != null )
+					list.Add( item );
 			}
+
+			return list;
 		}
 
 		public override ArrayList ReadMobileList()
 		{
 			int count = ReadInt();
 
-			if ( count > 0 ) {
-				ArrayList list = new ArrayList( count );
+			ArrayList list = new ArrayList( count );
 
-				for ( int i = 0; i < count; ++i ) {
-					Mobile m = ReadMobile();
+			for( int i = 0; i < count; ++i )
+			{
+				Mobile m = ReadMobile();
 
-					if ( m != null ) {
-						list.Add( m );
-					}
-				}
-
-				return list;
-			} else {
-				return new ArrayList();
+				if( m != null )
+					list.Add( m );
 			}
+
+			return list;
 		}
 
 		public override ArrayList ReadGuildList()
 		{
 			int count = ReadInt();
 
-			if ( count > 0 ) {
-				ArrayList list = new ArrayList( count );
+			ArrayList list = new ArrayList( count );
 
-				for ( int i = 0; i < count; ++i ) {
-					BaseGuild g = ReadGuild();
+			for( int i = 0; i < count; ++i )
+			{
+				BaseGuild g = ReadGuild();
 
-					if ( g != null ) {
-						list.Add( g );
-					}
-				}
-
-				return list;
-			} else {
-				return new ArrayList();
+				if( g != null )
+					list.Add( g );
 			}
+
+			return list;
 		}
 
 		public override List<Item> ReadStrongItemList()
 		{
-			return ReadStrongItemList<Item>();
+			int count = ReadInt();
+
+			List<Item> list = new List<Item>( count );
+
+			for( int i = 0; i < count; ++i )
+			{
+				Item item = ReadItem();
+
+				if( item != null )
+					list.Add( item );
+			}
+
+			return list;
 		}
 
 		public override List<T> ReadStrongItemList<T>()
 		{
 			int count = ReadInt();
 
-			if ( count > 0 ) {
-				List<T> list = new List<T>( count );
+			List<T> list = new List<T>( count );
 
-				for ( int i = 0; i < count; ++i ) {
-					T item = ReadItem() as T;
+			for( int i = 0; i < count; ++i )
+			{
+				T item = ReadItem() as T;
 
-					if ( item != null ) {
-						list.Add( item );
-					}
-				}
-
-				return list;
-			} else {
-				return new List<T>();
+				if( item != null )
+					list.Add( item );
 			}
+
+			return list;
 		}
 
 		public override List<Mobile> ReadStrongMobileList()
 		{
-			return ReadStrongMobileList<Mobile>();
+			int count = ReadInt();
+
+			List<Mobile> list = new List<Mobile>( count );
+
+			for( int i = 0; i < count; ++i )
+			{
+				Mobile m = ReadMobile();
+
+				if( m != null )
+					list.Add( m );
+			}
+
+			return list;
 		}
 
 		public override List<T> ReadStrongMobileList<T>()
 		{
 			int count = ReadInt();
 
-			if ( count > 0 ) {
-				List<T> list = new List<T>( count );
+			List<T> list = new List<T>( count );
 
-				for ( int i = 0; i < count; ++i ) {
-					T m = ReadMobile() as T;
+			for( int i = 0; i < count; ++i )
+			{
+				T m = ReadMobile() as T;
 
-					if ( m != null ) {
-						list.Add( m );
-					}
-				}
-
-				return list;
-			} else {
-				return new List<T>();
+				if( m != null )
+					list.Add( m );
 			}
+
+			return list;
 		}
 
 		public override List<BaseGuild> ReadStrongGuildList()
 		{
-			return ReadStrongGuildList<BaseGuild>();
+			int count = ReadInt();
+
+			List<BaseGuild> list = new List<BaseGuild>( count );
+
+			for( int i = 0; i < count; ++i )
+			{
+				BaseGuild g = ReadGuild();
+
+				if( g != null )
+					list.Add( g );
+			}
+
+			return list;
 		}
 
 		public override List<T> ReadStrongGuildList<T>()
 		{
 			int count = ReadInt();
 
-			if ( count > 0 ) {
-				List<T> list = new List<T>( count );
+			List<T> list = new List<T>( count );
 
-				for ( int i = 0; i < count; ++i ) {
-					T g = ReadGuild() as T;
+			for( int i = 0; i < count; ++i )
+			{
+				T g = ReadGuild() as T;
 
-					if ( g != null ) {
-						list.Add( g );
-					}
-				}
-
-				return list;
-			} else {
-				return new List<T>();
+				if( g != null )
+					list.Add( g );
 			}
+
+			return list;
 		}
 
 		public override bool End()
@@ -1715,3 +1753,4 @@ namespace Server
 		void Serialize( GenericWriter writer );
 	}
 }
+
