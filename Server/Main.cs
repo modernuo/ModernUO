@@ -274,7 +274,7 @@ namespace Server
 
 		private static bool OnConsoleEvent( ConsoleEventType type )
 		{
-			if( World.Saving )
+			if( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
 				return true;
 			
 			Kill();
