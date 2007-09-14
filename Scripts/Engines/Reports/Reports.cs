@@ -13,8 +13,13 @@ namespace Server.Engines.Reports
 {
 	public class Reports
 	{
+		public static bool Enabled = false;
+
 		public static void Initialize()
 		{
+			if ( !Enabled )
+				return;
+
 			m_StatsHistory = new SnapshotHistory();
 			m_StatsHistory.Load();
 

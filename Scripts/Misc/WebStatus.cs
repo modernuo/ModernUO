@@ -9,9 +9,12 @@ namespace Server.Misc
 {
 	public class StatusPage : Timer
 	{
+		public static bool Enabled = false;
+
 		public static void Initialize()
 		{
-			new StatusPage().Start();
+			if ( Enabled )
+				new StatusPage().Start();
 		}
 
 		public StatusPage() : base( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromSeconds( 60.0 ) )

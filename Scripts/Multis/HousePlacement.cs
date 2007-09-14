@@ -319,7 +319,16 @@ namespace Server.Multis
 			{
 				Point2D yardPoint = yard[i];
 
-				IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
+				Sector sector = Map.GetSector( yardPoint );
+
+				foreach ( BaseMulti multi in sector.Multis ) {
+					if ( multi is BaseBoat )
+						continue;
+
+					return HousePlacementResult.BadStatic; // Broke rule #3
+				}
+
+				/*IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
 
 				foreach ( Tile[] tile in eable )
 				{
@@ -333,7 +342,7 @@ namespace Server.Multis
 					}
 				}
 
-				eable.Free();
+				eable.Free();*/
 			}
 
 			return HousePlacementResult.Valid;
