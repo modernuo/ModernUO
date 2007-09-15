@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Server;
+using Server.Items;
 using Server.Regions;
 
 namespace Server.Multis
@@ -319,7 +320,7 @@ namespace Server.Multis
 			{
 				Point2D yardPoint = yard[i];
 
-				Sector sector = Map.GetSector( yardPoint );
+				Sector sector = map.GetSector( yardPoint );
 
 				foreach ( BaseMulti multi in sector.Multis ) {
 					if ( multi is BaseBoat )
