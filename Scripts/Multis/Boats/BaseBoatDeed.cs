@@ -110,7 +110,7 @@ namespace Server.Multis
 					return;
 				}
 
-				if ( from.Region.IsPartOf( typeof( HouseRegion ) ) || Server.Multis.BaseBoat.FindBoatAt( from, from.Map ) != null )
+				if ( from.Region.IsPartOf( typeof( HouseRegion ) ) || BaseBoat.FindBoatAt( from, from.Map ) != null )
 				{
 					from.SendLocalizedMessage( 1010568, null, 0x25 ); // You may not place a ship while on another ship or inside a house.
 					return;
