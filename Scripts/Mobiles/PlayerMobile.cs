@@ -105,13 +105,6 @@ namespace Server.Mobiles
 
 		private int m_GuildMessageHue, m_AllianceMessageHue;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Owner )]
-		public new Account Account
-		{
-			get { return base.Account as Account; }
-			set { base.Account = value; }
-		}
-
 		#region Getters & Setters
 		public Server.Guilds.RankDefinition GuildRank
 		{

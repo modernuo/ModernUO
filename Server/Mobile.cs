@@ -3479,6 +3479,7 @@ namespace Server
 
 		private IAccount m_Account;
 
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Owner )]
 		public IAccount Account
 		{
 			get

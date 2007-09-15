@@ -405,13 +405,21 @@ namespace Server
 
 				foreach( CompilerError e in results.Errors )
 				{
+					string file = e.FileName;
+
+					// Rediculous. FileName is null if the warning/error is internally generated in csc.
+					if ( string.IsNullOrEmpty( file ) ) {
+						Console.WriteLine( "ScriptCompiler: {0}: {1}", e.ErrorNumber, e.ErrorText );
+						continue;
+					}
+
 					Dictionary<string, List<CompilerError>> table = (e.IsWarning ? warnings : errors);
 
 					List<CompilerError> list = null;
-					table.TryGetValue( e.FileName, out list );
+					table.TryGetValue( file, out list );
 
 					if( list == null )
-						table[e.FileName] = list = new List<CompilerError>();
+						table[file] = list = new List<CompilerError>();
 
 					list.Add( e );
 				}
