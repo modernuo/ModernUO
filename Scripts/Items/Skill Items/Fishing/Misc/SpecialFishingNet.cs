@@ -261,7 +261,6 @@ namespace Server.Items
 			Delete();
 		}
 
-
 		public static bool FullValidation( Map map, int x, int y )
 		{
 			bool valid = ValidateDeepWater( map, x, y );
@@ -293,9 +292,7 @@ namespace Server.Items
 			bool water = false;
 
 			for( int i = 0; !water && i < m_WaterTiles.Length; i += 2 )
-			{
 				water = (tileID >= m_WaterTiles[i] && tileID <= m_WaterTiles[i + 1]);
-			}
 
 			return water;
 		}

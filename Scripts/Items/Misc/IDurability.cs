@@ -3,19 +3,19 @@ using Server;
 
 namespace Server.Items
 {
-	 interface IDurability
+	interface IDurability
 	{
-		 int InitMinHits { get; }
-		 int InitMaxHits { get; }
+		int InitMinHits { get; }
+		int InitMaxHits { get; }
 
-		 int HitPoints { get; set; }
-		 int MaxHitPoints { get; set; }
+		int HitPoints { get; set; }
+		int MaxHitPoints { get; set; }
 
 		//Maybe a scale/unscale durability?
 	}
 
-	 interface IWearableDurability : IDurability
+	interface IWearableDurability : IDurability
 	{
-		 int OnHit( BaseWeapon weapon, int damageTaken );
+		int OnHit( BaseWeapon weapon, int damageTaken );
 	}
 }

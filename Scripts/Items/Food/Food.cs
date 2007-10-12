@@ -192,6 +192,7 @@ namespace Server.Items
 		public BreadLoaf( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -224,6 +225,7 @@ namespace Server.Items
 		public Bacon( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -256,6 +258,7 @@ namespace Server.Items
 		public SlabOfBacon( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -292,6 +295,7 @@ namespace Server.Items
 		public FishSteak( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -328,6 +332,7 @@ namespace Server.Items
 		public CheeseWheel( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -364,6 +369,7 @@ namespace Server.Items
 		public CheeseWedge( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -400,6 +406,7 @@ namespace Server.Items
 		public CheeseSlice( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -432,6 +439,7 @@ namespace Server.Items
 		public FrenchBread( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -465,6 +473,7 @@ namespace Server.Items
 		public FriedEggs( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -497,6 +506,7 @@ namespace Server.Items
 		public CookedBird( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -529,6 +539,7 @@ namespace Server.Items
 		public RoastPig( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -561,6 +572,7 @@ namespace Server.Items
 		public Sausage( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -593,6 +605,7 @@ namespace Server.Items
 		public Ham( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -654,6 +667,7 @@ namespace Server.Items
 		public Ribs( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1024,6 +1038,7 @@ namespace Server.Items
 		public LambLeg( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1056,6 +1071,7 @@ namespace Server.Items
 		public ChickenLeg( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1089,6 +1105,7 @@ namespace Server.Items
 		public HoneydewMelon( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1122,6 +1139,7 @@ namespace Server.Items
 		public YellowGourd( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1155,6 +1173,7 @@ namespace Server.Items
 		public GreenGourd( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1188,6 +1207,7 @@ namespace Server.Items
 		public EarOfCorn( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -1220,6 +1240,7 @@ namespace Server.Items
 		public Turnip( Serial serial ) : base( serial )
 		{
 		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

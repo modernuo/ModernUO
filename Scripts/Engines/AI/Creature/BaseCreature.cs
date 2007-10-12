@@ -873,7 +873,7 @@ namespace Server.Mobiles
 		{
 			int oldHits = this.Hits;
 
-			if ( !this.Summoned && this.Controlled && 0.2 > Utility.RandomDouble() )
+			if ( Core.AOS && !this.Summoned && this.Controlled && 0.2 > Utility.RandomDouble() )
 				amount = (int)(amount * BonusPetDamageScalar);
 
 			if ( Spells.Necromancy.EvilOmenSpell.CheckEffect( this ) )

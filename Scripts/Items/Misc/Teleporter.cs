@@ -1,12 +1,13 @@
 using System;
 using Server;
 using Server.Network;
+using Server.Spells;
 
 namespace Server.Items
 {
 	public class Teleporter : Item
 	{
-		private bool m_Active, m_Creatures;
+		private bool m_Active, m_Creatures, m_CombatCheck;
 		private Point3D m_PointDest;
 		private Map m_MapDest;
 		private bool m_SourceEffect;
@@ -70,6 +71,14 @@ namespace Server.Items
 			set { m_Creatures = value; InvalidateProperties(); }
 		}
 
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool CombatCheck
+		{
+			get { return m_CombatCheck; }
+			set { m_CombatCheck = value; InvalidateProperties(); }
+		}
+
 		public override int LabelNumber{ get{ return 1026095; } } // teleporter
 
 		[Constructable]
@@ -92,6 +101,8 @@ namespace Server.Items
 			m_PointDest = pointDest;
 			m_MapDest = mapDest;
 			m_Creatures = creatures;
+
+			m_CombatCheck = false;
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -178,6 +189,11 @@ namespace Server.Items
 			{
 				if ( !m_Creatures && !m.Player )
 					return true;
+				else if ( m_CombatCheck && SpellHelper.CheckCombat( m ) )
+				{
+					m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
+					return true;				
+				}
 
 				StartTeleport( m );
 				return false;
@@ -194,7 +210,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( (int) 3 ); // version
+
+			writer.Write( (bool) m_CombatCheck );
 
 			writer.Write( (bool) m_SourceEffect );
 			writer.Write( (bool) m_DestEffect );
@@ -216,6 +234,11 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
+				{
+					m_CombatCheck = reader.ReadBool();
+					goto case 2;
+				}
 				case 2:
 				{
 					m_SourceEffect = reader.ReadBool();

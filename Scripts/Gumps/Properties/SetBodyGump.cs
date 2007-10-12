@@ -71,7 +71,7 @@ namespace Server.Gumps
 			AddImageTiled( 10, 35, 505, 283, 0xA40 );
 			AddAlphaRegion( 10, 35, 505, 283 );
 
-			AddTypeButton( 10, 10, 1, "Monster", ModelBodyType.Monsters );
+			AddTypeButton(  10, 10, 1, "Monster", ModelBodyType.Monsters );
 			AddTypeButton( 130, 10, 2, "Animal", ModelBodyType.Animals );
 			AddTypeButton( 250, 10, 3, "Marine", ModelBodyType.Sea );
 			AddTypeButton( 370, 10, 4, "Human", ModelBodyType.Human );

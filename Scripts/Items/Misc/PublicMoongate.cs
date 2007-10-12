@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Server;
-using Server.Gumps;
-using Server.Network;
-using Server.Mobiles;
 using Server.Commands;
+using Server.Gumps;
+using Server.Mobiles;
+using Server.Network;
+using Server.Spells;
 
 namespace Server.Items
 {
@@ -61,7 +62,7 @@ namespace Server.Items
 				m.SendLocalizedMessage( 1005561, "", 0x22 ); // Thou'rt a criminal and cannot escape so easily.
 				return false;
 			}
-			else if ( Server.Spells.SpellHelper.CheckCombat( m ) )
+			else if ( SpellHelper.CheckCombat( m ) )
 			{
 				m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
 				return false;
@@ -438,7 +439,7 @@ namespace Server.Items
 			{
 				m_Mobile.SendLocalizedMessage( 1005561, "", 0x22 ); // Thou'rt a criminal and cannot escape so easily.
 			}
-			else if ( Server.Spells.SpellHelper.CheckCombat( m_Mobile ) )
+			else if ( SpellHelper.CheckCombat( m_Mobile ) )
 			{
 				m_Mobile.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
 			}

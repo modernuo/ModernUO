@@ -70,7 +70,6 @@ namespace Server.Items
 			if ( from.Alive && this.Movable )
 				list.Add( new ContextMenus.AddToSpellbookEntry() );
 		}
-		
 
 		public override void OnDoubleClick( Mobile from )
 		{
