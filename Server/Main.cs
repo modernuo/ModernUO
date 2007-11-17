@@ -448,7 +448,7 @@ namespace Server
 
 			SocketPool.Create();
 
-			MessagePump ms = m_MessagePump = new MessagePump( new Listener( Listener.Port ) );
+			MessagePump ms = m_MessagePump = new MessagePump();
 
 			timerThread.Start();
 

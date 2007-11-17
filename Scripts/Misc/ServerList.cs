@@ -33,12 +33,8 @@ namespace Server.Misc
 		 * locally private address, the server will direct the client to either the AutoDetected IP address or the manually entered
 		 * IP address or hostname, whichever is applicable. Loopback clients will be directed to loopback.
 		 * 
-		 * If you would like to change the default port RunUO listens on, you can do so by modifying the 'Listener.Port' assignment
-		 * found below. If you would like to listen on additional ports (i.e. 22, 23, 80, for clients behind highly restrictive egress
-		 * firewalls) you can do so by modifying the file SocketOptions.cs found in this directory.
-		 *
-		 * RunUO currently has no provision to bind on specific interfaces. If you need to run multiple instances of RunUO, you must
-		 * bind the listener to a unique port.
+		 * If you would like to listen on additional ports (i.e. 22, 23, 80, for clients behind highly restrictive egress
+		 * firewalls) or specific IP adddresses you can do so by modifying the file SocketOptions.cs found in this directory.
 		 */
 
 		public static readonly string Address = null;
@@ -48,8 +44,6 @@ namespace Server.Misc
 
 		public static void Initialize()
 		{
-			Listener.Port = 2593;
-
 			if ( Address == null ) {
 				if ( AutoDetect )
 					AutoDetection();

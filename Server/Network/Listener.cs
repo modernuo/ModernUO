@@ -39,48 +39,23 @@ namespace Server.Network
 
 		private static Socket[] m_EmptySockets = new Socket[0];
 
-		private static int m_Port = 2593;
+		private static IPEndPoint[] m_EndPoints;
 
-		public static int Port
-		{
-			get
-			{
-				return m_Port;
-			}
-			set
-			{
-				m_Port = value;
-			}
+		public static IPEndPoint[] EndPoints {
+			get { return m_EndPoints; }
+			set { m_EndPoints = value; }
 		}
 
-		public Listener( int port )
+		public Listener( IPEndPoint ipep )
 		{
 			m_Accepted = new Queue<Socket>();
 			m_AcceptedSyncRoot = ((ICollection)m_Accepted).SyncRoot;
 			m_OnAccept = new AsyncCallback( OnAccept );
-
-			m_Listener = Bind( IPAddress.Any, port );
-
-			try
-			{
-				IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
-
-				Console.WriteLine( "Address: {0}:{1}", IPAddress.Loopback, port );
-
-				IPAddress[] ip = iphe.AddressList;
-
-				for ( int i = 0; i < ip.Length; ++i )
-					Console.WriteLine( "Address: {0}:{1}", ip[i], port );
-			}
-			catch
-			{
-			}
+			m_Listener = Bind( ipep );
 		}
 
-		private Socket Bind( IPAddress ip, int port )
+		private Socket Bind( IPEndPoint ipep )
 		{
-			IPEndPoint ipep = new IPEndPoint( ip, port );
-
 			Socket s = SocketPool.AcquireSocket();
 
 			try
@@ -93,14 +68,43 @@ namespace Server.Network
 				s.Bind( ipep );
 				s.Listen( 8 );
 
+				if ( ipep.Address.Equals( IPAddress.Any ) ) {
+					try {
+						Console.WriteLine( "Listening: {0}:{1}", IPAddress.Loopback, ipep.Port );
+
+						IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
+
+						IPAddress[] ip = iphe.AddressList;
+
+						for ( int i = 0; i < ip.Length; ++i )
+							Console.WriteLine( "Listening: {0}:{1}", ip[i], ipep.Port );
+					}
+					catch { }
+				}
+				else {
+					Console.WriteLine( "Listening: {0}:{1}", ipep.Address, ipep.Port );
+				}
+
 				IAsyncResult res = s.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, s );
 
 				return s;
 			}
 			catch ( Exception e )
 			{
-				Console.WriteLine( "Listener bind exception:" );
-				Console.WriteLine( e );
+				if ( e is SocketException ) {
+					SocketException se = (SocketException)e;
+
+					if ( se.ErrorCode == 10048 ) { // WSAEADDRINUSE
+						Console.WriteLine( "Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port ); 
+					}
+					else if ( se.ErrorCode == 10049 ) { // WSAEADDRNOTAVAIL
+						Console.WriteLine( "Listener Failed: {0}:{1} (Unavailable)", ipep.Address, ipep.Port );
+					}
+					else {
+						Console.WriteLine( "Listener Exception:" );
+						Console.WriteLine( e );
+					}
+				}
 
 				return null;
 			}
