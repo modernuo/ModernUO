@@ -152,7 +152,13 @@ namespace Server.Network
 
 				if ( !ns.Seeded )
 				{
-					if ( buffer.Length >= 4 )
+                    if ( buffer.GetPacketID() == 0xEF )
+                    {
+                        // new packet in client 6.0.5.0 replaces the traditional seed method with a seed packet
+                        // 0xEF = 239 = multicast IP, so this should never appear in a normal seed.  So this is backwards compatible with older clients.
+                        ns.Seeded = true;
+                    }
+					else if ( buffer.Length >= 4 )
 					{
 						buffer.Dequeue( m_Peek, 0, 4 );
 
@@ -180,7 +186,7 @@ namespace Server.Network
 				{
 					int packetID = buffer.GetPacketID();
 
-					if ( !ns.SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 && packetID != 0x91 && packetID != 0xA4 )
+					if ( !ns.SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 && packetID != 0x91 && packetID != 0xA4 && packetID != 0xEF )
 					{
 						Console.WriteLine( "Client: {0}: Encrypted client detected, disconnecting", ns );
 						ns.Dispose();

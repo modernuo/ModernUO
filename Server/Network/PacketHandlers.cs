@@ -147,6 +147,7 @@ namespace Server.Network
 			Register( 0xD1,   2,  true, new OnPacketReceive( LogoutReq ) );
 			Register( 0xD6,   0,  true, new OnPacketReceive( BatchQueryProperties ) );
 			Register( 0xD7,   0,  true, new OnPacketReceive( EncodedCommand ) );
+            Register( 0xEF,  21, false, new OnPacketReceive( LoginServerSeed ) );
 
 			Register6017( 0x08, 15, true, new OnPacketReceive( DropReq6017 ) );
 
@@ -2230,6 +2231,26 @@ namespace Server.Network
 				state.Send( new PlayServerAck( si ) );
 			}
 		}
+
+        public static void LoginServerSeed( NetState state, PacketReader pvSrc )
+        {
+            state.m_Seed = pvSrc.ReadInt32();
+            state.Seeded = true;
+
+            if ( state.m_Seed == 0 )
+            {
+                Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
+                state.Dispose();
+                return;
+            }
+
+            int clientMaj = pvSrc.ReadInt32();
+            int clientMin = pvSrc.ReadInt32();
+            int clientRev = pvSrc.ReadInt32();
+            int clientPat = pvSrc.ReadInt32();
+
+            state.Version = new ClientVersion( clientMaj, clientMin, clientRev, clientPat );
+        }
 
 		public static void AccountLogin( NetState state, PacketReader pvSrc )
 		{
