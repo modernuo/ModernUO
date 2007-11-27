@@ -913,12 +913,7 @@ namespace Server.Multis
                 }
                 else if ( cost < 0 )
                 {
-					if ( this.Deleted ) {
-						from.SendLocalizedMessage( 1060397, ( -cost ).ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box. (let them think it worked)
-						using ( StreamWriter op = new StreamWriter( "customexploiters.log", true ) )
-							op.WriteLine( "{0}\t{1}\t{2}\tLocation: {3}", from.Account, from.NetState != null ? from.NetState.ToString() : "null account", from.RawName, from.Location.ToString() );
-					}	
-                    else if ( Banker.Deposit( from, -cost ) )
+					if ( Banker.Deposit( from, -cost ) )
                         from.SendLocalizedMessage( 1060397, ( -cost ).ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
                     else
                         return;
