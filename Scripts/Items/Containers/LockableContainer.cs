@@ -5,7 +5,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public abstract class LockableContainer : TrapableContainer, ILockable, ILockpickable, ICraftable//, ITelekinesisable
+	public abstract class LockableContainer : TrapableContainer, ILockable, ILockpickable, ICraftable, IShipwreckedItem
 	{
 		private bool m_Locked;
 		private int m_LockLevel, m_MaxLockLevel, m_RequiredSkill;
@@ -121,7 +121,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 5 ); // version
+			writer.Write( (int) 6 ); // version
+
+			writer.Write( m_IsShipwreckedItem );
 
 			writer.Write( (bool) m_TrapOnLockpick );
 
@@ -142,6 +144,12 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 6:
+				{
+					m_IsShipwreckedItem = reader.ReadBool();
+
+					goto case 5;
+				}
 				case 5:
 				{
 					m_TrapOnLockpick = reader.ReadBool();
@@ -332,6 +340,21 @@ namespace Server.Items
 			}
 		}
 
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
+			if ( m_IsShipwreckedItem )
+				list.Add( 1041645 ); // recovered from a shipwreck
+		}
+
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			LabelTo( from, 1041645 );	//recovered from a shipwreck
+		}
+
 		#region ICraftable Members
 
 		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
@@ -372,5 +395,18 @@ namespace Server.Items
 		}
 
 		#endregion
+
+		#region IShipwreckedItem Members
+
+		private bool m_IsShipwreckedItem;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IsShipwreckedItem
+		{
+			get { return m_IsShipwreckedItem; }
+			set { m_IsShipwreckedItem = value; }
+		}
+		#endregion
+
 	}
 }

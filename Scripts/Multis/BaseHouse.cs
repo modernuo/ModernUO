@@ -1013,8 +1013,6 @@ namespace Server.Multis
 				return true;
 			else if ( item is Clock )
 				return true;
-			else if ( item is BaseBook )
-				return true;
 			else if ( item is BaseInstrument )
 				return true;
 			else if ( item is Dyes || item is DyeTub )

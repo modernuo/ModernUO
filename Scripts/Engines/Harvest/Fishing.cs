@@ -246,7 +246,7 @@ namespace Server.Engines.Harvest
 					{
 						Item preLoot = null;
 
-						switch ( Utility.Random( 7 ) )
+						switch ( Utility.Random( 8 ) )
 						{
 							case 0: // Body parts
 							{
@@ -288,7 +288,16 @@ namespace Server.Engines.Harvest
 								preLoot = new ShipwreckedItem( Utility.Random( 0xFC4, 9 ) );
 								break;
 							}
-							case 5: // Misc
+							case 5:	//Hats
+							{
+								if ( Utility.RandomBool() )
+									preLoot = new SkullCap();
+								else
+									preLoot = new TricorneHat();
+
+								break;
+							}
+							case 6: // Misc
 							{
 								int[] list = new int[]
 									{
@@ -299,13 +308,22 @@ namespace Server.Engines.Harvest
 										0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
 									};
 
-								preLoot = new ShipwreckedItem( Utility.RandomList( list ) );
+								if ( Utility.Random( list.Length + 1 ) == 0 )
+									preLoot = new Candelabra();
+								else
+									preLoot = new ShipwreckedItem( Utility.RandomList( list ) );
+
 								break;
 							}
 						}
 
 						if ( preLoot != null )
+						{
+							if ( preLoot is IShipwreckedItem )
+								( (IShipwreckedItem)preLoot ).IsShipwreckedItem = true;
+
 							return preLoot;
+						}
 
 						LockableContainer chest;
 						

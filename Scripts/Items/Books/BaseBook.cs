@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using Server;
 using Server.Network;
+using Server.Gumps;
+using Server.Multis;
 
 namespace Server.Items
 {
@@ -51,12 +53,13 @@ namespace Server.Items
 		}
 	}
 
-	public class BaseBook : Item
+	public class BaseBook : Item, ISecurable
 	{
 		private string m_Title;
 		private string m_Author;
 		private BookPageInfo[] m_Pages;
 		private bool m_Writable;
+		private SecureLevel m_SecureLevel;
 		
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Title
@@ -177,7 +180,11 @@ namespace Server.Items
 			if ( content == null || !content.IsMatch( m_Pages ) )
 				flags |= SaveFlags.Content;
 
-			writer.Write( (int) 3 ); // version
+
+
+			writer.Write( (int) 4 ); // version
+
+			writer.Write( (int)m_SecureLevel );
 
 			writer.Write( (byte) flags );
 
@@ -204,6 +211,11 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 4:
+				{
+					m_SecureLevel = (SecureLevel)reader.ReadInt();
+					goto case 3;
+				}
 				case 3:
 				case 2:
 				{
@@ -324,7 +336,7 @@ namespace Server.Items
 			Mobile from = state.Mobile;
 			BaseBook book = World.FindItem( pvSrc.ReadInt32() ) as BaseBook;
 
-			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) )
+			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
 				return;
 
 			pvSrc.Seek( 4, SeekOrigin.Current ); // Skip flags and page count
@@ -341,7 +353,7 @@ namespace Server.Items
 			Mobile from = state.Mobile;
 			BaseBook book = World.FindItem( pvSrc.ReadInt32() ) as BaseBook;
 
-			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) )
+			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
 				return;
 
 			pvSrc.Seek( 4, SeekOrigin.Current ); // Skip flags and page count
@@ -369,7 +381,7 @@ namespace Server.Items
 			Mobile from = state.Mobile;
 			BaseBook book = World.FindItem( pvSrc.ReadInt32() ) as BaseBook;
 
-			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) )
+			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
 				return;
 
 			int pageCount = pvSrc.ReadUInt16();
@@ -408,6 +420,23 @@ namespace Server.Items
 				}
 			}
 		}
+
+		#region ISecurable Members
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public SecureLevel Level
+		{
+			get
+			{
+				return m_SecureLevel;
+			}
+			set
+			{
+				m_SecureLevel = value;
+			}
+		}
+
+		#endregion
 	}
 
 	public sealed class BookPageDetails : Packet

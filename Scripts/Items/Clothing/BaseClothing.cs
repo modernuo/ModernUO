@@ -639,21 +639,7 @@ namespace Server.Items
 		{
 			List<EquipInfoAttribute> attrs = new List<EquipInfoAttribute>();
 
-			if ( DisplayLootType )
-			{
-				if ( LootType == LootType.Blessed )
-					attrs.Add( new EquipInfoAttribute( 1038021 ) ); // blessed
-				else if ( LootType == LootType.Cursed )
-					attrs.Add( new EquipInfoAttribute( 1049643 ) ); // cursed
-			}
-
-			#region Factions
-			if ( m_FactionState != null )
-				attrs.Add( new EquipInfoAttribute( 1041350 ) ); // faction item
-			#endregion
-
-			if ( m_Quality == ClothingQuality.Exceptional )
-				attrs.Add( new EquipInfoAttribute( 1018305 - (int)m_Quality ) );
+			AddEquipInfoAttributes( from, attrs );
 
 			int number;
 
@@ -673,6 +659,25 @@ namespace Server.Items
 			EquipmentInfo eqInfo = new EquipmentInfo( number, m_Crafter, false, attrs.ToArray() );
 
 			from.Send( new DisplayEquipmentInfo( this, eqInfo ) );
+		}
+
+		public virtual void AddEquipInfoAttributes( Mobile from, List<EquipInfoAttribute> attrs )
+		{
+			if ( DisplayLootType )
+			{
+				if ( LootType == LootType.Blessed )
+					attrs.Add( new EquipInfoAttribute( 1038021 ) ); // blessed
+				else if ( LootType == LootType.Cursed )
+					attrs.Add( new EquipInfoAttribute( 1049643 ) ); // cursed
+			}
+
+			#region Factions
+			if ( m_FactionState != null )
+				attrs.Add( new EquipInfoAttribute( 1041350 ) ); // faction item
+			#endregion
+
+			if ( m_Quality == ClothingQuality.Exceptional )
+				attrs.Add( new EquipInfoAttribute( 1018305 - (int)m_Quality ) );
 		}
 
 		#region Serialization

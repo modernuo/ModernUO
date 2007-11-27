@@ -2,7 +2,12 @@ using System;
 
 namespace Server.Items
 {
-	public class ShipwreckedItem : Item, IDyable
+	public interface IShipwreckedItem
+	{
+		bool IsShipwreckedItem { get; set; }
+	}
+
+	public class ShipwreckedItem : Item, IDyable, IShipwreckedItem
 	{
 		public ShipwreckedItem( int itemID ) : base( itemID )
 		{
@@ -57,5 +62,20 @@ namespace Server.Items
 			from.SendLocalizedMessage( sender.FailMessage );
 			return false;
 		}
+
+		#region IShipwreckedItem Members
+
+		public bool IsShipwreckedItem
+		{
+			get
+			{
+				return true;	//It's a ShipwreckedItem item.  'Course it's gonna be a Shipwreckeditem
+			}
+			set
+			{
+			}
+		}
+
+		#endregion
 	}
 }

@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	public class Candelabra : BaseLight
+	public class Candelabra : BaseLight, IShipwreckedItem
 	{
 		public override int LitItemID{ get { return 0xB1D; } }
 		public override int UnlitItemID{ get { return 0xA27; } }
@@ -24,13 +24,51 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
+
+			writer.Write( m_IsShipwreckedItem );
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			switch ( version )
+			{
+				case 1:
+				{
+					m_IsShipwreckedItem = reader.ReadBool();
+					break;
+				}
+			}
 		}
+
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
+			if ( m_IsShipwreckedItem )
+				list.Add( 1041645 ); // recovered from a shipwreck
+		}
+
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			LabelTo( from, 1041645 );	//recovered from a shipwreck
+		}
+
+		#region IShipwreckedItem Members
+
+		private bool m_IsShipwreckedItem;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IsShipwreckedItem
+		{
+			get { return m_IsShipwreckedItem; }
+			set { m_IsShipwreckedItem = value; }
+		}
+		#endregion
 	}
 }

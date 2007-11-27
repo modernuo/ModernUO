@@ -10,10 +10,10 @@ namespace Server.Gumps
 {
 	public enum ResurrectMessage
 	{
-		ChaosShrine=0,
-		VirtueShrine=1,
-		Healer=2,
-		Generic=3,
+		ChaosShrine = 0,
+		VirtueShrine = 1,
+		Healer = 2,
+		Generic = 3,
 	}
 
 	public class ResurrectGump : Gump

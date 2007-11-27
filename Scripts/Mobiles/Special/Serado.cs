@@ -88,7 +88,6 @@ namespace Server.Mobiles
 
 			ScaleResistances();
 			DoCounter( attacker );
-
 		}
 
 		private void ScaleResistances()
