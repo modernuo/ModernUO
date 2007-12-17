@@ -1,4 +1,5 @@
 using System;
+using Server.Network;
 
 namespace Server.Items
 {
@@ -41,6 +42,7 @@ namespace Server.Items
 			{
 				from.FixedEffect( 0x375A, 10, 15 );
 				from.PlaySound( 0x1E7 );
+				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 501774 ); // You swallow the fish whole!
 				Delete();
 			}
 		}

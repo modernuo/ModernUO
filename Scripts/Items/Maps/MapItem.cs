@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Network;
 using Server.Engines.Craft;
@@ -17,7 +18,7 @@ namespace Server.Items
 		private bool m_Protected;
 		private bool m_Editable;
 
-		private ArrayList m_Pins = new ArrayList();
+		private List<Point2D> m_Pins = new List<Point2D>();
 
 		private const int MaxUserPins = 50;
 
@@ -49,7 +50,7 @@ namespace Server.Items
 			set { m_Height = value; }
 		}
 
-		public ArrayList Pins
+		public List<Point2D> Pins
 		{
 			get { return m_Pins; }
 		}
@@ -105,7 +106,7 @@ namespace Server.Items
 			from.Send( new MapDisplay( this ) );
 
 			for ( int i = 0; i < m_Pins.Count; ++i )
-				from.Send( new MapAddPin( this, (Point2D) m_Pins[i] ) );
+				from.Send( new MapAddPin( this, m_Pins[i] ) );
 
 			from.Send( new MapSetEditable( this, ValidateEdit( from ) ) );
 		}
@@ -265,7 +266,7 @@ namespace Server.Items
 			
 			writer.Write( m_Pins.Count );
 			for ( int i = 0; i < m_Pins.Count; ++i )
-				writer.Write( (Point2D) m_Pins[i] );
+				writer.Write( m_Pins[i] );
 		}
 
 		public override void Deserialize( GenericReader reader )

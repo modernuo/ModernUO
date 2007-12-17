@@ -186,7 +186,7 @@ namespace Server.Engines.Harvest
 								item.Amount = amount;
 						}
 
-						bank.Consume( def, item.Amount, from );
+						bank.Consume( item.Amount, from );
 
 						if ( Give( from, item, def.PlaceAtFeetIfFull ) )
 						{
@@ -196,6 +196,22 @@ namespace Server.Engines.Harvest
 						{
 							SendPackFullTo( from, item, def, resource );
 							item.Delete();
+						}
+
+						BonusHarvestResource bonus = def.GetBonusResource();
+
+						if ( bonus != null && bonus.Type != null && skillBase >= bonus.ReqSkill )
+						{
+							Item bonusItem = Construct( bonus.Type, from );
+
+							if ( Give( from, bonusItem, true ) )	//Bonuses always allow placing at feet, even if pack is full irregrdless of def
+							{
+								bonus.SendSuccessTo( from );
+							}
+							else
+							{
+								item.Delete();
+							}
 						}
 
 						if ( tool is IUsesRemaining )
@@ -266,14 +282,14 @@ namespace Server.Engines.Harvest
 			if ( map == null )
 				return false;
 
-			ArrayList atFeet = new ArrayList();
+			List<Item> atFeet = new List<Item>();
 
 			foreach ( Item obj in m.GetItemsInRange( 0 ) )
 				atFeet.Add( obj );
 
 			for ( int i = 0; i < atFeet.Count; ++i )
 			{
-				Item check = (Item)atFeet[i];
+				Item check = atFeet[i];
 
 				if ( check.StackWith( m, item, false ) )
 					return true;

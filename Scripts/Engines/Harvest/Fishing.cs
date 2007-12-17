@@ -481,17 +481,23 @@ namespace Server.Engines.Harvest
 			Point3D loc;
 
 			if ( GetHarvestDetails( from, tool, toHarvest, out tileID, out map, out loc ) )
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), new TimerStateCallback( Splash_Callback ), new object[]{ loc, map } );
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), 
+					delegate
+					{
+						if( Core.ML )
+							from.RevealingAction();
+
+						Effects.SendLocationEffect( loc, map, 0x352D, 16, 4 );
+						Effects.PlaySound( loc, map, 0x364 );
+					} );
 		}
 
-		private void Splash_Callback( object state )
+		public override void OnHarvestFinished( Mobile from, Item tool, HarvestDefinition def, HarvestVein vein, HarvestBank bank, HarvestResource resource, object harvested )
 		{
-			object[] args = (object[])state;
-			Point3D loc = (Point3D)args[0];
-			Map map = (Map)args[1];
+			base.OnHarvestFinished( from, tool, def, vein, bank, resource, harvested );
 
-			Effects.SendLocationEffect( loc, map, 0x352D, 16, 4 );
-			Effects.PlaySound( loc, map, 0x364 );
+			if ( Core.ML )
+				from.RevealingAction();
 		}
 
 		public override object GetLock( Mobile from, Item tool, HarvestDefinition def, object toHarvest )

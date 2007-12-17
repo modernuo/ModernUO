@@ -2,6 +2,7 @@ using System;
 using Server;
 using Server.Network;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -106,16 +107,16 @@ namespace Server.Items
 
 			if ( NeighborRange >= 0 )
 			{
-				ArrayList list = new ArrayList();
+				List<WarningItem> list = new List<WarningItem>();
 
 				foreach ( Item item in GetItemsInRange( NeighborRange ) )
 				{
 					if ( item != this && item is WarningItem )
-						list.Add( item );
+						list.Add( (WarningItem)item );
 				}
 
 				for ( int i = 0; i < list.Count; i++ )
-					( (WarningItem) list[i] ).Broadcast( triggerer );
+					list[i].Broadcast( triggerer );
 			}
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( InternalCallback ) );

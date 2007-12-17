@@ -7,6 +7,7 @@ using Server.Accounting;
 using Server.Commands;
 using Server.Engines.Help;
 using Server.Network;
+using Server.Regions;
 
 namespace Server.Misc
 {
@@ -192,11 +193,16 @@ namespace Server.Misc
 					state.Send( new DeleteResult( DeleteResultType.CharTooYoung ) );
 					state.Send( new CharacterListUpdate( acct ) );
 				}
+				else if ( m.AccessLevel == AccessLevel.Player && Region.Find( m.LogoutLocation, m.LogoutMap ).GetRegion( typeof( Jail ) ) != null )	//Don't need to check current location, if netstate is null, they're logged out
+				{
+					state.Send( new DeleteResult( DeleteResultType.BadRequest ) );
+					state.Send( new CharacterListUpdate( acct ) );
+				}
 				else
 				{
 					Console.WriteLine( "Client: {0}: Deleting character {1} (0x{2:X})", state, index, m.Serial.Value );
 
-					acct.Comments.Add( new AccountComment( "System", String.Format( "Character #{0} {1} deleted by {2}", index+1, m, state ) ) );
+					acct.Comments.Add( new AccountComment( "System", String.Format( "Character #{0} {1} deleted by {2}", index + 1, m, state ) ) );
 
 					m.Delete();
 					state.Send( new CharacterListUpdate( acct ) );

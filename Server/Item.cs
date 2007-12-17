@@ -999,7 +999,19 @@ namespace Server
 		/// <summary>
 		/// Overridable. Determines whether the item will show <see cref="AddWeightProperty" />. 
 		/// </summary>
-		public virtual bool DisplayWeight { get { return ( Core.Expansion >= Expansion.ML ); } }
+		public virtual bool DisplayWeight 
+		{
+			get
+			{
+				if ( !Core.ML )
+					return false;
+
+				if ( !Movable && !( IsLockedDown || IsSecure ) && ItemData.Weight == 255 )
+					return false;
+
+				return true;
+			} 
+		}
 
 		/// <summary>
 		/// Overridable. Displays cliloc 1072788-1072789. 

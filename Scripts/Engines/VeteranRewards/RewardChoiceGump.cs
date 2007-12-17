@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Network;
@@ -90,11 +91,11 @@ namespace Server.Engines.VeteranRewards
 		{
 			AddPage( 2 + index );
 
-			ArrayList entries = category.Entries;
+			List<RewardEntry> entries = category.Entries;
 
 			for ( int i = 0; i < entries.Count; ++i )
 			{
-				RewardEntry entry = (RewardEntry)entries[i];
+				RewardEntry entry = entries[i];
 
 				if ( !RewardSystem.HasAccess( m_From, entry ) )
 					break;
@@ -146,7 +147,7 @@ namespace Server.Engines.VeteranRewards
 
 					if ( index >= 0 && index < category.Entries.Count )
 					{
-						RewardEntry entry = (RewardEntry)category.Entries[index];
+						RewardEntry entry = category.Entries[index];
 
 						if ( !RewardSystem.HasAccess( m_From, entry ) )
 							return;

@@ -278,19 +278,6 @@ namespace Server.Engines.Doom
 			{
 				Point3D loc = GetWorldLocation();
 
-				/*
-				Sector sec = map.GetSector( loc  );
-				ArrayList regions = sec.Regions;
-
-				for ( int i = 0; playerCount == 0 && i < regions.Count; ++i )
-				{
-					Region reg = (Region)regions[i];
-
-					if ( reg != null && reg != m_Region && reg.Contains( loc ) )
-						playerCount = reg.GetPlayerCount();
-				}
-				*/
-
 				Region reg = Region.Find( loc, map ).GetRegion( "Doom Gauntlet" );
 
 				if ( reg != null )
@@ -575,11 +562,11 @@ namespace Server.Engines.Doom
 			dealer.Female = false;
 			dealer.Hue = 0x8835;
 
-			ArrayList items = new ArrayList( dealer.Items );
+			List<Item> items = new List<Item>( dealer.Items );
 
 			for ( int i = 0; i < items.Count; ++i )
 			{
-				Item item = (Item)items[i];
+				Item item = items[i];
 
 				if ( item.Layer != Layer.ShopBuy && item.Layer != Layer.ShopResale && item.Layer != Layer.ShopSell )
 					item.Delete();

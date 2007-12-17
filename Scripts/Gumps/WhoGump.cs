@@ -127,7 +127,7 @@ namespace Server.Gumps
 			{
 				Mobile m = states[i].Mobile;
 
-				if ( m != null && (m == owner ||!m.Hidden || owner.AccessLevel > m.AccessLevel || (m is PlayerMobile && ((PlayerMobile)m).VisibilityList.Contains( owner ) ) ) )
+				if ( m != null && (m == owner || !m.Hidden || owner.AccessLevel > m.AccessLevel || (m is PlayerMobile && ((PlayerMobile)m).VisibilityList.Contains( owner ) ) ) )
 				{
 					if ( filter != null && ( m.Name == null || m.Name.ToLower().IndexOf( filter ) < 0 ) )
 						continue;

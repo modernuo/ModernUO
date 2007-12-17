@@ -101,16 +101,16 @@ namespace Server.Mobiles
 
 				Add( typeof( JesterHat ), 6 );
 				Add( typeof( FloppyHat ), 3 );
-				Add( typeof( WideBrimHat ), 13 );
+				Add( typeof( WideBrimHat ), 4 );
 				Add( typeof( Cap ), 5 );
 				Add( typeof( SkullCap ), 3 );
-				Add( typeof( Bandana ), 6 );
+				Add( typeof( Bandana ), 3 );
 				Add( typeof( TallStrawHat ), 4 );
 				Add( typeof( StrawHat ), 4 );
 				Add( typeof( WizardsHat ), 5 );
 				Add( typeof( Bonnet ), 4 );
 				Add( typeof( FeatheredHat ), 5 );
-				Add( typeof( TricorneHat ), 13 );
+				Add( typeof( TricorneHat ), 4 );
 
 				Add( typeof( SpoolOfThread ), 9 );
 

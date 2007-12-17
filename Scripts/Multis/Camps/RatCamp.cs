@@ -33,7 +33,7 @@ namespace Server.Multis
 
 			TreasureMapChest.Fill( chest, 2 );
 
-			AddItem( chest, 4, 4, 0 );
+			AddItem( chest, 4, 4, 1 );
 
 			AddMobile( new Ratman(), 15, 0, -2, 0 );
 			AddMobile( new Ratman(), 15, 0,  1, 0 );

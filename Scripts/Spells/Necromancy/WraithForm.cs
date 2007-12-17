@@ -24,11 +24,11 @@ namespace Server.Spells.Necromancy
 		public override int Body{ get{ return Caster.Female ? 747 : 748; } }
 		public override int Hue{ get{ return Caster.Female ? 0 : 0x4001; } }
 
-		public override int PhysResistOffset{ get{ return +10; } }
-		public override int FireResistOffset{ get{ return -25; } }
-		public override int ColdResistOffset{ get{ return -05; } }
-		public override int PoisResistOffset{ get{ return -05; } }
-		public override int NrgyResistOffset{ get{ return -05; } }
+		public override int PhysResistOffset{ get{ return +15; } }
+		public override int FireResistOffset{ get{ return -5; } }
+		public override int ColdResistOffset{ get{ return  0; } }
+		public override int PoisResistOffset{ get{ return  0; } }
+		public override int NrgyResistOffset{ get{ return -5; } }
 
 		public WraithFormSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

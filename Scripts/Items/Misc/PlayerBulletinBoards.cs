@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Multis;
@@ -72,11 +73,11 @@ namespace Server.Items
 	public abstract class BasePlayerBB : Item, ISecurable
 	{
 		private PlayerBBMessage m_Greeting;
-		private ArrayList m_Messages;
+		private List<PlayerBBMessage> m_Messages;
 		private string m_Title;
 		private SecureLevel m_Level;
 
-		public ArrayList Messages
+		public List<PlayerBBMessage> Messages
 		{
 			get{ return m_Messages; }
 		}
@@ -103,7 +104,7 @@ namespace Server.Items
 
 		public BasePlayerBB( int itemID ) : base( itemID )
 		{
-			m_Messages = new ArrayList();
+			m_Messages = new List<PlayerBBMessage>();
 			m_Level = SecureLevel.Anyone;
 		}
 
@@ -140,7 +141,7 @@ namespace Server.Items
 			writer.WriteEncodedInt( m_Messages.Count );
 
 			for ( int i = 0; i < m_Messages.Count; ++i )
-				((PlayerBBMessage)m_Messages[i]).Serialize( writer );
+				m_Messages[i].Serialize( writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -168,7 +169,7 @@ namespace Server.Items
 
 					int count = reader.ReadEncodedInt();
 
-					m_Messages = new ArrayList( count );
+					m_Messages = new List<PlayerBBMessage>( count );
 
 					for ( int i = 0; i < count; ++i )
 						m_Messages.Add( new PlayerBBMessage( reader ) );

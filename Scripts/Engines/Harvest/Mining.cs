@@ -110,7 +110,22 @@ namespace Server.Engines.Harvest
 			oreAndStone.Resources = res;
 			oreAndStone.Veins = veins;
 
+			if ( Core.ML )
+			{
+				oreAndStone.BonusResoucres = new BonusHarvestResource[]
+				{
+					new BonusHarvestResource( 0, 99.8998, null, null ),	//Nothing	//Note: Rounded the below to .0167 instead of 1/6th of a %.  Close enough
+					new BonusHarvestResource( 100, .0167, 1072562, typeof( BlueDiamond ) ),
+					new BonusHarvestResource( 100, .0167, 1072567, typeof( DarkSapphire ) ),
+					new BonusHarvestResource( 100, .0167, 1072570, typeof( EcruCitrine ) ),
+					new BonusHarvestResource( 100, .0167, 1072564, typeof( FireRuby ) ),
+					new BonusHarvestResource( 100, .0167, 1072566, typeof( PerfectEmerald ) ),
+					new BonusHarvestResource( 100, .0167, 1072568, typeof( Turquoise ) )
+				};
+			}
+
 			oreAndStone.RaceBonus = Core.ML;
+			oreAndStone.RandomizeVeins = Core.ML;
 
 			Definitions.Add( oreAndStone );
 			#endregion
@@ -328,6 +343,14 @@ namespace Server.Engines.Harvest
 
 			from.SendLocalizedMessage( 503033 ); // Where do you wish to dig?
 			return true;
+		}
+
+		public override void OnHarvestStarted( Mobile from, Item tool, HarvestDefinition def, object toHarvest )
+		{
+			base.OnHarvestStarted( from, tool, def, toHarvest );
+
+			if ( Core.ML )
+				from.RevealingAction();
 		}
 
 		public override void OnBadHarvestTarget( Mobile from, Item tool, object toHarvest )

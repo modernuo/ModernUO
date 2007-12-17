@@ -65,11 +65,8 @@ namespace Server.Gumps
 
 				if ( from.Backpack != null )
 					totalGold += from.Backpack.GetAmount( typeof( Gold ) );
-
-				BankBox bank = from.FindBankNoCreate();
-
-				if ( bank != null )
-					totalGold += bank.GetAmount( typeof( Gold ) );
+				
+				totalGold += Banker.GetBalance( from );
 
 				if ( totalGold < m_VI.Price )
 				{
@@ -85,9 +82,9 @@ namespace Server.Gumps
 
 					if ( from.Backpack != null )
 						leftPrice -= from.Backpack.ConsumeUpTo( typeof( Gold ), leftPrice );
-					
-					if ( leftPrice > 0 && bank != null )
-						bank.ConsumeUpTo( typeof( Gold ), leftPrice );
+
+					if ( leftPrice > 0 )
+						Banker.Withdraw( from, leftPrice );
 
 					m_Vendor.HoldGold += m_VI.Price;
 

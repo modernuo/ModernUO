@@ -14,7 +14,7 @@ namespace Server.Items
 	{
 		public static readonly TimeSpan UseDelay = TimeSpan.FromSeconds( 7.0 );
 
-		private ArrayList m_Entries;
+		private List<RunebookEntry> m_Entries;
 		private string m_Description;
 		private int m_CurCharges, m_MaxCharges;
 		private int m_DefaultIndex;
@@ -95,7 +95,7 @@ namespace Server.Items
 
 			Layer = (Core.AOS ? Layer.Invalid : Layer.OneHanded);
 
-			m_Entries = new ArrayList();
+			m_Entries = new List<RunebookEntry>();
 
 			m_MaxCharges = maxCharges;
 
@@ -109,7 +109,7 @@ namespace Server.Items
 		{
 		}
 
-		public ArrayList Entries
+		public List<RunebookEntry> Entries
 		{
 			get
 			{
@@ -122,7 +122,7 @@ namespace Server.Items
 			get
 			{
 				if ( m_DefaultIndex >= 0 && m_DefaultIndex < m_Entries.Count )
-					return (RunebookEntry)m_Entries[m_DefaultIndex];
+					return m_Entries[m_DefaultIndex];
 
 				return null;
 			}
@@ -163,7 +163,7 @@ namespace Server.Items
 			writer.Write( m_Entries.Count );
 
 			for ( int i = 0; i < m_Entries.Count; ++i )
-				((RunebookEntry)m_Entries[i]).Serialize( writer );
+				m_Entries[i].Serialize( writer );
 
 			writer.Write( m_Description );
 			writer.Write( m_CurCharges );
@@ -198,7 +198,7 @@ namespace Server.Items
 				{
 					int count = reader.ReadInt();
 
-					m_Entries = new ArrayList( count );
+					m_Entries = new List<RunebookEntry>( count );
 
 					for ( int i = 0; i < count; ++i )
 						m_Entries.Add( new RunebookEntry( reader ) );
@@ -294,29 +294,6 @@ namespace Server.Items
 			NextUse = DateTime.Now + UseDelay;
 		}
 
-        /*
-		public override Item Dupe( int amount )
-		{
-			Runebook book = new Runebook();
-
-			book.m_Level = m_Level;
-			book.m_CurCharges = m_CurCharges;
-			book.m_MaxCharges = m_MaxCharges;
-			book.m_DefaultIndex = m_DefaultIndex;
-			book.m_Description = m_Description;
-			book.m_Level = m_Level;
-			book.LootType = this.LootType;
-
-			for( int i = 0; i < m_Entries.Count; i++ )
-			{
-				RunebookEntry entry = m_Entries[i] as RunebookEntry;
-				
-				book.m_Entries.Add( new RunebookEntry( entry.Location, entry.Map, entry.Description, entry.House ) );
-			}
-
-			return base.Dupe( book, amount );
-		}*/
-
         public override void OnAfterDuped( Item newItem )
         {
             Runebook book = newItem as Runebook;
@@ -324,11 +301,11 @@ namespace Server.Items
             if ( book == null )
                 return;
 
-            book.m_Entries = new ArrayList(); //Currently, when duping, it just copies over the ref over the already made blank ArrayList
+			book.m_Entries = new List<RunebookEntry>(); //Currently, when duping, it just copies over the ref over the already made blank ArrayList
 
             for ( int i = 0; i < m_Entries.Count; i++ )
             {
-                RunebookEntry entry = m_Entries[i] as RunebookEntry;
+                RunebookEntry entry = m_Entries[i];
 
                 book.m_Entries.Add( new RunebookEntry( entry.Location, entry.Map, entry.Description, entry.House ) );
             }

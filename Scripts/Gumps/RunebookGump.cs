@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Network;
@@ -89,7 +90,7 @@ namespace Server.Gumps
 			AddHtmlLocalized( 158, 22, 100, 18, 1011299, false, false ); // Rename book
 
 			// List of entries
-			ArrayList entries = m_Book.Entries;
+			List<RunebookEntry> entries = m_Book.Entries;
 
 			for ( int i = 0; i < 16; ++i )
 			{
@@ -98,8 +99,8 @@ namespace Server.Gumps
 
 				if ( i < entries.Count )
 				{
-					desc = GetName( ((RunebookEntry)entries[i]).Description );
-					hue = GetMapHue( ((RunebookEntry)entries[i]).Map );
+					desc = GetName( entries[i].Description );
+					hue = GetMapHue( entries[i].Map );
 				}
 				else
 				{

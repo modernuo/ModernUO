@@ -568,7 +568,7 @@ namespace Server.Items
 				return false;
 
 			if ( item != this )
-				return CanLoot( from );
+				return CanLoot( from, item );
 
 			return true;
 		}
@@ -578,7 +578,7 @@ namespace Server.Items
 			if ( !base.CheckLift( from, item, ref reject ) )
 				return false;
 
-			return CanLoot( from );
+			return CanLoot( from,item );
 		}
 
 		public override void OnItemUsed( Mobile from, Item item )
@@ -664,7 +664,7 @@ namespace Server.Items
 				m_RestoreTable = null;
 		}
 
-		public bool CanLoot( Mobile from )
+		public bool CanLoot( Mobile from, Item item )
 		{
 			if ( !IsCriminalAction( from ) )
 				return true;
@@ -677,9 +677,9 @@ namespace Server.Items
 			return true;
 		}
 
-		public bool CheckLoot( Mobile from )
+		public bool CheckLoot( Mobile from, Item item )
 		{
-			if ( !CanLoot( from ) )
+			if ( !CanLoot( from, item ) )
 			{
 				if ( m_Owner == null || !m_Owner.Player )
 					from.SendLocalizedMessage( 1005035 ); // You did not earn the right to loot this creature!
@@ -786,7 +786,7 @@ namespace Server.Items
 
 				#endregion
 
-				if ( !CheckLoot( from ) )
+				if ( !CheckLoot( from, null ) )
 					return;
 
 				#region Quests

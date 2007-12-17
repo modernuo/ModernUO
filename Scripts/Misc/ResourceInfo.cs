@@ -26,7 +26,15 @@ namespace Server.Items
 		BlackScales,
 		GreenScales,
 		WhiteScales,
-		BlueScales
+		BlueScales,
+
+		RegularWood = 301,
+		OakWood,
+		AshWood,
+		YewWood,
+		Heartwood,
+		Bloodwood,
+		Frostwood
 	}
 
 	public enum CraftResourceType
@@ -34,7 +42,8 @@ namespace Server.Items
 		None,
 		Metal,
 		Leather,
-		Scales
+		Scales,
+		Wood
 	}
 
 	public class CraftAttributeInfo
@@ -95,6 +104,7 @@ namespace Server.Items
 		public static readonly CraftAttributeInfo DullCopper, ShadowIron, Copper, Bronze, Golden, Agapite, Verite, Valorite;
 		public static readonly CraftAttributeInfo Spined, Horned, Barbed;
 		public static readonly CraftAttributeInfo RedScales, YellowScales, BlackScales, GreenScales, WhiteScales, BlueScales;
+		public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
 
 		static CraftAttributeInfo()
 		{
@@ -271,6 +281,20 @@ namespace Server.Items
 
 			blue.ArmorPoisonResist = -3;
 			blue.ArmorEnergyResist = 10;
+
+			//public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
+
+			CraftAttributeInfo oak = OakWood = new CraftAttributeInfo();
+
+			CraftAttributeInfo ash = AshWood = new CraftAttributeInfo();
+
+			CraftAttributeInfo yew = YewWood = new CraftAttributeInfo();
+
+			CraftAttributeInfo heart = Heartwood = new CraftAttributeInfo();
+
+			CraftAttributeInfo blood = Bloodwood = new CraftAttributeInfo();
+
+			CraftAttributeInfo frost = Frostwood = new CraftAttributeInfo();
 		}
 	}
 
@@ -335,7 +359,7 @@ namespace Server.Items
 				new CraftResourceInfo( 0x283, 1049354, "Spined",		CraftAttributeInfo.Spined,		CraftResource.SpinedLeather,	typeof( SpinedLeather ),	typeof( SpinedHides ) ),
 				new CraftResourceInfo( 0x227, 1049355, "Horned",		CraftAttributeInfo.Horned,		CraftResource.HornedLeather,	typeof( HornedLeather ),	typeof( HornedHides ) ),
 				new CraftResourceInfo( 0x1C1, 1049356, "Barbed",		CraftAttributeInfo.Barbed,		CraftResource.BarbedLeather,	typeof( BarbedLeather ),	typeof( BarbedHides ) )
-		};
+			};
 
 		private static CraftResourceInfo[] m_AOSLeatherInfo = new CraftResourceInfo[]
 			{
@@ -343,14 +367,25 @@ namespace Server.Items
 				new CraftResourceInfo( 0x8AC, 1049354, "Spined",		CraftAttributeInfo.Spined,		CraftResource.SpinedLeather,	typeof( SpinedLeather ),	typeof( SpinedHides ) ),
 				new CraftResourceInfo( 0x845, 1049355, "Horned",		CraftAttributeInfo.Horned,		CraftResource.HornedLeather,	typeof( HornedLeather ),	typeof( HornedHides ) ),
 				new CraftResourceInfo( 0x851, 1049356, "Barbed",		CraftAttributeInfo.Barbed,		CraftResource.BarbedLeather,	typeof( BarbedLeather ),	typeof( BarbedHides ) ),
-		};
+			};
+
+		private static CraftResourceInfo[] m_WoodInfo = new CraftResourceInfo[]
+			{
+				new CraftResourceInfo( 0x000, 1011542, "Normal",		CraftAttributeInfo.Blank,		CraftResource.RegularWood,	typeof( Log ),			typeof( Board ) ),
+				new CraftResourceInfo( 0x7DA, 1072533, "Oak",			CraftAttributeInfo.OakWood,		CraftResource.OakWood,		typeof( OakLog ),		typeof( OakBoard ) ),
+				new CraftResourceInfo( 0x4A7, 1072534, "Ash",			CraftAttributeInfo.AshWood,		CraftResource.AshWood,		typeof( AshLog ),		typeof( AshBoard ) ),
+				new CraftResourceInfo( 0x4A8, 1072535, "Yew",			CraftAttributeInfo.YewWood,		CraftResource.YewWood,		typeof( YewLog ),		typeof( YewBoard ) ),
+				new CraftResourceInfo( 0x4A9, 1072536, "Heartwood",		CraftAttributeInfo.Heartwood,	CraftResource.Heartwood,	typeof( HeartwoodLog ),	typeof( HeartwoodBoard ) ),
+				new CraftResourceInfo( 0x4AA, 1072538, "Bloodwood",		CraftAttributeInfo.Bloodwood,	CraftResource.Bloodwood,	typeof( BloodwoodLog ),	typeof( BloodwoodBoard ) ),
+				new CraftResourceInfo( 0x47F, 1072539, "Frostwood",		CraftAttributeInfo.Frostwood,	CraftResource.Frostwood,	typeof( FrostwoodLog ),	typeof( FrostwoodBoard ) )
+			};
 
 		/// <summary>
-		/// Returns true if '<paramref name="resource"/>' is None, Iron, or RegularLeather. False if otherwise.
+		/// Returns true if '<paramref name="resource"/>' is None, Iron, RegularLeather or RegularWood. False if otherwise.
 		/// </summary>
 		public static bool IsStandard( CraftResource resource )
 		{
-			return ( resource == CraftResource.None || resource == CraftResource.Iron || resource == CraftResource.RegularLeather );
+			return ( resource == CraftResource.None || resource == CraftResource.Iron || resource == CraftResource.RegularLeather || resource == CraftResource.RegularWood );
 		}
 
 		private static Hashtable m_TypeTable;
@@ -394,6 +429,7 @@ namespace Server.Items
 				case CraftResourceType.Metal: list = m_MetalInfo; break;
 				case CraftResourceType.Leather: list = Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo; break;
 				case CraftResourceType.Scales: list = m_ScaleInfo; break;
+				case CraftResourceType.Wood: list = m_WoodInfo; break;
 			}
 
 			if ( list != null )
@@ -421,6 +457,9 @@ namespace Server.Items
 			if ( resource >= CraftResource.RedScales && resource <= CraftResource.BlueScales )
 				return CraftResourceType.Scales;
 
+			if ( resource >= CraftResource.RegularWood && resource <= CraftResource.Frostwood )
+				return CraftResourceType.Wood;
+
 			return CraftResourceType.None;
 		}
 
@@ -434,6 +473,7 @@ namespace Server.Items
 				case CraftResourceType.Metal: return CraftResource.Iron;
 				case CraftResourceType.Leather: return CraftResource.RegularLeather;
 				case CraftResourceType.Scales: return CraftResource.RedScales;
+				case CraftResourceType.Wood: return CraftResource.RegularWood;
 			}
 
 			return CraftResource.None;

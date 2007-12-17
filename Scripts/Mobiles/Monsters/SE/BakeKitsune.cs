@@ -164,13 +164,22 @@ namespace Server.Mobiles
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if ( version == 0 && PhysicalResistance > 60 )
+			{
+				SetResistance( ResistanceType.Physical, 40, 60 );
+				SetResistance( ResistanceType.Fire, 70, 90 );
+				SetResistance( ResistanceType.Cold, 40, 60 );
+				SetResistance( ResistanceType.Poison, 40, 60 );
+				SetResistance( ResistanceType.Energy, 40, 60 );
+			}
 		}
 	}
 }

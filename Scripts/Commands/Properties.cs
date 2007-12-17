@@ -135,7 +135,7 @@ namespace Server.Commands
 							failReason = String.Format( "Property '{0}' is write only.", propertyName );
 							return null;
 						}
-						else if ( (access & PropertyAccess.Write) != 0 && !p.CanWrite && isFinal )
+						else if ( (access & PropertyAccess.Write) != 0 && (!p.CanWrite || attr.ReadOnly) && isFinal )
 						{
 							failReason = String.Format( "Property '{0}' is read only.", propertyName );
 							return null;
@@ -718,7 +718,7 @@ namespace Server
 				if ( ( access & PropertyAccess.Read ) != 0 && from.AccessLevel < security.ReadLevel )
 					throw new ReadAccessException( this, from.AccessLevel, security.ReadLevel );
 
-				if ( ( access & PropertyAccess.Write ) != 0 && from.AccessLevel < security.WriteLevel )
+				if ( ( access & PropertyAccess.Write ) != 0 && (from.AccessLevel < security.WriteLevel || security.ReadOnly) )
 					throw new WriteAccessException( this, from.AccessLevel, security.ReadLevel );
 			}
 

@@ -22,7 +22,9 @@ namespace Server.Engines.Harvest
 		private object m_NoResourcesMessage, m_OutOfRangeMessage, m_TimedOutOfRangeMessage, m_DoubleHarvestMessage, m_FailMessage, m_PackFullMessage, m_ToolBrokeMessage;
 		private HarvestResource[] m_Resources;
 		private HarvestVein[] m_Veins;
+		private BonusHarvestResource[] m_BonusResources;
 		private bool m_RaceBonus;
+		private bool m_RandomizeVeins;
 
 		public int BankWidth{ get{ return m_BankWidth; } set{ m_BankWidth = value; } }
 		public int BankHeight{ get{ return m_BankHeight; } set{ m_BankHeight = value; } }
@@ -51,7 +53,9 @@ namespace Server.Engines.Harvest
 		public object ToolBrokeMessage{ get{ return m_ToolBrokeMessage; } set{ m_ToolBrokeMessage = value; } }
 		public HarvestResource[] Resources{ get{ return m_Resources; } set{ m_Resources = value; } }
 		public HarvestVein[] Veins{ get{ return m_Veins; } set{ m_Veins = value; } }
+		public BonusHarvestResource[] BonusResources{ get { return m_BonusResources; } set { m_BonusResources = value; } }
 		public bool RaceBonus { get { return m_RaceBonus; } set { m_RaceBonus = value; } }
+		public bool RandomizeVeins { get { return m_RandomizeVeins; } set { m_RandomizeVeins = value; } }
 
 		private Dictionary<Map, Dictionary<Point2D, HarvestBank>> m_BanksByMap;
 
@@ -94,8 +98,27 @@ namespace Server.Engines.Harvest
 			if ( m_Veins.Length == 1 )
 				return m_Veins[0];
 
-			Random random = new Random( (x*17)+(y*11)+(map.MapID * 3) );
-			double randomValue = random.NextDouble() * 100;
+			double randomValue;
+
+			if ( m_RandomizeVeins )
+			{
+				randomValue = Utility.RandomDouble();
+			}
+			else
+			{
+				Random random = new Random( ( x * 17 ) + ( y * 11 ) + ( map.MapID * 3 ) );
+				randomValue = random.NextDouble();
+			}
+
+			return GetVeinFrom( randomValue );
+		}
+
+		public HarvestVein GetVeinFrom( double randomValue )
+		{
+			if ( m_Veins.Length == 1 )
+				return m_Veins[0];
+
+			randomValue *= 100;
 
 			for ( int i = 0; i < m_Veins.Length; ++i )
 			{
@@ -103,6 +126,24 @@ namespace Server.Engines.Harvest
 					return m_Veins[i];
 
 				randomValue -= m_Veins[i].VeinChance;
+			}
+
+			return null;
+		}
+
+		public BonusHarvestResource GetBonusResource()
+		{
+			if ( m_BonusResources == null )
+				return null;
+
+			double randomValue = Utility.RandomDouble() * 100;
+
+			for ( int i = 0; i < m_BonusResources.Length; ++i )
+			{
+				if ( randomValue <= m_BonusResources[i].Chance )
+					return m_BonusResources[i];
+
+				randomValue -= m_BonusResources[i].Chance;
 			}
 
 			return null;

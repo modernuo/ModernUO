@@ -227,6 +227,9 @@ namespace Server.Items
 
 						if ( darts.PoisonCharges <= 0 )
 							darts.Poison = null;
+
+						m_UsesRemaining += need;
+						darts.UsesRemaining -= need;
 					}
 					else
 					{

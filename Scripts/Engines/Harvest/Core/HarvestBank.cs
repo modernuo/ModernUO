@@ -9,6 +9,13 @@ namespace Server.Engines.Harvest
 		private DateTime m_NextRespawn;
 		private HarvestVein m_Vein, m_DefaultVein;
 
+		HarvestDefinition m_Definition;
+
+		public HarvestDefinition Definition
+		{
+			get { return m_Definition; }
+		}
+
 		public int Current
 		{
 			get
@@ -46,23 +53,31 @@ namespace Server.Engines.Harvest
 				return;
 
 			m_Current = m_Maximum;
-			m_Vein = m_DefaultVein;
+
+			if ( m_Definition.RandomizeVeins )
+			{
+				m_Vein = m_Definition.GetVeinFrom( Utility.RandomDouble() );
+			}
+			else
+			{
+				m_Vein = m_DefaultVein;
+			}
 		}
 
-		public void Consume( HarvestDefinition def, int amount, Mobile from )
+		public void Consume( int amount, Mobile from )
 		{
 			CheckRespawn();
 
 			if ( m_Current == m_Maximum )
 			{
-				double min = def.MinRespawn.TotalMinutes;
-				double max = def.MaxRespawn.TotalMinutes;
+				double min = m_Definition.MinRespawn.TotalMinutes;
+				double max = m_Definition.MaxRespawn.TotalMinutes;
 				double rnd = Utility.RandomDouble();
 
 				m_Current = m_Maximum - amount;
 
 				double minutes = min + (rnd * (max - min));
-				if( def.RaceBonus && from.Race == Race.Elf )	//def.RaceBonus = Core.ML
+				if ( m_Definition.RaceBonus && from.Race == Race.Elf )	//def.RaceBonus = Core.ML
 					minutes *= .75;	//25% off the time.  
 
 				m_NextRespawn = DateTime.Now + TimeSpan.FromMinutes( minutes );
@@ -82,6 +97,8 @@ namespace Server.Engines.Harvest
 			m_Current = m_Maximum;
 			m_DefaultVein = defaultVein;
 			m_Vein = m_DefaultVein;
+
+			m_Definition = def;
 		}
 	}
 }

@@ -62,7 +62,7 @@ namespace Server.Engines.Harvest
 			// The chopping effect
 			lumber.EffectActions = new int[]{ 13 };
 			lumber.EffectSounds = new int[]{ 0x13E };
-			lumber.EffectCounts = new int[]{ 1, 2, 2, 2, 3 };
+			lumber.EffectCounts = (Core.AOS ? new int[]{ 1 } : new int[]{ 1, 2, 2, 2, 3 });
 			lumber.EffectDelay = TimeSpan.FromSeconds( 1.6 );
 			lumber.EffectSoundDelay = TimeSpan.FromSeconds( 0.9 );
 
@@ -72,20 +72,59 @@ namespace Server.Engines.Harvest
 			lumber.PackFullMessage = 500497; // You can't place any wood into your backpack!
 			lumber.ToolBrokeMessage = 500499; // You broke your axe.
 
-			res = new HarvestResource[]
+			if ( Core.ML )
+			{
+				res = new HarvestResource[]
+				{
+					new HarvestResource(  00.0, 00.0, 100.0, 1072540, typeof( Log ) ),
+					new HarvestResource(  65.0, 25.0, 105.0, 1072541, typeof( OakLog ) ),
+					new HarvestResource(  80.0, 40.0, 120.0, 1072542, typeof( AshLog ) ),
+					new HarvestResource(  95.0, 55.0, 135.0, 1072543, typeof( YewLog ) ),
+					new HarvestResource( 100.0, 60.0, 140.0, 1072544, typeof( HeartwoodLog ) ),
+					new HarvestResource( 100.0, 60.0, 140.0, 1072545, typeof( BloodwoodLog ) ),
+					new HarvestResource( 100.0, 60.0, 140.0, 1072546, typeof( FrostwoodLog ) ),
+				};
+
+
+				veins = new HarvestVein[]
+				{
+					new HarvestVein( 58.4, 0.0, res[0], null ),	// Ordinary Logs
+					new HarvestVein( 30.0, 0.5, res[1], res[0] ), // Oak
+					new HarvestVein( 10.0, 0.5, res[2], res[0] ), // Ash
+					new HarvestVein( 01.0, 0.5, res[3], res[0] ), // Yew
+					new HarvestVein( 00.3, 0.5, res[4], res[0] ), // Heartwood
+					new HarvestVein( 00.2, 0.5, res[5], res[0] ), // Bloodwood
+					new HarvestVein( 00.1, 0.5, res[6], res[0] ), // Frostwood
+				};
+
+				lumber.BonusResoucres = new BonusHarvestResource[]
+				{
+					new BonusHarvestResource( 0, 83.9, null, null ),	//Nothing
+					new BonusHarvestResource( 100, 10.0, 1072548, typeof( BarkFragment ) ),
+					new BonusHarvestResource( 100, 03.0, 1072550, typeof( LuminescentFungi ) ),
+					new BonusHarvestResource( 100, 02.0, 1072547, typeof( SwitchItem ) ),
+					new BonusHarvestResource( 100, 01.0, 1072549, typeof( ParasiticPlant ) ),
+					new BonusHarvestResource( 100, 00.1, 1072551, typeof( BrilliantAmber ) )
+				};
+			}
+			else
+			{
+				res = new HarvestResource[]
 				{
 					new HarvestResource( 00.0, 00.0, 100.0, 500498, typeof( Log ) )
 				};
 
-			veins = new HarvestVein[]
+				veins = new HarvestVein[]
 				{
 					new HarvestVein( 100.0, 0.0, res[0], null )
 				};
+			}
 
 			lumber.Resources = res;
 			lumber.Veins = veins;
 
 			lumber.RaceBonus = Core.ML;
+			lumber.RandomizeVeins = Core.ML;
 
 			m_Definition = lumber;
 			Definitions.Add( lumber );
@@ -123,6 +162,14 @@ namespace Server.Engines.Harvest
 		public override void OnBadHarvestTarget( Mobile from, Item tool, object toHarvest )
 		{
 			from.SendLocalizedMessage( 500489 ); // You can't use an axe on that.
+		}
+
+		public override void OnHarvestStarted( Mobile from, Item tool, HarvestDefinition def, object toHarvest )
+		{
+			base.OnHarvestStarted( from, tool, def, toHarvest );
+			
+			if( Core.ML )
+				from.RevealingAction();
 		}
 
 		public static void Initialize()

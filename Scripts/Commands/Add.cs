@@ -143,7 +143,7 @@ namespace Server.Commands
 							from.SendMessage( "Property ({0}) not found.", propName );
 						else if ( from.AccessLevel < attr.WriteLevel )
 							from.SendMessage( "Setting this property ({0}) requires at least {1} access level.", propName, Mobile.GetAccessLevelName( attr.WriteLevel ) );
-						else if ( !thisProp.CanWrite )
+						else if ( !thisProp.CanWrite || attr.ReadOnly )
 							from.SendMessage( "Property ({0}) is read only.", propName );
 						else
 							realProps[i] = thisProp;
