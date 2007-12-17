@@ -97,7 +97,7 @@ namespace Server.Engines.Harvest
 					new HarvestVein( 00.1, 0.5, res[6], res[0] ), // Frostwood
 				};
 
-				lumber.BonusResoucres = new BonusHarvestResource[]
+				lumber.BonusResources = new BonusHarvestResource[]
 				{
 					new BonusHarvestResource( 0, 83.9, null, null ),	//Nothing
 					new BonusHarvestResource( 100, 10.0, 1072548, typeof( BarkFragment ) ),

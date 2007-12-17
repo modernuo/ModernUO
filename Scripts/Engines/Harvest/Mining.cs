@@ -112,7 +112,7 @@ namespace Server.Engines.Harvest
 
 			if ( Core.ML )
 			{
-				oreAndStone.BonusResoucres = new BonusHarvestResource[]
+				oreAndStone.BonusResources = new BonusHarvestResource[]
 				{
 					new BonusHarvestResource( 0, 99.8998, null, null ),	//Nothing	//Note: Rounded the below to .0167 instead of 1/6th of a %.  Close enough
 					new BonusHarvestResource( 100, .0167, 1072562, typeof( BlueDiamond ) ),
