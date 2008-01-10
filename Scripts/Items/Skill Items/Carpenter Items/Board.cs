@@ -116,7 +116,7 @@ namespace Server.Items
 
 		[Constructable]
 		public HeartwoodBoard( int amount )
-			: base( CraftResource.Heartwood )
+			: base( CraftResource.Heartwood, amount )
 		{
 		}
 
@@ -150,7 +150,7 @@ namespace Server.Items
 
 		[Constructable]
 		public BloodwoodBoard( int amount )
-			: base( CraftResource.Bloodwood )
+			: base( CraftResource.Bloodwood, amount )
 		{
 		}
 
@@ -184,7 +184,7 @@ namespace Server.Items
 
 		[Constructable]
 		public FrostwoodBoard( int amount )
-			: base( CraftResource.Frostwood )
+			: base( CraftResource.Frostwood, amount )
 		{
 		}
 
@@ -218,7 +218,7 @@ namespace Server.Items
 
 		[Constructable]
 		public OakBoard( int amount )
-			: base( CraftResource.OakWood )
+			: base( CraftResource.OakWood, amount )
 		{
 		}
 
@@ -252,7 +252,7 @@ namespace Server.Items
 
 		[Constructable]
 		public AshBoard( int amount )
-			: base( CraftResource.AshWood )
+			: base( CraftResource.AshWood, amount )
 		{
 		}
 
@@ -286,7 +286,7 @@ namespace Server.Items
 
 		[Constructable]
 		public YewBoard( int amount )
-			: base( CraftResource.YewWood )
+			: base( CraftResource.YewWood, amount )
 		{
 		}
 
