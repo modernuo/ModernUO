@@ -35,7 +35,7 @@ namespace Server.Misc
 
 		public static bool Validate( string name, int minLength, int maxLength, bool allowLetters, bool allowDigits, bool noExceptionsAtStart, int maxExceptions, char[] exceptions, string[] disallowed, string[] startDisallowed )
 		{
-			if ( name.Length < minLength || name.Length > maxLength )
+			if ( name == null || name.Length < minLength || name.Length > maxLength )
 				return false;
 
 			int exceptCount = 0;
