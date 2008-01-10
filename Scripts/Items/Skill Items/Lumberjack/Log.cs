@@ -107,7 +107,7 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public HeartwoodLog( int amount ) : base( CraftResource.Heartwood )
+		public HeartwoodLog( int amount ) : base( CraftResource.Heartwood, amount )
 		{
 		}
 		
@@ -140,7 +140,7 @@ namespace Server.Items
 
 		[Constructable]
 		public BloodwoodLog( int amount )
-			: base( CraftResource.Bloodwood )
+			: base( CraftResource.Bloodwood, amount )
 		{
 		}
 
@@ -174,7 +174,7 @@ namespace Server.Items
 
 		[Constructable]
 		public FrostwoodLog( int amount )
-			: base( CraftResource.Frostwood )
+			: base( CraftResource.Frostwood, amount )
 		{
 		}
 
@@ -208,7 +208,7 @@ namespace Server.Items
 
 		[Constructable]
 		public OakLog( int amount )
-			: base( CraftResource.OakWood )
+			: base( CraftResource.OakWood, amount )
 		{
 		}
 
@@ -242,7 +242,7 @@ namespace Server.Items
 
 		[Constructable]
 		public AshLog( int amount )
-			: base( CraftResource.AshWood )
+			: base( CraftResource.AshWood, amount )
 		{
 		}
 
@@ -276,7 +276,7 @@ namespace Server.Items
 
 		[Constructable]
 		public YewLog( int amount )
-			: base( CraftResource.YewWood )
+			: base( CraftResource.YewWood, amount )
 		{
 		}
 
