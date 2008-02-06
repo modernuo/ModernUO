@@ -340,7 +340,7 @@ namespace Server.SkillHandlers
 
 						foreach ( NetState ns in m_Thief.GetClientsInRange( 8 ) )
 						{
-							if ( ns != m_Thief.NetState )
+							if ( ns.Mobile != m_Thief )
 								ns.Mobile.SendMessage( message );
 						}
 					}

@@ -71,7 +71,7 @@ namespace Server.SkillHandlers
 
 						foreach ( NetState ns in eable )
 						{
-							if ( ns != from.NetState )
+							if ( ns.Mobile != from )
 								ns.Mobile.SendMessage( message );
 						}
 
