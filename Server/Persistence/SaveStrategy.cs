@@ -34,7 +34,7 @@ namespace Server {
 			if ( Core.MultiProcessor ) {
 				int processorCount = Core.ProcessorCount;
 
-				if ( processorCount > 8 ) {
+				if ( processorCount > 16 ) {
 					return new ParallelSaveStrategy( processorCount );
 				} else {
 					return new DualSaveStrategy();
