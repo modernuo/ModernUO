@@ -51,6 +51,7 @@ namespace Server
 		private static bool m_Debug;
 		private static bool m_Cache = true;
 		private static bool m_HaltOnWarning;
+		private static bool m_VBdotNET;
 		private static MultiTextWriter m_MultiConOut;
 
 		private static bool m_Profiling;
@@ -98,6 +99,7 @@ namespace Server
 		public static bool Service { get { return m_Service; } }
 		public static bool Debug { get { return m_Debug; } }
 		internal static bool HaltOnWarning { get { return m_HaltOnWarning; } }
+		internal static bool VBdotNet { get { return m_VBdotNET; } }
 		public static List<string> DataDirectories { get { return m_DataDirectories; } }
 		public static Assembly Assembly { get { return m_Assembly; } set { m_Assembly = value; } }
 		public static Process Process { get { return m_Process; } }
@@ -363,17 +365,18 @@ namespace Server
 
 			for( int i = 0; i < args.Length; ++i )
 			{
-				if( Insensitive.Equals( args[i], "-debug" ) )
+				if ( Insensitive.Equals( args[i], "-debug" ) )
 					m_Debug = true;
-				else if( Insensitive.Equals( args[i], "-service" ) )
+				else if ( Insensitive.Equals( args[i], "-service" ) )
 					m_Service = true;
-				else if( Insensitive.Equals( args[i], "-profile" ) )
+				else if ( Insensitive.Equals( args[i], "-profile" ) )
 					Profiling = true;
-				else if( Insensitive.Equals( args[i], "-nocache" ) )
+				else if ( Insensitive.Equals( args[i], "-nocache" ) )
 					m_Cache = false;
-				else if( Insensitive.Equals( args[i], "-haltonwarning" ) )
+				else if ( Insensitive.Equals( args[i], "-haltonwarning" ) )
 					m_HaltOnWarning = true;
-
+				else if ( Insensitive.Equals( args[i], "-vb" ) )
+					m_VBdotNET = true;
 			}
 
 			try
@@ -517,6 +520,9 @@ namespace Server
 
 				if( m_HaltOnWarning )
 					Utility.Separate( sb, "-haltonwarning", " " );
+
+				if ( m_VBdotNET )
+					Utility.Separate( sb, "-vb", " " );
 
 				return sb.ToString();
 			}

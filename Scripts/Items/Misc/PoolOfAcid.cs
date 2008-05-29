@@ -3,6 +3,7 @@ using Server;
 using Server.Mobiles;
 using Server.Spells;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -115,7 +116,7 @@ namespace Server.Items
 				if( !Drying && age > (m_Duration - age) )
 					Drying = true;
 
-				ArrayList toDamage = new ArrayList();
+				List<Mobile> toDamage = new List<Mobile>();
 
 				foreach( Mobile m in GetMobilesInRange( 0 ) )
 				{
@@ -128,7 +129,7 @@ namespace Server.Items
 				}
 
 				for( int i = 0; i < toDamage.Count; i++ )
-					Damage( (Mobile)toDamage[i] );
+					Damage( toDamage[i] );
 
 			}
 		}

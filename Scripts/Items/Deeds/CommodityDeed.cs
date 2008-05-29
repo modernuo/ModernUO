@@ -7,6 +7,7 @@ namespace Server.Items
 	public interface ICommodity
 	{
 		string Description{ get; }
+		int DescriptionNumber{ get; }
 	}
 
 	public class CommodityDeed : Item
@@ -100,7 +101,7 @@ namespace Server.Items
 			base.GetProperties( list );
 
 			if ( m_Commodity != null )
-				list.Add( 1060658, "#{0}\t{1}", m_Commodity.LabelNumber, m_Commodity.Amount ); // ~1_val~: ~2_val~
+				list.Add( 1060658, "#{0}\t{1}", ((ICommodity)m_Commodity).DescriptionNumber, m_Commodity.Amount ); // ~1_val~: ~2_val~
 		}
 
 		public override void OnSingleClick( Mobile from )

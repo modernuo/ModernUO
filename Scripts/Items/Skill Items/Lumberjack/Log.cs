@@ -23,6 +23,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return CraftResources.IsStandard( m_Resource ) ? LabelNumber : 1075062 + ( (int)m_Resource - (int)CraftResource.RegularWood ); } }
+
 		[Constructable]
 		public Log() : this( 1 )
 		{
@@ -107,7 +109,8 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public HeartwoodLog( int amount ) : base( CraftResource.Heartwood, amount )
+		public HeartwoodLog( int amount ) 
+			: base( CraftResource.Heartwood, amount )
 		{
 		}
 		

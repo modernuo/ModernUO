@@ -22,6 +22,24 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber 
+		{ 
+			get
+			{
+				if ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.YewWood )
+					return 1075052 + ( (int)m_Resource - (int)CraftResource.OakWood );
+
+				switch ( m_Resource )
+				{
+					case CraftResource.Bloodwood: return 1075055;
+					case CraftResource.Frostwood: return 1075056;
+					case CraftResource.Heartwood: return 1075062;	//WHY Osi.  Why?
+				}
+
+				return LabelNumber;
+			} 
+		}
+
 		[Constructable]
 		public Board()
 			: this( 1 )
@@ -49,7 +67,6 @@ namespace Server.Items
 			: base( 0x1BD7 )
 		{
 			Stackable = true;
-			Weight = 2.0;
 			Amount = amount;
 
 			m_Resource = resource;
@@ -77,7 +94,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 );
+			writer.Write( (int) 3 );
 
 			writer.Write( (int)m_Resource );
 		}
@@ -90,6 +107,7 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
 				case 2:
 					{
 						m_Resource = (CraftResource)reader.ReadInt();
@@ -97,7 +115,7 @@ namespace Server.Items
 					}
 			}
 
-			if ( version == 0 && Weight == 0.1 )
+			if ( (version == 0 && Weight == 0.1) || ( version <= 2 && Weight == 2 ) )
 				Weight = -1;
 
 			if ( version <= 1 )

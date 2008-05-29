@@ -5,6 +5,7 @@ using System.Xml;
 using Server;
 using Server.Mobiles;
 using Server.Items;
+using System.Collections.Generic;
 
 namespace Server.Regions
 {
@@ -327,7 +328,7 @@ namespace Server.Regions
 					if ( !Region.ReadString( xmlDef, "name", ref name ) )
 						continue;
 
-					ArrayList list = new ArrayList();
+					List<SpawnGroupElement> list = new List<SpawnGroupElement>();
 					foreach ( XmlNode node in xmlDef.ChildNodes )
 					{
 						XmlElement el = node as XmlElement;
@@ -346,7 +347,7 @@ namespace Server.Regions
 						}
 					}
 
-					SpawnGroupElement[] elements = (SpawnGroupElement[]) list.ToArray( typeof( SpawnGroupElement ) );
+					SpawnGroupElement[] elements = list.ToArray();
 					SpawnGroup group = new SpawnGroup( name, elements );
 					Register( group );
 				}

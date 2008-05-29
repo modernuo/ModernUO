@@ -398,6 +398,9 @@ namespace Server.Mobiles
 
 		public override int GetMaxResistance( ResistanceType type )
 		{
+			if ( AccessLevel > AccessLevel.Player )
+				return int.MaxValue;
+
 			int max = base.GetMaxResistance( type );
 
 			if ( type != ResistanceType.Physical && 60 < max && Spells.Fourth.CurseSpell.UnderEffect( this ) )

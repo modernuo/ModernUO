@@ -140,7 +140,7 @@ namespace Server.Items
 			Mobile from = e.Mobile;
 			string speech = e.Speech;
 
-			foreach ( ReceiverCrystal receiver in new ArrayList( Receivers ) )
+			foreach ( ReceiverCrystal receiver in new List<ReceiverCrystal>( Receivers ) )
 			{
 				if ( receiver.Deleted )
 				{

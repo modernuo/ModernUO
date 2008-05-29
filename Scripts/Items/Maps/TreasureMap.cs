@@ -79,8 +79,8 @@ namespace Server.Items
 		{
 			string filePath = Path.Combine( Core.BaseDirectory, "Data/treasure.cfg" );
 
-			ArrayList list = new ArrayList();
-			ArrayList havenList = new ArrayList();
+			List<Point2D> list = new List<Point2D>();
+			List<Point2D> havenList = new List<Point2D>();
 
 			if ( File.Exists( filePath ) )
 			{
@@ -109,8 +109,8 @@ namespace Server.Items
 				}
 			}
 
-			m_Locations = (Point2D[])list.ToArray( typeof( Point2D ) );
-			m_HavenLocations = (Point2D[])havenList.ToArray( typeof( Point2D ) );
+			m_Locations = list.ToArray();
+			m_HavenLocations = havenList.ToArray();
 		}
 
 		public static bool IsInHavenIsland( IPoint2D loc )

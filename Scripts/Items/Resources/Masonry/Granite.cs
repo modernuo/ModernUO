@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public abstract class BaseGranite : Item, ICommodity
+	public abstract class BaseGranite : Item
 	{
 		private CraftResource m_Resource;
 
@@ -13,14 +13,6 @@ namespace Server.Items
 		{
 			get{ return m_Resource; }
 			set{ m_Resource = value; InvalidateProperties(); }
-		}
-		
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} {1} high quality granite", Amount, CraftResources.GetName( m_Resource ).ToLower() );
-			}
 		}
 
 		public override void Serialize( GenericWriter writer )

@@ -14,6 +14,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+
 		[Constructable]
 		public SpidersSilk() : this( 1 )
 		{

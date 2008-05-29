@@ -14,6 +14,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+
 		[Constructable]
 		public BatWing() : this( 1 )
 		{

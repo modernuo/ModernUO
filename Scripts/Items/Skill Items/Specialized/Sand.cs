@@ -14,6 +14,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+
 		public override int LabelNumber{ get{ return 1044626; } } // sand
 
 		[Constructable]

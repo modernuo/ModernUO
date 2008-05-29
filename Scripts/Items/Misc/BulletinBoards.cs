@@ -371,7 +371,7 @@ namespace Server.Items
 			m_PostedHue = m_Poster.Hue;
 			m_Lines = lines;
 
-			ArrayList list = new ArrayList();
+			List<BulletinEquip> list = new List<BulletinEquip>();
 
 			for ( int i = 0; i < poster.Items.Count; ++i )
 			{
@@ -381,7 +381,7 @@ namespace Server.Items
 					list.Add( new BulletinEquip( item.ItemID, item.Hue ) );
 			}
 
-			m_PostedEquip = (BulletinEquip[])list.ToArray( typeof( BulletinEquip ) );
+			m_PostedEquip = list.ToArray();
 		}
 
 		public Mobile Poster{ get{ return m_Poster; } }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using Server;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
 	public class EffectItem : Item
 	{
-		private static ArrayList m_Free = new ArrayList(); // List of available EffectItems
+		private static List<EffectItem> m_Free = new List<EffectItem>(); // List of available EffectItems
 
 		public static readonly TimeSpan DefaultDuration = TimeSpan.FromSeconds( 5.0 );
 
@@ -16,7 +17,7 @@ namespace Server.Items
 
 			for ( int i = m_Free.Count - 1; item == null && i >= 0; --i ) // We reuse new entries first so decay works better
 			{
-				EffectItem free = (EffectItem)m_Free[i];
+				EffectItem free = m_Free[i];
 
 				m_Free.RemoveAt( i );
 
@@ -75,9 +76,9 @@ namespace Server.Items
 
 		private class FreeTimer : Timer
 		{
-			private Item m_Item;
+			private EffectItem m_Item;
 
-			public FreeTimer( Item item, TimeSpan delay ) : base( delay )
+			public FreeTimer( EffectItem item, TimeSpan delay ) : base( delay )
 			{
 				m_Item = item;
 				Priority = TimerPriority.OneSecond;

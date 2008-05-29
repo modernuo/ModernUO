@@ -15,6 +15,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+
 		[Constructable]
 		public BoltOfCloth() : this( 1 )
 		{

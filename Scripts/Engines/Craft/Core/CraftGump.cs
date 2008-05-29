@@ -188,14 +188,14 @@ namespace Server.Engines.Craft
 			CreateGroupList();
 
 			if ( page == CraftPage.PickResource )
-				CreateResList( false );
+				CreateResList( false, from );
 			else if ( page == CraftPage.PickResource2 )
-				CreateResList( true );
+				CreateResList( true, from );
 			else if ( context != null && context.LastGroupIndex > -1 )
 				CreateItemList( context.LastGroupIndex );
 		}
 
-		public void CreateResList( bool opt )
+		public void CreateResList( bool opt, Mobile from )
 		{
 			CraftSubResCol res = ( opt ? m_CraftSystem.CraftSubRes2 : m_CraftSystem.CraftSubRes );
 
@@ -221,12 +221,22 @@ namespace Server.Engines.Craft
 					AddHtmlLocalized( 255, 263, 200, 18, (context == null || !context.DoNotColor) ? 1061591 : 1061590, LabelColor, false, false );
 				}
 
+				int resourceCount = 0;
+
+				if ( from.Backpack != null )
+				{
+					Item[] items = from.Backpack.FindItemsByType( subResource.ItemType, true );
+
+					for ( int j = 0; j < items.Length; ++j )
+						resourceCount += items[j].Amount;
+				}
+
 				AddButton( 220, 60 + (index * 20), 4005, 4007, GetButtonID( 5, i ), GumpButtonType.Reply, 0 );
 
 				if ( subResource.NameNumber > 0 )
-					AddHtmlLocalized( 255, 63 + (index * 20), 250, 18, subResource.NameNumber, LabelColor, false, false );
+					AddHtmlLocalized( 255, 63 + (index * 20), 250, 18, subResource.NameNumber, resourceCount.ToString(), LabelColor, false, false );
 				else
-					AddLabel( 255, 60 + (index * 20), LabelHue, subResource.NameString );
+					AddLabel( 255, 60 + ( index * 20 ), LabelHue, String.Format( "{0} ({1})", subResource.NameString, resourceCount ) );
 			}
 		}
 
@@ -237,7 +247,7 @@ namespace Server.Engines.Craft
 			if ( context == null )
 				return;
 
-			ArrayList items = context.Items;
+			List<CraftItem> items = context.Items;
 
 			if ( items.Count > 0 )
 			{
@@ -245,7 +255,7 @@ namespace Server.Engines.Craft
 				{
 					int index = i % 10;
 
-					CraftItem craftItem = (CraftItem)items[i];
+					CraftItem craftItem = items[i];
 
 					if ( index == 0 )
 					{
@@ -449,10 +459,10 @@ namespace Server.Engines.Craft
 					if ( context == null )
 						break;
 
-					ArrayList lastTen = context.Items;
+					List<CraftItem> lastTen = context.Items;
 
 					if ( index >= 0 && index < lastTen.Count )
-						CraftItem( (CraftItem)lastTen[index] );
+						CraftItem( lastTen[index] );
 
 					break;
 				}
@@ -461,10 +471,10 @@ namespace Server.Engines.Craft
 					if ( context == null )
 						break;
 
-					ArrayList lastTen = context.Items;
+					List<CraftItem> lastTen = context.Items;
 
 					if ( index >= 0 && index < lastTen.Count )
-						m_From.SendGump( new CraftGumpItem( m_From, system, (CraftItem)lastTen[index], m_Tool ) );
+						m_From.SendGump( new CraftGumpItem( m_From, system, lastTen[index], m_Tool ) );
 
 					break;
 				}

@@ -30,6 +30,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

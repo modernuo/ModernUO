@@ -25,6 +25,8 @@ namespace Server.Items
 			}
 		}
 
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+
 		public abstract BaseIngot GetIngot();
 
 		public override void Serialize( GenericWriter writer )

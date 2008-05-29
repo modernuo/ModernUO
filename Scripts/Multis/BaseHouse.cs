@@ -1598,10 +1598,14 @@ namespace Server.Multis
 
 			public override void OnSecureTrade( Mobile from, Mobile to, Mobile newOwner, bool accepted )
 			{
-				if ( Deleted || m_House == null || m_House.Deleted || !m_House.IsOwner( from ) || !from.CheckAlive() || !to.CheckAlive() )
+				if ( Deleted )
 					return;
 
 				Delete();
+
+				if ( m_House == null || m_House.Deleted || !m_House.IsOwner( from ) || !from.CheckAlive() || !to.CheckAlive() )
+					return;
+				
 
 				if ( !accepted )
 					return;

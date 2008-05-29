@@ -709,7 +709,7 @@ namespace Server.Mobiles
 
 		private class WarnTimer : Timer
 		{
-			private ArrayList m_List;
+			private List<WarnEntry> m_List;
 
 			private class WarnEntry
 			{
@@ -727,7 +727,7 @@ namespace Server.Mobiles
 
 			public WarnTimer() : base( TimeSpan.FromSeconds( 1.0 ) )
 			{
-				m_List = new ArrayList();
+				m_List = new List<WarnEntry>();
 				Start();
 			}
 
