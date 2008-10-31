@@ -48,8 +48,8 @@ namespace Server.Factions
 						{
 							pl.Leaving = DateTime.Now;
 
-							if ( Faction.LeavePeriod == TimeSpan.FromDays( 7.0 ) )
-								m_From.SendLocalizedMessage( 1005065 ); // You will be removed from the faction in 7 days
+							if ( Faction.LeavePeriod == TimeSpan.FromDays( 3.0 ) )
+								m_From.SendLocalizedMessage( 1005065 ); // You will be removed from the faction in 3 days
 							else
 								m_From.SendMessage( "You will be removed from the faction in {0} days.", Faction.LeavePeriod.TotalDays );
 						}
@@ -71,8 +71,8 @@ namespace Server.Factions
 							{
 								pl.Leaving = DateTime.Now;
 
-								if ( Faction.LeavePeriod == TimeSpan.FromDays( 7.0 ) )
-									mob.SendLocalizedMessage( 1005060 ); // Your guild will quit the faction in 7 days
+								if ( Faction.LeavePeriod == TimeSpan.FromDays( 3.0 ) )
+									mob.SendLocalizedMessage( 1005060 ); // Your guild will quit the faction in 3 days
 								else
 									mob.SendMessage( "Your guild will quit the faction in {0} days.", Faction.LeavePeriod.TotalDays );
 							}

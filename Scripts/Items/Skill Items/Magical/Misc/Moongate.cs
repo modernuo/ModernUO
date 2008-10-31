@@ -136,7 +136,8 @@ namespace Server.Items
 
 				m.MoveToWorld( m_Target, m_TargetMap );
 
-				m.PlaySound( 0x1FE );
+				if ( m.AccessLevel == AccessLevel.Player || !m.Hidden )
+					m.PlaySound( 0x1FE );
 
 				OnGateUsed( m );
 			}
@@ -192,7 +193,8 @@ namespace Server.Items
 		{
 			if ( IsInTown( from.Location, from.Map ) && !IsInTown( m_Target, m_TargetMap ) || (from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning) )
 			{
-				from.Send( new PlaySound( 0x20E, from.Location ) );
+				if ( from.AccessLevel == AccessLevel.Player || !from.Hidden )
+					from.Send( new PlaySound( 0x20E, from.Location ) );
 				from.CloseGump( typeof( MoongateConfirmGump ) );
 				from.SendGump( new MoongateConfirmGump( from, this ) );
 			}

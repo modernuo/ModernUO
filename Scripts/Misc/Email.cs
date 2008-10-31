@@ -1,5 +1,6 @@
 using System;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Server;
 
@@ -24,6 +25,16 @@ namespace Server.Misc
 
 		public static readonly string CrashAddresses = null;
 		public static readonly string SpeechLogPageAddresses = null;
+
+		private static Regex _pattern = new Regex( @"^[a-z0-9.+_-]+@([a-z0-9-]+.)+[a-z]+$", RegexOptions.IgnoreCase );
+
+		public static bool IsValid( string address )
+		{
+			if ( address == null || address.Length > 320 )
+				return false;
+
+			return _pattern.IsMatch( address );
+		}
 
 		public static SmtpClient Client;
 
