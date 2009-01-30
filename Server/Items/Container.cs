@@ -100,7 +100,7 @@ namespace Server.Items
 		public int MaxItems
 		{
 			get{ return ( m_MaxItems == -1 ? DefaultMaxItems : m_MaxItems ); }
-			set{ m_MaxItems = value; }
+			set{ m_MaxItems = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

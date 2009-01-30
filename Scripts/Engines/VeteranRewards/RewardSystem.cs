@@ -320,8 +320,8 @@ namespace Server.Engines.VeteranRewards
 						new RewardEntry( etherealSteeds, 1049748, typeof( EtherealBeetle ) )
 						/*new RewardEntry(    houseAddOns, 0, typeof( AnkhDecoration ) )*/
 					} ),
-					//TODO: 6th year player statue MArkers
-					//TODO: 7th year Decorative CAnnon
+					//TODO: 6th year player statue Markers
+					//TODO: 7th year Decorative Cannon
 					//TODO: 8th year Weapon Engraving Tool
 					//TODO: 9th year Ridable polar bear
 				};

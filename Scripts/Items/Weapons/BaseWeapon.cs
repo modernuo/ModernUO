@@ -3351,6 +3351,10 @@ namespace Server.Items
 					if( Core.ML )
 					{
 						Attributes.WeaponDamage += (int)(from.Skills.ArmsLore.Value / 20);
+
+						if ( Attributes.WeaponDamage > 50 )
+							Attributes.WeaponDamage = 50;
+
 						from.CheckSkill( SkillName.ArmsLore, 0, 100 );
 					}
 				}

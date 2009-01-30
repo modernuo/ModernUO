@@ -1245,7 +1245,16 @@ namespace Server
 				{
 					if ( m_Enumerator.MoveNext() )
 					{
-						object o = m_Enumerator.Current;
+						object o;
+
+						try
+						{
+							o = m_Enumerator.Current;
+						}
+						catch
+						{
+							continue;
+						}
 
 						if ( o is Mobile )
 						{
@@ -1503,7 +1512,16 @@ namespace Server
 				{
 					if ( m_Enumerator.MoveNext() )
 					{
-						object o = m_Enumerator.Current;
+						object o;
+
+						try
+						{
+							o = m_Enumerator.Current;
+						}
+						catch
+						{
+							continue;
+						}
 
 						if ( o is Mobile )
 						{

@@ -301,7 +301,7 @@ namespace Server.Items
             if ( book == null )
                 return;
 
-			book.m_Entries = new List<RunebookEntry>(); //Currently, when duping, it just copies over the ref over the already made blank ArrayList
+			book.m_Entries = new List<RunebookEntry>();
 
             for ( int i = 0; i < m_Entries.Count; i++ )
             {

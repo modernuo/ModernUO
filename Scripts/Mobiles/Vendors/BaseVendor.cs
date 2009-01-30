@@ -25,26 +25,26 @@ namespace Server.Mobiles
 	{
 		private const int MaxSell = 500;
 
-		protected abstract ArrayList SBInfos{ get; }
+		protected abstract ArrayList SBInfos { get; }
 
 		private ArrayList m_ArmorBuyInfo = new ArrayList();
 		private ArrayList m_ArmorSellInfo = new ArrayList();
 
 		private DateTime m_LastRestock;
 
-		public override bool CanTeach{ get{ return true; } }
+		public override bool CanTeach { get { return true; } }
 
-		public override bool PlayerRangeSensitive{ get{ return true; } }
+		public override bool PlayerRangeSensitive { get { return true; } }
 
-		public virtual bool IsActiveVendor{ get{ return true; } }
-		public virtual bool IsActiveBuyer{ get{ return IsActiveVendor; } } // response to vendor SELL
-		public virtual bool IsActiveSeller{ get{ return IsActiveVendor; } } // repsonse to vendor BUY
+		public virtual bool IsActiveVendor { get { return true; } }
+		public virtual bool IsActiveBuyer { get { return IsActiveVendor; } } // response to vendor SELL
+		public virtual bool IsActiveSeller { get { return IsActiveVendor; } } // repsonse to vendor BUY
 
-		public virtual NpcGuild NpcGuild{ get{ return NpcGuild.None; } }
+		public virtual NpcGuild NpcGuild { get { return NpcGuild.None; } }
 
-		public virtual bool IsInvulnerable{ get{ return true; } }
+		public virtual bool IsInvulnerable { get { return true; } }
 
-		public override bool ShowFameTitle{ get{ return false; } }
+		public override bool ShowFameTitle { get { return false; } }
 
 		public virtual bool IsValidBulkOrder( Item item )
 		{
@@ -76,7 +76,7 @@ namespace Server.Mobiles
 			Town town = Town.FromRegion( this.Region );
 
 			if ( town != null )
-				return (100 + town.Tax);
+				return ( 100 + town.Tax );
 
 			return 100;
 		}
@@ -84,7 +84,7 @@ namespace Server.Mobiles
 		public void UpdateBuyInfo()
 		{
 			int priceScalar = GetPriceScalar();
-			
+
 			IBuyItemInfo[] buyinfo = (IBuyItemInfo[])m_ArmorBuyInfo.ToArray( typeof( IBuyItemInfo ) );
 
 			if ( buyinfo != null )
@@ -100,7 +100,8 @@ namespace Server.Mobiles
 			private Mobile m_From;
 			private BaseVendor m_Vendor;
 
-			public BulkOrderInfoEntry( Mobile from, BaseVendor vendor ) : base( 6152, 6 )
+			public BulkOrderInfoEntry( Mobile from, BaseVendor vendor )
+				: base( 6152, 6 )
 			{
 				m_From = from;
 				m_Vendor = vendor;
@@ -113,10 +114,10 @@ namespace Server.Mobiles
 					TimeSpan ts = m_Vendor.GetNextBulkOrder( m_From );
 
 					int totalSeconds = (int)ts.TotalSeconds;
-					int totalHours = (totalSeconds + 3599) / 3600;
-					int totalMinutes = (totalSeconds + 59) / 60;
+					int totalHours = ( totalSeconds + 3599 ) / 3600;
+					int totalMinutes = ( totalSeconds + 59 ) / 60;
 
-					if ( ((Core.SE ) ? totalMinutes == 0 : totalHours == 0) )
+					if ( ( ( Core.SE ) ? totalMinutes == 0 : totalHours == 0 ) )
 					{
 						m_From.SendLocalizedMessage( 1049038 ); // You can get an order now.
 
@@ -134,8 +135,8 @@ namespace Server.Mobiles
 					{
 						int oldSpeechHue = m_Vendor.SpeechHue;
 						m_Vendor.SpeechHue = 0x3B2;
-						
-						if( Core.SE )
+
+						if ( Core.SE )
 							m_Vendor.SayTo( m_From, 1072058, totalMinutes.ToString() ); // An offer may be available in about ~1_minutes~ minutes.
 						else
 							m_Vendor.SayTo( m_From, 1049039, totalHours.ToString() ); // An offer may be available in about ~1_hours~ hours.
@@ -146,7 +147,8 @@ namespace Server.Mobiles
 			}
 		}
 
-		public BaseVendor( string title ) : base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
+		public BaseVendor( string title )
+			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
 			LoadSBInfo();
 
@@ -170,8 +172,9 @@ namespace Server.Mobiles
 
 			m_LastRestock = DateTime.Now;
 		}
-		
-		public BaseVendor( Serial serial ) : base( serial )
+
+		public BaseVendor( Serial serial )
+			: base( serial )
 		{
 		}
 
@@ -215,7 +218,7 @@ namespace Server.Mobiles
 
 		public abstract void InitSBInfo();
 
-		public virtual bool IsTokunoVendor{ get{ return ( Map == Map.Tokuno ); } }
+		public virtual bool IsTokunoVendor { get { return ( Map == Map.Tokuno ); } }
 
 		protected void LoadSBInfo()
 		{
@@ -294,7 +297,7 @@ namespace Server.Mobiles
 
 		public virtual VendorShoeType ShoeType
 		{
-			get{ return VendorShoeType.Shoes; }
+			get { return VendorShoeType.Shoes; }
 		}
 
 		public virtual int RandomBrightHue()
@@ -352,7 +355,7 @@ namespace Server.Mobiles
 			if ( !Region.IsPartOf( "Gargoyle City" ) )
 				return false;
 
-			if ( Body != 0x2F6 || (Hue & 0x8000) == 0 )
+			if ( Body != 0x2F6 || ( Hue & 0x8000 ) == 0 )
 				TurnToGargoyle();
 
 			return true;
@@ -551,7 +554,7 @@ namespace Server.Mobiles
 
 			List<ObjectPropertyList> opls = null;
 
-			for (int idx=0;idx<buyInfo.Length;idx++)
+			for ( int idx = 0; idx < buyInfo.Length; idx++ )
 			{
 				IBuyItemInfo buyItem = (IBuyItemInfo)buyInfo[idx];
 
@@ -559,10 +562,10 @@ namespace Server.Mobiles
 					continue;
 
 				// NOTE: Only GBI supported; if you use another implementation of IBuyItemInfo, this will crash
-				GenericBuyInfo gbi = (GenericBuyInfo) buyItem;
+				GenericBuyInfo gbi = (GenericBuyInfo)buyItem;
 				IEntity disp = gbi.GetDisplayEntity();
 
-				list.Add( new BuyItemState( buyItem.Name, cont.Serial, disp == null ? (Serial) 0x7FC0FFEE : disp.Serial, buyItem.Price, buyItem.Amount, buyItem.ItemID, buyItem.Hue ) );
+				list.Add( new BuyItemState( buyItem.Name, cont.Serial, disp == null ? (Serial)0x7FC0FFEE : disp.Serial, buyItem.Price, buyItem.Amount, buyItem.ItemID, buyItem.Hue ) );
 				count++;
 
 				if ( opls == null ) {
@@ -585,7 +588,7 @@ namespace Server.Mobiles
 
 				Item item = playerItems[i];
 
-				if ( (item.LastMoved + InventoryDecayTime) <= DateTime.Now )
+				if ( ( item.LastMoved + InventoryDecayTime ) <= DateTime.Now )
 					item.Delete();
 			}
 
@@ -596,7 +599,7 @@ namespace Server.Mobiles
 				int price = 0;
 				string name = null;
 
-				foreach( IShopSellInfo ssi in sellInfo )
+				foreach ( IShopSellInfo ssi in sellInfo )
 				{
 					if ( ssi.IsSellable( item ) )
 					{
@@ -631,7 +634,7 @@ namespace Server.Mobiles
 
 				if ( from.NetState == null )
 					return;
-				
+
 				if ( from.NetState.IsPost6017 )
 					from.Send( new VendorBuyContent6017( list ) );
 				else
@@ -712,7 +715,7 @@ namespace Server.Mobiles
 
 					foreach ( Item item in items )
 					{
-						if ( item is Container && ((Container)item).Items.Count != 0 )
+						if ( item is Container && ( (Container)item ).Items.Count != 0 )
 							continue;
 
 						if ( item.IsStandardLoot() && item.Movable && ssi.IsSellable( item ) )
@@ -742,7 +745,7 @@ namespace Server.Mobiles
 					SayTo( from, 1045130 ); // That order is for some other shopkeeper.
 					return false;
 				}
-				else if ( (dropped is SmallBOD && !((SmallBOD)dropped).Complete) || (dropped is LargeBOD && !((LargeBOD)dropped).Complete) )
+				else if ( ( dropped is SmallBOD && !( (SmallBOD)dropped ).Complete ) || ( dropped is LargeBOD && !( (LargeBOD)dropped ).Complete ) )
 				{
 					SayTo( from, 1045131 ); // You have not completed the order yet.
 					return false;
@@ -752,9 +755,9 @@ namespace Server.Mobiles
 				int gold, fame;
 
 				if ( dropped is SmallBOD )
-					((SmallBOD)dropped).GetRewards( out reward, out gold, out fame );
+					( (SmallBOD)dropped ).GetRewards( out reward, out gold, out fame );
 				else
-					((LargeBOD)dropped).GetRewards( out reward, out gold, out fame );
+					( (LargeBOD)dropped ).GetRewards( out reward, out gold, out fame );
 
 				from.SendSound( 0x3D );
 
@@ -849,7 +852,7 @@ namespace Server.Mobiles
 					if ( cont == null || !cont.TryDropItem( buyer, item, false ) )
 						item.MoveToWorld( buyer.Location, buyer.Map );
 
-					for (int i=1;i<amount;i++)
+					for ( int i = 1; i < amount; i++ )
 					{
 						item = bii.GetEntity() as Item;
 
@@ -872,7 +875,7 @@ namespace Server.Mobiles
 				m.PlaySound( m.GetIdleSound() );
 
 				if ( m is BaseCreature )
-					((BaseCreature)m).SetControlMaster( buyer );
+					( (BaseCreature)m ).SetControlMaster( buyer );
 
 				for ( int i = 1; i < amount; ++i )
 				{
@@ -884,7 +887,7 @@ namespace Server.Mobiles
 						m.MoveToWorld( buyer.Location, buyer.Map );
 
 						if ( m is BaseCreature )
-							((BaseCreature)m).SetControlMaster( buyer );
+							( (BaseCreature)m ).SetControlMaster( buyer );
 					}
 				}
 			}
@@ -934,7 +937,7 @@ namespace Server.Mobiles
 					{
 						ProcessSinglePurchase( buy, gbi, validBuy, ref controlSlots, ref fullPurchase, ref totalCost );
 					}
-					else if ( item.RootParent == this )
+					else if ( item != this.BuyPack && item.IsChildOf( this.BuyPack ) )
 					{
 						if ( amount > item.Amount )
 							amount = item.Amount;
@@ -1104,14 +1107,14 @@ namespace Server.Mobiles
 
 		public virtual bool CheckVendorAccess( Mobile from )
 		{
-			GuardedRegion reg = (GuardedRegion) this.Region.GetRegion( typeof( GuardedRegion ) );
+			GuardedRegion reg = (GuardedRegion)this.Region.GetRegion( typeof( GuardedRegion ) );
 
 			if ( reg != null && !reg.CheckVendorAccess( this, from ) )
 				return false;
 
 			if ( this.Region != from.Region )
 			{
-				reg = (GuardedRegion) from.Region.GetRegion( typeof( GuardedRegion ) );
+				reg = (GuardedRegion)from.Region.GetRegion( typeof( GuardedRegion ) );
 
 				if ( reg != null && !reg.CheckVendorAccess( this, from ) )
 					return false;
@@ -1146,10 +1149,10 @@ namespace Server.Mobiles
 
 			foreach ( SellItemResponse resp in list )
 			{
-				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || (resp.Item is Container && ((Container)resp.Item).Items.Count != 0) )
+				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || ( resp.Item is Container && ( (Container)resp.Item ).Items.Count != 0 ) )
 					continue;
 
-				foreach( IShopSellInfo ssi in info )
+				foreach ( IShopSellInfo ssi in info )
 				{
 					if ( ssi.IsSellable( resp.Item ) )
 					{
@@ -1163,7 +1166,7 @@ namespace Server.Mobiles
 			{
 				SayTo( seller, true, "You may only sell {0} items at a time!", MaxSell );
 				return false;
-			} 
+			}
 			else if ( Sold == 0 )
 			{
 				return true;
@@ -1171,10 +1174,10 @@ namespace Server.Mobiles
 
 			foreach ( SellItemResponse resp in list )
 			{
-				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || (resp.Item is Container && ((Container)resp.Item).Items.Count != 0) )
+				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || ( resp.Item is Container && ( (Container)resp.Item ).Items.Count != 0 ) )
 					continue;
 
-				foreach( IShopSellInfo ssi in info )
+				foreach ( IShopSellInfo ssi in info )
 				{
 					if ( ssi.IsSellable( resp.Item ) )
 					{
@@ -1232,7 +1235,7 @@ namespace Server.Mobiles
 								resp.Item.Delete();
 						}
 
-						GiveGold += ssi.GetSellPriceFor( resp.Item )*amount;
+						GiveGold += ssi.GetSellPriceFor( resp.Item ) * amount;
 						break;
 					}
 				}
@@ -1262,7 +1265,7 @@ namespace Server.Mobiles
 			}
 			//no cliloc for this?
 			//SayTo( seller, true, "Thank you! I bought {0} item{1}. Here is your {2}gp.", Sold, (Sold > 1 ? "s" : ""), GiveGold );
-			
+
 			return true;
 		}
 
@@ -1270,7 +1273,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int)1 ); // version
 
 			ArrayList sbInfos = this.SBInfos;
 
@@ -1298,7 +1301,7 @@ namespace Server.Mobiles
 
 					if ( doubled > 0 )
 					{
-						writer.WriteEncodedInt( 1 + ((j * sbInfos.Count) + i) );
+						writer.WriteEncodedInt( 1 + ( ( j * sbInfos.Count ) + i ) );
 						writer.WriteEncodedInt( doubled );
 					}
 				}
@@ -1320,48 +1323,48 @@ namespace Server.Mobiles
 			switch ( version )
 			{
 				case 1:
-				{
-					int index;
-
-					while ( (index = reader.ReadEncodedInt()) > 0 )
 					{
-						int doubled = reader.ReadEncodedInt();
+						int index;
 
-						if ( sbInfos != null )
+						while ( ( index = reader.ReadEncodedInt() ) > 0 )
 						{
-							index -= 1;
-							int sbInfoIndex = index % sbInfos.Count;
-							int buyInfoIndex = index / sbInfos.Count;
- 
-							if ( sbInfoIndex >= 0 && sbInfoIndex < sbInfos.Count )
+							int doubled = reader.ReadEncodedInt();
+
+							if ( sbInfos != null )
 							{
-								SBInfo sbInfo = (SBInfo)sbInfos[sbInfoIndex];
-								ArrayList buyInfo = sbInfo.BuyInfo;
+								index -= 1;
+								int sbInfoIndex = index % sbInfos.Count;
+								int buyInfoIndex = index / sbInfos.Count;
 
-								if ( buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count )
+								if ( sbInfoIndex >= 0 && sbInfoIndex < sbInfos.Count )
 								{
-									GenericBuyInfo gbi = (GenericBuyInfo)buyInfo[buyInfoIndex];
+									SBInfo sbInfo = (SBInfo)sbInfos[sbInfoIndex];
+									ArrayList buyInfo = sbInfo.BuyInfo;
 
-									int amount = 20;
-
-									switch ( doubled )
+									if ( buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count )
 									{
-										case 1: amount =  40; break;
-										case 2: amount =  80; break;
-										case 3: amount = 160; break;
-										case 4: amount = 320; break;
-										case 5: amount = 640; break;
-										case 6: amount = 999; break;
-									}
+										GenericBuyInfo gbi = (GenericBuyInfo)buyInfo[buyInfoIndex];
 
-									gbi.Amount = gbi.MaxAmount = amount;
+										int amount = 20;
+
+										switch ( doubled )
+										{
+											case 1: amount = 40; break;
+											case 2: amount = 80; break;
+											case 3: amount = 160; break;
+											case 4: amount = 320; break;
+											case 5: amount = 640; break;
+											case 6: amount = 999; break;
+										}
+
+										gbi.Amount = gbi.MaxAmount = amount;
+									}
 								}
 							}
 						}
-					}
 
-					break;
-				}
+						break;
+					}
 			}
 
 			if ( IsParagon )
@@ -1413,7 +1416,8 @@ namespace Server.ContextMenus
 	{
 		private BaseVendor m_Vendor;
 
-		public VendorBuyEntry( Mobile from, BaseVendor vendor ) : base( 6103, 8 )
+		public VendorBuyEntry( Mobile from, BaseVendor vendor )
+			: base( 6103, 8 )
 		{
 			m_Vendor = vendor;
 			Enabled = vendor.CheckVendorAccess( from );
@@ -1429,7 +1433,8 @@ namespace Server.ContextMenus
 	{
 		private BaseVendor m_Vendor;
 
-		public VendorSellEntry( Mobile from, BaseVendor vendor ) : base( 6104, 8 )
+		public VendorSellEntry( Mobile from, BaseVendor vendor )
+			: base( 6104, 8 )
 		{
 			m_Vendor = vendor;
 			Enabled = vendor.CheckVendorAccess( from );
@@ -1459,7 +1464,7 @@ namespace Server
 		bool IsSellable( Item item );
 
 		//What do we sell?
-		Type[] Types{ get; }
+		Type[] Types { get; }
 
 		//does the vendor resell this item?
 		bool IsResellable( Item item );
@@ -1470,27 +1475,27 @@ namespace Server
 		//get a new instance of an object (we just bought it)
 		IEntity GetEntity();
 
-		int ControlSlots{ get; }
+		int ControlSlots { get; }
 
-		int PriceScalar{ get; set; }
+		int PriceScalar { get; set; }
 
 		//display price of the item
-		int Price{ get; }
+		int Price { get; }
 
 		//display name of the item
-		string Name{ get; }
+		string Name { get; }
 
 		//display hue
-		int Hue{ get; }
+		int Hue { get; }
 
 		//display id
-		int ItemID{ get; }
+		int ItemID { get; }
 
 		//amount in stock
-		int Amount{ get; set; }
+		int Amount { get; set; }
 
 		//max amount in stock
-		int MaxAmount{ get; }
+		int MaxAmount { get; }
 
 		//Attempt to restock with item, (return true if restock sucessful)
 		bool Restock( Item item, int amount );

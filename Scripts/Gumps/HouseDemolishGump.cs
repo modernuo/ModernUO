@@ -88,44 +88,52 @@ namespace Server.Gumps
 						return;
 					}
 
-					Item toGive = null;
 
-					if ( m_House.IsAosRules )
+					if ( m_Mobile.AccessLevel >= AccessLevel.GameMaster )
 					{
-						if ( m_House.Price > 0 )
-							toGive = new BankCheck( m_House.Price );
+						m_Mobile.SendMessage( "You do not get a refund for your house as you are not a player" );
+					}
+					else
+					{
+						Item toGive = null;
+
+						if ( m_House.IsAosRules )
+						{
+							if ( m_House.Price > 0 )
+								toGive = new BankCheck( m_House.Price );
+							else
+								toGive = m_House.GetDeed();
+						}
 						else
+						{
 							toGive = m_House.GetDeed();
-					}
-					else
-					{
-						toGive = m_House.GetDeed();
 
-						if ( toGive == null && m_House.Price > 0 )
-							toGive = new BankCheck( m_House.Price );
-					}
+							if ( toGive == null && m_House.Price > 0 )
+								toGive = new BankCheck( m_House.Price );
+						}
 
-					if ( toGive != null )
-					{
-						BankBox box = m_Mobile.BankBox;
-
-						if ( box.TryDropItem( m_Mobile, toGive, false ) )
+						if ( toGive != null )
 						{
-							if ( toGive is BankCheck )
-								m_Mobile.SendLocalizedMessage( 1060397, ((BankCheck)toGive).Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+							BankBox box = m_Mobile.BankBox;
 
-							m_House.RemoveKeys( m_Mobile );
-							m_House.Delete();
+							if ( box.TryDropItem( m_Mobile, toGive, false ) )
+							{
+								if ( toGive is BankCheck )
+									m_Mobile.SendLocalizedMessage( 1060397, ( (BankCheck)toGive ).Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+
+								m_House.RemoveKeys( m_Mobile );
+								m_House.Delete();
+							}
+							else
+							{
+								toGive.Delete();
+								m_Mobile.SendLocalizedMessage( 500390 ); // Your bank box is full.
+							}
 						}
 						else
 						{
-							toGive.Delete();
-							m_Mobile.SendLocalizedMessage( 500390 ); // Your bank box is full.
+							m_Mobile.SendMessage( "Unable to refund house." );
 						}
-					}
-					else
-					{
-						m_Mobile.SendMessage( "Unable to refund house." );
 					}
 				}
 				else

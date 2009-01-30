@@ -6,11 +6,14 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xe80, 0x9a8 )]
+	[FlipableAttribute( 0xE80, 0x9A8 )]
 	public class StrongBox : BaseContainer, IChopable
 	{
 		private Mobile m_Owner;
 		private BaseHouse m_House;
+
+		public override double DefaultWeight{ get{ return 100; } }
+		public override int LabelNumber { get { return 1023712; } }
 
 		public StrongBox( Mobile owner, BaseHouse house ) : base( 0xE80 )
 		{

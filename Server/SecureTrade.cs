@@ -113,8 +113,8 @@ namespace Server
 			if ( ns != null )
 				ns.RemoveTrade( this );
 
-			m_From.Container.Delete();
-			m_To.Container.Delete();
+			Timer.DelayCall( TimeSpan.Zero, delegate{ m_From.Container.Delete(); } );
+			Timer.DelayCall( TimeSpan.Zero, delegate{ m_To.Container.Delete(); } );
 		}
 
 		public void Update()

@@ -382,6 +382,8 @@ namespace Server.Mobiles
 	{
 		private BaseMount m_Mount;
 
+		public override double DefaultWeight { get { return 0; } }
+
 		public MountItem( BaseMount mount, int itemID ) : base( itemID )
 		{
 			Layer = Layer.Mount;

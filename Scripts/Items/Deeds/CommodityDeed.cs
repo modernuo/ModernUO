@@ -65,6 +65,11 @@ namespace Server.Items
 					break;
 				}
 			}
+
+			if ( !( m_Commodity is ICommodity ) )	//Apparently, there may be items out there with this.  Funky.
+			{
+				Timer.DelayCall( TimeSpan.Zero, this.Delete );
+			}
 		}
 
 		public CommodityDeed( Item commodity ) : base( 0x14F0 )
@@ -100,7 +105,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if ( m_Commodity != null )
+			if ( m_Commodity != null && m_Commodity is ICommodity )
 				list.Add( 1060658, "#{0}\t{1}", ((ICommodity)m_Commodity).DescriptionNumber, m_Commodity.Amount ); // ~1_val~: ~2_val~
 		}
 
@@ -108,7 +113,7 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			if ( m_Commodity != null )
+			if ( m_Commodity != null && m_Commodity is ICommodity )
 				from.Send( new UnicodeMessage( Serial, ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", ((ICommodity)m_Commodity).Description ) );
 		}
 

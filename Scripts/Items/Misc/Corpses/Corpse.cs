@@ -296,15 +296,8 @@ namespace Server.Items
 			m_FacialHair = facialhair;
 
 
-#if false
-			// This corpse does not turn to bones if:
-			//    (the owner is not a player) and (the owner doesn't have a human body)
-			m_NoBones = !owner.Player && !owner.Body.IsHuman;
-#else
-			// This corpse does not turn to bones if:
-			//    (the owner is not a player)
+			// This corpse does not turn to bones if: the owner is not a player
 			m_NoBones = !owner.Player;
-#endif
 
 			m_Looters = new List<Mobile>();
 			m_EquipItems = equipItems;
