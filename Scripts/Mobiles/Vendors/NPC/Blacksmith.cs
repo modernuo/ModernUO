@@ -51,8 +51,6 @@ namespace Server.Mobiles
 				m_SBInfos.Add( new SBSEArmor() );	
 				m_SBInfos.Add( new SBSEWeapons() );
 			}
-
-
 		}
 
 		public override VendorShoeType ShoeType
