@@ -59,7 +59,7 @@ namespace Server.Items
 
 			AOS.Damage( defender, attacker, (int)(15.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 10), 100, 0, 0, 0, 0 );	//10-25
 
-			defender.Paralyze( TimeSpan.FromSeconds( 3.0 ) );
+			defender.Freeze( TimeSpan.FromSeconds( 2.0 ) );
 			Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );
 		}
 	}

@@ -101,6 +101,8 @@ namespace Server.Commands
 								else
 									newItem.MoveToWorld( from.Location, from.Map );
 
+								newItem.InvalidateProperties();
+
 								CommandLogging.WriteLine( from, "{0} {1} duped {2} creating {3}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( targ ), CommandLogging.Format( newItem ) );
 							}
 						}
@@ -121,7 +123,7 @@ namespace Server.Commands
 			}
 		}
 
-		private static void CopyProperties( Item dest, Item src )
+		public static void CopyProperties( Item dest, Item src )
 		{
 			PropertyInfo[] props = src.GetType().GetProperties();
 

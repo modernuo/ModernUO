@@ -3250,6 +3250,20 @@ namespace Server.Mobiles
 			}
 			#endregion
 
+			if ( Core.ML && this.Map == Faction.Facet )
+			{
+				Faction faction = Faction.Find( this );
+
+				if ( faction != null )
+				{
+					string adjunct = String.Format( "[{0}]", faction.Definition.Abbreviation );
+					if ( suffix.Length == 0 )
+						suffix = adjunct;
+					else
+						suffix = String.Concat( suffix, " ", adjunct );
+				}
+			}
+
 			return base.ApplyNameSuffix( suffix );
 		}
 

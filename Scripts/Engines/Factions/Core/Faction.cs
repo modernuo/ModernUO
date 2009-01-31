@@ -424,7 +424,9 @@ namespace Server.Factions
 				else if ( !Guild.NewGuildSystem && guild.Type != GuildType.Regular )
 					pm.SendLocalizedMessage( 1042161 ); // You cannot join a faction because your guild is an Order or Chaos type.
 				else if ( !Guild.NewGuildSystem && guild.Enemies != null && guild.Enemies.Count > 0 )	//CAN join w/wars in new system
-					pm.SendLocalizedMessage( 1005056 ); // You cannot join a faction with active Wars	
+					pm.SendLocalizedMessage( 1005056 ); // You cannot join a faction with active Wars
+				else if ( Guild.NewGuildSystem && guild.Alliance != null )
+					pm.SendLocalizedMessage( 1080454 ); // Your guild cannot join a faction while in alliance with non-factioned guilds.
 				else if ( !CanHandleInflux( guild.Members.Count ) )
 					pm.SendLocalizedMessage( 1018031 ); // In the interest of faction stability, this faction declines to accept new members for now.
 				else

@@ -238,7 +238,7 @@ namespace Server.Items
 					new PMEntry( new Point3D( 1828, 2948,-20), 1012008 ), // Trinsic
 					new PMEntry( new Point3D(  643, 2067, 5 ), 1012009 ), // Skara Brae
 					new PMEntry( new Point3D( 3563, 2139, 34), 1012010 ), // Magincia
-					new PMEntry( new Point3D( 3763, 2771, 50), 1078098 )  // New Haven
+					new PMEntry( new Point3D( 3450, 2677, 25), 1078098 )  // New Haven
 				} );
 
 		public static readonly PMList Felucca =

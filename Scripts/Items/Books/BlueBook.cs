@@ -5,8 +5,9 @@ namespace Server.Items
 {
 	public class BlueBook : BaseBook
 	{
+
 		[Constructable]
-		public BlueBook() : base( 0xFF2 )
+		public BlueBook() : base( 0xFF2, 40, true )
 		{
 		}
 

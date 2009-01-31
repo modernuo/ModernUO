@@ -21,7 +21,7 @@ namespace Server.Factions
 					1645, // join stone : dark red
 					1645, // broadcast : dark red
 					0x78, 0x3EAF, // war horse
-					"Minax", "minax",
+					"Minax", "minax", "Min",
 					new TextDefinition( 1011534, "MINAX" ),
 					new TextDefinition( 1060769, "Minax faction" ),
 					new TextDefinition( 1011421, "<center>FOLLOWERS OF MINAX</center>" ),

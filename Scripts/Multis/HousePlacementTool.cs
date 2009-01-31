@@ -423,6 +423,11 @@ namespace Server.Items
 					from.SendLocalizedMessage( 501265 ); // Housing cannot be created in this area.
 					break;
 				}
+				case HousePlacementResult.BadRegionTemp:
+				{
+					from.SendLocalizedMessage( 501270 ); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+					break;
+				}
 			}
 		}
 
@@ -509,6 +514,11 @@ namespace Server.Items
 				case HousePlacementResult.BadRegion:
 				{
 					from.SendLocalizedMessage( 501265 ); // Housing cannot be created in this area.
+					break;
+				}
+				case HousePlacementResult.BadRegionTemp:
+				{
+					from.SendLocalizedMessage( 501270 ); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
 					break;
 				}
 			}

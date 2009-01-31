@@ -21,7 +21,7 @@ namespace Server.Factions
 					2214, // join stone : gold
 					2125, // broadcast : gold
 					0x76, 0x3EB2, // war horse
-					"True Britannians", "true",
+					"True Britannians", "true", "TB", 
 					new TextDefinition( 1011536, "LORD BRITISH" ),
 					new TextDefinition( 1060771, "True Britannians faction" ),
 					new TextDefinition( 1011423, "<center>TRUE BRITANNIANS</center>" ),

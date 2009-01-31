@@ -43,10 +43,26 @@ namespace Server.Items
 
 		public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes( 2.0 );
 
+		public static readonly TimeSpan InstancedCorpseTime = TimeSpan.FromMinutes( 3.0 );
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public virtual bool InstancedCorpse 
+		{ 
+			get 
+			{
+				if ( !Core.SE )
+					return false;
+
+				return ( DateTime.Now > m_TimeOfDeath + InstancedCorpseTime );
+			} 
+		}
+
 		public override bool IsDecoContainer
 		{
 			get{ return false; }
 		}
+
+		private Dictionary<Mobile, List<Item>> m_InstancedItems;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime TimeOfDeath
@@ -268,6 +284,7 @@ namespace Server.Items
 		public Corpse( Mobile owner, List<Item> equipItems ) : this( owner, null, null, equipItems )
 		{
 		}
+
 		public Corpse( Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> equipItems )
 			: base( 0x2006 )
 		{
@@ -354,6 +371,12 @@ namespace Server.Items
 			}
 
 			BeginDecay( m_DefaultDecayTime );
+		}
+
+		private void AssignInstancedLoot()
+		{
+			if ( m_InstancedItems == null )
+				m_InstancedItems = new Dictionary<Mobile, List<Item>>();
 		}
 
 		public Corpse( Serial serial ) : base( serial )

@@ -413,6 +413,19 @@ namespace Server.Items
 
 		#endregion
 
+		public override void OnAfterDuped( Item newItem )
+		{
+			BaseWeapon weap = newItem as BaseWeapon;
+
+			if ( weap == null )
+				return;
+
+			weap.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
+			weap.m_AosElementDamages = new AosElementAttributes( newItem, m_AosElementDamages );
+			weap.m_AosSkillBonuses = new AosSkillBonuses( newItem, m_AosSkillBonuses );
+			weap.m_AosWeaponAttributes = new AosWeaponAttributes( newItem, m_AosWeaponAttributes );
+		}
+
 		public virtual void UnscaleDurability()
 		{
 			int scale = 100 + GetDurabilityBonus();

@@ -200,9 +200,14 @@ namespace Server.Multis
 			if ( Deleted )
 				return;
 
+			if ( Core.ML )
+				new TempNoHousingRegion( this );
+
 			KillVendors();
 			Delete();
 		}
+
+		public virtual TimeSpan RestrictedPlacingTime { get { return TimeSpan.FromHours( 1.0 ); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual double BonusStorageScalar { get { return (Core.ML ? 1.2 : 1.0); } }
@@ -3384,6 +3389,8 @@ namespace Server.Multis
 		}
 	}
 
+	#region Targets
+
 	public class LockdownTarget : Target
 	{
 		private bool m_Release;
@@ -3648,6 +3655,8 @@ namespace Server.Multis
 		}
 	}
 
+	#endregion
+
 	public class SetSecureLevelEntry : ContextMenuEntry
 	{
 		private Item m_Item;
@@ -3711,6 +3720,22 @@ namespace Server.Multis
 
 			if ( sec != null )
 				Owner.From.SendGump( new SetSecureLevelGump( Owner.From, sec, BaseHouse.FindHouseAt( m_Item ) ) );
+		}
+	}
+
+	public class TempNoHousingRegion : BaseRegion
+	{
+		public TempNoHousingRegion( BaseHouse house )
+			: base( null, house.Map, Region.DefaultPriority, house.Region.Area )
+		{
+			Register();
+
+			Timer.DelayCall( house.RestrictedPlacingTime, Unregister );
+		}
+
+		public override bool AllowHousing( Mobile from, Point3D p )
+		{
+			return false;
 		}
 	}
 }

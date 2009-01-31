@@ -21,7 +21,7 @@ namespace Server.Factions
 					1109, // join stone : shadow
 					2211, // broadcast : green
 					0x79, 0x3EB0, // war horse
-					"Shadowlords", "shadow",
+					"Shadowlords", "shadow", "SL", 
 					new TextDefinition( 1011537, "SHADOWLORDS" ),
 					new TextDefinition( 1060772, "Shadowlords faction" ),
 					new TextDefinition( 1011424, "<center>SHADES OF DARKNESS</center>" ),

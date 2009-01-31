@@ -14,7 +14,8 @@ namespace Server.Multis
 		BadStatic,
 		BadItem,
 		NoSurface,
-		BadRegionHidden
+		BadRegionHidden,
+		BadRegionTemp
 	}
 
 	public class HousePlacement
@@ -106,6 +107,9 @@ namespace Server.Multis
 
 					if ( !reg.AllowHousing( from, testPoint ) ) // Cannot place houses in dungeons, towns, treasure map areas etc
 					{
+						if ( reg.IsPartOf( typeof( TempNoHousingRegion ) ) )
+							return HousePlacementResult.BadRegionTemp;
+
 						if ( reg.IsPartOf( typeof( TreasureRegion ) ) )
 							return HousePlacementResult.BadRegionHidden;
 

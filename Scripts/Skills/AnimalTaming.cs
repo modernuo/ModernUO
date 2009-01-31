@@ -82,12 +82,22 @@ namespace Server.SkillHandlers
 
 		public static void ScaleSkills( BaseCreature bc, double scalar )
 		{
+			int totalCapIncrease = 0;
+
 			for ( int i = 0; i < bc.Skills.Length; ++i )
 			{
 				bc.Skills[i].Base *= scalar;
-				if ( bc.Skills[i].Base > 100.0 )
+
+				if ( bc.Skills[i].Base > bc.Skills[i].Cap )
+				{
+					if( Core.SE )
+						totalCapIncrease += ( bc.Skills[i].BaseFixedPoint - bc.Skills[i].CapFixedPoint );
+
 					bc.Skills[i].Cap = bc.Skills[i].Base;
+				}
 			}
+			
+			bc.SkillsCap += totalCapIncrease;	//increase will be 0 if not .SE per above
 		}
 
 		private class InternalTarget : Target
@@ -194,21 +204,6 @@ namespace Server.SkillHandlers
 				{
 					from.SendLocalizedMessage( 502801 ); // You can't tame that!
 				}
-			}
-			public static void AdjustSkillCaps( BaseCreature bc )
-			{
-				int totalCapIncrease = 0;
-
-				for ( int i = 0; i < bc.Skills.Length; ++i )
-				{
-					if( bc.Skills[i].Base > bc.Skills[i].Cap )
-					{
-						totalCapIncrease += (bc.Skills[i].BaseFixedPoint - bc.Skills[i].CapFixedPoint);
-						bc.Skills[i].Cap = bc.Skills[i].Base;
-					}
-				}
-
-				bc.SkillsCap += totalCapIncrease;
 			}
 
 			private class InternalTimer : Timer
@@ -340,9 +335,6 @@ namespace Server.SkillHandlers
 
 								if ( m_Creature.StatLossAfterTame )
 									ScaleStats( m_Creature, 0.50 );
-								
-								if( Core.SE )
-									AdjustSkillCaps( m_Creature );
 							}
 
 							if ( alreadyOwned )

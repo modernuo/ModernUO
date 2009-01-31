@@ -3324,8 +3324,13 @@ namespace Server.Mobiles
 		{
 			Skills[name].BaseFixedPoint = (int)(val * 10);
 
-			if ( Skills[name].Base > Skills[name].Cap ) 
+			if ( Skills[name].Base > Skills[name].Cap )
+			{
+				if ( Core.SE )
+					this.SkillsCap += ( Skills[name].BaseFixedPoint - Skills[name].CapFixedPoint );
+
 				Skills[name].Cap = Skills[name].Base;
+			}
 		}
 
 		public void SetSkill( SkillName name, double min, double max )
@@ -3335,8 +3340,13 @@ namespace Server.Mobiles
 
 			Skills[name].BaseFixedPoint = Utility.RandomMinMax( minFixed, maxFixed );
 
-			if ( Skills[name].Base > Skills[name].Cap ) 
+			if ( Skills[name].Base > Skills[name].Cap )
+			{
+				if ( Core.SE )
+					this.SkillsCap += ( Skills[name].BaseFixedPoint - Skills[name].CapFixedPoint );
+
 				Skills[name].Cap = Skills[name].Base;
+			}
 		}
 
 		public void SetFameLevel( int level )
@@ -3990,6 +4000,11 @@ namespace Server.Mobiles
 		}
 
 		public static List<DamageStore> GetLootingRights( List<DamageEntry> damageEntries, int hitsMax )
+		{
+			return GetLootingRights( damageEntries, hitsMax, false );
+		}
+
+		public static List<DamageStore> GetLootingRights( List<DamageEntry> damageEntries, int hitsMax, bool partyAsIndividual )
 		{
 			List<DamageStore> rights = new List<DamageStore>();
 
@@ -4664,7 +4679,7 @@ namespace Server.Mobiles
 			return base.CanBeDamaged();
 		}
 
-		public virtual bool PlayerRangeSensitive{ get{ return true; } }
+		public virtual bool PlayerRangeSensitive{ get{ return (this.CurrentWayPoint == null); } }	//If they are following a waypoint, they'll continue to follow it even if players aren't around
 
 		public override void OnSectorDeactivate()
 		{

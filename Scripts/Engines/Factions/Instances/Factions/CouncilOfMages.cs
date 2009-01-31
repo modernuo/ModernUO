@@ -21,7 +21,7 @@ namespace Server.Factions
 					1325, // join stone : blue
 					1325, // broadcast : blue
 					0x77, 0x3EB1, // war horse
-					"Council of Mages", "council",
+					"Council of Mages", "council", "CoM",
 					new TextDefinition( 1011535, "COUNCIL OF MAGES" ),
 					new TextDefinition( 1060770, "Council of Mages faction" ),
 					new TextDefinition( 1011422, "<center>COUNCIL OF MAGES</center>" ),

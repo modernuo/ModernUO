@@ -65,17 +65,18 @@ namespace Server.Misc
 			if( from == null || target == null || from.AccessLevel > AccessLevel.Player || target.AccessLevel > AccessLevel.Player )
 				return true;
 
+			Map map = from.Map;
+
 			#region Factions
 			Faction targetFaction = Faction.Find( target, true );
 
-			if( targetFaction != null )
+			if( (!Core.ML || map == Faction.Facet) && targetFaction != null )
 			{
 				if( Faction.Find( from, true ) != targetFaction )
 					return false;
 			}
 			#endregion
-
-			Map map = from.Map;
+			
 
 			if( map != null && (map.Rules & MapRules.BeneficialRestrictions) == 0 )
 				return true; // In felucca, anything goes

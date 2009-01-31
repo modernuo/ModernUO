@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Spells.Spellweaving
 {
@@ -26,6 +27,12 @@ namespace Server.Spells.Spellweaving
 			if( !IsValidLocation( Caster.Location, Caster.Map ) )
 			{
 				Caster.SendLocalizedMessage( 1072705 ); // You must be standing on an arcane circle, pentagram or abbatoir to use this spell.
+				return false;
+			}
+
+			if ( GetArcanists().Count < 2 )
+			{
+				Caster.SendLocalizedMessage( 1080452 ); //There are not enough spellweavers present to create an Arcane Focus.
 				return false;
 			}
 
@@ -111,7 +118,7 @@ namespace Server.Spells.Spellweaving
 			//OSI Verified: Even enemies/combatants count
 			foreach( Mobile m in Caster.GetMobilesInRange( 1 ) )	//Range verified as 1
 			{
-				if( m != Caster && Caster.CanBeBeneficial( m, false ) && Math.Abs( Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value ) <= 20 )	//TODO: OSI check, aggressor/agressed?  Visibility?
+				if ( m != Caster && Caster.CanBeBeneficial( m, false ) && Math.Abs( Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value ) <= 20 && !(m is Clone) )
 				{
 					weavers.Add( m );
 				}

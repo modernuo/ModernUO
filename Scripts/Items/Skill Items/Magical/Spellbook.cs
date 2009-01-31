@@ -412,6 +412,17 @@ namespace Server.Items
 			Content = content;
 		}
 
+		public override void OnAfterDuped( Item newItem )
+		{
+			Spellbook book = newItem as Spellbook;
+
+			if ( book == null )
+				return;
+
+			book.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
+			book.m_AosSkillBonuses = new AosSkillBonuses( newItem, m_AosSkillBonuses );
+		}
+
 		public override void OnAdded( object parent )
 		{
 			if ( Core.AOS && parent is Mobile )

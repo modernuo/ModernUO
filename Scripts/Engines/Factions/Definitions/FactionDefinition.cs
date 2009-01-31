@@ -16,6 +16,7 @@ namespace Server.Factions
 
 		private string m_FriendlyName;
 		private string m_Keyword;
+		private string m_Abbreviation;
 
 		private TextDefinition m_Name;
 		private TextDefinition m_PropName;
@@ -46,6 +47,7 @@ namespace Server.Factions
 
 		public string FriendlyName{ get{ return m_FriendlyName; } }
 		public string Keyword{ get{ return m_Keyword; } }
+		public string Abbreviation{ get { return m_Abbreviation; } }
 
 		public TextDefinition Name{ get{ return m_Name; } }
 		public TextDefinition PropName{ get{ return m_PropName; } }
@@ -66,7 +68,7 @@ namespace Server.Factions
 		public RankDefinition[] Ranks{ get{ return m_Ranks; } }
 		public GuardDefinition[] Guards{ get{ return m_Guards; } }
 
-		public FactionDefinition( int sort, int huePrimary, int hueSecondary, int hueJoin, int hueBroadcast, int warHorseBody, int warHorseItem, string friendlyName, string keyword, TextDefinition name, TextDefinition propName, TextDefinition header, TextDefinition about, TextDefinition cityControl, TextDefinition sigilControl, TextDefinition signupName, TextDefinition factionStoneName, TextDefinition ownerLabel, TextDefinition guardIgnore, TextDefinition guardWarn, TextDefinition guardAttack, StrongholdDefinition stronghold, RankDefinition[] ranks, GuardDefinition[] guards )
+		public FactionDefinition( int sort, int huePrimary, int hueSecondary, int hueJoin, int hueBroadcast, int warHorseBody, int warHorseItem, string friendlyName, string keyword, string abbreviation, TextDefinition name, TextDefinition propName, TextDefinition header, TextDefinition about, TextDefinition cityControl, TextDefinition sigilControl, TextDefinition signupName, TextDefinition factionStoneName, TextDefinition ownerLabel, TextDefinition guardIgnore, TextDefinition guardWarn, TextDefinition guardAttack, StrongholdDefinition stronghold, RankDefinition[] ranks, GuardDefinition[] guards )
 		{
 			m_Sort = sort;
 			m_HuePrimary = huePrimary;
@@ -77,6 +79,7 @@ namespace Server.Factions
 			m_WarHorseItem = warHorseItem;
 			m_FriendlyName = friendlyName;
 			m_Keyword = keyword;
+			m_Abbreviation = abbreviation;
 			m_Name = name;
 			m_PropName = propName;
 			m_Header = header;

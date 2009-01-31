@@ -97,6 +97,18 @@ namespace Server.Items
 		public virtual int OldDexReq{ get{ return 0; } }
 		public virtual int OldIntReq{ get{ return 0; } }
 
+		public override void OnAfterDuped( Item newItem )
+		{
+			BaseArmor armor = newItem as BaseArmor;
+
+			if ( armor == null )
+				return;
+
+			armor.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
+			armor.m_AosArmorAttributes = new AosArmorAttributes( newItem, m_AosArmorAttributes );
+			armor.m_AosSkillBonuses = new AosSkillBonuses( newItem, m_AosSkillBonuses );
+		}
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AMA MeditationAllowance
 		{
