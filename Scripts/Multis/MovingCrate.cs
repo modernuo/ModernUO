@@ -249,7 +249,7 @@ namespace Server.Multis
 			}
 			else
 			{
-				this.Delete();
+				Timer.DelayCall( TimeSpan.Zero, this.Delete );
 			}
 
 			if ( version == 0 )
@@ -278,6 +278,14 @@ namespace Server.Multis
 	{
 		public override int LabelNumber{ get{ return 1061690; } } // Packing Crate
 
+		public override int DefaultGumpID{ get{ return 0x4B; } }
+		public override int DefaultDropSound{ get{ return 0x42; } }
+
+		public override Rectangle2D Bounds
+		{
+			get{ return new Rectangle2D( 16, 51, 168, 73 ); }
+		}
+
 		public override int DefaultMaxItems{ get{ return 0; } }
 		public override int DefaultMaxWeight{ get{ return 0; } }
 
@@ -288,6 +296,11 @@ namespace Server.Multis
 
 		public PackingBox( Serial serial ) : base( serial )
 		{
+		}
+
+		public override void SendCantStoreMessage( Mobile to, Item item )
+		{
+			to.SendLocalizedMessage( 1061145 ); // You cannot place items into a house moving crate.
 		}
 
 		public override void OnItemRemoved( Item item )

@@ -1,9 +1,10 @@
 using System;
+using Server.Items;
+using Server.Factions;
+using Server.Mobiles;
 using Server.Multis;
 using Server.Targeting;
-using Server.Items;
 using Server.Regions;
-using Server.Factions;
 
 namespace Server.SkillHandlers
 {
@@ -68,7 +69,7 @@ namespace Server.SkillHandlers
 
 							if ( src.AccessLevel >= trg.AccessLevel && ( ss >= ts || ( inHouse && house.IsInside( trg ) ) ) )
 							{
-								if ( trg is Mobiles.ShadowKnight && (trg.X != p.X || trg.Y != p.Y) )
+								if ( trg is ShadowKnight && (trg.X != p.X || trg.Y != p.Y) )
 									continue;
 
 								trg.RevealingAction();
