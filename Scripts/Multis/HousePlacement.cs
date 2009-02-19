@@ -2,7 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Server;
+using Server.Guilds;
+using Server.Items;
+using Server.Misc;
 using Server.Regions;
+using Server.Spells;
 
 namespace Server.Multis
 {
@@ -56,8 +60,8 @@ namespace Server.Multis
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return HousePlacementResult.Valid; // Staff can place anywhere
 
-			if ( map == Map.Ilshenar )
-				return HousePlacementResult.BadRegion; // No houses in Ilshenar
+			if ( map == Map.Ilshenar || SpellHelper.IsFeluccaT2A( map, center ) )
+				return HousePlacementResult.BadRegion; // No houses in Ilshenar/T2A
 
 			NoHousingRegion noHousingRegion = (NoHousingRegion) Region.Find( center, map ).GetRegion( typeof( NoHousingRegion ) );
 
@@ -319,9 +323,36 @@ namespace Server.Multis
 				}
 			}
 
+			List<Sector> _sectors = new List<Sector>();
+			List<BaseHouse> _houses = new List<BaseHouse>();
+
+			for ( int i = 0; i < yard.Count; i++ ) {
+				Sector sector = map.GetSector( yard[i] );
+				
+				if ( !_sectors.Contains( sector ) ) {
+					_sectors.Add( sector );
+					
+					if ( sector.Multis != null ) {
+						for ( int j = 0; j < sector.Multis.Count; j++ ) {
+							if ( sector.Multis[j] is BaseHouse ) {
+								BaseHouse _house = (BaseHouse)sector.Multis[j];
+								if ( !_houses.Contains( _house ) ) {
+									_houses.Add( _house );
+								}
+							}
+						}
+					}
+				}
+			}
+
 			for ( int i = 0; i < yard.Count; ++i )
 			{
-				Point2D yardPoint = yard[i];
+				foreach ( BaseHouse b in _houses ) {
+					if ( b.Contains( yard[i] ) )
+						return HousePlacementResult.BadStatic; // Broke rule #3
+				}
+
+				/*Point2D yardPoint = yard[i];
 
 				IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
 
@@ -337,11 +368,10 @@ namespace Server.Multis
 					}
 				}
 
-				eable.Free();
+				eable.Free();*/
 			}
 
 			return HousePlacementResult.Valid;
-
 		}
 	}
 }

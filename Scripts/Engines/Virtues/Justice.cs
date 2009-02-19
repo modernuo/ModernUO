@@ -99,6 +99,8 @@ namespace Server
 				protector.SendLocalizedMessage( 1049436 ); // That player cannot be protected.
 			else if ( pm.JusticeProtectors.Count > 0 )
 				protector.SendLocalizedMessage( 1049369 ); // You cannot protect that player right now.
+			else if ( pm.HasGump( typeof( AcceptProtectorGump ) ) )
+				protector.SendLocalizedMessage( 1049369 ); // You cannot protect that player right now.
 			else
 				pm.SendGump( new AcceptProtectorGump( protector, pm ) );
 		}

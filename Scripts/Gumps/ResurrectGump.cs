@@ -48,6 +48,11 @@ namespace Server.Gumps
 		{
 		}
 
+		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg )
+			: this( owner, healer, msg, false )
+		{
+		}
+
 		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg, bool fromSacrifice )
 			: this( owner, healer, msg, fromSacrifice, 0.0 )
 		{
@@ -137,6 +142,8 @@ namespace Server.Gumps
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
 			Mobile from = state.Mobile;
+
+			from.CloseGump( typeof( ResurrectGump ) );
 
 			if( info.ButtonID == 1 || info.ButtonID == 2 )
 			{

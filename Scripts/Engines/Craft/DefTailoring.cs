@@ -145,7 +145,6 @@ namespace Server.Engines.Craft
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
-			// Pants
 			#endregion
 
 			#region Pants

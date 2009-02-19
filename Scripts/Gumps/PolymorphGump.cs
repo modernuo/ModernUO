@@ -156,7 +156,6 @@ namespace Server.Gumps
 		}
 	}
 
-
 	public class NewPolymorphGump : Gump
 	{
 		private static readonly PolymorphEntry[] m_Entries = new PolymorphEntry[]
@@ -180,7 +179,6 @@ namespace Server.Gumps
 				PolymorphEntry.Ettin,
 				PolymorphEntry.Daemon
 			};
-
 
 		private Mobile m_Caster;
 		private Item m_Scroll;

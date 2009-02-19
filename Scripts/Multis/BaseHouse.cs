@@ -2833,20 +2833,6 @@ namespace Server.Multis
 
 		public override void OnDelete()
 		{
-			/*Map map = this.Map;
-
-			if ( map != null )
-			{
-				MultiComponentList mcl = Components;
-				IPooledEnumerable eable = map.GetItemsInBounds( new Rectangle2D( X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height ) );
-
-				foreach ( Item item in eable )
-					if ( item is Guildstone && Contains( item ) )
-						item.Delete();
-				
-				eable.Free();
-			}*/
-
 			RestoreRelocatedEntities();
 
 			new FixColumnTimer( this ).Start();
