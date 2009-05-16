@@ -57,10 +57,21 @@ namespace Server.Items
 			defender.FixedEffect( 0x376A, 9, 32 );
 			defender.FixedParticles( 0x37C4, 1, 8, 0x13AF, 0, 0, EffectLayer.Waist );
 
-			AOS.Damage( defender, attacker, (int)(15.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 10), 100, 0, 0, 0, 0 );	//10-25
-
-			defender.Freeze( TimeSpan.FromSeconds( 2.0 ) );
-			Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );
+			if ( Core.ML )
+			{
+				AOS.Damage( defender, attacker, (int)( 15.0 * ( attacker.Skills[SkillName.Bushido].Value - 50.0 ) / 70.0 + Utility.Random( 10 ) ), true, 100, 0, 0, 0, 0 );	//0-25
+				if ( ( ( 150.0 / 7.0 + ( 4.0 * attacker.Skills[SkillName.Bushido].Value ) / 7.0) / 100.0 ) > Utility.RandomDouble() )
+				{
+					defender.Paralyze( TimeSpan.FromSeconds( 2.0 ) );
+					Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );				
+				}
+			}
+			else
+			{
+				AOS.Damage( defender, attacker, (int)(15.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 10), true, 100, 0, 0, 0, 0 ); //10-25
+				defender.Freeze( TimeSpan.FromSeconds( 2.0 ) );
+				Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );				
+			}
 		}
 	}
 }

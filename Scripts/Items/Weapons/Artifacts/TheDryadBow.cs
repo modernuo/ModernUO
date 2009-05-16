@@ -25,32 +25,12 @@ namespace Server.Items
 
 		private static SkillName[] m_PossibleBonusSkills = new SkillName[]
 			{
-				SkillName.Swords,
-				SkillName.Fencing,
-				SkillName.Macing,
 				SkillName.Archery,
-				SkillName.Wrestling,
-				SkillName.Parry,
-				SkillName.Tactics,
-				SkillName.Anatomy,
 				SkillName.Healing,
-				SkillName.Magery,
-				SkillName.Meditation,
-				SkillName.EvalInt,
 				SkillName.MagicResist,
-				SkillName.AnimalTaming,
-				SkillName.AnimalLore,
-				SkillName.Veterinary,
-				SkillName.Musicianship,
-				SkillName.Provocation,
-				SkillName.Discordance,
 				SkillName.Peacemaking,
 				SkillName.Chivalry,
-				SkillName.Focus,
-				SkillName.Necromancy,
-				SkillName.Stealing,
-				SkillName.Stealth,
-				SkillName.SpiritSpeak 
+				SkillName.Ninjitsu
 			};
 
 		public TheDryadBow( Serial serial ) : base( serial )

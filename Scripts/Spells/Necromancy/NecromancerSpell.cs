@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Items;
 
 namespace Server.Spells.Necromancy
 {
@@ -34,6 +35,17 @@ namespace Server.Spells.Necromancy
 		{
 			min = RequiredSkill;
 			max = RequiredSkill + 40.0;
+		}
+
+		public override bool ConsumeReagents()
+		{
+			if( base.ConsumeReagents() )
+				return true;
+
+			if( ArcaneGem.ConsumeCharges( Caster, (Core.SE ? 1 : 1 + (int)Circle) ) )
+				return true;
+
+			return false;
 		}
 
 		public override int GetMana()

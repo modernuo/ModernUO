@@ -190,6 +190,8 @@ namespace Server.Items
 			Weight = 3.0;
 		}
 
+		public override int DefaultMaxWeight { get { if ( Core.ML ) { return 550; } else { return 400; } } }
+
 		public Backpack( Serial serial ) : base( serial )
 		{
 		}

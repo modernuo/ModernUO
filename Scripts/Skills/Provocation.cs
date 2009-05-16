@@ -96,7 +96,11 @@ namespace Server.SkillHandlers
 					{
 						from.SendLocalizedMessage( 1062488 ); // The instrument you are trying to play is no longer in your backpack!
 					}
-					else if ( m_Creature.Unprovokable || creature.Unprovokable )
+					else if ( m_Creature.Unprovokable )
+					{
+						from.SendLocalizedMessage( 1049446 ); // You have no chance of provoking those creatures.
+					}
+					else if ( creature.Unprovokable && !( creature is DemonKnight ) )
 					{
 						from.SendLocalizedMessage( 1049446 ); // You have no chance of provoking those creatures.
 					}
