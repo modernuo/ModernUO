@@ -42,7 +42,7 @@ namespace Server.Spells.Necromancy
 			if( base.ConsumeReagents() )
 				return true;
 
-			if( ArcaneGem.ConsumeCharges( Caster, (Core.SE ? 1 : 1 + (int)Circle) ) )
+			if( ArcaneGem.ConsumeCharges( Caster, 1 ) )
 				return true;
 
 			return false;
