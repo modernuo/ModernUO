@@ -190,7 +190,20 @@ namespace Server.Items
 			Weight = 3.0;
 		}
 
-		public override int DefaultMaxWeight { get { if ( Core.ML ) { return 550; } else { return 400; } } }
+		public override int DefaultMaxWeight {
+			get {
+				if ( Core.ML ) {
+					Mobile m = ParentEntity as Mobile;
+					if ( m != null && m.Backpack == this ) {
+						return 550;
+					} else {
+						return base.DefaultMaxWeight;
+					}
+				} else {
+					return base.DefaultMaxWeight;
+				}
+			}
+		}
 
 		public Backpack( Serial serial ) : base( serial )
 		{

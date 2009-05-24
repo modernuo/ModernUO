@@ -55,12 +55,6 @@ namespace Server.Engines.Craft
 			return 0;
 		}
 
-		public override void PlayCraftEffect( Mobile from )
-		{
-			// no sound
-			//from.PlaySound( 0x241 );
-		}
-
 		private static Type[] m_TinkerColorables = new Type[]
 			{
 				typeof( ForkLeft ), typeof( ForkRight ),
@@ -88,6 +82,12 @@ namespace Server.Engines.Craft
 				contains = ( m_TinkerColorables[i] == type );
 
 			return contains;
+		}
+
+		public override void PlayCraftEffect( Mobile from )
+		{
+			// no sound
+			//from.PlaySound( 0x241 );
 		}
 
 		public override int PlayEndingEffect( Mobile from, bool failed, bool lostMaterial, bool toolBroken, int quality, bool makersMark, CraftItem item )

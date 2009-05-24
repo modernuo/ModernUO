@@ -61,6 +61,9 @@ namespace Server.Items
 
 		public static void EndWound( Mobile m )
 		{
+			if ( !IsWounded( m ) )
+				return;
+
 			Timer t = (Timer)m_Table[m];
 
 			if ( t != null )

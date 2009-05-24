@@ -49,6 +49,29 @@ namespace Server.Engines.Craft
 			return 0;
 		}
 
+		private static Type[] m_TailorColorables = new Type[]
+			{
+				typeof( GozaMatEastDeed ), typeof( GozaMatSouthDeed ),
+				typeof( SquareGozaMatEastDeed ), typeof( SquareGozaMatSouthDeed ),
+				typeof( BrocadeGozaMatEastDeed ), typeof( BrocadeGozaMatSouthDeed ),
+				typeof( BrocadeSquareGozaMatEastDeed ), typeof( BrocadeSquareGozaMatSouthDeed )
+			};
+
+		public override bool RetainsColorFrom( CraftItem item, Type type )
+		{
+			if ( !type.IsSubclassOf( typeof( Cloth ) ) )
+				return false;
+
+			type = item.ItemType;
+
+			bool contains = false;
+
+			for ( int i = 0; !contains && i < m_TailorColorables.Length; ++i )
+				contains = ( m_TailorColorables[i] == type );
+
+			return contains;
+		}
+
 		public override void PlayCraftEffect( Mobile from )
 		{
 			from.PlaySound( 0x248 );

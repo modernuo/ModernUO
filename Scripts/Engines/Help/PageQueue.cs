@@ -185,6 +185,10 @@ namespace Server.Engines.Help
 				{
 					m_Entry.Sender.SendLocalizedMessage( 1008077, true, (index + 1).ToString() ); // Thank you for paging. Queue status : 
 					m_Entry.Sender.SendLocalizedMessage( 1008084 ); // You can reference our website at www.uo.com or contact us at support@uo.com. To cancel your page, please select the help button again and select cancel.
+
+					if ( m_Entry.Handler != null && m_Entry.Handler.NetState == null ) {
+						m_Entry.Handler = null;
+					}
 				}
 				else
 				{
