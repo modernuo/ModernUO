@@ -415,7 +415,7 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public BrocadeSquareGozaMatEastAddon()
+		public BrocadeSquareGozaMatEastAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28AE, 1030688 ), 0, 0, 0 );
 			Hue = hue;
@@ -481,7 +481,7 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public BrocadeSquareGozaMatSouthAddon()
+		public BrocadeSquareGozaMatSouthAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28AF, 1030688 ), 0, 0, 0 );
 			Hue = hue;
