@@ -33,8 +33,8 @@ namespace Server.Spells.Spellweaving
 
 				TimeSpan duration = TimeSpan.FromSeconds( (int)(skill / 24) + FocusLevel );
 
-				int fcMalus = 2 * (FocusLevel + 1);
-				int ssiMalus = FocusLevel + 1;
+				int fcMalus = FocusLevel + 1;
+				int ssiMalus = 2 * (FocusLevel + 1);
 
 				List<Mobile> targets = new List<Mobile>();
 

@@ -62,6 +62,15 @@ namespace Server.Spells.Necromancy
 						damage *= (300 + (m.Karma / 100) + (GetDamageSkill( Caster ) * 10));
 						damage /= 1000;
 
+						int sdiBonus = AosAttributes.GetValue( Caster, AosAttribute.SpellDamage );
+						
+						// PvP spell damage increase cap of 15% from an item’s magic property in Publish 33(SE)
+						if ( Core.SE && m.Player && Caster.Player && sdiBonus > 15 )
+							sdiBonus = 15;
+						
+						damage *= ( 100 + sdiBonus );
+						damage /= 100;
+
 						// TODO: cap?
 						//if ( damage > 40 )
 						//	damage = 40;

@@ -64,11 +64,11 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041361; } } // A bank check
 
-		public override void GetProperties(ObjectPropertyList list)
+		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
 
-			list.Add( 1060738, m_Worth.ToString() ); // value: ~1_val~
+			list.Add( 1060738, Core.ML ? m_Worth.ToString( "N0" ) : m_Worth.ToString() ); // value: ~1_val~
 		}
 
 		public override void OnSingleClick( Mobile from )

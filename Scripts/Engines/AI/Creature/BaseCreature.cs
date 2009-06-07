@@ -529,6 +529,9 @@ namespace Server.Mobiles
 			int poisDamage = BreathPoisonDamage;
 			int nrgyDamage = BreathEnergyDamage;
 
+			if( Evasion.CheckSpellEvasion( target ) ) 
+				return;
+
 			if ( physDamage == 0 && fireDamage == 0 && coldDamage == 0 && poisDamage == 0 && nrgyDamage == 0 )
 			{ // Unresistable damage even in AOS
 				target.Damage( BreathComputeDamage(), this );

@@ -308,6 +308,7 @@ namespace Server.Engines.Harvest
 
 								if ( map.CanSpawnMobile( x, y, from.Z ) )
 								{
+									spawned.OnBeforeSpawn( new Point3D( x, y, from.Z ), map );
 									spawned.MoveToWorld( new Point3D( x, y, from.Z ), map );
 									spawned.Combatant = from;
 									return;
@@ -318,6 +319,7 @@ namespace Server.Engines.Harvest
 
 									if ( map.CanSpawnMobile( x, y, z ) )
 									{
+										spawned.OnBeforeSpawn( new Point3D( x, y, z ), map );
 										spawned.MoveToWorld( new Point3D( x, y, z ), map );
 										spawned.Combatant = from;
 										return;
@@ -325,6 +327,7 @@ namespace Server.Engines.Harvest
 								}
 							}
 
+							spawned.OnBeforeSpawn( from.Location, from.Map );
 							spawned.MoveToWorld( from.Location, from.Map );
 							spawned.Combatant = from;
 						}

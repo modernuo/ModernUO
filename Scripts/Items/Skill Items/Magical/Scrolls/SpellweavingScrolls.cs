@@ -252,7 +252,7 @@ namespace Server.Items
 
 		[Constructable]
 		public SummonFiendScroll( int amount )
-			: base( 606, 0x2D57, amount )
+			: base( 607, 0x2D58, amount )
 		{
 		}
 

@@ -3,6 +3,7 @@ using System.Collections;
 using Server.Network;
 using Server.Items;
 using Server.Mobiles;
+using Server.Spells;
 using Server.Targeting;
 
 namespace Server.Spells.Bushido
@@ -30,20 +31,15 @@ namespace Server.Spells.Bushido
 
 		public static bool VerifyCast( Mobile Caster, bool messages )
 		{
-			if( Caster == null )	//sanity
+			if( Caster == null ) // Sanity
 				return false;
-
-			if( Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null )
-				return true;
-
-			//Intentional having a Shield check override all.
 
 			BaseWeapon weap = Caster.FindItemOnLayer( Layer.OneHanded ) as BaseWeapon;
 
 			if( weap == null )
 				weap = Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseWeapon;
 
-			if( weap != null )
+			if( weap != null || Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null )
 			{
 				if( Core.ML && Caster.Skills[weap.Skill].Base < 50 )
 				{
@@ -71,9 +67,18 @@ namespace Server.Spells.Bushido
 
 		public static bool CheckSpellEvasion( Mobile defender )
 		{
-			if( IsEvading( defender ) && VerifyCast( defender, false ) && BaseWeapon.CheckParry( defender ) ) //As per OSI, uses the exact same parry code
+			BaseWeapon weap = defender.FindItemOnLayer( Layer.OneHanded ) as BaseWeapon;
+
+			if ( weap == null )
+				weap = defender.FindItemOnLayer( Layer.TwoHanded ) as BaseWeapon;
+
+			if ( Core.ML && defender.Spell != null && defender.Spell.IsCasting )
 			{
-				defender.Emote( "*evades*" );	//Yes.  Eew.  Blame OSI.
+				return false;
+			}
+			else if ( IsEvading( defender ) && BaseWeapon.CheckParry( defender ) && ( !Core.ML || defender.Skills[weap.Skill].Base > 50 ) && ( weap != null || defender.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null ) ) 
+			{
+				defender.Emote( "*evades*" ); // Yes.  Eew.  Blame OSI.
 				defender.FixedEffect( 0x37B9, 10, 16 );
 				return true;
 			}
@@ -158,15 +163,15 @@ namespace Server.Spells.Bushido
 			if( !Core.ML )
 				return 1.5;
 
-			double bonus = 80;
+			double bonus = 0;
 
-			if( m.Skills.Bushido.Value > 60 )
-				bonus += m.Skills.Bushido.Value;
+			if( m.Skills.Bushido.Value >= 60 )
+				bonus += ( ( m.Skills.Bushido.Value - 60 * .004 ) + 0.16 );
 
-			if( m.Skills.Anatomy.Value >= 100 && m.Skills.Tactics.Value >= 100 &&  m.Skills.Bushido.Value > 100 )	//Bushido being HIGHER than 100 for bonus is intended
-				bonus += 50;
+			if( m.Skills.Anatomy.Value >= 100 && m.Skills.Tactics.Value >= 100 && m.Skills.Bushido.Value > 100 ) //Bushido being HIGHER than 100 for bonus is intended
+				bonus += 0.10;
 
-			return 1.0 + bonus/500;
+			return 1.0 + bonus;
 		}
 
 		public static void BeginEvasion( Mobile m )

@@ -78,7 +78,7 @@ namespace Server.Items
 				/* Gazer */				new MonsterStatuetteInfo( 1049768, 0x20F4, 377 ),
 				/* FireElemental */		new MonsterStatuetteInfo( 1049769, 0x20F3, 838 ),
 				/* Wolf */				new MonsterStatuetteInfo( 1049770, 0x2122, 229 ),
-				/* Phillip's Steed */	new MonsterStatuetteInfo( 1063488, 0x3FFE, 205 ),
+				/* Phillip's Steed */	new MonsterStatuetteInfo( 1063488, 0x3FFE, 168 ),
 				/* Seahorse */			new MonsterStatuetteInfo( 1070819, 0x25BA, 138 )
 			};
 

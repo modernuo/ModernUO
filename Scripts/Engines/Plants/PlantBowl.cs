@@ -54,13 +54,15 @@ namespace Server.Engines.Plants
 
 				if ( targeted is FertileDirt )
 				{
+					int _dirtNeeded = Core.ML ? 20 : 40;
+
 					FertileDirt dirt = (FertileDirt)targeted;
 
 					if ( !dirt.IsChildOf( from.Backpack ) )
 					{
 						from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 					}
-					else if ( dirt.Amount < 40 )
+					else if ( dirt.Amount < _dirtNeeded )
 					{
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061896 ); // You need more dirt to fill a plant bowl!
 					}
@@ -70,7 +72,7 @@ namespace Server.Engines.Plants
 
 						if ( from.PlaceInBackpack( fullBowl ) )
 						{
-							dirt.Consume( 40 );
+							dirt.Consume( _dirtNeeded );
 							m_PlantBowl.Delete();
 
 							from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061895 ); // You fill the bowl with fresh dirt.

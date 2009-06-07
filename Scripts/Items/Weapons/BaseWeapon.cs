@@ -1056,11 +1056,13 @@ namespace Server.Items
 
 			if ( shield != null )
 			{
-				double chance = (parry - bushidoNonRacial) / 400.0;	//As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+				double chance = (parry - bushidoNonRacial) / 400.0;	// As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
 
+				if ( chance <= 0 ) // chance shouldn't go below 0
+					chance = 0;				
 
-				// Parry over 100 grants a 5% bonus.
-				if ( parry >= 100.0 )
+				// Parry/Bushido over 100 grants a 5% bonus.
+				if ( parry >= 100.0 || bushido >= 100.0)
 					chance += 0.05;
 
 				// Evasion grants a variable bonus post ML. 50% prior.
