@@ -45,7 +45,7 @@ namespace Server.Mobiles
 			Fame = 5000;
 			Karma = -5000;
 
-			CraftResource res;
+			CraftResource res = null;
 
 			switch (Utility.Random( 6 ))
 			{
