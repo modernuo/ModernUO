@@ -39,6 +39,9 @@ namespace Server.Items
 			if ( !Validate( attacker ) )
 				return;
 
+			if ( defender is ChaosDragoon || defender is ChaosDragoonElite )
+				return;
+
 			if ( attacker.Mounted && !(defender.Weapon is Lance) ) // TODO: Should there be a message here?
 				return;
 

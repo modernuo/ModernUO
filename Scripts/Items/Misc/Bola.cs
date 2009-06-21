@@ -84,9 +84,11 @@ namespace Server.Items
 
 			to.Damage( 1, from );
 
-			IMount mt = to.Mount;
+			if ( to is ChaosDragoon || to is ChaosDragoonElite )
+				from.SendLocalizedMessage( 1042047 ); // You fail to knock the rider from its mount.
 
-			if ( mt != null )
+			IMount mt = to.Mount;
+			if ( mt != null && !( to is ChaosDragoon || to is ChaosDragoonElite ) )
 				mt.Rider = null;
 
 			to.SendLocalizedMessage( 1040023 ); // You have been knocked off of your mount!

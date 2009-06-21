@@ -423,6 +423,12 @@
 				<logoutDelay active="false" />
 			</region>
 		</region>
+		<region type="DungeonRegion" priority="50" name="Sanctuary">
+			<rect x="6144" y="0" width="255" height="255" />
+			<go x="6174" y="23" z="0" />
+			<music name="Dungeon9" />
+			<entrance x="762" y="1645" />
+		</region>
 		<region type="DungeonRegion" priority="50" name="Covetous">
 			<rect x="5376" y="1793" width="201" height="255" />
 			<rect x="5576" y="1791" width="57" height="257" />
@@ -1086,9 +1092,10 @@
 						<object id="23" type="Scribe" amount="2" />
 					</spawning>
 				</region>
-				<region name="The Bountiful Harvest Inn in Haven">
-					<rune name="The Bountiful Harvest Inn in Haven" />
-					<rect x="3664" y="2608" width="16" height="16" />
+				<region name="The Gentle Rest Inn in New Haven">
+					<rune name="The Gentle Rest Inn in New Haven" />
+					<rect x="3493" y="2513" width="16" height="7" />
+					<rect x="3503" y="2513" width="7" height="16"
 					<logoutDelay active="false" />
 					<spawning excludeFromParent="true">
 						<object id="24" type="InnKeeper" amount="2" />
@@ -1975,6 +1982,11 @@
 		</region>
 	</Facet>
 	<Facet name="Malas">
+		<region type="NoHousingRegion" priority="50" name="Ilse of the Divide">
+			<rect x="1532" y="857" width="300" height="200" />
+			<go x="1731" y="981" z="-79" />
+			<smartNoHousing active="true" />
+		</region>
 		<region type="TownRegion" priority="50" name="Luna">
 			<rect x="945" y="490" width="91" height="61" />
 			<go x="989" y="520" z="-50" />
@@ -1993,6 +2005,12 @@
 				<rect x="2031" y="1311" width="15" height="14" />
 				<logoutDelay active="false" />
 			</region>
+		</region>
+		<region type="DungeonRegion" priority="50" name="Labrinth">
+			<rect x="256" y="1795" width="243" height="230" />
+			<go x="336" y="1970" z="0" />
+			<music name="Dungeon9" />
+			<entrance x="1731" y="981" z="-79" />
 		</region>
 		<region type="DungeonRegion" priority="50" name="Doom">
 			<rect x="256" y="0" width="256" height="304" />

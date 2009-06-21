@@ -1,0 +1,109 @@
+using System;
+using System.Collections;
+using Server;
+using Server.Items;
+
+namespace Server.Mobiles
+{
+	[CorpseName("a fetid essence corpse")]
+	public class  FetidEssence  : BaseCreature
+	{
+		[Constructable]
+		public  FetidEssence () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		{
+			Name = "a fetid essence";
+			Body = 273;
+
+			SetStr( 101, 150 );
+			SetDex( 210, 250 );
+			SetInt( 451, 550 );
+
+			SetHits( 551, 650 );
+			
+			SetDamage( 11, 13 );
+
+			SetDamageType( ResistanceType.Physical, 30 );
+			SetDamageType( ResistanceType.Poison, 70 );
+
+			SetResistance( ResistanceType.Physical, 40, 50 );
+			SetResistance( ResistanceType.Fire, 40, 50 );
+			SetResistance( ResistanceType.Cold, 40, 50 );
+			SetResistance( ResistanceType.Poison, 70, 90 );
+			SetResistance( ResistanceType.Energy, 75, 80 );
+
+			SetSkill(SkillName.Meditation, 91.4, 99.4 );
+			SetSkill(SkillName.EvalInt, 88.5, 92.3 );
+			SetSkill(SkillName.Magery, 97.9, 101.7 );
+			SetSkill(SkillName.Poisoning, 100 );
+			SetSkill(SkillName.Anatomy, 0, 4.5 );
+			SetSkill( SkillName.MagicResist, 103.5, 108.8 );
+			SetSkill( SkillName.Tactics, 81.0, 84.6 );
+			SetSkill( SkillName.Wrestling, 81.3, 83.9 );
+
+			Fame = 3700;  // Guessed
+			Karma = -3700;  // Guessed
+		}
+
+		/*public override void GenerateLoot() -- Need to verify
+		{
+			AddLoot( LootPack.Meager );
+			AddLoot( LootPack.Average );
+		}*/
+		 
+		public override int GetAngerSound()
+		{
+			return 0x56d;
+		}
+
+		public override int GetIdleSound()
+		{
+			return 0x56b;
+		}
+
+		public override int GetAttackSound()
+		{
+			return 0x56c;
+		}
+
+		public override int GetHurtSound()
+		{
+			return 0x56c;
+		}
+
+		public override int GetDeathSound()
+		{
+			return 0x56e;
+		}
+
+		public  FetidEssence ( Serial serial ) : base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+			writer.Write( (int) 0 );
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+			int version = reader.ReadInt();
+		}
+
+		/*private class InternalTimer : Timer
+		{
+			private Mobile m_From;
+			private Mobile m_Mobile;
+			private int m_Count;
+
+			public InternalTimer( Mobile from, Mobile m ) : base( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ) )
+			{
+				m_From = from;
+				m_Mobile = m;
+				Priority = TimerPriority.TwoFiftyMS;
+			}
+
+		}*/
+	}
+}

@@ -164,7 +164,7 @@ namespace Server.Items
 			return CheckSkills( from ) && CheckMana( from, false );
 		}
 
-		private static WeaponAbility[] m_Abilities = new WeaponAbility[30]
+		private static WeaponAbility[] m_Abilities = new WeaponAbility[31]
 			{
 				null,
 				new ArmorIgnore(),
@@ -185,18 +185,19 @@ namespace Server.Items
 				new FrenziedWhirlwind(),
 				new Block(),
 				new DefenseMastery(),
-                new NerveStrike(),
-                new TalonStrike(),
-                new Feint(),
-                new DualWield(),
-                new DoubleShot(),
-                new ArmorPierce(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+				new NerveStrike(),
+				new TalonStrike(),
+				new Feint(),
+				new DualWield(),
+				new DoubleShot(),
+				new ArmorPierce(),
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				new Disrobe()
 			};
 
 		public static WeaponAbility[] Abilities{ get{ return m_Abilities; } }
@@ -236,6 +237,8 @@ namespace Server.Items
 		public static readonly WeaponAbility PsychicAttack		= m_Abilities[27];
 		public static readonly WeaponAbility SerpentArrow		= m_Abilities[28];
 		public static readonly WeaponAbility ForceOfNature		= m_Abilities[29];
+
+		public static readonly WeaponAbility Disrobe            = m_Abilities[30];
 
 		public static bool IsWeaponAbility( Mobile m, WeaponAbility a )
 		{
