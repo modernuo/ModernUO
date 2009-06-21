@@ -1058,7 +1058,7 @@ namespace Server.Items
 			{
 				double chance = (parry - bushidoNonRacial) / 400.0;	// As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
 
-				if ( chance <= 0 ) // chance shouldn't go below 0
+				if ( chance < 0 ) // chance shouldn't go below 0
 					chance = 0;				
 
 				// Parry/Bushido over 100 grants a 5% bonus.
