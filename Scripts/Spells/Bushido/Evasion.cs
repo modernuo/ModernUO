@@ -39,30 +39,28 @@ namespace Server.Spells.Bushido
 			if( weap == null )
 				weap = Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseWeapon;
 
-			if( weap != null || Caster.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null )
-			{
-				if( Core.ML && Caster.Skills[weap.Skill].Base < 50 )
-				{
-					//UBW and Mage weapon have no bearing on this, nor do skill items and such.
-					if( messages )
+			if ( weap != null ) {
+				if ( Core.ML && Caster.Skills[weap.Skill].Base < 50 ) {
+					if ( messages ) {
 						Caster.SendLocalizedMessage( 1076206 ); // Your skill with your equipped weapon must be 50 or higher to use Evasion.
-
+					}
 					return false;
 				}
-
-				if ( !Caster.CanBeginAction( typeof( Evasion ) ) )
-				{
-					Caster.SendLocalizedMessage( 501789 ); // You must wait before trying again.
-					return false;
+			} else if ( !( Caster.FindItemOnLayer( Layer.TwoHanded ) is BaseShield ) ) {
+				if ( messages ) {
+					Caster.SendLocalizedMessage( 1062944 ); // You must have a weapon or a shield equipped to use this ability!
 				}
-
-				return true;
+				return false;
 			}
 
-			if( messages )
-				Caster.SendLocalizedMessage( 1062944 ); // You must have a weapon or a shield equipped to use this ability!
+			if ( !Caster.CanBeginAction( typeof( Evasion ) ) ) {
+				if ( messages ) {
+					Caster.SendLocalizedMessage( 501789 ); // You must wait before trying again.
+				}
+				return false;
+			}
 
-			return false;
+			return true;
 		}
 
 		public static bool CheckSpellEvasion( Mobile defender )
@@ -72,12 +70,21 @@ namespace Server.Spells.Bushido
 			if ( weap == null )
 				weap = defender.FindItemOnLayer( Layer.TwoHanded ) as BaseWeapon;
 
-			if ( Core.ML && defender.Spell != null && defender.Spell.IsCasting )
-			{
-				return false;
+			if ( Core.ML ) {
+				if ( defender.Spell != null && defender.Spell.IsCasting ) {
+					return false;
+				}
+				
+				if ( weap != null ) {
+					if ( defender.Skills[weap.Skill].Base < 50  ) {
+						return false;
+					}
+				} else if ( !( defender.FindItemOnLayer( Layer.TwoHanded ) is BaseShield ) ) {
+					return false;
+				}
 			}
-			else if ( IsEvading( defender ) && BaseWeapon.CheckParry( defender ) && ( !Core.ML || defender.Skills[weap.Skill].Base > 50 ) && ( weap != null || defender.FindItemOnLayer( Layer.TwoHanded ) as BaseShield != null ) ) 
-			{
+			
+			if ( IsEvading( defender ) && BaseWeapon.CheckParry( defender ) ) {
 				defender.Emote( "*evades*" ); // Yes.  Eew.  Blame OSI.
 				defender.FixedEffect( 0x37B9, 10, 16 );
 				return true;
@@ -166,7 +173,7 @@ namespace Server.Spells.Bushido
 			double bonus = 0;
 
 			if( m.Skills.Bushido.Value >= 60 )
-				bonus += ( ( m.Skills.Bushido.Value - 60 * .004 ) + 0.16 );
+				bonus += ( ( ( m.Skills.Bushido.Value - 60 ) * .004 ) + 0.16 );
 
 			if( m.Skills.Anatomy.Value >= 100 && m.Skills.Tactics.Value >= 100 && m.Skills.Bushido.Value > 100 ) //Bushido being HIGHER than 100 for bonus is intended
 				bonus += 0.10;
