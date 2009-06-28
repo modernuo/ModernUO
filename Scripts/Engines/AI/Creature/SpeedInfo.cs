@@ -118,7 +118,7 @@ namespace Server
 					typeof( SnowElemental ),	typeof( WhiteWyrm ),		typeof( Wisp ),
 					typeof( DemonKnight ),		typeof( GiantBlackWidow ),	typeof( SummonedAirElemental ),
 					typeof( LesserHiryu ),		typeof( Hiryu ),			typeof( LadyOfTheSnow ),
-					typeof( RaiJu ),			typeof( Ronin )
+					typeof( RaiJu ),			typeof( Ronin ),			typeof( RuneBeetle )
 				} ),
 				/* Very Fast */
 				new SpeedInfo( 0.175, 0.350, new Type[]
@@ -206,7 +206,7 @@ namespace Server
 					typeof( Kappa ),			typeof( KazeKemono ),		typeof( DeathwatchBeetle ),
 					typeof( TsukiWolf ),		typeof( YomotsuElder ),		typeof( YomotsuPriest ),
 					typeof( YomotsuWarrior ),	typeof( RevenantLion ),		typeof( Oni ),
-					typeof( RuneBeetle ),		typeof( Gaman ),			typeof( Crane )
+					typeof( Gaman ),			typeof( Crane )
 				} )
 			};
 	}

@@ -79,6 +79,11 @@ namespace Server.Spells.First
 
 						for ( int i = 0; i < mods.Length; ++i )
 							targ.AddResistanceMod( mods[i] );
+
+						int physresist = 15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20);
+						string args = String.Format("{0}\t{1}\t{2}\t{3}\t{4}", physresist, 5, 5, 5, 5);
+
+						BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args.ToString()));
 					}
 					else
 					{
@@ -89,6 +94,8 @@ namespace Server.Spells.First
 
 						for ( int i = 0; i < mods.Length; ++i )
 							targ.RemoveResistanceMod( mods[i] );
+
+						BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
 					}
 				}
 

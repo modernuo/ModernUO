@@ -58,6 +58,10 @@ namespace Server.Spells.Necromancy
 				 * ((ss-rm)/8)+8
 				 */
 
+				ExpireTimer timer = (ExpireTimer)m_Table[m];
+				if ( timer != null )
+				timer.DoExpire();
+
 				m_OathTable[Caster] = Caster;
 				m_OathTable[m] = Caster;
 
@@ -72,13 +76,32 @@ namespace Server.Spells.Necromancy
 				TimeSpan duration = TimeSpan.FromSeconds( ((GetDamageSkill( Caster ) - GetResistSkill( m )) / 8) + 8 );
 				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );	//Skill check for gain
 
-				new ExpireTimer( Caster, m, duration ).Start();
+				timer = new ExpireTimer ( Caster, m, duration );
+				timer.Start ();
+
+				BuffInfo.AddBuff ( Caster, new BuffInfo ( BuffIcon.BloodOathCaster, 1075659, duration, Caster, m.Name.ToString () ) );
+				BuffInfo.AddBuff ( m, new BuffInfo ( BuffIcon.BloodOathCurse, 1075661, duration, m, Caster.Name.ToString () ) );
+
+				m_Table[m] = timer;
+
 			}
 
 			FinishSequence();
 		}
 
+			public static bool RemoveCurse( Mobile m )
+			{
+			ExpireTimer t = (ExpireTimer)m_Table[m];
+
+				if ( t == null )
+					return false;
+
+			t.DoExpire();
+			return true;
+		}
+
 		private static Hashtable m_OathTable = new Hashtable();
+		private static Hashtable m_Table = new Hashtable ();
 
 		public static Mobile GetBloodOath( Mobile m )
 		{
@@ -112,14 +135,23 @@ namespace Server.Spells.Necromancy
 			{
 				if ( m_Caster.Deleted || m_Target.Deleted || !m_Caster.Alive || !m_Target.Alive || DateTime.Now >= m_End )
 				{
-					m_Caster.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
-					m_Target.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
-
-					m_OathTable.Remove( m_Caster );
-					m_OathTable.Remove( m_Target );
-
-					Stop();
+					DoExpire ();
 				}
+			}
+			public void DoExpire()
+			{
+				m_Caster.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
+				m_Target.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
+
+				m_OathTable.Remove ( m_Caster );
+				m_OathTable.Remove ( m_Target );
+
+				Stop ();
+
+				BuffInfo.RemoveBuff ( m_Caster, BuffIcon.BloodOathCaster );
+				BuffInfo.RemoveBuff ( m_Target, BuffIcon.BloodOathCurse );
+
+				m_Table.Remove ( m_Caster );
 			}
 		}
 

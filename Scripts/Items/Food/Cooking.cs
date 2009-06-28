@@ -26,6 +26,7 @@ namespace Server.Items
 		[Constructable]
 		public Dough() : base( 0x103d )
 		{
+			Stackable = Core.ML;
 			Weight = 1.0;
 		}
 
@@ -124,6 +125,7 @@ namespace Server.Items
 		[Constructable]
 		public SweetDough() : base( 0x103d )
 		{
+			Stackable = Core.ML;
 			Weight = 1.0;
 			Hue = 150;
 		}

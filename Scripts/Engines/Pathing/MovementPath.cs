@@ -149,8 +149,8 @@ namespace Server
 				{
 					alg = FastAStarAlgorithm.Instance;
 
-					if ( !alg.CheckCondition( m, map, start, goal ) )
-						alg = SlowAStarAlgorithm.Instance;
+					//if ( !alg.CheckCondition( m, map, start, goal ) )	// SlowAstar is still broken
+					//	alg = SlowAStarAlgorithm.Instance;		// TODO: Fix SlowAstar
 				}
 
 				if ( alg != null && alg.CheckCondition( m, map, start, goal ) )

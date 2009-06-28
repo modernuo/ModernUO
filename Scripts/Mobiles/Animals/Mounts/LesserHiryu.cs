@@ -118,12 +118,26 @@ namespace Server.Mobiles
 
 		public override double GetControlChance( Mobile m, bool useBaseSkill )
 		{
+			double tamingChance = base.GetControlChance( m, useBaseSkill );
+
+			if( tamingChance >= 0.95 )
+			{
+				return tamingChance;
+			}
+
 			double skill = (useBaseSkill? m.Skills.Bushido.Base : m.Skills.Bushido.Value);
 
-			if( skill >= 90.0 )
-				return 1.0;
+			if( skill < 90.0 )
+			{
+				return tamingChance;
+			}
 
-			return base.GetControlChance( m, useBaseSkill );
+			double bushidoChance = ( skill - 30.0 ) / 100;
+
+			if( m.Skills.Bushido.Base >= 120 )
+				bushidoChance += 0.05;
+
+			return bushidoChance > tamingChance ? bushidoChance : tamingChance;
 		}
 
 		public override int TreasureMapLevel { get { return 3; } }
@@ -217,7 +231,7 @@ namespace Server.Mobiles
 				Timer.DelayCall( TimeSpan.Zero, delegate { Hue = GetHue(); } );
 
 			if( version <= 1 )
-				Timer.DelayCall( TimeSpan.Zero, delegate { InternalItem.Hue = this.Hue; } );
+				Timer.DelayCall( TimeSpan.Zero, delegate { if( InternalItem != null ) { InternalItem.Hue = this.Hue; } } );
 		}
 	}
 }

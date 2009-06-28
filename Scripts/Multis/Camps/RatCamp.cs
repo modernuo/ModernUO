@@ -17,6 +17,8 @@ namespace Server.Multis
 
 		public override void AddComponents()
 		{
+			BaseCreature bc;
+
 			IronGate gate = new IronGate( DoorFacing.EastCCW );
 			m_Gate = gate;
 
@@ -46,6 +48,8 @@ namespace Server.Multis
 				case 1: m_Prisoner = new SeekerOfAdventure(); break;
 			}
 
+			bc = (BaseCreature)m_Prisoner;
+			bc.IsPrisoner = true;
 			m_Prisoner.YellHue = Utility.RandomList( 0x57, 0x67, 0x77, 0x87, 0x117 );
 
 			AddMobile( m_Prisoner, 2, -2, 0, 0 );

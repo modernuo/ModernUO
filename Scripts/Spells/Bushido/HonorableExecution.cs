@@ -18,14 +18,6 @@ namespace Server.Spells.Bushido
 
 		public override TextDefinition AbilityMessage{ get{ return new TextDefinition( 1063122 ); } } // You better kill your enemy with your next hit or you'll be rather sorry...
 
-		public override double GetAccuracyScalar( Mobile attacker )
-		{
-			double bushido = attacker.Skills[SkillName.Bushido].Value;
-
-			// TODO: 4 -> Perfection / 5
-			return 1.0 + ( bushido / 10.0 + 4 ) / 100.0;
-		}
-
 		public override double GetDamageScalar( Mobile attacker, Mobile defender )
 		{
 			double bushido = attacker.Skills[SkillName.Bushido].Value;

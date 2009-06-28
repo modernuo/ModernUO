@@ -7,6 +7,7 @@ using Server.Multis;
 using Server.Prompts;
 using Server.Mobiles;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Engines.BulkOrders
 {
@@ -61,6 +62,34 @@ namespace Server.Engines.BulkOrders
 				from.SendLocalizedMessage( 1062381 ); // The book is empty.
 			else if ( from is PlayerMobile )
 				from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
+		}
+
+		public override void OnDoubleClickSecureTrade( Mobile from )
+		{
+			if ( !from.InRange( GetWorldLocation(), 2 ) )
+			{
+				from.SendLocalizedMessage( 500446 ); // That is too far away.
+			}
+			else if ( m_Entries.Count == 0 )
+			{
+				from.SendLocalizedMessage( 1062381 ); // The book is empty.
+			}
+			else
+			{
+				from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
+
+				SecureTradeContainer cont = GetSecureTradeCont();
+
+				if ( cont != null )
+				{
+					SecureTrade trade = cont.Trade;
+
+					if ( trade != null && trade.From.Mobile == from )
+						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)(trade.To.Mobile), this ) );
+					else if ( trade != null && trade.To.Mobile == from )
+						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)(trade.From.Mobile), this ) );
+				}
+			}
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )

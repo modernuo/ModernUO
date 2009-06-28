@@ -8,6 +8,7 @@ namespace Server.Items
 		[Constructable]
 		public SmokeBomb() : base( 0x2808 )
 		{
+			Stackable = Core.ML;
 			Weight = 1.0;
 		}
 

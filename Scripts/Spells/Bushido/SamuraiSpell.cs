@@ -41,6 +41,8 @@ namespace Server.Spells.Bushido
 
 		public override bool CheckCast()
 		{
+			int mana = ScaleMana ( RequiredMana );
+
 			if ( !base.CheckCast() )
 				return false;
 
@@ -56,9 +58,9 @@ namespace Server.Spells.Bushido
 				Caster.SendLocalizedMessage( 1063013, args ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
 				return false;
 			}
-			else if ( Caster.Mana < ScaleMana( RequiredMana ) )
+			else if ( Caster.Mana < mana )
 			{
-				Caster.SendLocalizedMessage( 1060174, RequiredMana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+				Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				return false;
 			}
 

@@ -20,6 +20,11 @@ namespace Server.Items
 
 		public override int BaseMana{ get{ return 15; } }
 
+		public override bool RequiresTactics( Mobile from )
+		{
+			return false;
+		}
+
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
 			if ( !Validate( attacker ) )

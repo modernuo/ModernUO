@@ -95,7 +95,7 @@ namespace Server.SkillHandlers
 
 								foreach ( Mobile m in from.GetMobilesInRange( range ) )
 								{
-									if ( (m is BaseCreature && ((BaseCreature)m).Uncalmable) || m == from || !from.CanBeHarmful( m, false ) )
+									if ((m is BaseCreature && ((BaseCreature)m).Uncalmable) || (m is BaseCreature && ((BaseCreature)m).AreaPeaceImmune) || m == from || !from.CanBeHarmful ( m, false ))
 										continue;
 
 									calmed = true;

@@ -27,8 +27,22 @@ namespace Server.Spells.Spellweaving
 			{
 				Caster.PlaySound( 0x5CE );
 
+				double skill = Caster.Skills[SkillName.Spellweaving].Value;
+
+				int damage = Math.Max( 11, 10 + (int)(skill / 24) ) + FocusLevel;
+
+				int sdiBonus = AosAttributes.GetValue( Caster, AosAttribute.SpellDamage );
+						
+				int pvmDamage = damage * ( 100 + sdiBonus );
+				pvmDamage /= 100;
+
+				if ( sdiBonus > 15 )
+					sdiBonus = 15;
+						
+				int pvpDamage = damage * ( 100 + sdiBonus );
+				pvpDamage /= 100;
+
 				int range = 2 + FocusLevel;
-				int damage = 15 + FocusLevel;
 				TimeSpan duration = TimeSpan.FromSeconds( 5 + FocusLevel );
 
 				List<Mobile> targets = new List<Mobile>();
@@ -47,7 +61,7 @@ namespace Server.Spells.Spellweaving
 
 					Spell oldSpell = m.Spell as Spell;
 
-					SpellHelper.Damage( this, m, damage, 0, 0, 0, 0, 100 );
+					SpellHelper.Damage( this, m, ( m.Player && Caster.Player ) ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100 );
 
 					if( oldSpell != null && oldSpell != m.Spell )
 					{

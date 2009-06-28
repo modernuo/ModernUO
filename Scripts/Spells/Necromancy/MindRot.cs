@@ -66,56 +66,42 @@ namespace Server.Spells.Necromancy
 
 		public static void ClearMindRotScalar( Mobile m )
 		{
-			m_Table.Remove( m );
+			if (!m_Table.ContainsKey(m))
+				return;
+
 			BuffInfo.RemoveBuff( m, BuffIcon.Mindrot );
+			MRBucket tmpB = (MRBucket)m_Table[m];
+			MRExpireTimer tmpT = (MRExpireTimer)tmpB.m_MRExpireTimer;
+			tmpT.Stop();
+			m_Table.Remove(m);
+			m.SendLocalizedMessage(1060872); // Your mind feels normal again.
 		}
 
 		public static bool HasMindRotScalar( Mobile m )
 		{
-			return m_Table.Contains( m );
+			return m_Table.ContainsKey(m);
 		}
 
 		public static bool GetMindRotScalar( Mobile m, ref double scalar )
 		{
-			object obj = m_Table[m];
-
-			if ( obj == null )
+			if (!m_Table.ContainsKey(m))
 				return false;
 
-			scalar = (double)obj;
+			MRBucket tmpB = (MRBucket)m_Table[m];
+			scalar = tmpB.m_Scalar;
 			return true;
 		}
 
 		public static void SetMindRotScalar( Mobile caster, Mobile target, double scalar, TimeSpan duration )
 		{
-			m_Table[target] = scalar;
-			BuffInfo.AddBuff( target, new BuffInfo( BuffIcon.Mindrot, 1075665, duration, target  ) );
-			new ExpireTimer( caster, target, duration ).Start();
-		}
-
-		private class ExpireTimer : Timer
-		{
-			private Mobile m_Caster;
-			private Mobile m_Target;
-			private DateTime m_End;
-
-			public ExpireTimer( Mobile caster, Mobile target, TimeSpan delay ) : base( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ) )
+			if (!m_Table.ContainsKey(target))
 			{
-				m_Caster = caster;
-				m_Target = target;
-				m_End = DateTime.Now + delay;
-
-				Priority = TimerPriority.TwoFiftyMS;
-			}
-
-			protected override void OnTick()
-			{
-				if ( m_Target.Deleted || !m_Target.Alive || DateTime.Now >= m_End )
-				{
-					m_Target.SendLocalizedMessage( 1060872 ); // Your mind feels normal again.
-					ClearMindRotScalar( m_Target );
-					Stop();
-				}
+				m_Table.Add(target, new MRBucket(scalar, new MRExpireTimer(caster, target, duration)));
+				BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
+				MRBucket tmpB = (MRBucket)m_Table[target];
+				MRExpireTimer tmpT = (MRExpireTimer)tmpB.m_MRExpireTimer;
+				tmpT.Start();
+				target.SendLocalizedMessage(1074384);
 			}
 		}
 
@@ -141,5 +127,51 @@ namespace Server.Spells.Necromancy
 				m_Owner.FinishSequence();
 			}
 		}
+	}
+
+	public class MRExpireTimer : Timer
+    {
+    	private Mobile m_Caster;
+    	private Mobile m_Target;
+    	private DateTime m_End;
+        
+        public MRExpireTimer( Mobile caster, Mobile target, TimeSpan delay ) : base( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ) )
+    	{
+		    m_Caster = caster;
+		    m_Target = target;
+		    m_End = DateTime.Now + delay;
+            Priority = TimerPriority.TwoFiftyMS;
+	    }
+        
+        public void RenewDelay(TimeSpan delay)
+        {
+		    m_End = DateTime.Now + delay;
+        }
+
+        public void Halt()
+        {
+            Stop();
+        }
+
+    	protected override void OnTick()
+    	{
+		    if ( m_Target.Deleted || !m_Target.Alive || DateTime.Now >= m_End )
+		    {
+			    MindRotSpell.ClearMindRotScalar( m_Target );
+			    Stop();
+		    }
+	    }
+    }
+
+	public class MRBucket
+	{
+		public MRBucket(double theScalar, MRExpireTimer theTimer)
+		{
+			m_Scalar = theScalar;
+			m_MRExpireTimer = theTimer;
+		}
+
+		public double m_Scalar;
+		public MRExpireTimer m_MRExpireTimer;
 	}
 }

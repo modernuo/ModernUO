@@ -213,7 +213,7 @@ namespace Server.Mobiles
 
 		public override bool BardImmune{ get{ return !Core.SE; } }
 		public override bool Unprovokable{ get{ return Core.SE; } }
-		public override bool Uncalmable{ get{ return Core.SE; } }
+		public override bool AreaPeaceImmune { get { return Core.SE; } }
 		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
 
 		public override int TreasureMapLevel{ get{ return 1; } }

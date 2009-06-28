@@ -24,6 +24,22 @@ namespace Server.Items
 
 	public abstract class BaseWand : BaseBashing
 	{
+		public override WeaponAbility PrimaryAbility { get { return WeaponAbility.Dismount; } }
+		public override WeaponAbility SecondaryAbility { get { return WeaponAbility.Disarm; } }
+
+		public override int AosStrengthReq { get { return 5; } }
+		public override int AosMinDamage { get { return 9; } }
+		public override int AosMaxDamage { get { return 11; } }
+		public override int AosSpeed { get { return 40; } }
+
+		public override int OldStrengthReq { get { return 0; } }
+		public override int OldMinDamage { get { return 2; } }
+		public override int OldMaxDamage { get { return 6; } }
+		public override int OldSpeed { get { return 35; } }
+
+		public override int InitMinHits { get { return 31; } }
+		public override int InitMaxHits { get { return 110; } }
+
 		private WandEffect m_WandEffect;
 		private int m_Charges;
 

@@ -276,7 +276,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.InRange( GetWorldLocation(), 1 ) )
+			if ( from.InRange( GetWorldLocation(), (Core.ML ? 3 : 1) ) )
 			{
 				if ( DateTime.Now < NextUse )
 				{
@@ -294,22 +294,22 @@ namespace Server.Items
 			NextUse = DateTime.Now + UseDelay;
 		}
 
-        public override void OnAfterDuped( Item newItem )
-        {
-            Runebook book = newItem as Runebook;
+		public override void OnAfterDuped( Item newItem )
+		{
+			Runebook book = newItem as Runebook;
 
-            if ( book == null )
-                return;
+			if ( book == null )
+				return;
 
 			book.m_Entries = new List<RunebookEntry>();
 
-            for ( int i = 0; i < m_Entries.Count; i++ )
-            {
-                RunebookEntry entry = m_Entries[i];
+			for ( int i = 0; i < m_Entries.Count; i++ )
+			{
+				RunebookEntry entry = m_Entries[i];
 
-                book.m_Entries.Add( new RunebookEntry( entry.Location, entry.Map, entry.Description, entry.House ) );
-            }
-        }
+				book.m_Entries.Add( new RunebookEntry( entry.Location, entry.Map, entry.Description, entry.House ) );
+			}
+		}
 
 		public bool CheckAccess( Mobile m )
 		{

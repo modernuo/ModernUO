@@ -71,6 +71,7 @@ namespace Server.Items
 				else
 					list.Add( CraftResources.GetName( m_Resource ) );
 			}
+			Stackable = Core.ML;
 		}
 	}
 

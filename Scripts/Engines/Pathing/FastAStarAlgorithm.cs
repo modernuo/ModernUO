@@ -166,13 +166,13 @@ namespace Server.PathAlgorithms.FastAStar
 						int newCost = m_Nodes[bestNode].cost + 1;
 						int newTotal = newCost + Heuristic( newNode % AreaSize, (newNode / AreaSize) % AreaSize, m_Nodes[newNode].z );
 
-						if ( m_Nodes[newNode].total > newTotal )
+						if ( !wasTouched || m_Nodes[newNode].total > newTotal )
 						{
 							m_Nodes[newNode].parent = bestNode;
 							m_Nodes[newNode].cost = newCost;
 							m_Nodes[newNode].total = newTotal;
 
-							if ( !m_OnOpen[newNode] )
+							if ( !wasTouched || !m_OnOpen[newNode] )
 							{
 								AddToChain( newNode );
 

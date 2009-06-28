@@ -100,7 +100,7 @@ namespace Server
 			}
 
 			#region Dragon Barding
-			if( (!Core.AOS || from == null || !from.Player) && m.Player && m.Mount is SwampDragon )
+			if( (from == null || !from.Player) && m.Player && m.Mount is SwampDragon )
 			{
 				SwampDragon pet = m.Mount as SwampDragon;
 

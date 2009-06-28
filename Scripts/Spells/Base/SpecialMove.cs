@@ -21,9 +21,9 @@ namespace Server.Spells
 		public virtual bool BlockedByAnimalForm{ get{ return true; } }
 		public virtual bool DelayedContext{ get{ return false; } }
 
-		public virtual double GetAccuracyScalar( Mobile attacker )
+		public virtual int GetAccuracyBonus( Mobile attacker )
 		{
-			return 1.0;
+			return 0;
 		}
 
 		public virtual double GetDamageScalar( Mobile attacker, Mobile defender )

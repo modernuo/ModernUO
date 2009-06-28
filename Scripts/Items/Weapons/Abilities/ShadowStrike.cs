@@ -16,6 +16,11 @@ namespace Server.Items
 		public override int BaseMana{ get{ return 20; } }
 		public override double DamageScalar{ get{ return 1.25; } }
 
+		public override bool RequiresTactics( Mobile from )
+		{
+			return false;
+		}
+
 		public override bool CheckSkills( Mobile from )
 		{
 			if ( !base.CheckSkills( from ) )

@@ -26,7 +26,7 @@ namespace Server.Items
 		[Constructable]
 		public Sand( int amount ) : base( 0x11EA )
 		{
-			Stackable = false;
+			Stackable = Core.ML;
 			Weight = 1.0;
 		}
 

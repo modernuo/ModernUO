@@ -1096,6 +1096,7 @@ namespace Server.Mobiles
 
 				case OrderType.Stop:
 				m_Mobile.ControlMaster.RevealingAction();
+				m_Mobile.Home = m_Mobile.Location;
 				m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
 				m_Mobile.PlaySound( m_Mobile.GetIdleSound() );
 				m_Mobile.Warmode = false;
@@ -1476,13 +1477,9 @@ namespace Server.Mobiles
 					Mobile newCombatant = null;
 					double newScore = 0.0;
 
-					List<AggressorInfo> list = m_Mobile.Aggressors;
-
-					for( int i = 0; i < list.Count; ++i )
+					foreach( Mobile aggr in m_Mobile.GetMobilesInRange( m_Mobile.RangePerception ) )
 					{
-						Mobile aggr = list[i].Attacker;
-
-						if( aggr.Map != m_Mobile.Map || !aggr.InRange( m_Mobile.Location, m_Mobile.RangePerception ) || !m_Mobile.CanSee( aggr ) )
+						if( !m_Mobile.CanSee( aggr ) || aggr.Combatant != m_Mobile )
 							continue;
 
 						if( aggr.IsDeadBondedPet || !aggr.Alive )
@@ -1571,7 +1568,15 @@ namespace Server.Mobiles
 			m_Mobile.Home = m_Mobile.Location;
 
 			m_Mobile.ControlTarget = null;
-			m_Mobile.ControlOrder = OrderType.None;
+
+			if( Core.ML )
+			{
+				WalkRandomInHome( 3, 2, 1 );
+			}
+			else
+			{
+				m_Mobile.ControlOrder = OrderType.None;
+			}
 
 			return true;
 		}

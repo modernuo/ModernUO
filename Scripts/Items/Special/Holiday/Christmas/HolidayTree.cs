@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Server.Network;
 using Server.Items;
+using Server.Multis;
 
 namespace Server.Items
 {
@@ -11,7 +12,7 @@ namespace Server.Items
 		Modern
 	}
 
-	public class HolidayTree : Item
+	public class HolidayTree : Item, IAddon
 	{
 		private ArrayList m_Components;
 		private Mobile m_Placer;
@@ -208,6 +209,16 @@ namespace Server.Items
 		{
 		}
 
+		public bool CouldFit( IPoint3D p, Map map )
+		{
+			return map.CanFit( (Point3D)p, 20 );
+		}
+
+		Item IAddon.Deed
+		{
+			get{ return new HolidayTreeDeed(); }
+		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -253,7 +264,21 @@ namespace Server.Items
 					break;
 				}
 			}
+			ValidatePlacement();
 		}
+
+		public void ValidatePlacement()
+		{
+			BaseHouse house = BaseHouse.FindHouseAt( this );
+
+			if ( house == null )
+			{
+				HolidayTreeDeed deed = new HolidayTreeDeed();
+				deed.MoveToWorld( Location, Map );
+				Delete();
+			}
+		}
+
 
 		public override void OnDoubleClick( Mobile from )
 		{
@@ -264,6 +289,13 @@ namespace Server.Items
 					from.AddToBackpack( new HolidayTreeDeed() );
 
 					this.Delete();
+
+					BaseHouse house = BaseHouse.FindHouseAt( this );
+
+					if ( house != null && house.Addons.Contains( this ) )
+					{
+						house.Addons.Remove( this );
+					}
 
 					from.SendLocalizedMessage( 503393 ); // A deed for the tree has been placed in your backpack.
 				}

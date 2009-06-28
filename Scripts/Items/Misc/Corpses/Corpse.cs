@@ -929,6 +929,16 @@ namespace Server.Items
 
 		public void Carve( Mobile from, Item item )
 		{
+			if ( IsCriminalAction( from ) && this.Map != null && (this.Map.Rules & MapRules.HarmfulRestrictions) != 0 )
+			{
+				if ( m_Owner == null || !m_Owner.Player )
+					from.SendLocalizedMessage( 1005035 ); // You did not earn the right to loot this creature!
+				else
+					from.SendLocalizedMessage( 1010049 ); // You may not loot this corpse.
+
+				return;
+			}
+
 			Mobile dead = m_Owner;
 
 			if ( m_Carved || dead == null )

@@ -45,7 +45,7 @@ namespace Server.Mobiles
 			if ( pack != null )
 				pack.Delete();
 
-			pack = new StrongBackpack();
+			pack = new Backpack();
 			pack.Movable = false;
 
 			AddItem( pack );

@@ -38,6 +38,16 @@ namespace Server.Items
 			return false;
 		}*/
 
+		public override bool RequiresTactics( Mobile from )
+		{
+			BaseWeapon weapon = from.Weapon as BaseWeapon;
+
+			if ( weapon == null )
+				return true;
+
+			return weapon.Skill != SkillName.Wrestling;
+		}
+
 		public override bool OnBeforeSwing( Mobile attacker, Mobile defender )
 		{
 			if( defender.Paralyzed )

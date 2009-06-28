@@ -8,6 +8,7 @@ namespace Server.Items
 		[Constructable]
 		public EggBomb() : base( 0x2809 )
 		{
+			Stackable = Core.ML;
 			Weight = 1.0;
 		}
 

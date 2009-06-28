@@ -56,12 +56,10 @@ namespace Server.Engines.Harvest
 
 			if ( m_Definition.RandomizeVeins )
 			{
-				m_Vein = m_Definition.GetVeinFrom( Utility.RandomDouble() );
+				m_DefaultVein = m_Definition.GetVeinFrom( Utility.RandomDouble() );
 			}
-			else
-			{
-				m_Vein = m_DefaultVein;
-			}
+
+			m_Vein = m_DefaultVein;
 		}
 
 		public void Consume( int amount, Mobile from )

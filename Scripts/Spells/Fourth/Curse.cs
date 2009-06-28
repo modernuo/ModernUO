@@ -75,6 +75,13 @@ namespace Server.Spells.Fourth
 
 				m.FixedParticles( 0x374A, 10, 15, 5028, EffectLayer.Waist );
 				m.PlaySound( 0x1EA );
+
+				int percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
+				TimeSpan length = SpellHelper.GetDuration(Caster, m);
+
+				string args = String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", percentage, percentage, percentage, 10, 10, 10, 10);
+
+				BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Curse, 1075835, 1075836, length, m, args.ToString()));
 			}
 
 			FinishSequence();

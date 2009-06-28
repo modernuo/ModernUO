@@ -16,6 +16,7 @@ namespace Server.Items
 		[Constructable]
 		public ArcaneGem() : base( 0x1EA7 )
 		{
+			Stackable = Core.ML;
 			Weight = 1.0;
 		}
 

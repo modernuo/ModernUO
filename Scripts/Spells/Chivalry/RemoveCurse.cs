@@ -86,12 +86,16 @@ namespace Server.Spells.Chivalry
 					CorpseSkinSpell.RemoveCurse( m );
 					CurseSpell.RemoveEffect( m );
 					MortalStrike.EndWound( m );
+					if (Core.ML) { BloodOathSpell.RemoveCurse ( m ); }
+					MindRotSpell.ClearMindRotScalar ( m );
 
 					BuffInfo.RemoveBuff( m, BuffIcon.Clumsy );
 					BuffInfo.RemoveBuff( m, BuffIcon.FeebleMind );
 					BuffInfo.RemoveBuff( m, BuffIcon.Weaken );
+					BuffInfo.RemoveBuff ( m, BuffIcon.Curse );
 					BuffInfo.RemoveBuff( m, BuffIcon.MassCurse );
 					BuffInfo.RemoveBuff( m, BuffIcon.MortalStrike );
+					BuffInfo.RemoveBuff ( m, BuffIcon.Mindrot );
 
 					// TODO: Should this remove blood oath? Pain spike?
 				}

@@ -272,7 +272,33 @@ namespace Server.Commands
 
 		public static void GetFollowers_OnTarget( Mobile from, object obj )
 		{
-			if ( obj is Mobile && ((Mobile)obj).Player )
+			if ( obj is PlayerMobile )
+			{
+				PlayerMobile master = (PlayerMobile)obj;
+				List<Mobile> pets = master.AllFollowers;
+
+				if ( pets.Count > 0 )
+				{
+					CommandLogging.WriteLine( from, "{0} {1} getting all followers of {2}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( master ) );
+
+					from.SendMessage( "That player has {0} pet{1}.", pets.Count, pets.Count != 1 ? "s" : "" );
+
+					for ( int i = 0; i < pets.Count; ++i )
+					{
+						Mobile pet = (Mobile)pets[i];
+
+						if ( pet is IMount )
+							((IMount)pet).Rider = null; // make sure it's dismounted
+
+						pet.MoveToWorld( from.Location, from.Map );
+					}
+				}
+				else
+				{
+					from.SendMessage( "There were no pets found for that player." );
+				}
+			}
+			else if ( obj is Mobile && ((Mobile)obj).Player )
 			{
 				Mobile master = (Mobile)obj;
 				ArrayList pets = new ArrayList();

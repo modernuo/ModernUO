@@ -332,7 +332,7 @@ namespace Server.Mobiles
 					{
 						pm.SendLocalizedMessage( 1053004 ); // You must wait about a day before you can gain in compassion again.
 					}
-					else if ( VirtueHelper.Award( pm, VirtueName.Compassion, 200, ref gainedPath ) )
+					else if ( VirtueHelper.Award( pm, VirtueName.Compassion, this.IsPrisoner ? 400 : 200, ref gainedPath ) )
 					{
 						if ( gainedPath )
 							pm.SendLocalizedMessage( 1053005 ); // You have achieved a path in compassion!

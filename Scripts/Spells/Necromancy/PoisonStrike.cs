@@ -49,6 +49,13 @@ namespace Server.Spells.Necromancy
 				Effects.PlaySound( m.Location, m.Map, 0x229 );
 
 				double damage = Utility.RandomMinMax( (Core.ML ? 32 : 36), 40 ) * ((300 + (GetDamageSkill( Caster ) * 9)) / 1000);
+				
+				double sdiBonus = (double)AosAttributes.GetValue( Caster, AosAttribute.SpellDamage )/100;
+				double pvmDamage = damage * (1 + sdiBonus);
+				
+				if ( Core.ML && sdiBonus > 0.15 )
+					sdiBonus = 0.15;
+				double pvpDamage = damage * (1 + sdiBonus);
 
 				Map map = m.Map;
 
@@ -57,7 +64,7 @@ namespace Server.Spells.Necromancy
 					List<Mobile> targets = new List<Mobile>();
 
 					foreach( Mobile targ in m.GetMobilesInRange( 2 ) )
-						if( (Caster == targ || SpellHelper.ValidIndirectTarget( Caster, targ )) && Caster.CanBeHarmful( targ, false ) )
+						if( (Caster == targ || m == targ || SpellHelper.ValidIndirectTarget( Caster, targ )) && Caster.CanBeHarmful( targ, false ) )
 							targets.Add( targ );
 
 					for( int i = 0; i < targets.Count; ++i )
@@ -74,7 +81,7 @@ namespace Server.Spells.Necromancy
 							num = 3;
 
 						Caster.DoHarmful( targ );
-						SpellHelper.Damage( this, targ, damage / num, 0, 0, 0, 100, 0 );
+						SpellHelper.Damage( this, targ, ((m.Player && Caster.Player) ? pvpDamage : pvmDamage) / num, 0, 0, 0, 100, 0 );
 					}
 				}
 			}

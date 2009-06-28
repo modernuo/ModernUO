@@ -106,7 +106,9 @@ namespace Server.Items
 		public void EndPlace( Mobile from, HolidayTreeType type, Point3D loc )
 		{
 			this.Delete();
-			new HolidayTree( from, type, loc );
+			HolidayTree tree = new HolidayTree( from, type, loc );
+			BaseHouse house = BaseHouse.FindHouseAt( tree );
+			house.Addons.Add( tree );
 		}
 
 		public override void OnDoubleClick( Mobile from )

@@ -23,10 +23,15 @@ namespace Server.SkillHandlers
 
 		public static TimeSpan OnUse( Mobile m )
 		{
-			if ( m.Target != null || m.Spell != null )
+			if ( m.Spell != null )
 			{
 				m.SendLocalizedMessage( 501238 ); // You are busy doing something else and cannot hide.
 				return TimeSpan.FromSeconds( 1.0 );
+			}
+
+			if ( Core.ML && m.Target != null )
+			{
+				Targeting.Target.Cancel( m );
 			}
 
 			double bonus = 0.0;

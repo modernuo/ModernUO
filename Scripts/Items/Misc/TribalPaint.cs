@@ -14,6 +14,7 @@ namespace Server.Items
 		{
 			Hue = 2101;
 			Weight = 2.0;
+			Stackable = Core.ML;
 		}
 
 		public TribalPaint( Serial serial ) : base( serial )

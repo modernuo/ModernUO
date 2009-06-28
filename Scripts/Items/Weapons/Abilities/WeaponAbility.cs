@@ -11,7 +11,7 @@ namespace Server.Items
 	{
 		public virtual int BaseMana{ get{ return 0; } }
 
-		public virtual double AccuracyScalar{ get{ return 1.0; } }
+		public virtual int AccuracyBonus{ get{ return 0; } }
 		public virtual double DamageScalar{ get{ return 1.0; } }
 
 		public virtual bool RequiresSE { get { return false; } }
@@ -31,6 +31,11 @@ namespace Server.Items
 		}
 
 		public virtual bool OnBeforeDamage( Mobile attacker, Mobile defender )
+		{
+			return true;
+		}
+
+		public virtual bool RequiresTactics( Mobile from )
 		{
 			return true;
 		}
@@ -87,6 +92,13 @@ namespace Server.Items
 
 			Skill skill = from.Skills[weapon.Skill];
 			double reqSkill = GetRequiredSkill( from );
+			bool reqTactics = Core.ML && RequiresTactics( from );
+
+			if ( Core.ML && reqTactics && from.Skills[SkillName.Tactics].Base < reqSkill )
+			{
+				from.SendLocalizedMessage( 1079308, reqSkill.ToString() ); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+				return false;
+			}
 
 			if ( skill != null && skill.Base >= reqSkill )
 				return true;
@@ -96,7 +108,14 @@ namespace Server.Items
 				return true;
 			/* </UBWS> */
 
-			from.SendLocalizedMessage( 1060182, reqSkill.ToString() ); // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
+			if ( reqTactics )
+			{
+				from.SendLocalizedMessage( 1079308, reqSkill.ToString() ); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+			}
+			else
+			{
+				from.SendLocalizedMessage( 1060182, reqSkill.ToString() ); // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
+			}
 
 			return false;
 		}
@@ -160,6 +179,11 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
 				return false;
 			}
+                if ( Core.ML && from.Spell != null )
+            {
+                from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
+                return false;
+            }
 
 			return CheckSkills( from ) && CheckMana( from, false );
 		}

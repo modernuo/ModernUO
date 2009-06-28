@@ -130,7 +130,7 @@ namespace Server.Spells.Spellweaving
 
 		public virtual bool CheckResisted( Mobile m )
 		{
-			double percent = (50 + 2*(GetResistSkill( m ) - GetDamageSkill( m )))/100;	//TODO: According to the guide this is it.. but.. is it correct per OSI?
+			double percent = (50 + 2*(GetResistSkill( m ) - GetDamageSkill( Caster )))/100;	//TODO: According to the guide this is it.. but.. is it correct per OSI?
 
 			if( percent <= 0 )
 				return false;

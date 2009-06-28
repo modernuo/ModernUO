@@ -20,12 +20,9 @@ namespace Server.Spells.Bushido
 
 		public override bool DelayedContext{ get{ return true; } }
 
-		public override double GetAccuracyScalar( Mobile attacker )
+		public override int GetAccuracyBonus( Mobile attacker )
 		{
-			if ( GetContext( attacker, typeof( Bushido.LightningStrike ) ) )
-				return 1.1;
-
-			return 1.5;
+			return 50;
 		}
 
 		public override bool IgnoreArmor( Mobile attacker )

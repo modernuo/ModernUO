@@ -70,6 +70,13 @@ namespace Server.Spells.Spellweaving
 			{
 				Caster.SendLocalizedMessage( 501942 ); // That location is blocked.
 			}
+
+			//say "Target can not be seen" if you target directly a mobile, like in OSI
+			if (m != null)
+			{
+				Caster.SendLocalizedMessage(500237); // Target can not be seen.
+			}
+
 			else if( SpellHelper.CheckTown( p, Caster ) && (m_MobileTarg ? CheckHSequence( m ) : CheckSequence()) )
 			{
 				TimeSpan duration = TimeSpan.FromSeconds( Caster.Skills.Spellweaving.Value/24 + 25 + FocusLevel*2 );

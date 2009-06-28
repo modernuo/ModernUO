@@ -82,7 +82,7 @@ namespace Server.SkillHandlers
 
 		public static void ScaleSkills( BaseCreature bc, double scalar )
 		{
-			int totalCapIncrease = 0;
+			int totalCapIncrease = Core.SE ? 2000 : 0; // 2000 points for GM Anatomy and Meditation
 
 			for ( int i = 0; i < bc.Skills.Length; ++i )
 			{
@@ -246,7 +246,7 @@ namespace Server.SkillHandlers
 						m_Creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502796, m_Tamer.NetState ); // You are dead, and cannot continue taming.
 						Stop();
 					}
-					else if ( !m_Tamer.CanSee( m_Creature ) || !m_Tamer.InLOS( m_Creature ) )
+					else if ( !m_Tamer.CanSee( m_Creature ) || !m_Tamer.InLOS( m_Creature ) || !CanPath() )
 					{
 						m_BeingTamed.Remove( m_Creature );
 						m_Tamer.NextSkillTime = DateTime.Now;
@@ -355,6 +355,21 @@ namespace Server.SkillHandlers
 							m_Creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502798, m_Tamer.NetState ); // You fail to tame the creature.
 						}
 					}
+				}
+
+				private bool CanPath()
+				{
+					IPoint3D p = m_Tamer as IPoint3D;
+
+					if ( p == null )
+						return false;
+
+					if( m_Creature.InRange( new Point3D( p ), 1 ) )
+						return true;
+
+					MovementPath path = new MovementPath( m_Creature, new Point3D( p ) );
+
+					return path.Success;
 				}
 			}
 		}

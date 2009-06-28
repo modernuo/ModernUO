@@ -56,6 +56,8 @@ namespace Server.Spells.Chivalry
 				{
 					((PlayerMobile)Caster).EnemyOfOneType = null;
 					((PlayerMobile)Caster).WaitingForEnemy = true;
+
+					BuffInfo.AddBuff ( Caster, new BuffInfo ( BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes ( delay ), Caster ) );
 				}
 			}
 

@@ -14,6 +14,8 @@ namespace Server.Mobiles
 
 		public override bool IsBondable{ get{ return false; } }
 
+		public override FoodType FavoriteFood { get { return FoodType.None; } }
+
 		[Constructable]
 		public Golem() : this( false, 1.0 )
 		{
@@ -81,7 +83,7 @@ namespace Server.Mobiles
 					PackItem( new Gears() );
 			}
 
-			ControlSlots = 4;
+			ControlSlots = 3;
 		}
 
 		public override bool DeleteOnRelease{ get{ return true; } }

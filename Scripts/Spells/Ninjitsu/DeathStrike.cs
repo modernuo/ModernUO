@@ -135,6 +135,9 @@ namespace Server.Spells.Ninjitsu
 			// This bonus is 8 at most. That brings the cap up to 70/30.
 			damage += info.m_DamageBonus;
 
+			if ( info.m_Attacker.Weapon is BaseWeapon && ((BaseWeapon)info.m_Attacker.Weapon).MaxRange > 1 )
+				damage /= 2;
+
 			// Damage is direct.
 			//info.m_Target.Damage( damage, info.m_Attacker );
 

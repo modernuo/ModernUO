@@ -235,7 +235,7 @@ namespace Server.Mobiles
 				Timer.DelayCall( TimeSpan.Zero, delegate { Hue = GetHue(); } );
 
 			if( version <= 1 )
-				Timer.DelayCall( TimeSpan.Zero, delegate { InternalItem.Hue = this.Hue; } );
+				Timer.DelayCall( TimeSpan.Zero, delegate { if( InternalItem != null ) { InternalItem.Hue = this.Hue; } } );
 		}
 	}
 }

@@ -74,9 +74,7 @@ namespace Server.Spells.Necromancy
 					new InternalTimer( m, damage ).Start();
 				}
 
-				BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.PainSpike, 1075667, buffTime, m, (int)damage ) );
-
-
+				BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString( (int)damage ) ) );
 
 				Misc.WeightOverloading.DFA = Misc.DFAlgorithm.PainSpike;
 				m.Damage( (int) damage, Caster );
