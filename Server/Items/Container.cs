@@ -108,21 +108,14 @@ namespace Server.Items
 		{
 			get
 			{
-				int maxWeight;
-
-				if ( Parent is Container )
+				if ( Parent is Container && ((Container)Parent).MaxWeight == 0 )
 				{
-					maxWeight = ((Container)Parent).MaxWeight;
-
-					if ( maxWeight > 0 )
-						maxWeight = Math.Max( maxWeight, DefaultMaxWeight );
+					return 0;
 				}
 				else
 				{
-					maxWeight = DefaultMaxWeight;
+					return DefaultMaxWeight;
 				}
-
-				return maxWeight;
 			}
 		}
 
