@@ -1,17 +1,28 @@
 using System;
 using Server;
+using Server.Engines.CannedEvil;
 using Server.Items;
 
 namespace Server.Mobiles
 {
 	[CorpseName("corpse of Ilhenir")]
-	public class Ilhenir : BaseCreature
+	public class Ilhenir : BaseChampion
 	{
+		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
+
+		public override Type[] UniqueList{ get{ return new Type[] { }; } }
+		public override Type[] SharedList{ get{ return new Type[] { 	typeof( ANecromancerShroud ),
+										typeof( LieutenantOfTheBritannianRoyalGuard ),
+										typeof( OblivionsNeedle ),
+										typeof( TheRobeOfBritanniaAri ) }; } }
+		public override Type[] DecorativeList{ get{ return new Type[] { typeof( MonsterStatuette ) }; } }
+
+		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { 	MonsterStatuetteType.PlagueBeast,
+														MonsterStatuetteType.RedDeath }; } }
 
 		// Based off of the Bone Demon, since Stratics and UOGuide are lacking in info. Many things guessed for now.
 		[Constructable]
-		public Ilhenir()
-			: base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+		public Ilhenir() : base(AIType.AI_Mage)
 		{
 			Name = "Ilhenir";
 			Title = "the Stained";
@@ -23,7 +34,7 @@ namespace Server.Mobiles
 
 			SetHits( 9000 );
 
-			SetDamage(4, 6);
+			SetDamage(21, 28);
 
 			SetDamageType(ResistanceType.Physical, 60);
 			SetDamageType(ResistanceType.Fire, 20);

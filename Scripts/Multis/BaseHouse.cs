@@ -1024,6 +1024,8 @@ namespace Server.Multis
 				return true;
 			else if ( item is VendorRentalContract )
 				return true;
+			else if ( item is RewardBrazier )
+				return true;
 
 			return false;
 		}
@@ -1789,6 +1791,9 @@ namespace Server.Multis
 				item.PublicOverheadMessage( Server.Network.MessageType.Label, 0x3B2, 501657 );//[no longer locked down]
 				SetLockdown( item, false );
 				//TidyItemList( m_LockDowns );
+
+				if ( item is RewardBrazier )
+					((RewardBrazier) item).TurnOff();
 			}
 			else if ( IsSecure( item ) )
 			{

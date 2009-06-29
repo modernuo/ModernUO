@@ -23,6 +23,13 @@ namespace Server.Mobiles
 
 		public abstract ChampionSkullType SkullType{ get; }
 
+		public abstract Type[] UniqueList{ get; }
+		public abstract Type[] SharedList{ get; }
+		public abstract Type[] DecorativeList{ get; }
+		public abstract MonsterStatuetteType[] StatueTypes{ get; }
+
+		public virtual bool NoGoodies{ get{ return false; } }
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -35,6 +42,38 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+		}
+
+		public Item GetArtifact()
+		{
+			double random = Utility.RandomDouble();
+			if ( 0.05 >= random )
+				return CreateArtifact( UniqueList );
+			else if ( 0.15 >= random )
+				return CreateArtifact( SharedList );
+			else if ( 0.30 >= random )
+				return CreateArtifact( DecorativeList );
+			return null;
+		}
+
+		public Item CreateArtifact( Type[] list )
+		{
+			if( list.Length == 0 )
+				return null;
+
+			int random = Utility.Random( list.Length );
+			
+			Type type = list[random];
+
+			Item artifact = Loot.Construct( type );
+
+			if( artifact is MonsterStatuette && StatueTypes.Length > 0 )
+			{
+				((MonsterStatuette)artifact).Type = StatueTypes[Utility.Random( StatueTypes.Length )];
+				((MonsterStatuette)artifact).LootType = LootType.Regular;
+			}
+
+			return artifact;
 		}
 
 		private PowerScroll CreateRandomPowerScroll()
@@ -174,6 +213,9 @@ namespace Server.Mobiles
 			if ( !NoKillAwards )
 			{
 				GivePowerScrolls();
+
+				if( NoGoodies )
+					return base.OnBeforeDeath();
 
 				Map map = this.Map;
 

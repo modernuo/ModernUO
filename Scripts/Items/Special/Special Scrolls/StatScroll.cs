@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Mobiles;
 using Server.Gumps;
 using Server.Network;
 
@@ -72,7 +73,13 @@ namespace Server.Items
 
 			if ( IsChildOf( from.Backpack ) )
 			{
-				if ( from.StatCap >= m_Value )
+				int NewValue = m_Value;
+				if ( from is PlayerMobile && ((PlayerMobile)from).HasStatReward )
+				{
+					NewValue += 5;
+				}
+
+				if ( from.StatCap >= NewValue )
 				{
 					from.SendLocalizedMessage( 1049510 ); // Your stats are too high for this power scroll.
 				}
@@ -88,7 +95,7 @@ namespace Server.Items
 					{
 						from.SendLocalizedMessage( 1049512 ); // You feel a surge of magic as the scroll enhances your powers!
 
-						from.StatCap = m_Value;
+						from.StatCap = NewValue;
 
 						Effects.SendLocationParticles( EffectItem.Create( from.Location, from.Map, EffectItem.DefaultDuration ), 0, 0, 0, 0, 0, 5060, 0 );
 						Effects.PlaySound( from.Location, from.Map, 0x243 );

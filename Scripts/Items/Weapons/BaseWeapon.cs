@@ -23,6 +23,15 @@ namespace Server.Items
 
 	public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability
 	{
+		private string m_EngravedText;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string EngravedText
+		{
+			get{ return m_EngravedText; }
+			set{ m_EngravedText = value; InvalidateProperties(); }
+		}
+
 		#region Factions
 		private FactionItem m_FactionState;
 
@@ -134,6 +143,8 @@ namespace Server.Items
 
 		public virtual int InitMinHits{ get{ return 0; } }
 		public virtual int InitMaxHits{ get{ return 0; } }
+
+		public virtual bool CanFortify{ get{ return true; } }
 
 		public override int PhysicalResistance{ get{ return m_AosWeaponAttributes.ResistPhysicalBonus; } }
 		public override int FireResistance{ get{ return m_AosWeaponAttributes.ResistFireBonus; } }
@@ -2397,7 +2408,7 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-
+			
 			writer.Write( (int) 8 ); // version
 
 			SaveFlag flags = SaveFlag.None;
@@ -2432,6 +2443,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.SkillBonuses,		!m_AosSkillBonuses.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.Slayer2,			m_Slayer2 != SlayerName.None );
 			SetSaveFlag( ref flags, SaveFlag.ElementalDamages,	!m_AosElementDamages.IsEmpty );
+			SetSaveFlag( ref flags, SaveFlag.EngravedText,		!String.IsNullOrEmpty( m_EngravedText ) );
 
 			writer.Write( (int) flags );
 
@@ -2518,6 +2530,9 @@ namespace Server.Items
 
 			if( GetSaveFlag( flags, SaveFlag.ElementalDamages ) )
 				m_AosElementDamages.Serialize( writer );
+
+			if( GetSaveFlag( flags, SaveFlag.EngravedText ) )
+				writer.Write( (string) m_EngravedText );
 		}
 
 		[Flags]
@@ -2553,7 +2568,8 @@ namespace Server.Items
 			PlayerConstructed		= 0x04000000,
 			SkillBonuses			= 0x08000000,
 			Slayer2					= 0x10000000,
-			ElementalDamages		= 0x20000000
+			ElementalDamages		= 0x20000000,
+			EngravedText			= 0x40000000
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -2726,6 +2742,9 @@ namespace Server.Items
 						m_AosElementDamages = new AosElementAttributes( this, reader );
 					else
 						m_AosElementDamages = new AosElementAttributes( this );
+
+					if( GetSaveFlag( flags, SaveFlag.EngravedText ) )
+						m_EngravedText = reader.ReadString();
 
 					break;
 				}
@@ -2989,6 +3008,9 @@ namespace Server.Items
 				list.Add( LabelNumber );
 			else
 				list.Add( Name );
+				
+			if ( !String.IsNullOrEmpty( m_EngravedText ) )
+				list.Add( 1062613, m_EngravedText );
 		}
 
 		public override bool AllowEquipedCast( Mobile from )

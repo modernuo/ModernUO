@@ -62,15 +62,19 @@ namespace Server.Engines.VeteranRewards
 
 			RewardCategory[] categories = RewardSystem.Categories;
 
+			int page = 2;
+
 			for ( int i = 0; i < categories.Length; ++i )
 			{
-				if ( categories[i].Entries.Count == 0 )
+				if ( !RewardSystem.HasAccess( m_From, categories[i] ) )
+				{
+					page += 1;
 					continue;
+				}
 
-				if ( !RewardSystem.HasAccess( m_From, (RewardEntry)categories[i].Entries[0] ) )
-					continue;
+				AddButton( 100, 180 + (i * 40), 4005, 4005, 0, GumpButtonType.Page, page );
 
-				AddButton( 100, 180 + (i * 40), 4005, 4005, 0, GumpButtonType.Page, 2 + i );
+				page += PagesPerCategory( categories[ i ] );
 
 				if ( categories[i].NameString != null )
 					AddHtml( 135, 180 + (i * 40), 300, 20, categories[i].NameString, false, false );
@@ -78,8 +82,24 @@ namespace Server.Engines.VeteranRewards
 					AddHtmlLocalized( 135, 180 + (i * 40), 300, 20, categories[i].Name, false, false );
 			}
 
+			page = 2;
+
 			for ( int i = 0; i < categories.Length; ++i )
-				RenderCategory( categories[i], i );
+				RenderCategory( categories[ i ], i, ref page );
+		}
+
+		private int PagesPerCategory( RewardCategory category )
+		{
+			List<RewardEntry> entries = category.Entries;
+			int j = 0, i = 0;
+
+			for ( j = 0; j < entries.Count; j++ )
+			{
+				if ( RewardSystem.HasAccess( m_From, entries[ j ] ) )
+					i++;
+			}
+			
+			return (int) Math.Ceiling( i / 24.0 );
 		}
 
 		private int GetButtonID( int type, int index )
@@ -87,26 +107,44 @@ namespace Server.Engines.VeteranRewards
 			return 2 + (index * 20) + type;
 		}
 
-		private void RenderCategory( RewardCategory category, int index )
+		private void RenderCategory( RewardCategory category, int index, ref int page )
 		{
-			AddPage( 2 + index );
+			AddPage( page );
 
 			List<RewardEntry> entries = category.Entries;
 
-			for ( int i = 0; i < entries.Count; ++i )
+			int i = 0;
+			
+			for ( int j = 0; j < entries.Count; ++j )
 			{
-				RewardEntry entry = entries[i];
+				RewardEntry entry = entries[j];
 
 				if ( !RewardSystem.HasAccess( m_From, entry ) )
-					break;
+					continue;
 
-				AddButton( 55 + ((i / 12) * 250), 80 + ((i % 12) * 25), 5540, 5541, GetButtonID( index, i ), GumpButtonType.Reply, 0 );
+				if ( i == 24 )
+				{
+					AddButton( 305, 415, 0xFA5, 0xFA7, 0, GumpButtonType.Page, ++page );
+					AddHtmlLocalized( 340, 415, 200, 20, 1011066, false, false ); // Next page
+
+					AddPage( page );
+
+					AddButton( 270, 415, 0xFAE, 0xFB0, 0, GumpButtonType.Page, page - 1 );
+					AddHtmlLocalized( 185, 415, 200, 20, 1011067, false, false ); // Previous page
+
+					i = 0;
+				}
+
+				AddButton( 55 + ((i / 12) * 250), 80 + ((i % 12) * 25), 5540, 5541, GetButtonID( index, j ), GumpButtonType.Reply, 0 );
 
 				if ( entry.NameString != null )
 					AddHtml( 80 + ((i / 12) * 250), 80 + ((i % 12) * 25), 250, 20, entry.NameString, false, false );
 				else
 					AddHtmlLocalized( 80 + ((i / 12) * 250), 80 + ((i % 12) * 25), 250, 20, entry.Name, false, false );
+				++i;
 			}
+
+			page += 1;
 		}
 
 		public RewardChoiceGump( Mobile from ) : base( 0, 0 )

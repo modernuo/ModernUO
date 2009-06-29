@@ -41,6 +41,7 @@ namespace Server.Items
 		}
 		#endregion
 
+		public virtual bool CanFortify{ get{ return false; } }
 
 		private int m_MaxHitPoints;
 		private int m_HitPoints;

@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
@@ -155,7 +156,7 @@ namespace Server.Items
 	}
 
 	[Flipable]
-	public class RewardCloak : BaseCloak, Engines.VeteranRewards.IRewardItem
+	public class RewardCloak : BaseCloak, IRewardItem
 	{
 		private int m_LabelNumber;
 		private bool m_IsRewardItem;
@@ -207,6 +208,14 @@ namespace Server.Items
 		{
 			from.SendLocalizedMessage( sender.FailMessage );
 			return false;
+		}
+
+		public override void GetProperties( ObjectPropertyList list )
+		{
+			base.GetProperties( list );
+
+			if ( Core.ML && m_IsRewardItem )
+				list.Add( RewardSystem.GetRewardYearLabel( this, new object[]{ Hue, m_LabelNumber } ) ); // X Year Veteran Reward
 		}
 
 		public override bool CanEquip( Mobile m )

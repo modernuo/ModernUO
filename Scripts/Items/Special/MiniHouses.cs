@@ -31,6 +31,12 @@ namespace Server.Items
 
 		public void Construct()
 		{
+			foreach ( AddonComponent c in Components )
+			{
+				c.Addon = null;
+				c.Delete();
+			}
+
 			Components.Clear();
 
 			MiniHouseInfo info = MiniHouseInfo.GetInfo( m_Type );
@@ -40,7 +46,8 @@ namespace Server.Items
 
 			for ( int y = 0; y < size; ++y )
 				for ( int x = 0; x < size; ++x )
-					AddComponent( new AddonComponent( info.Graphics[num++] ), size - x - 1, size - y - 1, 0 );
+					if ( info.Graphics[num] != 0x1 ) // Veteran Rewards Mod
+						AddComponent( new AddonComponent( info.Graphics[num++] ), size - x - 1, size - y - 1, 0 );
 		}
 
 		public MiniHouseAddon( Serial serial ) : base( serial )
@@ -162,7 +169,9 @@ namespace Server.Items
 		TwoStoryVilla,
 		SandstoneHouseWithPatio,
 		SmallStoneWorkshop, 
-		SmallMarbleWorkshop
+		SmallMarbleWorkshop,
+		MalasMountainPass,	//Veteran reward house
+		ChurchAtNight		//Veteran reward house
 	}
 
 	public class MiniHouseInfo
@@ -210,7 +219,9 @@ namespace Server.Items
 				/* Two-story villa                   */ new MiniHouseInfo( 0x2300, 1, 1011319 ),
 				/* Sandstone house with patio        */ new MiniHouseInfo( 0x22F3, 1, 1011320 ),
 				/* Small stone workshop              */ new MiniHouseInfo( 0x22F6, 1, 1011321 ),
-				/* Small marble workshop             */ new MiniHouseInfo( 0x22F4, 1, 1011322 )
+				/* Small marble workshop             */ new MiniHouseInfo( 0x22F4, 1, 1011322 ),
+				/* Malas Mountain Pass               */ new MiniHouseInfo( 1062692, 0x2316, 0x2315, 0x2314, 0x2313 ),
+				/* Church At Night                   */ new MiniHouseInfo( 1072215, 0x2318, 0x2317, 0x2319, 0x1 )
 			};
 
 		public static MiniHouseInfo GetInfo( MiniHouseType type )

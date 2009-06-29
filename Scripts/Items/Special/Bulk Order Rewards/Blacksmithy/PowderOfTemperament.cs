@@ -110,6 +110,12 @@ namespace Server.Items
 				{
 					BaseArmor ar = (BaseArmor)targeted;
 
+					if ( !ar.CanFortify )
+					{
+						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
+						return;
+					}
+
 					if ( ar.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
 					{
 						int origMaxHP = ar.MaxHitPoints;
@@ -168,6 +174,12 @@ namespace Server.Items
 				{
 					BaseWeapon wep = (BaseWeapon)targeted;
 
+					if ( !wep.CanFortify )
+					{
+						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
+						return;
+					}
+
 					if ( wep.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
 					{
 						int origMaxHP = wep.MaxHitPoints;
@@ -225,6 +237,12 @@ namespace Server.Items
 				else if ( targeted is BaseClothing /*&& (DefBlacksmithy.CraftSystem.CraftItems.SearchForSubclass( targeted.GetType() ) != null)*/ )
 				{
 					BaseClothing clothing = (BaseClothing)targeted;
+
+					if ( !clothing.CanFortify )
+					{
+						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
+						return;
+					}
 
 					if ( clothing.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
 					{

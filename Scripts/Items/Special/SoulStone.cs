@@ -3,15 +3,26 @@ using Server;
 using Server.Gumps;
 using Server.Network;
 using Server.Accounting;
+using Server.Engines.VeteranRewards;
+using Server.Multis;
 
 namespace Server.Items
 {
-	public class SoulStone : Item
+	public class SoulStone : Item, ISecurable
 	{
 		public override int LabelNumber { get { return 1030899; } } // soulstone
 
 		private int m_ActiveItemID;
 		private int m_InactiveItemID;
+
+		private SecureLevel m_Level;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public SecureLevel Level
+		{
+			get{ return m_Level; }
+			set{ m_Level = value; }
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int ActiveItemID
@@ -725,7 +736,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 1 ); // version
+			writer.WriteEncodedInt( 2 ); // version
+
+			writer.Write( (int)m_Level );
 
 			writer.Write( m_ActiveItemID );
 			writer.Write( m_InactiveItemID );
@@ -745,6 +758,11 @@ namespace Server.Items
 
 			switch( version )
 			{
+				case 2:
+					{
+						m_Level = (SecureLevel)reader.ReadInt();
+						goto case 1;
+					}
 				case 1:
 					{
 						m_ActiveItemID = reader.ReadInt();
@@ -924,7 +942,7 @@ namespace Server.Items
 		}
 	}
 
-	public class RedSoulstone : SoulStone
+	public class RedSoulstone : SoulStone, IRewardItem
 	{
 		[Constructable]
 		public RedSoulstone()
@@ -944,11 +962,30 @@ namespace Server.Items
 		{
 		}
 
+		private bool m_IsRewardItem;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IsRewardItem
+		{
+			get{ return m_IsRewardItem; }
+			set{ m_IsRewardItem = value; InvalidateProperties(); }
+		}
+
+		public override void GetProperties( ObjectPropertyList list )
+		{
+			base.GetProperties( list );
+
+			if ( m_IsRewardItem )
+				list.Add( 1076217 ); // 1st Year Veteran Reward
+		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int)0 ); // version
+			writer.Write( (int)1 ); // version
+
+			writer.Write( (bool) m_IsRewardItem );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -956,6 +993,15 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+			
+			switch ( version )
+			{
+				case 1:
+				{
+					m_IsRewardItem = reader.ReadBool();
+					break;
+				}
+			}
 		}
 	}
 }

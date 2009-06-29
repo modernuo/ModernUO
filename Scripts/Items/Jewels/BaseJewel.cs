@@ -19,6 +19,9 @@ namespace Server.Items
 
 	public abstract class BaseJewel : Item, ICraftable
 	{
+		private int m_MaxHitPoints;
+		private int m_HitPoints;
+
 		private AosAttributes m_AosAttributes;
 		private AosElementAttributes m_AosResistances;
 		private AosSkillBonuses m_AosSkillBonuses;
@@ -26,6 +29,36 @@ namespace Server.Items
 		private GemType m_GemType;
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public int MaxHitPoints
+		{
+			get{ return m_MaxHitPoints; }
+			set{ m_MaxHitPoints = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int HitPoints
+		{
+			get 
+			{
+				return m_HitPoints;
+			}
+			set 
+			{
+				if ( value != m_HitPoints && MaxHitPoints > 0 )
+				{
+					m_HitPoints = value;
+
+					if ( m_HitPoints < 0 )
+						Delete();
+					else if ( m_HitPoints > MaxHitPoints )
+						m_HitPoints = MaxHitPoints;
+
+					InvalidateProperties();
+				}
+			}
+		}
+
+		[CommandProperty( AccessLevel.Player )]
 		public AosAttributes Attributes
 		{
 			get{ return m_AosAttributes; }
@@ -67,6 +100,9 @@ namespace Server.Items
 		public override int EnergyResistance{ get{ return m_AosResistances.Energy; } }
 		public virtual int BaseGemTypeNumber{ get{ return 0; } }
 
+		public virtual int InitMinHits{ get{ return 0; } }
+		public virtual int InitMaxHits{ get{ return 0; } }
+
 		public override int LabelNumber
 		{
 			get
@@ -101,6 +137,8 @@ namespace Server.Items
 			m_GemType = GemType.None;
 
 			Layer = layer;
+
+			m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax( InitMinHits, InitMaxHits );
 		}
 
 		public override void OnAdded( object parent )
@@ -236,13 +274,19 @@ namespace Server.Items
 				list.Add( 1060486, prop.ToString() ); // swing speed increase ~1_val~%
 
 			base.AddResistanceProperties( list );
+
+			if ( m_HitPoints >= 0 && m_MaxHitPoints > 0 )
+				list.Add( 1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints ); // durability ~1_val~ / ~2_val~
 		}
 
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( (int) 3 ); // version
+
+			writer.WriteEncodedInt( (int) m_MaxHitPoints );
+			writer.WriteEncodedInt( (int) m_HitPoints );
 
 			writer.WriteEncodedInt( (int) m_Resource );
 			writer.WriteEncodedInt( (int) m_GemType );
@@ -260,6 +304,13 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
+				{
+					m_MaxHitPoints = reader.ReadEncodedInt();
+					m_HitPoints = reader.ReadEncodedInt();
+
+					goto case 2;
+				}
 				case 2:
 				{
 					m_Resource = (CraftResource)reader.ReadEncodedInt();

@@ -51,6 +51,9 @@ namespace Server.Engines.VeteranRewards
 
 				if ( item != null )
 				{
+					if ( item is Server.Items.RedSoulstone )
+						((Server.Items.RedSoulstone) item).Account = m_From.Account.Username;	
+					
 					if ( RewardSystem.ConsumeRewardPoint( m_From ) )
 						m_From.AddToBackpack( item );
 					else

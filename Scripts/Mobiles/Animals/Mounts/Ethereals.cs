@@ -55,6 +55,8 @@ namespace Server.Mobiles
 				list.Add( "Donation Ethereal" );
 				list.Add( "7.5 sec slower cast time if not a 9mo. Veteran" );
 			}
+			if ( Core.ML && m_IsRewardItem )
+				list.Add( RewardSystem.GetRewardYearLabel( this, new object[]{ } ) ); // X Year Veteran Reward
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -698,6 +700,63 @@ namespace Server.Mobiles
 
 			if( Name == "an ethereal swamp dragon" )
 				Name = null;
+		}
+	}
+
+	public class RideablePolarBear : EtherealMount
+	{
+		public override int LabelNumber { get { return 1076159; } } // Rideable Polar Bear 
+		public override int EtherealHue { get { return 0; } }
+
+		[Constructable]
+		public RideablePolarBear() : base( 0x20E1, 0x3EC5 )
+		{
+		}
+
+		public RideablePolarBear( Serial serial ) : base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.WriteEncodedInt( 0 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadEncodedInt();
+		}
+	}	
+
+	public class EtherealCuSidhe : EtherealMount
+	{
+		public override int LabelNumber { get { return 1080386; } } // Ethereal Cu Sidhe Statuette
+
+		[Constructable]
+		public EtherealCuSidhe() : base( 0x2D96, 0x3E91 )
+		{
+		}
+
+		public EtherealCuSidhe( Serial serial ) : base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.WriteEncodedInt( 0 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadEncodedInt();
 		}
 	}
 

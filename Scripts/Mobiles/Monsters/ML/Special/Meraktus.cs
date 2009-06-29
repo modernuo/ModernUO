@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Server.Engines.CannedEvil;
 using Server.Items;
 using Server.Targeting;
 using Server.Misc;
@@ -7,10 +8,22 @@ using Server.Misc;
 namespace Server.Mobiles
 {
 	[CorpseName( "a minotaur corpse" )]
-	public class Meraktus : BaseCreature
+	public class Meraktus : BaseChampion
 	{
+		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
+
+		public override Type[] UniqueList{ get{ return new Type[] { typeof( Subdue ) }; } }
+		public override Type[] SharedList{ get{ return new Type[] { }; } }
+		public override Type[] DecorativeList{ get{ return new Type[] { typeof( ArtifactLargeVase ),
+										typeof( ArtifactVase ),
+										typeof( MinotaurStatueDeed ) }; } }
+
+		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
+
+		public override bool NoGoodies{ get{ return true; } }
+
 		[Constructable]
-		public Meraktus() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
+		public Meraktus() : base( AIType.AI_Melee )
 		{
 			Name = "Meraktus";
 			Title = "the Tormented";
@@ -22,7 +35,7 @@ namespace Server.Mobiles
 
 			SetHits( 4100, 4200 );
 
-			SetDamage( 3, 5 );
+			SetDamage( 16, 30 );
 
 			SetDamageType( ResistanceType.Physical, 100 );
 

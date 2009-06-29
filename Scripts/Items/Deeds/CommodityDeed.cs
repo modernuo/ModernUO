@@ -122,7 +122,9 @@ namespace Server.Items
 			int number;
 
 			BankBox box = from.FindBankNoCreate();
-
+			CommodityDeedBox cox = CommodityDeedBox.Find( this );
+			
+			// Veteran Rewards mods
 			if ( m_Commodity != null )
 			{
 				if ( box != null && IsChildOf( box ) )
@@ -134,14 +136,46 @@ namespace Server.Items
 					m_Commodity = null;
 					Delete();
 				}
+				else if ( cox != null )
+				{
+					if ( cox.IsSecure )
+					{
+						number = 1047031; // The commodity has been redeemed.
+
+						cox.DropItem( m_Commodity );
+
+						m_Commodity = null;
+						Delete();
+					}
+					else
+						number = 1080525; // The commodity deed box must be secured before you can use it.
+				}
 				else
 				{
-					number = 1047024; // To claim the resources ....
+					if( Core.ML )
+					{
+						number = 1080526; // That must be in your bank box or commodity deed box to use it.
+					}
+					else
+					{
+						number = 1047024; // To claim the resources ....
+					}
 				}
 			}
-			else if ( box == null || !IsChildOf( box ) )
+			else if ( cox != null && !cox.IsSecure )
 			{
-				number = 1047026; // That must be in your bank box to use it.
+				number = 1080525; // The commodity deed box must be secured before you can use it.
+			}
+			else if ( ( box == null || !IsChildOf( box ) ) && cox == null )
+			{
+				if( Core.ML )
+				{
+					number = 1080526; // That must be in your bank box or commodity deed box to use it.
+				}
+				else
+				{
+					number = 1047026; // That must be in your bank box to use it.
+				}
 			}
 			else
 			{
@@ -176,8 +210,11 @@ namespace Server.Items
 				else if ( targeted is Item )
 				{
 					BankBox box = from.FindBankNoCreate();
+					CommodityDeedBox cox = CommodityDeedBox.Find( m_Deed );
 
-					if ( box != null && m_Deed.IsChildOf( box ) && ((Item)targeted).IsChildOf( box ) )
+					// Veteran Rewards mods
+					if ( box != null && m_Deed.IsChildOf( box ) && ((Item)targeted).IsChildOf( box ) || 
+						cox != null && cox.IsSecure && ((Item)targeted).IsChildOf( cox ) )
 					{
 						if ( m_Deed.SetCommodity( (Item) targeted ) )
 						{
@@ -190,7 +227,14 @@ namespace Server.Items
 					}
 					else
 					{
-						number = 1047026; // That must be in your bank box to use it.
+						if( Core.ML )
+						{
+							number = 1080526; // That must be in your bank box or commodity deed box to use it.
+						}
+						else
+						{
+							number = 1047026; // That must be in your bank box to use it.
+						}
 					}
 				}
 				else

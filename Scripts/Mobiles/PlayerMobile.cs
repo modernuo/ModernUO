@@ -32,19 +32,20 @@ namespace Server.Mobiles
 	public enum PlayerFlag // First 16 bits are reserved for default-distro use, start custom flags at 0x00010000
 	{
 		None				= 0x00000000,
-		Glassblowing		= 0x00000001,
+		Glassblowing			= 0x00000001,
 		Masonry				= 0x00000002,
 		SandMining			= 0x00000004,
 		StoneMining			= 0x00000008,
-		ToggleMiningStone	= 0x00000010,
+		ToggleMiningStone		= 0x00000010,
 		KarmaLocked			= 0x00000020,
-		AutoRenewInsurance	= 0x00000040,
-		UseOwnFilter		= 0x00000080,
-		PublicMyRunUO		= 0x00000100,
-		PagingSquelched		= 0x00000200,
+		AutoRenewInsurance		= 0x00000040,
+		UseOwnFilter			= 0x00000080,
+		PublicMyRunUO			= 0x00000100,
+		PagingSquelched			= 0x00000200,
 		Young				= 0x00000400,
-		AcceptGuildInvites	= 0x00000800,
-		DisplayChampionTitle= 0x00001000
+		AcceptGuildInvites		= 0x00000800,
+		DisplayChampionTitle		= 0x00001000,
+		HasStatReward			= 0x00002000
 	}
 
 	public enum NpcGuild
@@ -291,8 +292,23 @@ namespace Server.Mobiles
 			get{ return GetFlag( PlayerFlag.AcceptGuildInvites ); }
 			set{ SetFlag( PlayerFlag.AcceptGuildInvites, value ); }
 		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool HasStatReward
+		{
+			get{ return GetFlag( PlayerFlag.HasStatReward ); }
+			set{ SetFlag( PlayerFlag.HasStatReward, value ); }
+		}
 		#endregion
 
+		private DateTime m_AnkhNextUse;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime AnkhNextUse
+		{
+			get{ return m_AnkhNextUse; }
+			set{ m_AnkhNextUse = value; }
+		}
 
 		public static Direction GetDirection4( Point3D from, Point3D to )
 		{
@@ -2356,9 +2372,16 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
-				case 26:
+				case 27: 
+				{
+					m_AnkhNextUse = reader.ReadDateTime();
+
+					goto case 26;
+				}
+				case 26: 
 				{
 					m_AutoStabled = reader.ReadStrongMobileList();
+
 					goto case 25;
 				}
 				case 25:
@@ -2642,8 +2665,9 @@ namespace Server.Mobiles
 
 			base.Serialize( writer );
 			
-			writer.Write( (int) 26 ); // version
+			writer.Write( (int) 27 ); // version
 
+			writer.Write( (DateTime) m_AnkhNextUse );
 			writer.Write( m_AutoStabled, true );
 
 			if( m_AcquiredRecipes == null )
@@ -2785,6 +2809,9 @@ namespace Server.Mobiles
 
 		public override bool CanSee( Mobile m )
 		{
+			if ( m is CharacterStatue )
+				((CharacterStatue) m).OnRequestedAnimation( this );
+
 			if ( m is PlayerMobile && ((PlayerMobile)m).m_VisList.Contains( this ) )
 				return true;
 

@@ -9,6 +9,12 @@ namespace Server.Mobiles
 	{
 		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Venom; } }
 
+		public override Type[] UniqueList{ get{ return new Type[] { typeof( Calm ) }; } }
+		public override Type[] SharedList{ get{ return new Type[] { typeof( OblivionsNeedle ), typeof( ANecromancerShroud ) }; } }
+		public override Type[] DecorativeList{ get{ return new Type[] { typeof( Web ), typeof( MonsterStatuette ) }; } }
+
+		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Spider }; } }
+
 		[Constructable]
 		public Mephitis() : base( AIType.AI_Melee )
 		{

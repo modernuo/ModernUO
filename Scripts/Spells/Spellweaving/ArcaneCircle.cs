@@ -106,7 +106,7 @@ namespace Server.Spells.Spellweaving
 		public static bool IsValidTile( int itemID )
 		{
 			//Per OSI, Center tile only
-			return (itemID == 0xFEA || itemID == 0x1216 || itemID == 0x307F);	// Pentagram center, Abbatoir center, Arcane Circle Center
+			return (itemID == 0xFEA || itemID == 0x1216 || itemID == 0x307F || itemID == 0x1D10 || itemID == 0x1D0F || itemID == 0x1D1F || itemID == 0x1D12 );	// Pentagram center, Abbatoir center, Arcane Circle Center, Bloody Pentagram has 4 tiles at center
 		}
 
 		private List<Mobile> GetArcanists()

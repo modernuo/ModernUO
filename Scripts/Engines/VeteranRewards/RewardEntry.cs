@@ -7,6 +7,7 @@ namespace Server.Engines.VeteranRewards
 		private RewardList m_List;
 		private RewardCategory m_Category;
 		private Type m_ItemType;
+		private Expansion m_RequiredExpansion;
 		private int m_Name;
 		private string m_NameString;
 		private object[] m_Args;
@@ -14,6 +15,7 @@ namespace Server.Engines.VeteranRewards
 		public RewardList List{ get{ return m_List; } set{ m_List = value; } }
 		public RewardCategory Category{ get{ return m_Category; } }
 		public Type ItemType{ get{ return m_ItemType; } }
+		public Expansion RequiredExpansion{ get{ return m_RequiredExpansion; } }
 		public int Name{ get{ return m_Name; } }
 		public string NameString{ get{ return m_NameString; } }
 		public object[] Args{ get{ return m_Args; } }
@@ -40,6 +42,7 @@ namespace Server.Engines.VeteranRewards
 		{
 			m_Category = category;
 			m_ItemType = itemType;
+			m_RequiredExpansion = Expansion.None;
 			m_Name = name;
 			m_Args = args;
 			category.Entries.Add( this );
@@ -49,6 +52,27 @@ namespace Server.Engines.VeteranRewards
 		{
 			m_Category = category;
 			m_ItemType = itemType;
+			m_RequiredExpansion = Expansion.None;
+			m_NameString = name;
+			m_Args = args;
+			category.Entries.Add( this );
+		}
+
+		public RewardEntry( RewardCategory category, int name, Type itemType, Expansion requiredExpansion, params object[] args )
+		{
+			m_Category = category;
+			m_ItemType = itemType;
+			m_RequiredExpansion = requiredExpansion;
+			m_Name = name;
+			m_Args = args;
+			category.Entries.Add( this );
+		}
+
+		public RewardEntry( RewardCategory category, string name, Type itemType, Expansion requiredExpansion, params object[] args )
+		{
+			m_Category = category;
+			m_ItemType = itemType;
+			m_RequiredExpansion = requiredExpansion;
 			m_NameString = name;
 			m_Args = args;
 			category.Entries.Add( this );

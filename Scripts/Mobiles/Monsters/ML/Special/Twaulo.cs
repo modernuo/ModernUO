@@ -1,16 +1,25 @@
 using System;
 using Server;
+using Server.Engines.CannedEvil;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Twaulo : BaseCreature
+	public class Twaulo : BaseChampion
 	{
 		// COMPLETELY guessed beyond stats. Stats/skills come from Stratics and UOGuide. No idea what the special attacks should be.
 		// Based on Silvani, due to them both using Blue creatures.
+
+		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
+
+		public override Type[] UniqueList{ get{ return new Type[] { typeof( Quell ) }; } }
+		public override Type[] SharedList{ get{ return new Type[] { typeof( TheMostKnowledgePerson ), typeof( OblivionsNeedle ) }; } }
+		public override Type[] DecorativeList{ get{ return new Type[] { typeof( Pier ), typeof( MonsterStatuette ) }; } }
+
+		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.DreadHorn }; } }
+
 		[Constructable]
-		public Twaulo()
-			: base(AIType.AI_Archer, FightMode.Evil, 18, 1, 0.1, 0.2)
+		public Twaulo()	: base(AIType.AI_Archer, FightMode.Evil)
 		{
 			Name = "Twaulo";
 			Title = "of the Glade";
@@ -23,7 +32,7 @@ namespace Server.Mobiles
 
 			SetHits( 7500 );
 
-			SetDamage( 3, 4 );
+			SetDamage( 19, 24 );
 
 			SetDamageType( ResistanceType.Physical, 100 );
 			
@@ -33,13 +42,12 @@ namespace Server.Mobiles
 			SetResistance( ResistanceType.Poison, 50, 60 );
 			SetResistance( ResistanceType.Energy, 50, 60 );
 
-			SetSkill( SkillName.Archery, 85.0, 100 ); // Guestimate
-			SetSkill( SkillName.EvalInt, 0 ); // Per Stratics?!?
-			SetSkill( SkillName.Magery, 0 ); // Per Stratics?!?
-			SetSkill( SkillName.Meditation, 0 ); // Per Stratics?!?
-			SetSkill( SkillName.MagicResist, 0 ); // Per Stratics?!?
-			SetSkill( SkillName.Tactics, 85.0, 100 ); // Stratics says 0?!?
-			SetSkill( SkillName.Wrestling, 0 ); // Per Stratics?!?
+			//Lacking OSI information skills are based on Centaurs and scaled up the way other champs are.
+			SetSkill( SkillName.Anatomy, 115.1, 135.0 );
+			SetSkill( SkillName.Archery, 100.0 );
+			SetSkill( SkillName.MagicResist, 100.5, 150.0 );
+			SetSkill( SkillName.Tactics, 100.0 );
+			SetSkill( SkillName.Wrestling, 100.0 );
 
 			Fame = 50000;
 			Karma = 50000;
@@ -63,65 +71,6 @@ namespace Server.Mobiles
 		public override bool Unprovokable{ get{ return true; } }
 		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
-
-		public void SpawnPixies( Mobile target )
-		{
-			Map map = this.Map;
-
-			if ( map == null )
-				return;
-
-			int newPixies = Utility.RandomMinMax( 3, 6 );
-
-			for ( int i = 0; i < newPixies; ++i )
-			{
-				Pixie pixie = new Pixie();
-
-				pixie.Team = this.Team;
-				pixie.FightMode = FightMode.Closest;
-
-				bool validLocation = false;
-				Point3D loc = this.Location;
-
-				for ( int j = 0; !validLocation && j < 10; ++j )
-				{
-					int x = X + Utility.Random( 3 ) - 1;
-					int y = Y + Utility.Random( 3 ) - 1;
-					int z = map.GetAverageZ( x, y );
-
-					if ( validLocation = map.CanFit( x, y, this.Z, 16, false, false ) )
-						loc = new Point3D( x, y, Z );
-					else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
-						loc = new Point3D( x, y, z );
-				}
-
-				pixie.MoveToWorld( loc, map );
-				pixie.Combatant = target;
-			}
-		}
-
-		public override void AlterDamageScalarFrom( Mobile caster, ref double scalar )
-		{
-			if ( 0.1 >= Utility.RandomDouble() )
-				SpawnPixies( caster );
-		}
-
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
-
-			defender.Damage( Utility.Random( 20, 10 ), this );
-			defender.Stam -= Utility.Random( 20, 10 );
-			defender.Mana -= Utility.Random( 20, 10 );
-		}
-
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
-
-			if ( 0.1 >= Utility.RandomDouble() )
-				SpawnPixies( attacker );
-		}
 
 		public Twaulo( Serial serial ) : base( serial )
 		{
