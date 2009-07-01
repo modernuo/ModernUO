@@ -207,7 +207,7 @@ namespace Server.Misc
 
 				Skills skills = from.Skills;
 
-				if ( ( skills.Total / skills.Cap ) >= Utility.RandomDouble() )//( skills.Total >= skills.Cap )
+				if ( !from.Player && ( skills.Total / skills.Cap ) >= Utility.RandomDouble() )//( skills.Total >= skills.Cap )
 				{
 					for ( int i = 0; i < skills.Length; ++i )
 					{
@@ -221,7 +221,7 @@ namespace Server.Misc
 					}
 				}
 
-				if ( (skills.Total + toGain) <= skills.Cap )
+				if ( !from.Player || (skills.Total + toGain) <= skills.Cap )
 				{
 					skill.BaseFixedPoint += toGain;
 				}

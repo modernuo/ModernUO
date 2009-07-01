@@ -24,8 +24,12 @@ namespace Server.Items
 			Hue = 0x3F;
 
 			Attributes.Luck = 100;
-			Attributes.BonusHits = 30;
 			Attributes.RegenHits = 3;
+
+			if( Utility.RandomBool() )
+				Attributes.BonusHits = 30;
+			else
+				Attributes.AttackChance = 30;
 		}
 
 		public OrcChieftainHelm( Serial serial ) : base( serial )

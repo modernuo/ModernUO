@@ -262,6 +262,10 @@ namespace Server.Commands
 			for ( int i = 0; i < realProps.Length; ++i )
 			{
 				object obj = realProps[i].GetValue( realObjs[i], null );
+
+				if( !( obj is IConvertible ) )
+					return "Property is not IConvertable.";
+
 				long v = (long)Convert.ChangeType( obj, TypeCode.Int64 );
 				v += realValues[i];
 

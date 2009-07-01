@@ -64,7 +64,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -75,6 +75,19 @@ namespace Server.Mobiles
 
 			if ( BaseSoundID <= 0 )
 				BaseSoundID = 0xA8;
+
+			if( version < 1 )
+			{
+				for ( int i = 0; i < Skills.Length; ++i )
+				{
+					Skills[i].Cap = Math.Max( 100.0, Skills[i].Cap * 0.9 );
+
+					if ( Skills[i].Base > Skills[i].Cap )
+					{
+						Skills[i].Base = Skills[i].Cap;
+					}
+				}
+			}
 		}
 	}
 }

@@ -82,22 +82,22 @@ namespace Server.SkillHandlers
 
 		public static void ScaleSkills( BaseCreature bc, double scalar )
 		{
-			int totalCapIncrease = Core.SE ? 2000 : 0; // 2000 points for GM Anatomy and Meditation
+			ScaleSkills( bc, scalar, scalar );
+		}
 
+		public static void ScaleSkills( BaseCreature bc, double scalar, double capScalar )
+		{
 			for ( int i = 0; i < bc.Skills.Length; ++i )
 			{
 				bc.Skills[i].Base *= scalar;
 
+				bc.Skills[i].Cap = Math.Max( 100.0, bc.Skills[i].Cap * capScalar );
+
 				if ( bc.Skills[i].Base > bc.Skills[i].Cap )
 				{
-					if( Core.SE )
-						totalCapIncrease += ( bc.Skills[i].BaseFixedPoint - bc.Skills[i].CapFixedPoint );
-
 					bc.Skills[i].Cap = bc.Skills[i].Base;
 				}
 			}
-			
-			bc.SkillsCap += totalCapIncrease;	//increase will be 0 if not .SE per above
 		}
 
 		private class InternalTarget : Target
@@ -139,6 +139,10 @@ namespace Server.SkillHandlers
 						else if ( !from.Female && !creature.AllowMaleTamer )
 						{
 							creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1049652, from.NetState ); // That creature can only be tamed by females.
+						}
+						else if ( creature is CuSidhe && from.Race != Race.Elf )
+						{
+							creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502801, from.NetState ); // You can't tame that!
 						}
 						else if ( from.Followers + creature.ControlSlots > from.FollowersMax )
 						{
@@ -328,7 +332,12 @@ namespace Server.SkillHandlers
 						{
 							if ( m_Creature.Owners.Count == 0 ) // First tame
 							{
-								if ( m_Paralyzed )
+								if ( m_Creature is GreaterDragon )
+								{
+									ScaleSkills( m_Creature, 0.72, 0.90 ); // 72% of original skills trainable to 90%
+									m_Creature.Skills[SkillName.Magery].Base = m_Creature.Skills[SkillName.Magery].Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
+								}
+								else if ( m_Paralyzed )
 									ScaleSkills( m_Creature, 0.86 ); // 86% of original skills if they were paralyzed during the taming
 								else
 									ScaleSkills( m_Creature, 0.90 ); // 90% of original skills

@@ -942,7 +942,7 @@ namespace Server.Engines.CannedEvil
 
 			totalDamage = 0;
 
-			foreach (KeyValuePair<Mobile, int> kvp in m_DamageEntries)
+			foreach (KeyValuePair<Mobile, int> kvp in validEntries)
 			{
 				totalDamage += kvp.Value;
 
@@ -969,7 +969,6 @@ namespace Server.Engines.CannedEvil
 
 		public bool IsEligable( Mobile m, Item Artifact )
 		{
-			//return true;
 			return m.Player && m.Alive && m.Region != null && m.Region == m_Region && m.Backpack != null && m.Backpack.CheckHold( m, Artifact, false );
 		}
 

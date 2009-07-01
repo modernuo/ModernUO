@@ -223,7 +223,7 @@ namespace Server.Mobiles
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int)1 );
+			writer.Write( (int)2 );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -236,6 +236,19 @@ namespace Server.Mobiles
 
 			if( version <= 1 )
 				Timer.DelayCall( TimeSpan.Zero, delegate { if( InternalItem != null ) { InternalItem.Hue = this.Hue; } } );
+
+			if( version < 2 )
+			{
+				for ( int i = 0; i < Skills.Length; ++i )
+				{
+					Skills[i].Cap = Math.Max( 100.0, Skills[i].Cap * 0.9 );
+
+					if ( Skills[i].Base > Skills[i].Cap )
+					{
+						Skills[i].Base = Skills[i].Cap;
+					}
+				}
+			}
 		}
 	}
 }
