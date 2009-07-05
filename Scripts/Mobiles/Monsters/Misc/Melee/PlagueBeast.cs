@@ -68,6 +68,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool AutoDispel{ get{ return true; } }
+		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
 
 		public override void OnGotMeleeAttack( Mobile attacker )
 		{

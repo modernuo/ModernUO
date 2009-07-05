@@ -179,11 +179,12 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
 				return false;
 			}
-                if ( Core.ML && from.Spell != null )
-            {
-                from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
-                return false;
-            }
+
+			if ( Core.ML && from.Spell != null )
+			{
+				from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
+				return false;
+			}
 
 			return CheckSkills( from ) && CheckMana( from, false );
 		}

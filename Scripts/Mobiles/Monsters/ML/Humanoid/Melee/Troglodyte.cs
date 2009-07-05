@@ -23,7 +23,7 @@ namespace Server.Mobiles
 
 			SetHits( 302, 340 );
 
-			SetDamage( 5, 6 );
+			SetDamage( 11, 14 );
 
 			SetDamageType( ResistanceType.Physical, 100 );
 
@@ -48,7 +48,8 @@ namespace Server.Mobiles
 
 		}
 
-        public override bool CanHeal { get { return true; } }
+			public override bool CanHeal { get { return true; } }
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Rich );  // Need to verify

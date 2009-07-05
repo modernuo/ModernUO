@@ -29,7 +29,7 @@ namespace Server.Mobiles
 
 			SetHits( 415, 445 );
 
-			SetDamage( 4, 7 );
+			SetDamage( 13, 23 );
 
 			SetDamageType( ResistanceType.Physical, 40 );
 			SetDamageType( ResistanceType.Cold, 20 );

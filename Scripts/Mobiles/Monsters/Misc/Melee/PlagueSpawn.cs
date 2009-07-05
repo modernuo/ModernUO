@@ -51,14 +51,7 @@ namespace Server.Mobiles
 
 		public override void OnThink()
 		{
-			bool expired;
-
-			expired = ( DateTime.Now >= m_ExpireTime );
-
-			if ( !expired && m_Owner != null )
-				expired = m_Owner.Deleted || Map != m_Owner.Map || !InRange( m_Owner, 16 );
-
-			if ( expired )
+			if ( m_Owner != null && ( DateTime.Now >= m_ExpireTime || m_Owner.Deleted || Map != m_Owner.Map || !InRange( m_Owner, 16 ) ) )
 			{
 				PlaySound( GetIdleSound() );
 				Delete();

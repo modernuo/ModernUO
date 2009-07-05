@@ -4950,7 +4950,7 @@ namespace Server.Mobiles
 
 			protected override void OnTick()
 			{
-				if( Core.ML && m_Creature.IsDeadBondedPet );
+				if( Core.ML && m_Creature.IsDeadBondedPet )
 				{
 					m_Creature.Delete();
 				}

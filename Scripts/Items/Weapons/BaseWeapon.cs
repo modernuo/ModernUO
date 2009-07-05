@@ -1140,7 +1140,10 @@ namespace Server.Items
 						BaseWeapon weapon = defender.Weapon as BaseWeapon;
 
 						if ( weapon != null )
+						{
+							defender.FixedParticles(0x3779, 1, 15, 0x158B, 0x0, 0x3, EffectLayer.Waist);
 							weapon.OnSwing( defender, attacker );
+						}
 
 						CounterAttack.StopCountering( defender );
 					}
@@ -2129,8 +2132,8 @@ namespace Server.Items
 		{
 			if ( checkSkills )
 			{
-				attacker.CheckSkill( SkillName.Tactics, 0.0, 120.0 ); // Passively check tactics for gain
-				attacker.CheckSkill( SkillName.Anatomy, 0.0, 120.0 ); // Passively check Anatomy for gain
+				attacker.CheckSkill( SkillName.Tactics, 0.0, attacker.Skills[SkillName.Tactics].Cap ); // Passively check tactics for gain
+				attacker.CheckSkill( SkillName.Anatomy, 0.0, attacker.Skills[SkillName.Anatomy].Cap ); // Passively check Anatomy for gain
 
 				if ( Type == WeaponType.Axe )
 					attacker.CheckSkill( SkillName.Lumberjacking, 0.0, 100.0 ); // Passively check Lumberjacking for gain
@@ -2197,8 +2200,8 @@ namespace Server.Items
 		{
 			if ( checkSkills )
 			{
-				attacker.CheckSkill( SkillName.Tactics, 0.0, 120.0 ); // Passively check tactics for gain
-				attacker.CheckSkill( SkillName.Anatomy, 0.0, 120.0 ); // Passively check Anatomy for gain
+				attacker.CheckSkill( SkillName.Tactics, 0.0, attacker.Skills[SkillName.Tactics].Cap ); // Passively check tactics for gain
+				attacker.CheckSkill( SkillName.Anatomy, 0.0, attacker.Skills[SkillName.Anatomy].Cap ); // Passively check Anatomy for gain
 
 				if ( Type == WeaponType.Axe )
 					attacker.CheckSkill( SkillName.Lumberjacking, 0.0, 100.0 ); // Passively check Lumberjacking for gain

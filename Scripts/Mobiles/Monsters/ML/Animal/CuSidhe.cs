@@ -29,7 +29,7 @@ namespace Server.Mobiles
 			SetDex( 151, 170 );
 			SetInt( 251, 282 );
 
-			SetDamage( 4, 5 );
+			SetDamage( 21, 28 );
 
 			SetDamageType( ResistanceType.Physical, 0 );
 			SetDamageType( ResistanceType.Cold, 50 );
@@ -77,7 +77,7 @@ namespace Server.Mobiles
 				Item pads = from.FindItemOnLayer( Layer.Shoes );
 				
 				if ( pads is PadsOfTheCuSidhe )
-					from.SendMessage( "Your boots allow you to mount the Cu Sidhe", null, 0x3B2 );
+					from.SendLocalizedMessage( 1071981 ); // Your boots allow you to mount the Cu Sidhe.
 				else
 				{
 					from.SendLocalizedMessage( 1072203 ); // Only Elves may use this.

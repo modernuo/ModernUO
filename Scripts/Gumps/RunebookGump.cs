@@ -225,7 +225,7 @@ namespace Server.Gumps
 
 			public override void OnResponse( Mobile from, string text )
 			{
-				if ( m_Book.Deleted || !from.InRange( m_Book.GetWorldLocation(), 1 ) )
+				if ( m_Book.Deleted || !from.InRange( m_Book.GetWorldLocation(), (Core.ML ? 3 : 1) ) )
 					return;
 
 				if ( m_Book.CheckAccess( from ) )
@@ -247,7 +247,7 @@ namespace Server.Gumps
 			{
 				from.SendLocalizedMessage( 502415 ); // Request cancelled.
 
-				if ( !m_Book.Deleted && from.InRange( m_Book.GetWorldLocation(), 1 ) )
+				if ( !m_Book.Deleted && from.InRange( m_Book.GetWorldLocation(), (Core.ML ? 3 : 1) ) )
 				{
 					from.CloseGump( typeof( RunebookGump ) );
 					from.SendGump( new RunebookGump( from, m_Book ) );
@@ -259,7 +259,7 @@ namespace Server.Gumps
 		{
 			Mobile from = state.Mobile;
 
-			if ( m_Book.Deleted || !from.InRange( m_Book.GetWorldLocation(), 1 ) || !Multis.DesignContext.Check( from ) )
+			if ( m_Book.Deleted || !from.InRange( m_Book.GetWorldLocation(), (Core.ML ? 3 : 1) ) || !Multis.DesignContext.Check( from ) )
 				return;
 
 			int buttonID = info.ButtonID;

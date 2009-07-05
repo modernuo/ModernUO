@@ -42,7 +42,7 @@ namespace Server.Spells.Necromancy
 				{
 					List<Mobile> targets = new List<Mobile>();
 
-					foreach ( Mobile m in Caster.GetMobilesInRange( 5 ) )
+					foreach ( Mobile m in Caster.GetMobilesInRange( Core.ML ? 4 : 5 ) )
 						if ( Caster != m && Caster.InLOS( m ) && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
 							targets.Add( m );
 

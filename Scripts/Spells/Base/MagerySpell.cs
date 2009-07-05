@@ -55,7 +55,7 @@ namespace Server.Spells
 			maxSkill += (1 + ((int)Circle / 6)) * 25;
 
 			if( m.Skills[SkillName.MagicResist].Value < maxSkill )
-				m.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );
+				m.CheckSkill( SkillName.MagicResist, 0.0, m.Skills[SkillName.MagicResist].Cap );
 
 			return m.Skills[SkillName.MagicResist].Value;
 		}
@@ -76,7 +76,7 @@ namespace Server.Spells
 			maxSkill += (1 + ((int)Circle / 6)) * 25;
 
 			if( target.Skills[SkillName.MagicResist].Value < maxSkill )
-				target.CheckSkill( SkillName.MagicResist, 0.0, 120.0 );
+				target.CheckSkill( SkillName.MagicResist, 0.0, target.Skills[SkillName.MagicResist].Cap );
 
 			return (n >= Utility.RandomDouble());
 		}

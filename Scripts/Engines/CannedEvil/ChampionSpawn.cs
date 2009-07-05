@@ -611,9 +611,9 @@ namespace Server.Engines.CannedEvil
 			return Location;
 		}
 
-		private const int Level1 = 5;  // First spawn level from 0-5 red skulls
-		private const int Level2 = 9;  // Second spawn level from 6-9 red skulls
-		private const int Level3 = 13; // Third spawn level from 10-13 red skulls
+		private const int Level1 = 4;  // First spawn level from 0-4 red skulls
+		private const int Level2 = 8;  // Second spawn level from 5-8 red skulls
+		private const int Level3 = 12; // Third spawn level from 9-12 red skulls
 
 		public int GetSubLevel()
 		{

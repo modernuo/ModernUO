@@ -207,7 +207,7 @@ namespace Server.Misc
 
 				Skills skills = from.Skills;
 
-				if ( !from.Player && ( skills.Total / skills.Cap ) >= Utility.RandomDouble() )//( skills.Total >= skills.Cap )
+				if ( from.Player && ( skills.Total / skills.Cap ) >= Utility.RandomDouble() )//( skills.Total >= skills.Cap )
 				{
 					for ( int i = 0; i < skills.Length; ++i )
 					{

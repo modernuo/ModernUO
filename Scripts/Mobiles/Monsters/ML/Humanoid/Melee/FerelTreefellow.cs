@@ -24,7 +24,7 @@ namespace Server.Mobiles
 
 			SetHits( 1170, 1320 );
 
-			SetDamage( 3, 4 ); // Estimate until Anat/Tactics is verified
+			SetDamage( 26, 35 );
 
 			SetDamageType( ResistanceType.Physical, 100 );
 

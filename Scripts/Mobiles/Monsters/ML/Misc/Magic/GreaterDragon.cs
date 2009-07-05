@@ -21,7 +21,7 @@ namespace Server.Mobiles
 			SetInt( 475, 675 );
 
 			SetHits( 1000, 2000 );
-            SetStam( 120, 135 );
+			SetStam( 120, 135 );
 
 			SetDamage( 24, 33 );
 
@@ -33,11 +33,11 @@ namespace Server.Mobiles
 			SetResistance( ResistanceType.Poison, 40, 60 );
 			SetResistance( ResistanceType.Energy, 50, 75 );
 
-            SetSkill( SkillName.Meditation, 0 );
+			SetSkill( SkillName.Meditation, 0 );
 			SetSkill( SkillName.EvalInt, 110.0, 140.0 );
 			SetSkill( SkillName.Magery, 110.0, 140.0 );
-            SetSkill( SkillName.Poisoning, 0 );
-            SetSkill( SkillName.Anatomy, 0 );
+			SetSkill( SkillName.Poisoning, 0 );
+			SetSkill( SkillName.Anatomy, 0 );
 			SetSkill( SkillName.MagicResist, 110.0, 140.0 );
 			SetSkill( SkillName.Tactics, 110.0, 140.0 );
 			SetSkill( SkillName.Wrestling, 115.0, 145.0 );
@@ -90,11 +90,13 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
+			SetDamage( 24, 33 );
+
 			if( version == 0 )
 			{
 				Server.SkillHandlers.AnimalTaming.ScaleStats( this, 0.50 );
 				Server.SkillHandlers.AnimalTaming.ScaleSkills( this, 0.80, 0.90 ); // 90% * 80% = 72% of original skills trainable to 90%
-				Skills[25].Base = Skills[25].Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
+				Skills[SkillName.Magery].Base = Skills[SkillName.Magery].Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
 			}
 		}
 	}

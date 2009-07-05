@@ -260,14 +260,14 @@ namespace Server.Spells
 
 		public virtual int GetDamageFixed( Mobile m )
 		{
-			m.CheckSkill( DamageSkill, 0.0, 120.0 );
+			m.CheckSkill( DamageSkill, 0.0, m.Skills[DamageSkill].Cap );
 
 			return m.Skills[DamageSkill].Fixed;
 		}
 
 		public virtual double GetDamageSkill( Mobile m )
 		{
-			m.CheckSkill( DamageSkill, 0.0, 120.0 );
+			m.CheckSkill( DamageSkill, 0.0, m.Skills[DamageSkill].Cap );
 
 			return m.Skills[DamageSkill].Value;
 		}

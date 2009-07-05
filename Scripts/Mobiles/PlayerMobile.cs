@@ -1026,7 +1026,7 @@ namespace Server.Mobiles
 					strBase = this.Str;	//this.Str already includes GetStatOffset/str
 					strOffs = AosAttributes.GetValue( this, AosAttribute.BonusHits );
 
-					if ( Core.ML && strOffs > 25 )
+					if ( Core.ML && strOffs > 25 && AccessLevel <= AccessLevel.Player )
 						strOffs = 25;
 
 					if ( AnimalForm.UnderTransformation( this, typeof( BakeKitsune ) ) || AnimalForm.UnderTransformation( this, typeof( GreyWolf ) ) )

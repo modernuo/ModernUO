@@ -302,7 +302,13 @@ namespace Server.Items
 		public override bool CanEquip( Mobile from )
 		{
 			if ( !Ethics.Ethic.CheckEquip( from, this ) )
+			{
 				return false;
+			}
+			else if ( !from.CanBeginAction( typeof( BaseWeapon ) ) )
+			{
+				return false;
+			}
 
 			return base.CanEquip( from );
 		}
