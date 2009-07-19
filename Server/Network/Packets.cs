@@ -2493,18 +2493,12 @@ namespace Server.Network
 
 		public static int Value{ get{ return m_AdditionalFlags; } set{ m_AdditionalFlags = value; } }
 
-		[Obsolete( "Specify account instead" )]
-		public static SupportedFeatures Instantiate()
+		public static SupportedFeatures Instantiate( NetState ns )
 		{
-			return Instantiate( null );
+			return new SupportedFeatures( ns );
 		}
 
-		public static SupportedFeatures Instantiate( IAccount account )
-		{
-			return new SupportedFeatures( account );
-		}
-
-		public SupportedFeatures( IAccount acct ) : base( 0xB9, 3 )
+		public SupportedFeatures( NetState ns ) : base( 0xB9, ns.ExtendedSupportedFeatures ? 5 : 3 )
 		{
 			int flags = ExpansionInfo.CurrentExpansion.SupportedFeatures;
 
@@ -2519,13 +2513,20 @@ namespace Server.Network
 				flags |= 0x801C;
 			 * */
 
+			IAccount acct = ns.Account as IAccount;
+
 			if ( acct != null && acct.Limit >= 6 )
 			{
 				flags |= 0x8020;
 				flags &= ~0x004;
 			}
 
-			m_Stream.Write( (ushort) flags );
+			if ( ns.ExtendedSupportedFeatures ) {
+				m_Stream.Write( (uint) flags );
+			} else {
+				m_Stream.Write( (ushort) flags );
+			}
+
 			//m_Stream.Write( (ushort) m_Value ); // 0x01 = T2A, 0x02 = LBR
 		}
 	}

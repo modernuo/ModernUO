@@ -201,11 +201,17 @@ namespace Server.Network {
 			set {
 				m_Version = value;
 
-				if ( value >= m_Version6017 )
+				if ( value >= m_Version60142 ) {
+					m_Post60142 = m_Post6017 = true;
+				} else if ( value >= m_Version6017 ) {
 					m_Post6017 = true;
-				else
-					m_Post6017 = false;
+				}
 			}
+		}
+
+		public bool ExtendedSupportedFeatures
+		{
+			get { return m_Post60142; }
 		}
 
 		public bool IsUOTDClient
@@ -217,12 +223,20 @@ namespace Server.Network {
 		}
 
 		private static ClientVersion m_Version6017 = new ClientVersion( "6.0.1.7" );
-		
+		private static ClientVersion m_Version60142 = new ClientVersion( "6.0.14.2" );
+
 		private bool m_Post6017;
+		private bool m_Post60142;
 
 		public bool IsPost6017 {
 			get { 
 				return m_Post6017; 
+			}
+		}
+
+		public bool IsPost60142 {
+			get { 
+				return m_Post60142; 
 			}
 		}
 

@@ -6769,7 +6769,7 @@ namespace Server
 						ClearFastwalkStack();
 
 						Send( new MobileIncoming( this, this ) );
-						Send( SupportedFeatures.Instantiate( ns.Account ) );
+						Send( SupportedFeatures.Instantiate( ns ) );
 						Send( new MobileUpdate( this ) );
 						Send( new MobileAttributes( this ) );
 					}
@@ -8816,7 +8816,7 @@ namespace Server
 				ClearFastwalkStack();
 
 				Send( new MobileIncoming( this, this ) );
-				Send( SupportedFeatures.Instantiate( ns.Account ) );
+				Send( SupportedFeatures.Instantiate( ns ) );
 				Send( new MobileUpdate( this ) );
 				Send( new MobileAttributes( this ) );
 			}
