@@ -403,7 +403,7 @@ namespace Server.Spells.Necromancy
 		{
 			private AnimateDeadSpell m_Owner;
 
-			public InternalTarget( AnimateDeadSpell owner ) : base( 12, false, TargetFlags.None )
+			public InternalTarget( AnimateDeadSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

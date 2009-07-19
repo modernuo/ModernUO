@@ -111,7 +111,7 @@ namespace Server.Spells.Sixth
 			private ExplosionSpell m_Owner;
 
 			public InternalTarget( ExplosionSpell owner )
-				: base( 12, false, TargetFlags.Harmful )
+				: base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

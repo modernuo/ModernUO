@@ -92,7 +92,7 @@ namespace Server.Spells.Second
 		{
 			private HarmSpell m_Owner;
 
-			public InternalTarget( HarmSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( HarmSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

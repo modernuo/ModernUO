@@ -913,7 +913,7 @@ namespace Server.Items
 			return true;
 		}
 
-		public bool Scissor( Mobile from, Scissors scissors )
+		public virtual bool Scissor( Mobile from, Scissors scissors )
 		{
 			if ( !IsChildOf( from.Backpack ) )
 			{

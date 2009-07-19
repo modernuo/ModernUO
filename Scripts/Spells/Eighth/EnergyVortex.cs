@@ -72,7 +72,7 @@ namespace Server.Spells.Eighth
 		{
 			private EnergyVortexSpell m_Owner;
 
-			public InternalTarget( EnergyVortexSpell owner ) : base( 12, true, TargetFlags.None )
+			public InternalTarget( EnergyVortexSpell owner ) : base( Core.ML ? 10 : 12, true, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

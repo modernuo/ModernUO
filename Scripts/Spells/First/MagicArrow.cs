@@ -75,7 +75,7 @@ namespace Server.Spells.First
 		{
 			private MagicArrowSpell m_Owner;
 
-			public InternalTarget( MagicArrowSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( MagicArrowSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

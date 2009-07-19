@@ -192,7 +192,7 @@ namespace Server.Spells.Spellweaving
 			private GiftOfLifeSpell m_Owner;
 
 			public InternalTarget( GiftOfLifeSpell owner )
-				: base( 12, false, TargetFlags.Beneficial )
+				: base( 10, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			}

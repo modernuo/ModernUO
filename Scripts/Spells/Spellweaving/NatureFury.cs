@@ -107,7 +107,7 @@ namespace Server.Spells.Spellweaving
 			private NatureFurySpell m_Owner;
 
 			public InternalTarget( NatureFurySpell owner )
-				: base( 12, true, TargetFlags.None )
+				: base( 10, true, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

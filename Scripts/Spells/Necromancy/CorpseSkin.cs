@@ -132,7 +132,7 @@ namespace Server.Spells.Necromancy
 		{
 			private CorpseSkinSpell m_Owner;
 
-			public InternalTarget( CorpseSkinSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( CorpseSkinSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

@@ -30,7 +30,7 @@ namespace Server.Spells.Third
 		{
 			private UnlockSpell m_Owner;
 
-			public InternalTarget( UnlockSpell owner ) : base( 12, false, TargetFlags.None )
+			public InternalTarget( UnlockSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

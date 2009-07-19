@@ -165,7 +165,7 @@ namespace Server.Spells.Spellweaving
 			private GiftOfRenewalSpell m_Owner;
 
 			public InternalTarget( GiftOfRenewalSpell owner )
-				: base( 12, false, TargetFlags.Beneficial )
+				: base( 10, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			}

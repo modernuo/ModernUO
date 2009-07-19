@@ -68,7 +68,7 @@ namespace Server.Spells.Sixth
 		{
 			private MarkSpell m_Owner;
 
-			public InternalTarget( MarkSpell owner ) : base( 12, false, TargetFlags.None )
+			public InternalTarget( MarkSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

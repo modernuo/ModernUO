@@ -189,7 +189,7 @@ namespace Server.Spells.Third
 		{
 			private WallOfStoneSpell m_Owner;
 
-			public InternalTarget( WallOfStoneSpell owner ) : base( 12, true, TargetFlags.None )
+			public InternalTarget( WallOfStoneSpell owner ) : base( Core.ML ? 10 : 12, true, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

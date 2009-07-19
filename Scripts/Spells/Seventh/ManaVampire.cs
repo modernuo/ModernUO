@@ -98,7 +98,7 @@ namespace Server.Spells.Seventh
 		{
 			private ManaVampireSpell m_Owner;
 
-			public InternalTarget( ManaVampireSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( ManaVampireSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

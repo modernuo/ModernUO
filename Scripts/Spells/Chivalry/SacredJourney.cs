@@ -141,7 +141,7 @@ namespace Server.Spells.Chivalry
 		{
 			private SacredJourneySpell m_Owner;
 
-			public InternalTarget( SacredJourneySpell owner ) : base( 12, false, TargetFlags.None )
+			public InternalTarget( SacredJourneySpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

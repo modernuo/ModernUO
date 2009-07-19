@@ -67,7 +67,7 @@ namespace Server.Spells.Spellweaving
 		{
 			private WordOfDeathSpell m_Owner;
 
-			public InternalTarget( WordOfDeathSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( WordOfDeathSpell owner ) : base( 10, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

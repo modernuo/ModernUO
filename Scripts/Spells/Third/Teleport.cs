@@ -104,7 +104,7 @@ namespace Server.Spells.Third
 		{
 			private TeleportSpell m_Owner;
 
-			public InternalTarget( TeleportSpell owner ) : base( 12, true, TargetFlags.None )
+			public InternalTarget( TeleportSpell owner ) : base( Core.ML ? 11 : 12, true, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

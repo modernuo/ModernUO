@@ -140,11 +140,17 @@ namespace Server.Spells.Necromancy
 			}
 			public void DoExpire()
 			{
-				m_Caster.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
-				m_Target.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
+				if( m_OathTable.Contains( m_Caster ) )
+				{
+					m_Caster.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
+					m_OathTable.Remove ( m_Caster );
+				}
 
-				m_OathTable.Remove ( m_Caster );
-				m_OathTable.Remove ( m_Target );
+				if( m_OathTable.Contains( m_Target ) )
+				{
+					m_Target.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
+					m_OathTable.Remove ( m_Target );
+				}
 
 				Stop ();
 
@@ -159,7 +165,7 @@ namespace Server.Spells.Necromancy
 		{
 			private BloodOathSpell m_Owner;
 
-			public InternalTarget( BloodOathSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( BloodOathSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

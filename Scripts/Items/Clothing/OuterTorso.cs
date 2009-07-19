@@ -510,6 +510,44 @@ namespace Server.Items
 		}
 	}
 
+	public class MonkRobe : BaseOuterTorso
+	{
+		[Constructable]
+		public MonkRobe() : this( 0x21E )
+		{
+		}
+		
+		[Constructable]
+		public MonkRobe( int hue ) : base( 0x2687, hue )
+		{
+			Weight = 1.0;
+			StrRequirement = 0;
+		}
+		public override int LabelNumber{ get{ return 1076584; } } // A monk's robe
+		public override bool CanBeBlessed { get { return false; } }
+		public override bool Dye( Mobile from, DyeTub sender )
+		{
+			from.SendLocalizedMessage( sender.FailMessage );
+			return false;
+		}
+		public MonkRobe( Serial serial ) : base( serial )
+		{
+		}
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.Write( (int) 0 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadInt();
+		}
+	}
+	
 	[Flipable( 0x2684, 0x2683 )]
 	public class HoodedShroudOfShadows : BaseOuterTorso
 	{
@@ -725,7 +763,6 @@ namespace Server.Items
 	[Flipable( 0x2FB9, 0x3173 )]
 	public class MaleElvenRobe : BaseOuterTorso
 	{
-		// TODO: Supports arcane?
 		public override Race RequiredRace { get { return Race.Elf; } }
 
 		[Constructable]
@@ -738,8 +775,6 @@ namespace Server.Items
 		{
 			Weight = 2.0;
 		}
-
-		public override bool AllowFemaleWearer{ get{ return false; } }
 
 		public MaleElvenRobe( Serial serial ) : base( serial )
 		{
@@ -763,7 +798,6 @@ namespace Server.Items
 	[Flipable( 0x2FBA, 0x3174 )]
 	public class FemaleElvenRobe : BaseOuterTorso
 	{
-		// TODO: Supports arcane?
 		public override Race RequiredRace { get { return Race.Elf; } }
 		[Constructable]
 		public FemaleElvenRobe() : this( 0 )

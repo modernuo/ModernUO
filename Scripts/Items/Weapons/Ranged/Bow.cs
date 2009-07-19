@@ -15,8 +15,8 @@ namespace Server.Items
 		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.MortalStrike; } }
 
 		public override int AosStrengthReq{ get{ return 30; } }
-		public override int AosMinDamage{ get{ return 16; } }
-		public override int AosMaxDamage{ get{ return 18; } }
+		public override int AosMinDamage{ get{ return Core.ML ? 15 : 16; } }
+		public override int AosMaxDamage{ get{ return Core.ML ? 19 : 18; } }
 		public override int AosSpeed{ get{ return 25; } }
 
 		public override int OldStrengthReq{ get{ return 20; } }

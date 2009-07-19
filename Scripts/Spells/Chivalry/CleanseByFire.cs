@@ -96,7 +96,7 @@ namespace Server.Spells.Chivalry
 		{
 			private CleanseByFireSpell m_Owner;
 
-			public InternalTarget( CleanseByFireSpell owner ) : base( 12, false, TargetFlags.Beneficial )
+			public InternalTarget( CleanseByFireSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			}

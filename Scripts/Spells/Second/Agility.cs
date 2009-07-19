@@ -53,7 +53,7 @@ namespace Server.Spells.Second
 		{
 			private AgilitySpell m_Owner;
 
-			public InternalTarget( AgilitySpell owner ) : base( 12, false, TargetFlags.Beneficial )
+			public InternalTarget( AgilitySpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			} 

@@ -16,7 +16,7 @@ namespace Server.Items
 
 		public override int AosStrengthReq{ get{ return 35; } }
 		public override int AosMinDamage{ get{ return 18; } }
-		public override int AosMaxDamage{ get{ return 20; } }
+		public override int AosMaxDamage{ get{ return Core.ML ? 22 : 20; } }
 		public override int AosSpeed{ get{ return 24; } }
 
 		public override int OldStrengthReq{ get{ return 30; } }

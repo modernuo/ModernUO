@@ -95,7 +95,7 @@ namespace Server.Spells.Necromancy
 		{
 			private EvilOmenSpell m_Owner;
 
-			public InternalTarget( EvilOmenSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( EvilOmenSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

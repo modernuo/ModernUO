@@ -53,7 +53,7 @@ namespace Server.Spells.Second
 		{
 			private CunningSpell m_Owner;
 
-			public InternalTarget( CunningSpell owner ) : base( 12, false, TargetFlags.Beneficial )
+			public InternalTarget( CunningSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			} 

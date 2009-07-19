@@ -78,7 +78,7 @@ namespace Server.Spells.Third
 		{
 			private TelekinesisSpell m_Owner;
 
-			public InternalTarget( TelekinesisSpell owner ) : base( 12, false, TargetFlags.None )
+			public InternalTarget( TelekinesisSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

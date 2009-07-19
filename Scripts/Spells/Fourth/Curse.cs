@@ -91,7 +91,7 @@ namespace Server.Spells.Fourth
 		{
 			private CurseSpell m_Owner;
 
-			public InternalTarget( CurseSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( CurseSpell owner ) : base( Core.ML? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

@@ -84,7 +84,7 @@ namespace Server.Spells.First
 		{
 			private HealSpell m_Owner;
 
-			public InternalTarget( HealSpell owner ) : base( 12, false, TargetFlags.Beneficial )
+			public InternalTarget( HealSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			}

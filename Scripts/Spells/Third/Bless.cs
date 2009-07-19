@@ -57,7 +57,7 @@ namespace Server.Spells.Third
 		{
 			private BlessSpell m_Owner;
 
-			public InternalTarget( BlessSpell owner ) : base( 12, false, TargetFlags.Beneficial )
+			public InternalTarget( BlessSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
 			}

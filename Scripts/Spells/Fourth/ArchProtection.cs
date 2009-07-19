@@ -133,7 +133,7 @@ namespace Server.Spells.Fourth
 		{
 			private ArchProtectionSpell m_Owner;
 
-			public InternalTarget( ArchProtectionSpell owner ) : base( 12, true, TargetFlags.None )
+			public InternalTarget( ArchProtectionSpell owner ) : base( Core.ML ? 10 : 12, true, TargetFlags.None )
 			{
 				m_Owner = owner;
 			}

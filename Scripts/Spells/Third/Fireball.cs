@@ -73,7 +73,7 @@ namespace Server.Spells.Third
 		{
 			private FireballSpell m_Owner;
 
-			public InternalTarget( FireballSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( FireballSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}

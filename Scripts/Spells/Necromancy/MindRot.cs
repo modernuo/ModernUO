@@ -109,7 +109,7 @@ namespace Server.Spells.Necromancy
 		{
 			private MindRotSpell m_Owner;
 
-			public InternalTarget( MindRotSpell owner ) : base( 12, false, TargetFlags.Harmful )
+			public InternalTarget( MindRotSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
 			{
 				m_Owner = owner;
 			}
