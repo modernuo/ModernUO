@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		[Constructable]
 		public WhiteWyrm () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Body = Core.AOS ? 180 : 49;
+			Body = (Utility.Random(1,2)==1) ? 180 :  49;
 			Name = "a white wyrm";
 			BaseSoundID = 362;
 

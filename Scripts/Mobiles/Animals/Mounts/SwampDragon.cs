@@ -122,6 +122,11 @@ namespace Server.Mobiles
 			MinTameSkill = 93.9;
 		}
 
+		public override bool OverrideBondingReqs()
+		{
+			return true;
+		}
+
 		public override int GetIdleSound()
 		{
 			return 0x2CE;

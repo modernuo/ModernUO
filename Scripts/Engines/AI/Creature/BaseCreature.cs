@@ -1922,7 +1922,7 @@ namespace Server.Mobiles
 
 							if ( master != null && master == from )	//So friends can't start the bonding process
 							{
-								if ( m_dMinTameSkill <= 29.1 || master.Skills[SkillName.AnimalTaming].Base >= m_dMinTameSkill || ( this is LesserHiryu && master.Skills[SkillName.Bushido].Base >= 90.0 ) )
+								if ( m_dMinTameSkill <= 29.1 || master.Skills[SkillName.AnimalTaming].Base >= m_dMinTameSkill || OverrideBondingReqs() )
 								{
 									if ( BondingBegin == DateTime.MinValue )
 									{
@@ -1952,6 +1952,11 @@ namespace Server.Mobiles
 		}
 
 		#endregion
+
+		public virtual bool OverrideBondingReqs()
+		{
+			return false;
+		}
 
 		public virtual bool CanAngerOnTame{ get{ return false; } }
 

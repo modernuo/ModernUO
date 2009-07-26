@@ -48,6 +48,11 @@ namespace Server.Mobiles
 			Hue = 0x489;
 		}
 
+		public override bool OverrideBondingReqs()
+		{
+			return true;
+		}
+
 		public override int GetAngerSound()
 		{
 			return 0x21D;

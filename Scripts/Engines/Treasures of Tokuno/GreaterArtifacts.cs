@@ -522,6 +522,8 @@ namespace Server.Items
 
 				if( --pigment.UsesRemaining <= 0 )
 					pigment.Delete();
+
+				from.PlaySound(0x23E); // As per OSI TC1
 			}
 		}
 

@@ -46,14 +46,14 @@ namespace Server.Spells.Sixth
 
 				m.Hidden = true;
 
-				BuffInfo.RemoveBuff( m, BuffIcon.HidingAndOrStealth );
-				BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.Invisibility, 1075825 ) );	//Invisibility/Invisible
-
 				RemoveTimer( m );
 
-				TimeSpan duration = TimeSpan.FromSeconds( ((6 * Caster.Skills.Magery.Fixed) / 50) + 1 );
+				TimeSpan duration = TimeSpan.FromSeconds( (( 1.2 * Caster.Skills.Magery.Fixed) / 10 ));
 
 				Timer t = new InternalTimer( m, duration );
+
+				BuffInfo.RemoveBuff( m, BuffIcon.HidingAndOrStealth );
+				BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.Invisibility, 1075825, duration, m ) );	//Invisibility/Invisible
 
 				m_Table[m] = t;
 

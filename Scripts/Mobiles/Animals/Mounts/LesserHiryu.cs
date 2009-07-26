@@ -73,8 +73,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 100.1, 110.0 );
 			SetSkill( SkillName.Wrestling, 100.1, 120.0 );
 
-			Fame = 18000;
-			Karma = -18000;
+			Fame = 10000;
+			Karma = 10000;
 
 			Tamable = true;
 			ControlSlots = 3;
@@ -84,6 +84,13 @@ namespace Server.Mobiles
 				PackItem( Engines.Plants.Seed.RandomBonsaiSeed() );
 		}
 
+
+		public override bool OverrideBondingReqs()
+		{
+			if ( ControlMaster.Skills[SkillName.Bushido].Base >= 90.0 )
+				return true;
+			return false;
+		}
 
 		public override int GetAngerSound()
 		{

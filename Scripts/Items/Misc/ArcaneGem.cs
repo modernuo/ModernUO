@@ -89,7 +89,9 @@ namespace Server.Items
 							eq.CurArcaneCharges += charges;
 
 						from.SendMessage( "You recharge the item." );
-						Delete();
+						if ( Amount <= 1 )
+							Delete();
+						else Amount--;
 					}
 				}
 				else if ( from.Skills[SkillName.Tailoring].Value >= 80.0 )
@@ -117,7 +119,9 @@ namespace Server.Items
 						item.Hue = DefaultArcaneHue;
 
 						from.SendMessage( "You enhance the item with your gem." );
-						Delete();
+						if ( Amount <= 1 )
+							Delete();
+						else Amount--;
 					}
 					else
 					{
