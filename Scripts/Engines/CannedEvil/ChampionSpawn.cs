@@ -1032,6 +1032,10 @@ namespace Server.Engines.CannedEvil
 					{
 						m = reader.ReadMobile();
 						damage = reader.ReadInt();
+
+						if ( m == null )
+							continue;
+
 						m_DamageEntries.Add( m, damage );
 					}
 
