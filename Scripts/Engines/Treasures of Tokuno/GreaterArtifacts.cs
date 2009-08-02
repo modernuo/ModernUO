@@ -136,7 +136,7 @@ namespace Server.Items
 
 	}
 
-	public class Stormgrip : LeatherGloves
+	public class Stormgrip : LeatherNinjaMitts
 	{
 		public override int InitMinHits { get { return 255; } }
 		public override int InitMaxHits { get { return 255; } }

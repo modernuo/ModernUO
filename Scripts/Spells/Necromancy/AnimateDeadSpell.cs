@@ -125,7 +125,7 @@ namespace Server.Spells.Necromancy
 				// Dragons
 				new CreatureGroup( new Type[]
 				{
-					typeof( AncientWyrm ), typeof( Dragon ), typeof( SerpentineDragon ),
+					typeof( AncientWyrm ), typeof( Dragon ), typeof( GreaterDragon ), typeof( SerpentineDragon ),
 					typeof( ShadowWyrm ), typeof( SkeletalDragon ), typeof( WhiteWyrm ),
 					typeof( Drake ), typeof( Wyvern ), typeof( LesserHiryu ), typeof( Hiryu )
 				}, new SummonEntry[]

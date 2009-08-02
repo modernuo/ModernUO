@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	public class DeathwatchBeetleHatchling : BaseCreature
 	{
 		[Constructable]
-		public DeathwatchBeetleHatchling() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public DeathwatchBeetleHatchling() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a deathwatch beetle hatchling";
 			Body = 242;
@@ -92,7 +92,7 @@ namespace Server.Mobiles
 		public DeathwatchBeetleHatchling( Serial serial ) : base( serial )
 		{
 		}
-
+		public override int Hides{ get{ return 8; } }
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

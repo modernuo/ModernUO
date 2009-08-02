@@ -45,6 +45,7 @@ namespace Server.Spells.Sixth
 				m.PlaySound( 0x3C4 );
 
 				m.Hidden = true;
+				m.Warmode = false;
 
 				RemoveTimer( m );
 

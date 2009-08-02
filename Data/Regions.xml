@@ -19,6 +19,39 @@
 			<!-- magincia -->
 			<rect x="3554" y="2132" width="18" height="18" />
 		</region>
+		<!--Mondain's Legacy-->
+		<region type="TownRegion" priority="50" name="Heartwood">
+			<rect x="6911" y="255" width="257" height="257" />
+			<go x="6984" y="337" z="0" />
+			<entrance x="535" y="995" />
+			<music name="ElfCity" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Painted Caves">
+			<rect x="6240" y="860" width="70" height="60" />
+			<go x="6308" y="892" z="-1" />
+			<entrance x="1716" y="892" />
+			<music name="Dungeon9" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Prism of Light">
+			<rect x="6400" y="0" width="221" height="255" />
+			<go x="6474" y="188" z="0" />
+			<entrance x="3784" y="1097" z="14" />
+			<music name="Dungeon9" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Blighted Grove">
+			<rect x="6440" y="820" width="160" height="150" />
+			<go x="6478" y="863" z="11" />
+			<entrance x="587" y="1641" z="-1" />
+			<music name="MelisandesLair" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Palace of Paroxysmus">
+			<rect x="6191" y="311" width="370" height="360" />
+			<go x="6222" y="335" z="60" />
+			<entrance x="5574" y="3024" z="31" />
+			<music name="ParoxysmusLair" />
+				<zrange min="-50" />
+		</region>
+		<!--End-->
 		<region type="TownRegion" priority="50" name="Cove">
 			<rect x="2200" y="1110" width="50" height="50" />
 			<rect x="2200" y="1160" width="86" height="86" />
@@ -714,8 +747,6 @@
 			<rect x="1494" y="3767" width="12" height="11" />
 			<!-- minoc -->
 			<rect x="2694" y="685" width="15" height="16" />
-			<!-- haven -->
-			<rect x="3759" y="2767" width="10" height="10" />
 			<!-- trinsic -->
 			<rect x="1823" y="2943" width="11" height="11" />
 			<!-- yew -->
@@ -727,6 +758,51 @@
 			<!-- magincia -->
 			<rect x="3554" y="2132" width="18" height="18" />
 		</region>
+		<!--Mondain's Legacy-->
+		<region type="TownRegion" priority="50" name="Heartwood">
+			<rect x="6911" y="255" width="257" height="257" />
+			<go x="6984" y="337" z="0" />
+			<entrance x="535" y="995" />
+			<music name="ElfCity" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Sanctuary">
+			<rect x="6157" y="4" width="242" height="251" />
+			<go x="6173" y="23" z="0" />
+			<entrance x="764" y="1646" />
+			<music name="Dungeon9" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Painted Caves">
+			<rect x="6240" y="860" width="70" height="60" />
+			<go x="6308" y="892" z="-1" />
+			<entrance x="1716" y="892" />
+			<music name="Dungeon9" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Prism of Light">
+			<rect x="6400" y="0" width="221" height="255" />
+			<go x="6474" y="188" z="0" />
+			<entrance x="3784" y="1097" z="14" />
+			<music name="Dungeon9" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Blighted Grove">
+			<rect x="6440" y="820" width="160" height="150" />
+			<go x="6478" y="863" z="11" />
+			<entrance x="587" y="1641" z="-1" />
+			<music name="MelisandesLair" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Palace of Paroxysmus">
+			<rect x="6191" y="311" width="370" height="360" />
+			<go x="6222" y="335" z="60" />
+			<entrance x="5574" y="3024" z="31" />
+			<music name="ParoxysmusLair" />
+				<zrange min="-50" />
+		</region>
+		<region priority="50" name="Bravehorn's drinking pool">
+			<rect x="1302" y="2331" width="38" height="22" />
+		</region>
+		<region priority="50" name="Huntsman's forrest">
+			<rect x="1595" y="550" width="120" height="120" />
+		</region>
+		<!--End-->
 		<region type="TownRegion" priority="50" name="Cove">
 			<rect x="2200" y="1110" width="50" height="50" />
 			<rect x="2200" y="1160" width="86" height="86" />
@@ -885,11 +961,20 @@
 			<rect x="3314" y="2345" width="500" height="750" />
 			<go x="3627" y="2606" z="0" />
 			<smartNoHousing active="true" />
+			<region type="GuardedRegion" name="New Haven Moongate">
+			<rect x="3446" y="2674" width="10" height="10" />
+        	</region>
 			<region type="TownRegion" name="New Haven">
 				<rune name="New Haven City" />
 				<rect x="3423" y="2480" width="111" height="143" />
 				<go x="3503" y="2574" z="14" />
 				<music name="Ocllo" />
+          		<region name="Gentle Rest Inn">
+		  			<rune name="The Gentle Rest Inn in New Haven" />
+					<rect x="3493" y="2513" width="10" height="10"/>
+            		<rect x="3503" y="2513" width="7" height="17" />
+		  			<logoutDelay active="false" />
+				</region>
 			</region>
 			<!--
 			<region type="TownRegion" name="Haven">
@@ -1142,9 +1227,9 @@
 						<object id="30" type="Miner" amount="2" />
 					</spawning>
 				</region>
-			</region>
-			-->
+			</region>-->
 		</region>
+
 		<region type="TownRegion" priority="50" name="Trinsic">
 			<rect x="1856" y="2636" width="75" height="28" />
 			<rect x="1816" y="2664" width="283" height="231" />
@@ -1650,6 +1735,17 @@
 		</region>
 	</Facet>
 	<Facet name="Ilshenar">
+		<!--Mondain's Legacy-->
+		<region type="DungeonRegion" priority="50" name="Twisted Weald">
+			<rect x="2107" y="1145" width="147" height="135" />
+			<go x="2189" y="1253" z="0" />
+			<music name="DreadHornArea" />
+			<entrance x="1450" y="1473" z="-23" />
+		</region>
+		<region priority="50" name="Sheep Farm">
+			<rect x="1303" y="1312" width="30" height="30" />
+		</region>
+		<!--End-->
 		<region priority="37" name="Shrine of Valor">
 			<rect x="512" y="200" width="32" height="32" />
 			<go x="539" y="221" z="-36" />
@@ -1987,6 +2083,20 @@
 			<go x="1731" y="981" z="-79" />
 			<smartNoHousing active="true" />
 		</region>
+		<!--Mondain's Legacy-->
+		<region type="DungeonRegion" priority="50" name="Bedlam">
+			<rect x="80" y="1590" width="130" height="100" />
+			<go x="117" y="1681" z="0" />
+			<entrance x="2068" y="1372" z="-75" />
+			<music name="GrizzleDungeon" />
+		</region>
+		<region type="DungeonRegion" priority="50" name="Citadel">
+			<rect x="65" y="1865" width="130" height="125" />
+			<go x="106" y="1884" z="0" />
+			<entrance x="1349" y="769" z="14" />
+			<music name="Dungeon9" />
+		</region>
+		<!--End-->
 		<region type="TownRegion" priority="50" name="Luna">
 			<rect x="945" y="490" width="91" height="61" />
 			<go x="989" y="520" z="-50" />
@@ -2006,7 +2116,7 @@
 				<logoutDelay active="false" />
 			</region>
 		</region>
-		<region type="DungeonRegion" priority="50" name="Labrinth">
+		<region type="DungeonRegion" priority="50" name="Labyrinth">
 			<rect x="256" y="1795" width="243" height="230" />
 			<go x="336" y="1970" z="0" />
 			<music name="Dungeon9" />
