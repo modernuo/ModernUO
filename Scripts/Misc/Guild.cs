@@ -259,7 +259,7 @@ namespace Server.Guilds
 			for( int i = 0; i < m_PendingMembers.Count; i++ )
 				m_PendingMembers[i].Alliance = null;
 
-			for( int i =0; i < m_Members.Count; i++ )
+			for( int i = 0; i < m_Members.Count; i++ )
 				m_Members[i].Alliance = null;
 
 

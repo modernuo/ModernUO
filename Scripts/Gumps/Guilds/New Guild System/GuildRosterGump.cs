@@ -117,7 +117,7 @@ namespace Server.Guilds
 				new InfoField<PlayerMobile>( 1062953, 150, GuildRosterGump.TitleComparer.Instance	)	//Guild Title
 			};
 
-		public GuildRosterGump( PlayerMobile pm, Guild g ) : this( pm, g, GuildRosterGump.LastOnComparer.Instance, true, "", 0 )
+		public GuildRosterGump( PlayerMobile pm, Guild g ) : this( pm, g, GuildRosterGump.LastOnComparer.Instance, false, "", 0 )
 		{
 		}
 
