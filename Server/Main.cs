@@ -154,26 +154,17 @@ namespace Server
 
 		public static bool AOS
 		{
-			get
-			{
-				return m_Expansion >= Expansion.AOS;
-			}
+			get { return m_Expansion >= Expansion.AOS; }
 		}
 
 		public static bool SE
 		{
-			get
-			{
-				return m_Expansion >= Expansion.SE;
-			}
+			get { return m_Expansion >= Expansion.SE; }
 		}
 
 		public static bool ML
 		{
-			get
-			{
-				return m_Expansion >= Expansion.ML;
-			}
+			get { return m_Expansion >= Expansion.ML; }
 		}
 
 		#endregion
