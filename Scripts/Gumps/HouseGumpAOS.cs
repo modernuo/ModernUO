@@ -804,7 +804,7 @@ namespace Server.Gumps
 			bool isFriend = isCoOwner || m_House.IsFriend( from );
 
 			if ( isCombatRestricted )
-				isFriend = isCoOwner = isFriend = false;
+				isCoOwner = isFriend = false;
 
 			if ( !from.CheckAlive() )
 				return;
