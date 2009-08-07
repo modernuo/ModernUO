@@ -386,7 +386,7 @@ namespace Server
 					if( !Directory.Exists( "Logs" ) )
 						Directory.CreateDirectory( "Logs" );
 
-					Console.SetOut( m_MultiConOut = new MultiTextWriter( Console.Out, new FileLogger( "Logs/Console.log" ) ) );
+					Console.SetOut( m_MultiConOut = new MultiTextWriter( new FileLogger( "Logs/Console.log" ) ) );
 				}
 				else
 				{
@@ -431,7 +431,7 @@ namespace Server
 				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", m_ProcessorCount, m_ProcessorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
 
 			int platform = (int)Environment.OSVersion.Platform;
-			if ( ( platform == 4 ) || ( platform == 128 ) ) { // MS 4, MONO 128
+			if ( platform == 4 || platform == 128 ) { // MS 4, MONO 128
 				m_Unix = true;
 				Console.WriteLine( "Core: Unix environment detected" );
 			}
@@ -448,6 +448,13 @@ namespace Server
 				if( Console.ReadKey( true ).Key != ConsoleKey.R )
 					return;
 			}
+
+			ScriptCompiler.Invoke( "Configure" );
+			
+			Region.Load();
+			World.Load();
+
+			ScriptCompiler.Invoke( "Initialize" );
 
 			SocketPool.Create();
 

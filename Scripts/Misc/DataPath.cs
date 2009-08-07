@@ -45,7 +45,7 @@ namespace Server.Misc
 			if ( pathTD != null ) 
 				Core.DataDirectories.Add( pathTD ); 
 
-			if ( Core.DataDirectories.Count == 0 )
+			if ( Core.DataDirectories.Count == 0 && !Core.Service )
 			{
 				Console.WriteLine( "Enter the Ultima Online directory:" );
 				Console.Write( "> " );

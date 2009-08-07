@@ -601,6 +601,11 @@ namespace Server
 			Core.VerifySerialization();
 			Console.WriteLine( "done ({0} items, {1} mobiles)", Core.ScriptItems, Core.ScriptMobiles );
 
+			return true;
+		}
+
+		public static void Invoke( string method )
+		{
 			List<MethodInfo> invoke = new List<MethodInfo>();
 
 			for( int a = 0; a < m_Assemblies.Length; ++a )
@@ -609,7 +614,7 @@ namespace Server
 
 				for( int i = 0; i < types.Length; ++i )
 				{
-					MethodInfo m = types[i].GetMethod( "Configure", BindingFlags.Static | BindingFlags.Public );
+					MethodInfo m = types[i].GetMethod( method, BindingFlags.Static | BindingFlags.Public );
 
 					if( m != null )
 						invoke.Add( m );
@@ -620,31 +625,6 @@ namespace Server
 
 			for( int i = 0; i < invoke.Count; ++i )
 				invoke[i].Invoke( null, null );
-
-			invoke.Clear();
-
-			Region.Load();
-			World.Load();
-
-			for( int a = 0; a < m_Assemblies.Length; ++a )
-			{
-				Type[] types = m_Assemblies[a].GetTypes();
-
-				for( int i = 0; i < types.Length; ++i )
-				{
-					MethodInfo m = types[i].GetMethod( "Initialize", BindingFlags.Static | BindingFlags.Public );
-
-					if( m != null )
-						invoke.Add( m );
-				}
-			}
-
-			invoke.Sort( new CallPriorityComparer() );
-
-			for( int i = 0; i < invoke.Count; ++i )
-				invoke[i].Invoke( null, null );
-
-			return true;
 		}
 
 		private static Dictionary<Assembly, TypeCache> m_TypeCaches = new Dictionary<Assembly, TypeCache>();

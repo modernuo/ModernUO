@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Server;
 using Server.Network;
@@ -113,6 +114,23 @@ namespace Server.Misc
 
 		private static bool HasPublicIPAddress()
 		{
+			NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+
+			foreach ( NetworkInterface adapter in adapters ) {
+				IPInterfaceProperties properties = adapter.GetIPProperties();
+
+				foreach ( IPAddressInformation unicast in properties.UnicastAddresses ) {
+					IPAddress ip = unicast.Address;
+
+					if ( !IPAddress.IsLoopback( ip ) && ip.AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork( ip ) )
+						return true;
+				}
+			}
+
+			return false;
+
+
+			/*
 			IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
 
 			IPAddress[] ips = iphe.AddressList;
@@ -124,6 +142,7 @@ namespace Server.Misc
 			}
 
 			return false;
+			*/
 		}
 
 		private static bool IsPrivateNetwork( IPAddress ip )

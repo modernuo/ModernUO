@@ -22,6 +22,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using Server;
@@ -69,6 +70,17 @@ namespace Server.Network
 				s.Listen( 8 );
 
 				if ( ipep.Address.Equals( IPAddress.Any ) ) {
+					NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+
+					foreach ( NetworkInterface adapter in adapters ) {
+						IPInterfaceProperties properties = adapter.GetIPProperties();
+
+						foreach ( IPAddressInformation unicast in properties.UnicastAddresses ) {
+							Console.WriteLine( "Listening: {0}:{1}", unicast.Address, ipep.Port );
+						}
+					}
+					
+					/*
 					try {
 						Console.WriteLine( "Listening: {0}:{1}", IPAddress.Loopback, ipep.Port );
 
@@ -80,6 +92,7 @@ namespace Server.Network
 							Console.WriteLine( "Listening: {0}:{1}", ip[i], ipep.Port );
 					}
 					catch { }
+					*/
 				}
 				else {
 					Console.WriteLine( "Listening: {0}:{1}", ipep.Address, ipep.Port );

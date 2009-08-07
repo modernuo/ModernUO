@@ -2535,11 +2535,13 @@ namespace Server.Commands
 		*/
 		public static bool DontLink( Type type )
 		{
+			// MONO: type.Namespace is null/empty for generic arguments
+
+			if ( type.Name == "T" || String.IsNullOrEmpty( type.Namespace ) || m_Namespaces == null )
+				return true;
+
 			if( type.Namespace.StartsWith( "Server" ) )
 				return false;
-
-			if( m_Namespaces == null )
-				return false;		//sanity
 
 			return  !m_Namespaces.ContainsKey( type.Namespace );
 		}
