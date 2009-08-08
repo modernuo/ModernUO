@@ -18,7 +18,7 @@ namespace Server.Accounting
 	{
 		public static readonly TimeSpan YoungDuration = TimeSpan.FromHours( 40.0 );
 
-		private static readonly TimeSpan InactiveDuration = TimeSpan.FromDays( 180.0 );
+		public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays( 180.0 );
 
 		private string m_Username, m_PlainPassword, m_CryptPassword, m_NewCryptPassword;
 		private AccessLevel m_AccessLevel;
