@@ -80,7 +80,7 @@ namespace Server.Multis
 				if ( !Core.AOS )
 					return DecayType.ManualRefresh;
 
-				if ( (acct.LastLogin + TimeSpan.FromDays( 90.0 )) < DateTime.Now )
+				if ( acct.Inactive )
 					return DecayType.Condemned;
 
 				List<BaseHouse> allHouses = new List<BaseHouse>();

@@ -31,9 +31,9 @@ namespace Server.Misc
 			if ( GenerateReport )
 				GenerateCrashReport( e );
 
-			if ( Core.Service )
+			/*if ( Core.Service )
 				e.Close = true;
-			else if ( RestartServer )
+			else */ if ( RestartServer )
 				Restart( e );
 		}
 

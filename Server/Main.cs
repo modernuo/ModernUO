@@ -245,8 +245,12 @@ namespace Server
 					if ( SocketPool.Created )
 						SocketPool.Destroy();
 
-					Console.WriteLine( "This exception is fatal, press return to exit" );
-					Console.ReadLine();
+					if ( m_Service ) {
+						Console.WriteLine( "This exception is fatal." );
+					} else {
+						Console.WriteLine( "This exception is fatal, press return to exit" );
+						Console.ReadLine();
+					}
 				}
 
 				m_Closing = true;
@@ -422,7 +426,7 @@ namespace Server
 				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", m_ProcessorCount, m_ProcessorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
 
 			int platform = (int)Environment.OSVersion.Platform;
-			if ( platform == 4 || platform == 128 ) { // MS 4, MONO 128
+			if( platform == 4 || platform == 128 ) { // MS 4, MONO 128
 				m_Unix = true;
 				Console.WriteLine( "Core: Unix environment detected" );
 			}
@@ -434,8 +438,12 @@ namespace Server
 			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
 			{
 				Console.WriteLine( "Scripts: One or more scripts failed to compile or no script files were found." );
-				Console.WriteLine( " - Press return to exit, or R to try again." );
+				
+				if( m_Service )
+					return;
 
+				Console.WriteLine( " - Press return to exit, or R to try again." );
+				
 				if( Console.ReadKey( true ).Key != ConsoleKey.R )
 					return;
 			}
