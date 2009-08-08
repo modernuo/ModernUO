@@ -522,6 +522,8 @@ namespace Server.Mobiles
 
 			public TeleportTimer( Mobile owner ) : base( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromSeconds( 5.0 ) )
 			{
+				Priority = TimerPriority.TwoFiftyMS;
+
 				m_Owner = owner;
 			}
 
@@ -608,6 +610,8 @@ namespace Server.Mobiles
 
 			public GoodiesTimer( Map map, int x, int y ) : base( TimeSpan.FromSeconds( Utility.RandomDouble() * 10.0 ) )
 			{
+				Priority = TimerPriority.TwoFiftyMS;
+
 				m_Map = map;
 				m_X = x;
 				m_Y = y;
