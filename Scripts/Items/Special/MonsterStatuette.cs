@@ -51,12 +51,10 @@ namespace Server.Items
 		private int m_LabelNumber;
 		private int m_ItemID;
 		private int[] m_Sounds;
-		private int m_Hue;
 
 		public int LabelNumber{ get{ return m_LabelNumber; } }
 		public int ItemID{ get{ return m_ItemID; } }
 		public int[] Sounds{ get{ return m_Sounds; } }
-		public int Hue{ get{ return m_Hue; } }
 
 		public MonsterStatuetteInfo( int labelNumber, int itemID, int baseSoundID )
 		{
