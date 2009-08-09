@@ -74,7 +74,6 @@ namespace Server.Spells.Ninjitsu
 		public override bool CheckFizzle()
 		{
 			// Spell is initially always successful, and with no skill gain.
-
 			return true;
 		}
 
@@ -414,7 +413,7 @@ namespace Server.Spells.Ninjitsu
 					return;
 
 				int mana = m_Spell.ScaleMana( m_Spell.RequiredMana );
-				if (  mana > m_Caster.Mana )
+				if ( mana > m_Caster.Mana )
 				{
 					m_Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				}
