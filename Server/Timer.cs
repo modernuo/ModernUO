@@ -53,6 +53,7 @@ namespace Server
 		private int m_Index, m_Count;
 		private TimerPriority m_Priority;
 		private List<Timer> m_List;
+		private bool m_PrioritySet;
 
 		private static string FormatDelegate( Delegate callback )
 		{
@@ -75,6 +76,9 @@ namespace Server
 			}
 			set
 			{
+				if ( !m_PrioritySet )
+					m_PrioritySet = true;
+
 				if ( m_Priority != value )
 				{
 					m_Priority = value;
@@ -92,42 +96,23 @@ namespace Server
 
 		public TimeSpan Delay
 		{
-			get
-			{
-				return m_Delay;
-			}
-			set
-			{
-				m_Delay = value;
-			}
+			get { return m_Delay; }
+			set { m_Delay = value; }
 		}
 
 		public TimeSpan Interval
 		{
-			get
-			{
-				return m_Interval;
-			}
-			set
-			{
-				m_Interval = value;
-			}
+			get { return m_Interval; }
+			set { m_Interval = value; }
 		}
 
 		public bool Running
 		{
-			get
-			{
-				return m_Running;
-			}
-			set
-			{
-				if ( value )
-				{
+			get { return m_Running; }
+			set {
+				if ( value ) {
 					Start();
-				}
-				else
-				{
+				} else {
 					Stop();
 				}
 			}
@@ -436,6 +421,15 @@ namespace Server
 			m_Delay = delay;
 			m_Interval = interval;
 			m_Count = count;
+
+			if ( !m_PrioritySet ) {
+				if ( count == 1 ) {
+					m_Priority = ComputePriority( delay );
+				} else {
+					m_Priority = ComputePriority( interval );
+				}
+				m_PrioritySet = true;
+			}
 
 			if ( DefRegCreation )
 				RegCreation();

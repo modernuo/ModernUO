@@ -1800,9 +1800,8 @@ namespace Server.Mobiles
 			if ( this.Alive && !wasAlive )
 			{
 				Item deathRobe = new DeathRobe();
-				if ( !this.Backpack.CheckHold( this, deathRobe, false, true ) )
-					deathRobe.Delete();
-				else if ( !EquipItem( deathRobe ) )
+				
+				if ( !EquipItem( deathRobe ) )
 					deathRobe.Delete();
 			}
 		}
