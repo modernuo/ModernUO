@@ -593,7 +593,7 @@ namespace Server.Mobiles
 				Point3D loc = this.Location;
 				Map map = this.Map;
 
-				PoolOfAcid acid = new PoolOfAcid( duration, minDamage, maxDamage, damagetype, name );
+				PoolOfAcid acid = new PoolOfAcid( duration, minDamage, maxDamage );
 
 				if ( target != null && target.Map != null && pools == 1 )
 				{
