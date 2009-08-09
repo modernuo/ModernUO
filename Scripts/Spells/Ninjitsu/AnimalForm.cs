@@ -96,10 +96,15 @@ namespace Server.Spells.Ninjitsu
 			{
 				AnimalFormContext context = GetContext( Caster );
 
-				if ( context != null )
+				int mana = ScaleMana( RequiredMana );
+				if ( mana > Caster.Mana )
 				{
-					if( ConsumeMana() )
+					Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+				}
+				else if ( context != null )
+				{
 						RemoveContext( Caster, context, true );
+						Caster.Mana -= mana;
 				}
 				else if ( Caster is PlayerMobile )
 				{
@@ -110,33 +115,22 @@ namespace Server.Spells.Ninjitsu
 					}
 					else
 					{
-						if ( ConsumeMana() && Morph( Caster, GetLastAnimalForm( Caster ) ) == MorphResult.Fail )
+						if ( Morph( Caster, GetLastAnimalForm( Caster ) ) == MorphResult.Fail )
 							DoFizzle();
+						else
+							Caster.Mana -= mana;
 					}
 				}
 				else
 				{
-					if ( ConsumeMana() && Morph( Caster, GetLastAnimalForm( Caster ) ) == MorphResult.Fail )
+					if ( Morph( Caster, GetLastAnimalForm( Caster ) ) == MorphResult.Fail )
 						DoFizzle();
+					else
+						Caster.Mana -= mana;
 				}
 			}
 
 			FinishSequence();
-		}
-
-		public bool ConsumeMana()
-		{
-			int mana = ScaleMana( RequiredMana );
-
-			if ( Caster.Mana < mana )
-			{
-				Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
-				return false;
-			}
-
-			Caster.Mana -= mana;
-
-			return true;
 		}
 
 		private static Hashtable m_LastAnimalForms = new Hashtable();
@@ -253,6 +247,8 @@ namespace Server.Spells.Ninjitsu
 				m.HueMod = -1;
 				m.BodyMod = 0;
 			}
+			
+			m.FixedParticles( 0x3728, 10, 13, 2023, EffectLayer.Waist );
 
 			context.Timer.Stop();
 		}
@@ -353,54 +349,86 @@ namespace Server.Spells.Ninjitsu
 			{
 				m_Caster = caster;
 				m_Spell = spell;
-
+			
 				AddPage( 0 );
 
-				AddBackground( 0, 0, 408, 298, 0x13BE );
-				AddBackground( 4, 28, 400, 240, 0xBB8 );
+				AddBackground( 0, 0, 520, 404, 0x13BE );
+				AddImageTiled( 10, 10, 500, 20, 0xA40 );
+				AddImageTiled( 10, 40, 500, 324, 0xA40 );
+				AddImageTiled( 10, 374, 500, 20, 0xA40 );
+				AddAlphaRegion( 10, 10, 500, 384 );
+				
+				AddHtmlLocalized( 14, 12, 500, 20, 1063394, 0x7FFF, false, false ); // <center>Polymorph Selection Menu</center>
 
-				AddHtmlLocalized( 4, 4, 400, 20, 1063394, 0x0, false, false ); // <center>Animal Form Selection Menu</center>
-
-				AddButton( 25, 272, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 60, 274, 150, 20, 1011036, 0x0, false, false ); // OKAY
-
-				AddButton( 285, 272, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 320, 274, 150, 20, 1011012, 0x0, false, false ); // CANCEL
-
+				AddButton( 10, 374, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 45, 376, 450, 20, 1011012, 0x7FFF, false, false ); // CANCEL
+				
 				double ninjitsu = caster.Skills.Ninjitsu.Value;
+				
+				int current = 0;
 
 				for ( int i = 0; i < entries.Length; ++i )
 				{
 					bool enabled = ( ninjitsu >= entries[i].ReqSkill );
+					
+					int page = current / 10 + 1;
+					int pos = current % 10;
 
-					int x = 100 * ( i % 4 );
-					int y = 80 * ( i / 4 );
-
-					TextDefinition.AddHtmlText( this, 10 + x, 30 + y, 100, 18, entries[i].Name, false, false );
-
-					if ( enabled )
+					if ( pos == 0 )
 					{
-						AddRadio( 10 + x, 50 + y, 0xD2, 0xD3, false, 100 + i );
-						AddItem( 30 + x, 50 + y, entries[i].ItemID, entries[i].Hue );
-					}
-					else
-						AddItem( 10 + x, 50 + y, entries[i].ItemID, 0x3E3 );
+						if ( page > 1 )
+						{
+							AddButton( 400, 374, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page );
+							AddHtmlLocalized( 440, 376, 60, 20, 1043353, 0x7FFF, false, false ); // Next
+						}
 
-					AddTooltip( enabled ? entries[i].Tooltip : 1070708 );
+						AddPage( page );
+
+						if ( page > 1 )
+						{
+							AddButton( 300, 374, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1 );
+							AddHtmlLocalized( 340, 376, 60, 20, 1011393, 0x7FFF, false, false ); // Back
+						}
+					}
+					
+					if( enabled )
+					{
+						int x = ( pos % 2 == 0 ) ? 14 : 264;
+						int y = ( pos / 2 ) * 64 + 44;
+						
+						Rectangle2D b = ItemBounds.Table[ entries[ i ].ItemID ];
+						
+						AddImageTiledButton( x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entries[i].ItemID, 0x0, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entries[i].Tooltip );
+						AddHtmlLocalized( x + 84, y, 250, 60, entries[i].Name, 0x7FFF, false, false );
+						
+						current++;
+					}
 				}
 			}
 
 			public override void OnResponse( NetState sender, RelayInfo info )
 			{
-				if ( info.ButtonID == 1 && info.Switches.Length > 0 )
+				int entryID = info.ButtonID - 1;
+				
+				if ( entryID < 0 || entryID >= m_Entries.Length )
+					return;
+
+				int mana = m_Spell.ScaleMana( m_Spell.RequiredMana );
+				if (  mana > m_Caster.Mana )
 				{
-					int entryID = info.Switches[0] - 100;
-					
-					if ( m_Spell.ConsumeMana() && AnimalForm.Morph( m_Caster, entryID ) == MorphResult.Fail )
+					m_Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+				}
+				else
+				{
+					if ( AnimalForm.Morph( m_Caster, entryID ) == MorphResult.Fail )
 					{
 						m_Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502632 ); // The spell fizzles.
 						m_Caster.FixedParticles( 0x3735, 1, 30, 9503, EffectLayer.Waist );
 						m_Caster.PlaySound( 0x5C );
+					}
+					else
+					{
+						m_Caster.Mana -= mana;
 					}
 				}
 			}

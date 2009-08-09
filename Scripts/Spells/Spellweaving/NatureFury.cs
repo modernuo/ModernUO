@@ -1,6 +1,7 @@
 using System;
 using Server.Mobiles;
 using Server.Targeting;
+using Server.Multis;
 
 namespace Server.Spells.Spellweaving
 {
@@ -64,7 +65,10 @@ namespace Server.Spells.Spellweaving
 
 			m_MobileTarg = (m != null);
 
-			
+			BaseHouse house = BaseHouse.FindHouseAt( p, map, 0 );
+			if ( house != null)
+				if ( !house.IsFriend ( Caster ) )
+					return;
 
 			if( !SpellHelper.FindValidSpawnLocation( map, ref p, m_MobileTarg ) )
 			{
@@ -85,6 +89,8 @@ namespace Server.Spells.Spellweaving
 					m = null;
 
 				NatureFury nf = new NatureFury( m );
+				if ( !Caster.InLOS ( p ) )
+					return;
 				BaseCreature.Summon( nf, false, Caster, p , 0x5CB, duration );
 
 				Timer t = null;
@@ -110,6 +116,7 @@ namespace Server.Spells.Spellweaving
 				: base( 10, true, TargetFlags.None )
 			{
 				m_Owner = owner;
+				CheckLOS = true;
 			}
 
 			protected override void OnTarget( Mobile from, object o )

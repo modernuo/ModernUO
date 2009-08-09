@@ -8,7 +8,12 @@ using Server.ContextMenus;
 
 namespace Server.Items
 {
-	public abstract class BaseAxe : BaseMeleeWeapon, IUsesRemaining
+	public interface IAxe
+	{
+		bool Axe( Mobile from, BaseAxe axe );
+	}
+
+	public abstract class BaseAxe : BaseMeleeWeapon
 	{
 		public override int DefHitSound{ get{ return 0x232; } }
 		public override int DefMissSound{ get{ return 0x23A; } }
@@ -75,13 +80,26 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( HarvestSystem == null )
+			if ( HarvestSystem == null || Deleted )
 				return;
 
-			if ( IsChildOf( from.Backpack ) || Parent == from )
-				HarvestSystem.BeginHarvesting( from, this );
-			else
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
+			Point3D loc = this.GetWorldLocation();			
+
+			if ( !from.InLOS( loc ) || !from.InRange( loc, 2 ) )
+			{
+				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3E9, 1019045 ); // I can't reach that
+				return;
+			}
+			else if ( !this.IsAccessibleTo( from ) )
+			{
+				this.PublicOverheadMessage( Server.Network.MessageType.Regular, 0x3E9, 1061637 ); // You are not allowed to access this.
+				return;
+			}
+			
+			if ( !(this.HarvestSystem is Mining) )
+				from.SendLocalizedMessage( 1010018 ); // What do you want to use this item on?
+			
+			HarvestSystem.BeginHarvesting( from, this );
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )

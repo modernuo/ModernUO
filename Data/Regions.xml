@@ -963,17 +963,17 @@
 			<smartNoHousing active="true" />
 			<region type="GuardedRegion" name="New Haven Moongate">
 			<rect x="3446" y="2674" width="10" height="10" />
-        	</region>
+			</region>
 			<region type="TownRegion" name="New Haven">
 				<rune name="New Haven City" />
 				<rect x="3423" y="2480" width="111" height="143" />
 				<go x="3503" y="2574" z="14" />
 				<music name="Ocllo" />
-          		<region name="Gentle Rest Inn">
-		  			<rune name="The Gentle Rest Inn in New Haven" />
+				<region name="Gentle Rest Inn">
+					<rune name="The Gentle Rest Inn in New Haven" />
 					<rect x="3493" y="2513" width="10" height="10"/>
-            		<rect x="3503" y="2513" width="7" height="17" />
-		  			<logoutDelay active="false" />
+					<rect x="3503" y="2513" width="7" height="17" />
+					<logoutDelay active="false" />
 				</region>
 			</region>
 			<!--

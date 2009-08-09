@@ -46,10 +46,10 @@ namespace Server.Mobiles
 			SetStam( 250 );
 			SetMana( 0 );
 
-			SetDamage( 5, 7 );
+			SetDamage( 6, 8 );
 
 			SetDamageType( ResistanceType.Poison, 100 );
-
+			SetDamageType( ResistanceType.Physical, 0 );
 			SetResistance( ResistanceType.Physical, 90 );
 
 			SetSkill( SkillName.Wrestling, 90.0 );

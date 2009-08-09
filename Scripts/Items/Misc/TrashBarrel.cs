@@ -101,7 +101,7 @@ namespace Server.Items
 
 			if ( house != null && house.IsCoOwner( from ) )
 			{
-				Effects.PlaySound( Location, Map, 0x11C );
+				Effects.PlaySound( Location, Map, 0x3B3 );
 				from.SendLocalizedMessage( 500461 ); // You destroy the item.
 				Destroy();
 			}

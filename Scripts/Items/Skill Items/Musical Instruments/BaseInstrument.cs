@@ -257,7 +257,7 @@ namespace Server.Items
 				- Summoning Undead
 			*/
 
-			double val = (targ.Hits * 1.6) + targ.Stam + targ.Mana;
+			double val = (targ.HitsMax * 1.6) + targ.StamMax + targ.ManaMax;
 
 			val += targ.SkillsTotal / 10;
 

@@ -21,7 +21,6 @@ namespace Server.Spells.Ninjitsu
 		public override bool BlocksMovement{ get{ return false; } }
 
 		//public override int CastDelayBase{ get{ return 1; } }
-		public override double CastDelayFastScalar { get { return 0; } }
 
 		public override int CastRecoveryBase{ get{ return 7; } }
 

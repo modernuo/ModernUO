@@ -134,13 +134,7 @@ namespace Server.Engines.Harvest
 		public override bool CheckHarvest( Mobile from, Item tool )
 		{
 			if ( !base.CheckHarvest( from, tool ) )
-				return false;
-
-			if ( tool.Parent != from )
-			{
-				from.SendLocalizedMessage( 500487 ); // The axe must be equipped for any serious wood chopping.
-				return false;
-			}
+				return false;		
 
 			return true;
 		}
@@ -161,7 +155,20 @@ namespace Server.Engines.Harvest
 
 		public override void OnBadHarvestTarget( Mobile from, Item tool, object toHarvest )
 		{
-			from.SendLocalizedMessage( 500489 ); // You can't use an axe on that.
+			if ( toHarvest is Mobile )
+			{
+				Mobile obj = (Mobile)toHarvest;
+				obj.PublicOverheadMessage( Server.Network.MessageType.Regular, 0x3E9, 500450 ); // You can only skin dead creatures.
+			}
+			else if ( toHarvest is Item )
+			{
+				Item obj = (Item)toHarvest;
+				obj.PublicOverheadMessage( Server.Network.MessageType.Regular, 0x3E9, 500464 ); // Use this on corpses to carve away meat and hide
+			}
+			else if ( toHarvest is Targeting.StaticTarget || toHarvest is Targeting.LandTarget )
+				from.SendLocalizedMessage( 500489 ); // You can't use an axe on that.
+			else
+				from.SendLocalizedMessage( 1005213 ); // You can't do that
 		}
 
 		public override void OnHarvestStarted( Mobile from, Item tool, HarvestDefinition def, object toHarvest )

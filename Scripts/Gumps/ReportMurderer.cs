@@ -34,7 +34,6 @@ namespace Server.Gumps
 					killers.Add( ai.Attacker );
 					ai.Reported = true;
 				}
-
 				if ( ai.Attacker.Player && (DateTime.Now - ai.LastCombatTime) < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Attacker ) )
 					toGive.Add( ai.Attacker );
 			}
@@ -70,6 +69,19 @@ namespace Server.Gumps
 
 			if ( killers.Count > 0 )
 				new GumpTimer( m, killers ).Start();
+
+			/*
+			TODO:  	Check entire combatant system and see if the
+				cobatant lists should be handled a different
+				way, and  change it accordingly.  This is a
+				small-scope patch to prevent an exploit.
+			*/
+
+			for ( int i = m.Aggressors.Count - 1; i >= 0; --i )
+			{
+				m.Aggressors.RemoveAt ( i );
+			}
+		
 		}
 
 		private class GumpTimer : Timer

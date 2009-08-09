@@ -1506,9 +1506,13 @@ namespace Server.Multis
 			} 
 			else if ( m_LockDowns.IndexOf( item ) != -1 )
 			{
-				m.SendLocalizedMessage( 1005526 );//That is already locked down
+				m.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1005526 ); //That is already locked down
 				return true;
-			} 
+			}
+			else if ( item is HouseSign || item is Static )
+			{
+				m.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1005526 ); // This is already locked down.
+			}
 			else
 			{
 				m.SendLocalizedMessage( 1005377 );//You cannot lock that down
@@ -1801,7 +1805,7 @@ namespace Server.Multis
 			}
 			else
 			{
-				m.SendLocalizedMessage( 501722 );//That isn't locked down...
+				m.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1010416 ); // This is not locked down or secured.
 			}
 		}
 		
@@ -3404,7 +3408,7 @@ namespace Server.Multis
 		{
 			if ( !from.Alive || m_House.Deleted || !m_House.IsCoOwner( from ) )
 				return;
-
+			
 			if ( targeted is Item )
 			{
 				if ( m_Release )
@@ -3418,15 +3422,24 @@ namespace Server.Multis
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1062392 ); // You must double click the contract in your pack to lock it down.
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 501732 ); // I cannot lock this down!
 					}
+					else if ( (Item)targeted is AddonComponent )
+					{
+						from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 501727 ); // You cannot lock that down!
+						from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 501732 ); // I cannot lock this down!
+					}
 					else
 					{
 						m_House.LockDown( from, (Item)targeted );
 					}
 				}
-			} 
+			}
+			else if ( targeted is StaticTarget )
+			{
+				return;
+			}
 			else 
 			{
-				from.SendLocalizedMessage( 1005377 );//You cannot lock that down
+				from.SendLocalizedMessage( 1005377 ); //You cannot lock that down
 			}
 		}
 	}

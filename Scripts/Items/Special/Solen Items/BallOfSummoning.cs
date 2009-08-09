@@ -119,7 +119,7 @@ namespace Server.Items
 				}
 				else
 				{
-					list.Add( new BallEntry( new BallCallback( SummonPet ), 6181 ) );
+					list.Add(new BallEntry(new BallCallback( CastSummonPet ), 6181 ));
 					list.Add( new BallEntry( new BallCallback( UpdatePetName ), 6183 ) );
 					list.Add( new BallEntry( new BallCallback( UnlinkPet ), 6182 ) );
 				}

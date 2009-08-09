@@ -44,7 +44,7 @@ namespace Server.SkillHandlers
 
 			if ( familiar != null && !familiar.Deleted && familiar is DarkWolfFamiliar )
 			{
-				if ( creature is DireWolf || creature is GreyWolf || creature is TimberWolf || creature is WhiteWolf )
+				if ( creature is DireWolf || creature is GreyWolf || creature is TimberWolf || creature is WhiteWolf || creature is BakeKitsune )
 					return true;
 			}
 
@@ -328,7 +328,7 @@ namespace Server.SkillHandlers
 
 						minSkill += 24.9;
 
-						if ( alreadyOwned || m_Tamer.CheckTargetSkill( SkillName.AnimalTaming, m_Creature, minSkill - 25.0, minSkill + 25.0 ) )
+						if ( CheckMastery( m_Tamer, m_Creature ) || alreadyOwned || m_Tamer.CheckTargetSkill( SkillName.AnimalTaming, m_Creature, minSkill - 25.0, minSkill + 25.0 ) )
 						{
 							if ( m_Creature.Owners.Count == 0 ) // First tame
 							{

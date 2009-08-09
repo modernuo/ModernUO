@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Server;
+using Server.Network;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -18,6 +19,8 @@ namespace Server.Mobiles
 			SetStr( 186, 230 );
 			SetDex( 51, 75 );
 			SetInt( 41, 55 );
+
+			SetMana ( 30 );
 
 			SetHits( 151, 180 );
 
@@ -48,8 +51,6 @@ namespace Server.Mobiles
 					case 2: PackItem( new Axle() ); break;
 				}
 			}
-
-
 		}
 
 
@@ -59,18 +60,6 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 			AddLoot( LootPack.Average );
 		}
-
-		public override int Meat{ get{ return 1; } }
-		public override int Hides{ get{ return 10; } }
-		public override HideType HideType{ get{ return HideType.Spined; } }
-
-		// TODO: Soul Sap
-		/*
-		 * Message: 1070820
-		 * Spits pool of acid (blood, hue 0x3F), hits lost 6-10 per second/step
-		 * Damage is resistable (physical)
-		 * Acid last 10 seconds
-		 */
 		 
 		public override int GetAngerSound()
 		{
@@ -101,12 +90,13 @@ namespace Server.Mobiles
  		{
 			base.OnGaveMeleeAttack (defender);
 
-			if ( 0.1 > Utility.RandomDouble() )
+			if ( Utility.RandomBool() )
 			{
-				if ( !IsBeingDrained( defender ) )
+				if ( !IsBeingDrained( defender ) && Mana > 14)
 				{
 					defender.SendLocalizedMessage( 1070848 ); // You feel your life force being stolen away.
 					BeginLifeDrain( defender, this );
+					Mana-=15;
 				}
 			}
 		}
@@ -135,7 +125,7 @@ namespace Server.Mobiles
 		{
 			if ( m.Alive )
 			{
-				int damageGiven = AOS.Damage( m, from, 5, 100, 0, 0, 0, 0 );
+				int damageGiven = AOS.Damage( m, from, 5, 0, 0, 0, 0, 100 );
 
 				from.Hits += damageGiven;
 			}
@@ -157,14 +147,33 @@ namespace Server.Mobiles
 			m.SendLocalizedMessage( 1070849 ); // The drain on your life force is gone.
 		}
 
-		/*
-		public override bool OnBeforeDeath()
+		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{
-			SpillAcid( 1, 4, 10, 6, 10 );
-
-			return base.OnBeforeDeath();
+			if ( from != null && from.Map != null )
+			{
+				int amt=0;
+				Mobile target = this; 
+				int rand = Utility.Random( 1, 100 );
+				if ( willKill )
+				{
+					amt = ((( rand % 5 ) >> 2 ) + 3);
+				} 
+				if ( ( Hits < 100 ) && ( rand < 21 ) ) 
+				{
+					target = ( rand % 2 ) < 1 ? this : from;
+					amt++;
+				}
+				if ( amt > 0 )
+				{
+					SpillAcid( target, amt, "slime" );
+					from.SendLocalizedMessage( 1070820 ); 
+					if ( Mana > 14)
+						Mana -= 15;
+					amt ^= amt;
+				}
+			}
+			base.OnDamage( amount, from, willKill );
 		}
-		*/
 
 		public Kappa( Serial serial ) : base( serial )
 		{

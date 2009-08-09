@@ -147,15 +147,24 @@ namespace Server.Engines.Quests.Collector
 
 						if ( obj != null && !obj.Completed )
 						{
-							BankBox bank = player.FindBankNoCreate();
-
-							if ( bank != null && bank.ConsumeTotal( typeof( Gold ), 10 ) )
+							
+							
+							if ( player.Backpack!= null && player.Backpack.ConsumeTotal( typeof( Gold ), 10 ) )
 							{
 								obj.Complete();
 							}
 							else
 							{
-								player.SendLocalizedMessage( 1055108 ); // You don't have enough gold to buy the sheet music.
+								BankBox bank = player.FindBankNoCreate();
+								if ( bank != null && bank.ConsumeTotal( typeof( Gold ), 10 ) )
+								{
+									obj.Complete();
+								}
+							
+								else
+								{
+									player.SendLocalizedMessage( 1055108 ); // You don't have enough gold to buy the sheet music.
+								}
 							}
 						}
 					}

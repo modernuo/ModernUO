@@ -4,7 +4,7 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	public class SturdyPickaxe : BaseAxe
+	public class SturdyPickaxe : BaseAxe, IUsesRemaining
 	{
 		public override int LabelNumber{ get{ return 1045126; } } // sturdy pickaxe
 		public override HarvestSystem HarvestSystem{ get{ return Mining.System; } }

@@ -2487,10 +2487,6 @@ namespace Server.Mobiles
 					if ( bFacFriend && !m_Mobile.IsFriend( m ) )
 						continue;
 
-					// Same goes for faction enemies.
-					if ( bFacFoe && !m_Mobile.IsEnemy( m ) )
-						continue;
-
 					//Ignore anyone under EtherealVoyage
 					if( TransformationSpellHelper.UnderTransformation( m, typeof( EtherealVoyageSpell ) ) )
 						continue;
@@ -2521,11 +2517,17 @@ namespace Server.Mobiles
 
 						if ( !bValid )
 							continue;
-					}
+					} else {
 
-					// If it's an enemy factioned mobile, make sure we can be harmful to it.
-					if ( bFacFoe && !bFacFriend && !m_Mobile.CanBeHarmful( m, false ) )
-						continue;
+
+						// Same goes for faction enemies.
+						if ( bFacFoe && !m_Mobile.IsEnemy( m ) )
+							continue;
+
+						// If it's an enemy factioned mobile, make sure we can be harmful to it.
+						if ( bFacFoe && !bFacFriend && !m_Mobile.CanBeHarmful( m, false ) )
+							continue;
+					}
 
 					theirVal = m_Mobile.GetFightModeRanking( m, acqType, bPlayerOnly );
 

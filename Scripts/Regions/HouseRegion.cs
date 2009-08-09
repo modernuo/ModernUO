@@ -86,7 +86,7 @@ namespace Server.Regions
 			if ( m is BaseCreature && ((BaseCreature)m).NoHouseRestrictions )
 			{
 			}
-			else if ( m is BaseCreature && ((BaseCreature)m).IsHouseSummonable && (BaseCreature.Summoning || m_House.IsInside( oldLocation, 16 )) )
+			else if ( m is BaseCreature && ((BaseCreature)m).IsHouseSummonable && !(BaseCreature.Summoning || m_House.IsInside( oldLocation, 16 )) )
 			{
 			}
 			else if ( (m_House.Public || !m_House.IsAosRules) && m_House.IsBanned( m ) && m_House.IsInside( m ) )
@@ -138,8 +138,13 @@ namespace Server.Regions
 			if ( from is BaseCreature && ((BaseCreature)from).NoHouseRestrictions )
 			{
 			}
-			else if ( from is BaseCreature && ((BaseCreature)from).IsHouseSummonable && (BaseCreature.Summoning || m_House.IsInside( oldLocation, 16 )) )
+			else if ( from is BaseCreature && ((BaseCreature)from).IsHouseSummonable && !(BaseCreature.Summoning || m_House.IsInside( oldLocation, 16 )) )
 			{
+				return false;
+			}
+			else if ( from is BaseCreature && !((BaseCreature)from).Controlled && m_House.IsAosRules && !m_House.Public)
+			{
+				return false;
 			}
 			else if ( (m_House.Public || !m_House.IsAosRules) && m_House.IsBanned( from ) && m_House.IsInside( newLocation, 16 ) )
 			{

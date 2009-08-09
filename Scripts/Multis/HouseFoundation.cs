@@ -51,7 +51,7 @@ namespace Server.Multis
 
 		public override bool IsActive { get { return Customizer == null; } }
 
-		public virtual int CustomizationCost { get { return (Core.SE ? 0 : 10000); } }
+		public virtual int CustomizationCost { get { return (Core.AOS ? 0 : 10000); } }
 
 		public bool IsFixture( Item item )
 		{

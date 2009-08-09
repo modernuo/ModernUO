@@ -14,6 +14,7 @@ using Server.Engines.Quests;
 using Server.Factions;
 using Server.Spells.Bushido;
 using Server.Spells.Spellweaving;
+using Server.Spells.Necromancy;
 
 namespace Server.Mobiles
 {
@@ -565,32 +566,22 @@ namespace Server.Mobiles
 		#endregion
 
 		#region Spill Acid
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage )
-		{
-			SpillAcid( duration, minDamage, maxDamage, null, 1, 1 );
-		}
 
+		public void SpillAcid( Mobile target, int amount, string name )
+		{
+			SpillAcid( TimeSpan.FromSeconds(10), 5, 10, target, amount, amount, AosElementAttribute.Poison , name );
+		}
 		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, Mobile target )
 		{
-			SpillAcid( duration, minDamage, maxDamage, target, 1, 1 );
-		}
-
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, int count )
-		{
-			SpillAcid( duration, minDamage, maxDamage, null, count, count );
+			SpillAcid( duration, minDamage, maxDamage, target, 1, 1, 0, null );
 		}
 
 		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, int minAmount, int maxAmount )
 		{
-			SpillAcid( duration, minDamage, maxDamage, null, minAmount, maxAmount );
+			SpillAcid( duration, minDamage, maxDamage, null, minAmount, maxAmount, 0, null );
 		}
 
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, Mobile target, int count )
-		{
-			SpillAcid( duration, minDamage, maxDamage, target, count, count );
-		}
-
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, Mobile target, int minAmount, int maxAmount )
+		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, Mobile target, int minAmount, int maxAmount, AosElementAttribute damagetype, string name )
 		{
 			if ( (target != null && target.Map == null) || this.Map == null )
 				return;
@@ -599,30 +590,28 @@ namespace Server.Mobiles
 
 			for ( int i = 0; i < pools; ++i )
 			{
-				PoolOfAcid acid = new PoolOfAcid( duration, minDamage, maxDamage );
-
-				if ( target != null && target.Map != null )
-				{
-					acid.MoveToWorld( target.Location, target.Map );
-					continue;
-				}
-
-				bool validLocation = false;
 				Point3D loc = this.Location;
 				Map map = this.Map;
 
-				for ( int j = 0; !validLocation && j < 10; ++j )
+				PoolOfAcid acid = new PoolOfAcid( duration, minDamage, maxDamage, damagetype, name );
+
+				if ( target != null && target.Map != null && pools == 1 )
 				{
-					int x = X + Utility.Random( 3 ) - 1;
-					int y = Y + Utility.Random( 3 ) - 1;
-					int z = map.GetAverageZ( x, y );
-
-					if ( validLocation = map.CanFit( x, y, this.Z, 16, false, false ) )
-						loc = new Point3D( x, y, Z );
-					else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
-						loc = new Point3D( x, y, z );
+					loc = target.Location;
+					map = target.Map;
+				} else
+				{
+					bool validLocation = false;
+					for ( int j = 0; !validLocation && j < 10; ++j )
+					{
+						loc = new Point3D( 
+							loc.X+(Utility.Random(0,3)-2), 
+							loc.Y+(Utility.Random(0,3)-2), 
+							loc.Z );
+						loc.Z = map.GetAverageZ( loc.X, loc.Y );
+						validLocation = map.CanFit( loc, 16, false, false ) ;
+					}
 				}
-
 				acid.MoveToWorld( loc, map );
 			}
 		}
@@ -905,6 +894,20 @@ namespace Server.Mobiles
 			}
 		}
 
+		public virtual bool IsNecroFamiliar
+		{
+			get
+			{
+				if ( !Summoned )
+					return false;
+
+				if ( m_ControlMaster != null && SummonFamiliarSpell.Table.Contains( m_ControlMaster ) )
+					return SummonFamiliarSpell.Table[ m_ControlMaster ] == this;
+
+				return false;
+			}
+		}
+
 		public override void Damage( int amount, Mobile from )
 		{
 			int oldHits = this.Hits;
@@ -1067,7 +1070,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_HitsMax >= 0 )
-					return m_HitsMax;
+					return m_HitsMax + GetStatOffset( StatType.Str );
 
 				return Str;
 			}
@@ -1086,7 +1089,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_StamMax >= 0 )
-					return m_StamMax;
+					return m_StamMax + GetStatOffset( StatType.Dex );
 
 				return Dex;
 			}
@@ -1105,7 +1108,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_ManaMax >= 0 )
-					return m_ManaMax;
+					return m_ManaMax + GetStatOffset( StatType.Int );
 
 				return Int;
 			}
@@ -2377,6 +2380,11 @@ namespace Server.Mobiles
 
 				if ( m_AI != null )
 					m_AI.OnCurrentOrderChanged();
+
+				InvalidateProperties();
+
+				if ( m_ControlMaster != null )
+					m_ControlMaster.InvalidateProperties();
 			}
 		}
 
@@ -3938,11 +3946,20 @@ namespace Server.Mobiles
 		{
 			base.AddNameProperties( list );
 
-			if ( Controlled && Commandable )
+			if ( Core.ML )
 			{
-				if ( Summoned )
-					list.Add( 1049646 ); // (summoned)
-				else if ( IsBonded )	//Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
+				if ( Backpack is StrongBackpack )
+					list.Add( TotalWeight == 1 ? 1072788 : 1072789, TotalWeight.ToString() ); // Weight: ~1_WEIGHT~ stones
+
+				if ( m_ControlOrder == OrderType.Guard )
+					list.Add( 1080078 ); // guarding
+			}
+
+			if ( Summoned && !IsAnimatedDead && !IsNecroFamiliar )
+				list.Add( 1049646 ); // (summoned)
+			else if ( Controlled && Commandable )
+			{
+				if ( IsBonded )	//Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
 					list.Add( 1049608 ); // (bonded)
 				else
 					list.Add( 502006 ); // (tame)
@@ -4419,6 +4436,8 @@ namespace Server.Mobiles
 
 				Delta( MobileDelta.Noto );
 			}
+			
+			InvalidateProperties();
 
 			return true;
 		}
