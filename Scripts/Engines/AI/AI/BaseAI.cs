@@ -1051,8 +1051,8 @@ namespace Server.Mobiles
 				case OrderType.Friend:
 				case OrderType.Unfriend:
 				m_Mobile.ControlMaster.RevealingAction();
-
 				break;
+
 				case OrderType.Guard:
 				m_Mobile.ControlMaster.RevealingAction();
 				m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
@@ -2392,8 +2392,11 @@ namespace Server.Mobiles
 			}
 			else if( m_Mobile.Controlled )
 			{
-				if( m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet || !m_Mobile.InRange( m_Mobile.ControlTarget, m_Mobile.RangePerception * 2 ) )
+				if( m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Hidden || !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet || !m_Mobile.InRange( m_Mobile.ControlTarget, m_Mobile.RangePerception * 2 ) )
 				{
+					if ( m_Mobile.ControlTarget != null && m_Mobile.ControlTarget != m_Mobile.ControlMaster )
+						m_Mobile.ControlTarget = null;
+
 					m_Mobile.FocusMob = null;
 					return false;
 				}

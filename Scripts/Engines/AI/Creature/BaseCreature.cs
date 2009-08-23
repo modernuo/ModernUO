@@ -1683,7 +1683,7 @@ namespace Server.Mobiles
 			else if ( version < 13 && m_ControlOrder >= OrderType.Unfriend )
 				++m_ControlOrder;
 
-			if ( version < 16 )
+			if ( version < 16 && Loyalty != MaxLoyalty )
 				Loyalty *= 10;
 
 			double activeSpeed = m_dActiveSpeed;
@@ -4180,7 +4180,7 @@ namespace Server.Mobiles
 				rights[0].m_Damage = (int)(rights[0].m_Damage * 1.25);	//This would be the first valid person attacking it.  Gets a 25% bonus.  Per 1/19/07 Five on Friday
 
 				if ( rights.Count > 1 )
-					rights.Sort();			//Sort by damage
+					rights.Sort(); //Sort by damage
 
 				int topDamage = rights[0].m_Damage;
 				int minDamage;

@@ -249,7 +249,7 @@ namespace Server.Factions
 
 		public int CompareTo( object obj )
 		{
-			return m_KillPoints - ((PlayerState)obj).m_KillPoints;
+			return ((PlayerState)obj).m_KillPoints - m_KillPoints;
 		}
 	}
 }
