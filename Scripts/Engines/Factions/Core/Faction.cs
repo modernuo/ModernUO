@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Guilds;
@@ -9,13 +10,14 @@ using Server.Targeting;
 using Server.Accounting;
 using Server.Commands;
 using Server.Commands.Generic;
-using System.Collections.Generic;
 
 namespace Server.Factions
 {
 	[CustomEnum( new string[]{ "Minax", "Council of Mages", "True Britannians", "Shadowlords" } )]
 	public abstract class Faction : IComparable
 	{
+		public int ZeroRankOffset;
+
 		private FactionDefinition m_Definition;
 		private FactionState m_State;
 		private StrongholdRegion m_StrongholdRegion;
@@ -72,7 +74,7 @@ namespace Server.Factions
 			set{ m_State.Members = value; }
 		}
 
-		public static readonly TimeSpan LeavePeriod = TimeSpan.FromDays( 7.0 );
+		public static readonly TimeSpan LeavePeriod = TimeSpan.FromDays( 3.0 );
 
 		public bool FactionMessageReady
 		{
@@ -139,6 +141,55 @@ namespace Server.Factions
 			}
 		}
 
+		public static void HandleAtrophy()
+		{
+			foreach ( Faction f in Factions )
+			{
+				if ( !f.State.IsAtrophyReady )
+					return;
+			}
+
+			List<PlayerState> activePlayers = new List<PlayerState>();
+
+			foreach ( Faction f in Factions )
+			{
+				foreach ( PlayerState ps in f.Members )
+				{
+					if ( ps.KillPoints > 0 && ps.IsActive )
+						activePlayers.Add( ps );
+				}
+			}
+
+			int distrib = 0;
+
+			foreach ( Faction f in Factions )
+				distrib += f.State.CheckAtrophy();
+
+			if ( activePlayers.Count == 0 )
+				return;
+
+			for ( int i = 0; i < distrib; ++i )
+				activePlayers[Utility.Random( activePlayers.Count )].KillPoints++;
+		}
+
+		public static void DistributePoints( int distrib ) {
+			List<PlayerState> activePlayers = new List<PlayerState>();
+
+			foreach ( Faction f in Factions ) {
+				foreach ( PlayerState ps in f.Members ) {
+					if ( ps.KillPoints > 0 && ps.IsActive ) {
+						activePlayers.Add( ps );
+					}
+				}
+			}
+
+			if ( activePlayers.Count > 0 ) {
+				for ( int i = 0; i < distrib; ++i ) {
+					activePlayers[Utility.Random( activePlayers.Count )].KillPoints++;
+				}
+			}
+		}
+
 		public void BeginHonorLeadership( Mobile from )
 		{
 			from.SendLocalizedMessage( 502090 ); // Click on the player whom you wish to honor.
@@ -167,6 +218,7 @@ namespace Server.Factions
 				}
 				else
 				{
+					recvState.LastHonorTime = DateTime.Now;
 					giveState.KillPoints -= 5;
 					recvState.KillPoints += 4;
 
@@ -182,8 +234,7 @@ namespace Server.Factions
 
 		public virtual void AddMember( Mobile mob )
 		{
-			PlayerState ps = new PlayerState( mob, this, Members );
-			Members.Add( ps );
+			Members.Insert( ZeroRankOffset, new PlayerState( mob, this, Members ) );
 
 			mob.AddToBackpack( FactionItem.Imbue( new Robe(), this, false, Definition.HuePrimary ) );
 			mob.SendLocalizedMessage( 1010374 ); // You have been granted a robe which signifies your faction
@@ -193,8 +244,6 @@ namespace Server.Factions
 
 			mob.FixedEffect( 0x373A, 10, 30 );
 			mob.PlaySound( 0x209 );
-
-			OnRankUpdate( ps );
 		}
 
 		public static bool IsNearType( Mobile mob, Type type, int range )
@@ -226,20 +275,6 @@ namespace Server.Factions
 
 		public static bool IsNearType( Mobile mob, Type[] types, int range )
 		{
-			/*
-			bool mobs = type.IsSubclassOf( typeof( Mobile ) );
-			bool items = type.IsSubclassOf( typeof( Item ) );
-
-			IPooledEnumerable eable;
-
-			if( mobs )
-				eable = mob.GetMobilesInRange( range );
-			else if( items )
-				eable = mob.GetItemsInRange( range );
-			else
-				return false;
-			 * */
-
 			IPooledEnumerable eable = mob.GetObjectsInRange( range );
 
 			foreach( object obj in eable )
@@ -265,15 +300,28 @@ namespace Server.Factions
 			if ( pl == null || !Members.Contains( pl ) )
 				return;
 
+			int killPoints = pl.KillPoints;
+
+			if ( pl.RankIndex != -1 ) {
+				while ( ( pl.RankIndex + 1 ) < ZeroRankOffset ) {
+					PlayerState pNext = Members[pl.RankIndex+1] as PlayerState;
+					Members[pl.RankIndex+1] = pl;
+					Members[pl.RankIndex] = pNext;
+					pl.RankIndex++;
+					pNext.RankIndex--;
+				}
+
+				ZeroRankOffset--;
+			}
+
 			Members.Remove( pl );
 
-			PlayerMobile pm = (PlayerMobile) pl.Mobile;
-			if( pm == null )
+			PlayerMobile pm = (PlayerMobile)pl.Mobile;
+			if ( pm == null )
 				return;
 
 			Mobile mob = pl.Mobile;
-			if ( pm.FactionPlayerState == pl )
-			{
+			if ( pm.FactionPlayerState == pl ) {
 				pm.FactionPlayerState = null;
 
 				mob.InvalidateProperties();
@@ -295,6 +343,9 @@ namespace Server.Factions
 
 				pm.ValidateEquipment();
 			}
+
+			if ( killPoints > 0 )
+				DistributePoints( killPoints );
 		}
 
 		public void RemoveMember( Mobile mob )
@@ -304,6 +355,8 @@ namespace Server.Factions
 			if ( pl == null || !Members.Contains( pl ) )
 				return;
 
+			int killPoints = pl.KillPoints;
+
 			if( mob.Backpack != null )
 			{
 				//Ordinarily, through normal faction removal, this will never find any sigils.
@@ -312,6 +365,18 @@ namespace Server.Factions
 
 				for ( int i = 0; i < sigils.Length; ++i )
 					((Sigil)sigils[i]).ReturnHome();
+			}
+
+			if ( pl.RankIndex != -1 ) {
+				while ( ( pl.RankIndex + 1 ) < ZeroRankOffset ) {
+					PlayerState pNext = Members[pl.RankIndex+1];
+					Members[pl.RankIndex+1] = pl;
+					Members[pl.RankIndex] = pNext;
+					pl.RankIndex++;
+					pNext.RankIndex--;
+				}
+
+				ZeroRankOffset--;
 			}
 
 			Members.Remove( pl );
@@ -338,6 +403,9 @@ namespace Server.Factions
 
 			if ( mob is PlayerMobile )
 				((PlayerMobile)mob).ValidateEquipment();
+
+			if ( killPoints > 0 )
+				DistributePoints( killPoints );
 		}
 
 		public void JoinGuilded( PlayerMobile mob, Guild guild )
@@ -494,56 +562,12 @@ namespace Server.Factions
 			return true;
 		}
 
-		protected virtual void OnRankUpdate( PlayerState pl )
-		{
-		}
-
-		public void UpdateRanks()
-		{
-			List<PlayerState> members = Members;
-
-			List<PlayerState> list = new List<PlayerState>( members );
-
-			list.Sort();
-
-			RankDefinition[] ranks = m_Definition.Ranks;
-
-			for ( int i = 0; i < list.Count; ++i )
-			{
-				PlayerState pl = list[i];
-
-				int percent;
-
-				if ( list.Count == 1 )
-					percent = 1000;
-				else
-					percent = (i * 1000) / (list.Count - 1);
-
-				RankDefinition rank = null;
-
-				for ( int j = 0; j < ranks.Length; ++j )
-				{
-					RankDefinition check = ranks[j];
-
-					if ( percent >= check.Required )
-					{
-						rank = check;
-						break;
-					}
-				}
-
-				if ( pl.Rank != rank )
-				{
-					pl.Rank = rank;
-					OnRankUpdate( pl );
-				}
-			}
-		}
-
 		public static void Initialize()
 		{
 			EventSink.Login += new LoginEventHandler( EventSink_Login );
 			EventSink.Logout += new LogoutEventHandler( EventSink_Logout );
+
+			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 10.0 ), new TimerCallback( HandleAtrophy ) );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), new TimerCallback( ProcessTick ) );
 
@@ -1018,7 +1042,11 @@ namespace Server.Factions
 
 					if ( killerState != null && killerPack != null )
 					{
-						if ( Sigil.ExistsOn( killer ) )
+						if ( killer.GetDistanceToSqrt( victim ) > 64 ) {
+							sigil.ReturnHome();
+							killer.SendLocalizedMessage( 1042230 ); // The sigil has gone back to its home location.
+						}
+						else if ( Sigil.ExistsOn( killer ) )
 						{
 							sigil.ReturnHome();
 							killer.SendLocalizedMessage( 1010258 ); // The sigil has gone back to its home location because you already have a sigil.
@@ -1050,7 +1078,6 @@ namespace Server.Factions
 
 					if ( silver > 0 )
 						killer.SendLocalizedMessage( 1042748, silver.ToString( "N0" ) ); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
-
 				}
 
 				#region Ethics
@@ -1117,6 +1144,11 @@ namespace Server.Factions
 					{
 						if ( victimState.KillPoints > 0 )
 						{
+							victimState.IsActive = true;
+
+							if ( 1 > Utility.Random( 3 ) )
+								killerState.IsActive = true;
+							
 							int silver = 0;
 
 							silver = killerState.Faction.AwardSilver( killer, award * 40 );

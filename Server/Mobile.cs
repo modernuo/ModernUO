@@ -9823,7 +9823,7 @@ namespace Server
 
 				if( sendPublicStats || sendPrivateStats )
 				{
-					ourState.Send( new MobileStatusExtended( m ) );
+					ourState.Send( new MobileStatusExtended( m, m_NetState ) );
 				}
 				else if( sendAll )
 				{
@@ -10555,7 +10555,7 @@ namespace Server
 		public virtual void OnStatsQuery( Mobile from )
 		{
 			if( from.Map == this.Map && Utility.InUpdateRange( this, from ) && from.CanSee( this ) )
-				from.Send( new MobileStatus( from, this ) );
+				from.Send( new MobileStatus( from, this, m_NetState ) );
 
 			if( from == this )
 				Send( new StatLockInfo( this ) );

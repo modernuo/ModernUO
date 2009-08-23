@@ -2725,12 +2725,16 @@ namespace Server.Network
 
 	public sealed class MobileStatusExtended : Packet
 	{
-		public MobileStatusExtended( Mobile m ) : base( 0x11 )
+		public MobileStatusExtended( Mobile m ) : this( m, m.NetState )
+		{
+		}
+
+		public MobileStatusExtended( Mobile m, NetState ns ) : base( 0x11 )
 		{
 			string name = m.Name;
 			if ( name == null ) name = "";
 
-			bool sendMaxWeight = (Core.ML && m.NetState != null && m.NetState.SupportsExpansion( Expansion.ML ));
+			bool sendMaxWeight = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
 
 
 			this.EnsureCapacity( sendMaxWeight ? 91 :88 );
@@ -2797,12 +2801,16 @@ namespace Server.Network
 
 	public sealed class MobileStatus : Packet
 	{
-		public MobileStatus( Mobile beholder, Mobile beheld ) : base( 0x11 )
+		public MobileStatus( Mobile beholder, Mobile beheld ) : this( beholder, beheld, beheld.NetState )
+		{
+		}
+
+		public MobileStatus( Mobile beholder, Mobile beheld, NetState ns ) : base( 0x11 )
 		{
 			string name = beheld.Name;
 			if ( name == null ) name = "";
 
-			bool sendMaxWeight = (Core.ML && beheld.NetState != null && beheld.NetState.SupportsExpansion( Expansion.ML ));
+			bool sendMaxWeight = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
 
 			this.EnsureCapacity( 43 + (beholder == beheld ? (sendMaxWeight ? 48 : 45) : 0) );
 

@@ -277,7 +277,7 @@ namespace Server.Factions
 			if ( mob.Hidden && mob.AccessLevel > AccessLevel.Player )
 				return false;
 
-			if ( !mob.Alive )
+			if ( !mob.Alive || mob.IsDeadBondedPet )
 				return false;
 
 			Faction faction = Faction.Find( mob, true );

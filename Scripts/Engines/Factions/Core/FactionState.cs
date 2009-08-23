@@ -13,11 +13,14 @@ namespace Server.Factions
 		private Election m_Election;
 		private List<FactionItem> m_FactionItems;
 		private List<BaseFactionTrap> m_FactionTraps;
+		private DateTime m_LastAtrophy;
 
 		private const int BroadcastsPerPeriod = 2;
 		private static readonly TimeSpan BroadcastPeriod = TimeSpan.FromHours( 1.0 );
 
 		private DateTime[] m_LastBroadcasts = new DateTime[BroadcastsPerPeriod];
+
+		public DateTime LastAtrophy{ get{ return m_LastAtrophy; } set{ m_LastAtrophy = value; } }
 
 		public bool FactionMessageReady
 		{
@@ -31,6 +34,38 @@ namespace Server.Factions
 
 				return false;
 			}
+		}
+
+		public bool IsAtrophyReady{ get{ return DateTime.Now >= (m_LastAtrophy + TimeSpan.FromHours( 47.0 )); } }
+
+		public int CheckAtrophy()
+		{
+			if ( DateTime.Now < (m_LastAtrophy + TimeSpan.FromHours( 47.0 )) )
+				return 0;
+
+			int distrib = 0;
+			m_LastAtrophy = DateTime.Now;
+
+			List<PlayerState> members = new List<PlayerState>( m_Members );
+
+			for ( int i = 0; i < members.Count; ++i )
+			{
+				PlayerState ps = members[i];
+					
+				if ( ps.IsActive )
+				{
+					ps.IsActive = false;
+					continue;
+				}
+				else if ( ps.KillPoints > 0 )
+				{
+					int atrophy = ( ps.KillPoints + 9 ) / 10;
+					ps.KillPoints -= atrophy;
+					distrib += atrophy;
+				}
+			}
+
+			return distrib;
 		}
 
 		public void RegisterBroadcast()
@@ -124,6 +159,11 @@ namespace Server.Factions
 
 			switch ( version )
 			{
+				case 5:
+				{
+					m_LastAtrophy = reader.ReadDateTime();
+					goto case 4;
+				}
 				case 4:
 				{
 					int count = reader.ReadEncodedInt();
@@ -152,6 +192,9 @@ namespace Server.Factions
 
 					m_Commander = reader.ReadMobile();
 
+					if ( version < 5 )
+						m_LastAtrophy = DateTime.Now;
+
 					if ( version < 4 )
 					{
 						DateTime time = reader.ReadDateTime();
@@ -176,7 +219,18 @@ namespace Server.Factions
 					}
 
 					m_Faction.State = this;
-					m_Faction.UpdateRanks();
+					
+					m_Faction.ZeroRankOffset = m_Members.Count;
+					m_Members.Sort();
+
+					for ( int i = m_Members.Count - 1; i >= 0; i-- ) {
+						PlayerState player = m_Members[i];
+
+						if ( player.KillPoints <= 0 )
+							m_Faction.ZeroRankOffset = i;
+						else
+							player.RankIndex = i;
+					}
 
 					m_FactionItems = new List<FactionItem>();
 
@@ -188,10 +242,7 @@ namespace Server.Factions
 						{
 							FactionItem factionItem = new FactionItem( reader, m_Faction );
 
-							if ( !factionItem.HasExpired )
-								factionItem.Attach();
-							else
-								Timer.DelayCall( TimeSpan.Zero, new TimerCallback( factionItem.Detach ) ); // sandbox detachment
+							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( factionItem.CheckAttach ) ); // sandbox attachment
 						}
 					}
 
@@ -220,7 +271,9 @@ namespace Server.Factions
 
 		public void Serialize( GenericWriter writer )
 		{
-			writer.WriteEncodedInt( (int) 4 ); // version
+			writer.WriteEncodedInt( (int) 5 ); // version
+
+			writer.Write( m_LastAtrophy );
 
 			writer.WriteEncodedInt( (int) m_LastBroadcasts.Length );
 

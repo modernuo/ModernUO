@@ -35,6 +35,14 @@ namespace Server.Factions
 			m_Expiration = DateTime.Now + ExpirationPeriod;
 		}
 
+		public void CheckAttach()
+		{
+			if ( !HasExpired )
+				Attach();
+			else
+				Detach();
+		}
+
 		public void Attach()
 		{
 			if ( m_Item is IFactionItem )
