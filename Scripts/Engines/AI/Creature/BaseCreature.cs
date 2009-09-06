@@ -423,6 +423,7 @@ namespace Server.Mobiles
 		//TODO: Find the pub 31 tweaks to the DispelDifficulty and apply them of course.
 		public virtual double DispelDifficulty{ get{ return 0.0; } } // at this skill level we dispel 50% chance
 		public virtual double DispelFocus{ get{ return 20.0; } } // at difficulty - focus we have 0%, at difficulty + focus we have 100%
+		public virtual bool DisplayWeight{ get{ return Backpack is StrongBackpack; } }
 
 		#region Breath ability, like dragon fire breath
 		private DateTime m_NextBreathTime;
@@ -566,36 +567,22 @@ namespace Server.Mobiles
 		#endregion
 
 		#region Spill Acid
-
-		public void SpillAcid( Mobile target, int amount, string name )
+		public void SpillAcid( int Amount )
 		{
-			SpillAcid( TimeSpan.FromSeconds(10), 5, 10, target, amount, amount, AosElementAttribute.Poison , name );
+			SpillAcid( null, Amount );
 		}
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, Mobile target )
-		{
-			SpillAcid( duration, minDamage, maxDamage, target, 1, 1, 0, null );
-		}
-
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, int minAmount, int maxAmount )
-		{
-			SpillAcid( duration, minDamage, maxDamage, null, minAmount, maxAmount, 0, null );
-		}
-
-		public void SpillAcid( TimeSpan duration, int minDamage, int maxDamage, Mobile target, int minAmount, int maxAmount, AosElementAttribute damagetype, string name )
+		public void SpillAcid( Mobile target, int Amount )
 		{
 			if ( (target != null && target.Map == null) || this.Map == null )
 				return;
 
-			int pools = Utility.RandomMinMax( minAmount, maxAmount );
-
-			for ( int i = 0; i < pools; ++i )
+			for ( int i = 0; i < Amount; ++i )
 			{
 				Point3D loc = this.Location;
 				Map map = this.Map;
-
-				PoolOfAcid acid = new PoolOfAcid( duration, minDamage, maxDamage );
-
-				if ( target != null && target.Map != null && pools == 1 )
+				Item acid = NewHarmfulItem();
+			
+				if ( target != null && target.Map != null && Amount == 1 )
 				{
 					loc = target.Location;
 					map = target.Map;
@@ -614,6 +601,15 @@ namespace Server.Mobiles
 				}
 				acid.MoveToWorld( loc, map );
 			}
+		}
+
+		/* 
+			Solen Style, override me for other mobiles/items: 
+			kappa+acidslime, grizzles+whatever, etc. 
+		*/
+		public virtual Item NewHarmfulItem()
+		{
+			return new PoolOfAcid( TimeSpan.FromSeconds(10), 30, 30 ); 
 		}
 		#endregion
 
@@ -3972,7 +3968,7 @@ namespace Server.Mobiles
 
 			if ( Core.ML )
 			{
-				if ( Backpack is StrongBackpack )
+				if ( DisplayWeight )
 					list.Add( TotalWeight == 1 ? 1072788 : 1072789, TotalWeight.ToString() ); // Weight: ~1_WEIGHT~ stones
 
 				if ( m_ControlOrder == OrderType.Guard )
@@ -4383,6 +4379,8 @@ namespace Server.Mobiles
 
 		public override void OnDelete()
 		{
+			Mobile m = m_ControlMaster;
+
 			SetControlMaster( null );
 			SummonMaster = null;
 
@@ -4390,6 +4388,9 @@ namespace Server.Mobiles
 				m_ReceivedHonorContext.Cancel();
 
 			base.OnDelete();
+
+			if ( m != null )
+				m.InvalidateProperties();
 		}
 
 		public override bool CanBeHarmful( Mobile target, bool message, bool ignoreOurBlessedness )
