@@ -564,13 +564,13 @@ namespace Server.Items
 
 			CraftItem item = system.CraftItems.SearchFor( GetType() );
 
-			if ( item != null && item.Ressources.Count == 1 && item.Ressources.GetAt( 0 ).Amount >= 2 )
+			if ( item != null && item.Resources.Count == 1 && item.Resources.GetAt( 0 ).Amount >= 2 )
 			{
 				try
 				{
 					Item res = (Item)Activator.CreateInstance( CraftResources.GetInfo( m_Resource ).ResourceTypes[0] );
 
-					ScissorHelper( from, res, m_PlayerConstructed ? (item.Ressources.GetAt( 0 ).Amount / 2) : 1 );
+					ScissorHelper( from, res, m_PlayerConstructed ? (item.Resources.GetAt( 0 ).Amount / 2) : 1 );
 					return true;
 				}
 				catch
@@ -1602,7 +1602,7 @@ namespace Server.Items
 			Type resourceType = typeRes;
 
 			if ( resourceType == null )
-				resourceType = craftItem.Ressources.GetAt( 0 ).ItemType;
+				resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
 
 			Resource = CraftResources.GetFromType( resourceType );
 			PlayerConstructed = true;

@@ -40,6 +40,9 @@ namespace Server.Mobiles
 
 			VirtualArmor = 30;
 			PackArmor( 1, 5 );
+
+			if ( Core.ML && Utility.RandomDouble() < .33 )
+				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(4) );
 		}
 
 		public override void GenerateLoot()

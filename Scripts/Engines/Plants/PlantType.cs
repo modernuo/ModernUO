@@ -29,7 +29,24 @@ namespace Server.Engines.Plants
 		RareGreenBonsai,
 		RarePinkBonsai,
 		ExceptionalBonsai,
-		ExoticBonsai
+		ExoticBonsai,
+		Cactus,
+		FlaxFlowers,
+		FoxgloveFlowers,
+		HopsEast,
+		OrfluerFlowers,
+		CypressTwisted,
+		HedgeShort,
+		JuniperBush,
+		SnowdropPatch,
+		Cattails,
+		PoppyPatch,
+		SpiderTree,
+		WaterLily,
+		CypressStraight,
+		HedgeTall,
+		HopsSouth,
+		SugarCanes
 	}
 
 	public class PlantTypeInfo
@@ -60,7 +77,24 @@ namespace Server.Engines.Plants
 				new PlantTypeInfo( 0x28DE, -5, 5,	PlantType.RareGreenBonsai,		true, false, false ),
 				new PlantTypeInfo( 0x28E1, -5, 5,	PlantType.RarePinkBonsai,		true, false, false ),
 				new PlantTypeInfo( 0x28E2, -5, 5,	PlantType.ExceptionalBonsai,	true, false, false ),
-				new PlantTypeInfo( 0x28E3, -5, 5,	PlantType.ExoticBonsai,			true, false, false )
+				new PlantTypeInfo( 0x28E3, -5, 5,	PlantType.ExoticBonsai,			true, false, false ),
+				new PlantTypeInfo( 0x0D25, 0, 0,	PlantType.Cactus,			false, false, false ),
+				new PlantTypeInfo( 0x1A9A, 5, 10, 	PlantType.FlaxFlowers,			false, true, false ),
+				new PlantTypeInfo( 0x0C84, 0, 0, 	PlantType.FoxgloveFlowers,		false, true, false ),
+				new PlantTypeInfo( 0x1A9F, 5, -25,	PlantType.HopsEast,			false, false, false ),
+				new PlantTypeInfo( 0x0CC1, 0, 0, 	PlantType.OrfluerFlowers,		false, true, false ),
+				new PlantTypeInfo( 0x0CFE, -45, -30, 	PlantType.CypressTwisted,		false, false, false ),
+				new PlantTypeInfo( 0x0C8F, 0, 0, 	PlantType.HedgeShort,			false, false, false ),
+				new PlantTypeInfo( 0x0CC8, 0, 0,	PlantType.JuniperBush,			true, false, false ),
+				new PlantTypeInfo( 0x0C8E, -20, 0,	PlantType.SnowdropPatch,		false, true, false ),
+				new PlantTypeInfo( 0x0CB7, 0, 0,	PlantType.Cattails,			false, false, false ),
+				new PlantTypeInfo( 0x0CBE, -20, 0, 	PlantType.PoppyPatch,			false, true, false ),
+				new PlantTypeInfo( 0x0CC9, 0, 0,	PlantType.SpiderTree,			false, false, false ),
+				new PlantTypeInfo( 0x0DC1, -5, 15,	PlantType.WaterLily,			false, true, false ),
+				new PlantTypeInfo( 0x0CFB, -45, -30,	PlantType.CypressStraight,		false, false, false ),
+				new PlantTypeInfo( 0x0DB8, 0, -20, 	PlantType.HedgeTall,			false, false, false ),
+				new PlantTypeInfo( 0x1AA1, 10, -25,	PlantType.HopsSouth,			false, false, false ),
+				new PlantTypeInfo( 0x246C, -25, -20,	PlantType.SugarCanes,			false, false, false )
 			};
 
 		public static PlantTypeInfo GetInfo( PlantType plantType )
@@ -80,6 +114,51 @@ namespace Server.Engines.Plants
 				case 0: return PlantType.CampionFlowers;
 				case 1: return PlantType.Fern;
 				default: return PlantType.TribarrelCactus;
+			}
+		}
+
+		public static PlantType RandomPeculiarGroupOne()
+		{
+			switch ( Utility.Random( 5 ) )
+			{
+				case 0: return PlantType.Cactus;
+				case 1: return PlantType.FlaxFlowers;
+				case 2: return PlantType.FoxgloveFlowers;
+				case 3: return PlantType.HopsEast;
+				default: return PlantType.OrfluerFlowers;
+			}
+		}
+
+		public static PlantType RandomPeculiarGroupTwo()
+		{
+			switch ( Utility.Random( 4 ) )
+			{
+				case 0:	return PlantType.CypressTwisted; 
+				case 1: return PlantType.HedgeShort;
+				case 2: return PlantType.JuniperBush;
+				default: return PlantType.SnowdropPatch;
+			}
+		}
+
+		public static PlantType RandomPeculiarGroupThree()
+		{
+			switch ( Utility.Random( 4 ) )
+			{
+				case 0:	return PlantType.Cattails;
+				case 1: return PlantType.PoppyPatch;
+				case 2: return PlantType.SpiderTree;
+				default: return PlantType.WaterLily;
+			}
+		}
+
+		public static PlantType RandomPeculiarGroupFour()
+		{
+			switch ( Utility.Random( 4 ) )
+			{
+				case 0:	return PlantType.CypressStraight;
+				case 1: return PlantType.HedgeTall;
+				case 2: return PlantType.HopsSouth;
+				default: return PlantType.SugarCanes;
 			}
 		}
 
@@ -152,6 +231,25 @@ namespace Server.Engines.Plants
 		{
 			switch ( plantType )
 			{
+				case PlantType.Cactus:
+				case PlantType.FlaxFlowers:
+				case PlantType.FoxgloveFlowers:
+				case PlantType.HopsEast:
+				case PlantType.OrfluerFlowers:
+				case PlantType.CypressTwisted:
+				case PlantType.HedgeShort:
+				case PlantType.JuniperBush:
+				case PlantType.SnowdropPatch:
+				case PlantType.Cattails:
+				case PlantType.PoppyPatch:
+				case PlantType.SpiderTree:
+				case PlantType.WaterLily:
+				case PlantType.CypressStraight:
+				case PlantType.HedgeTall:
+				case PlantType.HopsSouth:
+				case PlantType.SugarCanes:
+					return 1080528; // peculiar
+
 				case PlantType.CommonGreenBonsai:
 				case PlantType.CommonPinkBonsai:
 					return 1063335; // common

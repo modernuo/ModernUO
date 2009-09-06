@@ -66,7 +66,7 @@ namespace Server.Items
 				}
 			}
 
-			if ( !( m_Commodity is ICommodity ) )	//Apparently, there may be items out there with this.  Funky.
+			if ( m_Commodity != null && !( m_Commodity is ICommodity ) ) //Apparently, there may be items out there with this.  Funky.
 			{
 				Timer.DelayCall( TimeSpan.Zero, this.Delete );
 			}
@@ -101,7 +101,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return m_Commodity == null ? 1047016 : 1047017; } }
 
-		public override void GetProperties(ObjectPropertyList list)
+		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
 

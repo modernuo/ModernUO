@@ -69,18 +69,14 @@ namespace Server.Spells.Spellweaving
 			if ( house != null)
 				if ( !house.IsFriend ( Caster ) )
 					return;
-
-			if( !SpellHelper.FindValidSpawnLocation( map, ref p, m_MobileTarg ) )
+			if (m != null) //say "Target can not be seen" if you target directly a mobile, like in OSI
+			{
+				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
+			}
+			else if ( map == null || !map.CanSpawnMobile( p.X, p.Y, p.Z ) )
 			{
 				Caster.SendLocalizedMessage( 501942 ); // That location is blocked.
 			}
-
-			//say "Target can not be seen" if you target directly a mobile, like in OSI
-			if (m != null)
-			{
-				Caster.SendLocalizedMessage(500237); // Target can not be seen.
-			}
-
 			else if( SpellHelper.CheckTown( p, Caster ) && (m_MobileTarg ? CheckHSequence( m ) : CheckSequence()) )
 			{
 				TimeSpan duration = TimeSpan.FromSeconds( Caster.Skills.Spellweaving.Value/24 + 25 + FocusLevel*2 );
@@ -89,8 +85,7 @@ namespace Server.Spells.Spellweaving
 					m = null;
 
 				NatureFury nf = new NatureFury( m );
-				if ( !Caster.InLOS ( p ) )
-					return;
+
 				BaseCreature.Summon( nf, false, Caster, p , 0x5CB, duration );
 
 				Timer t = null;
@@ -112,8 +107,7 @@ namespace Server.Spells.Spellweaving
 		{
 			private NatureFurySpell m_Owner;
 
-			public InternalTarget( NatureFurySpell owner )
-				: base( 10, true, TargetFlags.None )
+			public InternalTarget( NatureFurySpell owner ) : base( 10, true, TargetFlags.None )
 			{
 				m_Owner = owner;
 				CheckLOS = true;
@@ -124,8 +118,6 @@ namespace Server.Spells.Spellweaving
 				if( o is IPoint3D )
 					m_Owner.Target( (IPoint3D)o );
 			}
-
-
 			protected override void OnTargetFinish( Mobile from )
 			{
 				if( m_Owner != null )

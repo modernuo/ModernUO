@@ -44,6 +44,9 @@ namespace Server.Mobiles
 			PackItem( new Bone( 3 ) );
 			PackItem( new FertileDirt( Utility.RandomMinMax( 1, 5 ) ) );
 
+			if ( Core.ML && Utility.RandomDouble() < .33 )
+				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(2) );
+
 			switch ( Utility.Random( 4 ) )
 			{
 				case 0: PackItem( new DullCopperOre( Utility.RandomMinMax( 1, 10 ) ) ); break;

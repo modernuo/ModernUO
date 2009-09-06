@@ -129,7 +129,11 @@ namespace Server.Engines.Plants
 				PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_Plant.PlantType );
 				PlantHueInfo hueInfo = PlantHueInfo.GetInfo( m_Plant.PlantHue );
 
-				AddItem( 130 + typeInfo.OffsetX, 96 + typeInfo.OffsetY, typeInfo.ItemID, hueInfo.Hue );
+				// The large images for these trees trigger a client crash, so use a smaller, generic tree.
+				if ( m_Plant.PlantType == PlantType.CypressTwisted || m_Plant.PlantType == PlantType.CypressStraight )
+					AddItem( 130 + typeInfo.OffsetX, 96 + typeInfo.OffsetY, 0x0CCA, hueInfo.Hue );
+				else
+					AddItem( 130 + typeInfo.OffsetX, 96 + typeInfo.OffsetY, typeInfo.ItemID, hueInfo.Hue );
 			}
 
 			if ( status != PlantStatus.BowlOfDirt )

@@ -107,6 +107,14 @@ namespace Server.Items
 			return true;
 		}
 
+		public override void UpdateTotal( Item sender, TotalType type, int delta )
+		{
+			base.UpdateTotal( sender, type, delta );
+
+			if ( type == TotalType.Weight && RootParent is Mobile )
+				((Mobile) RootParent).InvalidateProperties();
+		}
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) || this.RootParent is PlayerVendor )
@@ -142,7 +150,7 @@ namespace Server.Items
 		public StrongBackpack()
 		{
 			Layer = Layer.Backpack;
-			Weight = 3.0;
+			Weight = 13.0;
 		}
 
 		public override bool CheckHold( Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight )
@@ -170,7 +178,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -178,6 +186,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version == 0 )
+				Weight = 13.0;
 		}
 	}
 

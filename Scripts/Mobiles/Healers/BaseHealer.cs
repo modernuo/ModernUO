@@ -88,7 +88,6 @@ namespace Server.Mobiles
 		public virtual void OfferResurrection( Mobile m )
 		{
 			Direction = GetDirectionTo( m );
-			Say( 501224 ); // Thou hast strayed from the path of virtue, but thou still deservest a second chance.
 
 			m.PlaySound( 0x214 );
 			m.FixedEffect( 0x376A, 10, 16 );

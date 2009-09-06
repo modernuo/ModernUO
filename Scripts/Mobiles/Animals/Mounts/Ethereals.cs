@@ -123,9 +123,9 @@ namespace Server.Mobiles
 
 		public virtual bool Validate( Mobile from )
 		{
-			if( !IsChildOf( from.Backpack ) )
+			if( Parent == null )
 			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
+				from.SayTo( from,1010095 ); // This must be on your person to use.
 				return false;
 			}
 			else if( m_IsRewardItem && !Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( from, this, null ) )

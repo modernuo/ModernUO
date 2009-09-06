@@ -106,186 +106,71 @@ namespace Server.Items
 					return;
 				}
 
-				if ( targeted is BaseArmor /*&& (DefBlacksmithy.CraftSystem.CraftItems.SearchForSubclass( targeted.GetType() ) != null)*/ )
+				if ( targeted is IDurability && targeted is Item  )
 				{
-					BaseArmor ar = (BaseArmor)targeted;
+					IDurability wearable = (IDurability) targeted;
+					Item item = (Item) targeted;
 
-					if ( !ar.CanFortify )
+					if ( !wearable.CanFortify )
 					{
 						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
 						return;
 					}
 
-					if ( ar.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
+					if ( item.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
 					{
-						int origMaxHP = ar.MaxHitPoints;
-						int origCurHP = ar.HitPoints;
+						int origMaxHP = wearable.MaxHitPoints;
+						int origCurHP = wearable.HitPoints;
 
-						int initMaxHP = Core.AOS ? 255 : ar.InitMaxHits;
-
-						ar.UnscaleDurability();
-
-						if ( ar.MaxHitPoints < initMaxHP )
+						if ( origMaxHP > 0 )
 						{
-							int bonus = initMaxHP - ar.MaxHitPoints;
+							int initMaxHP = Core.AOS ? 255 : wearable.InitMaxHits;
 
-							if ( bonus > 10 )
-								bonus = 10;
+							wearable.UnscaleDurability();
 
-							ar.MaxHitPoints += bonus;
-							ar.HitPoints += bonus;
-
-							ar.ScaleDurability();
-
-							if ( ar.MaxHitPoints > 255 ) ar.MaxHitPoints = 255;
-							if ( ar.HitPoints > 255 ) ar.HitPoints = 255;
-
-							if ( ar.MaxHitPoints > origMaxHP )
+							if ( wearable.MaxHitPoints < initMaxHP )
 							{
-								from.SendLocalizedMessage( 1049084 ); // You successfully use the powder on the item.
+								int bonus = initMaxHP - wearable.MaxHitPoints;
 
-								--m_Powder.UsesRemaining;
+								if ( bonus > 10 )
+									bonus = 10;
 
-								if ( m_Powder.UsesRemaining <= 0 )
+								wearable.MaxHitPoints += bonus;
+								wearable.HitPoints += bonus;
+
+								wearable.ScaleDurability();
+
+								if ( wearable.MaxHitPoints > 255 ) wearable.MaxHitPoints = 255;
+								if ( wearable.HitPoints > 255 ) wearable.HitPoints = 255;
+
+								if ( wearable.MaxHitPoints > origMaxHP )
 								{
-									from.SendLocalizedMessage( 1049086 ); // You have used up your powder of temperament.
-									m_Powder.Delete();
+									from.SendLocalizedMessage( 1049084 ); // You successfully use the powder on the item.
+
+									--m_Powder.UsesRemaining;
+
+									if ( m_Powder.UsesRemaining <= 0 )
+									{
+										from.SendLocalizedMessage( 1049086 ); // You have used up your powder of temperament.
+										m_Powder.Delete();
+									}
+								}
+								else
+								{
+									wearable.MaxHitPoints = origMaxHP;
+									wearable.HitPoints = origCurHP;
+									from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
 								}
 							}
 							else
 							{
-								ar.MaxHitPoints = origMaxHP;
-								ar.HitPoints = origCurHP;
 								from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
+								wearable.ScaleDurability();
 							}
 						}
 						else
 						{
-							from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
-							ar.ScaleDurability();
-						}
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-					}
-				}
-				else if ( targeted is BaseWeapon /*&& (DefBlacksmithy.CraftSystem.CraftItems.SearchForSubclass( targeted.GetType() ) != null)*/ )
-				{
-					BaseWeapon wep = (BaseWeapon)targeted;
-
-					if ( !wep.CanFortify )
-					{
-						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
-						return;
-					}
-
-					if ( wep.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
-					{
-						int origMaxHP = wep.MaxHitPoints;
-						int origCurHP = wep.HitPoints;
-
-						int initMaxHP = Core.AOS ? 255 : wep.InitMaxHits;
-
-						wep.UnscaleDurability();
-
-						if ( wep.MaxHitPoints < initMaxHP )
-						{
-							int bonus = initMaxHP - wep.MaxHitPoints;
-
-							if ( bonus > 10 )
-								bonus = 10;
-
-							wep.MaxHitPoints += bonus;
-							wep.HitPoints += bonus;
-
-							wep.ScaleDurability();
-
-							if ( wep.MaxHitPoints > 255 ) wep.MaxHitPoints = 255;
-							if ( wep.HitPoints > 255 ) wep.HitPoints = 255;
-
-							if ( wep.MaxHitPoints > origMaxHP )
-							{
-								from.SendLocalizedMessage( 1049084 ); // You successfully use the powder on the item.
-
-								--m_Powder.UsesRemaining;
-
-								if ( m_Powder.UsesRemaining <= 0 )
-								{
-									from.SendLocalizedMessage( 1049086 ); // You have used up your powder of temperament.
-									m_Powder.Delete();
-								}
-							}
-							else
-							{
-								wep.MaxHitPoints = origMaxHP;
-								wep.HitPoints = origCurHP;
-								from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
-							}
-						}
-						else
-						{
-							from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
-							wep.ScaleDurability();
-						}
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-					}
-				}
-				else if ( targeted is BaseClothing /*&& (DefBlacksmithy.CraftSystem.CraftItems.SearchForSubclass( targeted.GetType() ) != null)*/ )
-				{
-					BaseClothing clothing = (BaseClothing)targeted;
-
-					if ( !clothing.CanFortify )
-					{
-						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
-						return;
-					}
-
-					if ( clothing.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
-					{
-						int origMaxHP = clothing.MaxHitPoints;
-						int origCurHP = clothing.HitPoints;
-
-						int initMaxHP = Core.AOS ? 255 : clothing.InitMaxHits;
-
-						if ( clothing.MaxHitPoints < initMaxHP )
-						{
-							int bonus = initMaxHP - clothing.MaxHitPoints;
-
-							if ( bonus > 10 )
-								bonus = 10;
-
-							clothing.MaxHitPoints += bonus;
-							clothing.HitPoints += bonus;
-
-							if ( clothing.MaxHitPoints > 255 ) clothing.MaxHitPoints = 255;
-							if ( clothing.HitPoints > 255 ) clothing.HitPoints = 255;
-
-							if ( clothing.MaxHitPoints > origMaxHP )
-							{
-								from.SendLocalizedMessage( 1049084 ); // You successfully use the powder on the item.
-
-								--m_Powder.UsesRemaining;
-
-								if ( m_Powder.UsesRemaining <= 0 )
-								{
-									from.SendLocalizedMessage( 1049086 ); // You have used up your powder of temperament.
-									m_Powder.Delete();
-								}
-							}
-							else
-							{
-								clothing.MaxHitPoints = origMaxHP;
-								clothing.HitPoints = origCurHP;
-								from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
-							}
-						}
-						else
-						{
-							from.SendLocalizedMessage( 1049085 ); // The item cannot be improved any further.
+							from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.
 						}
 					}
 					else

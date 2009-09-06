@@ -40,6 +40,9 @@ namespace Server.Mobiles
 			Karma = -11500;
 
 			VirtualArmor = 40;
+
+			if ( Core.ML && Utility.RandomDouble() < .33 )
+				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(1) );
 		}
 
 		public override void GenerateLoot()

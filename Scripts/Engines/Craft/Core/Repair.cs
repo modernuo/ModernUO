@@ -336,7 +336,7 @@ namespace Server.Engines.Craft
 						toDelete = true;
 					}
 				}
-				else if ( (targeted is BaseClothing) )
+				else if ( targeted is BaseClothing )
 				{
 					BaseClothing clothing = (BaseClothing)targeted;
 					SkillName skill = m_CraftSystem.MainSkill;
@@ -358,8 +358,8 @@ namespace Server.Engines.Craft
 							toWeaken = 3;
 					}
 
-					if (m_CraftSystem.CraftItems.SearchForSubclass(clothing.GetType()) == null && !IsSpecialClothing(clothing) && !((targeted is TribalMask) || (targeted is HornedTribalMask) || targeted.GetType().IsSubclassOf(typeof(HornedTribalMask)) || targeted.GetType().IsSubclassOf(typeof(TribalMask))))
-					{
+ 					if (m_CraftSystem.CraftItems.SearchForSubclass(clothing.GetType()) == null && !IsSpecialClothing(clothing) && !((targeted is TribalMask) || (targeted is HornedTribalMask)) )
+ 					{
 						number = (usingDeed) ? 1061136 : 1044277; // That item cannot be repaired. // You cannot repair that item with this type of repair contract.
 					}
 					else if ( !clothing.IsChildOf( from.Backpack ) )

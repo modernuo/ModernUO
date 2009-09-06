@@ -226,7 +226,7 @@ namespace Server.Engines.Craft
 			get { return m_NameNumber; }
 		}
 
-		public CraftResCol Ressources
+		public CraftResCol Resources
 		{
 			get { return m_arCraftRes; }
 		}

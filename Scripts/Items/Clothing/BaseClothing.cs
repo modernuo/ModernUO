@@ -475,6 +475,26 @@ namespace Server.Items
 			return ( m_AosAttributes.SpellChanneling != 0 );
 		}
 
+		public void UnscaleDurability()
+		{
+			int scale = 100 + m_AosClothingAttributes.DurabilityBonus;
+
+			m_HitPoints = ( ( m_HitPoints * 100 ) + ( scale - 1 ) ) / scale;
+			m_MaxHitPoints = ( ( m_MaxHitPoints * 100 ) + ( scale - 1 ) ) / scale;
+
+			InvalidateProperties();
+		}
+
+		public void ScaleDurability()
+		{
+			int scale = 100 + m_AosClothingAttributes.DurabilityBonus;
+
+			m_HitPoints = ( ( m_HitPoints * scale ) + 99 ) / 100;
+			m_MaxHitPoints = ( ( m_MaxHitPoints * scale ) + 99 ) / 100;
+
+			InvalidateProperties();
+		}
+
 		public override bool CheckPropertyConfliction( Mobile m )
 		{
 			if ( base.CheckPropertyConfliction( m ) )
@@ -931,7 +951,7 @@ namespace Server.Items
 
 			CraftItem item = system.CraftItems.SearchFor( GetType() );
 
-			if ( item != null && item.Ressources.Count == 1 && item.Ressources.GetAt( 0 ).Amount >= 2 )
+			if ( item != null && item.Resources.Count == 1 && item.Resources.GetAt( 0 ).Amount >= 2 )
 			{
 				try
 				{
@@ -943,11 +963,11 @@ namespace Server.Items
 						resourceType = info.ResourceTypes[0];
 
 					if ( resourceType == null )
-						resourceType = item.Ressources.GetAt( 0 ).ItemType;
+						resourceType = item.Resources.GetAt( 0 ).ItemType;
 
 					Item res = (Item)Activator.CreateInstance( resourceType );
 
-					ScissorHelper( from, res, m_PlayerConstructed ? (item.Ressources.GetAt( 0 ).Amount / 2) : 1 );
+					ScissorHelper( from, res, m_PlayerConstructed ? (item.Resources.GetAt( 0 ).Amount / 2) : 1 );
 
 					res.LootType = LootType.Regular;
 
@@ -993,7 +1013,7 @@ namespace Server.Items
 				Type resourceType = typeRes;
 
 				if ( resourceType == null )
-					resourceType = craftItem.Ressources.GetAt( 0 ).ItemType;
+					resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
 
 				Resource = CraftResources.GetFromType( resourceType );
 			}

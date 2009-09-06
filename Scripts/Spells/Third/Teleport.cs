@@ -95,6 +95,16 @@ namespace Server.Spells.Third
 				}
 
 				m.PlaySound( 0x1FE );
+
+				IPooledEnumerable eable = m.GetItemsInRange( 0 );
+
+				foreach ( Item item in eable )
+				{
+					if ( item is ParalyzeFieldSpell.InternalItem || item is PoisonFieldSpell.InternalItem || item is FireFieldItem )
+						item.OnMoveOver( m );
+				}
+
+				eable.Free();
 			}
 
 			FinishSequence();

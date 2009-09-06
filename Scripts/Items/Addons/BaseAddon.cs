@@ -12,7 +12,6 @@ namespace Server.Items
 		Valid,
 		Blocked,
 		NotInHouse,
-		DoorsNotClosed,
 		DoorTooClose,
 		NoWall
 	}
@@ -141,9 +140,6 @@ namespace Server.Items
 			for ( int i = 0; i < doors.Count; ++i )
 			{
 				BaseDoor door = doors[i] as BaseDoor;
-
-				if ( door != null && door.Open )
-					return AddonFitResult.DoorsNotClosed;
 
 				Point3D doorLoc = door.GetWorldLocation();
 				int doorHeight = door.ItemData.CalcHeight;

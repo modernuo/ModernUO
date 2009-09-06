@@ -36,7 +36,7 @@ namespace Server.Engines.Craft
 
 			CraftItem craftItem = craftSystem.CraftItems.SearchFor( item.GetType() );
 
-			if ( craftItem == null || craftItem.Ressources.Count == 0 )
+			if ( craftItem == null || craftItem.Resources.Count == 0 )
 				return EnhanceResult.BadItem;
 
 			bool allRequiredSkills = false;

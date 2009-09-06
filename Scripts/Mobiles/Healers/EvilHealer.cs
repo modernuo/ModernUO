@@ -40,6 +40,12 @@ namespace Server.Mobiles
 
 		public override bool CheckResurrect( Mobile m )
 		{
+			if ( Core.AOS && m.Criminal )
+			{
+				Say( 501222 ); // Thou art a criminal.  I shall not resurrect thee.
+				return false;
+			}
+
 			return true;
 		}
 

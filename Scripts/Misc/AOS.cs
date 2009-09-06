@@ -910,6 +910,8 @@ namespace Server
 			{
 				if( m_Owner is BaseArmor )
 					((BaseArmor)m_Owner).UnscaleDurability();
+				else if( m_Owner is BaseClothing )
+					((BaseClothing)m_Owner).UnscaleDurability();
 			}
 
 			uint mask = (uint)bitmask;
@@ -979,6 +981,8 @@ namespace Server
 			{
 				if( m_Owner is BaseArmor )
 					((BaseArmor)m_Owner).ScaleDurability();
+				else if( m_Owner is BaseClothing )
+					((BaseClothing)m_Owner).ScaleDurability();
 			}
 
 			if( m_Owner.Parent is Mobile )

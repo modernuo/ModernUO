@@ -56,6 +56,17 @@ namespace Server.Engines.Plants
 			return new Seed( PlantTypeInfo.RandomBonsai( increaseRatio ), PlantHue.Plain, false );
 		}
 
+		public static Seed RandomPeculiarSeed( int group )
+		{
+			switch ( group )
+			{
+				case 1: return new Seed ( PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain, false );
+				case 2: return new Seed ( PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain, false );
+				case 3: return new Seed ( PlantTypeInfo.RandomPeculiarGroupThree(), PlantHue.Plain, false );
+				default: return new Seed ( PlantTypeInfo.RandomPeculiarGroupFour(), PlantHue.Plain, false );
+			}
+		}
+
 		[Constructable]
 		public Seed() : this( PlantTypeInfo.RandomFirstGeneration(), PlantHueInfo.RandomFirstGeneration(), false )
 		{

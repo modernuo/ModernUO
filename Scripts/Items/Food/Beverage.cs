@@ -759,6 +759,17 @@ namespace Server.Items
 
 				from.SendLocalizedMessage( 1010089 ); // You fill the container with water.
 			}
+			else if ( targ is Cow )
+			{
+				Cow cow = (Cow)targ;
+
+				if ( cow.TryMilk( from ) )
+				{
+					Content = BeverageType.Milk;
+					Quantity = MaxQuantity;
+					from.SendLocalizedMessage( 1080197 ); // You fill the container with milk.
+				}
+			}
 			else if ( targ is LandTarget )
 			{
 				int tileID = ((LandTarget)targ).TileID;

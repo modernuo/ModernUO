@@ -38,6 +38,8 @@
 				<child name="Tunnel" x="2352" y="1267" z="-110" />
 				<child name="Inside" x="381" y="133" z="33" />
 				<child name="Gauntlet" x="433" y="331" z="-2" />
+				<child name="Guardian's Room" x="365" y="15" z="-1"/>
+				<child name="Lamp Room" x="470" y="95" z="-1"/>
 			</parent>
 		</parent>
 		<parent name="Sites">

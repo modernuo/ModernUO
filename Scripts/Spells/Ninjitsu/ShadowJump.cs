@@ -120,8 +120,7 @@ namespace Server.Spells.Ninjitsu
 			{
 				m_Owner.FinishSequence();
 
-				if ( !from.CheckSkill( SkillName.Hiding, 0.0, 100.0 ) )	//TODO: Hiding check or stealth check?
-					from.RevealingAction();
+				Server.SkillHandlers.Stealth.OnUse( from );
 			}
 		}
 	}

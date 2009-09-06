@@ -594,8 +594,6 @@ namespace Server.Mobiles
 					from.SendLocalizedMessage( 500269 ); // You cannot build that there.
 				else if ( result == AddonFitResult.NotInHouse )
 					from.SendLocalizedMessage( 1076192 ); // Statues can only be placed in houses where you are the owner or co-owner.
-				else if ( result == AddonFitResult.DoorsNotClosed )
-					from.SendMessage( "You must close all house doors before placing this." );
 				else if ( result == AddonFitResult.DoorTooClose )
 					from.SendLocalizedMessage( 500271 ); // You cannot build near the door.
 			}
@@ -620,9 +618,6 @@ namespace Server.Mobiles
 			for ( int i = 0; i < doors.Count; i ++ )
 			{
 				BaseDoor door = doors[ i ] as BaseDoor;
-
-				if ( door != null && door.Open )
-					return AddonFitResult.DoorsNotClosed;
 
 				Point3D doorLoc = door.GetWorldLocation();
 				int doorHeight = door.ItemData.CalcHeight;

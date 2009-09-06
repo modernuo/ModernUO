@@ -12,6 +12,8 @@ namespace Server.Mobiles
 	[CorpseName( "a horde minion corpse" )]
 	public class HordeMinionFamiliar : BaseFamiliar
 	{
+		public override bool DisplayWeight{ get { return true; } }
+
 		public HordeMinionFamiliar()
 		{
 			Name = "a horde minion";
@@ -47,6 +49,7 @@ namespace Server.Mobiles
 
 			pack = new Backpack();
 			pack.Movable = false;
+			pack.Weight = 13.0;
 
 			AddItem( pack );
 		}

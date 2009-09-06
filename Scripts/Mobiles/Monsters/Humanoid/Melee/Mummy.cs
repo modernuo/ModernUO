@@ -41,6 +41,9 @@ namespace Server.Mobiles
 
 			VirtualArmor = 50;
 
+			if ( Core.ML && Utility.RandomDouble() < .33 )
+				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(2) );
+
 			PackItem( new Garlic( 5 ) );
 			PackItem( new Bandage( 10 ) );
 		}

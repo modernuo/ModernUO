@@ -122,6 +122,16 @@ namespace Server.SkillHandlers
 			return String.Format( "<div align=right>{0}%</div>", val );
 		}
 
+		#region Mondain's Legacy
+		private static string FormatDamage( int min, int max )
+		{
+			if ( min <= 0 || max <= 0 )
+				return "<div align=right>---</div>";
+
+			return String.Format( "<div align=right>{0}-{1}</div>", min, max );
+		}
+		#endregion
+
 		private const int LabelColor = 0x24E5;
 
 		public AnimalLoreGump( BaseCreature c ) : base( 250, 50 )
@@ -255,6 +265,14 @@ namespace Server.SkillHandlers
 				AddHtmlLocalized( 153, 240, 160, 18, 1061650, LabelColor, false, false ); // Energy
 				AddHtml( 320, 240, 35, 18, FormatElement( c.EnergyDamage ), false, false );
 
+				#region Mondain's Legacy
+				if ( Core.ML )
+				{
+					AddHtmlLocalized( 153, 258, 160, 18, 1076750, LabelColor, false, false ); // Base Damage
+					AddHtml( 300, 258, 55, 18, FormatDamage( c.DamageMin, c.DamageMax ), false, false );
+				}
+				#endregion
+
 				AddButton( 340, 358, 5601, 5605, 0, GumpButtonType.Page, page + 1 );
 				AddButton( 317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1 );
 			}
@@ -278,8 +296,18 @@ namespace Server.SkillHandlers
 			AddHtmlLocalized( 153, 222, 160, 18, 1044061, LabelColor, false, false ); // Anatomy
 			AddHtml( 320, 222, 35, 18, FormatSkill( c, SkillName.Anatomy ), false, false );
 
-			AddHtmlLocalized( 153, 240, 160, 18, 1044090, LabelColor, false, false ); // Poisoning
-			AddHtml( 320, 240, 35, 18, FormatSkill( c, SkillName.Poisoning ), false, false );
+			#region Mondain's Legacy
+			if ( c is CuSidhe )
+			{
+				AddHtmlLocalized( 153, 240, 160, 18, 1044077, LabelColor, false, false ); // Healing
+				AddHtml( 320, 240, 35, 18, FormatSkill( c, SkillName.Healing ), false, false );
+			}
+			else
+			{
+				AddHtmlLocalized( 153, 240, 160, 18, 1044090, LabelColor, false, false ); // Poisoning
+				AddHtml( 320, 240, 35, 18, FormatSkill( c, SkillName.Poisoning ), false, false );
+			}
+			#endregion
 
 			AddImage( 128, 260, 2086 );
 			AddHtmlLocalized( 147, 258, 160, 18, 3001032, 200, false, false ); // Lore & Knowledge

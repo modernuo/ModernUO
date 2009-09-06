@@ -63,7 +63,7 @@ namespace Server.Mobiles
 		public override bool AutoDispel{ get{ return !Controlled; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Meat{ get{ return 19; } }
-		public override int Hides{ get{ return 20; } }
+		public override int Hides{ get{ return 30; } }
 		public override HideType HideType{ get{ return HideType.Barbed; } }
 		public override int Scales{ get{ return 7; } }
 		public override ScaleType ScaleType{ get{ return ( Body == 12 ? ScaleType.Yellow : ScaleType.Red ); } }

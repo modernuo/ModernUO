@@ -1004,6 +1004,8 @@ namespace Server.Multis
 				return HasSecureAccess( from, ((ISecurable)item).Level );
 			else if ( item is Container )
 				return IsCoOwner( from );
+			else if ( item.Stackable )
+				return true;
 			else if ( item is BaseLight )
 				return IsFriend( from );
 			else if ( item is PotionKeg )
@@ -1405,7 +1407,7 @@ namespace Server.Multis
 			}
 			else
 			{
-				m_Trash.MoveToWorld( from.Location, from.Map );
+				from.SendLocalizedMessage( 502117 ); // You already have a trash barrel!
 			}
 		}
 
@@ -3417,7 +3419,7 @@ namespace Server.Multis
 				}
 				else
 				{
-					if ( targeted is VendorRentalContract || ( targeted is Container && ((Container)targeted).FindItemByType( typeof( VendorRentalContract ) ) != null ) )
+					if ( targeted is VendorRentalContract )
 					{
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1062392 ); // You must double click the contract in your pack to lock it down.
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 501732 ); // I cannot lock this down!
@@ -3475,7 +3477,7 @@ namespace Server.Multis
 				}
 				else
 				{
-					if ( targeted is VendorRentalContract || ( targeted is Container && ((Container)targeted).FindItemByType( typeof( VendorRentalContract ) ) != null ) )
+					if ( targeted is VendorRentalContract )
 					{
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1062392 ); // You must double click the contract in your pack to lock it down.
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 501732 ); // I cannot lock this down!

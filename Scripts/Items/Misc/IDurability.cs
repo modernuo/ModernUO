@@ -5,13 +5,16 @@ namespace Server.Items
 {
 	interface IDurability
 	{
+		bool CanFortify { get; }
+
 		int InitMinHits { get; }
 		int InitMaxHits { get; }
 
 		int HitPoints { get; set; }
 		int MaxHitPoints { get; set; }
 
-		//Maybe a scale/unscale durability?
+		void ScaleDurability();
+		void UnscaleDurability();
 	}
 
 	interface IWearableDurability : IDurability

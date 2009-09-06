@@ -60,6 +60,96 @@ namespace Server.Mobiles
 		public override int Hides{ get{ return 10; } }
 		public override HideType HideType{ get{ return HideType.Barbed; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Fish; } }
+		public override bool ShowFameTitle{ get{ return false; } }
+		public override bool ClickTitle{ get{ return false; } }
+		public override bool PropertyTitle{ get{ return false; } }
+
+		public override void OnCombatantChange()
+		{
+			if ( Combatant == null && !IsBodyMod && !Controlled && m_DisguiseTimer == null && Utility.RandomBool() )
+				m_DisguiseTimer = Timer.DelayCall( TimeSpan.FromSeconds( Utility.RandomMinMax( 15, 30 ) ), new TimerCallback( Disguise ) );
+		}
+
+		public override bool OnBeforeDeath()
+		{
+			RemoveDisguise();
+
+			return base.OnBeforeDeath();
+		}
+
+		#region Disguise
+		private Timer m_DisguiseTimer;
+
+		public void Disguise()
+		{
+			if ( Combatant != null || IsBodyMod || Controlled )
+				return;
+
+			FixedEffect( 0x376A, 8, 32 );
+			PlaySound( 0x1FE );
+
+			Female = Utility.RandomBool();
+
+			if ( Female )
+			{
+				BodyMod = 0x191;
+				Name = NameList.RandomName( "female" );
+			}
+			else
+			{
+				BodyMod = 0x190;
+				Name = NameList.RandomName( "male" );
+			}
+
+			Title = "the mystic llama herder";
+			Hue = Race.Human.RandomSkinHue();
+			HairItemID = Race.Human.RandomHair( this );
+			HairHue = Race.Human.RandomHairHue();
+			FacialHairItemID = Race.Human.RandomFacialHair( this );
+			FacialHairHue = HairHue;
+
+			switch ( Utility.Random( 4 ) )
+			{
+				case 0: AddItem( new Shoes( Utility.RandomNeutralHue() ) ); break;
+				case 1: AddItem( new Boots( Utility.RandomNeutralHue() ) ); break;
+				case 2: AddItem( new Sandals( Utility.RandomNeutralHue() ) ); break;
+				case 3: AddItem( new ThighBoots( Utility.RandomNeutralHue() ) ); break;
+			}
+
+			AddItem( new Robe( Utility.RandomNondyedHue() ) );
+
+			m_DisguiseTimer = null;
+			m_DisguiseTimer = Timer.DelayCall( TimeSpan.FromSeconds( 75 ), new TimerCallback( RemoveDisguise ) );
+		}
+
+		public void RemoveDisguise()
+		{
+			if ( !IsBodyMod )
+				return;
+			
+			Name = "a bake kitsune";
+			Title = null;
+			BodyMod = 0;
+			Hue = 0;
+			HairItemID = 0;
+			HairHue = 0;
+			FacialHairItemID = 0;
+			FacialHairHue = 0;
+
+			DeleteItemOnLayer( Layer.OuterTorso );
+			DeleteItemOnLayer( Layer.Shoes );
+
+			m_DisguiseTimer = null;
+		}
+
+		public void DeleteItemOnLayer( Layer layer )
+		{
+			Item item = FindItemOnLayer( layer );
+
+			if ( item != null )
+				item.Delete();
+		}
+		#endregion
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{
@@ -180,6 +270,8 @@ namespace Server.Mobiles
 				SetResistance( ResistanceType.Poison, 40, 60 );
 				SetResistance( ResistanceType.Energy, 40, 60 );
 			}
+
+			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( RemoveDisguise ) );
 		}
 	}
 }

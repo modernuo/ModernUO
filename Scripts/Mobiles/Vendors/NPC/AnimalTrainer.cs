@@ -297,7 +297,7 @@ namespace Server.Mobiles
 			{
 				Container bank = from.FindBankNoCreate();
 
-				if ( bank != null && bank.ConsumeTotal( typeof( Gold ), 30 ) )
+				if ( ( from.Backpack != null && from.Backpack.ConsumeTotal( typeof( Gold ), 30 ) ) || ( bank != null && bank.ConsumeTotal( typeof( Gold ), 30 ) ) )
 				{
 					pet.ControlTarget = null;
 					pet.ControlOrder = OrderType.Stay;

@@ -1069,8 +1069,16 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( m_HitsMax >= 0 )
-					return m_HitsMax + GetStatOffset( StatType.Str );
+				if ( m_HitsMax > 0 ) {
+					int value = m_HitsMax + GetStatOffset( StatType.Str );
+
+					if( value < 1 )
+						value = 1;
+					else if( value > 65000 )
+						value = 65000;
+
+					return value;
+				}
 
 				return Str;
 			}
@@ -1088,8 +1096,16 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( m_StamMax >= 0 )
-					return m_StamMax + GetStatOffset( StatType.Dex );
+				if ( m_StamMax > 0 ) {
+					int value = m_StamMax + GetStatOffset( StatType.Dex );
+
+					if( value < 1 )
+						value = 1;
+					else if( value > 65000 )
+						value = 65000;
+
+					return value;
+				}
 
 				return Dex;
 			}
@@ -1107,8 +1123,16 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( m_ManaMax >= 0 )
-					return m_ManaMax + GetStatOffset( StatType.Int );
+				if ( m_ManaMax > 0 ) {
+					int value = m_ManaMax + GetStatOffset( StatType.Int );
+
+					if( value < 1 )
+						value = 1;
+					else if( value > 65000 )
+						value = 65000;
+
+					return value;
+				}
 
 				return Int;
 			}

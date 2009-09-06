@@ -3,6 +3,7 @@ using Server.Targeting;
 using Server.Items;
 using Server.Network;
 using Server.Misc;
+using Server.Mobiles;
 
 namespace Server.Spells.Sixth
 {
@@ -161,6 +162,9 @@ namespace Server.Spells.Sixth
 			{
 				if ( Visible && m_Caster != null && (!Core.AOS || m != m_Caster) && SpellHelper.ValidIndirectTarget( m_Caster, m ) && m_Caster.CanBeHarmful( m, false ) )
 				{
+					if ( SpellHelper.CanRevealCaster( m ) )
+						m_Caster.RevealingAction();
+
 					m_Caster.DoHarmful( m );
 
 					double duration;

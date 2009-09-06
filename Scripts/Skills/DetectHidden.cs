@@ -20,7 +20,7 @@ namespace Server.SkillHandlers
 			src.SendLocalizedMessage( 500819 );//Where will you search?
 			src.Target = new InternalTarget();
 
-			return TimeSpan.FromSeconds( 1.0 );
+			return TimeSpan.FromSeconds( 6.0 );
 		}
 
 		private class InternalTarget : Target

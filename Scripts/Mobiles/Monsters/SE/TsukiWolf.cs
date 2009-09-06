@@ -47,7 +47,8 @@ namespace Server.Mobiles
 			Fame = 8500;
 			Karma = -8500;
 
-
+			if ( Core.ML && Utility.RandomDouble() < .33 )
+				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(1) );
 
 			switch( Utility.Random( 10 ) )
 			{

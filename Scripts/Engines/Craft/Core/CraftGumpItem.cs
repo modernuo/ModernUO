@@ -192,17 +192,17 @@ namespace Server.Engines.Craft
 			if ( context != null )
 				resIndex = ( m_CraftItem.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex );
 
-			bool cropScroll = ( m_CraftItem.Ressources.Count > 1 )
-				&& m_CraftItem.Ressources.GetAt( m_CraftItem.Ressources.Count - 1 ).ItemType == typeofBlankScroll
+			bool cropScroll = ( m_CraftItem.Resources.Count > 1 )
+				&& m_CraftItem.Resources.GetAt( m_CraftItem.Resources.Count - 1 ).ItemType == typeofBlankScroll
 				&& typeofSpellScroll.IsAssignableFrom( m_CraftItem.ItemType );
 
-			for ( int i = 0; i < m_CraftItem.Ressources.Count - (cropScroll ? 1 : 0) && i < 4; i++ )
+			for ( int i = 0; i < m_CraftItem.Resources.Count - (cropScroll ? 1 : 0) && i < 4; i++ )
 			{
 				Type type;
 				string nameString;
 				int nameNumber;
 
-				CraftRes craftResource = m_CraftItem.Ressources.GetAt( i );
+				CraftRes craftResource = m_CraftItem.Resources.GetAt( i );
 
 				type = craftResource.ItemType;
 				nameString = craftResource.NameString;
@@ -240,8 +240,8 @@ namespace Server.Engines.Craft
 
 			if ( m_CraftItem.NameNumber == 1041267 ) // runebook
 			{
-				AddHtmlLocalized( 170, 219 + (m_CraftItem.Ressources.Count * 20), 310, 18, 1044447, LabelColor, false, false );
-				AddLabel( 430, 219 + (m_CraftItem.Ressources.Count * 20), LabelHue, "1" );
+				AddHtmlLocalized( 170, 219 + (m_CraftItem.Resources.Count * 20), 310, 18, 1044447, LabelColor, false, false );
+				AddLabel( 430, 219 + (m_CraftItem.Resources.Count * 20), LabelHue, "1" );
 			}
 
 			if ( cropScroll )

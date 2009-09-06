@@ -15,7 +15,7 @@ namespace Server.Mobiles
 		[Constructable]
 		public RestlessSoul() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{
-			Name = "a restless soul";
+			Name = "restless soul";
 			Body = 0x3CA;
 			Hue = 0x453;
 
@@ -71,12 +71,12 @@ namespace Server.Mobiles
 
 		public override int GetIdleSound()
 		{
-			return 0x1BF;
+			return 0x107;
 		}
 
 		public override int GetAngerSound()
 		{
-			return 0x107;
+			return 0x1BF;
 		}
 
 		public override int GetDeathSound()

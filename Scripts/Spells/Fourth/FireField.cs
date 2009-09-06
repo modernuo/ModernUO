@@ -4,6 +4,7 @@ using Server.Targeting;
 using Server.Network;
 using Server.Misc;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Spells.Fourth
 {
@@ -184,6 +185,9 @@ namespace Server.Spells.Fourth
 			{
 				if ( Visible && m_Caster != null && (!Core.AOS || m != m_Caster) && SpellHelper.ValidIndirectTarget( m_Caster, m ) && m_Caster.CanBeHarmful( m, false ) )
 				{
+					if ( SpellHelper.CanRevealCaster( m ) )
+						m_Caster.RevealingAction();
+					
 					m_Caster.DoHarmful( m );
 
 					int damage = m_Damage;
@@ -257,6 +261,9 @@ namespace Server.Spells.Fourth
 							while ( m_Queue.Count > 0 )
 							{
 								Mobile m = (Mobile)m_Queue.Dequeue();
+								
+								if ( SpellHelper.CanRevealCaster( m ) )
+									caster.RevealingAction();
 
 								caster.DoHarmful( m );
 

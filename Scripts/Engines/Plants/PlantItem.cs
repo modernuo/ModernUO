@@ -259,23 +259,38 @@ namespace Server.Engines.Plants
 
 				if ( m_PlantStatus < PlantStatus.DecorativePlant )
 				{
-					string args = string.Format( "#{0}\t#{1}\t#{2}", m_PlantSystem.GetLocalizedHealth(), title, typeInfo.Name );
-
-					if ( typeInfo.ContainsPlant )
+					if ( m_PlantType == PlantType.SugarCanes )
 					{
-						// a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~
-						list.Add( hueInfo.IsBright() ? 1061891 : 1061889, args );
+						string args = string.Format( "#{0}", m_PlantSystem.GetLocalizedHealth() );
+						list.Add ( 1094702, args );
 					}
 					else
 					{
-						// a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
-						list.Add( hueInfo.IsBright() ? 1061892 : 1061890, args );
+
+						string args = string.Format( "#{0}\t#{1}\t#{2}", m_PlantSystem.GetLocalizedHealth(), title, typeInfo.Name );
+
+						if ( typeInfo.ContainsPlant )
+						{
+							// a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~
+							list.Add( hueInfo.IsBright() ? 1061891 : 1061889, args );
+						}
+						else
+						{
+							// a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
+							list.Add( hueInfo.IsBright() ? 1061892 : 1061890, args );
+						}
 					}
 				}
 				else
 				{
-					// a decorative ~1_COLOR~ ~2_TYPE~ plant
-					list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
+					if ( m_PlantType == PlantType.SugarCanes )
+						list.Add ( 1094703 );
+					else if ( title == 1080528 )
+					     	// a decorative ~2_TYPE~
+						list.Add( 1080539, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
+					else
+						// a decorative ~1_COLOR~ ~2_TYPE~ plant
+						list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
 				}
 			}
 			else if ( m_PlantStatus >= PlantStatus.Seed )

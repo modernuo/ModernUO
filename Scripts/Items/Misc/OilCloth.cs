@@ -15,16 +15,9 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public OilCloth() : this( 1 )
-		{
-		}
-
-		[Constructable]
-		public OilCloth( int amount ) : base( 0x175D )
+		public OilCloth() : base( 0x175D )
 		{
 			Hue = 2001;
-			Stackable = true;
-			Amount = amount;
 		}
 
 		public bool Dye( Mobile from, DyeTub sender )
