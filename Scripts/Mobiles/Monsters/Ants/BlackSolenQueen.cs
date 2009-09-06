@@ -107,7 +107,7 @@ namespace Server.Mobiles
 				}
 				else if ( from != null && from != this && InRange( from, 1 ) )
 				{
-					SpillAcid( TimeSpan.FromSeconds( 10 ), 30, 30, from );
+					SpillAcid( from, 1 );
 				}
 			}
 
@@ -116,7 +116,7 @@ namespace Server.Mobiles
 
 		public override bool OnBeforeDeath()
 		{
-			SpillAcid( TimeSpan.FromSeconds( 10 ), 30, 30, 1, 4 );
+			SpillAcid( 4 );
 
 			return base.OnBeforeDeath();
 		}

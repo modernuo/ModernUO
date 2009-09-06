@@ -8,15 +8,24 @@ namespace Server.Mobiles
 	public class SeekerOfAdventure : BaseEscortable
 	{
 		private static string[] m_Dungeons = new string[]
-			{
-				"Covetous", "Deceit", "Despise",
-				"Destard", "Hythloth", "Shame",
-				"Wrong"
-			};
+		{
+			"Covetous", "Deceit", "Despise",
+			"Destard", "Hythloth", "Shame",		// Old Code for Pre-ML shards.
+			"Wrong"
+		};
+
+		private static string[] m_MLDestinations = new string[]
+		{
+			"Cove", "Serpent's Hold", "Jhelom",		// ML List
+			"Nujel'm"
+		};
 
 		public override string[] GetPossibleDestinations()
 		{
-			return m_Dungeons;
+			if ( Core.ML )
+				return m_MLDestinations;
+			else
+				return m_Dungeons;
 		}
 
 		[Constructable]

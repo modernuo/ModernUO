@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Server.Items
 {
-	public class PoolOfAcid : Item
+	public class AcidSlime : Item
 	{
 		private TimeSpan m_Duration;
 		private int m_MinDamage;
@@ -17,24 +17,22 @@ namespace Server.Items
 		private Timer m_Timer;
 
 		[Constructable]
-		public PoolOfAcid() : this( TimeSpan.FromSeconds( 10.0 ), 2, 5 )
+		public AcidSlime() : this( TimeSpan.FromSeconds( 10.0 ), 5, 10 )
 		{
 		}
 
-		public override string DefaultName { get { return "a pool of acid"; } }
+		public override string DefaultName { get { return "slime"; } }
 
 		[Constructable]
-		public PoolOfAcid( TimeSpan duration, int minDamage, int maxDamage )
+		public AcidSlime( TimeSpan duration, int minDamage, int maxDamage )
 			: base( 0x122A )
 		{
 			Hue = 0x3F;
 			Movable = false;
-
 			m_MinDamage = minDamage;
 			m_MaxDamage = maxDamage;
 			m_Created = DateTime.Now;
 			m_Duration = duration;
-
 			m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), new TimerCallback( OnTick ) );
 		}
 
@@ -61,7 +59,6 @@ namespace Server.Items
 				foreach( Mobile m in GetMobilesInRange( 0 ) )
 				{
 					BaseCreature bc = m as BaseCreature;
-
 					if( m.Alive && !m.IsDeadBondedPet && (bc == null || bc.Controlled || bc.Summoned) )
 					{
 						Damage ( m );
@@ -69,6 +66,7 @@ namespace Server.Items
 				}
 			}
 		}
+
 		public override bool OnMoveOver( Mobile m )
 		{
 			Damage( m );
@@ -77,16 +75,19 @@ namespace Server.Items
 
 		public void Damage ( Mobile m )
 		{
-			m.Damage( Utility.RandomMinMax( m_MinDamage, m_MaxDamage ) );
+			int damage = Utility.RandomMinMax( m_MinDamage, m_MaxDamage );
+			if ( Core.AOS )
+				AOS.Damage( m, damage, 0, 0, 0, 100, 0 );
+			else
+				m.Damage( damage );
 		}
 
-		public PoolOfAcid( Serial serial ) : base( serial )
+		public AcidSlime( Serial serial ) : base( serial )
 		{
 		}
 
 		public override void Serialize( GenericWriter writer )
 		{
-			//Don't serialize these
 		}
 
 		public override void Deserialize( GenericReader reader )

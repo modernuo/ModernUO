@@ -128,6 +128,7 @@ namespace Server.Items
 				}
 
 				Explode( from, true, loc, map );
+				m_Timer = null;
 			}
 			else
 			{

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Server;
 using Server.Items;
 using Server.Mobiles;
@@ -68,7 +69,14 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			list.Add( 1060738, Core.ML ? m_Worth.ToString( "N0" ) : m_Worth.ToString() ); // value: ~1_val~
+			string worth;
+
+			if ( Core.ML )
+				worth = m_Worth.ToString( "N0", CultureInfo.GetCultureInfo( "en-US" ) );
+			else
+				worth = m_Worth.ToString();
+
+			list.Add( 1060738, worth ); // value: ~1_val~
 		}
 
 		public override void OnSingleClick( Mobile from )

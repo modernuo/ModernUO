@@ -169,6 +169,19 @@ namespace Server.Spells
 
 			return false;
 		}
+		
+		public static bool CanRevealCaster( Mobile m )
+		{
+			if ( m is BaseCreature )
+			{
+				BaseCreature c = (BaseCreature)m;
+						
+				if ( !c.Controlled )
+					return true;
+			}
+			
+			return false;
+		}
 
 		public static void GetSurfaceTop( ref IPoint3D p )
 		{
@@ -532,19 +545,21 @@ namespace Server.Spells
 				new TravelValidator( IsDoomFerry ),
 				new TravelValidator( IsFactionStronghold ),
 				new TravelValidator( IsChampionSpawn ),
-				new TravelValidator( IsTokunoDungeon )
+				new TravelValidator( IsTokunoDungeon ),
+				new TravelValidator( IsLampRoom ),
+				new TravelValidator( IsGuardianRoom ),
 			};
 
 		private static bool[,] m_Rules = new bool[,]
 			{
-						/*T2A(Fel)		Ilshenar		Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel), CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	Stronghold,		ChampionSpawn, Dungeons(Tokuno[Malas]) */
-/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			true,			true	 },
-/* Recall To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
-/* Gate From */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
-/* Gate To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
-/* Mark In */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false	 },
-/* Tele From */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				true,				false,			true,			true	 },
-/* Tele To */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				false,				false, 			true,			true	 },
+						/*T2A(Fel)		Ilshenar		Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel), CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	Stronghold,		ChampionSpawn, Dungeons(Tokuno[Malas]), LampRoom(Doom),	GuardianRoom(Doom) */
+/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			true,			true,				false,				false },
+/* Recall To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },
+/* Gate From */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },
+/* Gate To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },
+/* Mark In */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },
+/* Tele From */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				true,				false,			true,			true,				true,				true },
+/* Tele To */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				false,				false, 			true,			true,				true,				true },
 			};
 
 		public static bool CheckTravel( Mobile caster, TravelCheckType type )
@@ -734,6 +749,26 @@ namespace Server.Spells
 			int x = loc.X - 256, y = loc.Y - 304;
 
 			return (x >= 0 && y >= 0 && x < 256 && y < 256);
+		}
+
+		public static bool IsLampRoom( Map map, Point3D loc )
+		{
+			if ( map != Map.Malas )
+				return false;
+
+			int x = loc.X, y = loc.Y;
+
+			return ( x >= 465 && y >= 92 && x < 474 && y < 102 );
+		}
+
+		public static bool IsGuardianRoom( Map map, Point3D loc )
+		{
+			if ( map != Map.Malas )
+				return false;
+
+			int x = loc.X, y = loc.Y;
+
+			return ( x >= 356 && y >= 5 && x < 375 && y < 25 );
 		}
 
 		public static bool IsInvalid( Map map, Point3D loc )

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Server;
 using Server.Items;
 using Server.Mobiles;
@@ -32,6 +33,17 @@ namespace Server.Mobiles
 
 		public Item Item{ get{ return m_Item; } }
 		public int Price{ get{ return m_Price; } }
+
+		public string FormattedPrice
+		{
+			get
+			{
+				if ( Core.ML )
+					return m_Price.ToString( "N0", CultureInfo.GetCultureInfo( "en-US" ) );
+
+				return m_Price.ToString();
+			}
+		}
 
 		public string Description
 		{
@@ -197,7 +209,7 @@ namespace Server.Mobiles
 			else if ( vi.IsForFree )
 				list.Add( 1043306 ); // Price: FREE!
 			else
-				list.Add( 1043304, vi.Price.ToString() ); // Price: ~1_COST~
+				list.Add( 1043304, vi.FormattedPrice ); // Price: ~1_COST~
 		}
 
 		public override void GetChildProperties( ObjectPropertyList list, Item item )
@@ -230,7 +242,7 @@ namespace Server.Mobiles
 					else if ( vi.IsForFree )
 						item.LabelTo( from, 1043306 ); // Price: FREE!
 					else
-						item.LabelTo( from, 1043304, vi.Price.ToString() ); // Price: ~1_COST~
+						item.LabelTo( from, 1043304, vi.FormattedPrice ); // Price: ~1_COST~
 
 					if ( !String.IsNullOrEmpty( vi.Description ) )
 					{
