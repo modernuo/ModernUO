@@ -85,7 +85,7 @@ namespace Server.Spells.Fifth
 		}
 
 		[DispellableField]
-		private class InternalItem : Item
+		public class InternalItem : Item
 		{
 			private Timer m_Timer;
 			private DateTime m_End;

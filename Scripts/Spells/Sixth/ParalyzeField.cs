@@ -83,7 +83,7 @@ namespace Server.Spells.Sixth
 		}
 
 		[DispellableField]
-		private class InternalItem : Item
+		public class InternalItem : Item
 		{
 			private Timer m_Timer;
 			private Mobile m_Caster;
