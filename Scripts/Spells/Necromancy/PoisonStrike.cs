@@ -67,7 +67,7 @@ namespace Server.Spells.Necromancy
 						targets.Add( m );
 
 					foreach( Mobile targ in m.GetMobilesInRange( 2 ) )
-						if( ( targ != Caster ) && ( SpellHelper.ValidIndirectTarget( Caster, targ ) && Caster.CanBeHarmful( targ, false) ) )
+						if( ( targ != Caster && m != targ ) && ( SpellHelper.ValidIndirectTarget( Caster, targ ) && Caster.CanBeHarmful( targ, false) ) )
 							targets.Add( targ );
 
 					for( int i = 0; i < targets.Count; ++i )
