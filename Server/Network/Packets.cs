@@ -2734,10 +2734,9 @@ namespace Server.Network
 			string name = m.Name;
 			if ( name == null ) name = "";
 
-			bool sendMaxWeight = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
+			bool sendMLExtended = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
 
-
-			this.EnsureCapacity( sendMaxWeight ? 91 :88 );
+			this.EnsureCapacity( sendMLExtended ? 91 : 88 );
 
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.WriteAsciiFixed( name, 30 );
@@ -2747,7 +2746,7 @@ namespace Server.Network
 
 			m_Stream.Write( m.CanBeRenamedBy( m ) );
 
-			m_Stream.Write( (byte)(sendMaxWeight ? 0x05 : Core.AOS ? 0x04 : 0x03) ); // type
+			m_Stream.Write( (byte)(sendMLExtended ? 0x05 : Core.AOS ? 0x04 : 0x03) ); // type
 
 			m_Stream.Write( m.Female );
 
@@ -2765,7 +2764,7 @@ namespace Server.Network
 			m_Stream.Write( (short) (Core.AOS ? m.PhysicalResistance : (int)(m.ArmorRating + 0.5)) );
 			m_Stream.Write( (short) (Mobile.BodyWeight + m.TotalWeight) );
 
-			if( sendMaxWeight )
+			if( sendMLExtended )
 			{
 				m_Stream.Write( (short)m.MaxWeight );
 				m_Stream.Write( (byte)(m.Race.RaceID + 1));	// Would be 0x00 if it's a non-ML enabled account but...
@@ -2810,9 +2809,9 @@ namespace Server.Network
 			string name = beheld.Name;
 			if ( name == null ) name = "";
 
-			bool sendMaxWeight = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
+			bool sendMLExtended = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
 
-			this.EnsureCapacity( 43 + (beholder == beheld ? (sendMaxWeight ? 48 : 45) : 0) );
+			this.EnsureCapacity( 43 + (beholder == beheld ? (sendMLExtended ? 48 : 45) : 0) );
 
 			m_Stream.Write( beheld.Serial );
 
@@ -2827,7 +2826,7 @@ namespace Server.Network
 
 			if ( beholder == beheld )
 			{
-				m_Stream.Write( (byte)(sendMaxWeight ? 0x05 : Core.AOS ? 0x04 : 0x03) ); // type
+				m_Stream.Write( (byte)(sendMLExtended ? 0x05 : Core.AOS ? 0x04 : 0x03) ); // type
 
 				m_Stream.Write( beheld.Female );
 
@@ -2842,7 +2841,7 @@ namespace Server.Network
 				m_Stream.Write( (short) (Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)) );
 				m_Stream.Write( (short) (Mobile.BodyWeight + beheld.TotalWeight) );
 
-				if( sendMaxWeight )
+				if( sendMLExtended )
 				{
 					m_Stream.Write( (short)beheld.MaxWeight );
 					m_Stream.Write( (byte)(beheld.Race.RaceID + 1) );	// Would be 0x00 if it's a non-ML enabled account but...
@@ -2889,6 +2888,46 @@ namespace Server.Network
 		private void WriteAttrNorm( int current, int maximum )
 		{
 			AttributeNormalizer.WriteReverse( m_Stream, current, maximum );
+		}
+	}
+
+	public sealed class HealthbarPoison : Packet
+	{
+		public HealthbarUpdatePoison( Mobile m ) : base( 0x17 )
+		{
+			EnsureCapacity( 12 );
+
+			m_Stream.Write( (int)   m.Serial );
+			m_Stream.Write( (short) 0 );
+
+			m_Stream.Write( (short) 1 );
+
+			Poison p = m.Poison;
+
+			if ( p != null ) {
+				m_Stream.Write( (byte) p.Level + 1 );
+			} else {
+				m_Stream.Write( (byte) 0 );
+			}
+		}
+	}
+
+	public sealed class HealthbarYellow : Packet
+	{
+		public HealthbarUpdateYellow( Mobile m ) : base( 0x17 )
+		{
+			EnsureCapacity( 12 );
+
+			m_Stream.Write( (int)   m.Serial );
+			m_Stream.Write( (short) 0 );
+
+			m_Stream.Write( (short) 2 );
+
+			if ( m.Blessed || m.YellowHealthbar ) {
+				m_Stream.Write( (byte) 1 );
+			} else {
+				m_Stream.Write( (byte) 0 );
+			}
 		}
 	}
 

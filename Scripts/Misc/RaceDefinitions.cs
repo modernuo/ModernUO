@@ -48,6 +48,7 @@ namespace Server.Misc
 
 				return false;
 			}
+
 			public override int RandomHair( bool female )	//Random hair doesn't include baldness
 			{
 				switch( Utility.Random( 9 ) )
@@ -80,6 +81,7 @@ namespace Server.Misc
 
 				return false;
 			}
+
 			public override int RandomFacialHair( bool female )
 			{
 				if( female )
@@ -163,6 +165,7 @@ namespace Server.Misc
 
 				return false;
 			}
+
 			public override int RandomHair( bool female )	//Random hair doesn't include baldness
 			{
 				switch( Utility.Random( 8 ) )
@@ -182,6 +185,7 @@ namespace Server.Misc
 			{
 				return (itemID == 0);
 			}
+
 			public override int RandomFacialHair( bool female )
 			{
 				return 0;

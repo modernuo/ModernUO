@@ -201,7 +201,9 @@ namespace Server.Network {
 			set {
 				m_Version = value;
 
-				if ( value >= m_Version60142 ) {
+				if ( value >= m_Version7000 ) {
+					m_Post7000 = m_Post60142 = m_Post6017 = true;
+				} else if ( value >= m_Version60142 ) {
 					m_Post60142 = m_Post6017 = true;
 				} else if ( value >= m_Version6017 ) {
 					m_Post6017 = true;
@@ -224,9 +226,11 @@ namespace Server.Network {
 
 		private static ClientVersion m_Version6017 = new ClientVersion( "6.0.1.7" );
 		private static ClientVersion m_Version60142 = new ClientVersion( "6.0.14.2" );
+		private static ClientVersion m_Version7000 = new ClientVersion( "7.0.0.0" );
 
 		private bool m_Post6017;
 		private bool m_Post60142;
+		private bool m_Post7000;
 
 		public bool IsPost6017 {
 			get { 
@@ -237,6 +241,12 @@ namespace Server.Network {
 		public bool IsPost60142 {
 			get { 
 				return m_Post60142; 
+			}
+		}
+
+		public bool IsPost7000 {
+			get { 
+				return m_Post7000; 
 			}
 		}
 

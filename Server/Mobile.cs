@@ -403,32 +403,34 @@ namespace Server
 	[Flags]
 	public enum MobileDelta
 	{
-		None=0x00000000,
-		Name=0x00000001,
-		Flags=0x00000002,
-		Hits=0x00000004,
-		Mana=0x00000008,
-		Stam=0x00000010,
-		Stat=0x00000020,
-		Noto=0x00000040,
-		Gold=0x00000080,
-		Weight=0x00000100,
-		Direction=0x00000200,
-		Hue=0x00000400,
-		Body=0x00000800,
-		Armor=0x00001000,
-		StatCap=0x00002000,
-		GhostUpdate=0x00004000,
-		Followers=0x00008000,
-		Properties=0x00010000,
-		TithingPoints=0x00020000,
-		Resistances=0x00040000,
-		WeaponDamage=0x00080000,
-		Hair=0x00100000,
-		FacialHair=0x00200000,
-		Race=0x00400000,
+		None=           0x00000000,
+		Name=           0x00000001,
+		Flags=          0x00000002,
+		Hits=           0x00000004,
+		Mana=           0x00000008,
+		Stam=           0x00000010,
+		Stat=           0x00000020,
+		Noto=           0x00000040,
+		Gold=           0x00000080,
+		Weight=         0x00000100,
+		Direction=      0x00000200,
+		Hue=            0x00000400,
+		Body=           0x00000800,
+		Armor=          0x00001000,
+		StatCap=        0x00002000,
+		GhostUpdate=    0x00004000,
+		Followers=      0x00008000,
+		Properties=     0x00010000,
+		TithingPoints=  0x00020000,
+		Resistances=    0x00040000,
+		WeaponDamage=   0x00080000,
+		Hair=           0x00100000,
+		FacialHair=     0x00200000,
+		Race=           0x00400000,
+		HealthbarYellow=0x00800000,
+		HealthbarPoison=0x01000000,
 
-		Attributes=0x0000001C
+		Attributes=   0x0000001C
 	}
 
 	public enum AccessLevel
@@ -6415,7 +6417,7 @@ namespace Server
 				if( m_Blessed != value )
 				{
 					m_Blessed = value;
-					Delta( MobileDelta.Flags );
+					Delta( MobileDelta.HealthbarYellow );
 				}
 			}
 		}
@@ -6675,6 +6677,14 @@ namespace Server
 						if( CanSee( m ) && Utility.InUpdateRange( m_Location, m.m_Location ) )
 						{
 							ns.Send( new MobileIncoming( this, m ) );
+
+							if ( ns.IsPost7000 ) {
+								if ( m.Poisoned )
+									ns.Send( new HealthbarPoison( m ) );
+
+								if ( m.Blessed || m.YellowHealthbar )
+									ns.Send( new HealthbarYellow( m ) );
+							}
 
 							if( m.IsDeadBondedPet )
 								ns.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
@@ -7655,8 +7665,13 @@ namespace Server
 			if( m_Female )
 				flags |= 0x02;
 
-			if( m_Poison != null )
+			if( m_NetState.IsPost7000 ) {
+				if( m_Flying ) {
+					flags |= 0x04;
+				}
+			} else if( m_Poison != null ) {
 				flags |= 0x04;
+			}
 
 			if( m_Blessed || m_YellowHealthbar )
 				flags |= 0x08;
@@ -8136,7 +8151,7 @@ namespace Server
 			set
 			{
 				m_YellowHealthbar = value;
-				Delta( MobileDelta.Flags );
+				Delta( MobileDelta.HealthbarYellow );
 			}
 		}
 
@@ -8277,7 +8292,7 @@ namespace Server
 				/*if ( m_Poison != value && (m_Poison == null || value == null || m_Poison.Level < value.Level) )
 				{*/
 				m_Poison = value;
-				Delta( MobileDelta.Flags );
+				Delta( MobileDelta.HealthbarPoison );
 
 				if( m_PoisonTimer != null )
 				{
@@ -8913,6 +8928,14 @@ namespace Server
 								{
 									m.m_NetState.Send( new MobileIncoming( m, this ) );
 
+									if ( m.m_NetState.IsPost7000 ) {
+										if ( m_Poison != null )
+											m.m_NetState.Send( new HealthbarPoison( this ) );
+
+										if ( m_Blessed || m_YellowHealthbar )
+											m.m_NetState.Send( new HealthbarYellow( this ) );
+									}
+
 									if( IsDeadBondedPet )
 										m.m_NetState.Send( new BondedStatus( 0, m_Serial, 1 ) );
 
@@ -8928,6 +8951,14 @@ namespace Server
 								if( !inOldRange && CanSee( m ) )
 								{
 									ourState.Send( new MobileIncoming( this, m ) );
+
+									if ( ourState.IsPost7000 ) {
+										if ( m.Poisoned )
+											ourState.Send( new HealthbarPoison( m ) );
+
+										if ( m.Blessed || m.YellowHealthbar )
+											ourState.Send( new HealthbarYellow( m ) );
+									}
 
 									if( m.IsDeadBondedPet )
 										ourState.Send( new BondedStatus( 0, m.m_Serial, 1 ) );
@@ -8955,6 +8986,14 @@ namespace Server
 							if( (isTeleport || !Utility.InUpdateRange( oldLocation, ns.Mobile.Location )) && ns.Mobile.CanSee( this ) )
 							{
 								ns.Send( new MobileIncoming( ns.Mobile, this ) );
+
+								if ( ns.IsPost7000 ) {
+									if ( m_Poison != null )
+										ns.Send( new HealthbarPoison( this ) );
+
+									if ( m_Blessed || m_YellowHealthbar )
+										ns.Send( new HealthbarYellow( this ) );
+								}
 
 								if( IsDeadBondedPet )
 									ns.Send( new BondedStatus( 0, m_Serial, 1 ) );
@@ -9284,6 +9323,14 @@ namespace Server
 					if( state.Mobile.CanSee( this ) )
 					{
 						state.Send( new MobileIncoming( state.Mobile, this ) );
+
+						if ( state.IsPost7000 ) {
+							if ( m_Poison != null )
+								state.Send( new HealthbarPoison( this ) );
+
+							if ( m_Blessed || m_YellowHealthbar )
+								state.Send( new HealthbarYellow( this ) );
+						}
 
 						if( IsDeadBondedPet )
 							state.Send( new BondedStatus( 0, m_Serial, 1 ) );
@@ -9708,6 +9755,8 @@ namespace Server
 
 			bool sendHair = false, sendFacialHair = false, removeHair = false, removeFacialHair = false;
 
+			bool sendHealthbarPoison = false, sendHealthbarYellow = false;
+
 			if( attrs != MobileDelta.None )
 			{
 				sendAny = true;
@@ -9764,6 +9813,16 @@ namespace Server
 				sendMoving = true;
 			}
 
+			if( (delta & (MobileDelta.HealthbarPoison) != 0 )
+			{
+				sendHealthbarPoison = true;
+			}
+
+			if( (delta & (MobileDelta.HealthbarYellow) != 0 )
+			{
+				sendHealthbarYellow = true;
+			}
+
 			if( (delta & MobileDelta.Name) != 0 )
 			{
 				sendAll = false;
@@ -9815,10 +9874,24 @@ namespace Server
 				if( sendIncoming )
 					ourState.Send( new MobileIncoming( m, m ) );
 
-				if( sendMoving )
-				{
-					int noto = Notoriety.Compute( m, m );
-					ourState.Send( cache[noto] = Packet.Acquire( new MobileMoving( m, noto ) ) );
+				if ( state.IsPost7000 ) {
+					if( sendMoving )
+					{
+						int noto = Notoriety.Compute( m, m );
+						ourState.Send( cache[noto] = Packet.Acquire( new MobileMoving( m, noto ) ) );
+					}
+
+					if ( sendHealthbarPoison )
+						ourState.Send( new HealthbarPoison( m ) );
+
+					if ( sendHealthbarYellow )
+						ourState.Send( new HealthbarYellow( m ) );
+				} else {
+					if( sendMoving || sendHealthbarPoison || sendHealthbarYellow )
+					{
+						int noto = Notoriety.Compute( m, m );
+						ourState.Send( cache[noto] = Packet.Acquire( new MobileMoving( m, noto ) ) );
+					}
 				}
 
 				if( sendPublicStats || sendPrivateStats )
@@ -9876,7 +9949,7 @@ namespace Server
 			sendIncoming = sendIncoming || sendNonlocalIncoming;
 			sendHits = sendHits || sendAll;
 
-			if( m.m_Map != null && (sendRemove || sendIncoming || sendPublicStats || sendHits || sendMoving || sendOPLUpdate || sendHair || sendFacialHair) )
+			if( m.m_Map != null && (sendRemove || sendIncoming || sendPublicStats || sendHits || sendMoving || sendOPLUpdate || sendHair || sendFacialHair || sendHealthbarPoison || sendHealthbarYellow) )
 			{
 				Mobile beholder;
 
@@ -9886,6 +9959,7 @@ namespace Server
 				Packet statPacketTrue = null, statPacketFalse = null;
 				Packet deadPacket = null;
 				Packet hairPacket = null, facialhairPacket = null;
+				Packet hbpPacket = null, hbyPacket = null;
 
 				foreach( NetState state in eable )
 				{
@@ -9909,16 +9983,43 @@ namespace Server
 							}
 						}
 
-						if( sendMoving )
-						{
-							int noto = Notoriety.Compute( beholder, m );
+						if ( state.IsPost7000 ) {
+							if( sendMoving )
+							{
+								int noto = Notoriety.Compute( beholder, m );
 
-							Packet p = cache[noto];
+								Packet p = cache[noto];
 
-							if( p == null )
-								cache[noto] = p = Packet.Acquire( new MobileMoving( m, noto ) );
+								if( p == null )
+									cache[noto] = p = Packet.Acquire( new MobileMoving( m, noto ) );
 
-							state.Send( p );
+								state.Send( p );
+							}
+
+							if ( sendHealthbarPoison ) {
+								if ( hbpPacket == null )
+									hbpPacket = Packet.Acquire( new HealthbarPoison( m ) );
+								
+								state.Send( hbpPacket );
+							}
+
+							if ( sendHealthbarYellow ) {
+								if ( hbyPacket == null )
+									hbyPacket = Packet.Acquire( new HealthbarYellow( m ) );
+								state.Send( hbyPacket );
+							}
+						} else {
+							if( sendMoving || sendHealthbarPoison || sendHealthbarYellow )
+							{
+								int noto = Notoriety.Compute( beholder, m );
+
+								Packet p = cache[noto];
+
+								if( p == null )
+									cache[noto] = p = Packet.Acquire( new MobileMoving( m, noto ) );
+
+								state.Send( p );
+							}
 						}
 
 						if( sendPublicStats )
@@ -9983,11 +10084,13 @@ namespace Server
 				Packet.Release( deadPacket );
 				Packet.Release( hairPacket );
 				Packet.Release( facialhairPacket );
+				Packet.Release( hbpPacket );
+				Packet.Release( hbyPacket );
 
 				eable.Free();
 			}
 
-			if( sendMoving || sendNonlocalMoving )
+			if( sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow )
 			{
 				for( int i = 0; i < cache.Length; ++i )
 					Packet.Release( ref cache[i] );
