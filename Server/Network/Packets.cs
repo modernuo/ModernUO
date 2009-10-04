@@ -2893,7 +2893,7 @@ namespace Server.Network
 
 	public sealed class HealthbarPoison : Packet
 	{
-		public HealthbarUpdatePoison( Mobile m ) : base( 0x17 )
+		public HealthbarPoison( Mobile m ) : base( 0x17 )
 		{
 			EnsureCapacity( 12 );
 
@@ -2914,7 +2914,7 @@ namespace Server.Network
 
 	public sealed class HealthbarYellow : Packet
 	{
-		public HealthbarUpdateYellow( Mobile m ) : base( 0x17 )
+		public HealthbarYellow( Mobile m ) : base( 0x17 )
 		{
 			EnsureCapacity( 12 );
 
