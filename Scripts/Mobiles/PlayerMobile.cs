@@ -3204,10 +3204,14 @@ namespace Server.Mobiles
 				Type t = m.GetType();
 
 				if ( t == oldType || t == newType ) {
-					if ( this.NetState.IsPost7000 ) {
-						Send( new MobileMoving( m, Notoriety.Compute( this, m ) ) );
-					} else {
-						Send( new MobileMovingOld( m, Notoriety.Compute( this, m ) ) );
+					NetState ns = this.NetState;
+
+					if ( ns != null ) {
+						if ( ns.IsPost7000 ) {
+							ns.Send( new MobileMoving( m, Notoriety.Compute( this, m ) ) );
+						} else {
+							ns.Send( new MobileMovingOld( m, Notoriety.Compute( this, m ) ) );
+						}
 					}
 				}
 			}
