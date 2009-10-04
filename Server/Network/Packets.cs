@@ -2923,13 +2923,13 @@ namespace Server.Network
 
 			m_Stream.Write( (int)   m.Serial );
 			m_Stream.Write( (short) 0 );
-
+			
 			m_Stream.Write( (short) 1 );
 
 			Poison p = m.Poison;
 
 			if ( p != null ) {
-				m_Stream.Write( (byte) p.Level + 1 );
+				m_Stream.Write( (byte) (p.Level + 1) );
 			} else {
 				m_Stream.Write( (byte) 0 );
 			}
