@@ -7787,6 +7787,23 @@ namespace Server
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Flying
+		{
+			get
+			{
+				return m_Flying;
+			}
+			set
+			{
+				if( m_Flying != value )
+				{
+					m_Flying = value;
+					Delta( MobileDelta.Flags );
+				}
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Warmode
 		{
 			get
