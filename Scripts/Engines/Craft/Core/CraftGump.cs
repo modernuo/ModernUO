@@ -117,7 +117,7 @@ namespace Server.Engines.Craft
 
 				int resIndex = ( context == null ? -1 : context.LastResourceIndex );
 
-                Type resourceType = craftSystem.CraftSubRes.ResType;
+				Type resourceType = craftSystem.CraftSubRes.ResType;
 
 				if ( resIndex > -1 )
 				{

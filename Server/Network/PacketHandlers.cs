@@ -1235,8 +1235,13 @@ namespace Server.Network
 		{
 			Mobile m = state.Mobile;
 
-			state.Send( new MobileUpdate( m ) );
-			state.Send( new MobileIncoming( m, m ) );
+			if ( state.IsPost7000 ) {
+				state.Send( new MobileUpdate( m ) );
+				state.Send( new MobileIncoming( m, m ) );
+			} else {
+				state.Send( new MobileUpdateOld( m ) );
+				state.Send( new MobileIncomingOld( m, m ) );
+			}
 
 			m.SendEverything();
 
@@ -1955,26 +1960,50 @@ namespace Server.Network
 			state.Send( SupportedFeatures.Instantiate( state ) );
 
 			state.Sequence = 0;
-			state.Send( new MobileUpdate( m ) );
-			state.Send( new MobileUpdate( m ) );
 
-			m.CheckLightLevels( true );
+			if ( state.IsPost7000 ) {
+				state.Send( new MobileUpdate( m ) );
+				state.Send( new MobileUpdate( m ) );
 
-			state.Send( new MobileUpdate( m ) );
+				m.CheckLightLevels( true );
 
-			state.Send( new MobileIncoming( m, m ) );
-			//state.Send( new MobileAttributes( m ) );
-			state.Send( new MobileStatus( m, m ) );
-			state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( new MobileUpdate( m ) );
 
-			m.SendEverything();
+				state.Send( new MobileIncoming( m, m ) );
+				//state.Send( new MobileAttributes( m ) );
+				state.Send( new MobileStatus( m, m ) );
+				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
 
-			state.Send( SupportedFeatures.Instantiate( state ) );
-			state.Send( new MobileUpdate( m ) );
-			//state.Send( new MobileAttributes( m ) );
-			state.Send( new MobileStatus( m, m ) );
-			state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
-			state.Send( new MobileIncoming( m, m ) );
+				m.SendEverything();
+
+				state.Send( SupportedFeatures.Instantiate( state ) );
+				state.Send( new MobileUpdate( m ) );
+				//state.Send( new MobileAttributes( m ) );
+				state.Send( new MobileStatus( m, m ) );
+				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( new MobileIncoming( m, m ) );
+			} else {
+				state.Send( new MobileUpdateOld( m ) );
+				state.Send( new MobileUpdateOld( m ) );
+
+				m.CheckLightLevels( true );
+
+				state.Send( new MobileUpdateOld( m ) );
+
+				state.Send( new MobileIncomingOld( m, m ) );
+				//state.Send( new MobileAttributes( m ) );
+				state.Send( new MobileStatus( m, m ) );
+				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+
+				m.SendEverything();
+
+				state.Send( SupportedFeatures.Instantiate( state ) );
+				state.Send( new MobileUpdateOld( m ) );
+				//state.Send( new MobileAttributes( m ) );
+				state.Send( new MobileStatus( m, m ) );
+				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( new MobileIncomingOld( m, m ) );
+			}
 
 			state.Send( LoginComplete.Instance );
 			state.Send( new CurrentTime() );

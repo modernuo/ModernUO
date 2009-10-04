@@ -115,21 +115,28 @@ namespace Server.Commands
 
 						if ( Utility.InUpdateRange( targ, from ) )
 						{
-							if ( targ.CanSee( from ) )
-							{
-								targ.Send( new Network.MobileIncoming( targ, from ) );
+							NetState ns = targ.NetState;
 
-								if ( ObjectPropertyList.Enabled )
+							if ( ns != null ) {
+								if ( targ.CanSee( from ) )
 								{
-									targ.Send( from.OPLPacket );
+									if ( ns.IsPost7000 )
+										ns.Send( new MobileIncoming( targ, from ) );
+									else
+										ns.Send( new MobileIncomingOld( targ, from ) );
 
-									foreach ( Item item in from.Items )
-										targ.Send( item.OPLPacket );
+									if ( ObjectPropertyList.Enabled )
+									{
+										ns.Send( from.OPLPacket );
+
+										foreach ( Item item in from.Items )
+											ns.Send( item.OPLPacket );
+									}
 								}
-							}
-							else
-							{
-								targ.Send( from.RemovePacket );
+								else
+								{
+									ns.Send( from.RemovePacket );
+								}
 							}
 						}
 					}

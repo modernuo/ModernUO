@@ -1959,7 +1959,7 @@ namespace Server.Network
 
 	public sealed class MobileMoving : Packet
 	{
-		public MobileMoving( Mobile m, int noto/*Mobile beholder, Mobile beheld*/ ) : base( 0x77, 17 )
+		public MobileMoving( Mobile m, int noto ) : base( 0x77, 17 )
 		{
 			Point3D loc = m.Location;
 
@@ -1976,7 +1976,31 @@ namespace Server.Network
 			m_Stream.Write( (byte) m.Direction );
 			m_Stream.Write( (short) hue );
 			m_Stream.Write( (byte) m.GetPacketFlags() );
-			m_Stream.Write( (byte) noto );//Notoriety.Compute( beholder, beheld ) );
+			m_Stream.Write( (byte) noto );
+		}
+	}
+
+	// Pre-7.0.0.0 Mobile Moving
+	public sealed class MobileMovingOld : Packet
+	{
+		public MobileMovingOld( Mobile m, int noto ) : base( 0x77, 17 )
+		{
+			Point3D loc = m.Location;
+
+			int hue = m.Hue;
+
+			if ( m.SolidHueOverride >= 0 )
+				hue = m.SolidHueOverride;
+
+			m_Stream.Write( (int) m.Serial );
+			m_Stream.Write( (short) m.Body );
+			m_Stream.Write( (short) loc.m_X );
+			m_Stream.Write( (short) loc.m_Y );
+			m_Stream.Write( (sbyte) loc.m_Z );
+			m_Stream.Write( (byte) m.Direction );
+			m_Stream.Write( (short) hue );
+			m_Stream.Write( (byte) m.GetOldPacketFlags() );
+			m_Stream.Write( (byte) noto );
 		}
 	}
 
@@ -2953,6 +2977,29 @@ namespace Server.Network
 		}
 	}
 
+	// Pre-7.0.0.0 Mobile Update
+	public sealed class MobileUpdateOld : Packet
+	{
+		public MobileUpdateOld( Mobile m ) : base( 0x20, 19 )
+		{
+			int hue = m.Hue;
+
+			if ( m.SolidHueOverride >= 0 )
+				hue = m.SolidHueOverride;
+
+			m_Stream.Write( (int) m.Serial );
+			m_Stream.Write( (short) m.Body );
+			m_Stream.Write( (byte) 0 );
+			m_Stream.Write( (short) hue );
+			m_Stream.Write( (byte) m.GetOldPacketFlags() );
+			m_Stream.Write( (short) m.X );
+			m_Stream.Write( (short) m.Y );
+			m_Stream.Write( (short) 0 );
+			m_Stream.Write( (byte) m.Direction );
+			m_Stream.Write( (sbyte) m.Z );
+		}
+	}
+
 	public sealed class MobileIncoming : Packet
 	{
 		private static int[] m_DupedLayers = new int[256];
@@ -2988,6 +3035,130 @@ namespace Server.Network
 			m_Stream.Write( (byte) beheld.Direction );
 			m_Stream.Write( (short) hue );
 			m_Stream.Write( (byte) beheld.GetPacketFlags() );
+			m_Stream.Write( (byte) Notoriety.Compute( beholder, beheld ) );
+
+			for ( int i = 0; i < eq.Count; ++i )
+			{
+				Item item = eq[i];
+
+				byte layer = (byte) item.Layer;
+
+				if ( !item.Deleted && beholder.CanSee( item ) && m_DupedLayers[layer] != m_Version )
+				{
+					m_DupedLayers[layer] = m_Version;
+
+					hue = item.Hue;
+
+					if ( beheld.SolidHueOverride >= 0 )
+						hue = beheld.SolidHueOverride;
+
+					int itemID = item.ItemID & 0x3FFF;
+					bool writeHue = ( hue != 0 );
+
+					if ( writeHue )
+						itemID |= 0x8000;
+
+					m_Stream.Write( (int) item.Serial );
+					m_Stream.Write( (short) itemID );
+					m_Stream.Write( (byte) layer );
+
+					if ( writeHue )
+						m_Stream.Write( (short) hue );
+				}
+			}
+
+			if( beheld.HairItemID > 0 )
+			{
+				if( m_DupedLayers[(int)Layer.Hair] != m_Version )
+				{
+					m_DupedLayers[(int)Layer.Hair] = m_Version;
+					hue = beheld.HairHue;
+
+					if( beheld.SolidHueOverride >= 0 )
+						hue = beheld.SolidHueOverride;
+
+					int itemID = beheld.HairItemID & 0x3FFF;
+
+					bool writeHue = (hue != 0);
+
+					if( writeHue )
+						itemID |= 0x8000;
+
+					m_Stream.Write( (int)HairInfo.FakeSerial( beheld ) );
+					m_Stream.Write( (short)itemID );
+					m_Stream.Write( (byte)Layer.Hair );
+
+					if( writeHue )
+						m_Stream.Write( (short)hue );
+				}
+			}
+
+			if( beheld.FacialHairItemID > 0 )
+			{
+				if( m_DupedLayers[(int)Layer.FacialHair] != m_Version )
+				{
+					m_DupedLayers[(int)Layer.FacialHair] = m_Version;
+					hue = beheld.FacialHairHue;
+
+					if( beheld.SolidHueOverride >= 0 )
+						hue = beheld.SolidHueOverride;
+
+					int itemID = beheld.FacialHairItemID & 0x3FFF;
+
+					bool writeHue = (hue != 0);
+
+					if( writeHue )
+						itemID |= 0x8000;
+
+					m_Stream.Write( (int)FacialHairInfo.FakeSerial( beheld ) );
+					m_Stream.Write( (short)itemID );
+					m_Stream.Write( (byte)Layer.FacialHair );
+
+					if( writeHue )
+						m_Stream.Write( (short)hue );
+				}
+			}
+
+			m_Stream.Write( (int) 0 ); // terminate
+		}
+	}
+
+	// Pre-7.0.0.0 Mobile Incoming
+	public sealed class MobileIncomingOld : Packet
+	{
+		private static int[] m_DupedLayers = new int[256];
+		private static int m_Version;
+
+		public Mobile m_Beheld;
+
+		public MobileIncomingOld( Mobile beholder, Mobile beheld ) : base( 0x78 )
+		{
+			m_Beheld = beheld;
+			++m_Version;
+
+			List<Item> eq = beheld.Items;
+			int count = eq.Count;
+
+			if( beheld.HairItemID > 0 )
+				count++;
+			if( beheld.FacialHairItemID > 0 )
+				count++;
+
+			this.EnsureCapacity( 23 + (count * 9) );
+
+			int hue = beheld.Hue;
+
+			if ( beheld.SolidHueOverride >= 0 )
+				hue = beheld.SolidHueOverride;
+
+			m_Stream.Write( (int) beheld.Serial );
+			m_Stream.Write( (short) beheld.Body );
+			m_Stream.Write( (short) beheld.X );
+			m_Stream.Write( (short) beheld.Y );
+			m_Stream.Write( (sbyte) beheld.Z );
+			m_Stream.Write( (byte) beheld.Direction );
+			m_Stream.Write( (short) hue );
+			m_Stream.Write( (byte) beheld.GetOldPacketFlags() );
 			m_Stream.Write( (byte) Notoriety.Compute( beholder, beheld ) );
 
 			for ( int i = 0; i < eq.Count; ++i )

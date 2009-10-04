@@ -3203,8 +3203,13 @@ namespace Server.Mobiles
 			{
 				Type t = m.GetType();
 
-				if ( t == oldType || t == newType )
-					Send( new MobileMoving( m, Notoriety.Compute( this, m ) ) );
+				if ( t == oldType || t == newType ) {
+					if ( this.NetState.IsPost7000 ) {
+						Send( new MobileMoving( m, Notoriety.Compute( this, m ) ) );
+					} else {
+						Send( new MobileMovingOld( m, Notoriety.Compute( this, m ) ) );
+					}
+				}
 			}
 		}
 		#endregion
