@@ -703,7 +703,7 @@ namespace Server
 		private int m_SpeechHue, m_EmoteHue, m_WhisperHue, m_YellHue;
 		private string m_Language;
 		private NetState m_NetState;
-		private bool m_Female, m_Warmode, m_Hidden, m_Blessed;
+		private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
 		private int m_StatCap;
 		private int m_Str, m_Dex, m_Int;
 		private int m_Hits, m_Stam, m_Mana;
@@ -9813,12 +9813,12 @@ namespace Server
 				sendMoving = true;
 			}
 
-			if( (delta & (MobileDelta.HealthbarPoison) != 0 )
+			if( (delta & MobileDelta.HealthbarPoison) != 0 )
 			{
 				sendHealthbarPoison = true;
 			}
 
-			if( (delta & (MobileDelta.HealthbarYellow) != 0 )
+			if( (delta & MobileDelta.HealthbarYellow) != 0 )
 			{
 				sendHealthbarYellow = true;
 			}
