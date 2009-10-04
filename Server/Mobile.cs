@@ -9874,7 +9874,7 @@ namespace Server
 				if( sendIncoming )
 					ourState.Send( new MobileIncoming( m, m ) );
 
-				if ( state.IsPost7000 ) {
+				if ( ourState.IsPost7000 ) {
 					if( sendMoving )
 					{
 						int noto = Notoriety.Compute( m, m );
