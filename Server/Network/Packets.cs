@@ -2922,7 +2922,7 @@ namespace Server.Network
 			EnsureCapacity( 12 );
 
 			m_Stream.Write( (int)   m.Serial );
-			m_Stream.Write( (short) 0 );
+			m_Stream.Write( (short) 1 );
 			
 			m_Stream.Write( (short) 1 );
 
@@ -2943,7 +2943,7 @@ namespace Server.Network
 			EnsureCapacity( 12 );
 
 			m_Stream.Write( (int)   m.Serial );
-			m_Stream.Write( (short) 0 );
+			m_Stream.Write( (short) 1 );
 
 			m_Stream.Write( (short) 2 );
 
