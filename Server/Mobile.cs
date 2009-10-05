@@ -8902,7 +8902,7 @@ namespace Server
 					if ( ns.IsPost7000 )
 						ns.Send( new MobileUpdate( this ) );
 					else
-						ns.Send( new MobileUpdate( this ) );
+						ns.Send( new MobileUpdateOld( this ) );
 
 					ClearFastwalkStack();
 				}
@@ -10160,7 +10160,7 @@ namespace Server
 								Packet p = cache[1][noto];
 
 								if( p == null )
-									cache[1][noto] = p = Packet.Acquire( new MobileMoving( m, noto ) );
+									cache[1][noto] = p = Packet.Acquire( new MobileMovingOld( m, noto ) );
 
 								state.Send( p );
 							}
