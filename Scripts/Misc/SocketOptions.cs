@@ -25,7 +25,6 @@ namespace Server
 		public static void Initialize()
 		{
 			SendQueue.CoalesceBufferSize = CoalesceBufferSize;
-			SocketPool.InitialCapacity = PooledSockets;
 
 			EventSink.SocketConnect += new SocketConnectEventHandler( EventSink_SocketConnect );
 

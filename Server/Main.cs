@@ -242,9 +242,6 @@ namespace Server
 					{
 					}
 
-					if ( SocketPool.Created )
-						SocketPool.Destroy();
-
 					if ( m_Service ) {
 						Console.WriteLine( "This exception is fatal." );
 					} else {
@@ -341,9 +338,6 @@ namespace Server
 
 			if( !m_Crashed )
 				EventSink.InvokeShutdown( new ShutdownEventArgs() );
-
-			if( SocketPool.Created )
-				SocketPool.Destroy();
 
 			Timer.TimerThread.Set();
 
@@ -454,8 +448,6 @@ namespace Server
 			World.Load();
 
 			ScriptCompiler.Invoke( "Initialize" );
-
-			SocketPool.Create();
 
 			MessagePump ms = m_MessagePump = new MessagePump();
 

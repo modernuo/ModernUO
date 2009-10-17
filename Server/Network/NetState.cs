@@ -845,8 +845,6 @@ namespace Server.Network {
 
 			try {
 				m_Socket.Close();
-
-				SocketPool.ReleaseSocket( m_Socket );
 			} catch ( SocketException ex ) {
 				TraceException( ex );
 			}

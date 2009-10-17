@@ -57,7 +57,7 @@ namespace Server.Network
 
 		private Socket Bind( IPEndPoint ipep )
 		{
-			Socket s = SocketPool.AcquireSocket();
+			Socket s = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp )
 
 			try
 			{
@@ -98,7 +98,7 @@ namespace Server.Network
 					Console.WriteLine( "Listening: {0}:{1}", ipep.Address, ipep.Port );
 				}
 
-				IAsyncResult res = s.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, s );
+				IAsyncResult res = s.BeginAccept( m_OnAccept, s );
 
 				return s;
 			}
@@ -145,7 +145,7 @@ namespace Server.Network
 			}
 
 			try {
-				listener.BeginAccept( SocketPool.AcquireSocket(), 0, m_OnAccept, listener );
+				listener.BeginAccept( m_OnAccept, listener );
 			} catch ( SocketException ex ) {
 				NetState.TraceException( ex );
 			} catch ( ObjectDisposedException ) {
@@ -183,8 +183,6 @@ namespace Server.Network
 
 			try {
 				socket.Close();
-
-				SocketPool.ReleaseSocket( socket );
 			} catch ( SocketException ex ) {
 				NetState.TraceException( ex );
 			}
