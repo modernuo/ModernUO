@@ -152,12 +152,12 @@ namespace Server.Network
 
 				if ( !ns.Seeded )
 				{
-                    if ( buffer.GetPacketID() == 0xEF )
-                    {
-                        // new packet in client 6.0.5.0 replaces the traditional seed method with a seed packet
-                        // 0xEF = 239 = multicast IP, so this should never appear in a normal seed.  So this is backwards compatible with older clients.
-                        ns.Seeded = true;
-                    }
+					if ( buffer.GetPacketID() == 0xEF )
+					{
+						// new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
+						// 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
+						ns.Seeded =	true;
+					}
 					else if ( buffer.Length >= 4 )
 					{
 						buffer.Dequeue( m_Peek, 0, 4 );
