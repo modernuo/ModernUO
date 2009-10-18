@@ -2713,9 +2713,9 @@ namespace Server.Network
 		}
 	}
 
-	public sealed class MobileAnimation : Packet
+	public sealed class OldMobileAnimation : Packet
 	{
-		public MobileAnimation( Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay ) : base( 0x6E, 14 )
+		public OldMobileAnimation( Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay ) : base( 0x6E, 14 )
 		{
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.Write( (short) action );
@@ -2723,6 +2723,17 @@ namespace Server.Network
 			m_Stream.Write( (short) repeatCount );
 			m_Stream.Write( (bool) !forward ); // protocol has really "reverse" but I find this more intuitive
 			m_Stream.Write( (bool) repeat );
+			m_Stream.Write( (byte) delay );
+		}
+	}
+	
+	public sealed class MobileAnimation : Packet
+	{
+		public MobileAnimation( Mobile m, int action, int frameCount, int delay ) : base( 0xE2, 10 )
+		{
+			m_Stream.Write( (int) m.Serial );
+			m_Stream.Write( (short) action );
+			m_Stream.Write( (short) frameCount );
 			m_Stream.Write( (byte) delay );
 		}
 	}

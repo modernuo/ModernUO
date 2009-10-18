@@ -4278,7 +4278,7 @@ namespace Server
 
 								foreach( NetState ns in eable )
 								{
-									if( ns.Mobile != from && ns.Mobile.CanSee( from ) )
+									if( !ns.IsPost7000 && ns.Mobile != from && ns.Mobile.CanSee( from ) )
 									{
 										if( p == null )
 										{
@@ -4413,7 +4413,7 @@ namespace Server
 
 					foreach( NetState ns in eable )
 					{
-						if( ns.Mobile != this && ns.Mobile.CanSee( this ) )
+						if( !ns.IsPost7000 && ns.Mobile != this && ns.Mobile.CanSee( this ) )
 						{
 							if( p == null )
 							{
@@ -6162,6 +6162,7 @@ namespace Server
 				ProcessDelta();
 
 				Packet p = null;
+				Packet pOld = null;
 
 				IPooledEnumerable eable = map.GetClientsInRange( m_Location );
 
@@ -6171,14 +6172,22 @@ namespace Server
 					{
 						state.Mobile.ProcessDelta();
 
-						if( p == null )
-							p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
+						if ( state.IsPost7000 ) {
+							if( p == null )
+								p = Packet.Acquire( new MobileAnimation( this, action, frameCount, delay ) );
 
-						state.Send( p );
+							state.Send( p );
+						} else {
+							if( pOld == null )
+								pOld = Packet.Acquire( new OldMobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
+
+							state.Send( pOld );
+						}
 					}
 				}
 
 				Packet.Release( p );
+				Packet.Release( pOld );
 
 				eable.Free();
 			}
