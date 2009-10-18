@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
+using Server.Mobiles;
 
 namespace Server.Spells.Fourth
 {
@@ -46,15 +47,28 @@ namespace Server.Spells.Fourth
 				List<Mobile> targets = new List<Mobile>();
 
 				Map map = Caster.Map;
+				Mobile m_directtarget = p as Mobile;
 
 				if ( map != null )
 				{
+					//you can target directly someone/something and become criminal if it's a criminal action
+					 if ( m_directtarget != null )
+						targets.Add ( m_directtarget );
+
 					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), 2 );
 
 					foreach ( Mobile m in eable )
 					{
-						// Archcure doesn't cure aggressors or victims 
-						if ( Caster.CanBeBeneficial( m, false ) && (!Core.AOS || !IsAggressor( m ) && !IsAggressed( m )) )
+						// Archcure area effect won't cure aggressors or victims, nor murderers, criminals or monsters 
+						// plus Arch Cure Area will NEVER work on summons/pets if you are in Felucca facet
+						// red players can cure only themselves and guildies with arch cure area.
+
+						if ( map.Rules == MapRules.FeluccaRules )
+							{
+								if ( Caster.CanBeBeneficial( m, false ) && ( !Core.AOS || !IsAggressor( m ) && !IsAggressed( m ) && (( IsInnocentTo ( Caster, m ) && IsInnocentTo ( m, Caster ) ) || ( IsAllyTo ( Caster, m ) )) && m != m_directtarget && m is PlayerMobile || m == Caster && m != m_directtarget ))
+									targets.Add( m );
+							}
+						else if ( Caster.CanBeBeneficial( m, false ) && ( !Core.AOS || !IsAggressor( m ) && !IsAggressed( m ) && (( IsInnocentTo ( Caster, m ) && IsInnocentTo ( m, Caster ) ) || ( IsAllyTo ( Caster, m ) )) && m != m_directtarget || m == Caster && m != m_directtarget ))
 							targets.Add( m );
 					}
 
@@ -117,6 +131,16 @@ namespace Server.Spells.Fourth
 			}
 
 			return false;
+		}
+
+		private static bool IsInnocentTo( Mobile from, Mobile to )
+		{
+			return ( Notoriety.Compute( from, (Mobile)to ) == Notoriety.Innocent );
+		}
+		
+		private static bool IsAllyTo( Mobile from, Mobile to )
+		{
+			return ( Notoriety.Compute( from, (Mobile)to ) == Notoriety.Ally );
 		}
 
 		private class InternalTarget : Target

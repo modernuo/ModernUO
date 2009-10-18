@@ -102,10 +102,26 @@ namespace Server.Items
 						from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
 					}
 				}
+				else if ( targeted is PlagueBeastInnard )
+				{
+					if ( ((PlagueBeastInnard) targeted).OnBandage( from ) )
+						m_Bandage.Consume();
+				}
 				else
 				{
 					from.SendLocalizedMessage( 500970 ); // Bandages can not be used on that.
 				}
+			}
+
+			protected override void OnNonlocalTarget( Mobile from, object targeted )
+			{
+				if ( targeted is PlagueBeastInnard )
+				{
+					if ( ((PlagueBeastInnard) targeted).OnBandage( from ) )
+						m_Bandage.Consume();
+				}
+				else
+					base.OnNonlocalTarget( from, targeted );
 			}
 		}
 	}

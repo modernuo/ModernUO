@@ -41,7 +41,7 @@ namespace Server.Engines.CannedEvil
 			{
 				new ChampionSpawnInfo( "Abyss", typeof( Semidar ), new string[]{ "Foe", "Assassin", "Conqueror" }, new Type[][]	// Abyss
 				{																											// Abyss
-					new Type[]{ typeof( StrongMongbat ), typeof( Imp ) },													// Level 1
+					new Type[]{ typeof( GreaterMongbat ), typeof( Imp ) },													// Level 1
 					new Type[]{ typeof( Gargoyle ), typeof( Harpy ) },														// Level 2
 					new Type[]{ typeof( FireGargoyle ), typeof( StoneGargoyle ) },											// Level 3
 					new Type[]{ typeof( Daemon ), typeof( Succubus ) }														// Level 4

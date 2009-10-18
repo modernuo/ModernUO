@@ -40,9 +40,12 @@ namespace Server.Mobiles
 
 			VirtualArmor = 30;
 			PackArmor( 1, 5 );
+			if ( Utility.RandomDouble() < 0.80 )
+				PackItem( new PlagueBeastGland() );
 
 			if ( Core.ML && Utility.RandomDouble() < .33 )
 				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(4) );
+
 		}
 
 		public override void GenerateLoot()

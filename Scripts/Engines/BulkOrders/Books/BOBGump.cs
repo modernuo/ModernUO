@@ -139,6 +139,66 @@ namespace Server.Engines.BulkOrders
 			return count;
 		}
 
+		public int GetPageForIndex(int index, int sizeDropped)
+		{
+			if (index <= 0)
+				return 0;
+
+			int count = 0;
+			int add = 0;
+			int page = 0;
+			ArrayList list = m_List;
+			int i;
+			object obj;
+
+			for (i=0; (i < index) && (i < list.Count); i++)
+			{
+				obj = list[i];
+				if (CheckFilter(obj))
+				{
+					if (obj is BOBLargeEntry)
+						add = ((BOBLargeEntry)obj).Entries.Length;
+					else
+						add = 1;
+					count += add;
+					if (count > 10)
+					{
+						page++;
+						count = add;
+					}
+				}
+			}
+			/* now we are on the page of the bod preceeding the dropped one.
+			 * next step: checking whether we have to remain where we are.
+			 * The counter i needs to be incremented as the bod to this very moment
+			 * has not yet been removed from m_List */
+			i++;
+
+			/* if, for instance, a big bod of size 6 has been removed, smaller bods
+			 * might fall back into this page. Depending on their sizes, the page eeds
+			 * to be adjusted accordingly. This is done now.
+			 */
+			if (count + sizeDropped > 10)
+			{
+				while ((i < list.Count) && (count <= 10))
+				{
+					obj = list[i];
+					if (CheckFilter(obj))
+					{
+						if (obj is BOBLargeEntry)
+							count += ((BOBLargeEntry)obj).Entries.Length;
+						else
+							count += 1;
+					}
+					i++;
+				}
+				if (count > 10)
+					page++;
+			}
+			return page;
+		}
+
+
 		public object GetMaterialName( BulkMaterialType mat, BODType type, Type itemType )
 		{
 			switch ( type )
@@ -256,16 +316,35 @@ namespace Server.Engines.BulkOrders
 
 							if ( item != null )
 							{
-								m_From.AddToBackpack( item );
-								m_From.SendLocalizedMessage( 1045152 ); // The bulk order deed has been placed in your backpack.
-
-								m_Book.Entries.Remove( obj );
-								m_Book.InvalidateProperties();
-
-								if ( m_Book.Entries.Count > 0 )
-									m_From.SendGump( new BOBGump( m_From, m_Book, 0, null ) );
+								Container pack = m_From.Backpack;
+								if ((pack == null) || ((pack != null) && (!pack.CheckHold(m_From, item, true, true, 0, item.PileWeight + item.TotalWeight))))
+								{
+									m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
+									m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
+								}
 								else
-									m_From.SendLocalizedMessage( 1062381 ); // The book is empty.
+								{
+									if (m_Book.IsChildOf(m_From.Backpack))
+									{
+										int sizeOfDroppedBod;
+										if (obj is BOBLargeEntry)
+											sizeOfDroppedBod = ((BOBLargeEntry)obj).Entries.Length;
+										else
+											sizeOfDroppedBod = 1;
+
+										m_From.AddToBackpack(item);
+										m_From.SendLocalizedMessage(1045152); // The bulk order deed has been placed in your backpack.
+										m_Book.Entries.Remove(obj);
+										m_Book.InvalidateProperties();
+										if (m_Book.Entries.Count > 0)
+										{
+											m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+											m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
+										}
+										else
+											m_From.SendLocalizedMessage(1062381); // The book is empty.
+									}
+								}
 							}
 							else
 							{
@@ -283,26 +362,37 @@ namespace Server.Engines.BulkOrders
 						else if ( m_Book.RootParent is PlayerVendor )
 						{
 							PlayerVendor pv = (PlayerVendor)m_Book.RootParent;
-
 							VendorItem vi = pv.GetVendorItem( m_Book );
 
-							int price = 0;
-
-							if ( vi != null && !vi.IsForSale )
+							if (vi != null && !vi.IsForSale)
 							{
-								if ( obj is BOBLargeEntry )
+								int sizeOfDroppedBod;
+								int price = 0;
+								if (obj is BOBLargeEntry)
+								{
 									price = ((BOBLargeEntry)obj).Price;
-								else if ( obj is BOBSmallEntry )
+									sizeOfDroppedBod = ((BOBLargeEntry)obj).Entries.Length;
+								}
+								else
+								{
 									price = ((BOBSmallEntry)obj).Price;
+									sizeOfDroppedBod = 1;
+								}
+								if (price == 0)
+									m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+								else
+								{
+									if (m_Book.Entries.Count > 0)
+									{
+										m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+										m_From.SendGump(new BODBuyGump(m_From, m_Book, obj, m_Page, price));
+									}
+									else
+										m_From.SendLocalizedMessage(1062381); // The book is emptz
+								}
 							}
-
-							if ( price == 0 )
-								m_From.SendLocalizedMessage( 1062382 ); // The deed selected is not available.
-							else
-								m_From.SendGump( new BODBuyGump( m_From, m_Book, obj, price ) );
 						}
 					}
-
 					break;
 				}
 			}

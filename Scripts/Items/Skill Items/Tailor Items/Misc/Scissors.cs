@@ -48,7 +48,7 @@ namespace Server.Items
 		{
 			private Scissors m_Item;
 
-			public InternalTarget( Scissors item ) : base( 1, false, TargetFlags.None )
+			public InternalTarget( Scissors item ) : base( 2, false, TargetFlags.None )
 			{
 				m_Item = item;
 			}
@@ -71,8 +71,15 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1063305 ); // Didn't your parents ever tell you not to run with scissors in your hand?!
 				}
-				else if ( targeted is Item && !((Item)targeted).Movable ) {
-					return;
+				else if( targeted is Item && !((Item)targeted).Movable ) 
+				{
+					if( targeted is IScissorable && ( targeted is PlagueBeastInnard || targeted is PlagueBeastMutationCore ) )
+					{
+						IScissorable obj = (IScissorable) targeted;
+
+						if( obj.Scissor( from, m_Item ) )
+							from.PlaySound( 0x248 );
+					}
 				}
 				else if( targeted is IScissorable )
 				{
@@ -85,6 +92,19 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
 				}
+			}
+
+			protected override void OnNonlocalTarget( Mobile from, object targeted )
+			{
+				if ( targeted is IScissorable && ( targeted is PlagueBeastInnard || targeted is PlagueBeastMutationCore ) )
+				{
+					IScissorable obj = (IScissorable) targeted;
+
+					if ( obj.Scissor( from, m_Item ) )
+						from.PlaySound( 0x248 );
+				}
+				else
+					base.OnNonlocalTarget( from, targeted );
 			}
 		}
 	}

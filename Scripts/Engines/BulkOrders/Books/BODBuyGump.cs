@@ -12,6 +12,7 @@ namespace Server.Engines.BulkOrders
 		private BulkOrderBook m_Book;
 		private object m_Object;
 		private int m_Price;
+		private int m_Page;
 
 		public override void OnResponse( Server.Network.NetState sender, RelayInfo info )
 		{
@@ -60,27 +61,31 @@ namespace Server.Engines.BulkOrders
 
 							Container pack = m_From.Backpack;
 
-							if ( (pack != null && pack.ConsumeTotal( typeof( Gold ), price )) || Banker.Withdraw( m_From, price ) )
+							if ( (pack == null) || ((pack != null) && (!pack.CheckHold(m_From, item, true, true, 0, item.PileWeight + item.TotalWeight)) ) )
 							{
-								m_Book.Entries.Remove( m_Object );
-								m_Book.InvalidateProperties();
-
-								pv.HoldGold += price;
-
-								if ( m_From.AddToBackpack( item ) )
-									m_From.SendLocalizedMessage( 1045152 ); // The bulk order deed has been placed in your backpack.
-								else
-									pv.SayTo( m_From, 503204 ); // You do not have room in your backpack for this.
-
-								if ( m_Book.Entries.Count > 0 )
-									m_From.SendGump( new BOBGump( m_From, m_Book ) );
-								else
-									m_From.SendLocalizedMessage( 1062381 ); // The book is empty.
+								pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
+								m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
 							}
 							else
 							{
-								pv.SayTo( m_From, 503205 ); // You cannot afford this item.
-								item.Delete();
+								if ((pack != null && pack.ConsumeTotal( typeof( Gold ), price )) || Banker.Withdraw( m_From, price ) )
+								{
+									m_Book.Entries.Remove( m_Object );
+									m_Book.InvalidateProperties();
+									pv.HoldGold += price;
+									m_From.AddToBackpack( item );
+									m_From.SendLocalizedMessage( 1045152 ); // The bulk order deed has been placed in your backpack.
+
+									if ( m_Book.Entries.Count > 0 )
+										m_From.SendGump( new BOBGump( m_From, m_Book, m_Page, null ) );
+									else
+										m_From.SendLocalizedMessage( 1062381 ); // The book is empty.
+								}
+								else
+								{
+									pv.SayTo( m_From, 503205 ); // You cannot afford this item.
+									item.Delete();
+								}
 							}
 						}
 					}
@@ -99,12 +104,13 @@ namespace Server.Engines.BulkOrders
 			}
 		}
 
-		public BODBuyGump( PlayerMobile from, BulkOrderBook book, object obj, int price ) : base( 100, 200 )
+		public BODBuyGump( PlayerMobile from, BulkOrderBook book, object obj, int page, int price ) : base( 100, 200 )
 		{
 			m_From = from;
 			m_Book = book;
 			m_Object = obj;
 			m_Price = price;
+			m_Page = page;
 
 			AddPage( 0 );
 

@@ -1,4 +1,5 @@
 using System;
+using Server.Mobiles;
 using Server.Targeting;
 using Server.Network;
 
@@ -69,10 +70,16 @@ namespace Server.Spells.Fifth
 						duration *= 0.75;
 				}
 
-					m.Paralyze( TimeSpan.FromSeconds( duration ) );
+				if ( m is PlagueBeastLord )
+				{
+					( (PlagueBeastLord) m ).OnParalyzed( Caster );
+					duration = 120;
+				}
+
+				m.Paralyze( TimeSpan.FromSeconds( duration ) );
 	
-					m.PlaySound( 0x204 );
-					m.FixedEffect( 0x376A, 6, 1 );
+				m.PlaySound( 0x204 );
+				m.FixedEffect( 0x376A, 6, 1 );
 			}
 
 			FinishSequence();

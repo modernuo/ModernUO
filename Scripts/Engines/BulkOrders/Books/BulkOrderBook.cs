@@ -106,6 +106,7 @@ namespace Server.Engines.BulkOrders
 					m_Entries.Add( new BOBLargeEntry( (LargeBOD)dropped ) );
 					InvalidateProperties();
 
+					from.PlaySound(0x42);
 					from.SendLocalizedMessage( 1062386 ); // Deed added to book.
 
 					if ( from is PlayerMobile )
@@ -132,6 +133,7 @@ namespace Server.Engines.BulkOrders
 					m_Entries.Add( new BOBSmallEntry( (SmallBOD)dropped ) );
 					InvalidateProperties();
 
+					from.PlaySound(0x42);
 					from.SendLocalizedMessage( 1062386 ); // Deed added to book.
 
 					if ( from is PlayerMobile )
