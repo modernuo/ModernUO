@@ -14,32 +14,69 @@ using Server.Network;
 
 namespace Server.Items
 {
+	public interface IDevourable
+	{
+		bool Devour( Corpse corpse );
+	}
+
+	[Flags]
+	public enum CorpseFlag
+	{
+		None					= 0x00000000,
+
+		/// <summary>
+		/// Has this corpse been carved?
+		/// </summary>
+		Carved					= 0x00000001,
+
+		/// <summary>
+		/// If true, this corpse will not turn into bones
+		/// </summary>
+		NoBones					= 0x00000002,
+
+		/// <summary>
+		/// If true, the corpse has turned into bones
+		/// </summary>
+		IsBones					= 0x00000004,
+
+		/// <summary>
+		/// Has this corpse yet been visited by a taxidermist?
+		/// </summary>
+		VisitedByTaxidermist	= 0x00000008,
+
+		/// <summary>
+		/// Has this corpse yet been used to channel spiritual energy? (AOS Spirit Speak)
+		/// </summary>
+		Channeled				= 0x00000010,
+
+		/// <summary>
+		/// Was the owner criminal when he died?
+		/// </summary>
+		Criminal				= 0x00000020,
+	}
+
 	public class Corpse : Container, ICarvable
 	{
-		private Mobile		m_Owner;				// Whos corpse is this?
-		private Mobile		m_Killer;				// Who killed the owner?
-		private bool		m_Carved;				// Has this corpse been carved?
+		private Mobile				m_Owner;				// Whos corpse is this?
+		private Mobile				m_Killer;				// Who killed the owner?
+		private CorpseFlag			m_Flags;				// @see CorpseFlag
 
-		private List<Mobile>	m_Looters;				// Who's looted this corpse?
-		private List<Item>		m_EquipItems;			// List of items equiped when the owner died. Ingame, these items display /on/ the corpse, not just inside
-		private List<Mobile>	m_Aggressors;			// Anyone from this list will be able to loot this corpse; we attacked them, or they attacked us when we were freely attackable
+		private List<Mobile>		m_Looters;				// Who's looted this corpse?
+		private List<Item>			m_EquipItems;			// List of items equiped when the owner died. Ingame, these items display /on/ the corpse, not just inside
+		private List<Mobile>		m_Aggressors;			// Anyone from this list will be able to loot this corpse; we attacked them, or they attacked us when we were freely attackable
 
-		private string		m_CorpseName;			// Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
-		private bool		m_NoBones;				// If true, this corpse will not turn into bones
-
-		private bool		m_VisitedByTaxidermist;	// Has this corpse yet been visited by a taxidermist?
-		private bool		m_Channeled;			// Has this corpse yet been used to channel spiritual energy? (AOS Spirit Speak)
+		private string				m_CorpseName;			// Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
+		private IDevourable			m_Devourer;				// The creature that devoured this corpse
 
 		// For notoriety:
-		private AccessLevel	m_AccessLevel;			// Which AccessLevel the owner had when he died
-		private Guild		m_Guild;				// Which Guild the owner was in when he died
-		private int			m_Kills;				// How many kills the owner had when he died
-		private bool		m_Criminal;				// Was the owner criminal when he died?
+		private AccessLevel			m_AccessLevel;			// Which AccessLevel the owner had when he died
+		private Guild				m_Guild;				// Which Guild the owner was in when he died
+		private int					m_Kills;				// How many kills the owner had when he died
 
-		private DateTime	m_TimeOfDeath;			// What time was this corpse created?
+		private DateTime			m_TimeOfDeath;			// What time was this corpse created?
 
-		private HairInfo m_Hair;					// This contains the hair of the owner
-		private FacialHairInfo m_FacialHair;		// This contains the facial hair of the owner
+		private HairInfo			m_Hair;					// This contains the hair of the owner
+		private FacialHairInfo		m_FacialHair;			// This contains the facial hair of the owner
 
 		public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes( 2.0 );
 
@@ -77,24 +114,36 @@ namespace Server.Items
 		public FacialHairInfo FacialHair { get { return m_FacialHair; } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IsBones
+		{
+			get { return GetFlag( CorpseFlag.IsBones ); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Devoured
+		{
+			get { return (m_Devourer != null); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Carved
 		{
-			get{ return m_Carved; }
-			set{ m_Carved = value; }
+			get{ return GetFlag( CorpseFlag.Carved ); }
+			set { SetFlag( CorpseFlag.Carved, value ); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool VisitedByTaxidermist
 		{
-			get{ return m_VisitedByTaxidermist; }
-			set{ m_VisitedByTaxidermist = value; }
+			get { return GetFlag( CorpseFlag.VisitedByTaxidermist ); }
+			set { SetFlag( CorpseFlag.VisitedByTaxidermist, value ); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Channeled
 		{
-			get{ return m_Channeled; }
-			set{ m_Channeled = value; }
+			get { return GetFlag( CorpseFlag.Channeled ); }
+			set { SetFlag( CorpseFlag.Channeled, value ); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -139,8 +188,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Criminal
 		{
-			get{ return m_Criminal; }
-			set{ m_Criminal = value; }
+			get { return GetFlag( CorpseFlag.Criminal ); }
+			set { SetFlag( CorpseFlag.Criminal, value ); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -160,7 +209,9 @@ namespace Server.Items
 			Hue = 0;
 			ProcessDelta();
 
-			m_NoBones = true;
+			SetFlag( CorpseFlag.NoBones, true );
+			SetFlag( CorpseFlag.IsBones, true );
+
 			BeginDecay( m_BoneDecayTime );
 		}
 
@@ -201,7 +252,7 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				if ( !m_Corpse.m_NoBones )
+				if ( !m_Corpse.GetFlag( CorpseFlag.NoBones ) )
 					m_Corpse.TurnToBones();
 				else
 					m_Corpse.Delete();
@@ -307,14 +358,14 @@ namespace Server.Items
 			m_AccessLevel = owner.AccessLevel;
 			m_Guild = owner.Guild as Guild;
 			m_Kills = owner.Kills;
-			m_Criminal = owner.Criminal;
+			SetFlag( CorpseFlag.Criminal, owner.Criminal );
 
 			m_Hair = hair;
 			m_FacialHair = facialhair;
 
 
 			// This corpse does not turn to bones if: the owner is not a player
-			m_NoBones = !owner.Player;
+			SetFlag( CorpseFlag.NoBones, !owner.Player );
 
 			m_Looters = new List<Mobile>();
 			m_EquipItems = equipItems;
@@ -371,6 +422,8 @@ namespace Server.Items
 			}
 
 			BeginDecay( m_DefaultDecayTime );
+
+			DevourCorpse();
 		}
 
 		private void AssignInstancedLoot()
@@ -383,11 +436,23 @@ namespace Server.Items
 		{
 		}
 
+		protected bool GetFlag( CorpseFlag flag )
+		{
+			return ((m_Flags & flag) != 0);
+		}
+
+		protected void SetFlag( CorpseFlag flag, bool on )
+		{
+			m_Flags = (on ? m_Flags | flag : m_Flags & ~flag);
+		}
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 10 ); // version
+			writer.Write( (int) 11 ); // version
+
+			writer.Write( (int)m_Flags );
 
 			writer.WriteDeltaTime( m_TimeOfDeath );
 
@@ -415,8 +480,6 @@ namespace Server.Items
 				}
 			}
 
-			writer.Write( m_VisitedByTaxidermist );
-
 			writer.Write( m_DecayTimer != null );
 
 			if ( m_DecayTimer != null )
@@ -425,20 +488,15 @@ namespace Server.Items
 			writer.Write( m_Looters );
 			writer.Write( m_Killer );
 
-			writer.Write( (bool) m_Carved );
-
 			writer.Write( m_Aggressors );
 
 			writer.Write( m_Owner );
-
-			writer.Write( m_NoBones );
 
 			writer.Write( (string) m_CorpseName );
 
 			writer.Write( (int) m_AccessLevel );
 			writer.Write( (Guild) m_Guild );
 			writer.Write( (int) m_Kills );
-			writer.Write( (bool) m_Criminal );
 
 			writer.Write( m_EquipItems );
 		}
@@ -451,6 +509,43 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 11:
+					{
+						// Version 11, we move all bools to a CorpseFlag
+						m_Flags = (CorpseFlag)reader.ReadInt();
+
+						m_TimeOfDeath = reader.ReadDeltaTime();
+
+						int count = reader.ReadInt();
+
+						for( int i = 0; i < count; ++i )
+						{
+							Item item = reader.ReadItem();
+
+							if( reader.ReadBool() )
+								SetRestoreInfo( item, reader.ReadPoint3D() );
+							else if( item != null )
+								SetRestoreInfo( item, item.Location );
+						}
+
+						if( reader.ReadBool() )
+							BeginDecay( reader.ReadDeltaTime() - DateTime.Now );
+
+						m_Looters = reader.ReadStrongMobileList();
+						m_Killer = reader.ReadMobile();
+
+						m_Aggressors = reader.ReadStrongMobileList();
+						m_Owner = reader.ReadMobile();
+
+						m_CorpseName = reader.ReadString();
+
+						m_AccessLevel = (AccessLevel)reader.ReadInt();
+						reader.ReadInt(); // guild reserve
+						m_Kills = reader.ReadInt();
+
+						m_EquipItems = reader.ReadStrongItemList();
+						break;
+					}
 				case 10:
 				{
 					m_TimeOfDeath = reader.ReadDeltaTime();
@@ -475,7 +570,7 @@ namespace Server.Items
 				}
 				case 8:
 				{
-					m_VisitedByTaxidermist = reader.ReadBool();
+					SetFlag( CorpseFlag.VisitedByTaxidermist, reader.ReadBool() );
 
 					goto case 7;
 				}
@@ -495,7 +590,7 @@ namespace Server.Items
 				}
 				case 5:
 				{
-					m_Carved = reader.ReadBool();
+					SetFlag( CorpseFlag.Carved, reader.ReadBool() );
 
 					goto case 4;
 				}
@@ -513,7 +608,7 @@ namespace Server.Items
 				}
 				case 2:
 				{
-					m_NoBones = reader.ReadBool();
+					SetFlag( CorpseFlag.NoBones, reader.ReadBool() );
 
 					goto case 1;
 				}
@@ -540,13 +635,22 @@ namespace Server.Items
 					m_AccessLevel = (AccessLevel)reader.ReadInt();
 					reader.ReadInt(); // guild reserve
 					m_Kills = reader.ReadInt();
-					m_Criminal = reader.ReadBool();
+					SetFlag( CorpseFlag.Criminal, reader.ReadBool() );
 
 					m_EquipItems = reader.ReadStrongItemList();
 
 					break;
 				}
 			}
+		}
+
+		public bool DevourCorpse()
+		{
+			if( Devoured || Deleted || m_Killer == null || m_Killer.Deleted || !m_Killer.Alive || !(m_Killer is IDevourable) || m_Owner == null || m_Owner.Deleted )
+				return false;
+
+			m_Devourer = (IDevourable)m_Killer; // Set the devourer the killer
+			return m_Devourer.Devour( this ); // Devour the corpse if it hasn't
 		}
 
 		public override void SendInfoTo( NetState state, bool sendOplPacket )
@@ -780,7 +884,7 @@ namespace Server.Items
 
 					if ( gathered && !didntFit )
 					{
-						m_Carved = true;
+						SetFlag( CorpseFlag.Carved, true );
 
 						if ( ItemID == 0x2006 )
 						{
@@ -941,7 +1045,7 @@ namespace Server.Items
 
 			Mobile dead = m_Owner;
 
-			if ( m_Carved || dead == null )
+			if ( GetFlag( CorpseFlag.Carved ) || dead == null )
 			{
 				from.SendLocalizedMessage( 500485 ); // You see nothing useful to carve from the corpse.
 			}
@@ -956,7 +1060,7 @@ namespace Server.Items
 				new RightArm().MoveToWorld( Location, Map );
 				new Head( dead.Name ).MoveToWorld( Location, Map );
 
-				m_Carved = true;
+				SetFlag( CorpseFlag.Carved, true );
 
 				ProcessDelta();
 				SendRemovePacket();

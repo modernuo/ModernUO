@@ -955,6 +955,22 @@ namespace Server.Mobiles
 			base.OnBeforeSpawn( location, m );
 		}
 
+		public virtual void OnBeforeParagonConvert()
+		{
+		}
+
+		public virtual void OnAfterParagonConvert()
+		{
+		}
+
+		public virtual void OnBeforeParagonUnConvert()
+		{
+		}
+
+		public virtual void OnAfterParagonUnConvert()
+		{
+		}
+
 		public override ApplyPoisonResult ApplyPoison( Mobile from, Poison poison )
 		{
 			if ( !Alive || IsDeadPet )

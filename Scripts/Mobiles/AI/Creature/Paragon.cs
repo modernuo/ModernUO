@@ -46,6 +46,8 @@ namespace Server.Mobiles
 			if ( bc.IsParagon )
 				return;
 
+			bc.OnBeforeParagonConvert();
+
 			bc.Hue = Hue;
 
 			if ( bc.HitsMaxSeed >= 0 )
@@ -88,6 +90,8 @@ namespace Server.Mobiles
 				if( Math.Abs( bc.Karma ) > 32000 )
 					bc.Karma = 32000 * Math.Sign( bc.Karma );
 			}
+
+			bc.OnAfterParagonConvert();
 		}
 
 		public static void UnConvert( BaseCreature bc )
@@ -95,6 +99,7 @@ namespace Server.Mobiles
 			if ( !bc.IsParagon )
 				return;
 
+			bc.OnBeforeParagonUnConvert();
 			bc.Hue = 0;
 
 			if ( bc.HitsMaxSeed >= 0 )
@@ -126,6 +131,8 @@ namespace Server.Mobiles
 				bc.Fame = (int)( bc.Fame / FameBuff );
 			if ( bc.Karma != 0 )
 				bc.Karma = (int)( bc.Karma / KarmaBuff );
+
+			bc.OnAfterParagonUnConvert();
 		}
 
 		public static bool CheckConvert( BaseCreature bc )
