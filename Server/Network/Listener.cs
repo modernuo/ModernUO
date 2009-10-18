@@ -57,7 +57,7 @@ namespace Server.Network
 
 		private Socket Bind( IPEndPoint ipep )
 		{
-			Socket s = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp )
+			Socket s = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
 
 			try
 			{
