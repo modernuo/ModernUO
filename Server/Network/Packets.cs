@@ -2713,9 +2713,9 @@ namespace Server.Network
 		}
 	}
 
-	public sealed class OldMobileAnimation : Packet
+	public sealed class MobileAnimation : Packet
 	{
-		public OldMobileAnimation( Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay ) : base( 0x6E, 14 )
+		public MobileAnimation( Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay ) : base( 0x6E, 14 )
 		{
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.Write( (short) action );
@@ -2726,10 +2726,10 @@ namespace Server.Network
 			m_Stream.Write( (byte) delay );
 		}
 	}
-	
-	public sealed class MobileAnimation : Packet
+
+	public sealed class NewMobileAnimation : Packet
 	{
-		public MobileAnimation( Mobile m, int action, int frameCount, int delay ) : base( 0xE2, 10 )
+		public NewMobileAnimation( Mobile m, int action, int frameCount, int delay ) : base( 0xE2, 10 )
 		{
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.Write( (short) action );

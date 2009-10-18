@@ -6162,7 +6162,7 @@ namespace Server
 				ProcessDelta();
 
 				Packet p = null;
-				Packet pOld = null;
+				//Packet pNew = null;
 
 				IPooledEnumerable eable = map.GetClientsInRange( m_Location );
 
@@ -6172,22 +6172,22 @@ namespace Server
 					{
 						state.Mobile.ProcessDelta();
 
-						if ( state.IsPost7000 ) {
+						//if ( state.IsPost7000 ) {
+							//if( pNew == null )
+								//pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+
+							//state.Send( pNew );
+						//} else {
 							if( p == null )
-								p = Packet.Acquire( new MobileAnimation( this, action, frameCount, delay ) );
+								p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
 
 							state.Send( p );
-						} else {
-							if( pOld == null )
-								pOld = Packet.Acquire( new OldMobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
-
-							state.Send( pOld );
-						}
+						//}
 					}
 				}
 
 				Packet.Release( p );
-				Packet.Release( pOld );
+				//Packet.Release( pNew );
 
 				eable.Free();
 			}
