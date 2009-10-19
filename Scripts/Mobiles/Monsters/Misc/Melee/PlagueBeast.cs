@@ -23,7 +23,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int DevourGoal
 		{
-			get { return ( this.Paragon ? m_DevourGoal + 25 : m_DevourGoal ); }
+			get { return ( IsParagon ? m_DevourGoal + 25 : m_DevourGoal ); }
 			set { m_DevourGoal = value; }
 		}
 
