@@ -14,7 +14,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public interface IDevourable
+	public interface IDevourer
 	{
 		bool Devour( Corpse corpse );
 	}
@@ -66,7 +66,7 @@ namespace Server.Items
 		private List<Mobile>		m_Aggressors;			// Anyone from this list will be able to loot this corpse; we attacked them, or they attacked us when we were freely attackable
 
 		private string				m_CorpseName;			// Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
-		private IDevourable			m_Devourer;				// The creature that devoured this corpse
+		private IDevourer			m_Devourer;				// The creature that devoured this corpse
 
 		// For notoriety:
 		private AccessLevel			m_AccessLevel;			// Which AccessLevel the owner had when he died
@@ -646,10 +646,10 @@ namespace Server.Items
 
 		public bool DevourCorpse()
 		{
-			if( Devoured || Deleted || m_Killer == null || m_Killer.Deleted || !m_Killer.Alive || !(m_Killer is IDevourable) || m_Owner == null || m_Owner.Deleted )
+			if( Devoured || Deleted || m_Killer == null || m_Killer.Deleted || !m_Killer.Alive || !(m_Killer is IDevourer) || m_Owner == null || m_Owner.Deleted )
 				return false;
 
-			m_Devourer = (IDevourable)m_Killer; // Set the devourer the killer
+			m_Devourer = (IDevourer)m_Killer; // Set the devourer the killer
 			return m_Devourer.Devour( this ); // Devour the corpse if it hasn't
 		}
 

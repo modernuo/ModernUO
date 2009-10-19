@@ -7,7 +7,7 @@ using Server.Network;
 namespace Server.Mobiles
 {
 	[CorpseName( "a plague beast corpse" )]
-	public class PlagueBeast : BaseCreature, IDevourable
+	public class PlagueBeast : BaseCreature, IDevourer
 	{
 		private int m_DevourTotal;
 		private int m_DevourGoal;
@@ -23,7 +23,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int DevourGoal
 		{
-			get { return m_DevourGoal; }
+			get { return ( this.Paragon ? m_DevourGoal + 25 : m_DevourGoal ); }
 			set { m_DevourGoal = value; }
 		}
 
@@ -72,7 +72,7 @@ namespace Server.Mobiles
 				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(4) );
 
 			m_DevourTotal = 0;
-			m_DevourGoal = Utility.RandomMinMax( 15, 25 ); // The goal amount of how many corpses must devour before metal chest is rewarded
+			m_DevourGoal = Utility.RandomMinMax( 15, 25 ); // How many corpses must be devoured before a metal chest is awarded
 		}
 
 		public override void GenerateLoot()
@@ -80,16 +80,6 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich );
 			AddLoot( LootPack.Gems, Utility.Random( 1, 3 ) );
 			// TODO: dungeon chest, healthy gland
-		}
-
-		public override void OnAfterParagonConvert()
-		{
-			m_DevourGoal += 25;
-		}
-
-		public override void OnAfterParagonUnConvert()
-		{
-			m_DevourGoal -= 25;
 		}
 
 		public override void OnGaveMeleeAttack( Mobile defender )
@@ -211,7 +201,7 @@ namespace Server.Mobiles
 			eable.Free();
 		}
 
-		#region IDevourable Members
+		#region IDevourer Members
 
 		public bool Devour( Corpse corpse )
 		{
@@ -226,7 +216,7 @@ namespace Server.Mobiles
 
 			PublicOverheadMessage( MessageType.Emote, 0x3B2, 1053033 ); // * The plague beast absorbs the fleshy remains of the corpse *
 
-			if( !m_HasMetalChest && m_DevourTotal >= m_DevourGoal )
+			if( !m_HasMetalChest && m_DevourTotal >= DevourGoal )
 			{
 				PackItem( new MetalChest() );
 				m_HasMetalChest = true;
