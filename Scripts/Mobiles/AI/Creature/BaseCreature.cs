@@ -241,7 +241,7 @@ namespace Server.Mobiles
 
 		private bool		m_Paragon;
 
-        private bool        m_IsPrisoner;
+		private bool		m_IsPrisoner;
 
 		#endregion
 
@@ -253,12 +253,12 @@ namespace Server.Mobiles
 			set{ m_IsStabled = value; }
 		}
 
-        [CommandProperty( AccessLevel.GameMaster )]
-        public bool IsPrisoner
-        {
-            get{ return m_IsPrisoner; }
-            set{ m_IsPrisoner = value; }
-        }
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IsPrisoner
+		{
+			get{ return m_IsPrisoner; }
+			set{ m_IsPrisoner = value; }
+		}
 
 		protected DateTime SummonEnd
 		{
@@ -413,7 +413,7 @@ namespace Server.Mobiles
 		public virtual bool BardImmune{ get{ return false; } }
 		public virtual bool Unprovokable{ get{ return BardImmune || m_IsDeadPet; } }
 		public virtual bool Uncalmable{ get{ return BardImmune || m_IsDeadPet; } }
-        public virtual bool AreaPeaceImmune { get { return BardImmune || m_IsDeadPet; } }
+		public virtual bool AreaPeaceImmune { get { return BardImmune || m_IsDeadPet; } }
 
 		public virtual bool BleedImmune{ get{ return false; } }
 		public virtual double BonusPetDamageScalar{ get{ return 1.0; } }
