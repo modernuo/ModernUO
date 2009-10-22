@@ -75,33 +75,30 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool CanActive { get { return m_CanActive; } set { m_CanActive = value; } }
 
-		private bool Check()
-		{
-			foreach ( Item item in World.Items.Values )
-			{
-				if ( item is LampController && !item.Deleted && item != this )
-				{
-					return true;
-				}
-			}
+		private static LampController _Instance = null;
 
-			return false;
-		}
-
+		// Should this even be constructable?
 		[Constructable]
 		public LampController() : base( 0x1BC3 )
 		{
-			if ( Check() )
+			if ( _Instance != null )
 			{
-				World.Broadcast( 0x35, true, "Another Lamp's room controller exists in the world!" );
 				Delete();
 				return;
+			} else {
+				_Instance = this;
 			}
 
 			Visible = false;
 			Movable = false;
 
 			Setup();
+		}
+
+		public override void Delete()
+		{
+			_Instance = null;
+			base.Delete();
 		}
 
 		public void Setup()
@@ -499,6 +496,8 @@ namespace Server.Items
 
 			m_CanActive = true;
 			m_Box.CanSummon = true;
+
+			_Instance = this;
 		}
 
 		public class PoisonTimer : Timer
