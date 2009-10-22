@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Commands;
 using Server.Engines.Craft;
@@ -123,7 +123,7 @@ namespace Server.Items
 			}
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, List<Spellbook>> m_Table = new Dictionary<Mobile, List<Spellbook>>();
 
 		public static SpellbookType GetTypeForSpell( int spellID )
 		{
@@ -183,13 +183,15 @@ namespace Server.Items
 			if ( from == null )
 				return null;
 
-			ArrayList list = (ArrayList)m_Table[from];
-
 			if ( from.Deleted )
 			{
 				m_Table.Remove( from );
 				return null;
 			}
+
+			List<Spellbook> list = null;
+
+			m_Table.TryGetValue( from, out list );
 
 			bool searchAgain = false;
 
@@ -210,7 +212,7 @@ namespace Server.Items
 			return book;
 		}
 
-		public static Spellbook FindSpellbookInList( ArrayList list, Mobile from, int spellID, SpellbookType type )
+		public static Spellbook FindSpellbookInList( List<Spellbook> list, Mobile from, int spellID, SpellbookType type )
 		{
 			Container pack = from.Backpack;
 
@@ -219,7 +221,7 @@ namespace Server.Items
 				if ( i >= list.Count )
 					continue;
 
-				Spellbook book = (Spellbook)list[i];
+				Spellbook book = list[i];
 
 				if ( !book.Deleted && (book.Parent == from || (pack != null && book.Parent == pack)) && ValidateSpellbook( book, spellID, type ) )
 					return book;
@@ -230,9 +232,9 @@ namespace Server.Items
 			return null;
 		}
 
-		public static ArrayList FindAllSpellbooks( Mobile from )
+		public static List<Spellbook> FindAllSpellbooks( Mobile from )
 		{
-			ArrayList list = new ArrayList();
+			List<Spellbook> list = new List<Spellbook>();
 
 			Item item = from.FindItemOnLayer( Layer.OneHanded );
 

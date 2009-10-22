@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Multis;
 using Server.Network;
@@ -352,11 +352,11 @@ namespace Server.Items
 
 	public class DynamicFurniture
 	{
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Container, Timer> m_Table = new Dictionary<Container, Timer>();
 
 		public static bool Open( Container c, Mobile m )
 		{
-			if ( m_Table.Contains( c ) )
+			if ( m_Table.ContainsKey( c ) )
 			{
 				c.SendRemovePacket();
 				Close( c );
@@ -385,7 +385,9 @@ namespace Server.Items
 
 		public static void Close( Container c )
 		{
-			Timer t = (Timer)m_Table[c];
+			Timer t = null;
+
+			m_Table.TryGetValue( c, out t );
 
 			if ( t != null )
 			{
