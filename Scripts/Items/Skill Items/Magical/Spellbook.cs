@@ -226,7 +226,7 @@ namespace Server.Items
 				if ( !book.Deleted && (book.Parent == from || (pack != null && book.Parent == pack)) && ValidateSpellbook( book, spellID, type ) )
 					return book;
 
-				list.Remove( i );
+				list.RemoveAt( i );
 			}
 
 			return null;
@@ -239,7 +239,7 @@ namespace Server.Items
 			Item item = from.FindItemOnLayer( Layer.OneHanded );
 
 			if ( item is Spellbook )
-				list.Add( item );
+				list.Add( (Spellbook)item );
 
 			Container pack = from.Backpack;
 
@@ -251,7 +251,7 @@ namespace Server.Items
 				item = pack.Items[i];
 
 				if ( item is Spellbook )
-					list.Add( item );
+					list.Add( (Spellbook)item );
 			}
 
 			return list;
