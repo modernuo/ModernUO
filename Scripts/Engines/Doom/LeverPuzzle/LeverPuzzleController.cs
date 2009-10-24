@@ -529,6 +529,13 @@ namespace Server.Engines.Doom
 		{
 			if ( m != null )
 			{
+				if( m is PlayerMobile && !m.Alive )
+				{
+					if( m.Corpse != null && !m.Corpse.Deleted )
+					{
+						m.Corpse.MoveToWorld( lr_Exit, Map.Malas );
+					}
+				}
 				BaseCreature.TeleportPets( m, lr_Exit, Map.Malas );
 				m.Location = lr_Exit;
 				m.ProcessDelta();
