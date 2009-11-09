@@ -197,9 +197,9 @@ namespace Server.Commands
 				CreateTeleporter( 5594, 1841, -9, 5467, 1805, 7, map, false );
 
 				// Wrong
-				CreateTeleporter( 5824, 631, 0, 2041, 215, 14, map, true );
-				CreateTeleporter( 5825, 631, 0, 2042, 215, 14, map, true );
-				CreateTeleporter( 5826, 631, 0, 2043, 215, 14, map, true );
+				CreateTeleporter( 5824, 631, 5, 2041, 215, 14, map, true );
+				CreateTeleporter( 5825, 631, 5, 2042, 215, 14, map, true );
+				CreateTeleporter( 5825, 631, 5, 2043, 215, 14, map, true );
 				CreateTeleporter( 5698, 662, 0, 5793, 527, 10, map, false );
 
 				DestroyTeleporter( 5863, 525, 15, map );

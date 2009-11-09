@@ -859,6 +859,7 @@ namespace Server.Items
 		[Constructable]
 		public WoodenFootLocker() : base( 0x2811 )
 		{
+			GumpID = 0x10B;
 		}
 
 		public WoodenFootLocker( Serial serial ) : base( serial )
@@ -869,7 +870,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -880,6 +881,9 @@ namespace Server.Items
 
 			if ( version == 0 && Weight == 15 )
 				Weight = -1;
+			
+			if ( version < 2 )
+				GumpID = 0x10B;
 		}
 	}
 

@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	public class BlankScroll : Item
+	public class BlankScroll : Item, ICommodity
 	{
 		[Constructable]
 		public BlankScroll() : this( 1 )
@@ -17,6 +17,16 @@ namespace Server.Items
 			Amount = amount;
 		}
 
+		string ICommodity.Description
+		{
+			get
+			{
+				return String.Format( "blank scroll: {0}", Amount );
+			}
+		}
+
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		
 		public BlankScroll( Serial serial ) : base( serial )
 		{
 		}

@@ -107,6 +107,8 @@ namespace Server.Items
 
 			if ( m_Commodity != null && m_Commodity is ICommodity )
 				list.Add( 1060658, "#{0}\t{1}", ((ICommodity)m_Commodity).DescriptionNumber, m_Commodity.Amount ); // ~1_val~: ~2_val~
+			else
+				list.Add( 1060748 ); // unfilled
 		}
 
 		public override void OnSingleClick( Mobile from )

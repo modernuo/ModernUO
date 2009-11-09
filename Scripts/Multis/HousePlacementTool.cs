@@ -367,45 +367,45 @@ namespace Server.Items
 						from.SendLocalizedMessage( 501271 ); // You already own a house, you may not place another!
 					}
 					else
-                    {
-                        BaseHouse house = ConstructHouse( from );
+					{
+						BaseHouse house = ConstructHouse( from );
 
-                        if ( house == null )
-                            return;
+						if ( house == null )
+							return;
 
-                        house.Price = m_Cost;
+						house.Price = m_Cost;
 
-                        if ( from.AccessLevel >= AccessLevel.GameMaster )
-                        {
-                            from.SendMessage( "{0} gold would have been withdrawn from your bank if you were not a GM.", m_Cost.ToString() );
-                        }
-                        else
-                        {
-                            if ( Banker.Withdraw( from, m_Cost ) )
-                            {
-                                from.SendLocalizedMessage( 1060398, m_Cost.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-                            }
-                            else
-                            {
-                                house.RemoveKeys( from );
-                                house.Delete();
-                                from.SendLocalizedMessage( 1060646 ); // You do not have the funds available in your bank box to purchase this house.  Try placing a smaller house, or adding gold or checks to your bank box.
-                                return;
-                            }
-                        }
+						if ( from.AccessLevel >= AccessLevel.GameMaster )
+						{
+							from.SendMessage( "{0} gold would have been withdrawn from your bank if you were not a GM.", m_Cost.ToString() );
+						}
+						else
+						{
+							if ( Banker.Withdraw( from, m_Cost ) )
+							{
+								from.SendLocalizedMessage( 1060398, m_Cost.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+							}
+							else
+							{
+								house.RemoveKeys( from );
+								house.Delete();
+								from.SendLocalizedMessage( 1060646 ); // You do not have the funds available in your bank box to purchase this house.  Try placing a smaller house, or adding gold or checks to your bank box.
+								return;
+							}
+						}
 
-                        house.MoveToWorld( center, from.Map );
+						house.MoveToWorld( center, from.Map );
 
-                        for ( int i = 0; i < toMove.Count; ++i )
-                        {
-                            object o = toMove[i];
+						for ( int i = 0; i < toMove.Count; ++i )
+						{
+							object o = toMove[ i ];
 
-                            if ( o is Mobile )
-                                ( (Mobile)o ).Location = house.BanLocation;
-                            else if ( o is Item )
-                                ( (Item)o ).Location = house.BanLocation;
-                        }
-                    }
+							if ( o is Mobile )
+								( (Mobile) o ).Location = house.BanLocation;
+							else if ( o is Item )
+								( (Item) o ).Location = house.BanLocation;
+						}
+					}
 
 					break;
 				}
@@ -425,7 +425,12 @@ namespace Server.Items
 				}
 				case HousePlacementResult.BadRegionTemp:
 				{
-					from.SendLocalizedMessage( 501270 ); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+					from.SendLocalizedMessage( 501270 ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+					break;
+				}
+				case HousePlacementResult.InvalidCastleKeep:
+				{
+					from.SendLocalizedMessage( 1061122 ); // Castles and keeps cannot be created here.
 					break;
 				}
 			}
@@ -519,6 +524,11 @@ namespace Server.Items
 				case HousePlacementResult.BadRegionTemp:
 				{
 					from.SendLocalizedMessage( 501270 ); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+					break;
+				}
+				case HousePlacementResult.InvalidCastleKeep:
+				{
+					from.SendLocalizedMessage( 1061122 ); // Castles and keeps cannot be created here.
 					break;
 				}
 			}

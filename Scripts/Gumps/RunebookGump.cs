@@ -266,14 +266,14 @@ namespace Server.Gumps
 
 			if ( buttonID == 1 ) // Rename book
 			{
-				if ( m_Book.CheckAccess( from ) )
+				if ( !m_Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster )
 				{
 					from.SendLocalizedMessage( 502414 ); // Please enter a title for the runebook:
 					from.Prompt = new InternalPrompt( m_Book );
 				}
 				else
 				{
-					from.SendLocalizedMessage( 502413 ); // That cannot be done while the book is locked down.
+					from.SendLocalizedMessage( 502413, null, 0x35 ); // That cannot be done while the book is locked down.
 				}
 			}
 			else
@@ -319,7 +319,7 @@ namespace Server.Gumps
 						}
 						case 1: // Drop rune
 						{
-							if ( m_Book.CheckAccess( from ) )
+							if ( !m_Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster )
 							{
 								m_Book.DropRune( from, e, index );
 
@@ -328,7 +328,7 @@ namespace Server.Gumps
 							}
 							else
 							{
-								from.SendLocalizedMessage( 502413 ); // That cannot be done while the book is locked down.
+								from.SendLocalizedMessage( 502413, null, 0x35 ); // That cannot be done while the book is locked down.
 							}
 
 							break;
@@ -343,10 +343,6 @@ namespace Server.Gumps
 								from.SendGump( new RunebookGump( from, m_Book ) );
 
 								from.SendLocalizedMessage( 502417 ); // New default location set.
-							}
-							else
-							{
-								from.SendLocalizedMessage( 502413 ); // That cannot be done while the book is locked down.
 							}
 
 							break;

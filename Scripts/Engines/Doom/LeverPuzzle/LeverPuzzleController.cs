@@ -5,7 +5,6 @@ using Server.Network;
 using Server.Mobiles;
 using Server.Commands;
 using System.Collections.Generic;
-using System.Collections;
 
 	/*
 	this is From me to you, Under no terms, Conditions...   K?  to apply you
@@ -22,10 +21,10 @@ namespace Server.Engines.Doom
 		private UInt16 m_MyKey;
 		private UInt16 m_TheirKey;
 
-		private ArrayList m_Levers;
-		private ArrayList m_Teles;
-		private ArrayList m_Statues;
-		private ArrayList m_Tiles;
+		private List<Item> m_Levers;
+		private List<Item> m_Teles;
+		private List<Item> m_Statues;
+		private List<LeverPuzzleRegion> m_Tiles;
 		private Mobile m_Successful;
 		private LampRoomBox m_Box;
 		private Region m_LampRoom;
@@ -92,19 +91,19 @@ namespace Server.Engines.Doom
 			installed=true;
 			int i=0;
 
-			m_Levers = new ArrayList();	/* codes are 0x1 shifted left x # of bits, easily handled here */
+			m_Levers = new List<Item>();	/* codes are 0x1 shifted left x # of bits, easily handled here */
 			for (; i<4; i++)
 				m_Levers.Add( AddLeverPuzzlePart( TA[i], new LeverPuzzleLever( (ushort)(1<<i), this )));
 
-			m_Tiles = new ArrayList();
+			m_Tiles = new List<LeverPuzzleRegion>();
 			for (; i<9; i++)
 				m_Tiles.Add( new LeverPuzzleRegion( this, TA[i] ));
 
-			m_Teles = new ArrayList();
+			m_Teles = new List<Item>();
 			for (; i<15; i++)
 				m_Teles.Add( AddLeverPuzzlePart( TA[i], new LampRoomTelePorter( TA[++i] )));
 
-			m_Statues = new ArrayList();
+			m_Statues = new List<Item>();
 			for (; i<19; i++)
 				m_Statues.Add( AddLeverPuzzlePart( TA[i], new LeverPuzzleStatue( TA[++i], this )));
 
@@ -159,7 +158,7 @@ namespace Server.Engines.Doom
 			}
 		}
 
-		public static void NukeItemList( ArrayList list )
+		public static void NukeItemList( List<Item> list )
 		{
 			if ( list != null && list.Count != 0 )
 			{
@@ -395,16 +394,21 @@ namespace Server.Engines.Doom
 						{
 							IEntity m_IEntity = new Entity( Serial.Zero, RandomPointIn( m_Player.Location, 10 ), m_Player.Map );
 
-							foreach( Mobile  m in m_IEntity.Map.GetMobilesInRange( m_IEntity.Location, 2 ) )
+							List<Mobile> mobiles = new List<Mobile>();
+							foreach( Mobile m in m_IEntity.Map.GetMobilesInRange( m_IEntity.Location, 2 ))
 							{
-								if( IsValidDamagable( m ) && m != m_Player  )
+								mobiles.Add( m );
+							}
+							for( int k=0; k<mobiles.Count; k++ )
+							{
+								if( IsValidDamagable( mobiles[k] ) && mobiles[k] != m_Player  )
 								{
-									PlayEffect( m_Player, m, Rock(), 8, true );
-									DoDamage( m, 25, 30, false );
+									PlayEffect( m_Player, mobiles[k], Rock(), 8, true );
+									DoDamage( mobiles[k], 25, 30, false );
 
-									if( m.Player )
+									if( mobiles[k].Player )
 									{
-										POHMessage( m, 2 ); // OUCH!
+										POHMessage( mobiles[k], 2 ); // OUCH!
 									}
 								}
 							}
@@ -510,8 +514,6 @@ namespace Server.Engines.Doom
 					return true;
 				}
 
-/* TODO: need to resolve lockup @ basecreature damage
-
 				if( m is BaseCreature )
 				{
 					BaseCreature bc=(BaseCreature)m;
@@ -520,7 +522,6 @@ namespace Server.Engines.Doom
 						return true;
 					}
 				}
-*/
 			}
 			return false;
 		}
@@ -554,14 +555,10 @@ namespace Server.Engines.Doom
 
 		public static void DoDamage( Mobile m, int min, int max, bool poison )
 		{
-			int damage = Utility.Random(min,max);
-			if ( Core.AOS )
+			if ( m != null && !m.Deleted && m.Alive )
 			{
-				AOS.Damage( (m is BaseCreature) ? (BaseCreature)m : m, damage,(poison) ? 0 : 100 , 0, 0,(poison) ? 100 : 0, 0 );
-			}
-			else
-			{
-				m.Damage( damage );
+				int damage = Utility.Random(min,max);
+				AOS.Damage( m, damage,(poison) ? 0 : 100 , 0, 0,(poison) ? 100 : 0, 0 );
 			}
 		}
 
@@ -717,13 +714,13 @@ namespace Server.Engines.Doom
 
 			int version = reader.ReadInt();
 
-			m_Levers = reader.ReadItemList();
-			m_Statues = reader.ReadItemList();
-			m_Teles = reader.ReadItemList();
+			m_Levers = reader.ReadStrongItemList();
+			m_Statues = reader.ReadStrongItemList();
+			m_Teles = reader.ReadStrongItemList();
 
 			m_Box = reader.ReadItem() as LampRoomBox;
 
-			m_Tiles = new ArrayList();
+			m_Tiles = new List<LeverPuzzleRegion>();
 			for (int i = 4; i<9; i++)
 				m_Tiles.Add( new LeverPuzzleRegion( this, TA[i] ));
 

@@ -20,10 +20,15 @@ namespace Server
 
 		public static void OnVirtueUsed( Mobile from )
 		{
-			if ( from.Alive )
-				from.Target = new InternalTarget();
-			else
-				Resurrect( from );
+			if ( !from.Hidden )
+			{
+				if ( from.Alive )
+					from.Target = new InternalTarget();
+				else
+					Resurrect( from );
+			}
+			else 
+				from.SendLocalizedMessage( 1052015 ); // You cannot do that while hidden.
 		}
 
 		public static void CheckAtrophy( Mobile from )

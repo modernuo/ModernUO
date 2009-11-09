@@ -97,8 +97,31 @@ namespace Server.Mobiles
 				Type[] types = Loot.RegularScrollTypes;
 
 				for ( int i = 0; i < types.Length; ++i )
-					Add( types[i], ((i / 8) + 2) * 5 );
+					Add(types[i], i + 3 + (i / 4));     // This is NOT 100% OSI accurate. Two spells per circle will be off by 1gp, as OSI's math is slightly different.
+
+
+				if ( Core.SE )
+				{				
+					Add( typeof( ExorcismScroll ), 1 );
+					Add( typeof( AnimateDeadScroll ), 26 );
+					Add( typeof( BloodOathScroll ), 26 );
+					Add( typeof( CorpseSkinScroll ), 26 );
+					Add( typeof( CurseWeaponScroll ), 26 );
+					Add( typeof( EvilOmenScroll ), 26 );
+					Add( typeof( PainSpikeScroll ), 26 );
+					Add( typeof( SummonFamiliarScroll ), 26 );
+					Add( typeof( HorrificBeastScroll ), 27 );
+					Add( typeof( MindRotScroll ), 39 );
+					Add( typeof( PoisonStrikeScroll ), 39 );
+					Add( typeof( WraithFormScroll ), 51 );
+					Add( typeof( LichFormScroll ), 64 );
+					Add( typeof( StrangleScroll ), 64 );
+					Add( typeof( WitherScroll ), 64 );
+					Add( typeof( VampiricEmbraceScroll ), 101 );
+					Add( typeof( VengefulSpiritScroll ), 114 );
 			}
+
 		}
+	}
 	}
 }

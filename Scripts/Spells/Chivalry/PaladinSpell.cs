@@ -13,6 +13,7 @@ namespace Server.Spells.Chivalry
 		public abstract int MantraNumber{ get; }
 
 		public override SkillName CastSkill{ get{ return SkillName.Chivalry; } }
+		public override SkillName DamageSkill{ get{ return SkillName.Chivalry; } }
 
 		public override bool ClearHandsOnCast{ get{ return false; } }
 

@@ -34,6 +34,8 @@ namespace Server.Mobiles
 
 		public override bool CanTeach { get { return true; } }
 
+		public override bool BardImmune { get { return true; } }
+
 		public override bool PlayerRangeSensitive { get { return true; } }
 
 		public virtual bool IsActiveVendor { get { return true; } }
