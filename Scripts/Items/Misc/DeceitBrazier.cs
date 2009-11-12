@@ -89,7 +89,8 @@ namespace Server.Items
 		[Constructable]
 		public DeceitBrazier() : base( 0xE31 )
 		{
-			Movable = false;
+			Movable = false; 
+			Light = LightType.Circle225;
 			m_NextSpawn = DateTime.Now;
 			m_NextSpawnDelay = TimeSpan.FromMinutes( 15.0 );
 			m_SpawnRange = 5;
