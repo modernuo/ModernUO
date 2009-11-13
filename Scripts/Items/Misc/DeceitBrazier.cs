@@ -127,56 +127,23 @@ namespace Server.Items
 
 		public virtual void HeedWarning()
 		{
-			if( m_IsWarning )
-				PublicOverheadMessage( MessageType.Regular, 0x3B2, 500761 );// Heed this warning well, and use this brazier at your own peril.
+			PublicOverheadMessage( MessageType.Regular, 0x3B2, 500761 );// Heed this warning well, and use this brazier at your own peril.
 		}
 
 		public override bool HandlesOnMovement { get { return true; } }
 
-		private bool m_IsWarning;
-		private List<Serial> m_Players = new List<Serial>();
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
 			if( m_NextSpawn < DateTime.Now ) // means we haven't spawned anything if the next spawn is below
 			{
-				if( !m_IsWarning && Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) )
+				if( Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) )
 				{
-					m_IsWarning = true;
-
-					m_Players.Add( m.Serial );
-					HeedWarning();
-
-					m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1 ), TimeSpan.FromSeconds( 1 ), new TimerCallback( HeedWarning ) );
-				}
-				else
-				{
-					if( m_Players.Contains( m.Serial ) )
-						m_Players.Remove( m.Serial );
-
-					if( m_IsWarning && !Utility.InRange( m.Location, Location, 1 ) && Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) && m_Players.Count == 0 )
-					{
-						if( m_Timer != null )
-						{
-							m_IsWarning = false;
-							m_Timer.Stop(); 
-							m_Timer = null;
-						}
-					}
+					if( m_Timer == null || !m_Timer.Running )
+						m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 2 ), new TimerCallback( HeedWarning ) );
 				}
 			}
 
 			base.OnMovement( m, oldLocation );
-		}
-
-		public override void OnAfterDelete()
-		{
-			if( m_Timer != null )
-			{
-				m_IsWarning = false;
-				m_Timer.Stop();
-				m_Timer = null;
-			}
-			base.OnAfterDelete();
 		}
 
 		public Point3D GetSpawnPosition()
@@ -223,23 +190,19 @@ namespace Server.Items
 						{
 							Point3D spawnLoc = GetSpawnPosition();
 
-							DoEffect( Location, Map );
+							DoEffect( spawnLoc, map );
 
 							Timer.DelayCall( TimeSpan.FromSeconds( 1 ), delegate()
 							{
 								bc.Home = Location;
 								bc.RangeHome = m_SpawnRange;
+								bc.FightMode = FightMode.Closest;
 
 								bc.MoveToWorld( spawnLoc, map );
 
-								DoEffect( bc.Location, bc.Map );
+								DoEffect( spawnLoc, map );
 
-								if( m_Timer != null )
-								{
-									m_IsWarning = false;
-									m_Timer.Stop();
-									m_Timer = null;
-								}
+								bc.ForceReacquire();
 							} );
 
 							m_NextSpawn = DateTime.Now + m_NextSpawnDelay;
