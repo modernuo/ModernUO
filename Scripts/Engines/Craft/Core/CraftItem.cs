@@ -318,7 +318,7 @@ namespace Server.Engines.Craft
 				new Type[]{ typeof( BloodwoodLog ), typeof( BloodwoodBoard ) },
 				new Type[]{ typeof( FrostwoodLog ), typeof( FrostwoodBoard ) },
 				new Type[]{ typeof( OakLog ), typeof( OakBoard ) },
-				new Type[]{ typeof( AshLog ), typeof( YewBoard ) },
+				new Type[]{ typeof( AshLog ), typeof( AshBoard ) },
 				new Type[]{ typeof( YewLog ), typeof( YewBoard ) },
 				new Type[]{ typeof( Leather ), typeof( Hides ) },
 				new Type[]{ typeof( SpinedLeather ), typeof( SpinedHides ) },
