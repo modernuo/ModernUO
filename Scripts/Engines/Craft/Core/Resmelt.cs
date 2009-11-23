@@ -22,7 +22,7 @@ namespace Server.Engines.Craft
 		{
 			int num = craftSystem.CanCraft( from, tool, null );
 
-			if ( num > 0 )
+			if ( num > 0 && num != 1044267 )
 			{
 				from.SendGump( new CraftGump( from, craftSystem, tool, num ) );
 			}
@@ -111,6 +111,18 @@ namespace Server.Engines.Craft
 
 				if ( num > 0 )
 				{
+					if ( num == 1044267 )
+					{
+						bool anvil, forge;
+			
+						DefBlacksmithy.CheckAnvilAndForge( from, 2, out anvil, out forge );
+
+						if ( !anvil )
+							num = 1044266; // You must be near an anvil
+						else if ( !forge )
+							num = 1044265; // You must be near a forge.
+					}
+					
 					from.SendGump( new CraftGump( from, m_CraftSystem, m_Tool, num ) );
 				}
 				else

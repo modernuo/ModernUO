@@ -1,25 +1,24 @@
 using System;
-using Server.Network;
-using Server.Items;
+using Server;
 
 namespace Server.Items
 {
-	public class OverseerSunderedBlade : RadiantScimitar
+	public class WildfireBow : ElvenCompositeLongbow
 	{
-		public override int LabelNumber{ get{ return 1072920; } } // Overseer Sundered Blade
+		public override int LabelNumber{ get{ return 1075044; } } // Wildfire Bow
+
+		public override int InitMinHits{ get{ return 255; } }
+		public override int InitMaxHits{ get{ return 255; } }
 
 		[Constructable]
-		public OverseerSunderedBlade()
+		public WildfireBow() : base()
 		{
-			ItemID = 0x2D27;
-			Hue = 0x485;
-
-			Attributes.RegenStam = 2;
-			Attributes.AttackChance = 10;
-			Attributes.WeaponSpeed = 35;
-			Attributes.WeaponDamage = 45;
-
-			Hue = this.GetElementalDamageHue();
+			Hue = 0x489;
+			
+			SkillBonuses.SetValues( 0, SkillName.Archery, 10 );
+			WeaponAttributes.ResistFireBonus = 25;
+			
+			Velocity = 15;
 		}
 
 		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
@@ -28,7 +27,7 @@ namespace Server.Items
 			fire = 100;
 		}
 
-		public OverseerSunderedBlade( Serial serial ) : base( serial )
+		public WildfireBow( Serial serial ) : base( serial )
 		{
 		}
 

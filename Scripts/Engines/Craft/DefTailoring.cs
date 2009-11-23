@@ -200,6 +200,33 @@ namespace Server.Engines.Craft
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
+			if( Core.ML )
+			{
+				index = AddCraft( typeof( ElvenQuiver ), 1015283, 1032657, 65.0, 115.0, typeof( Leather ), 1044462, 28, 1044463 );
+				AddRecipe( index, 501 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( QuiverOfFire ), 1015283, 1073109, 65.0, 115.0, typeof( Leather ), 1044462, 28, 1044463 );
+				AddRes( index, typeof( FireRuby ), 1032695, 15, 1042081 );
+				AddRecipe( index, 502 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( QuiverOfIce ), 1015283, 1073110, 65.0, 115.0, typeof( Leather ), 1044462, 28, 1044463 );
+				AddRes( index, typeof( WhitePearl ), 1032694, 15, 1042081 );
+				AddRecipe( index, 503 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( QuiverOfBlight ), 1015283, 1073111, 65.0, 115.0, typeof( Leather ), 1044462, 28, 1044463 );
+				AddRes( index, typeof( Blight ), 1032675, 10, 1042081 );
+				AddRecipe( index, 504 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( QuiverOfLightning ), 1015283, 1073112, 65.0, 115.0, typeof( Leather ), 1044462, 28, 1044463 );
+				AddRes( index, typeof( Corruption ), 1032676, 10, 1042081 );
+				AddRecipe( index, 505 );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+
 			AddCraft( typeof( OilCloth ), 1015283, 1041498, 74.6, 99.6, typeof( Cloth ), 1044286, 1, 1044287 );
 
 			if( Core.SE )

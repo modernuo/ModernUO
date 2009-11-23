@@ -60,13 +60,6 @@ namespace Server.Misc
 			if ( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
 				points += 40;
 
-			if ( CheckTransform( from, typeof( HorrificBeastSpell ) ) )
-				points += 20;
-
-			if ( CheckAnimal( from, typeof( Dog ) ) || CheckAnimal( from, typeof( Cat ) ) )
-				points += from.Skills[SkillName.Ninjitsu].Fixed / 300;
-			//TODO: What's the new increased rate?
-
 			if( Core.ML && from.Race == Race.Human )	//Is this affected by the cap?
 				points += 2;
 
@@ -74,7 +67,13 @@ namespace Server.Misc
 				points = 0;
 
 			if( Core.ML && from is PlayerMobile )	//does racial bonus go before/after?
-				points = Math.Min ( points, 18 );
+				points = Math.Min( points, 18 );
+
+			if ( CheckTransform( from, typeof( HorrificBeastSpell ) ) )
+				points += 20;
+
+			if ( CheckAnimal( from, typeof( Dog ) ) || CheckAnimal( from, typeof( Cat ) ) )
+				points += from.Skills[SkillName.Ninjitsu].Fixed / 30;
 
 			return TimeSpan.FromSeconds( 1.0 / (0.1 * (1 + points)) );
 		}

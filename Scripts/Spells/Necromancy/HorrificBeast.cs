@@ -33,6 +33,7 @@ namespace Server.Spells.Necromancy
 			m.FixedParticles( 0x3728, 1, 13, 9918, 92, 3, EffectLayer.Head );
 
 			m.Delta( MobileDelta.WeaponDamage );
+			m.CheckStatTimers();
 		}
 
 		public override void RemoveEffect( Mobile m )

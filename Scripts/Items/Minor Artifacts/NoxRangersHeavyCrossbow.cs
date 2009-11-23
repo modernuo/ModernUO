@@ -21,12 +21,12 @@ namespace Server.Items
 			WeaponAttributes.ResistPoisonBonus = 10;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
 			pois = 50;
 			phys = 50;
 
-			fire = cold = nrgy = 0;
+			fire = cold = nrgy = chaos = direct = 0;
 		}
 
 		public NoxRangersHeavyCrossbow( Serial serial ) : base( serial )

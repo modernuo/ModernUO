@@ -28,7 +28,8 @@ namespace Server.Spells.Ninjitsu
 
 		public override bool CheckCast()
 		{
-			if ( !Caster.Hidden || Caster.AllowedStealthSteps <= 0 )
+			PlayerMobile pm = Caster as PlayerMobile; // IsStealthing should be moved to Server.Mobiles
+			if ( !pm.IsStealthing )
 			{
 				Caster.SendLocalizedMessage( 1063087 ); // You must be in stealth mode to use this ability.
 				return false;
@@ -54,8 +55,10 @@ namespace Server.Spells.Ninjitsu
 			Map map = Caster.Map;
 
 			SpellHelper.GetSurfaceTop( ref p );
+			
+			PlayerMobile pm = Caster as PlayerMobile; // IsStealthing should be moved to Server.Mobiles
 
-			if ( !Caster.Hidden || Caster.AllowedStealthSteps <= 0 )
+			if ( !pm.IsStealthing )
 			{
 				Caster.SendLocalizedMessage( 1063087 ); // You must be in stealth mode to use this ability.
 			}
@@ -94,6 +97,8 @@ namespace Server.Spells.Ninjitsu
 				Effects.SendLocationParticles( EffectItem.Create( from, m.Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 2023 );
 
 				m.PlaySound( 0x512 );
+				
+				Server.SkillHandlers.Stealth.OnUse( m ); // stealth check after the a jump
 			}
 
 			FinishSequence();
@@ -119,8 +124,6 @@ namespace Server.Spells.Ninjitsu
 			protected override void OnTargetFinish( Mobile from )
 			{
 				m_Owner.FinishSequence();
-
-				Server.SkillHandlers.Stealth.OnUse( from );
 			}
 		}
 	}

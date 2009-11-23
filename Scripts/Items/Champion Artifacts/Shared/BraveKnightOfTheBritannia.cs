@@ -23,9 +23,9 @@ namespace Server.Items
 			WeaponAttributes.HitLeechHits = 22;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = 0;
+			phys = chaos = direct = 0;
 			fire = 40;
 			cold = 30;
 			pois = 10;

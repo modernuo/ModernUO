@@ -150,8 +150,12 @@ namespace Server.Engines.Craft
 				bool toDelete = false;
 
 				//TODO: Make a IRepairable
-
-				if ( m_CraftSystem is DefTinkering && targeted is Golem )
+				
+				if ( m_CraftSystem.CanCraft( from, m_Tool, targeted.GetType() ) == 1044267 )
+				{
+					number = 1044282; // You must be near a forge and and anvil to repair items. * Yes, there are two and's *
+				}
+				else if ( m_CraftSystem is DefTinkering && targeted is Golem )
 				{
 					Golem g = (Golem)targeted;
 					int damage = g.HitsMax - g.Hits;

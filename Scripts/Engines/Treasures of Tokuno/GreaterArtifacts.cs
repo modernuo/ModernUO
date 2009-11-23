@@ -20,9 +20,9 @@ namespace Server.Items
 			Attributes.WeaponDamage = 50;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = fire = pois = 0;
+			phys = fire = pois = chaos = direct = 0;
 			cold = nrgy = 50;
 		}
 
@@ -190,9 +190,9 @@ namespace Server.Items
 			Attributes.WeaponDamage = 60;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = fire = pois = nrgy = 0;
+			phys = fire = pois = nrgy = chaos = direct = 0;
 			cold = 100;
 		}
 
@@ -232,9 +232,9 @@ namespace Server.Items
 			Attributes.Luck = 200;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = cold = pois = nrgy = 0;
+			phys = cold = pois = nrgy = chaos = direct = 0;
 			fire = 100;
 		}
 
@@ -345,9 +345,9 @@ namespace Server.Items
 			Attributes.DefendChance = 10;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			phys = fire = cold = pois = 0;
+			phys = fire = cold = pois = chaos = direct = 0;
 			nrgy = 100;
 		}
 
@@ -549,7 +549,7 @@ namespace Server.Items
 				|| IsInTypeList( t, TreasuresOfTokuno.GreaterArtifacts ) 
 				|| IsInTypeList( t, DemonKnight.ArtifactRarity10 )
 				|| IsInTypeList( t, DemonKnight.ArtifactRarity11 )
-				|| IsInTypeList( t, DemonKnight.ArtifactRarity10 )
+				|| IsInTypeList( t, BaseCreature.MinorArtifactsMl )
 				|| IsInTypeList( t, StealableArtifactsSpawner.TypesOfEntires )
 				|| IsInTypeList( t, Paragon.Artifacts )
 				|| IsInTypeList( t, Leviathan.Artifacts )

@@ -7,6 +7,7 @@ namespace Server.Engines.Craft
 {
 	public enum EnhanceResult
 	{
+		None,
 		NotInBackpack,
 		BadItem,
 		BadResource,
@@ -33,6 +34,14 @@ namespace Server.Engines.Craft
 
 			if ( CraftResources.IsStandard( resource ) )
 				return EnhanceResult.BadResource;
+			
+			int num = craftSystem.CanCraft( from, tool, item.GetType() );
+			
+			if ( num > 0 )
+			{
+				resMessage = num;
+				return EnhanceResult.None;
+			}
 
 			CraftItem craftItem = craftSystem.CraftItems.SearchFor( item.GetType() );
 

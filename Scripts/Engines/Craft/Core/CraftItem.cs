@@ -355,7 +355,8 @@ namespace Server.Engines.Craft
 					typeof( BaseTool ),
 					typeof( BaseHarvestTool ),
 					typeof( FukiyaDarts ), typeof( Shuriken ),
-					typeof( Spellbook ), typeof( Runebook )
+					typeof( Spellbook ), typeof( Runebook ),
+					typeof( BaseQuiver )
 				};
 		#endregion
 

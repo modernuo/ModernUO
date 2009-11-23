@@ -40,20 +40,20 @@ namespace Server
 
 		public static int Damage( Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy )
 		{
-			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, false );
+			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, false, false );
 		}
 
 		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy )
 		{
-			return Damage( m, from, damage, ignoreArmor, phys, fire, cold, pois, nrgy, false );
+			return Damage( m, from, damage, ignoreArmor, phys, fire, cold, pois, nrgy, 0, 0, false, false );
 		}
 
 		public static int Damage( Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy, bool keepAlive )
 		{
-			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, keepAlive );
+			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive, false );
 		}
 
-		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy, bool keepAlive )
+		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy, int chaos, int direct, bool keepAlive, bool archer )
 		{
 			if( m == null || m.Deleted || !m.Alive || damage <= 0 )
 				return 0;
@@ -72,6 +72,25 @@ namespace Server
 			Fix( ref cold );
 			Fix( ref pois );
 			Fix( ref nrgy );
+			Fix( ref chaos );
+			Fix( ref direct );
+
+			if ( Core.ML && chaos > 0 )
+			{
+				switch ( Utility.Random( 5 ) )
+				{
+					case 0: phys += chaos; break;
+					case 1: fire += chaos; break;
+					case 2: cold += chaos; break;
+					case 3: pois += chaos; break;
+					case 4: nrgy += chaos; break;
+				}
+			}
+
+			BaseQuiver quiver = null;
+			
+			if ( archer && from != null )
+				quiver = from.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
 
 			int totalDamage;
 
@@ -92,16 +111,30 @@ namespace Server
 
 				totalDamage /= 10000;
 
+				if ( Core.ML )
+				{
+					totalDamage += damage * direct / 100;
+
+					if ( quiver != null )
+						totalDamage += totalDamage * quiver.DamageIncrease / 100;
+				}
+
 				if( totalDamage < 1 )
 					totalDamage = 1;
 			}
 			else if( Core.ML && m is PlayerMobile && from is PlayerMobile )
 			{
+				if ( quiver != null )
+					damage += damage * quiver.DamageIncrease / 100;
+
 				totalDamage = Math.Min( damage, 35 );	//Direct Damage cap of 35
 			}
 			else
 			{
 				totalDamage = damage;
+
+				if ( Core.ML && quiver != null )
+					totalDamage += totalDamage * quiver.DamageIncrease / 100;
 			}
 
 			#region Dragon Barding
@@ -264,6 +297,13 @@ namespace Server
 					if( attrs != null )
 						value += attrs[attribute];
 				}
+				else if( obj is BaseQuiver )
+				{
+					AosAttributes attrs = ((BaseQuiver)obj).Attributes;
+
+					if( attrs != null )
+						value += attrs[attribute];
+			}
 			}
 
 			return value;
@@ -278,6 +318,40 @@ namespace Server
 		public override string ToString()
 		{
 			return "...";
+		}
+
+		public void AddStatBonuses( Mobile to )
+		{
+			int strBonus = BonusStr;
+			int dexBonus = BonusDex;
+			int intBonus = BonusInt;
+
+			if ( strBonus != 0 || dexBonus != 0 || intBonus != 0 )
+			{
+				string modName = Owner.Serial.ToString();
+
+				if ( strBonus != 0 )
+					to.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
+
+				if ( dexBonus != 0 )
+					to.AddStatMod( new StatMod( StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero ) );
+
+				if ( intBonus != 0 )
+					to.AddStatMod( new StatMod( StatType.Int, modName + "Int", intBonus, TimeSpan.Zero ) );
+			}
+
+			to.CheckStatTimers();
+		}
+
+		public void RemoveStatBonuses( Mobile from )
+		{
+			string modName = Owner.Serial.ToString();
+
+			from.RemoveStatMod( modName + "Str" );
+			from.RemoveStatMod( modName + "Dex" );
+			from.RemoveStatMod( modName + "Int" );
+
+			from.CheckStatTimers();
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -823,7 +897,9 @@ namespace Server
 		Fire=0x00000002,
 		Cold=0x00000004,
 		Poison=0x00000008,
-		Energy=0x00000010
+		Energy=0x00000010,
+		Chaos=0x00000020,
+		Direct=0x00000040
 	}
 
 	public sealed class AosElementAttributes : BaseAttributes
@@ -868,6 +944,12 @@ namespace Server
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Energy { get { return this[AosElementAttribute.Energy]; } set { this[AosElementAttribute.Energy] = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Chaos { get { return this[AosElementAttribute.Chaos]; } set { this[AosElementAttribute.Chaos] = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Direct { get { return this[AosElementAttribute.Direct]; } set { this[AosElementAttribute.Direct] = value; } }
 	}
 
 	[PropertyObject]

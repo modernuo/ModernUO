@@ -24,11 +24,11 @@ namespace Server.Items
 			Slayer = SlayerName.Fey;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
 			fire = 100;
 
-			cold = pois = phys = nrgy = 0;
+			cold = pois = phys = nrgy = chaos = direct = 0;
 		}
 
 		public PixieSwatter( Serial serial ) : base( serial )

@@ -1517,9 +1517,17 @@ namespace Server.Items
 
 			AddBlood( attacker, defender, damage );
 
-			int phys, fire, cold, pois, nrgy;
+			int phys, fire, cold, pois, nrgy, chaos, direct;
 
-			GetDamageTypes( attacker, out phys, out fire, out cold, out pois, out nrgy );
+			GetDamageTypes( attacker, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );
+
+			if ( Core.ML && this is BaseRanged )
+			{
+				BaseQuiver quiver = attacker.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
+
+				if ( quiver != null )
+					quiver.AlterBowDamage( ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct );
+			}
 
 			if ( m_Consecrated )
 			{
@@ -1536,7 +1544,7 @@ namespace Server.Items
 				if ( pois < low ){ low = pois; type = 3; }
 				if ( nrgy < low ){ low = nrgy; type = 4; }
 
-				phys = fire = cold = pois = nrgy = 0;
+				phys = fire = cold = pois = nrgy = chaos = direct = 0;
 
 				if ( type == 0 ) phys = 100;
 				else if ( type == 1 ) fire = 100;
@@ -1561,7 +1569,7 @@ namespace Server.Items
 
 			bool ignoreArmor = ( a is ArmorIgnore || (move != null && move.IgnoreArmor( attacker )) );
 
-			damageGiven = AOS.Damage( defender, attacker, damage, ignoreArmor, phys, fire, cold, pois, nrgy );
+			damageGiven = AOS.Damage( defender, attacker, damage, ignoreArmor, phys, fire, cold, pois, nrgy, chaos, direct, false, this is BaseRanged );
 
 			double propertyBonus = ( move == null ) ? 1.0 : move.GetPropertyBonus( attacker );
 
@@ -1966,7 +1974,7 @@ namespace Server.Items
 			}
 		}
 
-		public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
 			if( wielder is BaseCreature )
 			{
@@ -1977,6 +1985,8 @@ namespace Server.Items
 				cold = bc.ColdDamage;
 				pois = bc.PoisonDamage;
 				nrgy = bc.EnergyDamage;
+				chaos = bc.ChaosDamage;
+				direct = bc.DirectDamage;
 			}
 			else
 			{
@@ -1984,8 +1994,10 @@ namespace Server.Items
 				cold = m_AosElementDamages.Cold;
 				pois = m_AosElementDamages.Poison;
 				nrgy = m_AosElementDamages.Energy;
+				chaos = m_AosElementDamages.Chaos;
+				direct = m_AosElementDamages.Direct;
 
-				phys = 100 - fire - cold - pois - nrgy;
+				phys = 100 - fire - cold - pois - nrgy - chaos - direct;
 
 				CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
 
@@ -2001,6 +2013,8 @@ namespace Server.Items
 						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponEnergyDamage,	ref nrgy, left );
 						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponFireDamage,		ref fire, left );
 						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponPoisonDamage,	ref pois, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponChaosDamage,	ref chaos, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponDirectDamage,	ref direct, left );
 
 						phys = left;
 					}
@@ -2975,8 +2989,8 @@ namespace Server.Items
 
 		public int GetElementalDamageHue()
 		{
-			int phys, fire, cold, pois, nrgy;
-			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy );
+			int phys, fire, cold, pois, nrgy, chaos, direct;
+			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );
 			//Order is Cold, Energy, Fire, Poison, Physical left
 
 			int currentMax = 50;
@@ -3123,6 +3137,9 @@ namespace Server.Items
 
 			int prop;
 
+			if ( Core.ML && this is BaseRanged && ( (BaseRanged) this ).Balanced )
+				list.Add( 1072792 ); // Balanced
+
 			if ( (prop = m_AosWeaponAttributes.UseBestSkill) != 0 )
 				list.Add( 1060400 ); // use best weapon skill
 
@@ -3189,6 +3206,9 @@ namespace Server.Items
 			if ( (prop = m_AosWeaponAttributes.HitLeechStam) != 0 )
 				list.Add( 1060430, prop.ToString() ); // hit stamina leech ~1_val~%
 
+			if ( Core.ML && this is BaseRanged && ( prop = ( (BaseRanged) this ).Velocity ) != 0 )
+				list.Add( 1072793, prop.ToString() ); // Velocity ~1_val~%
+
 			if ( (prop = m_AosAttributes.BonusDex) != 0 )
 				list.Add( 1060409, prop.ToString() ); // dexterity bonus ~1_val~
 
@@ -3249,9 +3269,9 @@ namespace Server.Items
 			if ( (prop = m_AosAttributes.WeaponSpeed) != 0 )
 				list.Add( 1060486, prop.ToString() ); // swing speed increase ~1_val~%
 
-			int phys, fire, cold, pois, nrgy;
+			int phys, fire, cold, pois, nrgy, chaos, direct;
 
-			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy );
+			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );
 
 			if ( phys != 0 )
 				list.Add( 1060403, phys.ToString() ); // physical damage ~1_val~%
@@ -3266,7 +3286,13 @@ namespace Server.Items
 				list.Add( 1060406, pois.ToString() ); // poison damage ~1_val~%
 
 			if ( nrgy != 0 )
-				list.Add( 1060407, nrgy.ToString() ); // energy damage ~1_val~%
+				list.Add( 1060407, nrgy.ToString() ); // energy damage ~1_val
+
+			if ( Core.ML && chaos != 0 )
+				list.Add( 1072846, chaos.ToString() ); // chaos damage ~1_val~%
+
+			if ( Core.ML && direct != 0 )
+				list.Add( 1079978, direct.ToString() ); // Direct Damage: ~1_PERCENT~%
 
 			list.Add( 1061168, "{0}\t{1}", MinDamage.ToString(), MaxDamage.ToString() ); // weapon damage ~1_val~ - ~2_val~
 

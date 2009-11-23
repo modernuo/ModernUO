@@ -22,11 +22,11 @@ namespace Server.Items
 			Attributes.BonusMana = 6;
 		}
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy )
+		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
 			cold = 100;
 
-			fire = phys = pois = nrgy = 0;
+			fire = phys = pois = nrgy = chaos = direct = 0;
 		}
 
 		public ColdBlood( Serial serial ) : base( serial )

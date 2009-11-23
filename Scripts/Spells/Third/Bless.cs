@@ -42,7 +42,7 @@ namespace Server.Spells.Third
 				m.FixedParticles( 0x373A, 10, 15, 5018, EffectLayer.Waist );
 				m.PlaySound( 0x1EA );
 
-				int percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
+				int percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
 				TimeSpan length = SpellHelper.GetDuration(Caster, m);
 
 				string args = String.Format("{0}\t{1}\t{2}", percentage, percentage, percentage);
