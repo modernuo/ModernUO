@@ -116,7 +116,7 @@ namespace Server.Spells.Necromancy
 					typeof( ValoriteElemental ), typeof( VeriteElemental ), typeof( PoisonElemental ),
 					typeof( FireElemental ), typeof( SummonedFireElemental ), typeof( SnowElemental ),
 					typeof( AirElemental ), typeof( SummonedAirElemental ), typeof( WaterElemental ),
-					typeof( SummonedAirElemental )
+					typeof( SummonedAirElemental ), typeof ( ToxicElemental )
 				}, new SummonEntry[]
 				{
 					new SummonEntry( 5000, typeof( WailingBanshee ) ),

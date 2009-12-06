@@ -2494,6 +2494,10 @@ namespace Server.Mobiles
 					if( TransformationSpellHelper.UnderTransformation( m, typeof( EtherealVoyageSpell ) ) )
 						continue;
 
+					// Ignore players with activated honor
+					if ( m is PlayerMobile && ( (PlayerMobile)m ).HonorActive )
+						continue;
+					
 					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil )
 					{
 						// Only acquire this mobile if it attacked us, or if it's evil.

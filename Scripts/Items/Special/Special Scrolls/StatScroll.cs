@@ -89,6 +89,9 @@ namespace Server.Items
 					{
 						from.CloseGump( typeof( StatCapScroll.InternalGump ) );
 						from.CloseGump( typeof( PowerScroll.InternalGump ) );
+						#region Scroll of Alacrity
+						from.CloseGump(typeof( ScrollofAlacrity.InternalGump ) );
+						#endregion
 						from.SendGump( new InternalGump( from, this ) );
 					}
 					else

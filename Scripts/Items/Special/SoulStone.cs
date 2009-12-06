@@ -5,6 +5,7 @@ using Server.Network;
 using Server.Accounting;
 using Server.Engines.VeteranRewards;
 using Server.Multis;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -49,7 +50,7 @@ namespace Server.Items
 					this.ItemID = m_InactiveItemID;
 			}
 		}
-	
+
 		public static readonly TimeSpan UseDelay = TimeSpan.FromDays( 1.0 );
 
 		private string m_Account;
@@ -157,6 +158,8 @@ namespace Server.Items
 		{
 			DateTime now = DateTime.Now;
 
+			PlayerMobile pm = from as PlayerMobile;
+
 			if ( this.Deleted || !this.IsAccessibleTo( from ) )
 			{
 				return false;
@@ -224,6 +227,15 @@ namespace Server.Items
 
 				return false;
 			}
+
+			#region Scroll of Alacrity
+			if ( pm.AcceleratedStart > DateTime.Now )
+			{
+				from.SendLocalizedMessage(1078115); // You may not use a soulstone while your character is under the effects of a Scroll of Alacrity.
+				return false;
+			}
+			#endregion
+
 			else
 			{
 				return true;
@@ -590,6 +602,21 @@ namespace Server.Items
 					from.SendGump( new ErrorGump( m_Stone, 1070717, 1070802 ) );
 					return;
 				}
+
+				#region Scroll of ALacrity
+				PlayerMobile pm = from as PlayerMobile;
+				if (pm.AcceleratedStart > DateTime.Now)
+				{
+					// <CENTER>Unable to Absorb Selected Skill from Soulstone</CENTER>
+
+					/*You may not use a soulstone while your character is under the effects of a Scroll of Alacrity.*/
+
+					// Wrong message?!
+
+					from.SendGump(new ErrorGump(m_Stone, 1070717, 1078115));
+					return;
+				}
+				#endregion
 
 				if ( requiredAmount > 0 )
 				{

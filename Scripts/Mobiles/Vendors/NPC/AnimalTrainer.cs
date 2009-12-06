@@ -251,7 +251,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				SayTo( from, 1042558 ); /* I charge 30 gold per pet for a real week's stable time.
+				from.SendLocalizedMessage( 1042558 ); /* I charge 30 gold per pet for a real week's stable time.
 										 * I will withdraw it from thy bank account.
 										 * Which animal wouldst thou like to stable here?
 										 */
@@ -313,7 +313,7 @@ namespace Server.Mobiles
 
 					from.Stabled.Add( pet );
 
-					SayTo( from, 502679 ); // Very well, thy pet is stabled. Thou mayst recover it by saying 'claim' to me. In one real world week, I shall sell it off if it is not claimed!
+					SayTo( from, Core.AOS ? 1049677 : 502679 ); // [AOS: Your pet has been stabled.] Very well, thy pet is stabled. Thou mayst recover it by saying 'claim' to me. In one real world week, I shall sell it off if it is not claimed!
 				}
 				else
 				{

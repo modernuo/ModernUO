@@ -251,7 +251,7 @@ namespace Server.Engines.Harvest
 				{
 					SOS sos = messages[i];
 
-					if ( from.Map == sos.TargetMap && from.InRange( sos.TargetLocation, 60 ) )
+					if ( ( from.Map == Map.Felucca || from.Map == Map.Trammel ) && from.InRange( sos.TargetLocation, 60 ) )
 					{
 						Item preLoot = null;
 

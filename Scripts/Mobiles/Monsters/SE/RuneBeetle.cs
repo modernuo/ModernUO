@@ -134,19 +134,19 @@ namespace Server.Mobiles
 				if ( Core.ML )
 				{
 					if ( defender.PhysicalResistance > 0 )
-						mods.Add( new ResistanceMod( ResistanceType.Physical, defender.PhysicalResistance / 2 ) );
+						mods.Add( new ResistanceMod( ResistanceType.Physical, -(defender.PhysicalResistance / 2) ) );
 
 					if ( defender.FireResistance > 0 )
-						mods.Add( new ResistanceMod( ResistanceType.Fire, defender.FireResistance / 2 ) );
+						mods.Add( new ResistanceMod( ResistanceType.Fire, -(defender.FireResistance / 2) ) );
 
 					if ( defender.ColdResistance > 0 )
-						mods.Add( new ResistanceMod( ResistanceType.Cold, defender.ColdResistance / 2 ) );
+						mods.Add( new ResistanceMod( ResistanceType.Cold, -(defender.ColdResistance / 2) ) );
 
 					if ( defender.PoisonResistance > 0 )
-						mods.Add( new ResistanceMod( ResistanceType.Poison, defender.PoisonResistance / 2 ) );
+						mods.Add( new ResistanceMod( ResistanceType.Poison, -(defender.PoisonResistance / 2) ) );
 
 					if ( defender.EnergyResistance > 0 )
-						mods.Add( new ResistanceMod( ResistanceType.Energy, defender.EnergyResistance / 2 ) );
+						mods.Add( new ResistanceMod( ResistanceType.Energy, -(defender.EnergyResistance / 2) ) );
 				}
 				else
 				{

@@ -221,6 +221,14 @@ namespace Server.Misc
 					}
 				}
 
+				#region Scroll of Alacrity
+				PlayerMobile pm = from as PlayerMobile;
+
+				if ( from is PlayerMobile )
+					if (pm != null && skill.SkillName == pm.AcceleratedSkill && pm.AcceleratedStart > DateTime.Now)
+					toGain *= Utility.RandomMinMax(2, 5);
+					#endregion
+
 				if ( !from.Player || (skills.Total + toGain) <= skills.Cap )
 				{
 					skill.BaseFixedPoint += toGain;

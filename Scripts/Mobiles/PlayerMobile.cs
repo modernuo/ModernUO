@@ -45,7 +45,11 @@ namespace Server.Mobiles
 		Young				= 0x00000400,
 		AcceptGuildInvites		= 0x00000800,
 		DisplayChampionTitle		= 0x00001000,
-		HasStatReward			= 0x00002000
+		HasStatReward			= 0x00002000,
+
+		#region Scroll of Alacrity
+		AcceleratedSkill = 0x00080000,
+		#endregion
 	}
 
 	public enum NpcGuild
@@ -318,6 +322,27 @@ namespace Server.Mobiles
 			set{ m_AnkhNextUse = value; }
 		}
 
+		#region Scroll of Alacrity
+		private DateTime m_AcceleratedStart;
+
+		[CommandProperty(AccessLevel.GameMaster)]
+		public DateTime AcceleratedStart
+		{
+			get { return m_AcceleratedStart; }
+			set { m_AcceleratedStart = value; }
+		}
+
+		private SkillName m_AcceleratedSkill;
+
+		[CommandProperty(AccessLevel.GameMaster)]
+		public SkillName AcceleratedSkill
+		{
+			get { return m_AcceleratedSkill; }
+			set { m_AcceleratedSkill = value; }
+		}
+		#endregion
+
+
 		public static Direction GetDirection4( Point3D from, Point3D to )
 		{
 			int dx = from.X - to.X;
@@ -344,6 +369,16 @@ namespace Server.Mobiles
 		{
 			if ( !base.OnDroppedItemToWorld( item, location ) )
 				return false;
+
+			IPooledEnumerable mobiles = Map.GetMobilesInRange( location, 0 );
+			
+			if ( mobiles.GetEnumerator().MoveNext() ) 
+			{ 
+				mobiles.Free(); 
+				return false; 
+			}
+			else
+				mobiles.Free();
 
 			BounceInfo bi = item.GetBounce();
 

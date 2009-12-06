@@ -270,9 +270,12 @@ namespace Server.Items
 					{
 						if ( firstStage )
 						{
-							from.CloseGump( typeof( StatCapScroll.InternalGump ) );
-							from.CloseGump( typeof( PowerScroll.InternalGump ) );
-							from.SendGump( new InternalGump( from, this ) );
+							from.CloseGump(typeof(StatCapScroll.InternalGump));
+							from.CloseGump(typeof(PowerScroll.InternalGump));
+							#region Scroll of Alacrity
+							from.CloseGump(typeof(ScrollofAlacrity.InternalGump));
+							#endregion
+							from.SendGump(new InternalGump(from, this));
 						}
 						else
 						{
