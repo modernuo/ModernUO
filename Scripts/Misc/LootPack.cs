@@ -239,6 +239,17 @@ namespace Server
 			};
 		#endregion
 
+		#region ML definitions
+		public static readonly LootPack MlRich = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry(  true, Gold,						100.00, "4d50+450" ),
+				new LootPackEntry( false, AosMagicItemsRichType1,	100.00, 1, 3, 0, 75 ),
+				new LootPackEntry( false, AosMagicItemsRichType1,	 80.00, 1, 3, 0, 75 ),
+				new LootPackEntry( false, AosMagicItemsRichType1,	 60.00, 1, 5, 0, 100 ),
+				new LootPackEntry( false, Instruments,				  1.00, 1 )
+			} );
+		#endregion
+
 		#region SE definitions
 		public static readonly LootPack SePoor = new LootPack( new LootPackEntry[]
 			{

@@ -987,6 +987,11 @@ namespace Server.Spells
 					//from.SendMessage(String.Format("You Leeched {0} Mana", manaLeech));
 				}
 			}
+			if ( context != null && context.Type == typeof( VampiricEmbraceSpell ) )
+			{
+				from.Hits += AOS.Scale( damageGiven, 20 );
+				from.PlaySound( 0x44D );
+			}
 		}
 
 		public static void Heal( int amount, Mobile target, Mobile from )

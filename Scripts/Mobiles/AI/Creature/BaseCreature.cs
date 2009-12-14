@@ -1222,6 +1222,9 @@ namespace Server.Mobiles
 			if ( m_ReceivedHonorContext != null )
 				m_ReceivedHonorContext.OnTargetDamaged( from, amount );
 
+			if ( willKill && from is PlayerMobile )
+				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( ((PlayerMobile) from).RecoverAmmo ) );
+
 			base.OnDamage( amount, from, willKill );
 		}
 
@@ -3505,6 +3508,14 @@ namespace Server.Mobiles
 		public void PackPotion()
 		{
 			PackItem( Loot.RandomPotion() );
+		}
+
+		public void PackArcanceScroll( double chance )
+		{
+			if ( !Core.ML || chance <= Utility.RandomDouble() )
+				return;
+
+			PackItem( Loot.Construct( Loot.ArcaneScrollTypes ) );
 		}
 
 		public void PackNecroScroll( int index )

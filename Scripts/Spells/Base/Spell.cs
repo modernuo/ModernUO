@@ -498,6 +498,10 @@ namespace Server.Spells
 			{
 				m_Caster.SendLocalizedMessage( 502644 ); // You have not yet recovered from casting a spell.
 			}
+			else if ( m_Caster is PlayerMobile && ( (PlayerMobile) m_Caster ).PeacedUntil > DateTime.Now )
+			{
+				m_Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
+			}
 			else if ( m_Caster.Mana >= ScaleMana( GetMana() ) )
 			{
 				if ( m_Caster.Spell == null && m_Caster.CheckSpellCast( this ) && CheckCast() && m_Caster.Region.OnBeginSpellCast( m_Caster, this ) )
@@ -725,6 +729,11 @@ namespace Server.Spells
 			else if ( Core.AOS && (m_Caster.Frozen || m_Caster.Paralyzed) )
 			{
 				m_Caster.SendLocalizedMessage( 502646 ); // You cannot cast a spell while frozen.
+				DoFizzle();
+			}
+			else if ( m_Caster is PlayerMobile && ((PlayerMobile) m_Caster).PeacedUntil > DateTime.Now )
+			{
+				m_Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
 				DoFizzle();
 			}
 			else if ( CheckFizzle() )

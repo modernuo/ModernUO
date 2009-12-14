@@ -106,7 +106,8 @@ namespace Server
 					typeof( Silvani ),
 					typeof( Unicorn ),
 					typeof( Wisp ),
-					typeof( Treefellow )
+					typeof( Treefellow ),
+					typeof( MLDryad )
 				},
 				new Type[]
 				{
