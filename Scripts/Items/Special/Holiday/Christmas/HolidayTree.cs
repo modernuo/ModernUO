@@ -264,7 +264,8 @@ namespace Server.Items
 					break;
 				}
 			}
-			ValidatePlacement();
+
+            Timer.DelayCall( TimeSpan.Zero, ValidatePlacement );
 		}
 
 		public void ValidatePlacement()
