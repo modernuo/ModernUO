@@ -56,8 +56,6 @@ namespace Server.Items
 		public override int BasePoisonResistance { get { return 17; } }
 		public override int BaseEnergyResistance { get { return 17; } }
 
-		public override bool CanBeBlessed { get { return false; } }
-
 		public override int InitMinHits { get { return 255; } }
 		public override int InitMaxHits { get { return 255; } }
 

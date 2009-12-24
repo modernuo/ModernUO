@@ -41,8 +41,14 @@ namespace Server.Engines.Plants
 		{
 			Mobile from = sender.Mobile;
 
-			if ( info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus != PlantStatus.Stage9 || !from.InRange( m_Plant.GetWorldLocation(), 3 ) )
+			if ( info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus != PlantStatus.Stage9 )
 				return;
+			
+			if ( info.ButtonID == 3 && !from.InRange( m_Plant.GetWorldLocation(), 3 ) )
+			{
+				from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 500446 ); // That is too far away.
+				return;
+			}
 
 			if ( !m_Plant.IsUsableBy( from ) )
 			{

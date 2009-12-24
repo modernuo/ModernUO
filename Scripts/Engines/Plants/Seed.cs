@@ -140,9 +140,10 @@ namespace Server.Engines.Plants
 		{
 			private Seed m_Seed;
 
-			public InternalTarget( Seed seed ) : base( 3, false, TargetFlags.None )
+			public InternalTarget( Seed seed ) : base( -1, false, TargetFlags.None )
 			{
 				m_Seed = seed;
+				CheckLOS = false;
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )

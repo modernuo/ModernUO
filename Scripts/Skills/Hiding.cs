@@ -97,6 +97,7 @@ namespace Server.SkillHandlers
 				if ( ok )
 				{
 					m.Hidden = true;
+					m.Warmode = false;
 					m.LocalOverheadMessage( MessageType.Regular, 0x1F4, 501240 ); // You have hidden yourself well.
 				}
 				else

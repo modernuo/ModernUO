@@ -6,6 +6,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Multis;
 using Server.ContextMenus;
+using Server.Network;
 
 namespace Server.Engines.Plants
 {
@@ -212,8 +213,10 @@ namespace Server.Engines.Plants
 				return 1060812; // plant
 			else if ( m_PlantStatus >= PlantStatus.Sapling )
 				return 1023305; // sapling
-			else
+			else if ( m_PlantStatus >= PlantStatus.Seed )
 				return 1060810; // seed
+			else
+				return 1026951; // dirt
 		}
 
 		private void Update()
@@ -341,6 +344,14 @@ namespace Server.Engines.Plants
 		{
 			if ( m_PlantStatus >= PlantStatus.DecorativePlant )
 				return;
+			
+			Point3D loc = this.GetWorldLocation();	
+			
+			if ( !from.InLOS( loc ) || !from.InRange( loc, 2 ) )
+			{
+				from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1019045 ); // I can't reach that.
+				return;
+			}
 
 			if ( !IsUsableBy( from ) )
 			{
@@ -363,12 +374,7 @@ namespace Server.Engines.Plants
 			}
 			else if ( m_PlantStatus != PlantStatus.BowlOfDirt )
 			{
-				if ( m_PlantStatus >= PlantStatus.Plant )
-					LabelTo( from, "This bowl of dirt already has a plant in it!" );
-				else if ( m_PlantStatus >= PlantStatus.Sapling )
-					LabelTo( from, "This bowl of dirt already has a sapling in it!" );
-				else
-					LabelTo( from, "This bowl of dirt already has a seed in it!" );
+				from.SendLocalizedMessage( 1080389, "#" + GetLocalizedPlantStatus().ToString() ); // This bowl of dirt already has a ~1_val~ in it!
 			}
 			else if ( m_PlantSystem.Water < 2 )
 			{

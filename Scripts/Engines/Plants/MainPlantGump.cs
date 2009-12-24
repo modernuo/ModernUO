@@ -226,8 +226,14 @@ namespace Server.Engines.Plants
 		{
 			Mobile from = sender.Mobile;
 
-			if ( info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant || !from.InRange( m_Plant.GetWorldLocation(), 3 ) )
+			if ( info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant )
 				return;
+			
+			if ( ( ( info.ButtonID >= 6 && info.ButtonID <= 10 ) || info.ButtonID == 12 ) && !from.InRange( m_Plant.GetWorldLocation(), 3 ) )
+			{
+				from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 500446 ); // That is too far away.
+				return;
+			}
 
 			if ( !m_Plant.IsUsableBy( from ) )
 			{
@@ -286,8 +292,30 @@ namespace Server.Engines.Plants
 				}
 				case 6: // Water
 				{
-					from.Target = new PlantPourTarget( m_Plant );
-					from.SendLocalizedMessage( 1060808, "#" + m_Plant.GetLocalizedPlantStatus().ToString() ); // Target the container you wish to use to water the ~1_val~.
+					Item[] item = from.Backpack.FindItemsByType( typeof( BaseBeverage ) );
+					
+					bool foundUsableWater = false;
+					
+					if ( item != null && item.Length > 0 )
+					{
+						for ( int i = 0; i < item.Length; ++i )
+						{
+							BaseBeverage beverage = (BaseBeverage)item[i];
+							
+							if ( !beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water )
+							{
+								foundUsableWater = true;
+								m_Plant.Pour( from, beverage );
+								break;
+							}
+						}
+					}
+					
+					if ( !foundUsableWater )
+					{
+						from.Target = new PlantPourTarget( m_Plant );
+						from.SendLocalizedMessage( 1060808, "#" + m_Plant.GetLocalizedPlantStatus().ToString() ); // Target the container you wish to use to water the ~1_val~.
+					}
 
 					break;
 				}

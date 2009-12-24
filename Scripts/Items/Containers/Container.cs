@@ -40,6 +40,14 @@ namespace Server.Items
 			return base.CheckHold( m, item, message, checkItems, plusItems, plusWeight );
 		}
 
+		public override bool CheckItemUse( Mobile from, Item item )
+		{
+			if ( IsDecoContainer && item is BaseBook )
+				return true;
+
+			return base.CheckItemUse( from, item );
+		}
+
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
 			base.GetContextMenuEntries( from, list );

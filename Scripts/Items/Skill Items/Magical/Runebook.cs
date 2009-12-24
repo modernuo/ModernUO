@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Network;
+using Server.Mobiles;
 using Server.Multis;
 using Server.Engines.Craft;
 using Server.ContextMenus;
@@ -22,6 +23,8 @@ namespace Server.Items
 		private Mobile m_Crafter;
 		
 		private DateTime m_NextUse;
+		
+		private List<Mobile> m_Openers = new List<Mobile>();
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime NextUse
@@ -81,6 +84,18 @@ namespace Server.Items
 			set
 			{
 				m_MaxCharges = value;
+			}
+		}
+		
+		public List<Mobile> Openers
+		{
+			get
+			{
+				return m_Openers;
+			}
+			set
+			{
+				m_Openers = value;
 			}
 		}
 
@@ -264,6 +279,23 @@ namespace Server.Items
 			if ( m_Description != null && m_Description.Length > 0 )
 				list.Add( m_Description );
 		}
+		
+		public override bool OnDragLift( Mobile from )
+		{
+			if ( from.HasGump( typeof( RunebookGump ) ) )
+			{
+				from.SendLocalizedMessage( 500169 ); // You cannot pick that up.
+				return false;
+			}
+			
+			foreach ( Mobile m in m_Openers )
+				if ( IsOpen( m ) )
+					m.CloseGump( typeof( RunebookGump ) );
+				
+			m_Openers.Clear();
+			
+			return true;
+		}
 
 		public override void OnSingleClick( Mobile from )
 		{
@@ -280,6 +312,12 @@ namespace Server.Items
 		{
 			if ( from.InRange( GetWorldLocation(), (Core.ML ? 3 : 1) ) && CheckAccess( from ) )
 			{
+				if ( RootParent is BaseCreature )
+				{
+					from.SendLocalizedMessage( 502402 ); // That is inaccessible.
+					return;
+				}
+
 				if ( DateTime.Now < NextUse )
 				{
 					from.SendLocalizedMessage( 502406 ); // This book needs time to recharge.
@@ -288,6 +326,8 @@ namespace Server.Items
 
 				from.CloseGump( typeof( RunebookGump ) );
 				from.SendGump( new RunebookGump( from, this ) );
+				
+				m_Openers.Add( from );
 			}
 		}
 

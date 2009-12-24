@@ -149,12 +149,11 @@ namespace Server.Gumps
 				AddButton( 135 + (half * 160), 115, 2437, 2438, 2 + (index * 6) + 1, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 150 + (half * 160), 115, 100, 18, 1011298, false, false ); // Drop rune
 
-				if ( e != m_Book.Default )
-				{
-					// Set as default button
-					AddButton( 160 + (half * 140), 20, 2361, 2361, 2 + (index * 6) + 2, GumpButtonType.Reply, 0 );
-					AddHtmlLocalized( 175 + (half * 140), 15, 100, 18, 1011300, false, false ); // Set default
-				}
+				// Set as default button
+				int defButtonID = e != m_Book.Default ? 2361 : 2360;
+				
+				AddButton( 160 + (half * 140), 20, defButtonID, defButtonID, 2 + (index * 6) + 2, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 175 + (half * 140), 15, 100, 18, 1011300, false, false ); // Set default
 
 				if ( Core.AOS )
 				{
@@ -239,6 +238,8 @@ namespace Server.Gumps
 				}
 				else
 				{
+					m_Book.Openers.Remove( from );
+					
 					from.SendLocalizedMessage( 502416 ); // That cannot be done while the book is locked down.
 				}
 			}
@@ -260,7 +261,10 @@ namespace Server.Gumps
 			Mobile from = state.Mobile;
 
 			if ( m_Book.Deleted || !from.InRange( m_Book.GetWorldLocation(), (Core.ML ? 3 : 1) ) || !Multis.DesignContext.Check( from ) )
+			{
+				m_Book.Openers.Remove( from );
 				return;
+			}
 
 			int buttonID = info.ButtonID;
 
@@ -273,6 +277,8 @@ namespace Server.Gumps
 				}
 				else
 				{
+					m_Book.Openers.Remove( from );
+					
 					from.SendLocalizedMessage( 502413, null, 0x35 ); // That cannot be done while the book is locked down.
 				}
 			}
@@ -311,8 +317,9 @@ namespace Server.Gumps
 								}
 
 								m_Book.OnTravel();
-
 								new RecallSpell( from, m_Book, e, m_Book ).Cast();
+								
+								m_Book.Openers.Remove( from );
 							}
 
 							break;
@@ -328,6 +335,8 @@ namespace Server.Gumps
 							}
 							else
 							{
+								m_Book.Openers.Remove( from );
+								
 								from.SendLocalizedMessage( 502413, null, 0x35 ); // That cannot be done while the book is locked down.
 							}
 
@@ -368,6 +377,8 @@ namespace Server.Gumps
 							{
 								from.SendLocalizedMessage( 500015 ); // You do not have that spell!
 							}
+							
+							m_Book.Openers.Remove( from );
 
 							break;
 						}
@@ -392,6 +403,8 @@ namespace Server.Gumps
 							{
 								from.SendLocalizedMessage( 500015 ); // You do not have that spell!
 							}
+							
+							m_Book.Openers.Remove( from );
 
 							break;
 						}
@@ -419,11 +432,15 @@ namespace Server.Gumps
 									from.SendLocalizedMessage( 500015 ); // You do not have that spell!
 								}
 							}
+							
+							m_Book.Openers.Remove( from );
 
 							break;
 						}
 					}
 				}
+				else
+					m_Book.Openers.Remove( from );
 			}
 		}
 	}

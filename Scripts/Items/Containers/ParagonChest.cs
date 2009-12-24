@@ -9,6 +9,7 @@ using Server.Engines.PartySystem;
 
 namespace Server.Items
 {
+	[Flipable]
 	public class ParagonChest : LockableContainer
 	{
 		public override int LabelNumber{ get{ return 3000541; } }
@@ -21,7 +22,7 @@ namespace Server.Items
 		private static int[] m_Hues = new int[]
 		{
 			0x0, 0x455, 0x47E, 0x89F, 0x8A5, 0x8AB, 
-			0x966, 0x96D, 0x972, 0x973, 0x979,   
+			0x966, 0x96D, 0x972, 0x973, 0x979
 		};
 
 		private string m_Name;
@@ -74,6 +75,18 @@ namespace Server.Items
 			{
 				attributeCount = 1;
 				min = 10; max = 20;
+			}
+		}
+		
+		public void Flip()
+		{
+			switch ( ItemID )
+			{
+				case 0x9AB : ItemID = 0xE7C; break;
+				case 0xE7C : ItemID = 0x9AB; break;
+				
+				case 0xE40 : ItemID = 0xE41; break;
+				case 0xE41 : ItemID = 0xE40; break;
 			}
 		}
 
