@@ -76,7 +76,7 @@ namespace Server.Items
 		{
 			if( IsChildOf( from.Backpack ) || from.InRange(this, 1) )
 			{
-				from.PlaySound( 0x3b + Utility.Random(3) ); 
+				from.PlaySound( 0x3a + Utility.Random(3) ); 
 				from.Animate( 34, 5, 1, true, false, 0 );
 
 				if ( !ToothAches.ContainsKey( from ) )
