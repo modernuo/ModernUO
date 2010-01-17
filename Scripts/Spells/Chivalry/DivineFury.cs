@@ -31,7 +31,7 @@ namespace Server.Spells.Chivalry
 			if ( CheckSequence() )
 			{
 				Caster.PlaySound( 0x20F );
-				Caster.PlaySound( Caster.Body.IsFemale ? 0x338 : 0x44A );
+				Caster.PlaySound( Caster.Female ? 0x338 : 0x44A );
 				Caster.FixedParticles( 0x376A, 1, 31, 9961, 1160, 0, EffectLayer.Waist );
 				Caster.FixedParticles( 0x37C4, 1, 31, 9502, 43, 2, EffectLayer.Waist );
 

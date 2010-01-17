@@ -32,7 +32,7 @@ namespace Server.Engines.Quests.Hag
 				// rabbit's foot
 				new IngredientInfo( 1055021, 5, typeof( Rabbit ), typeof( JackRabbit ) ),
 				// mongbat wing
-				new IngredientInfo( 1055022, 5, typeof( Mongbat ) ),
+				new IngredientInfo( 1055022, 5, typeof( Mongbat ), typeof( GreaterMongbat ) ),
 				// chicken gizzard
 				new IngredientInfo( 1055023, 5, typeof( Chicken ) ),
 				// rat tail

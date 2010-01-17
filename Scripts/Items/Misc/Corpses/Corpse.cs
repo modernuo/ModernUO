@@ -1073,7 +1073,7 @@ namespace Server.Items
 			}
 			else if ( dead is BaseCreature )
 			{
-				((BaseCreature)dead).OnCarve( from, this );
+				((BaseCreature)dead).OnCarve( from, this, item );
 			}
 			else
 			{

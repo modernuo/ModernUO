@@ -1305,8 +1305,19 @@ namespace Server.Mobiles
 				}
 				else
 				{
-					OpenBackpack( from );
-
+					if ( WasNamed( e.Speech ) )
+						OpenBackpack( from );
+					else
+					{
+						IPooledEnumerable mobiles = e.Mobile.GetMobilesInRange( 2 );
+						
+						foreach ( Mobile m in mobiles )
+							if ( m is PlayerVendor && m.CanSee( e.Mobile ) && m.InLOS( e.Mobile ) )
+								((PlayerVendor)m).OpenBackpack( from );
+						
+						mobiles.Free();
+					}
+					
 					e.Handled = true;
 				}
 			}

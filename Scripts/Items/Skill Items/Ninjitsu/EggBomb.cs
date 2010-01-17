@@ -5,9 +5,15 @@ namespace Server.Items
 {
 	public class EggBomb : Item
 	{
-		[Constructable]
-		public EggBomb() : base( 0x2809 )
+		public override int LabelNumber 
 		{
+			get { return 1030249; }
+		}
+		
+		[Constructable]
+		public EggBomb() : base( 0x2808 )
+		{
+			// Item ID should be 0x2809 - Temporary solution for clients 7.0.0.0 and up
 			Stackable = Core.ML;
 			Weight = 1.0;
 		}
@@ -68,6 +74,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+			
+			if ( ItemID == 0x2809 ) // Temporary solution for clients 7.0.0.0 and up
+				ItemID = 0x2808;
 		}
 	}
 }

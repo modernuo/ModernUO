@@ -85,7 +85,7 @@ namespace Server.Engines.Quests.Collector
 							if ( targeted is Mobile )
 							{
 								ImageType image;
-								CaptureResponse response = obj.CaptureImage( targeted.GetType(), out image );
+								CaptureResponse response = obj.CaptureImage(( targeted.GetType().Name=="GreaterMongbat" ? new Mongbat().GetType() : targeted.GetType() ), out image );
 
 								switch ( response )
 								{

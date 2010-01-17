@@ -476,7 +476,10 @@ namespace Server.Items
 			if ( !isShield && armor.MeditationAllowance == ArmorMeditationAllowance.All )
 				m_Props.Set( 3, true ); // remove mage armor from possible properties
 			if ( armor.Resource >= CraftResource.RegularLeather && armor.Resource <= CraftResource.BarbedLeather )
+			{
 				m_Props.Set( 0, true ); // remove lower requirements from possible properties for leather armor
+				m_Props.Set( 2, true ); // remove durability bonus from possible properties
+			}
 			if ( armor.RequiredRace == Race.Elf )
 				m_Props.Set( 7, true ); // elves inherently have night sight and elf only armor doesn't get night sight as a mod
 

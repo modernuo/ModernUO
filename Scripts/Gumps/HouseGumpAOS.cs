@@ -104,8 +104,9 @@ namespace Server.Gumps
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
-				int offset = index % 10;
-				int page = 1 + (index / 10);
+				int xoffset = ((index % 20) / 10) * 200;
+				int yoffset = (index % 10) * 20;
+				int page = 1 + (index / 20);
 
 				if ( page != lastPage )
 				{
@@ -148,7 +149,7 @@ namespace Server.Gumps
 					continue;
 
 				if ( button != -1 )
-					AddButton( 10, 150 + (offset * 20), 4005, 4007, GetButtonID( button, i ), GumpButtonType.Reply, 0 );
+					AddButton( 10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID( button, i ), GumpButtonType.Reply, 0 );
 
 				if ( accountOf && m.Player && m.Account != null )
 					name = "Account of " + name;
@@ -156,7 +157,7 @@ namespace Server.Gumps
 				if ( leadingStar )
 					name = "* " + name;
 
-				AddLabel( button > 0 ? 45 : 10, 150 + (offset * 20), labelHue, name );
+				AddLabel( button > 0 ? 45 + xoffset : 10 + xoffset, 150 + yoffset, labelHue, name );
 				++index;
 			}
 		}

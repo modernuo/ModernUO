@@ -224,43 +224,12 @@ namespace Server.Items
 
 				m_From.SendGump( new DisguiseGump( m_From, m_Kit, hair, true ) );
 
-				StopTimer( m_From );
-
-				m_Timers[m_From] = Timer.DelayCall( TimeSpan.FromHours( 2.0 ), new TimerStateCallback( OnDisguiseExpire ), m_From );
+				DisguiseTimers.RemoveTimer( m_From );
+				
+				DisguiseTimers.CreateTimer( m_From, TimeSpan.FromHours( 2.0 ) );
+				DisguiseTimers.StartTimer( m_From );
 			}
 		}
-
-		public static void OnDisguiseExpire( object state )
-		{
-			Mobile m = (Mobile)state;
-
-			StopTimer( m );
-
-			m.NameMod = null;
-
-			if ( m is PlayerMobile )
-				((PlayerMobile)m).SetHairMods( -1, -1 );
-		}
-
-		public static bool IsDisguised( Mobile m )
-		{
-			return m_Timers.Contains( m );
-		}
-
-		public static bool StopTimer( Mobile m )
-		{
-			Timer t = (Timer)m_Timers[m];
-
-			if ( t != null )
-			{
-				t.Stop();
-				m_Timers.Remove( m );
-			}
-
-			return ( t != null );
-		}
-
-		private static Hashtable m_Timers = new Hashtable();
 
 		private static DisguiseEntry[] m_HairEntries = new DisguiseEntry[]
 			{
@@ -304,6 +273,100 @@ namespace Server.Items
 				m_OffsetY = oy;
 				m_Number = name;
 			}
+		}
+	}
+	
+	public class DisguiseTimers
+	{
+		public static void Initialize()
+		{
+			new DisguisePersistance();
+		}
+		
+		private class InternalTimer : Timer
+		{
+			private Mobile m_Player;
+			
+			public InternalTimer( Mobile m, TimeSpan delay ) : base( delay )
+			{
+				m_Player = m;
+				Priority = TimerPriority.OneMinute;
+			}
+
+			protected override void OnTick()
+			{
+				m_Player.NameMod = null;
+
+				if ( m_Player is PlayerMobile )
+					((PlayerMobile)m_Player).SetHairMods( -1, -1 );
+			
+				DisguiseTimers.RemoveTimer( m_Player );
+			}
+		}
+		
+		public static void CreateTimer( Mobile m, TimeSpan delay )
+		{
+			if ( m != null )
+				if ( !m_Timers.Contains( m ) )
+					m_Timers[m] = new InternalTimer( m, delay );
+		}
+		
+		public static void StartTimer( Mobile m )
+		{
+			Timer t = (Timer)m_Timers[m];
+			
+			if ( t != null )
+				t.Start();
+		}
+
+		public static bool IsDisguised( Mobile m )
+		{
+			return m_Timers.Contains( m );
+		}
+
+		public static bool StopTimer( Mobile m )
+		{
+			Timer t = (Timer)m_Timers[m];
+
+			if ( t != null )
+			{
+				t.Delay = t.Next - DateTime.Now;
+				t.Stop();
+			}
+
+			return ( t != null );
+		}
+		
+		public static bool RemoveTimer( Mobile m )
+		{
+			Timer t = (Timer)m_Timers[m];
+
+			if ( t != null )
+			{
+				t.Stop();
+				m_Timers.Remove( m );
+			}
+			
+			return ( t != null );
+		}
+		
+		public static TimeSpan TimeRemaining( Mobile m )
+		{
+			Timer t = (Timer)m_Timers[m];
+
+			if ( t != null )
+			{
+				return t.Next - DateTime.Now;
+			}
+			
+			return TimeSpan.Zero;
+		}
+		
+		private static Hashtable m_Timers = new Hashtable();
+		
+		public static Hashtable Timers
+		{
+			get { return m_Timers; }
 		}
 	}
 }

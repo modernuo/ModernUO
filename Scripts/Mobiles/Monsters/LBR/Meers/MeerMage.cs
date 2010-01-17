@@ -88,11 +88,64 @@ namespace Server.Mobiles
 				{
 					m_NextAbilityTime = DateTime.Now + TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 30 ) );
 
-					// TODO: Forest summon ability
+					if( combatant is BaseCreature )
+					{
+						BaseCreature bc = (BaseCreature)combatant;
 
-					this.Say( true, "I call a plague of insects to sting your flesh!" );
+						if( bc.Controlled  )
+						{
+							combatant = bc.ControlMaster;
+						}
+					}
 
-					m_Table[combatant] = Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 7.0 ), new TimerStateCallback( DoEffect ), new object[]{ combatant, 0 } );
+					if( Utility.RandomDouble() < .1 )
+					{
+						int[][] coord = 
+						{
+							new int[]{-4,-6}, new int[]{4,-6}, new int[]{0,-8}, new int[]{-5,5}, new int[]{5,5}
+						};
+
+						BaseCreature rabid;
+
+						for( int i=0; i<5; i++ )
+						{
+							switch( i )
+							{
+								case 0: rabid = new EnragedRabbit( this ); break;
+								case 1: rabid = new EnragedHind( this ); break;
+								case 2: rabid = new EnragedHart( this ); break;
+								case 3: rabid = new EnragedBlackBear( this ); break;
+								default: rabid = new EnragedEagle( this ); break;
+							}
+
+							rabid.FocusMob = combatant;
+
+							int x = combatant.X + coord[i][0];
+							int y = combatant.Y + coord[i][1];
+
+							/*
+								Once in a while OSI's dont spawn all 5, and
+								I can only attribute this to a bad spawn location
+								so I will do this.
+							*/
+
+							Point3D loc = new Point3D( x, y,  combatant.Map.GetAverageZ( x, y ));
+							if ( combatant.Map.CanSpawnMobile( loc ) )
+							{
+								rabid.MoveToWorld( loc, combatant.Map ) ;
+							}
+							else
+							{
+								rabid.Delete();
+							}
+						}
+						this.Say( 1071932 ); //Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
+					}
+					else
+					{
+						this.Say( true, "I call a plague of insects to sting your flesh!" );
+						m_Table[combatant] = Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 7.0 ), new TimerStateCallback( DoEffect ), new object[]{ combatant, 0 } );
+					}
 				}
 			}
 

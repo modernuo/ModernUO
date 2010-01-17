@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	public class GiantToad : BaseCreature
 	{
 		[Constructable]
-		public GiantToad() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
+		public GiantToad() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a giant toad";
 			Body = 80;
@@ -60,7 +60,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize(writer);
 
-			writer.Write((int) 0);
+			writer.Write((int) 1);
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -68,6 +68,11 @@ namespace Server.Mobiles
 			base.Deserialize(reader);
 
 			int version = reader.ReadInt();
+			if ( version < 1 )
+			{
+					AI = AIType.AI_Melee;
+					FightMode = FightMode.Closest;
+			}
 		}
 	}
 }

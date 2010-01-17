@@ -105,7 +105,7 @@ namespace Server.SkillHandlers
 						{
 							m_Thief.SendLocalizedMessage( 1010581 ); //	You cannot steal the sigil when you are incognito
 						}
-						else if ( DisguiseGump.IsDisguised( m_Thief ) )
+						else if ( DisguiseTimers.IsDisguised( m_Thief ) )
 						{
 							m_Thief.SendLocalizedMessage( 1010583 ); //	You cannot steal the sigil while disguised
 						}

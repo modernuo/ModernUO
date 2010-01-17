@@ -896,6 +896,8 @@ namespace Server.Gumps
 				}
 				default:
 				{
+					int hairhue = 0;
+
 					if ( (info.ButtonID & 0x100) != 0 ) // Hair style selected
 					{
 						int index = info.ButtonID & 0xFF;
@@ -905,7 +907,14 @@ namespace Server.Gumps
 
 						HairOrBeard hairStyle = m_HairStyles[index];
 
+						hairhue = m_Vendor.HairHue;
+
+						m_Vendor.HairItemID = 0;
+						m_Vendor.ProcessDelta();
+
 						m_Vendor.HairItemID = hairStyle.ItemID;
+
+						m_Vendor.HairHue = hairhue;
 
 						from.SendGump( new NewPlayerVendorCustomizeGump( m_Vendor ) );
 					}
@@ -921,7 +930,14 @@ namespace Server.Gumps
 
 						HairOrBeard beardStyle = m_BeardStyles[index];
 
+						hairhue = m_Vendor.FacialHairHue;
+
+						m_Vendor.FacialHairItemID = 0;
+						m_Vendor.ProcessDelta();
+
 						m_Vendor.FacialHairItemID = beardStyle.ItemID;
+
+						m_Vendor.FacialHairHue = hairhue;
 
 						from.SendGump( new NewPlayerVendorCustomizeGump( m_Vendor ) );
 					}

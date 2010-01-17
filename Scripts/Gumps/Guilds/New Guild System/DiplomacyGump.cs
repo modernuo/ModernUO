@@ -182,8 +182,19 @@ namespace Server.Guilds
 				return true;
 
 			AllianceInfo alliance = guild.Alliance;
-			if( alliance != null && alliance.IsPendingMember( g ) )
-				return true;
+
+			if( alliance != null )
+			{
+				Guild leader = alliance.Leader;
+				
+				if ( leader != null )
+				{
+					if ( guild == leader && alliance.IsPendingMember( g ) || g == leader && alliance.IsPendingMember( guild ) )
+				    	return true;
+				}
+				else if ( alliance.IsPendingMember( g ) )
+					return true;
+			}
 
 			return false;
 		}

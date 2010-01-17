@@ -377,6 +377,12 @@ namespace Server.Mobiles
 			get{ return m_AnkhNextUse; }
 			set{ m_AnkhNextUse = value; }
 		}
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan DisguiseTimeLeft
+		{
+			get{ return DisguiseTimers.TimeRemaining( this ); }
+		}
 
 		private DateTime m_PeacedUntil;
 
@@ -928,6 +934,8 @@ namespace Server.Mobiles
 				pm.BedrollLogout = false;
 				pm.LastOnline = DateTime.Now;
 			}
+			
+			DisguiseTimers.StartTimer( e.Mobile );
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerStateCallback( ClearSpecialMovesCallback ), e.Mobile );
 		}
@@ -980,6 +988,8 @@ namespace Server.Mobiles
 				pm.m_SpeechLog = null;
 				pm.LastOnline = DateTime.Now;
 			}
+			
+			DisguiseTimers.StopTimer( from );
 		}
 
 		public override void RevealingAction()
@@ -2047,7 +2057,7 @@ namespace Server.Mobiles
 
 			PolymorphSpell.StopTimer( this );
 			IncognitoSpell.StopTimer( this );
-			DisguiseGump.StopTimer( this );
+			DisguiseTimers.RemoveTimer( this );
 
 			EndAction( typeof( PolymorphSpell ) );
 			EndAction( typeof( IncognitoSpell ) );
@@ -2643,9 +2653,6 @@ namespace Server.Mobiles
 						m_HairModHue = reader.ReadInt();
 						m_BeardModID = reader.ReadInt();
 						m_BeardModHue = reader.ReadInt();
-
-						// We cannot call SetHairMods( -1, -1 ) here because the items have not yet loaded
-						Timer.DelayCall( TimeSpan.Zero, new TimerCallback( RevertHair ) );
 					}
 
 					goto case 9;
@@ -2963,6 +2970,8 @@ namespace Server.Mobiles
 				faction.RemoveMember( this );
 
 			BaseHouse.HandleDeletion( this );
+			
+			DisguiseTimers.RemoveTimer( this );
 		}
 
 		public override bool NewGuildDisplay { get { return Server.Guilds.Guild.NewGuildSystem; } }
@@ -4083,7 +4092,7 @@ namespace Server.Mobiles
 		{
 			if ( Core.SE && AllFollowers.Count > 0 )
 			{
-				for ( int i = 0; i < m_AllFollowers.Count; ++i )
+				for ( int i = m_AllFollowers.Count - 1; i >= 0; --i )
 				{
 					BaseCreature pet = AllFollowers[i] as BaseCreature;
 
@@ -4096,7 +4105,7 @@ namespace Server.Mobiles
 					if ( (pet is PackLlama || pet is PackHorse || pet is Beetle || pet is HordeMinionFamiliar) && (pet.Backpack != null && pet.Backpack.Items.Count > 0) )
 						continue;
 
-					if ( !pet.Summoned && !pet.IsBonded )
+					if ( pet is BaseEscortable )
 						continue;
 
 					pet.ControlTarget = null;
@@ -4112,41 +4121,37 @@ namespace Server.Mobiles
 
 					Stabled.Add( pet );
 					m_AutoStabled.Add( pet );
-					--i;
 				}
 			}
 		}
 
 		public void ClaimAutoStabledPets()
 		{
-			if( !Core.SE || m_AutoStabled.Count <= 0 )
+			if ( !Core.SE || m_AutoStabled.Count <= 0 )
 				return;
 
-			if( !Alive )
+			if ( !Alive )
 			{
 				SendLocalizedMessage( 1076251 ); // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.				
 				return;
 			}
 
-			for ( int i = 0; i < m_AutoStabled.Count; ++i )
+			for ( int i = m_AutoStabled.Count - 1; i >= 0; --i )
 			{
 				BaseCreature pet = m_AutoStabled[i] as BaseCreature;
 
 				if ( pet == null || pet.Deleted )
 				{
 					pet.IsStabled = false;
-					m_AutoStabled.RemoveAt( i );
-					if( Stabled.Contains( pet ) )
+
+					if ( Stabled.Contains( pet ) )
 						Stabled.Remove( pet );
-					--i;
+
 					continue;
 				}
 
 				if ( (Followers + pet.ControlSlots) <= FollowersMax )
 				{
-					m_AutoStabled.RemoveAt( i );
-					--i;
-
 					pet.SetControlMaster( this );
 
 					if ( pet.Summoned )
@@ -4161,7 +4166,7 @@ namespace Server.Mobiles
 
 					pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
 
-					if( Stabled.Contains( pet ) )
+					if ( Stabled.Contains( pet ) )
 						Stabled.Remove( pet );
 				}
 				else

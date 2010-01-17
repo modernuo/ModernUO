@@ -8,7 +8,7 @@ using Server.ContextMenus;
 namespace Server.Items
 {
 	[FlipableAttribute( 0x2790, 0x27DB )]
-	public class LeatherNinjaBelt : BaseWaist, IUsesRemaining
+	public class LeatherNinjaBelt : BaseWaist, IUsesRemaining, IDyable
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
@@ -168,17 +168,15 @@ namespace Server.Items
 			if ( m_UsesRemaining < 1 )
 				return;
 
-			--m_UsesRemaining;
+			--UsesRemaining;
 
 			if ( m_PoisonCharges > 0 )
 			{
-				--m_PoisonCharges;
+				--PoisonCharges;
 
 				if ( m_PoisonCharges == 0 )
-					m_Poison = null;
+					Poison = null;
 			}
-
-			InvalidateProperties();
 		}
 
 		public void ResetUsing()
@@ -190,21 +188,19 @@ namespace Server.Items
 
 		public void Unload( Mobile from )
 		{
-			if ( UsesRemaining < 1 )
+			if ( m_UsesRemaining < 1 )
 				return;
 
-			Shuriken shuriken = new Shuriken( UsesRemaining );
+			Shuriken shuriken = new Shuriken( m_UsesRemaining );
 
 			shuriken.Poison = m_Poison;
 			shuriken.PoisonCharges = m_PoisonCharges;
 
 			from.AddToBackpack( shuriken );
 
-			m_UsesRemaining = 0;
-			m_PoisonCharges = 0;
-			m_Poison = null;
-
-			InvalidateProperties();
+			UsesRemaining = 0;
+			PoisonCharges = 0;
+			Poison = null;
 		}
 
 		public void Reload( Mobile from, Shuriken shuriken )
@@ -218,49 +214,72 @@ namespace Server.Items
 			}
 			else if ( shuriken.UsesRemaining > 0 )
 			{
+				bool canload = false;
+				bool poison = false;
+
 				if ( need > shuriken.UsesRemaining )
 					need = shuriken.UsesRemaining;
 
-				if ( shuriken.Poison != null && shuriken.PoisonCharges > 0 )
+				if( shuriken.Poison != null && shuriken.PoisonCharges > 0 )
 				{
-					if ( m_PoisonCharges <= 0 || m_Poison == shuriken.Poison )
-					{
-						if ( m_Poison != null && m_Poison.Level < shuriken.Poison.Level )
-							Unload( from );
+					poison = true;
 
+					if( m_Poison == null || ( m_Poison.Level < shuriken.Poison.Level ))
+					{
+						Unload( from );
+						canload = true;
+					}
+					else if( m_Poison != null && ( m_Poison.Level == shuriken.Poison.Level ))
+					{
+						canload = true;
+					}
+				}
+				else if( shuriken.Poison == null || shuriken.PoisonCharges <= 0 )
+				{
+					if( m_Poison == null || m_PoisonCharges <= 0 )
+					{
+						canload = true;
+					}
+				}
+
+				if( !canload )
+				{
+					from.SendLocalizedMessage( 1070767 ); // Loaded projectile is stronger, unload it first
+				}
+				else
+				{
+					if( poison )
+					{
 						if ( need > shuriken.PoisonCharges )
+						{
 							need = shuriken.PoisonCharges;
+						}
 
 						if ( m_Poison == null || m_PoisonCharges <= 0 )
-							m_PoisonCharges = need;
+						{
+							PoisonCharges = need;
+						}
 						else
-							m_PoisonCharges += need;
+						{
+							PoisonCharges += need;
+						}
 
-						m_Poison = shuriken.Poison;
+						Poison = shuriken.Poison;
 
 						shuriken.PoisonCharges -= need;
 
 						if ( shuriken.PoisonCharges <= 0 )
+						{
 							shuriken.Poison = null;
+						}
+					}
 
-						m_UsesRemaining += need;
-						shuriken.UsesRemaining -= need;
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1070767 ); // Loaded projectile is stronger, unload it first
-					}
-				}
-				else
-				{
-					m_UsesRemaining += need;
+					UsesRemaining += need;
 					shuriken.UsesRemaining -= need;
 				}
 
 				if ( shuriken.UsesRemaining <= 0 )
 					shuriken.Delete();
-
-				InvalidateProperties();
 			}
 		}
 

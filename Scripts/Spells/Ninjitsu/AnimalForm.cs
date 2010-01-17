@@ -4,6 +4,7 @@ using Server;
 using Server.Gumps;
 using Server.Network;
 using Server.Mobiles;
+using Server.Items;
 using Server.Spells.Fifth;
 using Server.Spells.Seventh;
 
@@ -53,6 +54,11 @@ namespace Server.Spells.Ninjitsu
 			else if ( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1063219 ); // You cannot mimic an animal while in that form.
+				return false;
+			}
+			else if ( DisguiseTimers.IsDisguised( Caster ) )
+			{
+				Caster.SendLocalizedMessage( 1061631 ); // You can't do that while disguised.
 				return false;
 			}
 

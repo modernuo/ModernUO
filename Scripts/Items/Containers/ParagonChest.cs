@@ -12,8 +12,6 @@ namespace Server.Items
 	[Flipable]
 	public class ParagonChest : LockableContainer
 	{
-		public override int LabelNumber{ get{ return 3000541; } }
-
 		private static int[] m_ItemIDs = new int[]
 		{
 			0x9AB, 0xE40, 0xE41, 0xE7C

@@ -15,12 +15,12 @@ namespace Server.Mobiles
 		public static Type[] ArtifactRarity11 { get { return m_ArtifactRarity11; } }
 		private static Type[] m_ArtifactRarity10 = new Type[]
 			{
+				typeof( LegacyOfTheDreadLord ),
 				typeof( TheTaskmaster )
 			};
 
 		private static Type[] m_ArtifactRarity11 = new Type[]
 			{
-				typeof( LegacyOfTheDreadLord ),
 				typeof( TheDragonSlayer ),
 				typeof( ArmorOfFortune ),
 				typeof( GauntletsOfNobility ),

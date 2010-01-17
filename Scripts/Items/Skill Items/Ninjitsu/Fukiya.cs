@@ -153,17 +153,15 @@ namespace Server.Items
 			if ( m_UsesRemaining < 1 )
 				return;
 
-			--m_UsesRemaining;
+			--UsesRemaining;
 
 			if ( m_PoisonCharges > 0 )
 			{
-				--m_PoisonCharges;
+				--PoisonCharges;
 
 				if ( m_PoisonCharges == 0 )
-					m_Poison = null;
+					Poison = null;
 			}
-
-			InvalidateProperties();
 		}
 
 		public void ResetUsing()
@@ -175,21 +173,19 @@ namespace Server.Items
 
 		public void Unload( Mobile from )
 		{
-			if ( UsesRemaining < 1 )
+			if ( m_UsesRemaining < 1 )
 				return;
 
-			FukiyaDarts darts = new FukiyaDarts( UsesRemaining );
+			FukiyaDarts darts = new FukiyaDarts( m_UsesRemaining );
 
 			darts.Poison = m_Poison;
 			darts.PoisonCharges = m_PoisonCharges;
 
 			from.AddToBackpack( darts );
 
-			m_UsesRemaining = 0;
-			m_PoisonCharges = 0;
-			m_Poison = null;
-
-			InvalidateProperties();
+			UsesRemaining = 0;
+			PoisonCharges = 0;
+			Poison = null;
 		}
 
 		public void Reload( Mobile from, FukiyaDarts darts )
@@ -203,49 +199,72 @@ namespace Server.Items
 			}
 			else if ( darts.UsesRemaining > 0 )
 			{
+				bool canload = false;
+				bool poison = false;
+
 				if ( need > darts.UsesRemaining )
 					need = darts.UsesRemaining;
 
-				if ( darts.Poison != null && darts.PoisonCharges > 0 )
+				if( darts.Poison != null && darts.PoisonCharges > 0 )
 				{
-					if ( m_PoisonCharges <= 0 || m_Poison == null || m_Poison.Level <= darts.Poison.Level )
-					{
-						if ( m_Poison != null && m_Poison.Level < darts.Poison.Level )
-							Unload( from );
+					poison = true;
 
+					if( m_Poison == null || ( m_Poison.Level < darts.Poison.Level ))
+					{
+						Unload( from );
+						canload = true;
+					}
+					else if( m_Poison != null && ( m_Poison.Level == darts.Poison.Level ))
+					{
+						canload = true;
+					}
+				}
+				else if( darts.Poison == null || darts.PoisonCharges <= 0 )
+				{
+					if( m_Poison == null || m_PoisonCharges <= 0 )
+					{
+						canload = true;
+					}
+				}
+
+				if( !canload )
+				{
+					from.SendLocalizedMessage( 1070767 ); // Loaded projectile is stronger, unload it first
+				}
+				else
+				{
+					if( poison )
+					{
 						if ( need > darts.PoisonCharges )
+						{
 							need = darts.PoisonCharges;
+						}
 
 						if ( m_Poison == null || m_PoisonCharges <= 0 )
-							m_PoisonCharges = need;
+						{
+							PoisonCharges = need;
+						}
 						else
-							m_PoisonCharges += need;
+						{
+							PoisonCharges += need;
+						}
 
-						m_Poison = darts.Poison;
+						Poison = darts.Poison;
 
 						darts.PoisonCharges -= need;
 
 						if ( darts.PoisonCharges <= 0 )
+						{
 							darts.Poison = null;
+						}
+					}
 
-						m_UsesRemaining += need;
-						darts.UsesRemaining -= need;
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1070767 ); // Loaded projectile is stronger, unload it first
-					}
-				}
-				else
-				{
-					m_UsesRemaining += need;
+					UsesRemaining += need;
 					darts.UsesRemaining -= need;
 				}
 
 				if ( darts.UsesRemaining <= 0 )
 					darts.Delete();
-
-				InvalidateProperties();
 			}
 		}
 

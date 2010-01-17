@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Server;
+using Server.Mobiles;
 
 namespace Server.Movement
 {
@@ -14,9 +15,11 @@ namespace Server.Movement
 
 		private static bool m_AlwaysIgnoreDoors;
 		private static bool m_IgnoreMovableImpassables;
+		private static bool m_IgnoreSpellFields;
 
 		public static bool AlwaysIgnoreDoors{ get{ return m_AlwaysIgnoreDoors; } set{ m_AlwaysIgnoreDoors = value; } }
 		public static bool IgnoreMovableImpassables{ get{ return m_IgnoreMovableImpassables; } set{ m_IgnoreMovableImpassables = value; } }
+		public static bool IgnoreSpellFields{ get{ return m_IgnoreSpellFields; } set{ m_IgnoreSpellFields = value; } }
 
 		public static void Configure()
 		{
@@ -27,7 +30,7 @@ namespace Server.Movement
 		{
 		}
 
-		private bool IsOk( bool ignoreDoors, int ourZ, int ourTop, Tile[] tiles, List<Item> items )
+		private bool IsOk( bool ignoreDoors, bool ignoreSpellFields, int ourZ, int ourTop, Tile[] tiles, List<Item> items )
 		{
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
@@ -54,6 +57,9 @@ namespace Server.Movement
 				if ( (flags & ImpassableSurface) != 0 ) // Impassable || Surface
 				{
 					if ( ignoreDoors && ((flags & TileFlag.Door) != 0 || itemID == 0x692 || itemID == 0x846 || itemID == 0x873 || (itemID >= 0x6F5 && itemID <= 0x6F6)) )
+						continue;
+
+					if ( ignoreSpellFields && ( itemID == 0x82 || itemID == 0x3946 || itemID == 0x3956 ) )
 						continue;
 
 					int checkZ = item.Z;
@@ -100,6 +106,7 @@ namespace Server.Movement
 			int checkTop = startZ + PersonHeight;
 
 			bool ignoreDoors = ( m_AlwaysIgnoreDoors || !m.Alive || m.Body.BodyID == 0x3DB || m.IsDeadBondedPet );
+			bool ignoreSpellFields = m is PlayerMobile && map != Map.Felucca;
 
 			#region Tiles
 			for ( int i = 0; i < tiles.Length; ++i )
@@ -145,7 +152,7 @@ namespace Server.Movement
 						if ( considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ )
 							continue;
 
-						if ( IsOk( ignoreDoors, ourZ, testTop, tiles, items ) )
+						if ( IsOk( ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items ) )
 						{
 							newZ = ourZ;
 							moveIsOk = true;
@@ -199,7 +206,7 @@ namespace Server.Movement
 						if ( considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ )
 							continue;
 
-						if ( IsOk( ignoreDoors, ourZ, testTop, tiles, items ) )
+						if ( IsOk( ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items ) )
 						{
 							newZ = ourZ;
 							moveIsOk = true;
@@ -229,7 +236,7 @@ namespace Server.Movement
 						shouldCheck = false;
 				}
 
-				if ( shouldCheck && IsOk( ignoreDoors, ourZ, testTop, tiles, items ) )
+				if ( shouldCheck && IsOk( ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items ) )
 				{
 					newZ = ourZ;
 					moveIsOk = true;

@@ -1188,6 +1188,11 @@ namespace Server.Spells
 			{
 				caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 			}
+			else if ( DisguiseTimers.IsDisguised( caster ) )
+			{
+				caster.SendLocalizedMessage( 1061631 ); // You can't do that while disguised.
+				return false;
+			}
 			else if( AnimalForm.UnderTransformation( caster ) )
 			{
 				caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.

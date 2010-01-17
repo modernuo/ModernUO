@@ -21,8 +21,8 @@ namespace Server.Multis
 		public static bool NewVendorSystem{ get{ return Core.AOS; } } // Is new player vendor system enabled?
 
 		public const int MaxCoOwners = 15;
-		public const int MaxFriends = 50;
-		public const int MaxBans = 50;
+		public static int MaxFriends { get { return !Core.AOS ? 50 : 140; } }
+		public static int MaxBans { get { return !Core.AOS ? 50 : 140; } }
 
 		public const bool DecayEnabled = true;
 
