@@ -2623,8 +2623,11 @@ namespace Server.Mobiles
 			if ( m_Paragon )
 				p = PoisonImpl.IncreaseLevel( p );
 
-			if ( p != null && HitPoisonChance >= Utility.RandomDouble() )
+			if ( p != null && HitPoisonChance >= Utility.RandomDouble() ) {
 				defender.ApplyPoison( this, p );
+				if ( this.Controlled )
+					this.CheckSkill(SkillName.Poisoning, 0, this.Skills[SkillName.Poisoning].Cap);
+			}
 
 			if( AutoDispel && defender is BaseCreature && ((BaseCreature)defender).IsDispellable && AutoDispelChance > Utility.RandomDouble() )
 				Dispel( defender );

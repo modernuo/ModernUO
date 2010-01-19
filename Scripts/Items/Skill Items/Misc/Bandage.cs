@@ -244,7 +244,16 @@ namespace Server.Items
 						{
 							Mobile master = petPatient.ControlMaster;
 
-							if ( master != null && master.InRange( petPatient, 3 ) )
+							if( master != null && m_Healer == master )
+							{
+								petPatient.ResurrectPet();
+
+								for ( int i = 0; i < petPatient.Skills.Length; ++i )
+								{
+									petPatient.Skills[i].Base -= 0.1;
+								}
+							}
+							else if ( master != null && master.InRange( petPatient, 3 ) )
 							{
 								healerNumber = 503255; // You are able to resurrect the creature.
 
