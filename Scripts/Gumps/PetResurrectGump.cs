@@ -65,12 +65,20 @@ namespace Server.Gumps
 				m_Pet.FixedEffect( 0x376A, 10, 16 );
 				m_Pet.ResurrectPet();
 
+				double decreaseAmount;
+
+				if( from == m_Pet.ControlMaster )
+					decreaseAmount = 0.1;
+				else
+					decreaseAmount = 0.2;
+
 				for ( int i = 0; i < m_Pet.Skills.Length; ++i )	//Decrease all skills on pet.
-					m_Pet.Skills[i].Base -= 0.2;
+					m_Pet.Skills[i].Base -= decreaseAmount;
 
 				if( !m_Pet.IsDeadPet && m_HitsScalar > 0 )
 					m_Pet.Hits = (int)(m_Pet.HitsMax * m_HitsScalar);
 			}
+
 		}
 	}
 }
