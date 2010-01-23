@@ -92,9 +92,12 @@ namespace Server.Mobiles
 					{
 						BaseCreature bc = (BaseCreature)combatant;
 
-						if( bc.Controlled  )
+						if( bc.Controlled && bc.ControlMaster != null && !bc.ControlMaster.Deleted && bc.ControlMaster.Alive )
 						{
-							combatant = bc.ControlMaster;
+							if ( bc.ControlMaster.Map == this.Map && bc.ControlMaster.InRange( this, 12 ) && !UnderEffect( bc.ControlMaster ) )
+							{
+								combatant = bc.ControlMaster;
+							}
 						}
 					}
 
