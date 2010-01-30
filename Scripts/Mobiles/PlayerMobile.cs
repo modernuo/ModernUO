@@ -442,13 +442,16 @@ namespace Server.Mobiles
 
 			IPooledEnumerable mobiles = Map.GetMobilesInRange( location, 0 );
 			
-			if ( mobiles.GetEnumerator().MoveNext() ) 
+			foreach ( Mobile m in mobiles ) 
 			{ 
-				mobiles.Free(); 
-				return false; 
+				if ( m.Z >= location.Z && m.Z < location.Z + 16 )
+				{
+					mobiles.Free();
+					return false;
+				}
 			}
-			else
-				mobiles.Free();
+			
+			mobiles.Free();
 
 			BounceInfo bi = item.GetBounce();
 

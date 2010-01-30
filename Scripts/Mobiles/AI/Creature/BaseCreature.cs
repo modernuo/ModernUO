@@ -464,6 +464,9 @@ namespace Server.Mobiles
 		public virtual int BreathColdDamage{ get{ return 0; } }
 		public virtual int BreathPoisonDamage{ get{ return 0; } }
 		public virtual int BreathEnergyDamage{ get{ return 0; } }
+		
+		// Is immune to breath damages
+		public virtual bool BreathImmune{ get{ return false; } }
 
 		// Effect details and sound
 		public virtual int BreathEffectItemID{ get{ return 0x36D4; } }
@@ -535,6 +538,9 @@ namespace Server.Mobiles
 		public virtual void BreathDamage_Callback( object state )
 		{
 			Mobile target = (Mobile)state;
+			
+			if ( target is BaseCreature && ((BaseCreature)target).BreathImmune )
+				return;
 
 			if ( CanBeHarmful( target ) )
 			{
