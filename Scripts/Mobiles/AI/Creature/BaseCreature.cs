@@ -329,6 +329,47 @@ namespace Server.Mobiles
 			set{ m_OwnerAbandonTime = value; }
 		}
 		#endregion
+		
+		#region Delete Previously Tamed Timer
+		private DeleteTimer		m_DeleteTimer;
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan DeleteTimeLeft
+		{
+			get
+			{
+				if ( m_DeleteTimer != null && m_DeleteTimer.Running )
+					return m_DeleteTimer.Next - DateTime.Now;
+				
+				return TimeSpan.Zero;
+			}
+		}
+		
+		private class DeleteTimer : Timer
+		{
+			private Mobile m;
+			
+			public DeleteTimer( Mobile creature, TimeSpan delay ) : base( delay )
+			{
+				m = creature;
+				Priority = TimerPriority.OneMinute;
+			}
+			
+			protected override void OnTick()
+			{
+				m.Delete();
+			}
+		}
+		
+		public void BeginDeleteTimer()
+		{
+			if ( !(this is BaseEscortable) && !Summoned && !Deleted )
+			{
+				m_DeleteTimer = new DeleteTimer( this, TimeSpan.FromDays( 3.0 ) );
+				m_DeleteTimer.Start();
+			}
+		}
+		#endregion
 
 		public virtual double WeaponAbilityChance{ get{ return 0.4; } }
 
@@ -1467,7 +1508,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 16 ); // version
+			writer.Write( (int) 17 ); // version
 
 			writer.Write( (int)m_CurrentAI );
 			writer.Write( (int)m_DefaultAI );
@@ -1577,6 +1618,9 @@ namespace Server.Mobiles
 			// Version 14
 			writer.Write( (bool)m_RemoveIfUntamed );
 			writer.Write( (int)m_RemoveStep );
+			
+			// Version 17
+			writer.Write( DeleteTimeLeft );
 		}
 
 		private static double[] m_StandardActiveSpeeds = new double[]
@@ -1782,6 +1826,20 @@ namespace Server.Mobiles
 			{
 				m_RemoveIfUntamed = reader.ReadBool();
 				m_RemoveStep = reader.ReadInt();
+			}
+			
+			TimeSpan deleteTime = TimeSpan.Zero;
+				
+			if ( version >= 17 )
+				deleteTime = reader.ReadTimeSpan();
+
+			if ( deleteTime > TimeSpan.Zero || LastOwner != null && !Controlled && !IsStabled )
+			{
+				if ( deleteTime == TimeSpan.Zero )
+					deleteTime = TimeSpan.FromDays( 3.0 );
+					
+				m_DeleteTimer = new DeleteTimer( this, deleteTime );
+				m_DeleteTimer.Start();
 			}
 
 			if( version <= 14 && m_Paragon && Hue == 0x31 )
@@ -2647,6 +2705,12 @@ namespace Server.Mobiles
 					m_AI.m_Timer.Stop();
 
 				m_AI = null;
+			}
+			
+			if ( m_DeleteTimer != null )
+			{
+				m_DeleteTimer.Stop();
+				m_DeleteTimer = null;
 			}
 
 			FocusMob = null;
@@ -4558,6 +4622,12 @@ namespace Server.Mobiles
 				ControlTarget = null;
 				ControlOrder = OrderType.Come;
 				Guild = null;
+				
+				if ( m_DeleteTimer != null )
+				{
+					m_DeleteTimer.Stop();
+					m_DeleteTimer = null;
+				}
 
 				Delta( MobileDelta.Noto );
 			}
