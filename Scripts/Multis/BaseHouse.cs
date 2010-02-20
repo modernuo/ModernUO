@@ -2011,7 +2011,7 @@ namespace Server.Multis
 			{
 				from.SendLocalizedMessage( 501346 ); // Uh oh...a bigger boot may be required!
 			}
-			else if ( IsFriend( targ ) )
+			else if ( IsFriend( targ ) && !Core.ML )
 			{
 				from.SendLocalizedMessage( 501348 ); // You cannot eject a friend of the house!
 			}

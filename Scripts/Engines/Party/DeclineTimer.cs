@@ -21,7 +21,7 @@ namespace Server.Engines.PartySystem
 			t.Start();
 		}
 
-		private DeclineTimer( Mobile m, Mobile leader ) : base( TimeSpan.FromSeconds( 10.0 ) )
+		private DeclineTimer( Mobile m, Mobile leader ) : base( TimeSpan.FromSeconds( 30.0 ) )
 		{
 			m_Mobile = m;
 			m_Leader = leader;

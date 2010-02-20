@@ -1398,6 +1398,20 @@ namespace Server.Mobiles
 				if( Alive )
 					list.Add( new CallbackEntry( 6210, new ContextCallback( ToggleChampionTitleDisplay ) ) );
 			}
+			if ( from != this )
+			{
+					
+				if ( Alive && Core.Expansion >= Expansion.AOS )
+					list.Add( new AddToPartyEntry( from, this ) );
+			
+				BaseHouse curhouse = BaseHouse.FindHouseAt( this );
+			
+				if( curhouse != null )
+				{
+					if ( Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend( from ) )
+						list.Add( new EjectPlayerEntry( from, this ) );
+				}
+			}
 		}
 
 		private void CancelProtection()

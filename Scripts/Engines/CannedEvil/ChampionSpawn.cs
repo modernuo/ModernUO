@@ -388,135 +388,74 @@ namespace Server.Engines.CannedEvil
 		}
 
 		#region Scroll of Transcendence
-		private ScrollofTranscendence CreateRandomTramSoT()
+		private ScrollofTranscendence CreateRandomSoT( bool felucca )
 		{
-			int level;
-			double random = Utility.RandomDouble();
-
-			if (0.2 >= random)
-				level = 5;
-			else if (0.4 >= random)
-				level = 4;
-			else if (0.6 >= random)
-				level = 3;
-			else if (0.8 >= random)
-				level = 2;
-			else
-				level = 1;
+			int level = Utility.RandomMinMax( 1, 5 );
+			
+			if ( felucca )
+				level += 5;
 
 			return ScrollofTranscendence.CreateRandom(level, level);
 		}
+		#endregion
 
-		private ScrollofTranscendence CreateRandomFelSoT()
+		public static void GiveScrollTo( Mobile killer, SpecialScroll scroll )
 		{
-			int level;
-			double random = Utility.RandomDouble();
-
-			if (0.2 >= random)
-				level = 10;
-			else if (0.4 >= random)
-				level = 9;
-			else if (0.6 >= random)
-				level = 8;
-			else if (0.8 >= random)
-				level = 7;
-			else
-				level = 6;
-
-			return ScrollofTranscendence.CreateRandom(level, level);
-		}
-
-		private PowerScroll CreateRandomFelPS()
-		{
-			return PowerScroll.CreateRandomNoCraft(5, 5);
-		}
-		
-		 public static void GiveScrollOfTranscendenceFelTo ( Mobile killer, ScrollofTranscendence SoTF )
-		{
-			if( SoTF == null || killer == null )	//sanity
+			if( scroll == null || killer == null )	//sanity
 				return;
 
-			killer.SendLocalizedMessage( 1094936 ); // You have received a Scroll of Transcendence!
+			if ( scroll is ScrollofTranscendence )
+				killer.SendLocalizedMessage( 1094936 ); // You have received a Scroll of Transcendence!
+			else
+				killer.SendLocalizedMessage( 1049524 ); // You have received a scroll of power!
 			
 			if ( killer.Alive )
-				killer.AddToBackpack( SoTF );
+				killer.AddToBackpack( scroll );
 			else
 			{
 				if( killer.Corpse != null && !killer.Corpse.Deleted )
-					killer.Corpse.DropItem( SoTF );
+					killer.Corpse.DropItem( scroll );
 				else
-					killer.AddToBackpack( SoTF );
+					killer.AddToBackpack( scroll );
 			}
-				
-				
+			
 			// Justice reward
 			PlayerMobile pm = (PlayerMobile)killer;
 			for (int j = 0; j < pm.JusticeProtectors.Count; ++j)
 			{
 				Mobile prot = (Mobile)pm.JusticeProtectors[j];
-				if (prot.Map != killer.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion(killer, prot))
-				continue;
-
-				int chance = 0;
-
-				switch (VirtueHelper.GetLevel(prot, VirtueName.Justice))
-				{
-					case VirtueLevel.Seeker: chance = 60; break;
-					case VirtueLevel.Follower: chance = 80; break;
-					case VirtueLevel.Knight: chance = 100; break;
-				}
-
-				if (chance > Utility.Random(100))
-				{
-					prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-					ScrollofTranscendence SoTFduplicate = new ScrollofTranscendence ( SoTF.Skill, SoTF.Value );
-					prot.AddToBackpack( SoTFduplicate );
-				}
-			}
-		}
-		public static void GivePowerScrollFelTo ( Mobile killer, PowerScroll PS )
-		{
-			if( PS == null || killer == null )	//sanity
-				return;
-
-			killer.SendLocalizedMessage(1049524); // You have received a scroll of power!
-
-			if ( killer.Alive )
-				killer.AddToBackpack( PS );
-			else
-			{
-				if( killer.Corpse != null && !killer.Corpse.Deleted )
-					killer.Corpse.DropItem( PS );
-				else
-					killer.AddToBackpack( PS );
-			}
-
-			// Justice reward
-			PlayerMobile pm = (PlayerMobile)killer;
-			for (int j = 0; j < pm.JusticeProtectors.Count; ++j)
-				{
-				Mobile prot = (Mobile)pm.JusticeProtectors[j];
-				if (prot.Map != killer.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion(killer, prot))
+				
+				if ( prot.Map != killer.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( killer, prot ) )
 					continue;
 
 				int chance = 0;
 
-				switch (VirtueHelper.GetLevel(prot, VirtueName.Justice))
+				switch ( VirtueHelper.GetLevel( prot, VirtueName.Justice ) )
 				{
 					case VirtueLevel.Seeker: chance = 60; break;
 					case VirtueLevel.Follower: chance = 80; break;
 					case VirtueLevel.Knight: chance = 100; break;
 				}
 
-				if (chance > Utility.Random(100))
+				if ( chance > Utility.Random( 100 ) )
 				{
-					prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-					PowerScroll PSduplicate = new PowerScroll ( PS.Skill, PS.Value );
-					prot.AddToBackpack( PSduplicate );
+					try
+					{
+						prot.SendLocalizedMessage( 1049368 ); // You have been rewarded for your dedication to Justice!
+
+						SpecialScroll scrollDupe = Activator.CreateInstance( scroll.GetType() ) as SpecialScroll;
+					
+						if ( scrollDupe != null )
+						{
+							scrollDupe.Skill = scroll.Skill;
+							scrollDupe.Value = scroll.Value;
+							prot.AddToBackpack( scrollDupe );
+						}
+					}
+					catch{}
 				}
 			}
 		}
-		#endregion
 
 		public void OnSlice()
 		{
@@ -588,23 +527,23 @@ namespace Server.Engines.CannedEvil
 										
 										if ( random <= 24 )
 										{
-											ScrollofTranscendence SoTF = CreateRandomFelSoT();
-											GiveScrollOfTranscendenceFelTo ( pm, SoTF );
+											ScrollofTranscendence SoTF = CreateRandomSoT( true );
+											GiveScrollTo( pm, (SpecialScroll)SoTF );
 										}
 										else
 										{
-											PowerScroll PS = CreateRandomFelPS();
-											GivePowerScrollFelTo ( pm, PS );
+											PowerScroll PS = PowerScroll.CreateRandomNoCraft(5, 5);
+											GiveScrollTo( pm, (SpecialScroll)PS );
 										}
 									}
 								}
 
-								if ( Map == Map.Ilshenar || Map == Map.Tokuno )
+								if ( Map == Map.Ilshenar || Map == Map.Tokuno || Map == Map.Malas )
 								{
 									if ( Utility.RandomDouble() < 0.0015 )
 									{
 										killer.SendLocalizedMessage( 1094936 ); // You have received a Scroll of Transcendence!
-										ScrollofTranscendence SoTT = CreateRandomTramSoT();
+										ScrollofTranscendence SoTT = CreateRandomSoT( false );
 										killer.AddToBackpack( SoTT );
 									}
 								}

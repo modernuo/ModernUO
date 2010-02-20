@@ -106,6 +106,7 @@ namespace Server.Mobiles
 		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
 		public override Poison HitPoison{ get{ return Poison.Greater; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
+		public override bool CanAngerOnTame { get { return true; } }
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{

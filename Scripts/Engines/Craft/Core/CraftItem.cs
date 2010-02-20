@@ -295,7 +295,10 @@ namespace Server.Engines.Craft
 				0x184E, 0x1850, // Heating stand (right)
 				0x398C, 0x399F,  // Fire field
 				0x2DDB, 0x2DDC,	//Elven stove
-				0x19AA, 0x19BB	// Veteran Reward Brazier
+				0x19AA, 0x19BB,	// Veteran Reward Brazier
+				0x197A, 0x19A9, // Large Forge 
+				0x0FB1, 0x0FB1, // Small Forge
+				0x2DD8, 0x2DD8 // Elven Forge
 			};
 
 		private static int[] m_Ovens = new int[]
