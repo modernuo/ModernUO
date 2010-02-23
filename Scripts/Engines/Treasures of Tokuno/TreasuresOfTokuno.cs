@@ -9,24 +9,80 @@ using Server.Mobiles;
 
 namespace Server.Misc
 {
+	public enum TreasuresOfTokunoEra
+	{
+		None,
+		ToTOne,
+		ToTTwo,
+		ToTThree
+	}
+	
 	public class TreasuresOfTokuno
 	{
-		private static bool m_Enabled = (Core.Expansion == Expansion.SE);
-		public static bool Enabled { get { return m_Enabled; } }
-
 		public const int ItemsPerReward = 10;
-
-		private static Type[] m_LesserArtifacts = new Type[]
+		
+		private static Type[] m_LesserArtifactsTotal = new Type[]
 			{
+				typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
+ 				typeof( DaimyosHelm ), typeof( DemonForks ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ),
+ 				typeof( HanzosBow ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
+				typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( PigmentsOfTokuno ), typeof( FluteOfRenewal ),
+				typeof( LeurociansMempoOfFortune ), typeof( LesserPigmentsOfTokuno ), typeof( MetalPigmentsOfTokuno ), typeof( ChestOfHeirlooms )
+ 			};
+		
+		public static Type[] LesserArtifactsTotal { get { return m_LesserArtifactsTotal; } }
+		
+		private static TreasuresOfTokunoEra _DropEra = TreasuresOfTokunoEra.None;
+		private static TreasuresOfTokunoEra _RewardEra = TreasuresOfTokunoEra.ToTOne;
+		
+		public static TreasuresOfTokunoEra DropEra
+		{
+			get { return _DropEra; }
+			set { _DropEra = value; }
+		}
+		
+		public static TreasuresOfTokunoEra RewardEra
+		{
+			get { return _RewardEra; }
+			set { _RewardEra = value; }
+		}
+
+		private static Type[][] m_LesserArtifacts = new Type[][]
+		{
+			// ToT One Rewards
+			new Type[] {
 				typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
 				typeof( DaimyosHelm ), typeof( DemonForks ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ),
 				typeof( HanzosBow ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
-				typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( PigmentsOfTokuno ), typeof( FluteOfRenewal ) //TODO: Chest of heirlooms
-			};
+				typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( PigmentsOfTokuno ),
+				typeof( FluteOfRenewal ), typeof( ChestOfHeirlooms )
+			},
+			// ToT Two Rewards
+			new Type[] {
+				typeof( MetalPigmentsOfTokuno ), typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ),
+				typeof( MetalPigmentsOfTokuno ), typeof( BlackLotusHood ), typeof( DaimyosHelm ), typeof( DemonForks ),
+				typeof( MetalPigmentsOfTokuno ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ), typeof( HanzosBow ), 
+				typeof( MetalPigmentsOfTokuno ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
+				typeof( MetalPigmentsOfTokuno ), typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ),
+				typeof( MetalPigmentsOfTokuno ), typeof( FluteOfRenewal ), typeof( ChestOfHeirlooms )
+			},
+			// ToT Three Rewards
+			new Type[] {
+				typeof( LesserPigmentsOfTokuno ), typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ),
+				typeof( LesserPigmentsOfTokuno ), typeof( BlackLotusHood ), typeof( DaimyosHelm ), typeof( HanzosBow ),
+				typeof( LesserPigmentsOfTokuno ), typeof( DemonForks ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ),
+				typeof( LesserPigmentsOfTokuno ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
+				typeof( LesserPigmentsOfTokuno ), typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( FluteOfRenewal ),
+				typeof( LesserPigmentsOfTokuno ), typeof( LeurociansMempoOfFortune ), typeof( ChestOfHeirlooms )
+			}
+		};
 
-		public static Type[] LesserArtifacts { get { return m_LesserArtifacts; } }
+		public static Type[] LesserArtifacts 
+		{ 
+			get { return m_LesserArtifacts[(int)RewardEra-1]; }
+		}
 
-		private static Type[] m_GreaterArtifacts = null;
+		private static Type[][] m_GreaterArtifacts = null;
 		
 		public static Type[] GreaterArtifacts
 		{
@@ -34,14 +90,20 @@ namespace Server.Misc
 			{
 				if( m_GreaterArtifacts == null )
 				{
-					m_GreaterArtifacts = new Type[ToTRedeemGump.NormalRewards.Length];
+					m_GreaterArtifacts = new Type[ToTRedeemGump.NormalRewards.Length][];
+					
 					for( int i = 0; i < m_GreaterArtifacts.Length; i++ )
 					{
-						m_GreaterArtifacts[i] = ToTRedeemGump.NormalRewards[i].Type;
+						m_GreaterArtifacts[i] = new Type[ToTRedeemGump.NormalRewards[i].Length];
+						
+						for( int j = 0; j < m_GreaterArtifacts[i].Length; j++ )
+						{
+							m_GreaterArtifacts[i][j] = ToTRedeemGump.NormalRewards[i][j].Type;
+						}
 					}
 				}
 
-				return m_GreaterArtifacts;
+				return m_GreaterArtifacts[(int)RewardEra-1];
 			}
 		}
 
@@ -64,7 +126,7 @@ namespace Server.Misc
 			PlayerMobile pm = killer as PlayerMobile;
 			BaseCreature bc = victim as BaseCreature;
 
-			if( !Enabled || pm == null || bc == null || !CheckLocation( bc ) || !CheckLocation( pm )|| !killer.InRange( victim, 18 ))
+			if( DropEra == TreasuresOfTokunoEra.None || pm == null || bc == null || !CheckLocation( bc ) || !CheckLocation( pm )|| !killer.InRange( victim, 18 ))
 				return;
 
 			if( bc.Controlled || bc.Owners.Count > 0 || bc.Fame <= 0 )
@@ -90,26 +152,30 @@ namespace Server.Misc
 			if( chance > Utility.RandomDouble() )
 			{
 				Item i = null;
-
+				
 				try
 				{
-					i = Activator.CreateInstance( m_LesserArtifacts[Utility.Random( m_LesserArtifacts.Length )] ) as Item;
+					i = Activator.CreateInstance( m_LesserArtifacts[(int)DropEra-1][Utility.Random( m_LesserArtifacts[(int)DropEra-1].Length )] ) as Item;
 				}
 				catch
 				{ }
 
 				if( i != null )
 				{
-					if( pm.AddToBackpack( i ) )
+					pm.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+					
+					if( !pm.PlaceInBackpack( i ) )
 					{
-						pm.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
-						pm.ToTTotalMonsterFame = 0;
+						if( pm.BankBox != null && pm.BankBox.TryDropItem( killer, i, false ) )
+							pm.SendLocalizedMessage( 1079730 ); // The item has been placed into your bank box.
+						else
+						{
+							pm.SendLocalizedMessage( 1072523 ); // You find an artifact, but your backpack and bank are too full to hold it.
+							i.MoveToWorld( pm.Location, pm.Map );
+						}
 					}
-					else
-					{
-						//Place in bank possibly?
-						i.Delete();
-					}
+					
+					pm.ToTTotalMonsterFame = 0;
 				}
 			}
 		}
@@ -128,10 +194,10 @@ namespace Server.Mobiles
 
 		protected ArrayList m_SBInfos = new ArrayList();
 		protected override ArrayList SBInfos { get { return m_SBInfos; } }
+		
 		public override void InitSBInfo()
 		{
 		}
-
 
 		public override void InitOutfit()
 		{
@@ -180,9 +246,6 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			//if( !TreasuresOfTokuno.Enabled )	//He still accepts items even if ToTs are turned off.
-			//	return;
-
 			if( m.Alive && m is PlayerMobile )
 			{
 				PlayerMobile pm = (PlayerMobile)m;
@@ -196,7 +259,7 @@ namespace Server.Mobiles
 						SayTo( pm, 1070980 ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
 						pm.CloseGump( typeof( ToTTurnInGump ) );	//Sanity
-
+						
 						if( !pm.HasGump( typeof( ToTRedeemGump ) ) )
 							pm.SendGump( new ToTRedeemGump( this, false ) );
 					}
@@ -254,17 +317,18 @@ namespace Server.Gumps
 			if( pack == null )
 				return new ArrayList();
 
-			ArrayList items = new ArrayList( pack.FindItemsByType( TreasuresOfTokuno.LesserArtifacts ) );
+			ArrayList items = new ArrayList( pack.FindItemsByType( TreasuresOfTokuno.LesserArtifactsTotal ) );
 			ArrayList buttons = new ArrayList();
 
 			for( int i = 0; i < items.Count; i++ )
 			{
 				Item item = (Item)items[i];
-				//bool acceptable = true;
-
-				/*	TODO:
-						if( item is ChestOfHeirlooms )
-				*/
+				if( item is ChestOfHeirlooms && !((ChestOfHeirlooms)item).Locked )
+					continue;
+				
+				if( item is ChestOfHeirlooms && ((ChestOfHeirlooms)item).TrapLevel != 10 )
+					continue;
+				
 				if( item is PigmentsOfTokuno && ((PigmentsOfTokuno)item).Type != PigmentType.None )
 					continue;
 
@@ -301,7 +365,7 @@ namespace Server.Gumps
 			{
 				m_Collector.SayTo( pm, 1070980 ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
-				pm.CloseGump( typeof( ToTTurnInGump ) );	//SAnity
+				pm.CloseGump( typeof( ToTTurnInGump ) );	//Sanity
 
 				if( !pm.HasGump( typeof( ToTRedeemGump ) ) )
 					pm.SendGump( new ToTRedeemGump( m_Collector, false ) );
@@ -378,14 +442,17 @@ namespace Server.Gumps
 				}
 			}
 
-			public PigmentsTileButtonInfo( PigmentType p ) : base( 0xEFF, PigmentsOfTokuno.PigmentInfo.GetInfo( p ).Hue, PigmentsOfTokuno.PigmentInfo.GetInfo( p ).Label )
+			public PigmentsTileButtonInfo( PigmentType p ) : base( 0xEFF, PigmentsOfTokuno.GetInfo( p )[0], PigmentsOfTokuno.GetInfo( p )[1] )
 			{
 				m_Pigment = p;
 			}
 		}
 
-		private static TypeTileButtonInfo[] m_NormalRewards = new TypeTileButtonInfo[]
-			{
+		#region ToT Normal Rewards Table
+		private static TypeTileButtonInfo[][] m_NormalRewards = new TypeTileButtonInfo[][]
+		{
+			// ToT One Rewards
+			new TypeTileButtonInfo[] {
 				new TypeTileButtonInfo( typeof( SwordsOfProsperity ),	 0x27A9, 1070963, 1071002 ),
 				new TypeTileButtonInfo( typeof( SwordOfTheStampede ),	 0x27A2, 1070964, 1070978 ),
 				new TypeTileButtonInfo( typeof( WindsEdge ),			 0x27A3, 1070965, 1071003 ),
@@ -394,14 +461,47 @@ namespace Server.Gumps
 				new TypeTileButtonInfo( typeof( RuneBeetleCarapace ),	 0x277D, 1070968, 1071006 ),
 				new TypeTileButtonInfo( typeof( KasaOfTheRajin ),		 0x2798, 1070969, 1071007 ),
 				new TypeTileButtonInfo( typeof( Stormgrip ),			 0x2792, 1070970, 1071008 ),
-				new TypeTileButtonInfo( typeof( TomeOfLostKnowledge ),	 0xEFA,	 0x530, 1070971, 1071009 ),
-				new TypeTileButtonInfo( typeof( PigmentsOfTokuno ),		 0xEFF,	 1070933, 1071011 )
-			};
+				new TypeTileButtonInfo( typeof( TomeOfLostKnowledge ),	 0x0EFA, 0x530, 1070971, 1071009 ),
+				new TypeTileButtonInfo( typeof( PigmentsOfTokuno ),		 0x0EFF, 1070933, 1071011 )
+			},
+			// ToT Two Rewards
+			new TypeTileButtonInfo[] {
+				new TypeTileButtonInfo( typeof( SwordsOfProsperity ),	 0x27A9, 1070963, 1071002 ),
+				new TypeTileButtonInfo( typeof( SwordOfTheStampede ),	 0x27A2, 1070964, 1070978 ),
+				new TypeTileButtonInfo( typeof( WindsEdge ),			 0x27A3, 1070965, 1071003 ),
+				new TypeTileButtonInfo( typeof( DarkenedSky ),			 0x27AD, 1070966, 1071004 ),
+				new TypeTileButtonInfo( typeof( TheHorselord ),			 0x27A5, 1070967, 1071005 ),
+				new TypeTileButtonInfo( typeof( RuneBeetleCarapace ),	 0x277D, 1070968, 1071006 ),
+				new TypeTileButtonInfo( typeof( KasaOfTheRajin ),		 0x2798, 1070969, 1071007 ),
+				new TypeTileButtonInfo( typeof( Stormgrip ),			 0x2792, 1070970, 1071008 ),
+				new TypeTileButtonInfo( typeof( TomeOfLostKnowledge ),	 0x0EFA, 0x530, 1070971, 1071009 ),
+				new TypeTileButtonInfo( typeof( PigmentsOfTokuno ),		 0x0EFF, 1070933, 1071011 )
+			},
+			// ToT Three Rewards
+			new TypeTileButtonInfo[] {
+				new TypeTileButtonInfo( typeof( SwordsOfProsperity ),	 0x27A9, 1070963, 1071002 ),
+				new TypeTileButtonInfo( typeof( SwordOfTheStampede ),	 0x27A2, 1070964, 1070978 ),
+				new TypeTileButtonInfo( typeof( WindsEdge ),			 0x27A3, 1070965, 1071003 ),
+				new TypeTileButtonInfo( typeof( DarkenedSky ),			 0x27AD, 1070966, 1071004 ),
+				new TypeTileButtonInfo( typeof( TheHorselord ),			 0x27A5, 1070967, 1071005 ),
+				new TypeTileButtonInfo( typeof( RuneBeetleCarapace ),	 0x277D, 1070968, 1071006 ),
+				new TypeTileButtonInfo( typeof( KasaOfTheRajin ),		 0x2798, 1070969, 1071007 ),
+				new TypeTileButtonInfo( typeof( Stormgrip ),			 0x2792, 1070970, 1071008 ),
+				new TypeTileButtonInfo( typeof( TomeOfLostKnowledge ),	 0x0EFA, 0x530, 1070971, 1071009 )
+			}
+		};
+		#endregion
 
-		public static TypeTileButtonInfo[] NormalRewards { get { return m_NormalRewards; } }
+		public static TypeTileButtonInfo[][] NormalRewards
+		{ 
+			get { return m_NormalRewards; }
+		}
 
-		private static PigmentsTileButtonInfo[] m_PigmentRewards = new PigmentsTileButtonInfo[]
-			{
+		#region ToT Pigment Rewards Table
+		private static PigmentsTileButtonInfo[][] m_PigmentRewards = new PigmentsTileButtonInfo[][]
+		{
+			// ToT One Pigment Rewards
+			new PigmentsTileButtonInfo[] {
 				new PigmentsTileButtonInfo( PigmentType.ParagonGold ),
 				new PigmentsTileButtonInfo( PigmentType.VioletCouragePurple ),
 				new PigmentsTileButtonInfo( PigmentType.InvulnerabilityBlue ),
@@ -412,13 +512,43 @@ namespace Server.Gumps
 				new PigmentsTileButtonInfo( PigmentType.NoxGreen ),
 				new PigmentsTileButtonInfo( PigmentType.RumRed ),
 				new PigmentsTileButtonInfo( PigmentType.FireOrange )
-			};
+			},
+			// ToT Two Pigment Rewards
+			new PigmentsTileButtonInfo[] {
+				new PigmentsTileButtonInfo( PigmentType.FadedCoal ),
+				new PigmentsTileButtonInfo( PigmentType.Coal ),
+				new PigmentsTileButtonInfo( PigmentType.FadedGold ),
+				new PigmentsTileButtonInfo( PigmentType.StormBronze ),
+				new PigmentsTileButtonInfo( PigmentType.Rose ),
+				new PigmentsTileButtonInfo( PigmentType.MidnightCoal ),
+				new PigmentsTileButtonInfo( PigmentType.FadedBronze ),
+				new PigmentsTileButtonInfo( PigmentType.FadedRose ),
+				new PigmentsTileButtonInfo( PigmentType.DeepRose )
+			},
+			// ToT Three Pigment Rewards
+			new PigmentsTileButtonInfo[] {
+				new PigmentsTileButtonInfo( PigmentType.ParagonGold ),
+				new PigmentsTileButtonInfo( PigmentType.VioletCouragePurple ),
+				new PigmentsTileButtonInfo( PigmentType.InvulnerabilityBlue ),
+				new PigmentsTileButtonInfo( PigmentType.LunaWhite ),
+				new PigmentsTileButtonInfo( PigmentType.DryadGreen ),
+				new PigmentsTileButtonInfo( PigmentType.ShadowDancerBlack ),
+				new PigmentsTileButtonInfo( PigmentType.BerserkerRed ),
+				new PigmentsTileButtonInfo( PigmentType.NoxGreen ),
+				new PigmentsTileButtonInfo( PigmentType.RumRed ),
+				new PigmentsTileButtonInfo( PigmentType.FireOrange )
+			}
+		};
+		#endregion
 
-		public static PigmentsTileButtonInfo[] PigmentRewards { get { return m_PigmentRewards; } }
+		public static PigmentsTileButtonInfo[][] PigmentRewards
+		{ 
+			get { return m_PigmentRewards; }
+		}
 
 		private Mobile m_Collector;
 
-		public ToTRedeemGump( Mobile collector, bool pigments ) : base( pigments ? 1070986 : 1070985, pigments ? (ImageTileButtonInfo[])m_PigmentRewards : (ImageTileButtonInfo[])m_NormalRewards )
+		public ToTRedeemGump( Mobile collector, bool pigments ) : base( pigments ? 1070986 : 1070985, pigments ? (ImageTileButtonInfo[])m_PigmentRewards[(int)TreasuresOfTokuno.RewardEra-1] : (ImageTileButtonInfo[])m_NormalRewards[(int)TreasuresOfTokuno.RewardEra-1] )
 		{
 			m_Collector = collector;
 		}

@@ -384,50 +384,53 @@ namespace Server.Items
 		BerserkerRed,
 		NoxGreen,
 		RumRed,
-		FireOrange
+		FireOrange,
+		FadedCoal,
+		Coal,
+		FadedGold,
+		StormBronze,
+		Rose,
+		MidnightCoal,
+		FadedBronze,
+		FadedRose,
+		DeepRose
 	}
 
-	public class PigmentsOfTokuno : Item, IUsesRemaining
+	public class PigmentsOfTokuno : BasePigmentsOfTokuno
 	{
-		public class PigmentInfo
+		private static int[][] m_Table = new int[][]
 		{
-			//private PigmentType m_PigmentType;
-			private int m_Hue;
-			private TextDefinition m_Label;
+			// Hue, Label
+			new int[]{ /*PigmentType.None,*/ 0, -1 },
+			new int[]{ /*PigmentType.ParagonGold,*/ 0x501, 1070987 },
+			new int[]{ /*PigmentType.VioletCouragePurple,*/ 0x486, 1070988 },
+			new int[]{ /*PigmentType.InvulnerabilityBlue,*/ 0x4F2, 1070989 },
+			new int[]{ /*PigmentType.LunaWhite,*/ 0x47E, 1070990 },
+			new int[]{ /*PigmentType.DryadGreen,*/ 0x48F, 1070991 },
+			new int[]{ /*PigmentType.ShadowDancerBlack,*/ 0x455, 1070992 },
+			new int[]{ /*PigmentType.BerserkerRed,*/ 0x21, 1070993 },
+			new int[]{ /*PigmentType.NoxGreen,*/ 0x58C, 1070994 },
+			new int[]{ /*PigmentType.RumRed,*/ 0x66C, 1070995 },
+			new int[]{ /*PigmentType.FireOrange,*/ 0x54F, 1070996 },
+			new int[]{ /*PigmentType.Fadedcoal,*/ 0x96A, 1079579 },
+			new int[]{ /*PigmentType.Coal,*/ 0x96B, 1079580 },
+			new int[]{ /*PigmentType.FadedGold,*/ 0x972, 1079581 },
+			new int[]{ /*PigmentType.StormBronze,*/ 0x977, 1079582 },
+			new int[]{ /*PigmentType.Rose,*/ 0x97C, 1079583 },
+			new int[]{ /*PigmentType.MidnightCoal,*/ 0x96C, 1079584 },
+			new int[]{ /*PigmentType.FadedBronze,*/ 0x975, 1079585 },
+			new int[]{ /*PigmentType.FadedRose,*/ 0x97B, 1079586 },
+			new int[]{ /*PigmentType.DeepRose,*/ 0x97E, 1079587 }
+		};
+		
+		public static int[] GetInfo( PigmentType type )
+		{
+			int v = (int)type;
 
-			public int Hue { get { return m_Hue; } }
-			public TextDefinition Label { get { return m_Label; } }
-
-			public PigmentInfo( int hue, TextDefinition label )
-			{
-				m_Hue = hue;
-				m_Label = label;
-			}
-
-			private static PigmentInfo[] m_Table = new PigmentInfo[]
-				{
-					new PigmentInfo( /*PigmentType.None,*/ 0, -1 ),
-					new PigmentInfo( /*PigmentType.ParagonGold,*/ 0x501, 1070987 ),
-					new PigmentInfo( /*PigmentType.VioletCouragePurple,*/ 0x486, 1070988 ),
-					new PigmentInfo( /*PigmentType.InvulnerabilityBlue,*/ 0x4F2, 1070989 ),
-					new PigmentInfo( /*PigmentType.LunaWhite,*/ 0x47E, 1070990 ),
-					new PigmentInfo( /*PigmentType.DryadGreen,*/ 0x48F, 1070991 ),
-					new PigmentInfo( /*PigmentType.ShadowDancerBlack,*/ 0x455, 1070992 ),
-					new PigmentInfo( /*PigmentType.BerserkerRed,*/ 0x21, 1070993 ),
-					new PigmentInfo( /*PigmentType.NoxGreen,*/ 0x58C, 1070994 ),
-					new PigmentInfo( /*PigmentType.RumRed,*/ 0x66C, 1070995 ),
-					new PigmentInfo( /*PigmentType.FireOrange,*/ 0x54F, 1070996 )
-				};
-
-			public static PigmentInfo GetInfo( PigmentType type )
-			{
-				int v = (int)type;
-
-				if( v < 0 || v >= m_Table.Length )
-					v = 0;
-
-				return m_Table[v];
-			}
+			if( v < 0 || v >= m_Table.Length )
+				v = 0;
+			
+			return m_Table[v];
 		}
 
 		private PigmentType m_Type;
@@ -439,15 +442,22 @@ namespace Server.Items
 			set
 			{
 				m_Type = value;
+				
+				int v = (int)m_Type;
 
-				PigmentInfo p = PigmentInfo.GetInfo( m_Type );
-				Hue = p.Hue;
-				InvalidateProperties();
+				if ( v >= 0 && v < m_Table.Length )
+				{
+					Hue = m_Table[v][0];
+					Label = m_Table[v][1];
+				}
+				else
+				{
+					Hue = 0;
+					Label = -1;
+				}
 			}
 		}
-
-		private int m_UsesRemaining;
-
+		
 		public override int LabelNumber { get { return 1070933; } } // Pigments of Tokuno
 
 		[Constructable]
@@ -456,113 +466,15 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public PigmentsOfTokuno( PigmentType type ) : this( type, (type == PigmentType.None)? 10 : 50 )
+		public PigmentsOfTokuno( PigmentType type ) : this( type, (type == PigmentType.None||type >= PigmentType.FadedCoal)? 10 : 50 )
 		{
 		}
 
 		[Constructable]
-		public PigmentsOfTokuno( PigmentType type, int uses ) : base( 0xEFF )
+		public PigmentsOfTokuno( PigmentType type, int uses ) : base( uses )
 		{
 			Weight = 1.0;
-			m_UsesRemaining = uses;
 			Type = type;
-		}
-
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
-
-			if( m_Type != PigmentType.None )
-			{
-				PigmentInfo p = PigmentInfo.GetInfo( m_Type );
-				TextDefinition.AddTo( list, p.Label );
-			}
-
-			list.Add( 1060584, m_UsesRemaining.ToString() ); // uses remaining: ~1_val~
-		}
-
-		public override void OnDoubleClick( Mobile from )
-		{
-			if( IsAccessibleTo( from ) && from.InRange( GetWorldLocation(), 3 ) )
-			{
-				from.SendLocalizedMessage( 1070929 ); // Select the artifact or enhanced magic item to dye.
-				from.BeginTarget( 3, false, Server.Targeting.TargetFlags.None, new TargetStateCallback( InternalCallback ), this );
-			}
-			else
-				from.SendLocalizedMessage( 502436 ); // That is not accessible.
-		}
-
-		private void InternalCallback( Mobile from, object targeted, object state )
-		{
-			PigmentsOfTokuno pigment = (PigmentsOfTokuno)state;
-
-			if( pigment.Deleted || pigment.UsesRemaining <= 0 || !from.InRange( pigment.GetWorldLocation(), 3 ) || !pigment.IsAccessibleTo( from ))
-				return;
-
-			Item i = targeted as Item;
-
-			if( i == null )
-				from.SendLocalizedMessage( 1070931 ); // You can only dye artifacts and enhanced magic items with this tub.
-			else if( !from.InRange( i.GetWorldLocation(), 3 ) || !IsAccessibleTo( from ) )
-				from.SendLocalizedMessage( 502436 ); // That is not accessible.
-			else if( from.Items.Contains( i ) )
-				from.SendLocalizedMessage( 1070930 ); // Can't dye artifacts or enhanced magic items that are being worn.
-			else if( i.IsLockedDown )
-				from.SendLocalizedMessage( 1070932 ); // You may not dye artifacts and enhanced magic items which are locked down.
-			else if( i is PigmentsOfTokuno )
-				from.SendLocalizedMessage( 1042417 ); // You cannot dye that.
-			else if( !IsValidItem( i ) )
-				from.SendLocalizedMessage( 1070931 ); // You can only dye artifacts and enhanced magic items with this tub.	//Yes, it says tub on OSI.  Don't ask me why ;p
-			else
-			{
-				//Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
-				i.Hue = PigmentInfo.GetInfo( pigment.Type ).Hue;
-
-				if( --pigment.UsesRemaining <= 0 )
-					pigment.Delete();
-
-				from.PlaySound(0x23E); // As per OSI TC1
-			}
-		}
-
-		public static bool IsValidItem( Item i )
-		{
-			if( i is PigmentsOfTokuno )
-				return false;
-
-			Type t = i.GetType();
-
-			CraftResource resource = CraftResource.None;
-
-			if( i is BaseWeapon )
-				resource = ((BaseWeapon)i).Resource;
-			else if( i is BaseArmor )
-				resource = ((BaseArmor)i).Resource;
-
-			if( !CraftResources.IsStandard( resource ) )
-				return true;
-
-			return( 
-				IsInTypeList( t, TreasuresOfTokuno.LesserArtifacts )
-				|| IsInTypeList( t, TreasuresOfTokuno.GreaterArtifacts ) 
-				|| IsInTypeList( t, DemonKnight.ArtifactRarity10 )
-				|| IsInTypeList( t, DemonKnight.ArtifactRarity11 )
-				|| IsInTypeList( t, BaseCreature.MinorArtifactsMl )
-				|| IsInTypeList( t, StealableArtifactsSpawner.TypesOfEntires )
-				|| IsInTypeList( t, Paragon.Artifacts )
-				|| IsInTypeList( t, Leviathan.Artifacts )
-				|| IsInTypeList( t, TreasureMapChest.Artifacts )
-				);
-		}
-
-		private static bool IsInTypeList( Type t, Type[] list )
-		{
-			for( int i = 0; i < list.Length; i++ )
-			{
-				if( list[i] == t ) return true;
-			}
-
-			return false;
 		}
 
 		public PigmentsOfTokuno( Serial serial ) : base( serial )
@@ -573,38 +485,22 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int)0 );
+			writer.Write( (int)1 );
 
 			writer.WriteEncodedInt( (int)m_Type );
-			writer.WriteEncodedInt( m_UsesRemaining );
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
-
-			m_Type = (PigmentType)reader.ReadEncodedInt();
-			m_UsesRemaining = reader.ReadEncodedInt();
+			int version = ( InheritsItem ? 0 : reader.ReadInt() ); // Required for BasePigmentsOfTokuno insertion
+			
+			switch ( version )
+			{
+				case 1: Type = (PigmentType)reader.ReadEncodedInt(); break;
+				case 0: break;
+			}
 		}
-
-		#region IUsesRemaining Members
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int UsesRemaining
-		{
-			get { return m_UsesRemaining; }
-			set { m_UsesRemaining = value; InvalidateProperties(); }
-		}
-
-		public bool ShowUsesRemaining
-		{
-			get { return true; }
-			set {}
-		}
-
-
-		#endregion
 	}
 }

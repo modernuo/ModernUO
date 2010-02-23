@@ -361,7 +361,7 @@ namespace Server.Misc
 
 			PlaceItemIn( bank, 18, 124, cont );
 
-			if( TreasuresOfTokuno.Enabled )
+			if( Core.SE )
 			{
 				cont = new Bag();
 				cont.Hue = 0x501;
@@ -373,7 +373,7 @@ namespace Server.Misc
 				PlaceItemIn( cont, 92, 80, new DragonNunchaku() );
 				PlaceItemIn( cont, 42, 56, new PeasantsBokuto() );
 				PlaceItemIn( cont, 44, 71, new TomeOfEnlightenment() );
-				//PlaceItemIn( cont, 35, 35, new ChestOfHeirlooms() );	//Chest of Heirlooms
+				PlaceItemIn( cont, 35, 35, new ChestOfHeirlooms() );
 				PlaceItemIn( cont, 29,  0, new HonorableSwords() );
 				PlaceItemIn( cont, 49, 85, new AncientUrn() );
 				PlaceItemIn( cont, 51, 58, new FluteOfRenewal() );

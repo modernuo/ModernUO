@@ -546,6 +546,13 @@ namespace Server
 
 			return Construct( m_WeaponTypes, m_RangedWeaponTypes, m_ArmorTypes, m_HatTypes, m_ShieldTypes, m_JewelryTypes );
 		}
+		
+		#region Chest of Heirlooms
+		public static Item ChestOfHeirloomsContains()
+		{
+			return Construct( m_SEArmorTypes, m_SEHatTypes, m_SEWeaponTypes, m_SERangedWeaponTypes, m_JewelryTypes );
+		}
+		#endregion
 
 		public static Item RandomGem()
 		{

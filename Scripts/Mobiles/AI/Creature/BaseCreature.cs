@@ -4485,7 +4485,7 @@ namespace Server.Mobiles
 							Faction.HandleDeath( this, ds.m_Mobile );
 						}
 
-						if( !givenToTKill )
+						if( !givenToTKill && Map == Map.Tokuno )
 						{
 							givenToTKill = true;
 							TreasuresOfTokuno.HandleKill( this, ds.m_Mobile );
