@@ -91,6 +91,16 @@ namespace Server.Mobiles
 				Add( typeof( Nightshade ), 2 ); 
 				Add( typeof( SpidersSilk ), 2 ); 
 				Add( typeof( SulfurousAsh ), 2 ); 
+
+				if ( Core.AOS )
+				{
+					Add( typeof( BatWing ), 1 );
+					Add( typeof( DaemonBlood ), 3 );
+					Add( typeof( PigIron ), 2 );
+					Add( typeof( NoxCrystal ), 3 );
+					Add( typeof( GraveDust ), 1 );
+				}
+
 				Add( typeof( RecallRune ), 13 );
 				Add( typeof( Spellbook ), 25 );
 

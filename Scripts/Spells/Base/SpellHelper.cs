@@ -974,23 +974,24 @@ namespace Server.Spells
 		public static void DoLeech( int damageGiven, Mobile from, Mobile target )
 		{
 			TransformContext context = TransformationSpellHelper.GetContext( from );
-			if ( context != null && context.Type == typeof( WraithFormSpell ) )
+
+			if ( context != null ) /* cleanup */
 			{
-				int wraithLeech = ( 5 + (int)( ( 15 * from.Skills.SpiritSpeak.Value ) / 100 ) ); // Wraith form gives 5-20% mana leech
-				int manaLeech = AOS.Scale( damageGiven, wraithLeech );
-				if ( manaLeech != 0 )
+				if ( context.Type == typeof( WraithFormSpell ) )
 				{
-					// Mana leeched by the Wraith Form spell is actually stolen, not just leeched.
-					target.Mana -= manaLeech;
-					from.Mana += manaLeech;
-					from.PlaySound( 0x44D );
-					//from.SendMessage(String.Format("You Leeched {0} Mana", manaLeech));
+					int wraithLeech = ( 5 + (int)( ( 15 * from.Skills.SpiritSpeak.Value ) / 100 ) ); // Wraith form gives 5-20% mana leech
+					int manaLeech = AOS.Scale( damageGiven, wraithLeech );
+					if ( manaLeech != 0 )
+					{
+						from.Mana += manaLeech;
+						from.PlaySound( 0x44D );
+					}
 				}
-			}
-			if ( context != null && context.Type == typeof( VampiricEmbraceSpell ) )
-			{
-				from.Hits += AOS.Scale( damageGiven, 20 );
-				from.PlaySound( 0x44D );
+				else if ( context.Type == typeof( VampiricEmbraceSpell ) )
+				{
+					from.Hits += AOS.Scale( damageGiven, 20 );
+					from.PlaySound( 0x44D );
+				}
 			}
 		}
 

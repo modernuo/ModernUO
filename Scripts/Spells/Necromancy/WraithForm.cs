@@ -3,6 +3,7 @@ using System.Collections;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
+using Server.Mobiles;
 
 namespace Server.Spells.Necromancy
 {
@@ -36,8 +37,17 @@ namespace Server.Spells.Necromancy
 
 		public override void DoEffect( Mobile m )
 		{
+			if ( m is PlayerMobile )
+				((PlayerMobile)m).IgnoreMobiles = true;
+			
 			m.PlaySound( 0x17F );
 			m.FixedParticles( 0x374A, 1, 15, 9902, 1108, 4, EffectLayer.Waist );
+		}
+		
+		public override void RemoveEffect( Mobile m )
+		{
+			if ( m is PlayerMobile && m.AccessLevel == AccessLevel.Player )
+				((PlayerMobile)m).IgnoreMobiles = false;
 		}
 	}
 }

@@ -890,7 +890,7 @@ namespace Server.Multis
 		public void EndConfirmCommit( Mobile from )
 		{
 			int oldPrice = Price;
-			int newPrice = oldPrice + CustomizationCost + ((DesignState.Components.List.Length - CurrentState.Components.List.Length) * 500);
+			int newPrice = oldPrice + CustomizationCost + ((DesignState.Components.List.Length - ( CurrentState.Components.List.Length + CurrentState.Fixtures.Length )) * 500);
 			int cost = newPrice - oldPrice;
 
 			if ( !this.Deleted ) { // Temporary Fix. We should be booting a client out of customization mode in the delete handler.
@@ -991,7 +991,7 @@ namespace Server.Multis
 			if( context != null )
 			{
 				int oldPrice = context.Foundation.Price;
-				int newPrice = oldPrice + context.Foundation.CustomizationCost + ((context.Foundation.DesignState.Components.List.Length - context.Foundation.CurrentState.Components.List.Length) * 500);
+				int newPrice = oldPrice + context.Foundation.CustomizationCost + ((context.Foundation.DesignState.Components.List.Length - ( context.Foundation.CurrentState.Components.List.Length + context.Foundation.Fixtures.Count) ) * 500);
 				int bankBalance = Banker.GetBalance( from );
 
 				from.SendGump( new ConfirmCommitGump( from, context.Foundation, bankBalance, oldPrice, newPrice ) );
@@ -1936,8 +1936,16 @@ namespace Server.Multis
 			AddHtmlLocalized( 10, 235, 150, 20, 1061900, 1023, false, false ); // Cost To Commit:
 			AddLabel( 170, 235, 90, newPrice.ToString() );
 
-			AddHtmlLocalized( 10, 260, 150, 20, 1061901, 31744, false, false ); // Your Cost:
-			AddLabel( 170, 260, 40, (newPrice - oldPrice).ToString() );
+			if ( newPrice - oldPrice < 0 )
+			{
+				AddHtmlLocalized( 10, 260, 150, 20, 1062059, 992, false, false ); // Your Refund:
+				AddLabel( 170, 260, 70, (oldPrice - newPrice).ToString() );
+			}
+			else
+			{
+				AddHtmlLocalized( 10, 260, 150, 20, 1061901, 31744, false, false ); // Your Cost:
+				AddLabel( 170, 260, 40, (newPrice - oldPrice).ToString() );
+			}
 
 			AddButton( 10, 290, 4005, 4007, 1, GumpButtonType.Reply, 0 );
 			AddHtmlLocalized( 45, 290, 55, 20, 1011036, 32767, false, false ); // OKAY

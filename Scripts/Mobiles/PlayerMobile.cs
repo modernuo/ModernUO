@@ -105,7 +105,14 @@ namespace Server.Mobiles
 		private int m_StepsTaken;
 		private int m_Profession;
 		private bool m_IsStealthing; // IsStealthing should be moved to Server.Mobiles
+		private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
 
+		/* 
+		 * a value of zero means, that the mobile is not executing the spell. Otherwise,
+		 * the value should match the BaseMana required 
+		*/
+		private int m_ExecutesLightningStrike; // move to Server.Mobiles??
+		
 		private DateTime m_LastOnline;
 		private Server.Guilds.RankDefinition m_GuildRank;
 
@@ -174,6 +181,23 @@ namespace Server.Mobiles
 		}
 		
 		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IgnoreMobiles // IgnoreMobiles should be moved to Server.Mobiles
+		{
+			get
+			{
+				return m_IgnoreMobiles;
+			}
+			set
+			{
+				if( m_IgnoreMobiles != value )
+				{
+					m_IgnoreMobiles = value;
+					Delta( MobileDelta.Flags );
+				}
+			}
+		}
+		
+		[CommandProperty( AccessLevel.GameMaster )]
 		public NpcGuild NpcGuild
 		{
 			get{ return m_NpcGuild; }
@@ -217,6 +241,12 @@ namespace Server.Mobiles
 		{
 			get { return m_ToTTotalMonsterFame; }
 			set { m_ToTTotalMonsterFame = value; }
+		}
+
+		public int ExecutesLightningStrike
+		{
+			get { return m_ExecutesLightningStrike; }
+			set { m_ExecutesLightningStrike = value; }
 		}
 
 		#endregion
@@ -506,6 +536,26 @@ namespace Server.Mobiles
 
 			return true;
 		}
+		
+		public override int GetPacketFlags()
+		{
+			int flags = base.GetPacketFlags();
+			
+			if ( m_IgnoreMobiles )
+				flags |= 0x10;
+			
+			return flags;
+		}
+		
+		public override int GetOldPacketFlags()
+		{
+			int flags = base.GetOldPacketFlags();
+			
+			if ( m_IgnoreMobiles )
+				flags |= 0x10;
+			
+			return flags;
+		}
 
 		public bool GetFlag( PlayerFlag flag )
 		{
@@ -630,6 +680,18 @@ namespace Server.Mobiles
 				min = baseMin;
 
 			return min;
+		}
+
+		public override void OnManaChange(int oldValue)
+		{
+			base.OnManaChange(oldValue);
+			if (m_ExecutesLightningStrike > 0)
+			{
+				if (Mana < m_ExecutesLightningStrike)
+				{
+					LightningStrike.ClearCurrentMove(this);
+				}
+			}
 		}
 
 		private static void OnLogin( LoginEventArgs e )
@@ -1860,7 +1922,7 @@ namespace Server.Mobiles
 
 		public override bool CheckShove( Mobile shoved )
 		{
-			if( TransformationSpellHelper.UnderTransformation( this, typeof( WraithFormSpell ) ) )
+			if( m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation( shoved, typeof( WraithFormSpell ) ) )
 				return true;
 			else
 				return base.CheckShove( shoved );
@@ -2762,6 +2824,9 @@ namespace Server.Mobiles
 
 			if( m_ChampionTitles == null )
 				m_ChampionTitles = new ChampionTitleInfo();
+			
+			if ( AccessLevel > AccessLevel.Player )
+				m_IgnoreMobiles = true;
 
 			List<Mobile> list = this.Stabled;
 
@@ -3247,6 +3312,11 @@ namespace Server.Mobiles
 
 		public override void OnAccessLevelChanged( AccessLevel oldLevel )
 		{
+			if ( AccessLevel == AccessLevel.Player )
+				IgnoreMobiles = false;
+			else
+				IgnoreMobiles = true;
+			
 			InvalidateMyRunUO();
 		}
 

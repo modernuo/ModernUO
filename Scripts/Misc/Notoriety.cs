@@ -329,7 +329,7 @@ namespace Server.Misc
 
 			if( !(target is BaseCreature && ((BaseCreature)target).InitialInnocent) )
 			{
-				if( !target.Body.IsHuman && !target.Body.IsGhost && !IsPet( target as BaseCreature ) && !TransformationSpellHelper.UnderTransformation( target ) && !AnimalForm.UnderTransformation( target ) )
+				if( !target.Body.IsHuman && !target.Body.IsGhost && !IsPet( target as BaseCreature ) && !(target is PlayerMobile) || !Core.ML && !target.CanBeginAction( typeof( Server.Spells.Seventh.PolymorphSpell ) ) )
 					return Notoriety.CanBeAttacked;
 			}
 

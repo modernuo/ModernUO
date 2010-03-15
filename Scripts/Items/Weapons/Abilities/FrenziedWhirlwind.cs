@@ -86,6 +86,7 @@ namespace Server.Items
 				for( int i = 0; i < targets.Count; ++i )
 				{
 					Mobile m = (Mobile)targets[i];
+					attacker.DoHarmful( m, true );
 
 					Timer t = Registry[m] as Timer;
 

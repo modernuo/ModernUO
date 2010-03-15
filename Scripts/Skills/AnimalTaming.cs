@@ -5,6 +5,8 @@ using Server.Targeting;
 using Server.Network;
 using Server.Mobiles;
 using Server.Factions;
+using Server.Spells;
+using Server.Spells.Spellweaving;
 
 namespace Server.SkillHandlers
 {
@@ -180,7 +182,7 @@ namespace Server.SkillHandlers
 								creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502805, from.NetState ); // You seem to anger the beast!
 								creature.PlaySound( creature.GetAngerSound() );
 								creature.Direction = creature.GetDirectionTo( from );
-								if ( from is PlayerMobile && !( (PlayerMobile)from ).HonorActive )
+								if ( from is PlayerMobile && !(( (PlayerMobile)from ).HonorActive || TransformationSpellHelper.UnderTransformation( from, typeof( EtherealVoyageSpell ))))
 									creature.Combatant = from;
 							}
 							else
