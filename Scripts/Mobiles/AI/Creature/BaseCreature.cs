@@ -250,10 +250,16 @@ namespace Server.Mobiles
 
 		public virtual InhumanSpeech SpeechType{ get{ return null; } }
 
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public bool IsStabled
 		{
 			get{ return m_IsStabled; }
-			set{ m_IsStabled = value; }
+			set
+			{
+				m_IsStabled = value;
+				if ( m_IsStabled )
+					StopDeleteTimer();
+			}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -363,12 +369,23 @@ namespace Server.Mobiles
 		
 		public void BeginDeleteTimer()
 		{
-			if ( !(this is BaseEscortable) && !Summoned && !Deleted )
+			if ( !(this is BaseEscortable) && !Summoned && !Deleted && !IsStabled )
 			{
+				StopDeleteTimer();
 				m_DeleteTimer = new DeleteTimer( this, TimeSpan.FromDays( 3.0 ) );
 				m_DeleteTimer.Start();
 			}
 		}
+
+		public void StopDeleteTimer()
+		{
+			if ( m_DeleteTimer != null )
+			{
+				m_DeleteTimer.Stop();
+				m_DeleteTimer = null;
+			}
+		}
+
 		#endregion
 
 		public virtual double WeaponAbilityChance{ get{ return 0.4; } }
@@ -1620,7 +1637,10 @@ namespace Server.Mobiles
 			writer.Write( (int)m_RemoveStep );
 			
 			// Version 17
-			writer.Write( DeleteTimeLeft );
+			if ( IsStabled || ( Controlled && ControlMaster != null ) )
+				writer.Write( TimeSpan.Zero );
+			else
+				writer.Write( DeleteTimeLeft );
 		}
 
 		private static double[] m_StandardActiveSpeeds = new double[]
@@ -2442,6 +2462,8 @@ namespace Server.Mobiles
 				RemoveFollowers();
 				m_ControlMaster = value;
 				AddFollowers();
+				if ( m_ControlMaster != null )
+					StopDeleteTimer();
 
 				Delta( MobileDelta.Noto );
 			}
