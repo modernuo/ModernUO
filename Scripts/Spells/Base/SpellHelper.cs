@@ -958,7 +958,11 @@ namespace Server.Spells
 				WeightOverloading.DFA = dfa;
 
 				int damageGiven = AOS.Damage( target, from, iDamage, phys, fire, cold, pois, nrgy );
-				DoLeech( damageGiven, from, target );
+
+				if ( from != null ) // sanity check
+				{
+					DoLeech( damageGiven, from, target );
+				}
 
 				WeightOverloading.DFA = DFAlgorithm.Standard;
 			}
@@ -1077,7 +1081,11 @@ namespace Server.Spells
 				WeightOverloading.DFA = m_DFA;
 
 				int damageGiven = AOS.Damage( m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy );
-				DoLeech( damageGiven, m_From, m_Target );
+
+				if ( m_From != null ) // sanity check
+				{
+					DoLeech( damageGiven, m_From, m_Target );
+				}
 
 				WeightOverloading.DFA = DFAlgorithm.Standard;
 

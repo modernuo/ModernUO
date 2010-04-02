@@ -2501,7 +2501,7 @@ namespace Server.Mobiles
 						continue;
 
 					// Ignore players with activated honor
-					if ( m is PlayerMobile && ( (PlayerMobile)m ).HonorActive )
+					if ( m is PlayerMobile && ( (PlayerMobile)m ).HonorActive && !( m_Mobile.Combatant == m ))
 						continue;
 					
 					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil )

@@ -4989,8 +4989,11 @@ namespace Server.Mobiles
 		{
 			BardProvoked = true;
 
-			this.PublicOverheadMessage( MessageType.Emote, EmoteHue, false, "*looks furious*" );
- 
+			if ( !Core.ML )
+			{
+				this.PublicOverheadMessage( MessageType.Emote, EmoteHue, false, "*looks furious*" );
+			}
+			
 			if ( bSuccess )
 			{
 				PlaySound( GetIdleSound() );

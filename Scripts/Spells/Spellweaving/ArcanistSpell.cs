@@ -42,6 +42,9 @@ namespace Server.Spells.Spellweaving
 			if( from == null || from.Backpack == null )
 				return null;
 
+			if ( from.Holding is ArcaneFocus )
+				return (ArcaneFocus)from.Holding;
+
 			return from.Backpack.FindItemByType<ArcaneFocus>();
 		}
 
