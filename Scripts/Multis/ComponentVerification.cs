@@ -6,8 +6,8 @@ namespace Server.Multis
 {
 	public class ComponentVerification
 	{
-		private byte[] m_ItemTable;
-		private byte[] m_MultiTable;
+		private int[] m_ItemTable;
+		private int[] m_MultiTable;
 
 		public bool IsItemValid( int itemID )
 		{
@@ -25,8 +25,11 @@ namespace Server.Multis
 			return CheckValidity( m_MultiTable[multiID] );
 		}
 
-		public bool CheckValidity( byte val )
+		public bool CheckValidity( int val )
 		{
+			if ( val == -1 )
+				return false;
+
 			return ( val == 0 || (ExpansionInfo.CurrentExpansion.CustomHousingFlag & val) != 0 );
 		}
 
@@ -46,12 +49,12 @@ namespace Server.Multis
 			LoadMultis( "Data/Components/stairs.txt", "MultiNorth", "MultiEast", "MultiSouth", "MultiWest" );
 		}
 
-		private byte[] CreateTable( int length )
+		private int[] CreateTable( int length )
 		{
-			byte[] table = new byte[length];
+			int[] table = new int[length];
 
 			for ( int i = 0; i < table.Length; ++i )
-				table[i] = 0xFF;
+				table[i] = -1;
 
 			return table;
 		}
@@ -66,7 +69,7 @@ namespace Server.Multis
 			LoadSpreadsheet( m_MultiTable, path, multiColumns );
 		}
 
-		private void LoadSpreadsheet( byte[] table, string path, params string[] tileColumns )
+		private void LoadSpreadsheet( int[] table, string path, params string[] tileColumns )
 		{
 			Spreadsheet ss = new Spreadsheet( path );
 
@@ -81,7 +84,7 @@ namespace Server.Multis
 			{
 				DataRecord record = ss.Records[i];
 
-				byte fid = (byte) record.GetInt32( featureCID );
+				int fid = record.GetInt32( featureCID );
 
 				for ( int j = 0; j < tileCIDs.Length; ++j )
 				{

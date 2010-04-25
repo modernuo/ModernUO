@@ -2211,8 +2211,7 @@ namespace Server.Network
 				m_AuthIDWindow.Remove( authID );
 
 				state.Version = ap.Version;
-			}
-			else if ( m_ClientVerification ) {
+			} else if ( m_ClientVerification ) {
 				Console.WriteLine( "Login: {0}: Invalid client detected, disconnecting", state );
 				state.Dispose();
 				return;
@@ -2243,8 +2242,7 @@ namespace Server.Network
 				state.CityInfo = e.CityInfo;
 				state.CompressionEnabled = true;
 
-				if ( Core.AOS )
-					state.Send( SupportedFeatures.Instantiate( state ) );
+				state.Send( SupportedFeatures.Instantiate( state ) );
 
 				state.Send( new CharacterList( state.Account, state.CityInfo ) );
 			}

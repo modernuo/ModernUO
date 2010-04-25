@@ -19,7 +19,7 @@ namespace Server.Mobiles
 		public class InternalBuyInfo : List<GenericBuyInfo> 
 		{ 
 			public InternalBuyInfo() 
-			{                 
+			{
 				Add( new GenericBuyInfo( typeof( Bacon ), 7, 20, 0x979, 0 ) );
 				Add( new GenericBuyInfo( typeof( Ham ), 26, 20, 0x9C9, 0 ) ); 
 				Add( new GenericBuyInfo( typeof( Sausage ), 18, 20, 0x9C0, 0 ) );
@@ -28,7 +28,7 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( RawLambLeg ), 9, 20, 0x1609, 0 ) );
 				Add( new GenericBuyInfo( typeof( RawRibs ), 16, 20, 0x9F1, 0 ) );
 				Add( new GenericBuyInfo( typeof( ButcherKnife ), 13, 20, 0x13F6, 0 ) );
- 				Add( new GenericBuyInfo( typeof( Cleaver ), 13, 20, 0xEC3, 0 ) );
+				Add( new GenericBuyInfo( typeof( Cleaver ), 13, 20, 0xEC3, 0 ) );
 				Add( new GenericBuyInfo( typeof( SkinningKnife ), 13, 20, 0xEC4, 0 ) ); 
 
 
