@@ -2213,7 +2213,7 @@ namespace Server.Multis
 					{
 						c.IsLockedDown = false;
 						c.IsSecure = false;
-						m_Secures.Remove( c );
+						m_Secures.Remove( info );
 						c.Destroy();
 						break;
 					}

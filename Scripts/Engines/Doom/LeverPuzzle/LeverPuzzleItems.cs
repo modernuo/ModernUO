@@ -152,9 +152,11 @@ namespace Server.Engines.Doom
 			m_Controller = reader.ReadItem() as LeverPuzzleController;
 		}
 	}
-	public class LampRoomTelePorter : Item
+
+    [TypeAlias( "Server.Engines.Doom.LampRoomTelePorter" )]
+	public class LampRoomTeleporter : Item
 	{
-		public LampRoomTelePorter( int[] dat )
+		public LampRoomTeleporter( int[] dat )
 		{
 			Hue = dat[1];
 			ItemID = dat[0];
@@ -180,7 +182,7 @@ namespace Server.Engines.Doom
 			return true;
 		}
 
-		public LampRoomTelePorter( Serial serial ) : base( serial )
+		public LampRoomTeleporter( Serial serial ) : base( serial )
 		{
 		}
 		public override void Serialize( GenericWriter writer )

@@ -127,7 +127,7 @@ namespace Server.Misc
 			}
 		}
 
-		public static string[] HarrowerTitles = new string[] { "Spite", "Opponent", "Hunter", "Venom", "Executioner", "Annihilator", "Champion" };
+		public static string[] HarrowerTitles = new string[] { "Spite", "Opponent", "Hunter", "Venom", "Executioner", "Annihilator", "Champion", "Assailant", "Purifier", "Nullifier" };
 
 		public static string ComputeTitle( Mobile beholder, Mobile beheld )
 		{

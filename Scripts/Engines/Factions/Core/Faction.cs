@@ -884,25 +884,28 @@ namespace Server.Factions
 		public const double SkillLossFactor = 1.0 / 3;
 		public static readonly TimeSpan SkillLossPeriod = TimeSpan.FromMinutes( 20.0 );
 
-		private static Hashtable m_SkillLoss = new Hashtable();
+		private static Dictionary<Mobile, SkillLossContext> m_SkillLoss = new Dictionary<Mobile, SkillLossContext>();
 
 		private class SkillLossContext
 		{
 			public Timer m_Timer;
-			public ArrayList m_Mods;
+			public List<SkillMod> m_Mods;
+		}
+
+		public static bool InSkillLoss( Mobile mob )
+		{
+			return m_SkillLoss.ContainsKey( mob );
 		}
 
 		public static void ApplySkillLoss( Mobile mob )
 		{
-			SkillLossContext context = (SkillLossContext)m_SkillLoss[mob];
-
-			if ( context != null )
+			if ( InSkillLoss( mob ) )
 				return;
 
-			context = new SkillLossContext();
+			SkillLossContext context = new SkillLossContext();
 			m_SkillLoss[mob] = context;
 
-			ArrayList mods = context.m_Mods = new ArrayList();
+			List<SkillMod> mods = context.m_Mods = new List<SkillMod>();
 
 			for ( int i = 0; i < mob.Skills.Length; ++i )
 			{
@@ -928,18 +931,17 @@ namespace Server.Factions
 
 		public static bool ClearSkillLoss( Mobile mob )
 		{
-			SkillLossContext context = (SkillLossContext)m_SkillLoss[mob];
+			SkillLossContext context;
 
-			if ( context == null ) {
+			if ( !m_SkillLoss.TryGetValue( mob, out context ) )
 				return false;
-			}
 
 			m_SkillLoss.Remove( mob );
 
-			ArrayList mods = context.m_Mods;
+			List<SkillMod> mods = context.m_Mods;
 
 			for ( int i = 0; i < mods.Count; ++i )
-				mob.RemoveSkillMod( (SkillMod) mods[i] );
+				mob.RemoveSkillMod( mods[i] );
 
 			context.m_Timer.Stop();
 

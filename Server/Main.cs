@@ -32,12 +32,13 @@ using Server;
 using Server.Accounting;
 using Server.Gumps;
 using Server.Network;
+using System.Runtime;
 
 namespace Server
 {
 	public delegate void Slice();
 
-	public class Core
+	public static class Core
 	{
 		private static bool m_Crashed;
 		private static Thread timerThread;
@@ -102,11 +103,13 @@ namespace Server
 		internal static bool VBdotNet { get { return m_VBdotNET; } }
 		public static List<string> DataDirectories { get { return m_DataDirectories; } }
 		public static Assembly Assembly { get { return m_Assembly; } set { m_Assembly = value; } }
+        public static Version Version { get { return m_Assembly.GetName().Version; } }
 		public static Process Process { get { return m_Process; } }
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
 		public static readonly bool Is64Bit = (IntPtr.Size == 8);
+        //TODO: Upon public release of .NET 4.0, use Environment.Is64BitOperatingSystem/Process
 
 		private static bool m_MultiProcessor;
 		private static int m_ProcessorCount;
@@ -287,12 +290,12 @@ namespace Server
 		private static bool m_Closing;
 		public static bool Closing { get { return m_Closing; } }
 
-		private static uint m_CycleIndex;
+		private static long m_CycleIndex;
 		private static float[] m_CyclesPerSecond = new float[100];
 
 		public static float CyclesPerSecond
 		{
-			get { return m_CyclesPerSecond[((uint)(m_CycleIndex - 1)) % m_CyclesPerSecond.Length]; }
+			get { return m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length]; }
 		}
 
 		public static float AverageCPS
@@ -429,6 +432,9 @@ namespace Server
 				SetConsoleCtrlHandler( m_ConsoleEventHandler, true );
 			}
 
+            if ( GCSettings.IsServerGC )
+                Console.WriteLine("Core: Server garbage collection mode enabled");
+
 			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
 			{
 				Console.WriteLine( "Scripts: One or more scripts failed to compile or no script files were found." );
@@ -467,7 +473,7 @@ namespace Server
 				const int sampleInterval = 100;
 				const float ticksPerSecond = (float)(TimeSpan.TicksPerSecond * sampleInterval);
 
-				int sample = 0;
+				long sample = 0;
 
 				while( m_Signal.WaitOne() )
 				{
@@ -620,6 +626,7 @@ namespace Server
 					}
 					catch
 					{
+                        Console.WriteLine( "Warning: Exception in serialization verification of type {0}", t );
 					}
 				}
 			}

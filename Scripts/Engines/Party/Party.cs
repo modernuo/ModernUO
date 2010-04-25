@@ -5,15 +5,16 @@ using Server.Network;
 using Server.Targeting;
 using Server.Factions;
 using Server.Commands;
+using System.Collections.Generic;
 
 namespace Server.Engines.PartySystem
 {
 	public class Party : IParty
 	{
 		private Mobile m_Leader;
-		private ArrayList m_Members;
-		private ArrayList m_Candidates;
-		private ArrayList m_Listeners; // staff listening
+		private List<PartyMemberInfo> m_Members;
+		private List<Mobile> m_Candidates;
+        private List<Mobile> m_Listeners; // staff listening
 
 		public const int Capacity = 10;
 
@@ -148,9 +149,9 @@ namespace Server.Engines.PartySystem
 		{
 			m_Leader = leader;
 
-			m_Members = new ArrayList();
-			m_Candidates = new ArrayList();
-			m_Listeners = new ArrayList();
+			m_Members = new List<PartyMemberInfo>();
+			m_Candidates = new List<Mobile>();
+            m_Listeners = new List<Mobile>();
 
 			m_Members.Add( new PartyMemberInfo( leader ) );
 		}
@@ -335,10 +336,10 @@ namespace Server.Engines.PartySystem
 
 			for ( int i = 0; i < m_Listeners.Count; ++i )
 			{
-				Mobile mob = (Mobile)m_Listeners[i];
+				Mobile mob = m_Listeners[i];
 
 				if ( mob.Party != this )
-					((Mobile)m_Listeners[i]).SendMessage( "[{0}]: {1}", from.Name, text );
+					m_Listeners[i].SendMessage( "[{0}]: {1}", from.Name, text );
 			}
 
 			SendToStaffMessage( from, "[Party]: {0}", text );
@@ -350,10 +351,10 @@ namespace Server.Engines.PartySystem
 
 			for ( int i = 0; i < m_Listeners.Count; ++i )
 			{
-				Mobile mob = (Mobile)m_Listeners[i];
+				Mobile mob = m_Listeners[i];
 
 				if ( mob.Party != this )
-					((Mobile)m_Listeners[i]).SendMessage( "[{0}]->[{1}]: {2}", from.Name, to.Name, text );
+					m_Listeners[i].SendMessage( "[{0}]->[{1}]: {2}", from.Name, to.Name, text );
 			}
 
 			SendToStaffMessage( from, "[Party]->[{0}]: {1}", to.Name, text );
@@ -388,13 +389,13 @@ namespace Server.Engines.PartySystem
 			p.Acquire();
 
 			for ( int i = 0; i < m_Members.Count; ++i )
-				((PartyMemberInfo)m_Members[i]).Mobile.Send( p );
+				m_Members[i].Mobile.Send( p );
 
 			if ( p is MessageLocalized || p is MessageLocalizedAffix || p is UnicodeMessage || p is AsciiMessage )
 			{
 				for ( int i = 0; i < m_Listeners.Count; ++i )
 				{
-					Mobile mob = (Mobile)m_Listeners[i];
+					Mobile mob = m_Listeners[i];
 
 					if ( mob.Party != this )
 						mob.Send( p );
@@ -410,7 +411,7 @@ namespace Server.Engines.PartySystem
 
 			for ( int i = 0; i < m_Members.Count; ++i )
 			{
-				Mobile c = ((PartyMemberInfo)m_Members[i]).Mobile;
+				Mobile c = m_Members[i].Mobile;
 
 				if ( c != m && m.Map == c.Map && Utility.InUpdateRange( c, m ) && c.CanSee( m ) )
 				{
@@ -430,7 +431,7 @@ namespace Server.Engines.PartySystem
 
 			for ( int i = 0; i < m_Members.Count; ++i )
 			{
-				Mobile c = ((PartyMemberInfo)m_Members[i]).Mobile;
+				Mobile c = m_Members[i].Mobile;
 
 				if ( c != m && m.Map == c.Map && Utility.InUpdateRange( c, m ) && c.CanSee( m ) )
 				{
@@ -458,17 +459,17 @@ namespace Server.Engines.PartySystem
 		public int Count{ get{ return m_Members.Count; } }
 		public bool Active{ get{ return m_Members.Count > 1; } }
 		public Mobile Leader{ get{ return m_Leader; } }
-		public ArrayList Members{ get{ return m_Members; } }
-		public ArrayList Candidates{ get{ return m_Candidates; } }
+		public List<PartyMemberInfo> Members{ get{ return m_Members; } }
+        public List<Mobile> Candidates { get { return m_Candidates; } }
 
-		public PartyMemberInfo this[int index]{ get{ return (PartyMemberInfo)m_Members[index]; } }
+		public PartyMemberInfo this[int index]{ get{ return m_Members[index]; } }
 		public PartyMemberInfo this[Mobile m]
 		{
 			get
 			{
 				for ( int i = 0; i < m_Members.Count; ++i )
-					if ( ((PartyMemberInfo)m_Members[i]).Mobile == m )
-						return (PartyMemberInfo)m_Members[i];
+					if ( m_Members[i].Mobile == m )
+						return m_Members[i];
 
 				return null;
 			}

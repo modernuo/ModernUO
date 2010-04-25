@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Network;
@@ -8,8 +8,8 @@ namespace Server.Mobiles
 {
 	public abstract class BaseGuildmaster : BaseVendor
 	{
-		private ArrayList m_SBInfos = new ArrayList();
-		protected override ArrayList SBInfos{ get { return m_SBInfos; } }
+		private List<SBInfo> m_SBInfos = new List<SBInfo>();
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
 		public override bool IsActiveVendor{ get{ return false; } }
 

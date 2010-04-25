@@ -101,7 +101,7 @@ namespace Server.Engines.Doom
 
 			m_Teles = new List<Item>();
 			for (; i<15; i++)
-				m_Teles.Add( AddLeverPuzzlePart( TA[i], new LampRoomTelePorter( TA[++i] )));
+				m_Teles.Add( AddLeverPuzzlePart( TA[i], new LampRoomTeleporter( TA[++i] )));
 
 			m_Statues = new List<Item>();
 			for (; i<19; i++)
@@ -266,7 +266,7 @@ namespace Server.Engines.Doom
 
 			/* if one bit in each of the four nibbles is set, this is false */
 
-			if( (TheirKey=(ushort)(code|(TheirKey<<=4))) < 4095 )
+			if( (TheirKey=(ushort)(code|(TheirKey<<=4))) < 0x0FFF )
 			{
 				l_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), new TimerCallback( ResetPuzzle ));
 				return;

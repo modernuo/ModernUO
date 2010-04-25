@@ -17,7 +17,7 @@ namespace Server.Guilds
 		{
 			m_ToLeader = toPromoteToLeader;
 			m_toKick = toKick;
-			m_Member = (PlayerMobile)member;
+			m_Member = member;
 			PopulateGump();
 		}
 

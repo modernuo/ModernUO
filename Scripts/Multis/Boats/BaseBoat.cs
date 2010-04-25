@@ -891,14 +891,8 @@ namespace Server.Multis
 			{
 				string sNumber = navPoint.Substring( start );
 
-				try
-				{
-					number = Convert.ToInt32( sNumber );
-				}
-				catch
-				{
-					number = -1;
-				}
+                if ( !int.TryParse( sNumber, out number ) )
+                    number = -1;
 
 				if ( number != -1 )
 				{

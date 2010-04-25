@@ -51,6 +51,7 @@ namespace Server
 						}
 						catch
 						{
+                            Console.WriteLine( "Warning: Error in Line '{0}' of Data/treasure.cfg", line );
 						}
 					}
 				}

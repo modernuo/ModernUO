@@ -4,6 +4,7 @@ using Server;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using System.Collections.Generic;
 
 namespace Server.Factions
 {
@@ -55,12 +56,12 @@ namespace Server.Factions
 		{
 		}
 
-		public override bool OnBuyItems( Mobile buyer, ArrayList list )
+        public override bool OnBuyItems( Mobile buyer, List<BuyItemResponse> list )
 		{
 			return false;
 		}
 
-		public override bool OnSellItems( Mobile seller, ArrayList list )
+        public override bool OnSellItems( Mobile seller, List<SellItemResponse> list )
 		{
 			return false;
 		}

@@ -6,6 +6,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Commands;
 using Server.Targeting;
+using System.Collections.Generic;
 
 namespace Server
 {
@@ -201,7 +202,7 @@ namespace Server
 
 							for ( int i = 0; i < state.m_List.Count; ++i )
 							{
-								Item item = (Item)state.m_List[i];
+								Item item = state.m_List[i];
 
 								int xOffset = item.X - (state.m_X * 8);
 								int yOffset = item.Y - (state.m_Y * 8);
@@ -551,13 +552,13 @@ namespace Server
 		private class DeltaState
 		{
 			public int m_X, m_Y;
-			public ArrayList m_List;
+			public List<Item> m_List;
 
 			public DeltaState( Point2D p )
 			{
 				m_X = p.X;
 				m_Y = p.Y;
-				m_List = new ArrayList();
+                m_List = new List<Item>();
 			}
 		}
 

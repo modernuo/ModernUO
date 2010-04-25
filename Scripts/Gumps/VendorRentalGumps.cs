@@ -284,14 +284,8 @@ namespace Server.Gumps
 
 				int price;
 
-				try
-				{
-					price = Convert.ToInt32( text );
-				}
-				catch
-				{
-					price = -1;
-				}
+                if ( !int.TryParse( text, out price ) )
+                    price = -1;
 
 				if ( price < 0 )
 				{
@@ -512,14 +506,8 @@ namespace Server.Gumps
 
 				int price;
 
-				try
-				{
-					price = Convert.ToInt32( text );
-				}
-				catch
-				{
-					price = -1;
-				}
+                if ( !int.TryParse( text, out price ) )
+                    price = -1;
 
 				if ( price < 0 )
 				{

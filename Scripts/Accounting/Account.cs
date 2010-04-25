@@ -225,7 +225,7 @@ namespace Server.Accounting
 		/// </summary>
 		public bool Inactive
 		{
-			get { return ( ( m_LastLogin + InactiveDuration ) <= DateTime.Now ); }
+			get { return ( ( m_LastLogin + InactiveDuration ) <= DateTime.Now && AccessLevel == AccessLevel.Player ); }
 		}
 
 		/// <summary>
@@ -365,7 +365,7 @@ namespace Server.Accounting
 			string tagDuration = GetTag( "BanDuration" );
 
 			if ( tagTime != null )
-				banTime = Utility.GetDateTime( tagTime, DateTime.MinValue );
+				banTime = Utility.GetXMLDateTime( tagTime, DateTime.MinValue );
 			else
 				banTime = DateTime.MinValue;
 
@@ -657,9 +657,9 @@ namespace Server.Accounting
 			}
 
 			m_AccessLevel = (AccessLevel)Enum.Parse( typeof( AccessLevel ), Utility.GetText( node["accessLevel"], "Player" ), true );
-			m_Flags = Utility.GetInt32( Utility.GetText( node["flags"], "0" ), 0 );
-			m_Created = Utility.GetDateTime( Utility.GetText( node["created"], null ), DateTime.Now );
-			m_LastLogin = Utility.GetDateTime( Utility.GetText( node["lastLogin"], null ), DateTime.Now );
+			m_Flags = Utility.GetXMLInt32( Utility.GetText( node["flags"], "0" ), 0 );
+			m_Created = Utility.GetXMLDateTime( Utility.GetText( node["created"], null ), DateTime.Now );
+			m_LastLogin = Utility.GetXMLDateTime( Utility.GetText( node["lastLogin"], null ), DateTime.Now );
 
 			m_Mobiles = LoadMobiles( node );
 			m_Comments = LoadComments( node );
@@ -673,7 +673,7 @@ namespace Server.Accounting
 					m_Mobiles[i].Account = this;
 			}
 
-			TimeSpan totalGameTime = Utility.GetTimeSpan( Utility.GetText( node["totalGameTime"], null ), TimeSpan.Zero );
+			TimeSpan totalGameTime = Utility.GetXMLTimeSpan( Utility.GetText( node["totalGameTime"], null ), TimeSpan.Zero );
 			if ( totalGameTime == TimeSpan.Zero )
 			{
 				for ( int i = 0; i < m_Mobiles.Length; i++ )
@@ -736,7 +736,7 @@ namespace Server.Accounting
 
 			if ( addressList != null )
 			{
-				int count = Utility.GetInt32( Utility.GetAttribute( addressList, "count", "0" ), 0 );
+				int count = Utility.GetXMLInt32( Utility.GetAttribute( addressList, "count", "0" ), 0 );
 
 				list = new IPAddress[count];
 
@@ -793,8 +793,8 @@ namespace Server.Accounting
 				{
 					try
 					{
-						int index = Utility.GetInt32( Utility.GetAttribute( ele, "index", "0" ), 0 );
-						int serial = Utility.GetInt32( Utility.GetText( ele, "0" ), 0 );
+						int index = Utility.GetXMLInt32( Utility.GetAttribute( ele, "index", "0" ), 0 );
+						int serial = Utility.GetXMLInt32( Utility.GetText( ele, "0" ), 0 );
 
 						if ( index >= 0 && index < list.Length )
 							list[index] = World.FindMobile( serial );

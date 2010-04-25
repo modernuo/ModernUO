@@ -476,9 +476,9 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			if ( CheckType( "PitcherWater" ) || CheckType( "GlassPitcher" ) )
-				base.Deserialize( reader, false );
+				base.InternalDeserialize( reader, false );
 			else
-				base.Deserialize( reader, true );
+				base.InternalDeserialize( reader, true );
 
 			int version = reader.ReadInt();
 
@@ -1141,10 +1141,10 @@ namespace Server.Items
 
 		public override void Deserialize( GenericReader reader )
 		{
-			Deserialize( reader, true );
+			InternalDeserialize( reader, true );
 		}
 
-		public void Deserialize( GenericReader reader, bool read )
+		protected void InternalDeserialize( GenericReader reader, bool read )
 		{
 			base.Deserialize( reader );
 

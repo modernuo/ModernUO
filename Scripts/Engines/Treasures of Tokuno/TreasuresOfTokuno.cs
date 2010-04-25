@@ -2,6 +2,7 @@ using System;
 using Server;
 using Server.Network;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Gumps;
 using Server.Misc;
@@ -192,8 +193,8 @@ namespace Server.Mobiles
 		public override bool ClickTitle { get { return true; } }
 		public override bool CanTeach { get { return false; } }
 
-		protected ArrayList m_SBInfos = new ArrayList();
-		protected override ArrayList SBInfos { get { return m_SBInfos; } }
+        protected List<SBInfo> m_SBInfos = new List<SBInfo>();
+        protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
 		
 		public override void InitSBInfo()
 		{

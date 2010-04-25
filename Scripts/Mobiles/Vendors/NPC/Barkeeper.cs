@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Gumps;
@@ -11,8 +11,8 @@ namespace Server.Mobiles
 {
 	public class Barkeeper : BaseVendor
 	{
-		private ArrayList m_SBInfos = new ArrayList(); 
-		protected override ArrayList SBInfos{ get { return m_SBInfos; } } 
+		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
 
 		public override void InitSBInfo()
 		{

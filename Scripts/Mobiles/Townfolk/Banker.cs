@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Items;
 using Server.ContextMenus;
@@ -10,8 +9,8 @@ namespace Server.Mobiles
 {
 	public class Banker : BaseVendor
 	{
-		private ArrayList m_SBInfos = new ArrayList();
-		protected override ArrayList SBInfos{ get { return m_SBInfos; } }
+		private List<SBInfo> m_SBInfos = new List<SBInfo>();
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.MerchantsGuild; } }
 
@@ -250,14 +249,8 @@ namespace Server.Mobiles
 							{
 								int amount;
 
-								try
-								{
-									amount = Convert.ToInt32( split[1] );
-								}
-								catch
-								{
-									break;
-								}
+                                if ( !int.TryParse( split[1], out amount ) )
+                                    break;
 
 								if ( amount > 5000 )
 								{
@@ -331,14 +324,8 @@ namespace Server.Mobiles
 							{
 								int amount;
 
-								try
-								{
-									amount = Convert.ToInt32( split[1] );
-								}
-								catch
-								{
-									break;
-								}
+                                if ( !int.TryParse( split[1], out amount ) )
+                                    break;
 
 								if ( amount < 5000 )
 								{

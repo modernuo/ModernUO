@@ -28,8 +28,8 @@ namespace Server.Engines.Quests
 
 	public abstract class BaseQuester : BaseVendor
 	{
-		protected ArrayList m_SBInfos = new ArrayList();
-		protected override ArrayList SBInfos{ get { return m_SBInfos; } }
+        protected List<SBInfo> m_SBInfos = new List<SBInfo>();
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
 		public override bool IsActiveVendor{ get{ return false; } }
 		public override bool IsInvulnerable{ get{ return true; } }

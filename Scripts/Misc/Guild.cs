@@ -603,9 +603,10 @@ namespace Server.Guilds
 			{
 				Guild g = null;
 
-				int id = Utility.GetInt32( arg, -1 );
-				if( id != -1 )
-					g = Guild.Find( id ) as Guild;
+                int id;
+
+                if( int.TryParse( arg, out id ) )
+                    g = Guild.Find( id ) as Guild;
 
 				if( g == null )
 				{
@@ -615,11 +616,13 @@ namespace Server.Guilds
 						g = Guild.FindByName( arg ) as Guild;
 				}
 
-				if( g != null )
+				if ( g != null )
+				{
 					from.SendGump( new PropertiesGump( from, g ) );
 
-				if( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && from is PlayerMobile )
-					from.SendGump( new GuildInfoGump( (PlayerMobile)from, g ) );
+					if ( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && from is PlayerMobile )
+						from.SendGump( new GuildInfoGump( (PlayerMobile)from, g ) );
+				}
 			}
 
 		}
@@ -1607,7 +1610,6 @@ namespace Server.Guilds
 
 		public void CalculateGuildmaster()
 		{
-			//Hashtable votes = new Hashtable();
 			Dictionary<Mobile, int> votes = new Dictionary<Mobile, int>();
 
 			int votingMembers = 0;
@@ -1621,7 +1623,6 @@ namespace Server.Guilds
 
 				Mobile m = memb.GuildFealty;
 
-				//if ( m == null || m.Deleted || m.Guild != this )
 				if( !CanBeVotedFor( m ) )
 				{
 					if ( m_Leader != null && !m_Leader.Deleted && m_Leader.Guild == this )
@@ -1639,13 +1640,6 @@ namespace Server.Guilds
 					votes[m] = 1;
 				else
 					votes[m] = v + 1;
-
-				/*
-				if ( votes[m] == null )
-					votes[m] = (int)1;
-				else
-					votes[m] = (int)(votes[m]) + 1;
-				 * */
 				
 				votingMembers++;
 			}

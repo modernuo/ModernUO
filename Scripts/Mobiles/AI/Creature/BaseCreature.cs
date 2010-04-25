@@ -1359,24 +1359,24 @@ namespace Server.Mobiles
 
 				if ( feathers != 0 )
 				{
-					corpse.DropItem( new Feather( feathers ) );
+					corpse.AddCarvedItem( new Feather( feathers ), from );
 					from.SendLocalizedMessage( 500479 ); // You pluck the bird. The feathers are now on the corpse.
 				}
 
 				if ( wool != 0 )
 				{
-					corpse.DropItem( new Wool( wool ) );
+                    corpse.AddCarvedItem( new Wool( wool ), from );
 					from.SendLocalizedMessage( 500483 ); // You shear it, and the wool is now on the corpse.
 				}
 
 				if ( meat != 0 )
 				{
 					if ( MeatType == MeatType.Ribs )
-						corpse.DropItem( new RawRibs( meat ) );
+                        corpse.AddCarvedItem( new RawRibs( meat ), from );
 					else if ( MeatType == MeatType.Bird )
-						corpse.DropItem( new RawBird( meat ) );
+                        corpse.AddCarvedItem( new RawBird( meat ), from );
 					else if ( MeatType == MeatType.LambLeg )
-						corpse.DropItem( new RawLambLeg( meat ) );
+                        corpse.AddCarvedItem( new RawLambLeg( meat ), from );
 
 					from.SendLocalizedMessage( 500467 ); // You carve some meat, which remains on the corpse.
 				}
@@ -1428,20 +1428,20 @@ namespace Server.Mobiles
 
 					switch ( sc )
 					{
-						case ScaleType.Red:		corpse.DropItem( new RedScales( scales ) ); break;
-						case ScaleType.Yellow:	corpse.DropItem( new YellowScales( scales ) ); break;
-						case ScaleType.Black:	corpse.DropItem( new BlackScales( scales ) ); break;
-						case ScaleType.Green:	corpse.DropItem( new GreenScales( scales ) ); break;
-						case ScaleType.White:	corpse.DropItem( new WhiteScales( scales ) ); break;
-						case ScaleType.Blue:	corpse.DropItem( new BlueScales( scales ) ); break;
+                        case ScaleType.Red:     corpse.AddCarvedItem( new RedScales( scales ), from ); break;
+                        case ScaleType.Yellow:  corpse.AddCarvedItem( new YellowScales( scales ), from ); break;
+                        case ScaleType.Black:   corpse.AddCarvedItem( new BlackScales( scales ), from ); break;
+                        case ScaleType.Green:   corpse.AddCarvedItem( new GreenScales( scales ), from ); break;
+                        case ScaleType.White:   corpse.AddCarvedItem( new WhiteScales( scales ), from ); break;
+                        case ScaleType.Blue:    corpse.AddCarvedItem( new BlueScales( scales ), from ); break;
 						case ScaleType.All:
 						{
-							corpse.DropItem( new RedScales( scales ) );
-							corpse.DropItem( new YellowScales( scales ) );
-							corpse.DropItem( new BlackScales( scales ) );
-							corpse.DropItem( new GreenScales( scales ) );
-							corpse.DropItem( new WhiteScales( scales ) );
-							corpse.DropItem( new BlueScales( scales ) );
+                            corpse.AddCarvedItem( new RedScales( scales ), from );
+                            corpse.AddCarvedItem( new YellowScales( scales ), from );
+                            corpse.AddCarvedItem( new BlackScales( scales ), from );
+                            corpse.AddCarvedItem( new GreenScales( scales ), from );
+                            corpse.AddCarvedItem( new WhiteScales( scales ), from );
+                            corpse.AddCarvedItem( new BlueScales( scales ), from );
 							break;
 						}
 					}
@@ -2456,7 +2456,7 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if ( m_ControlMaster == value )
+				if ( m_ControlMaster == value || this == value )
 					return;
 
 				RemoveFollowers();
@@ -2478,7 +2478,7 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if ( m_SummonMaster == value )
+				if ( m_SummonMaster == value || this == value )
 					return;
 
 				RemoveFollowers();
@@ -4261,11 +4261,6 @@ namespace Server.Mobiles
 
 		public static List<DamageStore> GetLootingRights( List<DamageEntry> damageEntries, int hitsMax )
 		{
-			return GetLootingRights( damageEntries, hitsMax, false );
-		}
-
-		public static List<DamageStore> GetLootingRights( List<DamageEntry> damageEntries, int hitsMax, bool partyAsIndividual )
-		{
 			List<DamageStore> rights = new List<DamageStore>();
 
 			for ( int i = damageEntries.Count - 1; i >= 0; --i )
@@ -4960,6 +4955,7 @@ namespace Server.Mobiles
 				{
 					// *rummages through a corpse and takes an item*
 					PublicOverheadMessage( MessageType.Emote, 0x3B2, 1008086 );
+                    //TODO: Instancing of Rummaged stuff.
 					return true;
 				}
 			}

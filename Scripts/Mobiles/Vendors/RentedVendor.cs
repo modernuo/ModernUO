@@ -318,14 +318,9 @@ namespace Server.Mobiles
 				text = text.Trim();
 
 				int amount;
-				try
-				{
-					amount = Convert.ToInt32( text );
-				}
-				catch
-				{
-					amount = -1;
-				}
+
+                if ( !int.TryParse( text, out amount ) )
+                    amount = -1;
 
 				Mobile owner = m_Vendor.Owner;
 				if ( owner == null )

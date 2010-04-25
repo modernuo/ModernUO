@@ -266,10 +266,18 @@ namespace Server.Commands
 				if( !( obj is IConvertible ) )
 					return "Property is not IConvertable.";
 
-				long v = (long)Convert.ChangeType( obj, TypeCode.Int64 );
-				v += realValues[i];
+				try
+				{
 
-				realProps[i].SetValue( realObjs[i], Convert.ChangeType( v, realProps[i].PropertyType ), null );
+					long v = (long)Convert.ChangeType( obj, TypeCode.Int64 );
+					v += realValues[i];
+
+					realProps[i].SetValue( realObjs[i], Convert.ChangeType( v, realProps[i].PropertyType ), null );
+				}
+				catch
+				{
+					return "Value could not be converted";
+				}
 			}
 
 			if ( realProps.Length == 1 )

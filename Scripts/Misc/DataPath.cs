@@ -36,6 +36,8 @@ namespace Server.Misc
 			string pathReg = GetExePath( "Ultima Online" );
 			string pathTD = GetExePath( "Ultima Online Third Dawn" );	//These refer to 2D & 3D, not the Third Dawn expansion
 
+            string newPath = GetExePath("Ultima Online", "KR Legacy Beta"); //After KR, This is the new registry key for the 2D client
+
 			if ( CustomPath != null ) 
 				Core.DataDirectories.Add( CustomPath ); 
 
@@ -43,7 +45,10 @@ namespace Server.Misc
 				Core.DataDirectories.Add( pathReg ); 
 
 			if ( pathTD != null ) 
-				Core.DataDirectories.Add( pathTD ); 
+				Core.DataDirectories.Add( pathTD );
+
+            if ( newPath != null )
+                Core.DataDirectories.Add( newPath );
 
 			if ( Core.DataDirectories.Count == 0 && !Core.Service )
 			{
@@ -54,18 +59,23 @@ namespace Server.Misc
 			}
 		}
 
-		private static string GetExePath( string subName )
+        private static string GetExePath( string subName )
+        {
+            return GetExePath( subName, "1.0" );
+        }
+
+		private static string GetExePath( string subName, string version )
 		{
 			try
 			{
 				String keyString;
 
 				if( Core.Is64Bit )
-					keyString = @"SOFTWARE\Wow6432Node\Origin Worlds Online\{0}\1.0";
+					keyString = @"SOFTWARE\Wow6432Node\Origin Worlds Online\{0}\{1}";
 				else
-					keyString = @"SOFTWARE\Origin Worlds Online\{0}\1.0";
+					keyString = @"SOFTWARE\Origin Worlds Online\{0}\{1}";
 
-				using( RegistryKey key = Registry.LocalMachine.OpenSubKey( String.Format( keyString, subName ) ) )
+				using( RegistryKey key = Registry.LocalMachine.OpenSubKey( String.Format( keyString, subName, version ) ) )
 				{
 					if( key == null )
 						return null;

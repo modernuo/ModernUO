@@ -1119,6 +1119,11 @@ namespace Server
 				((Mobile)m_Parent).GetChildNameProperties( list, item );
 		}
 
+        public virtual bool IsChildVisibleTo( Mobile m, Item child )
+        {
+            return true;
+        }
+
 		public void Bounce( Mobile from )
 		{
 			if ( m_Parent is Item )

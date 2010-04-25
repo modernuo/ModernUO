@@ -52,16 +52,38 @@ namespace Server.Items
 			}
 		}
 
-		private static object[,] m_Table = new object[,]
-			{
-				{ typeof( BrownBear ),		0x1E60,		1041093, 1041107 },
-				{ typeof( GreatHart ),		0x1E61,		1041095, 1041109 },
-				{ typeof( BigFish ),		0x1E62,		1041096, 1041110 },
-				{ typeof( Gorilla ),		0x1E63,		1041091, 1041105 },
-				{ typeof( Orc ),			0x1E64,		1041090, 1041104 },
-				{ typeof( PolarBear ),		0x1E65,		1041094, 1041108 },
-				{ typeof( Troll ),			0x1E66,		1041092, 1041106 }
-			};
+        private static TrophyInfo[] m_Table = new TrophyInfo[]
+        {
+            new TrophyInfo( typeof( BrownBear ),	0x1E60,		1041093, 1041107 ),
+			new TrophyInfo( typeof( GreatHart ),	0x1E61,		1041095, 1041109 ),
+			new TrophyInfo( typeof( BigFish ),		0x1E62,		1041096, 1041110 ),
+			new TrophyInfo( typeof( Gorilla ),		0x1E63,		1041091, 1041105 ),
+			new TrophyInfo( typeof( Orc ),			0x1E64,		1041090, 1041104 ),
+			new TrophyInfo( typeof( PolarBear ),	0x1E65,		1041094, 1041108 ),
+			new TrophyInfo( typeof( Troll ),		0x1E66,		1041092, 1041106 )
+        };
+
+        public class TrophyInfo
+        {
+            public TrophyInfo( Type type, int id, int deedNum, int addonNum )
+            {
+                m_CreatureType = type;
+                m_NorthID = id;
+                m_DeedNumber = deedNum;
+                m_AddonNumber = addonNum;
+            }
+
+            private Type m_CreatureType;
+            private int m_NorthID;
+            private int m_DeedNumber;
+            private int m_AddonNumber;
+
+            public Type CreatureType { get { return m_CreatureType; } }
+            public int NorthID { get { return m_NorthID; } }
+            public int DeedNumber { get { return m_DeedNumber; } }
+            public int AddonNumber { get { return m_AddonNumber; } }
+        }
+
 
 		private class CorpseTarget : Target
 		{
@@ -100,49 +122,57 @@ namespace Server.Items
 					if ( obj is Corpse )
 						obj = ((Corpse)obj).Owner;
 
-					for ( int i = 0; obj != null && i < m_Table.GetLength( 0 ); ++i )
-					{
-						if ( m_Table[i, 0] == obj.GetType() )
-						{
-							Container pack = from.Backpack;
+                    if ( obj != null )
+                    {
+                        for ( int i = 0; i < m_Table.Length; i++ )
+                        {
+                            if ( m_Table[i].CreatureType == obj.GetType() )
+                            {
+                                Container pack = from.Backpack;
 
-							if ( pack != null && pack.ConsumeTotal( typeof( Board ), 10 ) )
-							{
-								from.SendLocalizedMessage( 1042278 ); // You review the corpse and find it worthy of a trophy.
-								from.SendLocalizedMessage( 1042602 ); // You use your kit up making the trophy.
+                                if ( pack != null && pack.ConsumeTotal( typeof( Board ), 10 ) )
+                                {
+                                    from.SendLocalizedMessage( 1042278 ); // You review the corpse and find it worthy of a trophy.
+                                    from.SendLocalizedMessage( 1042602 ); // You use your kit up making the trophy.
 
-								Mobile hunter = null;
-								int weight = 0;
+                                    Mobile hunter = null;
+                                    int weight = 0;
 
-								if ( targeted is BigFish )
-								{
-									hunter = ((BigFish)targeted).Fisher;
-									weight = (int) ((BigFish)targeted).Weight;
-								}
+                                    if ( targeted is BigFish )
+                                    {
+                                        BigFish fish = targeted as BigFish;
 
-								from.AddToBackpack( new TrophyDeed( (int)m_Table[i, 1] + 7, (int)m_Table[i, 1], (int)m_Table[i, 2], (int)m_Table[i, 3], hunter, weight ) );
+                                        hunter = fish.Fisher;
+                                        weight = (int)fish.Weight;
 
-								if ( targeted is Corpse )
-									((Corpse)targeted).VisitedByTaxidermist = true;
-								else if ( targeted is BigFish )
-									((BigFish)targeted).Consume();
+                                        fish.Consume();
+                                    }
 
-								m_Kit.Delete();
-								return;
-							}
-							else
-							{
-								from.SendLocalizedMessage( 1042598 ); // You do not have enough boards.
-								return;
-							}
-						}
-					}
+
+                                    from.AddToBackpack( new TrophyDeed( m_Table[i], hunter, weight ) );
+
+                                    if ( targeted is Corpse )
+                                        ((Corpse)targeted).VisitedByTaxidermist = true;
+
+                                    m_Kit.Delete();
+                                    return;
+                                }
+                                else
+                                {
+                                    from.SendLocalizedMessage( 1042598 ); // You do not have enough boards.
+                                    return;
+                                }
+                            }
+                        }
+                    }
 
 					from.SendLocalizedMessage( 1042599 ); // That does not look like something you want hanging on a wall.
 				}
 			}
 		}
 	}
+
+
 
 	public class TrophyAddon : Item, IAddon
 	{
@@ -352,6 +382,11 @@ namespace Server.Items
 			m_Hunter = hunter;
 			m_AnimalWeight = animalWeight;
 		}
+
+        public TrophyDeed( TaxidermyKit.TrophyInfo info, Mobile hunter, int animalWeight )
+            : this( info.NorthID + 7, info.NorthID, info.DeedNumber, info.AddonNumber )
+        {
+        }
 
 		public TrophyDeed( Serial serial ) : base( serial )
 		{

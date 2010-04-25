@@ -1468,20 +1468,18 @@ namespace Server.Mobiles
 				int price;
 				string description;
 
-				try
-				{
-					price = Convert.ToInt32( firstWord );
-
-					if ( sep >= 0 )
-						description = text.Substring( sep + 1 ).Trim();
-					else
-						description = "";
-				}
-				catch
-				{
-					price = -1;
-					description = text.Trim();
-				}
+                if ( int.TryParse( firstWord, out price ) )
+                {
+                    if ( sep >= 0 )
+                        description = text.Substring( sep + 1 ).Trim();
+                    else
+                        description = "";
+                }
+                else
+                {
+                    price = -1;
+                    description = text.Trim();
+                }
 
 				SetInfo( from, price, Utility.FixHtml( description ) );
 			}
@@ -1561,14 +1559,9 @@ namespace Server.Mobiles
 				text = text.Trim();
 
 				int amount;
-				try
-				{
-					amount = Convert.ToInt32( text );
-				}
-				catch
-				{
-					amount = 0;
-				}
+
+                if ( !int.TryParse( text, out amount ) )
+                    amount = 0;
 
 				GiveGold( from, amount );
 			}

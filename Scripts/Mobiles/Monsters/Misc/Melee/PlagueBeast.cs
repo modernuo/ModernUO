@@ -229,7 +229,10 @@ namespace Server.Mobiles
 
 		private void IncreaseHits( int hp )
 		{
-			int maxhits = (int)(2000 * (IsParagon ? Paragon.HitsBuff : 1));
+            int maxhits = 2000;
+
+            if ( this.IsParagon )
+                maxhits = (int)(maxhits * Paragon.HitsBuff);
 
 			if( hp < 1000 && !Core.AOS )
 				hp = (hp * 100) / 60;
@@ -237,7 +240,10 @@ namespace Server.Mobiles
 			if( HitsMaxSeed >= maxhits )
 			{
 				HitsMaxSeed = maxhits;
-				Hits += hp + Utility.RandomMinMax( 10, 20 ); // increase the hp until it hits if it goes over it'll max at 2000
+
+                int newHits = this.Hits + hp + Utility.RandomMinMax( 10, 20 ); // increase the hp until it hits if it goes over it'll max at 2000
+
+                this.Hits = Math.Min( maxhits, newHits );
 				// Also provide heal for each devour on top of the hp increase
 			}
 			else

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Gumps;
@@ -9,15 +10,15 @@ namespace Server.Mobiles
 {
 	public class CustomHairstylist : BaseVendor
 	{
-		private ArrayList m_SBInfos = new ArrayList();
-		protected override ArrayList SBInfos{ get { return m_SBInfos; } }
+		private List<SBInfo> m_SBInfos = new List<SBInfo>();
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
 		public override bool ClickTitle{ get{ return false; } }
 
 		public override bool IsActiveBuyer{ get{ return false; } }
 		public override bool IsActiveSeller{ get{ return true; } }
 
-		public override bool OnBuyItems( Mobile buyer, ArrayList list )
+        public override bool OnBuyItems( Mobile buyer, List<BuyItemResponse> list )
 		{
 			return false;
 		}

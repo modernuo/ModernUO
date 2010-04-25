@@ -20,127 +20,125 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server
 {
-	[Parsable]
-	public abstract class Poison
-	{
-		/*public abstract TimeSpan Interval{ get; }
-		public abstract TimeSpan Duration{ get; }*/
-		public abstract string Name{ get; }
-		public abstract int Level{ get; }
-		public abstract Timer ConstructTimer( Mobile m );
-		/*public abstract void OnDamage( Mobile m, ref object state );*/
+    [Parsable]
+    public abstract class Poison
+    {
+        /*public abstract TimeSpan Interval{ get; }
+        public abstract TimeSpan Duration{ get; }*/
+        public abstract string Name { get; }
+        public abstract int Level { get; }
+        public abstract Timer ConstructTimer( Mobile m );
+        /*public abstract void OnDamage( Mobile m, ref object state );*/
 
-		public override string ToString()
-		{
-			return this.Name;
-		}
+        public override string ToString()
+        {
+            return this.Name;
+        }
 
 
-		private static ArrayList m_Poisons = new ArrayList();
+        private static List<Poison> m_Poisons = new List<Poison>();
 
-		public static void Register( Poison reg )
-		{
-			string regName = reg.Name.ToLower();
+        public static void Register( Poison reg )
+        {
+            string regName = reg.Name.ToLower();
 
-			for(int i=0;i<m_Poisons.Count;i++)
-			{
-				if ( reg.Level == ((Poison)m_Poisons[i]).Level )
-					throw new Exception( "A poison with that level already exists." );
-				else if ( regName == ((Poison)m_Poisons[i]).Name.ToLower() )
-					throw new Exception( "A poison with that name already exists." );
-			}
+            for ( int i = 0; i < m_Poisons.Count; i++ )
+            {
+                if ( reg.Level == m_Poisons[i].Level )
+                    throw new Exception( "A poison with that level already exists." );
+                else if ( regName == m_Poisons[i].Name.ToLower() )
+                    throw new Exception( "A poison with that name already exists." );
+            }
 
-			m_Poisons.Add( reg );
-		}
+            m_Poisons.Add( reg );
+        }
 
-		public static Poison Lesser{ get{ return GetPoison( "Lesser" ); } }
-		public static Poison Regular{ get{ return GetPoison( "Regular" ); } }
-		public static Poison Greater{ get{ return GetPoison( "Greater" ); } }
-		public static Poison Deadly{ get{ return GetPoison( "Deadly" ); } }
-		public static Poison Lethal{ get{ return GetPoison( "Lethal" ); } }
+        public static Poison Lesser { get { return GetPoison( "Lesser" ); } }
+        public static Poison Regular { get { return GetPoison( "Regular" ); } }
+        public static Poison Greater { get { return GetPoison( "Greater" ); } }
+        public static Poison Deadly { get { return GetPoison( "Deadly" ); } }
+        public static Poison Lethal { get { return GetPoison( "Lethal" ); } }
 
-		public static ArrayList Poisons
-		{
-			get
-			{
-				return m_Poisons;
-			}
-		}
+        public static List<Poison> Poisons
+        {
+            get
+            {
+                return m_Poisons;
+            }
+        }
 
-		public static Poison Parse( string value )
-		{
-			Poison p = null;
+        public static Poison Parse( string value )
+        {
+            Poison p = null;
 
-			try
-			{
-				p = GetPoison( Convert.ToInt32( value ) );
-			}
-			catch
-			{
-			}
+            int plevel;
 
-			if ( p == null )
-				p = GetPoison( value );
+            if ( int.TryParse( value, out plevel ) )
+                p = GetPoison( plevel );
 
-			return p;
-		}
+            if ( p == null )
+                p = GetPoison( value );
 
-		public static Poison GetPoison( int level )
-		{
-			for ( int i = 0; i < m_Poisons.Count; ++i )
-			{
-				Poison p = (Poison)m_Poisons[i];
+            return p;
+        }
 
-				if ( p.Level == level )
-					return p;
-			}
+        public static Poison GetPoison( int level )
+        {
+            for ( int i = 0; i < m_Poisons.Count; ++i )
+            {
+                Poison p = m_Poisons[i];
 
-			return null;
-		}
+                if ( p.Level == level )
+                    return p;
+            }
 
-		public static Poison GetPoison( string name )
-		{
-			for ( int i = 0; i < m_Poisons.Count; ++i )
-			{
-				Poison p = (Poison)m_Poisons[i];
+            return null;
+        }
 
-				if ( Utility.InsensitiveCompare( p.Name, name ) == 0 )
-					return p;
-			}
+        public static Poison GetPoison( string name )
+        {
+            for ( int i = 0; i < m_Poisons.Count; ++i )
+            {
+                Poison p = m_Poisons[i];
 
-			return null;
-		}
+                if ( Utility.InsensitiveCompare( p.Name, name ) == 0 )
+                    return p;
+            }
 
-		public static void Serialize( Poison p, GenericWriter writer )
-		{
-			if ( p == null )
-			{
-				writer.Write( (byte)0 );
-			}
-			else
-			{
-				writer.Write( (byte)1 );
-				writer.Write( (byte)p.Level );
-			}
-		}
+            return null;
+        }
 
-		public static Poison Deserialize( GenericReader reader )
-		{
-			switch ( reader.ReadByte() )
-			{
-				case 1: return GetPoison( reader.ReadByte() );
-				case 2: 
-					//no longer used, safe to remove?
-					reader.ReadInt();
-					reader.ReadDouble();
-					reader.ReadInt();
-					reader.ReadTimeSpan();
-					break;
-			}
-			return null;
-		}
-	}
+        public static void Serialize( Poison p, GenericWriter writer )
+        {
+            if ( p == null )
+            {
+                writer.Write( (byte)0 );
+            }
+            else
+            {
+                writer.Write( (byte)1 );
+                writer.Write( (byte)p.Level );
+            }
+        }
+
+        public static Poison Deserialize( GenericReader reader )
+        {
+            switch ( reader.ReadByte() )
+            {
+                case 1: return GetPoison( reader.ReadByte() );
+                case 2:
+                    //no longer used, safe to remove?
+                    reader.ReadInt();
+                    reader.ReadDouble();
+                    reader.ReadInt();
+                    reader.ReadTimeSpan();
+                    break;
+            }
+            return null;
+        }
+    }
 }

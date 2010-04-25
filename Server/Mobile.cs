@@ -4378,7 +4378,7 @@ namespace Server
 			item.Layer = oldItem.Layer;
 			item.Name = oldItem.Name;
 			item.Weight = oldItem.Weight;
-			//item.Amount = oldItem.amount;
+
 			item.Amount = oldItem.Amount - amount;
 			item.Map = oldItem.Map;
 
@@ -8060,8 +8060,10 @@ namespace Server
 			{
 				if( item.Parent is Item )
 				{
-					if( !CanSee( (Item)item.Parent ) )
-						return false;
+                    Item parent = item.Parent as Item;
+
+                    if ( !(CanSee( parent ) && parent.IsChildVisibleTo( this, item )) )
+                        return false;
 				}
 				else if( item.Parent is Mobile )
 				{

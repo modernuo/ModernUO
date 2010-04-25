@@ -251,7 +251,8 @@ namespace Server.Network
 
 	public sealed class VendorBuyContent : Packet
 	{
-		public VendorBuyContent( ArrayList list ) : base( 0x3c )
+        public VendorBuyContent( List<BuyItemState> list )
+            : base( 0x3c )
 		{
 			this.EnsureCapacity( list.Count*19 + 5 );
 
@@ -277,9 +278,9 @@ namespace Server.Network
 		}
 	}
 
-		public sealed class VendorBuyContent6017 : Packet
+	public sealed class VendorBuyContent6017 : Packet
 	{
-		public VendorBuyContent6017( ArrayList list ) : base( 0x3c )
+		public VendorBuyContent6017( List<BuyItemState> list ) : base( 0x3c )
 		{
 			this.EnsureCapacity( list.Count*20 + 5 );
 
@@ -317,7 +318,8 @@ namespace Server.Network
 
 	public sealed class VendorBuyList : Packet
 	{
-		public VendorBuyList( Mobile vendor, ArrayList list ) : base( 0x74 )
+        public VendorBuyList( Mobile vendor, List<BuyItemState> list )
+            : base( 0x74 )
 		{
 			this.EnsureCapacity( 256 );
 
@@ -328,7 +330,7 @@ namespace Server.Network
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
-				BuyItemState bis = (BuyItemState)list[i];
+				BuyItemState bis = list[i];
 
 				m_Stream.Write( (int) bis.Price );
 
@@ -1607,7 +1609,7 @@ namespace Server.Network
 		}
 	}
 
-		public sealed class ContainerContentUpdate6017 : Packet
+	public sealed class ContainerContentUpdate6017 : Packet
 	{
 		public ContainerContentUpdate6017( Item item ) : base( 0x25, 21 )
 		{
@@ -1686,7 +1688,7 @@ namespace Server.Network
 		}
 	}
 
-		public sealed class ContainerContent6017 : Packet
+	public sealed class ContainerContent6017 : Packet
 	{
 		public ContainerContent6017( Mobile beholder, Item beheld ) : base( 0x3C )
 		{

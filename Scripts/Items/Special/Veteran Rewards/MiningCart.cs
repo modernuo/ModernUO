@@ -191,7 +191,7 @@ namespace Server.Items
 						{
 							Item gems = null;
 
-							switch ( Utility.Random( 17 ) )
+							switch ( Utility.Random( 15 ) )
 							{
 								case 0: gems = new Amber(); break;
 								case 1: gems = new Amethyst(); break;
@@ -208,10 +208,8 @@ namespace Server.Items
 								case 10: gems = new DarkSapphire(); break;
 								case 11: gems = new Turquoise(); break;
 								case 12: gems = new EcruCitrine(); break;
-								case 13: gems = new WhitePearl(); break;
-								case 14: gems = new FireRuby(); break;
-								case 15: gems = new BlueDiamond(); break;
-								case 16: gems = new BrilliantAmber(); break;
+								case 13: gems = new FireRuby(); break;
+								case 14: gems = new BlueDiamond(); break;
 							}
 
 							int amount = Math.Min( 5, m_Gems );

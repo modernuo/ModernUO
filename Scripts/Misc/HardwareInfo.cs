@@ -20,6 +20,7 @@ namespace Server
 		private string m_VCDescription;
 		private string m_Language;
 		private string m_Unknown;
+        private DateTime m_TimeReceived;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int CpuModel{ get{ return m_CpuModel; } }
@@ -95,6 +96,9 @@ namespace Server
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Unknown{ get{ return m_Unknown; } }
+
+        [CommandProperty( AccessLevel.GameMaster )]
+        public DateTime TimeReceived { get { return m_TimeReceived; } }
 
 		public static void Initialize()
 		{
@@ -173,6 +177,8 @@ namespace Server
 			info.m_PartialInstalled = pvSrc.ReadByte();
 			info.m_Language = pvSrc.ReadUnicodeStringLESafe( 4 );
 			info.m_Unknown = pvSrc.ReadStringSafe( 64 );
+
+            info.m_TimeReceived = DateTime.Now;
 
 			Account acct = state.Account as Account;
 

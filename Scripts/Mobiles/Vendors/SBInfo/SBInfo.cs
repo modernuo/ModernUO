@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -11,6 +11,6 @@ namespace Server.Mobiles
 		}
 
 		public abstract IShopSellInfo SellInfo { get; }
-		public abstract ArrayList BuyInfo { get; }
+        public abstract List<GenericBuyInfo> BuyInfo { get; }
 	}
 }

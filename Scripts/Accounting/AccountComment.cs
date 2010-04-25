@@ -53,7 +53,7 @@ namespace Server.Accounting
 		public AccountComment( XmlElement node )
 		{
 			m_AddedBy = Utility.GetAttribute( node, "addedBy", "empty" );
-			m_LastModified = Utility.GetDateTime( Utility.GetAttribute( node, "lastModified" ), DateTime.Now );
+			m_LastModified = Utility.GetXMLDateTime( Utility.GetAttribute( node, "lastModified" ), DateTime.Now );
 			m_Content = Utility.GetText( node, "" );
 		}
 

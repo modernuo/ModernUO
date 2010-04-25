@@ -673,7 +673,7 @@ namespace Server.Factions
 						int dexMod = GetStatMod( m_Guard, StatType.Dex );
 						int intMod = GetStatMod( m_Guard, StatType.Int );
 
-						ArrayList types = new ArrayList();
+                        List<Type> types = new List<Type>();
 
 						if ( strMod <= 0 )
 							types.Add( typeof( StrengthSpell ) );
@@ -689,7 +689,7 @@ namespace Server.Factions
 							if ( types.Count > 1 )
 								spell = new BlessSpell( m_Guard, null );
 							else if ( types.Count == 1 )
-								spell = (Spell) Activator.CreateInstance( (Type) types[0], new object[]{ m_Guard, null } );
+								spell = (Spell) Activator.CreateInstance( types[0], new object[]{ m_Guard, null } );
 						}
 						else if ( types.Count > 0 )
 						{
@@ -712,7 +712,7 @@ namespace Server.Factions
 							int dexMod = GetStatMod( combatant, StatType.Dex );
 							int intMod = GetStatMod( combatant, StatType.Int );
 
-							ArrayList types = new ArrayList();
+                            List<Type> types = new List<Type>();
 
 							if ( strMod >= 0 )
 								types.Add( typeof( WeakenSpell ) );
@@ -726,7 +726,7 @@ namespace Server.Factions
 							if ( types.Count > 1 )
 								spell = new CurseSpell( m_Guard, null );
 							else if ( types.Count == 1 )
-								spell = (Spell) Activator.CreateInstance( (Type) types[0], new object[]{ m_Guard, null } );
+								spell = (Spell) Activator.CreateInstance( types[0], new object[]{ m_Guard, null } );
 						}
 					}
 				}
