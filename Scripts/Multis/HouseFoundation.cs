@@ -611,10 +611,11 @@ namespace Server.Multis
 			DesignContext.Add( m, this );
 			m.Send( new BeginHouseCustomization( this ) );
 
-			if( m.NetState != null )
-				SendInfoTo( m.NetState );
+			NetState ns = m.NetState;
+			if( ns != null )
+				SendInfoTo( ns );
 
-			DesignState.SendDetailedInfoTo( m.NetState );
+			DesignState.SendDetailedInfoTo( ns );
 		}
 
 		public override void SendInfoTo( NetState state, bool sendOplPacket )

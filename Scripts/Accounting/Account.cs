@@ -597,7 +597,7 @@ namespace Server.Accounting
 			m_Created = m_LastLogin = DateTime.Now;
 			m_TotalGameTime = TimeSpan.Zero;
 
-			m_Mobiles = new Mobile[6];
+			m_Mobiles = new Mobile[7];
 
 			m_IPRestrictions = new string[0];
 			m_LoginIPs = new IPAddress[0];
@@ -780,7 +780,7 @@ namespace Server.Accounting
 		/// <returns>Mobile list. Value will never be null.</returns>
 		public static Mobile[] LoadMobiles( XmlElement node )
 		{
-			Mobile[] list = new Mobile[6];
+			Mobile[] list = new Mobile[7];
 			XmlElement chars = node["chars"];
 
 			//int length = Accounts.GetInt32( Accounts.GetAttribute( chars, "length", "6" ), 6 );
@@ -1110,11 +1110,11 @@ namespace Server.Accounting
 		}
 
 		/// <summary>
-		/// Gets the maximum amount of characters allowed to be created on this account. Values other than 1, 5, or 6 are not supported by the client.
+		/// Gets the maximum amount of characters allowed to be created on this account. Values other than 1, 5, 6, or 7 are not supported by the client.
 		/// </summary>
 		public int Limit
 		{
-			get { return ( Core.AOS ? 6 : 5 ); }
+			get { return ( Core.SA ? 7 : Core.AOS ? 6 : 5 ); }
 		}
 
 		/// <summary>
