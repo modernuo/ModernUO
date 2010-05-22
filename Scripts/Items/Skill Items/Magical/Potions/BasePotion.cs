@@ -26,7 +26,13 @@ namespace Server.Items
 		HealGreater,
 		ExplosionLesser,
 		Explosion,
-		ExplosionGreater
+		ExplosionGreater,
+		Conflagration,
+		ConflagrationGreater,
+		MaskOfDeath,		// Mask of Death is not available in OSI but does exist in cliloc files
+		MaskOfDeathGreater,	// included in enumeration for compatability if later enabled by OSI
+		ConfusionBlast,
+		ConfusionBlastGreater
 	}
 
 	public abstract class BasePotion : Item, ICraftable
@@ -145,8 +151,12 @@ namespace Server.Items
 		public static int EnhancePotions( Mobile m )
 		{
 			int EP = AosAttributes.GetValue( m, AosAttribute.EnhancePotions );
-			if ( Core.ML && EP > 50 )
-				EP = 50;
+
+			int cap = 50 + m.Skills.Alchemy.Fixed / 330 * 10;
+
+			if ( Core.ML && EP > cap && m.AccessLevel <= AccessLevel.Player )
+				EP = cap;
+
 			return EP;
 		}
 

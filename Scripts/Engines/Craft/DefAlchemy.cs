@@ -159,6 +159,21 @@ namespace Server.Engines.Craft
 				index = AddCraft( typeof( SmokeBomb ), 1044537, 1030248, 90.0, 120.0, typeof( Eggs ), 1044477, 1, 1044253 );
 				AddRes( index, typeof ( Ginseng ), 1044356, 3, 1044364 );
 				SetNeededExpansion( index, Expansion.SE );
+
+				// Conflagration Potions
+				index = AddCraft( typeof(ConflagrationPotion), 1044109, 1072096, 55.0, 105.0, typeof(GraveDust), 1023983, 5, 1044253 );
+				AddRes( index, typeof(Bottle), 1044529, 1, 500315 );
+				SetNeededExpansion(index, Expansion.SE);
+				index = AddCraft( typeof(GreaterConflagrationPotion), 1044109, 1072099, 65.0, 115.0, typeof(GraveDust), 1023983, 10, 1044253 );
+				AddRes( index, typeof(Bottle), 1044529, 1, 500315 );
+				SetNeededExpansion(index, Expansion.SE);
+				// Confusion Blast Potions
+				index = AddCraft( typeof(ConfusionBlastPotion), 1044109, 1072106, 55.0, 105.0, typeof(PigIron), 1023978, 5, 1044253 );
+				AddRes( index, typeof(Bottle), 1044529, 1, 500315 );
+				SetNeededExpansion(index, Expansion.SE);
+				index = AddCraft( typeof(GreaterConfusionBlastPotion), 1044109, 1072109, 65.0, 115.0, typeof(PigIron), 1023978, 10, 1044253 );
+				AddRes( index, typeof(Bottle), 1044529, 1, 500315 );
+				SetNeededExpansion(index, Expansion.SE);
 			}
 		}
 	}

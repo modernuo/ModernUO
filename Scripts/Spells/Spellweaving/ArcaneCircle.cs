@@ -118,7 +118,7 @@ namespace Server.Spells.Spellweaving
 			//OSI Verified: Even enemies/combatants count
 			foreach( Mobile m in Caster.GetMobilesInRange( 1 ) )	//Range verified as 1
 			{
-				if ( m != Caster && Caster.CanBeBeneficial( m, false ) && Math.Abs( Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value ) <= 20 && !(m is Clone) )
+				if ( m != Caster && m is PlayerMobile && Caster.CanBeBeneficial( m, false ) && Math.Abs( Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value ) <= 20 && !(m is Clone) )
 				{
 					weavers.Add( m );
 				}
