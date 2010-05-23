@@ -51,7 +51,7 @@ namespace Server.Engines.MyRunUO
 			}
 		}
 
-		[Usage( "PublicChar" )]
+		[Usage( "PrivateChar" )]
 		[Description( "Disables showing extended character stats and skills in MyRunUO." )]
 		public static void PrivateChar_OnCommand( CommandEventArgs e )
 		{

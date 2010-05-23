@@ -1176,8 +1176,6 @@ namespace Server.Commands
 							}
 						}
 
-
-
 						if ( ser != 0 )
 							from.SendMessage( "No object with that serial was found." );
 						else
