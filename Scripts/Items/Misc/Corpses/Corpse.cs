@@ -94,152 +94,152 @@ namespace Server.Items
 			} 
 		}
 
-        private Dictionary<Item, InstancedItemInfo> m_InstancedItems;
+		private Dictionary<Item, InstancedItemInfo> m_InstancedItems;
 
-        private class InstancedItemInfo
-        {
-            private Mobile m_Mobile;
-            private Item m_Item;
+		private class InstancedItemInfo
+		{
+			private Mobile m_Mobile;
+			private Item m_Item;
 
-            private bool m_Perpetual;   //Needed for Rummaged stuff.  CONTRARY to the Patchlog, cause a later FoF contradicts it.  Verify on OSI.
-            public bool Perpetual { get { return m_Perpetual; } set { m_Perpetual = value; } }
+			private bool m_Perpetual;   //Needed for Rummaged stuff.  CONTRARY to the Patchlog, cause a later FoF contradicts it.  Verify on OSI.
+			public bool Perpetual { get { return m_Perpetual; } set { m_Perpetual = value; } }
 
-            public InstancedItemInfo( Item i, Mobile m )
-            {
-                m_Item = i;
-                m_Mobile = m;
-            }
+			public InstancedItemInfo( Item i, Mobile m )
+			{
+				m_Item = i;
+				m_Mobile = m;
+			}
 
-            public bool IsOwner( Mobile m )
-            {
-                if ( m_Item.LootType == LootType.Cursed )   //Cursed Items are part of everyone's instanced corpse... (?)
-                    return true;
+			public bool IsOwner( Mobile m )
+			{
+				if ( m_Item.LootType == LootType.Cursed )   //Cursed Items are part of everyone's instanced corpse... (?)
+					return true;
 
-                if ( m == null )
-                    return false;   //sanity
+				if ( m == null )
+					return false;   //sanity
 
-                if ( m_Mobile == m )
-                    return true;
+				if ( m_Mobile == m )
+					return true;
 
-                Party myParty = Party.Get( m_Mobile );
+				Party myParty = Party.Get( m_Mobile );
 
-                return (myParty != null && myParty == Party.Get( m ));
-            }
-        }
+				return (myParty != null && myParty == Party.Get( m ));
+			}
+		}
 
-        public override bool IsChildVisibleTo( Mobile m, Item child )
-        {
-            if ( !m.Player || m.AccessLevel > AccessLevel.Player )   //Staff and creatures not subject to instancing.
-                return true;
+		public override bool IsChildVisibleTo( Mobile m, Item child )
+		{
+			if ( !m.Player || m.AccessLevel > AccessLevel.Player )   //Staff and creatures not subject to instancing.
+				return true;
 
-            if ( m_InstancedItems != null )
-            {
-                InstancedItemInfo info;
+			if ( m_InstancedItems != null )
+			{
+				InstancedItemInfo info;
 
-                if ( m_InstancedItems.TryGetValue( child, out info ) && (InstancedCorpse || info.Perpetual) )
-                {
-                    return info.IsOwner( m );   //IsOwner checks Party stuff.
-                }
-            }
+				if ( m_InstancedItems.TryGetValue( child, out info ) && (InstancedCorpse || info.Perpetual) )
+				{
+					return info.IsOwner( m );   //IsOwner checks Party stuff.
+				}
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        private void AssignInstancedLoot()
-        {
-            if ( m_Aggressors.Count == 0 || this.Items.Count == 0 )
-                return;
+		private void AssignInstancedLoot()
+		{
+			if ( m_Aggressors.Count == 0 || this.Items.Count == 0 )
+				return;
 
-            if ( m_InstancedItems == null )
-                m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
+			if ( m_InstancedItems == null )
+				m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
 
-            List<Item> m_Stackables = new List<Item>();
-            List<Item> m_Unstackables = new List<Item>();
+			List<Item> m_Stackables = new List<Item>();
+			List<Item> m_Unstackables = new List<Item>();
 
-            for ( int i = 0; i < this.Items.Count; i++ )
-            {
-                Item item = this.Items[i];
+			for ( int i = 0; i < this.Items.Count; i++ )
+			{
+				Item item = this.Items[i];
 
-                if ( item.LootType != LootType.Cursed ) //Don't have curesd items take up someone's item spot.. (?)
-                {
-                    if ( item.Stackable )
-                        m_Stackables.Add( item );
-                    else
-                        m_Unstackables.Add( item );
-                }
-            }
+				if ( item.LootType != LootType.Cursed ) //Don't have curesd items take up someone's item spot.. (?)
+				{
+					if ( item.Stackable )
+						m_Stackables.Add( item );
+					else
+						m_Unstackables.Add( item );
+				}
+			}
 
-            List<Mobile> attackers = new List<Mobile>( m_Aggressors );
+			List<Mobile> attackers = new List<Mobile>( m_Aggressors );
 
-            for ( int i = 1; i < attackers.Count -1; i++ )  //randomize
-            {
-                int rand = Utility.Random( i + 1 );
+			for ( int i = 1; i < attackers.Count -1; i++ )  //randomize
+			{
+				int rand = Utility.Random( i + 1 );
 
-                Mobile temp = attackers[rand];
-                attackers[rand] = attackers[i];
-                attackers[i] = temp;
-            }
+				Mobile temp = attackers[rand];
+				attackers[rand] = attackers[i];
+				attackers[i] = temp;
+			}
 
-            //stackables first, for the remaining stackables, have those be randomly added after
+			//stackables first, for the remaining stackables, have those be randomly added after
 
-            for ( int i = 0; i < m_Stackables.Count; i++ )
-            {
-                Item item = m_Stackables[i];
+			for ( int i = 0; i < m_Stackables.Count; i++ )
+			{
+				Item item = m_Stackables[i];
 
-                if ( item.Amount >= attackers.Count )
-                {
-                    int amountPerAttacker = (item.Amount / attackers.Count);
-                    int remainder = (item.Amount % attackers.Count);
+				if ( item.Amount >= attackers.Count )
+				{
+					int amountPerAttacker = (item.Amount / attackers.Count);
+					int remainder = (item.Amount % attackers.Count);
 
-                    for ( int j = 0; j < ((remainder == 0) ? attackers.Count -1 : attackers.Count); j++ )
-                    {
-                        Item splitItem = Mobile.LiftItemDupe( item, item.Amount - amountPerAttacker );  //LiftItemDupe automagically adds it as a child item to the corpse
+					for ( int j = 0; j < ((remainder == 0) ? attackers.Count -1 : attackers.Count); j++ )
+					{
+						Item splitItem = Mobile.LiftItemDupe( item, item.Amount - amountPerAttacker );  //LiftItemDupe automagically adds it as a child item to the corpse
 
-                        m_InstancedItems.Add( splitItem, new InstancedItemInfo( splitItem, attackers[j] ) );
+						m_InstancedItems.Add( splitItem, new InstancedItemInfo( splitItem, attackers[j] ) );
 
-                        //What happens to the remaining portion?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
-                    }
+						//What happens to the remaining portion?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
+					}
 
-                    if ( remainder == 0 )
-                    {
-                        m_InstancedItems.Add( item, new InstancedItemInfo( item, attackers[attackers.Count - 1] ) );
-                        //Add in the original item (which has an equal amount as the others) to the instance for the last attacker, cause it wasn't added above.
-                    }
-                    else
-                    {
-                        m_Unstackables.Add( item );
-                    }
-                }
-                else
-                {
-                    //What happens in this case?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
-                    m_Unstackables.Add( item );
-                }
-            }
+					if ( remainder == 0 )
+					{
+						m_InstancedItems.Add( item, new InstancedItemInfo( item, attackers[attackers.Count - 1] ) );
+						//Add in the original item (which has an equal amount as the others) to the instance for the last attacker, cause it wasn't added above.
+					}
+					else
+					{
+						m_Unstackables.Add( item );
+					}
+				}
+				else
+				{
+					//What happens in this case?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
+					m_Unstackables.Add( item );
+				}
+			}
 
-            for ( int i = 0; i < m_Unstackables.Count; i++ )
-            {
-                Mobile m = attackers[i % attackers.Count];
-                Item item = m_Unstackables[i];
+			for ( int i = 0; i < m_Unstackables.Count; i++ )
+			{
+				Mobile m = attackers[i % attackers.Count];
+				Item item = m_Unstackables[i];
 
-                m_InstancedItems.Add( item, new InstancedItemInfo( item, m ) );
-            }
-        }
+				m_InstancedItems.Add( item, new InstancedItemInfo( item, m ) );
+			}
+		}
 
-        public void AddCarvedItem( Item carved, Mobile carver )
-        {
-            this.DropItem( carved );
+		public void AddCarvedItem( Item carved, Mobile carver )
+		{
+			this.DropItem( carved );
 
-            if ( this.InstancedCorpse )
-            {
-                if ( m_InstancedItems == null )
-                    m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
+			if ( this.InstancedCorpse )
+			{
+				if ( m_InstancedItems == null )
+					m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
 
-                m_InstancedItems.Add( carved, new InstancedItemInfo( carved, carver ) );
-            }
-        }
+				m_InstancedItems.Add( carved, new InstancedItemInfo( carved, carver ) );
+			}
+		}
 
-        public override bool IsDecoContainer
+		public override bool IsDecoContainer
 		{
 			get{ return false; }
 		}
@@ -454,8 +454,8 @@ namespace Server.Items
 						c.SetRestoreInfo( item, item.Location );
 				}
 
-                if ( !owner.Player )
-                    c.AssignInstancedLoot();
+				if ( !owner.Player )
+					c.AssignInstancedLoot();
 			}
 			else
 			{
@@ -519,7 +519,7 @@ namespace Server.Items
 			m_Aggressors = new List<Mobile>( owner.Aggressors.Count + owner.Aggressed.Count );
 			//bool addToAggressors = !( owner is BaseCreature );
 
-            bool isBaseCreature = (owner is BaseCreature);
+			bool isBaseCreature = (owner is BaseCreature);
 
 			TimeSpan lastTime = TimeSpan.MaxValue;
 
@@ -547,7 +547,7 @@ namespace Server.Items
 					lastTime = (DateTime.Now - info.LastCombatTime);
 				}
 
-                if ( !isBaseCreature )
+				if ( !isBaseCreature )
 					m_Aggressors.Add( info.Defender );
 			}
 
@@ -847,7 +847,7 @@ namespace Server.Items
 		{
 			base.OnItemUsed( from, item );
 
-			if ( from != m_Owner )
+			if ( item is Food )
 				from.RevealingAction();
 
 			if ( item != this && IsCriminalAction( from ) )
@@ -856,8 +856,8 @@ namespace Server.Items
 			if ( !m_Looters.Contains( from ) )
 				m_Looters.Add( from );
 
-            if ( m_InstancedItems != null && m_InstancedItems.ContainsKey( item ) )
-                m_InstancedItems.Remove( item );
+			if ( m_InstancedItems != null && m_InstancedItems.ContainsKey( item ) )
+				m_InstancedItems.Remove( item );
 		}
 
 		public override void OnItemLifted( Mobile from, Item item )
@@ -873,8 +873,8 @@ namespace Server.Items
 			if ( !m_Looters.Contains( from ) )
 				m_Looters.Add( from );
 
-            if ( m_InstancedItems != null && m_InstancedItems.ContainsKey( item ) )
-                m_InstancedItems.Remove( item );
+			if ( m_InstancedItems != null && m_InstancedItems.ContainsKey( item ) )
+				m_InstancedItems.Remove( item );
 		}
 
 		private class OpenCorpseEntry : ContextMenuEntry
@@ -1115,9 +1115,6 @@ namespace Server.Items
 				#endregion
 
 				base.OnDoubleClick( from );
-
-				if ( from != m_Owner )
-					from.RevealingAction();
 			}
 			else
 			{

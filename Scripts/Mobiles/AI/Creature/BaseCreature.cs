@@ -217,7 +217,7 @@ namespace Server.Mobiles
 		private Mobile		m_bBardTarget = null;
 		private DateTime	m_timeBardEnd;
 		private WayPoint	m_CurrentWayPoint = null;
-		private Point2D		m_TargetLocation = Point2D.Zero;
+		private IPoint2D	m_TargetLocation = null;
 
 		private Mobile		m_SummonMaster;
 
@@ -1084,7 +1084,7 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point2D TargetLocation
+		public IPoint2D TargetLocation
 		{
 			get
 			{
@@ -1365,18 +1365,18 @@ namespace Server.Mobiles
 
 				if ( wool != 0 )
 				{
-                    corpse.AddCarvedItem( new Wool( wool ), from );
+					corpse.AddCarvedItem( new Wool( wool ), from );
 					from.SendLocalizedMessage( 500483 ); // You shear it, and the wool is now on the corpse.
 				}
 
 				if ( meat != 0 )
 				{
 					if ( MeatType == MeatType.Ribs )
-                        corpse.AddCarvedItem( new RawRibs( meat ), from );
+						corpse.AddCarvedItem( new RawRibs( meat ), from );
 					else if ( MeatType == MeatType.Bird )
-                        corpse.AddCarvedItem( new RawBird( meat ), from );
+						corpse.AddCarvedItem( new RawBird( meat ), from );
 					else if ( MeatType == MeatType.LambLeg )
-                        corpse.AddCarvedItem( new RawLambLeg( meat ), from );
+						corpse.AddCarvedItem( new RawLambLeg( meat ), from );
 
 					from.SendLocalizedMessage( 500467 ); // You carve some meat, which remains on the corpse.
 				}
@@ -1428,20 +1428,20 @@ namespace Server.Mobiles
 
 					switch ( sc )
 					{
-                        case ScaleType.Red:     corpse.AddCarvedItem( new RedScales( scales ), from ); break;
-                        case ScaleType.Yellow:  corpse.AddCarvedItem( new YellowScales( scales ), from ); break;
-                        case ScaleType.Black:   corpse.AddCarvedItem( new BlackScales( scales ), from ); break;
-                        case ScaleType.Green:   corpse.AddCarvedItem( new GreenScales( scales ), from ); break;
-                        case ScaleType.White:   corpse.AddCarvedItem( new WhiteScales( scales ), from ); break;
-                        case ScaleType.Blue:    corpse.AddCarvedItem( new BlueScales( scales ), from ); break;
+						case ScaleType.Red:     corpse.AddCarvedItem( new RedScales( scales ), from ); break;
+						case ScaleType.Yellow:  corpse.AddCarvedItem( new YellowScales( scales ), from ); break;
+						case ScaleType.Black:   corpse.AddCarvedItem( new BlackScales( scales ), from ); break;
+						case ScaleType.Green:   corpse.AddCarvedItem( new GreenScales( scales ), from ); break;
+						case ScaleType.White:   corpse.AddCarvedItem( new WhiteScales( scales ), from ); break;
+						case ScaleType.Blue:    corpse.AddCarvedItem( new BlueScales( scales ), from ); break;
 						case ScaleType.All:
 						{
-                            corpse.AddCarvedItem( new RedScales( scales ), from );
-                            corpse.AddCarvedItem( new YellowScales( scales ), from );
-                            corpse.AddCarvedItem( new BlackScales( scales ), from );
-                            corpse.AddCarvedItem( new GreenScales( scales ), from );
-                            corpse.AddCarvedItem( new WhiteScales( scales ), from );
-                            corpse.AddCarvedItem( new BlueScales( scales ), from );
+							corpse.AddCarvedItem( new RedScales( scales ), from );
+							corpse.AddCarvedItem( new YellowScales( scales ), from );
+							corpse.AddCarvedItem( new BlackScales( scales ), from );
+							corpse.AddCarvedItem( new GreenScales( scales ), from );
+							corpse.AddCarvedItem( new WhiteScales( scales ), from );
+							corpse.AddCarvedItem( new BlueScales( scales ), from );
 							break;
 						}
 					}
@@ -2346,6 +2346,9 @@ namespace Server.Mobiles
 		{
 			get
 			{
+				if ( m_TargetLocation != null )
+					return 0.3;
+
 				return m_dCurrentSpeed;
 			}
 			set
@@ -4957,7 +4960,7 @@ namespace Server.Mobiles
 				{
 					// *rummages through a corpse and takes an item*
 					PublicOverheadMessage( MessageType.Emote, 0x3B2, 1008086 );
-                    //TODO: Instancing of Rummaged stuff.
+					//TODO: Instancing of Rummaged stuff.
 					return true;
 				}
 			}

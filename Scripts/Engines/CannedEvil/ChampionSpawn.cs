@@ -277,6 +277,11 @@ namespace Server.Engines.CannedEvil
 			}
 		}
 
+		public bool IsChampionSpawn( Mobile m )
+		{
+			return m_Creatures.Contains( m );
+		}
+
 		public void SetWhiteSkullCount( int val )
 		{
 			for( int i = m_WhiteSkulls.Count - 1; i >= val; --i )

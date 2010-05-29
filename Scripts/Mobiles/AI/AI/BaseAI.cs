@@ -904,19 +904,30 @@ namespace Server.Mobiles
 
 		public virtual bool DoActionCombat()
 		{
-			Mobile c = m_Mobile.Combatant;
-
-			if( c == null || c.Deleted || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet )
-				Action = ActionType.Wander;
+			if ( CheckHerding() )
+			{
+				m_Mobile.DebugSay( "Praise the shepherd!" );
+			}
 			else
-				m_Mobile.Direction = m_Mobile.GetDirectionTo( c );
+			{
+				Mobile c = m_Mobile.Combatant;
+
+				if ( c == null || c.Deleted || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet )
+					Action = ActionType.Wander;
+				else
+					m_Mobile.Direction = m_Mobile.GetDirectionTo( c );
+			}
 
 			return true;
 		}
 
 		public virtual bool DoActionGuard()
 		{
-			if( DateTime.Now < m_NextStopGuard )
+			if ( CheckHerding() )
+			{
+				m_Mobile.DebugSay( "Praise the shepherd!" );
+			}
+			else if( DateTime.Now < m_NextStopGuard )
 			{
 				m_Mobile.DebugSay( "I am on guard" );
 				//m_Mobile.Turn( Utility.Random(0, 2) - 1 );
@@ -1207,14 +1218,14 @@ namespace Server.Mobiles
 
 		public virtual bool CheckHerding()
 		{
-			Point2D target = m_Mobile.TargetLocation;
+			IPoint2D target = m_Mobile.TargetLocation;
 
-			if( target == Point2D.Zero )
+			if ( target == null )
 				return false; // Creature is not being herded
 
 			double distance = m_Mobile.GetDistanceToSqrt( target );
 
-			if( distance < 1 || distance > 20 )
+			if( distance < 1 || distance > 15 )
 			{
 				if( distance < 1 && target.X == 1076 && target.Y == 450 && (m_Mobile is HordeMinionFamiliar) )
 				{
@@ -1237,7 +1248,7 @@ namespace Server.Mobiles
 					}
 				}
 
-				m_Mobile.TargetLocation = Point2D.Zero;
+				m_Mobile.TargetLocation = null;
 				return false; // At the target or too far away
 			}
 

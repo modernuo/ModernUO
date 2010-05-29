@@ -227,7 +227,7 @@ namespace Server.Engines.Quests.Necro
 			{
 				HordeMinionFamiliar hmf = Spells.Necromancy.SummonFamiliarSpell.Table[System.From] as HordeMinionFamiliar;
 
-				if ( hmf != null && hmf.InRange( System.From, 5 ) && hmf.TargetLocation == Point2D.Zero )
+				if ( hmf != null && hmf.InRange( System.From, 5 ) && hmf.TargetLocation == null )
 				{
 					System.From.SendLocalizedMessage( 1060113 ); // You instinctively will your familiar to fetch the scroll for you.
 					hmf.TargetLocation = new Point2D( 1076, 450 );
