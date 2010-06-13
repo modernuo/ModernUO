@@ -715,7 +715,7 @@ namespace Server.Multis
 
 		public bool IsHiddenToCustomizer( Item item )
 		{
-			return (item == m_Signpost || (m_Fixtures != null && m_Fixtures.Contains( item )));
+			return (item == m_Signpost || item == m_SignHanger || item == Sign || (m_Fixtures != null && m_Fixtures.Contains( item )));
 		}
 
 		public static void Initialize()
@@ -999,13 +999,6 @@ namespace Server.Multis
 			}
 		}
 
-		public static bool IsSignHanger( int itemID )
-		{
-			itemID &= 0x3FFF;
-
-			return (itemID >= 0xB97 && itemID < 0xBA3);
-		}
-
 		public int MaxLevels
 		{
 			get
@@ -1094,6 +1087,8 @@ namespace Server.Multis
 		private static int[] m_StairIDs = new int[]
 			{
 				0x71F, 0x736, 0x737, 0x749,
+				0x35D4, 0x35D3, 0x35D6, 0x35D5,
+				0x360B, 0x360A, 0x360D, 0x360C,
 				0x7BB, 0x7BC
 			};
 
@@ -1127,7 +1122,7 @@ namespace Server.Multis
 
 			delta = -1;
 
-			for( int i = 0; delta < 0 && i < m_StairIDs.Length; ++i )
+			for( int i = 0; ( delta < 0 || delta > 0 ) && i < m_StairIDs.Length; ++i )
 			{
 				delta = (m_StairIDs[i] - id);
 				dir = i % 4;
@@ -1268,7 +1263,7 @@ namespace Server.Multis
 				int ax = x + mcl.Center.X;
 				int ay = y + mcl.Center.Y;
 
-				if( IsSignHanger( itemID ) || (z == 0 && ax >= 0 && ax < mcl.Width && ay >= 0 && ay < (mcl.Height - 1)) )
+				if( z == 0 && ax >= 0 && ax < mcl.Width && ay >= 0 && ay < (mcl.Height - 1) )
 				{
 					/* Component is not deletable
 					 *  - Resend design state
@@ -1279,9 +1274,12 @@ namespace Server.Multis
 					return;
 				}
 
-				// Remove the component
-				if( !DeleteStairs( mcl, itemID, x, y, z ) )
-					mcl.Remove( itemID, x, y, z );
+				mcl.Remove( itemID, x, y, z );
+				
+				int dir = 0;
+				
+				if( IsStair( itemID, ref dir ) || IsStairBlock( itemID ) )
+					design.SendGeneralInfoTo( state );
 
 				// If needed, replace removed component with a dirt tile
 				if( ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1 )
@@ -2036,6 +2034,12 @@ namespace Server.Multis
 
 			if( foundation.Signpost != null )
 				state.Send( foundation.Signpost.RemovePacket );
+			
+			if( foundation.SignHanger != null )
+				state.Send( foundation.SignHanger.RemovePacket );
+			
+			if( foundation.Sign != null )
+				state.Send( foundation.Sign.RemovePacket );
 		}
 
 		public static void Remove( Mobile from )
@@ -2071,6 +2075,12 @@ namespace Server.Multis
 
 			if( context.Foundation.Signpost != null )
 				context.Foundation.Signpost.SendInfoTo( state );
+			
+			if( context.Foundation.SignHanger != null )
+				context.Foundation.SignHanger.SendInfoTo( state );
+			
+			if( context.Foundation.Sign != null )
+				context.Foundation.Sign.SendInfoTo( state );
 		}
 	}
 

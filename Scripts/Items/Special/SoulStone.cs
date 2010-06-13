@@ -51,10 +51,8 @@ namespace Server.Items
 			}
 		}
 
-		public static readonly TimeSpan UseDelay = TimeSpan.FromDays( 1.0 );
-
-		private string m_Account;
-		private DateTime m_NextUse;
+		private string m_Account, m_LastUserName;
+		private DateTime m_NextUse; // TODO: unused, it's here not to break serialize/deserialize
 
 		private SkillName m_Skill;
 		private double m_SkillValue;
@@ -67,10 +65,10 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime NextUse
+		public string LastUserName
 		{
-			get{ return m_NextUse; }
-			set{ m_NextUse = value; }
+			get{ return m_LastUserName; }
+			set{ m_LastUserName = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -128,7 +126,6 @@ namespace Server.Items
 			m_ActiveItemID = activeItemID;
 
 			m_Account = account;
-			m_NextUse = DateTime.MinValue;
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -139,6 +136,14 @@ namespace Server.Items
 			{
 				list.Add( 1070721, "#{0}\t{1:0.0}", 1044060 + (int)this.Skill, this.SkillValue ); // Skill stored: ~1_skillname~ ~2_skillamount~
 			}
+			
+			string name = this.LastUserName;
+
+			if ( name == null )
+				name = String.Format( "#{0}", 1074235 ); // Unknown
+
+				list.Add( 1041602, "{0}", name ); // Owner: ~1_val~
+
 		}
 
 		private static bool CheckCombat( Mobile m, TimeSpan time )
@@ -212,19 +217,6 @@ namespace Server.Items
 			else if ( from.Paralyzed )
 			{
 				from.SendLocalizedMessage( 1070735 ); // You may not use a Soulstone while your character is paralyzed.
-				return false;
-			}
-			else if ( now < this.NextUse )
-			{
-				TimeSpan time = this.NextUse - now;
-
-				if ( time.TotalHours > 0.0 )
-					from.SendLocalizedMessage( 1070736, ((int)time.TotalHours).ToString() ); // You must wait ~1_hours~ hours before you can use your Soulstone.
-				else if ( time.TotalMinutes > 0.0 )
-					from.SendLocalizedMessage( 1070737, ((int)time.TotalMinutes).ToString() ); // You must wait ~1_minutes~ minutes before you can use your Soulstone.
-				else
-					from.SendLocalizedMessage( 1070738, ((int)time.TotalSeconds).ToString() ); // You must wait ~1_seconds~ seconds before you can use your Soulstone.
-
 				return false;
 			}
 
@@ -442,6 +434,8 @@ namespace Server.Items
 
 				from.SendLocalizedMessage( 1070712 ); // You have successfully transferred your skill points into the Soulstone.
 
+				m_Stone.LastUserName = from.Name;
+
 				Effects.SendLocationParticles( EffectItem.Create( from.Location, from.Map, EffectItem.DefaultDuration ), 0, 0, 0, 0, 0, 5060, 0 );
 				Effects.PlaySound( from.Location, from.Map, 0x243 );
 
@@ -558,7 +552,6 @@ namespace Server.Items
 						cannotAbsorb = true;
 				}
 
-				//if ( fromSkill.Lock != SkillLock.Up || ( from.SkillsTotal - fromSkill.BaseFixedPoint + (int)(skillValue * 10) > from.SkillsCap ) )
 				if ( cannotAbsorb )
 				{
 					// <CENTER>Unable to Absorb Selected Skill from Soulstone</CENTER>
@@ -641,9 +634,9 @@ namespace Server.Items
 				fromSkill.Base = skillValue;
 				m_Stone.SkillValue = 0.0;
 
-				m_Stone.NextUse = DateTime.Now + UseDelay;
-
 				from.SendLocalizedMessage( 1070713 ); // You have successfully absorbed the Soulstone's skill points.
+
+				m_Stone.LastUserName = from.Name;
 
 				Effects.SendLocationParticles( EffectItem.Create( from.Location, from.Map, EffectItem.DefaultDuration ), 0, 0, 0, 0, 0, 5060, 0 );
 				Effects.PlaySound( from.Location, from.Map, 0x243 );
@@ -763,15 +756,19 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 2 ); // version
+			writer.WriteEncodedInt( 3 ); // version
 
+			//version 3
+			writer.Write( (string) m_LastUserName );
+
+			//version 2
 			writer.Write( (int)m_Level );
 
 			writer.Write( m_ActiveItemID );
 			writer.Write( m_InactiveItemID );
 
 			writer.Write( (string) m_Account );
-			writer.Write( (DateTime) m_NextUse );
+			writer.Write( (DateTime) m_NextUse ); //TODO: delete it in a harmless way
 
 			writer.WriteEncodedInt( (int) m_Skill );
 			writer.Write( (double) m_SkillValue );
@@ -785,6 +782,11 @@ namespace Server.Items
 
 			switch( version )
 			{
+				case 3:
+					{
+						m_LastUserName = reader.ReadString();
+						goto case 2;
+					}
 				case 2:
 					{
 						m_Level = (SecureLevel)reader.ReadInt();
@@ -800,7 +802,7 @@ namespace Server.Items
 				case 0:
 					{
 						m_Account = reader.ReadString();
-						m_NextUse = reader.ReadDateTime();
+						m_NextUse = reader.ReadDateTime(); //TODO: delete it in a harmless way
 
 						m_Skill = (SkillName)reader.ReadEncodedInt();
 						m_SkillValue = reader.ReadDouble();
@@ -888,7 +890,7 @@ namespace Server.Items
 				}
 				else
 				{
-					ActiveItemID = ItemID;					
+					ActiveItemID = ItemID;
 				}
 
 				InactiveItemID = ActiveItemID;
