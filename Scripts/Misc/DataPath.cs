@@ -33,22 +33,25 @@ namespace Server.Misc
 
 		public static void Configure()
 		{
-			string pathReg = GetExePath( "Ultima Online" );
-			string pathTD = GetExePath( "Ultima Online Third Dawn" );	//These refer to 2D & 3D, not the Third Dawn expansion
-
-            string newPath = GetExePath("Ultima Online", "KR Legacy Beta"); //After KR, This is the new registry key for the 2D client
+			string pathUO = GetPath( @"Origin Worlds Online\Ultima Online\1.0", "ExePath" );
+			string pathTD = GetPath( @"Origin Worlds Online\Ultima Online Third Dawn\1.0", "ExePath" ); //These refer to 2D & 3D, not the Third Dawn expansion
+			string pathKR = GetPath( @"Origin Worlds Online\Ultima Online\KR Legacy Beta", "ExePath" ); //After KR, This is the new registry key for the 2D client
+			string pathSA = GetPath( @"Electronic Arts\EA Games\Ultima Online Stygian Abyss Classic", "InstallDir" );
 
 			if ( CustomPath != null ) 
 				Core.DataDirectories.Add( CustomPath ); 
 
-			if ( pathReg != null ) 
-				Core.DataDirectories.Add( pathReg ); 
+			if ( pathUO != null ) 
+				Core.DataDirectories.Add( pathUO ); 
 
 			if ( pathTD != null ) 
 				Core.DataDirectories.Add( pathTD );
 
-            if ( newPath != null )
-                Core.DataDirectories.Add( newPath );
+			if ( pathKR != null )
+				Core.DataDirectories.Add( pathKR );
+
+			if ( pathSA != null )
+				Core.DataDirectories.Add( pathSA );
 
 			if ( Core.DataDirectories.Count == 0 && !Core.Service )
 			{
@@ -59,38 +62,33 @@ namespace Server.Misc
 			}
 		}
 
-        private static string GetExePath( string subName )
-        {
-            return GetExePath( subName, "1.0" );
-        }
-
-		private static string GetExePath( string subName, string version )
+		private static string GetPath( string subName, string keyName )
 		{
 			try
 			{
-				String keyString;
+				string keyString;
 
 				if( Core.Is64Bit )
-					keyString = @"SOFTWARE\Wow6432Node\Origin Worlds Online\{0}\{1}";
+					keyString = @"SOFTWARE\Wow6432Node\{0}";
 				else
-					keyString = @"SOFTWARE\Origin Worlds Online\{0}\{1}";
+					keyString = @"SOFTWARE\{0}";
 
-				using( RegistryKey key = Registry.LocalMachine.OpenSubKey( String.Format( keyString, subName, version ) ) )
+				using( RegistryKey key = Registry.LocalMachine.OpenSubKey( String.Format( keyString, subName ) ) )
 				{
 					if( key == null )
 						return null;
 
-					string v = key.GetValue( "ExePath" ) as string;
+					string v = key.GetValue( keyName ) as string;
 
-					if( v == null || v.Length <= 0 )
+					if( String.IsNullOrEmpty( v ) )
 						return null;
 
-					if( !File.Exists( v ) )
-						return null;
+					if ( keyName == "InstallDir" )
+						v = v + @"\";
 
 					v = Path.GetDirectoryName( v );
 
-					if( v == null )
+					if ( String.IsNullOrEmpty( v ) )
 						return null;
 
 					return v;
