@@ -490,8 +490,6 @@ namespace Server.Items
 		{
 		}
 
-		private static readonly ClientVersion Version_400a = new ClientVersion( "4.0.0a" );
-
 		public void DisplayTo( Mobile to )
 		{
 			// The client must know about the spellbook or it will crash!
@@ -506,7 +504,7 @@ namespace Server.Items
 					return;
 
 				// What will happen if the client doesn't know about our parent?
-				if ( to.NetState.IsPost6017 )
+				if ( to.NetState.ContainerGridLines )
 					to.Send( new ContainerContentUpdate6017( this ) );
 				else
 					to.Send( new ContainerContentUpdate( this ) );
@@ -523,14 +521,14 @@ namespace Server.Items
 				return;
 
 			if ( Core.AOS ) {
-				if ( to.NetState.Version != null && to.NetState.Version >= Version_400a ) {
+				if ( to.NetState.NewSpellbook ) {
 					to.Send( new NewSpellbookContent( this, ItemID, BookOffset + 1, m_Content ) );
 				} else {
 					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
 				}
 			}
 			else {
-				if ( to.NetState.IsPost6017 ) {
+				if ( to.NetState.ContainerGridLines ) {
 					to.Send( new SpellbookContent6017( m_Count, BookOffset + 1, m_Content, this ) );
 				} else {
 					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );

@@ -637,7 +637,7 @@ namespace Server.Mobiles
 				if ( from.NetState == null )
 					return;
 
-				if ( from.NetState.IsPost6017 )
+				if ( from.NetState.ContainerGridLines )
 					from.Send( new VendorBuyContent6017( list ) );
 				else
 					from.Send( new VendorBuyContent( list ) );

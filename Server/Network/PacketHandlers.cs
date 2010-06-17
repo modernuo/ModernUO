@@ -147,6 +147,7 @@ namespace Server.Network
 			Register( 0xD1,   2,  true, new OnPacketReceive( LogoutReq ) );
 			Register( 0xD6,   0,  true, new OnPacketReceive( BatchQueryProperties ) );
 			Register( 0xD7,   0,  true, new OnPacketReceive( EncodedCommand ) );
+			Register( 0xE1,   0, false, new OnPacketReceive( ClientType ) );
 			Register( 0xEF,  21, false, new OnPacketReceive( LoginServerSeed ) );
 
 			Register6017( 0x08, 15, true, new OnPacketReceive( DropReq6017 ) );
@@ -1235,7 +1236,7 @@ namespace Server.Network
 		{
 			Mobile m = state.Mobile;
 
-			if ( state.IsPost7000 ) {
+			if ( state.StygianAbyss ) {
 				state.Send( new MobileUpdate( m ) );
 				state.Send( new MobileIncoming( m, m ) );
 			} else {
@@ -1823,6 +1824,16 @@ namespace Server.Network
 			EventSink.InvokeClientVersionReceived( new ClientVersionReceivedArgs( state, version ) );
 		}
 
+		public static void ClientType( NetState state, PacketReader pvSrc )
+		{
+			pvSrc.ReadUInt16();
+
+			int type = pvSrc.ReadUInt16();
+			CV version = state.Version = new CV( pvSrc.ReadString() );
+
+			//EventSink.InvokeClientVersionReceived( new ClientVersionReceivedArgs( state, version ) );//todo
+		}
+
 		public static void MobileQuery( NetState state, PacketReader pvSrc )
 		{
 			Mobile from = state.Mobile;
@@ -1936,7 +1947,7 @@ namespace Server.Network
 
 					state.BlockAllPackets = true;
 
-					state.Flags = flags;
+					state.Flags = (ClientFlags)flags;
 
 					state.Mobile = m;
 					m.NetState = state;
@@ -1961,7 +1972,7 @@ namespace Server.Network
 
 			state.Sequence = 0;
 
-			if ( state.IsPost7000 ) {
+			if ( state.StygianAbyss ) {
 				state.Send( new MobileUpdate( m ) );
 				state.Send( new MobileUpdate( m ) );
 
@@ -2069,7 +2080,7 @@ namespace Server.Network
 
 			Race race = null;
 
-			if ( state.IsPost7000 ) {
+			if ( state.StygianAbyss ) {
 				byte raceID = (byte)(genderRace < 4 ? 0 : ((genderRace / 2) - 1));
 				race = Race.Races[raceID];
 			} else {
@@ -2101,7 +2112,7 @@ namespace Server.Network
 					}
 				}
 
-				state.Flags = flags;
+				state.Flags = (ClientFlags)flags;
 
 				CharacterCreatedEventArgs args = new CharacterCreatedEventArgs(
 					state, a,

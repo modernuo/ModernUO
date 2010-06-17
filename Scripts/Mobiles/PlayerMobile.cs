@@ -3426,7 +3426,7 @@ namespace Server.Mobiles
 					NetState ns = this.NetState;
 
 					if ( ns != null ) {
-						if ( ns.IsPost7000 ) {
+						if ( ns.StygianAbyss ) {
 							ns.Send( new MobileMoving( m, Notoriety.Compute( this, m ) ) );
 						} else {
 							ns.Send( new MobileMovingOld( m, Notoriety.Compute( this, m ) ) );
@@ -4108,7 +4108,7 @@ namespace Server.Mobiles
 
 			NetState state = this.NetState;
 
-			if( state != null && state.Version >= BuffInfo.RequiredClient )
+			if( state != null && state.BuffIcon )
 			{
 				foreach( BuffInfo info in m_BuffTable.Values )
 				{
@@ -4133,7 +4133,7 @@ namespace Server.Mobiles
 
 			NetState state = this.NetState;
 
-			if( state != null && state.Version >= BuffInfo.RequiredClient )
+			if( state != null && state.BuffIcon )
 			{
 				state.Send( new AddBuffPacket( this, b ) );
 			}
@@ -4161,7 +4161,7 @@ namespace Server.Mobiles
 
 			NetState state = this.NetState;
 
-			if( state != null && state.Version >= BuffInfo.RequiredClient )
+			if( state != null && state.BuffIcon )
 			{
 				state.Send( new RemoveBuffPacket( this, b ) );
 			}

@@ -734,14 +734,13 @@ namespace Server.Misc
 			}
 		}
 
-		private static readonly ClientVersion m_NewHavenClient = new ClientVersion( "6.0.0.0" );
 		private static readonly CityInfo m_NewHavenInfo = new CityInfo( "New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel );
 
 		private static CityInfo GetStartLocation( CharacterCreatedEventArgs args, bool isYoung )
 		{
 			if( Core.ML )
 			{
-				//if( args.State != null && args.State.Version >= m_NewHavenClient )
+				//if( args.State != null && args.State.NewHaven )
 				return m_NewHavenInfo;	//We don't get the client Version until AFTER Character creation
 
 				//return args.City;  TODO: Uncomment when the old quest system is actually phased out
@@ -749,14 +748,14 @@ namespace Server.Misc
 
 			bool useHaven = isYoung;
 
-			int flags = args.State == null ? 0 : args.State.Flags;
+			ClientFlags flags = args.State == null ? ClientFlags.None : args.State.Flags;
 			Mobile m = args.Mobile;
 
 			switch ( args.Profession )
 			{
 				case 4: //Necro
 				{
-					if ( (flags & 0x8) != 0 )
+					if ( (flags & ClientFlags.Malas) != 0 )
 					{
 						return new CityInfo( "Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas );
 					}
@@ -782,7 +781,7 @@ namespace Server.Misc
 				}
 				case 6:	//Samurai
 				{
-					if ( (flags & 0x10) != 0 )
+					if ( (flags & ClientFlags.Tokuno) != 0 )
 					{
 						return new CityInfo( "Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas );
 					}
@@ -804,7 +803,7 @@ namespace Server.Misc
 				}
 				case 7:	//Ninja
 				{
-					if ( (flags & 0x10) != 0 )
+					if ( (flags & ClientFlags.Tokuno) != 0 )
 					{
 						return new CityInfo( "Ninja DE", "Enimo's Residence", 414,	823, -1, Map.Malas );
 					}

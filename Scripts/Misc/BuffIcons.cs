@@ -24,9 +24,6 @@ namespace Server
 			}
 		}
 
-		private static readonly ClientVersion m_RequiredClient = new ClientVersion( "5.0.2b" );
-		public static ClientVersion RequiredClient { get { return m_RequiredClient; } }
-
 		#region Properties
 		private BuffIcon m_ID;
 		public BuffIcon ID { get { return m_ID; } }

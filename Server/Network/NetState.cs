@@ -90,7 +90,7 @@ namespace Server.Network {
 			}
 		}
 
-		private int m_Flags;
+		private ClientFlags m_Flags;
 
 		private static bool m_Paused;
 
@@ -185,7 +185,7 @@ namespace Server.Network {
 			}
 		}
 
-		public int Flags {
+		public ClientFlags Flags {
 			get {
 				return m_Flags;
 			}
@@ -202,51 +202,74 @@ namespace Server.Network {
 				m_Version = value;
 
 				if ( value >= m_Version7000 ) {
-					m_Post7000 = m_Post60142 = m_Post6017 = true;
+					_ProtocolChanges = ProtocolChanges.Version7000;
 				} else if ( value >= m_Version60142 ) {
-					m_Post60142 = m_Post6017 = true;
+					_ProtocolChanges = ProtocolChanges.Version60142;
 				} else if ( value >= m_Version6017 ) {
-					m_Post6017 = true;
+					_ProtocolChanges = ProtocolChanges.Version6017;
+				} else if ( value >= m_Version6000 ) {
+					_ProtocolChanges = ProtocolChanges.Version6000;
+				} else if ( value >= m_Version502b ) {
+					_ProtocolChanges = ProtocolChanges.Version502b;
+				} else if ( value >= m_Version500a ) {
+					_ProtocolChanges = ProtocolChanges.Version500a;
+				} else if ( value >= m_Version407a ) {
+					_ProtocolChanges = ProtocolChanges.Version407a;
+				} else if ( value >= m_Version400a ) {
+					_ProtocolChanges = ProtocolChanges.Version400a;
 				}
 			}
 		}
 
-		public bool ExtendedSupportedFeatures
-		{
-			get { return m_Post60142; }
+		private static ClientVersion m_Version400a	= new ClientVersion( "4.0.0a" );
+		private static ClientVersion m_Version407a	= new ClientVersion( "4.0.7a" );
+		private static ClientVersion m_Version500a	= new ClientVersion( "5.0.0a" );
+		private static ClientVersion m_Version502b	= new ClientVersion( "5.0.2b" );
+		private static ClientVersion m_Version6000	= new ClientVersion( "6.0.0.0" );
+		private static ClientVersion m_Version6017	= new ClientVersion( "6.0.1.7" );
+		private static ClientVersion m_Version60142	= new ClientVersion( "6.0.14.2" );
+		private static ClientVersion m_Version7000	= new ClientVersion( "7.0.0.0" );
+
+		private ProtocolChanges _ProtocolChanges;
+
+		private enum ProtocolChanges {
+			NewSpellbook				= 0x00000001,
+			DamagePacket				= 0x00000002,
+			Unpack						= 0x00000004,
+			BuffIcon					= 0x00000008,
+			NewHaven					= 0x00000010,
+			ContainerGridLines			= 0x00000020,
+			ExtendedSupportedFeatures	= 0x00000040,
+			StygianAbyss				= 0x00000080,
+
+			Version400a					= NewSpellbook,
+			Version407a					= Version400a | DamagePacket,
+			Version500a					= Version407a | Unpack,
+			Version502b					= Version500a | BuffIcon,
+			Version6000					= Version502b | NewHaven,
+			Version6017					= Version6000 | ContainerGridLines,
+			Version60142				= Version6017 | ExtendedSupportedFeatures,
+			Version7000					= Version60142 | StygianAbyss
 		}
 
-		public bool IsUOTDClient
-		{
-			get
-			{
-				return ((m_Flags & 0x100) != 0 || (m_Version != null && m_Version.Type == ClientType.UOTD));
+		public bool NewSpellbook { get { return ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0); } }
+		public bool DamagePacket { get { return ((_ProtocolChanges & ProtocolChanges.DamagePacket) != 0); } }
+		public bool Unpack { get { return ((_ProtocolChanges & ProtocolChanges.Unpack) != 0); } }
+		public bool BuffIcon { get { return ((_ProtocolChanges & ProtocolChanges.BuffIcon) != 0); } }
+		public bool NewHaven { get { return ((_ProtocolChanges & ProtocolChanges.NewHaven) != 0); } }
+		public bool ContainerGridLines { get { return ((_ProtocolChanges & ProtocolChanges.ContainerGridLines) != 0); } }
+		public bool ExtendedSupportedFeatures { get { return ((_ProtocolChanges & ProtocolChanges.ExtendedSupportedFeatures) != 0); } }
+		public bool StygianAbyss { get { return ((_ProtocolChanges & ProtocolChanges.StygianAbyss) != 0); } }
+
+		public bool IsUOTDClient {
+			get {
+				return ( (m_Flags & ClientFlags.UOTD) != 0 || m_Version.Type == ClientType.UOTD );
 			}
 		}
 
-		private static ClientVersion m_Version6017 = new ClientVersion( "6.0.1.7" );
-		private static ClientVersion m_Version60142 = new ClientVersion( "6.0.14.2" );
-		private static ClientVersion m_Version7000 = new ClientVersion( "7.0.0.0" );
-
-		private bool m_Post6017;
-		private bool m_Post60142;
-		private bool m_Post7000;
-
-		public bool IsPost6017 {
-			get { 
-				return m_Post6017; 
-			}
-		}
-
-		public bool IsPost60142 {
-			get { 
-				return m_Post60142; 
-			}
-		}
-
-		public bool IsPost7000 {
-			get { 
-				return m_Post7000; 
+		public bool IsSAClient {
+			get {
+				return ( m_Version.Type == ClientType.SA );
 			}
 		}
 
@@ -574,7 +597,7 @@ namespace Server.Network {
 
 		public PacketHandler GetHandler( int packetID )
 		{
-			if ( IsPost6017 )
+			if ( ContainerGridLines )
 				return PacketHandlers.Get6017Handler( packetID );
 			else
 				return PacketHandlers.GetHandler( packetID );
@@ -949,7 +972,7 @@ namespace Server.Network {
 				for ( int i = ExpansionInfo.Table.Length - 1; i >= 0; i-- ) {
 					ExpansionInfo info = ExpansionInfo.Table[i];
 
-					if ( ( info.RequiredClient != null && this.Version >= info.RequiredClient ) || ( ( this.Flags & info.NetStateFlag ) != 0 ) ) {
+					if ( ( info.RequiredClient != null && this.Version >= info.RequiredClient ) || ( ( this.Flags & info.ClientFlags ) != 0 ) ) {
 						return info;
 					}
 				}
@@ -971,7 +994,7 @@ namespace Server.Network {
 			if ( info.RequiredClient != null )
 				return ( this.Version >= info.RequiredClient );
 
-			return ( ( this.Flags & info.NetStateFlag ) != 0 );
+			return ( ( this.Flags & info.ClientFlags ) != 0 );
 		}
 
 		public bool SupportsExpansion( Expansion ex, bool checkCoreExpansion ) {

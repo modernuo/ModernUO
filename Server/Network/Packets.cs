@@ -89,8 +89,6 @@ namespace Server.Network
 
 	public sealed class DamagePacket : Packet
 	{
-		public static readonly ClientVersion Version = new ClientVersion( "4.0.7a" );
-
 		public DamagePacket( Mobile m, int amount ) : base( 0x0B, 7 )
 		{
 			m_Stream.Write( (int) m.Serial );
@@ -1072,6 +1070,45 @@ namespace Server.Network
 
 			if ( flags != 0 )
 				m_Stream.Write( (byte) flags );
+		}
+	}
+
+	public sealed class WorldItemSA : Packet
+	{
+		public WorldItemSA( Item item ) : base( 0xF3, 24 )
+		{
+			m_Stream.Write( (short) 0x1 );
+
+			int itemID = item.ItemID;
+
+			if ( item is BaseMulti ) {
+				m_Stream.Write( (byte) 0x02 );
+				itemID &= 0x3FFF;
+			} else {
+				m_Stream.Write( (byte) 0x00 );
+				itemID &= 0x7FFF;
+			}
+
+			m_Stream.Write( (int) item.Serial );
+
+			m_Stream.Write( (short) itemID ); 
+
+			m_Stream.Write( (byte) item.Direction );
+
+			int amount = item.Amount;
+			m_Stream.Write( (short) amount );
+			m_Stream.Write( (short) amount );
+
+			Point3D loc = item.Location;
+			int x = loc.m_X & 0x7FFF;
+			int y = loc.m_Y & 0x3FFF;
+			m_Stream.Write( (short) x );
+			m_Stream.Write( (short) y );
+			m_Stream.Write( (sbyte) loc.m_Z );
+
+			m_Stream.Write( (byte) item.Light );
+			m_Stream.Write( (short) item.Hue );
+			m_Stream.Write( (byte) item.GetPacketFlags() );
 		}
 	}
 
@@ -2515,9 +2552,9 @@ namespace Server.Network
 
 	public sealed class SupportedFeatures : Packet
 	{
-		private static int m_AdditionalFlags;
+		private static FeatureFlags m_AdditionalFlags;
 
-		public static int Value{ get{ return m_AdditionalFlags; } set{ m_AdditionalFlags = value; } }
+		public static FeatureFlags Value{ get{ return m_AdditionalFlags; } set{ m_AdditionalFlags = value; } }
 
 		public static SupportedFeatures Instantiate( NetState ns )
 		{
@@ -2526,25 +2563,21 @@ namespace Server.Network
 
 		public SupportedFeatures( NetState ns ) : base( 0xB9, ns.ExtendedSupportedFeatures ? 5 : 3 )
 		{
-			int flags = ExpansionInfo.CurrentExpansion.SupportedFeatures;
+			FeatureFlags flags = ExpansionInfo.CurrentExpansion.SupportedFeatures;
 
 			flags |= m_AdditionalFlags;
-			/*
-			int flags = 0x3 | m_AdditionalFlags;
-
-			if ( Core.SE )
-				flags |= 0x0040;
-
-			if ( Core.AOS )
-				flags |= 0x801C;
-			 * */
 
 			IAccount acct = ns.Account as IAccount;
 
 			if ( acct != null && acct.Limit >= 6 )
 			{
-				flags |= 0x8020;
-				flags &= ~0x004;
+				flags |= FeatureFlags.Unk7;
+				flags &= ~FeatureFlags.UOTD;
+
+				if ( acct.Limit > 6 )
+					flags |= FeatureFlags.SeventhCharacterSlot;
+				else
+					flags |= FeatureFlags.SixthCharacterSlot;
 			}
 
 			if ( ns.ExtendedSupportedFeatures ) {
@@ -2552,8 +2585,6 @@ namespace Server.Network
 			} else {
 				m_Stream.Write( (ushort) flags );
 			}
-
-			//m_Stream.Write( (ushort) m_Value ); // 0x01 = T2A, 0x02 = LBR
 		}
 	}
 
@@ -3591,28 +3622,22 @@ namespace Server.Network
 				m_Stream.WriteAsciiFixed( ci.City, 31 );
 				m_Stream.WriteAsciiFixed( ci.Building, 31 );
 			}
-/*
-			int flags = 0x08; //Context Menus
 
-			if ( Core.SE )
-				flags |= 0xA0; //SE & AOS
-			else if ( Core.AOS )
-				flags |= 0x20; //AOS
- * */
+			CharacterListFlags flags = ExpansionInfo.CurrentExpansion.CharacterListFlags;
 
-			int flags = ExpansionInfo.CurrentExpansion.CharacterListFlags;
-
-			if ( count >= 6 )
-				flags |= 0x40; // 6th character slot
+			if ( count > 6 )
+				flags |= (CharacterListFlags.SeventhCharacterSlot | CharacterListFlags.SixthCharacterSlot); // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+			else if ( count == 6 )
+				flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
 			else if ( a.Limit == 1 )
-				flags |= 0x14; // Limit characters & one character
+				flags |= (CharacterListFlags.SlotLimit & CharacterListFlags.OneCharacterSlot); // Limit Characters & One Character
 
-			m_Stream.Write( (int)(flags | m_AdditionalFlags) ); // flags
+			m_Stream.Write( (int)(flags | m_AdditionalFlags) ); // Additional Flags
 		}
 
-		private static int m_AdditionalFlags;
+		private static CharacterListFlags m_AdditionalFlags;
 
-		public static int AdditionalFlags
+		public static CharacterListFlags AdditionalFlags
 		{
 			get{ return m_AdditionalFlags; }
 			set{ m_AdditionalFlags = value; }
@@ -3633,12 +3658,12 @@ namespace Server.Network
 
 	public enum ALRReason : byte
 	{
-		Invalid = 0x00,
-		InUse = 0x01,
-		Blocked = 0x02,
-		BadPass = 0x03,
-		Idle = 0xFE,
-		BadComm = 0xFF
+		Invalid	= 0x00,
+		InUse	= 0x01,
+		Blocked	= 0x02,
+		BadPass	= 0x03,
+		Idle	= 0xFE,
+		BadComm	= 0xFF
 	}
 
 	public sealed class AccountLoginRej : Packet

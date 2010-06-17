@@ -22,45 +22,139 @@ using System;
 
 namespace Server
 {
-	public enum Expansion
+	public enum	Expansion
 	{
 		None,
-		/*
 		T2A,
 		UOR,
-		LBR,
 		UOTD,
-		*/
+		LBR,
 		AOS,
 		SE,
-		ML
+		ML,
+		SA
 	}
+
+	public enum	ClientFlags
+	{
+		None		= 0x00000000,
+		Felucca		= 0x00000001,
+		Trammel		= 0x00000002,
+		Ilshenar	= 0x00000004,
+		Malas		= 0x00000008,
+		Tokuno		= 0x00000010,
+		TerMur		= 0x00000020,
+		Unk1		= 0x00000040,
+		Unk2		= 0x00000080,
+		UOTD		= 0x00000100
+	}
+
+	public enum	FeatureFlags
+	{
+		None					= 0x00000000,
+		T2A						= 0x00000001,
+		UOR						= 0x00000002,
+		UOTD					= 0x00000004,
+		LBR						= 0x00000008,
+		AOS						= 0x00000010,
+		SixthCharacterSlot		= 0x00000020,
+		SE						= 0x00000040,
+		ML						= 0x00000080,
+		Unk1					= 0x00000100,
+		Unk2					= 0x00000200,
+		Unk3					= 0x00000400,
+		Unk4					= 0x00000800,
+		SeventhCharacterSlot	= 0x00001000,
+		Unk5					= 0x00002000,
+		Unk6					= 0x00004000,
+		Unk7					= 0x00008000,
+		SA						= 0x00010000,
+
+
+		ExpansionNone	= None,
+		ExpansionT2A	= T2A,
+		ExpansionUOR	= ExpansionT2A	| UOR,
+		ExpansionUOTD	= ExpansionUOR	| UOTD,
+		ExpansionLBR	= ExpansionUOTD	| LBR,
+		ExpansionAOS	= ExpansionLBR	| AOS	| Unk7,
+		ExpansionSE		= ExpansionAOS	| SE,
+		ExpansionML		= ExpansionSE	| ML	| Unk2,
+		ExpansionSA		= ExpansionML	| SA
+	}
+
+	public enum	CharacterListFlags
+	{
+		None					= 0x00000000,
+		Unk1					= 0x00000001,
+		Unk2					= 0x00000002,
+		OneCharacterSlot		= 0x00000004,
+		ContextMenus			= 0x00000008,
+		SlotLimit				= 0x00000010,
+		AOS						= 0x00000020,
+		SixthCharacterSlot		= 0x00000040,
+		SE						= 0x00000080,
+		ML						= 0x00000100,
+		Unk4					= 0x00000200,
+		Unk5					= 0x00000400,
+		Unk6					= 0x00000800,
+		SeventhCharacterSlot	= 0x00001000,
+		Unk7					= 0x00002000,
+
+		ExpansionNone	= ContextMenus, //
+		ExpansionT2A	= ContextMenus, //
+		ExpansionUOR	= ContextMenus, // None
+		ExpansionUOTD	= ContextMenus, //
+		ExpansionLBR	= ContextMenus, //
+		ExpansionAOS	= ContextMenus	| AOS,
+		ExpansionSE		= ExpansionAOS	| SE,
+		ExpansionML		= ExpansionSE	| ML,
+		ExpansionSA		= ExpansionML
+	}
+
 	public class ExpansionInfo
 	{
-		private string m_Name;
-		private int m_ID, m_NetStateFlag, m_SupportedFeatures, m_CharListFlags, m_CustomHousingFlag;
+		public static ExpansionInfo[] Table { get { return m_Table; } }
+		private static ExpansionInfo[] m_Table = new ExpansionInfo[]
+			{
+				new ExpansionInfo( 0, "None"				, ClientFlags.None,					FeatureFlags.ExpansionNone,	CharacterListFlags.ExpansionNone,	0x0000 ),
+				new ExpansionInfo( 1, "The Second Age"		, ClientFlags.Felucca,				FeatureFlags.ExpansionT2A,	CharacterListFlags.ExpansionT2A,	0x0000 ),
+				new ExpansionInfo( 2, "Renaissance"			, ClientFlags.Trammel,				FeatureFlags.ExpansionUOR,	CharacterListFlags.ExpansionUOR,	0x0000 ),
+				new ExpansionInfo( 3, "Third Dawn"			, ClientFlags.Ilshenar,				FeatureFlags.ExpansionUOTD,	CharacterListFlags.ExpansionUOTD,	0x0000 ),
+				new ExpansionInfo( 4, "Blackthorn's Revenge", ClientFlags.Ilshenar,				FeatureFlags.ExpansionLBR,	CharacterListFlags.ExpansionLBR,	0x0000 ),
+				new ExpansionInfo( 5, "Age of Shadows"		, ClientFlags.Malas,				FeatureFlags.ExpansionAOS,	CharacterListFlags.ExpansionAOS,	0x0020 ),
+				new ExpansionInfo( 6, "Samurai Empire"		, ClientFlags.Tokuno,				FeatureFlags.ExpansionSE,	CharacterListFlags.ExpansionSE,		0x0060 ),	// 0x40 | 0x20 = 0x60
+				new ExpansionInfo( 7, "Mondain's Legacy"	, new ClientVersion( "5.0.0a" ),	FeatureFlags.ExpansionML,	CharacterListFlags.ExpansionML,		0x02E0 ),	// 0x280 | 0x60 = 0x2E0
+				new ExpansionInfo( 8, "Stygian Abyss"		, ClientFlags.TerMur,				FeatureFlags.ExpansionSA,	CharacterListFlags.ExpansionSA,		0x02E0 )	// ??
+			};
 
-		private ClientVersion m_RequiredClient;	//Used as an alternative to the flags
+		private string m_Name;
+		private int m_ID, m_CustomHousingFlag;
+
+		private ClientFlags m_ClientFlags;
+		private FeatureFlags m_SupportedFeatures;
+		private CharacterListFlags m_CharListFlags;
+
+		private ClientVersion m_RequiredClient;	// Used as an alternative to the flags
 
 		public string Name{ get{ return m_Name; } }
 		public int ID{ get{ return m_ID; } }
-		public int NetStateFlag{ get{ return m_NetStateFlag; } }
-		public int SupportedFeatures{ get{ return m_SupportedFeatures; } }
-		public int CharacterListFlags { get { return m_CharListFlags; } }
+		public ClientFlags ClientFlags{ get{ return m_ClientFlags; } }
+		public FeatureFlags SupportedFeatures{ get{ return m_SupportedFeatures; } }
+		public CharacterListFlags CharacterListFlags { get { return m_CharListFlags; } }
 		public int CustomHousingFlag { get{ return m_CustomHousingFlag; } }
 		public ClientVersion RequiredClient { get { return m_RequiredClient; } }
 
-		public ExpansionInfo( int id, string name, int netStateFlag, int supportedFeatures, int charListFlags, int customHousingFlag )
+		public ExpansionInfo( int id, string name, ClientFlags clientFlags, FeatureFlags supportedFeatures, CharacterListFlags charListFlags, int customHousingFlag )
 		{
 			m_Name = name;
 			m_ID = id;
-			m_NetStateFlag = netStateFlag;
+			m_ClientFlags = clientFlags;
 			m_SupportedFeatures = supportedFeatures;
 			m_CharListFlags = charListFlags;
 			m_CustomHousingFlag = customHousingFlag;
 		}
 
-		public ExpansionInfo( int id, string name, ClientVersion requiredClient, int supportedFeatures, int charListFlags, int customHousingFlag )
+		public ExpansionInfo( int id, string name, ClientVersion requiredClient, FeatureFlags supportedFeatures, CharacterListFlags charListFlags, int customHousingFlag )
 		{
 			m_Name = name;
 			m_ID = id;
@@ -69,17 +163,6 @@ namespace Server
 			m_CustomHousingFlag = customHousingFlag;
 			m_RequiredClient = requiredClient;
 		}
-
-		public static ExpansionInfo[] Table { get { return m_Table; } }
-		private static ExpansionInfo[] m_Table = new ExpansionInfo[]
-			{
-				new ExpansionInfo( 0, "None"			, 0x00,								0x0003, 0x008, 0x00 ),
-				new ExpansionInfo( 1, "Age of Shadows"	, 0x08,								0x801F, 0x028, 0x20 ),
-				new ExpansionInfo( 2, "Samurai Empire"	, 0x10,								0x805F, 0x0A8, 0x60 ),	//0x40 | 0x20 = 0x60
-				new ExpansionInfo( 3, "Mondain's Legacy", new ClientVersion( "5.0.0a" ),	0x82DF, 0x1A8, 0x2E0 )	//0x280 | 0x60 = 0x2E0
-
-				//0x200 + 0x400 for KR?
-			};
 
 		public static ExpansionInfo GetInfo( Expansion ex )
 		{

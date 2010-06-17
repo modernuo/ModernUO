@@ -28,7 +28,8 @@ namespace Server
 	{
 		Regular,
 		UOTD,
-		God
+		God,
+		SA
 	}
 
 	public class ClientVersion : IComparable, IComparer

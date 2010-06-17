@@ -365,8 +365,6 @@ namespace Server.Gumps
 		private static byte[] m_NoDispose = StringToBuffer( "{ nodispose }" );
 		private static byte[] m_NoResize = StringToBuffer( "{ noresize }" );
 
-		public static readonly ClientVersion UnpackVersion = new ClientVersion( "5.0.0a" );
-
 		private Packet Compile()
 		{
 			return Compile( null );
@@ -376,7 +374,7 @@ namespace Server.Gumps
 		{
 			IGumpWriter disp;
 
-			if ( ns != null && ns.Version != null && ns.Version >= UnpackVersion )
+			if ( ns != null && ns.Unpack )
 				disp = new DisplayGumpPacked( this );
 			else
 				disp = new DisplayGumpFast( this );

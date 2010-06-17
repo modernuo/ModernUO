@@ -219,9 +219,6 @@ namespace Server.Gumps
 			ExpansionInfo info = state.ExpansionInfo;
 			string expansionName = info.Name;
 
-			if ( info.ID == (int)Expansion.None )
-				expansionName = (((state.Flags & 0x04) != 0) ? "Blackthorn's Revenge" : ((state.Flags & 0x02) != 0) ? "Third Dawn" : ((state.Flags & 0x01) != 0) ? "Renaissance" : "The Second Age" );
-
 			AddHtml( 70, 36 + (line++ * 20), 200, 20, Color( expansionName, LabelColor32 ), false, false );
 
 			Account a = state.Account as Account;

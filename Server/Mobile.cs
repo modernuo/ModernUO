@@ -1157,7 +1157,7 @@ namespace Server
 					info.Free();
 
 					if( m_NetState != null && this.CanSee( attacker ) && Utility.InUpdateRange( m_Location, attacker.m_Location ) ) {
-						if ( m_NetState.IsPost7000 ) {
+						if ( m_NetState.StygianAbyss ) {
 							m_NetState.Send( new MobileIncoming( this, attacker ) );
 						} else {
 							m_NetState.Send( new MobileIncomingOld( this, attacker ) );
@@ -1182,7 +1182,7 @@ namespace Server
 					info.Free();
 
 					if( m_NetState != null && this.CanSee( defender ) && Utility.InUpdateRange( m_Location, defender.m_Location ) ) {
-						if ( m_NetState.IsPost7000 ) {
+						if ( m_NetState.StygianAbyss ) {
 							m_NetState.Send( new MobileIncoming( this, defender ) );
 						} else {
 							m_NetState.Send( new MobileIncomingOld( this, defender ) );
@@ -2386,7 +2386,7 @@ namespace Server
 				m_Aggressors.Add( AggressorInfo.Create( aggressor, this, criminal ) ); // new AggressorInfo( aggressor, this, criminal, true ) );
 
 				if( this.CanSee( aggressor ) && m_NetState != null ) {
-					if ( m_NetState.IsPost7000 ) {
+					if ( m_NetState.StygianAbyss ) {
 						m_NetState.Send( new MobileIncoming( this, aggressor ) );
 					} else {
 						m_NetState.Send( new MobileIncomingOld( this, aggressor ) );
@@ -2404,7 +2404,7 @@ namespace Server
 				aggressor.m_Aggressed.Add( AggressorInfo.Create( aggressor, this, criminal ) ); // new AggressorInfo( aggressor, this, criminal, false ) );
 
 				if( this.CanSee( aggressor ) && m_NetState != null ) {
-					if ( m_NetState.IsPost7000 ) {
+					if ( m_NetState.StygianAbyss ) {
 						m_NetState.Send( new MobileIncoming( this, aggressor ) );
 					} else {
 						m_NetState.Send( new MobileIncomingOld( this, aggressor ) );
@@ -2440,7 +2440,7 @@ namespace Server
 					info.Free();
 
 					if( m_NetState != null && this.CanSee( aggressed ) ) {
-						if ( m_NetState.IsPost7000 ) {
+						if ( m_NetState.StygianAbyss ) {
 							m_NetState.Send( new MobileIncoming( this, aggressed ) );
 						} else {
 							m_NetState.Send( new MobileIncomingOld( this, aggressed ) );
@@ -2471,7 +2471,7 @@ namespace Server
 					info.Free();
 
 					if( m_NetState != null && this.CanSee( aggressor ) ) {
-						if ( m_NetState.IsPost7000 ) {
+						if ( m_NetState.StygianAbyss ) {
 							m_NetState.Send( new MobileIncoming( this, aggressor ) );
 						} else {
 							m_NetState.Send( new MobileIncomingOld( this, aggressor ) );
@@ -3253,7 +3253,7 @@ namespace Server
 						{
 							Packet p = null;
 
-							if ( ns.IsPost7000 ) {
+							if ( ns.StygianAbyss ) {
 								int noto = Notoriety.Compute( m, this );
 								p = cache[0][noto];
 
@@ -4278,7 +4278,7 @@ namespace Server
 
 								foreach( NetState ns in eable )
 								{
-									if( !ns.IsPost7000 && ns.Mobile != from && ns.Mobile.CanSee( from ) )
+									if( !ns.StygianAbyss && ns.Mobile != from && ns.Mobile.CanSee( from ) )
 									{
 										if( p == null )
 										{
@@ -4342,7 +4342,7 @@ namespace Server
 				state.Send( new LiftRej( reject ) );
 
 				if( item.Parent is Item ) {
-					if ( state.IsPost6017 )
+					if ( state.ContainerGridLines )
 						state.Send( new ContainerContentUpdate6017( item ) );
 					else
 						state.Send( new ContainerContentUpdate( item ) );
@@ -4413,7 +4413,7 @@ namespace Server
 
 					foreach( NetState ns in eable )
 					{
-						if( !ns.IsPost7000 && ns.Mobile != this && ns.Mobile.CanSee( this ) )
+						if( !ns.StygianAbyss && ns.Mobile != this && ns.Mobile.CanSee( this ) )
 						{
 							if( p == null )
 							{
@@ -5146,9 +5146,7 @@ namespace Server
 
 								if( ourState != null )
 								{
-									bool newPacket = (ourState.Version != null && ourState.Version >= DamagePacket.Version);
-
-									if( newPacket )
+									if( ourState.DamagePacket )
 										p = Packet.Acquire( new DamagePacket( this, amount ) );
 									else
 										p = Packet.Acquire( new DamagePacketOld( this, amount ) );
@@ -5158,7 +5156,7 @@ namespace Server
 
 								if( theirState != null && theirState != ourState )
 								{
-									bool newPacket = (theirState.Version != null && theirState.Version >= DamagePacket.Version);
+									bool newPacket = theirState.DamagePacket;
 
 									if( newPacket && (p == null || !(p is DamagePacket)) )
 									{
@@ -5227,10 +5225,9 @@ namespace Server
 			{
 				if( ns.Mobile.CanSee( this ) )
 				{
-					bool newPacket = (ns.Version != null && ns.Version >= DamagePacket.Version);
 					Packet p;
 
-					if( newPacket )
+					if( ns.DamagePacket )
 					{
 						if( pNew == null )
 							pNew = Packet.Acquire( new DamagePacket( this, amount ) );
@@ -6172,7 +6169,7 @@ namespace Server
 					{
 						state.Mobile.ProcessDelta();
 
-						//if ( state.IsPost7000 ) {
+						//if ( state.StygianAbyss ) {
 							//if( pNew == null )
 								//pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
 
@@ -6728,7 +6725,7 @@ namespace Server
 
 						if( CanSee( m ) && Utility.InUpdateRange( m_Location, m.m_Location ) )
 						{
-							if ( ns.IsPost7000 ) {
+							if ( ns.StygianAbyss ) {
 								ns.Send( new MobileIncoming( this, m ) );
 
 								if ( m.Poisoned )
@@ -6804,7 +6801,7 @@ namespace Server
 						ns.Send( new MapPatches() );
 						ns.Send( SeasonChange.Instantiate( GetSeason(), true ) );
 
-						if ( ns.IsPost7000 )
+						if ( ns.StygianAbyss )
 							ns.Send( new MobileUpdate( this ) );
 						else
 							ns.Send( new MobileUpdateOld( this ) );
@@ -6820,7 +6817,7 @@ namespace Server
 						ns.Sequence = 0;
 						ClearFastwalkStack();
 
-						if ( ns.IsPost7000 ) {
+						if ( ns.StygianAbyss ) {
 							Send( new MobileIncoming( this, this ) );
 							Send( new MobileUpdate( this ) );
 							CheckLightLevels( true );
@@ -6841,7 +6838,7 @@ namespace Server
 						ns.Sequence = 0;
 						ClearFastwalkStack();
 
-						if ( ns.IsPost7000 ) {
+						if ( ns.StygianAbyss ) {
 							Send( new MobileIncoming( this, this ) );
 							Send( SupportedFeatures.Instantiate( ns ) );
 							Send( new MobileUpdate( this ) );
@@ -7894,7 +7891,7 @@ namespace Server
 							}
 							else
 							{
-								if ( state.IsPost7000 )
+								if ( state.StygianAbyss )
 									state.Send( new MobileIncoming( state.Mobile, this ) );
 								else
 									state.Send( new MobileIncomingOld( state.Mobile, this ) );
@@ -8910,7 +8907,7 @@ namespace Server
 					ns.Send( new MapPatches() );
 					ns.Send( SeasonChange.Instantiate( GetSeason(), true ) );
 
-					if ( ns.IsPost7000 )
+					if ( ns.StygianAbyss )
 						ns.Send( new MobileUpdate( this ) );
 					else
 						ns.Send( new MobileUpdateOld( this ) );
@@ -8931,7 +8928,7 @@ namespace Server
 				ns.Sequence = 0;
 				ClearFastwalkStack();
 
-				if ( ns.IsPost7000 ) {
+				if ( ns.StygianAbyss ) {
 					Send( new MobileIncoming( this, this ) );
 					Send( new MobileUpdate( this ) );
 					CheckLightLevels( true );
@@ -8952,7 +8949,7 @@ namespace Server
 				ns.Sequence = 0;
 				ClearFastwalkStack();
 
-				if ( ns.IsPost7000 ) {
+				if ( ns.StygianAbyss ) {
 					Send( new MobileIncoming( this, this ) );
 					Send( SupportedFeatures.Instantiate( ns ) );
 					Send( new MobileUpdate( this ) );
@@ -8999,7 +8996,7 @@ namespace Server
 				{
 					m_NetState.Sequence = 0;
 
-					if ( m_NetState.IsPost7000 )
+					if ( m_NetState.StygianAbyss )
 						m_NetState.Send( new MobileUpdate( this ) );
 					else
 						m_NetState.Send( new MobileUpdateOld( this ) );
@@ -9060,7 +9057,7 @@ namespace Server
 
 								if( (isTeleport || !inOldRange) && m.m_NetState != null && m.CanSee( this ) )
 								{
-									if ( m.m_NetState.IsPost7000 ) {
+									if ( m.m_NetState.StygianAbyss ) {
 										m.m_NetState.Send( new MobileIncoming( m, this ) );
 
 										if ( m_Poison != null )
@@ -9086,7 +9083,7 @@ namespace Server
 
 								if( !inOldRange && CanSee( m ) )
 								{
-									if ( ourState.IsPost7000 ) {
+									if ( ourState.StygianAbyss ) {
 										ourState.Send( new MobileIncoming( this, m ) );
 
 										if ( m.Poisoned )
@@ -9123,7 +9120,7 @@ namespace Server
 						{
 							if( (isTeleport || !Utility.InUpdateRange( oldLocation, ns.Mobile.Location )) && ns.Mobile.CanSee( this ) )
 							{
-								if ( ns.IsPost7000 ) {
+								if ( ns.StygianAbyss ) {
 									ns.Send( new MobileIncoming( ns.Mobile, this ) );
 
 									if ( m_Poison != null )
@@ -9462,7 +9459,7 @@ namespace Server
 				{
 					if( state.Mobile.CanSee( this ) )
 					{
-						if ( state.IsPost7000 ) {
+						if ( state.StygianAbyss ) {
 							state.Send( new MobileIncoming( state.Mobile, this ) );
 
 							if ( m_Poison != null )
@@ -10011,7 +10008,7 @@ namespace Server
 				{
 					ourState.Sequence = 0;
 
-					if ( ourState.IsPost7000 )
+					if ( ourState.StygianAbyss )
 						ourState.Send( new MobileUpdate( m ) );
 					else
 						ourState.Send( new MobileUpdateOld( m ) );
@@ -10019,7 +10016,7 @@ namespace Server
 					ClearFastwalkStack();
 				}
 
-				if ( ourState.IsPost7000 ) {
+				if ( ourState.StygianAbyss ) {
 					if( sendIncoming )
 						ourState.Send( new MobileIncoming( m, m ) );
 
@@ -10123,7 +10120,7 @@ namespace Server
 
 						if( sendIncoming )
 						{
-							if ( state.IsPost7000 ) {
+							if ( state.StygianAbyss ) {
 								state.Send( new MobileIncoming( beholder, m ) );
 							} else {
 								state.Send( new MobileIncomingOld( beholder, m ) );
@@ -10138,7 +10135,7 @@ namespace Server
 							}
 						}
 
-						if ( state.IsPost7000 ) {
+						if ( state.StygianAbyss ) {
 							if( sendMoving )
 							{
 								int noto = Notoriety.Compute( beholder, m );

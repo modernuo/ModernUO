@@ -602,6 +602,7 @@ namespace Server
 
 		#region Packet caches
 		private Packet m_WorldPacket;
+		private Packet m_WorldPacketSA;
 		private Packet m_RemovePacket;
 
 		private Packet m_OPLPacket;
@@ -1363,7 +1364,7 @@ namespace Server
 				m_Location = location;
 				this.OnLocationChange( oldRealLocation );
 
-				Packet.Release( ref m_WorldPacket );
+				ReleaseWorldPackets();
 
 				List<Item> items = LookupItems();
 
@@ -1431,7 +1432,7 @@ namespace Server
 				m_Location = location;
 				this.OnLocationChange( oldRealLocation );
 
-				Packet.Release( ref m_WorldPacket );
+				ReleaseWorldPackets();
 
 				eable = m_Map.GetClientsInRange( m_Location, GetMaxUpdateRange() );
 
@@ -1724,6 +1725,34 @@ namespace Server
 			}
 		}
 
+		public Packet WorldPacketSA
+		{
+			get
+			{
+				// This needs to be invalidated when any of the following changes:
+				//  - ItemID
+				//  - Amount
+				//  - Location
+				//  - Hue
+				//  - Packet Flags
+				//  - Direction
+
+				if ( m_WorldPacketSA == null )
+				{
+					m_WorldPacketSA = new WorldItemSA( this );
+					m_WorldPacketSA.SetStatic();
+				}
+
+				return m_WorldPacketSA;
+			}
+		}
+
+		public void ReleaseWorldPackets()
+		{
+			Packet.Release( ref m_WorldPacket );
+			Packet.Release( ref m_WorldPacketSA );
+		}
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Visible
 		{
@@ -1733,7 +1762,7 @@ namespace Server
 				if ( GetFlag( ImplFlag.Visible ) != value )
 				{
 					SetFlag( ImplFlag.Visible, value );
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 
 					if ( m_Map != null )
 					{
@@ -1772,7 +1801,7 @@ namespace Server
 				if ( GetFlag( ImplFlag.Movable ) != value )
 				{
 					SetFlag( ImplFlag.Movable, value );
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 					Delta( ItemDelta.Update );
 				}
 			}
@@ -2778,7 +2807,7 @@ namespace Server
 				if ( m_Hue != value )
 				{
 					m_Hue = value;
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 
 					Delta( ItemDelta.Update );
 				}
@@ -2994,7 +3023,7 @@ namespace Server
 							{
 								if ( rootParent.CanSee( this ) && rootParent.InRange( worldLoc, GetUpdateRange( rootParent ) ) )
 								{
-									if ( ns.IsPost6017 )
+									if ( ns.ContainerGridLines )
 										ns.Send( new ContainerContentUpdate6017( this ) );
 									else
 										ns.Send( new ContainerContentUpdate( this ) );
@@ -3031,7 +3060,7 @@ namespace Server
 									{
 										if ( tradeRecip.CanSee( this ) && tradeRecip.InRange( worldLoc, GetUpdateRange( tradeRecip ) ) )
 										{
-											if ( ns.IsPost6017 )
+											if ( ns.ContainerGridLines )
 												ns.Send( new ContainerContentUpdate6017( this ) );
 											else
 												ns.Send( new ContainerContentUpdate( this ) );
@@ -3069,7 +3098,7 @@ namespace Server
 									{
 										if ( mob.CanSee( this ) )
 										{
-											if ( ns.IsPost6017 )
+											if ( ns.ContainerGridLines )
 												ns.Send( new ContainerContentUpdate6017( this ) );
 											else
 												ns.Send( new ContainerContentUpdate( this ) );
@@ -3104,7 +3133,7 @@ namespace Server
 							} else {
 								if ( p == null ) {
 									if ( m_Parent is Item ) {
-										if ( state.IsPost6017 )
+										if ( state.ContainerGridLines )
 											state.Send( new ContainerContentUpdate6017( this ) );
 										else
 											state.Send( new ContainerContentUpdate( this ) );
@@ -3215,8 +3244,8 @@ namespace Server
 
 		public virtual void FreeCache()
 		{
+			ReleaseWorldPackets();
 			Packet.Release( ref m_RemovePacket );
-			Packet.Release( ref m_WorldPacket );
 			Packet.Release( ref m_OPLPacket );
 			Packet.Release( ref m_PropertyList );
 		}
@@ -3473,7 +3502,7 @@ namespace Server
 							}
 
 							m_Location = value;
-							Packet.Release( ref m_WorldPacket );
+							ReleaseWorldPackets();
 
 							SetLastMoved();
 
@@ -3494,14 +3523,14 @@ namespace Server
 						else if ( m_Parent is Item )
 						{
 							m_Location = value;
-							Packet.Release( ref m_WorldPacket );
+							ReleaseWorldPackets();
 
 							Delta( ItemDelta.Update );
 						}
 						else
 						{
 							m_Location = value;
-							Packet.Release( ref m_WorldPacket );
+							ReleaseWorldPackets();
 						}
 
 						if ( m_Parent == null )
@@ -3510,7 +3539,7 @@ namespace Server
 					else
 					{
 						m_Location = value;
-						Packet.Release( ref m_WorldPacket );
+						ReleaseWorldPackets();
 					}
 
 					this.OnLocationChange( oldLocation );
@@ -3554,7 +3583,7 @@ namespace Server
 					int oldPileWeight = this.PileWeight;
 
 					m_ItemID = value;
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 
 					int newPileWeight = this.PileWeight;
 
@@ -3636,7 +3665,7 @@ namespace Server
 				if ( (LightType)m_Direction != value )
 				{
 					m_Direction = (Direction)value;
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 
 					Delta( ItemDelta.Update );
 				}
@@ -3655,7 +3684,7 @@ namespace Server
 				if ( m_Direction != value )
 				{
 					m_Direction = value;
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 
 					Delta( ItemDelta.Update );
 				}
@@ -3678,7 +3707,7 @@ namespace Server
 					int oldPileWeight = this.PileWeight;
 
 					m_Amount = value;
-					Packet.Release( ref m_WorldPacket );
+					ReleaseWorldPackets();
 
 					int newPileWeight = this.PileWeight;
 
@@ -4455,7 +4484,7 @@ namespace Server
 
 				InvalidateProperties();
 
-				Packet.Release( ref m_WorldPacket );
+				ReleaseWorldPackets();
 
 				Delta( ItemDelta.Update );
 			}

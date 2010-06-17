@@ -36,7 +36,6 @@ namespace Server.Spells.Bushido
 			if ( from.NetState == null )
 				return false;
 
-			//return ( (from.NetState.Flags & 0x10) != 0 );
 			return from.NetState.SupportsExpansion( Expansion.SE );
 		}
 

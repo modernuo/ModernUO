@@ -321,14 +321,14 @@ namespace Server.Items
 				}
 				else
 				{
-					int flags = mobile.NetState == null ? 0 : mobile.NetState.Flags;
+					ClientFlags flags = mobile.NetState == null ? ClientFlags.None : mobile.NetState.Flags;
 					bool young = mobile is PlayerMobile ? ((PlayerMobile)mobile).Young : false;
 
-					if ( Core.SE && (flags & 0x10) != 0 )
+					if ( Core.SE && (flags & ClientFlags.Tokuno) != 0 )
 						checkLists = young ? PMList.SEListsYoung : PMList.SELists;
-					else if ( Core.AOS && (flags & 0x8) != 0 )
+					else if ( Core.AOS && (flags & ClientFlags.Malas) != 0 )
 						checkLists = young ? PMList.AOSListsYoung : PMList.AOSLists;
-					else if ( (flags & 0x4) != 0 )
+					else if ( (flags & ClientFlags.Ilshenar) != 0 )
 						checkLists = young ? PMList.LBRListsYoung : PMList.LBRLists;
 					else
 						checkLists = young ? PMList.UORListsYoung : PMList.UORLists;

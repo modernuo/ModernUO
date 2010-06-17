@@ -166,9 +166,12 @@ namespace Server.Items
 			if ( !from.Player )
 				return true;
 
-			int flags = (from.NetState == null) ? 0 : from.NetState.Flags;
+			NetState state = from.NetState;
 
-			if( RequiresSE && (flags & 0x10) == 0 )	//TODO: Convert to expansionInfo
+			if ( state == null )
+				return false;
+
+			if( RequiresSE && state.SupportsExpansion( Expansion.SE ) )
 			{
 				from.SendLocalizedMessage( 1063456 ); // You must upgrade to Samurai Empire in order to use that ability.
 				return false;

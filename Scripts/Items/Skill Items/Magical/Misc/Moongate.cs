@@ -112,7 +112,7 @@ namespace Server.Items
 
 		public virtual void UseGate( Mobile m )
 		{
-			int flags = m.NetState == null ? 0 : m.NetState.Flags;
+			ClientFlags flags = m.NetState == null ? ClientFlags.None : m.NetState.Flags;
 
 			if ( Factions.Sigil.ExistsOn( m ) )
 			{
@@ -122,7 +122,7 @@ namespace Server.Items
 			{
 				m.SendLocalizedMessage( 1049543 ); // You decide against traveling to Felucca while you are still young.
 			}
-			else if ( (m.Kills >= 5 && m_TargetMap != Map.Felucca) || ( m_TargetMap == Map.Tokuno && (flags & 0x10) == 0 ) || ( m_TargetMap == Map.Malas && (flags & 0x8) == 0 ) || ( m_TargetMap == Map.Ilshenar && (flags & 0x4) == 0 ) )
+			else if ( (m.Kills >= 5 && m_TargetMap != Map.Felucca) || ( m_TargetMap == Map.Tokuno && (flags & ClientFlags.Tokuno) == 0 ) || ( m_TargetMap == Map.Malas && (flags & ClientFlags.Malas) == 0 ) || ( m_TargetMap == Map.Ilshenar && (flags & ClientFlags.Ilshenar) == 0 ) )
 			{
 				m.SendLocalizedMessage( 1019004 ); // You are not allowed to travel there.
 			}
