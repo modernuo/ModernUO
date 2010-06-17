@@ -35,7 +35,7 @@ namespace Server
 		SA
 	}
 
-	public enum	ClientFlags
+	public enum ClientFlags
 	{
 		None		= 0x00000000,
 		Felucca		= 0x00000001,
@@ -49,7 +49,7 @@ namespace Server
 		UOTD		= 0x00000100
 	}
 
-	public enum	FeatureFlags
+	public enum FeatureFlags
 	{
 		None					= 0x00000000,
 		T2A						= 0x00000001,
