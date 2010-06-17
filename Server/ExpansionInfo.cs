@@ -22,7 +22,7 @@ using System;
 
 namespace Server
 {
-	public enum	Expansion
+	public enum Expansion
 	{
 		None,
 		T2A,
