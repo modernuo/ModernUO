@@ -43,7 +43,9 @@ namespace Server.Reflection
 			return m_MethodHandler.Invoke( target, parameters );
 		}
 
-		public IAsyncResult BeginInvoke( object target, object[] parameters, AsyncCallback callback, object obj )
+		// Apparently this doesn't work in Mono atm, which I find it weird because BeginInvoke requires 4 arguments not '2'
+		// Error: No overload for method `BeginInvoke' takes `2' arguments
+		/*public IAsyncResult BeginInvoke( object target, object[] parameters, AsyncCallback callback, object obj )
 		{
 			if ( m_MethodEmpty )
 				return null;
@@ -57,6 +59,6 @@ namespace Server.Reflection
 				return null;
 
 			return m_MethodHandler.EndInvoke( asyncResult );
-		}
+		}*/
 	}
 }
