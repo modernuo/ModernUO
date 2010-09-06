@@ -5,16 +5,17 @@ using Server.Mobiles;
 
 namespace Server.Multis
 {	
-	public class RatCamp : BaseCamp
+	public class BrigandCamp : BaseCamp
 	{
-		public virtual Mobile Ratmen{ get{ return new Ratman(); } }
+		public virtual Mobile Brigands{ get{ return new Brigand(); } }
+		public virtual Mobile Executioners{ get{ return new Executioner(); } }
 		
 		private Mobile m_Prisoner;
 		
 		private int m_SpawnRange;
 		
 		[Constructable]
-		public RatCamp() : base( 0x10ee, 0 ) // dummy garbage at center
+		public BrigandCamp() : base( 0x10ee, 0 ) // dummy garbage at center
 		{
 		}
 
@@ -24,36 +25,36 @@ namespace Server.Multis
 			//BaseEscortable be;
 
             Visible = false;
-            DecayDelay = TimeSpan.FromMinutes(5.0);
+            DecayDelay = TimeSpan.FromMinutes( 5.0 );
+
             AddItem(new Static(0x10ee), 0, 0, 0);
-            AddItem(new Static(0xfac), 0, 6, 0);
+            AddItem(new Static(0xfac), 0, 7, 0);
 			
 			switch ( Utility.Random( 3 ) )
 			{
 				case 0:
 				{
-					AddItem( new Item( 0xDE3 ), 0, 6, 0 ); // Campfire
-					AddItem( new Item( 0x974 ), 0, 6, 1 ); // Cauldron
+					AddItem( new Item( 0xDE3 ), 0, 7, 0 ); // Campfire
+					AddItem( new Item( 0x974 ), 0, 7, 1 ); // Cauldron
 					break;
 				}
 				case 1:
 				{
-					AddItem( new Item( 0x1E95 ), 0, 6, 1 ); // Rabbit on a spit
+					AddItem( new Item( 0x1E95 ), 0, 7, 1 ); // Rabbit on a spit
 					break;
 				}
                 default:
 				{
-					AddItem( new Item( 0x1E94 ), 0, 6, 1 ); // Chicken on a spit
+					AddItem( new Item( 0x1E94 ), 0, 7, 1 ); // Chicken on a spit
 					break;
 				}
 			}
-            AddItem(new Item(0x41F), 5, 5, 0); // Gruesome Standart South
 
             AddCampChests();
 			
 			for ( int i = 0; i < 4; i ++ )
 			{				
-				AddMobile( Ratmen, 6, Utility.RandomMinMax( -7, 7 ), Utility.RandomMinMax( -7, 7 ), 0 );
+				AddMobile( Brigands, 6, Utility.RandomMinMax( -7, 7 ), Utility.RandomMinMax( -7, 7 ), 0 );
 			}
 			
 			switch ( Utility.Random( 2 ) )
@@ -130,7 +131,7 @@ namespace Server.Multis
         }
 
         // Don't refresh decay timer
-        public override void OnEnter(Mobile m)
+		public override void OnEnter( Mobile m )
 		{
 			if ( m.Player && m_Prisoner != null && m_Prisoner.CantWalk )
 			{
@@ -145,7 +146,7 @@ namespace Server.Multis
 					case 4: number = 502265; break; // Help! Please!
 					case 5: number = 502266; break; // Aaah! Help me!
 					case 6: number = 502267; break; // Go and get some help!
-                    default: number = 502268; break; // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.	
+					default: number = 502268; break; // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.	
 				}
 				m_Prisoner.Yell( number );
 			}
@@ -156,7 +157,7 @@ namespace Server.Multis
         {
         }
 
-		public RatCamp( Serial serial ) : base( serial )
+		public BrigandCamp( Serial serial ) : base( serial )
 		{
 		}
 		
@@ -172,7 +173,7 @@ namespace Server.Multis
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 0 ); // version
 
 			writer.Write( m_Prisoner );
 		}
@@ -185,15 +186,9 @@ namespace Server.Multis
 
 			switch ( version )
 			{
-				case 1:
-				{
-					m_Prisoner = reader.ReadMobile();
-					break;
-				}
 				case 0:
 				{
 					m_Prisoner = reader.ReadMobile();
-					reader.ReadItem();
 					break;
 				}
 			}

@@ -4,17 +4,17 @@ using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Multis
-{	
-	public class RatCamp : BaseCamp
+{   
+    public class LizardmenCamp : BaseCamp
 	{
-		public virtual Mobile Ratmen{ get{ return new Ratman(); } }
+		public virtual Mobile Lizardmen{ get{ return new Lizardman(); } }
 		
 		private Mobile m_Prisoner;
 		
 		private int m_SpawnRange;
 		
 		[Constructable]
-		public RatCamp() : base( 0x10ee, 0 ) // dummy garbage at center
+		public LizardmenCamp() : base( 0x10ee , 0 ) // dummy garbage at center
 		{
 		}
 
@@ -24,36 +24,36 @@ namespace Server.Multis
 			//BaseEscortable be;
 
             Visible = false;
-            DecayDelay = TimeSpan.FromMinutes(5.0);
+            DecayDelay = TimeSpan.FromMinutes( 5.0 );
             AddItem(new Static(0x10ee), 0, 0, 0);
-            AddItem(new Static(0xfac), 0, 6, 0);
-			
+            AddItem(new Static(0xfac), 0, 7, 0);
+
 			switch ( Utility.Random( 3 ) )
 			{
 				case 0:
 				{
-					AddItem( new Item( 0xDE3 ), 0, 6, 0 ); // Campfire
-					AddItem( new Item( 0x974 ), 0, 6, 1 ); // Cauldron
+					AddItem( new Item( 0xDE3 ), 0, 7, 0 ); // Campfire
+                    AddItem( new Item( 0x974 ), 0, 7, 1); // Cauldron
 					break;
 				}
 				case 1:
 				{
-					AddItem( new Item( 0x1E95 ), 0, 6, 1 ); // Rabbit on a spit
+                    AddItem( new Item( 0x1E95 ), 0, 7, 1); // Rabbit on a spit
 					break;
 				}
                 default:
 				{
-					AddItem( new Item( 0x1E94 ), 0, 6, 1 ); // Chicken on a spit
+                    AddItem( new Item( 0x1E94 ), 0, 7, 1); // Chicken on a spit
 					break;
 				}
 			}
-            AddItem(new Item(0x41F), 5, 5, 0); // Gruesome Standart South
+            AddItem(new Item(0x41F), 4, 4, 0); // Gruesome Standart South
 
             AddCampChests();
-			
+
 			for ( int i = 0; i < 4; i ++ )
 			{				
-				AddMobile( Ratmen, 6, Utility.RandomMinMax( -7, 7 ), Utility.RandomMinMax( -7, 7 ), 0 );
+				AddMobile( Lizardmen, 6, Utility.RandomMinMax( -7, 7 ), Utility.RandomMinMax( -7, 7 ), 0 );
 			}
 			
 			switch ( Utility.Random( 2 ) )
@@ -75,58 +75,58 @@ namespace Server.Multis
 
         private void AddCampChests()
         {
-            LockableContainer chest = null;
-
-            switch (Utility.Random(3))
-            {
-                case 0: chest = new MetalChest(); break;
-                case 1: chest = new MetalGoldenChest(); break;
+   			LockableContainer chest = null;
+			
+			switch ( Utility.Random( 3 ) )
+			{
+				case 0: chest = new MetalChest(); break;
+				case 1: chest = new MetalGoldenChest(); break;
                 default: chest = new WoodenChest(); break;
-            }
+			}
 
             chest.LiftOverride = true;
 
-            TreasureMapChest.Fill(chest, 1);
+			TreasureMapChest.Fill( chest, 1 );
+						
+			AddItem( chest, 2, -2, 0 );
+			
+			LockableContainer crates = null;
 
-            AddItem(chest, -2, -2, 0);
-
-            LockableContainer crates = null;
-
-            switch (Utility.Random(4))
-            {
-                case 0: crates = new SmallCrate(); break;
-                case 1: crates = new MediumCrate(); break;
-                case 2: crates = new LargeCrate(); break;
+			switch ( Utility.Random( 4 ) )
+			{
+				case 0: crates = new SmallCrate(); break;
+				case 1: crates = new MediumCrate(); break;
+				case 2: crates = new LargeCrate(); break;
                 default: crates = new LockableBarrel(); break;
-            }
-
-            crates.TrapType = TrapType.ExplosionTrap;
-            crates.TrapPower = Utility.RandomMinMax(30, 40);
-            crates.TrapLevel = 2;
-
-            crates.RequiredSkill = 76;
-            crates.LockLevel = 66;
-            crates.MaxLockLevel = 116;
-            crates.Locked = true;
-
-            crates.DropItem(new Gold(Utility.RandomMinMax(100, 400)));
-            crates.DropItem(new Arrow(10));
-            crates.DropItem(new Bolt(10));
+			}
+			
+			crates.TrapType = TrapType.ExplosionTrap;
+			crates.TrapPower = Utility.RandomMinMax( 30, 40 );
+			crates.TrapLevel = 2;
+			
+			crates.RequiredSkill = 76;
+			crates.LockLevel = 66;
+			crates.MaxLockLevel = 116;
+			crates.Locked = true;
+			
+			crates.DropItem( new Gold( Utility.RandomMinMax( 100, 400 ) ) );
+			crates.DropItem( new Arrow( 10 ) );
+			crates.DropItem( new Bolt( 10 ) );
 
             crates.LiftOverride = true;
-
-            if (Utility.RandomDouble() < 0.8)
-            {
-                switch (Utility.Random(4))
-                {
-                    case 0: crates.DropItem(new LesserCurePotion()); break;
-                    case 1: crates.DropItem(new LesserExplosionPotion()); break;
-                    case 2: crates.DropItem(new LesserHealPotion()); break;
+			
+			if ( Utility.RandomDouble() < 0.8 )
+			{
+				switch ( Utility.Random( 4 ) )
+				{
+					case 0: crates.DropItem( new LesserCurePotion() ); break;
+					case 1: crates.DropItem( new LesserExplosionPotion() ); break;
+					case 2: crates.DropItem( new LesserHealPotion() ); break;
                     default: crates.DropItem(new LesserPoisonPotion()); break;
-                }
-            }
-
-            AddItem(crates, 2, 2, 0);
+				}
+			}
+			
+			AddItem( crates, -2, 2, 0 );
         }
 
         // Don't refresh decay timer
@@ -156,7 +156,7 @@ namespace Server.Multis
         {
         }
 
-		public RatCamp( Serial serial ) : base( serial )
+		public LizardmenCamp( Serial serial ) : base( serial )
 		{
 		}
 		
@@ -172,7 +172,7 @@ namespace Server.Multis
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 0 ); // version
 
 			writer.Write( m_Prisoner );
 		}
@@ -185,15 +185,9 @@ namespace Server.Multis
 
 			switch ( version )
 			{
-				case 1:
-				{
-					m_Prisoner = reader.ReadMobile();
-					break;
-				}
 				case 0:
 				{
 					m_Prisoner = reader.ReadMobile();
-					reader.ReadItem();
 					break;
 				}
 			}

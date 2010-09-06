@@ -95,7 +95,7 @@ namespace Server.Items
 			get
 			{ 
 				if ( m_Held == 0 )
-					return 1041641;
+					return 1041084; // A specially lined keg for potions.
 				else if( m_Type >= PotionEffect.Conflagration )
 					return 1072658 + (int) m_Type - (int) PotionEffect.Conflagration;
 				else
