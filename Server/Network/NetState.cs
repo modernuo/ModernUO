@@ -263,13 +263,13 @@ namespace Server.Network {
 
 		public bool IsUOTDClient {
 			get {
-				return ( (m_Flags & ClientFlags.UOTD) != 0 || m_Version.Type == ClientType.UOTD );
+				return ( (m_Flags & ClientFlags.UOTD) != 0 || ( m_Version != null && m_Version.Type == ClientType.UOTD ) );
 			}
 		}
 
 		public bool IsSAClient {
 			get {
-				return ( m_Version.Type == ClientType.SA );
+				return ( m_Version != null && m_Version.Type == ClientType.SA );
 			}
 		}
 
