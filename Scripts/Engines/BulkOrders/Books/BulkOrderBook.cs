@@ -17,6 +17,7 @@ namespace Server.Engines.BulkOrders
 		private BOBFilter m_Filter;
 		private string m_BookName;
 		private SecureLevel m_Level;
+		private int m_ItemCount;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string BookName
@@ -40,6 +41,12 @@ namespace Server.Engines.BulkOrders
 		public BOBFilter Filter
 		{
 			get{ return m_Filter; }
+		}
+		
+		public int ItemCount
+		{
+			get{ return m_ItemCount; }
+			set{ m_ItemCount = value; }
 		}
 
 		[Constructable]
@@ -94,17 +101,29 @@ namespace Server.Engines.BulkOrders
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( dropped is LargeBOD )
+			if ( dropped is LargeBOD || dropped is SmallBOD )
 			{
 				if ( !IsChildOf( from.Backpack ) )
 				{
 					from.SendLocalizedMessage( 1062385 ); // You must have the book in your backpack to add deeds to it.
 					return false;
 				}
+				else if ( !from.Backpack.CheckHold( from, dropped, true, true ) )
+					return false;
 				else if ( m_Entries.Count < 500 )
 				{
-					m_Entries.Add( new BOBLargeEntry( (LargeBOD)dropped ) );
+					if ( dropped is LargeBOD )
+						m_Entries.Add( new BOBLargeEntry( (LargeBOD)dropped ) );
+					else if ( dropped is SmallBOD ) // Sanity
+						m_Entries.Add( new BOBSmallEntry( (SmallBOD)dropped ) );
+					
 					InvalidateProperties();
+					
+					if ( m_Entries.Count / 5 > m_ItemCount )
+					{
+						m_ItemCount++;
+						InvalidateItems();
+					}
 
 					from.PlaySound(0x42);
 					from.SendLocalizedMessage( 1062386 ); // Deed added to book.
@@ -113,33 +132,7 @@ namespace Server.Engines.BulkOrders
 						from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
 
 					dropped.Delete();
-					return true;
-				}
-				else
-				{
-					from.SendLocalizedMessage( 1062387 ); // The book is full of deeds.
-					return false;
-				}
-			}
-			else if ( dropped is SmallBOD )
-			{
-				if ( !IsChildOf( from.Backpack ) )
-				{
-					from.SendLocalizedMessage( 1062385 ); // You must have the book in your backpack to add deeds to it.
-					return false;
-				}
-				else if ( m_Entries.Count < 500 )
-				{
-					m_Entries.Add( new BOBSmallEntry( (SmallBOD)dropped ) );
-					InvalidateProperties();
-
-					from.PlaySound(0x42);
-					from.SendLocalizedMessage( 1062386 ); // Deed added to book.
-
-					if ( from is PlayerMobile )
-						from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
-
-					dropped.Delete();
+					
 					return true;
 				}
 				else
@@ -152,6 +145,38 @@ namespace Server.Engines.BulkOrders
 			from.SendLocalizedMessage( 1062388 ); // That is not a bulk order deed.
 			return false;
 		}
+		
+		public override int GetTotal( TotalType type )
+		{
+			int total = base.GetTotal( type );
+			
+			if ( type == TotalType.Items )
+				total = m_ItemCount;
+
+			return total;
+		}
+		
+		public void InvalidateItems()
+		{
+			if ( RootParent is Mobile )
+			{
+				Mobile m = (Mobile) RootParent;
+
+				m.UpdateTotals();
+				InvalidateContainers( Parent );
+			}
+		}
+		
+		public void InvalidateContainers( object parent )
+		{
+			if ( parent != null && parent is Container )
+			{
+				Container c = (Container)parent;
+				
+				c.InvalidateProperties();
+				InvalidateContainers( c.Parent );
+			}
+		}
 
 		public BulkOrderBook( Serial serial ) : base( serial )
 		{
@@ -161,7 +186,9 @@ namespace Server.Engines.BulkOrders
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
+			
+			writer.Write( (int) m_ItemCount );
 
 			writer.Write( (int) m_Level );
 
@@ -200,6 +227,11 @@ namespace Server.Engines.BulkOrders
 
 			switch ( version )
 			{
+				case 2:
+				{
+					m_ItemCount = reader.ReadInt();
+					goto case 1;
+				}
 				case 1:
 				{
 					m_Level = (SecureLevel)reader.ReadInt();

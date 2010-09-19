@@ -24,6 +24,16 @@ namespace Server.Items
 			{
 				BaseClothing item = (BaseClothing)target;
 
+				if ( item is IArcaneEquip )
+				{
+					IArcaneEquip eq = (IArcaneEquip)item;
+					if ( eq.IsArcane )
+					{
+						from.SendLocalizedMessage( 1005019 ); // This bless deed is for Clothes only.
+						return;
+					}
+				}
+
 				if ( item.LootType == LootType.Blessed || item.BlessedFor == from || (Mobile.InsuranceEnabled && item.Insured) ) // Check if its already newbied (blessed)
 				{
 					from.SendLocalizedMessage( 1045113 ); // That item is already blessed

@@ -331,7 +331,8 @@ namespace Server.Gumps
 								m_Book.DropRune( from, e, index );
 
 								from.CloseGump( typeof( RunebookGump ) );
-								from.SendGump( new RunebookGump( from, m_Book ) );
+								if ( !Core.ML )
+									from.SendGump( new RunebookGump( from, m_Book ) );
 							}
 							else
 							{

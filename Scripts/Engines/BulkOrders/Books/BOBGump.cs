@@ -336,6 +336,13 @@ namespace Server.Engines.BulkOrders
 										m_From.SendLocalizedMessage(1045152); // The bulk order deed has been placed in your backpack.
 										m_Book.Entries.Remove(obj);
 										m_Book.InvalidateProperties();
+										
+										if ( m_Book.Entries.Count / 5 < m_Book.ItemCount )
+										{
+											m_Book.ItemCount--;
+											m_Book.InvalidateItems();
+										}
+										
 										if (m_Book.Entries.Count > 0)
 										{
 											m_Page = GetPageForIndex(index, sizeOfDroppedBod);

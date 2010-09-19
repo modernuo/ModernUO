@@ -27,6 +27,7 @@ namespace Server.SkillHandlers
 			from.RevealingAction();
 			from.SendLocalizedMessage( 1049541 ); // Choose the target for your song of discordance.
 			from.Target = new DiscordanceTarget( from, instrument );
+			from.NextSkillTime = DateTime.Now + TimeSpan.FromHours( 6.0 );
 		}
 
 		private class DiscordanceInfo
@@ -34,15 +35,17 @@ namespace Server.SkillHandlers
 			public Mobile m_From;
 			public Mobile m_Creature;
 			public DateTime m_EndTime;
+			public bool m_Ending;
 			public Timer m_Timer;
 			public int m_Effect;
 			public ArrayList m_Mods;
 
-			public DiscordanceInfo( Mobile from, Mobile creature, TimeSpan duration, int effect, ArrayList mods )
+			public DiscordanceInfo( Mobile from, Mobile creature, int effect, ArrayList mods )
 			{
 				m_From = from;
 				m_Creature = creature;
-				m_EndTime = DateTime.Now + duration;
+				m_EndTime = DateTime.Now;
+				m_Ending = false;
 				m_Effect = effect;
 				m_Mods = mods;
 
@@ -93,13 +96,26 @@ namespace Server.SkillHandlers
 			return true;
 		}
 
-		private static void ProcessDiscordance( object state )
+		private static void ProcessDiscordance( DiscordanceInfo info )
 		{
-			DiscordanceInfo info = (DiscordanceInfo)state;
 			Mobile from = info.m_From;
 			Mobile targ = info.m_Creature;
+			bool ends = false;
 
-			if ( DateTime.Now >= info.m_EndTime || targ.Deleted || from.Map != targ.Map || targ.GetDistanceToSqrt( from ) > 16 )
+			// According to uoherald bard must remain alive, visible, and 
+			// within range of the target or the effect ends in 15 seconds.
+			if ( !targ.Alive || targ.Deleted || !from.Alive || from.Hidden )
+				ends = true;
+			else
+			{
+				int range = (int) targ.GetDistanceToSqrt( from );
+				int maxRange = BaseInstrument.GetBardRange( from, SkillName.Discordance );
+
+				if ( from.Map != targ.Map || range > maxRange )
+					ends = true;
+			}
+
+			if ( ends && info.m_Ending && info.m_EndTime < DateTime.Now )
 			{
 				if ( info.m_Timer != null )
 					info.m_Timer.Stop();
@@ -109,6 +125,17 @@ namespace Server.SkillHandlers
 			}
 			else
 			{
+				if ( ends && !info.m_Ending )
+				{
+					info.m_Ending = true;
+					info.m_EndTime = DateTime.Now + TimeSpan.FromSeconds( 15 );
+				}
+				else if ( !ends )
+				{
+					info.m_Ending = false;
+					info.m_EndTime = DateTime.Now;
+				}
+
 				targ.FixedEffect( 0x376A, 1, 32 );
 			}
 		}
@@ -125,6 +152,7 @@ namespace Server.SkillHandlers
 			protected override void OnTarget( Mobile from, object target )
 			{
 				from.RevealingAction();
+				from.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 1.0 );
 
 				if ( !m_Instrument.IsChildOf( from.Backpack ) )
 				{
@@ -138,13 +166,12 @@ namespace Server.SkillHandlers
 					{
 						from.SendLocalizedMessage( 1049535 ); // A song of discord would have no effect on that.
 					}
-                    else if ( m_Table.Contains( targ ) ) //Already discorded
-                    {
-                        from.SendLocalizedMessage( 1049537 );// Your target is already in discord.
-                    }
+					else if ( m_Table.Contains( targ ) ) //Already discorded
+					{
+						from.SendLocalizedMessage( 1049537 );// Your target is already in discord.
+					}
 					else if ( !targ.Player )
 					{
-						TimeSpan len = TimeSpan.FromSeconds( from.Skills[SkillName.Discordance].Value * 2 );
 						double diff = m_Instrument.GetDifficultyFor( targ ) - 10.0;
 						double music = from.Skills[SkillName.Musicianship].Value;
 
@@ -209,8 +236,8 @@ namespace Server.SkillHandlers
 								}
 							}
 
-							DiscordanceInfo info = new DiscordanceInfo( from, targ, len, Math.Abs( effect ), mods );
-							info.m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1.25 ), new TimerStateCallback( ProcessDiscordance ), info );
+							DiscordanceInfo info = new DiscordanceInfo( from, targ, Math.Abs( effect ), mods );
+							info.m_Timer = Timer.DelayCall<DiscordanceInfo>( TimeSpan.Zero, TimeSpan.FromSeconds( 1.25 ), new TimerStateCallback<DiscordanceInfo>( ProcessDiscordance ), info );
 
 							m_Table[targ] = info;
 						}
@@ -220,6 +247,8 @@ namespace Server.SkillHandlers
 							m_Instrument.PlayInstrumentBadly( from );
 							m_Instrument.ConsumeUse( from );
 						}
+
+						from.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 12.0 );
 					}
 					else
 					{

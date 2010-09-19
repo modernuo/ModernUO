@@ -304,8 +304,7 @@ namespace Server.Multis
 			}
 			
 
-			if ( m_LockDowns != null )
-				fromLockdowns += m_LockDowns.Count;
+			fromLockdowns += GetLockdowns();
 
 			if ( !NewVendorSystem )
 			{
@@ -839,8 +838,7 @@ namespace Server.Multis
 		{
 			int v = 0;
 
-			if ( m_LockDowns != null )
-				v += m_LockDowns.Count;
+			v += GetLockdowns();
 
 			if ( m_Secures != null )
 				v += m_Secures.Count;
@@ -2773,14 +2771,36 @@ namespace Server.Multis
 		public ArrayList Bans{ get{ return m_Bans; } set{ m_Bans = value; } }
 		public ArrayList Doors{ get{ return m_Doors; } set{ m_Doors = value; } }
 
+		public int GetLockdowns()
+		{
+			int count = 0;
+
+			if ( m_LockDowns != null )
+			{
+				for ( int i = 0; i < m_LockDowns.Count; ++i )
+				{
+					if ( m_LockDowns[i] is Item )
+					{
+						Item item = (Item)m_LockDowns[i];
+						
+						if ( !(item is Container) )
+							count += item.TotalItems;
+					}
+					
+					count++;
+				}
+			}
+			
+			return count;
+		}
+		
 		public int LockDownCount
 		{
 			get
 			{
 				int count = 0;
 
-				if ( m_LockDowns != null )
-					count += m_LockDowns.Count;
+				count += GetLockdowns();
 
 				if ( m_Secures != null )
 				{

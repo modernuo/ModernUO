@@ -32,6 +32,13 @@ namespace Server.Engines.Craft
 			if ( !(item is BaseArmor) && !(item is BaseWeapon) )
 				return EnhanceResult.BadItem;
 
+			if ( item is IArcaneEquip )
+			{
+				IArcaneEquip eq = (IArcaneEquip)item;
+				if ( eq.IsArcane )
+					return EnhanceResult.BadItem;
+			}
+
 			if ( CraftResources.IsStandard( resource ) )
 				return EnhanceResult.BadResource;
 			

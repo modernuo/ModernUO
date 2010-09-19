@@ -62,11 +62,30 @@ namespace Server.Items
 			if ( obj is IArcaneEquip && obj is Item )
 			{
 				Item item = (Item)obj;
+				CraftResource resource = CraftResource.None;
+
+				if( item is BaseClothing )
+					resource = ((BaseClothing)item).Resource;
+				else if( item is BaseArmor )
+					resource = ((BaseArmor)item).Resource;
+				else if( item is BaseWeapon ) // Sanity, weapons cannot recieve gems...
+					resource = ((BaseWeapon)item).Resource;
+
 				IArcaneEquip eq = (IArcaneEquip)obj;
 
 				if ( !item.IsChildOf( from.Backpack ) )
 				{
 					from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
+					return;
+				}
+				else if ( item.LootType == LootType.Blessed )
+				{
+					from.SendMessage( "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves." );
+					return;
+				}
+				else if ( resource != CraftResource.None && resource != CraftResource.RegularLeather )
+				{
+					from.SendLocalizedMessage( 1049690 ); // Arcane gems can not be used on that type of leather.
 					return;
 				}
 
@@ -108,11 +127,21 @@ namespace Server.Items
 					if ( isExceptional )
 					{
 						if ( item is BaseClothing )
+						{
+							((BaseClothing)item).Quality = ClothingQuality.Regular;
 							((BaseClothing)item).Crafter = from;
+						}
 						else if ( item is BaseArmor )
+						{
+							((BaseArmor)item).Quality = ArmorQuality.Regular;
 							((BaseArmor)item).Crafter = from;
-						else if ( item is BaseWeapon )
+							((BaseArmor)item).PhysicalBonus = ((BaseArmor)item).FireBonus = ((BaseArmor)item).ColdBonus = ((BaseArmor)item).PoisonBonus = ((BaseArmor)item).EnergyBonus = 0; // Is there a method to remove bonuses?
+						}
+						else if ( item is BaseWeapon ) // Sanity, weapons cannot recieve gems...
+						{
+							((BaseWeapon)item).Quality = WeaponQuality.Regular;
 							((BaseWeapon)item).Crafter = from;
+						}
 
 						eq.CurArcaneCharges = eq.MaxArcaneCharges = charges;
 
@@ -135,7 +164,7 @@ namespace Server.Items
 			}
 			else
 			{
-				from.SendMessage( "You cannot use the gem on that." );
+				from.SendMessage( "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves." );
 			}
 		}
 
@@ -186,8 +215,6 @@ namespace Server.Items
 
 			return true;
 		}
-
-		
 
 		public override void Serialize( GenericWriter writer )
 		{

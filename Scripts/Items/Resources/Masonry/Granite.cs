@@ -19,7 +19,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 
 			writer.Write( (int) m_Resource );
 		}
@@ -32,22 +32,27 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 1:
 				case 0:
 				{
 					m_Resource = (CraftResource)reader.ReadInt();
 					break;
 				}
 			}
+			
+			if ( version < 1 )
+				Stackable = Core.ML;
 		}
 
 		public override double DefaultWeight
 		{
-			get { return 10.0; }
+			get { return Core.ML ? 1.0 : 10.0; } // Pub 57
 		}
 
 		public BaseGranite( CraftResource resource ) : base( 0x1779 )
 		{
 			Hue = CraftResources.GetHue( resource );
+			Stackable = Core.ML;
 
 			m_Resource = resource;
 		}
@@ -71,7 +76,6 @@ namespace Server.Items
 				else
 					list.Add( CraftResources.GetName( m_Resource ) );
 			}
-			Stackable = Core.ML;
 		}
 	}
 

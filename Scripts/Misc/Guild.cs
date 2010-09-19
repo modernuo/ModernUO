@@ -697,7 +697,7 @@ namespace Server.Guilds
 
 		public static readonly int RegistrationFee = 25000;
 		public static readonly int AbbrevLimit = 4;
-		public static readonly int NameLimit = 20;
+		public static readonly int NameLimit = 40;
 		public static readonly int MajorityPercentage = 66;
 		public static readonly TimeSpan InactiveTime = TimeSpan.FromDays( 30 );
 

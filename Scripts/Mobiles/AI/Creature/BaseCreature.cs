@@ -1365,7 +1365,7 @@ namespace Server.Mobiles
 
 				if ( wool != 0 )
 				{
-					corpse.AddCarvedItem( new Wool( wool ), from );
+					corpse.AddCarvedItem( new TaintedWool( wool ), from );
 					from.SendLocalizedMessage( 500483 ); // You shear it, and the wool is now on the corpse.
 				}
 
@@ -4444,6 +4444,11 @@ namespace Server.Mobiles
 				{
 					int totalFame = Fame / 100;
 					int totalKarma = -Karma / 100;
+					if (Map == Map.Felucca)
+					{
+						totalFame += ((totalFame/10)*3);
+						totalKarma += ((totalKarma/10)*3);
+					}
 
 					List<DamageStore> list = GetLootingRights( this.DamageEntries, this.HitsMax );
 					List<Mobile> titles = new List<Mobile>();

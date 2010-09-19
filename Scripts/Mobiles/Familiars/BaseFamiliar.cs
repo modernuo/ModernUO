@@ -28,7 +28,7 @@ namespace Server.Mobiles
 			if ( master == null )
 				return;
 
-			if ( master.Deleted || master.Map != this.Map || !InRange( master.Location, 20 ) )
+			if ( master.Deleted )
 			{
 				DropPackContents();
 				EndRelease( null );
