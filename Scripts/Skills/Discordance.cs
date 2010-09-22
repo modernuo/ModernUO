@@ -27,7 +27,7 @@ namespace Server.SkillHandlers
 			from.RevealingAction();
 			from.SendLocalizedMessage( 1049541 ); // Choose the target for your song of discordance.
 			from.Target = new DiscordanceTarget( from, instrument );
-			from.NextSkillTime = DateTime.Now + TimeSpan.FromHours( 6.0 );
+			from.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 6.0 );
 		}
 
 		private class DiscordanceInfo
