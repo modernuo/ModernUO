@@ -1558,6 +1558,7 @@ namespace Server.Mobiles
 				m_Mobile.Delete();
 			
 			m_Mobile.BeginDeleteTimer();
+			m_Mobile.DropBackpack();
 
 			return true;
 		}

@@ -61,7 +61,7 @@ namespace Server.SkillHandlers
 			{
 				m.SendLocalizedMessage( 502725 ); // You must hide first
 			}
-			else if ( m.Skills[SkillName.Hiding].Base < ((Core.SE) ? 50.0 : 80.0) )
+			else if ( m.Skills[SkillName.Hiding].Base < ((Core.ML) ? 30.0 : (Core.SE) ? 50.0 : 80.0) )
 			{
 				m.SendLocalizedMessage( 502726 ); // You are not hidden well enough.  Become better at hiding.
 				m.RevealingAction();

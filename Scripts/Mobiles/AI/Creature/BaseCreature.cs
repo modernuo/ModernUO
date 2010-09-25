@@ -5,6 +5,7 @@ using Server;
 using Server.Regions;
 using Server.Targeting;
 using Server.Network;
+using Server.Multis;
 using Server.Spells;
 using Server.Misc;
 using Server.Items;
@@ -3675,6 +3676,29 @@ namespace Server.Mobiles
 				PackWeapon( minLevel, maxLevel, weaponChance );
 		}
 
+		public virtual void DropBackpack()
+		{
+			if ( Backpack != null )
+			{
+				if( Backpack.Items.Count > 0 )
+				{
+					Backpack b = new CreatureBackpack( Name );
+
+					List<Item> list = new List<Item>( Backpack.Items );
+					foreach ( Item item in list )
+					{
+						b.DropItem( item );
+					}
+
+					BaseHouse house = BaseHouse.FindHouseAt( this );
+					if ( house  != null )
+						b.MoveToWorld( house.BanLocation, house.Map );
+					else
+						b.MoveToWorld( Location, Map );
+				}
+			}
+		}
+
 		protected bool m_Spawning;
 		protected int m_KillersLuck;
 
@@ -5278,6 +5302,7 @@ namespace Server.Mobiles
 				c.ControlTarget = null;
 				//c.ControlOrder = OrderType.Release;
 				c.AIObject.DoOrderRelease(); // this will prevent no release of creatures left alone with AI disabled (and consequent bug of Followers)
+				c.DropBackpack();
 			}
 
 			// added code to handle removing of wild creatures in house regions

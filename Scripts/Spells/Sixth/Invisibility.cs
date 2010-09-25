@@ -45,6 +45,7 @@ namespace Server.Spells.Sixth
 				m.PlaySound( 0x3C4 );
 
 				m.Hidden = true;
+				m.Combatant = null;
 				m.Warmode = false;
 
 				RemoveTimer( m );
@@ -94,6 +95,7 @@ namespace Server.Spells.Sixth
 
 			protected override void OnTick()
 			{
+				if ( !m_Mobile.Hidden )
 				m_Mobile.RevealingAction();
 				RemoveTimer( m_Mobile );
 			}
