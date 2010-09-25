@@ -65,6 +65,9 @@ namespace Server.Spells.Necromancy
 				m_OathTable[Caster] = Caster;
 				m_OathTable[m] = Caster;
 
+				 if ( m.Spell != null )
+					m.Spell.OnCasterHurt();
+				
 				Caster.PlaySound( 0x175 );
 
 				Caster.FixedParticles( 0x375A, 1, 17, 9919, 33, 7, EffectLayer.Waist );

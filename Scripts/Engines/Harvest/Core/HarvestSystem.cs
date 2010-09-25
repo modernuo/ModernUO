@@ -176,11 +176,11 @@ namespace Server.Engines.Harvest
 							bool eligableForRacialBonus = ( def.RaceBonus && from.Race == Race.Human );
 							bool inFelucca = (map == Map.Felucca);
 
-							if( eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount )
+							if( eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount && 0.1 > Utility.RandomDouble() )
 								item.Amount = feluccaRacialAmount;
 							else if( inFelucca && bank.Current >= feluccaAmount )
 								item.Amount = feluccaAmount;
-							else if( eligableForRacialBonus && bank.Current >= racialAmount )
+							else if( eligableForRacialBonus && bank.Current >= racialAmount && 0.1 > Utility.RandomDouble() )
 								item.Amount = racialAmount;
 							else
 								item.Amount = amount;

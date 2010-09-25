@@ -46,7 +46,8 @@ namespace Server.Spells.Chivalry
 					if ( Caster != m && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
 						targets.Add( m );
 				}
-
+				
+				Caster.PlaySound( 0xF5 );
 				Caster.PlaySound( 0x299 );
 				Caster.FixedParticles( 0x37C4, 1, 25, 9922, 14, 3, EffectLayer.Head );
 

@@ -38,7 +38,7 @@ namespace Server.Spells.Second
 				SpellHelper.AddStatBonus( Caster, m, StatType.Dex );
 
 				m.FixedParticles( 0x375A, 10, 15, 5010, EffectLayer.Waist );
-				m.PlaySound( 0x28E );
+				m.PlaySound( 0x1e7 );
 
 				int percentage = (int)(SpellHelper.GetOffsetScalar( Caster, m, false )*100);
 				TimeSpan length = SpellHelper.GetDuration( Caster, m );

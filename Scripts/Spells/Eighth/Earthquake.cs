@@ -40,7 +40,7 @@ namespace Server.Spells.Eighth
 						if ( Caster != m && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) && (!Core.AOS || Caster.InLOS( m )) )
 							targets.Add( m );
 
-				Caster.PlaySound( 0x2F3 );
+				Caster.PlaySound( 0x220 );
 
 				for ( int i = 0; i < targets.Count; ++i )
 				{

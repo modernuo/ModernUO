@@ -740,8 +740,19 @@ namespace Server.Mobiles
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
+			/* TODO: Thou art giving me? and fame/karma for gold gifts */
+
 			if ( dropped is SmallBOD || dropped is LargeBOD )
 			{
+				if( Core.ML )
+				{
+					if( ((PlayerMobile)from).NextBODTurnInTime > DateTime.Now )
+					{
+						SayTo( from, 1079976 );	//
+						return false;
+					}
+				}
+
 				if ( !IsValidBulkOrder( dropped ) || !SupportsBulkOrders( from ) )
 				{
 					SayTo( from, 1045130 ); // That order is for some other shopkeeper.
@@ -776,6 +787,11 @@ namespace Server.Mobiles
 				Titles.AwardFame( from, fame, true );
 
 				OnSuccessfulBulkOrderReceive( from );
+
+				if( Core.ML )
+				{
+					((PlayerMobile)from).NextBODTurnInTime = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
+				}
 
 				dropped.Delete();
 				return true;

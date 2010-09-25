@@ -49,6 +49,9 @@ namespace Server.Spells.Necromancy
 				 * The effect lasts for one harmful event only.
 				 */
 
+				if ( m.Spell != null )
+					m.Spell.OnCasterHurt();
+					
 				m.PlaySound( 0xFC );
 				m.FixedParticles( 0x3728, 1, 13, 9912, 1150, 7, EffectLayer.Head );
 				m.FixedParticles( 0x3779, 1, 15, 9502, 67, 7, EffectLayer.Head );

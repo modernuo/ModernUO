@@ -102,11 +102,15 @@ namespace Server.Spells.Seventh
 							m.SendLocalizedMessage( 501783 ); // You feel yourself resisting magical energy.
 						}
 
-						Caster.DoHarmful( m );
-						SpellHelper.Damage( this, m, toDeal, 0, 0, 0, 0, 100 );
+					Caster.DoHarmful( m );
+					SpellHelper.Damage( this, m, toDeal, 0, 0, 0, 0, 100 );
 
-						m.BoltEffect( 0 );
+					m.BoltEffect( 0 );
 					}
+				}
+				else
+				{
+					Caster.PlaySound ( 0x29 );
 				}
 			}
 

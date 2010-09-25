@@ -161,7 +161,7 @@ namespace Server.Spells.Chivalry
 
 				if ( sacrifice )
 				{
-					Caster.PlaySound( 0x423 );
+					Caster.PlaySound( Caster.Body.IsFemale ? 0x150 : 0x423 );
 					Caster.Hits = 1;
 					Caster.Stam = 1;
 					Caster.Mana = 1;

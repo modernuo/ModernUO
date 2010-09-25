@@ -131,7 +131,9 @@ namespace Server.Spells.Chivalry
 
 				Effects.SendLocationParticles( EffectItem.Create( Caster.Location, Caster.Map, EffectItem.DefaultDuration ), 0, 0, 0, 5033 );
 
+				Caster.PlaySound( 0x1FC );
 				Caster.MoveToWorld( loc, map );
+				Caster.PlaySound( 0x1FC );
 			}
 
 			FinishSequence();

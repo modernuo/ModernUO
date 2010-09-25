@@ -96,6 +96,7 @@ namespace Server.Mobiles
 
 		private NpcGuild m_NpcGuild;
 		private DateTime m_NpcGuildJoinTime;
+		private DateTime m_NextBODTurnInTime;
 		private TimeSpan m_NpcGuildGameTime;
 		private PlayerFlag m_Flags;
 		private int m_StepsTaken;
@@ -205,6 +206,13 @@ namespace Server.Mobiles
 		{
 			get{ return m_NpcGuildJoinTime; }
 			set{ m_NpcGuildJoinTime = value; }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime NextBODTurnInTime
+		{
+			get{ return m_NextBODTurnInTime; }
+			set{ m_NextBODTurnInTime = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -581,6 +589,28 @@ namespace Server.Mobiles
 			EventSink.Logout += new LogoutEventHandler( OnLogout );
 			EventSink.Connected += new ConnectedEventHandler( EventSink_Connected );
 			EventSink.Disconnected += new DisconnectedEventHandler( EventSink_Disconnected );
+
+			if( Core.SE )
+			{
+				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckPets ) );
+			}
+		}
+
+		private static void CheckPets()
+		{
+			foreach( Mobile m in World.Mobiles.Values )
+			{
+				if( m is PlayerMobile )
+				{
+					PlayerMobile pm = (PlayerMobile)m;
+
+					if((( !pm.Mounted || ( pm.Mount != null && pm.Mount is EtherealMount )) && ( pm.AllFollowers.Count > pm.AutoStabled.Count )) ||
+						( pm.Mounted && ( pm.AllFollowers.Count  > ( pm.AutoStabled.Count +1 ))))
+					{
+						pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
+					}
+				}
+			}
 		}
 
 		public override void OnSkillInvalidated( Skill skill )
@@ -2438,10 +2468,27 @@ namespace Server.Mobiles
 
 			Mobile oath = Spells.Necromancy.BloodOathSpell.GetBloodOath( from );
 
+				/* Per EA's UO Herald Pub48 (ML): 
+				 * ((resist spellsx10)/20 + 10=percentage of damage resisted)
+				 */
+         
 			if ( oath == this )
 			{
 				amount = (int)(amount * 1.1);
-				from.Damage( amount, from );
+
+				if( amount > 35 && from is PlayerMobile )  /* capped @ 35, seems no expansion */
+				{
+					amount = 35;
+				}
+
+				if( Core.ML )
+				{
+					from.Damage( (int)(amount * ( 1 - ((( from.Skills.MagicResist.Value * .5 ) + 10) / 100 ))), this );
+				}
+				else
+				{
+					from.Damage( amount, this );
+				}
 			}
 
 			base.Damage( amount, from );
@@ -2835,7 +2882,6 @@ namespace Server.Mobiles
 			}
 
 			CheckAtrophies( this );
-
 
 			if( Hidden )	//Hiding is the only buff where it has an effect that's serialized.
 				AddBuff( new BuffInfo( BuffIcon.HidingAndOrStealth, 1075655 ) );

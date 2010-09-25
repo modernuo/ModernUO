@@ -45,8 +45,11 @@ namespace Server.Mobiles
 			ControlSlots = 2;
 
 			PackItem( new FertileDirt( Utility.RandomMinMax( 1, 4 ) ) );
-			PackItem( new IronOre( 3 ) ); // TODO: Five small iron ore
 			PackItem( new MandrakeRoot() );
+			
+			Item ore = new IronOre( 5 );
+			ore.ItemID = 0x19B7;
+			PackItem( ore );
 		}
 
 		public override void GenerateLoot()

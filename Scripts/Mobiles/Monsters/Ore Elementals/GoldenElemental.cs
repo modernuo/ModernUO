@@ -44,7 +44,9 @@ namespace Server.Mobiles
 
 			VirtualArmor = 60;
 
-			PackItem( new GoldOre( oreAmount ) );
+			Item ore = new GoldOre( oreAmount );
+			ore.ItemID = 0x19B9;
+			PackItem( ore );
 		}
 
 		public override void GenerateLoot()

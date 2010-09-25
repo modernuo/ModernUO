@@ -144,7 +144,11 @@ namespace Server.Items
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house != null && house.HasSecureAccess( from, SecureLevel.Friends ) )
+			if ( !from.InRange( GetWorldLocation(), 2 ) )
+			{
+				from.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
+			}
+			else if ( house != null && house.HasSecureAccess( from, SecureLevel.Friends ) )
 			{
 				switch ( m_CartType )
 				{

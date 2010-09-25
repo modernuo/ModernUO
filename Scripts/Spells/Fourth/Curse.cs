@@ -74,7 +74,7 @@ namespace Server.Spells.Fourth
 				m.Paralyzed = false;
 
 				m.FixedParticles( 0x374A, 10, 15, 5028, EffectLayer.Waist );
-				m.PlaySound( 0x1EA );
+				m.PlaySound( 0x1E1 );
 
 				int percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
 				TimeSpan length = SpellHelper.GetDuration(Caster, m);
