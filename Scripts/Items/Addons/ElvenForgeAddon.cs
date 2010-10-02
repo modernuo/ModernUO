@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -8,10 +9,17 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ElvenForgeDeed(); } }
 
 		[Constructable]
-		public ElvenForgeAddon()
+		public ElvenForgeAddon() : this( 0 )
+		{
+		}
+		
+		[Constructable]
+		public ElvenForgeAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x2DD8 ), 0, 0, 0 );
+			Hue = hue;
 		}
+
 
 		public ElvenForgeAddon( Serial serial ) : base( serial )
 		{
@@ -32,9 +40,10 @@ namespace Server.Items
 		}
 	}
 
+	[CraftItemID( 0x2DD8 )]
 	public class ElvenForgeDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ElvenForgeAddon(); } }
+		public override BaseAddon Addon{ get{ return new ElvenForgeAddon( Hue ); } }
 		public override int LabelNumber{ get{ return 1072875; } } // squirrel statue (east)
 
 		[Constructable]

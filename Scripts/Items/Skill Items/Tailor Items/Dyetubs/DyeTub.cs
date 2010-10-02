@@ -215,6 +215,7 @@ namespace Server.Items
 							if ( okay )
 							{
 								item.Hue = m_Tub.DyedHue;
+								item.InvalidateProperties();
 								from.PlaySound( 0x23E );
 							}
 						}

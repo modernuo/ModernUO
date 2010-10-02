@@ -1,9 +1,10 @@
 using System;
 using Server;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public abstract class BaseLight : Item
+	public abstract class BaseLight : Item, ICraftable
 	{
 		private Timer m_Timer;
 		private DateTime m_End;
@@ -12,6 +13,10 @@ namespace Server.Items
 		private bool m_Protected = false;
 		private TimeSpan m_Duration = TimeSpan.Zero;
 
+		private Mobile m_Crafter;
+		private CraftQuality m_Quality;
+		private CraftResource m_Resource;
+		
 		public abstract int LitItemID{ get; }
 		
 		public virtual int UnlitItemID{ get { return 0; } }
@@ -22,6 +27,39 @@ namespace Server.Items
 		public virtual int BurntOutSound{ get { return 0x4b8; } }
 
 		public static readonly bool Burnout = false;
+		
+		public virtual CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		public virtual bool DisplaysResource{ get{ return true; } }
+		public virtual bool DisplaysMakersMark{ get{ return true; } }
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Mobile Crafter
+		{
+			get { return m_Crafter; } 
+			set { m_Crafter = value; InvalidateProperties(); } 
+		}
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftQuality Quality
+		{ 
+			get { return m_Quality; } 
+			set { m_Quality = value; InvalidateProperties(); } 
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftResource Resource
+		{
+			get { return m_Resource; }
+			set
+			{
+				if ( m_Resource != value )
+				{
+					m_Resource = value;
+					Hue = CraftResources.GetHue( m_Resource );
+					InvalidateProperties();
+				}
+			}
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Burning
@@ -74,6 +112,20 @@ namespace Server.Items
 
 		public BaseLight( Serial serial ) : base( serial )
 		{
+		}
+		
+		public override void GetProperties( ObjectPropertyList list )
+		{
+			base.GetProperties( list );
+
+			if ( m_Crafter != null && DisplaysMakersMark )
+				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+
+			if ( m_Quality == CraftQuality.Exceptional )
+				list.Add( 1060636 ); // exceptional
+
+			if( ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.Frostwood ) && Hue == CraftResources.GetHue( m_Resource ) && DisplaysResource )
+				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) ); // resource name
 		}
 
 		public virtual void PlayLitSound()
@@ -180,7 +232,12 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
+			
+			writer.Write( m_Crafter );
+			writer.WriteEncodedInt( (int) m_Quality );
+			writer.WriteEncodedInt( (int) m_Resource );
+			
 			writer.Write( m_BurntOut );
 			writer.Write( m_Burning );
 			writer.Write( m_Duration );
@@ -198,6 +255,13 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 1:
+				{
+					m_Crafter = reader.ReadMobile();
+					m_Quality = (CraftQuality)reader.ReadEncodedInt();
+					m_Resource = (CraftResource)reader.ReadEncodedInt();
+					goto case 0;
+				}
 				case 0:
 				{
 					m_BurntOut = reader.ReadBool();
@@ -210,6 +274,12 @@ namespace Server.Items
 
 					break;
 				}
+			}
+			
+			if ( version < 1 )
+			{
+				m_Quality = CraftQuality.Regular;
+				m_Resource = DefaultResource;
 			}
 		}
 
@@ -228,6 +298,33 @@ namespace Server.Items
 				if ( m_Light != null && !m_Light.Deleted )
 					m_Light.Burn();
 			}
+		}
+		
+		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
+		{
+			if ( Core.ML )
+			{
+				Quality = (CraftQuality)quality;
+			
+				if ( makersMark )
+					Crafter = from;
+
+				Type resourceType = typeRes;
+
+				if ( resourceType == null )
+					resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
+
+				Resource = CraftResources.GetFromType( resourceType );
+
+				CraftContext context = craftSystem.GetContext( from );
+
+				if ( context != null && context.DoNotColor )
+					Resource = DefaultResource;
+			}
+			else
+				Resource = DefaultResource;
+			
+			return quality;
 		}
 	}
 }

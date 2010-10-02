@@ -391,8 +391,6 @@ namespace Server.Items
 
 			//Order is Cold, Energy, Fire, Poison -> Physical left
 			//Cannot be looped, AoselementAttribute is 'out of order'
-
-			weapon.Hue = weapon.GetElementalDamageHue();
 		}
 
 		private static int AssignElementalDamage( BaseWeapon weapon, AosElementAttribute attr, int totalDamage )
@@ -473,7 +471,7 @@ namespace Server.Items
 			int baseCount = ( isShield ? 7 : 20 );
 			int baseOffset = ( isShield ? 0 : 4 );
 
-			if ( !isShield && armor.MeditationAllowance == ArmorMeditationAllowance.All )
+			if ( ( !isShield && armor.MeditationAllowance == ArmorMeditationAllowance.All ) || armor.ArmorAttributes.MageArmor > 0 )
 				m_Props.Set( 3, true ); // remove mage armor from possible properties
 			if ( armor.Resource >= CraftResource.RegularLeather && armor.Resource <= CraftResource.BarbedLeather )
 			{

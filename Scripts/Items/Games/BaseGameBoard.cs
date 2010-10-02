@@ -10,7 +10,7 @@ using Server.Gumps;
 
 namespace Server.Items
 {
-	public abstract class BaseBoard : Container, ISecurable
+	public abstract class BaseGameBoard : Container, ISecurable
 	{
 		private SecureLevel m_Level;
 
@@ -21,7 +21,7 @@ namespace Server.Items
 			set{ m_Level = value; }
 		}
 
-		public BaseBoard( int itemID ) : base( itemID )
+		public BaseGameBoard( int itemID ) : base( itemID )
 		{
 			CreatePieces();
 
@@ -51,7 +51,7 @@ namespace Server.Items
 
 		public override bool IsDecoContainer{ get{ return false; } }
 
-		public BaseBoard( Serial serial ) : base( serial )
+		public BaseGameBoard( Serial serial ) : base( serial )
 		{
 		}
 
@@ -124,7 +124,7 @@ namespace Server.Items
 			SetSecureLevelEntry.AddTo( from, this, list );
 		}
 
-		public static bool ValidateDefault( Mobile from, BaseBoard board )
+		public static bool ValidateDefault( Mobile from, BaseGameBoard board )
 		{
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
@@ -151,9 +151,9 @@ namespace Server.Items
 		public class DefaultEntry : ContextMenuEntry
 		{
 			private Mobile m_From;
-			private BaseBoard m_Board;
+			private BaseGameBoard m_Board;
 
-			public DefaultEntry( Mobile from, BaseBoard board ) : base( 6162, from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1 )
+			public DefaultEntry( Mobile from, BaseGameBoard board ) : base( 6162, from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1 )
 			{
 				m_From = from;
 				m_Board = board;
@@ -161,7 +161,7 @@ namespace Server.Items
 
 			public override void OnClick()
 			{
-				if ( BaseBoard.ValidateDefault( m_From, m_Board ) )
+				if ( BaseGameBoard.ValidateDefault( m_From, m_Board ) )
 					m_Board.Reset();
 			}
 		}

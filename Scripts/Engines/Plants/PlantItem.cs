@@ -192,7 +192,7 @@ namespace Server.Engines.Plants
 
 			m_PlantStatus = PlantStatus.BowlOfDirt;
 			m_PlantSystem = new PlantSystem( this, fertileDirt );
-			m_Level = SecureLevel.CoOwners;
+			m_Level = SecureLevel.Owner;
 
 			m_Instances.Add( this );
 		}

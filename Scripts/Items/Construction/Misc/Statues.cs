@@ -2,8 +2,10 @@ using System;
 
 namespace Server.Items 
 { 
-	public class StatueSouth : Item 
-	{ 
+	public class StatueSouth : BaseCraftableItem
+	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public StatueSouth() : base(0x139A) 
 		{ 
@@ -27,12 +29,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class StatueSouth2 : Item 
-	{ 
+	public class StatueSouth2 : BaseCraftableItem
+	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public StatueSouth2() : base(0x1227) 
 		{ 
@@ -56,11 +60,11 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class StatueNorth : Item 
+	public class StatueNorth : BaseCraftableItem
 	{ 
 		[Constructable] 
 		public StatueNorth() : base(0x139B) 
@@ -85,11 +89,11 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class StatueWest : Item 
+	public class StatueWest : BaseCraftableItem
 	{ 
 		[Constructable] 
 		public StatueWest() : base(0x1226) 
@@ -114,11 +118,11 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class StatueEast : Item 
+	public class StatueEast : BaseCraftableItem
 	{ 
 		[Constructable] 
 		public StatueEast() : base(0x139C) 
@@ -143,12 +147,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion 
 		} 
 	} 
 
-	public class StatueEast2 : Item 
-	{ 
+	public class StatueEast2 : BaseCraftableItem 
+	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public StatueEast2() : base(0x1224) 
 		{ 
@@ -172,12 +178,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class StatueSouthEast : Item 
-	{ 
+	public class StatueSouthEast : BaseCraftableItem
+	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public StatueSouthEast() : base(0x1225) 
 		{ 
@@ -201,12 +209,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class BustSouth : Item 
-	{ 
+	public class BustSouth : BaseCraftableItem
+	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public BustSouth() : base(0x12CB) 
 		{ 
@@ -230,12 +240,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class BustEast : Item 
-	{ 
+	public class BustEast : BaseCraftableItem
+	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public BustEast() : base(0x12CA) 
 		{ 
@@ -259,12 +271,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion 
 		} 
 	} 
 
-	public class StatuePegasus : Item 
+	public class StatuePegasus : BaseCraftableItem
 	{ 
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public StatuePegasus() : base(0x139D) 
 		{ 
@@ -288,12 +302,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class StatuePegasus2 : Item 
+	public class StatuePegasus2 : BaseCraftableItem
 	{ 
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public StatuePegasus2() : base(0x1228) 
 		{ 
@@ -317,12 +333,14 @@ namespace Server.Items
 		{ 
 			base.Deserialize(reader); 
 
-			int version = reader.ReadInt(); 
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		} 
 	} 
 
-	public class SmallTowerSculpture : Item
+	public class SmallTowerSculpture : BaseCraftableItem
 	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable]
 		public SmallTowerSculpture() : base(0x241A)
 		{
@@ -344,7 +362,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		}
 	}
 }

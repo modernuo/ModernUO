@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Server.Items
 {
-	public class Chessboard : BaseBoard
+	public class Chessboard : BaseGameBoard
 	{
 		public override int LabelNumber{ get{ return 1016450; } } // a chessboard
 

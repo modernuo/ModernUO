@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "white king"; }
 		}
 
-		public PieceWhiteKing( BaseBoard board ) : base( 0x3587, board )
+		public PieceWhiteKing( BaseGameBoard board ) : base( 0x3587, board )
 		{
 		}
 
@@ -38,7 +38,7 @@ namespace Server.Items
 			get { return "black king"; }
 		}
 
-		public PieceBlackKing( BaseBoard board ) : base( 0x358E, board )
+		public PieceBlackKing( BaseGameBoard board ) : base( 0x358E, board )
 		{
 		}
 
@@ -66,7 +66,7 @@ namespace Server.Items
 			get { return "white queen"; }
 		}
 
-		public PieceWhiteQueen( BaseBoard board ) : base( 0x358A, board )
+		public PieceWhiteQueen( BaseGameBoard board ) : base( 0x358A, board )
 		{
 		}
 
@@ -94,7 +94,7 @@ namespace Server.Items
 			get { return "black queen"; }
 		}
 
-		public PieceBlackQueen( BaseBoard board ) : base( 0x3591, board )
+		public PieceBlackQueen( BaseGameBoard board ) : base( 0x3591, board )
 		{
 		}
 
@@ -122,7 +122,7 @@ namespace Server.Items
 			get { return "white rook"; }
 		}
 
-		public PieceWhiteRook( BaseBoard board ) : base( 0x3586, board )
+		public PieceWhiteRook( BaseGameBoard board ) : base( 0x3586, board )
 		{
 		}
 
@@ -150,7 +150,7 @@ namespace Server.Items
 			get { return "black rook"; }
 		}
 
-		public PieceBlackRook( BaseBoard board ) : base( 0x358D, board )
+		public PieceBlackRook( BaseGameBoard board ) : base( 0x358D, board )
 		{
 		}
 
@@ -178,7 +178,7 @@ namespace Server.Items
 			get { return "white bishop"; }
 		}
 
-		public PieceWhiteBishop( BaseBoard board ) : base( 0x3585, board )
+		public PieceWhiteBishop( BaseGameBoard board ) : base( 0x3585, board )
 		{
 		}
 
@@ -206,7 +206,7 @@ namespace Server.Items
 			get { return "black bishop"; }
 		}
 
-		public PieceBlackBishop( BaseBoard board ) : base( 0x358C, board )
+		public PieceBlackBishop( BaseGameBoard board ) : base( 0x358C, board )
 		{
 		}
 
@@ -234,7 +234,7 @@ namespace Server.Items
 			get { return "white knight"; }
 		}
 
-		public PieceWhiteKnight( BaseBoard board ) : base( 0x3588, board )
+		public PieceWhiteKnight( BaseGameBoard board ) : base( 0x3588, board )
 		{
 		}
 
@@ -262,7 +262,7 @@ namespace Server.Items
 			get { return "black knight"; }
 		}
 
-		public PieceBlackKnight( BaseBoard board ) : base( 0x358F, board )
+		public PieceBlackKnight( BaseGameBoard board ) : base( 0x358F, board )
 		{
 		}
 
@@ -290,7 +290,7 @@ namespace Server.Items
 			get { return "white pawn"; }
 		}
 
-		public PieceWhitePawn( BaseBoard board ) : base( 0x3589, board )
+		public PieceWhitePawn( BaseGameBoard board ) : base( 0x3589, board )
 		{
 		}
 
@@ -318,7 +318,7 @@ namespace Server.Items
 			get { return "black pawn"; }
 		}
 
-		public PieceBlackPawn( BaseBoard board ) : base( 0x3590, board )
+		public PieceBlackPawn( BaseGameBoard board ) : base( 0x3590, board )
 		{
 		}
 

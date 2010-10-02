@@ -50,6 +50,11 @@ namespace Server.Engines.Craft
 		{
 			return false;
 		}
+		
+		public virtual bool UsesHueSelector( CraftItem item, Type type )
+		{
+			return false;
+		}
 
 		public CraftContext GetContext( Mobile m )
 		{
@@ -145,6 +150,11 @@ namespace Server.Engines.Craft
 		{
 			return AddCraft( typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message );
 		}
+		
+		public int AddCraft( Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill, Type typeRes, TextDefinition nameRes, int amount, TextDefinition message, object[] args )
+		{
+			return AddCraft( typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message, args );
+		}
 
 		public int AddCraft( Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill, double maxSkill, Type typeRes, TextDefinition nameRes, int amount )
 		{
@@ -153,10 +163,16 @@ namespace Server.Engines.Craft
 
 		public int AddCraft( Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill, double maxSkill, Type typeRes, TextDefinition nameRes, int amount, TextDefinition message )
 		{
+			return AddCraft( typeItem, group, name, skillToMake, minSkill, maxSkill, typeRes, nameRes, amount, "", null );
+		}
+		
+		public int AddCraft( Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill, double maxSkill, Type typeRes, TextDefinition nameRes, int amount, TextDefinition message, object[] args )
+		{
 			CraftItem craftItem = new CraftItem( typeItem, group, name );
 			craftItem.AddRes( typeRes, nameRes, amount, message );
 			craftItem.AddSkill( skillToMake, minSkill, maxSkill );
-
+			craftItem.CraftArgs = args;
+			
 			DoGroup( group, craftItem );
 			return m_CraftItems.Add( craftItem );
 		}
@@ -197,10 +213,16 @@ namespace Server.Engines.Craft
 			craftItem.Hits = hits;
 		}
 		
-		public void SetUseAllRes( int index, bool useAll )
+		public void SetUseAllRes( int index, bool useAll ) 
+		{
+			SetUseAllRes( index, useAll, 1048176); // Default message is "Makes as many as possible at once"
+		}
+		
+		public void SetUseAllRes( int index, bool useAll, int message )
 		{
 			CraftItem craftItem = m_CraftItems.GetAt( index );
 			craftItem.UseAllRes = useAll;
+			craftItem.UseAllMessage = message;
 		}
 
 		public void SetNeedHeat( int index, bool needHeat )
@@ -255,6 +277,12 @@ namespace Server.Engines.Craft
 			CraftItem craftItem = m_CraftItems.GetAt( index );
 			craftItem.AddRecipe( id, this );
 		}
+		
+		public void MultiplyBy( int index, int multiple )
+		{
+			CraftItem craftItem = m_CraftItems.GetAt( index );
+			craftItem.MultiplyBy = multiple;
+		}
 
 		public void ForceNonExceptional( int index )
 		{
@@ -262,6 +290,12 @@ namespace Server.Engines.Craft
 			craftItem.ForceNonExceptional = true;
 		}
 
+		public void ForceGumpItemID( int index, int itemID )
+		{
+			CraftItem craftItem = m_CraftItems.GetAt( index );
+			craftItem.ForceGumpItemID = true;
+			craftItem.GumpItemID = itemID;
+		}
 
 		public void SetSubRes( Type type, string name )
 		{

@@ -20,7 +20,7 @@ namespace Server.Items
 		Arcanist
 	}
 
-	public class Spellbook : Item, ICraftable, ISlayer
+	public class Spellbook : Item, ICraftable, ISlayer, IAosAttributes
 	{
 		public static void Initialize()
 		{

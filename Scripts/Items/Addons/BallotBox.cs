@@ -336,9 +336,14 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BallotBoxDeed(); } }
 
-		public BallotBoxAddon()
+		public BallotBoxAddon() : this( 0 )
+		{
+		}
+		
+		public BallotBoxAddon( int hue )
 		{
 			AddComponent( new BallotBox(), 0, 0, 0 );
+			Hue = hue;
 		}
 
 		public BallotBoxAddon( Serial serial ) : base( serial )
@@ -362,7 +367,7 @@ namespace Server.Items
 
 	public class BallotBoxDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new BallotBoxAddon(); } }
+		public override BaseAddon Addon{ get{ return new BallotBoxAddon( Hue ); } }
 
 		public override int LabelNumber{ get{ return 1044327; } } // ballot box
 

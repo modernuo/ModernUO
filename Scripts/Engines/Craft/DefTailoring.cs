@@ -48,28 +48,21 @@ namespace Server.Engines.Craft
 
 			return 0;
 		}
-
-		private static Type[] m_TailorColorables = new Type[]
-			{
-				typeof( GozaMatEastDeed ), typeof( GozaMatSouthDeed ),
-				typeof( SquareGozaMatEastDeed ), typeof( SquareGozaMatSouthDeed ),
-				typeof( BrocadeGozaMatEastDeed ), typeof( BrocadeGozaMatSouthDeed ),
-				typeof( BrocadeSquareGozaMatEastDeed ), typeof( BrocadeSquareGozaMatSouthDeed )
-			};
-
+		
 		public override bool RetainsColorFrom( CraftItem item, Type type )
 		{
-			if ( type != typeof( Cloth ) && type != typeof( UncutCloth ) )
+			if ( item.ItemType == typeof( OilCloth ) )
 				return false;
-
-			type = item.ItemType;
-
-			bool contains = false;
-
-			for ( int i = 0; !contains && i < m_TailorColorables.Length; ++i )
-				contains = ( m_TailorColorables[i] == type );
-
-			return contains;
+			
+			return true;
+		}
+		
+		public override bool UsesHueSelector( CraftItem item, Type type )
+		{
+			if ( item.ItemType == typeof( UncutCloth ) )
+				return false;
+			
+			return true;
 		}
 
 		public override void PlayCraftEffect( Mobile from )
@@ -105,6 +98,14 @@ namespace Server.Engines.Craft
 		public override void InitCraftList()
 		{
 			int index = -1;
+			
+			#region Materials
+			index = AddCraft( typeof( UncutCloth ), 1044457, 1044458, 0.0, 0.0, typeof( BoltOfCloth ), 1044453, 1, 1044253 );
+			MultiplyBy( index, 50 );
+			SetUseAllRes( index, true, 1044460 ); // Cut bolts of cloth into pieces of ready cloth.
+			index = AddCraft( typeof( UncutCloth ), 1044457, 1044459, 0.0, 0.0, typeof( Cloth ), 1044455, 1, 1044253 );
+			SetUseAllRes( index, true, 1044461 ); // Combine available cloth into piles by color.
+			#endregion
 
 			#region Hats
 			AddCraft( typeof( SkullCap ), 1011375, 1025444, 0.0, 25.0, typeof( Cloth ), 1044286, 2, 1044287 );

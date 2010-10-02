@@ -8,10 +8,16 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ArcaneBookshelfEastDeed(); } }
 
 		[Constructable]
-		public ArcaneBookshelfEastAddon()
+		public ArcaneBookshelfEastAddon() : this( 0 )
+		{
+		}
+		
+		[Constructable]
+		public ArcaneBookshelfEastAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x3084 ), 0, 0, 0 );
 			AddComponent( new AddonComponent( 0x3085 ), -1, 0, 0 );
+			Hue = hue;
 		}
 
 		public ArcaneBookshelfEastAddon( Serial serial ) : base( serial )

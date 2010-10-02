@@ -125,8 +125,8 @@ namespace Server.Items
 		public PowerScroll( SkillName skill, double value ) : base( skill, value )
 		{
 			Hue = 0x481;
-			
-			if ( Value == 105.0 )
+
+            if (Value == 105.0 || skill == Server.SkillName.Blacksmith || skill == Server.SkillName.Tailoring )
 				LootType = LootType.Regular;
 		}
 
@@ -210,7 +210,7 @@ namespace Server.Items
 
 			int version = ( InheritsItem ? 0 : reader.ReadInt() ); //Required for SpecialScroll insertion
 
-			if ( Value == 105.0 )
+            if (Value == 105.0 || Skill == SkillName.Blacksmith || Skill == SkillName.Tailoring)
 			{
 				LootType = LootType.Regular;
 			}

@@ -3,7 +3,7 @@ using System;
 namespace Server.Items
 {
 	[Furniture]
-	public class Stool : Item
+	public class Stool : BaseCraftableItem
 	{
 		[Constructable]
 		public Stool() : base( 0xA2A )
@@ -26,7 +26,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 
 			if ( Weight == 6.0 )
 				Weight = 10.0;
@@ -34,12 +34,12 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	public class FootStool : Item
+	public class FootStool : BaseCraftableItem
 	{
 		[Constructable]
 		public FootStool() : base( 0xB5E )
 		{
-			Weight = 6.0;
+			Weight = 10.0;
 		}
 
 		public FootStool(Serial serial) : base(serial)
@@ -57,7 +57,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 
 			if ( Weight == 6.0 )
 				Weight = 10.0;

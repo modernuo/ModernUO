@@ -6,6 +6,7 @@ using Server.Items;
 using Server.Factions;
 using Server.Mobiles;
 using Server.Commands;
+using Server.Targeting;
 
 namespace Server.Engines.Craft
 {
@@ -24,6 +25,8 @@ namespace Server.Engines.Craft
 		private CraftResCol m_arCraftRes;
 		private CraftSkillCol m_arCraftSkill;
 		private Type m_Type;
+		
+		private object[] m_CraftArgs;
 
 		private string m_GroupNameString;
 		private int m_GroupNameNumber;
@@ -36,6 +39,8 @@ namespace Server.Engines.Craft
 		private int m_Stam;
 
 		private bool m_UseAllRes;
+		private int m_UseAllMessage;
+		private int m_MultiplyBy;
 
 		private bool m_NeedHeat;
 		private bool m_NeedOven;
@@ -44,14 +49,42 @@ namespace Server.Engines.Craft
 		private bool m_UseSubRes2;
 
 		private bool m_ForceNonExceptional;
+		private bool m_ForceGumpItemID;
+		private int m_GumpItemID;
+		
+		private bool m_BeginHueSelector;
+		private Type m_TypeToCompare;
+		
+		public int UseAllMessage
+		{
+			get { return m_UseAllMessage; }
+			set { m_UseAllMessage = value; }
+		}
+		
+		public int MultiplyBy
+		{
+			get { return m_MultiplyBy; }
+			set { m_MultiplyBy = value; }
+		}
 
 		public bool ForceNonExceptional
 		{
 			get { return m_ForceNonExceptional; }
 			set { m_ForceNonExceptional = value; }
 		}
-	
 
+		public bool ForceGumpItemID
+		{
+			get { return m_ForceGumpItemID; }
+			set { m_ForceGumpItemID = value; }
+		}
+		
+		public int GumpItemID
+		{
+			get { return m_GumpItemID; }
+			set { m_GumpItemID = value; }
+		}
+		
 		private Expansion m_RequiredExpansion;
 
 		public Expansion RequiredExpansion
@@ -133,6 +166,8 @@ namespace Server.Engines.Craft
 
 			m_GroupNameNumber = groupName;
 			m_NameNumber = name;
+			
+			m_MultiplyBy = 1;
 		}
 
 		public void AddRes( Type type, TextDefinition name, int amount )
@@ -151,6 +186,12 @@ namespace Server.Engines.Craft
 		{
 			CraftSkill craftSkill = new CraftSkill( skillToMake, minSkill, maxSkill );
 			m_arCraftSkill.Add( craftSkill );
+		}
+		
+		public object[] CraftArgs
+		{
+			get { return m_CraftArgs; }
+			set { m_CraftArgs = value; }
 		}
 
 		public int Mana
@@ -361,17 +402,36 @@ namespace Server.Engines.Craft
 					typeof( Spellbook ), typeof( Runebook ),
 					typeof( BaseQuiver )
 				};
+		private static Type[] m_MarkableAOSTable = new Type[]
+			{
+				typeof( BaseCraftableItem ),
+				typeof( BasePlayerBB ),
+				typeof( BaseLight ),
+				typeof( BaseOtherEquipable ),
+				typeof( BaseFurnitureContainer ),
+				typeof( LockableContainer )
+			};
 		#endregion
 
 		public bool IsMarkable( Type type )
 		{
 			if( m_ForceNonExceptional )	//Don't even display the stuff for marking if it can't ever be exceptional.
 				return false;
-
+			
 			for ( int i = 0; i < m_MarkableTable.Length; ++i )
 			{
 				if ( type == m_MarkableTable[i] || type.IsSubclassOf( m_MarkableTable[i] ) )
 					return true;
+			}
+			
+			// Carpentry prior to AOS did not have exceptional items.
+			if ( Core.AOS )
+			{
+				for ( int i = 0; i < m_MarkableAOSTable.Length; ++i )
+				{
+					if ( type == m_MarkableAOSTable[i] || type.IsSubclassOf( m_MarkableAOSTable[i] ) )
+						return true;
+				}
 			}
 
 			return false;
@@ -573,13 +633,19 @@ namespace Server.Engines.Craft
 		{
 			return ConsumeRes( from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false );
 		}
-
+		
 		public bool ConsumeRes( Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount, ConsumeType consumeType, ref object message, bool isFailure )
 		{
-			Container ourPack = from.Backpack;
+			Container c = from.Backpack;
+			
+			CraftContext context = craftSystem.GetContext( from );
+			
+			m_System = craftSystem;
 
-			if ( ourPack == null )
+			if ( c == null || !(c is BaseContainer) )
 				return false;
+			
+			BaseContainer ourPack = (BaseContainer)c;
 
 			if ( m_NeedHeat && !Find( from, m_HeatSources ) )
 			{
@@ -637,10 +703,15 @@ namespace Server.Engines.Craft
 
 				amounts[i] = craftRes.Amount;
 
-				// For stackable items that can ben crafted more than one at a time
+				// For stackable items that can be crafted more than one at a time
 				if ( UseAllRes )
 				{
-					int tempAmount = ourPack.GetAmount( types[i] );
+					if ( !context.CheckedHues )
+						if ( RetainsColorFrom( m_System, types[i][0] ) )
+							CheckMulitpleHues( from, types[i] );
+						
+					int tempAmount = ourPack.GetAmountCompared( types[i], new CheckItemGroup( CheckHueGrouping ), context.CompareHueTo );
+					
 					tempAmount /= amounts[i];
 					if ( tempAmount < maxAmount )
 					{
@@ -707,12 +778,12 @@ namespace Server.Engines.Craft
 			// Consume ALL
 			if ( consumeType == ConsumeType.All )
 			{
-				m_ResHue = 0; m_ResAmount = 0; m_System = craftSystem;
-
+				m_ResHue = 0; m_ResAmount = 0;
+				
 				if ( IsQuantityType( types ) )
 					index = ConsumeQuantity( ourPack, types, amounts );
 				else
-					index = ourPack.ConsumeTotalGrouped( types, amounts, true, new OnItemConsumed( OnResourceConsumed ), new CheckItemGroup( CheckHueGrouping ) );
+					index = ourPack.ConsumeTotalGroupedCompared( types, amounts, true, new OnItemConsumed( OnResourceConsumed ), new CheckItemGroup( CheckHueGrouping ), context.CompareHueTo );
 
 				resHue = m_ResHue;
 			}
@@ -728,12 +799,12 @@ namespace Server.Engines.Craft
 						amounts[i] = 1;
 				}
 
-				m_ResHue = 0; m_ResAmount = 0; m_System = craftSystem;
+				m_ResHue = 0; m_ResAmount = 0;
 
 				if ( IsQuantityType( types ) )
 					index = ConsumeQuantity( ourPack, types, amounts );
 				else
-					index = ourPack.ConsumeTotalGrouped( types, amounts, true, new OnItemConsumed( OnResourceConsumed ), new CheckItemGroup( CheckHueGrouping ) );
+					index = ourPack.ConsumeTotalGroupedCompared( types, amounts, true, new OnItemConsumed( OnResourceConsumed ), new CheckItemGroup( CheckHueGrouping ), context.CompareHueTo );
 
 				resHue = m_ResHue;
 			}
@@ -757,7 +828,21 @@ namespace Server.Engines.Craft
 				{
 					for ( int i = 0; i < types.Length; i++ )
 					{
-						if ( ourPack.GetBestGroupAmount( types[i], true, new CheckItemGroup( CheckHueGrouping ) ) < amounts[i] )
+						if ( !context.CheckedHues )
+							if ( RetainsColorFrom( m_System, types[i][0] ) )
+								CheckMulitpleHues( from, types[i] );
+						
+						if ( craftSystem.UsesHueSelector( this, types[i][0] )  )
+						{
+							if ( context.CompareHueTo == null && context.Hues.Count > 1 )
+							{
+								m_BeginHueSelector = true;
+								m_TypeToCompare = types[i][0];
+								return false;
+							}
+						}
+
+						if ( ourPack.GetComparedGroupAmount( types[i], true, new CheckItemGroup( CheckHueGrouping ), context.CompareHueTo ) < amounts[i] )
 						{
 							index = i;
 							break;
@@ -784,9 +869,104 @@ namespace Server.Engines.Craft
 					message = res.MessageString;
 				else
 					message = 502925; // You don't have the resources required to make that item.
-
+				
 				return false;
 			}
+		}
+
+		private class SelectHuedTarget : Target
+		{
+			private CraftItem m_CraftItem;
+			private CraftSystem m_CraftSystem;
+			private Type m_TypeRes;
+			private BaseTool m_Tool;
+
+			public SelectHuedTarget( CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool ) : base( -1, true, TargetFlags.None )
+			{
+				m_CraftItem = craftItem;
+				m_CraftSystem = craftSystem;
+				m_TypeRes = typeRes;
+				m_Tool = tool;
+			}
+
+			protected override void OnTarget( Mobile from, object targeted )
+			{
+				CraftContext context = m_CraftSystem.GetContext( from );
+				
+				if ( context == null )
+					return;
+				
+				if ( targeted is Item )
+				{
+					Item target = (Item)targeted;
+					
+					Type targType = target.GetType();
+					
+					List<Type> types = new List<Type>();
+					
+					Type baseType = m_CraftItem.GetBaseResType( m_CraftSystem, m_TypeRes );
+
+					for ( int i = 0; i < m_TypesTable.Length; ++i )
+					{
+						if ( m_TypesTable[i][0] == baseType )
+						{
+							types.AddRange( m_TypesTable[i] );
+							break;
+						}
+					}
+					
+					if ( types.Count <= 0 )
+						types.Add( m_TypeRes );
+					
+					for ( int i = 0; i < types.Count; ++i )
+					{
+						if ( target.IsChildOf( from.Backpack ) && targType == types[i] )
+						{
+							context.CompareHueTo = target;
+							context.Hues = new List<int>( new int[] { target.Hue } );
+							m_CraftItem.Craft( from, m_CraftSystem, m_TypeRes, m_Tool );
+							return;
+						}
+					}
+				}
+				
+				from.Target = new SelectHuedTarget( m_CraftItem, m_CraftSystem, m_TypeRes, m_Tool );
+				from.SendLocalizedMessage( 1046439 ); // That is not a valid target.
+				from.SendLocalizedMessage( 1074794 ); // Target the material to use:
+			}
+			
+			protected override void OnTargetCancel( Mobile from, TargetCancelType cancelType )
+			{
+				CraftContext context = m_CraftSystem.GetContext( from );
+				
+				if ( context != null )
+					context.ResetHueStateVars();
+				
+				if ( cancelType == TargetCancelType.Canceled )
+					from.SendGump( new CraftGump( from, m_CraftSystem, m_Tool, 0 ) );
+			}
+		}
+		
+		public Type GetBaseResType( CraftSystem craftSystem, Type typeRes )
+		{
+			CraftSubResCol resCol = ( UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes );
+			CraftRes craftRes = Resources.GetAt( 0 );
+			
+			foreach ( CraftRes res in Resources )
+			{
+				if ( res.ItemType == typeRes )
+				{
+					craftRes = res;
+					break;
+				}
+			}
+			
+			Type baseType = craftRes.ItemType;
+					
+			if ( (baseType == resCol.ResType) && ( typeRes != null ) )
+				baseType = typeRes;
+			
+			return baseType;
 		}
 
 		private int m_ResHue;
@@ -804,6 +984,25 @@ namespace Server.Engines.Craft
 				m_ResAmount = amount;
 			}
 		}
+		
+		private void CheckMulitpleHues( Mobile from, Type[] types )
+		{
+			Item[] items = from.Backpack.FindItemsByType( types, true );
+			
+			CraftContext context = m_System.GetContext( from );
+			
+			if ( context == null || context.CheckedHues || items.Length < 1 )
+				return;
+			
+			for ( int i = 0; i < items.Length; ++i )
+				if ( !context.Hues.Contains( items[i].Hue ) )
+					context.Hues.Add( items[i].Hue );
+
+			context.CheckedHues = true;
+			
+			if ( m_UseAllRes && !m_System.UsesHueSelector( this, types[0] ) )
+				context.CompareHueTo = items[0];
+		}
 
 		private int CheckHueGrouping( Item a, Item b )
 		{
@@ -814,6 +1013,16 @@ namespace Server.Engines.Craft
 		{
 			if( m_ForceNonExceptional )
 				return 0.0;
+			
+			// Carpentry prior to AOS did not have exceptional items
+			if ( !Core.AOS )
+			{
+				for ( int i = 0; i < m_MarkableAOSTable.Length; ++i )
+				{
+					if ( m_Type == m_MarkableAOSTable[i] || m_Type.IsSubclassOf( m_MarkableAOSTable[i] ) )
+						return 0.0;
+				}
+			}
 
 			switch ( system.ECA )
 			{
@@ -891,7 +1100,7 @@ namespace Server.Engines.Craft
 
 			return chance;
 		}
-
+		
 		public void Craft( Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool )
 		{
 			if ( from.BeginAction( typeof( CraftSystem ) ) )
@@ -912,15 +1121,15 @@ namespace Server.Engines.Craft
 								int resHue = 0;
 								int maxAmount = 0;
 								object message = null;
+								
+								CraftContext context = craftSystem.GetContext( from );
 
 								if( ConsumeRes( from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message ) )
 								{
 									message = null;
-
+									
 									if( ConsumeAttributes( from, ref message, false ) )
 									{
-										CraftContext context = craftSystem.GetContext( from );
-
 										if( context != null )
 											context.OnMade( this );
 
@@ -932,6 +1141,9 @@ namespace Server.Engines.Craft
 									}
 									else
 									{
+										if ( context != null )
+											context.ResetHueStateVars();
+										
 										from.EndAction( typeof( CraftSystem ) );
 										from.SendGump( new CraftGump( from, craftSystem, tool, message ) );
 									}
@@ -939,7 +1151,20 @@ namespace Server.Engines.Craft
 								else
 								{
 									from.EndAction( typeof( CraftSystem ) );
-									from.SendGump( new CraftGump( from, craftSystem, tool, message ) );
+									
+									if ( m_BeginHueSelector )
+									{
+										m_BeginHueSelector = false;
+										from.SendLocalizedMessage( 1074794 ); // Target the material to use:
+										from.Target = new SelectHuedTarget( this, craftSystem, m_TypeToCompare, tool );
+									}
+									else
+									{
+										if ( context != null )
+											context.ResetHueStateVars();
+										
+										from.SendGump( new CraftGump( from, craftSystem, tool, message ) );
+									}
 								}
 							}
 							else
@@ -1064,25 +1289,30 @@ namespace Server.Engines.Craft
 
 					return;
 				}
+				
+				CraftContext context = craftSystem.GetContext( from );
 
-				tool.UsesRemaining--;
-
-				if ( craftSystem is DefBlacksmithy )
+				if ( context != null && context.Hues.Count <= 1 )
 				{
-					AncientSmithyHammer hammer = from.FindItemOnLayer( Layer.OneHanded ) as AncientSmithyHammer;
-					if ( hammer != null && hammer != tool )
+					tool.UsesRemaining--;
+
+					if ( craftSystem is DefBlacksmithy )
 					{
-						hammer.UsesRemaining--;
-						if ( hammer.UsesRemaining < 1 )
-							hammer.Delete();
+						AncientSmithyHammer hammer = from.FindItemOnLayer( Layer.OneHanded ) as AncientSmithyHammer;
+						if ( hammer != null && hammer != tool )
+						{
+							hammer.UsesRemaining--;
+							if ( hammer.UsesRemaining < 1 )
+								hammer.Delete();
+						}
 					}
+
+					if ( tool.UsesRemaining < 1 )
+						toolBroken = true;
+
+					if ( toolBroken )
+						tool.Delete();
 				}
-
-				if ( tool.UsesRemaining < 1 )
-					toolBroken = true;
-
-				if ( toolBroken )
-					tool.Delete();
 
 				int num = 0;
 
@@ -1098,7 +1328,19 @@ namespace Server.Engines.Craft
 				}
 				else
 				{
-					item = Activator.CreateInstance( ItemType ) as Item;
+					if ( CraftArgs != null )
+					{
+						try{ item = Activator.CreateInstance( ItemType, CraftArgs ) as Item; }
+						catch
+						{ 
+							item = null;
+							//An internal error occurred, Please notify a game master that you received this message.
+							from.SendGump( new CraftGump( from, craftSystem, tool, 1043288 ) );
+							return;
+						}
+					}
+					else
+						item = Activator.CreateInstance( ItemType ) as Item;
 				}
 
 				if ( item != null )
@@ -1115,6 +1357,8 @@ namespace Server.Engines.Craft
 						else
 							item.Amount = maxAmount;
 					}
+					
+					item.Amount *= m_MultiplyBy;
 
 					from.AddToBackpack( item );
 
@@ -1197,13 +1441,18 @@ namespace Server.Engines.Craft
 					return;
 				}
 
-				tool.UsesRemaining--;
+				CraftContext context = craftSystem.GetContext( from );
 
-				if ( tool.UsesRemaining < 1 )
-					toolBroken = true;
+				if ( context != null && context.Hues.Count <= 1 )
+				{
+					tool.UsesRemaining--;
 
-				if ( toolBroken )
-					tool.Delete();
+					if ( tool.UsesRemaining < 1 )
+						toolBroken = true;
+
+					if ( toolBroken )
+						tool.Delete();
+				}
 
 				// SkillCheck failed.
 				int num = craftSystem.PlayEndingEffect( from, true, true, toolBroken, endquality, false, this );
@@ -1281,6 +1530,8 @@ namespace Server.Engines.Craft
 
 						if ( cc != null )
 							cc.EndCraftAction();
+						
+						context.ResetHueStateVars();
 
 						return;
 					}
@@ -1298,9 +1549,30 @@ namespace Server.Engines.Craft
 					{
 						if ( context.MarkOption == CraftMarkOption.DoNotMark )
 							makersMark = false;
-
-						m_CraftItem.CompleteCraft( quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null );
+						
+						Type comparerResType = null;
+						
+						if ( context.CompareHueTo != null )
+							comparerResType = context.CompareHueTo.GetType();
+						
+						Type baseType = m_CraftItem.GetBaseResType( m_CraftSystem, ( comparerResType != null ? comparerResType : m_TypeRes ) );
+						
+						if ( context.Hues != null && context.Hues.Count > 0 && m_CraftItem.UseAllRes && !m_CraftSystem.UsesHueSelector( m_CraftItem, baseType ) )
+						{
+							while ( context.Hues.Count > 0 )
+							{
+								if ( context.CompareHueTo != null )
+									context.CompareHueTo.Hue = context.Hues[0];
+								
+								m_CraftItem.CompleteCraft( quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null );
+								context.Hues.RemoveAt( 0 );
+							}
+						}
+						else
+							m_CraftItem.CompleteCraft( quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null );
 					}
+					
+					context.ResetHueStateVars();
 				}
 			}
 		}

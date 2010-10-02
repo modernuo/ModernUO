@@ -27,6 +27,17 @@ namespace Server.Engines.Craft
 				return m_CraftSystem;
 			}
 		}
+		
+		public override CraftECA ECA
+		{
+			get
+			{
+				if ( Core.AOS ) 
+					return CraftECA.ChanceMinusSixtyToFourtyFive;
+				
+				return CraftECA.FiftyPercentChanceMinusTenPercent;
+			}
+		}
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
@@ -80,8 +91,6 @@ namespace Server.Engines.Craft
 					return 1044154; // You create the item.
 			}
 		}
-
-		public override CraftECA ECA{ get{ return CraftECA.FiftyPercentChanceMinusTenPercent; } }
 
 		public override void InitCraftList()
 		{

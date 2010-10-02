@@ -36,6 +36,8 @@ namespace Server.Items
 	[FlipableAttribute( 0xe41, 0xe40 )] 
 	public class MetalGoldenTreasureChest : BaseTreasureChest 
 	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public MetalGoldenTreasureChest() : base( 0xE41 ) 
 		{ 
@@ -63,6 +65,8 @@ namespace Server.Items
 	[FlipableAttribute( 0x9ab, 0xe7c )] 
 	public class MetalTreasureChest : BaseTreasureChest 
 	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable] 
 		public MetalTreasureChest() : base( 0x9AB ) 
 		{ 

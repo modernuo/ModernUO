@@ -8,9 +8,15 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new WarriorStatueEastDeed(); } }
 
 		[Constructable]
-		public WarriorStatueEastAddon()
+		public WarriorStatueEastAddon() : this( 0 )
+		{
+		}
+		
+		[Constructable]
+		public WarriorStatueEastAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x2D12 ), 0, 0, 0 );
+			Hue = hue;
 		}
 
 		public WarriorStatueEastAddon( Serial serial ) : base( serial )
@@ -34,7 +40,7 @@ namespace Server.Items
 
 	public class WarriorStatueEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new WarriorStatueEastAddon(); } }
+		public override BaseAddon Addon{ get{ return new WarriorStatueEastAddon( Hue ); } }
 		public override int LabelNumber{ get{ return 1072888; } } // warrior statue (east)
 
 		[Constructable]

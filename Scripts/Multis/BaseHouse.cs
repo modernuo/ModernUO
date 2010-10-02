@@ -1014,7 +1014,7 @@ namespace Server.Multis
 				return IsFriend( from );
 			else if ( item is PotionKeg )
 				return IsFriend( from );
-			else if ( item is BaseBoard )
+			else if ( item is BaseGameBoard )
 				return true;
 			else if ( item is Dices )
 				return true;
@@ -1456,7 +1456,7 @@ namespace Server.Multis
 			if ( !locked )
 				i.SetLastMoved();
 
-			if ( (i is Container) && (!locked || !(i is BaseBoard)) )
+			if ( (i is Container) && (!locked || !(i is BaseGameBoard)) )
 			{
 				foreach ( Item c in i.Items )
 					SetLockdown( c, locked, checkContains );
@@ -1842,6 +1842,7 @@ namespace Server.Multis
 
 				if ( info != null )
 				{
+					m.CloseGump( typeof ( SetSecureLevelGump ) );
 					m.SendGump( new Gumps.SetSecureLevelGump( m_Owner, info, this ) );
 				}
 				else if ( item.Parent != null )
@@ -1867,7 +1868,7 @@ namespace Server.Multis
 				}
 				else
 				{
-					info = new SecureInfo( (Container)item, SecureLevel.CoOwners );
+					info = new SecureInfo( (Container)item, SecureLevel.Owner );
 
 					item.IsLockedDown = false;
 					item.IsSecure = true;
@@ -1876,6 +1877,7 @@ namespace Server.Multis
 					m_LockDowns.Remove( item );
 					item.Movable = false;
 
+					m.CloseGump( typeof ( SetSecureLevelGump ) );
 					m.SendGump( new Gumps.SetSecureLevelGump( m_Owner, info, this ) );
 				}
 			}
@@ -2353,7 +2355,7 @@ namespace Server.Multis
 			{
 				Item item = (Item)m_LockDowns[i];
 
-				if ( item is Container && !(item is BaseBoard) )
+				if ( item is Container && !(item is BaseGameBoard) )
 				{
 					Container cont = (Container)item;
 					List<Item> children = cont.Items;
@@ -3751,6 +3753,7 @@ namespace Server.Multis
 			ISecurable sec = GetSecurable( Owner.From, m_Item );
 
 			if ( sec != null )
+				Owner.From.CloseGump( typeof ( SetSecureLevelGump ) );
 				Owner.From.SendGump( new SetSecureLevelGump( Owner.From, sec, BaseHouse.FindHouseAt( m_Item ) ) );
 		}
 	}

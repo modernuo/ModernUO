@@ -81,7 +81,7 @@ namespace Server.Engines.Craft
 				AddLabel( 330, 40, LabelHue, craftItem.NameString );
 
 			if ( craftItem.UseAllRes )
-				AddHtmlLocalized( 170, 302 + (m_OtherCount++ * 20), 310, 18, 1048176, LabelColor, false, false ); // Makes as many as possible at once
+				AddHtmlLocalized( 170, 302 + (m_OtherCount++ * 20), 310, 18, craftItem.UseAllMessage, LabelColor, false, false ); 
 
 			DrawItem();
 			DrawSkill();
@@ -122,7 +122,10 @@ namespace Server.Engines.Craft
 		{
 			Type type = m_CraftItem.ItemType;
 
-			AddItem( 20, 50, CraftItem.ItemIDOf( type ) );
+			int itemID = m_CraftItem.ForceGumpItemID ? m_CraftItem.GumpItemID : CraftItem.ItemIDOf( type );
+
+			if ( !type.IsSubclassOf( typeof( BaseAddonDeed ) ) || type.IsDefined( typeof( CraftItemIDAttribute ), true ) )
+				AddItem( 20, 50, itemID );
 
 			if ( m_CraftItem.IsMarkable( type ) )
 			{

@@ -24,6 +24,7 @@ namespace Server.Items
 		private InstrumentQuality m_Quality;
 		private Mobile m_Crafter;
 		private int m_UsesRemaining;
+		private CraftResource m_Resource;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SuccessSound
@@ -66,6 +67,15 @@ namespace Server.Items
 			get{ return m_Crafter; }
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftResource Resource
+		{
+			get{ return m_Resource; }
+			set{ m_Resource = value; Hue = CraftResources.GetHue( m_Resource ); InvalidateProperties(); }
+		}
+		
+		public virtual CraftResource DefaultResource{ get{ return CraftResource.RegularWood; } }
 
 		public virtual int InitMinUses{ get{ return 350; } }
 		public virtual int InitMaxUses{ get{ return 450; } }
@@ -370,6 +380,9 @@ namespace Server.Items
 				if( entry != null )
 					list.Add( entry.Title );
 			}
+			
+			if ( ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.Frostwood ) && Hue == CraftResources.GetHue( m_Resource ) )
+				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) );
 
 			if( m_UsesRemaining != oldUses )
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( InvalidateProperties ) );
@@ -436,12 +449,13 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 3 ); // version
+			writer.Write( (int) 4 ); // version
 
+			writer.WriteEncodedInt( (int)m_Resource );
+			
 			writer.Write( m_ReplenishesCharges );
 			if( m_ReplenishesCharges )
 				writer.Write( m_LastReplenished );
-
 
 			writer.Write( m_Crafter );
 
@@ -463,6 +477,11 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 4:
+				{
+					m_Resource = (CraftResource)reader.ReadEncodedInt();
+					goto case 3;
+				}
 				case 3:
 				{
 					m_ReplenishesCharges = reader.ReadBool();
@@ -510,6 +529,9 @@ namespace Server.Items
 					break;
 				}
 			}
+			
+			if ( version < 4 )
+				m_Resource = DefaultResource;
 
 			CheckReplenishUses();
 		}
@@ -570,18 +592,34 @@ namespace Server.Items
 				m_From.EndAction( typeof( BaseInstrument ) );
 			}
 		}
+		
 		#region ICraftable Members
-
 		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
 		{
 			Quality = (InstrumentQuality)quality;
+			
+			if ( Core.ML )
+			{
+				Type resourceType = typeRes;
+				
+				if ( resourceType == null )
+					resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
+			
+				Resource = CraftResources.GetFromType( resourceType );
+			
+				CraftContext context = craftSystem.GetContext( from );
 
+				if ( context != null && context.DoNotColor )
+					Hue = 0;
+			}
+			else
+				Resource = DefaultResource;
+			
 			if ( makersMark )
 				Crafter = from;
 
 			return quality;
 		}
-
 		#endregion
 	}
 }

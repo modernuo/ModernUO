@@ -8,7 +8,12 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ArcaneCircleDeed(); } }
 
 		[Constructable]
-		public ArcaneCircleAddon()
+		public ArcaneCircleAddon() : this( 0 )
+		{
+		}
+		
+		[Constructable]
+		public ArcaneCircleAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x3080 ), -1,  0, 0 );
 			AddComponent( new AddonComponent( 0x3082 ),  0, -1, 0 );
@@ -19,6 +24,7 @@ namespace Server.Items
 			AddComponent( new AddonComponent( 0x307C ),  0,  1, 0 );
 			AddComponent( new AddonComponent( 0x307B ),  1,  1, 0 );
 			AddComponent( new AddonComponent( 0x3083 ),  1,  1, 0 );
+			Hue = hue;
 		}
 
 		public ArcaneCircleAddon( Serial serial ) : base( serial )
@@ -42,7 +48,7 @@ namespace Server.Items
 
 	public class ArcaneCircleDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ArcaneCircleAddon(); } }
+		public override BaseAddon Addon{ get{ return new ArcaneCircleAddon( Hue ); } }
 		public override int LabelNumber{ get{ return 1072703; } } // arcane circle
 
 		[Constructable]

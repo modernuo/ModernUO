@@ -4,7 +4,7 @@ namespace Server.Items
 {
 
 	[Furniture]
-	public class ElegantLowTable : Item
+	public class ElegantLowTable : BaseCraftableItem
 	{
 		[Constructable]
 		public ElegantLowTable() : base(0x2819)
@@ -27,13 +27,12 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		}
 	}
 
 	[Furniture]
-	public class PlainLowTable : Item
+	public class PlainLowTable : BaseCraftableItem
 	{
 		[Constructable]
 		public PlainLowTable() : base(0x281A)
@@ -56,17 +55,16 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 		}
 	}
 
 	[Furniture]
 	[Flipable(0xB90,0xB7D)]
-	public class LargeTable : Item
+	public class LargeTable : BaseCraftableItem
 	{
 		[Constructable]
-		public LargeTable() : base(0xB90)
+		public LargeTable() : base(0xB7D)
 		{
 			Weight = 1.0;
 		}
@@ -86,7 +84,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 
 			if ( Weight == 4.0 )
 				Weight = 1.0;
@@ -95,10 +93,10 @@ namespace Server.Items
 
 	[Furniture]
 	[Flipable(0xB35,0xB34)]
-	public class Nightstand : Item
+	public class Nightstand : BaseCraftableItem
 	{
 		[Constructable]
-		public Nightstand() : base(0xB35)
+		public Nightstand() : base(0xB34)
 		{
 			Weight = 1.0;
 		}
@@ -118,7 +116,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 
 			if ( Weight == 4.0 )
 				Weight = 1.0;
@@ -127,10 +125,10 @@ namespace Server.Items
 
 	[Furniture]
 	[Flipable(0xB8F,0xB7C)]
-	public class YewWoodTable : Item
+	public class YewWoodTable : BaseCraftableItem
 	{
 		[Constructable]
-		public YewWoodTable() : base(0xB8F)
+		public YewWoodTable() : base(0xB7C)
 		{
 			Weight = 1.0;
 		}
@@ -150,7 +148,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
 
 			if ( Weight == 4.0 )
 				Weight = 1.0;

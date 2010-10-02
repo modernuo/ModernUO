@@ -139,7 +139,250 @@ namespace Server.Items
 		public BaseContainer( Serial serial ) : base( serial )
 		{
 		}
+		
+		#region Consume[...]
+		public int ConsumeTotalGroupedCompared( Type[][] types, int[] amounts, bool recurse, OnItemConsumed callback, CheckItemGroup grouper, Item compareTo )
+		{
+			if ( types.Length != amounts.Length )
+				throw new ArgumentException();
+			else if ( grouper == null )
+				throw new ArgumentNullException();
 
+			Item[][][] items = new Item[types.Length][][];
+			int[] totals = new int[types.Length];
+			
+			bool hasComparer = false;
+			
+			Item originalComparer = compareTo;
+			
+			int comparerType = -1;
+						
+			for ( int i = 0; i < types.Length; ++i )
+			{
+				Item[] typedItems = FindItemsByType( types[i], recurse );
+				
+				List<List<Item>> groups = new List<List<Item>>();
+
+				int idx = 0;
+				
+				if ( originalComparer != null )
+				{
+					for ( int j = 0; j < types[i].Length; ++j )
+					{
+						if ( originalComparer.GetType() == types[i][j] )
+						{
+							hasComparer = true;
+							compareTo = originalComparer;
+							comparerType = i;
+							break;
+						}
+					}
+				}
+
+				while( idx < typedItems.Length )
+				{
+					Item a = typedItems[idx++];
+					List<Item> group = new List<Item>();					
+
+					if ( !hasComparer )
+					{
+						compareTo = a;
+						group.Add( a );
+					}
+					else if ( grouper( compareTo, a ) == 0 )
+						group.Add( a );
+
+					while( idx < typedItems.Length )
+					{
+						Item b = typedItems[idx];
+						int v = grouper( compareTo, b );
+
+						if( v == 0 )
+							group.Add( b );
+						else
+							break;
+						
+						++idx;
+					}				
+					
+					groups.Add( group );
+				}
+				
+				compareTo = originalComparer;
+				hasComparer = false;
+				
+				items[i] = new Item[groups.Count][];
+
+				bool hasEnough = false;
+
+				for ( int j = 0; j < groups.Count; ++j )
+				{
+					items[i][j] = groups[j].ToArray();
+
+					for ( int k = 0; k < items[i][j].Length; ++k )
+						totals[i] += items[i][j][k].Amount;
+				}
+				
+				if ( totals[i] >= amounts[i] )
+					hasEnough = true;
+				
+				if ( !hasEnough )
+					return i;
+			}
+			
+
+			for ( int i = 0; i < items.Length; ++i )
+			{
+				int need = amounts[i];
+				
+				if ( originalComparer != null && comparerType == i )
+				{
+					object parent = originalComparer.RootParent;
+					
+					if ( parent is Mobile )
+					{
+						Mobile m = (Mobile)parent;
+						
+						if ( this.RootParent is Mobile && m == (Mobile)this.RootParent )
+							ConsumeNeeded( ref need, originalComparer, callback );
+					}
+				}
+				
+				for ( int j = 0; j < items[i].Length && need > 0; ++j )
+				{
+					if ( totals[i] >= amounts[i] )
+					{
+						for ( int k = 0; k < items[i][j].Length && need > 0; ++k )
+						{
+							Item item = items[i][j][k];
+							
+							if ( !item.Deleted )
+								ConsumeNeeded( ref need, item, callback );
+						}
+					}
+				}
+			}
+
+			return -1;
+		}
+		
+		private void ConsumeNeeded( ref int need, Item item, OnItemConsumed callback )
+		{
+			int theirAmount = item.Amount;
+
+			if ( theirAmount < need )
+			{
+				if ( callback != null )
+					callback( item, theirAmount );
+
+				item.Delete();
+				need -= theirAmount;
+			}
+			else
+			{
+				if ( callback != null )
+					callback( item, need );
+
+				item.Consume( need );
+				need = 0;
+			}
+		}
+		#endregion
+		
+		#region Get[Compared]Amount
+		public int GetComparedGroupAmount( Type[] types, bool recurse, CheckItemGroup grouper, Item compareTo )
+		{
+			if( grouper == null )
+				throw new ArgumentNullException();
+			
+			Item[] typedItems = FindItemsByType( types, recurse );
+			
+			bool hasComparer = false;
+			
+			if ( compareTo != null )
+			{
+				for ( int i = 0; i < types.Length; ++i )
+				{
+					if ( compareTo.GetType() == types[i] )
+					{
+						hasComparer = true;
+						break;
+					}
+				}
+			}
+
+			List<List<Item>> groups = new List<List<Item>>();
+	
+			int idx = 0;
+			
+			while( idx < typedItems.Length )
+			{
+				Item a = typedItems[idx++];
+				List<Item> group = new List<Item>();
+				
+				if ( !hasComparer )
+				{
+					compareTo = a;
+					group.Add( a );
+				}
+				else if ( grouper( compareTo, a ) == 0 )
+					group.Add( a );
+
+				while( idx < typedItems.Length )
+				{
+					Item b = typedItems[idx];
+					int v = grouper( compareTo, b );
+					
+					if( v == 0 )
+						group.Add( b );
+					else
+						break;
+					
+					++idx;
+				}
+
+				groups.Add( group );
+			}
+			
+			int total = 0;
+
+			for( int j = 0; j < groups.Count; ++j )
+			{
+				Item[] items = groups[j].ToArray();
+
+				for( int k = 0; k < items.Length; ++k )
+					total += items[k].Amount;
+			}
+			
+			return total;
+		}
+		
+		public int GetAmountCompared( Type[] types, CheckItemGroup grouper, Item compareTo )
+		{
+			return GetAmountCompared( types, grouper, compareTo, true );
+		}
+
+		public int GetAmountCompared( Type[] types, CheckItemGroup grouper, Item compareTo, bool recurse )
+		{
+			Item[] items = FindItemsByType( types, recurse );
+			
+			int amount = 0;
+
+			for ( int i = 0; i < items.Length; ++i )
+			{
+				if ( compareTo == null )
+				{
+					compareTo = items[i];
+					amount += items[i].Amount;
+				}
+				else if ( grouper( compareTo, items[i] ) == 0 )
+					amount += items[i].Amount;
+			}
+
+			return amount;
+		}
+		#endregion
+		
 		/* Note: base class insertion; we cannot serialize anything here */
 		public override void Serialize( GenericWriter writer )
 		{
@@ -474,7 +717,7 @@ namespace Server.Items
 		}
 	}
 
-	public class Barrel : BaseContainer
+	public class Barrel : BaseFurnitureContainer
 	{
 		[Constructable]
 		public Barrel() : base( 0xE77 )
@@ -497,14 +740,14 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
+			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
 
 			if ( Weight == 0.0 )
 				Weight = 25.0;
 		}
 	}
 
-	public class Keg : BaseContainer
+	public class Keg : BaseFurnitureContainer
 	{
 		[Constructable]
 		public Keg() : base( 0xE7F )
@@ -527,7 +770,7 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
+			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
 		}
 	}
 
@@ -590,7 +833,7 @@ namespace Server.Items
 	public class WoodenBox : LockableContainer
 	{
 		[Constructable]
-		public WoodenBox() : base( 0x9AA )
+		public WoodenBox() : base( 0xE7D )
 		{
 			Weight = 4.0;
 		}
@@ -619,9 +862,9 @@ namespace Server.Items
 	public class SmallCrate : LockableContainer
 	{
 		[Constructable]
-		public SmallCrate() : base( 0x9A9 )
+		public SmallCrate() : base( 0xE7E )
 		{
-			Weight = 2.0;
+			Weight = 1.0;
 		}
 
 		public SmallCrate( Serial serial ) : base( serial )
@@ -641,8 +884,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if ( Weight == 4.0 )
-				Weight = 2.0;
+			if ( Weight == 4.0 || Weight == 2.0 )
+				Weight = 1.0;
 		}
 	}
 
@@ -651,9 +894,9 @@ namespace Server.Items
 	public class MediumCrate : LockableContainer
 	{
 		[Constructable]
-		public MediumCrate() : base( 0xE3F )
+		public MediumCrate() : base( 0xE3E )
 		{
-			Weight = 2.0;
+			Weight = 1.0;
 		}
 
 		public MediumCrate( Serial serial ) : base( serial )
@@ -673,8 +916,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if ( Weight == 6.0 )
-				Weight = 2.0;
+			if ( Weight == 6.0 || Weight == 2.0 )
+				Weight = 1.0;
 		}
 	}
 
@@ -683,7 +926,7 @@ namespace Server.Items
 	public class LargeCrate : LockableContainer
 	{
 		[Constructable]
-		public LargeCrate() : base( 0xE3D )
+		public LargeCrate() : base( 0xE3C )
 		{
 			Weight = 1.0;
 		}
@@ -714,6 +957,8 @@ namespace Server.Items
 	[Flipable( 0x9A8, 0xE80 )]
 	public class MetalBox : LockableContainer
 	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable]
 		public MetalBox() : base( 0x9A8 )
 		{
@@ -745,6 +990,8 @@ namespace Server.Items
 	[Flipable( 0x9AB, 0xE7C )]
 	public class MetalChest : LockableContainer
 	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable]
 		public MetalChest() : base( 0x9AB )
 		{
@@ -776,6 +1023,8 @@ namespace Server.Items
 	[Flipable( 0xE41, 0xE40 )]
 	public class MetalGoldenChest : LockableContainer
 	{
+		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
+		
 		[Constructable]
 		public MetalGoldenChest() : base( 0xE41 )
 		{
@@ -804,13 +1053,13 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xe43, 0xe42 )]
+	[Flipable( 0xE43, 0xE42 )]
 	public class WoodenChest : LockableContainer
 	{
 		[Constructable]
-		public WoodenChest() : base( 0xe43 )
+		public WoodenChest() : base( 0xE42 )
 		{
-			Weight = 2.0;
+			Weight = 1.0;
 		}
 
 		public WoodenChest( Serial serial ) : base( serial )
@@ -830,8 +1079,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if ( Weight == 15.0 )
-				Weight = 2.0;
+			if ( Weight == 15.0 || Weight == 2.0 )
+				Weight = 1.0;
 		}
 	}
 
@@ -840,7 +1089,7 @@ namespace Server.Items
 	public class PlainWoodenChest : LockableContainer
 	{
 		[Constructable]
-		public PlainWoodenChest() : base( 0x280B )
+		public PlainWoodenChest() : base( 0x280C )
 		{
 		}
 
@@ -871,7 +1120,7 @@ namespace Server.Items
 	public class OrnateWoodenChest : LockableContainer
 	{
 		[Constructable]
-		public OrnateWoodenChest() : base( 0x280D )
+		public OrnateWoodenChest() : base( 0x280E )
 		{
 		}
 
@@ -902,7 +1151,7 @@ namespace Server.Items
 	public class GildedWoodenChest : LockableContainer
 	{
 		[Constructable]
-		public GildedWoodenChest() : base( 0x280F )
+		public GildedWoodenChest() : base( 0x2810 )
 		{
 		}
 
@@ -933,7 +1182,7 @@ namespace Server.Items
 	public class WoodenFootLocker : LockableContainer
 	{
 		[Constructable]
-		public WoodenFootLocker() : base( 0x2811 )
+		public WoodenFootLocker() : base( 0x2812 )
 		{
 			GumpID = 0x10B;
 		}
@@ -968,7 +1217,7 @@ namespace Server.Items
 	public class FinishedWoodenChest : LockableContainer
 	{
 		[Constructable]
-		public FinishedWoodenChest() : base( 0x2813 )
+		public FinishedWoodenChest() : base( 0x2814 )
 		{
 		}
 

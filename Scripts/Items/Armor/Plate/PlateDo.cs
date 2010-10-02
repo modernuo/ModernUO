@@ -18,6 +18,8 @@ namespace Server.Items
 		public override int OldStrReq{ get{ return 85; } }
 
 		public override int ArmorBase{ get{ return 3; } }
+		
+		public override bool MageArmorOnExceptional{ get{ return true; } }
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 

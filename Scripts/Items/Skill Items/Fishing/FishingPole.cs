@@ -8,10 +8,14 @@ using Server.ContextMenus;
 
 namespace Server.Items
 {
-	public class FishingPole : Item
+	public class FishingPole : BaseOtherEquipable
 	{
+		public override int AosStrReq{ get{ return 10; } }
+
+		public override CraftResource DefaultResource{ get{ return CraftResource.RegularWood; } }
+		
 		[Constructable]
-		public FishingPole() : base( 0x0DC0 )
+		public FishingPole() : base( 0x0DBF )
 		{
 			Layer = Layer.OneHanded;
 			Weight = 8.0;
@@ -44,7 +48,7 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseOtherEquipable insertion
 		}
 	}
 }

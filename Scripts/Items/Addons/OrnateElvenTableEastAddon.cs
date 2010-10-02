@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -8,11 +9,17 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new OrnateElvenTableEastDeed(); } }
 
 		[Constructable]
-		public OrnateElvenTableEastAddon()
+		public OrnateElvenTableEastAddon() : this( 0 )
 		{
-			AddComponent( new AddonComponent( 0x308E ), -1, 0, 0 );
-			AddComponent( new AddonComponent( 0x308D ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x308C ), 1, 0, 0 );
+		}
+		
+		[Constructable]
+		public OrnateElvenTableEastAddon( int hue )
+		{
+			AddComponent( new AddonComponent( 0x308F ), 0, 1, 0 );
+			AddComponent( new AddonComponent( 0x3090 ), 0, 0, 0 );
+			AddComponent( new AddonComponent( 0x3091 ), 0, -1, 0 );
+			Hue = hue;
 		}
 
 		public OrnateElvenTableEastAddon( Serial serial ) : base( serial )
@@ -34,9 +41,10 @@ namespace Server.Items
 		}
 	}
 
+	[CraftItemID( 0x2DE2 )]
 	public class OrnateElvenTableEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new OrnateElvenTableEastAddon(); } }
+		public override BaseAddon Addon{ get{ return new OrnateElvenTableEastAddon( Hue ); } }
 		public override int LabelNumber{ get{ return 1073384; } } // ornate table (east)
 
 		[Constructable]

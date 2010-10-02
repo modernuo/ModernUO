@@ -104,9 +104,14 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new DartBoardEastDeed(); } }
 
-		public DartBoardEastAddon()
+		public DartBoardEastAddon() : this( 0 )
+		{
+		}
+		
+		public DartBoardEastAddon( int hue )
 		{
 			AddComponent( new DartBoard( true ), 0, 0, 0 );
+			Hue = hue;
 		}
 
 		public DartBoardEastAddon( Serial serial ) : base( serial )
@@ -130,7 +135,7 @@ namespace Server.Items
 
 	public class DartBoardEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new DartBoardEastAddon(); } }
+		public override BaseAddon Addon{ get{ return new DartBoardEastAddon( Hue ); } }
 
 		public override int LabelNumber{ get{ return 1044326; } } // dartboard (east)
 
@@ -162,9 +167,14 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new DartBoardSouthDeed(); } }
 
-		public DartBoardSouthAddon()
+		public DartBoardSouthAddon() : this( 0 )
+		{
+		}
+		
+		public DartBoardSouthAddon( int hue )
 		{
 			AddComponent( new DartBoard( false ), 0, 0, 0 );
+			Hue = hue;
 		}
 
 		public DartBoardSouthAddon( Serial serial ) : base( serial )
@@ -188,7 +198,7 @@ namespace Server.Items
 
 	public class DartBoardSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new DartBoardSouthAddon(); } }
+		public override BaseAddon Addon{ get{ return new DartBoardSouthAddon( Hue ); } }
 
 		public override int LabelNumber{ get{ return 1044325; } } // dartboard (south)
 

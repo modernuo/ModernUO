@@ -224,7 +224,13 @@ namespace Server
 		EnhancePotions=0x00080000,
 		Luck=0x00100000,
 		SpellChanneling=0x00200000,
-		NightSight=0x00400000
+		NightSight=0x00400000,
+		LowerWeight=0x00800000
+	}
+	
+	public interface IAosAttributes
+	{
+		AosAttributes Attributes{ get; set; }
 	}
 
 	public sealed class AosAttributes : BaseAttributes
@@ -256,43 +262,9 @@ namespace Server
 			{
 				Item obj = items[i];
 
-				if( obj is BaseWeapon )
+				if( obj is IAosAttributes )
 				{
-					AosAttributes attrs = ((BaseWeapon)obj).Attributes;
-
-					if( attrs != null )
-						value += attrs[attribute];
-
-					if( attribute == AosAttribute.Luck )
-						value += ((BaseWeapon)obj).GetLuckBonus();
-				}
-				else if( obj is BaseArmor )
-				{
-					AosAttributes attrs = ((BaseArmor)obj).Attributes;
-
-					if( attrs != null )
-						value += attrs[attribute];
-
-					if( attribute == AosAttribute.Luck )
-						value += ((BaseArmor)obj).GetLuckBonus();
-				}
-				else if( obj is BaseJewel )
-				{
-					AosAttributes attrs = ((BaseJewel)obj).Attributes;
-
-					if( attrs != null )
-						value += attrs[attribute];
-				}
-				else if( obj is BaseClothing )
-				{
-					AosAttributes attrs = ((BaseClothing)obj).Attributes;
-
-					if( attrs != null )
-						value += attrs[attribute];
-				}
-				else if( obj is Spellbook )
-				{
-					AosAttributes attrs = ((Spellbook)obj).Attributes;
+					AosAttributes attrs = ((IAosAttributes)obj).Attributes;
 
 					if( attrs != null )
 						value += attrs[attribute];
@@ -422,6 +394,9 @@ namespace Server
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int NightSight { get { return this[AosAttribute.NightSight]; } set { this[AosAttribute.NightSight] = value; } }
+		
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int LowerWeight { get { return this[AosAttribute.LowerWeight]; } set { this[AosAttribute.LowerWeight] = value; } }
 	}
 
 	[Flags]
@@ -1139,6 +1114,16 @@ namespace Server
 				}
 			}
 
+			if( (bitmask == (int)AosAttribute.LowerWeight) && (this is AosAttributes) )
+			{
+				if( m_Owner is BaseArmor )
+					((BaseArmor)m_Owner).ModifyWeight();
+				else if( m_Owner is BaseWeapon )
+					((BaseWeapon)m_Owner).ModifyWeight();
+				else if( m_Owner is BaseOtherEquipable )
+					((BaseOtherEquipable)m_Owner).ModifyWeight();
+			}
+			
 			m_Owner.InvalidateProperties();
 		}
 

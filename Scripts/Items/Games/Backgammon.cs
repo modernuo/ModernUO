@@ -4,7 +4,7 @@ using System.Collections;
 namespace Server.Items
 {
 	[Flipable( 0xE1C, 0xFAD )]
-	public class Backgammon : BaseBoard
+	public class Backgammon : BaseGameBoard
 	{
 		[Constructable]
 		public Backgammon() : base( 0xE1C )

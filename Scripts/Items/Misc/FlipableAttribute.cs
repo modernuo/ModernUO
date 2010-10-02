@@ -65,10 +65,16 @@ namespace Server.Items
 	public class FlipableAttribute : Attribute
 	{
 		private int[] m_ItemIDs;
+		private bool m_IsDynamicFlipable;
 
 		public int[] ItemIDs
 		{
 			get { return m_ItemIDs; }
+		}
+	
+		public bool IsDynamicFlipable
+		{
+			get { return m_IsDynamicFlipable; }
 		}
 
 		public FlipableAttribute()
@@ -76,8 +82,14 @@ namespace Server.Items
 		{
 		}
 
-		public FlipableAttribute( params int[] itemIDs )
+		public FlipableAttribute( params int[] itemIDs ) 
+			: this( true, itemIDs )
 		{
+		}
+		
+		public FlipableAttribute( bool isDynamicFlipable, params int[] itemIDs)
+		{
+			m_IsDynamicFlipable = isDynamicFlipable;
 			m_ItemIDs = itemIDs;
 		}
 

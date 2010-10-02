@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -8,9 +9,15 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new AlchemistTableEastDeed(); } }
 
 		[Constructable]
-		public AlchemistTableEastAddon()
+		public AlchemistTableEastAddon() : this( 0 )
+		{
+		}
+		
+		[Constructable]
+		public AlchemistTableEastAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x2DD3 ), 0, 0, 0 );
+			Hue = hue;
 		}
 
 		public AlchemistTableEastAddon( Serial serial ) : base( serial )
@@ -32,9 +39,10 @@ namespace Server.Items
 		}
 	}
 
+	[CraftItemID( 0x2DD3 )]
 	public class AlchemistTableEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new AlchemistTableEastAddon(); } }
+		public override BaseAddon Addon{ get{ return new AlchemistTableEastAddon( Hue ); } }
 		public override int LabelNumber{ get{ return 1073397; } } // alchemist table (east)
 
 		[Constructable]

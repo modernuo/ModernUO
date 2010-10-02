@@ -10,7 +10,7 @@ using ABT = Server.Items.ArmorBodyType;
 
 namespace Server.Items
 {
-	public abstract class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability
+	public abstract class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosAttributes
 	{
 		#region Factions
 		private FactionItem m_FactionState;
@@ -61,6 +61,9 @@ namespace Server.Items
 		private AosAttributes m_AosAttributes;
 		private AosArmorAttributes m_AosArmorAttributes;
 		private AosSkillBonuses m_AosSkillBonuses;
+		
+		private BonusAttribute[] m_BonusRandomAttributes;
+		private double m_OriginalWeight;
 
 		// Overridable values. These values are provided to override the defaults which get defined in the individual armor scripts.
 		private int m_ArmorBase = -1;
@@ -98,6 +101,9 @@ namespace Server.Items
 		public virtual int OldIntReq{ get{ return 0; } }
 
 		public virtual bool CanFortify{ get{ return true; } }
+		
+		public virtual bool MageArmorOnExceptional{ get{ return false; } }
+		public virtual bool UsesShieldAttrs{ get{ return false; } }
 
 		public override void OnAfterDuped( Item newItem )
 		{
@@ -109,7 +115,10 @@ namespace Server.Items
 			armor.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
 			armor.m_AosArmorAttributes = new AosArmorAttributes( newItem, m_AosArmorAttributes );
 			armor.m_AosSkillBonuses = new AosSkillBonuses( newItem, m_AosSkillBonuses );
+			armor.m_BonusRandomAttributes = m_BonusRandomAttributes;
 		}
+
+		#region Getters & Setters
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AMA MeditationAllowance
@@ -246,18 +255,37 @@ namespace Server.Items
 			{
 				if ( m_Resource != value )
 				{
-					UnscaleDurability();
+					if ( !Core.AOS )
+						UnscaleDurability();
 
+					if ( Core.AOS && !CraftResources.IsStandard( m_Resource ) )
+					{
+						BonusAttributesHelper.RemoveAttrsFrom( this, GetResourceBonusAttrs() );
+						BonusAttributesHelper.RemoveAttrsFrom( this, RandomAttributes );
+						RandomAttributes = null;
+					}
+					
 					m_Resource = value;
 					Hue = CraftResources.GetHue( m_Resource );
-
+					
+					if ( Core.AOS && !CraftResources.IsStandard( m_Resource ) )
+					{
+						// Enhance sets RandomAttributes so check if it's null/empty first before getting new random attributes.
+						if ( RandomAttributes == null || RandomAttributes.Length == 0 )
+							RandomAttributes = BonusAttributesHelper.GetRandomAttributes( GetResourceRandomAttrs(), GetResourceAttrs().RandomAttributeCount );
+					
+						BonusAttributesHelper.ApplyAttributesTo( this, GetResourceBonusAttrs() );
+						BonusAttributesHelper.ApplyAttributesTo( this, RandomAttributes );
+					}
+					
 					Invalidate();
 					InvalidateProperties();
 
 					if ( Parent is Mobile )
 						((Mobile)Parent).UpdateResistances();
 
-					ScaleDurability();
+					if ( !Core.AOS )
+						ScaleDurability();
 				}
 			}
 		}
@@ -375,6 +403,14 @@ namespace Server.Items
 			get{ return m_AosSkillBonuses; }
 			set{}
 		}
+		
+		public BonusAttribute[] RandomAttributes
+		{
+			get { return m_BonusRandomAttributes; }
+			set { m_BonusRandomAttributes = value; }
+		}
+		
+		#endregion
 
 		public int ComputeStatReq( StatType type )
 		{
@@ -421,11 +457,11 @@ namespace Server.Items
 		public virtual int BasePoisonResistance{ get{ return 0; } }
 		public virtual int BaseEnergyResistance{ get{ return 0; } }
 
-		public override int PhysicalResistance{ get{ return BasePhysicalResistance + GetProtOffset() + GetResourceAttrs().ArmorPhysicalResist + m_PhysicalBonus; } }
-		public override int FireResistance{ get{ return BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + m_FireBonus; } }
-		public override int ColdResistance{ get{ return BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + m_ColdBonus; } }
-		public override int PoisonResistance{ get{ return BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + m_PoisonBonus; } }
-		public override int EnergyResistance{ get{ return BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus; } }
+		public override int PhysicalResistance{ get{ return BasePhysicalResistance + GetProtOffset() + m_PhysicalBonus; } }
+		public override int FireResistance{ get{ return BaseFireResistance + GetProtOffset() + m_FireBonus; } }
+		public override int ColdResistance{ get{ return BaseColdResistance + GetProtOffset() + m_ColdBonus; } }
+		public override int PoisonResistance{ get{ return BasePoisonResistance + GetProtOffset() + m_PoisonBonus; } }
+		public override int EnergyResistance{ get{ return BaseEnergyResistance + GetProtOffset() + m_EnergyBonus; } }
 
 		public virtual int InitMinHits{ get{ return 0; } }
 		public virtual int InitMaxHits{ get{ return 0; } }
@@ -481,6 +517,26 @@ namespace Server.Items
 
 			return info.AttributeInfo;
 		}
+		
+		public BonusAttribute[] GetResourceBonusAttrs()
+		{
+			CraftAttributeInfo attrInfo = GetResourceAttrs();
+			
+			if ( UsesShieldAttrs )
+				return attrInfo.ShieldAttributes;
+			
+			return attrInfo.ArmorAttributes;
+		}
+		
+		public BonusAttribute[] GetResourceRandomAttrs()
+		{
+			CraftAttributeInfo attrInfo = GetResourceAttrs();
+			
+			if ( UsesShieldAttrs )
+				return attrInfo.ShieldRandomAttributes;
+			
+			return attrInfo.ArmorRandomAttributes;
+		}
 
 		public int GetProtOffset()
 		{
@@ -493,6 +549,25 @@ namespace Server.Items
 			}
 
 			return 0;
+		}
+		
+		public void ModifyWeight()
+		{
+			double v = 0;
+		
+			v = 100 - GetWeightBonus();
+				
+			Weight = m_OriginalWeight * (v / 100);
+		}
+		
+		public int GetWeightBonus()
+		{			
+			int v = Attributes.LowerWeight;
+				
+			if ( v > 100 )
+				v = 100;
+			
+			return v;	
 		}
 
 		public void UnscaleDurability()
@@ -532,15 +607,6 @@ namespace Server.Items
 			if ( Core.AOS )
 			{
 				bonus += m_AosArmorAttributes.DurabilityBonus;
-
-				CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
-				CraftAttributeInfo attrInfo = null;
-
-				if ( resInfo != null )
-					attrInfo = resInfo.AttributeInfo;
-
-				if ( attrInfo != null )
-					bonus += attrInfo.ArmorDurability;
 			}
 
 			return bonus;
@@ -647,16 +713,6 @@ namespace Server.Items
 
 			int v = m_AosArmorAttributes.LowerStatReq;
 
-			CraftResourceInfo info = CraftResources.GetInfo( m_Resource );
-
-			if ( info != null )
-			{
-				CraftAttributeInfo attrInfo = info.AttributeInfo;
-
-				if ( attrInfo != null )
-					v += attrInfo.ArmorLowerRequirements;
-			}
-
 			if ( v > 100 )
 				v = 100;
 
@@ -735,14 +791,16 @@ namespace Server.Items
 			IntReq				= 0x00200000,
 			MedAllowance		= 0x00400000,
 			SkillBonuses		= 0x00800000,
-			PlayerConstructed	= 0x01000000
+			PlayerConstructed	= 0x01000000,
+			BonusAttributes		= 0x02000000,
+			OriginalWeight		= 0x04000000
 		}
 
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 7 ); // version
+			writer.Write( (int) 8 ); // version
 
 			SaveFlag flags = SaveFlag.None;
 
@@ -771,7 +829,9 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.MedAllowance,		m_Meditate != (AMA)(-1) );
 			SetSaveFlag( ref flags, SaveFlag.SkillBonuses,		!m_AosSkillBonuses.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	m_PlayerConstructed != false );
-
+			SetSaveFlag( ref flags, SaveFlag.BonusAttributes,	m_BonusRandomAttributes != null && m_BonusRandomAttributes.Length > 0 );
+			SetSaveFlag( ref flags, SaveFlag.OriginalWeight,	m_OriginalWeight != 0 );
+			
 			writer.WriteEncodedInt( (int) flags );
 
 			if ( GetSaveFlag( flags, SaveFlag.Attributes ) )
@@ -842,6 +902,16 @@ namespace Server.Items
 
 			if ( GetSaveFlag( flags, SaveFlag.SkillBonuses ) )
 				m_AosSkillBonuses.Serialize( writer );
+			
+			if ( GetSaveFlag( flags, SaveFlag.BonusAttributes ) )
+			{
+				writer.Write( (int)m_BonusRandomAttributes.Length );
+				for ( int i = 0; i < m_BonusRandomAttributes.Length; i++ )
+					m_BonusRandomAttributes[i].Serialize( writer );
+			}
+			
+			if ( GetSaveFlag( flags, SaveFlag.OriginalWeight ) )
+				writer.Write( (double)m_OriginalWeight );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -852,6 +922,7 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 8:
 				case 7:
 				case 6:
 				case 5:
@@ -972,6 +1043,17 @@ namespace Server.Items
 
 					if ( GetSaveFlag( flags, SaveFlag.PlayerConstructed ) )
 						m_PlayerConstructed = true;
+					
+					if ( GetSaveFlag( flags, SaveFlag.BonusAttributes ) )
+					{
+						m_BonusRandomAttributes = new BonusAttribute[reader.ReadInt()];
+						
+						for( int i = 0; i < m_BonusRandomAttributes.Length; i++ )
+							m_BonusRandomAttributes[i] =  new BonusAttribute( reader );
+					}
+					
+					if ( GetSaveFlag( flags, SaveFlag.OriginalWeight ) )
+						m_OriginalWeight = reader.ReadDouble();
 
 					break;
 				}
@@ -1129,6 +1211,18 @@ namespace Server.Items
 
 			if ( version < 7 )
 				m_PlayerConstructed = true; // we don't know, so, assume it's crafted
+			
+			if ( version < 8 )
+			{
+				int hits = m_HitPoints;
+				int maxHits = m_MaxHitPoints;
+				
+				m_OriginalWeight = Weight;
+				BonusAttributesHelper.ApplyAttributesTo( this, GetResourceBonusAttrs() );
+				
+				m_HitPoints = hits;
+				m_MaxHitPoints = maxHits;
+			}
 		}
 
 		public virtual CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
@@ -1149,6 +1243,8 @@ namespace Server.Items
 			m_AosAttributes = new AosAttributes( this );
 			m_AosArmorAttributes = new AosArmorAttributes( this );
 			m_AosSkillBonuses = new AosSkillBonuses( this );
+			
+			m_OriginalWeight = Weight;
 		}
 
 		public override bool AllowSecureTrade( Mobile from, Mobile to, Mobile newOwner, bool accepted )
@@ -1386,7 +1482,7 @@ namespace Server.Items
 				default: oreType = 0; break;
 			}
 
-			if ( m_Quality == ArmorQuality.Exceptional )
+			if ( m_Quality == ArmorQuality.Exceptional && !( m_Resource >= CraftResource.RegularWood && m_Resource <= CraftResource.Frostwood ) )
 			{
 				if ( oreType != 0 )
 					list.Add( 1053100, "#{0}\t{1}", oreType, GetNameString() ); // exceptional ~1_oretype~ ~2_armortype~
@@ -1411,28 +1507,16 @@ namespace Server.Items
 
 			return ( m_AosAttributes.SpellChanneling != 0 );
 		}
-
-		public virtual int GetLuckBonus()
-		{
-			CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
-
-			if ( resInfo == null )
-				return 0;
-
-			CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
-
-			if ( attrInfo == null )
-				return 0;
-
-			return attrInfo.ArmorLuck;
-		}
-
+		
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
 
 			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+			
+			if ( m_Quality == ArmorQuality.Exceptional && ( m_Resource >= CraftResource.RegularWood && m_Resource <= CraftResource.Frostwood ) )
+				list.Add( 1060636 ); // exceptional
 
 			#region Factions
 			if ( m_FactionState != null )
@@ -1485,7 +1569,7 @@ namespace Server.Items
 			if ( (prop = GetLowerStatReq()) != 0 )
 				list.Add( 1060435, prop.ToString() ); // lower requirements ~1_val~%
 
-			if ( (prop = (GetLuckBonus() + m_AosAttributes.Luck)) != 0 )
+			if ( (prop = m_AosAttributes.Luck) != 0 )
 				list.Add( 1060436, prop.ToString() ); // luck ~1_val~
 
 			if ( (prop = m_AosArmorAttributes.MageArmor) != 0 )
@@ -1599,23 +1683,15 @@ namespace Server.Items
 			if ( makersMark )
 				Crafter = from;
 
-			Type resourceType = typeRes;
-
-			if ( resourceType == null )
-				resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
-
-			Resource = CraftResources.GetFromType( resourceType );
-			PlayerConstructed = true;
-
-			CraftContext context = craftSystem.GetContext( from );
-
-			if ( context != null && context.DoNotColor )
-				Hue = 0;
-
 			if( Quality == ArmorQuality.Exceptional )
 			{
-				DistributeBonuses( (tool is BaseRunicTool ? 6 : Core.SE ? 15 : 14) ); // Not sure since when, but right now 15 points are added, not 14.
+				if ( !(this is BaseShield) )
+					DistributeBonuses( (tool is BaseRunicTool ? 6 : Core.SE ? 15 : 14) ); // Not sure since when, but right now 15 points are added, not 14.
 
+				if ( Core.SE )
+					if ( MageArmorOnExceptional )
+						ArmorAttributes[AosArmorAttribute.MageArmor] = 1;
+				
 				if( Core.ML && !(this is BaseShield) )
 				{
 					int bonus = (int)(from.Skills.ArmsLore.Value / 20);
@@ -1638,7 +1714,26 @@ namespace Server.Items
 
 			if ( Core.AOS && tool is BaseRunicTool )
 				((BaseRunicTool)tool).ApplyAttributesTo( this );
+			
+			Type resourceType = typeRes;
 
+			if ( resourceType == null )
+				resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
+
+			Resource = CraftResources.GetFromType( resourceType );
+
+			PlayerConstructed = true;
+
+			CraftContext context = craftSystem.GetContext( from );
+
+			if ( context != null )
+			{
+				if ( context.DoNotColor )
+					Hue = 0;
+				else if ( context.CompareHueTo != null )
+					Hue = context.CompareHueTo.Hue;
+			}
+				
 			return quality;
 		}
 

@@ -4,7 +4,7 @@ using Server.Items;
 namespace Server.Items
 {
 	[FlipableAttribute( 0x1bdd, 0x1be0 )]
-	public class Log : Item, ICommodity, IAxe
+	public abstract class BaseLog : Item, ICommodity, IAxe
 	{
 		private CraftResource m_Resource;
 
@@ -14,6 +14,22 @@ namespace Server.Items
 			get { return m_Resource; }
 			set { m_Resource = value; InvalidateProperties(); }
 		}
+		
+		#region Old Log Serialization Vars
+		/* DO NOT USE! Only used in serialization of logs that originally derived from Log */
+		private bool m_InheritsItem;
+		private int m_OldVersion;
+		
+		protected bool InheritsItem
+		{
+			get{ return m_InheritsItem; }
+		}
+		
+		protected int OldVersion
+		{
+			get{ return m_OldVersion; }
+		}
+		#endregion
 
 		string ICommodity.Description
 		{
@@ -25,23 +41,7 @@ namespace Server.Items
 
 		int ICommodity.DescriptionNumber { get { return CraftResources.IsStandard( m_Resource ) ? LabelNumber : 1075062 + ( (int)m_Resource - (int)CraftResource.RegularWood ); } }
 
-		[Constructable]
-		public Log() : this( 1 )
-		{
-		}
-
-		[Constructable]
-		public Log( int amount ) : this( CraftResource.RegularWood, amount )
-		{
-		}
-
-		[Constructable]
-		public Log( CraftResource resource )
-			: this( resource, 1 )
-		{
-		}
-		[Constructable]
-		public Log( CraftResource resource, int amount )
+		public BaseLog( CraftResource resource, int amount )
 			: base( 0x1BDD )
 		{
 			Stackable = true;
@@ -66,7 +66,7 @@ namespace Server.Items
 					list.Add( CraftResources.GetName( m_Resource ) );
 			}
 		}
-		public Log( Serial serial ) : base( serial )
+		public BaseLog( Serial serial ) : base( serial )
 		{
 		}
 
@@ -74,7 +74,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
 
 			writer.Write( (int)m_Resource );
 		}
@@ -87,15 +87,24 @@ namespace Server.Items
 
 			switch ( version )
 			{
-				case 1:
-					{
-						m_Resource = (CraftResource)reader.ReadInt();
-						break;
-					}
+				case 2:
+				{
+					m_Resource = (CraftResource)reader.ReadInt();
+					break;
+				}
+				/** Below is for deserialization of old logs that orignally inherited from Log or Item **/
+				case 1: // For all logs
+				{
+					m_Resource = (CraftResource)reader.ReadInt();
+					goto case 0;
+				}
+				case 0: // For old standard logs
+				{
+					m_InheritsItem = true;
+					m_OldVersion = version;
+					break;
+				}
 			}
-
-			if ( version == 0 )
-				m_Resource = CraftResource.RegularWood;
 		}
 
 		public virtual bool TryCreateBoards( Mobile from, double skill, Item item )
@@ -120,7 +129,58 @@ namespace Server.Items
 			return true;
 		}
 	}
-	public class HeartwoodLog : Log
+
+	public class Log : BaseLog
+	{
+		[Constructable]
+		public Log() : this( 1 )
+		{
+		}
+
+		[Constructable]
+		public Log( int amount ) 
+			: base( CraftResource.RegularWood, amount )
+		{
+		}
+
+		public Log( Serial serial ) : base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.Write( (int) 2 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); // Required for BaseLog insertion
+
+			switch ( version )
+			{
+				/** Versions 0 and 1 originally inherited from Item. Version 0 is from before Log became a CraftResource. **/
+				case 0:
+				{
+					Resource = CraftResource.RegularWood;
+					break;
+				}
+			}
+		}
+
+		public override bool Axe( Mobile from, BaseAxe axe )
+		{
+			if ( !TryCreateBoards( from , 0, new Board() ) )
+				return false;
+			
+			return true;
+		}
+	}
+	
+	public class HeartwoodLog : BaseLog
 	{
 		[Constructable]
 		public HeartwoodLog() : this( 1 )
@@ -156,7 +216,7 @@ namespace Server.Items
 		}
 	}
 
-	public class BloodwoodLog : Log
+	public class BloodwoodLog : BaseLog
 	{
 		[Constructable]
 		public BloodwoodLog()
@@ -194,7 +254,7 @@ namespace Server.Items
 		}
 	}
 
-	public class FrostwoodLog : Log
+	public class FrostwoodLog : BaseLog
 	{
 		[Constructable]
 		public FrostwoodLog()
@@ -236,7 +296,7 @@ namespace Server.Items
 		}
 	}
 
-	public class OakLog : Log
+	public class OakLog : BaseLog
 	{
 		[Constructable]
 		public OakLog()
@@ -278,7 +338,7 @@ namespace Server.Items
 		}
 	}
 
-	public class AshLog : Log
+	public class AshLog : BaseLog
 	{
 		[Constructable]
 		public AshLog()
@@ -320,7 +380,7 @@ namespace Server.Items
 		}
 	}
 
-	public class YewLog : Log
+	public class YewLog : BaseLog
 	{
 		[Constructable]
 		public YewLog()

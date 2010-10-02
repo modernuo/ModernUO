@@ -4,12 +4,12 @@ namespace Server.Items
 {
 	[Furniture]
 	[Flipable( 0xB2D, 0xB2C )]
-	public class WoodenBench : Item
+	public class WoodenBench : BaseCraftableItem
 	{
 		[Constructable]
-		public WoodenBench() : base( 0xB2D )
+		public WoodenBench() : base( 0xB2C )
 		{
-			Weight = 6;
+			Weight = 1;
 		}
 
 		public WoodenBench(Serial serial) : base(serial)
@@ -27,7 +27,10 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			
+			if ( Weight == 6 )
+				Weight = 1;
 		}
 	}
 }

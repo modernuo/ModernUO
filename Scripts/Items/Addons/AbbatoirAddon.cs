@@ -8,7 +8,12 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new AbbatoirDeed(); } }
 
 		[Constructable]
-		public AbbatoirAddon()
+		public AbbatoirAddon() : this( 0 )
+		{
+		}
+		
+		[Constructable]
+		public AbbatoirAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x120E ), -1, -1, 0 );
 			AddComponent( new AddonComponent( 0x120F ),  0, -1, 0 );
@@ -19,6 +24,7 @@ namespace Server.Items
 			AddComponent( new AddonComponent( 0x1214 ), -1,  1, 0 );
 			AddComponent( new AddonComponent( 0x1213 ),  0,  1, 0 );
 			AddComponent( new AddonComponent( 0x1212 ),  1,  1, 0 );
+			Hue = hue;
 		}
 
 		public AbbatoirAddon( Serial serial ) : base( serial )
@@ -42,7 +48,7 @@ namespace Server.Items
 
 	public class AbbatoirDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new AbbatoirAddon(); } }
+		public override BaseAddon Addon{ get{ return new AbbatoirAddon( Hue ); } }
 		public override int LabelNumber{ get{ return 1044329; } } // abbatoir
 
 		[Constructable]
