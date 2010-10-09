@@ -553,7 +553,7 @@ namespace Server.Spells
 		private static bool[,] m_Rules = new bool[,]
 			{
 						/*T2A(Fel)		Ilshenar		Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel), CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	Stronghold,		ChampionSpawn, Dungeons(Tokuno[Malas]), LampRoom(Doom),	GuardianRoom(Doom) */
-/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			true,			true,				false,				false },
+/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			false,			true,				false,				false },
 /* Recall To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },
 /* Gate From */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },
 /* Gate To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false },

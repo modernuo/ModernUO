@@ -24,6 +24,7 @@ using Server.Accounting;
 using Server.Engines.CannedEvil;
 using Server.Engines.Craft;
 using Server.Spells.Spellweaving;
+using Server.Engines.PartySystem;
 
 namespace Server.Mobiles
 {
@@ -103,6 +104,7 @@ namespace Server.Mobiles
 		private int m_Profession;
 		private bool m_IsStealthing; // IsStealthing should be moved to Server.Mobiles
 		private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
+ 	 	private int m_NonAutoreinsuredItems; // number of items that could not be automaitically reinsured because gold in bank was not enough
 
 		/* 
 		 * a value of zero means, that the mobile is not executing the spell. Otherwise,
@@ -1491,9 +1493,19 @@ namespace Server.Mobiles
 			}
 			if ( from != this )
 			{
-					
 				if ( Alive && Core.Expansion >= Expansion.AOS )
-					list.Add( new AddToPartyEntry( from, this ) );
+				{
+					if ( from.Party == null && this.Party == null )
+						list.Add( new AddToPartyEntry( from, this ) );
+
+					else if ( from.Party != null && ((Party)from.Party).Leader == from )
+					{
+						if ( this.Party == null )
+							list.Add( new AddToPartyEntry( from, this ) );
+						else if ( this.Party == from.Party )
+							list.Add( new RemoveFromPartyEntry( from, this ) );
+					}
+				}
 			
 				BaseHouse curhouse = BaseHouse.FindHouseAt( this );
 			
@@ -2059,6 +2071,7 @@ namespace Server.Mobiles
 
 		public override bool OnBeforeDeath()
 		{
+ 	 	 	m_NonAutoreinsuredItems = 0;
 			m_InsuranceCost = 0;
 			m_InsuranceAward = base.FindMostRecentDamager( false );
 
@@ -2098,12 +2111,14 @@ namespace Server.Mobiles
 					{
 						m_InsuranceCost += cost;
 						item.PayedInsurance = true;
-					}
+ 	 	 	 	 	 	SendLocalizedMessage(1060398, cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+ 	 	 	 	 	}
 					else
 					{
 						SendLocalizedMessage( 1061079, "", 0x23 ); // You lack the funds to purchase the insurance
 						item.PayedInsurance = false;
 						item.Insured = false;
+ 	 	 	 	 	 	m_NonAutoreinsuredItems++;
 					}
 				}
 				else
@@ -2155,7 +2170,12 @@ namespace Server.Mobiles
 
 		public override void OnDeath( Container c )
 		{
-			base.OnDeath( c );
+ 	 	 	if (m_NonAutoreinsuredItems > 0)
+ 	 	 	{
+ 	 	 	 	SendMessage("You do not have the gold to automatically reinsure all your items.");
+ 	 	 	}
+
+ 	 	 	base.OnDeath(c);
 
 			HueMod = -1;
 			NameMod = null;
@@ -2474,7 +2494,7 @@ namespace Server.Mobiles
 				/* Per EA's UO Herald Pub48 (ML): 
 				 * ((resist spellsx10)/20 + 10=percentage of damage resisted)
 				 */
-         
+ 	 	 
 			if ( oath == this )
 			{
 				amount = (int)(amount * 1.1);
@@ -3399,7 +3419,7 @@ namespace Server.Mobiles
 			if ( context != null && context.Type == typeof( ReaperFormSpell ) )
 				return Mobile.WalkFoot;
 
-            bool running = ( (dir & Direction.Running) != 0 );
+ 	 	 	bool running = ( (dir & Direction.Running) != 0 );
 
 			bool onHorse = ( this.Mount != null );
 
