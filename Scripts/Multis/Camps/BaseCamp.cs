@@ -13,22 +13,28 @@ namespace Server.Multis
 		private List<Mobile> m_Mobiles;
 		private DateTime m_DecayTime;
 		private Timer m_DecayTimer;
-        private TimeSpan m_DecayDelay;
+		private TimeSpan m_DecayDelay;
 
 		public virtual int EventRange{ get{ return 10; } }
-        public virtual TimeSpan DecayDelay { 
-            get { return m_DecayDelay; } 
-            set { 
-                m_DecayDelay = value;
-                RefreshDecay( true );
-            } 
-        }
+
+		public virtual TimeSpan DecayDelay
+		{
+			get
+			{
+				return m_DecayDelay;
+			} 
+			set
+			{
+				m_DecayDelay = value;
+				RefreshDecay( true );
+			} 
+		}
 
 		public BaseCamp( int multiID ) : base( multiID | 0x4000 )
 		{
 			m_Items = new List<Item>();
 			m_Mobiles = new List<Mobile>();
-            m_DecayDelay = TimeSpan.FromMinutes( 30.0 );
+			m_DecayDelay = TimeSpan.FromMinutes( 30.0 );
 			RefreshDecay( true );
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckAddComponents ) );
@@ -38,8 +44,8 @@ namespace Server.Multis
 		{
 			m_Items = new List<Item>();
 			m_Mobiles = new List<Mobile>();
-            m_DecayDelay = TimeSpan.FromMinutes(30.0);
-            RefreshDecay(true);
+			m_DecayDelay = TimeSpan.FromMinutes(30.0);
+			RefreshDecay(true);
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckAddComponents ) );
 		}
@@ -74,16 +80,16 @@ namespace Server.Multis
 		{
 			m_Items.Add( item );
 
-            int zavg = Map.GetAverageZ(X + xOffset, Y + yOffset);
+			int zavg = Map.GetAverageZ(X + xOffset, Y + yOffset);
 			item.MoveToWorld( new Point3D( X + xOffset, Y + yOffset, zavg + zOffset ), Map );
 		}
 
 		public virtual void AddMobile( Mobile m, int wanderRange, int xOffset, int yOffset, int zOffset )
 		{
-            m_Mobiles.Add(m);
+			m_Mobiles.Add(m);
 
-            int zavg = Map.GetAverageZ(X + xOffset, Y + yOffset);
-            Point3D loc = new Point3D(X + xOffset, Y + yOffset, zavg + zOffset);
+			int zavg = Map.GetAverageZ(X + xOffset, Y + yOffset);
+			Point3D loc = new Point3D(X + xOffset, Y + yOffset, zavg + zOffset);
 			BaseCreature bc = m as BaseCreature;
 
 			if ( bc != null )
@@ -128,15 +134,15 @@ namespace Server.Multis
 			for ( int i = 0; i < m_Items.Count; ++i )
 				m_Items[i].Delete();
 
-            for ( int i = 0; i < m_Mobiles.Count; ++i )
-            {
-                BaseCreature bc = (BaseCreature)m_Mobiles[i];
+			for ( int i = 0; i < m_Mobiles.Count; ++i )
+			{
+				BaseCreature bc = (BaseCreature)m_Mobiles[i];
 
-                if ( bc.IsPrisoner == false )
-                    m_Mobiles[i].Delete();
-                else if ( m_Mobiles[i].CantWalk == true )
-                    m_Mobiles[i].Delete();
-            }
+				if ( bc.IsPrisoner == false )
+					m_Mobiles[i].Delete();
+				else if ( m_Mobiles[i].CantWalk == true )
+					m_Mobiles[i].Delete();
+			}
 
 			m_Items.Clear();
 			m_Mobiles.Clear();
@@ -179,35 +185,33 @@ namespace Server.Multis
 		}
 	}
 
-    public class LockableBarrel : LockableContainer
-    {
-        [Constructable]
-        public LockableBarrel()
-            : base(0xE77)
-        {
-            Weight = 1.0;
-        }
+	public class LockableBarrel : LockableContainer
+	{
+		[Constructable]
+		public LockableBarrel() : base(0xE77)
+		{
+			Weight = 1.0;
+		}
 
-        public LockableBarrel(Serial serial)
-            : base(serial)
-        {
-        }
+		public LockableBarrel(Serial serial) : base(serial)
+		{
+		}
 
-        public override void Serialize(GenericWriter writer)
-        {
-            base.Serialize(writer);
+		public override void Serialize(GenericWriter writer)
+		{
+			base.Serialize(writer);
 
-            writer.Write((int)0); // version
-        }
+			writer.Write((int)0); // version
+		}
 
-        public override void Deserialize(GenericReader reader)
-        {
-            base.Deserialize(reader);
+		public override void Deserialize(GenericReader reader)
+		{
+			base.Deserialize(reader);
 
-            int version = reader.ReadInt();
+			int version = reader.ReadInt();
 
-            if (Weight == 8.0)
-                Weight = 1.0;
-        }
-    }
+			if (Weight == 8.0)
+				Weight = 1.0;
+		}
+	}
 }

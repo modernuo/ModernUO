@@ -5,10 +5,7 @@ namespace Server.Spells.Spellweaving
 {
 	public class ReaperFormSpell : ArcaneForm
 	{
-		private static SpellInfo m_Info = new SpellInfo(
-                "Reaper Form", "Tarisstree",
-				-1
-			);
+		private static SpellInfo m_Info = new SpellInfo( "Reaper Form", "Tarisstree", -1 );
 
 		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.5 ); } }
 
@@ -25,8 +22,8 @@ namespace Server.Spells.Spellweaving
 				e.Mobile.Send( SpeedControl.WalkSpeed );
 		}
 
-        public override double RequiredSkill { get { return 24.0; } }
-        public override int RequiredMana { get { return 34; } }
+		public override double RequiredSkill { get { return 24.0; } }
+		public override int RequiredMana { get { return 34; } }
 
 		public override int Body { get { return 0x11D; } }
 
@@ -39,7 +36,7 @@ namespace Server.Spells.Spellweaving
 		public virtual int SwingSpeedBonus { get { return 10 + FocusLevel; } }
 		public virtual int SpellDamageBonus { get { return 10 + FocusLevel; } }
 
-        public ReaperFormSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
+		public ReaperFormSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
 		}
 

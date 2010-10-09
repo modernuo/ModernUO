@@ -1468,18 +1468,18 @@ namespace Server.Mobiles
 				int price;
 				string description;
 
-                if ( int.TryParse( firstWord, out price ) )
-                {
-                    if ( sep >= 0 )
-                        description = text.Substring( sep + 1 ).Trim();
-                    else
-                        description = "";
+		if ( int.TryParse( firstWord, out price ) )
+		{
+			if ( sep >= 0 )
+				description = text.Substring( sep + 1 ).Trim();
+			else
+				description = "";
                 }
-                else
-                {
-                    price = -1;
-                    description = text.Trim();
-                }
+		else
+		{
+			price = -1;
+			description = text.Trim();
+		}
 
 				SetInfo( from, price, Utility.FixHtml( description ) );
 			}
@@ -1560,8 +1560,8 @@ namespace Server.Mobiles
 
 				int amount;
 
-                if ( !int.TryParse( text, out amount ) )
-                    amount = 0;
+				if ( !int.TryParse( text, out amount ) )
+					amount = 0;
 
 				GiveGold( from, amount );
 			}

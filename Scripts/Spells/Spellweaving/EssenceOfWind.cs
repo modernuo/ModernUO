@@ -6,17 +6,14 @@ namespace Server.Spells.Spellweaving
 {
 	public class EssenceOfWindSpell : ArcanistSpell
 	{
-		private static SpellInfo m_Info = new SpellInfo(
-                "Essence of Wind", "Anathrae",
-				-1
-			);
+		private static SpellInfo m_Info = new SpellInfo( "Essence of Wind", "Anathrae", -1 );
 
 		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 3.0 ); } }
 
-        public override double RequiredSkill { get { return 52.0; } }
-        public override int RequiredMana { get { return 40; } }
+		public override double RequiredSkill { get { return 52.0; } }
+		public override int RequiredMana { get { return 40; } }
 
-        public EssenceOfWindSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
+		public EssenceOfWindSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
 		}
 

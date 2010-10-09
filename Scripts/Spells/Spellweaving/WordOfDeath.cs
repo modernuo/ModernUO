@@ -6,17 +6,14 @@ namespace Server.Spells.Spellweaving
 {
 	public class WordOfDeathSpell : ArcanistSpell
 	{
-		private static SpellInfo m_Info = new SpellInfo(
-                "Word of Death", "Nyraxle",
-				-1
-			);
+		private static SpellInfo m_Info = new SpellInfo( "Word of Death", "Nyraxle", -1 );
 
 		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 3.5 ); } }
 
-        public override double RequiredSkill { get { return 80.0; } }
-        public override int RequiredMana { get { return 50; } }
+		public override double RequiredSkill { get { return 80.0; } }
+		public override int RequiredMana { get { return 50; } }
 
-        public WordOfDeathSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
+		public WordOfDeathSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
 		}
 

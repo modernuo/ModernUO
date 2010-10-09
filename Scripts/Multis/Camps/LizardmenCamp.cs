@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Multis
 {   
-    public class LizardmenCamp : BaseCamp
+	public class LizardmenCamp : BaseCamp
 	{
 		public virtual Mobile Lizardmen{ get{ return new Lizardman(); } }
 		
@@ -23,33 +23,33 @@ namespace Server.Multis
 			BaseCreature bc;
 			//BaseEscortable be;
 
-            Visible = false;
-            DecayDelay = TimeSpan.FromMinutes( 5.0 );
-            AddItem(new Static(0x10ee), 0, 0, 0);
-            AddItem(new Static(0xfac), 0, 7, 0);
+			Visible = false;
+			DecayDelay = TimeSpan.FromMinutes( 5.0 );
+			AddItem(new Static(0x10ee), 0, 0, 0);
+			AddItem(new Static(0xfac), 0, 7, 0);
 
 			switch ( Utility.Random( 3 ) )
 			{
 				case 0:
 				{
 					AddItem( new Item( 0xDE3 ), 0, 7, 0 ); // Campfire
-                    AddItem( new Item( 0x974 ), 0, 7, 1); // Cauldron
+					AddItem( new Item( 0x974 ), 0, 7, 1); // Cauldron
 					break;
 				}
 				case 1:
 				{
-                    AddItem( new Item( 0x1E95 ), 0, 7, 1); // Rabbit on a spit
+					AddItem( new Item( 0x1E95 ), 0, 7, 1); // Rabbit on a spit
 					break;
 				}
-                default:
+				default:
 				{
-                    AddItem( new Item( 0x1E94 ), 0, 7, 1); // Chicken on a spit
+					AddItem( new Item( 0x1E94 ), 0, 7, 1); // Chicken on a spit
 					break;
 				}
 			}
-            AddItem(new Item(0x41F), 4, 4, 0); // Gruesome Standart South
+			AddItem(new Item(0x41F), 4, 4, 0); // Gruesome Standart South
 
-            AddCampChests();
+			AddCampChests();
 
 			for ( int i = 0; i < 4; i ++ )
 			{				
@@ -59,7 +59,7 @@ namespace Server.Multis
 			switch ( Utility.Random( 2 ) )
 			{
 				case 0: m_Prisoner = new Noble(); break;
-                default: m_Prisoner = new SeekerOfAdventure(); break;
+				default: m_Prisoner = new SeekerOfAdventure(); break;
 			}
 			
 			//be = (BaseEscortable)m_Prisoner;
@@ -73,18 +73,18 @@ namespace Server.Multis
 			AddMobile( m_Prisoner, 2, Utility.RandomMinMax( -2, 2 ), Utility.RandomMinMax( -2, 2 ), 0 );
 		}
 
-        private void AddCampChests()
-        {
+		private void AddCampChests()
+		{
    			LockableContainer chest = null;
 			
 			switch ( Utility.Random( 3 ) )
 			{
 				case 0: chest = new MetalChest(); break;
 				case 1: chest = new MetalGoldenChest(); break;
-                default: chest = new WoodenChest(); break;
+				default: chest = new WoodenChest(); break;
 			}
 
-            chest.LiftOverride = true;
+			chest.LiftOverride = true;
 
 			TreasureMapChest.Fill( chest, 1 );
 						
@@ -97,7 +97,7 @@ namespace Server.Multis
 				case 0: crates = new SmallCrate(); break;
 				case 1: crates = new MediumCrate(); break;
 				case 2: crates = new LargeCrate(); break;
-                default: crates = new LockableBarrel(); break;
+				default: crates = new LockableBarrel(); break;
 			}
 			
 			crates.TrapType = TrapType.ExplosionTrap;
@@ -113,7 +113,7 @@ namespace Server.Multis
 			crates.DropItem( new Arrow( 10 ) );
 			crates.DropItem( new Bolt( 10 ) );
 
-            crates.LiftOverride = true;
+			crates.LiftOverride = true;
 			
 			if ( Utility.RandomDouble() < 0.8 )
 			{
@@ -122,15 +122,15 @@ namespace Server.Multis
 					case 0: crates.DropItem( new LesserCurePotion() ); break;
 					case 1: crates.DropItem( new LesserExplosionPotion() ); break;
 					case 2: crates.DropItem( new LesserHealPotion() ); break;
-                    default: crates.DropItem(new LesserPoisonPotion()); break;
+					default: crates.DropItem(new LesserPoisonPotion()); break;
 				}
 			}
 			
 			AddItem( crates, -2, 2, 0 );
-        }
+		}
 
-        // Don't refresh decay timer
-        public override void OnEnter(Mobile m)
+		// Don't refresh decay timer
+		public override void OnEnter(Mobile m)
 		{
 			if ( m.Player && m_Prisoner != null && m_Prisoner.CantWalk )
 			{
@@ -145,16 +145,16 @@ namespace Server.Multis
 					case 4: number = 502265; break; // Help! Please!
 					case 5: number = 502266; break; // Aaah! Help me!
 					case 6: number = 502267; break; // Go and get some help!
-                    default: number = 502268; break; // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.	
+					default: number = 502268; break; // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.	
 				}
 				m_Prisoner.Yell( number );
 			}
 		}
 
-        // Don't refresh decay timer
-        public override void OnExit(Mobile m)
-        {
-        }
+		// Don't refresh decay timer
+		public override void OnExit(Mobile m)
+		{
+		}
 
 		public LizardmenCamp( Serial serial ) : base( serial )
 		{
