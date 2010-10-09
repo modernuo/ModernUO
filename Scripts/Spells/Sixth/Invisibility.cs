@@ -95,7 +95,6 @@ namespace Server.Spells.Sixth
 
 			protected override void OnTick()
 			{
-				if ( !m_Mobile.Hidden )
 				m_Mobile.RevealingAction();
 				RemoveTimer( m_Mobile );
 			}
