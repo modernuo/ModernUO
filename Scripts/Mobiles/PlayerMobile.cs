@@ -505,9 +505,6 @@ namespace Server.Mobiles
 
 						if ( fp != null )
 						{
-							if ( !fp.IsDynamicFlipable )
-								return true;
-							
 							int[] itemIDs = fp.ItemIDs;
 
 							Point3D oldWorldLoc = bi.m_WorldLoc;

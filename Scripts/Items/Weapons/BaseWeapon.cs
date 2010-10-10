@@ -21,7 +21,7 @@ namespace Server.Items
 		SlayerName Slayer2 { get; set; }
 	}
 
-	public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosAttributes
+	public abstract class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability
 	{
 		private string m_EngravedText;
 		
@@ -92,9 +92,6 @@ namespace Server.Items
 		private AosWeaponAttributes m_AosWeaponAttributes;
 		private AosSkillBonuses m_AosSkillBonuses;
 		private AosElementAttributes m_AosElementDamages;
-		
-		private BonusAttribute[] m_BonusRandomAttributes;
-		private double m_OriginalWeight;
 
 		// Overridable values. These values are provided to override the defaults which get defined in the individual weapon scripts.
 		private int m_StrReq, m_DexReq, m_IntReq;
@@ -280,43 +277,7 @@ namespace Server.Items
 		public CraftResource Resource
 		{
 			get{ return m_Resource; }
-			set
-			{ 
-				if ( m_Resource != value )
-				{
-					if ( !Core.AOS )
-						UnscaleDurability(); 
-				
-					if ( Core.AOS && !CraftResources.IsStandard( m_Resource ) )
-					{
-						BonusAttributesHelper.RemoveAttrsFrom( this, GetResourceBonusAttrs() );
-						BonusAttributesHelper.RemoveAttrsFrom( this, RandomAttributes );
-						RandomAttributes = null;
-					}
-					
-					m_Resource = value;
-					
-					if ( Core.AOS && !CraftResources.IsStandard( m_Resource ) )
-					{
-						// Enhance sets RandomAttributes so check if it's null/empty first before getting new random attributes.
-						if ( RandomAttributes == null || RandomAttributes.Length == 0 )
-							RandomAttributes = BonusAttributesHelper.GetRandomAttributes( GetResourceRandomAttrs(), GetResourceAttrs().RandomAttributeCount );
-					
-						BonusAttributesHelper.ApplyAttributesTo( this, GetResourceBonusAttrs() );
-						BonusAttributesHelper.ApplyAttributesTo( this, RandomAttributes );
-					}
-					
-					if ( Core.AOS )
-						Hue = GetElementalDamageHue( CraftResources.GetHue( m_Resource ) );
-					else
-						Hue = CraftResources.GetHue( m_Resource );
-				
-					InvalidateProperties();
-				
-					if ( !Core.AOS )
-						ScaleDurability();
-				}
-			}
+			set{ UnscaleDurability(); m_Resource = value; Hue = CraftResources.GetHue( m_Resource ); InvalidateProperties(); ScaleDurability(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -472,12 +433,6 @@ namespace Server.Items
 				}
 			}
 		}
-		
-		public BonusAttribute[] RandomAttributes
-		{
-			get { return m_BonusRandomAttributes; }
-			set { m_BonusRandomAttributes = value; }
-		}
 
 		#endregion
 
@@ -492,28 +447,6 @@ namespace Server.Items
 			weap.m_AosElementDamages = new AosElementAttributes( newItem, m_AosElementDamages );
 			weap.m_AosSkillBonuses = new AosSkillBonuses( newItem, m_AosSkillBonuses );
 			weap.m_AosWeaponAttributes = new AosWeaponAttributes( newItem, m_AosWeaponAttributes );
-			weap.m_BonusRandomAttributes = m_BonusRandomAttributes;
-		}
-		
-		public void ModifyWeight()
-		{
-			double v = 0;
-		
-			v = 100 - GetWeightBonus();
-				
-			Weight = m_OriginalWeight * (v / 100);
-		}
-		
-		public int GetWeightBonus()
-		{
-			CraftAttributeInfo attrInfo = GetResourceAttrs();
-			
-			int v = Attributes.LowerWeight;
-				
-			if ( v > 100 )
-				v = 100;
-			
-			return v;	
 		}
 
 		public virtual void UnscaleDurability()
@@ -532,30 +465,6 @@ namespace Server.Items
 			m_Hits = ((m_Hits * scale) + 99) / 100;
 			m_MaxHits = ((m_MaxHits * scale) + 99) / 100;
 			InvalidateProperties();
-		}
-		
-		public CraftAttributeInfo GetResourceAttrs()
-		{
-			CraftResourceInfo info = CraftResources.GetInfo( m_Resource );
-
-			if ( info == null )
-				return CraftAttributeInfo.Blank;
-
-			return info.AttributeInfo;
-		}
-		
-		public BonusAttribute[] GetResourceBonusAttrs()
-		{
-			CraftAttributeInfo attrInfo = GetResourceAttrs();
-			
-			return attrInfo.WeaponAttributes;
-		}
-		
-		public BonusAttribute[] GetResourceRandomAttrs()
-		{
-			CraftAttributeInfo attrInfo = GetResourceAttrs();
-			
-			return attrInfo.WeaponRandomAttributes;
 		}
 
 		public int GetDurabilityBonus()
@@ -577,6 +486,15 @@ namespace Server.Items
 			if ( Core.AOS )
 			{
 				bonus += m_AosWeaponAttributes.DurabilityBonus;
+
+				CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
+				CraftAttributeInfo attrInfo = null;
+
+				if ( resInfo != null )
+					attrInfo = resInfo.AttributeInfo;
+
+				if ( attrInfo != null )
+					bonus += attrInfo.WeaponDurability;
 			}
 
 			return bonus;
@@ -588,6 +506,16 @@ namespace Server.Items
 				return 0;
 
 			int v = m_AosWeaponAttributes.LowerStatReq;
+
+			CraftResourceInfo info = CraftResources.GetInfo( m_Resource );
+
+			if ( info != null )
+			{
+				CraftAttributeInfo attrInfo = info.AttributeInfo;
+
+				if ( attrInfo != null )
+					v += attrInfo.WeaponLowerRequirements;
+			}
 
 			if ( v > 100 )
 				v = 100;
@@ -1005,7 +933,6 @@ namespace Server.Items
 					ticks = Math.Floor( ( 80000.0 / ( ( m.Stam + 100 ) * speed ) ) - 2 );
 				}
 				
-
 				// Swing speed currently capped at one swing every 1.25 seconds (5 ticks).
 				if ( ticks < 5 )
 					ticks = 5;
@@ -2078,10 +2005,31 @@ namespace Server.Items
 				direct = m_AosElementDamages.Direct;
 
 				phys = 100 - fire - cold - pois - nrgy - chaos - direct;
+
+				CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
+
+				if( resInfo != null )
+				{
+					CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
+
+					if( attrInfo != null )
+					{
+						int left = phys;
+
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponColdDamage,		ref cold, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponEnergyDamage,	ref nrgy, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponFireDamage,		ref fire, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponPoisonDamage,	ref pois, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponChaosDamage,	ref chaos, left );
+						left = ApplyCraftAttributeElementDamage( attrInfo.WeaponDirectDamage,	ref direct, left );
+
+						phys = left;
+					}
+				}
 			}
 		}
 
-		public int ApplyAttributeElementDamage( int attrDamage, ref int element, int totalRemaining )
+		private int ApplyCraftAttributeElementDamage( int attrDamage, ref int element, int totalRemaining )
 		{
 			if( totalRemaining <= 0 )
 				return 0;
@@ -2100,27 +2048,6 @@ namespace Server.Items
 			element += appliedDamage;
 
 			return totalRemaining - appliedDamage;
-		}
-		
-		public int RemoveAttributeElementDamage( int attrDamage, ref int element, int totalRemaining )
-		{
-			if( totalRemaining >= 100 )
-				return 100;
-
-			if ( attrDamage <= 0 )
-				return totalRemaining;
-
-			int removedDamage = attrDamage;
-
-			if ( (element - removedDamage) < 0 )
-				removedDamage = element;
-
-			if( removedDamage > 100 - totalRemaining )
-				removedDamage = 100 - totalRemaining;
-
-			element -= removedDamage;
-
-			return totalRemaining + removedDamage;
 		}
 
 		public virtual void OnMiss( Mobile attacker, Mobile defender )
@@ -2520,19 +2447,8 @@ namespace Server.Items
 			if ( setIf )
 				flags |= toSet;
 		}
-		
-		private static void SetSaveFlag( ref SaveFlag2 flags, SaveFlag2 toSet, bool setIf )
-		{
-			if ( setIf )
-				flags |= toSet;
-		}
 
 		private static bool GetSaveFlag( SaveFlag flags, SaveFlag toGet )
-		{
-			return ( (flags & toGet) != 0 );
-		}
-		
-		private static bool GetSaveFlag( SaveFlag2 flags, SaveFlag2 toGet )
 		{
 			return ( (flags & toGet) != 0 );
 		}
@@ -2541,12 +2457,10 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 			
-			writer.Write( (int) 10 ); // version
+			writer.Write( (int) 9 ); // version
 
 			SaveFlag flags = SaveFlag.None;
-			SaveFlag2 flags2 = SaveFlag2.None;
 
-			//SaveFlag
 			SetSaveFlag( ref flags, SaveFlag.DamageLevel,		m_DamageLevel != WeaponDamageLevel.Regular );
 			SetSaveFlag( ref flags, SaveFlag.AccuracyLevel,		m_AccuracyLevel != WeaponAccuracyLevel.Regular );
 			SetSaveFlag( ref flags, SaveFlag.DurabilityLevel,	m_DurabilityLevel != WeaponDurabilityLevel.Regular );
@@ -2578,23 +2492,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.Slayer2,			m_Slayer2 != SlayerName.None );
 			SetSaveFlag( ref flags, SaveFlag.ElementalDamages,	!m_AosElementDamages.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.EngravedText,		!String.IsNullOrEmpty( m_EngravedText ) );
-			
-			//SaveFlag2
-			SetSaveFlag( ref flags2, SaveFlag2.BonusAttributes,	m_BonusRandomAttributes != null && m_BonusRandomAttributes.Length > 0 );
-			SetSaveFlag( ref flags2, SaveFlag2.OriginalWeight,	m_OriginalWeight != 0 );
-			
-			writer.Write( (int) flags2 );
-			
-			if ( GetSaveFlag( flags2, SaveFlag2.BonusAttributes ) )
-			{
-				writer.Write( (int)m_BonusRandomAttributes.Length );
-				for ( int i = 0; i < m_BonusRandomAttributes.Length; i++ )
-					m_BonusRandomAttributes[i].Serialize( writer );
-			}
-			
-			if ( GetSaveFlag( flags2, SaveFlag2.OriginalWeight ) )
-				writer.Write( (double)m_OriginalWeight );
-			
+
 			writer.Write( (int) flags );
 
 			if ( GetSaveFlag( flags, SaveFlag.DamageLevel ) )
@@ -2721,14 +2619,6 @@ namespace Server.Items
 			ElementalDamages		= 0x20000000,
 			EngravedText			= 0x40000000
 		}
-		
-		[Flags]
-		private enum SaveFlag2
-		{
-			None					= 0x00000000,
-			BonusAttributes			= 0x00000001,
-			OriginalWeight			= 0x00000002
-		}
 
 		public override void Deserialize( GenericReader reader )
 		{
@@ -2738,23 +2628,6 @@ namespace Server.Items
 
 			switch ( version )
 			{
-				case 10:
-				{
-					SaveFlag2 flags2 = (SaveFlag2)reader.ReadInt();
-					
-					if ( GetSaveFlag( flags2, SaveFlag2.BonusAttributes ) )
-					{
-						m_BonusRandomAttributes = new BonusAttribute[reader.ReadInt()];
-						
-						for( int i = 0; i < m_BonusRandomAttributes.Length; i++ )
-							m_BonusRandomAttributes[i] =  new BonusAttribute( reader );
-					}
-					
-					if ( GetSaveFlag( flags2, SaveFlag2.OriginalWeight ) )
-						m_OriginalWeight = reader.ReadDouble();
-					
-					goto case 9;
-				}
 				case 9:
 				case 8:
 				case 7:
@@ -3069,18 +2942,6 @@ namespace Server.Items
 
 			if ( version < 6 )
 				m_PlayerConstructed = true; // we don't know, so, assume it's crafted
-			
-			if ( version < 10 )
-			{
-				int hits = m_Hits;
-				int maxHits = m_MaxHits;
-				
-				m_OriginalWeight = Weight;
-				BonusAttributesHelper.ApplyAttributesTo( this, GetResourceBonusAttrs() );
-				
-				m_Hits = hits;
-				m_MaxHits = maxHits;
-			}
 		}
 		#endregion
 
@@ -3110,8 +2971,6 @@ namespace Server.Items
 			m_AosWeaponAttributes = new AosWeaponAttributes( this );
 			m_AosSkillBonuses = new AosSkillBonuses( this );
 			m_AosElementDamages = new AosElementAttributes( this );
-			
-			m_OriginalWeight = Weight;
 		}
 
 		public BaseWeapon( Serial serial ) : base( serial )
@@ -3134,24 +2993,16 @@ namespace Server.Items
 			get{ return base.Hue; }
 			set{ base.Hue = value; InvalidateProperties(); }
 		}
-		
-		public int GetElementalDamageHue()
-		{
-			return GetElementalDamageHue( 0 );
-		}
 
-		public int GetElementalDamageHue( int currentHue )
+		public int GetElementalDamageHue()
 		{
 			int phys, fire, cold, pois, nrgy, chaos, direct;
 			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );
 			//Order is Cold, Energy, Fire, Poison, Physical left
-			
-			if( ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.Frostwood ) && currentHue == CraftResources.GetHue( m_Resource ) )
-				return currentHue;
 
 			int currentMax = 50;
-			int hue = currentHue;
-			
+			int hue = 0;
+
 			if( pois >= currentMax )
 			{
 				hue = 1267 + (pois - 50) / 10;
@@ -3229,6 +3080,21 @@ namespace Server.Items
 			get{ return 0; }
 		}
 
+		public virtual int GetLuckBonus()
+		{
+			CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
+
+			if ( resInfo == null )
+				return 0;
+
+			CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
+
+			if ( attrInfo == null )
+				return 0;
+
+			return attrInfo.WeaponLuck;
+		}
+
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
@@ -3277,9 +3143,6 @@ namespace Server.Items
 			base.AddResistanceProperties( list );
 
 			int prop;
-			
-			if ( ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.Frostwood ) && Hue == CraftResources.GetHue( m_Resource ) )
-				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) );
 
 			if ( Core.ML && this is BaseRanged && ( (BaseRanged) this ).Balanced )
 				list.Add( 1072792 ); // Balanced
@@ -3371,7 +3234,7 @@ namespace Server.Items
 			if ( (prop = GetLowerStatReq()) != 0 )
 				list.Add( 1060435, prop.ToString() ); // lower requirements ~1_val~%
 
-			if ( (prop = m_AosAttributes.Luck) != 0 )
+			if ( (prop = (GetLuckBonus() + m_AosAttributes.Luck)) != 0 )
 				list.Add( 1060436, prop.ToString() ); // luck ~1_val~
 
 			if ( (prop = m_AosWeaponAttributes.MageWeapon) != 0 )
@@ -3570,6 +3433,13 @@ namespace Server.Items
 
 			if ( Core.AOS )
 			{
+				Resource = CraftResources.GetFromType( resourceType );
+
+				CraftContext context = craftSystem.GetContext( from );
+
+				if ( context != null && context.DoNotColor )
+					Hue = 0;
+
 				if ( tool is BaseRunicTool )
 					((BaseRunicTool)tool).ApplyAttributesTo( this );
 
@@ -3590,13 +3460,6 @@ namespace Server.Items
 						from.CheckSkill( SkillName.ArmsLore, 0, 100 );
 					}
 				}
-				
-				Resource = CraftResources.GetFromType( resourceType );
-
-				CraftContext context = craftSystem.GetContext( from );
-
-				if ( context != null && context.DoNotColor )
-					Hue = GetElementalDamageHue();
 			}
 			else if ( tool is BaseRunicTool )
 			{

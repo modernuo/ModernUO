@@ -2,11 +2,8 @@ using System;
 
 namespace Server.Items
 {
-	public class BarrelLid : BaseCraftableItem
+	public class BarrelLid : Item
 	{
-		public override bool DisplaysResource{ get{ return false; } }
-		public override bool DisplaysMakersMark{ get{ return false; } }
-		
 		[Constructable]
 		public BarrelLid() : base(0x1DB8)
 		{
@@ -28,16 +25,13 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 
 	[FlipableAttribute(0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4)]
-	public class BarrelStaves : BaseCraftableItem
+	public class BarrelStaves : Item
 	{
-		public override bool DisplaysResource{ get{ return false; } }
-		public override bool DisplaysMakersMark{ get{ return false; } }
-		
 		[Constructable]
 		public BarrelStaves() : base(0x1EB1)
 		{
@@ -59,7 +53,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 

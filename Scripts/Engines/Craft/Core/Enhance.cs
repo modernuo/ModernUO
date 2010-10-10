@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Server;
 using Server.Targeting;
 using Server.Items;
@@ -30,7 +29,7 @@ namespace Server.Engines.Craft
 			if ( !item.IsChildOf( from.Backpack ) )
 				return EnhanceResult.NotInBackpack;
 
-			if ( !(item is BaseArmor) && !(item is BaseWeapon) && !(item is BaseOtherEquipable) )
+			if ( !(item is BaseArmor) && !(item is BaseWeapon) )
 				return EnhanceResult.BadItem;
 
 			if ( item is IArcaneEquip )
@@ -86,10 +85,19 @@ namespace Server.Engines.Craft
 				}
 			}
 
+			int phys = 0, fire = 0, cold = 0, pois = 0, nrgy = 0;
+			int dura = 0, luck = 0, lreq = 0, dinc = 0;
 			int baseChance = 0;
-			
-			BonusAttribute[] bonusAttrs = null;
-			BonusAttribute[] randomAttrs = null;
+
+			bool physBonus = false;
+			bool fireBonus = false;
+			bool coldBonus = false;
+			bool nrgyBonus = false;
+			bool poisBonus = false;
+			bool duraBonus = false;
+			bool luckBonus = false;
+			bool lreqBonus = false;
+			bool dincBonus = false;
 
 			if ( item is BaseWeapon )
 			{
@@ -99,15 +107,23 @@ namespace Server.Engines.Craft
 					return EnhanceResult.AlreadyEnhanced;
 
 				baseChance = 20;
-				
-				CheckSkill( ref baseChance, from, craftSystem );
-				
-				int numOfRand = attributes.RandomAttributeCount;
-				
-				bonusAttrs = attributes.WeaponAttributes;
-				randomAttrs = BonusAttributesHelper.GetRandomAttributes( attributes.WeaponRandomAttributes, numOfRand );
+
+				dura = weapon.MaxHitPoints;
+				luck = weapon.Attributes.Luck;
+				lreq = weapon.WeaponAttributes.LowerStatReq;
+				dinc = weapon.Attributes.WeaponDamage;
+
+				fireBonus = ( attributes.WeaponFireDamage > 0 );
+				coldBonus = ( attributes.WeaponColdDamage > 0 );
+				nrgyBonus = ( attributes.WeaponEnergyDamage > 0 );
+				poisBonus = ( attributes.WeaponPoisonDamage > 0 );
+
+				duraBonus = ( attributes.WeaponDurability > 0 );
+				luckBonus = ( attributes.WeaponLuck > 0 );
+				lreqBonus = ( attributes.WeaponLowerRequirements > 0 );
+				dincBonus = ( dinc > 0 );
 			}
-			else if ( item is BaseArmor )
+			else
 			{
 				BaseArmor armor = (BaseArmor)item;
 
@@ -115,48 +131,62 @@ namespace Server.Engines.Craft
 					return EnhanceResult.AlreadyEnhanced;
 
 				baseChance = 20;
-				
-				CheckSkill( ref baseChance, from, craftSystem );
-				
-				int numOfRand = attributes.RandomAttributeCount;
-				
-				if ( armor.UsesShieldAttrs )
-				{
-					bonusAttrs = attributes.ShieldAttributes;
-					randomAttrs = BonusAttributesHelper.GetRandomAttributes( attributes.ShieldRandomAttributes, numOfRand );
-				}
-				else 
-				{
-					bonusAttrs = info.AttributeInfo.ArmorAttributes;
-					randomAttrs = BonusAttributesHelper.GetRandomAttributes( attributes.ArmorRandomAttributes, numOfRand );
-				}
-			}
-			else if ( item is BaseOtherEquipable )
-			{
-				BaseOtherEquipable otherEquip = (BaseOtherEquipable)item;
 
-				if ( !CraftResources.IsStandard( otherEquip.Resource ) )
-					return EnhanceResult.AlreadyEnhanced;
+				phys = armor.PhysicalResistance;
+				fire = armor.FireResistance;
+				cold = armor.ColdResistance;
+				pois = armor.PoisonResistance;
+				nrgy = armor.EnergyResistance;
 
-				baseChance = 20;
-				
-				CheckSkill( ref baseChance, from, craftSystem );
-				
-				int numOfRand = attributes.RandomAttributeCount;
-				
-				bonusAttrs = attributes.OtherAttributes;
-				randomAttrs = BonusAttributesHelper.GetRandomAttributes( attributes.OtherRandomAttributes, numOfRand );	
+				dura = armor.MaxHitPoints;
+				luck = armor.Attributes.Luck;
+				lreq = armor.ArmorAttributes.LowerStatReq;
+
+				physBonus = ( attributes.ArmorPhysicalResist > 0 );
+				fireBonus = ( attributes.ArmorFireResist > 0 );
+				coldBonus = ( attributes.ArmorColdResist > 0 );
+				nrgyBonus = ( attributes.ArmorEnergyResist > 0 );
+				poisBonus = ( attributes.ArmorPoisonResist > 0 );
+
+				duraBonus = ( attributes.ArmorDurability > 0 );
+				luckBonus = ( attributes.ArmorLuck > 0 );
+				lreqBonus = ( attributes.ArmorLowerRequirements > 0 );
+				dincBonus = false;
 			}
-			
-			List<BonusAttribute> attrs = new List<BonusAttribute>();
-			if ( bonusAttrs != null && bonusAttrs.Length > 0 )
-				attrs.AddRange( bonusAttrs );
-			if ( randomAttrs != null && randomAttrs.Length > 0 )
-				attrs.AddRange( randomAttrs );
-			
+
+			int skill = from.Skills[craftSystem.MainSkill].Fixed / 10;
+
+			if ( skill >= 100 )
+				baseChance -= (skill - 90) / 10;
+
 			EnhanceResult res = EnhanceResult.Success;
-				
-			TryEnhance( attrs, item, baseChance, ref res );
+
+			if ( physBonus )
+				CheckResult( ref res, baseChance + phys );
+
+			if ( fireBonus )
+				CheckResult( ref res, baseChance + fire );
+
+			if ( coldBonus )
+				CheckResult( ref res, baseChance + cold );
+
+			if ( nrgyBonus )
+				CheckResult( ref res, baseChance + nrgy );
+
+			if ( poisBonus )
+				CheckResult( ref res, baseChance + pois );
+
+			if ( duraBonus )
+				CheckResult( ref res, baseChance + (dura / 40) );
+
+			if ( luckBonus )
+				CheckResult( ref res, baseChance + 10 + (luck / 2) );
+
+			if ( lreqBonus )
+				CheckResult( ref res, baseChance + (lreq / 4) );
+
+			if ( dincBonus )
+				CheckResult( ref res, baseChance + (dinc / 4) );
 
 			switch ( res )
 			{
@@ -176,28 +206,16 @@ namespace Server.Engines.Craft
 					if( item is BaseWeapon )
 					{
 						BaseWeapon w = (BaseWeapon)item;
-						
-						w.RandomAttributes = randomAttrs;
 
 						w.Resource = resource;
 
-						w.Hue = w.GetElementalDamageHue( w.Hue );
+						int hue = w.GetElementalDamageHue();
+						if( hue > 0 )
+							w.Hue = hue;
 					}
-					else if( item is BaseArmor )
+					else if( item is BaseArmor )	//Sanity
 					{
-						BaseArmor ar = (BaseArmor)item;
-						
-						ar.RandomAttributes = randomAttrs;
-						
 						((BaseArmor)item).Resource = resource;
-					}
-					else if( item is BaseOtherEquipable )	//Sanity
-					{
-						BaseOtherEquipable otherEquip = (BaseOtherEquipable)item;
-						
-						otherEquip.RandomAttributes = randomAttrs;
-						
-						((BaseOtherEquipable)item).Resource = resource;
 					}
 
 					break;
@@ -225,129 +243,6 @@ namespace Server.Engines.Craft
 				res = EnhanceResult.Failure;
 			else if ( chance > random )
 				res = EnhanceResult.Broken;
-		}
-		
-		public static void CheckSkill( ref int baseChance, Mobile from, CraftSystem craftSystem )
-		{
-			int skill = from.Skills[craftSystem.MainSkill].Fixed / 10;
-
-			if ( skill >= 100 )
-				baseChance -= (skill - 90) / 10;
-		}
-		
-		public static void TryEnhance( List<BonusAttribute> attrs, Item item, int baseChance, ref EnhanceResult res )
-		{
-			foreach ( BonusAttribute attr in attrs )
-			{
-				if ( res != EnhanceResult.Success )
-					return;
-				
-				if ( attr.Attribute == null )
-					continue;
-				
-				Type type = attr.Attribute.GetType();
-						
-				if ( type == typeof( AosAttribute ) )
-				{
-					AosAttribute aosAttr = (AosAttribute)attr.Attribute;
-						
-					if ( aosAttr == AosAttribute.SpellChanneling )
-						continue;
-					
-					if ( item is IAosAttributes )
-						CheckResult( ref res, baseChance + GetChance( aosAttr, ((IAosAttributes)item).Attributes ) );
-				}
-				else if ( type == typeof( AosWeaponAttribute ) )
-				{
-					if ( item is BaseWeapon )
-						CheckResult( ref res, baseChance + GetChance( (AosWeaponAttribute)attr.Attribute, ((BaseWeapon)item).WeaponAttributes ) );
-				}
-				else if ( type == typeof( AosArmorAttribute ) )
-				{
-					if ( (AosArmorAttribute)attr.Attribute == AosArmorAttribute.MageArmor )
-						continue;
-					
-					if ( item is BaseArmor )
-						CheckResult( ref res, baseChance + GetChance( (AosArmorAttribute)attr.Attribute, ((BaseArmor)item).ArmorAttributes ) );
-				}
-				else if ( type == typeof( ResistanceType ) )
-				{
-					if ( item is BaseArmor )
-					{
-						BaseArmor ar = (BaseArmor)item;
-						
-						switch ( (ResistanceType)attr.Attribute )
-						{
-							case ResistanceType.Physical:
-								CheckResult( ref res, baseChance + ar.PhysicalResistance );
-								break;
-							case ResistanceType.Fire:
-								CheckResult( ref res, baseChance + ar.FireResistance );
-								break;
-							case ResistanceType.Cold:
-								CheckResult( ref res, baseChance + ar.ColdResistance );
-								break;
-							case ResistanceType.Poison:
-								CheckResult( ref res, baseChance + ar.PoisonResistance );
-								break;
-							case ResistanceType.Energy:
-								CheckResult( ref res, baseChance + ar.EnergyResistance );
-								break;
-						}
-					} 
-				}
-			}
-		}
-		
-		public static int GetChance( AosAttribute attr, AosAttributes itemAttrs )
-		{
-			int chance;
-			
-			switch ( attr )
-			{
-				case AosAttribute.LowerWeight: 					chance = itemAttrs[attr] / 40; break;
-				case AosAttribute.WeaponDamage:					chance = itemAttrs[attr] / 4; break;
-				case AosAttribute.Luck: 						chance = 10 + itemAttrs[attr] / 2; break;
-				default: 
-					chance = itemAttrs[attr] / 2; break;
-			}
-			
-			return chance;
-		}
-		
-		public static int GetChance( AosArmorAttribute attr, AosArmorAttributes itemAttrs )
-		{
-			int chance;
-			
-			switch ( attr )
-			{
-				case AosArmorAttribute.DurabilityBonus: 		chance = itemAttrs[attr] / 40; break;
-				case AosArmorAttribute.LowerStatReq: 			chance = itemAttrs[attr] / 4; break;
-				default:
-					chance = itemAttrs[attr] / 2; break;
-			}
-			
-			return chance;
-		}
-		
-		public static int GetChance( AosWeaponAttribute attr, AosWeaponAttributes itemAttrs )
-		{
-			int chance;
-			
-			switch ( attr )
-			{
-				case AosWeaponAttribute.DurabilityBonus: 		chance = itemAttrs[attr] / 40; break;
-				case AosWeaponAttribute.LowerStatReq: 			chance = itemAttrs[attr] / 4; break;
-				case AosWeaponAttribute.ResistPhysicalBonus:
-				case AosWeaponAttribute.ResistFireBonus:
-				case AosWeaponAttribute.ResistColdBonus:
-				case AosWeaponAttribute.ResistPoisonBonus:
-				case AosWeaponAttribute.ResistEnergyBonus:		chance = itemAttrs[attr]; break;
-				default: 
-					chance = itemAttrs[attr] / 2; break;
-			}
-			
-			return chance;
 		}
 
 		public static void BeginTarget( Mobile from, CraftSystem craftSystem, BaseTool tool )

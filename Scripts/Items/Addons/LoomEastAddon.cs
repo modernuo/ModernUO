@@ -17,16 +17,10 @@ namespace Server.Items
 		public int Phase{ get{ return m_Phase; } set{ m_Phase = value; } }
 
 		[Constructable]
-		public LoomEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public LoomEastAddon( int hue )
+		public LoomEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1060 ), 0, 0, 0 );
 			AddComponent( new AddonComponent( 0x105F ), 0, 1, 0 );
-			Hue = hue;
 		}
 
 		public LoomEastAddon( Serial serial ) : base( serial )
@@ -61,7 +55,7 @@ namespace Server.Items
 
 	public class LoomEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new LoomEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new LoomEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044343; } } // loom (east)
 
 		[Constructable]

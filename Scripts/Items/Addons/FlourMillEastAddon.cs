@@ -160,17 +160,11 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public FlourMillEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public FlourMillEastAddon( int hue )
+		public FlourMillEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1920 ),-1, 0, 0 );
 			AddComponent( new AddonComponent( 0x1922 ), 0, 0, 0 );
 			AddComponent( new AddonComponent( 0x1924 ), 1, 0, 0 );
-			Hue = hue;
 		}
 
 		public FlourMillEastAddon( Serial serial ) : base( serial )
@@ -207,7 +201,7 @@ namespace Server.Items
 
 	public class FlourMillEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new FlourMillEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new FlourMillEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044347; } } // flour mill (east)
 
 		[Constructable]

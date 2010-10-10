@@ -8,16 +8,10 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new StoneOvenSouthDeed(); } }
 
 		[Constructable]
-		public StoneOvenSouthAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public StoneOvenSouthAddon( int hue )
+		public StoneOvenSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0x931 ), -1, 0, 0 );
 			AddComponent( new AddonComponent( 0x930 ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public StoneOvenSouthAddon( Serial serial ) : base( serial )
@@ -41,7 +35,7 @@ namespace Server.Items
 
 	public class StoneOvenSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new StoneOvenSouthAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new StoneOvenSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044346; } } // stone oven (south)
 
 		[Constructable]

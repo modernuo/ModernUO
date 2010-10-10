@@ -8,11 +8,9 @@ using Server.Prompts;
 using Server.Mobiles;
 using Server.Network;
 using Server.ContextMenus;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[CraftItemID( 0x2311 )]
 	public class PlayerBBSouth : BasePlayerBB
 	{
 		public override int LabelNumber{ get{ return 1062421; } } // bulletin board (south)
@@ -42,7 +40,6 @@ namespace Server.Items
 		}
 	}
 
-	[CraftItemID( 0x2312 )]
 	public class PlayerBBEast : BasePlayerBB
 	{
 		public override int LabelNumber{ get{ return 1062420; } } // bulletin board (east)
@@ -72,15 +69,12 @@ namespace Server.Items
 		}
 	}
 
-	public abstract class BasePlayerBB : Item, ISecurable, ICraftable
+	public abstract class BasePlayerBB : Item, ISecurable
 	{
 		private PlayerBBMessage m_Greeting;
 		private List<PlayerBBMessage> m_Messages;
 		private string m_Title;
 		private SecureLevel m_Level;
-		
-		private Mobile m_Crafter;
-		private CraftQuality m_Quality;
 
 		public List<PlayerBBMessage> Messages
 		{
@@ -106,20 +100,6 @@ namespace Server.Items
 			get{ return m_Level; }
 			set{ m_Level = value; }
 		}
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Crafter
-		{
-			get { return m_Crafter; } 
-			set { m_Crafter = value; InvalidateProperties(); } 
-		}
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftQuality Quality
-		{ 
-			get { return m_Quality; } 
-			set { m_Quality = value; InvalidateProperties(); } 
-		}
 
 		public BasePlayerBB( int itemID ) : base( itemID )
 		{
@@ -129,17 +109,6 @@ namespace Server.Items
 
 		public BasePlayerBB( Serial serial ) : base( serial )
 		{
-		}
-		
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
-
-			if ( m_Crafter != null )
-				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
-
-			if ( m_Quality == CraftQuality.Exceptional )
-				list.Add( 1060636 ); // exceptional
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
@@ -152,10 +121,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 );
-			
-			writer.Write( m_Crafter );
-			writer.WriteEncodedInt( (int) m_Quality );
+			writer.Write( (int) 1 );
 
 			writer.Write( (int) m_Level );
 
@@ -185,12 +151,6 @@ namespace Server.Items
 
 			switch ( version )
 			{
-				case 2:
-				{
-					m_Crafter = reader.ReadMobile();
-					m_Quality = (CraftQuality)reader.ReadEncodedInt();
-					goto case 1;
-				}
 				case 1:
 				{
 					m_Level = (SecureLevel)reader.ReadInt();
@@ -200,9 +160,6 @@ namespace Server.Items
 				{
 					if ( version < 1 )
 						m_Level = SecureLevel.Anyone;
-					
-					if ( version < 2 )
-						m_Quality = CraftQuality.Regular;
 
 					m_Title = reader.ReadString();
 
@@ -218,7 +175,7 @@ namespace Server.Items
 
 					break;
 				}
-			} 
+			}
 		}
 
 		public static bool CheckAccess( BaseHouse house, Mobile from )
@@ -239,31 +196,6 @@ namespace Server.Items
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else if ( CheckAccess( house, from ) )
 				from.SendGump( new PlayerBBGump( from, house, this, 0 ) );
-		}
-		
-		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
-		{
-			if ( Core.ML )
-			{
-				Quality = (CraftQuality)quality;
-			
-				if ( makersMark )
-					Crafter = from;
-				
-				Type resourceType = typeRes;
-
-				if ( resourceType == null )
-					resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
-				
-				Hue = CraftResources.GetHue( CraftResources.GetFromType( resourceType ) );
-
-				CraftContext context = craftSystem.GetContext( from );
-
-				if ( context != null && context.DoNotColor )
-					Hue = 0;
-			}
-			
-			return quality;
 		}
 
 		public class PostPrompt : Prompt

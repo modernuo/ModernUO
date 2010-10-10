@@ -8,16 +8,10 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ElvenDresserSouthDeed(); } }
 
 		[Constructable]
-		public ElvenDresserSouthAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public ElvenDresserSouthAddon( int hue )
+		public ElvenDresserSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0x30E5 ), 0, 0, 0 );
 			AddComponent( new AddonComponent( 0x30E6 ), 1, 0, 0 );
-			Hue = hue;
 		}
 
 		public ElvenDresserSouthAddon( Serial serial ) : base( serial )
@@ -41,7 +35,7 @@ namespace Server.Items
 
 	public class ElvenDresserSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ElvenDresserSouthAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new ElvenDresserSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1072864; } } // elven dresser (south)
 
 		[Constructable]

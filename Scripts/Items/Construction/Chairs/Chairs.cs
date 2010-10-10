@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	[Furniture]
 	[Flipable( 0xB4F, 0xB4E, 0xB50, 0xB51 )]
-	public class FancyWoodenChairCushion : BaseCraftableItem
+	public class FancyWoodenChairCushion : Item
 	{
 		[Constructable]
-		public FancyWoodenChairCushion() : base(0xB4E)
+		public FancyWoodenChairCushion() : base(0xB4F)
 		{
 			Weight = 20.0;
 		}
@@ -27,7 +27,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 20.0;
@@ -36,10 +36,10 @@ namespace Server.Items
 
 	[Furniture]
 	[Flipable( 0xB53, 0xB52, 0xB54, 0xB55 )]
-	public class WoodenChairCushion : BaseCraftableItem
+	public class WoodenChairCushion : Item
 	{
 		[Constructable]
-		public WoodenChairCushion() : base(0xB52)
+		public WoodenChairCushion() : base(0xB53)
 		{
 			Weight = 20.0;
 		}
@@ -59,7 +59,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 20.0;
@@ -68,10 +68,10 @@ namespace Server.Items
 
 	[Furniture]
 	[Flipable( 0xB57, 0xB56, 0xB59, 0xB58 )]
-	public class WoodenChair : BaseCraftableItem
+	public class WoodenChair : Item
 	{
 		[Constructable]
-		public WoodenChair() : base(0xB56)
+		public WoodenChair() : base(0xB57)
 		{
 			Weight = 20.0;
 		}
@@ -91,7 +91,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 20.0;
@@ -100,10 +100,10 @@ namespace Server.Items
 
 	[Furniture]
 	[Flipable( 0xB5B, 0xB5A, 0xB5C, 0xB5D )]
-	public class BambooChair : BaseCraftableItem
+	public class BambooChair : Item
 	{
 		[Constructable]
-		public BambooChair() : base(0xB5A)
+		public BambooChair() : base(0xB5B)
 		{
 			Weight = 20.0;
 		}
@@ -123,7 +123,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 20.0;
@@ -132,9 +132,8 @@ namespace Server.Items
 
 	[DynamicFliping]
 	[Flipable(0x1218, 0x1219, 0x121A, 0x121B)]
-	public class StoneChair : BaseCraftableItem
+	public class StoneChair : Item
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
 		[Constructable]
 		public StoneChair() : base(0x1218)
 		{
@@ -156,13 +155,13 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 
-	[Furniture]
+	[DynamicFliping]
 	[Flipable( 0x2DE3, 0x2DE4, 0x2DE5, 0x2DE6 )]
-	public class OrnateElvenChair : BaseCraftableItem
+	public class OrnateElvenChair : Item
 	{
 		[Constructable]
 		public OrnateElvenChair() : base( 0x2DE3 )
@@ -185,16 +184,16 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadEncodedInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadEncodedInt();
 		}
 	}
 
-	[Furniture]
+	[DynamicFliping]
 	[Flipable( 0x2DEB, 0x2DEC, 0x2DED, 0x2DEE )]
-	public class BigElvenChair : BaseCraftableItem
+	public class BigElvenChair : Item
 	{
 		[Constructable]
-		public BigElvenChair() : base( 0x2DED )
+		public BigElvenChair() : base( 0x2DEB )
 		{
 		}
 
@@ -213,13 +212,13 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadEncodedInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadEncodedInt();
 		}
 	}
 
-	[Furniture]
+	[DynamicFliping]
 	[Flipable( 0x2DF5, 0x2DF6 )]
-	public class ElvenReadingChair : BaseCraftableItem
+	public class ElvenReadingChair : Item
 	{
 		[Constructable]
 		public ElvenReadingChair() : base( 0x2DF5 )
@@ -241,7 +240,7 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadEncodedInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadEncodedInt();
 		}
 	}
 }

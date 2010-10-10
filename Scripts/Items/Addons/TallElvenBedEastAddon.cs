@@ -8,18 +8,12 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new TallElvenBedEastDeed(); } }
 
 		[Constructable]
-		public TallElvenBedEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public TallElvenBedEastAddon( int hue )
+		public TallElvenBedEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x3054 ), 0,  0, 0 );
 			AddComponent( new AddonComponent( 0x3053 ), 1,  0, 0 );
 			AddComponent( new AddonComponent( 0x3055 ), 2, -1, 0 );
 			AddComponent( new AddonComponent( 0x3052 ), 2,  0, 0 );
-			Hue = hue;
 		}
 
 		public TallElvenBedEastAddon( Serial serial ) : base( serial )
@@ -43,7 +37,7 @@ namespace Server.Items
 
 	public class TallElvenBedEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new TallElvenBedEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new TallElvenBedEastAddon(); } }
 		public override int LabelNumber{ get{ return 1072859; } } // tall elven bed (east)
 
 		[Constructable]

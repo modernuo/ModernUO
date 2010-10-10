@@ -8,15 +8,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new AnvilEastDeed(); } }
 
 		[Constructable]
-		public AnvilEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public AnvilEastAddon( int hue )
+		public AnvilEastAddon()
 		{
 			AddComponent( new AnvilComponent( 0xFAF ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public AnvilEastAddon( Serial serial ) : base( serial )
@@ -40,7 +34,7 @@ namespace Server.Items
 
 	public class AnvilEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new AnvilEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new AnvilEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044333; } } // anvil (east)
 
 		[Constructable]

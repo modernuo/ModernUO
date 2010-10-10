@@ -161,15 +161,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new PickpocketDipEastDeed(); } }
 
 		[Constructable]
-		public PickpocketDipEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public PickpocketDipEastAddon( int hue )
+		public PickpocketDipEastAddon()
 		{
 			AddComponent( new PickpocketDip( 0x1EC3 ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public PickpocketDipEastAddon( Serial serial ) : base( serial )
@@ -193,7 +187,7 @@ namespace Server.Items
 
 	public class PickpocketDipEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new PickpocketDipEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new PickpocketDipEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044337; } } // pickpocket dip (east)
 
 		[Constructable]
@@ -225,15 +219,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new PickpocketDipSouthDeed(); } }
 
 		[Constructable]
-		public PickpocketDipSouthAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public PickpocketDipSouthAddon( int hue )
+		public PickpocketDipSouthAddon()
 		{
 			AddComponent( new PickpocketDip( 0x1EC0 ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public PickpocketDipSouthAddon( Serial serial ) : base( serial )
@@ -257,7 +245,7 @@ namespace Server.Items
 
 	public class PickpocketDipSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new PickpocketDipSouthAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new PickpocketDipSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044338; } } // pickpocket dip (south)
 
 		[Constructable]

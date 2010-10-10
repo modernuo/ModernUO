@@ -2,23 +2,16 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0xEC6, 0xEC7 )]
-	public class Dressform : BaseCraftableItem
+	[FlipableAttribute(0xec6, 0xec7)]
+	public class Dressform : Item
 	{
-		public override bool DisplaysResource{ get{ return false; } }
-		
 		[Constructable]
-		public Dressform() : this( 0xEC6 )
-		{
-		}
-		
-		[Constructable]
-		public Dressform( int itemID ) : base( itemID )
+		public Dressform() : base(0xec6)
 		{
 			Weight = 10;
 		}
 
-		public Dressform( Serial serial ) : base( serial )
+		public Dressform(Serial serial) : base(serial)
 		{
 		}
 
@@ -33,7 +26,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 }

@@ -12,9 +12,6 @@ namespace Server.Items
 		private uint m_KeyValue;
 		private Mobile m_Picker;
 		private bool m_TrapOnLockpick;
-		private CraftQuality m_Quality;
-		private Mobile m_Crafter;
-		private CraftResource m_Resource;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Picker
@@ -119,39 +116,12 @@ namespace Server.Items
 				m_TrapOnLockpick = value;
 			}
 		}
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftQuality Quality
-		{
-			get{ return m_Quality; }
-			set{ m_Quality = value; InvalidateProperties(); }
-		}
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Crafter
-		{
-			get{ return m_Crafter; }
-			set{ m_Crafter = value; InvalidateProperties(); }
-		}
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftResource Resource
-		{
-			get{ return m_Resource; }
-			set{ m_Resource = value; Hue = CraftResources.GetHue( m_Resource ); InvalidateProperties(); }
-		}
-		
-		public virtual CraftResource DefaultResource{ get{ return CraftResource.RegularWood; } }
 
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 7 ); // version
-			
-			writer.Write( (int)m_Quality );
-			writer.Write( (int)m_Resource );
-			writer.WriteMobile( m_Crafter );
+			writer.Write( (int) 6 ); // version
 
 			writer.Write( m_IsShipwreckedItem );
 
@@ -174,13 +144,6 @@ namespace Server.Items
 
 			switch ( version )
 			{
-				case 7:
-				{
-					m_Quality = (CraftQuality)reader.ReadInt();
-					m_Resource = (CraftResource)reader.ReadInt();
-					m_Crafter = reader.ReadMobile();
-					goto case 6;
-				}
 				case 6:
 				{
 					m_IsShipwreckedItem = reader.ReadBool();
@@ -235,12 +198,6 @@ namespace Server.Items
 							m_RequiredSkill = m_LockLevel;
 						}
 					}
-					
-					if ( version < 7 )
-					{
-						m_Quality = CraftQuality.Regular;
-						m_Resource = DefaultResource;
-					}
 
 					m_Locked = reader.ReadBool();
 
@@ -251,27 +208,11 @@ namespace Server.Items
 
 		public LockableContainer( int itemID ) : base( itemID )
 		{
-			m_Quality = CraftQuality.Regular;
-			Resource = DefaultResource;
 			m_MaxLockLevel = 100;
 		}
 
 		public LockableContainer( Serial serial ) : base( serial )
 		{
-		}
-
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
-			
-			if ( m_Crafter != null )
-				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
-
-			if ( m_Quality == CraftQuality.Exceptional )
-				list.Add( 1060636 ); // exceptional
-			
-			if( ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.Frostwood ) && Hue == CraftResources.GetHue( m_Resource ) )
-				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) ); // resource name
 		}
 
 		public override bool CheckContentDisplay( Mobile from )
@@ -419,26 +360,6 @@ namespace Server.Items
 
 		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
 		{
-			if ( Core.ML )
-			{
-				Quality = (CraftQuality)quality;
-			
-				Type resourceType = typeRes;
-
-				if ( resourceType == null )
-					resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
-			
-				Resource = CraftResources.GetFromType( resourceType );
-			
-				CraftContext context = craftSystem.GetContext( from );
-
-				if ( context != null && context.DoNotColor )
-					Resource = DefaultResource;
-				
-				if ( makersMark )
-					Crafter = from;
-			}
-			
 			if ( from.CheckSkill( SkillName.Tinkering, -5.0, 15.0 ) )
 			{
 				from.SendLocalizedMessage( 500636 ); // Your tinker skill was sufficient to make the item lockable.
@@ -471,7 +392,7 @@ namespace Server.Items
 				from.SendLocalizedMessage( 500637 ); // Your tinker skill was insufficient to make the item lockable.
 			}
 
-			return quality;
+			return 1;
 		}
 
 		#endregion

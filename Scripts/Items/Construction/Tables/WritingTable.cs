@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	[Furniture]
 	[Flipable(0xB4A,0xB49, 0xB4B, 0xB4C)]
-	public class WritingTable : BaseCraftableItem
+	public class WritingTable : Item
 	{
 		[Constructable]
 		public WritingTable() : base(0xB4A)
@@ -27,7 +27,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 4.0 )
 				Weight = 1.0;

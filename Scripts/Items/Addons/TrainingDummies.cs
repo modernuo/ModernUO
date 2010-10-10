@@ -171,15 +171,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new TrainingDummyEastDeed(); } }
 
 		[Constructable]
-		public TrainingDummyEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public TrainingDummyEastAddon( int hue )
+		public TrainingDummyEastAddon()
 		{
 			AddComponent( new TrainingDummy( 0x1074 ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public TrainingDummyEastAddon( Serial serial ) : base( serial )
@@ -203,7 +197,7 @@ namespace Server.Items
 
 	public class TrainingDummyEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new TrainingDummyEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new TrainingDummyEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044335; } } // training dummy (east)
 
 		[Constructable]
@@ -235,15 +229,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new TrainingDummySouthDeed(); } }
 
 		[Constructable]
-		public TrainingDummySouthAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public TrainingDummySouthAddon( int hue )
+		public TrainingDummySouthAddon()
 		{
 			AddComponent( new TrainingDummy( 0x1070 ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public TrainingDummySouthAddon( Serial serial ) : base( serial )
@@ -267,7 +255,7 @@ namespace Server.Items
 
 	public class TrainingDummySouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new TrainingDummySouthAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new TrainingDummySouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044336; } } // training dummy (south)
 
 		[Constructable]

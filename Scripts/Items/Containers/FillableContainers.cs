@@ -407,8 +407,6 @@ namespace Server.Items
 	[Flipable( 0x9A8, 0xE80 )]
 	public class FillableMetalBox : FillableContainer
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
-		
 		[Constructable]
 		public FillableMetalBox() : base( 0x9A8 )
 		{
@@ -470,8 +468,6 @@ namespace Server.Items
 	[Flipable( 0x9AB, 0xE7C )]
 	public class FillableMetalChest : FillableContainer
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
-		
 		[Constructable]
 		public FillableMetalChest() : base( 0x9AB )
 		{
@@ -502,8 +498,6 @@ namespace Server.Items
 	[Flipable( 0xE41, 0xE40 )]
 	public class FillableMetalGoldenChest : FillableContainer
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
-		
 		[Constructable]
 		public FillableMetalGoldenChest() : base( 0xE41 )
 		{

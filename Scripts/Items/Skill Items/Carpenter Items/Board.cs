@@ -3,7 +3,7 @@ using System;
 namespace Server.Items
 {
 	[FlipableAttribute( 0x1BD7, 0x1BDA )]
-	public abstract class BaseBoard : Item, ICommodity
+	public class Board : Item, ICommodity
 	{
 		private CraftResource m_Resource;
 
@@ -13,22 +13,6 @@ namespace Server.Items
 			get { return m_Resource; }
 			set { m_Resource = value; InvalidateProperties(); }
 		}
-		
-		#region Old Board Serialization Vars
-		/* DO NOT USE! Only used in serialization of boards that originally derived from Board */
-		private bool m_InheritsItem;
-		private int m_OldVersion;
-		
-		protected bool InheritsItem
-		{
-			get{ return m_InheritsItem; }
-		}
-		
-		protected int OldVersion
-		{
-			get{ return m_OldVersion; }
-		}
-		#endregion
 
 		string ICommodity.Description
 		{
@@ -56,12 +40,30 @@ namespace Server.Items
 			} 
 		}
 
-		public BaseBoard( Serial serial )
+		[Constructable]
+		public Board()
+			: this( 1 )
+		{
+		}
+
+		[Constructable]
+		public Board( int amount )
+			: this( CraftResource.RegularWood, amount )
+		{
+		}
+
+		public Board( Serial serial )
 			: base( serial )
 		{
 		}
 
-		public BaseBoard( CraftResource resource, int amount )
+		[Constructable]
+		public Board( CraftResource resource ) : this( resource, 1 )
+		{
+		}
+
+		[Constructable]
+		public Board( CraftResource resource, int amount )
 			: base( 0x1BD7 )
 		{
 			Stackable = true;
@@ -92,7 +94,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 4 );
+			writer.Write( (int) 3 );
 
 			writer.Write( (int)m_Resource );
 		}
@@ -105,79 +107,24 @@ namespace Server.Items
 
 			switch ( version )
 			{
-				case 4:
-				{
-					m_Resource = (CraftResource)reader.ReadInt();
-					break;
-				}
-				/** Below is for deserialization of old boards that orignally inherited from Board or Item **/
-				case 3: // For all boards
+				case 3:
 				case 2:
-				{
-					m_Resource = (CraftResource)reader.ReadInt();
-					goto case 0;
-				}
-				case 1: // For old standard boards
-				case 0: 
-				{
-					m_InheritsItem = true;
-					m_OldVersion = version;
-					break;
-				}
+					{
+						m_Resource = (CraftResource)reader.ReadInt();
+						break;
+					}
 			}
 
 			if ( (version == 0 && Weight == 0.1) || ( version <= 2 && Weight == 2 ) )
 				Weight = -1;
-		}
-	}
-	
-	public class Board : BaseBoard
-	{
-		[Constructable]
-		public Board()
-			: this( 1 )
-		{
-		}
 
-		[Constructable]
-		public Board( int amount )
-			: base( CraftResource.RegularWood, amount )
-		{
-		}
-
-		public Board( Serial serial )
-			: base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 4 );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); // Required for BaseBoard insertion
-
-			switch ( version )
-			{
-				/** Versions 0 through 3 originally inherited from Item. Versions 0 and 1 are from before Board became a CraftResource. **/
-				case 1:
-				case 0:
-				{
-					Resource = CraftResource.RegularWood;
-					break;
-				}
-			}	
+			if ( version <= 1 )
+				m_Resource = CraftResource.RegularWood;
 		}
 	}
 
 
-	public class HeartwoodBoard : BaseBoard
+	public class HeartwoodBoard : Board
 	{
 		[Constructable]
 		public HeartwoodBoard()
@@ -211,7 +158,7 @@ namespace Server.Items
 		}
 	}
 
-	public class BloodwoodBoard : BaseBoard
+	public class BloodwoodBoard : Board
 	{
 		[Constructable]
 		public BloodwoodBoard()
@@ -245,7 +192,7 @@ namespace Server.Items
 		}
 	}
 
-	public class FrostwoodBoard : BaseBoard
+	public class FrostwoodBoard : Board
 	{
 		[Constructable]
 		public FrostwoodBoard()
@@ -279,7 +226,7 @@ namespace Server.Items
 		}
 	}
 
-	public class OakBoard : BaseBoard
+	public class OakBoard : Board
 	{
 		[Constructable]
 		public OakBoard()
@@ -313,7 +260,7 @@ namespace Server.Items
 		}
 	}
 
-	public class AshBoard : BaseBoard
+	public class AshBoard : Board
 	{
 		[Constructable]
 		public AshBoard()
@@ -347,7 +294,7 @@ namespace Server.Items
 		}
 	}
 
-	public class YewBoard : BaseBoard
+	public class YewBoard : Board
 	{
 		[Constructable]
 		public YewBoard()

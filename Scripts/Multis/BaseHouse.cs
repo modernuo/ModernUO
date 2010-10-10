@@ -1014,7 +1014,7 @@ namespace Server.Multis
 				return IsFriend( from );
 			else if ( item is PotionKeg )
 				return IsFriend( from );
-			else if ( item is BaseGameBoard )
+			else if ( item is BaseBoard )
 				return true;
 			else if ( item is Dices )
 				return true;
@@ -1456,7 +1456,7 @@ namespace Server.Multis
 			if ( !locked )
 				i.SetLastMoved();
 
-			if ( (i is Container) && (!locked || !(i is BaseGameBoard)) )
+			if ( (i is Container) && (!locked || !(i is BaseBoard)) )
 			{
 				foreach ( Item c in i.Items )
 					SetLockdown( c, locked, checkContains );
@@ -2355,7 +2355,7 @@ namespace Server.Multis
 			{
 				Item item = (Item)m_LockDowns[i];
 
-				if ( item is Container && !(item is BaseGameBoard) )
+				if ( item is Container && !(item is BaseBoard) )
 				{
 					Container cont = (Container)item;
 					List<Item> children = cont.Items;

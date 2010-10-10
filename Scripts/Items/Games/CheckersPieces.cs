@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "white checker"; }
 		}
 
-		public PieceWhiteChecker( BaseGameBoard board ) : base( 0x3584, board )
+		public PieceWhiteChecker( BaseBoard board ) : base( 0x3584, board )
 		{
 		}
 
@@ -38,7 +38,7 @@ namespace Server.Items
 			get { return "black checker"; }
 		}
 
-		public PieceBlackChecker( BaseGameBoard board ) : base( 0x358B, board )
+		public PieceBlackChecker( BaseBoard board ) : base( 0x358B, board )
 		{
 		}
 

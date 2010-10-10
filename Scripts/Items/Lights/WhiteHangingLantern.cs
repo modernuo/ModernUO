@@ -28,16 +28,14 @@ namespace Server.Items
 			}
 		}
 		
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularWood; } }
-		
 		[Constructable]
-		public WhiteHangingLantern() : base( 0x24C8 )
+		public WhiteHangingLantern() : base( 0x24C6 )
 		{
 			Movable = true;
 			Duration = TimeSpan.Zero; // Never burnt out
 			Burning = false;
 			Light = LightType.Circle300;
-			Weight = 1.0;
+			Weight = 3.0;
 		}
 
 		public WhiteHangingLantern( Serial serial ) : base( serial )
@@ -68,9 +66,6 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
-			
-			if ( Weight == 3.0 )
-				Weight = 1.0;
 		}
 	}
 }

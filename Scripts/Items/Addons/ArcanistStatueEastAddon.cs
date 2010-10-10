@@ -1,6 +1,5 @@
 using System;
 using Server;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -9,15 +8,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ArcanistStatueEastDeed(); } }
 
 		[Constructable]
-		public ArcanistStatueEastAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public ArcanistStatueEastAddon( int hue )
+		public ArcanistStatueEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x2D0E ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public ArcanistStatueEastAddon( Serial serial ) : base( serial )
@@ -39,10 +32,9 @@ namespace Server.Items
 		}
 	}
 
-	[CraftItemID( 0x2D0E )]
 	public class ArcanistStatueEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ArcanistStatueEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new ArcanistStatueEastAddon(); } }
 		public override int LabelNumber{ get{ return 1072886; } } // arcanist statue (east)
 
 		[Constructable]

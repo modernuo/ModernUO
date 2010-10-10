@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Server.Items
 {
-	public class CheckerBoard : BaseGameBoard
+	public class CheckerBoard : BaseBoard
 	{
 		public override int LabelNumber{ get{ return 1016449; } } // a checker board
 

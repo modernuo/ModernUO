@@ -2,10 +2,8 @@ using System;
 
 namespace Server.Items
 {
-	public class Vase : BaseCraftableItem
+	public class Vase : Item
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
-		
 		[Constructable]
 		public Vase() : base( 0xB46 )
 		{
@@ -27,14 +25,12 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 
-	public class LargeVase : BaseCraftableItem
+	public class LargeVase : Item
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
-		
 		[Constructable]
 		public LargeVase() : base( 0xB45 )
 		{
@@ -56,14 +52,12 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 
-	public class SmallUrn : BaseCraftableItem
+	public class SmallUrn : Item
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
-		
 		[Constructable]
 		public SmallUrn() : base( 0x241C )
 		{
@@ -85,7 +79,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 		}
 	}
 }

@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	[Furniture]
 	[Flipable(0xB32, 0xB33)]
-	public class Throne : BaseCraftableItem
+	public class Throne : Item
 	{
 		[Constructable]
 		public Throne() : base(0xB33)
@@ -27,7 +27,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 1.0;
@@ -36,10 +36,10 @@ namespace Server.Items
 
 	[Furniture]
 	[Flipable( 0xB2E, 0xB2F, 0xB31, 0xB30 )]
-	public class WoodenThrone : BaseCraftableItem
+	public class WoodenThrone : Item
 	{
 		[Constructable]
-		public WoodenThrone() : base(0xB2F)
+		public WoodenThrone() : base(0xB2E)
 		{
 			Weight = 15.0;
 		}
@@ -59,7 +59,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 15.0;

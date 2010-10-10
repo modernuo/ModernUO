@@ -1,6 +1,5 @@
 using System;
 using Server;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -9,15 +8,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ElvenSpinningwheelSouthDeed(); } }
 
 		[Constructable]
-		public ElvenSpinningwheelSouthAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public ElvenSpinningwheelSouthAddon( int hue )
+		public ElvenSpinningwheelSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0x2DDA ), 0, 0, 0 );
-			Hue = hue;
 		}
 
 		public ElvenSpinningwheelSouthAddon( Serial serial ) : base( serial )
@@ -115,10 +108,9 @@ namespace Server.Items
 		}
 	}
 
-	[CraftItemID( 0x2DDA )]
 	public class ElvenSpinningwheelSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ElvenSpinningwheelSouthAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new ElvenSpinningwheelSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1072878; } } // spinning wheel (south)
 
 		[Constructable]

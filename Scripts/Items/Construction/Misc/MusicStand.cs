@@ -3,18 +3,11 @@ using System;
 namespace Server.Items
 {
 	[Furniture]
-	[Flipable( false, 0xEBB, 0xEBC )]
-	public class TallMusicStand : BaseCraftableItem
+	[Flipable(0xEBB, 0xEBC)]
+	public class TallMusicStand : Item
 	{
-		public override bool DisplaysResource{ get{ return false; } }
-		
 		[Constructable]
-		public TallMusicStand() : this( 0xEBB )
-		{
-		}
-		
-		[Constructable]
-		public TallMusicStand( int itemID ) : base( itemID )
+		public TallMusicStand() : base(0xEBB)
 		{
 			Weight = 10.0;
 		}
@@ -34,7 +27,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 8.0 )
 				Weight = 10.0;
@@ -42,18 +35,11 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( false, 0xEB6,0xEB8 )]
-	public class ShortMusicStand : BaseCraftableItem
+	[Flipable(0xEB6,0xEB8)]
+	public class ShortMusicStand : Item
 	{
-		public override bool DisplaysResource{ get{ return false; } }
-		
 		[Constructable]
-		public ShortMusicStand() : this( 0xEB6 )
-		{
-		}
-		
-		[Constructable]
-		public ShortMusicStand( int itemID ) : base( itemID )
+		public ShortMusicStand() : base(0xEB6)
 		{
 			Weight = 10.0;
 		}
@@ -73,7 +59,7 @@ namespace Server.Items
 		{
 			base.Deserialize(reader);
 
-			int version = ( InheritsItem ? OldVersion : reader.ReadInt() ); //Required for BaseCraftableItem insertion
+			int version = reader.ReadInt();
 
 			if ( Weight == 6.0 )
 				Weight = 10.0;

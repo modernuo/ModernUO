@@ -1,6 +1,5 @@
 using System;
 using Server;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -9,16 +8,10 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ElvenLoveseatSouthDeed(); } }
 
 		[Constructable]
-		public ElvenLoveseatSouthAddon() : this( 0 )
+		public ElvenLoveseatSouthAddon()
 		{
-		}
-		
-		[Constructable]
-		public ElvenLoveseatSouthAddon( int hue )
-		{
-			AddComponent( new AddonComponent( 0x3089 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x3088 ), 1, 0, 0 );
-			Hue = hue;
+			AddComponent( new AddonComponent( 0x308A ), 0, 0, 0 );
+			AddComponent( new AddonComponent( 0x308B ), 0, -1, 0 );
 		}
 
 		public ElvenLoveseatSouthAddon( Serial serial ) : base( serial )
@@ -40,10 +33,9 @@ namespace Server.Items
 		}
 	}
 
-	[CraftItemID( 0x2DDF )]
 	public class ElvenLoveseatSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ElvenLoveseatSouthAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new ElvenLoveseatSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1072867; } } // elven loveseat (south)
 
 		[Constructable]

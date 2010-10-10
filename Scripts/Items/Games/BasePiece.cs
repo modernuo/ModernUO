@@ -5,9 +5,9 @@ namespace Server.Items
 {
 	public class BasePiece : Item
 	{
-		private BaseGameBoard m_Board;
+		private BaseBoard m_Board;
 
-		public BaseGameBoard Board
+		public BaseBoard Board
 		{
 			get { return m_Board; }
 			set { m_Board = value; }
@@ -15,7 +15,7 @@ namespace Server.Items
 
 		public override bool IsVirtualItem{ get{ return true; } }
 
-		public BasePiece( int itemID, BaseGameBoard board ) : base( itemID )
+		public BasePiece( int itemID, BaseBoard board ) : base( itemID )
 		{
 			m_Board = board;
 		}
@@ -42,7 +42,7 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_Board = (BaseGameBoard)reader.ReadItem();
+					m_Board = (BaseBoard)reader.ReadItem();
 
 					if ( m_Board == null || Parent == null )
 						Delete();

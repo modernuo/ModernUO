@@ -1,162 +1,17 @@
 using System;
 using System.Collections.Generic;
 using Server;
-using Server.Misc;
 using Server.Multis;
 using Server.Network;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public abstract class BaseFurnitureContainer : BaseContainer, ICraftable
-	{
-		private Mobile m_Crafter;
-		private CraftQuality m_Quality;
-		private CraftResource m_Resource;
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Crafter
-		{
-			get { return m_Crafter; } 
-			set { m_Crafter = value; InvalidateProperties(); } 
-		}
-		
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftQuality Quality
-		{ 
-			get { return m_Quality; } 
-			set { m_Quality = value; InvalidateProperties(); } 
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftResource Resource
-		{
-			get { return m_Resource; }
-			set
-			{
-				if ( m_Resource != value )
-				{
-					m_Resource = value;
-					Hue = CraftResources.GetHue( m_Resource );
-					InvalidateProperties();
-				}
-			}
-		}
-		
-		public virtual CraftResource DefaultResource{ get{ return CraftResource.RegularWood; } }
-		public virtual bool DisplaysResource{ get{ return true; } }
-		public virtual bool DisplaysMakersMark{ get{ return true; } }
-		
-		#region Old Container Serialization Vars
-		/* DO NOT USE! Only used in serialization of furniture containers that originally derived from BaseContainer */
-		private bool m_InheritsBaseCont;
-		private int m_OldVersion;
-		
-		protected bool InheritsBaseCont
-		{
-			get{ return m_InheritsBaseCont; }
-		}
-		
-		protected int OldVersion
-		{
-			get{ return m_OldVersion; }
-		}
-		#endregion
-		
-		public BaseFurnitureContainer( int itemID ) : base( itemID )
-		{
-			m_Quality = CraftQuality.Regular;
-			Resource = DefaultResource;
-		}
-
-		public BaseFurnitureContainer(Serial serial) : base(serial)
-		{
-		}
-		
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
-
-			if ( m_Crafter != null && DisplaysMakersMark )
-				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
-
-			if ( m_Quality == CraftQuality.Exceptional )
-				list.Add( 1060636 ); // exceptional
-
-			if( ( m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.Frostwood ) && Hue == CraftResources.GetHue( m_Resource ) && DisplaysResource )
-				list.Add( CraftResources.GetLocalizationNumber( m_Resource ) ); // resource name
-		}
-
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
-
-			writer.Write((int) 2);
-			
-			writer.Write( m_Crafter );
-			writer.WriteEncodedInt( (int) m_Quality );
-			writer.WriteEncodedInt( (int) m_Resource );
-		}
-
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
-			
-			int version = reader.ReadInt();
-			
-			switch ( version )
-			{
-				case 2: 
-				{
-					m_Crafter = reader.ReadMobile();
-					m_Quality = (CraftQuality)reader.ReadEncodedInt();
-					m_Resource = (CraftResource)reader.ReadEncodedInt();
-					break;
-				}
-				case 1: //Captcha for EmptyBookcase
-				case 0: 
-				{
-					m_InheritsBaseCont = true;
-					m_OldVersion = version;
-					m_Quality = CraftQuality.Regular;
-					m_Resource = DefaultResource;
-					break;
-				}
-			}
-		}
-		
-		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
-		{
-			if ( Core.ML )
-			{
-				Quality = (CraftQuality)quality;
-			
-				if ( makersMark )
-					Crafter = from;
-
-				Type resourceType = typeRes;
-
-				if ( resourceType == null )
-					resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
-
-				Resource = CraftResources.GetFromType( resourceType );
-
-				CraftContext context = craftSystem.GetContext( from );
-
-				if ( context != null && context.DoNotColor )
-					Hue = 0;
-			}
-			
-			return quality;
-		}
-	}
-	
 	[Furniture]
 	[Flipable( 0x2815, 0x2816 )]
-	public class TallCabinet : BaseFurnitureContainer
+	public class TallCabinet : BaseContainer
 	{
 		[Constructable]
-		public TallCabinet() : base( 0x2816 )
+		public TallCabinet() : base( 0x2815 )
 		{
 			Weight = 1.0;
 		}
@@ -174,16 +29,16 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
 	[Flipable( 0x2817, 0x2818 )]
-	public class ShortCabinet : BaseFurnitureContainer
+	public class ShortCabinet : BaseContainer
 	{
 		[Constructable]
-		public ShortCabinet() : base( 0x2818 )
+		public ShortCabinet() : base( 0x2817 )
 		{
 			Weight = 1.0;
 		}
@@ -201,19 +56,19 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 		}
 	}
 
 
 	[Furniture]
 	[Flipable( 0x2857, 0x2858 )]
-	public class RedArmoire : BaseFurnitureContainer
+	public class RedArmoire : BaseContainer
 	{
 		[Constructable]
-		public RedArmoire() : base( 0x2858 )
+		public RedArmoire() : base( 0x2857 )
 		{
-			Weight = 10.0;
+			Weight = 1.0;
 		}
 
 		public RedArmoire( Serial serial ) : base( serial )
@@ -229,21 +84,18 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
-			
-			if ( Weight == 1.0 )
-				Weight = 10.0;
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
 	[Flipable( 0x285D, 0x285E )]
-	public class CherryArmoire : BaseFurnitureContainer
+	public class CherryArmoire : BaseContainer
 	{
 		[Constructable]
-		public CherryArmoire() : base( 0x285E )
+		public CherryArmoire() : base( 0x285D )
 		{
-			Weight = 10.0;
+			Weight = 1.0;
 		}
 
 		public CherryArmoire( Serial serial ) : base( serial )
@@ -259,21 +111,18 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
-			
-			if ( Weight == 1.0 )
-				Weight = 10.0;
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
 	[Flipable( 0x285B, 0x285C )]
-	public class MapleArmoire : BaseFurnitureContainer
+	public class MapleArmoire : BaseContainer
 	{
 		[Constructable]
-		public MapleArmoire() : base( 0x285C )
+		public MapleArmoire() : base( 0x285B )
 		{
-			Weight = 10.0;
+			Weight = 1.0;
 		}
 
 		public MapleArmoire( Serial serial ) : base( serial )
@@ -289,21 +138,18 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
-			
-			if ( Weight == 1.0 )
-				Weight = 10.0;
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
 	[Flipable( 0x2859, 0x285A )]
-	public class ElegantArmoire : BaseFurnitureContainer
+	public class ElegantArmoire : BaseContainer
 	{
 		[Constructable]
-		public ElegantArmoire() : base( 0x285A )
+		public ElegantArmoire() : base( 0x2859 )
 		{
-			Weight = 10.0;
+			Weight = 1.0;
 		}
 
 		public ElegantArmoire( Serial serial ) : base( serial )
@@ -319,19 +165,16 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
-			
-			if ( Weight == 1.0 )
-				Weight = 10.0;
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
-	[Flipable( 0xA97, 0xA99, 0xA98, 0xA9A, 0xA9B, 0xA9C )]
-	public class FullBookcase : BaseFurnitureContainer
+	[Flipable( 0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c )]
+	public class FullBookcase : BaseContainer
 	{
 		[Constructable]
-		public FullBookcase() : base( 0xA99 )
+		public FullBookcase() : base( 0xA97 )
 		{
 			Weight = 1.0;
 		}
@@ -349,16 +192,16 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
-	[Flipable( 0xA9D, 0xA9E )]
-	public class EmptyBookcase : BaseFurnitureContainer
+	[Flipable( 0xa9d, 0xa9e )]
+	public class EmptyBookcase : BaseContainer
 	{
 		[Constructable]
-		public EmptyBookcase() : base( 0xA9E )
+		public EmptyBookcase() : base( 0xA9D )
 		{
 		}
 
@@ -376,7 +219,7 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 
 			if ( version == 0 && Weight == 1.0 )
 				Weight = -1;
@@ -384,11 +227,11 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xA2C, 0xA34 )]
-	public class Drawer : BaseFurnitureContainer
+	[Flipable( 0xa2c, 0xa34 )]
+	public class Drawer : BaseContainer
 	{
 		[Constructable]
-		public Drawer() : base( 0xA34 )
+		public Drawer() : base( 0xA2C )
 		{
 			Weight = 1.0;
 		}
@@ -406,16 +249,16 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 		}
 	}
 
 	[Furniture]
-	[Flipable( 0xA30, 0xA38 )]
-	public class FancyDrawer : BaseFurnitureContainer
+	[Flipable( 0xa30, 0xa38 )]
+	public class FancyDrawer : BaseContainer
 	{
 		[Constructable]
-		public FancyDrawer() : base( 0xA38 )
+		public FancyDrawer() : base( 0xA30 )
 		{
 			Weight = 1.0;
 		}
@@ -433,78 +276,16 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
-		}
-	}
-	
-	[Furniture]
-	[Flipable( 0x2DF1, 0x2DF2 )]
-	public class OrnateElvenChest : BaseFurnitureContainer
-	{
-		[Constructable]
-		public OrnateElvenChest() : base( 0x2DF1 )
-		{
-			Weight = 1.0;
-			GumpID = 0x10C;
-		}
-
-		public OrnateElvenChest( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 1 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
 			int version = reader.ReadInt();
-			
-			if ( version < 1 )
-				GumpID = 0x10C; 
-		}
-	}
-	
-	[Furniture]
-	[Flipable( 0x2DF3, 0x2DF4 )]
-	public class OrnateElvenBox : BaseFurnitureContainer
-	{
-		[Constructable]
-		public OrnateElvenBox() : base( 0x2DF3 )
-		{
-			Weight = 1.0;
-			GumpID = 0x10C;
-		}
-
-		public OrnateElvenBox( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 1 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-			
-			if ( version < 1 )
-				GumpID = 0x10C; 
 		}
 	}
 
 	[Furniture]
-	[Flipable( 0xA4F, 0xA53 )]
-	public class Armoire : BaseFurnitureContainer
+	[Flipable( 0xa4f, 0xa53 )]
+	public class Armoire : BaseContainer
 	{
 		[Constructable]
-		public Armoire() : base( 0xA53 )
+		public Armoire() : base( 0xA4F )
 		{
 			Weight = 1.0;
 		}
@@ -528,18 +309,18 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 
 			DynamicFurniture.Close( this );
 		}
 	}
 
 	[Furniture]
-	[Flipable( 0xA4D, 0xA51 )]
-	public class FancyArmoire : BaseFurnitureContainer
+	[Flipable( 0xa4d, 0xa51 )]
+	public class FancyArmoire : BaseContainer
 	{
 		[Constructable]
-		public FancyArmoire() : base( 0xA51 )
+		public FancyArmoire() : base( 0xA4D )
 		{
 			Weight = 1.0;
 		}
@@ -563,7 +344,7 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			int version = ( InheritsBaseCont ? OldVersion : reader.ReadInt() ); //Required for BaseFurnitureContainer insertion
+			int version = reader.ReadInt();
 
 			DynamicFurniture.Close( this );
 		}

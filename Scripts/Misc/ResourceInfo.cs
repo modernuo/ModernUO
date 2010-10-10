@@ -48,32 +48,52 @@ namespace Server.Items
 
 	public class CraftAttributeInfo
 	{
-		private BonusAttribute[] m_WeaponAttributes;
-		private BonusAttribute[] m_ArmorAttributes;
-		private BonusAttribute[] m_ShieldAttributes;
-		private BonusAttribute[] m_OtherAttributes;
-		
-		private int m_RandomAttributeCount;
-		private BonusAttribute[] m_WeaponRandomAttributes;
-		private BonusAttribute[] m_ArmorRandomAttributes;
-		private BonusAttribute[] m_ShieldRandomAttributes;
-		private BonusAttribute[] m_OtherRandomAttributes;
+		private int m_WeaponFireDamage;
+		private int m_WeaponColdDamage;
+		private int m_WeaponPoisonDamage;
+		private int m_WeaponEnergyDamage;
+		private int m_WeaponChaosDamage;
+		private int m_WeaponDirectDamage;
+		private int m_WeaponDurability;
+		private int m_WeaponLuck;
+		private int m_WeaponGoldIncrease;
+		private int m_WeaponLowerRequirements;
+
+		private int m_ArmorPhysicalResist;
+		private int m_ArmorFireResist;
+		private int m_ArmorColdResist;
+		private int m_ArmorPoisonResist;
+		private int m_ArmorEnergyResist;
+		private int m_ArmorDurability;
+		private int m_ArmorLuck;
+		private int m_ArmorGoldIncrease;
+		private int m_ArmorLowerRequirements;
 
 		private int m_RunicMinAttributes;
 		private int m_RunicMaxAttributes;
 		private int m_RunicMinIntensity;
 		private int m_RunicMaxIntensity;
-		
-		public BonusAttribute[] WeaponAttributes{ get{ return m_WeaponAttributes; } set{ m_WeaponAttributes = value; } }
-		public BonusAttribute[] ArmorAttributes{ get{ return m_ArmorAttributes; } set{ m_ArmorAttributes = value; } }
-		public BonusAttribute[] ShieldAttributes{ get{ return m_ShieldAttributes; } set{ m_ShieldAttributes = value; } }
-		public BonusAttribute[] OtherAttributes{ get{ return m_OtherAttributes; } set{ m_OtherAttributes = value; } }
-		
-		public int RandomAttributeCount{ get{ return m_RandomAttributeCount; } set{ m_RandomAttributeCount = value; } }
-		public BonusAttribute[] WeaponRandomAttributes{ get{ return m_WeaponRandomAttributes; } set{ m_WeaponRandomAttributes = value; } }
-		public BonusAttribute[] ArmorRandomAttributes{ get{ return m_ArmorRandomAttributes; } set{ m_ArmorRandomAttributes = value; } }
-		public BonusAttribute[] ShieldRandomAttributes{ get{ return m_ShieldRandomAttributes; } set{ m_ShieldRandomAttributes = value; } }
-		public BonusAttribute[] OtherRandomAttributes{ get{ return m_OtherRandomAttributes; } set{ m_OtherRandomAttributes = value; } }
+
+		public int WeaponFireDamage{ get{ return m_WeaponFireDamage; } set{ m_WeaponFireDamage = value; } }
+		public int WeaponColdDamage{ get{ return m_WeaponColdDamage; } set{ m_WeaponColdDamage = value; } }
+		public int WeaponPoisonDamage{ get{ return m_WeaponPoisonDamage; } set{ m_WeaponPoisonDamage = value; } }
+		public int WeaponEnergyDamage{ get{ return m_WeaponEnergyDamage; } set{ m_WeaponEnergyDamage = value; } }
+		public int WeaponChaosDamage{ get{ return m_WeaponChaosDamage; } set{ m_WeaponChaosDamage = value; } }
+		public int WeaponDirectDamage{ get{ return m_WeaponDirectDamage; } set{ m_WeaponDirectDamage = value; } }
+		public int WeaponDurability{ get{ return m_WeaponDurability; } set{ m_WeaponDurability = value; } }
+		public int WeaponLuck{ get{ return m_WeaponLuck; } set{ m_WeaponLuck = value; } }
+		public int WeaponGoldIncrease{ get{ return m_WeaponGoldIncrease; } set{ m_WeaponGoldIncrease = value; } }
+		public int WeaponLowerRequirements{ get{ return m_WeaponLowerRequirements; } set{ m_WeaponLowerRequirements = value; } }
+
+		public int ArmorPhysicalResist{ get{ return m_ArmorPhysicalResist; } set{ m_ArmorPhysicalResist = value; } }
+		public int ArmorFireResist{ get{ return m_ArmorFireResist; } set{ m_ArmorFireResist = value; } }
+		public int ArmorColdResist{ get{ return m_ArmorColdResist; } set{ m_ArmorColdResist = value; } }
+		public int ArmorPoisonResist{ get{ return m_ArmorPoisonResist; } set{ m_ArmorPoisonResist = value; } }
+		public int ArmorEnergyResist{ get{ return m_ArmorEnergyResist; } set{ m_ArmorEnergyResist = value; } }
+		public int ArmorDurability{ get{ return m_ArmorDurability; } set{ m_ArmorDurability = value; } }
+		public int ArmorLuck{ get{ return m_ArmorLuck; } set{ m_ArmorLuck = value; } }
+		public int ArmorGoldIncrease{ get{ return m_ArmorGoldIncrease; } set{ m_ArmorGoldIncrease = value; } }
+		public int ArmorLowerRequirements{ get{ return m_ArmorLowerRequirements; } set{ m_ArmorLowerRequirements = value; } }
 
 		public int RunicMinAttributes{ get{ return m_RunicMinAttributes; } set{ m_RunicMinAttributes = value; } }
 		public int RunicMaxAttributes{ get{ return m_RunicMaxAttributes; } set{ m_RunicMaxAttributes = value; } }
@@ -96,15 +116,11 @@ namespace Server.Items
 
 			CraftAttributeInfo dullCopper = DullCopper = new CraftAttributeInfo();
 
-			dullCopper.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 6 ), 
-				new BonusAttribute( AosArmorAttribute.DurabilityBonus, 50 ),
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 20 )
-			};
-			dullCopper.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosWeaponAttribute.DurabilityBonus, 100 ),
-				new BonusAttribute( AosWeaponAttribute.LowerStatReq, 50 ) 
-			};
+			dullCopper.ArmorPhysicalResist = 6;
+			dullCopper.ArmorDurability = 50;
+			dullCopper.ArmorLowerRequirements = 20;
+			dullCopper.WeaponDurability = 100;
+			dullCopper.WeaponLowerRequirements = 50;
 			dullCopper.RunicMinAttributes = 1;
 			dullCopper.RunicMaxAttributes = 2;
 			if ( Core.ML )
@@ -120,16 +136,12 @@ namespace Server.Items
 
 			CraftAttributeInfo shadowIron = ShadowIron = new CraftAttributeInfo();
 
-			shadowIron.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 2 ), 
-				new BonusAttribute( ResistanceType.Fire, 1 ),
-				new BonusAttribute( ResistanceType.Energy, 5 ),
-				new BonusAttribute( AosArmorAttribute.DurabilityBonus, 100 )
-			};
-			shadowIron.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Cold, 20 ),
-				new BonusAttribute( AosWeaponAttribute.DurabilityBonus, 50 ) 
-			};
+			shadowIron.ArmorPhysicalResist = 2;
+			shadowIron.ArmorFireResist = 1;
+			shadowIron.ArmorEnergyResist = 5;
+			shadowIron.ArmorDurability = 100;
+			shadowIron.WeaponColdDamage = 20;
+			shadowIron.WeaponDurability = 50;
 			shadowIron.RunicMinAttributes = 2;
 			shadowIron.RunicMaxAttributes = 2;
 			if ( Core.ML )
@@ -145,16 +157,12 @@ namespace Server.Items
 
 			CraftAttributeInfo copper = Copper = new CraftAttributeInfo();
 
-			copper.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 1 ), 
-				new BonusAttribute( ResistanceType.Fire, 1 ),
-				new BonusAttribute( ResistanceType.Poison, 5 ),
-				new BonusAttribute( ResistanceType.Energy, 2 )
-			};
-			copper.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Poison, 10 ),
-				new BonusAttribute( AosElementAttribute.Energy, 20 ) 
-			};
+			copper.ArmorPhysicalResist = 1;
+			copper.ArmorFireResist = 1;
+			copper.ArmorPoisonResist = 5;
+			copper.ArmorEnergyResist = 2;
+			copper.WeaponPoisonDamage = 10;
+			copper.WeaponEnergyDamage = 20;
 			copper.RunicMinAttributes = 2;
 			copper.RunicMaxAttributes = 3;
 			if ( Core.ML )
@@ -170,15 +178,11 @@ namespace Server.Items
 
 			CraftAttributeInfo bronze = Bronze = new CraftAttributeInfo();
 
-			bronze.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 3 ), 
-				new BonusAttribute( ResistanceType.Cold, 5 ),
-				new BonusAttribute( ResistanceType.Poison, 1 ),
-				new BonusAttribute( ResistanceType.Energy, 1 )
-			};
-			bronze.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Fire, 40 )
-			};
+			bronze.ArmorPhysicalResist = 3;
+			bronze.ArmorColdResist = 5;
+			bronze.ArmorPoisonResist = 1;
+			bronze.ArmorEnergyResist = 1;
+			bronze.WeaponFireDamage = 40;
 			bronze.RunicMinAttributes = 3;
 			bronze.RunicMaxAttributes = 3;
 			if ( Core.ML )
@@ -194,18 +198,14 @@ namespace Server.Items
 
 			CraftAttributeInfo golden = Golden = new CraftAttributeInfo();
 
-			golden.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 1 ), 
-				new BonusAttribute( ResistanceType.Fire, 1 ),
-				new BonusAttribute( ResistanceType.Cold, 2 ),
-				new BonusAttribute( ResistanceType.Energy, 2 ),
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 30 )
-			};
-			golden.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosWeaponAttribute.LowerStatReq, 50 )
-			};
+			golden.ArmorPhysicalResist = 1;
+			golden.ArmorFireResist = 1;
+			golden.ArmorColdResist = 2;
+			golden.ArmorEnergyResist = 2;
+			golden.ArmorLuck = 40;
+			golden.ArmorLowerRequirements = 30;
+			golden.WeaponLuck = 40;
+			golden.WeaponLowerRequirements = 50;
 			golden.RunicMinAttributes = 3;
 			golden.RunicMaxAttributes = 4;
 			if ( Core.ML )
@@ -221,17 +221,13 @@ namespace Server.Items
 
 			CraftAttributeInfo agapite = Agapite = new CraftAttributeInfo();
 
-			agapite.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 2 ), 
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( ResistanceType.Cold, 2 ),
-				new BonusAttribute( ResistanceType.Poison, 2 ),
-				new BonusAttribute( ResistanceType.Energy, 2 )
-			};
-			agapite.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Cold, 30 ),
-				new BonusAttribute( AosElementAttribute.Energy, 20 )
-			};
+			agapite.ArmorPhysicalResist = 2;
+			agapite.ArmorFireResist = 3;
+			agapite.ArmorColdResist = 2;
+			agapite.ArmorPoisonResist = 2;
+			agapite.ArmorEnergyResist = 2;
+			agapite.WeaponColdDamage = 30;
+			agapite.WeaponEnergyDamage = 20;
 			agapite.RunicMinAttributes = 4;
 			agapite.RunicMaxAttributes = 4;
 			if ( Core.ML )
@@ -247,17 +243,13 @@ namespace Server.Items
 
 			CraftAttributeInfo verite = Verite = new CraftAttributeInfo();
 
-			verite.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 3 ), 
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( ResistanceType.Cold, 2 ),
-				new BonusAttribute( ResistanceType.Poison, 3 ),
-				new BonusAttribute( ResistanceType.Energy, 1 )
-			};
-			verite.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Poison, 40 ),
-				new BonusAttribute( AosElementAttribute.Energy, 20 )
-			};
+			verite.ArmorPhysicalResist = 3;
+			verite.ArmorFireResist = 3;
+			verite.ArmorColdResist = 2;
+			verite.ArmorPoisonResist = 3;
+			verite.ArmorEnergyResist = 1;
+			verite.WeaponPoisonDamage = 40;
+			verite.WeaponEnergyDamage = 20;
 			verite.RunicMinAttributes = 4;
 			verite.RunicMaxAttributes = 5;
 			if ( Core.ML )
@@ -273,19 +265,15 @@ namespace Server.Items
 
 			CraftAttributeInfo valorite = Valorite = new CraftAttributeInfo();
 
-			valorite.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 4 ), 
-				new BonusAttribute( ResistanceType.Cold, 3 ),
-				new BonusAttribute( ResistanceType.Poison, 3 ),
-				new BonusAttribute( ResistanceType.Energy, 3 ),
-				new BonusAttribute( AosArmorAttribute.DurabilityBonus, 50 )
-			};
-			valorite.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Fire, 10 ),
-				new BonusAttribute( AosElementAttribute.Cold, 20 ),
-				new BonusAttribute( AosElementAttribute.Poison, 10 ),
-				new BonusAttribute( AosElementAttribute.Energy, 20 )
-			};
+			valorite.ArmorPhysicalResist = 4;
+			valorite.ArmorColdResist = 3;
+			valorite.ArmorPoisonResist = 3;
+			valorite.ArmorEnergyResist = 3;
+			valorite.ArmorDurability = 50;
+			valorite.WeaponFireDamage = 10;
+			valorite.WeaponColdDamage = 20;
+			valorite.WeaponPoisonDamage = 10;
+			valorite.WeaponEnergyDamage = 20;
 			valorite.RunicMinAttributes = 5;
 			valorite.RunicMaxAttributes = 5;
 			if ( Core.ML )
@@ -301,10 +289,8 @@ namespace Server.Items
 
 			CraftAttributeInfo spined = Spined = new CraftAttributeInfo();
 
-			spined.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 5 ), 
-				new BonusAttribute( AosAttribute.Luck, 40 )
-			};
+			spined.ArmorPhysicalResist = 5;
+			spined.ArmorLuck = 40;
 			spined.RunicMinAttributes = 1;
 			spined.RunicMaxAttributes = 3;
 			if ( Core.ML )
@@ -320,13 +306,11 @@ namespace Server.Items
 
 			CraftAttributeInfo horned = Horned = new CraftAttributeInfo();
 
-			horned.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 2 ),
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( ResistanceType.Cold, 2 ),
-				new BonusAttribute( ResistanceType.Poison, 2 ),
-				new BonusAttribute( ResistanceType.Energy, 2 )
-			};
+			horned.ArmorPhysicalResist = 2;
+			horned.ArmorFireResist = 3;
+			horned.ArmorColdResist = 2;
+			horned.ArmorPoisonResist = 2;
+			horned.ArmorEnergyResist = 2;
 			horned.RunicMinAttributes = 3;
 			horned.RunicMaxAttributes = 4;
 			if ( Core.ML )
@@ -342,13 +326,11 @@ namespace Server.Items
 
 			CraftAttributeInfo barbed = Barbed = new CraftAttributeInfo();
 
-			barbed.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 2 ),
-				new BonusAttribute( ResistanceType.Fire, 1 ),
-				new BonusAttribute( ResistanceType.Cold, 2 ),
-				new BonusAttribute( ResistanceType.Poison, 3 ),
-				new BonusAttribute( ResistanceType.Energy, 4 )
-			};
+			barbed.ArmorPhysicalResist = 2;
+			barbed.ArmorFireResist = 1;
+			barbed.ArmorColdResist = 2;
+			barbed.ArmorPoisonResist = 3;
+			barbed.ArmorEnergyResist = 4;
 			barbed.RunicMinAttributes = 4;
 			barbed.RunicMaxAttributes = 5;
 			if ( Core.ML )
@@ -364,235 +346,47 @@ namespace Server.Items
 
 			CraftAttributeInfo red = RedScales = new CraftAttributeInfo();
 
-			red.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Fire, 10 ),
-				new BonusAttribute( ResistanceType.Cold, -3 )
-			};
+			red.ArmorFireResist = 10;
+			red.ArmorColdResist = -3;
 
 			CraftAttributeInfo yellow = YellowScales = new CraftAttributeInfo();
 
-			yellow.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, -3 ),
-				new BonusAttribute( AosAttribute.Luck, 20 )
-			};
+			yellow.ArmorPhysicalResist = -3;
+			yellow.ArmorLuck = 20;
 
 			CraftAttributeInfo black = BlackScales = new CraftAttributeInfo();
 
-			black.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 10 ),
-				new BonusAttribute( ResistanceType.Energy, -3 )
-			};
+			black.ArmorPhysicalResist = 10;
+			black.ArmorEnergyResist = -3;
 
 			CraftAttributeInfo green = GreenScales = new CraftAttributeInfo();
 
-			green.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Fire, -3 ),
-				new BonusAttribute( ResistanceType.Poison, 10 )
-			};
+			green.ArmorFireResist = -3;
+			green.ArmorPoisonResist = 10;
 
 			CraftAttributeInfo white = WhiteScales = new CraftAttributeInfo();
 
-			white.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, -3 ),
-				new BonusAttribute( ResistanceType.Cold, 10 )
-			};
+			white.ArmorPhysicalResist = -3;
+			white.ArmorColdResist = 10;
 
 			CraftAttributeInfo blue = BlueScales = new CraftAttributeInfo();
 
-			blue.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Poison, -3 ),
-				new BonusAttribute( ResistanceType.Energy, 10 )
-			};
+			blue.ArmorPoisonResist = -3;
+			blue.ArmorEnergyResist = 10;
 
-			#region Mondain's Legacy
+			//public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
+
 			CraftAttributeInfo oak = OakWood = new CraftAttributeInfo();
-			
-			oak.ArmorAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 3 ),
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( ResistanceType.Poison, 2 ),
-				new BonusAttribute( ResistanceType.Energy, 3 ),
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosArmorAttribute.DurabilityBonus, 50 )
-			};
-			oak.WeaponAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosAttribute.WeaponDamage, 5 ),
-				new BonusAttribute( AosWeaponAttribute.DurabilityBonus, 50 )
-			};
-			oak.ShieldAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Physical, 1 ),
-				new BonusAttribute( ResistanceType.Fire, 1 ),
-				new BonusAttribute( ResistanceType.Cold, 1 ),
-				new BonusAttribute( ResistanceType.Poison, 1 ),
-				new BonusAttribute( ResistanceType.Energy, 1 )
-			};
-			oak.OtherAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosAttribute.Luck, 40 ) 
-			};
-			oak.RunicMinAttributes = 1;
-			oak.RunicMaxAttributes = 2;
-			oak.RunicMinIntensity = 1;
-			oak.RunicMaxIntensity = 50;
 
 			CraftAttributeInfo ash = AshWood = new CraftAttributeInfo();
 
-			ash.ArmorAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Physical, 3 ),
-				new BonusAttribute( ResistanceType.Cold, 3 ),
-				new BonusAttribute( ResistanceType.Poison, 2 ),
-				new BonusAttribute( ResistanceType.Energy, 3 ),
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 20 ),
-				new BonusAttribute( AosAttribute.LowerWeight, 75 )
-			};
-			ash.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosAttribute.WeaponSpeed, 10 ), 
-				new BonusAttribute( AosAttribute.LowerWeight, 75 ),
-				new BonusAttribute( AosWeaponAttribute.LowerStatReq, 20 )
-			};
-			ash.ShieldAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Energy, 3 ),
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 20 )
-			};
-			ash.OtherAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 20 ) 
-			};
-			ash.RunicMinAttributes = 2;
-			ash.RunicMaxAttributes = 3;
-			ash.RunicMinIntensity = 35;
-			ash.RunicMaxIntensity = 75;
-
 			CraftAttributeInfo yew = YewWood = new CraftAttributeInfo();
 
-			yew.ArmorAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Physical, 6 ),
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( ResistanceType.Cold, 3 ),
-				new BonusAttribute( ResistanceType.Energy, 3 ),
-				new BonusAttribute( AosAttribute.RegenHits, 1 ) 
-			};
-			yew.WeaponAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.WeaponDamage, 10 ),
-				new BonusAttribute( AosAttribute.AttackChance, 5 )
-			};
-			yew.ShieldAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Physical, 3 ),
-				new BonusAttribute( AosAttribute.RegenHits, 1 ) 
-			};
-			yew.OtherAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosAttribute.RegenHits, 2 ) 
-			};
-			yew.RunicMinAttributes = 3;
-			yew.RunicMaxAttributes = 3;
-			yew.RunicMinIntensity = 40;
-			yew.RunicMaxIntensity = 90;
-
 			CraftAttributeInfo heart = Heartwood = new CraftAttributeInfo();
-			
-			heart.ArmorAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Physical, 2 ),
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( ResistanceType.Cold, 2 ),
-				new BonusAttribute( ResistanceType.Poison, 7 ),
-				new BonusAttribute( ResistanceType.Energy, 2 )
-			};
-			
-			#region Random Attributes
-			heart.RandomAttributeCount = 1;
-			heart.ArmorRandomAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosArmorAttribute.DurabilityBonus, 50 ),
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 20 ),
-				new BonusAttribute( AosAttribute.WeaponDamage, 10 ),
-				new BonusAttribute( AosAttribute.LowerWeight, 50 ),
-				new BonusAttribute( AosAttribute.AttackChance, 5 ),
-				new BonusAttribute( AosArmorAttribute.MageArmor, 1 )
-			};
-			
-			heart.WeaponRandomAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosWeaponAttribute.DurabilityBonus, 50 ),
-				new BonusAttribute( AosWeaponAttribute.LowerStatReq, 20 ),
-				new BonusAttribute( AosAttribute.WeaponSpeed, 10 ),
-				new BonusAttribute( AosAttribute.LowerWeight, 75 ),
-				new BonusAttribute( AosAttribute.AttackChance, 5 ),
-				new BonusAttribute( AosWeaponAttribute.HitLeechHits, 13 ),
-				new BonusAttribute( AosAttribute.Luck, 10 )
-			};
-			
-			heart.ShieldRandomAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.BonusDex, 2 ),
-				new BonusAttribute( AosAttribute.BonusStr, 2 ),
-				new BonusAttribute( ResistanceType.Physical, 5 ),
-				new BonusAttribute( AosAttribute.ReflectPhysical, 5 ),
-				new BonusAttribute( AosArmorAttribute.SelfRepair, 2 ),
-				new BonusAttribute( ResistanceType.Cold, 3 ),
-				new BonusAttribute( AosAttribute.SpellChanneling, 1 )
-			};
-			
-			heart.OtherRandomAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosAttribute.RegenHits, 2 ),
-				new BonusAttribute( AosArmorAttribute.LowerStatReq, 20 ),
-				new BonusAttribute( AosAttribute.SpellChanneling, 1 ),
-				new BonusAttribute( AosAttribute.Luck, 10 )
-			};
-			#endregion
-			
-			heart.RunicMinAttributes = 4;
-			heart.RunicMaxAttributes = 4;
-			heart.RunicMinIntensity = 50;
-			heart.RunicMaxIntensity = 100;
 
 			CraftAttributeInfo blood = Bloodwood = new CraftAttributeInfo();
-			
-			blood.ArmorAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Physical, 3 ),
-				new BonusAttribute( ResistanceType.Fire, 8 ),
-				new BonusAttribute( ResistanceType.Cold, 1 ),
-				new BonusAttribute( ResistanceType.Poison, 3 ),
-				new BonusAttribute( ResistanceType.Energy, 3 ),
-				new BonusAttribute( AosAttribute.RegenHits, 2 ) 
-			};
-			blood.WeaponAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.RegenHits, 2 ),
-				new BonusAttribute( AosWeaponAttribute.HitLeechHits, 13 )
-			};
-			blood.ShieldAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Fire, 3 ),
-				new BonusAttribute( AosAttribute.Luck, 40 ),
-				new BonusAttribute( AosAttribute.RegenHits, 2 ) 
-			};
-			blood.OtherAttributes = new BonusAttribute[] {
-				new BonusAttribute( AosAttribute.RegenHits, 2 ),
-				new BonusAttribute( AosAttribute.Luck, 20 )
-			};
 
 			CraftAttributeInfo frost = Frostwood = new CraftAttributeInfo();
-			
-			frost.ArmorAttributes = new BonusAttribute[] {
-				new BonusAttribute( ResistanceType.Physical, 2 ),
-				new BonusAttribute( ResistanceType.Fire, 1 ),
-				new BonusAttribute( ResistanceType.Cold, 8 ),
-				new BonusAttribute( ResistanceType.Poison, 3 ),
-				new BonusAttribute( ResistanceType.Energy, 4 )
-			};
-			blood.WeaponAttributes = new BonusAttribute[] {
-				
-				new BonusAttribute( AosWeaponAttribute.HitLeechHits, 13 )
-			};
-			frost.WeaponAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosElementAttribute.Cold, 40 ),
-				new BonusAttribute( AosAttribute.WeaponDamage, 12 ) 
-			};
-			frost.ShieldAttributes = new BonusAttribute[] { 
-				new BonusAttribute( ResistanceType.Cold, 3 ),
-				new BonusAttribute( AosAttribute.SpellChanneling, 1 ) 
-			};
-			frost.OtherAttributes = new BonusAttribute[] { 
-				new BonusAttribute( AosAttribute.SpellChanneling, 1 )
-			};
-			#endregion
 		}
 	}
 

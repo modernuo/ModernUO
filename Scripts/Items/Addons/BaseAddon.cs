@@ -47,7 +47,7 @@ namespace Server.Items
 			m_Components = new List<AddonComponent>();
 		}
 
-		public virtual bool RetainDeedHue{ get{ return ( Core.ML ? true : false ); } }
+		public virtual bool RetainDeedHue{ get{ return false; } }
 
 		public virtual void OnChop( Mobile from )
 		{

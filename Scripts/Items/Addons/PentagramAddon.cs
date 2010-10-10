@@ -8,12 +8,7 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new PentagramDeed(); } }
 
 		[Constructable]
-		public PentagramAddon() : this( 0 )
-		{
-		}
-		
-		[Constructable]
-		public PentagramAddon( int hue )
+		public PentagramAddon()
 		{
 			AddComponent( new AddonComponent( 0xFE7 ), -1, -1, 0 );
 			AddComponent( new AddonComponent( 0xFE8 ),  0, -1, 0 );
@@ -24,7 +19,6 @@ namespace Server.Items
 			AddComponent( new AddonComponent( 0xFE9 ), -1,  1, 0 );
 			AddComponent( new AddonComponent( 0xFEC ),  0,  1, 0 );
 			AddComponent( new AddonComponent( 0xFED ),  1,  1, 0 );
-			Hue = hue;
 		}
 
 		public PentagramAddon( Serial serial ) : base( serial )
@@ -48,7 +42,7 @@ namespace Server.Items
 
 	public class PentagramDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new PentagramAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new PentagramAddon(); } }
 		public override int LabelNumber{ get{ return 1044328; } } // pentagram
 
 		[Constructable]

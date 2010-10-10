@@ -1,6 +1,5 @@
 using System;
 using Server;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -9,15 +8,9 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new ParrotPerchDeed(); } }
 
 		[Constructable]
-		public ParrotPerchAddon() : this( 0 )
+		public ParrotPerchAddon()
 		{
-		}
-		
-		[Constructable]
-		public ParrotPerchAddon( int hue )
-		{
-			AddComponent( new AddonComponent( 0x2FB6 ), 0, 0, 0 );
-			Hue = hue;
+			AddComponent( new AddonComponent( 0x2FF4 ), 0, 0, 0 );
 		}
 
 		public ParrotPerchAddon( Serial serial ) : base( serial )
@@ -39,10 +32,9 @@ namespace Server.Items
 		}
 	}
 
-	[CraftItemID( 0x2FB6 )]
 	public class ParrotPerchDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ParrotPerchAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new ParrotPerchAddon(); } }
 		public override int LabelNumber{ get{ return 1072617; } } // parrot perch
 
 		[Constructable]

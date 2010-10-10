@@ -17,8 +17,6 @@ namespace Server.Items
 		public override int AosStrReq{ get{ return 20; } }
 
 		public override int ArmorBase{ get{ return 8; } }
-		
-		public override bool UsesShieldAttrs{ get{ return true; } }
 
 		[Constructable]
 		public WoodenShield() : base( 0x1B7A )

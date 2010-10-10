@@ -1,6 +1,5 @@
 using System;
 using Server;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -9,17 +8,11 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new FancyElvenTableEastDeed(); } }
 
 		[Constructable]
-		public FancyElvenTableEastAddon() : this( 0 )
+		public FancyElvenTableEastAddon()
 		{
-		}
-		
-		[Constructable]
-		public FancyElvenTableEastAddon( int hue )
-		{
-			AddComponent( new AddonComponent( 0x3095 ), 0, 1, 0 );
-			AddComponent( new AddonComponent( 0x3096 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x3097 ), 0, -1, 0 );
-			Hue = hue;
+			AddComponent( new AddonComponent( 0x3094 ), -1, 0, 0 );
+			AddComponent( new AddonComponent( 0x3093 ), 0, 0, 0 );
+			AddComponent( new AddonComponent( 0x3092 ), 1, 0, 0 );
 		}
 
 		public FancyElvenTableEastAddon( Serial serial ) : base( serial )
@@ -41,10 +34,9 @@ namespace Server.Items
 		}
 	}
 
-	[CraftItemID( 0x2DE8 )]
 	public class FancyElvenTableEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new FancyElvenTableEastAddon( Hue ); } }
+		public override BaseAddon Addon{ get{ return new FancyElvenTableEastAddon(); } }
 		public override int LabelNumber{ get{ return 1073386; } } // hardwood table (east)
 
 		[Constructable]

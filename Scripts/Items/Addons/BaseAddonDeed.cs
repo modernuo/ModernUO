@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using Server;
 using Server.Multis;
 using Server.Targeting;
-using Server.Engines.Craft;
 
 namespace Server.Items
 {
 	[Flipable( 0x14F0, 0x14EF )]
-	public abstract class BaseAddonDeed : Item, ICraftable
+	public abstract class BaseAddonDeed : Item
 	{
 		public abstract BaseAddon Addon{ get; }
 
@@ -48,29 +47,6 @@ namespace Server.Items
 			else
 				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 		}
-		
-		#region ICraftable Members
-		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
-		{
-			Type resourceType = typeRes;
-
-			if ( resourceType == null )
-				resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
-			
-			CraftResource resource = CraftResources.GetFromType( resourceType );
-			
-			CraftContext context = craftSystem.GetContext( from );
-			
-			if ( context != null && context.DoNotColor )
-				Hue = 0;
-			else if ( resource == CraftResource.None )
-				Hue = resHue;
-			else
-				Hue = CraftResources.GetHue( resource );
-
-			return 1;
-		}
-		#endregion
 
 		private class InternalTarget : Target
 		{

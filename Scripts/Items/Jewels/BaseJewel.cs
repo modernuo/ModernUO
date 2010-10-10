@@ -17,7 +17,7 @@ namespace Server.Items
 		Diamond
 	}
 
-	public abstract class BaseJewel : Item, ICraftable, IAosAttributes
+	public abstract class BaseJewel : Item, ICraftable
 	{
 		private int m_MaxHitPoints;
 		private int m_HitPoints;

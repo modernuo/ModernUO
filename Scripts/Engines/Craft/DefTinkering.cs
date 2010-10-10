@@ -34,17 +34,6 @@ namespace Server.Engines.Craft
 		private DefTinkering() : base( 1, 1, 1.25 )// base( 1, 1, 3.0 )
 		{
 		}
-		
-		public override CraftECA ECA
-		{ 
-			get
-			{ 
-				if ( Core.AOS )
-					return CraftECA.ChanceMinusSixtyToFourtyFive; 
-				
-				return CraftECA.ChanceMinusSixty;
-			} 
-		}
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
@@ -236,7 +225,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( Key ), 1044050, 1024112, 20.0, 70.0, typeof( IronIngot ), 1044036, 3, 1044037 );
 			AddCraft( typeof( Globe ), 1044050, 1024167, 55.0, 105.0, typeof( IronIngot ), 1044036, 4, 1044037 );
 			AddCraft( typeof( Spyglass ), 1044050, 1025365, 60.0, 110.0, typeof( IronIngot ), 1044036, 4, 1044037 );
-			AddCraft( typeof( Lantern ), 1044050, 1022597, 30.0, 80.0, typeof( IronIngot ), 1044036, 4, 1044037 );
+			AddCraft( typeof( Lantern ), 1044050, 1022597, 30.0, 80.0, typeof( IronIngot ), 1044036, 2, 1044037 );
 			AddCraft( typeof( HeatingStand ), 1044050, 1026217, 60.0, 110.0, typeof( IronIngot ), 1044036, 4, 1044037 );
 
 			if ( Core.SE )
