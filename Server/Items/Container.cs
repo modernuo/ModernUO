@@ -1620,11 +1620,19 @@ namespace Server.Items
 
 		public virtual void DisplayTo( Mobile to )
 		{
-            ProcessOpeners( to );
+			ProcessOpeners( to );
 
-			to.Send( new ContainerDisplay( this ) );
+			NetState ns = to.NetState;
+
+			if ( ns == null )
+				return;
+
+			if ( ns.HighSeas )
+				to.Send( new ContainerDisplayHS( this ) );
+			else
+				to.Send( new ContainerDisplay( this ) );
 			
-			if ( to.NetState != null && to.NetState.ContainerGridLines )
+			if ( ns.ContainerGridLines )
 				to.Send( new ContainerContent6017( to, this ) );
 			else
 				to.Send( new ContainerContent( to, this ) );

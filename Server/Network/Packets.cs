@@ -310,7 +310,17 @@ namespace Server.Network
 		public DisplayBuyList( Mobile vendor ) : base( 0x24, 7 )
 		{
 			m_Stream.Write( (int)vendor.Serial );
-			m_Stream.Write( (short)0x30 );//buy window id?
+			m_Stream.Write( (short) 0x30 ); // buy window id?
+		}
+	}
+
+	public sealed class DisplayBuyListHS : Packet
+	{
+		public DisplayBuyListHS( Mobile vendor ) : base( 0x24, 9 )
+		{
+			m_Stream.Write( (int)vendor.Serial );
+			m_Stream.Write( (short) 0x30 ); // buy window id?
+			m_Stream.Write( (short) 0x00 );
 		}
 	}
 
@@ -1112,6 +1122,47 @@ namespace Server.Network
 		}
 	}
 
+	public sealed class WorldItemHS : Packet
+	{
+		public WorldItemHS( Item item ) : base( 0xF3, 26 )
+		{
+			m_Stream.Write( (short) 0x1 );
+
+			int itemID = item.ItemID;
+
+			if ( item is BaseMulti ) {
+				m_Stream.Write( (byte) 0x02 );
+				itemID &= 0x3FFF;
+			} else {
+				m_Stream.Write( (byte) 0x00 );
+				itemID &= 0x7FFF;
+			}
+
+			m_Stream.Write( (int) item.Serial );
+
+			m_Stream.Write( (short) itemID ); 
+
+			m_Stream.Write( (byte) item.Direction );
+
+			int amount = item.Amount;
+			m_Stream.Write( (short) amount );
+			m_Stream.Write( (short) amount );
+
+			Point3D loc = item.Location;
+			int x = loc.m_X & 0x7FFF;
+			int y = loc.m_Y & 0x3FFF;
+			m_Stream.Write( (short) x );
+			m_Stream.Write( (short) y );
+			m_Stream.Write( (sbyte) loc.m_Z );
+
+			m_Stream.Write( (byte) item.Light );
+			m_Stream.Write( (short) item.Hue );
+			m_Stream.Write( (byte) item.GetPacketFlags() );
+
+			m_Stream.Write( (short) 0x00 ); // ??
+		}
+	}
+
 	public sealed class LiftRej : Packet
 	{
 		public LiftRej( LRReason reason ) : base( 0x27, 2 )
@@ -1518,6 +1569,16 @@ namespace Server.Network
 		}
 	}
 
+	public sealed class DisplaySpellbookHS : Packet
+	{
+		public DisplaySpellbookHS( Item book ) : base( 0x24, 9 )
+		{
+			m_Stream.Write( (int) book.Serial );
+			m_Stream.Write( (short) -1 );
+			m_Stream.Write( (short) 0x7D );
+		}
+	}
+
 	public sealed class NewSpellbookContent : Packet
 	{
 		public NewSpellbookContent( Item item, int graphic, int offset, ulong content ) : base( 0xBF )
@@ -1611,6 +1672,16 @@ namespace Server.Network
 		{
 			m_Stream.Write( (int) c.Serial );
 			m_Stream.Write( (short) c.GumpID );
+		}
+	}
+
+	public sealed class ContainerDisplayHS : Packet
+	{
+		public ContainerDisplayHS( Container c ) : base( 0x24, 9 )
+		{
+			m_Stream.Write( (int) c.Serial );
+			m_Stream.Write( (short) c.GumpID );
+			m_Stream.Write( (short) 0x7D );
 		}
 	}
 

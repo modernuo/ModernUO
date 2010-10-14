@@ -494,17 +494,19 @@ namespace Server.Items
 		{
 			// The client must know about the spellbook or it will crash!
 
+			NetState ns = to.NetState;
+
+			if ( ns == null )
+				return;
+
 			if ( Parent == null )
 			{
 				to.Send( this.WorldPacket );
 			}
 			else if ( Parent is Item )
 			{
-				if ( to.NetState == null )
-					return;
-
 				// What will happen if the client doesn't know about our parent?
-				if ( to.NetState.ContainerGridLines )
+				if ( ns.ContainerGridLines )
 					to.Send( new ContainerContentUpdate6017( this ) );
 				else
 					to.Send( new ContainerContentUpdate( this ) );
@@ -515,20 +517,20 @@ namespace Server.Items
 				to.Send( new EquipUpdate( this ) );
 			}
 
-			to.Send( new DisplaySpellbook( this ) );
-
-			if ( to.NetState == null )
-				return;
+			if ( ns.HighSeas )
+				to.Send( new DisplaySpellbookHS( this ) );
+			else
+				to.Send( new DisplaySpellbook( this ) );
 
 			if ( Core.AOS ) {
-				if ( to.NetState.NewSpellbook ) {
+				if ( ns.NewSpellbook ) {
 					to.Send( new NewSpellbookContent( this, ItemID, BookOffset + 1, m_Content ) );
 				} else {
 					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
 				}
 			}
 			else {
-				if ( to.NetState.ContainerGridLines ) {
+				if ( ns.ContainerGridLines ) {
 					to.Send( new SpellbookContent6017( m_Count, BookOffset + 1, m_Content, this ) );
 				} else {
 					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );

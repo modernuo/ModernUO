@@ -2,8 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Text;
 using Server;
+using Server.Commands;
 using Server.Items;
+using Server.Network;
+using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Mobiles
 {
@@ -40,15 +45,15 @@ namespace Server.Mobiles
 
 		public virtual int CreaturesNameCount { get { return m_CreaturesName.Count; } }
 
-        public override void OnAfterDuped( Item newItem )
-        {
-            Spawner s = newItem as Spawner;
+		public override void OnAfterDuped( Item newItem )
+		{
+			Spawner s = newItem as Spawner;
 
-            if ( s == null )
-                return;
+			if ( s == null )
+				return;
 
 			s.m_CreaturesName = new List<string>( m_CreaturesName );
-        }
+		}
 		
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Count
@@ -148,7 +153,7 @@ namespace Server.Mobiles
 		public Spawner( int amount, int minDelay, int maxDelay, int team, int homeRange, string creatureName ) : base( 0x1f13 )
 		{
 			List<string> creaturesName = new List<string>();
-			creaturesName.Add( creatureName.ToLower() );
+			creaturesName.Add( creatureName );
 			InitSpawn( amount, TimeSpan.FromMinutes( minDelay ), TimeSpan.FromMinutes( maxDelay ), team, homeRange, creaturesName );
 		}
 
@@ -156,7 +161,7 @@ namespace Server.Mobiles
 		public Spawner( string creatureName ) : base( 0x1f13 )
 		{
 			List<string> creaturesName = new List<string>();
-			creaturesName.Add( creatureName.ToLower() );
+			creaturesName.Add( creatureName );
 			InitSpawn( 1, TimeSpan.FromMinutes( 5 ), TimeSpan.FromMinutes( 10 ), 0, 4, creaturesName );
 		}
 
@@ -217,7 +222,7 @@ namespace Server.Mobiles
 
 				list.Add( 1060656, m_Count.ToString() ); // amount to make: ~1_val~
 				list.Add( 1061169, m_HomeRange.ToString() ); // range ~1_val~
-            	list.Add( 1060658, "walking range\t{0}", m_WalkingRange ); // ~1_val~: ~2_val~ 
+				list.Add( 1060658, "walking range\t{0}", m_WalkingRange ); // ~1_val~: ~2_val~ 
 
 				list.Add( 1060659, "group\t{0}", m_Group ); // ~1_val~: ~2_val~
 				list.Add( 1060660, "team\t{0}", m_Team ); // ~1_val~: ~2_val~
@@ -261,6 +266,11 @@ namespace Server.Mobiles
 				m_Timer.Stop();
 				m_Running = false;
 			}
+		}
+
+		public static string ParseType( string s )
+		{
+			return s.Split( null, 2 )[0];
 		}
 
 		public void Defrag()
@@ -369,16 +379,13 @@ namespace Server.Mobiles
 			if ( index >= m_CreaturesName.Count )
 				return null;
 
-
-			Type type = SpawnerType.GetType( m_CreaturesName[index] );
+			Type type = ScriptCompiler.FindTypeByName( ParseType( m_CreaturesName[index] ) );
 
 			if ( type != null )
 			{
 				try
 				{
-					object o = Activator.CreateInstance( type );
-
-					return ( o as IEntity );
+					return Build( CommandSystem.Split( m_CreaturesName[index] ) );
 				}
 				catch
 				{
@@ -386,7 +393,113 @@ namespace Server.Mobiles
 			}
 
 			return null;
+		}
 
+		public static IEntity Build( string[] args )
+		{
+			string name = args[0];
+
+			Add.FixArgs( ref args );
+
+			string[,] props = null;
+
+			for ( int i = 0; i < args.Length; ++i )
+			{
+				if ( Insensitive.Equals( args[i], "set" ) )
+				{
+					int remains = args.Length - i - 1;
+
+					if ( remains >= 2 )
+					{
+						props = new string[remains / 2, 2];
+
+						remains /= 2;
+
+						for ( int j = 0; j < remains; ++j )
+						{
+							props[j, 0] = args[i + (j * 2) + 1];
+							props[j, 1] = args[i + (j * 2) + 2];
+						}
+
+						Add.FixSetString( ref args, i );
+					}
+
+					break;
+				}
+			}
+
+			Type type = ScriptCompiler.FindTypeByName( name );
+
+			if ( !Add.IsEntity( type ) ) {
+				return null;
+			}
+
+			PropertyInfo[] realProps = null;
+
+			if ( props != null )
+			{
+				realProps = new PropertyInfo[props.GetLength( 0 )];
+
+				PropertyInfo[] allProps = type.GetProperties( BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public );
+
+				for ( int i = 0; i < realProps.Length; ++i )
+				{
+					PropertyInfo thisProp = null;
+
+					string propName = props[i, 0];
+
+					for ( int j = 0; thisProp == null && j < allProps.Length; ++j )
+					{
+						if ( Insensitive.Equals( propName, allProps[j].Name ) )
+							thisProp = allProps[j];
+					}
+
+					if ( thisProp != null )
+					{
+						CPA attr = Properties.GetCPA( thisProp );
+
+						if ( attr != null && AccessLevel.GameMaster >= attr.WriteLevel && thisProp.CanWrite && !attr.ReadOnly )
+							realProps[i] = thisProp;
+					}
+				}
+			}
+
+			ConstructorInfo[] ctors = type.GetConstructors();
+
+			for ( int i = 0; i < ctors.Length; ++i )
+			{
+				ConstructorInfo ctor = ctors[i];
+
+				if ( !Add.IsConstructable( ctor, AccessLevel.GameMaster ) )
+					continue;
+
+				ParameterInfo[] paramList = ctor.GetParameters();
+
+				if ( args.Length == paramList.Length )
+				{
+					object[] paramValues = Add.ParseValues( paramList, args );
+
+					if ( paramValues == null )
+						continue;
+
+					object built = ctor.Invoke( paramValues );
+
+					if ( built != null && realProps != null )
+					{
+						for ( int j = 0; j < realProps.Length; ++j )
+						{
+							if ( realProps[j] == null )
+								continue;
+
+							string result = Properties.InternalSetValue( built, realProps[j], props[j, 1] );
+						}
+					}
+
+					return (IEntity)built;
+				}
+			}
+
+			return null;
 		}
 
 		public void Spawn( int index )
@@ -465,8 +578,16 @@ namespace Server.Mobiles
 			// Try 10 times to find a Spawnable location.
 			for ( int i = 0; i < 10; i++ )
 			{
-				int x = Location.X + (Utility.Random( (m_HomeRange * 2) + 1 ) - m_HomeRange);
-				int y = Location.Y + (Utility.Random( (m_HomeRange * 2) + 1 ) - m_HomeRange);
+				int x, y;
+
+				if ( m_HomeRange > 0 ) {
+					x = Location.X + (Utility.Random( (m_HomeRange * 2) + 1 ) - m_HomeRange);
+					y = Location.Y + (Utility.Random( (m_HomeRange * 2) + 1 ) - m_HomeRange);
+				} else {
+					x = Location.X;
+					y = Location.Y;
+				}
+
 				int z = Map.GetAverageZ( x, y );
 
 				if ( Map.CanSpawnMobile( new Point2D( x, y ), this.Z ) )
@@ -688,11 +809,12 @@ namespace Server.Mobiles
 
 					for ( int i = 0; i < size; ++i )
 					{
-						string typeName = reader.ReadString();
+						string creatureString = reader.ReadString();
 
-						m_CreaturesName.Add( typeName );
+						m_CreaturesName.Add( creatureString );
+						string typeName = ParseType( creatureString );
 
-						if ( SpawnerType.GetType( typeName ) == null )
+						if ( ScriptCompiler.FindTypeByName( typeName ) == null )
 						{
 							if ( m_WarnTimer == null )
 								m_WarnTimer = new WarnTimer();

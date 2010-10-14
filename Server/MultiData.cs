@@ -26,6 +26,13 @@ namespace Server
 {
 	public class MultiData
 	{
+		public static bool PostHSFormat {
+			get { return _PostHSFormat; }
+			set { _PostHSFormat = value; }
+		}
+
+		private static bool _PostHSFormat = false;
+
 		private static MultiComponentList[] m_Components;
 
 		private static FileStream m_Index, m_Stream;
@@ -66,7 +73,7 @@ namespace Server
 
 				m_StreamReader.BaseStream.Seek( lookup, SeekOrigin.Begin );
 
-				return new MultiComponentList( m_StreamReader, length / 12 );
+				return new MultiComponentList( m_StreamReader, length / ( _PostHSFormat ? 16 : 12 ) );
 			}
 			catch
 			{
@@ -524,6 +531,9 @@ namespace Server
 				allTiles[i].m_OffsetY = reader.ReadInt16();
 				allTiles[i].m_OffsetZ = reader.ReadInt16();
 				allTiles[i].m_Flags = reader.ReadInt32();
+
+				if ( MultiData.PostHSFormat )
+					reader.ReadInt32(); // ??
 
 				MultiTileEntry e = allTiles[i];
 

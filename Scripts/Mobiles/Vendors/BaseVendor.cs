@@ -634,15 +634,23 @@ namespace Server.Mobiles
 
 				SendPacksTo( from );
 
-				if ( from.NetState == null )
+				NetState ns = from.NetState;
+
+				if ( ns == null )
 					return;
 
-				if ( from.NetState.ContainerGridLines )
+				if ( ns.ContainerGridLines )
 					from.Send( new VendorBuyContent6017( list ) );
 				else
 					from.Send( new VendorBuyContent( list ) );
+
 				from.Send( new VendorBuyList( this, list ) );
-				from.Send( new DisplayBuyList( this ) );
+
+				if ( ns.HighSeas )
+					from.Send( new DisplayBuyListHS( this ) );
+				else
+					from.Send( new DisplayBuyList( this ) );
+
 				from.Send( new MobileStatusExtended( from ) );//make sure their gold amount is sent
 
 				if ( opls != null ) {

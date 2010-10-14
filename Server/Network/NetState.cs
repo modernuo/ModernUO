@@ -201,7 +201,9 @@ namespace Server.Network {
 			set {
 				m_Version = value;
 
-				if ( value >= m_Version7000 ) {
+				if ( value >= m_Version7090 ) {
+					_ProtocolChanges = ProtocolChanges.Version7090;
+				} else if ( value >= m_Version7000 ) {
 					_ProtocolChanges = ProtocolChanges.Version7000;
 				} else if ( value >= m_Version60142 ) {
 					_ProtocolChanges = ProtocolChanges.Version60142;
@@ -229,27 +231,30 @@ namespace Server.Network {
 		private static ClientVersion m_Version6017	= new ClientVersion( "6.0.1.7" );
 		private static ClientVersion m_Version60142	= new ClientVersion( "6.0.14.2" );
 		private static ClientVersion m_Version7000	= new ClientVersion( "7.0.0.0" );
+		private static ClientVersion m_Version7090	= new ClientVersion( "7.0.9.0" );
 
 		private ProtocolChanges _ProtocolChanges;
 
 		private enum ProtocolChanges {
-			NewSpellbook				= 0x00000001,
-			DamagePacket				= 0x00000002,
-			Unpack						= 0x00000004,
-			BuffIcon					= 0x00000008,
-			NewHaven					= 0x00000010,
-			ContainerGridLines			= 0x00000020,
+			NewSpellbook			= 0x00000001,
+			DamagePacket			= 0x00000002,
+			Unpack				= 0x00000004,
+			BuffIcon			= 0x00000008,
+			NewHaven			= 0x00000010,
+			ContainerGridLines		= 0x00000020,
 			ExtendedSupportedFeatures	= 0x00000040,
-			StygianAbyss				= 0x00000080,
+			StygianAbyss			= 0x00000080,
+			HighSeas			= 0x00000100,
 
-			Version400a					= NewSpellbook,
-			Version407a					= Version400a | DamagePacket,
-			Version500a					= Version407a | Unpack,
-			Version502b					= Version500a | BuffIcon,
-			Version6000					= Version502b | NewHaven,
-			Version6017					= Version6000 | ContainerGridLines,
-			Version60142				= Version6017 | ExtendedSupportedFeatures,
-			Version7000					= Version60142 | StygianAbyss
+			Version400a			= NewSpellbook,
+			Version407a			= Version400a  | DamagePacket,
+			Version500a			= Version407a  | Unpack,
+			Version502b			= Version500a  | BuffIcon,
+			Version6000			= Version502b  | NewHaven,
+			Version6017			= Version6000  | ContainerGridLines,
+			Version60142			= Version6017  | ExtendedSupportedFeatures,
+			Version7000			= Version60142 | StygianAbyss,
+			Version7090			= Version7000  | HighSeas
 		}
 
 		public bool NewSpellbook { get { return ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0); } }
@@ -260,6 +265,7 @@ namespace Server.Network {
 		public bool ContainerGridLines { get { return ((_ProtocolChanges & ProtocolChanges.ContainerGridLines) != 0); } }
 		public bool ExtendedSupportedFeatures { get { return ((_ProtocolChanges & ProtocolChanges.ExtendedSupportedFeatures) != 0); } }
 		public bool StygianAbyss { get { return ((_ProtocolChanges & ProtocolChanges.StygianAbyss) != 0); } }
+		public bool HighSeas { get { return ((_ProtocolChanges & ProtocolChanges.HighSeas) != 0); } }
 
 		public bool IsUOTDClient {
 			get {
