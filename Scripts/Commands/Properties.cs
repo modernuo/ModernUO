@@ -526,6 +526,24 @@ namespace Server.Commands
 			}
 		}
 
+		public static string SetDirect( object obj, PropertyInfo prop, object toSet )
+		{
+			try
+			{
+				if ( toSet is AccessLevel )
+				{
+					return "You do not have access to that level.";
+				}
+
+				prop.SetValue( obj, toSet, null );
+				return "Property has been set.";
+			}
+			catch
+			{
+				return "An exception was caught, the property may not be set.";
+			}
+		}
+
 		public static string InternalSetValue( Mobile from, object logobj, object o, PropertyInfo p, string pname, string value, bool shouldLog )
 		{
 			object toSet = null;
@@ -535,6 +553,17 @@ namespace Server.Commands
 				return result;
 
 			return SetDirect( from, logobj, o, p, pname, toSet, shouldLog );
+		}
+
+		public static string InternalSetValue( object o, PropertyInfo p, string value )
+		{
+			object toSet = null;
+			string result = ConstructFromString( p.PropertyType, o, value, ref toSet );
+
+			if ( result != null )
+				return result;
+
+			return SetDirect( o, p, toSet );
 		}
 	}
 }

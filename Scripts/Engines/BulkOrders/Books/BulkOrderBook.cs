@@ -132,7 +132,7 @@ namespace Server.Engines.BulkOrders
 						from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
 
 					dropped.Delete();
-					
+
 					return true;
 				}
 				else
