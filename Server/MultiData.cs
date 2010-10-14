@@ -26,13 +26,6 @@ namespace Server
 {
 	public class MultiData
 	{
-		public static bool PostHSFormat {
-			get { return _PostHSFormat; }
-			set { _PostHSFormat = value; }
-		}
-
-		private static bool _PostHSFormat = false;
-
 		private static MultiComponentList[] m_Components;
 
 		private static FileStream m_Index, m_Stream;
@@ -73,7 +66,7 @@ namespace Server
 
 				m_StreamReader.BaseStream.Seek( lookup, SeekOrigin.Begin );
 
-				return new MultiComponentList( m_StreamReader, length / ( _PostHSFormat ? 16 : 12 ) );
+				return new MultiComponentList( m_StreamReader, length / ( MultiComponentList.PostHSFormat ? 16 : 12 ) );
 			}
 			catch
 			{
@@ -155,6 +148,13 @@ namespace Server
 
 	public sealed class MultiComponentList
 	{
+		public static bool PostHSFormat {
+			get { return _PostHSFormat; }
+			set { _PostHSFormat = value; }
+		}
+
+		private static bool _PostHSFormat = false;
+
 		private Point2D m_Min, m_Max, m_Center;
 		private int m_Width, m_Height;
 		private Tile[][][] m_Tiles;
@@ -532,7 +532,7 @@ namespace Server
 				allTiles[i].m_OffsetZ = reader.ReadInt16();
 				allTiles[i].m_Flags = reader.ReadInt32();
 
-				if ( MultiData.PostHSFormat )
+				if ( _PostHSFormat )
 					reader.ReadInt32(); // ??
 
 				MultiTileEntry e = allTiles[i];
