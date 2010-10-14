@@ -39,7 +39,6 @@ namespace Server.Misc
 
 			TileMatrixPatch.Enabled = false; // OSI Client Patch 6.0.0.0
 
-			TileData.PostHSFormat = true; // OSI Client Patch 7.0.9.0
 			MultiData.PostHSFormat = true; // OSI Client Patch 7.0.9.0
 		}
 
