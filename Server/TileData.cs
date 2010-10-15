@@ -257,9 +257,9 @@ namespace Server
 							m_LandData[i] = new LandData( ReadNameString( bin ), flags );
 						}
 
-						m_ItemData = new ItemData[0x8000];
+						m_ItemData = new ItemData[0x10000];
 
-						for ( int i = 0; i < 0x8000; ++i )
+						for ( int i = 0; i < 0x10000; ++i )
 						{
 							if ( (i & 0x1F) == 0 )
 							{

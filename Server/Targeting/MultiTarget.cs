@@ -63,9 +63,12 @@ namespace Server.Targeting
 			m_Offset = offset;
 		}
 
-		public override Packet GetPacket()
+		public override Packet GetPacketFor( NetState ns )
 		{
-			return new MultiTargetReq( this );
+			if ( ns.HighSeas )
+				return new MultiTargetReqHS( this );
+			else
+				return new MultiTargetReq( this );
 		}
 	}
 }

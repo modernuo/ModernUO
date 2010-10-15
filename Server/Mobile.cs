@@ -2730,25 +2730,9 @@ namespace Server
 				m_Target = newTarget;
 
 				if( newTarget != null && m_NetState != null && !m_TargetLocked )
-					m_NetState.Send( newTarget.GetPacket() );
+					m_NetState.Send( newTarget.GetPacketFor( m_NetState ) );
 
 				OnTargetChange();
-
-
-
-				/*if ( m_Target != value )
-				{
-					if ( m_Target != null && value != null )
-						m_Target.Cancel( this, TargetCancelType.Overriden );
-
-					m_Target = value;
-
-					if ( m_Target != null && m_NetState != null && !m_TargetLocked )
-						m_NetState.Send( m_Target.GetPacket() );
-					//m_NetState.Send( new TargetReq( m_Target ) );
-
-					OnTargetChange();
-				}*/
 			}
 		}
 

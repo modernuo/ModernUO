@@ -168,7 +168,7 @@ namespace Server.Targeting
 			}
 		}
 
-		public virtual Packet GetPacket()
+		public virtual Packet GetPacketFor( NetState ns )
 		{
 			return new TargetReq( this );
 		}
