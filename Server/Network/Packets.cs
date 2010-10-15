@@ -2116,7 +2116,7 @@ namespace Server.Network
 
 	public sealed class MultiTargetReqHS : Packet
 	{
-		public MultiTargetReq( MultiTarget t ) : base( 0x99, 30 )
+		public MultiTargetReqHS( MultiTarget t ) : base( 0x99, 30 )
 		{
 			m_Stream.Write( (bool) t.AllowGround );
 			m_Stream.Write( (int) t.TargetID );
