@@ -1,5 +1,4 @@
 using System;
-using Server;
 using Server.Items;
 using Server.Mobiles;
 
@@ -11,8 +10,6 @@ namespace Server.Multis
 		public virtual Mobile Executioners{ get{ return new Executioner(); } }
 		
 		private Mobile m_Prisoner;
-		
-		private int m_SpawnRange;
 		
 		[Constructable]
 		public BrigandCamp() : base( 0x10ee, 0 ) // dummy garbage at center
