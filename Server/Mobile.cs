@@ -8041,10 +8041,10 @@ namespace Server
 			{
 				if( item.Parent is Item )
 				{
-                    Item parent = item.Parent as Item;
+					Item parent = item.Parent as Item;
 
-                    if ( !(CanSee( parent ) && parent.IsChildVisibleTo( this, item )) )
-                        return false;
+					if ( !(CanSee( parent ) && parent.IsChildVisibleTo( this, item )) )
+						return false;
 				}
 				else if( item.Parent is Mobile )
 				{
