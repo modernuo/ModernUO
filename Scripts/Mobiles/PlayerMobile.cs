@@ -1492,15 +1492,14 @@ namespace Server.Mobiles
 			{
 				if ( Alive && Core.Expansion >= Expansion.AOS )
 				{
-					if ( from.Party == null && this.Party == null )
+					if ( from.Party == null && this.Party == null ) {
 						list.Add( new AddToPartyEntry( from, this ) );
-
-					else if ( from.Party != null && ((Party)from.Party).Leader == from )
-					{
-						if ( this.Party == null )
+					} else if ( from.Party != null && ((Party)(from.Party)).Leader == from ) {
+						if ( this.Party == null ) {
 							list.Add( new AddToPartyEntry( from, this ) );
-						else if ( this.Party == from.Party )
+						} else if ( this.Party == from.Party ) {
 							list.Add( new RemoveFromPartyEntry( from, this ) );
+						}
 					}
 				}
 			
