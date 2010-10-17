@@ -36,19 +36,21 @@ namespace Server.Misc
 			return _pattern.IsMatch( address );
 		}
 
-		public static SmtpClient Client;
+		private static SmtpClient _Client;
 
 		public static void Configure()
 		{
 			if ( EmailServer != null )
-				Client = new SmtpClient( EmailServer );
+				_Client = new SmtpClient( EmailServer );
 		}
 
 		public static bool Send( MailMessage message )
 		{
 			try
 			{
-				Client.Send( message );
+				lock ( _Client ) {
+					_Client.Send( message );
+				}
 			}
 			catch
 			{
