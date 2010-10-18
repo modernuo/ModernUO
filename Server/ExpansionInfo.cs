@@ -35,6 +35,7 @@ namespace Server
 		SA
 	}
 
+	[Flags]
 	public enum ClientFlags
 	{
 		None		= 0x00000000,
@@ -49,6 +50,7 @@ namespace Server
 		UOTD		= 0x00000100
 	}
 
+	[Flags]
 	public enum FeatureFlags
 	{
 		None					= 0x00000000,
@@ -82,6 +84,7 @@ namespace Server
 		ExpansionSA		= ExpansionML	| SA
 	}
 
+	[Flags]
 	public enum	CharacterListFlags
 	{
 		None					= 0x00000000,

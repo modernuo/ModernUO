@@ -483,9 +483,9 @@ namespace Server.Regions
 			{
 				ReadBoolean( spawning, "excludeFromParent", ref m_ExcludeFromParentSpawns, false );
 
-				object zLevel = SpawnZLevel.Lowest;
-				ReadEnum( spawning, "zLevel", typeof( SpawnZLevel ), ref zLevel, false );
-				m_SpawnZLevel = (SpawnZLevel) zLevel;
+				SpawnZLevel zLevel = SpawnZLevel.Lowest;
+				ReadEnum( spawning, "zLevel", ref zLevel, false );
+				m_SpawnZLevel = zLevel;
 
 
 				List<SpawnEntry> list = new List<SpawnEntry>();
@@ -521,9 +521,8 @@ namespace Server.Regions
 						if ( ReadPoint3D( homeEl, map, ref home, false ) )
 							ReadInt32( homeEl, "range", ref range, false );
 
-						object oDir = SpawnEntry.InvalidDirection;
-						ReadEnum( el["direction"], "value" , typeof( Direction ), ref oDir, false );
-						Direction dir = (Direction) oDir;
+						Direction dir = SpawnEntry.InvalidDirection;
+						ReadEnum( el["direction"], "value" , ref dir, false );
 
 						SpawnEntry entry = new SpawnEntry( id, this, home, range, dir, def, amount, minSpawnTime, maxSpawnTime );
 						list.Add( entry );

@@ -66,10 +66,11 @@ namespace Server.Regions
 					int itemID = 0xE43;
 					Region.ReadInt32( xml, "itemID", ref itemID, false );
 
-					object oLevel = BaseTreasureChest.TreasureLevel.Level2;
-					Region.ReadEnum( xml, "level", typeof( BaseTreasureChest.TreasureLevel ), ref oLevel, false );
+					BaseTreasureChest.TreasureLevel level = BaseTreasureChest.TreasureLevel.Level2;
 
-					return new SpawnTreasureChest( itemID, (BaseTreasureChest.TreasureLevel) oLevel );
+					Region.ReadEnum( xml, "level", ref level, false );
+
+					return new SpawnTreasureChest( itemID, level );
 				}
 				default:
 				{
