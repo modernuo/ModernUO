@@ -126,7 +126,7 @@ namespace Server
 					}
 
 					bin.Write( debug );
-                    bin.Write( Core.Version.ToString() );
+					bin.Write( Core.Version.ToString() );
 
 					ms.Position = 0;
 

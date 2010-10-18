@@ -249,8 +249,8 @@ namespace Server.Network
 
 	public sealed class VendorBuyContent : Packet
 	{
-        public VendorBuyContent( List<BuyItemState> list )
-            : base( 0x3c )
+		public VendorBuyContent( List<BuyItemState> list )
+			: base( 0x3c )
 		{
 			this.EnsureCapacity( list.Count*19 + 5 );
 
@@ -326,8 +326,8 @@ namespace Server.Network
 
 	public sealed class VendorBuyList : Packet
 	{
-        public VendorBuyList( Mobile vendor, List<BuyItemState> list )
-            : base( 0x74 )
+		public VendorBuyList( Mobile vendor, List<BuyItemState> list )
+			: base( 0x74 )
 		{
 			this.EnsureCapacity( 256 );
 

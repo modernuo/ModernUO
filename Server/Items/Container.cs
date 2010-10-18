@@ -1646,50 +1646,50 @@ namespace Server.Items
 			}
 		}
 
-        public void ProcessOpeners( Mobile opener )
-        {
-            if ( !IsPublicContainer )
-            {
-                bool contains = false;
+		public void ProcessOpeners( Mobile opener )
+		{
+			if ( !IsPublicContainer )
+			{
+				bool contains = false;
 
-                if ( m_Openers != null )
-                {
-                    Point3D worldLoc = GetWorldLocation();
-                    Map map = this.Map;
+				if ( m_Openers != null )
+				{
+					Point3D worldLoc = GetWorldLocation();
+					Map map = this.Map;
 
-                    for ( int i = 0; i < m_Openers.Count; ++i )
-                    {
-                        Mobile mob = m_Openers[i];
+					for ( int i = 0; i < m_Openers.Count; ++i )
+					{
+						Mobile mob = m_Openers[i];
 
-                        if ( mob == opener )
-                        {
-                            contains = true;
-                        }
-                        else
-                        {
-                            int range = GetUpdateRange( mob );
+						if ( mob == opener )
+						{
+							contains = true;
+						}
+						else
+						{
+							int range = GetUpdateRange( mob );
 
-                            if ( mob.Map != map || !mob.InRange( worldLoc, range ) )
-                                m_Openers.RemoveAt( i-- );
-                        }
-                    }
-                }
+							if ( mob.Map != map || !mob.InRange( worldLoc, range ) )
+								m_Openers.RemoveAt( i-- );
+						}
+					}
+				}
 
-                if ( !contains )
-                {
-                    if ( m_Openers == null )
-                    {
-                        m_Openers = new List<Mobile>();
-                    }
+				if ( !contains )
+				{
+					if ( m_Openers == null )
+					{
+						m_Openers = new List<Mobile>();
+					}
 
-                    m_Openers.Add( opener );
-                }
-                else if ( m_Openers != null && m_Openers.Count == 0 )
-                {
-                    m_Openers = null;
-                }
-            }
-        }
+					m_Openers.Add( opener );
+				}
+				else if ( m_Openers != null && m_Openers.Count == 0 )
+				{
+					m_Openers = null;
+				}
+			}
+		}
 
 		public override void GetProperties( ObjectPropertyList list )
 		{

@@ -46,7 +46,7 @@ namespace Server.Prompts
 
 		public virtual void OnCancel( Mobile from )
 		{
-        }
+		}
 
 		public virtual void OnResponse( Mobile from, string text )
 		{

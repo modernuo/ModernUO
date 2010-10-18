@@ -401,7 +401,7 @@ namespace Server.Network
 				if ( (msgSize / 7) > 100 )
 					return;
 
-                List<BuyItemResponse> buyList = new List<BuyItemResponse>( msgSize / 7 );
+				List<BuyItemResponse> buyList = new List<BuyItemResponse>( msgSize / 7 );
 				for ( ;msgSize>0;msgSize-=7)
 				{
 					byte layer = pvSrc.ReadByte();
@@ -443,7 +443,7 @@ namespace Server.Network
 			int count = pvSrc.ReadUInt16();
 			if ( count < 100 && pvSrc.Size == (1+2+4+2+(count*6)) )
 			{
-                List<SellItemResponse> sellList = new List<SellItemResponse>( count );
+				List<SellItemResponse> sellList = new List<SellItemResponse>( count );
 
 				for (int i=0;i<count;i++)
 				{
@@ -765,8 +765,8 @@ namespace Server.Network
 				{
 					int skillIndex;
 
-                    if ( !int.TryParse( command.Split( ' ' )[0], out skillIndex ) )
-                        break;
+					if ( !int.TryParse( command.Split( ' ' )[0], out skillIndex ) )
+						break;
 
 					Skills.UseSkill( m, skillIndex );
 
@@ -776,8 +776,8 @@ namespace Server.Network
 				{
 					int booktype;
 
-                    if ( !int.TryParse( command, out booktype ) )
-                        booktype = 1;
+					if ( !int.TryParse( command, out booktype ) )
+						booktype = 1;
 
 					EventSink.InvokeOpenSpellbookRequest( new OpenSpellbookRequestEventArgs( m, booktype ) );
 
@@ -2284,25 +2284,25 @@ namespace Server.Network
 			}
 		}
 
-        public static void LoginServerSeed( NetState state, PacketReader pvSrc )
-        {
-            state.m_Seed = pvSrc.ReadInt32();
-            state.Seeded = true;
+		public static void LoginServerSeed( NetState state, PacketReader pvSrc )
+		{
+			state.m_Seed = pvSrc.ReadInt32();
+			state.Seeded = true;
 
-            if ( state.m_Seed == 0 )
-            {
-                Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
-                state.Dispose();
-                return;
-            }
+			if ( state.m_Seed == 0 )
+			{
+				Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", state);
+				state.Dispose();
+				return;
+			}
 
-            int clientMaj = pvSrc.ReadInt32();
-            int clientMin = pvSrc.ReadInt32();
-            int clientRev = pvSrc.ReadInt32();
-            int clientPat = pvSrc.ReadInt32();
+			int clientMaj = pvSrc.ReadInt32();
+			int clientMin = pvSrc.ReadInt32();
+			int clientRev = pvSrc.ReadInt32();
+			int clientPat = pvSrc.ReadInt32();
 
-            state.Version = new ClientVersion( clientMaj, clientMin, clientRev, clientPat );
-        }
+			state.Version = new ClientVersion( clientMaj, clientMin, clientRev, clientPat );
+		}
 
 		public static void AccountLogin( NetState state, PacketReader pvSrc )
 		{
