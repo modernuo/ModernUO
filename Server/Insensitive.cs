@@ -32,10 +32,6 @@ namespace Server
 			get{ return m_Comparer; }
 		}
 
-		private Insensitive()
-		{
-		}
-
 		public static int Compare( string a, string b )
 		{
 			return m_Comparer.Compare( a, b );

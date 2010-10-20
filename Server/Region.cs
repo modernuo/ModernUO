@@ -1149,9 +1149,11 @@ namespace Server
 			if ( s == null )
 				return false;
 
+			Type type = typeof(T);
+
 			try
 			{
-				value = (T)Enum.Parse( typeof( T ), s, true );
+				value = (T)Enum.Parse(type, s, true);
 				//TODO: On .NET 4.0, use Enum.TryParse
 			}
 			catch
