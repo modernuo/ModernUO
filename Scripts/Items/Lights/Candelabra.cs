@@ -56,7 +56,8 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			LabelTo( from, 1041645 );	//recovered from a shipwreck
+			if ( m_IsShipwreckedItem )
+				LabelTo( from, 1041645 );	//recovered from a shipwreck
 		}
 
 		#region IShipwreckedItem Members

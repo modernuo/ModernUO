@@ -2478,6 +2478,7 @@ namespace Server.Mobiles
 
 			Packet.Release( p );
 		}
+
 		private static void SendToStaffMessage( Mobile from, string format, params object[] args )
 		{
 			SendToStaffMessage( from, String.Format( format, args ) );
@@ -2636,8 +2637,6 @@ namespace Server.Mobiles
 		{
 			get{ return m_BOBFilter; }
 		}
-
-
 
 		public override void Deserialize( GenericReader reader )
 		{
@@ -2925,20 +2924,7 @@ namespace Server.Mobiles
 					t.Remove( remove[i] );
 			}
 
-			//decay our kills
-			if ( m_ShortTermElapse < this.GameTime )
-			{
-				m_ShortTermElapse += TimeSpan.FromHours( 8 );
-				if ( ShortTermMurders > 0 )
-					--ShortTermMurders;
-			}
-
-			if ( m_LongTermElapse < this.GameTime )
-			{
-				m_LongTermElapse += TimeSpan.FromHours( 40 );
-				if ( Kills > 0 )
-					--Kills;
-			}
+			CheckKillDecay();
 
 			CheckAtrophies( this );
 
@@ -3049,8 +3035,6 @@ namespace Server.Mobiles
 			writer.Write( this.GameTime );
 		}
 
-
-
 		public static void CheckAtrophies( Mobile m )
 		{
 			SacrificeVirtue.CheckAtrophy( m );
@@ -3061,6 +3045,23 @@ namespace Server.Mobiles
 
 			if( m is PlayerMobile )
 				ChampionTitleInfo.CheckAtrophy( (PlayerMobile)m );
+		}
+
+		public void CheckKillDecay()
+		{
+			if ( m_ShortTermElapse < this.GameTime )
+			{
+				m_ShortTermElapse += TimeSpan.FromHours( 8 );
+				if ( ShortTermMurders > 0 )
+					--ShortTermMurders;
+			}
+
+			if ( m_LongTermElapse < this.GameTime )
+			{
+				m_LongTermElapse += TimeSpan.FromHours( 40 );
+				if ( Kills > 0 )
+					--Kills;
+			}
 		}
 
 		public void ResetKillTime()
@@ -3411,7 +3412,7 @@ namespace Server.Mobiles
 		public override TimeSpan ComputeMovementSpeed( Direction dir, bool checkTurning )
 		{
 			if ( checkTurning && (dir & Direction.Mask) != (this.Direction & Direction.Mask) )
-				return TimeSpan.FromSeconds( 0.1 );	// We are NOT actually moving (just a direction change)
+				return Mobile.RunMount;	// We are NOT actually moving (just a direction change)
 
 			TransformContext context = TransformationSpellHelper.GetContext( this );
 

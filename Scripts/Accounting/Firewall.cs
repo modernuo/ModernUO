@@ -147,7 +147,7 @@ namespace Server
 				if( obj is string )
 					return obj.Equals( m_Entry );
 				else if( obj is WildcardIPFirewallEntry )
-					m_Entry.Equals( ((WildcardIPFirewallEntry)obj).m_Entry );
+					return m_Entry.Equals( ((WildcardIPFirewallEntry)obj).m_Entry );
 
 				return false;
 			}

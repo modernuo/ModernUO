@@ -336,7 +336,7 @@ namespace Server.Regions
 					from.SendLocalizedMessage( 502094 ); // You must be in your house to do this.
 				}
 			}
-			else if ( e.HasKeyword( 0x28 ) )
+			else if ( e.HasKeyword( 0x28 ) ) // trash barrel
 			{
 				if ( isCoOwner )
 				{

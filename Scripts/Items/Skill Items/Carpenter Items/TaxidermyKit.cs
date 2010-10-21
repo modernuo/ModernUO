@@ -172,8 +172,6 @@ namespace Server.Items
 		}
 	}
 
-
-
 	public class TrophyAddon : Item, IAddon
 	{
 		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }

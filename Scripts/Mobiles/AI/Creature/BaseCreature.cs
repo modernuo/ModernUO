@@ -60,8 +60,8 @@ namespace Server.Mobiles
 	{
 		None			= 0x0000,
 		Meat			= 0x0001,
-		FruitsAndVegies		= 0x0002,
-		GrainsAndHay		= 0x0004,
+		FruitsAndVegies	= 0x0002,
+		GrainsAndHay	= 0x0004,
 		Fish			= 0x0008,
 		Eggs			= 0x0010,
 		Gold			= 0x0020
@@ -174,36 +174,36 @@ namespace Server.Mobiles
 		#region Var declarations
 		private BaseAI	m_AI;					// THE AI
 		
-		private AIType	m_CurrentAI;				// The current AI
-		private AIType	m_DefaultAI;				// The default AI
+		private AIType	m_CurrentAI;			// The current AI
+		private AIType	m_DefaultAI;			// The default AI
 
 		private Mobile	m_FocusMob;				// Use focus mob instead of combatant, maybe we don't whan to fight
-		private FightMode m_FightMode;				// The style the mob uses
+		private FightMode m_FightMode;			// The style the mob uses
 
 		private int		m_iRangePerception;		// The view area
 		private int		m_iRangeFight;			// The fight distance
 
-		private bool		m_bDebugAI;			// Show debug AI messages
+		private bool	m_bDebugAI;				// Show debug AI messages
 
-		private int		m_iTeam;			// Monster Team
+		private int		m_iTeam;				// Monster Team
 
-		private double		m_dActiveSpeed;			// Timer speed when active
-		private double		m_dPassiveSpeed;		// Timer speed when not active
-		private double		m_dCurrentSpeed;		// The current speed, lets say it could be changed by something;
+		private double	m_dActiveSpeed;			// Timer speed when active
+		private double	m_dPassiveSpeed;		// Timer speed when not active
+		private double	m_dCurrentSpeed;		// The current speed, lets say it could be changed by something;
 
-		private Point3D 	m_pHome;			// The home position of the creature, used by some AI
+		private Point3D m_pHome;				// The home position of the creature, used by some AI
 		private int		m_iRangeHome = 10;		// The home range of the creature
 
 		List<Type>		m_arSpellAttack;		// List of attack spell/power
 		List<Type>		m_arSpellDefense;		// List of defensive spell/power
 
-		private bool		m_bControlled;			// Is controlled
-		private Mobile		m_ControlMaster;		// My master
-		private Mobile		m_ControlTarget;		// My target mobile
-		private Point3D		m_ControlDest;			// My target destination (patrol)
-		private OrderType	m_ControlOrder;			// My order
+		private bool		m_bControlled;		// Is controlled
+		private Mobile		m_ControlMaster;	// My master
+		private Mobile		m_ControlTarget;	// My target mobile
+		private Point3D		m_ControlDest;		// My target destination (patrol)
+		private OrderType	m_ControlOrder;		// My order
 
-		private int		m_Loyalty;
+		private int			m_Loyalty;
 
 		private double		m_dMinTameSkill;
 		private bool		m_bTamable;
@@ -222,22 +222,22 @@ namespace Server.Mobiles
 
 		private Mobile		m_SummonMaster;
 
-		private int		m_HitsMax = -1;
-		private	int		m_StamMax = -1;
-		private int		m_ManaMax = -1;
-		private int		m_DamageMin = -1;
-		private int		m_DamageMax = -1;
+		private int			m_HitsMax = -1;
+		private	int			m_StamMax = -1;
+		private int			m_ManaMax = -1;
+		private int			m_DamageMin = -1;
+		private int			m_DamageMax = -1;
 
-		private int		m_PhysicalResistance, m_PhysicalDamage = 100;
-		private int		m_FireResistance, m_FireDamage;
-		private int		m_ColdResistance, m_ColdDamage;
-		private int		m_PoisonResistance, m_PoisonDamage;
-		private int		m_EnergyResistance, m_EnergyDamage;
-		private int		m_ChaosDamage;
-		private int		m_DirectDamage;
+		private int			m_PhysicalResistance, m_PhysicalDamage = 100;
+		private int			m_FireResistance, m_FireDamage;
+		private int			m_ColdResistance, m_ColdDamage;
+		private int			m_PoisonResistance, m_PoisonDamage;
+		private int			m_EnergyResistance, m_EnergyDamage;
+		private int			m_ChaosDamage;
+		private int			m_DirectDamage;
 
-		private List<Mobile> 	m_Owners;
-		private List<Mobile> 	m_Friends;
+		private List<Mobile> m_Owners;
+		private List<Mobile> m_Friends;
 
 		private bool		m_IsStabled;
 
@@ -1636,7 +1636,7 @@ namespace Server.Mobiles
 			// Version 14
 			writer.Write( (bool)m_RemoveIfUntamed );
 			writer.Write( (int)m_RemoveStep );
-			
+
 			// Version 17
 			if ( IsStabled || ( Controlled && ControlMaster != null ) )
 				writer.Write( TimeSpan.Zero );
@@ -1848,7 +1848,7 @@ namespace Server.Mobiles
 				m_RemoveIfUntamed = reader.ReadBool();
 				m_RemoveStep = reader.ReadInt();
 			}
-			
+
 			TimeSpan deleteTime = TimeSpan.Zero;
 				
 			if ( version >= 17 )

@@ -59,7 +59,6 @@ namespace Server.Gumps
 			}
 			else
 			{
-
 				GuildType newType;
 
 				switch ( info.ButtonID )

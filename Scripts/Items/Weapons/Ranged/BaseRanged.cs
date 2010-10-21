@@ -144,9 +144,9 @@ namespace Server.Items
 								m_RecoveryTimer.Start();
 						}
 					}
+				} else {
+					Ammo.MoveToWorld( new Point3D( defender.X + Utility.RandomMinMax( -1, 1 ), defender.Y + Utility.RandomMinMax( -1, 1 ), defender.Z ), defender.Map );
 				}
-				else
-				Ammo.MoveToWorld( new Point3D( defender.X + Utility.RandomMinMax( -1, 1 ), defender.Y + Utility.RandomMinMax( -1, 1 ), defender.Z ), defender.Map );
 			}
 
 			base.OnMiss( attacker, defender );

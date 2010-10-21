@@ -3438,7 +3438,7 @@ namespace Server.Multis
 		{
 			if ( !from.Alive || m_House.Deleted || !m_House.IsCoOwner( from ) )
 				return;
-			
+
 			if ( targeted is Item )
 			{
 				if ( m_Release )

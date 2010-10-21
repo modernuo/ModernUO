@@ -1235,7 +1235,7 @@ namespace Server.Misc
 
 		private static void PackScroll( int circle )
 		{
-			switch ( Utility.Random( 8 ) * (circle * 8) )
+			switch ( Utility.Random( 8 ) * ( circle + 1 ) )
 			{
 				case  0: PackItem( new ClumsyScroll() ); break;
 				case  1: PackItem( new CreateFoodScroll() ); break;
