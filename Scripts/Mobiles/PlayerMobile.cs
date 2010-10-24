@@ -3117,7 +3117,7 @@ namespace Server.Mobiles
 				faction.RemoveMember( this );
 
 			BaseHouse.HandleDeletion( this );
-			
+
 			DisguiseTimers.RemoveTimer( this );
 		}
 
@@ -3653,7 +3653,6 @@ namespace Server.Mobiles
 
 			return base.ApplyNameSuffix( suffix );
 		}
-
 
 		public override TimeSpan GetLogoutDelay()
 		{
