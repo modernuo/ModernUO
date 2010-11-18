@@ -251,8 +251,8 @@ namespace Server.Mobiles
 
 								Container pack = e.Mobile.Backpack;
 
-                                if ( !int.TryParse( split[1], out amount ) )
-                                    break;
+								if ( !int.TryParse( split[1], out amount ) )
+									break;
 
 								if ( (!Core.ML && amount > 5000) || (Core.ML && amount > 60000) )
 								{
