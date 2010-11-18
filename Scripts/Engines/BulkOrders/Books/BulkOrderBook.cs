@@ -125,7 +125,7 @@ namespace Server.Engines.BulkOrders
 						InvalidateItems();
 					}
 
-					from.PlaySound(0x42);
+					from.SendSound(0x42, GetWorldLocation());
 					from.SendLocalizedMessage( 1062386 ); // Deed added to book.
 
 					if ( from is PlayerMobile )
