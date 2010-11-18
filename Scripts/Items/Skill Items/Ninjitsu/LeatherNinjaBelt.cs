@@ -4,6 +4,7 @@ using Server.Targeting;
 using System.Collections;
 using System.Collections.Generic;
 using Server.ContextMenus;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -12,7 +13,6 @@ namespace Server.Items
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		private bool m_Using;
 		private int m_UsesRemaining;
 
 		private Poison m_Poison;
@@ -81,7 +81,7 @@ namespace Server.Items
 				// You have no shuriken in your ninja belt!
 				from.SendLocalizedMessage( 1063297 );
 			}
-			else if ( m_Using )
+			else if (((PlayerMobile)from).NinjaWepCooldown)
 			{
 				// You cannot throw another shuriken yet.
 				from.SendLocalizedMessage( 1063298 );
@@ -107,7 +107,7 @@ namespace Server.Items
 				// You have no shuriken in your ninja belt!
 				from.SendLocalizedMessage( 1063297 );
 			}
-			else if ( m_Using )
+			else if (((PlayerMobile)from).NinjaWepCooldown)
 			{
 				// You cannot throw another shuriken yet.
 				from.SendLocalizedMessage( 1063298 );
@@ -123,7 +123,7 @@ namespace Server.Items
 			}
 			else if ( from.CanBeHarmful( target ) )
 			{
-				m_Using = true;
+				((PlayerMobile)from).NinjaWepCooldown = true;
 
 				from.Direction = from.GetDirectionTo( target );
 
@@ -140,7 +140,7 @@ namespace Server.Items
 				else
 					ConsumeUse();
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), new TimerCallback( ResetUsing ) );
+				Timer.DelayCall(TimeSpan.FromSeconds(2.5), new TimerStateCallback( ResetUsing ), from );
 			}
 		}
 
@@ -179,9 +179,10 @@ namespace Server.Items
 			}
 		}
 
-		public void ResetUsing()
+		public void ResetUsing(object state)
 		{
-			m_Using = false;
+			PlayerMobile from = (PlayerMobile)state;
+			from.NinjaWepCooldown = false;
 		}
 
 		private const int MaxUses = 10;

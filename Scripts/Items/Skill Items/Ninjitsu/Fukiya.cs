@@ -4,13 +4,13 @@ using Server.Targeting;
 using System.Collections;
 using System.Collections.Generic;
 using Server.ContextMenus;
+using Server.Mobiles;
 
 namespace Server.Items
 {
 	[FlipableAttribute( 0x27AA, 0x27F5 )]
 	public class Fukiya : Item, IUsesRemaining
 	{
-		private bool m_Using;
 		private int m_UsesRemaining;
 
 		private Poison m_Poison;
@@ -70,7 +70,7 @@ namespace Server.Items
 				// You have no fukiya darts!
 				from.SendLocalizedMessage( 1063325 );
 			}
-			else if ( m_Using )
+			else if (((PlayerMobile)from).NinjaWepCooldown)
 			{
 				// You are already using that fukiya.
 				from.SendLocalizedMessage( 1063326 );
@@ -96,7 +96,7 @@ namespace Server.Items
 				// You have no fukiya darts!
 				from.SendLocalizedMessage( 1063325 );
 			}
-			else if ( m_Using )
+			else if (((PlayerMobile)from).NinjaWepCooldown)
 			{
 				// You are already using that fukiya.
 				from.SendLocalizedMessage( 1063326 );
@@ -108,7 +108,7 @@ namespace Server.Items
 			}
 			else if ( from.CanBeHarmful( target ) )
 			{
-				m_Using = true;
+				((PlayerMobile)from).NinjaWepCooldown = true;
 
 				from.Direction = from.GetDirectionTo( target );
 
@@ -125,7 +125,7 @@ namespace Server.Items
 				else
 					ConsumeUse();
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), new TimerCallback( ResetUsing ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), new TimerStateCallback( ResetUsing ), from );
 			}
 		}
 
@@ -164,9 +164,10 @@ namespace Server.Items
 			}
 		}
 
-		public void ResetUsing()
+		public void ResetUsing(object state)
 		{
-			m_Using = false;
+			PlayerMobile from = (PlayerMobile)state;
+			from.NinjaWepCooldown = false;
 		}
 
 		private const int MaxUses = 10;

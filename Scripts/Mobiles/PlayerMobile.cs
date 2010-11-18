@@ -105,7 +105,7 @@ namespace Server.Mobiles
 		private bool m_IsStealthing; // IsStealthing should be moved to Server.Mobiles
 		private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
 		private int m_NonAutoreinsuredItems; // number of items that could not be automaitically reinsured because gold in bank was not enough
-
+		private bool m_NinjaWepCooldown;
 		/* 
 		 * a value of zero means, that the mobile is not executing the spell. Otherwise,
 		 * the value should match the BaseMana required 
@@ -122,6 +122,18 @@ namespace Server.Mobiles
 
 		#region Getters & Setters
 		public List<Mobile> AutoStabled { get { return m_AutoStabled; } }
+
+		public bool NinjaWepCooldown
+		{
+			get
+			{
+				return m_NinjaWepCooldown;
+			}
+			set
+			{
+				m_NinjaWepCooldown = value;
+			}
+		}
 
 		public List<Mobile> AllFollowers
 		{ 
@@ -4247,8 +4259,18 @@ namespace Server.Mobiles
 				{
 					BaseCreature pet = AllFollowers[i] as BaseCreature;
 
-					if ( pet == null || pet.ControlMaster == null || pet.Summoned )
+					if (pet == null || pet.ControlMaster == null)
 						continue;
+
+					if (pet.Summoned)
+					{
+						if (pet.Map != Map)
+						{
+							pet.PlaySound(pet.GetAngerSound());
+							pet.Delete();
+						}
+						continue;
+					}
 
 					if ( pet is IMount && ((IMount)pet).Rider != null )
 						continue;

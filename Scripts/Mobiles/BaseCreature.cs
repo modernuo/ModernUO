@@ -132,7 +132,6 @@ namespace Server.Mobiles
 	[AttributeUsage( AttributeTargets.Class )]
 	public class FriendlyNameAttribute : Attribute
 	{
-
 		//future use: Talisman 'Protection/Bonus vs. Specific Creature
 		private TextDefinition m_FriendlyName;
 
