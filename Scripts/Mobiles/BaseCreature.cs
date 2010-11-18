@@ -3065,6 +3065,10 @@ namespace Server.Mobiles
 		{
 			base.AggressiveAction( aggressor, criminal );
 
+			if ( this.ControlMaster != null )
+				if ( NotorietyHandlers.CheckAggressor( this.ControlMaster.Aggressors, aggressor ) )
+					aggressor.Aggressors.Add( AggressorInfo.Create( this, aggressor, true ) );
+
 			OrderType ct = m_ControlOrder;
 
 			if ( m_AI != null )

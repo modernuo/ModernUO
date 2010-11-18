@@ -285,7 +285,7 @@ namespace Server.Misc
 
 				if ( Core.ML && master != null )
 				{
-					if( source == master && CheckAggressor( target.Aggressors, source ) )
+					if ( ( source == master && CheckAggressor( target.Aggressors, source ) ) || ( CheckAggressor( source.Aggressors, bc ) ) )
 						return Notoriety.CanBeAttacked;
 					else
 						return MobileNotoriety( source, master );
@@ -352,8 +352,9 @@ namespace Server.Misc
 				BaseCreature bc = (BaseCreature)source;
 
 				Mobile master = bc.GetMaster();
-				if( master != null && CheckAggressor( master.Aggressors, target ) )
-					return Notoriety.CanBeAttacked;
+				if( master != null )
+					if( CheckAggressor( master.Aggressors, target ) || MobileNotoriety( master, target ) == Notoriety.CanBeAttacked )
+						return Notoriety.CanBeAttacked;
 			}
 
 			return Notoriety.Innocent;
