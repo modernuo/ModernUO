@@ -22,6 +22,13 @@ namespace Server.Items
 
 		private Item m_Fire;
 
+		public override void OnDelete()
+		{
+			TurnOff();
+
+			base.OnDelete();
+		}
+
 		private static int[] m_Art = new int[]
 		{
 			0x19AA, 0x19BB

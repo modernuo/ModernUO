@@ -182,6 +182,11 @@ namespace Server.Mobiles
 					m_Trainer.SayTo( from, 1048053 ); // You can't stable that!
 			}
 		}
+		
+		private void CloseClaimList( Mobile from )
+		{
+			from.CloseGump( typeof( ClaimListGump ) );
+		}
 
 		public void BeginClaimList( Mobile from )
 		{
@@ -213,16 +218,20 @@ namespace Server.Mobiles
 
 		public void EndClaimList( Mobile from, BaseCreature pet )
 		{
-			if ( pet == null || pet.Deleted || from.Map != this.Map || !from.InRange( this, 14 ) || !from.Stabled.Contains( pet ) || !from.CheckAlive() )
+			if ( pet == null || pet.Deleted || from.Map != this.Map || !from.Stabled.Contains( pet ) || !from.CheckAlive() )
 				return;
+			
+			if ( !from.InRange( this, 14 ) )
+			{
+				from.SendLocalizedMessage( 500446 ); // That is too far away.
+				return;
+			}
 
 			if ( CanClaim( from, pet ) )
 			{
-                DoClaim( from, pet );
+				DoClaim( from, pet );
 
 				from.Stabled.Remove( pet );
-
-				SayTo( from, 1042559 ); // Here you go... and good day to you!
 			}
 			else
 			{
@@ -235,16 +244,19 @@ namespace Server.Mobiles
 			if ( Deleted || !from.CheckAlive() )
 				return;
 
-			if ( from.Stabled.Count >= GetMaxStabled( from ) )
+			Container bank = from.FindBankNoCreate();
+			
+			if ( ( from.Backpack == null || from.Backpack.GetAmount( typeof( Gold ) ) < 30 ) && ( bank == null || bank.GetAmount( typeof( Gold ) ) < 30 ) )
 			{
-				SayTo( from, 1042565 ); // You have too many pets in the stables!
+				SayTo( from, 1042556 ); // Thou dost not have enough gold, not even in thy bank account.
 			}
 			else
 			{
-				from.SendLocalizedMessage( 1042558 ); /* I charge 30 gold per pet for a real week's stable time.
-										 * I will withdraw it from thy bank account.
-										 * Which animal wouldst thou like to stable here?
-										 */
+				/* I charge 30 gold per pet for a real week's stable time.
+				 * I will withdraw it from thy bank account.
+				 * Which animal wouldst thou like to stable here?
+				 */
+				from.SendLocalizedMessage(1042558);
 
 				from.Target = new StableTarget( this );
 			}
@@ -255,7 +267,15 @@ namespace Server.Mobiles
 			if ( Deleted || !from.CheckAlive() )
 				return;
 
-			if ( !pet.Controlled || pet.ControlMaster != from )
+			if ( pet.Body.IsHuman )
+			{
+				SayTo( from, 502672 ); // HA HA HA! Sorry, I am not an inn.
+			}
+			else if ( !pet.Controlled )
+			{
+				SayTo( from, 1048053 ); // You can't stable that!
+			}
+			else if ( pet.ControlMaster != from )
 			{
 				SayTo( from, 1042562 ); // You do not own that pet!
 			}
@@ -266,10 +286,6 @@ namespace Server.Mobiles
 			else if ( pet.Summoned )
 			{
 				SayTo( from, 502673 ); // I can not stable summoned creatures.
-			}
-			else if ( pet.Body.IsHuman )
-			{
-				SayTo( from, 502672 ); // HA HA HA! Sorry, I am not an inn.
 			}
 			else if ( (pet is PackLlama || pet is PackHorse || pet is Beetle) && (pet.Backpack != null && pet.Backpack.Items.Count > 0) )
 			{
@@ -312,10 +328,10 @@ namespace Server.Mobiles
 			}
 		}
 
-        public void Claim( Mobile from )
-        {
-            Claim( from, null );
-        }
+		public void Claim( Mobile from )
+		{
+			Claim( from, null );
+		}
 
 		public void Claim( Mobile from, string petName )
 		{
@@ -324,6 +340,8 @@ namespace Server.Mobiles
 
 			bool claimed = false;
 			int stabled = 0;
+			
+			bool claimByName = ( petName != null );
 
 			for ( int i = 0; i < from.Stabled.Count; ++i )
 			{
@@ -339,9 +357,12 @@ namespace Server.Mobiles
 
 				++stabled;
 
+				if ( claimByName && !Insensitive.Equals( pet.Name, petName ) )
+					continue;
+
 				if ( CanClaim( from, pet ) )
 				{
-                    DoClaim( from, pet );
+					DoClaim( from, pet );
 
 					from.Stabled.RemoveAt( i );
 					--i;
@@ -358,30 +379,32 @@ namespace Server.Mobiles
 				SayTo( from, 1042559 ); // Here you go... and good day to you!
 			else if ( stabled == 0 )
 				SayTo( from, 502671 ); // But I have no animals stabled with me at the moment!
+			else if ( claimByName )
+				BeginClaimList( from );
 		}
 
-        public bool CanClaim( Mobile from, BaseCreature pet )
-        {
-            return ((from.Followers + pet.ControlSlots) <= from.FollowersMax);
-        }
+		public bool CanClaim( Mobile from, BaseCreature pet )
+		{
+			return ((from.Followers + pet.ControlSlots) <= from.FollowersMax);
+		}
 
-        private void DoClaim( Mobile from, BaseCreature pet )
-        {
-            pet.SetControlMaster( from );
+		private void DoClaim( Mobile from, BaseCreature pet )
+		{
+			pet.SetControlMaster( from );
 
-            if ( pet.Summoned )
-                pet.SummonMaster = from;
+			if ( pet.Summoned )
+				pet.SummonMaster = from;
 
-            pet.ControlTarget = from;
-            pet.ControlOrder = OrderType.Follow;
+			pet.ControlTarget = from;
+			pet.ControlOrder = OrderType.Follow;
 
-            pet.MoveToWorld( from.Location, from.Map );
+			pet.MoveToWorld( from.Location, from.Map );
 
-            pet.IsStabled = false;
+			pet.IsStabled = false;
 
-            if ( Core.SE )
-                pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
-        }
+			if ( Core.SE )
+				pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
+		}
 
 		public override bool HandlesOnSpeech( Mobile from )
 		{
@@ -390,43 +413,25 @@ namespace Server.Mobiles
 
 		public override void OnSpeech( SpeechEventArgs e )
 		{
-			if ( !e.Handled && e.HasKeyword( 0x0008 ) )
+			if ( !e.Handled && e.HasKeyword( 0x0008 ) ) // *stable*
 			{
 				e.Handled = true;
+				
+				CloseClaimList( e.Mobile );				
 				BeginStable( e.Mobile );
 			}
-			else if ( !e.Handled && e.HasKeyword( 0x0009 ) )
+			else if ( !e.Handled && e.HasKeyword( 0x0009 ) ) // *claim*
 			{
 				e.Handled = true;
+				
+				CloseClaimList( e.Mobile );
+				
+				int index = e.Speech.IndexOf( ' ' );
 
-                if (!Insensitive.Equals( e.Speech, "claim" ))
-                {
-                    bool showList = true;
-
-                    if ( e.Speech.Length > 6 ) //sanity    
-                    {
-                        string name = e.Speech.Substring( 6 ).Trim();
-
-                        for ( int i = 0; i < e.Mobile.Stabled.Count; ++i )
-                        {
-                            if ( Insensitive.Equals( e.Mobile.Stabled[i].Name, name ) ) //Similar names?
-                            {
-                                showList = false;
-                                break;
-                            }
-                        }
-
-                        //What about pets with the same name, or 'similar' names, ie Fluffy 1, Fluffy 2?? - Similar names don't work.. what about identicals?
-                        //What if you try and claim a pet that doesn't exist? -- GUMP
-                    }
-
-                    if ( showList )
-                        BeginClaimList( e.Mobile );
-                }
-                else
-                {
-                    Claim( e.Mobile );
-                }
+				if ( index != -1 )
+					Claim( e.Mobile, e.Speech.Substring( index ).Trim() );
+				else
+					Claim( e.Mobile );
 			}
 			else
 			{
