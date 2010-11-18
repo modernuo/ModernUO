@@ -249,26 +249,32 @@ namespace Server.Mobiles
 							{
 								int amount;
 
+								Container pack = e.Mobile.Backpack;
+
                                 if ( !int.TryParse( split[1], out amount ) )
                                     break;
 
-								if ( amount > 5000 )
+								if ( (!Core.ML && amount > 5000) || (Core.ML && amount > 60000) )
 								{
 									this.Say( 500381 ); // Thou canst not withdraw so much at one time!
 								}
-								else if ( amount > 0 )
+								else if (pack == null || pack.Deleted || !(pack.TotalWeight < pack.MaxWeight) || !(pack.TotalItems < pack.MaxItems))
+								{
+									this.Say(1048147); // Your backpack can't hold anything else.
+								}
+								else if (amount > 0)
 								{
 									BankBox box = e.Mobile.FindBankNoCreate();
 
-									if ( box == null || !box.ConsumeTotal( typeof( Gold ), amount ) )
+									if (box == null || !box.ConsumeTotal(typeof(Gold), amount))
 									{
-										this.Say( 500384 ); // Ah, art thou trying to fool me? Thou hast not so much gold!
+										this.Say(500384); // Ah, art thou trying to fool me? Thou hast not so much gold!
 									}
 									else
 									{
-										e.Mobile.AddToBackpack( new Gold( amount ) );
+										pack.DropItem(new Gold(amount));
 
-										this.Say( 1010005 ); // Thou hast withdrawn gold from thy account.
+										this.Say(1010005); // Thou hast withdrawn gold from thy account.
 									}
 								}
 							}
