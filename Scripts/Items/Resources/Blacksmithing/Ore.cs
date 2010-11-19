@@ -18,15 +18,8 @@ namespace Server.Items
 			set{ m_Resource = value; InvalidateProperties(); }
 		}
 
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} {1} ore", Amount, CraftResources.GetName( m_Resource ).ToLower() );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		public abstract BaseIngot GetIngot();
 

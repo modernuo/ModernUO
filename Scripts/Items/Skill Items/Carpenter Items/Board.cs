@@ -14,14 +14,6 @@ namespace Server.Items
 			set { m_Resource = value; InvalidateProperties(); }
 		}
 
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} {1} board" : "{0} {1} boards", Amount, CraftResources.IsStandard( m_Resource ) ? String.Empty : CraftResources.GetName( m_Resource ).ToLower() );
-			}
-		}
-
 		int ICommodity.DescriptionNumber 
 		{ 
 			get
@@ -39,6 +31,8 @@ namespace Server.Items
 				return LabelNumber;
 			} 
 		}
+
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public Board()

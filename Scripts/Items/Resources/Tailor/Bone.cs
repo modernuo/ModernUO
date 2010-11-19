@@ -5,15 +5,8 @@ namespace Server.Items
 {
 	public class Bone : Item, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} bone" : "{0} bones", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public Bone() : this( 1 )

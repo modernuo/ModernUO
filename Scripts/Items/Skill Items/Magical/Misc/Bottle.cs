@@ -2,8 +2,11 @@ using System;
 
 namespace Server.Items
 {
-	public class Bottle : Item
+	public class Bottle : Item, ICommodity
 	{
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return (Core.ML); } }
+
 		[Constructable]
 		public Bottle() : this( 1 )
 		{

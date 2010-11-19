@@ -6,15 +6,8 @@ namespace Server.Items
 {
 	public class SpidersSilk : BaseReagent, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} spiders' silk", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public SpidersSilk() : this( 1 )

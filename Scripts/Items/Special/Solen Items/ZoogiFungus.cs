@@ -3,8 +3,11 @@ using Server;
 
 namespace Server.Items
 {
-	public class ZoogiFungus : Item
+	public class ZoogiFungus : Item, ICommodity
 	{
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return (Core.ML); } }
+
 		[Constructable]
 		public ZoogiFungus() : this( 1 )
 		{
@@ -17,8 +20,6 @@ namespace Server.Items
 			Weight = 0.1;
 			Amount = amount;
 		}
-
-		
 
 		public ZoogiFungus( Serial serial ) : base( serial )
 		{

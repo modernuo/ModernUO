@@ -15,15 +15,8 @@ namespace Server.Items
 			set{ m_Resource = value; InvalidateProperties(); }
 		}
 		
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} piece of {1} leather" : "{0} pieces of {1} leather", Amount, CraftResources.GetName( m_Resource ).ToLower() );	
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		public override void Serialize( GenericWriter writer )
 		{

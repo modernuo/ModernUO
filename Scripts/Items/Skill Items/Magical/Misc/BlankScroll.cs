@@ -17,21 +17,12 @@ namespace Server.Items
 			Amount = amount;
 		}
 
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "blank scroll: {0}", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		
+		bool ICommodity.IsDeedable { get { return (Core.ML); } }
+
 		public BlankScroll( Serial serial ) : base( serial )
 		{
 		}
-
-		
 
 		public override void Serialize( GenericWriter writer )
 		{

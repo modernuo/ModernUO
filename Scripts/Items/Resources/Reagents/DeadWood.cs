@@ -6,15 +6,8 @@ namespace Server.Items
 {
 	public class DeadWood : BaseReagent, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} dead wood", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public DeadWood() : this( 1 )

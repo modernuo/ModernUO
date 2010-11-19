@@ -6,15 +6,8 @@ namespace Server.Items
 {
 	public class SulfurousAsh : BaseReagent, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} sulfurous ash", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public SulfurousAsh() : this( 1 )

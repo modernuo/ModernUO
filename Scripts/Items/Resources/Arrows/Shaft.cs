@@ -5,15 +5,8 @@ namespace Server.Items
 {
 	public class Shaft : Item, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} shaft" : "{0} shafts", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		public override double DefaultWeight
 		{

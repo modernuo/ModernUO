@@ -4,15 +4,8 @@ namespace Server.Items
 {
 	public class Arrow : Item, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} arrow" : "{0} arrows", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		public override double DefaultWeight
 		{

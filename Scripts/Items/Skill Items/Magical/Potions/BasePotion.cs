@@ -35,7 +35,7 @@ namespace Server.Items
 		ConfusionBlastGreater
 	}
 
-	public abstract class BasePotion : Item, ICraftable
+	public abstract class BasePotion : Item, ICraftable, ICommodity
 	{
 		private PotionEffect m_PotionEffect;
 
@@ -51,6 +51,9 @@ namespace Server.Items
 				InvalidateProperties();
 			}
 		}
+
+		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return (Core.ML); } }
 
 		public override int LabelNumber{ get{ return 1041314 + (int)m_PotionEffect; } }
 

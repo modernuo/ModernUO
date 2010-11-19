@@ -6,15 +6,8 @@ namespace Server.Items
 {
 	public class MandrakeRoot : BaseReagent, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} mandrake root", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public MandrakeRoot() : this( 1 )

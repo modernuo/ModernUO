@@ -6,15 +6,8 @@ namespace Server.Items
 {
 	public class Bloodmoss : BaseReagent, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} bloodmoss", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public Bloodmoss() : this( 1 )

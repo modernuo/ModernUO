@@ -6,16 +6,8 @@ namespace Server.Items
 {
 	public class Ginseng : BaseReagent, ICommodity
 	{
-
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( "{0} ginseng", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		[Constructable]
 		public Ginseng() : this( 1 )

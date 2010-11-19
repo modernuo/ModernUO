@@ -5,15 +5,8 @@ namespace Server.Items
 {
 	public class Feather : Item, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} feather" : "{0} feathers", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		public override double DefaultWeight
 		{

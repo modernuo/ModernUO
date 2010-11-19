@@ -4,10 +4,10 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public interface ICommodity
+	public interface ICommodity /* added IsDeedable prop so expansion-based deedables can determine true/false */
 	{
-		string Description{ get; }
 		int DescriptionNumber{ get; }
+		bool IsDeedable { get; }
 	}
 
 	public class CommodityDeed : Item
@@ -27,7 +27,7 @@ namespace Server.Items
 		{
 			InvalidateProperties();
 
-			if ( m_Commodity == null && item is ICommodity )
+			if ( m_Commodity == null && item is ICommodity && ((ICommodity)item).IsDeedable )
 			{
 				m_Commodity = item;
 				m_Commodity.Internalize();
@@ -45,7 +45,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 
 			writer.Write( m_Commodity );
 		}
@@ -56,12 +56,16 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
+			m_Commodity = reader.ReadItem();
+
 			switch ( version )
 			{
 				case 0:
 				{
-					m_Commodity = reader.ReadItem();
-
+					if (m_Commodity != null)
+					{
+						Hue = 0x592;
+					}
 					break;
 				}
 			}
@@ -105,10 +109,12 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if ( m_Commodity != null && m_Commodity is ICommodity )
-				list.Add( 1060658, "#{0}\t{1}", ((ICommodity)m_Commodity).DescriptionNumber, m_Commodity.Amount ); // ~1_val~: ~2_val~
+			if (m_Commodity != null && m_Commodity is ICommodity)
+			{
+				list.Add(1060658, "#{0}\t{1}", ((ICommodity)m_Commodity).DescriptionNumber, m_Commodity.Amount); // ~1_val~: ~2_val~
+			}
 			else
-				list.Add( 1060748 ); // unfilled
+				list.Add(1060748); // unfilled
 		}
 
 		public override void OnSingleClick( Mobile from )
@@ -116,7 +122,20 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			if ( m_Commodity != null && m_Commodity is ICommodity )
-				from.Send( new UnicodeMessage( Serial, ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", ((ICommodity)m_Commodity).Description ) );
+
+				from.Send(new MessageLocalizedAffix(
+										Serial,
+										ItemID,
+										MessageType.Label,
+										0x3B2,
+										3,
+										(m_Commodity.Name == null) ? ((ICommodity)m_Commodity).DescriptionNumber : 0,
+										(m_Commodity.Name != null) ? m_Commodity.Name : null,
+										AffixType.Append,
+										String.Format(": {0}",
+										m_Commodity.Amount),
+										null)
+										);
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -220,6 +239,7 @@ namespace Server.Items
 					{
 						if ( m_Deed.SetCommodity( (Item) targeted ) )
 						{
+							m_Deed.Hue = 0x592;
 							number = 1047030; // The commodity deed has been filled.
 						}
 						else

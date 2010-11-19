@@ -7,15 +7,8 @@ namespace Server.Items
 	[FlipableAttribute( 0x1766, 0x1768 )]
 	public class Cloth : Item, IScissorable, IDyable, ICommodity
 	{
-		string ICommodity.Description
-		{
-			get
-			{
-				return String.Format( Amount == 1 ? "{0} piece of cloth" : "{0} pieces of cloth", Amount );
-			}
-		}
-
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
+		bool ICommodity.IsDeedable { get { return true; } }
 
 		public override double DefaultWeight
 		{
