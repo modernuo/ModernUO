@@ -132,8 +132,7 @@ namespace Server.Items
 										(m_Commodity.Name == null) ? ((ICommodity)m_Commodity).DescriptionNumber : 0,
 										(m_Commodity.Name != null) ? m_Commodity.Name : null,
 										AffixType.Append,
-										String.Format(": {0}",
-										m_Commodity.Amount),
+										String.Format(": {0}", m_Commodity.Amount),
 										null)
 										);
 		}
