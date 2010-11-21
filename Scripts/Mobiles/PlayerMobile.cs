@@ -4267,7 +4267,7 @@ namespace Server.Mobiles
 						if (pet.Map != Map)
 						{
 							pet.PlaySound( pet.GetAngerSound() );
-							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( pet.Delete() ) );
+							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( pet.Delete ) );
 						}
 						continue;
 					}
