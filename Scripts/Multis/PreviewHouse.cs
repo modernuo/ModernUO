@@ -23,7 +23,7 @@ namespace Server.Multis
 
 				if ( entry.m_Flags == 0 )
 				{
-					Item item = new Static( entry.m_ItemID );
+					Item item = new Static( (int)entry.m_ItemID );
 
 					item.MoveToWorld( new Point3D( X + entry.m_OffsetX, Y + entry.m_OffsetY, Z + entry.m_OffsetZ ), Map );
 
