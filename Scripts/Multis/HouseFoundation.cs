@@ -209,7 +209,7 @@ namespace Server.Multis
 			for( int i = 0; i < list.Length; ++i )
 			{
 				MultiTileEntry mte = list[i];
-				int itemID = mte.m_ItemID & 0x3FFF;
+				int itemID = mte.m_ItemID;
 
 				if( itemID >= 0x181D && itemID < 0x1829 )
 				{
@@ -1094,7 +1094,6 @@ namespace Server.Multis
 
 		public static bool IsStairBlock( int id )
 		{
-			id &= 0x3FFF;
 			int delta = -1;
 
 			for( int i = 0; delta < 0 && i < m_BlockIDs.Length; ++i )
@@ -1108,7 +1107,6 @@ namespace Server.Multis
 		public static bool IsStair( int id, ref int dir )
 		{
 			//dir n=0 w=1 s=2 e=3
-			id &= 0x3FFF;
 			int delta = -4;
 
 			for( int i = 0; delta < -3 && i < m_StairSeqs.Length; ++i )
@@ -1352,7 +1350,7 @@ namespace Server.Multis
 				{
 					MultiTileEntry entry = stairs.List[i];
 
-					if( (entry.m_ItemID & 0x3FFF) != 1 )
+					if( entry.m_ItemID != 1 )
 						mcl.Add( entry.m_ItemID, x + entry.m_OffsetX, y + entry.m_OffsetY, z + entry.m_OffsetZ );
 				}
 
@@ -1862,8 +1860,6 @@ namespace Server.Multis
 
 		public static bool IsFixture( int itemID )
 		{
-			itemID &= 0x3FFF;
-
 			if( itemID >= 0x675 && itemID < 0x6F5 )
 				return true;
 			else if( itemID >= 0x314 && itemID < 0x364 )
