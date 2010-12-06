@@ -603,6 +603,7 @@ namespace Server
 		#region Packet caches
 		private Packet m_WorldPacket;
 		private Packet m_WorldPacketSA;
+		private Packet m_WorldPacketHS;
 		private Packet m_RemovePacket;
 
 		private Packet m_OPLPacket;
@@ -1747,10 +1748,33 @@ namespace Server
 			}
 		}
 
+		public Packet WorldPacketHS
+		{
+			get
+			{
+				// This needs to be invalidated when any of the following changes:
+				//  - ItemID
+				//  - Amount
+				//  - Location
+				//  - Hue
+				//  - Packet Flags
+				//  - Direction
+
+				if ( m_WorldPacketHS == null )
+				{
+					m_WorldPacketHS = new WorldItemHS( this );
+					m_WorldPacketHS.SetStatic();
+				}
+
+				return m_WorldPacketHS;
+			}
+		}
+
 		public void ReleaseWorldPackets()
 		{
 			Packet.Release( ref m_WorldPacket );
 			Packet.Release( ref m_WorldPacketSA );
+			Packet.Release( ref m_WorldPacketHS );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -2675,7 +2699,12 @@ namespace Server
 		}
 
 		protected virtual Packet GetWorldPacketFor( NetState state ) {
-			return this.WorldPacket;
+			if ( state.HighSeas )
+				return this.WorldPacketHS;
+			else if ( state.StygianAbyss )
+				return this.WorldPacketSA;
+			else
+				return this.WorldPacket;
 		}
 
 		public virtual bool IsVirtualItem{ get{ return false; } }
@@ -2706,7 +2735,10 @@ namespace Server
 		{
 			get
 			{
-				return 1020000 + (m_ItemID & 0x3FFF);
+				if ( m_ItemID < 0x4000 )
+					return 1020000 + m_ItemID;
+				else
+					return 1078872 + m_ItemID;
 			}
 		}
 
@@ -2732,7 +2764,7 @@ namespace Server
 		{
 			get
 			{
-				if ( m_ItemID < 0 || m_ItemID >= 0x4000 )
+				if ( m_ItemID < 0 || m_ItemID > TileData.MaxItemValue || this is BaseMulti )
 					return 0;
 
 				int weight = TileData.ItemTable[m_ItemID].Weight;
@@ -2791,7 +2823,7 @@ namespace Server
 		{
 			get
 			{
-				return ( m_ItemID & 0x3FFF );
+				return m_ItemID;
 			}
 		}
 
@@ -3859,8 +3891,8 @@ namespace Server
 
 			int maxZ = from.Z + 16;
 
-			Tile landTile = map.Tiles.GetLandTile( x, y );
-			TileFlag landFlags = TileData.LandTable[landTile.ID & 0x3FFF].Flags;
+			LandTile landTile = map.Tiles.GetLandTile( x, y );
+			TileFlag landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
 
 			int landZ = 0, landAvg = 0, landTop = 0;
 			map.GetAverageZ( x, y, ref landZ, ref landAvg, ref landTop );
@@ -3871,12 +3903,12 @@ namespace Server
 					z = landAvg;
 			}
 
-			Tile[] tiles = map.Tiles.GetStaticTiles( x, y, true );
+			StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y, true );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
-				ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+				StaticTile tile = tiles[i];
+				ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 				if ( !id.Surface )
 					continue;
@@ -3895,7 +3927,7 @@ namespace Server
 
 			foreach ( Item item in eable )
 			{
-				if ( item.ItemID >= 0x4000 )
+				if ( item is BaseMulti )
 					continue;
 
 				items.Add( item );
@@ -3927,8 +3959,8 @@ namespace Server
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
-				ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+				StaticTile tile = tiles[i];
+				ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 				int checkZ = tile.Z;
 				int checkTop = checkZ + id.CalcHeight;
@@ -4021,8 +4053,8 @@ namespace Server
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
-				ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+				StaticTile tile = tiles[i];
+				ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 				int checkZ = tile.Z;
 				int checkTop = checkZ + id.CalcHeight;
@@ -4323,7 +4355,7 @@ namespace Server
 		{
 			get
 			{
-				return TileData.ItemTable[m_ItemID & 0x3FFF];
+				return TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
 			}
 		}
 

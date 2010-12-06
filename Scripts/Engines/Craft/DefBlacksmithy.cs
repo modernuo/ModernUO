@@ -92,11 +92,11 @@ namespace Server.Engines.Craft
 			{
 				for ( int y = -range; (!anvil || !forge) && y <= range; ++y )
 				{
-					Tile[] tiles = map.Tiles.GetStaticTiles( from.X+x, from.Y+y, true );
+					StaticTile[] tiles = map.Tiles.GetStaticTiles( from.X+x, from.Y+y, true );
 
 					for ( int i = 0; (!anvil || !forge) && i < tiles.Length; ++i )
 					{
-						int id = tiles[i].ID & 0x3FFF;
+						int id = tiles[i].ID;
 
 						bool isAnvil = ( id == 4015 || id == 4016 || id == 0x2DD5 || id == 0x2DD6 );
 						bool isForge = ( id == 4017 || (id >= 6522 && id <= 6569) || id == 0x2DD8 );

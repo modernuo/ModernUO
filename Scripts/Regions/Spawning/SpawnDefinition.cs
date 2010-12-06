@@ -270,7 +270,7 @@ namespace Server.Regions
 
 		protected override void Init()
 		{
-			m_Height = TileData.ItemTable[m_ItemID & 0x3FFF].Height;
+			m_Height = TileData.ItemTable[m_ItemID & TileData.MaxItemValue].Height;
 		}
 
 		protected override Item CreateItem()

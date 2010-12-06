@@ -285,7 +285,7 @@ namespace Server.Engines.Plants
 		public int OffsetX { get { return m_OffsetX; } }
 		public int OffsetY { get { return m_OffsetY; } }
 		public PlantType PlantType { get { return m_PlantType; } }
-		public int Name { get { return 1020000 + m_ItemID; } }
+		public int Name { get { return m_ItemID < 0x4000 ? 1020000 + m_ItemID : 1078872 + m_ItemID; } }
 		public bool ContainsPlant { get { return m_ContainsPlant; } }
 		public bool Flowery { get { return m_Flowery; } }
 		public bool Crossable { get { return m_Crossable; } }

@@ -95,9 +95,9 @@ namespace Server
 
 						fsData.Seek( 4, SeekOrigin.Current );
 
-						Tile[] tiles = new Tile[64];
+						LandTile[] tiles = new LandTile[64];
 
-						fixed ( Tile *pTiles = tiles )
+						fixed ( LandTile *pTiles = tiles )
 						{
 #if !MONO
 							NativeReader.Read( fsData.SafeFileHandle.DangerousGetHandle(), pTiles, 192 );
@@ -177,15 +177,15 @@ namespace Server
 
 								while ( pCur < pEnd )
 								{
-									lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( (short)((pCur->m_ID & 0x3FFF) + 0x4000), pCur->m_Z );
+									lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( (ushort)pCur->m_ID, pCur->m_Z );
 									pCur = pCur + 1;
 								}
 
-								Tile[][][] tiles = new Tile[8][][];
+								StaticTile[][][] tiles = new StaticTile[8][][];
 
 								for ( int x = 0; x < 8; ++x )
 								{
-									tiles[x] = new Tile[8][];
+									tiles[x] = new StaticTile[8][];
 
 									for ( int y = 0; y < 8; ++y )
 										tiles[x][y] = lists[x][y].ToArray();

@@ -75,9 +75,9 @@ namespace Server.Items
 			int itemID;
 
 			if ( targeted is Item )
-				itemID = ((Item)targeted).ItemID & 0x3FFF;
+				itemID = ((Item)targeted).ItemID;
 			else if ( targeted is StaticTarget )
-				itemID = ((StaticTarget)targeted).ItemID & 0x3FFF;
+				itemID = ((StaticTarget)targeted).ItemID;
 			else
 				return false;
 

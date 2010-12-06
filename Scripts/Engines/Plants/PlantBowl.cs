@@ -137,7 +137,7 @@ namespace Server.Engines.Plants
 			else if ( obj is StaticTarget )
 				tileID = (((StaticTarget)obj).ItemID & 0x3FFF) | 0x4000;
 			else if ( obj is LandTarget )
-				tileID = ((LandTarget)obj).TileID & 0x3FFF;
+				tileID = ((LandTarget)obj).TileID;
 			else
 				return false;
 

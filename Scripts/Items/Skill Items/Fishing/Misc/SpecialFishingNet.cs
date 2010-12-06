@@ -218,7 +218,7 @@ namespace Server.Items
 				int tx = p.X - 2 + Utility.Random( 5 );
 				int ty = p.Y - 2 + Utility.Random( 5 );
 
-				Tile t = map.Tiles.GetLandTile( tx, ty );
+				LandTile t = map.Tiles.GetLandTile( tx, ty );
 
 				if ( t.Z == p.Z && ( (t.ID >= 0xA8 && t.ID <= 0xAB) || (t.ID >= 0x136 && t.ID <= 0x137) ) && !Spells.SpellHelper.CheckMulti( new Point3D( tx, ty, p.Z ), map ) )
 				{

@@ -12,7 +12,7 @@ namespace Server.Multis
 		private Mobile m_Prisoner;
 		
 		[Constructable]
-		public BrigandCamp() : base( 0x10ee, 0 ) // dummy garbage at center
+		public BrigandCamp() : base( 0x10EE ) // dummy garbage at center
 		{
 		}
 

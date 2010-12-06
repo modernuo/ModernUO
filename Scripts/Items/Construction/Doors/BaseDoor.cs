@@ -288,7 +288,7 @@ namespace Server.Items
 			{
 				Item item = items[i];
 
-				if ( item.ItemID < 0x4000 && item.AtWorldPoint( x, y ) && !(item is BaseDoor) )
+				if ( !(item is BaseMulti) && item.AtWorldPoint( x, y ) && !(item is BaseDoor) )
 				{
 					ItemData id = item.ItemData;
 					bool surface = id.Surface;

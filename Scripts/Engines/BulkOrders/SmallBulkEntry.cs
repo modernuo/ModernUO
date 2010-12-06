@@ -95,7 +95,7 @@ namespace Server.Engines.BulkOrders
 								int graphic = Utility.ToInt32( split[split.Length - 1] );
 
 								if ( type != null && graphic > 0 )
-									list.Add( new SmallBulkEntry( type, 1020000 + graphic, graphic ) );
+									list.Add( new SmallBulkEntry( type, graphic < 0x4000 ? 1020000 + graphic : 1078872 + graphic, graphic ) );
 							}
 						}
 						catch

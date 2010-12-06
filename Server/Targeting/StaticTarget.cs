@@ -30,7 +30,7 @@ namespace Server.Targeting
 		public StaticTarget( Point3D location, int itemID )
 		{
 			m_Location = location;
-			m_ItemID = itemID & 0x3FFF;
+			m_ItemID = itemID & TileData.MaxItemValue;
 			m_Location.Z += TileData.ItemTable[m_ItemID].CalcHeight;
 		}
 

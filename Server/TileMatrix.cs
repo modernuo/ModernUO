@@ -27,11 +27,11 @@ namespace Server
 {
 	public class TileMatrix
 	{
-		private Tile[][][][][] m_StaticTiles;
-		private Tile[][][] m_LandTiles;
+		private StaticTile[][][][][] m_StaticTiles;
+		private LandTile[][][] m_LandTiles;
 
-		private Tile[] m_InvalidLandBlock;
-		private Tile[][][] m_EmptyStaticBlock;
+		private LandTile[] m_InvalidLandBlock;
+		private StaticTile[][][] m_EmptyStaticBlock;
 
 		private FileStream m_Map;
 
@@ -173,27 +173,27 @@ namespace Server
 					m_Statics = new FileStream( staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
 			}
 
-			m_EmptyStaticBlock = new Tile[8][][];
+			m_EmptyStaticBlock = new StaticTile[8][][];
 
 			for ( int i = 0; i < 8; ++i )
 			{
-				m_EmptyStaticBlock[i] = new Tile[8][];
+				m_EmptyStaticBlock[i] = new StaticTile[8][];
 
 				for ( int j = 0; j < 8; ++j )
-					m_EmptyStaticBlock[i][j] = new Tile[0];
+					m_EmptyStaticBlock[i][j] = new StaticTile[0];
 			}
 
-			m_InvalidLandBlock = new Tile[196];
+			m_InvalidLandBlock = new LandTile[196];
 
-			m_LandTiles = new Tile[m_BlockWidth][][];
-			m_StaticTiles = new Tile[m_BlockWidth][][][][];
+			m_LandTiles = new LandTile[m_BlockWidth][][];
+			m_StaticTiles = new StaticTile[m_BlockWidth][][][][];
 			m_StaticPatches = new int[m_BlockWidth][];
 			m_LandPatches = new int[m_BlockWidth][];
 
 			m_Patch = new TileMatrixPatch( this, mapID );
 		}
 
-		public Tile[][][] EmptyStaticBlock
+		public StaticTile[][][] EmptyStaticBlock
 		{
 			get
 			{
@@ -201,13 +201,13 @@ namespace Server
 			}
 		}
 
-		public void SetStaticBlock( int x, int y, Tile[][][] value )
+		public void SetStaticBlock( int x, int y, StaticTile[][][] value )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight )
 				return;
 
 			if ( m_StaticTiles[x] == null )
-				m_StaticTiles[x] = new Tile[m_BlockHeight][][][];
+				m_StaticTiles[x] = new StaticTile[m_BlockHeight][][][];
 
 			m_StaticTiles[x][y] = value;
 
@@ -217,15 +217,15 @@ namespace Server
 			m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
 		}
 
-		public Tile[][][] GetStaticBlock( int x, int y )
+		public StaticTile[][][] GetStaticBlock( int x, int y )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight || m_Statics == null || m_Index == null )
 				return m_EmptyStaticBlock;
 
 			if ( m_StaticTiles[x] == null )
-				m_StaticTiles[x] = new Tile[m_BlockHeight][][][];
+				m_StaticTiles[x] = new StaticTile[m_BlockHeight][][][];
 
-			Tile[][][] tiles = m_StaticTiles[x][y];
+			StaticTile[][][] tiles = m_StaticTiles[x][y];
 
 			if ( tiles == null )
 			{
@@ -235,7 +235,7 @@ namespace Server
 
 					if ( x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight )
 					{
-						Tile[][][][] theirTiles = shared.m_StaticTiles[x];
+						StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
 
 						if ( theirTiles != null )
 							tiles = theirTiles[y];
@@ -259,18 +259,18 @@ namespace Server
 			return tiles;
 		}
 
-		public Tile[] GetStaticTiles( int x, int y )
+		public StaticTile[] GetStaticTiles( int x, int y )
 		{
-			Tile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
+			StaticTile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
 
 			return tiles[x & 0x7][y & 0x7];
 		}
 
 		private static TileList m_TilesList = new TileList();
 
-		public Tile[] GetStaticTiles( int x, int y, bool multis )
+		public StaticTile[] GetStaticTiles( int x, int y, bool multis )
 		{
-			Tile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
+			StaticTile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
 
 			if ( multis )
 			{
@@ -281,7 +281,7 @@ namespace Server
 
 				bool any = false;
 
-				foreach ( Tile[] multiTiles in eable )
+				foreach ( StaticTile[] multiTiles in eable )
 				{
 					if ( !any )
 						any = true;
@@ -304,13 +304,13 @@ namespace Server
 			}
 		}
 
-		public void SetLandBlock( int x, int y, Tile[] value )
+		public void SetLandBlock( int x, int y, LandTile[] value )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight )
 				return;
 
 			if ( m_LandTiles[x] == null )
-				m_LandTiles[x] = new Tile[m_BlockHeight][];
+				m_LandTiles[x] = new LandTile[m_BlockHeight][];
 
 			m_LandTiles[x][y] = value;
 
@@ -320,15 +320,15 @@ namespace Server
 			m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
 		}
 
-		public Tile[] GetLandBlock( int x, int y )
+		public LandTile[] GetLandBlock( int x, int y )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight || m_Map == null )
 				return m_InvalidLandBlock;
 
 			if ( m_LandTiles[x] == null )
-				m_LandTiles[x] = new Tile[m_BlockHeight][];
+				m_LandTiles[x] = new LandTile[m_BlockHeight][];
 
-			Tile[] tiles = m_LandTiles[x][y];
+			LandTile[] tiles = m_LandTiles[x][y];
 
 			if ( tiles == null )
 			{
@@ -338,7 +338,7 @@ namespace Server
 
 					if ( x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight )
 					{
-						Tile[][] theirTiles = shared.m_LandTiles[x];
+						LandTile[][] theirTiles = shared.m_LandTiles[x];
 
 						if ( theirTiles != null )
 							tiles = theirTiles[y];
@@ -362,9 +362,9 @@ namespace Server
 			return tiles;
 		}
 
-		public Tile GetLandTile( int x, int y )
+		public LandTile GetLandTile( int x, int y )
 		{
-			Tile[] tiles = GetLandBlock( x >> 3, y >> 3 );
+			LandTile[] tiles = GetLandBlock( x >> 3, y >> 3 );
 
 			return tiles[((y & 0x7) << 3) + (x & 0x7)];
 		}
@@ -373,7 +373,7 @@ namespace Server
 
 		private static StaticTile[] m_TileBuffer = new StaticTile[128];
 
-		private unsafe Tile[][][] ReadStaticBlock( int x, int y )
+		private unsafe StaticTile[][][] ReadStaticBlock( int x, int y )
 		{
 			try
 			{
@@ -423,15 +423,15 @@ namespace Server
 
 						while ( pCur < pEnd )
 						{
-							lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( (short)((pCur->m_ID & 0x3FFF) + 0x4000), pCur->m_Z );
+							lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( pCur->m_ID, pCur->m_Z );
 							pCur = pCur + 1;
 						}
 
-						Tile[][][] tiles = new Tile[8][][];
+						StaticTile[][][] tiles = new StaticTile[8][][];
 
 						for ( int i = 0; i < 8; ++i )
 						{
-							tiles[i] = new Tile[8][];
+							tiles[i] = new StaticTile[8][];
 
 							for ( int j = 0; j < 8; ++j )
 								tiles[i][j] = lists[i][j].ToArray();
@@ -462,15 +462,15 @@ namespace Server
 				throw new Exception();
 		}
 
-		private unsafe Tile[] ReadLandBlock( int x, int y )
+		private unsafe LandTile[] ReadLandBlock( int x, int y )
 		{
 			try
 			{
 				m_Map.Seek( ((x * m_BlockHeight) + y) * 196 + 4, SeekOrigin.Begin );
 
-				Tile[] tiles = new Tile[64];
+				LandTile[] tiles = new LandTile[64];
 
-				fixed ( Tile *pTiles = tiles )
+				fixed ( LandTile *pTiles = tiles )
 				{
 #if !MONO
 					NativeReader.Read( m_Map.SafeFileHandle.DangerousGetHandle(), pTiles, 192 );
@@ -507,65 +507,34 @@ namespace Server
 	}
 
 	[System.Runtime.InteropServices.StructLayout( System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1 )]
-	public struct StaticTile
-	{
-		public short m_ID;
-		public byte m_X;
-		public byte m_Y;
-		public sbyte m_Z;
-		public short m_Hue;
-	}
-
-	[System.Runtime.InteropServices.StructLayout( System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1 )]
-	public struct Tile
+	public struct LandTile
 	{
 		internal short m_ID;
 		internal sbyte m_Z;
 
 		public int ID
 		{
-			get
-			{
-				return m_ID;
-			}
+			get { return m_ID; }
 		}
 
 		public int Z
 		{
-			get
-			{
-				return m_Z;
-			}
-			set
-			{
-				m_Z = (sbyte)value;
-			}
+			get { return m_Z; }
+			set { m_Z = (sbyte)value; }
 		}
 
 		public int Height
 		{
-			get
-			{
-				if ( m_ID < 0x4000 )
-				{
-					return 0;
-				}
-				else
-				{
-					return TileData.ItemTable[m_ID & 0x3FFF].Height;
-				}
-			}
+			get { return 0; }
+
 		}
 
 		public bool Ignored
 		{
-			get
-			{
-				return ( m_ID == 2 || m_ID == 0x1DB || ( m_ID >= 0x1AE && m_ID <= 0x1B5 ) );
-			}
+			get { return ( m_ID == 2 || m_ID == 0x1DB || ( m_ID >= 0x1AE && m_ID <= 0x1B5 ) ); }
 		}
 
-		public Tile( short id, sbyte z )
+		public LandTile( short id, sbyte z )
 		{
 			m_ID = id;
 			m_Z = z;
@@ -575,6 +544,84 @@ namespace Server
 		{
 			m_ID = id;
 			m_Z = z;
+		}
+	}
+
+	[System.Runtime.InteropServices.StructLayout( System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1 )]
+	public struct StaticTile
+	{
+		internal ushort m_ID;
+		internal byte m_X;
+		internal byte m_Y;
+		internal sbyte m_Z;
+		internal short m_Hue;
+
+		public int ID
+		{
+			get { return m_ID; }
+		}
+
+		public int X
+		{
+			get { return m_X; }
+			set { m_X = (byte)value; }
+		}
+
+		public int Y
+		{
+			get { return m_Y; }
+			set { m_Y = (byte)value; }
+		}
+
+		public int Z
+		{
+			get { return m_Z; }
+			set { m_Z = (sbyte)value; }
+		}
+
+		public int Hue
+		{
+			get { return m_Hue; }
+			set { m_Hue = (short)value; }
+		}
+
+		public int Height
+		{
+			get { return TileData.ItemTable[m_ID & TileData.MaxItemValue].Height; }
+		}
+
+		public StaticTile( ushort id, sbyte z )
+		{
+			m_ID = id;
+			m_Z = z;
+
+			m_X = 0;
+			m_Y = 0;
+			m_Hue = 0;
+		}
+
+		public StaticTile( ushort id, byte x, byte y, sbyte z, short hue )
+		{
+			m_ID = id;
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
+			m_Hue = hue;
+		}
+
+		public void Set( ushort id, sbyte z )
+		{
+			m_ID = id;
+			m_Z = z;
+		}
+
+		public void Set( ushort id, byte x, byte y, sbyte z, short hue )
+		{
+			m_ID = id;
+			m_X = x;
+			m_Y = y;
+			m_Z = z;
+			m_Hue = hue;
 		}
 	}
 }

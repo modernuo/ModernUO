@@ -108,7 +108,7 @@ namespace Server.Commands
 					if ( item is BaseAddon && ((BaseAddon)item).Components.Count == 1 )
 						itemID = ((AddonComponent)(((BaseAddon)item).Components[0])).ItemID;
 
-					if ( itemID >= 0x4000 )
+					if ( itemID > TileData.MaxItemValue )
 						itemID = 1;
 
 					xml.WriteAttributeString( "gfx", XmlConvert.ToString( itemID ) );

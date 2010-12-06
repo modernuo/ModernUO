@@ -26,7 +26,7 @@ namespace Server.Multis
 			Weight = 1.0;
 			LootType = LootType.Blessed;
 
-			m_MultiID = id & 0x3FFF;
+			m_MultiID = id;
 			m_Offset = offset;
 
 			m_ShipName = boat.ShipName;

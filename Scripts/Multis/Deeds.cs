@@ -75,7 +75,7 @@ namespace Server.Multis.Deeds
 			Weight = 1.0;
 			LootType = LootType.Newbied;
 
-			m_MultiID = id & 0x3FFF;
+			m_MultiID = id;
 			m_Offset = offset;
 		}
 

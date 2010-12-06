@@ -256,7 +256,7 @@ namespace Server.Mobiles
 			m_Args = args;
 
 			if ( name == null )
-				m_Name = (1020000 + (itemID & 0x3FFF)).ToString();
+				m_Name = itemID < 0x4000 ? (1020000 + itemID).ToString() : (1078872 + itemID).ToString();
 			else
 				m_Name = name;
 		}

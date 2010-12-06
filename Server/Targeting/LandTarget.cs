@@ -34,7 +34,7 @@ namespace Server.Targeting
 			if ( map != null )
 			{
 				m_Location.Z = map.GetAverageZ( m_Location.X, m_Location.Y );
-				m_TileID = map.Tiles.GetLandTile( m_Location.X, m_Location.Y ).ID & 0x3FFF;
+				m_TileID = map.Tiles.GetLandTile( m_Location.X, m_Location.Y ).ID & TileData.MaxLandValue;
 			}
 		}
 

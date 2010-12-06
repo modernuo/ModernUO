@@ -360,24 +360,24 @@ namespace Server
 
 			bool hasSurface = false;
 
-			Tile lt = Tiles.GetLandTile( x, y );
+			LandTile lt = Tiles.GetLandTile( x, y );
 			int lowZ = 0, avgZ = 0, topZ = 0;
 
 			GetAverageZ( x, y, ref lowZ, ref avgZ, ref topZ );
-			TileFlag landFlags = TileData.LandTable[lt.ID & 0x3FFF].Flags;
+			TileFlag landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
 
 			if ( ( landFlags & TileFlag.Impassable ) != 0 && avgZ > z && ( z + height ) > lowZ )
 				return false;
 			else if ( ( landFlags & TileFlag.Impassable ) == 0 && z == avgZ && !lt.Ignored )
 				hasSurface = true;
 
-			Tile[] staticTiles = Tiles.GetStaticTiles( x, y, true );
+			StaticTile[] staticTiles = Tiles.GetStaticTiles( x, y, true );
 
 			bool surface, impassable;
 
 			for ( int i = 0; i < staticTiles.Length; ++i )
 			{
-				ItemData id = TileData.ItemTable[staticTiles[i].ID & 0x3FFF];
+				ItemData id = TileData.ItemTable[staticTiles[i].ID & TileData.MaxItemValue];
 				surface = id.Surface;
 				impassable = id.Impassable;
 
@@ -395,7 +395,7 @@ namespace Server
 			{
 				Item item = items[i];
 
-				if ( item.ItemID < 0x4000 && item.AtWorldPoint( x, y ) )
+				if ( !(item is BaseMulti) && item.AtWorldPoint( x, y ) )
 				{
 					ItemData id = item.ItemData;
 					surface = id.Surface;
@@ -457,12 +457,12 @@ namespace Server
 
 		public void FixColumn( int x, int y )
 		{
-			Tile landTile = Tiles.GetLandTile( x, y );
+			LandTile landTile = Tiles.GetLandTile( x, y );
 
 			int landZ = 0, landAvg = 0, landTop = 0;
 			GetAverageZ( x, y, ref landZ, ref landAvg, ref landTop );
 
-			Tile[] tiles = Tiles.GetStaticTiles( x, y, true );
+			StaticTile[] tiles = Tiles.GetStaticTiles( x, y, true );
 
 			List<Item> items = new List<Item>();
 
@@ -470,7 +470,7 @@ namespace Server
 
 			foreach ( Item item in eable )
 			{
-				if ( item.ItemID < 0x4000 )
+				if ( !(item is BaseMulti) )
 				{
 					items.Add( item );
 
@@ -501,8 +501,8 @@ namespace Server
 
 				for ( int j = 0; j < tiles.Length; ++j )
 				{
-					Tile tile = tiles[j];
-					ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+					StaticTile tile = tiles[j];
+					ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 					int checkZ = tile.Z;
 					int checkTop = checkZ + id.CalcHeight;
@@ -537,6 +537,7 @@ namespace Server
 			}
 		}
 
+		/* This could be probably be re-implemented if necessary (perhaps via an ITile interface?).
 		public List<Tile> GetTilesAt( Point2D p, bool items, bool land, bool statics )
 		{
 			List<Tile> list = new List<Tile>();
@@ -556,11 +557,12 @@ namespace Server
 
 				foreach ( Item item in sector.Items )
 					if ( item.AtWorldPoint( p.m_X, p.m_Y ) )
-						list.Add( new Tile( (short) ( ( item.ItemID & 0x3FFF ) + 0x4000 ), (sbyte) item.Z ) );
+						list.Add( new StaticTile( (ushort)item.ItemID, (sbyte) item.Z ) );
 			}
 
 			return list;
 		}
+		*/
 
 		/// <summary>
 		/// Gets the highest surface that is lower than <paramref name="p"/>.
@@ -576,7 +578,7 @@ namespace Server
 			int surfaceZ = int.MinValue;
 
 
-			Tile lt = Tiles.GetLandTile( p.X, p.Y );
+			LandTile lt = Tiles.GetLandTile( p.X, p.Y );
 
 			if ( !lt.Ignored )
 			{
@@ -593,12 +595,12 @@ namespace Server
 			}
 
 
-			Tile[] staticTiles = Tiles.GetStaticTiles( p.X, p.Y, true );
+			StaticTile[] staticTiles = Tiles.GetStaticTiles( p.X, p.Y, true );
 
 			for ( int i = 0; i < staticTiles.Length; i++ )
 			{
-				Tile tile = staticTiles[i];
-				ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+				StaticTile tile = staticTiles[i];
+				ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 				if ( id.Surface || ( id.Flags & TileFlag.Wet ) != 0 )
 				{
@@ -622,7 +624,7 @@ namespace Server
 			{
 				Item item = sector.Items[i];
 
-				if ( item.ItemID < 0x4000 && item.AtWorldPoint( p.X, p.Y ) && !item.Movable )
+				if ( !(item is BaseMulti) && item.AtWorldPoint( p.X, p.Y ) && !item.Movable )
 				{
 					ItemData id = item.ItemData;
 
@@ -1385,12 +1387,12 @@ namespace Server
 
 						if ( xOffset >= 0 && xOffset < list.Width && yOffset >= 0 && yOffset < list.Height )
 						{
-							Tile[] tiles = list.Tiles[xOffset][yOffset];
+							StaticTile[] tiles = list.Tiles[xOffset][yOffset];
 
 							if ( tiles.Length > 0 )
 							{
 								// TODO: How to avoid this copy?
-								Tile[] copy = new Tile[tiles.Length];
+								StaticTile[] copy = new StaticTile[tiles.Length];
 
 								for ( int i = 0; i < copy.Length; ++i )
 								{
@@ -1779,7 +1781,7 @@ namespace Server
 			else if( o is StaticTarget )
 			{
 				StaticTarget st = (StaticTarget)o;
-				ItemData id = TileData.ItemTable[st.ItemID & 0x3FFF];
+				ItemData id = TileData.ItemTable[st.ItemID & TileData.MaxItemValue];
 
 				p = new Point3D( st.X, st.Y, st.Z - id.CalcHeight + (id.Height / 2) + 1 );
 			}
@@ -1894,7 +1896,7 @@ namespace Server
 			{
 				Point3D point = path[i];
 
-				Tile landTile = Tiles.GetLandTile( point.X, point.Y );
+				LandTile landTile = Tiles.GetLandTile( point.X, point.Y );
 				int landZ = 0, landAvg = 0, landTop = 0;
 				GetAverageZ( point.m_X, point.m_Y, ref landZ, ref landAvg, ref landTop );
 
@@ -1902,12 +1904,12 @@ namespace Server
 					return false;
 
 				/* --Do land tiles need to be checked?  There is never land between two people, always statics.--
-				Tile landTile = Tiles.GetLandTile( point.X, point.Y );
-				if ( landTile.Z-1 >= point.Z && landTile.Z+1 <= point.Z && (TileData.LandTable[landTile.ID & 0x3FFF].Flags & TileFlag.Impassable) != 0 )
+				LandTile landTile = Tiles.GetLandTile( point.X, point.Y );
+				if ( landTile.Z-1 >= point.Z && landTile.Z+1 <= point.Z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Impassable) != 0 )
 					return false;
 				*/
 
-				Tile[] statics = Tiles.GetStaticTiles( point.m_X, point.m_Y, true );
+				StaticTile[] statics = Tiles.GetStaticTiles( point.m_X, point.m_Y, true );
 
 				bool contains = false;
 				int ltID = landTile.ID;
@@ -1936,9 +1938,9 @@ namespace Server
 
 				for( int j = 0; j < statics.Length; ++j )
 				{
-					Tile t = statics[j];
+					StaticTile t = statics[j];
 
-					ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
+					ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
 					flags = id.Flags;
 					height = id.CalcHeight;
@@ -1954,7 +1956,7 @@ namespace Server
 					/*if ( t.Z <= point.Z && t.Z+height >= point.Z && (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0
 						&& ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )*/
 					/*{
-						//Console.WriteLine( "LoS: Blocked by Static \"{0}\" Z:{1} T:{3} P:{2} F:x{4:X}", TileData.ItemTable[t.ID&0x3FFF].Name, t.Z, point, t.Z+height, flags );
+						//Console.WriteLine( "LoS: Blocked by Static \"{0}\" Z:{1} T:{3} P:{2} F:x{4:X}", TileData.ItemTable[t.ID&TileData.MaxItemValue].Name, t.Z, point, t.Z+height, flags );
 						//Console.WriteLine( "if ( {0} && {1} && {2} && ( {3} || {4} || {5} || ({6} && {7} && {8}) ) )", t.Z <= point.Z, t.Z+height >= point.Z, (flags&TileFlag.Window)==0, (flags&TileFlag.Impassable)!=0, (flags&TileFlag.Wall)!=0, (flags&TileFlag.Roof)!=0, (flags&TileFlag.Surface)!=0, t.Z != dest.Z, zd != 0 ) ;
 						return false;
 					}*/
@@ -1970,7 +1972,7 @@ namespace Server
 				if( !i.Visible )
 					continue;
 
-				if( i.ItemID >= 0x4000 )
+				if( i is BaseMulti || i.ItemID > TileData.MaxItemValue )
 					continue;
 
 				ItemData id = i.ItemData;
@@ -2010,11 +2012,11 @@ namespace Server
 
 				/*if ( (flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0 )
 
-				//flags = TileData.ItemTable[i.ItemID&0x3FFF].Flags;
+				//flags = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Flags;
 				//if ( (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )
 				{
-					//height = TileData.ItemTable[i.ItemID&0x3FFF].Height;
-					//Console.WriteLine( "LoS: Blocked by ITEM \"{0}\" P:{1} T:{2} F:x{3:X}", TileData.ItemTable[i.ItemID&0x3FFF].Name, i.Location, i.Location.Z+height, flags );
+					//height = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Height;
+					//Console.WriteLine( "LoS: Blocked by ITEM \"{0}\" P:{1} T:{2} F:x{3:X}", TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Name, i.Location, i.Location.Z+height, flags );
 					area.Free();
 					return false;
 				}*/

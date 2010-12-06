@@ -11,7 +11,7 @@ namespace Server.Multis
 		private List<Item> m_Components;
 		private Timer m_Timer;
 
-		public PreviewHouse( int multiID ) : base( multiID | 0x4000 )
+		public PreviewHouse( int multiID ) : base( multiID )
 		{
 			m_Components = new List<Item>();
 
@@ -123,7 +123,7 @@ namespace Server.Multis
 				}
 			}
 
-			Delete();
+			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( this.Delete ) );
 		}
 
 		private class DecayTimer : Timer

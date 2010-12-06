@@ -195,7 +195,7 @@ namespace Server.Spells
 				int z = t.Z;
 
 				if( (t.Flags & TileFlag.Surface) == 0 )
-					z -= TileData.ItemTable[t.ItemID & 0x3FFF].CalcHeight;
+					z -= TileData.ItemTable[t.ItemID & TileData.MaxItemValue].CalcHeight;
 
 				p = new Point3D( t.X, t.Y, z );
 			}

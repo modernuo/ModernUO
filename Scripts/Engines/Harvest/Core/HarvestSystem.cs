@@ -467,7 +467,7 @@ namespace Server.Engines.Harvest
 			{
 				LandTarget obj = (LandTarget)toHarvest;
 
-				tileID = obj.TileID & 0x3FFF;
+				tileID = obj.TileID;
 				map = from.Map;
 				loc = obj.Location;
 			}

@@ -387,7 +387,7 @@ namespace Server.Engines.Harvest
 					int tx = m.X - 10 + Utility.Random( 21 );
 					int ty = m.Y - 10 + Utility.Random( 21 );
 
-					Tile t = map.Tiles.GetLandTile( tx, ty );
+					LandTile t = map.Tiles.GetLandTile( tx, ty );
 
 					if ( t.Z == -5 && ( (t.ID >= 0xA8 && t.ID <= 0xAB) || (t.ID >= 0x136 && t.ID <= 0x137) ) && !Spells.SpellHelper.CheckMulti( new Point3D( tx, ty, -5 ), map ) )
 					{

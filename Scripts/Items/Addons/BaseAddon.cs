@@ -172,12 +172,12 @@ namespace Server.Items
 			if ( map == null )
 				return false;
 
-			Tile[] tiles = map.Tiles.GetStaticTiles( x, y, true );
+			StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y, true );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile t = tiles[i];
-				ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
+				StaticTile t = tiles[i];
+				ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
 				if ( (id.Flags & TileFlag.Wall) != 0 && (z + 16) > t.Z && (t.Z + t.Height) > z )
 					return true;

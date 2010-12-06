@@ -6,10 +6,10 @@ namespace Server.Multis
 {
 	public class MediumBoat : BaseBoat
 	{
-		public override int NorthID{ get{ return 0x4008; } }
-		public override int  EastID{ get{ return 0x4009; } }
-		public override int SouthID{ get{ return 0x400A; } }
-		public override int  WestID{ get{ return 0x400B; } }
+		public override int NorthID{ get{ return 0x8; } }
+		public override int  EastID{ get{ return 0x9; } }
+		public override int SouthID{ get{ return 0xA; } }
+		public override int  WestID{ get{ return 0xB; } }
 
 		public override int HoldDistance{ get{ return 4; } }
 		public override int TillerManDistance{ get{ return -5; } }
@@ -51,7 +51,7 @@ namespace Server.Multis
 		public override BaseBoat Boat{ get{ return new MediumBoat(); } }
 
 		[Constructable]
-		public MediumBoatDeed() : base( 0x4008, Point3D.Zero )
+		public MediumBoatDeed() : base( 0x8, Point3D.Zero )
 		{
 		}
 
@@ -78,7 +78,7 @@ namespace Server.Multis
 	{
 		public override BaseBoat Boat{ get{ return new MediumBoat(); } }
 
-		public MediumDockedBoat( BaseBoat boat ) : base( 0x4008, Point3D.Zero, boat )
+		public MediumDockedBoat( BaseBoat boat ) : base( 0x8, Point3D.Zero, boat )
 		{
 		}
 

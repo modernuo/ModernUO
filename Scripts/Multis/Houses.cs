@@ -32,7 +32,7 @@ namespace Server.Multis
 
 		public override HouseDeed GetDeed() 
 		{
-			switch ( ItemID ^ 0x4000 )
+			switch ( ItemID )
 			{
 				case 0x64: return new StonePlasterHouseDeed();
 				case 0x66: return new FieldStoneHouseDeed();
@@ -128,7 +128,7 @@ namespace Server.Multis
 
 		public override HouseDeed GetDeed() 
 		{ 
-			switch( ItemID ^ 0x4000 )
+			switch( ItemID )
 			{
 				case 0x76: return new TwoStoryWoodPlasterHouseDeed();
 				case 0x78:
@@ -554,7 +554,7 @@ namespace Server.Multis
 
 		public override HouseDeed GetDeed() 
 		{ 
-			switch ( ItemID ^ 0x4000 )
+			switch ( ItemID )
 			{
 				case 0xA0: return new StoneWorkshopDeed(); 
 				case 0xA2:

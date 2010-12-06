@@ -898,7 +898,7 @@ namespace Server.Commands
 						m_DeleteQueue.Enqueue( item );
 				}
 			}
-			else if ( (TileData.ItemTable[itemID & 0x3FFF].Flags & TileFlag.LightSource) != 0 )
+			else if ( (TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.LightSource) != 0 )
 			{
 				eable = map.GetItemsInRange( new Point3D( x, y, z ), 0 );
 

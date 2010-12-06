@@ -392,8 +392,6 @@ namespace Server
 
 		public static bool IsFrame( int id, int[] list )
 		{
-			id &= 0x3FFF;
-
 			if ( id > list[list.Length - 1] )
 				return false;
 
@@ -432,11 +430,11 @@ namespace Server
 
 		public static bool IsEastFrame( int x, int y, int z )
 		{
-			Tile[] tiles = m_Map.Tiles.GetStaticTiles( x, y );
+			StaticTile[] tiles = m_Map.Tiles.GetStaticTiles( x, y );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
+				StaticTile tile = tiles[i];
 
 				if ( tile.Z == z && IsEastFrame( tile.ID ) )
 					return true;
@@ -447,11 +445,11 @@ namespace Server
 
 		public static bool IsSouthFrame( int x, int y, int z )
 		{
-			Tile[] tiles = m_Map.Tiles.GetStaticTiles( x, y );
+			StaticTile[] tiles = m_Map.Tiles.GetStaticTiles( x, y );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
+				StaticTile tile = tiles[i];
 
 				if ( tile.Z == z && IsSouthFrame( tile.ID ) )
 					return true;
@@ -497,11 +495,11 @@ namespace Server
 					int vx = rx + region.X;
 					int vy = ry + region.Y;
 
-					Tile[] tiles = m_Map.Tiles.GetStaticTiles( vx, vy );
+					StaticTile[] tiles = m_Map.Tiles.GetStaticTiles( vx, vy );
 
 					for ( int i = 0; i < tiles.Length; ++i )
 					{
-						Tile tile = tiles[i];
+						StaticTile tile = tiles[i];
 
 						int id = tile.ID;
 						int z = tile.Z;

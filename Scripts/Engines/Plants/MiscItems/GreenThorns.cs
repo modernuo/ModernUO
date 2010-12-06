@@ -270,7 +270,7 @@ namespace Server.Items
 			if ( !from.Map.CanSpawnMobile( land.Location ) )
 				return null;
 
-			int tileID = land.TileID & 0x3FFF;
+			int tileID = land.TileID;
 
 			foreach ( TilesAndEffect taep in m_Table )
 			{

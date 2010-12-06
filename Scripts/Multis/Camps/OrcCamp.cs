@@ -11,7 +11,7 @@ namespace Server.Multis
 		private Mobile m_Prisoner;
 		
 		[Constructable]
-		public OrcCamp() : base( 0x10ee, 0 ) // dummy garbage at center
+		public OrcCamp() : base( 0x10EE ) // dummy garbage at center
 		{
 		}
 

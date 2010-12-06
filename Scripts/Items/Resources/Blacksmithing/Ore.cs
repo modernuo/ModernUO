@@ -175,7 +175,7 @@ namespace Server.Items
 				if ( obj is Item )
 					itemID = ((Item)obj).ItemID;
 				else if ( obj is StaticTarget )
-					itemID = ((StaticTarget)obj).ItemID & 0x3FFF;
+					itemID = ((StaticTarget)obj).ItemID;
 
 				return ( itemID == 4017 || (itemID >= 6522 && itemID <= 6569) );
 			}

@@ -92,7 +92,7 @@ namespace Server.Engines.Quests.Collector
 
 		public int Figurine { get { return m_Figurine; } }
 		public Type Type { get { return m_Type; } }
-		public int Name { get { return 1020000 + m_Figurine; } }
+		public int Name { get { return m_Figurine < 0x4000 ? 1020000 + m_Figurine : 1078872 + m_Figurine; } }
 		public int X { get { return m_X; } }
 		public int Y { get { return m_Y; } }
 

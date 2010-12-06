@@ -49,7 +49,7 @@ namespace Server
 
 		private static bool GetFloorZ( Map map, int x, int y, out int z )
 		{
-			Tile lt = map.Tiles.GetLandTile( x, y );
+			LandTile lt = map.Tiles.GetLandTile( x, y );
 
 			if ( IsFloor( lt.ID ) && map.CanFit( x, y, lt.Z, 16, false, false ) )
 			{
@@ -57,12 +57,12 @@ namespace Server
 				return true;
 			}
 
-			Tile[] tiles = map.Tiles.GetStaticTiles( x, y );
+			StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile t = tiles[i];
-				ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
+				StaticTile t = tiles[i];
+				ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
 				if ( IsStaticFloor( t.ID ) && map.CanFit( x, y, t.Z + (id.Surface ? id.CalcHeight : 0), 16, false, false ) )
 				{
@@ -77,17 +77,17 @@ namespace Server
 
 		private static bool IsFloor( Map map, int x, int y, bool canFit )
 		{
-			Tile lt = map.Tiles.GetLandTile( x, y );
+			LandTile lt = map.Tiles.GetLandTile( x, y );
 
 			if ( IsFloor( lt.ID ) && (canFit||CanFit( map, x, y, lt.Z )) )
 				return true;
 
-			Tile[] tiles = map.Tiles.GetStaticTiles( x, y );
+			StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile t = tiles[i];
-				ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
+				StaticTile t = tiles[i];
+				ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
 				if ( IsStaticFloor( t.ID ) && (canFit||CanFit( map, x, y, t.Z + (id.Surface ? id.CalcHeight : 0) )) )
 					return true;
@@ -98,23 +98,19 @@ namespace Server
 
 		private static bool IsFloor( int itemID )
 		{
-			itemID &= 0x3FFF;
+			itemID &= TileData.MaxLandValue;
 
 			return ( itemID >= 0x406 && itemID <= 0x51A );
 		}
 
 		private static bool IsStaticFloor( int itemID )
 		{
-			itemID &= 0x3FFF;
-
 			return ( itemID >= 0x495 && itemID <= 0x514 )
 				|| ( itemID >= 0x519 && itemID <= 0x53A );
 		}
 
 		private static bool IsDisplayCase( int itemID )
 		{
-			itemID &= 0x3FFF;
-
 			return ( itemID >= 0xB00 && itemID <= 0xB02 )
 				|| ( itemID >= 0xB06 && itemID <= 0xB0A )
 				|| ( itemID >= 0xB0D && itemID <= 0xB17 );
@@ -261,7 +257,7 @@ namespace Server
 
 		private static void CheckFloor( Map map, int x, int y )
 		{
-			Tile[] tiles = map.Tiles.GetStaticTiles( x, y );
+			StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y );
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
@@ -371,7 +367,7 @@ namespace Server
 
 		private static ShopFlags ProcessDisplayedItem( int itemID )
 		{
-			itemID &= 0x3FFF;
+			itemID &= TileData.MaxItemValue;
 
 			ShopFlags res = ShopFlags.None;
 
@@ -411,7 +407,7 @@ namespace Server
 			return res;
 		}
 
-		private static void ProcessDisplayCase( Map map, Tile[] tiles, int x, int y )
+		private static void ProcessDisplayCase( Map map, StaticTile[] tiles, int x, int y )
 		{
 			ShopFlags flags = ShopFlags.None;
 
@@ -460,18 +456,18 @@ namespace Server
 		{
 			bool hasSurface = false;
 
-			Tile lt = map.Tiles.GetLandTile( x, y );
+			LandTile lt = map.Tiles.GetLandTile( x, y );
 			int lowZ = 0, avgZ = 0, topZ = 0;
 
 			map.GetAverageZ( x, y, ref lowZ, ref avgZ, ref topZ );
-			TileFlag landFlags = TileData.LandTable[lt.ID & 0x3FFF].Flags;
+			TileFlag landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
 
 			if ( (landFlags & TileFlag.Impassable) != 0 && topZ > z && (z + 16) > lowZ )
 				return false;
 			else if ( (landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored )
 				hasSurface = true;
 
-			Tile[] staticTiles = map.Tiles.GetStaticTiles( x, y );
+			StaticTile[] staticTiles = map.Tiles.GetStaticTiles( x, y );
 
 			bool surface, impassable;
 
@@ -480,7 +476,7 @@ namespace Server
 				if ( IsDisplayCase( staticTiles[i].ID ) )
 					continue;
 
-				ItemData id = TileData.ItemTable[staticTiles[i].ID & 0x3FFF];
+				ItemData id = TileData.ItemTable[staticTiles[i].ID & TileData.MaxItemValue];
 
 				surface = id.Surface;
 				impassable = id.Impassable;

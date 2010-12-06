@@ -66,19 +66,18 @@ namespace Server.Spells.Spellweaving
 
 		private static bool IsValidLocation( Point3D location, Map map )
 		{
-			Tile lt = map.Tiles.GetLandTile( location.X, location.Y );         // Land   Tiles            
+			LandTile lt = map.Tiles.GetLandTile( location.X, location.Y );         // Land   Tiles            
 
 			if( IsValidTile( lt.ID ) && lt.Z == location.Z )
 				return true;
 
-			Tile[] tiles = map.Tiles.GetStaticTiles( location.X, location.Y ); // Static Tiles
+			StaticTile[] tiles = map.Tiles.GetStaticTiles( location.X, location.Y ); // Static Tiles
 
 			for( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile t = tiles[i];
-				ItemData id = TileData.ItemTable[t.ID & 0x3FFF];
+				StaticTile t = tiles[i];
 
-				int tand = t.ID & 0x3FFF;
+				int tand = t.ID;
 
 				if( t.Z != location.Z )
 					continue;

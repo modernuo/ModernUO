@@ -269,12 +269,12 @@ namespace Server.Regions
 				if ( x < 0 || y < 0 || x >= map.Width || y >= map.Height )
 					continue;
 
-				Tile lt = map.Tiles.GetLandTile( x, y );
+				LandTile lt = map.Tiles.GetLandTile( x, y );
 
 				int ltLowZ = 0, ltAvgZ = 0, ltTopZ = 0;
 				map.GetAverageZ( x, y, ref ltLowZ, ref ltAvgZ, ref ltTopZ );
 
-				TileFlag ltFlags = TileData.LandTable[lt.ID & 0x3FFF].Flags;
+				TileFlag ltFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
 				bool ltImpassable = ( (ltFlags & TileFlag.Impassable) != 0 );
 
 				if ( !lt.Ignored && ltAvgZ >= minZ && ltAvgZ < maxZ )
@@ -285,12 +285,12 @@ namespace Server.Regions
 					else if ( land && !ltImpassable )
 						m_SpawnBuffer1.Add( ltAvgZ );
 
-				Tile[] staticTiles = map.Tiles.GetStaticTiles( x, y, true );
+				StaticTile[] staticTiles = map.Tiles.GetStaticTiles( x, y, true );
 
 				for ( int j = 0; j < staticTiles.Length; j++ )
 				{
-					Tile tile = staticTiles[j];
-					ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+					StaticTile tile = staticTiles[j];
+					ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 					int tileZ = tile.Z + id.CalcHeight;
 
 					if ( tileZ >= minZ && tileZ < maxZ )
@@ -309,7 +309,7 @@ namespace Server.Regions
 				{
 					Item item = sector.Items[j];
 
-					if ( item.ItemID < 0x4000 && item.AtWorldPoint( x, y ) )
+					if ( item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint( x, y ) )
 					{
 						m_SpawnBuffer2.Add( item );
 
@@ -411,8 +411,8 @@ namespace Server.Regions
 
 				for ( int j = 0; j < staticTiles.Length; j++ )
 				{
-					Tile tile = staticTiles[j];
-					ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+					StaticTile tile = staticTiles[j];
+					ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 					if ( ( id.Surface || id.Impassable ) && tile.Z + id.CalcHeight > z && tile.Z < top )
 					{

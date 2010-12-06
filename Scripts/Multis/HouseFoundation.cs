@@ -553,11 +553,11 @@ namespace Server.Multis
 
 			if( x >= 0 && x < mcl.Width && y >= 0 && y < mcl.Height )
 			{
-				Tile[] tiles = mcl.Tiles[x][y];
+				StaticTile[] tiles = mcl.Tiles[x][y];
 
 				for( int i = 0; i < tiles.Length; ++i )
 				{
-					Tile tile = tiles[i];
+					StaticTile tile = tiles[i];
 
 					if( tile.Z == 7 && tile.Height == 20 )
 						return true;
@@ -1061,11 +1061,11 @@ namespace Server.Multis
 
 		public static bool ValidPiece( int itemID, bool roof )
 		{
-			itemID &= 0x3FFF;
+			itemID &= TileData.MaxItemValue;
 
-			if ( !roof && ( TileData.ItemTable[itemID & 0x3FFF].Flags & TileFlag.Roof ) != 0 )
+			if ( !roof && ( TileData.ItemTable[itemID].Flags & TileFlag.Roof ) != 0 )
 				return false;
-			else if ( roof && ( TileData.ItemTable[itemID & 0x3FFF].Flags & TileFlag.Roof ) == 0 )
+			else if ( roof && ( TileData.ItemTable[itemID].Flags & TileFlag.Roof ) == 0 )
 				return false;
 
 			return Verification.IsItemValid( itemID );
@@ -1141,11 +1141,11 @@ namespace Server.Multis
 
 			if( IsStairBlock( id ) )
 			{
-				Tile[] tiles = mcl.Tiles[ax][ay];
+				StaticTile[] tiles = mcl.Tiles[ax][ay];
 
 				for( int i = 0; i < tiles.Length; ++i )
 				{
-					Tile tile = tiles[i];
+					StaticTile tile = tiles[i];
 
 					if( tile.Z == (z + 5) )
 					{
@@ -1220,12 +1220,12 @@ namespace Server.Multis
 
 				if( ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1 )
 				{
-					Tile[] tiles = mcl.Tiles[ax][ay];
+					StaticTile[] tiles = mcl.Tiles[ax][ay];
 
 					bool hasBaseFloor = false;
 
 					for( int j = 0; !hasBaseFloor && j < tiles.Length; ++j )
-						hasBaseFloor = (tiles[j].Z == 7 && (tiles[j].ID & 0x3FFF) != 1);
+						hasBaseFloor = (tiles[j].Z == 7 && tiles[j].ID != 1);
 
 					if( !hasBaseFloor )
 						mcl.Add( 0x31F4, x, y, 7 );
@@ -1284,12 +1284,12 @@ namespace Server.Multis
 				// If needed, replace removed component with a dirt tile
 				if( ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1 )
 				{
-					Tile[] tiles = mcl.Tiles[ax][ay];
+					StaticTile[] tiles = mcl.Tiles[ax][ay];
 
 					bool hasBaseFloor = false;
 
 					for( int i = 0; !hasBaseFloor && i < tiles.Length; ++i )
-						hasBaseFloor = (tiles[i].Z == 7 && (tiles[i].ID & 0x3FFF) != 1);
+						hasBaseFloor = (tiles[i].Z == 7 && tiles[i].ID != 1);
 
 					if( !hasBaseFloor )
 					{
@@ -1641,7 +1641,7 @@ namespace Server.Multis
 				{
 					MultiTileEntry mte = list[i];
 
-					if( mte.m_OffsetX == x && mte.m_OffsetY == y && GetZLevel( mte.m_OffsetZ, context.Foundation ) == context.Level  && (TileData.ItemTable[mte.m_ItemID & 0x3FFF].Flags & TileFlag.Roof) != 0 )
+					if( mte.m_OffsetX == x && mte.m_OffsetY == y && GetZLevel( mte.m_OffsetZ, context.Foundation ) == context.Level  && (TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0 )
 						mcl.Remove( mte.m_ItemID, x, y, mte.m_OffsetZ );
 				}
 
@@ -1669,7 +1669,7 @@ namespace Server.Multis
 				DesignState design = context.Foundation.DesignState;
 				MultiComponentList mcl = design.Components;
 
-				if( (TileData.ItemTable[itemID & 0x3FFF].Flags & TileFlag.Roof) == 0 )
+				if( (TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.Roof) == 0 )
 				{
 					design.SendDetailedInfoTo( state );
 					return;
@@ -1748,7 +1748,7 @@ namespace Server.Multis
 
 					for( int i = 0; i < length; ++i )
 					{
-						m_Fixtures[i].m_ItemID = reader.ReadShort();
+						m_Fixtures[i].m_ItemID = reader.ReadUShort();
 						m_Fixtures[i].m_OffsetX = reader.ReadShort();
 						m_Fixtures[i].m_OffsetY = reader.ReadShort();
 						m_Fixtures[i].m_OffsetZ = reader.ReadShort();
@@ -1774,7 +1774,7 @@ namespace Server.Multis
 			{
 				MultiTileEntry ent = m_Fixtures[i];
 
-				writer.Write( (short)ent.m_ItemID );
+				writer.Write( (ushort)ent.m_ItemID );
 				writer.Write( (short)ent.m_OffsetX );
 				writer.Write( (short)ent.m_OffsetY );
 				writer.Write( (short)ent.m_OffsetZ );
@@ -2229,7 +2229,7 @@ namespace Server.Multis
 				int x = mte.m_OffsetX - xMin;
 				int y = mte.m_OffsetY - yMin;
 				int z = mte.m_OffsetZ;
-				bool floor = (TileData.ItemTable[mte.m_ItemID & 0x3FFF].Height <= 0);
+				bool floor = (TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Height <= 0);
 				int plane, size;
 
 				switch( z )

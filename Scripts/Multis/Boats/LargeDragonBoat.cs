@@ -6,10 +6,10 @@ namespace Server.Multis
 {
 	public class LargeDragonBoat : BaseBoat
 	{
-		public override int NorthID{ get{ return 0x4014; } }
-		public override int  EastID{ get{ return 0x4015; } }
-		public override int SouthID{ get{ return 0x4016; } }
-		public override int  WestID{ get{ return 0x4017; } }
+		public override int NorthID{ get{ return 0x14; } }
+		public override int  EastID{ get{ return 0x15; } }
+		public override int SouthID{ get{ return 0x16; } }
+		public override int  WestID{ get{ return 0x17; } }
 
 		public override int HoldDistance{ get{ return 5; } }
 		public override int TillerManDistance{ get{ return -5; } }
@@ -51,7 +51,7 @@ namespace Server.Multis
 		public override BaseBoat Boat{ get{ return new LargeDragonBoat(); } }
 
 		[Constructable]
-		public LargeDragonBoatDeed() : base( 0x4014, new Point3D( 0, -1, 0 ) )
+		public LargeDragonBoatDeed() : base( 0x14, new Point3D( 0, -1, 0 ) )
 		{
 		}
 
@@ -78,7 +78,7 @@ namespace Server.Multis
 	{
 		public override BaseBoat Boat{ get{ return new LargeDragonBoat(); } }
 
-		public LargeDockedDragonBoat( BaseBoat boat ) : base( 0x4014, new Point3D( 0, -1, 0 ), boat )
+		public LargeDockedDragonBoat( BaseBoat boat ) : base( 0x14, new Point3D( 0, -1, 0 ), boat )
 		{
 		}
 

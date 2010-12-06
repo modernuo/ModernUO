@@ -420,12 +420,12 @@ namespace Server.Engines.Craft
 					int vx = from.X + x;
 					int vy = from.Y + y;
 
-					Tile[] tiles = map.Tiles.GetStaticTiles( vx, vy, true );
+					StaticTile[] tiles = map.Tiles.GetStaticTiles( vx, vy, true );
 
 					for ( int i = 0; i < tiles.Length; ++i )
 					{
 						int z = tiles[i].Z;
-						int id = tiles[i].ID & 0x3FFF;
+						int id = tiles[i].ID;
 
 						if ( (z + 16) > from.Z && (from.Z + 16) > z && Find( id, itemIDs ) )
 							return true;

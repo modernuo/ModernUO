@@ -210,7 +210,7 @@ namespace Server.Items
 						to = (Mobile)p;
 				}
 
-				Effects.SendMovingEffect( from, to, m_Potion.ItemID & 0x3FFF, 7, 0, false, false, m_Potion.Hue, 0 );
+				Effects.SendMovingEffect( from, to, m_Potion.ItemID, 7, 0, false, false, m_Potion.Hue, 0 );
 
 				if( m_Potion.Amount > 1 )
 				{

@@ -273,7 +273,7 @@ namespace Server.Items
 							return;
 							
 						Point3D p3d = new Point3D( p );
-						ItemData id = TileData.ItemTable[ m_ItemID & 0x3FFF ];
+						ItemData id = TileData.ItemTable[ m_ItemID & TileData.MaxItemValue ];
 						
 						if ( map.CanFit( p3d, id.Height ) )
 						{

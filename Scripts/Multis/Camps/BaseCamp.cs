@@ -30,22 +30,12 @@ namespace Server.Multis
 			} 
 		}
 
-		public BaseCamp( int multiID ) : base( multiID | 0x4000 )
+		public BaseCamp( int multiID ) : base( multiID )
 		{
 			m_Items = new List<Item>();
 			m_Mobiles = new List<Mobile>();
 			m_DecayDelay = TimeSpan.FromMinutes( 30.0 );
 			RefreshDecay( true );
-
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckAddComponents ) );
-		}
-
-		public BaseCamp( int multiID, int mode ) : base( multiID | 0x4000*mode )
-		{
-			m_Items = new List<Item>();
-			m_Mobiles = new List<Mobile>();
-			m_DecayDelay = TimeSpan.FromMinutes(30.0);
-			RefreshDecay(true);
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckAddComponents ) );
 		}

@@ -5,11 +5,10 @@ namespace Server.Items
 {
 	public class Static : Item
 	{
-        public Static() //Dupe-tastic!
-            : base( 0x80 )
-        {
-            Movable = false;
-        }
+		public Static() : base( 0x80 )
+		{
+			Movable = false;
+		}
 
 		[Constructable]
 		public Static( int itemID ) : base( itemID )
@@ -58,7 +57,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return m_LabelNumber; } }
 
 		[Constructable]
-		public LocalizedStatic( int itemID ) : this( itemID, 1020000 + itemID )
+		public LocalizedStatic( int itemID ) : this( itemID, itemID < 0x4000 ? 1020000 + itemID : 1078872 + itemID )
 		{
 		}
 

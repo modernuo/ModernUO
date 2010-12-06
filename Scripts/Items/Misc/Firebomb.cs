@@ -164,7 +164,7 @@ namespace Server.Items
 			else
 				to = new Entity( Serial.Zero, new Point3D( p ), Map );
 
-			Effects.SendMovingEffect( from, to, ItemID & 0x3FFF, 7, 0, false, false, Hue, 0 );
+			Effects.SendMovingEffect( from, to, ItemID, 7, 0, false, false, Hue, 0 );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( FirebombReposition_OnTick ), new object[]{ p, Map } );
 			Internalize();

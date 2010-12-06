@@ -210,13 +210,7 @@ namespace Server
 								if ( xOffset < 0 || xOffset >= 8 || yOffset < 0 || yOffset >= 8 )
 									continue;
 
-								StaticTile newTile = new StaticTile();
-
-								newTile.m_ID = (short)(item.ItemID & 0x3FFF);
-								newTile.m_X = (byte)xOffset;
-								newTile.m_Y = (byte)yOffset;
-								newTile.m_Z = (sbyte)item.Z;
-								newTile.m_Hue = (short)item.Hue;
+								StaticTile newTile = new StaticTile( (ushort)item.ItemID, (byte)xOffset, (byte)yOffset, (sbyte)item.Z, (short)item.Hue );
 
 								newTiles[newTileCount++] = newTile;
 
@@ -241,22 +235,22 @@ namespace Server
 								{
 									StaticTile toWrite = oldTiles[i];
 
-									mulWriter.Write( (short) toWrite.m_ID );
-									mulWriter.Write( (byte) toWrite.m_X );
-									mulWriter.Write( (byte) toWrite.m_Y );
-									mulWriter.Write( (sbyte) toWrite.m_Z );
-									mulWriter.Write( (short) toWrite.m_Hue );
+									mulWriter.Write( (ushort) toWrite.ID );
+									mulWriter.Write( (byte) toWrite.X );
+									mulWriter.Write( (byte) toWrite.Y );
+									mulWriter.Write( (sbyte) toWrite.Z );
+									mulWriter.Write( (short) toWrite.Hue );
 								}
 
 								for ( int i = 0; i < newTileCount; ++i )
 								{
 									StaticTile toWrite = newTiles[i];
 
-									mulWriter.Write( (short) toWrite.m_ID );
-									mulWriter.Write( (byte) toWrite.m_X );
-									mulWriter.Write( (byte) toWrite.m_Y );
-									mulWriter.Write( (sbyte) toWrite.m_Z );
-									mulWriter.Write( (short) toWrite.m_Hue );
+									mulWriter.Write( (ushort) toWrite.ID );
+									mulWriter.Write( (byte) toWrite.X );
+									mulWriter.Write( (byte) toWrite.Y );
+									mulWriter.Write( (sbyte) toWrite.Z );
+									mulWriter.Write( (short) toWrite.Hue );
 								}
 
 								mulWriter.Flush();
@@ -381,8 +375,8 @@ namespace Server
 							{
 								StaticTile oldTile = oldTiles[i];
 
-								int px = baseX + oldTile.m_X;
-								int py = baseY + oldTile.m_Y;
+								int px = baseX + oldTile.X;
+								int py = baseY + oldTile.Y;
 
 								if ( px < 0 || px >= xTileWidth || py < 0 || py >= yTileHeight )
 								{
@@ -392,11 +386,11 @@ namespace Server
 								{
 									++totalUnfrozen;
 
-									Item item = new Static( oldTile.m_ID & 0x3FFF );
+									Item item = new Static( oldTile.ID );
 
-									item.Hue = oldTile.m_Hue;
+									item.Hue = oldTile.Hue;
 
-									item.MoveToWorld( new Point3D( px + xTileStart, py + yTileStart, oldTile.m_Z ), map );
+									item.MoveToWorld( new Point3D( px + xTileStart, py + yTileStart, oldTile.Z ), map );
 								}
 							}
 
@@ -416,11 +410,11 @@ namespace Server
 								{
 									StaticTile toWrite = newTiles[i];
 
-									mulWriter.Write( (short) toWrite.m_ID );
-									mulWriter.Write( (byte) toWrite.m_X );
-									mulWriter.Write( (byte) toWrite.m_Y );
-									mulWriter.Write( (sbyte) toWrite.m_Z );
-									mulWriter.Write( (short) toWrite.m_Hue );
+									mulWriter.Write( (ushort) toWrite.ID );
+									mulWriter.Write( (byte) toWrite.X );
+									mulWriter.Write( (byte) toWrite.Y );
+									mulWriter.Write( (sbyte) toWrite.Z );
+									mulWriter.Write( (short) toWrite.Hue );
 								}
 
 								mulWriter.Flush();
@@ -533,11 +527,9 @@ namespace Server
 
 					for ( int i = 0; i < count; ++i )
 					{
-						staTiles[i].m_ID = (short)(m_Buffer[index++] | (m_Buffer[index++] << 8));
-						staTiles[i].m_X = m_Buffer[index++];
-						staTiles[i].m_Y = m_Buffer[index++];
-						staTiles[i].m_Z = (sbyte)m_Buffer[index++];
-						staTiles[i].m_Hue = (short)(m_Buffer[index++] | (m_Buffer[index++] << 8));
+						staTiles[i].Set((ushort)(m_Buffer[index++] | (m_Buffer[index++] << 8)),
+								(byte)m_Buffer[index++], (byte)m_Buffer[index++], (sbyte)m_Buffer[index++],
+								(short)(m_Buffer[index++] | (m_Buffer[index++] << 8)));
 					}
 				}
 			}
@@ -558,7 +550,7 @@ namespace Server
 			{
 				m_X = p.X;
 				m_Y = p.Y;
-                m_List = new List<Item>();
+				m_List = new List<Item>();
 			}
 		}
 

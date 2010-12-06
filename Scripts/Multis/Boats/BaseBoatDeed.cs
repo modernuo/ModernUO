@@ -25,7 +25,7 @@ namespace Server.Multis
 			if ( !Core.AOS )
 				LootType = LootType.Newbied;
 
-			m_MultiID = id & 0x3FFF;
+			m_MultiID = id;
 			m_Offset = offset;
 		}
 

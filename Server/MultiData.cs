@@ -35,8 +35,6 @@ namespace Server
 		{
 			MultiComponentList mcl;
 
-			multiID &= 0x3FFF;
-
 			if ( multiID >= 0 && multiID < m_Components.Length )
 			{
 				mcl = m_Components[multiID];
@@ -132,11 +130,11 @@ namespace Server
 
 	public struct MultiTileEntry
 	{
-		public short m_ItemID;
+		public ushort m_ItemID;
 		public short m_OffsetX, m_OffsetY, m_OffsetZ;
 		public int m_Flags;
 
-		public MultiTileEntry( short itemID, short xOffset, short yOffset, short zOffset, int flags )
+		public MultiTileEntry( ushort itemID, short xOffset, short yOffset, short zOffset, int flags )
 		{
 			m_ItemID = itemID;
 			m_OffsetX = xOffset;
@@ -157,7 +155,7 @@ namespace Server
 
 		private Point2D m_Min, m_Max, m_Center;
 		private int m_Width, m_Height;
-		private Tile[][][] m_Tiles;
+		private StaticTile[][][] m_Tiles;
 		private MultiTileEntry[] m_List;
 
 		public static readonly MultiComponentList Empty = new MultiComponentList();
@@ -170,29 +168,26 @@ namespace Server
 		public int Width{ get{ return m_Width; } }
 		public int Height{ get{ return m_Height; } }
 
-		public Tile[][][] Tiles{ get{ return m_Tiles; } }
+		public StaticTile[][][] Tiles{ get{ return m_Tiles; } }
 		public MultiTileEntry[] List{ get{ return m_List; } }
 
 		public void Add( int itemID, int x, int y, int z )
 		{
-			itemID &= 0x3FFF;
-			itemID |= 0x4000;
-
 			int vx = x + m_Center.m_X;
 			int vy = y + m_Center.m_Y;
 
 			if ( vx >= 0 && vx < m_Width && vy >= 0 && vy < m_Height )
 			{
-				Tile[] oldTiles = m_Tiles[vx][vy];
+				StaticTile[] oldTiles = m_Tiles[vx][vy];
 
 				for ( int i = oldTiles.Length - 1; i >= 0; --i )
 				{
-					ItemData data = TileData.ItemTable[itemID & 0x3FFF];
+					ItemData data = TileData.ItemTable[itemID & TileData.MaxItemValue];
 
 					if ( oldTiles[i].Z == z && (oldTiles[i].Height > 0 == data.Height > 0 ) )
 					{
 						bool newIsRoof = ( data.Flags & TileFlag.Roof) != 0;
-						bool oldIsRoof = (TileData.ItemTable[oldTiles[i].ID & 0x3FFF].Flags & TileFlag.Roof ) != 0;
+						bool oldIsRoof = (TileData.ItemTable[oldTiles[i].ID & TileData.MaxItemValue].Flags & TileFlag.Roof ) != 0;
 
 						if ( newIsRoof == oldIsRoof )
 							Remove( oldTiles[i].ID, x, y, z );
@@ -201,12 +196,12 @@ namespace Server
 
 				oldTiles = m_Tiles[vx][vy];
 
-				Tile[] newTiles = new Tile[oldTiles.Length + 1];
+				StaticTile[] newTiles = new StaticTile[oldTiles.Length + 1];
 
 				for ( int i = 0; i < oldTiles.Length; ++i )
 					newTiles[i] = oldTiles[i];
 
-				newTiles[oldTiles.Length] = new Tile( (short)itemID, (sbyte)z );
+				newTiles[oldTiles.Length] = new StaticTile( (ushort)itemID, (sbyte)z );
 
 				m_Tiles[vx][vy] = newTiles;
 
@@ -216,7 +211,7 @@ namespace Server
 				for ( int i = 0; i < oldList.Length; ++i )
 					newList[i] = oldList[i];
 
-				newList[oldList.Length] = new MultiTileEntry( (short)itemID, (short)x, (short)y, (short)z, 1 );
+				newList[oldList.Length] = new MultiTileEntry( (ushort)itemID, (short)x, (short)y, (short)z, 1 );
 
 				m_List = newList;
 
@@ -241,15 +236,15 @@ namespace Server
 
 			if ( vx >= 0 && vx < m_Width && vy >= 0 && vy < m_Height )
 			{
-				Tile[] oldTiles = m_Tiles[vx][vy];
+				StaticTile[] oldTiles = m_Tiles[vx][vy];
 
 				for ( int i = 0; i < oldTiles.Length; ++i )
 				{
-					Tile tile = oldTiles[i];
+					StaticTile tile = oldTiles[i];
 
 					if ( tile.Z == z && tile.Height >= minHeight )
 					{
-						Tile[] newTiles = new Tile[oldTiles.Length - 1];
+						StaticTile[] newTiles = new StaticTile[oldTiles.Length - 1];
 
 						for ( int j = 0; j < i; ++j )
 							newTiles[j] = oldTiles[j];
@@ -269,7 +264,7 @@ namespace Server
 				{
 					MultiTileEntry tile = oldList[i];
 
-					if ( tile.m_OffsetX == (short)x && tile.m_OffsetY == (short)y && tile.m_OffsetZ == (short)z && TileData.ItemTable[tile.m_ItemID & 0x3FFF].Height >= minHeight )
+					if ( tile.m_OffsetX == (short)x && tile.m_OffsetY == (short)y && tile.m_OffsetZ == (short)z && TileData.ItemTable[tile.m_ItemID & TileData.MaxItemValue].Height >= minHeight )
 					{
 						MultiTileEntry[] newList = new MultiTileEntry[oldList.Length - 1];
 
@@ -294,15 +289,15 @@ namespace Server
 
 			if ( vx >= 0 && vx < m_Width && vy >= 0 && vy < m_Height )
 			{
-				Tile[] oldTiles = m_Tiles[vx][vy];
+				StaticTile[] oldTiles = m_Tiles[vx][vy];
 
 				for ( int i = 0; i < oldTiles.Length; ++i )
 				{
-					Tile tile = oldTiles[i];
+					StaticTile tile = oldTiles[i];
 
-					if ( (tile.ID & 0x3FFF) == (itemID & 0x3FFF) && tile.Z == z )
+					if ( tile.ID == itemID && tile.Z == z )
 					{
-						Tile[] newTiles = new Tile[oldTiles.Length - 1];
+						StaticTile[] newTiles = new StaticTile[oldTiles.Length - 1];
 
 						for ( int j = 0; j < i; ++j )
 							newTiles[j] = oldTiles[j];
@@ -322,7 +317,7 @@ namespace Server
 				{
 					MultiTileEntry tile = oldList[i];
 
-					if ( (tile.m_ItemID & 0x3FFF) == (short)(itemID & 0x3FFF) && tile.m_OffsetX == (short)x && tile.m_OffsetY == (short)y && tile.m_OffsetZ == (short)z )
+					if ( tile.m_ItemID == itemID && tile.m_OffsetX == (short)x && tile.m_OffsetY == (short)y && tile.m_OffsetZ == (short)z )
 					{
 						MultiTileEntry[] newList = new MultiTileEntry[oldList.Length - 1];
 
@@ -343,22 +338,22 @@ namespace Server
 		public void Resize( int newWidth, int newHeight )
 		{
 			int oldWidth = m_Width, oldHeight = m_Height;
-			Tile[][][] oldTiles = m_Tiles;
+			StaticTile[][][] oldTiles = m_Tiles;
 
 			int totalLength = 0;
 
-			Tile[][][] newTiles = new Tile[newWidth][][];
+			StaticTile[][][] newTiles = new StaticTile[newWidth][][];
 
 			for ( int x = 0; x < newWidth; ++x )
 			{
-				newTiles[x] = new Tile[newHeight][];
+				newTiles[x] = new StaticTile[newHeight][];
 
 				for ( int y = 0; y < newHeight; ++y )
 				{
 					if ( x < oldWidth && y < oldHeight )
 						newTiles[x][y] = oldTiles[x][y];
 					else
-						newTiles[x][y] = new Tile[0];
+						newTiles[x][y] = new StaticTile[0];
 
 					totalLength += newTiles[x][y].Length;
 				}
@@ -378,11 +373,11 @@ namespace Server
 			{
 				for ( int y = 0; y < newHeight; ++y )
 				{
-					Tile[] tiles = newTiles[x][y];
+					StaticTile[] tiles = newTiles[x][y];
 
 					for ( int i = 0; i < tiles.Length; ++i )
 					{
-						Tile tile = tiles[i];
+						StaticTile tile = tiles[i];
 
 						int vx = x - m_Center.X;
 						int vy = y - m_Center.Y;
@@ -399,7 +394,7 @@ namespace Server
 						if ( vy > m_Max.m_Y )
 							m_Max.m_Y = vy;
 
-						m_List[index++] = new MultiTileEntry( (short)tile.ID, (short)vx, (short)vy, (short)tile.Z, 1 );
+						m_List[index++] = new MultiTileEntry( (ushort)tile.ID, (short)vx, (short)vy, (short)tile.Z, 1 );
 					}
 				}
 			}
@@ -415,15 +410,15 @@ namespace Server
 			m_Width = toCopy.m_Width;
 			m_Height = toCopy.m_Height;
 
-			m_Tiles = new Tile[m_Width][][];
+			m_Tiles = new StaticTile[m_Width][][];
 
 			for ( int x = 0; x < m_Width; ++x )
 			{
-				m_Tiles[x] = new Tile[m_Height][];
+				m_Tiles[x] = new StaticTile[m_Height][];
 
 				for ( int y = 0; y < m_Height; ++y )
 				{
-					m_Tiles[x][y] = new Tile[toCopy.m_Tiles[x][y].Length];
+					m_Tiles[x][y] = new StaticTile[toCopy.m_Tiles[x][y].Length];
 
 					for ( int i = 0; i < m_Tiles[x][y].Length; ++i )
 						m_Tiles[x][y][i] = toCopy.m_Tiles[x][y][i];
@@ -453,7 +448,7 @@ namespace Server
 			{
 				MultiTileEntry ent = m_List[i];
 
-				writer.Write( (short) ent.m_ItemID );
+				writer.Write( (ushort) ent.m_ItemID );
 				writer.Write( (short) ent.m_OffsetX );
 				writer.Write( (short) ent.m_OffsetY );
 				writer.Write( (short) ent.m_OffsetZ );
@@ -481,7 +476,7 @@ namespace Server
 
 					for ( int i = 0; i < length; ++i )
 					{
-						allTiles[i].m_ItemID = reader.ReadShort();
+						allTiles[i].m_ItemID = reader.ReadUShort();
 						allTiles[i].m_OffsetX = reader.ReadShort();
 						allTiles[i].m_OffsetY = reader.ReadShort();
 						allTiles[i].m_OffsetZ = reader.ReadShort();
@@ -489,12 +484,12 @@ namespace Server
 					}
 
 					TileList[][] tiles = new TileList[m_Width][];
-					m_Tiles = new Tile[m_Width][][];
+					m_Tiles = new StaticTile[m_Width][][];
 
 					for ( int x = 0; x < m_Width; ++x )
 					{
 						tiles[x] = new TileList[m_Height];
-						m_Tiles[x] = new Tile[m_Height][];
+						m_Tiles[x] = new StaticTile[m_Height][];
 
 						for ( int y = 0; y < m_Height; ++y )
 							tiles[x][y] = new TileList();
@@ -507,7 +502,7 @@ namespace Server
 							int xOffset = allTiles[i].m_OffsetX + m_Center.m_X;
 							int yOffset = allTiles[i].m_OffsetY + m_Center.m_Y;
 
-							tiles[xOffset][yOffset].Add( (short)((allTiles[i].m_ItemID & 0x3FFF) | 0x4000), (sbyte)allTiles[i].m_OffsetZ );
+							tiles[xOffset][yOffset].Add( (ushort)allTiles[i].m_ItemID, (sbyte)allTiles[i].m_OffsetZ );
 						}
 					}
 
@@ -526,7 +521,7 @@ namespace Server
 
 			for ( int i = 0; i < count; ++i )
 			{
-				allTiles[i].m_ItemID = reader.ReadInt16();
+				allTiles[i].m_ItemID = reader.ReadUInt16();
 				allTiles[i].m_OffsetX = reader.ReadInt16();
 				allTiles[i].m_OffsetY = reader.ReadInt16();
 				allTiles[i].m_OffsetZ = reader.ReadInt16();
@@ -558,12 +553,12 @@ namespace Server
 			m_Height = (m_Max.m_Y - m_Min.m_Y) + 1;
 
 			TileList[][] tiles = new TileList[m_Width][];
-			m_Tiles = new Tile[m_Width][][];
+			m_Tiles = new StaticTile[m_Width][][];
 
 			for ( int x = 0; x < m_Width; ++x )
 			{
 				tiles[x] = new TileList[m_Height];
-				m_Tiles[x] = new Tile[m_Height][];
+				m_Tiles[x] = new StaticTile[m_Height][];
 
 				for ( int y = 0; y < m_Height; ++y )
 					tiles[x][y] = new TileList();
@@ -576,7 +571,7 @@ namespace Server
 					int xOffset = allTiles[i].m_OffsetX + m_Center.m_X;
 					int yOffset = allTiles[i].m_OffsetY + m_Center.m_Y;
 
-					tiles[xOffset][yOffset].Add( (short)((allTiles[i].m_ItemID & 0x3FFF) | 0x4000), (sbyte)allTiles[i].m_OffsetZ );
+					tiles[xOffset][yOffset].Add( (ushort)allTiles[i].m_ItemID, (sbyte)allTiles[i].m_OffsetZ );
 				}
 			}
 
@@ -587,7 +582,7 @@ namespace Server
 
 		private MultiComponentList()
 		{
-			m_Tiles = new Tile[0][][];
+			m_Tiles = new StaticTile[0][][];
 			m_List = new MultiTileEntry[0];
 		}
 	}

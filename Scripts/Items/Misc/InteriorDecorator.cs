@@ -243,14 +243,14 @@ namespace Server.Items
 				if ( map == null )
 					return int.MinValue;
 
-				Tile[] tiles = map.Tiles.GetStaticTiles( item.X, item.Y, true );
+				StaticTile[] tiles = map.Tiles.GetStaticTiles( item.X, item.Y, true );
 
 				int z = int.MinValue;
 
 				for ( int i = 0; i < tiles.Length; ++i )
 				{
-					Tile tile = tiles[i];
-					ItemData id = TileData.ItemTable[tile.ID & 0x3FFF];
+					StaticTile tile = tiles[i];
+					ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
 					int top = tile.Z; // Confirmed : no height checks here
 

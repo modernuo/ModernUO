@@ -684,16 +684,18 @@ namespace Server
 			}
 		}
 
-		public static bool CanMobileFit( int z, Tile[] tiles )
+		/* Should probably be rewritten to use an ITile interface
+
+		public static bool CanMobileFit( int z, StaticTile[] tiles )
 		{
 			int checkHeight = 15;
 			int checkZ = z;
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
+				StaticTile tile = tiles[i];
 
-				if ( ((checkZ + checkHeight) > tile.Z && checkZ < (tile.Z + tile.Height))/* || (tile.Z < (checkZ + checkHeight) && (tile.Z + tile.Height) > checkZ)*/ )
+				if ( ((checkZ + checkHeight) > tile.Z && checkZ < (tile.Z + tile.Height))*//* || (tile.Z < (checkZ + checkHeight) && (tile.Z + tile.Height) > checkZ)*//* )
 				{
 					return false;
 				}
@@ -706,16 +708,16 @@ namespace Server
 			return true;
 		}
 
-		public static bool IsInContact( Tile check, Tile[] tiles )
+		public static bool IsInContact( StaticTile check, StaticTile[] tiles )
 		{
 			int checkHeight = check.Height;
 			int checkZ = check.Z;
 
 			for ( int i = 0; i < tiles.Length; ++i )
 			{
-				Tile tile = tiles[i];
+				StaticTile tile = tiles[i];
 
-				if ( ((checkZ + checkHeight) > tile.Z && checkZ < (tile.Z + tile.Height))/* || (tile.Z < (checkZ + checkHeight) && (tile.Z + tile.Height) > checkZ)*/ )
+				if ( ((checkZ + checkHeight) > tile.Z && checkZ < (tile.Z + tile.Height))*//* || (tile.Z < (checkZ + checkHeight) && (tile.Z + tile.Height) > checkZ)*//* )
 				{
 					return true;
 				}
@@ -727,6 +729,7 @@ namespace Server
 
 			return false;
 		}
+		*/
 
 		public static object GetArrayCap( Array array, int index )
 		{

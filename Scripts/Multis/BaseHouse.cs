@@ -1052,12 +1052,12 @@ namespace Server.Multis
 			if ( this is HouseFoundation && y < (mcl.Height-1) && p.Z >= this.Z )
 				return true;
 
-			Tile[] tiles = mcl.Tiles[x][y];
+			StaticTile[] tiles = mcl.Tiles[x][y];
 
 			for ( int j = 0; j < tiles.Length; ++j )
 			{
-				Tile tile = tiles[j];
-				int id = tile.ID & 0x3FFF;
+				StaticTile tile = tiles[j];
+				int id = tile.ID & TileData.MaxItemValue;
 				ItemData data = TileData.ItemTable[id];
 
 				// Slanted roofs do not count; they overhang blocking south and east sides of the multi
@@ -1095,7 +1095,7 @@ namespace Server.Multis
 
 		private static List<BaseHouse> m_AllHouses = new List<BaseHouse>();
 
-		public BaseHouse( int multiID, Mobile owner, int MaxLockDown, int MaxSecure ) : base( multiID | 0x4000 )
+		public BaseHouse( int multiID, Mobile owner, int MaxLockDown, int MaxSecure ) : base( multiID )
 		{
 			m_AllHouses.Add( this );
 
