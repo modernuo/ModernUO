@@ -1097,17 +1097,33 @@ namespace Server.Network
 
 			if ( item is BaseMulti ) {
 				m_Stream.Write( (byte) 0x02 );
+
+				m_Stream.Write( (int) item.Serial );
+
 				itemID &= 0x3FFF;
+
+				m_Stream.Write( (short) itemID ); 
+
+				m_Stream.Write( (byte) 0 );
+			/*} else if (  ) {
+				m_Stream.Write( (byte) 0x01 );
+
+				m_Stream.Write( (int) item.Serial );
+
+				m_Stream.Write( (short) itemID ); 
+
+				m_Stream.Write( (byte) item.Direction );*/
 			} else {
 				m_Stream.Write( (byte) 0x00 );
+
+				m_Stream.Write( (int) item.Serial );
+
 				itemID &= 0x7FFF;
+
+				m_Stream.Write( (short) itemID ); 
+
+				m_Stream.Write( (byte) 0 );
 			}
-
-			m_Stream.Write( (int) item.Serial );
-
-			m_Stream.Write( (short) itemID ); 
-
-			m_Stream.Write( (byte) item.Direction );
 
 			int amount = item.Amount;
 			m_Stream.Write( (short) amount );
@@ -1136,17 +1152,33 @@ namespace Server.Network
 
 			if ( item is BaseMulti ) {
 				m_Stream.Write( (byte) 0x02 );
+
+				m_Stream.Write( (int) item.Serial );
+
 				itemID &= 0x3FFF;
+
+				m_Stream.Write( (ushort) itemID ); 
+
+				m_Stream.Write( (byte) 0 );
+			/*} else if (  ) {
+				m_Stream.Write( (byte) 0x01 );
+
+				m_Stream.Write( (int) item.Serial );
+
+				m_Stream.Write( (ushort) itemID ); 
+
+				m_Stream.Write( (byte) item.Direction );*/
 			} else {
 				m_Stream.Write( (byte) 0x00 );
+
+				m_Stream.Write( (int) item.Serial );
+
 				itemID &= 0xFFFF;
+
+				m_Stream.Write( (ushort) itemID ); 
+
+				m_Stream.Write( (byte) 0 );
 			}
-
-			m_Stream.Write( (int) item.Serial );
-
-			m_Stream.Write( (ushort) itemID ); 
-
-			m_Stream.Write( (byte) item.Direction );
 
 			int amount = item.Amount;
 			m_Stream.Write( (short) amount );

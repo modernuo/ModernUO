@@ -433,7 +433,7 @@ namespace Server
 
 		public void Serialize( GenericWriter writer )
 		{
-			writer.Write( (int) 0 ); // version;
+			writer.Write( (int) 1 ); // version;
 
 			writer.Write( m_Min );
 			writer.Write( m_Max );
@@ -460,59 +460,66 @@ namespace Server
 		{
 			int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
+			m_Min = reader.ReadPoint2D();
+			m_Max = reader.ReadPoint2D();
+			m_Center = reader.ReadPoint2D();
+			m_Width = reader.ReadInt();
+			m_Height = reader.ReadInt();
+
+			int length = reader.ReadInt();
+
+			MultiTileEntry[] allTiles = m_List = new MultiTileEntry[length];
+
+			if ( version == 0 ) {
+				for ( int i = 0; i < length; ++i )
 				{
-					m_Min = reader.ReadPoint2D();
-					m_Max = reader.ReadPoint2D();
-					m_Center = reader.ReadPoint2D();
-					m_Width = reader.ReadInt();
-					m_Height = reader.ReadInt();
+					int id = reader.ReadShort();
+					if ( id >= 0x4000 )
+						id -= 0x4000;
 
-					int length = reader.ReadInt();
-
-					MultiTileEntry[] allTiles = m_List = new MultiTileEntry[length];
-
-					for ( int i = 0; i < length; ++i )
-					{
-						allTiles[i].m_ItemID = reader.ReadUShort();
-						allTiles[i].m_OffsetX = reader.ReadShort();
-						allTiles[i].m_OffsetY = reader.ReadShort();
-						allTiles[i].m_OffsetZ = reader.ReadShort();
-						allTiles[i].m_Flags = reader.ReadInt();
-					}
-
-					TileList[][] tiles = new TileList[m_Width][];
-					m_Tiles = new StaticTile[m_Width][][];
-
-					for ( int x = 0; x < m_Width; ++x )
-					{
-						tiles[x] = new TileList[m_Height];
-						m_Tiles[x] = new StaticTile[m_Height][];
-
-						for ( int y = 0; y < m_Height; ++y )
-							tiles[x][y] = new TileList();
-					}
-
-					for ( int i = 0; i < allTiles.Length; ++i )
-					{
-						if ( i == 0 || allTiles[i].m_Flags != 0 )
-						{
-							int xOffset = allTiles[i].m_OffsetX + m_Center.m_X;
-							int yOffset = allTiles[i].m_OffsetY + m_Center.m_Y;
-
-							tiles[xOffset][yOffset].Add( (ushort)allTiles[i].m_ItemID, (sbyte)allTiles[i].m_OffsetZ );
-						}
-					}
-
-					for ( int x = 0; x < m_Width; ++x )
-						for ( int y = 0; y < m_Height; ++y )
-							m_Tiles[x][y] = tiles[x][y].ToArray();
-
-					break;
+					allTiles[i].m_ItemID = (ushort)id;
+					allTiles[i].m_OffsetX = reader.ReadShort();
+					allTiles[i].m_OffsetY = reader.ReadShort();
+					allTiles[i].m_OffsetZ = reader.ReadShort();
+					allTiles[i].m_Flags = reader.ReadInt();
+				}
+			} else {
+				for ( int i = 0; i < length; ++i )
+				{
+					allTiles[i].m_ItemID = reader.ReadUShort();
+					allTiles[i].m_OffsetX = reader.ReadShort();
+					allTiles[i].m_OffsetY = reader.ReadShort();
+					allTiles[i].m_OffsetZ = reader.ReadShort();
+					allTiles[i].m_Flags = reader.ReadInt();
 				}
 			}
+
+			TileList[][] tiles = new TileList[m_Width][];
+			m_Tiles = new StaticTile[m_Width][][];
+
+			for ( int x = 0; x < m_Width; ++x )
+			{
+				tiles[x] = new TileList[m_Height];
+				m_Tiles[x] = new StaticTile[m_Height][];
+
+				for ( int y = 0; y < m_Height; ++y )
+					tiles[x][y] = new TileList();
+			}
+
+			for ( int i = 0; i < allTiles.Length; ++i )
+			{
+				if ( i == 0 || allTiles[i].m_Flags != 0 )
+				{
+					int xOffset = allTiles[i].m_OffsetX + m_Center.m_X;
+					int yOffset = allTiles[i].m_OffsetY + m_Center.m_Y;
+
+					tiles[xOffset][yOffset].Add( (ushort)allTiles[i].m_ItemID, (sbyte)allTiles[i].m_OffsetZ );
+				}
+			}
+
+			for ( int x = 0; x < m_Width; ++x )
+				for ( int y = 0; y < m_Height; ++y )
+					m_Tiles[x][y] = tiles[x][y].ToArray();
 		}
 
 		public MultiComponentList( BinaryReader reader, int count )
