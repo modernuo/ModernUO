@@ -1221,7 +1221,7 @@ namespace Server.Multis
 
 			foreach ( Item item in eable )
 			{
-				if ( item is BaseMulti || item.Z < p.Z || !item.Visible )
+				if ( item.ItemID > TileData.MaxItemValue || item.Z < p.Z || !item.Visible )
 					continue;
 
 				int x = item.X - p.X + newComponents.Min.X;

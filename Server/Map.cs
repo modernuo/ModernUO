@@ -395,7 +395,7 @@ namespace Server
 			{
 				Item item = items[i];
 
-				if ( !(item is BaseMulti) && item.AtWorldPoint( x, y ) )
+				if ( item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint( x, y ) )
 				{
 					ItemData id = item.ItemData;
 					surface = id.Surface;
@@ -470,7 +470,7 @@ namespace Server
 
 			foreach ( Item item in eable )
 			{
-				if ( !(item is BaseMulti) )
+				if ( item.ItemID <= TileData.MaxItemValue )
 				{
 					items.Add( item );
 
@@ -624,7 +624,7 @@ namespace Server
 			{
 				Item item = sector.Items[i];
 
-				if ( !(item is BaseMulti) && item.AtWorldPoint( p.X, p.Y ) && !item.Movable )
+				if ( item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint( p.X, p.Y ) && !item.Movable )
 				{
 					ItemData id = item.ItemData;
 
@@ -1972,7 +1972,7 @@ namespace Server
 				if( !i.Visible )
 					continue;
 
-				if( i is BaseMulti || i.ItemID > TileData.MaxItemValue )
+				if( i.ItemID > TileData.MaxItemValue )
 					continue;
 
 				ItemData id = i.ItemData;

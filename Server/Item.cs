@@ -3927,7 +3927,7 @@ namespace Server
 
 			foreach ( Item item in eable )
 			{
-				if ( item is BaseMulti )
+				if ( item.ItemID > TileData.MaxItemValue )
 					continue;
 
 				items.Add( item );
