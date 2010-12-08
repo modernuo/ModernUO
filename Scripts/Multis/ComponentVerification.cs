@@ -35,7 +35,7 @@ namespace Server.Multis
 
 		public ComponentVerification()
 		{
-			m_ItemTable = CreateTable( 0x4000 );
+			m_ItemTable = CreateTable( 0x10000 );
 			m_MultiTable = CreateTable( 0x4000 );
 
 			LoadItems( "Data/Components/walls.txt", "South1", "South2", "South3", "Corner", "East1", "East2", "East3", "Post", "WindowS", "AltWindowS", "WindowE", "AltWindowE", "SecondAltWindowS", "SecondAltWindowE" );
