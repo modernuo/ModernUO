@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Server;
+using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Movement
@@ -319,13 +320,13 @@ namespace Server.Movement
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
 							continue;
 
-						if ( sector == sectorStart && item.AtWorldPoint( xStart, yStart ) && item.ItemID <= TileData.MaxItemValue )
+						if ( sector == sectorStart && item.AtWorldPoint( xStart, yStart ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsStart.Add( item );
-						else if ( sector == sectorForward && item.AtWorldPoint( xForward, yForward ) && item.ItemID <= TileData.MaxItemValue )
+						else if ( sector == sectorForward && item.AtWorldPoint( xForward, yForward ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsForward.Add( item );
-						else if ( sector == sectorLeft && item.AtWorldPoint( xLeft, yLeft ) && item.ItemID <= TileData.MaxItemValue )
+						else if ( sector == sectorLeft && item.AtWorldPoint( xLeft, yLeft ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsLeft.Add( item );
-						else if ( sector == sectorRight && item.AtWorldPoint( xRight, yRight ) && item.ItemID <= TileData.MaxItemValue )
+						else if ( sector == sectorRight && item.AtWorldPoint( xRight, yRight ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsRight.Add( item );
 					}
 				}
@@ -350,9 +351,9 @@ namespace Server.Movement
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
 							continue;
 
-						if ( item.AtWorldPoint( xStart, yStart ) && item.ItemID <= TileData.MaxItemValue )
+						if ( item.AtWorldPoint( xStart, yStart ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsStart.Add( item );
-						else if ( item.AtWorldPoint( xForward, yForward ) && item.ItemID <= TileData.MaxItemValue )
+						else if ( item.AtWorldPoint( xForward, yForward ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsForward.Add( item );
 					}
 				}
@@ -368,7 +369,7 @@ namespace Server.Movement
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
 							continue;
 
-						if ( item.AtWorldPoint( xForward, yForward ) && item.ItemID <= TileData.MaxItemValue )
+						if ( item.AtWorldPoint( xForward, yForward ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsForward.Add( item );
 					}
 
@@ -382,7 +383,7 @@ namespace Server.Movement
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
 							continue;
 
-						if ( item.AtWorldPoint( xStart, yStart ) && item.ItemID <= TileData.MaxItemValue )
+						if ( item.AtWorldPoint( xStart, yStart ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsStart.Add( item );
 					}
 				}

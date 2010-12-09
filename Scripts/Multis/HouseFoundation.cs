@@ -2242,7 +2242,7 @@ namespace Server.Multis
 
 						int byteIndex = (totalStairsUsed % MaxItemsPerStairBuffer) * 5;
 
-						stairBuffer[byteIndex++] = (byte)((mte.m_ItemID >> 8) & 0x3F);
+						stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
 						stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
 
 						stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
@@ -2280,7 +2280,7 @@ namespace Server.Multis
 
 					int byteIndex = (totalStairsUsed % MaxItemsPerStairBuffer) * 5;
 
-					stairBuffer[byteIndex++] = (byte)((mte.m_ItemID >> 8) & 0x3F);
+					stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
 					stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
 
 					stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
@@ -2292,7 +2292,7 @@ namespace Server.Multis
 				else
 				{
 					m_PlaneUsed[plane] = true;
-					m_PlaneBuffers[plane][index] = (byte)((mte.m_ItemID >> 8) & 0x3F);
+					m_PlaneBuffers[plane][index] = (byte)(mte.m_ItemID >> 8);
 					m_PlaneBuffers[plane][index + 1] = (byte)mte.m_ItemID;
 				}
 			}

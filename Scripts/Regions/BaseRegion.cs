@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using Server;
+using Server.Items;
 
 namespace Server.Regions
 {
@@ -309,7 +310,7 @@ namespace Server.Regions
 				{
 					Item item = sector.Items[j];
 
-					if ( item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint( x, y ) )
+					if ( !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint( x, y ) )
 					{
 						m_SpawnBuffer2.Add( item );
 
