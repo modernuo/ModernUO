@@ -1104,9 +1104,12 @@ namespace Server.Network
 
 									bool valid = false;
 
-									ItemData id = TileData.ItemTable[graphic&TileData.MaxItemValue];
-									if ( id.Surface )
-										z -= id.Height;
+									if ( state.HighSeas ) {
+										ItemData id = TileData.ItemTable[graphic&TileData.MaxItemValue];
+										if ( id.Surface ) {
+											z -= id.Height;
+										}
+									}
 
 									for ( int i = 0; !valid && i < tiles.Length; ++i )
 									{
