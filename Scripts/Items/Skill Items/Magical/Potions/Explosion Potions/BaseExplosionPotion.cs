@@ -241,9 +241,9 @@ namespace Server.Items
 			if ( map == null )
 				return;
 
-			Effects.PlaySound( loc, map, 0x207 );
-			Effects.SendLocationEffect( loc, map, 0x36BD, 20 );
+			Effects.PlaySound(loc, map, 0x307);
 
+			Effects.SendLocationEffect(loc, map, 0x36B0, 9, 10, 0, 0);
 			int alchemyBonus = 0;
 
 			if ( direct )
@@ -256,7 +256,7 @@ namespace Server.Items
 
 			foreach ( object o in eable )
 			{
-				if ( o is Mobile )
+				if ( o is Mobile && (from == null || (SpellHelper.ValidIndirectTarget( from, (Mobile)o ) && from.CanBeHarmful( (Mobile)o, false ))))
 				{
 					toExplode.Add( o );
 					++toDamage;
@@ -280,22 +280,19 @@ namespace Server.Items
 				{
 					Mobile m = (Mobile)o;
 
-					if ( from == null || (SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false )) )
-					{
-						if ( from != null )
-							from.DoHarmful( m );
+					if ( from != null )
+						from.DoHarmful( m );
 
-						int damage = Utility.RandomMinMax( min, max );
+					int damage = Utility.RandomMinMax( min, max );
+					
+					damage += alchemyBonus;
 
-						damage += alchemyBonus;
+					if ( !Core.AOS && damage > 40 )
+						damage = 40;
+					else if ( Core.AOS && toDamage > 2 )
+						damage /= toDamage - 1;
 
-						if ( !Core.AOS && damage > 40 )
-							damage = 40;
-						else if ( Core.AOS && toDamage > 2 )
-							damage /= toDamage - 1;
-
-						AOS.Damage( m, from, damage, 0, 100, 0, 0, 0 );
-					}
+					AOS.Damage( m, from, damage, 0, 100, 0, 0, 0 );
 				}
 				else if ( o is BaseExplosionPotion )
 				{

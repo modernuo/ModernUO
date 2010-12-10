@@ -97,10 +97,36 @@ namespace Server.Items
 
 			if ( from.InRange( this.GetWorldLocation(), 1 ) )
 			{
-				if ( !RequireFreeHand || HasFreeHand( from ) )
-					Drink( from );
+				if (!RequireFreeHand || HasFreeHand(from))
+				{
+					if (Amount > 1)
+					{
+						BasePotion pot = (BasePotion)Activator.CreateInstance(this.GetType());
+
+						if (pot != null)
+						{
+							Amount--;
+
+							if (from.Backpack != null && !from.Backpack.Deleted)
+							{
+								from.Backpack.DropItem(pot);
+							}
+							else
+							{
+								pot.MoveToWorld(from.Location, from.Map);
+							}
+							pot.Drink( from );
+						}
+					}
+					else if( Amount == 1 )
+					{
+						this.Drink( from );
+					}
+				}
 				else
-					from.SendLocalizedMessage( 502172 ); // You must have a free hand to drink a potion.
+				{
+					from.SendLocalizedMessage(502172); // You must have a free hand to drink a potion.
+				}
 			}
 			else
 			{
