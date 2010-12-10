@@ -2183,7 +2183,7 @@ namespace Server.Mobiles
 		{
 			if (m_NonAutoreinsuredItems > 0)
 			{
-				SendMessage("You do not have the gold to automatically reinsure all your items.");
+				SendLocalizedMessage(1061115);
 			}
 
 			base.OnDeath(c);
@@ -4344,7 +4344,7 @@ namespace Server.Mobiles
 				}
 				else
 				{
-					SendMessage( 1049612, pet.Name ); // ~1_NAME~ remained in the stables because you have too many followers.
+					SendLocalizedMessage( 1049612, pet.Name ); // ~1_NAME~ remained in the stables because you have too many followers.
 				}
 			}
 
