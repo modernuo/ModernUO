@@ -2080,8 +2080,35 @@ namespace Server.Mobiles
 		private int m_InsuranceCost;
 		private int m_InsuranceBonus;
 
+		private bool FindItems_Callback(Item item)
+		{
+			if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured == true))
+			{
+				if (this.Backpack != item.ParentEntity)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public override bool OnBeforeDeath()
 		{
+			NetState state = NetState;
+			state.CancelAllTrades();
+
+			DropHolding();
+
+			if (Backpack != null && !Backpack.Deleted)
+			{
+				List<Item> ilist = Backpack.FindItemsByType<Item>(FindItems_Callback);
+
+				for (int i = 0; i < ilist.Count; i++)
+				{
+					Backpack.AddItem(ilist[i]);
+				}
+			}
+
 			m_NonAutoreinsuredItems = 0;
 			m_InsuranceCost = 0;
 			m_InsuranceAward = base.FindMostRecentDamager( false );
