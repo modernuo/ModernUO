@@ -99,7 +99,7 @@ namespace Server.Items
 			{
 				if (!RequireFreeHand || HasFreeHand(from))
 				{
-					if (Amount > 1)
+					if (this is BaseExplosionPotion && Amount > 1)
 					{
 						BasePotion pot = (BasePotion)Activator.CreateInstance(this.GetType());
 
@@ -118,7 +118,7 @@ namespace Server.Items
 							pot.Drink( from );
 						}
 					}
-					else if( Amount == 1 )
+					else
 					{
 						this.Drink( from );
 					}
