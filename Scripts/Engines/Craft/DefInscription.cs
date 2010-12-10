@@ -161,7 +161,7 @@ namespace Server.Engines.Craft
 		{
 			int id = CraftItem.ItemIDOf( regs[0] );
 
-			int index = AddCraft( type, 1061677, 1060509 + spell, minSkill, minSkill + 1.0, regs[0], id < 0x4000 ? 1020000 + id : 1078872 + id, 501627 );	//Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
+			int index = AddCraft( type, 1061677, 1060509 + spell, minSkill, minSkill + 1.0, regs[0], id < 0x4000 ? 1020000 + id : 1078872 + id, 1, 501627 );	//Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
 
 			for ( int i = 1; i < regs.Length; ++i ) {
 				id = CraftItem.ItemIDOf( regs[i] );
