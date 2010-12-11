@@ -53,7 +53,7 @@ namespace Server.Engines.Quests.Necro
 						}
 						else
 						{
-							player.SendMessage( "You must be young to have this item recharged." );
+							player.SendLocalizedMessage(1114333); //You must be young to have this item recharged.
 						}
 
 						return false;

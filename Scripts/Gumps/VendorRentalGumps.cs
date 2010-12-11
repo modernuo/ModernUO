@@ -329,7 +329,7 @@ namespace Server.Gumps
 
 				if ( mob == null || !mob.Player || !mob.Alive || mob == from )
 				{
-					from.SendMessage( "That is not a valid target for a rental contract!" );
+					from.SendLocalizedMessage(1071984); //That is not a valid target for a rental contract!
 				}
 				else if ( !mob.InRange( m_Contract, 5 ) )
 				{
@@ -600,7 +600,7 @@ namespace Server.Gumps
 
 					m_Vendor.Destroy( false );
 
-					from.SendMessage( "Remember to claim your vendor's belongings from the house sign!" );
+					from.SendLocalizedMessage(1071990); //Remember to claim your vendor's belongings from the house sign!
 				}
 				else
 				{
