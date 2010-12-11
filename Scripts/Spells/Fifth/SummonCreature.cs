@@ -9,8 +9,8 @@ namespace Server.Spells.Fifth
 	{
 		private static SpellInfo m_Info = new SpellInfo(
 				"Summon Creature", "Kal Xen",
-				266,
-				9040,
+				16,
+				false,
 				Reagent.Bloodmoss,
 				Reagent.MandrakeRoot,
 				Reagent.SpidersSilk
@@ -22,20 +22,27 @@ namespace Server.Spells.Fifth
 		{
 		}
 
-		// TODO: Get real list
+		// NOTE: Creature list based on 1hr of summon/release on OSI.
+
 		private static Type[] m_Types = new Type[]
 			{
 				typeof( PolarBear ),
 				typeof( GrizzlyBear ),
 				typeof( BlackBear ),
-				typeof( BrownBear ),
 				typeof( Horse ),
 				typeof( Walrus ),
-				typeof( GreatHart ),
-				typeof( Hind ),
-				typeof( Dog ),
-				typeof( Boar ),
 				typeof( Chicken ),
+				typeof( Scorpion ),
+				typeof( GiantSerpent ),
+				typeof( Llama ),
+				typeof( Alligator ),
+				typeof( GreyWolf ),
+				typeof( Slime ),
+				typeof( Eagle ),
+				typeof( Gorilla ),
+				typeof( SnowLeopard ),
+				typeof( Pig ),
+				typeof( Hind ),
 				typeof( Rabbit )
 			};
 
@@ -61,7 +68,7 @@ namespace Server.Spells.Fifth
 				{
 					BaseCreature creature = (BaseCreature)Activator.CreateInstance( m_Types[Utility.Random( m_Types.Length )] );
 
-					creature.ControlSlots = 2;
+					//creature.ControlSlots = 2;
 
 					TimeSpan duration;
 
