@@ -73,10 +73,13 @@ namespace Server.Spells
 
 		public static bool CheckMulti( Point3D p, Map map )
 		{
-			return CheckMulti( p, map, true );
+			return CheckMulti( p, map, true, 0);
 		}
-
-		public static bool CheckMulti( Point3D p, Map map, bool houses )
+		public static bool CheckMulti(Point3D p, Map map, bool houses)
+		{
+			return CheckMulti(p, map, houses, 0);
+		}
+		public static bool CheckMulti( Point3D p, Map map, bool houses, int housingrange )
 		{
 			if( map == null || map == Map.Internal )
 				return false;
@@ -87,17 +90,18 @@ namespace Server.Spells
 			{
 				BaseMulti multi = sector.Multis[i];
 
-				if( multi is BaseHouse )
+				if( houses && multi is BaseHouse  )
 				{
-					if( houses && ((BaseHouse)multi).IsInside( p, 16 ) )
+					BaseHouse bh = (BaseHouse)multi;
+
+					if(bh.IsInside( p, 16 ) || (housingrange > 0 && bh.InRange(p, housingrange)))
 						return true;
 				}
-				else if( multi.Contains( p ) )
+				else if( multi.Contains( p ))
 				{
 					return true;
 				}
 			}
-
 			return false;
 		}
 
