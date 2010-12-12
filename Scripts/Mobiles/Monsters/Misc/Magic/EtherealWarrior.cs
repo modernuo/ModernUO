@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Items;
+using Server.Gumps;
 
 namespace Server.Mobiles 
 { 
@@ -52,8 +53,32 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich, 3 );
 			AddLoot( LootPack.Gems );
 		}
-		// TODO: Resurrect good players.
-		
+
+		private DateTime m_NextResurrect;
+		private static TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
+
+		public override void OnMovement(Mobile from, Point3D oldLocation)
+		{
+			if (!from.Alive && (from is PlayerMobile))
+			{
+				if (!from.Frozen && (DateTime.Now >= m_NextResurrect) && InRange(from, 4) && !InRange(oldLocation, 4) && InLOS(from))
+				{
+					m_NextResurrect = DateTime.Now + ResurrectDelay;
+					if (!from.Criminal && (from.Kills < 5) && (from.Karma > 0))
+					{
+						if (from.Map != null && from.Map.CanFit(from.Location, 16, false, false))
+						{
+							Direction = GetDirectionTo(from);
+							from.PlaySound(0x1F2);
+							from.FixedEffect(0x376A, 10, 16);
+							from.CloseGump(typeof(ResurrectGump));
+							from.SendGump(new ResurrectGump(from, ResurrectMessage.Healer));
+						}
+					}
+				}
+			}
+		}
+
 		public override OppositionGroup OppositionGroup
 		{
 			get{ return OppositionGroup.FeyAndUndead; }

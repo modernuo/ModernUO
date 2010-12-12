@@ -89,7 +89,7 @@ namespace Server.Mobiles
 		{
 			Direction = GetDirectionTo( m );
 
-			m.PlaySound( 0x214 );
+			m.PlaySound(0x1F2);
 			m.FixedEffect( 0x376A, 10, 16 );
 
 			m.CloseGump( typeof( ResurrectGump ) );
