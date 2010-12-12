@@ -326,7 +326,7 @@ namespace Server.SkillHandlers
 		private Mobile m_From;
 		private Timer m_Timer;
 
-		public TrackArrow( Mobile from, Mobile target, int range ) : base( from )
+		public TrackArrow( Mobile from, Mobile target, int range ) : base( from, target )
 		{
 			m_From = from;
 			m_Timer = new TrackTimer( from, target, range, this );
@@ -383,11 +383,7 @@ namespace Server.SkillHandlers
 			}
 			else if ( m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map || !m_From.InRange( m_Target, m_Range ) )
 			{
-				m_From.Send( new CancelArrow() );
-				m_From.SendLocalizedMessage( 503177 ); // You have lost your quarry.
-
-				Tracking.ClearTrackingInfo( m_From );
-
+				m_Arrow.Stop();
 				Stop();
 				return;
 			}
@@ -397,7 +393,7 @@ namespace Server.SkillHandlers
 				m_LastX = m_Target.X;
 				m_LastY = m_Target.Y;
 
-				m_Arrow.Update( m_LastX, m_LastY );
+				m_Arrow.Update();
 			}
 		}
 	}

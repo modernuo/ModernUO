@@ -138,6 +138,28 @@ namespace Server.Network
 		}
 	}
 
+	public sealed class CancelArrowHS : Packet
+	{
+		public CancelArrowHS( int x, int y, Serial s ) : base( 0xBA, 10 )
+		{
+			m_Stream.Write( (byte) 0 );
+			m_Stream.Write( (short) x );
+			m_Stream.Write( (short) y );
+			m_Stream.Write( (int) s );
+		}
+	}
+
+	public sealed class SetArrowHS : Packet
+	{
+		public SetArrowHS( int x, int y, Serial s ) : base( 0xBA, 10 )
+		{
+			m_Stream.Write( (byte) 1 );
+			m_Stream.Write( (short) x );
+			m_Stream.Write( (short) y );
+			m_Stream.Write( (int) s );
+		}
+	}
+
 	public sealed class DisplaySecureTrade : Packet
 	{
 		public DisplaySecureTrade( Mobile them, Container first, Container second, string name ) : base( 0x6F )
