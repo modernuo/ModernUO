@@ -2095,7 +2095,9 @@ namespace Server.Mobiles
 		public override bool OnBeforeDeath()
 		{
 			NetState state = NetState;
-			state.CancelAllTrades();
+
+			if ( state != null )
+				state.CancelAllTrades();
 
 			DropHolding();
 
