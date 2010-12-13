@@ -685,7 +685,7 @@ namespace Server.Items
 
 			from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503019 ); // You successfully decode a treasure map!
 			Decoder = from;
-
+			LootType = LootType.Blessed;
 			DisplayTo( from );
 		}
 
@@ -793,13 +793,13 @@ namespace Server.Items
 		}
 
 		public override int LabelNumber
-		{ 
+		{
 			get
-			{ 
+			{
 				if ( m_Decoder != null )
 				{
 					if ( m_Level == 6 )
-						return 1063453;	
+						return 1063453;
 					else
 						return 1041516 + m_Level;
 				}
@@ -886,6 +886,10 @@ namespace Server.Items
 
 					break;
 				}
+			}
+			if (m_Decoder != null && LootType == LootType.Regular)
+			{
+				LootType = LootType.Blessed;
 			}
 		}
 	}
