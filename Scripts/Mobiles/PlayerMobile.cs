@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Misc;
 using Server.Items;
 using Server.Gumps;
@@ -11,7 +10,6 @@ using Server.ContextMenus;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Fifth;
-using Server.Spells.Sixth;
 using Server.Spells.Seventh;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
@@ -86,10 +84,10 @@ namespace Server.Mobiles
 			}
 
 			public DateTime TimeStamp { get{ return m_Stamp; } }
-			public int Count 
-			{ 
-				get { return m_Count; } 
-				set	{ m_Count = value; m_Stamp = DateTime.Now; } 
+			public int Count
+			{
+				get { return m_Count; }
+				set	{ m_Count = value; m_Stamp = DateTime.Now; }
 			}
 		}
 
@@ -106,12 +104,12 @@ namespace Server.Mobiles
 		private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
 		private int m_NonAutoreinsuredItems; // number of items that could not be automaitically reinsured because gold in bank was not enough
 		private bool m_NinjaWepCooldown;
-		/* 
+		/*
 		 * a value of zero means, that the mobile is not executing the spell. Otherwise,
-		 * the value should match the BaseMana required 
+		 * the value should match the BaseMana required
 		*/
 		private int m_ExecutesLightningStrike; // move to Server.Mobiles??
-		
+
 		private DateTime m_LastOnline;
 		private Server.Guilds.RankDefinition m_GuildRank;
 
@@ -119,8 +117,22 @@ namespace Server.Mobiles
 
 		private List<Mobile> m_AutoStabled;
 		private List<Mobile> m_AllFollowers;
+		private List<Mobile> m_RecentlyReported;
 
 		#region Getters & Setters
+
+		public List<Mobile> RecentlyReported
+		{
+			get
+			{
+				return m_RecentlyReported;
+			}
+			set
+			{
+				m_RecentlyReported = value;
+			}
+		}
+
 		public List<Mobile> AutoStabled { get { return m_AutoStabled; } }
 
 		public bool NinjaWepCooldown
@@ -136,13 +148,13 @@ namespace Server.Mobiles
 		}
 
 		public List<Mobile> AllFollowers
-		{ 
+		{
 			get
 			{
 				if( m_AllFollowers == null )
-					m_AllFollowers = new List<Mobile>();; 
+					m_AllFollowers = new List<Mobile>();
 				return m_AllFollowers;
-			} 
+			}
 		}
 
 		public Server.Guilds.RankDefinition GuildRank
@@ -152,7 +164,7 @@ namespace Server.Mobiles
 				if( this.AccessLevel >= AccessLevel.GameMaster )
 					return Server.Guilds.RankDefinition.Leader;
 				else
-					return m_GuildRank; 
+					return m_GuildRank;
 			}
 			set{ m_GuildRank = value; }
 		}
@@ -190,7 +202,7 @@ namespace Server.Mobiles
 			get { return m_IsStealthing; }
 			set { m_IsStealthing = value; }
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IgnoreMobiles // IgnoreMobiles should be moved to Server.Mobiles
 		{
@@ -207,7 +219,7 @@ namespace Server.Mobiles
 				}
 			}
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public NpcGuild NpcGuild
 		{
@@ -415,6 +427,7 @@ namespace Server.Mobiles
 				m_RecoverableAmmo.Clear();
 			}
 		}
+
 		#endregion
 
 		private DateTime m_AnkhNextUse;
@@ -425,7 +438,7 @@ namespace Server.Mobiles
 			get{ return m_AnkhNextUse; }
 			set{ m_AnkhNextUse = value; }
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan DisguiseTimeLeft
 		{
@@ -489,16 +502,16 @@ namespace Server.Mobiles
 				return false;
 
 			IPooledEnumerable mobiles = Map.GetMobilesInRange( location, 0 );
-			
-			foreach ( Mobile m in mobiles ) 
-			{ 
+
+			foreach ( Mobile m in mobiles )
+			{
 				if ( m.Z >= location.Z && m.Z < location.Z + 16 )
 				{
 					mobiles.Free();
 					return false;
 				}
 			}
-			
+
 			mobiles.Free();
 
 			BounceInfo bi = item.GetBounce();
@@ -554,24 +567,24 @@ namespace Server.Mobiles
 
 			return true;
 		}
-		
+
 		public override int GetPacketFlags()
 		{
 			int flags = base.GetPacketFlags();
-			
+
 			if ( m_IgnoreMobiles )
 				flags |= 0x10;
-			
+
 			return flags;
 		}
-		
+
 		public override int GetOldPacketFlags()
 		{
 			int flags = base.GetOldPacketFlags();
-			
+
 			if ( m_IgnoreMobiles )
 				flags |= 0x10;
-			
+
 			return flags;
 		}
 
@@ -1039,7 +1052,7 @@ namespace Server.Mobiles
 				pm.BedrollLogout = false;
 				pm.LastOnline = DateTime.Now;
 			}
-			
+
 			DisguiseTimers.StartTimer( e.Mobile );
 
 			Timer.DelayCall( TimeSpan.Zero, new TimerStateCallback( ClearSpecialMovesCallback ), e.Mobile );
@@ -1093,7 +1106,7 @@ namespace Server.Mobiles
 				pm.m_SpeechLog = null;
 				pm.LastOnline = DateTime.Now;
 			}
-			
+
 			DisguiseTimers.StopTimer( from );
 		}
 
@@ -1105,7 +1118,7 @@ namespace Server.Mobiles
 			Spells.Sixth.InvisibilitySpell.RemoveTimer( this );
 
 			base.RevealingAction();
-			
+
 			m_IsStealthing = false; // IsStealthing should be moved to Server.Mobiles
 		}
 
@@ -1398,7 +1411,7 @@ namespace Server.Mobiles
 		{
 			SkillName.ArmsLore,	SkillName.Begging, SkillName.Discordance, SkillName.Forensics,
 			SkillName.Inscribe, SkillName.ItemID, SkillName.Meditation, SkillName.Peacemaking,
-			SkillName.Provocation, SkillName.RemoveTrap, SkillName.SpiritSpeak, SkillName.Stealing,	
+			SkillName.Provocation, SkillName.RemoveTrap, SkillName.SpiritSpeak, SkillName.Stealing,
 			SkillName.TasteID
 		};
 
@@ -1517,9 +1530,9 @@ namespace Server.Mobiles
 						}
 					}
 				}
-			
+
 				BaseHouse curhouse = BaseHouse.FindHouseAt( this );
-			
+
 				if( curhouse != null )
 				{
 					if ( Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend( from ) )
@@ -1695,6 +1708,7 @@ namespace Server.Mobiles
 				}
 			}
 		}
+
 		#endregion
 
 		private void GetVendor()
@@ -1747,6 +1761,7 @@ namespace Server.Mobiles
 
 			base.DisruptiveAction();
 		}
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( this == from && !Warmode )
@@ -1980,7 +1995,6 @@ namespace Server.Mobiles
 				return base.CheckShove( shoved );
 		}
 
-
 		protected override void OnMapChange( Map oldMap )
 		{
 			if ( (Map != Faction.Facet && oldMap == Faction.Facet) || (Map == Faction.Facet && oldMap != Faction.Facet) )
@@ -2053,7 +2067,7 @@ namespace Server.Mobiles
 			if ( this.Alive && !wasAlive )
 			{
 				Item deathRobe = new DeathRobe();
-				
+
 				if ( !EquipItem( deathRobe ) )
 					deathRobe.Delete();
 			}
@@ -2425,6 +2439,7 @@ namespace Server.Mobiles
 			m_VisList = new List<Mobile>();
 			m_PermaFlags = new List<Mobile>();
 			m_AntiMacroTable = new Hashtable();
+			m_RecentlyReported = new List<Mobile>();
 
 			m_BOBFilter = new Engines.BulkOrders.BOBFilter();
 
@@ -2532,10 +2547,10 @@ namespace Server.Mobiles
 
 			Mobile oath = Spells.Necromancy.BloodOathSpell.GetBloodOath( from );
 
-				/* Per EA's UO Herald Pub48 (ML): 
+				/* Per EA's UO Herald Pub48 (ML):
 				 * ((resist spellsx10)/20 + 10=percentage of damage resisted)
 				 */
-		 
+
 			if ( oath == this )
 			{
 				amount = (int)(amount * 1.1);
@@ -2559,6 +2574,7 @@ namespace Server.Mobiles
 		}
 
 		#region Poison
+
 		public override ApplyPoisonResult ApplyPoison( Mobile from, Poison poison )
 		{
 			if ( !Alive )
@@ -2590,6 +2606,7 @@ namespace Server.Mobiles
 			else
 				base.OnPoisonImmunity( from, poison );
 		}
+
 		#endregion
 
 		public PlayerMobile( Serial s ) : base( s )
@@ -2692,13 +2709,13 @@ namespace Server.Mobiles
 
 					goto case 27;
 				}
-				case 27: 
+				case 27:
 				{
 					m_AnkhNextUse = reader.ReadDateTime();
 
 					goto case 26;
 				}
-				case 26: 
+				case 26:
 				{
 					m_AutoStabled = reader.ReadStrongMobileList();
 
@@ -2908,6 +2925,9 @@ namespace Server.Mobiles
 				}
 			}
 
+			if (m_RecentlyReported == null)
+				m_RecentlyReported = new List<Mobile>();
+
 			// Professions weren't verified on 1.0 RC0
 			if ( !CharacterCreation.VerifyProfession( m_Profession ) )
 				m_Profession = 0;
@@ -2929,7 +2949,7 @@ namespace Server.Mobiles
 
 			if( m_ChampionTitles == null )
 				m_ChampionTitles = new ChampionTitleInfo();
-			
+
 			if ( AccessLevel > AccessLevel.Player )
 				m_IgnoreMobiles = true;
 
@@ -2948,10 +2968,10 @@ namespace Server.Mobiles
 			if( Hidden )	//Hiding is the only buff where it has an effect that's serialized.
 				AddBuff( new BuffInfo( BuffIcon.HidingAndOrStealth, 1075655 ) );
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
-			//cleanup our anti-macro table 
+			//cleanup our anti-macro table
 			foreach ( Hashtable t in m_AntiMacroTable.Values )
 			{
 				ArrayList remove = new ArrayList();
@@ -2970,7 +2990,7 @@ namespace Server.Mobiles
 			CheckAtrophies( this );
 
 			base.Serialize( writer );
-			
+
 			writer.Write( (int) 28 ); // version
 
 			writer.Write( (DateTime) m_PeacedUntil );
@@ -3264,7 +3284,7 @@ namespace Server.Mobiles
 					else if( AllowedStealthSteps-- <= 0 )
 					{
 						Server.SkillHandlers.Stealth.OnUse( this );
-					}			
+					}
 				}
 				else
 				{
@@ -3422,7 +3442,7 @@ namespace Server.Mobiles
 				IgnoreMobiles = false;
 			else
 				IgnoreMobiles = true;
-			
+
 			InvalidateMyRunUO();
 		}
 
@@ -3440,6 +3460,7 @@ namespace Server.Mobiles
 
 			InvalidateMyRunUO();
 		}
+
 		#endregion
 
 		#region Fastwalk Prevention
@@ -3497,6 +3518,7 @@ namespace Server.Mobiles
 
 			return ( ts < FastwalkThreshold );
 		}
+
 		#endregion
 
 		#region Enemy of One
@@ -3545,6 +3567,7 @@ namespace Server.Mobiles
 				}
 			}
 		}
+
 		#endregion
 
 		#region Hair and beard mods
@@ -3605,6 +3628,7 @@ namespace Server.Mobiles
 			}
 			CreateHair( hair, id, 0 );
 		}
+
 		#endregion
 
 		#region Virtues
@@ -3848,6 +3872,7 @@ namespace Server.Mobiles
 		{
 			this.SendGump( new YoungDeathNotice() );
 		}
+
 		#endregion
 
 		#region Speech log
@@ -3865,6 +3890,7 @@ namespace Server.Mobiles
 				m_SpeechLog.Add( e.Mobile, e.Speech );
 			}
 		}
+
 		#endregion
 
 		#region Champion Titles
@@ -3933,12 +3959,11 @@ namespace Server.Mobiles
 					writer.WriteEncodedInt( info.m_Value );
 					writer.Write( info.m_LastDecay );
 				}
-
 			}
+
 			private TitleInfo[] m_Values;
 
 			private int m_Harrower;	//Harrower titles do NOT decay
-
 
 			public int GetValue( ChampionSpawnType type )
 			{
@@ -4055,7 +4080,7 @@ namespace Server.Mobiles
 
 			[CommandProperty( AccessLevel.GameMaster )]
 			public int VerminHorde { get { return GetValue( ChampionSpawnType.VerminHorde ); } set { SetValue( ChampionSpawnType.VerminHorde, value ); } }
-			
+
 			[CommandProperty( AccessLevel.GameMaster )]
 			public int Harrower { get { return m_Harrower; } set { m_Harrower = value; } }
 
@@ -4152,15 +4177,16 @@ namespace Server.Mobiles
 				t.m_Harrower = Math.Max( count, t.m_Harrower );	//Harrower titles never decay.
 			}
 		}
+
 		#endregion
 
 		#region Recipes
 
 		private Dictionary<int, bool> m_AcquiredRecipes;
-		
+
 		public virtual bool HasRecipe( Recipe r )
 		{
-			if( r == null ) 
+			if( r == null )
 				return false;
 
 			return HasRecipe( r.ID );
@@ -4192,11 +4218,11 @@ namespace Server.Mobiles
 		{
 			m_AcquiredRecipes = null;
 		}
-	
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int KnownRecipes
 		{
-			get 
+			get
 			{
 				if( m_AcquiredRecipes == null )
 					return 0;
@@ -4204,7 +4230,6 @@ namespace Server.Mobiles
 				return m_AcquiredRecipes.Count;
 			}
 		}
-	
 
 		#endregion
 
@@ -4278,6 +4303,7 @@ namespace Server.Mobiles
 			if( m_BuffTable.Count <= 0 )
 				m_BuffTable = null;
 		}
+
 		#endregion
 
 		public void AutoStablePets()
@@ -4334,7 +4360,7 @@ namespace Server.Mobiles
 
 			if ( !Alive )
 			{
-				SendLocalizedMessage( 1076251 ); // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.				
+				SendLocalizedMessage( 1076251 ); // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.
 				return;
 			}
 

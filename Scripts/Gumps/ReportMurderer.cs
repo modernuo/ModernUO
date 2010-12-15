@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Misc;
-using Server.Gumps;
 using Server.Network;
 using Server.Mobiles;
 
@@ -19,7 +16,7 @@ namespace Server.Gumps
 		{
 			EventSink.PlayerDeath += new PlayerDeathEventHandler( EventSink_PlayerDeath );
 		}
- 
+
 		public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
 		{
 			Mobile m = e.Mobile;
@@ -31,9 +28,12 @@ namespace Server.Gumps
 			{
 				if ( ai.Attacker.Player && ai.CanReportMurder && !ai.Reported )
 				{
-					killers.Add( ai.Attacker );
-					ai.Reported = true;
-					ai.CanReportMurder = false;
+					if (!Core.SE || !((PlayerMobile)m).RecentlyReported.Contains(ai.Attacker))
+					{
+						killers.Add(ai.Attacker);
+						ai.Reported = true;
+						ai.CanReportMurder = false;
+					}
 				}
 				if ( ai.Attacker.Player && (DateTime.Now - ai.LastCombatTime) < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Attacker ) )
 					toGive.Add( ai.Attacker );
@@ -70,7 +70,6 @@ namespace Server.Gumps
 
 			if ( killers.Count > 0 )
 				new GumpTimer( m, killers ).Start();
-	
 		}
 
 		private class GumpTimer : Timer
@@ -102,14 +101,14 @@ namespace Server.Gumps
 			BuildGump();
 		}
 
-		private void BuildGump() 
+		private void BuildGump()
 		{
 			AddBackground( 265, 205, 320, 290, 5054 );
 			Closable = false;
 			Resizable = false;
-			
-			AddPage( 0 );      			
-			
+
+			AddPage( 0 );
+
 			AddImageTiled( 225, 175, 50, 45, 0xCE );   //Top left corner
 			AddImageTiled( 267, 175, 315, 44, 0xC9 );  //Top bar
 			AddImageTiled( 582, 175, 43, 45, 0xCF );   //Top right corner
@@ -120,15 +119,28 @@ namespace Server.Gumps
 			AddImageTiled( 582, 489, 43, 43, 0xCD );   //Lower right corner
 
 			AddPage( 1 );
-			
+
 			AddHtml( 260, 234, 300, 140, ((Mobile)m_Killers[m_Idx]).Name, false, false ); // Player's Name
 			AddHtmlLocalized( 260, 254, 300, 140, 1049066, false, false ); // Would you like to report...
 
 			AddButton( 260, 300, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
 			AddHtmlLocalized( 300, 300, 300, 50, 1046362, false, false ); // Yes
-			      	
+
 			AddButton( 360, 300, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 400, 300, 300, 50, 1046363, false, false ); // No      
+			AddHtmlLocalized( 400, 300, 300, 50, 1046363, false, false ); // No
+		}
+
+		public static void ReportedListExpiry_Callback( object state )
+		{
+			object[] states = (object[])state;
+
+			PlayerMobile from = (PlayerMobile)states[0];
+			Mobile killer = (Mobile)states[1];
+
+			if (from.RecentlyReported.Contains(killer))
+			{
+				from.RecentlyReported.Remove(killer);
+			}
 		}
 
 		public override void OnResponse( NetState state, RelayInfo info )
@@ -137,29 +149,41 @@ namespace Server.Gumps
 
 			switch ( info.ButtonID )
 			{
-				case 1: 
-				{            
+				case 1:
+				{
 					Mobile killer = m_Killers[m_Idx];
 					if ( killer != null && !killer.Deleted )
 					{
 						killer.Kills++;
 						killer.ShortTermMurders++;
 
-						if ( killer is PlayerMobile )
-							((PlayerMobile)killer).ResetKillTime();
+						if (Core.SE)
+						{
+							((PlayerMobile)from).RecentlyReported.Add(killer);
+							Timer.DelayCall(TimeSpan.FromMinutes(10), new TimerStateCallback(ReportedListExpiry_Callback), new object[] { from, killer });
+						}
 
-						killer.SendLocalizedMessage( 1049067 );//You have been reported for murder!
+						if (killer is PlayerMobile)
+						{
+							PlayerMobile pk = (PlayerMobile)killer;
+							pk.ResetKillTime();
+							pk.SendLocalizedMessage(1049067);//You have been reported for murder!
 
-						if ( killer.Kills == 5 )
-							killer.SendLocalizedMessage( 502134 );//You are now known as a murderer!
-						else if ( SkillHandlers.Stealing.SuspendOnMurder && killer.Kills == 1 && killer is PlayerMobile && ((PlayerMobile)killer).NpcGuild == NpcGuild.ThievesGuild )
-							killer.SendLocalizedMessage( 501562 ); // You have been suspended by the Thieves Guild.
+							if (pk.Kills == 5)
+							{
+								pk.SendLocalizedMessage(502134);//You are now known as a murderer!
+							}
+							else if (SkillHandlers.Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
+							{
+								pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
+							}
+						}
 					}
-					break; 
+					break;
 				}
-				case 2: 
+				case 2:
 				{
-					break; 
+					break;
 				}
 			}
 
