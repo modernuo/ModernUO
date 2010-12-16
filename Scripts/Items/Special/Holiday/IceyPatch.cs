@@ -48,7 +48,7 @@ namespace Server.Items
 
 			if (freeze)
 			{
-				m.CantWalk = freeze;
+				m.Frozen = freeze;
 				Timer.DelayCall(TimeSpan.FromSeconds((message==1095162) ? 2.25 : 1.25), new TimerStateCallback(EndFall_Callback), m);
 			}
 
@@ -105,7 +105,7 @@ namespace Server.Items
 
 		private static void EndFall_Callback(object state)
 		{
-			((Mobile)state).CantWalk = false;
+			((Mobile)state).Frozen = false;
 		}
 
 		public override void Serialize(GenericWriter writer)
