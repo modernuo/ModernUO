@@ -7,6 +7,7 @@ namespace Server.Items
 	public class IceyPatch : Item
 	{
 		public override int LabelNumber { get { return 1095159; } } //An Icy Patch
+		public override double DefaultWeight { get { return 5.0; } }
 
 		/* On OSI, the iceypatch with itemid 0x122a is "rarer", so we will give it 1:10 chance of creating it that way */
 
