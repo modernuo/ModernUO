@@ -29,10 +29,11 @@ namespace Server.Items
 			0x851,
 			0x503,
 			0xb8c,
-			0x4ab
+			0x4ab,
+			0x84B
 		};
 		private static readonly int[] m_NeonHues =
-		{ 
+		{
 			0x438,
 			0x424,
 			0x433,
@@ -71,6 +72,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
+
 	public class GiftBoxCube : BaseContainer
 	{
 		public override int DefaultGumpID { get { return 0x11B; } }
@@ -99,6 +101,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
+
 	public class GiftBoxCylinder : BaseContainer
 	{
 		public override int DefaultGumpID { get { return 0x11C; } }
@@ -127,6 +130,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
+
 	public class GiftBoxOctogon : BaseContainer
 	{
 		public override int DefaultGumpID { get { return 0x11D; } }
@@ -155,6 +159,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
+
 	public class GiftBoxAngel : BaseContainer
 	{
 		public override int DefaultGumpID { get { return 0x11F; } }
@@ -183,6 +188,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
+
 	[Flipable(0x232A, 0x232B)]
 	public class GiftBoxNeon : BaseContainer
 	{

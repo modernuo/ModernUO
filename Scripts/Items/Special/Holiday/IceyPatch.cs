@@ -49,7 +49,7 @@ namespace Server.Items
 			if (freeze)
 			{
 				m.Frozen = freeze;
-				Timer.DelayCall(TimeSpan.FromSeconds((message==1095162) ? 2.25 : 1.25), new TimerStateCallback(EndFall_Callback), m);
+				Timer.DelayCall(TimeSpan.FromSeconds((message==1095162) ? 2.0 : 1.25), new TimerStateCallback(EndFall_Callback), m);
 			}
 
 			m.SendLocalizedMessage(message);
@@ -76,7 +76,7 @@ namespace Server.Items
 			}
 			if (arg != null)
 			{
-				Timer.DelayCall(TimeSpan.FromSeconds(.25), new TimerStateCallback(BeginFall_Callback), arg);
+				Timer.DelayCall(TimeSpan.FromSeconds(.4), new TimerStateCallback(BeginFall_Callback), arg);
 			}
 		}
 
