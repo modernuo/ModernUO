@@ -61,7 +61,7 @@ namespace Server
 			_indexQueue.Enqueue(info);
 		}
 
-		public int CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile)
+		public void CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile)
 		{
 			this.Flush();
 
@@ -76,7 +76,8 @@ namespace Server
 
 			byte[] indexBuffer = new byte[20];
 
-			int indexWritten = _indexQueue.Count * indexBuffer.Length;
+			//int indexWritten = _indexQueue.Count * indexBuffer.Length;
+			//int totalWritten = memLength + indexWritten
 
 			while (_indexQueue.Count > 0)
 			{
@@ -117,8 +118,6 @@ namespace Server
 			}
 
 			this.Close();	//We're donezo with this writer.
-
-			return memLength + indexWritten;
 		}
 	}
 }

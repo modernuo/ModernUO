@@ -39,7 +39,7 @@ namespace Server
 	{
 		public override string Name { get { return "Dynamic"; } }
 
-		private SaveMetrics metrics;
+		private SaveMetrics _metrics;
 
 		private SequentialFileWriter _itemData, _itemIndex;
 		private SequentialFileWriter _mobileData, _mobileIndex;
@@ -61,15 +61,15 @@ namespace Server
 
 		public override void Save(SaveMetrics metrics)
 		{
-			this.metrics = metrics;
+			this._metrics = metrics;
 
 			OpenFiles();
 
 			Task[] saveTasks = new Task[3];
 
-			saveTasks[0] = SaveItems( metrics );
-			saveTasks[1] = SaveMobiles( metrics );
-			saveTasks[2] = SaveGuilds( metrics );
+			saveTasks[0] = SaveItems();
+			saveTasks[1] = SaveMobiles();
+			saveTasks[2] = SaveGuilds();
 
 			SaveTypeDatabases();
 
@@ -100,19 +100,14 @@ namespace Server
 						break;
 					}
 
-					int bytesWritten = writer.CommitTo(data, index);
-
-					if (metrics != null)
-					{
-						metrics.OnFileWritten(bytesWritten);
-					}
+					writer.CommitTo(data, index);
 				}
 			});
 
 			return commitTask;
 		}
 
-		private Task SaveItems(SaveMetrics metrics)
+		private Task SaveItems()
 		{
 			//Start the blocking consumer; this runs in background.
 			Task commitTask = StartCommitTask(_itemThreadWriters, _itemData, _itemIndex);
@@ -136,9 +131,9 @@ namespace Server
 						_decayBag.Add(item);
 					}
 
-					if (metrics != null)
+					if (_metrics != null)
 					{
-						metrics.OnItemSaved(size);
+						_metrics.OnItemSaved(size);
 					}
 
 					return writer;
@@ -157,7 +152,7 @@ namespace Server
 
 
 
-		private Task SaveMobiles(SaveMetrics metrics)
+		private Task SaveMobiles()
 		{
 			//Start the blocking consumer; this runs in background.
 			Task commitTask = StartCommitTask( _mobileThreadWriters, _mobileData, _mobileIndex );
@@ -176,9 +171,9 @@ namespace Server
 
 					writer.QueueForIndex(mobile, size);
 
-					if (metrics != null)
+					if (_metrics != null)
 					{
-						metrics.OnMobileSaved(size);
+						_metrics.OnMobileSaved(size);
 					}
 
 					return writer;
@@ -195,7 +190,7 @@ namespace Server
 			return commitTask;
 		}
 
-		private Task SaveGuilds(SaveMetrics metrics)
+		private Task SaveGuilds()
 		{
 			//Start the blocking consumer; this runs in background.
 			Task commitTask = StartCommitTask(_guildThreadWriters, _guildData, _guildIndex);
@@ -214,9 +209,9 @@ namespace Server
 
 					writer.QueueForIndex(guild, size);
 
-					if (metrics != null)
+					if (_metrics != null)
 					{
-						metrics.OnGuildSaved(size);
+						_metrics.OnGuildSaved(size);
 					}
 
 					return writer;
@@ -245,14 +240,14 @@ namespace Server
 
 		private void OpenFiles()
 		{
-			_itemData = new SequentialFileWriter(World.ItemDataPath, metrics);
-			_itemIndex = new SequentialFileWriter(World.ItemIndexPath, metrics);
+			_itemData = new SequentialFileWriter(World.ItemDataPath, _metrics);
+			_itemIndex = new SequentialFileWriter(World.ItemIndexPath, _metrics);
 
-			_mobileData = new SequentialFileWriter(World.MobileDataPath, metrics);
-			_mobileIndex = new SequentialFileWriter(World.MobileIndexPath, metrics);
+			_mobileData = new SequentialFileWriter(World.MobileDataPath, _metrics);
+			_mobileIndex = new SequentialFileWriter(World.MobileIndexPath, _metrics);
 
-			_guildData = new SequentialFileWriter(World.GuildDataPath, metrics);
-			_guildIndex = new SequentialFileWriter(World.GuildIndexPath, metrics);
+			_guildData = new SequentialFileWriter(World.GuildDataPath, _metrics);
+			_guildIndex = new SequentialFileWriter(World.GuildIndexPath, _metrics);
 
 			WriteCount(_itemIndex, World.Items.Count);
 			WriteCount(_mobileIndex, World.Mobiles.Count);

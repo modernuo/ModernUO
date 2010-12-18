@@ -613,7 +613,7 @@ namespace Server
 			}
 		}
 
-		private static SkillInfo[] m_Table = new SkillInfo[55]
+		private static SkillInfo[] m_Table = new SkillInfo[58]
 			{
 				new SkillInfo(  0, "Alchemy",			0.0,	5.0,	5.0,	"Alchemist",	null,	0.0,	0.5,	0.5,	1.0 ),
 				new SkillInfo(  1, "Anatomy",			0.0,	0.0,	0.0,	"Healer",	null,	0.15,	0.15,	0.7,	1.0 ),
