@@ -91,8 +91,8 @@ namespace Server
 
 			AppendDefine( ref sb, "/d:Framework_2_0" );
 
-#if Framework_3_5
-			AppendDefine( ref sb, "/d:Framework_3_5" );
+#if Framework_4_0
+			AppendDefine( ref sb, "/d:Framework_4_0" );
 #endif
 
 			return (sb == null ? null : sb.ToString());
@@ -212,11 +212,7 @@ namespace Server
 
 			DeleteFiles( "Scripts.CS*.dll" );
 
-#if Framework_3_5
-			using ( CSharpCodeProvider provider = new CSharpCodeProvider( new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } } ) )
-#else
 			using ( CSharpCodeProvider provider = new CSharpCodeProvider() )
-#endif
 			{
 				string path = GetUnusedPath( "Scripts.CS" );
 
@@ -355,11 +351,8 @@ namespace Server
 			}
 
 			DeleteFiles( "Scripts.VB*.dll" );
-#if Framework_3_5
-			using ( VBCodeProvider provider = new VBCodeProvider( new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } } ) )
-#else
+
 			using ( VBCodeProvider provider = new VBCodeProvider() )
-#endif
 			{
 				string path = GetUnusedPath( "Scripts.VB" );
 
