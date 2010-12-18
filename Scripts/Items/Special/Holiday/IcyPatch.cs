@@ -4,7 +4,7 @@ using Server.Spells;
 
 namespace Server.Items
 {
-	public class IceyPatch : Item
+	public class IcyPatch : Item
 	{
 		public override int LabelNumber { get { return 1095159; } } //An Icy Patch
 		public override double DefaultWeight { get { return 5.0; } }
@@ -12,18 +12,18 @@ namespace Server.Items
 		/* On OSI, the iceypatch with itemid 0x122a is "rarer", so we will give it 1:10 chance of creating it that way */
 
 		[Constructable]
-		public IceyPatch()
+		public IcyPatch()
 			: this((Utility.Random(10) == 0) ? 0x122A : 0x122F)
 		{
 		}
 
-		public IceyPatch(int itemid)
+		public IcyPatch(int itemid)
 			: base (itemid)
 		{
 			Hue = 0x481;
 		}
 
-		public IceyPatch(Serial serial)
+		public IcyPatch(Serial serial)
 			: base(serial)
 		{
 		}
