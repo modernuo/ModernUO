@@ -77,7 +77,7 @@ namespace Server.Misc
 				return;
 
 			try{ Backup(); }
-            catch (Exception e) { Console.WriteLine("WARNING: Automatic backup FAILED: {0}", e); }
+			catch (Exception e) { Console.WriteLine("WARNING: Automatic backup FAILED: {0}", e); }
 
 			World.Save();
 		}
