@@ -20,7 +20,7 @@ namespace Server.Commands
 
 	public class Properties
 	{
-		public static void Register()
+		public static void Initialize()
 		{
 			CommandSystem.Register( "Props", AccessLevel.Counselor, new CommandEventHandler( Props_OnCommand ) );
 		}
