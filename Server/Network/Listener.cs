@@ -69,7 +69,12 @@ namespace Server.Network
 			ThreadPool.QueueUserWorkItem( delegate { Accept_Start(); } );
 #else
 			m_OnAccept = new AsyncCallback( OnAccept );
-			IAsyncResult res = m_Listener.BeginAccept( m_OnAccept, m_Listener );
+			try {
+				IAsyncResult res = m_Listener.BeginAccept( m_OnAccept, m_Listener );
+			} catch ( SocketException ex ) {
+				NetState.TraceException( ex );
+			} catch ( ObjectDisposedException ) {
+			}
 #endif
 		}
 
