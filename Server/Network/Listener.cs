@@ -64,9 +64,9 @@ namespace Server.Network
 			DisplayListener();
 
 #if Framework_4_0
-			SocketAsyncEventArgs m_EventArgs = new SocketAsyncEventArgs();
+			m_EventArgs = new SocketAsyncEventArgs();
 			m_EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Accept_Completion );
-			ThreadPool.QueueUserWorkItem( new WaitCallback( Accept_Start );
+			ThreadPool.QueueUserWorkItem( delegate { Accept_Start(); } );
 #else
 			m_OnAccept = new AsyncCallback( OnAccept );
 			IAsyncResult res = m_Listener.BeginAccept( m_OnAccept, m_Listener );
@@ -110,7 +110,7 @@ namespace Server.Network
 
 		private void DisplayListener()
 		{
-			IPEndPoint ipep = m_Listener.EndPoint as IPEndPoint;
+			IPEndPoint ipep = m_Listener.LocalEndPoint as IPEndPoint;
 
 			if ( ipep == null )
 				return;
@@ -143,9 +143,21 @@ namespace Server.Network
 #if Framework_4_0
 		private void Accept_Start()
 		{
-			while ( !m_Listener.AcceptAsync( m_EventArgs ) ) {
-				Accept_Process( m_EventArgs );
-			}
+			bool result;
+
+			do {
+				try {
+					result = !m_Listener.AcceptAsync( m_EventArgs );
+				} catch ( SocketException ex ) {
+					NetState.TraceException( ex );
+					break;
+				} catch ( ObjectDisposedException ) {
+					break;
+				}
+
+				if ( result )
+					Accept_Process( m_EventArgs );
+			} while ( result );
 		}
 
 		private void Accept_Completion( object sender, SocketAsyncEventArgs e )
@@ -165,6 +177,7 @@ namespace Server.Network
 
 			e.AcceptSocket = null;
 		}
+
 #else
 
 		private void OnAccept( IAsyncResult asyncResult ) {
