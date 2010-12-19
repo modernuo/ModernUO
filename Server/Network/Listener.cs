@@ -66,7 +66,7 @@ namespace Server.Network
 #if Framework_4_0
 			m_EventArgs = new SocketAsyncEventArgs();
 			m_EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Accept_Completion );
-			ThreadPool.QueueUserWorkItem( delegate { Accept_Start(); } );
+			Accept_Start();
 #else
 			m_OnAccept = new AsyncCallback( OnAccept );
 			try {
