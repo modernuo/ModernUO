@@ -148,7 +148,7 @@ namespace Server.Network
 #if Framework_4_0
 		private void Accept_Start()
 		{
-			bool result;
+			bool result = false;
 
 			do {
 				try {
