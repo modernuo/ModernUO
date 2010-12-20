@@ -1217,7 +1217,11 @@ namespace Server
 
 				if( m_Owner.m_Closed )
 					m_Owner.m_File.Close();
+
 				AsyncWriter.m_ThreadCount--;
+
+				if (AsyncWriter.m_ThreadCount <= 0)
+					World.NotifyDiskWriteComplete();
 			}
 		}
 

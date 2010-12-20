@@ -48,6 +48,9 @@ namespace Server.Commands
 			Register( "Help", AccessLevel.Player, new CommandEventHandler( Help_OnCommand ) );
 
 			Register( "Save", AccessLevel.Administrator, new CommandEventHandler( Save_OnCommand ) );
+			Register( "BackgroundSave", AccessLevel.Administrator, new CommandEventHandler( BackgroundSave_OnCommand ) );
+			Register( "BGSave", AccessLevel.Administrator, new CommandEventHandler( BackgroundSave_OnCommand ) );
+			Register( "SaveBG", AccessLevel.Administrator, new CommandEventHandler( BackgroundSave_OnCommand ) );
 
 			Register( "Move", AccessLevel.GameMaster, new CommandEventHandler( Move_OnCommand ) );
 			Register( "Client", AccessLevel.Counselor, new CommandEventHandler( Client_OnCommand ) );
@@ -55,7 +58,7 @@ namespace Server.Commands
 			Register( "SMsg", AccessLevel.Counselor, new CommandEventHandler( StaffMessage_OnCommand ) );
 			Register( "SM", AccessLevel.Counselor, new CommandEventHandler( StaffMessage_OnCommand ) );
 			Register( "S", AccessLevel.Counselor, new CommandEventHandler( StaffMessage_OnCommand ) );
-       
+
 			Register( "BCast", AccessLevel.GameMaster, new CommandEventHandler( BroadcastMessage_OnCommand ) );
 			Register( "BC", AccessLevel.GameMaster, new CommandEventHandler( BroadcastMessage_OnCommand ) );
 			Register( "B", AccessLevel.GameMaster, new CommandEventHandler( BroadcastMessage_OnCommand ) );
@@ -637,6 +640,14 @@ namespace Server.Commands
 		private static void Save_OnCommand( CommandEventArgs e )
 		{
 			Misc.AutoSave.Save();
+		}
+
+		[Usage("BackgroundSave")]
+		[Aliases("BGSave", "SaveBG")]
+		[Description("Saves the world, writing to the disk in the background")]
+		private static void BackgroundSave_OnCommand(CommandEventArgs e)
+		{
+			Misc.AutoSave.Save( true );
 		}
 
 		private static bool FixMap( ref Map map, ref Point3D loc, Item item )

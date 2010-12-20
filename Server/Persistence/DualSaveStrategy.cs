@@ -37,18 +37,24 @@ namespace Server {
 		public DualSaveStrategy() {
 		}
 
-		public override void Save( SaveMetrics metrics ) {
+		public override void Save( SaveMetrics metrics, bool permitBackgroundWrite ) 
+		{
+			this.PermitBackgroundWrite = permitBackgroundWrite;
+
 			Thread saveThread = new Thread( delegate() {
-				SaveItems( metrics );
+				SaveItems(metrics);
 			} );
 
 			saveThread.Name = "Item Save Subset";
 			saveThread.Start();
 
-			SaveMobiles( metrics );
-			SaveGuilds( metrics );
+			SaveMobiles(metrics);
+			SaveGuilds(metrics);
 
 			saveThread.Join();
+
+			if (UseSequentialWriters)
+				World.NotifyDiskWriteComplete();
 		}
 	}
 }

@@ -52,7 +52,7 @@ namespace Server.Misc
 
 			if ( m_Warning == TimeSpan.Zero )
 			{
-				Save();
+				Save( true );
 			}
 			else
 			{
@@ -73,13 +73,20 @@ namespace Server.Misc
 
 		public static void Save()
 		{
+			AutoSave.Save( false );
+		}
+
+		public static void Save( bool permitBackgroundWrite )
+		{
 			if ( AutoRestart.Restarting )
 				return;
 
-			try{ Backup(); }
-			catch (Exception e) { Console.WriteLine("WARNING: Automatic backup FAILED: {0}", e); }
+			World.WaitForWriteCompletion();
 
-			World.Save();
+			try{ Backup(); }
+			catch ( Exception e ) { Console.WriteLine("WARNING: Automatic backup FAILED: {0}", e); }
+
+			World.Save( true, permitBackgroundWrite );
 		}
 
 		private static string[] m_Backups = new string[]

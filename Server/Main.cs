@@ -302,7 +302,7 @@ namespace Server
 			if( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
 				return true;
 			
-			Kill();
+			Kill();	//Kill -> HandleClosed will hadnle waiting for the completion of flushign to disk
 
 			return true;
 		}
@@ -315,7 +315,7 @@ namespace Server
 		private static bool m_Closing;
 		public static bool Closing { get { return m_Closing; } }
 
-		private static long m_CycleIndex;
+		private static long m_CycleIndex = 1;
 		private static float[] m_CyclesPerSecond = new float[100];
 
 		public static float CyclesPerSecond
@@ -363,6 +363,8 @@ namespace Server
 			m_Closing = true;
 
 			Console.Write( "Exiting..." );
+
+			World.WaitForWriteCompletion();
 
 			if( !m_Crashed )
 				EventSink.InvokeShutdown( new ShutdownEventArgs() );

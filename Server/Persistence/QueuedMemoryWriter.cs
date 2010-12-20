@@ -25,7 +25,6 @@ using System.Text;
 
 namespace Server
 {
-
 	public sealed class QueuedMemoryWriter : BinaryFileWriter
 	{
 		private struct IndexInfo
@@ -36,11 +35,11 @@ namespace Server
 		}
 
 		private MemoryStream _memStream;
-		private Queue<IndexInfo> _indexQueue = new Queue<IndexInfo>();	//TODO: Pick a more optimal starting size
+		private List<IndexInfo> _orderedIndexInfo = new List<IndexInfo>();
 
 		protected override int BufferSize
 		{
-			get { return 4096; }
+			get { return 512; }
 		}
 
 		public QueuedMemoryWriter()
@@ -58,66 +57,70 @@ namespace Server
 			info.typeCode = serializable.TypeReference;	//For guilds, this will automagically be zero.
 			info.serial = serializable.SerialIdentity;
 
-			_indexQueue.Enqueue(info);
+			_orderedIndexInfo.Add(info);
 		}
 
 		public void CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile)
 		{
 			this.Flush();
 
-			byte[] memBuffer = _memStream.GetBuffer();
 			int memLength = (int)_memStream.Position;
 
-			long actualPosition = dataFile.Position;
-
-			dataFile.Write(memBuffer, 0, memLength);	//The buffer contains the data from many items.
-
-			//Console.WriteLine("Writing {0} bytes starting at {1}", memLength, actualPosition);
-
-			byte[] indexBuffer = new byte[20];
-
-			//int indexWritten = _indexQueue.Count * indexBuffer.Length;
-			//int totalWritten = memLength + indexWritten
-
-			while (_indexQueue.Count > 0)
+			if (memLength > 0)
 			{
-				IndexInfo info = _indexQueue.Dequeue();
+				byte[] memBuffer = _memStream.GetBuffer();
 
-				int typeCode = info.typeCode;
-				int serial = info.serial;
-				int length = info.size;
+				long actualPosition = dataFile.Position;
+
+				dataFile.Write(memBuffer, 0, memLength);	//The buffer contains the data from many items.
+
+				//Console.WriteLine("Writing {0} bytes starting at {1}, with {2} things", memLength, actualPosition, _orderedIndexInfo.Count);
+
+				byte[] indexBuffer = new byte[20];
+
+				//int indexWritten = _orderedIndexInfo.Count * indexBuffer.Length;
+				//int totalWritten = memLength + indexWritten
+
+				for (int i = 0; i < _orderedIndexInfo.Count; i++)
+				{
+					IndexInfo info = _orderedIndexInfo[i];
+
+					int typeCode = info.typeCode;
+					int serial = info.serial;
+					int length = info.size;
 
 
-				indexBuffer[0] = (byte)(info.typeCode);
-				indexBuffer[1] = (byte)(info.typeCode >> 8);
-				indexBuffer[2] = (byte)(info.typeCode >> 16);
-				indexBuffer[3] = (byte)(info.typeCode >> 24);
+					indexBuffer[0] = (byte)(info.typeCode);
+					indexBuffer[1] = (byte)(info.typeCode >> 8);
+					indexBuffer[2] = (byte)(info.typeCode >> 16);
+					indexBuffer[3] = (byte)(info.typeCode >> 24);
 
-				indexBuffer[4] = (byte)(info.serial);
-				indexBuffer[5] = (byte)(info.serial >> 8);
-				indexBuffer[6] = (byte)(info.serial >> 16);
-				indexBuffer[7] = (byte)(info.serial >> 24);
+					indexBuffer[4] = (byte)(info.serial);
+					indexBuffer[5] = (byte)(info.serial >> 8);
+					indexBuffer[6] = (byte)(info.serial >> 16);
+					indexBuffer[7] = (byte)(info.serial >> 24);
 
-				indexBuffer[8] = (byte)(actualPosition);
-				indexBuffer[9] = (byte)(actualPosition >> 8);
-				indexBuffer[10] = (byte)(actualPosition >> 16);
-				indexBuffer[11] = (byte)(actualPosition >> 24);
-				indexBuffer[12] = (byte)(actualPosition >> 32);
-				indexBuffer[13] = (byte)(actualPosition >> 40);
-				indexBuffer[14] = (byte)(actualPosition >> 48);
-				indexBuffer[15] = (byte)(actualPosition >> 56);
+					indexBuffer[8] = (byte)(actualPosition);
+					indexBuffer[9] = (byte)(actualPosition >> 8);
+					indexBuffer[10] = (byte)(actualPosition >> 16);
+					indexBuffer[11] = (byte)(actualPosition >> 24);
+					indexBuffer[12] = (byte)(actualPosition >> 32);
+					indexBuffer[13] = (byte)(actualPosition >> 40);
+					indexBuffer[14] = (byte)(actualPosition >> 48);
+					indexBuffer[15] = (byte)(actualPosition >> 56);
 
-				indexBuffer[16] = (byte)(info.size);
-				indexBuffer[17] = (byte)(info.size >> 8);
-				indexBuffer[18] = (byte)(info.size >> 16);
-				indexBuffer[19] = (byte)(info.size >> 24);
+					indexBuffer[16] = (byte)(info.size);
+					indexBuffer[17] = (byte)(info.size >> 8);
+					indexBuffer[18] = (byte)(info.size >> 16);
+					indexBuffer[19] = (byte)(info.size >> 24);
 
-				indexFile.Write(indexBuffer, 0, indexBuffer.Length);
+					indexFile.Write(indexBuffer, 0, indexBuffer.Length);
 
-				actualPosition += info.size;
+					actualPosition += info.size;
+				}
 			}
 
-			this.Close();	//We're donezo with this writer.
+			this.Close();	//We're done with this writer.
 		}
 	}
 }

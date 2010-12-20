@@ -45,7 +45,9 @@ namespace Server {
 
 		private static bool m_Loading;
 		private static bool m_Loaded;
+
 		private static bool m_Saving;
+		private static ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
 
 		private static Queue<IEntity> _addQueue, _deleteQueue;
 
@@ -63,6 +65,19 @@ namespace Server {
 
 		public readonly static string GuildIndexPath = Path.Combine( "Saves/Guilds/", "Guilds.idx" );
 		public readonly static string GuildDataPath = Path.Combine( "Saves/Guilds/", "Guilds.bin" );
+
+		public static void NotifyDiskWriteComplete()
+		{
+			if( m_DiskWriteHandle.Set())
+			{
+				Console.WriteLine("Closing Save Files...");
+			}
+		}
+
+		public static void WaitForWriteCompletion()
+		{
+			m_DiskWriteHandle.WaitOne();
+		}
 
 		public static Dictionary<Serial, Mobile> Mobiles {
 			get { return m_Mobiles; }
@@ -758,18 +773,23 @@ namespace Server {
 		internal static int m_Saves;
 
 		public static void Save() {
-			++m_Saves;
-			Save( true );
+			Save( true, false );
 		}
 
-		public static void Save( bool message ) {
-			if ( m_Saving || AsyncWriter.ThreadCount > 0 )
+		public static void Save( bool message, bool permitBackgroundWrite ) {
+			if ( m_Saving )
 				return;
+
+			++m_Saves;
 
 			NetState.FlushAll();
 			NetState.Pause();
 
+			World.WaitForWriteCompletion();//Blocks Save until current disk flush is done.
+
 			m_Saving = true;
+
+			m_DiskWriteHandle.Reset();
 
 			if ( message )
 				Broadcast( 0x35, true, "The world is saving, please wait." );
@@ -790,7 +810,7 @@ namespace Server {
 
 
 			/*using ( SaveMetrics metrics = new SaveMetrics() ) {*/
-			strategy.Save( null );
+			strategy.Save( null, permitBackgroundWrite );
 			/*}*/
 
 			try {
@@ -803,11 +823,14 @@ namespace Server {
 
 			m_Saving = false;
 
+			if (!permitBackgroundWrite)
+				World.NotifyDiskWriteComplete();	//Sets the DiskWriteHandle.  If we allow background writes, we leave this upto the individual save strategies.
+
 			ProcessSafetyQueues();
 
 			strategy.ProcessDecay();
 
-			Console.WriteLine( "done in {0:F2} seconds.", watch.Elapsed.TotalSeconds );
+			Console.WriteLine( "Save done in {0:F2} seconds.", watch.Elapsed.TotalSeconds );
 
 			if ( message )
 				Broadcast( 0x35, true, "World save complete. The entire process took {0:F1} seconds.", watch.Elapsed.TotalSeconds );

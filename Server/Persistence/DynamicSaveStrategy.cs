@@ -59,7 +59,7 @@ namespace Server
 			_guildThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
 		}
 
-		public override void Save(SaveMetrics metrics)
+		public override void Save(SaveMetrics metrics, bool permitBackgroundWrite)
 		{
 			this._metrics = metrics;
 
@@ -73,13 +73,21 @@ namespace Server
 
 			SaveTypeDatabases();
 
+			if (permitBackgroundWrite)
+			{
+				//This option makes it finish the writing to disk in the background, continuing even after Save() returns.
+				Task.Factory.ContinueWhenAll(saveTasks, _ =>
+					{
+						CloseFiles();
 
-			Task.WaitAll(saveTasks);	//Waits for the completion of all of the tasks(committing to disk)
-			CloseFiles();
-
-			//This option makes it finish the writing to disk in the background, continuing even after Save() returns.  VERY DANGEROUS. 
-			//TODO: Make this less dangerous, by notifying rest of the server that this can and does happen
-			//Task.Factory.ContinueWhenAll(saveTasks, _ => CloseFiles());
+						World.NotifyDiskWriteComplete();
+					});
+			}
+			else
+			{
+				Task.WaitAll(saveTasks);	//Waits for the completion of all of the tasks(committing to disk)
+				CloseFiles();
+			}
 		}
 
 		private Task StartCommitTask(BlockingCollection<QueuedMemoryWriter> threadWriter, SequentialFileWriter data, SequentialFileWriter index)
@@ -264,8 +272,6 @@ namespace Server
 
 			_guildData.Close();
 			_guildIndex.Close();
-
-			Console.WriteLine("Closing files");
 		}
 
 		private void WriteCount(SequentialFileWriter indexFile, int count)

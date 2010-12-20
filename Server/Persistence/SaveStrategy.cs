@@ -51,7 +51,7 @@ namespace Server
 		}
 
 		public abstract string Name { get; }
-		public abstract void Save(SaveMetrics metrics);
+		public abstract void Save(SaveMetrics metrics, bool permitBackgroundWrite);
 
 		public abstract void ProcessDecay();
 	}

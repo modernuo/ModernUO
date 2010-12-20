@@ -25,11 +25,14 @@ namespace Server.Misc
 
 		public static void CrashGuard_OnCrash( CrashedEventArgs e )
 		{
+			if ( GenerateReport )
+				GenerateCrashReport( e );
+
+			World.WaitForWriteCompletion();
+
 			if ( SaveBackup )
 				Backup();
 
-			if ( GenerateReport )
-				GenerateCrashReport( e );
 
 			/*if ( Core.Service )
 				e.Close = true;
