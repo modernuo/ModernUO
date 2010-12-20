@@ -53,7 +53,7 @@ namespace Server {
 
 			saveThread.Join();
 
-			if (UseSequentialWriters)
+			if (permitBackgroundWrite && UseSequentialWriters)	//If we're permitted to write in the background, but we don't anyways, then notify.
 				World.NotifyDiskWriteComplete();
 		}
 	}
