@@ -370,7 +370,7 @@ namespace Server.Items
 				else if ( Core.AOS )
 					return AosSpeed;
 
-				return m_Speed;
+				return OldSpeed;
 			}
 			set{ m_Speed = value; InvalidateProperties(); }
 		}
