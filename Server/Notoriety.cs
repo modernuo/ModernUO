@@ -28,7 +28,7 @@ namespace Server
 {
 	public delegate int NotorietyHandler( Mobile source, Mobile target );
 
-	public class Notoriety
+	public static class Notoriety
 	{
 		public const int Innocent = 1;
 		public const int Ally = 2;

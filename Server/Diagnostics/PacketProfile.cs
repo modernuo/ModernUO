@@ -39,7 +39,7 @@ namespace Server.Diagnostics {
 			}
 		}
 
-		public BasePacketProfile( string name )
+		protected BasePacketProfile(string name)
 			: base( name ) {
 		}
 

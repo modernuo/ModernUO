@@ -27,7 +27,7 @@ namespace Server.Gumps
 	{
 		private Gump m_Parent;
 
-		public GumpEntry()
+		protected GumpEntry()
 		{
 		}
 

@@ -22,7 +22,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace Server {
-	public class NativeReader {
+	public static class NativeReader {
 
 		private static readonly INativeReader m_NativeReader;
 

@@ -1104,7 +1104,7 @@ namespace Server.Items
 
 				// Evasion grants a variable bonus post ML. 50% prior.
 				if ( Evasion.IsEvading( defender ) )
-                    chance *= Evasion.GetParryScalar( defender );
+					chance *= Evasion.GetParryScalar( defender );
 
 				// Low dexterity lowers the chance.
 				if ( defender.Dex < 80 )
@@ -1133,9 +1133,9 @@ namespace Server.Items
 					chance += 0.05;
 				}
 
-                // Evasion grants a variable bonus post ML. 50% prior.
-                if( Evasion.IsEvading( defender ) )
-                    chance *= Evasion.GetParryScalar( defender );
+				// Evasion grants a variable bonus post ML. 50% prior.
+				if( Evasion.IsEvading( defender ) )
+					chance *= Evasion.GetParryScalar( defender );
 
 				// Low dexterity lowers the chance.
 				if( defender.Dex < 80 )

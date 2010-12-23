@@ -24,7 +24,7 @@ using System.IO;
 
 namespace Server
 {
-	public class MultiData
+	public static class MultiData
 	{
 		private static MultiComponentList[] m_Components;
 

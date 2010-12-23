@@ -26,7 +26,7 @@ namespace Server.Network {
 	/// <summary>
 	/// Handles outgoing packet compression for the network.
 	/// </summary>
-	public class Compression {
+	public static class Compression {
 		private static int[] _huffmanTable = new int[514]
 		{
 			0x2, 0x000,	0x5, 0x01F,	0x6, 0x022,	0x7, 0x034,	0x7, 0x075,	0x6, 0x028,	0x6, 0x03B,	0x7, 0x032,

@@ -53,11 +53,13 @@ namespace Server.Targeting
 			}
 		}
 
-		public MultiTarget( int multiID, Point3D offset ) : this( multiID, offset, 10, true, TargetFlags.None )
+		protected MultiTarget( int multiID, Point3D offset )
+			: this( multiID, offset, 10, true, TargetFlags.None )
 		{
 		}
 
-		public MultiTarget( int multiID, Point3D offset, int range, bool allowGround, TargetFlags flags ) : base( range, allowGround, flags )
+		protected MultiTarget( int multiID, Point3D offset, int range, bool allowGround, TargetFlags flags )
+			: base( range, allowGround, flags )
 		{
 			m_MultiID = multiID;
 			m_Offset = offset;

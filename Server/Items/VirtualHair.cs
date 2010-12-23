@@ -35,18 +35,18 @@ namespace Server
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Hue { get { return m_Hue; } set { m_Hue = value; } }
 
-		public BaseHairInfo( int itemid )
+		protected BaseHairInfo( int itemid )
 			: this( itemid, 0 )
 		{
 		}
 
-		public BaseHairInfo( int itemid, int hue )
+		protected BaseHairInfo( int itemid, int hue )
 		{
 			m_ItemID = itemid;
 			m_Hue = hue;
 		}
 
-		public BaseHairInfo( GenericReader reader )
+		protected BaseHairInfo( GenericReader reader )
 		{
 			int version = reader.ReadInt();
 

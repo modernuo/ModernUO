@@ -125,7 +125,7 @@ namespace Server
 					return m_Maps[index];
 			}
 
-			throw new Exception( "Invalid map name" );
+			throw new ArgumentException( "Invalid map name" );
 		}
 
 		private static void CheckNamesAndValues()

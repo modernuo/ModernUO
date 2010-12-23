@@ -544,6 +544,7 @@ namespace Server
 		Weight,
 	}
 
+	[Flags]
 	public enum ExpandFlag
 	{
 		None		= 0x00,

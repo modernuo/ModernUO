@@ -32,7 +32,7 @@ using Microsoft.VisualBasic;
 
 namespace Server
 {
-	public class ScriptCompiler
+	public static class ScriptCompiler
 	{
 		private static Assembly[] m_Assemblies;
 
@@ -521,15 +521,6 @@ namespace Server
 		}
 
 		private delegate CompilerResults Compiler( bool debug );
-
-		private void LoadScriptedAssembly( List<Assembly> assemblies, string fileName, Compiler compiler, bool debug )
-		{
-
-
-			if( File.Exists( fileName ) )
-			{
-			}
-		}
 
 		public static bool Compile()
 		{

@@ -42,7 +42,7 @@ namespace Server
 		None
 	}
 
-	public class Effects
+	public static class Effects
 	{
 		private static ParticleSupportType m_ParticleSupportType = ParticleSupportType.Detect;
 

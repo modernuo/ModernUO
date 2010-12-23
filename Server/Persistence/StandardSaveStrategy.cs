@@ -108,7 +108,6 @@ namespace Server {
 		protected void SaveItems(SaveMetrics metrics)
 		{
 			Dictionary<Serial, Item> items = World.Items;
-			List<Item> decaying = new List<Item>();
 
 			GenericWriter idx;
 			GenericWriter tdb;

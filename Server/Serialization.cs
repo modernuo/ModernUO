@@ -34,7 +34,7 @@ namespace Server
 {
 	public abstract class GenericReader
 	{
-		public GenericReader() { }
+		protected GenericReader() { }
 
 		public abstract string ReadString();
 		public abstract DateTime ReadDateTime();
@@ -90,7 +90,7 @@ namespace Server
 
 	public abstract class GenericWriter
 	{
-		public GenericWriter() { }
+		protected GenericWriter() { }
 
 		public abstract void Close();
 

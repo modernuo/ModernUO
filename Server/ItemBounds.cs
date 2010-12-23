@@ -23,7 +23,7 @@ using System.IO;
 
 namespace Server
 {
-	public class ItemBounds
+	public static class ItemBounds
 	{
 		private static Rectangle2D[] m_Bounds;
 

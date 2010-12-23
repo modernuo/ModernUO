@@ -197,7 +197,7 @@ namespace Server
 		StairRight		= 0x80000000
 	}
 
-	public class TileData
+	public static class TileData
 	{
 		private static LandData[] m_LandData;
 		private static ItemData[] m_ItemData;

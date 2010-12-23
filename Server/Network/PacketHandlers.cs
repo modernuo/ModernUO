@@ -57,7 +57,7 @@ namespace Server.Network
 		Encoded = 0xC0
 	}
 
-	public class PacketHandlers
+	public static class PacketHandlers
 	{
 		private static PacketHandler[] m_Handlers;
 		private static PacketHandler[] m_6017Handlers;

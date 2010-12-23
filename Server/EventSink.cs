@@ -789,7 +789,7 @@ namespace Server
 		public bool Blocked{ get{ return m_Blocked; } set{ m_Blocked = value; } }
 	}
 
-	public class EventSink
+	public static class EventSink
 	{
 		public static event CharacterCreatedEventHandler CharacterCreated;
 		public static event OpenDoorMacroEventHandler OpenDoorMacroUsed;

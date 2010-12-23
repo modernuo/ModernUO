@@ -108,7 +108,7 @@ namespace Server
 		private double m_Value;
 		private bool m_ObeyCap;
 
-		public SkillMod( SkillName skill, bool relative, double value )
+		protected SkillMod( SkillName skill, bool relative, double value )
 		{
 			m_Skill = skill;
 			m_Relative = relative;

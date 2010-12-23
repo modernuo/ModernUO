@@ -38,7 +38,7 @@ namespace Server.Targeting
 
 		public DateTime TimeoutTime{ get{ return m_TimeoutTime; } }
 
-		public Target( int range, bool allowGround, TargetFlags flags )
+		protected Target( int range, bool allowGround, TargetFlags flags )
 		{
 			m_TargetID = ++m_NextTargetID;
 			m_Range = range;

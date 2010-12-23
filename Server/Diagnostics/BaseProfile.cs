@@ -77,7 +77,7 @@ namespace Server.Diagnostics {
 			}
 		}
 
-		public BaseProfile( string name ) {
+		protected BaseProfile( string name ) {
 			_name = name;
 
 			_stopwatch = new Stopwatch();

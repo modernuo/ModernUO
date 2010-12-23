@@ -36,7 +36,7 @@ namespace Server.Prompts
 			}
 		}
 
-		public Prompt()
+		protected Prompt()
 		{
 			do
 			{
