@@ -5,7 +5,7 @@
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
  *
- *   $Id: DynamicSaveStrategy.cs 164 2007-04-20 22:35:41Z asayre $
+ *   $Id$
  *
  ***************************************************************************/
 
