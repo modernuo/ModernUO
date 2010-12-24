@@ -42,9 +42,11 @@ namespace Server
 	#region Callbacks
 	public delegate void TargetCallback( Mobile from, object targeted );
 	public delegate void TargetStateCallback( Mobile from, object targeted, object state );
+	public delegate void TargetStateCallback<T>( Mobile from, object targeted, T state );
 
 	public delegate void PromptCallback( Mobile from, string text );
 	public delegate void PromptStateCallback( Mobile from, string text, object state );
+	public delegate void PromptStateCallback<T>( Mobile from, string text, T state );
 	#endregion
 
 	#region [...]Mods
@@ -2708,6 +2710,33 @@ namespace Server
 			return t;
 		}
 
+		private class SimpleStateTarget<T> : Target
+		{
+			private TargetStateCallback<T> m_Callback;
+			private T m_State;
+
+			public SimpleStateTarget(int range, TargetFlags flags, bool allowGround, TargetStateCallback<T> callback, T state)
+				: base(range, allowGround, flags)
+			{
+				m_Callback = callback;
+				m_State = state;
+			}
+
+			protected override void OnTarget(Mobile from, object targeted)
+			{
+				if (m_Callback != null)
+					m_Callback(from, targeted, m_State);
+			}
+		}
+		public Target BeginTarget<T>(int range, bool allowGround, TargetFlags flags, TargetStateCallback<T> callback, T state)
+		{
+			Target t = new SimpleStateTarget<T>(range, flags, allowGround, callback, state);
+
+			this.Target = t;
+
+			return t;
+		}
+
 		public Target Target
 		{
 			get
@@ -2763,6 +2792,7 @@ namespace Server
 			return true;
 		}
 
+		#region Prompts
 		private class SimplePrompt : Prompt
 		{
 			private PromptCallback m_Callback;
@@ -2878,6 +2908,65 @@ namespace Server
 			return BeginPrompt( callback, false, state );
 		}
 
+		private class SimpleStatePrompt<T> : Prompt
+		{
+			private PromptStateCallback<T> m_Callback;
+			private PromptStateCallback<T> m_CancelCallback;
+
+			private bool m_CallbackHandlesCancel;
+
+			private T m_State;
+
+			public SimpleStatePrompt(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
+			{
+				m_Callback = callback;
+				m_CancelCallback = cancelCallback;
+				m_State = state;
+			}
+			public SimpleStatePrompt(PromptStateCallback<T> callback, bool callbackHandlesCancel, T state)
+			{
+				m_Callback = callback;
+				m_State = state;
+				m_CallbackHandlesCancel = callbackHandlesCancel;
+			}
+			public SimpleStatePrompt(PromptStateCallback<T> callback, T state)
+				: this(callback, false, state)
+			{
+			}
+
+			public override void OnResponse(Mobile from, string text)
+			{
+				if (m_Callback != null)
+					m_Callback(from, text, m_State);
+			}
+
+			public override void OnCancel(Mobile from)
+			{
+				if (m_CallbackHandlesCancel && m_Callback != null)
+					m_Callback(from, "", m_State);
+				else if (m_CancelCallback != null)
+					m_CancelCallback(from, "", m_State);
+			}
+		}
+		public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
+		{
+			Prompt p = new SimpleStatePrompt<T>(callback, cancelCallback, state);
+
+			this.Prompt = p;
+			return p;
+		}
+		public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, bool callbackHandlesCancel, T state)
+		{
+			Prompt p = new SimpleStatePrompt<T>(callback, callbackHandlesCancel, state);
+
+			this.Prompt = p;
+			return p;
+		}
+		public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, T state)
+		{
+			return BeginPrompt(callback, false, state);
+		}
+
 		public Prompt Prompt
 		{
 			get
@@ -2903,6 +2992,7 @@ namespace Server
 					Send( new UnicodePrompt( newPrompt ) );
 			}
 		}
+		#endregion
 
 		private bool InternalOnMove( Direction d )
 		{
