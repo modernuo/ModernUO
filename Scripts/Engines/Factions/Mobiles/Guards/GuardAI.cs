@@ -673,7 +673,7 @@ namespace Server.Factions
 						int dexMod = GetStatMod( m_Guard, StatType.Dex );
 						int intMod = GetStatMod( m_Guard, StatType.Int );
 
-                        List<Type> types = new List<Type>();
+						List<Type> types = new List<Type>();
 
 						if ( strMod <= 0 )
 							types.Add( typeof( StrengthSpell ) );
@@ -712,7 +712,7 @@ namespace Server.Factions
 							int dexMod = GetStatMod( combatant, StatType.Dex );
 							int intMod = GetStatMod( combatant, StatType.Int );
 
-                            List<Type> types = new List<Type>();
+							List<Type> types = new List<Type>();
 
 							if ( strMod >= 0 )
 								types.Add( typeof( WeakenSpell ) );

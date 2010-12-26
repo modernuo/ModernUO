@@ -49,7 +49,7 @@ namespace Server.Items
 
 		public void Unlink()
 		{
-			SpawnEntry se = this.Spawner as SpawnEntry;
+			ISpawner se = this.Spawner;
 
 			if ( se != null )
 			{

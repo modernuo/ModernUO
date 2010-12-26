@@ -99,17 +99,6 @@ namespace Server
 		ValoriaShips
 	}
 
-
-	public interface ISpawner
-	{
-		bool UnlinkOnTaming{ get; }
-		Point3D Home{ get; }
-		int Range{ get; }
-
-		void Remove( object spawn );
-	}
-
-
 	public class Region : IComparable
 	{
 		private static List<Region> m_Regions = new List<Region>();

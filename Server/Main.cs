@@ -108,8 +108,11 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-		public static readonly bool Is64Bit = (IntPtr.Size == 8);
-		//TODO: Upon public release of .NET 4.0, use Environment.Is64BitOperatingSystem/Process
+#if Framework_4_0
+		public static readonly bool Is64Bit = Environment.Is64BitProcess;
+#else
+		public static readonly bool Is64Bit = (IntPtr.Size == 8);	//Returns the size for the current /process/
+#endif
 
 		private static bool m_MultiProcessor;
 		private static int m_ProcessorCount;
@@ -482,7 +485,7 @@ namespace Server
 
 			ScriptCompiler.Invoke( "Initialize" );
 
-			MessagePump ms = m_MessagePump = new MessagePump();
+			MessagePump messagePump = new MessagePump();
 
 			timerThread.Start();
 
@@ -508,7 +511,7 @@ namespace Server
 					Item.ProcessDeltaQueue();
 
 					Timer.Slice();
-					m_MessagePump.Slice();
+					messagePump.Slice();
 
 					NetState.FlushAll();
 					NetState.ProcessDisposedQueue();

@@ -412,7 +412,7 @@ namespace Server
 				{
 					string file = e.FileName;
 
-					// Rediculous. FileName is null if the warning/error is internally generated in csc.
+					// Ridiculous. FileName is null if the warning/error is internally generated in csc.
 					if ( string.IsNullOrEmpty( file ) ) {
 						Console.WriteLine( "ScriptCompiler: {0}: {1}", e.ErrorNumber, e.ErrorText );
 						continue;

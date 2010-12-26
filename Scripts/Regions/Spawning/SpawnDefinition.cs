@@ -15,7 +15,7 @@ namespace Server.Regions
 		{
 		}
 
-		public abstract object Spawn( SpawnEntry entry );
+		public abstract ISpawnable Spawn( SpawnEntry entry );
 
 		public abstract bool CanSpawn( params Type[] types );
 
@@ -110,19 +110,20 @@ namespace Server.Regions
 		{
 		}
 
-		public override object Spawn( SpawnEntry entry )
+		public override ISpawnable Spawn( SpawnEntry entry )
 		{
 			BaseRegion region = entry.Region;
 			Map map = region.Map;
 
 			Point3D loc = entry.RandomSpawnLocation( this.Height, this.Land, this.Water );
+
 			if ( loc == Point3D.Zero )
 				return null;
 
 			return Construct( entry, loc, map );
 		}
 
-		protected abstract object Construct( SpawnEntry entry, Point3D loc, Map map );
+		protected abstract ISpawnable Construct( SpawnEntry entry, Point3D loc, Map map );
 
 		public override bool CanSpawn( params Type[] types )
 		{
@@ -174,15 +175,16 @@ namespace Server.Regions
 			mob.Delete();
 		}
 
-		protected override object Construct( SpawnEntry entry, Point3D loc, Map map )
+		protected override ISpawnable Construct(SpawnEntry entry, Point3D loc, Map map)
 		{
 			Mobile mobile = CreateMobile();
 
 			BaseCreature creature = mobile as BaseCreature;
+
 			if ( creature != null )
 			{
-				creature.Home = entry.Home;
-				creature.RangeHome = entry.Range;
+				creature.Home = entry.HomeLocation;
+				creature.RangeHome = entry.HomeRange;
 			}
 
 			if ( entry.Direction != SpawnEntry.InvalidDirection )
@@ -237,7 +239,7 @@ namespace Server.Regions
 			item.Delete();
 		}
 
-		protected override object Construct( SpawnEntry entry, Point3D loc, Map map )
+		protected override ISpawnable Construct( SpawnEntry entry, Point3D loc, Map map )
 		{
 			Item item = CreateItem();
 
@@ -376,7 +378,7 @@ namespace Server.Regions
 				m_TotalWeight += elements[i].Weight;
 		}
 
-		public override object Spawn( SpawnEntry entry )
+		public override ISpawnable Spawn(SpawnEntry entry)
 		{
 			int index = Utility.Random( m_TotalWeight );
 

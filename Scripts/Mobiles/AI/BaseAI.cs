@@ -1548,10 +1548,10 @@ namespace Server.Mobiles
 			m_Mobile.IsBonded = false;
 
 			SpawnEntry se = m_Mobile.Spawner as SpawnEntry;
-			if( se != null && se.Home != Point3D.Zero )
+			if( se != null && se.HomeLocation != Point3D.Zero )
 			{
-				m_Mobile.Home = se.Home;
-				m_Mobile.RangeHome = se.Range;
+				m_Mobile.Home = se.HomeLocation;
+				m_Mobile.RangeHome = se.HomeRange;
 			}
 
 			if( m_Mobile.DeleteOnRelease || m_Mobile.IsDeadPet )
@@ -2618,14 +2618,14 @@ namespace Server.Mobiles
 
 				if( se != null && se.ReturnOnDeactivate && !m_Mobile.Controlled )
 				{
-					if( se.Home == Point3D.Zero )
+					if( se.HomeLocation == Point3D.Zero )
 					{
 						if( !m_Mobile.Region.AcceptsSpawnsFrom( se.Region ) )
 						{
 							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ReturnToHome ) );
 						}
 					}
-					else if( !m_Mobile.InRange( se.Home, se.Range ) )
+					else if( !m_Mobile.InRange( se.HomeLocation, se.HomeRange ) )
 					{
 						Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ReturnToHome ) );
 					}

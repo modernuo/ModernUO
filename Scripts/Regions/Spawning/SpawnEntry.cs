@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
 using Server.Commands;
@@ -34,7 +35,7 @@ namespace Server.Regions
 		private int m_Range;
 		private Direction m_Direction;
 		private SpawnDefinition m_Definition;
-		private ArrayList m_SpawnedObjects;
+		private List<ISpawnable> m_SpawnedObjects;
 		private int m_Max;
 		private TimeSpan m_MinSpawnTime;
 		private TimeSpan m_MaxSpawnTime;
@@ -45,11 +46,11 @@ namespace Server.Regions
 
 		public int ID{ get{ return m_ID; } }
 		public BaseRegion Region{ get{ return m_Region; } }
-		public Point3D Home{ get{ return m_Home; } }
-		public int Range{ get{ return m_Range; } }
+		public Point3D HomeLocation{ get{ return m_Home; } }
+		public int HomeRange{ get{ return m_Range; } }
 		public Direction Direction{ get{ return m_Direction; } }
 		public SpawnDefinition Definition{ get{ return m_Definition; } }
-		public ArrayList SpawnedObjects{ get{ return m_SpawnedObjects; } }
+		public List<ISpawnable> SpawnedObjects{ get{ return m_SpawnedObjects; } }
 		public int Max{ get{ return m_Max; } }
 		public TimeSpan MinSpawnTime{ get{ return m_MinSpawnTime; } }
 		public TimeSpan MaxSpawnTime{ get{ return m_MaxSpawnTime; } }
@@ -66,7 +67,7 @@ namespace Server.Regions
 			m_Range = range;
 			m_Direction = direction;
 			m_Definition = definition;
-			m_SpawnedObjects = new ArrayList();
+			m_SpawnedObjects = new List<ISpawnable>();
 			m_Max = max;
 			m_MinSpawnTime = minSpawnTime;
 			m_MaxSpawnTime = maxSpawnTime;
@@ -103,30 +104,23 @@ namespace Server.Regions
 
 		private void Spawn()
 		{
-			object spawn = m_Definition.Spawn( this );
+			ISpawnable spawn = m_Definition.Spawn(this);
 
 			if ( spawn != null )
 				Add( spawn );
 		}
 
-		private void Add( object spawn )
+		private void Add( ISpawnable spawn )
 		{
 			m_SpawnedObjects.Add( spawn );
 
-			if ( spawn is Mobile )
-			{
-				((Mobile)spawn).Spawner = this;
+			spawn.Spawner = this;
 
-				if ( spawn is BaseCreature )
-					((BaseCreature)spawn).RemoveIfUntamed = this.RemoveIfUntamed;
-			}
-			else
-			{
-				((Item)spawn).Spawner = this;
-			}
+			if ( spawn is BaseCreature )
+				((BaseCreature)spawn).RemoveIfUntamed = this.RemoveIfUntamed;
 		}
 
-		void ISpawner.Remove( object spawn )
+		void ISpawner.Remove( ISpawnable spawn )
 		{
 			m_SpawnedObjects.Remove( spawn );
 
@@ -181,23 +175,14 @@ namespace Server.Regions
 
 		private void InternalDeleteSpawnedObjects()
 		{
-			foreach ( object obj in m_SpawnedObjects )
+			foreach ( ISpawnable spawnable in m_SpawnedObjects )
 			{
-				if ( obj is Mobile )
-				{
-					Mobile mob = (Mobile) obj;
+				spawnable.Spawner = null;
 
-					mob.Spawner = null;
-					if ( !(mob is BaseCreature) || !((BaseCreature)mob).Controlled )
-						mob.Delete();
-				}
-				else
-				{
-					Item item = (Item) obj;
+				bool uncontrolled = !(spawnable is BaseCreature) || !((BaseCreature)spawnable).Controlled;
 
-					item.Spawner = null;
-					item.Delete();
-				}
+				if( uncontrolled )
+					spawnable.Delete();
 			}
 
 			m_SpawnedObjects.Clear();
@@ -235,13 +220,9 @@ namespace Server.Regions
 
 			for ( int i = 0; i < m_SpawnedObjects.Count; i++ )
 			{
-				object spawn = m_SpawnedObjects[i];
+				ISpawnable spawn = m_SpawnedObjects[i];
 
-				int serial;
-				if ( spawn is Mobile )
-					serial = ((Mobile)spawn).Serial;
-				else
-					serial = ((Item)spawn).Serial;
+				int serial = spawn.Serial;
 
 				writer.Write( (int) serial );
 			}
@@ -266,10 +247,10 @@ namespace Server.Regions
 			for ( int i = 0; i < count; i++ )
 			{
 				int serial = reader.ReadInt();
-				IEntity entity = World.FindEntity( serial );
+				ISpawnable spawnableEntity = World.FindEntity( serial ) as ISpawnable;
 
-				if ( entity != null )
-					Add( entity );
+				if (spawnableEntity != null)
+					Add(spawnableEntity);
 			}
 
 			m_Running = reader.ReadBool();
@@ -291,7 +272,7 @@ namespace Server.Regions
 			CheckTimer();
 		}
 
-		private static ArrayList m_RemoveList;
+		private static List<IEntity> m_RemoveList;
 
 		public static void Remove( GenericReader reader, int version )
 		{
@@ -305,7 +286,7 @@ namespace Server.Regions
 				if ( entity != null )
 				{
 					if ( m_RemoveList == null )
-						m_RemoveList = new ArrayList();
+						m_RemoveList = new List<IEntity>();
 
 					m_RemoveList.Add( entity );
 				}
@@ -321,12 +302,9 @@ namespace Server.Regions
 		{
 			if ( m_RemoveList != null )
 			{
-				foreach ( object obj in m_RemoveList )
+				foreach ( IEntity ent in m_RemoveList )
 				{
-					if ( obj is Mobile )
-						((Mobile)obj).Delete();
-					else
-						((Item)obj).Delete();
+					ent.Delete();
 				}
 
 				m_RemoveList = null;

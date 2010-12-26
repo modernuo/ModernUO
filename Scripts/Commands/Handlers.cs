@@ -356,8 +356,8 @@ namespace Server.Commands
 						{
 							Spawner spawner = (Spawner)item;
 
-							for ( int i = 0; !hasBankerSpawner && i < spawner.CreaturesName.Count; ++i )
-								hasBankerSpawner = Insensitive.Equals( (string)spawner.CreaturesName[i], "banker" );
+							for ( int i = 0; !hasBankerSpawner && i < spawner.SpawnNames.Count; ++i )
+								hasBankerSpawner = Insensitive.Equals( (string)spawner.SpawnNames[i], "banker" );
 
 							if ( hasBankerSpawner )
 								break;

@@ -42,9 +42,9 @@ namespace Server.Mobiles
 
 				string str = "";
 
-				if ( i < spawner.CreaturesName.Count )
+				if ( i < spawner.SpawnNames.Count )
 				{
-					str = (string)spawner.CreaturesName[i];
+					str = (string)spawner.SpawnNames[i];
 					int count = m_Spawner.CountCreatures( str );
 
 					AddLabel( 382, ( 22 * i ) + 20, 0, count.ToString() );
@@ -98,7 +98,7 @@ namespace Server.Mobiles
 				}
 				case 1: // Okay
 				{
-					m_Spawner.CreaturesName = CreateArray( info, state.Mobile );
+					m_Spawner.SpawnNames = CreateArray( info, state.Mobile );
 
 					break;
 				}
@@ -127,9 +127,9 @@ namespace Server.Mobiles
 						if ( type == 0 ) // Spawn creature
 							m_Spawner.Spawn( entry.Text );
 						else // Remove creatures
-							m_Spawner.RemoveCreatures( entry.Text );
+							m_Spawner.RemoveSpawned( entry.Text );
 
-						m_Spawner.CreaturesName = CreateArray( info, state.Mobile );
+						m_Spawner.SpawnNames = CreateArray( info, state.Mobile );
 					}
 
 					break;

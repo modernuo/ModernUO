@@ -4656,7 +4656,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				SpawnEntry se = this.Spawner as SpawnEntry;
+				ISpawner se = this.Spawner;
 				if ( se != null && se.UnlinkOnTaming )
 				{
 					this.Spawner.Remove( this );

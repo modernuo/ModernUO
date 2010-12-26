@@ -559,7 +559,7 @@ namespace Server
 		Weight		= 0x80
 	}
 
-	public class Item : IEntity, IHued, IComparable<Item>, ISerializable
+	public class Item : IEntity, IHued, IComparable<Item>, ISerializable, ISpawnable
 	{
 		public static readonly List<Item> EmptyItems = new List<Item>();
 
@@ -3438,6 +3438,7 @@ namespace Server
 			return true;
 		}
 
+		//TODO: Move to CompactInfo.
 		private ISpawner m_Spawner;
 
 		public ISpawner Spawner{ get{ return m_Spawner; } set{ m_Spawner = value; } }
