@@ -528,6 +528,7 @@ namespace Server.Mobiles
 			if (spawned == null)
 				return;
 
+			spawned.Spawner = this;
 			m_Spawned.Add(spawned);
 
 			Point3D loc = (spawned is BaseVendor ? this.Location : GetSpawnPosition());
@@ -691,6 +692,7 @@ namespace Server.Mobiles
 			base.OnDelete();
 
 			RemoveSpawned();
+
 			if ( m_Timer != null )
 				m_Timer.Stop();
 		}
@@ -809,8 +811,11 @@ namespace Server.Mobiles
 					{
 						ISpawnable e = World.FindEntity(reader.ReadInt()) as ISpawnable;
 
-						if ( e != null )
-							m_Spawned.Add( e );
+						if (e != null)
+						{
+							e.Spawner = this;
+							m_Spawned.Add(e);
+						}
 					}
 
 					if ( m_Running )
