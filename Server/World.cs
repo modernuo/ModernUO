@@ -286,6 +286,62 @@ namespace Server {
 			get { return m_LoadingType; }
 		}
 
+		private static readonly Type[] m_SerialTypeArray = new Type[1] { typeof(Serial) };
+
+		//TODO, when fully migrated to .NET 4.0:
+		//private static List<Tuple<ConstructorInfo, string>> ReadTypes( BinaryReader tdbReader )
+		private static List<object[]> ReadTypes( BinaryReader tdbReader )
+		{
+			int count = tdbReader.ReadInt32();
+
+			List<object[]> types = new List<object[]>(count);
+
+			for (int i = 0; i < count; ++i)
+			{
+				string typeName = tdbReader.ReadString();
+
+				Type t = ScriptCompiler.FindTypeByFullName(typeName);
+
+				if (t == null)
+				{
+					Console.WriteLine("failed");
+
+					if (!Core.Service)
+					{
+						Console.WriteLine("Error: Type '{0}' was not found. Delete all of those types? (y/n)", typeName);
+
+						if (Console.ReadKey(true).Key == ConsoleKey.Y)
+						{
+							types.Add(null);
+							Console.Write("World: Loading...");
+							continue;
+						}
+
+						Console.WriteLine("Types will not be deleted. An exception will be thrown.");
+					}
+					else
+					{
+						Console.WriteLine("Error: Type '{0}' was not found.", typeName);
+					}
+
+					throw new Exception(String.Format("Bad type '{0}'", typeName));
+				}
+
+				ConstructorInfo ctor = t.GetConstructor(m_SerialTypeArray);
+
+				if (ctor != null)
+				{
+					types.Add(new object[] { ctor, typeName });
+				}
+				else
+				{
+					throw new Exception(String.Format("Type '{0}' does not have a serialization constructor", t));
+				}
+			}
+
+			return types;
+		}
+
 		public static void Load() {
 			if ( m_Loaded )
 				return;
@@ -305,7 +361,6 @@ namespace Server {
 			int mobileCount = 0, itemCount = 0, guildCount = 0;
 
 			object[] ctorArgs = new object[1];
-			Type[] ctorTypes = new Type[1] { typeof( Serial ) };
 
 			List<ItemEntry> items = new List<ItemEntry>();
 			List<MobileEntry> mobiles = new List<MobileEntry>();
@@ -318,43 +373,7 @@ namespace Server {
 					using ( FileStream tdb = new FileStream( MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 						BinaryReader tdbReader = new BinaryReader( tdb );
 
-						int count = tdbReader.ReadInt32();
-
-						ArrayList types = new ArrayList( count );
-
-						for ( int i = 0; i < count; ++i ) {
-							string typeName = tdbReader.ReadString();
-
-							Type t = ScriptCompiler.FindTypeByFullName( typeName );
-
-							if ( t == null ) {
-								Console.WriteLine( "failed" );
-								
-								if ( !Core.Service ) {
-									Console.WriteLine( "Error: Type '{0}' was not found. Delete all of those types? (y/n)", typeName );
-
-									if ( Console.ReadKey( true ).Key == ConsoleKey.Y ) {
-										types.Add( null );
-										Console.Write( "World: Loading..." );
-										continue;
-									}
-
-									Console.WriteLine( "Types will not be deleted. An exception will be thrown." );
-								} else {
-									Console.WriteLine( "Error: Type '{0}' was not found.", typeName );
-								}
-
-								throw new Exception( String.Format( "Bad type '{0}'", typeName ) );
-							}
-
-							ConstructorInfo ctor = t.GetConstructor( ctorTypes );
-
-							if ( ctor != null ) {
-								types.Add( new object[] { ctor, null } );
-							} else {
-								throw new Exception( String.Format( "Type '{0}' does not have a serialization constructor", t ) );
-							}
-						}
+						List<object[]> types = ReadTypes( tdbReader );
 
 						mobileCount = idxReader.ReadInt32();
 
@@ -366,7 +385,7 @@ namespace Server {
 							long pos = idxReader.ReadInt64();
 							int length = idxReader.ReadInt32();
 
-							object[] objs = ( object[] ) types[typeID];
+							object[] objs = types[typeID];
 
 							if ( objs == null )
 								continue;
@@ -403,44 +422,7 @@ namespace Server {
 					using ( FileStream tdb = new FileStream( ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 						BinaryReader tdbReader = new BinaryReader( tdb );
 
-						int count = tdbReader.ReadInt32();
-
-						ArrayList types = new ArrayList( count );
-
-						for ( int i = 0; i < count; ++i ) {
-							string typeName = tdbReader.ReadString();
-
-							Type t = ScriptCompiler.FindTypeByFullName( typeName );
-
-							if ( t == null ) {
-								Console.WriteLine( "failed" );
-								
-								
-								if ( !Core.Service ) {
-									Console.WriteLine( "Error: Type '{0}' was not found. Delete all of those types? (y/n)", typeName );
-
-									if ( Console.ReadKey( true ).Key == ConsoleKey.Y ) {
-										types.Add( null );
-										Console.Write( "World: Loading..." );
-										continue;
-									}
-
-									Console.WriteLine( "Types will not be deleted. An exception will be thrown." );
-								} else {
-									Console.WriteLine( "Error: Type '{0}' was not found.", typeName );
-								}
-
-								throw new Exception( String.Format( "Bad type '{0}'", typeName ) );
-							}
-
-							ConstructorInfo ctor = t.GetConstructor( ctorTypes );
-
-							if ( ctor != null ) {
-								types.Add( new object[] { ctor, typeName } );
-							} else {
-								throw new Exception( String.Format( "Type '{0}' does not have a serialization constructor", t ) );
-							}
-						}
+						List<object[]> types = ReadTypes( tdbReader );
 
 						itemCount = idxReader.ReadInt32();
 
@@ -452,7 +434,7 @@ namespace Server {
 							long pos = idxReader.ReadInt64();
 							int length = idxReader.ReadInt32();
 
-							object[] objs = ( object[] ) types[typeID];
+							object[] objs = types[typeID];
 
 							if ( objs == null )
 								continue;

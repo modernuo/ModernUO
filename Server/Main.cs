@@ -28,6 +28,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+#if Framework_4_0
+using System.Threading.Tasks;
+#endif
+
 using Server;
 using Server.Accounting;
 using Server.Gumps;
@@ -586,80 +590,95 @@ namespace Server
 				VerifySerialization( ScriptCompiler.Assemblies[a] );
 		}
 
+		private static readonly Type[] m_SerialTypeArray = new Type[1] { typeof(Serial) };
+
+		private static void VerifyType( Type t )
+		{
+			bool isItem = t.IsSubclassOf(typeof(Item));
+
+			if (isItem || t.IsSubclassOf(typeof(Mobile)))
+			{
+				if (isItem)
+				{
+					//++m_ItemCount;
+					Interlocked.Increment(ref m_ItemCount);
+				}
+				else
+				{
+					//++m_MobileCount;
+					Interlocked.Increment(ref m_MobileCount);
+				}
+
+				StringBuilder warningSb = null;
+
+				try
+				{
+					/*
+					if( isItem && t.IsPublic && !t.IsAbstract )
+					{
+						ConstructorInfo cInfo = t.GetConstructor( Type.EmptyTypes );
+
+						if( cInfo == null )
+						{
+							if (warningSb == null)
+								warningSb = new StringBuilder();
+
+							warningSb.AppendLine("       - No zero paramater constructor");
+						}
+					}*/
+
+					if (t.GetConstructor(m_SerialTypeArray) == null)
+					{
+						if (warningSb == null)
+							warningSb = new StringBuilder();
+
+						warningSb.AppendLine("       - No serialization constructor");
+					}
+
+					if (t.GetMethod("Serialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) == null)
+					{
+						if (warningSb == null)
+							warningSb = new StringBuilder();
+
+						warningSb.AppendLine("       - No Serialize() method");
+					}
+
+					if (t.GetMethod("Deserialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) == null)
+					{
+						if (warningSb == null)
+							warningSb = new StringBuilder();
+
+						warningSb.AppendLine("       - No Deserialize() method");
+					}
+
+					if (warningSb != null && warningSb.Length > 0)
+					{
+						Console.WriteLine("Warning: {0}\n{1}", t, warningSb.ToString());
+					}
+				}
+				catch
+				{
+					Console.WriteLine("Warning: Exception in serialization verification of type {0}", t);
+				}
+			}
+		}
+
 		private static void VerifySerialization( Assembly a )
 		{
 			if( a == null )
 				return;
 
-			Type[] ctorTypes = new Type[] { typeof( Serial ) };
-
-			foreach( Type t in a.GetTypes() )
-			{
-				bool isItem = t.IsSubclassOf( typeof( Item ) );
-
-				if( isItem || t.IsSubclassOf( typeof( Mobile ) ) )
+#if Framework_4_0
+			Parallel.ForEach(a.GetTypes(), t => 
 				{
-					if( isItem )
-						++m_ItemCount;
-					else
-						++m_MobileCount;
-
-					bool warned = false;
-
-					try
-					{
-
-						/*
-						if( isItem && t.IsPublic && !t.IsAbstract )
-						{
-							ConstructorInfo cInfo = t.GetConstructor( Type.EmptyTypes );
-							if( cInfo == null )
-							{
-								if( !warned )
-									Console.WriteLine( "Warning: {0}", t );
-
-								warned = true;
-								Console.WriteLine( "       - No zero paramater constructor" );
-							}
-						}
-						*/
-
-						if( t.GetConstructor( ctorTypes ) == null )
-						{
-							if( !warned )
-								Console.WriteLine( "Warning: {0}", t );
-
-							warned = true;
-							Console.WriteLine( "       - No serialization constructor" );
-						}
-
-						if( t.GetMethod( "Serialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly ) == null )
-						{
-							if( !warned )
-								Console.WriteLine( "Warning: {0}", t );
-
-							warned = true;
-							Console.WriteLine( "       - No Serialize() method" );
-						}
-
-						if( t.GetMethod( "Deserialize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly ) == null )
-						{
-							if( !warned )
-								Console.WriteLine( "Warning: {0}", t );
-
-							warned = true;
-							Console.WriteLine( "       - No Deserialize() method" );
-						}
-
-						if( warned )
-							Console.WriteLine();
-					}
-					catch
-					{
-						Console.WriteLine( "Warning: Exception in serialization verification of type {0}", t );
-					}
-				}
+					VerifyType(t);
+				});
+#else
+			foreach (Type t in a.GetTypes())
+			{
+				VerifyType(t);
 			}
+#endif
 		}
 	}
 
