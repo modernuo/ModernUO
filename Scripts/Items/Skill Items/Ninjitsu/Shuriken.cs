@@ -5,7 +5,7 @@ using Server.Engines.Craft;
 namespace Server.Items
 {
 	[Flipable( 0x27AC, 0x27F7 )]
-	public class Shuriken : Item, IUsesRemaining, ICraftable
+	public class Shuriken : Item, ICraftable, INinjaAmmo
 	{
 		private int m_UsesRemaining;
 

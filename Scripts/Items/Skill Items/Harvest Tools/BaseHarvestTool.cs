@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Mobiles;
 using Server.Network;
 using Server.Engines.Craft;
@@ -10,7 +8,7 @@ using Server.ContextMenus;
 
 namespace Server.Items
 {
-	interface IUsesRemaining
+	public interface IUsesRemaining
 	{
 		int UsesRemaining{ get; set; }
 		bool ShowUsesRemaining{ get; set; }
