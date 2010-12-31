@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
-
-using Server;
+using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
-using Server.Engines.VeteranRewards;
 
 namespace Server.Items
-{	
+{
 	public enum MiningCartType
 	{
 		OreSouth	= 100,
@@ -49,7 +46,7 @@ namespace Server.Items
 			get{ return m_CartType; }
 		}
 
-		private int m_Gems;		
+		private int m_Gems;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Gems
@@ -58,7 +55,7 @@ namespace Server.Items
 			set{ m_Gems = value; }
 		}
 
-		private int m_Ore;		
+		private int m_Ore;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Ore
@@ -68,10 +65,10 @@ namespace Server.Items
 		}
 
 		private Timer m_Timer;
-		
+
 		[Constructable]
 		public MiningCart( MiningCartType type ) : base()
-		{	
+		{
 			m_CartType = type;
 
 			switch ( type )
@@ -144,9 +141,28 @@ namespace Server.Items
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( !from.InRange( GetWorldLocation(), 2 ) )
+			/*
+			 * Unique problems have unique solutions.  OSI does not have a problem with 1000s of mining carts
+			 * due to the fact that they have only a miniscule fraction of the number of 10 year vets that a
+			 * typical RunUO shard will have (RunUO's scaled down account aging system makes this a unique problem),
+			 * and the "freeness" of free accounts. We also dont have mitigating factors like inactive (unpaid)
+			 * accounts not gaining veteran time.
+			 *
+			 * The lack of high end vets and vet rewards on OSI has made testing the *exact* ranging/stacking
+			 * behavior of these things all but impossible, so either way its just an estimation.
+			 *
+			 * If youd like your shard's carts/stumps to work the way they did before, simply replace the check
+			 * below with this line of code:
+			 *
+			 * if (!from.InRange(GetWorldLocation(), 2)
+			 *
+			 * However, I am sure these checks are more accurate to OSI than the former version was.
+			 *
+			 */
+
+			if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this) || !((from.Z - Z) > -3 && (from.Z - Z) < 3))
 			{
-				from.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
+				from.LocalOverheadMessage(Network.MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
 			}
 			else if ( house != null && house.HasSecureAccess( from, SecureLevel.Friends ) )
 			{
@@ -185,7 +201,7 @@ namespace Server.Items
 								m_Ore -= amount;
 							}
 						}
-						else 
+						else
 							from.SendLocalizedMessage( 1094725 ); // There are no more resources available at this time.
 
 						break;
@@ -230,13 +246,13 @@ namespace Server.Items
 								m_Gems -= amount;
 							}
 						}
-						else 
+						else
 							from.SendLocalizedMessage( 1094725 ); // There are no more resources available at this time.
 
 						break;
 				}
 			}
-			else 
+			else
 				from.SendLocalizedMessage( 1061637 ); // You are not allowed to access this.
 		}
 
@@ -259,13 +275,13 @@ namespace Server.Items
 			else
 				writer.Write( (DateTime) DateTime.Now + TimeSpan.FromDays( 1 ) );
 		}
-			
+
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			switch ( version )
 			{
 				case 1:
@@ -279,31 +295,31 @@ namespace Server.Items
 					DateTime next = reader.ReadDateTime();
 
 					if ( next < DateTime.Now )
-						next = DateTime.Now;	
+						next = DateTime.Now;
 
 					m_Timer = Timer.DelayCall( next - DateTime.Now, TimeSpan.FromDays( 1 ), new TimerCallback( GiveResources ) );
 					break;
 			}
 		}
-	}	
-	
+	}
+
 	public class MiningCartDeed : BaseAddonDeed, IRewardItem, IRewardOption
 	{
 		public override int LabelNumber{ get{ return 1080385; } } // deed for a mining cart decoration
 
 		public override BaseAddon Addon
-		{ 
+		{
 			get
-			{ 
+			{
 				MiningCart addon = new MiningCart( m_CartType );
 				addon.IsRewardItem = m_IsRewardItem;
 				addon.Gems = m_Gems;
 				addon.Ore = m_Ore;
 
-				return addon; 
-			} 
+				return addon;
+			}
 		}
-		
+
 		private MiningCartType m_CartType;
 
 		private bool m_IsRewardItem;
@@ -313,9 +329,9 @@ namespace Server.Items
 		{
 			get{ return m_IsRewardItem; }
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
-		}		
+		}
 
-		private int m_Gems;		
+		private int m_Gems;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Gems
@@ -346,23 +362,23 @@ namespace Server.Items
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-			
+
 			if ( m_IsRewardItem )
 				list.Add( 1080457 ); // 10th Year Veteran Reward
 		}
-		
+
 		public override void OnDoubleClick( Mobile from )
-		{        	
+		{
 			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 				return;
-		
+
 			if ( IsChildOf( from.Backpack ) )
 			{
 				from.CloseGump( typeof( RewardOptionGump ) );
 				from.SendGump( new RewardOptionGump( this ) );
 			}
 			else
-				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.       	
+				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -381,7 +397,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 			m_Gems = reader.ReadInt();
 			m_Ore = reader.ReadInt();
