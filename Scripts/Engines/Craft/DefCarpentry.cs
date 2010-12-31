@@ -190,10 +190,10 @@ namespace Server.Engines.Craft
 				index = AddCraft( typeof( ElegantArmoire ),	1044292, 1030330, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
 				
-				index = AddCraft( typeof( MapleArmoire ),	1044292, 1030328, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
+				index = AddCraft( typeof( MapleArmoire ),	1044292, 1030332, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
 				
-				index = AddCraft( typeof( CherryArmoire ),	1044292, 1030328, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
+				index = AddCraft( typeof( CherryArmoire ),	1044292, 1030334, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
