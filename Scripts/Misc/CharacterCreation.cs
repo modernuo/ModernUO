@@ -357,7 +357,7 @@ namespace Server.Misc
 			PlaceItemIn( cont, 93, 66, new PixieSwatter() );
 
 			for( int i = 0; i < 10; i++ )
-                PlaceItemIn( cont, 117, 128, new MessageInABottle( Utility.RandomBool() ? Map.Trammel : Map.Felucca, 4 ) );
+				PlaceItemIn( cont, 117, 128, new MessageInABottle( Utility.RandomBool() ? Map.Trammel : Map.Felucca, 4 ) );
 
 			PlaceItemIn( bank, 18, 124, cont );
 

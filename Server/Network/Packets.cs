@@ -3771,7 +3771,7 @@ namespace Server.Network
 		}
 	}
 
-	public class ClearWeaponAbility : Packet
+	public sealed class ClearWeaponAbility : Packet
 	{
 		public static readonly Packet Instance = Packet.SetStatic( new ClearWeaponAbility() );
 

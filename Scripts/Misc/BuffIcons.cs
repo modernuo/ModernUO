@@ -147,7 +147,7 @@ namespace Server
 
 		#endregion
 
-		#region Convience Methods
+		#region Convenience Methods
 		public static void AddBuff( Mobile m, BuffInfo b )
 		{
 			PlayerMobile pm = m as PlayerMobile;
@@ -184,26 +184,26 @@ namespace Server
 		EvilOmen,
 		UnknownStandingSwirl,	//Which is healing throttle & Stamina throttle?
 		UnknownKneelingSword,
-		DivineFury,
-		EnemyOfOne,
+		DivineFury,			//*
+		EnemyOfOne,			//*
 		HidingAndOrStealth,	//*
 		ActiveMeditation,	//*
-		BloodOathCaster,
-		BloodOathCurse,
+		BloodOathCaster,	//*
+		BloodOathCurse,		//*
 		CorpseSkin,			//*
 		Mindrot,			//*
 		PainSpike,			//*
 		Strangle,
 		GiftOfRenewal,		//*
-		AttuneWeapon,
-		Thunderstorm,
-		EssenceOfWind,
-		EtherealVoyage,
-		GiftOfLife,
-		ArcaneEmpowerment,
+		AttuneWeapon,		//*
+		Thunderstorm,		//*
+		EssenceOfWind,		//*
+		EtherealVoyage,		//*
+		GiftOfLife,			//*
+		ArcaneEmpowerment,	//*
 		MortalStrike,
-		ReactiveArmor,
-		Protection,
+		ReactiveArmor,		//*
+		Protection,			//*
 		ArchProtection,
 		MagicReflection,	//*
 		Incognito,			//*
@@ -217,15 +217,15 @@ namespace Server
 		Clumsy,				//*
 		FeebleMind,			//*
 		Weaken,				//*
-		Curse,			
+		Curse,				//*
 		MassCurse,
 		Agility,			//*
 		Cunning,			//*
 		Strength,			//*
-		Bless
+		Bless				//*
 	}
 
-	public class AddBuffPacket : Packet
+	public sealed class AddBuffPacket : Packet
 	{
 		public AddBuffPacket( Mobile m, BuffInfo info )
 			: this( m, info.ID, info.TitleCliloc, info.SecondaryCliloc, info.Args, (info.TimeStart != DateTime.MinValue) ? ((info.TimeStart + info.TimeLength) - DateTime.Now) : TimeSpan.Zero )
@@ -279,7 +279,7 @@ namespace Server
 		}
 	}
 
-	public class RemoveBuffPacket : Packet
+	public sealed class RemoveBuffPacket : Packet
 	{
 		public RemoveBuffPacket( Mobile mob, BuffInfo info )
 			: this( mob, info.ID )

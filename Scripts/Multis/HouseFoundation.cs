@@ -2114,7 +2114,7 @@ namespace Server.Multis
 		}
 	}
 
-	public class DesignStateGeneral : Packet
+	public sealed class DesignStateGeneral : Packet
 	{
 		public DesignStateGeneral( HouseFoundation house, DesignState state )
 			: base( 0xBF )
@@ -2127,7 +2127,7 @@ namespace Server.Multis
 		}
 	}
 
-	public class DesignStateDetailed : Packet
+	public sealed class DesignStateDetailed : Packet
 	{
 		public const int MaxItemsPerStairBuffer = 750;
 
