@@ -103,7 +103,7 @@ namespace Server.Mobiles
 			private BaseVendor m_Vendor;
 
 			public BulkOrderInfoEntry( Mobile from, BaseVendor vendor )
-				: base( 6152, 6 )
+				: base( 6152 )
 			{
 				m_From = from;
 				m_Vendor = vendor;
@@ -1404,14 +1404,14 @@ namespace Server.Mobiles
 		{
 			if ( from.Alive && IsActiveVendor )
 			{
+				if ( SupportsBulkOrders( from ) )
+					list.Add( new BulkOrderInfoEntry( from, this ) );
+				
 				if ( IsActiveSeller )
 					list.Add( new VendorBuyEntry( from, this ) );
 
 				if ( IsActiveBuyer )
 					list.Add( new VendorSellEntry( from, this ) );
-
-				if ( SupportsBulkOrders( from ) )
-					list.Add( new BulkOrderInfoEntry( from, this ) );
 			}
 
 			base.AddCustomContextEntries( from, list );

@@ -16,24 +16,27 @@ namespace Server.Items
 		public override int AosMinDamage{ get{ return 13; } }
 		public override int AosMaxDamage{ get{ return 15; } }
 		public override int AosSpeed{ get{ return 35; } }
+		public override float MlSpeed{ get{ return 3.00f; } }
 
 		public override int OldStrengthReq{ get{ return 25; } }
 		public override int OldMinDamage{ get{ return 1; } }
 		public override int OldMaxDamage{ get{ return 15; } }
 		public override int OldSpeed{ get{ return 35; } }
+		
+		public override int InitMinHits{ get{ return 31; } }
+		public override int InitMaxHits{ get{ return 60; } }
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Slash1H; } }
 
 		[Constructable]
-		public GargoylesPickaxe() : this( 100 )
+		public GargoylesPickaxe() : this( Utility.RandomMinMax( 101, 125 ))
 		{
 		}
 
 		[Constructable]
-		public GargoylesPickaxe( int uses ) : base( 0xE86 )
+		public GargoylesPickaxe( int uses ) : base( 0xE85 + Utility.Random( 2 ))
 		{
 			Weight = 11.0;
-			Hue = 0x973;
 			UsesRemaining = uses;
 			ShowUsesRemaining = true;
 		}
@@ -54,6 +57,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+			
+			if ( Hue == 0x973 )
+				Hue = 0x0;
 		}
 	}
 }
