@@ -337,8 +337,8 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 8; } }
 		public override int BaseEnergyResistance{ get{ return 8; } }
 
-		public override int InitMinHits{ get{ return 7; } }
-		public override int InitMaxHits{ get{ return 12; } }
+		public override int InitMinHits{ get{ return ( Core.ML ? 14 : 7 ); } }
+		public override int InitMaxHits{ get{ return ( Core.ML ? 28 : 12 ); } }
 
 		[Constructable]
 		public SkullCap() : this( 0 )
