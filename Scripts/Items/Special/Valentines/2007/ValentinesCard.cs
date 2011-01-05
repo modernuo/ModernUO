@@ -38,11 +38,9 @@ namespace Server.Items
 		 *
 		 */
 
-		public override void GetProperties(ObjectPropertyList list)
+		public override void AddNameProperty(ObjectPropertyList list)
 		{
 			list.Add(m_LabelNumber, String.Format("{0}\t{1}", (m_To != null) ? m_To : Unsigned, (m_From != null) ? m_From : Unsigned));
-			list.Add("Blessed");
-			AddWeightProperty(list);
 		}
 
 		public override void OnDoubleClick(Mobile from)
