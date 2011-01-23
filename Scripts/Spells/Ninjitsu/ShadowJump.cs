@@ -77,7 +77,7 @@ namespace Server.Spells.Ninjitsu
 			{
 				Caster.SendLocalizedMessage( 502831 ); // Cannot teleport to that spot.
 			}
-			else if (SpellHelper.CheckMulti( Caster.Location, Caster.Map, true, 5 ))
+			else if ( SpellHelper.CheckMulti( new Point3D( p ), map, true, 5 ) )
 			{
 				Caster.SendLocalizedMessage( 502831 ); // Cannot teleport to that spot.
 			}

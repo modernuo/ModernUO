@@ -75,10 +75,12 @@ namespace Server.Spells
 		{
 			return CheckMulti( p, map, true, 0);
 		}
+		
 		public static bool CheckMulti(Point3D p, Map map, bool houses)
 		{
 			return CheckMulti(p, map, houses, 0);
 		}
+		
 		public static bool CheckMulti( Point3D p, Map map, bool houses, int housingrange )
 		{
 			if( map == null || map == Map.Internal )
@@ -90,11 +92,11 @@ namespace Server.Spells
 			{
 				BaseMulti multi = sector.Multis[i];
 
-				if( houses && multi is BaseHouse  )
+				if( multi is BaseHouse )
 				{
 					BaseHouse bh = (BaseHouse)multi;
 
-					if(bh.IsInside( p, 16 ) || (housingrange > 0 && bh.InRange(p, housingrange)))
+					if( ( houses && bh.IsInside( p, 16 ) ) || ( housingrange > 0 && bh.InRange( p, housingrange ) ) )
 						return true;
 				}
 				else if( multi.Contains( p ))
@@ -102,6 +104,7 @@ namespace Server.Spells
 					return true;
 				}
 			}
+			
 			return false;
 		}
 

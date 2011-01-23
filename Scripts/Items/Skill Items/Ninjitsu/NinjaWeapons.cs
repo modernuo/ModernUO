@@ -346,8 +346,8 @@ namespace Server.Items
 		{
 			private INinjaWeapon weapon;
 
-			public LoadEntry(INinjaWeapon wep)
-				: base(6222, 0)
+			public LoadEntry(INinjaWeapon wep, int entry)
+				: base(entry, 0)
 			{
 				weapon = wep;
 			}
@@ -365,10 +365,10 @@ namespace Server.Items
 		{
 			private INinjaWeapon weapon;
 
-			public UnloadEntry(INinjaWeapon belt)
-				: base(6223, 0)
+			public UnloadEntry(INinjaWeapon wep, int entry)
+				: base(entry, 0)
 			{
-				weapon = belt;
+				weapon = wep;
 
 				Enabled = (weapon.UsesRemaining > 0);
 			}
