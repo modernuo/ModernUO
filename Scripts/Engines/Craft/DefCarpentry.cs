@@ -76,7 +76,7 @@ namespace Server.Engines.Craft
 					return 1044156; // You create an exceptional quality item and affix your maker's mark.
 				else if ( quality == 2 )
 					return 1044155; // You create an exceptional quality item.
-				else				
+				else
 					return 1044154; // You create the item.
 			}
 		}
@@ -118,14 +118,12 @@ namespace Server.Engines.Craft
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
-			if( Core.AOS )	//Duplicate Entries to preserve ordering depending on era 
+			if( Core.AOS )	//Duplicate Entries to preserve ordering depending on era
 			{
 				index = AddCraft( typeof( FishingPole ), 1044294, 1023519, 68.4, 93.4, typeof( Log ), 1044041, 5, 1044351 ); //This is in the categor of Other during AoS
 				AddSkill( index, SkillName.Tailoring, 40.0, 45.0 );
 				AddRes( index, typeof( Cloth ), 1044286, 5, 1044287 );
 			}
-
-
 
 			// Furniture
 			AddCraft( typeof( FootStool ),					1044291, 1022910,	11.0,  36.0,	typeof( Log ), 1044041,  9, 1044351 );
@@ -159,7 +157,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( WoodenChest ),				1044292, 1023650,	73.6,  98.6,	typeof( Log ), 1044041, 20, 1044351 );
 			AddCraft( typeof( EmptyBookcase ),				1044292, 1022718,	31.5,  56.5,	typeof( Log ), 1044041, 25, 1044351 );
 			AddCraft( typeof( FancyArmoire ),				1044292, 1044312,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );
-			AddCraft( typeof( Armoire ),					1044292, 1022643,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );	
+			AddCraft( typeof( Armoire ),					1044292, 1022643,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );
 
 			if( Core.SE )
 			{
@@ -186,13 +184,13 @@ namespace Server.Engines.Craft
 
 				index = AddCraft( typeof( RedArmoire ),	1044292, 1030328, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 				index = AddCraft( typeof( ElegantArmoire ),	1044292, 1030330, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 				index = AddCraft( typeof( MapleArmoire ),	1044292, 1030332, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 				index = AddCraft( typeof( CherryArmoire ),	1044292, 1030334, 90.0, 115.0,	typeof( Log ), 1044041, 40, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
 			}
@@ -207,7 +205,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( GnarledStaff ), 1044295, 1025112, 78.9, 103.9, typeof( Log ), 1044041, 7, 1044351 );
 			AddCraft( typeof( WoodenShield ), 1044295, 1027034, 52.6, 77.6, typeof( Log ), 1044041, 9, 1044351 );
 
-			if( !Core.AOS )	//Duplicate Entries to preserve ordering depending on era 
+			if( !Core.AOS )	//Duplicate Entries to preserve ordering depending on era
 			{
 				index = AddCraft( typeof( FishingPole ), 1044295, 1023519, 68.4, 93.4, typeof( Log ), 1044041, 5, 1044351 ); //This is in the categor of Other during AoS
 				AddSkill( index, SkillName.Tailoring, 40.0, 45.0 );
@@ -222,9 +220,7 @@ namespace Server.Engines.Craft
 				index = AddCraft( typeof( Fukiya ), 1044295, 1030229, 60.0, 85.0, typeof( Log ), 1044041, 6, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
 
-				index = AddCraft( typeof( Tetsubo ), 1044295, 1030225, 85.0, 110.0, typeof( Log ), 1044041, 8, 1044351 );
-				AddSkill( index, SkillName.Tinkering, 40.0, 45.0 );
-				AddRes( index, typeof( IronIngot ), 1044036, 5, 1044037 );
+				index = AddCraft( typeof( Tetsubo ), 1044295, 1030225, 80.0, 140.3, typeof( Log ), 1044041, 10, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
@@ -236,22 +232,22 @@ namespace Server.Engines.Craft
 			index = AddCraft( typeof( Harp ), 1044293, 1023761, 78.9, 103.9, typeof( Log ), 1044041, 35, 1044351 );
 			AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 15, 1044287 );
-			
+
 			index = AddCraft( typeof( Drums ), 1044293, 1023740, 57.8, 82.8, typeof( Log ), 1044041, 20, 1044351 );
 			AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 10, 1044287 );
-			
+
 			index = AddCraft( typeof( Lute ), 1044293, 1023763, 68.4, 93.4, typeof( Log ), 1044041, 25, 1044351 );
 			AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 10, 1044287 );
-			
+
 			index = AddCraft( typeof( Tambourine ), 1044293, 1023741, 57.8, 82.8, typeof( Log ), 1044041, 15, 1044351 );
 			AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 10, 1044287 );
 
 			index = AddCraft( typeof( TambourineTassel ), 1044293, 1044320, 57.8, 82.8, typeof( Log ), 1044041, 15, 1044351 );
 			AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );
-			AddRes( index, typeof( Cloth ), 1044286, 15, 1044287 );	
+			AddRes( index, typeof( Cloth ), 1044286, 15, 1044287 );
 
 			if( Core.SE )
 			{
@@ -261,16 +257,16 @@ namespace Server.Engines.Craft
 			}
 
 			// Misc
-			index = AddCraft( typeof( SmallBedSouthDeed ), 1044290, 1044321, 94.7, 113.1, typeof( Log ), 1044041, 100, 1044351 );
+			index = AddCraft( typeof( SmallBedSouthDeed ), 1044290, 1044321, 94.7, 119.8, typeof( Log ), 1044041, 100, 1044351 );
 			AddSkill( index, SkillName.Tailoring, 75.0, 80.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 100, 1044287 );
-			index = AddCraft( typeof( SmallBedEastDeed ), 1044290, 1044322, 94.7, 113.1, typeof( Log ), 1044041, 100, 1044351 );
+			index = AddCraft(typeof(SmallBedEastDeed), 1044290, 1044322, 94.7, 119.8, typeof(Log), 1044041, 100, 1044351);
 			AddSkill( index, SkillName.Tailoring, 75.0, 80.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 100, 1044287 );
-			index = AddCraft( typeof( LargeBedSouthDeed ), 1044290,1044323, 94.7, 113.1, typeof( Log ), 1044041, 150, 1044351 );
+			index = AddCraft(typeof(LargeBedSouthDeed), 1044290, 1044323, 94.7, 119.8, typeof(Log), 1044041, 150, 1044351);
 			AddSkill( index, SkillName.Tailoring, 75.0, 80.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 150, 1044287 );
-			index = AddCraft( typeof( LargeBedEastDeed ), 1044290, 1044324, 94.7, 113.1, typeof( Log ), 1044041, 150, 1044351 );
+			index = AddCraft(typeof(LargeBedEastDeed), 1044290, 1044324, 94.7, 119.8, typeof(Log), 1044041, 150, 1044351);
 			AddSkill( index, SkillName.Tailoring, 75.0, 80.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 150, 1044287 );
 			AddCraft( typeof( DartBoardSouthDeed ), 1044290, 1044325, 15.7, 40.7, typeof( Log ), 1044041, 5, 1044351 );

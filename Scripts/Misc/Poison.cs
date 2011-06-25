@@ -140,6 +140,9 @@ namespace Server
 
 				AOS.Damage( m_Mobile, m_From, damage, 0, 0, 0, 100, 0 );
 
+				if ( 0.60 <= Utility.RandomDouble() ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+						m_Mobile.RevealingAction();
+
 				if ( (m_Index % m_Poison.m_MessageInterval) == 0 )
 					m_Mobile.OnPoisoned( m_From, m_Poison, m_Poison );
 			}

@@ -93,6 +93,8 @@ namespace Server.Spells.Third
 
 				m.FixedParticles( 0x374A, 10, 15, 5021, EffectLayer.Waist );
 				m.PlaySound( 0x205 );
+
+				HarmfulSpell( m );
 			}
 
 			FinishSequence();

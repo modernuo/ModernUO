@@ -87,20 +87,21 @@ namespace Server.Spells.Seventh
 						damage = (damage * 2) / targets.Count;
 					else if ( !Core.AOS )
 						damage /= targets.Count;
-
+						
+					double toDeal;
 					for ( int i = 0; i < targets.Count; ++i )
 					{
 						Mobile m = targets[i];
 
-						double toDeal = damage;
+						toDeal  = damage;
 
 						if ( !Core.AOS && CheckResisted( m ) )
 						{
-							toDeal *= 0.5;
+							damage *= 0.5;
 
 							m.SendLocalizedMessage( 501783 ); // You feel yourself resisting magical energy.
 						}
-
+						toDeal *= GetDamageScalar( m );
 						Caster.DoHarmful( m );
 						SpellHelper.Damage( this, m, toDeal, 0, 100, 0, 0, 0 );
 

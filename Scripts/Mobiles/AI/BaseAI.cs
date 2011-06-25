@@ -1956,16 +1956,19 @@ namespace Server.Mobiles
 				delay -= 0.075;
 			}
 
-			double offset = (double)m_Mobile.Hits / m_Mobile.HitsMax;
+			if ( m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued )
+			{
+				double offset = (double) m_Mobile.Hits / m_Mobile.HitsMax;
 
-			if( offset < 0.0 )
-				offset = 0.0;
-			else if( offset > 1.0 )
-				offset = 1.0;
+				if ( offset < 0.0 )
+					offset = 0.0;
+				else if ( offset > 1.0 )
+					offset = 1.0;
 
-			offset = 1.0 - offset;
+				offset = 1.0 - offset;
 
-			delay += (offset * 0.8);
+				delay += ( offset * 0.8 );
+			}
 
 			if( delay < 0.0 )
 				delay = 0.0;

@@ -10,6 +10,8 @@ namespace Server.Mobiles
 	{
 		public override bool SubdueBeforeTame{ get{ return true; } } // Must be beaten into submission
 		public override bool StatLossAfterTame{ get{ return true; } }
+		public virtual double BoostedSpeed{ get{ return 0.1; } }
+		public override bool ReduceSpeedWithDamage{ get{ return false; } }
 
 		[Constructable]
 		public FireBeetle() : base( "a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -46,6 +48,18 @@ namespace Server.Mobiles
 			PackItem( new IronIngot( 2 ) );
 
 			Hue = 0x489;
+		}
+
+		public override void OnHarmfulSpell( Mobile from )
+		{
+			if ( !Controlled && ControlMaster == null )
+				CurrentSpeed = BoostedSpeed;
+		}
+
+		public override void OnCombatantChange()
+		{
+			if ( Combatant == null && !Controlled && ControlMaster == null )
+				CurrentSpeed = PassiveSpeed;
 		}
 
 		public override bool OverrideBondingReqs()

@@ -53,6 +53,11 @@ namespace Server.Items
 		/// Was the owner criminal when he died?
 		/// </summary>
 		Criminal				= 0x00000020,
+
+		/// <summary>
+		/// Has this corpse been animated?
+		/// </summary>
+		Animated				= 0x00000040,
 	}
 
 	public class Corpse : Container, ICarvable
@@ -77,6 +82,9 @@ namespace Server.Items
 
 		private HairInfo			m_Hair;					// This contains the hair of the owner
 		private FacialHairInfo		m_FacialHair;			// This contains the facial hair of the owner
+
+		// For Forensics Evaluation
+		public string				 m_Forensicist;			// Name of the first PlayerMobile who used Forensic Evaluation on the corpse
 
 		public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes( 2.0 );
 
@@ -287,6 +295,13 @@ namespace Server.Items
 		{
 			get { return GetFlag( CorpseFlag.Channeled ); }
 			set { SetFlag( CorpseFlag.Channeled, value ); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Animated
+		{
+			get { return GetFlag( CorpseFlag.Animated ); }
+			set { SetFlag( CorpseFlag.Animated, value ); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

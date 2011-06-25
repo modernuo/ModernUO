@@ -20,7 +20,7 @@ namespace Server.SkillHandlers
 			m.Target = new ForensicTarget();
 			m.RevealingAction();
 
-			m.SendLocalizedMessage( 500906 ); // What would you like to evaluate?
+			m.SendLocalizedMessage( 501000 ); // Show me the crime.
 
 			return TimeSpan.FromSeconds( 1.0 );
 		}
@@ -53,8 +53,13 @@ namespace Server.SkillHandlers
 					{
 						Corpse c = (Corpse)target;
 
+						if ( c.m_Forensicist != null )
+							from.SendLocalizedMessage( 1042750, c.m_Forensicist ) ; // The forensicist  ~1_NAME~ has already discovered that:
+						else
+							c.m_Forensicist = from.Name;
+
 						if ( ((Body)c.Amount).IsHuman )
-							c.LabelTo( from, 1042751, ( c.Killer == null ? "no one" : c.Killer.Name ) );//This person was killed by ~1_KILLER_NAME~
+							from.SendLocalizedMessage( 1042751, ( c.Killer == null ? "no one" : c.Killer.Name ) );//This person was killed by ~1_KILLER_NAME~
 
 						if ( c.Looters.Count > 0 )
 						{
@@ -66,11 +71,11 @@ namespace Server.SkillHandlers
 								sb.Append( ((Mobile)c.Looters[i]).Name );
 							}
 
-							c.LabelTo( from, 1042752, sb.ToString() );//This body has been distrubed by ~1_PLAYER_NAMES~
+							from.SendLocalizedMessage( 1042752, sb.ToString() );//This body has been distrubed by ~1_PLAYER_NAMES~
 						}
 						else
 						{
-							c.LabelTo( from, 501002 );//The corpse has not be desecrated.
+							from.SendLocalizedMessage( 501002 );//The corpse has not be desecrated.
 						}
 					}
 					else

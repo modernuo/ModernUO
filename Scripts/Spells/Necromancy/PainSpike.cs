@@ -82,6 +82,7 @@ namespace Server.Spells.Necromancy
 				Misc.WeightOverloading.DFA = Misc.DFAlgorithm.Standard;
 
 				//SpellHelper.Damage( this, m, damage, 100, 0, 0, 0, 0, Misc.DFAlgorithm.PainSpike );
+				HarmfulSpell( m );
 			}
 
 			FinishSequence();

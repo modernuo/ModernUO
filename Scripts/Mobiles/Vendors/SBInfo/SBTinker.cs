@@ -39,7 +39,7 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( KeyRing ), 8, 20, 0x1010, 0 ) );
 				Add( new GenericBuyInfo( typeof( Lockpick ), 12, 20, 0x14FC, 0 ) );
 
-				Add( new GenericBuyInfo( typeof( TinkerTools ), 7, 20, 0x1EB8, 0 ) );
+				Add( new GenericBuyInfo( typeof( TinkersTools ), 7, 20, 0x1EBC, 0 ) );
 				Add( new GenericBuyInfo( typeof( Board ), 3, 20, 0x1BD7, 0 ) );
 				Add( new GenericBuyInfo( typeof( IronIngot ), 5, 16, 0x1BF2, 0 ) );
 				Add( new GenericBuyInfo( typeof( SewingKit ), 3, 20, 0xF9D, 0 ) );

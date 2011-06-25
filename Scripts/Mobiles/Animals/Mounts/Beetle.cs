@@ -11,15 +11,18 @@ namespace Server.Mobiles
 	[CorpseName( "a giant beetle corpse" )]
 	public class Beetle : BaseMount
 	{
+		public virtual double BoostedSpeed{ get{ return 0.1; } }
+
 		[Constructable]
 		public Beetle() : this( "a giant beetle" )
 		{
 		}
 
 		public override bool SubdueBeforeTame{ get{ return true; } } // Must be beaten into submission
+		public override bool ReduceSpeedWithDamage{ get{ return false; } }
 
 		[Constructable]
-		public Beetle( string name ) : base( name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public Beetle( string name ) : base( name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.25, 0.5 )
 		{
 			SetStr( 300 );
 			SetDex( 100 );
@@ -86,10 +89,20 @@ namespace Server.Mobiles
 
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 
-		// TODO: Speed boost when hit by magic.
-
 		public Beetle( Serial serial ) : base( serial )
 		{
+		}
+
+		public override void OnHarmfulSpell( Mobile from )
+		{
+			if ( !Controlled && ControlMaster == null )
+				CurrentSpeed = BoostedSpeed;
+		}
+
+		public override void OnCombatantChange()
+		{
+			if ( Combatant == null && !Controlled && ControlMaster == null )
+				CurrentSpeed = PassiveSpeed;
 		}
 
 		#region Pack Animal Methods

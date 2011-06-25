@@ -86,7 +86,7 @@ namespace Server.Spells.Necromancy
 				BuffInfo.AddBuff ( m, new BuffInfo ( BuffIcon.BloodOathCurse, 1075661, duration, m, Caster.Name.ToString () ) );
 
 				m_Table[m] = timer;
-
+				HarmfulSpell( m );
 			}
 
 			FinishSequence();

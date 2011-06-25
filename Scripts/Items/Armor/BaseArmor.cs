@@ -1614,7 +1614,8 @@ namespace Server.Items
 
 			if( Quality == ArmorQuality.Exceptional )
 			{
-				DistributeBonuses( (tool is BaseRunicTool ? 6 : Core.SE ? 15 : 14) ); // Not sure since when, but right now 15 points are added, not 14.
+				if ( !( Core.ML && this is BaseShield ))		// Guessed Core.ML removed exceptional resist bonuses from crafted shields
+					DistributeBonuses( (tool is BaseRunicTool ? 6 : Core.SE ? 15 : 14) ); // Not sure since when, but right now 15 points are added, not 14.
 
 				if( Core.ML && !(this is BaseShield) )
 				{

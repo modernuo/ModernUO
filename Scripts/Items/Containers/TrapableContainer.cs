@@ -207,8 +207,10 @@ namespace Server.Items
 			Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5022 );
 			Effects.PlaySound( Location, Map, 0x1F5 );
 
-			if ( !this.TrapOnOpen || !ExecuteTrap( from ) )
-				base.DisplayTo( from );
+			if( this.TrapOnOpen )
+			{
+				ExecuteTrap( from );
+			}
 		}
 
 		public override void Open( Mobile from )

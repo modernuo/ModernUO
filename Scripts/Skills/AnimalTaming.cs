@@ -55,6 +55,7 @@ namespace Server.SkillHandlers
 
 		public static bool MustBeSubdued( BaseCreature bc )
 		{
+            if (bc.Owners.Count > 0) { return false; } //Checks to see if the animal has been tamed before
 			return bc.SubdueBeforeTame && (bc.Hits > (bc.HitsMax / 10));
 		}
 

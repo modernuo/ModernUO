@@ -66,7 +66,46 @@ namespace Server.Spells.Necromancy
 
 					m_Table[m] = t;
 				}
+
+				HarmfulSpell( m );
 			}
+
+            //Calculations for the buff bar
+            double spiritlevel = Caster.Skills[SkillName.SpiritSpeak].Value / 10;
+            if (spiritlevel < 4)
+                spiritlevel = 4;
+            int d_MinDamage = 4;
+            int d_MaxDamage = ((int)spiritlevel + 1) * 3;
+            string args = String.Format("{0}\t{1}", d_MinDamage, d_MaxDamage);
+
+            int i_Count = (int)spiritlevel;
+            int i_MaxCount = i_Count;
+            int i_HitDelay = 5;
+            int i_Length = i_HitDelay;
+
+            while (i_Count > 1)
+            {
+                --i_Count;
+                if (i_HitDelay > 1)
+                {
+                    if (i_MaxCount < 5)
+                    {
+                        --i_HitDelay;
+                    }
+                    else
+                    {
+                        int delay = (int)(Math.Ceiling((1.0 + (5 * i_Count)) / i_MaxCount));
+
+                        if (delay <= 5)
+                            i_HitDelay = delay;
+                        else
+                            i_HitDelay = 5;
+                    }
+                }
+                i_Length += i_HitDelay;
+            }
+            TimeSpan t_Duration = TimeSpan.FromSeconds(i_Length);
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args.ToString()));
 
 			FinishSequence();
 		}
@@ -171,6 +210,9 @@ namespace Server.Spells.Necromancy
 						damage *= 1.75;
 
 					AOS.Damage( m_Target, m_From, (int)damage, 0, 0, 0, 100, 0 );
+					
+					if ( 0.60 <= Utility.RandomDouble() ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+						m_Target.RevealingAction();
 				}
 			}
 		}

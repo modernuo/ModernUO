@@ -81,15 +81,18 @@ namespace Server.Items
 			{
 				if ( _Skills.Count == 0 )
 				{
-					switch ( Core.Expansion )
+					_Skills.AddRange( m_Skills );
+					if (Core.AOS)
 					{
-						case Expansion.ML: _Skills.Add( SkillName.Spellweaving ); goto case Expansion.SE;
-						case Expansion.SE: _Skills.AddRange( m_SESkills ); goto case Expansion.AOS;
-						case Expansion.AOS: _Skills.AddRange( m_AOSSkills ); goto default;
-						default: _Skills.AddRange( m_Skills ); break;
+						_Skills.AddRange( m_AOSSkills );
+						if (Core.SE)
+						{
+							_Skills.AddRange( m_SESkills );
+							if (Core.ML)
+								_Skills.Add( SkillName.Spellweaving );
+						}
 					}
 				}
-				
 				return _Skills;
 			} 
 		}

@@ -66,7 +66,6 @@ namespace Server.Spells.Third
 					Effects.SendLocationParticles( EffectItem.Create( item.Location, item.Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5022 );
 					Effects.PlaySound( item.Location, item.Map, 0x1F5 );
 
-					item.DisplayTo( Caster );
 					item.OnItemUsed( Caster, item );
 				}
 			}

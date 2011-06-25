@@ -51,6 +51,8 @@ namespace Server.Spells.First
 				TimeSpan length = SpellHelper.GetDuration( Caster, m );
 
 				BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.Weaken, 1075837, length, m, percentage.ToString() ) );
+
+				HarmfulSpell( m );
 			}
 
 			FinishSequence();

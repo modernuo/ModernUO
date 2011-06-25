@@ -97,6 +97,12 @@ namespace Server.Spells
 			contexts.Remove( m );
 		}
 
+		public void HarmfulSpell( Mobile m )
+		{
+			if ( m is BaseCreature )
+				((BaseCreature)m).OnHarmfulSpell( m_Caster );
+		}
+
 		public Spell( Mobile caster, Item scroll, SpellInfo info )
 		{
 			m_Caster = caster;

@@ -466,6 +466,8 @@ namespace Server.Mobiles
 		public virtual bool AllowFemaleTamer{ get{ return true; } }
 		public virtual bool SubdueBeforeTame{ get{ return false; } }
 		public virtual bool StatLossAfterTame{ get{ return SubdueBeforeTame; } }
+		public virtual bool ReduceSpeedWithDamage{ get{ return true; } }
+		public virtual bool IsSubdued{ get{ return SubdueBeforeTame && ( Hits < ( HitsMax / 10 ) ); } }
 
 		public virtual bool Commandable{ get{ return true; } }
 
@@ -1301,6 +1303,10 @@ namespace Server.Mobiles
 		{
 		}
 
+		public virtual void OnHarmfulSpell( Mobile from )
+		{
+		}
+
 		#region Alter[...]Damage From/To
 
 		public virtual void AlterDamageScalarFrom( Mobile caster, ref double scalar )
@@ -1341,8 +1347,11 @@ namespace Server.Mobiles
 			int hides = Hides;
 			int scales = Scales;
 
-			if ( (feathers == 0 && wool == 0 && meat == 0 && hides == 0 && scales == 0) || Summoned || IsBonded )
+			if ( (feathers == 0 && wool == 0 && meat == 0 && hides == 0 && scales == 0) || Summoned || IsBonded || corpse.Animated )
 			{
+				if ( corpse.Animated ) 
+					corpse.SendLocalizedMessageTo( from, 500464 );	// Use this on corpses to carve away meat and hide
+				else
 				from.SendLocalizedMessage( 500485 ); // You see nothing useful to carve from the corpse.
 			}
 			else
@@ -2067,7 +2076,7 @@ namespace Server.Mobiles
 							}
 						}
 
-						if ( happier )
+						/* if ( happier )*/	// looks like in OSI pets say they are happier even if they are at maximum loyalty
 							SayTo( from, 502060 ); // Your pet looks happier.
 
 						if ( Body.IsAnimal )

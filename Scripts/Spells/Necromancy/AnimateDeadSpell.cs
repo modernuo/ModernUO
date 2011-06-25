@@ -380,6 +380,7 @@ namespace Server.Spells.Necromancy
 			corpse.ItemID = Utility.Random( 0xECA, 9 ); // bone graphic
 			corpse.Hue = 0;
 			corpse.ProcessDelta();
+			corpse.Animated = true;
 
 			Register( caster, summoned );
 		}

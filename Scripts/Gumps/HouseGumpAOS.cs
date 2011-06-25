@@ -1220,10 +1220,16 @@ namespace Server.Gumps
 						{
 							if ( isOwner && m_House.MovingCrate == null && m_House.InternalizedVendors.Count == 0 )
 							{
-								if( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null ) {
+								if( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null ) 
+								{
 									from.SendLocalizedMessage( 501389 ); // You cannot redeed a house with a guildstone inside.
 								}
-								else {
+								else if ( Core.ML && from.AccessLevel < AccessLevel.GameMaster && DateTime.Now <= m_House.BuiltOn.AddHours ( 1 ) )
+								{
+									from.SendLocalizedMessage( 1080178 ); // You must wait one hour between each house demolition.
+								}
+								else 
+								{
 									from.CloseGump( typeof( HouseDemolishGump ) );
 									from.SendGump( new HouseDemolishGump( from, m_House ) );
 								}

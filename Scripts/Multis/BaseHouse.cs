@@ -201,7 +201,7 @@ namespace Server.Multis
 				return;
 
 			if ( Core.ML )
-				new TempNoHousingRegion( this );
+				new TempNoHousingRegion( this, null );
 
 			KillVendors();
 			Delete();
@@ -3760,17 +3760,43 @@ namespace Server.Multis
 
 	public class TempNoHousingRegion : BaseRegion
 	{
-		public TempNoHousingRegion( BaseHouse house )
+		private Mobile m_RegionOwner;
+
+		public TempNoHousingRegion( BaseHouse house, Mobile regionowner )
 			: base( null, house.Map, Region.DefaultPriority, house.Region.Area )
 		{
 			Register();
 
+			m_RegionOwner = regionowner;
+
 			Timer.DelayCall( house.RestrictedPlacingTime, Unregister );
+		}
+
+		public bool CheckAccount( Mobile mobCheck, Mobile accCheck )
+		{
+			if ( accCheck != null )
+			{
+				Account a = accCheck.Account as Account;
+
+				if ( a != null )
+				{
+					for ( int i = 0; i < a.Length; ++i )
+					{
+						if ( a[i] == mobCheck )
+							return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		public override bool AllowHousing( Mobile from, Point3D p )
 		{
-			return false;
+			if ( from == m_RegionOwner || CheckAccount( from, m_RegionOwner ) )
+				return true;
+			else
+				return false;
 		}
 	}
 }

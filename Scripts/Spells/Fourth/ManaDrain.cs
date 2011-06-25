@@ -98,6 +98,8 @@ namespace Server.Spells.Fourth
 					m.FixedParticles( 0x374A, 10, 15, 5032, EffectLayer.Head );
 					m.PlaySound( 0x1F8 );
 				}
+
+				HarmfulSpell( m );
 			}
 
 			FinishSequence();

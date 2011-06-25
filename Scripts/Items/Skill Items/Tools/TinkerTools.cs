@@ -39,4 +39,42 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
+
+	public class TinkersTools : BaseTool
+	{
+		public override CraftSystem CraftSystem { get { return DefTinkering.CraftSystem; } }
+
+		[Constructable]
+		public TinkersTools()
+			: base(0x1EBC)
+		{
+			Weight = 1.0;
+		}
+
+		[Constructable]
+		public TinkersTools(int uses)
+			: base(uses, 0x1EBC)
+		{
+			Weight = 1.0;
+		}
+
+		public TinkersTools(Serial serial)
+			: base(serial)
+		{
+		}
+
+		public override void Serialize(GenericWriter writer)
+		{
+			base.Serialize(writer);
+
+			writer.Write((int)0); // version
+		}
+
+		public override void Deserialize(GenericReader reader)
+		{
+			base.Deserialize(reader);
+
+			int version = reader.ReadInt();
+		}
+	}
 }

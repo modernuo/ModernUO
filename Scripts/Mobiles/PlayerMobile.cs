@@ -2291,9 +2291,6 @@ namespace Server.Mobiles
 				}
 			}
 
-			if ( m_InsuranceCost > 0 )
-				SendLocalizedMessage( 1060398, m_InsuranceCost.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-
 			if ( m_InsuranceAward is PlayerMobile )
 			{
 				PlayerMobile pm = (PlayerMobile)m_InsuranceAward;
