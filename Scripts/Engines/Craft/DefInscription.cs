@@ -304,7 +304,7 @@ namespace Server.Engines.Craft
 			}
 
 			if ( Core.SE )
-				AddCraft( typeof( Spellbook ), 1044294, 1023834, 50.0, 150.0, typeof( BlankScroll ), 1044377, 10,  1044378 );
+				AddCraft( typeof( Spellbook ), 1044294, 1023834, 50.0, 140, typeof( BlankScroll ), 1044377, 10,  1044378 );
 
 			MarkOption = true;
 		}

@@ -1,42 +1,20 @@
 using System;
 using Server;
 using Server.Mobiles;
+using Server.Gumps;
 using Server.Targeting;
+using Server.Regions;
 
 namespace Server
 {
 	public class HonorVirtue
 	{
-		private static readonly TimeSpan LossDelay = TimeSpan.FromDays( 7.0 );
-		private static readonly int LossAmount = 500;
-
+		
 		private static readonly TimeSpan UseDelay = TimeSpan.FromMinutes( 5.0 ); 
 
 		public static void Initialize()
 		{
 			VirtueGump.Register( 107, new OnVirtueUsed( OnVirtueUsed ) );
-		}
-
-		public static void CheckAtrophy( Mobile from )
-		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
-				return;
-
-			try
-			{
-				if ( (pm.LastHonorLoss + LossDelay) < DateTime.Now )
-				{
-					if ( VirtueHelper.Atrophy( from, VirtueName.Honor, LossAmount ) )
-						from.SendLocalizedMessage( 1063227 ); // You have lost some Honor.
-
-					pm.LastHonorLoss = DateTime.Now;
-				}
-			}
-			catch
-			{
-			}
 		}
 
 		private static void OnVirtueUsed( Mobile from )
@@ -62,7 +40,9 @@ namespace Server
 					return;
 
 				if ( targeted == pm )
+				{
 					EmbraceHonor( pm );
+				}
 				else if ( targeted is Mobile )
 					Honor( pm, (Mobile) targeted );
 			}
@@ -93,8 +73,7 @@ namespace Server
 				return;
 			}
 
-			int duration = GetHonorDuration( pm );
-			if ( duration == 0 )
+			if ( GetHonorDuration( pm ) == 0 )
 			{
 				pm.SendLocalizedMessage( 1063234 ); // You do not have enough honor to do that
 				return;
@@ -109,8 +88,23 @@ namespace Server
 				pm.SendLocalizedMessage( 1063240, remainingMinutes.ToString() ); // You must wait ~1_HONOR_WAIT~ minutes before embracing honor again
 				return;
 			}
+			
+			pm.SendGump( new HonorSelf( pm ) );
+			
+		}
 
-			int usedPoints = pm.Virtues.Honor / 20;
+		public static void ActivateEmbrace( PlayerMobile pm )
+		{
+			int duration = GetHonorDuration( pm );
+			int usedPoints;
+
+			if ( pm.Virtues.Honor < 4399)
+               			 usedPoints = 400;
+			else if ( pm.Virtues.Honor < 10599 )
+                		usedPoints = 600;
+			else
+                		usedPoints = 1000;
+
 			VirtueHelper.Atrophy( pm, VirtueName.Honor, usedPoints );
 
 			pm.HonorActive = true;
@@ -127,8 +121,10 @@ namespace Server
 		private static void Honor( PlayerMobile source, Mobile target )
 		{
 			IHonorTarget honorTarget = target as IHonorTarget;
+			GuardedRegion reg = (GuardedRegion) source.Region.GetRegion( typeof( GuardedRegion ) );
+			Map map = source.Map;
 
-			if ( honorTarget == null || !source.CanBeHarmful( target, true ) )
+			if ( honorTarget == null )
 				return;
 
 			if ( honorTarget.ReceivedHonorContext != null )
@@ -149,6 +145,25 @@ namespace Server
 				return;
 			}
 
+			BaseCreature cret = target as BaseCreature;
+			if ( target.Body.IsHuman && (cret == null || (!cret.AlwaysAttackable && !cret.AlwaysMurderer)) )
+			{
+
+				if( reg == null || reg.IsDisabled() )
+				{				
+					//Allow honor on blue if Out of guardzone
+				}
+				else if ( map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0 )
+				{
+					//Allow honor on blue if in Fel
+				}
+				else
+				{
+					source.SendLocalizedMessage( 1001018 ); // You cannot perform negative acts
+					return;					//cannot honor in trammel town on blue
+				}
+			}
+
 			if( Core.ML && target is PlayerMobile )
 			{
 				source.SendLocalizedMessage( 1075614 ); // You cannot honor other players.
@@ -165,8 +180,6 @@ namespace Server
 			if ( !source.Mounted )
 				source.Animate( 32, 5, 1, true, true, 0 );
 
-			// OSI apparently removed this message... it's nice though
-			source.Say( 1063231 ); // I honor you
 		}
 	}
 
@@ -180,7 +193,7 @@ namespace Server
 		private PlayerMobile m_Source;
 		private Mobile m_Target;
 
-		private int m_HonorDamageTwentieths;
+		private double m_HonorDamage;
 		private int m_TotalDamage;
 
 		private int m_Perfection;
@@ -218,6 +231,15 @@ namespace Server
 
 			m_Timer = new InternalTimer( this );
 			m_Timer.Start();
+			source.m_hontime = (DateTime.Now + TimeSpan.FromMinutes( 40 ));
+
+			Timer.DelayCall( TimeSpan.FromMinutes( 40 ),
+				delegate() {
+					if (source.m_hontime < DateTime.Now && source.SentHonorContext != null)
+					{
+						Cancel();
+					}
+				} );
 		}
 
 		public void OnSourceDamaged( Mobile from, int amount )
@@ -241,7 +263,7 @@ namespace Server
 
 			if ( m_Poisoned )
 			{
-				m_TotalDamage += amount * 2;
+				m_HonorDamage += amount * 0.8;
 				m_Poisoned = false; // Reset the flag
 
 				return;
@@ -254,16 +276,16 @@ namespace Server
 				if ( m_Target.CanSee( m_Source ) && m_Target.InLOS( m_Source ) && ( m_Source.InRange( m_Target, 1 )
 					|| ( m_Source.Location == m_InitialLocation && m_Source.Map == m_InitialMap ) ) )
 				{
-					m_HonorDamageTwentieths += amount * 20;
+					m_HonorDamage += amount;
 				}
 				else
 				{
-					m_HonorDamageTwentieths += amount * 2;
+					m_HonorDamage += amount * 0.8;
 				}
 			}
-			else if ( from is BaseCreature && ((BaseCreature)from).GetMaster() == from )
+			else if ( from is BaseCreature && ((BaseCreature)from).GetMaster() == m_Source )
 			{
-				m_HonorDamageTwentieths += amount;
+				m_HonorDamage += amount * 0.8;
 			}
 		}
 
@@ -321,7 +343,7 @@ namespace Server
 
 		public void OnSourceKilled()
 		{
-			Cancel();
+			return;
 		}
 
 		public void OnTargetKilled()
@@ -342,16 +364,17 @@ namespace Server
 			if ( m_Source.Virtues.Honor > targetFame )
 				return;
 
-			double dGain = ( targetFame * m_HonorDamageTwentieths ) / (double)( 20 * m_TotalDamage );
-			dGain = dGain * dGain / 2000000.0;
+			double dGain = ( targetFame / 100 ) * (m_HonorDamage / m_TotalDamage );	//Initial honor gain is 100th of the monsters honor
 
-			if ( m_FirstHit == FirstHit.Granted )
-				dGain *= 1.1; // Is this correct?
+			if ( m_HonorDamage == m_TotalDamage && m_FirstHit == FirstHit.Granted)
+				dGain = dGain * 1.5;							//honor gain is increased alot more if the combat was fully honorable
+			else
+				dGain = dGain * 0.9;
 
 			int gain = Math.Min( (int)dGain, 200 );
 
-			if ( gain <= 0 )
-				return;
+			if ( gain < 1 )
+				gain=1;		//Minimum gain of 1 honor when the honor is under the monsters fame
 
 			if ( VirtueHelper.IsHighestPath( m_Source, VirtueName.Honor ) )
 			{
@@ -381,12 +404,6 @@ namespace Server
 
 		public bool CheckDistance()
 		{
-			if ( m_Source.Map == Map.Internal || m_Source.Map != m_Target.Map || !m_Source.InRange( m_Target, 24 ) )
-			{
-				Cancel();
-				return false;
-			}
-
 			return true;
 		}
 

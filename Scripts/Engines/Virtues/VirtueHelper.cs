@@ -38,10 +38,11 @@ namespace Server
 		{
 			int v = from.Virtues.GetValue( (int)virtue );
 			int vl;
+			int vmax = GetMaxAmount( virtue );
 
 			if ( v < 4000 )
 				vl = 0;
-			else if ( v >= 20000 )
+			else if ( v >= vmax)
 				vl = 3;
 			else
 				vl = ( v + 9999 ) / 10000;

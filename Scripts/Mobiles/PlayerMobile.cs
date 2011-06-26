@@ -3099,7 +3099,6 @@ namespace Server.Mobiles
 			JusticeVirtue.CheckAtrophy( m );
 			CompassionVirtue.CheckAtrophy( m );
 			ValorVirtue.CheckAtrophy( m );
-			HonorVirtue.CheckAtrophy( m );
 
 			if( m is PlayerMobile )
 				ChampionTitleInfo.CheckAtrophy( (PlayerMobile)m );
@@ -3663,6 +3662,7 @@ namespace Server.Mobiles
 		private bool m_HonorActive;
 		private HonorContext m_ReceivedHonorContext;
 		private HonorContext m_SentHonorContext;
+		public DateTime m_hontime;
 
 		public DateTime LastHonorLoss{ get{ return m_LastHonorLoss; } set{ m_LastHonorLoss = value; } }
 		public DateTime LastHonorUse{ get{ return m_LastHonorUse; } set{ m_LastHonorUse = value; } }
