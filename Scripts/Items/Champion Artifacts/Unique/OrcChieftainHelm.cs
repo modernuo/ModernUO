@@ -21,7 +21,7 @@ namespace Server.Items
 		[Constructable]
 		public OrcChieftainHelm()
 		{
-			Hue = 0x3F;
+			Hue = 0x2a3;
 
 			Attributes.Luck = 100;
 			Attributes.RegenHits = 3;
@@ -40,7 +40,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
@@ -48,6 +48,10 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+			if (version < 1)
+			{
+				Hue = 0x1D6;
+			}
 		}
 	}
 }

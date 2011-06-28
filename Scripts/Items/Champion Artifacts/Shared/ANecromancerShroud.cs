@@ -17,7 +17,7 @@ namespace Server.Items
 		[Constructable]
 		public ANecromancerShroud()
 		{
-			Hue = 0x1;
+			Hue = 0x455;
 		}
 
 		public ANecromancerShroud( Serial serial ) : base( serial )

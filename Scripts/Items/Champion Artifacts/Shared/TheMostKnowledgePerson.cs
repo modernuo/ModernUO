@@ -17,7 +17,7 @@ namespace Server.Items
 		[Constructable]
 		public TheMostKnowledgePerson() : base( 0x2684 )
 		{
-			Hue = 0x242;
+			Hue = 0x117;
 			StrRequirement = 0;
 
 			Attributes.BonusHits = 3 + Utility.RandomMinMax( 0, 2 );

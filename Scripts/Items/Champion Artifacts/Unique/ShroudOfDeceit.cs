@@ -21,7 +21,7 @@ namespace Server.Items
 		[Constructable]
 		public ShroudOfDeciet()
 		{
-			Hue = 0x3D5;
+			Hue = 0x455;
 
 			Attributes.RegenHits = 3;
 

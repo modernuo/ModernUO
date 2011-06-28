@@ -15,7 +15,7 @@ namespace Server.Items
 		[Constructable]
 		public EmbroideredOakLeafCloak() : base( 0x2684 )
 		{
-			Hue = 0x557;
+			Hue = 0x483;
 			StrRequirement = 0;
 
 			SkillBonuses.Skill_1_Name = SkillName.Stealth;

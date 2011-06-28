@@ -21,7 +21,8 @@ namespace Server.Mobiles
 										typeof( TheMostKnowledgePerson ) }; } }
 		public override Type[] DecorativeList{ get{ return new Type[] { typeof( WaterTile ),
 										typeof( WindSpirit ),
-										typeof( Pier ), }; } }
+										typeof( Pier ),
+										typeof( DirtPatch )}; } }
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
 

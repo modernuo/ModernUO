@@ -17,7 +17,7 @@ namespace Server.Items
 		[Constructable]
 		public AcidProofRobe()
 		{
-			Hue = 0x1;
+			Hue = 0x455;
 			LootType = LootType.Blessed;
 		}
 
@@ -29,7 +29,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
@@ -37,6 +37,10 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+			if (version < 1)
+			{
+				Hue = 0x455;
+			}
 		}
 	}
 }

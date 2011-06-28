@@ -21,7 +21,7 @@ namespace Server.Items
 		[Constructable]
 		public GuantletsOfAnger()
 		{
-			Hue = 0x557;
+			Hue = 0x29b;
 
 			Attributes.BonusHits = 8;
 			Attributes.RegenHits = 2;

@@ -17,7 +17,7 @@ namespace Server.Items
 		[Constructable]
 		public TheRobeOfBritanniaAri() : base( 0x2684 )
 		{
-			Hue = 0x486;
+			Hue = 0x48b;
 			StrRequirement = 0;
 		}
 

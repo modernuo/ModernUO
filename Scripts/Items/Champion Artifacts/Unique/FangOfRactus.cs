@@ -15,7 +15,7 @@ namespace Server.Items
 		[Constructable]
 		public FangOfRactus()
 		{
-			Hue = 0x1D9;
+			Hue = 0x117;
 
 			Attributes.SpellChanneling = 1;
 			Attributes.AttackChance = 5;

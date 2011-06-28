@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
 
 		public override Type[] UniqueList{ get{ return new Type[] { typeof( GladiatorsCollar ) }; } }
-		public override Type[] SharedList{ get{ return new Type[] { typeof( LieutenantOfTheBritannianRoyalGuard ) }; } }
+		public override Type[] SharedList { get { return new Type[] { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) }; } }
 		public override Type[] DecorativeList{ get{ return new Type[] { typeof( LavaTile ), typeof( DemonSkull ) }; } }
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }

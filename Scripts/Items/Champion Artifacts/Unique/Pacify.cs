@@ -15,6 +15,8 @@ namespace Server.Items
 		[Constructable]
 		public Pacify()
 		{
+			Hue = 0x835;
+
 			Attributes.SpellChanneling = 1;
 			Attributes.AttackChance = 10;
 			Attributes.WeaponSpeed = 20;

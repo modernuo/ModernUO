@@ -15,6 +15,8 @@ namespace Server.Items
 		[Constructable]
 		public BraveKnightOfTheBritannia()
 		{
+			Hue = 0x47e;
+
 			Attributes.WeaponSpeed = 30;
 			Attributes.WeaponDamage = 35;
 

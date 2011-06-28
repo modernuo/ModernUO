@@ -21,7 +21,7 @@ namespace Server.Items
 		[Constructable]
 		public GladiatorsCollar()
 		{
-			Hue = 0x967;
+			Hue = 0x26d;
 
 			Attributes.BonusHits = 10;
 			Attributes.AttackChance = 10;

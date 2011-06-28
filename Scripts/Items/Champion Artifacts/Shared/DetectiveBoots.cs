@@ -24,6 +24,7 @@ namespace Server.Items
 		[Constructable]
 		public DetectiveBoots()
 		{
+			Hue = 0x455;
 			Level = Utility.RandomMinMax( 0, 2 );
 		}
 

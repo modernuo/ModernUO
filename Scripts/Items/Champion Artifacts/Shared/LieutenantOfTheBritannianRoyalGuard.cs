@@ -15,7 +15,7 @@ namespace Server.Items
 		[Constructable]
 		public LieutenantOfTheBritannianRoyalGuard()
 		{
-			Hue = 0x7B;
+			Hue = 0xe8;
 
 			Attributes.BonusInt = 5;
 			Attributes.RegenMana = 2;

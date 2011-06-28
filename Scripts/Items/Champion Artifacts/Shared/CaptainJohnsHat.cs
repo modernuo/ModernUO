@@ -21,7 +21,7 @@ namespace Server.Items
 		[Constructable]
 		public CaptainJohnsHat()
 		{
-			Hue = 0x1;
+			Hue = 0x455;
 
 			Attributes.BonusDex = 8;
 			Attributes.NightSight = 1;
