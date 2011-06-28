@@ -171,7 +171,7 @@ namespace Server.Items
 			if ( state == null )
 				return false;
 
-			if( RequiresSE && state.SupportsExpansion( Expansion.SE ) )
+			if( RequiresSE && !state.SupportsExpansion( Expansion.SE ) )
 			{
 				from.SendLocalizedMessage( 1063456 ); // You must upgrade to Samurai Empire in order to use that ability.
 				return false;
