@@ -2262,7 +2262,11 @@ namespace Server.Network
 
 				state.Send( SupportedFeatures.Instantiate( state ) );
 
-				state.Send( new CharacterList( state.Account, state.CityInfo ) );
+				if ( state.NewCharacterList ) {
+					state.Send( new CharacterList( state.Account, state.CityInfo ) );
+				} else {
+					state.Send( new CharacterListOld( state.Account, state.CityInfo ) );
+				}
 			}
 			else
 			{

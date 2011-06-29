@@ -3579,18 +3579,28 @@ namespace Server.Network
 	{
 		private string m_City;
 		private string m_Building;
+		private int m_Description;
 		private Point3D m_Location;
 		private Map m_Map;
 
-		public CityInfo( string city, string building, int x, int y, int z, Map m )
+		public CityInfo( string city, string building, int description, int x, int y, int z, Map m )
 		{
 			m_City = city;
 			m_Building = building;
+			m_Description = description;
 			m_Location = new Point3D( x, y, z );
 			m_Map = m;
 		}
 
-		public CityInfo( string city, string building, int x, int y, int z ) : this( city, building, x, y, z, Map.Trammel )
+		public CityInfo( string city, string building, int x, int y, int z, Map m ) : this( city, building, 0, x, y, z, m )
+		{
+		}
+
+		public CityInfo( string city, string building, int description, int x, int y, int z ) : this( city, building, description, x, y, z, Map.Trammel )
+		{
+		}
+
+		public CityInfo( string city, string building, int x, int y, int z ) : this( city, building, 0, x, y, z, Map.Trammel )
 		{
 		}
 
@@ -3615,6 +3625,18 @@ namespace Server.Network
 			set
 			{
 				m_Building = value;
+			}
+		}
+
+		public int Description
+		{
+			get
+			{
+				return m_Description;
+			}
+			set
+			{
+				m_Description = value;
 			}
 		}
 
@@ -3712,6 +3734,75 @@ namespace Server.Network
 	{
 		public CharacterList( IAccount a, CityInfo[] info ) : base( 0xA9 )
 		{
+			this.EnsureCapacity( 11 + (a.Length * 60) + (info.Length * 89) );
+
+			int highSlot = -1;
+
+			for ( int i = 0; i < a.Length; ++i )
+			{
+				if ( a[i] != null )
+					highSlot = i;
+			}
+
+			int count = Math.Max( Math.Max( highSlot + 1, a.Limit ), 5 );
+
+			m_Stream.Write( (byte) count );
+
+			for ( int i = 0; i < count; ++i )
+			{
+				if ( a[i] != null )
+				{
+					m_Stream.WriteAsciiFixed( a[i].Name, 30 );
+					m_Stream.Fill( 30 ); // password
+				}
+				else
+				{
+					m_Stream.Fill( 60 );
+				}
+			}
+
+			m_Stream.Write( (byte) info.Length );
+
+			for ( int i = 0; i < info.Length; ++i )
+			{
+				CityInfo ci = info[i];
+
+				m_Stream.Write( (byte) i );
+				m_Stream.WriteAsciiFixed( ci.City, 32 );
+				m_Stream.WriteAsciiFixed( ci.Building, 32 );
+				m_Stream.Write( (int) ci.X );
+				m_Stream.Write( (int) ci.Y );
+				m_Stream.Write( (int) ci.Z );
+				m_Stream.Write( (int) ci.Map.MapID );
+				m_Stream.Write( (int) ci.Description );
+				m_Stream.Write( (int) 0 );
+			}
+
+			CharacterListFlags flags = ExpansionInfo.CurrentExpansion.CharacterListFlags;
+
+			if ( count > 6 )
+				flags |= (CharacterListFlags.SeventhCharacterSlot | CharacterListFlags.SixthCharacterSlot); // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+			else if ( count == 6 )
+				flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+			else if ( a.Limit == 1 )
+				flags |= (CharacterListFlags.SlotLimit & CharacterListFlags.OneCharacterSlot); // Limit Characters & One Character
+
+			m_Stream.Write( (int)(flags | m_AdditionalFlags) ); // Additional Flags
+		}
+
+		private static CharacterListFlags m_AdditionalFlags;
+
+		public static CharacterListFlags AdditionalFlags
+		{
+			get{ return m_AdditionalFlags; }
+			set{ m_AdditionalFlags = value; }
+		}
+	}
+
+	public sealed class CharacterListOld : Packet
+	{
+		public CharacterListOld( IAccount a, CityInfo[] info ) : base( 0xA9 )
+		{
 			this.EnsureCapacity( 9 + (a.Length * 60) + (info.Length * 63) );
 
 			int highSlot = -1;
@@ -3759,15 +3850,7 @@ namespace Server.Network
 			else if ( a.Limit == 1 )
 				flags |= (CharacterListFlags.SlotLimit & CharacterListFlags.OneCharacterSlot); // Limit Characters & One Character
 
-			m_Stream.Write( (int)(flags | m_AdditionalFlags) ); // Additional Flags
-		}
-
-		private static CharacterListFlags m_AdditionalFlags;
-
-		public static CharacterListFlags AdditionalFlags
-		{
-			get{ return m_AdditionalFlags; }
-			set{ m_AdditionalFlags = value; }
+			m_Stream.Write( (int)(flags | CharacterList.AdditionalFlags) ); // Additional Flags
 		}
 	}
 

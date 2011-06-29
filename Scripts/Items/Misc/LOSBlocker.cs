@@ -8,8 +8,8 @@ namespace Server.Items
 	{
 		public static void Initialize()
 		{
-			TileData.ItemTable[0x2199].Flags = TileFlag.Wall | TileFlag.NoShoot;
-			TileData.ItemTable[0x2199].Height = 20;
+			TileData.ItemTable[0x21A2].Flags = TileFlag.Wall | TileFlag.NoShoot;
+			TileData.ItemTable[0x21A2].Height = 20;
 		}
 
 		public override string DefaultName
@@ -18,7 +18,7 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public LOSBlocker() : base( 0x2199 )
+		public LOSBlocker() : base( 0x21A2 )
 		{
 			Movable = false;
 		}
@@ -41,7 +41,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -49,6 +49,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version < 1 && ItemID == 0x2199 )
+				this.ItemID = 0x21A2;
 		}
 
 		public sealed class GMItemPacket : Packet
