@@ -215,7 +215,7 @@ namespace Server.Misc
 				if( target.Kills >= 5 || (body.IsMonster && IsSummoned( target.Owner as BaseCreature )) || (target.Owner is BaseCreature && (((BaseCreature)target.Owner).AlwaysMurderer || ((BaseCreature)target.Owner).IsAnimatedDead)) )
 					return Notoriety.Murderer;
 
-				if( target.Criminal )
+				if (target.Criminal && target.Map != null && ((target.Map.Rules & MapRules.HarmfulRestrictions) == 0))
 					return Notoriety.Criminal;
 
 				Guild sourceGuild = GetGuildFor( source.Guild as Guild, source );
