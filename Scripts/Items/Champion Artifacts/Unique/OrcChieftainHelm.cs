@@ -48,9 +48,10 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
-			if (version < 1)
+
+			if (version < 1 && Hue == 0x3f) /* Pigmented? */
 			{
-				Hue = 0x1D6;
+				Hue = 0x2a3;
 			}
 		}
 	}

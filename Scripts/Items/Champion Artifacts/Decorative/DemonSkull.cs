@@ -4,11 +4,10 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2250, 0x2251 )]
 	public class DemonSkull : Item
 	{
 		[Constructable]
-		public DemonSkull() : base( 0x2250 )
+		public DemonSkull() : base( 0x224e + Utility.Random(4) )
 		{
 		}
 

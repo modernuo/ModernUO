@@ -7,7 +7,8 @@ namespace Server.Items
 	public class WallBlood : Item
 	{
 		[Constructable]
-		public WallBlood() : base( 0x1D95 )
+		public WallBlood()
+			: base(Utility.RandomBool() ? 0x1D95 : 0x1D94)
 		{
 		}
 

@@ -173,7 +173,7 @@ namespace Server.Items
 
 			m.AddToBackpack( new Bottle() );
 
-			if ( m.Body.IsHuman /*&& !m.Mounted*/ )
+			if ( m.Body.IsHuman && !m.Mounted )
 				m.Animate( 34, 5, 1, true, false, 0 );
 		}
 
