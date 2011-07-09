@@ -7,6 +7,33 @@ namespace Server.Items
 {
 	public abstract class BasePigmentsOfTokuno : Item, IUsesRemaining
 	{
+		private static Type[] m_Replicas = new Type[]
+		{
+			typeof( ANecromancerShroud ),
+			typeof( BraveKnightOfTheBritannia ),
+			typeof( CaptainJohnsHat ),
+			typeof( DetectiveBoots ),
+			typeof( DjinnisRing ),
+			typeof( EmbroideredOakLeafCloak ),
+			typeof( GuantletsOfAnger ),
+			typeof( LieutenantOfTheBritannianRoyalGuard ),
+			typeof( OblivionsNeedle ),
+			typeof( RoyalGuardSurvivalKnife ),
+			typeof( SamaritanRobe ),
+			typeof( TheMostKnowledgePerson ),
+			typeof( TheRobeOfBritanniaAri ),
+			typeof( AcidProofRobe ),
+			typeof( Calm ),
+			typeof( CrownOfTalKeesh ),
+			typeof( FangOfRactus ),
+			typeof( GladiatorsCollar ),
+			typeof( OrcChieftainHelm ),
+			typeof( Pacify ),
+			typeof( Quell ),
+			typeof( ShroudOfDeciet ),
+			typeof( Subdue )
+		};
+
 		public override int LabelNumber { get { return 1070933; } } // Pigments of Tokuno
 		
 		private int m_UsesRemaining;
@@ -129,6 +156,7 @@ namespace Server.Items
 				|| IsInTypeList( t, Paragon.Artifacts )
 				|| IsInTypeList( t, Leviathan.Artifacts )
 				|| IsInTypeList( t, TreasureMapChest.Artifacts )
+				|| IsInTypeList( t, m_Replicas )
 				);
 		}
 
