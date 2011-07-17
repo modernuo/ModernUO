@@ -4057,6 +4057,9 @@ namespace Server.Mobiles
 				return "...";
 			}
 
+			[CommandProperty(AccessLevel.GameMaster)]
+			public int Pestilence { get { return GetValue(ChampionSpawnType.Pestilence); } set { SetValue(ChampionSpawnType.Pestilence, value); } }
+
 			[CommandProperty( AccessLevel.GameMaster )]
 			public int Abyss { get { return GetValue( ChampionSpawnType.Abyss ); } set { SetValue( ChampionSpawnType.Abyss, value ); } }
 

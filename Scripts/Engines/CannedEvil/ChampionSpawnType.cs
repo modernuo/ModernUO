@@ -12,7 +12,8 @@ namespace Server.Engines.CannedEvil
 		ForestLord,
 		VerminHorde,
 		UnholyTerror,
-		SleepingDragon
+		SleepingDragon,
+		Pestilence
 	}
 
 	public class ChampionSpawnInfo
@@ -90,6 +91,13 @@ namespace Server.Engines.CannedEvil
 					new Type[]{ typeof( DeathwatchBeetle ), typeof( Kappa ) },
 					new Type[]{ typeof( LesserHiryu ), typeof( RevenantLion ) },
 					new Type[]{ typeof( Hiryu ), typeof( Oni ) }
+				} ),
+				new ChampionSpawnInfo( "The Corrupt", typeof( Ilhenir ), new string[]{ "Cleanser", "Expunger", "Depurator" } , new Type[][]
+				{																											// Unholy Terror
+					new Type[]{ typeof( PlagueSpawn ), typeof( Bogling ) },
+					new Type[]{ typeof( PlagueBeast ), typeof( BogThing ) },
+					new Type[]{ typeof( PlagueBeastLord ), typeof( InterredGrizzle ) },
+					new Type[]{ typeof( FetidEssence ), typeof( PestilentBandage ) }
 				} )
 			};
 

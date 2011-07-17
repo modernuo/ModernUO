@@ -44,11 +44,10 @@ namespace Server.Mobiles
 			Karma = -3700;  // Guessed
 		}
 
-		/*public override void GenerateLoot() -- Need to verify
+		public override void GenerateLoot() // Need to verify
 		{
-			AddLoot( LootPack.Meager );
-			AddLoot( LootPack.Average );
-		}*/
+			AddLoot( LootPack.FilthyRich );
+		}
 		 
 		public override int GetAngerSound()
 		{

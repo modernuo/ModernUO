@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	{
 		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
 
-		public override Type[] UniqueList{ get{ return new Type[] { }; } }
+		public override Type[] UniqueList{ get{ return new Type[] { typeof( Pacify ) }; } }
 		public override Type[] SharedList{ get{ return new Type[] { 	typeof( ANecromancerShroud ),
 										typeof( LieutenantOfTheBritannianRoyalGuard ),
 										typeof( OblivionsNeedle ),
@@ -55,8 +55,8 @@ namespace Server.Mobiles
 			SetSkill(SkillName.Tactics, 119.9);  
 			SetSkill(SkillName.Wrestling, 119.9);
 
-			Fame = 50000;
-			Karma = -50000;
+			Fame = 22500;
+			Karma = -22500;
 
 			VirtualArmor = 44;
 		}
@@ -69,7 +69,7 @@ namespace Server.Mobiles
 		public override bool Unprovokable { get { return true; } }
 		public override bool Uncalmable { get { return true; } }
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
-		public override int TreasureMapLevel { get { return 1; } }
+		//public override int TreasureMapLevel { get { return 1; } }
 
 		public override int GetAngerSound()
 		{

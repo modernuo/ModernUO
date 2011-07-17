@@ -34,6 +34,15 @@ namespace Server.Items
 			typeof( Subdue )
 		};
 
+		private static Type[] m_DyableHeritageItems = new Type[]
+		{
+			typeof( ChargerOfTheFallen ),
+			typeof( SamuraiHelm ),
+			typeof( HolySword ),
+			typeof( LeggingsOfEmbers ),
+			typeof( ShaminoCrossbow )
+		};
+
 		public override int LabelNumber { get { return 1070933; } } // Pigments of Tokuno
 		
 		private int m_UsesRemaining;
@@ -142,6 +151,8 @@ namespace Server.Items
 				resource = ((BaseWeapon)i).Resource;
 			else if( i is BaseArmor )
 				resource = ((BaseArmor)i).Resource;
+			else if (i is BaseClothing)
+				resource = ((BaseClothing)i).Resource;
 
 			if( !CraftResources.IsStandard( resource ) )
 				return true;
@@ -157,8 +168,9 @@ namespace Server.Items
 				|| IsInTypeList( t, Leviathan.Artifacts )
 				|| IsInTypeList( t, TreasureMapChest.Artifacts )
 				|| IsInTypeList( t, m_Replicas )
+				|| IsInTypeList( t, m_DyableHeritageItems )
 				);
-		}
+		}  
 
 		private static bool IsInTypeList( Type t, Type[] list )
 		{
