@@ -17,7 +17,7 @@ namespace Server.Spells.Necromancy
 				Reagent.PigIron
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.25 ); } }
+		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
 
 		public override double RequiredSkill{ get{ return 60.0; } }
 		public override int RequiredMana{ get{ return 23; } }
