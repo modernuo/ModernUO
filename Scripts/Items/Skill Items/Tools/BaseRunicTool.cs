@@ -268,14 +268,13 @@ namespace Server.Items
 			AosWeaponAttributes secondary = weapon.WeaponAttributes;
 
 			m_Props.SetAll( false );
-            m_Props.Set(0, true); // no lower stat requirements for weapons
 
 			if ( weapon is BaseRanged )
 				m_Props.Set( 2, true ); // ranged weapons cannot be ubws or mageweapon
 
 			for ( int i = 0; i < attributeCount; ++i )
 			{
-				int random = GetUniqueRandom( 24 );
+				int random = GetUniqueRandom( 25 );
 
 				if ( random == -1 )
 					break;
@@ -330,14 +329,15 @@ namespace Server.Items
 					case 13: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.HitLowerDefend,		2, 50, 2 ); break;
 					case 14: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.HitLeechMana,			2, 50, 2 ); break;
 					case 15: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.HitLeechStam,			2, 50, 2 ); break;
-					case 16: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistPhysicalBonus,	1, 15 ); break;
-					case 17: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistFireBonus,		1, 15 ); break;
-					case 18: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistColdBonus,		1, 15 ); break;
-					case 19: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistPoisonBonus,		1, 15 ); break;
-					case 20: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistEnergyBonus,		1, 15 ); break;
-					case 21: ApplyAttribute( secondary, min, max, AosWeaponAttribute.DurabilityBonus,		10, 100, 10 ); break;
-					case 22: weapon.Slayer = GetRandomSlayer(); break;
-					case 23: GetElementalDamages( weapon ); break;
+					case 16: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.LowerStatReq,			10, 100, 10 ); break;
+					case 17: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistPhysicalBonus,	1, 15 ); break;
+					case 18: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistFireBonus,		1, 15 ); break;
+					case 19: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistColdBonus,		1, 15 ); break;
+					case 20: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistPoisonBonus,		1, 15 ); break;
+					case 21: ApplyAttribute( secondary,	min, max, AosWeaponAttribute.ResistEnergyBonus,		1, 15 ); break;
+					case 22: ApplyAttribute( secondary, min, max, AosWeaponAttribute.DurabilityBonus,		10, 100, 10 ); break;
+					case 23: weapon.Slayer = GetRandomSlayer(); break;
+					case 24: GetElementalDamages( weapon ); break;
 				}
 			}
 		}
@@ -473,16 +473,13 @@ namespace Server.Items
 			int baseCount = ( isShield ? 7 : 20 );
 			int baseOffset = ( isShield ? 0 : 4 );
 
-			if ( !isShield ) {
-				if (armor.MeditationAllowance == ArmorMeditationAllowance.All ) {
-					m_Props.Set( 3, true ); // remove mage armor from possible properties
-				}
-                m_Props.Set(0, true); // no lower stat requirements for any armor but shields
-			}
-				
+			if ( !isShield && armor.MeditationAllowance == ArmorMeditationAllowance.All )
+				m_Props.Set( 3, true ); // remove mage armor from possible properties
 			if ( armor.Resource >= CraftResource.RegularLeather && armor.Resource <= CraftResource.BarbedLeather )
+			{
+				m_Props.Set( 0, true ); // remove lower requirements from possible properties for leather armor
 				m_Props.Set( 2, true ); // remove durability bonus from possible properties
-			
+			}
 			if ( armor.RequiredRace == Race.Elf )
 				m_Props.Set( 7, true ); // elves inherently have night sight and elf only armor doesn't get night sight as a mod
 
@@ -550,11 +547,10 @@ namespace Server.Items
 			AosElementAttributes resists = hat.Resistances;
 
 			m_Props.SetAll( false );
-            m_Props.Set(0, true); // no lower stat requirements for hats
 
 			for ( int i = 0; i < attributeCount; ++i )
 			{
-				int random = GetUniqueRandom( 18 );
+				int random = GetUniqueRandom( 19 );
 
 				if ( random == -1 )
 					break;
@@ -572,13 +568,14 @@ namespace Server.Items
 					case  8: ApplyAttribute( primary,	min, max, AosAttribute.LowerManaCost,			1, 8 ); break;
 					case  9: ApplyAttribute( primary,	min, max, AosAttribute.LowerRegCost,			1, 20 ); break;
 					case 10: ApplyAttribute( primary,	min, max, AosAttribute.Luck,					1, 100 ); break;
-					case 11: ApplyAttribute( secondary,	min, max, AosArmorAttribute.SelfRepair,			1, 5 ); break;
-					case 12: ApplyAttribute( secondary,	min, max, AosArmorAttribute.DurabilityBonus,	10, 100, 10 ); break;
-					case 13: ApplyAttribute( resists,	min, max, AosElementAttribute.Physical,			1, 15 ); break;
-					case 14: ApplyAttribute( resists,	min, max, AosElementAttribute.Fire,				1, 15 ); break;
-					case 15: ApplyAttribute( resists,	min, max, AosElementAttribute.Cold,				1, 15 ); break;
-					case 16: ApplyAttribute( resists,	min, max, AosElementAttribute.Poison,			1, 15 ); break;
-					case 17: ApplyAttribute( resists,	min, max, AosElementAttribute.Energy,			1, 15 ); break;
+					case 11: ApplyAttribute( secondary,	min, max, AosArmorAttribute.LowerStatReq,		10, 100, 10 ); break;
+					case 12: ApplyAttribute( secondary,	min, max, AosArmorAttribute.SelfRepair,			1, 5 ); break;
+					case 13: ApplyAttribute( secondary,	min, max, AosArmorAttribute.DurabilityBonus,	10, 100, 10 ); break;
+					case 14: ApplyAttribute( resists,	min, max, AosElementAttribute.Physical,			1, 15 ); break;
+					case 15: ApplyAttribute( resists,	min, max, AosElementAttribute.Fire,				1, 15 ); break;
+					case 16: ApplyAttribute( resists,	min, max, AosElementAttribute.Cold,				1, 15 ); break;
+					case 17: ApplyAttribute( resists,	min, max, AosElementAttribute.Poison,			1, 15 ); break;
+					case 18: ApplyAttribute( resists,	min, max, AosElementAttribute.Energy,			1, 15 ); break;
 				}
 			}
 		}
@@ -598,7 +595,6 @@ namespace Server.Items
 			AosSkillBonuses skills = jewelry.SkillBonuses;
 
 			m_Props.SetAll( false );
-            m_Props.Set(0, true); // no lower stat requirements for weapons
 
 			for ( int i = 0; i < attributeCount; ++i )
 			{
@@ -651,7 +647,6 @@ namespace Server.Items
 			AosSkillBonuses skills = spellbook.SkillBonuses;
 
 			m_Props.SetAll( false );
-            m_Props.Set(0, true); // no lower stat requirements for weapons
 
 			for ( int i = 0; i < attributeCount; ++i )
 			{
