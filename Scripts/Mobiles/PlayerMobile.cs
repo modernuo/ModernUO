@@ -3731,7 +3731,7 @@ namespace Server.Mobiles
 			if ( !this.Young )
 				return false;
 
-			if ( Region.IsPartOf( typeof( DungeonRegion ) ) )
+			if ( !((BaseRegion)Region).YoungProtected )
 				return false;
 
 			if( from is BaseCreature && ((BaseCreature)from).IgnoreYoungProtection )

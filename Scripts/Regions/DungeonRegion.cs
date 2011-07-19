@@ -8,6 +8,8 @@ namespace Server.Regions
 {
 	public class DungeonRegion : BaseRegion
 	{
+		public override bool YoungProtected { get { return false; } }
+
 		private Point3D m_EntranceLocation;
 		private Map m_EntranceMap;
 
@@ -28,12 +30,6 @@ namespace Server.Regions
 		public override bool AllowHousing( Mobile from, Point3D p )
 		{
 			return false;
-		}
-
-		public override void OnEnter( Mobile m )
-		{
-			if ( m is PlayerMobile && ((PlayerMobile)m).Young )
-				m.SendGump( new YoungDungeonWarning() );
 		}
 
 		public override void AlterLightLevel( Mobile m, ref int global, ref int personal )

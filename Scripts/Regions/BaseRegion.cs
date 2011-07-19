@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Xml;
 using Server;
 using Server.Items;
+using Server.Mobiles;
+using Server.Gumps;
+
 
 namespace Server.Regions
 {
@@ -16,6 +19,8 @@ namespace Server.Regions
 
 	public class BaseRegion : Region
 	{
+		public virtual bool YoungProtected { get { return true; } }
+
 		public static void Configure()
 		{
 			Region.DefaultRegionType = typeof( BaseRegion );
@@ -114,6 +119,17 @@ namespace Server.Regions
 			}
 
 			return false;
+		}
+
+		public override void OnEnter(Mobile m)
+		{
+			if (m is PlayerMobile && ((PlayerMobile)m).Young)
+			{
+				if(!this.YoungProtected)
+				{
+					m.SendGump(new YoungDungeonWarning());
+				}
+			}
 		}
 
 		public override bool AcceptsSpawnsFrom( Region region )

@@ -70,7 +70,7 @@ namespace Server.Engines.CannedEvil
 			m_Idol = new IdolOfTheChampion( this );
 
 			m_ExpireDelay = TimeSpan.FromMinutes( 10.0 );
-			m_RestartDelay = TimeSpan.FromMinutes( 5.0 );
+			m_RestartDelay = TimeSpan.FromMinutes( 10.0 );
 
 			m_DamageEntries = new Dictionary<Mobile, int>();
 
@@ -1232,6 +1232,8 @@ namespace Server.Engines.CannedEvil
 
 	public class ChampionSpawnRegion : BaseRegion
 	{
+		public override bool YoungProtected { get { return false; } }
+
 		private ChampionSpawn m_Spawn;
 
 		public ChampionSpawn ChampionSpawn
