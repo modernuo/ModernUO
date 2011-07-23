@@ -2044,8 +2044,6 @@ namespace Server.Mobiles
 
 					if ( amount > 0 )
 					{
-						bool happier = false;
-
 						int stamGain;
 
 						if ( f is Gold )
@@ -2061,7 +2059,6 @@ namespace Server.Mobiles
 							if ( m_Loyalty < MaxLoyalty )
 							{
 								m_Loyalty = MaxLoyalty;
-								happier = true;
 							}
 						}
 						else
@@ -2071,7 +2068,6 @@ namespace Server.Mobiles
 								if ( m_Loyalty < MaxLoyalty  && 0.5 >= Utility.RandomDouble() )
 								{
 									m_Loyalty += 10;
-									happier = true;
 								}
 							}
 						}
