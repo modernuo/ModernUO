@@ -96,6 +96,22 @@ namespace Server.Spells.Second
 			}
 		}
 
+		public static void EndProtection( Mobile m )
+		{
+			if ( m_Table.Contains( m ) )
+			{
+				object[] mods = (object[]) m_Table[ m ];
+
+				m_Table.Remove( m );
+				Registry.Remove( m );
+
+				m.RemoveResistanceMod( (ResistanceMod) mods[ 0 ] );
+				m.RemoveSkillMod( (SkillMod) mods[ 1 ] );
+
+				BuffInfo.RemoveBuff( m, BuffIcon.Protection );
+			}
+		}
+
 		public override void OnCast()
 		{
 			if ( Core.AOS )

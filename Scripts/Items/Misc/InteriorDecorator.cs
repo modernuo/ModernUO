@@ -157,9 +157,41 @@ namespace Server.Items
 					
 					bool isDecorableComponent = false;
 
-					if ( item is AddonComponent )
-						if ( ((AddonComponent)item).Addon.Components.Count == 1 && Core.SE )
+					if ( item is AddonComponent || item is AddonContainerComponent || item is BaseAddonContainer )
+					{
+						object addon = null;
+						int count = 0;
+
+						if ( item is AddonComponent )
+						{
+							AddonComponent component = (AddonComponent) item;
+							count = component.Addon.Components.Count;
+							addon = component.Addon;
+						}
+						else if ( item is AddonContainerComponent )
+						{
+							AddonContainerComponent component = (AddonContainerComponent) item;
+							count = component.Addon.Components.Count;
+							addon = component.Addon;
+						}
+						else if ( item is BaseAddonContainer )
+						{
+							BaseAddonContainer container = (BaseAddonContainer) item;
+							count = container.Components.Count;
+							addon = container;
+						}
+
+						if ( count == 1 && Core.SE )
 							isDecorableComponent = true;
+
+						if ( m_Decorator.Command == DecorateCommand.Turn )
+						{
+							FlipableAddonAttribute[] attributes = (FlipableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlipableAddonAttribute ), false );
+
+							if ( attributes.Length > 0 )
+								isDecorableComponent = true;
+						}
+					}
 
 					if ( house == null || !house.IsCoOwner( from ) )
 					{
@@ -208,10 +240,30 @@ namespace Server.Items
 
 			private static void Turn( Item item, Mobile from )
 			{
-				FlipableAttribute[] attributes = (FlipableAttribute[])item.GetType().GetCustomAttributes( typeof( FlipableAttribute ), false );
+				if ( item is AddonComponent || item is AddonContainerComponent || item is BaseAddonContainer )
+				{
+					object addon = null;
 
-				if( attributes.Length > 0 )
-					attributes[0].Flip( item );
+					if ( item is AddonComponent )
+						addon = ((AddonComponent) item).Addon;
+					else if ( item is AddonContainerComponent )
+						addon = ((AddonContainerComponent) item).Addon;
+					else if ( item is BaseAddonContainer )
+						addon = (BaseAddonContainer) item;
+
+					FlipableAddonAttribute[] aAttributes = (FlipableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlipableAddonAttribute ), false );
+
+					if ( aAttributes.Length > 0 )
+					{
+						aAttributes[ 0 ].Flip( from, (Item) addon );
+						return;
+					}
+				}
+
+				FlipableAttribute[] attributes = (FlipableAttribute[]) item.GetType().GetCustomAttributes( typeof( FlipableAttribute ), false );
+
+				if ( attributes.Length > 0 )
+					attributes[ 0 ].Flip( item );
 				else
 					from.SendLocalizedMessage( 1042273 ); // You cannot turn that.
 			}

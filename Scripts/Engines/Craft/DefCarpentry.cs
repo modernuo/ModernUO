@@ -125,6 +125,15 @@ namespace Server.Engines.Craft
 				AddRes( index, typeof( Cloth ), 1044286, 5, 1044287 );
 			}
 
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( RunedSwitch ), 1044294, 1072896, 70.0, 120.0, typeof( Log ), 1044041, 2, 1044351 );
+				AddRes( index, typeof( EnchantedSwitch ), 1072893, 1, 1053098 );
+				AddRes( index, typeof( RunedPrism ), 1073465, 1, 1053098 );
+				AddRes( index, typeof( JeweledFiligree ), 1072894, 1, 1053098 );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+
 			// Furniture
 			AddCraft( typeof( FootStool ),					1044291, 1022910,	11.0,  36.0,	typeof( Log ), 1044041,  9, 1044351 );
 			AddCraft( typeof( Stool ),						1044291, 1022602,	11.0,  36.0,	typeof( Log ), 1044041,  9, 1044351 );

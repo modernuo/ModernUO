@@ -24,6 +24,18 @@ namespace Server
 			m_String = text;
 		}
 
+		public TextDefinition( GenericReader reader )
+		{
+			int type = reader.ReadEncodedInt();
+
+			switch ( type )
+			{
+				case 1: m_Number = reader.ReadEncodedInt(); m_String = null; break;
+				case 2: m_Number = 0; m_String = reader.ReadString(); break;
+				default: m_Number = 0; m_String = null; break;
+			}
+		}
+
 		public override string ToString()
 		{
 			if ( m_Number > 0 )
@@ -32,6 +44,22 @@ namespace Server
 				return m_String;
 
 			return "(empty)";
+		}
+
+		public virtual void Serialize( GenericWriter writer )
+		{
+			if ( m_Number > 0 )
+			{
+				writer.WriteEncodedInt( 1 );
+				writer.WriteEncodedInt( m_Number );
+			}
+			else if ( m_String != null )
+			{
+				writer.WriteEncodedInt( 2 );
+				writer.Write( m_String );
+			}
+			else
+				writer.WriteEncodedInt( 0 );
 		}
 
 		public static void AddTo( ObjectPropertyList list, TextDefinition def )

@@ -2567,6 +2567,19 @@ namespace Server.Mobiles
 				}
 			}
 
+			if ( from != null && Talisman is BaseTalisman )
+			{
+				BaseTalisman talisman = (BaseTalisman) Talisman;
+
+				if ( talisman.Protection != null && talisman.Protection.Type != null )
+				{
+					Type type = talisman.Protection.Type;
+
+					if ( type == from.GetType() )
+						amount *= 1 - (int) ( ( (double) talisman.Protection.Amount ) / 100 );
+				}
+			}
+
 			base.Damage( amount, from );
 		}
 

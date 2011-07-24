@@ -134,5 +134,22 @@ namespace Server.Spells.Fifth
 				FinishSequence();
 			}
 		}
+
+		public static void EndReflect( Mobile m )
+		{
+			if ( m_Table.Contains( m ) )
+			{
+				ResistanceMod[] mods = (ResistanceMod[]) m_Table[ m ];
+
+				if ( mods != null )
+				{
+					for ( int i = 0; i < mods.Length; ++i )
+						m.RemoveResistanceMod( mods[ i ] );
+				}
+
+				m_Table.Remove( m );
+				BuffInfo.RemoveBuff( m, BuffIcon.MagicReflection );
+			}
+		}
 	}
 }

@@ -201,6 +201,15 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( BarrelHoops ), 1044047, 1024321, -15.0, 35.0, typeof( IronIngot ), 1044036, 5, 1044037 );
 			AddCraft( typeof( Hinge ), 1044047, 1024181, 5.0, 55.0, typeof( IronIngot ), 1044036, 2, 1044037 );
 			AddCraft( typeof( BolaBall ), 1044047, 1023699, 45.0, 95.0, typeof( IronIngot ), 1044036, 10, 1044037 );
+			
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( JeweledFiligree ), 1044047, 1072894, 70.0, 110.0, typeof( IronIngot ), 1044036, 2, 1044037 );
+				AddRes( index, typeof( StarSapphire ), 1044231, 1, 1044253 );
+				AddRes( index, typeof( Ruby ), 1044234, 1, 1044253 );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+			
 			#endregion
 
 			#region Utensils

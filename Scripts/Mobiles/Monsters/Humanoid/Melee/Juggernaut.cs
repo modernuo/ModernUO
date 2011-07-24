@@ -52,6 +52,25 @@ namespace Server.Mobiles
 			if ( 0.4 > Utility.RandomDouble() )
 				PackItem( new ClockworkAssembly() );
 		}
+
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );
+
+			if ( 0.05 > Utility.RandomDouble() )
+			{
+				if ( !IsParagon )
+				{
+					if ( 0.75 > Utility.RandomDouble() )
+						c.DropItem( DawnsMusicGear.RandomCommon );
+					else
+						c.DropItem( DawnsMusicGear.RandomUncommon );
+				}
+				else
+					c.DropItem( DawnsMusicGear.RandomRare );
+			}
+		}
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Rich );

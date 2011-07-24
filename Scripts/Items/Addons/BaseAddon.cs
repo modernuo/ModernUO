@@ -13,7 +13,8 @@ namespace Server.Items
 		Blocked,
 		NotInHouse,
 		DoorTooClose,
-		NoWall
+		NoWall,
+		DoorsNotClosed
 	}
 
 	public interface IAddon

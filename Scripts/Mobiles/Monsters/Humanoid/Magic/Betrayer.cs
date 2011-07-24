@@ -56,6 +56,24 @@ namespace Server.Mobiles
 			m_NextAbilityTime = DateTime.Now + TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 30 ) );
 		}
 
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );
+
+			if ( 0.05 > Utility.RandomDouble() )
+			{
+				if ( !IsParagon )
+				{
+					if ( 0.75 > Utility.RandomDouble() )
+						c.DropItem( DawnsMusicGear.RandomCommon );
+					else
+						c.DropItem( DawnsMusicGear.RandomUncommon );
+				}
+				else
+					c.DropItem( DawnsMusicGear.RandomRare );
+			}
+		}
+
 		public override int GetDeathSound()
 		{
 			return 0x423;
@@ -148,7 +166,8 @@ namespace Server.Mobiles
 			}
 		}
 
-		public Betrayer( Serial serial ) : base( serial )
+		public Betrayer( Serial serial )
+			: base( serial )
 		{
 		}
 

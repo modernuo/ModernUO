@@ -293,12 +293,30 @@ namespace Server.Engines.Craft
 				AddNecroSpell(16, 40, 79.6, typeof(ExorcismScroll), Reagent.NoxCrystal, Reagent.GraveDust);
 			}
 
-			int index;
 
+			int index;
+			
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( EnchantedSwitch ), 1044294, 1072893, 45.0, 95.0, typeof( BlankScroll ), 1044377, 1, 1044378 );
+				AddRes( index, typeof( SpidersSilk ), 1044360, 1, 1044253 );
+				AddRes( index, typeof( BlackPearl ), 1044353, 1, 1044253 );
+				AddRes( index, typeof( SwitchItem ), 1073464, 1, 1044253 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				
+				index = AddCraft( typeof( RunedPrism ), 1044294, 1073465, 45.0, 95.0, typeof( BlankScroll ), 1044377, 1, 1044378 );
+				AddRes( index, typeof( SpidersSilk ), 1044360, 1, 1044253 );
+				AddRes( index, typeof( BlackPearl ), 1044353, 1, 1044253 );
+				AddRes( index, typeof( HollowPrism ), 1072895, 1, 1044253 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+			
 			// Runebook
-			index = AddCraft(typeof(Runebook), 1044294, 1041267, 45.0, 95.0, typeof(BlankScroll), 1044377, 8, 1044378);
-			AddRes(index, typeof(RecallScroll), 1044445, 1, 1044253);
-			AddRes(index, typeof(GateTravelScroll), 1044446, 1, 1044253);
+			index = AddCraft( typeof( Runebook ), 1044294, 1041267, 45.0, 95.0, typeof( BlankScroll ), 1044377, 8, 1044378 );
+			AddRes( index, typeof( RecallScroll ), 1044445, 1, 1044253 );
+			AddRes( index, typeof( GateTravelScroll ), 1044446, 1, 1044253 );
 
 			if (Core.AOS)
 			{

@@ -157,6 +157,9 @@ namespace Server.Items
 			if( !CraftResources.IsStandard( resource ) )
 				return true;
 
+			if ( i is ITokunoDyable )
+				return true;
+
 			return( 
 				IsInTypeList( t, TreasuresOfTokuno.LesserArtifactsTotal )
 				|| IsInTypeList( t, TreasuresOfTokuno.GreaterArtifacts ) 

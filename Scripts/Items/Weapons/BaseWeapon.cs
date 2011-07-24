@@ -1495,6 +1495,11 @@ namespace Server.Items
 			//if ( factor > 3.0 )
 			//	factor = 3.0;
 
+			BaseTalisman talisman = attacker.Talisman as BaseTalisman;
+
+			if ( talisman != null && talisman.Killer != null )
+				percentageBonus += talisman.Killer.DamageBonus( defender );
+
 			percentageBonus = Math.Min( percentageBonus, 300 );
 
 			//damage = (int)(damage * factor);
@@ -1941,6 +1946,11 @@ namespace Server.Items
 			SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName( atkWeapon.Slayer2 );
 
 			if ( atkSlayer != null && atkSlayer.Slays( defender )  || atkSlayer2 != null && atkSlayer2.Slays( defender ) )
+				return CheckSlayerResult.Slayer;
+
+			BaseTalisman talisman = attacker.Talisman as BaseTalisman;
+
+			if ( talisman != null && TalismanSlayer.Slays( talisman.Slayer, defender ) )
 				return CheckSlayerResult.Slayer;
 
 			if ( !Core.SE )
