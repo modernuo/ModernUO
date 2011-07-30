@@ -88,8 +88,11 @@ namespace Server.SkillHandlers
 						steps = 1;
 
 					m.AllowedStealthSteps = steps;
+
 					PlayerMobile pm = m as PlayerMobile; // IsStealthing should be moved to Server.Mobiles
-					pm.IsStealthing = true;
+
+					if( pm != null )
+    						pm.IsStealthing = true;
 
 					m.SendLocalizedMessage( 502730 ); // You begin to move quietly.
 

@@ -3744,7 +3744,7 @@ namespace Server.Mobiles
 			if ( !this.Young )
 				return false;
 
-			if ( !((BaseRegion)Region).YoungProtected )
+			if ( Region is BaseRegion && !((BaseRegion)Region).YoungProtected )
 				return false;
 
 			if( from is BaseCreature && ((BaseCreature)from).IgnoreYoungProtection )
