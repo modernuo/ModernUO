@@ -12,7 +12,6 @@
 		[Constructable]
 		public Bucket()
 			: this( false )
-
 		{
 		}
 
