@@ -149,6 +149,7 @@ namespace Server.Network
 			Register( 0xD7,   0,  true, new OnPacketReceive( EncodedCommand ) );
 			Register( 0xE1,   0, false, new OnPacketReceive( ClientType ) );
 			Register( 0xEF,  21, false, new OnPacketReceive( LoginServerSeed ) );
+			Register( 0xF8, 106, false, new OnPacketReceive( CreateCharacter70160 ) );
 
 			Register6017( 0x08, 15, true, new OnPacketReceive( DropReq6017 ) );
 
@@ -2160,6 +2161,128 @@ namespace Server.Network
 				}
 			}
 		}
+
+		public static void CreateCharacter70160( NetState state, PacketReader pvSrc )
+		{
+			int unk1 = pvSrc.ReadInt32();
+			int unk2 = pvSrc.ReadInt32();
+			int unk3 = pvSrc.ReadByte();
+			string name = pvSrc.ReadString( 30 );
+
+			pvSrc.Seek( 2, SeekOrigin.Current );
+			int flags = pvSrc.ReadInt32();
+			pvSrc.Seek( 8, SeekOrigin.Current );
+			int prof = pvSrc.ReadByte();
+			pvSrc.Seek( 15, SeekOrigin.Current );
+
+			int genderRace = pvSrc.ReadByte();
+
+			int str = pvSrc.ReadByte();
+			int dex = pvSrc.ReadByte();
+			int intl= pvSrc.ReadByte();
+			int is1 = pvSrc.ReadByte();
+			int vs1 = pvSrc.ReadByte();
+			int is2 = pvSrc.ReadByte();
+			int vs2 = pvSrc.ReadByte();
+			int is3 = pvSrc.ReadByte();
+			int vs3 = pvSrc.ReadByte();
+			int is4 = pvSrc.ReadByte();
+			int vs4 = pvSrc.ReadByte();
+
+			int hue = pvSrc.ReadUInt16();
+			int hairVal = pvSrc.ReadInt16();
+			int hairHue = pvSrc.ReadInt16();
+			int hairValf= pvSrc.ReadInt16();
+			int hairHuef= pvSrc.ReadInt16();
+			pvSrc.ReadByte();
+			int cityIndex = pvSrc.ReadByte();
+			int charSlot = pvSrc.ReadInt32();
+			int clientIP = pvSrc.ReadInt32();
+			int shirtHue = pvSrc.ReadInt16();
+			int pantsHue = pvSrc.ReadInt16();
+
+			/*
+			0x00, 0x01
+			0x02, 0x03 -> Human Male, Human Female
+			0x04, 0x05 -> Elf Male, Elf Female
+			0x05, 0x06 -> Gargoyle Male, Gargoyle Female
+			*/
+
+			bool female = ((genderRace % 2) != 0);
+
+			Race race = null;
+
+			byte raceID = (byte)(genderRace < 4 ? 0 : ((genderRace / 2) - 1));
+			race = Race.Races[raceID];
+		
+			if( race == null )
+				race = Race.DefaultRace;
+
+			CityInfo[] info = state.CityInfo;
+			IAccount a = state.Account;
+
+			if ( info == null || a == null || cityIndex < 0 || cityIndex >= info.Length )
+			{
+				state.Dispose();
+			}
+			else
+			{
+				// Check if anyone is using this account
+				for ( int i = 0; i < a.Length; ++i )
+				{
+					Mobile check = a[i];
+
+					if ( check != null && check.Map != Map.Internal )
+					{
+						Console.WriteLine( "Login: {0}: Account in use", state );
+						state.Send( new PopupMessage( PMMessage.CharInWorld ) );
+						return;
+					}
+				}
+
+				state.Flags = (ClientFlags)flags;
+
+				CharacterCreatedEventArgs args = new CharacterCreatedEventArgs(
+					state, a,
+					name, female, hue,
+					str, dex, intl,
+					info[cityIndex],
+					new SkillNameValue[4]
+					{
+						new SkillNameValue( (SkillName)is1, vs1 ),
+						new SkillNameValue( (SkillName)is2, vs2 ),
+						new SkillNameValue( (SkillName)is3, vs3 ),
+						new SkillNameValue( (SkillName)is4, vs4 ),
+					},
+					shirtHue, pantsHue,
+					hairVal, hairHue,
+					hairValf, hairHuef,
+					prof,
+					race
+					);
+
+				state.Send( new ClientVersionReq() );
+
+				state.BlockAllPackets = true;
+
+				EventSink.InvokeCharacterCreated( args );
+
+				Mobile m = args.Mobile;
+
+				if ( m != null )
+				{
+					state.Mobile = m;
+					m.NetState = state;
+					new LoginTimer( state, m ).Start();
+				}
+				else
+				{
+					state.BlockAllPackets = false;
+					state.Dispose();
+				}
+			}
+		}
+
 
 		private static bool m_ClientVerification = true;
 

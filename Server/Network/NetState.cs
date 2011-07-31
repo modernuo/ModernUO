@@ -165,7 +165,9 @@ namespace Server.Network {
 			set {
 				m_Version = value;
 
-				if ( value >= m_Version70130 ) {
+				if ( value >= m_Version70160 ) {
+					_ProtocolChanges = ProtocolChanges.Version70160;
+				} else if ( value >= m_Version70130 ) {
 					_ProtocolChanges = ProtocolChanges.Version70130;
 				} else if ( value >= m_Version7090 ) {
 					_ProtocolChanges = ProtocolChanges.Version7090;
@@ -199,6 +201,7 @@ namespace Server.Network {
 		private static ClientVersion m_Version7000	= new ClientVersion( "7.0.0.0" );
 		private static ClientVersion m_Version7090	= new ClientVersion( "7.0.9.0" );
 		private static ClientVersion m_Version70130	= new ClientVersion( "7.0.13.0" );
+		private static ClientVersion m_Version70160	= new ClientVersion( "7.0.16.0" );
 
 		private ProtocolChanges _ProtocolChanges;
 
@@ -213,6 +216,7 @@ namespace Server.Network {
 			StygianAbyss			= 0x00000080,
 			HighSeas			= 0x00000100,
 			NewCharacterList		= 0x00000200,
+			NewCharacterCreation		= 0x00000400,
 
 			Version400a			= NewSpellbook,
 			Version407a			= Version400a  | DamagePacket,
@@ -223,7 +227,8 @@ namespace Server.Network {
 			Version60142			= Version6017  | ExtendedSupportedFeatures,
 			Version7000			= Version60142 | StygianAbyss,
 			Version7090			= Version7000  | HighSeas,
-			Version70130			= Version7090  | NewCharacterList
+			Version70130			= Version7090  | NewCharacterList,
+			Version70160			= Version70130 | NewCharacterCreation
 		}
 
 		public bool NewSpellbook { get { return ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0); } }
@@ -236,6 +241,7 @@ namespace Server.Network {
 		public bool StygianAbyss { get { return ((_ProtocolChanges & ProtocolChanges.StygianAbyss) != 0); } }
 		public bool HighSeas { get { return ((_ProtocolChanges & ProtocolChanges.HighSeas) != 0); } }
 		public bool NewCharacterList { get { return ((_ProtocolChanges & ProtocolChanges.NewCharacterList) != 0); } }
+		public bool NewCharacterCreation { get { return ((_ProtocolChanges & ProtocolChanges.NewCharacterCreation) != 0); } }
 
 		public bool IsUOTDClient {
 			get {

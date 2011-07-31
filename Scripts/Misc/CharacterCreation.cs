@@ -615,11 +615,16 @@ namespace Server.Misc
 			if ( !VerifyProfession( args.Profession ) )
 				args.Profession = 0;
 
+			NetState state = args.State;
+
+			if ( state == null )
+				return;
+
 			Mobile newChar = CreateMobile( args.Account as Account );
 
 			if ( newChar == null )
 			{
-				Console.WriteLine( "Login: {0}: Character creation failed, account full", args.State );
+				Console.WriteLine( "Login: {0}: Character creation failed, account full", state );
 				return;
 			}
 
@@ -657,7 +662,7 @@ namespace Server.Misc
 
 			AddBackpack( newChar );
 
-			SetStats( newChar, args.Str, args.Dex, args.Int );
+			SetStats( newChar, state, args.Str, args.Dex, args.Int );
 			SetSkills( newChar, args.Skills, args.Profession );
 
 			Race race = newChar.Race;
@@ -695,7 +700,7 @@ namespace Server.Misc
 
 			newChar.MoveToWorld( city.Location, city.Map );
 
-			Console.WriteLine( "Login: {0}: New character being created (account={1})", args.State, args.Account.Username );
+			Console.WriteLine( "Login: {0}: New character being created (account={1})", state, args.Account.Username );
 			Console.WriteLine( " - Character: {0} (serial={1})", newChar.Name, newChar.Serial );
 			Console.WriteLine( " - Started: {0} {1} in {2}", city.City, city.Location, city.Map.ToString() );
 
@@ -830,7 +835,7 @@ namespace Server.Misc
 				return args.City;
 		}
 
-		private static void FixStats( ref int str, ref int dex, ref int intel )
+		private static void FixStats( ref int str, ref int dex, ref int intel, int max )
 		{
 			int vStr = str - 10;
 			int vDex = dex - 10;
@@ -847,39 +852,42 @@ namespace Server.Misc
 
 			int total = vStr + vDex + vInt;
 
-			if ( total == 0 || total == 50 )
+			if ( total == 0 || total == max )
 				return;
 
-			double scalar = 50 / (double)total;
+			double scalar = max / (double)total;
 
 			vStr = (int)(vStr * scalar);
 			vDex = (int)(vDex * scalar);
 			vInt = (int)(vInt * scalar);
 
-			FixStat( ref vStr, (vStr + vDex + vInt) - 50 );
-			FixStat( ref vDex, (vStr + vDex + vInt) - 50 );
-			FixStat( ref vInt, (vStr + vDex + vInt) - 50 );
+			FixStat( ref vStr, (vStr + vDex + vInt) - max, max );
+			FixStat( ref vDex, (vStr + vDex + vInt) - max, max );
+			FixStat( ref vInt, (vStr + vDex + vInt) - max, max );
 
 			str = vStr + 10;
 			dex = vDex + 10;
 			intel = vInt + 10;
 		}
 
-		private static void FixStat( ref int stat, int diff )
+		private static void FixStat( ref int stat, int diff, int max )
 		{
 			stat += diff;
 
 			if ( stat < 0 )
 				stat = 0;
-			else if ( stat > 50 )
-				stat = 50;
+			else if ( stat > max )
+				stat = max;
 		}
 
-		private static void SetStats( Mobile m, int str, int dex, int intel )
+		private static void SetStats( Mobile m, NetState state, int str, int dex, int intel )
 		{
-			FixStats( ref str, ref dex, ref intel );
+			int max = state.NewCharacterCreation ? 60 : 50;
+			int total = state.NewCharacterCreation ? 90 : 80;
 
-			if ( str < 10 || str > 60 || dex < 10 || dex > 60 || intel < 10 || intel > 60 || (str + dex + intel) != 80 )
+			FixStats( ref str, ref dex, ref intel, max );
+
+			if ( str < 10 || str > max || dex < 10 || dex > max || intel < 10 || intel > max || (str + dex + intel) != total )
 			{
 				str = 10;
 				dex = 10;
@@ -917,7 +925,7 @@ namespace Server.Misc
 				}
 			}
 
-			return ( total == 100 );
+			return ( total == 100 || total == 120 );
 		}
 
 		private static Mobile m_Mobile;
