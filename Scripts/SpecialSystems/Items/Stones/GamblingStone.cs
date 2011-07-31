@@ -1,6 +1,3 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
 	public class GamblingStone : Item
@@ -27,7 +24,8 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public GamblingStone() : base( 0xED4 )
+		public GamblingStone()
+			: base( 0xED4 )
 		{
 			Movable = false;
 			Hue = 0x56;
@@ -50,31 +48,41 @@ namespace Server.Items
 		{
 			Container pack = from.Backpack;
 
-			if ( pack != null && pack.ConsumeTotal( typeof( Gold ), 250 ) )
+			if( pack != null && pack.ConsumeTotal( typeof( Gold ), 250 ) )
 			{
 				m_GamblePot += 150;
 				InvalidateProperties();
 
 				int roll = Utility.Random( 1200 );
 
-				if ( roll == 0 ) // Jackpot
+				if( roll == 0 ) // Jackpot
 				{
+					int maxCheck = 1000000;
+
 					from.SendMessage( 0x35, "You win the {0}gp jackpot!", m_GamblePot );
+
+					while( m_GamblePot > maxCheck )
+					{
+						from.AddToBackpack( new BankCheck( maxCheck ) );
+
+						m_GamblePot -= maxCheck;
+					}
+
 					from.AddToBackpack( new BankCheck( m_GamblePot ) );
 
 					m_GamblePot = 2500;
 				}
-				else if ( roll <= 20 ) // Chance for a regbag
+				else if( roll <= 20 ) // Chance for a regbag
 				{
 					from.SendMessage( 0x35, "You win a bag of reagents!" );
 					from.AddToBackpack( new BagOfReagents( 50 ) );
 				}
-				else if ( roll <= 40 ) // Chance for gold
+				else if( roll <= 40 ) // Chance for gold
 				{
 					from.SendMessage( 0x35, "You win 1500gp!" );
 					from.AddToBackpack( new BankCheck( 1500 ) );
 				}
-				else if ( roll <= 100 ) // Another chance for gold
+				else if( roll <= 100 ) // Another chance for gold
 				{
 					from.SendMessage( 0x35, "You win 1000gp!" );
 					from.AddToBackpack( new BankCheck( 1000 ) );
@@ -89,8 +97,9 @@ namespace Server.Items
 				from.SendMessage( 0x22, "You need at least 250gp in your backpack to use this." );
 			}
 		}
-    
-		public GamblingStone( Serial serial ) : base( serial )
+
+		public GamblingStone( Serial serial )
+			: base( serial )
 		{
 		}
 
@@ -98,9 +107,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int)0 ); // version
 
-			writer.Write( (int) m_GamblePot );
+			writer.Write( (int)m_GamblePot );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -109,14 +118,14 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			switch ( version )
+			switch( version )
 			{
 				case 0:
-				{
-					m_GamblePot = reader.ReadInt();
+					{
+						m_GamblePot = reader.ReadInt();
 
-					break;
-				}
+						break;
+					}
 			}
 		}
 	}
