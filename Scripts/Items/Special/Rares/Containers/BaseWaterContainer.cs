@@ -18,9 +18,6 @@
 		public virtual int currItemID { get { return ( IsEmpty ) ? voidItem_ID : fullItem_ID; } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool CanFill { get { return ( !IsFull && !IsLockedDown() ); } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
 		public int Quantity
 		{
 			get
@@ -29,11 +26,14 @@
 			}
 			set
 			{
-				if( value != m_Quantity && CanFill )
+				if( ( value <= 0 && IsEmpty ) || ( value >= MaxQuantity && IsFull ) )
 				{
-					UpdateContainer( value );
+					if( value != m_Quantity )
+					{
+						UpdateContainer( value );
 
-					InvalidateProperties();
+						InvalidateProperties();
+					}
 				}
 			}
 		}
@@ -44,20 +44,6 @@
 			: base( Item_Id )
 		{
 			m_Quantity = ( filled ) ? MaxQuantity : 0;
-		}
-
-		public virtual bool IsLockedDown()
-		{
-			Multis.BaseHouse house = Multis.BaseHouse.FindHouseAt( this );
-
-			if( house == null || !house.IsLockedDown( this ) )
-			{
-				if( Parent == null )
-				{
-					return true;
-				}
-			}
-			return false;
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -104,8 +90,10 @@
 			{
 				m_Quantity = ( MaxQuantity > amount ) ? amount : MaxQuantity;
 			}
-
-			Movable = IsEmpty;
+			if( !IsLockedDown )
+			{
+				Movable = IsEmpty;
+			}
 			ItemID = currItemID;
 		}
 
