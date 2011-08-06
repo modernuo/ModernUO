@@ -1,7 +1,7 @@
 using System;
-using Server.Multis;
 using System.Collections.Generic;
 using Server.Gumps;
+using Server.Multis;
 
 namespace Server.Items
 {
@@ -10,17 +10,20 @@ namespace Server.Items
 		public static int HealingBonus { get { return 10; } }
 
 		[Constructable]
-		public EnhancedBandage() : this( 1 )
+		public EnhancedBandage()
+			: this( 1 )
 		{
 		}
 
 		[Constructable]
-		public EnhancedBandage( int amount ) : base( amount )
+		public EnhancedBandage( int amount )
+			: base( amount )
 		{
 			Hue = 0x8A5;
 		}
 
-		public EnhancedBandage( Serial serial ) : base( serial )
+		public EnhancedBandage( Serial serial )
+			: base( serial )
 		{
 		}
 
@@ -66,6 +69,8 @@ namespace Server.Items
 		public override int DefaultDropSound { get { return 66; } }
 		public override int DefaultMaxItems { get { return 125; } }
 
+		public override bool Movable { get { return false; } }
+
 		private int m_Charges;
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -78,29 +83,32 @@ namespace Server.Items
 		private Timer m_Timer;
 
 		[Constructable]
-		public FountainOfLife() : this( 10 )
+		public FountainOfLife()
+			: this( 10 )
 		{
 		}
 
 		[Constructable]
-		public FountainOfLife( int charges ) : base( 0x2AC0 )
+		public FountainOfLife( int charges )
+			: base( 0x2AC0 )
 		{
 			m_Charges = charges;
 
 			m_Timer = Timer.DelayCall( RechargeTime, RechargeTime, new TimerCallback( Recharge ) );
 		}
 
-		public FountainOfLife( Serial serial ) : base( serial )
+		public FountainOfLife( Serial serial )
+			: base( serial )
 		{
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( dropped is Bandage )
+			if( dropped is Bandage )
 			{
 				bool allow = base.OnDragDrop( from, dropped );
 
-				if ( allow )
+				if( allow )
 					Enhance();
 
 				return allow;
@@ -114,11 +122,11 @@ namespace Server.Items
 
 		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
 		{
-			if ( item is Bandage )
+			if( item is Bandage )
 			{
 				bool allow = base.OnDragDropInto( from, item, p );
 
-				if ( allow )
+				if( allow )
 					Enhance();
 
 				return allow;
@@ -139,7 +147,7 @@ namespace Server.Items
 
 		public override void OnDelete()
 		{
-			if ( m_Timer != null )
+			if( m_Timer != null )
 				m_Timer.Stop();
 
 			base.OnDelete();
@@ -152,7 +160,7 @@ namespace Server.Items
 			writer.WriteEncodedInt( 0 ); //version
 
 			writer.Write( m_Charges );
-			writer.Write( (DateTime) m_Timer.Next );
+			writer.Write( (DateTime)m_Timer.Next );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -165,7 +173,7 @@ namespace Server.Items
 
 			DateTime next = reader.ReadDateTime();
 
-			if ( next < DateTime.Now )
+			if( next < DateTime.Now )
 				m_Timer = Timer.DelayCall( TimeSpan.Zero, RechargeTime, new TimerCallback( Recharge ) );
 			else
 				m_Timer = Timer.DelayCall( next - DateTime.Now, RechargeTime, new TimerCallback( Recharge ) );
@@ -180,13 +188,13 @@ namespace Server.Items
 
 		public void Enhance()
 		{
-			for ( int i = Items.Count - 1; i >= 0 && m_Charges > 0; i-- )
+			for( int i = Items.Count - 1; i >= 0 && m_Charges > 0; i-- )
 			{
 				Bandage bandage = Items[ i ] as Bandage;
 
-				if ( bandage != null )
+				if( bandage != null )
 				{
-					if ( bandage.Amount > m_Charges )
+					if( bandage.Amount > m_Charges )
 					{
 						bandage.Amount -= m_Charges;
 						DropItem( new EnhancedBandage( m_Charges ) );
@@ -220,18 +228,21 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public FountainOfLifeDeed() : this( 10 )
+		public FountainOfLifeDeed()
+			: this( 10 )
 		{
 		}
 
 		[Constructable]
-		public FountainOfLifeDeed( int charges ) : base()
+		public FountainOfLifeDeed( int charges )
+			: base()
 		{
 			LootType = LootType.Blessed;
 			m_Charges = charges;
 		}
 
-		public FountainOfLifeDeed( Serial serial ) : base( serial )
+		public FountainOfLifeDeed( Serial serial )
+			: base( serial )
 		{
 		}
 
