@@ -69,7 +69,9 @@ namespace Server.Items
 		public override int DefaultDropSound { get { return 66; } }
 		public override int DefaultMaxItems { get { return 125; } }
 
-		public override bool Movable { get { return false; } }
+		new public bool Movable { get { return m_Movable; } set { } }
+
+		private bool m_Movable;
 
 		private int m_Charges;
 
