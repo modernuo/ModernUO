@@ -62,16 +62,17 @@ namespace Server.Items
 			get { return new FountainOfLifeDeed( m_Charges ); }
 		}
 
+		public override bool OnDragLift( Mobile from )
+		{
+			return false;
+		}
+
 		public virtual TimeSpan RechargeTime { get { return TimeSpan.FromDays( 1 ); } }
 
 		public override int LabelNumber { get { return 1075197; } } // Fountain of Life
 		public override int DefaultGumpID { get { return 0x484; } }
 		public override int DefaultDropSound { get { return 66; } }
 		public override int DefaultMaxItems { get { return 125; } }
-
-		new public bool Movable { get { return m_Movable; } set { } }
-
-		private bool m_Movable;
 
 		private int m_Charges;
 
