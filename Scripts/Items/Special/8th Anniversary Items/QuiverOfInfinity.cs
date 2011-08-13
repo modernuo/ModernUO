@@ -17,6 +17,8 @@ namespace Server.Items
 
 			Attributes.DefendChance = 5;
 			Attributes.WeaponDamage = 10;
+			DamageIncrease = 10;
+
 		}
 
 		public QuiverOfInfinity( Serial serial ) : base( serial )
