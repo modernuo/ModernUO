@@ -1569,7 +1569,7 @@ namespace Server.Mobiles
 
 		private bool CanInsure( Item item )
 		{
-			if ( item is Container || item is BagOfSending || item is KeyRing )
+			if ( (( item is Container) && !(item is BaseQuiver)) || item is BagOfSending || item is KeyRing )
 				return false;
 
 			if ( (item is Spellbook && item.LootType == LootType.Blessed)|| item is Runebook || item is PotionKeg || item is Sigil )
