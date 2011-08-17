@@ -789,6 +789,11 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if( version <= 1 && Hue != 0)
+			{
+				Hue = 0;
+			}
 		}
 	}
 }
