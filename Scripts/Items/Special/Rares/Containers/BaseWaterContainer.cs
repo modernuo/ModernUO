@@ -9,16 +9,13 @@
 		public override int DefaultGumpID { get { return 0x3e; } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool IsEmpty { get { return ( m_Quantity == 0 ); } }
+		public virtual bool IsEmpty { get { return ( m_Quantity <= 0 ); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual bool IsFull { get { return ( m_Quantity >= MaxQuantity ); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual int currItemID { get { return ( IsEmpty ) ? voidItem_ID : fullItem_ID; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Quantity
+		public virtual int Quantity
 		{
 			get
 			{
@@ -26,14 +23,15 @@
 			}
 			set
 			{
-				if( ( value <= 0 && IsEmpty ) || ( value >= MaxQuantity && IsFull ) )
+				if( value != m_Quantity )
 				{
-					if( value != m_Quantity )
-					{
-						UpdateContainer( value );
+					m_Quantity = ( value < 1 ) ? 0 : ( value > MaxQuantity ) ? MaxQuantity : value;
 
-						InvalidateProperties();
-					}
+					Movable = ( !IsLockedDown ) ? IsEmpty : false;
+
+					ItemID = ( IsEmpty ) ? voidItem_ID : fullItem_ID;
+
+					InvalidateProperties();
 				}
 			}
 		}
@@ -78,23 +76,6 @@
 			}
 
 			return base.OnDragDropInto( from, item, p );
-		}
-
-		public virtual void UpdateContainer( int amount )
-		{
-			if( amount <= 0 )
-			{
-				m_Quantity = 0;
-			}
-			else
-			{
-				m_Quantity = ( MaxQuantity > amount ) ? amount : MaxQuantity;
-			}
-			if( !IsLockedDown )
-			{
-				Movable = IsEmpty;
-			}
-			ItemID = currItemID;
 		}
 
 		public BaseWaterContainer( Serial serial )
