@@ -4816,131 +4816,136 @@ namespace Server.Mobiles
 		public virtual bool IsDispellable { get { return Summoned && !IsAnimatedDead; } }
 
 		#region Healing
-		public virtual double MinHealDelay { get { return 2.0; } }
-		public virtual double HealScalar { get { return 1.0; } }
 		public virtual bool CanHeal { get { return false; } }
 		public virtual bool CanHealOwner { get { return false; } }
+		public virtual double HealScalar { get { return 1.0; } }
 
-		public double MaxHealDelay
-		{
-			get
-			{
-				if (ControlMaster != null)
-				{
-					double max = ControlMaster.Hits / 10;
-
-					if (max > 10)
-						max = 10;
-					if (max < 1)
-						max = 1;
-
-					return max;
-				}
-				else
-					return 7;
-			}
-		}
+		public virtual int HealSound { get { return 0x57; } }
+		public virtual int HealStartRange { get { return 2; } }
+		public virtual int HealEndRange { get { return RangePerception; } }
+		public virtual double HealTrigger { get { return 0.78; } }
+		public virtual double HealDelay { get { return 6.5; } }
+		public virtual double HealInterval { get { return 0.0; } }
+		public virtual bool HealFully { get { return true; } }
+		public virtual double HealOwnerTrigger { get { return 0.78; } }
+		public virtual double HealOwnerDelay { get { return 6.5; } }
+		public virtual double HealOwnerInterval { get { return 30.0; } }
+		public virtual bool HealOwnerFully { get { return false; } }
 
 		private DateTime m_NextHealTime = DateTime.Now;
+		private DateTime m_NextHealOwnerTime = DateTime.Now;
 		private Timer m_HealTimer = null;
 
-		public virtual void HealStart()
+		public bool IsHealing { get { return ( m_HealTimer != null ); } }
+
+		public virtual void HealStart( Mobile patient )
 		{
-			if (!Alive)
+			bool onSelf = ( patient == this );
+
+			//DoBeneficial( patient );
+
+			RevealingAction();
+
+			if ( !onSelf )
+			{
+				patient.RevealingAction();
+				patient.SendLocalizedMessage( 1008078, false, Name ); //  : Attempting to heal you.
+			}
+
+			double seconds = ( onSelf ? HealDelay : HealOwnerDelay ) + ( patient.Alive ? 0.0 : 5.0 );
+
+			m_HealTimer = Timer.DelayCall( TimeSpan.FromSeconds( seconds ), new TimerStateCallback( Heal_Callback ), patient );
+		}
+
+		private void Heal_Callback( object state )
+		{
+			if ( state is Mobile )
+				Heal( (Mobile)state );
+		}
+
+		public virtual void Heal( Mobile patient )
+		{
+			if ( !Alive || this.Map == Map.Internal || !CanBeBeneficial( patient, true, true ) || patient.Map != this.Map || !InRange( patient, HealEndRange ) )
+			{
+				StopHeal();
 				return;
-
-			if (CanHeal && Hits != HitsMax)
-			{
-				RevealingAction();
-
-				double seconds = 10 - Dex / 12;
-
-				m_HealTimer = Timer.DelayCall(TimeSpan.FromSeconds(seconds), new TimerStateCallback(Heal_Callback), this);
 			}
-			else if (CanHealOwner && ControlMaster != null && ControlMaster.Hits < ControlMaster.HitsMax && InRange(ControlMaster, 2))
-			{
-				ControlMaster.RevealingAction();
 
-				double seconds = 10 - Dex / 15;
-				double resDelay = (ControlMaster.Alive ? 0.0 : 5.0);
+			bool onSelf = ( patient == this );
 
-				seconds += resDelay;
-
-				ControlMaster.SendLocalizedMessage(1008078, false, Name); //  : Attempting to heal you.
-
-				m_HealTimer = Timer.DelayCall(TimeSpan.FromSeconds(seconds), new TimerStateCallback(Heal_Callback), ControlMaster);
-			}
-		}
-
-		private void Heal_Callback(object state)
-		{
-			if (state is Mobile)
-				Heal((Mobile)state);
-		}
-
-		public virtual void Heal(Mobile patient)
-		{
-			if (!Alive || !patient.Alive || !InRange(patient, 2))
+			if ( !patient.Alive )
 			{
 			}
-			else if (patient.Poisoned)
+			else if ( patient.Poisoned )
 			{
+				int poisonLevel = patient.Poison.Level;
+
 				double healing = Skills.Healing.Value;
 				double anatomy = Skills.Anatomy.Value;
-				double chance = (healing - 30.0) / 50.0 - patient.Poison.Level * 0.1;
+				double chance = ( healing - 30.0 ) / 50.0 - poisonLevel * 0.1;
 
-				if ((healing >= 60.0 && anatomy >= 60.0) && chance > Utility.RandomDouble())
+				if ( ( healing >= 60.0 && anatomy >= 60.0 ) && chance > Utility.RandomDouble() )
 				{
-					if (patient.CurePoison(this))
+					if ( patient.CurePoison( this ) )
 					{
-						patient.SendLocalizedMessage(1010059); // You have been cured of all poisons.
-						patient.PlaySound(0x57);
+						patient.SendLocalizedMessage( 1010059 ); // You have been cured of all poisons.
 
-						CheckSkill(SkillName.Healing, 0.0, 100.0);
-						CheckSkill(SkillName.Anatomy, 0.0, 100.0);
+						CheckSkill( SkillName.Healing, 0.0, 60.0 + poisonLevel * 10.0 ); // TODO: Verify formula
+						CheckSkill( SkillName.Anatomy, 0.0, 100.0 );
 					}
 				}
 			}
-			else if (BleedAttack.IsBleeding(patient))
+			else if ( BleedAttack.IsBleeding( patient ) )
 			{
-				patient.SendLocalizedMessage(1060167); // The bleeding wounds have healed, you are no longer bleeding!
-				BleedAttack.EndBleed(patient, true);
-				patient.PlaySound(0x57);
+				patient.SendLocalizedMessage( 1060167 ); // The bleeding wounds have healed, you are no longer bleeding!
+				BleedAttack.EndBleed( patient, false );
 			}
 			else
 			{
 				double healing = Skills.Healing.Value;
 				double anatomy = Skills.Anatomy.Value;
-				double chance = (healing + 10.0) / 100.0;
+				double chance = ( healing + 10.0 ) / 100.0;
 
-				if (chance > Utility.RandomDouble())
+				if ( chance > Utility.RandomDouble() )
 				{
 					double min, max;
 
-					min = (anatomy / 10.0) + (healing / 6.0) + 4.0;
-					max = (anatomy / 8.0) + (healing / 3.0) + 4.0;
+					min = ( anatomy / 10.0 ) + ( healing / 6.0 ) + 4.0;
+					max = ( anatomy / 8.0 ) + ( healing / 3.0 ) + 4.0;
 
-					if (patient == this)
+					if ( onSelf )
 						max += 10;
 
-					double toHeal = min + (Utility.RandomDouble() * (max - min));
+					double toHeal = min + ( Utility.RandomDouble() * ( max - min ) );
 
 					toHeal *= HealScalar;
 
-					patient.Heal((int)toHeal);
-					patient.PlaySound(0x57);
+					patient.Heal( (int)toHeal );
 
-					CheckSkill(SkillName.Healing, 0.0, 100.0);
-					CheckSkill(SkillName.Anatomy, 0.0, 100.0);
+					CheckSkill( SkillName.Healing, 0.0, 90.0 );
+					CheckSkill( SkillName.Anatomy, 0.0, 100.0 );
 				}
 			}
 
-			if (m_HealTimer != null)
+			HealEffect( patient );
+
+			StopHeal();
+
+			if ( ( onSelf && HealFully && Hits >= HealTrigger * HitsMax && Hits < HitsMax ) || ( !onSelf && HealOwnerFully && patient.Hits >= HealOwnerTrigger * patient.HitsMax && patient.Hits < patient.HitsMax ) )
+				HealStart( patient );
+		}
+
+		public virtual void StopHeal()
+		{
+			if ( m_HealTimer != null )
 				m_HealTimer.Stop();
 
 			m_HealTimer = null;
+		}
 
-			m_NextHealTime = DateTime.Now + TimeSpan.FromSeconds(MinHealDelay + (Utility.RandomDouble() * MaxHealDelay));
+		public virtual void HealEffect( Mobile patient )
+		{
+			patient.PlaySound( HealSound );
 		}
 
 		#endregion
@@ -4966,7 +4971,7 @@ namespace Server.Mobiles
 				m_NextRummageTime = DateTime.Now + TimeSpan.FromMinutes( delay );
 			}
 
-			if ( CanBreath && DateTime.Now >= m_NextBreathTime ) // tested: controled dragons do breath fire, what about summoned skeletal dragons?
+			if ( CanBreath && DateTime.Now >= m_NextBreathTime ) // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
 			{
 				Mobile target = this.Combatant;
 
@@ -4974,6 +4979,24 @@ namespace Server.Mobiles
 					BreathStart( target );
 
 				m_NextBreathTime = DateTime.Now + TimeSpan.FromSeconds( BreathMinDelay + (Utility.RandomDouble() * BreathMaxDelay) );
+			}
+
+			if ( ( CanHeal || CanHealOwner ) && Alive && !IsHealing && !BardPacified )
+			{
+				Mobile owner = this.ControlMaster;
+
+				if ( owner != null && CanHealOwner && DateTime.Now >= m_NextHealOwnerTime && CanBeBeneficial( owner, true, true ) && owner.Map == this.Map && InRange( owner, HealStartRange ) && InLOS( owner ) && owner.Hits < HealOwnerTrigger * owner.HitsMax )
+				{
+					HealStart( owner );
+
+					m_NextHealOwnerTime = DateTime.Now + TimeSpan.FromSeconds( HealOwnerInterval );
+				}
+				else if ( CanHeal && DateTime.Now >= m_NextHealTime && CanBeBeneficial( this ) && ( Hits < HealTrigger * HitsMax || Poisoned ) )
+				{
+					HealStart( this );
+
+					m_NextHealTime = DateTime.Now + TimeSpan.FromSeconds( HealInterval );
+				}
 			}
 		}
 
