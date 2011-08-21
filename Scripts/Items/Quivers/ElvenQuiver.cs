@@ -11,7 +11,6 @@ namespace Server.Items
 		[Constructable]
 		public ElvenQuiver() : base()
 		{
-			DamageIncrease = 10;
 			WeightReduction = 30;
 		}
 

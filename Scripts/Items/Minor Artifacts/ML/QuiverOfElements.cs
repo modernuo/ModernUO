@@ -11,8 +11,6 @@ namespace Server.Items
 		public QuiverOfElements() : base()
 		{
 			Hue = 0xEB;
-
-			DamageIncrease = 10;
 			WeightReduction = 50;
 		}
 

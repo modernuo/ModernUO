@@ -85,6 +85,8 @@ namespace Server.Items
 			Layer = Layer.Cloak;
 
 			m_Attributes = new AosAttributes( this );
+
+			DamageIncrease = 10;
 		}
 
 		public BaseQuiver( Serial serial ) : base( serial )
