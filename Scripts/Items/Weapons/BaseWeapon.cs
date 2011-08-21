@@ -3074,7 +3074,7 @@ namespace Server.Items
 				list.Add( Name );
 				
 			if ( !String.IsNullOrEmpty( m_EngravedText ) )
-				list.Add( 1062613, m_EngravedText );
+				list.Add( 1062613, Utility.FixHtml( m_EngravedText ) );
 		}
 
 		public override bool AllowEquipedCast( Mobile from )
