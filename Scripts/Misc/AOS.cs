@@ -40,20 +40,20 @@ namespace Server
 
 		public static int Damage( Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy )
 		{
-			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, false, false );
+			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, false, false, false );
 		}
 
 		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy )
 		{
-			return Damage( m, from, damage, ignoreArmor, phys, fire, cold, pois, nrgy, 0, 0, false, false );
+			return Damage( m, from, damage, ignoreArmor, phys, fire, cold, pois, nrgy, 0, 0, false, false, false );
 		}
 
 		public static int Damage( Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy, bool keepAlive )
 		{
-			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive, false );
+			return Damage( m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive, false, false );
 		}
 
-		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy, int chaos, int direct, bool keepAlive, bool archer )
+		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy, int chaos, int direct, bool keepAlive, bool archer, bool deathStrike )
 		{
 			if( m == null || m.Deleted || !m.Alive || damage <= 0 )
 				return 0;
@@ -127,7 +127,10 @@ namespace Server
 				if ( quiver != null )
 					damage += damage * quiver.DamageIncrease / 100;
 
-				totalDamage = Math.Min( damage, 35 );	//Direct Damage cap of 35
+				if ( !deathStrike )
+					totalDamage = Math.Min( damage, 35 );	// Direct Damage cap of 35
+				else
+					totalDamage = Math.Min( damage, 70 );	// Direct Damage cap of 70
 			}
 			else
 			{
