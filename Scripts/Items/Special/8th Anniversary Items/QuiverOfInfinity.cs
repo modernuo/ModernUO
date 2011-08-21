@@ -26,7 +26,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 0 ); //version
+			writer.WriteEncodedInt( 1 ); //version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -34,6 +34,11 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+
+			if( version < 1 && DamageIncrease == 0 )
+			{
+				DamageIncrease = 10;
+			}
 		}
 	}
 }

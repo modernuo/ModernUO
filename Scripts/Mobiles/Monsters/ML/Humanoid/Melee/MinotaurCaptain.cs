@@ -9,6 +9,11 @@ namespace Server.Mobiles
 	[CorpseName( "a minotaur corpse" )]
 	public class MinotaurCaptain : BaseCreature
 	{
+		public override WeaponAbility GetWeaponAbility()
+		{
+			return WeaponAbility.ParalyzingBlow;
+		}
+
 		[Constructable]
 		public MinotaurCaptain() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{

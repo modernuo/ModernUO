@@ -13,6 +13,7 @@ namespace Server.Engines.CannedEvil
 		VerminHorde,
 		UnholyTerror,
 		SleepingDragon,
+		Glade,
 		Pestilence
 	}
 
@@ -91,6 +92,13 @@ namespace Server.Engines.CannedEvil
 					new Type[]{ typeof( DeathwatchBeetle ), typeof( Kappa ) },
 					new Type[]{ typeof( LesserHiryu ), typeof( RevenantLion ) },
 					new Type[]{ typeof( Hiryu ), typeof( Oni ) }
+				} ),
+				new ChampionSpawnInfo( "Glade", typeof( Twaulo ), new string[]{ "Banisher", "Enforcer", "Eradicator" } , new Type[][]
+				{																											// Glade
+					new Type[]{ typeof( Pixie ), typeof( ShadowWisp ) },
+					new Type[]{ typeof( Centaur ), typeof( MLDryad ) },
+					new Type[]{ typeof( Satyr ), typeof( CuSidhe ) },
+					new Type[]{ typeof( FerelTreefellow ), typeof( RagingGrizzlyBear ) }
 				} ),
 				new ChampionSpawnInfo( "The Corrupt", typeof( Ilhenir ), new string[]{ "Cleanser", "Expunger", "Depurator" } , new Type[][]
 				{																											// Unholy Terror

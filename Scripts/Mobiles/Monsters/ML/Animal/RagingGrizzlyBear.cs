@@ -30,8 +30,13 @@ namespace Server.Mobiles
 			SetResistance( ResistanceType.Poison, 10, 20 );
 			SetResistance( ResistanceType.Energy, 10, 20 );
 
-			Fame = 5000;  //Guessing here
-			Karma = -5000;  //Guessing here
+			SetSkill( SkillName.Wrestling, 73.4, 88.1 );
+			SetSkill( SkillName.Tactics, 73.6, 110.5 );
+			SetSkill( SkillName.MagicResist, 32.8, 54.6 );
+			SetSkill( SkillName.Anatomy, 0, 0 );
+
+			Fame = 10000;  //Guessing here
+			Karma = 10000;  //Guessing here
 
 			VirtualArmor = 24;
 
@@ -39,8 +44,8 @@ namespace Server.Mobiles
 			
 		}
 
-		public override int Meat{ get{ return 2; } }
-		public override int Hides{ get{ return 16; } }
+		public override int Meat{ get{ return 4; } }
+		public override int Hides{ get{ return 32; } }
 		public override PackInstinct PackInstinct{ get{ return PackInstinct.Bear; } }
 
 		public RagingGrizzlyBear( Serial serial ) : base( serial )

@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
-using Server.Engines.CannedEvil;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Targeting;
 using Server.Misc;
+using Server.Engines.CannedEvil;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a minotaur corpse" )]
+	[CorpseName( "the remains of Meraktus" )]
 	public class Meraktus : BaseChampion
 	{
 		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
@@ -18,17 +19,24 @@ namespace Server.Mobiles
 										typeof( ArtifactVase ),
 										typeof( MinotaurStatueDeed ) }; } }
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
+		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { 	
+			MonsterStatuetteType.Minotaur }; } }
 
-		public override bool NoGoodies{ get{ return true; } }
+		public override WeaponAbility GetWeaponAbility()
+		{
+			return WeaponAbility.Dismount;
+		}
 
 		[Constructable]
-		public Meraktus() : base( AIType.AI_Melee )
+		public Meraktus()
+			: base(AIType.AI_Melee)
 		{
 			Name = "Meraktus";
 			Title = "the Tormented";
-			Body = 262;
-		   
+			Body = 263;
+			BaseSoundID = 680;
+			Hue = 0x835;
+
 			SetStr( 1419, 1438 );
 			SetDex( 309, 413 );
 			SetInt( 129, 131 );
@@ -59,16 +67,59 @@ namespace Server.Mobiles
 
 			VirtualArmor = 28; // Don't know what it should be
 
-			// TODO: Area Ground Stomp: Damage + Dismount
+			PackResources(8);
+			PackTalismans(5);
+
+			Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerCallback(SpawnTormented));
 		}
 
+		public virtual void PackResources(int amount)
+		{
+			for (int i = 0; i < amount; i++)
+				switch (Utility.Random(6))
+				{
+					case 0: PackItem(new Blight()); break;
+					case 1: PackItem(new Scourge()); break;
+					case 2: PackItem(new Taint()); break;
+					case 3: PackItem(new Putrefication()); break;
+					case 4: PackItem(new Corruption()); break;
+					case 5: PackItem(new Muculent()); break;
+				}
+		}
+
+		public virtual void PackTalismans(int amount)
+		{
+			int count = Utility.Random(amount);
+
+			for (int i = 0; i < count; i++)
+				PackItem(new RandomTalisman());
+		}
+
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );		
+
+			c.DropItem( new MalletAndChisel() );
+
+			switch ( Utility.Random( 3 ) )
+			{
+				case 0: c.DropItem( new MinotaurHedge() ); break;
+				case 1: c.DropItem( new BonePile() ); break;
+				case 2: c.DropItem( new LightYarn() ); break;
+			}
+
+			if ( Utility.RandomBool() )
+				c.DropItem( new TormentedChains() );
+
+			if ( Utility.RandomDouble() < 0.025 )
+				c.DropItem(new CrimsonCincture());
+		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.Rich );  // Need to verify
-			AddLoot(LootPack.Rich);  // Need to verify
+			AddLoot( LootPack.AosSuperBoss, 5 );  // Need to verify
 		}
-		
+
 		public override int GetAngerSound()
 		{
 			return 0x597;
@@ -94,6 +145,61 @@ namespace Server.Mobiles
 			return 0x59c;
 		}
 
+		public override int Meat { get { return 2; } }
+		public override int Hides { get { return 10; } }
+		public override HideType HideType { get { return HideType.Regular; } }
+		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override int TreasureMapLevel{ get{ return 3; } }
+		public override bool BardImmune{ get{ return true; } }
+		public override bool Unprovokable{ get{ return true; } }
+		public override bool Uncalmable { get { return true; } }
+
+		public override void OnGaveMeleeAttack(Mobile defender)
+		{
+			base.OnGaveMeleeAttack(defender);
+			if (0.2 >= Utility.RandomDouble())
+				Earthquake();
+		}
+
+		public void Earthquake()
+		{
+			Map map = this.Map;
+			if (map == null)
+				return;
+			ArrayList targets = new ArrayList();
+			foreach (Mobile m in this.GetMobilesInRange(8))
+			{
+				if (m == this || !CanBeHarmful(m))
+					continue;
+				if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != this.Team))
+					targets.Add(m);
+				else if (m.Player)
+					targets.Add(m);
+			}
+			PlaySound(0x2F3);
+			for (int i = 0; i < targets.Count; ++i)
+			{
+				Mobile m = (Mobile)targets[i];
+				if( m != null && !m.Deleted && m is PlayerMobile )
+				{
+					PlayerMobile pm = m as PlayerMobile;
+					if(pm != null && pm.Mounted)
+					{
+						pm.Mount.Rider=null;
+					}
+				}
+				double damage = m.Hits * 0.6;//was .6
+				if (damage < 10.0)
+					damage = 10.0;
+				else if (damage > 75.0)
+					damage = 75.0;
+				DoHarmful(m);
+				AOS.Damage(m, this, (int)damage, 100, 0, 0, 0, 0);
+				if (m.Alive && m.Body.IsHuman && !m.Mounted)
+					m.Animate(20, 7, 1, true, false, 0); // take hit
+			}
+		}
+
 		public Meraktus( Serial serial ) : base( serial )
 		{
 		}
@@ -109,5 +215,21 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 		}
+		#region SpawnHelpers
+		public void SpawnTormented()
+		{
+			BaseCreature spawna = new TormentedMinotaur();
+			spawna.MoveToWorld(Location, Map);
+
+			BaseCreature spawnb = new TormentedMinotaur();
+			spawnb.MoveToWorld(Location, Map);
+
+			BaseCreature spawnc = new TormentedMinotaur();
+			spawnc.MoveToWorld(Location, Map);
+
+			BaseCreature spawnd = new TormentedMinotaur();
+			spawnd.MoveToWorld(Location, Map);
+		}
+		#endregion
 	}
 }
