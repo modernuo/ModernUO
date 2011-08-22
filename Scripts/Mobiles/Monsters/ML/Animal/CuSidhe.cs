@@ -18,8 +18,6 @@ namespace Server.Mobiles
 		{			
 			double chance = Utility.RandomDouble() * 23301;
 
-			int[] list = new int[] { 0x97A, 0x978, 0x901, 0x8AC, 0x5A7, 0x527 };
-
 			if ( chance <= 1 )
 				Hue = 0x489;
 			else if ( chance < 50 )

@@ -410,23 +410,55 @@ namespace Server.Mobiles
 			if (!m.Alive)
 				StopTimer(m);
 
-			if (m_Corrosive)
+			if( m_Corrosive )
 			{
-				for (int i = 0; i < m.Items.Count; i++)
+				for( int i = 0; i < m.Items.Count; i++ )
 				{
-					IDurability item = m.Items[i] as IDurability;
+					IDurability item = m.Items[ i ] as IDurability;
 
-					if (item != null && Utility.RandomDouble() < 0.25)
+					if( item != null && Utility.RandomDouble() < 0.25 )
 					{
-						if (item.HitPoints > 10)
-							item.HitPoints -= 10;
+						if( item.HitPoints <= 10 )
+						{
+							if( item.HitPoints <= 0 )
+							{
+								if( item.MaxHitPoints <= 10 )
+								{
+									if( item.MaxHitPoints <= 0 )
+									{
+										( (Item)item ).Delete();
+									}
+									else
+									{
+										item.MaxHitPoints--;
+									}
+								}
+								else
+								{
+									item.MaxHitPoints -= 10;
+								}
+
+								if( Parent is Mobile )
+								{
+									( (Mobile)Parent ).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
+								}
+							}
+							else
+							{
+								item.HitPoints--;
+							}
+						}
 						else
-							item.HitPoints -= 1;
+						{
+							item.HitPoints -= 10;
+						}
 					}
 				}
 			}
 			else
-				AOS.Damage(m, 40, 0, 0, 0, 100, 0);
+			{
+				AOS.Damage( m, 40, 0, 0, 0, 100, 0 );
+			}
 		}
 
 		public virtual void Morph()
