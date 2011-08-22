@@ -405,16 +405,26 @@ namespace Server.Mobiles
 				Damage((Mobile)state);
 		}
 
-		public virtual void Damage(Mobile m)
+		public virtual void Damage( Mobile m )
 		{
-			if (!m.Alive)
-				StopTimer(m);
+			if( m == null || m.Deleted || !m.Alive )
+			{
+				StopTimer( m );
+			}
 
 			if( m_Corrosive )
 			{
 				for( int i = 0; i < m.Items.Count; i++ )
 				{
-					IDurability item = m.Items[ i ] as IDurability;
+					Item m_Item = m.Items[ i ] as Item;
+					IDurability item = m_Item as IDurability;
+
+					Mobile m_Parent = null;
+
+					if( m_Item.Parent != null && m_Item.Parent is Mobile )
+					{
+						m_Parent = m_Item.Parent as Mobile;
+					}
 
 					if( item != null && Utility.RandomDouble() < 0.25 )
 					{
@@ -424,11 +434,7 @@ namespace Server.Mobiles
 							{
 								if( item.MaxHitPoints <= 10 )
 								{
-									if( item.MaxHitPoints <= 0 )
-									{
-										( (Item)item ).Delete();
-									}
-									else
+									if( item.MaxHitPoints > 0 )
 									{
 										item.MaxHitPoints--;
 									}
@@ -436,11 +442,6 @@ namespace Server.Mobiles
 								else
 								{
 									item.MaxHitPoints -= 10;
-								}
-
-								if( Parent is Mobile )
-								{
-									( (Mobile)Parent ).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
 								}
 							}
 							else
@@ -451,6 +452,19 @@ namespace Server.Mobiles
 						else
 						{
 							item.HitPoints -= 10;
+						}
+					}
+
+					if( item.HitPoints <= 0 )
+					{
+						if( m_Parent != null && !m_Parent.Deleted )
+						{
+							m_Parent.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
+						}
+
+						if( item.MaxHitPoints <= 0 )
+						{
+							m_Item.Delete();
 						}
 					}
 				}
