@@ -258,10 +258,10 @@ namespace Server.Items
 						}
 						else
 						{
-							if ( relay.Text.Length > 64 )
-								m_Target.EngravedText = relay.Text.Substring( 0, 64 );
+							if( relay.Text.Length > 64 )
+								m_Target.EngravedText = Utility.FixHtml( relay.Text.Substring( 0, 64 ) );
 							else
-								m_Target.EngravedText = relay.Text;
+								m_Target.EngravedText = Utility.FixHtml( relay.Text );
 						
 							state.Mobile.SendLocalizedMessage( 1072361 ); // You engraved the object.	
 							m_Target.InvalidateProperties();						

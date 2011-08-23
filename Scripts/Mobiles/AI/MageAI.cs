@@ -78,7 +78,7 @@ namespace Server.Mobiles
 
 				base.DoActionWander();
 
-				if ( !m_Mobile.Controlled )
+				if ( (Utility.RandomDouble() < .05) )
 				{
 					Spell spell = CheckCastHealingSpell();
 
@@ -297,7 +297,7 @@ namespace Server.Mobiles
 				if ( spell != null )
 					return spell;
 
-				switch ( Utility.Random( 16 ) )
+				switch ( Utility.Random( 13 ) )
 				{
 					case 0:
 					case 1:
@@ -340,6 +340,18 @@ namespace Server.Mobiles
 						m_Mobile.DebugSay( "Attempting to drain mana" );
 
 						spell = GetRandomManaDrainSpell();
+						break;
+					}
+
+					case 9:
+					{
+						m_Mobile.DebugSay( "Attempting to Invis" );
+
+						if (spell == null )
+						{
+							spell = new InvisibilitySpell( m_Mobile, null );
+						}
+
 						break;
 					}
 
@@ -861,11 +873,16 @@ namespace Server.Mobiles
 			bool isDispel = ( targ is DispelSpell.InternalTarget );
 			bool isParalyze = ( targ is ParalyzeSpell.InternalTarget );
 			bool isTeleport = ( targ is TeleportSpell.InternalTarget );
+			bool isInvisible = ( targ is InvisibilitySpell.InternalTarget );
 			bool teleportAway = false;
 
 			Mobile toTarget;
 
-			if ( isDispel )
+			if( isInvisible )
+			{
+				toTarget = m_Mobile;
+			}
+			else if ( isDispel )
 			{
 				toTarget = FindDispelTarget( false );
 

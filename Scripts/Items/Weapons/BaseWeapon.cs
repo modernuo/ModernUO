@@ -3073,8 +3073,23 @@ namespace Server.Items
 			else
 				list.Add( Name );
 				
+			/*
+			 * Want to move this to the engraving tool, let the non-harmful 
+			 * formatting show, and remove CLILOCs embedded: more like OSI
+			 * did with the books that had markup, etc.
+			 * 
+			 * This will have a negative effect on a few event things imgame 
+			 * as is.
+			 * 
+			 * If we cant find a more OSI-ish way to clean it up, we can 
+			 * easily put this back, and use it in the deserialize
+			 * method and engraving tool, to make it perm cleaned up.
+			 */
+
 			if ( !String.IsNullOrEmpty( m_EngravedText ) )
-				list.Add( 1062613, Utility.FixHtml( m_EngravedText ) );
+				list.Add( 1062613, m_EngravedText );
+
+				/* list.Add( 1062613, Utility.FixHtml( m_EngravedText ) ); */
 		}
 
 		public override bool AllowEquipedCast( Mobile from )
