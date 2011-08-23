@@ -419,7 +419,7 @@ namespace Server.Mobiles
 
 		private bool ValidMobile( Mobile m )
 		{
-			return ( !m.Deleted && m.Alive );
+			return ( !m.Deleted && m.Alive && m.AccessLevel == AccessLevel.Player );
 		}
 
 		private bool IsUsingDurability( IDurability item )

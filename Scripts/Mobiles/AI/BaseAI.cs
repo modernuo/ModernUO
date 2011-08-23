@@ -180,7 +180,7 @@ namespace Server.Mobiles
 					list.Add( new InternalEntry( from, 6112, 14, m_Mobile, this, OrderType.Stop ) );   // Command: Stop
 					list.Add( new InternalEntry( from, 6114, 14, m_Mobile, this, OrderType.Stay ) );   // Command: Stay
 
-					if( !m_Mobile.Summoned )
+					if( !m_Mobile.Summoned && !( m_Mobile is GrizzledMare ) )
 					{
 						list.Add( new InternalEntry( from, 6110, 14, m_Mobile, this, OrderType.Friend ) ); // Add Friend
 						list.Add( new InternalEntry( from, 6099, 14, m_Mobile, this, OrderType.Unfriend ) ); // Remove Friend
@@ -620,7 +620,7 @@ namespace Server.Mobiles
 
 								if( WasNamed( speech ) && m_Mobile.CheckControlChance( e.Mobile ) )
 								{
-									if( m_Mobile.Summoned )
+									if( m_Mobile.Summoned  || ( m_Mobile is GrizzledMare ) )
 										e.Mobile.SendLocalizedMessage( 1005481 ); // Summoned creatures are loyal only to their summoners.
 									else if( e.Mobile.HasTrade )
 										e.Mobile.SendLocalizedMessage( 1070947 ); // You cannot friend a pet with a trade pending
@@ -714,7 +714,7 @@ namespace Server.Mobiles
 
 								if( !m_Mobile.IsDeadPet && WasNamed( speech ) && m_Mobile.CheckControlChance( e.Mobile ) )
 								{
-									if( m_Mobile.Summoned )
+									if( m_Mobile.Summoned || ( m_Mobile is GrizzledMare ) )
 										e.Mobile.SendLocalizedMessage( 1005487 ); // You cannot transfer ownership of a summoned creature.
 									else if( e.Mobile.HasTrade )
 										e.Mobile.SendLocalizedMessage( 1010507 ); // You cannot transfer a pet with a trade pending

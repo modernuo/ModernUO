@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074475; } } // Grizzled Mare Statuette
 		public override BaseCreature Summon{ get { return new GrizzledMare(); } }
-	
+
 		[Constructable]
 		public GrizzledMareStatuette() : base( 0x2617 )
 		{
@@ -40,6 +40,7 @@ namespace Server.Mobiles
 	public class GrizzledMare : SkeletalMount
 	{	
 		public override bool DeleteOnRelease{ get{ return true; } }
+		public override bool IsDispellable { get { return false; } }
 		
 		[Constructable]
 		public GrizzledMare() : base()

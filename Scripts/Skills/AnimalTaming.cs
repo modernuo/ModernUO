@@ -117,6 +117,14 @@ namespace Server.SkillHandlers
 					from.NextSkillTime = DateTime.Now;
 			}
 
+			public virtual void ResetPacify( object obj )
+			{
+				if( obj is BaseCreature )
+				{
+					((BaseCreature)obj).BardPacified = true;
+				}
+			}
+
 			protected override void OnTarget( Mobile from, object targeted )
 			{
 				from.RevealingAction();
@@ -183,6 +191,20 @@ namespace Server.SkillHandlers
 								creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502805, from.NetState ); // You seem to anger the beast!
 								creature.PlaySound( creature.GetAngerSound() );
 								creature.Direction = creature.GetDirectionTo( from );
+
+								if( creature.BardPacified && Utility.RandomDouble() > .24)
+								{
+									Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( ResetPacify ), creature );
+								}
+								else
+								{
+									creature.BardEndTime = DateTime.Now;
+								}
+		
+								creature.BardPacified = false;
+
+								creature.Move( creature.Direction );
+
 								if ( from is PlayerMobile && !(( (PlayerMobile)from ).HonorActive || TransformationSpellHelper.UnderTransformation( from, typeof( EtherealVoyageSpell ))))
 									creature.Combatant = from;
 							}
@@ -381,7 +403,6 @@ namespace Server.SkillHandlers
 						return true;
 
 					MovementPath path = new MovementPath( m_Creature, new Point3D( p ) );
-
 					return path.Success;
 				}
 			}
