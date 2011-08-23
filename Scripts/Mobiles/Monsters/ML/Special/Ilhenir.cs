@@ -9,24 +9,36 @@ using Server.Engines.CannedEvil;
 
 namespace Server.Mobiles
 {
-	[CorpseName("a corpse of Ilhenir")]
+	[CorpseName( "a corpse of Ilhenir" )]
 	public class Ilhenir : BaseChampion
 	{
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
+		public override ChampionSkullType SkullType { get { return ChampionSkullType.Pain; } }
 
-		public override Type[] UniqueList{ get{ return new Type[] { }; } }
-		public override Type[] SharedList{ get{ return new Type[] { 	typeof( ANecromancerShroud ),
+		public override Type[] UniqueList { get { return new Type[] { }; } }
+		public override Type[] SharedList
+		{
+			get
+			{
+				return new Type[] { 	typeof( ANecromancerShroud ),
 										typeof( LieutenantOfTheBritannianRoyalGuard ),
 										typeof( OblivionsNeedle ),
-										typeof( TheRobeOfBritanniaAri ) }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( MonsterStatuette ) }; } }
+										typeof( TheRobeOfBritanniaAri ) };
+			}
+		}
+		public override Type[] DecorativeList { get { return new Type[] { typeof( MonsterStatuette ) }; } }
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { 	MonsterStatuetteType.PlagueBeast,
-														MonsterStatuetteType.RedDeath }; } }
+		public override MonsterStatuetteType[] StatueTypes
+		{
+			get
+			{
+				return new MonsterStatuetteType[] { 	MonsterStatuetteType.PlagueBeast,
+														MonsterStatuetteType.RedDeath };
+			}
+		}
 
 		[Constructable]
 		public Ilhenir()
-			: base(AIType.AI_Mage)
+			: base( AIType.AI_Mage )
 		{
 			Name = "Ilhenir";
 			Title = "the Stained";
@@ -40,120 +52,121 @@ namespace Server.Mobiles
 
 			SetHits( 9000 );
 
-			SetDamage(21, 28);
+			SetDamage( 21, 28 );
 
-			SetDamageType(ResistanceType.Physical, 60);
-			SetDamageType(ResistanceType.Fire, 20);
-			SetDamageType(ResistanceType.Poison, 20);
+			SetDamageType( ResistanceType.Physical, 60 );
+			SetDamageType( ResistanceType.Fire, 20 );
+			SetDamageType( ResistanceType.Poison, 20 );
 
-			SetResistance(ResistanceType.Physical, 55, 65);
-			SetResistance(ResistanceType.Fire, 50, 60);
-			SetResistance(ResistanceType.Cold, 55, 65);
-			SetResistance(ResistanceType.Poison, 70, 90);
-			SetResistance(ResistanceType.Energy, 65, 75);
+			SetResistance( ResistanceType.Physical, 55, 65 );
+			SetResistance( ResistanceType.Fire, 50, 60 );
+			SetResistance( ResistanceType.Cold, 55, 65 );
+			SetResistance( ResistanceType.Poison, 70, 90 );
+			SetResistance( ResistanceType.Energy, 65, 75 );
 
-			SetSkill(SkillName.EvalInt, 100);
-			SetSkill(SkillName.Magery, 100);
-			SetSkill(SkillName.Meditation, 0);
-			SetSkill(SkillName.Poisoning, 5.4);
-			SetSkill(SkillName.Anatomy, 117.5);
-			SetSkill(SkillName.MagicResist, 120.0);
-			SetSkill(SkillName.Tactics, 119.9);  
-			SetSkill(SkillName.Wrestling, 119.9);
+			SetSkill( SkillName.EvalInt, 100 );
+			SetSkill( SkillName.Magery, 100 );
+			SetSkill( SkillName.Meditation, 0 );
+			SetSkill( SkillName.Poisoning, 5.4 );
+			SetSkill( SkillName.Anatomy, 117.5 );
+			SetSkill( SkillName.MagicResist, 120.0 );
+			SetSkill( SkillName.Tactics, 119.9 );
+			SetSkill( SkillName.Wrestling, 119.9 );
 
 			Fame = 50000;
 			Karma = -50000;
 
 			VirtualArmor = 44;
 
-			PackResources(8);
-			PackTalismans(5);
+			PackResources( 8 );
+			PackTalismans( 5 );
 		}
 
-		public virtual void PackResources(int amount)
+		public virtual void PackResources( int amount )
 		{
-			for (int i = 0; i < amount; i++)
-				switch (Utility.Random(6))
+			for( int i = 0; i < amount; i++ )
+				switch( Utility.Random( 6 ) )
 				{
-					case 0: PackItem(new Blight()); break;
-					case 1: PackItem(new Scourge()); break;
-					case 2: PackItem(new Taint()); break;
-					case 3: PackItem(new Putrefication()); break;
-					case 4: PackItem(new Corruption()); break;
-					case 5: PackItem(new Muculent()); break;
+					case 0: PackItem( new Blight() ); break;
+					case 1: PackItem( new Scourge() ); break;
+					case 2: PackItem( new Taint() ); break;
+					case 3: PackItem( new Putrefication() ); break;
+					case 4: PackItem( new Corruption() ); break;
+					case 5: PackItem( new Muculent() ); break;
 				}
 		}
 
-		public virtual void PackItems(Item item, int amount)
+		public virtual void PackItems( Item item, int amount )
 		{
-			for (int i = 0; i < amount; i++)
-				PackItem(item);
+			for( int i = 0; i < amount; i++ )
+				PackItem( item );
 		}
 
-		public virtual void PackTalismans(int amount)
+		public virtual void PackTalismans( int amount )
 		{
-			int count = Utility.Random(amount);
+			int count = Utility.Random( amount );
 
-			for (int i = 0; i < count; i++)
-				PackItem(new RandomTalisman());
+			for( int i = 0; i < count; i++ )
+				PackItem( new RandomTalisman() );
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot(LootPack.FilthyRich, 8);
+			AddLoot( LootPack.FilthyRich, 8 );
 		}
 
-		public override void OnDeath(Container c)
+		public override void OnDeath( Container c )
 		{
-			base.OnDeath(c);
+			base.OnDeath( c );
 
-			c.DropItem(new GrizzledBones());
+			c.DropItem( new GrizzledBones() );
 
-/*			if (Utility.RandomDouble() < 0.6)
-				c.DropItem(new ParrotItem()); */ //TODO Add parrots
+			/*			if (Utility.RandomDouble() < 0.6)
+							c.DropItem(new ParrotItem()); */
+			//TODO Add parrots
 
-			if (Utility.RandomDouble() < 0.05)
-				c.DropItem(new GrizzledMareStatuette());
+			if( Utility.RandomDouble() < 0.05 )
+				c.DropItem( new GrizzledMareStatuette() );
 
-			if (Utility.RandomDouble() < 0.025)
-				c.DropItem(new CrimsonCincture());
+			if( Utility.RandomDouble() < 0.025 )
+				c.DropItem( new CrimsonCincture() );
 
-/*			if (Utility.RandomDouble() < 0.05)  //TODO Add armor sets
-			{
-				switch (Utility.Random(5))
-				{
-					case 0: c.DropItem(new GrizzleGauntlets()); break;
-					case 1: c.DropItem(new GrizzleGreaves()); break;
-					case 2: c.DropItem(new GrizzleHelm()); break;
-					case 3: c.DropItem(new GrizzleTunic()); break;
-					case 4: c.DropItem(new GrizzleVambraces()); break;
-				}
-			} */
+			/*			if (Utility.RandomDouble() < 0.05)  //TODO Add armor sets
+						{
+							switch (Utility.Random(5))
+							{
+								case 0: c.DropItem(new GrizzleGauntlets()); break;
+								case 1: c.DropItem(new GrizzleGreaves()); break;
+								case 2: c.DropItem(new GrizzleHelm()); break;
+								case 3: c.DropItem(new GrizzleTunic()); break;
+								case 4: c.DropItem(new GrizzleVambraces()); break;
+							}
+						} */
 		}
 
 		public override bool Unprovokable { get { return true; } }
 		public override bool Uncalmable { get { return true; } }
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
-//		public override bool GivesMinorArtifact { get { return true; } } //TODO add ML minor artifacts
+		//		public override bool GivesMinorArtifact { get { return true; } } //TODO add ML minor artifacts
 		public override int TreasureMapLevel { get { return 5; } }
 
-		public override void OnGaveMeleeAttack(Mobile defender)
+		public override void OnGaveMeleeAttack( Mobile defender )
 		{
-			base.OnGaveMeleeAttack(defender);
+			base.OnGaveMeleeAttack( defender );
 
-			if (Utility.RandomDouble() < 0.15)
-				CacophonicAttack(defender);
+			if( Utility.RandomDouble() < 0.15 )
+				CacophonicAttack( defender );
 		}
 
-		public override void OnDamage(int amount, Mobile from, bool willKill)
+		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{
-			if (Utility.RandomDouble() < 0.15)
-				CacophonicAttack(from);
+			if( Utility.RandomDouble() < 0.15 )
+				CacophonicAttack( from );
 
-			if (Utility.RandomDouble() < 0.3)
+			if( Utility.RandomDouble() < 0.3 )
 				DropOoze();
 
-			base.OnDamage(amount, from, willKill);
+			base.OnDamage( amount, from, willKill );
 		}
 
 		public override int GetAngerSound()
@@ -181,140 +194,126 @@ namespace Server.Mobiles
 			return 0x584;
 		}
 
-		public Ilhenir(Serial serial)
-			: base(serial)
+		public Ilhenir( Serial serial )
+			: base( serial )
 		{
 		}
 
-		public override void Serialize(GenericWriter writer)
+		public override void Serialize( GenericWriter writer )
 		{
-			base.Serialize(writer);
+			base.Serialize( writer );
 
-			writer.Write((int)0); // version
+			writer.Write( (int)0 ); // version
 		}
 
-		public override void Deserialize(GenericReader reader)
+		public override void Deserialize( GenericReader reader )
 		{
-			base.Deserialize(reader);
+			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
 		}
 
 		private static Hashtable m_Table;
 
-		public virtual void CacophonicAttack(Mobile to)
+		public virtual void CacophonicAttack( Mobile to )
 		{
-			if (m_Table == null)
+			if( m_Table == null )
 				m_Table = new Hashtable();
 
-			if (to.Alive && to.Player && m_Table[to] == null)
+			if( to.Alive && to.Player && m_Table[ to ] == null )
 			{
-				to.Send(SpeedControl.WalkSpeed);
-				to.SendLocalizedMessage(1072069); // A cacophonic sound lambastes you, suppressing your ability to move.
-				to.PlaySound(0x584);
+				to.Send( SpeedControl.WalkSpeed );
+				to.SendLocalizedMessage( 1072069 ); // A cacophonic sound lambastes you, suppressing your ability to move.
+				to.PlaySound( 0x584 );
 
-				m_Table[to] = Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndCacophonic_Callback), to);
+				m_Table[ to ] = Timer.DelayCall( TimeSpan.FromSeconds( 30 ), new TimerStateCallback( EndCacophonic_Callback ), to );
 			}
 		}
 
-		private void EndCacophonic_Callback(object state)
+		private void EndCacophonic_Callback( object state )
 		{
-			if (state is Mobile)
-				CacophonicEnd((Mobile)state);
+			if( state is Mobile )
+				CacophonicEnd( (Mobile)state );
 		}
 
-		public virtual void CacophonicEnd(Mobile from)
+		public virtual void CacophonicEnd( Mobile from )
 		{
-			if (m_Table == null)
+			if( m_Table == null )
 				m_Table = new Hashtable();
 
-			m_Table[from] = null;
+			m_Table[ from ] = null;
 
-			from.Send(SpeedControl.Disable);
+			from.Send( SpeedControl.Disable );
 		}
 
-		public static bool UnderCacophonicAttack(Mobile from)
+		public static bool UnderCacophonicAttack( Mobile from )
 		{
-			if (m_Table == null)
+			if( m_Table == null )
 				m_Table = new Hashtable();
 
-			return m_Table[from] != null;
+			return m_Table[ from ] != null;
 		}
 
 		private DateTime m_NextDrop = DateTime.Now;
 
 		public virtual void DropOoze()
 		{
-			int amount = Utility.RandomMinMax(1, 3);
+			int amount = Utility.RandomMinMax( 1, 3 );
 			bool corrosive = Utility.RandomBool();
 
-			for (int i = 0; i < amount; i++)
+			for( int i = 0; i < amount; i++ )
 			{
-				Item ooze = new StainedOoze(corrosive);
-				Point3D p = new Point3D(Location);
+				Item ooze = new StainedOoze( corrosive );
+				Point3D p = new Point3D( Location );
 
-				for (int j = 0; j < 5; j++)
+				for( int j = 0; j < 5; j++ )
 				{
-					p = GetSpawnPosition(2);
+					p = GetSpawnPosition( 2 );
 					bool found = false;
 
-					foreach (Item item in Map.GetItemsInRange(p, 0))
-						if (item is StainedOoze)
+					foreach( Item item in Map.GetItemsInRange( p, 0 ) )
+						if( item is StainedOoze )
 						{
 							found = true;
 							break;
 						}
 
-					if (!found)
+					if( !found )
 						break;
 				}
 
-				ooze.MoveToWorld(p, Map);
+				ooze.MoveToWorld( p, Map );
 			}
 
-			if (Combatant != null)
+			if( Combatant != null )
 			{
-				if (corrosive)
-					Combatant.SendLocalizedMessage(1072071); // A corrosive gas seeps out of your enemy's skin!
+				if( corrosive )
+					Combatant.SendLocalizedMessage( 1072071 ); // A corrosive gas seeps out of your enemy's skin!
 				else
-					Combatant.SendLocalizedMessage(1072072); // A poisonous gas seeps out of your enemy's skin!
+					Combatant.SendLocalizedMessage( 1072072 ); // A poisonous gas seeps out of your enemy's skin!
 			}
 		}
 
-		public virtual Point3D GetSpawnPosition(int range)
+		private int RandomPoint( int mid )
 		{
-			return GetSpawnPosition(Location, Map, range);
+			return ( mid + Utility.RandomMinMax( -2, 2 ) );
 		}
 
-		public static Point3D GetSpawnPosition(Point3D from, Map map, int range)
+		public virtual Point3D GetSpawnPosition( int range )
 		{
-			if (map == null)
+			return GetSpawnPosition( Location, Map, range );
+		}
+
+		public virtual Point3D GetSpawnPosition( Point3D from, Map map, int range )
+		{
+			if( map == null )
 				return from;
 
-			for (int i = 0; i < 10; i++)
-			{
-				int x = from.X + Utility.Random(range);
-				int y = from.Y + Utility.Random(range);
-				int z = map.GetAverageZ(x, y);
+			Point3D loc = new Point3D( ( RandomPoint( X ) ), ( RandomPoint( Y ) ), Z );
 
-				if (Utility.RandomBool())
-					x *= -1;
+			loc.Z = Map.GetAverageZ( loc.X, loc.Y );
 
-				if (Utility.RandomBool())
-					y *= -1;
-
-				Point3D p = new Point3D(x, y, from.Z);
-
-				if (map.CanSpawnMobile(p) && map.LineOfSight(from, p))
-					return p;
-
-				p = new Point3D(x, y, z);
-
-				if (map.CanSpawnMobile(p) && map.LineOfSight(from, p))
-					return p;
-			}
-
-			return from;
+			return loc;
 		}
 	}
 
@@ -350,13 +349,19 @@ namespace Server.Mobiles
 
 		public override bool OnMoveOver(Mobile m)
 		{
-			if (m_Table == null)
-				m_Table = new Hashtable();
+			if( m != null && !m.Deleted )
+			{
+				if( m_Table == null )
+				{
+					m_Table = new Hashtable();
+				}
 
-			if ((m is BaseCreature && ((BaseCreature)m).Controlled) || m.Player)
-				m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), new TimerStateCallback(Damage_Callback), m);
-
-			return base.OnMoveOver(m);
+				if( ( m is BaseCreature && ( (BaseCreature)m ).Controlled ) || m.Player )
+				{
+					m_Table[ m ] = Timer.DelayCall( TimeSpan.FromSeconds( 1 ), TimeSpan.FromSeconds( 1 ), new TimerStateCallback( Damage_Callback ), m );
+				}
+			}
+			return base.OnMoveOver( m );
 		}
 
 		public override bool OnMoveOff(Mobile m)
@@ -405,73 +410,67 @@ namespace Server.Mobiles
 				Damage((Mobile)state);
 		}
 
+		/* Ode to ASayre .. perhaps a lil voodoo  will summon his ghost :D  */
+
+		private bool DamageSelector( ref bool z, ref int hp, ref int mhp ) 
+		{
+			return ( ( ( mhp -= ( z ) ? ( ( mhp > 10 ) ? 10 : 1 ) : 0 ) > 0 ) && ( hp -= ( ( z ) ? 0 : ( ( hp > 10 ) ? 10 : 1 ) ) ) > 0 );
+		}
+
+		private bool ValidMobile( Mobile m )
+		{
+			return ( !m.Deleted && m.Alive );
+		}
+
+		private bool IsUsingDurability( IDurability item )
+		{
+			return ( (item.HitPoints + item.MaxHitPoints ) > 0 );
+		}
+
+		private IDurability ValidDurabilityEquipment( Mobile m, Item item )
+		{
+			return ( ( item != null && !item.Deleted && item.Parent == m && item is IDurability ) ? item as IDurability : null );
+		}
+
 		public virtual void Damage( Mobile m )
 		{
-			if( m == null || m.Deleted || !m.Alive )
+			if( m != null )
 			{
-				StopTimer( m );
-			}
-
-			if( m_Corrosive )
-			{
-				for( int i = 0; i < m.Items.Count; i++ )
+				if( ValidMobile( m ) )
 				{
-					Item m_Item = m.Items[ i ] as Item;
-					IDurability item = m_Item as IDurability;
-
-					Mobile m_Parent = null;
-
-					if( m_Item.Parent != null && m_Item.Parent is Mobile )
+					if( m_Corrosive && ( m.Items.Count > 0 ) )
 					{
-						m_Parent = m_Item.Parent as Mobile;
-					}
-
-					if( item != null && Utility.RandomDouble() < 0.25 )
-					{
-						if( item.HitPoints <= 10 )
+						for( int i = 0; i < m.Items.Count; i++ )
 						{
-							if( item.HitPoints <= 0 )
+							Item m_Item; IDurability item = ValidDurabilityEquipment( m, ( m_Item = m.Items[ i ] as Item ) );
+
+							if( item != null && ( IsUsingDurability( item ) ) && ( Utility.RandomDouble() < 0.25 ) )
 							{
-								if( item.MaxHitPoints <= 10 )
+								int hp; bool z = ( ( hp = item.HitPoints ) < 1 ); int mhp = item.MaxHitPoints;
+
+								if( !( DamageSelector( ref z, ref hp, ref mhp ) ) && z )
 								{
-									if( item.MaxHitPoints > 0 )
+									m.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
+
+									if( ( item.MaxHitPoints = mhp ) < 1 )
 									{
-										item.MaxHitPoints--;
+										m_Item.Delete();
 									}
 								}
-								else
-								{
-									item.MaxHitPoints -= 10;
-								}
+
+								item.HitPoints = hp;
 							}
-							else
-							{
-								item.HitPoints--;
-							}
-						}
-						else
-						{
-							item.HitPoints -= 10;
 						}
 					}
-
-					if( item.HitPoints <= 0 )
+					else
 					{
-						if( m_Parent != null && !m_Parent.Deleted )
-						{
-							m_Parent.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
-						}
-
-						if( item.MaxHitPoints <= 0 )
-						{
-							m_Item.Delete();
-						}
+						AOS.Damage( m, 40, 0, 0, 0, 100, 0 );
 					}
 				}
-			}
-			else
-			{
-				AOS.Damage( m, 40, 0, 0, 0, 100, 0 );
+				else
+				{
+					StopTimer( m );
+				}
 			}
 		}
 

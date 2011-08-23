@@ -75,7 +75,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( (int) 0 ); // version
+			writer.WriteEncodedInt( (int) 1 ); // version
+			
+			writer.Write( (int) m_Music );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -83,6 +85,30 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+			
+			switch ( version )
+			{
+				case 1:
+				{
+					m_Music = (MusicName) reader.ReadInt();
+					break;
+				}
+			}
+			
+			if ( version == 0 ) // Music wasn't serialized in version 0, pick a new track of random rarity
+			{
+				DawnsMusicRarity rarity;
+				double rand = Utility.RandomDouble();
+				
+				if ( rand < 0.025 )
+					rarity = DawnsMusicRarity.Rare;
+				else if ( rand < 0.225 )
+					rarity = DawnsMusicRarity.Uncommon;
+				else
+					rarity = DawnsMusicRarity.Common;
+				
+				m_Music = DawnsMusicBox.RandomTrack( rarity );
+			}
 		}
 
 		public class InternalTarget : Target
