@@ -61,7 +61,7 @@ namespace Server.Spells.Spellweaving
 
 		private static bool IsSanctuary( Point3D p, Map m )
 		{
-			return (m == Map.Trammel || m == Map.Felucca) && p.X == 6267 && p.Y == 131 && p.Z == 5;
+			return (m == Map.Trammel || m == Map.Felucca) && p.X == 6267 && p.Y == 131;
 		}
 
 		private static bool IsValidLocation( Point3D location, Map map )
@@ -76,10 +76,11 @@ namespace Server.Spells.Spellweaving
 			for( int i = 0; i < tiles.Length; ++i )
 			{
 				StaticTile t = tiles[i];
+				ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
 				int tand = t.ID;
 
-				if( t.Z != location.Z )
+				if( t.Z + id.CalcHeight != location.Z )
 					continue;
 				else if( IsValidTile( tand ) )
 					return true;
@@ -89,7 +90,9 @@ namespace Server.Spells.Spellweaving
 
 			foreach( Item item in eable )
 			{
-				if( item == null || item.Z != location.Z )
+				ItemData id = item.ItemData;
+				
+				if( item == null || item.Z + id.CalcHeight != location.Z )
 					continue;
 				else if( IsValidTile( item.ItemID ) )
 				{

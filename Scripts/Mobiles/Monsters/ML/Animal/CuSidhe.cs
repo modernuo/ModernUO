@@ -25,9 +25,11 @@ namespace Server.Mobiles
 			else if ( chance < 500 )
 				Hue = Utility.RandomList( 0x97A, 0x978, 0x901, 0x8AC, 0x5A7, 0x527 ); 
 
-			SetStr( 1201, 1225 );
-			SetDex( 151, 170 );
-			SetInt( 251, 282 );
+			SetStr( 1200, 1225 );
+			SetDex( 150, 170 );
+			SetInt( 250, 285 );
+			
+			SetHits( 1010, 1275 );
 
 			SetDamage( 21, 28 );
 
@@ -35,8 +37,8 @@ namespace Server.Mobiles
 			SetDamageType( ResistanceType.Cold, 50 );
 			SetDamageType( ResistanceType.Energy, 50 );
 
-			SetResistance( ResistanceType.Physical, 55, 65 );
-			SetResistance( ResistanceType.Fire, 30, 45 );
+			SetResistance( ResistanceType.Physical, 50, 65 );
+			SetResistance( ResistanceType.Fire, 25, 45 );
 			SetResistance( ResistanceType.Cold, 70, 85 );
 			SetResistance( ResistanceType.Poison, 30, 50 );
 			SetResistance( ResistanceType.Energy, 70, 85 );
