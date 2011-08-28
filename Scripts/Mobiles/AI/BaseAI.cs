@@ -1624,7 +1624,7 @@ namespace Server.Mobiles
 
 				//(As Per OSI)No name.  Normally, set by the ItemID of the Shrink Item unless we either explicitly set it with an Attribute, or, no lookup found
 				
-				Hue = creature.Hue;
+				Hue = creature.Hue & 0x0FFF;
 			}
 
 			public TransferItem( Serial serial )
