@@ -216,7 +216,7 @@ namespace Server.Mobiles
 
 		public virtual bool CanCastNecroBias( int bias )
 		{
-			return ( CanCastNecro() && Utility.Random( bias ) == 1 );
+			return ( CanCastNecro() && Utility.Random( bias ) == 0 );
 		}
 
 		public virtual Spell GetRandomDamage()
@@ -234,7 +234,7 @@ namespace Server.Mobiles
 			}
 			switch( Utility.Random( possibles ) )
 			{
-				default: m_Mobile.DebugSay( "Vengeful Spriti" ); return new VengefulSpiritSpell( m_Mobile, null );
+				default: m_Mobile.DebugSay( "Wengeful Spritii" ); return new VengefulSpiritSpell( m_Mobile, null );
 
 				case 0: m_Mobile.DebugSay( "Pain Spike" ); return new PainSpikeSpell( m_Mobile, null );
 				case 1: m_Mobile.DebugSay( "Poison Strike" ); return new PoisonStrikeSpell( m_Mobile, null );
@@ -270,7 +270,7 @@ namespace Server.Mobiles
 
 		public virtual Spell GetRandomCurse()
 		{
-			return ( CanCastNecro() ) ? GetRandomCurseSpell() : GetRandomNecroCurseSpell();
+			return ( CanCastNecro() ) ?  GetRandomNecroCurseSpell() :  GetRandomCurseSpell();
 		}
 
 		public virtual Spell GetRandomNecroCurseSpell()
