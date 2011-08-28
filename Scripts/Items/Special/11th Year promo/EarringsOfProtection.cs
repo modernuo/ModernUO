@@ -4,7 +4,40 @@ using System.Text;
 
 namespace Server.Items
 {
-	public class EarringosfProtection : BaseJewel
+	public class EarringBoxSet : RedVelvetGiftBox
+	{
+		[Constructable]
+		public EarringBoxSet()
+			: base()
+		{
+			DropItem( new EarringsOfProtection( AosElementAttribute.Physical ) );
+			DropItem( new EarringsOfProtection( AosElementAttribute.Fire ) );
+			DropItem( new EarringsOfProtection( AosElementAttribute.Cold ) );
+			DropItem( new EarringsOfProtection( AosElementAttribute.Poison ) );
+			DropItem( new EarringsOfProtection( AosElementAttribute.Energy ) );
+		}
+
+		public EarringBoxSet( Serial serial )
+			: base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.Write( (int)0 ); // version
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadInt();
+		}
+	}
+
+	public class EarringsOfProtection : BaseJewel
 	{
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual AosElementAttribute Attribute
@@ -35,13 +68,12 @@ namespace Server.Items
 		private LootType m_LootType;
 
 		[Constructable]
-		public EarringosfProtection()
-			: this( RandomType() )
+		public EarringsOfProtection() : this( RandomType() )
 		{
 		}
 
 		[Constructable]
-		public EarringosfProtection( AosElementAttribute element )
+		public EarringsOfProtection( AosElementAttribute element )
 			: base( 0x1087, Layer.Earrings )
 		{
 			Resistances[ ( (AosElementAttribute)element ) ] = 2;
@@ -50,7 +82,7 @@ namespace Server.Items
 			LootType = LootType.Blessed;
 		}
 
-		public EarringosfProtection( Serial serial )
+		public EarringsOfProtection( Serial serial )
 			: base( serial )
 		{
 		}
@@ -100,38 +132,6 @@ namespace Server.Items
 
 				default: return -1;
 			}
-		}
-	}
-
-	public class EarringBoxSet : RedVelvetGiftBox
-	{
-		[Constructable]
-		public EarringBoxSet()
-			: base()
-		{
-			DropItem( new EarringosfProtection( AosElementAttribute.Physical ) );
-			DropItem( new EarringosfProtection( AosElementAttribute.Fire ) );
-			DropItem( new EarringosfProtection( AosElementAttribute.Cold ) );
-			DropItem( new EarringosfProtection( AosElementAttribute.Poison ) );
-			DropItem( new EarringosfProtection( AosElementAttribute.Energy ) );
-		}
-
-		public EarringBoxSet( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int)0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
 		}
 	}
 }
