@@ -138,6 +138,10 @@ namespace Server.Regions
 			if ( from is BaseCreature && ((BaseCreature)from).NoHouseRestrictions )
 			{
 			}
+			else if ( from is BaseCreature && !((BaseCreature)from).Controlled ) // Untamed creatures cannot enter public houses
+			{
+				return false;
+			}
 			else if ( from is BaseCreature && ((BaseCreature)from).IsHouseSummonable && !(BaseCreature.Summoning || m_House.IsInside( oldLocation, 16 )) )
 			{
 				return false;
