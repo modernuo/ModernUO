@@ -191,6 +191,9 @@ namespace Server.Mobiles
 			SetResistance( ResistanceType.Poison, 30 );
 			SetResistance( ResistanceType.Energy, 30 );
 
+			SetSkill( SkillName.Necromancy, 120, 120.0 );
+			SetSkill( SkillName.SpiritSpeak, 120.0, 120.0 );
+
 			SetSkill( SkillName.DetectHidden, 80.0 );
 			SetSkill( SkillName.EvalInt, 100.0 );
 			SetSkill( SkillName.Magery, 100.0 );

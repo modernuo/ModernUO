@@ -26,7 +26,9 @@ namespace Server.Gumps
 			if ( summon != null )
 			{				
 				if ( !summon.SetControlMaster( from ) )
-					from.SendLocalizedMessage( 1049607 ); // You have too many followers to control that creature.
+				{
+					summon.Delete();
+				}
 				else
 				{
 					from.SendLocalizedMessage( 1049666 ); // Your pet has bonded with you!

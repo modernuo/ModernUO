@@ -85,7 +85,7 @@ namespace Server.Gumps
 			}
 			else
 			{
-				m_Info.Level = level;
+                m_Info.Level = level;
 				state.Mobile.SendLocalizedMessage( 1061280 ); // New access level set.
 			}
 		}

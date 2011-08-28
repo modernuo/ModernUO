@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Network;
 using Server.Items;
 using Server.Targeting;
+using Server.Mobiles;
 
 namespace Server.Spells.Necromancy
 {
@@ -67,13 +68,13 @@ namespace Server.Spells.Necromancy
 						targets.Add( m );
 
 					foreach( Mobile targ in m.GetMobilesInRange( 2 ) )
-						if( ( targ != Caster && m != targ ) && ( SpellHelper.ValidIndirectTarget( Caster, targ ) && Caster.CanBeHarmful( targ, false) ) )
-							targets.Add( targ );
+						if(Caster is BaseCreature && targ is BaseCreature && !((BaseCreature)targ).Controlled && !((BaseCreature)targ).Summoned )
+							if( ( targ != Caster && m != targ ) && ( SpellHelper.ValidIndirectTarget( Caster, targ ) && Caster.CanBeHarmful( targ, false) ) )
+								targets.Add( targ );
 
 					for( int i = 0; i < targets.Count; ++i )
 					{
 						Mobile targ = targets[i];
-
 						int num;
 
 						if( targ.InRange( m.Location, 0 ) )
