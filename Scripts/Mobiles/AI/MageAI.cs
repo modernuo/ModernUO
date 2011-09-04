@@ -230,11 +230,11 @@ namespace Server.Mobiles
 
 			if( myNecro >= 100 )
 			{
-				possibles = 4;
+				possibles = 5;
 			}
 			switch( Utility.Random( possibles ) )
 			{
-				default: m_Mobile.DebugSay( "Wengeful Spritii" ); return new VengefulSpiritSpell( m_Mobile, null );
+				default: m_Mobile.DebugSay( "Vengeful Spirit" ); return new VengefulSpiritSpell( m_Mobile, null );
 
 				case 0: m_Mobile.DebugSay( "Pain Spike" ); return new PainSpikeSpell( m_Mobile, null );
 				case 1: m_Mobile.DebugSay( "Poison Strike" ); return new PoisonStrikeSpell( m_Mobile, null );
@@ -401,7 +401,6 @@ namespace Server.Mobiles
 							break;
 						}
 					case 7:
-					case 8:
 						{
 							//m_Mobile.DebugSay( "Attempting to Invis" );
 

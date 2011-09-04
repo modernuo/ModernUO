@@ -154,16 +154,13 @@ namespace Server.Mobiles
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if( Utility.RandomDouble() < 0.15 )
+			if( Utility.RandomDouble() < 0.25 )
 				CacophonicAttack( defender );
 		}
 
 		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{
-			if( Utility.RandomDouble() < 0.15 )
-				CacophonicAttack( from );
-
-			if( Utility.RandomDouble() < 0.3 )
+			if( Utility.RandomDouble() < 0.1 )
 				DropOoze();
 
 			base.OnDamage( amount, from, willKill );
@@ -434,7 +431,11 @@ namespace Server.Mobiles
 
 		public virtual void Damage( Mobile m )
 		{
-			if( m != null )
+			if( m == null || m.Deleted || !m.Alive || m.Map == null || m.Map == Map.Internal ) /* cant have that happen again */
+			{
+				StopTimer( m );
+			}
+			else
 			{
 				if( ValidMobile( m ) )
 				{
