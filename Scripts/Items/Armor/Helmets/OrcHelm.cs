@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public override int ArmorBase{ get{ return 20; } }
 
-		public override int DefaultWeight { get { return 5; } }
+		public override double DefaultWeight { get { return 5; } }
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Leather; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
