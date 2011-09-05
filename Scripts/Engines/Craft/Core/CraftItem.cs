@@ -379,6 +379,11 @@ namespace Server.Engines.Craft
 
 		public bool RetainsColorFrom( CraftSystem system, Type type )
 		{
+			if (DefTailoring.IsNonColorable(m_Type))
+			{
+				return false;
+			}
+
 			if ( system.RetainsColorFrom( this, type ) )
 				return true;
 

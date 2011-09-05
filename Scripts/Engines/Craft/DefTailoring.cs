@@ -49,6 +49,24 @@ namespace Server.Engines.Craft
 			return 0;
 		}
 
+		public static bool IsNonColorable(Type type)
+		{
+			for (int i = 0; i < m_TailorNonColorables.Length; ++i)
+			{
+				if (m_TailorNonColorables[i] == type)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static Type[] m_TailorNonColorables = new Type[]
+			{
+				typeof( OrcHelm )
+			};
+
 		private static Type[] m_TailorColorables = new Type[]
 			{
 				typeof( GozaMatEastDeed ), typeof( GozaMatSouthDeed ),
@@ -353,6 +371,9 @@ namespace Server.Engines.Craft
 		
 			index = AddCraft( typeof( BoneChest ), 1049149, 1025199, 96.0, 121.0, typeof( Leather ), 1044462, 12, 1044463 );
 			AddRes( index, typeof( Bone ), 1049064, 10, 1049063 );
+
+			index = AddCraft(typeof(OrcHelm), 1049149, 1027947, 90.0, 115.0, typeof(Leather), 1044462, 6, 1044463);
+			AddRes(index, typeof(Bone), 1049064, 4, 1049063);
 			#endregion
 
 			// Set the overridable material

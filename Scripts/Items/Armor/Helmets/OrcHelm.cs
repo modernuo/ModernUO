@@ -19,15 +19,16 @@ namespace Server.Items
 
 		public override int ArmorBase{ get{ return 20; } }
 
+		public override int DefaultWeight { get { return 5; } }
+
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Leather; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
-
-		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
+ 
+		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.None; } }
 
 		[Constructable]
 		public OrcHelm() : base( 0x1F0B )
 		{
-			Weight = 1;
 		}
 
 		public OrcHelm( Serial serial ) : base( serial )
@@ -44,6 +45,11 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if( version == 0 && Weight == 1 )
+			{
+				Weight = 0;
+			}
 		}
 	}
 }

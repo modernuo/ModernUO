@@ -249,7 +249,11 @@ namespace Server.Items
 					UnscaleDurability();
 
 					m_Resource = value;
-					Hue = CraftResources.GetHue( m_Resource );
+
+					if (!DefTailoring.IsNonColorable(this.GetType()))
+					{
+						Hue = CraftResources.GetHue(m_Resource);
+					}
 
 					Invalidate();
 					InvalidateProperties();
