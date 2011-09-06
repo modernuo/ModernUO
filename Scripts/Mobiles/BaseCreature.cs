@@ -662,7 +662,8 @@ namespace Server.Mobiles
 				{
 					loc = target.Location;
 					map = target.Map;
-				} else
+				} 
+				else
 				{
 					bool validLocation = false;
 					for ( int j = 0; !validLocation && j < 10; ++j )
@@ -4977,10 +4978,21 @@ namespace Server.Mobiles
 			{
 				Mobile target = this.Combatant;
 
-				if ( target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful( target ) && target.Map == this.Map && !IsDeadBondedPet && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
-					BreathStart( target );
-
-				m_NextBreathTime = DateTime.Now + TimeSpan.FromSeconds( BreathMinDelay + (Utility.RandomDouble() * BreathMaxDelay) );
+				if( target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful( target ) && target.Map == this.Map && !IsDeadBondedPet && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
+				{
+					if( m_NextBreathTime == DateTime.MinValue )
+					{
+						m_NextBreathTime = DateTime.Now + TimeSpan.FromSeconds( BreathMinDelay + ( Utility.RandomDouble() * BreathMaxDelay ) );
+					}
+					else
+					{
+						BreathStart( target );
+					}
+				}
+				else
+				{
+					m_NextBreathTime = DateTime.MinValue;
+				}
 			}
 
 			if ( ( CanHeal || CanHealOwner ) && Alive && !IsHealing && !BardPacified )
