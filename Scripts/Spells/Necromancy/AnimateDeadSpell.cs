@@ -375,11 +375,8 @@ namespace Server.Spells.Necromancy
 
 			summoned.MoveToWorld( loc, map );
 
-			corpse.ProcessDelta();
-			corpse.SendRemovePacket();
-			corpse.ItemID = Utility.Random( 0xECA, 9 ); // bone graphic
-			corpse.Hue = 0;
-			corpse.ProcessDelta();
+			corpse.Hue = 1109;
+
 			corpse.Animated = true;
 
 			Register( caster, summoned );
