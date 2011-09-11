@@ -7,6 +7,23 @@ namespace Server.Items
 {
 	public abstract class BasePigmentsOfTokuno : Item, IUsesRemaining
 	{
+
+		private static Type[] m_Glasses = new Type[]
+		{
+			typeof( MaritimeGlasses ),
+			typeof( WizardsGlasses ),
+			typeof( TradeGlasses ),
+			typeof( LyricalGlasses ),
+			typeof( NecromanticGlasses ),
+			typeof( LightOfWayGlasses ),
+			typeof( FoldedSteelGlasses ),
+			typeof( PoisonedGlasses ),
+			typeof( TreasureTrinketGlasses ),
+			typeof( MaceShieldGlasses ),
+			typeof( ArtsGlasses ),
+			typeof( AnthropomorphistGlasses )
+		};
+
 		private static Type[] m_Replicas = new Type[]
 		{
 			typeof( ANecromancerShroud ),
@@ -172,6 +189,7 @@ namespace Server.Items
 				|| IsInTypeList( t, TreasureMapChest.Artifacts )
 				|| IsInTypeList( t, m_Replicas )
 				|| IsInTypeList( t, m_DyableHeritageItems )
+				|| IsInTypeList( t, m_Glasses )
 				);
 		}  
 
