@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Server;
 using Server.Accounting;
 using Server.Items;
@@ -17,31 +18,25 @@ namespace Server.Regions
 			m_Stone = stone;
 		}
 
-		public bool CheckAccount( Mobile mobCheck, Mobile accCheck )
+		public override bool AllowHousing( Mobile from, Point3D p )
 		{
-			if ( accCheck != null )
-			{
-				Account a = accCheck.Account as Account;
+			if ( m_Stone == null || m_Stone.Deed == null )
+				return false;
 
-				if ( a != null )
+			Container pack = from.Backpack;
+
+			if ( pack != null )
+			{
+				List<HouseRaffleDeed> deeds = pack.FindItemsByType<HouseRaffleDeed>();
+
+				for ( int i = 0; i < deeds.Count; i++ )
 				{
-					for ( int i = 0; i < a.Length; ++i )
-					{
-						if ( a[i] == mobCheck )
-							return true;
-					}
+					if ( deeds[i] == m_Stone.Deed )
+						return true;
 				}
 			}
 
 			return false;
-		}
-
-		public override bool AllowHousing( Mobile from, Point3D p )
-		{
-			if ( m_Stone == null || m_Stone.Winner == null )
-				return false;
-
-			return ( from == m_Stone.Winner || CheckAccount( from, m_Stone.Winner ) );
 		}
 
 		public override bool OnTarget( Mobile m, Target t, object o )
@@ -53,17 +48,6 @@ namespace Server.Regions
 			}
 
 			return base.OnTarget( m, t, o );
-		}
-
-		public override bool OnBeginSpellCast( Mobile m, ISpell s )
-		{
-			if ( s is MarkSpell && m.AccessLevel == AccessLevel.Player )
-			{
-				m.SendLocalizedMessage( 501800 ); // You cannot mark an object at that location.
-				return false;
-			}
-
-			return base.OnBeginSpellCast( m, s );
 		}
 	}
 }

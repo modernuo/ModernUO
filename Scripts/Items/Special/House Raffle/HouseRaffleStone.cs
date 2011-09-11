@@ -1,6 +1,7 @@
 using System;
-using System.Net;
 using System.Collections.Generic;
+using System.Net;
+using System.Text;
 using Server;
 using Server.Accounting;
 using Server.ContextMenus;
@@ -55,6 +56,7 @@ namespace Server.Items
 		{
 			switch ( version )
 			{
+				case 1:
 				case 0:
 				{
 					m_From = reader.ReadMobile();
@@ -81,11 +83,14 @@ namespace Server.Items
 		private const int DefaultTicketPrice = 5000;
 		private const int MessageHue = 1153;
 
+		private static readonly TimeSpan ExpirationTime = TimeSpan.FromDays( 30.0 );
+
 		private HouseRaffleRegion m_Region;
 		private Rectangle2D m_Bounds;
 		private Map m_Facet;
 
 		private Mobile m_Winner;
+		private HouseRaffleDeed m_Deed;
 
 		private bool m_Active;
 		private DateTime m_Started;
@@ -119,6 +124,7 @@ namespace Server.Items
 					{
 						m_Entries.Clear();
 						m_Winner = null;
+						m_Deed = null;
 						m_Started = DateTime.Now;
 					}
 
@@ -162,6 +168,13 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
+		public HouseRaffleDeed Deed
+		{
+			get { return m_Deed; }
+			set { m_Deed = value; }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
 		public DateTime Started
 		{
 			get { return m_Started; }
@@ -173,6 +186,18 @@ namespace Server.Items
 		{
 			get { return m_Duration; }
 			set { m_Duration = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
+		public bool IsExpired
+		{
+			get
+			{
+				if ( CurrentState != HouseRaffleState.Completed )
+					return false;
+
+				return ( m_Started + m_Duration + ExpirationTime <= DateTime.Now );
+			}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
@@ -211,6 +236,14 @@ namespace Server.Items
 
 		public static void Initialize()
 		{
+			for ( int i = m_AllStones.Count - 1; i >= 0; i-- )
+			{
+				HouseRaffleStone stone = m_AllStones[i];
+
+				if ( stone.IsExpired )
+					stone.Delete();
+			}
+
 			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( CheckEnd_OnTick ) );
 		}
 
@@ -223,6 +256,7 @@ namespace Server.Items
 			m_Facet = null;
 
 			m_Winner = null;
+			m_Deed = null;
 
 			m_Active = false;
 			m_Started = DateTime.MinValue;
@@ -302,22 +336,40 @@ namespace Server.Items
 			return false;
 		}
 
-		public string FormatLocation()
+		public static string FormatLocation( Point3D loc, Map map, bool displayMap )
 		{
-			if ( !ValidLocation() )
-				return "no location set";
+			StringBuilder result = new StringBuilder();
 
 			int xLong = 0, yLat = 0;
 			int xMins = 0, yMins = 0;
 			bool xEast = false, ySouth = false;
 
-			Point3D loc = new Point3D( m_Bounds.X + m_Bounds.Width / 2, m_Bounds.Y + m_Bounds.Height / 2, 0 );
-			Map map = m_Facet;
-
 			if ( Sextant.Format( loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
-				return String.Format( "{0}°{1}'{2},{3}°{4}'{5} ({6})", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W", map );
+				result.AppendFormat( "{0}°{1}'{2},{3}°{4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 			else
-				return String.Format( "{0},{1} ({2})", loc.X, loc.Y, map );
+				result.AppendFormat( "{0},{1}", loc.X, loc.Y );
+
+			if ( displayMap )
+				result.AppendFormat( " ({0})", map );
+
+			return result.ToString();
+		}
+
+		private Point3D GetPlotCenter()
+		{
+			int x = m_Bounds.X + m_Bounds.Width / 2;
+			int y = m_Bounds.Y + m_Bounds.Height / 2;
+			int z = ( m_Facet == null ) ? 0 : m_Facet.GetAverageZ( x, y );
+
+			return new Point3D( x, y, z );
+		}
+
+		public string FormatLocation()
+		{
+			if ( !ValidLocation() )
+				return "no location set";
+
+			return FormatLocation( GetPlotCenter(), m_Facet, true );
 		}
 
 		public string FormatPrice()
@@ -419,15 +471,44 @@ namespace Server.Items
 
 		public void CheckEnd()
 		{
-			if ( !m_Active || m_Region == null || m_Entries.Count == 0 || m_Started + m_Duration > DateTime.Now )
+			if ( !m_Active || m_Started + m_Duration > DateTime.Now )
 				return;
 
 			m_Active = false;
 
-			int winner = Utility.Random( m_Entries.Count );
+			if ( m_Region != null && m_Entries.Count != 0 )
+			{
+				int winner = Utility.Random( m_Entries.Count );
 
-			m_Winner = m_Entries[winner].From;
-			m_Winner.SendMessage( MessageHue, "Congratulations, {0}!  You have won the raffle for the plot located at {1}.  The plot is now open for house placement to you.", m_Entries[winner].From.Name, FormatLocation() );
+				m_Winner = m_Entries[winner].From;
+
+				if ( m_Winner != null )
+				{
+					m_Deed = new HouseRaffleDeed( GetPlotCenter(), m_Facet, m_Winner );
+
+					m_Winner.SendMessage( MessageHue, "Congratulations, {0}!  You have won the raffle for the plot located at {1}.", m_Entries[winner].From.Name, FormatLocation() );
+
+					if ( m_Winner.AddToBackpack( m_Deed ) )
+					{
+						m_Winner.SendMessage( MessageHue, "The writ of lease has been placed in your backpack." );
+					}
+					else
+					{
+						BankBox box = m_Winner.BankBox;
+
+						if ( box.TryDropItem( m_Winner, m_Deed, false ) )
+						{
+							m_Winner.SendMessage( MessageHue, "As your backpack is full, the writ of lease has been placed in your bank box." );
+						}
+						else
+						{
+							// Item is already at the mobile's feet
+
+							m_Winner.SendMessage( MessageHue, "As both your backpack and bank box are full, the writ of lease has been placed at your feet." );
+						}
+					}
+				}
+			}
 
 			InvalidateProperties();
 		}
@@ -449,7 +530,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
+
+			writer.Write( m_Deed );
 
 			writer.Write( m_Active );
 
@@ -476,6 +559,12 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 1:
+				{
+					m_Deed = reader.ReadItem<HouseRaffleDeed>();
+
+					goto case 0;
+				}
 				case 0:
 				{
 					m_Active = reader.ReadBool();

@@ -233,6 +233,12 @@ namespace Server.Spells.Seventh
 					else
 						from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501030, from.Name, "" ) ); // I can not gate travel from that object.
 				}*/
+				else if ( o is HouseRaffleDeed && ((HouseRaffleDeed)o).ValidLocation() )
+				{
+					HouseRaffleDeed deed = (HouseRaffleDeed)o;
+
+					m_Owner.Effect( deed.PlotLocation, deed.PlotFacet, true );
+				}
 				else
 				{
 					from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501030, from.Name, "" ) ); // I can not gate travel from that object.
