@@ -72,14 +72,14 @@ namespace Server
 			{
 				LootPackEntry entry = m_Entries[i];
 
-				bool shouldAdd = ( entry.Chance > Utility.Random( 10000 ) );
+				bool shouldAdd = true; // ( entry.Chance > Utility.Random( 10000 ) );
 
 				if ( !shouldAdd && checkLuck )
 				{
 					checkLuck = false;
 
-					if ( LootPack.CheckLuck( luckChance ) )
-						shouldAdd = ( entry.Chance > Utility.Random( 10000 ) );
+					if( LootPack.CheckLuck( luckChance ) )
+						shouldAdd = true; // ( entry.Chance > Utility.Random( 10000 ) );
 				}
 
 				if ( !shouldAdd )

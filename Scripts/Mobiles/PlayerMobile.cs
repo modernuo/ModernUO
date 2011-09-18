@@ -91,6 +91,15 @@ namespace Server.Mobiles
 			}
 		}
 
+
+		public virtual Mobile countThis { get { return m_countThis; } set { m_countThis = value; } }
+		public virtual int CombatMiss { get { return m_CombatMiss; } set { m_CombatMiss = value; } }
+		public virtual int CombatHits { get { return m_CombatHits; } set { m_CombatHits = value; } }
+
+		private int m_CombatMiss;
+		private int m_CombatHits;
+		private Mobile m_countThis;
+
 		private DesignContext m_DesignContext;
 
 		private NpcGuild m_NpcGuild;
@@ -2094,9 +2103,16 @@ namespace Server.Mobiles
 		private int m_InsuranceCost;
 		private int m_InsuranceBonus;
 
+		private List<Item> m_EquipSnapshot;
+
+		public List<Item> EquipSnapshot
+		{
+			get { return m_EquipSnapshot; }
+		}
+
 		private bool FindItems_Callback(Item item)
 		{
-			if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured == true))
+			if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured))
 			{
 				if (this.Backpack != item.ParentEntity)
 				{
@@ -2124,6 +2140,8 @@ namespace Server.Mobiles
 					Backpack.AddItem(ilist[i]);
 				}
 			}
+
+			m_EquipSnapshot = new List<Item>( this.Items );
 
 			m_NonAutoreinsuredItems = 0;
 			m_InsuranceCost = 0;
@@ -2230,6 +2248,8 @@ namespace Server.Mobiles
 			}
 
 			base.OnDeath(c);
+
+			m_EquipSnapshot = null;
 
 			HueMod = -1;
 			NameMod = null;

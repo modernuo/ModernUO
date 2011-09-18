@@ -352,7 +352,7 @@ namespace Server.Items
 					{
 						BaseCreature mob = (BaseCreature)obj;
 
-						if ((m_Creature != null && m_Creature.Deleted) || from.Followers + mob.ControlSlots > from.FollowersMax)
+						if ((m_Creature != null && !m_Creature.Deleted) || from.Followers + mob.ControlSlots > from.FollowersMax)
 						{
 							from.SendLocalizedMessage(1074270); // You have too many followers to summon another one.
 							mob.Delete();

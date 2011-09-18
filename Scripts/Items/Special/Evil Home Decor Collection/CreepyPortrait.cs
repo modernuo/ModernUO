@@ -33,12 +33,18 @@ namespace Server.Items
 				if ( !Utility.InRange( old, Location, 2 ) && Utility.InRange( m.Location, Location, 2 ) )
 				{
 					if ( ItemID == 0x2A69 || ItemID == 0x2A6D )
-						Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 0.5 ), 3, new TimerCallback( Up ) );
+					{
+						Up();
+						Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 0.5 ), 2, new TimerCallback( Up ) );
+					}
 				}
 				else if ( Utility.InRange( old, Location, 2 ) && !Utility.InRange( m.Location, Location, 2 ) )
 				{
 					if ( ItemID == 0x2A6C || ItemID == 0x2A70 )
-						Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 0.5 ), 3, new TimerCallback( Down ) );
+					{
+						Down();
+						Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 0.5 ), 2, new TimerCallback( Down ) );
+					}
 				}
 			}
 		}
@@ -57,7 +63,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 0 ); // version
+			writer.WriteEncodedInt( 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -65,6 +71,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+			
+			if ( version == 0 && ItemID != 0x2A69 && ItemID != 0x2A6D )
+				ItemID = 0x2A69;
 		}
 	}
 

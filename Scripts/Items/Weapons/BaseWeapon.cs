@@ -1349,6 +1349,8 @@ namespace Server.Items
 
 		public virtual void OnHit( Mobile attacker, Mobile defender, double damageBonus )
 		{
+			DoKeepScore( attacker, defender, false );
+
 			if ( MirrorImage.HasClone( defender ) && (defender.Skills.Ninjitsu.Value / 150.0) > Utility.RandomDouble() )
 			{
 				Clone bc;
@@ -2060,6 +2062,35 @@ namespace Server.Items
 			return totalRemaining - appliedDamage;
 		}
 
+		public virtual void DoKeepScore( Mobile attacker, Mobile defender, bool hit )
+		{
+			PlayerMobile player = ( ( attacker != null ) && !attacker.Deleted && ( attacker is PlayerMobile ) ) ? attacker as PlayerMobile : null;
+
+			if( player != null )
+			{
+				int hits = player.CombatHits;
+				int miss = player.CombatMiss;
+
+				if( player.countThis != defender )
+				{
+					player.countThis = defender;
+
+					miss = hits = 0;
+				}
+
+				switch( hit )
+				{
+					case true: hits += 1; break;
+					case false: miss += 1; break;
+				}
+
+				player.CombatHits = hits;
+				player.CombatMiss = miss;
+
+				attacker.Say( string.Format( "hits:{0} miss{1} = {2} percent success", hits, miss, ( hits / ( hits + miss ) ) ) );
+			}
+		}
+
 		public virtual void OnMiss( Mobile attacker, Mobile defender )
 		{
 			PlaySwingAnimation( attacker );
@@ -2078,6 +2109,8 @@ namespace Server.Items
 
 			if ( defender is IHonorTarget && ((IHonorTarget)defender).ReceivedHonorContext != null )
 				((IHonorTarget)defender).ReceivedHonorContext.OnTargetMissed( attacker );
+
+			DoKeepScore( attacker, defender, false );
 		}
 
 		public virtual void GetBaseDamageRange( Mobile attacker, out int min, out int max )

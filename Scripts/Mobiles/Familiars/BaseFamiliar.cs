@@ -123,8 +123,26 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			DropPackContents();
-			Delete();
+			m_ToRemove.Add( this );
+		}
+
+		private static List<BaseFamiliar> m_ToRemove;
+
+		public static void Configure()
+		{
+			m_ToRemove = new List<BaseFamiliar>();
+		}
+
+		public static void Initialize()
+		{
+			foreach( BaseFamiliar f in m_ToRemove )
+			{
+				f.DropPackContents();
+				f.Delete();
+			}
+
+			m_ToRemove.Clear();
+			m_ToRemove = null;
 		}
 
 		private class ReleaseEntry : ContextMenuEntry

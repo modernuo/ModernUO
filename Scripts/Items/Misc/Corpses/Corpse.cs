@@ -58,6 +58,11 @@ namespace Server.Items
 		/// Has this corpse been animated?
 		/// </summary>
 		Animated				= 0x00000040,
+
+		/// <summary>
+		/// Has this corpse been self looted?
+		/// </summary>
+		SelfLooted				= 0x00000080,
 	}
 
 	public class Corpse : Container, ICarvable
@@ -67,7 +72,8 @@ namespace Server.Items
 		private CorpseFlag			m_Flags;				// @see CorpseFlag
 
 		private List<Mobile>		m_Looters;				// Who's looted this corpse?
-		private List<Item>			m_EquipItems;			// List of items equiped when the owner died. Ingame, these items display /on/ the corpse, not just inside
+		private List<Item>			m_EquipItems;			// List of dropped equipment when the owner died. Ingame, these items display /on/ the corpse, not just inside
+		private List<Item>			m_RestoreEquip;			// List of items equipped when the owner died. Includes insured and blessed items.
 		private List<Mobile>		m_Aggressors;			// Anyone from this list will be able to loot this corpse; we attacked them, or they attacked us when we were freely attackable
 
 		private string				m_CorpseName;			// Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
@@ -84,22 +90,22 @@ namespace Server.Items
 		private FacialHairInfo		m_FacialHair;			// This contains the facial hair of the owner
 
 		// For Forensics Evaluation
-		public string				 m_Forensicist;			// Name of the first PlayerMobile who used Forensic Evaluation on the corpse
+		public string				m_Forensicist;			// Name of the first PlayerMobile who used Forensic Evaluation on the corpse
 
 		public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes( 2.0 );
 
 		public static readonly TimeSpan InstancedCorpseTime = TimeSpan.FromMinutes( 3.0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool InstancedCorpse 
-		{ 
-			get 
+		public virtual bool InstancedCorpse
+		{
+			get
 			{
 				if ( !Core.SE )
 					return false;
 
 				return ( DateTime.Now < (m_TimeOfDeath + InstancedCorpseTime) );
-			} 
+			}
 		}
 
 		private Dictionary<Item, InstancedItemInfo> m_InstancedItems;
@@ -305,6 +311,13 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public bool SelfLooted
+		{
+			get { return GetFlag( CorpseFlag.SelfLooted ); }
+			set { SetFlag( CorpseFlag.SelfLooted, value ); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public AccessLevel AccessLevel
 		{
 			get{ return m_AccessLevel; }
@@ -329,6 +342,12 @@ namespace Server.Items
 		public List<Item> EquipItems
 		{
 			get{ return m_EquipItems; }
+		}
+
+		public List<Item> RestoreEquip
+		{
+			get { return m_RestoreEquip; }
+			set { m_RestoreEquip = value; }
 		}
 
 		public Guild Guild
@@ -470,7 +489,16 @@ namespace Server.Items
 				}
 
 				if ( !owner.Player )
+				{
 					c.AssignInstancedLoot();
+				}
+				else if ( Core.AOS )
+				{
+					PlayerMobile pm = owner as PlayerMobile;
+
+					if ( pm != null )
+						c.RestoreEquip = pm.EquipSnapshot;
+				}
 			}
 			else
 			{
@@ -523,7 +551,6 @@ namespace Server.Items
 
 			m_Hair = hair;
 			m_FacialHair = facialhair;
-
 
 			// This corpse does not turn to bones if: the owner is not a player
 			SetFlag( CorpseFlag.NoBones, !owner.Player );
@@ -607,7 +634,17 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 11 ); // version
+			writer.Write( (int) 12 ); // version
+
+			if ( m_RestoreEquip == null )
+			{
+				writer.Write( false );
+			}
+			else
+			{
+				writer.Write( true );
+				writer.Write( m_RestoreEquip );
+			}
 
 			writer.Write( (int)m_Flags );
 
@@ -666,43 +703,50 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 12:
+				{
+					if ( reader.ReadBool() )
+						m_RestoreEquip = reader.ReadStrongItemList();
+
+					goto case 11;
+				}
 				case 11:
+				{
+					// Version 11, we move all bools to a CorpseFlag
+					m_Flags = (CorpseFlag)reader.ReadInt();
+
+					m_TimeOfDeath = reader.ReadDeltaTime();
+
+					int count = reader.ReadInt();
+
+					for( int i = 0; i < count; ++i )
 					{
-						// Version 11, we move all bools to a CorpseFlag
-						m_Flags = (CorpseFlag)reader.ReadInt();
-
-						m_TimeOfDeath = reader.ReadDeltaTime();
-
-						int count = reader.ReadInt();
-
-						for( int i = 0; i < count; ++i )
-						{
-							Item item = reader.ReadItem();
-
-							if( reader.ReadBool() )
-								SetRestoreInfo( item, reader.ReadPoint3D() );
-							else if( item != null )
-								SetRestoreInfo( item, item.Location );
-						}
+						Item item = reader.ReadItem();
 
 						if( reader.ReadBool() )
-							BeginDecay( reader.ReadDeltaTime() - DateTime.Now );
-
-						m_Looters = reader.ReadStrongMobileList();
-						m_Killer = reader.ReadMobile();
-
-						m_Aggressors = reader.ReadStrongMobileList();
-						m_Owner = reader.ReadMobile();
-
-						m_CorpseName = reader.ReadString();
-
-						m_AccessLevel = (AccessLevel)reader.ReadInt();
-						reader.ReadInt(); // guild reserve
-						m_Kills = reader.ReadInt();
-
-						m_EquipItems = reader.ReadStrongItemList();
-						break;
+							SetRestoreInfo( item, reader.ReadPoint3D() );
+						else if( item != null )
+							SetRestoreInfo( item, item.Location );
 					}
+
+					if( reader.ReadBool() )
+						BeginDecay( reader.ReadDeltaTime() - DateTime.Now );
+
+					m_Looters = reader.ReadStrongMobileList();
+					m_Killer = reader.ReadMobile();
+
+					m_Aggressors = reader.ReadStrongMobileList();
+					m_Owner = reader.ReadMobile();
+
+					m_CorpseName = reader.ReadString();
+
+					m_AccessLevel = (AccessLevel)reader.ReadInt();
+					reader.ReadInt(); // guild reserve
+					m_Kills = reader.ReadInt();
+
+					m_EquipItems = reader.ReadStrongItemList();
+					break;
+				}
 				case 10:
 				{
 					m_TimeOfDeath = reader.ReadDeltaTime();
@@ -986,58 +1030,53 @@ namespace Server.Items
 		{
 			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) )
 			{
-
 				#region Self Looting
-				bool selfLoot = ( checkSelfLoot && ( from == m_Owner ) );
-
-				if ( selfLoot )
+				if ( checkSelfLoot && from == m_Owner && !GetFlag( CorpseFlag.SelfLooted ) && this.Items.Count != 0 )
 				{
-					List<Item> items = new List<Item>( this.Items );
+					DeathRobe robe = from.FindItemOnLayer( Layer.OuterTorso ) as DeathRobe;
 
-					bool gathered = false;
-					bool didntFit = false;
+					if ( robe != null )
+					{
+						Map map = from.Map;
+
+						if ( map != null && map != Map.Internal )
+							robe.MoveToWorld( from.Location, map );
+					}
 
 					Container pack = from.Backpack;
 
-					bool checkRobe = true;
+					if ( m_RestoreEquip != null && pack != null )
+					{
+						List<Item> packItems = new List<Item>( pack.Items ); // Only items in the top-level pack are re-equipped
+
+						for ( int i = 0; i < packItems.Count; i++ )
+						{
+							Item packItem = packItems[i];
+
+							if ( m_RestoreEquip.Contains( packItem ) && packItem.Movable )
+								from.EquipItem( packItem );
+						}
+					}
+
+					List<Item> items = new List<Item>( this.Items );
+
+					bool didntFit = false;
 
 					for ( int i = 0; !didntFit && i < items.Count; ++i )
 					{
 						Item item = items[i];
 						Point3D loc = item.Location;
 
-						if ( (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair) || !item.Movable || !GetRestoreInfo( item, ref loc ) )
+						if ( ( item.Layer == Layer.Hair || item.Layer == Layer.FacialHair ) || !item.Movable || !GetRestoreInfo( item, ref loc ) )
 							continue;
 
-						if ( checkRobe )
-						{
-							DeathRobe robe = from.FindItemOnLayer( Layer.OuterTorso ) as DeathRobe;
-
-							if ( robe != null )
-							{
-								if ( Core.SE )
-								{
-									robe.Delete();
-								}
-								else
-								{
-									Map map = from.Map;
-	
-									if ( map != null && map != Map.Internal )
-										robe.MoveToWorld( from.Location, map );
-								}
-							}
-						}
-
-						if ( m_EquipItems.Contains( item ) && from.EquipItem( item ) )
-						{
-							gathered = true;
-						}
-						else if ( pack != null && pack.CheckHold( from, item, false, true ) )
+						if ( pack != null && pack.CheckHold( from, item, false, true ) )
 						{
 							item.Location = loc;
 							pack.AddItem( item );
-							gathered = true;
+
+							if ( m_RestoreEquip != null && m_RestoreEquip.Contains( item ) )
+								from.EquipItem( item );
 						}
 						else
 						{
@@ -1045,7 +1084,13 @@ namespace Server.Items
 						}
 					}
 
-					if ( gathered && !didntFit )
+					from.PlaySound( 0x3E3 );
+
+					if ( this.Items.Count != 0 )
+					{
+						from.SendLocalizedMessage( 1062472 ); // You gather some of your belongings. The rest remain on the corpse.
+					}
+					else
 					{
 						SetFlag( CorpseFlag.Carved, true );
 
@@ -1058,15 +1103,11 @@ namespace Server.Items
 							ProcessDelta();
 						}
 
-						from.PlaySound( 0x3E3 );
 						from.SendLocalizedMessage( 1062471 ); // You quickly gather all of your belongings.
-						return;
 					}
 
-					if ( gathered && didntFit )
-						from.SendLocalizedMessage( 1062472 ); // You gather some of your belongings. The rest remain on the corpse.
+					SetFlag( CorpseFlag.SelfLooted, true );
 				}
-
 				#endregion
 
 				if ( !CheckLoot( from, null ) )
