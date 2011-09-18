@@ -517,6 +517,7 @@ namespace Server.Mobiles
 		public virtual int BreathRange{ get{ return RangePerception; } }
 
 		// Damage types
+		public virtual int BreathChaosDamage { get { return 0; } }
 		public virtual int BreathPhysicalDamage{ get{ return 0; } }
 		public virtual int BreathFireDamage{ get{ return 100; } }
 		public virtual int BreathColdDamage{ get{ return 0; } }
@@ -609,25 +610,37 @@ namespace Server.Mobiles
 
 		public virtual void BreathDealDamage( Mobile target )
 		{
-			int physDamage = BreathPhysicalDamage;
-			int fireDamage = BreathFireDamage;
-			int coldDamage = BreathColdDamage;
-			int poisDamage = BreathPoisonDamage;
-			int nrgyDamage = BreathEnergyDamage;
-
-			if( Evasion.CheckSpellEvasion( target ) )
-				return;
-
-			if ( physDamage == 0 && fireDamage == 0 && coldDamage == 0 && poisDamage == 0 && nrgyDamage == 0 )
-			{ // Unresistable damage even in AOS
-				target.Damage( BreathComputeDamage(), this );
-			}
-			else
+			if( !Evasion.CheckSpellEvasion( target ) )
 			{
-				AOS.Damage( target, this, BreathComputeDamage(), physDamage, fireDamage, coldDamage, poisDamage, nrgyDamage );
+				int physDamage = BreathPhysicalDamage;
+				int fireDamage = BreathFireDamage;
+				int coldDamage = BreathColdDamage;
+				int poisDamage = BreathPoisonDamage;
+				int nrgyDamage = BreathEnergyDamage;
+
+				if( BreathChaosDamage > 0 )
+				{
+					switch( Utility.Random( 5 ))
+					{
+						case 0: physDamage += BreathChaosDamage; break;
+						case 1: fireDamage += BreathChaosDamage; break;
+						case 2: coldDamage += BreathChaosDamage; break;
+						case 3: poisDamage += BreathChaosDamage; break;
+						case 4: nrgyDamage += BreathChaosDamage; break;
+					}
+				}
+
+				if( physDamage == 0 && fireDamage == 0 && coldDamage == 0 && poisDamage == 0 && nrgyDamage == 0 )
+				{
+					target.Damage( BreathComputeDamage(), this );// Unresistable damage even in AOS
+				}
+				else
+				{
+					AOS.Damage( target, this, BreathComputeDamage(), physDamage, fireDamage, coldDamage, poisDamage, nrgyDamage );
+				}
 			}
 		}
-
+ 
 		public virtual int BreathComputeDamage()
 		{
 			int damage = (int)(Hits * BreathDamageScalar);

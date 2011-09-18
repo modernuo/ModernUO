@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074475; } } // Grizzled Mare Statuette
 		public override BaseCreature Summon{ get { return new GrizzledMare(); } }
-
+	
 		[Constructable]
 		public GrizzledMareStatuette() : base( 0x2617 )
 		{
@@ -37,33 +37,34 @@ namespace Server.Items
 
 namespace Server.Mobiles
 {
-	public class GrizzledMare : SkeletalMount
-	{	
-		public override bool DeleteOnRelease{ get{ return true; } }
-		public override bool IsDispellable { get { return false; } }
-		
+	public class GrizzledMare : HellSteed
+	{
+		public override bool DeleteOnRelease { get { return true; } }
+
+		private static readonly string m_Myname = "a grizzled mare";
+
 		[Constructable]
-		public GrizzledMare() : base()
+		public GrizzledMare()
+			: base( m_Myname  )
 		{
-			ControlSlots = 1;
+		}
+
+		public virtual void OnAfterDeserialize_Callback()
+		{
+			HellSteed.SetStats( this );
+
+			Name = m_Myname;
 		}
 
 		public GrizzledMare( Serial serial ) : base( serial )
 		{
 		}
 		
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
-			
-			list.Add( 1049646 ); // (summoned)
-		}
-
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 			
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -71,7 +72,11 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			
 			int version = reader.ReadInt();
-		}		
+
+			if( version < 1 )
+			{
+				Timer.DelayCall( TimeSpan.FromSeconds( 0 ), new TimerCallback( OnAfterDeserialize_Callback ) );
+			}
+		}
 	}
 }
-
