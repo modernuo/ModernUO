@@ -37,7 +37,7 @@ namespace Server.Engines.VeteranRewards
 
 		public static bool Enabled = true; // change to true to enable vet rewards
 		public static bool SkillCapRewards = true; // assuming vet rewards are enabled, should total skill cap bonuses be awarded? (720 skills total at 4th level)
-		public static TimeSpan RewardInterval = TimeSpan.FromDays( 30.0 );
+		public static TimeSpan RewardInterval = TimeSpan.FromMinutes( 1 );
 
 		public static bool HasAccess( Mobile mob, RewardCategory category )
 		{
@@ -248,11 +248,9 @@ namespace Server.Engines.VeteranRewards
 
 		public static int GetRewardYearLabel( Item item, object[] args )
 		{
-			int level = GetRewardYear( item, args );
-			int cliloc = 1076216 + level;
-			if( level > 9 )
-				cliloc += 4231;
-			return cliloc;
+			int level =  GetRewardYear( item, args );
+
+			return 1076216 + ( ( level < 10 ) ? level : ( level < 12 ) ? (( level - 9 ) + 4240 ) : (( level - 11 ) + 37585 ) );
 		}
 
 		public static int GetRewardYear( Item item, object[] args )
@@ -327,7 +325,7 @@ namespace Server.Engines.VeteranRewards
 			const int Crimson	= 0x485;
 
 			m_Lists = new RewardList[]
-				{
+			{
 					new RewardList( RewardInterval, 1, new RewardEntry[]
 					{
 						new RewardEntry( specialDyeTubs, 1006008, typeof( RewardBlackDyeTub ) ),
@@ -397,6 +395,7 @@ namespace Server.Engines.VeteranRewards
 						new RewardEntry( cloaksAndRobes, 1049727, typeof( RewardCloak ), IceGreen, 1049759 ),
 						new RewardEntry( cloaksAndRobes, 1049728, typeof( RewardRobe ), IceGreen, 1049758 ),
 						new RewardEntry( cloaksAndRobes, 1080372, typeof( RewardDress ), Expansion.ML, IceGreen, 1080372 ),
+
 						new RewardEntry( cloaksAndRobes, 1049729, typeof( RewardCloak ), IceBlue, 1049761 ),
 						new RewardEntry( cloaksAndRobes, 1049730, typeof( RewardRobe ), IceBlue, 1049760 ),
 						new RewardEntry( cloaksAndRobes, 1080373, typeof( RewardDress ), Expansion.ML, IceBlue, 1080373 ),
@@ -466,10 +465,19 @@ namespace Server.Engines.VeteranRewards
 
 						new RewardEntry( houseAddOns,		1080548, typeof( MiningCartDeed ), Expansion.ML ),
 						new RewardEntry( houseAddOns,		1080397, typeof( AnkhOfSacrificeDeed ), Expansion.ML )
-					} )
-				};
-		}
+					} ),
 
+					new RewardList( RewardInterval, 11, new RewardEntry[]
+					{
+						new RewardEntry( etherealSteeds,	1113908, typeof( EtherealReptalon ), Expansion.ML ),
+					} ),
+
+					new RewardList( RewardInterval, 12, new RewardEntry[]
+					{
+						new RewardEntry( etherealSteeds,	1113813, typeof( EtherealHiryu ), Expansion.ML ),
+					} ),
+			};
+		}
 		public static void Initialize()
 		{
 			if ( Enabled )

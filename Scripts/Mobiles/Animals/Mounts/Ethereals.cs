@@ -796,7 +796,7 @@ namespace Server.Mobiles
 
 	public class EtherealReptalon : EtherealMount
 	{
-		public override int LabelNumber { get { return 1113908; } } // reptalon statuette
+		public override int LabelNumber { get { return 1113813; } } // reptalon statuette
 
 		[Constructable]
 		public EtherealReptalon()
