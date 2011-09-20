@@ -10,8 +10,11 @@ namespace Server.Items
 			return CreateRandomWand();
 		}
 
-		public static BaseWand CreateRandomWand( )
+		public static BaseWand CreateRandomWand()
 		{
+			return Loot.RandomWand();
+
+			/*
 			switch ( Utility.Random( 11 ) )
 			{
 				default:
@@ -27,6 +30,7 @@ namespace Server.Items
 				case  9: return new ManaDrainWand();
 				case 10: return new WeaknessWand();
 			}
+			*/
 		}
 	}
 }

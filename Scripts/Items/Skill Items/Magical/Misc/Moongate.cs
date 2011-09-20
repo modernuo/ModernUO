@@ -104,11 +104,8 @@ namespace Server.Items
 		public virtual void CheckGate( Mobile m, int range )
 		{
 			#region Mondain's Legacy
-			if ( m.Hidden && Core.ML )
-			{
+			if ( m.Hidden && m.AccessLevel == AccessLevel.Player && Core.ML )
 				m.RevealingAction();
-				m.SendLocalizedMessage( 501955 ); // Your spirit lacks the cohesion for gate travel at this time.
-			}
 			#endregion
 
 			new DelayTimer( m, this, range ).Start();

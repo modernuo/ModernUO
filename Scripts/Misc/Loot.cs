@@ -271,11 +271,16 @@ namespace Server
 			{
 				typeof( ClumsyWand ),               typeof( FeebleWand ),           typeof( FireballWand ),
 				typeof( GreaterHealWand ),          typeof( HarmWand ),             typeof( HealWand ),
-				typeof( IDWand ),                   typeof( LightningWand ),        typeof( MagicArrowWand ),
-				typeof( ManaDrainWand ),            typeof( WeaknessWand )          
-                
+				typeof( LightningWand ),            typeof( MagicArrowWand ),       typeof( ManaDrainWand ),
+				typeof( WeaknessWand )
 			};
 		public static Type[] WandTypes{ get{ return m_WandTypes; } }
+		
+		private static Type[] m_OldWandTypes = new Type[]
+			{
+				typeof( IDWand )
+			};
+		public static Type[] OldWandTypes{ get{ return m_OldWandTypes; } }
 
 		private static Type[] m_SEClothingTypes = new Type[]
 			{
@@ -358,6 +363,9 @@ namespace Server
 
 		public static BaseWand RandomWand()
 		{
+			if ( !Core.AOS )
+				return Construct( m_OldWandTypes, m_WandTypes ) as BaseWand;
+			
 			return Construct( m_WandTypes ) as BaseWand;
 		}
 
