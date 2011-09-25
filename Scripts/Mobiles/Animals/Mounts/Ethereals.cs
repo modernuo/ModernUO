@@ -766,7 +766,7 @@ namespace Server.Mobiles
 
 	public class EtherealHiryu : EtherealMount
 	{
-		public override int LabelNumber { get { return 1080458; } } // 1080458
+		public override int LabelNumber { get { return 1113813; } } // Ethereal Hiryu Statuette
 
 		[Constructable]
 		public EtherealHiryu()
@@ -796,7 +796,7 @@ namespace Server.Mobiles
 
 	public class EtherealReptalon : EtherealMount
 	{
-		public override int LabelNumber { get { return 1113813; } } // reptalon statuette
+		public override int LabelNumber { get { return 1113812; } } // Ethereal Reptalon Statuette
 
 		[Constructable]
 		public EtherealReptalon()
