@@ -182,7 +182,7 @@ namespace Server.Mobiles
 					m_Trainer.SayTo( from, 1048053 ); // You can't stable that!
 			}
 		}
-		
+
 		private void CloseClaimList( Mobile from )
 		{
 			from.CloseGump( typeof( ClaimListGump ) );
@@ -220,7 +220,7 @@ namespace Server.Mobiles
 		{
 			if ( pet == null || pet.Deleted || from.Map != this.Map || !from.Stabled.Contains( pet ) || !from.CheckAlive() )
 				return;
-			
+
 			if ( !from.InRange( this, 14 ) )
 			{
 				from.SendLocalizedMessage( 500446 ); // That is too far away.
@@ -232,6 +232,9 @@ namespace Server.Mobiles
 				DoClaim( from, pet );
 
 				from.Stabled.Remove( pet );
+
+				if ( from is PlayerMobile )
+					((PlayerMobile)from).AutoStabled.Remove( pet );
 			}
 			else
 			{
@@ -245,7 +248,7 @@ namespace Server.Mobiles
 				return;
 
 			Container bank = from.FindBankNoCreate();
-			
+
 			if ( ( from.Backpack == null || from.Backpack.GetAmount( typeof( Gold ) ) < 30 ) && ( bank == null || bank.GetAmount( typeof( Gold ) ) < 30 ) )
 			{
 				SayTo( from, 1042556 ); // Thou dost not have enough gold, not even in thy bank account.
@@ -314,7 +317,7 @@ namespace Server.Mobiles
 
 					pet.IsStabled = true;
 
-					if ( Core.SE )	
+					if ( Core.SE )
 						pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
 
 					from.Stabled.Add( pet );
@@ -340,7 +343,7 @@ namespace Server.Mobiles
 
 			bool claimed = false;
 			int stabled = 0;
-			
+
 			bool claimByName = ( petName != null );
 
 			for ( int i = 0; i < from.Stabled.Count; ++i )
@@ -365,6 +368,10 @@ namespace Server.Mobiles
 					DoClaim( from, pet );
 
 					from.Stabled.RemoveAt( i );
+
+					if ( from is PlayerMobile )
+						((PlayerMobile)from).AutoStabled.Remove( pet );
+
 					--i;
 
 					claimed = true;
@@ -416,16 +423,16 @@ namespace Server.Mobiles
 			if ( !e.Handled && e.HasKeyword( 0x0008 ) ) // *stable*
 			{
 				e.Handled = true;
-				
-				CloseClaimList( e.Mobile );				
+
+				CloseClaimList( e.Mobile );
 				BeginStable( e.Mobile );
 			}
 			else if ( !e.Handled && e.HasKeyword( 0x0009 ) ) // *claim*
 			{
 				e.Handled = true;
-				
+
 				CloseClaimList( e.Mobile );
-				
+
 				int index = e.Speech.IndexOf( ' ' );
 
 				if ( index != -1 )

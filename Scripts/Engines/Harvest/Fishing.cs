@@ -2,6 +2,7 @@ using System;
 using Server;
 using Server.Items;
 using Server.Mobiles;
+using Server.Network;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Collector;
 using System.Collections.Generic;
@@ -440,7 +441,7 @@ namespace Server.Engines.Harvest
 				else if ( item is Fish )
 				{
 					number = 1008124;
-					name = "a fish";
+					name = item.ItemData.Name;
 				}
 				else if ( item is BaseShoes )
 				{
@@ -474,7 +475,12 @@ namespace Server.Engines.Harvest
 						name = item.ItemData.Name;
 				}
 
-				if ( number == 1043297 )
+				NetState ns = from.NetState;
+
+				if ( ns == null )
+					return;
+
+				if ( number == 1043297 || ns.HighSeas )
 					from.SendLocalizedMessage( number, name );
 				else
 					from.SendLocalizedMessage( number, true, name );

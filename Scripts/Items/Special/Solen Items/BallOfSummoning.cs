@@ -293,6 +293,9 @@ namespace Server.Items
 
 				pet.IsStabled = false;
 				from.Stabled.Remove( pet );
+
+				if ( from is PlayerMobile )
+					((PlayerMobile)from).AutoStabled.Remove( pet );
 			}
 
 			pet.MoveToWorld( from.Location, from.Map );

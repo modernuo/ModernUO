@@ -182,7 +182,7 @@ namespace Server.Misc
 					case OldClientResponse.Warn:
 					{
 						state.Mobile.SendMessage( 0x22, "Your client is out of date. Please update your client.", Required );
-						state.Mobile.SendMessage( 0x22, "This server reccomends that your client version be at least {0}.", Required );
+						state.Mobile.SendMessage( 0x22, "This server recommends that your client version be at least {0}.", Required );
 						break;
 					}
 					case OldClientResponse.LenientKick:
