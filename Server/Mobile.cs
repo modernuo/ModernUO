@@ -3050,10 +3050,10 @@ namespace Server
 		private static TimeSpan m_WalkMount = TimeSpan.FromSeconds( 0.2 );
 		private static TimeSpan m_RunMount = TimeSpan.FromSeconds( 0.1 );
 
-		public static TimeSpan WalkFoot { get { return m_WalkFoot; } }
-		public static TimeSpan RunFoot { get { return m_RunFoot; } }
-		public static TimeSpan WalkMount { get { return m_WalkMount; } }
-		public static TimeSpan RunMount { get { return m_RunMount; } }
+		public static TimeSpan WalkFoot { get { return m_WalkFoot; } set { m_WalkFoot = value; } }
+		public static TimeSpan RunFoot { get { return m_RunFoot; } set { m_RunFoot = value; } }
+		public static TimeSpan WalkMount { get { return m_WalkMount; } set { m_WalkMount = value; } }
+		public static TimeSpan RunMount { get { return m_RunMount; } set { m_RunMount = value; } }
 
 		private DateTime m_EndQueue;
 

@@ -502,7 +502,7 @@ namespace Server
 
 			try
 			{
-				DateTime now, last = DateTime.Now;
+				DateTime now, last = DateTime.UtcNow;
 
 				const int sampleInterval = 100;
 				const float ticksPerSecond = (float)(TimeSpan.TicksPerSecond * sampleInterval);
@@ -525,7 +525,7 @@ namespace Server
 
 					if( (++sample % sampleInterval) == 0 )
 					{
-						now = DateTime.Now;
+						now = DateTime.UtcNow;
 						m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] =
 							ticksPerSecond / (now.Ticks - last.Ticks);
 						last = now;
