@@ -9,7 +9,28 @@ namespace Server.Items
 	[Flipable( 0x14F0, 0x14EF )]
 	public abstract class BaseAddonDeed : Item
 	{
-		public abstract BaseAddon Addon{ get; }
+		public abstract BaseAddon Addon{ get;
+		}
+
+		#region Mondain's Legacy
+		private CraftResource m_Resource;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CraftResource Resource
+		{
+			get{ return m_Resource;	}
+			set
+			{
+				if ( m_Resource != value )
+				{
+					m_Resource = value;
+					Hue = CraftResources.GetHue( m_Resource );
+
+					InvalidateProperties();
+				}
+			}
+		}
+		#endregion
 
 		public BaseAddonDeed() : base( 0x14F0 )
 		{
