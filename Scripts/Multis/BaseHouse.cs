@@ -429,6 +429,22 @@ namespace Server.Multis
 			}
 		}
 
+		#region Mondain's Legacy
+		public bool HasAddonContainers
+		{
+			get
+			{
+				foreach ( Item item in Addons )
+				{
+					if ( item is BaseAddonContainer )
+						return true;
+				}
+
+				return false;
+			}
+		}
+		#endregion
+
 		public ArrayList AvailableVendorsFor( Mobile m )
 		{
 			ArrayList list = new ArrayList();
@@ -545,6 +561,18 @@ namespace Server.Multis
 
 					if ( deed != null )
 					{
+						#region Mondain's Legacy
+						if ( deed is BaseAddonContainerDeed && addon is BaseAddonContainer )
+						{
+							BaseAddonContainer c = (BaseAddonContainer) addon;
+							c.DropItemsToGround();
+
+							((BaseAddonContainerDeed) deed).Resource = c.Resource;
+						}
+						else if ( deed is BaseAddonDeed && addon is BaseAddon )
+							((BaseAddonDeed) deed).Resource = ((BaseAddon) addon).Resource;
+						#endregion
+
 						addon.Delete();
 
 						if( retainDeedHue )
@@ -725,8 +753,23 @@ namespace Server.Multis
 									}
 								}
 
-								if( deed != null && retainDeedHue )
-									deed.Hue = hue;
+								#region Mondain's Legacy
+								if ( deed != null )
+								{
+									if ( deed is BaseAddonContainerDeed && item is BaseAddonContainer )
+									{
+										BaseAddonContainer c = (BaseAddonContainer) item;
+										c.DropItemsToGround();
+
+										((BaseAddonContainerDeed) deed).Resource = c.Resource;
+									}
+									else if ( deed is BaseAddonDeed && item is BaseAddon )
+										((BaseAddonDeed) deed).Resource = ((BaseAddon) item).Resource;
+
+									if ( retainDeedHue )
+										deed.Hue = hue;
+								}
+								#endregion
 
 								relocateItem = deed;
 								item.Delete();
@@ -1431,6 +1474,12 @@ namespace Server.Multis
 			if ( m_LockDowns == null )
 				return;
 
+			#region Mondain's Legacy
+			if ( i is BaseAddonContainer )
+				i.Movable = false;
+			else
+			#endregion
+
 			i.Movable = !locked;
 			i.IsLockedDown = locked;
 
@@ -1473,7 +1522,7 @@ namespace Server.Multis
 			if ( !IsCoOwner( m ) || !IsActive )
 				return false;
 
-			if ( item.Movable && !IsSecure( item ) )
+			if ( item is BaseAddonContainer || item.Movable && !IsSecure( item ) )
 			{
 				int amt = 1 + item.TotalItems;
 
@@ -1849,7 +1898,8 @@ namespace Server.Multis
 				{
 					m.SendLocalizedMessage( 1010423 ); // You cannot secure this, place it on the ground first.
 				}
-				else if ( !item.Movable )
+				// Mondain's Legacy mod
+				else if ( !( item is BaseAddonContainer ) && !item.Movable )
 				{
 					m.SendLocalizedMessage( 1010424 ); // You cannot secure this.
 				}
@@ -1935,6 +1985,13 @@ namespace Server.Multis
 				{
 					item.IsLockedDown = false;
 					item.IsSecure = false;
+
+					#region Mondain's Legacy
+					if ( item is BaseAddonContainer )
+						item.Movable = false;
+					else
+					#endregion
+
 					item.Movable = true;
 					item.SetLastMoved();
 					item.PublicOverheadMessage( Server.Network.MessageType.Label, 0x3B2, 501656 );//[no longer secure]
@@ -3443,6 +3500,17 @@ namespace Server.Multis
 			{
 				if ( m_Release )
 				{
+					#region Mondain's legacy
+					if ( targeted is AddonContainerComponent )
+					{
+						AddonContainerComponent component = (AddonContainerComponent) targeted;
+						
+						if ( component.Addon != null )
+							m_House.Release( from, component.Addon );
+					}
+					else
+					#endregion
+
 					m_House.Release( from, (Item)targeted );
 				}
 				else
@@ -3459,6 +3527,17 @@ namespace Server.Multis
 					}
 					else
 					{
+						#region Mondain's legacy
+						if ( targeted is AddonContainerComponent )
+						{
+							AddonContainerComponent component = (AddonContainerComponent) targeted;
+							
+							if ( component.Addon != null )
+								m_House.LockDown( from, component.Addon );
+						}
+						else
+						#endregion
+
 						m_House.LockDown( from, (Item)targeted );
 					}
 				}
@@ -3501,6 +3580,17 @@ namespace Server.Multis
 			{
 				if ( m_Release )
 				{
+					#region Mondain's legacy
+					if ( targeted is AddonContainerComponent )
+					{
+						AddonContainerComponent component = (AddonContainerComponent) targeted;
+						
+						if ( component.Addon != null )
+							m_House.ReleaseSecure( from, component.Addon );
+					}
+					else
+					#endregion
+
 					m_House.ReleaseSecure( from, (Item)targeted );
 				}
 				else
@@ -3512,6 +3602,17 @@ namespace Server.Multis
 					}
 					else
 					{
+						#region Mondain's legacy
+						if ( targeted is AddonContainerComponent )
+						{
+							AddonContainerComponent component = (AddonContainerComponent) targeted;
+							
+							if ( component.Addon != null )
+								m_House.AddSecure( from, component.Addon );
+						}
+						else
+						#endregion
+
 						m_House.AddSecure( from, (Item)targeted );
 					}
 				}
