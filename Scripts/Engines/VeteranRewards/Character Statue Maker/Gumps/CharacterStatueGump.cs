@@ -141,7 +141,7 @@ namespace Server.Gumps
 		
 		public override void OnResponse( NetState state, RelayInfo info )
 		{		
-			if ( m_Statue == null || m_Statue.Deleted )
+			if ( m_Statue == null || m_Statue.Deleted || m_Maker == null || m_Maker.Deleted || !m_Maker.IsChildOf( state.Mobile.Backpack ) )
 				return;
 				
 			bool sendGump = false;

@@ -253,6 +253,7 @@ namespace Server.Mobiles
 				Delete();
 
 				deed.Statue = this;
+				deed.StatueType = m_Type;
 				deed.IsRewardItem = m_IsRewardItem;
 
 				if ( m_Plinth != null )
@@ -410,22 +411,26 @@ namespace Server.Mobiles
 		public override int LabelNumber
 		{ 
 			get
-			{ 
+			{
+				StatueType t = m_Type;
+
 				if ( m_Statue != null )
 				{
-					switch ( m_Statue.StatueType )
-					{
-						case StatueType.Marble: return 1076189;
-						case StatueType.Jade: return 1076188;
-						case StatueType.Bronze: return 1076190;
-					}
+					t = m_Statue.StatueType;
 				}
 
-				return 1076173; 
+				switch ( t )
+				{
+					case StatueType.Marble: return 1076189;
+					case StatueType.Jade: return 1076188;
+					case StatueType.Bronze: return 1076190;
+					default: return 1076173;
+				}
 			} 
 		}
 
 		private CharacterStatue m_Statue;
+		private StatueType m_Type;
 		private bool m_IsRewardItem;
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -443,8 +448,9 @@ namespace Server.Mobiles
 				if ( m_Statue != null )
 					return m_Statue.StatueType; 
 
-				return StatueType.Marble;
+				return m_Type;
 			}
+			set { m_Type = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -518,7 +524,9 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( (int) 0 ); // version
+			writer.WriteEncodedInt( (int) 1 ); // version
+
+			writer.Write( (int) m_Type );
 
 			writer.Write( (Mobile) m_Statue );
 			writer.Write( (bool) m_IsRewardItem );
@@ -529,6 +537,10 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+
+			if ( version >= 1 ) {
+				m_Type = (StatueType) reader.ReadInt();
+			}
 
 			m_Statue = reader.ReadMobile() as CharacterStatue;
 			m_IsRewardItem = reader.ReadBool();
