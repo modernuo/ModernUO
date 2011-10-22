@@ -31,6 +31,9 @@ namespace Server.Engines.Craft
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
+			if( item.ItemType == typeof( HollowPrism ) )
+				return 0.5; // 50%
+
 			return 0.0; // 0%
 		}
 

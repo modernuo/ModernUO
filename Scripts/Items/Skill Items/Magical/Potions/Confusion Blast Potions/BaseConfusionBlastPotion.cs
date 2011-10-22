@@ -102,7 +102,7 @@ namespace Server.Items
 
 			foreach ( Mobile mobile in map.GetMobilesInRange( loc, Radius ) )
 			{
-				if ( mobile is BaseCreature )
+				if ( mobile is BaseCreature && ( Notoriety.Compute ( from, mobile ) != Notoriety.Innocent  ))
 				{
 					BaseCreature mon = (BaseCreature) mobile;
 

@@ -350,10 +350,10 @@ namespace Server.Misc
 			if( source is BaseCreature )
 			{
 				BaseCreature bc = (BaseCreature)source;
-
 				Mobile master = bc.GetMaster();
+
 				if( master != null )
-					if( CheckAggressor( master.Aggressors, target ) || MobileNotoriety( master, target ) == Notoriety.CanBeAttacked )
+					if( CheckAggressor( master.Aggressors, target ) || MobileNotoriety( master, target ) == Notoriety.CanBeAttacked || target is BaseCreature )
 						return Notoriety.CanBeAttacked;
 			}
 
