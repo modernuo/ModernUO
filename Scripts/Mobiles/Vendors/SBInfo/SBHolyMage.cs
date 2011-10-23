@@ -55,7 +55,7 @@ namespace Server.Mobiles
 					else if ( i > 6 )
 						--itemID;
 
-					Add( new GenericBuyInfo( types[ i ], 12 + ( ( i / 8 ) * 10 ), 20, itemID, 0 ) );
+					Add( new GenericBuyInfo( types[i], 12 + ((i / 8) * 10), 20, itemID, 0 ) );
 				}
 			}
 		}

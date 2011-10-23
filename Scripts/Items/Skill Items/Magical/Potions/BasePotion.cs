@@ -32,7 +32,10 @@ namespace Server.Items
 		MaskOfDeath,		// Mask of Death is not available in OSI but does exist in cliloc files
 		MaskOfDeathGreater,	// included in enumeration for compatability if later enabled by OSI
 		ConfusionBlast,
-		ConfusionBlastGreater
+		ConfusionBlastGreater,
+		Invisibility,
+		Parasitic,
+		Darkglow,
 	}
 
 	public abstract class BasePotion : Item, ICraftable, ICommodity
@@ -78,11 +81,10 @@ namespace Server.Items
 
 			if ( handTwo is BaseWeapon )
 				handOne = handTwo;
-			
-			if ( handOne is BaseRanged )
+			if ( handTwo is BaseRanged )
 			{
-				BaseRanged ranged = (BaseRanged) handOne;
-
+				BaseRanged ranged = (BaseRanged) handTwo;
+				
 				if ( ranged.Balanced )
 					return true;
 			}
@@ -234,6 +236,9 @@ namespace Server.Items
 
 				if ( pack != null )
 				{
+					if ( (int) PotionEffect >= (int) PotionEffect.Invisibility )
+						return 1;
+
 					List<PotionKeg> kegs = pack.FindItemsByType<PotionKeg>();
 
 					for ( int i = 0; i < kegs.Count; ++i )

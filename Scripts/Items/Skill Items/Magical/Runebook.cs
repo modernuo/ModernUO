@@ -15,6 +15,15 @@ namespace Server.Items
 	{
 		public static readonly TimeSpan UseDelay = TimeSpan.FromSeconds( 7.0 );
 
+		private BookQuality m_Quality;
+		
+		[CommandProperty( AccessLevel.GameMaster )]		
+		public BookQuality Quality
+		{
+			get{ return m_Quality; }
+			set{ m_Quality = value; InvalidateProperties(); }
+		}
+
 		private List<RunebookEntry> m_Entries;
 		private string m_Description;
 		private int m_CurCharges, m_MaxCharges;
@@ -169,7 +178,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 );
+			writer.Write( (int) 3 );
+
+			writer.Write( (byte) m_Quality );	
 
 			writer.Write( m_Crafter );
 
@@ -199,6 +210,11 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
+				{
+					m_Quality = (BookQuality) reader.ReadByte();		
+					goto case 2;
+				}
 				case 2:
 				{
 					m_Crafter = reader.ReadMobile();
@@ -272,6 +288,9 @@ namespace Server.Items
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
+		
+			if ( m_Quality == BookQuality.Exceptional )
+				list.Add( 1063341 ); // exceptional
 
 			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
@@ -451,6 +470,8 @@ namespace Server.Items
 
 			if ( makersMark )
 				Crafter = from;
+
+			m_Quality = (BookQuality) ( quality - 1 );
 
 			return quality;
 		}

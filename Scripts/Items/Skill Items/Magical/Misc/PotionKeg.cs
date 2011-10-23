@@ -93,13 +93,13 @@ namespace Server.Items
 		public override int LabelNumber
 		{ 
 			get
-			{ 
-				if ( m_Held == 0 )
-					return 1041084; // A specially lined keg for potions.
-				else if( m_Type >= PotionEffect.Conflagration )
-					return 1072658 + (int) m_Type - (int) PotionEffect.Conflagration;
-				else
-					return ( 1041620 + (int)m_Type ); 
+			{
+				if( m_Held > 0 && ( int )m_Type >= ( int )PotionEffect.Conflagration )
+				{
+					return 1072658 + ( int )m_Type - ( int )PotionEffect.Conflagration;
+				}
+
+				return (m_Held > 0 ? 1041620 + (int)m_Type : 1041641); 
 			} 
 		}
 
@@ -230,6 +230,14 @@ namespace Server.Items
 				}
 				else if ( m_Held == 0 )
 				{
+					#region Mondain's Legacy
+					if ( (int) pot.PotionEffect >= (int) PotionEffect.Invisibility )
+					{
+						from.SendLocalizedMessage( 502232 ); // The keg is not designed to hold that type of object.
+						return false;
+					}
+					#endregion
+
 					if ( GiveBottle( from, toHold ) )
 					{
 						m_Type = pot.PotionEffect;

@@ -104,6 +104,9 @@ namespace Server.Mobiles
 
 		public bool IsSellable( Item item )
 		{
+			if ( item.QuestItem )
+				return false;
+
 			//if ( item.Hue != 0 )
 				//return false;
 
@@ -112,6 +115,9 @@ namespace Server.Mobiles
 	 
 		public bool IsResellable( Item item )
 		{
+			if ( item.QuestItem )
+				return false;
+
 			//if ( item.Hue != 0 )
 				//return false;
 

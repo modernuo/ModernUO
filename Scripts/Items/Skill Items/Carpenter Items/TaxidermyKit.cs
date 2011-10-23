@@ -196,12 +196,6 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int AddonNumber{ get{ return m_AddonNumber; } set{ m_AddonNumber = value; InvalidateProperties(); } }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Hunter{ get{ return m_Hunter; } set{ m_Hunter = value; InvalidateProperties(); } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int AnimalWeight{ get{ return m_AnimalWeight; } set{ m_AnimalWeight = value; InvalidateProperties(); } }
-
 		public override int LabelNumber{ get{ return m_AddonNumber; } }
 
 		[Constructable]
@@ -388,9 +382,10 @@ namespace Server.Items
 		}
 
         public TrophyDeed( TaxidermyKit.TrophyInfo info, Mobile hunter, int animalWeight )
-            : this( info.NorthID + 7, info.NorthID, info.DeedNumber, info.AddonNumber, hunter, animalWeight )
+            : this( info.NorthID + 7, info.NorthID, info.DeedNumber, info.AddonNumber )
         {
         }
+
 		public TrophyDeed( Serial serial ) : base( serial )
 		{
 		}
