@@ -165,6 +165,8 @@ namespace Server.Items
 		
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
+			bool truefalse = true;
+
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 			
 			if ( house == null || !house.IsCoOwner( from ) )
@@ -182,13 +184,15 @@ namespace Server.Items
 			if ( dropped is FishBowl )
 			{
 				FishBowl bowl = (FishBowl) dropped;
-				
-				if ( bowl.Empty ) 
-					return false;
-				
-				if ( AddFish( from, bowl.Fish ) )
-					bowl.InvalidateProperties();	
-					
+
+				if( !bowl.Empty )
+				{
+					if( AddFish( from, bowl.Fish ) )
+					{
+						bowl.InvalidateProperties();
+						InvalidateProperties();
+					}
+				}
 				return false;
 					
 			}			
@@ -215,6 +219,7 @@ namespace Server.Items
 			}			
 			else if ( dropped is BaseBeverage )
 			{
+
 				BaseBeverage beverage = (BaseBeverage) dropped;
 				
 				if ( beverage.IsEmpty || !beverage.Pourable || beverage.Content != BeverageType.Water )
@@ -228,16 +233,16 @@ namespace Server.Items
 						
 				from.PlaySound( 0x4E );
 				from.SendLocalizedMessage( 1074260, "" + 1 ); // ~1_NUM~ unit(s) of water have been added to the aquarium.
-				return false;
+				truefalse = false;
 			}	
 			else if ( !AddDecoration( from, dropped ) )
-				return false;
-			
-			InvalidateProperties();				
+				truefalse = false;			
 			
 			from.CloseGump( typeof( AquariumGump ) );
-			
-			return true;
+
+			InvalidateProperties();
+
+			return truefalse;
 		}
 		
 		public override void OnChop( Mobile from )
@@ -300,7 +305,7 @@ namespace Server.Items
 			else
 				list.Add( 1074254, "{0}\t{1}\t{2}", m_Water.Added, m_Water.Maintain, m_Water.Improve ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
 			
-			list.Add( 1073841, "{0}\t{1}\t{2}", Items.Count, MaxItems, TotalWeight ); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
+			//list.Add( 1073841, "{0}\t{1}\t{2}", Items.Count, MaxItems, TotalWeight ); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
 		}
 		
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
@@ -702,6 +707,8 @@ namespace Server.Items
 			m_LiveCreatures += 1;
 			
 			from.SendLocalizedMessage( 1073632, "#" + fish.LabelNumber ); // You add the following creature to your aquarium: ~1_FISH~		
+
+			InvalidateProperties();
 			return true;	
 		}
 		
@@ -728,7 +735,8 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1073635, "#" + item.LabelNumber ); // You add the following decoration to your aquarium: ~1_NAME~
 			else
 				from.SendLocalizedMessage( 1073635, item.Name ); // You add the following decoration to your aquarium: ~1_NAME~
-				
+
+			InvalidateProperties();
 			return true;
 		}
 		#endregion

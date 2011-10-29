@@ -20,8 +20,7 @@ namespace Server.Items
 		{
 			Weight = 1.0;
 			
-			if ( 0.01 > Utility.RandomDouble() )
-				Hue = Utility.RandomList( m_Hues );
+			Hue = ( 0.01 > Utility.RandomDouble() ) ? Utility.RandomList( m_Hues ) : 0x240;
 		}
 
 		public AquariumFishingNet( Serial serial ) : base( serial )
@@ -172,6 +171,7 @@ namespace Server.Items
 				{
 					if ( !bowl.Deleted && bowl.Empty )
 					{
+						fish.StopTimer();
 						bowl.AddItem( fish );
 						bowl.InvalidateProperties();
 						m_Player.SendLocalizedMessage( 1074489 ); // A live creature jumps into the fish bowl in your pack!
