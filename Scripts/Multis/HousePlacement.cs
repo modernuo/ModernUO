@@ -21,6 +21,7 @@ namespace Server.Multis
 		BadRegionHidden,
 		BadRegionTemp,
 		InvalidCastleKeep,
+		BadRegionRaffle
 	}
 
 	public class HousePlacement
@@ -113,6 +114,9 @@ namespace Server.Multis
 
 						if ( reg.IsPartOf( typeof( TreasureRegion ) ) )
 							return HousePlacementResult.BadRegionHidden;
+
+						if ( reg.IsPartOf( typeof( HouseRaffleRegion ) ) )
+							return HousePlacementResult.BadRegionRaffle;
 
 						return HousePlacementResult.BadRegion;
 					}

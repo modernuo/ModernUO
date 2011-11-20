@@ -4,6 +4,7 @@ using System.Collections;
 using Server.Multis;
 using Server.Targeting;
 using Server.Items;
+using Server.Regions;
 
 namespace Server.Multis.Deeds
 {
@@ -33,6 +34,8 @@ namespace Server.Multis.Deeds
 					m_Deed.OnPlacement( from, p );
 				else if ( reg.IsPartOf( typeof( TreasureRegion ) ) )
 					from.SendLocalizedMessage( 1043287 ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+				else if ( reg.IsPartOf( typeof( HouseRaffleRegion ) ) )
+					from.SendLocalizedMessage( 1150493 ); // You must have a deed for this plot of land in order to build here.
 				else
 					from.SendLocalizedMessage( 501265 ); // Housing can not be created in this area.
 			}
@@ -203,6 +206,11 @@ namespace Server.Multis.Deeds
 					case HousePlacementResult.BadRegionTemp:
 					{
 						from.SendLocalizedMessage( 501270 ); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+						break;
+					}
+					case HousePlacementResult.BadRegionRaffle:
+					{
+						from.SendLocalizedMessage( 1150493 ); // You must have a deed for this plot of land in order to build here.
 						break;
 					}
 				}

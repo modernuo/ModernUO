@@ -83,7 +83,7 @@ namespace Server.Items
 		private const int DefaultTicketPrice = 5000;
 		private const int MessageHue = 1153;
 
-		private static readonly TimeSpan ExpirationTime = TimeSpan.FromDays( 30.0 );
+		public static readonly TimeSpan ExpirationTime = TimeSpan.FromDays( 30.0 );
 
 		private HouseRaffleRegion m_Region;
 		private Rectangle2D m_Bounds;
@@ -355,7 +355,7 @@ namespace Server.Items
 			return result.ToString();
 		}
 
-		private Point3D GetPlotCenter()
+		public Point3D GetPlotCenter()
 		{
 			int x = m_Bounds.X + m_Bounds.Width / 2;
 			int y = m_Bounds.Y + m_Bounds.Height / 2;
@@ -394,8 +394,18 @@ namespace Server.Items
 			}
 			else if ( m_Winner != null )
 			{
-				list.Add( 1060658, "won by\t{0}", m_Winner.Name ); // ~1_val~: ~2_val~
+				list.Add( 1060658, "winner\t{0}", m_Winner.Name ); // ~1_val~: ~2_val~
 			}
+		}
+
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			if ( m_Active )
+				LabelTo( from, 1060658, String.Format( "Ends\t{0}", m_Started + m_Duration ) ); // ~1_val~: ~2_val~
+			else if ( m_Winner != null )
+				LabelTo( from, 1060658, String.Format( "Winner\t{0}", m_Winner.Name ) ); // ~1_val~: ~2_val~
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
@@ -484,7 +494,7 @@ namespace Server.Items
 
 				if ( m_Winner != null )
 				{
-					m_Deed = new HouseRaffleDeed( GetPlotCenter(), m_Facet, m_Winner );
+					m_Deed = new HouseRaffleDeed( this, m_Winner );
 
 					m_Winner.SendMessage( MessageHue, "Congratulations, {0}!  You have won the raffle for the plot located at {1}.", m_Entries[winner].From.Name, FormatLocation() );
 

@@ -20,20 +20,36 @@ namespace Server.Regions
 
 		public override bool AllowHousing( Mobile from, Point3D p )
 		{
-			if ( m_Stone == null || m_Stone.Deed == null )
+			if ( m_Stone == null )
+				return false;
+
+			if ( m_Stone.IsExpired )
+				return true;
+
+			if ( m_Stone.Deed == null )
 				return false;
 
 			Container pack = from.Backpack;
 
-			if ( pack != null )
-			{
-				List<HouseRaffleDeed> deeds = pack.FindItemsByType<HouseRaffleDeed>();
+			if ( pack != null && ContainsDeed( pack ) )
+				return true;
 
-				for ( int i = 0; i < deeds.Count; i++ )
-				{
-					if ( deeds[i] == m_Stone.Deed )
-						return true;
-				}
+			BankBox bank = from.FindBankNoCreate();
+
+			if ( bank != null && ContainsDeed( bank ) )
+				return true;
+
+			return false;
+		}
+
+		private bool ContainsDeed( Container cont )
+		{
+			List<HouseRaffleDeed> deeds = cont.FindItemsByType<HouseRaffleDeed>();
+
+			for ( int i = 0; i < deeds.Count; ++i )
+			{
+				if ( deeds[i] == m_Stone.Deed )
+					return true;
 			}
 
 			return false;

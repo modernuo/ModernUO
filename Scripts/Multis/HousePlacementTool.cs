@@ -4,6 +4,7 @@ using Server;
 using Server.Gumps;
 using Server.Multis;
 using Server.Mobiles;
+using Server.Regions;
 using Server.Targeting;
 
 namespace Server.Items
@@ -249,6 +250,8 @@ namespace Server.Items
 					m_Placed = m_Entry.OnPlacement( from, p );
 				else if ( reg.IsPartOf( typeof( TreasureRegion ) ) )
 					from.SendLocalizedMessage( 1043287 ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+				else if ( reg.IsPartOf( typeof( HouseRaffleRegion ) ) )
+					from.SendLocalizedMessage( 1150493 ); // You must have a deed for this plot of land in order to build here.
 				else
 					from.SendLocalizedMessage( 501265 ); // Housing can not be created in this area.
 			}
@@ -428,6 +431,11 @@ namespace Server.Items
 					from.SendLocalizedMessage( 501270 ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
 					break;
 				}
+				case HousePlacementResult.BadRegionRaffle:
+				{
+					from.SendLocalizedMessage( 1150493 ); // You must have a deed for this plot of land in order to build here.
+					break;
+				}
 				case HousePlacementResult.InvalidCastleKeep:
 				{
 					from.SendLocalizedMessage( 1061122 ); // Castles and keeps cannot be created here.
@@ -524,6 +532,11 @@ namespace Server.Items
 				case HousePlacementResult.BadRegionTemp:
 				{
 					from.SendLocalizedMessage( 501270 ); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+					break;
+				}
+				case HousePlacementResult.BadRegionRaffle:
+				{
+					from.SendLocalizedMessage( 1150493 ); // You must have a deed for this plot of land in order to build here.
 					break;
 				}
 				case HousePlacementResult.InvalidCastleKeep:

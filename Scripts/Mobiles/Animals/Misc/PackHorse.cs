@@ -176,7 +176,7 @@ namespace Server.Mobiles
 			if ( from == animal || from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			if ( from.Alive && animal.Controlled && !animal.IsDeadPet && (from == animal.ControlMaster || from == animal.SummonMaster) )
+			if ( from.Alive && animal.Controlled && !animal.IsDeadPet && ( from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend( from ) ) )
 				return true;
 
 			return false;
