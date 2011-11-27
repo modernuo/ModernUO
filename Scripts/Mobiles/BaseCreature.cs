@@ -3116,7 +3116,6 @@ namespace Server.Mobiles
 				{
 					DebugSay( "I'm being attacked but my master told me not to fight." );
 					Warmode = false;
-					Combatant = null;
 					return;
 				}
 			}
