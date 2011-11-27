@@ -3108,7 +3108,7 @@ namespace Server.Mobiles
 
 			if ( m_AI != null )
 			{
-				if( !Core.ML || ( ct != OrderType.Follow && ct != OrderType.Stop ) )
+				if( !Core.ML || ( ct != OrderType.Follow && ct != OrderType.Stop && ct != OrderType.Stay ) )
 				{
 					m_AI.OnAggressiveAction( aggressor );
 				}
@@ -3116,6 +3116,7 @@ namespace Server.Mobiles
 				{
 					DebugSay( "I'm being attacked but my master told me not to fight." );
 					Warmode = false;
+					Combatant = null;
 					return;
 				}
 			}

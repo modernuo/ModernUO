@@ -73,12 +73,14 @@ namespace Server.Mobiles
 		public Mobile SculptedBy
 		{
 			get{ return m_SculptedBy; }
+			set{ m_SculptedBy = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime SculptedOn
 		{
 			get{ return m_SculptedOn; }
+			set{ m_SculptedOn = value; }
 		}
 
 		private CharacterStatuePlinth m_Plinth;
@@ -130,8 +132,8 @@ namespace Server.Mobiles
 
 			if ( m_SculptedBy != null )
 			{
-				if ( m_SculptedBy.Title != null )
-					list.Add( 1076202, m_SculptedBy.Title + " " + m_SculptedBy.Name ); // Sculpted by ~1_Name~
+				if ( m_SculptedBy.ShowFameTitle && ( m_SculptedBy.Player || m_SculptedBy.Body.IsHuman ) && m_SculptedBy.Fame >= 10000 )
+					list.Add( 1076202, String.Format( "{0} {1}", m_SculptedBy.Female ? "Lady" : "Lord", m_SculptedBy.Name ) ); // Sculpted by ~1_Name~
 				else
 					list.Add( 1076202, m_SculptedBy.Name ); // Sculpted by ~1_Name~
 			}
@@ -284,6 +286,7 @@ namespace Server.Mobiles
 		{
 			Name = from.Name;
 			BodyValue = from.BodyValue;
+			Female = from.Female;
 			HairItemID = from.HairItemID;
 			FacialHairItemID = from.FacialHairItemID;
 		}

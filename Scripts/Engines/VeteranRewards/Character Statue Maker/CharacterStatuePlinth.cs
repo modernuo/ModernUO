@@ -113,7 +113,7 @@ namespace Server.Items
 				AddPage( 0 );
 				AddImage( 0, 0, 0x24F4 );
 				AddHtml( 55, 50, 150, 20, statue.Name, false, false );
-				AddHtml( 55, 75, 150, 20, statue.SculptedOn.ToString( "G", new CultureInfo("de-DE") ), false, false );
+				AddHtml( 55, 75, 150, 20, statue.SculptedOn.ToString(), false, false );
 				AddHtmlLocalized( 55, 100, 150, 20, GetTypeNumber( statue.StatueType ), 0, false, false );
 			}
 
