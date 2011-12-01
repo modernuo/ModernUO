@@ -189,10 +189,7 @@ namespace Server.Items
 
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house != null && house.IsCoOwner( from ) )
-				return true;
-
-			return false;
+			return ( house != null && house.IsCoOwner( from ) );
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
@@ -767,7 +764,7 @@ namespace Server.Items
 			if ( fish == null )
 				return false;
 
-			if ( IsFull || m_LiveCreatures == MaxLiveCreatures || fish.Dead )
+			if ( IsFull || m_LiveCreatures >= MaxLiveCreatures || fish.Dead )
 			{
 				if ( from != null )
 					from.SendLocalizedMessage( 1073633 ); // The aquarium can not hold the creature.
