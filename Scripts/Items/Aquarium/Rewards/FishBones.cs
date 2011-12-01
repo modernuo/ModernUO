@@ -4,23 +4,23 @@ using Server;
 namespace Server.Items
 {
 	public class FishBones : Item
-	{		
+	{
 		public override int LabelNumber{ get{ return 1074601; } } // Fish bones
-		
+		public override double DefaultWeight{ get{ return 1.0; } }
+
 		[Constructable]
 		public FishBones() : base( 0x3B0C )
 		{
-			Weight = 1;
 		}
 
 		public FishBones( Serial serial ) : base( serial )
-		{		
-		}
-		
-		public override void GetProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
-			
+		}
+
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
 			list.Add( 1073634 ); // An aquarium decoration
 		}
 

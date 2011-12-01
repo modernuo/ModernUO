@@ -5,22 +5,22 @@ using Server.Items;
 namespace Server.Items
 {
 	public class AquariumMessage : MessageInABottle
-	{				
+	{
 		public override int LabelNumber{ get{ return 1073894; } } // Message in a Bottle
-		
+
 		[Constructable]
 		public AquariumMessage() : base()
 		{
 		}
 
 		public AquariumMessage( Serial serial ) : base( serial )
-		{		
-		}
-		
-		public override void GetProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
-			
+		}
+
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
 			list.Add( 1073634 ); // An aquarium decoration
 		}
 

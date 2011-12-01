@@ -152,7 +152,7 @@ namespace Server.Items
 			AddonComponent.ApplyLightTo( this );
 		}
 
-		public void DropItemsToGround()
+		public virtual void DropItemsToGround()
 		{
 			for ( int i = Items.Count - 1; i >= 0; i-- )
 				Items[ i ].MoveToWorld( Location );

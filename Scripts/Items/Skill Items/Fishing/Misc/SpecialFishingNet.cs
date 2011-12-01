@@ -11,6 +11,13 @@ namespace Server.Items
 
 		private bool m_InUse;
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool InUse
+		{
+			get{ return m_InUse; }
+			set{ m_InUse = value; }
+		}
+
 		[Constructable]
 		public SpecialFishingNet() : base( 0x0DCA )
 		{
@@ -48,6 +55,11 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
+			AddNetProperties( list );
+		}
+
+		protected virtual void AddNetProperties( ObjectPropertyList list )
+		{
 			// as if the name wasn't enough..
 			list.Add( 1017410 ); // Special Fishing Net
 		}
@@ -100,6 +112,9 @@ namespace Server.Items
 			}
 		}
 
+		// TODO
+		//public virtual bool RequireDeepWater{ get{ return true; } }
+
 		public void OnTarget( Mobile from, object obj )
 		{
 			if ( Deleted || m_InUse )
@@ -125,8 +140,11 @@ namespace Server.Items
 			{
 				Point3D p = new Point3D( x, y, map.GetAverageZ( x, y ) );
 
-				for ( int i = 1; i < Amount; ++i ) // these were stackable before, doh
-					from.AddToBackpack( new SpecialFishingNet() );
+				if ( GetType() == typeof( SpecialFishingNet ) )
+				{
+					for ( int i = 1; i < Amount; ++i ) // these were stackable before, doh
+						from.AddToBackpack( new SpecialFishingNet() );
+				}
 
 				m_InUse = true;
 				Movable = false;
@@ -306,6 +324,10 @@ namespace Server.Items
 		public FabledFishingNet()
 		{
 			Hue = 0x481;
+		}
+
+		protected override void AddNetProperties( ObjectPropertyList list )
+		{
 		}
 
 		protected override int GetSpawnCount()

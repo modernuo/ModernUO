@@ -4,14 +4,14 @@ using Server;
 namespace Server.Items
 {
 	public class WaterloggedBoots : BaseShoes
-	{		
+	{
 		public override int LabelNumber{ get{ return 1074364; } } // Waterlogged boots
-		
+
 		[Constructable]
 		public WaterloggedBoots() : base( 0x1711 )
 		{
 			if ( Utility.RandomBool() )
-			{	
+			{
 				// thigh boots
 				ItemID = 0x1711;
 				Weight = 4.0;
@@ -25,13 +25,13 @@ namespace Server.Items
 		}
 
 		public WaterloggedBoots( Serial serial ) : base( serial )
-		{		
-		}
-		
-		public override void GetProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
-			
+		}
+
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
 			list.Add( 1073634 ); // An aquarium decoration
 		}
 

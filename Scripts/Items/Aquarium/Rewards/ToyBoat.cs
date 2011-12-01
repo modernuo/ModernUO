@@ -6,23 +6,23 @@ namespace Server.Items
 {
 	[FlipableAttribute( 0x14F3, 0x14F4 )]
 	public class ToyBoat : Item
-	{		
+	{
 		public override int LabelNumber{ get{ return 1074363; } } // A toy boat
-		
+		public override double DefaultWeight{ get{ return 1.0; } }
+
 		[Constructable]
-		public ToyBoat() : base( 0x14F3 )
+		public ToyBoat() : base( 0x14F4 )
 		{
-			Weight = 1;
 		}
 
 		public ToyBoat( Serial serial ) : base( serial )
-		{		
-		}
-		
-		public override void GetProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
-			
+		}
+
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
+
 			list.Add( 1073634 ); // An aquarium decoration
 		}
 

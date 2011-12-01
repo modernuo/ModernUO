@@ -7,20 +7,20 @@ namespace Server.Items
 	public class IslandStatue : Item
 	{		
 		public override int LabelNumber{ get{ return 1074600; } } // An island statue
+		public override double DefaultWeight{ get{ return 1.0; } }
 		
 		[Constructable]
 		public IslandStatue() : base( 0x3B0F )
 		{
-			Weight = 1;
 		}
 
 		public IslandStatue( Serial serial ) : base( serial )
 		{		
 		}
 		
-		public override void GetProperties( ObjectPropertyList list )
+		public override void AddNameProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
+			base.AddNameProperties( list );
 			
 			list.Add( 1073634 ); // An aquarium decoration
 		}
