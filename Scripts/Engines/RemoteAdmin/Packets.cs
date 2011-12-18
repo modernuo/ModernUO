@@ -84,7 +84,7 @@ namespace Server.RemoteAdmin
 			m_Stream.Write( (int) Core.ScriptItems );
 
 			m_Stream.Write( (uint)(DateTime.Now - Clock.ServerStart).TotalSeconds );
-			m_Stream.Write( (uint) GC.GetTotalMemory( false ) );
+			m_Stream.Write( (uint) GC.GetTotalMemory( false ) );                        // TODO: uint not sufficient for TotalMemory (long). Fix protocol.
 			m_Stream.WriteAsciiNull( netVer );
 			m_Stream.WriteAsciiNull( os );
 		}
@@ -110,7 +110,7 @@ namespace Server.RemoteAdmin
 				m_Stream.WriteAsciiNull( pwToSend );
 				m_Stream.Write( (byte)a.AccessLevel );
 				m_Stream.Write( a.Banned );
-				unchecked { m_Stream.Write( (uint)a.LastLogin.Ticks ); }
+				unchecked { m_Stream.Write( (uint)a.LastLogin.Ticks ); } // TODO: This doesn't work, uint.MaxValue is only 7 minutes of ticks. Fix protocol.
 				
 				m_Stream.Write( (ushort)a.LoginIPs.Length );
 				for (int i=0;i<a.LoginIPs.Length;i++)
@@ -120,6 +120,23 @@ namespace Server.RemoteAdmin
 				for (int i=0;i<a.IPRestrictions.Length;i++)
 					m_Stream.WriteAsciiNull( a.IPRestrictions[i] );
 			}
+		}
+	}
+
+	public sealed class CompactServerInfo : Packet
+	{
+		public CompactServerInfo() : base( 0x51 )
+		{
+			EnsureCapacity( 1 + 2 + (4 * 4) + 8 );
+
+			m_Stream.Write( (int)NetState.Instances.Count - 1 );                      // Clients
+			m_Stream.Write( (int)World.Items.Count );                                 // Items
+			m_Stream.Write( (int)World.Mobiles.Count );                               // Mobiles
+			m_Stream.Write( (uint)(DateTime.Now - Clock.ServerStart).TotalSeconds );  // Age (seconds)
+
+			long memory = GC.GetTotalMemory( false );
+			m_Stream.Write( (uint)(memory >> 32) );                                   // Memory high bytes
+			m_Stream.Write( (uint)memory );                                           // Memory low bytes
 		}
 	}
 

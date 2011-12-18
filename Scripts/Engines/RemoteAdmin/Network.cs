@@ -9,6 +9,8 @@ namespace Server.RemoteAdmin
 {
 	public class AdminNetwork
 	{
+		private const string ProtocolVersion = "2";
+
 		private static ArrayList m_Auth = new ArrayList();
 		private static bool m_NewLine = true;
 		private static StringBuilder m_ConsoleData = new StringBuilder();
@@ -39,11 +41,9 @@ namespace Server.RemoteAdmin
 			}
 
 			m_ConsoleData.Append( outStr );
-			if ( m_ConsoleData.Length >= 4096 )
-				m_ConsoleData.Remove( 0, 2048 );
+			RoughTrimConsoleData();
 
-			for (int i=0;i<m_Auth.Count;i++)
-				((NetState)m_Auth[i]).Send( new ConsoleData( str ) );
+			SendToAll( outStr );
 		}
 
 		public static void OnConsoleChar( char ch )
@@ -54,22 +54,17 @@ namespace Server.RemoteAdmin
 				outStr = String.Format( "[{0}]: {1}", DateTime.Now.ToString( DateFormat ), ch );
 
 				m_ConsoleData.Append( outStr );
-
-				for (int i=0;i<m_Auth.Count;i++)
-					((NetState)m_Auth[i]).Send( new ConsoleData( outStr ) );
+				SendToAll( outStr );
 
 				m_NewLine = false;
 			}
 			else
 			{
 				m_ConsoleData.Append( ch );
-
-				for (int i=0;i<m_Auth.Count;i++)
-					((NetState)m_Auth[i]).Send( new ConsoleData( ch ) );
+				SendToAll( ch );
 			}
 
-			if ( m_ConsoleData.Length >= 4096 )
-				m_ConsoleData.Remove( 0, 2048 );
+			RoughTrimConsoleData();
 		}
 
 		public static void OnConsoleLine( string line )
@@ -81,13 +76,41 @@ namespace Server.RemoteAdmin
 				outStr = String.Format( "{0}{1}", line, Console.Out.NewLine );
 
 			m_ConsoleData.Append( outStr );
-			if ( m_ConsoleData.Length >= 4096 )
-				m_ConsoleData.Remove( 0, 2048 );
+			RoughTrimConsoleData();
 
-			for (int i=0;i<m_Auth.Count;i++)
-				((NetState)m_Auth[i]).Send( new ConsoleData( outStr ) );
+			SendToAll( outStr );
 
 			m_NewLine = true;
+		}
+
+		static void SendToAll( string outStr )
+		{
+			SendToAll( new ConsoleData( outStr ) );
+		}
+
+		static void SendToAll( char ch )
+		{
+			SendToAll( new ConsoleData( ch ) );
+		}
+
+		static void SendToAll( ConsoleData packet )
+		{
+			packet.Acquire();
+			for ( int i = 0; i < m_Auth.Count; i++ )
+				((NetState)m_Auth[i]).Send( packet );
+			packet.Release();
+		}
+
+		static void RoughTrimConsoleData()
+		{
+			if ( m_ConsoleData.Length >= 4096 )
+				m_ConsoleData.Remove( 0, 2048 );
+		}
+
+		static void TightTrimConsoleData()
+		{
+			if ( m_ConsoleData.Length > 1024 )
+				m_ConsoleData.Remove( 0, m_ConsoleData.Length - 1024 );
 		}
 
 		public static void OnReceive( NetState state, PacketReader pvSrc )
@@ -97,9 +120,14 @@ namespace Server.RemoteAdmin
 			{
 				Authenticate( state, pvSrc );
 			}
+			else if ( cmd == 0xFE )
+			{
+				state.Send( new CompactServerInfo() );
+				state.Dispose();
+			}
 			else if ( cmd == 0xFF )
 			{
-				string statStr = String.Format( ", Name={0}, Age={1}, Clients={2}, Items={3}, Chars={4}, Mem={5}K", Server.Misc.ServerList.ServerName, (int)(DateTime.Now-Server.Items.Clock.ServerStart).TotalHours, NetState.Instances.Count, World.Items.Count, World.Mobiles.Count, (int)(System.GC.GetTotalMemory(false)/1024) );
+				string statStr = String.Format( ", Name={0}, Age={1}, Clients={2}, Items={3}, Chars={4}, Mem={5}K, Ver={6}", Server.Misc.ServerList.ServerName, (int)(DateTime.Now - Server.Items.Clock.ServerStart).TotalHours, NetState.Instances.Count, World.Items.Count, World.Mobiles.Count, (int)(System.GC.GetTotalMemory( false ) / 1024), ProtocolVersion );
 				state.Send( new UOGInfo( statStr ) );
 				state.Dispose();
 			}
@@ -147,7 +175,7 @@ namespace Server.RemoteAdmin
 			else if ( !a.CheckPassword( pw ) )
 			{
 				state.Send( new Login( LoginResponse.BadPass ) );
-				Console.WriteLine( "ADMIN: Invalid password '{0}' for user '{1}' from {2}", pw, user, state );
+				Console.WriteLine( "ADMIN: Invalid password for user '{0}' from {1}", user, state );
 				DelayedDisconnect( state );
 			}
 			else if ( a.AccessLevel < AccessLevel.Administrator || a.Banned )
@@ -164,6 +192,7 @@ namespace Server.RemoteAdmin
 				a.LastLogin = DateTime.Now;
 
 				state.Send( new Login( LoginResponse.OK ) );
+				TightTrimConsoleData();
 				state.Send( Compress( new ConsoleData( m_ConsoleData.ToString() ) ) );
 				m_Auth.Add( state );
 			}
@@ -194,7 +223,7 @@ namespace Server.RemoteAdmin
 
 			if ( length > 100 && length < 60000 )
 			{
-				byte[] dest = new byte[(int)(length*1.001)+1];
+				byte[] dest = new byte[(int)(length * 1.001) + 10];
 				int destSize = dest.Length;
 
 				ZLibError error = Compression.Pack( dest, ref destSize, source, length, ZLibQuality.Default );
