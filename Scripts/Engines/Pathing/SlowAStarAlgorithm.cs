@@ -163,6 +163,8 @@ namespace Server.PathAlgorithms.SlowAStar
 					MoveImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
 				}
 
+				MoveImpl.Goal = goal;
+
 				for ( int i = 0; i < 8; ++i )
 				{
 					switch ( i )
@@ -188,6 +190,7 @@ namespace Server.PathAlgorithms.SlowAStar
 
 				MoveImpl.AlwaysIgnoreDoors = false;
 				MoveImpl.IgnoreMovableImpassables = false;
+				MoveImpl.Goal = Point3D.Zero;
 
 				if ( sucCount == 0 || ++depth > MaxDepth )
 					break;

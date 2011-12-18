@@ -1204,7 +1204,7 @@ namespace Server.Gumps
 
 					AddButtonLabeled( 20, 150, GetButtonID( 6, 3 ), "Remove" );
 
-					AddHtml( 10, 175, 400, 20, Color( Center( "Potentially Effected Accounts" ), LabelColor32 ), false, false );
+					AddHtml( 10, 175, 400, 20, Color( Center( "Potentially Affected Accounts" ), LabelColor32 ), false, false );
 
 					if ( m_List == null )
 					{

@@ -17,10 +17,12 @@ namespace Server.Movement
 		private static bool m_AlwaysIgnoreDoors;
 		private static bool m_IgnoreMovableImpassables;
 		private static bool m_IgnoreSpellFields;
+		private static Point3D m_Goal;
 
 		public static bool AlwaysIgnoreDoors{ get{ return m_AlwaysIgnoreDoors; } set{ m_AlwaysIgnoreDoors = value; } }
 		public static bool IgnoreMovableImpassables{ get{ return m_IgnoreMovableImpassables; } set{ m_IgnoreMovableImpassables = value; } }
 		public static bool IgnoreSpellFields{ get{ return m_IgnoreSpellFields; } set{ m_IgnoreSpellFields = value; } }
+		public static Point3D Goal{ get{ return m_Goal; } set{ m_Goal = value; } }
 
 		public static void Configure()
 		{
@@ -79,10 +81,16 @@ namespace Server.Movement
 				new List<Item>(), new List<Item>(),
 				new List<Item>(), new List<Item>(),
 			};
-		
+
+		private List<Mobile>[] m_MobPools = new List<Mobile>[3]
+			{
+				new List<Mobile>(), new List<Mobile>(),
+				new List<Mobile>(),
+			};
+
 		private List<Sector> m_Sectors = new List<Sector>();
 
-		private bool Check( Map map, Mobile m, List<Item> items, int x, int y, int startTop, int startZ, bool canSwim, bool cantWalk, out int newZ )
+		private bool Check( Map map, Mobile m, List<Item> items, List<Mobile> mobiles, int x, int y, int startTop, int startZ, bool canSwim, bool cantWalk, out int newZ )
 		{
 			newZ = 0;
 
@@ -215,7 +223,6 @@ namespace Server.Movement
 					}
 				}
 			}
-
 			#endregion
 
 			if ( considerLand && !landBlocks && stepTop >= landZ )
@@ -244,7 +251,25 @@ namespace Server.Movement
 				}
 			}
 
+			#region Mobiles
+			if ( moveIsOk )
+			{
+				for ( int i = 0; moveIsOk && i < mobiles.Count; ++i )
+				{
+					Mobile mob = mobiles[i];
+
+					if ( mob != m && ( mob.Z + 15 ) > newZ && ( newZ + 15 ) > mob.Z && !CanMoveOver( m, mob ) )
+						moveIsOk = false;
+				}
+			}
+			#endregion
+
 			return moveIsOk;
+		}
+
+		private bool CanMoveOver( Mobile m, Mobile t )
+		{
+			return ( !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet ) || ( t.Hidden && t.AccessLevel > AccessLevel.Player );
 		}
 
 		public bool CheckMovement( Mobile m, Map map, Point3D loc, Direction d, out int newZ )
@@ -285,6 +310,12 @@ namespace Server.Movement
 
 			if ( m.CanSwim )
 				reqFlags |= TileFlag.Wet;
+
+			List<Mobile> mobsForward = m_MobPools[0];
+			List<Mobile> mobsLeft = m_MobPools[1];
+			List<Mobile> mobsRight = m_MobPools[2];
+
+			bool checkMobs = ( m is BaseCreature && !((BaseCreature)m).Controlled && ( xForward != m_Goal.X || yForward != m_Goal.Y ) );
 
 			if ( checkDiagonals )
 			{
@@ -328,6 +359,21 @@ namespace Server.Movement
 							itemsLeft.Add( item );
 						else if ( sector == sectorRight && item.AtWorldPoint( xRight, yRight ) && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue )
 							itemsRight.Add( item );
+					}
+
+					if ( checkMobs )
+					{
+						for ( int j = 0; j < sector.Mobiles.Count; ++j )
+						{
+							Mobile mob = sector.Mobiles[j];
+
+							if ( sector == sectorForward && mob.X == xForward && mob.Y == yForward )
+								mobsForward.Add( mob );
+							else if ( sector == sectorLeft && mob.X == xLeft && mob.Y == yLeft )
+								mobsLeft.Add( mob );
+							else if ( sector == sectorRight && mob.X == xRight && mob.Y == yRight )
+								mobsRight.Add( mob );
+						}
 					}
 				}
 
@@ -387,29 +433,46 @@ namespace Server.Movement
 							itemsStart.Add( item );
 					}
 				}
+
+				if ( checkMobs )
+				{
+					for ( int i = 0; i < sectorForward.Mobiles.Count; ++i )
+					{
+						Mobile mob = sectorForward.Mobiles[i];
+
+						if ( mob.X == xForward && mob.Y == yForward )
+							mobsForward.Add( mob );
+					}
+				}
 			}
 
 			GetStartZ( m, map, loc, itemsStart, out startZ, out startTop );
 
-			bool moveIsOk = Check( map, m, itemsForward, xForward, yForward, startTop, startZ, m.CanSwim, m.CantWalk, out newZ );
+			bool moveIsOk = Check( map, m, itemsForward, mobsForward, xForward, yForward, startTop, startZ, m.CanSwim, m.CantWalk, out newZ );
 
 			if ( moveIsOk && checkDiagonals )
 			{
 				int hold;
 
 				if ( m.Player && m.AccessLevel < AccessLevel.GameMaster ) {
-					if ( !Check( map, m, itemsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) || !Check( map, m, itemsRight, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) )
+					if ( !Check( map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) || !Check( map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) )
 						moveIsOk = false;
 				} else {
-					if ( !Check( map, m, itemsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) && !Check( map, m, itemsRight, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) )
+					if ( !Check( map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) && !Check( map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold ) )
 						moveIsOk = false;
 				}
 			}
 
 			for ( int i = 0; i < (checkDiagonals ? 4 : 2); ++i )
 			{
-				if ( m_Pools[i].Count > 0 )
+				if ( m_Pools[i].Count != 0 )
 					m_Pools[i].Clear();
+			}
+
+			for ( int i = 0; i < (checkDiagonals ? 3 : 1); ++i )
+			{
+				if ( m_MobPools[i].Count != 0 )
+					m_MobPools[i].Clear();
 			}
 
 			if ( !moveIsOk )

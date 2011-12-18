@@ -14,6 +14,21 @@ namespace Server.Items
 		private string m_GuildName;
 		private string m_GuildAbbrev;
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string GuildName
+		{
+			get { return m_GuildName; }
+			set { m_GuildName = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string GuildAbbrev
+		{
+			get { return m_GuildAbbrev; }
+			set { m_GuildAbbrev = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public Guild Guild
 		{
 			get
@@ -97,12 +112,6 @@ namespace Server.Items
 			if( Guild.NewGuildSystem && ItemID == 0xED4 )
 				ItemID = 0xED6;
 
-			if( m_Guild != null )
-			{
-				m_GuildName = m_Guild.Name;
-				m_GuildAbbrev = m_Guild.Abbreviation;
-			}
-
 			if( version <= 2 )
 				m_BeforeChangeover = true;
 
@@ -142,7 +151,7 @@ namespace Server.Items
 				//list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( name ), Utility.FixHtml( abbr ) ) );
 			}
-			else
+			else if( m_GuildName != null && m_GuildAbbrev != null )
 			{
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( m_GuildName ), Utility.FixHtml( m_GuildAbbrev ) ) );
 			}
@@ -152,14 +161,19 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			string name;
+			if( m_Guild != null && !m_Guild.Disbanded )
+			{
+				string name;
 
-			if( m_Guild == null )
-				name = "(unfounded)";
-			else if( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
-				name = "(unnamed)";
+				if( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
+					name = "(unnamed)";
 
-			this.LabelTo( from, name );
+				this.LabelTo( from, name );
+			}
+			else if( m_GuildName != null )
+			{
+				this.LabelTo( from, m_GuildName );
+			}
 		}
 
 		public override void OnAfterDelete()
@@ -267,7 +281,39 @@ namespace Server.Items
 		private string m_GuildName;
 		private string m_GuildAbbrev;
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string GuildName
+		{
+			get { return m_GuildName; }
+			set { m_GuildName = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string GuildAbbrev
+		{
+			get { return m_GuildAbbrev; }
+			set { m_GuildAbbrev = value; InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Guild Guild
+		{
+			get
+			{
+				return m_Guild;
+			}
+		}
+
 		[Constructable]
+		public GuildstoneDeed() : this( null, null )
+		{
+		}
+
+		[Constructable]
+		public GuildstoneDeed( string guildName, string abbrev ) : this( null, guildName, abbrev )
+		{
+		}
+
 		public GuildstoneDeed( Guild g, string guildName, string abbrev ) : base( 0x14F0 )
 		{
 			m_Guild = g;
@@ -285,7 +331,18 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int)0 ); // version
+			if( m_Guild != null && !m_Guild.Disbanded )
+			{
+				m_GuildName = m_Guild.Name;
+				m_GuildAbbrev = m_Guild.Abbreviation;
+			}
+
+			writer.Write( (int)1 ); // version
+
+			writer.Write( m_GuildName );
+			writer.Write( m_GuildAbbrev );
+
+			writer.Write( m_Guild );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -293,8 +350,20 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
-		}
 
+			switch ( version )
+			{
+				case 1:
+				{
+					m_GuildName = reader.ReadString();
+					m_GuildAbbrev = reader.ReadString();
+
+					m_Guild = reader.ReadGuild() as Guild;
+
+					break;
+				}
+			}
+		}
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
@@ -314,7 +383,7 @@ namespace Server.Items
 				//list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( name ), Utility.FixHtml( abbr ) ) );
 			}
-			else
+			else if( m_GuildName != null && m_GuildAbbrev != null )
 			{
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( m_GuildName ), Utility.FixHtml( m_GuildAbbrev ) ) );
 			}
@@ -374,6 +443,5 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 			}
 		}
-
 	}
 }

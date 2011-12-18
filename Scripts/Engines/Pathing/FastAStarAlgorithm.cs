@@ -146,11 +146,14 @@ namespace Server.PathAlgorithms.FastAStar
 					MoveImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
 				}
 
+				MoveImpl.Goal = goal;
+
 				int[] vals = m_Successors;
 				int count = GetSuccessors( bestNode, m, map );
 
 				MoveImpl.AlwaysIgnoreDoors = false;
 				MoveImpl.IgnoreMovableImpassables = false;
+				MoveImpl.Goal = Point3D.Zero;
 
 				if ( count == 0 )
 					break;

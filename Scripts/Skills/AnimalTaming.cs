@@ -107,7 +107,7 @@ namespace Server.SkillHandlers
 		{
 			private bool m_SetSkillTime = true;
 
-			public InternalTarget() :  base ( 2, false, TargetFlags.None )
+			public InternalTarget() : base ( Core.AOS ? 3 : 2, false, TargetFlags.None )
 			{
 			}
 
@@ -200,7 +200,7 @@ namespace Server.SkillHandlers
 								{
 									creature.BardEndTime = DateTime.Now;
 								}
-		
+
 								creature.BardPacified = false;
 
 								creature.Move( creature.Direction );
@@ -262,7 +262,7 @@ namespace Server.SkillHandlers
 					DamageEntry de = m_Creature.FindMostRecentDamageEntry( false );
 					bool alreadyOwned = m_Creature.Owners.Contains( m_Tamer );
 
-					if ( !m_Tamer.InRange( m_Creature, 6 ) )
+					if ( !m_Tamer.InRange( m_Creature, Core.AOS ? 7 : 6 ) )
 					{
 						m_BeingTamed.Remove( m_Creature );
 						m_Tamer.NextSkillTime = DateTime.Now;
@@ -280,7 +280,7 @@ namespace Server.SkillHandlers
 					{
 						m_BeingTamed.Remove( m_Creature );
 						m_Tamer.NextSkillTime = DateTime.Now;
-						m_Creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1049654, m_Tamer.NetState ); // You do not have a clear path to the animal you are taming, and must cease your attempt.
+						m_Tamer.SendLocalizedMessage( 1049654 ); // You do not have a clear path to the animal you are taming, and must cease your attempt.
 						Stop();
 					}
 					else if ( !m_Creature.Tamable )
