@@ -66,7 +66,7 @@ namespace Server.Items
 
 		public override bool IsAccessibleTo( Mobile check )
 		{
-			if ( !IsChildOf( check ) )
+			if ( !IsChildOf( check ) || m_Trade == null || !m_Trade.Valid )
 				return false;
 
 			return base.IsAccessibleTo( check );
