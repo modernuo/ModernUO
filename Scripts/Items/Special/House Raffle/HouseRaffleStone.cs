@@ -56,6 +56,7 @@ namespace Server.Items
 		{
 			switch ( version )
 			{
+				case 2: // HouseRaffleStone version changes
 				case 1:
 				case 0:
 				{
@@ -76,6 +77,13 @@ namespace Server.Items
 		Completed
 	}
 
+	public enum HouseRaffleExpireAction
+	{
+		None,
+		HideStone,
+		DeleteStone
+	}
+
 	[FlipableAttribute( 0xEDD, 0xEDE )]
 	public class HouseRaffleStone : Item
 	{
@@ -83,6 +91,7 @@ namespace Server.Items
 		private const int DefaultTicketPrice = 5000;
 		private const int MessageHue = 1153;
 
+		public static readonly TimeSpan DefaultDuration = TimeSpan.FromDays( 7.0 );
 		public static readonly TimeSpan ExpirationTime = TimeSpan.FromDays( 30.0 );
 
 		private HouseRaffleRegion m_Region;
@@ -95,6 +104,7 @@ namespace Server.Items
 		private bool m_Active;
 		private DateTime m_Started;
 		private TimeSpan m_Duration;
+		private HouseRaffleExpireAction m_ExpireAction;
 		private int m_TicketPrice;
 
 		private List<RaffleEntry> m_Entries;
@@ -201,6 +211,13 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
+		public HouseRaffleExpireAction ExpireAction
+		{
+			get { return m_ExpireAction; }
+			set { m_ExpireAction = value; }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
 		public int TicketPrice
 		{
 			get { return m_TicketPrice; }
@@ -241,7 +258,26 @@ namespace Server.Items
 				HouseRaffleStone stone = m_AllStones[i];
 
 				if ( stone.IsExpired )
-					stone.Delete();
+				{
+					switch ( stone.ExpireAction )
+					{
+						case HouseRaffleExpireAction.HideStone:
+						{
+							if ( stone.Visible )
+							{
+								stone.Visible = false;
+								stone.ItemID = 0x1B7B; // Non-blocking ItemID
+							}
+
+							break;
+						}
+						case HouseRaffleExpireAction.DeleteStone:
+						{
+							stone.Delete();
+							break;
+						}
+					}
+				}
 			}
 
 			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( CheckEnd_OnTick ) );
@@ -260,7 +296,8 @@ namespace Server.Items
 
 			m_Active = false;
 			m_Started = DateTime.MinValue;
-			m_Duration = TimeSpan.Zero;
+			m_Duration = DefaultDuration;
+			m_ExpireAction = HouseRaffleExpireAction.None;
 			m_TicketPrice = DefaultTicketPrice;
 
 			m_Entries = new List<RaffleEntry>();
@@ -540,7 +577,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
+
+			writer.WriteEncodedInt( (int) m_ExpireAction );
 
 			writer.Write( m_Deed );
 
@@ -569,6 +608,12 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 2:
+				{
+					m_ExpireAction = (HouseRaffleExpireAction) reader.ReadEncodedInt();
+
+					goto case 1;
+				}
 				case 1:
 				{
 					m_Deed = reader.ReadItem<HouseRaffleDeed>();
