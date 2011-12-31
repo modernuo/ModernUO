@@ -8094,7 +8094,7 @@ namespace Server
 								}
 							}
 
-							item.Delete();
+							Timer.DelayCall( TimeSpan.Zero, delegate { item.Delete(); } );
 						}
 					}
 

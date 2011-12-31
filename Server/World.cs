@@ -70,7 +70,7 @@ namespace Server {
 		{
 			if( m_DiskWriteHandle.Set())
 			{
-				Console.WriteLine("Closing Save Files...");
+				Console.WriteLine("Closing Save Files. ");
 			}
 		}
 

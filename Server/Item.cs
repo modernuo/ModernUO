@@ -547,16 +547,17 @@ namespace Server
 	[Flags]
 	public enum ExpandFlag
 	{
-		None		= 0x00,
+		None		= 0x000,
 
-		Name		= 0x01,
-		Items		= 0x02,
-		Bounce		= 0x04,
-		Holder		= 0x08,
-		Blessed		= 0x10,
-		TempFlag	= 0x20,
-		SaveFlag	= 0x40,
-		Weight		= 0x80
+		Name		= 0x001,
+		Items		= 0x002,
+		Bounce		= 0x004,
+		Holder		= 0x008,
+		Blessed		= 0x010,
+		TempFlag	= 0x020,
+		SaveFlag	= 0x040,
+		Weight		= 0x080,
+		Spawner		= 0x100
 	}
 
 	public class Item : IEntity, IHued, IComparable<Item>, ISerializable, ISpawnable
@@ -704,6 +705,8 @@ namespace Server
 			public Mobile m_HeldBy;
 			public Mobile m_BlessedFor;
 
+			public ISpawner m_Spawner;
+
 			public int m_TempFlags;
 			public int m_SavedFlags;
 
@@ -734,6 +737,9 @@ namespace Server
 
 				if ( info.m_Name != null )
 					flags |= ExpandFlag.Name;
+
+				if (info.m_Spawner != null)
+					flags |= ExpandFlag.Spawner;
 
 				if ( info.m_SavedFlags != 0 )
 					flags |= ExpandFlag.SaveFlag;
@@ -778,6 +784,7 @@ namespace Server
 							|| ( info.m_Bounce != null )
 							|| ( info.m_HeldBy != null )
 							|| ( info.m_BlessedFor != null )
+							|| ( info.m_Spawner != null )
 							|| ( info.m_TempFlags != 0 )
 							|| ( info.m_SavedFlags != 0 )
 							|| ( info.m_Weight != -1 );
@@ -3263,10 +3270,10 @@ namespace Server
 
 		public virtual void OnDelete()
 		{
-			if ( m_Spawner != null )
+			if (this.Spawner != null)
 			{
-				m_Spawner.Remove( this );
-				m_Spawner = null;
+				this.Spawner.Remove(this);
+				this.Spawner = null;
 			}
 		}
 
@@ -3438,10 +3445,28 @@ namespace Server
 			return true;
 		}
 
-		//TODO: Move to CompactInfo.
-		private ISpawner m_Spawner;
+		public ISpawner Spawner
+		{ 
+			get
+			{
+				CompactInfo info = LookupCompactInfo();
 
-		public ISpawner Spawner{ get{ return m_Spawner; } set{ m_Spawner = value; } }
+				if (info != null)
+					return info.m_Spawner;
+
+				return null;
+
+			} 
+			set
+			{
+				CompactInfo info = AcquireCompactInfo();
+
+				info.m_Spawner = value;
+
+				if (info.m_Spawner == null)
+					VerifyCompactInfo();
+			} 
+		}
 
 		public virtual void OnBeforeSpawn( Point3D location, Map m )
 		{

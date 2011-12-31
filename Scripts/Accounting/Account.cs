@@ -19,6 +19,8 @@ namespace Server.Accounting
 		public static readonly TimeSpan YoungDuration = TimeSpan.FromHours( 40.0 );
 
 		public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays( 180.0 );
+		
+		public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays( 30.0 );
 
 		private string m_Username, m_PlainPassword, m_CryptPassword, m_NewCryptPassword;
 		private AccessLevel m_AccessLevel;
@@ -221,11 +223,19 @@ namespace Server.Accounting
 		}
 
 		/// <summary>
-		/// An account is considered inactive based upon LastLogin and InactiveDuration
+		/// An account is considered inactive based upon LastLogin and InactiveDuration.  If the account is empty, it is based upon EmptyInactiveDuration
 		/// </summary>
 		public bool Inactive
 		{
-			get { return ( ( m_LastLogin + InactiveDuration ) <= DateTime.Now && AccessLevel == AccessLevel.Player ); }
+			get 
+			{
+				if( this.AccessLevel != AccessLevel.Player )
+					return false;
+
+				TimeSpan inactiveLength = DateTime.Now - m_LastLogin;
+
+				return (inactiveLength > ((this.Count == 0) ? EmptyInactiveDuration : InactiveDuration));
+			}
 		}
 
 		/// <summary>
