@@ -265,7 +265,7 @@ namespace Server.Engines.Plants
 					if ( m_PlantType == PlantType.SugarCanes )
 					{
 						string args = string.Format( "#{0}", m_PlantSystem.GetLocalizedHealth() );
-						list.Add ( 1094702, args );
+						list.Add ( 1094702, args ); // ~1_HEALTH~ Sugar Canes
 					}
 					else
 					{
@@ -287,12 +287,12 @@ namespace Server.Engines.Plants
 				else
 				{
 					if ( m_PlantType == PlantType.SugarCanes )
-						list.Add ( 1094703 );
+						list.Add ( 1094703 ); // Decorative Sugar Canes
 					else if ( title == 1080528 )
-					     	// a decorative ~2_TYPE~
+						// a decorative ~2_TYPE~
 						list.Add( 1080539, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
 					else
-						// a decorative ~1_COLOR~ ~2_TYPE~ plant
+						// a decorative [bright] ~1_COLOR~ ~2_TYPE~
 						list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
 				}
 			}
@@ -306,6 +306,9 @@ namespace Server.Engines.Plants
 
 				string args = string.Format( "#{0}\t#{1}\t#{2}", m_PlantSystem.GetLocalizedDirtStatus(), m_PlantSystem.GetLocalizedHealth(), title );
 
+				// 7.0.12.0 cliloc change
+				args = String.Concat( "#1150435\t", args ); // TODO: Change to plant container type when implemented
+
 				if ( m_ShowType )
 				{
 					PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_PlantType );
@@ -313,24 +316,29 @@ namespace Server.Engines.Plants
 
 					if ( typeInfo.ContainsPlant && m_PlantStatus == PlantStatus.Plant )
 					{
-						// a bowl of ~1_val~ dirt with a ~2_val~ [bright] ~3_val~ ~4_val~
+						// a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
 						list.Add( hueInfo.IsBright() ? 1060832 : 1060831, args );
 					}
 					else
 					{
-						// a bowl of ~1_val~ dirt with a ~2_val~ [bright] ~3_val~ ~4_val~ ~5_val~
+						// a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~ ~6_val~
 						list.Add( hueInfo.IsBright() ? 1061887 : 1061888, args + "\t#" + GetLocalizedPlantStatus().ToString() );
 					}
 				}
 				else
 				{
-					// a bowl of ~1_val~ dirt with a ~2_val~ [bright] ~3_val~ ~4_val~
+					// a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
 					list.Add( hueInfo.IsBright() ? 1060832 : 1060831, args + "\t#" + GetLocalizedPlantStatus().ToString() );
 				}
 			}
 			else
 			{
-				list.Add( 1060830, "#" + m_PlantSystem.GetLocalizedDirtStatus() ); // a bowl of ~1_val~ dirt
+				string args = "#" + m_PlantSystem.GetLocalizedDirtStatus();
+
+				// 7.0.12.0 cliloc change
+				args = String.Concat( "#1150435\t", args ); // TODO: Change to plant container type when implemented
+
+				list.Add( 1060830, args ); // a ~1_val~ of ~2_val~ dirt
 			}
 		}
 
@@ -366,7 +374,7 @@ namespace Server.Engines.Plants
 		{
 			if ( m_PlantStatus >= PlantStatus.FullGrownPlant )
 			{
-				LabelTo( from, 1061919 ); // You must use a seed on a bowl of dirt!
+				LabelTo( from, 1061919 ); // You must use a seed on some prepared soil!
 			}
 			else if ( !IsUsableBy( from ) )
 			{
@@ -378,7 +386,7 @@ namespace Server.Engines.Plants
 			}
 			else if ( m_PlantSystem.Water < 2 )
 			{
-				LabelTo( from, 1061920 ); // The dirt in this bowl needs to be softened first.
+				LabelTo( from, 1061920 ); // The dirt needs to be softened first.
 			}
 			else
 			{
