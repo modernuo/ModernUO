@@ -174,7 +174,7 @@ namespace Server.Engines.Quests
 		{
 			if ( m.Region.IsPartOf( typeof( Regions.Jail ) ) )
 			{
-				m.SendLocalizedMessage( 1042632 ); // You'll need a better jailbreak plan then that!
+				m.SendLocalizedMessage( 1114345 ); // You'll need a better jailbreak plan than that!
 			}
 			else if ( m == m_Caster )
 			{

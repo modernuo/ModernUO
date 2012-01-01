@@ -233,7 +233,7 @@ namespace Server.Engines.Help
 					}
 					else if ( from.Region.IsPartOf( typeof( Server.Regions.Jail ) ) )
 					{
-						from.SendLocalizedMessage( 1041530, "", 0x35 ); // You'll need a better jailbreak plan then that!
+						from.SendLocalizedMessage( 1114345, "", 0x35 ); // You'll need a better jailbreak plan than that!
 					}
 					else if ( Factions.Sigil.ExistsOn( from ) )
 					{
@@ -290,7 +290,7 @@ namespace Server.Engines.Help
 					{
 						if ( from.Region.IsPartOf( typeof( Regions.Jail ) ) )
 						{
-							from.SendLocalizedMessage( 1041530, "", 0x35 ); // You'll need a better jailbreak plan then that!
+							from.SendLocalizedMessage( 1114345, "", 0x35 ); // You'll need a better jailbreak plan than that!
 						}
 						else if ( from.Region.IsPartOf( "Haven Island" ) )
 						{

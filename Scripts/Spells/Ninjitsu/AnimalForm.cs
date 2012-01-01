@@ -69,11 +69,19 @@ namespace Server.Spells.Ninjitsu
 			return false;
 		}
 
+		private bool CasterIsMoving()
+		{
+			return (DateTime.Now - Caster.LastMoveTime <= Caster.ComputeMovementSpeed(Caster.Direction));
+		}
+
+		private bool m_WasMoving;
+
 		public override void OnBeginCast()
 		{
 			base.OnBeginCast();
 
 			Caster.FixedEffect(0x37C4, 10, 14, 4, 3);
+			m_WasMoving = CasterIsMoving();
 		}
 
 		public override bool CheckFizzle()
@@ -112,7 +120,9 @@ namespace Server.Spells.Ninjitsu
 				}
 				else if (Caster is PlayerMobile)
 				{
-					if (GetLastAnimalForm(Caster) == -1 || DateTime.Now - Caster.LastMoveTime > Caster.ComputeMovementSpeed(Caster.Direction))
+					bool skipGump = (m_WasMoving || CasterIsMoving());
+
+					if (GetLastAnimalForm(Caster) == -1 || !skipGump)
 					{
 						Caster.CloseGump(typeof(AnimalFormGump));
 						Caster.SendGump(new AnimalFormGump(Caster, m_Entries, this));
@@ -120,17 +130,27 @@ namespace Server.Spells.Ninjitsu
 					else
 					{
 						if (Morph(Caster, GetLastAnimalForm(Caster)) == MorphResult.Fail)
+						{
 							DoFizzle();
+						}
 						else
+						{
+							Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
 							Caster.Mana -= mana;
+						}
 					}
 				}
 				else
 				{
 					if (Morph(Caster, GetLastAnimalForm(Caster)) == MorphResult.Fail)
+					{
 						DoFizzle();
+					}
 					else
+					{
+						Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
 						Caster.Mana -= mana;
+					}
 				}
 			}
 
@@ -189,12 +209,13 @@ namespace Server.Spells.Ninjitsu
 
 			m.CheckSkill(SkillName.Ninjitsu, 0.0, 37.5);
 
+			if (!BaseFormTalisman.EntryEnabled(m, entry.Type))
+				return MorphResult.Success; // Still consumes mana, just no effect
+
 			BaseMount.Dismount(m);
 
 			m.BodyMod = entry.BodyMod;
-
-			if (entry.HueMod > 0)
-				m.HueMod = entry.HueMod;
+			m.HueMod = entry.HueMod;
 
 			if (entry.SpeedBoost)
 				m.Send(SpeedControl.MountSpeed);
@@ -461,6 +482,7 @@ namespace Server.Spells.Ninjitsu
 					}
 					else
 					{
+						m_Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
 						m_Caster.Mana -= mana;
 					}
 				}

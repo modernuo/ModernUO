@@ -17,23 +17,10 @@ namespace Server.Mobiles
 
 		public override bool AlwaysMurderer { get { return true; } }
 
-		private Mobile m_Target;
-
-		public override Mobile ConstantFocus { get { return m_Target; } }
-
-		public override void OnThink()
-		{
-			if( m_Target != null && (!m_Target.Alive || m_Target.Deleted || !InRange( m_Target, 24 ) || !CanSee( m_Target )) )
-				m_Target = null;	//Go kill other stuffs
-
-			base.OnThink();
-		}
-
 		[Constructable]
-		public NatureFury( Mobile target )
+		public NatureFury()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			m_Target = target;
 			Name = "a nature's fury";
 			Body = 0x33;
 			Hue = 0x4001;
@@ -60,12 +47,6 @@ namespace Server.Mobiles
 			Karma = 0;
 
 			ControlSlots = 1;
-		}
-
-		[Constructable]
-		public NatureFury()
-			: this( null )	//Null makes it act like any other mob
-		{
 		}
 
 		public override void MoveToWorld( Point3D loc, Map map )

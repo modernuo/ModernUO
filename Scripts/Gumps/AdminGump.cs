@@ -10,6 +10,7 @@ using Server.Prompts;
 using Server.Network;
 using Server.Accounting;
 using Server.Commands;
+using Server.Multis;
 
 namespace Server.Gumps
 {
@@ -756,7 +757,8 @@ namespace Server.Gumps
 						AddButtonLabeled( 10, 390, GetButtonID( 5, 27 ), "Ban marked" );
 						AddButtonLabeled( 10, 410, GetButtonID( 5, 28 ), "Delete marked" );
 
-						AddButtonLabeled( 210, 400, GetButtonID( 5, 29 ), "Mark all" );
+						AddButtonLabeled( 210, 390, GetButtonID( 5, 29 ), "Mark all" );
+						AddButtonLabeled( 210, 410, GetButtonID( 5, 33 ), "Unmark house owners" );
 					}
 
 					for ( int i = 0, index = (listPage * 12); i < 12 && index >= 0 && index < m_List.Count; ++i, ++index )
@@ -2380,6 +2382,32 @@ namespace Server.Gumps
 								from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Information, 0, null, "One match found.", results[0] ) );
 							else
 								from.SendGump( new AdminGump( from, AdminGumpPage.Accounts, 0, results, (results.Count == 0 ? "Nothing matched your search terms." : null), new ArrayList() ) );
+
+							break;
+						}
+						case 33: // Unmark house owners
+						{
+							ArrayList list = m_List;
+							ArrayList rads = m_State as ArrayList;
+
+							if ( list == null || rads == null )
+								break;
+
+							ArrayList newRads = new ArrayList();
+
+							foreach ( Account acct in rads )
+							{
+								bool hasHouse = false;
+
+								for ( int i = 0; i < acct.Length && !hasHouse; ++i )
+									if ( acct[i] != null && BaseHouse.HasHouse( acct[i] ) )
+										hasHouse = true;
+
+								if ( !hasHouse )
+									newRads.Add( acct );
+							}
+
+							from.SendGump( new AdminGump( from, AdminGumpPage.Accounts, m_ListPage, m_List, null, newRads ) );
 
 							break;
 						}

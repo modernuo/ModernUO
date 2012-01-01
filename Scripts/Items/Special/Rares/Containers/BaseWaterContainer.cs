@@ -31,6 +31,14 @@
 
 					ItemID = ( IsEmpty ) ? voidItem_ID : fullItem_ID;
 
+					if( !IsEmpty )
+					{
+						IEntity rootParent = RootParentEntity;
+
+						if( rootParent != null && rootParent.Map != null && rootParent.Map != Map.Internal )
+							MoveToWorld( rootParent.Location, rootParent.Map );
+					}
+
 					InvalidateProperties();
 				}
 			}

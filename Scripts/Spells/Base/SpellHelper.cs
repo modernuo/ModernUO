@@ -609,7 +609,7 @@ namespace Server.Spells
 
 			if( caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf( typeof( Regions.Jail ) ) )
 			{
-				caster.SendLocalizedMessage( 1042632 ); // You'll need a better jailbreak plan then that!
+				caster.SendLocalizedMessage( 1114345 ); // You'll need a better jailbreak plan than that!
 				return false;
 			}
 

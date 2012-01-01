@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Server;
 using Server.Targeting;
 
@@ -76,6 +77,7 @@ namespace Server.Engines.Plants
 		public Seed( PlantType plantType, PlantHue plantHue, bool showType ) : base( 0xDCF )
 		{
 			Weight = 1.0;
+			Stackable = Core.SA;
 
 			m_PlantType = plantType;
 			m_PlantHue = plantHue;
@@ -90,7 +92,7 @@ namespace Server.Engines.Plants
 
 		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
 
-		public override void AddNameProperty( ObjectPropertyList list )
+		private int GetLabel( out string args )
 		{
 			PlantHueInfo hueInfo = PlantHueInfo.GetInfo( m_PlantHue );
 
@@ -98,30 +100,50 @@ namespace Server.Engines.Plants
 			if ( title == 0 ) // Not a bonsai
 				title = hueInfo.Name;
 
+			int label;
+
+			if ( Amount == 1 )
+				label = m_ShowType ? 1061917 : 1060838; // ~1_COLOR~ ~2_TYPE~ seed : ~1_val~ seed
+			else
+				label = m_ShowType ? 1113492 : 1113490; // ~1_amount~ ~2_color~ ~3_type~ seeds : ~1_amount~ ~2_val~ seeds
+
+			if ( hueInfo.IsBright() )
+				++label;
+
+			StringBuilder ab = new StringBuilder();
+
+			if ( Amount != 1 )
+			{
+				ab.Append( Amount );
+				ab.Append( '\t' );
+			}
+
+			ab.Append( '#' );
+			ab.Append( title );
+
 			if ( m_ShowType )
 			{
 				PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_PlantType );
-				list.Add( hueInfo.IsBright() ? 1061918 : 1061917, String.Concat( "#", title.ToString(), "\t#", typeInfo.Name.ToString() ) ); // [bright] ~1_COLOR~ ~2_TYPE~ seed
+
+				ab.Append( "\t#" );
+				ab.Append( typeInfo.Name );
 			}
-			else
-			{
-				list.Add( hueInfo.IsBright() ? 1060839 : 1060838, String.Concat( "#", title.ToString() ) ); // [bright] ~1_val~ seed
-			}
+
+			args = ab.ToString();
+
+			return label;
 		}
 
-		public override void OnSingleClick ( Mobile from )
+		public override void AddNameProperty( ObjectPropertyList list )
 		{
-			PlantHueInfo hueInfo = PlantHueInfo.GetInfo( m_PlantHue );
+			string args;
+			list.Add( GetLabel( out args ), args );
+		}
 
-			if ( m_ShowType )
-			{
-				PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_PlantType );
-				LabelTo( from, hueInfo.IsBright() ? 1061918 : 1061917, String.Concat( "#", hueInfo.Name.ToString(), "\t#", typeInfo.Name.ToString() ) ); // [bright] ~1_COLOR~ ~2_TYPE~ seed
-			}
-			else
-			{
-				LabelTo( from, hueInfo.IsBright() ? 1060839 : 1060838, String.Concat( "#", hueInfo.Name.ToString() ) ); // [bright] ~1_val~ seed
-			}
+		public override void OnSingleClick( Mobile from )
+		{
+			string args;
+			LabelTo( from, GetLabel( out args ), args );
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -134,6 +156,31 @@ namespace Server.Engines.Plants
 
 			from.Target = new InternalTarget( this );
 			LabelTo( from, 1061916 ); // Choose a bowl of dirt to plant this seed in.
+		}
+
+		public override bool StackWith( Mobile from, Item dropped, bool playSound )
+		{
+			if ( dropped is Seed )
+			{
+				Seed other = (Seed)dropped;
+
+				if ( other.PlantType == m_PlantType && other.PlantHue == m_PlantHue && other.ShowType == m_ShowType )
+					return base.StackWith( from, dropped, playSound );
+			}
+
+			return false;
+		}
+
+		public override void OnAfterDuped( Item newItem )
+		{
+			Seed newSeed = newItem as Seed;
+
+			if ( newSeed == null )
+				return;
+
+			newSeed.PlantType = m_PlantType;
+			newSeed.PlantHue = m_PlantHue;
+			newSeed.ShowType = m_ShowType;
 		}
 
 		private class InternalTarget : Target
@@ -178,7 +225,7 @@ namespace Server.Engines.Plants
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 
 			writer.Write( (int) m_PlantType );
 			writer.Write( (int) m_PlantHue );
@@ -197,6 +244,9 @@ namespace Server.Engines.Plants
 
 			if ( Weight != 1.0 )
 				Weight = 1.0;
+
+			if ( version < 1 )
+				Stackable = Core.SA;
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using System;
 using Server.Mobiles;
 using Server.Targeting;
-using Server.Multis;
+using Server.Regions;
 
 namespace Server.Spells.Spellweaving
 {
@@ -23,26 +23,12 @@ namespace Server.Spells.Spellweaving
 		{
 		}
 
-		private bool m_MobileTarg;
-
-		public override int GetMana()
-		{
-			int mana = base.GetMana();
-
-			if( m_MobileTarg )
-				mana *= 2;
-
-			return mana;
-		}
-
-
-
 		public override bool CheckCast()
 		{
-			if( !base.CheckCast() )
+			if ( !base.CheckCast() )
 				return false;
 
-			if( (Caster.Followers + 1) > Caster.FollowersMax )
+			if ( ( Caster.Followers + 1 ) > Caster.FollowersMax )
 			{
 				Caster.SendLocalizedMessage( 1049645 ); // You have too many followers to summon that creature.
 				return false;
@@ -58,46 +44,29 @@ namespace Server.Spells.Spellweaving
 
 		public void Target( IPoint3D point )
 		{
-			//What happens if you cast it on yourself?	OSI ANSWER: You're an idiot for wasting the mana, and it'll just look for another target.
-			Mobile m = point as Mobile;
 			Point3D p = new Point3D( point );
 			Map map = Caster.Map;
 
-			m_MobileTarg = (m != null);
+			if ( map == null )
+				return;
 
-			BaseHouse house = BaseHouse.FindHouseAt( p, map, 0 );
-			if ( house != null)
-				if ( !house.IsFriend ( Caster ) )
-					return;
-			if (m != null) //say "Target can not be seen" if you target directly a mobile, like in OSI
-			{
-				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
-			}
-			else if ( map == null || !map.CanSpawnMobile( p.X, p.Y, p.Z ) )
+			HouseRegion r = Region.Find( p, map ).GetRegion( typeof( HouseRegion ) ) as HouseRegion;
+
+			if ( r != null && r.House != null && !r.House.IsFriend( Caster ) )
+				return;
+
+			if ( !map.CanSpawnMobile( p.X, p.Y, p.Z ) )
 			{
 				Caster.SendLocalizedMessage( 501942 ); // That location is blocked.
 			}
-			else if( SpellHelper.CheckTown( p, Caster ) && (m_MobileTarg ? CheckHSequence( m ) : CheckSequence()) )
+			else if ( SpellHelper.CheckTown( p, Caster ) && CheckSequence() )
 			{
-				TimeSpan duration = TimeSpan.FromSeconds( Caster.Skills.Spellweaving.Value/24 + 25 + FocusLevel*2 );
+				TimeSpan duration = TimeSpan.FromSeconds( Caster.Skills.Spellweaving.Value / 24 + 25 + FocusLevel * 2 );
 
-				if( m == Caster )
-					m = null;
+				NatureFury nf = new NatureFury();
+				BaseCreature.Summon( nf, false, Caster, p, 0x5CB, duration );
 
-				NatureFury nf = new NatureFury( m );
-
-				BaseCreature.Summon( nf, false, Caster, p , 0x5CB, duration );
-
-				Timer t = null;
-
-				t = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromSeconds( 5.0 ), delegate
-				 {
-					 if( !nf.Alive || nf.Deleted || nf.DamageMin > 20 )	//sanity
-						 t.Stop();
-
-					 nf.DamageMin++;
-					 nf.DamageMax++;
-				 } );
+				new InternalTimer( nf ).Start();
 			}
 
 			FinishSequence();
@@ -107,21 +76,46 @@ namespace Server.Spells.Spellweaving
 		{
 			private NatureFurySpell m_Owner;
 
-			public InternalTarget( NatureFurySpell owner ) : base( 10, true, TargetFlags.None )
+			public InternalTarget( NatureFurySpell owner )
+				: base( 10, true, TargetFlags.None )
 			{
 				m_Owner = owner;
-				CheckLOS = true;
 			}
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				if( o is IPoint3D )
+				if ( o is IPoint3D )
 					m_Owner.Target( (IPoint3D)o );
 			}
+
 			protected override void OnTargetFinish( Mobile from )
 			{
-				if( m_Owner != null )
+				if ( m_Owner != null )
 					m_Owner.FinishSequence();
+			}
+		}
+
+		private class InternalTimer : Timer
+		{
+			private NatureFury m_NatureFury;
+
+			public InternalTimer( NatureFury nf )
+				: base( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromSeconds( 5.0 ) )
+			{
+				m_NatureFury = nf;
+			}
+
+			protected override void OnTick()
+			{
+				if ( m_NatureFury.Deleted || !m_NatureFury.Alive || m_NatureFury.DamageMin > 20 )
+				{
+					Stop();
+				}
+				else
+				{
+					++m_NatureFury.DamageMin;
+					++m_NatureFury.DamageMax;
+				}
 			}
 		}
 	}

@@ -25,6 +25,9 @@ namespace Server.Engines.Plants
 		{
 			if ( !m_Plant.Deleted && m_Plant.PlantStatus < PlantStatus.DecorativePlant && from.InRange( m_Plant.GetWorldLocation(), 3 ) && m_Plant.IsUsableBy( from ) )
 			{
+				if ( from.HasGump( typeof( MainPlantGump ) ) )
+					from.CloseGump( typeof( MainPlantGump ) );
+
 				from.SendGump( new MainPlantGump( m_Plant ) );
 			}
 		}

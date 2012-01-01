@@ -741,14 +741,14 @@ namespace Server.Items
 			{
 				BaseWaterContainer bwc = targ as BaseWaterContainer;
 
-				if( Quantity == 0 || ( this.Content == BeverageType.Water && !this.IsFull ) )
+				if( Quantity == 0 || ( Content == BeverageType.Water && !IsFull ) )
 				{
-					int I_Need = Math.Min( ( MaxQuantity - Quantity ), bwc.Quantity );
+					int iNeed = Math.Min( ( MaxQuantity - Quantity ), bwc.Quantity );
 
-					if( ( I_Need > 0 ) && !bwc.IsEmpty && !IsFull )
+					if( iNeed > 0 && !bwc.IsEmpty && !IsFull )
 					{
-						bwc.Quantity -= I_Need;
-						Quantity += I_Need;
+						bwc.Quantity -= iNeed;
+						Quantity += iNeed;
 						Content = BeverageType.Water;
 
 						from.PlaySound( 0x4E );
@@ -1026,15 +1026,23 @@ namespace Server.Items
 			else if( targ is BaseWaterContainer )
 			{
 				BaseWaterContainer bwc = targ as BaseWaterContainer;
-
-				if( ( !this.IsEmpty || this.Content == BeverageType.Water ) && bwc.Items.Count == 0 )
+				
+				if( Content != BeverageType.Water )
 				{
-					int It_Needs = Math.Min( ( bwc.MaxQuantity - bwc.Quantity ), Quantity );
+					from.SendLocalizedMessage( 500842 ); // Can't pour that in there.
+				}
+				else if( bwc.Items.Count != 0 )
+				{
+					from.SendLocalizedMessage( 500841 ); // That has something in it.
+				}
+				else
+				{				
+					int itNeeds = Math.Min( ( bwc.MaxQuantity - bwc.Quantity ), Quantity );
 
-					if( It_Needs > 0 && ( !IsEmpty && !bwc.IsFull ) )
+					if( itNeeds > 0 )
 					{
-						bwc.Quantity += It_Needs;
-						Quantity -= It_Needs;
+						bwc.Quantity += itNeeds;
+						Quantity -= itNeeds;
 
 						from.PlaySound( 0x4E );
 					}

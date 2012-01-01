@@ -386,7 +386,7 @@ namespace Server.Engines.Plants
 				m_PlantHue = seed.PlantHue;
 				m_ShowType = seed.ShowType;
 
-				seed.Delete();
+				seed.Consume();
 
 				PlantStatus = PlantStatus.Seed;
 

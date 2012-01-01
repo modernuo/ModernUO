@@ -251,17 +251,31 @@ namespace Server.Misc
 
 				return m_IPTable;
 			}
-		}	
+		}
+
+		private static readonly char[] m_ForbiddenChars = new char[]
+		{
+			'<', '>', ':', '"', '/', '\\', '|', '?', '*'
+		};
+
+		private static bool IsForbiddenChar( char c )
+		{
+			for ( int i = 0; i < m_ForbiddenChars.Length; ++i )
+				if ( c == m_ForbiddenChars[i] )
+					return true;
+
+			return false;
+		}
 
 		private static Account CreateAccount( NetState state, string un, string pw )
 		{
 			if ( un.Length == 0 || pw.Length == 0 )
 				return null;
 
-			bool isSafe = true;
+			bool isSafe = !( un.StartsWith( " " ) || un.EndsWith( " " ) || un.EndsWith( "." ) );
 
 			for ( int i = 0; isSafe && i < un.Length; ++i )
-				isSafe = ( un[i] >= 0x20 && un[i] < 0x80 );
+				isSafe = ( un[i] >= 0x20 && un[i] < 0x80 && !IsForbiddenChar( un[i] ) );
 
 			for ( int i = 0; isSafe && i < pw.Length; ++i )
 				isSafe = ( pw[i] >= 0x20 && pw[i] < 0x80 );

@@ -24,6 +24,34 @@ namespace Server.Multis
 		public static int MaxFriends { get { return !Core.AOS ? 50 : 140; } }
 		public static int MaxBans { get { return !Core.AOS ? 50 : 140; } }
 
+		#region Dynamic decay system
+		private DecayLevel m_CurrentStage;
+		private DateTime m_NextDecayStage;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime NextDecayStage
+		{
+			get { return m_NextDecayStage; }
+			set { m_NextDecayStage = value; }
+		}
+
+		public void ResetDynamicDecay()
+		{
+			m_CurrentStage = DecayLevel.Ageless;
+			m_NextDecayStage = DateTime.MinValue;
+		}
+
+		public void SetDynamicDecay( DecayLevel level )
+		{
+			m_CurrentStage = level;
+
+			if ( DynamicDecay.Decays( level ) )
+				m_NextDecayStage = DateTime.Now + DynamicDecay.GetRandomDuration( level );
+			else
+				m_NextDecayStage = DateTime.MinValue;
+		}
+		#endregion
+
 		public const bool DecayEnabled = true;
 
 		public static void Decay_OnTick()
@@ -128,35 +156,71 @@ namespace Server.Multis
 			}
 		}
 
+		private DecayLevel m_LastDecayLevel;
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual DecayLevel DecayLevel
 		{
 			get
 			{
+				DecayLevel result;
+
 				if ( !CanDecay )
 				{
+					if ( DynamicDecay.Enabled )
+						ResetDynamicDecay();
+
 					m_LastRefreshed = DateTime.Now;
-					return DecayLevel.Ageless;
+					result = DecayLevel.Ageless;
+				}
+				else if ( DynamicDecay.Enabled )
+				{
+					DecayLevel stage = m_CurrentStage;
+
+					if ( stage == DecayLevel.Ageless || ( DynamicDecay.Decays( stage ) && m_NextDecayStage <= DateTime.Now ) )
+						SetDynamicDecay( ++stage );
+
+					if ( stage == DecayLevel.Collapsed && ( HasRentedVendors || VendorInventories.Count > 0 ) )
+						result = DecayLevel.DemolitionPending;
+					else
+						result = stage;
+				}
+				else
+				{
+					result = GetOldDecayLevel();
 				}
 
-				TimeSpan timeAfterRefresh = DateTime.Now - m_LastRefreshed;
-				int percent = (int) ((timeAfterRefresh.Ticks * 1000) / DecayPeriod.Ticks);
+				if ( result != m_LastDecayLevel )
+				{
+					m_LastDecayLevel = result;
 
-				if ( percent >= 1000 ) // 100.0%
-					return ( HasRentedVendors || VendorInventories.Count > 0 ) ? DecayLevel.DemolitionPending : DecayLevel.Collapsed;
-				else if ( percent >= 950 ) // 95.0% - 99.9%
-					return DecayLevel.IDOC;
-				else if ( percent >= 750 ) // 75.0% - 94.9%
-					return DecayLevel.Greatly;
-				else if ( percent >= 500 ) // 50.0% - 74.9%
-					return DecayLevel.Fairly;
-				else if ( percent >= 250 ) // 25.0% - 49.9%
-					return DecayLevel.Somewhat;
-				else if ( percent >= 005 ) // 00.5% - 24.9%
-					return DecayLevel.Slightly;
+					if ( m_Sign != null && !m_Sign.GettingProperties )
+						m_Sign.InvalidateProperties();
+				}
 
-				return DecayLevel.LikeNew;
+				return result;
 			}
+		}
+
+		public DecayLevel GetOldDecayLevel()
+		{
+			TimeSpan timeAfterRefresh = DateTime.Now - m_LastRefreshed;
+			int percent = (int) ((timeAfterRefresh.Ticks * 1000) / DecayPeriod.Ticks);
+
+			if ( percent >= 1000 ) // 100.0%
+				return ( HasRentedVendors || VendorInventories.Count > 0 ) ? DecayLevel.DemolitionPending : DecayLevel.Collapsed;
+			else if ( percent >= 950 ) // 95.0% - 99.9%
+				return DecayLevel.IDOC;
+			else if ( percent >= 750 ) // 75.0% - 94.9%
+				return DecayLevel.Greatly;
+			else if ( percent >= 500 ) // 50.0% - 74.9%
+				return DecayLevel.Fairly;
+			else if ( percent >= 250 ) // 25.0% - 49.9%
+				return DecayLevel.Somewhat;
+			else if ( percent >= 005 ) // 00.5% - 24.9%
+				return DecayLevel.Slightly;
+
+			return DecayLevel.LikeNew;
 		}
 
 		public virtual bool RefreshDecay()
@@ -167,6 +231,12 @@ namespace Server.Multis
 			DecayLevel oldLevel = this.DecayLevel;
 
 			m_LastRefreshed = DateTime.Now;
+
+			if ( DynamicDecay.Enabled )
+				ResetDynamicDecay();
+
+			if ( m_Sign != null )
+				m_Sign.InvalidateProperties();
 
 			return ( oldLevel > DecayLevel.LikeNew );
 		}
@@ -2336,7 +2406,17 @@ namespace Server.Multis
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 14 ); // version
+			writer.Write( (int) 15 ); // version
+
+			if ( !DynamicDecay.Enabled )
+			{
+				writer.Write( (int) -1 );
+			}
+			else
+			{
+				writer.Write( (int) m_CurrentStage );
+				writer.Write( m_NextDecayStage );
+			}
 
 			writer.Write( (Point3D) m_RelativeBanLocation );
 
@@ -2434,9 +2514,23 @@ namespace Server.Multis
 
 			int version = reader.ReadInt();
 			int count;
+			bool loadedDynamicDecay = false;
 
 			switch ( version )
 			{
+				case 15:
+				{
+					int stage = reader.ReadInt();
+
+					if ( stage != -1 )
+					{
+						m_CurrentStage = (DecayLevel)stage;
+						m_NextDecayStage = reader.ReadDateTime();
+						loadedDynamicDecay = true;
+					}
+
+					goto case 14;
+				}
 				case 14:
 				{
 					m_RelativeBanLocation = reader.ReadPoint3D();
@@ -2631,6 +2725,16 @@ namespace Server.Multis
 			if ( version < 11 )
 				m_LastRefreshed = DateTime.Now + TimeSpan.FromHours( 24 * Utility.RandomDouble() );
 
+			if ( DynamicDecay.Enabled && !loadedDynamicDecay )
+			{
+				DecayLevel old = GetOldDecayLevel();
+
+				if ( old == DecayLevel.DemolitionPending )
+					old = DecayLevel.Collapsed;
+
+				SetDynamicDecay( old );
+			}
+
 			if ( !CheckDecay() )
 			{
 				if ( RelocatedEntities.Count > 0 )
@@ -2788,7 +2892,11 @@ namespace Server.Multis
 		{
 			get
 			{
-				return m_Region.GoLocation;
+				if ( m_Region != null )
+					return m_Region.GoLocation;
+
+				Point3D rel = m_RelativeBanLocation;
+				return new Point3D( this.X + rel.X, this.Y + rel.Y, this.Z + rel.Z );
 			}
 			set
 			{
@@ -2806,7 +2914,9 @@ namespace Server.Multis
 			set
 			{
 				m_RelativeBanLocation = value;
-				m_Region.GoLocation = new Point3D( this.X + value.X, this.Y + value.Y, this.Z + value.Z );
+
+				if ( m_Region != null )
+					m_Region.GoLocation = new Point3D( this.X + value.X, this.Y + value.Y, this.Z + value.Z );
 			}
 		}
 
