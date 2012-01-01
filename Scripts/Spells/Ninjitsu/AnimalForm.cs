@@ -214,8 +214,11 @@ namespace Server.Spells.Ninjitsu
 
 			BaseMount.Dismount(m);
 
-			m.BodyMod = entry.BodyMod;
-			m.HueMod = entry.HueMod;
+			int bodyMod = entry.BodyMod;
+			int hueMod = entry.HueMod;
+
+			m.BodyMod = bodyMod;
+			m.HueMod = hueMod;
 
 			if (entry.SpeedBoost)
 				m.Send(SpeedControl.MountSpeed);
@@ -238,7 +241,7 @@ namespace Server.Spells.Ninjitsu
 				m.AddSkillMod(stealingMod);
 			}
 
-			Timer timer = new AnimalFormTimer(m, entry.BodyMod, entry.HueMod);
+			Timer timer = new AnimalFormTimer(m, bodyMod, hueMod);
 			timer.Start();
 
 			AddContext(m, new AnimalFormContext(timer, mod, entry.SpeedBoost, entry.Type, stealingMod));
@@ -323,7 +326,8 @@ namespace Server.Spells.Ninjitsu
 			private int m_Tooltip;
 			private double m_ReqSkill;
 			private int m_BodyMod;
-			private int m_HueMod;
+			private int m_HueModMin;
+			private int m_HueModMax;
 			private bool m_StealthBonus;
 			private bool m_SpeedBoost;
 			private bool m_StealingBonus;
@@ -335,7 +339,7 @@ namespace Server.Spells.Ninjitsu
 			public int Tooltip { get { return m_Tooltip; } }
 			public double ReqSkill { get { return m_ReqSkill; } }
 			public int BodyMod { get { return m_BodyMod; } }
-			public int HueMod { get { return m_HueMod; } }
+			public int HueMod { get { return Utility.RandomMinMax( m_HueModMin, m_HueModMax ); } }
 			public bool StealthBonus { get { return m_StealthBonus; } }
 			public bool SpeedBoost { get { return m_SpeedBoost; } }
 			public bool StealingBonus { get { return m_StealingBonus; } }
@@ -345,12 +349,7 @@ namespace Server.Spells.Ninjitsu
 			private AnimalFormRequirementCallback m_RequirementCallback;
 			*/
 
-			public AnimalFormEntry(Type type, TextDefinition name, int itemID, int hue, int tooltip, double reqSkill, int bodyMod, bool stealthBonus, bool speedBoost, bool stealingBonus)
-				: this(type, name, itemID, hue, tooltip, reqSkill, bodyMod, 0, stealthBonus, speedBoost, stealingBonus)
-			{
-			}
-
-			public AnimalFormEntry(Type type, TextDefinition name, int itemID, int hue, int tooltip, double reqSkill, int bodyMod, int hueMod, bool stealthBonus, bool speedBoost, bool stealingBonus)
+			public AnimalFormEntry(Type type, TextDefinition name, int itemID, int hue, int tooltip, double reqSkill, int bodyMod, int hueModMin, int hueModMax, bool stealthBonus, bool speedBoost, bool stealingBonus)
 			{
 				m_Type = type;
 				m_Name = name;
@@ -359,7 +358,8 @@ namespace Server.Spells.Ninjitsu
 				m_Tooltip = tooltip;
 				m_ReqSkill = reqSkill;
 				m_BodyMod = bodyMod;
-				m_HueMod = hueMod;
+				m_HueModMin = hueModMin;
+				m_HueModMax = hueModMax;
 				m_StealthBonus = stealthBonus;
 				m_SpeedBoost = speedBoost;
 				m_StealingBonus = stealingBonus;
@@ -368,22 +368,22 @@ namespace Server.Spells.Ninjitsu
 
 		private static AnimalFormEntry[] m_Entries = new AnimalFormEntry[]
 			{
-				new AnimalFormEntry( typeof( Kirin ),        1029632,  9632,    0, 1070811, 100.0, 0x84, false,  true, false ),
-				new AnimalFormEntry( typeof( Unicorn ),      1018214,  9678,    0, 1070812, 100.0, 0x7A, false,  true, false ),
-				new AnimalFormEntry( typeof( BakeKitsune ),  1030083, 10083,    0, 1070810,	 82.5, 0xF6, false,  true, false ),
-				new AnimalFormEntry( typeof( GreyWolf ),     1028482,  9681, 2309, 1070810,  82.5, 0x19, false,  true, false ),
-				new AnimalFormEntry( typeof( Llama ),        1028438,  8438,    0, 1070809,  70.0, 0xDC, false,  true, false ),
-				new AnimalFormEntry( typeof( ForestOstard ), 1018273,  8503, 2212, 1070809,  70.0, 0xDA, false,  true, false ),
-				new AnimalFormEntry( typeof( BullFrog ),     1028496,  8496, 2003, 1070807,  50.0, 0x51, 0x5A3, false, false, false ),
-				new AnimalFormEntry( typeof( GiantSerpent ), 1018114,  9663, 2009, 1070808,  50.0, 0x15, false, false, false ),
-				new AnimalFormEntry( typeof( Dog ),          1018280,  8476, 2309, 1070806,  40.0, 0xD9, false, false, false ),
-				new AnimalFormEntry( typeof( Cat ),          1018264,  8475, 2309, 1070806,  40.0, 0xC9, false, false, false ),
-				new AnimalFormEntry( typeof( Rat ),          1018294,  8483, 2309, 1070805,  20.0, 0xEE,  true, false, false ),
-				new AnimalFormEntry( typeof( Rabbit ),       1028485,  8485, 2309, 1070805,  20.0, 0xCD,  true, false, false ),
-				new AnimalFormEntry( typeof( Squirrel ),     1031671, 11671,    0,       0,  20.0, 0x116, false, false, false ),
-				new AnimalFormEntry( typeof( Ferret ),       1031672, 11672,    0, 1075220,  40.0, 0x117, false, false, true ),
-				new AnimalFormEntry( typeof( CuSidhe ),      1031670, 11670,    0, 1075221,  60.0, 0x115, false, false, false ),
-				new AnimalFormEntry( typeof( Reptalon ),     1075202, 11669,    0, 1075222,  90.0, 0x114, false, false, false ),
+				new AnimalFormEntry( typeof( Kirin ),        1029632,  9632,    0, 1070811, 100.0,  0x84,     0,     0, false,  true, false ),
+				new AnimalFormEntry( typeof( Unicorn ),      1018214,  9678,    0, 1070812, 100.0,  0x7A,     0,     0, false,  true, false ),
+				new AnimalFormEntry( typeof( BakeKitsune ),  1030083, 10083,    0, 1070810,  82.5,  0xF6,     0,     0, false,  true, false ),
+				new AnimalFormEntry( typeof( GreyWolf ),     1028482,  9681, 2309, 1070810,  82.5,  0x19, 0x8FD, 0x90E, false,  true, false ),
+				new AnimalFormEntry( typeof( Llama ),        1028438,  8438,    0, 1070809,  70.0,  0xDC,     0,     0, false,  true, false ),
+				new AnimalFormEntry( typeof( ForestOstard ), 1018273,  8503, 2212, 1070809,  70.0,  0xDB, 0x899, 0x8B0, false,  true, false ),
+				new AnimalFormEntry( typeof( BullFrog ),     1028496,  8496, 2003, 1070807,  50.0,  0x51, 0x7D1, 0x7D6, false, false, false ),
+				new AnimalFormEntry( typeof( GiantSerpent ), 1018114,  9663, 2009, 1070808,  50.0,  0x15, 0x7D1, 0x7E2, false, false, false ),
+				new AnimalFormEntry( typeof( Dog ),          1018280,  8476, 2309, 1070806,  40.0,  0xD9, 0x8FD, 0x90E, false, false, false ),
+				new AnimalFormEntry( typeof( Cat ),          1018264,  8475, 2309, 1070806,  40.0,  0xC9, 0x8FD, 0x90E, false, false, false ),
+				new AnimalFormEntry( typeof( Rat ),          1018294,  8483, 2309, 1070805,  20.0,  0xEE, 0x8FD, 0x90E,  true, false, false ),
+				new AnimalFormEntry( typeof( Rabbit ),       1028485,  8485, 2309, 1070805,  20.0,  0xCD, 0x8FD, 0x90E,  true, false, false ),
+				new AnimalFormEntry( typeof( Squirrel ),     1031671, 11671,    0,       0,  20.0, 0x116,     0,     0, false, false, false ),
+				new AnimalFormEntry( typeof( Ferret ),       1031672, 11672,    0, 1075220,  40.0, 0x117,     0,     0, false, false,  true ),
+				new AnimalFormEntry( typeof( CuSidhe ),      1031670, 11670,    0, 1075221,  60.0, 0x115,     0,     0, false, false, false ),
+				new AnimalFormEntry( typeof( Reptalon ),     1075202, 11669,    0, 1075222,  90.0, 0x114,     0,     0, false, false, false ),
 			};
 
 		public static AnimalFormEntry[] Entries { get { return m_Entries; } }
@@ -450,7 +450,7 @@ namespace Server.Spells.Ninjitsu
 
 						Rectangle2D b = ItemBounds.Table[entries[i].ItemID];
 
-						AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entries[i].ItemID, 0x0, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entries[i].Tooltip);
+						AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entries[i].ItemID, entries[i].Hue, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entries[i].Tooltip);
 						AddHtmlLocalized(x + 84, y, 250, 60, entries[i].Name, 0x7FFF, false, false);
 
 						current++;
@@ -535,7 +535,7 @@ namespace Server.Spells.Ninjitsu
 
 		protected override void OnTick()
 		{
-			if (m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Body != m_Body || (m_Hue != 0 && m_Mobile.Hue != m_Hue))
+			if (m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Body != m_Body || m_Mobile.Hue != m_Hue)
 			{
 				AnimalForm.RemoveContext(m_Mobile, true);
 				Stop();
