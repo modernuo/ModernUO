@@ -16,8 +16,6 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
-		private AosWeaponAttributes m_AosWeaponAttributes;
-
 		[Constructable]
 		public LyricalGlasses()
 		{

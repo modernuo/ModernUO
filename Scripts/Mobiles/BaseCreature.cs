@@ -163,7 +163,7 @@ namespace Server.Mobiles
 		}
 	}
 
-	public class BaseCreature : Mobile, IHonorTarget
+	public partial class BaseCreature : Mobile, IHonorTarget
 	{
 		public const int MaxLoyalty = 100;
 

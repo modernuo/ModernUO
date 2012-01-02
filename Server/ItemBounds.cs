@@ -37,15 +37,17 @@ namespace Server
 
 		static ItemBounds()
 		{
+			m_Bounds = new Rectangle2D[TileData.ItemTable.Length];
+
 			if ( File.Exists( "Data/Binary/Bounds.bin" ) )
 			{
 				using ( FileStream fs = new FileStream( "Data/Binary/Bounds.bin", FileMode.Open, FileAccess.Read, FileShare.Read ) )
 				{
 					BinaryReader bin = new BinaryReader( fs );
 
-					m_Bounds = new Rectangle2D[0x4000];
+					int count = Math.Min( m_Bounds.Length, (int)( fs.Length / 8 ) );
 
-					for ( int i = 0; i < 0x4000; ++i )
+					for ( int i = 0; i < count; ++i )
 					{
 						int xMin = bin.ReadInt16();
 						int yMin = bin.ReadInt16();
@@ -61,8 +63,6 @@ namespace Server
 			else
 			{
 				Console.WriteLine( "Warning: Data/Binary/Bounds.bin does not exist" );
-
-				m_Bounds = new Rectangle2D[0x4000];
 			}
 		}
 	}

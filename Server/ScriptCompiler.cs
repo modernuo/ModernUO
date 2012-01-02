@@ -86,15 +86,13 @@ namespace Server
 			AppendDefine( ref sb, "/d:MONO" );
 #endif
 
-			//These two defines are legacy, ie, depreciated.
+			//These following defines are legacy, ie, depreciated.
 			if( Core.Is64Bit )
 				AppendDefine( ref sb, "/d:x64" );
 
 			AppendDefine( ref sb, "/d:Framework_2_0" );
 
-#if Framework_4_0
 			AppendDefine( ref sb, "/d:Framework_4_0" );
-#endif
 
 			return (sb == null ? null : sb.ToString());
 		}
