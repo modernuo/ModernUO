@@ -78,9 +78,12 @@ namespace Server
 			return list.ToArray();
 		}
 
-		public static string GetDefines()
+		public static string GetCompilerOptions( bool debug )
 		{
 			StringBuilder sb = null;
+
+			if( !debug )
+				AppendCompilerOption( ref sb, "/optimize" );
 
 #if MONO
 			AppendDefine( ref sb, "/d:MONO" );
@@ -88,16 +91,16 @@ namespace Server
 
 			//These following defines are legacy, ie, depreciated.
 			if( Core.Is64Bit )
-				AppendDefine( ref sb, "/d:x64" );
+				AppendCompilerOption( ref sb, "/d:x64" );
 
-			AppendDefine( ref sb, "/d:Framework_2_0" );
+			AppendCompilerOption( ref sb, "/d:Framework_2_0" );
 
-			AppendDefine( ref sb, "/d:Framework_4_0" );
+			AppendCompilerOption( ref sb, "/d:Framework_4_0" );
 
 			return (sb == null ? null : sb.ToString());
 		}
 
-		public static void AppendDefine( ref StringBuilder sb, string define )
+		private static void AppendCompilerOption( ref StringBuilder sb, string define )
 		{
 			if( sb == null )
 				sb = new StringBuilder();
@@ -217,10 +220,10 @@ namespace Server
 
 				CompilerParameters parms = new CompilerParameters( GetReferenceAssemblies(), path, debug );
 
-				string defines = GetDefines();
+				string options = GetCompilerOptions( debug );
 
-				if( defines != null )
-					parms.CompilerOptions = defines;
+				if( options != null )
+					parms.CompilerOptions = options;
 
 				if( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
@@ -357,10 +360,10 @@ namespace Server
 
 				CompilerParameters parms = new CompilerParameters( GetReferenceAssemblies(), path, debug );
 
-				string defines = GetDefines();
+				string options = GetCompilerOptions( debug );
 
-				if( defines != null )
-					parms.CompilerOptions = String.Format( "/D:{0}", defines );
+				if( options != null )
+					parms.CompilerOptions = options;
 
 				if( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
