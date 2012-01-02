@@ -288,13 +288,11 @@ namespace Server {
 
 		private static readonly Type[] m_SerialTypeArray = new Type[1] { typeof(Serial) };
 
-		//TODO, when fully migrated to .NET 4.0:
-		//private static List<Tuple<ConstructorInfo, string>> ReadTypes( BinaryReader tdbReader )
-		private static List<object[]> ReadTypes( BinaryReader tdbReader )
+		private static List<Tuple<ConstructorInfo, string>> ReadTypes( BinaryReader tdbReader )
 		{
 			int count = tdbReader.ReadInt32();
 
-			List<object[]> types = new List<object[]>(count);
+			List<Tuple<ConstructorInfo, string>> types = new List<Tuple<ConstructorInfo, string>>( count );
 
 			for (int i = 0; i < count; ++i)
 			{
@@ -331,7 +329,7 @@ namespace Server {
 
 				if (ctor != null)
 				{
-					types.Add(new object[] { ctor, typeName });
+					types.Add( new Tuple<ConstructorInfo, string>( ctor, typeName ) );
 				}
 				else
 				{
@@ -373,7 +371,7 @@ namespace Server {
 					using ( FileStream tdb = new FileStream( MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 						BinaryReader tdbReader = new BinaryReader( tdb );
 
-						List<object[]> types = ReadTypes( tdbReader );
+						List<Tuple<ConstructorInfo, string>> types = ReadTypes( tdbReader );
 
 						mobileCount = idxReader.ReadInt32();
 
@@ -385,14 +383,14 @@ namespace Server {
 							long pos = idxReader.ReadInt64();
 							int length = idxReader.ReadInt32();
 
-							object[] objs = types[typeID];
+							Tuple<ConstructorInfo, string> objs = types[typeID];
 
 							if ( objs == null )
 								continue;
 
 							Mobile m = null;
-							ConstructorInfo ctor = ( ConstructorInfo ) objs[0];
-							string typeName = ( string ) objs[1];
+							ConstructorInfo ctor = objs.Item1;
+							string typeName = objs.Item2;
 
 							try {
 								ctorArgs[0] = ( Serial ) serial;
@@ -422,7 +420,7 @@ namespace Server {
 					using ( FileStream tdb = new FileStream( ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read ) ) {
 						BinaryReader tdbReader = new BinaryReader( tdb );
 
-						List<object[]> types = ReadTypes( tdbReader );
+						List<Tuple<ConstructorInfo, string>> types = ReadTypes( tdbReader );
 
 						itemCount = idxReader.ReadInt32();
 
@@ -434,14 +432,14 @@ namespace Server {
 							long pos = idxReader.ReadInt64();
 							int length = idxReader.ReadInt32();
 
-							object[] objs = types[typeID];
+							Tuple<ConstructorInfo, string> objs = types[typeID];
 
 							if ( objs == null )
 								continue;
 
 							Item item = null;
-							ConstructorInfo ctor = ( ConstructorInfo ) objs[0];
-							string typeName = ( string ) objs[1];
+							ConstructorInfo ctor = objs.Item1;
+							string typeName = objs.Item2;
 
 							try {
 								ctorArgs[0] = ( Serial ) serial;
