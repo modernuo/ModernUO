@@ -45,7 +45,7 @@ namespace Server
 			{
 				using ( StreamReader ip = new StreamReader( "Data/bodyTable.cfg" ) )
 				{
-					m_Types = new BodyType[1000];
+					m_Types = new BodyType[0x1000];
 
 					string line;
 
@@ -56,15 +56,14 @@ namespace Server
 
 						string[] split = line.Split( '\t' );
 
-						try
-						{
-							int bodyID = int.Parse( split[0] );
-							BodyType type = (BodyType)Enum.Parse( typeof( BodyType ), split[1], true );
+						BodyType type;
+						int bodyID;
 
-							if ( bodyID >= 0 && bodyID < m_Types.Length )
-								m_Types[bodyID] = type;
+						if( int.TryParse( split[0], out bodyID ) && Enum.TryParse( split[1], true, out type ) && bodyID >= 0 && bodyID < m_Types.Length )
+						{
+							m_Types[bodyID] = type;
 						}
-						catch
+						else
 						{
 							Console.WriteLine( "Warning: Invalid bodyTable entry:" );
 							Console.WriteLine( line );

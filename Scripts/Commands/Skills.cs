@@ -25,16 +25,15 @@ namespace Server.Commands
 			else
 			{
 				SkillName skill;
-				try
+
+				if( Enum.TryParse( arg.GetString( 0 ), true, out skill ) )
 				{
-					skill = (SkillName)Enum.Parse( typeof( SkillName ), arg.GetString( 0 ), true );
+					arg.Mobile.Target = new SkillTarget( skill, arg.GetDouble( 1 ) );
 				}
-				catch
+				else
 				{
 					arg.Mobile.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
-					return;
 				}
-				arg.Mobile.Target = new SkillTarget( skill, arg.GetDouble( 1 ) );
 			}
 		}
 
@@ -63,17 +62,15 @@ namespace Server.Commands
 			else
 			{
 				SkillName skill;
-				try
-				{
-					skill = (SkillName)Enum.Parse( typeof( SkillName ), arg.GetString( 0 ), true );
-				}
-				catch
-				{
-					arg.Mobile.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
-					return;
-				}
 
-				arg.Mobile.Target = new SkillTarget( skill );
+				if( Enum.TryParse( arg.GetString( 0 ), true, out skill ) )
+				{
+					arg.Mobile.Target = new SkillTarget( skill );
+				}
+				else
+				{
+					arg.Mobile.SendMessage( "You have specified an invalid skill to get." );
+				}
 			}
 		}
 

@@ -1126,32 +1126,30 @@ namespace Server
 			return true;
 		}
 
-		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value )
+		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value ) where T : struct
 		{
 			return ReadEnum( xml, attribute, ref value, true );
 		}
 
-		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value, bool mandatory )
+		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value, bool mandatory ) where T : struct
 		{
 			string s = GetAttribute( xml, attribute, mandatory );
 
 			if ( s == null )
 				return false;
 
-			Type type = typeof(T);
+			T tempVal;
 
-			try
+			if( Enum.TryParse( s, true, out tempVal ) )
 			{
-				value = (T)Enum.Parse(type, s, true);
-				//TODO: On .NET 4.0, use Enum.TryParse
+				value = tempVal;
+				return true;
 			}
-			catch
+			else
 			{
-				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name );
+				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", typeof(T), attribute, xml.Name );
 				return false;
 			}
-
-			return true;
 		}
 
 		public static bool ReadMap( XmlElement xml, string attribute, ref Map value )

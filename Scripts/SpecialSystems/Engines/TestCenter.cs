@@ -122,17 +122,7 @@ namespace Server.Misc
 		{
 			SkillName index;
 
-			try
-			{
-				index = (SkillName)Enum.Parse( typeof( SkillName ), name, true );
-			}
-			catch
-			{
-				from.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
-				return;
-			}
-
-			if ( ( !Core.SE && (int)index > 51 ) || ( !Core.AOS && (int)index > 48 ) )
+			if( !Enum.TryParse( name, true, out index ) || (!Core.SE && (int)index > 51) || (!Core.AOS && (int)index > 48) )
 			{
 				from.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
 				return;

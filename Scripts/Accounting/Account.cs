@@ -666,7 +666,8 @@ namespace Server.Accounting
 					}
 			}
 
-			m_AccessLevel = (AccessLevel)Enum.Parse( typeof( AccessLevel ), Utility.GetText( node["accessLevel"], "Player" ), true );
+			Enum.TryParse( Utility.GetText( node["accessLevel"], "Player" ), true, out m_AccessLevel );
+
 			m_Flags = Utility.GetXMLInt32( Utility.GetText( node["flags"], "0" ), 0 );
 			m_Created = Utility.GetXMLDateTime( Utility.GetText( node["created"], null ), DateTime.Now );
 			m_LastLogin = Utility.GetXMLDateTime( Utility.GetText( node["lastLogin"], null ), DateTime.Now );
