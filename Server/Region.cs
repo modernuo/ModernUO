@@ -1131,23 +1131,24 @@ namespace Server
 			return ReadEnum( xml, attribute, ref value, true );
 		}
 
-		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value, bool mandatory ) where T : struct
+		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value, bool mandatory ) where T : struct // We can't limit the where clause to Enums only :(
 		{
 			string s = GetAttribute( xml, attribute, mandatory );
 
 			if ( s == null )
 				return false;
 
+			Type type = typeof(T);
 			T tempVal;
 
-			if( Enum.TryParse( s, true, out tempVal ) )
+			if( type.IsEnum && Enum.TryParse( s, true, out tempVal ) )
 			{
 				value = tempVal;
 				return true;
 			}
 			else
 			{
-				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", typeof(T), attribute, xml.Name );
+				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", attribute, xml.Name );
 				return false;
 			}
 		}
