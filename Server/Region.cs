@@ -1131,7 +1131,7 @@ namespace Server
 			return ReadEnum( xml, attribute, ref value, true );
 		}
 
-		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value, bool mandatory ) where T : struct // We can't limit the where clause to Enums only :(
+		public static bool ReadEnum<T>( XmlElement xml, string attribute, ref T value, bool mandatory ) where T : struct // We can't limit the where clause to Enums only
 		{
 			string s = GetAttribute( xml, attribute, mandatory );
 
@@ -1148,7 +1148,7 @@ namespace Server
 			}
 			else
 			{
-				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", attribute, xml.Name );
+				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name );
 				return false;
 			}
 		}
