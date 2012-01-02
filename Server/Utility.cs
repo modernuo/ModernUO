@@ -555,6 +555,23 @@ namespace Server
 			}
 		}
 
+		public static DateTimeOffset GetXMLDateTimeOffset( string dateTimeOffsetString, DateTimeOffset defaultValue )
+		{
+			try
+			{
+				return XmlConvert.ToDateTimeOffset( dateTimeOffsetString );
+			}
+			catch
+			{
+				DateTimeOffset d;
+
+				if( DateTimeOffset.TryParse( dateTimeOffsetString, out d ) )
+					return d;
+
+				return defaultValue;
+			}
+		}
+
 		public static TimeSpan GetXMLTimeSpan( string timeSpanString, TimeSpan defaultValue )
 		{
 			try

@@ -38,6 +38,7 @@ namespace Server
 
 		public abstract string ReadString();
 		public abstract DateTime ReadDateTime();
+		public abstract DateTimeOffset ReadDateTimeOffset();
 		public abstract TimeSpan ReadTimeSpan();
 		public abstract DateTime ReadDeltaTime();
 		public abstract decimal ReadDecimal();
@@ -98,6 +99,7 @@ namespace Server
 
 		public abstract void Write( string value );
 		public abstract void Write( DateTime value );
+		public abstract void Write( DateTimeOffset value );
 		public abstract void Write( TimeSpan value );
 		public abstract void Write( decimal value );
 		public abstract void Write( long value );
@@ -335,6 +337,12 @@ namespace Server
 		public override void Write( DateTime value )
 		{
 			Write( value.Ticks );
+		}
+
+		public override void Write( DateTimeOffset value )
+		{
+			Write( value.Ticks );
+			Write( value.Offset.Ticks );
 		}
 
 		public override void WriteDeltaTime( DateTime value )
@@ -870,6 +878,14 @@ namespace Server
 			return new DateTime( m_File.ReadInt64() );
 		}
 
+		public override DateTimeOffset ReadDateTimeOffset()
+		{
+			long ticks = m_File.ReadInt64();
+			TimeSpan offset = new TimeSpan( m_File.ReadInt64() );
+
+			return new DateTimeOffset( ticks, offset );
+		}
+
 		public override TimeSpan ReadTimeSpan()
 		{
 			return new TimeSpan( m_File.ReadInt64() );
@@ -1315,6 +1331,13 @@ namespace Server
 		public override void Write( DateTime value )
 		{
 			m_Bin.Write( value.Ticks );
+			OnWrite();
+		}
+
+		public override void Write( DateTimeOffset value )
+		{
+			m_Bin.Write( value.Ticks );
+			m_Bin.Write( value.Offset.Ticks );
 			OnWrite();
 		}
 
