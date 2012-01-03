@@ -1137,8 +1137,9 @@ namespace Server
 
 			if ( s == null )
 				return false;
-#if Framework_4_0
+
 			Type type = typeof(T);
+#if Framework_4_0
 			T tempVal;
 
 			if( type.IsEnum && Enum.TryParse( s, true, out tempVal ) )
