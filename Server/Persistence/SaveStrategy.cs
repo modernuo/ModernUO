@@ -31,10 +31,13 @@ namespace Server
 			{
 				int processorCount = Core.ProcessorCount;
 
-				//TODO: Upon realworld verification of DynamicSaveStrategy, change this method around.
 				if (processorCount > 16)
 				{
+#if Framework_4_0
 					return new DynamicSaveStrategy();
+#else
+					return new ParallelSaveStrategy(processorCount);
+#endif
 				}
 				else
 				{

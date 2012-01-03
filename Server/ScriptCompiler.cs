@@ -86,16 +86,17 @@ namespace Server
 				AppendCompilerOption( ref sb, "/optimize" );
 
 #if MONO
-			AppendDefine( ref sb, "/d:MONO" );
+			AppendCompilerOption( ref sb, "/d:MONO" );
 #endif
 
-			//These following defines are legacy, ie, depreciated.
+			//These two defines are legacy, ie, depreciated.
 			if( Core.Is64Bit )
 				AppendCompilerOption( ref sb, "/d:x64" );
 
 			AppendCompilerOption( ref sb, "/d:Framework_2_0" );
-
+#if Framework_4_0
 			AppendCompilerOption( ref sb, "/d:Framework_4_0" );
+#endif
 
 			return (sb == null ? null : sb.ToString());
 		}
