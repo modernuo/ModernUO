@@ -465,6 +465,11 @@ namespace Server
 
 		#region DelayCall(..)
 
+		public static Timer DelayCall( TimerCallback callback )
+		{
+			return DelayCall( TimeSpan.Zero, TimeSpan.Zero, 1, callback );
+		}
+
 		public static Timer DelayCall( TimeSpan delay, TimerCallback callback )
 		{
 			return DelayCall( delay, TimeSpan.Zero, 1, callback );
@@ -487,6 +492,11 @@ namespace Server
 			t.Start();
 
 			return t;
+		}
+
+		public static Timer DelayCall( TimerStateCallback callback, object state )
+		{
+			return DelayCall( TimeSpan.Zero, TimeSpan.Zero, 1, callback, state );
 		}
 
 		public static Timer DelayCall( TimeSpan delay, TimerStateCallback callback, object state )
@@ -515,6 +525,11 @@ namespace Server
 		#endregion
 
 		#region DelayCall<T>(..)
+		public static Timer DelayCall<T>( TimerStateCallback<T> callback, T state )
+		{
+			return DelayCall( TimeSpan.Zero, TimeSpan.Zero, 1, callback, state );
+		}
+
 		public static Timer DelayCall<T>( TimeSpan delay, TimerStateCallback<T> callback, T state )
 		{
 			return DelayCall( delay, TimeSpan.Zero, 1, callback, state );
