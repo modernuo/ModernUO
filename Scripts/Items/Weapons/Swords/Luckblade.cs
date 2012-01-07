@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073522; } } // luckblade
 
 		[Constructable]
-		public Luckblade() : base()
+		public Luckblade()
 		{
 			Attributes.Luck = 20;
 		}

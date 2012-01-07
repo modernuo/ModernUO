@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073545; } } // guardian axe
 
 		[Constructable]
-		public GuardianAxe() : base()
+		public GuardianAxe()
 		{
 			Attributes.BonusHits = 4;
 			Attributes.RegenHits = 1;

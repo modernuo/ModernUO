@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073529; } } // ruby mace
 
 		[Constructable]
-		public RubyMace() : base()
+		public RubyMace()
 		{
 			Attributes.WeaponDamage = 5;
 		}

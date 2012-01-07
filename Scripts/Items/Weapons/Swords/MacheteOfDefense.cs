@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073535; } } // machete of defense
 
 		[Constructable]
-		public MacheteOfDefense() : base()
+		public MacheteOfDefense()
 		{
 			Attributes.DefendChance = 5;
 		}

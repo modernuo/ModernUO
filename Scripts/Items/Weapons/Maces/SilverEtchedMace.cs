@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073532; } } // silver-etched mace
 
 		[Constructable]
-		public SilverEtchedMace() : base()
+		public SilverEtchedMace()
 		{
 			Slayer = SlayerName.Exorcism;
 		}

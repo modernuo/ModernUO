@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1020526; } } // bone machete
 
 		[Constructable]
-		public BoneMachete() : base()
+		public BoneMachete()
 		{
 			// TODO attributes
 		}

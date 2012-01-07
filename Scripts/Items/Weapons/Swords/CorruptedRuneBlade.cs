@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073540; } } // Corrupted Rune Blade
 
 		[Constructable]
-		public CorruptedRuneBlade() : base()
-		{			
+		public CorruptedRuneBlade()
+		{
 			WeaponAttributes.ResistPhysicalBonus = -5;
 			WeaponAttributes.ResistPoisonBonus = 12;
 		}

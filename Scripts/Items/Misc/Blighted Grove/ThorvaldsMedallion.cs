@@ -6,7 +6,7 @@ namespace Server.Items
 	public class ThorvaldsMedallion : Item
 	{
 		public override int LabelNumber{ get{ return 1074232; } } // Thorvald's Medallion
-	
+
 		[Constructable]
 		public ThorvaldsMedallion() : base( 0x2AAA )
 		{
@@ -21,14 +21,14 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			
+
 			writer.Write( (int) 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			
+
 			int version = reader.ReadInt();
 		}
 	}

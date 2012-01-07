@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073552; } } // hardened wild staff
 
 		[Constructable]
-		public HardenedWildStaff() : base()
-		{			
+		public HardenedWildStaff()
+		{
 			Attributes.WeaponDamage = 5;
 		}
 

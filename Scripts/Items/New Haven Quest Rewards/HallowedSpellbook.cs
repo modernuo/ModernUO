@@ -1,6 +1,5 @@
-using System; 
-using Server; 
-using Server.Mobiles;
+using System;
+using Server;
 
 namespace Server.Items
 {
@@ -9,10 +8,9 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1077620; } } // Hallowed Spellbook
 
 		[Constructable]
-		public HallowedSpellbook() : base()
+		public HallowedSpellbook() : base( 0x3FFFFFFFF )
 		{
 			LootType = LootType.Blessed;
-			Content = 0x3FFFFFFFF;
 
 			Slayer = SlayerName.Silver;
 		}

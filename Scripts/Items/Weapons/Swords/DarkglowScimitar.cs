@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073542; } } // darkglow scimitar
 
 		[Constructable]
-		public DarkglowScimitar() : base()
+		public DarkglowScimitar()
 		{
 			WeaponAttributes.HitDispel = 10;
 		}

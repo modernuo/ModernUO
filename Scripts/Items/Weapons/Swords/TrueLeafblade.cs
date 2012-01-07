@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073521; } } // true leafblade
 
 		[Constructable]
-		public TrueLeafblade() : base()
+		public TrueLeafblade()
 		{
 			WeaponAttributes.ResistPoisonBonus = 5;
 		}

@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073515; } } // fiery spellblade
 
 		[Constructable]
-		public FierySpellblade() : base()
-		{			
+		public FierySpellblade()
+		{
 			WeaponAttributes.ResistFireBonus = 5;
 		}
 

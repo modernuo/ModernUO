@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073519; } } // magekiller assassin spike
 
 		[Constructable]
-		public MagekillerAssassinSpike() : base()
+		public MagekillerAssassinSpike()
 		{
 			WeaponAttributes.HitLeechMana = 16;
 		}

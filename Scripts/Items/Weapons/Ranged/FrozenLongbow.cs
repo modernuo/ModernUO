@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073507; } } // frozen longbow
 
 		[Constructable]
-		public FrozenLongbow() : base()
+		public FrozenLongbow()
 		{
 			Attributes.WeaponSpeed = -5;
 			Attributes.DefendChance = 10;

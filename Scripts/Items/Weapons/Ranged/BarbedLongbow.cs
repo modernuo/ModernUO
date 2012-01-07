@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073505; } } // barbed longbow
 
 		[Constructable]
-		public BarbedLongbow() : base()
+		public BarbedLongbow()
 		{
 			Attributes.ReflectPhysical = 12;
 		}

@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073524; } } // leafblade of ease
 
 		[Constructable]
-		public LeafbladeOfEase() : base()
-		{			
+		public LeafbladeOfEase()
+		{
 			WeaponAttributes.UseBestSkill = 1;
 		}
 

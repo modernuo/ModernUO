@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073527; } } // serrated war cleaver
 
 		[Constructable]
-		public SerratedWarCleaver() : base()
+		public SerratedWarCleaver()
 		{
 			Attributes.WeaponDamage = 7;
 		}

@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073514; } } // icy spellblade
 
 		[Constructable]
-		public IcySpellblade() : base()
-		{			
+		public IcySpellblade()
+		{
 			WeaponAttributes.ResistColdBonus = 5;
 		}
 

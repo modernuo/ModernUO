@@ -6,9 +6,9 @@ namespace Server.Items
 	public class SlayerLongbow : ElvenCompositeLongbow
 	{
 		public override int LabelNumber{ get{ return 1073506; } } // slayer longbow
-		
+
 		[Constructable]
-		public SlayerLongbow() : base()
+		public SlayerLongbow()
 		{
 			Slayer2 = (SlayerName) Utility.RandomMinMax( 1, 27 );
 		}

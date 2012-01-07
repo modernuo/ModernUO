@@ -1,6 +1,5 @@
-using System; 
-using Server; 
-using Server.Mobiles;
+using System;
+using Server;
 
 namespace Server.Items
 {
@@ -9,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1078210; } } // Heartseeker
 
 		[Constructable]
-		public Heartseeker() : base()
+		public Heartseeker()
 		{
 			LootType = LootType.Blessed;
 

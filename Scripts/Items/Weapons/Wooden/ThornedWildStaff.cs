@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073551; } } // thorned wild staff
 
 		[Constructable]
-		public ThornedWildStaff() : base()
+		public ThornedWildStaff()
 		{
 			Attributes.ReflectPhysical = 12;
 		}

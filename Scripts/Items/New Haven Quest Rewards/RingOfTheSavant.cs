@@ -1,6 +1,5 @@
-using System; 
-using Server; 
-using Server.Mobiles;
+using System;
+using Server;
 
 namespace Server.Items
 {
@@ -9,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1077608; } } // Ring of the Savant
 
 		[Constructable]
-		public RingOfTheSavant() : base()
+		public RingOfTheSavant()
 		{
 			LootType = LootType.Blessed;
 

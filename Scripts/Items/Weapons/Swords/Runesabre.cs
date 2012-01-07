@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073537; } } // runesabre
 
 		[Constructable]
-		public Runesabre() : base()
+		public Runesabre()
 		{
 			SkillBonuses.SetValues( 0, SkillName.MagicResist, 5.0 );
 			WeaponAttributes.MageWeapon = -29;

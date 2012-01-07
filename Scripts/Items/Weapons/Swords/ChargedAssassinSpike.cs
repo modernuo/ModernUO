@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073518; } } // charged assassin spike
 
 		[Constructable]
-		public ChargedAssassinSpike() : base()
-		{			
+		public ChargedAssassinSpike()
+		{
 			WeaponAttributes.HitLightning = 10;
 		}
 

@@ -1,6 +1,5 @@
-using System; 
-using Server; 
-using Server.Mobiles;
+using System;
+using Server;
 
 namespace Server.Items
 {
@@ -10,11 +9,11 @@ namespace Server.Items
 
 		public override int BasePhysicalResistance{ get{ return 5; } }
 		public override int BaseEnergyResistance{ get{ return 1; } }
-		
+
 		public override int AosStrReq{ get{ return 14; } }
 
 		[Constructable]
-		public EscutcheonDeAriadne() : base()
+		public EscutcheonDeAriadne()
 		{
 			LootType = LootType.Blessed;
 			Hue = 0x8A5;
@@ -24,7 +23,7 @@ namespace Server.Items
 			Attributes.DefendChance = 5;
 		}
 
-		public EscutcheonDeAriadne( Serial serial ) : base(serial)
+		public EscutcheonDeAriadne( Serial serial ) : base( serial )
 		{
 		}
 

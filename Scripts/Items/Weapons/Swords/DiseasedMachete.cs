@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073536; } } // Diseased Machete
 
 		[Constructable]
-		public DiseasedMachete() : base()
+		public DiseasedMachete()
 		{
 			WeaponAttributes.HitPoisonArea = 25;
 		}

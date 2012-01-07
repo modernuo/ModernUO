@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073517; } } // true assassin spike
 
 		[Constructable]
-		public TrueAssassinSpike() : base()
+		public TrueAssassinSpike()
 		{
 			Attributes.AttackChance = 4;
 			Attributes.WeaponDamage = 4;

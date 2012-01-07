@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073520; } } // wounding assassin spike
 
 		[Constructable]
-		public WoundingAssassinSpike() : base()
+		public WoundingAssassinSpike()
 		{
 			WeaponAttributes.HitHarm = 15;
 		}

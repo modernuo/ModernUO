@@ -1,6 +1,5 @@
-using System; 
-using Server; 
-using Server.Mobiles;
+using System;
+using Server;
 
 namespace Server.Items
 {
@@ -15,7 +14,7 @@ namespace Server.Items
 		public override int BaseEnergyResistance{ get{ return 3; } }
 
 		[Constructable]
-		public WalkersLeggings() : base()
+		public WalkersLeggings()
 		{
 			LootType = LootType.Blessed;
 		}

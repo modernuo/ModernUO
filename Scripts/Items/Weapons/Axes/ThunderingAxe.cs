@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073547; } } // thundering axe
 
 		[Constructable]
-		public ThunderingAxe() : base()
+		public ThunderingAxe()
 		{
 			WeaponAttributes.HitLightning = 10;
 		}

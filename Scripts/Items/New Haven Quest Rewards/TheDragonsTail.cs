@@ -1,6 +1,5 @@
-using System; 
-using Server; 
-using Server.Mobiles;
+using System;
+using Server;
 
 namespace Server.Items
 {
@@ -12,7 +11,7 @@ namespace Server.Items
 		public override int InitMaxHits{ get{ return 80; } }
 
 		[Constructable]
-		public TheDragonsTail() : base()
+		public TheDragonsTail()
 		{
 			LootType = LootType.Blessed;
 

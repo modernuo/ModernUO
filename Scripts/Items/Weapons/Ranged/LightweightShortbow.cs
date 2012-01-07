@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073510; } } // lightweight shortbow
 
 		[Constructable]
-		public LightweightShortbow() : base()
+		public LightweightShortbow()
 		{
 			Balanced = true;
 		}

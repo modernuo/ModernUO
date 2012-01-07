@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073548; } } // heavy ornate axe
 
 		[Constructable]
-		public HeavyOrnateAxe() : base()
+		public HeavyOrnateAxe()
 		{
 			Attributes.WeaponDamage = 8;
 		}

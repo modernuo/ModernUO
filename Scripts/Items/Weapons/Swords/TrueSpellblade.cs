@@ -8,8 +8,8 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1073513; } } // true spellblade
 
 		[Constructable]
-		public TrueSpellblade() : base()
-		{			
+		public TrueSpellblade()
+		{
 			Attributes.SpellChanneling = 1;
 			Attributes.CastSpeed = -1;
 		}
