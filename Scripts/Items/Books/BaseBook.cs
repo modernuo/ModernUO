@@ -332,6 +332,39 @@ namespace Server.Items
 			from.Send( new BookPageDetails( this ) );
 		}
 
+		public string ContentAsString
+		{
+			get
+			{
+				StringBuilder sb = new StringBuilder();
+
+				foreach( BookPageInfo bpi in this.m_Pages )
+				{
+					foreach( string line in bpi.Lines )
+					{
+						sb.AppendLine( line );
+					}
+				}
+
+				return sb.ToString();
+			}
+		}
+
+		public string[] ContentAsStringArray
+		{
+			get
+			{
+				List<string> lines = new List<string>();
+
+				foreach( BookPageInfo bpi in this.m_Pages )
+				{
+					lines.AddRange( bpi.Lines );
+				}
+
+				return lines.ToArray();
+			}
+		}
+
 		public static void Initialize()
 		{
 			PacketHandlers.Register( 0xD4,  0, true, new OnPacketReceive( HeaderChange ) );
