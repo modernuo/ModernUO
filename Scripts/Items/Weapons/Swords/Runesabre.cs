@@ -11,7 +11,7 @@ namespace Server.Items
 		public Runesabre() : base()
 		{
 			SkillBonuses.SetValues( 0, SkillName.MagicResist, 5.0 );
-			WeaponAttributes.MageWeapon = -29;			
+			WeaponAttributes.MageWeapon = -29;
 		}
 
 		public Runesabre( Serial serial ) : base( serial )
