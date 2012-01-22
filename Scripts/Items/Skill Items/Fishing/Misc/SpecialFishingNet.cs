@@ -1,6 +1,8 @@
 using System;
 using Server;
 using Server.Mobiles;
+using Server.Multis;
+using Server.Spells;
 using Server.Targeting;
 
 namespace Server.Items
@@ -112,8 +114,7 @@ namespace Server.Items
 			}
 		}
 
-		// TODO
-		//public virtual bool RequireDeepWater{ get{ return true; } }
+		public virtual bool RequireDeepWater{ get{ return true; } }
 
 		public void OnTarget( Mobile from, object obj )
 		{
@@ -130,15 +131,19 @@ namespace Server.Items
 			if ( map == null || map == Map.Internal )
 				return;
 
-			int x = p3D.X, y = p3D.Y;
+			int x = p3D.X, y = p3D.Y, z = map.GetAverageZ( x, y ); // OSI just takes the targeted Z
 
 			if ( !from.InRange( p3D, 6 ) )
 			{
 				from.SendLocalizedMessage( 500976 ); // You need to be closer to the water to fish!
 			}
-			else if ( FullValidation( map, x, y ) )
+			else if ( !from.InLOS( obj ) )
 			{
-				Point3D p = new Point3D( x, y, map.GetAverageZ( x, y ) );
+				from.SendLocalizedMessage( 500979 ); // You cannot see that location.
+			}
+			else if ( RequireDeepWater ? FullValidation( map, x, y ) : ( ValidateDeepWater( map, x, y ) || ValidateUndeepWater( map, obj, ref z ) ) )
+			{
+				Point3D p = new Point3D( x, y, z );
 
 				if ( GetType() == typeof( SpecialFishingNet ) )
 				{
@@ -150,15 +155,19 @@ namespace Server.Items
 				Movable = false;
 				MoveToWorld( p, map );
 
+				SpellHelper.Turn( from, p );
 				from.Animate( 12, 5, 1, true, false, 0 );
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), TimeSpan.FromSeconds( 1.0 ), 20, new TimerStateCallback( DoEffect ), new object[]{ p, 0, from } );
+				Effects.SendLocationEffect( p, map, 0x352D, 16, 4 );
+				Effects.PlaySound( p, map, 0x364 );
 
-				from.SendLocalizedMessage( 1010487 ); // You plunge the net into the sea...
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.25 ), 14, new TimerStateCallback( DoEffect ), new object[]{ p, 0, from } );
+
+				from.SendLocalizedMessage( RequireDeepWater ? 1010487 : 1074492 ); // You plunge the net into the sea... / You plunge the net into the water...
 			}
 			else
 			{
-				from.SendLocalizedMessage( 1010485 ); // You can only use this net in deep water!
+				from.SendLocalizedMessage( RequireDeepWater ? 1010485 : 1074491 ); // You can only use this net in deep water! / You can only use this net in water!
 			}
 		}
 
@@ -180,31 +189,39 @@ namespace Server.Items
 				Effects.SendLocationEffect( p, Map, 0x352D, 16, 4 );
 				Effects.PlaySound( p, Map, 0x364 );
 			}
-			else if ( index <= 10 || index == 20 )
+			else if ( index <= 7 || index == 14 )
 			{
-				for ( int i = 0; i < 3; ++i )
+				if ( RequireDeepWater )
 				{
-					int x, y;
-
-					switch ( Utility.Random( 8 ) )
+					for ( int i = 0; i < 3; ++i )
 					{
-						default:
-						case 0: x = -1; y = -1; break;
-						case 1: x = -1; y =  0; break;
-						case 2: x = -1; y = +1; break;
-						case 3: x =  0; y = -1; break;
-						case 4: x =  0; y = +1; break;
-						case 5: x = +1; y = -1; break;
-						case 6: x = +1; y =  0; break;
-						case 7: x = +1; y = +1; break;
-					}
+						int x, y;
 
-					Effects.SendLocationEffect( new Point3D( p.X + x, p.Y + y, p.Z ), Map, 0x352D, 16, 4 );
+						switch ( Utility.Random( 8 ) )
+						{
+							default:
+							case 0: x = -1; y = -1; break;
+							case 1: x = -1; y =  0; break;
+							case 2: x = -1; y = +1; break;
+							case 3: x =  0; y = -1; break;
+							case 4: x =  0; y = +1; break;
+							case 5: x = +1; y = -1; break;
+							case 6: x = +1; y =  0; break;
+							case 7: x = +1; y = +1; break;
+						}
+
+						Effects.SendLocationEffect( new Point3D( p.X + x, p.Y + y, p.Z ), Map, 0x352D, 16, 4 );
+					}
+				}
+				else
+				{
+					Effects.SendLocationEffect( p, Map, 0x352D, 16, 4 );
 				}
 
-				Effects.PlaySound( p, Map, 0x364 );
+				if ( Utility.RandomBool() )
+					Effects.PlaySound( p, Map, 0x364 );
 
-				if ( index == 20 )
+				if ( index == 14 )
 					FinishEffect( p, Map, from );
 				else
 					this.Z -= 1;
@@ -309,10 +326,39 @@ namespace Server.Items
 			int tileID = map.Tiles.GetLandTile( x, y ).ID;
 			bool water = false;
 
-			for( int i = 0; !water && i < m_WaterTiles.Length; i += 2 )
-				water = (tileID >= m_WaterTiles[i] && tileID <= m_WaterTiles[i + 1]);
+			for ( int i = 0; !water && i < m_WaterTiles.Length; i += 2 )
+				water = ( tileID >= m_WaterTiles[i] && tileID <= m_WaterTiles[i + 1] );
 
 			return water;
+		}
+
+		private static int[] m_UndeepWaterTiles = new int[]
+			{
+				0x1797, 0x179C
+			};
+
+		private static bool ValidateUndeepWater( Map map, object obj, ref int z )
+		{
+			if ( !( obj is StaticTarget ) )
+				return false;
+
+			StaticTarget target = (StaticTarget)obj;
+
+			if ( BaseHouse.FindHouseAt( target.Location, map, 0 ) != null )
+				return false;
+
+			int itemID = target.ItemID;
+
+			for ( int i = 0; i < m_UndeepWaterTiles.Length; i += 2 )
+			{
+				if ( itemID >= m_UndeepWaterTiles[i] && itemID <= m_UndeepWaterTiles[i + 1] )
+				{
+					z = target.Z;
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 

@@ -706,6 +706,8 @@ namespace Server.Items
 				if ( Core.AOS )
 					m_AosSkillBonuses.Remove();
 
+				ImmolatingWeaponSpell.StopImmolating( this );
+
 				m.CheckStatTimers();
 
 				m.Delta( MobileDelta.WeaponDamage );
@@ -1387,7 +1389,6 @@ namespace Server.Items
 			 * The following damage bonuses multiply damage by a factor.
 			 * Capped at x3 (300%).
 			 */
-			//double factor = 1.0;
 			int percentageBonus = 0;
 
 			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
@@ -1395,17 +1396,14 @@ namespace Server.Items
 
 			if( a != null )
 			{
-				//factor *= a.DamageScalar;
 				percentageBonus += (int)(a.DamageScalar * 100) - 100;
 			}
 
 			if( move != null )
 			{
-				//factor *= move.GetDamageScalar( attacker, defender );
 				percentageBonus += (int)(move.GetDamageScalar( attacker, defender ) * 100) - 100;
 			}
 
-			//factor *= damageBonus;
 			percentageBonus += (int)(damageBonus * 100) - 100;
 
 			CheckSlayerResult cs = CheckSlayers( attacker, defender );
@@ -1415,7 +1413,6 @@ namespace Server.Items
 				if ( cs == CheckSlayerResult.Slayer )
 					defender.FixedEffect( 0x37B9, 10, 5 );
 
-				//factor *= 2.0;
 				percentageBonus += 100;
 			}
 
@@ -1427,7 +1424,6 @@ namespace Server.Items
 
 					if( pm.EnemyOfOneType != null && pm.EnemyOfOneType != attacker.GetType() )
 					{
-						//factor *= 2.0;
 						percentageBonus += 100;
 					}
 				}
@@ -1447,7 +1443,7 @@ namespace Server.Items
 					if ( pm.EnemyOfOneType == defender.GetType() )
 					{
 						defender.FixedEffect( 0x37B9, 10, 5, 1160, 0 );
-						//factor *= 1.5;
+
 						percentageBonus += 50;
 					}
 				}
@@ -1457,13 +1453,11 @@ namespace Server.Items
 
 			if( packInstinctBonus != 0 )
 			{
-				//factor *= 1.0 + (double)packInstinctBonus / 100.0;
 				percentageBonus += packInstinctBonus;
 			}
 
 			if( m_InDoubleStrike )
 			{
-				//factor *= 0.9; // 10% loss when attacking with double-strike
 				percentageBonus -= 10;
 			}
 
@@ -1471,7 +1465,7 @@ namespace Server.Items
 
 			if( (m_Slayer == SlayerName.Silver || m_Slayer2 == SlayerName.Silver) && context != null && context.Spell is NecromancerSpell && context.Type != typeof( HorrificBeastSpell ) )
 			{
-				//factor *= 1.25; // Every necromancer transformation other than horrific beast takes an additional 25% damage
+				// Every necromancer transformation other than horrific beast takes an additional 25% damage
 				percentageBonus += 25;
 			}
 
@@ -1481,19 +1475,14 @@ namespace Server.Items
 
 				if( pmAttacker.HonorActive && pmAttacker.InRange( defender, 1 ) )
 				{
-					//factor *= 1.25;
 					percentageBonus += 25;
 				}
 
 				if( pmAttacker.SentHonorContext != null && pmAttacker.SentHonorContext.Target == defender )
 				{
-					//pmAttacker.SentHonorContext.ApplyPerfectionDamageBonus( ref factor );
 					percentageBonus += pmAttacker.SentHonorContext.PerfectionDamageBonus;
 				}
 			}
-
-			//if ( factor > 3.0 )
-			//	factor = 3.0;
 
 			BaseTalisman talisman = attacker.Talisman as BaseTalisman;
 
@@ -1502,7 +1491,6 @@ namespace Server.Items
 
 			percentageBonus = Math.Min( percentageBonus, 300 );
 
-			//damage = (int)(damage * factor);
 			damage = AOS.Scale( damage, 100 + percentageBonus );
 			#endregion
 
@@ -1564,6 +1552,10 @@ namespace Server.Items
 				else if ( type == 3 ) pois = 100;
 				else if ( type == 4 ) nrgy = 100;
 			}
+
+			// TODO: Scale damage, alongside the leech effects below, to weapon speed.
+			if ( ImmolatingWeaponSpell.IsImmolating( this ) && damage > 0 )
+				ImmolatingWeaponSpell.DoEffect( this, defender );
 
 			int damageGiven = damage;
 
@@ -3237,6 +3229,9 @@ namespace Server.Items
 
 			if ( (prop = m_AosWeaponAttributes.HitLeechStam) != 0 )
 				list.Add( 1060430, prop.ToString() ); // hit stamina leech ~1_val~%
+
+			if ( ImmolatingWeaponSpell.IsImmolating( this ) )
+				list.Add( 1111917 ); // Immolated
 
 			if ( Core.ML && this is BaseRanged && ( prop = ( (BaseRanged) this ).Velocity ) != 0 )
 				list.Add( 1072793, prop.ToString() ); // Velocity ~1_val~%

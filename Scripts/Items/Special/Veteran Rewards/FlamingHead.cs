@@ -73,7 +73,7 @@ namespace Server.Items
 					from.SendLocalizedMessage( 1018328 ); // You can only re-deed a skull if you placed it or you are the owner of the house.
 			}
 			else
-				from.Say( 1019045 ); // I can't reach that.
+				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 		}
 
 		public override void Serialize( GenericWriter writer )

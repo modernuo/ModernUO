@@ -147,7 +147,7 @@ namespace Server.Spells
 				{
 					Register( 600, typeof( Spellweaving.ArcaneCircleSpell ) );
 					Register( 601, typeof( Spellweaving.GiftOfRenewalSpell ) );
-					//Register( 602, typeof( Spellweaving.ImmolatingWeaponSpell ) );
+					Register( 602, typeof( Spellweaving.ImmolatingWeaponSpell ) );
 					Register( 603, typeof( Spellweaving.AttuneWeaponSpell ) );
 					Register( 604, typeof( Spellweaving.ThunderstormSpell ) );
 					Register( 605, typeof( Spellweaving.NatureFurySpell ) );

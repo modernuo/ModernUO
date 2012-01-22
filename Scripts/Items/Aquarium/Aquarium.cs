@@ -293,9 +293,28 @@ namespace Server.Items
 			}
 		}
 
-		public override void GetProperties( ObjectPropertyList list )
+		public override bool CheckItemUse( Mobile from, Item item )
 		{
-			base.GetProperties( list );
+			if ( item != this )
+				return false;
+
+			return base.CheckItemUse( from, item );
+		}
+
+		public override bool CheckLift( Mobile from, Item item, ref LRReason reject )
+		{
+			if ( item != this )
+			{
+				reject = LRReason.CannotLift;
+				return false;
+			}
+
+			return base.CheckLift( from, item, ref reject );
+		}
+
+		public override void AddNameProperties( ObjectPropertyList list )
+		{
+			base.AddNameProperties( list );
 
 			if ( m_VacationLeft > 0 )
 				list.Add( 1074430, m_VacationLeft.ToString() ); // Vacation days left: ~1_DAYS
@@ -371,7 +390,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( 2 ); // Version
+			writer.Write( 3 ); // Version
 
 			// version 1
 			if ( m_Timer != null )
@@ -402,6 +421,7 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
 				case 2:
 				case 1:
 				{
@@ -443,6 +463,37 @@ namespace Server.Items
 				Weight = DefaultWeight;
 				Movable = false;
 			}
+
+			if ( version < 3 )
+				m_Recount.Add( this );
+		}
+
+		private void RecountLiveCreatures()
+		{
+			m_LiveCreatures = 0;
+			List<BaseFish> fish = FindItemsByType<BaseFish>();
+
+			foreach ( BaseFish f in fish )
+			{
+				if ( !f.Dead )
+					++m_LiveCreatures;
+			}
+		}
+
+		private static List<Aquarium> m_Recount;
+
+		public static void Configure()
+		{
+			m_Recount = new List<Aquarium>();
+		}
+
+		public static void Initialize()
+		{
+			foreach ( Aquarium aquarium in m_Recount )
+				aquarium.RecountLiveCreatures();
+
+			m_Recount.Clear();
+			m_Recount = null;
 		}
 
 		#region Members
@@ -694,6 +745,12 @@ namespace Server.Items
 				return false;
 
 			Item item = Items[ at ];
+
+			if ( item.IsLockedDown ) // for legacy aquariums
+			{
+				from.SendLocalizedMessage( 1010449 ); // You may not use this object while it is locked down.
+				return false;
+			}
 
 			if ( item is BaseFish )
 			{

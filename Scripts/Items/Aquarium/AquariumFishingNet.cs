@@ -23,12 +23,11 @@ namespace Server.Items
 		{
 		}
 
-		// TODO
-		//public override bool RequireDeepWater { get { return false; } }
+		public override bool RequireDeepWater { get { return false; } }
 
 		protected override void FinishEffect( Point3D p, Map map, Mobile from )
 		{
-			if ( Utility.RandomDouble() < 0.02 )
+			if ( from.Skills.Fishing.Value < 10 )
 			{
 				from.SendLocalizedMessage( 1074487 ); // The creatures are too quick for you!
 			}

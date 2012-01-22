@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Server;
-using Server.Mobiles;
 using Server.ContextMenus;
+using Server.Mobiles;
+using Server.Network;
 
 namespace Server.Items
 {
@@ -48,6 +49,15 @@ namespace Server.Items
 		{
 		}
 
+		public override bool TryDropItem( Mobile from, Item dropped, bool sendFullMessage )
+		{
+			if ( !CheckHold( from, dropped, sendFullMessage, true ) )
+				return false;
+
+			DropItem( dropped );
+			return true;
+		}
+
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
 			if ( !IsAccessibleTo( from ) )
@@ -71,6 +81,25 @@ namespace Server.Items
 			}
 
 			return false;
+		}
+
+		public override bool CheckItemUse( Mobile from, Item item )
+		{
+			if ( item != this )
+				return false;
+
+			return base.CheckItemUse( from, item );
+		}
+
+		public override bool CheckLift( Mobile from, Item item, ref LRReason reject )
+		{
+			if ( item != this )
+			{
+				reject = LRReason.CannotLift;
+				return false;
+			}
+
+			return base.CheckLift( from, item, ref reject );
 		}
 
 		public override void AddNameProperties( ObjectPropertyList list )
@@ -129,7 +158,7 @@ namespace Server.Items
 
 				if ( fish != null )
 				{
-					if ( fish.IsLockedDown )
+					if ( fish.IsLockedDown ) // for legacy fish bowls
 					{
 						Owner.From.SendLocalizedMessage( 1010449 ); // You may not use this object while it is locked down.
 					}

@@ -1575,7 +1575,7 @@ namespace Server.Multis
 			if ( !locked )
 				i.SetLastMoved();
 
-			if ( (i is Container) && (!locked || !(i is BaseBoard)) )
+			if ( (i is Container) && (!locked || !(i is BaseBoard || i is Aquarium || i is FishBowl)) )
 			{
 				foreach ( Item c in i.Items )
 					SetLockdown( c, locked, checkContains );
@@ -2492,7 +2492,7 @@ namespace Server.Multis
 			{
 				Item item = (Item)m_LockDowns[i];
 
-				if ( item is Container && !(item is BaseBoard) )
+				if ( item is Container && !(item is BaseBoard || item is Aquarium || item is FishBowl) )
 				{
 					Container cont = (Container)item;
 					List<Item> children = cont.Items;
