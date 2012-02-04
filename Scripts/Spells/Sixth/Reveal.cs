@@ -97,7 +97,7 @@ namespace Server.Spells.Sixth
 			return chance > Utility.Random( 100 );
 		}
 
-		private class InternalTarget : Target
+		public class InternalTarget : Target
 		{
 			private RevealSpell m_Owner;
 

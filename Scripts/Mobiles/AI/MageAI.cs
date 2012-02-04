@@ -357,68 +357,75 @@ namespace Server.Mobiles
 				if( spell != null )
 					return spell;
 
-				switch( Utility.Random( 16 ) )
+				if (m_Mobile.Combatant.Hidden && Utility.RandomDouble() < .25)
 				{
-					case 0:
-					case 1:	// Poison them
-						{
-							//m_Mobile.DebugSay( "Attempting to poison" );
-
-							if( !c.Poisoned )
-								spell = new PoisonSpell( m_Mobile, null );
-
-							break;
-						}
-					case 2:	// Bless ourselves.
-						{
-							//m_Mobile.DebugSay( "Blessing myself" );
-
-							spell = new BlessSpell( m_Mobile, null );
-							break;
-						}
-					case 3:
-					case 4: // Curse them.
-						{
-							//m_Mobile.DebugSay( "Attempting to curse" );
-
-							spell = GetRandomCurse();
-							break;
-						}
-					case 5:	// Paralyze them.
-						{
-							//m_Mobile.DebugSay( "Attempting to paralyze" );
-
-							if( m_Mobile.Skills[ SkillName.Magery ].Value > 50.0 )
-								spell = new ParalyzeSpell( m_Mobile, null );
-
-							break;
-						}
-					case 6: // Drain mana
-						{
-							//m_Mobile.DebugSay( "Attempting to drain mana" );
-
-							spell = GetRandomManaDrainSpell();
-							break;
-						}
-					case 7:
-						{
-							//m_Mobile.DebugSay( "Attempting to Invis" );
-
-							if( spell == null )
+					spell = new RevealSpell(m_Mobile, null);
+				}
+				else
+				{
+					switch (Utility.Random(16))
+					{
+						case 0:
+						case 1:	// Poison them
 							{
-								spell = new InvisibilitySpell( m_Mobile, null );
+								//m_Mobile.DebugSay( "Attempting to poison" );
+
+								if (!c.Poisoned)
+									spell = new PoisonSpell(m_Mobile, null);
+
+								break;
+							}
+						case 2:	// Bless ourselves.
+							{
+								//m_Mobile.DebugSay( "Blessing myself" );
+
+								spell = new BlessSpell(m_Mobile, null);
+								break;
+							}
+						case 3:
+						case 4: // Curse them.
+							{
+								//m_Mobile.DebugSay( "Attempting to curse" );
+
+								spell = GetRandomCurse();
+								break;
+							}
+						case 5:	// Paralyze them.
+							{
+								//m_Mobile.DebugSay( "Attempting to paralyze" );
+
+								if (m_Mobile.Skills[SkillName.Magery].Value > 50.0)
+									spell = new ParalyzeSpell(m_Mobile, null);
+
+								break;
+							}
+						case 6: // Drain mana
+							{
+								//m_Mobile.DebugSay( "Attempting to drain mana" );
+
+								spell = GetRandomManaDrainSpell();
+								break;
+							}
+						case 7:
+							{
+								//m_Mobile.DebugSay( "Attempting to Invis" );
+
+								if (spell == null && Utility.RandomBool())
+								{
+									spell = new InvisibilitySpell(m_Mobile, null);
+								}
+
+								break;
 							}
 
-							break;
-						}
+						default: // Damage them.
+							{
+								//m_Mobile.DebugSay( "Just doing damage" );
 
-					default: // Damage them.
-						{
-							//m_Mobile.DebugSay( "Just doing damage" );
-
-							spell = GetRandomDamage();
-							break;
-						}
+								spell = GetRandomDamage();
+								break;
+							}
+					}
 				}
 
 				return spell;
@@ -927,6 +934,7 @@ namespace Server.Mobiles
 			if( targ == null )
 				return false;
 
+			bool isReveal = (targ is RevealSpell.InternalTarget);
 			bool isDispel = ( targ is DispelSpell.InternalTarget );
 			bool isParalyze = ( targ is ParalyzeSpell.InternalTarget );
 			bool isTeleport = ( targ is TeleportSpell.InternalTarget );
@@ -948,7 +956,7 @@ namespace Server.Mobiles
 				else if( toTarget != null && m_Mobile.InRange( toTarget, 10 ) )
 					RunFrom( toTarget );
 			}
-			else if( SmartAI && ( isParalyze || isTeleport ) )
+			else if( SmartAI && ( isParalyze || isTeleport || isReveal ) )
 			{
 				toTarget = FindDispelTarget( true );
 
