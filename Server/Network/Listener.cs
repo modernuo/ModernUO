@@ -36,7 +36,7 @@ namespace Server.Network
 		private Queue<Socket> m_Accepted;
 		private object m_AcceptedSyncRoot;
 
-#if Framework_4_0
+#if NewAsyncSockets
 		private SocketAsyncEventArgs m_EventArgs;
 #else
 		private AsyncCallback m_OnAccept;
@@ -63,7 +63,7 @@ namespace Server.Network
 
 			DisplayListener();
 
-#if Framework_4_0
+#if NewAsyncSockets
 			m_EventArgs = new SocketAsyncEventArgs();
 			m_EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Accept_Completion );
 			Accept_Start();
@@ -146,7 +146,7 @@ namespace Server.Network
 			}
 		}
 
-#if Framework_4_0
+#if NewAsyncSockets
 		private void Accept_Start()
 		{
 			bool result = false;

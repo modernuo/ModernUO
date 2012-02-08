@@ -51,7 +51,7 @@ namespace Server.Network {
 		private bool m_Seeded;
 		private bool m_Running;
 
-#if Framework_4_0
+#if NewAsyncSockets
 		private SocketAsyncEventArgs m_ReceiveEventArgs, m_SendEventArgs;
 #else
 		private AsyncCallback m_OnReceive, m_OnSend;
@@ -615,7 +615,7 @@ namespace Server.Network {
 					}
 
 					if ( gram != null ) {
-#if Framework_4_0
+#if NewAsyncSockets
 						m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
 						Send_Start();
 #else
@@ -648,7 +648,7 @@ namespace Server.Network {
 			}
 		}
 
-#if Framework_4_0
+#if NewAsyncSockets
 		public void Start() {
 			m_ReceiveEventArgs = new SocketAsyncEventArgs();
 			m_ReceiveEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Receive_Completion );
@@ -1088,7 +1088,7 @@ namespace Server.Network {
 			m_Buffer = null;
 			m_RecvBuffer = null;
 
-#if Framework_4_0
+#if NewAsyncSockets
 			m_ReceiveEventArgs = null;
 			m_SendEventArgs = null;
 #else
