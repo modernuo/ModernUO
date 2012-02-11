@@ -33,12 +33,6 @@ using Server.Guilds;
 
 namespace Server {
 	public static class World {
-		public enum SaveOption {
-			Normal,
-			Threaded
-		}
-
-		public static SaveOption SaveType = SaveOption.Normal;
 
 		private static Dictionary<Serial, Mobile> m_Mobiles;
 		private static Dictionary<Serial, Item> m_Items;
