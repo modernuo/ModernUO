@@ -381,7 +381,7 @@ namespace Server.SkillHandlers
 				Stop();
 				return;
 			}
-			else if ( m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map || !m_From.InRange( m_Target, m_Range ) )
+			else if ( m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map || !m_From.InRange( m_Target, m_Range ) || ( m_Target.Hidden && m_Target.AccessLevel > m_From.AccessLevel ) )
 			{
 				m_Arrow.Stop();
 				Stop();

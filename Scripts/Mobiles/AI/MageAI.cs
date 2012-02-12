@@ -357,75 +357,66 @@ namespace Server.Mobiles
 				if( spell != null )
 					return spell;
 
-				if (m_Mobile.Combatant.Hidden && Utility.RandomDouble() < .25)
+				switch (Utility.Random(16))
 				{
-					spell = new RevealSpell(m_Mobile, null);
-				}
-				else
-				{
-					switch (Utility.Random(16))
-					{
-						case 0:
-						case 1:	// Poison them
-							{
-								//m_Mobile.DebugSay( "Attempting to poison" );
+					case 0:
+					case 1:	// Poison them
+						{
+							//m_Mobile.DebugSay( "Attempting to poison" );
 
-								if (!c.Poisoned)
-									spell = new PoisonSpell(m_Mobile, null);
+							if (!c.Poisoned)
+								spell = new PoisonSpell(m_Mobile, null);
 
-								break;
-							}
-						case 2:	// Bless ourselves.
-							{
-								//m_Mobile.DebugSay( "Blessing myself" );
+							break;
+						}
+					case 2:	// Bless ourselves.
+						{
+							//m_Mobile.DebugSay( "Blessing myself" );
 
-								spell = new BlessSpell(m_Mobile, null);
-								break;
-							}
-						case 3:
-						case 4: // Curse them.
-							{
-								//m_Mobile.DebugSay( "Attempting to curse" );
+							spell = new BlessSpell(m_Mobile, null);
+							break;
+						}
+					case 3:
+					case 4: // Curse them.
+						{
+							//m_Mobile.DebugSay( "Attempting to curse" );
 
-								spell = GetRandomCurse();
-								break;
-							}
-						case 5:	// Paralyze them.
-							{
-								//m_Mobile.DebugSay( "Attempting to paralyze" );
+							spell = GetRandomCurse();
+							break;
+						}
+					case 5:	// Paralyze them.
+						{
+							//m_Mobile.DebugSay( "Attempting to paralyze" );
 
-								if (m_Mobile.Skills[SkillName.Magery].Value > 50.0)
-									spell = new ParalyzeSpell(m_Mobile, null);
+							if (m_Mobile.Skills[SkillName.Magery].Value > 50.0)
+								spell = new ParalyzeSpell(m_Mobile, null);
 
-								break;
-							}
-						case 6: // Drain mana
-							{
-								//m_Mobile.DebugSay( "Attempting to drain mana" );
+							break;
+						}
+					case 6: // Drain mana
+						{
+							//m_Mobile.DebugSay( "Attempting to drain mana" );
 
-								spell = GetRandomManaDrainSpell();
-								break;
-							}
-						case 7:
-							{
-								//m_Mobile.DebugSay( "Attempting to Invis" );
+							spell = GetRandomManaDrainSpell();
+							break;
+						}
+					case 7:
+						{
+							//m_Mobile.DebugSay( "Attempting to Invis" );
 
-								if (spell == null && Utility.RandomBool())
-								{
-									spell = new InvisibilitySpell(m_Mobile, null);
-								}
+							if (Utility.RandomBool())
+								spell = new InvisibilitySpell(m_Mobile, null);
 
-								break;
-							}
+							break;
+						}
 
-						default: // Damage them.
-							{
-								//m_Mobile.DebugSay( "Just doing damage" );
+					default: // Damage them.
+						{
+							//m_Mobile.DebugSay( "Just doing damage" );
 
-								spell = GetRandomDamage();
-								break;
-							}
-					}
+							spell = GetRandomDamage();
+							break;
+						}
 				}
 
 				return spell;
@@ -551,14 +542,24 @@ namespace Server.Mobiles
 			return spell;
 		}
 
-		private TimeSpan GetDelay()
+		private TimeSpan GetDelay( Spell spell )
 		{
-			double del = ScaleByMagery( 3.0 );
-			double min = 6.0 - ( del * 0.75 );
-			double max = 6.0 - ( del * 1.25 );
+			if( SmartAI || ( spell is DispelSpell ) )
+			{
+				return TimeSpan.FromSeconds( m_Mobile.ActiveSpeed );
+			}
+			else
+			{
+				double del = ScaleByMagery( 3.0 );
+				double min = 6.0 - ( del * 0.75 );
+				double max = 6.0 - ( del * 1.25 );
 
-			return TimeSpan.FromSeconds( min + ( ( max - min ) * Utility.RandomDouble() ) );
+				return TimeSpan.FromSeconds( min + ( ( max - min ) * Utility.RandomDouble() ) );
+			}
 		}
+
+		private Mobile m_LastTarget;
+		private Point3D m_LastTargetLoc;
 
 		public override bool DoActionCombat()
 		{
@@ -592,7 +593,7 @@ namespace Server.Mobiles
 
 				if( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 				{
-					m_Mobile.DebugSay( "Nobody else is around" );
+					m_Mobile.DebugSay( "I will switch to {0}", m_Mobile.FocusMob.Name );
 					m_Mobile.Combatant = c = m_Mobile.FocusMob;
 					m_Mobile.FocusMob = null;
 				}
@@ -708,25 +709,45 @@ namespace Server.Mobiles
 				if( spell != null )
 					spell.Cast();
 
-				TimeSpan delay;
-
-				if( SmartAI || ( spell is DispelSpell ) )
-					delay = TimeSpan.FromSeconds( m_Mobile.ActiveSpeed );
-				else
-					delay = GetDelay();
-
-				m_NextCastTime = DateTime.Now;
+				m_NextCastTime = DateTime.Now + GetDelay( spell );
 			}
 			else if( m_Mobile.Spell == null || !m_Mobile.Spell.IsCasting )
 			{
 				RunTo( c );
 			}
 
+			m_LastTarget = c;
+			m_LastTargetLoc = c.Location;
+
 			return true;
 		}
 
+		private LandTarget m_RevealTarget;
+
 		public override bool DoActionGuard()
 		{
+			if( m_LastTarget != null && m_LastTarget.Hidden )
+			{
+				Map map = m_Mobile.Map;
+
+				if( map == null || !m_Mobile.InRange( m_LastTargetLoc, Core.ML ? 10 : 12 ) )
+				{
+					m_LastTarget = null;
+				}
+				else if( m_Mobile.Spell == null && DateTime.Now > m_NextCastTime )
+				{
+					m_Mobile.DebugSay( "I am going to reveal my last target" );
+
+					m_RevealTarget = new LandTarget( m_LastTargetLoc, map );
+					Spell spell = new RevealSpell( m_Mobile, null );
+
+					if( spell.Cast() )
+						m_LastTarget = null; // only do it once
+
+					m_NextCastTime = DateTime.Now + GetDelay( spell );
+				}
+			}
+
 			if( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 			{
 				m_Mobile.DebugSay( "I am going to attack {0}", m_Mobile.FocusMob.Name );
@@ -934,7 +955,7 @@ namespace Server.Mobiles
 			if( targ == null )
 				return false;
 
-			bool isReveal = (targ is RevealSpell.InternalTarget);
+			bool isReveal = ( targ is RevealSpell.InternalTarget );
 			bool isDispel = ( targ is DispelSpell.InternalTarget );
 			bool isParalyze = ( targ is ParalyzeSpell.InternalTarget );
 			bool isTeleport = ( targ is TeleportSpell.InternalTarget );
@@ -956,7 +977,7 @@ namespace Server.Mobiles
 				else if( toTarget != null && m_Mobile.InRange( toTarget, 10 ) )
 					RunFrom( toTarget );
 			}
-			else if( SmartAI && ( isParalyze || isTeleport || isReveal ) )
+			else if( SmartAI && ( isParalyze || isTeleport ) )
 			{
 				toTarget = FindDispelTarget( true );
 
@@ -999,6 +1020,13 @@ namespace Server.Mobiles
 			else if( ( targ.Flags & TargetFlags.Beneficial ) != 0 )
 			{
 				targ.Invoke( m_Mobile, m_Mobile );
+			}
+			else if( isReveal && m_RevealTarget != null )
+			{
+				targ.Invoke( m_Mobile, m_RevealTarget );
+
+				if( SmartAI )
+					m_Mobile.NextReacquireTime = DateTime.Now;
 			}
 			else if( isTeleport && toTarget != null )
 			{

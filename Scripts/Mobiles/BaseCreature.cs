@@ -243,9 +243,17 @@ namespace Server.Mobiles
 
 		private bool		m_IsPrisoner;
 
+		private string		m_CorpseNameOverride;
 		#endregion
 
 		public virtual InhumanSpeech SpeechType{ get{ return null; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string CorpseNameOverride
+		{
+			get { return m_CorpseNameOverride; }
+			set { m_CorpseNameOverride = value; }
+		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public bool IsStabled
@@ -1560,7 +1568,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 17 ); // version
+			writer.Write( (int) 18 ); // version
 
 			writer.Write( (int)m_CurrentAI );
 			writer.Write( (int)m_DefaultAI );
@@ -1676,6 +1684,9 @@ namespace Server.Mobiles
 				writer.Write( TimeSpan.Zero );
 			else
 				writer.Write( DeleteTimeLeft );
+
+			// Version 18
+			writer.Write( m_CorpseNameOverride );
 		}
 
 		private static double[] m_StandardActiveSpeeds = new double[]
@@ -1896,6 +1907,9 @@ namespace Server.Mobiles
 				m_DeleteTimer = new DeleteTimer( this, deleteTime );
 				m_DeleteTimer.Start();
 			}
+
+			if ( version >= 18 )
+				m_CorpseNameOverride = reader.ReadString();
 
 			if( version <= 14 && m_Paragon && Hue == 0x31 )
 			{
@@ -4186,7 +4200,7 @@ namespace Server.Mobiles
 					list.Add( 1080078 ); // guarding
 			}
 
-			if ( Summoned && !IsAnimatedDead && !IsNecroFamiliar )
+			if ( Summoned && !IsAnimatedDead && !IsNecroFamiliar && !( this is Clone ) )
 				list.Add( 1049646 ); // (summoned)
 			else if ( Controlled && Commandable )
 			{
@@ -5314,7 +5328,7 @@ namespace Server.Mobiles
 					{
 						Mobile owner = c.ControlMaster;
 
-						if ( owner == null || owner.Deleted || owner.Map != c.Map || !owner.InRange( c, 12 ) || !c.CanSee( owner ) || !c.InLOS( owner ) )
+						if ( !c.IsStabled && ( owner == null || owner.Deleted || owner.Map != c.Map || !owner.InRange( c, 12 ) || !c.CanSee( owner ) || !c.InLOS( owner ) ) )
 						{
 							if ( c.OwnerAbandonTime == DateTime.MinValue )
 								c.OwnerAbandonTime = DateTime.Now;

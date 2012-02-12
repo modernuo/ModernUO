@@ -213,20 +213,25 @@ namespace Server.Commands.Generic
 			object[] states = (object[])state;
 			Mobile gm = (Mobile)states[0];
 			string url = (string)states[1];
+			bool echo = (bool)states[2];
 
 			if ( okay )
 			{
-				gm.SendMessage( "{0} : has opened their web browser to : {1}", from.Name, url );
+				if ( echo )
+					gm.SendMessage( "{0} : has opened their web browser to : {1}", from.Name, url );
+
 				from.LaunchBrowser( url );
 			}
 			else
 			{
+				if ( echo )
+					gm.SendMessage( "{0} : has chosen not to open their web browser to : {1}", from.Name, url );
+
 				from.SendMessage( "You have chosen not to open your web browser." );
-				gm.SendMessage( "{0} : has chosen not to open their web browser to : {1}", from.Name, url );
 			}
 		}
 
-		public override void Execute( CommandEventArgs e, object obj )
+		public void Execute( CommandEventArgs e, object obj, bool echo )
 		{
 			if ( e.Length == 1 )
 			{
@@ -246,8 +251,13 @@ namespace Server.Commands.Generic
 						string url = e.GetString( 0 );
 
 						CommandLogging.WriteLine( from, "{0} {1} requesting to open web browser of {2} to {3}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( mob ), url );
-						AddResponse( "Awaiting user confirmation..." );
-						mob.SendGump( new WarningGump( 1060637, 30720, String.Format( "A game master is requesting to open your web browser to the following URL:<br>{0}", url ), 0xFFC000, 320, 240, new WarningGumpCallback( OpenBrowser_Callback ), new object[]{ from, url } ) );
+
+						if ( echo )
+							AddResponse( "Awaiting user confirmation..." );
+						else
+							AddResponse( "Open web browser request sent." );
+
+						mob.SendGump( new WarningGump( 1060637, 30720, String.Format( "A game master is requesting to open your web browser to the following URL:<br>{0}", url ), 0xFFC000, 320, 240, new WarningGumpCallback( OpenBrowser_Callback ), new object[]{ from, url, echo } ) );
 					}
 				}
 				else
@@ -259,6 +269,17 @@ namespace Server.Commands.Generic
 			{
 				LogFailure( "Format: OpenBrowser <url>" );
 			}
+		}
+
+		public override void Execute( CommandEventArgs e, object obj )
+		{
+			Execute( e, obj, true );
+		}
+
+		public override void ExecuteList( CommandEventArgs e, ArrayList list )
+		{
+			for ( int i = 0; i < list.Count; ++i )
+				Execute( e, list[i], false );
 		}
 	}
 

@@ -64,7 +64,29 @@
 		{
 			if( IsEmpty )
 			{
-				base.OnDoubleClick( from );
+				base.OnSingleClick( from );
+			}
+			else
+			{
+				if( Name == null )
+					LabelTo( from, LabelNumber );
+				else
+					LabelTo( from, Name );
+			}
+		}
+
+		public override void OnAosSingleClick( Mobile from )
+		{
+			if( IsEmpty )
+			{
+				base.OnAosSingleClick( from );
+			}
+			else
+			{
+				if( Name == null )
+					LabelTo( from, LabelNumber );
+				else
+					LabelTo( from, Name );
 			}
 		}
 

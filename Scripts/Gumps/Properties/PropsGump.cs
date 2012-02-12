@@ -17,6 +17,7 @@ namespace Server.Gumps
 		private int m_Page;
 		private Mobile m_Mobile;
 		private object m_Object;
+		private Type m_Type;
 		private Stack m_Stack;
 
 		public static readonly bool OldStyle = PropsConfig.OldStyle;
@@ -54,6 +55,7 @@ namespace Server.Gumps
 		public static readonly int BorderSize = PropsConfig.BorderSize;
 
 		private static bool PrevLabel = OldStyle, NextLabel = OldStyle;
+		private static bool TypeLabel = !OldStyle;
 
 		private static readonly int PrevLabelOffsetX = PrevWidth + 1;
 		private static readonly int PrevLabelOffsetY = 0;
@@ -78,6 +80,7 @@ namespace Server.Gumps
 		{
 			m_Mobile = mobile;
 			m_Object = o;
+			m_Type = o.GetType();
 			m_List = BuildList();
 
 			Initialize( 0 );
@@ -87,6 +90,7 @@ namespace Server.Gumps
 		{
 			m_Mobile = mobile;
 			m_Object = o;
+			m_Type = o.GetType();
 			m_Stack = stack;
 			m_List = BuildList();
 
@@ -105,6 +109,10 @@ namespace Server.Gumps
 		{
 			m_Mobile = mobile;
 			m_Object = o;
+
+			if ( o != null )
+				m_Type = o.GetType();
+
 			m_List = list;
 			m_Stack = stack;
 
@@ -155,7 +163,10 @@ namespace Server.Gumps
 			x += PrevWidth + OffsetSize;
 
 			if ( !OldStyle )
-				AddImageTiled( x - (OldStyle ? OffsetSize : 0), y, emptyWidth + (OldStyle ? OffsetSize * 2 : 0), EntryHeight, HeaderGumpID );
+				AddImageTiled( x, y, emptyWidth, EntryHeight, HeaderGumpID );
+
+			if ( TypeLabel && m_Type != null )
+				AddHtml( x, y, emptyWidth, EntryHeight, String.Format( "<BASEFONT COLOR=#FAFAFA><CENTER>{0}</CENTER></BASEFONT>", m_Type.Name ), false, false );
 
 			x += emptyWidth + OffsetSize;
 
@@ -506,12 +517,14 @@ namespace Server.Gumps
 
 		private ArrayList BuildList()
 		{
-			Type type = m_Object.GetType();
-
-			PropertyInfo[] props = type.GetProperties( BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public );
-
-			ArrayList groups = GetGroups( type, props );
 			ArrayList list = new ArrayList();
+
+			if ( m_Type == null )
+				return list;
+
+			PropertyInfo[] props = m_Type.GetProperties( BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public );
+
+			ArrayList groups = GetGroups( m_Type, props );
 
 			for ( int i = 0; i < groups.Count; ++i )
 			{

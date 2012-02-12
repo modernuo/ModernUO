@@ -438,6 +438,14 @@ namespace Server.Items
 
 		public static string GetCorpseName( Mobile m )
 		{
+			if ( m is BaseCreature )
+			{
+				BaseCreature bc = (BaseCreature)m;
+
+				if ( bc.CorpseNameOverride != null )
+					return bc.CorpseNameOverride;
+			}
+
 			Type t = m.GetType();
 
 			object[] attrs = t.GetCustomAttributes( typeof( CorpseNameAttribute ), true );
@@ -1040,7 +1048,10 @@ namespace Server.Items
 						Map map = from.Map;
 
 						if ( map != null && map != Map.Internal )
+						{
 							robe.MoveToWorld( from.Location, map );
+							robe.BeginDecay();
+						}
 					}
 
 					Container pack = from.Backpack;

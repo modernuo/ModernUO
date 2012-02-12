@@ -18,14 +18,26 @@ namespace Server.Commands
 			CommandSystem.Register( "TileRXYZ", AccessLevel.GameMaster, new CommandEventHandler( TileRXYZ_OnCommand ) );
 			CommandSystem.Register( "TileXYZ", AccessLevel.GameMaster, new CommandEventHandler( TileXYZ_OnCommand ) );
 			CommandSystem.Register( "TileZ", AccessLevel.GameMaster, new CommandEventHandler( TileZ_OnCommand ) );
+			CommandSystem.Register( "TileAvg", AccessLevel.GameMaster, new CommandEventHandler( TileAvg_OnCommand ) );
+
+			CommandSystem.Register( "Outline", AccessLevel.GameMaster, new CommandEventHandler( Outline_OnCommand ) );
+			CommandSystem.Register( "OutlineRXYZ", AccessLevel.GameMaster, new CommandEventHandler( OutlineRXYZ_OnCommand ) );
+			CommandSystem.Register( "OutlineXYZ", AccessLevel.GameMaster, new CommandEventHandler( OutlineXYZ_OnCommand ) );
+			CommandSystem.Register( "OutlineZ", AccessLevel.GameMaster, new CommandEventHandler( OutlineZ_OnCommand ) );
+			CommandSystem.Register( "OutlineAvg", AccessLevel.GameMaster, new CommandEventHandler( OutlineAvg_OnCommand ) );
 		}
 
 		public static void Invoke( Mobile from, Point3D start, Point3D end, string[] args )
 		{
-			Invoke( from, start, end, args, null );
+			Invoke( from, start, end, args, null, false, false );
 		}
 
 		public static void Invoke( Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs )
+		{
+			Invoke( from, start, end, args, packs, false, false );
+		}
+
+		public static void Invoke( Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs, bool outline, bool mapAvg )
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -83,7 +95,7 @@ namespace Server.Commands
 
 			DateTime time = DateTime.Now;
 
-			int built = BuildObjects( from, type, start, end, args, props, packs );
+			int built = BuildObjects( from, type, start, end, args, props, packs, outline, mapAvg );
 
 			if ( built > 0 )
 				from.SendMessage( "{0} object{1} generated in {2:F1} seconds.", built, built != 1 ? "s" : "", (DateTime.Now - time).TotalSeconds );
@@ -108,6 +120,11 @@ namespace Server.Commands
 		}
 
 		public static int BuildObjects( Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props, List<Container> packs )
+		{
+			return BuildObjects( from, type, start, end, args, props, packs, false, false );
+		}
+
+		public static int BuildObjects( Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props, List<Container> packs, bool outline, bool mapAvg )
 		{
 			Utility.FixPoints( ref start, ref end );
 
@@ -169,7 +186,7 @@ namespace Server.Commands
 					if ( paramValues == null )
 						continue;
 
-					int built = Build( from, start, end, ctor, paramValues, props, realProps, packs );
+					int built = Build( from, start, end, ctor, paramValues, props, realProps, packs, outline, mapAvg );
 
 					if ( built > 0 )
 						return built;
@@ -271,11 +288,29 @@ namespace Server.Commands
 
 		public static int Build( Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, List<Container> packs )
 		{
+			return Build( from, start, end, ctor, values, props, realProps, packs, false, false );
+		}
+
+		public static int Build( Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values, string[,] props, PropertyInfo[] realProps, List<Container> packs, bool outline, bool mapAvg )
+		{
 			try
 			{
 				Map map = from.Map;
 
-				int objectCount = ( packs == null ? (((end.X - start.X) + 1) * ((end.Y - start.Y) + 1)) : packs.Count );
+				int width = end.X - start.X + 1;
+				int height = end.Y - start.Y + 1;
+
+				if ( outline && ( width < 3 || height < 3 ) )
+					outline = false;
+
+				int objectCount;
+
+				if ( packs != null )
+					objectCount = packs.Count;
+				else if ( outline )
+					objectCount = ( width + height - 2 ) * 2;
+				else
+					objectCount = width * height;
 
 				if ( objectCount >= 20 )
 					from.SendMessage( "Constructing {0} objects, please wait.", objectCount );
@@ -292,7 +327,7 @@ namespace Server.Commands
 						IEntity built = Build( from, ctor, values, props, realProps, ref sendError );
 
 						sb.AppendFormat( "0x{0:X}; ", built.Serial.Value );
-	
+
 						if ( built is Item ) {
 							Container pack = packs[i];
 							pack.DropItem( (Item)built );
@@ -305,21 +340,29 @@ namespace Server.Commands
 				}
 				else
 				{
+					int z = start.Z;
+
 					for ( int x = start.X; x <= end.X; ++x )
 					{
 						for ( int y = start.Y; y <= end.Y; ++y )
 						{
+							if ( outline && x != start.X && x != end.X && y != start.Y && y != end.Y )
+								continue;
+
+							if ( mapAvg )
+								z = map.GetAverageZ( x, y );
+
 							IEntity built = Build( from, ctor, values, props, realProps, ref sendError );
 
 							sb.AppendFormat( "0x{0:X}; ", built.Serial.Value );
 
 							if ( built is Item ) {
 								Item item = (Item)built;
-								item.MoveToWorld( new Point3D( x, y, start.Z ), map );
+								item.MoveToWorld( new Point3D( x, y, z ), map );
 							}
 							else if ( built is Mobile ) {
 								Mobile m = (Mobile)built;
-								m.MoveToWorld( new Point3D( x, y, start.Z ), map );
+								m.MoveToWorld( new Point3D( x, y, z ), map );
 							}
 						}
 					}
@@ -410,51 +453,60 @@ namespace Server.Commands
 			}
 		}
 
+		private enum TileZType
+		{
+			Start,
+			Fixed,
+			MapAverage
+		}
+
 		private class TileState
 		{
-			public bool m_UseFixedZ;
+			public TileZType m_ZType;
 			public int m_FixedZ;
 			public string[] m_Args;
+			public bool m_Outline;
 
-			public TileState( string[] args ) : this( false, 0, args )
+			public TileState( TileZType zType, int fixedZ, string[] args, bool outline )
 			{
-			}
-
-			public TileState( int fixedZ, string[] args ) : this( true, fixedZ, args )
-			{
-			}
-
-			public TileState( bool useFixedZ, int fixedZ, string[] args )
-			{
-				m_UseFixedZ = useFixedZ;
+				m_ZType = zType;
 				m_FixedZ = fixedZ;
 				m_Args = args;
+				m_Outline = outline;
 			}
 		}
 
 		private static void TileBox_Callback( Mobile from, Map map, Point3D start, Point3D end, object state )
 		{
 			TileState ts = (TileState)state;
+			bool mapAvg = false;
 
-			if ( ts.m_UseFixedZ )
-				start.Z = end.Z = ts.m_FixedZ;
+			switch ( ts.m_ZType )
+			{
+				case TileZType.Fixed:
+				{
+					start.Z = end.Z = ts.m_FixedZ;
+					break;
+				}
+				case TileZType.MapAverage:
+				{
+					mapAvg = true;
+					break;
+				}
+			}
 
-			Invoke( from, start, end, ts.m_Args );
+			Invoke( from, start, end, ts.m_Args, null, ts.m_Outline, mapAvg );
 		}
 
-		[Usage( "Tile <name> [params] [set {<propertyName> <value> ...}]" )]
-		[Description( "Tiles an item or npc by name into a targeted bounding box. Optional constructor parameters. Optional set property list." )]
-		public static void Tile_OnCommand( CommandEventArgs e )
+		private static void Internal_OnCommand( CommandEventArgs e, bool outline )
 		{
 			if ( e.Length >= 1 )
-				BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( TileBox_Callback ), new TileState( e.Arguments ) );
+				BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( TileBox_Callback ), new TileState( TileZType.Start, 0, e.Arguments, outline ) );
 			else
-				e.Mobile.SendMessage( "Format: Add <type> [params] [set {<propertyName> <value> ...}]" );
+				e.Mobile.SendMessage( "Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]", outline ? "Outline" : "Tile" );
 		}
 
-		[Usage( "TileRXYZ <x> <y> <w> <h> <z> <name> [params] [set {<propertyName> <value> ...}]" )]
-		[Description( "Tiles an item or npc by name into a given bounding box, (x, y) parameters are relative to your characters position. Optional constructor parameters. Optional set property list." )]
-		public static void TileRXYZ_OnCommand( CommandEventArgs e )
+		private static void InternalRXYZ_OnCommand( CommandEventArgs e, bool outline )
 		{
 			if ( e.Length >= 6 )
 			{
@@ -466,17 +518,15 @@ namespace Server.Commands
 				for ( int i = 0; i < subArgs.Length; ++i )
 					subArgs[i] = e.Arguments[i + 5];
 
-				Add.Invoke( e.Mobile, p, p2, subArgs );
+				Add.Invoke( e.Mobile, p, p2, subArgs, null, outline, false );
 			}
 			else
 			{
-				e.Mobile.SendMessage( "Format: TileRXYZ <x> <y> <w> <h> <z> <type> [params] [set {<propertyName> <value> ...}]" );
+				e.Mobile.SendMessage( "Format: {0}RXYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]", outline ? "Outline" : "Tile" );
 			}
 		}
 
-		[Usage( "TileXYZ <x> <y> <w> <h> <z> <name> [params] [set {<propertyName> <value> ...}]" )]
-		[Description( "Tiles an item or npc by name into a given bounding box. Optional constructor parameters. Optional set property list." )]
-		public static void TileXYZ_OnCommand( CommandEventArgs e )
+		private static void InternalXYZ_OnCommand( CommandEventArgs e, bool outline )
 		{
 			if ( e.Length >= 6 )
 			{
@@ -488,17 +538,15 @@ namespace Server.Commands
 				for ( int i = 0; i < subArgs.Length; ++i )
 					subArgs[i] = e.Arguments[i + 5];
 
-				Add.Invoke( e.Mobile, p, p2, subArgs );
+				Add.Invoke( e.Mobile, p, p2, subArgs, null, outline, false );
 			}
 			else
 			{
-				e.Mobile.SendMessage( "Format: TileXYZ <x> <y> <w> <h> <z> <type> [params] [set {<propertyName> <value> ...}]" );
+				e.Mobile.SendMessage( "Format: {0}XYZ <x> <y> <w> <h> <z> <type> [params] [set {{<propertyName> <value> ...}}]", outline ? "Outline" : "Tile" );
 			}
 		}
 
-		[Usage( "TileZ <z> <name> [params] [set {<propertyName> <value> ...}]" )]
-		[Description( "Tiles an item or npc by name into a targeted bounding box at a fixed Z location. Optional constructor parameters. Optional set property list." )]
-		public static void TileZ_OnCommand( CommandEventArgs e )
+		private static void InternalZ_OnCommand( CommandEventArgs e, bool outline )
 		{
 			if ( e.Length >= 2 )
 			{
@@ -507,12 +555,90 @@ namespace Server.Commands
 				for ( int i = 0; i < subArgs.Length; ++i )
 					subArgs[i] = e.Arguments[i + 1];
 
-				BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( TileBox_Callback ), new TileState( e.GetInt32( 0 ), subArgs ) );
+				BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( TileBox_Callback ), new TileState( TileZType.Fixed, e.GetInt32( 0 ), subArgs, outline ) );
 			}
 			else
 			{
-				e.Mobile.SendMessage( "Format: TileZ <z> <type> [params] [set {<propertyName> <value> ...}]" );
+				e.Mobile.SendMessage( "Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]", outline ? "Outline" : "Tile" );
 			}
+		}
+
+		private static void InternalAvg_OnCommand( CommandEventArgs e, bool outline )
+		{
+			if ( e.Length >= 1 )
+				BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( TileBox_Callback ), new TileState( TileZType.MapAverage, 0, e.Arguments, outline ) );
+			else
+				e.Mobile.SendMessage( "Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]", outline ? "Outline" : "Tile" );
+		}
+
+		[Usage( "Tile <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name into a targeted bounding box. Optional constructor parameters. Optional set property list." )]
+		public static void Tile_OnCommand( CommandEventArgs e )
+		{
+			Internal_OnCommand( e, false );
+		}
+
+		[Usage( "TileRXYZ <x> <y> <w> <h> <z> <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name into a given bounding box, (x, y) parameters are relative to your characters position. Optional constructor parameters. Optional set property list." )]
+		public static void TileRXYZ_OnCommand( CommandEventArgs e )
+		{
+			InternalRXYZ_OnCommand( e, false );
+		}
+
+		[Usage( "TileXYZ <x> <y> <w> <h> <z> <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name into a given bounding box. Optional constructor parameters. Optional set property list." )]
+		public static void TileXYZ_OnCommand( CommandEventArgs e )
+		{
+			InternalXYZ_OnCommand( e, false );
+		}
+
+		[Usage( "TileZ <z> <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name into a targeted bounding box at a fixed Z location. Optional constructor parameters. Optional set property list." )]
+		public static void TileZ_OnCommand( CommandEventArgs e )
+		{
+			InternalZ_OnCommand( e, false );
+		}
+
+		[Usage( "TileAvg <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name into a targeted bounding box on the map's average Z elevation. Optional constructor parameters. Optional set property list." )]
+		public static void TileAvg_OnCommand( CommandEventArgs e )
+		{
+			InternalAvg_OnCommand( e, false );
+		}
+
+		[Usage( "Outline <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name around a targeted bounding box. Optional constructor parameters. Optional set property list." )]
+		public static void Outline_OnCommand( CommandEventArgs e )
+		{
+			Internal_OnCommand( e, true );
+		}
+
+		[Usage( "OutlineRXYZ <x> <y> <w> <h> <z> <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name around a given bounding box, (x, y) parameters are relative to your characters position. Optional constructor parameters. Optional set property list." )]
+		public static void OutlineRXYZ_OnCommand( CommandEventArgs e )
+		{
+			InternalRXYZ_OnCommand( e, true );
+		}
+
+		[Usage( "OutlineXYZ <x> <y> <w> <h> <z> <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name around a given bounding box. Optional constructor parameters. Optional set property list." )]
+		public static void OutlineXYZ_OnCommand( CommandEventArgs e )
+		{
+			InternalXYZ_OnCommand( e, true );
+		}
+
+		[Usage( "OutlineZ <z> <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name around a targeted bounding box at a fixed Z location. Optional constructor parameters. Optional set property list." )]
+		public static void OutlineZ_OnCommand( CommandEventArgs e )
+		{
+			InternalZ_OnCommand( e, true );
+		}
+
+		[Usage( "OutlineAvg <name> [params] [set {<propertyName> <value> ...}]" )]
+		[Description( "Tiles an item or npc by name around a targeted bounding box on the map's average Z elevation. Optional constructor parameters. Optional set property list." )]
+		public static void OutlineAvg_OnCommand( CommandEventArgs e )
+		{
+			InternalAvg_OnCommand( e, true );
 		}
 
 		private static Type m_EntityType = typeof( IEntity );

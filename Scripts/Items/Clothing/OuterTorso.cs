@@ -102,9 +102,9 @@ namespace Server.Items
 	{
 		private Timer m_DecayTimer;
 		private DateTime m_DecayTime;
-		
+
 		private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
-		
+
 		public override bool DisplayLootType
 		{
 			get{ return false; }
@@ -123,25 +123,30 @@ namespace Server.Items
 			from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
 			return false;
 		}
-		
-		public void BeginDecay( TimeSpan delay )
+
+		public void BeginDecay()
+		{
+			BeginDecay( m_DefaultDecayTime );
+		}
+
+		private void BeginDecay( TimeSpan delay )
 		{
 			if ( m_DecayTimer != null )
 				m_DecayTimer.Stop();
-			
+
 			m_DecayTime = DateTime.Now + delay;
-			
+
 			m_DecayTimer = new InternalTimer( this, delay );
 			m_DecayTimer.Start();
 		}
-		
+
 		public override bool OnDroppedToWorld( Mobile from, Point3D p )
 		{
 			BeginDecay( m_DefaultDecayTime );
-			
+
 			return true;
 		}
-		
+
 		public override bool OnDroppedToMobile( Mobile from, Mobile target )
 		{
 			if (m_DecayTimer != null )
@@ -189,7 +194,7 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.Write( (int) 2 ); // version
-			
+
 			writer.Write( m_DecayTimer != null );
 
 			if( m_DecayTimer != null )
@@ -201,7 +206,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
-			
+
 			switch ( version )
 			{
 				case 2:
@@ -603,7 +608,7 @@ namespace Server.Items
 		public MonkRobe() : this( 0x21E )
 		{
 		}
-		
+
 		[Constructable]
 		public MonkRobe( int hue ) : base( 0x2687, hue )
 		{
@@ -634,7 +639,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
-	
+
 	[Flipable( 0x1f01, 0x1f02 )]
 	public class PlainDress : BaseOuterTorso
 	{
