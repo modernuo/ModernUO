@@ -3196,12 +3196,12 @@ namespace Server.Mobiles
 
 					if ( skill != null && theirSkill != null && skill.Base >= 60.0 && CheckTeach( skill.SkillName, from ) )
 					{
-						double toTeach = skill.Base / 3.0;
+						int toTeach = skill.BaseFixedPoint / 3;
 
-						if ( toTeach > 42.0 )
-							toTeach = 42.0;
+						if ( toTeach > 420 )
+							toTeach = 420;
 
-						list.Add( new TeachEntry( (SkillName)i, this, from, ( toTeach > theirSkill.Base ) ) );
+						list.Add( new TeachEntry( (SkillName)i, this, from, ( toTeach > theirSkill.BaseFixedPoint ) ) );
 					}
 				}
 			}

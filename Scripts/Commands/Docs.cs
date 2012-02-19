@@ -2421,10 +2421,11 @@ namespace Server.Commands
 			if( type.IsGenericType )
 			{
 				int index = type.Name.IndexOf( '`' );
-				string rootType = type.Name.Substring( 0, index );
 
 				if( index > 0 )
 				{
+					string rootType = type.Name.Substring( 0, index );
+
 					StringBuilder nameBuilder = new StringBuilder( rootType );
 					StringBuilder fnamBuilder = new StringBuilder( "docs/types/" + Docs.SanitizeType( rootType ) );
 					StringBuilder linkBuilder;

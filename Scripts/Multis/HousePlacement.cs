@@ -112,7 +112,7 @@ namespace Server.Multis
 						if ( reg.IsPartOf( typeof( TempNoHousingRegion ) ) )
 							return HousePlacementResult.BadRegionTemp;
 
-						if ( reg.IsPartOf( typeof( TreasureRegion ) ) )
+						if ( reg.IsPartOf( typeof( TreasureRegion ) ) || reg.IsPartOf( typeof( HouseRegion ) ) )
 							return HousePlacementResult.BadRegionHidden;
 
 						if ( reg.IsPartOf( typeof( HouseRaffleRegion ) ) )

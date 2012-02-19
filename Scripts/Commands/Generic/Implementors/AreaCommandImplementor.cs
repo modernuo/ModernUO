@@ -1,12 +1,18 @@
 using System;
 using System.Collections;
 using Server;
-using Server.Targeting;
 
 namespace Server.Commands.Generic
 {
 	public class AreaCommandImplementor : BaseCommandImplementor
 	{
+		private static AreaCommandImplementor m_Instance;
+
+		public static AreaCommandImplementor Instance
+		{
+			get { return m_Instance; }
+		}
+
 		public AreaCommandImplementor()
 		{
 			Accessors = new string[]{ "Area", "Group" };
@@ -15,6 +21,8 @@ namespace Server.Commands.Generic
 			AccessLevel = AccessLevel.GameMaster;
 			Usage = "Area <command> [condition]";
 			Description = "Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects.";
+
+			m_Instance = this;
 		}
 
 		public override void Process( Mobile from, BaseCommand command, string[] args )
@@ -66,58 +74,6 @@ namespace Server.Commands.Generic
 				ext.Filter( objs );
 
 				RunCommand( from, objs, command, args );
-			}
-			catch ( Exception ex )
-			{
-				from.SendMessage( ex.Message );
-			}
-		}
-
-		public void OnTarget( Mobile from, object targeted, object state )
-		{
-			try
-			{
-				object[] states = (object[])state;
-				BaseCommand command = (BaseCommand)states[0];
-				string[] args = (string[])states[1];
-
-				switch ( command.ObjectTypes )
-				{
-					case ObjectTypes.Both:
-					{
-						if ( !(targeted is Item) && !(targeted is Mobile) )
-						{
-							from.SendMessage( "This command does not work on that." );
-							return;
-						}
-
-						break;
-					}
-					case ObjectTypes.Items:
-					{
-						if ( !(targeted is Item) )
-						{
-							from.SendMessage( "This command only works on items." );
-							return;
-						}
-
-						break;
-					}
-					case ObjectTypes.Mobiles:
-					{
-						if ( !(targeted is Mobile) )
-						{
-							from.SendMessage( "This command only works on mobiles." );
-							return;
-						}
-
-						break;
-					}
-				}
-
-				RunCommand( from, targeted, command, args );
-
-				from.BeginTarget( -1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None, new TargetStateCallback( OnTarget ), new object[]{ command, args } );
 			}
 			catch ( Exception ex )
 			{

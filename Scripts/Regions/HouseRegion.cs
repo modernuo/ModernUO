@@ -38,6 +38,11 @@ namespace Server.Regions
 			this.GoLocation = new Point3D( house.X + ban.X, house.Y + ban.Y, house.Z + ban.Z );
 		}
 
+		public override bool AllowHousing( Mobile from, Point3D p )
+		{
+			return false;
+		}
+
 		private static Rectangle3D[] GetArea( BaseHouse house )
 		{
 			int x = house.X;

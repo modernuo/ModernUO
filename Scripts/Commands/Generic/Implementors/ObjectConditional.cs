@@ -135,7 +135,7 @@ namespace Server.Commands.Generic
 				}
 				else if ( Insensitive.Equals( cur, "or" ) || cur == "||" )
 				{
-					if ( conditions.Count > 1 )
+					if ( current.Count > 1 )
 					{
 						conditions.Add( current.ToArray() );
 

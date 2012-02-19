@@ -40,6 +40,9 @@ namespace Server.Commands.Generic
 			Register( new AreaCommandImplementor() );
 			Register( new SelfCommandImplementor() );
 			Register( new ContainedCommandImplementor() );
+			Register( new RangeCommandImplementor() );
+			Register( new ScreenCommandImplementor() );
+			Register( new FacetCommandImplementor() );
 		}
 
 		private string[] m_Accessors;
