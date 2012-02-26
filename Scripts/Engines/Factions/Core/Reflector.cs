@@ -8,8 +8,6 @@ namespace Server.Factions
 {
 	public class Reflector
 	{
-		private static List<Type> m_Types = new List<Type>();
-
 		private static List<Town> m_Towns;
 
 		public static List<Town> Towns
@@ -33,50 +31,6 @@ namespace Server.Factions
 					Reflector.ProcessTypes();
 
 				return m_Factions;
-			}
-		}
-
-		public static void Configure()
-		{
-			EventSink.WorldSave += new WorldSaveEventHandler( EventSink_WorldSave );
-		}
-
-		private static void EventSink_WorldSave( WorldSaveEventArgs e )
-		{
-			m_Types.Clear();
-		}
-
-		public static void Serialize( GenericWriter writer, Type type )
-		{
-			int index = m_Types.IndexOf( type );
-
-			writer.WriteEncodedInt( (int) (index + 1) );
-
-			if ( index == -1 )
-			{
-				writer.Write( type == null ? null : type.FullName );
-				m_Types.Add( type );
-			}
-		}
-
-		public static Type Deserialize( GenericReader reader )
-		{
-			int index = reader.ReadEncodedInt();
-
-			if ( index == 0 )
-			{
-				string typeName = reader.ReadString();
-
-				if ( typeName == null )
-					m_Types.Add( null );
-				else
-					m_Types.Add( ScriptCompiler.FindTypeByFullName( typeName, false ) );
-
-				return m_Types[m_Types.Count - 1];
-			}
-			else
-			{
-				return m_Types[index - 1];
 			}
 		}
 
