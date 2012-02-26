@@ -197,6 +197,7 @@ namespace Server.Spells.Necromancy
 				{
 					type = c.Owner.GetType();
 				}
+
 				if( c.ItemID != 0x2006 || c.Animated || type == typeof( PlayerMobile ) || type == null || ( c.Owner != null && c.Owner.Fame < 100 ) || ( ( c.Owner != null ) && ( c.Owner is BaseCreature ) && ( ( ( BaseCreature )c.Owner ).Summoned || ( ( BaseCreature )c.Owner ).IsBonded ) ) )
 				{
 					Caster.SendLocalizedMessage( 1061085 ); // There's not enough life force there to animate.
@@ -300,7 +301,7 @@ namespace Server.Spells.Necromancy
 			Map map = (Map)states[3];
 			CreatureGroup group = (CreatureGroup)states[4];
 
-			if ( corpse.ItemID != 0x2006 )
+			if ( corpse.Animated )
 				return;
 
 			Mobile owner = corpse.Owner;
@@ -377,13 +378,12 @@ namespace Server.Spells.Necromancy
 			summoned.MoveToWorld( loc, map );
 
 			corpse.Hue = 1109;
-
 			corpse.Animated = true;
 
 			Register( caster, summoned );
 		}
 
-		private static void Scale( BaseCreature bc, int scalar )
+		public static void Scale( BaseCreature bc, int scalar )
 		{
 			int toScale;
 

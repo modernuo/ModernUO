@@ -71,17 +71,23 @@ namespace Server.Engines.Quests.Zento
 
 						if ( Utility.RandomBool() )
 						{
-							BaseWeapon weapon = Loot.RandomWeapon( true );
-							BaseRunicTool.ApplyAttributesTo( weapon, 3, 10, 30 );
+							BaseWeapon weapon = Loot.Construct( Loot.SEWeaponTypes ) as BaseWeapon;
 
-							cont.DropItem( weapon );
+							if ( weapon != null )
+							{
+								BaseRunicTool.ApplyAttributesTo( weapon, 3, 10, 30 );
+								cont.DropItem( weapon );
+							}
 						}
 						else
 						{
-							BaseArmor armor = Loot.RandomArmor( true );
-							BaseRunicTool.ApplyAttributesTo( armor, 1, 10, 20 );
+							BaseArmor armor = Loot.Construct( Loot.SEArmorTypes ) as BaseArmor;
 
-							cont.DropItem( armor );
+							if ( armor != null )
+							{
+								BaseRunicTool.ApplyAttributesTo( armor, 1, 10, 20 );
+								cont.DropItem( armor );
+							}
 						}
 
 						if ( player.PlaceInBackpack( cont ) )

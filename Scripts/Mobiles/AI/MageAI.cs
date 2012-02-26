@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Spells;
 using Server.Spells.Fifth;
@@ -37,24 +36,28 @@ namespace Server.Mobiles
 
 		public virtual bool SmartAI
 		{
-			get { return ( m_Mobile is BaseVendor || m_Mobile is BaseEscortable ); }
+			get { return ( m_Mobile is BaseVendor || m_Mobile is BaseEscortable/* || m_Mobile is Changeling*/ ); } // TODO: Uncomment once added
+		}
+
+		public virtual bool IsNecromancer
+		{
+			get { return ( m_Mobile.Skills[ SkillName.Necromancy ].Value > 50 ); }
 		}
 
 		private const double HealChance = 0.10; // 10% chance to heal at gm magery
 		private const double TeleportChance = 0.05; // 5% chance to teleport at gm magery
 		private const double DispelChance = 0.75; // 75% chance to dispel at gm magery
 
-		public virtual double ScaleByMagery( double v )
+		public virtual double ScaleBySkill( double v, SkillName skill )
 		{
-			return m_Mobile.Skills[ SkillName.Magery ].Value * v * 0.01;
+			return v * m_Mobile.Skills[ skill ].Value / 100;
 		}
 
 		public override bool DoActionWander()
 		{
 			if( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 			{
-				if( m_Mobile.Debug )
-					m_Mobile.DebugSay( "I am going to attack {0}", m_Mobile.FocusMob.Name );
+				m_Mobile.DebugSay( "I am going to attack {0}", m_Mobile.FocusMob.Name );
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
 				Action = ActionType.Combat;
@@ -74,7 +77,7 @@ namespace Server.Mobiles
 
 				base.DoActionWander();
 
-				if( ( Utility.RandomDouble() < .05 ) )
+				if( Utility.RandomDouble() < 0.05 )
 				{
 					Spell spell = CheckCastHealingSpell();
 
@@ -104,7 +107,7 @@ namespace Server.Mobiles
 
 			if( !SmartAI )
 			{
-				if( ScaleByMagery( HealChance ) < Utility.RandomDouble() )
+				if( ScaleBySkill( HealChance, SkillName.Magery ) < Utility.RandomDouble() )
 					return null;
 			}
 			else
@@ -117,13 +120,22 @@ namespace Server.Mobiles
 
 			if( m_Mobile.Hits < ( m_Mobile.HitsMax - 50 ) )
 			{
-				spell = new GreaterHealSpell( m_Mobile, null );
+				if ( UseNecromancy() )
+				{
+					m_Mobile.UseSkill( SkillName.SpiritSpeak );
+				}
+				else
+				{
+					spell = new GreaterHealSpell( m_Mobile, null );
 
-				if( spell == null )
-					spell = new HealSpell( m_Mobile, null );
+					if( spell == null )
+						spell = new HealSpell( m_Mobile, null );
+				}
 			}
 			else if( m_Mobile.Hits < ( m_Mobile.HitsMax - 10 ) )
+			{
 				spell = new HealSpell( m_Mobile, null );
+			}
 
 			double delay;
 
@@ -175,7 +187,7 @@ namespace Server.Mobiles
 
 		public void OnFailedMove()
 		{
-			if( !m_Mobile.DisallowAllMoves && ( SmartAI ? Utility.Random( 4 ) == 0 : ScaleByMagery( TeleportChance ) > Utility.RandomDouble() ) )
+			if( !m_Mobile.DisallowAllMoves && ( SmartAI ? Utility.Random( 4 ) == 0 : ScaleBySkill( TeleportChance, SkillName.Magery ) > Utility.RandomDouble() ) )
 			{
 				if( m_Mobile.Target != null )
 					m_Mobile.Target.Cancel( m_Mobile, TargetCancelType.Canceled );
@@ -186,8 +198,7 @@ namespace Server.Mobiles
 			}
 			else if( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 			{
-				if( m_Mobile.Debug )
-					m_Mobile.DebugSay( "My move is blocked, so I am going to attack {0}", m_Mobile.FocusMob.Name );
+				m_Mobile.DebugSay( "My move is blocked, so I am going to attack {0}", m_Mobile.FocusMob.Name );
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
 				Action = ActionType.Combat;
@@ -209,46 +220,41 @@ namespace Server.Mobiles
 				OnFailedMove();
 		}
 
-		public virtual bool CanCastNecro()
+		public virtual bool UseNecromancy()
 		{
-			return ( Utility.RandomBool() && ( m_Mobile is BaseCreature ) && ( (BaseCreature)m_Mobile ).IsNecromancer );
-		}
+			if ( IsNecromancer )
+				return ( Utility.Random( m_Mobile.Skills[ SkillName.Necromancy ].BaseFixedPoint ) > Utility.Random( m_Mobile.Skills[ SkillName.Magery ].BaseFixedPoint ) );
 
-		public virtual bool CanCastNecroBias( int bias )
-		{
-			return ( CanCastNecro() && Utility.Random( bias ) == 0 );
-		}
-
-		public virtual Spell GetRandomDamage()
-		{
-			return ( CanCastNecroBias( 2 ) ) ? GetRandomDamageNecroSpell() : GetRandomDamageSpell();
-		}
-
-		public virtual Spell GetRandomDamageNecroSpell()
-		{
-			int possibles = 3;
-
-			if( myNecro >= 100 )
-			{
-				possibles = 5;
-			}
-			switch( Utility.Random( possibles ) )
-			{
-				default: m_Mobile.DebugSay( "Vengeful Spirit" ); return new VengefulSpiritSpell( m_Mobile, null );
-
-				case 0: m_Mobile.DebugSay( "Pain Spike" ); return new PainSpikeSpell( m_Mobile, null );
-				case 1: m_Mobile.DebugSay( "Poison Strike" ); return new PoisonStrikeSpell( m_Mobile, null );
-				case 2: m_Mobile.DebugSay( "Strangle" ); return new StrangleSpell( m_Mobile, null );
-				case 3: m_Mobile.DebugSay( "Wither" ); return new WitherSpell( m_Mobile, null );
-			}
+			return false;
 		}
 
 		public virtual Spell GetRandomDamageSpell()
 		{
-			int maxCircle = (int)( ( myMagery + 20.0 ) / ( 100.0 / 7.0 ) );
+			return UseNecromancy() ? GetRandomDamageSpellNecro() : GetRandomDamageSpellMage();
+		}
+
+		public virtual Spell GetRandomDamageSpellNecro()
+		{
+			int bound = ( m_Mobile.Skills[ SkillName.Necromancy ].Value >= 100 ) ? 5 : 3;
+
+			switch( Utility.Random( bound ) )
+			{
+				case 0: m_Mobile.DebugSay( "Pain Spike" ); return new PainSpikeSpell( m_Mobile, null );
+				case 1: m_Mobile.DebugSay( "Poison Strike" ); return new PoisonStrikeSpell( m_Mobile, null );
+				case 2: m_Mobile.DebugSay( "Strangle" ); return new StrangleSpell( m_Mobile, null );
+				case 3: m_Mobile.DebugSay( "Wither" ); return new WitherSpell( m_Mobile, null );
+				default: m_Mobile.DebugSay( "Vengeful Spirit" ); return new VengefulSpiritSpell( m_Mobile, null );
+			}
+		}
+
+		public virtual Spell GetRandomDamageSpellMage()
+		{
+			int maxCircle = (int)( ( m_Mobile.Skills[ SkillName.Magery ].Value + 20.0 ) / ( 100.0 / 7.0 ) );
 
 			if( maxCircle < 1 )
 				maxCircle = 1;
+			else if( maxCircle > 8 )
+				maxCircle = 8;
 
 			switch( Utility.Random( maxCircle * 2 ) )
 			{
@@ -268,49 +274,39 @@ namespace Server.Mobiles
 			}
 		}
 
-		public virtual Spell GetRandomCurse()
+		public virtual Spell GetRandomCurseSpell()
 		{
-			return ( CanCastNecro() ) ?  GetRandomNecroCurseSpell() :  GetRandomCurseSpell();
+			return UseNecromancy() ? GetRandomCurseSpellNecro() : GetRandomCurseSpellMage();
 		}
 
-		public virtual Spell GetRandomNecroCurseSpell()
+		public virtual Spell GetRandomCurseSpellNecro()
 		{
 			switch( Utility.Random( 4 ) )
 			{
-				default:
 				case 0: m_Mobile.DebugSay( "Blood Oath" ); return new BloodOathSpell( m_Mobile, null );
 				case 1: m_Mobile.DebugSay( "Corpse Skin" ); return new CorpseSkinSpell( m_Mobile, null );
 				case 2: m_Mobile.DebugSay( "Evil Omen" ); return new EvilOmenSpell( m_Mobile, null );
-				case 3: m_Mobile.DebugSay( "Mind Rot" ); return new MindRotSpell( m_Mobile, null );
+				default: m_Mobile.DebugSay( "Mind Rot" ); return new MindRotSpell( m_Mobile, null );
 			}
 		}
 
-		public virtual Spell GetRandomCurseSpell()
+		public virtual Spell GetRandomCurseSpellMage()
 		{
-			if( Utility.Random( 4 ) == 3 )
-			{
-				if( myMagery >= 40.0 )
-				{
-					return new CurseSpell( m_Mobile, null );
-				}
-			}
+			if( m_Mobile.Skills[ SkillName.Magery ].Value >= 40.0 && Utility.Random( 4 ) == 0 )
+				return new CurseSpell( m_Mobile, null );
 
 			switch( Utility.Random( 3 ) )
 			{
-				default:
 				case 0: return new WeakenSpell( m_Mobile, null );
 				case 1: return new ClumsySpell( m_Mobile, null );
-				case 2: return new FeeblemindSpell( m_Mobile, null );
+				default: return new FeeblemindSpell( m_Mobile, null );
 			}
 		}
 
 		public virtual Spell GetRandomManaDrainSpell()
 		{
-			if( Utility.RandomBool() )
-			{
-				if( myMagery >= 80.0 )
-					return new ManaVampireSpell( m_Mobile, null );
-			}
+			if( m_Mobile.Skills[ SkillName.Magery ].Value >= 80.0 && Utility.RandomBool() )
+				return new ManaVampireSpell( m_Mobile, null );
 
 			return new ManaDrainSpell( m_Mobile, null );
 		}
@@ -319,7 +315,7 @@ namespace Server.Mobiles
 		{
 			if( !SmartAI )
 			{
-				if( ScaleByMagery( DispelChance ) > Utility.RandomDouble() )
+				if( ScaleBySkill( DispelChance, SkillName.Magery ) > Utility.RandomDouble() )
 					return new DispelSpell( m_Mobile, null );
 
 				return ChooseSpell( toDispel );
@@ -340,12 +336,6 @@ namespace Server.Mobiles
 			return spell;
 		}
 
-		public virtual double myNecro { get { return m_Mobile.Skills[ SkillName.Magery ].Value; } }
-
-		public virtual double myMagery { get { return m_Mobile.Skills[ SkillName.Magery ].Value; } }
-
-		public virtual double mySpiritSpeak { get { return m_Mobile.Skills[ SkillName.SpiritSpeak ].Value; } }
-
 		public virtual Spell ChooseSpell( Mobile c )
 		{
 			Spell spell = null;
@@ -357,64 +347,74 @@ namespace Server.Mobiles
 				if( spell != null )
 					return spell;
 
+				if( IsNecromancer )
+				{
+					double psDamage = ( ( m_Mobile.Skills[ SkillName.SpiritSpeak ].Value - c.Skills[ SkillName.MagicResist ].Value ) / 10 ) + ( c.Player ? 18 : 30 );
+
+					if( psDamage > c.Hits )
+						return new PainSpikeSpell( m_Mobile, null );
+				}
+
 				switch (Utility.Random(16))
 				{
 					case 0:
 					case 1:	// Poison them
 						{
-							//m_Mobile.DebugSay( "Attempting to poison" );
+							if (c.Poisoned)
+								goto default;
 
-							if (!c.Poisoned)
-								spell = new PoisonSpell(m_Mobile, null);
+							m_Mobile.DebugSay( "Attempting to poison" );
 
+							spell = new PoisonSpell(m_Mobile, null);
 							break;
 						}
-					case 2:	// Bless ourselves.
+					case 2:	// Bless ourselves
 						{
-							//m_Mobile.DebugSay( "Blessing myself" );
+							m_Mobile.DebugSay( "Blessing myself" );
 
 							spell = new BlessSpell(m_Mobile, null);
 							break;
 						}
 					case 3:
-					case 4: // Curse them.
+					case 4: // Curse them
 						{
-							//m_Mobile.DebugSay( "Attempting to curse" );
+							m_Mobile.DebugSay( "Attempting to curse" );
 
-							spell = GetRandomCurse();
+							spell = GetRandomCurseSpell();
 							break;
 						}
-					case 5:	// Paralyze them.
+					case 5:	// Paralyze them
 						{
-							//m_Mobile.DebugSay( "Attempting to paralyze" );
+							if (m_Mobile.Skills[ SkillName.Magery ].Value <= 50.0)
+								goto default;
 
-							if (m_Mobile.Skills[SkillName.Magery].Value > 50.0)
-								spell = new ParalyzeSpell(m_Mobile, null);
+							m_Mobile.DebugSay( "Attempting to paralyze" );
 
+							spell = new ParalyzeSpell(m_Mobile, null);
 							break;
 						}
 					case 6: // Drain mana
 						{
-							//m_Mobile.DebugSay( "Attempting to drain mana" );
+							m_Mobile.DebugSay( "Attempting to drain mana" );
 
 							spell = GetRandomManaDrainSpell();
 							break;
 						}
-					case 7:
+					case 7: // Invis ourselves
 						{
-							//m_Mobile.DebugSay( "Attempting to Invis" );
-
 							if (Utility.RandomBool())
-								spell = new InvisibilitySpell(m_Mobile, null);
+								goto default;
 
+							m_Mobile.DebugSay( "Attempting to invis myself" );
+
+							spell = new InvisibilitySpell(m_Mobile, null);
 							break;
 						}
-
-					default: // Damage them.
+					default: // Damage them
 						{
-							//m_Mobile.DebugSay( "Just doing damage" );
+							m_Mobile.DebugSay( "Just doing damage" );
 
-							spell = GetRandomDamage();
+							spell = GetRandomDamageSpell();
 							break;
 						}
 				}
@@ -429,12 +429,12 @@ namespace Server.Mobiles
 
 			switch( Utility.Random( 3 ) )
 			{
-				default:
 				case 0: // Poison them
 					{
-						if( !c.Poisoned )
-							spell = new PoisonSpell( m_Mobile, null );
+						if( c.Poisoned )
+							goto case 1;
 
+						spell = new PoisonSpell( m_Mobile, null );
 						break;
 					}
 				case 1: // Deal some damage
@@ -443,9 +443,9 @@ namespace Server.Mobiles
 
 						break;
 					}
-				case 2: // Set up a combo
+				default: // Set up a combo
 					{
-						if( m_Mobile.Mana < 40 && m_Mobile.Mana > 15 )
+						if( m_Mobile.Mana > 15 && m_Mobile.Mana < 40 )
 						{
 							if( c.Paralyzed && !c.Poisoned )
 							{
@@ -460,7 +460,7 @@ namespace Server.Mobiles
 						}
 						else if( m_Mobile.Mana > 60 )
 						{
-							if( Utility.Random( 2 ) == 0 && !c.Paralyzed && !c.Frozen && !c.Poisoned )
+							if( Utility.RandomBool() && !c.Paralyzed && !c.Frozen && !c.Poisoned )
 							{
 								m_Combo = 0;
 								spell = new ParalyzeSpell( m_Mobile, null );
@@ -499,15 +499,16 @@ namespace Server.Mobiles
 			{
 				if( !c.Poisoned )
 					spell = new PoisonSpell( m_Mobile, null );
+				else if ( IsNecromancer )
+					spell = new StrangleSpell( m_Mobile, null );
 
 				++m_Combo; // Move to next spell
 			}
 
 			if( m_Combo == 3 && spell == null )
 			{
-				switch( Utility.Random( 3 ) )
+				switch( Utility.Random( IsNecromancer ? 4 : 3 ) )
 				{
-					default:
 					case 0:
 						{
 							if( c.Int < c.Dex )
@@ -531,6 +532,12 @@ namespace Server.Mobiles
 							m_Combo = -1; // Reset combo state
 							break;
 						}
+					default:
+						{
+							spell = new PainSpikeSpell( m_Mobile, null );
+							m_Combo = -1; // Reset combo state
+							break;
+						}
 				}
 			}
 			else if( m_Combo == 4 && spell == null )
@@ -550,7 +557,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				double del = ScaleByMagery( 3.0 );
+				double del = ScaleBySkill( 3.0, SkillName.Magery );
 				double min = 6.0 - ( del * 0.75 );
 				double max = 6.0 - ( del * 1.25 );
 
@@ -573,8 +580,7 @@ namespace Server.Mobiles
 
 				if( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 				{
-					if( m_Mobile.Debug )
-						m_Mobile.DebugSay( "Something happened to my combatant, so I am going to fight {0}", m_Mobile.FocusMob.Name );
+					m_Mobile.DebugSay( "Something happened to my combatant, so I am going to fight {0}", m_Mobile.FocusMob.Name );
 
 					m_Mobile.Combatant = c = m_Mobile.FocusMob;
 					m_Mobile.FocusMob = null;
@@ -650,8 +656,7 @@ namespace Server.Mobiles
 
 					if( flee )
 					{
-						if( m_Mobile.Debug )
-							m_Mobile.DebugSay( "I am going to flee from {0}", c.Name );
+						m_Mobile.DebugSay( "I am going to flee from {0}", c.Name );
 
 						Action = ActionType.Flee;
 						return true;
@@ -784,8 +789,7 @@ namespace Server.Mobiles
 			}
 			else if( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
 			{
-				if( m_Mobile.Debug )
-					m_Mobile.DebugSay( "I am scared of {0}", m_Mobile.FocusMob.Name );
+				m_Mobile.DebugSay( "I am scared of {0}", m_Mobile.FocusMob.Name );
 
 				RunFrom( m_Mobile.FocusMob );
 				m_Mobile.FocusMob = null;

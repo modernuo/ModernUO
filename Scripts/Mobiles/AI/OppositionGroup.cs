@@ -35,7 +35,7 @@ namespace Server
 				bool contains = false;
 
 				for ( int j = 0; !contains && j < group.Length; ++j )
-					contains = ( type == group[j] );
+					contains = group[j].IsAssignableFrom( type );
 
 				if ( contains )
 					return i;
@@ -107,7 +107,8 @@ namespace Server
 					typeof( Unicorn ),
 					typeof( Wisp ),
 					typeof( Treefellow ),
-					typeof( MLDryad )
+					typeof( MLDryad ),
+					typeof( Satyr )
 				},
 				new Type[]
 				{

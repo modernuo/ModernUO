@@ -19,7 +19,7 @@ namespace Server.Mobiles
 			SetInt( 451, 550 );
 
 			SetHits( 551, 650 );
-			
+
 			SetDamage( 21, 25 );
 
 			SetDamageType( ResistanceType.Physical, 30 );
@@ -48,7 +48,10 @@ namespace Server.Mobiles
 		{
 			AddLoot( LootPack.FilthyRich );
 		}
-		 
+
+		public override Poison HitPoison{ get{ return Poison.Deadly; } }
+		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+
 		public override int GetAngerSound()
 		{
 			return 0x56d;

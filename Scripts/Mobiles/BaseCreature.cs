@@ -286,8 +286,6 @@ namespace Server.Mobiles
 		#region Bonding
 		public const bool BondingEnabled = true;
 
-		public virtual bool IsNecromancer { get { return ( Skills[ SkillName.Necromancy ].Value > 50 ); } }
-
 		public virtual bool IsBondable{ get{ return ( BondingEnabled && !Summoned ); } }
 		public virtual TimeSpan BondingDelay{ get{ return TimeSpan.FromDays( 7.0 ); } }
 		public virtual TimeSpan BondingAbandonDelay{ get{ return TimeSpan.FromDays( 1.0 ); } }
@@ -525,7 +523,7 @@ namespace Server.Mobiles
 		public virtual int BreathRange{ get{ return RangePerception; } }
 
 		// Damage types
-		public virtual int BreathChaosDamage { get { return 0; } }
+		public virtual int BreathChaosDamage{ get { return 0; } }
 		public virtual int BreathPhysicalDamage{ get{ return 0; } }
 		public virtual int BreathFireDamage{ get{ return 100; } }
 		public virtual int BreathColdDamage{ get{ return 0; } }
@@ -648,7 +646,7 @@ namespace Server.Mobiles
 				}
 			}
 		}
- 
+
 		public virtual int BreathComputeDamage()
 		{
 			int damage = (int)(Hits * BreathDamageScalar);
@@ -683,7 +681,7 @@ namespace Server.Mobiles
 				{
 					loc = target.Location;
 					map = target.Map;
-				} 
+				}
 				else
 				{
 					bool validLocation = false;
@@ -868,6 +866,9 @@ namespace Server.Mobiles
 				return false;
 
 			BaseCreature c = (BaseCreature)m;
+
+			if ( ( FightMode == FightMode.Evil && m.Karma < 0 ) || ( c.FightMode == FightMode.Evil && Karma < 0 ) )
+				return true;
 
 			return ( m_iTeam != c.m_iTeam || ( (m_bSummoned || m_bControlled) != (c.m_bSummoned || c.m_bControlled) )/* || c.Combatant == this*/ );
 		}
@@ -1351,6 +1352,20 @@ namespace Server.Mobiles
 
 		public virtual void AlterMeleeDamageFrom( Mobile from, ref int damage )
 		{
+			#region Mondain's Legacy
+			if ( from != null && from.Talisman is BaseTalisman )
+			{
+				BaseTalisman talisman = (BaseTalisman)from.Talisman;
+
+				if ( talisman.Killer != null && talisman.Killer.Type != null )
+				{
+					Type type = talisman.Killer.Type;
+
+					if ( type.IsAssignableFrom( GetType() ) )
+						damage = (int)( damage * ( 1 + (double)talisman.Killer.Amount / 100 ) );
+				}
+			}
+			#endregion
 		}
 
 		public virtual void AlterMeleeDamageTo( Mobile to, ref int damage )
@@ -1371,19 +1386,17 @@ namespace Server.Mobiles
 			int hides = Hides;
 			int scales = Scales;
 
-			if ( (feathers == 0 && wool == 0 && meat == 0 && hides == 0 && scales == 0) || Summoned || IsBonded || corpse.Animated )
+			if ( ( feathers == 0 && wool == 0 && meat == 0 && hides == 0 && scales == 0 ) || Summoned || IsBonded || corpse.Animated )
 			{
-				if ( corpse.Animated ) 
-					corpse.SendLocalizedMessageTo( from, 500464 );	// Use this on corpses to carve away meat and hide
+				if ( corpse.Animated )
+					corpse.SendLocalizedMessageTo( from, 500464 ); // Use this on corpses to carve away meat and hide
 				else
-				from.SendLocalizedMessage( 500485 ); // You see nothing useful to carve from the corpse.
+					from.SendLocalizedMessage( 500485 ); // You see nothing useful to carve from the corpse.
 			}
 			else
 			{
-				if( Core.ML && from.Race == Race.Human )
-				{
-					hides = (int)Math.Ceiling( hides * 1.1 );	//10% Bonus Only applies to Hides, Ore & Logs
-				}
+				if ( Core.ML && from.Race == Race.Human )
+					hides = (int)Math.Ceiling( hides * 1.1 ); // 10% bonus only applies to hides, ore & logs
 
 				if ( corpse.Map == Map.Felucca )
 				{
@@ -1427,6 +1440,7 @@ namespace Server.Mobiles
 				if ( hides != 0 )
 				{
 					Item holding = from.Weapon as Item;
+
 					if ( Core.AOS && ( holding is SkinningKnife /* TODO: || holding is ButcherWarCleaver || with is ButcherWarCleaver */ ) )
 					{
 						Item leather = null;
@@ -1447,7 +1461,9 @@ namespace Server.Mobiles
 								from.SendLocalizedMessage( 500471 ); // You skin it, and the hides are now in the corpse.
 							}
 							else
+							{
 								from.SendLocalizedMessage( 1073555 ); // You skin it and place the cut-up hides in your backpack.
+							}
 						}
 					}
 					else
@@ -3684,6 +3700,27 @@ namespace Server.Mobiles
 
 		#region Pack & Loot
 
+		#region Mondain's Legacy
+		public void PackArcaneScroll( int min, int max )
+		{
+			PackArcaneScroll( Utility.RandomMinMax( min, max ) );
+		}
+
+		public void PackArcaneScroll( int amount )
+		{
+			for ( int i = 0; i < amount; ++i )
+				PackArcaneScroll();
+		}
+
+		public void PackArcaneScroll()
+		{
+			if ( !Core.ML )
+				return;
+
+			PackItem( Loot.Construct( Loot.ArcanistScrollTypes ) );
+		}
+		#endregion
+
 		public void PackPotion()
 		{
 			PackItem( Loot.RandomPotion() );
@@ -3694,7 +3731,7 @@ namespace Server.Mobiles
 			if ( !Core.ML || chance <= Utility.RandomDouble() )
 				return;
 
-			PackItem( Loot.Construct( Loot.ArcaneScrollTypes ) );
+			PackItem( Loot.Construct( Loot.ArcanistScrollTypes ) );
 		}
 
 		public void PackNecroScroll( int index )
@@ -4445,10 +4482,19 @@ namespace Server.Mobiles
 			return rights;
 		}
 
+		#region Mondain's Legacy
+		public virtual bool GivesMLMinorArtifact{ get{ return false; } }
+		#endregion
+
 		public virtual void OnKilledBy( Mobile mob )
 		{
 			if ( m_Paragon && Paragon.CheckArtifactChance( mob, this ) )
 				Paragon.GiveArtifactTo( mob );
+
+			#region Mondain's Legacy
+			if ( GivesMLMinorArtifact && MondainsLegacy.CheckArtifactChance( mob, this ) )
+				MondainsLegacy.GiveArtifactTo( mob );
+			#endregion
 		}
 
 		public override void OnDeath( Container c )
@@ -4814,22 +4860,6 @@ namespace Server.Mobiles
 			return true;
 		}
 
-		private static Type[] m_MinorArtifactsMl = new Type[]
-		{
-			typeof( AegisOfGrace ), typeof( BladeDance ), typeof( Bonesmasher ),
-			typeof( Boomstick ), typeof( FeyLeggings ), typeof( FleshRipper ),
-			typeof( HelmOfSwiftness ), typeof( PadsOfTheCuSidhe ), typeof( QuiverOfRage ),
-			typeof( QuiverOfElements ), typeof( RaedsGlory ), typeof( RighteousAnger ),
-			typeof( RobeOfTheEclipse ), typeof( RobeOfTheEquinox ), typeof( SoulSeeker ),
-			typeof( TalonBite ), typeof( WildfireBow ), typeof( Windsong ),
-			// TODO: Brightsight lenses, Bloodwood spirit, Totem of the void
-		};
-
-		public static Type[] MinorArtifactsMl
-		{
-			get { return m_MinorArtifactsMl; }
-		}
-
 		private static bool EnableRummaging = true;
 
 		private const double ChanceToRummage = 0.5; // 50%
@@ -5004,10 +5034,10 @@ namespace Server.Mobiles
 			if ( CanBreath && DateTime.Now >= m_NextBreathTime ) // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
 			{
 				Mobile target = this.Combatant;
-				
+
 				if( target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful( target ) && target.Map == this.Map && !IsDeadBondedPet && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
 				{
-					if( ( DateTime.Now - m_NextBreathTime ) < TimeSpan.FromSeconds( 30 ) ) 
+					if( ( DateTime.Now - m_NextBreathTime ) < TimeSpan.FromSeconds( 30 ) )
 					{
 						BreathStart( target );
 					}

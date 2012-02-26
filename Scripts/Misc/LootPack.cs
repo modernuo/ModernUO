@@ -501,6 +501,21 @@ namespace Server
 			{
 				new LootPackEntry( false, PotionItems,		100.00, 1 )
 			} );
+
+		/*
+		// TODO: Uncomment once added
+		#region Mondain's Legacy
+		public static readonly LootPackItem[] ParrotItem = new LootPackItem[]
+			{
+				new LootPackItem( typeof( ParrotItem ), 1 )
+			};
+
+		public static readonly LootPack Parrot = new LootPack( new LootPackEntry[]
+			{
+				new LootPackEntry( false, ParrotItem, 10.00, 1 )
+			} );
+		#endregion
+		*/
 	}
 
 	public class LootPackEntry
@@ -561,6 +576,37 @@ namespace Server
 			return ( m.Map == Map.Tokuno );
 		}
 
+		#region Mondain's Legacy
+		private static bool IsMondain( Mobile m )
+		{
+			if ( m.Region.IsPartOf( "Twisted Weald" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Sanctuary" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Prism of Light" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Citadel" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Bedlam" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Blighted Grove" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Painted Caves" ) )
+				return true;
+
+			if ( m.Region.IsPartOf( "Palace of Paroxysmus" ) )
+				return true;
+
+			return false;
+		}
+		#endregion
+
 		public Item Construct( Mobile from, int luckChance, bool spawning )
 		{
 			if ( m_AtSpawnTime != spawning )
@@ -578,7 +624,7 @@ namespace Server
 				LootPackItem item = m_Items[i];
 
 				if ( rnd < item.Chance )
-					return Mutate( from, luckChance, item.Construct( IsInTokuno( from ) ) );
+					return Mutate( from, luckChance, item.Construct( IsInTokuno( from ), IsMondain( from ) ) );
 
 				rnd -= item.Chance;
 			}
@@ -850,18 +896,18 @@ namespace Server
 			return Loot.RandomScroll( minCircle * 8, (maxCircle * 8) + 7, SpellbookType.Regular );
 		}
 
-		public Item Construct( bool inTokuno )
+		public Item Construct( bool inTokuno, bool isMondain )
 		{
 			try
 			{
 				Item item;
 
 				if ( m_Type == typeof( BaseRanged ) )
-					item = Loot.RandomRangedWeapon( inTokuno );
+					item = Loot.RandomRangedWeapon( inTokuno, isMondain );
 				else if ( m_Type == typeof( BaseWeapon ) )
-					item = Loot.RandomWeapon( inTokuno );
+					item = Loot.RandomWeapon( inTokuno, isMondain );
 				else if ( m_Type == typeof( BaseArmor ) )
-					item = Loot.RandomArmorOrHat( inTokuno );
+					item = Loot.RandomArmorOrHat( inTokuno, isMondain );
 				else if ( m_Type == typeof( BaseShield ) )
 					item = Loot.RandomShield();
 				else if ( m_Type == typeof( BaseJewel ) )
