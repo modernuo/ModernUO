@@ -60,7 +60,7 @@ namespace Server.SkillHandlers
 				Item oneHanded = m.FindItemOnLayer( Layer.OneHanded );
 				Item twoHanded = m.FindItemOnLayer( Layer.TwoHanded );
 
-				if ( Core.AOS )
+				if ( Core.AOS && m.Player )
 				{
 					if ( !CheckOkayHolding( oneHanded ) )
 						m.AddToBackpack( oneHanded );

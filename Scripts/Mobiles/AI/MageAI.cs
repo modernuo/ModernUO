@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
 		public virtual bool SmartAI
 		{
-			get { return ( m_Mobile is BaseVendor || m_Mobile is BaseEscortable/* || m_Mobile is Changeling*/ ); } // TODO: Uncomment once added
+			get { return ( m_Mobile is BaseVendor || m_Mobile is BaseEscortable || m_Mobile is Changeling ); }
 		}
 
 		public virtual bool IsNecromancer
@@ -63,7 +63,7 @@ namespace Server.Mobiles
 				Action = ActionType.Combat;
 				m_NextCastTime = DateTime.Now;
 			}
-			else if( SmartAI && m_Mobile.Mana < m_Mobile.ManaMax )
+			else if( SmartAI && m_Mobile.Mana < m_Mobile.ManaMax && !m_Mobile.Meditating )
 			{
 				m_Mobile.DebugSay( "I am going to meditate" );
 
@@ -223,7 +223,7 @@ namespace Server.Mobiles
 		public virtual bool UseNecromancy()
 		{
 			if ( IsNecromancer )
-				return ( Utility.Random( m_Mobile.Skills[ SkillName.Necromancy ].BaseFixedPoint ) > Utility.Random( m_Mobile.Skills[ SkillName.Magery ].BaseFixedPoint ) );
+				return ( Utility.Random( m_Mobile.Skills[ SkillName.Magery ].BaseFixedPoint + m_Mobile.Skills[ SkillName.Necromancy ].BaseFixedPoint ) >= m_Mobile.Skills[ SkillName.Magery ].BaseFixedPoint );
 
 			return false;
 		}
@@ -447,7 +447,7 @@ namespace Server.Mobiles
 					{
 						if( m_Mobile.Mana > 15 && m_Mobile.Mana < 40 )
 						{
-							if( c.Paralyzed && !c.Poisoned )
+							if( c.Paralyzed && !c.Poisoned && !m_Mobile.Meditating )
 							{
 								m_Mobile.DebugSay( "I am going to meditate" );
 
@@ -1028,9 +1028,6 @@ namespace Server.Mobiles
 			else if( isReveal && m_RevealTarget != null )
 			{
 				targ.Invoke( m_Mobile, m_RevealTarget );
-
-				if( SmartAI )
-					m_Mobile.NextReacquireTime = DateTime.Now;
 			}
 			else if( isTeleport && toTarget != null )
 			{

@@ -104,7 +104,7 @@ namespace Server.Items
 
 			for ( int i = 0; i < types.Length; i++ )
 			{
-				if ( types[ i ] == type )
+				if ( types[ i ].IsAssignableFrom( type ) )
 					return true;
 			}
 

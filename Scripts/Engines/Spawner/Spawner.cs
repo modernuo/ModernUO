@@ -29,7 +29,7 @@ namespace Server.Mobiles
 		private WayPoint m_WayPoint;
 
 		public bool IsFull{ get{ return ( m_Spawned != null && m_Spawned.Count >= m_Count ); } }
-		
+
 		public List<string> SpawnNames
 		{
 			get { return m_SpawnNames; }
@@ -55,7 +55,7 @@ namespace Server.Mobiles
 			s.m_SpawnNames = new List<string>( m_SpawnNames );
 			s.m_Spawned = new List<ISpawnable>();
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Count
 		{
@@ -98,12 +98,12 @@ namespace Server.Mobiles
 			set { m_HomeRange = value; InvalidateProperties(); }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )] 
-		public int WalkingRange 
-		{ 
-		   get { return m_WalkingRange; } 
-		   set { m_WalkingRange = value; InvalidateProperties(); } 
-		} 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int WalkingRange
+		{
+			get { return m_WalkingRange; }
+			set { m_WalkingRange = value; InvalidateProperties(); }
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Team
@@ -196,12 +196,12 @@ namespace Server.Mobiles
 			m_Count = amount;
 			m_Team = team;
 			m_HomeRange = homeRange;
-			m_WalkingRange = -1; 
+			m_WalkingRange = -1;
 			m_SpawnNames = spawnNames;
 			m_Spawned = new List<ISpawnable>();
 			DoTimer( TimeSpan.FromSeconds( 1 ) );
 		}
-			
+
 		public Spawner( Serial serial ) : base( serial )
 		{
 		}
@@ -225,14 +225,14 @@ namespace Server.Mobiles
 
 				list.Add( 1060656, m_Count.ToString() ); // amount to make: ~1_val~
 				list.Add( 1061169, m_HomeRange.ToString() ); // range ~1_val~
-				list.Add( 1060658, "walking range\t{0}", m_WalkingRange ); // ~1_val~: ~2_val~ 
+				list.Add( 1060658, "walking range\t{0}", m_WalkingRange ); // ~1_val~: ~2_val~
 
 				list.Add( 1060659, "group\t{0}", m_Group ); // ~1_val~: ~2_val~
 				list.Add( 1060660, "team\t{0}", m_Team ); // ~1_val~: ~2_val~
 				list.Add( 1060661, "speed\t{0} to {1}", m_MinDelay, m_MaxDelay ); // ~1_val~: ~2_val~
 
-				for ( int i = 0; i < 2 && i < m_SpawnNames.Count; ++i )
-					list.Add( 1060662 + i, "{0}\t{1}", m_SpawnNames[i], CountCreatures( m_SpawnNames[i] ) );
+				if ( m_Spawned.Count != 0 )
+					list.Add( SpawnedStats() );
 			}
 			else
 			{
@@ -355,7 +355,7 @@ namespace Server.Mobiles
 				Spawn();
 			}
 		}
-		
+
 		public void Respawn()
 		{
 			RemoveSpawned();
@@ -363,13 +363,13 @@ namespace Server.Mobiles
 			for ( int i = 0; i < m_Count; i++ )
 				Spawn();
 		}
-		
+
 		public void Spawn()
 		{
 			if ( SpawnNamesCount > 0 )
 				Spawn( Utility.Random( SpawnNamesCount ) );
 		}
-		
+
 		public void Spawn( string creatureName )
 		{
 			for ( int i = 0; i < m_SpawnNames.Count; i++ )
@@ -542,7 +542,7 @@ namespace Server.Mobiles
 			if (spawned is BaseCreature)
 			{
 				BaseCreature bc = (BaseCreature)spawned;
-					
+
 				if( m_WalkingRange >= 0 )
 					bc.RangeHome = m_WalkingRange;
 				else
@@ -636,6 +636,33 @@ namespace Server.Mobiles
 			}
 		}
 
+		public string SpawnedStats()
+		{
+			Defrag();
+
+			Dictionary<string, int> counts = new Dictionary<string, int>();
+
+			foreach ( ISpawnable spawned in m_Spawned )
+			{
+				string name = spawned.GetType().Name;
+
+				if ( counts.ContainsKey( name ) )
+					++counts[name];
+				else
+					counts[name] = 1;
+			}
+
+			List<string> names = new List<string>( counts.Keys );
+			names.Sort();
+
+			StringBuilder result = new StringBuilder();
+
+			for ( int i = 0; i < names.Count; ++i )
+				result.AppendFormat( "{0}{1}: {2}", ( i == 0 ) ? "" : "<BR>", names[i], counts[names[i]] );
+
+			return result.ToString();
+		}
+
 		public int CountCreatures( string creatureName )
 		{
 			Defrag();
@@ -658,12 +685,12 @@ namespace Server.Mobiles
 				IEntity e = m_Spawned[i];
 
 				if ( Insensitive.Equals( creatureName, e.GetType().Name ) )
-						e.Delete();
+					e.Delete();
 			}
 
 			InvalidateProperties();
 		}
-		
+
 		public void RemoveSpawned()
 		{
 			Defrag();
@@ -673,7 +700,7 @@ namespace Server.Mobiles
 
 			InvalidateProperties();
 		}
-		
+
 		public void BringToHome()
 		{
 			Defrag();
@@ -683,7 +710,6 @@ namespace Server.Mobiles
 				ISpawnable e = m_Spawned[i];
 
 				e.MoveToWorld( this.Location, this.Map );
-
 			}
 		}
 
@@ -696,7 +722,7 @@ namespace Server.Mobiles
 			if ( m_Timer != null )
 				m_Timer.Stop();
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -714,7 +740,7 @@ namespace Server.Mobiles
 			writer.Write( m_Team );
 			writer.Write( m_HomeRange );
 			writer.Write( m_Running );
-			
+
 			if ( m_Running )
 				writer.WriteDeltaTime( m_End );
 
@@ -765,7 +791,7 @@ namespace Server.Mobiles
 				case 1:
 				{
 					m_Group = reader.ReadBool();
-					
+
 					goto case 0;
 				}
 
@@ -782,7 +808,7 @@ namespace Server.Mobiles
 
 					if ( m_Running )
 						ts = reader.ReadDeltaTime() - DateTime.Now;
-					
+
 					int size = reader.ReadInt();
 
 					m_SpawnNames = new List<string>( size );

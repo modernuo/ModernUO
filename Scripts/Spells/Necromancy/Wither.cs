@@ -43,9 +43,31 @@ namespace Server.Spells.Necromancy
 				{
 					List<Mobile> targets = new List<Mobile>();
 
+					BaseCreature cbc = Caster as BaseCreature;
+					bool isMonster = ( cbc != null && !cbc.Controlled && !cbc.Summoned );
+
 					foreach( Mobile m in Caster.GetMobilesInRange( Core.ML ? 4 : 5 ) )
-						if( Caster != m && Caster.InLOS( m ) && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
+					{
+						if( Caster != m && Caster.InLOS( m ) && ( isMonster || SpellHelper.ValidIndirectTarget( Caster, m ) ) && Caster.CanBeHarmful( m, false ) )
+						{
+							if ( isMonster )
+							{
+								if ( m is BaseCreature )
+								{
+									BaseCreature bc = (BaseCreature)m;
+
+									if ( !bc.Controlled && !bc.Summoned && bc.Team == cbc.Team )
+										continue;
+								}
+								else if ( !m.Player )
+								{
+									continue;
+								}
+							}
+
 							targets.Add( m );
+						}
+					}
 
 					Effects.PlaySound( Caster.Location, map, 0x1FB );
 					Effects.PlaySound( Caster.Location, map, 0x10B );

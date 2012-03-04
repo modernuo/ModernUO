@@ -654,6 +654,9 @@ namespace Server.Mobiles
 			if ( IsParagon )
 				damage = (int)(damage / Paragon.HitsBuff);
 
+			if ( damage > 200 )
+				damage = 200;
+
 			return damage;
 		}
 
@@ -5007,7 +5010,58 @@ namespace Server.Mobiles
 		{
 			patient.PlaySound( HealSound );
 		}
+		#endregion
 
+		#region Damaging Aura
+		private DateTime m_NextAura;
+
+		public virtual bool HasAura { get { return false; } }
+		public virtual TimeSpan AuraInterval { get { return TimeSpan.FromSeconds( 5 ); } }
+		public virtual int AuraRange { get { return 4; } }
+
+		public virtual int AuraBaseDamage { get { return 5; } }
+		public virtual int AuraPhysicalDamage { get{ return 0; } }
+		public virtual int AuraFireDamage { get{ return 100; } }
+		public virtual int AuraColdDamage { get{ return 0; } }
+		public virtual int AuraPoisonDamage { get{ return 0; } }
+		public virtual int AuraEnergyDamage { get{ return 0; } }
+		public virtual int AuraChaosDamage { get { return 0; } }
+
+		public virtual void AuraDamage()
+		{
+			if ( !Alive || IsDeadBondedPet )
+				return;
+
+			List<Mobile> list = new List<Mobile>();
+
+			foreach ( Mobile m in GetMobilesInRange( AuraRange ) )
+			{
+				if ( m == this || !CanBeHarmful( m, false ) || ( Core.AOS && !InLOS( m ) ) )
+					continue;
+
+				if ( m is BaseCreature )
+				{
+					BaseCreature bc = (BaseCreature)m;
+
+					if ( bc.Controlled || bc.Summoned || bc.Team != Team )
+						list.Add( m );
+				}
+				else if ( m.Player )
+				{
+					list.Add( m );
+				}
+			}
+
+			foreach ( Mobile m in list )
+			{
+				AOS.Damage( m, this, AuraBaseDamage, AuraPhysicalDamage, AuraFireDamage, AuraColdDamage, AuraPoisonDamage, AuraEnergyDamage, AuraChaosDamage );
+				AuraEffect( m );
+			}
+		}
+
+		public virtual void AuraEffect( Mobile m )
+		{
+		}
 		#endregion
 
 		public virtual void OnThink()
@@ -5062,6 +5116,12 @@ namespace Server.Mobiles
 
 					m_NextHealTime = DateTime.Now + TimeSpan.FromSeconds( HealInterval );
 				}
+			}
+
+			if ( HasAura && DateTime.Now >= m_NextAura )
+			{
+				AuraDamage();
+				m_NextAura = DateTime.Now + AuraInterval;
 			}
 		}
 

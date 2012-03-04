@@ -9,7 +9,6 @@ namespace Server.Mobiles
 	[CorpseName( "a troglodyte corpse" )]
 	public class Troglodyte : BaseCreature
 	{
-
 		[Constructable]
 		public Troglodyte() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{
@@ -37,6 +36,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.MagicResist, 51.8, 65.0 );
 			SetSkill( SkillName.Tactics, 80.4, 94.7 );
 			SetSkill( SkillName.Wrestling, 70.2, 93.5 );
+			SetSkill( SkillName.Healing, 70.0, 95.0 );
 
 			Fame = 5000;
 			Karma = -5000;
@@ -45,10 +45,9 @@ namespace Server.Mobiles
 
 			PackItem( new Bandage( 5 ) );  // How many?
 			PackItem( new Ribs() );
-
 		}
 
-			public override bool CanHeal { get { return true; } }
+		public override bool CanHeal { get { return true; } }
 
 		public override void GenerateLoot()
 		{

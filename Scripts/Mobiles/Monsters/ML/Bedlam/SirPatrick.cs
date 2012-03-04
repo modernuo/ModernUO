@@ -54,13 +54,21 @@ namespace Server.Mobiles
 				DrainLife();
 		}
 
+		public override void OnGotMeleeAttack( Mobile attacker )
+		{
+			base.OnGotMeleeAttack( attacker );
+
+			if ( Utility.RandomDouble() < 0.1 )
+				DrainLife();
+		}
+
 		public virtual void DrainLife()
 		{
 			List<Mobile> list = new List<Mobile>();
 
 			foreach ( Mobile m in GetMobilesInRange( 2 ) )
 			{
-				if ( m == this || !CanBeHarmful( m ) )
+				if ( m == this || !CanBeHarmful( m, false ) || ( Core.AOS && !InLOS( m ) ) )
 					continue;
 
 				if ( m is BaseCreature )

@@ -68,7 +68,7 @@ namespace Server.Spells.Necromancy
 				bool contains = ( types.Length == 0 );
 
 				for ( int j = 0; !contains && j < types.Length; ++j )
-					contains = ( types[j] == type );
+					contains = types[j].IsAssignableFrom( type );
 
 				if ( contains )
 					return group;

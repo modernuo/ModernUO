@@ -37,6 +37,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.MagicResist, 90.1, 105.0 );
 			SetSkill( SkillName.Tactics, 80.1, 100.0 );
 			SetSkill( SkillName.Wrestling, 80.1, 100.0 );
+			SetSkill( SkillName.Necromancy, 90, 110.0 );
+			SetSkill( SkillName.SpiritSpeak, 90.0, 110.0 );
 
 			Fame = 15200;
 			Karma = -15200;

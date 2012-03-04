@@ -36,13 +36,13 @@ namespace Server
 
 			if ( m.AddToBackpack( item ) )
 			{
-				m.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
 				m.SendLocalizedMessage( 1072223 ); // An item has been placed in your backpack.
+				m.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
 			}
 			else if ( m.BankBox.TryDropItem( m, item, false ) )
 			{
-				m.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
 				m.SendLocalizedMessage( 1072224 ); // An item has been placed in your bank box.
+				m.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
 			}
 			else
 			{

@@ -212,7 +212,7 @@ namespace Server.Mobiles
 			{
 				DrainLife( m_Mobile, m_From );
 
-				if ( ++m_Count == 5 )
+				if ( Running && ++m_Count == 5 )
 					EndLifeDrain( m_Mobile );
 			}
 		}

@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		[Constructable]
 		public Reptalon() : base( "a reptalon", 0x114, 0x3E90, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.35 )
 		{
-			BaseSoundID = 0x16A; // TODO check
+			BaseSoundID = 0x16A;
 
 			SetStr( 1001, 1025 );
 			SetDex( 152, 164 );
