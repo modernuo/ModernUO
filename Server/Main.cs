@@ -28,10 +28,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-#if Framework_4_0
 using System.Threading.Tasks;
-#endif
-
 using Server;
 using Server.Accounting;
 using Server.Gumps;
@@ -112,11 +109,7 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-#if Framework_4_0
 		public static readonly bool Is64Bit = Environment.Is64BitProcess;
-#else
-		public static readonly bool Is64Bit = (IntPtr.Size == 8);	//Returns the size for the current /process/
-#endif
 
 		private static bool m_MultiProcessor;
 		private static int m_ProcessorCount;
@@ -668,17 +661,10 @@ namespace Server
 			if( a == null )
 				return;
 
-#if Framework_4_0
 			Parallel.ForEach(a.GetTypes(), t => 
 				{
 					VerifyType(t);
 				});
-#else
-			foreach (Type t in a.GetTypes())
-			{
-				VerifyType(t);
-			}
-#endif
 		}
 	}
 

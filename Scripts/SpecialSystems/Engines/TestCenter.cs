@@ -121,29 +121,13 @@ namespace Server.Misc
 		private static void ChangeSkill( Mobile from, string name, double value )
 		{
 			SkillName index;
-#if Framework_4_0
+
 			if( !Enum.TryParse( name, true, out index ) || (!Core.SE && (int)index > 51) || (!Core.AOS && (int)index > 48) )
 			{
 				from.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
 				return;
 			}
-#else
-			try
-			{
-				index = (SkillName)Enum.Parse( typeof( SkillName ), name, true );
-			}
-			catch
-			{
-				from.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
-				return;
-			}
 
-			if ( ( !Core.SE && (int)index > 51 ) || ( !Core.AOS && (int)index > 48 ) )
-			{
-				from.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
-				return;
-			}
-#endif
 			Skill skill = from.Skills[index];
 
 			if ( skill != null )

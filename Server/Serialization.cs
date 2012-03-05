@@ -38,9 +38,7 @@ namespace Server
 
 		public abstract string ReadString();
 		public abstract DateTime ReadDateTime();
-#if Framework_4_0
 		public abstract DateTimeOffset ReadDateTimeOffset();
-#endif
 		public abstract TimeSpan ReadTimeSpan();
 		public abstract DateTime ReadDeltaTime();
 		public abstract decimal ReadDecimal();
@@ -85,7 +83,7 @@ namespace Server
 
 		public abstract List<BaseGuild> ReadStrongGuildList();
 		public abstract List<T> ReadStrongGuildList<T>() where T : BaseGuild;
-#if Framework_4_0
+
 		public abstract HashSet<Item> ReadItemSet();
 		public abstract HashSet<T> ReadItemSet<T>() where T: Item;
 
@@ -94,7 +92,7 @@ namespace Server
 
 		public abstract HashSet<BaseGuild> ReadGuildSet();
 		public abstract HashSet<T> ReadGuildSet<T>() where T : BaseGuild;
-#endif
+
 		public abstract Race ReadRace();
 
 		public abstract bool End();
@@ -110,9 +108,7 @@ namespace Server
 
 		public abstract void Write( string value );
 		public abstract void Write( DateTime value );
-#if Framework_4_0
 		public abstract void Write( DateTimeOffset value );
-#endif
 		public abstract void Write( TimeSpan value );
 		public abstract void Write( decimal value );
 		public abstract void Write( long value );
@@ -162,37 +158,37 @@ namespace Server
 
 		public abstract void WriteItemList<T>( List<T> list ) where T : Item;
 		public abstract void WriteItemList<T>( List<T> list, bool tidy ) where T : Item;
-#if Framework_4_0
+
 		public abstract void Write( HashSet<Item> list );
 		public abstract void Write( HashSet<Item> list, bool tidy );
 
 		public abstract void WriteItemSet<T>( HashSet<T> set ) where T : Item;
 		public abstract void WriteItemSet<T>( HashSet<T> set, bool tidy ) where T : Item;
-#endif
+
 		public abstract void Write( List<Mobile> list );
 		public abstract void Write( List<Mobile> list, bool tidy );
 
 		public abstract void WriteMobileList<T>( List<T> list ) where T : Mobile;
 		public abstract void WriteMobileList<T>( List<T> list, bool tidy ) where T : Mobile;
-#if Framework_4_0
+
 		public abstract void Write( HashSet<Mobile> list );
 		public abstract void Write( HashSet<Mobile> list, bool tidy );
 
 		public abstract void WriteMobileSet<T>( HashSet<T> set ) where T : Mobile;
 		public abstract void WriteMobileSet<T>( HashSet<T> set, bool tidy ) where T : Mobile;
-#endif
+
 		public abstract void Write( List<BaseGuild> list );
 		public abstract void Write( List<BaseGuild> list, bool tidy );
 
 		public abstract void WriteGuildList<T>( List<T> list ) where T : BaseGuild;
 		public abstract void WriteGuildList<T>( List<T> list, bool tidy ) where T : BaseGuild;
-#if Framework_4_0
+
 		public abstract void Write( HashSet<BaseGuild> list );
 		public abstract void Write( HashSet<BaseGuild> list, bool tidy );
 
 		public abstract void WriteGuildSet<T>( HashSet<T> set ) where T : BaseGuild;
 		public abstract void WriteGuildSet<T>( HashSet<T> set, bool tidy ) where T : BaseGuild;
-#endif
+
 		//Stupid compiler won't notice there 'where' to differentiate the generic methods.
 	}
 
@@ -369,13 +365,13 @@ namespace Server
 		{
 			Write( value.Ticks );
 		}
-#if Framework_4_0
+
 		public override void Write( DateTimeOffset value )
 		{
 			Write( value.Ticks );
 			Write( value.Offset.Ticks );
 		}
-#endif
+
 		public override void WriteDeltaTime( DateTime value )
 		{
 			long ticks = value.Ticks;
@@ -736,7 +732,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Item> set )
 		{
 			Write( set, false );
@@ -774,7 +770,7 @@ namespace Server
 				Write( item );
 			}
 		}
-#endif
+
 		public override void Write( List<Mobile> list )
 		{
 			Write( list, false );
@@ -820,7 +816,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Mobile> set )
 		{
 			Write( set, false );
@@ -858,7 +854,7 @@ namespace Server
 				Write( mob );
 			}
 		}
-#endif
+
 		public override void Write( List<BaseGuild> list )
 		{
 			Write( list, false );
@@ -904,7 +900,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<BaseGuild> set )
 		{
 			Write( set, false );
@@ -942,7 +938,6 @@ namespace Server
 				Write( guild );
 			}
 		}
-#endif
 	}
 
 	public sealed class BinaryFileReader : GenericReader
@@ -1015,7 +1010,7 @@ namespace Server
 		{
 			return new DateTime( m_File.ReadInt64() );
 		}
-#if Framework_4_0
+
 		public override DateTimeOffset ReadDateTimeOffset()
 		{
 			long ticks = m_File.ReadInt64();
@@ -1023,7 +1018,7 @@ namespace Server
 
 			return new DateTimeOffset( ticks, offset );
 		}
-#endif
+
 		public override TimeSpan ReadTimeSpan()
 		{
 			return new TimeSpan( m_File.ReadInt64() );
@@ -1237,7 +1232,7 @@ namespace Server
 				return new List<T>();
 			}
 		}
-#if Framework_4_0
+
 		public override HashSet<Item> ReadItemSet()
 		{
 			return ReadItemSet<Item>();
@@ -1268,7 +1263,7 @@ namespace Server
 				return new HashSet<T>();
 			}
 		}
-#endif
+
 		public override List<Mobile> ReadStrongMobileList()
 		{
 			return ReadStrongMobileList<Mobile>();
@@ -1294,7 +1289,7 @@ namespace Server
 				return new List<T>();
 			}
 		}
-#if Framework_4_0
+
 		public override HashSet<Mobile> ReadMobileSet()
 		{
 			return ReadMobileSet<Mobile>();
@@ -1325,7 +1320,7 @@ namespace Server
 				return new HashSet<T>();
 			}
 		}
-#endif
+
 		public override List<BaseGuild> ReadStrongGuildList()
 		{
 			return ReadStrongGuildList<BaseGuild>();
@@ -1351,7 +1346,7 @@ namespace Server
 				return new List<T>();
 			}
 		}
-#if Framework_4_0
+
 		public override HashSet<BaseGuild> ReadGuildSet()
 		{
 			return ReadGuildSet<BaseGuild>();
@@ -1382,7 +1377,7 @@ namespace Server
 				return new HashSet<T>();
 			}
 		}
-#endif
+
 		public override Race ReadRace()
 		{
 			return Race.Races[ReadByte()];
@@ -1564,14 +1559,14 @@ namespace Server
 			m_Bin.Write( value.Ticks );
 			OnWrite();
 		}
-#if Framework_4_0
+
 		public override void Write( DateTimeOffset value )
 		{
 			m_Bin.Write( value.Ticks );
 			m_Bin.Write( value.Offset.Ticks );
 			OnWrite();
 		}
-#endif
+
 		public override void Write( TimeSpan value )
 		{
 			m_Bin.Write( value.Ticks );
@@ -1864,7 +1859,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Item> set )
 		{
 			Write( set, false );
@@ -1902,7 +1897,7 @@ namespace Server
 				Write( item );
 			}
 		}
-#endif
+
 		public override void Write( List<Mobile> list )
 		{
 			Write( list, false );
@@ -1948,7 +1943,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<Mobile> set )
 		{
 			Write( set, false );
@@ -1986,7 +1981,7 @@ namespace Server
 				Write( mob );
 			}
 		}
-#endif
+
 		public override void Write( List<BaseGuild> list )
 		{
 			Write( list, false );
@@ -2032,7 +2027,7 @@ namespace Server
 			for( int i = 0; i < list.Count; ++i )
 				Write( list[i] );
 		}
-#if Framework_4_0
+
 		public override void Write( HashSet<BaseGuild> set )
 		{
 			Write( set, false );
@@ -2070,7 +2065,6 @@ namespace Server
 				Write( guild );
 			}
 		}
-#endif
 	}
 
 	public interface ISerializable
