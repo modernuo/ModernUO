@@ -63,6 +63,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool ShowFameTitle{ get{ return false; } }
+		public override bool InitialInnocent{ get{ return ( m_MorphedInto != null ); } }
 
 		public override void GenerateLoot()
 		{
@@ -79,12 +80,12 @@ namespace Server.Mobiles
 			get { return m_MorphedInto; }
 			set
 			{
+				if ( value == this )
+					value = null;
+
 				if ( m_MorphedInto != value )
 				{
 					Revert();
-
-					if ( value == this )
-						value = null;
 
 					if ( value != null )
 					{
@@ -93,6 +94,7 @@ namespace Server.Mobiles
 					}
 
 					m_MorphedInto = value;
+					Delta( MobileDelta.Noto );
 				}
 			}
 		}
