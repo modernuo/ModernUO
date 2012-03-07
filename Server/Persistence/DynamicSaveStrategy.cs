@@ -240,7 +240,10 @@ namespace Server
 
 			while( _decayBag.TryTake( out item ) )
 			{
-				item.Delete();
+				if( item.OnDecay() )
+				{
+					item.Delete();
+				}
 			}
 		}
 
