@@ -317,6 +317,8 @@ namespace Server.Commands
 				toString = String.Format( "'{0}' ({1} [0x{1:X}])", value, (int) value );
 			else if ( IsString( type ) )
 				toString = ( (string) value == "null" ? @"@""null""" : String.Format( "\"{0}\"", value ) );
+			else if ( IsText( type ) )
+				toString = ( (TextDefinition) value ).Format( false );
 			else
 				toString = value.ToString();
 
@@ -375,6 +377,13 @@ namespace Server.Commands
 		private static bool IsString( Type t )
 		{
 			return ( t == typeofString );
+		}
+
+		private static Type typeofText = typeof( TextDefinition );
+
+		private static bool IsText( Type t )
+		{
+			return ( t == typeofText );
 		}
 
 		private static bool IsEnum( Type t )

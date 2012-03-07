@@ -77,6 +77,8 @@ namespace Server.Gumps
 
 			if ( val == null )
 				initialText = "";
+			else if ( val is TextDefinition )
+				initialText = ((TextDefinition)val).GetValue();
 			else
 				initialText = val.ToString();
 

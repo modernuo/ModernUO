@@ -510,6 +510,10 @@ namespace Server.Gumps
 			{
 				return ((Type)o).Name;
 			}
+			else if ( o is TextDefinition )
+			{
+				return ((TextDefinition)o).Format( true );
+			}
 			else
 			{
 				return o.ToString();

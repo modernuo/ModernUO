@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Server;
 using Server.Gumps;
 
@@ -34,11 +35,31 @@ namespace Server
 		public override string ToString()
 		{
 			if ( m_Number > 0 )
-				return "#" + m_Number.ToString();
+				return String.Concat( "#", m_Number.ToString() );
 			else if ( m_String != null )
 				return m_String;
 
-			return "(empty)";
+			return "";
+		}
+
+		public string Format( bool propsGump )
+		{
+			if ( m_Number > 0 )
+				return String.Format( "{0} (0x{0:X})", m_Number );
+			else if ( m_String != null )
+				return String.Format( "\"{0}\"", m_String );
+
+			return propsGump ? "-empty-" : "empty";
+		}
+
+		public string GetValue()
+		{
+			if ( m_Number > 0 )
+				return m_Number.ToString();
+			else if ( m_String != null )
+				return m_String;
+
+			return "";
 		}
 
 		public static void Serialize( GenericWriter writer, TextDefinition def )
@@ -155,8 +176,17 @@ namespace Server
 		{
 			if ( value == null )
 				return null;
-			else if ( value.StartsWith( "#" ) )
-				return new TextDefinition( Utility.ToInt32( value.Substring( 1 ) ) );
+
+			int i;
+			bool isInteger;
+
+			if ( value.StartsWith( "0x" ) )
+				isInteger = int.TryParse( value.Substring( 2 ), NumberStyles.HexNumber, null, out i );
+			else
+				isInteger = int.TryParse( value, out i );
+
+			if ( isInteger )
+				return new TextDefinition( i );
 			else
 				return new TextDefinition( value );
 		}
