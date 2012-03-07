@@ -141,7 +141,7 @@ namespace Server.Mobiles
 			if ( Array.IndexOf( Maps, m ) == -1 )
 				return false;
 
-			if ( bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone )
+			if ( bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone || bc.GivesMLMinorArtifact )
 				return false;
 
 			int fame = bc.Fame;

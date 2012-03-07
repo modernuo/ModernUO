@@ -314,7 +314,7 @@ namespace Server.Gumps
 							from.SendGump( new SetListOptionGump( prop, from, m_Object, m_Stack, m_Page, m_List, Enum.GetNames( type ), GetObjects( Enum.GetValues( type ) ) ) );
 						else if ( IsType( type, typeofBool ) )
 							from.SendGump( new SetListOptionGump( prop, from, m_Object, m_Stack, m_Page, m_List, m_BoolNames, m_BoolValues ) );
-						else if ( IsType( type, typeofString ) || IsType( type, typeofReal ) || IsType( type, typeofNumeric ) )
+						else if ( IsType( type, typeofString ) || IsType( type, typeofReal ) || IsType( type, typeofNumeric ) || IsType( type, typeofText ) )
 							from.SendGump( new SetGump( prop, from, m_Object, m_Stack, m_Page, m_List ) );
 						else if ( IsType( type, typeofPoison ) )
 							from.SendGump( new SetListOptionGump( prop, from, m_Object, m_Stack, m_Page, m_List, m_PoisonNames, m_PoisonValues ) );
@@ -416,6 +416,7 @@ namespace Server.Gumps
 		private static Type typeofEnum = typeof( Enum );
 		private static Type typeofBool = typeof( Boolean );
 		private static Type typeofString = typeof( String );
+		private static Type typeofText = typeof( TextDefinition );
 		private static Type typeofPoison = typeof( Poison );
 		private static Type typeofMap = typeof( Map );
 		private static Type typeofSkills = typeof( Skills );

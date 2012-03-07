@@ -112,7 +112,7 @@ namespace Server.Mobiles
 					m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
 			}
 
-			if ( !m_Mobile.Controlled && !m_Mobile.Summoned && !m_Mobile.IsParagon )
+			if ( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee )
 			{
 				if ( m_Mobile.Hits < m_Mobile.HitsMax * 20/100 )
 				{

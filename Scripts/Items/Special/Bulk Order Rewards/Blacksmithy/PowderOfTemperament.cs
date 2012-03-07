@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		public override int LabelNumber{ get{ return 1049082; } } // powder of temperament
+		public override int LabelNumber{ get{ return 1049082; } } // powder of fortifying
 
 		[Constructable]
 		public PowderOfTemperament() : this( 10 )
@@ -117,7 +117,7 @@ namespace Server.Items
 						return;
 					}
 
-					if ( item.IsChildOf( from.Backpack ) && m_Powder.IsChildOf( from.Backpack ) )
+					if ( ( item.IsChildOf( from.Backpack ) || ( Core.ML && item.Parent == from ) ) && m_Powder.IsChildOf( from.Backpack ) )
 					{
 						int origMaxHP = wearable.MaxHitPoints;
 						int origCurHP = wearable.HitPoints;
@@ -146,12 +146,13 @@ namespace Server.Items
 								if ( wearable.MaxHitPoints > origMaxHP )
 								{
 									from.SendLocalizedMessage( 1049084 ); // You successfully use the powder on the item.
+									from.PlaySound( 0x247 );
 
 									--m_Powder.UsesRemaining;
 
 									if ( m_Powder.UsesRemaining <= 0 )
 									{
-										from.SendLocalizedMessage( 1049086 ); // You have used up your powder of temperament.
+										from.SendLocalizedMessage( 1049086 ); // You have used up your powder of fortifying.
 										m_Powder.Delete();
 									}
 								}

@@ -62,6 +62,8 @@ namespace Server.Mobiles
 			PackArcaneScroll( 0, 1 );
 		}
 
+		public override bool ShowFameTitle{ get{ return false; } }
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.AosRich, 3 );

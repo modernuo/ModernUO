@@ -101,7 +101,7 @@ namespace Server.Engines.Craft
 
 			private bool IsSpecialClothing( BaseClothing clothing )
 			{
-				// Armor repairable but not craftable
+				// Clothing repairable but not craftable
 
 				if( m_CraftSystem is DefTailoring )
 				{
@@ -132,8 +132,37 @@ namespace Server.Engines.Craft
 				}
 				else if ( m_CraftSystem is DefBlacksmithy )
 				{
-					return ( weapon is Pitchfork );
+					return ( weapon is Pitchfork )
+					#region Temporary
+					// TODO: Make these items craftable
+						|| ( weapon is RadiantScimitar )
+						|| ( weapon is WarCleaver )
+						|| ( weapon is ElvenSpellblade )
+						|| ( weapon is AssassinSpike )
+						|| ( weapon is Leafblade )
+						|| ( weapon is RuneBlade )
+						|| ( weapon is ElvenMachete )
+						|| ( weapon is OrnateAxe )
+						|| ( weapon is DiamondMace );
+					#endregion
 				}
+
+				return false;
+			}
+
+			private bool IsSpecialArmor( BaseArmor armor )
+			{
+				// Armor repairable but not craftable
+
+				#region Temporary
+				// TODO: Make these items craftable
+				if ( m_CraftSystem is DefBlacksmithy )
+				{
+					return ( armor is Circlet )
+						|| ( armor is RoyalCirclet )
+						|| ( armor is GemmedCirclet );
+				}
+				#endregion
 
 				return false;
 			}
@@ -149,8 +178,8 @@ namespace Server.Engines.Craft
 				bool usingDeed = (m_Deed != null);
 				bool toDelete = false;
 
-				//TODO: Make a IRepairable
-				
+				// TODO: Make an IRepairable
+
 				if ( m_CraftSystem.CanCraft( from, m_Tool, targeted.GetType() ) == 1044267 )
 				{
 					number = 1044282; // You must be near a forge and and anvil to repair items. * Yes, there are two and's *
@@ -244,7 +273,7 @@ namespace Server.Engines.Craft
 					{
 						number = (usingDeed)? 1061136 : 1044277; // That item cannot be repaired. // You cannot repair that item with this type of repair contract.
 					}
-					else if ( !weapon.IsChildOf( from.Backpack ) )
+					else if ( !weapon.IsChildOf( from.Backpack ) && ( !Core.ML || weapon.Parent != from ) )
 					{
 						number = 1044275; // The item must be in your backpack to repair it.
 					}
@@ -301,11 +330,11 @@ namespace Server.Engines.Craft
 							toWeaken = 3;
 					}
 
-					if ( m_CraftSystem.CraftItems.SearchForSubclass( armor.GetType() ) == null )
+					if ( m_CraftSystem.CraftItems.SearchForSubclass( armor.GetType() ) == null && !IsSpecialArmor( armor ) )
 					{
 						number = (usingDeed)? 1061136 : 1044277; // That item cannot be repaired. // You cannot repair that item with this type of repair contract.
 					}
-					else if ( !armor.IsChildOf( from.Backpack ) )
+					else if ( !armor.IsChildOf( from.Backpack ) && ( !Core.ML || armor.Parent != from ) )
 					{
 						number = 1044275; // The item must be in your backpack to repair it.
 					}
@@ -366,7 +395,7 @@ namespace Server.Engines.Craft
  					{
 						number = (usingDeed) ? 1061136 : 1044277; // That item cannot be repaired. // You cannot repair that item with this type of repair contract.
 					}
-					else if ( !clothing.IsChildOf( from.Backpack ) )
+					else if ( !clothing.IsChildOf( from.Backpack ) && ( !Core.ML || clothing.Parent != from ) )
 					{
 						number = 1044275; // The item must be in your backpack to repair it.
 					}
@@ -430,10 +459,12 @@ namespace Server.Engines.Craft
 					CraftContext context = m_CraftSystem.GetContext( from );
 					from.SendGump( new CraftGump( from, m_CraftSystem, m_Tool, number ) );
 				}
-				else if( toDelete )
+				else
 				{
 					from.SendLocalizedMessage( number );
-					m_Deed.Delete();
+
+					if( toDelete )
+						m_Deed.Delete();
 				}
 			}
 		}

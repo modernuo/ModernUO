@@ -14,6 +14,9 @@ namespace Server.Mobiles
 			Hue = 0x21;
 			BaseSoundID = 0x1C3;
 
+			AI = AIType.AI_Melee;
+			FightMode = FightMode.Closest;
+
 			SetStr( 319, 324 );
 			SetDex( 241, 244 );
 			SetInt( 242, 255 );

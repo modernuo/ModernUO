@@ -78,7 +78,7 @@ namespace Server.Items
 				m_Type = ScriptCompiler.FindTypeByFullName( reader.ReadString(), false );
 
 			if ( GetSaveFlag( flags, SaveFlag.Name ) )
-				m_Name = new TextDefinition( reader );
+				m_Name = TextDefinition.Deserialize( reader );
 
 			if ( GetSaveFlag( flags, SaveFlag.Amount ) )
 				m_Amount = reader.ReadEncodedInt();
@@ -128,7 +128,7 @@ namespace Server.Items
 				writer.Write( m_Type.FullName );
 
 			if ( GetSaveFlag( flags, SaveFlag.Name ) )
-				m_Name.Serialize( writer );
+				TextDefinition.Serialize( writer, m_Name );
 
 			if ( GetSaveFlag( flags, SaveFlag.Amount ) )
 				writer.WriteEncodedInt( m_Amount );

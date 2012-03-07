@@ -633,7 +633,7 @@ namespace Server.Mobiles
 				}
 			}
 
-			if( !m_Mobile.Controlled && !m_Mobile.Summoned && !m_Mobile.IsParagon )
+			if( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee )
 			{
 				if( m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100 )
 				{

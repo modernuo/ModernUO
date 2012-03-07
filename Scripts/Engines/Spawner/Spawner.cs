@@ -28,7 +28,8 @@ namespace Server.Mobiles
 		private bool m_Group;
 		private WayPoint m_WayPoint;
 
-		public bool IsFull{ get{ return ( m_Spawned != null && m_Spawned.Count >= m_Count ); } }
+		public bool IsFull{ get{ return ( m_Spawned.Count >= m_Count ); } }
+		public bool IsEmpty{ get{ return ( m_Spawned.Count == 0 ); } }
 
 		public List<string> SpawnNames
 		{
@@ -41,6 +42,11 @@ namespace Server.Mobiles
 
 				InvalidateProperties();
 			}
+		}
+
+		public List<ISpawnable> Spawned
+		{
+			get { return m_Spawned; }
 		}
 
 		public virtual int SpawnNamesCount { get { return m_SpawnNames.Count; } }
@@ -124,6 +130,12 @@ namespace Server.Mobiles
 		{
 			get { return m_MaxDelay; }
 			set { m_MaxDelay = value; InvalidateProperties(); }
+		}
+
+		public DateTime End
+		{
+			get { return m_End; }
+			set { m_End = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -231,7 +243,7 @@ namespace Server.Mobiles
 				list.Add( 1060660, "team\t{0}", m_Team ); // ~1_val~: ~2_val~
 				list.Add( 1060661, "speed\t{0} to {1}", m_MinDelay, m_MaxDelay ); // ~1_val~: ~2_val~
 
-				if ( m_Spawned.Count != 0 )
+				if ( m_SpawnNames.Count != 0 )
 					list.Add( SpawnedStats() );
 			}
 			else
@@ -266,7 +278,9 @@ namespace Server.Mobiles
 		{
 			if ( m_Running )
 			{
-				m_Timer.Stop();
+				if ( m_Timer != null )
+					m_Timer.Stop();
+
 				m_Running = false;
 			}
 		}
@@ -356,7 +370,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		public void Respawn()
+		public virtual void Respawn()
 		{
 			RemoveSpawned();
 
@@ -364,7 +378,7 @@ namespace Server.Mobiles
 				Spawn();
 		}
 
-		public void Spawn()
+		public virtual void Spawn()
 		{
 			if ( SpawnNamesCount > 0 )
 				Spawn( Utility.Random( SpawnNamesCount ) );
@@ -511,6 +525,11 @@ namespace Server.Mobiles
 
 		public Point3D HomeLocation { get { return this.Location; } }
 
+		public virtual bool CheckSpawnCount()
+		{
+			return ( m_Spawned.Count >= m_Count );
+		}
+
 		public void Spawn( int index )
 		{
 			Map map = Map;
@@ -520,7 +539,7 @@ namespace Server.Mobiles
 
 			Defrag();
 
-			if ( m_Spawned.Count >= m_Count )
+			if ( !CheckSpawnCount() )
 				return;
 
 			ISpawnable spawned = CreateSpawnedObject( index );
@@ -555,7 +574,7 @@ namespace Server.Mobiles
 
 				bc.Home = this.HomeLocation;
 			}
-	}
+		}
 
 		public Point3D GetSpawnPosition()
 		{
@@ -600,7 +619,7 @@ namespace Server.Mobiles
 			DoTimer( delay );
 		}
 
-		public void DoTimer( TimeSpan delay )
+		public virtual void DoTimer( TimeSpan delay )
 		{
 			if ( !m_Running )
 				return;
@@ -640,7 +659,18 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			Dictionary<string, int> counts = new Dictionary<string, int>();
+			Dictionary<string, int> counts = new Dictionary<string, int>( StringComparer.OrdinalIgnoreCase );
+
+			foreach ( string entry in m_SpawnNames )
+			{
+				string name = ParseType( entry );
+				Type type = ScriptCompiler.FindTypeByName( name );
+
+				if ( type == null )
+					counts[name] = 0;
+				else
+					counts[type.Name] = 0;
+			}
 
 			foreach ( ISpawnable spawned in m_Spawned )
 			{
@@ -695,7 +725,7 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			for ( int i = 0; i < m_Spawned.Count; ++i )
+			for ( int i = m_Spawned.Count - 1; i >= 0; --i )
 				m_Spawned[i].Delete();
 
 			InvalidateProperties();

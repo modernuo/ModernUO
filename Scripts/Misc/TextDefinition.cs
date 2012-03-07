@@ -1,14 +1,21 @@
 using System;
+using Server;
+using Server.Gumps;
 
 namespace Server
 {
+	[Parsable]
 	public class TextDefinition
 	{
 		private int m_Number;
 		private string m_String;
 
-		public int Number{ get{ return m_Number; } }
-		public string String{ get{ return m_String; } }
+		public int Number { get { return m_Number; } }
+		public string String { get { return m_String; } }
+
+		public TextDefinition() : this( 0, null )
+		{
+		}
 
 		public TextDefinition( int number ) : this( number, null )
 		{
@@ -24,18 +31,6 @@ namespace Server
 			m_String = text;
 		}
 
-		public TextDefinition( GenericReader reader )
-		{
-			int type = reader.ReadEncodedInt();
-
-			switch ( type )
-			{
-				case 1: m_Number = reader.ReadEncodedInt(); m_String = null; break;
-				case 2: m_Number = 0; m_String = reader.ReadString(); break;
-				default: m_Number = 0; m_String = null; break;
-			}
-		}
-
 		public override string ToString()
 		{
 			if ( m_Number > 0 )
@@ -46,41 +41,64 @@ namespace Server
 			return "(empty)";
 		}
 
-		public virtual void Serialize( GenericWriter writer )
+		public static void Serialize( GenericWriter writer, TextDefinition def )
 		{
-			if ( m_Number > 0 )
+			if ( def == null )
+			{
+				writer.WriteEncodedInt( 3 );
+			}
+			else if ( def.m_Number > 0 )
 			{
 				writer.WriteEncodedInt( 1 );
-				writer.WriteEncodedInt( m_Number );
+				writer.WriteEncodedInt( def.m_Number );
 			}
-			else if ( m_String != null )
+			else if ( def.m_String != null )
 			{
 				writer.WriteEncodedInt( 2 );
-				writer.Write( m_String );
+				writer.Write( def.m_String );
 			}
 			else
+			{
 				writer.WriteEncodedInt( 0 );
+			}
+		}
+
+		public static TextDefinition Deserialize( GenericReader reader )
+		{
+			int type = reader.ReadEncodedInt();
+
+			switch ( type )
+			{
+				case 0: return new TextDefinition();
+				case 1: return new TextDefinition( reader.ReadEncodedInt() );
+				case 2: return new TextDefinition( reader.ReadString() );
+			}
+
+			return null;
 		}
 
 		public static void AddTo( ObjectPropertyList list, TextDefinition def )
 		{
-			if ( def != null && def.m_Number > 0 )
+			if ( def == null )
+				return;
+
+			if ( def.m_Number > 0 )
 				list.Add( def.m_Number );
-			else if ( def != null && def.m_String != null )
+			else if ( def.m_String != null )
 				list.Add( def.m_String );
 		}
 
-		public static implicit operator TextDefinition ( int v )
+		public static implicit operator TextDefinition( int v )
 		{
 			return new TextDefinition( v );
 		}
 
-		public static implicit operator TextDefinition ( string s )
+		public static implicit operator TextDefinition( string s )
 		{
 			return new TextDefinition( s );
 		}
 
-		public static implicit operator int ( TextDefinition m )
+		public static implicit operator int( TextDefinition m )
 		{
 			if ( m == null )
 				return 0;
@@ -88,7 +106,7 @@ namespace Server
 			return m.m_Number;
 		}
 
-		public static implicit operator string ( TextDefinition m )
+		public static implicit operator string( TextDefinition m )
 		{
 			if ( m == null )
 				return null;
@@ -96,30 +114,51 @@ namespace Server
 			return m.m_String;
 		}
 
-		public static void AddHtmlText( Server.Gumps.Gump g, int x, int y, int width, int height, TextDefinition text, bool back, bool scroll, int numberColor, int stringColor )
+		public static void AddHtmlText( Gump g, int x, int y, int width, int height, TextDefinition def, bool back, bool scroll, int numberColor, int stringColor )
 		{
-			if( text != null && text.Number > 0 )
-				if( numberColor >= 0 )
-					g.AddHtmlLocalized( x, y, width, height, text.Number, numberColor, back, scroll );
+			if ( def == null )
+				return;
+
+			if ( def.m_Number > 0 )
+			{
+				if ( numberColor >= 0 )
+					g.AddHtmlLocalized( x, y, width, height, def.m_Number, numberColor, back, scroll );
 				else
-					g.AddHtmlLocalized( x, y, width, height, text.Number, back, scroll );
-			else if( text != null && text.String != null )
-				if( stringColor >= 0 )
-					g.AddHtml( x, y, width, height, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", stringColor, text.String ), back, scroll );
-				else			
-					g.AddHtml( x, y, width, height, text.String, back, scroll );
+					g.AddHtmlLocalized( x, y, width, height, def.m_Number, back, scroll );
+			}
+			else if ( def.m_String != null )
+			{
+				if ( stringColor >= 0 )
+					g.AddHtml( x, y, width, height, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", stringColor, def.m_String ), back, scroll );
+				else
+					g.AddHtml( x, y, width, height, def.m_String, back, scroll );
+			}
 		}
-		public static void AddHtmlText( Server.Gumps.Gump g, int x, int y, int width, int height, TextDefinition text, bool back, bool scroll )
+
+		public static void AddHtmlText( Gump g, int x, int y, int width, int height, TextDefinition def, bool back, bool scroll )
 		{
-			AddHtmlText( g, x, y, width, height, text, back, scroll, -1, -1 );
+			AddHtmlText( g, x, y, width, height, def, back, scroll, -1, -1 );
 		}
 
 		public static void SendMessageTo( Mobile m, TextDefinition def )
 		{
-			if( def.Number > 0 )
-				m.SendLocalizedMessage( def.Number );
-			else if( def.String != null )
-				m.SendMessage( def.String );
+			if ( def == null )
+				return;
+
+			if ( def.m_Number > 0 )
+				m.SendLocalizedMessage( def.m_Number );
+			else if ( def.m_String != null )
+				m.SendMessage( def.m_String );
+		}
+
+		public static TextDefinition Parse( string value )
+		{
+			if ( value == null )
+				return null;
+			else if ( value.StartsWith( "#" ) )
+				return new TextDefinition( Utility.ToInt32( value.Substring( 1 ) ) );
+			else
+				return new TextDefinition( value );
 		}
 	}
 }

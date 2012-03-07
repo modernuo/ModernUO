@@ -80,7 +80,7 @@ namespace Server.Mobiles
 
 			
 			// At 20% we should check if we must leave
-			if ( m_Mobile.Hits < m_Mobile.HitsMax*20/100 )
+			if ( m_Mobile.Hits < m_Mobile.HitsMax*20/100 && m_Mobile.CanFlee )
 			{
 				bool bFlee = false;
 				// if my current hits are more than my opponent, i don't care

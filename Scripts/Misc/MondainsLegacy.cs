@@ -69,5 +69,17 @@ namespace Server
 
 			return false;
 		}
+
+		public static bool IsMLRegion( Region region )
+		{
+			return region.IsPartOf( "Twisted Weald" )
+				|| region.IsPartOf( "Sanctuary" )
+				|| region.IsPartOf( "Prism of Light" )
+				|| region.IsPartOf( "Citadel" )
+				|| region.IsPartOf( "Bedlam" )
+				|| region.IsPartOf( "Blighted Grove" )
+				|| region.IsPartOf( "Painted Caves" )
+				|| region.IsPartOf( "Palace of Paroxysmus" );
+		}
 	}
 }

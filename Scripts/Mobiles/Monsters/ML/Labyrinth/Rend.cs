@@ -36,6 +36,9 @@ namespace Server.Mobiles
 			SetSkill( SkillName.MagicResist, 90.9, 110.0 );
 			SetSkill( SkillName.Anatomy, 66.6, 72.0 );
 
+			Fame = 21000;
+			Karma = -21000;
+
 			Tamable = false;
 
 			/*

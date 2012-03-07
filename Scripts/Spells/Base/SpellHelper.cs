@@ -556,28 +556,20 @@ namespace Server.Spells
 				new TravelValidator( IsLampRoom ),
 				new TravelValidator( IsGuardianRoom ),
 				new TravelValidator( IsHeartwood ),
+				new TravelValidator( IsMLDungeon )
 			};
 
 		private static bool[,] m_Rules = new bool[,]
 			{
-						/*T2A(Fel)		Ilshenar		Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel), CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	Stronghold,		ChampionSpawn, Dungeons(Tokuno[Malas]), LampRoom(Doom),	GuardianRoom(Doom),	Heartwood */
-/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			false,			true,				false,				false,			false },
-/* Recall To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false },
-/* Gate From */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false },
-/* Gate To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false },
-/* Mark In */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false },
-/* Tele From */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				true,				false,			true,			true,				true,				true,			false },
-/* Tele To */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				false,				false, 			true,			true,				true,				true,			false },
+						/*T2A(Fel)		Ilshenar		Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel), CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	Stronghold,		ChampionSpawn, Dungeons(Tokuno[Malas]), LampRoom(Doom),	GuardianRoom(Doom),	Heartwood,		MLDungeons */
+/* Recall From */		{ false,		true,			true,			false,		false,			true,			false,		false,				false,				false,				true,			false,			true,				false,				false,			false,			false },
+/* Recall To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false,			false },
+/* Gate From */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false,			false },
+/* Gate To */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false,			false },
+/* Mark In */			{ false,		false,			false,			false,		false,			false,			false,		false,				false,				false,				false,			false,			false,				false,				false,			false,			false },
+/* Tele From */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				true,				false,			true,			true,				true,				true,			false,			true },
+/* Tele To */			{ true,			true,			true,			true,		true,			true,			true,		false,				true,				false,				false, 			true,			true,				true,				true,			false,			false },
 			};
-
-		public static bool CheckTravel( Mobile caster, TravelCheckType type )
-		{
-			if( CheckTravel( caster, caster.Map, caster.Location, type ) )
-				return true;
-
-			SendInvalidMessage( caster, type );
-			return false;
-		}
 
 		public static void SendInvalidMessage( Mobile caster, TravelCheckType type )
 		{
@@ -587,6 +579,11 @@ namespace Server.Spells
 				caster.SendLocalizedMessage( 501035 ); // You cannot teleport from here to the destination.
 			else
 				caster.SendLocalizedMessage( 501802 ); // Thy spell doth not appear to work...
+		}
+
+		public static bool CheckTravel( Mobile caster, TravelCheckType type )
+		{
+			return CheckTravel( caster, caster.Map, caster.Location, type );
 		}
 
 		public static bool CheckTravel( Map map, Point3D loc, TravelCheckType type )
@@ -611,6 +608,15 @@ namespace Server.Spells
 			{
 				caster.SendLocalizedMessage( 1114345 ); // You'll need a better jailbreak plan than that!
 				return false;
+			}
+
+			// Always allow monsters to teleport
+			if ( caster is BaseCreature && ( type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom ) )
+			{
+				BaseCreature bc = (BaseCreature)caster;
+
+				if ( !bc.Controlled && !bc.Summoned )
+					return true;
 			}
 
 			m_TravelCaster = caster;
@@ -689,17 +695,15 @@ namespace Server.Spells
 
 		public static bool IsCrystalCave( Map map, Point3D loc )
 		{
-			if( map != Map.Malas )
+			if( map != Map.Malas || loc.Z >= -80 )
 				return false;
 
-			int x = loc.X, y = loc.Y, z = loc.Z;
+			int x = loc.X, y = loc.Y;
 
-			bool r1 = (x >= 1182 && y >= 437 && x < 1211 && y < 470);
-			bool r2 = (x >= 1156 && y >= 470 && x < 1211 && y < 503);
-			bool r3 = (x >= 1176 && y >= 503 && x < 1208 && y < 509);
-			bool r4 = (x >= 1188 && y >= 509 && x < 1201 && y < 513);
-
-			return (z < -80 && (r1 || r2 || r3 || r4));
+			return ( x >= 1182 && y >= 437 && x < 1211 && y < 470 )
+				|| ( x >= 1156 && y >= 470 && x < 1211 && y < 503 )
+				|| ( x >= 1176 && y >= 503 && x < 1208 && y < 509 )
+				|| ( x >= 1188 && y >= 509 && x < 1201 && y < 513 );
 		}
 
 		public static bool IsFactionStronghold( Map map, Point3D loc )
@@ -784,6 +788,11 @@ namespace Server.Spells
 			int x = loc.X, y = loc.Y;
 
 			return (map == Map.Trammel || map == Map.Felucca) && (x >= 6911 && y >= 254 && x < 7167 && y < 511);
+		}
+
+		public static bool IsMLDungeon( Map map, Point3D loc )
+		{
+			return MondainsLegacy.IsMLRegion( Region.Find( loc, map ) );
 		}
 
 		public static bool IsInvalid( Map map, Point3D loc )

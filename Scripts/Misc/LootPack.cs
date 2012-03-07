@@ -579,31 +579,7 @@ namespace Server
 		#region Mondain's Legacy
 		private static bool IsMondain( Mobile m )
 		{
-			if ( m.Region.IsPartOf( "Twisted Weald" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Sanctuary" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Prism of Light" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Citadel" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Bedlam" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Blighted Grove" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Painted Caves" ) )
-				return true;
-
-			if ( m.Region.IsPartOf( "Palace of Paroxysmus" ) )
-				return true;
-
-			return false;
+			return MondainsLegacy.IsMLRegion( m.Region );
 		}
 		#endregion
 
@@ -861,7 +837,7 @@ namespace Server
 				new Type[] // high
 				{
 					typeof( VengefulSpiritScroll ),		typeof( VampiricEmbraceScroll ), typeof( ExorcismScroll )
-				} : 
+				} :
 				new Type[] // high
 				{
 					typeof( VengefulSpiritScroll ),		typeof( VampiricEmbraceScroll )

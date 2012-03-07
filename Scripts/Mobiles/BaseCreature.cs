@@ -715,6 +715,8 @@ namespace Server.Mobiles
 		#endregion
 
 		#region Flee!!!
+		public virtual bool CanFlee{ get{ return ( !m_Paragon && !GivesMLMinorArtifact ); } }
+
 		private DateTime m_EndFlee;
 
 		public DateTime EndFleeTime
@@ -2083,7 +2085,7 @@ namespace Server.Mobiles
 
 		public virtual bool CheckFeed( Mobile from, Item dropped )
 		{
-			if ( !IsDeadPet && Controlled && (ControlMaster == from || IsPetFriend( from )) && (dropped is Food || dropped is Gold || dropped is CookableFood || dropped is Head || dropped is LeftArm || dropped is LeftLeg || dropped is Torso || dropped is RightArm || dropped is RightLeg) )
+			if ( !IsDeadPet && Controlled && ( ControlMaster == from || IsPetFriend( from ) ) )
 			{
 				Item f = dropped;
 
@@ -2114,7 +2116,7 @@ namespace Server.Mobiles
 						{
 							for ( int i = 0; i < amount; ++i )
 							{
-								if ( m_Loyalty < MaxLoyalty  && 0.5 >= Utility.RandomDouble() )
+								if ( m_Loyalty < MaxLoyalty && 0.5 >= Utility.RandomDouble() )
 								{
 									m_Loyalty += 10;
 								}

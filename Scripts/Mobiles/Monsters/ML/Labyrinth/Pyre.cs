@@ -16,6 +16,8 @@ namespace Server.Mobiles
 			Name = "Pyre";
 			Hue = 0x489;
 
+			FightMode = FightMode.Closest;
+
 			SetStr( 605, 611 );
 			SetDex( 391, 519 );
 			SetInt( 669, 818 );

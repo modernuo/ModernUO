@@ -128,7 +128,7 @@ namespace Server.Mobiles
 				m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
 			}
 
-			if ( m_Mobile.Hits < m_Mobile.HitsMax * 20/100 && !m_Mobile.IsParagon )
+			if ( m_Mobile.Hits < m_Mobile.HitsMax * 20/100 && m_Mobile.CanFlee )
 			{
 				// We are low on health, should we flee?
 

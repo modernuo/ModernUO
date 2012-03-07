@@ -14,6 +14,8 @@ namespace Server.Mobiles
 			Name = "Swoop";
 			Hue = 0xE0;
 
+			AI = AIType.AI_Melee;
+
 			SetStr( 100, 150 );
 			SetDex( 400, 500 );
 			SetInt( 80, 90 );
@@ -35,7 +37,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.MagicResist, 95.0, 105.0 );
 
 			Fame = 18000;
-			Karma = -18000;
+			Karma = 0;
 
 			Tamable = false;
 
