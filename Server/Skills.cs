@@ -689,7 +689,7 @@ namespace Server
 	}
 
 	[PropertyObject]
-	public class Skills
+	public class Skills : IEnumerable
 	{
 		private Mobile m_Owner;
 		private Skill[] m_Skills;
@@ -1106,6 +1106,11 @@ namespace Server
 
 			if ( ns != null )
 				ns.Send( new SkillChange( skill ) );
+		}
+
+		public IEnumerator GetEnumerator()
+		{
+			return m_Skills.GetEnumerator();
 		}
 	}
 }
