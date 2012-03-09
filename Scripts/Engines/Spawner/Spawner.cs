@@ -525,7 +525,7 @@ namespace Server.Mobiles
 
 		public Point3D HomeLocation { get { return this.Location; } }
 
-		public virtual bool CheckSpawnCount()
+		public virtual bool CheckSpawnerFull()
 		{
 			return ( m_Spawned.Count >= m_Count );
 		}
@@ -539,7 +539,7 @@ namespace Server.Mobiles
 
 			Defrag();
 
-			if ( !CheckSpawnCount() )
+			if ( CheckSpawnerFull() )
 				return;
 
 			ISpawnable spawned = CreateSpawnedObject( index );

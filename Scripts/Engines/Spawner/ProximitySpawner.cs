@@ -99,9 +99,9 @@ namespace Server.Mobiles
 			}
 		}
 
-		public override bool CheckSpawnCount()
+		public override bool CheckSpawnerFull()
 		{
-			return true;
+			return false;
 		}
 
 		public override bool HandlesOnMovement { get { return true; } }
