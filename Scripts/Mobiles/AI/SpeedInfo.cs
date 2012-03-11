@@ -119,7 +119,17 @@ namespace Server
 					typeof( DemonKnight ),		typeof( GiantBlackWidow ),	typeof( SummonedAirElemental ),
 					typeof( LesserHiryu ),		typeof( Hiryu ),			typeof( LadyOfTheSnow ),
 					typeof( RaiJu ),			typeof( Ronin ),			typeof( RuneBeetle ),
-					typeof( Changeling )
+					typeof( Changeling ),
+					#region ML named mobs - before Paragon speedboost
+					typeof( LadyJennifyr ),		typeof( LadyMarai ),		typeof( MasterJonath ),
+					typeof( MasterMikael ),		typeof( MasterTheophilus ),	typeof( RedDeath ),
+					typeof( SirPatrick ),		typeof( Miasma ),			typeof( Rend ),
+					typeof( Grobu ),			typeof( Gnaw ),				typeof( Guile ),
+					typeof( Irk ),				typeof( Spite ),			typeof( LadyLissith ),
+					typeof( LadySabrix ),		typeof( Malefic ),			typeof( Silk ),
+					typeof( Virulent )
+					// TODO: Where to put Lurg, Putrefier, Swoop and Pyre? They seem slower.
+					#endregion
 				} ),
 				/* Very Fast */
 				new SpeedInfo( 0.175, 0.350, new Type[]
@@ -132,21 +142,7 @@ namespace Server
 					typeof( FactionHenchman ),	typeof( FactionMercenary ),	typeof( FactionNecromancer ),
 					typeof( FactionSorceress ),	typeof( FactionWizard ),	typeof( FactionBerserker ),
 					typeof( FactionPaladin ),	typeof( Leviathan ),		typeof( FireBeetle ),
-					typeof( FanDancer ),
-					#region ML named mobs
-					typeof( LadyJennifyr ),	typeof( LadyMarai ),		typeof( MasterJonath ),
-					typeof( MasterMikael ),	typeof( MasterTheophilus ),	typeof( RedDeath ),
-					typeof( SirPatrick ),		typeof( Miasma ),			typeof( Rend ),
-					typeof( Grobu ),			typeof( Gnaw ),			typeof( Guile ),
-					typeof( Irk ),				typeof( Spite ),			typeof( LadyLissith ),
-					typeof( LadySabrix ),		typeof( Malefic ),			typeof( Silk ),
-					typeof( Virulent )
-					/*
-					// These don't seem to be fast?
-					typeof( Lurg ),				typeof( Putrefier ),		typeof( Swoop),
-					typeof( Pyre )
-					*/
-					#endregion
+					typeof( FanDancer )
 				} ),
 				/* Medium */
 				new SpeedInfo( 0.25, 0.5, new Type[]

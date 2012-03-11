@@ -11,6 +11,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public LadyMarai()
 		{
+			IsParagon = true;
+
 			Name = "Lady Marai";
 			Hue = 0x21;
 
@@ -42,7 +44,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

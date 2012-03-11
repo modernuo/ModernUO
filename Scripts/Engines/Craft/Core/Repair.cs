@@ -103,7 +103,7 @@ namespace Server.Engines.Craft
 			{
 				// Clothing repairable but not craftable
 
-				if( m_CraftSystem is DefTailoring )
+				if ( m_CraftSystem is DefTailoring )
 				{
 					return (clothing is BearMask)
 						|| (clothing is DeerMask);
@@ -128,7 +128,11 @@ namespace Server.Engines.Craft
 				{
 					return ( weapon is Club )
 						|| ( weapon is BlackStaff )
-						|| ( weapon is MagicWand );
+						|| ( weapon is MagicWand )
+					#region Temporary
+					// TODO: Make these items craftable
+						|| ( weapon is WildStaff );
+					#endregion
 				}
 				else if ( m_CraftSystem is DefBlacksmithy )
 				{
@@ -146,6 +150,14 @@ namespace Server.Engines.Craft
 						|| ( weapon is DiamondMace );
 					#endregion
 				}
+				#region Temporary
+				// TODO: Make these items craftable
+				else if ( m_CraftSystem is DefBowFletching )
+				{
+					return ( weapon is ElvenCompositeLongbow )
+						|| ( weapon is MagicalShortbow );
+				}
+				#endregion
 
 				return false;
 			}
@@ -156,7 +168,32 @@ namespace Server.Engines.Craft
 
 				#region Temporary
 				// TODO: Make these items craftable
-				if ( m_CraftSystem is DefBlacksmithy )
+				if ( m_CraftSystem is DefTailoring )
+				{
+					return ( armor is LeafTonlet )
+						|| ( armor is LeafArms )
+						|| ( armor is LeafChest )
+						|| ( armor is LeafGloves )
+						|| ( armor is LeafGorget )
+						|| ( armor is LeafLegs )
+						|| ( armor is HideChest )
+						|| ( armor is HideGloves )
+						|| ( armor is HideGorget )
+						|| ( armor is HidePants )
+						|| ( armor is HidePauldrons );
+				}
+				else if ( m_CraftSystem is DefCarpentry )
+				{
+					return ( armor is WingedHelm )
+						|| ( armor is RavenHelm )
+						|| ( armor is VultureHelm )
+						|| ( armor is WoodlandArms )
+						|| ( armor is WoodlandChest )
+						|| ( armor is WoodlandGloves )
+						|| ( armor is WoodlandGorget )
+						|| ( armor is WoodlandLegs );
+				}
+				else if ( m_CraftSystem is DefBlacksmithy )
 				{
 					return ( armor is Circlet )
 						|| ( armor is RoyalCirclet )
@@ -173,7 +210,6 @@ namespace Server.Engines.Craft
 
 				if( !CheckDeed( from ) )
 					return;
-
 
 				bool usingDeed = (m_Deed != null);
 				bool toDelete = false;

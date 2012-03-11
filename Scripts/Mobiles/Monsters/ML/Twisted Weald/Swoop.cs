@@ -11,6 +11,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Swoop()
 		{
+			IsParagon = true;
+
 			Name = "Swoop";
 			Hue = 0xE0;
 
@@ -39,15 +41,13 @@ namespace Server.Mobiles
 			Fame = 18000;
 			Karma = 0;
 
-			Tamable = false;
-
 			PackReg( 4 );
 			PackArcaneScroll( 0, 1 );
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.UltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
 		}
 
 		// TODO: Put this attack shared with Hiryu and Lesser Hiryu in one place

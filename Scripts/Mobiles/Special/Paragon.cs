@@ -14,7 +14,7 @@ namespace Server.Mobiles
 
 		public static Type[] Artifacts = new Type[]
 		{
-			typeof( GoldBricks ), typeof( PhillipsWoodenSteed ), 
+			typeof( GoldBricks ), typeof( PhillipsWoodenSteed ),
 			typeof( AlchemistsBauble ), typeof( ArcticDeathDealer ),
 			typeof( BlazeOfDeath ), typeof( BowOfTheJukaKing ),
 			typeof( BurglarsBandana ), typeof( CavortingClub ),
@@ -23,13 +23,13 @@ namespace Server.Mobiles
 			typeof( NightsKiss ), typeof( NoxRangersHeavyCrossbow ),
 			typeof( OrcishVisage ), typeof( PolarBearMask ),
 			typeof( ShieldOfInvulnerability ), typeof( StaffOfPower ),
-			typeof( VioletCourage ), typeof( HeartOfTheLion ), 
-			typeof( WrathOfTheDryad ), typeof( PixieSwatter ), 
+			typeof( VioletCourage ), typeof( HeartOfTheLion ),
+			typeof( WrathOfTheDryad ), typeof( PixieSwatter ),
 			typeof( GlovesOfThePugilist )
 		};
 
 		public static int    Hue   = 0x501;        // Paragon hue
-		
+
 		// Buffs
 		public static double HitsBuff   = 5.0;
 		public static double StrBuff    = 1.05;
@@ -50,7 +50,7 @@ namespace Server.Mobiles
 
 			if ( bc.HitsMaxSeed >= 0 )
 				bc.HitsMaxSeed = (int)( bc.HitsMaxSeed * HitsBuff );
-			
+
 			bc.RawStr = (int)( bc.RawStr * StrBuff );
 			bc.RawInt = (int)( bc.RawInt * IntBuff );
 			bc.RawDex = (int)( bc.RawDex * DexBuff );
@@ -69,6 +69,7 @@ namespace Server.Mobiles
 
 			bc.PassiveSpeed /= SpeedBuff;
 			bc.ActiveSpeed /= SpeedBuff;
+			bc.CurrentSpeed = bc.PassiveSpeed;
 
 			bc.DamageMin += DamageBuff;
 			bc.DamageMax += DamageBuff;
@@ -99,7 +100,7 @@ namespace Server.Mobiles
 
 			if ( bc.HitsMaxSeed >= 0 )
 				bc.HitsMaxSeed = (int)( bc.HitsMaxSeed / HitsBuff );
-			
+
 			bc.RawStr = (int)( bc.RawStr / StrBuff );
 			bc.RawInt = (int)( bc.RawInt / IntBuff );
 			bc.RawDex = (int)( bc.RawDex / DexBuff );
@@ -115,9 +116,10 @@ namespace Server.Mobiles
 				if ( skill.Base > 0.0 )
 					skill.Base /= SkillsBuff;
 			}
-			
+
 			bc.PassiveSpeed *= SpeedBuff;
 			bc.ActiveSpeed *= SpeedBuff;
+			bc.CurrentSpeed = bc.PassiveSpeed;
 
 			bc.DamageMin -= DamageBuff;
 			bc.DamageMax -= DamageBuff;
@@ -141,7 +143,7 @@ namespace Server.Mobiles
 			if ( Array.IndexOf( Maps, m ) == -1 )
 				return false;
 
-			if ( bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone || bc.GivesMLMinorArtifact )
+			if ( bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone || bc.IsParagon )
 				return false;
 
 			int fame = bc.Fame;

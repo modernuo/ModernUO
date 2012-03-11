@@ -13,6 +13,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Pyre()
 		{
+			IsParagon = true;
+
 			Name = "Pyre";
 			Hue = 0x489;
 
@@ -48,7 +50,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public MasterJonath()
 		{
+			IsParagon = true;
+
 			Name = "Master Jonath";
 			Hue = 0x455;
 
@@ -52,7 +54,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		// TODO: Special move?

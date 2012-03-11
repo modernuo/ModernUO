@@ -11,6 +11,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public LadyLissith()
 		{
+			IsParagon = true;
+
 			Name = "Lady Lissith";
 			Hue = 0x452;
 
@@ -44,7 +46,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

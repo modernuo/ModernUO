@@ -16,7 +16,7 @@ namespace Server.Items
 
 			Removal = TalismanRemoval.Damage;
 			Blessed = GetRandomBlessed();
-			Protection = GetRandomProtection();
+			Protection = GetRandomProtection( false );
 
 			SkillBonuses.SetValues( 0, SkillName.SpiritSpeak, 10.0 );
 			SkillBonuses.SetValues( 1, SkillName.Necromancy, 5.0 );
@@ -30,7 +30,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -38,6 +38,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version == 0 && ( Protection == null || Protection.IsEmpty ) )
+				Protection = GetRandomProtection( false );
 		}
 	}
 }

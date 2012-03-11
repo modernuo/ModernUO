@@ -11,6 +11,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public LadyJennifyr()
 		{
+			IsParagon = true;
+
 			Name = "Lady Jennifyr";
 			Hue = 0x76D;
 
@@ -42,7 +44,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override void OnGaveMeleeAttack( Mobile defender )

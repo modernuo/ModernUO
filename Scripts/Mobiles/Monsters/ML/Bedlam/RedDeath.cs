@@ -11,6 +11,8 @@ namespace Server.Mobiles
 		public RedDeath()
 			: base( "Red Death" )
 		{
+			IsParagon = true;
+
 			Hue = 0x21;
 			BaseSoundID = 0x1C3;
 
@@ -51,7 +53,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

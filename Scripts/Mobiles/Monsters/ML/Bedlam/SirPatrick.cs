@@ -12,6 +12,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public SirPatrick()
 		{
+			IsParagon = true;
+
 			Name = "Sir Patrick";
 			Hue = 0x47E;
 
@@ -43,7 +45,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
 		}
 
 		public override void OnGaveMeleeAttack( Mobile defender )

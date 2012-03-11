@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Virulent()
 		{
+			IsParagon = true;
+
 			Name = "Virulent";
 			Hue = 0x8FD;
 
@@ -45,7 +47,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

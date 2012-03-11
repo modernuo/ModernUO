@@ -16,8 +16,8 @@ namespace Server.Items
 			MaxChargeTime = 1800;
 
 			Blessed = GetRandomBlessed();
-			Protection = GetRandomProtection();
-			
+			Protection = GetRandomProtection( false );
+
 			Attributes.RegenHits = 2;
 			Attributes.LowerManaCost = 10;
 		}
@@ -35,7 +35,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -43,6 +43,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version == 0 && ( Protection == null || Protection.IsEmpty ) )
+				Protection = GetRandomProtection( false );
 		}
 	}
 }

@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public LadySabrix()
 		{
+			IsParagon = true;
+
 			Name = "Lady Sabrix";
 			Hue = 0x497;
 
@@ -43,7 +45,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

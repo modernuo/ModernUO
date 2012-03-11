@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Putrefier()
 		{
+			IsParagon = true;
+
 			Name = "Putrefier";
 			Hue = 63;
 
@@ -41,13 +43,16 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Meditation, 41.4, 85.0 );
 			SetSkill( SkillName.Poisoning, 45.0, 50.0 );
 
+			Fame = 24000;
+			Karma = -24000;
+
 			PackScroll( 4, 7 );
 			PackScroll( 4, 7 );
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		/*
@@ -60,15 +65,11 @@ namespace Server.Mobiles
 
 			if ( Utility.RandomDouble() < 0.6 )
 				c.DropItem( new ParrotItem() );
-
-			if ( Paragon.ChestChance > Utility.RandomDouble() )
-				c.DropItem( new ParagonChest( Name, TreasureMapLevel ) );
 		}
 		*/
 
 		public override bool GivesMLMinorArtifact{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override Poison HitPoison{ get{ return Poison.Deadly; } } // Becomes Lethal with Paragon bonus
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public Putrefier( Serial serial )

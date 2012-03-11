@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Rend()
 		{
+			IsParagon = true;
+
 			Name = "Rend";
 			Hue = 0x455;
 
@@ -38,19 +40,11 @@ namespace Server.Mobiles
 
 			Fame = 21000;
 			Karma = -21000;
-
-			Tamable = false;
-
-			/*
-			// TODO: Needs verification
-			if ( Paragon.ChestChance > Utility.RandomDouble() )
-				PackItem( new ParagonChest( Name, TreasureMapLevel ) );
-			*/
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()
@@ -60,6 +54,8 @@ namespace Server.Mobiles
 			else
 				return WeaponAbility.BleedAttack;
 		}
+
+		public override bool GivesMLMinorArtifact{ get{ return true; } }
 
 		public Rend( Serial serial )
 			: base( serial )

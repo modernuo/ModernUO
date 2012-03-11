@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Malefic()
 		{
+			IsParagon = true;
+
 			Name = "Malefic";
 			Hue = 0x455;
 
@@ -51,7 +53,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 4 );
+			AddLoot( LootPack.UltraRich, 3 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()

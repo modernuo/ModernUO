@@ -10,6 +10,8 @@ namespace Server.Mobiles
 		[Constructable]
 		public Miasma()
 		{
+			IsParagon = true;
+
 			Name = "Miasma";
 			Hue = 0x8FD;
 
@@ -38,13 +40,11 @@ namespace Server.Mobiles
 
 			Fame = 21000;
 			Karma = -21000;
-
-			Tamable = false;
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosUltraRich, 3 );
+			AddLoot( LootPack.UltraRich, 2 );
 		}
 
 		public override WeaponAbility GetWeaponAbility()
@@ -80,16 +80,11 @@ namespace Server.Mobiles
 					case 15: c.DropItem( new HunterLegs() ); break;
 				}
 			}
-
-			if ( Paragon.ChestChance > Utility.RandomDouble() )
-				c.DropItem( new ParagonChest( Name, TreasureMapLevel ) );
 		}
 		*/
 
 		public override bool GivesMLMinorArtifact{ get{ return true; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
 
 		public Miasma( Serial serial )
 			: base( serial )

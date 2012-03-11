@@ -345,7 +345,7 @@ namespace Server.Items
 							from.SendLocalizedMessage(1075001); // You have been given some ingots.
 						else if (item is Bandage)
 							from.SendLocalizedMessage(1075002); // You have been given some clean bandages.
-						else if (m_Summoner.Name != null)
+						else if (m_Summoner != null && m_Summoner.Name != null)
 							from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
 					}
 					else if (obj is BaseCreature)
@@ -553,7 +553,7 @@ namespace Server.Items
 			SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !m_AosSkillBonuses.IsEmpty);
 			SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection != null && !m_Protection.IsEmpty);
 			SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer != null && !m_Killer.IsEmpty);
-			SetSaveFlag(ref flags, SaveFlag.Summoner, !m_Summoner.IsEmpty);
+			SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner != null && !m_Summoner.IsEmpty);
 			SetSaveFlag(ref flags, SaveFlag.Removal, m_Removal != TalismanRemoval.None);
 			SetSaveFlag(ref flags, SaveFlag.KarmaLoss, m_KarmaLoss != 0);
 			SetSaveFlag(ref flags, SaveFlag.Skill, (int)m_Skill != 0);
@@ -894,26 +894,32 @@ namespace Server.Items
 
 		public static TalismanAttribute GetRandomKiller()
 		{
-			if (0.5 > Utility.RandomDouble())
-			{
-				int num = Utility.Random(m_Killers.Length);
+			return GetRandomKiller( true );
+		}
 
-				return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(10, 100));
-			}
+		public static TalismanAttribute GetRandomKiller( bool includingNone )
+		{
+			if ( includingNone && Utility.RandomBool() )
+				return new TalismanAttribute();
 
-			return new TalismanAttribute();
+			int num = Utility.Random(m_Killers.Length);
+
+			return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(10, 100));
 		}
 
 		public static TalismanAttribute GetRandomProtection()
 		{
-			if (0.5 > Utility.RandomDouble())
-			{
-				int num = Utility.Random(m_Killers.Length);
+			return GetRandomProtection( true );
+		}
 
-				return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(5, 60));
-			}
+		public static TalismanAttribute GetRandomProtection( bool includingNone )
+		{
+			if ( includingNone && Utility.RandomBool() )
+				return new TalismanAttribute();
 
-			return new TalismanAttribute();
+			int num = Utility.Random(m_Killers.Length);
+
+			return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(5, 60));
 		}
 
 		private static SkillName[] m_Skills = new SkillName[]
