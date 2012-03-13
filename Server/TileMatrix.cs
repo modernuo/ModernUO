@@ -34,6 +34,7 @@ namespace Server
 		private StaticTile[][][] m_EmptyStaticBlock;
 
 		private FileStream m_Map;
+		private bool m_MapUOPPacked;
 
 		private FileStream m_Index;
 		private BinaryReader m_IndexReader;
@@ -104,6 +105,12 @@ namespace Server
 			set{ m_Map = value; }
 		}
 
+		public bool MapUOPPacked
+		{
+			get{ return m_MapUOPPacked; }
+			set{ m_MapUOPPacked = value; }
+		}
+
 		public FileStream IndexStream
 		{
 			get{ return m_Index; }
@@ -157,7 +164,19 @@ namespace Server
 				string mapPath = Core.FindDataFile( "map{0}.mul", fileIndex );
 
 				if ( File.Exists( mapPath ) )
+				{
 					m_Map = new FileStream( mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
+				}
+				else
+				{
+					mapPath = Core.FindDataFile( "map{0}LegacyMUL.uop", fileIndex );
+
+					if ( File.Exists( mapPath ) )
+					{
+						m_Map = new FileStream( mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
+						m_MapUOPPacked = true;
+					}
+				}
 
 				string indexPath = Core.FindDataFile( "staidx{0}.mul", fileIndex );
 
@@ -466,7 +485,12 @@ namespace Server
 		{
 			try
 			{
-				m_Map.Seek( ((x * m_BlockHeight) + y) * 196 + 4, SeekOrigin.Begin );
+				int offset = ((x * m_BlockHeight) + y) * 196 + 4;
+
+				if ( m_MapUOPPacked )
+					offset += 0xD88 + ( 12 * ( offset / 0xC4000 ) );
+
+				m_Map.Seek( offset, SeekOrigin.Begin );
 
 				LandTile[] tiles = new LandTile[64];
 
