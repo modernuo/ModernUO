@@ -488,7 +488,10 @@ namespace Server
 				int offset = ((x * m_BlockHeight) + y) * 196 + 4;
 
 				if ( m_MapUOPPacked )
-					offset += 0xD88 + ( 12 * ( offset / 0xC4000 ) );
+				{
+					int block = offset / 0xC4000;
+					offset += 0xD88 + ( 0xD54 * ( block / 100 ) ) + ( 12 * block );
+				}
 
 				m_Map.Seek( offset, SeekOrigin.Begin );
 
