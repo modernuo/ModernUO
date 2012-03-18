@@ -142,7 +142,7 @@ namespace Server.Commands
 					sb.Append( "Modifiers: " );
 
 					if( (command.Supports & CommandSupport.Global) != 0 )
-						sb.Append( "<i><Global</i>, " );
+						sb.Append( "<i>Global</i>, " );
 
 					if( (command.Supports & CommandSupport.Online) != 0 )
 						sb.Append( "<i>Online</i>, " );

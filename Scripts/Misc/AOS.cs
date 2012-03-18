@@ -505,7 +505,6 @@ namespace Server
 					if( attrs != null )
 						value += attrs[attribute];
 				}
-
 				else if ( obj is ElvenGlasses )
 				{
 					AosWeaponAttributes attrs = ((ElvenGlasses)obj).WeaponAttributes;

@@ -24,7 +24,6 @@ namespace Server.Mobiles
 			Name = DefaultName;
 			Body = 264;
 			Hue = DefaultHue;
-			BaseSoundID = 0x470;
 
 			SetStr( 36, 105 );
 			SetDex( 212, 262 );
@@ -69,6 +68,12 @@ namespace Server.Mobiles
 		{
 			AddLoot( LootPack.AosRich, 3 );
 		}
+
+		public override int GetAngerSound() { return 0x46E; }
+		public override int GetIdleSound() { return 0x470; }
+		public override int GetAttackSound() { return 0x46D; }
+		public override int GetHurtSound() { return 0x471; }
+		public override int GetDeathSound() { return 0x46F; }
 
 		private Mobile m_MorphedInto;
 		private DateTime m_LastMorph;
@@ -189,7 +194,7 @@ namespace Server.Mobiles
 		protected virtual void Revert()
 		{
 			Body = 264;
-			Hue = IsParagon ? Paragon.Hue : DefaultHue;
+			Hue = ( IsParagon && DefaultHue == 0 ) ? Paragon.Hue : DefaultHue;
 			Female = false;
 			Name = DefaultName;
 			NameHue = -1;
@@ -200,6 +205,14 @@ namespace Server.Mobiles
 			FacialHairItemID = 0;
 			FacialHairHue = 0;
 
+			DeleteClonedItems();
+
+			PlaySound( 0x511 );
+			FixedParticles( 0x376A, 1, 14, 5045, EffectLayer.Waist );
+		}
+
+		public void DeleteClonedItems()
+		{
 			for ( int i = Items.Count - 1; i >= 0; --i )
 			{
 				Item item = Items[i];
@@ -218,9 +231,13 @@ namespace Server.Mobiles
 						item.Delete();
 				}
 			}
+		}
 
-			PlaySound( 0x511 );
-			FixedParticles( 0x376A, 1, 14, 5045, EffectLayer.Waist );
+		public override void OnAfterDelete()
+		{
+			DeleteClonedItems();
+
+			base.OnAfterDelete();
 		}
 
 		public override void ClearHands()

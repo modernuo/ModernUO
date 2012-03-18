@@ -79,7 +79,8 @@ namespace Server
 				|| region.IsPartOf( "Bedlam" )
 				|| region.IsPartOf( "Blighted Grove" )
 				|| region.IsPartOf( "Painted Caves" )
-				|| region.IsPartOf( "Palace of Paroxysmus" );
+				|| region.IsPartOf( "Palace of Paroxysmus" )
+				|| region.IsPartOf( "Labyrinth" );
 		}
 	}
 }

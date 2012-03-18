@@ -2592,8 +2592,8 @@ namespace Server.Mobiles
 				{
 					Type type = talisman.Protection.Type;
 
-					if ( type == from.GetType() )
-						amount *= 1 - (int) ( ( (double) talisman.Protection.Amount ) / 100 );
+					if ( type.IsAssignableFrom( from.GetType() ) )
+						amount = (int)( amount * ( 1 - (double)talisman.Protection.Amount / 100 ) );
 				}
 			}
 
