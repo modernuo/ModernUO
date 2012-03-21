@@ -55,7 +55,11 @@ namespace Server
 		{
 			List<string> list = new List<string>();
 
+#if Framework_4_0
+			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies_4_0.cfg" );
+#else
 			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies.cfg" );
+#endif
 
 			if( File.Exists( path ) )
 			{

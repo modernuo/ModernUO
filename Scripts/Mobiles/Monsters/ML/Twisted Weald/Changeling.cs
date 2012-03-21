@@ -264,23 +264,12 @@ namespace Server.Mobiles
 			int version = reader.ReadInt();
 
 			if ( reader.ReadBool() )
-				m_ToRevert.Add( this );
+				ValidationQueue<Changeling>.Add( this );
 		}
 
-		private static List<Changeling> m_ToRevert;
-
-		public static void Configure()
+		public void Validate()
 		{
-			m_ToRevert = new List<Changeling>();
-		}
-
-		public static void Initialize()
-		{
-			foreach ( Changeling c in m_ToRevert )
-				c.Revert();
-
-			m_ToRevert.Clear();
-			m_ToRevert = null;
+			Revert();
 		}
 
 		private class ClonedItem : Item

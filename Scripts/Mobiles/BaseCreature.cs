@@ -11,6 +11,7 @@ using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Engines.PartySystem;
 using Server.Factions;
+using Server.SkillHandlers;
 using Server.Spells.Bushido;
 using Server.Spells.Spellweaving;
 using Server.Spells.Necromancy;
@@ -2948,7 +2949,7 @@ namespace Server.Mobiles
 			if ( !CanTeach )
 				return false;
 
-			if( skill == SkillName.Stealth && from.Skills[SkillName.Hiding].Base < ((Core.SE) ? 50.0 : 80.0) )
+			if( skill == SkillName.Stealth && from.Skills[SkillName.Hiding].Base < Stealth.HidingRequirement )
 				return false;
 
 			if ( skill == SkillName.RemoveTrap && (from.Skills[SkillName.Lockpicking].Base < 50.0 || from.Skills[SkillName.DetectHidden].Base < 50.0) )
@@ -3382,12 +3383,24 @@ namespace Server.Mobiles
 			return true; // entered idle state
 		}
 
+		private void CheckAIActive()
+		{
+			Map map = Map;
+
+			if ( PlayerRangeSensitive && m_AI != null && map != null && map.GetSector( Location ).Active )
+				m_AI.Activate();
+		}
+
+		protected override void OnMapChange( Map oldMap )
+		{
+			CheckAIActive();
+
+			base.OnMapChange( oldMap );
+		}
+
 		protected override void OnLocationChange( Point3D oldLocation )
 		{
-			Map map = this.Map;
-
-			if ( PlayerRangeSensitive && m_AI != null && map != null && map.GetSector( this.Location ).Active )
-				m_AI.Activate();
+			CheckAIActive();
 
 			base.OnLocationChange( oldLocation );
 		}

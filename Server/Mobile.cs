@@ -10696,7 +10696,7 @@ namespace Server
 
 		public void SendLocalizedMessage( int number, bool append, string affix, string args )
 		{
-			SendLocalizedMessage( number, append, affix, args );
+			SendLocalizedMessage( number, append, affix, args, 0x3B2 );
 		}
 
 		public void SendLocalizedMessage( int number, bool append, string affix, string args, int hue )

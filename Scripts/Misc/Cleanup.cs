@@ -141,8 +141,27 @@ namespace Server.Misc
 				|| item is TreasureMap || item is MessageInABottle
 				|| item is BaseArmor || item is BaseWeapon
 				|| item is BaseClothing
-				|| (item is BaseJewel && Core.AOS) 
-				|| (item is BasePotion && Core.ML))
+				|| ( item is BaseJewel && Core.AOS )
+				|| ( item is BasePotion && Core.ML )
+				#region Champion artifacts
+				|| item is SkullPole
+				|| item is EvilIdolSkull
+				|| item is MonsterStatuette
+				|| item is Pier
+				|| item is ArtifactLargeVase
+				|| item is ArtifactVase
+				|| item is MinotaurStatueDeed
+				|| item is SwampTile
+				|| item is WallBlood
+				|| item is TatteredAncientMummyWrapping
+				|| item is LavaTile
+				|| item is DemonSkull
+				|| item is Web
+				|| item is WaterTile
+				|| item is WindSpirit
+				|| item is DirtPatch
+				|| item is Futon )
+				#endregion
 				return true;
 
 			return false;

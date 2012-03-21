@@ -22,7 +22,7 @@ using System;
 
 namespace Server.Accounting
 {
-	public interface IAccount
+	public interface IAccount : IComparable<IAccount>
 	{
 		string Username { get; set; }
 		AccessLevel AccessLevel { get; set; }

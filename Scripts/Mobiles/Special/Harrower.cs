@@ -450,16 +450,18 @@ namespace Server.Mobiles
 
 			totalDamage = 0;
 
-			foreach (KeyValuePair<Mobile, int> kvp in m_DamageEntries)
+			foreach (KeyValuePair<Mobile, int> kvp in validEntries)
 			{
 				totalDamage += kvp.Value;
 
-				if( totalDamage > randomDamage )
+				if( totalDamage >= randomDamage )
 				{
 					GiveArtifact( kvp.Key, artifact );
-					break;
+					return;
 				}
 			}
+
+			artifact.Delete();
 		}
 
 		public void GiveArtifact( Mobile to, Item artifact )

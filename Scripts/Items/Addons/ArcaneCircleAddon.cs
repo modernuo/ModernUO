@@ -33,31 +33,6 @@ namespace Server.Items
 			writer.WriteEncodedInt( 1 ); // version
 		}
 
-		private static List<ArcaneCircleAddon> m_ToFix;
-
-		public static void Configure()
-		{
-			m_ToFix = new List<ArcaneCircleAddon>();
-		}
-
-		public static void Initialize()
-		{
-			foreach ( ArcaneCircleAddon ac in m_ToFix )
-			{
-				foreach ( AddonComponent c in ac.Components )
-				{
-					if ( c.ItemID == 0x3083 )
-					{
-						c.Offset = new Point3D( -1, -1, 0 );
-						c.MoveToWorld( new Point3D( ac.X + c.Offset.X, ac.Y + c.Offset.Y, ac.Z + c.Offset.Z ), ac.Map );
-					}
-				}
-			}
-
-			m_ToFix.Clear();
-			m_ToFix = null;
-		}
-
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
@@ -65,7 +40,19 @@ namespace Server.Items
 			int version = reader.ReadEncodedInt();
 
 			if ( version == 0 )
-				m_ToFix.Add( this );
+				ValidationQueue<ArcaneCircleAddon>.Add( this );
+		}
+
+		public void Validate()
+		{
+			foreach ( AddonComponent c in Components )
+			{
+				if ( c.ItemID == 0x3083 )
+				{
+					c.Offset = new Point3D( -1, -1, 0 );
+					c.MoveToWorld( new Point3D( X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z ), Map );
+				}
+			}
 		}
 	}
 

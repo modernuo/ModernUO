@@ -812,16 +812,16 @@ namespace Server
 			{
 				Container cont = this as Container;
 
-				if ( cont.m_Items == null ) {
+				if ( cont.m_Items == null )
 					cont.m_Items = new List<Item>();
-				}
 
 				return cont.m_Items;
 			}
 
 			CompactInfo info = AcquireCompactInfo();
 
-			info.m_Items = new List<Item>();
+			if ( info.m_Items == null )
+				info.m_Items = new List<Item>();
 
 			return info.m_Items;
 		}

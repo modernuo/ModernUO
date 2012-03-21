@@ -465,7 +465,7 @@ namespace Server.Items
 			}
 
 			if ( version < 3 )
-				m_Recount.Add( this );
+				ValidationQueue<Aquarium>.Add( this );
 		}
 
 		private void RecountLiveCreatures()
@@ -480,20 +480,9 @@ namespace Server.Items
 			}
 		}
 
-		private static List<Aquarium> m_Recount;
-
-		public static void Configure()
+		public void Validate()
 		{
-			m_Recount = new List<Aquarium>();
-		}
-
-		public static void Initialize()
-		{
-			foreach ( Aquarium aquarium in m_Recount )
-				aquarium.RecountLiveCreatures();
-
-			m_Recount.Clear();
-			m_Recount = null;
+			RecountLiveCreatures();
 		}
 
 		#region Members

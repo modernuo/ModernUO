@@ -1060,12 +1060,14 @@ namespace Server.Engines.CannedEvil
 			{
 				totalDamage += kvp.Value;
 
-				if( totalDamage > randomDamage )
+				if( totalDamage >= randomDamage )
 				{
 					GiveArtifact( kvp.Key, artifact );
-					break;
+					return;
 				}
 			}
+
+			artifact.Delete();
 		}
 
 		public void GiveArtifact( Mobile to, Item artifact )
