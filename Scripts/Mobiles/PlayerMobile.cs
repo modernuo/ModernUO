@@ -285,6 +285,13 @@ namespace Server.Mobiles
 			set { m_ExecutesLightningStrike = value; }
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int ToothAche
+		{
+			get { return CandyCane.GetToothAche( this ); }
+			set { CandyCane.SetToothAche( this, value ); }
+		}
+
 		#endregion
 
 		#region PlayerFlags

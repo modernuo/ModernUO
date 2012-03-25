@@ -25,7 +25,7 @@ namespace Server.Items
 			get { return m_Poison; }
 			set { m_Poison = value; }
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int FillFactor
 		{
@@ -70,7 +70,7 @@ namespace Server.Items
 		public virtual bool Eat( Mobile from )
 		{
 			// Fill the Mobile with FillFactor
-			if ( FillHunger( from, m_FillFactor ) )
+			if ( CheckHunger( from ) )
 			{
 				// Play a random "eat" sound
 				from.PlaySound( Utility.Random( 0x3A, 3 ) );
@@ -89,17 +89,24 @@ namespace Server.Items
 			return false;
 		}
 
-		static public bool FillHunger( Mobile from, int fillFactor )
+		public virtual bool CheckHunger( Mobile from )
+		{
+			return FillHunger( from, m_FillFactor );
+		}
+
+		public static bool FillHunger( Mobile from, int fillFactor )
 		{
 			if ( from.Hunger >= 20 )
 			{
 				from.SendLocalizedMessage( 500867 ); // You are simply too full to eat any more!
 				return false;
 			}
-			
+
 			int iHunger = from.Hunger + fillFactor;
+
 			if ( from.Stam < from.StamMax )
-				from.Stam += Utility.Random( 6, 3 ) + fillFactor/5;//restore some stamina
+				from.Stam += Utility.Random( 6, 3 ) + fillFactor / 5;
+
 			if ( iHunger >= 20 )
 			{
 				from.Hunger = 20;
