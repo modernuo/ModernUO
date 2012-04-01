@@ -1329,7 +1329,7 @@ namespace Server.Multis
 				mcl.Remove( itemID, x, y, z );
 				
 				int dir = 0;
-				
+
 				if( IsStair( itemID, ref dir ) || IsStairBlock( itemID ) )
 					design.SendGeneralInfoTo( state );
 
@@ -1709,7 +1709,7 @@ namespace Server.Multis
 			Mobile from = state.Mobile;
 			DesignContext context = DesignContext.Find( from );
 
-			if( context != null )	//No need to check if core.SE if trying to remvoe something that shouldn't be able to be placed anyways
+			if( context != null )	// No need to check for Core.SE if trying to remove something that shouldn't be able to be placed anyways
 			{
 				// Read data detailing which component to delete
 				int itemID = pvSrc.ReadInt32();
