@@ -344,6 +344,52 @@ namespace Server.Multis
 							case 1: door = new GenericHouseDoor( facing, 0x368B, 0xEC, 0x3E7 ); break;	//shadow
 						}
 					}
+					else if( itemID >= 0x409B && itemID < 0x40A3 )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x409B ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x410C && itemID < 0x4114 )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x410C ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x41C2 && itemID < 0x41CA )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x41C2 ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x41CF && itemID < 0x41D7 )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x41CF ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x436E && itemID < 0x437E )
+					{
+						/* These ones had to be different...
+						 * Offset		0	2	4	6	8	10	12	14
+						 * DoorFacing	2	3	2	3	6	7	6	7
+						 */
+						int offset = itemID - 0x436E;
+						DoorFacing facing = (DoorFacing)( ( offset / 2 + 2 * ( ( 1 + offset / 4 ) % 2 ) ) % 8 );
+						door = new GenericHouseDoor( facing, itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x46DD && itemID < 0x46E5 )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x46DD ), itemID, 0xEB, 0xF2, false );
+					}
+					else if( itemID >= 0x4D22 && itemID < 0x4D2A )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x4D22 ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x50C8 && itemID < 0x50D0 )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x50C8 ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x50D0 && itemID < 0x50D8 )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x50D0 ), itemID, 0xEA, 0xF1, false );
+					}
+					else if( itemID >= 0x5142 && itemID < 0x514A )
+					{
+						door = new GenericHouseDoor( GetSADoorFacing( itemID - 0x5142 ), itemID, 0xF0, 0xEF, false );
+					}
 
 					if( door != null )
 					{
@@ -418,6 +464,14 @@ namespace Server.Multis
 					}
 				}
 			}
+		}
+
+		private static DoorFacing GetSADoorFacing( int offset )
+		{
+			/* Offset		0	2	4	6
+			 * DoorFacing	2	3	6	7
+			 */
+			return (DoorFacing)( ( offset / 2 + 2 * ( 1 + offset / 4 ) ) % 8 );
 		}
 
 		public void AddFixture( Item item, MultiTileEntry mte )
@@ -1894,6 +1948,26 @@ namespace Server.Multis
 				return true;
 			else if( itemID >= 0x367B && itemID < 0x369B )
 				return true;
+			#region SA doors
+			else if( itemID >= 0x409B && itemID < 0x40A3 )
+				return true;
+			else if( itemID >= 0x410C && itemID < 0x4114 )
+				return true;
+			else if( itemID >= 0x41C2 && itemID < 0x41CA )
+				return true;
+			else if( itemID >= 0x41CF && itemID < 0x41D7 )
+				return true;
+			else if( itemID >= 0x436E && itemID < 0x437E )
+				return true;
+			else if( itemID >= 0x46DD && itemID < 0x46E5 )
+				return true;
+			else if( itemID >= 0x4D22 && itemID < 0x4D2A )
+				return true;
+			else if( itemID >= 0x50C8 && itemID < 0x50D8 )
+				return true;
+			else if( itemID >= 0x5142 && itemID < 0x514A )
+				return true;
+			#endregion
 
 			return false;
 		}

@@ -23,6 +23,8 @@ namespace Server.Items
 			Attributes.BonusHits = 5;
 			Attributes.RegenMana = 3;
 			Attributes.ReflectPhysical = 20;
+
+			Hue = 0x80;
 		}
 		public AnthropomorphistGlasses( Serial serial ) : base( serial )
 		{
@@ -31,13 +33,16 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if ( version == 0 && Hue == 0 )
+				Hue = 0x80;
 		}
 	}
 }

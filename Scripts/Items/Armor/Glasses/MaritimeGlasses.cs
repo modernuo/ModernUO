@@ -22,6 +22,8 @@ namespace Server.Items
 			Attributes.Luck = 150;
 			Attributes.NightSight = 1;
 			Attributes.ReflectPhysical = 20;
+
+			Hue = 0x581;
 		}
 		public MaritimeGlasses( Serial serial ) : base( serial )
 		{
@@ -30,13 +32,16 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if ( version == 0 && Hue == 0 )
+				Hue = 0x581;
 		}
 	}
 }

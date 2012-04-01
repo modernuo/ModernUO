@@ -22,6 +22,8 @@ namespace Server.Items
 			Attributes.BonusStr = 8;
 			Attributes.NightSight = 1;
 			Attributes.DefendChance = 15;
+
+			Hue = 0x47E;
 		}
 		public FoldedSteelGlasses( Serial serial ) : base( serial )
 		{
@@ -30,13 +32,16 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if ( version == 0 && Hue == 0 )
+				Hue = 0x47E;
 		}
 	}
 }

@@ -22,6 +22,8 @@ namespace Server.Items
 			Attributes.BonusStr = 7;
 			Attributes.BonusInt = 5;
 			Attributes.WeaponDamage = 30;
+
+			Hue = 0x256;
 		}
 		public LightOfWayGlasses( Serial serial ) : base( serial )
 		{
@@ -30,13 +32,16 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if ( version == 0 && Hue == 0 )
+				Hue = 0x256;
 		}
 	}
 }

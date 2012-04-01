@@ -17,6 +17,9 @@ namespace Server.Items
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Dragon; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.Iron; } }
 
+		public override int InitMinHits{ get{ return 255; } }
+		public override int InitMaxHits{ get{ return 255; } }
+
 		[Constructable]
 		public AegisOfGrace()
 		{

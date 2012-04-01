@@ -21,6 +21,8 @@ namespace Server.Items
 		{
 			Attributes.BonusStam = 3;
 			Attributes.RegenStam = 4;
+
+			Hue = 0x113;
 		}
 		public PoisonedGlasses( Serial serial ) : base( serial )
 		{
@@ -29,13 +31,16 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
+
+			if ( version == 0 && Hue == 0 )
+				Hue = 0x113;
 		}
 	}
 }

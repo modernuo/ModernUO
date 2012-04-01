@@ -759,6 +759,13 @@ namespace Server.Items
 			}
 		}
 
+		public override void DoTeleport( Mobile m )
+		{
+			m_Teleporting.Remove( m );
+
+			base.DoTeleport( m );
+		}
+
 		public override bool OnMoveOver( Mobile m )
 		{
 			if ( Active && ( m.Player || Creatures ) )
