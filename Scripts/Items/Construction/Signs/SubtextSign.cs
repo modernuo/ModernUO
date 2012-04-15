@@ -32,7 +32,7 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			if ( m_Subtext != null )
+			if ( !String.IsNullOrEmpty( m_Subtext ) )
 				LabelTo( from, m_Subtext );
 		}
 
@@ -40,7 +40,7 @@ namespace Server.Items
 		{
 			base.AddNameProperties( list );
 
-			if ( m_Subtext != null )
+			if ( !String.IsNullOrEmpty( m_Subtext ) )
 				list.Add( m_Subtext );
 		}
 

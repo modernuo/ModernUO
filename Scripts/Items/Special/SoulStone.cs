@@ -29,7 +29,7 @@ namespace Server.Items
 		public virtual int ActiveItemID
 		{
 			get { return m_ActiveItemID; }
-			set 
+			set
 			{
 				m_ActiveItemID = value;
 
@@ -42,8 +42,8 @@ namespace Server.Items
 		public virtual int InactiveItemID
 		{
 			get { return m_InactiveItemID; }
-			set 
-			{ 
+			set
+			{
 				m_InactiveItemID = value;
 
 				if( IsEmpty )
@@ -132,18 +132,15 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if ( !this.IsEmpty )
-			{
-				list.Add( 1070721, "#{0}\t{1:0.0}", 1044060 + (int)this.Skill, this.SkillValue ); // Skill stored: ~1_skillname~ ~2_skillamount~
-			}
-			
+			if ( !IsEmpty )
+				list.Add( 1070721, "#{0}\t{1:0.0}", AosSkillBonuses.GetLabel( Skill ), SkillValue ); // Skill stored: ~1_skillname~ ~2_skillamount~
+
 			string name = this.LastUserName;
 
 			if ( name == null )
 				name = String.Format( "#{0}", 1074235 ); // Unknown
 
-				list.Add( 1041602, "{0}", name ); // Owner: ~1_val~
-
+			list.Add( 1041602, "{0}", name ); // Owner: ~1_val~
 		}
 
 		private static bool CheckCombat( Mobile m, TimeSpan time )
@@ -305,7 +302,7 @@ namespace Server.Items
 						int y = ( p / 2 ) * 20 + 40;
 
 						AddButton( x, y, 0xFA5, 0xFA6, i + 1, GumpButtonType.Reply, 0 );
-						AddHtmlLocalized( x + 45, y + 2, 200, 20, 1044060 + i, 0x7FFF, false, false );
+						AddHtmlLocalized( x + 45, y + 2, 200, 20, AosSkillBonuses.GetLabel( skill.SkillName ), 0x7FFF, false, false );
 
 						n++;
 					}
@@ -360,19 +357,19 @@ namespace Server.Items
 				 * the stone, you must make sure your Skill Lock for the indicated skill is pointed downward.
 				 * Click the "Skills" button on your Paperdoll to access the Skill List, and double-check
 				 * your skill lock.<BR><BR>
-				 * 
+				 *
 				 * Once you activate the stone, all skill points in the indicated skill will be removed from
 				 * your character.  These skill points can later be retrieved.  IMPORTANT: When retrieving
 				 * skill points from a Soulstone, the Soulstone WILL REPLACE any existing skill points
 				 * already on your character!<BR><BR>
-				 * 
+				 *
 				 * This is an Account Bound Soulstone.  Skill pointsstored inside can be retrieved by any
 				 * character on the same account as the character who placed them into the stone.
 				 */
 				AddHtmlLocalized( 10, 42, 500, 110, 1061067, 0x7FFF, false, true );
 
 				AddHtmlLocalized( 10, 200, 390, 20, 1062297, 0x7FFF, false, false ); // Skill Chosen:
-				AddHtmlLocalized( 210, 200, 390, 20, 1044060 + skill.SkillID, 0x7FFF, false, false );
+				AddHtmlLocalized( 210, 200, 390, 20, AosSkillBonuses.GetLabel( skill.SkillName ), 0x7FFF, false, false );
 
 				AddHtmlLocalized( 10, 220, 390, 20, 1062298, 0x7FFF, false, false ); // Current Value:
 				AddLabel( 210, 220, 0x481, skill.Base.ToString( "0.0" ) );
@@ -469,19 +466,19 @@ namespace Server.Items
 				 * the stone, you must make sure your Skill Lock for the indicated skill is pointed downward.
 				 * Click the "Skills" button on your Paperdoll to access the Skill List, and double-check
 				 * your skill lock.<BR><BR>
-				 * 
+				 *
 				 * Once you activate the stone, all skill points in the indicated skill will be removed from
 				 * your character.  These skill points can later be retrieved.  IMPORTANT: When retrieving
 				 * skill points from a Soulstone, the Soulstone WILL REPLACE any existing skill points
 				 * already on your character!<BR><BR>
-				 * 
+				 *
 				 * This is an Account Bound Soulstone.  Skill pointsstored inside can be retrieved by any
 				 * character on the same account as the character who placed them into the stone.
 				 */
 				AddHtmlLocalized( 10, 42, 500, 110, 1061067, 0x7FFF, false, true );
 
 				AddHtmlLocalized( 10, 200, 390, 20, 1070718, 0x7FFF, false, false ); // Skill Stored:
-				AddHtmlLocalized( 210, 200, 390, 20, 1044060 + (int)stone.Skill, 0x7FFF, false, false );
+				AddHtmlLocalized( 210, 200, 390, 20, AosSkillBonuses.GetLabel( stone.Skill ), 0x7FFF, false, false );
 
 				Skill fromSkill = from.Skills[stone.Skill];
 
@@ -674,10 +671,10 @@ namespace Server.Items
 				AddHtmlLocalized( 10, 12, 500, 20, 1070725, 0x7FFF, false, false ); // <CENTER>Confirm Soulstone Skill Removal</CENTER>
 
 				/* WARNING!<BR><BR>
-				 * 
+				 *
 				 * You are about to permanently remove all skill points stored in this Soulstone.
 				 * You WILL NOT absorb these skill points.  They will be DELETED.<BR><BR>
-				 * 
+				 *
 				 * Are you sure you wish to do this?  If not, press the Cancel button.
 				 */
 				AddHtmlLocalized( 10, 42, 500, 110, 1070724, 0x7FFF, false, true );
@@ -937,7 +934,6 @@ namespace Server.Items
 		public BlueSoulstone( string account )
 			: base( account, 0x2ADC, 0x2ADD )
 		{
-					
 		}
 
 		public BlueSoulstone( Serial serial )
@@ -1022,7 +1018,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
-			
+
 			switch ( version )
 			{
 				case 1:

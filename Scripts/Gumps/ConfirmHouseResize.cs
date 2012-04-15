@@ -87,11 +87,11 @@ namespace Server.Gumps
 						return;
 					}
 
-
 					if ( m_Mobile.AccessLevel >= AccessLevel.GameMaster )
 					{
 						m_Mobile.SendMessage( "You do not get a refund for your house as you are not a player" );
-						m_House.RemoveKeys(m_Mobile);
+						m_House.RemoveKeys( m_Mobile );
+						new TempNoHousingRegion( m_House, m_Mobile );
 						m_House.Delete();
 					}
 					else

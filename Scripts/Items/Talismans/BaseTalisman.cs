@@ -419,10 +419,10 @@ namespace Server.Items
 				list.Add(1072387, "{0}\t{1}", m_Protection.Name != null ? m_Protection.Name.ToString() : "Unknown", m_Protection.Amount); // ~1_NAME~ Protection: +~2_val~%
 
 			if (m_ExceptionalBonus != 0)
-				list.Add(1072395, "#{0}\t{1}", 1044060 + (int)m_Skill, m_ExceptionalBonus); // ~1_NAME~ Exceptional Bonus: ~2_val~%
+				list.Add(1072395, "#{0}\t{1}", AosSkillBonuses.GetLabel( m_Skill ), m_ExceptionalBonus); // ~1_NAME~ Exceptional Bonus: ~2_val~%
 
 			if (m_SuccessBonus != 0)
-				list.Add(1072394, "#{0}\t{1}", 1044060 + (int)m_Skill, m_SuccessBonus); // ~1_NAME~ Bonus: ~2_val~%
+				list.Add(1072394, "#{0}\t{1}", AosSkillBonuses.GetLabel( m_Skill ), m_SuccessBonus); // ~1_NAME~ Bonus: ~2_val~%
 
 			m_AosSkillBonuses.GetProperties(list);
 

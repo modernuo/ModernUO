@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Server;
 using Server.Items;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Multis.Deeds;
 using Server.Regions;
@@ -369,10 +370,9 @@ namespace Server.Multis
 
 					fromSecures += si.Item.TotalItems;
 				}
-				
+
 				fromLockdowns += list.Count;
 			}
-			
 
 			fromLockdowns += GetLockdowns();
 
@@ -421,7 +421,7 @@ namespace Server.Multis
 
 			if ( hpe == null )
 				return 0;
-			
+
 			return (int)(hpe.Vendors * BonusStorageScalar);
 		}
 
@@ -903,7 +903,7 @@ namespace Server.Multis
 			List<Item> list = new List<Item>();
 
 			IPooledEnumerable eable = this.Map.GetItemsInBounds( rect );
-			
+
 			foreach ( Item item in eable )
 				if ( item.Movable && IsInside( item ) )
 					list.Add( item );
@@ -1628,7 +1628,7 @@ namespace Server.Multis
 					SetLockdown( item, true );
 					return true;
 				}
-			} 
+			}
 			else if ( m_LockDowns.IndexOf( item ) != -1 )
 			{
 				m.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1005526 ); //That is already locked down
@@ -1741,7 +1741,7 @@ namespace Server.Multis
 
 				if ( m_House == null || m_House.Deleted || !m_House.IsOwner( from ) || !from.CheckAlive() || !to.CheckAlive() )
 					return;
-				
+
 
 				if ( !accepted )
 					return;
@@ -1933,7 +1933,7 @@ namespace Server.Multis
 				m.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1010416 ); // This is not locked down or secured.
 			}
 		}
-		
+
 		public void AddSecure( Mobile m, Item item )
 		{
 			if ( m_Secures == null || !IsOwner( m ) || !IsActive )
@@ -1975,7 +1975,7 @@ namespace Server.Multis
 				}
 				else if ( !IsAosRules && SecureCount >= MaxSecures )
 				{
-					// The maximum number of secure items has been reached : 
+					// The maximum number of secure items has been reached :
 					m.SendLocalizedMessage( 1008142, true, MaxSecures.ToString() );
 				}
 				else if ( IsAosRules ? !CheckAosLockdowns( 1 ) : ((LockDownCount + 125) >= MaxLockDowns) )
@@ -2951,18 +2951,18 @@ namespace Server.Multis
 					if ( m_LockDowns[i] is Item )
 					{
 						Item item = (Item)m_LockDowns[i];
-						
+
 						if ( !(item is Container) )
 							count += item.TotalItems;
 					}
-					
+
 					count++;
 				}
 			}
-			
+
 			return count;
 		}
-		
+
 		public int LockDownCount
 		{
 			get
@@ -3082,7 +3082,7 @@ namespace Server.Multis
 			{
 				List<BaseHouse> list = null;
 				m_Table.TryGetValue( m_Owner, out list );
-				
+
 				if ( list == null )
 					m_Table[m_Owner] = list = new List<BaseHouse>();
 
@@ -3265,25 +3265,6 @@ namespace Server.Multis
 			return false;
 		}
 
-		public bool CheckAccount( Mobile mobCheck, Mobile accCheck )
-		{
-			if ( accCheck != null )
-			{
-				Account a = accCheck.Account as Account;
-
-				if ( a != null )
-				{
-					for ( int i = 0; i < a.Length; ++i )
-					{
-						if ( a[i] == mobCheck )
-							return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
 		public bool IsOwner( Mobile m )
 		{
 			if ( m == null )
@@ -3292,7 +3273,7 @@ namespace Server.Multis
 			if ( m == m_Owner || m.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			return IsAosRules && CheckAccount( m, m_Owner );
+			return IsAosRules && AccountHandler.CheckAccount( m, m_Owner );
 		}
 
 		public bool IsCoOwner( Mobile m )
@@ -3303,7 +3284,7 @@ namespace Server.Multis
 			if ( IsOwner( m ) || m_CoOwners.Contains( m ) )
 				return true;
 
-			return !IsAosRules && CheckAccount( m, m_Owner );
+			return !IsAosRules && AccountHandler.CheckAccount( m, m_Owner );
 		}
 
 		public bool IsGuildMember( Mobile m )
@@ -3614,7 +3595,7 @@ namespace Server.Multis
 					if ( targeted is AddonContainerComponent )
 					{
 						AddonContainerComponent component = (AddonContainerComponent) targeted;
-						
+
 						if ( component.Addon != null )
 							m_House.Release( from, component.Addon );
 					}
@@ -3641,7 +3622,7 @@ namespace Server.Multis
 						if ( targeted is AddonContainerComponent )
 						{
 							AddonContainerComponent component = (AddonContainerComponent) targeted;
-							
+
 							if ( component.Addon != null )
 								m_House.LockDown( from, component.Addon );
 						}
@@ -3656,7 +3637,7 @@ namespace Server.Multis
 			{
 				return;
 			}
-			else 
+			else
 			{
 				from.SendLocalizedMessage( 1005377 ); //You cannot lock that down
 			}
@@ -3694,7 +3675,7 @@ namespace Server.Multis
 					if ( targeted is AddonContainerComponent )
 					{
 						AddonContainerComponent component = (AddonContainerComponent) targeted;
-						
+
 						if ( component.Addon != null )
 							m_House.ReleaseSecure( from, component.Addon );
 					}
@@ -3716,7 +3697,7 @@ namespace Server.Multis
 						if ( targeted is AddonContainerComponent )
 						{
 							AddonContainerComponent component = (AddonContainerComponent) targeted;
-							
+
 							if ( component.Addon != null )
 								m_House.AddSecure( from, component.Addon );
 						}
@@ -3726,8 +3707,8 @@ namespace Server.Multis
 						m_House.AddSecure( from, (Item)targeted );
 					}
 				}
-			} 
-			else 
+			}
+			else
 			{
 				from.SendLocalizedMessage( 1010424 );//You cannot secure this
 			}
@@ -3753,8 +3734,8 @@ namespace Server.Multis
 			if ( targeted is Mobile )
 			{
 				m_House.Kick( from, (Mobile)targeted );
-			} 
-			else 
+			}
+			else
 			{
 				from.SendLocalizedMessage( 501347 );//You cannot eject that from the house!
 			}
@@ -3785,8 +3766,8 @@ namespace Server.Multis
 					m_House.Ban( from, (Mobile)targeted );
 				else
 					m_House.RemoveBan( from, (Mobile)targeted );
-			} 
-			else 
+			}
+			else
 			{
 				from.SendLocalizedMessage( 501347 );//You cannot eject that from the house!
 			}
@@ -3840,8 +3821,8 @@ namespace Server.Multis
 					m_House.AddCoOwner( from, (Mobile)targeted );
 				else
 					m_House.RemoveCoOwner( from, (Mobile)targeted );
-			} 
-			else 
+			}
+			else
 			{
 				from.SendLocalizedMessage( 501362 );//That can't be a coowner
 			}
@@ -3872,8 +3853,8 @@ namespace Server.Multis
 					m_House.AddFriend( from, (Mobile)targeted );
 				else
 					m_House.RemoveFriend( from, (Mobile)targeted );
-			} 
-			else 
+			}
+			else
 			{
 				from.SendLocalizedMessage( 501371 ); // That can't be a friend
 			}
@@ -3964,8 +3945,10 @@ namespace Server.Multis
 			ISecurable sec = GetSecurable( Owner.From, m_Item );
 
 			if ( sec != null )
+			{
 				Owner.From.CloseGump( typeof ( SetSecureLevelGump ) );
 				Owner.From.SendGump( new SetSecureLevelGump( Owner.From, sec, BaseHouse.FindHouseAt( m_Item ) ) );
+			}
 		}
 	}
 
@@ -3983,31 +3966,9 @@ namespace Server.Multis
 			Timer.DelayCall( house.RestrictedPlacingTime, Unregister );
 		}
 
-		public bool CheckAccount( Mobile mobCheck, Mobile accCheck )
-		{
-			if ( accCheck != null )
-			{
-				Account a = accCheck.Account as Account;
-
-				if ( a != null )
-				{
-					for ( int i = 0; i < a.Length; ++i )
-					{
-						if ( a[i] == mobCheck )
-							return true;
-					}
-				}
-			}
-
-			return false;
-		}
-
 		public override bool AllowHousing( Mobile from, Point3D p )
 		{
-			if ( from == m_RegionOwner || CheckAccount( from, m_RegionOwner ) )
-				return true;
-			else
-				return false;
+			return ( from == m_RegionOwner || AccountHandler.CheckAccount( from, m_RegionOwner ) );
 		}
 	}
 }

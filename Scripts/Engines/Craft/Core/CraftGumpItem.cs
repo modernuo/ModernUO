@@ -141,7 +141,7 @@ namespace Server.Engines.Craft
 				if ( minSkill < 0 )
 					minSkill = 0;
 
-				AddHtmlLocalized( 170, 132 + (i * 20), 200, 18, 1044060 + (int)skill.SkillToMake, LabelColor, false, false );
+				AddHtmlLocalized( 170, 132 + (i * 20), 200, 18, AosSkillBonuses.GetLabel( skill.SkillToMake ), LabelColor, false, false );
 				AddLabel( 430, 132 + (i * 20), LabelHue, String.Format( "{0:F1}", minSkill ) );
 			}
 

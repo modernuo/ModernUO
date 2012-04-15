@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Server;
 using Server.Gumps;
+using Server.Misc;
 using Server.Multis;
 using Server.ContextMenus;
 using Server.Prompts;
@@ -131,7 +132,7 @@ namespace Server.Mobiles
 
 		public override bool IsOwner( Mobile m )
 		{
-			return m == Owner || m.AccessLevel >= AccessLevel.GameMaster;
+			return m == Owner || m.AccessLevel >= AccessLevel.GameMaster || ( Core.ML && AccountHandler.CheckAccount( m, Owner ) );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

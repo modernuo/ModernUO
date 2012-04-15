@@ -9,17 +9,17 @@ namespace Server.Items
 	{
 		private SkillName m_Skill;
 		private double m_Value;
-		
+
 		#region Old Item Serialization Vars
 		/* DO NOT USE! Only used in serialization of special scrolls that originally derived from Item */
 		private bool m_InheritsItem;
-		
+
 		protected bool InheritsItem
-		{ 
-			get{ return m_InheritsItem; } 
+		{
+			get{ return m_InheritsItem; }
 		}
 		#endregion
-		
+
 		public abstract int Message{ get; }
 		public virtual int Title{ get { return 0; } }
 		public abstract string DefaultTitle{ get; }
@@ -28,7 +28,7 @@ namespace Server.Items
 		{
 			LootType = LootType.Cursed;
 			Weight = 1.0;
-			
+
 			m_Skill = skill;
 			m_Value = value;
 		}
@@ -50,14 +50,14 @@ namespace Server.Items
 			get { return m_Value; }
 			set { m_Value = value; }
 		}
-		
+
 		public virtual string GetNameLocalized()
 		{
-			return String.Concat( "#", (1044060 + (int)m_Skill).ToString() );
+			return String.Concat( "#", AosSkillBonuses.GetLabel( m_Skill ).ToString() );
 		}
 
 		public virtual string GetName()
-		{			
+		{
 			int index = (int)m_Skill;
 			SkillInfo[] table = SkillInfo.Table;
 
@@ -66,18 +66,18 @@ namespace Server.Items
 			else
 				return "???";
 		}
-		
+
 		public virtual bool CanUse( Mobile from )
 		{
 			if ( Deleted )
 				return false;
-			
+
 			if ( !IsChildOf( from.Backpack ) )
 			{
 				from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
 				return false;
 			}
-			
+
 			return true;
 		}
 
@@ -89,7 +89,7 @@ namespace Server.Items
 		{
 			if ( !CanUse( from ) )
 				return;
-			
+
 			from.CloseGump( typeof( SpecialScroll.InternalGump ) );
 			from.SendGump( new InternalGump( from, this ) );
 		}
@@ -121,12 +121,12 @@ namespace Server.Items
 				case 0:
 				{
 					m_InheritsItem = true;
-					
+
 					if ( !(this is StatCapScroll) )
 						m_Skill = (SkillName)reader.ReadInt();
 					else
 						m_Skill = SkillName.Alchemy;
-					
+
 					if ( this is ScrollofAlacrity )
 						m_Value = 0.0;
 					else if ( this is StatCapScroll )
@@ -165,7 +165,7 @@ namespace Server.Items
 
 				AddButton( 275, 172, 4005, 4007, 0, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 310, 172, 120, 20, 1046363, 0xFFFFFF, false, false ); // No
-				
+
 				if ( m_Scroll.Title != 0 )
 					AddHtmlLocalized( 40, 20, 260, 20, m_Scroll.Title, 0xFFFFFF, false, false );
 				else
@@ -174,7 +174,7 @@ namespace Server.Items
 				if ( m_Scroll is StatCapScroll )
 					AddHtmlLocalized( 310, 20, 120, 20, 1038019, 0xFFFFFF, false, false ); // Power
 				else
-					AddHtmlLocalized( 310, 20, 120, 20, 1044060 + (int)m_Scroll.Skill, 0xFFFFFF, false, false );
+					AddHtmlLocalized( 310, 20, 120, 20, AosSkillBonuses.GetLabel( m_Scroll.Skill ), 0xFFFFFF, false, false );
 			}
 
 			public override void OnResponse( NetState state, RelayInfo info )

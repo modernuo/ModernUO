@@ -714,7 +714,18 @@ namespace Server
 				if( !GetValues( i, out skill, out bonus ) )
 					continue;
 
-				list.Add( 1060451 + i, "#{0}\t{1}", 1044060 + (int)skill, bonus );
+				list.Add( 1060451 + i, "#{0}\t{1}", GetLabel( skill ), bonus );
+			}
+		}
+
+		public static int GetLabel( SkillName skill )
+		{
+			switch ( skill )
+			{
+				case SkillName.EvalInt: return 1002070; // Evaluate Intelligence
+				case SkillName.Forensics: return 1002078; // Forensic Evaluation
+				case SkillName.Lockpicking: return 1002097; // Lockpicking
+				default: return 1044060 + (int)skill;
 			}
 		}
 

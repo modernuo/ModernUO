@@ -319,7 +319,7 @@ namespace Server.Misc
 
 			if ( acct == null )
 			{
-				if ( AutoAccountCreation && un.Trim().Length > 0 )	//To prevent someone from making an account of just '' or a bunch of meaningless spaces 
+				if ( AutoAccountCreation && un.Trim().Length > 0 ) // To prevent someone from making an account of just '' or a bunch of meaningless spaces
 				{
 					e.State.Account = acct = CreateAccount( e.State, un, pw );
 					e.Accepted = acct == null ? false : acct.CheckAccess( e.State );
@@ -411,6 +411,25 @@ namespace Server.Misc
 
 			if ( !e.Accepted )
 				AccountAttackLimiter.RegisterInvalidAccess( e.State );
+		}
+
+		public static bool CheckAccount( Mobile mobCheck, Mobile accCheck )
+		{
+			if ( accCheck != null )
+			{
+				Account a = accCheck.Account as Account;
+
+				if ( a != null )
+				{
+					for ( int i = 0; i < a.Length; ++i )
+					{
+						if ( a[i] == mobCheck )
+							return true;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 }
