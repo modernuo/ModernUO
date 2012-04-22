@@ -1673,6 +1673,7 @@ namespace Server
 				if( m_Paralyzed != value )
 				{
 					m_Paralyzed = value;
+					Delta( MobileDelta.Flags );
 
 					this.SendLocalizedMessage( m_Paralyzed ? 502381 : 502382 );
 
@@ -1725,6 +1726,7 @@ namespace Server
 				if( m_Frozen != value )
 				{
 					m_Frozen = value;
+					Delta( MobileDelta.Flags );
 
 					if( m_FrozenTimer != null )
 					{
@@ -1750,7 +1752,7 @@ namespace Server
 		{
 			if( !m_Frozen )
 			{
-				m_Frozen = true;
+				Frozen = true;
 
 				m_FrozenTimer = new FrozenTimer( this, duration );
 				m_FrozenTimer.Start();
@@ -7803,6 +7805,9 @@ namespace Server
 		{
 			int flags = 0x0;
 
+			if( m_Paralyzed || m_Frozen )
+				flags |= 0x01;
+
 			if( m_Female )
 				flags |= 0x02;
 
@@ -7825,6 +7830,9 @@ namespace Server
 		public virtual int GetOldPacketFlags()
 		{
 			int flags = 0x0;
+
+			if( m_Paralyzed || m_Frozen )
+				flags |= 0x01;
 
 			if( m_Female )
 				flags |= 0x02;

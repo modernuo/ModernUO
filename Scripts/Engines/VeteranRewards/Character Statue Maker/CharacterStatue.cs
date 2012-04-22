@@ -232,7 +232,7 @@ namespace Server.Mobiles
 
 			Frozen = true;
 
-			if( m_SculptedBy == null || Map == Map.Internal )
+			if( m_SculptedBy == null || Map == Map.Internal ) // Remove preview statues
 			{
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
 			}
@@ -246,7 +246,7 @@ namespace Server.Mobiles
 			InvalidateProperties();
 		}
 
-		public void Demolish( Mobile by )
+		public bool Demolish( Mobile by )
 		{
 			CharacterStatueDeed deed = new CharacterStatueDeed( null );
 
@@ -260,11 +260,15 @@ namespace Server.Mobiles
 
 				if ( m_Plinth != null )
 					m_Plinth.Delete();
+
+				return true;
 			}
 			else
 			{
 				by.SendLocalizedMessage( 500720 ); // You don't have enough room in your backpack!
 				deed.Delete();
+
+				return false;
 			}
 		}
 
@@ -601,6 +605,14 @@ namespace Server.Mobiles
 					statue.Plinth = plinth;
 					plinth.MoveToWorld( loc, map );
 					statue.InvalidatePose();
+
+					/*
+					 * TODO: Previously the maker wasn't deleted until after statue
+					 * customization, leading to redeeding issues. Exact OSI behavior
+					 * needs looking into.
+					 */
+					m_Maker.Delete();
+					statue.Sculpt( from );
 
 					from.CloseGump( typeof( CharacterStatueGump ) );
 					from.SendGump( new CharacterStatueGump( m_Maker, statue, from ) );

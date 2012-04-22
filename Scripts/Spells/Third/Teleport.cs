@@ -50,6 +50,9 @@ namespace Server.Spells.Third
 
 			SpellHelper.GetSurfaceTop( ref p );
 
+			Point3D from = Caster.Location;
+			Point3D to = new Point3D( p );
+
 			if ( Factions.Sigil.ExistsOn( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1061632 ); // You can't do that while carrying the sigil.
@@ -61,25 +64,26 @@ namespace Server.Spells.Third
 			else if ( !SpellHelper.CheckTravel( Caster, TravelCheckType.TeleportFrom ) )
 			{
 			}
-			else if ( !SpellHelper.CheckTravel( Caster, map, new Point3D( p ), TravelCheckType.TeleportTo ) )
+			else if ( !SpellHelper.CheckTravel( Caster, map, to, TravelCheckType.TeleportTo ) )
 			{
 			}
 			else if ( map == null || !map.CanSpawnMobile( p.X, p.Y, p.Z ) )
 			{
 				Caster.SendLocalizedMessage( 501942 ); // That location is blocked.
 			}
-			else if ( SpellHelper.CheckMulti( new Point3D( p ), map ) )
+			else if ( SpellHelper.CheckMulti( to, map ) )
 			{
-				Caster.SendLocalizedMessage( 501942 ); // That location is blocked.
+				Caster.SendLocalizedMessage( 502831 ); // Cannot teleport to that spot.
+			}
+			else if ( Region.Find( to, map ).GetRegion( typeof( HouseRegion ) ) != null )
+			{
+				Caster.SendLocalizedMessage( 502829 ); // Cannot teleport to that spot.
 			}
 			else if ( CheckSequence() )
 			{
 				SpellHelper.Turn( Caster, orig );
 
 				Mobile m = Caster;
-
-				Point3D from = m.Location;
-				Point3D to = new Point3D( p );
 
 				m.Location = to;
 				m.ProcessDelta();

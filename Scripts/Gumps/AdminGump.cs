@@ -11,6 +11,7 @@ using Server.Network;
 using Server.Accounting;
 using Server.Commands;
 using Server.Multis;
+using Server.Misc;
 
 namespace Server.Gumps
 {
@@ -102,7 +103,7 @@ namespace Server.Gumps
 
 		public int GetButtonID( int type, int index )
 		{
-			return 1 + (index * 10) + type;
+			return 1 + (index * 11) + type;
 		}
 
 		public static string FormatTimeSpan( TimeSpan ts )
@@ -979,35 +980,37 @@ namespace Server.Gumps
 
 					AddHtml( 10, 195, 400, 20, Color( Center( "Client Addresses" ), LabelColor32 ), false, false );
 
-					AddButtonLabeled( 200, 225, GetButtonID( 5, 16 ), "View all shared accounts" );
-					AddButtonLabeled( 200, 245, GetButtonID( 5, 17 ), "Ban all shared accounts" );
-					AddButtonLabeled( 200, 265, GetButtonID( 5, 18 ), "Firewall all addresses" );
+					AddButtonLabeled( 227, 225, GetButtonID( 5, 16 ), "View all shared accounts" );
+					AddButtonLabeled( 227, 245, GetButtonID( 5, 17 ), "Ban all shared accounts" );
+					AddButtonLabeled( 227, 265, GetButtonID( 5, 18 ), "Firewall all addresses" );
+					AddButtonLabeled( 227, 285, GetButtonID( 5, 34 ), "Clear all addresses" );
 
-					AddHtml( 195, 295, 210, 80, Color( "List of IP addresses which have accessed this account.", LabelColor32 ), false, false );
+					AddHtml( 225, 315, 180, 80, Color( "List of IP addresses which have accessed this account.", LabelColor32 ), false, false );
 
-					AddImageTiled( 15, 219, 176, 156, 0xBBC );
-					AddBlackAlpha( 16, 220, 174, 154 );
+					AddImageTiled( 15, 219, 206, 156, 0xBBC );
+					AddBlackAlpha( 16, 220, 204, 154 );
 
 					AddHtml( 18, 221, 114, 20, Color( "IP Address", LabelColor32 ), false, false );
 
 					if ( listPage > 0 )
-						AddButton( 154, 223, 0x15E3, 0x15E7, GetButtonID( 1, 0 ), GumpButtonType.Reply, 0 );
+						AddButton( 184, 223, 0x15E3, 0x15E7, GetButtonID( 1, 0 ), GumpButtonType.Reply, 0 );
 					else
-						AddImage( 154, 223, 0x25EA );
+						AddImage( 184, 223, 0x25EA );
 
 					if ( (listPage + 1) * 6 < m_List.Count )
-						AddButton( 171, 223, 0x15E1, 0x15E5, GetButtonID( 1, 1 ), GumpButtonType.Reply, 0 );
+						AddButton( 201, 223, 0x15E1, 0x15E5, GetButtonID( 1, 1 ), GumpButtonType.Reply, 0 );
 					else
-						AddImage( 171, 223, 0x25E6 );
+						AddImage( 201, 223, 0x25E6 );
 
 					if ( m_List.Count == 0 )
-						AddHtml( 18, 243, 170, 60, Color( "This account has not yet been accessed.", LabelColor32 ), false, false );
+						AddHtml( 18, 243, 200, 60, Color( "This account has not yet been accessed.", LabelColor32 ), false, false );
 
 					for ( int i = 0, index = (listPage * 6); i < 6 && index >= 0 && index < m_List.Count; ++i, ++index )
 					{
 						AddHtml( 18, 243 + (i * 22), 114, 20, Color( m_List[index].ToString(), LabelColor32 ), false, false );
 						AddButton( 130, 242 + (i * 22), 0xFA2, 0xFA4, GetButtonID( 8, index ), GumpButtonType.Reply, 0 );
 						AddButton( 160, 242 + (i * 22), 0xFA8, 0xFAA, GetButtonID( 9, index ), GumpButtonType.Reply, 0 );
+						AddButton( 190, 242 + (i * 22), 0xFB1, 0xFB3, GetButtonID( 10, index ), GumpButtonType.Reply, 0 );
 					}
 
 					goto case AdminGumpPage.AccountDetails_Access;
@@ -1024,34 +1027,34 @@ namespace Server.Gumps
 
 					AddHtml( 10, 195, 400, 20, Color( Center( "Address Restrictions" ), LabelColor32 ), false, false );
 
-					AddTextField( 200, 225, 120, 20, 0 );
+					AddTextField( 227, 225, 120, 20, 0 );
 
-					AddButtonLabeled( 330, 225, GetButtonID( 5, 19 ), "Add" );
+					AddButtonLabeled( 352, 225, GetButtonID( 5, 19 ), "Add" );
 
-					AddHtml( 195, 255, 210, 120, Color( "Any clients connecting from an address not in this list will be rejected. Or, if the list is empty, any client may connect.", LabelColor32 ), false, false );
+					AddHtml( 225, 255, 180, 120, Color( "Any clients connecting from an address not in this list will be rejected. Or, if the list is empty, any client may connect.", LabelColor32 ), false, false );
 
-					AddImageTiled( 15, 219, 176, 156, 0xBBC );
-					AddBlackAlpha( 16, 220, 174, 154 );
+					AddImageTiled( 15, 219, 206, 156, 0xBBC );
+					AddBlackAlpha( 16, 220, 204, 154 );
 
 					AddHtml( 18, 221, 114, 20, Color( "IP Address", LabelColor32 ), false, false );
 
 					if ( listPage > 0 )
-						AddButton( 154, 223, 0x15E3, 0x15E7, GetButtonID( 1, 0 ), GumpButtonType.Reply, 0 );
+						AddButton( 184, 223, 0x15E3, 0x15E7, GetButtonID( 1, 0 ), GumpButtonType.Reply, 0 );
 					else
-						AddImage( 154, 223, 0x25EA );
+						AddImage( 184, 223, 0x25EA );
 
 					if ( (listPage + 1) * 6 < m_List.Count )
-						AddButton( 171, 223, 0x15E1, 0x15E5, GetButtonID( 1, 1 ), GumpButtonType.Reply, 0 );
+						AddButton( 201, 223, 0x15E1, 0x15E5, GetButtonID( 1, 1 ), GumpButtonType.Reply, 0 );
 					else
-						AddImage( 171, 223, 0x25E6 );
+						AddImage( 201, 223, 0x25E6 );
 
 					if ( m_List.Count == 0 )
-						AddHtml( 18, 243, 170, 60, Color( "There are no addresses in this list.", LabelColor32 ), false, false );
+						AddHtml( 18, 243, 200, 60, Color( "There are no addresses in this list.", LabelColor32 ), false, false );
 
 					for ( int i = 0, index = (listPage * 6); i < 6 && index >= 0 && index < m_List.Count; ++i, ++index )
 					{
 						AddHtml( 18, 243 + (i * 22), 114, 20, Color( m_List[index].ToString(), LabelColor32 ), false, false );
-						AddButton( 160, 242 + (i * 22), 0xFB1, 0xFB3, GetButtonID( 8, index ), GumpButtonType.Reply, 0 );
+						AddButton( 190, 242 + (i * 22), 0xFB1, 0xFB3, GetButtonID( 8, index ), GumpButtonType.Reply, 0 );
 					}
 
 					goto case AdminGumpPage.AccountDetails_Access;
@@ -1592,6 +1595,67 @@ namespace Server.Gumps
 			from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a ) );
 		}
 
+		public static void RemoveLoginIP_Callback( Mobile from, bool okay, object state )
+		{
+			if ( from.AccessLevel < AccessLevel.Administrator )
+				return;
+
+			object[] states = (object[])state;
+
+			Account a = (Account)states[0];
+			IPAddress ip = (IPAddress)states[1];
+
+			string notice;
+
+			if ( okay )
+			{
+				IPAddress[] ips = a.LoginIPs;
+
+				if ( ips.Length != 0 && ip == ips[0] && AccountHandler.IPTable.ContainsKey( ips[0] ) )
+					--AccountHandler.IPTable[ip];
+
+				List<IPAddress> newList = new List<IPAddress>( ips );
+				newList.Remove( ip );
+				a.LoginIPs = newList.ToArray();
+
+				notice = String.Format( "{0} : Removed address.", ip );
+			}
+			else
+			{
+				notice = "You have chosen not to remove the address.";
+			}
+
+			from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a ) );
+		}
+
+		public static void RemoveLoginIPs_Callback( Mobile from, bool okay, object state )
+		{
+			if ( from.AccessLevel < AccessLevel.Administrator )
+				return;
+
+			Account a = (Account)state;
+
+			string notice;
+
+			if ( okay )
+			{
+				IPAddress[] ips = a.LoginIPs;
+
+				if ( ips.Length != 0 && AccountHandler.IPTable.ContainsKey( ips[0] ) )
+					--AccountHandler.IPTable[ips[0]];
+
+				a.LoginIPs = new IPAddress[0];
+
+				notice = "All addresses in the list have been removed.";
+			}
+			else
+			{
+				notice = "You have chosen not to clear all addresses.";
+			}
+
+			from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a ) );
+		}
+
 		public override void OnResponse( Server.Network.NetState sender, RelayInfo info )
 		{
 			int val = info.ButtonID - 1;
@@ -1628,8 +1692,8 @@ namespace Server.Gumps
 				}
 			}
 
-			int type = val % 10;
-			int index = val / 10;
+			int type = val % 11;
+			int index = val / 11;
 
 			switch ( type )
 			{
@@ -2411,6 +2475,32 @@ namespace Server.Gumps
 
 							break;
 						}
+						case 34: // Clear login addresses
+						{
+							Account a = m_State as Account;
+
+							if ( a == null )
+								break;
+
+							IPAddress[] ips = a.LoginIPs;
+
+							if ( ips.Length == 0 )
+							{
+								from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, "This account has not yet been accessed.", m_State ) );
+							}
+							else
+							{
+								StringBuilder sb = new StringBuilder();
+								sb.AppendFormat( "You are about to clear the address list for account {0}. Do you wish to continue?", a );
+
+								for ( int i = 0; i < ips.Length; ++i )
+									sb.AppendFormat( "<br>- {0}", ips[i] );
+
+								from.SendGump( new WarningGump( 1060635, 30720, sb.ToString(), 0xFFC000, 420, 400, new WarningGumpCallback( RemoveLoginIPs_Callback ), a ) );
+							}
+
+							break;
+						}
 						default:
 						{
 							index -= 50;
@@ -2743,6 +2833,28 @@ namespace Server.Gumps
 								from.SendGump( new AdminGump( from, AdminGumpPage.Accounts, 0, list, null, new ArrayList() ) );
 							else
 								from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, "There are no other accounts which share that address.", m_State ) );
+						}
+					}
+
+					break;
+				}
+				case 10:
+				{
+					if ( m_List != null && index >= 0 && index < m_List.Count )
+					{
+						if ( m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs )
+						{
+							IPAddress ip = m_List[index] as IPAddress;
+
+							if ( ip == null )
+								break;
+
+							Account a = m_State as Account;
+
+							if ( a == null )
+								break;
+
+							from.SendGump( new WarningGump( 1060635, 30720, String.Format( "You are about to remove address {0} from account {1}. Do you wish to continue?", ip, a ), 0xFFC000, 420, 280, new WarningGumpCallback( RemoveLoginIP_Callback ), new object[] { a, ip } ) );
 						}
 					}
 

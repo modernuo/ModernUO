@@ -10,7 +10,6 @@ namespace Server.Gumps
 	{
 		private Item m_Maker;
 		private CharacterStatue m_Statue;
-		private Timer m_Timer;
 		private Mobile m_Owner;
 	
 		private enum Buttons
@@ -81,20 +80,6 @@ namespace Server.Gumps
 				AddButton( 107, 294, 0xFAB, 0xFAD, (int) Buttons.Restore, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 142, 294, 80, 20, 1076193, 0x7FFF, false, false ); // Restore	
 			}
-
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), TimeSpan.FromSeconds( 2.5 ), new TimerCallback( CheckOnline ) );
-		}
-
-		private void CheckOnline()
-		{
-			if ( m_Owner != null && m_Owner.NetState == null )
-			{
-				if ( m_Timer != null )
-					m_Timer.Stop();
-
-				if ( m_Statue != null && !m_Statue.Deleted )
-					m_Statue.Delete();
-			}
 		}
 		
 		private int GetMaterialNumber( StatueType type, StatueMaterial material )
@@ -141,7 +126,7 @@ namespace Server.Gumps
 		
 		public override void OnResponse( NetState state, RelayInfo info )
 		{		
-			if ( m_Statue == null || m_Statue.Deleted || m_Maker == null || m_Maker.Deleted || !m_Maker.IsChildOf( state.Mobile.Backpack ) )
+			if ( m_Statue == null || m_Statue.Deleted )
 				return;
 				
 			bool sendGump = false;
@@ -205,25 +190,13 @@ namespace Server.Gumps
 				
 				sendGump = true;
 			}
-			else
+			else // Close
 			{
-				m_Statue.Delete();
+				sendGump = !m_Statue.Demolish( state.Mobile );
 			}
 
 			if ( sendGump )
 				state.Mobile.SendGump( new CharacterStatueGump( m_Maker, m_Statue, m_Owner ) );
-			
-			if ( m_Timer != null )
-				m_Timer.Stop();
-		}
-
-		public override void OnServerClose( NetState owner )
-		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
-
-			if ( m_Statue != null && !m_Statue.Deleted )
-				m_Statue.Delete();
 		}
 	}
 }

@@ -11,6 +11,7 @@ namespace Server.Items
 		private Timer m_Timer;
 		private int m_Ticks = 0;
 		private Mobile m_LitBy;
+		private List<Mobile> m_Users;
 
 		[Constructable]
 		public Firebomb() : this( 0x99B )
@@ -53,21 +54,27 @@ namespace Server.Items
 
 			if ( Core.AOS && (from.Paralyzed || from.Frozen || (from.Spell != null && from.Spell.IsCasting)) )
 			{
-				//to prevent exploiting for pvp
-				from.SendLocalizedMessage( 1075857 ); // You can not use that while paralyzed.
+				// to prevent exploiting for pvp
+				from.SendLocalizedMessage( 1075857 ); // You cannot use that while paralyzed.
 				return;
-			} 
+			}
 
 			if ( m_Timer == null )
 			{
 				m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1 ), TimeSpan.FromSeconds( 1 ), new TimerCallback( OnFirebombTimerTick ) );
 				m_LitBy = from;
-				from.SendLocalizedMessage( 1060581 ); //You light the firebomb! Throw it now!
+				from.SendLocalizedMessage( 1060582 ); // You light the firebomb.  Throw it now!
 			}
 			else
-				from.SendLocalizedMessage( 1060582 ); //You've already lit it! Better throw it now!
+				from.SendLocalizedMessage( 1060581 ); // You've already lit it!  Better throw it now!
 
-			from.BeginTarget( 12, true, TargetFlags.None, new TargetCallback( OnFirebombTarget ) );
+			if ( m_Users == null )
+				m_Users = new List<Mobile>();
+
+			if ( !m_Users.Contains( from ) )
+				m_Users.Add( from );
+
+			from.Target = new ThrowTarget( this );
 		}
 
 		private void OnFirebombTimerTick()
@@ -103,10 +110,24 @@ namespace Server.Items
 					if ( HeldBy != null )
 						HeldBy.DropHolding();
 
+					if ( m_Users != null )
+					{
+						foreach ( Mobile m in m_Users )
+						{
+							ThrowTarget targ = m.Target as ThrowTarget;
+
+							if ( targ != null && targ.Bomb == this )
+								Target.Cancel( m );
+						}
+
+						m_Users.Clear();
+						m_Users = null;
+					}
+
 					if ( RootParent is Mobile )
 					{
 						Mobile parent = (Mobile)RootParent;
-						parent.SendLocalizedMessage( 1060583 ); //The firebomb explodes in your hand!
+						parent.SendLocalizedMessage( 1060583 ); // The firebomb explodes in your hand!
 						AOS.Damage( parent, Utility.Random( 3 ) + 4, 0, 100, 0, 0, 0 );
 					}
 					else if ( RootParent == null )
@@ -181,6 +202,27 @@ namespace Server.Items
 
 			MoveToWorld( new Point3D( p ), map );
 		}
+
+		private class ThrowTarget : Target
+		{
+			private Firebomb m_Bomb;
+
+			public Firebomb Bomb
+			{
+				get { return m_Bomb; }
+			}
+
+			public ThrowTarget( Firebomb bomb )
+				: base( 12, true, TargetFlags.None )
+			{
+				m_Bomb = bomb;
+			}
+
+			protected override void OnTarget( Mobile from, object targeted )
+			{
+				m_Bomb.OnFirebombTarget( from, targeted );
+			}
+		}
 	}
 
 	public class FirebombField : Item
@@ -205,7 +247,7 @@ namespace Server.Items
 
 		public override void Serialize( GenericWriter writer )
 		{
-			//Don't serialize these...
+			// Don't serialize these...
 		}
 
 		public override void Deserialize( GenericReader reader )

@@ -3,6 +3,7 @@ using System.Collections;
 using Server.Network;
 using Server.Items;
 using Server.Mobiles;
+using Server.Regions;
 using Server.Targeting;
 
 namespace Server.Spells.Ninjitsu
@@ -55,7 +56,10 @@ namespace Server.Spells.Ninjitsu
 			Map map = Caster.Map;
 
 			SpellHelper.GetSurfaceTop( ref p );
-			
+
+			Point3D from = Caster.Location;
+			Point3D to = new Point3D( p );
+
 			PlayerMobile pm = Caster as PlayerMobile; // IsStealthing should be moved to Server.Mobiles
 
 			if ( !pm.IsStealthing )
@@ -70,25 +74,26 @@ namespace Server.Spells.Ninjitsu
 			{
 				Caster.SendLocalizedMessage( 502359, "", 0x22 ); // Thou art too encumbered to move.
 			}
-			else if ( !SpellHelper.CheckTravel( Caster, TravelCheckType.TeleportFrom ) || !SpellHelper.CheckTravel( Caster, map, new Point3D( p ), TravelCheckType.TeleportTo ))
+			else if ( !SpellHelper.CheckTravel( Caster, TravelCheckType.TeleportFrom ) || !SpellHelper.CheckTravel( Caster, map, to, TravelCheckType.TeleportTo ))
 			{
 			}
 			else if ( map == null || !map.CanSpawnMobile( p.X, p.Y, p.Z ) )
 			{
 				Caster.SendLocalizedMessage( 502831 ); // Cannot teleport to that spot.
 			}
-			else if ( SpellHelper.CheckMulti( new Point3D( p ), map, true, 5 ) )
+			else if ( SpellHelper.CheckMulti( to, map, true, 5 ) )
 			{
 				Caster.SendLocalizedMessage( 502831 ); // Cannot teleport to that spot.
+			}
+			else if ( Region.Find( to, map ).GetRegion( typeof( HouseRegion ) ) != null )
+			{
+				Caster.SendLocalizedMessage( 502829 ); // Cannot teleport to that spot.
 			}
 			else if ( CheckSequence() )
 			{
 				SpellHelper.Turn( Caster, orig );
 
 				Mobile m = Caster;
-
-				Point3D from = m.Location;
-				Point3D to = new Point3D( p );
 
 				m.Location = to;
 				m.ProcessDelta();

@@ -203,7 +203,8 @@ namespace Server.SkillHandlers
 
 								creature.BardPacified = false;
 
-								creature.Move( creature.Direction );
+								if ( creature.AIObject != null )
+									creature.AIObject.DoMove( creature.Direction );
 
 								if ( from is PlayerMobile && !(( (PlayerMobile)from ).HonorActive || TransformationSpellHelper.UnderTransformation( from, typeof( EtherealVoyageSpell ))))
 									creature.Combatant = from;

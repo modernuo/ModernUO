@@ -4,6 +4,7 @@ using Server.Gumps;
 
 namespace Server.Items
 {
+	[Flipable( 0x14ED, 0x14EE )]
 	public class SOS : Item
 	{
 		public override int LabelNumber
@@ -80,7 +81,7 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public SOS( Map map, int level ) : base( 0x14ED )
+		public SOS( Map map, int level ) : base( 0x14EE )
 		{
 			Weight = 1.0;
 
@@ -167,7 +168,7 @@ namespace Server.Items
 				else
 					entry = MessageEntry.Entries[m_MessageIndex = Utility.Random( MessageEntry.Entries.Length )];
 
-				from.CloseGump( typeof( MessageGump ) );
+				//from.CloseGump( typeof( MessageGump ) );
 				from.SendGump( new MessageGump( entry, m_TargetMap, m_TargetLocation ) );
 			}
 			else

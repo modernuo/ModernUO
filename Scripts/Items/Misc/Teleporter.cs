@@ -8,7 +8,7 @@ namespace Server.Items
 {
 	public class Teleporter : Item
 	{
-		private bool m_Active, m_Creatures, m_CombatCheck;
+		private bool m_Active, m_Creatures, m_CombatCheck, m_CriminalCheck;
 		private Point3D m_PointDest;
 		private Map m_MapDest;
 		private bool m_SourceEffect;
@@ -79,6 +79,13 @@ namespace Server.Items
 			set { m_CombatCheck = value; InvalidateProperties(); }
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool CriminalCheck
+		{
+			get { return m_CriminalCheck; }
+			set { m_CriminalCheck = value; InvalidateProperties(); }
+		}
+
 		public override int LabelNumber{ get{ return 1026095; } } // teleporter
 
 		[Constructable]
@@ -103,6 +110,7 @@ namespace Server.Items
 			m_Creatures = creatures;
 
 			m_CombatCheck = false;
+			m_CriminalCheck = false;
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -183,7 +191,14 @@ namespace Server.Items
 			if ( m_Active )
 			{
 				if ( !m_Creatures && !m.Player )
+				{
 					return true;
+				}
+				else if ( m_CriminalCheck && m.Criminal )
+				{
+					m.SendLocalizedMessage( 1005561, "", 0x22 ); // Thou'rt a criminal and cannot escape so easily.
+					return true;
+				}
 				else if ( m_CombatCheck && SpellHelper.CheckCombat( m ) )
 				{
 					m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
@@ -205,8 +220,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 3 ); // version
+			writer.Write( (int) 4 ); // version
 
+			writer.Write( (bool) m_CriminalCheck );
 			writer.Write( (bool) m_CombatCheck );
 
 			writer.Write( (bool) m_SourceEffect );
@@ -229,6 +245,11 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 4:
+				{
+					m_CriminalCheck = reader.ReadBool();
+					goto case 3;
+				}
 				case 3:
 				{
 					m_CombatCheck = reader.ReadBool();

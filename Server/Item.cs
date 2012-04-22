@@ -4533,6 +4533,21 @@ namespace Server
 				this.Delete();
 		}
 
+		public virtual void ReplaceWith( Item newItem )
+		{
+			if ( m_Parent is Container )
+			{
+				((Container)m_Parent).AddItem( newItem );
+				newItem.Location = m_Location;
+			}
+			else
+			{
+				newItem.MoveToWorld( GetWorldLocation(), m_Map );
+			}
+
+			Delete();
+		}
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool QuestItem
 		{

@@ -96,7 +96,7 @@ namespace Server.Mobiles
 						{
 							if ( bc.ControlMaster.Map == this.Map && bc.ControlMaster.InRange( this, 12 ) && !UnderEffect( bc.ControlMaster ) )
 							{
-								combatant = bc.ControlMaster;
+								Combatant = combatant = bc.ControlMaster;
 							}
 						}
 					}
@@ -112,7 +112,15 @@ namespace Server.Mobiles
 
 						for( int i=0; i<5; i++ )
 						{
-							switch( i )
+							int x = combatant.X + coord[i][0];
+							int y = combatant.Y + coord[i][1];
+
+							Point3D loc = new Point3D( x, y, combatant.Map.GetAverageZ( x, y ) );
+
+							if ( !combatant.Map.CanSpawnMobile( loc ) )
+								continue;
+
+							switch ( i )
 							{
 								case 0: rabid = new EnragedRabbit( this ); break;
 								case 1: rabid = new EnragedHind( this ); break;
@@ -122,29 +130,11 @@ namespace Server.Mobiles
 							}
 
 							rabid.FocusMob = combatant;
-
-							int x = combatant.X + coord[i][0];
-							int y = combatant.Y + coord[i][1];
-
-							/*
-								Once in a while OSI's dont spawn all 5, and
-								I can only attribute this to a bad spawn location
-								so I will do this.
-							*/
-
-							Point3D loc = new Point3D( x, y,  combatant.Map.GetAverageZ( x, y ));
-							if ( combatant.Map.CanSpawnMobile( loc ) )
-							{
-								rabid.MoveToWorld( loc, combatant.Map ) ;
-							}
-							else
-							{
-								rabid.Delete();
-							}
+							rabid.MoveToWorld( loc, combatant.Map );
 						}
 						this.Say( 1071932 ); //Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
 					}
-					else
+					else if ( combatant.Player )
 					{
 						this.Say( true, "I call a plague of insects to sting your flesh!" );
 						m_Table[combatant] = Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 7.0 ), new TimerStateCallback( DoEffect ), new object[]{ combatant, 0 } );
