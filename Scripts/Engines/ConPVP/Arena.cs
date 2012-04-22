@@ -247,22 +247,12 @@ namespace Server.Engines.ConPVP
 					m_Teleporter.Map = value;
 
 				if ( m_Region != null )
-				{
-					if ( m_Facet == null )
-					{
-						m_Region.Unregister();
-						m_Region = null;
-					}
-					else
-					{
-						m_Region = new SafeZone( m_Zone, m_Outside, m_Facet, m_IsGuarded );
-					}
-				}
+					m_Region.Unregister();
+
+				if ( m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null )
+					m_Region = new SafeZone( m_Zone, m_Outside, m_Facet, m_IsGuarded );
 				else
-				{
-					if ( m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null )
-						m_Region = new SafeZone( m_Zone, m_Outside, m_Facet, m_IsGuarded );
-				}
+					m_Region = null;
 			}
 		}
 
