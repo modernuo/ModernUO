@@ -3605,20 +3605,6 @@ namespace Server.Mobiles
 			if ( checkTurning && (dir & Direction.Mask) != (this.Direction & Direction.Mask) )
 				return Mobile.RunMount;	// We are NOT actually moving (just a direction change)
 
-            #region Dueling / CTF
-
-            if ( m_DuelContext != null && m_DuelContext.m_EventGame is CTFGame )
-            {
-                CTFGame game = (CTFGame)m_DuelContext.m_EventGame;
-				CTFTeamInfo team = game.GetTeamInfo( this );
-
-				//We don't want to just search through all the contents of our pack everytime we take a step.
-				if ( game.Controller != null && game.Controller.SlowFlagBearer && team != null && team.Flag != null && team.Flag.RootParent == this )
-					return Mobile.WalkFoot;
-            }
-
-            #endregion
-
 			TransformContext context = TransformationSpellHelper.GetContext( this );
 
 			if ( context != null && context.Type == typeof( ReaperFormSpell ) )
