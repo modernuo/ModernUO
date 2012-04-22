@@ -1779,8 +1779,6 @@ namespace Server.Guilds
 			}
 		}
 
-
-		
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime LastFealty
 		{
@@ -1803,7 +1801,6 @@ namespace Server.Guilds
 			}
 		}
 
-		
 		public List<Guild> Allies
 		{
 			get
@@ -1877,6 +1874,5 @@ namespace Server.Guilds
 		}
 
 		#endregion
-
 	}
 }

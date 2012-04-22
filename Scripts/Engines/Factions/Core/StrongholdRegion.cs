@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Server;
+using Server.Mobiles;
 using Server.Regions;
 
 namespace Server.Factions
@@ -29,6 +30,15 @@ namespace Server.Factions
 
 			if ( m.AccessLevel >= AccessLevel.Counselor || Contains( oldLocation ) )
 				return true;
+			
+			if ( m is PlayerMobile ) {
+				PlayerMobile pm = (PlayerMobile)m;
+
+				if ( pm.DuelContext != null ) {
+					m.SendMessage( "You may not enter this area while participating in a duel or a tournament." );
+					return false;
+				}
+			}
 
 			return ( Faction.Find( m, true, true ) != null );
 		}

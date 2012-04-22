@@ -48,10 +48,10 @@ namespace Server.Mobiles
 			Rope rope = new Rope();
 			rope.ItemID = 0x14F8;
 			PackItem( rope );
-			
+
 			if( Utility.RandomDouble() < .05 )
 				PackItem( new MessageInABottle() );
-				
+
 			PackItem( new SpecialFishingNet() ); //Confirm?
 		}
 

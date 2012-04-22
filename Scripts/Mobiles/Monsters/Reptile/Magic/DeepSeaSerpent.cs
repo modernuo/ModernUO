@@ -44,9 +44,9 @@ namespace Server.Mobiles
 			CantWalk = true;
 
 			if ( Utility.RandomBool() )
-			PackItem( new SulfurousAsh( 4 ) );
+				PackItem( new SulfurousAsh( 4 ) );
 			else
-			PackItem( new BlackPearl( 4 ) );
+				PackItem( new BlackPearl( 4 ) );
 
 			//PackItem( new SpecialFishingNet() );
 		}

@@ -1103,6 +1103,11 @@ namespace Server.Factions
 			if ( victimState == null )
 				return;
 
+			#region Dueling
+			if ( victim.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
+				return;
+			#endregion
+
 			if ( killer == victim || killerState.Faction != victimState.Faction )
 				ApplySkillLoss( victim );
 

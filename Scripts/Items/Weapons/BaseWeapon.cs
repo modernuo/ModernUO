@@ -1019,8 +1019,18 @@ namespace Server.Items
 					PlayerMobile p = attacker as PlayerMobile;
 
 					canSwing = ( p == null || p.PeacedUntil <= DateTime.Now );
+				}
 			}
+
+			#region Dueling
+			if ( attacker is PlayerMobile )
+			{
+				PlayerMobile pm = (PlayerMobile)attacker;
+
+				if ( pm.DuelContext != null && !pm.DuelContext.CheckItemEquip( attacker, this ) )
+					canSwing = false;
 			}
+			#endregion
 
 			if ( canSwing && attacker.HarmfulCheck( defender ) )
 			{

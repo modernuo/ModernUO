@@ -191,7 +191,7 @@ namespace Server.Gumps
 				660, 666, 672, 898, 970,
 				974, 982
 			};
-		
+
 		private static List<int> _HouseSigns = new List<int>();
 
 		public HouseGumpAOS( HouseGumpPageAOS page, Mobile from, BaseHouse house ) : base( 50, 40 )
@@ -497,7 +497,7 @@ namespace Server.Gumps
 						{
 							_HouseSigns.Add( 2980 + ( i * 2 ) );
 						}
-				
+
 						// Add library and beekeeper signs ( ML )
 						_HouseSigns.Add( 2966 );
 						_HouseSigns.Add( 3140 );

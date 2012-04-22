@@ -217,6 +217,11 @@ namespace Server.Items
 		{
 			Mobile m = e.Mobile;
 
+			#region Dueling
+			if ( !Engines.ConPVP.DuelContext.AllowSpecialAbility( m, "Disarm", true ) )
+				return;
+			#endregion
+
 			double armsValue = m.Skills[SkillName.ArmsLore].Value;
 			double wresValue = m.Skills[SkillName.Wrestling].Value;
 
@@ -241,6 +246,11 @@ namespace Server.Items
 		private static void EventSink_StunRequest( StunRequestEventArgs e )
 		{
 			Mobile m = e.Mobile;
+
+			#region Dueling
+			if ( !Engines.ConPVP.DuelContext.AllowSpecialAbility( m, "Stun", true ) )
+				return;
+			#endregion
 
 			double anatValue = m.Skills[SkillName.Anatomy].Value;
 			double wresValue = m.Skills[SkillName.Wrestling].Value;

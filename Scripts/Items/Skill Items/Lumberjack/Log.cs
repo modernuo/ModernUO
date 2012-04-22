@@ -17,6 +17,7 @@ namespace Server.Items
 
 		int ICommodity.DescriptionNumber { get { return CraftResources.IsStandard( m_Resource ) ? LabelNumber : 1075062 + ( (int)m_Resource - (int)CraftResource.RegularWood ); } }
 		bool ICommodity.IsDeedable { get { return true; } }
+
 		[Constructable]
 		public Log() : this( 1 )
 		{

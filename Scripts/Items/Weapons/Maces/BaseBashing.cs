@@ -46,7 +46,7 @@ namespace Server.Items
 		{
 			double damage = base.GetBaseDamage( attacker );
 
-			if ( !Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded && (attacker.Skills[SkillName.Anatomy].Value / 400.0) >= Utility.RandomDouble() )
+			if ( !Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded && (attacker.Skills[SkillName.Anatomy].Value / 400.0) >= Utility.RandomDouble() && Engines.ConPVP.DuelContext.AllowSpecialAbility( attacker, "Crushing Blow", false ) )
 			{
 				damage *= 1.5;
 

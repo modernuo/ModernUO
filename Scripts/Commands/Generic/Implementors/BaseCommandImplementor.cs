@@ -17,14 +17,15 @@ namespace Server.Commands.Generic
 		Self		= 0x0020,
 		Region		= 0x0040,
 		Contained	= 0x0080,
+		IPAddress	= 0x0100,
 
-		All			= Single | Global | Online | Multi | Area | Self | Region | Contained,
+		All			= Single | Global | Online | Multi | Area | Self | Region | Contained | IPAddress,
 		AllMobiles	= All & ~Contained,
-		AllNPCs		= All & ~(Online | Self | Contained),
-		AllItems	= All & ~(Online | Self | Region),
+		AllNPCs		= All & ~(IPAddress | Online | Self | Contained),
+		AllItems	= All & ~(IPAddress | Online | Self | Region),
 
 		Simple		= Single | Multi,
-		Complex		= Global | Online | Area | Region | Contained
+		Complex		= Global | Online | Area | Region | Contained | IPAddress
 	}
 
 	public abstract class BaseCommandImplementor
@@ -40,6 +41,8 @@ namespace Server.Commands.Generic
 			Register( new AreaCommandImplementor() );
 			Register( new SelfCommandImplementor() );
 			Register( new ContainedCommandImplementor() );
+			Register( new IPAddressCommandImplementor() );
+
 			Register( new RangeCommandImplementor() );
 			Register( new ScreenCommandImplementor() );
 			Register( new FacetCommandImplementor() );

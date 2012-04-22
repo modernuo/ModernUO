@@ -22,7 +22,7 @@ namespace Server.Engines.Help
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "SpeechLog", AccessLevel.GameMaster, new CommandEventHandler( SpeechLog_OnCommand ) );
+			CommandSystem.Register( "SpeechLog", AccessLevel.Counselor, new CommandEventHandler( SpeechLog_OnCommand ) );
 		}
 
 		[Usage( "SpeechLog" )]

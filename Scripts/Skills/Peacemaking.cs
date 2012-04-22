@@ -54,6 +54,14 @@ namespace Server.SkillHandlers
 				{
 					from.SendLocalizedMessage( 1049528 ); // You cannot calm that!
 				}
+				else if ( from.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
+				{
+					from.SendMessage( "You may not peacemake here." );
+				}
+				else if ( ((Mobile)targeted).Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
+				{
+					from.SendMessage( "You may not peacemake there." );
+				}
 				else if ( !m_Instrument.IsChildOf( from.Backpack ) )
 				{
 					from.SendLocalizedMessage( 1062488 ); // The instrument you are trying to play is no longer in your backpack!

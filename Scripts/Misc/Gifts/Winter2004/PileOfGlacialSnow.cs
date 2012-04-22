@@ -112,7 +112,11 @@ namespace Server.Items
 					Mobile targ = (Mobile) target;
 					Container pack = targ.Backpack;
 
-					if ( pack != null && pack.FindItemByType( new Type[]{ typeof( SnowPile ), typeof( PileOfGlacialSnow ) } ) != null )
+					if ( from.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) || targ.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
+					{
+						from.SendMessage( "You may not throw snow here." );
+					}
+					else if ( pack != null && pack.FindItemByType( new Type[]{ typeof( SnowPile ), typeof( PileOfGlacialSnow ) } ) != null )
 					{
 						if ( from.BeginAction( typeof( SnowPile ) ) )
 						{

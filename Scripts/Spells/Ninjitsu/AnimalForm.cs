@@ -474,11 +474,16 @@ namespace Server.Spells.Ninjitsu
 				}
 				else if (BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
 				{
-					if (AnimalForm.Morph(m_Caster, entryID) == MorphResult.Fail)
+					#region Dueling
+					if ( m_Caster is PlayerMobile && ((PlayerMobile)m_Caster).DuelContext != null && !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast( m_Caster, m_Spell ) )
 					{
-						m_Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
-						m_Caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
-						m_Caster.PlaySound(0x5C);
+					}
+					#endregion
+					else if (AnimalForm.Morph(m_Caster, entryID) == MorphResult.Fail)
+					{
+						m_Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502632 ); // The spell fizzles.
+						m_Caster.FixedParticles( 0x3735, 1, 30, 9503, EffectLayer.Waist );
+						m_Caster.PlaySound( 0x5C );
 					}
 					else
 					{

@@ -94,7 +94,8 @@ namespace Server.Items
 					{
 						if ( BandageContext.BeginHeal( from, (Mobile)targeted ) != null )
 						{
-							m_Bandage.Consume();
+							if ( !Engines.ConPVP.DuelContext.IsFreeConsume( from ) )
+								m_Bandage.Consume();
 						}
 					}
 					else
@@ -509,7 +510,6 @@ namespace Server.Items
 				if ( !onSelf )
 					patient.SendLocalizedMessage( 1008078, false, healer.Name ); //  : Attempting to heal you.
 
-				
 				healer.SendLocalizedMessage( 500956 ); // You begin applying the bandages.
 				return context;
 			}

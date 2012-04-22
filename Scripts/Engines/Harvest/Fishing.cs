@@ -252,7 +252,7 @@ namespace Server.Engines.Harvest
 				{
 					SOS sos = messages[i];
 
-					if ( ( from.Map == Map.Felucca || from.Map == Map.Trammel ) && from.InRange( sos.TargetLocation, 60 ) )
+					if ( from.Map == sos.TargetMap && from.InRange( sos.TargetLocation, 60 ) )
 					{
 						Item preLoot = null;
 
@@ -345,7 +345,7 @@ namespace Server.Engines.Harvest
 						if ( sos.IsAncient )
 							chest.Hue = 0x481;
 
-						TreasureMapChest.Fill( chest, Math.Max( 1, Math.Max( 4, sos.Level ) ) );
+						TreasureMapChest.Fill( chest, Math.Max( 1, Math.Min( 4, sos.Level ) ) );
 
 						if ( sos.IsAncient )
 							chest.DropItem( new FabledFishingNet() );
