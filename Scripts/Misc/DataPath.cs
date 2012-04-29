@@ -9,9 +9,9 @@ namespace Server.Misc
 	{
 		/* If you have not installed Ultima Online,
 		 * or wish the server to use a separate set of datafiles,
-		 * change the 'CustomPath' value, example:
-		 * 
-		 * private const string CustomPath = @"C:\Program Files\Ultima Online";
+		 * change the 'CustomPath' value.
+		 * Example:
+		 *  private static string CustomPath = @"C:\Program Files\Ultima Online";
 		 */
 		private static string CustomPath = null;
 
@@ -21,7 +21,7 @@ namespace Server.Misc
 		 * Multi.mul
 		 * VerData.mul
 		 * TileData.mul
-		 * Map*.mul
+		 * Map*.mul or Map*LegacyMUL.uop
 		 * StaIdx*.mul
 		 * Statics*.mul
 		 * MapDif*.mul

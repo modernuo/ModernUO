@@ -30,9 +30,10 @@ namespace Server.Misc
 			 * Defined:
 			 * RegisterMap( <index>, <mapID>, <fileIndex>, <width>, <height>, <season>, <name>, <rules> );
 			 *  - <index> : An unreserved unique index for this map
-			 *  - <mapID> : An identification number used in client communications. For any visible maps, this value must be from 0-3
-			 *  - <fileIndex> : A file identification number. For any visible maps, this value must be 0, 2, 3, or 4
+			 *  - <mapID> : An identification number used in client communications. For any visible maps, this value must be from 0-5
+			 *  - <fileIndex> : A file identification number. For any visible maps, this value must be from 0-5
 			 *  - <width>, <height> : Size of the map (in tiles)
+			 *  - <season> : Season of the map. 0 = Spring, 1 = Summer, 2 = Fall, 3 = Winter, 4 = Desolation
 			 *  - <name> : Reference name for the map, used in props gump, get/set commands, region loading, etc
 			 *  - <rules> : Rules and restrictions associated with the map. See documentation for details
 			*/

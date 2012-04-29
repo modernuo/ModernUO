@@ -44,7 +44,7 @@ namespace Server.Misc
 		{
 			Console.Write( "Crash: Sending email..." );
 
-			MailMessage message = new MailMessage( "RunUO", Email.CrashAddresses );
+			MailMessage message = new MailMessage( Email.FromAddress, Email.CrashAddresses );
 
 			message.Subject = "Automated RunUO Crash Report";
 
@@ -237,7 +237,7 @@ namespace Server.Misc
 
 				Console.WriteLine( "done" );
 
-				if ( Email.CrashAddresses != null )
+				if ( Email.FromAddress != null && Email.CrashAddresses != null )
 					SendEmail( filePath );
 			}
 			catch

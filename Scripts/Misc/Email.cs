@@ -8,25 +8,27 @@ namespace Server.Misc
 {
 	public class Email
 	{
-		/* In order to support emailing, fill in EmailServer:
+		/* In order to support emailing, fill in EmailServer and FromAddress:
 		 * Example:
 		 *  public static readonly string EmailServer = "mail.domain.com";
+		 *  public static readonly string FromAddress = "runuo@domain.com";
 		 * 
 		 * If you want to add crash reporting emailing, fill in CrashAddresses:
 		 * Example:
-		 *  public static readonly string CrashAddresses = "first@email.here;second@email.here;third@email.here";
+		 *  public static readonly string CrashAddresses = "first@email.here,second@email.here,third@email.here";
 		 * 
 		 * If you want to add speech log page emailing, fill in SpeechLogPageAddresses:
 		 * Example:
-		 *  public static readonly string SpeechLogPageAddresses = "first@email.here;second@email.here;third@email.here";
+		 *  public static readonly string SpeechLogPageAddresses = "first@email.here,second@email.here,third@email.here";
 		 */
 
 		public static readonly string EmailServer = null;
+		public static readonly string FromAddress = null;
 
 		public static readonly string CrashAddresses = null;
 		public static readonly string SpeechLogPageAddresses = null;
 
-		private static Regex _pattern = new Regex( @"^[a-z0-9.+_-]+@([a-z0-9-]+.)+[a-z]+$", RegexOptions.IgnoreCase );
+		private static Regex _pattern = new Regex( @"^[a-z0-9.+_-]+@([a-z0-9-]+\.)+[a-z]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase );
 
 		public static bool IsValid( string address )
 		{
