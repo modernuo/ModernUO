@@ -22,7 +22,7 @@ namespace Server.Items
 		ManaDraining
 	}
 
-	public abstract class BaseWand : BaseBashing
+	public abstract class BaseWand : BaseBashing, ITokunoDyable
 	{
 		public override WeaponAbility PrimaryAbility { get { return WeaponAbility.Dismount; } }
 		public override WeaponAbility SecondaryAbility { get { return WeaponAbility.Disarm; } }
@@ -31,6 +31,7 @@ namespace Server.Items
 		public override int AosMinDamage { get { return 9; } }
 		public override int AosMaxDamage { get { return 11; } }
 		public override int AosSpeed { get { return 40; } }
+		public override float MlSpeed{ get{ return 2.75f; } }
 
 		public override int OldStrengthReq { get { return 0; } }
 		public override int OldMinDamage { get { return 2; } }
@@ -64,6 +65,9 @@ namespace Server.Items
 			Weight = 1.0;
 			Effect = effect;
 			Charges = Utility.RandomMinMax( minCharges, maxCharges );
+			Attributes.SpellChanneling = 1;
+			Attributes.CastSpeed = -1;
+			WeaponAttributes.MageWeapon = Utility.RandomMinMax( 1, 10 );
 		}
 
 		public void ConsumeCharge( Mobile from )
@@ -94,7 +98,10 @@ namespace Server.Items
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( !from.CanBeginAction( typeof( BaseWand ) ) )
+			{
+				from.SendLocalizedMessage( 1070860 ); // You must wait a moment for the wand to recharge.
 				return;
+			}
 
 			if ( Parent == from )
 			{

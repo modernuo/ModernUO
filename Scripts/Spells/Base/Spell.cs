@@ -491,6 +491,10 @@ namespace Server.Spells
 			{
 				return false;
 			}
+			else if ( m_Scroll is BaseWand && m_Caster.Spell != null && m_Caster.Spell.IsCasting )
+			{
+				m_Caster.SendLocalizedMessage( 502643 ); // You can not cast a spell while frozen.
+			}
 			else if ( m_Caster.Spell != null && m_Caster.Spell.IsCasting )
 			{
 				m_Caster.SendLocalizedMessage( 502642 ); // You are already casting a spell.
@@ -523,7 +527,7 @@ namespace Server.Spells
 					m_State = SpellState.Casting;
 					m_Caster.Spell = this;
 
-					if ( RevealOnCast )
+					if ( !( m_Scroll is BaseWand ) && RevealOnCast )
 						m_Caster.RevealingAction();
 
 					SayMantra();
@@ -671,7 +675,7 @@ namespace Server.Spells
 		public virtual TimeSpan GetCastDelay()
 		{
 			if ( m_Scroll is BaseWand )
-				return TimeSpan.Zero;
+				return Core.ML ? CastDelayBase : TimeSpan.Zero; // TODO: Should FC apply to wands?
 
 			// Faster casting cap of 2 (if not using the protection spell) 
 			// Faster casting cap of 0 (if using the protection spell) 
@@ -757,7 +761,10 @@ namespace Server.Spells
 				if ( m_Scroll is SpellScroll )
 					m_Scroll.Consume();
 				else if ( m_Scroll is BaseWand )
+				{
 					((BaseWand)m_Scroll).ConsumeCharge( m_Caster );
+					m_Caster.RevealingAction();
+				}
 
 				if ( m_Scroll is BaseWand )
 				{

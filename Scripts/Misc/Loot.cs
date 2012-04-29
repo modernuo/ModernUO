@@ -314,12 +314,17 @@ namespace Server
 		public static Type[] TavarasJournalTypes{ get{ return m_TavarasJournalTypes; } }
 
 
+		private static Type[] m_NewWandTypes = new Type[]
+			{
+				typeof( FireballWand ),		typeof( LightningWand ),		typeof( MagicArrowWand ),
+				typeof( GreaterHealWand ),	typeof( HarmWand ),				typeof( HealWand )
+			};
+		public static Type[] NewWandTypes{ get{ return m_NewWandTypes; } }
+
 		private static Type[] m_WandTypes = new Type[]
 			{
-				typeof( ClumsyWand ),               typeof( FeebleWand ),           typeof( FireballWand ),
-				typeof( GreaterHealWand ),          typeof( HarmWand ),             typeof( HealWand ),
-				typeof( LightningWand ),            typeof( MagicArrowWand ),       typeof( ManaDrainWand ),
-				typeof( WeaknessWand )
+				typeof( ClumsyWand ),		typeof( FeebleWand ),
+				typeof( ManaDrainWand ),	typeof( WeaknessWand )
 			};
 		public static Type[] WandTypes{ get{ return m_WandTypes; } }
 		
@@ -410,10 +415,12 @@ namespace Server
 
 		public static BaseWand RandomWand()
 		{
-			if ( !Core.AOS )
-				return Construct( m_OldWandTypes, m_WandTypes ) as BaseWand;
-			
-			return Construct( m_WandTypes ) as BaseWand;
+			if ( Core.ML )
+				return Construct( m_NewWandTypes ) as BaseWand;
+			else if ( Core.AOS )
+				return Construct( m_WandTypes, m_NewWandTypes ) as BaseWand;
+			else
+				return Construct( m_OldWandTypes, m_WandTypes, m_NewWandTypes ) as BaseWand;
 		}
 
 		public static BaseClothing RandomClothing()

@@ -96,7 +96,7 @@ namespace Server.Spells
 
 		public override TimeSpan GetCastDelay()
 		{
-			if( Scroll is BaseWand )
+			if( !Core.ML && Scroll is BaseWand )
 				return TimeSpan.Zero;
 
 			if( !Core.AOS )
