@@ -1891,6 +1891,7 @@ namespace Server
 			Utility.FixPoints( ref pTop, ref pBottom );
 
 			int pathCount = path.Count;
+			int endTop = end.m_Z + 1;
 
 			for( int i = 0; i < pathCount; ++i )
 			{
@@ -1901,7 +1902,7 @@ namespace Server
 				int landZ = 0, landAvg = 0, landTop = 0;
 				GetAverageZ( point.m_X, point.m_Y, ref landZ, ref landAvg, ref landTop );
 
-				if( landZ <= pointTop && landTop >= point.m_Z && (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > end.m_Z || landTop < end.m_Z) && !landTile.Ignored )
+				if( landZ <= pointTop && landTop >= point.m_Z && (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > endTop || landTop < end.m_Z) && !landTile.Ignored )
 					return false;
 
 				/* --Do land tiles need to be checked?  There is never land between two people, always statics.--
@@ -1948,7 +1949,7 @@ namespace Server
 
 					if( t.Z <= pointTop && t.Z + height >= point.Z && (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0 )
 					{
-						if( point.m_X == end.m_X && point.m_Y == end.m_Y && t.Z <= end.m_Z && t.Z + height >= end.m_Z )
+						if( point.m_X == end.m_X && point.m_Y == end.m_Y && t.Z <= endTop && t.Z + height >= end.m_Z )
 							continue;
 
 						return false;
@@ -1998,7 +1999,7 @@ namespace Server
 					if( loc.m_X == point.m_X && loc.m_Y == point.m_Y &&
 						loc.m_Z <= pointTop && loc.m_Z + height >= point.m_Z )
 					{
-						if( loc.m_X == end.m_X && loc.m_Y == end.m_Y && loc.m_Z <= end.m_Z && loc.m_Z + height >= end.m_Z )
+						if( loc.m_X == end.m_X && loc.m_Y == end.m_Y && loc.m_Z <= endTop && loc.m_Z + height >= end.m_Z )
 							continue;
 
 						found = true;

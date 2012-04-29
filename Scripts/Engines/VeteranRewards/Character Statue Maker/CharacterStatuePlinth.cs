@@ -14,7 +14,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1076201; } } // Character Statue
 
 		private CharacterStatue m_Statue;
-		
+
 		public CharacterStatuePlinth( CharacterStatue statue ) : base( 0x32F2 )
 		{
 			m_Statue = statue;
@@ -49,7 +49,7 @@ namespace Server.Items
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( m_Statue != null )
-				from.SendGump( new CharacterPlinthGump( m_Statue ) );			
+				from.SendGump( new CharacterPlinthGump( m_Statue ) );
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -84,12 +84,12 @@ namespace Server.Items
 		public virtual bool CouldFit( IPoint3D p, Map map )
 		{
 			Point3D point = new Point3D( p.X, p.Y, p.Z );
-			
+
 			if ( map == null || !map.CanFit( point, 20 ) )
 				return false;
 
 			BaseHouse house = BaseHouse.FindHouseAt( point, map, 20 );
-			
+
 			if ( house == null )
 				return false;
 
@@ -109,7 +109,7 @@ namespace Server.Items
 				Disposable = true;
 				Dragable = true;
 				Resizable = false;
-			
+
 				AddPage( 0 );
 				AddImage( 0, 0, 0x24F4 );
 				AddHtml( 55, 50, 150, 20, statue.Name, false, false );

@@ -2485,19 +2485,9 @@ namespace Server.Gumps
 							IPAddress[] ips = a.LoginIPs;
 
 							if ( ips.Length == 0 )
-							{
 								from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, "This account has not yet been accessed.", m_State ) );
-							}
 							else
-							{
-								StringBuilder sb = new StringBuilder();
-								sb.AppendFormat( "You are about to clear the address list for account {0}. Do you wish to continue?", a );
-
-								for ( int i = 0; i < ips.Length; ++i )
-									sb.AppendFormat( "<br>- {0}", ips[i] );
-
-								from.SendGump( new WarningGump( 1060635, 30720, sb.ToString(), 0xFFC000, 420, 400, new WarningGumpCallback( RemoveLoginIPs_Callback ), a ) );
-							}
+								from.SendGump( new WarningGump( 1060635, 30720, String.Format( "You are about to clear the address list for account {0} containing {1} {2}. Do you wish to continue?", a, ips.Length, ( ips.Length == 1 ) ? "entry" : "entries" ), 0xFFC000, 420, 280, new WarningGumpCallback( RemoveLoginIPs_Callback ), a ) );
 
 							break;
 						}

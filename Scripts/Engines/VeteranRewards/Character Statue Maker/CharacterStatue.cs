@@ -35,7 +35,7 @@ namespace Server.Mobiles
 	{
 		Antique,
 		Dark,
-		Medium, 
+		Medium,
 		Light
 	}
 
@@ -187,7 +187,7 @@ namespace Server.Mobiles
 		}
 
 		public void OnRequestedAnimation( Mobile from )
-		{				
+		{
 			from.Send( new UpdateStatueAnimation( this, 1, m_Animation, m_Frames ) );
 		}
 
@@ -237,7 +237,7 @@ namespace Server.Mobiles
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
 			}
 		}
-		
+
 		public void Sculpt( Mobile by )
 		{
 			m_SculptedBy = by;
@@ -317,7 +317,7 @@ namespace Server.Mobiles
 			cloned.Hue = item.Hue;
 			cloned.Weight = item.Weight;
 			cloned.Movable = false;
-			
+
 			return cloned;
 		}
 
@@ -344,7 +344,7 @@ namespace Server.Mobiles
 		{
 			switch ( m_Pose )
 			{
-				case StatuePose.Ready: 
+				case StatuePose.Ready:
 						m_Animation = 4;
 						m_Frames = 0;
 						break;
@@ -416,7 +416,7 @@ namespace Server.Mobiles
 	public class CharacterStatueDeed : Item, IRewardItem
 	{
 		public override int LabelNumber
-		{ 
+		{
 			get
 			{
 				StatueType t = m_Type;
@@ -433,7 +433,7 @@ namespace Server.Mobiles
 					case StatueType.Bronze: return 1076190;
 					default: return 1076173;
 				}
-			} 
+			}
 		}
 
 		private CharacterStatue m_Statue;
@@ -451,9 +451,9 @@ namespace Server.Mobiles
 		public StatueType StatueType
 		{
 			get
-			{ 
+			{
 				if ( m_Statue != null )
-					return m_Statue.StatueType; 
+					return m_Statue.StatueType;
 
 				return m_Type;
 			}
@@ -470,7 +470,7 @@ namespace Server.Mobiles
 		public CharacterStatueDeed( CharacterStatue statue ) : base( 0x14F0 )
 		{
 			m_Statue = statue;
-		
+
 			LootType = LootType.Blessed;
 			Weight = 1.0;
 		}
@@ -500,7 +500,7 @@ namespace Server.Mobiles
 
 				if ( time > TimeSpan.Zero )
 				{
-					from.SendLocalizedMessage( 1008126, true, Math.Ceiling( time.TotalDays / RewardSystem.RewardInterval.TotalDays ).ToString() ); // Your account is not old enough to use this item. Months until you can use this item : 
+					from.SendLocalizedMessage( 1008126, true, Math.Ceiling( time.TotalDays / RewardSystem.RewardInterval.TotalDays ).ToString() ); // Your account is not old enough to use this item. Months until you can use this item :
 					return;
 				}
 			}
@@ -553,7 +553,7 @@ namespace Server.Mobiles
 			m_IsRewardItem = reader.ReadBool();
 		}
 	}
-	
+
 	public class CharacterStatueTarget : Target
 	{
 		private Item m_Maker;
@@ -575,7 +575,7 @@ namespace Server.Mobiles
 
 			if ( m_Maker.IsChildOf( from.Backpack ) )
 			{
-				SpellHelper.GetSurfaceTop( ref p );			
+				SpellHelper.GetSurfaceTop( ref p );
 				BaseHouse house = null;
 				Point3D loc = new Point3D( p );
 
@@ -593,7 +593,7 @@ namespace Server.Mobiles
 				AddonFitResult result = CouldFit( loc, map, from, ref house );
 
 				if ( result == AddonFitResult.Valid )
-				{				
+				{
 					CharacterStatue statue = new CharacterStatue( from, m_Type );
 					CharacterStatuePlinth plinth = new CharacterStatuePlinth( statue );
 
@@ -629,7 +629,7 @@ namespace Server.Mobiles
 		}
 
 		public static AddonFitResult CouldFit( Point3D p, Map map, Mobile from, ref BaseHouse house )
-		{			
+		{
 			if ( !map.CanFit( p.X, p.Y, p.Z, 20, true, true, true ) )
 				return AddonFitResult.Blocked;
 			else if ( !BaseAddon.CheckHouse( from, p, map, 20, ref house ) )
