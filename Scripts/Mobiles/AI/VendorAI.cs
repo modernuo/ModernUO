@@ -125,7 +125,7 @@ namespace Server.Mobiles
 					((BaseVendor)m_Mobile).VendorSell( from );
 					m_Mobile.FocusMob = from;
 				}
-				else if ( e.HasKeyword( 0x3C ) )
+				else if ( e.HasKeyword( 0x3C ) ) // *vendor buy*
 				{
 					e.Handled = true;
 
@@ -134,12 +134,18 @@ namespace Server.Mobiles
 				}
 				else if ( WasNamed( e.Speech ) )
 				{
-					e.Handled = true;
-
 					if ( e.HasKeyword( 0x177 ) ) // *sell*
+					{
+						e.Handled = true;
+
 						((BaseVendor)m_Mobile).VendorSell( from );
+					}
 					else if ( e.HasKeyword( 0x171 ) ) // *buy*
+					{
+						e.Handled = true;
+
 						((BaseVendor)m_Mobile).VendorBuy( from );
+					}
 
 					m_Mobile.FocusMob = from;
 				}

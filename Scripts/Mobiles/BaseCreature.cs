@@ -5045,11 +5045,11 @@ namespace Server.Mobiles
 		public virtual int AuraRange { get { return 4; } }
 
 		public virtual int AuraBaseDamage { get { return 5; } }
-		public virtual int AuraPhysicalDamage { get{ return 0; } }
-		public virtual int AuraFireDamage { get{ return 100; } }
-		public virtual int AuraColdDamage { get{ return 0; } }
-		public virtual int AuraPoisonDamage { get{ return 0; } }
-		public virtual int AuraEnergyDamage { get{ return 0; } }
+		public virtual int AuraPhysicalDamage { get { return 0; } }
+		public virtual int AuraFireDamage { get { return 100; } }
+		public virtual int AuraColdDamage { get { return 0; } }
+		public virtual int AuraPoisonDamage { get { return 0; } }
+		public virtual int AuraEnergyDamage { get { return 0; } }
 		public virtual int AuraChaosDamage { get { return 0; } }
 
 		public virtual void AuraDamage()
