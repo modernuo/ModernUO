@@ -181,7 +181,7 @@ namespace Server.Items
 		{
 			house = BaseHouse.FindHouseAt( p, map, height );
 
-			if ( from == null || house == null || !house.IsOwner( from ) )
+			if ( house == null || ( from != null && !house.IsOwner( from ) ) )
 				return false;
 
 			return true;
