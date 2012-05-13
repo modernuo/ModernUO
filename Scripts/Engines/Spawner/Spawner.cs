@@ -544,21 +544,21 @@ namespace Server.Mobiles
 
 			ISpawnable spawned = CreateSpawnedObject( index );
 
-			if (spawned == null)
+			if ( spawned == null )
 				return;
 
 			spawned.Spawner = this;
-			m_Spawned.Add(spawned);
+			m_Spawned.Add( spawned );
 
-			Point3D loc = (spawned is BaseVendor ? this.Location : GetSpawnPosition());
+			Point3D loc = ( spawned is BaseVendor ? this.Location : GetSpawnPosition( spawned ) );
 
-			spawned.OnBeforeSpawn(loc, map);
+			spawned.OnBeforeSpawn( loc, map );
 
 			InvalidateProperties();
 
-			spawned.MoveToWorld(loc, map);
+			spawned.MoveToWorld( loc, map );
 
-			if (spawned is BaseCreature)
+			if ( spawned is BaseCreature )
 			{
 				BaseCreature bc = (BaseCreature)spawned;
 
@@ -578,33 +578,90 @@ namespace Server.Mobiles
 
 		public Point3D GetSpawnPosition()
 		{
+			return GetSpawnPosition( null );
+		}
+
+		public Point3D GetSpawnPosition( ISpawnable spawned )
+		{
 			Map map = Map;
 
 			if ( map == null )
 				return Location;
 
-			// Try 10 times to find a Spawnable location.
-			for ( int i = 0; i < 10; i++ )
+			bool waterMob, waterOnlyMob;
+
+			if ( spawned is Mobile )
+			{
+				Mobile mob = (Mobile)spawned;
+
+				waterMob = mob.CanSwim;
+				waterOnlyMob = ( mob.CanSwim && mob.CantWalk );
+			}
+			else
+			{
+				waterMob = false;
+				waterOnlyMob = false;
+			}
+
+			// Try 10 times to find a spawnable location.
+			for ( int i = 0; i < 10; ++i )
 			{
 				int x, y;
 
-				if ( m_HomeRange > 0 ) {
-					x = Location.X + (Utility.Random( (m_HomeRange * 2) + 1 ) - m_HomeRange);
-					y = Location.Y + (Utility.Random( (m_HomeRange * 2) + 1 ) - m_HomeRange);
-				} else {
+				if ( m_HomeRange > 0 )
+				{
+					x = Location.X + ( Utility.Random( ( m_HomeRange * 2 ) + 1 ) - m_HomeRange );
+					y = Location.Y + ( Utility.Random( ( m_HomeRange * 2 ) + 1 ) - m_HomeRange );
+				}
+				else
+				{
 					x = Location.X;
 					y = Location.Y;
 				}
 
-				int z = Map.GetAverageZ( x, y );
+				int mapZ = map.GetAverageZ( x, y );
 
-				if ( Map.CanSpawnMobile( new Point2D( x, y ), this.Z ) )
-					return new Point3D( x, y, this.Z );
-				else if ( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
-					return new Point3D( x, y, z );
+				if ( waterMob )
+				{
+					if ( IsValidWater( map, x, y, this.Z ) )
+						return new Point3D( x, y, this.Z );
+					else if ( IsValidWater( map, x, y, mapZ ) )
+						return new Point3D( x, y, mapZ );
+				}
+
+				if ( !waterOnlyMob )
+				{
+					if ( map.CanSpawnMobile( x, y, this.Z ) )
+						return new Point3D( x, y, this.Z );
+					else if ( map.CanSpawnMobile( x, y, mapZ ) )
+						return new Point3D( x, y, mapZ );
+				}
 			}
 
 			return this.Location;
+		}
+
+		public static bool IsValidWater( Map map, int x, int y, int z )
+		{
+			if ( !Region.Find( new Point3D( x, y, z ), map ).AllowSpawn() || !map.CanFit( x, y, z, 16, false, true, false ) )
+				return false;
+
+			LandTile landTile = map.Tiles.GetLandTile( x, y );
+
+			if ( landTile.Z == z && ( TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet ) != 0 )
+				return true;
+
+			StaticTile[] staticTiles = map.Tiles.GetStaticTiles( x, y, true );
+
+			for ( int i = 0; i < staticTiles.Length; ++i )
+			{
+				StaticTile staticTile = staticTiles[i];
+
+				if ( staticTile.Z == z && ( TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Flags & TileFlag.Wet ) != 0 )
+					return true;
+			}
+
+			return false;
 		}
 
 		public void DoTimer()
@@ -710,7 +767,7 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			for ( int i = 0; i < m_Spawned.Count; ++i )
+			for ( int i = m_Spawned.Count - 1; i >= 0; --i )
 			{
 				IEntity e = m_Spawned[i];
 

@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using Server;
 using Server.Accounting;
+using Server.Mobiles;
 using Server.Network;
 using Server.Targets;
 using Server.Commands;
@@ -38,7 +39,7 @@ namespace Server.Gumps
 				from.SendMessage( "That character no longer exists." );
 				return;
 			}
-			else if ( from != focus && focus.Hidden && from.AccessLevel < focus.AccessLevel )
+			else if ( from != focus && focus.Hidden && from.AccessLevel < focus.AccessLevel && ( !( focus is PlayerMobile ) || !((PlayerMobile)focus).VisibilityList.Contains( from ) ) )
 			{
 				from.SendMessage( "That character is no longer visible." );
 				return;

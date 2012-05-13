@@ -51,7 +51,7 @@ namespace Server.Mobiles
 			Item shroud = new Item( 0x204E );
 			shroud.Layer = Layer.OuterTorso;
 			shroud.Movable = false;
-			shroud.Hue = boots.Hue ^ 1;
+			shroud.Hue = Utility.Random( 2 );
 
 			AddItem( boots );
 			AddItem( shroud );

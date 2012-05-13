@@ -759,7 +759,7 @@ namespace Server.Gumps
 						AddButtonLabeled( 10, 410, GetButtonID( 5, 28 ), "Delete marked" );
 
 						AddButtonLabeled( 210, 390, GetButtonID( 5, 29 ), "Mark all" );
-						AddButtonLabeled( 210, 410, GetButtonID( 5, 33 ), "Unmark house owners" );
+						AddButtonLabeled( 210, 410, GetButtonID( 5, 35 ), "Unmark house owners" );
 					}
 
 					for ( int i = 0, index = (listPage * 12); i < 12 && index >= 0 && index < m_List.Count; ++i, ++index )
@@ -983,7 +983,7 @@ namespace Server.Gumps
 					AddButtonLabeled( 227, 225, GetButtonID( 5, 16 ), "View all shared accounts" );
 					AddButtonLabeled( 227, 245, GetButtonID( 5, 17 ), "Ban all shared accounts" );
 					AddButtonLabeled( 227, 265, GetButtonID( 5, 18 ), "Firewall all addresses" );
-					AddButtonLabeled( 227, 285, GetButtonID( 5, 34 ), "Clear all addresses" );
+					AddButtonLabeled( 227, 285, GetButtonID( 5, 36 ), "Clear all addresses" );
 
 					AddHtml( 225, 315, 180, 80, Color( "List of IP addresses which have accessed this account.", LabelColor32 ), false, false );
 
@@ -2301,7 +2301,7 @@ namespace Server.Gumps
 
 							break;
 						}
-						case 20:
+						case 20: // Change access level
 						case 21:
 						case 22:
 						case 23:
@@ -2326,7 +2326,7 @@ namespace Server.Gumps
 								case 34: newLevel = AccessLevel.Owner; break;
 							}
 
-							if ( newLevel < from.AccessLevel )
+							if ( newLevel < from.AccessLevel || from.AccessLevel == AccessLevel.Owner )
 							{
 								a.AccessLevel = newLevel;
 
@@ -2449,7 +2449,12 @@ namespace Server.Gumps
 
 							break;
 						}
-						case 33: // Unmark house owners
+						case 33: // Change access level (extended)
+						case 34:
+						{
+							goto case 20;
+						}
+						case 35: // Unmark house owners
 						{
 							ArrayList list = m_List;
 							ArrayList rads = m_State as ArrayList;
@@ -2475,7 +2480,7 @@ namespace Server.Gumps
 
 							break;
 						}
-						case 34: // Clear login addresses
+						case 36: // Clear login addresses
 						{
 							Account a = m_State as Account;
 

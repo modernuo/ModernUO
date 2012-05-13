@@ -18,13 +18,13 @@ namespace Server.Mobiles
 
 			AddBackground( 0, 0, 410, 371, 5054 );
 
-			AddLabel( 95, 1, 0, "Creatures List" );
+			AddLabel( 160, 1, 0, "Creatures List" );
 
 			AddButton( 5, 347, 0xFB1, 0xFB3, 0, GumpButtonType.Reply, 0 );
 			AddLabel( 38, 347, 0x384, "Cancel" );
 
 			AddButton( 5, 325, 0xFB7, 0xFB9, 1, GumpButtonType.Reply, 0 );
-			AddLabel( 38, 325, 0x384, "Okay" );
+			AddLabel( 38, 325, 0x384, "Apply" );
 
 			AddButton( 110, 325, 0xFB4, 0xFB6, 2, GumpButtonType.Reply, 0 );
 			AddLabel( 143, 325, 0x384, "Bring to Home" );
@@ -87,28 +87,28 @@ namespace Server.Mobiles
 		
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
-			if ( m_Spawner.Deleted )
+			if ( m_Spawner.Deleted || state.Mobile.AccessLevel < AccessLevel.GameMaster )
 				return;
 
 			switch ( info.ButtonID )
 			{
 				case 0: // Closed
 				{
-					break;
+					return;
 				}
-				case 1: // Okay
+				case 1: // Apply
 				{
 					m_Spawner.SpawnNames = CreateArray( info, state.Mobile );
 
 					break;
 				}
-				case 2: // Bring everything home
+				case 2: // Bring to Home
 				{
 					m_Spawner.BringToHome();
 
 					break;
 				}
-				case 3: // Complete respawn
+				case 3: // Total Respawn
 				{
 					m_Spawner.Respawn();
 
@@ -135,6 +135,8 @@ namespace Server.Mobiles
 					break;
 				}
 			}
+
+			state.Mobile.SendGump( new SpawnerGump( m_Spawner ) );
 		}
 	}
 }
