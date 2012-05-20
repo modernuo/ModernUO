@@ -49,7 +49,12 @@
 			<go x="6222" y="335" z="60" />
 			<entrance x="5574" y="3024" z="31" />
 			<music name="ParoxysmusLair" />
-				<zrange min="-50" />
+		</region>
+		<region priority="50" name="Bravehorn's drinking pool">
+			<rect x="1302" y="2331" width="38" height="22" />
+		</region>
+		<region priority="50" name="Huntsman's Forest">
+			<rect x="1595" y="550" width="120" height="120" />
 		</region>
 		<!--End-->
 		<region type="TownRegion" priority="50" name="Cove">
@@ -794,12 +799,11 @@
 			<go x="6222" y="335" z="60" />
 			<entrance x="5574" y="3024" z="31" />
 			<music name="ParoxysmusLair" />
-				<zrange min="-50" />
 		</region>
 		<region priority="50" name="Bravehorn's drinking pool">
 			<rect x="1302" y="2331" width="38" height="22" />
 		</region>
-		<region priority="50" name="Huntsman's forrest">
+		<region priority="50" name="Huntsman's Forest">
 			<rect x="1595" y="550" width="120" height="120" />
 		</region>
 		<!--End-->

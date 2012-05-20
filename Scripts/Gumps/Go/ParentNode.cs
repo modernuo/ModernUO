@@ -34,8 +34,11 @@ namespace Server.Gumps
 			{
 				ArrayList children = new ArrayList();
 
-				while ( xml.Read() && xml.NodeType == XmlNodeType.Element )
+				while ( xml.Read() && ( xml.NodeType == XmlNodeType.Element || xml.NodeType == XmlNodeType.Comment ) )
 				{
+					if ( xml.NodeType == XmlNodeType.Comment )
+						continue;
+
 					if ( xml.Name == "child" )
 					{
 						ChildNode n = new ChildNode( xml, this );

@@ -3306,6 +3306,9 @@ namespace Server.Items
 			if ( (prop = m_AosAttributes.WeaponSpeed) != 0 )
 				list.Add( 1060486, prop.ToString() ); // swing speed increase ~1_val~%
 
+			if ( Core.ML && (prop = m_AosAttributes.IncreasedKarmaLoss) != 0 )
+				list.Add( 1075210, prop.ToString() ); // Increased Karma Loss ~1val~%
+
 			int phys, fire, cold, pois, nrgy, chaos, direct;
 
 			GetDamageTypes( null, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct );

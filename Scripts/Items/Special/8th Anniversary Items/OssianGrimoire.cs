@@ -7,14 +7,14 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1078148; } } // Ossian Grimoire
 
 		[Constructable]
-		public OssianGrimoire() : base()
+		public OssianGrimoire()
 		{
 			LootType = LootType.Blessed;
 
 			SkillBonuses.SetValues( 0, SkillName.Necromancy, 10.0 );
 			Attributes.RegenMana = 1;
 			Attributes.CastSpeed = 1;
-			//Attributes.IncreasedKarmaLoss = 5;
+			Attributes.IncreasedKarmaLoss = 5;
 		}
 
 		public OssianGrimoire( Serial serial ) : base( serial )
@@ -25,7 +25,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 0 ); //version
+			writer.WriteEncodedInt( 1 ); //version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -33,6 +33,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+
+			if ( version == 0 )
+				Attributes.IncreasedKarmaLoss = 5;
 		}
 	}
 }

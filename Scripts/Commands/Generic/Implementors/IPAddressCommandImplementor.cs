@@ -25,12 +25,12 @@ namespace Server.Commands.Generic
 
 				bool items, mobiles;
 
-				if ( !CheckObjectTypes( command, ext, out items, out mobiles ) )
+				if ( !CheckObjectTypes( from, command, ext, out items, out mobiles ) )
 					return;
 
 				if ( !mobiles ) // sanity check
 				{
-					command.LogFailure( "This command does not support mobiles." );
+					command.LogFailure( "This command does not support items." );
 					return;
 				}
 

@@ -113,7 +113,7 @@ namespace Server.Commands.Generic
 				m_Commands[command.Commands[i]] = command;
 		}
 
-		public bool CheckObjectTypes( BaseCommand command, Extensions ext, out bool items, out bool mobiles )
+		public bool CheckObjectTypes( Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles )
 		{
 			items = mobiles = false;
 
@@ -153,7 +153,7 @@ namespace Server.Commands.Generic
 					}
 					else if ( condIsMobile )
 					{
-						command.LogFailure( "You may not use a mobile type condition for this command." );
+						from.SendMessage( "You may not use a mobile type condition for this command." );
 						return false;
 					}
 
@@ -167,7 +167,7 @@ namespace Server.Commands.Generic
 					}
 					else if ( condIsItem )
 					{
-						command.LogFailure( "You may not use an item type condition for this command." );
+						from.SendMessage( "You may not use an item type condition for this command." );
 						return false;
 					}
 

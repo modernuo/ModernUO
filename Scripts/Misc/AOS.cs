@@ -232,7 +232,8 @@ namespace Server
 		EnhancePotions=0x00080000,
 		Luck=0x00100000,
 		SpellChanneling=0x00200000,
-		NightSight=0x00400000
+		NightSight=0x00400000,
+		IncreasedKarmaLoss=0x00800000
 	}
 
 	public sealed class AosAttributes : BaseAttributes
@@ -437,6 +438,9 @@ namespace Server
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int NightSight { get { return this[AosAttribute.NightSight]; } set { this[AosAttribute.NightSight] = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int IncreasedKarmaLoss { get { return this[AosAttribute.IncreasedKarmaLoss]; } set { this[AosAttribute.IncreasedKarmaLoss] = value; } }
 	}
 
 	[Flags]

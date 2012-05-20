@@ -719,13 +719,13 @@ namespace Server.Mobiles
 		}
 	}
 
-	public class DummyTheif : Dummy
+	[TypeAlias( "Server.Mobiles.DummyTheif" )]
+	public class DummyThief : Dummy
 	{
-
 		[Constructable]
-		public DummyTheif() : base(AIType.AI_Thief, FightMode.Closest, 15, 1, 0.2, 0.6)
+		public DummyThief() : base(AIType.AI_Thief, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
-			// A Dummy Hybrid Theif
+			// A Dummy Hybrid Thief
 			int iHue = 20 + Team * 40;
 			int jHue = 25 + Team * 40;
 
@@ -739,7 +739,7 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Wrestling].Base = 120;
 
 			// Name
-			this.Name = "Hybrid Theif";
+			this.Name = "Hybrid Thief";
 
 			// Equip
 			Spellbook book = new Spellbook();
@@ -793,7 +793,7 @@ namespace Server.Mobiles
 			AddToBackpack( band );
 		}
 
-		public DummyTheif( Serial serial ) : base( serial )
+		public DummyThief( Serial serial ) : base( serial )
 		{
 		}
 

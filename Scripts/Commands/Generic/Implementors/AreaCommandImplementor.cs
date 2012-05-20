@@ -44,7 +44,7 @@ namespace Server.Commands.Generic
 
 				bool items, mobiles;
 
-				if ( !CheckObjectTypes( command, ext, out items, out mobiles ) )
+				if ( !CheckObjectTypes( from, command, ext, out items, out mobiles ) )
 					return;
 
 				IPooledEnumerable eable;

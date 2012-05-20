@@ -25,10 +25,13 @@ namespace Server.Spells.Necromancy
 		public override int ComputeKarmaAward()
 		{
 			//TODO: Verify this formula being that Necro spells don't HAVE a circle.
+			//int karma = -(70 + (10 * (int)Circle));
+			int karma = -(40 + (int)(10 * (CastDelayBase.TotalSeconds / CastDelaySecondsPerTick)));
 
-			//return -(70 + (10 * (int)Circle));
+			if ( Core.ML ) // Pub 36: "Added a new property called Increased Karma Loss which grants higher karma loss for casting necromancy spells."
+				karma += AOS.Scale( karma, AosAttributes.GetValue( Caster, AosAttribute.IncreasedKarmaLoss ) );
 
-			return -(40 + (int)(10 * (CastDelayBase.TotalSeconds / CastDelaySecondsPerTick)));
+			return karma;
 		}
 
 		public override void GetCastSkills( out double min, out double max )

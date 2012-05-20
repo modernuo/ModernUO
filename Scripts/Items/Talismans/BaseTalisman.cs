@@ -42,19 +42,11 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1071023; } } // Talisman
 		public virtual bool ForceShowName { get { return false; } } // used to override default summoner/removal name
 
-		private int m_KarmaLoss;
 		private int m_MaxCharges;
 		private int m_Charges;
 		private int m_MaxChargeTime;
 		private int m_ChargeTime;
 		private bool m_Blessed;
-
-		[CommandProperty(AccessLevel.GameMaster)]
-		public int KarmaLoss
-		{
-			get { return m_KarmaLoss; }
-			set { m_KarmaLoss = value; InvalidateProperties(); }
-		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public int MaxCharges
@@ -497,8 +489,8 @@ namespace Server.Items
 			if ((prop = m_AosAttributes.WeaponSpeed) != 0)
 				list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
 
-			if (m_KarmaLoss != 0)
-				list.Add(1075210, m_KarmaLoss.ToString()); // Increased Karma Loss ~1val~%
+			if (Core.ML && (prop = m_AosAttributes.IncreasedKarmaLoss) != 0)
+				list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
 			if (m_MaxCharges > 0)
 				list.Add(1060741, m_Charges.ToString()); // charges: ~1_val~
@@ -529,7 +521,7 @@ namespace Server.Items
 			Killer = 0x00000010,
 			Summoner = 0x00000020,
 			Removal = 0x00000040,
-			KarmaLoss = 0x00000080,
+			OldKarmaLoss = 0x00000080,
 			Skill = 0x00000100,
 			SuccessBonus = 0x00000200,
 			ExceptionalBonus = 0x00000400,
@@ -555,7 +547,6 @@ namespace Server.Items
 			SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer != null && !m_Killer.IsEmpty);
 			SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner != null && !m_Summoner.IsEmpty);
 			SetSaveFlag(ref flags, SaveFlag.Removal, m_Removal != TalismanRemoval.None);
-			SetSaveFlag(ref flags, SaveFlag.KarmaLoss, m_KarmaLoss != 0);
 			SetSaveFlag(ref flags, SaveFlag.Skill, (int)m_Skill != 0);
 			SetSaveFlag(ref flags, SaveFlag.SuccessBonus, m_SuccessBonus != 0);
 			SetSaveFlag(ref flags, SaveFlag.ExceptionalBonus, m_ExceptionalBonus != 0);
@@ -585,9 +576,6 @@ namespace Server.Items
 
 			if (GetSaveFlag(flags, SaveFlag.Removal))
 				writer.WriteEncodedInt((int)m_Removal);
-
-			if (GetSaveFlag(flags, SaveFlag.KarmaLoss))
-				writer.WriteEncodedInt(m_KarmaLoss);
 
 			if (GetSaveFlag(flags, SaveFlag.Skill))
 				writer.WriteEncodedInt((int)m_Skill);
@@ -658,8 +646,8 @@ namespace Server.Items
 						if (GetSaveFlag(flags, SaveFlag.Removal))
 							m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
 
-						if (GetSaveFlag(flags, SaveFlag.KarmaLoss))
-							m_KarmaLoss = reader.ReadEncodedInt();
+						if (GetSaveFlag(flags, SaveFlag.OldKarmaLoss))
+							m_AosAttributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
 
 						if (GetSaveFlag(flags, SaveFlag.Skill))
 							m_Skill = (SkillName)reader.ReadEncodedInt();
