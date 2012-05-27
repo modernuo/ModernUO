@@ -48,6 +48,40 @@ namespace Server.Commands.Generic
 					}
 					else
 					{
+						switch ( command.ObjectTypes )
+						{
+							case ObjectTypes.Both:
+							{
+								if ( !(obj is Item) && !(obj is Mobile) )
+								{
+									e.Mobile.SendMessage( "This command does not work on that." );
+									return;
+								}
+
+								break;
+							}
+							case ObjectTypes.Items:
+							{
+								if ( !(obj is Item) )
+								{
+									e.Mobile.SendMessage( "This command only works on items." );
+									return;
+								}
+
+								break;
+							}
+							case ObjectTypes.Mobiles:
+							{
+								if ( !(obj is Mobile) )
+								{
+									e.Mobile.SendMessage( "This command only works on mobiles." );
+									return;
+								}
+
+								break;
+							}
+						}
+
 						string[] oldArgs = e.Arguments;
 						string[] args = new string[oldArgs.Length - 2];
 

@@ -16,6 +16,18 @@ namespace Server.Items
 			set { m_StrengthBonus = value; }
 		}
 
+		[Constructable]
+		public ArcaneFocus()
+			: this( TimeSpan.FromHours( 1 ), 1 )
+		{
+		}
+
+		[Constructable]
+		public ArcaneFocus( int lifeSpan, int strengthBonus )
+			: this( TimeSpan.FromSeconds( lifeSpan ), strengthBonus )
+		{
+		}
+
 		public ArcaneFocus( TimeSpan lifeSpan, int strengthBonus ) : base( 0x3155, lifeSpan )
 		{
 			LootType = LootType.Blessed;

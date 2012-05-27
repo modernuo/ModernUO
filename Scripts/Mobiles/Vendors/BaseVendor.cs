@@ -752,16 +752,14 @@ namespace Server.Mobiles
 
 			if ( dropped is SmallBOD || dropped is LargeBOD )
 			{
-				if( Core.ML )
-				{
-					if( ((PlayerMobile)from).NextBODTurnInTime > DateTime.Now )
-					{
-						SayTo( from, 1079976 );	//
-						return false;
-					}
-				}
+				PlayerMobile pm = from as PlayerMobile;
 
-				if ( !IsValidBulkOrder( dropped ) || !SupportsBulkOrders( from ) )
+				if ( Core.ML && pm != null && pm.NextBODTurnInTime > DateTime.Now )
+				{
+					SayTo( from, 1079976 ); // You'll have to wait a few seconds while I inspect the last order.
+					return false;
+				}
+				else if ( !IsValidBulkOrder( dropped ) )
 				{
 					SayTo( from, 1045130 ); // That order is for some other shopkeeper.
 					return false;
@@ -796,10 +794,8 @@ namespace Server.Mobiles
 
 				OnSuccessfulBulkOrderReceive( from );
 
-				if( Core.ML )
-				{
-					((PlayerMobile)from).NextBODTurnInTime = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
-				}
+				if ( Core.ML && pm != null )
+					pm.NextBODTurnInTime = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
 
 				dropped.Delete();
 				return true;

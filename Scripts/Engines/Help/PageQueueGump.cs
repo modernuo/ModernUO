@@ -637,7 +637,7 @@ namespace Server.Engines.Help
 						m_Entry.AddResponse( state.Mobile, "[Go Sender]" );
 						m.MoveToWorld( m_Entry.Sender.Location, m_Entry.Sender.Map );
 
-						m.SendMessage( "You have been teleported to that pages sender." );
+						m.SendMessage( "You have been teleported to that page's sender." );
 
 						Resend( state );
 					}
@@ -664,7 +664,7 @@ namespace Server.Engines.Help
 							m_Entry.AddResponse( state.Mobile, "[Go Handler]" );
 							m.MoveToWorld( h.Location, h.Map );
 
-							m.SendMessage( "You have been teleported to that pages handler." );
+							m.SendMessage( "You have been teleported to that page's handler." );
 							Resend( state );
 						}
 					}

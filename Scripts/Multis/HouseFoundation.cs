@@ -792,8 +792,6 @@ namespace Server.Multis
 
 			PacketHandlers.RegisterEncoded( 0x1A, true, new OnEncodedPacketReceive( Designer_Revert ) );
 
-			CommandSystem.Register( "DesignInsert", AccessLevel.GameMaster, new CommandEventHandler( DesignInsert_OnCommand ) );
-
 			EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
 		}
 
@@ -1413,101 +1411,6 @@ namespace Server.Multis
 			}
 		}
 
-		[Usage( "DesignInsert" )]
-		[Description( "Inserts multiple targeted items into a customizable houses design." )]
-		public static void DesignInsert_OnCommand( CommandEventArgs e )
-		{
-			e.Mobile.Target = new DesignInsertTarget( null );
-			e.Mobile.SendMessage( "Target an item to insert it into the house design." );
-		}
-
-		private class DesignInsertTarget : Target
-		{
-			private HouseFoundation m_Foundation;
-
-			public DesignInsertTarget( HouseFoundation foundation )
-				: base( -1, false, TargetFlags.None )
-			{
-				m_Foundation = foundation;
-			}
-
-			protected override void OnTargetCancel( Mobile from, TargetCancelType cancelType )
-			{
-				if( m_Foundation != null )
-				{
-					from.SendMessage( "Your changes have been committed. Updating..." );
-
-					m_Foundation.Delta( ItemDelta.Update );
-				}
-			}
-
-			protected override void OnTarget( Mobile from, object obj )
-			{
-				Item item = obj as Item;
-
-				if( item == null )
-				{
-					from.Target = new DesignInsertTarget( m_Foundation );
-					from.SendMessage( "That is not an item. Try again." );
-				}
-				else
-				{
-					HouseFoundation house = BaseHouse.FindHouseAt( item ) as HouseFoundation;
-
-					if( house == null )
-					{
-						from.Target = new DesignInsertTarget( m_Foundation );
-						from.SendMessage( "That item is not inside a customizable house. Try again." );
-					}
-					else if( m_Foundation != null && house != m_Foundation )
-					{
-						from.Target = new DesignInsertTarget( m_Foundation );
-						from.SendMessage( "That item is not inside the current house; all targeted items must reside in the same house. You may cancel this target and repeat the command." );
-					}
-					else
-					{
-						DesignState state = house.CurrentState;
-						MultiComponentList mcl = state.Components;
-
-						int x = item.X - house.X;
-						int y = item.Y - house.Y;
-						int z = item.Z - house.Z;
-
-						if( x >= mcl.Min.X && y >= mcl.Min.Y && x <= mcl.Max.X && y <= mcl.Max.Y )
-						{
-							mcl.Add( item.ItemID, x, y, z );
-							item.Delete();
-
-							state.OnRevised();
-
-							state = house.DesignState;
-							mcl = state.Components;
-
-							if( x >= mcl.Min.X && y >= mcl.Min.Y && x <= mcl.Max.X && y <= mcl.Max.Y )
-							{
-								mcl.Add( item.ItemID, x, y, z );
-								state.OnRevised();
-							}
-
-							from.Target = new DesignInsertTarget( house );
-
-							if( m_Foundation == null )
-								from.SendMessage( "The item has been inserted into the house design. Press ESC when you are finished." );
-							else
-								from.SendMessage( "The item has been inserted into the house design." );
-
-							m_Foundation = house;
-						}
-						else
-						{
-							from.Target = new DesignInsertTarget( m_Foundation );
-							from.SendMessage( "That item is not inside a customizable house. Try again." );
-						}
-					}
-				}
-			}
-		}
-
 		private static void TraceValidity( NetState state, int itemID )
 		{
 			try
@@ -1572,7 +1475,7 @@ namespace Server.Multis
 				/* Client closed his house design window
 				 *  - Remove design context
 				 *  - Notify the client that customization has ended
-				 *  - Refresh client with current visable design state
+				 *  - Refresh client with current visible design state
 				 *  - If a signpost is needed, add it
 				 *  - Eject all from house
 				 *  - Restore relocated entities

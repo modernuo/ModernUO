@@ -26,6 +26,12 @@
 			<entrance x="535" y="995" />
 			<music name="ElfCity" />
 		</region>
+		<region type="DungeonRegion" priority="50" name="Sanctuary">
+			<rect x="6144" y="0" width="255" height="255" />
+			<go x="6174" y="23" z="0" />
+			<music name="Dungeon9" />
+			<entrance x="762" y="1645" />
+		</region>
 		<region type="DungeonRegion" priority="50" name="Painted Caves">
 			<rect x="6240" y="860" width="70" height="60" />
 			<go x="6308" y="892" z="-1" />
@@ -461,12 +467,6 @@
 				<logoutDelay active="false" />
 			</region>
 		</region>
-		<region type="DungeonRegion" priority="50" name="Sanctuary">
-			<rect x="6144" y="0" width="255" height="255" />
-			<go x="6174" y="23" z="0" />
-			<music name="Dungeon9" />
-			<entrance x="762" y="1645" />
-		</region>
 		<region type="DungeonRegion" priority="50" name="Covetous">
 			<rect x="5376" y="1793" width="201" height="255" />
 			<rect x="5576" y="1791" width="57" height="257" />
@@ -771,9 +771,9 @@
 			<music name="ElfCity" />
 		</region>
 		<region type="DungeonRegion" priority="50" name="Sanctuary">
-			<rect x="6157" y="4" width="242" height="251" />
-			<go x="6173" y="23" z="0" />
-			<entrance x="764" y="1646" />
+			<rect x="6144" y="0" width="255" height="255" />
+			<go x="6174" y="23" z="0" />
+			<entrance x="762" y="1645" />
 			<music name="Dungeon9" />
 		</region>
 		<region type="DungeonRegion" priority="50" name="Painted Caves">

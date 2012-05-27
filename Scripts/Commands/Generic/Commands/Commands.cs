@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using Server;
 using Server.Accounting;
+using Server.Engines.Help;
 using Server.Items;
 using Server.Gumps;
 using Server.Mobiles;
@@ -44,7 +45,8 @@ namespace Server.Commands.Generic
 			Register( new DismountCommand() );
 			Register( new AddCommand() );
 			Register( new AddToPackCommand() );
-			Register( new TellCommand() );
+			Register( new TellCommand( true ) );
+			Register( new TellCommand( false ) );
 			Register( new PrivSoundCommand() );
 			Register( new IncreaseCommand() );
 			Register( new OpenBrowserCommand() );
@@ -350,14 +352,28 @@ namespace Server.Commands.Generic
 
 	public class TellCommand : BaseCommand
 	{
-		public TellCommand()
+		private bool m_InGump;
+
+		public TellCommand( bool inGump )
 		{
+			m_InGump = inGump;
+
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ "Tell" };
 			ObjectTypes = ObjectTypes.Mobiles;
-			Usage = "Tell \"text\"";
-			Description = "Sends a system message to a targeted player.";
+
+			if ( inGump )
+			{
+				Commands = new string[]{ "Message", "Msg" };
+				Usage = "Message \"text\"";
+				Description = "Sends a message to a targeted player.";
+			}
+			else
+			{
+				Commands = new string[]{ "Tell" };
+				Usage = "Tell \"text\"";
+				Description = "Sends a system message to a targeted player.";
+			}
 		}
 
 		public override void Execute( CommandEventArgs e, object obj )
@@ -365,9 +381,12 @@ namespace Server.Commands.Generic
 			Mobile mob = (Mobile)obj;
 			Mobile from = e.Mobile;
 
-			CommandLogging.WriteLine( from, "{0} {1} telling {2} \"{3}\"", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( mob ), e.ArgString );
+			CommandLogging.WriteLine( from, "{0} {1} {2} {3} \"{4}\"", from.AccessLevel, CommandLogging.Format( from ), m_InGump ? "messaging" : "telling", CommandLogging.Format( mob ), e.ArgString );
 
-			mob.SendMessage( e.ArgString );
+			if ( m_InGump )
+				mob.SendGump( new MessageSentGump( mob, from.Name, e.ArgString ) );
+			else
+				mob.SendMessage( e.ArgString );
 		}
 	}
 
