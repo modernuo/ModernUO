@@ -34,7 +34,7 @@ namespace Server
 		private StaticTile[][][] m_EmptyStaticBlock;
 
 		private FileStream m_Map;
-		private bool m_MapUOPPacked;
+		private UOPIndex m_MapIndex;
 
 		private FileStream m_Index;
 		private BinaryReader m_IndexReader;
@@ -107,8 +107,7 @@ namespace Server
 
 		public bool MapUOPPacked
 		{
-			get{ return m_MapUOPPacked; }
-			set{ m_MapUOPPacked = value; }
+			get{ return ( m_MapIndex != null ); }
 		}
 
 		public FileStream IndexStream
@@ -174,7 +173,7 @@ namespace Server
 					if ( File.Exists( mapPath ) )
 					{
 						m_Map = new FileStream( mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
-						m_MapUOPPacked = true;
+						m_MapIndex = new UOPIndex( m_Map );
 					}
 				}
 
@@ -487,11 +486,8 @@ namespace Server
 			{
 				int offset = ((x * m_BlockHeight) + y) * 196 + 4;
 
-				if ( m_MapUOPPacked )
-				{
-					int block = offset / 0xC4000;
-					offset += 0xD88 + ( 0xD54 * ( block / 100 ) ) + ( 12 * block );
-				}
+				if ( m_MapIndex != null )
+					offset = m_MapIndex.Lookup( offset );
 
 				m_Map.Seek( offset, SeekOrigin.Begin );
 
@@ -522,7 +518,9 @@ namespace Server
 
 		public void Dispose()
 		{
-			if ( m_Map != null )
+			if ( m_MapIndex != null )
+				m_MapIndex.Close();
+			else if ( m_Map != null )
 				m_Map.Close();
 
 			if ( m_Statics != null )
@@ -649,6 +647,129 @@ namespace Server
 			m_Y = y;
 			m_Z = z;
 			m_Hue = hue;
+		}
+	}
+
+	public class UOPIndex
+	{
+		private class UOPEntry : IComparable<UOPEntry>
+		{
+			public int m_Offset;
+			public int m_Length;
+			public int m_Order;
+
+			public UOPEntry( int offset, int length )
+			{
+				m_Offset = offset;
+				m_Length = length;
+				m_Order = 0;
+			}
+
+			public int CompareTo( UOPEntry other )
+			{
+				return m_Order.CompareTo( other.m_Order );
+			}
+		}
+
+		private class OffsetComparer : IComparer<UOPEntry>
+		{
+			public static readonly IComparer<UOPEntry> Instance = new OffsetComparer();
+
+			public OffsetComparer()
+			{
+			}
+
+			public int Compare( UOPEntry x, UOPEntry y )
+			{
+				return x.m_Offset.CompareTo( y.m_Offset );
+			}
+		}
+
+		private BinaryReader m_Reader;
+		private int m_Length;
+		private int m_Version;
+		private UOPEntry[] m_Entries;
+
+		public int Version
+		{
+			get { return m_Version; }
+		}
+
+		public UOPIndex( FileStream stream )
+		{
+			m_Reader = new BinaryReader( stream );
+			m_Length = (int)stream.Length;
+
+			if ( m_Reader.ReadInt32() != 0x50594D )
+				throw new ArgumentException( "Invalid UOP file." );
+
+			m_Version = m_Reader.ReadInt32();
+			m_Reader.ReadInt32();
+			int nextTable = m_Reader.ReadInt32();
+
+			List<UOPEntry> entries = new List<UOPEntry>();
+
+			do
+			{
+				stream.Seek( nextTable, SeekOrigin.Begin );
+				int count = m_Reader.ReadInt32();
+				nextTable = m_Reader.ReadInt32();
+				m_Reader.ReadInt32();
+
+				for ( int i = 0; i < count; ++i )
+				{
+					int offset = m_Reader.ReadInt32();
+
+					if ( offset == 0 )
+						break;
+
+					m_Reader.ReadInt64();
+					int length = m_Reader.ReadInt32();
+
+					entries.Add( new UOPEntry( offset, length ) );
+
+					stream.Seek( 18, SeekOrigin.Current );
+				}
+			}
+			while ( nextTable != 0 && nextTable < m_Length );
+
+			entries.Sort( OffsetComparer.Instance );
+
+			for ( int i = 0; i < entries.Count; ++i )
+			{
+				stream.Seek( entries[i].m_Offset + 2, SeekOrigin.Begin );
+
+				int dataOffset = m_Reader.ReadInt16();
+				entries[i].m_Offset += 4 + dataOffset;
+
+				stream.Seek( dataOffset, SeekOrigin.Current );
+				entries[i].m_Order = m_Reader.ReadInt32();
+			}
+
+			entries.Sort();
+			m_Entries = entries.ToArray();
+		}
+
+		public int Lookup( int offset )
+		{
+			int total = 0;
+
+			for ( int i = 0; i < m_Entries.Length; ++i )
+			{
+				int newTotal = total + m_Entries[i].m_Length;
+
+				if ( offset < newTotal )
+					return m_Entries[i].m_Offset + ( offset - total );
+
+				total = newTotal;
+			}
+
+			return m_Length;
+		}
+
+		public void Close()
+		{
+			m_Reader.Close();
 		}
 	}
 }
