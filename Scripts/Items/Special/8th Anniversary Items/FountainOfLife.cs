@@ -9,6 +9,8 @@ namespace Server.Items
 	{
 		public static int HealingBonus { get { return 10; } }
 
+		public override int LabelNumber { get { return 1152441; } } // enhanced bandage
+
 		[Constructable]
 		public EnhancedBandage()
 			: this( 1 )
@@ -32,9 +34,9 @@ namespace Server.Items
 			return false;
 		}
 
-		public override void GetProperties( ObjectPropertyList list )
+		public override void AddNameProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
+			base.AddNameProperties( list );
 
 			list.Add( 1075216 ); // these bandages have been enhanced
 		}
@@ -112,7 +114,7 @@ namespace Server.Items
 				bool allow = base.OnDragDrop( from, dropped );
 
 				if( allow )
-					Enhance();
+					Enhance( from );
 
 				return allow;
 			}
@@ -130,7 +132,7 @@ namespace Server.Items
 				bool allow = base.OnDragDropInto( from, item, p );
 
 				if( allow )
-					Enhance();
+					Enhance( from );
 
 				return allow;
 			}
@@ -141,9 +143,9 @@ namespace Server.Items
 			}
 		}
 
-		public override void GetProperties( ObjectPropertyList list )
+		public override void AddNameProperties( ObjectPropertyList list )
 		{
-			base.GetProperties( list );
+			base.AddNameProperties( list );
 
 			list.Add( 1075217, m_Charges.ToString() ); // ~1_val~ charges remaining
 		}
@@ -186,33 +188,41 @@ namespace Server.Items
 		{
 			m_Charges = 10;
 
-			Enhance();
+			Enhance( null );
 		}
 
-		public void Enhance()
+		public void Enhance( Mobile from )
 		{
-			for( int i = Items.Count - 1; i >= 0 && m_Charges > 0; i-- )
+			for( int i = Items.Count - 1; i >= 0 && m_Charges > 0; --i )
 			{
-				Bandage bandage = Items[ i ] as Bandage;
+				if ( Items[i] is EnhancedBandage )
+					continue;
+
+				Bandage bandage = Items[i] as Bandage;
 
 				if( bandage != null )
 				{
+					Item enhanced;
+
 					if( bandage.Amount > m_Charges )
 					{
 						bandage.Amount -= m_Charges;
-						DropItem( new EnhancedBandage( m_Charges ) );
+						enhanced = new EnhancedBandage( m_Charges );
 						m_Charges = 0;
 					}
 					else
 					{
-						DropItem( new EnhancedBandage( bandage.Amount ) );
+						enhanced = new EnhancedBandage( bandage.Amount );
 						m_Charges -= bandage.Amount;
 						bandage.Delete();
 					}
 
-					InvalidateProperties();
+					if ( from == null || !TryDropItem( from, enhanced, false ) ) // try stacking first
+						DropItem( enhanced );
 				}
 			}
+
+			InvalidateProperties();
 		}
 	}
 

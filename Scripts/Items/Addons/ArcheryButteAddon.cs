@@ -248,7 +248,7 @@ namespace Server.Items
 
 			if ( split )
 			{
-				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + (isArrow ? 0 : 4) + area, from.Name );
+				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area, String.Format( "{0}\t{1}", from.Name, isArrow ? "arrow" : "bolt" ) );
 			}
 			else
 			{
