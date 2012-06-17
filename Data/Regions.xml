@@ -33,7 +33,7 @@
 			<entrance x="762" y="1645" />
 		</region>
 		<region type="DungeonRegion" priority="50" name="Painted Caves">
-			<rect x="6240" y="860" width="70" height="60" />
+			<rect x="6240" y="850" width="75" height="70" />
 			<go x="6308" y="892" z="-1" />
 			<entrance x="1716" y="892" />
 			<music name="Dungeon9" />
@@ -777,7 +777,7 @@
 			<music name="Dungeon9" />
 		</region>
 		<region type="DungeonRegion" priority="50" name="Painted Caves">
-			<rect x="6240" y="860" width="70" height="60" />
+			<rect x="6240" y="850" width="75" height="70" />
 			<go x="6308" y="892" z="-1" />
 			<entrance x="1716" y="892" />
 			<music name="Dungeon9" />
@@ -2089,13 +2089,13 @@
 		</region>
 		<!--Mondain's Legacy-->
 		<region type="DungeonRegion" priority="50" name="Bedlam">
-			<rect x="80" y="1590" width="130" height="100" />
+			<rect x="75" y="1590" width="135" height="170" />
 			<go x="117" y="1681" z="0" />
 			<entrance x="2068" y="1372" z="-75" />
 			<music name="GrizzleDungeon" />
 		</region>
 		<region type="DungeonRegion" priority="50" name="Citadel">
-			<rect x="65" y="1865" width="130" height="125" />
+			<rect x="60" y="1855" width="135" height="135" />
 			<go x="106" y="1884" z="0" />
 			<entrance x="1349" y="769" z="14" />
 			<music name="Dungeon9" />

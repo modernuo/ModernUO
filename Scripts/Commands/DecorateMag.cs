@@ -562,7 +562,7 @@ namespace Server.Commands
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Required = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) ) * 0.01;
+							tp.Required = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) ) * 0.1;
 					}
 					else if ( m_Params[i].StartsWith( "Required" ) )
 					{

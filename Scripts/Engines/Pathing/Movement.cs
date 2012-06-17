@@ -345,7 +345,7 @@ namespace Server.Movement
 					{
 						Item item = sector.Items[j];
 
-						if ( ignoreMovableImpassables && item.Movable && item.ItemData.Impassable )
+						if ( ignoreMovableImpassables && item.Movable && ( item.ItemData.Flags & ImpassableSurface ) != 0 )
 							continue;
 
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
@@ -391,7 +391,7 @@ namespace Server.Movement
 					{
 						Item item = sectorStart.Items[i];
 
-						if ( ignoreMovableImpassables && item.Movable && item.ItemData.Impassable )
+						if ( ignoreMovableImpassables && item.Movable && ( item.ItemData.Flags & ImpassableSurface ) != 0 )
 							continue;
 
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
@@ -409,7 +409,7 @@ namespace Server.Movement
 					{
 						Item item = sectorForward.Items[i];
 
-						if ( ignoreMovableImpassables && item.Movable && item.ItemData.Impassable )
+						if ( ignoreMovableImpassables && item.Movable && ( item.ItemData.Flags & ImpassableSurface ) != 0 )
 							continue;
 
 						if ( (item.ItemData.Flags & reqFlags) == 0 )
@@ -423,7 +423,7 @@ namespace Server.Movement
 					{
 						Item item = sectorStart.Items[i];
 
-						if ( ignoreMovableImpassables && item.Movable && item.ItemData.Impassable )
+						if ( ignoreMovableImpassables && item.Movable && ( item.ItemData.Flags & ImpassableSurface ) != 0 )
 							continue;
 
 						if ( (item.ItemData.Flags & reqFlags) == 0 )

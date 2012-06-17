@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Server;
+using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
@@ -150,6 +152,26 @@ namespace Server.Items
 			}
 		}
 
+		public virtual bool CanTeleport( Mobile m )
+		{
+			if ( !m_Creatures && !m.Player )
+			{
+				return false;
+			}
+			else if ( m_CriminalCheck && m.Criminal )
+			{
+				m.SendLocalizedMessage( 1005561, "", 0x22 ); // Thou'rt a criminal and cannot escape so easily.
+				return false;
+			}
+			else if ( m_CombatCheck && SpellHelper.CheckCombat( m ) )
+			{
+				m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
+				return false;
+			}
+
+			return true;
+		}
+
 		public virtual void StartTeleport( Mobile m )
 		{
 			if ( m_Delay == TimeSpan.Zero )
@@ -188,23 +210,8 @@ namespace Server.Items
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			if ( m_Active )
+			if ( m_Active && CanTeleport( m ) )
 			{
-				if ( !m_Creatures && !m.Player )
-				{
-					return true;
-				}
-				else if ( m_CriminalCheck && m.Criminal )
-				{
-					m.SendLocalizedMessage( 1005561, "", 0x22 ); // Thou'rt a criminal and cannot escape so easily.
-					return true;
-				}
-				else if ( m_CombatCheck && SpellHelper.CheckCombat( m ) )
-				{
-					m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
-					return true;
-				}
-
 				StartTeleport( m );
 				return false;
 			}
@@ -322,31 +329,25 @@ namespace Server.Items
 			((Mobile)state).EndAction( this );
 		}
 
-		public override bool OnMoveOver( Mobile m )
+		public override bool CanTeleport( Mobile m )
 		{
-			if ( Active )
+			if ( !base.CanTeleport( m ) )
+				return false;
+
+			Skill sk = m.Skills[m_Skill];
+
+			if ( sk == null || sk.Base < m_Required )
 			{
-				if ( !Creatures && !m.Player )
-					return true;
-
-				Skill sk = m.Skills[m_Skill];
-
-				if ( sk == null || sk.Base < m_Required )
+				if ( m.BeginAction( this ) )
 				{
-					if ( m.BeginAction( this ) )
-					{
-						if ( m_MessageString != null )
-							m.Send( new UnicodeMessage( Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", null, m_MessageString ) );
-						else if ( m_MessageNumber != 0 )
-							m.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null, "" ) );
+					if ( m_MessageString != null )
+						m.Send( new UnicodeMessage( Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", null, m_MessageString ) );
+					else if ( m_MessageNumber != 0 )
+						m.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null, "" ) );
 
-						Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( EndMessageLock ), m );
-					}
-
-					return false;
+					Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( EndMessageLock ), m );
 				}
 
-				StartTeleport( m );
 				return false;
 			}
 
@@ -450,9 +451,6 @@ namespace Server.Items
 			{
 				Mobile m = e.Mobile;
 
-				if ( !Creatures && !m.Player )
-					return;
-
 				if ( !m.InRange( GetWorldLocation(), m_Range ) )
 					return;
 
@@ -463,7 +461,7 @@ namespace Server.Items
 				else if ( m_Substring != null && e.Speech.ToLower().IndexOf( m_Substring.ToLower() ) >= 0 )
 					isMatch = true;
 
-				if ( !isMatch )
+				if ( !isMatch || !CanTeleport( m ) )
 					return;
 
 				e.Handled = true;
@@ -789,8 +787,13 @@ namespace Server.Items
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			if ( Active && ( m.Player || Creatures ) )
+			if ( Active )
+			{
+				if ( !CanTeleport( m ) )
+					return false;
+
 				StartTimer( m );
+			}
 
 			return true;
 		}
@@ -892,6 +895,200 @@ namespace Server.Items
 			int version = reader.ReadInt();
 
 			m_Teleporter = reader.ReadItem<TimeoutTeleporter>();
+		}
+	}
+
+	public class ConditionTeleporter : Teleporter
+	{
+		[Flags]
+		protected enum ConditionFlag
+		{
+			None				= 0x00,
+			DenyMounted			= 0x01,
+			DenyFollowers		= 0x02,
+			DenyPackContents	= 0x04,
+			DenyHolding			= 0x08,
+			DenyEquipment		= 0x10,
+			DenyTransformed		= 0x20
+		}
+
+		private ConditionFlag m_Flags;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool DenyMounted
+		{
+			get{ return GetFlag( ConditionFlag.DenyMounted ); }
+			set{ SetFlag( ConditionFlag.DenyMounted, value ); InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool DenyFollowers
+		{
+			get{ return GetFlag( ConditionFlag.DenyFollowers ); }
+			set{ SetFlag( ConditionFlag.DenyFollowers, value ); InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool DenyPackContents
+		{
+			get{ return GetFlag( ConditionFlag.DenyPackContents ); }
+			set{ SetFlag( ConditionFlag.DenyPackContents, value ); InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool DenyHolding
+		{
+			get{ return GetFlag( ConditionFlag.DenyHolding ); }
+			set{ SetFlag( ConditionFlag.DenyHolding, value ); InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool DenyEquipment
+		{
+			get{ return GetFlag( ConditionFlag.DenyEquipment ); }
+			set{ SetFlag( ConditionFlag.DenyEquipment, value ); InvalidateProperties(); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool DenyTransformed
+		{
+			get{ return GetFlag( ConditionFlag.DenyTransformed ); }
+			set{ SetFlag( ConditionFlag.DenyTransformed, value ); InvalidateProperties(); }
+		}
+
+		public override bool CanTeleport( Mobile m )
+		{
+			if ( !base.CanTeleport( m ) )
+				return false;
+
+			if ( GetFlag( ConditionFlag.DenyMounted ) && m.Mounted )
+			{
+				m.SendLocalizedMessage( 1077252 ); // You must dismount before proceeding.
+				return false;
+			}
+
+			if ( GetFlag( ConditionFlag.DenyFollowers ) && ( m.Followers != 0 || ( m is PlayerMobile && ( (PlayerMobile) m ).AutoStabled.Count != 0 ) ) )
+			{
+				m.SendLocalizedMessage( 1077250 ); // No pets permitted beyond this point.
+				return false;
+			}
+
+			Container pack;
+
+			if ( GetFlag( ConditionFlag.DenyPackContents ) && ( pack = m.Backpack ) != null && pack.TotalItems != 0 )
+			{
+				m.SendMessage( "You must empty your backpack before proceeding." );
+				return false;
+			}
+
+			if ( GetFlag( ConditionFlag.DenyHolding ) && m.Holding != null )
+			{
+				m.SendMessage( "You must let go of what you are holding before proceeding." );
+				return false;
+			}
+
+			if ( GetFlag( ConditionFlag.DenyEquipment ) )
+			{
+				foreach ( Item item in m.Items )
+				{
+					switch ( item.Layer )
+					{
+						case Layer.Hair:
+						case Layer.FacialHair:
+						case Layer.Backpack:
+						case Layer.Mount:
+						case Layer.Bank:
+						{
+							continue; // ignore
+						}
+						default:
+						{
+							m.SendMessage( "You must remove all of your equipment before proceeding." );
+							return false;
+						}
+					}
+				}
+			}
+
+			if ( GetFlag( ConditionFlag.DenyTransformed ) && m.IsBodyMod )
+			{
+				m.SendMessage( "You cannot go there in this form." );
+				return false;
+			}
+
+			return true;
+		}
+
+		[Constructable]
+		public ConditionTeleporter()
+		{
+		}
+
+		public override void GetProperties( ObjectPropertyList list )
+		{
+			base.GetProperties( list );
+
+			StringBuilder props = new StringBuilder();
+
+			if ( GetFlag( ConditionFlag.DenyMounted ) )
+				props.Append( "<BR>Deny Mounted" );
+
+			if ( GetFlag( ConditionFlag.DenyFollowers ) )
+				props.Append( "<BR>Deny Followers" );
+
+			if ( GetFlag( ConditionFlag.DenyPackContents ) )
+				props.Append( "<BR>Deny Pack Contents" );
+
+			if ( GetFlag( ConditionFlag.DenyHolding ) )
+				props.Append( "<BR>Deny Holding" );
+
+			if ( GetFlag( ConditionFlag.DenyEquipment ) )
+				props.Append( "<BR>Deny Equipment" );
+
+			if ( GetFlag( ConditionFlag.DenyTransformed ) )
+				props.Append( "<BR>Deny Transformed" );
+
+			if ( props.Length != 0 )
+			{
+				props.Remove( 0, 4 );
+				list.Add( props.ToString() );
+			}
+		}
+
+		public ConditionTeleporter( Serial serial )
+			: base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+
+			writer.Write( (int) 0 ); // version
+
+			writer.Write( (int) m_Flags );
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+
+			int version = reader.ReadInt();
+
+			m_Flags = (ConditionFlag) reader.ReadInt();
+		}
+
+		protected bool GetFlag( ConditionFlag flag )
+		{
+			return ( ( m_Flags & flag ) != 0 );
+		}
+
+		protected void SetFlag( ConditionFlag flag, bool value )
+		{
+			if ( value )
+				m_Flags |= flag;
+			else
+				m_Flags &= ~flag;
 		}
 	}
 }
