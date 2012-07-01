@@ -164,17 +164,23 @@ namespace Server.Items
 
 		public virtual bool OnFired( Mobile attacker, Mobile defender )
 		{
-			BaseQuiver quiver = attacker.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
-			Container pack = attacker.Backpack;
-
 			if ( attacker.Player )
 			{
-				if ( quiver == null || quiver.LowerAmmoCost == 0 || quiver.LowerAmmoCost > Utility.Random( 100 ) )
+				BaseQuiver quiver = attacker.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
+				Container pack = attacker.Backpack;
+
+				if ( quiver == null || Utility.Random( 100 ) >= quiver.LowerAmmoCost )
 				{
+					// consume ammo
 					if ( quiver != null && quiver.ConsumeTotal( AmmoType, 1 ) )
 						quiver.InvalidateWeight();
 					else if ( pack == null || !pack.ConsumeTotal( AmmoType, 1 ) )
 						return false;
+				}
+				else if ( quiver.FindItemByType( AmmoType ) == null && ( pack == null || pack.FindItemByType( AmmoType ) == null ) )
+				{
+					// lower ammo cost should not work when we have no ammo at all
+					return false;
 				}
 			}
 

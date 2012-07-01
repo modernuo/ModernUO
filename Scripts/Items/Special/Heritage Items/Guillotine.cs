@@ -37,6 +37,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new GuillotineDeed(); } }
 
+		[Constructable]
 		public GuillotineAddon() : base()
 		{
 			AddComponent( new GuillotineComponent(), 0, 0, 0 );
@@ -87,7 +88,7 @@ namespace Server.Items
 
 		public virtual void Activate( AddonComponent c, Mobile from )
 		{
-			if ( c.ItemID == 0x125E )
+			if ( c.ItemID == 0x125E || c.ItemID == 0x1269 || c.ItemID == 0x1260 )
 				c.ItemID = 0x1269;
 			else
 				c.ItemID = 0x1247;
