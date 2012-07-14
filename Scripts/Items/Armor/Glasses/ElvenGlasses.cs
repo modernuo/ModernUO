@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ElvenGlasses : BaseArmor
 	{
-		public override int LabelNumber{ get{ return 1032216; } } //elven glasses
+		public override int LabelNumber{ get{ return 1032216; } } // elven glasses
 
 		public override int BasePhysicalResistance{ get{ return 2; } }
 		public override int BaseFireResistance{ get{ return 4; } }
@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override int ArmorBase{ get{ return 30; } }
 
-		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Leather; } }	
+		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Leather; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
@@ -31,6 +31,7 @@ namespace Server.Items
 		public AosWeaponAttributes WeaponAttributes
 		{
 			get{ return m_AosWeaponAttributes; }
+			set{}
 		}
 
 		[Constructable]
@@ -43,12 +44,12 @@ namespace Server.Items
 		public ElvenGlasses( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void AppendChildNameProperties( ObjectPropertyList list )
 		{
 			base.AppendChildNameProperties( list );
-			
-			int prop;	
+
+			int prop;
 
 			if ( (prop = m_AosWeaponAttributes.HitColdArea) != 0 )
 				list.Add( 1060416, prop.ToString() ); // hit cold area ~1_val~%
@@ -95,7 +96,7 @@ namespace Server.Items
 			if ( (prop = m_AosWeaponAttributes.HitLeechStam) != 0 )
 				list.Add( 1060430, prop.ToString() ); // hit stamina leech ~1_val~%
 		}
-		
+
 		private static void SetSaveFlag( ref SaveFlag flags, SaveFlag toSet, bool setIf )
 		{
 			if ( setIf )
@@ -106,37 +107,37 @@ namespace Server.Items
 		{
 			return ( (flags & toGet) != 0 );
 		}
-		
+
 		private enum SaveFlag
 		{
 			None				= 0x00000000,
-			WeaponAttributes		= 0x00000001,
+			WeaponAttributes	= 0x00000001,
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			
-			writer.Write( (int) 0 ); // version			
-			
+
+			writer.Write( (int) 0 ); // version
+
 			SaveFlag flags = SaveFlag.None;
-			
+
 			SetSaveFlag( ref flags, SaveFlag.WeaponAttributes, !m_AosWeaponAttributes.IsEmpty );
-			
+
 			writer.Write( (int) flags );
-			
+
 			if ( GetSaveFlag( flags, SaveFlag.WeaponAttributes ) )
 				m_AosWeaponAttributes.Serialize( writer );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
-			
+
 			int version = reader.ReadInt();
-			
+
 			SaveFlag flags = (SaveFlag) reader.ReadInt();
-			
+
 			if ( GetSaveFlag( flags, SaveFlag.WeaponAttributes ) )
 				m_AosWeaponAttributes = new AosWeaponAttributes( this, reader );
 			else

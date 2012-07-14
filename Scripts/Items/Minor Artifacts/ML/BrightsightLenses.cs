@@ -6,7 +6,7 @@ namespace Server.Items
 	public class BrightsightLenses : ElvenGlasses
 	{
 		public override int LabelNumber{ get{ return 1075039; } } // Brightsight Lenses
-	
+
 		public override int BasePhysicalResistance{ get{ return 9; } }
 		public override int BaseFireResistance{ get{ return 29; } }
 		public override int BaseColdResistance{ get{ return 7; } }
@@ -20,29 +20,35 @@ namespace Server.Items
 		public BrightsightLenses() : base()
 		{
 			Hue = 0x501;
-		
+
 			Attributes.NightSight = 1;
 			Attributes.RegenMana = 3;
-			
-			WeaponAttributes.SelfRepair = 3;
+
+			ArmorAttributes.SelfRepair = 3;
 		}
 
 		public BrightsightLenses( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			
-			writer.Write( (int) 0 ); // version
+
+			writer.Write( (int) 1 ); // version
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
-			
+
 			int version = reader.ReadInt();
+
+			if ( version < 1 )
+			{
+				WeaponAttributes.SelfRepair = 0;
+				ArmorAttributes.SelfRepair = 3;
+			}
 		}
 	}
 }

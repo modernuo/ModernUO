@@ -223,12 +223,15 @@ namespace Server.Items
 			talisman.m_AosSkillBonuses = new AosSkillBonuses(newItem, m_AosSkillBonuses);
 		}
 
-		public override bool CanEquip(Mobile m)
+		public override bool CanEquip( Mobile from )
 		{
-			if (BlessedFor == null || BlessedFor == m)
-				return base.CanEquip(m);
+			if ( BlessedFor != null && BlessedFor != from )
+			{
+				from.SendLocalizedMessage( 1010437 ); // You are not the owner.
+				return false;
+			}
 
-			return false;
+			return base.CanEquip( from );
 		}
 
 		public override void OnAdded(object parent)
