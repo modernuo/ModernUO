@@ -1186,7 +1186,7 @@ namespace Server.Accounting
 		public int CompareTo( Account other )
 		{
 			if ( other == null )
-				return -1;
+				return 1;
 
 			return m_Username.CompareTo( other.m_Username );
 		}
@@ -1194,7 +1194,7 @@ namespace Server.Accounting
 		public int CompareTo( IAccount other )
 		{
 			if ( other == null )
-				return -1;
+				return 1;
 
 			return m_Username.CompareTo( other.Username );
 		}

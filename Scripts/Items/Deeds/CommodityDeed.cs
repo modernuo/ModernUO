@@ -69,11 +69,6 @@ namespace Server.Items
 					break;
 				}
 			}
-
-			if ( m_Commodity != null && !( m_Commodity is ICommodity ) ) //Apparently, there may be items out there with this.  Funky.
-			{
-				Timer.DelayCall( TimeSpan.Zero, this.Delete );
-			}
 		}
 
 		public CommodityDeed( Item commodity ) : base( 0x14F0 )
@@ -109,32 +104,56 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if (m_Commodity != null && m_Commodity is ICommodity)
+			if ( m_Commodity != null )
 			{
-				list.Add(1060658, "#{0}\t{1}", ((ICommodity)m_Commodity).DescriptionNumber, m_Commodity.Amount); // ~1_val~: ~2_val~
+				string args;
+
+				if ( m_Commodity.Name == null )
+					args = String.Format( "#{0}\t{1}", ( m_Commodity is ICommodity ) ? ((ICommodity)m_Commodity).DescriptionNumber : m_Commodity.LabelNumber, m_Commodity.Amount );
+				else
+					args = String.Format( "{0}\t{1}", m_Commodity.Name, m_Commodity.Amount );
+
+				list.Add( 1060658, args ); // ~1_val~: ~2_val~
 			}
 			else
-				list.Add(1060748); // unfilled
+			{
+				list.Add( 1060748 ); // unfilled
+			}
 		}
 
 		public override void OnSingleClick( Mobile from )
 		{
 			base.OnSingleClick( from );
 
-			if ( m_Commodity != null && m_Commodity is ICommodity )
+			if ( m_Commodity != null )
+			{
+				int label;
+				string labelString;
 
-				from.Send(new MessageLocalizedAffix(
+				if ( m_Commodity.Name == null )
+				{
+					label = ( m_Commodity is ICommodity ) ? ((ICommodity)m_Commodity).DescriptionNumber : m_Commodity.LabelNumber;
+					labelString = null;
+				}
+				else
+				{
+					label = 0;
+					labelString = m_Commodity.Name;
+				}
+
+				from.Send( new MessageLocalizedAffix(
 										Serial,
 										ItemID,
 										MessageType.Label,
 										0x3B2,
 										3,
-										(m_Commodity.Name == null) ? ((ICommodity)m_Commodity).DescriptionNumber : 0,
-										(m_Commodity.Name != null) ? m_Commodity.Name : null,
+										label,
+										labelString,
 										AffixType.Append,
-										String.Format(": {0}", m_Commodity.Amount),
-										null)
+										String.Format( ": {0}", m_Commodity.Amount ),
+										null )
 										);
+			}
 		}
 
 		public override void OnDoubleClick( Mobile from )

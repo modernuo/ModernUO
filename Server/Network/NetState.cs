@@ -42,7 +42,7 @@ namespace Server.Network {
 
 	public delegate void NetStateCreatedCallback( NetState ns );
 
-	public class NetState {
+	public class NetState : IComparable<NetState> {
 		private Socket m_Socket;
 		private IPAddress m_Address;
 		private ByteQueue m_Buffer;
@@ -1222,6 +1222,13 @@ namespace Server.Network {
 
 		public bool SupportsExpansion( ExpansionInfo info ) {
 			return SupportsExpansion( info, true );
+		}
+
+		public int CompareTo( NetState other ) {
+			if ( other == null )
+				return 1;
+
+			return m_ToString.CompareTo( other.m_ToString );
 		}
 	}
 }

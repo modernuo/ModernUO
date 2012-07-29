@@ -80,25 +80,20 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( HarvestSystem == null || Deleted )
+			if ( HarvestSystem == null )
 				return;
 
-			Point3D loc = this.GetWorldLocation();			
+			Point3D loc = GetWorldLocation();
 
 			if ( !from.InLOS( loc ) || !from.InRange( loc, 2 ) )
 			{
 				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3E9, 1019045 ); // I can't reach that
 				return;
 			}
-			else if ( !this.IsAccessibleTo( from ) )
-			{
-				this.PublicOverheadMessage( Server.Network.MessageType.Regular, 0x3E9, 1061637 ); // You are not allowed to access this.
-				return;
-			}
-			
-			if ( !(this.HarvestSystem is Mining) )
+
+			if ( !( HarvestSystem is Mining ) )
 				from.SendLocalizedMessage( 1010018 ); // What do you want to use this item on?
-			
+
 			HarvestSystem.BeginHarvesting( from, this );
 		}
 

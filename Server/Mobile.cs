@@ -170,7 +170,7 @@ namespace Server
 			{
 				if( m_Skill != value )
 				{
-					Skill oldUpdate = (m_Owner == null ? m_Owner.Skills[m_Skill] : null);
+					Skill oldUpdate = (m_Owner != null ? m_Owner.Skills[m_Skill] : null);
 
 					m_Skill = value;
 
@@ -8009,6 +8009,7 @@ namespace Server
 		{
 		}
 
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Owner )]
 		public NetState NetState
 		{
 			get

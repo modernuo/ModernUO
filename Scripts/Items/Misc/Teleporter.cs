@@ -909,7 +909,8 @@ namespace Server.Items
 			DenyPackContents	= 0x04,
 			DenyHolding			= 0x08,
 			DenyEquipment		= 0x10,
-			DenyTransformed		= 0x20
+			DenyTransformed		= 0x20,
+			StaffOnly			= 0x40
 		}
 
 		private ConditionFlag m_Flags;
@@ -956,9 +957,19 @@ namespace Server.Items
 			set{ SetFlag( ConditionFlag.DenyTransformed, value ); InvalidateProperties(); }
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool StaffOnly
+		{
+			get{ return GetFlag( ConditionFlag.StaffOnly ); }
+			set{ SetFlag( ConditionFlag.StaffOnly, value ); InvalidateProperties(); }
+		}
+
 		public override bool CanTeleport( Mobile m )
 		{
 			if ( !base.CanTeleport( m ) )
+				return false;
+
+			if ( GetFlag( ConditionFlag.StaffOnly ) && m.AccessLevel < AccessLevel.Counselor )
 				return false;
 
 			if ( GetFlag( ConditionFlag.DenyMounted ) && m.Mounted )
@@ -1047,6 +1058,9 @@ namespace Server.Items
 
 			if ( GetFlag( ConditionFlag.DenyTransformed ) )
 				props.Append( "<BR>Deny Transformed" );
+
+			if ( GetFlag( ConditionFlag.StaffOnly ) )
+				props.Append( "<BR>Staff Only" );
 
 			if ( props.Length != 0 )
 			{

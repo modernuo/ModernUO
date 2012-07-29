@@ -48,6 +48,8 @@ namespace Server.Factions
 
 	public class SBFactionOre : SBInfo
 	{
+		private static readonly object[] m_FixedSizeArgs = { true };
+
 		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
 		private IShopSellInfo m_SellInfo = new InternalSellInfo();
 
@@ -63,7 +65,7 @@ namespace Server.Factions
 			public InternalBuyInfo()
 			{
 				for ( int i = 0; i < 5; ++i )
-					Add( new GenericBuyInfo( typeof( IronOre ), 16, 20, 0x19B8, 0 ) );
+					Add( new GenericBuyInfo( typeof( IronOre ), 16, 20, 0x19B8, 0, m_FixedSizeArgs ) );
 			}
 		}
 
