@@ -127,32 +127,14 @@ namespace Server.Items
 
 			if ( m_Commodity != null )
 			{
-				int label;
-				string labelString;
+				string args;
 
 				if ( m_Commodity.Name == null )
-				{
-					label = ( m_Commodity is ICommodity ) ? ((ICommodity)m_Commodity).DescriptionNumber : m_Commodity.LabelNumber;
-					labelString = null;
-				}
+					args = String.Format( "#{0}\t{1}", ( m_Commodity is ICommodity ) ? ((ICommodity)m_Commodity).DescriptionNumber : m_Commodity.LabelNumber, m_Commodity.Amount );
 				else
-				{
-					label = 0;
-					labelString = m_Commodity.Name;
-				}
+					args = String.Format( "{0}\t{1}", m_Commodity.Name, m_Commodity.Amount );
 
-				from.Send( new MessageLocalizedAffix(
-										Serial,
-										ItemID,
-										MessageType.Label,
-										0x3B2,
-										3,
-										label,
-										labelString,
-										AffixType.Append,
-										String.Format( ": {0}", m_Commodity.Amount ),
-										null )
-										);
+				LabelTo( from, 1060658, args ); // ~1_val~: ~2_val~
 			}
 		}
 
