@@ -721,7 +721,10 @@ namespace Server
 					int offset = m_Reader.ReadInt32();
 
 					if ( offset == 0 )
-						break;
+					{
+						stream.Seek( 30, SeekOrigin.Current );
+						continue;
+					}
 
 					m_Reader.ReadInt64();
 					int length = m_Reader.ReadInt32();
