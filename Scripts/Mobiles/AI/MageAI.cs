@@ -605,7 +605,7 @@ namespace Server.Mobiles
 				}
 			}
 
-			if( SmartAI && !m_Mobile.StunReady && m_Mobile.Skills[ SkillName.Wrestling ].Value >= 80.0 && m_Mobile.Skills[ SkillName.Anatomy ].Value >= 80.0 )
+			if( !Core.AOS && SmartAI && !m_Mobile.StunReady && m_Mobile.Skills[ SkillName.Wrestling ].Value >= 80.0 && m_Mobile.Skills[ SkillName.Anatomy ].Value >= 80.0 )
 				EventSink.InvokeStunRequest( new StunRequestEventArgs( m_Mobile ) );
 
 			if( !m_Mobile.InRange( c, m_Mobile.RangePerception ) )
