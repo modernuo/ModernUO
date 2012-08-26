@@ -14,7 +14,7 @@ namespace Server.Items
 		[Constructable]
 		public FishingPole() : base( 0x0DC0 )
 		{
-			Layer = Layer.OneHanded;
+			Layer = Layer.TwoHanded;
 			Weight = 8.0;
 		}
 
@@ -43,7 +43,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -51,6 +51,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version < 1 && Layer == Layer.OneHanded )
+				Layer = Layer.TwoHanded;
 		}
 	}
 }
