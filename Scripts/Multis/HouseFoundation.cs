@@ -305,7 +305,7 @@ namespace Server.Multis
 					{
 						int mod = (itemID - 0x2D63)/2%2;
 						DoorFacing facing = ( ( mod == 0 ) ? DoorFacing.SouthCCW : DoorFacing.WestCCW );
-						
+
 						int type = (itemID - 0x2D63) / 4;
 
 						door = new GenericHouseDoor( facing, 0x2D63 + 4*type + mod*2, 0xEA, 0xF1, false );
@@ -769,7 +769,7 @@ namespace Server.Multis
 
 		public bool IsHiddenToCustomizer( Item item )
 		{
-			return (item == m_Signpost || item == m_SignHanger || item == Sign || (m_Fixtures != null && m_Fixtures.Contains( item )));
+			return ( item == m_Signpost || item == m_SignHanger || item == Sign || IsFixture( item ) );
 		}
 
 		public static void Initialize()
@@ -1123,24 +1123,43 @@ namespace Server.Multis
 			return Verification.IsItemValid( itemID );
 		}
 
+		public const bool AllowStairSectioning = true;
+
+		/* Stair block IDs
+		 * (sorted ascending)
+		 */
 		private static int[] m_BlockIDs = new int[]
 			{
 				0x3EE, 0x709, 0x71E, 0x721,
 				0x738, 0x750, 0x76C, 0x788,
-				0x7A3, 0x7BA, 0x35D2, 0x3609
+				0x7A3, 0x7BA, 0x35D2, 0x3609,
+				0x4317, 0x4318, 0x4B07, 0x7807
 			};
 
+		/* Stair sequence IDs
+		 * (sorted ascending)
+		 * Use this for stairs in the proper N,W,S,E sequence
+		 */
 		private static int[] m_StairSeqs = new int[]
 			{
 				0x3EF, 0x70A, 0x722, 0x739,
 				0x751, 0x76D, 0x789, 0x7A4
 			};
 
+		/* Other stair IDs
+		 * Listed in order: north, west, south, east
+		 * Use this for stairs not in the proper sequence
+		 */
 		private static int[] m_StairIDs = new int[]
 			{
 				0x71F, 0x736, 0x737, 0x749,
 				0x35D4, 0x35D3, 0x35D6, 0x35D5,
 				0x360B, 0x360A, 0x360D, 0x360C,
+				0x4360, 0x435E, 0x435F, 0x4361,
+				0x435C, 0x435A, 0x435B, 0x435D,
+				0x4364, 0x4362, 0x4363, 0x4365,
+				0x4B05, 0x4B04, 0x4B34, 0x4B33,
+				0x7809, 0x7808, 0x780A, 0x780B,
 				0x7BB, 0x7BC
 			};
 
@@ -1152,8 +1171,6 @@ namespace Server.Multis
 				delta = (m_BlockIDs[i] - id);
 
 			return (delta == 0);
-
-			//if ID matches one of the the items in m_BlockIDs, return true
 		}
 
 		public static bool IsStair( int id, ref int dir )
@@ -1170,15 +1187,16 @@ namespace Server.Multis
 				return true;
 			}
 
-			delta = -1;
-
-			for( int i = 0; ( delta < 0 || delta > 0 ) && i < m_StairIDs.Length; ++i )
+			for( int i = 0; i < m_StairIDs.Length; ++i )
 			{
-				delta = (m_StairIDs[i] - id);
-				dir = i % 4;
+				if( m_StairIDs[i] == id )
+				{
+					dir = i % 4;
+					return true;
+				}
 			}
 
-			return (delta == 0);
+			return false;
 		}
 
 		public static bool DeleteStairs( MultiComponentList mcl, int id, int x, int y, int z )
@@ -1212,6 +1230,9 @@ namespace Server.Multis
 
 			if( !IsStair( id, ref dir ) )
 				return false;
+
+			if ( AllowStairSectioning )
+				return true; // skip deletion
 
 			int height = ((z - 7) % 20) / 5;
 
@@ -1324,12 +1345,21 @@ namespace Server.Multis
 					return;
 				}
 
-				mcl.Remove( itemID, x, y, z );
-				
-				int dir = 0;
+				bool fixState = false;
 
-				if( IsStair( itemID, ref dir ) || IsStairBlock( itemID ) )
-					design.SendGeneralInfoTo( state );
+				// Remove the component
+				if( AllowStairSectioning )
+				{
+					if( DeleteStairs( mcl, itemID, x, y, z ) )
+						fixState = true; // The client removes the entire set of stairs locally, resend state
+
+					mcl.Remove( itemID, x, y, z );
+				}
+				else
+				{
+					if( !DeleteStairs( mcl, itemID, x, y, z ) )
+						mcl.Remove( itemID, x, y, z );
+				}
 
 				// If needed, replace removed component with a dirt tile
 				if( ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1 )
@@ -1350,6 +1380,10 @@ namespace Server.Multis
 
 				// Update revision
 				design.OnRevised();
+
+				// Resend design state
+				if( fixState )
+					design.SendDetailedInfoTo( state );
 			}
 		}
 
@@ -1521,7 +1555,7 @@ namespace Server.Multis
 				 *  - Update design context with new level
 				 *  - Teleport mobile to new level
 				 *  - Update client
-				 * 
+				 *
 				 */
 
 				// Read data detailing the target level
@@ -1959,7 +1993,7 @@ namespace Server.Multis
 
 			DesignContext d;
 			m_Table.TryGetValue( from, out d );
-			
+
 			return d;
 		}
 
@@ -2007,10 +2041,10 @@ namespace Server.Multis
 
 			if( foundation.Signpost != null )
 				state.Send( foundation.Signpost.RemovePacket );
-			
+
 			if( foundation.SignHanger != null )
 				state.Send( foundation.SignHanger.RemovePacket );
-			
+
 			if( foundation.Sign != null )
 				state.Send( foundation.Sign.RemovePacket );
 		}
@@ -2048,10 +2082,10 @@ namespace Server.Multis
 
 			if( context.Foundation.Signpost != null )
 				context.Foundation.Signpost.SendInfoTo( state );
-			
+
 			if( context.Foundation.SignHanger != null )
 				context.Foundation.SignHanger.SendInfoTo( state );
-			
+
 			if( context.Foundation.Sign != null )
 				context.Foundation.Sign.SendInfoTo( state );
 		}
