@@ -1123,7 +1123,7 @@ namespace Server.Multis
 			return Verification.IsItemValid( itemID );
 		}
 
-		public const bool AllowStairSectioning = true;
+		public static readonly bool AllowStairSectioning = true;
 
 		/* Stair block IDs
 		 * (sorted ascending)
