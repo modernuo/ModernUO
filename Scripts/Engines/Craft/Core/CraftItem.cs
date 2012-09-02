@@ -30,14 +30,10 @@ namespace Server.Engines.Craft
 
 		private string m_NameString;
 		private int m_NameNumber;
-
-		private int m_ItemHue;
-
+		
 		private int m_Mana;
 		private int m_Hits;
 		private int m_Stam;
-
-		private BeverageType m_RequiredBeverage;
 
 		private bool m_UseAllRes;
 
@@ -54,6 +50,7 @@ namespace Server.Engines.Craft
 			get { return m_ForceNonExceptional; }
 			set { m_ForceNonExceptional = value; }
 		}
+	
 
 		private Expansion m_RequiredExpansion;
 
@@ -136,14 +133,6 @@ namespace Server.Engines.Craft
 
 			m_GroupNameNumber = groupName;
 			m_NameNumber = name;
-
-			m_RequiredBeverage = BeverageType.Water;
-		}
-
-		public BeverageType RequiredBeverage
-		{
-			get { return m_RequiredBeverage; }
-			set { m_RequiredBeverage = value; }
 		}
 
 		public void AddRes( Type type, TextDefinition name, int amount )
@@ -211,16 +200,10 @@ namespace Server.Engines.Craft
 			get { return m_NeedMill; }
 			set { m_NeedMill = value; }
 		}
-
+		
 		public Type ItemType
 		{
 			get { return m_Type; }
-		}
-
-		public int ItemHue
-		{
-			get { return m_ItemHue; }
-			set { m_ItemHue = value; }
 		}
 
 		public string GroupNameString
@@ -506,7 +489,7 @@ namespace Server.Engines.Craft
 					}
 					else
 					{
-						if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != m_RequiredBeverage )
+						if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != BeverageType.Water )
 							continue;
 
 						totals[i] += hq.Quantity;
@@ -543,7 +526,7 @@ namespace Server.Engines.Craft
 					}
 					else
 					{
-						if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != m_RequiredBeverage )
+						if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != BeverageType.Water )
 							continue;
 
 						int theirAmount = hq.Quantity;
@@ -581,7 +564,7 @@ namespace Server.Engines.Craft
 				}
 				else
 				{
-					if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != m_RequiredBeverage )
+					if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != BeverageType.Water )
 						continue;
 
 					amount += hq.Quantity;
