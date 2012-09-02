@@ -179,6 +179,12 @@ namespace Server.Engines.Craft
 		}
 
 
+		public void SetItemHue( int index, int hue )
+		{
+			CraftItem craftItem = m_CraftItems.GetAt( index );
+			craftItem.ItemHue = hue;
+		}
+
 		public void SetManaReq( int index, int mana )
 		{
 			CraftItem craftItem = m_CraftItems.GetAt( index );
@@ -213,6 +219,12 @@ namespace Server.Engines.Craft
 		{
 			CraftItem craftItem = m_CraftItems.GetAt( index );
 			craftItem.NeedOven = needOven;
+		}
+
+		public void SetBeverageType( int index, BeverageType requiredBeverage )
+		{
+			CraftItem craftItem = m_CraftItems.GetAt( index );
+			craftItem.RequiredBeverage = requiredBeverage;
 		}
 
 		public void SetNeedMill( int index, bool needMill )

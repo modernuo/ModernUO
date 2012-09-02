@@ -97,6 +97,20 @@ namespace Server.Engines.Craft
 
 			index = AddCraft( typeof( CookieMix ), 1044495, 1024159, 0.0, 100.0, typeof( JarHoney ), 1044472, 1, 1044253 );
 			AddRes( index, typeof( SweetDough ), 1044475, 1, 1044253 );
+
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( CocoaButter ), 1044495, 1079998, 0.0, 100.0, typeof( CocoaPulp ), 1080530, 1, 1044253 );
+				SetItemHue( index, 0x457 );
+				SetNeededExpansion( index, Expansion.ML );
+				SetNeedOven( index, true );
+
+				index = AddCraft( typeof( CocoaLiquor ), 1044495, 1079999, 0.0, 100.0, typeof( CocoaPulp ), 1080530, 1, 1044253 );
+				AddRes( index, typeof( EmptyPewterBowl ), 1025629, 1, 1044253 );
+				SetItemHue( index, 0x46A );
+				SetNeededExpansion( index, Expansion.ML );
+				SetNeedOven( index, true );
+			}
 			/* End Ingredients */
 
 			/* Begin Preparations */
@@ -242,6 +256,33 @@ namespace Server.Engines.Craft
 			SetNeedHeat( index, true );
 			SetUseAllRes( index, true );
 			/* End Barbecue */
+
+			/* Begin Chocolatiering */
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( DarkChocolate ), 1080001, 1079994, 15.0, 100.0, typeof( SackOfSugar ), 1079997, 1, 1044253 );
+				AddRes( index, typeof( CocoaButter ), 1079998, 1, 1044253 );
+				AddRes( index, typeof( CocoaLiquor ), 1079999, 1, 1044253 );
+				SetItemHue( index, 0x465 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( MilkChocolate ), 1080001, 1079995, 32.5, 107.5, typeof( SackOfSugar ), 1079997, 1, 1044253 );
+				AddRes( index, typeof( CocoaButter ), 1079998, 1, 1044253 );
+				AddRes( index, typeof( CocoaLiquor ), 1079999, 1, 1044253 );
+				AddRes( index, typeof( BaseBeverage ), 1022544, 1, 1044253 );
+				SetBeverageType( index, BeverageType.Milk );
+				SetItemHue( index, 0x461 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( WhiteChocolate ), 1080001, 1079996, 52.5, 127.5, typeof( SackOfSugar ), 1079997, 1, 1044253 );
+				AddRes( index, typeof( CocoaButter ), 1079998, 1, 1044253 );
+				AddRes( index, typeof( Vanilla ), 1080000, 1, 1044253 );
+				AddRes( index, typeof( BaseBeverage ), 1022544, 1, 1044253 );
+				SetBeverageType( index, BeverageType.Milk );
+				SetItemHue( index, 0x47E );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+			/* End Chocolatiering */
 		}
 	}
 }

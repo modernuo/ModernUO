@@ -122,7 +122,7 @@ namespace Server.Engines.Craft
 		{
 			Type type = m_CraftItem.ItemType;
 
-			AddItem( 20, 50, CraftItem.ItemIDOf( type ) );
+			AddItem( 20, 50, CraftItem.ItemIDOf( type ), m_CraftItem.ItemHue );
 
 			if ( m_CraftItem.IsMarkable( type ) )
 			{
