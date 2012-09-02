@@ -4310,12 +4310,26 @@ namespace Server.Mobiles
 					treasureLevel = 0;
 			}
 
-			if ( !Summoned && !NoKillAwards && !IsBonded && treasureLevel >= 0 )
+			if ( !Summoned && !NoKillAwards && !IsBonded )
 			{
-				if ( m_Paragon && Paragon.ChestChance > Utility.RandomDouble() )
-					PackItem( new ParagonChest( this.Name, treasureLevel ) );
-				else if ( (Map == Map.Felucca || Map == Map.Trammel) && TreasureMap.LootChance >= Utility.RandomDouble() )
-					PackItem( new TreasureMap( treasureLevel, Map ) );
+				if ( treasureLevel >= 0 )
+				{
+					if ( m_Paragon && Paragon.ChestChance > Utility.RandomDouble() )
+						PackItem( new ParagonChest( this.Name, treasureLevel ) );
+					else if ( (Map == Map.Felucca || Map == Map.Trammel) && TreasureMap.LootChance >= Utility.RandomDouble() )
+						PackItem( new TreasureMap( treasureLevel, Map ) );
+				}
+
+				if ( m_Paragon && Paragon.ChocolateIngredientChance > Utility.RandomDouble() )
+				{
+					switch ( Utility.Random( 4 ) )
+					{
+						case 0: PackItem( new CocoaButter() ); break;
+						case 1: PackItem( new CocoaLiquor() ); break;
+						case 2: PackItem( new SackOfSugar() ); break;
+						case 3: PackItem( new Vanilla() ); break;
+					}
+				}
 			}
 
 			if ( !Summoned && !NoKillAwards && !m_HasGeneratedLoot )
