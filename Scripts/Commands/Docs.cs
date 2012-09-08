@@ -1396,7 +1396,7 @@ namespace Server.Commands
 									html.Write( "&quot;" );
 								else if( c == '\'' )
 									html.Write( "&apos;" );
-								else if( c >= 0x20 && c < 0x80 )
+								else if( c >= 0x20 && c < 0x7F )
 									html.Write( c );
 								else
 									html.Write( "&#{0};", (int)c );

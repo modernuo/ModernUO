@@ -35,6 +35,20 @@ namespace Server.Items
 			BaseHarvestTool.AddContextMenuEntries( from, this, list, Fishing.System );
 		}
 
+		public override bool CheckConflictingLayer( Mobile m, Item item, Layer layer )
+		{
+			if ( base.CheckConflictingLayer( m, item, layer ) )
+				return true;
+
+			if ( layer == Layer.OneHanded )
+			{
+				m.SendLocalizedMessage( 500214 ); // You already have something in both hands.
+				return true;
+			}
+
+			return false;
+		}
+
 		public FishingPole( Serial serial ) : base( serial )
 		{
 		}

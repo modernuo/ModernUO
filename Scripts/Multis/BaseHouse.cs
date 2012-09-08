@@ -1208,6 +1208,11 @@ namespace Server.Multis
 
 		private static List<BaseHouse> m_AllHouses = new List<BaseHouse>();
 
+		public static List<BaseHouse> AllHouses
+		{
+			get { return m_AllHouses; }
+		}
+
 		public BaseHouse( int multiID, Mobile owner, int MaxLockDown, int MaxSecure ) : base( multiID )
 		{
 			m_AllHouses.Add( this );

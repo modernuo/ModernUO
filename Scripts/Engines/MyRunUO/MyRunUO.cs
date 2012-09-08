@@ -305,7 +305,7 @@ namespace Server.Engines.MyRunUO
 			{
 				char c = input[i];
 
-				if ( c < 0x20 || c > 0x80 )
+				if ( c < 0x20 || c >= 0x7F )
 				{
 					AppendCharEntity( input, i, ref sb, c );
 				}

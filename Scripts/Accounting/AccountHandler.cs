@@ -121,7 +121,7 @@ namespace Server.Misc
 			bool isSafe = true;
 
 			for ( int i = 0; isSafe && i < pass.Length; ++i )
-				isSafe = ( pass[i] >= 0x20 && pass[i] < 0x80 );
+				isSafe = ( pass[i] >= 0x20 && pass[i] < 0x7F );
 
 			if ( !isSafe )
 			{
@@ -275,10 +275,10 @@ namespace Server.Misc
 			bool isSafe = !( un.StartsWith( " " ) || un.EndsWith( " " ) || un.EndsWith( "." ) );
 
 			for ( int i = 0; isSafe && i < un.Length; ++i )
-				isSafe = ( un[i] >= 0x20 && un[i] < 0x80 && !IsForbiddenChar( un[i] ) );
+				isSafe = ( un[i] >= 0x20 && un[i] < 0x7F && !IsForbiddenChar( un[i] ) );
 
 			for ( int i = 0; isSafe && i < pw.Length; ++i )
-				isSafe = ( pw[i] >= 0x20 && pw[i] < 0x80 );
+				isSafe = ( pw[i] >= 0x20 && pw[i] < 0x7F );
 
 			if ( !isSafe )
 				return null;

@@ -1131,7 +1131,7 @@ namespace Server
 						bytes.Append( "  " );
 					}
 
-					if ( c >= 0x20 && c < 0x80 )
+					if ( c >= 0x20 && c < 0x7F )
 					{
 						chars.Append( (char)c );
 					}
@@ -1170,7 +1170,7 @@ namespace Server
 							bytes.Append( "  " );
 						}
 
-						if ( c >= 0x20 && c < 0x80 )
+						if ( c >= 0x20 && c < 0x7F )
 						{
 							chars.Append( (char)c );
 						}
