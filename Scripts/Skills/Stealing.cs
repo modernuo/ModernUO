@@ -59,7 +59,7 @@ namespace Server.SkillHandlers
 				{
 					m_Thief.SendLocalizedMessage( 1005584 ); // Both hands must be free to steal.
 				}
-				else if ( root is Mobile && ((Mobile)root).Player && IsInnocentTo( m_Thief, (Mobile)root ) && !IsInGuild( m_Thief ) )
+				else if ( root is Mobile && ((Mobile)root).Player && !IsInGuild( m_Thief ) )
 				{
 					m_Thief.SendLocalizedMessage( 1005596 ); // You must be in the thieves guild to steal from other players.
 				}
