@@ -720,6 +720,10 @@ namespace Server.Engines.CannedEvil
 
 				if( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
 					return new Point3D( x, y, z );
+
+				/* try @ platform Z if map z fails */
+				else if( Map.CanSpawnMobile( new Point2D( x, y ), m_Platform.Location.Z ) )
+					return new Point3D( x, y, m_Platform.Location.Z );
 			}
 
 			return Location;

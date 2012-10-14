@@ -279,6 +279,9 @@ namespace Server.Items
 		{
 			BaseCreature pet = this.Pet;
 
+			if ( pet == null )
+				return;
+
 			Charges--;
 
 			if ( pet.IsStabled )
