@@ -46,7 +46,8 @@ namespace Server.Items
 		OphidianKnight,
 		OphidianMage,
 		DreadHorn,
-		Minotaur
+		Minotaur,
+		BlackCat
 	}
 
 	public class MonsterStatuetteInfo
@@ -111,7 +112,8 @@ namespace Server.Items
 				/* OphidianKnight */		new MonsterStatuetteInfo( 1029642, 0x25aa, 634 ),
 				/* OphidianMage */		new MonsterStatuetteInfo( 1029643, 0x25ab, 639 ),
 				/* DreadHorn */			new MonsterStatuetteInfo( 1031651, 0x2D83, 0xA8 ),
-				/* Minotaur */			new MonsterStatuetteInfo( 1031657, 0x2D89, 0x596 )
+				/* Minotaur */			new MonsterStatuetteInfo( 1031657, 0x2D89, 0x596 ),
+				/* Black Cat */			new MonsterStatuetteInfo( 1096928, 0x4688, 0x69 )
 			};
 
 		public static MonsterStatuetteInfo GetInfo( MonsterStatuetteType type )
