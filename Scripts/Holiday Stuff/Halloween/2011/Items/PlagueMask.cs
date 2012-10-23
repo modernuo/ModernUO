@@ -4,17 +4,17 @@ using Server.Misc;
 
 namespace Server.Items
 {
-	public class RuinedTapestry : Lantern
+	public class PlagueMask : Lantern
 	{
 		public override string DefaultName { get { return "Plague Mask"; } }
 
 		[Constructable]
-		public RuinedTapestry()
+		public PlagueMask()
 			: base( Utility.RandomBool() ? 0x4A8E : 0x4A8F )
 		{
 		}
 
-		public RuinedTapestry( Serial serial )
+		public PlagueMask( Serial serial )
 			: base( serial )
 		{
 		}
