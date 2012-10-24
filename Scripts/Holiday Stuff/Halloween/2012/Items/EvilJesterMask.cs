@@ -3,17 +3,17 @@ using Server;
 
 namespace Server.Items.Holiday
 {
-	public class PaintedPlagueMask : BasePaintedMask
+	public class PaintedEvilJesterMask : BasePaintedMask
 	{
-		public override string MaskName { get { return "Plague Mask"; } }
+		public override string MaskName { get { return "Evil Jester Mask"; } }
 
 		[Constructable]
-		public PaintedPlagueMask()
-			: base( 0x4A8E )
+		public PaintedEvilJesterMask()
+			: base( 0x4BA5 )
 		{
 		}
 
-		public PaintedPlagueMask( Serial serial )
+		public PaintedEvilJesterMask( Serial serial )
 			: base( serial )
 		{
 		}

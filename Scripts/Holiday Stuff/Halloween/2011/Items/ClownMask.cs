@@ -1,20 +1,19 @@
 ﻿using System;
 using Server;
-using Server.Misc;
 
-namespace Server.Items
+namespace Server.Items.Holiday
 {
-	public class ClownMask : Item
+	public class PaintedEvilClownMask : BasePaintedMask
 	{
-		public override string DefaultName { get { return "Clown Mask"; } }
+		public override string MaskName { get { return "Evil Clown Mask"; } }
 
 		[Constructable]
-		public ClownMask()
-			: base( Utility.RandomBool() ? 0x4A8E : 0x4A8F )
+		public PaintedEvilClownMask( )
+			: base( 0x4a90 )
 		{
 		}
 
-		public ClownMask( Serial serial )
+		public PaintedEvilClownMask( Serial serial )
 			: base( serial )
 		{
 		}

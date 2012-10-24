@@ -1,20 +1,19 @@
 ﻿using System;
 using Server;
-using Server.Misc;
 
-namespace Server.Items
+namespace Server.Items.Holiday
 {
-	public class DaemonMask : Item
+	public class PaintedDaemonMask : BasePaintedMask
 	{
-		public override string DefaultName { get { return "Daemon Mask"; } }
+		public override string MaskName { get { return "Daemon Mask"; } }
 
 		[Constructable]
-		public DaemonMask()
-			: base( Utility.RandomBool() ? 0x4A92: 0x4A93 )
+		public PaintedDaemonMask()
+			: base( 0x4a92 )
 		{
 		}
 
-		public DaemonMask( Serial serial )
+		public PaintedDaemonMask( Serial serial )
 			: base( serial )
 		{
 		}
@@ -34,3 +33,4 @@ namespace Server.Items
 		}
 	}
 }
+

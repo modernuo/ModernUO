@@ -3,17 +3,17 @@ using Server;
 
 namespace Server.Items.Holiday
 {
-	public class PaintedPlagueMask : BasePaintedMask
+	public class PaintedPorcelainMask : BasePaintedMask
 	{
-		public override string MaskName { get { return "Plague Mask"; } }
+		public override string MaskName { get { return "Porcelain Mask"; } }
 
 		[Constructable]
-		public PaintedPlagueMask()
-			: base( 0x4A8E )
+		public PaintedPorcelainMask()
+			: base( 0x4BA7 )
 		{
 		}
 
-		public PaintedPlagueMask( Serial serial )
+		public PaintedPorcelainMask( Serial serial )
 			: base( serial )
 		{
 		}
@@ -22,7 +22,7 @@ namespace Server.Items.Holiday
 		{
 			base.Serialize( writer );
 
-			writer.Write( ( int )0 ); // version
+			writer.Write( ( int )1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
