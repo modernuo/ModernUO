@@ -130,6 +130,40 @@ namespace Server.Engines.Events
 		}
 	}
 
+	public class PlayerBones : Container
+	{
+		public PlayerBones( String name )
+			: base( Utility.RandomMinMax( 0x0ECA, 0x0ED2 ) )
+		{
+			Name = String.Format( "{0}\'s bones", name );
+
+			switch( Utility.Random( 10 ) )
+			{
+				case 0: Hue = 0xa09; break;
+				case 1: Hue = 0xa93; break;
+				case 2: Hue = 0xa47; break;
+				default: break;
+			}
+		}
+
+		public PlayerBones( Serial serial )
+			: base( serial )
+		{
+		}
+
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+			writer.Write( ( int )0 );
+		}
+
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+			int version = reader.ReadInt();
+		}
+	}
+
 	[CorpseName( "a rotting corpse" )]
 	public class ZombieSkeleton : BaseCreature
 	{
@@ -140,40 +174,6 @@ namespace Server.Engines.Events
 		public ZombieSkeleton()
 			: this( null )
 		{
-		}
-
-		public class PlayerBones : Container
-		{
-			public PlayerBones( String name )
-				: base( Utility.RandomMinMax( 0x0ECA, 0x0ED2 ) )
-			{
-				Name = String.Format( "{0}\'s bones", name );
-
-				switch( Utility.Random( 10 ) )
-				{
-					case 0: Hue = 0xa09; break;
-					case 1: Hue = 0xa93; break;
-					case 2: Hue = 0xa47; break;
-					default: break;
-				}
-			}
-
-			public PlayerBones( Serial serial )
-				: base( serial )
-			{
-			}
-
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
-				writer.Write( ( int )0 );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
-				int version = reader.ReadInt();
-			}
 		}
 
 		public ZombieSkeleton( PlayerMobile player )
