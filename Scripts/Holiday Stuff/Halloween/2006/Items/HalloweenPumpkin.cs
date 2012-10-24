@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		private readonly string[] staff =
 		{
-			"Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios"
+			"Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios", "Zippy"
 		};
 
 		[Constructable]
@@ -65,7 +65,7 @@ namespace Server.Items
 				}
 				else
 				{
-					Name = String.Format( "{0}'s Jack-O-antern", staff[ Utility.Random( staff.Length ) ] );
+						Name = String.Format( "{0}'s Jack-O-antern", staff[ Utility.Random( staff.Length ) ] );
 				}
 			}
 		}

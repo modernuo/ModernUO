@@ -29,9 +29,9 @@ namespace Server.Items.Holiday
 				  "Ryan",
 				  "Mark",
 				  "Krrios",
-				  "EOS",
+				  "Zippy",
 				  "Athena",
-				  "EoS",
+				  "Eos",
 				  "Xavier"
 		};
 

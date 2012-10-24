@@ -1,6 +1,7 @@
 ﻿using System;
 using Server;
 using Server.Items;
+using Server.Items.Holiday;
 using Server.Mobiles;
 
 namespace Server.Mobiles
@@ -59,7 +60,17 @@ namespace Server.Mobiles
 		{
 			if( Utility.RandomDouble() < .05 )
 			{
-				PackItem( new TwilightLantern() );
+				//PackItem( new TwilightLantern() );  OLD Halloween
+
+				switch( Utility.Random( 50 ) )
+				{
+					case 0: PackItem( new PaintedEvilClownMask() ); break;
+					case 1: PackItem( new PaintedDaemonMask() ); break;
+					case 2: PackItem( new PaintedPlagueMask() ); break;
+					case 3: PackItem( new PaintedEvilJesterMask() ); break;
+					case 4: PackItem( new PaintedPorcelainMask() ); break;
+					default: break;
+				}
 			}
 
 			PackItem( new WrappedCandy() );
