@@ -24,11 +24,6 @@ namespace Server.Items
 			ItemID = ( Utility.RandomBool() ) ? 0x09F0 : 0x09AD;
 		}
 
-		public override int ComputeItemID()
-		{
-			return base.ComputeItemID();
-		}
-
 		public MurkyMilk( Serial serial )
 			: base( serial )
 		{

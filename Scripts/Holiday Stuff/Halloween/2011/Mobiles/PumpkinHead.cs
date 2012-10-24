@@ -62,7 +62,7 @@ namespace Server.Mobiles
 			{
 				//PackItem( new TwilightLantern() );  OLD Halloween
 
-				switch( Utility.Random( 50 ) )
+				switch( Utility.Random( 5 ) )
 				{
 					case 0: PackItem( new PaintedEvilClownMask() ); break;
 					case 1: PackItem( new PaintedDaemonMask() ); break;

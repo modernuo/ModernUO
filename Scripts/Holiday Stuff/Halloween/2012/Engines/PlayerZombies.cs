@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Server.Engines.Events
 {
-	public class HalloweenHauntings : Item
+	public class HalloweenHauntings
 	{
 		public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get { return m_ReAnimated; } set { m_ReAnimated = value; } }
 
@@ -41,11 +41,16 @@ namespace Server.Engines.Events
 
 		public static void Initialize()
 		{
+			m_TotalZombieLimit = 200;
+			m_DeathQueueLimit = 200;
+			m_QueueDelaySeconds = 2;
+			m_QueueClearIntervalSeconds = 1800;
+
 			DateTime today = DateTime.Now;
 			TimeSpan tick = TimeSpan.FromSeconds( m_QueueDelaySeconds );
 			TimeSpan clear = TimeSpan.FromSeconds( m_QueueClearIntervalSeconds );
 
-			m_Start = new DateTime( 2011, 10, 25 );
+			m_Start = new DateTime( 2012, 10, 25 );
 			m_Finish = new DateTime( 2012, 11, 15 );
 
 			m_ReAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
@@ -59,32 +64,20 @@ namespace Server.Engines.Events
 
 				EventSink.PlayerDeath += new PlayerDeathEventHandler( EventSink_PlayerDeath );
 			}
-
-			m_TotalZombieLimit = 200;
-			m_DeathQueueLimit = 200;
-			m_QueueDelaySeconds = 2;
-			m_QueueClearIntervalSeconds = 1800;
-		}
-
-		public static void Command_Stop( Mobile mobile )
-		{
-			m_Timer.Stop();
-		}
-
-		public static void Command_Start( Mobile mobile )
-		{
-			m_Timer.Start();
 		}
 
 		public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
 		{
 			if( e.Mobile != null && !e.Mobile.Deleted ) /* not sure .. better safe than sorry? */
 			{
-				PlayerMobile player = e.Mobile as PlayerMobile;
-
-				if( m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
+				if( e.Mobile is PlayerMobile )
 				{
-					m_DeathQueue.Add( player );
+					PlayerMobile player = e.Mobile as PlayerMobile;
+
+					if( m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
+					{
+						m_DeathQueue.Add( player );
+					}
 				}
 			}
 		}
@@ -231,7 +224,7 @@ namespace Server.Engines.Events
 				case 2: PackItem( new Torso() ); break;
 				case 3: PackItem( new Bone() ); break;
 				case 4: PackItem( new RibCage() ); break;
-				case 5: PackItem( new PlayerBones( m_DeadPlayer.Name ) ); break;
+				case 5: if( m_DeadPlayer != null && !m_DeadPlayer.Deleted ) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
 				default: break;
 			}
 
