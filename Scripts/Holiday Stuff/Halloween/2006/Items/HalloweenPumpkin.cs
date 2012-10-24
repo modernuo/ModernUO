@@ -43,7 +43,7 @@ namespace Server.Items
 		{
 			base.OnItemLifted( from, item );
 
-			if( item != null && !item.Deleted && item == this )
+			if( item != null && !item.Deleted && item == this && Name == null )
 			{
 				if( Utility.RandomBool() )
 				{
