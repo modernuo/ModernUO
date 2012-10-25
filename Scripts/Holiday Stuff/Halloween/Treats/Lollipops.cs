@@ -3,6 +3,7 @@ using Server;
 
 namespace Server.Items
 {
+	[TypeAlias( "Server.Items.Lollipop" )]
 	public class Lollipops : CandyCane
 	{
 		[Constructable]
