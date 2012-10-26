@@ -2,6 +2,7 @@
 using Server.Items;
 using Server.Mobiles;
 using System.Collections.Generic;
+using Server.Events.Halloween;
 
 namespace Server.Engines.Events
 {
@@ -11,9 +12,6 @@ namespace Server.Engines.Events
 
 		private static bool m_Running;
 		private static bool m_AutoStart;
-
-		private static DateTime m_Start;
-		private static DateTime m_Finish;
 
 		private static Timer m_Timer;
 		private static Timer m_ClearTimer;
@@ -50,13 +48,10 @@ namespace Server.Engines.Events
 			TimeSpan tick = TimeSpan.FromSeconds( m_QueueDelaySeconds );
 			TimeSpan clear = TimeSpan.FromSeconds( m_QueueClearIntervalSeconds );
 
-			m_Start = new DateTime( 2012, 10, 25 );
-			m_Finish = new DateTime( 2012, 11, 15 );
-
 			m_ReAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
 			m_DeathQueue = new List<PlayerMobile>();
 
-			if( today >= m_Start && today <= m_Finish )
+			if( today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween )
 			{
 				m_Timer = Timer.DelayCall( tick, tick, new TimerCallback( Timer_Callback ) );
 
@@ -93,7 +88,7 @@ namespace Server.Engines.Events
 		{
 			PlayerMobile player = null;
 
-			if( DateTime.Now < m_Finish )
+			if( DateTime.Now < HolidaySettings.FinishHalloween )
 			{
 				for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
 				{

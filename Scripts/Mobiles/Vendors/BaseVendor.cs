@@ -32,6 +32,8 @@ namespace Server.Mobiles
 
 		private DateTime m_LastRestock;
 
+		private DateTime m_NextTrickOrTreat;
+
 		public override bool CanTeach { get { return true; } }
 
 		public override bool BardImmune { get { return true; } }
@@ -45,6 +47,8 @@ namespace Server.Mobiles
 		public virtual NpcGuild NpcGuild { get { return NpcGuild.None; } }
 
 		public virtual bool IsInvulnerable { get { return true; } }
+
+		public virtual DateTime NextTrickOrTreat { get { return m_NextTrickOrTreat; } set { m_NextTrickOrTreat = value; } }
 
 		public override bool ShowFameTitle { get { return false; } }
 
@@ -551,7 +555,7 @@ namespace Server.Mobiles
 			IBuyItemInfo[] buyInfo = this.GetBuyInfo();
 			IShopSellInfo[] sellInfo = this.GetSellInfo();
 
-            list = new List<BuyItemState>( buyInfo.Length );
+			list = new List<BuyItemState>( buyInfo.Length );
 			Container cont = this.BuyPack;
 
 			List<ObjectPropertyList> opls = null;
@@ -818,7 +822,7 @@ namespace Server.Mobiles
 			return null;
 		}
 
-        private void ProcessSinglePurchase( BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy, ref int controlSlots, ref bool fullPurchase, ref int totalCost )
+		private void ProcessSinglePurchase( BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy, ref int controlSlots, ref bool fullPurchase, ref int totalCost )
 		{
 			int amount = buy.Amount;
 
@@ -915,7 +919,7 @@ namespace Server.Mobiles
 			}
 		}
 
-        public virtual bool OnBuyItems( Mobile buyer, List<BuyItemResponse> list )
+		public virtual bool OnBuyItems( Mobile buyer, List<BuyItemResponse> list )
 		{
 			if ( !IsActiveSeller )
 				return false;
@@ -934,7 +938,7 @@ namespace Server.Mobiles
 			IBuyItemInfo[] buyInfo = this.GetBuyInfo();
 			IShopSellInfo[] info = GetSellInfo();
 			int totalCost = 0;
-            List<BuyItemResponse> validBuy = new List<BuyItemResponse>( list.Count );
+			List<BuyItemResponse> validBuy = new List<BuyItemResponse>( list.Count );
 			Container cont;
 			bool bought = false;
 			bool fromBank = false;
@@ -1145,7 +1149,7 @@ namespace Server.Mobiles
 			return true;
 		}
 
-        public virtual bool OnSellItems( Mobile seller, List<SellItemResponse> list )
+		public virtual bool OnSellItems( Mobile seller, List<SellItemResponse> list )
 		{
 			if ( !IsActiveBuyer )
 				return false;
@@ -1295,12 +1299,12 @@ namespace Server.Mobiles
 
 			writer.Write( (int)1 ); // version
 
-            List<SBInfo> sbInfos = this.SBInfos;
+			List<SBInfo> sbInfos = this.SBInfos;
 
 			for ( int i = 0; sbInfos != null && i < sbInfos.Count; ++i )
 			{
 				SBInfo sbInfo = sbInfos[i];
-                List<GenericBuyInfo> buyInfo = sbInfo.BuyInfo;
+				List<GenericBuyInfo> buyInfo = sbInfo.BuyInfo;
 
 				for ( int j = 0; buyInfo != null && j < buyInfo.Count; ++j )
 				{
@@ -1359,7 +1363,7 @@ namespace Server.Mobiles
 								if ( sbInfoIndex >= 0 && sbInfoIndex < sbInfos.Count )
 								{
 									SBInfo sbInfo = sbInfos[sbInfoIndex];
-                                    List<GenericBuyInfo> buyInfo = sbInfo.BuyInfo;
+									List<GenericBuyInfo> buyInfo = sbInfo.BuyInfo;
 
 									if ( buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count )
 									{
