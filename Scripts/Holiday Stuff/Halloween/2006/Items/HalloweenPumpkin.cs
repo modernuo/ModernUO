@@ -57,7 +57,7 @@ namespace Server.Items
 					}
 					else
 					{
-						Name = String.Format( "{0}'s Jack-O-antern", staff[ Utility.Random( staff.Length ) ] );
+						Name = String.Format( "{0}'s Jack-O-Lantern", staff[ Utility.Random( staff.Length ) ] );
 					}
 				}
 			}
