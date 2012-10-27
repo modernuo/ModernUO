@@ -35,6 +35,15 @@ namespace Server.Engines.Events
 			new Rectangle2D(712,1104,30,22), // Yew
 			new Rectangle2D(5824,1464,22,6), // Fire Dungeon
 			new Rectangle2D(5224,3655,14,5), // T2A
+
+			new Rectangle2D(1272,3712,20,30), // Jhelom
+			new Rectangle2D(1337,1444,52,48), // Britain
+			new Rectangle2D(2424,1098,28,20), // Trinsic
+			new Rectangle2D(2728,840,54,54), // Vesper
+			new Rectangle2D(4528,1314,28,20), // Moonglow
+			new Rectangle2D(712,1104,22,30), // Yew
+			new Rectangle2D(5824,1464,6,22), // Fire Dungeon
+			new Rectangle2D(5224,3655,5,14), // T2A
 		};
 
 		public static void Initialize()
@@ -103,9 +112,15 @@ namespace Server.Engines.Events
 				if( player != null && !player.Deleted && m_ReAnimated.Count < m_TotalZombieLimit )
 				{
 					Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
+					Point3D home = ( GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map ));
 
-					m_ReAnimated.Add( player, new ZombieSkeleton( player ) );
-					m_ReAnimated[ player ].MoveToWorld( GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map ), map );
+					ZombieSkeleton zombieskel = new ZombieSkeleton( player );
+
+					m_ReAnimated.Add( player, zombieskel );
+					zombieskel.Home = home;
+					zombieskel.RangeHome = 10;
+
+					zombieskel.MoveToWorld( home , map );
 
 					m_DeathQueue.Remove( player );
 				}
