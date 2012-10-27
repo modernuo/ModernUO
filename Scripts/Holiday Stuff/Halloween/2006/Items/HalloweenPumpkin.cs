@@ -45,29 +45,27 @@ namespace Server.Items
 
 			if( item != null && !item.Deleted && item == this && Name == null )
 			{
-				if( Utility.RandomBool() )
+				if( ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4695 || ItemID == 0x4695 )
 				{
-					int[][] coord = { new int[] { -3, -3 }, new int[] { -3, 0 }, new int[] { 0, 3 }, new int[] { 3, 3 } };
-
-					for( int i=0; i < 4; i++ )
+					if( Utility.RandomBool() )
 					{
-						Point3D loc = new Point3D( from.X + coord[ i ][ 0 ], from.Y + coord[ i ][ 1 ], Map.GetAverageZ( from.X, from.Y ) );
+						BaseCreature pumpkinhead = new PumpkinHead();
 
-						if( Map.CanSpawnMobile( loc ) )
-						{
-							BaseCreature pumpkinhead = new PumpkinHead();
+						pumpkinhead.MoveToWorld( Location, from.Map );
 
-							pumpkinhead.FocusMob = from;
-							pumpkinhead.MoveToWorld( loc, from.Map );
-						}
+						Delete();
 					}
-					Delete();
-				}
-				else
-				{
+					else
+					{
 						Name = String.Format( "{0}'s Jack-O-antern", staff[ Utility.Random( staff.Length ) ] );
+					}
 				}
 			}
+		}
+
+		public HalloweenPumpkin( Serial serial )
+			: base( serial )
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -75,11 +73,6 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.Write( ( int )0 ); // version
-		}
-
-		public HalloweenPumpkin( Serial serial )
-			: base( serial)
-		{
 		}
 
 		public override void Deserialize( GenericReader reader )
