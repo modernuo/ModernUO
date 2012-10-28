@@ -4,7 +4,7 @@ using Server.Misc;
 
 namespace Server.Items
 {
-	public class PumpkinScarecrow : Lantern
+	public class PumpkinScarecrow : Item
 	{
 		public override int LabelNumber { get { return 1096947; } }
 
