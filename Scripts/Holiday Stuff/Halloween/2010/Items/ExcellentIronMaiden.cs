@@ -9,7 +9,7 @@ namespace Server.Items
 
 		[Constructable]
 		public ExcellentIronMaiden()
-			: this( 0x3f15 )
+			: base( 0x3f15 )
 		{
 		}
 
