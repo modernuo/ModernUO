@@ -45,7 +45,7 @@ namespace Server.Items
 
 			if( item != null && !item.Deleted && item == this && Name == null )
 			{
-				if( ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4695 || ItemID == 0x4695 )
+				if( ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4695 || ItemID == 0x4698 )
 				{
 					if( Utility.RandomBool() )
 					{
