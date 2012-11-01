@@ -112,17 +112,21 @@ namespace Server.Engines.Events
 				if( player != null && !player.Deleted && m_ReAnimated.Count < m_TotalZombieLimit )
 				{
 					Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
+
 					Point3D home = ( GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map ));
 
-					ZombieSkeleton zombieskel = new ZombieSkeleton( player );
+					if( map.CanSpawnMobile( home ) )
+					{
+						ZombieSkeleton zombieskel = new ZombieSkeleton( player );
 
-					m_ReAnimated.Add( player, zombieskel );
-					zombieskel.Home = home;
-					zombieskel.RangeHome = 10;
+						m_ReAnimated.Add( player, zombieskel );
+						zombieskel.Home = home;
+						zombieskel.RangeHome = 10;
 
-					zombieskel.MoveToWorld( home , map );
+						zombieskel.MoveToWorld( home, map );
 
-					m_DeathQueue.Remove( player );
+						m_DeathQueue.Remove( player );
+					}
 				}
 			}
 			else
