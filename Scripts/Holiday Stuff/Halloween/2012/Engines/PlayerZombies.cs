@@ -144,12 +144,13 @@ namespace Server.Engines.Events
 		}
 	}
 
-	public class PlayerBones : Container
+	public class PlayerBones : BaseContainer
 	{
+		[Constructable]
 		public PlayerBones( String name )
 			: base( Utility.RandomMinMax( 0x0ECA, 0x0ED2 ) )
 		{
-			Name = String.Format( "{0}\'s bones", name );
+			Name = String.Format( "{0}'s bones", name );
 
 			switch( Utility.Random( 10 ) )
 			{
@@ -195,7 +196,7 @@ namespace Server.Engines.Events
 		{
 			m_DeadPlayer = player;
 
-			Name = ( player != null ) ? String.Format( "{0}\'s {1}", player.Name, m_Name ) : m_Name;
+			Name = ( player != null ) ? String.Format( "{0}'s {1}", player.Name, m_Name ) : m_Name;
 
 			Body = 0x93;
 			BaseSoundID = 0x1c3;

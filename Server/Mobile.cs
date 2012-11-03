@@ -4417,6 +4417,9 @@ namespace Server
 			{
 				state.Send( new LiftRej( reject ) );
 
+				if( item.Deleted )
+					return;
+
 				if( item.Parent is Item ) {
 					if ( state.ContainerGridLines )
 						state.Send( new ContainerContentUpdate6017( item ) );

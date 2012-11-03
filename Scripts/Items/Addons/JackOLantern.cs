@@ -19,7 +19,7 @@ namespace Server.Items
 			AddonComponent ac = new AddonComponent( itemID );
 
 			ac.Hue = hue;
-			ac.Name = "jack-o-latern";
+			ac.Name = "jack-o-lantern";
 
 			return ac;
 		}
@@ -61,7 +61,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (byte) 1 ); // version
+			writer.Write( (byte) 2 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -80,6 +80,20 @@ namespace Server.Items
 
 						if ( ac != null && ac.Hue == 2118 )
 							ac.Hue = 1161;
+					}
+				} );
+			}
+
+			if ( version <= 1 )
+			{
+				Timer.DelayCall( TimeSpan.Zero, delegate()
+				{
+					for ( int i = 0; i < Components.Count; ++i )
+					{
+						AddonComponent ac = Components[i] as AddonComponent;
+
+						if ( ac != null )
+							ac.Name = "jack-o-lantern";
 					}
 				} );
 			}

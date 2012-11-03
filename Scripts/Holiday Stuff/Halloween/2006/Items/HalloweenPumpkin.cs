@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class HalloweenPumpkin : Item
 	{
-		private readonly string[] staff =
+		private static readonly string[] m_Staff =
 		{
 			"Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios", "Zippy"
 		};
@@ -16,51 +16,50 @@ namespace Server.Items
 			: base()
 		{
 			Weight = Utility.RandomMinMax( 3, 20 );
-			ItemID = ( Utility.RandomDouble() <= .02 ) ? 0x4694 + Utility.Random( 2 ) : Utility.RandomList( 0xc6a, 0xc6b, 0xc6c );
+			ItemID = ( Utility.RandomDouble() <= .02 ) ? Utility.RandomList( 0x4694, 0x4698 ) : Utility.RandomList( 0xc6a, 0xc6b, 0xc6c );
 		}
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			this.ItemID = GetItemID( ItemID );
+			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
+				return;
 
-			base.OnDoubleClick( from );
-		}
+			bool douse = false;
 
-		private int GetItemID( int itemid )
-		{
-			switch( ItemID )
+			switch ( ItemID )
 			{
-				case 0x4694: itemid = 0x4691; break;
-				case 0x4691: itemid = 0x4694; break;
-				case 0x4698: itemid = 0x4695; break;
-				case 0x4695: itemid = 0x4698; break;
+				case 0x4694: ItemID = 0x4691; break;
+				case 0x4691: ItemID = 0x4694; douse = true; break;
+				case 0x4698: ItemID = 0x4695; break;
+				case 0x4695: ItemID = 0x4698; douse = true; break;
+				default: return;
 			}
 
-			return itemid;
+			from.SendLocalizedMessage( douse ? 1113988 : 1113987 ); // You extinguish/light the Jack-O-Lantern
+			Effects.PlaySound( GetWorldLocation(), Map, douse ? 0x3be : 0x47 );
 		}
 
-		public override void OnItemLifted( Mobile from, Item item )
+		private void AssignRandomName()
 		{
-			base.OnItemLifted( from, item );
+			Name = String.Format( "{0}'s Jack-O-Lantern", m_Staff[ Utility.Random( m_Staff.Length ) ] );
+		}
 
-			if( item != null && !item.Deleted && item == this && Name == null )
+		public override bool OnDragLift( Mobile from )
+		{
+			if ( Name == null && ( ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4698 || ItemID == 0x4695 ) )
 			{
-				if( ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4695 || ItemID == 0x4698 )
+				if ( Utility.RandomBool() )
 				{
-					if( Utility.RandomBool() )
-					{
-						BaseCreature pumpkinhead = new PumpkinHead();
+					new PumpkinHead().MoveToWorld( GetWorldLocation(), Map );
 
-						pumpkinhead.MoveToWorld( Location, from.Map );
-
-						Delete();
-					}
-					else
-					{
-						Name = String.Format( "{0}'s Jack-O-Lantern", staff[ Utility.Random( staff.Length ) ] );
-					}
+					Delete();
+					return false;
 				}
+
+				AssignRandomName();
 			}
+
+			return true;
 		}
 
 		public HalloweenPumpkin( Serial serial )
@@ -72,7 +71,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( ( int )0 ); // version
+			writer.Write( (int)1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -80,6 +79,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
+
+			if ( version == 0 && Name == null && ItemID == 0x4698 )
+				AssignRandomName();
 		}
 	}
 }
