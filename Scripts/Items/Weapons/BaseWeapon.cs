@@ -2113,7 +2113,22 @@ namespace Server.Items
 
 			GetBaseDamageRange( attacker, out min, out max );
 
-			return Utility.RandomMinMax( min, max );
+			int damage = Utility.RandomMinMax( min, max );
+
+			if ( Core.AOS ) return damage;
+
+			/* Apply damage level offset
+			 * : Regular : 0
+			 * : Ruin    : 1
+			 * : Might   : 3
+			 * : Force   : 5
+			 * : Power   : 7
+			 * : Vanq    : 9
+			 */
+			if ( m_DamageLevel != WeaponDamageLevel.Regular )
+				damage += (2 * (int)m_DamageLevel) - 1;
+
+			return damage;
 		}
 
 		public virtual double GetBonus( double value, double scalar, double threshold, double offset )
@@ -2269,72 +2284,48 @@ namespace Server.Items
 			 * :  50.0 = unchanged
 			 * : 100.0 = 50% bonus
 			 */
-			double tacticsBonus = (attacker.Skills[SkillName.Tactics].Value - 50.0) / 100.0;
+			damage += ( damage * ( ( attacker.Skills[SkillName.Tactics].Value - 50.0 ) / 100.0 ) );
+
 
 			/* Compute strength modifier
 			 * : 1% bonus for every 5 strength
 			 */
-			double strBonus = (attacker.Str / 5.0) / 100.0;
+			double modifiers = ( attacker.Str / 5.0 ) / 100.0;
 
 			/* Compute anatomy modifier
 			 * : 1% bonus for every 5 points of anatomy
 			 * : +10% bonus at Grandmaster or higher
 			 */
 			double anatomyValue = attacker.Skills[SkillName.Anatomy].Value;
-			double anatomyBonus = (anatomyValue / 5.0) / 100.0;
+			modifiers += ( ( anatomyValue / 5.0 ) / 100.0 );
 
 			if ( anatomyValue >= 100.0 )
-				anatomyBonus += 0.1;
+				modifiers += 0.1;
 
 			/* Compute lumberjacking bonus
 			 * : 1% bonus for every 5 points of lumberjacking
 			 * : +10% bonus at Grandmaster or higher
 			 */
-			double lumberBonus;
-
 			if ( Type == WeaponType.Axe )
 			{
 				double lumberValue = attacker.Skills[SkillName.Lumberjacking].Value;
 
-				lumberBonus = (lumberValue / 5.0) / 100.0;
+				modifiers += ( ( lumberValue / 5.0 ) / 100.0 );
 
 				if ( lumberValue >= 100.0 )
-					lumberBonus += 0.1;
-			}
-			else
-			{
-				lumberBonus = 0.0;
+					modifiers += 0.1;
 			}
 
 			// New quality bonus:
-			double qualityBonus = ((int)m_Quality - 1) * 0.2;
+			if ( m_Quality != WeaponQuality.Regular )
+				modifiers += ( ( (int)m_Quality - 1 ) * 0.2 );
+
+			// Virtual damage bonus:
+			if ( VirtualDamageBonus != 0 )
+				modifiers += ( VirtualDamageBonus / 100.0 );
 
 			// Apply bonuses
-			damage += (damage * tacticsBonus) + (damage * strBonus) + (damage * anatomyBonus) + (damage * lumberBonus) + (damage * qualityBonus) + ((damage * VirtualDamageBonus) / 100);
-
-			// Old quality bonus:
-#if false
-			/* Apply quality offset
-			 * : Low         : -4
-			 * : Regular     :  0
-			 * : Exceptional : +4
-			 */
-			damage += ((int)m_Quality - 1) * 4.0;
-#endif
-
-			/* Apply damage level offset
-			 * : Regular : 0
-			 * : Ruin    : 1
-			 * : Might   : 3
-			 * : Force   : 5
-			 * : Power   : 7
-			 * : Vanq    : 9
-			 */
-			if ( m_DamageLevel != WeaponDamageLevel.Regular )
-				damage += (2.0 * (int)m_DamageLevel) - 1.0;
-
-			// Halve the computed damage and return
-			damage /= 2.0;
+			damage += ( damage * modifiers );
 
 			return ScaleDamageByDurability( (int)damage );
 		}

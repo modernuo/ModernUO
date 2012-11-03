@@ -104,7 +104,7 @@ namespace Server.Spells
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
 
@@ -176,7 +176,7 @@ namespace Server.Spells
 
 			return false;
 		}
-		
+
 		public static bool CanRevealCaster( Mobile m )
 		{
 			if ( m is BaseCreature )

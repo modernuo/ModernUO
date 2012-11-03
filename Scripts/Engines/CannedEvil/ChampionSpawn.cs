@@ -386,7 +386,7 @@ namespace Server.Engines.CannedEvil
 					case 4: Type = ChampionSpawnType.Arachnid; break;
 				}
 			}
-			
+
 			m_HasBeenAdvanced = false;
 
 			Start();

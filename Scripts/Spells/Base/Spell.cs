@@ -412,7 +412,7 @@ namespace Server.Spells
 
 			if ( m_State == SpellState.Casting )
 			{
-				if( !firstCircle && !Core.AOS && this is MagerySpell &&  ((MagerySpell)this).Circle == SpellCircle.First )
+				if( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
 				m_State = SpellState.None;
@@ -433,7 +433,7 @@ namespace Server.Spells
 			}
 			else if ( m_State == SpellState.Sequencing )
 			{
-				if( !firstCircle && !Core.AOS && this is MagerySpell &&  ((MagerySpell)this).Circle == SpellCircle.First )
+				if( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
 				m_State = SpellState.None;
@@ -558,9 +558,15 @@ namespace Server.Spells
 						WeaponAbility.ClearCurrentAbility( m_Caster );
 
 					m_CastTimer = new CastTimer( this, castDelay );
-					m_CastTimer.Start();
+					//m_CastTimer.Start();
 
 					OnBeginCast();
+
+					if ( castDelay > TimeSpan.Zero ) {
+						m_CastTimer.Start();
+					} else {
+						m_CastTimer.Tick();
+					}
 
 					return true;
 				}
@@ -658,8 +664,6 @@ namespace Server.Spells
 
 			return TimeSpan.FromSeconds( (double)delay / CastRecoveryPerSecond );
 		}
-
-
 
 		public abstract TimeSpan CastDelayBase { get; }
 
@@ -898,12 +902,17 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_Spell.m_State == SpellState.Casting && m_Spell.m_Caster.Spell == m_Spell )
+				if ( m_Spell == null || m_Spell.m_Caster == null )
+				{
+					return;
+				}
+				else if ( m_Spell.m_State == SpellState.Casting && m_Spell.m_Caster.Spell == m_Spell )
 				{
 					m_Spell.m_State = SpellState.Sequencing;
 					m_Spell.m_CastTimer = null;
 					m_Spell.m_Caster.OnSpellCast( m_Spell );
-					m_Spell.m_Caster.Region.OnSpellCast( m_Spell.m_Caster, m_Spell );
+					if ( m_Spell.m_Caster.Region != null )
+						m_Spell.m_Caster.Region.OnSpellCast( m_Spell.m_Caster, m_Spell );
 					m_Spell.m_Caster.NextSpellTime = DateTime.Now + m_Spell.GetCastRecovery();// Spell.NextSpellDelay;
 
 					Target originalTarget = m_Spell.m_Caster.Target;
@@ -915,6 +924,10 @@ namespace Server.Spells
 
 					m_Spell.m_CastTimer = null;
 				}
+			}
+
+			public void Tick() {
+				OnTick();
 			}
 		}
 	}

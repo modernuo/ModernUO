@@ -128,7 +128,7 @@ namespace Server.Mobiles
 				from.SayTo( from, 1010095 ); // This must be on your person to use.
 				return false;
 			}
-			else if( m_IsRewardItem && !Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( from, this, null ) )
+			else if( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 			{
 				// CheckIsUsableBy sends the message
 				return false;
@@ -171,6 +171,16 @@ namespace Server.Mobiles
 		{
 			if( Validate( from ) )
 				new EtherealSpell( this, from ).Cast();
+		}
+
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			if ( m_IsDonationItem )
+				LabelTo( from, "Donation Ethereal" );
+			else
+				LabelTo( from, "Veteran Reward" );
 		}
 
 		public override void Serialize( GenericWriter writer )
