@@ -56,7 +56,8 @@ namespace Server.Items
 		{
 			switch ( version )
 			{
-				case 2: // HouseRaffleStone version changes
+				case 3: // HouseRaffleStone version changes
+				case 2:
 				case 1:
 				case 0:
 				{
@@ -101,7 +102,7 @@ namespace Server.Items
 		private Mobile m_Winner;
 		private HouseRaffleDeed m_Deed;
 
-		private bool m_Active;
+		private HouseRaffleState m_State;
 		private DateTime m_Started;
 		private TimeSpan m_Duration;
 		private HouseRaffleExpireAction m_ExpireAction;
@@ -109,28 +110,15 @@ namespace Server.Items
 
 		private List<RaffleEntry> m_Entries;
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
 		public HouseRaffleState CurrentState
 		{
-			get
-			{
-				if ( !m_Active && m_Winner != null )
-					return HouseRaffleState.Completed;
-				else if ( m_Active )
-					return HouseRaffleState.Active;
-				else
-					return HouseRaffleState.Inactive;
-			}
-		}
-
-		public bool Active
-		{
-			get { return m_Active; }
+			get { return m_State; }
 			set
 			{
-				if ( m_Active != value )
+				if ( m_State != value )
 				{
-					if ( value )
+					if ( value == HouseRaffleState.Active )
 					{
 						m_Entries.Clear();
 						m_Winner = null;
@@ -138,7 +126,7 @@ namespace Server.Items
 						m_Started = DateTime.Now;
 					}
 
-					m_Active = value;
+					m_State = value;
 					InvalidateProperties();
 				}
 			}
@@ -198,12 +186,12 @@ namespace Server.Items
 			set { m_Duration = value; InvalidateProperties(); }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
+		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsExpired
 		{
 			get
 			{
-				if ( CurrentState != HouseRaffleState.Completed )
+				if ( m_State != HouseRaffleState.Completed )
 					return false;
 
 				return ( m_Started + m_Duration + ExpirationTime <= DateTime.Now );
@@ -294,7 +282,7 @@ namespace Server.Items
 			m_Winner = null;
 			m_Deed = null;
 
-			m_Active = false;
+			m_State = HouseRaffleState.Inactive;
 			m_Started = DateTime.MinValue;
 			m_Duration = DefaultDuration;
 			m_ExpireAction = HouseRaffleExpireAction.None;
@@ -424,14 +412,19 @@ namespace Server.Items
 			if ( ValidLocation() )
 				list.Add( FormatLocation() );
 
-			if ( m_Active )
+			switch ( m_State )
 			{
-				list.Add( 1060658, "ticket price\t{0}", FormatPrice() ); // ~1_val~: ~2_val~
-				list.Add( 1060659, "ends\t{0}", m_Started + m_Duration ); // ~1_val~: ~2_val~
-			}
-			else if ( m_Winner != null )
-			{
-				list.Add( 1060658, "winner\t{0}", m_Winner.Name ); // ~1_val~: ~2_val~
+				case HouseRaffleState.Active:
+				{
+					list.Add( 1060658, "ticket price\t{0}", FormatPrice() ); // ~1_val~: ~2_val~
+					list.Add( 1060659, "ends\t{0}", m_Started + m_Duration ); // ~1_val~: ~2_val~
+					break;
+				}
+				case HouseRaffleState.Completed:
+				{
+					list.Add( 1060658, "winner\t{0}", ( m_Winner == null ) ? "unknown" : m_Winner.Name ); // ~1_val~: ~2_val~
+					break;
+				}
 			}
 		}
 
@@ -439,10 +432,19 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			if ( m_Active )
-				LabelTo( from, 1060658, String.Format( "Ends\t{0}", m_Started + m_Duration ) ); // ~1_val~: ~2_val~
-			else if ( m_Winner != null )
-				LabelTo( from, 1060658, String.Format( "Winner\t{0}", m_Winner.Name ) ); // ~1_val~: ~2_val~
+			switch ( m_State )
+			{
+				case HouseRaffleState.Active:
+				{
+					LabelTo( from, 1060658, String.Format( "Ends\t{0}", m_Started + m_Duration ) ); // ~1_val~: ~2_val~
+					break;
+				}
+				case HouseRaffleState.Completed:
+				{
+					LabelTo( from, 1060658, String.Format( "Winner\t{0}", ( m_Winner == null ) ? "Unknown" : m_Winner.Name ) ); // ~1_val~: ~2_val~
+					break;
+				}
+			}
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
@@ -453,7 +455,7 @@ namespace Server.Items
 			{
 				list.Add( new EditEntry( from, this ) );
 
-				if ( !m_Active && m_Winner == null )
+				if ( m_State == HouseRaffleState.Inactive )
 					list.Add( new ActivateEntry( from, this ) );
 				else
 					list.Add( new ManagementEntry( from, this ) );
@@ -462,7 +464,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !m_Active || !from.CheckAlive() )
+			if ( m_State != HouseRaffleState.Active || !from.CheckAlive() )
 				return;
 
 			if ( !from.InRange( GetWorldLocation(), 2 ) )
@@ -487,7 +489,7 @@ namespace Server.Items
 
 		public void Purchase_Callback( Mobile from, bool okay, object state )
 		{
-			if ( Deleted || !from.CheckAlive() || HasEntered( from ) || IsAtIPLimit( from ) )
+			if ( Deleted || m_State != HouseRaffleState.Active || !from.CheckAlive() || HasEntered( from ) || IsAtIPLimit( from ) )
 				return;
 
 			Account acc = from.Account as Account;
@@ -518,10 +520,10 @@ namespace Server.Items
 
 		public void CheckEnd()
 		{
-			if ( !m_Active || m_Started + m_Duration > DateTime.Now )
+			if ( m_State != HouseRaffleState.Active || m_Started + m_Duration > DateTime.Now )
 				return;
 
-			m_Active = false;
+			m_State = HouseRaffleState.Completed;
 
 			if ( m_Region != null && m_Entries.Count != 0 )
 			{
@@ -533,7 +535,7 @@ namespace Server.Items
 				{
 					m_Deed = new HouseRaffleDeed( this, m_Winner );
 
-					m_Winner.SendMessage( MessageHue, "Congratulations, {0}!  You have won the raffle for the plot located at {1}.", m_Entries[winner].From.Name, FormatLocation() );
+					m_Winner.SendMessage( MessageHue, "Congratulations, {0}!  You have won the raffle for the plot located at {1}.", m_Winner.Name, FormatLocation() );
 
 					if ( m_Winner.AddToBackpack( m_Deed ) )
 					{
@@ -541,18 +543,8 @@ namespace Server.Items
 					}
 					else
 					{
-						BankBox box = m_Winner.BankBox;
-
-						if ( box.TryDropItem( m_Winner, m_Deed, false ) )
-						{
-							m_Winner.SendMessage( MessageHue, "As your backpack is full, the writ of lease has been placed in your bank box." );
-						}
-						else
-						{
-							// Item is already at the mobile's feet
-
-							m_Winner.SendMessage( MessageHue, "As both your backpack and bank box are full, the writ of lease has been placed at your feet." );
-						}
+						m_Winner.BankBox.DropItem( m_Deed );
+						m_Winner.SendMessage( MessageHue, "As your backpack is full, the writ of lease has been placed in your bank box." );
 					}
 				}
 			}
@@ -577,13 +569,12 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( (int) 3 ); // version
 
+			writer.WriteEncodedInt( (int) m_State );
 			writer.WriteEncodedInt( (int) m_ExpireAction );
 
 			writer.Write( m_Deed );
-
-			writer.Write( m_Active );
 
 			writer.Write( m_Bounds );
 			writer.Write( m_Facet );
@@ -608,6 +599,12 @@ namespace Server.Items
 
 			switch ( version )
 			{
+				case 3:
+				{
+					m_State = (HouseRaffleState) reader.ReadEncodedInt();
+
+					goto case 2;
+				}
 				case 2:
 				{
 					m_ExpireAction = (HouseRaffleExpireAction) reader.ReadEncodedInt();
@@ -622,7 +619,7 @@ namespace Server.Items
 				}
 				case 0:
 				{
-					m_Active = reader.ReadBool();
+					bool oldActive = ( version < 3 ) ? reader.ReadBool() : false;
 
 					m_Bounds = reader.ReadRect2D();
 					m_Facet = reader.ReadMap();
@@ -649,6 +646,16 @@ namespace Server.Items
 					InvalidateRegion();
 
 					m_AllStones.Add( this );
+
+					if ( version < 3 )
+					{
+						if ( oldActive )
+							m_State = HouseRaffleState.Active;
+						else if ( m_Winner != null )
+							m_State = HouseRaffleState.Completed;
+						else
+							m_State = HouseRaffleState.Inactive;
+					}
 
 					break;
 				}
@@ -695,10 +702,10 @@ namespace Server.Items
 
 			public override void OnClick()
 			{
-				if ( m_Stone.Deleted || m_From.AccessLevel < AccessLevel.Seer || m_Stone.Active || !m_Stone.ValidLocation() )
+				if ( m_Stone.Deleted || m_From.AccessLevel < AccessLevel.Seer || !m_Stone.ValidLocation() )
 					return;
 
-				m_Stone.Active = true;
+				m_Stone.CurrentState = HouseRaffleState.Active;
 			}
 		}
 
