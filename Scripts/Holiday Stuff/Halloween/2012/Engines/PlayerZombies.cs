@@ -10,9 +10,6 @@ namespace Server.Engines.Events
 	{
 		public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get { return m_ReAnimated; } set { m_ReAnimated = value; } }
 
-		private static bool m_Running;
-		private static bool m_AutoStart;
-
 		private static Timer m_Timer;
 		private static Timer m_ClearTimer;
 

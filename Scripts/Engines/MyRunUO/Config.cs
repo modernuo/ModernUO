@@ -17,13 +17,13 @@ namespace Server.Engines.MyRunUO
 		public const string DatabasePassword		= "password";
 
 		// Should the database use transactions? This is recommended
-		public const bool UseTransactions = true;
+		public static bool UseTransactions = true;
 
 		// Use optimized table loading techniques? (LOAD DATA INFILE)
-		public const bool LoadDataInFile = true;
+		public static bool LoadDataInFile = true;
 
 		// This must be enabled if the database server is on a remote machine.
-		public const bool DatabaseNonLocal = ( DatabaseServer != "localhost" );
+		public static bool DatabaseNonLocal = ( DatabaseServer != "localhost" );
 
 		// Text encoding used
 		public static Encoding EncodingIO = Encoding.ASCII;
