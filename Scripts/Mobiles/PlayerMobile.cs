@@ -4463,7 +4463,7 @@ namespace Server.Mobiles
 					if ( pet is IMount && ((IMount)pet).Rider != null )
 						continue;
 
-					if ( (pet is PackLlama || pet is PackHorse || pet is Beetle || pet is HordeMinionFamiliar) && (pet.Backpack != null && pet.Backpack.Items.Count > 0) )
+					if ( (pet is PackLlama || pet is PackHorse || pet is Beetle ) && (pet.Backpack != null && pet.Backpack.Items.Count > 0) )
 						continue;
 
 					if ( pet is BaseEscortable )
