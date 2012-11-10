@@ -65,7 +65,6 @@ namespace Server.Mobiles
 		public override bool CanAngerOnTame { get { return true; } }
 		public override bool CanFly { get { return true; } }
 
-
 		public WhiteWyrm( Serial serial ) : base( serial )
 		{
 		}

@@ -61,7 +61,6 @@ namespace Server.Mobiles
 		public override HideType HideType{ get{ return HideType.Horned; } }
 		public override bool CanFly { get { return true; } }
 
-
 		public override int GetAttackSound()
 		{
 			return 713;

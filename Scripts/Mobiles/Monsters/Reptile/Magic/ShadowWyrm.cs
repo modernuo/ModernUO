@@ -74,7 +74,6 @@ namespace Server.Mobiles
 		public override HideType HideType{ get{ return HideType.Barbed; } }
 		public override bool CanFly { get { return true; } }
 
-
 		public ShadowWyrm( Serial serial ) : base( serial )
 		{
 		}
