@@ -78,6 +78,9 @@ namespace Server.Commands
 
 		public Item Construct()
 		{
+			if ( m_Type == null )
+				return null;
+
 			Item item;
 
 			try

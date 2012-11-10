@@ -40,10 +40,6 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( Tourmaline ), 75, 20, 0xF2D, 0 ) );
 				Add( new GenericBuyInfo( typeof( Amber ), 50, 20, 0xF25, 0 ) );
 				Add( new GenericBuyInfo( typeof( Diamond ), 200, 20, 0xF26, 0 ) );
-
-				Add( new GenericBuyInfo( typeof( Board ), 3, 20, 0x1BD7, 0 ) );
-				Add( new GenericBuyInfo( typeof( IronIngot ), 6, 20, 0x1BF2, 0 ) );
-
 			}
 		}
 

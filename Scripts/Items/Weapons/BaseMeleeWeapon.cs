@@ -22,7 +22,7 @@ namespace Server.Items
 
 			if ( Core.AOS )
 				return damage;
-			
+
 			int absorb = defender.MeleeDamageAbsorb;
 
 			if ( absorb > 0 )

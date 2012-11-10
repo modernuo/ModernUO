@@ -239,10 +239,10 @@ namespace Server.Regions
 
 			if ( !isFriend )
 				return;
-			
+
 			if ( !from.Alive )
 				return;
-			
+
 			if ( Core.ML && Insensitive.Equals( e.Speech, "I wish to resize my house" ) )
 			{
 				if ( from.Map != sign.Map || !from.InRange( sign, 0 ) )
@@ -264,10 +264,9 @@ namespace Server.Regions
 					from.SendLocalizedMessage( 501320 ); // Only the house owner may do this.
 				}
 			}
-			
+
 			if ( !m_House.IsInside( from ) || !m_House.IsActive )
 				return;
-
 			else if ( e.HasKeyword( 0x33 ) ) // remove thyself
 			{
 				if ( isFriend )

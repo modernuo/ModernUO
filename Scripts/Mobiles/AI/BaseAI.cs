@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Server;
 using Server.Items;
 using Server.Targeting;
@@ -904,7 +905,7 @@ namespace Server.Mobiles
 
 		public virtual bool DoActionCombat()
 		{
-			if ( CheckHerding() )
+			if ( Core.AOS && CheckHerding() )
 			{
 				m_Mobile.DebugSay( "Praise the shepherd!" );
 			}
@@ -923,7 +924,7 @@ namespace Server.Mobiles
 
 		public virtual bool DoActionGuard()
 		{
-			if ( CheckHerding() )
+			if ( Core.AOS && CheckHerding() )
 			{
 				m_Mobile.DebugSay( "Praise the shepherd!" );
 			}
@@ -1298,7 +1299,8 @@ namespace Server.Mobiles
 						else
 						{
 							m_Mobile.Warmode = false;
-							m_Mobile.CurrentSpeed = 0.1;
+							if ( Core.AOS )
+								m_Mobile.CurrentSpeed = 0.1;
 						}
 					}
 				}
@@ -1467,7 +1469,8 @@ namespace Server.Mobiles
 				m_Mobile.DebugSay( "Nothing to guard from" );
 
 				m_Mobile.Warmode = false;
-				m_Mobile.CurrentSpeed = 0.1;
+				if ( Core.AOS )
+					m_Mobile.CurrentSpeed = 0.1;
 
 				WalkMobileRange( controlMaster, 1, false, 0, 1 );
 			}
@@ -1484,8 +1487,13 @@ namespace Server.Mobiles
 			{
 				m_Mobile.DebugSay( "I think he might be dead. He's not anywhere around here at least. That's cool. I'm glad he's dead." );
 
-				m_Mobile.ControlTarget = m_Mobile.ControlMaster;
-				m_Mobile.ControlOrder = OrderType.Follow;
+				if ( Core.AOS ) {
+					m_Mobile.ControlTarget = m_Mobile.ControlMaster;
+					m_Mobile.ControlOrder = OrderType.Follow;
+				} else {
+					m_Mobile.ControlTarget = null;
+					m_Mobile.ControlOrder = OrderType.None;
+				}
 
 				if( m_Mobile.FightMode == FightMode.Closest || m_Mobile.FightMode == FightMode.Aggressor )
 				{
@@ -1623,7 +1631,7 @@ namespace Server.Mobiles
 					Name = FriendlyNameAttribute.GetFriendlyNameFor( creature.GetType() ).ToString();
 
 				//(As Per OSI)No name.  Normally, set by the ItemID of the Shrink Item unless we either explicitly set it with an Attribute, or, no lookup found
-				
+
 				Hue = creature.Hue & 0x0FFF;
 			}
 
@@ -1974,6 +1982,14 @@ namespace Server.Mobiles
 
 			if( delay < 0.0 )
 				delay = 0.0;
+
+			if ( double.IsNaN( delay ) ) {
+				using( StreamWriter op = new StreamWriter( "nan_transform.txt", true ) ) {
+					op.WriteLine( String.Format( "NaN in TransformMoveDelay: {0}, {1}, {2}, {3}", DateTime.Now, this.GetType().ToString(), m_Mobile == null ? "null" : m_Mobile.GetType().ToString(), m_Mobile.HitsMax ) );
+				}
+
+				return 1.0;
+			}
 
 			return delay;
 		}
@@ -2520,7 +2536,7 @@ namespace Server.Mobiles
 					// Ignore players with activated honor
 					if ( m is PlayerMobile && ( (PlayerMobile)m ).HonorActive && !( m_Mobile.Combatant == m ))
 						continue;
-					
+
 					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil )
 					{
 						// Only acquire this mobile if it attacked us, or if it's evil.
@@ -2542,7 +2558,7 @@ namespace Server.Mobiles
 							if( m is BaseCreature && ((BaseCreature)m).Controlled && ((BaseCreature)m).ControlMaster != null )
 							bValid = ( ((BaseCreature)m).ControlMaster.Karma < 0 );
 							else
-							bValid = ( m.Karma < 0 );
+							bValid = ( (Core.AOS || m.Player) && m.Karma < 0 );
 						}
 
 						if ( !bValid )

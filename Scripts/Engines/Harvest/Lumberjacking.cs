@@ -135,7 +135,13 @@ namespace Server.Engines.Harvest
 		public override bool CheckHarvest( Mobile from, Item tool )
 		{
 			if ( !base.CheckHarvest( from, tool ) )
-				return false;		
+				return false;
+
+			if ( tool.Parent != from )
+			{
+				from.SendLocalizedMessage( 500487 ); // The axe must be equipped for any serious wood chopping.
+				return false;
+			}
 
 			return true;
 		}

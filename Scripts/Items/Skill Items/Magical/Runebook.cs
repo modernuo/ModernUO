@@ -288,7 +288,7 @@ namespace Server.Items
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-		
+
 			if ( m_Quality == BookQuality.Exceptional )
 				list.Add( 1063341 ); // exceptional
 

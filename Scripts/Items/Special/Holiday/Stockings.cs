@@ -3,13 +3,16 @@ using Server;
 
 namespace Server.Items
 {
+	[Furniture]
 	[FlipableAttribute( 0x2bd9, 0x2bda )]
 	public class GreenStocking : BaseContainer
 	{
+		public override int DefaultGumpID{ get{ return 0x103; } }
+		public override int DefaultDropSound{ get{ return 0x42; } }
+
 		[Constructable]
-		public GreenStocking() : base ( 0x2bd9 )
+		public GreenStocking() : base ( Utility.Random( 0x2BD9, 2 ) )
 		{
-			GumpID = 0x103;
 		}
 
 		public GreenStocking( Serial serial ) : base( serial )
@@ -29,13 +32,16 @@ namespace Server.Items
 		}
 	}
 
+	[Furniture]
 	[FlipableAttribute( 0x2bdb, 0x2bdc )]
 	public class RedStocking : BaseContainer
 	{
+		public override int DefaultGumpID{ get{ return 0x103; } }
+		public override int DefaultDropSound{ get{ return 0x42; } }
+
 		[Constructable]
-		public RedStocking() : base ( 0x2bdb )
+		public RedStocking() : base ( Utility.Random( 0x2BDB, 2 ) )
 		{
-			GumpID = 0x103;
 		}
 
 		public RedStocking( Serial serial ) : base( serial )

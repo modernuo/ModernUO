@@ -9,6 +9,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using Server.Spells;
 using Server.Targeting;
 
 namespace Server.Multis
@@ -646,8 +647,12 @@ namespace Server.Multis
 
 		public void BeginCustomize( Mobile m )
 		{
-			if( !m.CheckAlive() )
+			if( !m.CheckAlive() ) {
 				return;
+			} else if ( SpellHelper.CheckCombat( m, true ) ) {
+				m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
+				return;
+			}
 
 			RelocateEntities();
 

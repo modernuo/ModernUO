@@ -3,11 +3,11 @@ using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Multis
-{	
+{
 	public class OrcCamp : BaseCamp
 	{
 		public virtual Mobile Orcs{ get{ return new Orc(); } }
-		
+
 		private Mobile m_Prisoner;
 		
 		[Constructable]

@@ -316,6 +316,10 @@ namespace Server.Engines.Craft
 					{
 						number = 1044275; // The item must be in your backpack to repair it.
 					}
+					else if ( !Core.AOS && weapon.PoisonCharges != 0 )
+					{
+						number = 1005012; // You cannot repair an item while a caustic substance is on it.
+					}
 					else if ( weapon.MaxHitPoints <= 0 || weapon.HitPoints == weapon.MaxHitPoints )
 					{
 						number = 1044281; // That item is in full repair

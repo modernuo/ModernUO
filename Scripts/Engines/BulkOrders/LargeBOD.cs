@@ -3,6 +3,7 @@ using System.Collections;
 using Server;
 using Server.Items;
 using System.Collections.Generic;
+using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
@@ -117,9 +118,19 @@ namespace Server.Engines.BulkOrders
 				list.Add( 1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount ); // ~1_val~: ~2_val~
 		}
 
+		public override void OnDoubleClickNotAccessible( Mobile from )
+		{
+			OnDoubleClick( from );
+		}
+
+		public override void OnDoubleClickSecureTrade( Mobile from )
+		{
+			OnDoubleClick( from );
+		}
+
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( IsChildOf( from.Backpack ) )
+			if ( IsChildOf( from.Backpack ) || InSecureTrade || RootParent is PlayerVendor )
 				from.SendGump( new LargeBODGump( from, this ) );
 			else
 				from.SendLocalizedMessage( 1045156 ); // You must have the deed in your backpack to use it.

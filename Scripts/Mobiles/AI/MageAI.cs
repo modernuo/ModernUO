@@ -41,7 +41,7 @@ namespace Server.Mobiles
 
 		public virtual bool IsNecromancer
 		{
-			get { return ( m_Mobile.Skills[ SkillName.Necromancy ].Value > 50 ); }
+			get { return ( Core.AOS && m_Mobile.Skills[ SkillName.Necromancy ].Value > 50 ); }
 		}
 
 		private const double HealChance = 0.10; // 10% chance to heal at gm magery
@@ -385,7 +385,7 @@ namespace Server.Mobiles
 						}
 					case 5:	// Paralyze them
 						{
-							if (m_Mobile.Skills[ SkillName.Magery ].Value <= 50.0)
+							if (c.Paralyzed || m_Mobile.Skills[ SkillName.Magery ].Value <= 50.0)
 								goto default;
 
 							m_Mobile.DebugSay( "Attempting to paralyze" );

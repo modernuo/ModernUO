@@ -74,7 +74,7 @@ namespace Server.SkillHandlers
 			{
 				bc.HitsMaxSeed = (int)Math.Max( 1, bc.HitsMaxSeed * scalar );
 				bc.Hits = bc.Hits;
-				}
+			}
 
 			if ( bc.StamMaxSeed > 0 )
 			{

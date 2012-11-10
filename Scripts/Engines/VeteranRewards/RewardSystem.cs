@@ -248,7 +248,7 @@ namespace Server.Engines.VeteranRewards
 
 		public static int GetRewardYearLabel( Item item, object[] args )
 		{
-			int level =  GetRewardYear( item, args );
+			int level = GetRewardYear( item, args );
 
 			return 1076216 + ( ( level < 10 ) ? level : ( level < 12 ) ? (( level - 9 ) + 4240 ) : (( level - 11 ) + 37585 ) );
 		}

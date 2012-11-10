@@ -753,8 +753,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if ( Hue != 0x8A4 )
-				Hue = 0x8A4;
+			/*if ( Hue != 0x8A4 )
+				Hue = 0x8A4;*/
 		}
 	}
 
@@ -813,8 +813,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if ( Hue != 0 && (Hue < 2101 || Hue > 2130) )
-				Hue = GetRandomHue();
+			/*if ( Hue != 0 && (Hue < 2101 || Hue > 2130) )
+				Hue = GetRandomHue();*/
 		}
 	}
 

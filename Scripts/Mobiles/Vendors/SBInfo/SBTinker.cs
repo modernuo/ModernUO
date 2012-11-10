@@ -20,7 +20,6 @@ namespace Server.Mobiles
 		{ 
 			public InternalBuyInfo() 
 			{ 
-
 				Add( new GenericBuyInfo( typeof( Clock ), 22, 20, 0x104B, 0 ) );
 				Add( new GenericBuyInfo( typeof( Nails ), 3, 20, 0x102E, 0 ) );
 				Add( new GenericBuyInfo( typeof( ClockParts ), 3, 20, 0x104F, 0 ) );
@@ -75,7 +74,6 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( Tambourine ), 21, 20, 0x0E9E, 0 ) );
 				Add( new GenericBuyInfo( typeof( LapHarp ), 21, 20, 0x0EB2, 0 ) );
 				Add( new GenericBuyInfo( typeof( Lute ), 21, 20, 0x0EB3, 0 ) );
-
 			} 
 		} 
 

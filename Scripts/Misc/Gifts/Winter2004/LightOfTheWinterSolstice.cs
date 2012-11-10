@@ -97,7 +97,8 @@ namespace Server.Items
 				}
 			}
 
-			Utility.Intern( ref m_Dipper );
+			if ( m_Dipper != null )
+				m_Dipper = String.Intern( m_Dipper );
 		}
 	}
 }

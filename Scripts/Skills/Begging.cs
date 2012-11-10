@@ -65,7 +65,7 @@ namespace Server.SkillHandlers
 						else
 							number = 500402; // You are too far away to beg from her.
 					}
-					else if (!( Core.ML ) && from.Mounted ) // If we're on a mount, who would give us money? TODO: guessed it's removed since ML
+					else if ( !Core.ML && from.Mounted ) // If we're on a mount, who would give us money? TODO: guessed it's removed since ML
 					{
 						number = 500404; // They seem unwilling to give you any money.
 					}

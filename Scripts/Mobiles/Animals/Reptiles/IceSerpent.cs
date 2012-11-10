@@ -57,7 +57,7 @@ namespace Server.Mobiles
 				case 8: PackItem( new BonePile() ); break;
 				case 9: PackItem( new BonePile() ); break;
 			}
-			
+
 			if ( 0.025 > Utility.RandomDouble() )
 				PackItem( new GlacialStaff() );
 		}

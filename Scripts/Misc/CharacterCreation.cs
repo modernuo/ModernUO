@@ -1054,7 +1054,6 @@ namespace Server.Misc
 
 					regs.LootType = LootType.Regular;
 
-					
 					EquipItem( new BoneHelm() );
 
 					if ( elf )
@@ -1125,7 +1124,7 @@ namespace Server.Misc
 
 					break;
 				}
-					
+
 				case 6: // Samurai
 				{
 					addSkillItems = false;
@@ -1279,7 +1278,7 @@ namespace Server.Misc
 			return item;
 		}
 
-		private static void	AddSkillItems( SkillName skill, Mobile m )
+		private static void AddSkillItems( SkillName skill, Mobile m )
 		{
 			bool elf = (m.Race == Race.Elf);
 
@@ -1320,14 +1319,12 @@ namespace Server.Misc
 					}
 					else
 					{
-						EquipItem( new Robe( Utility.RandomPinkHue() ) );
+						EquipItem( new Robe( hue ) );
 					}
 					break;
 				}
 				case SkillName.AnimalLore:
 				{
-					
-
 					int hue = Utility.RandomBlueHue();
 
 					if ( elf )
@@ -1483,7 +1480,7 @@ namespace Server.Misc
 					}
 					else
 					{
-						EquipItem( new FloppyHat( Utility.RandomYellowHue() ) );
+						EquipItem( new FloppyHat( hue ) );
 					}
 
 					break;

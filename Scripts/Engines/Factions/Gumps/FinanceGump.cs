@@ -2,6 +2,7 @@ using System;
 using Server;
 using Server.Gumps;
 using Server.Mobiles;
+using Server.Multis;
 using Server.Network;
 using Server.Targeting;
 using System.Collections.Generic;
@@ -254,6 +255,9 @@ namespace Server.Factions
 						else if ( vendorList.Vendors.Count >= vendorList.Definition.Maximum )
 						{
 							m_From.SendLocalizedMessage( 1010306 ); // You currently have too many of this enhancement type to place another
+						}
+						else if ( BaseBoat.FindBoatAt( m_From.Location, m_From.Map ) != null ) {
+							m_From.SendMessage( "You cannot place a vendor here" );
 						}
 						else if ( m_Town.Silver >= vendorList.Definition.Price )
 						{

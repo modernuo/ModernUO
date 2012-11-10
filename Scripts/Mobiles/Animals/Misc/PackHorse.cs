@@ -187,8 +187,8 @@ namespace Server.Mobiles
 			if ( Core.AOS )
 				return;
 
-			//if ( animal.IsBonded || animal.IsDeadPet )
-			//	return;
+			if ( animal.IsBonded || animal.IsDeadPet )
+				return;
 
 			Container pack = animal.Backpack;
 

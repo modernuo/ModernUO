@@ -61,7 +61,7 @@ namespace Server.Misc
 		{
 			Mobile from = e.Mobile;
 
-			if ( !from.Alive || from.AccessLevel > AccessLevel.Player  )
+			if ( !from.Alive || from.AccessLevel > AccessLevel.Player )
 				return;
 
 			if ( !from.Player )

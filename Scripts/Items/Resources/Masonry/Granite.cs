@@ -39,7 +39,7 @@ namespace Server.Items
 					break;
 				}
 			}
-			
+
 			if ( version < 1 )
 				Stackable = Core.ML;
 		}

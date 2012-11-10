@@ -23,7 +23,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Leather; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
- 
+
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.None; } }
 
 		[Constructable]
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( (int) 0 );
+			writer.Write( (int) 1 );
 		}
 		
 		public override void Deserialize(GenericReader reader)
@@ -46,9 +46,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			if( version == 0 && Weight == 1 )
+			if( version == 0 && ( Weight == 1 || Weight == 5 ) )
 			{
-				Weight = 5;
+				Weight = -1;
 			}
 		}
 	}

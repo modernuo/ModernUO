@@ -81,7 +81,6 @@ namespace Server.Engines.Craft
 			m_Recipe = new Recipe( id, system, this );
 		}
 
-
 		private static Dictionary<Type, int> _itemIds = new Dictionary<Type, int>();
 		
 		public static int ItemIDOf( Type type ) {
@@ -396,11 +395,6 @@ namespace Server.Engines.Craft
 
 		public bool RetainsColorFrom( CraftSystem system, Type type )
 		{
-			if (DefTailoring.IsNonColorable(m_Type))
-			{
-				return false;
-			}
-
 			if ( system.RetainsColorFrom( this, type ) )
 				return true;
 

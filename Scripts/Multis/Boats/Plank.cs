@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Server;
+using Server.Factions;
 using Server.Multis;
 
 namespace Server.Items
@@ -140,6 +141,9 @@ namespace Server.Items
 		{
 			if ( IsOpen )
 			{
+				if ( from is BaseFactionGuard )
+					return false;
+
 				if ( (from.Direction & Direction.Running) != 0 || (m_Boat != null && !m_Boat.Contains( from )) )
 					return true;
 

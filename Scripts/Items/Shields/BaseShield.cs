@@ -145,40 +145,33 @@ namespace Server.Items
 
 					if( 25 > Utility.Random( 100 ) ) // 25% chance to lower durability
 					{
-						if( Core.AOS && ArmorAttributes.SelfRepair > Utility.Random( 10 ) )
-						{
-							HitPoints += 2;
-						}
-						else
-						{
-							int wear = Utility.Random( 2 );
+						int wear = Utility.Random( 2 );
 
-							if( wear > 0 && MaxHitPoints > 0 )
+						if( wear > 0 && MaxHitPoints > 0 )
+						{
+							if( HitPoints >= wear )
 							{
-								if( HitPoints >= wear )
+								HitPoints -= wear;
+								wear = 0;
+							}
+							else
+							{
+								wear -= HitPoints;
+								HitPoints = 0;
+							}
+
+							if( wear > 0 )
+							{
+								if( MaxHitPoints > wear )
 								{
-									HitPoints -= wear;
-									wear = 0;
+									MaxHitPoints -= wear;
+
+									if( Parent is Mobile )
+										((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
 								}
 								else
 								{
-									wear -= HitPoints;
-									HitPoints = 0;
-								}
-
-								if( wear > 0 )
-								{
-									if( MaxHitPoints > wear )
-									{
-										MaxHitPoints -= wear;
-
-										if( Parent is Mobile )
-											((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
-									}
-									else
-									{
-										Delete();
-									}
+									Delete();
 								}
 							}
 						}

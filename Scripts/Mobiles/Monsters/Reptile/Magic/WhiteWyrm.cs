@@ -8,9 +8,9 @@ namespace Server.Mobiles
 	public class WhiteWyrm : BaseCreature
 	{
 		[Constructable]
-		public WhiteWyrm () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public WhiteWyrm() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Body = (Utility.Random(1,2)==1) ? 180 :  49;
+			Body = Utility.RandomBool() ? 180 : 49;
 			Name = "a white wyrm";
 			BaseSoundID = 362;
 
@@ -80,9 +80,6 @@ namespace Server.Mobiles
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
-
-			if ( Core.AOS && Body == 49 )
-				Body = 180;
 		}
 	}
 }

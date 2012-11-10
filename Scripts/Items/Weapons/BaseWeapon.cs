@@ -1243,6 +1243,10 @@ namespace Server.Items
 			if ( Core.AOS )
 				return AbsorbDamageAOS( attacker, defender, damage );
 
+			BaseShield shield = defender.FindItemOnLayer( Layer.TwoHanded ) as BaseShield;
+			if ( shield != null )
+				damage = shield.OnHit( this, damage );
+
 			double chance = Utility.RandomDouble();
 
 			Item armorItem;
@@ -1264,10 +1268,6 @@ namespace Server.Items
 
 			if ( armor != null )
 				damage = armor.OnHit( this, damage );
-
-			BaseShield shield = defender.FindItemOnLayer( Layer.TwoHanded ) as BaseShield;
-			if ( shield != null )
-				damage = shield.OnHit( this, damage );
 
 			int virtualArmor = defender.VirtualArmor + defender.VirtualArmorMod;
 
@@ -2345,7 +2345,13 @@ namespace Server.Items
 			if ( Core.AOS )
 				return ComputeDamageAOS( attacker, defender );
 
-			return (int)ScaleDamageOld( attacker, GetBaseDamage( attacker ), true );
+			int damage = (int)ScaleDamageOld( attacker, GetBaseDamage( attacker ), true );
+
+			// pre-AOS, halve damage if the defender is a player or the attacker is not a player
+			if ( defender is PlayerMobile || !( attacker is PlayerMobile ) )
+				damage = (int)(damage / 2.0);
+
+			return damage;
 		}
 
 		public virtual void PlayHurtAnimation( Mobile from )

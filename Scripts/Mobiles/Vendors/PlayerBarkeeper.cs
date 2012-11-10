@@ -205,7 +205,10 @@ namespace Server.Mobiles
 		{
 			base.InitBody();
 
-			Hue = 0x83F4; // hue is not random
+			if ( BodyValue == 0x340 || BodyValue == 0x402 )
+				Hue = 0;
+			else
+				Hue = 0x83F4; // hue is not random
 
 			Container pack = this.Backpack;
 
@@ -971,14 +974,16 @@ namespace Server.Mobiles
 			AddButton( 130, 120, 4005, 4007, GetButtonID( 5, 0 ), GumpButtonType.Reply, 0 );
 			AddHtml( 170, 120, 120, 20, "Title", false, false );
 
-			AddButton( 130, 200, 4005, 4007, GetButtonID( 5, 1 ), GumpButtonType.Reply, 0 );
-			AddHtml( 170, 200, 120, 20, "Appearance", false, false );
+			if ( m_Barkeeper.BodyValue != 0x340 && m_Barkeeper.BodyValue != 0x402 ) {			
+				AddButton( 130, 200, 4005, 4007, GetButtonID( 5, 1 ), GumpButtonType.Reply, 0 );
+				AddHtml( 170, 200, 120, 20, "Appearance", false, false );
 
-			AddButton( 130, 280, 4005, 4007, GetButtonID( 5, 2 ), GumpButtonType.Reply, 0 );
-			AddHtml( 170, 280, 120, 20, "Male / Female", false, false );
+				AddButton( 130, 280, 4005, 4007, GetButtonID( 5, 2 ), GumpButtonType.Reply, 0 );
+				AddHtml( 170, 280, 120, 20, "Male / Female", false, false );
 
-			AddButton( 338, 437, 4014, 4016, 0, GumpButtonType.Page, 1 );
-			AddHtml( 290, 440, 35, 40, "Back", false, false );
+				AddButton( 338, 437, 4014, 4016, 0, GumpButtonType.Page, 1 );
+				AddHtml( 290, 440, 35, 40, "Back", false, false );
+			}
 
 			AddItem( 580, 44, 4033 );
 		}

@@ -56,7 +56,7 @@ namespace Server.SkillHandlers
 				}
 				else if ( from.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
 				{
-					from.SendMessage( "You may not peacemake here." );
+					from.SendMessage( "You may not peacemake in this area." );
 				}
 				else if ( ((Mobile)targeted).Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
 				{

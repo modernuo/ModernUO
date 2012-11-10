@@ -39,7 +39,7 @@ namespace Server.Mobiles
 			Karma = -4000;
 
 			VirtualArmor = 40;
-			
+
 			PackItem( new LesserPoisonPotion() );
 		}
 

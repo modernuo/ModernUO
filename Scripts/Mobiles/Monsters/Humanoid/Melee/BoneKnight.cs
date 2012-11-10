@@ -40,7 +40,7 @@ namespace Server.Mobiles
 			Karma = -3000;
 
 			VirtualArmor = 40;
-			
+
 			switch ( Utility.Random( 6 ) )
 			{
 				case 0: PackItem( new PlateArms() ); break;

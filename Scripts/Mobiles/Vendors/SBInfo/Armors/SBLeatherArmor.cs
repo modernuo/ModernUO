@@ -44,7 +44,6 @@ namespace Server.Mobiles
 				Add( typeof( LeatherLegs ), 40 );
 				Add( typeof( LeatherCap ), 5 );
 
-
 				Add( typeof( FemaleLeatherChest ), 18 );
 				Add( typeof( FemaleStuddedChest ), 25 );
 				Add( typeof( LeatherShorts ), 14 );
