@@ -649,7 +649,7 @@ namespace Server.Multis
 		{
 			if( !m.CheckAlive() ) {
 				return;
-			} else if ( SpellHelper.CheckCombat( m, true ) ) {
+			} else if ( SpellHelper.CheckCombat( m ) ) {
 				m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
 				return;
 			}
