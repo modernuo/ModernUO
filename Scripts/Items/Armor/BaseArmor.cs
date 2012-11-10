@@ -250,7 +250,7 @@ namespace Server.Items
 
 					m_Resource = value;
 
-					if (! (this is OrcHelm)) // TODO: Awful
+					if ( CraftItem.RetainsColor( this.GetType() ) )
 					{
 						Hue = CraftResources.GetHue(m_Resource);
 					}

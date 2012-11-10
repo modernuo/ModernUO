@@ -377,6 +377,11 @@ namespace Server.Engines.Craft
 					typeof( Spellbook ), typeof( Runebook ),
 					typeof( BaseQuiver )
 				};
+
+		private static Type[] m_NeverColorTable = new Type[]
+				{
+					typeof( OrcHelm )
+				};
 		#endregion
 
 		public bool IsMarkable( Type type )
@@ -393,20 +398,40 @@ namespace Server.Engines.Craft
 			return false;
 		}
 
+		public static bool RetainsColor( Type type )
+		{
+			bool neverColor = false;
+
+			for ( int i = 0; !neverColor && i < m_NeverColorTable.Length; ++i )
+				neverColor = ( type == m_NeverColorTable[i] || type.IsSubclassOf( m_NeverColorTable[i] ) );
+
+			if ( neverColor )
+				return false;
+
+			bool inItemTable = false;
+
+			for ( int i = 0; !inItemTable && i < m_ColoredItemTable.Length; ++i )
+				inItemTable = ( type == m_ColoredItemTable[i] || type.IsSubclassOf( m_ColoredItemTable[i] ) );
+
+			return inItemTable;
+		}
+
 		public bool RetainsColorFrom( CraftSystem system, Type type )
 		{
 			if ( system.RetainsColorFrom( this, type ) )
 				return true;
 
-			bool inItemTable = false, inResourceTable = false;
+			bool inItemTable = RetainsColor( m_Type );
 
-			for ( int i = 0; !inItemTable && i < m_ColoredItemTable.Length; ++i )
-				inItemTable = ( m_Type == m_ColoredItemTable[i] || m_Type.IsSubclassOf( m_ColoredItemTable[i] ) );
+			if ( !inItemTable )
+				return false;
 
-			for ( int i = 0; inItemTable && !inResourceTable && i < m_ColoredResourceTable.Length; ++i )
+			bool inResourceTable = false;
+
+			for ( int i = 0; !inResourceTable && i < m_ColoredResourceTable.Length; ++i )
 				inResourceTable = ( type == m_ColoredResourceTable[i] || type.IsSubclassOf( m_ColoredResourceTable[i] ) );
 
-			return ( inItemTable && inResourceTable );
+			return inResourceTable;
 		}
 
 		public bool Find( Mobile from, int[] itemIDs )
