@@ -63,6 +63,8 @@ namespace Server.Mobiles
 		public override ScaleType ScaleType{ get{ return ScaleType.White; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Gold; } }
 		public override bool CanAngerOnTame { get { return true; } }
+		public override bool CanFly { get { return true; } }
+
 
 		public WhiteWyrm( Serial serial ) : base( serial )
 		{

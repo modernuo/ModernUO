@@ -57,6 +57,7 @@ namespace Server.Mobiles
 
 		public override bool BardImmune{ get{ return !Core.AOS; } }
 		public override int Meat{ get{ return 1; } }
+		public override bool CanFly { get { return true; } }
 
 		public override void OnDamagedBySpell( Mobile from )
 		{

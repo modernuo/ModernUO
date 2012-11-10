@@ -44,6 +44,8 @@ namespace Server.Mobiles
 				PackItem( new GargoylesPickaxe() );
 		}
 
+		public override bool CanFly { get { return true; } }
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Average );

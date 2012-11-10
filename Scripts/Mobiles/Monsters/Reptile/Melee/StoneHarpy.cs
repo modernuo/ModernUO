@@ -76,6 +76,7 @@ namespace Server.Mobiles
 
 		public override int Meat{ get{ return 1; } }
 		public override int Feathers{ get{ return 50; } }
+		public override bool CanFly { get { return true; } }
 
 		public StoneHarpy( Serial serial ) : base( serial )
 		{

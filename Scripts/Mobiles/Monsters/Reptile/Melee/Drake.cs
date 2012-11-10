@@ -62,6 +62,7 @@ namespace Server.Mobiles
 		public override int Scales{ get{ return 2; } }
 		public override ScaleType ScaleType{ get{ return ( Body == 60 ? ScaleType.Yellow : ScaleType.Red ); } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish; } }
+		public override bool CanFly { get { return true; } }
 
 		public Drake( Serial serial ) : base( serial )
 		{

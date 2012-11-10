@@ -50,7 +50,7 @@ namespace Server.Engines.Events
 		{
 			m_TotalZombieLimit = 200;
 			m_DeathQueueLimit = 200;
-			m_QueueDelaySeconds = 2;
+			m_QueueDelaySeconds = 120;
 			m_QueueClearIntervalSeconds = 1800;
 
 			DateTime today = DateTime.Now;
@@ -91,13 +91,18 @@ namespace Server.Engines.Events
 			m_ReAnimated.Clear();
 
 			m_DeathQueue.Clear();
+
+			if( DateTime.Now <= HolidaySettings.FinishHalloween )
+			{
+				m_ClearTimer.Stop();
+			}
 		}
 
 		private static void Timer_Callback()
 		{
 			PlayerMobile player = null;
 
-			if( DateTime.Now < HolidaySettings.FinishHalloween )
+			if( DateTime.Now <= HolidaySettings.FinishHalloween )
 			{
 				for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
 				{
@@ -132,6 +137,9 @@ namespace Server.Engines.Events
 			else
 			{
 				m_Timer.Stop();
+
+
+
 			}
 		}
 

@@ -57,6 +57,7 @@ namespace Server.Mobiles
 		public override bool CanAngerOnTame{ get { return true; } }
 		public override bool StatLossAfterTame{ get{ return true; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override bool CanFly { get { return true; } }
 
 		public Reptalon( Serial serial ) : base( serial )
 		{

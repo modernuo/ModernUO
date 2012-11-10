@@ -75,6 +75,7 @@ namespace Server.Mobiles
 		public override int Meat{ get{ return 4; } }
 		public override MeatType MeatType{ get{ return MeatType.Bird; } }
 		public override int Feathers{ get{ return 50; } }
+		public override bool CanFly { get { return true; } }
 
 		public Harpy( Serial serial ) : base( serial )
 		{

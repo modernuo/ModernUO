@@ -53,6 +53,7 @@ namespace Server.Mobiles
 		public override int Meat{ get{ return 1; } }
 		public override MeatType MeatType{ get{ return MeatType.Bird; } }
 		public override int Feathers{ get{ return 36; } }
+		public override bool CanFly { get { return true; } }
 
 		public Phoenix( Serial serial ) : base( serial )
 		{

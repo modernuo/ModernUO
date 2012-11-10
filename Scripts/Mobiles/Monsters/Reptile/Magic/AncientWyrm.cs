@@ -71,6 +71,7 @@ namespace Server.Mobiles
 		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
 		public override Poison HitPoison{ get{ return Utility.RandomBool() ? Poison.Lesser : Poison.Regular; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
+		public override bool CanFly { get { return true; } }
 
 		public AncientWyrm( Serial serial ) : base( serial )
 		{

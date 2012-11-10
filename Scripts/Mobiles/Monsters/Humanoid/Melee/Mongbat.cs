@@ -41,6 +41,7 @@ namespace Server.Mobiles
 			ControlSlots = 1;
 			MinTameSkill = -18.9;
 		}
+		public override bool CanFly { get { return true; } }
 
 		public override void GenerateLoot()
 		{

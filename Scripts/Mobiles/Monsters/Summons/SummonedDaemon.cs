@@ -44,6 +44,7 @@ namespace Server.Mobiles
 		}
 
 		public override Poison PoisonImmune{ get{ return Poison.Regular; } } // TODO: Immune to poison?
+		public override bool CanFly { get { return true; } }
 
 		public SummonedDaemon( Serial serial ) : base( serial )
 		{

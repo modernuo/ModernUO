@@ -53,6 +53,7 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
+		public override bool CanFly { get { return true; } }
 		public override bool Unprovokable{ get{ return true; } }
 		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
