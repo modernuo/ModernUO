@@ -299,8 +299,10 @@ namespace Server.Engines.ConPVP
 						new string[]
 						{
 							"Bandages",
+							"Wands",
 							"Trapped Containers",
 							"Bolas",
+							"Mounts",
 							"Orange Petals",
 							"Shurikens",
 							"Fukiya Darts",
@@ -326,9 +328,12 @@ namespace Server.Engines.ConPVP
 							new string[]
 						{
 							"Bandages",
+							"Wands",
 							"Trapped Containers",
 							"Bolas",
-							"Orange Petals"
+							"Mounts",
+							"Orange Petals",
+							"Fire Horns"
 						} ) );
 					}
 

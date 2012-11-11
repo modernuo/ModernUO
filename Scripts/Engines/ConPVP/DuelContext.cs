@@ -128,6 +128,9 @@ namespace Server.Engines.ConPVP
 			if ( CantDoAnything( from ) )
 				return false;
 
+			if ( spell is Server.Spells.Fourth.RecallSpell )
+				from.SendMessage( "You may not cast this spell." );
+
 			string title = null, option = null;
 
 			if( spell is ArcanistSpell )
@@ -273,6 +276,9 @@ namespace Server.Engines.ConPVP
 
 				if ( weapon.PoisonCharges > 0 && weapon.Poison != null && !m_Ruleset.GetOption( "Weapons", "Poisoned" ) )
 					return false;
+
+				if ( weapon is BaseWand && !m_Ruleset.GetOption( "Items", "Wands" ) )
+					return false;
 			}
 
 			return true;
@@ -313,10 +319,10 @@ namespace Server.Engines.ConPVP
 			if ( pl == null || pl.Eliminated )
 				return true;
 
-			if ( item is EtherealMount )
+			if ( !(item is BaseRefreshPotion) )
 			{
-				from.SendMessage( "You may not mount an ethereal while dueling." );
-				return false;
+				if ( CantDoAnything( from ) )
+					return false;
 			}
 
 			string title = null, option = null;
@@ -365,6 +371,11 @@ namespace Server.Engines.ConPVP
 				title = "Items";
 				option = "Orange Petals";
 			}
+			else if ( item is EtherealMount || item.Layer == Layer.Mount )
+			{
+				title = "Items";
+				option = "Mounts";
+			}
 			else if ( item is LeatherNinjaBelt )
 			{
 				title = "Items";
@@ -379,6 +390,11 @@ namespace Server.Engines.ConPVP
 			{
 				title = "Items";
 				option = "Fire Horns";
+			}
+			else if ( item is BaseWand )
+			{
+				title = "Items";
+				option = "Wands";
 			}
 
 			if ( title != null && option != null && m_StartedBeginCountdown && !m_Started )
@@ -395,12 +411,6 @@ namespace Server.Engines.ConPVP
 			{
 				from.SendMessage( 0x22, "You may not use bandages in sudden death." );
 				return false;
-			}
-
-			if ( !(item is BaseRefreshPotion) )
-			{
-				if ( CantDoAnything( from ) )
-					return false;
 			}
 
 			if ( title == null || option == null || m_Ruleset.GetOption( title, option ) )
@@ -2371,6 +2381,8 @@ namespace Server.Engines.ConPVP
 		public Tournament m_Tournament;
 		public TournyMatch m_Match;
 		public EventGame m_EventGame;
+
+		public Tournament Tournament { get { return m_Tournament; } }
 
 		public void SendReadyGump( int count )
 		{

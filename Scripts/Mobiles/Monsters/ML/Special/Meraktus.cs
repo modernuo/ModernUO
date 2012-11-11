@@ -67,8 +67,10 @@ namespace Server.Mobiles
 
 			VirtualArmor = 28; // Don't know what it should be
 
-			PackResources(8);
-			PackTalismans(5);
+			if ( Core.ML ) {
+				PackResources(8);
+				PackTalismans(5);
+			}
 
 			Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerCallback(SpawnTormented));
 		}
@@ -99,25 +101,29 @@ namespace Server.Mobiles
 		{
 			base.OnDeath( c );		
 
-			c.DropItem( new MalletAndChisel() );
+			if ( Core.ML ) {
+				c.DropItem( new MalletAndChisel() );
 
-			switch ( Utility.Random( 3 ) )
-			{
-				case 0: c.DropItem( new MinotaurHedge() ); break;
-				case 1: c.DropItem( new BonePile() ); break;
-				case 2: c.DropItem( new LightYarn() ); break;
+				switch ( Utility.Random( 3 ) )
+				{
+					case 0: c.DropItem( new MinotaurHedge() ); break;
+					case 1: c.DropItem( new BonePile() ); break;
+					case 2: c.DropItem( new LightYarn() ); break;
+				}
+
+				if ( Utility.RandomBool() )
+					c.DropItem( new TormentedChains() );
+
+				if ( Utility.RandomDouble() < 0.025 )
+					c.DropItem(new CrimsonCincture());
 			}
-
-			if ( Utility.RandomBool() )
-				c.DropItem( new TormentedChains() );
-
-			if ( Utility.RandomDouble() < 0.025 )
-				c.DropItem(new CrimsonCincture());
 		}
 
 		public override void GenerateLoot()
 		{
-			AddLoot( LootPack.AosSuperBoss, 5 );  // Need to verify
+			if ( Core.ML ) {
+				AddLoot( LootPack.AosSuperBoss, 5 );  // Need to verify
+			}
 		}
 
 		public override int GetAngerSound()
