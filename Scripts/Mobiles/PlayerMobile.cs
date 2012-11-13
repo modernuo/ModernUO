@@ -515,18 +515,21 @@ namespace Server.Mobiles
 			if ( !base.OnDroppedItemToWorld( item, location ) )
 				return false;
 
-			IPooledEnumerable mobiles = Map.GetMobilesInRange( location, 0 );
-
-			foreach ( Mobile m in mobiles )
+			if ( Core.AOS )
 			{
-				if ( m.Z >= location.Z && m.Z < location.Z + 16 )
-				{
-					mobiles.Free();
-					return false;
-				}
-			}
+				IPooledEnumerable mobiles = Map.GetMobilesInRange( location, 0 );
 
-			mobiles.Free();
+				foreach ( Mobile m in mobiles )
+				{
+					if ( m.Z >= location.Z && m.Z < location.Z + 16 )
+					{
+						mobiles.Free();
+						return false;
+					}
+				}
+
+				mobiles.Free();
+			}
 
 			BounceInfo bi = item.GetBounce();
 
@@ -2171,7 +2174,7 @@ namespace Server.Mobiles
 
 			DropHolding();
 
-			if (Backpack != null && !Backpack.Deleted)
+			if (Core.AOS && Backpack != null && !Backpack.Deleted)
 			{
 				List<Item> ilist = Backpack.FindItemsByType<Item>(FindItems_Callback);
 

@@ -2581,7 +2581,19 @@ namespace Server.Engines.ConPVP
 
 		public static void CloseAndSendGump( NetState ns, Gump g, params Type[] types )
 		{
-			if ( ns == null )
+			if ( ns != null ) {
+				Mobile mob = ns.Mobile;
+
+				if ( mob != null ) {
+					foreach ( Type type in types ) {
+						mob.CloseGump( type );
+					}
+
+					mob.SendGump( g );
+				}
+			}
+
+			/*if ( ns == null )
 				return;
 
 			for ( int i = 0; i < types.Length; ++i )
@@ -2589,7 +2601,7 @@ namespace Server.Engines.ConPVP
 
 			g.SendTo( ns );
 
-			/*ns.AddGump( g );
+			ns.AddGump( g );
 
 			Packet[] packets = new Packet[types.Length + 1];
 
@@ -2604,7 +2616,7 @@ namespace Server.Engines.ConPVP
 			ns.CompressionEnabled = compress;*/
 		}
 
-		public static Packet BindPackets( bool compress, params Packet[] packets )
+		/*public static Packet BindPackets( bool compress, params Packet[] packets )
 		{
 			if ( packets.Length == 0 )
 				throw new ArgumentException( "No packets to bind", "packets" );
@@ -2632,6 +2644,6 @@ namespace Server.Engines.ConPVP
 				for ( int i = 0; i < compiled.Length; ++i )
 					m_Stream.Write( compiled[i], 0, lengths[i] );
 			}
-		}
+		}*/
 	}
 }
