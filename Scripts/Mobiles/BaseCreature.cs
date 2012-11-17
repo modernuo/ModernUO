@@ -878,7 +878,7 @@ namespace Server.Mobiles
 			if ( ( FightMode == FightMode.Evil && m.Karma < 0 ) || ( c.FightMode == FightMode.Evil && Karma < 0 ) )
 				return true;
 
-			return ( m_iTeam != c.m_iTeam || ( (m_bSummoned || m_bControlled) != (c.m_bSummoned || c.m_bControlled) )/* || c.Combatant == this*/ );
+			return ( m_iTeam != c.m_iTeam || ( (m_bSummoned || m_bControlled) != (c.m_bSummoned || c.m_bControlled ) )/* || c.Combatant == this*/ );
 		}
 
 		public override string ApplyNameSuffix( string suffix )
@@ -3448,7 +3448,7 @@ namespace Server.Mobiles
 			{
 				if( InRange( m.Location, AcquireOnApproachRange ) && !InRange( oldLocation, AcquireOnApproachRange ) )
 				{
-					if( CanBeHarmful( m ) )
+					if( CanBeHarmful( m ) && IsEnemy( m ))
 					{
 						Combatant = FocusMob = m;
 
@@ -3456,12 +3456,14 @@ namespace Server.Mobiles
 						{
 							AIObject.MoveTo( m, true, 1 );
 						}
+
+						DoHarmful( m );
 					}
 				}
 			}
 			else if( ReacquireOnMovement )
 			{
-				m_NextReacquireTime = DateTime.MinValue;
+				ForceReacquire();
 			}
 
 			InhumanSpeech speechType = this.SpeechType;
