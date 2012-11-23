@@ -9,7 +9,8 @@ namespace Server.Mobiles
 {
 	public abstract class BaseFamiliar : BaseCreature
 	{
-		public BaseFamiliar() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public BaseFamiliar()
+			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, -1, -1 )
 		{
 		}
 
@@ -17,54 +18,83 @@ namespace Server.Mobiles
 		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
 		public override bool Commandable{ get{ return false; } }
 
+		public override bool PlayerRangeSensitive { get { return false; } }
+
 		private bool m_LastHidden;
+
+		public virtual void RangeCheck()
+		{
+			if( !Deleted && ControlMaster != null && !ControlMaster.Deleted )
+			{
+				int range = ( RangeHome - 2 );
+
+				if( !InRange( ControlMaster.Location, RangeHome ) )
+				{
+					Mobile master = ControlMaster;
+
+					Point3D m_Loc = Point3D.Zero;
+
+					if( Map == master.Map )
+					{
+						int x = ( X > master.X ) ? ( master.X + range ) : ( master.X - range );
+						int y = ( Y > master.Y ) ? ( master.Y + range ) : ( master.Y - range );
+
+						for( int i = 0; i < 10; i++ )
+						{
+							m_Loc.X = x + Utility.RandomMinMax( -1, 1 );
+							m_Loc.Y = y + Utility.RandomMinMax( -1, 1 );
+
+							m_Loc.Z = Map.GetAverageZ( m_Loc.X, m_Loc.Y );
+
+							if( Map.CanSpawnMobile( m_Loc ) )
+							{
+								break;
+							}
+
+							m_Loc = master.Location;
+						}
+
+						if( !Deleted )
+						{
+							SetLocation( m_Loc, true );
+						}
+					}
+				}
+			}
+		}
 
 		public override void OnThink()
 		{
-			base.OnThink();
-
 			Mobile master = ControlMaster;
 
-			if ( master == null )
+			if( Deleted )
+			{
 				return;
-
-			if ( master.Deleted )
+			}
+			if( master == null || master.Deleted )
 			{
 				DropPackContents();
 				EndRelease( null );
-				return;
 			}
 
-			if ( m_LastHidden != master.Hidden )
+			RangeCheck();
+
+			if( m_LastHidden != master.Hidden )
 				Hidden = m_LastHidden = master.Hidden;
 
-			Mobile toAttack = null;
-
-			if ( !Hidden )
+			if( AIObject != null && AIObject.WalkMobileRange( master,  5, true, 1, 1 ))
 			{
-				toAttack = master.Combatant;
+				Warmode = master.Warmode;
+				Combatant = master.Combatant;
 
-				if ( toAttack == this )
-					toAttack = master;
-				else if ( toAttack == null )
-					toAttack = this.Combatant;
+				CurrentSpeed = 0.10;
 			}
-
-			if ( Combatant != toAttack )
-				Combatant = null;
-
-			if ( toAttack == null )
+			else
 			{
-				if ( ControlTarget != master || ControlOrder != OrderType.Follow )
-				{
-					ControlTarget = master;
-					ControlOrder = OrderType.Follow;
-				}
-			}
-			else if ( ControlTarget != toAttack || ControlOrder != OrderType.Attack )
-			{
-				ControlTarget = toAttack;
-				ControlOrder = OrderType.Attack;
+				Warmode = false;
+				FocusMob = Combatant = null;
+
+				CurrentSpeed = .01;
 			}
 		}
 

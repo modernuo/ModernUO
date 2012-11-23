@@ -2491,7 +2491,7 @@ namespace Server.Mobiles
 						continue;
 
 					// Let's not target ourselves...
-					if ( m == m_Mobile )
+					if ( m == m_Mobile || m is BaseFamiliar )
 						continue;
 
 					// Dead targets are invalid.
@@ -2537,34 +2537,32 @@ namespace Server.Mobiles
 					if ( m is PlayerMobile && ( (PlayerMobile)m ).HonorActive && !( m_Mobile.Combatant == m ))
 						continue;
 
-					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil )
+					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil || ( m is BaseCreature ) && ( ( BaseCreature )m ).Summoned )
 					{
-						// Only acquire this mobile if it attacked us, or if it's evil.
-						bool bValid = false;
+						BaseCreature bc = m as BaseCreature;
 
-						for ( int a = 0; !bValid && a < m_Mobile.Aggressors.Count; ++a )
-							bValid = ( m_Mobile.Aggressors[a].Attacker == m );
+						bool bValid = IsHostile( m );
 
-						for ( int a = 0; !bValid && a < m_Mobile.Aggressed.Count; ++a )
-							bValid = ( m_Mobile.Aggressed[a].Defender == m );
-
-						#region Ethics & Faction checks
-						if ( !bValid )
+						if( !bValid && ( !( m is BaseCreature ) || !bc.Summoned || bc.Controlled ) )
+						{ 
 							bValid = ( m_Mobile.GetFactionAllegiance( m ) == BaseCreature.Allegiance.Enemy || m_Mobile.GetEthicAllegiance( m ) == BaseCreature.Allegiance.Enemy );
-						#endregion
 
-						if ( acqType == FightMode.Evil && !bValid )
-						{
-							if( m is BaseCreature && ((BaseCreature)m).Controlled && ((BaseCreature)m).ControlMaster != null )
-							bValid = ( ((BaseCreature)m).ControlMaster.Karma < 0 );
-							else
-							bValid = ( (Core.AOS || m.Player) && m.Karma < 0 );
+							if( acqType == FightMode.Evil && !bValid )
+							{
+								if( m is BaseCreature && bc.Controlled && bc.ControlMaster != null )
+								{
+									bValid = (  bc.ControlMaster.Karma < 0 );
+								}
+								else
+								{
+									bValid = ( ( Core.AOS || m.Player ) && m.Karma < 0 );
+								}
+							}
 						}
 
 						if ( !bValid )
 							continue;
 					} else {
-
 
 						// Same goes for faction enemies.
 						if ( bFacFoe && !m_Mobile.IsEnemy( m ) )
@@ -2587,10 +2585,44 @@ namespace Server.Mobiles
 				eable.Free();
 
 				m_Mobile.FocusMob = newFocusMob;
+
+				if( m_Mobile.FocusMob is BaseFamiliar )
+				{
+					m_Mobile.FocusMob = null;
+				}
 			}
 
 			return (m_Mobile.FocusMob != null);
 		}
+
+		private bool IsHostile( Mobile from )
+		{
+			int count = Math.Max( m_Mobile.Aggressors.Count, m_Mobile.Aggressed.Count );
+
+			if( m_Mobile.Combatant == from || from.Combatant == m_Mobile )
+			{
+				return true;
+			}
+
+			if( count  > 0 )
+			{
+				for( int a = 0; a < count; ++a )
+				{
+					if( a < m_Mobile.Aggressed.Count && m_Mobile.Aggressed[ a ].Attacker == from )
+					{
+						return true;
+					}
+
+					if( a < m_Mobile.Aggressors.Count && m_Mobile.Aggressors[ a ].Defender == from )
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
 
 		public virtual void DetectHidden()
 		{

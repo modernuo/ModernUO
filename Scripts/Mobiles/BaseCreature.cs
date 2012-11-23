@@ -1294,9 +1294,11 @@ namespace Server.Mobiles
 
 		public HonorContext ReceivedHonorContext{ get{ return m_ReceivedHonorContext; } set{ m_ReceivedHonorContext = value; } }
 
-		public virtual void CheckStopFollow( Mobile from )
+		public virtual bool CanBeDistracted { get { return true; } }
+
+		public virtual void CheckDistracted( Mobile from )
 		{
-			if( ControlOrder == OrderType.Follow && Utility.RandomDouble() < .10 )
+			if( Utility.RandomDouble() < .10 )
 			{
 				ControlTarget = from;
 				ControlOrder = OrderType.Attack;
@@ -1342,7 +1344,10 @@ namespace Server.Mobiles
 
 			if( !willKill )
 			{
-				CheckStopFollow( from );
+				if( CanBeDistracted && ControlOrder == OrderType.Follow )
+				{
+					CheckDistracted( from );
+				}
 			}
 			else if( from is PlayerMobile )
 			{
@@ -1354,7 +1359,10 @@ namespace Server.Mobiles
 
 		public virtual void OnDamagedBySpell( Mobile from )
 		{
-			CheckStopFollow( from );
+			if( CanBeDistracted && ControlOrder == OrderType.Follow )
+			{
+				CheckDistracted( from );
+			}
 		}
 
 		public virtual void OnHarmfulSpell( Mobile from )
