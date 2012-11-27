@@ -134,9 +134,6 @@ namespace Server.Engines.Events
 			else
 			{
 				m_Timer.Stop();
-
-
-
 			}
 		}
 

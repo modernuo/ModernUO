@@ -10,11 +10,11 @@ namespace Server.Engines.MyRunUO
 		public static bool Enabled = false;
 
 		// Details required for database connection string
-		public const string DatabaseDriver			= "{MySQL ODBC 3.51 Driver}";
-		public const string DatabaseServer			= "localhost";
-		public const string DatabaseName			= "MyRunUO";
-		public const string DatabaseUserID			= "username";
-		public const string DatabasePassword		= "password";
+		public const string DatabaseDriver		= "{MySQL ODBC 5.2w Driver}";
+		public const string DatabaseServer		= "localhost";
+		public const string DatabaseName		= "MyRunUO";
+		public const string DatabaseUserID		= "username";
+		public const string DatabasePassword	= "password";
 
 		// Should the database use transactions? This is recommended
 		public static bool UseTransactions = true;

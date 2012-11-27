@@ -2563,7 +2563,6 @@ namespace Server.Mobiles
 						if ( !bValid )
 							continue;
 					} else {
-
 						// Same goes for faction enemies.
 						if ( bFacFoe && !m_Mobile.IsEnemy( m ) )
 							continue;
