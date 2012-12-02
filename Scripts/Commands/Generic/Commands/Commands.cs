@@ -59,6 +59,7 @@ namespace Server.Commands.Generic
 			Register( new Factions.FactionKickCommand( Factions.FactionKickType.Unban ) );
 			Register( new BringToPackCommand() );
 			Register( new TraceLockdownCommand() );
+			Register( new TraceStabledCommand() );
 		}
 
 		private static List<BaseCommand> m_AllCommands = new List<BaseCommand>();
@@ -1116,6 +1117,48 @@ namespace Server.Commands.Generic
 			}
 
 			LogFailure( "No house was found." );
+		}
+	}
+
+	public class TraceStabledCommand : BaseCommand
+	{
+		public TraceStabledCommand()
+		{
+			AccessLevel = AccessLevel.Administrator;
+			Supports = CommandSupport.Simple;
+			Commands = new string[] { "TraceStabled" };
+			ObjectTypes = ObjectTypes.Mobiles;
+			Usage = "TraceStabled";
+			Description = "Shows all mobiles that have a targeted pet in their stable.";
+		}
+
+		public override void Execute( CommandEventArgs e, object obj )
+		{
+			BaseCreature bc = obj as BaseCreature;
+
+			if ( bc == null )
+			{
+				LogFailure( "That is not a pet." );
+			}
+			else if ( !bc.IsStabled )
+			{
+				LogFailure( "That pet is not stabled." );
+			}
+			else
+			{
+				ArrayList list = new ArrayList();
+
+				foreach ( Mobile m in World.Mobiles.Values )
+				{
+					if ( m.Stabled.Contains( bc ) )
+						list.Add( m );
+				}
+
+				if ( list.Count == 0 )
+					LogFailure( "No mobiles were found." );
+				else
+					e.Mobile.SendGump( new InterfaceGump( e.Mobile, new string[] { "Object" }, list, 0, null ) );
+			}
 		}
 	}
 }
