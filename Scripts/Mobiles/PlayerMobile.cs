@@ -3044,7 +3044,10 @@ namespace Server.Mobiles
 				BaseCreature bc = list[i] as BaseCreature;
 
 				if ( bc != null )
+				{
 					bc.IsStabled = true;
+					bc.StabledBy = this;
+				}
 			}
 
 			CheckAtrophies( this );
@@ -4480,6 +4483,7 @@ namespace Server.Mobiles
 					pet.SummonMaster = null;
 
 					pet.IsStabled = true;
+					pet.StabledBy = this;
 
 					pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
 
@@ -4507,6 +4511,7 @@ namespace Server.Mobiles
 				if ( pet == null || pet.Deleted )
 				{
 					pet.IsStabled = false;
+					pet.StabledBy = null;
 
 					if ( Stabled.Contains( pet ) )
 						Stabled.Remove( pet );
@@ -4527,6 +4532,7 @@ namespace Server.Mobiles
 					pet.MoveToWorld( Location, Map );
 
 					pet.IsStabled = false;
+					pet.StabledBy = null;
 
 					pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
 

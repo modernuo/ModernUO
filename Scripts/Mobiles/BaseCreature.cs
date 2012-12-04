@@ -237,6 +237,7 @@ namespace Server.Mobiles
 		private List<Mobile> m_Friends;
 
 		private bool		m_IsStabled;
+		private Mobile		m_StabledBy;
 
 		private bool		m_HasGeneratedLoot; // have we generated our loot yet?
 
@@ -266,6 +267,13 @@ namespace Server.Mobiles
 				if ( m_IsStabled )
 					StopDeleteTimer();
 			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
+		public Mobile StabledBy
+		{
+			get { return m_StabledBy; }
+			set { m_StabledBy = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

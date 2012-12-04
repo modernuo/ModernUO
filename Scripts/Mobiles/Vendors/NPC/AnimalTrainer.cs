@@ -202,6 +202,7 @@ namespace Server.Mobiles
 				if ( pet == null || pet.Deleted )
 				{
 					pet.IsStabled = false;
+					pet.StabledBy = null;
 					from.Stabled.RemoveAt( i );
 					--i;
 					continue;
@@ -322,6 +323,7 @@ namespace Server.Mobiles
 					pet.SummonMaster = null;
 
 					pet.IsStabled = true;
+					pet.StabledBy = from;
 
 					if ( Core.SE )
 						pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
@@ -359,6 +361,7 @@ namespace Server.Mobiles
 				if ( pet == null || pet.Deleted )
 				{
 					pet.IsStabled = false;
+					pet.StabledBy = null;
 					from.Stabled.RemoveAt( i );
 					--i;
 					continue;
@@ -414,6 +417,7 @@ namespace Server.Mobiles
 			pet.MoveToWorld( from.Location, from.Map );
 
 			pet.IsStabled = false;
+			pet.StabledBy = null;
 
 			if ( Core.SE )
 				pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy

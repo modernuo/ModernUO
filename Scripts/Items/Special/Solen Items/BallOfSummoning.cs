@@ -295,6 +295,7 @@ namespace Server.Items
 				pet.ControlOrder = OrderType.Follow;
 
 				pet.IsStabled = false;
+				pet.StabledBy = null;
 				from.Stabled.Remove( pet );
 
 				if ( from is PlayerMobile )

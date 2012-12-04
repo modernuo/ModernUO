@@ -2,7 +2,7 @@
 
 namespace Server.Commands
 {
-	public class Time
+	public class ShardTime
 	{
 		public static void Initialize()
 		{
@@ -13,7 +13,7 @@ namespace Server.Commands
 		[Description( "Returns the server's local time." )]
 		private static void Time_OnCommand( CommandEventArgs e )
 		{
-			e.Mobile.SendMessage( DateTime.UtcNow.ToString( "MMM ddd d HH:mm yyyy" ) );
+			e.Mobile.SendMessage( DateTime.Now.ToString() );
 		}
 	}
 }
