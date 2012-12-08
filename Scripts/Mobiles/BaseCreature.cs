@@ -1302,7 +1302,18 @@ namespace Server.Mobiles
 
 		public HonorContext ReceivedHonorContext{ get{ return m_ReceivedHonorContext; } set{ m_ReceivedHonorContext = value; } }
 
-		public virtual bool CanBeDistracted { get { return true; } }
+		/*
+
+		Seems this actually was removed on OSI somewhere between the original bug report and now.
+		We will call it ML, until we can get better information. I suspect it was on the OSI TC when
+		originally it taken out of RunUO, and not implmented on OSIs production shards until more 
+		recently.  Either way, this is, or was, accurate OSI behavior, and just entirely 
+		removing it was incorrect.  OSI followers were distracted by being attacked well into
+		AoS, at very least.
+
+		*/
+
+		public virtual bool CanBeDistracted { get { return !Core.ML ; } }
 
 		public virtual void CheckDistracted( Mobile from )
 		{
