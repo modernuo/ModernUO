@@ -471,6 +471,12 @@ namespace Server.Mobiles
 		{
 			m_Statue = statue;
 
+			if ( statue != null )
+			{
+				m_Type = statue.StatueType;
+				m_IsRewardItem = statue.IsRewardItem;
+			}
+
 			LootType = LootType.Blessed;
 			Weight = 1.0;
 		}
