@@ -4,12 +4,23 @@ using Server.HuePickers;
 
 namespace Server.Items
 {
-	public class Dyes : Item
+	public class Dyes : Item /* , IUsesRemaining */ /* TODO complete usesremaing */
 	{
+		/*
+		public bool ShowUsesRemaining { get { return false; } set { } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public virtual int UsesRemaining { get { return m_UsesRemaining; } set { m_UsesRemaining = value; } }
+
+		private int m_UsesRemaining;
+		*/
+
 		[Constructable]
 		public Dyes() : base( 0xFA9 )
 		{
 			Weight = 3.0;
+
+			/* m_UsesRemaining = 25; */
 		}
 
 		public Dyes( Serial serial ) : base( serial )
@@ -20,7 +31,9 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( (int) 1 ); // version
+
+			/* writer.Write( ( int )m_UsesRemaining );  */
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -31,6 +44,8 @@ namespace Server.Items
 
 			if ( Weight == 0.0 )
 				Weight = 3.0;
+
+			/* m_UsesRemaining = ( version == 0 ) ? 25 : reader.ReadInt(); */
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -60,9 +75,16 @@ namespace Server.Items
 				}
 			}
 
-			private static void SetTubHue( Mobile from, object state, int hue )
+			public virtual void SetTubHue( Mobile from, object state,  int hue )
 			{
-				((DyeTub)state).DyedHue = hue;
+				if( state is DyeTub )
+				{
+					DyeTub tub = state as DyeTub;
+
+					tub.DyedHue = hue;
+
+					/* dyes.m_UsesRemaining--; let this change ride till the overhaul */
+				}
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )
@@ -73,10 +95,18 @@ namespace Server.Items
 
 					if ( tub.Redyable )
 					{
-						if ( tub.CustomHuePicker == null )
-							from.SendHuePicker( new InternalPicker( tub ) );
-						else
+						if( tub.MetallicHues )   /* OSI has three metallic tubs now */
+						{
+							from.SendGump( new MetallicHuePicker( from, new MetallicHuePicker.MetallicHuePickerCallback( SetTubHue ), tub ) );
+						}
+						else if( tub.CustomHuePicker != null )
+						{
 							from.SendGump( new CustomHuePickerGump( from, tub.CustomHuePicker, new CustomHuePickerCallback( SetTubHue ), tub ) );
+						}
+						else
+						{
+							from.SendHuePicker( new InternalPicker( tub ) );
+						}
 					}
 					else if ( tub is BlackDyeTub )
 					{

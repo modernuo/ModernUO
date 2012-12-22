@@ -81,7 +81,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Redyable
+		public virtual bool Redyable
 		{
 			get
 			{
@@ -139,6 +139,9 @@ namespace Server.Items
 		public DyeTub( Serial serial ) : base( serial )
 		{
 		}
+
+		// Three metallic tubs now.
+		public virtual bool MetallicHues{ get { return false; } }
 
 		// Select the clothing to dye.
 		public virtual int TargetMessage{ get{ return 500859; } }
