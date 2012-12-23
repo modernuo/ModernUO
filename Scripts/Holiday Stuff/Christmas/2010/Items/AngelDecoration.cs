@@ -2,16 +2,16 @@
 
 namespace Server.Items.Holiday
 {
-	public class RockingHorse : Item
+	public class AngelDecoration : Item
 	{
-		public RockingHorse() : base ( 0x4214 )
+		public AngelDecoration() : base ( 0x46FA  )
 		{
 			LootType = LootType.Blessed;
 
 			Weight = 30;
 		}
 
-		public RockingHorse( Serial serial )
+		public AngelDecoration( Serial serial )
 			: base( serial )
 		{
 		}
