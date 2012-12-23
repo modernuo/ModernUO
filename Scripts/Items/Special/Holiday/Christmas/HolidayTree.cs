@@ -265,7 +265,7 @@ namespace Server.Items
 				}
 			}
 
-            Timer.DelayCall( TimeSpan.Zero, ValidatePlacement );
+		  Timer.DelayCall( TimeSpan.Zero, ValidatePlacement );
 		}
 
 		public void ValidatePlacement()
