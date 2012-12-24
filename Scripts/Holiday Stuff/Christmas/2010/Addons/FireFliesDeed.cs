@@ -194,7 +194,7 @@ namespace Server.Items
 					default: return;
 				}
 
-				m_Placer.Target = new InternalTarget( m_Deed, m_Placer, m_ItemID  );
+				m_Placer.Target = new InternalTarget( m_Deed,  m_ItemID  );
 
 			}
 		}
@@ -203,9 +203,8 @@ namespace Server.Items
 		{
 			private FirefliesDeed m_FirefliesDeed;
 			private int m_ItemID;
-			private Mobile m_Placer;
 
-			public InternalTarget( FirefliesDeed m_Deed, Mobile m_Placer, int itemid )
+			public InternalTarget( FirefliesDeed m_Deed, int itemid )
 				: base( -1, true, TargetFlags.None )
 			{
 				m_FirefliesDeed = m_Deed;
