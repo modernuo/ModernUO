@@ -241,7 +241,17 @@ namespace Server.Items
 								bool north = BaseAddon.IsWall( p3d.X, p3d.Y - 1, p3d.Z, map );
 								bool west = BaseAddon.IsWall( p3d.X - 1, p3d.Y, p3d.Z, map );
 
-								if( ( m_ItemID == 0x2336 && north ) || ( m_ItemID == 0x2332 && west ) || from.Map.GetItemsInRange( p3d, 1 ) )
+								bool isclear = true;
+
+								foreach( Item item in Map.Malas.GetItemsInRange( p3d, 0 ) )
+								{
+									if( item is Fireflies )
+									{
+										isclear = false;
+									}
+								}
+
+								if( ( ( m_ItemID == 0x2336 && north ) || ( m_ItemID == 0x2332 && west ) ) && isclear )
 								{
 									Fireflies flies = new Fireflies( m_ItemID );
 
@@ -253,7 +263,7 @@ namespace Server.Items
 								}
 
 								else
-									from.SendLocalizedMessage( 1150065 ); // The banner must be placed next to a wall.
+									from.SendLocalizedMessage( 1150065 ); // Holiday fireflies must be placed next to a wall.
 							}
 							else
 								from.SendLocalizedMessage( 1042036 ); // That location is not in your house.
