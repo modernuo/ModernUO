@@ -48,7 +48,8 @@ namespace Server.Items
 		DreadHorn,
 		Minotaur,
 		BlackCat,
-		HalloweenGhoul
+		HalloweenGhoul,
+		Santa
 	}
 
 	public class MonsterStatuetteInfo
@@ -115,7 +116,8 @@ namespace Server.Items
 				/* DreadHorn */			new MonsterStatuetteInfo( 1031651, 0x2D83, 0xA8 ),
 				/* Minotaur */			new MonsterStatuetteInfo( 1031657, 0x2D89, 0x596 ),
 				/* Black Cat */			new MonsterStatuetteInfo( 1096928, 0x4688, 0x69 ),
-				/* HalloweenGhoul */	new MonsterStatuetteInfo( 1076782, 0x2109, 0x482 )
+				/* HalloweenGhoul */	new MonsterStatuetteInfo( 1076782, 0x2109, 0x482 ),
+				/* Santa */			new MonsterStatuetteInfo( 1097968, 0x4A98, 0x669 )
 			};
 
 		public static MonsterStatuetteInfo GetInfo( MonsterStatuetteType type )
