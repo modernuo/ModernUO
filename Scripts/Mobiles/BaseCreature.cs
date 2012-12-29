@@ -517,8 +517,8 @@ namespace Server.Mobiles
 		public virtual double BreathDamageScalar{ get{ return (Core.AOS ? 0.16 : 0.05); } }
 
 		// Min/max seconds until next breath
-		public virtual double BreathMinDelay{ get{ return 10.0; } }
-		public virtual double BreathMaxDelay{ get{ return 15.0; } }
+		public virtual double BreathMinDelay{ get{ return 30.0; } }
+		public virtual double BreathMaxDelay{ get{ return 45.0; } }
 
 		// Creature stops moving for 1.0 seconds while breathing
 		public virtual double BreathStallTime{ get{ return 1.0; } }
@@ -3471,7 +3471,7 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if( AcquireOnApproach && FightMode != FightMode.Aggressor )
+			if( AcquireOnApproach && ( !Controlled && !Summoned ) && FightMode != FightMode.Aggressor )
 			{
 				if( InRange( m.Location, AcquireOnApproachRange ) && !InRange( oldLocation, AcquireOnApproachRange ) )
 				{
@@ -5208,12 +5208,12 @@ namespace Server.Mobiles
 
 				if( target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful( target ) && target.Map == this.Map && !IsDeadBondedPet && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
 				{
-					if( ( DateTime.Now - m_NextBreathTime ) < TimeSpan.FromSeconds( 30 ) )
+					if( ( DateTime.Now - m_NextBreathTime ) < TimeSpan.FromSeconds( 30 ) && Utility.RandomBool() )
 					{
 						BreathStart( target );
 					}
 
-					m_NextBreathTime = DateTime.Now + TimeSpan.FromSeconds( BreathMinDelay + ( Utility.RandomDouble() * BreathMaxDelay ) );
+					m_NextBreathTime = DateTime.Now + TimeSpan.FromSeconds( BreathMinDelay + ( ( Utility.RandomDouble( ) * ( BreathMaxDelay - BreathMinDelay ) ) ) );
 				}
 			}
 
