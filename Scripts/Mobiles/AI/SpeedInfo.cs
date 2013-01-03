@@ -147,7 +147,7 @@ namespace Server
 				/* Medium */
 				new SpeedInfo( 0.25, 0.5, new Type[]
 				{
-					typeof( ToxicElemental ),	typeof( AgapiteElemental ),	typeof( Alligator ),
+					typeof( AcidElemental ),	typeof( AgapiteElemental ),	typeof( Alligator ),
 					typeof( AncientLich ),		typeof( Betrayer ),			typeof( Bird ),
 					typeof( BlackBear ),		typeof( BlackSolenInfiltratorQueen ), typeof( BlackSolenInfiltratorWarrior ),
 					typeof( BlackSolenQueen ),	typeof( BlackSolenWarrior ), typeof( BlackSolenWorker ),

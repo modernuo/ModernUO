@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	public abstract class BaseFamiliar : BaseCreature
 	{
 		public BaseFamiliar()
-			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, -1, -1 )
+			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, .1, .1 )
 		{
 		}
 

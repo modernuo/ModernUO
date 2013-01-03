@@ -4,11 +4,12 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
+	[TypeAlias( "Server.Mobiles.ToxicElemental" )]
 	[CorpseName( "an acid elemental corpse" )]
-	public class ToxicElemental : BaseCreature
+	public class AcidElemental : BaseCreature
 	{
 		[Constructable]
-		public ToxicElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public AcidElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an acid elemental";
 			Body = 0x9E;
@@ -57,7 +58,8 @@ namespace Server.Mobiles
 
 		public override int TreasureMapLevel{ get{ return Core.AOS ? 2 : 3; } }
 
-		public ToxicElemental( Serial serial ) : base( serial )
+		public AcidElemental( Serial serial )
+			: base( serial )
 		{
 		}
 
