@@ -2,12 +2,12 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0xC17, 0xC17 )]
+	[Flipable( 0xC19, 0xC1a )]
 	public class BrokenFallenChairComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076264; } } // Broken Fallen Chair
 
-		public BrokenFallenChairComponent() : base( 0xC17 )
+		public BrokenFallenChairComponent() : base( 0xC19 )
 		{
 		}
 
