@@ -316,7 +316,7 @@ namespace Server.Mobiles
 			if ( !Core.AOS )
 				NameHue = 0x35;
 
-			InitStats( 75, 75, 75 );
+			InitStats( 100, 100, 25 );
 			InitBody();
 			InitOutfit();
 
@@ -336,7 +336,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
 
 			writer.Write( (bool) BaseHouse.NewVendorSystem );
 			writer.Write( (string) m_ShopName );
@@ -368,6 +368,7 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
+				case 2:
 				case 1:
 				{
 					newVendorSystem = reader.ReadBool();
@@ -430,6 +431,9 @@ namespace Server.Mobiles
 					m_BankAccount = 0;
 				}
 			}
+
+			if ( version < 2 && RawStr == 75 && RawDex == 75 && RawInt == 75 )
+				InitStats( 100, 100, 25 );
 
 			TimeSpan delay = m_NextPayTime - DateTime.Now;
 
