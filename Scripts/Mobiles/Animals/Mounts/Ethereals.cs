@@ -133,7 +133,7 @@ namespace Server.Mobiles
 				// CheckIsUsableBy sends the message
 				return false;
 			}
-			else if( !BaseMount.CheckMountAllowed( from, true ) )
+			else if( !BaseMount.CheckMountAllowed( from ) )
 			{
 				// CheckMountAllowed sends the message
 				return false;

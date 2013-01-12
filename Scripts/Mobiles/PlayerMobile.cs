@@ -71,6 +71,15 @@ namespace Server.Mobiles
 		Red,
 		Black
 	}
+
+	public enum BlockMountType
+	{
+		None = -1,
+		Dazed = 1040024,
+		BolaRecovery = 1062910,
+		DismountRecovery = 1070859
+	}
+
 	#endregion
 
 	public partial class PlayerMobile : Mobile, IHonorTarget
@@ -655,6 +664,74 @@ namespace Server.Mobiles
 					}
 				}
 			}
+		}
+
+		private List<MountBlock> m_Blocks;
+
+		public BlockMountType BlockReason { get { return ( CheckList() ) ? m_Blocks[ 0 ].type : BlockMountType.None; } }
+
+		private class MountBlock
+		{
+			public BlockMountType type;
+			public Timer m_Timer;
+
+			public MountBlock( TimeSpan duration, BlockMountType Type, List<MountBlock> list )
+			{
+				type = Type;
+
+				m_Timer = Timer.DelayCall( duration, new TimerStateCallback<List<MountBlock>>( RemoveBlock ), list );
+			}
+
+			private void RemoveBlock( List<MountBlock> list )
+			{
+				if( list != null )
+				{
+					list.Remove( this );
+				}
+			}
+		}
+
+		public void AddMountBlock( BlockMountType type, TimeSpan duration )
+		{
+			CheckList();
+
+			m_Blocks.Add( new MountBlock( duration, type, m_Blocks ) );
+
+			IMount mount = this.Mount;
+
+			if( mount != null )
+			{
+				mount.Rider = null;
+			}
+		}
+
+		private bool CheckList()
+		{
+			if( m_Blocks == null )
+			{
+				m_Blocks = new List<MountBlock>();
+			}
+			else if( m_Blocks.Count > 0 )
+			{
+				List<MountBlock> toRemove = new List<MountBlock>();
+
+				int count = m_Blocks.Count;
+
+				for( int i = 0; i < count; i++ )
+				{
+					if( !m_Blocks[ i ].m_Timer.Running )
+					{
+						toRemove.Add( m_Blocks[ i ] );
+					}
+				}
+
+				foreach( MountBlock block in toRemove )
+				{
+					m_Blocks.Remove( block );
+				}
+			}
+
+			return m_Blocks.Count > 0;
 		}
 
 		public override void OnSkillInvalidated( Skill skill )
