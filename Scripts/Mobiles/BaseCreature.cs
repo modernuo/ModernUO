@@ -477,6 +477,8 @@ namespace Server.Mobiles
 			}
 		}
 
+		public virtual bool HasManaOveride { get { return false; } }
+
 		public virtual FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public virtual PackInstinct PackInstinct{ get{ return PackInstinct.None; } }
 
@@ -5249,7 +5251,7 @@ namespace Server.Mobiles
 					}
 				}
 			}
-			else
+			else if( m_FailedReturnHome > 0 )
 			{
 				m_FailedReturnHome = 0;
 			}

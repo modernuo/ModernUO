@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -21,8 +22,13 @@ namespace Server.Items
 
 		public override void OnHit(Mobile attacker, Mobile defender, int damage)
 		{
-			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
-				return;
+			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			{
+				if( !( defender is BaseCreature ) || !( defender as BaseCreature ).HasManaOveride )
+				{
+					return;
+				}
+			}
 
 			ClearCurrentAbility( attacker );
 
