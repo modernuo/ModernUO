@@ -33,7 +33,7 @@ namespace Server.Items
 					this.GumpID = 0x42;
 					break;
 
-				case 4:// Keg
+				case 3:// Keg
 					this.ItemID = 0xe7f;
 					this.GumpID = 0x3e;
 					break;

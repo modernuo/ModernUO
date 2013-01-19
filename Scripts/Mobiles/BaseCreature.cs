@@ -246,6 +246,9 @@ namespace Server.Mobiles
 		private bool		m_IsPrisoner;
 
 		private string		m_CorpseNameOverride;
+
+		private int m_FailedReturnHome; /* return to home failure counter */
+
 		#endregion
 
 		public virtual InhumanSpeech SpeechType{ get{ return null; } }
@@ -5234,6 +5237,22 @@ namespace Server.Mobiles
 					m_NextHealTime = DateTime.Now + TimeSpan.FromSeconds( HealInterval );
 				}
 			}
+			else if( ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !InRange( Home, ( RangeHome ) ) )
+			{
+				if( Utility.RandomDouble() < .05 )  /* some throttling */
+				{
+					m_FailedReturnHome = !this.Move( GetDirectionTo( Home.X, Home.Y ) ) ? m_FailedReturnHome + 1 : 0;
+
+					if( m_FailedReturnHome > 5 )
+					{
+						this.SetLocation( this.Home, true );
+					}
+				}
+			}
+			else
+			{
+				m_FailedReturnHome = 0;
+			}
 
 			if ( HasAura && DateTime.Now >= m_NextAura )
 			{
@@ -5462,18 +5481,29 @@ namespace Server.Mobiles
 
 		public virtual bool PlayerRangeSensitive{ get{ return (this.CurrentWayPoint == null); } }	//If they are following a waypoint, they'll continue to follow it even if players aren't around
 
+		/* until we are sure about who should be getting deleted, move them instead */
+		/* On OSI, they despawn */
+
 		public override void OnSectorDeactivate()
 		{
-			if ( PlayerRangeSensitive && m_AI != null )
+			if( ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !this.InRange( Home, ( RangeHome + 10 ) ) )
+			{
+				this.SetLocation( Home, true );
+			}
+			else if( PlayerRangeSensitive && m_AI != null )
+			{
 				m_AI.Deactivate();
+			}
 
 			base.OnSectorDeactivate();
 		}
 
 		public override void OnSectorActivate()
 		{
-			if ( PlayerRangeSensitive && m_AI != null )
+			if( PlayerRangeSensitive && m_AI != null )
+			{
 				m_AI.Activate();
+			}
 
 			base.OnSectorActivate();
 		}
