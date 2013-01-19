@@ -16,7 +16,7 @@ namespace Server.Items
 		{
 			bool UseFirstItemId = Utility.RandomBool();
 
-			switch( Utility.RandomList( 0, 1, 2 ) )
+			switch( Utility.Random( 4 ) )
 			{
 				case 0:// Wooden Chest
 					this.ItemID = ( UseFirstItemId ? 0xe42 : 0xe43 );
@@ -31,6 +31,11 @@ namespace Server.Items
 				case 2:// Metal Golden Chest
 					this.ItemID = ( UseFirstItemId ? 0xe40 : 0xe41 );
 					this.GumpID = 0x42;
+					break;
+
+				case 4:// Keg
+					this.ItemID = 0xe7f;
+					this.GumpID = 0x3e;
 					break;
 			}
 		}
