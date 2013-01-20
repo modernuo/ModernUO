@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -24,10 +23,7 @@ namespace Server.Items
 		{
 			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
 			{
-				if( !( defender is BaseCreature ) || !( defender as BaseCreature ).HasManaOveride )
-				{
-					return;
-				}
+				return;
 			}
 
 			ClearCurrentAbility( attacker );

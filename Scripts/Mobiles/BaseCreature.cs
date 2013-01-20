@@ -5239,9 +5239,10 @@ namespace Server.Mobiles
 					m_NextHealTime = DateTime.Now + TimeSpan.FromSeconds( HealInterval );
 				}
 			}
-			else if( ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !InRange( Home, ( RangeHome ) ) )
+
+			if( ReturnsToHome && ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !InRange( Home, ( RangeHome ) ) )
 			{
-				if( Utility.RandomDouble() < .05 )  /* some throttling */
+				if( ( Combatant == null ) && ( Warmode == false ) && Utility.RandomDouble() < .05 )  /* some throttling */
 				{
 					m_FailedReturnHome = !this.Move( GetDirectionTo( Home.X, Home.Y ) ) ? m_FailedReturnHome + 1 : 0;
 
@@ -5486,11 +5487,17 @@ namespace Server.Mobiles
 		/* until we are sure about who should be getting deleted, move them instead */
 		/* On OSI, they despawn */
 
+		public virtual bool ReturnsToHome { get { return true; } }
+
+		private bool m_ReturnQueued;
+
 		public override void OnSectorDeactivate()
 		{
-			if( ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !this.InRange( Home, ( RangeHome + 10 ) ) )
+			if( ReturnsToHome && !m_ReturnQueued && ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !this.InRange( Home, ( RangeHome + 5 ) ) )
 			{
-				this.SetLocation( Home, true );
+				Timer.DelayCall( TimeSpan.FromSeconds( Utility.Random( 10 ) ), new TimerCallback( GoHome_Callback ) );
+
+				m_ReturnQueued = true;
 			}
 			else if( PlayerRangeSensitive && m_AI != null )
 			{
@@ -5498,6 +5505,21 @@ namespace Server.Mobiles
 			}
 
 			base.OnSectorDeactivate();
+		}
+
+		public void GoHome_Callback()
+		{
+			if( !( ( Map.GetSector( X, Y ) ).Active ) )
+			{
+				this.SetLocation( Home, true );
+
+				if( !( ( Map.GetSector( X, Y ) ).Active ) && m_AI != null )
+				{
+					m_AI.Deactivate();
+				}
+			}
+
+			m_ReturnQueued = false;
 		}
 
 		public override void OnSectorActivate()

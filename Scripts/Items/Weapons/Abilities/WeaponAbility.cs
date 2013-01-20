@@ -3,7 +3,7 @@ using System.Collections;
 using Server;
 using Server.Network;
 using Server.Spells;
-
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -141,6 +141,11 @@ namespace Server.Items
 
 			if ( from.Mana < mana )
 			{
+				if( ( from is BaseCreature ) && ( from as BaseCreature ).HasManaOveride )
+				{
+					return true;
+				}
+
 				from.SendLocalizedMessage( 1060181, mana.ToString() ); // You need ~1_MANA_REQUIREMENT~ mana to perform that attack
 				return false;
 			}
