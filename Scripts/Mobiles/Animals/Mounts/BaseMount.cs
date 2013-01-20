@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using Server;
+using Server.Items;
+using Server.Targeting;
 
 namespace Server.Mobiles
 {
@@ -256,6 +258,11 @@ namespace Server.Mobiles
 						value.Direction = this.Direction;
 
 						Internalize();
+					}
+
+					if( m_Rider.Target is BolaTarget )
+					{
+						m_Rider.Target.Cancel( TargetCancelType.Canceled );
 					}
 
 					m_Rider = value;
