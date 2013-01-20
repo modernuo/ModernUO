@@ -262,7 +262,7 @@ namespace Server.Mobiles
 
 					if( m_Rider.Target is Bola.BolaTarget )
 					{
-						m_Rider.Target.Cancel( TargetCancelType.Canceled );
+						m_Rider.Target.Cancel( this, TargetCancelType.Canceled );
 					}
 
 					m_Rider = value;
