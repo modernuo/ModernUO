@@ -260,7 +260,7 @@ namespace Server.Mobiles
 						Internalize();
 					}
 
-					if( m_Rider.Target is BolaTarget )
+					if( m_Rider.Target is Bola.BolaTarget )
 					{
 						m_Rider.Target.Cancel( TargetCancelType.Canceled );
 					}
