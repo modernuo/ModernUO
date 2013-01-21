@@ -112,7 +112,7 @@ namespace Server.Items
 			string newName = ( nameEntry == null ? null : nameEntry.Text.Trim() );
 			
 
-			if ( !NameVerification.Validate( newName, 2, 16, true, true, true, 1, NameVerification.SpaceDashPeriodQuote ) )
+			if ( !NameVerification.Validate( newName, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote ) )
 			{
 				m.SendMessage( "That name is unacceptable." );
 				return;
