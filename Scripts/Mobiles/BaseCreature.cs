@@ -3435,6 +3435,14 @@ namespace Server.Mobiles
 			return true; // entered idle state
 		}
 
+		public override void Animate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
+		{
+			if( !Mounted )
+			{
+				base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
+			}
+		}
+
 		private void CheckAIActive()
 		{
 			Map map = Map;

@@ -3341,6 +3341,14 @@ namespace Server.Mobiles
 			return base.CanSee( m );
 		}
 
+		public override void Animate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
+		{
+			if( !Mounted )
+			{
+				base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
+			}
+		}
+
 		public override bool CanSee( Item item )
 		{
 			if ( m_DesignContext != null && m_DesignContext.Foundation.IsHiddenToCustomizer( item ) )
