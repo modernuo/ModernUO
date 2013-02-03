@@ -259,10 +259,8 @@ namespace Server.Mobiles
 
 						Internalize();
 
-						if( m_Rider.Target != null && m_Rider.Target is Bola.BolaTarget )
-						{
-							m_Rider.Target.Cancel( this, TargetCancelType.Canceled );
-						}
+						if ( value.Target is Bola.BolaTarget )
+							Target.Cancel( value );
 					}
 
 					m_Rider = value;
