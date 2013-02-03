@@ -132,7 +132,7 @@ namespace Server.Items
 			( ( Mobile )state ).EndAction( typeof( Bola ) );
 		}
 
-		private class BolaTarget : Target
+		public class BolaTarget : Target
 		{
 			private Bola m_Bola;
 
