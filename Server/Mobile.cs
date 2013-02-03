@@ -4361,7 +4361,7 @@ namespace Server
 
 								foreach( NetState ns in eable )
 								{
-									if( ns.Mobile != from && ns.Mobile.CanSee( from ) )
+									if( ns.Mobile != from && ns.Mobile.CanSee( from ) && ns.Mobile.CanSee( root ) )
 									{
 										if( p == null )
 										{
@@ -4487,7 +4487,7 @@ namespace Server
 
 		public virtual void SendDropEffect( Item item )
 		{
-			if( Mobile.DragEffects )
+			if( Mobile.DragEffects && !item.Deleted )
 			{
 				Map map = m_Map;
 				object root = item.RootParent;
@@ -4499,7 +4499,7 @@ namespace Server
 
 					foreach( NetState ns in eable )
 					{
-						if( ns.Mobile != this && ns.Mobile.CanSee( this ) )
+						if( ns.Mobile != this && ns.Mobile.CanSee( this ) && ns.Mobile.CanSee( root ) )
 						{
 							if( p == null )
 							{
