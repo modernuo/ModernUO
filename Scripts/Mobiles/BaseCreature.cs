@@ -253,6 +253,23 @@ namespace Server.Mobiles
 
 		public virtual InhumanSpeech SpeechType{ get{ return null; } }
 
+		/* Do not serialize this till the code is finalized */
+
+		private bool m_SeeksHome;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool SeeksHome
+		{
+			get
+			{
+				return m_SeeksHome;
+			}
+			set
+			{
+				m_SeeksHome = value;
+			}
+		}
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string CorpseNameOverride
 		{
@@ -303,7 +320,7 @@ namespace Server.Mobiles
 		public virtual TimeSpan BondingAbandonDelay{ get{ return TimeSpan.FromDays( 1.0 ); } }
 
 		public override bool CanRegenHits{ get{ return !m_IsDeadPet && base.CanRegenHits; } }
-		public override bool CanRegenStam{ get{ return !m_IsDeadPet && base.CanRegenStam; } }
+		public override bool CanRegenStam{ get{ return !IsParagon && !m_IsDeadPet && base.CanRegenStam; } }
 		public override bool CanRegenMana{ get{ return !m_IsDeadPet && base.CanRegenMana; } }
 
 		public override bool IsDeadBondedPet{ get{ return m_IsDeadPet; } }
@@ -4900,6 +4917,8 @@ namespace Server.Mobiles
 
 				CurrentWayPoint = null;//so tamed animals don't try to go back
 
+				Home = Point3D.Zero;
+
 				ControlMaster = m;
 				Controlled = true;
 				ControlTarget = null;
@@ -5248,21 +5267,19 @@ namespace Server.Mobiles
 				}
 			}
 
-			if( ReturnsToHome && ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !InRange( Home, ( RangeHome ) ) )
+			if( ReturnsToHome && this.IsSpawnerBound() )
 			{
-				if( ( Combatant == null ) && ( Warmode == false ) && Utility.RandomDouble() < .05 )  /* some throttling */
+				if( ( Combatant == null ) && ( Warmode == false ) && Utility.RandomDouble() < .10 )  /* some throttling */
 				{
 					m_FailedReturnHome = !this.Move( GetDirectionTo( Home.X, Home.Y ) ) ? m_FailedReturnHome + 1 : 0;
 
 					if( m_FailedReturnHome > 5 )
 					{
 						this.SetLocation( this.Home, true );
+
+						m_FailedReturnHome = 0;
 					}
 				}
-			}
-			else if( m_FailedReturnHome > 0 )
-			{
-				m_FailedReturnHome = 0;
 			}
 
 			if ( HasAura && DateTime.Now >= m_NextAura )
@@ -5495,15 +5512,40 @@ namespace Server.Mobiles
 		/* until we are sure about who should be getting deleted, move them instead */
 		/* On OSI, they despawn */
 
-		public virtual bool ReturnsToHome { get { return true; } }
-
 		private bool m_ReturnQueued;
+
+		private bool IsSpawnerBound()
+		{
+			if( ( Map != null ) && ( Map != Map.Internal ) )
+			{
+				if( FightMode != FightMode.None && ( RangeHome >= 0 ) )
+				{
+					if( !Controlled && !Summoned )
+					{
+						if( Spawner != null && Spawner is Spawner && ( ( Spawner as Spawner ).Map ) == Map )
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+		public virtual bool ReturnsToHome
+		{
+			get
+			{
+				return ( m_SeeksHome && ( Home != Point3D.Zero ) && !m_ReturnQueued && !Controlled && !Summoned );
+			}
+		}
 
 		public override void OnSectorDeactivate()
 		{
-			if( ReturnsToHome && !m_ReturnQueued && ( this.FightMode != FightMode.None ) && ( Home != Point3D.Zero ) && ( RangeHome >= 0 ) && !this.InRange( Home, ( RangeHome + 5 ) ) )
+			if( !Deleted && ReturnsToHome && IsSpawnerBound() && !this.InRange( Home, ( RangeHome + 5 ) ) )
 			{
-				Timer.DelayCall( TimeSpan.FromSeconds( Utility.Random( 10 ) ), new TimerCallback( GoHome_Callback ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( ( Utility.Random( 45 ) + 15 ) ), new TimerCallback( GoHome_Callback ) );
 
 				m_ReturnQueued = true;
 			}
@@ -5517,13 +5559,16 @@ namespace Server.Mobiles
 
 		public void GoHome_Callback()
 		{
-			if( !( ( Map.GetSector( X, Y ) ).Active ) )
+			if( m_ReturnQueued && IsSpawnerBound() )
 			{
-				this.SetLocation( Home, true );
-
-				if( !( ( Map.GetSector( X, Y ) ).Active ) && m_AI != null )
+				if( !( ( Map.GetSector( X, Y ) ).Active ) )
 				{
-					m_AI.Deactivate();
+					this.SetLocation( Home, true );
+
+					if( !( ( Map.GetSector( X, Y ) ).Active ) && m_AI != null )
+					{
+						m_AI.Deactivate();
+					}
 				}
 			}
 

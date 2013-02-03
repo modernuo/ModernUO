@@ -13,6 +13,36 @@ namespace Server.Mobiles
 			Map.Ilshenar
 		};
 
+		private static TimeSpan FastRegenRate = TimeSpan.FromSeconds( .5 );
+		private static TimeSpan CPUSaverRate = TimeSpan.FromSeconds( 2 );
+
+		private class ParagonStamRegen : Timer
+		{
+			private BaseCreature m_Owner;
+
+			public ParagonStamRegen( Mobile m )
+				: base( FastRegenRate, FastRegenRate )
+			{
+				this.Priority = TimerPriority.FiftyMS;
+
+				m_Owner = m as BaseCreature;
+			}
+
+			protected override void OnTick()
+			{
+				if( !m_Owner.Deleted && m_Owner.IsParagon && m_Owner .Map != Map.Internal )
+				{
+					m_Owner.Stam++;
+
+					Delay = Interval = ( m_Owner.Stam < ( m_Owner.StamMax * .75 ) ) ? FastRegenRate : CPUSaverRate;
+				}
+				else
+				{
+					Stop();
+				}
+			}
+		}
+
 		public static Type[] Artifacts = new Type[]
 		{
 			typeof( GoldBricks ), typeof( PhillipsWoodenSteed ),
@@ -90,11 +120,14 @@ namespace Server.Mobiles
 				if( Math.Abs( bc.Karma ) > 32000 )
 					bc.Karma = 32000 * Math.Sign( bc.Karma );
 			}
+
+			new ParagonStamRegen( bc ).Start();
 		}
 
 		public static void UnConvert( BaseCreature bc )
 		{
-			if ( !bc.IsParagon )
+			if( !bc.IsParagon )
+				if( !bc.IsParagon )
 				return;
 
 			bc.Hue = 0;

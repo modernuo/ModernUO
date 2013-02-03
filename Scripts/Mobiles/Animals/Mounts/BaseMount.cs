@@ -258,11 +258,11 @@ namespace Server.Mobiles
 						value.Direction = this.Direction;
 
 						Internalize();
-					}
 
-					if( m_Rider != null && m_Rider.Target is Bola.BolaTarget )
-					{
-						m_Rider.Target.Cancel( this, TargetCancelType.Canceled );
+						if( m_Rider.Target != null && m_Rider.Target is Bola.BolaTarget )
+						{
+							m_Rider.Target.Cancel( this, TargetCancelType.Canceled );
+						}
 					}
 
 					m_Rider = value;
