@@ -820,6 +820,18 @@ namespace Server.Network
 
 					break;
 				}
+				case 0x2F: // Old scroll double click
+				{
+					/*
+					 * This command is still sent for items 0xEF3 - 0xEF9
+					 *
+					 * Command is one of three, depending on the item ID of the scroll:
+					 * - [scroll serial]
+					 * - [scroll serial] [target serial]
+					 * - [scroll serial] [x] [y] [z]
+					 */
+					break;
+				}
 				default:
 				{
 					Console.WriteLine( "Client: {0}: Unknown text-command type 0x{1:X2}: {2}", state, type, command );

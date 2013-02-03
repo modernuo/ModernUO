@@ -1,4 +1,5 @@
 using System;
+using Server.Mobiles;
 
 namespace Server
 {
@@ -86,6 +87,7 @@ namespace Server
 		{
 			return Atrophy( from, virtue, 1 );
 		}
+
 		public static bool Atrophy( Mobile from, VirtueName virtue, int amount )
 		{
 			int current = from.Virtues.GetValue( (int)virtue );
@@ -111,6 +113,50 @@ namespace Server
 		public static bool IsKnight( Mobile from, VirtueName virtue )
 		{
 			return ( GetLevel( from, virtue ) >= VirtueLevel.Knight );
+		}
+
+		public static void AwardVirtue( PlayerMobile pm, VirtueName virtue, int amount )
+		{
+			if ( virtue == VirtueName.Compassion )
+			{
+				if ( pm.CompassionGains > 0 && DateTime.Now > pm.NextCompassionDay )
+				{
+					pm.NextCompassionDay = DateTime.MinValue;
+					pm.CompassionGains = 0;
+				}
+
+				if ( pm.CompassionGains >= 5 )
+				{
+					pm.SendLocalizedMessage( 1053004 ); // You must wait about a day before you can gain in compassion again.
+					return;
+				}
+			}
+
+			bool gainedPath = false;
+			string virtueName = Enum.GetName( typeof( VirtueName ), virtue );
+
+			if ( VirtueHelper.Award( pm, virtue, amount, ref gainedPath ) )
+			{
+				// TODO: Localize?
+				if ( gainedPath )
+					pm.SendMessage( "You have gained a path in {0}!", virtueName );
+				else
+					pm.SendMessage( "You have gained in {0}.", virtueName );
+
+				if ( virtue == VirtueName.Compassion )
+				{
+					pm.NextCompassionDay = DateTime.Now + TimeSpan.FromDays( 1.0 );
+					++pm.CompassionGains;
+
+					if ( pm.CompassionGains >= 5 )
+						pm.SendLocalizedMessage( 1053004 ); // You must wait about a day before you can gain in compassion again.
+				}
+			}
+			else
+			{
+				// TODO: Localize?
+				pm.SendMessage( "You have achieved the highest path of {0} and can no longer gain any further.", virtueName );
+			}
 		}
 	}
 }

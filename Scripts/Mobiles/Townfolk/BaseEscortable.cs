@@ -6,18 +6,109 @@ using Server.Items;
 using Server.Network;
 using Server.ContextMenus;
 using EDI = Server.Mobiles.EscortDestinationInfo;
+using Server.Engines.MLQuests;
+using Server.Engines.MLQuests.Definitions;
+using Server.Engines.MLQuests.Objectives;
 
 namespace Server.Mobiles
 {
 	public class BaseEscortable : BaseCreature
 	{
+		public static readonly TimeSpan EscortDelay = TimeSpan.FromMinutes( 5.0 );
+		public static readonly TimeSpan AbandonDelay = MLQuestSystem.Enabled ? TimeSpan.FromMinutes( 1.0 ) : TimeSpan.FromMinutes( 2.0 );
+		public static readonly TimeSpan DeleteTime = MLQuestSystem.Enabled ? TimeSpan.FromSeconds( 100 ) : TimeSpan.FromSeconds( 30 );
+
+		public override bool StaticMLQuester { get { return false; } } // Suppress automatic quest registration on creation/deserialization
+
+		private MLQuest m_MLQuest;
+
+		protected override List<MLQuest> ConstructQuestList()
+		{
+			if ( m_MLQuest == null )
+			{
+				Region reg = Region;
+				Type[] list = reg.IsPartOf( "Haven Island" ) ? m_MLQuestTypesNH : m_MLQuestTypes;
+
+				if ( MLQuestSystem.Debug )
+					Console.WriteLine( "DEBUG: Assigning quest to BaseEscortable {0}, Region = {1}", Serial, ( reg == null ) ? "-null-" : reg.Name );
+
+				int randomIdx = Utility.Random( list.Length );
+
+				for ( int i = 0; i < list.Length; ++i )
+				{
+					Type questType = list[randomIdx];
+
+					MLQuest quest = MLQuestSystem.FindQuest( questType );
+
+					if ( quest != null )
+					{
+						bool okay = true;
+
+						foreach ( BaseObjective obj in quest.Objectives )
+						{
+							if ( obj is EscortObjective && ( (EscortObjective)obj ).Destination.Contains( reg ) )
+							{
+								okay = false; // We're already there!
+								break;
+							}
+						}
+
+						if ( okay )
+						{
+							SetMLQuest( quest );
+							break;
+						}
+					}
+					else if ( MLQuestSystem.Debug )
+					{
+						Console.WriteLine( "WARNING: Type {0} should not be eligible as it is not a registered quest", questType.Name );
+					}
+
+					randomIdx = ( randomIdx + 1 ) % list.Length;
+				}
+
+				if ( m_MLQuest == null )
+				{
+					if ( MLQuestSystem.Debug )
+						Console.WriteLine( "WARNING: No suitable quest found for escort {0}", Serial );
+
+					return null;
+				}
+			}
+
+			List<MLQuest> result = new List<MLQuest>();
+			result.Add( m_MLQuest );
+
+			return result;
+		}
+
+		public override bool CanShout { get { return ( !Controlled && !IsBeingDeleted ); } }
+
+		public override void Shout( PlayerMobile pm )
+		{
+			/*
+			 * 1072301 - You there!  Care to hear how to earn some easy gold?
+			 * 1072302 - Adventurer!  I have an offer for you.
+			 * 1072303 - Wait!  I have an opportunity for you to make some gold!
+			 */
+			MLQuestSystem.Tell( this, pm, Utility.Random( 1072301, 3 ) );
+		}
+
 		private EDI m_Destination;
 		private string m_DestinationString;
 
 		private DateTime m_DeleteTime;
 		private Timer m_DeleteTimer;
 
+		private bool m_DeleteCorpse = false;
+
+		public bool IsBeingDeleted
+		{
+			get { return ( m_DeleteTimer != null ); }
+		}
+
 		public override bool Commandable { get { return false; } } // Our master cannot boss us around!
+		public override bool DeleteCorpseOnDeath { get { return m_DeleteCorpse; } }
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public string Destination
@@ -26,19 +117,68 @@ namespace Server.Mobiles
 			set { m_DestinationString = value; m_Destination = EDI.Find(value); }
 		}
 
+		// Classic list
+		// Used when: !MLQuestSystem.Enabled && !Core.ML
 		private static string[] m_TownNames = new string[]
 		{
 			"Cove", "Britain", "Jhelom",
 			"Minoc", "Ocllo", "Trinsic",
-			"Vesper", "Yew", "Skara Brae",		//Original List, will need to add it back for Pre-ML shards
+			"Vesper", "Yew", "Skara Brae",
 			"Nujel'm", "Moonglow", "Magincia"
 		};
 
+		// ML list, pre-ML quest system
+		// Used when: !MLQuestSystem.Enabled && Core.ML
 		private static string[] m_MLTownNames = new string[]
 		{
-			"Cove", "Serpent's Hold", "Jhelom",		 //ML List
+			"Cove", "Serpent's Hold", "Jhelom",
 			"Nujel'm"
 		};
+
+		// ML quest system general list
+		// Used when: MLQuestSystem.Enabled && !Region.IsPartOf( "Haven Island" )
+		private static Type[] m_MLQuestTypes =
+		{
+			typeof( EscortToYew ),
+			typeof( EscortToVesper ),
+			typeof( EscortToTrinsic ),
+			typeof( EscortToSkaraBrae ),
+			typeof( EscortToSerpentsHold ),
+			typeof( EscortToNujelm ),
+			typeof( EscortToMoonglow ),
+			typeof( EscortToMinoc ),
+			typeof( EscortToMagincia ),
+			typeof( EscortToJhelom ),
+			typeof( EscortToCove ),
+			typeof( EscortToBritain )
+			// Ocllo was removed in pub 56
+			//typeof( EscortToOcllo )
+		};
+
+		// ML quest system New Haven list
+		// Used when: MLQuestSystem.Enabled && Region.IsPartOf( "Haven Island" )
+		private static Type[] m_MLQuestTypesNH =
+		{
+			typeof( EscortToNHAlchemist ),
+			typeof( EscortToNHBard ),
+			typeof( EscortToNHWarrior ),
+			typeof( EscortToNHTailor ),
+			typeof( EscortToNHCarpenter ),
+			typeof( EscortToNHMapmaker ),
+			typeof( EscortToNHMage ),
+			typeof( EscortToNHInn ),
+			// Farm destination was removed
+			//typeof( EscortToNHFarm ),
+			typeof( EscortToNHDocks ),
+			typeof( EscortToNHBowyer ),
+			typeof( EscortToNHBank )
+		};
+
+		public void SetMLQuest( MLQuest quest )
+		{
+			m_MLQuest = quest;
+			quest.Register( this );
+		}
 
 		[Constructable]
 		public BaseEscortable()
@@ -46,6 +186,9 @@ namespace Server.Mobiles
 		{
 			InitBody();
 			InitOutfit();
+
+			Fame = 200;
+			Karma = 4000;
 		}
 
 		public virtual void InitBody()
@@ -109,8 +252,6 @@ namespace Server.Mobiles
 			get { return m_EscortTable; }
 		}
 
-		private static TimeSpan m_EscortDelay = TimeSpan.FromMinutes(5.0);
-
 		public virtual bool AcceptEscorter(Mobile m)
 		{
 			EDI dest = GetDestination();
@@ -130,9 +271,9 @@ namespace Server.Mobiles
 				Say("I see you already have an escort.");
 				return false;
 			}
-			else if (m is PlayerMobile && (((PlayerMobile)m).LastEscortTime + m_EscortDelay) >= DateTime.Now)
+			else if (m is PlayerMobile && (((PlayerMobile)m).LastEscortTime + EscortDelay) >= DateTime.Now)
 			{
-				int minutes = (int)Math.Ceiling(((((PlayerMobile)m).LastEscortTime + m_EscortDelay) - DateTime.Now).TotalMinutes);
+				int minutes = (int)Math.Ceiling(((((PlayerMobile)m).LastEscortTime + EscortDelay) - DateTime.Now).TotalMinutes);
 
 				Say("You must rest {0} minute{1} before we set out on this journey.", minutes, minutes == 1 ? "" : "s");
 				return false;
@@ -155,6 +296,9 @@ namespace Server.Mobiles
 
 		public override bool HandlesOnSpeech(Mobile from)
 		{
+			if ( MLQuestSystem.Enabled )
+				return false;
+
 			if (from.InRange(this.Location, 3))
 				return true;
 
@@ -202,6 +346,8 @@ namespace Server.Mobiles
 			return true;
 		}
 
+		// TODO: Pre-ML methods below, might be mergeable with the ML methods in EscortObjective
+
 		public virtual void StartFollow()
 		{
 			StartFollow(GetEscorter());
@@ -240,13 +386,13 @@ namespace Server.Mobiles
 
 		public virtual Mobile GetEscorter()
 		{
-			if (!Controlled)
+			if ( !Controlled )
 				return null;
 
 			Mobile master = ControlMaster;
 
-			if (master == null)
-				return null;
+			if ( MLQuestSystem.Enabled || master == null )
+				return master;
 
 			if (master.Deleted || master.Map != this.Map || !master.InRange(Location, 30) || !master.Alive)
 			{
@@ -254,7 +400,7 @@ namespace Server.Mobiles
 
 				TimeSpan lastSeenDelay = DateTime.Now - m_LastSeenEscorter;
 
-				if (lastSeenDelay >= TimeSpan.FromMinutes(2.0))
+				if (lastSeenDelay >= AbandonDelay)
 				{
 					master.SendLocalizedMessage(1042473); // You have lost the person you were escorting.
 					Say(1005653); // Hmmm. I seem to have lost my master.
@@ -284,7 +430,7 @@ namespace Server.Mobiles
 			if (m_DeleteTimer != null)
 				m_DeleteTimer.Stop();
 
-			m_DeleteTime = DateTime.Now + TimeSpan.FromSeconds(30.0);
+			m_DeleteTime = DateTime.Now + DeleteTime;
 
 			m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - DateTime.Now);
 			m_DeleteTimer.Start();
@@ -292,6 +438,9 @@ namespace Server.Mobiles
 
 		public virtual bool CheckAtDestination()
 		{
+			if ( MLQuestSystem.Enabled )
+				return false;
+
 			EDI dest = GetDestination();
 
 			if (dest == null)
@@ -352,6 +501,9 @@ namespace Server.Mobiles
 
 						pm.NextCompassionDay = DateTime.Now + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
 						++pm.CompassionGains;
+
+						if (pm.CompassionGains >= 5)
+							pm.SendLocalizedMessage(1053004); // You must wait about a day before you can gain in compassion again.
 					}
 					else
 					{
@@ -365,6 +517,13 @@ namespace Server.Mobiles
 			return false;
 		}
 
+		public override bool OnBeforeDeath()
+		{
+			m_DeleteCorpse = ( Controlled || IsBeingDeleted );
+
+			return base.OnBeforeDeath();
+		}
+
 		public BaseEscortable(Serial serial)
 			: base(serial)
 		{
@@ -374,7 +533,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize(writer);
 
-			writer.Write((int)0); // version
+			writer.Write((int)1); // version
 
 			EDI dest = GetDestination();
 
@@ -387,6 +546,8 @@ namespace Server.Mobiles
 
 			if (m_DeleteTimer != null)
 				writer.WriteDeltaTime(m_DeleteTime);
+
+			MLQuestSystem.WriteQuestRef( writer, StaticMLQuester ? null : m_MLQuest );
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -404,6 +565,14 @@ namespace Server.Mobiles
 				m_DeleteTimer = new DeleteTimer(this, m_DeleteTime - DateTime.Now);
 				m_DeleteTimer.Start();
 			}
+
+			if ( version >= 1 )
+			{
+				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
+
+				if ( quest != null && !StaticMLQuester )
+					SetMLQuest( quest );
+			}
 		}
 
 		public override bool CanBeRenamedBy(Mobile from)
@@ -411,24 +580,26 @@ namespace Server.Mobiles
 			return (from.AccessLevel >= AccessLevel.GameMaster);
 		}
 
-		public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+		public override void AddCustomContextEntries( Mobile from, List<ContextMenuEntry> list )
 		{
-			EDI dest = GetDestination();
-
-			if (dest != null && from.Alive)
+			if ( from.Alive )
 			{
 				Mobile escorter = GetEscorter();
 
-				if (escorter == null || escorter == from)
-					list.Add(new AskDestinationEntry(this, from));
+				if ( !MLQuestSystem.Enabled && GetDestination() != null )
+				{
+					if ( escorter == null || escorter == from )
+						list.Add( new AskDestinationEntry( this, from ) );
 
-				if (escorter == null)
-					list.Add(new AcceptEscortEntry(this, from));
-				else if (escorter == from)
-					list.Add(new AbandonEscortEntry(this, from));
+					if ( escorter == null )
+						list.Add( new AcceptEscortEntry( this, from ) );
+				}
+
+				if ( escorter == from )
+					list.Add( new AbandonEscortEntry( this, from ) );
 			}
 
-			base.AddCustomContextEntries(from, list);
+			base.AddCustomContextEntries( from, list );
 		}
 
 		public virtual string[] GetPossibleDestinations()
@@ -461,6 +632,9 @@ namespace Server.Mobiles
 
 		public EDI GetDestination()
 		{
+			if ( MLQuestSystem.Enabled )
+				return null;
+
 			if (m_DestinationString == null && m_DeleteTimer == null)
 				m_DestinationString = PickRandomDestination();
 

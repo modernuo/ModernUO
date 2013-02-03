@@ -54,6 +54,14 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );  // Need to verify
 		}
 
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );
+
+			if ( Utility.RandomDouble() < 0.1 )
+				c.DropItem( new PrimitiveFetish() );
+		}
+
 		public Troglodyte( Serial serial ) : base( serial )
 		{
 		}

@@ -42,7 +42,7 @@ namespace Server.Mobiles
 
 		public override int GetRobeColor()
 		{
-			return RandomBrightHue();
+			return Utility.RandomBrightHue();
 		}
 
 		public override void InitOutfit()
@@ -51,9 +51,9 @@ namespace Server.Mobiles
 
 			switch ( Utility.Random( 3 ) )
 			{
-				case 0: AddItem( new SkullCap( RandomBrightHue() ) ); break;
-				case 1: AddItem( new WizardsHat( RandomBrightHue() ) ); break;
-				case 2: AddItem( new Bandana( RandomBrightHue() ) ); break;
+				case 0: AddItem( new SkullCap( Utility.RandomBrightHue() ) ); break;
+				case 1: AddItem( new WizardsHat( Utility.RandomBrightHue() ) ); break;
+				case 2: AddItem( new Bandana( Utility.RandomBrightHue() ) ); break;
 			}
 
 			AddItem( new Spellbook() );

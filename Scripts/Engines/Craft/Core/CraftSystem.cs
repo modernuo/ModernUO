@@ -26,6 +26,9 @@ namespace Server.Engines.Craft
 		private CraftSubResCol m_CraftSubRes;
 		private CraftSubResCol m_CraftSubRes2;
 
+		private List<int> m_Recipes;
+		private List<int> m_RareRecipes;
+
 		public int MinCraftEffect { get { return m_MinCraftEffect; } }
 		public int MaxCraftEffect { get { return m_MaxCraftEffect; } }
 		public double Delay { get { return m_Delay; } }
@@ -34,7 +37,7 @@ namespace Server.Engines.Craft
 		public CraftGroupCol CraftGroups{ get { return m_CraftGroups; } }
 		public CraftSubResCol CraftSubRes{ get { return m_CraftSubRes; } }
 		public CraftSubResCol CraftSubRes2{ get { return m_CraftSubRes2; } }
-		
+
 		public abstract SkillName MainSkill{ get; }
 
 		public virtual int GumpTitleNumber{ get{ return 0; } }
@@ -114,6 +117,9 @@ namespace Server.Engines.Craft
 			m_CraftSubRes = new CraftSubResCol();
 			m_CraftSubRes2 = new CraftSubResCol();
 
+			m_Recipes = new List<int>();
+			m_RareRecipes = new List<int>();
+
 			InitCraftList();
 		}
 
@@ -133,6 +139,22 @@ namespace Server.Engines.Craft
 				realCraftItem.Craft( from, this, typeRes, tool );
 				//craftItem.Craft( from, this, typeRes, tool );
 			}
+		}
+
+		public int RandomRecipe()
+		{
+			if ( m_Recipes.Count == 0 )
+				return -1;
+
+			return m_Recipes[Utility.Random( m_Recipes.Count )];
+		}
+
+		public int RandomRareRecipe()
+		{
+			if ( m_RareRecipes.Count == 0 )
+				return -1;
+
+			return m_RareRecipes[Utility.Random( m_RareRecipes.Count )];
 		}
 
 
@@ -262,10 +284,27 @@ namespace Server.Engines.Craft
 			craftItem.UseSubRes2 = val;
 		}
 
-		public void AddRecipe( int index, int id )
+		private void AddRecipeBase( int index, int id )
 		{
 			CraftItem craftItem = m_CraftItems.GetAt( index );
 			craftItem.AddRecipe( id, this );
+		}
+
+		public void AddRecipe( int index, int id )
+		{
+			AddRecipeBase( index, id );
+			m_Recipes.Add( id );
+		}
+
+		public void AddRareRecipe( int index, int id )
+		{
+			AddRecipeBase( index, id );
+			m_RareRecipes.Add( id );
+		}
+
+		public void AddQuestRecipe( int index, int id )
+		{
+			AddRecipeBase( index, id );
 		}
 
 		public void ForceNonExceptional( int index )

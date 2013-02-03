@@ -966,18 +966,75 @@
 			<go x="3627" y="2606" z="0" />
 			<smartNoHousing active="true" />
 			<region type="GuardedRegion" name="New Haven Moongate">
-			<rect x="3446" y="2674" width="10" height="10" />
+				<rect x="3446" y="2674" width="10" height="10" />
 			</region>
 			<region type="TownRegion" name="New Haven">
-				<rune name="New Haven City" />
-				<rect x="3423" y="2480" width="111" height="143" />
+				<rune name="New Haven" />
+				<rect x="3416" y="2480" width="129" height="168" />
 				<go x="3503" y="2574" z="14" />
 				<music name="Ocllo" />
-				<region name="Gentle Rest Inn">
-					<rune name="The Gentle Rest Inn in New Haven" />
-					<rect x="3493" y="2513" width="10" height="10"/>
+				<region name="the New Haven Alchemist">
+					<!-- Note: OSI still uses the old rune names for all the shop regions -->
+					<rune name="The Little Shop of Alchemy in New Haven" />
+					<rect x="3457" y="2563" width="9" height="9" />
+				</region>
+				<region name="the New Haven Bard">
+					<rune name="the Bardic Guild in New Haven" />
+					<rect x="3410" y="2598" width="9" height="9" />
+					<rect x="3419" y="2599" width="2" height="7" />
+					<rect x="3408" y="2607" width="7" height="5" />
+				</region>
+				<region name="Warrior's Guild Hall">
+					<rune name="the Warrior Guild Hall in New Haven" />
+					<rect x="3520" y="2528" width="23" height="24" />
+					<rect x="3520" y="2552" width="14" height="11" />
+					<region name="the New Haven Warrior">
+						<rect x="3523" y="2546" width="6" height="16" />
+						<rect x="3529" y="2550" width="4" height="12" />
+					</region>
+					<region name="the New Haven Bowyer">
+						<rect x="3529" y="2531" width="12" height="19" />
+					</region>
+				</region>
+				<region name="the New Haven Tailor">
+					<rune name="A Stitch In Time in New Haven" />
+					<rect x="3492" y="2546" width="10" height="11" />
+					<rect x="3502" y="2546" width="3" height="4" />
+				</region>
+				<region name="the New Haven Carpenter">
+					<rune name="Carpenters of New Haven" />
+					<rect x="3439" y="2632" width="9" height="11" />
+					<rect x="3440" y="2643" width="7" height="5" />
+				</region>
+				<region name="the New Haven Mapmaker">
+					<rune name="Mapmakers of New Haven" />
+					<rect x="3490" y="2588" width="7" height="7" />
+				</region>
+				<region name="the New Haven Mage">
+					<rune name="New Haven Magery School" />
+					<rect x="3464" y="2488" width="27" height="16" />
+				</region>
+				<region name="the New Haven Inn">
+					<rune name="the Bountiful Harvest Inn in New Haven" />
+					<rect x="3493" y="2513" width="10" height="10" />
 					<rect x="3503" y="2513" width="7" height="17" />
 					<logoutDelay active="false" />
+				</region>
+				<!--
+				<region name="the New Haven Farm">
+					<rune name="" />
+					<rect />
+				</region>
+				-->
+				<region name="the New Haven Docks">
+					<rune name="the docks in New Haven" />
+					<rect x="3500" y="2592" width="8" height="25" />
+					<rect x="3508" y="2592" width="8" height="7" />
+					<rect x="3516" y="2592" width="8" height="16" />
+				</region>
+				<region name="the New Haven Bank">
+					<rune name="the First Bank of New Haven" />
+					<rect x="3479" y="2565" width="13" height="15" />
 				</region>
 			</region>
 			<!--
@@ -1747,7 +1804,7 @@
 			<entrance x="1450" y="1473" z="-23" />
 		</region>
 		<region priority="50" name="Sheep Farm">
-			<rect x="1303" y="1312" width="30" height="30" />
+			<rect x="1298" y="1307" width="38" height="37" />
 		</region>
 		<!--End-->
 		<region priority="37" name="Shrine of Valor">

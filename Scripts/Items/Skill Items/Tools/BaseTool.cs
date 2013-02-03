@@ -39,6 +39,8 @@ namespace Server.Items
 			set { m_UsesRemaining = value; InvalidateProperties(); }
 		}
 
+		public virtual bool BreakOnDepletion { get { return true; } }
+
 		public void ScaleUses()
 		{
 			m_UsesRemaining = (m_UsesRemaining * GetUsesScalar()) / 100;

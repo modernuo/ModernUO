@@ -193,7 +193,7 @@ namespace Server
 		public abstract void WriteGuildSet<T>( HashSet<T> set ) where T : BaseGuild;
 		public abstract void WriteGuildSet<T>( HashSet<T> set, bool tidy ) where T : BaseGuild;
 #endif
-		//Stupid compiler won't notice there 'where' to differentiate the generic methods.
+		// Compiler won't notice their 'where' to differentiate the generic methods.
 	}
 
 	public class BinaryFileWriter : GenericWriter

@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using Server.Items;
 using Server.Mobiles;
+using Server.Engines.MLQuests;
 
 namespace Server.Spells.Spellweaving
 {
@@ -64,24 +65,35 @@ namespace Server.Spells.Spellweaving
 			if( !base.CheckCast() )
 				return false;
 
-			if( !CheckExpansion( Caster ) )
+			Mobile caster = Caster;
+
+			if ( !CheckExpansion( caster ) )
 			{
-				Caster.SendLocalizedMessage( 1072176 ); // You must upgrade to the Mondain's Legacy Expansion Pack before using that ability
+				caster.SendLocalizedMessage( 1072176 ); // You must upgrade to the Mondain's Legacy Expansion Pack before using that ability
 				return false;
 			}
 
-			//TODO: Spellweaving quest completion
+			if ( caster is PlayerMobile )
+			{
+				MLQuestContext context = MLQuestSystem.GetContext( (PlayerMobile)caster );
+
+				if ( context == null || !context.Spellweaving )
+				{
+					caster.SendLocalizedMessage( 1073220 ); // You must have completed the epic arcanist quest to use this ability.
+					return false;
+				}
+			}
 
 			int mana = ScaleMana( RequiredMana );
 
-			if( Caster.Mana < mana )
+			if ( caster.Mana < mana )
 			{
-				Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+				caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				return false;
 			}
-			else if( Caster.Skills[CastSkill].Value < RequiredSkill )
+			else if ( caster.Skills[CastSkill].Value < RequiredSkill )
 			{
-				Caster.SendLocalizedMessage( 1063013, String.Format( "{0}\t{1}", RequiredSkill.ToString( "F1" ), "#1044114" ) ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+				caster.SendLocalizedMessage( 1063013, String.Format( "{0}\t{1}", RequiredSkill.ToString( "F1" ), "#1044114" ) ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
 				return false;
 			}
 

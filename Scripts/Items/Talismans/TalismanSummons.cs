@@ -13,10 +13,11 @@ namespace Server.Mobiles
 	{
 		public override bool Commandable{ get{ return false; } }
 		public override bool InitialInnocent{ get{ return true; } }
-		public virtual bool IsInvulnerable{ get{ return true; } }
+		//public override bool IsInvulnerable{ get{ return true; } } // TODO: Wailing banshees are NOT invulnerable, are any of the others?
 	
 		public BaseTalismanSummon() : base( AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4 )
 		{
+			// TODO: Stats/skills
 		}
 
 		public BaseTalismanSummon( Serial serial ) : base( serial )
@@ -368,8 +369,10 @@ namespace Server.Mobiles
 
 		public override void OnThink()
 		{
+			/*
 			if ( m_NextWave < DateTime.Now )
 				AreaHeatDamage();
+			*/
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -385,6 +388,9 @@ namespace Server.Mobiles
 
 			int version = reader.ReadEncodedInt();
 		}
+
+		/*
+		// An area attack that only damages staff, wtf?
 
 		private DateTime m_NextWave;
 
@@ -417,6 +423,7 @@ namespace Server.Mobiles
 
 			m_NextWave = DateTime.Now + TimeSpan.FromSeconds( 3 );
 		}
+		*/
 	}
 
 	public class SummonedOrcBrute : BaseTalismanSummon

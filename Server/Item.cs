@@ -1508,7 +1508,7 @@ namespace Server
 		{
 			get
 			{
-				return (Movable && Visible);
+				return (Movable && Visible && Spawner == null);
 			}
 		}
 
@@ -1541,6 +1541,15 @@ namespace Server
 
 		public virtual bool StackWith( Mobile from, Item dropped, bool playSound )
 		{
+			// TODO: OSI actually just ignores the stacking attempt and places the item over it, can we do that?
+			if( Nontransferable || dropped.Nontransferable )
+			{
+				if ( dropped.Nontransferable )
+					HandleInvalidTransfer( from );
+
+				return false;
+			}
+
 			if ( dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.ItemID == ItemID && dropped.Hue == Hue && dropped.Name == Name && (dropped.Amount + Amount) <= 60000 && dropped != this )
 			{
 				if ( m_LootType != dropped.m_LootType )
@@ -2840,7 +2849,7 @@ namespace Server
 		{
 			get
 			{
-				return (QuestItem ? QuestItemHue : m_Hue);
+				return m_Hue;
 			}
 			set
 			{
@@ -2854,10 +2863,7 @@ namespace Server
 			}
 		}
 
-		public virtual int QuestItemHue
-		{
-			get { return 0x04EA; }	//HMMMM... For EA?
-		}
+		public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
 
 		public virtual bool Nontransferable
 		{
@@ -2866,8 +2872,9 @@ namespace Server
 
 		public virtual void HandleInvalidTransfer( Mobile from )
 		{
+			// OSI sends 1074769, bug!
 			if( QuestItem )
-				from.SendLocalizedMessage( 1074769 ); // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+				from.SendLocalizedMessage( 1049343 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -3797,7 +3804,7 @@ namespace Server
 
 		public virtual bool OnDroppedToMobile( Mobile from, Mobile target )
 		{
-			if( Nontransferable && from.Player && from.AccessLevel <= AccessLevel.GameMaster )
+			if( Nontransferable && from.Player )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3830,7 +3837,7 @@ namespace Server
 			{
 				return false;
 			}
-			else if( Nontransferable && from.Player && target != from.Backpack && from.AccessLevel <= AccessLevel.GameMaster )
+			else if( Nontransferable && from.Player && target != from.Backpack )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3851,7 +3858,7 @@ namespace Server
 				return false;
 			else if ( !from.OnDroppedItemOnto( this, target ) )
 				return false;
-			else if( Nontransferable && from.Player && from.AccessLevel <= AccessLevel.GameMaster )
+			else if( Nontransferable && from.Player )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3885,7 +3892,7 @@ namespace Server
 
 		public virtual bool OnDroppedToWorld( Mobile from, Point3D p )
 		{
-			if( Nontransferable && from.Player && from.AccessLevel <= AccessLevel.GameMaster )
+			if( Nontransferable && from.Player )
 			{
 				HandleInvalidTransfer( from );
 				return false;

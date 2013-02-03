@@ -24,12 +24,12 @@ namespace Server.Mobiles
 
 		public override void InitOutfit()
 		{
-			AddItem( new FancyShirt( RandomBrightHue() ) );
+			AddItem( new FancyShirt( Utility.RandomBrightHue() ) );
 			AddItem( new Shoes( GetShoeHue() ) );
 			AddItem( new LongPants( GetRandomHue() ) );
 
 			if ( Utility.RandomBool() )
-				AddItem( new Cloak( RandomBrightHue() ) );
+				AddItem( new Cloak( Utility.RandomBrightHue() ) );
 
 			switch ( Utility.Random( 2 ) )
 			{

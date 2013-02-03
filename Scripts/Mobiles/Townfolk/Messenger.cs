@@ -11,7 +11,6 @@ namespace Server.Mobiles
 		public Messenger()
 		{
 			Title = "the messenger";
-
 		}
 
 		public override bool CanTeach{ get{ return true; } }

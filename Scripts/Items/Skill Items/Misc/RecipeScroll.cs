@@ -23,13 +23,12 @@ namespace Server.Items
 		{
 			get
 			{
-				if( Recipe.Recipes.ContainsKey( m_RecipeID ) )
+				if ( Recipe.Recipes.ContainsKey( m_RecipeID ) )
 					return Recipe.Recipes[m_RecipeID];
 
 				return null;
 			}
 		}
-	
 
 		public override void GetProperties( ObjectPropertyList list )
 		{

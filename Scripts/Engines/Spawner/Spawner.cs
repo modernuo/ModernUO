@@ -175,7 +175,13 @@ namespace Server.Mobiles
 		}
 
 		[Constructable]
-		public Spawner(int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName)
+		public Spawner( int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName )
+			: this( amount, TimeSpan.FromMinutes( minDelay ), TimeSpan.FromMinutes( maxDelay ), team, homeRange, spawnName )
+		{
+		}
+
+		[Constructable]
+		public Spawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, string spawnName)
 			: base(0x1f13)
 		{
 			List<string> spawnNames = new List<string>();
@@ -183,7 +189,7 @@ namespace Server.Mobiles
 			if (!String.IsNullOrEmpty(spawnName))
 				spawnNames.Add(spawnName);
 
-			InitSpawner(amount, TimeSpan.FromMinutes(minDelay), TimeSpan.FromMinutes(maxDelay), team, homeRange, spawnNames);
+			InitSpawner(amount, minDelay, maxDelay, team, homeRange, spawnNames);
 		}
 
 		public Spawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, List<string> spawnNames)
@@ -553,10 +559,8 @@ namespace Server.Mobiles
 			Point3D loc = ( spawned is BaseVendor ? this.Location : GetSpawnPosition( spawned ) );
 
 			spawned.OnBeforeSpawn( loc, map );
-
-			InvalidateProperties();
-
 			spawned.MoveToWorld( loc, map );
+			spawned.OnAfterSpawn();
 
 			if ( spawned is BaseCreature )
 			{
@@ -574,6 +578,8 @@ namespace Server.Mobiles
 
 				bc.Home = this.HomeLocation;
 			}
+
+			InvalidateProperties();
 		}
 
 		public Point3D GetSpawnPosition()

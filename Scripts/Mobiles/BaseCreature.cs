@@ -9,6 +9,7 @@ using Server.Misc;
 using Server.Items;
 using Server.ContextMenus;
 using Server.Engines.Quests;
+using Server.Engines.MLQuests;
 using Server.Engines.PartySystem;
 using Server.Factions;
 using Server.SkillHandlers;
@@ -311,6 +312,86 @@ namespace Server.Mobiles
 
 		public virtual Faction FactionAllegiance{ get{ return null; } }
 		public virtual int FactionSilverWorth{ get{ return 30; } }
+
+		#region ML Quest System
+
+		private List<MLQuest> m_MLQuests;
+
+		public List<MLQuest> MLQuests
+		{
+			get
+			{
+				if ( m_MLQuests == null )
+				{
+					if ( StaticMLQuester )
+						m_MLQuests = MLQuestSystem.FindQuestList( GetType() );
+					else
+						m_MLQuests = ConstructQuestList();
+
+					if ( m_MLQuests == null )
+						return MLQuestSystem.EmptyList; // return EmptyList, but don't cache it (run construction again next time)
+				}
+
+				return m_MLQuests;
+			}
+		}
+
+		public virtual bool StaticMLQuester { get { return true; } }
+
+		protected virtual List<MLQuest> ConstructQuestList()
+		{
+			return null;
+		}
+
+		public virtual bool CanGiveMLQuest { get { return ( MLQuests.Count != 0 ); } }
+		public virtual bool CanShout { get { return false; } }
+
+		public const int ShoutRange = 8;
+		public static readonly TimeSpan ShoutDelay = TimeSpan.FromMinutes( 1 );
+
+		private DateTime m_MLNextShout;
+
+		private void CheckShout( PlayerMobile pm, Point3D oldLocation )
+		{
+			if ( m_MLNextShout > DateTime.Now || pm.Hidden || !pm.Alive )
+				return;
+
+			int shoutRange = ShoutRange;
+
+			if ( !InRange( pm.Location, shoutRange ) || InRange( oldLocation, shoutRange ) || !CanSee( pm ) || !InLOS( pm ) )
+				return;
+
+			MLQuestContext context = MLQuestSystem.GetContext( pm );
+
+			if ( context != null && context.IsFull )
+				return;
+
+			MLQuest quest = MLQuestSystem.RandomStarterQuest( this, pm );
+
+			if ( quest == null || !quest.Activated || ( context != null && context.IsDoingQuest( quest ) ) )
+				return;
+
+			Shout( pm );
+			m_MLNextShout = DateTime.Now + ShoutDelay;
+		}
+
+		public virtual void Shout( PlayerMobile pm )
+		{
+		}
+
+		private void RegisterQuests()
+		{
+			foreach ( MLQuest quest in MLQuests )
+				quest.Register( this );
+		}
+
+		private void UnregisterQuests()
+		{
+			foreach ( MLQuest quest in MLQuests )
+				quest.Unregister( this );
+		}
+
+		#endregion
 
 		#region Bonding
 		public const bool BondingEnabled = true;
@@ -783,6 +864,8 @@ namespace Server.Mobiles
 		}
 
 		#endregion
+
+		public virtual bool IsInvulnerable { get { return false; } }
 
 		public BaseAI AIObject{ get{ return m_AI; } }
 
@@ -1647,7 +1730,13 @@ namespace Server.Mobiles
 			if ( speechType != null )
 				speechType.OnConstruct( this );
 
+			if ( IsInvulnerable && !Core.AOS )
+				NameHue = 0x35;
+
 			GenerateLoot( true );
+
+			if ( MLQuestSystem.Enabled && StaticMLQuester )
+				RegisterQuests();
 		}
 
 		public BaseCreature( Serial serial ) : base( serial )
@@ -2010,6 +2099,9 @@ namespace Server.Mobiles
 				Hue = Paragon.Hue; //Paragon hue fixed, should now be 0x501.
 			}
 
+			if ( Core.AOS && NameHue == 0x35 )
+				NameHue = -1;
+
 			CheckStatTimers();
 
 			ChangeAIType(m_CurrentAI);
@@ -2018,6 +2110,9 @@ namespace Server.Mobiles
 
 			if ( IsAnimatedDead )
 				Spells.Necromancy.AnimateDeadSpell.Register( m_SummonMaster, this );
+
+			if ( MLQuestSystem.Enabled && StaticMLQuester )
+				RegisterQuests();
 		}
 
 		public virtual bool IsHumanInTown()
@@ -2282,6 +2377,14 @@ namespace Server.Mobiles
 				return true;
 			else if ( CheckGold( from, dropped ) )
 				return true;
+
+			// Note: Yes, this happens for all questers (regardless of type, e.g. escorts),
+			// even if they can't offer you anything at the moment
+			if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile )
+			{
+				MLQuestSystem.Tell( this, (PlayerMobile)from, 1074893 ); // You need to mark your quest items so I don't take the wrong object.  Then speak to me.
+				return false;
+			}
 
 			return base.OnDragDrop( from, dropped );
 		}
@@ -2885,6 +2988,9 @@ namespace Server.Mobiles
 
 			if ( IsAnimatedDead )
 				Spells.Necromancy.AnimateDeadSpell.Unregister( m_SummonMaster, this );
+
+			if ( MLQuestSystem.Enabled )
+				UnregisterQuests();
 
 			base.OnAfterDelete();
 		}
@@ -3548,6 +3654,9 @@ namespace Server.Mobiles
 				}
 			}
 			/* End notice sound */
+
+			if ( MLQuestSystem.Enabled && CanShout && m is PlayerMobile )
+				CheckShout( (PlayerMobile)m, oldLocation );
 
 			if ( m_NoDupeGuards == m )
 				return;
@@ -4323,6 +4432,9 @@ namespace Server.Mobiles
 				}
 			}
 
+			if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile )
+				MLQuestSystem.OnDoubleClick( this, (PlayerMobile)from );
+
 			base.OnDoubleClick( from );
 		}
 
@@ -4361,6 +4473,9 @@ namespace Server.Mobiles
 		public override void AddNameProperties( ObjectPropertyList list )
 		{
 			base.AddNameProperties( list );
+
+			if ( MLQuestSystem.Enabled && CanGiveMLQuest )
+				list.Add( 1072269 ); // Quest Giver
 
 			if ( Core.ML )
 			{
@@ -4720,6 +4835,7 @@ namespace Server.Mobiles
 				{
 					int totalFame = Fame / 100;
 					int totalKarma = -Karma / 100;
+
 					if (Map == Map.Felucca)
 					{
 						totalFame += ((totalFame/10)*3);
@@ -4794,13 +4910,21 @@ namespace Server.Mobiles
 							TreasuresOfTokuno.HandleKill( this, ds.m_Mobile );
 						}
 
-						if ( givenQuestKill )
-							continue;
-
 						PlayerMobile pm = ds.m_Mobile as PlayerMobile;
 
 						if ( pm != null )
 						{
+							if ( MLQuestSystem.Enabled )
+							{
+								MLQuestSystem.HandleKill( pm, this );
+
+								// Kills are given to *everyone* with looting right in the ML quest system
+								//givenQuestKill = true;
+							}
+
+							if ( givenQuestKill )
+								continue;
+
 							QuestSystem qs = pm.Quest;
 
 							if ( qs != null )
@@ -4810,6 +4934,7 @@ namespace Server.Mobiles
 							}
 						}
 					}
+
 					for ( int i = 0; i < titles.Count; ++i )
 					{
 						Titles.AwardFame( titles[ i ], fame[ i ], true );
@@ -4862,12 +4987,12 @@ namespace Server.Mobiles
 			if ( target is BaseFactionGuard )
 				return false;
 
-			if ( (target is BaseVendor && ((BaseVendor)target).IsInvulnerable) || target is PlayerVendor || target is TownCrier )
+			if ( ( target is BaseCreature && ( (BaseCreature)target ).IsInvulnerable ) || target is PlayerVendor || target is TownCrier )
 			{
 				if ( message )
 				{
 					if ( target.Title == null )
-						SendMessage( "{0} the vendor cannot be harmed.", target.Name );
+						SendMessage( "{0} cannot be harmed.", target.Name );
 					else
 						SendMessage( "{0} {1} cannot be harmed.", target.Name, target.Title );
 				}
@@ -5501,7 +5626,7 @@ namespace Server.Mobiles
 
 		public override bool CanBeDamaged()
 		{
-			if ( IsDeadPet )
+			if ( IsDeadPet || IsInvulnerable )
 				return false;
 
 			return base.CanBeDamaged();

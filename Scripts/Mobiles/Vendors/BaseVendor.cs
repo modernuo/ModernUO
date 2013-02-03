@@ -46,7 +46,7 @@ namespace Server.Mobiles
 
 		public virtual NpcGuild NpcGuild { get { return NpcGuild.None; } }
 
-		public virtual bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable { get { return true; } }
 
 		public virtual DateTime NextTrickOrTreat { get { return m_NextTrickOrTreat; } set { m_NextTrickOrTreat = value; } }
 
@@ -265,9 +265,6 @@ namespace Server.Mobiles
 			SpeechHue = Utility.RandomDyedHue();
 			Hue = Utility.RandomSkinHue();
 
-			if ( IsInvulnerable && !Core.AOS )
-				NameHue = 0x35;
-
 			if ( Female = GetGender() )
 			{
 				Body = 0x191;
@@ -304,14 +301,6 @@ namespace Server.Mobiles
 		public virtual VendorShoeType ShoeType
 		{
 			get { return VendorShoeType.Shoes; }
-		}
-
-		public virtual int RandomBrightHue()
-		{
-			if ( 0.1 > Utility.RandomDouble() )
-				return Utility.RandomList( 0x62, 0x71 );
-
-			return Utility.RandomList( 0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59 );
 		}
 
 		public virtual void CheckMorph()
@@ -439,7 +428,7 @@ namespace Server.Mobiles
 			FacialHairItemID = 0;
 
 			Body = 0x2F6;
-			Hue = RandomBrightHue() | 0x8000;
+			Hue = Utility.RandomBrightHue() | 0x8000;
 			Name = NameList.RandomName( "gargoyle vendor" );
 
 			CapitalizeTitle();
@@ -1015,7 +1004,7 @@ namespace Server.Mobiles
 				if ( cont.ConsumeTotal( typeof( Gold ), totalCost ) )
 					bought = true;
 				else if ( totalCost < 2000 )
-					SayTo( buyer, 500192 );//Begging thy pardon, but thou casnt afford that.
+					SayTo( buyer, 500192 ); // Begging thy pardon, but thou canst not afford that.
 			}
 
 			if ( !bought && totalCost >= 2000 )
@@ -1394,9 +1383,6 @@ namespace Server.Mobiles
 			if ( IsParagon )
 				IsParagon = false;
 
-			if ( Core.AOS && NameHue == 0x35 )
-				NameHue = -1;
-
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckMorph ) );
 		}
 
@@ -1425,11 +1411,6 @@ namespace Server.Mobiles
 		public virtual IBuyItemInfo[] GetBuyInfo()
 		{
 			return (IBuyItemInfo[])m_ArmorBuyInfo.ToArray( typeof( IBuyItemInfo ) );
-		}
-
-		public override bool CanBeDamaged()
-		{
-			return !IsInvulnerable;
 		}
 	}
 }

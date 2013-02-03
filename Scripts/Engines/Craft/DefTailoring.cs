@@ -271,6 +271,33 @@ namespace Server.Engines.Craft
 
 			#region Leather Armor
 
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( SpellWovenBritches ), 1015293, 1072929, 92.5, 117.5, typeof( Leather ), 1044462, 15, 1044463 );
+				AddRes( index, typeof( EyeOfTheTravesty ), 1032685, 1, 1044253 );
+				AddRes( index, typeof( Putrefication ), 1032678, 10, 1044253 );
+				AddRes( index, typeof( Scourge ), 1032677, 10, 1044253 );
+				AddRareRecipe( index, 506 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( SongWovenMantle ), 1015293, 1072931, 92.5, 117.5, typeof( Leather ), 1044462, 15, 1044463 );
+				AddRes( index, typeof( EyeOfTheTravesty ), 1032685, 1, 1044253 );
+				AddRes( index, typeof( Blight ), 1032675, 10, 1044253 );
+				AddRes( index, typeof( Muculent ), 1032680, 10, 1044253 );
+				AddRareRecipe( index, 507 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( StitchersMittens ), 1015293, 1072932, 92.5, 117.5, typeof( Leather ), 1044462, 15, 1044463 );
+				AddRes( index, typeof( CapturedEssence ), 1032686, 1, 1044253 );
+				AddRes( index, typeof( Corruption ), 1032676, 10, 1044253 );
+				AddRes( index, typeof( Taint ), 1032679, 10, 1044253 );
+				AddRareRecipe( index, 508 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+
 			AddCraft( typeof( LeatherGorget ), 1015293, 1025063, 53.9, 78.9, typeof( Leather ), 1044462, 4, 1044463 );
 			AddCraft( typeof( LeatherCap ), 1015293, 1027609, 6.2, 31.2, typeof( Leather ), 1044462, 2, 1044463 );
 			AddCraft( typeof( LeatherGloves ), 1015293, 1025062, 51.8, 76.8, typeof( Leather ), 1044462, 3, 1044463 );

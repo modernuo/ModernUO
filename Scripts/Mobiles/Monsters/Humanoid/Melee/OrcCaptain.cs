@@ -59,6 +59,15 @@ namespace Server.Mobiles
 				PackItem( Loot.RandomNecromancyReagent() );
 		}
 
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );
+
+			// TODO: Check drop rate
+			if ( Utility.RandomDouble() < 0.05 )
+				c.DropItem( new StoutWhip() );
+		}
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Meager, 2 );

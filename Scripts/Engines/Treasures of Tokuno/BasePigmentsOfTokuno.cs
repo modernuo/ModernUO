@@ -134,6 +134,8 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1070930 ); // Can't dye artifacts or enhanced magic items that are being worn.
 			else if( i.IsLockedDown )
 				from.SendLocalizedMessage( 1070932 ); // You may not dye artifacts and enhanced magic items which are locked down.
+			else if( i.QuestItem )
+				from.SendLocalizedMessage( 1151836 ); // You may not dye toggled quest items.
 			else if( i is MetalPigmentsOfTokuno )
 				from.SendLocalizedMessage( 1042417 ); // You cannot dye that.
 			else if( i is LesserPigmentsOfTokuno )

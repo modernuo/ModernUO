@@ -25,7 +25,7 @@ namespace Server.Mobiles
 		{
 			base.InitOutfit();
 
-			AddItem( new HalfApron( RandomBrightHue() ) );
+			AddItem( new HalfApron( Utility.RandomBrightHue() ) );
 		}
 
 		[Constructable]

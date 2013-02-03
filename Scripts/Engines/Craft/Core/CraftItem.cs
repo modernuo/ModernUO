@@ -1146,7 +1146,7 @@ namespace Server.Engines.Craft
 					}
 				}
 
-				if ( tool.UsesRemaining < 1 )
+				if ( tool.UsesRemaining < 1 && tool.BreakOnDepletion )
 					toolBroken = true;
 
 				if ( toolBroken )
@@ -1267,7 +1267,7 @@ namespace Server.Engines.Craft
 
 				tool.UsesRemaining--;
 
-				if ( tool.UsesRemaining < 1 )
+				if ( tool.UsesRemaining < 1 && tool.BreakOnDepletion )
 					toolBroken = true;
 
 				if ( toolBroken )

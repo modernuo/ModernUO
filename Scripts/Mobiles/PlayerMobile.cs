@@ -24,6 +24,7 @@ using Server.Engines.CannedEvil;
 using Server.Engines.Craft;
 using Server.Spells.Spellweaving;
 using Server.Engines.PartySystem;
+using Server.Engines.MLQuests;
 
 namespace Server.Mobiles
 {
@@ -112,7 +113,7 @@ namespace Server.Mobiles
 		private int m_Profession;
 		private bool m_IsStealthing; // IsStealthing should be moved to Server.Mobiles
 		private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
-		private int m_NonAutoreinsuredItems; // number of items that could not be automaitically reinsured because gold in bank was not enough
+		private int m_NonAutoreinsuredItems; // number of items that could not be automatically reinsured because gold in bank was not enough
 		private bool m_NinjaWepCooldown;
 		/*
 		 * a value of zero means, that the mobile is not executing the spell. Otherwise,
@@ -1257,12 +1258,12 @@ namespace Server.Mobiles
 			if ( m_DesignContext != null || (target is PlayerMobile && ((PlayerMobile)target).m_DesignContext != null) )
 				return false;
 
-			if ( (target is BaseVendor && ((BaseVendor)target).IsInvulnerable) || target is PlayerVendor || target is TownCrier )
+			if ( (target is BaseCreature && ((BaseCreature)target).IsInvulnerable) || target is PlayerVendor || target is TownCrier )
 			{
 				if ( message )
 				{
 					if ( target.Title == null )
-						SendMessage( "{0} the vendor cannot be harmed.", target.Name );
+						SendMessage( "{0} cannot be harmed.", target.Name );
 					else
 						SendMessage( "{0} {1} cannot be harmed.", target.Name, target.Title );
 				}
@@ -1590,14 +1591,20 @@ namespace Server.Mobiles
 				if ( m_Quest != null )
 					m_Quest.GetContextMenuEntries( list );
 
-				if ( Alive && InsuranceEnabled )
+				if ( Alive )
 				{
-					list.Add( new CallbackEntry( 6201, new ContextCallback( ToggleItemInsurance ) ) );
+					if ( InsuranceEnabled )
+					{
+						list.Add( new CallbackEntry( 6201, new ContextCallback( ToggleItemInsurance ) ) ); // Toggle Item Insurance
 
-					if ( AutoRenewInsurance )
-						list.Add( new CallbackEntry( 6202, new ContextCallback( CancelRenewInventoryInsurance ) ) );
-					else
-						list.Add( new CallbackEntry( 6200, new ContextCallback( AutoRenewInventoryInsurance ) ) );
+						if ( AutoRenewInsurance )
+							list.Add( new CallbackEntry( 6202, new ContextCallback( CancelRenewInventoryInsurance ) ) ); // Cancel Renewing Inventory Insurance
+						else
+							list.Add( new CallbackEntry( 6200, new ContextCallback( AutoRenewInventoryInsurance ) ) ); // Auto Renew Inventory Insurance
+					}
+
+					if ( MLQuestSystem.Enabled )
+						list.Add( new CallbackEntry( 6169, new ContextCallback( ToggleQuestItem ) ) ); // Toggle Quest Item
 				}
 
 				BaseHouse house = BaseHouse.FindHouseAt( this );
@@ -1811,6 +1818,62 @@ namespace Server.Mobiles
 					m_Player.SendLocalizedMessage( 1042021 ); // Cancelled.
 				}
 			}
+		}
+
+		#endregion
+
+		#region Toggle Quest Item
+
+		private void ToggleQuestItem()
+		{
+			if ( !CheckAlive() )
+				return;
+
+			ToggleQuestItemTarget();
+		}
+
+		private void ToggleQuestItemTarget()
+		{
+			Server.Engines.MLQuests.Gumps.BaseQuestGump.CloseOtherGumps( this );
+			CloseGump( typeof( Server.Engines.MLQuests.Gumps.QuestLogDetailedGump ) );
+			CloseGump( typeof( Server.Engines.MLQuests.Gumps.QuestLogGump ) );
+			CloseGump( typeof( Server.Engines.MLQuests.Gumps.QuestOfferGump ) );
+			//CloseGump( typeof( UnknownGump802 ) );
+			//CloseGump( typeof( UnknownGump804 ) );
+
+			BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleQuestItem_Callback ) );
+			SendLocalizedMessage( 1072352 ); // Target the item you wish to toggle Quest Item status on <ESC> to cancel
+		}
+
+		private void ToggleQuestItem_Callback( Mobile from, object obj )
+		{
+			if ( !CheckAlive() )
+				return;
+
+			Item item = obj as Item;
+
+			if ( item == null )
+				return;
+
+			if ( from.Backpack == null || item.Parent != from.Backpack )
+			{
+				SendLocalizedMessage( 1074769 ); // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+			}
+			else if ( item.QuestItem )
+			{
+				item.QuestItem = false;
+				SendLocalizedMessage( 1072354 ); // You remove Quest Item status from the item
+			}
+			else if ( MLQuestSystem.MarkQuestItem( this, item ) )
+			{
+				SendLocalizedMessage( 1072353 ); // You set the item to Quest Item status
+			}
+			else
+			{
+				SendLocalizedMessage( 1072355, "", 0x23 ); // That item does not match any of your quest criteria
+			}
+
+			ToggleQuestItemTarget();
 		}
 
 		#endregion
@@ -2341,6 +2404,10 @@ namespace Server.Mobiles
 
 		public override DeathMoveResult GetParentMoveResultFor( Item item )
 		{
+			// It seems all items are unmarked on death, even blessed/insured ones
+			if ( item.QuestItem )
+				item.QuestItem = false;
+
 			if ( CheckInsuranceOnDeath( item ) )
 				return DeathMoveResult.MoveToBackpack;
 
@@ -2354,6 +2421,10 @@ namespace Server.Mobiles
 
 		public override DeathMoveResult GetInventoryMoveResultFor( Item item )
 		{
+			// It seems all items are unmarked on death, even blessed/insured ones
+			if ( item.QuestItem )
+				item.QuestItem = false;
+
 			if ( CheckInsuranceOnDeath( item ) )
 				return DeathMoveResult.MoveToBackpack;
 
@@ -2465,6 +2536,8 @@ namespace Server.Mobiles
 				Faction.HandleDeath( this, killer );
 
 			Server.Guilds.Guild.HandleDeath( this, killer );
+
+			MLQuestSystem.HandleDeath( this );
 
 			#region Dueling
 			if ( m_DuelContext != null )
@@ -3366,6 +3439,8 @@ namespace Server.Mobiles
 			if ( faction != null )
 				faction.RemoveMember( this );
 
+			MLQuestSystem.HandleDeletion( this );
+
 			BaseHouse.HandleDeletion( this );
 
 			DisguiseTimers.RemoveTimer( this );
@@ -3653,6 +3728,9 @@ namespace Server.Mobiles
 					acc.RemoveYoungStatus( 1019036 ); // You have successfully obtained a respectable skill level, and have outgrown your status as a young player!
 			}
 
+			if ( MLQuestSystem.Enabled )
+				MLQuestSystem.HandleSkillGain( this, skill );
+
 			InvalidateMyRunUO();
 		}
 
@@ -3874,7 +3952,9 @@ namespace Server.Mobiles
 		private int m_CompassionGains;
 
 		public DateTime LastCompassionLoss{ get{ return m_LastCompassionLoss; } set{ m_LastCompassionLoss = value; } }
+		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime NextCompassionDay{ get{ return m_NextCompassionDay; } set{ m_NextCompassionDay = value; } }
+		[CommandProperty( AccessLevel.GameMaster )]
 		public int CompassionGains{ get{ return m_CompassionGains; } set{ m_CompassionGains = value; } }
 
 		private DateTime m_LastValorLoss;

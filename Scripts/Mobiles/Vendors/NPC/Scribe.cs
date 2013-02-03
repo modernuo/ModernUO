@@ -11,6 +11,9 @@ namespace Server.Mobiles
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.MagesGuild; } }
 
+		private DateTime m_NextShush;
+		public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes( 1 );
+
 		[Constructable]
 		public Scribe() : base( "the scribe" )
 		{
@@ -33,6 +36,27 @@ namespace Server.Mobiles
 			base.InitOutfit();
 
 			AddItem( new Server.Items.Robe( Utility.RandomNeutralHue() ) );
+		}
+
+		public override bool HandlesOnSpeech( Mobile from )
+		{
+			return from.Player;
+		}
+
+		public override void OnSpeech( SpeechEventArgs e )
+		{
+			base.OnSpeech( e );
+
+			if ( !e.Handled && m_NextShush <= DateTime.Now && InLOS( e.Mobile ) )
+			{
+				Direction = GetDirectionTo( e.Mobile );
+
+				PlaySound( Female ? 0x32F : 0x441 );
+				PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 1073990 ); // Shhhh!
+
+				m_NextShush = DateTime.Now + ShushDelay;
+				e.Handled = true;
+			}
 		}
 
 		public Scribe( Serial serial ) : base( serial )

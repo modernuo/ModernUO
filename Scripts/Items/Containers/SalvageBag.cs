@@ -252,23 +252,22 @@ namespace Server.Items
 			
 			Container sBag = this;
 			
-			List<Item> Scissorables = sBag.FindItemsByType<Item>();
+			List<Item> scissorables = sBag.FindItemsByType<Item>();
 
-				for (int i = Scissorables.Count - 1; i >= 0; i--)
+			for ( int i = scissorables.Count - 1; i >= 0; --i )
+			{
+				Item item = scissorables[i];
+
+				if ( item is IScissorable )
 				{
-					Item item = Scissorables[i];
-					if( item is IScissorable )
-					{
-						if( ( (IScissorable)item ).Scissor( from, scissors ) )
-						{
-							salvaged++;
-						}
-						else
-						{
-							notSalvaged++;
-						}
-					}
+					IScissorable scissorable = (IScissorable)item;
+
+					if ( Scissors.CanScissor( from, scissorable ) && scissorable.Scissor( from, scissors ) )
+						++salvaged;
+					else
+						++notSalvaged;
 				}
+			}
 			
             from.SendLocalizedMessage( 1079974, String.Format( "{0}\t{1}", salvaged, salvaged + notSalvaged ) ); // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
 			

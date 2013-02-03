@@ -77,15 +77,15 @@ namespace Server.Items
 					{
 						IScissorable obj = (IScissorable) targeted;
 
-						if( obj.Scissor( from, m_Item ) )
+						if ( CanScissor( from, obj ) && obj.Scissor( from, m_Item ) )
 							from.PlaySound( 0x248 );
 					}
 				}
-				else if( targeted is IScissorable )
+				else if ( targeted is IScissorable )
 				{
 					IScissorable obj = (IScissorable)targeted;
 
-					if( obj.Scissor( from, m_Item ) )
+					if ( CanScissor( from, obj ) && obj.Scissor( from, m_Item ) )
 						from.PlaySound( 0x248 );
 				}
 				else
@@ -100,12 +100,25 @@ namespace Server.Items
 				{
 					IScissorable obj = (IScissorable) targeted;
 
-					if ( obj.Scissor( from, m_Item ) )
+					if ( CanScissor( from, obj ) && obj.Scissor( from, m_Item ) )
 						from.PlaySound( 0x248 );
 				}
 				else
 					base.OnNonlocalTarget( from, targeted );
 			}
+		}
+
+		public static bool CanScissor( Mobile from, IScissorable obj )
+		{
+			if ( obj is Item && ( (Item)obj ).Nontransferable )
+			{
+				from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
+				return false;
+			}
+
+			// TODO: Move other general checks from the different implementations here
+
+			return true;
 		}
 	}
 }

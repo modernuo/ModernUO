@@ -833,6 +833,9 @@ namespace Server
 
 		#region Random Hues
 
+		/// <summary>
+		/// Random pink, blue, green, orange, red or yellow hue
+		/// </summary>
 		public static int RandomNondyedHue()
 		{
 			switch ( Random( 6 ) )
@@ -848,61 +851,97 @@ namespace Server
 			return 0;
 		}
 
+		/// <summary>
+		/// Random hue in the range 1201-1254
+		/// </summary>
 		public static int RandomPinkHue()
 		{
 			return Random( 1201, 54 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 1301-1354
+		/// </summary>
 		public static int RandomBlueHue()
 		{
 			return Random( 1301, 54 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 1401-1454
+		/// </summary>
 		public static int RandomGreenHue()
 		{
 			return Random( 1401, 54 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 1501-1554
+		/// </summary>
 		public static int RandomOrangeHue()
 		{
 			return Random( 1501, 54 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 1601-1654
+		/// </summary>
 		public static int RandomRedHue()
 		{
 			return Random( 1601, 54 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 1701-1754
+		/// </summary>
 		public static int RandomYellowHue()
 		{
 			return Random( 1701, 54 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 1801-1908
+		/// </summary>
 		public static int RandomNeutralHue()
 		{
 			return Random( 1801, 108 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 2001-2018
+		/// </summary>
 		public static int RandomSnakeHue()
 		{
 			return Random( 2001, 18 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 2101-2130
+		/// </summary>
 		public static int RandomBirdHue()
 		{
 			return Random( 2101, 30 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 2201-2224
+		/// </summary>
 		public static int RandomSlimeHue()
 		{
 			return Random( 2201, 24 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 2301-2318
+		/// </summary>
 		public static int RandomAnimalHue()
 		{
 			return Random( 2301, 18 );
 		}
 
+		/// <summary>
+		/// Random hue in the range 2401-2430
+		/// </summary>
 		public static int RandomMetalHue()
 		{
 			return Random( 2401, 30 );
@@ -918,9 +957,23 @@ namespace Server
 				return hue;
 		}
 
+		/// <summary>
+		/// Random hue in the range 2-1001
+		/// </summary>
 		public static int RandomDyedHue()
 		{
 			return Random( 2, 1000 );
+		}
+
+		/// <summary>
+		/// Random hue from 0x62, 0x71, 0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59
+		/// </summary>
+		public static int RandomBrightHue()
+		{
+			if ( Utility.RandomDouble() < 0.1  )
+				return Utility.RandomList( 0x62, 0x71 );
+
+			return Utility.RandomList( 0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59 );
 		}
 
 		//[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
@@ -1234,11 +1287,13 @@ namespace Server
 		{
 			AssignRandomHair( m, true );
 		}
+
 		public static void AssignRandomHair( Mobile m, int hue )
 		{
 			m.HairItemID = m.Race.RandomHair( m );
 			m.HairHue = hue;
 		}
+
 		public static void AssignRandomHair( Mobile m, bool randomHue )
 		{
 			m.HairItemID = m.Race.RandomHair( m );
@@ -1251,11 +1306,13 @@ namespace Server
 		{
 			AssignRandomFacialHair( m, true );
 		}
+
 		public static void AssignRandomFacialHair( Mobile m, int hue )
 		{
-			m.FacialHairHue = m.Race.RandomFacialHair( m );
+			m.FacialHairItemID = m.Race.RandomFacialHair( m );
 			m.FacialHairHue = hue;
 		}
+
 		public static void AssignRandomFacialHair( Mobile m, bool randomHue )
 		{
 			m.FacialHairItemID = m.Race.RandomFacialHair( m );

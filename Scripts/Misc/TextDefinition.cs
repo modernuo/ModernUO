@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using Server;
 using Server.Gumps;
+using Server.Network;
 
 namespace Server
 {
@@ -13,6 +14,8 @@ namespace Server
 
 		public int Number { get { return m_Number; } }
 		public string String { get { return m_String; } }
+
+		public bool IsEmpty { get { return ( m_Number <= 0 && m_String == null ); } }
 
 		public TextDefinition() : this( 0, null )
 		{
@@ -142,14 +145,14 @@ namespace Server
 
 			if ( def.m_Number > 0 )
 			{
-				if ( numberColor >= 0 )
+				if ( numberColor >= 0 ) // 5 bits per RGB component (15 bit RGB)
 					g.AddHtmlLocalized( x, y, width, height, def.m_Number, numberColor, back, scroll );
 				else
 					g.AddHtmlLocalized( x, y, width, height, def.m_Number, back, scroll );
 			}
 			else if ( def.m_String != null )
 			{
-				if ( stringColor >= 0 )
+				if ( stringColor >= 0 ) // 8 bits per RGB component (24 bit RGB)
 					g.AddHtml( x, y, width, height, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", stringColor, def.m_String ), back, scroll );
 				else
 					g.AddHtml( x, y, width, height, def.m_String, back, scroll );
@@ -172,6 +175,17 @@ namespace Server
 				m.SendMessage( def.m_String );
 		}
 
+		public static void PublicOverheadMessage( Mobile m, MessageType messageType, int hue, TextDefinition def )
+		{
+			if ( def == null )
+				return;
+
+			if ( def.m_Number > 0 )
+				m.PublicOverheadMessage( messageType, hue, def.m_Number );
+			else if ( def.m_String != null )
+				m.PublicOverheadMessage( messageType, hue, false, def.m_String );
+		}
+
 		public static TextDefinition Parse( string value )
 		{
 			if ( value == null )
@@ -189,6 +203,11 @@ namespace Server
 				return new TextDefinition( i );
 			else
 				return new TextDefinition( value );
+		}
+
+		public static bool IsNullOrEmpty( TextDefinition def )
+		{
+			return ( def == null || def.IsEmpty );
 		}
 	}
 }

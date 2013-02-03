@@ -126,6 +126,93 @@ namespace Server.Engines.Craft
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
+			if ( Core.ML )
+			{
+				index = AddCraft( typeof( BlightGrippedLongbow ), 1044566, 1072907, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
+				AddRes( index, typeof( LardOfParoxysmus ), 1032681, 1, 1053098 );
+				AddRes( index, typeof( Blight ), 1032675, 10, 1053098 );
+				AddRes( index, typeof( Corruption ), 1032676, 10, 1053098 );
+				AddRareRecipe( index, 200 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+
+				/* TODO
+				index = AddCraft( typeof( FaerieFire ), 1044566, 1072908, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
+				AddRes( index, typeof( LardOfParoxysmus ), 1032681, 1, 1053098 );
+				AddRes( index, typeof( Putrefication ), 1032678, 10, 1053098 );
+				AddRes( index, typeof( Taint ), 1032679, 10, 1053098 );
+				AddRareRecipe( index, 201 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				*/
+
+				index = AddCraft( typeof( SilvanisFeywoodBow ), 1044566, 1072955, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
+				AddRes( index, typeof( LardOfParoxysmus ), 1032681, 1, 1053098 );
+				AddRes( index, typeof( Scourge ), 1032677, 10, 1053098 );
+				AddRes( index, typeof( Muculent ), 1032680, 10, 1053098 );
+				AddRareRecipe( index, 202 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+
+				/* TODO
+				index = AddCraft( typeof( MischiefMaker ), 1044566, 1072910, 75.0, 125.0, typeof( Log ), 1044041, 15, 1044351 );
+				AddRes( index, typeof( DreadHornMane ), 1032682, 1, 1053098 );
+				AddRes( index, typeof( Corruption ), 1032676, 10, 1053098 );
+				AddRes( index, typeof( Putrefication ), 1032678, 10, 1053098 );
+				AddRareRecipe( index, 203 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+				*/
+
+				index = AddCraft( typeof( TheNightReaper ), 1044566, 1072912, 75.0, 125.0, typeof( Log ), 1044041, 10, 1044351 );
+				AddRes( index, typeof( DreadHornMane ), 1032682, 1, 1053098 );
+				AddRes( index, typeof( Blight ), 1032675, 10, 1053098 );
+				AddRes( index, typeof( Scourge ), 1032677, 10, 1053098 );
+				AddRareRecipe( index, 204 );
+				ForceNonExceptional( index );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( BarbedLongbow ), 1044566, 1073505, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
+				AddRes( index, typeof( FireRuby ), 1026254, 1, 1053098 );
+				AddRecipe( index, 205 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( SlayerLongbow ), 1044566, 1073506, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
+				AddRes( index, typeof( BrilliantAmber ), 1026256, 1, 1053098 );
+				AddRecipe( index, 206 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( FrozenLongbow ), 1044566, 1073507, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
+				AddRes( index, typeof( Turquoise ), 1026250, 1, 1053098 );
+				AddRecipe( index, 207 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( LongbowOfMight ), 1044566, 1073508, 75.0, 125.0, typeof( Log ), 1044041, 10, 1044351 );
+				AddRes( index, typeof( BlueDiamond ), 1026255, 1, 1053098 );
+				AddRecipe( index, 208 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( RangersShortbow ), 1044566, 1073509, 75.0, 125.0, typeof( Log ), 1044041, 15, 1044351 );
+				AddRes( index, typeof( PerfectEmerald ), 1026251, 1, 1053098 );
+				AddRecipe( index, 209 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( LightweightShortbow ), 1044566, 1073510, 75.0, 125.0, typeof( Log ), 1044041, 15, 1044351 );
+				AddRes( index, typeof( WhitePearl ), 1026253, 1, 1053098 );
+				AddRecipe( index, 210 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( MysticalShortbow ), 1044566, 1073511, 75.0, 125.0, typeof( Log ), 1044041, 15, 1044351 );
+				AddRes( index, typeof( EcruCitrine ), 1026252, 1, 1053098 );
+				AddRecipe( index, 211 );
+				SetNeededExpansion( index, Expansion.ML );
+
+				index = AddCraft( typeof( AssassinsShortbow ), 1044566, 1073512, 75.0, 125.0, typeof( Log ), 1044041, 15, 1044351 );
+				AddRes( index, typeof( DarkSapphire ), 1026249, 1, 1053098 );
+				AddRecipe( index, 212 );
+				SetNeededExpansion( index, Expansion.ML );
+			}
+
 			MarkOption = true;
 			Repair = Core.AOS;
 		}

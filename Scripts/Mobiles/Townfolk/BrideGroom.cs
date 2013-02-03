@@ -11,10 +11,9 @@ namespace Server.Mobiles
 		public BrideGroom()
 		{
 			if ( Female )
-			Title = "the bride";
+				Title = "the bride";
 			else
-			Title = "the groom";			
-
+				Title = "the groom";
 		}
 
 		public override bool CanTeach{ get{ return true; } }
@@ -37,8 +36,7 @@ namespace Server.Mobiles
 		public override void InitOutfit()
 		{
 			if ( Female )
-				
-			AddItem( new FancyDress() );
+				AddItem( new FancyDress() );
 			else
 				AddItem( new FancyShirt() );
 
@@ -50,8 +48,6 @@ namespace Server.Mobiles
 				AddItem( new Shoes( lowHue ) );
 			else
 				AddItem( new Boots( lowHue ) );
-
-
 
 			if( Utility.RandomBool() )
 				HairItemID = 0x203B;

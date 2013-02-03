@@ -59,7 +59,7 @@ namespace Server.Mobiles
 
 		public override int GetHairHue()
 		{
-			return RandomBrightHue();
+			return Utility.RandomBrightHue();
 		}
 
 		public override VendorShoeType ShoeType

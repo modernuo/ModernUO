@@ -1,19 +1,31 @@
 using System;
 using Server.Items;
+using Server.Engines.MLQuests.Items;
 
 namespace Server.Items
 {
-	public class BoneMachete : ElvenMachete
+	public class BoneMachete : ElvenMachete, ITicket
 	{
-		public override int LabelNumber{ get{ return 1020526; } } // bone machete
+		public override WeaponAbility PrimaryAbility { get { return null; } }
+		public override WeaponAbility SecondaryAbility { get { return null; } }
+
+		public override int PhysicalResistance { get { return 1; } }
+		public override int FireResistance { get { return 1; } }
+		public override int ColdResistance { get { return 1; } }
+		public override int PoisonResistance { get { return 1; } }
+		public override int EnergyResistance { get { return 1; } }
+
+		public override int InitMinHits { get { return 5; } }
+		public override int InitMaxHits { get { return 5; } }
 
 		[Constructable]
 		public BoneMachete()
 		{
-			// TODO attributes
+			ItemID = 0x20E;
 		}
 
-		public BoneMachete( Serial serial ) : base( serial )
+		public BoneMachete( Serial serial )
+			: base( serial )
 		{
 		}
 
@@ -30,5 +42,22 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 		}
+
+		#region ITicket Members
+
+		public void OnTicketUsed( Mobile from )
+		{
+			if ( Utility.RandomDouble() < 0.25 )
+			{
+				from.SendLocalizedMessage( 1075007 ); // Your bone handled machete snaps in half as you force your way through the poisonous undergrowth.
+				Delete();
+			}
+			else
+			{
+				from.SendLocalizedMessage( 1075008 ); // Your bone handled machete has grown dull but you still manage to force your way past the venomous branches.
+			}
+		}
+
+		#endregion
 	}
 }

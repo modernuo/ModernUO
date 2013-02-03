@@ -4201,7 +4201,7 @@ namespace Server
 
 		public virtual void Use( Item item )
 		{
-			if( item == null || item.Deleted || this.Deleted )
+			if( item == null || item.Deleted || item.QuestItem || this.Deleted )
 				return;
 
 			DisruptiveAction();
@@ -4303,6 +4303,13 @@ namespace Server
 					{
 						reject = LRReason.CannotLift;
 					}
+					else if( item.Nontransferable && amount != item.Amount )
+					{
+						if ( item.QuestItem )
+							from.SendLocalizedMessage( 1074868 ); // Stacks of quest items cannot be unstacked.
+
+						reject = LRReason.CannotLift;
+					}
 					else if( !item.CheckLift( from, item, ref reject ) )
 					{
 					}
@@ -4354,7 +4361,7 @@ namespace Server
 
 								foreach( NetState ns in eable )
 								{
-									if( !ns.StygianAbyss && ns.Mobile != from && ns.Mobile.CanSee( from ) )
+									if( ns.Mobile != from && ns.Mobile.CanSee( from ) )
 									{
 										if( p == null )
 										{
@@ -4492,7 +4499,7 @@ namespace Server
 
 					foreach( NetState ns in eable )
 					{
-						if( !ns.StygianAbyss && ns.Mobile != this && ns.Mobile.CanSee( this ) )
+						if( ns.Mobile != this && ns.Mobile.CanSee( this ) )
 						{
 							if( p == null )
 							{
@@ -9693,6 +9700,13 @@ namespace Server
 		/// <returns>True if the request is accepted, false if otherwise.</returns>
 		public virtual bool OnEquip( Item item )
 		{
+			// For some reason OSI allows equipping quest items, but they are unmarked in the process
+			if ( item.QuestItem )
+			{
+				item.QuestItem = false;
+				SendLocalizedMessage( 1074769 ); // An item must be in your backpack (and not in a container within) to be toggled as a quest item.
+			}
+
 			return true;
 		}
 

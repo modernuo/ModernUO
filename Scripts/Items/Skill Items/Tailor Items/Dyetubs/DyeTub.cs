@@ -177,7 +177,11 @@ namespace Server.Items
 				{
 					Item item = (Item)targeted;
 
-					if ( item is IDyable && m_Tub.AllowDyables )
+					if ( item.QuestItem )
+					{
+						from.SendLocalizedMessage( 1151836 ); // You may not dye toggled quest items.
+					}
+					else if ( item is IDyable && m_Tub.AllowDyables )
 					{
 						if ( !from.InRange( m_Tub.GetWorldLocation(), 1 ) || !from.InRange( item.GetWorldLocation(), 1 ) )
 							from.SendLocalizedMessage( 500446 ); // That is too far away.

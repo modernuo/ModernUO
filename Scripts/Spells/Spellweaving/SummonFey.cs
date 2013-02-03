@@ -1,5 +1,6 @@
 using System;
 using Server.Mobiles;
+using Server.Engines.MLQuests;
 
 namespace Server.Spells.Spellweaving
 {
@@ -21,5 +22,24 @@ namespace Server.Spells.Spellweaving
 		}
 
 		public override int Sound { get { return 0x217; } }
+
+		public override bool CheckSequence()
+		{
+			Mobile caster = Caster;
+
+			// This is done after casting completes
+			if ( caster is PlayerMobile )
+			{
+				MLQuestContext context = MLQuestSystem.GetContext( (PlayerMobile)caster );
+
+				if ( context == null || !context.SummonFey )
+				{
+					caster.SendLocalizedMessage( 1074563 ); // You haven't forged a friendship with the fey and are unable to summon their aid.
+					return false;
+				}
+			}
+
+			return base.CheckSequence();
+		}
 	}
 }
