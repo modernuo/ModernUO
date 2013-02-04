@@ -3414,12 +3414,17 @@ namespace Server.Mobiles
 			return base.CanSee( m );
 		}
 
-		public override void Animate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
+		public virtual void CheckedAnimate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
 		{
 			if( !Mounted )
 			{
 				base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
 			}
+		}
+
+		public override void Animate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
+		{
+			base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
 		}
 
 		public override bool CanSee( Item item )

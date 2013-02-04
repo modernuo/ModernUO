@@ -3532,25 +3532,25 @@ namespace Server.Mobiles
 			{
 				switch ( Utility.Random( 2 ) )
 				{
-					case 0: Animate( 5, 5, 1, true,  true, 1 ); break;
-					case 1: Animate( 6, 5, 1, true, false, 1 ); break;
+					case 0: CheckedAnimate( 5, 5, 1, true, true, 1 ); break;
+					case 1: CheckedAnimate( 6, 5, 1, true, false, 1 ); break;
 				}
 			}
 			else if ( Body.IsAnimal )
 			{
 				switch ( Utility.Random( 3 ) )
 				{
-					case 0: Animate(  3, 3, 1, true, false, 1 ); break;
-					case 1: Animate(  9, 5, 1, true, false, 1 ); break;
-					case 2: Animate( 10, 5, 1, true, false, 1 ); break;
+					case 0: CheckedAnimate( 3, 3, 1, true, false, 1 ); break;
+					case 1: CheckedAnimate( 9, 5, 1, true, false, 1 ); break;
+					case 2: CheckedAnimate( 10, 5, 1, true, false, 1 ); break;
 				}
 			}
 			else if ( Body.IsMonster )
 			{
 				switch ( Utility.Random( 2 ) )
 				{
-					case 0: Animate( 17, 5, 1, true, false, 1 ); break;
-					case 1: Animate( 18, 5, 1, true, false, 1 ); break;
+					case 0: CheckedAnimate( 17, 5, 1, true, false, 1 ); break;
+					case 1: CheckedAnimate( 18, 5, 1, true, false, 1 ); break;
 				}
 			}
 
@@ -3558,12 +3558,23 @@ namespace Server.Mobiles
 			return true; // entered idle state
 		}
 
-		public override void Animate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
+		/* 
+			this way, due to the huge number of locations this will have to be changed 
+			Perhaps we can change this in the future when fixing game play is not the
+			major issue.
+		*/
+
+		public virtual void CheckedAnimate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
 		{
 			if( !Mounted )
 			{
 				base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
 			}
+		}
+
+		public override void Animate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
+		{
+			base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
 		}
 
 		private void CheckAIActive()

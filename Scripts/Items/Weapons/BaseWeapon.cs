@@ -2386,7 +2386,10 @@ namespace Server.Items
 			if ( from.Mounted )
 				return;
 
-			from.Animate( action, frames, 1, true, false, 0 );
+			if( !from.Mounted )
+			{
+				from.Animate( action, frames, 1, true, false, 0 );
+			}
 		}
 
 		public virtual void PlaySwingAnimation( Mobile from )
