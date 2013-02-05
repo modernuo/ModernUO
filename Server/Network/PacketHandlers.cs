@@ -1396,7 +1396,7 @@ namespace Server.Network
 					}
 				}
 
-				from.NextActionTime = DateTime.Now + TimeSpan.FromSeconds( 0.5 );
+				from.NextActionTime = DateTime.Now + Mobile.ActionDelay;
 			}
 			else
 			{

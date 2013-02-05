@@ -4266,6 +4266,14 @@ namespace Server
 				m.OnDoubleClick( this );
 		}
 
+		private static TimeSpan m_ActionDelay = TimeSpan.FromSeconds( 1.0 );
+
+		public static TimeSpan ActionDelay
+		{
+			get { return m_ActionDelay; }
+			set { m_ActionDelay = value; }
+		}
+
 		public virtual void Lift( Item item, int amount, out bool rejected, out LRReason reject )
 		{
 			rejected = true;
@@ -4354,7 +4362,7 @@ namespace Server
 
 							Map map = from.Map;
 
-							if( Mobile.DragEffects && map != null && (root == null || root is Item) )
+							if( m_DragEffects && map != null && (root == null || root is Item) )
 							{
 								IPooledEnumerable eable = map.GetClientsInRange( from.Location );
 								Packet p = null;
@@ -4399,7 +4407,7 @@ namespace Server
 							if( liftSound != -1 )
 								from.Send( new PlaySound( liftSound, from ) );
 
-							from.NextActionTime = DateTime.Now + TimeSpan.FromSeconds( 0.5 );
+							from.NextActionTime = DateTime.Now + m_ActionDelay;
 
 							if( fixMap != null && shouldFix )
 								fixMap.FixColumn( fixLoc.m_X, fixLoc.m_Y );
@@ -4487,7 +4495,7 @@ namespace Server
 
 		public virtual void SendDropEffect( Item item )
 		{
-			if( Mobile.DragEffects && !item.Deleted )
+			if( m_DragEffects && !item.Deleted )
 			{
 				Map map = m_Map;
 				object root = item.RootParent;
@@ -4509,6 +4517,9 @@ namespace Server
 									trg = new Entity( Serial.Zero, item.Location, map );
 								else
 									trg = new Entity( ((Item)root).Serial, ((Item)root).Location, map );
+
+								if ( m_Location == trg.Location )
+									break; // causes crash on SA+ clients
 
 								p = Packet.Acquire( new DragEffect( this, trg, item.ItemID, item.Hue, item.Amount ) );
 							}
