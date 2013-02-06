@@ -10,6 +10,25 @@ using Server.Items;
 using Server.Network;
 using CPA = Server.CommandPropertyAttribute;
 
+/*
+	UsesSpawnerHome true causes normal behavior, while false will
+	cause the spawner to set the mobile's home to be its spawn 
+	location, thus, not walking back to the spawner.  This will
+	create a less artificial feel to mobiles attempting to return
+	to their home location.
+
+	Also, the spawn area and home range work together.  If the
+	area is not set, they will behave pretty much like they 
+	always have.  If the area is set, the mobile will spawn within
+	that rectangle.  If both are set, the spawn location will be
+	based on the rectangle and allow an additional # of tiles,
+	which is the home range.
+
+	Also, since the home does not necessarily equate to the spawner
+	location any longer, a gettersetter was added to the 
+	BaseCreature.
+*/
+
 namespace Server.Mobiles
 {
 	public class Spawner : Item, ISpawner
@@ -27,6 +46,8 @@ namespace Server.Mobiles
 		private bool m_Running;
 		private bool m_Group;
 		private WayPoint m_WayPoint;
+		private bool m_UsesSpawnerHome;
+		private Rectangle2D m_SpawnArea;
 
 		public bool IsFull{ get{ return ( m_Spawned.Count >= m_Count ); } }
 		public bool IsEmpty{ get{ return ( m_Spawned.Count == 0 ); } }
@@ -63,6 +84,19 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public Rectangle2D SpawnArea
+		{
+			get
+			{
+				return m_SpawnArea;
+			}
+			set
+			{
+				m_SpawnArea = value;
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public int Count
 		{
 			get { return m_Count; }
@@ -94,6 +128,19 @@ namespace Server.Mobiles
 					Stop();
 
 				InvalidateProperties();
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool UsesSpawnerHome
+		{
+			get
+			{
+				return m_UsesSpawnerHome;
+			}
+			set
+			{
+				m_UsesSpawnerHome = value;
 			}
 		}
 
@@ -576,7 +623,7 @@ namespace Server.Mobiles
 				if ( m_Team > 0 )
 					bc.Team = m_Team;
 
-				bc.Home = this.HomeLocation;
+				bc.Home = ( m_UsesSpawnerHome ) ? this.HomeLocation : bc.Location ;
 			}
 
 			InvalidateProperties();
@@ -585,6 +632,13 @@ namespace Server.Mobiles
 		public Point3D GetSpawnPosition()
 		{
 			return GetSpawnPosition( null );
+		}
+
+		private int GetAdjustedLocation( int range, int side, int coord, int coord_this )
+		{
+			int val = ( ( ( coord > 0 ) ? coord : ( coord_this - range ) ) + ( Utility.Random( ( ( range * 2 ) + 1 ) + side ) ) );
+
+			return ( val < 0 ) ? 0 : val;
 		}
 
 		public Point3D GetSpawnPosition( ISpawnable spawned )
@@ -609,21 +663,10 @@ namespace Server.Mobiles
 				waterOnlyMob = false;
 			}
 
-			// Try 10 times to find a spawnable location.
 			for ( int i = 0; i < 10; ++i )
 			{
-				int x, y;
-
-				if ( m_HomeRange > 0 )
-				{
-					x = Location.X + ( Utility.Random( ( m_HomeRange * 2 ) + 1 ) - m_HomeRange );
-					y = Location.Y + ( Utility.Random( ( m_HomeRange * 2 ) + 1 ) - m_HomeRange );
-				}
-				else
-				{
-					x = Location.X;
-					y = Location.Y;
-				}
+				int x = GetAdjustedLocation( m_HomeRange, m_SpawnArea.Width, m_SpawnArea.X, X );
+				int y = GetAdjustedLocation( m_HomeRange, m_SpawnArea.Height, m_SpawnArea.Y, Y );
 
 				int mapZ = map.GetAverageZ( x, y );
 
@@ -820,7 +863,12 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 4 ); // version
+			writer.Write( (int) 5 ); // version
+
+			writer.Write( m_SpawnArea );
+
+			writer.Write( m_UsesSpawnerHome );
+
 			writer.Write( m_WalkingRange );
 
 			writer.Write( m_WayPoint );
@@ -867,6 +915,13 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
+				case 5:
+				{
+					m_SpawnArea = reader.ReadRect2D();
+					m_UsesSpawnerHome = reader.ReadBool();
+
+					goto case 4;
+				}
 				case 4:
 				{
 					m_WalkingRange = reader.ReadInt();

@@ -412,6 +412,27 @@ namespace Server.Mobiles
 		private DateTime m_OwnerAbandonTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]
+		public Spawner MySpawner
+		{
+			get
+			{
+				if( Spawner is Spawner )
+				{
+					return ( Spawner as Spawner );
+				}
+
+				return null;
+			}
+			set
+			{
+				if( value is ISpawner )
+				{
+					Spawner = value as ISpawner;
+				}
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile LastOwner
 		{
 			get
