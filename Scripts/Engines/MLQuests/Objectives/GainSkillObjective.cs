@@ -66,15 +66,15 @@ namespace Server.Engines.MLQuests.Objectives
 				m_Flags |= GainSkillObjectiveFlags.Accelerate;
 		}
 
-		public override bool CanOffer( BaseCreature quester, PlayerMobile pm )
+		public override bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
 		{
 			Skill skill = pm.Skills[m_Skill];
 
 			if ( ( UseReal ? skill.Fixed : skill.BaseFixedPoint ) >= m_ThresholdFixed )
 			{
-				// On OSI both 1077772 and 1080107 are sent.
-				MLQuestSystem.Tell( quester, pm, 1077772 ); // I cannot teach you, for you know all I can teach!
-				//MLQuestSystem.Tell( quester, pm, 1080107 ); // I'm sorry, I have nothing for you at this time.
+				if ( message )
+					MLQuestSystem.Tell( quester, pm, 1077772 ); // I cannot teach you, for you know all I can teach!
+
 				return false;
 			}
 

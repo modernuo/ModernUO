@@ -11,15 +11,13 @@ using Server.Mobiles;
 namespace Server.Engines.MLQuests.Definitions
 {
 	#region Quests
-	// TODO: Time delay on doing these quests (2 mins?)
-	// I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
-	// I'm sorry, I have nothing for you at this time.
 
 	public class SplitEnds : MLQuest
 	{
 		public SplitEnds()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075506; // Split Ends
 			Description = 1075507; // *sighs* I think bowcrafting is a might beyond my talents. Say there, you look a bit more confident with tools. Can I persuade thee to make a few arrows? You could have my satchel in return... 'tis useless to me! You'll need a fletching kit to start, some feathers, and a few arrow shafts. Just use the fletching kit while you have the other things, and I'm sure you'll figure out the rest.
 			RefusalMessage = 1075508; // Oh. Well. I'll just keep trying alone, I suppose...
@@ -67,6 +65,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BakersDozen()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075478; // Baker's Dozen
 			Description = 1075479; // You there! Do you know much about the ways of cooking? If you help me out, I'll show you a thing or two about how it's done. Bring me some cookie mix, about 5 batches will do it, and I will reward you. Although, I don't think you can buy it, you can make some in a snap! First get a rolling pin or frying pan or even a flour sifter. Then you mix one pinch of flour with some water and you've got some dough! Take that dough and add one dollop of honey and you've got sweet dough. add one more drop of honey and you've got cookie mix. See? Nothing to it! Now get to work!
 			RefusalMessage = 1075480; // Argh, I absolutely must have more of these 'cookies!' Come back if you change your mind.
@@ -91,13 +90,14 @@ namespace Server.Engines.MLQuests.Definitions
 		public AStitchInTime()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075523; // A Stitch in Time
 			Description = 1075522; // Oh how I wish I had a fancy dress like the noble ladies of Castle British! I don't have much... but I have a few trinkets I might trade for it. It would mean the world to me to go to a fancy ball and dance the night away. Oh, and I could tell you how to make one! You just need to use your sewing kit on enough cut cloth, that's all.
 			RefusalMessage = 1075526; // Won't you reconsider? It'd mean the world to me, it would!
 			InProgressMessage = 1075527; // Hello again! Do you need anything? You may want to visit the tailor's shop for cloth and a sewing kit, if you don't already have them.
 			CompletionMessage = 1075528; // It's gorgeous! I only have a few things to give you in return, but I can't thank you enough! Maybe I'll even catch Uzeraan's eye at the, er, *blushes* I mean, I can't wait to wear it to the next town dance!
 
-			Objectives.Add( new CollectObjective( 1, typeof( FancyDress ), 1015275 ) ); // fancy dress
+			Objectives.Add( new CollectObjective( 1, typeof( FancyDress ), 1027935 ) ); // fancy dress
 
 			Rewards.Add( new ItemReward( 1075524, typeof( AnOldRing ) ) ); // an old ring
 			Rewards.Add( new ItemReward( 1075525, typeof( AnOldNecklace ) ) ); // an old necklace
@@ -116,6 +116,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BatteredBucklers()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075511; // Battered Bucklers
 			Description = 1075512; // Hey there! Yeah... you! Ya' any good with a hammer? Tell ya what, if yer thinking about tryin' some metal work, and have a bit of skill, I can show ya how to bend it into shape. Just get some of those ingots there, and grab a hammer and use it over here at this forge. I need a few more bucklers hammered out to fill this here order with...  hmmm about ten more. that'll give some taste of how to work the metal.
 			RefusalMessage = 1075514; // Not enough muscle on yer bones to use it? hmph, probably afraid of the sparks markin' up yer loverly skin... to good for some honest labor... ha!... off with ya!
@@ -140,6 +141,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public MoreOrePlease()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075530; // More Ore Please
 			Description = 1075529; // Have a pickaxe? My supplier is late and I need some iron ore so I can complete a bulk order for another merchant. If you can get me some soon I'll pay you double what it's worth on the market. Just find a cave or mountainside and try to use your pickaxe there, maybe you'll strike a good vein! 5 large pieces should do it.
 			RefusalMessage = 1075531; // Not feeling strong enough today? Its alright, I didn't need a bucket of rocks anyway.
@@ -164,6 +166,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ComfortableSeating()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075517; // Comfortable Seating
 			Description = 1075518; // Hail friend, hast thou a moment? A mishap with a saw hath left me in a sorry state, for it shall be a while before I canst return to carpentry. In the meantime, I need a comfortable chair that I may rest. Could thou craft a straw chair?  Only a tool, such as a dovetail saw, a few boards, and some skill as a carpenter is needed. Remember, this is a piece of furniture, so please pay attention to detail.
 			RefusalMessage = 1072687; // I quite understand your reluctance.  If you reconsider, I'll be here.
@@ -188,6 +191,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ThePenIsMightier()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075542; // The Pen is Mightier
 			Description = 1075543; // Do you know anything about 'Inscription?' I've been trying to get my hands on some hand crafted Recall scrolls for a while now, and I could really use some help. I don't have a scribe's pen, let alone a spellbook with Recall in it, or blank scrolls, so there's no way I can do it on my own. How about you though? I could trade you one of my old leather bound books for some.
 			RefusalMessage = 1075546; // Hmm, thought I had your interest there for a moment. It's not everyday you see a book made from real daemon skin, after all!
@@ -212,6 +216,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public AClockworkPuzzle()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075535; // A clockwork puzzle
 			Description = 1075534; // 'Tis a riddle, you see! "What kind of clock is only right twice per day? A broken one!" *laughs heartily* Ah, yes *wipes eye*, that's one of my favorites! Ah... to business. Could you fashion me some clock parts? I wish my own clocks to be right all the day long! You'll need some tinker's tools and some iron ingots, I think, but from there it should be just a matter of working the metal.
 			RefusalMessage = 1072981; // Or perhaps you'd rather not.
@@ -236,6 +241,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public DeliciousFishes()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075555; // Delicious Fishes
 			Description = 1075556; // Ello there, looking for a good place on the dock to fish? I like the southeast corner meself. What's that? Oh, no, *sighs* me pole is broken and in for fixin'. My grandpappy gave me that pole, means a lot you see. Miss the taste of fish though... Oh say, since you're here, could you catch me a few fish? I can cook a mean fish steak, and I'll split 'em with you! But make sure it's one of the green kind, they're the best for seasoning!
 			RefusalMessage = 1075558; // Ah, you're missin' out my friend, you're missing out. My peppercorn fishsteaks are famous on this little isle of ours!
@@ -260,6 +266,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public FleeAndFatigue()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075487; // Flee and Fatigue
 			Description = 1075488; // I was just *coughs* ambushed near the moongate. *wheeze* Why do I pay my taxes? Where were the guards? You then, you an Alchemist? If you can make me a few Refresh potions, I will be back on my feet and can give those lizards the what for! Find a mortar and pestle, a good amount of black pearl, and ten empty bottles to store the finished potions in. Just use the mortar and pestle and the rest will surely come to you. When you return, the favor will be repaid.
 			RefusalMessage = 1075489; // Fine fine, off with *cough* thee then! The next time you see a lizardman though, give him a whallop for me, eh?
@@ -284,6 +291,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ChopChopOnTheDouble()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1075537; // Chop Chop, On The Double!
 			Description = 1075538; // That's right, move it! I need sixty logs on the double, and they need to be freshly cut! If you can get them to me fast I'll have your payment in your hands before you have the scent of pine out from beneath your nostrils. Just get a sharp axe and hack away at some of the trees in the land and your lumberjacking skill will rise in no time.
 			RefusalMessage = 1072981; // Or perhaps you'd rather not.

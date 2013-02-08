@@ -144,15 +144,11 @@ namespace Server.Engines.MLQuests.Definitions
 			Description = 1072825; // *snort* ... guard-mates ... guard-herd *hoof stomp* ... defend-with-hoof-and-horn ... thirsty-drink.  *proud head-toss*
 			RefusalMessage = 1072826; // *snort*
 			InProgressMessage = 1072827; // *impatient hoof stomp* ... thirsty herd ... water scent.
+			CompletionNotice = CompletionNoticeShort;
 
 			Objectives.Add( new EscortObjective( new QuestArea( 1074779, "Bravehorn's drinking pool" ) ) ); // Bravehorn's drinking pool
 
 			Rewards.Add( new DummyReward( 1072806 ) ); // The boon of Bravehorn.
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1046258, "", 0x23 ); // Your quest is complete.
 		}
 
 		public override void GetRewards( MLQuestInstance instance )
@@ -534,15 +530,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1074508; // Okay.  Best of luck with your other endeavors.
 			InProgressMessage = 1074509; // Lord overseers are the best source I know for power crystals of the type I need.  Iron golems too, can have them but they're harder to find.
 			CompletionMessage = 1074510; // Do you have those power crystals?  I'm ready to put the finishing touches on my latest experiment.
+			CompletionNotice = CompletionNoticeShortReturn;
 
 			Objectives.Add( new CollectObjective( 10, typeof( PowerCrystal ), "Power Crystals" ) );
 
 			Rewards.Add( new DummyReward( 1074875 ) ); // Another step closer to becoming human.
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
 		}
 
 		public override void GetRewards( MLQuestInstance instance )
@@ -575,15 +567,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1074521; // Oh yah, if you're too busy, no problem.
 			InProgressMessage = 1074522; // Sledge can be found in Buc's Den.  Better hurry, he won't take those crates if you take too long with them.
 			CompletionMessage = 1074523; // Hey, if you have cargo for me, you can start unloading over here.
+			CompletionNotice = CompletionNoticeShort;
 
 			Objectives.Add( new TimedDeliverObjective( TimeSpan.FromHours( 1 ), typeof( CrateForSledge ), 5, "Crates for Sledge", typeof( Sledge ), "Sledge (Buc's Den)" ) );
 
 			Rewards.Add( new DummyReward( 1074875 ) ); // Another step closer to becoming human.
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1046258, "", 0x23 ); // Your quest is complete.
 		}
 
 		public override void GetRewards( MLQuestInstance instance )
@@ -632,16 +620,12 @@ namespace Server.Engines.MLQuests.Definitions
 			Description = 1074527; // It's all about hardship, suffering, struggle and pain.  Without challenges, you've got nothing to test yourself against -- and that's what life is all about.  Self improvement!  Honing your body and mind!  Overcoming obstacles ... You'll see what I mean if you take on my challenge.
 			RefusalMessage = 1074528; // My way of life isn't for everyone, that's true enough.
 			InProgressMessage = 1074529; // You're not making much progress in the honing-mind-and-body department, are you?
+			CompletionNotice = CompletionNoticeShortReturn;
 
 			Objectives.Add( new KillObjective( 5, new Type[] { typeof( Efreet ) }, "efreets", new QuestArea( 1074808, "Fire" ) ) ); // Fire
 			Objectives.Add( new KillObjective( 5, new Type[] { typeof( IceFiend ) }, "ice fiends", new QuestArea( 1074809, "Ice" ) ) ); // Ice
 
 			Rewards.Add( new DummyReward( 1074875 ) ); // Another step closer to becoming human.
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
 		}
 
 		public override void GetRewards( MLQuestInstance instance )

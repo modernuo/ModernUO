@@ -1103,6 +1103,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TheKingOfClothing()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073902; // The King of Clothing
 			Description = 1074092; // I have heard noble tales of a fine and proud human garment. An article of clothing fit for both man and god alike. It is called a "kilt" I believe? Could you fetch for me some of these kilts so I that I might revel in their majesty and glory?
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1120,6 +1121,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ThePuffyShirt()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073903; // The Puffy Shirt
 			Description = 1074093; // We elves believe that beauty is expressed in all things, including the garments we wear. I wish to understand more about human aesthetics, so please kind traveler - could you bring to me magnificent examples of human fancy shirts? For my thanks, I could teach you more about the beauty of elven vestements.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1137,6 +1139,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public FromTheGaultierCollection()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073905; // From the Gaultier Collection
 			Description = 1074095; // It is my understanding, the females of humankind actually wear on certain occasions a studded bustier? This is not simply a fanciful tale? Remarkable! It sounds hideously uncomfortable as well as ludicrously impracticle. But perhaps, I simply do not understand the nuances of human clothing. Perhaps, I need to see such a studded bustier for myself?
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1154,6 +1157,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public HauteCouture()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073901; // Hâute Couture
 			Description = 1074091; // Most human apparel is interesting to elven eyes. But there is one garment - the flower garland - which sounds very elven indeed. Could I see how a human crafts such an object of beauty? In exchange, I could share with you the wonders of elven garments.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1171,6 +1175,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TheSongOfTheWind()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073910; // The Song of the Wind
 			Description = 1074100; // To give voice to the passing wind, this is an idea worthy of an elf! Friend, bring me some of the amazing fancy wind chimes so that I may listen to the song of the passing breeze. Do this, and I will share with you treasured elven secrets.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1188,6 +1193,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BeerGoggles()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073895; // Beer Goggles
 			Description = 1074085; // Oh, the deviltry! Why would humans lock their precious liquors inside a wooden coffin? I understand I need a "keg tap" to access the golden brew within such a wooden abomination. Perhaps, if you could bring me such a tap, we could share a drink and I could teach you.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1205,6 +1211,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public MessageInABottleQuest()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073894; // Message in a Bottle
 			Description = 1074084; // We elves are interested in trading our wines with humans but we understand human usually trade such brew in strange transparent bottles. If you could provide some of these empty glass bottles, I might engage in a bit of elven winemaking.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1222,6 +1229,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public NecessitysMother()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073906; // Necessity's Mother
 			Description = 1074096; // What a thing, this human need to tinker. It seems there is no end to what might be produced with a set of Tinker's Tools. Who knows what an elf might build with some? Could you obtain some tinker's tools and bring them to me? In exchange, I offer you elven lore and knowledge.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1239,6 +1247,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TickTock()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073907; // Tick Tock
 			Description = 1074097; // Elves find it remarkable the human preoccupation with the passage of time. To have built instruments to try and capture time -- it is a fascinating notion. I would like to see how a clock is put together. Maybe you could provide some clocks for my experimentation?
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1273,6 +1282,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public StopHarpingOnMe()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073881; // Stop Harping on Me
 			Description = 1074071; // Humans artistry can be a remarkable thing. For instance, I have heard of a wonderful instrument which creates the most melodious of music. A lap harp. I would be ever so grateful if I could examine one in person.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1290,6 +1300,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TheFarEye()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073908; // The Far Eye
 			Description = 1074098; // The wonders of human invention! Turning sand and metal into a far-seeing eye! This is something I must experience for myself. Bring me some of these spyglasses friend human.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1307,11 +1318,13 @@ namespace Server.Engines.MLQuests.Definitions
 		public LethalDarts()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073876; // Lethal Darts
 			Description = 1074066; // We elves are no strangers to archery but I would be interested in learning whether there is anything to learn from the human approach. I would gladly trade you something I have if you could teach me of the deadly crossbow bolt.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
 			InProgressMessage = 1073922; // I will be in your debt if you bring me crossbow bolts.
 			CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
+			CompletionNotice = CompletionNoticeCraft;
 
 			Objectives.Add( new CollectObjective( 10, typeof( Bolt ), 1027163 ) ); // crossbow bolt
 
@@ -1324,11 +1337,13 @@ namespace Server.Engines.MLQuests.Definitions
 		public ASimpleBow()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073877; // A Simple Bow
 			Description = 1074067; // I wish to try a bow crafted in the human style. Is it possible for you to bring me such a weapon? I would be happy to return this favor.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
 			InProgressMessage = 1073923; // I will be in your debt if you bring me bows.
 			CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
+			CompletionNotice = CompletionNoticeCraft;
 
 			Objectives.Add( new CollectObjective( 10, typeof( Bow ), 1025041 ) ); // bow
 
@@ -1341,21 +1356,17 @@ namespace Server.Engines.MLQuests.Definitions
 		public IngeniousArcheryPartOne()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073878; // Ingenious Archery, Part I
 			Description = 1074068; // I have heard of a curious type of bow, you call it a "crossbow". It sounds fascinating and I would very much like to examine one closely. Would you be able to obtain such an instrument for me?
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
 			InProgressMessage = 1073924; // I will be in your debt if you bring me crossbows.
 			CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
+			CompletionNotice = CompletionNoticeCraft;
 
 			Objectives.Add( new CollectObjective( 10, typeof( Crossbow ), 1023919 ) ); // crossbow
 
 			Rewards.Add( ItemReward.FletchingSatchel );
-		}
-
-		// TODO: Verified for this one, what about the others?
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1073967, "", 0x23 ); // You obtained what you seek, now receive your reward.
 		}
 	}
 
@@ -1364,11 +1375,13 @@ namespace Server.Engines.MLQuests.Definitions
 		public IngeniousArcheryPartTwo()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073879; // Ingenious Archery, Part II
 			Description = 1074069; // These human "crossbows" are complex and clever. The "heavy crossbow" is a remarkable instrument of war. I am interested in seeing one up close, if you could arrange for one to make its way to my hands.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
 			InProgressMessage = 1073925; // I will be in your debt if you bring me heavy crossbows.
 			CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
+			CompletionNotice = CompletionNoticeCraft;
 
 			Objectives.Add( new CollectObjective( 8, typeof( HeavyCrossbow ), 1025116 ) ); // heavy crossbow
 
@@ -1381,11 +1394,13 @@ namespace Server.Engines.MLQuests.Definitions
 		public IngeniousArcheryPartThree()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073880; // Ingenious Archery, Part III
 			Description = 1074070; // My friend, I am in search of a device, a instrument of remarkable human ingenuity. It is a repeating crossbow. If you were to obtain such a device, I would gladly reveal to you some of the secrets of elven craftsmanship.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
 			InProgressMessage = 1073926; // I will be in your debt if you bring me repeating crossbows.
 			CompletionMessage = 1073968; // My thanks for your service. Now, I shall teach you of elven archery.
+			CompletionNotice = CompletionNoticeCraft;
 
 			Objectives.Add( new CollectObjective( 10, typeof( RepeatingCrossbow ), 1029923 ) ); // repeating crossbow
 
@@ -1416,6 +1431,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public CutsBothWays()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073913; // Cuts Both Ways
 			Description = 1074103; // What would you say is a typical human instrument of war? Is a broadsword a typical example? I wish to see more of such human weapons, so I would gladly trade elven knowledge for human steel.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1433,6 +1449,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public DragonProtection()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073915; // Dragon Protection
 			Description = 1074105; // Mankind, I am told, knows how to take the scales of a terrible dragon and forge them into powerful armor. Such a feat of craftsmanship! I would give anything to view such a creation - I would even teach some of the prize secrets of the elven people.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1450,6 +1467,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public NothingFancy()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073911; // Nothing Fancy
 			Description = 1074101; // I am curious to see the results of human blacksmithing. To examine the care and quality of a simple item. Perhaps, a simple bascinet helmet? Yes, indeed -- if you could bring to me some bascinet helmets, I would demonstrate my gratitude.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1467,6 +1485,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TheBulwark()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073912; // The Bulwark
 			Description = 1074102; // The clank of human iron and steel is strange to elven ears. For instance, the metallic heater shield which human warriors carry into battle. It is odd to an elf, but nevertheless intriguing. Tell me friend, could you bring me such an example of human smithing skill?
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
@@ -1484,6 +1503,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ArchSupport()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1073882; // Arch Support
 			Description = 1074072; // How clever humans are - to understand the need of feet to rest from time to time!  Imagine creating a special stool just for weary toes.  I would like to examine and learn the secret of their making.  Would you bring me some foot stools to examine?
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.

@@ -21,29 +21,29 @@ namespace Server.Engines.MLQuests
 		private class MLDoneQuestInfo
 		{
 			public MLQuest m_Quest;
-			public DateTime m_Completed;
+			public DateTime m_NextAvailable;
 
-			public MLDoneQuestInfo( MLQuest quest, DateTime completed )
+			public MLDoneQuestInfo( MLQuest quest, DateTime nextAvailable )
 			{
 				m_Quest = quest;
-				m_Completed = completed;
+				m_NextAvailable = nextAvailable;
 			}
 
 			public void Serialize( GenericWriter writer )
 			{
 				MLQuestSystem.WriteQuestRef( writer, m_Quest );
-				writer.Write( m_Completed );
+				writer.Write( m_NextAvailable );
 			}
 
 			public static MLDoneQuestInfo Deserialize( GenericReader reader, int version )
 			{
 				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
-				DateTime completed = reader.ReadDateTime();
+				DateTime nextAvailable = reader.ReadDateTime();
 
 				if ( quest == null || !quest.RecordCompletion )
 					return null; // forget about this record
 
-				return new MLDoneQuestInfo( quest, completed );
+				return new MLDoneQuestInfo( quest, nextAvailable );
 			}
 		}
 
@@ -122,15 +122,15 @@ namespace Server.Engines.MLQuests
 			return false;
 		}
 
-		public bool HasDoneQuest( MLQuest quest, out DateTime completed )
+		public bool HasDoneQuest( MLQuest quest, out DateTime nextAvailable )
 		{
-			completed = DateTime.MinValue;
+			nextAvailable = DateTime.MinValue;
 
 			foreach ( MLDoneQuestInfo info in m_DoneQuests )
 			{
 				if ( info.m_Quest == quest )
 				{
-					completed = info.m_Completed;
+					nextAvailable = info.m_NextAvailable;
 					return true;
 				}
 			}
@@ -140,16 +140,21 @@ namespace Server.Engines.MLQuests
 
 		public void SetDoneQuest( MLQuest quest )
 		{
+			SetDoneQuest( quest, DateTime.MinValue );
+		}
+
+		public void SetDoneQuest( MLQuest quest, DateTime nextAvailable )
+		{
 			foreach ( MLDoneQuestInfo info in m_DoneQuests )
 			{
 				if ( info.m_Quest == quest )
 				{
-					info.m_Completed = DateTime.Now;
+					info.m_NextAvailable = nextAvailable;
 					return;
 				}
 			}
 
-			m_DoneQuests.Add( new MLDoneQuestInfo( quest, DateTime.Now ) );
+			m_DoneQuests.Add( new MLDoneQuestInfo( quest, nextAvailable ) );
 		}
 
 		public void RemoveDoneQuest( MLQuest quest )

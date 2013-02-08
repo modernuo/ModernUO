@@ -182,10 +182,18 @@ namespace Server.Engines.MLQuests
 				foreach ( BaseObjectiveInstance obj in m_ObjectiveInstances )
 					obj.OnQuestCompleted();
 
-				m_Quest.OnComplete( this );
+				TextDefinition.SendMessageTo( m_Player, m_Quest.CompletionNotice, 0x23 );
 
-				if ( !Removed && SkipReportBack && !m_Quest.RequiresCollection ) // An OnComplete can potentially have removed this instance already
-					ClaimReward = true;
+				/*
+				 * Advance to the ClaimReward=true stage if this quest has no
+				 * completion message to show anyway. This suppresses further
+				 * triggers of CheckComplete.
+				 *
+				 * For quests that require collections, this is done later when
+				 * the player double clicks the quester.
+				 */
+				if ( !Removed && SkipReportBack && !m_Quest.RequiresCollection ) // An OnQuestCompleted can potentially have removed this instance already
+					ContinueReportBack( false );
 			}
 		}
 
@@ -273,12 +281,12 @@ namespace Server.Engines.MLQuests
 		public void SendReportBackGump()
 		{
 			if ( SkipReportBack )
-				ContinueReportBack(); // skip ahead
+				ContinueReportBack( true ); // skip ahead
 			else
 				m_Player.SendGump( new QuestReportBackGump( this ) );
 		}
 
-		public void ContinueReportBack()
+		public void ContinueReportBack( bool sendRewardGump )
 		{
 			// There is a backpack check here on OSI for the rewards as well (even though it's not needed...)
 
@@ -326,11 +334,15 @@ namespace Server.Engines.MLQuests
 
 			ClaimReward = true;
 
+			if ( m_Quest.HasRestartDelay )
+				PlayerContext.SetDoneQuest( m_Quest, DateTime.Now + m_Quest.GetRestartDelay() );
+
 			// This is correct for ObjectiveType.Any as well
 			foreach ( BaseObjectiveInstance objective in m_ObjectiveInstances )
 				objective.OnAfterClaimReward();
 
-			SendRewardOffer();
+			if ( sendRewardGump )
+				SendRewardOffer();
 		}
 
 		public void ClaimRewards()
@@ -385,7 +397,7 @@ namespace Server.Engines.MLQuests
 
 			MLQuestContext context = PlayerContext;
 
-			if ( m_Quest.RecordCompletion )
+			if ( m_Quest.RecordCompletion && !m_Quest.HasRestartDelay ) // Quests with restart delays are logged earlier as per OSI
 				context.SetDoneQuest( m_Quest );
 
 			if ( m_Quest.IsChainTriggered )

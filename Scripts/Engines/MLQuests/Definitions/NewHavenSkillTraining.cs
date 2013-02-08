@@ -23,15 +23,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077723; // Farewell to you my friend. Return to me if you wish to live the life of a Paladin.
 			InProgressMessage = 1077724; // There are still more undead to lay to rest. You still have more to learn. Return to me once you have done so.
 			CompletionMessage = 1077726; // Well done, friend. While I know you understand Chivalry is its own reward, I would like to reward you with something that will protect you in battle. It was passed down to me when I was a lad. Now, I am passing it on you. It is called the Bulwark Leggings. Thank you for your service.
+			CompletionNotice = 1077725; // You have achieved the rank of Apprentice Paladin. Return to Aelorn in New Haven to report your progress.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Chivalry, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077727, typeof( BulwarkLeggings ) ) ); // Bulwark Leggings
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077725, "", 0x23 ); // You have achieved the rank of Apprentice Paladin. Return to Aelorn in New Haven to report your progress.
 		}
 
 		public override void Generate()
@@ -53,15 +49,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077611; // Ok, featherweight. come back to me if you want to learn the rudiments of self-defense.
 			InProgressMessage = 1077630; // You have not achived the rank of Apprentice Wrestler. Come back to me once you feel that you are worthy of the rank Apprentice Wrestler and i will reward you with something useful.
 			CompletionMessage = 1077613; // It's about time! Looks like you managed to make it through your self-defense training. As i promised, here's a little something for you. When worn, these Gloves of Safeguarding will increase your awareness and resistances to most elements except poison. Oh yeah, they also increase your natural health regeneration aswell. Pretty handy gloves, indeed. Oh, if you are wondering if your meditation will be hinered while wearing these gloves, it won't be. Mages can wear cloth and leather items without needing to worry about that. Now get out of here and make something of yourself.
+			CompletionNotice = 1077612; // You have achieved the rank of Apprentice Wrestler. Return to Dimethro in New Haven to receive your prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Wrestling, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077614, typeof( GlovesOfSafeguarding ) ) ); // Gloves Of Safeguarding
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077612, "", 0x23 ); // You have achieved the rank of Apprentice Wrestler. Return to Dimethro in New Haven to receive your prize.
 		}
 
 		public override void Generate()
@@ -83,15 +75,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078068; // I thought you wanted to be an Armsman and really make something of yourself. You have potential, kid, but if you want to play with toothpicks, run to Jockles and he will teach you how to clean your teeth with a sword. If you change your mind, come back to me, and i will show you how to wield a real weapon.
 			InProgressMessage = 1078067; // Listen kid. There are a lot of undead in Old Haven, and you haven't smashed enough of them yet. So get back there and do some more cleansing.
 			CompletionMessage = 1078069; // Now that's what I'm talking about! Well done! Don't you like crushing bones and taking names? As i promised, here is a war mace for you. It hits hard. It swings fast. It hits often. What more do you need? Now get out of here and crush some more enemies!
+			CompletionNotice = 1078068; // You have achieved the rank of Apprentice Armsman. Return to Churchill in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Macing, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078062, typeof( ChurchillsWarMace ) ) ); // Churchill's War Mace
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078068, "", 0x23 ); // You have achieved the rank of Apprentice Armsman. Return to Churchill in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -113,15 +101,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078206; // I understand that Archery may not be for you. Feel free to visit me in the future if you change your mind.
 			InProgressMessage = 1078207; // You're doing great as an Archer! however, you need more practice.
 			CompletionMessage = 1078209; // Congratulation! I want to reward you for your accomplishment. Take this composite bow. It is called " Heartseeker". With it, you will shoot with swiftness, precision, and power. I hope "Heartseeker" serves you well.
+			CompletionNotice = 1078208; // You have achieved the rank of Apprentice Archer. Return to Robyn in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Archery, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078210, typeof( Heartseeker ) ) ); // Heartseeker
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078208, "", 0x23 ); // You have achieved the rank of Apprentice Archer. Return to Robyn in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -143,15 +127,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078191; // I understand, lad. Being a hero isn't for everyone. Run along, then. Come back to me if you change your mind.
 			InProgressMessage = 1078192; // You're doing well so far, but you're not quite ready yet. Head back to Old Haven, to the East, and kill some more undead.
 			CompletionMessage = 1078194; // Excellent! You are beginning to appreciate the art of Fencing. I told you fighting with elegance and precision is more enriching than fighting like an ogre.<br><br>Since you have returned victorious, please take this war fork and use it well. The war fork is a finesse weapon, and this one is magical! I call it "Recaro's Riposte". With it, you will be able to parry and counterstrike with ease! Your enemies will bask in your greatness and glory! Good luck to you, lad, and keep practicing!
+			CompletionNotice = 1078193; // You have achieved the rank of Apprentice Fencer. Return to Recaro in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Fencing, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078195, typeof( RecarosRiposte ) ) ); // Recaro's Riposte
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078193, "", 0x23 ); // You have achieved the rank of Apprentice Fencer. Return to Recaro in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -173,15 +153,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077671; // That's too bad. I really thought you had it in you. Well, I'm sure those undead will still be there later, so if you change your mind, feel free to stop on by and I'll help you the best I can.
 			InProgressMessage = 1077672; // You're making some progress, that i can tell, but you're not quite good enough to last for very long out there by yourself. Head back to Old Haven, to the east, and kill some more undead.
 			CompletionMessage = 1077674; // Hey, good job killing those undead! Hopefully someone will come along and clean up the mess. All that blood and guts tends to stink after a few days, and when the wind blows in from the east, it can raise a mighty stink!<br><br>Since you performed valiantly, please take these arms and use them well. I've seen a few too many harvests to be running around out there myself, so you might as well take it.<br><br>There is a lot left for you to learn, but I think you'll do fine. Remember to keep your elbows in and stick'em where it hurts the most!
+			CompletionNotice = 1077673; // You have achieved the rank of Apprentice Warrior. Return to Alden Armstrong in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Tactics, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077675, typeof( ArmsOfArmstrong ) ) ); // Arms of Armstrong
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077673, "", 0x23 ); // You have achieved the rank of Apprentice Warrior. Return to Alden Armstrong in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -203,15 +179,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077662; // Ha! I had a feeling you were a lily-livered pansy. You might have potential, but you're scared by a few smelly undead, maybe it's better that you stay away from sharp objects. After all, you wouldn't want to hurt yourself swinging a sword. If you change your mind, I might give you another chance...maybe.
 			InProgressMessage = 1077663; // *Jockles looks you up and down* Come on! You've got to work harder than that to get better. Now get out of here, go kill some more of those undead to the east in Old Haven, and don't come back till you've got real skill.
 			CompletionMessage = 1077665; // Well, well, look at what we have here! You managed to do it after all. I have to say, I'm a little surprised that you came back in one piece, but since you did. I've got a little something for you. This is a fine blade that served me well in my younger days. Of course I've got much better swords at my disposal now, so I'll let you go ahead and use it under one condition. Take goodcare of it and treat it with the respect that a fine sword deserves. You're one of the quickers learners I've seen, but you still have a long way to go. Keep at it, and you'll get there someday. Happy hunting, kid.
+			CompletionNotice = 1077664; // You have achieved the rank of Apprentice Swordsman. Return to Jockles in New Haven to see what kind of reward he has waiting for you. Hopefully he'll be a little nicer this time!
 
 			Objectives.Add( new GainSkillObjective( SkillName.Swords, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077666, typeof( JocklesQuicksword ) ) ); // Jockles' Quicksword
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077664, "", 0x23 ); // You have achieved the rank of Apprentice Swordsman. Return to Jockles in New Haven to see what kind of reward he has waiting for you. Hopefully he'll be a little nicer this time!
 		}
 
 		public override void Generate()
@@ -233,15 +205,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077708; // It's your choice, obviously, but I'd highly suggest that you learn to parry before adventuring out into the world. Come talk to me again when you get tired of being beat on by your opponents
 			InProgressMessage = 1077709; // You're doing well, but in my opinion, I Don't think you really want to continue on without improving your parrying skill a bit more. Go to Old Haven, to the East, and practice blocking blows with a shield.
 			CompletionMessage = 1077711; // Well done! You're much better at parrying blows than you were when we first met. You should be proud of your new ability and I bet your body is greatful to you aswell. *Tyl Ariadne laughs loudly at his ownn (mostly lame) joke*	Oh yes, I did promise you a shield if I thought you were worthy of having it, so here you go. My father made these shields for the guards who served my father faithfully for many years, and I just happen to have obe that i can part with. You should find it useful as you explore the lands.Good luck, and may the Virtues be your guide.
+			CompletionNotice = 1077710; // You have achieved the rank of Apprentice Warrior (for Parrying). Return to Tyl Ariadne in New Haven as soon as you can to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Parry, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077694, typeof( EscutcheonDeAriadne ) ) ); // Escutcheon de Ariadne
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077710, "", 0x23 ); // You have achieved the rank of Apprentice Warrior (for Parrying). Return to Tyl Ariadne in New Haven as soon as you can to claim your reward.
 		}
 
 		public override void Generate()
@@ -263,15 +231,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077624; // The ability to resist powerful spells is a taxing experience. I understand your resistance in wanting to pursue it. If you wish to reconsider, feel free to return to me for Resisting Spells training. Good journey to you!
 			InProgressMessage = 1077632; // You have not achieved the rank of Apprentice Mage. Come back to me once you feel that you are worthy of the rank of Apprentice Mage and I will reward you with an arcane prize.
 			CompletionMessage = 1077626; // You have successfully begun your journey in becoming a true master of Magery. On behalf of the New Haven Mage Council I wish to present you with this bracelet. When worn, the Bracelet of Resilience will enhance your resistances vs. the elements, physical, and poison harm. The Bracelet of Resilience also magically enhances your ability fend off ranged and melee attacks. I hope it serves you well.
+			CompletionNotice = 1077625; // You have achieved the rank of Apprentice Mage (for Resisting Spells). Return to Alefian in New Haven to receive your arcane prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.MagicResist, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077627, typeof( BraceletOfResilience ) ) ); // Bracelet of Resilience
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077625, "", 0x23 ); // You have achieved the rank of Apprentice Mage (for Resisting Spells). Return to Alefian in New Haven to receive your arcane prize.
 		}
 
 		public override void Generate()
@@ -293,15 +257,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077599; // Seek me out if you ever wish to study the art of Meditation. Good journey.
 			InProgressMessage = 1077628; // You have not achived the rank of Apprentice Stoic. Come back to me once you feel that you are worthy of the rank Apprentice Stoic and i will reward you with a arcane prize.
 			CompletionMessage = 1077626; // You have successfully begun your journey in becoming a true master of Magery. On behalf of the New Haven Mage Council I wish to present you with this bracelet. When worn, the Bracelet of Resilience will enhance your resistances vs. the elements, physical, and poison harm. The Bracelet of Resilience also magically enhances your ability fend off ranged and melee attacks. I hope it serves you well.
+			CompletionNotice = 1077600; // You have achieved the rank of Apprentice Stoic (for Meditation). Return to Gustar in New Haven to receive your arcane prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Meditation, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077602, typeof( PhilosophersHat ) ) ); // Philosopher's Hat
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077600, "", 0x23 ); // You have achieved the rank of Apprentice Stoic (for Meditation). Return to Gustar in New Haven to receive your arcane prize.
 		}
 
 		public override void Generate()
@@ -323,15 +283,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077617; // I understand. When you are ready, feel free to return to me for Inscription training. Thanks for stopping by!
 			InProgressMessage = 1077631; // You have not achived the rank of Apprentice Scribe. Come back to me once you feel that you are worthy of the rank Apprentice Scribe and i will reward you with a arcane prize.
 			CompletionMessage = 1077619; // Scribing is a very fulfilling pursuit. I am please to see you embark on this journey. You sling a pen well! On behalf of the New Haven Mage Council I wish to present you with this spellbook. When equipped, the Hallowed Spellbook greatly enhanced the potency of your offensive soells when used against Undead. Be mindful, though. While this book is equiped you invoke powerful spells and abilities vs Humanoids, such as other humans, orcs, ettins, and trolls. Your offensive spells will diminish in effectiveness. I suggest unequipping the Hallowed Spellbook when battling Humanoids. I hope this spellbook serves you well.
+			CompletionNotice = 1077618; // You have achieved the rank of Apprentice Scribe. Return to Jillian in New Haven to receive your arcane prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Inscribe, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077620, typeof( HallowedSpellbook ) ) ); // Hallowed Spellbook
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077618, "", 0x23 ); // You have achieved the rank of Apprentice Scribe. Return to Jillian in New Haven to receive your arcane prize.
 		}
 
 		public override void Generate()
@@ -353,15 +309,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077578; // Very well, come back to me when you are ready to practice Magery. You have so much arcane potential. 'Tis a shame to see it go to waste. The New Haven Mage Council could really use your help.
 			InProgressMessage = 1077579; // You have not achieved the rank of Apprentice Mage. Come back to me once you feel that you are worthy of the rank of Apprentice Mage and I will reward you with an arcane prize.
 			CompletionMessage = 1077581; // Well done! On behalf of the New Haven Mage Council I wish to present you with this staff. Normally a mage must unequip weapons before spell casting. While wielding your new Ember Staff, however, you will be able to invoke your Magery spells. Even if you do not currently possess skill in Mace Fighting, the Ember Staff will allow you to fight as if you do. However, your Magery skill will be temporarily reduced while doing so. Finally, the Ember Staff occasionally smites a foe with a Fireball while wielding it in melee combat. I hope the Ember Staff serves you well.
+			CompletionNotice = 1077580; // You have achieved the rank of Apprentice Mage. Return to Kaelynna in New Haven to receive your arcane prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Magery, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077582, typeof( EmberStaff ) ) ); // Ember Staff
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077580, "", 0x23 ); // You have achieved the rank of Apprentice Mage. Return to Kaelynna in New Haven to receive your arcane prize.
 		}
 
 		public override void Generate()
@@ -383,15 +335,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077605; // Return to me if you reconsider and wish to become an Apprentice Scholar.
 			InProgressMessage = 1077629; // You have not achieved the rank of Apprentice Scholar. Come back to me once you feel that you are worthy of the rank of Apprentice Scholar and I will reward you with an arcane prize.
 			CompletionMessage = 1077607; // You have completed the task. Well done. On behalf of the New Haven Mage Council I wish to present you with this ring. When worn, the Ring of the Savant enhances your intellectual aptitude and increases your mana pool. Your spell casting abilities will take less time to invoke and recovering from such spell casting will be hastened. I hope the Ring of the Savant serves you well.
+			CompletionNotice = 1077606; // You have achieved the rank of Apprentice Scholar. Return to Mithneral in New Haven to receive your arcane prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.EvalInt, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077608, typeof( RingOfTheSavant ) ) ); // Ring of the Savant
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077606, "", 0x23 ); // You have achieved the rank of Apprentice Scholar. Return to Mithneral in New Haven to receive your arcane prize.
 		}
 
 		public override void Generate()
@@ -413,15 +361,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077745; // I’m disappointed that you aren’t interested in learning more about Tinkering. It’s really such a useful skill!<br><br>*Amelia smiles*<br><br>At least you know where to find me if you change your mind, since I rarely spend time outside of this shop.
 			InProgressMessage = 1077746; // Nice going! You're not quite at Apprentice Tinkering yet, though, so you better get back to work. Remember that the quickest way to learn is to make scissors up until 45 skill, and then switch to hammers. Also, don't forget that working here in my shop will let me give you tips so you can learn faster.
 			CompletionMessage = 1077748; // You've done it! Look at our brand new Apprentice Tinker! You've still got quite a lot to learn if you want to be a Grandmaster Tinker, but I believe you can do it! Just keep in mind that if you're tinkering just to practice and improve your skill, make items that are moderately difficult (60-80% success chance), and try to stick to ones that use less ingots.  <br><br>Come here, my brand new Apprentice Tinker, I want to give you something special. I created this just for you, so I hope you like it. It's a set of Tinker's Tools that contains a bit of magic. These tools have more charges than any Tinker's Tools a Tinker can make. You can even use them to make a normal set of tools, so that way you won't ever find yourself stuck somewhere with no tools!
+			CompletionNotice = 1077747; // You have achieved the rank of Apprentice Tinker. Talk to Amelia Youngstone in New Haven to see what kind of reward she has waiting for you.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Tinkering, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077749, typeof( AmeliasToolbox ) ) ); // Amelia’s Toolbox
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077747, "", 0x23 ); // You have achieved the rank of Apprentice Tinker. Talk to Amelia Youngstone in New Haven to see what kind of reward she has waiting for you.
 		}
 
 		public override void Generate()
@@ -443,15 +387,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077689; // It's your choice, but I wouldn't head out there without knowing what makes those things tick inside! If you change your mind, you can find me right here dissecting frogs, cats or even the occasional unlucky adventurer.
 			InProgressMessage = 1077690; // I'm surprised to see you back so soon. You've still got a ways to go if you want to really understand the science of Anatomy. Head out to Old Haven and practice combat and healing yourself or other adventurers.
 			CompletionMessage = 1077692; // By the Virtues, you've done it! Congratulations mate! You still have quite a ways to go if you want to perfect your knowledge of Anatomy, but I know you'll get there someday. Just keep at it.<br><br>In the meantime, here's a piece of armor that you might find useful. It's not fancy, but it'll serve you well if you choose to wear it.<br><br>Happy adventuring, and remember to keep your cranium separate from your clavicle!
+			CompletionNotice = 1077691; // You have achieved the rank of Apprentice Healer (for Anatomy). Return to Andreas Vesalius in New Haven as soon as you can to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Anatomy, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077693, typeof( TunicOfGuarding ) ) ); // Tunic of Guarding
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077691, "", 0x23 ); // You have achieved the rank of Apprentice Healer (for Anatomy). Return to Andreas Vesalius in New Haven as soon as you can to claim your reward.
 		}
 
 		public override void Generate()
@@ -473,15 +413,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077680; // No? Are you sure? Well, when you feel that you're ready to practice your healing, come back to me. I'll be right here, fixing up adventurers and curing the occasional cold!
 			InProgressMessage = 1077681; // Hail! 'Tis good to see you again. Unfortunately, you're not quite ready to call yourself an Apprentice Healer quite yet. Head back out to Old Haven, due east from here, and bandage up some wounds. Yours or someone else's, it doesn't much matter.
 			CompletionMessage = 1077683; // Hello there, friend. I see you've returned in one piece, and you're an Apprentice Healer to boot! You should be proud of your accomplishment, as not everyone has "the touch" when it comes to healing.<br><br>I can't stand to see such good work go unrewarded, so I have something I'd like you to have. It's not much, but it'll help you heal just a little faster, and maybe keep you alive.<br><br>Good luck out there, friend, and don't forget to help your fellow adventurer whenever possible!
+			CompletionNotice = 1077682; // You have achieved the rank of Apprentice Healer. Return to Avicenna in New Haven as soon as you can to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Healing, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077684, typeof( HealersTouch ) ) ); // Healer's Touch
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077682, "", 0x23 ); // You have achieved the rank of Apprentice Healer. Return to Avicenna in New Haven as soon as you can to claim your reward.
 		}
 
 		public override void Generate()
@@ -503,15 +439,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077700; // I'm disappointed. You have a lot of inner potential, and it would pain me greatly to see you waste that. Oh well. If you change your mind, I'll be right here.
 			InProgressMessage = 1077701; // Hello again. I see you've returned, but it seems that your Focus skill hasn't improved as much as it could have. Just head east, to Old Haven, and exert yourself physically and mentally as much as possible. To do this physically, engage in combat and move as quickly as you can. For exerting yourself mentally, expend mana in whatever way you find most suitable to your abilities. Casting spells and using abilities work well for consuming your mana.<br><br>Return to me when you have gained enough Focus skill to be considered an Apprentice Stoic.
 			CompletionMessage = 1077703; // Look who it is! I knew you could do it if you just had the discipline to apply yourself. It feels good to recover from battle so quickly, doesn't it? Just wait until you become a Grandmaster, it's amazing!<br><br>Please take this gift, as you've more than earned it with your hard work. It will help you recover even faster during battle, and provides a bit of protection as well.<br><br>You have so much more potential, so don't stop trying to improve your Focus now! Safe travels!
+			CompletionNotice = 1077702; // You have achieved the rank of Apprentice Stoic (for Focus). Return to Sarsmea Smythe in New Haven to see what kind of reward she has waiting for you.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Focus, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077695, typeof( ClaspOfConcentration ) ) ); // Clasp of Concentration
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077702, "", 0x23 ); // You have achieved the rank of Apprentice Stoic (for Focus). Return to Sarsmea Smythe in New Haven to see what kind of reward she has waiting for you.
 		}
 
 		public override void Generate()
@@ -533,15 +465,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078159; // Come back to me if you with to learn Ninjitsu in the future.
 			InProgressMessage = 1078160; // You have not achieved the rank of Apprentice Ninja. Come back to me once you have done so.
 			CompletionMessage = 1078162; // You have done well, young one. Please accept this kryss as a gift. It is called the "Silver Serpent Blade". With it, you will strike with precision and power. This should aid you in your journey as a Ninja. Farewell.
+			CompletionNotice = 1078161; // You have achieved the rank of Apprentice Ninja. Return to Ryuichi in New Haven to see what kind of reward he has waiting for you.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Ninjitsu, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078163, typeof( SilverSerpentBlade ) ) ); // Silver Serpent Blade
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078161, "", 0x23 ); // You have achieved the rank of Apprentice Ninja. Return to Ryuichi in New Haven to see what kind of reward he has waiting for you.
 		}
 
 		public override void Generate()
@@ -563,15 +491,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078169; // If you wish to become one with the shadows, come back and talk to me.
 			InProgressMessage = 1078170; // You have not achieved the rank of Apprentice Rogue (for Hiding). Talk to me when you feel you have accomplished this.
 			CompletionMessage = 1078172; // Not bad at all. You have learned to control your fear of the dark and you are becoming one with the shadows. If you haven't already talked to Jun, I advise you do so. Jun can teach you how to stealth undetected. Hiding and Stealth are essential skills to master when becoming a Ninja.<br><br>As promised, I have a reward for you. Here are some smokebombs. As long as you are an Apprentice Ninja and have mana available you will be able to use them. They will allow you to hide while in the middle of combat. I hope these serve you well.
+			CompletionNotice = 1078171; // You have achieved the rank of Apprentice Rogue (for Hiding). Return to Chiyo in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Hiding, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078173, typeof( BagOfSmokeBombs ) ) ); // Bag of Smoke Bombs
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078171, "", 0x23 ); // You have achieved the rank of Apprentice Rogue (for Hiding). Return to Chiyo in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -593,15 +517,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078179; // If you want to learn to quiet your movements, talk to me, and I will help you.
 			InProgressMessage = 1078180; // You have not achieved the rank of Apprentice Rogue (for Stealth). Come back to me when you feel you have accomplished this.
 			CompletionMessage = 1078182; // Good. You have learned to quiet your movements. If you haven't already talked to Chiyo, I advise you do so. Chiyo can teach you how to become one with the shadows. Hiding and Stealth are essential skills to master when becoming a Ninja.<br><br>Here is your reward. This leather Ninja jacket is called "Twilight Jacket". It will offer greater protection to you. I hope this serve you well.
+			CompletionNotice = 1078181; // You have achieved the rank of Apprentice Rogue (for Stealth). Return to Jun in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Stealth, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078183, typeof( TwilightJacket ) ) ); // Twilight Jacket
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078181, "", 0x23 ); // You have achieved the rank of Apprentice Rogue (for Stealth). Return to Jun in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -623,15 +543,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078218; // Farewell, friend. Be careful out here. If you change your mind and want to learn Tracking, come back and talk to me.
 			InProgressMessage = 1078219; // So far so good, kid. You are still alive, and you are getting the hang of Tracking. There are many more animals, monsters, and people to track. Come back to me once you have tracked them.
 			CompletionMessage = 1078221; // I knew you could do it! You have become a fine Ranger. Just keep practicing, and one day you will become a Grandmaster Ranger. Just like me.<br><br>I have a little something for you that will hopefully aid you in your journeys. These leggings offer some resistances that will hopefully protect you from harm. I hope these serve you well. Farewell, friend.
+			CompletionNotice = 1078220; // You have achieved the rank of Apprentice Ranger (for Tracking). Return to Walker in New Haven to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Tracking, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078222, typeof( WalkersLeggings ) ) ); // Walker's Leggings
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078220, "", 0x23 ); // You have achieved the rank of Apprentice Ranger (for Tracking). Return to Walker in New Haven to claim your reward.
 		}
 
 		public override void Generate()
@@ -653,15 +569,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078011; // Good journey to you. Return to me if you wish to live the life of a Samurai.
 			InProgressMessage = 1078012; // You are not ready to become an Apprentice Samurai. There are still more undead to lay to rest. Return to me once you have done so.
 			CompletionMessage = 1078014; // You have proven yourself young one. You will continue to improve as your skills are honed with age. You are an honorable warrior, worthy of the rank of Apprentice Samurai.  Please accept this no-dachi as a gift. It is called "The Dragon's Tail". Upon a successful strike in combat, there is a chance this mighty weapon will replenish your stamina equal to the damage of your attack. I hope "The Dragon's Tail" serves you well. You have earned it. Farewell for now.
+			CompletionNotice = 1078013; // You have achieved the rank of Apprentice Samurai. Return to Hamato in New Haven to report your progress.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Bushido, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078015, typeof( TheDragonsTail ) ) ); // The Dragon's Tail
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078013, "", 0x23 ); // You have achieved the rank of Apprentice Samurai. Return to Hamato in New Haven to report your progress.
 		}
 
 		public override void Generate()
@@ -683,15 +595,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078040; // You are weak after all. Come back to me when you are ready to practice Necromancy.
 			InProgressMessage = 1078041; // You have not achieved the rank of Apprentice Necromancer. Come back to me once you feel that you are worthy of the rank of Apprentice Necromancer and I will reward you with the knowledge you desire.
 			CompletionMessage = 1078043; // You have done well, my young apprentice. Behold! I now present to you the knowledge you desire. This spellbook contains all the Necromancer spells. The power is intoxicating, isn't it?
+			CompletionNotice = 1078042; // You have achieved the rank of Apprentice Necromancer. Return to Mulcivikh in New Haven to receive the knowledge you desire.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Necromancy, 500, true, true ) );
 
 			Rewards.Add( new InternalReward() );
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078042, "", 0x23 ); // You have achieved the rank of Apprentice Necromancer. Return to Mulcivikh in New Haven to receive the knowledge you desire.
 		}
 
 		public override void Generate()
@@ -733,15 +641,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1078048; // Channeling the supernatural isn't for everyone. It is a dark art. See me if you ever wish to pursue the life of a Medium.
 			InProgressMessage = 1078049; // Back so soon? You have not achieved the rank of Apprentice Medium. Come back to me once you feel that you are worthy of the rank of Apprentice Medium and I will reward you with something useful.
 			CompletionMessage = 1078051; // Well done! Channeling the supernatural is taxing, indeed. As promised, I will reward you with this bag of Necromancer reagents. You will need these if you wish to also pursue the dark magic of Necromancy. Good journey to you.
+			CompletionNotice = 1078050; // You have achieved the rank of Apprentice Medium. Return to Morganna in New Haven to receive your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.SpiritSpeak, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1078053, typeof( BagOfNecromancerReagents ) ) ); // Bag of Necromancer Reagents
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1078050, "", 0x23 ); // You have achieved the rank of Apprentice Medium. Return to Morganna in New Haven to receive your reward.
 		}
 
 		public override void Generate()
@@ -763,15 +667,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077754; // Couldn’t find my iron mine, could ya? Well, neither can I!<br><br>*Jacob laughs*<br><br>Oh, ya don’t wanna find it? Well, allrighty then, ya might as well head on back down to town then and stop cluttering up my camp. Come back and talk to me if you’re interested in learnin’ ‘bout minin’.
 			InProgressMessage = 1077755; // Where ya been off a gallivantin’ all day, pilgrim? You ain’t seen no hard work yet! Get yer arse back out there to my mine and dig up some more iron. Don’t forget to take a pickaxe or shovel, and if you’re so inclined, a packhorse too.
 			CompletionMessage = 1077757; // Dang gun it! If that don't beat all! Ya went and did it, didn’t ya? What we got ourselves here is a mighty fine brand spankin’ new Apprentice Miner!<br><br>I can see ya put some meat on them bones too while you were at it!<br><br>Here’s that little somethin’ I told ya I had for ya. It’s a pickaxe with some high falutin’ magic inside that’ll help you find the good stuff when you’re off minin’. It wears out fast, though, so you can only use it a few times a day.<br><br>Welp, I’ve got some smeltin’ to do, so off with ya. Good luck, pilgrim!
+			CompletionNotice = 1077756; // You have achieved the rank of Apprentice Miner. Return to Jacob Waltz in at his camp in the hills above New Haven as soon as you can to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Mining, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077758, typeof( JacobsPickaxe ) ) ); // Jacob's Pickaxe
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077756, "", 0x23 ); // You have achieved the rank of Apprentice Miner. Return to Jacob Waltz in at his camp in the hills above New Haven as soon as you can to claim your reward.
 		}
 
 		public override void Generate()
@@ -793,15 +693,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1077736; // You're not interested in learning to be a smith, eh? I thought for sure that's why you were here. Oh well, if you change your mind, you can always come back and talk to me.
 			InProgressMessage = 1077737; // You’re doing well, but you’re not quite there yet. Remember that the quickest way to learn is to make daggers up until 45 skill, and then switch to maces. Also, don’t forget that using my forge and anvil will help you learn faster.
 			CompletionMessage = 1077739; // I've been watching you get better and better as you've been smithing, and I have to say, you're a natural! It's a long road to being a Grandmaster Blacksmith, but I have no doubt that if you put your mind to it you'll get there someday. Let me give you one final piece of advice. If you're smithing just to practice and improve your skill, make items that are moderately difficult (60-80% success chance), and try to stick to ones that use less ingots.<br><br>Now that you're an Apprentice Blacksmith, I have something for you. While you were busy practicing, I was crafting this hammer for you. It's finely balanced, and has a bit of magic imbued within that will help you craft better items. However, that magic needs to restore itself over time, so you can only use it so many times per day. I hope you find it useful!
+			CompletionNotice = 1077738; // You have achieved the rank of Apprentice Blacksmith. Return to George Hephaestus in New Haven to see what kind of reward he has waiting for you.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Blacksmith, 500, true, true ) );
 
 			Rewards.Add( new ItemReward( 1077740, typeof( HammerOfHephaestus ) ) ); // Hammer of Hephaestus
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1077738, "", 0x23 ); // You have achieved the rank of Apprentice Blacksmith. Return to George Hephaestus in New Haven to see what kind of reward he has waiting for you.
 		}
 
 		public override void Generate()

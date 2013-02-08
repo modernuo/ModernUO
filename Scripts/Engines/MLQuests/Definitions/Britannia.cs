@@ -24,32 +24,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1075324; // Oh! Alright then. I hope someone comes along soon who can help me, or I dont know what will become of us.
 			InProgressMessage = 1075325; // My father - or what remains of him - can be found in the graveyard northwest of the city.
 			CompletionMessage = 1075326; // What is this you give me? A basin of water?
+			CompletionNotice = CompletionNoticeShort;
 
 			Objectives.Add( new DeliverObjective( typeof( BasinOfCrystalClearWater ), 1, 1075303, typeof( SkeletonOfSzandor ), "Szandor" ) );
 
 			Rewards.Add( new DummyReward( 1075323 ) ); // Aurelia's gratitude.
-		}
-
-		public override bool CanOffer( BaseCreature quester, PlayerMobile pm )
-		{
-			if ( !base.CanOffer( quester, pm ) )
-				return false;
-
-			MLQuestContext context = MLQuestSystem.GetContext( pm );
-
-			// This quest can be repeated, but only while the next quest has not been completed.
-			if ( context != null && context.HasDoneQuest( NextQuest ) )
-			{
-				MLQuestSystem.Tell( quester, pm, 1075454 ); // I cannot offer you the quest again.
-				return false;
-			}
-
-			return true;
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1046258, "", 0x23 ); // Your quest is complete.
 		}
 
 		public override void Generate()
@@ -74,15 +53,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1075330; // You wont take this back to my daughter? Please, I cannot leave until she knows I am at peace.
 			InProgressMessage = 1075331; // My daughter will be at my home, on the east side of the city.
 			CompletionMessage = 1075332; // Thank goodness! Now we can honor my father for the great man he was while he lived, rather than the horror he became.
+			CompletionNotice = CompletionNoticeShort;
 
 			Objectives.Add( new DeliverObjective( typeof( BasinOfCrystalClearWater ), 1, 1075303, typeof( Aurelia ), "Aurelia" ) );
 
 			Rewards.Add( new ItemReward( 1075304, typeof( MirrorOfPurification ) ) );
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1046258, "", 0x23 ); // Your quest is complete.
 		}
 
 		public override void Generate()

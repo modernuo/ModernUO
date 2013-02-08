@@ -43,10 +43,12 @@ namespace Server.Engines.MLQuests
 		private TextDefinition m_Description;
 		private TextDefinition m_RefuseMessage;
 		private TextDefinition m_InProgressMessage;
-		private TextDefinition m_CompleteMessage;
+		private TextDefinition m_CompletionMessage;
+		private TextDefinition m_CompletionNotice;
 
 		// TODO: Flags? (Deserialized, SaveEnabled, Activated)
 		private bool m_OneTimeOnly;
+		private bool m_HasRestartDelay;
 
 		public bool Activated
 		{
@@ -90,6 +92,12 @@ namespace Server.Engines.MLQuests
 			set { m_OneTimeOnly = value; }
 		}
 
+		public bool HasRestartDelay
+		{
+			get { return m_HasRestartDelay; }
+			set { m_HasRestartDelay = value; }
+		}
+
 		public bool HasObjective<T>() where T : BaseObjective
 		{
 			foreach ( BaseObjective obj in m_Objectives )
@@ -118,8 +126,7 @@ namespace Server.Engines.MLQuests
 
 		public virtual bool RecordCompletion
 		{
-			// TODO
-			get { return ( m_OneTimeOnly /* || HasRestartDelay */ ); }
+			get { return ( m_OneTimeOnly || m_HasRestartDelay ); }
 		}
 
 		public virtual bool IsChainTriggered { get { return false; } }
@@ -129,7 +136,13 @@ namespace Server.Engines.MLQuests
 		public TextDefinition Description { get { return m_Description; } set { m_Description = value; } }
 		public TextDefinition RefusalMessage { get { return m_RefuseMessage; } set { m_RefuseMessage = value; } }
 		public TextDefinition InProgressMessage { get { return m_InProgressMessage; } set { m_InProgressMessage = value; } }
-		public TextDefinition CompletionMessage { get { return m_CompleteMessage; } set { m_CompleteMessage = value; } }
+		public TextDefinition CompletionMessage { get { return m_CompletionMessage; } set { m_CompletionMessage = value; } }
+		public TextDefinition CompletionNotice { get { return m_CompletionNotice; } set { m_CompletionNotice = value; } }
+
+		public static readonly TextDefinition CompletionNoticeDefault = new TextDefinition( 1072273 ); // You've completed a quest!  Don't forget to collect your reward.
+		public static readonly TextDefinition CompletionNoticeShort = new TextDefinition( 1046258 ); // Your quest is complete.
+		public static readonly TextDefinition CompletionNoticeShortReturn = new TextDefinition( 1073775 ); // Your quest is complete. Return for your reward.
+		public static readonly TextDefinition CompletionNoticeCraft = new TextDefinition( 1073967 ); // You obtained what you seek, now receive your reward.
 
 		public MLQuest()
 		{
@@ -137,6 +150,7 @@ namespace Server.Engines.MLQuests
 			m_Objectives = new List<BaseObjective>();
 			m_ObjectiveType = ObjectiveType.All;
 			m_Rewards = new List<BaseReward>();
+			m_CompletionNotice = CompletionNoticeDefault;
 
 			m_Questers = new List<BaseCreature>();
 			m_Instances = new List<MLQuestInstance>();
@@ -178,21 +192,21 @@ namespace Server.Engines.MLQuests
 
 		public void PutSpawner( Spawner s, Point3D loc, Map map )
 		{
+			string name = String.Format( "MLQS-{0}", GetType().Name );
+
 			// Auto cleanup on regeneration
-			/*
 			List<Item> toDelete = new List<Item>();
 
 			foreach ( Item item in map.GetItemsInRange( loc, 0 ) )
 			{
-				if ( item is Spawner )
+				if ( item is Spawner && item.Name == name )
 					toDelete.Add( item );
 			}
 
 			foreach ( Item item in toDelete )
 				item.Delete();
-			*/
 
-			s.Name = String.Format( "MLQS-{0}", GetType().Name );
+			s.Name = name;
 			s.MoveToWorld( loc, map );
 		}
 
@@ -203,44 +217,60 @@ namespace Server.Engines.MLQuests
 			return new MLQuestInstance( this, quester, pm );
 		}
 
-		public virtual bool CanOffer( BaseCreature quester, PlayerMobile pm )
+		public bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
+		{
+			return CanOffer( quester, pm, MLQuestSystem.GetContext( pm ), message );
+		}
+
+		public virtual bool CanOffer( BaseCreature quester, PlayerMobile pm, MLQuestContext context, bool message )
 		{
 			if ( !m_Activated || quester.Deleted || !m_Questers.Contains( quester ) )
 				return false;
-
-			MLQuestContext context = MLQuestSystem.GetContext( pm );
 
 			if ( context != null )
 			{
 				if ( context.IsFull )
 				{
-					MLQuestSystem.Tell( quester, pm, 1080107 ); // I'm sorry, I have nothing for you at this time.
+					if ( message )
+						MLQuestSystem.Tell( quester, pm, 1080107 ); // I'm sorry, I have nothing for you at this time.
+
 					return false;
 				}
 
-				DateTime lastDone;
+				MLQuest checkQuest = this;
 
-				// TODO: Also recursively check NextQuest? (This would explain Aemaeth1)
-				if ( context.HasDoneQuest( this, out lastDone ) )
+				while ( checkQuest != null )
 				{
-					if ( m_OneTimeOnly )
+					DateTime nextAvailable;
+
+					if ( context.HasDoneQuest( checkQuest, out nextAvailable ) )
 					{
-						MLQuestSystem.Tell( quester, pm, 1075454 ); // I cannot offer you the quest again.
-						return false;
+						if ( checkQuest.OneTimeOnly )
+						{
+							if ( message )
+								MLQuestSystem.Tell( quester, pm, 1075454 ); // I cannot offer you the quest again.
+
+							return false;
+						}
+						else if ( nextAvailable > DateTime.Now )
+						{
+							if ( message )
+								MLQuestSystem.Tell( quester, pm, 1075575 ); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
+
+							return false;
+						}
 					}
-					//else if ( m_RestartDelay > TimeSpan.Zero && lastDone + m_RestartDelay > DateTime.Now )
-					//{
-					//	MLQuestSystem.Tell( quester, pm, "Piss off!" );
-					//	return false;
-					//}
+
+					if ( checkQuest.NextQuest == null )
+						break;
+
+					checkQuest = MLQuestSystem.FindQuest( checkQuest.NextQuest );
 				}
 			}
 
-			// Note: On OSI this is checked before max concurrent / one time only (at least for EscortObjective),
-			// but it's more intuitive for players to have it here
 			foreach ( BaseObjective obj in m_Objectives )
 			{
-				if ( !obj.CanOffer( quester, pm ) )
+				if ( !obj.CanOffer( quester, pm, message ) )
 					return false;
 			}
 
@@ -254,7 +284,7 @@ namespace Server.Engines.MLQuests
 
 		public virtual void OnAccept( BaseCreature quester, PlayerMobile pm )
 		{
-			if ( !CanOffer( quester, pm ) )
+			if ( !CanOffer( quester, pm, true ) )
 				return;
 
 			MLQuestInstance instance = CreateInstance( quester, pm );
@@ -268,20 +298,7 @@ namespace Server.Engines.MLQuests
 
 		public virtual void OnRefuse( BaseCreature quester, PlayerMobile pm )
 		{
-			if ( !CanOffer( quester, pm ) )
-				return;
-
 			pm.SendGump( new QuestConversationGump( this, pm, RefusalMessage ) );
-		}
-
-		// Note: Be careful with awarding stuff in OnComplete (like fame), this CAN
-		// be triggered multiple times for certain objectives. Use OnRewardClaimed instead.
-		public virtual void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1072273, "", 0x23 ); // You've completed a quest!  Don't forget to collect your reward.
-
-			// Note: For some quests this message is sent instead:
-			//instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
 		}
 
 		public virtual void GetRewards( MLQuestInstance instance )
@@ -303,6 +320,11 @@ namespace Server.Engines.MLQuests
 
 		public virtual void OnPlayerDeath( MLQuestInstance instance )
 		{
+		}
+
+		public virtual TimeSpan GetRestartDelay()
+		{
+			return TimeSpan.FromSeconds( Utility.Random( 1, 5 ) * 30 );
 		}
 
 		public static void Serialize( GenericWriter writer, MLQuest quest )

@@ -366,7 +366,7 @@ namespace Server.Mobiles
 			if ( context != null && context.IsFull )
 				return;
 
-			MLQuest quest = MLQuestSystem.RandomStarterQuest( this, pm );
+			MLQuest quest = MLQuestSystem.RandomStarterQuest( this, pm, context );
 
 			if ( quest == null || !quest.Activated || ( context != null && context.IsDoingQuest( quest ) ) )
 				return;

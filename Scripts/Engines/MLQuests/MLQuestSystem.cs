@@ -116,6 +116,14 @@ namespace Server.Engines.MLQuests
 			questList.Add( quest );
 		}
 
+		public static void Register( MLQuest quest, params Type[] questerTypes )
+		{
+			Register( quest.GetType(), quest );
+
+			foreach ( Type questerType in questerTypes )
+				RegisterQuestGiver( quest, questerType );
+		}
+
 		public static void Initialize()
 		{
 			if ( !Enabled )
@@ -306,15 +314,13 @@ namespace Server.Engines.MLQuests
 				m.SendGump( new InterfaceGump( m, new string[] { "Object" }, found, 0, null ) );
 		}
 
-		private static bool FindQuest( BaseCreature quester, PlayerMobile pm, out MLQuest quest, out MLQuestInstance entry )
+		private static bool FindQuest( BaseCreature quester, PlayerMobile pm, MLQuestContext context, out MLQuest quest, out MLQuestInstance entry )
 		{
 			quest = null;
 			entry = null;
 
 			List<MLQuest> quests = quester.MLQuests;
 			Type questerType = quester.GetType();
-
-			MLQuestContext context = GetContext( pm );
 
 			// 1. Check quests in progress with this NPC (overriding deliveries is intended)
 			if ( context != null )
@@ -323,10 +329,10 @@ namespace Server.Engines.MLQuests
 				{
 					MLQuestInstance instance = context.FindInstance( questEntry );
 
-					if ( instance != null && instance.QuesterType == questerType )
+					if ( instance != null && ( instance.Quester == quester || ( !questEntry.IsEscort && instance.QuesterType == questerType ) ) )
 					{
 						entry = instance;
-						quest = instance.Quest;
+						quest = questEntry;
 						return true;
 					}
 				}
@@ -353,7 +359,7 @@ namespace Server.Engines.MLQuests
 			}
 
 			// 4. Random quest
-			quest = RandomStarterQuest( quester, pm );
+			quest = RandomStarterQuest( quester, pm, context );
 
 			return ( quest != null );
 		}
@@ -363,16 +369,18 @@ namespace Server.Engines.MLQuests
 			if ( quester.Deleted || !quester.CanGiveMLQuest || !pm.Alive )
 				return;
 
+			MLQuestContext context = GetContext( pm );
+
 			MLQuest quest;
 			MLQuestInstance entry;
 
-			if ( !FindQuest( quester, pm, out quest, out entry ) )
+			if ( !FindQuest( quester, pm, context, out quest, out entry ) )
 			{
 				Tell( quester, pm, 1080107 ); // I'm sorry, I have nothing for you at this time.
 				return;
 			}
 
-			if ( entry != null && ( entry.Quester == quester || !quest.IsEscort ) ) // TODO: It's possible to move the NPC requirement to FindQuest now
+			if ( entry != null )
 			{
 				TurnToFace( quester, pm );
 
@@ -385,7 +393,7 @@ namespace Server.Engines.MLQuests
 				else
 					entry.SendProgressGump();
 			}
-			else if ( quest.CanOffer( quester, pm ) )
+			else if ( quest.CanOffer( quester, pm, context, true ) )
 			{
 				TurnToFace( quester, pm );
 
@@ -617,39 +625,34 @@ namespace Server.Engines.MLQuests
 
 		private static List<MLQuest> m_EligiblePool = new List<MLQuest>();
 
-		public static MLQuest RandomStarterQuest( BaseCreature quester, PlayerMobile pm )
+		public static MLQuest RandomStarterQuest( BaseCreature quester, PlayerMobile pm, MLQuestContext context )
 		{
 			List<MLQuest> quests = quester.MLQuests;
 
 			if ( quests.Count == 0 )
 				return null;
 
-			MLQuestContext context = GetContext( pm );
 			m_EligiblePool.Clear();
+			MLQuest fallback = null;
 
 			foreach ( MLQuest quest in quests )
 			{
-				if ( !quest.Activated )
+				if ( quest.IsChainTriggered || ( context != null && context.IsDoingQuest( quest ) ) )
 					continue;
 
-				if ( quest.IsChainTriggered )
-					continue;
+				/*
+				 * Save first quest that reaches the CanOffer call.
+				 * If no quests are valid at all, return this quest for displaying the CanOffer error message.
+				 */
+				if ( fallback == null )
+					fallback = quest;
 
-				if ( context != null )
-				{
-					if ( context.IsDoingQuest( quest ) )
-						continue;
-
-					// TODO: Maybe this is more complex and it checks CanOffer... but this'll do for now
-					if ( quests.Count > 1 && quest.OneTimeOnly && context.HasDoneQuest( quest ) )
-						continue;
-				}
-
-				m_EligiblePool.Add( quest );
+				if ( quest.CanOffer( quester, pm, context, false ) )
+					m_EligiblePool.Add( quest );
 			}
 
 			if ( m_EligiblePool.Count == 0 )
-				return null;
+				return fallback;
 
 			return m_EligiblePool[Utility.Random( m_EligiblePool.Count )];
 		}

@@ -67,7 +67,7 @@ namespace Server.Engines.MLQuests.Objectives
 			else
 				result = ( label - 1078872 );
 
-			if ( MLQuestSystem.Debug && result > 0x4000 )
+			if ( MLQuestSystem.Debug && ( result <= 0 || result > 0x4000 ) )
 				Console.WriteLine( "Warning: cliloc {0} is likely giving the wrong item ID", label );
 
 			return result;

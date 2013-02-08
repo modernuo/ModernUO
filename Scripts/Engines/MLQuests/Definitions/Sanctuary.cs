@@ -17,6 +17,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BrokenShaft()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074018; // Broken Shaft
 			Description = 1074112; // What do humans know of archery? Humans can barely shoot straight. Why, your efforts are absurd. In fact, I will make a wager - if these so called human arrows I've heard about are really as effective and innovative as human braggarts would have me believe, then I'll trade you something useful.  I might even teach you something of elven craftsmanship.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -60,6 +61,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BendingTheBow()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074019; // Bending the Bow
 			Description = 1074113; // Human craftsmanship! Ha! Why, take an elven bow. It will last for a lifetime, never break and always shoot an arrow straight and true. Can't say the same for a human, can you? Bring me some of these human made bows, and I will show you.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -77,6 +79,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ArmsRace()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074020; // Arms Race
 			Description = 1074114; // Leave it to a human to try and improve upon perfection. To take a bow and turn it into a mechanical contraption like a crossbow. I wish to see more of this sort of "invention". Fetch for me a crossbow, human.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -94,6 +97,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ImprovedCrossbows()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074021; // Improved Crossbows
 			Description = 1074115; // How lazy is man! You cannot even be bothered to pull your own drawstring and hold an arrow ready? You must invent a device to do it for you? I cannot understand, but perhaps if I examine a heavy crossbow for myself, I will see their appeal. Go and bring me such a device and I will repay your meager favor.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -111,6 +115,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BuildingTheBetterCrossbow()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074022; // Building the Better Crossbow
 			Description = 1074116; // More is always better for a human, eh? Take these repeating crossbows. What sort of mind invents such a thing? I must look at it more closely. Bring such a contraption to me and you'll receive a token for your efforts.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -128,6 +133,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public InstrumentOfWar()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074055; // Instrument of War
 			Description = 1074149; // Pathetic, this human craftsmanship! Take their broadswords - overgrown butter knives, in reality. No, I cannot do them justice - you must see for yourself. Bring me broadswords and I will demonstrate their feebleness.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -145,6 +151,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TheShield()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074054; // The Shield
 			Description = 1074148; // I doubt very much a human shield would stop a good stout elven arrow. You doubt me? I will show you - get me some of these heater shields and I will piece them with sharp elven arrows!
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -162,6 +169,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public MusicToMyEars()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074023; // Music to my Ears
 			Description = 1074117; // You think you know something of music? Laughable! Take your lap harp. Crude, indelicate instruments that make a noise not unlike the wailing of a choleric child or a dying cat. I will show you - bring lap harps, and I will demonstrate.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -179,6 +187,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TheGlassEye()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074050; // The Glass Eye
 			Description = 1074144; // Humans are so pathetically weak, they must be augmented by glass and metal! Imagine such a thing! I must see one of these spyglasses for myself, to understand the pathetic limits of human sight!
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -196,6 +205,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public LazyHumans()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074024; // Lazy Humans
 			Description = 1074118; // Human fancy knows no bounds!  It's pathetic that they are so weak that they must create a special stool upon which to rest their feet when they recline!  Humans don't have any clue how to live.  Bring me some of these foot stools to examine and I may teach you something worthwhile.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -213,6 +223,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public InventiveTools()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074048; // Inventive Tools
 			Description = 1074142; // Bring me some of these tinker's tools! I am certain, in the hands of an elf, they will fashion objects of ingenuity and delight that will shame all human invention! Hurry, do this quickly and I might deign to show you my skill.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -246,6 +257,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public AnImpressivePlaid()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074044; // An Impressive Plaid
 			Description = 1074138; // I do not believe humans are so ridiculous as to wear something called a "kilt". Bring for me some of these kilts, if they truly exist, and I will offer you meager reward.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -263,6 +275,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public ANiceShirt()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074045; // A Nice Shirt
 			Description = 1074139; // Humans call that a fancy shirt? I would wager the ends are frayed, the collar worn, the buttons loosely stitched. Bring me fancy shirts and I will demonstrate the many ways in which they are inferior.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -280,6 +293,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public LeatherAndLace()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074047; // Leather and Lace
 			Description = 1074141; // No self respecting elf female would ever wear a studded bustier! I will prove it - bring me such clothing and I will show you how ridiculous they are!
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -297,6 +311,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public FeyHeadgear()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074043; // Fey Headgear
 			Description = 1074137; // Humans do not deserve to wear a thing such as a flower garland. Help me prevent such things from falling into the clumsy hands of humans -- bring me flower garlands!
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -439,6 +454,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public TappingTheKeg()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074037; // Tapping the Keg
 			Description = 1074131; // I have acquired a barrel of human brewed beer. I am loathe to drink it, but how else to prove how inferior it is? I suppose I shall need a barrel tap to drink. Go, bring me a barrel tap quickly, so I might get this over with.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -456,6 +472,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public WaitingToBeFilled()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074036; // Waiting to be Filled
 			Description = 1074130; // The only good thing I can say about human made bottles is that they are empty and may yet still be filled with elven wine. Go now, fetch a number of empty bottles so that I might save them from the fate of carrying human-made wine.
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -473,6 +490,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public BreezesSong()
 		{
 			Activated = true;
+			HasRestartDelay = true;
 			Title = 1074052; // Breeze's Song
 			Description = 1074146; // I understand humans cruely enslave the very wind to their selfish whims! Fancy wind chimes, what a monstrous idea! You must bring me proof of this terrible depredation - hurry, bring me wind chimes!
 			RefusalMessage = 1074063; // Fine then, I'm shall find another to run my errands then.
@@ -603,15 +621,11 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072587; // *looks disappointed* Let me know if you change your mind.
 			InProgressMessage = 1072588; // You haven't lost the letter have you?  It must be delivered to Ahie directly.  Give it into no other hands.
 			CompletionMessage = 1074579; // Yes, can I help you?
+			CompletionNotice = CompletionNoticeShort;
 
 			Objectives.Add( new DeliverObjective( typeof( APersonalLetterAddressedToAhie ), 1, "letter", typeof( Ahie ), "Ahie (The Heartwood)" ) );
 
 			Rewards.Add( ItemReward.BagOfTrinkets );
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1046258, "", 0x23 ); // Your quest is complete.
 		}
 	}
 

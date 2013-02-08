@@ -10,11 +10,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 		public BaseEscort()
 		{
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1046258, "", 0x23 ); // Your quest is complete.
+			CompletionNotice = CompletionNoticeShort;
 		}
 
 		public override void GetRewards( MLQuestInstance instance )

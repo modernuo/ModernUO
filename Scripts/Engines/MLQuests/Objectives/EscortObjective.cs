@@ -29,7 +29,7 @@ namespace Server.Engines.MLQuests.Objectives
 			m_Destination = destination;
 		}
 
-		public override bool CanOffer( BaseCreature quester, PlayerMobile pm )
+		public override bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
 		{
 			BaseEscortable escortable = quester as BaseEscortable;
 
@@ -44,7 +44,9 @@ namespace Server.Engines.MLQuests.Objectives
 				{
 					if ( instance.Quest.IsEscort )
 					{
-						MLQuestSystem.Tell( quester, pm, 500896 ); // I see you already have an escort.
+						if ( message )
+							MLQuestSystem.Tell( quester, pm, 500896 ); // I see you already have an escort.
+
 						return false;
 					}
 				}
@@ -55,12 +57,15 @@ namespace Server.Engines.MLQuests.Objectives
 			// Note: On OSI Bravehorn doesn't check the time limit, but it does SET the last escort time... bug!
 			if ( nextEscort > DateTime.Now )
 			{
-				int minutes = (int)Math.Ceiling( ( nextEscort - DateTime.Now ).TotalMinutes );
+				if ( message )
+				{
+					int minutes = (int)Math.Ceiling( ( nextEscort - DateTime.Now ).TotalMinutes );
 
-				if ( minutes == 1 )
-					MLQuestSystem.Tell( quester, pm, "You must rest 1 minute before we set out on this journey." );
-				else
-					MLQuestSystem.Tell( quester, pm, 1071195, minutes.ToString() ); // You must rest ~1_minsleft~ minutes before we set out on this journey.
+					if ( minutes == 1 )
+						MLQuestSystem.Tell( quester, pm, "You must rest 1 minute before we set out on this journey." );
+					else
+						MLQuestSystem.Tell( quester, pm, 1071195, minutes.ToString() ); // You must rest ~1_minsleft~ minutes before we set out on this journey.
+				}
 
 				return false;
 			}

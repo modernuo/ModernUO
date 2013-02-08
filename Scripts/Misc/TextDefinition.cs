@@ -175,6 +175,17 @@ namespace Server
 				m.SendMessage( def.m_String );
 		}
 
+		public static void SendMessageTo( Mobile m, TextDefinition def, int hue )
+		{
+			if ( def == null )
+				return;
+
+			if ( def.m_Number > 0 )
+				m.SendLocalizedMessage( def.m_Number, "", hue );
+			else if ( def.m_String != null )
+				m.SendMessage( hue, def.m_String );
+		}
+
 		public static void PublicOverheadMessage( Mobile m, MessageType messageType, int hue, TextDefinition def )
 		{
 			if ( def == null )

@@ -16,7 +16,7 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 		}
 
-		public virtual bool CanOffer( BaseCreature quester, PlayerMobile pm )
+		public virtual bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
 		{
 			return true;
 		}

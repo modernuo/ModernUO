@@ -345,15 +345,11 @@ namespace Server.Engines.MLQuests.Definitions
 			Description = 1074298; // *giggle* Mean reapers make pixies unhappy.  *light-hearted giggle*  You could fix them!
 			RefusalMessage = 1074311; // *giggle* Okies!
 			InProgressMessage = 1074316; // Mean reapers are all around trees!  *giggle*  You fix them up, please.
+			CompletionNotice = CompletionNoticeShortReturn;
 
 			Objectives.Add( new KillObjective( 20, new Type[] { typeof( Reaper ) }, "reapers" ) );
 
 			Rewards.Add( new ItemReward( 1031607, typeof( SummonFeyScroll ) ) ); // Summon Fey
-		}
-
-		public override void OnComplete( MLQuestInstance instance )
-		{
-			instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
 		}
 
 		public override void GetRewards( MLQuestInstance instance )
