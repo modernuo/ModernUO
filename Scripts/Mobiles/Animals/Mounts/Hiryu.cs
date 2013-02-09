@@ -8,6 +8,8 @@ namespace Server.Mobiles
 	[CorpseName( "a hiryu corpse" )]
 	public class Hiryu : BaseMount
 	{
+		public override double WeaponAbilityChance { get { return 0.07; } } /* 1 in 15 chance of using per landed hit */
+
 		public override WeaponAbility GetWeaponAbility()
 		{
 			return WeaponAbility.Dismount;

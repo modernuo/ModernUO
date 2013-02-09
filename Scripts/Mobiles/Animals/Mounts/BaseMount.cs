@@ -247,8 +247,10 @@ namespace Server.Mobiles
 					}
 					else
 					{
-						if ( m_Rider != null )
+						if( m_Rider != null )
+						{
 							Dismount( m_Rider );
+						}
 
 						Dismount( value );
 
@@ -259,8 +261,10 @@ namespace Server.Mobiles
 
 						Internalize();
 
-						if ( value.Target is Bola.BolaTarget )
+						if( value.Target is Bola.BolaTarget )
+						{
 							Target.Cancel( value );
+						}
 					}
 
 					m_Rider = value;
@@ -276,9 +280,9 @@ namespace Server.Mobiles
 		{
 			bool result = true;
 
-			if( ( mob is PlayerMobile ) && ( mob as PlayerMobile ).BlockReason != BlockMountType.None )
+			if ((mob is PlayerMobile) && (mob as PlayerMobile).MountBlockReason != BlockMountType.None)
 			{
-				mob.SendLocalizedMessage( ( int )( mob as PlayerMobile ).BlockReason );
+				mob.SendLocalizedMessage((int)(mob as PlayerMobile).MountBlockReason);
 
 				result = false;
 			}

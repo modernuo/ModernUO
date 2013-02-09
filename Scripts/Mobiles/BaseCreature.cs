@@ -425,10 +425,6 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if( value is ISpawner )
-				{
-					Spawner = value as ISpawner;
-				}
 			}
 		}
 

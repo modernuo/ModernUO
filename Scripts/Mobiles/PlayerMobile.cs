@@ -667,72 +667,57 @@ namespace Server.Mobiles
 			}
 		}
 
-		private List<MountBlock> m_Blocks;
+		private MountBlock m_MountBlock;
 
-		public BlockMountType BlockReason { get { return ( CheckList() ) ? m_Blocks[ 0 ].type : BlockMountType.None; } }
+		public BlockMountType MountBlockReason
+		{
+			get
+			{
+				return ( CheckBlock( m_MountBlock ) ) ? m_MountBlock.m_Type : BlockMountType.None;
+			}
+		}
+
+		private static bool CheckBlock( MountBlock block )
+		{
+			return ( !( block is MountBlock ) || !block.m_Timer.Running );
+		}
 
 		private class MountBlock
 		{
-			public BlockMountType type;
+			public BlockMountType m_Type;
 			public Timer m_Timer;
 
-			public MountBlock( TimeSpan duration, BlockMountType Type, List<MountBlock> list )
+			public MountBlock( TimeSpan duration, BlockMountType type, Mobile mobile )
 			{
-				type = Type;
+				m_Type = type;
 
-				m_Timer = Timer.DelayCall( duration, new TimerStateCallback<List<MountBlock>>( RemoveBlock ), list );
+				m_Timer = Timer.DelayCall( duration, new TimerStateCallback<Mobile>( RemoveBlock ), mobile );
 			}
 
-			private void RemoveBlock( List<MountBlock> list )
+			private void RemoveBlock( Mobile mobile )
 			{
-				if( list != null )
-				{
-					list.Remove( this );
-				}
+				( mobile as PlayerMobile ).m_MountBlock = null;
 			}
 		}
 
-		public void AddMountBlock( BlockMountType type, TimeSpan duration )
+		public void SetMountBlock( BlockMountType type, TimeSpan duration, bool dismount )
 		{
-			CheckList();
-
-			m_Blocks.Add( new MountBlock( duration, type, m_Blocks ) );
-
-			IMount mount = this.Mount;
-
-			if( mount != null )
+			if( dismount )
 			{
-				mount.Rider = null;
-			}
-		}
-
-		private bool CheckList()
-		{
-			if( m_Blocks == null )
-			{
-				m_Blocks = new List<MountBlock>();
-			}
-			else if( m_Blocks.Count > 0 )
-			{
-				List<MountBlock> toRemove = new List<MountBlock>();
-
-				int count = m_Blocks.Count;
-
-				for( int i = 0; i < count; i++ )
+				if (this.Mount != null)
 				{
-					if( !m_Blocks[ i ].m_Timer.Running )
-					{
-						toRemove.Add( m_Blocks[ i ] );
-					}
+					this.Mount.Rider = null;
 				}
-
-				foreach( MountBlock block in toRemove )
+				else if (AnimalForm.UnderTransformation(this))
 				{
-					m_Blocks.Remove( block );
+					AnimalForm.RemoveContext(this, true);
 				}
 			}
 
-			return m_Blocks.Count > 0;
+			if( ( m_MountBlock == null ) || !m_MountBlock.m_Timer.Running || ( m_MountBlock.m_Timer.Next < ( DateTime.UtcNow + duration ) ) )
+			{
+				m_MountBlock = new MountBlock( duration, type, this );
+			}
 		}
 
 		public override void OnSkillInvalidated( Skill skill )

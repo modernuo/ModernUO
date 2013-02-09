@@ -41,14 +41,14 @@ namespace Server.Items
 			if ( defender is ChaosDragoon || defender is ChaosDragoonElite )
 				return;
 
-			if ( attacker.Mounted && !(defender.Weapon is Lance) ) // TODO: Should there be a message here?
+			if ( attacker.Mounted && ( !(attacker.Weapon is Lance) || !(defender.Weapon is Lance) ) ) // TODO: Should there be a message here?
 				return;
 
 			ClearCurrentAbility( attacker );
 
 			IMount mount = defender.Mount;
 
-			if ( mount == null )
+			if (mount == null && !Server.Spells.Ninjitsu.AnimalForm.UnderTransformation( defender ) )
 			{
 				attacker.SendLocalizedMessage( 1060848 ); // This attack only works on mounted targets
 				return;
@@ -72,16 +72,28 @@ namespace Server.Items
 			defender.PlaySound( 0x140 );
 			defender.FixedParticles( 0x3728, 10, 15, 9955, EffectLayer.Waist );
 
-			if( defender is PlayerMobile )
+			if (defender is PlayerMobile)
 			{
-				( defender as PlayerMobile ).AddMountBlock( BlockMountType.Dazed, RemountDelay );
+				if (Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(defender))
+				{
+					defender.SendLocalizedMessage(1114066, attacker.Name); // ~1_NAME~ knocked you out of animal form!
+				}
+				else if (defender.Mounted)
+				{
+					defender.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+				}
+
+				(defender as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(10), true);
+			}
+			else
+			{
+				defender.Mount.Rider = null;
 			}
 
 			if( attacker is PlayerMobile )
 			{
-				( attacker as PlayerMobile ).AddMountBlock( BlockMountType.DismountRecovery, RemountDelay );
+				(attacker as PlayerMobile).SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, true );
 			}
-
 			else if( Core.ML && attacker is BaseCreature )
 			{
 				BaseCreature bc = attacker as BaseCreature;
@@ -90,7 +102,7 @@ namespace Server.Items
 				{
 					PlayerMobile pm = bc.ControlMaster as PlayerMobile;
 
-					pm.AddMountBlock( BlockMountType.DismountRecovery, RemountDelay );
+					pm.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, false );
 				}
 			}
 				

@@ -1,53 +1,50 @@
+using System;
+using System.Collections;
 using Server;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
-using System;
 
 namespace Server.Items
 {
 	public class Bola : Item
 	{
 		[Constructable]
-		public Bola()
-			: this( 1 )
+		public Bola() : this( 1 )
 		{
 		}
 
 		[Constructable]
-		public Bola( int amount )
-			: base( 0x26AC )
+		public Bola( int amount ) : base( 0x26AC )
 		{
 			Weight = 4.0;
 			Stackable = true;
 			Amount = amount;
 		}
 
-		public static TimeSpan BolaRecoveryTime { get { return TimeSpan.FromSeconds( Core.ML ? 10 : 3 ); } }
-
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( !IsChildOf( from.Backpack ) )
+			if ( !IsChildOf( from.Backpack ) )
 			{
 				from.SendLocalizedMessage( 1040019 ); // The bola must be in your pack to use it.
 			}
-			else if( !from.CanBeginAction( typeof( Bola ) ) )
+			else if ( !from.CanBeginAction( typeof( Bola ) ) )
 			{
 				from.SendLocalizedMessage( 1049624 ); // You have to wait a few moments before you can use another bola!
 			}
-			else if( from.Target is BolaTarget )
+			else if ( from.Target is BolaTarget )
 			{
 				from.SendLocalizedMessage( 1049631 ); // This bola is already being used.
 			}
-			else if( !Core.AOS && ( from.FindItemOnLayer( Layer.OneHanded ) != null || from.FindItemOnLayer( Layer.TwoHanded ) != null ) )
+			else if ( !Core.AOS && (from.FindItemOnLayer( Layer.OneHanded ) != null || from.FindItemOnLayer( Layer.TwoHanded ) != null) )
 			{
 				from.SendLocalizedMessage( 1040015 ); // Your hands must be free to use this
 			}
-			else if( from.Mounted )
+			else if ( from.Mounted )
 			{
 				from.SendLocalizedMessage( 1040016 ); // You cannot use this while riding a mount
 			}
-			else if( Server.Spells.Ninjitsu.AnimalForm.UnderTransformation( from ) )
+			else if ( Server.Spells.Ninjitsu.AnimalForm.UnderTransformation( from ) )
 			{
 				from.SendLocalizedMessage( 1070902 ); // You can't use this while in an animal form!
 			}
@@ -55,15 +52,14 @@ namespace Server.Items
 			{
 				EtherealMount.StopMounting( from );
 
-				if( Core.AOS )
-				{
+				if ( Core.AOS ) {
 					Item one = from.FindItemOnLayer( Layer.OneHanded );
 					Item two = from.FindItemOnLayer( Layer.TwoHanded );
 
-					if( one != null )
+					if ( one != null )
 						from.AddToBackpack( one );
 
-					if( two != null )
+					if ( two != null )
 						from.AddToBackpack( two );
 				}
 
@@ -73,126 +69,121 @@ namespace Server.Items
 			}
 		}
 
+		private static void ReleaseBolaLock( object state )
+		{
+			((Mobile)state).EndAction( typeof( Bola ) );
+		}
+
 		private static void FinishThrow( object state )
 		{
-			object[] states = ( object[] )state;
+			object[] states = (object[])state;
 
-			Mobile from = ( Mobile )states[ 0 ];
-			Mobile to = ( Mobile )states[ 1 ];
+			Mobile from = (Mobile)states[0];
+			Mobile to = (Mobile)states[1];
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( ReleaseBolaLock ), from );
-
-			if( Core.AOS )
+			if ( Core.AOS )
 				new Bola().MoveToWorld( to.Location, to.Map );
 
-			to.Damage( 1, from );
-
-			if( to is ChaosDragoon || to is ChaosDragoonElite )
-			{
+			if ( to is ChaosDragoon || to is ChaosDragoonElite )
 				from.SendLocalizedMessage( 1042047 ); // You fail to knock the rider from its mount.
+
+			IMount mt = to.Mount;
+			if ( mt != null && !( to is ChaosDragoon || to is ChaosDragoonElite ) )
+				mt.Rider = null;
+
+			if (to is PlayerMobile)
+			{
+				if (Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(to))
+				{
+					to.SendLocalizedMessage(1114066, from.Name); // ~1_NAME~ knocked you out of animal form!
+				}
+				else if (to.Mounted)
+				{
+					to.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+				}
+
+				(to as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(10), true);
 			}
 			else
 			{
-				if( from.InRange( to.Location, 8 ) && ( to.Map == from.Map ) && ( to.Map != Map.Internal ) )
-				{
-					IMount mt = to.Mount;
-
-					if( mt != null )
-					{
-						mt.Rider = null;
-					}
-
-					from.Direction = from.GetDirectionTo( to );
-					from.Animate( 11, 5, 1, true, false, 0 );
-
-					from.MovingEffect( to, 0x26AC, 10, 0, false, false );
-
-					from.DoHarmful( to );
-
-					to.SendLocalizedMessage( 1040023 ); // You have been knocked off of your mount!
-
-					if( to is PlayerMobile )
-					{
-						( to as PlayerMobile ).AddMountBlock( BlockMountType.Dazed, BolaRecoveryTime );
-					}
-					if( from is PlayerMobile )
-					{
-						( from as PlayerMobile ).AddMountBlock( BlockMountType.BolaRecovery, BolaRecoveryTime ); // TODO validate durations
-					}
-				}
-				else
-				{
-					from.SendLocalizedMessage( 1042060 );  //You cannot see that target!
-				}
+				to.Mount.Rider = null;
 			}
-		}
 
-		private static void ReleaseBolaLock( object state )
-		{
-			( ( Mobile )state ).EndAction( typeof( Bola ) );
+			if (Core.AOS && from is PlayerMobile) /* only failsafe, attacker should already be dismounted */
+			{
+				(from as PlayerMobile).SetMountBlock( BlockMountType.BolaRecovery, TimeSpan.FromSeconds(10), true );
+			}
+
+			to.Damage(1);
+
+			Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( ReleaseBolaLock ), from );
 		}
 
 		public class BolaTarget : Target
 		{
 			private Bola m_Bola;
 
-			public BolaTarget( Bola bola )
-				: base( 8, false, TargetFlags.Harmful )
+			public BolaTarget( Bola bola ) : base( 8, false, TargetFlags.Harmful )
 			{
 				m_Bola = bola;
 			}
 
 			protected override void OnTarget( Mobile from, object obj )
 			{
-				if( m_Bola.Deleted )
+				if ( m_Bola.Deleted )
 					return;
 
-				if( obj is Mobile )
+				if ( obj is Mobile )
 				{
-					Mobile to = ( Mobile )obj;
+					Mobile to = (Mobile)obj;
 
-					if( !m_Bola.IsChildOf( from.Backpack ) )
+					if ( !m_Bola.IsChildOf( from.Backpack ) )
 					{
 						from.SendLocalizedMessage( 1040019 ); // The bola must be in your pack to use it.
 					}
-					else if( !Core.AOS && ( from.FindItemOnLayer( Layer.OneHanded ) != null || from.FindItemOnLayer( Layer.TwoHanded ) != null ) )
+					else if ( !Core.AOS && (from.FindItemOnLayer( Layer.OneHanded ) != null || from.FindItemOnLayer( Layer.TwoHanded ) != null) )
 					{
 						from.SendLocalizedMessage( 1040015 ); // Your hands must be free to use this
 					}
-					else if( from.Mounted )
+					else if ( from.Mounted )
 					{
 						from.SendLocalizedMessage( 1040016 ); // You cannot use this while riding a mount
 					}
-					else if( Server.Spells.Ninjitsu.AnimalForm.UnderTransformation( from ) )
+					else if ( Server.Spells.Ninjitsu.AnimalForm.UnderTransformation( from ) )
 					{
 						from.SendLocalizedMessage( 1070902 ); // You can't use this while in an animal form!
 					}
-					else if( !to.Mounted )
+					else if (!to.Mounted && !Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(to))
 					{
 						from.SendLocalizedMessage( 1049628 ); // You have no reason to throw a bola at that.
 					}
-					else if( !from.CanBeHarmful( to ) )
+					else if ( !from.CanBeHarmful( to ) )
 					{
 					}
-					else if( from.BeginAction( typeof( Bola ) ) )
+					else if ( from.BeginAction( typeof( Bola ) ) )
 					{
 						EtherealMount.StopMounting( from );
 
-						if( Core.AOS )
-						{
+						if ( Core.AOS ) {
 							Item one = from.FindItemOnLayer( Layer.OneHanded );
 							Item two = from.FindItemOnLayer( Layer.TwoHanded );
 
-							if( one != null )
+							if ( one != null )
 								from.AddToBackpack( one );
 
-							if( two != null )
+							if ( two != null )
 								from.AddToBackpack( two );
 						}
 
+						from.DoHarmful( to );
+
 						m_Bola.Consume();
 
-						Timer.DelayCall( TimeSpan.FromSeconds( Core.ML ? 4 : .5 ), new TimerStateCallback( FinishThrow ), new object[] { from, to } );
+						from.Direction = from.GetDirectionTo( to );
+						from.Animate( 11, 5, 1, true, false, 0 );
+						from.MovingEffect( to, 0x26AC, 10, 0, false, false );
+
+						Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), new TimerStateCallback( FinishThrow ), new object[]{ from, to } );
 					}
 					else
 					{
@@ -206,8 +197,7 @@ namespace Server.Items
 			}
 		}
 
-		public Bola( Serial serial )
-			: base( serial )
+		public Bola( Serial serial ) : base( serial )
 		{
 		}
 
@@ -215,7 +205,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( ( int )0 );
+			writer.Write( (int) 0 );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -226,4 +216,3 @@ namespace Server.Items
 		}
 	}
 }
-
