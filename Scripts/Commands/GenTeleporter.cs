@@ -1002,6 +1002,9 @@ namespace Server.Commands
 				CreateTeleporter( 328, 1975, 5, 1731, 978, -80, map, false );
 
 				// Dungeon Bedlam
+				CreateTeleporter( 119, 1684, 0, 2068, 1372, -75, map, false );
+				CreateTeleporter( 120, 1684, 0, 2068, 1372, -75, map, false );
+				CreateTeleporter( 121, 1684, 0, 2068, 1372, -75, map, false );
 				CreateTeleporter(  84, 1673, -2, 156, 1613, 0, map, false );
 				CreateTeleporter( 156, 1609, 17,  87, 1673, 0, map, false );
 				CreateTeleporter( 157, 1609, 17,  87, 1673, 0, map, false );
