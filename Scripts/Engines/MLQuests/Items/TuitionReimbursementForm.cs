@@ -19,7 +19,6 @@ namespace Server.Items
 		public TuitionReimbursementForm() : base( 0xE3A )
 		{
 			LootType = LootType.Blessed;
-			Hue = 0x395;
 		}
 
 		public TuitionReimbursementForm( Serial serial ) : base( serial )

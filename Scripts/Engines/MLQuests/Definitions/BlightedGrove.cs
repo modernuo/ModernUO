@@ -220,8 +220,6 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Iosep : BaseCreature
 	{
-		// TODO: EmbracingHumanity
-
 		public override bool IsInvulnerable { get { return true; } }
 
 		public override bool CanShout { get { return true; } }

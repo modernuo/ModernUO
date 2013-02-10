@@ -74,14 +74,31 @@ namespace Server.Engines.MLQuests.Definitions
 		public OddsAndEnds()
 		{
 			Activated = true;
-			OneTimeOnly = true;
 			Title = 1074354; // Odds and Ends
 			Description = 1074677; // I've always been fascinated by primitive cultures -- especially the artifacts.  I'm a collector, you see.  I'm working on building my troglodyte display and I'm saddened to say that I'm short on examples of religion and superstition amongst the creatures.  If you come across any primitive fetishes, I'd be happy to trade you something interesting for them.
 			RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
 			InProgressMessage = 1074678; // I don't really want to know where you get the primitive fetishes, as I can't support the destruction of their lifestyle and culture. That would be wrong.
 			CompletionMessage = 1074679; // Bravo!  These fetishes are just what I needed.  You've earned this reward.
 
-			Objectives.Add( new CollectObjective( 12, typeof( PrimitiveFetish ), 1151986 ) ); // Primitive Fetishes
+			Objectives.Add( new CollectObjective( 12, typeof( PrimitiveFetish ), "Primitive Fetishes" ) );
+
+			Rewards.Add( ItemReward.BagOfTreasure );
+		}
+	}
+
+	public class EmbracingHumanity : MLQuest
+	{
+		public EmbracingHumanity()
+		{
+			Activated = true;
+			OneTimeOnly = true; // OSI has no limit or delay, VERY exploitable
+			Title = 1074349; // Embracing Humanity
+			Description = 1074357; // Well, I don't mind saying it -- I'm flabbergasted!  Absolutely astonished.  I just heard that some elves want to convert themselves to humans through some magical process.  My cousin Nedrick does whatever needs doing.  I guess you could check it out for yourself if you're curious.  Anyway, I wonder if you'll bring my cousin, Drithen, this here treat my wife baked up for him special.
+			RefusalMessage = 1074459; // That's okay, I'll find someone else to make the delivery.
+			InProgressMessage = 1074460; // If I knew where my cousin was, I'd make the delivery myself.
+			CompletionMessage = 1074461; // Oh, hello there.  What do you have for me?
+
+			Objectives.Add( new DeliverObjective( typeof( SpecialTreatForDrithen ), 1, "treat for Drithen", typeof( Drithen ), "Drithen (Umbra)" ) );
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}

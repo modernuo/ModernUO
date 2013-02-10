@@ -570,7 +570,7 @@ namespace Server.Mobiles
 			{
 				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
 
-				if ( quest != null && !StaticMLQuester )
+				if ( MLQuestSystem.Enabled && quest != null && !StaticMLQuester )
 					SetMLQuest( quest );
 			}
 		}

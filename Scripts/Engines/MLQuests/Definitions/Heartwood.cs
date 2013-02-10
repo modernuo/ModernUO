@@ -385,7 +385,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074735; // If you're going to get anywhere in the adventuring game, you have to take some risks.  A harpy, well, it's bad, but it's not a dragon.
 			CompletionMessage = 1074734; // The hero returns from the glorious battle and - oh, such a small feather?
 
-			Objectives.Add( new CollectObjective( 1, typeof( SalivasFeather ), 1151994 ) ); // Saliva's Feathers
+			Objectives.Add( new CollectObjective( 1, typeof( SalivasFeather ), "Saliva's Feather" ) );
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -402,7 +402,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074729; // Em, I thought I had explained already.  Abscess, the hydra, you know? Lots of heads but just the one tail. I need the tail. I have my reasons. Go go go.
 			CompletionMessage = 1074730; // Ah, the tail.  You did it!  You know the rumours about dried ground hydra tail powder are all true? Thank you so much!
 
-			Objectives.Add( new CollectObjective( 1, typeof( AbscessTail ), 1074231 ) ); // Abscess' Tail
+			Objectives.Add( new CollectObjective( 1, typeof( AbscessTail ), "Abscess' Tail" ) );
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -1419,8 +1419,8 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074724; // Hydras have been spotted in the Blighted Grove.  You won't get those scales without getting your feet wet, I'm afraid.
 			CompletionMessage = 1074725; // I can't wait to get to work now that you've returned with my scales.
 
-			Objectives.Add( new CollectObjective( 1, typeof( ThrashersTail ), 1074230 ) ); // Thrasher's Tail
-			Objectives.Add( new CollectObjective( 10, typeof( HydraScale ), 1151992 ) ); // Hydra Scales
+			Objectives.Add( new CollectObjective( 1, typeof( ThrashersTail ), "Thrasher's Tail" ) );
+			Objectives.Add( new CollectObjective( 10, typeof( HydraScale ), "Hydra Scales" ) );
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}

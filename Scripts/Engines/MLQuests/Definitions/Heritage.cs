@@ -649,8 +649,6 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Sledge : BaseCreature
 	{
-		// TODO: Pointy Ears
-
 		public override bool IsInvulnerable { get { return true; } }
 
 		public override bool CanShout { get { return true; } }

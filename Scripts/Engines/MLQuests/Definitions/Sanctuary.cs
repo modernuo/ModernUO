@@ -335,7 +335,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074686; // I've told you all I know of the creature.  Until you return with Grobu's fur I can't finish my cloak.
 			CompletionMessage = 1074687; // Ah! So soft, so supple.  What a wonderful texture.  Here you are ... my thanks.
 
-			Objectives.Add( new CollectObjective( 1, typeof( GrobusFur ), 1074676 ) ); // Grobu's Fur
+			Objectives.Add( new CollectObjective( 1, typeof( GrobusFur ), "Grobu's Fur" ) );
 
 			Rewards.Add( ItemReward.TailorSatchel );
 		}
@@ -629,6 +629,22 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	public class CommonBrigands : MLQuest
+	{
+		public CommonBrigands()
+		{
+			Activated = true;
+			Title = 1073082; // Common Brigands
+			Description = 1073572; // Thank goodness, a hero like you has arrived! Brigands have descended upon this area like locusts, stealing and looting where ever they go. We need someone to put these vile curs where they belong -- in their graves. Are you up to the task? 
+			RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
+			InProgressMessage = 1073592; // The Brigands still plague us. Have you killed 20 of their number?<br>
+
+			Objectives.Add( new KillObjective( 20, new Type[] { typeof( Brigand ) }, "common brigands" ) );
+
+			Rewards.Add( ItemReward.BagOfTreasure );
+		}
+	}
+
 	#endregion
 
 	#region Mobiles
@@ -811,8 +827,6 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Tiana : BaseCreature
 	{
-		// TODO: Add quests, Common Brigands (needs Elf and Human Brigands put in first)
-
 		public override bool IsInvulnerable { get { return true; } }
 		public override bool CanTeach { get { return true; } }
 
@@ -937,8 +951,6 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class LorekeeperRollarn : BaseCreature
 	{
-		// TODO: Add quest Brotherly Love
-
 		public override bool IsInvulnerable { get { return true; } }
 		public override bool CanTeach { get { return true; } }
 

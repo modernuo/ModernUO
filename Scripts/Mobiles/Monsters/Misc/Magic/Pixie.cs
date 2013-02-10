@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Misc;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -51,6 +52,14 @@ namespace Server.Mobiles
 		{
 			AddLoot( LootPack.LowScrolls );
 			AddLoot( LootPack.Gems, 2 );
+		}
+
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );
+
+			if ( Utility.RandomBool() )
+				c.DropItem( new PixieLeg() );
 		}
 
 		public override HideType HideType{ get{ return HideType.Spined; } }

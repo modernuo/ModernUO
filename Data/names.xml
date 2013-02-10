@@ -642,4 +642,13 @@
 		Yero, Yervant, York, Yusuf, Yves, Zachariah, Zachary, Zackery, Zaid, Zaide, 
 		Zane, Zaniel, Zann, Zared, Zarek, Zeke, Zenon, Zion, Ziven, Zorn
 	</namelist>
+	<namelist type="female elf brigand">
+		Bergeni, Callylili, Elaniana, Hanalea, Jerliai, Kaitha, Mesanial, Oquila, Sylievo,
+		Uliala, Vimaly, Yeldemi
+	</namelist>
+	<namelist type="male elf brigand">
+		Castoriel, Celebrindal, Chathmiru, Davlien, Gerrath, Jerraintho, Lewys, Misran, 
+		Nandrien, Olonal, Peorilien, Regornolas, Rylvarn, Silnaliel, Talendeor, Uomo,
+		Verlolas
+	</namelist>
 </names>

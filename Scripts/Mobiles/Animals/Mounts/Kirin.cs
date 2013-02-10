@@ -1,6 +1,7 @@
 using System;
 using Server.Mobiles;
 using Server.Network;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -88,6 +89,14 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.LowScrolls );
 			AddLoot( LootPack.Potions );
+		}
+
+		public override void OnDeath( Container c )
+		{
+			base.OnDeath( c );
+
+			if ( Utility.RandomDouble() < 0.10 )
+				c.DropItem( new KirinBrains() );
 		}
 
 		public override OppositionGroup OppositionGroup
