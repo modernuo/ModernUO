@@ -12,7 +12,7 @@ namespace Server.Items
 		public TwilightLantern()
 			: base()
 		{
-			Hue = Utility.RandomBool() ? 142 : 947;
+			Hue = Utility.RandomBool() ? 244 : 997;
 		}
 
 		public override bool AllowEquipedCast( Mobile from )
