@@ -679,7 +679,7 @@ namespace Server.Mobiles
 
 		private static bool CheckBlock( MountBlock block )
 		{
-			return ( !( block is MountBlock ) || !block.m_Timer.Running );
+			return ( ( block is MountBlock ) && block.m_Timer.Running );
 		}
 
 		private class MountBlock
@@ -704,11 +704,11 @@ namespace Server.Mobiles
 		{
 			if( dismount )
 			{
-				if (this.Mount != null)
+				if ( this.Mount != null )
 				{
 					this.Mount.Rider = null;
 				}
-				else if (AnimalForm.UnderTransformation(this))
+				else if( AnimalForm.UnderTransformation( this ) )
 				{
 					AnimalForm.RemoveContext(this, true);
 				}
