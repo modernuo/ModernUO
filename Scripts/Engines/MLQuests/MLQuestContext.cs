@@ -12,7 +12,8 @@ namespace Server.Engines.MLQuests
 		None			= 0x00,
 		Spellweaving	= 0x01,
 		SummonFey		= 0x02,
-		SummonFiend		= 0x04
+		SummonFiend		= 0x04,
+		BedlamAccess	= 0x08
 	}
 
 	[PropertyObject]
@@ -93,6 +94,13 @@ namespace Server.Engines.MLQuests
 		{
 			get { return GetFlag( MLQuestFlag.SummonFiend ); }
 			set { SetFlag( MLQuestFlag.SummonFiend, value ); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool BedlamAccess
+		{
+			get { return GetFlag( MLQuestFlag.BedlamAccess ); }
+			set { SetFlag( MLQuestFlag.BedlamAccess, value ); }
 		}
 
 		public MLQuestContext( PlayerMobile owner )

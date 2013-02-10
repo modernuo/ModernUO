@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server;
 using Server.ContextMenus;
+using Server.Engines.MLQuests.Items;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
 using Server.Items;
@@ -92,8 +93,6 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class NotQuiteThatEasy : MLQuest
 	{
-		// TODO: This quest allows permanent access to Bedlam (only need to do this once)
-
 		public override Type NextQuest { get { return typeof( ConvinceMe ); } }
 		public override bool IsChainTriggered { get { return true; } }
 
@@ -110,6 +109,18 @@ namespace Server.Engines.MLQuests.Definitions
 			Objectives.Add( new DeliverObjective( typeof( SignedTuitionReimbursementForm ), 1, "Signed Tuition Reimbursement Form", typeof( MasterGnosos ), "Master Gnosos (Bedlam)" ) );
 
 			Rewards.Add( new DummyReward( 1074634 ) ); // Tuition Reimbursement
+		}
+
+		public override void Generate()
+		{
+			base.Generate();
+
+			PutDeco( new BedlamTeleporter(), new Point3D( 2067, 1371, -75 ), Map.Malas );
+		}
+
+		public override void OnAccepted( MLQuestInstance instance )
+		{
+			instance.PlayerContext.BedlamAccess = true; // Permanent access
 		}
 	}
 

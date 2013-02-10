@@ -210,6 +210,23 @@ namespace Server.Engines.MLQuests
 			s.MoveToWorld( loc, map );
 		}
 
+		public void PutDeco( Item deco, Point3D loc, Map map )
+		{
+			// Auto cleanup on regeneration
+			List<Item> toDelete = new List<Item>();
+
+			foreach ( Item item in map.GetItemsInRange( loc, 0 ) )
+			{
+				if ( item.ItemID == deco.ItemID && item.Z == loc.Z )
+					toDelete.Add( item );
+			}
+
+			foreach ( Item item in toDelete )
+				item.Delete();
+
+			deco.MoveToWorld( loc, map );
+		}
+
 		#endregion
 
 		public MLQuestInstance CreateInstance( BaseCreature quester, PlayerMobile pm )
@@ -292,8 +309,14 @@ namespace Server.Engines.MLQuests
 			pm.SendLocalizedMessage( 1049019 ); // You have accepted the Quest.
 			pm.SendSound( 0x2E7 ); // private sound
 
+			OnAccepted( instance );
+
 			foreach ( BaseObjectiveInstance obj in instance.Objectives )
 				obj.OnQuestAccepted();
+		}
+
+		public virtual void OnAccepted( MLQuestInstance instance )
+		{
 		}
 
 		public virtual void OnRefuse( BaseCreature quester, PlayerMobile pm )
