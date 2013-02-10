@@ -7,6 +7,17 @@ namespace Server.Items
 {
 	public abstract class StValentinesBear : Item
 	{
+		public override string DefaultName
+		{
+			get
+			{
+				if ( m_Owner != null )
+					return String.Format( "{0}'s St. Valentine Bear", m_Owner );
+				else
+					return "St. Valentine Bear";
+			}
+		}
+
 		private string m_Owner;
 		private string m_Line1;
 		private string m_Line2;
@@ -82,6 +93,21 @@ namespace Server.Items
 		{
 			if ( line != null )
 				list.Add( cliloc, line );
+		}
+
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			ShowLine( from, 1150301, m_Line1 ); // [ ~1_LINE0~ ]
+			ShowLine( from, 1150302, m_Line2 ); // [ ~1_LINE1~ ]
+			ShowLine( from, 1150303, m_Line3 ); // [ ~1_LINE2~ ]
+		}
+
+		private void ShowLine( Mobile from, int cliloc, string line )
+		{
+			if ( line != null )
+				LabelTo( from, cliloc, line );
 		}
 
 		public override void OnDoubleClick( Mobile from )

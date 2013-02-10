@@ -6,6 +6,8 @@ namespace Server.Items
 {
 	public class ValentinesCard : Item
 	{
+		public override string DefaultName { get { return "a Valentine's card"; } }
+
 		[CommandProperty(AccessLevel.GameMaster)]
 		public virtual string From { get { return m_From; } set { m_From = value; } }
 
@@ -41,6 +43,13 @@ namespace Server.Items
 		public override void AddNameProperty(ObjectPropertyList list)
 		{
 			list.Add(m_LabelNumber, String.Format("{0}\t{1}", (m_To != null) ? m_To : Unsigned, (m_From != null) ? m_From : Unsigned));
+		}
+
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			LabelTo( from, m_LabelNumber, String.Format( "{0}\t{1}", ( m_To != null ) ? m_To : Unsigned, ( m_From != null ) ? m_From : Unsigned ) );
 		}
 
 		public override void OnDoubleClick(Mobile from)

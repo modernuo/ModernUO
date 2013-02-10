@@ -56,6 +56,14 @@ namespace Server.Items
 			return false;
 		}
 
+		public override void OnSingleClick( Mobile from )
+		{
+			base.OnSingleClick( from );
+
+			if ( IsSigned )
+				LabelTo( from, 1152273, String.Format( "{0}\t{1}", m_From, m_To ) ); // ~1_val~ is madly in love with ~2_val~
+		}
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( IsSigned || !CheckSeason( from ) )
