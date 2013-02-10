@@ -102,7 +102,7 @@ namespace Server.Items
 					to.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
 				}
 
-				(to as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(10), true);
+				(to as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true);
 			}
 			else
 			{
@@ -111,7 +111,7 @@ namespace Server.Items
 
 			if (Core.AOS && from is PlayerMobile) /* only failsafe, attacker should already be dismounted */
 			{
-				(from as PlayerMobile).SetMountBlock( BlockMountType.BolaRecovery, TimeSpan.FromSeconds(10), true );
+				(from as PlayerMobile).SetMountBlock( BlockMountType.BolaRecovery, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true );
 			}
 
 			to.Damage(1);

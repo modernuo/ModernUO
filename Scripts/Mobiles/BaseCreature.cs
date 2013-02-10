@@ -5420,19 +5420,23 @@ namespace Server.Mobiles
 				}
 			}
 
-			if( ReturnsToHome && this.IsSpawnerBound() )
+			if (ReturnsToHome && this.IsSpawnerBound() && !this.InRange(Home, RangeHome) )
 			{
-				if( ( Combatant == null ) && ( Warmode == false ) && Utility.RandomDouble() < .10 )  /* some throttling */
+				if ((Combatant == null) && (Warmode == false) && Utility.RandomDouble() < .10)  /* some throttling */
 				{
-					m_FailedReturnHome = !this.Move( GetDirectionTo( Home.X, Home.Y ) ) ? m_FailedReturnHome + 1 : 0;
+					m_FailedReturnHome = !this.Move(GetDirectionTo(Home.X, Home.Y)) ? m_FailedReturnHome + 1 : 0;
 
-					if( m_FailedReturnHome > 5 )
+					if (m_FailedReturnHome > 5)
 					{
-						this.SetLocation( this.Home, true );
+						this.SetLocation(this.Home, true);
 
 						m_FailedReturnHome = 0;
 					}
 				}
+			}
+			else
+			{
+				m_FailedReturnHome = 0;
 			}
 
 			if ( HasAura && DateTime.Now >= m_NextAura )
