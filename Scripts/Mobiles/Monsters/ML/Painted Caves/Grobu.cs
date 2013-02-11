@@ -49,15 +49,13 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich, 2 );
 		}
 
-		/*
-		// TODO: uncomment once added
+
 		public override void OnDeath( Container c )
 		{
 			base.OnDeath( c );
 
 			c.DropItem( new GrobusFur() );
 		}
-		*/
 
 		public override bool GivesMLMinorArtifact{ get{ return true; } }
 
