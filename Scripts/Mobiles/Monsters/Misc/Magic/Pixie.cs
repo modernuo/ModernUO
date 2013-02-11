@@ -58,7 +58,7 @@ namespace Server.Mobiles
 		{
 			base.OnDeath( c );
 
-			if ( Utility.RandomBool() )
+			if ( Utility.RandomDouble() < 0.35 )
 				c.DropItem( new PixieLeg() );
 		}
 

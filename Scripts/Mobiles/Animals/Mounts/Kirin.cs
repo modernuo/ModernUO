@@ -95,7 +95,7 @@ namespace Server.Mobiles
 		{
 			base.OnDeath( c );
 
-			if ( Utility.RandomDouble() < 0.10 )
+			if ( Utility.RandomDouble() < 0.35 )
 				c.DropItem( new KirinBrains() );
 		}
 
