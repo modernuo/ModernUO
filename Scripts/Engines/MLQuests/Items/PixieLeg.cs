@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	public class PixieLeg : Item
+	public class PixieLeg : ChickenLeg
 	{
 		public override int LabelNumber{ get{ return 1074613; } } // Pixie Leg
 
@@ -13,12 +13,10 @@ namespace Server.Items
 		}
 
 		[Constructable]
-		public PixieLeg( int amount ) : base( 0x1608 )
+		public PixieLeg( int amount ) : base( amount )
 		{
 			LootType = LootType.Blessed;
 			Hue = 0x1C2;
-			Stackable = true;
-			Amount = amount;
 		}
 
 		public PixieLeg( Serial serial ) : base( serial )
