@@ -11,6 +11,184 @@ namespace Server.Engines.CannedEvil
 {
 	public class ChampionSpawn : Item
 	{
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool HasPlatform
+		{
+			get
+			{
+				return m_HasPlatform; 
+			}
+			set
+			{
+				if( m_HasPlatform != value )
+				{
+					m_HasPlatform = value;
+
+					if( value == true && ( m_Platform == null || m_Platform.Deleted ) )
+					{
+						m_Platform = new ChampionPlatform( this, false );
+					}
+					else if( value == false && ( m_Platform != null && !m_Platform.Deleted ) )
+					{
+						m_Platform.Delete();
+					}
+				}
+			}
+		}
+
+		private bool m_HasPlatform;
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool ConfinedRoaming { get { return m_ConfinedRoaming; } set { m_ConfinedRoaming = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool HasBeenAdvanced { get { return m_HasBeenAdvanced; } set { m_HasBeenAdvanced = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CustomSpawnData CustomSpawnData 
+		{
+			get
+			{
+				if( m_CustomSpawnData == null )
+				{
+					m_CustomSpawnData = new CustomSpawnData();
+				}
+
+				return m_CustomSpawnData;
+			} 
+			set
+			{
+				m_CustomSpawnData = value;
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public PlatformData PlatformData
+		{
+			get
+			{
+				if( m_PlatformData == null )
+				{
+					m_PlatformData = new PlatformData();
+				}
+
+				return m_PlatformData;
+			}
+			set
+			{
+				m_PlatformData = value;
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Mobile LinkedChamp { get { return m_LinkedChamp; } set { m_LinkedChamp = value; } }
+
+		public ChampionSpawnInfo CustomSpawnInfo
+		{
+			get
+			{
+				if( m_CustomSpawnInfo == null )
+				{
+					m_CustomSpawnInfo = ReGenerateInfo();
+				}
+
+				return m_CustomSpawnInfo; 
+			}
+			set 
+			{
+				m_CustomSpawnInfo = value; 
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int BaseMaxKills { get { return m_BaseMaxKills; } set { m_BaseMaxKills = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int AdjustMaxKills { get { return m_AdjustMaxKills; } set { m_AdjustMaxKills = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Traps { get { return m_Traps; } set { m_Traps = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public double TrapsDensity { get { return m_TrapsDensity; } set { m_TrapsDensity = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public double ArtifactDropChance { get { return m_ArtifactDropChance; } set { m_ArtifactDropChance = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Type Reward { get { return m_Reward; } set { m_Reward = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Type RewardBig { get { return m_RewardBig; } set { m_RewardBig = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool RandomizeType { get { return m_RandomizeType; } set { m_RandomizeType = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Kills { get { return m_Kills; } set { m_Kills = value; InvalidateProperties(); } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Rectangle2D SpawnArea { get { return m_SpawnArea; } set { m_SpawnArea = value; InvalidateProperties(); UpdateRegion(); } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan RestartDelay { get { return m_RestartDelay; } set { m_RestartDelay = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime RestartTime { get { return m_RestartTime; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan ExpireDelay { get { return m_ExpireDelay; } set { m_ExpireDelay = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime ExpireTime { get { return m_ExpireTime; } set { m_ExpireTime = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public ChampionSpawnType Type { get { return m_Type; } set { m_Type = value; InvalidateProperties(); } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Active { get { return m_Active; } set { if( value ) Start(); else Stop(); InvalidateProperties(); } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Mobile Champion { get { return m_Champion; } set { m_Champion = value; } }
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Level
+		{
+			get
+			{
+				return m_RedSkulls.Count;
+			}
+			set
+			{
+				for( int i = m_RedSkulls.Count - 1; i >= value; --i )
+				{
+					m_RedSkulls[ i ].Delete();
+					m_RedSkulls.RemoveAt( i );
+				}
+
+				for( int i = m_RedSkulls.Count; i < value; ++i )
+				{
+					Item skull = new Item( m_PlatformData.ItemIDRedCandles );
+
+					skull.Hue = m_PlatformData.HueRedCandles;
+					skull.Movable = false;
+					skull.Light = LightType.Circle150;
+
+					skull.MoveToWorld( GetRedSkullLocation( i ), Map );
+
+					m_RedSkulls.Add( skull );
+				}
+
+				InvalidateProperties();
+			}
+		}
+
+		public ChampionPlatform Platform { get { return m_Platform; } }
+		public ChampionAltar Altar { get { return m_Altar; } }
+
+		private CustomSpawnData m_CustomSpawnData;
+		private PlatformData m_PlatformData;
+		private Mobile m_LinkedChamp;
 		private bool m_Active;
 		private bool m_RandomizeType;
 		private ChampionSpawnType m_Type;
@@ -21,39 +199,26 @@ namespace Server.Engines.CannedEvil
 		private ChampionAltar m_Altar;
 		private int m_Kills;
 		private Mobile m_Champion;
-
-		//private int m_SpawnRange;
 		private Rectangle2D m_SpawnArea;
 		private ChampionSpawnRegion m_Region;
-
 		private TimeSpan m_ExpireDelay;
 		private DateTime m_ExpireTime;
-
 		private TimeSpan m_RestartDelay;
 		private DateTime m_RestartTime;
-
 		private Timer m_Timer, m_RestartTimer;
-
 		private IdolOfTheChampion m_Idol;
-
 		private bool m_HasBeenAdvanced;
 		private bool m_ConfinedRoaming;
-
+		private int m_BaseMaxKills;
+		private int m_AdjustMaxKills;
 		private Dictionary<Mobile, int> m_DamageEntries;
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool ConfinedRoaming
-		{
-			get { return m_ConfinedRoaming; }
-			set { m_ConfinedRoaming = value; }
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool HasBeenAdvanced
-		{
-			get { return m_HasBeenAdvanced; }
-			set { m_HasBeenAdvanced = value; }
-		}
+		private ChampionSpawnInfo m_CustomSpawnInfo;
+		private Type m_RewardBig;
+		private Type m_Reward;
+		private double m_ArtifactDropChance;
+		private double m_TrapsDensity;
+		private bool m_Traps;
+		private bool m_Rebuild;
 
 		[Constructable]
 		public ChampionSpawn() : base( 0xBD2 )
@@ -74,13 +239,94 @@ namespace Server.Engines.CannedEvil
 
 			m_DamageEntries = new Dictionary<Mobile, int>();
 
+			m_CustomSpawnData = new CustomSpawnData();
+
+			Z += 20;
+
 			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( SetInitialSpawnArea ) );
 		}
 
 		public void SetInitialSpawnArea()
 		{
-			//Previous default used to be 24;
 			SpawnArea = new Rectangle2D( new Point2D( X - 24, Y - 24 ), new Point2D( X + 24, Y + 24 ) );
+		}
+
+		private bool Validate()
+		{
+			return (
+				( m_CustomSpawnData.ChampType != null || m_LinkedChamp != null ) &&
+
+				( m_CustomSpawnData.MobLevel1A != null && m_CustomSpawnData.MobLevel1B != null ) &&
+				( m_CustomSpawnData.MobLevel2A != null && m_CustomSpawnData.MobLevel2B != null ) &&
+				( m_CustomSpawnData.MobLevel3A != null && m_CustomSpawnData.MobLevel3B != null ) &&
+				( m_CustomSpawnData.MobLevel4A != null && m_CustomSpawnData.MobLevel4B != null ) &&
+
+				m_CustomSpawnData.SpawnName != null &&
+				m_CustomSpawnData.TitleLevel1 != null &&
+				m_CustomSpawnData.TitleLevel2 != null &&
+				m_CustomSpawnData.TitleLevel3 != null &&
+				m_CustomSpawnData.ChampType != null
+				);
+		}
+
+		public ChampionSpawnInfo ReGenerateInfo()
+		{
+			if( !Validate() )
+			{
+				return null;
+			}
+
+			return new ChampionSpawnInfo
+			(
+				m_CustomSpawnData.SpawnName,
+				ConvertToMobileType( m_CustomSpawnData.ChampType ),
+				new string[]
+				{
+					m_CustomSpawnData.TitleLevel1,
+					m_CustomSpawnData.TitleLevel2,
+					m_CustomSpawnData.TitleLevel3
+				},
+				new Type[][]
+				{
+					new Type[]{ ConvertToMobileType( m_CustomSpawnData.MobLevel1A ), ConvertToMobileType( m_CustomSpawnData.MobLevel1B ) },
+					new Type[]{ ConvertToMobileType( m_CustomSpawnData.MobLevel2A ), ConvertToMobileType( m_CustomSpawnData.MobLevel2B ) },
+					new Type[]{ ConvertToMobileType( m_CustomSpawnData.MobLevel3A ), ConvertToMobileType( m_CustomSpawnData.MobLevel3B ) },
+					new Type[]{ ConvertToMobileType( m_CustomSpawnData.MobLevel4A ), ConvertToMobileType( m_CustomSpawnData.MobLevel4B ) }
+				}
+			);
+		}
+
+		private Type ConvertToMobileType( string type )
+		{
+			try
+			{
+				if( type != null )
+				{
+					Type newType = ScriptCompiler.FindTypeByName( type, true );
+
+					if( newType != null )
+					{
+						return newType;
+					}
+				}
+			}
+			catch
+			{
+			}
+
+			return null;
+		}
+
+		private Item GetCustomDrop()
+		{
+			Type type = ( Utility.RandomDouble() < .34 ) ? m_RewardBig.GetType()  : m_Reward.GetType();
+
+			if( type != null )
+			{
+				return InstantiateObject( type ) as Item;
+			}
+
+			return null;
 		}
 
 		public void UpdateRegion()
@@ -93,189 +339,9 @@ namespace Server.Engines.CannedEvil
 				m_Region = new ChampionSpawnRegion( this );
 				m_Region.Register();
 			}
-
-			/*
-			if( m_Region == null )
-			{
-				m_Region = new ChampionSpawnRegion( this );
-			}
-			else
-			{
-				m_Region.Unregister();
-				//Why doesn't Region allow me to set it's map/Area meself? ><
-				m_Region = new ChampionSpawnRegion( this );
-			}
-			*/
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool RandomizeType
-		{
-			get { return m_RandomizeType; }
-			set { m_RandomizeType = value; }
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Kills
-		{
-			get
-			{
-				return m_Kills;
-			}
-			set
-			{
-				m_Kills = value;
-				InvalidateProperties();
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Rectangle2D SpawnArea
-		{
-			get
-			{
-				return m_SpawnArea;
-			}
-			set
-			{
-				m_SpawnArea = value;
-				InvalidateProperties();
-				UpdateRegion();
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan RestartDelay
-		{
-			get
-			{
-				return m_RestartDelay;
-			}
-			set
-			{
-				m_RestartDelay = value;
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime RestartTime
-		{
-			get
-			{
-				return m_RestartTime;
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan ExpireDelay
-		{
-			get
-			{
-				return m_ExpireDelay;
-			}
-			set
-			{
-				m_ExpireDelay = value;
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime ExpireTime
-		{
-			get
-			{
-				return m_ExpireTime;
-			}
-			set
-			{
-				m_ExpireTime = value;
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public ChampionSpawnType Type
-		{
-			get
-			{
-				return m_Type;
-			}
-			set
-			{
-				m_Type = value;
-				InvalidateProperties();
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Active
-		{
-			get
-			{
-				return m_Active;
-			}
-			set
-			{
-				if( value )
-					Start();
-				else
-					Stop();
-
-				InvalidateProperties();
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Champion
-		{
-			get
-			{
-				return m_Champion;
-			}
-			set
-			{
-				m_Champion = value;
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Level
-		{
-			get
-			{
-				return m_RedSkulls.Count;
-			}
-			set
-			{
-				for( int i = m_RedSkulls.Count - 1; i >= value; --i )
-				{
-					m_RedSkulls[i].Delete();
-					m_RedSkulls.RemoveAt( i );
-				}
-
-				for( int i = m_RedSkulls.Count; i < value; ++i )
-				{
-					Item skull = new Item( 0x1854 );
-
-					skull.Hue = 0x26;
-					skull.Movable = false;
-					skull.Light = LightType.Circle150;
-
-					skull.MoveToWorld( GetRedSkullLocation( i ), Map );
-
-					m_RedSkulls.Add( skull );
-				}
-
-				InvalidateProperties();
-			}
-		}
-
-		public int MaxKills
-		{
-			get
-			{
-				return 250 - (Level * 12);
-			}
-		}
+		public int MaxKills { get { return m_BaseMaxKills - ( Level * m_AdjustMaxKills ); } }
 
 		public bool IsChampionSpawn( Mobile m )
 		{
@@ -292,11 +358,11 @@ namespace Server.Engines.CannedEvil
 
 			for( int i = m_WhiteSkulls.Count; i < val; ++i )
 			{
-				Item skull = new Item( 0x1854 );
+				Item skull = new Item( m_PlatformData.ItemIDWhiteCandles );
 
 				skull.Movable = false;
 				skull.Light = LightType.Circle150;
-
+				skull.Hue = m_PlatformData.HueWhiteCandles;
 				skull.MoveToWorld( GetWhiteSkullLocation( i ), Map );
 
 				m_WhiteSkulls.Add( skull );
@@ -328,13 +394,13 @@ namespace Server.Engines.CannedEvil
 			if( m_Altar != null )
 			{
 				if ( m_Champion != null )
-					m_Altar.Hue = 0x26;
+					m_Altar.Hue = m_PlatformData.AddonHueChampion;
 				else
-					m_Altar.Hue = 0;
+					m_Altar.Hue = m_PlatformData.AddonHueActive;
 			}
 
 			if ( m_Platform != null )
-				m_Platform.Hue = 0x452;
+				m_Platform.Hue = m_PlatformData.PlatformHueActive;
 		}
 
 		public void Stop()
@@ -356,10 +422,10 @@ namespace Server.Engines.CannedEvil
 			m_RestartTimer = null;
 
 			if( m_Altar != null )
-				m_Altar.Hue = 0;
+				m_Altar.Hue = m_PlatformData.AddonHueInactive;
 
 			if ( m_Platform != null )
-				m_Platform.Hue = 0x497;
+				m_Platform.Hue = m_PlatformData.PlatformHueInactive;
 		}
 
 		public void BeginRestart( TimeSpan ts )
@@ -648,6 +714,27 @@ namespace Server.Engines.CannedEvil
 
 			if( m_Champion != null )
 				m_Champion.MoveToWorld( new Point3D( X, Y, Z - 15 ), Map );
+		}
+
+		public object InstantiateObject( object obj )
+		{
+			if( obj is BaseCreature )
+			{
+				try
+				{
+					object Object = Activator.CreateInstance( obj.GetType() ) as object;
+
+					if( Object is BaseCreature || Object is Item )
+					{
+						return Object;
+					}
+				}
+				catch
+				{
+				}
+			}
+
+			return null;
 		}
 
 		public void Respawn()
@@ -1006,7 +1093,7 @@ namespace Server.Engines.CannedEvil
 		{
 		}
 
-		public virtual void RegisterDamageTo( Mobile m )
+		public void RegisterDamageTo( Mobile m )
 		{
 			if( m == null )
 				return;
@@ -1276,11 +1363,14 @@ namespace Server.Engines.CannedEvil
 		}
 
 
-		public IdolOfTheChampion( ChampionSpawn spawn ): base( 0x1F18 )
+		public IdolOfTheChampion( ChampionSpawn spawn )
+			: base( spawn.PlatformData.ItemIDIdol )
 		{
 			m_Spawn = spawn;
 			Movable = false;
 		}
+
+		public override bool DisplayWeight { get { return false; } }
 
 		public override void OnAfterDelete()
 		{
