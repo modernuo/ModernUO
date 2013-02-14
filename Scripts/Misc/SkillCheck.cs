@@ -335,7 +335,7 @@ namespace Server.Misc
 			}
 		}
 
-		private static TimeSpan m_StatGainDelay = TimeSpan.FromMinutes( ( Core.ML ) ? 15.0 : 0.05 );
+		private static TimeSpan m_StatGainDelay = TimeSpan.FromMinutes( ( Core.ML ) ? 0.05 : 15 );
 		private static TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes( 5.0 );
 
 		public static void GainStat( Mobile from, Stat stat )
