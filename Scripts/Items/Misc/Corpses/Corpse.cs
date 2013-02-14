@@ -496,7 +496,7 @@ namespace Server.Items
 						c.SetRestoreInfo( item, item.Location );
 				}
 
-				if ( !owner.Player )
+				if ( Core.SE && !owner.Player )
 				{
 					c.AssignInstancedLoot();
 				}
