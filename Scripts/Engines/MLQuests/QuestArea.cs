@@ -38,6 +38,23 @@ namespace Server.Engines.MLQuests
 			m_Name = name;
 			m_RegionName = region;
 			m_ForceMap = forceMap;
+
+			if ( MLQuestSystem.Debug )
+			{
+				bool found = false;
+
+				foreach ( Region r in Region.Regions )
+				{
+					if ( r.Name == region && ( forceMap == null || r.Map == forceMap ) )
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if ( !found )
+					Console.WriteLine( "Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", region, ( forceMap == null ) ? "-null-" : forceMap.ToString() );
+			}
 		}
 
 		public bool Contains( Mobile mob )

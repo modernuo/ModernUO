@@ -74,12 +74,12 @@ namespace Server
 		{
 			return region.IsPartOf( "Twisted Weald" )
 				|| region.IsPartOf( "Sanctuary" )
-				|| region.IsPartOf( "Prism of Light" )
-				|| region.IsPartOf( "Citadel" )
+				|| region.IsPartOf( "The Prism of Light" )
+				|| region.IsPartOf( "The Citadel" )
 				|| region.IsPartOf( "Bedlam" )
 				|| region.IsPartOf( "Blighted Grove" )
-				|| region.IsPartOf( "Painted Caves" )
-				|| region.IsPartOf( "Palace of Paroxysmus" )
+				|| region.IsPartOf( "The Painted Caves" )
+				|| region.IsPartOf( "The Palace of Paroxysmus" )
 				|| region.IsPartOf( "Labyrinth" );
 		}
 	}
