@@ -636,9 +636,7 @@ namespace Server.Mobiles
 
 		private int GetAdjustedLocation( int range, int side, int coord, int coord_this )
 		{
-			int val = ( ( ( coord > 0 ) ? coord : ( coord_this - range ) ) + ( Utility.Random( ( ( range * 2 ) + 1 ) + side ) ) );
-
-			return ( val < 1 ) ? 1 : val;
+			return ( ( ( coord > 0 ) ? coord : ( coord_this - range ) ) + ( Utility.Random( Math.Max( ( ( ( range * 2 ) + 1 ) + side ), 1 ) ) ) );
 		}
 
 		public Point3D GetSpawnPosition( ISpawnable spawned )
