@@ -11,6 +11,20 @@ namespace Server.Engines.CannedEvil
 {
 	public class ChampionSpawn : Item
 	{
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int SpawnSzMod
+		{
+			get
+			{
+				return ( m_SPawnSzMod < 1 || m_SPawnSzMod > 12 ) ? 12 : m_SPawnSzMod;
+			}
+			set
+			{
+				m_SPawnSzMod = ( value < 1 || value > 12 ) ? 12 : value;
+			}
+		}
+		private int m_SPawnSzMod;
+
 		private bool m_Active;
 		private bool m_RandomizeType;
 		private ChampionSpawnType m_Type;
@@ -273,7 +287,7 @@ namespace Server.Engines.CannedEvil
 		{
 			get
 			{
-				return 250 - (Level * 12);
+				return ( m_SPawnSzMod * ( 250 / 12 ) ) - ( Level * m_SPawnSzMod );
 			}
 		}
 
@@ -655,14 +669,14 @@ namespace Server.Engines.CannedEvil
 			if( !m_Active || Deleted || m_Champion != null )
 				return;
 
-			while( m_Creatures.Count < (200 - (GetSubLevel() * 40)) )
+			while( m_Creatures.Count < ( ( m_SPawnSzMod * ( 200 / 12 ) ) ) - ( GetSubLevel() * ( m_SPawnSzMod * ( 40 / 12 ) ) ) )
 			{
 				Mobile m = Spawn();
 
 				if( m == null )
 					return;
 
-				Point3D loc = GetSpawnLocation();
+				Point3D loc = GetSpawnLocation();	
 
 				// Allow creatures to turn into Paragons at Ilshenar champions.
 				m.OnBeforeSpawn( loc, Map );
@@ -1096,8 +1110,9 @@ namespace Server.Engines.CannedEvil
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int)5 ); // version
+			writer.Write( (int)6 ); // version
 
+			writer.Write( ( int ) m_SPawnSzMod );
 			writer.Write( m_DamageEntries.Count );
 			foreach (KeyValuePair<Mobile, int> kvp in m_DamageEntries)
 			{
@@ -1143,6 +1158,11 @@ namespace Server.Engines.CannedEvil
 
 			switch( version )
 			{
+				case 6:
+				{
+					m_SPawnSzMod = reader.ReadInt();
+					goto case 5;
+				}
 				case 5:
 				{
 					int entries = reader.ReadInt();
