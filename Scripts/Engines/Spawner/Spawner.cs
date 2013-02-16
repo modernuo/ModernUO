@@ -638,7 +638,7 @@ namespace Server.Mobiles
 		{
 			int val = ( ( ( coord > 0 ) ? coord : ( coord_this - range ) ) + ( Utility.Random( ( ( range * 2 ) + 1 ) + side ) ) );
 
-			return ( val < 0 ) ? 0 : val;
+			return ( val < 1 ) ? 1 : val;
 		}
 
 		public Point3D GetSpawnPosition( ISpawnable spawned )
