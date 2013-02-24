@@ -4369,7 +4369,7 @@ namespace Server
 
 								foreach( NetState ns in eable )
 								{
-									if( ns.Mobile != from && ns.Mobile.CanSee( from ) && ns.Mobile.CanSee( root ) )
+									if( ns.Mobile != from && ns.Mobile.CanSee( from ) && ns.Mobile.InLOS( from ) && ns.Mobile.CanSee( root ) )
 									{
 										if( p == null )
 										{
@@ -4509,7 +4509,7 @@ namespace Server
 
 					foreach( NetState ns in eable )
 					{
-						if( ns.Mobile != this && ns.Mobile.CanSee( this ) && ns.Mobile.CanSee( root ) )
+						if( ns.Mobile != this && ns.Mobile.CanSee( this ) && ns.Mobile.InLOS( this ) && ns.Mobile.CanSee( root ) )
 						{
 							if( p == null )
 							{

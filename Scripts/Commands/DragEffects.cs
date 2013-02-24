@@ -3,20 +3,11 @@ using Server;
 
 namespace Server.Commands
 {
-	/*
-	 * Temporary system to allow on-the-fly enabling and disabling
-	 * of the drag effects, for investigating client crashes.
-	 *
-	 * By default the effects will be disabled.
-	 */
 	public static class DragEffects
 	{
 		public static void Initialize()
 		{
-			// Disable effects
-			Mobile.DragEffects = false;
-
-			CommandSystem.Register( "DragEffects", AccessLevel.Administrator, new CommandEventHandler( DragEffects_OnCommand ) );
+			CommandSystem.Register( "DragEffects", AccessLevel.Developer, new CommandEventHandler( DragEffects_OnCommand ) );
 		}
 
 		[Usage( "DragEffects [enable=false]" )]
