@@ -4266,7 +4266,7 @@ namespace Server
 				m.OnDoubleClick( this );
 		}
 
-		private static TimeSpan m_ActionDelay = TimeSpan.FromSeconds( 1.0 );
+		private static TimeSpan m_ActionDelay = TimeSpan.FromSeconds( 0.5 );
 
 		public static TimeSpan ActionDelay
 		{
