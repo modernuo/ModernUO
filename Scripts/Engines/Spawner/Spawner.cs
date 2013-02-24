@@ -8,6 +8,7 @@ using Server;
 using Server.Commands;
 using Server.Items;
 using Server.Network;
+using Server.Multis;
 using CPA = Server.CommandPropertyAttribute;
 
 /*
@@ -48,6 +49,8 @@ namespace Server.Mobiles
 		private WayPoint m_WayPoint;
 		private bool m_UsesSpawnerHome;
 		private Rectangle2D m_SpawnArea;
+		private bool m_IgnoreHousing;
+		private bool m_MobilesSeekHome;
 
 		public bool IsFull{ get{ return ( m_Spawned.Count >= m_Count ); } }
 		public bool IsEmpty{ get{ return ( m_Spawned.Count == 0 ); } }
@@ -81,6 +84,32 @@ namespace Server.Mobiles
 
 			s.m_SpawnNames = new List<string>( m_SpawnNames );
 			s.m_Spawned = new List<ISpawnable>();
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool IgnoreHousing
+		{
+			get
+			{
+				return m_IgnoreHousing;
+			}
+			set
+			{
+				m_IgnoreHousing = value;
+			}
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool MobilesSeekHome
+		{
+			get
+			{
+				return m_MobilesSeekHome;
+			}
+			set
+			{
+				m_MobilesSeekHome = value;
+			}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -620,6 +649,8 @@ namespace Server.Mobiles
 
 				bc.CurrentWayPoint = m_WayPoint;
 
+				bc.SeeksHome = m_MobilesSeekHome;
+
 				if ( m_Team > 0 )
 					bc.Team = m_Team;
 
@@ -639,7 +670,7 @@ namespace Server.Mobiles
 			return ( ( ( coord > 0 ) ? coord : ( coord_this - range ) ) + ( Utility.Random( Math.Max( ( ( ( range * 2 ) + 1 ) + side ), 1 ) ) ) );
 		}
 
-		public Point3D GetSpawnPosition( ISpawnable spawned )
+		public Point3D  GetSpawnPosition( ISpawnable spawned )
 		{
 			Map map = Map;
 
@@ -661,27 +692,31 @@ namespace Server.Mobiles
 				waterOnlyMob = false;
 			}
 
-			for ( int i = 0; i < 10; ++i )
+			for( int i = 0; i < 10; ++i )
 			{
 				int x = GetAdjustedLocation( m_HomeRange, m_SpawnArea.Width, m_SpawnArea.X, X );
 				int y = GetAdjustedLocation( m_HomeRange, m_SpawnArea.Height, m_SpawnArea.Y, Y );
 
-				int mapZ = map.GetAverageZ( x, y );
+				int mapZ =  map.GetAverageZ( x, y );
 
-				if ( waterMob )
+				if( m_IgnoreHousing || ( ( BaseHouse.FindHouseAt( new Point3D( x, y, mapZ ), Map, 16 ) == null && 
+					BaseHouse.FindHouseAt( new Point3D( x, y, mapZ ), Map, 16 ) == null ) ) )
 				{
-					if ( IsValidWater( map, x, y, this.Z ) )
-						return new Point3D( x, y, this.Z );
-					else if ( IsValidWater( map, x, y, mapZ ) )
-						return new Point3D( x, y, mapZ );
-				}
+					if( waterMob )
+					{
+						if( IsValidWater( map, x, y, this.Z ) )
+							return new Point3D( x, y, this.Z );
+						else if( IsValidWater( map, x, y, mapZ ) )
+							return new Point3D( x, y, mapZ );
+					}
 
-				if ( !waterOnlyMob )
-				{
-					if ( map.CanSpawnMobile( x, y, this.Z ) )
-						return new Point3D( x, y, this.Z );
-					else if ( map.CanSpawnMobile( x, y, mapZ ) )
-						return new Point3D( x, y, mapZ );
+					if( !waterOnlyMob )
+					{
+						if( map.CanSpawnMobile( x, y, this.Z ) )
+							return new Point3D( x, y, this.Z );
+						else if( map.CanSpawnMobile( x, y, mapZ ) )
+							return new Point3D( x, y, mapZ );
+					}
 				}
 			}
 
@@ -861,7 +896,11 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 5 ); // version
+			writer.Write( (int) 6 ); // version
+
+			writer.Write( m_MobilesSeekHome );
+
+			writer.Write( m_IgnoreHousing );
 
 			writer.Write( m_SpawnArea );
 
@@ -913,6 +952,12 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
+				case 6:
+				{
+					m_MobilesSeekHome = reader.ReadBool();
+					m_UsesSpawnerHome = reader.ReadBool();
+					goto case 5;
+				}
 				case 5:
 				{
 					m_SpawnArea = reader.ReadRect2D();
