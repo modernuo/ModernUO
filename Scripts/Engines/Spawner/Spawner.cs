@@ -700,7 +700,7 @@ namespace Server.Mobiles
 				int mapZ =  map.GetAverageZ( x, y );
 
 				if( m_IgnoreHousing || ( ( BaseHouse.FindHouseAt( new Point3D( x, y, mapZ ), Map, 16 ) == null && 
-					BaseHouse.FindHouseAt( new Point3D( x, y, mapZ ), Map, 16 ) == null ) ) )
+					BaseHouse.FindHouseAt( new Point3D( x, y, this.Z ), Map, 16 ) == null ) ) )
 				{
 					if( waterMob )
 					{
