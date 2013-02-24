@@ -46,6 +46,14 @@ namespace Server.Engines.MLQuests.Objectives
 			m_DesiredAmount = amount;
 			m_AcceptedType = type;
 			m_Name = name;
+
+			if ( MLQuestSystem.Debug && ShowDetailed && name.Number > 0 )
+			{
+				int itemid = LabelToItemID( name.Number );
+
+				if ( itemid <= 0 || itemid > 0x4000 )
+					Console.WriteLine( "Warning: cliloc {0} is likely giving the wrong item ID", name.Number );
+			}
 		}
 
 		public bool CheckType( Type type )
@@ -60,17 +68,10 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public static int LabelToItemID( int label )
 		{
-			int result;
-
 			if ( label < 1078872 )
-				result = ( label - 1020000 );
+				return ( label - 1020000 );
 			else
-				result = ( label - 1078872 );
-
-			if ( MLQuestSystem.Debug && ( result <= 0 || result > 0x4000 ) )
-				Console.WriteLine( "Warning: cliloc {0} is likely giving the wrong item ID", label );
-
-			return result;
+				return ( label - 1078872 );
 		}
 
 		public override void WriteToGump( Gump g, ref int y )
@@ -250,7 +251,7 @@ namespace Server.Engines.MLQuests.Objectives
 				y += 16;
 
 				g.AddHtmlLocalized( 103, y, 120, 16, 1074782, 0x15F90, false, false ); // Return to
-				g.AddLabel( 223, y, 0x481, Instance.GetReturnTo() );
+				g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( Instance.QuesterType ) );
 				y += 16;
 			}
 		}

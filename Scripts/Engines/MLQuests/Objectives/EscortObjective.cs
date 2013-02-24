@@ -29,11 +29,9 @@ namespace Server.Engines.MLQuests.Objectives
 			m_Destination = destination;
 		}
 
-		public override bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
+		public override bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
 		{
-			BaseEscortable escortable = quester as BaseEscortable;
-
-			if ( quester.Controlled || ( escortable != null && escortable.IsBeingDeleted ) )
+			if ( ( quester is BaseCreature && ( (BaseCreature)quester ).Controlled ) || ( quester is BaseEscortable && ( (BaseEscortable)quester ).IsBeingDeleted ) )
 				return false;
 
 			MLQuestContext context = MLQuestSystem.GetContext( pm );
@@ -54,7 +52,6 @@ namespace Server.Engines.MLQuests.Objectives
 
 			DateTime nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
 
-			// Note: On OSI Bravehorn doesn't check the time limit, but it does SET the last escort time... bug!
 			if ( nextEscort > DateTime.Now )
 			{
 				if ( message )
@@ -100,6 +97,7 @@ namespace Server.Engines.MLQuests.Objectives
 		private bool m_HasCompleted;
 		private Timer m_Timer;
 		private DateTime m_LastSeenEscorter;
+		private BaseCreature m_Escort;
 
 		public bool HasCompleted
 		{
@@ -114,43 +112,56 @@ namespace Server.Engines.MLQuests.Objectives
 			m_HasCompleted = false;
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), new TimerCallback( CheckDestination ) );
 			m_LastSeenEscorter = DateTime.Now;
+			m_Escort = instance.Quester as BaseCreature;
+
+			if ( MLQuestSystem.Debug && m_Escort == null && instance.Quester != null )
+				Console.WriteLine( "Warning: EscortObjective is not supported for type '{0}'", instance.Quester.GetType().Name );
 		}
 
 		public override bool IsCompleted()
 		{
-			// Once complete, it stays complete
 			return m_HasCompleted;
 		}
 
 		private void CheckDestination()
 		{
-			if ( m_HasCompleted ) // Completed by deserialization
+			if ( m_Escort == null || m_HasCompleted ) // Completed by deserialization
 			{
 				StopTimer();
 				return;
 			}
 
 			MLQuestInstance instance = Instance;
-			BaseCreature escort = instance.Quester;
 			PlayerMobile pm = instance.Player;
 
-			if ( instance.Removed ) // Player cancelled or player died
+			if ( instance.Removed )
 			{
 				Abandon();
 			}
-			else if ( m_Objective.Destination.Contains( escort ) ) // We've arrived!
+			else if ( m_Objective.Destination.Contains( m_Escort ) )
 			{
+				m_Escort.Say( 1042809, pm.Name ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
+
+				if ( pm.Young || m_Escort.Region.IsPartOf( "Haven Island" ) )
+					Titles.AwardFame( pm, 10, true );
+				else
+					VirtueHelper.AwardVirtue( pm, VirtueName.Compassion, ( m_Escort is BaseEscortable && ( (BaseEscortable)m_Escort ).IsPrisoner ) ? 400 : 200 );
+
+				EndFollow( m_Escort );
+				StopTimer();
+
 				m_HasCompleted = true;
 				CheckComplete();
-				InternalOnQuestCompleted();
-				StopTimer();
+
+				// Auto claim reward
+				MLQuestSystem.OnDoubleClick( m_Escort, pm );
 			}
-			else if ( pm.Map != escort.Map || !pm.InRange( escort, 30 ) ) // Player abandoned us (range not verified)
+			else if ( pm.Map != m_Escort.Map || !pm.InRange( m_Escort, 30 ) ) // TODO: verify range
 			{
 				if ( m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.Now )
 					Abandon();
 			}
-			else // Player is still with us
+			else
 			{
 				m_LastSeenEscorter = DateTime.Now;
 			}
@@ -203,7 +214,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 			pm.LastEscortTime = DateTime.Now;
 
-			BeginFollow( instance.Quester, pm );
+			if ( m_Escort != null )
+				BeginFollow( m_Escort, pm );
 		}
 
 		public void Abandon()
@@ -211,17 +223,16 @@ namespace Server.Engines.MLQuests.Objectives
 			StopTimer();
 
 			MLQuestInstance instance = Instance;
-			BaseCreature quester = instance.Quester;
 			PlayerMobile pm = instance.Player;
 
-			if ( !quester.Deleted )
+			if ( m_Escort != null && !m_Escort.Deleted )
 			{
 				if ( !pm.Alive )
-					quester.Say( 500901 ); // Ack!  My escort has come to haunt me!
+					m_Escort.Say( 500901 ); // Ack!  My escort has come to haunt me!
 				else
-					quester.Say( 500902 ); // My escort seems to have abandoned me!
+					m_Escort.Say( 500902 ); // My escort seems to have abandoned me!
 
-				EndFollow( quester );
+				EndFollow( m_Escort );
 			}
 
 			// Note: this sound is sent twice on OSI (once here and once in Cancel())
@@ -230,25 +241,6 @@ namespace Server.Engines.MLQuests.Objectives
 
 			if ( !instance.Removed )
 				instance.Cancel();
-		}
-
-		private void InternalOnQuestCompleted() // To make sure it's never executed twice (when combined with a CollectObjective for example)
-		{
-			MLQuestInstance instance = Instance;
-			PlayerMobile pm = instance.Player;
-			BaseCreature quester = instance.Quester;
-
-			quester.Say( 1042809, pm.Name ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
-
-			// Verified: auto double click goes here
-			MLQuestSystem.OnDoubleClick( quester, pm ); // Auto claim reward
-
-			if ( pm.Young || quester.Region.IsPartOf( "Haven Island" ) )
-				Titles.AwardFame( pm, 10, true );
-			else
-				VirtueHelper.AwardVirtue( pm, VirtueName.Compassion, ( quester is BaseEscortable && ( (BaseEscortable)quester ).IsPrisoner ) ? 400 : 200 );
-
-			EndFollow( quester );
 		}
 
 		public override void OnQuesterDeleted()

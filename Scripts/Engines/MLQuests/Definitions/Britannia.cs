@@ -26,7 +26,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075326; // What is this you give me? A basin of water?
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( BasinOfCrystalClearWater ), 1, 1075303, typeof( SkeletonOfSzandor ), "Szandor" ) );
+			Objectives.Add( new DeliverObjective( typeof( BasinOfCrystalClearWater ), 1, "Basin of Crystal Clear Water", typeof( SkeletonOfSzandor ) ) );
 
 			Rewards.Add( new DummyReward( 1075323 ) ); // Aurelia's gratitude.
 		}
@@ -55,9 +55,9 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075332; // Thank goodness! Now we can honor my father for the great man he was while he lived, rather than the horror he became.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( BasinOfCrystalClearWater ), 1, 1075303, typeof( Aurelia ), "Aurelia" ) );
+			Objectives.Add( new DeliverObjective( typeof( BasinOfCrystalClearWater ), 1, "Basin of Crystal Clear Water", typeof( Aurelia ) ) );
 
-			Rewards.Add( new ItemReward( 1075304, typeof( MirrorOfPurification ) ) );
+			Rewards.Add( new ItemReward( 1075304, typeof( MirrorOfPurification ) ) ); // Mirror of Purification
 		}
 
 		public override void Generate()
@@ -98,7 +98,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074460; // If I knew where my cousin was, I'd make the delivery myself.
 			CompletionMessage = 1074461; // Oh, hello there.  What do you have for me?
 
-			Objectives.Add( new DeliverObjective( typeof( SpecialTreatForDrithen ), 1, "treat for Drithen", typeof( Drithen ), "Drithen (Umbra)" ) );
+			Objectives.Add( new DeliverObjective( typeof( SpecialTreatForDrithen ), 1, "treat for Drithen", typeof( Drithen ) ) );
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -157,6 +157,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Szandor" )]
 	public class SkeletonOfSzandor : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

@@ -13,7 +13,7 @@ namespace Server.Engines.MLQuests.Objectives
 		private int m_Amount;
 		private TextDefinition m_Name;
 		private Type m_Destination;
-		private TextDefinition m_DestinationName;
+		private bool m_SpawnsDelivery;
 
 		public Type Delivery
 		{
@@ -39,19 +39,59 @@ namespace Server.Engines.MLQuests.Objectives
 			set { m_Destination = value; }
 		}
 
-		public TextDefinition DestinationName
+		public bool SpawnsDelivery
 		{
-			get { return m_DestinationName; }
-			set { m_DestinationName = value; }
+			get { return m_SpawnsDelivery; }
+			set { m_SpawnsDelivery = value; }
 		}
 
-		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination, TextDefinition destinationName )
+		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination )
+			: this( delivery, amount, name, destination, true )
+		{
+		}
+
+		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery )
 		{
 			m_Delivery = delivery;
 			m_Amount = amount;
 			m_Name = name;
 			m_Destination = destination;
-			m_DestinationName = destinationName;
+			m_SpawnsDelivery = spawnsDelivery;
+
+			if ( MLQuestSystem.Debug && name.Number > 0 )
+			{
+				int itemid = CollectObjective.LabelToItemID( name.Number );
+
+				if ( itemid <= 0 || itemid > 0x4000 )
+					Console.WriteLine( "Warning: cliloc {0} is likely giving the wrong item ID", name.Number );
+			}
+		}
+
+		public virtual void SpawnDelivery( Container pack )
+		{
+			if ( !m_SpawnsDelivery || pack == null )
+				return;
+
+			List<Item> delivery = new List<Item>();
+
+			for ( int i = 0; i < m_Amount; ++i )
+			{
+				Item item = Activator.CreateInstance( m_Delivery ) as Item;
+
+				if ( item == null )
+					continue;
+
+				delivery.Add( item );
+
+				if ( item.Stackable && m_Amount > 1 )
+				{
+					item.Amount = m_Amount;
+					break;
+				}
+			}
+
+			foreach ( Item item in delivery )
+				pack.DropItem( item ); // Confirmed: on OSI items are added even if your pack is full
 		}
 
 		public override void WriteToGump( Gump g, ref int y )
@@ -74,11 +114,7 @@ namespace Server.Engines.MLQuests.Objectives
 			y += 32;
 
 			g.AddHtmlLocalized( 103, y, 120, 16, 1072379, 0x15F90, false, false ); // Deliver to
-
-			if ( m_DestinationName.Number > 0 )
-				g.AddHtmlLocalized( 223, y, 190, 18, m_DestinationName.Number, false, false );
-			else
-				g.AddLabel( 223, y, 0x481, m_DestinationName.String );
+			g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( m_Destination ) );
 
 			y += 16;
 		}
@@ -98,8 +134,13 @@ namespace Server.Engines.MLQuests.Objectives
 		public override bool IsTimed { get { return true; } }
 		public override TimeSpan Duration { get { return m_Duration; } }
 
-		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination, TextDefinition destinationName )
-			: base( delivery, amount, name, destination, destinationName )
+		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination )
+			: this( duration, delivery, amount, name, destination, true )
+		{
+		}
+
+		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery )
+			: base( delivery, amount, name, destination, spawnsDelivery )
 		{
 			m_Duration = duration;
 		}
@@ -130,7 +171,7 @@ namespace Server.Engines.MLQuests.Objectives
 			m_Objective = objective;
 		}
 
-		public virtual bool IsDestination( BaseCreature quester, Type type )
+		public virtual bool IsDestination( IQuestGiver quester, Type type )
 		{
 			Type destType = m_Objective.Destination;
 
@@ -144,34 +185,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override void OnQuestAccepted()
 		{
-			Container pack = Instance.Player.Backpack;
-
-			if ( pack == null )
-				return; // where are we supposed to put them?
-
-			Type type = m_Objective.Delivery;
-			int amount = m_Objective.Amount;
-
-			List<Item> delivery = new List<Item>();
-
-			for ( int i = 0; i < amount; ++i )
-			{
-				Item item = Activator.CreateInstance( type ) as Item;
-
-				if ( item == null )
-					continue;
-
-				delivery.Add( item );
-
-				if ( item.Stackable && amount > 1 )
-				{
-					item.Amount = amount;
-					break;
-				}
-			}
-
-			foreach ( Item item in delivery )
-				pack.DropItem( item ); // Confirmed: on OSI items are added even if your pack is full
+			m_Objective.SpawnDelivery( Instance.Player.Backpack );
 		}
 
 		// This is VERY similar to CollectObjective.GetCurrentTotal

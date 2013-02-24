@@ -27,7 +27,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1074607; // Oh blast!  Not another of those forms.  I'm so sick of this endless paperwork.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( TuitionReimbursementForm ), 1, "Tuition Reimbursement Form", typeof( Gorrow ), "Gorrow (Luna)" ) );
+			Objectives.Add( new DeliverObjective( typeof( TuitionReimbursementForm ), 1, "Tuition Reimbursement Form", typeof( Gorrow ) ) );
 
 			Rewards.Add( new DummyReward( 1074634 ) ); // Tuition Reimbursement
 		}
@@ -85,7 +85,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1074622; // What?  Hrmph.  Gorrow signed your form did he?  Let me see that.  *squint*
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( SignedTuitionReimbursementForm ), 1, "Signed Tuition Reimbursement Form", typeof( Aernya ), "Aernya (Umbra)" ) );
+			Objectives.Add( new DeliverObjective( typeof( SignedTuitionReimbursementForm ), 1, "Signed Tuition Reimbursement Form", typeof( Aernya ) ) );
 
 			Rewards.Add( new DummyReward( 1074634 ) ); // Tuition Reimbursement
 		}
@@ -106,7 +106,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1074628; // Made it through did you?  Did you happen to see Red Death out there?  Big horse, skeletal ... burning eyes?  No?  What's this?  Forms?  FORMS?  I'm up to my eyebrows in ravenous out-of-control undead and you want a signature?
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( SignedTuitionReimbursementForm ), 1, "Signed Tuition Reimbursement Form", typeof( MasterGnosos ), "Master Gnosos (Bedlam)" ) );
+			Objectives.Add( new DeliverObjective( typeof( SignedTuitionReimbursementForm ), 1, "Signed Tuition Reimbursement Form", typeof( MasterGnosos ) ) );
 
 			Rewards.Add( new DummyReward( 1074634 ) ); // Tuition Reimbursement
 		}
@@ -170,7 +170,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1074638; // *disinterested stare*  What?  Oh, you've gotten your form filled in.  How nice.  *glare*  And I'd hoped you'd drop this charade before I was forced to rub your nose in it.  *nasty smile*  You're not even a student and as such, you're not eligible for a refund -- you've never paid tuition.  For your services, Master Gnosos has recommended you receive pay.  So here.  Now go away.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( CompletedTuitionReimbursementForm ), 1, "Completed Tuition Reimbursement Form", typeof( Aernya ), "Aernya (Umbra)" ) );
+			Objectives.Add( new DeliverObjective( typeof( CompletedTuitionReimbursementForm ), 1, "Completed Tuition Reimbursement Form", typeof( Aernya ) ) );
 
 			Rewards.Add( ItemReward.Strongbox );
 		}
@@ -180,6 +180,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Aernya (Umbra)" )]
 	public class Aernya : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -225,6 +226,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Gorrow (Luna)" )]
 	public class Gorrow : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -277,6 +279,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Master Gnosos (Bedlam)" )]
 	public class MasterGnosos : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

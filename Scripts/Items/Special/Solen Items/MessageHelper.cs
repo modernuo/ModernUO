@@ -14,5 +14,10 @@ namespace Server
 		{
 			to.Send( new MessageLocalized( from.Serial, from.ItemID, MessageType.Regular, hue, 3, number, "", args ) );
 		}
+
+		public static void SendMessageTo( Item from, Mobile to, string text, int hue )
+		{
+			to.Send( new UnicodeMessage( from.Serial, from.ItemID, MessageType.Regular, hue, 3, "ENU", "", text ) );
+		}
 	}
 }

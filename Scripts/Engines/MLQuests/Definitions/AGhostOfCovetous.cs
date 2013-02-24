@@ -26,7 +26,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075291; // (As you try to use the Spirit Bottle, the ghost snatches it out of your hand and smashes it on the rocks) Please, don't be frightened. I need your help!
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( SpiritBottle ), 1, "Spirit Bottle", typeof( Frederic ), "The Ghost of Frederic Smithson" ) );
+			Objectives.Add( new DeliverObjective( typeof( SpiritBottle ), 1, "Spirit Bottle", typeof( Frederic ) ) );
 
 			Rewards.Add( new DummyReward( 1075284 ) ); // Return the filled Spirit Bottle to Griswolt the Master Necromancer to receive a reward.
 		}
@@ -55,7 +55,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075342; // How may I help thee? You have the silk of a dread spider? Of course I can make you a bandage, but what happened to Frederic?
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new TimedDeliverObjective( TimeSpan.FromSeconds( 600 ), typeof( DreadSpiderSilk ), 1, "Dread Spider Silk", typeof( Leon ), "Leon" ) );
+			Objectives.Add( new TimedDeliverObjective( TimeSpan.FromSeconds( 600 ), typeof( DreadSpiderSilk ), 1, "Dread Spider Silk", typeof( Leon ) ) );
 
 			Rewards.Add( new DummyReward( 1075339 ) ); // Hurry! You must get the silk to Leon the Alchemist quickly, or it will crumble and become useless!
 		}
@@ -84,7 +84,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075348; // Sorry, I’m not accepting commissions at the moment. What? You have the bandage I need from Leon? Thank you so much! But why didn’t my son bring this to me himself? . . . Oh, no! You can't be serious! *sag* My Freddie, my son! Thank you for carrying out his last wish. Here -- I made this for my son, to give to him when he became a journeyman. I want you to have it.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( AlchemistsBandage ), 1, "Alchemist's Bandage", typeof( Andros ), "Andros" ) );
+			Objectives.Add( new DeliverObjective( typeof( AlchemistsBandage ), 1, "Alchemist's Bandage", typeof( Andros ) ) );
 
 			Rewards.Add( new ItemReward( 1075345, typeof( AndrosGratitude ) ) ); // Andros’ Gratitude
 		}
@@ -150,6 +150,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "The Ghost of Frederic Smithson" )]
 	public class Frederic : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

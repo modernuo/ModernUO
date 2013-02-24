@@ -83,6 +83,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Kia (Bedlam)" )]
 	public class Kia : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -126,6 +127,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Emerillo (Bedlam)" )]
 	public class Emerillo : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

@@ -243,6 +243,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Human To Elf Mobiles
 
+	[QuesterName( "Maul" )]
 	public class MaulTheBear : GrizzlyBear
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -569,7 +570,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1074523; // Hey, if you have cargo for me, you can start unloading over here.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new TimedDeliverObjective( TimeSpan.FromHours( 1 ), typeof( CrateForSledge ), 5, "Crates for Sledge", typeof( Sledge ), "Sledge (Buc's Den)" ) );
+			Objectives.Add( new TimedDeliverObjective( TimeSpan.FromHours( 1 ), typeof( CrateForSledge ), 5, "Crates for Sledge", typeof( Sledge ) ) );
 
 			Rewards.Add( new DummyReward( 1074875 ) ); // Another step closer to becoming human.
 		}
@@ -647,6 +648,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Elf To Human Mobiles
 
+	[QuesterName( "Sledge (Buc's Den)" )]
 	public class Sledge : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -697,6 +699,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Patricus (Vesper)" )]
 	public class Patricus : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -738,6 +741,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Belulah (Nujel'm)" )] // On OSI it's "Belulah (Nu'Jelm)" (incorrect spelling)
 	public class Belulah : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

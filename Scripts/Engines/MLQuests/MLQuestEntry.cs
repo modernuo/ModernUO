@@ -22,7 +22,7 @@ namespace Server.Engines.MLQuests
 	{
 		private MLQuest m_Quest;
 
-		private BaseCreature m_Quester;
+		private IQuestGiver m_Quester;
 		private Type m_QuesterType;
 		private PlayerMobile m_Player;
 
@@ -33,7 +33,7 @@ namespace Server.Engines.MLQuests
 
 		private Timer m_Timer;
 
-		public MLQuestInstance( MLQuest quest, BaseCreature quester, PlayerMobile player )
+		public MLQuestInstance( MLQuest quest, IQuestGiver quester, PlayerMobile player )
 		{
 			m_Quest = quest;
 
@@ -89,7 +89,7 @@ namespace Server.Engines.MLQuests
 			set { m_Quest = value; }
 		}
 
-		public BaseCreature Quester
+		public IQuestGiver Quester
 		{
 			get { return m_Quester; }
 			set
@@ -292,9 +292,10 @@ namespace Server.Engines.MLQuests
 
 			if ( m_Quest.ObjectiveType == ObjectiveType.All )
 			{
+				// TODO: 1115877 - You no longer have the required items to complete this quest.
 				foreach ( BaseObjectiveInstance objective in m_ObjectiveInstances )
 				{
-					if ( !objective.IsCompleted() ) // Checking this isn't enough, Delivery is "complete" but claiming the items may not be possible
+					if ( !objective.IsCompleted() )
 						return;
 				}
 
@@ -309,9 +310,10 @@ namespace Server.Engines.MLQuests
 			}
 			else
 			{
-				// The following behavior is unverified, as OSI (currently) has no collect quest requiring
-				// only one objective to be completed. It is assumed that only one objective is claimed
-				// (the first completed one), even when multiple are complete.
+				/* The following behavior is unverified, as OSI (currently) has no collect quest requiring
+				 * only one objective to be completed. It is assumed that only one objective is claimed
+				 * (the first completed one), even when multiple are complete.
+				 */
 				bool complete = false;
 
 				foreach ( BaseObjectiveInstance objective in m_ObjectiveInstances )
@@ -467,14 +469,6 @@ namespace Server.Engines.MLQuests
 			m_Quest.OnPlayerDeath( this );
 		}
 
-		public string GetReturnTo()
-		{
-			if ( m_Quester == null )
-				return "";
-
-			return ( m_Quester.Region.Name == null ) ? m_Quester.Name : String.Format( "{0} ({1})", m_Quester.Name, m_Quester.Region.Name );
-		}
-
 		private bool GetFlag( MLQuestInstanceFlags flag )
 		{
 			return ( ( m_Flags & flag ) != 0 );
@@ -493,7 +487,11 @@ namespace Server.Engines.MLQuests
 			// Version info is written in MLQuestPersistence.Serialize
 
 			MLQuestSystem.WriteQuestRef( writer, m_Quest );
-			writer.WriteMobile<BaseCreature>( m_Quester );
+
+			if ( m_Quester == null || m_Quester.Deleted )
+				writer.Write( Serial.MinusOne );
+			else
+				writer.Write( m_Quester.Serial );
 
 			writer.Write( ClaimReward );
 			writer.Write( m_ObjectiveInstances.Length );
@@ -505,7 +503,9 @@ namespace Server.Engines.MLQuests
 		public static MLQuestInstance Deserialize( GenericReader reader, int version, PlayerMobile pm )
 		{
 			MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
-			BaseCreature quester = reader.ReadMobile<BaseCreature>();
+
+			// TODO: Serialize quester TYPE too, the quest giver reference then becomes optional (only for escorts)
+			IQuestGiver quester = World.FindEntity( reader.ReadInt() ) as IQuestGiver;
 
 			bool claimReward = reader.ReadBool();
 			int objectives = reader.ReadInt();

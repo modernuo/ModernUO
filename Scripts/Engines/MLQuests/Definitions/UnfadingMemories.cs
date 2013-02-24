@@ -55,7 +55,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075372; // I’m sorry, I’m getting ready to be married. I don’t have time to . . . what’s that you say?
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( PortraitOfTheBride ), 1, "Portrait of the Bride", typeof( Thalia ), "Thalia (Nujel'm)" ) ); // OSI's description is "Bride"
+			Objectives.Add( new DeliverObjective( typeof( PortraitOfTheBride ), 1, "Portrait of the Bride", typeof( Thalia ) ) );
 
 			Rewards.Add( new DummyReward( 1075369 ) ); // The Artist’s gratitude.
 		}
@@ -76,7 +76,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075378; // She said what? She thinks what of me? I . . . I can’t believe it! All this time, I never knew how she truly felt. Thank you, my friend. I believe now I will be able to paint once again. Here, take this bleach. I was going to use it to destroy all of my works. Perhaps you can find a better use for it now.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( BridesLetter ), 1, "Bride's Letter", typeof( Emilio ), "Emilio (Britain)" ) ); // OSI's description is "Artist"
+			Objectives.Add( new DeliverObjective( typeof( BridesLetter ), 1, "Bride's Letter", typeof( Emilio ) ) );
 
 			Rewards.Add( new ItemReward( 1075375, typeof( Bleach ) ) ); // Bleach
 		}
@@ -94,6 +94,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Emilio (Britain)" )] // OSI's description is "Artist", not very helpful
 	public class Emilio : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -141,6 +142,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Thalia (Nujel'm)" )] // OSI's description is "Bride", not very helpful
 	public class Thalia : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

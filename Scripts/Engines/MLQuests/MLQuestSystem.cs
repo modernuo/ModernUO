@@ -54,7 +54,9 @@ namespace Server.Engines.MLQuests
 			m_Contexts = new Dictionary<PlayerMobile, MLQuestContext>();
 
 			string cfgPath = Path.Combine( Core.BaseDirectory, Path.Combine( "Data", "MLQuests.cfg" ) );
-			Type baseType = typeof( MLQuest );
+
+			Type baseQuestType = typeof( MLQuest );
+			Type baseQuesterType = typeof( IQuestGiver );
 
 			if ( File.Exists( cfgPath ) )
 			{
@@ -71,8 +73,13 @@ namespace Server.Engines.MLQuests
 
 						Type type = ScriptCompiler.FindTypeByName( split[0] );
 
-						if ( type == null || !baseType.IsAssignableFrom( type ) )
+						if ( type == null || !baseQuestType.IsAssignableFrom( type ) )
+						{
+							if ( Debug )
+								Console.WriteLine( "Warning: {1} quest type '{0}'", split[0], ( type == null ) ? "Unknown" : "Invalid" );
+
 							continue;
+						}
 
 						MLQuest quest = null;
 
@@ -91,8 +98,13 @@ namespace Server.Engines.MLQuests
 						{
 							Type questerType = ScriptCompiler.FindTypeByName( split[i] );
 
-							if ( questerType == null )
+							if ( questerType == null || !baseQuesterType.IsAssignableFrom( questerType ) )
+							{
+								if ( Debug )
+									Console.WriteLine( "Warning: {1} quester type '{0}'", split[i], ( questerType == null ) ? "Unknown" : "Invalid" );
+
 								continue;
+							}
 
 							RegisterQuestGiver( quest, questerType );
 						}
@@ -175,7 +187,7 @@ namespace Server.Engines.MLQuests
 			m.SendMessage( "Activated: {0}", quest.Activated );
 			m.SendMessage( "Number of objectives: {0}", quest.Objectives.Count );
 			m.SendMessage( "Objective type: {0}", quest.ObjectiveType );
-			m.SendMessage( "Number of registered questers: {0}", quest.Questers.Count );
+			m.SendMessage( "Number of active instances: {0}", quest.Instances.Count );
 		}
 
 		public class ViewQuestsCommand : BaseCommand
@@ -314,7 +326,7 @@ namespace Server.Engines.MLQuests
 				m.SendGump( new InterfaceGump( m, new string[] { "Object" }, found, 0, null ) );
 		}
 
-		private static bool FindQuest( BaseCreature quester, PlayerMobile pm, MLQuestContext context, out MLQuest quest, out MLQuestInstance entry )
+		private static bool FindQuest( IQuestGiver quester, PlayerMobile pm, MLQuestContext context, out MLQuest quest, out MLQuestInstance entry )
 		{
 			quest = null;
 			entry = null;
@@ -364,9 +376,9 @@ namespace Server.Engines.MLQuests
 			return ( quest != null );
 		}
 
-		public static void OnDoubleClick( BaseCreature quester, PlayerMobile pm )
+		public static void OnDoubleClick( IQuestGiver quester, PlayerMobile pm )
 		{
-			if ( quester.Deleted || !quester.CanGiveMLQuest || !pm.Alive )
+			if ( quester.Deleted || !pm.Alive )
 				return;
 
 			MLQuestContext context = GetContext( pm );
@@ -528,7 +540,7 @@ namespace Server.Engines.MLQuests
 			}
 		}
 
-		public static MLQuestInstance HandleDelivery( PlayerMobile pm, BaseCreature quester, Type questerType )
+		public static MLQuestInstance HandleDelivery( PlayerMobile pm, IQuestGiver quester, Type questerType )
 		{
 			MLQuestContext context = GetContext( pm );
 
@@ -613,6 +625,22 @@ namespace Server.Engines.MLQuests
 			}
 		}
 
+		public static void HandleDeletion( IQuestGiver quester )
+		{
+			foreach ( MLQuest quest in quester.MLQuests )
+			{
+				List<MLQuestInstance> instances = quest.Instances;
+
+				for ( int i = instances.Count - 1; i >= 0; --i )
+				{
+					MLQuestInstance instance = instances[i];
+
+					if ( instance.Quester == quester )
+						instance.OnQuesterDeleted();
+				}
+			}
+		}
+
 		public static void EventSink_QuestGumpRequest( QuestGumpRequestArgs args )
 		{
 			PlayerMobile pm = args.Mobile as PlayerMobile;
@@ -625,7 +653,7 @@ namespace Server.Engines.MLQuests
 
 		private static List<MLQuest> m_EligiblePool = new List<MLQuest>();
 
-		public static MLQuest RandomStarterQuest( BaseCreature quester, PlayerMobile pm, MLQuestContext context )
+		public static MLQuest RandomStarterQuest( IQuestGiver quester, PlayerMobile pm, MLQuestContext context )
 		{
 			List<MLQuest> quests = quester.MLQuests;
 
@@ -657,30 +685,52 @@ namespace Server.Engines.MLQuests
 			return m_EligiblePool[Utility.Random( m_EligiblePool.Count )];
 		}
 
-		public static void TurnToFace( BaseCreature quester, Mobile mob )
+		public static void TurnToFace( IQuestGiver quester, Mobile mob )
 		{
-			quester.Direction = quester.GetDirectionTo( mob );
+			if ( quester is Mobile )
+			{
+				Mobile m = (Mobile)quester;
+				m.Direction = m.GetDirectionTo( mob );
+			}
 		}
 
-		public static void Tell( BaseCreature quester, PlayerMobile pm, int cliloc )
-		{
-			TurnToFace( quester, pm );
-			quester.PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, pm.NetState );
-		}
-
-		public static void Tell( BaseCreature quester, PlayerMobile pm, int cliloc, string args )
+		public static void Tell( IQuestGiver quester, PlayerMobile pm, int cliloc )
 		{
 			TurnToFace( quester, pm );
-			quester.PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, args, pm.NetState );
+
+			if ( quester is Mobile )
+				((Mobile)quester).PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, pm.NetState );
+			else if ( quester is Item )
+				MessageHelper.SendLocalizedMessageTo( (Item)quester, pm, cliloc, SpeechColor );
+			else
+				pm.SendLocalizedMessage( cliloc, "", SpeechColor );
 		}
 
-		public static void Tell( BaseCreature quester, PlayerMobile pm, string message )
+		public static void Tell( IQuestGiver quester, PlayerMobile pm, int cliloc, string args )
 		{
 			TurnToFace( quester, pm );
-			quester.PrivateOverheadMessage( MessageType.Regular, SpeechColor, false, message, pm.NetState );
+
+			if ( quester is Mobile )
+				((Mobile)quester).PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, args, pm.NetState );
+			else if ( quester is Item )
+				MessageHelper.SendLocalizedMessageTo( (Item)quester, pm, cliloc, args, SpeechColor );
+			else
+				pm.SendLocalizedMessage( cliloc, args, SpeechColor );
 		}
 
-		public static void TellDef( BaseCreature quester, PlayerMobile pm, TextDefinition def )
+		public static void Tell( IQuestGiver quester, PlayerMobile pm, string message )
+		{
+			TurnToFace( quester, pm );
+
+			if ( quester is Mobile )
+				((Mobile)quester).PrivateOverheadMessage( MessageType.Regular, SpeechColor, false, message, pm.NetState );
+			else if ( quester is Item )
+				MessageHelper.SendMessageTo( (Item)quester, pm, message, SpeechColor );
+			else
+				pm.SendMessage( SpeechColor, message );
+		}
+
+		public static void TellDef( IQuestGiver quester, PlayerMobile pm, TextDefinition def )
 		{
 			if ( def == null )
 				return;

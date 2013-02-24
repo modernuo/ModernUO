@@ -53,7 +53,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074547; // Braen is nearby, run and speak with him.
 			CompletionMessage = 1074549; // Yes?  What do you want?  I'm very busy.
 
-			Objectives.Add( new DeliverObjective( typeof( FragmentOfAMapDelivery ), 1, "fragment of a map", typeof( Braen ), "Braen (The Heartwood)" ) );
+			Objectives.Add( new DeliverObjective( typeof( FragmentOfAMapDelivery ), 1, "fragment of a map", typeof( Braen ) ) );
 
 			Rewards.Add( new DummyReward( 1074876 ) ); // Knowledge of the legendary minotaur.
 		}
@@ -102,6 +102,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Broolol (The Heartwood)" )]
 	public class LorekeeperBroolol : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

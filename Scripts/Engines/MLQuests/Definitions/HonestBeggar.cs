@@ -26,7 +26,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075397; // Didst thou find my ring? I thank thee very much! It is an old ring, and a gift from my husband. I was most distraught when I realized it was missing.
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( ReginasRing ), 1, "Regina's Ring", typeof( Regina ), "Regina" ) );
+			Objectives.Add( new DeliverObjective( typeof( ReginasRing ), 1, "Regina's Ring", typeof( Regina ) ) );
 
 			Rewards.Add( new DummyReward( 1075394 ) ); // Find the ring’s owner.
 		}
@@ -55,7 +55,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1075403; // What? For me? Let me see . . . these sapphire earrings are for you, it says. Oh, she wants to offer me a job! This is the most wonderful thing that ever happened to me!
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( ReginasLetter ), 1, "Regina's Letter", typeof( Evan ), "Evan" ) );
+			Objectives.Add( new DeliverObjective( typeof( ReginasLetter ), 1, "Regina's Letter", typeof( Evan ) ) );
 
 			Rewards.Add( new ItemReward( 1075400, typeof( TransparentHeart ) ) ); // Transparent Heart
 		}

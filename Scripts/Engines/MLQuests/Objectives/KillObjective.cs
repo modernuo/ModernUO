@@ -178,7 +178,7 @@ namespace Server.Engines.MLQuests.Objectives
 			y += 16;
 
 			g.AddHtmlLocalized( 103, y, 120, 16, 1074782, 0x15F90, false, false ); // Return to
-			g.AddLabel( 223, y, 0x481, Instance.GetReturnTo() );
+			g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( Instance.QuesterType ) );
 			y += 16;
 		}
 

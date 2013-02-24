@@ -35,7 +35,6 @@ namespace Server.Engines.MLQuests
 		private List<BaseObjective> m_Objectives;
 		private ObjectiveType m_ObjectiveType;
 		private List<BaseReward> m_Rewards;
-		private List<BaseCreature> m_Questers;
 
 		private List<MLQuestInstance> m_Instances;
 
@@ -72,12 +71,6 @@ namespace Server.Engines.MLQuests
 		{
 			get { return m_Rewards; }
 			set { m_Rewards = value; }
-		}
-
-		public List<BaseCreature> Questers
-		{
-			get { return m_Questers; }
-			set { m_Questers = value; }
 		}
 
 		public List<MLQuestInstance> Instances
@@ -152,34 +145,9 @@ namespace Server.Engines.MLQuests
 			m_Rewards = new List<BaseReward>();
 			m_CompletionNotice = CompletionNoticeDefault;
 
-			m_Questers = new List<BaseCreature>();
 			m_Instances = new List<MLQuestInstance>();
 
 			m_SaveEnabled = true;
-		}
-
-		public void Register( BaseCreature quester )
-		{
-			if ( MLQuestSystem.Debug )
-				Console.WriteLine( "INFO: Registering quester: {0} => {1}", quester.Serial, GetType().Name );
-
-			m_Questers.Add( quester );
-		}
-
-		public void Unregister( BaseCreature quester )
-		{
-			if ( MLQuestSystem.Debug )
-				Console.WriteLine( "INFO: Unregistering quester: {0} => {1}", quester.Serial, GetType().Name );
-
-			m_Questers.Remove( quester );
-
-			for ( int i = m_Instances.Count - 1; i >= 0; --i )
-			{
-				MLQuestInstance instance = m_Instances[i];
-
-				if ( instance.Quester == quester )
-					instance.OnQuesterDeleted();
-			}
 		}
 
 		public virtual void Generate()
@@ -229,19 +197,19 @@ namespace Server.Engines.MLQuests
 
 		#endregion
 
-		public MLQuestInstance CreateInstance( BaseCreature quester, PlayerMobile pm )
+		public MLQuestInstance CreateInstance( IQuestGiver quester, PlayerMobile pm )
 		{
 			return new MLQuestInstance( this, quester, pm );
 		}
 
-		public bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
+		public bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
 		{
 			return CanOffer( quester, pm, MLQuestSystem.GetContext( pm ), message );
 		}
 
-		public virtual bool CanOffer( BaseCreature quester, PlayerMobile pm, MLQuestContext context, bool message )
+		public virtual bool CanOffer( IQuestGiver quester, PlayerMobile pm, MLQuestContext context, bool message )
 		{
-			if ( !m_Activated || quester.Deleted || !m_Questers.Contains( quester ) )
+			if ( !m_Activated || quester.Deleted )
 				return false;
 
 			if ( context != null )
@@ -294,12 +262,12 @@ namespace Server.Engines.MLQuests
 			return true;
 		}
 
-		public virtual void SendOffer( BaseCreature quester, PlayerMobile pm )
+		public virtual void SendOffer( IQuestGiver quester, PlayerMobile pm )
 		{
 			pm.SendGump( new QuestOfferGump( this, quester, pm ) );
 		}
 
-		public virtual void OnAccept( BaseCreature quester, PlayerMobile pm )
+		public virtual void OnAccept( IQuestGiver quester, PlayerMobile pm )
 		{
 			if ( !CanOffer( quester, pm, true ) )
 				return;
@@ -319,7 +287,7 @@ namespace Server.Engines.MLQuests
 		{
 		}
 
-		public virtual void OnRefuse( BaseCreature quester, PlayerMobile pm )
+		public virtual void OnRefuse( IQuestGiver quester, PlayerMobile pm )
 		{
 			pm.SendGump( new QuestConversationGump( this, pm, RefusalMessage ) );
 		}

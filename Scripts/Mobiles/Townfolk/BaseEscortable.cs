@@ -29,9 +29,6 @@ namespace Server.Mobiles
 				Region reg = Region;
 				Type[] list = reg.IsPartOf( "Haven Island" ) ? m_MLQuestTypesNH : m_MLQuestTypes;
 
-				if ( MLQuestSystem.Debug )
-					Console.WriteLine( "DEBUG: Assigning quest to BaseEscortable {0}, Region = {1}", Serial, ( reg == null ) ? "-null-" : reg.Name );
-
 				int randomIdx = Utility.Random( list.Length );
 
 				for ( int i = 0; i < list.Length; ++i )
@@ -55,13 +52,13 @@ namespace Server.Mobiles
 
 						if ( okay )
 						{
-							SetMLQuest( quest );
+							m_MLQuest = quest;
 							break;
 						}
 					}
 					else if ( MLQuestSystem.Debug )
 					{
-						Console.WriteLine( "WARNING: Type {0} should not be eligible as it is not a registered quest", questType.Name );
+						Console.WriteLine( "Warning: Escortable cannot be assigned quest type '{0}', it is not registered", questType.Name );
 					}
 
 					randomIdx = ( randomIdx + 1 ) % list.Length;
@@ -70,7 +67,7 @@ namespace Server.Mobiles
 				if ( m_MLQuest == null )
 				{
 					if ( MLQuestSystem.Debug )
-						Console.WriteLine( "WARNING: No suitable quest found for escort {0}", Serial );
+						Console.WriteLine( "Warning: No suitable quest found for escort {0}", Serial );
 
 					return null;
 				}
@@ -173,12 +170,6 @@ namespace Server.Mobiles
 			typeof( EscortToNHBowyer ),
 			typeof( EscortToNHBank )
 		};
-
-		public void SetMLQuest( MLQuest quest )
-		{
-			m_MLQuest = quest;
-			quest.Register( this );
-		}
 
 		[Constructable]
 		public BaseEscortable()
@@ -571,7 +562,7 @@ namespace Server.Mobiles
 				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
 
 				if ( MLQuestSystem.Enabled && quest != null && !StaticMLQuester )
-					SetMLQuest( quest );
+					m_MLQuest = quest;
 			}
 		}
 

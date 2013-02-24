@@ -165,7 +165,7 @@ namespace Server.Mobiles
 		}
 	}
 
-	public partial class BaseCreature : Mobile, IHonorTarget
+	public partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
 	{
 		public const int MaxLoyalty = 100;
 
@@ -336,14 +336,14 @@ namespace Server.Mobiles
 			}
 		}
 
+		public virtual bool CanGiveMLQuest { get { return ( MLQuests.Count != 0 ); } }
 		public virtual bool StaticMLQuester { get { return true; } }
 
 		protected virtual List<MLQuest> ConstructQuestList()
 		{
 			return null;
 		}
-
-		public virtual bool CanGiveMLQuest { get { return ( MLQuests.Count != 0 ); } }
+		
 		public virtual bool CanShout { get { return false; } }
 
 		public const int ShoutRange = 8;
@@ -377,18 +377,6 @@ namespace Server.Mobiles
 
 		public virtual void Shout( PlayerMobile pm )
 		{
-		}
-
-		private void RegisterQuests()
-		{
-			foreach ( MLQuest quest in MLQuests )
-				quest.Register( this );
-		}
-
-		private void UnregisterQuests()
-		{
-			foreach ( MLQuest quest in MLQuests )
-				quest.Unregister( this );
 		}
 
 		#endregion
@@ -1751,9 +1739,6 @@ namespace Server.Mobiles
 				NameHue = 0x35;
 
 			GenerateLoot( true );
-
-			if ( MLQuestSystem.Enabled && StaticMLQuester )
-				RegisterQuests();
 		}
 
 		public BaseCreature( Serial serial ) : base( serial )
@@ -2127,9 +2112,6 @@ namespace Server.Mobiles
 
 			if ( IsAnimatedDead )
 				Spells.Necromancy.AnimateDeadSpell.Register( m_SummonMaster, this );
-
-			if ( MLQuestSystem.Enabled && StaticMLQuester )
-				RegisterQuests();
 		}
 
 		public virtual bool IsHumanInTown()
@@ -3007,7 +2989,7 @@ namespace Server.Mobiles
 				Spells.Necromancy.AnimateDeadSpell.Unregister( m_SummonMaster, this );
 
 			if ( MLQuestSystem.Enabled )
-				UnregisterQuests();
+				MLQuestSystem.HandleDeletion( this );
 
 			base.OnAfterDelete();
 		}

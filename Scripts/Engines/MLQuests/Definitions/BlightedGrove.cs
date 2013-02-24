@@ -23,7 +23,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074968; // My friend, Iosep, is a weaponsmith in Jhelom.  If anyone can help us, he can!
 			CompletionMessage = 1074991; // Greetings.  What have you there?  Ah, a sample from a poisonous tree, you say?  My friend Jamal sent you?  Well, let me see that then, and we'll get to work.
 
-			Objectives.Add( new DeliverObjective( typeof( TaintedTreeSample ), 1, "tainted tree sample", typeof( Iosep ), "Iosep (Jhelom)" ) );
+			Objectives.Add( new DeliverObjective( typeof( TaintedTreeSample ), 1, "tainted tree sample", typeof( Iosep ) ) );
 
 			Rewards.Add( new DummyReward( 1074962 ) ); // A step closer to entering Blighted Grove.
 		}
@@ -126,7 +126,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074972; // I'm sure Jamal is eager to get this information.  He's probably still hanging around near that big old blighted tree.
 			CompletionMessage = 1074995; // Heya!  You're back.  Was Iosep able to help?  Let me see what he's sent.
 
-			Objectives.Add( new DeliverObjective( typeof( SealedNotesForJamal ), 1, "sealed note for Jamal", typeof( Jamal ), "Jamal (near Blighted Grove)" ) );
+			Objectives.Add( new DeliverObjective( typeof( SealedNotesForJamal ), 1, "sealed note for Jamal", typeof( Jamal ) ) );
 
 			Rewards.Add( new DummyReward( 1074962 ) ); // A step closer to entering Blighted Grove.
 		}
@@ -175,6 +175,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Jamal (near Blighted Grove)" )]
 	public class Jamal : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -218,6 +219,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Iosep (Jhelom)" )]
 	public class Iosep : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

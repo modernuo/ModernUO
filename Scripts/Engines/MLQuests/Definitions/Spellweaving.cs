@@ -328,7 +328,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074315; // Arielle wanders quite a bit, so I'm not sure exactly where to find her.  I'm sure she's going to love your gift.
 			CompletionMessage = 1074319; // *giggle*  Oooh!  For me?
 
-			Objectives.Add( new DeliverObjective( typeof( GiftForArielle ), 1, "gift for Arielle", typeof( Arielle ), "Arielle" ) );
+			Objectives.Add( new DeliverObjective( typeof( GiftForArielle ), 1, "gift for Arielle", typeof( Arielle ) ) );
 
 			Rewards.Add( new DummyReward( 1074874 ) ); // The opportunity to prove yourself worthy of learning to Summon Fey. (Sufficient spellweaving skill is required to cast the spell)
 		}
@@ -445,6 +445,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Aeluva (The Heartwood)" )]
 	public class Aeluva : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -503,6 +504,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Koole (Sanctuary)" )]
 	public class Koole : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -568,6 +570,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Synaeva (The Heartwood)" )]
 	public class Synaeva : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -627,6 +630,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Elder Brae (Sanctuary)" )]
 	public class ElderBrae : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

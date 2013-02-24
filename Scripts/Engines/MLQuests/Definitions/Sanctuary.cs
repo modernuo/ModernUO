@@ -140,7 +140,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074064; // Hurry up! I don't have all day to wait for you to bring what I desire!
 			CompletionMessage = 1074065; // These human made goods are laughable! It offends so -- I must show you what elven skill is capable of!
 
-			Objectives.Add( new CollectObjective( 12, typeof( Broadsword ), 1015055 ) ); // broadsword
+			Objectives.Add( new CollectObjective( 12, typeof( Broadsword ), 1023934 ) ); // broadsword
 
 			Rewards.Add( ItemReward.BlacksmithSatchel );
 		}
@@ -230,7 +230,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074064; // Hurry up! I don't have all day to wait for you to bring what I desire!
 			CompletionMessage = 1074065; // These human made goods are laughable! It offends so -- I must show you what elven skill is capable of!
 
-			Objectives.Add( new CollectObjective( 10, typeof( TinkerTools ), 1011218 ) ); // tinker's tools
+			Objectives.Add( new CollectObjective( 10, typeof( TinkerTools ), 1027868 ) ); // tinker's tools
 
 			Rewards.Add( ItemReward.TinkerSatchel );
 		}
@@ -264,7 +264,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074064; // Hurry up! I don't have all day to wait for you to bring what I desire!
 			CompletionMessage = 1074065; // These human made goods are laughable! It offends so -- I must show you what elven skill is capable of!
 
-			Objectives.Add( new CollectObjective( 10, typeof( Kilt ), 1015281 ) ); // kilt
+			Objectives.Add( new CollectObjective( 10, typeof( Kilt ), 1025431 ) ); // kilt
 
 			Rewards.Add( ItemReward.TailorSatchel );
 		}
@@ -282,7 +282,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074064; // Hurry up! I don't have all day to wait for you to bring what I desire!
 			CompletionMessage = 1074065; // These human made goods are laughable! It offends so -- I must show you what elven skill is capable of!
 
-			Objectives.Add( new CollectObjective( 10, typeof( FancyShirt ), 1015272 ) ); // fancy shirt
+			Objectives.Add( new CollectObjective( 10, typeof( FancyShirt ), 1027933 ) ); // fancy shirt
 
 			Rewards.Add( ItemReward.TailorSatchel );
 		}
@@ -300,7 +300,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074064; // Hurry up! I don't have all day to wait for you to bring what I desire!
 			CompletionMessage = 1074065; // These human made goods are laughable! It offends so -- I must show you what elven skill is capable of!
 
-			Objectives.Add( new CollectObjective( 10, typeof( FemaleStuddedChest ), 1015310 ) ); // studded bustier
+			Objectives.Add( new CollectObjective( 10, typeof( FemaleStuddedChest ), 1027180 ) ); // studded bustier
 
 			Rewards.Add( ItemReward.TailorSatchel );
 		}
@@ -623,7 +623,7 @@ namespace Server.Engines.MLQuests.Definitions
 			CompletionMessage = 1074579; // Yes, can I help you?
 			CompletionNotice = CompletionNoticeShort;
 
-			Objectives.Add( new DeliverObjective( typeof( APersonalLetterAddressedToAhie ), 1, "letter", typeof( Ahie ), "Ahie (The Heartwood)" ) );
+			Objectives.Add( new DeliverObjective( typeof( APersonalLetterAddressedToAhie ), 1, "letter", typeof( Ahie ) ) );
 
 			Rewards.Add( ItemReward.BagOfTrinkets );
 		}
@@ -639,7 +639,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
 			InProgressMessage = 1073592; // The Brigands still plague us. Have you killed 20 of their number?<br>
 
-			Objectives.Add( new KillObjective( 20, new Type[] { typeof( Brigand ) }, "common brigands" ) );
+			Objectives.Add( new KillObjective( 20, new Type[] { typeof( Brigand ) }, 1074894 ) ); // Common brigands
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -649,6 +649,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Beotham (Sanctuary)" )]
 	public class Beotham : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -711,6 +712,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Danoel (Sanctuary)" )]
 	public class Danoel : BaseCreature
 	{
 		// TODO: Add quests: Spring Cleaning
@@ -769,6 +771,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Tallinin (Sanctuary)" )]
 	public class Tallinin : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -825,6 +828,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Tiana (Sanctuary)" )]
 	public class Tiana : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -892,6 +896,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Oolua (Sanctuary)" )]
 	public class LorekeeperOolua : BaseCreature
 	{
 		// TODO: Add quest Dreadhorn
@@ -949,6 +954,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Rollarn (Sanctuary)" )]
 	public class LorekeeperRollarn : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -1012,6 +1018,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Dallid (Sanctuary)" )]
 	public class Dallid : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -1070,6 +1077,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Canir (Sanctuary)" )]
 	public class Canir : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -1172,6 +1180,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Elder Onallan (Sanctuary)" )]
 	public class ElderOnallan : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

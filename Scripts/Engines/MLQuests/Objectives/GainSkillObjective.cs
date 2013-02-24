@@ -66,7 +66,7 @@ namespace Server.Engines.MLQuests.Objectives
 				m_Flags |= GainSkillObjectiveFlags.Accelerate;
 		}
 
-		public override bool CanOffer( BaseCreature quester, PlayerMobile pm, bool message )
+		public override bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
 		{
 			Skill skill = pm.Skills[m_Skill];
 

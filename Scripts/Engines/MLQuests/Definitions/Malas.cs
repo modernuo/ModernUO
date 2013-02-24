@@ -23,7 +23,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074643; // I can't pay a bounty if you don't bring bag the ears.
 			CompletionMessage = 1074644; // Here to collect on a bounty?
 
-			Objectives.Add( new CollectObjective( 20, typeof( SeveredElfEars ), "severed elf ears" ) );
+			Objectives.Add( new CollectObjective( 20, typeof( SeveredElfEars ), 1032590 ) ); // severed elf ears
 
 			Rewards.Add( ItemReward.BagOfTrinkets );
 		}
@@ -40,6 +40,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	#region Mobiles
 
+	[QuesterName( "Drithen (Umbra)" )]
 	public class Drithen : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

@@ -10,9 +10,9 @@ namespace Server.Engines.MLQuests.Gumps
 	public class QuestOfferGump : BaseQuestGump
 	{
 		private MLQuest m_Quest;
-		private BaseCreature m_Quester;
+		private IQuestGiver m_Quester;
 
-		public QuestOfferGump( MLQuest quest, BaseCreature quester, PlayerMobile pm )
+		public QuestOfferGump( MLQuest quest, IQuestGiver quester, PlayerMobile pm )
 			: base( 1049010 ) // Quest Offer
 		{
 			m_Quest = quest;

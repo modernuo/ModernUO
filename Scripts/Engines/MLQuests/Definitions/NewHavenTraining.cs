@@ -123,7 +123,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1075515; // Come On! Whats that... a bucket? We need ten bucklers... not spitoons.
 			CompletionMessage = 1075516; // Thanks for the help. Here's something for ya to remember me by.
 
-			Objectives.Add( new CollectObjective( 10, typeof( Buckler ), 1015044 ) ); // buckler
+			Objectives.Add( new CollectObjective( 10, typeof( Buckler ), 1027027 ) ); // buckler
 
 			Rewards.Add( new ItemReward( 1074282, typeof( GervisSatchel ) ) ); // Craftsmans's Satchel
 		}
@@ -148,7 +148,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1075532; // Hmmm… we need some more Ore. Try finding a mountain or cave, and give it a whack.
 			CompletionMessage = 1075533; // I see you found a good vien! Great!  This will help get this order out on time. Good work!
 
-			Objectives.Add( new CollectObjective( 5, typeof( IronOre ), 1042853 ) ); // iron ore
+			Objectives.Add( new InternalObjective() );
 
 			Rewards.Add( new ItemReward( 1074282, typeof( MuggSatchel ) ) ); // Craftsmans's Satchel
 		}
@@ -158,6 +158,20 @@ namespace Server.Engines.MLQuests.Definitions
 			base.Generate();
 
 			PutSpawner( new Spawner( 1, 5, 10, 0, 0, "Mugg" ), new Point3D( 3507, 2747, 0 ), Map.Trammel );
+		}
+
+		private class InternalObjective : CollectObjective
+		{
+			// Any type of ore is allowed
+			public InternalObjective()
+				: base( 5, typeof( BaseOre ), 1026585 ) // ore
+			{
+			}
+
+			public override bool CheckItem( Item item )
+			{
+				return ( item.ItemID == 6585 ); // Only large pieces count
+			}
 		}
 	}
 
@@ -173,7 +187,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1075509; // Is all going well? I look forward to the simple comforts in my very own home.
 			CompletionMessage = 1074720; // This is perfect!
 
-			Objectives.Add( new CollectObjective( 1, typeof( BambooChair ), 1044300 ) ); // straw chair
+			Objectives.Add( new CollectObjective( 1, typeof( BambooChair ), "straw chair" ) );
 
 			Rewards.Add( new ItemReward( 1074282, typeof( LowelSatchel ) ) ); // Craftsmans's Satchel
 		}
@@ -223,7 +237,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 			CompletionMessage = 1075536; // Wonderful! Tick tock, tick tock, soon all shall be well with grandfather's clock!
 
-			Objectives.Add( new CollectObjective( 5, typeof( ClockParts ), 1011205 ) ); // clock parts
+			Objectives.Add( new CollectObjective( 5, typeof( ClockParts ), 1024175 ) ); // clock parts
 
 			Rewards.Add( new ItemReward( 1074282, typeof( NibbetSatchel ) ) ); // Craftsmans's Satchel
 		}
@@ -273,7 +287,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1075490; // Just remember you need to use your mortar and pestle while you have empty bottles and some black pearl. Refresh potions are what I need.
 			CompletionMessage = 1075491; // *glug* *glug* Ahh... Yes! Yes! That feels great! Those lizardmen will never know what hit 'em! Here, take this, I can get more from the lizards.
 
-			Objectives.Add( new CollectObjective( 10, typeof( RefreshPotion ), 1048029 ) ); // refresh potion
+			Objectives.Add( new CollectObjective( 10, typeof( RefreshPotion ), "refresh potions" ) );
 
 			Rewards.Add( new ItemReward( 1074282, typeof( SadrahSatchel ) ) ); // Craftsmans's Satchel
 		}
@@ -506,6 +520,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	//[QuesterName( "Clarisse" )] // On OSI the gumps refer to her as this, different from actual name
 	public class Clairesse : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }

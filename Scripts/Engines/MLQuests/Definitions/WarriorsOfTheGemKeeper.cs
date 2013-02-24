@@ -43,7 +43,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074548; // Canir is nearby, run and speak with her.
 			CompletionMessage = 1074549; // Yes?  What do you want?  I'm very busy.
 
-			Objectives.Add( new DeliverObjective( typeof( FragmentOfAMapDelivery ), 1, "fragment of a map", typeof( Canir ), "Canir (Sanctuary)" ) );
+			Objectives.Add( new DeliverObjective( typeof( FragmentOfAMapDelivery ), 1, "fragment of a map", typeof( Canir ) ) );
 
 			Rewards.Add( new DummyReward( 1074876 ) ); // Knowledge of the legendary minotaur.
 		}

@@ -232,6 +232,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Jelrice (Ilshenar)" )]
 	public class Jelrice : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
@@ -281,6 +282,7 @@ namespace Server.Engines.MLQuests.Definitions
 		}
 	}
 
+	[QuesterName( "Yorus (Ilshenar)" )]
 	public class Yorus : BaseCreature
 	{
 		public override bool IsInvulnerable { get { return true; } }
