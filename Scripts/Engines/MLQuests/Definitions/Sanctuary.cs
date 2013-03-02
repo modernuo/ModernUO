@@ -300,7 +300,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074064; // Hurry up! I don't have all day to wait for you to bring what I desire!
 			CompletionMessage = 1074065; // These human made goods are laughable! It offends so -- I must show you what elven skill is capable of!
 
-			Objectives.Add( new CollectObjective( 10, typeof( FemaleStuddedChest ), 1027180 ) ); // studded bustier
+			Objectives.Add( new CollectObjective( 10, typeof( StuddedBustierArms ), 1027180 ) ); // studded bustier
 
 			Rewards.Add( ItemReward.TailorSatchel );
 		}

@@ -1146,7 +1146,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1073951; // I will be in your debt if you bring me studded bustiers.
 			CompletionMessage = 1073976; // Truly, it is worse than I feared. Still, I appreciate your efforts on my behalf.
 
-			Objectives.Add( new CollectObjective( 10, typeof( FemaleStuddedChest ), 1027180 ) ); // studded bustier
+			Objectives.Add( new CollectObjective( 10, typeof( StuddedBustierArms ), 1027180 ) ); // studded bustier
 
 			Rewards.Add( ItemReward.TailorSatchel );
 		}
