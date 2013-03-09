@@ -7,7 +7,6 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Gumps;
 
-
 namespace Server.Regions
 {
 	public enum SpawnZLevel
@@ -20,6 +19,11 @@ namespace Server.Regions
 	public class BaseRegion : Region
 	{
 		public virtual bool YoungProtected { get { return true; } }
+		public virtual bool YoungMayEnter { get { return true; } }
+		public virtual bool MountsAllowed { get { return true; } }
+		public virtual bool DeadMayEnter { get { return true; } }
+		public virtual bool ResurrectionAllowed { get { return true; } }
+		public virtual bool LogoutAllowed { get { return true; } }
 
 		public static void Configure()
 		{

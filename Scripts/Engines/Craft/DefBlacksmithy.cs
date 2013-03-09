@@ -472,10 +472,10 @@ namespace Server.Engines.Craft
 					SetNeededExpansion( index, Expansion.ML );
 
 					// TODO
-					//index = AddCraft( typeof( ButchersWarCleaver ), 1011081, 1073526, 75.0, 125.0, typeof( IronIngot ), 1044036, 18, 1044037 );
-					//AddRes( index, typeof( Turquoise ), 1032691, 1, 1044240 );
-					//AddRecipe( index, 17 );
-					//SetNeededExpansion( index, Expansion.ML );
+					index = AddCraft( typeof( ButchersWarCleaver ), 1011081, 1073526, 75.0, 125.0, typeof( IronIngot ), 1044036, 18, 1044037 );
+					AddRes( index, typeof( Turquoise ), 1032691, 1, 1044240 );
+					AddRecipe( index, 17 );
+					SetNeededExpansion( index, Expansion.ML );
 
 					index = AddCraft( typeof( SerratedWarCleaver ), 1011081, 1073527, 75.0, 125.0, typeof( IronIngot ), 1044036, 18, 1044037 );
 					AddRes( index, typeof( EcruCitrine ), 1032693, 1, 1044240 );
@@ -508,10 +508,10 @@ namespace Server.Engines.Craft
 					SetNeededExpansion( index, Expansion.ML );
 
 					// TODO
-					//index = AddCraft( typeof( RuneSabre ), 1011081, 1073537, 75.0, 125.0, typeof( IronIngot ), 1044036, 15, 1044037 );
-					//AddRes( index, typeof( Turquoise ), 1032691, 1, 1044240 );
-					//AddRecipe( index, 24 );
-					//SetNeededExpansion( index, Expansion.ML );
+					index = AddCraft( typeof( Runesabre ), 1011081, 1073537, 75.0, 125.0, typeof( IronIngot ), 1044036, 15, 1044037 );
+					AddRes( index, typeof( Turquoise ), 1032691, 1, 1044240 );
+					AddRecipe( index, 24 );
+					SetNeededExpansion( index, Expansion.ML );
 
 					index = AddCraft( typeof( MagesRuneBlade ), 1011081, 1073538, 75.0, 125.0, typeof( IronIngot ), 1044036, 15, 1044037 );
 					AddRes( index, typeof( BlueDiamond ), 1032696, 1, 1044240 );

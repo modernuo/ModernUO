@@ -1947,6 +1947,9 @@ namespace Server.Items
 			SlayerEntry atkSlayer = SlayerGroup.GetEntryByName( atkWeapon.Slayer );
 			SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName( atkWeapon.Slayer2 );
 
+			if( atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays( TalismanSlayerName.Bovine, defender ) )
+				return CheckSlayerResult.Slayer;
+
 			if ( atkSlayer != null && atkSlayer.Slays( defender )  || atkSlayer2 != null && atkSlayer2.Slays( defender ) )
 				return CheckSlayerResult.Slayer;
 
