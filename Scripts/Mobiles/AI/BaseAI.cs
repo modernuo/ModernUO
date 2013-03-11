@@ -2510,6 +2510,9 @@ namespace Server.Mobiles
 					if ( !m_Mobile.CanSee( m ) )
 						continue;
 
+					if( Core.AOS && m is BaseCreature && ( m as BaseCreature ).Summoned && !( m as BaseCreature ).Controlled )
+						continue;
+
 					if ( m_Mobile.Summoned && m_Mobile.SummonMaster != null )
 					{
 						// If this is a summon, it can't target its controller.
@@ -2537,27 +2540,19 @@ namespace Server.Mobiles
 					if ( m is PlayerMobile && ( (PlayerMobile)m ).HonorActive && !( m_Mobile.Combatant == m ))
 						continue;
 
-					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil || ( m is BaseCreature ) && ( ( BaseCreature )m ).Summoned )
+					if( acqType == FightMode.Aggressor || acqType == FightMode.Evil )
 					{
-						BaseCreature bc = m as BaseCreature;
-
 						bool bValid = IsHostile( m );
 
-						if( !bValid && ( !( m is BaseCreature ) || !bc.Summoned || bc.Controlled ) )
-						{ 
+						if ( !bValid )
 							bValid = ( m_Mobile.GetFactionAllegiance( m ) == BaseCreature.Allegiance.Enemy || m_Mobile.GetEthicAllegiance( m ) == BaseCreature.Allegiance.Enemy );
 
-							if( acqType == FightMode.Evil && !bValid )
-							{
-								if( m is BaseCreature && bc.Controlled && bc.ControlMaster != null )
-								{
-									bValid = (  bc.ControlMaster.Karma < 0 );
-								}
-								else
-								{
-									bValid = ( ( Core.AOS || m.Player ) && m.Karma < 0 );
-								}
-							}
+						if ( acqType == FightMode.Evil && !bValid )
+						{
+							if( m is BaseCreature && ((BaseCreature)m).Controlled && ((BaseCreature)m).ControlMaster != null )
+							bValid = ( ((BaseCreature)m).ControlMaster.Karma < 0 );
+							else
+							bValid = ( m.Karma < 0 );
 						}
 
 						if ( !bValid )
@@ -2584,11 +2579,6 @@ namespace Server.Mobiles
 				eable.Free();
 
 				m_Mobile.FocusMob = newFocusMob;
-
-				if( m_Mobile.FocusMob is BaseFamiliar )
-				{
-					m_Mobile.FocusMob = null;
-				}
 			}
 
 			return (m_Mobile.FocusMob != null);
@@ -2824,3 +2814,4 @@ namespace Server.Mobiles
 		}
 	}
 }
+
