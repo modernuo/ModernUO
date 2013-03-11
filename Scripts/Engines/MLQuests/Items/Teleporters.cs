@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Server;
@@ -129,20 +129,22 @@ namespace Server.Engines.MLQuests.Items
 			set { m_Message = value; }
 		}
 
+		/* set default config to prevent null ref @ serialize due to uninitialized data */
+
 		[Constructable]
 		public TicketTeleporter()
-			: this( Point3D.Zero, null, null, null )
+			: this( new Point3D( 6223, 336, 60 ), Map.Trammel )
 		{
 		}
 
 		[Constructable]
 		public TicketTeleporter( Point3D pointDest, Map mapDest )
-			: this( pointDest, mapDest, null, null )
+			: this( pointDest, mapDest, typeof( AcidProofRope ), 1074272 )
 		{
 		}
 
 		[Constructable]
-		public TicketTeleporter( Point3D pointDest, Map mapDest, Type ticketType, TextDefinition message )
+		public TicketTeleporter( Point3D pointDest, Map mapDest, Type ticketType, TextDefinition message ) 
 			: base( pointDest, mapDest )
 		{
 			m_TicketType = ticketType;
@@ -221,3 +223,4 @@ namespace Server.Engines.MLQuests.Items
 		}
 	}
 }
+
