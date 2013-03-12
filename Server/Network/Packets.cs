@@ -3801,6 +3801,64 @@ namespace Server.Network
 		}
 	}
 
+	[Flags]
+	public enum ThirdPartyFeature : ulong
+	{
+		FilterWeather	= 1 << 0,
+		FilterLight	= 1 << 1,
+
+		SmartTarget	= 1 << 2,
+		RangedTarget	= 1 << 3,
+
+		AutoOpenDoors	= 1 << 4,
+
+		DequipOnCast	= 1 << 5,
+		AutoPotionEquip	= 1 << 6,
+
+		ProtectHeals	= 1 << 7,
+
+		LoopedMacros	= 1 << 8,
+
+		UseOnceAgent	= 1 << 9,
+		RestockAgent	= 1 << 10,
+		SellAgent	= 1 << 11,
+		BuyAgent	= 1 << 12,
+
+		PotionHotkeys	= 1 << 13,
+
+		RandomTargets	= 1 << 14,
+		ClosestTargets	= 1 << 15, // All closest target hotkeys
+		OverheadHealth	= 1 << 16, // Health and Mana/Stam messages shown over player's heads
+	}
+
+	public static class FeatureProtection
+	{
+		private static ThirdPartyFeature m_Disabled = 0;
+
+		public static ThirdPartyFeature DisabledFeatures
+		{
+			get { return m_Disabled; }
+		}
+
+		public static void Disable( ThirdPartyFeature feature )
+		{
+			SetDisabled( feature, true );
+		}
+
+		public static void Enable( ThirdPartyFeature feature )
+		{
+			SetDisabled( feature, false );
+		}
+
+		public static void SetDisabled( ThirdPartyFeature feature, bool value )
+		{
+			if ( value )
+				m_Disabled |= feature;
+			else
+				m_Disabled &= ~feature;
+		}
+	}
+
 	public sealed class CharacterList : Packet
 	{
 		public CharacterList( IAccount a, CityInfo[] info ) : base( 0xA9 )
@@ -3859,7 +3917,41 @@ namespace Server.Network
 				flags |= (CharacterListFlags.SlotLimit & CharacterListFlags.OneCharacterSlot); // Limit Characters & One Character
 
 			m_Stream.Write( (int)(flags | m_AdditionalFlags) ); // Additional Flags
+
+			m_Stream.Write( (short) -1 );
+
+			ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
+
+			if ( disabled != 0 )
+			{
+				if ( m_MD5Provider == null )
+					m_MD5Provider = new System.Security.Cryptography.MD5CryptoServiceProvider();
+
+				m_Stream.UnderlyingStream.Flush();
+
+				byte[] hashCode = m_MD5Provider.ComputeHash( m_Stream.UnderlyingStream.GetBuffer(), 0, (int) m_Stream.UnderlyingStream.Length );
+
+				Random rnd = new Random();
+				byte[] buffer = new byte[29];
+
+				for ( int i = 0; i < count; ++i )
+				{
+					rnd.NextBytes( buffer );
+
+					m_Stream.Seek( 34 + ( i * 60 ), SeekOrigin.Begin );
+					m_Stream.Write( buffer, 0, buffer.Length );
+				}
+
+				m_Stream.Seek( 35, SeekOrigin.Begin );
+				m_Stream.Write( (int) ((long)disabled>>32) );
+				m_Stream.Write( (int) disabled );
+
+				m_Stream.Seek( 95, SeekOrigin.Begin );
+				m_Stream.Write( hashCode, 0, hashCode.Length );
+			}
 		}
+
+		private static System.Security.Cryptography.MD5CryptoServiceProvider m_MD5Provider;
 
 		private static CharacterListFlags m_AdditionalFlags;
 
@@ -3922,7 +4014,39 @@ namespace Server.Network
 				flags |= (CharacterListFlags.SlotLimit & CharacterListFlags.OneCharacterSlot); // Limit Characters & One Character
 
 			m_Stream.Write( (int)(flags | CharacterList.AdditionalFlags) ); // Additional Flags
+
+			ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
+
+			if ( disabled != 0 )
+			{
+				if ( m_MD5Provider == null )
+					m_MD5Provider = new System.Security.Cryptography.MD5CryptoServiceProvider();
+
+				m_Stream.UnderlyingStream.Flush();
+
+				byte[] hashCode = m_MD5Provider.ComputeHash( m_Stream.UnderlyingStream.GetBuffer(), 0, (int) m_Stream.UnderlyingStream.Length );
+
+				Random rnd = new Random();
+				byte[] buffer = new byte[29];
+
+				for ( int i = 0; i < count; ++i )
+				{
+					rnd.NextBytes( buffer );
+
+					m_Stream.Seek( 34 + ( i * 60 ), SeekOrigin.Begin );
+					m_Stream.Write( buffer, 0, buffer.Length );
+				}
+
+				m_Stream.Seek( 35, SeekOrigin.Begin );
+				m_Stream.Write( (int) ((long)disabled>>32) );
+				m_Stream.Write( (int) disabled );
+
+				m_Stream.Seek( 95, SeekOrigin.Begin );
+				m_Stream.Write( hashCode, 0, hashCode.Length );
+			}
 		}
+
+		private static System.Security.Cryptography.MD5CryptoServiceProvider m_MD5Provider;
 	}
 
 	public sealed class ClearWeaponAbility : Packet

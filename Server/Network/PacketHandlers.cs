@@ -1892,6 +1892,18 @@ namespace Server.Network
 			}
 		}
 
+		public delegate void PlayCharCallback( NetState state, bool val );
+
+		public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
+
+		private static byte[] m_ThirdPartyAuthKey = new byte[] 
+			{ 
+				0x9, 0x11, 0x83, (byte)'+', 0x4, 0x17, 0x83, 
+				0x5, 0x24, 0x85, 
+				0x7, 0x17, 0x87, 
+				0x6, 0x19, 0x88,
+			};
+
 		private class LoginTimer : Timer
 		{
 			private NetState m_State;
@@ -1924,7 +1936,43 @@ namespace Server.Network
 
 			pvSrc.Seek( 2, SeekOrigin.Current );
 			int flags = pvSrc.ReadInt32();
-			pvSrc.Seek( 24, SeekOrigin.Current );
+
+			if ( FeatureProtection.DisabledFeatures != 0 && ThirdPartyAuthCallback != null )
+			{
+				bool authOK = false;
+
+				ulong razorFeatures = (((ulong)pvSrc.ReadUInt32())<<32) | ((ulong)pvSrc.ReadUInt32());
+
+				if ( razorFeatures == (ulong)FeatureProtection.DisabledFeatures )
+				{
+					bool match = true;
+					for ( int i=0; match && i < m_ThirdPartyAuthKey.Length; i++ )
+						match = match && pvSrc.ReadByte() == m_ThirdPartyAuthKey[i];
+						
+					if ( match )
+						authOK = true;
+				}
+                else
+                {
+                    pvSrc.Seek( 16, SeekOrigin.Current );
+                }
+
+				ThirdPartyAuthCallback( state, authOK );
+			}
+			else
+			{
+				pvSrc.Seek( 24, SeekOrigin.Current );
+			}
+
+			if ( ThirdPartyHackedCallback != null )
+			{
+				pvSrc.Seek( -2, SeekOrigin.Current );
+				if ( pvSrc.ReadUInt16() == 0xDEAD )
+					ThirdPartyHackedCallback( state, true );
+			}
+
+			if ( !state.Running )
+				return;
 
 			int charSlot = pvSrc.ReadInt32();
 			int clientIP = pvSrc.ReadInt32();
