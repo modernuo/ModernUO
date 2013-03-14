@@ -12,7 +12,7 @@ namespace Server.Engines.MLQuests.Items
 		private MLQuest m_RequiredQuest;
 		private TextDefinition m_Message;
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty(AccessLevel.GameMaster)]
 		public MLQuest RequiredQuest
 		{
 			get { return m_RequiredQuest; }
@@ -20,7 +20,7 @@ namespace Server.Engines.MLQuests.Items
 			set { m_RequiredQuest = value; InvalidateProperties(); }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty(AccessLevel.GameMaster)]
 		public TextDefinition Message
 		{
 			get { return m_Message; }
@@ -29,41 +29,41 @@ namespace Server.Engines.MLQuests.Items
 
 		[Constructable]
 		public MLQuestTeleporter()
-			: this( Point3D.Zero, null, null, null )
+			: this(Point3D.Zero, null, null, null)
 		{
 		}
 
 		[Constructable]
-		public MLQuestTeleporter( Point3D pointDest, Map mapDest )
-			: this( pointDest, mapDest, null, null )
+		public MLQuestTeleporter(Point3D pointDest, Map mapDest)
+			: this(pointDest, mapDest, null, null)
 		{
 		}
 
 		[Constructable]
-		public MLQuestTeleporter( Point3D pointDest, Map mapDest, MLQuest quest, TextDefinition message )
-			: base( pointDest, mapDest )
+		public MLQuestTeleporter(Point3D pointDest, Map mapDest, MLQuest quest, TextDefinition message)
+			: base(pointDest, mapDest)
 		{
 			m_RequiredQuest = quest;
 			m_Message = message;
 		}
 
-		public override bool CanTeleport( Mobile m )
+		public override bool CanTeleport(Mobile m)
 		{
-			if ( !base.CanTeleport( m ) )
+			if (!base.CanTeleport(m))
 				return false;
 
-			if ( m_RequiredQuest != null )
+			if (m_RequiredQuest != null)
 			{
 				PlayerMobile pm = m as PlayerMobile;
 
-				if ( pm == null )
+				if (pm == null)
 					return false;
 
-				MLQuestContext context = MLQuestSystem.GetContext( pm );
+				MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-				if ( context == null || ( !context.IsDoingQuest( m_RequiredQuest ) && !context.HasDoneQuest( m_RequiredQuest ) ) )
+				if (context == null || (!context.IsDoingQuest(m_RequiredQuest) && !context.HasDoneQuest(m_RequiredQuest)))
 				{
-					TextDefinition.SendMessageTo( m, m_Message );
+					TextDefinition.SendMessageTo(m, m_Message);
 					return false;
 				}
 			}
@@ -71,43 +71,43 @@ namespace Server.Engines.MLQuests.Items
 			return true;
 		}
 
-		public override void GetProperties( ObjectPropertyList list )
+		public override void GetProperties(ObjectPropertyList list)
 		{
-			base.GetProperties( list );
+			base.GetProperties(list);
 
-			if ( m_RequiredQuest != null )
-				list.Add( String.Format( "Required quest: {0}", m_RequiredQuest ) );
+			if (m_RequiredQuest != null)
+				list.Add(String.Format("Required quest: {0}", m_RequiredQuest));
 		}
 
-		public MLQuestTeleporter( Serial serial )
-			: base( serial )
+		public MLQuestTeleporter(Serial serial)
+			: base(serial)
 		{
 		}
 
-		public override void Serialize( GenericWriter writer )
+		public override void Serialize(GenericWriter writer)
 		{
-			base.Serialize( writer );
+			base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+			writer.Write((int)0); // version
 
-			MLQuestSystem.WriteQuestRef( writer, m_RequiredQuest );
-			TextDefinition.Serialize( writer, m_Message );
+			MLQuestSystem.WriteQuestRef(writer, m_RequiredQuest);
+			TextDefinition.Serialize(writer, m_Message);
 		}
 
-		public override void Deserialize( GenericReader reader )
+		public override void Deserialize(GenericReader reader)
 		{
-			base.Deserialize( reader );
+			base.Deserialize(reader);
 
 			int version = reader.ReadInt();
 
-			m_RequiredQuest = MLQuestSystem.ReadQuestRef( reader );
-			m_Message = TextDefinition.Deserialize( reader );
+			m_RequiredQuest = MLQuestSystem.ReadQuestRef(reader);
+			m_Message = TextDefinition.Deserialize(reader);
 		}
 	}
 
 	public interface ITicket
 	{
-		void OnTicketUsed( Mobile from );
+		void OnTicketUsed(Mobile from);
 	}
 
 	public class TicketTeleporter : Teleporter
@@ -115,14 +115,14 @@ namespace Server.Engines.MLQuests.Items
 		private Type m_TicketType;
 		private TextDefinition m_Message;
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty(AccessLevel.GameMaster)]
 		public Type TicketType
 		{
 			get { return m_TicketType; }
 			set { m_TicketType = value; InvalidateProperties(); }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty(AccessLevel.GameMaster)]
 		public TextDefinition Message
 		{
 			get { return m_Message; }
@@ -133,42 +133,42 @@ namespace Server.Engines.MLQuests.Items
 
 		[Constructable]
 		public TicketTeleporter()
-			: this( new Point3D( 6223, 336, 60 ), Map.Trammel )
+			: this(new Point3D(6223, 336, 60), Map.Trammel)
 		{
 		}
 
 		[Constructable]
-		public TicketTeleporter( Point3D pointDest, Map mapDest )
-			: this( pointDest, mapDest, typeof( AcidProofRope ), 1074272 )
+		public TicketTeleporter(Point3D pointDest, Map mapDest)
+			: this(pointDest, mapDest, typeof(AcidProofRope), 1074272)
 		{
 		}
 
 		[Constructable]
-		public TicketTeleporter( Point3D pointDest, Map mapDest, Type ticketType, TextDefinition message ) 
-			: base( pointDest, mapDest )
+		public TicketTeleporter(Point3D pointDest, Map mapDest, Type ticketType, TextDefinition message)
+			: base(pointDest, mapDest)
 		{
 			m_TicketType = ticketType;
 			m_Message = message;
 		}
 
-		public override bool CanTeleport( Mobile m )
+		public override bool CanTeleport(Mobile m)
 		{
-			if ( !base.CanTeleport( m ) )
+			if (!base.CanTeleport(m))
 				return false;
 
-			if ( m_TicketType != null )
+			if (m_TicketType != null)
 			{
 				Item ticket = null;
 				Container pack = m.Backpack;
 
-				if ( pack != null )
-					ticket = pack.FindItemByType( m_TicketType, false ); // Check (top level) backpack
+				if (pack != null)
+					ticket = pack.FindItemByType(m_TicketType, false); // Check (top level) backpack
 
-				if ( ticket == null )
+				if (ticket == null)
 				{
-					foreach ( Item item in m.Items ) // Check paperdoll
+					foreach (Item item in m.Items) // Check paperdoll
 					{
-						if ( m_TicketType.IsAssignableFrom( item.GetType() ) )
+						if (m_TicketType.IsAssignableFrom(item.GetType()))
 						{
 							ticket = item;
 							break;
@@ -176,50 +176,50 @@ namespace Server.Engines.MLQuests.Items
 					}
 				}
 
-				if ( ticket == null )
+				if (ticket == null)
 				{
-					TextDefinition.SendMessageTo( m, m_Message );
+					TextDefinition.SendMessageTo(m, m_Message);
 					return false;
 				}
 
-				if ( ticket is ITicket )
-					((ITicket)ticket).OnTicketUsed( m );
+				if (ticket is ITicket)
+					((ITicket)ticket).OnTicketUsed(m);
 			}
 
 			return true;
 		}
 
-		public override void GetProperties( ObjectPropertyList list )
+		public override void GetProperties(ObjectPropertyList list)
 		{
-			base.GetProperties( list );
+			base.GetProperties(list);
 
-			if ( m_TicketType != null )
-				list.Add( String.Format( "Required ticket: {0}", m_TicketType.Name ) );
+			if (m_TicketType != null)
+				list.Add(String.Format("Required ticket: {0}", m_TicketType.Name));
 		}
 
-		public TicketTeleporter( Serial serial )
-			: base( serial )
+		public TicketTeleporter(Serial serial)
+			: base(serial)
 		{
 		}
 
-		public override void Serialize( GenericWriter writer )
+		public override void Serialize(GenericWriter writer)
 		{
-			base.Serialize( writer );
+			base.Serialize(writer);
 
-			writer.Write( (int)0 ); // version
+			writer.Write((int)0); // version
 
-			writer.Write( m_TicketType.FullName );
-			TextDefinition.Serialize( writer, m_Message );
+			writer.Write(m_TicketType.FullName);
+			TextDefinition.Serialize(writer, m_Message);
 		}
 
-		public override void Deserialize( GenericReader reader )
+		public override void Deserialize(GenericReader reader)
 		{
-			base.Deserialize( reader );
+			base.Deserialize(reader);
 
 			int version = reader.ReadInt();
 
-			m_TicketType = ScriptCompiler.FindTypeByFullName( reader.ReadString(), false );
-			m_Message = TextDefinition.Deserialize( reader );
+			m_TicketType = ScriptCompiler.FindTypeByFullName(reader.ReadString(), false);
+			m_Message = TextDefinition.Deserialize(reader);
 		}
 	}
 }
