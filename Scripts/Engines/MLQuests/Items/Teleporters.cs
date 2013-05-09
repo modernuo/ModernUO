@@ -9,15 +9,14 @@ namespace Server.Engines.MLQuests.Items
 {
 	public class MLQuestTeleporter : Teleporter
 	{
-		private MLQuest m_RequiredQuest;
+		private Type m_QuestType;
 		private TextDefinition m_Message;
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public MLQuest RequiredQuest
+		public Type QuestType
 		{
-			get { return m_RequiredQuest; }
-			// Needs work for in-game
-			set { m_RequiredQuest = value; InvalidateProperties(); }
+			get { return m_QuestType; }
+			set { m_QuestType = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
@@ -40,10 +39,10 @@ namespace Server.Engines.MLQuests.Items
 		}
 
 		[Constructable]
-		public MLQuestTeleporter(Point3D pointDest, Map mapDest, MLQuest quest, TextDefinition message)
+		public MLQuestTeleporter(Point3D pointDest, Map mapDest, Type questType, TextDefinition message)
 			: base(pointDest, mapDest)
 		{
-			m_RequiredQuest = quest;
+			m_QuestType = questType;
 			m_Message = message;
 		}
 
@@ -52,7 +51,7 @@ namespace Server.Engines.MLQuests.Items
 			if (!base.CanTeleport(m))
 				return false;
 
-			if (m_RequiredQuest != null)
+			if (m_QuestType != null)
 			{
 				PlayerMobile pm = m as PlayerMobile;
 
@@ -61,7 +60,7 @@ namespace Server.Engines.MLQuests.Items
 
 				MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-				if (context == null || (!context.IsDoingQuest(m_RequiredQuest) && !context.HasDoneQuest(m_RequiredQuest)))
+				if (context == null || (!context.IsDoingQuest(m_QuestType) && !context.HasDoneQuest(m_QuestType)))
 				{
 					TextDefinition.SendMessageTo(m, m_Message);
 					return false;
@@ -75,8 +74,8 @@ namespace Server.Engines.MLQuests.Items
 		{
 			base.GetProperties(list);
 
-			if (m_RequiredQuest != null)
-				list.Add(String.Format("Required quest: {0}", m_RequiredQuest));
+			if (m_QuestType != null)
+				list.Add(String.Format("Required quest: {0}", m_QuestType.Name));
 		}
 
 		public MLQuestTeleporter(Serial serial)
@@ -90,7 +89,7 @@ namespace Server.Engines.MLQuests.Items
 
 			writer.Write((int)0); // version
 
-			MLQuestSystem.WriteQuestRef(writer, m_RequiredQuest);
+			writer.Write((m_QuestType != null) ? m_QuestType.FullName : null);
 			TextDefinition.Serialize(writer, m_Message);
 		}
 
@@ -100,7 +99,11 @@ namespace Server.Engines.MLQuests.Items
 
 			int version = reader.ReadInt();
 
-			m_RequiredQuest = MLQuestSystem.ReadQuestRef(reader);
+			string typeName = reader.ReadString();
+
+			if (typeName != null)
+				m_QuestType = ScriptCompiler.FindTypeByFullName(typeName, false);
+
 			m_Message = TextDefinition.Deserialize(reader);
 		}
 	}
@@ -129,17 +132,15 @@ namespace Server.Engines.MLQuests.Items
 			set { m_Message = value; }
 		}
 
-		/* set default config to prevent null ref @ serialize due to uninitialized data */
-
 		[Constructable]
 		public TicketTeleporter()
-			: this(new Point3D(6223, 336, 60), Map.Trammel)
+			: this(Point3D.Zero, null, null, null)
 		{
 		}
 
 		[Constructable]
 		public TicketTeleporter(Point3D pointDest, Map mapDest)
-			: this(pointDest, mapDest, typeof(AcidProofRope), 1074272)
+			: this(pointDest, mapDest, null, null)
 		{
 		}
 
@@ -208,7 +209,7 @@ namespace Server.Engines.MLQuests.Items
 
 			writer.Write((int)0); // version
 
-			writer.Write(m_TicketType.FullName);
+			writer.Write((m_TicketType != null) ? m_TicketType.FullName : null);
 			TextDefinition.Serialize(writer, m_Message);
 		}
 
@@ -218,7 +219,11 @@ namespace Server.Engines.MLQuests.Items
 
 			int version = reader.ReadInt();
 
-			m_TicketType = ScriptCompiler.FindTypeByFullName(reader.ReadString(), false);
+			string typeName = reader.ReadString();
+
+			if (typeName != null)
+				m_TicketType = ScriptCompiler.FindTypeByFullName(typeName, false);
+
 			m_Message = TextDefinition.Deserialize(reader);
 		}
 	}
