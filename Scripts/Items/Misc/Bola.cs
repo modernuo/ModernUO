@@ -104,10 +104,6 @@ namespace Server.Items
 
 				(to as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true);
 			}
-			else
-			{
-				to.Mount.Rider = null;
-			}
 
 			if (Core.AOS && from is PlayerMobile) /* only failsafe, attacker should already be dismounted */
 			{

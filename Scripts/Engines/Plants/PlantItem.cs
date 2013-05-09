@@ -286,14 +286,23 @@ namespace Server.Engines.Plants
 				}
 				else
 				{
-					if ( m_PlantType == PlantType.SugarCanes )
-						list.Add ( 1094703 ); // Decorative Sugar Canes
-					else if ( title == 1080528 )
-						// a decorative ~2_TYPE~
-						list.Add( 1080539, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
+					if ( title == 1080528 ) // peculiar
+					{
+						if ( m_PlantHue != PlantHue.None )
+							// a decorative [bright] ~1_COLOR~ ~2_TYPE~
+							list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t{1}", hueInfo.Name, ( m_PlantType == PlantType.SugarCanes ) ? "Sugar Canes" : string.Format( "#{0}", typeInfo.Name ) ) );
+						else if ( m_PlantType == PlantType.SugarCanes )
+							// Decorative Sugar Canes
+							list.Add( 1094703 );
+						else
+							// a decorative ~2_TYPE~
+							list.Add( 1080539, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
+					}
 					else
+					{
 						// a decorative [bright] ~1_COLOR~ ~2_TYPE~
 						list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
+					}
 				}
 			}
 			else if ( m_PlantStatus >= PlantStatus.Seed )

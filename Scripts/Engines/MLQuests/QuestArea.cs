@@ -40,21 +40,7 @@ namespace Server.Engines.MLQuests
 			m_ForceMap = forceMap;
 
 			if ( MLQuestSystem.Debug )
-			{
-				bool found = false;
-
-				foreach ( Region r in Region.Regions )
-				{
-					if ( r.Name == region && ( forceMap == null || r.Map == forceMap ) )
-					{
-						found = true;
-						break;
-					}
-				}
-
-				if ( !found )
-					Console.WriteLine( "Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", region, ( forceMap == null ) ? "-null-" : forceMap.ToString() );
-			}
+				ValidationQueue<QuestArea>.Add( this );
 		}
 
 		public bool Contains( Mobile mob )
@@ -68,6 +54,24 @@ namespace Server.Engines.MLQuests
 				return false;
 
 			return reg.IsPartOf( m_RegionName );
+		}
+
+		// Debug method
+		public void Validate()
+		{
+			bool found = false;
+
+			foreach ( Region r in Region.Regions )
+			{
+				if ( r.Name == m_RegionName && ( m_ForceMap == null || r.Map == m_ForceMap ) )
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if ( !found )
+				Console.WriteLine( "Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", m_RegionName, ( m_ForceMap == null ) ? "-null-" : m_ForceMap.ToString() );
 		}
 	}
 }

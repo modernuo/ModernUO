@@ -340,6 +340,24 @@ namespace Server.Items
 			}
 		}
 
+		/*
+		private sealed class MapDetailsNew : Packet
+		{
+			public MapDetailsNew( MapItem map ) : base ( 0xF5, 21 )
+			{
+				m_Stream.Write( (int) map.Serial );
+				m_Stream.Write( (short) 0x139D );
+				m_Stream.Write( (short) map.Bounds.Start.X );
+				m_Stream.Write( (short) map.Bounds.Start.Y );
+				m_Stream.Write( (short) map.Bounds.End.X );
+				m_Stream.Write( (short) map.Bounds.End.Y );
+				m_Stream.Write( (short) map.Width );
+				m_Stream.Write( (short) map.Height );
+				m_Stream.Write( (short) ( map.Facet == null ? 0 : map.Facet.MapID ) );
+			}
+		}
+		*/
+
 		private abstract class MapCommand : Packet
 		{
 			public MapCommand( MapItem map, int command, int number, int x, int y ) : base ( 0x56, 11 )
