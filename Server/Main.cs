@@ -509,8 +509,10 @@ namespace Server
 
 				long sample = 0;
 
-				while( m_Signal.WaitOne() )
+				while( !m_Closing )
 				{
+					m_Signal.WaitOne( 10, false );
+
 					Mobile.ProcessDeltaQueue();
 					Item.ProcessDeltaQueue();
 

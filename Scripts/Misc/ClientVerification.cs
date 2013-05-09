@@ -126,7 +126,7 @@ namespace Server.Misc
 			NetState state = e.State;
 			ClientVersion version = e.Version;
 
-			if ( state.Mobile.AccessLevel > AccessLevel.Player )
+			if ( state.Mobile == null || state.Mobile.AccessLevel > AccessLevel.Player )
 				return;
 
 			if( Required != null && version < Required && ( m_OldClientResponse == OldClientResponse.Kick ||( m_OldClientResponse == OldClientResponse.LenientKick && (DateTime.Now - state.Mobile.CreationTime) > m_AgeLeniency && state.Mobile is PlayerMobile && ((PlayerMobile)state.Mobile).GameTime > m_GameTimeLeniency )))

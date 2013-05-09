@@ -8392,11 +8392,17 @@ namespace Server
 			{
 				if( m_Name != value ) // I'm leaving out the && m_NameMod == null
 				{
+					string oldName = m_Name;
 					m_Name = value;
+					OnAfterNameChange( oldName, m_Name );
 					Delta( MobileDelta.Name );
 					InvalidateProperties();
 				}
 			}
+		}
+
+		public virtual void OnAfterNameChange( string oldName, string newName )
+		{
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
