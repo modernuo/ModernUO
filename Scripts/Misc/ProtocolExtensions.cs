@@ -13,22 +13,6 @@ namespace Server.Misc
 		public static void Initialize()
 		{
 			PacketHandlers.Register( 0xF0, 0, false, new OnPacketReceive( DecodeBundledPacket ) );
-
-			Register( 0x00, true, new OnPacketReceive( QueryPartyLocations ) );
-		}
-
-		public static void QueryPartyLocations( NetState state, PacketReader pvSrc )
-		{
-			Mobile from = state.Mobile;
-			Party party = Party.Get( from );
-
-			if ( party != null )
-			{
-				AckPartyLocations ack = new AckPartyLocations( from, party );
-
-				if ( ack.UnderlyingStream.Length > 8 )
-					state.Send( ack );
-			}
 		}
 
 		public static void Register( int packetID, bool ingame, OnPacketReceive onReceive )
@@ -76,32 +60,6 @@ namespace Server.Misc
 			EnsureCapacity( 4 + capacity );
 
 			m_Stream.Write( (byte) packetID );
-		}
-	}
-
-	public class AckPartyLocations : ProtocolExtension
-	{
-		public AckPartyLocations( Mobile from, Party party ) : base( 0x01, ((party.Members.Count - 1) * 9) + 4 )
-		{
-			for ( int i = 0; i < party.Members.Count; ++i )
-			{
-				PartyMemberInfo pmi = (PartyMemberInfo)party.Members[i];
-
-				if ( pmi == null || pmi.Mobile == from )
-					continue;
-
-				Mobile mob = pmi.Mobile;
-
-				if ( Utility.InUpdateRange( from, mob ) && from.CanSee( mob ) )
-					continue;
-
-				m_Stream.Write( (int) mob.Serial );
-				m_Stream.Write( (short) mob.X );
-				m_Stream.Write( (short) mob.Y );
-				m_Stream.Write( (byte) (mob.Map == null ? 0 : mob.Map.MapID) );
-			}
-
-			m_Stream.Write( (int) 0 );
 		}
 	}
 }
