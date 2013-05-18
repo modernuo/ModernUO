@@ -19,6 +19,16 @@
 			<!-- magincia -->
 			<rect x="3554" y="2132" width="18" height="18" />
 		</region>
+		<region type="GuardedRegion" priority="50" name="T2A Arena">
+			<!-- Minoc Cave Entrance -->
+			<rect x="2396" y="197" width="10" height="22" />
+			<!-- Minoc Cave Tunnel -->
+			<rect x="5717" y="428" width="37" height="27" />
+			<!-- T2A Arena -->
+			<rect x="6085" y="3674" width="22" height="23" />
+			<rect x="6063" y="3698" width="47" height="51" />
+			<go x="6103" y="3724" z="25" />
+		</region>
 		<!--Mondain's Legacy-->
 		<region type="TownRegion" priority="50" name="The Heartwood">
 			<rect x="6911" y="255" width="257" height="257" />
