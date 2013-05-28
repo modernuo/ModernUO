@@ -101,7 +101,7 @@ namespace Server.Engines.Plants
 			PlantSystem system = m_Plant.PlantSystem;
 			int totalSeeds = system.AvailableSeeds + system.LeftSeeds;
 
-			if ( !m_Plant.IsCrossable || totalSeeds == 0 )
+			if ( !m_Plant.Reproduces || totalSeeds == 0 )
 			{
 				AddLabel( x + 5, y, 0x21, "X" );
 			}
@@ -238,7 +238,7 @@ namespace Server.Engines.Plants
 				{
 					PlantSystem system = m_Plant.PlantSystem;
 
-					if ( !m_Plant.IsCrossable )
+					if ( !m_Plant.Reproduces )
 					{
 						m_Plant.LabelTo( from, 1053060 ); // Mutated plants do not produce seeds!
 					}

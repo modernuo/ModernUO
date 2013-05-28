@@ -33,6 +33,12 @@ namespace Server.Engines.Plants
 
 	public class PlantItem : Item, ISecurable
 	{
+		/*
+		 * Clients 7.0.12.0+ expect a container type in the plant label.
+		 * To support older (and only older) clients, change this to false.
+		 */
+		private static readonly bool ShowContainerType = true;
+
 		private PlantSystem m_PlantSystem;
 
 		private PlantStatus m_PlantStatus;
@@ -53,21 +59,17 @@ namespace Server.Engines.Plants
 
 		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
 
-		public override int LabelNumber
+		public override void OnSingleClick( Mobile from )
 		{
-			get
-			{
-				if ( m_PlantStatus >= PlantStatus.DeadTwigs )
-					return base.LabelNumber;
-				else if ( m_PlantStatus >= PlantStatus.DecorativePlant )
-					return 1061924; // a decorative plant
-				else if ( m_PlantStatus >= PlantStatus.FullGrownPlant )
-					return PlantTypeInfo.GetInfo( m_PlantType ).Name;
-				else
-					return 1029913; // plant bowl
-			}
+			if ( m_PlantStatus >= PlantStatus.DeadTwigs )
+				LabelTo( from, LabelNumber );
+			else if ( m_PlantStatus >= PlantStatus.DecorativePlant )
+				LabelTo( from, 1061924 ); // a decorative plant
+			else if ( m_PlantStatus >= PlantStatus.FullGrownPlant )
+				LabelTo( from, PlantTypeInfo.GetInfo( m_PlantType ).Name );
+			else
+				LabelTo( from, 1029913 ); // plant bowl
 		}
-
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public PlantStatus PlantStatus
@@ -176,6 +178,12 @@ namespace Server.Engines.Plants
 			get { return PlantHueInfo.IsCrossable( this.PlantHue ) && PlantTypeInfo.IsCrossable( this.PlantType ); }
 		}
 
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Reproduces
+		{
+			get { return PlantHueInfo.CanReproduce( this.PlantHue ) && PlantTypeInfo.CanReproduce( this.PlantType ); }
+		}
+
 		private static ArrayList m_Instances = new ArrayList();
 
 		public static ArrayList Plants{ get{ return m_Instances; } }
@@ -219,6 +227,11 @@ namespace Server.Engines.Plants
 				return 1026951; // dirt
 		}
 
+		public int GetLocalizedContainerType()
+		{
+			return 1150435; // bowl
+		}
+
 		private void Update()
 		{
 			if ( m_PlantStatus >= PlantStatus.DeadTwigs )
@@ -251,103 +264,55 @@ namespace Server.Engines.Plants
 			{
 				base.AddNameProperty( list );
 			}
-			else if ( m_PlantStatus >= PlantStatus.FullGrownPlant )
+			else if ( m_PlantStatus < PlantStatus.Seed )
 			{
-				PlantHueInfo hueInfo = PlantHueInfo.GetInfo( m_PlantHue );
-				PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_PlantType );
+				string args;
 
-				int title = PlantTypeInfo.GetBonsaiTitle( m_PlantType );
-				if ( title == 0 ) // Not a bonsai
-					title = hueInfo.Name;
-
-				if ( m_PlantStatus < PlantStatus.DecorativePlant )
-				{
-					if ( m_PlantType == PlantType.SugarCanes )
-					{
-						string args = string.Format( "#{0}", m_PlantSystem.GetLocalizedHealth() );
-						list.Add ( 1094702, args ); // ~1_HEALTH~ Sugar Canes
-					}
-					else
-					{
-
-						string args = string.Format( "#{0}\t#{1}\t#{2}", m_PlantSystem.GetLocalizedHealth(), title, typeInfo.Name );
-
-						if ( typeInfo.ContainsPlant )
-						{
-							// a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~
-							list.Add( hueInfo.IsBright() ? 1061891 : 1061889, args );
-						}
-						else
-						{
-							// a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
-							list.Add( hueInfo.IsBright() ? 1061892 : 1061890, args );
-						}
-					}
-				}
+				if ( ShowContainerType )
+					args = String.Format( "#{0}\t#{1}", GetLocalizedContainerType(), m_PlantSystem.GetLocalizedDirtStatus() );
 				else
-				{
-					if ( title == 1080528 ) // peculiar
-					{
-						if ( m_PlantHue != PlantHue.None )
-							// a decorative [bright] ~1_COLOR~ ~2_TYPE~
-							list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t{1}", hueInfo.Name, ( m_PlantType == PlantType.SugarCanes ) ? "Sugar Canes" : string.Format( "#{0}", typeInfo.Name ) ) );
-						else if ( m_PlantType == PlantType.SugarCanes )
-							// Decorative Sugar Canes
-							list.Add( 1094703 );
-						else
-							// a decorative ~2_TYPE~
-							list.Add( 1080539, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
-					}
-					else
-					{
-						// a decorative [bright] ~1_COLOR~ ~2_TYPE~
-						list.Add( hueInfo.IsBright() ? 1074267 : 1070973, string.Format( "#{0}\t#{1}", title, typeInfo.Name ) );
-					}
-				}
-			}
-			else if ( m_PlantStatus >= PlantStatus.Seed )
-			{
-				PlantHueInfo hueInfo = PlantHueInfo.GetInfo( m_PlantHue );
+					args = String.Format( "#{0}", m_PlantSystem.GetLocalizedDirtStatus() );
 
-				int title = PlantTypeInfo.GetBonsaiTitle( m_PlantType );
-				if ( title == 0 ) // Not a bonsai
-					title = hueInfo.Name;
-
-				string args = string.Format( "#{0}\t#{1}\t#{2}", m_PlantSystem.GetLocalizedDirtStatus(), m_PlantSystem.GetLocalizedHealth(), title );
-
-				// 7.0.12.0 cliloc change
-				args = String.Concat( "#1150435\t", args ); // TODO: Change to plant container type when implemented
-
-				if ( m_ShowType )
-				{
-					PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_PlantType );
-					args += "\t#" + typeInfo.Name.ToString();
-
-					if ( typeInfo.ContainsPlant && m_PlantStatus == PlantStatus.Plant )
-					{
-						// a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
-						list.Add( hueInfo.IsBright() ? 1060832 : 1060831, args );
-					}
-					else
-					{
-						// a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~ ~6_val~
-						list.Add( hueInfo.IsBright() ? 1061887 : 1061888, args + "\t#" + GetLocalizedPlantStatus().ToString() );
-					}
-				}
-				else
-				{
-					// a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
-					list.Add( hueInfo.IsBright() ? 1060832 : 1060831, args + "\t#" + GetLocalizedPlantStatus().ToString() );
-				}
+				list.Add( 1060830, args ); // a ~1_val~ of ~2_val~ dirt
 			}
 			else
 			{
-				string args = "#" + m_PlantSystem.GetLocalizedDirtStatus();
+				PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo( m_PlantType );
+				PlantHueInfo hueInfo = PlantHueInfo.GetInfo( m_PlantHue );
 
-				// 7.0.12.0 cliloc change
-				args = String.Concat( "#1150435\t", args ); // TODO: Change to plant container type when implemented
+				if ( m_PlantStatus >= PlantStatus.DecorativePlant )
+				{
+					list.Add( typeInfo.GetPlantLabelDecorative( hueInfo ), String.Format( "#{0}\t#{1}", hueInfo.Name, typeInfo.Name ) );
+				}
+				else if ( m_PlantStatus >= PlantStatus.FullGrownPlant )
+				{
+					list.Add( typeInfo.GetPlantLabelFullGrown( hueInfo ), String.Format( "#{0}\t#{1}\t#{2}", m_PlantSystem.GetLocalizedHealth(), hueInfo.Name, typeInfo.Name ) );
+				}
+				else
+				{
+					string args;
 
-				list.Add( 1060830, args ); // a ~1_val~ of ~2_val~ dirt
+					if ( ShowContainerType )
+						args = String.Format( "#{0}\t#{1}\t#{2}", GetLocalizedContainerType(), m_PlantSystem.GetLocalizedDirtStatus(), m_PlantSystem.GetLocalizedHealth() );
+					else
+						args = String.Format( "#{0}\t#{1}", m_PlantSystem.GetLocalizedDirtStatus(), m_PlantSystem.GetLocalizedHealth() );
+
+					if ( m_ShowType )
+					{
+						args += String.Format( "\t#{0}\t#{1}\t#{2}", hueInfo.Name, typeInfo.Name, GetLocalizedPlantStatus() );
+
+						if ( m_PlantStatus == PlantStatus.Plant )
+							list.Add( typeInfo.GetPlantLabelPlant( hueInfo ), args );
+						else
+							list.Add( typeInfo.GetPlantLabelSeed( hueInfo ), args );
+					}
+					else
+					{
+						args += String.Format( "\t#{0}\t#{1}", ( typeInfo.PlantCategory == PlantCategory.Default ) ? hueInfo.Name : (int)typeInfo.PlantCategory, GetLocalizedPlantStatus() );
+
+						list.Add( hueInfo.IsBright() ? 1060832 : 1060831, args ); // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
+					}
+				}
 			}
 		}
 
@@ -361,9 +326,9 @@ namespace Server.Engines.Plants
 		{
 			if ( m_PlantStatus >= PlantStatus.DecorativePlant )
 				return;
-			
-			Point3D loc = this.GetWorldLocation();	
-			
+
+			Point3D loc = this.GetWorldLocation();
+
 			if ( !from.InLOS( loc ) || !from.InRange( loc, 2 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 1019045 ); // I can't reach that.
@@ -571,7 +536,7 @@ namespace Server.Engines.Plants
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
 
 			writer.Write( (int) m_Level );
 
@@ -592,6 +557,7 @@ namespace Server.Engines.Plants
 
 			switch ( version )
 			{
+				case 2:
 				case 1:
 				{
 					m_Level = (SecureLevel)reader.ReadInt();
@@ -609,6 +575,9 @@ namespace Server.Engines.Plants
 
 					if ( m_PlantStatus < PlantStatus.DecorativePlant )
 						m_PlantSystem = new PlantSystem( this, reader );
+
+					if ( version < 2 && PlantHueInfo.IsCrossable( m_PlantHue ) )
+						m_PlantHue |= PlantHue.Reproduces;
 
 					break;
 				}

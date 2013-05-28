@@ -7,11 +7,11 @@ namespace Server.Engines.Plants
 	[Flags]
 	public enum PlantHue
 	{
-		Plain			= 0x1 | Crossable,
+		Plain			= 0x1 | Crossable | Reproduces,
 
-		Red				= 0x2 | Crossable,
-		Blue			= 0x4 | Crossable,
-		Yellow			= 0x8 | Crossable,
+		Red				= 0x2 | Crossable | Reproduces,
+		Blue			= 0x4 | Crossable | Reproduces,
+		Yellow			= 0x8 | Crossable | Reproduces,
 
 		BrightRed		= Red | Bright,
 		BrightBlue		= Blue | Bright,
@@ -33,6 +33,7 @@ namespace Server.Engines.Plants
 		FireRed			= 0x200,
 
 		None			= 0,
+		Reproduces		= 0x2000000,
 		Crossable		= 0x4000000,
 		Bright			= 0x8000000
 	}
@@ -85,6 +86,11 @@ namespace Server.Engines.Plants
 				case 2: return PlantHue.Blue;
 				default: return PlantHue.Yellow;
 			}
+		}
+
+		public static bool CanReproduce( PlantHue plantHue )
+		{
+			return (plantHue & PlantHue.Reproduces) != PlantHue.None;
 		}
 
 		public static bool IsCrossable( PlantHue plantHue )

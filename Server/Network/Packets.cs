@@ -4389,6 +4389,8 @@ namespace Server.Network
 
 		public void OnSend()
 		{
+			Core.Set();
+
 			if ( (m_State & (State.Acquired | State.Static)) == 0 )
 				Free();
 		}

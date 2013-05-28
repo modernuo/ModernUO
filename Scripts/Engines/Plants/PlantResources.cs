@@ -15,7 +15,8 @@ namespace Server.Engines.Plants
 				new PlantResourceInfo( PlantType.Bulrushes, PlantHue.BrightOrange, typeof( OrangePetals ) ),
 				new PlantResourceInfo( PlantType.PampasGrass, PlantHue.BrightOrange, typeof( OrangePetals ) ),
 				new PlantResourceInfo( PlantType.SnakePlant, PlantHue.BrightGreen, typeof( GreenThorns ) ),
-				new PlantResourceInfo( PlantType.BarrelCactus, PlantHue.BrightGreen, typeof( GreenThorns ) )
+				new PlantResourceInfo( PlantType.BarrelCactus, PlantHue.BrightGreen, typeof( GreenThorns ) ),
+				new PlantResourceInfo( PlantType.CocoaTree, PlantHue.Plain, typeof( CocoaPulp ) )
 			};
 
 		public static PlantResourceInfo GetInfo( PlantType plantType, PlantHue plantHue )

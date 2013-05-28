@@ -1743,6 +1743,11 @@ namespace Server.Multis
 
 		#region High Seas
 
+		public override bool AllowsRelativeDrop
+		{
+			get { return true; }
+		}
+
 		/*
 		 * OSI sends the 0xF7 packet instead, holding 0xF3 packets
 		 * for every entity on the boat. Though, the regular 0xF3

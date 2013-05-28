@@ -1012,11 +1012,28 @@ namespace Server.Network
 			Mobile from = state.Mobile;
 
 			if ( dest.IsMobile )
+			{
 				from.Drop( World.FindMobile( dest ), loc );
+			}
 			else if ( dest.IsItem )
-				from.Drop( World.FindItem( dest ), loc );
+			{
+				Item item = World.FindItem( dest );
+
+				if ( item is BaseMulti && ((BaseMulti)item).AllowsRelativeDrop )
+				{
+					loc.m_X += item.X;
+					loc.m_Y += item.Y;
+					from.Drop( loc );
+				}
+				else
+				{
+					from.Drop( item, loc );
+				}
+			}
 			else
+			{
 				from.Drop( loc );
+			}
 		}
 
 		public static void DropReq6017( NetState state, PacketReader pvSrc )
@@ -1033,11 +1050,28 @@ namespace Server.Network
 			Mobile from = state.Mobile;
 
 			if ( dest.IsMobile )
+			{
 				from.Drop( World.FindMobile( dest ), loc );
+			}
 			else if ( dest.IsItem )
-				from.Drop( World.FindItem( dest ), loc );
+			{
+				Item item = World.FindItem( dest );
+
+				if ( item is BaseMulti && ((BaseMulti)item).AllowsRelativeDrop )
+				{
+					loc.m_X += item.X;
+					loc.m_Y += item.Y;
+					from.Drop( loc );
+				}
+				else
+				{
+					from.Drop( item, loc );
+				}
+			}
 			else
+			{
 				from.Drop( loc );
+			}
 		}
 
 		public static void ConfigurationFile( NetState state, PacketReader pvSrc )

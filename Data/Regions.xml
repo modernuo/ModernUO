@@ -21,12 +21,12 @@
 		</region>
 		<region type="GuardedRegion" priority="50" name="T2A Arena">
 			<!-- Minoc Cave Entrance -->
-			<rect x="2396" y="197" width="10" height="22" />
+			<rect x="2396" y="197" width="11" height="23" />
 			<!-- Minoc Cave Tunnel -->
-			<rect x="5717" y="428" width="37" height="27" />
+			<rect x="5717" y="428" width="38" height="28" />
 			<!-- T2A Arena -->
-			<rect x="6085" y="3674" width="22" height="23" />
-			<rect x="6063" y="3698" width="47" height="51" />
+			<rect x="6085" y="3674" width="23" height="24" />
+			<rect x="6063" y="3698" width="48" height="52" />
 			<go x="6103" y="3724" z="25" />
 		</region>
 		<!--Mondain's Legacy-->

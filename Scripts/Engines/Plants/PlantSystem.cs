@@ -580,7 +580,7 @@ namespace Server.Engines.Plants
 			}
 			else
 			{
-				if ( Pollinated && LeftSeeds > 0 && m_Plant.IsCrossable )
+				if ( Pollinated && LeftSeeds > 0 && m_Plant.Reproduces )
 				{
 					LeftSeeds--;
 					AvailableSeeds++;
@@ -643,7 +643,7 @@ namespace Server.Engines.Plants
 
 		public void Save( GenericWriter writer )
 		{
-			writer.Write( (int) 1 ); // version
+			writer.Write( (int) 2 ); // version
 
 			writer.Write( (bool) m_FertileDirt );
 
@@ -707,6 +707,9 @@ namespace Server.Engines.Plants
 
 			m_AvailableResources = reader.ReadInt();
 			m_LeftResources = reader.ReadInt();
+
+			if ( version < 2 && PlantHueInfo.IsCrossable( m_SeedHue ) )
+				m_SeedHue |= PlantHue.Reproduces;
 		}
 	}
 }

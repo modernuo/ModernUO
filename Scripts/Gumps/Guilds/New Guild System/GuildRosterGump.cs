@@ -57,9 +57,9 @@ namespace Server.Guilds
 				if ( aState == null && bState == null )
 					return x.LastOnline.CompareTo( y.LastOnline );
 				else if ( aState == null )
-					return 1;
-				else if ( bState == null )
 					return -1;
+				else if ( bState == null )
+					return 1;
 				else
 					return 0;
 			}
@@ -117,7 +117,7 @@ namespace Server.Guilds
 				new InfoField<PlayerMobile>( 1062953, 150, GuildRosterGump.TitleComparer.Instance	)	//Guild Title
 			};
 
-		public GuildRosterGump( PlayerMobile pm, Guild g ) : this( pm, g, GuildRosterGump.LastOnComparer.Instance, true, "", 0 )
+		public GuildRosterGump( PlayerMobile pm, Guild g ) : this( pm, g, GuildRosterGump.LastOnComparer.Instance, false, "", 0 )
 		{
 		}
 

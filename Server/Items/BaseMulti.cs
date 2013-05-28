@@ -88,6 +88,11 @@ namespace Server.Items
 			}
 		}
 
+		public virtual bool AllowsRelativeDrop
+		{
+			get { return false; }
+		}
+
 		public override int GetMaxUpdateRange()
 		{
 			return 22;
