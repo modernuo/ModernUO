@@ -202,6 +202,11 @@ namespace Server
 			get { return m_Expansion >= Expansion.SA; }
 		}
 
+		public static bool HS
+		{
+			get { return m_Expansion >= Expansion.HS; }
+		}
+
 		#endregion
 
 		public static string ExePath

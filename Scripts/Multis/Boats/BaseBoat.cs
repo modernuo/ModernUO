@@ -436,8 +436,7 @@ namespace Server.Multis
 		 * 'walking' in piloting mode has a 1s interval, speed 0x2
 		 */
 
-		// Legacy clients will continue to see the old-style movement, but speeds are adjusted
-		private static bool NewBoatMovement = true;
+		private static bool NewBoatMovement { get { return Core.HS; } }
 
 		private static TimeSpan SlowInterval = TimeSpan.FromSeconds( NewBoatMovement ? 0.50 : 0.75 );
 		private static TimeSpan FastInterval = TimeSpan.FromSeconds( NewBoatMovement ? 0.25 : 0.75 );

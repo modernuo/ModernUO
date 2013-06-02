@@ -902,12 +902,63 @@ namespace Server.Network
 	{
 		None = 0x00,
 		Disabled = 0x01,
+		Arrow = 0x02,
+		Highlighted = 0x04,
 		Colored = 0x20
 	}
 
 	public sealed class DisplayContextMenu : Packet
 	{
 		public DisplayContextMenu( ContextMenu menu ) : base( 0xBF )
+		{
+			ContextMenuEntry[] entries = menu.Entries;
+
+			int length = (byte) entries.Length;
+
+			this.EnsureCapacity( 12 + (length * 8) );
+
+			m_Stream.Write( (short) 0x14 );
+			m_Stream.Write( (short) 0x02 );
+
+			IEntity target = menu.Target as IEntity;
+
+			m_Stream.Write( (int) ( target == null ? Serial.MinusOne : target.Serial ) );
+
+			m_Stream.Write( (byte) length );
+
+			Point3D p;
+
+			if ( target is Mobile )
+				p = target.Location;
+			else if ( target is Item )
+				p = ((Item)target).GetWorldLocation();
+			else
+				p = Point3D.Zero;
+
+			for ( int i = 0; i < length; ++i )
+			{
+				ContextMenuEntry e = entries[i];
+
+				m_Stream.Write( (int) e.Number );
+				m_Stream.Write( (short) i );
+
+				int range = e.Range;
+
+				if ( range == -1 )
+					range = 18;
+
+				CMEFlags flags = (e.Enabled && menu.From.InRange( p, range )) ? CMEFlags.None : CMEFlags.Disabled;
+
+				flags |= e.Flags;
+
+				m_Stream.Write( (short) flags );
+			}
+		}
+	}
+
+	public sealed class DisplayContextMenuOld : Packet
+	{
+		public DisplayContextMenuOld( ContextMenu menu ) : base( 0xBF )
 		{
 			ContextMenuEntry[] entries = menu.Entries;
 
@@ -938,7 +989,7 @@ namespace Server.Network
 				ContextMenuEntry e = entries[i];
 
 				m_Stream.Write( (short) i );
-				m_Stream.Write( (ushort) e.Number );
+				m_Stream.Write( (ushort) ( e.Number - 3000000 ) );
 
 				int range = e.Range;
 
@@ -3805,9 +3856,9 @@ namespace Server.Network
 	public enum ThirdPartyFeature : ulong
 	{
 		FilterWeather	= 1 << 0,
-		FilterLight	= 1 << 1,
+		FilterLight		= 1 << 1,
 
-		SmartTarget	= 1 << 2,
+		SmartTarget		= 1 << 2,
 		RangedTarget	= 1 << 3,
 
 		AutoOpenDoors	= 1 << 4,
@@ -3821,14 +3872,24 @@ namespace Server.Network
 
 		UseOnceAgent	= 1 << 9,
 		RestockAgent	= 1 << 10,
-		SellAgent	= 1 << 11,
-		BuyAgent	= 1 << 12,
+		SellAgent		= 1 << 11,
+		BuyAgent		= 1 << 12,
 
 		PotionHotkeys	= 1 << 13,
 
 		RandomTargets	= 1 << 14,
 		ClosestTargets	= 1 << 15, // All closest target hotkeys
 		OverheadHealth	= 1 << 16, // Health and Mana/Stam messages shown over player's heads
+
+		AutolootAgent	= 1 << 17,
+		BoneCutterAgent	= 1 << 18,
+		AdvancedMacros	= 1 << 19,
+		AutoRemount		= 1 << 20,
+		AutoBandage		= 1 << 21,
+		BuffChecks		= 1 << 22, // Buff bar checks for macros
+		FilterSeason	= 1 << 23,
+
+		All				= ulong.MaxValue
 	}
 
 	public static class FeatureProtection
@@ -3930,15 +3991,13 @@ namespace Server.Network
 				m_Stream.UnderlyingStream.Flush();
 
 				byte[] hashCode = m_MD5Provider.ComputeHash( m_Stream.UnderlyingStream.GetBuffer(), 0, (int) m_Stream.UnderlyingStream.Length );
-
-				Random rnd = new Random();
-				byte[] buffer = new byte[29];
+				byte[] buffer = new byte[28];
 
 				for ( int i = 0; i < count; ++i )
 				{
-					rnd.NextBytes( buffer );
+					Utility.RandomBytes( buffer );
 
-					m_Stream.Seek( 34 + ( i * 60 ), SeekOrigin.Begin );
+					m_Stream.Seek( 35 + ( i * 60 ), SeekOrigin.Begin );
 					m_Stream.Write( buffer, 0, buffer.Length );
 				}
 
@@ -4025,15 +4084,13 @@ namespace Server.Network
 				m_Stream.UnderlyingStream.Flush();
 
 				byte[] hashCode = m_MD5Provider.ComputeHash( m_Stream.UnderlyingStream.GetBuffer(), 0, (int) m_Stream.UnderlyingStream.Length );
-
-				Random rnd = new Random();
-				byte[] buffer = new byte[29];
+				byte[] buffer = new byte[28];
 
 				for ( int i = 0; i < count; ++i )
 				{
-					rnd.NextBytes( buffer );
+					Utility.RandomBytes( buffer );
 
-					m_Stream.Seek( 34 + ( i * 60 ), SeekOrigin.Begin );
+					m_Stream.Seek( 35 + ( i * 60 ), SeekOrigin.Begin );
 					m_Stream.Write( buffer, 0, buffer.Length );
 				}
 

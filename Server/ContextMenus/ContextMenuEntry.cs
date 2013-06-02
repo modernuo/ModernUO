@@ -123,7 +123,11 @@ namespace Server.ContextMenus
 		/// </param>
 		public ContextMenuEntry( int number, int range )
 		{
-			m_Number = number;
+			if ( number <= 0x7FFF ) // Legacy code support
+				m_Number = 3000000 + number;
+			else
+				m_Number = number;
+
 			m_Range = range;
 			m_Enabled = true;
 			m_Color = 0xFFFF;

@@ -32,7 +32,8 @@ namespace Server
 		AOS,
 		SE,
 		ML,
-		SA
+		SA,
+		HS
 	}
 
 	[Flags]
@@ -83,7 +84,8 @@ namespace Server
 		ExpansionAOS		= ExpansionLBR	| AOS	| Unk7,
 		ExpansionSE		= ExpansionAOS	| SE,
 		ExpansionML		= ExpansionSE	| ML	| Unk2,
-		ExpansionSA		= ExpansionML	| SA	| Gothic	| Rustic
+		ExpansionSA		= ExpansionML	| SA	| Gothic	| Rustic,
+		ExpansionHS		= ExpansionSA
 	}
 
 	[Flags]
@@ -113,7 +115,8 @@ namespace Server
 		ExpansionAOS		= ContextMenus	| AOS,
 		ExpansionSE		= ExpansionAOS	| SE,
 		ExpansionML		= ExpansionSE	| ML,
-		ExpansionSA		= ExpansionML
+		ExpansionSA		= ExpansionML,
+		ExpansionHS		= ExpansionSA
 	}
 
 	public class ExpansionInfo
@@ -129,7 +132,8 @@ namespace Server
 				new ExpansionInfo( 5, "Age of Shadows",		ClientFlags.Malas,		FeatureFlags.ExpansionAOS,	CharacterListFlags.ExpansionAOS,	0x0000 ),
 				new ExpansionInfo( 6, "Samurai Empire",		ClientFlags.Tokuno,		FeatureFlags.ExpansionSE,	CharacterListFlags.ExpansionSE,		0x00C0 ), // 0x20 | 0x80
 				new ExpansionInfo( 7, "Mondain's Legacy",	new ClientVersion( "5.0.0a" ),	FeatureFlags.ExpansionML,	CharacterListFlags.ExpansionML,		0x02C0 ), // 0x20 | 0x80 | 0x200
-				new ExpansionInfo( 8, "Stygian Abyss",		ClientFlags.TerMur,		FeatureFlags.ExpansionSA,	CharacterListFlags.ExpansionSA,		0xD02C0 ) // 0x20 | 0x80 | 0x200 | 0x10000 | 0x40000 | 0x80000
+				new ExpansionInfo( 8, "Stygian Abyss",		ClientFlags.TerMur,		FeatureFlags.ExpansionSA,	CharacterListFlags.ExpansionSA,		0xD02C0 ), // 0x20 | 0x80 | 0x200 | 0x10000 | 0x40000 | 0x80000
+				new ExpansionInfo( 9, "High Seas",		new ClientVersion( "7.0.9.0" ),		FeatureFlags.ExpansionHS,	CharacterListFlags.ExpansionHS,		0xD02C0 ) // 0x20 | 0x80 | 0x200 | 0x10000 | 0x40000 | 0x80000
 			};
 
 		private string m_Name;

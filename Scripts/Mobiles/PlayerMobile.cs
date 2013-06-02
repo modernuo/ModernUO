@@ -46,7 +46,8 @@ namespace Server.Mobiles
 		Young					= 0x00000400,
 		AcceptGuildInvites		= 0x00000800,
 		DisplayChampionTitle	= 0x00001000,
-		HasStatReward			= 0x00002000
+		HasStatReward			= 0x00002000,
+		RefuseTrades			= 0x00004000
 	}
 
 	public enum NpcGuild
@@ -394,6 +395,13 @@ namespace Server.Mobiles
 		{
 			get{ return GetFlag( PlayerFlag.HasStatReward ); }
 			set{ SetFlag( PlayerFlag.HasStatReward, value ); }
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool RefuseTrades
+		{
+			get{ return GetFlag( PlayerFlag.RefuseTrades ); }
+			set{ SetFlag( PlayerFlag.RefuseTrades, value ); }
 		}
 		#endregion
 
@@ -1580,12 +1588,18 @@ namespace Server.Mobiles
 				{
 					if ( InsuranceEnabled )
 					{
+						if ( Core.SA )
+							list.Add( new CallbackEntry( 1114299, new ContextCallback( OpenItemInsuranceMenu ) ) ); // Open Item Insurance Menu
+
 						list.Add( new CallbackEntry( 6201, new ContextCallback( ToggleItemInsurance ) ) ); // Toggle Item Insurance
 
-						if ( AutoRenewInsurance )
-							list.Add( new CallbackEntry( 6202, new ContextCallback( CancelRenewInventoryInsurance ) ) ); // Cancel Renewing Inventory Insurance
-						else
-							list.Add( new CallbackEntry( 6200, new ContextCallback( AutoRenewInventoryInsurance ) ) ); // Auto Renew Inventory Insurance
+						if ( !Core.SA )
+						{
+							if ( AutoRenewInsurance )
+								list.Add( new CallbackEntry( 6202, new ContextCallback( CancelRenewInventoryInsurance ) ) ); // Cancel Renewing Inventory Insurance
+							else
+								list.Add( new CallbackEntry( 6200, new ContextCallback( AutoRenewInventoryInsurance ) ) ); // Auto Renew Inventory Insurance
+						}
 					}
 
 					if ( MLQuestSystem.Enabled )
@@ -1608,6 +1622,9 @@ namespace Server.Mobiles
 
 				if( Alive )
 					list.Add( new CallbackEntry( 6210, new ContextCallback( ToggleChampionTitleDisplay ) ) );
+
+				if ( Core.HS )
+					list.Add( new CallbackEntry( RefuseTrades ? 1154112 : 1154113, new ContextCallback( ToggleTrades ) ) ); // Allow Trades / Refuse Trades
 			}
 			if ( from != this )
 			{
@@ -1654,6 +1671,11 @@ namespace Server.Mobiles
 
 		#region Insurance
 
+		private static int GetInsuranceCost( Item item )
+		{
+			return 600; // TODO
+		}
+
 		private void ToggleItemInsurance()
 		{
 			if ( !CheckAlive() )
@@ -1665,10 +1687,7 @@ namespace Server.Mobiles
 
 		private bool CanInsure( Item item )
 		{
-			if ( (( item is Container) && !(item is BaseQuiver)) || item is BagOfSending || item is KeyRing )
-				return false;
-
-			if ( (item is Spellbook && item.LootType == LootType.Blessed)|| item is Runebook || item is PotionKeg || item is Sigil )
+			if ( ( item is Container && !( item is BaseQuiver ) ) || item is BagOfSending || item is KeyRing || item is PotionKeg || item is Sigil )
 				return false;
 
 			if ( item.Stackable )
@@ -1680,6 +1699,12 @@ namespace Server.Mobiles
 			if ( item.ItemID == 0x204E ) // death shroud
 				return false;
 
+			if ( item.LootType == LootType.Blessed || item.LootType == LootType.Newbied || item.BlessedFor == this )
+			{
+				//SendLocalizedMessage( 1060870, "", 0x23 ); // That item is blessed and does not need to be insured
+				return false;
+			}
+
 			return true;
 		}
 
@@ -1688,11 +1713,16 @@ namespace Server.Mobiles
 			if ( !CheckAlive() )
 				return;
 
-			Item item = obj as Item;
+			ToggleItemInsurance_Callback( from, obj as Item, true );
+		}
 
+		private void ToggleItemInsurance_Callback( Mobile from, Item item, bool target )
+		{
 			if ( item == null || !item.IsChildOf( this ) )
 			{
-				BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+				if ( target )
+					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+
 				SendLocalizedMessage( 1060871, "", 0x23 ); // You can only insure items that you have equipped or that are in your backpack
 			}
 			else if ( item.Insured )
@@ -1701,27 +1731,28 @@ namespace Server.Mobiles
 
 				SendLocalizedMessage( 1060874, "", 0x35 ); // You cancel the insurance on the item
 
-				BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
-				SendLocalizedMessage( 1060868, "", 0x23 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
+				if ( target )
+				{
+					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+					SendLocalizedMessage( 1060868, "", 0x23 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
+				}
 			}
 			else if ( !CanInsure( item ) )
 			{
-				BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
-				SendLocalizedMessage( 1060869, "", 0x23 ); // You cannot insure that
-			}
-			else if ( item.LootType == LootType.Blessed || item.LootType == LootType.Newbied || item.BlessedFor == from )
-			{
-				BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
-				SendLocalizedMessage( 1060870, "", 0x23 ); // That item is blessed and does not need to be insured
+				if ( target )
+					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+
 				SendLocalizedMessage( 1060869, "", 0x23 ); // You cannot insure that
 			}
 			else
 			{
 				if ( !item.PayedInsurance )
 				{
-					if ( Banker.Withdraw( from, 600 ) )
+					int cost = GetInsuranceCost( item );
+
+					if ( Banker.Withdraw( from, cost ) )
 					{
-						SendLocalizedMessage( 1060398, "600" ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+						SendLocalizedMessage( 1060398, cost.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
 						item.PayedInsurance = true;
 					}
 					else
@@ -1735,8 +1766,11 @@ namespace Server.Mobiles
 
 				SendLocalizedMessage( 1060873, "", 0x23 ); // You have insured the item
 
-				BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
-				SendLocalizedMessage( 1060868, "", 0x23 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
+				if ( target )
+				{
+					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+					SendLocalizedMessage( 1060868, "", 0x23 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
+				}
 			}
 		}
 
@@ -1757,7 +1791,7 @@ namespace Server.Mobiles
 			if( Core.SE )
 			{
 				if( !HasGump( typeof( CancelRenewInventoryInsuranceGump ) ) )
-					SendGump( new CancelRenewInventoryInsuranceGump( this ) );
+					SendGump( new CancelRenewInventoryInsuranceGump( this, null ) );
 			}
 			else
 			{
@@ -1769,10 +1803,12 @@ namespace Server.Mobiles
 		private class CancelRenewInventoryInsuranceGump : Gump
 		{
 			private PlayerMobile m_Player;
+			private ItemInsuranceMenuGump m_InsuranceGump;
 
-			public CancelRenewInventoryInsuranceGump( PlayerMobile player ) : base( 250, 200 )
+			public CancelRenewInventoryInsuranceGump( PlayerMobile player, ItemInsuranceMenuGump insuranceGump ) : base( 250, 200 )
 			{
 				m_Player = player;
+				m_InsuranceGump = insuranceGump;
 
 				AddBackground( 0, 0, 240, 142, 0x13BE );
 				AddImageTiled( 6, 6, 228, 100, 0xA40 );
@@ -1801,6 +1837,265 @@ namespace Server.Mobiles
 				else
 				{
 					m_Player.SendLocalizedMessage( 1042021 ); // Cancelled.
+				}
+
+				if ( m_InsuranceGump != null )
+					m_Player.SendGump( m_InsuranceGump.NewInstance() );
+			}
+		}
+
+		private void OpenItemInsuranceMenu()
+		{
+			if ( !CheckAlive() )
+				return;
+
+			List<Item> items = new List<Item>();
+
+			foreach ( Item item in Items )
+			{
+				if ( DisplayInItemInsuranceGump( item ) )
+					items.Add( item );
+			}
+
+			Container pack = Backpack;
+
+			if ( pack != null )
+				items.AddRange( pack.FindItemsByType<Item>( true, DisplayInItemInsuranceGump ) );
+
+			// TODO: Investigate item sorting
+
+			CloseGump( typeof( ItemInsuranceMenuGump ) );
+
+			if ( items.Count == 0 )
+				SendLocalizedMessage( 1114915, "", 0x35 ); // None of your current items meet the requirements for insurance.
+			else
+				SendGump( new ItemInsuranceMenuGump( this, items.ToArray() ) );
+		}
+
+		private bool DisplayInItemInsuranceGump( Item item )
+		{
+			return ( item.Insured || CanInsure( item ) );
+		}
+
+		private class ItemInsuranceMenuGump : Gump
+		{
+			private PlayerMobile m_From;
+			private Item[] m_Items;
+			private bool[] m_Insure;
+			private int m_Page;
+
+			public ItemInsuranceMenuGump( PlayerMobile from, Item[] items )
+				: this( from, items, null, 0 )
+			{
+			}
+
+			public ItemInsuranceMenuGump( PlayerMobile from, Item[] items, bool[] insure, int page )
+				: base( 25, 50 )
+			{
+				m_From = from;
+				m_Items = items;
+
+				if ( insure == null )
+				{
+					insure = new bool[items.Length];
+
+					for ( int i = 0; i < items.Length; ++i )
+						insure[i] = items[i].Insured;
+				}
+
+				m_Insure = insure;
+				m_Page = page;
+
+				AddPage( 0 );
+
+				AddBackground( 0, 0, 520, 510, 0x13BE );
+				AddImageTiled( 10, 10, 500, 30, 0xA40 );
+				AddImageTiled( 10, 50, 500, 355, 0xA40 );
+				AddImageTiled( 10, 415, 500, 80, 0xA40 );
+				AddAlphaRegion( 10, 10, 500, 485 );
+
+				AddButton( 15, 470, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 50, 472, 80, 20, 1011012, 0x7FFF, false, false ); // CANCEL
+
+				if ( from.AutoRenewInsurance )
+					AddButton( 360, 10, 9723, 9724, 1, GumpButtonType.Reply, 0 );
+				else
+					AddButton( 360, 10, 9720, 9722, 1, GumpButtonType.Reply, 0 );
+
+				AddHtmlLocalized( 395, 14, 105, 20, 1114122, 0x7FFF, false, false ); // AUTO REINSURE
+
+				AddButton( 395, 470, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 430, 472, 50, 20, 1006044, 0x7FFF, false, false ); // OK
+
+				AddHtmlLocalized( 10, 14, 150, 20, 1114121, 0x7FFF, false, false ); // <CENTER>ITEM INSURANCE MENU</CENTER>
+
+				AddHtmlLocalized( 45, 54, 70, 20, 1062214, 0x7FFF, false, false ); // Item
+				AddHtmlLocalized( 250, 54, 70, 20, 1061038, 0x7FFF, false, false ); // Cost
+				AddHtmlLocalized( 400, 54, 70, 20, 1114311, 0x7FFF, false, false ); // Insured
+
+				int balance = Banker.GetBalance( from );
+				int cost = 0;
+
+				for ( int i = 0; i < items.Length; ++i )
+				{
+					if ( insure[i] )
+						cost += GetInsuranceCost( items[i] );
+				}
+
+				AddHtmlLocalized( 15, 420, 300, 20, 1114310, 0x7FFF, false, false ); // GOLD AVAILABLE:
+				AddLabel( 215, 420, 0x481, balance.ToString() );
+				AddHtmlLocalized( 15, 435, 300, 20, 1114123, 0x7FFF, false, false ); // TOTAL COST OF INSURANCE:
+				AddLabel( 215, 435, 0x481, cost.ToString() );
+
+				if ( cost != 0 )
+				{
+					AddHtmlLocalized( 15, 450, 300, 20, 1114125, 0x7FFF, false, false ); // NUMBER OF DEATHS PAYABLE:
+					AddLabel( 215, 450, 0x481, ( balance / cost ).ToString() );
+				}
+
+				for ( int i = page * 4, y = 72; i < ( page + 1 ) * 4 && i < items.Length; ++i, y += 75 )
+				{
+					Item item = items[i];
+					Rectangle2D b = ItemBounds.Table[item.ItemID];
+
+					AddImageTiledButton( 40, y, 0x918, 0x918, 0, GumpButtonType.Page, 0, item.ItemID, item.Hue, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y );
+					AddItemProperty( item.Serial );
+
+					if ( insure[i] )
+					{
+						AddButton( 400, y, 9723, 9724, 100 + i, GumpButtonType.Reply, 0 );
+						AddLabel( 250, y, 0x481, GetInsuranceCost( item ).ToString() );
+					}
+					else
+					{
+						AddButton( 400, y, 9720, 9722, 100 + i, GumpButtonType.Reply, 0 );
+						AddLabel( 250, y, 0x66C, GetInsuranceCost( item ).ToString() );
+					}
+				}
+
+				if ( page >= 1 )
+				{
+					AddButton( 15, 380, 0xFAE, 0xFAF, 3, GumpButtonType.Reply, 0 );
+					AddHtmlLocalized( 50, 380, 450, 20, 1044044, 0x7FFF, false, false ); // PREV PAGE
+				}
+
+				if ( ( page + 1 ) * 4 < items.Length )
+				{
+					AddButton( 400, 380, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0 );
+					AddHtmlLocalized( 435, 380, 70, 20, 1044045, 0x7FFF, false, false ); // NEXT PAGE
+				}
+			}
+
+			public ItemInsuranceMenuGump NewInstance()
+			{
+				return new ItemInsuranceMenuGump( m_From, m_Items, m_Insure, m_Page );
+			}
+
+			public override void OnResponse( NetState sender, RelayInfo info )
+			{
+				if ( info.ButtonID == 0 || !m_From.CheckAlive() )
+					return;
+
+				switch ( info.ButtonID )
+				{
+					case 1: // Auto Reinsure
+					{
+						if ( m_From.AutoRenewInsurance )
+						{
+							if ( !m_From.HasGump( typeof( CancelRenewInventoryInsuranceGump ) ) )
+								m_From.SendGump( new CancelRenewInventoryInsuranceGump( m_From, this ) );
+						}
+						else
+						{
+							m_From.AutoRenewInventoryInsurance();
+							m_From.SendGump( new ItemInsuranceMenuGump( m_From, m_Items, m_Insure, m_Page ) );
+						}
+
+						break;
+					}
+					case 2: // OK
+					{
+						m_From.SendGump( new ItemInsuranceMenuConfirmGump( m_From, m_Items, m_Insure, m_Page ) );
+
+						break;
+					}
+					case 3: // Prev
+					{
+						if ( m_Page >= 1 )
+							m_From.SendGump( new ItemInsuranceMenuGump( m_From, m_Items, m_Insure, m_Page - 1 ) );
+
+						break;
+					}
+					case 4: // Next
+					{
+						if ( ( m_Page + 1 ) * 4 < m_Items.Length )
+							m_From.SendGump( new ItemInsuranceMenuGump( m_From, m_Items, m_Insure, m_Page + 1 ) );
+
+						break;
+					}
+					default:
+					{
+						int idx = info.ButtonID - 100;
+
+						if ( idx >= 0 && idx < m_Items.Length )
+							m_Insure[idx] = !m_Insure[idx];
+
+						m_From.SendGump( new ItemInsuranceMenuGump( m_From, m_Items, m_Insure, m_Page ) );
+
+						break;
+					}
+				}
+			}
+		}
+
+		private class ItemInsuranceMenuConfirmGump : Gump
+		{
+			private PlayerMobile m_From;
+			private Item[] m_Items;
+			private bool[] m_Insure;
+			private int m_Page;
+
+			public ItemInsuranceMenuConfirmGump( PlayerMobile from, Item[] items, bool[] insure, int page )
+				: base( 250, 200 )
+			{
+				m_From = from;
+				m_Items = items;
+				m_Insure = insure;
+				m_Page = page;
+
+				AddBackground( 0, 0, 240, 142, 0x13BE );
+				AddImageTiled( 6, 6, 228, 100, 0xA40 );
+				AddImageTiled( 6, 116, 228, 20, 0xA40 );
+				AddAlphaRegion( 6, 6, 228, 142 );
+
+				AddHtmlLocalized( 8, 8, 228, 100, 1114300, 0x7FFF, false, false ); // Do you wish to insure all newly selected items?
+
+				AddButton( 6, 116, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 40, 118, 450, 20, 1060051, 0x7FFF, false, false ); // CANCEL
+
+				AddButton( 114, 116, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
+				AddHtmlLocalized( 148, 118, 450, 20, 1073996, 0x7FFF, false, false ); // ACCEPT
+			}
+
+			public override void OnResponse( NetState sender, RelayInfo info )
+			{
+				if ( !m_From.CheckAlive() )
+					return;
+
+				if ( info.ButtonID == 1 )
+				{
+					for ( int i = 0; i < m_Items.Length; ++i )
+					{
+						Item item = m_Items[i];
+
+						if ( item.Insured != m_Insure[i] )
+							m_From.ToggleItemInsurance_Callback( m_From, item, false );
+					}
+				}
+				else
+				{
+					m_From.SendLocalizedMessage( 1042021 ); // Cancelled.
+					m_From.SendGump( new ItemInsuranceMenuGump( m_From, m_Items, m_Insure, m_Page ) );
 				}
 			}
 		}
@@ -1862,6 +2157,11 @@ namespace Server.Mobiles
 		}
 
 		#endregion
+
+		private void ToggleTrades()
+		{
+			RefuseTrades = !RefuseTrades;
+		}
 
 		private void GetVendor()
 		{
@@ -2021,6 +2321,8 @@ namespace Server.Mobiles
 					msgNum = 1062781; // You are already trading with someone else!
 				else if ( to.HasTrade )
 					msgNum = 1062779; // That person is already involved in a trade
+				else if ( to is PlayerMobile && ((PlayerMobile)to).RefuseTrades )
+					msgNum = 1154111; // ~1_NAME~ is refusing all trades.
 			}
 
 			if ( msgNum == 0 )
@@ -2042,7 +2344,12 @@ namespace Server.Mobiles
 			if ( msgNum != 0 )
 			{
 				if ( message )
-					this.SendLocalizedMessage( msgNum );
+				{
+					if ( msgNum == 1154111 )
+						SendLocalizedMessage( msgNum, to.Name );
+					else
+						SendLocalizedMessage( msgNum );
+				}
 
 				return false;
 			}
@@ -2350,7 +2657,10 @@ namespace Server.Mobiles
 
 				if ( AutoRenewInsurance )
 				{
-					int cost = ( m_InsuranceAward == null ? 600 : 300 );
+					int cost = GetInsuranceCost( item );
+
+					if ( m_InsuranceAward != null )
+						cost /= 2;
 
 					if ( Banker.Withdraw( this, cost ) )
 					{

@@ -310,6 +310,11 @@ namespace Server.Gumps
 			Add( new GumpTextEntryLimited( x, y, width, height, hue, entryID, initialText, size ) );
 		}
 
+		public void AddItemProperty( int serial )
+		{
+			Add( new GumpItemProperty( serial ) );
+		}
+
 		public void Add( GumpEntry g )
 		{
 			if ( g.Parent != this )

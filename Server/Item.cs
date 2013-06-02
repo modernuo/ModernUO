@@ -1508,7 +1508,8 @@ namespace Server
 		{
 			get
 			{
-				return (Movable && Visible && Spawner == null);
+				// TODO: Make item decay an option on the spawner
+				return (Movable && Visible/* && Spawner == null*/);
 			}
 		}
 

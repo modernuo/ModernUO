@@ -831,6 +831,11 @@ namespace Server
 			return m_Random.Next( count );
 		}
 
+		public static void RandomBytes( byte[] buffer )
+		{
+			m_Random.NextBytes( buffer );
+		}
+
 		#region Random Hues
 
 		/// <summary>

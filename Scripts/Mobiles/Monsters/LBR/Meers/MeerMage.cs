@@ -11,7 +11,7 @@ namespace Server.Mobiles
 	public class MeerMage : BaseCreature
 	{
 		[Constructable]
-		public MeerMage() : base( AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
+		public MeerMage() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a meer mage";
 			Body = 770;
