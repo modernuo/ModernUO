@@ -1126,6 +1126,11 @@ namespace Server.Network
 						// User pressed escape
 						t.Cancel( from, TargetCancelType.Canceled );
 					}
+					else if ( t.TargetID != targetID )
+					{
+						// Sanity, prevent fake target
+						return;
+					}
 					else
 					{
 						object toTarget;
