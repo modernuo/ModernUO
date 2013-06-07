@@ -489,7 +489,7 @@ namespace Server.Factions
 
 				if ( guild.Leader != pm )
 					pm.SendLocalizedMessage( 1005057 ); // You cannot join a faction because you are in a guild and not the guildmaster
-				else if ( !Guild.NewGuildSystem && guild.Type != GuildType.Regular )
+				else if ( guild.Type != GuildType.Regular )
 					pm.SendLocalizedMessage( 1042161 ); // You cannot join a faction because your guild is an Order or Chaos type.
 				else if ( !Guild.NewGuildSystem && guild.Enemies != null && guild.Enemies.Count > 0 )	//CAN join w/wars in new system
 					pm.SendLocalizedMessage( 1005056 ); // You cannot join a faction with active Wars

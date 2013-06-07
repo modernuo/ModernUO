@@ -694,6 +694,7 @@ namespace Server.Guilds
 		#endregion
 
 		public static bool NewGuildSystem{ get{ return Core.SE; } }
+		public static bool OrderChaos{ get{ return !Core.SE; } }
 
 		public static readonly int RegistrationFee = 25000;
 		public static readonly int AbbrevLimit = 4;
@@ -1166,13 +1167,10 @@ namespace Server.Guilds
 
 		public bool IsEnemy( Guild g )
 		{
-			if( NewGuildSystem )
-				return IsWar( g );
-
-			if( m_Type != GuildType.Regular && g.m_Type != GuildType.Regular && m_Type != g.m_Type )
+			if( Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type )
 				return true;
 
-			return m_Enemies.Contains( g );
+			return IsWar( g );
 		}
 
 		public bool IsWar( Guild g )
@@ -1184,13 +1182,12 @@ namespace Server.Guilds
 			{
 				Guild guild = GetAllianceLeader( this );
 				Guild otherGuild = GetAllianceLeader( g );
-				
+
 				if ( guild.FindActiveWar( otherGuild ) != null )
 					return true;
 
 				return false;
 			}
-
 
 			return m_Enemies.Contains( g );
 		}
@@ -1765,7 +1762,7 @@ namespace Server.Guilds
 		{
 			get
 			{
-				return m_Type;
+				return OrderChaos ? m_Type : GuildType.Regular;
 			}
 			set
 			{

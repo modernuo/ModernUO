@@ -43,12 +43,19 @@ namespace Server.Guilds
 				AddButton( 40, 120, 0x4B9, 0x4BA, 6, GumpButtonType.Reply, 0 );	//Alliance Roster
 			}
 
+			if( Guild.OrderChaos && isLeader )
+				AddButton( 40, 154, 0x4B9, 0x4BA, 100, GumpButtonType.Reply, 0 ); // Guild Faction
+
 			AddImageTiled( 65, 148, 160, 26, 0xA40 );
 			AddImageTiled( 67, 150, 156, 22, 0xBBC );
 			AddHtmlLocalized( 70, 151, 150, 20, 1063084, 0x0, false, false ); // <i>Guild Faction</i>
-		
-			Faction f = Faction.Find( guild.Leader );
-			if( f != null )
+
+			GuildType gt;
+			Faction f;
+
+			if( ( gt = guild.Type ) != GuildType.Regular )
+				AddHtml( 233, 152, 320, 26, gt.ToString(), false, false );
+			else if( ( f = Faction.Find( guild.Leader ) ) != null )
 				AddHtml( 233, 152, 320, 26, f.ToString(), false, false );
 
 			AddImageTiled( 65, 196, 480, 4, 0x238D );
@@ -130,6 +137,16 @@ namespace Server.Guilds
 					else
 					{
 						guild.RemoveMember( pm, 1063411 ); // You resign from your guild.
+					}
+					break;
+				}
+				case 100: // Custom code to support Order/Chaos in the new guild system
+				{
+					// Guild Faction
+					if( Guild.OrderChaos && IsLeader( pm, guild ) )
+					{
+						pm.CloseGump( typeof( GuildChangeTypeGump ) );
+						pm.SendGump( new GuildChangeTypeGump( pm, guild ) );
 					}
 					break;
 				}

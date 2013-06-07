@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Server;
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Network;
 using Server.Factions;
 
@@ -44,36 +45,45 @@ namespace Server.Gumps
 
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
-			if ( GuildGump.BadLeader( m_Mobile, m_Guild ) )
+			if ( ( Guild.NewGuildSystem && !BaseGuildGump.IsLeader( m_Mobile, m_Guild ) ) || ( !Guild.NewGuildSystem && GuildGump.BadLeader( m_Mobile, m_Guild ) ) )
 				return;
 
-			PlayerState pl = PlayerState.Find( m_Mobile );
+			GuildType newType;
 
-			if ( pl != null )
+			switch ( info.ButtonID )
 			{
-				m_Mobile.SendLocalizedMessage( 1010405 ); // You cannot change guild types while in a Faction!
+				default: newType = m_Guild.Type;     break;
+				case 1: newType = GuildType.Regular; break;
+				case 2: newType = GuildType.Order;   break;
+				case 3: newType = GuildType.Chaos;   break;
 			}
-			else if ( m_Guild.TypeLastChange.AddDays( 7 ) > DateTime.Now )
-			{
-				m_Mobile.SendLocalizedMessage( 1005292 ); // Your guild type will be changed in one week.
-			}
-			else
-			{
-				GuildType newType;
 
-				switch ( info.ButtonID )
+			if ( m_Guild.Type != newType )
+			{
+				PlayerState pl = PlayerState.Find( m_Mobile );
+
+				if ( pl != null )
 				{
-					default: return; // Close
-					case 1: newType = GuildType.Regular; break;
-					case 2: newType = GuildType.Order;   break;
-					case 3: newType = GuildType.Chaos;   break;
+					m_Mobile.SendLocalizedMessage( 1010405 ); // You cannot change guild types while in a Faction!
 				}
+				else if ( m_Guild.TypeLastChange.AddDays( 7 ) > DateTime.Now )
+				{
+					m_Mobile.SendLocalizedMessage( 1011142 ); // You have already changed your guild type recently.
+					// TODO: Clilocs 1011142-1011145 suggest a timer for pending changes
+				}
+				else
+				{
+					m_Guild.Type = newType;
+					m_Guild.GuildMessage( 1018022, true, newType.ToString() ); // Guild Message: Your guild type has changed:
+				}
+			}
 
-				if ( m_Guild.Type == newType )
-					return;
+			if ( Guild.NewGuildSystem )
+			{
+				if ( m_Mobile is PlayerMobile )
+					m_Mobile.SendGump( new GuildInfoGump( (PlayerMobile)m_Mobile, m_Guild ) );
 
-				m_Guild.Type = newType;
-				m_Guild.GuildMessage( 1018022, true, newType.ToString() ); // Guild Message: Your guild type has changed:
+				return;
 			}
 
 			GuildGump.EnsureClosed( m_Mobile );
