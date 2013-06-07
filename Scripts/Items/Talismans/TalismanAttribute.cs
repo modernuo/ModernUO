@@ -136,7 +136,7 @@ namespace Server.Items
 
 		public int DamageBonus( Mobile to )
 		{
-			if ( to != null && to.GetType() == m_Type )
+			if ( to != null && to.GetType() == m_Type ) // Verified: only works on the exact type
 				return m_Amount;
 
 			return 0;

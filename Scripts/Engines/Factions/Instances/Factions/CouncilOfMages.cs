@@ -47,7 +47,7 @@ namespace Server.Factions
 							new Rectangle2D( 4450, 1522, 35, 48 ),
 						},
 						new Point3D( 4469, 1486, 0 ),
-						new Point3D( 4457, 1455, 0 ),
+						new Point3D( 4457, 1544, 0 ),
 						new Point3D[]
 						{
 							new Point3D( 4464, 1534, 21 ),
