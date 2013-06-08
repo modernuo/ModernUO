@@ -1624,7 +1624,12 @@ namespace Server.Mobiles
 					list.Add( new CallbackEntry( 6210, new ContextCallback( ToggleChampionTitleDisplay ) ) );
 
 				if ( Core.HS )
-					list.Add( new CallbackEntry( RefuseTrades ? 1154112 : 1154113, new ContextCallback( ToggleTrades ) ) ); // Allow Trades / Refuse Trades
+				{
+					NetState ns = from.NetState;
+
+					if ( ns != null && ns.ExtendedStatus )
+						list.Add( new CallbackEntry( RefuseTrades ? 1154112 : 1154113, new ContextCallback( ToggleTrades ) ) ); // Allow Trades / Refuse Trades
+				}
 			}
 			if ( from != this )
 			{
@@ -1697,6 +1702,9 @@ namespace Server.Mobiles
 				return false;
 
 			if ( item.ItemID == 0x204E ) // death shroud
+				return false;
+
+			if ( item.Layer == Layer.Mount )
 				return false;
 
 			if ( item.LootType == LootType.Blessed || item.LootType == LootType.Newbied || item.BlessedFor == this )

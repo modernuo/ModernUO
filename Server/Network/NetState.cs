@@ -165,7 +165,9 @@ namespace Server.Network {
 			set {
 				m_Version = value;
 
-				if ( value >= m_Version70160 ) {
+				if ( value >= m_Version70300 ) {
+					_ProtocolChanges = ProtocolChanges.Version70300;
+				} else if ( value >= m_Version70160 ) {
 					_ProtocolChanges = ProtocolChanges.Version70160;
 				} else if ( value >= m_Version70130 ) {
 					_ProtocolChanges = ProtocolChanges.Version70130;
@@ -202,6 +204,7 @@ namespace Server.Network {
 		private static ClientVersion m_Version7090	= new ClientVersion( "7.0.9.0" );
 		private static ClientVersion m_Version70130	= new ClientVersion( "7.0.13.0" );
 		private static ClientVersion m_Version70160	= new ClientVersion( "7.0.16.0" );
+		private static ClientVersion m_Version70300	= new ClientVersion( "7.0.30.0" );
 
 		private ProtocolChanges _ProtocolChanges;
 
@@ -217,6 +220,7 @@ namespace Server.Network {
 			HighSeas			= 0x00000100,
 			NewCharacterList		= 0x00000200,
 			NewCharacterCreation		= 0x00000400,
+			ExtendedStatus				= 0x00000800,
 
 			Version400a			= NewSpellbook,
 			Version407a			= Version400a  | DamagePacket,
@@ -228,7 +232,8 @@ namespace Server.Network {
 			Version7000			= Version60142 | StygianAbyss,
 			Version7090			= Version7000  | HighSeas,
 			Version70130			= Version7090  | NewCharacterList,
-			Version70160			= Version70130 | NewCharacterCreation
+			Version70160			= Version70130 | NewCharacterCreation,
+			Version70300			= Version70160 | ExtendedStatus
 		}
 
 		public bool NewSpellbook { get { return ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0); } }
@@ -242,6 +247,7 @@ namespace Server.Network {
 		public bool HighSeas { get { return ((_ProtocolChanges & ProtocolChanges.HighSeas) != 0); } }
 		public bool NewCharacterList { get { return ((_ProtocolChanges & ProtocolChanges.NewCharacterList) != 0); } }
 		public bool NewCharacterCreation { get { return ((_ProtocolChanges & ProtocolChanges.NewCharacterCreation) != 0); } }
+		public bool ExtendedStatus { get { return ((_ProtocolChanges & ProtocolChanges.ExtendedStatus) != 0); } }
 
 		public bool IsUOTDClient {
 			get {
