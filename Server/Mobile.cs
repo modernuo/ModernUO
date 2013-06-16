@@ -2786,7 +2786,8 @@ namespace Server
 
 				if ( m_ContextMenu != null && m_NetState != null )
 				{
-					if ( m_NetState.NewHaven )
+					// Old packet is preferred until assistants catch up
+					if ( m_NetState.NewHaven && m_ContextMenu.RequiresNewPacket )
 						Send( new DisplayContextMenu( m_ContextMenu ) );
 					else
 						Send( new DisplayContextMenuOld( m_ContextMenu ) );

@@ -1882,7 +1882,7 @@ namespace Server.Mobiles
 
 		private bool DisplayInItemInsuranceGump( Item item )
 		{
-			return ( item.Insured || CanInsure( item ) );
+			return ( ( item.Visible || AccessLevel >= AccessLevel.GameMaster ) && ( item.Insured || CanInsure( item ) ) );
 		}
 
 		private class ItemInsuranceMenuGump : Gump

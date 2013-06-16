@@ -27,6 +27,14 @@ namespace Server.Targeting
 	{
 		private static int m_NextTargetID;
 
+		private static bool m_TargetIDValidation = true;
+
+		public static bool TargetIDValidation
+		{
+			get { return m_TargetIDValidation; }
+			set { m_TargetIDValidation = value; }
+		}
+
 		private int m_TargetID;
 		private int m_Range;
 		private bool m_AllowGround;

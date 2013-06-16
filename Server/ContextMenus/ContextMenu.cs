@@ -94,5 +94,22 @@ namespace Server.ContextMenus
 				m_Entries[i].Owner = this;
 			}
 		}
+
+		/// <summary>
+		/// Returns true if this ContextMenu requires packet version 2.
+		/// </summary>
+		public bool RequiresNewPacket
+		{
+			get
+			{
+				for ( int i = 0; i < m_Entries.Length; ++i )
+				{
+					if ( m_Entries[i].Number < 3000000 || m_Entries[i].Number > 3032767 )
+						return true;
+				}
+
+				return false;
+			}
+		}
 	}
 }
