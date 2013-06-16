@@ -75,6 +75,7 @@ namespace Server.Mobiles
 			{
 				DropPackContents();
 				EndRelease( null );
+				return;
 			}
 
 			RangeCheck();
