@@ -282,15 +282,11 @@ namespace Server
 					{
 					}
 
-					if ( m_Service ) {
-						Console.WriteLine( "This exception is fatal." );
-					} else {
-						Console.WriteLine( "This exception is fatal, press return to exit" );
-						Console.ReadLine();
-					}
+					Console.WriteLine( "This exception is fatal, press return to exit" );
+					Console.ReadLine();
 				}
 
-				m_Closing = true;
+				Kill();
 			}
 		}
 
@@ -494,7 +490,7 @@ namespace Server
 
 			ScriptCompiler.Invoke( "Initialize" );
 
-			MessagePump messagePump = new MessagePump();
+			MessagePump messagePump = m_MessagePump = new MessagePump();
 
 			timerThread.Start();
 
