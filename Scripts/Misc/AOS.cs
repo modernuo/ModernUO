@@ -205,6 +205,30 @@ namespace Server
 		{
 			return (input * percent) / 100;
 		}
+
+		public static int GetStatus( Mobile from, int index )
+		{
+			switch ( index )
+			{
+				// TODO: Account for buffs/debuffs
+				case 0: return from.GetMaxResistance( ResistanceType.Physical );
+				case 1: return from.GetMaxResistance( ResistanceType.Fire );
+				case 2: return from.GetMaxResistance( ResistanceType.Cold );
+				case 3: return from.GetMaxResistance( ResistanceType.Poison );
+				case 4: return from.GetMaxResistance( ResistanceType.Energy );
+				case 5: return AosAttributes.GetValue( from, AosAttribute.DefendChance );
+				case 6: return 45;
+				case 7: return AosAttributes.GetValue( from, AosAttribute.AttackChance );
+				case 8: return AosAttributes.GetValue( from, AosAttribute.WeaponSpeed );
+				case 9: return AosAttributes.GetValue( from, AosAttribute.WeaponDamage );
+				case 10: return AosAttributes.GetValue( from, AosAttribute.LowerRegCost );
+				case 11: return AosAttributes.GetValue( from, AosAttribute.SpellDamage );
+				case 12: return AosAttributes.GetValue( from, AosAttribute.CastRecovery );
+				case 13: return AosAttributes.GetValue( from, AosAttribute.CastSpeed );
+				case 14: return AosAttributes.GetValue( from, AosAttribute.LowerManaCost );
+				default: return 0;
+			}
+		}
 	}
 
 	[Flags]

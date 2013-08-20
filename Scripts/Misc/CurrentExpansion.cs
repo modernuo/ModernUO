@@ -27,6 +27,7 @@ namespace Server
 					PacketHandlers.SingleClickProps = true; // single click for everything is overriden to check object property list
 
 				Mobile.ActionDelay = TimeSpan.FromSeconds( 1.0 );
+				Mobile.AOSStatusHandler = new AOSStatusHandler( AOS.GetStatus );
 			}
 		}
 	}

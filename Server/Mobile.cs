@@ -495,6 +495,8 @@ namespace Server
 
 	public delegate Container CreateCorpseHandler( Mobile from, HairInfo hair, FacialHairInfo facialhair, List<Item> initialContent, List<Item> equipedItems );
 
+	public delegate int AOSStatusHandler( Mobile from, int index );
+
 	#endregion
 
 	/// <summary>
@@ -577,6 +579,14 @@ namespace Server
 		{
 			get { return m_SkillCheckDirectLocationHandler; }
 			set { m_SkillCheckDirectLocationHandler = value; }
+		}
+
+		private static AOSStatusHandler m_AOSStatusHandler;
+
+		public static AOSStatusHandler AOSStatusHandler
+		{
+			get { return m_AOSStatusHandler; }
+			set { m_AOSStatusHandler = value; }
 		}
 
 		#endregion
@@ -1013,6 +1023,11 @@ namespace Server
 				return m_MaxPlayerResistance;
 
 			return int.MaxValue;
+		}
+
+		public int GetAOSStatus( int index )
+		{
+			return ( m_AOSStatusHandler == null ) ? 0 : m_AOSStatusHandler( this, index );
 		}
 
 		public virtual void SendPropertiesTo( Mobile from )

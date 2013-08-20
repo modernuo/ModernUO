@@ -36,7 +36,7 @@ namespace Server.Items
 			{
 				from.SendLocalizedMessage( 1049631 ); // This bola is already being used.
 			}
-			else if ( !Core.AOS && (from.FindItemOnLayer( Layer.OneHanded ) != null || from.FindItemOnLayer( Layer.TwoHanded ) != null) )
+			else if ( !HasFreeHands( from ) )
 			{
 				from.SendLocalizedMessage( 1040015 ); // Your hands must be free to use this
 			}
@@ -51,17 +51,6 @@ namespace Server.Items
 			else
 			{
 				EtherealMount.StopMounting( from );
-
-				if ( Core.AOS ) {
-					Item one = from.FindItemOnLayer( Layer.OneHanded );
-					Item two = from.FindItemOnLayer( Layer.TwoHanded );
-
-					if ( one != null )
-						from.AddToBackpack( one );
-
-					if ( two != null )
-						from.AddToBackpack( two );
-				}
 
 				from.Target = new BolaTarget( this );
 				from.LocalOverheadMessage( MessageType.Emote, 0x3B2, 1049632 ); // * You begin to swing the bola...*
@@ -115,6 +104,48 @@ namespace Server.Items
 			Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( ReleaseBolaLock ), from );
 		}
 
+		private static bool HasFreeHands( Mobile from )
+		{
+			Item one = from.FindItemOnLayer( Layer.OneHanded );
+			Item two = from.FindItemOnLayer( Layer.TwoHanded );
+
+			if ( Core.SE )
+			{
+				Container pack = from.Backpack;
+
+				if ( pack != null )
+				{
+					if ( one != null && one.Movable )
+					{
+						pack.DropItem( one );
+						one = null;
+					}
+
+					if ( two != null && two.Movable )
+					{
+						pack.DropItem( two );
+						two = null;
+					}
+				}
+			}
+			else if ( Core.AOS )
+			{
+				if ( one != null && one.Movable )
+				{
+					from.AddToBackpack( one );
+					one = null;
+				}
+
+				if ( two != null && two.Movable )
+				{
+					from.AddToBackpack( two );
+					two = null;
+				}
+			}
+
+			return ( one == null && two == null );
+		}
+
 		public class BolaTarget : Target
 		{
 			private Bola m_Bola;
@@ -137,7 +168,7 @@ namespace Server.Items
 					{
 						from.SendLocalizedMessage( 1040019 ); // The bola must be in your pack to use it.
 					}
-					else if ( !Core.AOS && (from.FindItemOnLayer( Layer.OneHanded ) != null || from.FindItemOnLayer( Layer.TwoHanded ) != null) )
+					else if ( !HasFreeHands( from ) )
 					{
 						from.SendLocalizedMessage( 1040015 ); // Your hands must be free to use this
 					}
@@ -159,17 +190,6 @@ namespace Server.Items
 					else if ( from.BeginAction( typeof( Bola ) ) )
 					{
 						EtherealMount.StopMounting( from );
-
-						if ( Core.AOS ) {
-							Item one = from.FindItemOnLayer( Layer.OneHanded );
-							Item two = from.FindItemOnLayer( Layer.TwoHanded );
-
-							if ( one != null )
-								from.AddToBackpack( one );
-
-							if ( two != null )
-								from.AddToBackpack( two );
-						}
 
 						from.DoHarmful( to );
 

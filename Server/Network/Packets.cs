@@ -3051,9 +3051,23 @@ namespace Server.Network
 			string name = m.Name;
 			if ( name == null ) name = "";
 
-			bool sendMLExtended = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
+			int type;
 
-			this.EnsureCapacity( sendMLExtended ? 91 : 88 );
+			if ( Core.HS && ns != null && ns.ExtendedStatus )
+			{
+				type = 6;
+				EnsureCapacity( 121 );
+			}
+			else if ( Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ) )
+			{
+				type = 5;
+				EnsureCapacity( 91 );
+			}
+			else
+			{
+				type = Core.AOS ? 4 : 3;
+				EnsureCapacity( 88 );
+			}
 
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.WriteAsciiFixed( name, 30 );
@@ -3063,7 +3077,7 @@ namespace Server.Network
 
 			m_Stream.Write( m.CanBeRenamedBy( m ) );
 
-			m_Stream.Write( (byte)(sendMLExtended ? 0x05 : Core.AOS ? 0x04 : 0x03) ); // type
+			m_Stream.Write( (byte) type );
 
 			m_Stream.Write( m.Female );
 
@@ -3081,7 +3095,7 @@ namespace Server.Network
 			m_Stream.Write( (short) (Core.AOS ? m.PhysicalResistance : (int)(m.ArmorRating + 0.5)) );
 			m_Stream.Write( (short) (Mobile.BodyWeight + m.TotalWeight) );
 
-			if( sendMLExtended )
+			if ( type >= 5 )
 			{
 				m_Stream.Write( (short)m.MaxWeight );
 				m_Stream.Write( (byte)(m.Race.RaceID + 1));	// Would be 0x00 if it's a non-ML enabled account but...
@@ -3092,7 +3106,7 @@ namespace Server.Network
 			m_Stream.Write( (byte) m.Followers );
 			m_Stream.Write( (byte) m.FollowersMax );
 
-			if ( Core.AOS )
+			if ( type >= 4 )
 			{
 				m_Stream.Write( (short) m.FireResistance ); // Fire
 				m_Stream.Write( (short) m.ColdResistance ); // Cold
@@ -3112,6 +3126,12 @@ namespace Server.Network
 
 				m_Stream.Write( (int) m.TithingPoints );
 			}
+
+			if ( type >= 6 )
+			{
+				for ( int i = 0; i < 15; ++i )
+					m_Stream.Write( (short) m.GetAOSStatus( i ) );
+			}
 		}
 	}
 
@@ -3126,9 +3146,28 @@ namespace Server.Network
 			string name = beheld.Name;
 			if ( name == null ) name = "";
 
-			bool sendMLExtended = (Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ));
+			int type;
 
-			this.EnsureCapacity( 43 + (beholder == beheld ? (sendMLExtended ? 48 : 45) : 0) );
+			if ( beholder != beheld )
+			{
+				type = 0;
+				EnsureCapacity( 43 );
+			}
+			else if ( Core.HS && ns != null && ns.ExtendedStatus )
+			{
+				type = 6;
+				EnsureCapacity( 121 );
+			}
+			else if ( Core.ML && ns != null && ns.SupportsExpansion( Expansion.ML ) )
+			{
+				type = 5;
+				EnsureCapacity( 91 );
+			}
+			else
+			{
+				type = Core.AOS ? 4 : 3;
+				EnsureCapacity( 88 );
+			}
 
 			m_Stream.Write( beheld.Serial );
 
@@ -3141,10 +3180,10 @@ namespace Server.Network
 
 			m_Stream.Write( beheld.CanBeRenamedBy( beholder ) );
 
-			if ( beholder == beheld )
-			{
-				m_Stream.Write( (byte)(sendMLExtended ? 0x05 : Core.AOS ? 0x04 : 0x03) ); // type
+			m_Stream.Write( (byte) type );
 
+			if ( type > 0 )
+			{
 				m_Stream.Write( beheld.Female );
 
 				m_Stream.Write( (short) beheld.Str );
@@ -3158,7 +3197,7 @@ namespace Server.Network
 				m_Stream.Write( (short) (Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)) );
 				m_Stream.Write( (short) (Mobile.BodyWeight + beheld.TotalWeight) );
 
-				if( sendMLExtended )
+				if ( type >= 5 )
 				{
 					m_Stream.Write( (short)beheld.MaxWeight );
 					m_Stream.Write( (byte)(beheld.Race.RaceID + 1) );	// Would be 0x00 if it's a non-ML enabled account but...
@@ -3169,7 +3208,7 @@ namespace Server.Network
 				m_Stream.Write( (byte) beheld.Followers );
 				m_Stream.Write( (byte) beheld.FollowersMax );
 
-				if ( Core.AOS )
+				if ( type >= 4 )
 				{
 					m_Stream.Write( (short) beheld.FireResistance ); // Fire
 					m_Stream.Write( (short) beheld.ColdResistance ); // Cold
@@ -3189,10 +3228,12 @@ namespace Server.Network
 
 					m_Stream.Write( (int) beheld.TithingPoints );
 				}
-			}
-			else
-			{
-				m_Stream.Write( (byte) 0x00 );
+
+				if ( type >= 6 )
+				{
+					for ( int i = 0; i < 15; ++i )
+						m_Stream.Write( (short) beheld.GetAOSStatus( i ) );
+				}
 			}
 		}
 

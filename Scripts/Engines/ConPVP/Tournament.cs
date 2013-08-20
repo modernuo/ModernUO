@@ -2217,7 +2217,7 @@ namespace Server.Engines.ConPVP
 				}
 				case TournyType.Standard:
 				{
-					if ( partsPerMatch == 2 && (participants.Count % 2) == 1 )
+					if ( partsPerMatch >= 2 && participants.Count % partsPerMatch == 1 )
 					{
 						int lowAdvances = int.MaxValue;
 

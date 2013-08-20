@@ -910,14 +910,16 @@ namespace Server.Items
 		[Flags]
 		protected enum ConditionFlag
 		{
-			None = 0x00,
-			DenyMounted = 0x01,
-			DenyFollowers = 0x02,
-			DenyPackContents = 0x04,
-			DenyHolding = 0x08,
-			DenyEquipment = 0x10,
-			DenyTransformed = 0x20,
-			StaffOnly = 0x40
+			None = 0x000,
+			DenyMounted = 0x001,
+			DenyFollowers = 0x002,
+			DenyPackContents = 0x004,
+			DenyHolding = 0x008,
+			DenyEquipment = 0x010,
+			DenyTransformed = 0x020,
+			StaffOnly = 0x040,
+			DenyPackEthereals = 0x080,
+			DeadOnly = 0x100
 		}
 
 		private ConditionFlag m_Flags;
@@ -971,6 +973,20 @@ namespace Server.Items
 			set { SetFlag(ConditionFlag.StaffOnly, value); InvalidateProperties(); }
 		}
 
+		[CommandProperty(AccessLevel.GameMaster)]
+		public bool DenyPackEthereals
+		{
+			get { return GetFlag(ConditionFlag.DenyPackEthereals); }
+			set { SetFlag(ConditionFlag.DenyPackEthereals, value); InvalidateProperties(); }
+		}
+
+		[CommandProperty(AccessLevel.GameMaster)]
+		public bool DeadOnly
+		{
+			get { return GetFlag(ConditionFlag.DeadOnly); }
+			set { SetFlag(ConditionFlag.DeadOnly, value); InvalidateProperties(); }
+		}
+
 		public override bool CanTeleport(Mobile m)
 		{
 			if (!base.CanTeleport(m))
@@ -991,12 +1007,21 @@ namespace Server.Items
 				return false;
 			}
 
-			Container pack;
+			Container pack = m.Backpack;
 
-			if (GetFlag(ConditionFlag.DenyPackContents) && (pack = m.Backpack) != null && pack.TotalItems != 0)
+			if (pack != null)
 			{
-				m.SendMessage("You must empty your backpack before proceeding.");
-				return false;
+				if (GetFlag(ConditionFlag.DenyPackContents) && pack.TotalItems != 0)
+				{
+					m.SendMessage("You must empty your backpack before proceeding.");
+					return false;
+				}
+
+				if (GetFlag(ConditionFlag.DenyPackEthereals) && (pack.FindItemByType(typeof(EtherealMount)) != null || pack.FindItemByType(typeof(BaseImprisonedMobile)) != null))
+				{
+					m.SendMessage("You must empty your backpack of ethereal mounts before proceeding.");
+					return false;
+				}
 			}
 
 			if (GetFlag(ConditionFlag.DenyHolding) && m.Holding != null)
@@ -1034,6 +1059,12 @@ namespace Server.Items
 				return false;
 			}
 
+			if (GetFlag(ConditionFlag.DeadOnly) && m.Alive)
+			{
+				m.SendLocalizedMessage(1060014); // Only the dead may pass.
+				return false;
+			}
+
 			return true;
 		}
 
@@ -1057,6 +1088,9 @@ namespace Server.Items
 			if (GetFlag(ConditionFlag.DenyPackContents))
 				props.Append("<BR>Deny Pack Contents");
 
+			if (GetFlag(ConditionFlag.DenyPackEthereals))
+				props.Append("<BR>Deny Pack Ethereals");
+
 			if (GetFlag(ConditionFlag.DenyHolding))
 				props.Append("<BR>Deny Holding");
 
@@ -1068,6 +1102,9 @@ namespace Server.Items
 
 			if (GetFlag(ConditionFlag.StaffOnly))
 				props.Append("<BR>Staff Only");
+
+			if (GetFlag(ConditionFlag.DeadOnly))
+				props.Append("<BR>Dead Only");
 
 			if (props.Length != 0)
 			{

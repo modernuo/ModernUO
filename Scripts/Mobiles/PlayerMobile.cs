@@ -539,7 +539,7 @@ namespace Server.Mobiles
 
 				foreach ( Mobile m in mobiles )
 				{
-					if ( m.Z >= location.Z && m.Z < location.Z + 16 )
+					if ( m.Z >= location.Z && m.Z < location.Z + 16 && ( !m.Hidden || m.AccessLevel == AccessLevel.Player ) )
 					{
 						mobiles.Free();
 						return false;
@@ -737,7 +737,7 @@ namespace Server.Mobiles
 		public override int GetMaxResistance( ResistanceType type )
 		{
 			if ( AccessLevel > AccessLevel.Player )
-				return int.MaxValue;
+				return 100;
 
 			int max = base.GetMaxResistance( type );
 
