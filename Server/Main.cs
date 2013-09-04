@@ -507,11 +507,14 @@ namespace Server
 
 				const int sampleInterval = 100;
 				const float ticksPerSecond = (float)(TimeSpan.TicksPerSecond * sampleInterval);
+				TimeSpan _oneMS = TimeSpan.FromMilliseconds( 1 );
 
 				long sample = 0;
 
-				while( m_Signal.WaitOne() )
+				while( !m_Closing )
 				{
+					m_Signal.WaitOne( _oneMS );
+
 					Mobile.ProcessDeltaQueue();
 					Item.ProcessDeltaQueue();
 

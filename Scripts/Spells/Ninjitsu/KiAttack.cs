@@ -57,7 +57,11 @@ namespace Server.Spells.Ninjitsu
 			if ( attacker.Hidden )
 				return 1.0;
 
-			return 1.0 + GetBonus( attacker ) / 10;
+			/*
+			 * Pub40 changed pvp damage max to 55%
+			 */
+
+			return 1.0 + GetBonus(attacker) / ( (Core.ML && attacker.Player && defender.Player) ? 40 : 10 );
 		}
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )

@@ -8,7 +8,7 @@ namespace Server.Items
 	public class WarMace : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.BleedAttack; } }
+		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.MortalStrike; } }
 
 		public override int AosStrengthReq{ get{ return 80; } }
 		public override int AosMinDamage{ get{ return 16; } }

@@ -1910,7 +1910,9 @@ namespace Server.Items
 
 			List<Mobile> list = new List<Mobile>();
 
-			foreach ( Mobile m in from.GetMobilesInRange( 10 ) )
+			int range = Core.ML ? 5 : 10;
+
+			foreach ( Mobile m in from.GetMobilesInRange( range ) )
 			{
 				if ( from != m && defender != m && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) && ( !Core.ML || from.InLOS( m ) ) )
 					list.Add( m );
@@ -1921,22 +1923,25 @@ namespace Server.Items
 
 			Effects.PlaySound( from.Location, map, sound );
 
-			// TODO: What is the damage calculation?
-
 			for ( int i = 0; i < list.Count; ++i )
 			{
 				Mobile m = list[i];
 
-				double scalar = (11 - from.GetDistanceToSqrt( m )) / 10;
+				double scalar = Core.ML ? 1.0 : ( 11 - from.GetDistanceToSqrt( m ) ) / 10;
+				double damage = GetBaseDamage( from );
 
-				if ( scalar > 1.0 )
-					scalar = 1.0;
-				else if ( scalar < 0.0 )
+				if(scalar <= 0)
+				{
 					continue;
+				}
+				else if( scalar < 1.0 )
+				{
+					damage *= ( 11 - from.GetDistanceToSqrt( m ) ) / 10;
+				}
 
 				from.DoHarmful( m, true );
 				m.FixedEffect( 0x3779, 1, 15, hue, 0 );
-				AOS.Damage( m, from, (int)(GetBaseDamage( from ) * scalar), phys, fire, cold, pois, nrgy );
+				AOS.Damage(m, from, (int)damage, phys, fire, cold, pois, nrgy);
 			}
 		}
 		#endregion

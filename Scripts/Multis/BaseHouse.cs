@@ -2298,7 +2298,7 @@ namespace Server.Multis
 			{
 				from.SendLocalizedMessage( 501362 ); // That can't be a co-owner of the house.
 			}
-			else if ( HasAccountHouse( targ ) )
+			else if ( !Core.AOS && HasAccountHouse( targ ) )
 			{
 				from.SendLocalizedMessage( 501364 ); // That person is already a house owner.
 			}

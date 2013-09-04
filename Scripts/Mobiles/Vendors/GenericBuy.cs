@@ -307,10 +307,23 @@ namespace Server.Mobiles
 		{
 			if ( m_Amount <= 0 )
 			{
-				m_MaxAmount *= 2;
+				/*
+					Core.ML using this vendor system is undefined behavior, so being
+					as it lends itself to an abusable exploit to cause ingame havok
+					and the stackable items are not found to be over 20 items, this is
+					changed until there is a better solution.
+				*/
 
-				if ( m_MaxAmount >= 999 )
-					m_MaxAmount = 999;
+				object Obj_Disp = GetDisplayEntity();
+
+				if( Core.ML && Obj_Disp is Item && !( Obj_Disp as Item ).Stackable )
+				{
+					m_MaxAmount = Math.Min( 20, m_MaxAmount );
+				}
+				else
+				{
+					m_MaxAmount = Math.Min( 999, m_MaxAmount * 2 );
+				}
 			}
 			else
 			{

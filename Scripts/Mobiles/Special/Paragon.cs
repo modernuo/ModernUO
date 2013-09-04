@@ -127,12 +127,11 @@ namespace Server.Mobiles
 		public static void UnConvert( BaseCreature bc )
 		{
 			if( !bc.IsParagon )
-				if( !bc.IsParagon )
 				return;
 
 			bc.Hue = 0;
 
-			if ( bc.HitsMaxSeed >= 0 )
+			if( bc.HitsMaxSeed >= 0 )
 				bc.HitsMaxSeed = (int)( bc.HitsMaxSeed / HitsBuff );
 
 			bc.RawStr = (int)( bc.RawStr / StrBuff );

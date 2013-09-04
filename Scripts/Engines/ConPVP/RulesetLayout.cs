@@ -344,7 +344,6 @@ namespace Server.Engines.ConPVP
 
 					if( !Core.AOS )
 					{
-
 						#region Mage 5x
 						Ruleset m5x = new Ruleset( m_Root );
 

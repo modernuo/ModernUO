@@ -676,7 +676,7 @@ namespace Server.Engines.CannedEvil
 				if( m == null )
 					return;
 
-				Point3D loc = GetSpawnLocation();	
+				Point3D loc = GetSpawnLocation();
 
 				// Allow creatures to turn into Paragons at Ilshenar champions.
 				m.OnBeforeSpawn( loc, Map );

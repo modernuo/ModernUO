@@ -9,6 +9,9 @@ namespace Server.Mobiles
 {
 	public abstract class BaseChampion : BaseCreature
 	{
+		public override bool CanMoveOverObstacles { get { return true; } }
+		public override bool CanDestroyObstacles { get { return true; } }
+
 		public BaseChampion( AIType aiType ) : this( aiType, FightMode.Closest )
 		{
 		}
