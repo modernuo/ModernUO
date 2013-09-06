@@ -1040,6 +1040,9 @@ namespace Server.Network {
 		}
 
 		public static void TraceException( Exception ex ) {
+			if (!Core.Debug)
+				return;
+
 			try {
 				using ( StreamWriter op = new StreamWriter( "network-errors.log", true ) ) {
 					op.WriteLine( "# {0}", DateTime.Now );
