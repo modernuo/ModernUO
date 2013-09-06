@@ -527,7 +527,8 @@ namespace Server.Items
 			return c;
 		}
 
-		public override bool IsPublicContainer{ get{ return true; } }
+		// Why was this public?
+		// public override bool IsPublicContainer{ get{ return true; } }
 
 		public Corpse( Mobile owner, List<Item> equipItems ) : this( owner, null, null, equipItems )
 		{
