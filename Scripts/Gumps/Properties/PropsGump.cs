@@ -504,7 +504,7 @@ namespace Server.Gumps
 			}
 			else if ( o is Item )
 			{
-				return String.Format( "(I) 0x{0:X}", ((Item)o).Serial );
+				return String.Format( "(I) 0x{0:X}", ((Item)o).Serial.Value );
 			}
 			else if ( o is Type )
 			{
@@ -692,7 +692,7 @@ namespace Server.Gumps
 			}
 			else if ( o is Item )
 			{
-				return String.Format( "(I) 0x{0:X}", ((Item)o).Serial );
+				return String.Format( "(I) 0x{0:X}", ((Item)o).Serial.Value );
 			}
 			else if ( o is Type )
 			{
