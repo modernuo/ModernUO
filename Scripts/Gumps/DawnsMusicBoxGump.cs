@@ -46,6 +46,9 @@ namespace Server.Gumps
 					page++;
 				}
 
+				if (info == null)
+					continue;
+
 				AddButton( 19, y, 0x845, 0x846, 100 + i, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 44, y - 2, 213, 20, info.Name, 0x7FFF, false, false );
 			}
