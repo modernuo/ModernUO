@@ -1,4 +1,4 @@
 runuo
 =====
 
-Official RunUO Git Repository
+RunUO Git Repository
