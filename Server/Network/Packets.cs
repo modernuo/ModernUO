@@ -3927,8 +3927,9 @@ namespace Server.Network
 		AdvancedMacros	= 1 << 19,
 		AutoRemount		= 1 << 20,
 		AutoBandage		= 1 << 21,
-		BuffChecks		= 1 << 22, // Buff bar checks for macros
+		EnemyTargetShare	= 1 << 22,
 		FilterSeason	= 1 << 23,
+		SpellTargetShare	= 1 << 24,
 
 		All				= ulong.MaxValue
 	}
