@@ -59,6 +59,10 @@ namespace Server.SkillHandlers
 				{
 					m_Thief.SendLocalizedMessage( 1005584 ); // Both hands must be free to steal.
 				}
+				else if ( m_Thief.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
+				{
+					m_Thief.SendMessage( "You may not steal in this area." );
+				}
 				else if ( root is Mobile && ((Mobile)root).Player && !IsInGuild( m_Thief ) )
 				{
 					m_Thief.SendLocalizedMessage( 1005596 ); // You must be in the thieves guild to steal from other players.
@@ -316,7 +320,9 @@ namespace Server.SkillHandlers
 				{
 					from.AddToBackpack( stolen );
 
-					StolenItem.Add( stolen, m_Thief, root as Mobile );
+					if ( !( stolen is Container || stolen.Stackable ) ) { // do not return stolen containers or stackable items
+						StolenItem.Add( stolen, m_Thief, root as Mobile );
+					}
 				}
 
 				if ( caught )
@@ -376,6 +382,10 @@ namespace Server.SkillHandlers
 			if ( !IsEmptyHanded( m ) )
 			{
 				m.SendLocalizedMessage( 1005584 ); // Both hands must be free to steal.
+			}
+			else if ( m.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
+			{
+				m.SendMessage( "You may not steal in this area." );
 			}
 			else
 			{

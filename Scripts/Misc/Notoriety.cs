@@ -85,7 +85,7 @@ namespace Server.Misc
 					pmTarg = bcTarg.SummonMaster as PlayerMobile;
 			}
 
-			if( pmFrom!= null && pmTarg != null )
+			if( pmFrom != null && pmTarg != null )
 			{
 				if( pmFrom.DuelContext != pmTarg.DuelContext && ((pmFrom.DuelContext != null && pmFrom.DuelContext.Started) || (pmTarg.DuelContext != null && pmTarg.DuelContext.Started)) )
 					return false;
@@ -176,7 +176,7 @@ namespace Server.Misc
 					pmTarg = bcTarg.SummonMaster as PlayerMobile;
 			}
 
-			if( pmFrom!= null && pmTarg != null )
+			if( pmFrom != null && pmTarg != null )
 			{
 				if( pmFrom.DuelContext != pmTarg.DuelContext && ((pmFrom.DuelContext != null && pmFrom.DuelContext.Started) || (pmTarg.DuelContext != null && pmTarg.DuelContext.Started)) )
 					return false;
