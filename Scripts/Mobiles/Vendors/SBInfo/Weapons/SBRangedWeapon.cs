@@ -46,7 +46,7 @@ namespace Server.Mobiles
 
 				Add( typeof( HeavyCrossbow ), 27 );
 				Add( typeof( Bow ), 17 );
-				Add( typeof( Crossbow ), 25 ); 
+				Add( typeof( Crossbow ), 25 );
 
 				if( Core.AOS )
 				{

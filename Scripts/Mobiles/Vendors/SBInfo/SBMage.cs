@@ -21,7 +21,7 @@ namespace Server.Mobiles
 			public InternalBuyInfo()
 			{
 				Add( new GenericBuyInfo( typeof( Spellbook ), 18, 10, 0xEFA, 0 ) );
-				
+
 				if ( Core.AOS )
 					Add( new GenericBuyInfo( typeof( NecromancerSpellbook ), 115, 10, 0x2253, 0 ) );
 				
@@ -39,7 +39,7 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( LesserHealPotion ), 15, 10, 0xF0C, 0 ) );
 				Add( new GenericBuyInfo( typeof( StrengthPotion ), 15, 10, 0xF09, 0 ) );
 				Add( new GenericBuyInfo( typeof( LesserPoisonPotion ), 15, 10, 0xF0A, 0 ) );
- 				Add( new GenericBuyInfo( typeof( LesserCurePotion ), 15, 10, 0xF07, 0 ) );
+				Add( new GenericBuyInfo( typeof( LesserCurePotion ), 15, 10, 0xF07, 0 ) );
 				Add( new GenericBuyInfo( typeof( LesserExplosionPotion ), 21, 10, 0xF0D, 0 ) );
 
 				Add( new GenericBuyInfo( typeof( BlackPearl ), 5, 20, 0xF7A, 0 ) );
@@ -109,9 +109,8 @@ namespace Server.Mobiles
 				for ( int i = 0; i < types.Length; ++i )
 					Add( types[i], ((i / 8) + 2) * 2 );
 
-
 				if ( Core.SE )
-				{				
+				{
 					Add( typeof( ExorcismScroll ), 3 );
 					Add( typeof( AnimateDeadScroll ), 8 );
 					Add( typeof( BloodOathScroll ), 8 );
@@ -129,9 +128,8 @@ namespace Server.Mobiles
 					Add( typeof( WitherScroll ), 16 );
 					Add( typeof( VampiricEmbraceScroll ), 20 );
 					Add( typeof( VengefulSpiritScroll ), 20 );
+				}
 			}
-
 		}
-	}
 	}
 }
