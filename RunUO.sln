@@ -1,0 +1,279 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{DAE872E6-6899-427C-A75D-AD52526EBCDA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{1B394627-C6BF-447D-8CBD-4A3B5262C5B4}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Assemblies.cfg = Data\Assemblies.cfg
+		Data\Assemblies_4_0.cfg = Data\Assemblies_4_0.cfg
+		Data\bodyTable.cfg = Data\bodyTable.cfg
+		Data\Common.map = Data\Common.map
+		Data\containers.cfg = Data\containers.cfg
+		Data\items.cfg = Data\items.cfg
+		Data\MLQuests.cfg = Data\MLQuests.cfg
+		Data\mobiles.cfg = Data\mobiles.cfg
+		Data\names.xml = Data\names.xml
+		Data\objects.xml = Data\objects.xml
+		Data\pageresponse.cfg = Data\pageresponse.cfg
+		Data\Regions.xml = Data\Regions.xml
+		Data\shrink.cfg = Data\shrink.cfg
+		Data\signs.cfg = Data\signs.cfg
+		Data\SpawnDefinitions.xml = Data\SpawnDefinitions.xml
+		Data\treasure.cfg = Data\treasure.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Binary", "Binary", "{0BC3F1F5-95F7-4048-8BA1-71F2430104D8}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Binary\Bounds.bin = Data\Binary\Bounds.bin
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bulk Orders", "Bulk Orders", "{3CA15B59-8702-42FE-9980-54F8335CE149}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blacksmith", "Blacksmith", "{D990829A-479F-4377-B0C2-FD7C795C4D28}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Bulk Orders\Blacksmith\armor.cfg = Data\Bulk Orders\Blacksmith\armor.cfg
+		Data\Bulk Orders\Blacksmith\largeaxes.cfg = Data\Bulk Orders\Blacksmith\largeaxes.cfg
+		Data\Bulk Orders\Blacksmith\largechain.cfg = Data\Bulk Orders\Blacksmith\largechain.cfg
+		Data\Bulk Orders\Blacksmith\largefencing.cfg = Data\Bulk Orders\Blacksmith\largefencing.cfg
+		Data\Bulk Orders\Blacksmith\largemaces.cfg = Data\Bulk Orders\Blacksmith\largemaces.cfg
+		Data\Bulk Orders\Blacksmith\largeplate.cfg = Data\Bulk Orders\Blacksmith\largeplate.cfg
+		Data\Bulk Orders\Blacksmith\largepolearms.cfg = Data\Bulk Orders\Blacksmith\largepolearms.cfg
+		Data\Bulk Orders\Blacksmith\largering.cfg = Data\Bulk Orders\Blacksmith\largering.cfg
+		Data\Bulk Orders\Blacksmith\largeswords.cfg = Data\Bulk Orders\Blacksmith\largeswords.cfg
+		Data\Bulk Orders\Blacksmith\weapons.cfg = Data\Bulk Orders\Blacksmith\weapons.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tailoring", "Tailoring", "{2C58085D-5E30-4FB4-A71C-FD0328C60558}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Bulk Orders\Tailoring\boneset.cfg = Data\Bulk Orders\Tailoring\boneset.cfg
+		Data\Bulk Orders\Tailoring\cloth.cfg = Data\Bulk Orders\Tailoring\cloth.cfg
+		Data\Bulk Orders\Tailoring\farmer.cfg = Data\Bulk Orders\Tailoring\farmer.cfg
+		Data\Bulk Orders\Tailoring\femaleleatherset.cfg = Data\Bulk Orders\Tailoring\femaleleatherset.cfg
+		Data\Bulk Orders\Tailoring\fishergirl.cfg = Data\Bulk Orders\Tailoring\fishergirl.cfg
+		Data\Bulk Orders\Tailoring\gypsy.cfg = Data\Bulk Orders\Tailoring\gypsy.cfg
+		Data\Bulk Orders\Tailoring\hatset.cfg = Data\Bulk Orders\Tailoring\hatset.cfg
+		Data\Bulk Orders\Tailoring\jester.cfg = Data\Bulk Orders\Tailoring\jester.cfg
+		Data\Bulk Orders\Tailoring\lady.cfg = Data\Bulk Orders\Tailoring\lady.cfg
+		Data\Bulk Orders\Tailoring\leather.cfg = Data\Bulk Orders\Tailoring\leather.cfg
+		Data\Bulk Orders\Tailoring\maleleatherset.cfg = Data\Bulk Orders\Tailoring\maleleatherset.cfg
+		Data\Bulk Orders\Tailoring\pirate.cfg = Data\Bulk Orders\Tailoring\pirate.cfg
+		Data\Bulk Orders\Tailoring\shoeset.cfg = Data\Bulk Orders\Tailoring\shoeset.cfg
+		Data\Bulk Orders\Tailoring\studdedset.cfg = Data\Bulk Orders\Tailoring\studdedset.cfg
+		Data\Bulk Orders\Tailoring\towncrier.cfg = Data\Bulk Orders\Tailoring\towncrier.cfg
+		Data\Bulk Orders\Tailoring\wizard.cfg = Data\Bulk Orders\Tailoring\wizard.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{4883A0CC-9D0C-4045-AC24-2A2FEAF09B88}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Components\doors.txt = Data\Components\doors.txt
+		Data\Components\floors.txt = Data\Components\floors.txt
+		Data\Components\misc.txt = Data\Components\misc.txt
+		Data\Components\roof.txt = Data\Components\roof.txt
+		Data\Components\stairs.txt = Data\Components\stairs.txt
+		Data\Components\suppinfo.txt = Data\Components\suppinfo.txt
+		Data\Components\teleprts.txt = Data\Components\teleprts.txt
+		Data\Components\walls.txt = Data\Components\walls.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Decoration", "Decoration", "{F1E91339-C2F1-40B7-80D0-6289228168D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Britannia", "Britannia", "{D4052FE1-A0C6-486C-B972-348945894772}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\Britannia\_covetous.cfg = Data\Decoration\Britannia\_covetous.cfg
+		Data\Decoration\Britannia\_deceit.cfg = Data\Decoration\Britannia\_deceit.cfg
+		Data\Decoration\Britannia\_despise.cfg = Data\Decoration\Britannia\_despise.cfg
+		Data\Decoration\Britannia\_destard.cfg = Data\Decoration\Britannia\_destard.cfg
+		Data\Decoration\Britannia\_fire.cfg = Data\Decoration\Britannia\_fire.cfg
+		Data\Decoration\Britannia\_hedgemaze.cfg = Data\Decoration\Britannia\_hedgemaze.cfg
+		Data\Decoration\Britannia\_hythloth.cfg = Data\Decoration\Britannia\_hythloth.cfg
+		Data\Decoration\Britannia\_ice.cfg = Data\Decoration\Britannia\_ice.cfg
+		Data\Decoration\Britannia\_orccave.cfg = Data\Decoration\Britannia\_orccave.cfg
+		Data\Decoration\Britannia\_shame.cfg = Data\Decoration\Britannia\_shame.cfg
+		Data\Decoration\Britannia\_terathankeep.cfg = Data\Decoration\Britannia\_terathankeep.cfg
+		Data\Decoration\Britannia\_wrong.cfg = Data\Decoration\Britannia\_wrong.cfg
+		Data\Decoration\Britannia\britain.cfg = Data\Decoration\Britannia\britain.cfg
+		Data\Decoration\Britannia\bucs.cfg = Data\Decoration\Britannia\bucs.cfg
+		Data\Decoration\Britannia\bucsportal.cfg = Data\Decoration\Britannia\bucsportal.cfg
+		Data\Decoration\Britannia\cove.cfg = Data\Decoration\Britannia\cove.cfg
+		Data\Decoration\Britannia\delucia.cfg = Data\Decoration\Britannia\delucia.cfg
+		Data\Decoration\Britannia\despise.cfg = Data\Decoration\Britannia\despise.cfg
+		Data\Decoration\Britannia\destard.cfg = Data\Decoration\Britannia\destard.cfg
+		Data\Decoration\Britannia\hythloth.cfg = Data\Decoration\Britannia\hythloth.cfg
+		Data\Decoration\Britannia\jhelom.cfg = Data\Decoration\Britannia\jhelom.cfg
+		Data\Decoration\Britannia\magincia.cfg = Data\Decoration\Britannia\magincia.cfg
+		Data\Decoration\Britannia\minoc.cfg = Data\Decoration\Britannia\minoc.cfg
+		Data\Decoration\Britannia\moonglow.cfg = Data\Decoration\Britannia\moonglow.cfg
+		Data\Decoration\Britannia\nujelm.cfg = Data\Decoration\Britannia\nujelm.cfg
+		Data\Decoration\Britannia\papua.cfg = Data\Decoration\Britannia\papua.cfg
+		Data\Decoration\Britannia\patches.cfg = Data\Decoration\Britannia\patches.cfg
+		Data\Decoration\Britannia\serpent pillars.cfg = Data\Decoration\Britannia\serpent pillars.cfg
+		Data\Decoration\Britannia\serpentshold.cfg = Data\Decoration\Britannia\serpentshold.cfg
+		Data\Decoration\Britannia\shame.cfg = Data\Decoration\Britannia\shame.cfg
+		Data\Decoration\Britannia\shrines.cfg = Data\Decoration\Britannia\shrines.cfg
+		Data\Decoration\Britannia\skara.cfg = Data\Decoration\Britannia\skara.cfg
+		Data\Decoration\Britannia\solen matriarch quest.cfg = Data\Decoration\Britannia\solen matriarch quest.cfg
+		Data\Decoration\Britannia\study of solen quest.cfg = Data\Decoration\Britannia\study of solen quest.cfg
+		Data\Decoration\Britannia\trinsic.cfg = Data\Decoration\Britannia\trinsic.cfg
+		Data\Decoration\Britannia\vesper.cfg = Data\Decoration\Britannia\vesper.cfg
+		Data\Decoration\Britannia\wind.cfg = Data\Decoration\Britannia\wind.cfg
+		Data\Decoration\Britannia\witch apprentice quest.cfg = Data\Decoration\Britannia\witch apprentice quest.cfg
+		Data\Decoration\Britannia\yew.cfg = Data\Decoration\Britannia\yew.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Felucca", "Felucca", "{C5F8ACCC-B741-4398-8F1B-9425F7F4659A}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\Felucca\_champion teleporters.cfg = Data\Decoration\Felucca\_champion teleporters.cfg
+		Data\Decoration\Felucca\_star room.cfg = Data\Decoration\Felucca\_star room.cfg
+		Data\Decoration\Felucca\ambitious solen queen quest.cfg = Data\Decoration\Felucca\ambitious solen queen quest.cfg
+		Data\Decoration\Felucca\khaldun entrance.cfg = Data\Decoration\Felucca\khaldun entrance.cfg
+		Data\Decoration\Felucca\khaldun.cfg = Data\Decoration\Felucca\khaldun.cfg
+		Data\Decoration\Felucca\ocllo.cfg = Data\Decoration\Felucca\ocllo.cfg
+		Data\Decoration\Felucca\solen matriarch quest.cfg = Data\Decoration\Felucca\solen matriarch quest.cfg
+		Data\Decoration\Felucca\yew.cfg = Data\Decoration\Felucca\yew.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ilshenar", "Ilshenar", "{1AE5E70F-6607-4C60-82BF-764F7BD89138}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\Ilshenar\_blood.cfg = Data\Decoration\Ilshenar\_blood.cfg
+		Data\Decoration\Ilshenar\_central.cfg = Data\Decoration\Ilshenar\_central.cfg
+		Data\Decoration\Ilshenar\_exodus.cfg = Data\Decoration\Ilshenar\_exodus.cfg
+		Data\Decoration\Ilshenar\_gwenno.cfg = Data\Decoration\Ilshenar\_gwenno.cfg
+		Data\Decoration\Ilshenar\_ratcave.cfg = Data\Decoration\Ilshenar\_ratcave.cfg
+		Data\Decoration\Ilshenar\_regvolom.cfg = Data\Decoration\Ilshenar\_regvolom.cfg
+		Data\Decoration\Ilshenar\_serpentine.cfg = Data\Decoration\Ilshenar\_serpentine.cfg
+		Data\Decoration\Ilshenar\_sheepfarm.cfg = Data\Decoration\Ilshenar\_sheepfarm.cfg
+		Data\Decoration\Ilshenar\_sorcerers.cfg = Data\Decoration\Ilshenar\_sorcerers.cfg
+		Data\Decoration\Ilshenar\_terortskitas.cfg = Data\Decoration\Ilshenar\_terortskitas.cfg
+		Data\Decoration\Ilshenar\_twinoaks.cfg = Data\Decoration\Ilshenar\_twinoaks.cfg
+		Data\Decoration\Ilshenar\camp.cfg = Data\Decoration\Ilshenar\camp.cfg
+		Data\Decoration\Ilshenar\camp2.cfg = Data\Decoration\Ilshenar\camp2.cfg
+		Data\Decoration\Ilshenar\enslavedgargs.cfg = Data\Decoration\Ilshenar\enslavedgargs.cfg
+		Data\Decoration\Ilshenar\gargoylecity.cfg = Data\Decoration\Ilshenar\gargoylecity.cfg
+		Data\Decoration\Ilshenar\golemsandjukas.cfg = Data\Decoration\Ilshenar\golemsandjukas.cfg
+		Data\Decoration\Ilshenar\lakeshire.cfg = Data\Decoration\Ilshenar\lakeshire.cfg
+		Data\Decoration\Ilshenar\meercatacombs.cfg = Data\Decoration\Ilshenar\meercatacombs.cfg
+		Data\Decoration\Ilshenar\misc.cfg = Data\Decoration\Ilshenar\misc.cfg
+		Data\Decoration\Ilshenar\mistas.cfg = Data\Decoration\Ilshenar\mistas.cfg
+		Data\Decoration\Ilshenar\patches.cfg = Data\Decoration\Ilshenar\patches.cfg
+		Data\Decoration\Ilshenar\ratfortress.cfg = Data\Decoration\Ilshenar\ratfortress.cfg
+		Data\Decoration\Ilshenar\savagecamp.cfg = Data\Decoration\Ilshenar\savagecamp.cfg
+		Data\Decoration\Ilshenar\shrines.cfg = Data\Decoration\Ilshenar\shrines.cfg
+		Data\Decoration\Ilshenar\vinculuminn.cfg = Data\Decoration\Ilshenar\vinculuminn.cfg
+		Data\Decoration\Ilshenar\wispdungeon.cfg = Data\Decoration\Ilshenar\wispdungeon.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Malas", "Malas", "{BCB51DFB-3AD2-44C5-8531-51D43C34CF44}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\Malas\_luna.cfg = Data\Decoration\Malas\_luna.cfg
+		Data\Decoration\Malas\_umbra.cfg = Data\Decoration\Malas\_umbra.cfg
+		Data\Decoration\Malas\dark tides quest.cfg = Data\Decoration\Malas\dark tides quest.cfg
+		Data\Decoration\Malas\doom.cfg = Data\Decoration\Malas\doom.cfg
+		Data\Decoration\Malas\emino's undertaking quest.cfg = Data\Decoration\Malas\emino's undertaking quest.cfg
+		Data\Decoration\Malas\haochi's trials quest.cfg = Data\Decoration\Malas\haochi's trials quest.cfg
+		Data\Decoration\Malas\luna.cfg = Data\Decoration\Malas\luna.cfg
+		Data\Decoration\Malas\markcontainers.cfg = Data\Decoration\Malas\markcontainers.cfg
+		Data\Decoration\Malas\summoning quest.cfg = Data\Decoration\Malas\summoning quest.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RuinedMaginciaFel", "RuinedMaginciaFel", "{8DD3A1F1-EBD8-4DC2-A7D7-0127929726E0}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\RuinedMaginciaFel\Mag-Fel.cfg = Data\Decoration\RuinedMaginciaFel\Mag-Fel.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RuinedMaginciaTram", "RuinedMaginciaTram", "{B018CA81-2D88-49DA-B362-2F6D84148B94}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\RuinedMaginciaTram\Mag-Tram.cfg = Data\Decoration\RuinedMaginciaTram\Mag-Tram.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tokuno", "Tokuno", "{A42F9968-E255-4960-9C4D-66180D828EB9}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\Tokuno\terrible hatchlings quest.cfg = Data\Decoration\Tokuno\terrible hatchlings quest.cfg
+		Data\Decoration\Tokuno\tokuno.cfg = Data\Decoration\Tokuno\tokuno.cfg
+		Data\Decoration\Tokuno\treasures of tokuno.cfg = Data\Decoration\Tokuno\treasures of tokuno.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Trammel", "Trammel", "{452A8873-A7C2-4FD8-A940-8AFDEACB9702}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Decoration\Trammel\_haven additions.cfg = Data\Decoration\Trammel\_haven additions.cfg
+		Data\Decoration\Trammel\_minoc camp.cfg = Data\Decoration\Trammel\_minoc camp.cfg
+		Data\Decoration\Trammel\ambitious solen queen quest.cfg = Data\Decoration\Trammel\ambitious solen queen quest.cfg
+		Data\Decoration\Trammel\collector quest.cfg = Data\Decoration\Trammel\collector quest.cfg
+		Data\Decoration\Trammel\haven.cfg = Data\Decoration\Trammel\haven.cfg
+		Data\Decoration\Trammel\magincia.cfg = Data\Decoration\Trammel\magincia.cfg
+		Data\Decoration\Trammel\solen matriarch quest.cfg = Data\Decoration\Trammel\solen matriarch quest.cfg
+		Data\Decoration\Trammel\uzeraan turmoil quest.cfg = Data\Decoration\Trammel\uzeraan turmoil quest.cfg
+		Data\Decoration\Trammel\yew.cfg = Data\Decoration\Trammel\yew.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Locations", "Locations", "{70B04D45-39DD-422D-B95F-99ED9FC3DAC1}"
+	ProjectSection(SolutionItems) = preProject
+		Data\Locations\felucca.xml = Data\Locations\felucca.xml
+		Data\Locations\ilshenar.xml = Data\Locations\ilshenar.xml
+		Data\Locations\malas.xml = Data\Locations\malas.xml
+		Data\Locations\tokuno.xml = Data\Locations\tokuno.xml
+		Data\Locations\trammel.xml = Data\Locations\trammel.xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|x64.ActiveCfg = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|x64.Build.0 = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|x86.ActiveCfg = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Debug|x86.Build.0 = Debug|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Release|Any CPU.ActiveCfg = Release|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Release|Mixed Platforms.Build.0 = Release|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Release|x64.ActiveCfg = Release|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Release|x86.ActiveCfg = Release|x86
+		{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}.Release|x86.Build.0 = Release|x86
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|x64.Build.0 = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Release|x64.ActiveCfg = Release|Any CPU
+		{DAE872E6-6899-427C-A75D-AD52526EBCDA}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0BC3F1F5-95F7-4048-8BA1-71F2430104D8} = {1B394627-C6BF-447D-8CBD-4A3B5262C5B4}
+		{3CA15B59-8702-42FE-9980-54F8335CE149} = {1B394627-C6BF-447D-8CBD-4A3B5262C5B4}
+		{4883A0CC-9D0C-4045-AC24-2A2FEAF09B88} = {1B394627-C6BF-447D-8CBD-4A3B5262C5B4}
+		{F1E91339-C2F1-40B7-80D0-6289228168D0} = {1B394627-C6BF-447D-8CBD-4A3B5262C5B4}
+		{70B04D45-39DD-422D-B95F-99ED9FC3DAC1} = {1B394627-C6BF-447D-8CBD-4A3B5262C5B4}
+		{D990829A-479F-4377-B0C2-FD7C795C4D28} = {3CA15B59-8702-42FE-9980-54F8335CE149}
+		{2C58085D-5E30-4FB4-A71C-FD0328C60558} = {3CA15B59-8702-42FE-9980-54F8335CE149}
+		{D4052FE1-A0C6-486C-B972-348945894772} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{C5F8ACCC-B741-4398-8F1B-9425F7F4659A} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{1AE5E70F-6607-4C60-82BF-764F7BD89138} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{BCB51DFB-3AD2-44C5-8531-51D43C34CF44} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{8DD3A1F1-EBD8-4DC2-A7D7-0127929726E0} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{B018CA81-2D88-49DA-B362-2F6D84148B94} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{A42F9968-E255-4960-9C4D-66180D828EB9} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+		{452A8873-A7C2-4FD8-A940-8AFDEACB9702} = {F1E91339-C2F1-40B7-80D0-6289228168D0}
+	EndGlobalSection
+EndGlobal

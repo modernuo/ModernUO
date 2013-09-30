@@ -1,0 +1,14 @@
+/RunUO.exe
+/RunUO.pdb
+/RunUO.vshost.exe
+/Logs/
+/Scripts/bin/
+/Scripts/obj/
+/Scripts/Output
+/Server/bin/
+/Server/obj/
+
+*.user
+*.suo
+/Backups
+/Saves
