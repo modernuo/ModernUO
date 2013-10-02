@@ -46,6 +46,7 @@ namespace Server
 	public delegate void StunRequestEventHandler( StunRequestEventArgs e );
 	public delegate void OpenSpellbookRequestEventHandler( OpenSpellbookRequestEventArgs e );
 	public delegate void CastSpellRequestEventHandler( CastSpellRequestEventArgs e );
+	public delegate void BandageTargetRequestEventHandler( BandageTargetRequestEventArgs e );
 	public delegate void AnimateRequestEventHandler( AnimateRequestEventArgs e );
 	public delegate void LogoutEventHandler( LogoutEventArgs e );
 	public delegate void SocketConnectEventHandler( SocketConnectEventArgs e );
@@ -464,6 +465,24 @@ namespace Server
 		}
 	}
 
+	public class BandageTargetRequestEventArgs : EventArgs
+	{
+		private Mobile m_Mobile;
+		private Item m_Bandage;
+		private Mobile m_Target;
+
+		public Mobile Mobile { get { return m_Mobile; } }
+		public Item Bandage { get { return m_Bandage; } }
+		public Mobile Target { get { return m_Target; } }
+
+		public BandageTargetRequestEventArgs(Mobile m, Item bandage, Mobile target)
+		{
+			m_Mobile = m;
+			m_Bandage = bandage;
+			m_Target = target;
+		}
+	}
+
 	public class OpenSpellbookRequestEventArgs : EventArgs
 	{
 		private Mobile m_Mobile;
@@ -805,6 +824,7 @@ namespace Server
 		public static event StunRequestEventHandler StunRequest;
 		public static event OpenSpellbookRequestEventHandler OpenSpellbookRequest;
 		public static event CastSpellRequestEventHandler CastSpellRequest;
+		public static event BandageTargetRequestEventHandler BandageTargetRequest;
 		public static event AnimateRequestEventHandler AnimateRequest;
 		public static event LogoutEventHandler Logout;
 		public static event SocketConnectEventHandler SocketConnect;
@@ -998,6 +1018,12 @@ namespace Server
 				CastSpellRequest( e );
 		}
 
+		public static void InvokeBandageTargetRequest( BandageTargetRequestEventArgs e )
+		{
+			if ( BandageTargetRequest != null )
+				BandageTargetRequest( e );
+		}
+
 		public static void InvokeOpenSpellbookRequest( OpenSpellbookRequestEventArgs e )
 		{
 			if ( OpenSpellbookRequest != null )
@@ -1104,6 +1130,7 @@ namespace Server
 			StunRequest = null;
 			OpenSpellbookRequest = null;
 			CastSpellRequest = null;
+			BandageTargetRequest = null;
 			AnimateRequest = null;
 			Logout = null;
 			SocketConnect = null;

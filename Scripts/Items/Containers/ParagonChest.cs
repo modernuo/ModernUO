@@ -35,6 +35,7 @@ namespace Server.Items
 
 		public override void OnSingleClick( Mobile from )
 		{
+			base.OnSingleClick(from);
 			LabelTo( from, 1063449, m_Name );
 		}
 

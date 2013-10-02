@@ -168,6 +168,7 @@ namespace Server.Network
 			RegisterExtended( 0x1A,  true, new OnPacketReceive( StatLockChange ) );
 			RegisterExtended( 0x1C,  true, new OnPacketReceive( CastSpell ) );
 			RegisterExtended( 0x24, false, new OnPacketReceive( UnhandledBF ) );
+			RegisterExtended( 0x2C,  true, new OnPacketReceive( BandageTarget ) );
 
 			RegisterEncoded( 0x19, true, new OnEncodedPacketReceive( SetAbility ) );
 			RegisterEncoded( 0x28, true, new OnEncodedPacketReceive( GuildGumpRequest ) );
@@ -1617,6 +1618,35 @@ namespace Server.Network
 			int spellID = pvSrc.ReadInt16() - 1;
 
 			EventSink.InvokeCastSpellRequest( new CastSpellRequestEventArgs( from, spellID, spellbook ) );
+		}
+
+		public static void BandageTarget(NetState state, PacketReader pvSrc)
+		{
+			Mobile from = state.Mobile;
+
+			if (from == null)
+				return;
+
+			if (from.AccessLevel >= AccessLevel.Counselor || DateTime.Now >= from.NextActionTime)
+			{
+				Item bandage = World.FindItem(pvSrc.ReadInt32());
+
+				if (bandage == null)
+					return;
+
+				Mobile target = World.FindMobile(pvSrc.ReadInt32());
+
+				if (target == null)
+					return;
+
+				EventSink.InvokeBandageTargetRequest(new BandageTargetRequestEventArgs(from, bandage, target));
+
+				from.NextActionTime = DateTime.Now + Mobile.ActionDelay;
+			}
+			else
+			{
+				from.SendActionMessage();
+			}
 		}
 
 		public static void BatchQueryProperties( NetState state, PacketReader pvSrc )

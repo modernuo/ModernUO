@@ -18,6 +18,11 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
+		public static void Initialize()
+		{
+			EventSink.BandageTargetRequest += new BandageTargetRequestEventHandler(EventSink_BandageTargetRequest);
+		}
+
 		[Constructable]
 		public Bandage() : this( 1 )
 		{
@@ -71,6 +76,37 @@ namespace Server.Items
 			else
 			{
 				from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
+			}
+		}
+
+		private static void EventSink_BandageTargetRequest(BandageTargetRequestEventArgs e)
+		{
+			Bandage b = e.Bandage as Bandage;
+
+			if (b == null || b.Deleted)
+				return;
+
+			Mobile from = e.Mobile;
+
+			if (from.InRange(b.GetWorldLocation(), Range))
+			{
+				Target t = from.Target;
+
+				if (t != null)
+				{
+					Target.Cancel(from);
+					from.Target = null;
+				}
+
+				from.RevealingAction();
+
+				from.SendLocalizedMessage(500948); // Who will you use the bandages on?
+
+				new InternalTarget(b).Invoke(from, e.Target);
+			}
+			else
+			{
+				from.SendLocalizedMessage(500295); // You are too far away to do that.
 			}
 		}
 
