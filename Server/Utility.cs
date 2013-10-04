@@ -35,6 +35,7 @@ namespace Server
 {
 	public static class Utility
 	{
+		// TODO: ThreadLocal<T> for .NET 4.0?
 		private static Random m_Random = new Random();
 		private static Encoding m_UTF8, m_UTF8WithEncoding;
 
@@ -625,10 +626,6 @@ namespace Server
 		}
 		#endregion
 
-		public static double RandomDouble()
-		{
-			return m_Random.NextDouble();
-		}
 		#region In[...]Range
 		public static bool InRange( Point3D p1, Point3D p2, int range )
 		{
@@ -661,8 +658,8 @@ namespace Server
 				&& ( p1.Y >= (p2.Y - 18) )
 				&& ( p1.Y <= (p2.Y + 18) );
 		}
-
 		#endregion
+
 		public static Direction GetDirection( IPoint2D from, IPoint2D to )
 		{
 			int dx = to.X - from.X;
@@ -774,24 +771,36 @@ namespace Server
 			}
 		}
 
+		#region Random
 		//4d6+8 would be: Utility.Dice( 4, 6, 8 )
 		public static int Dice( int numDice, int numSides, int bonus )
 		{
 			int total = 0;
-			for (int i=0;i<numDice;++i)
-				total += Random( numSides ) + 1;
+
+			lock (m_Random)
+			{
+				for (int i = 0; i < numDice; ++i)
+					total += m_Random.Next(numSides) + 1;
+			}
+
 			total += bonus;
 			return total;
 		}
 
 		public static int RandomList( params int[] list )
 		{
-			return list[m_Random.Next( list.Length )];
+			int r;
+			lock (m_Random)
+				r = m_Random.Next( list.Length );
+			return list[r];
 		}
 
 		public static bool RandomBool()
 		{
-			return ( m_Random.Next( 2 ) == 0 );
+			bool r;
+			lock (m_Random)
+				r = ( m_Random.Next( 2 ) == 0 );
+			return r;
 		}
 
 		public static int RandomMinMax( int min, int max )
@@ -807,7 +816,11 @@ namespace Server
 				return min;
 			}
 
-			return min + m_Random.Next( (max - min) + 1 );
+			int r;
+			lock (m_Random)
+				r = m_Random.Next( (max - min) + 1 );
+
+			return min + r;
 		}
 
 		public static int Random( int from, int count )
@@ -818,23 +831,42 @@ namespace Server
 			}
 			else if ( count > 0 )
 			{
-				return from + m_Random.Next( count );
+				int r;
+				lock (m_Random)
+					r = m_Random.Next( count );
+				return from + r;
 			}
 			else
 			{
-				return from - m_Random.Next( -count );
+				int r;
+				lock (m_Random)
+					r = m_Random.Next( -count );
+				return from - r;
 			}
 		}
 
 		public static int Random( int count )
 		{
-			return m_Random.Next( count );
+			int r;
+			lock (m_Random)
+				r = m_Random.Next( count );
+			return r;
 		}
 
 		public static void RandomBytes( byte[] buffer )
 		{
-			m_Random.NextBytes( buffer );
+			lock (m_Random)
+				m_Random.NextBytes(buffer);
 		}
+
+		public static double RandomDouble()
+		{
+			double r;
+			lock (m_Random)
+				r = m_Random.NextDouble();
+			return r;
+		}
+		#endregion
 
 		#region Random Hues
 
