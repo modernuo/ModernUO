@@ -545,14 +545,17 @@ namespace Server.Items
 			else
 				to.Send( new DisplaySpellbook( this ) );
 
-			if ( Core.AOS ) {
+			if ( ObjectPropertyList.Enabled ) {
 				if ( ns.NewSpellbook ) {
 					to.Send( new NewSpellbookContent( this, ItemID, BookOffset + 1, m_Content ) );
 				} else {
-					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
+					if (ns.ContainerGridLines) {
+						to.Send(new SpellbookContent6017(m_Count, BookOffset + 1, m_Content, this));
+					} else {
+						to.Send(new SpellbookContent(m_Count, BookOffset + 1, m_Content, this));
+					}
 				}
-			}
-			else {
+			} else {
 				if ( ns.ContainerGridLines ) {
 					to.Send( new SpellbookContent6017( m_Count, BookOffset + 1, m_Content, this ) );
 				} else {
