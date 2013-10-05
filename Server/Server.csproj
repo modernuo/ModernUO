@@ -150,6 +150,7 @@
     <Compile Include="Prompt.cs" />
     <Compile Include="QuestArrow.cs" />
     <Compile Include="Race.cs" />
+    <Compile Include="Random.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="ScriptCompiler.cs" />
     <Compile Include="Sector.cs" />

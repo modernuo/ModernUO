@@ -35,8 +35,6 @@ namespace Server
 {
 	public static class Utility
 	{
-		// TODO: ThreadLocal<T> for .NET 4.0?
-		private static Random m_Random = new Random();
 		private static Encoding m_UTF8, m_UTF8WithEncoding;
 
 		public static Encoding UTF8
@@ -777,11 +775,8 @@ namespace Server
 		{
 			int total = 0;
 
-			lock (m_Random)
-			{
-				for (int i = 0; i < numDice; ++i)
-					total += m_Random.Next(numSides) + 1;
-			}
+			for (int i = 0; i < numDice; ++i)
+				total += RandomImpl.Next(numSides) + 1;
 
 			total += bonus;
 			return total;
@@ -789,18 +784,12 @@ namespace Server
 
 		public static int RandomList( params int[] list )
 		{
-			int r;
-			lock (m_Random)
-				r = m_Random.Next( list.Length );
-			return list[r];
+			return list[RandomImpl.Next(list.Length)];
 		}
 
 		public static bool RandomBool()
 		{
-			bool r;
-			lock (m_Random)
-				r = ( m_Random.Next( 2 ) == 0 );
-			return r;
+			return (RandomImpl.Next(2) == 0);
 		}
 
 		public static int RandomMinMax( int min, int max )
@@ -816,11 +805,7 @@ namespace Server
 				return min;
 			}
 
-			int r;
-			lock (m_Random)
-				r = m_Random.Next( (max - min) + 1 );
-
-			return min + r;
+			return min + RandomImpl.Next((max - min) + 1);
 		}
 
 		public static int Random( int from, int count )
@@ -831,40 +816,27 @@ namespace Server
 			}
 			else if ( count > 0 )
 			{
-				int r;
-				lock (m_Random)
-					r = m_Random.Next( count );
-				return from + r;
+				return from + RandomImpl.Next(count);
 			}
 			else
 			{
-				int r;
-				lock (m_Random)
-					r = m_Random.Next( -count );
-				return from - r;
+				return from - RandomImpl.Next(-count);
 			}
 		}
 
 		public static int Random( int count )
 		{
-			int r;
-			lock (m_Random)
-				r = m_Random.Next( count );
-			return r;
+			return RandomImpl.Next(count);
 		}
 
 		public static void RandomBytes( byte[] buffer )
 		{
-			lock (m_Random)
-				m_Random.NextBytes(buffer);
+			RandomImpl.NextBytes(buffer);
 		}
 
 		public static double RandomDouble()
 		{
-			double r;
-			lock (m_Random)
-				r = m_Random.NextDouble();
-			return r;
+			return RandomImpl.NextDouble();
 		}
 		#endregion
 
