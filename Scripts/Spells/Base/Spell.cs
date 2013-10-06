@@ -633,7 +633,7 @@ namespace Server.Spells
 			if ( Core.AOS )
 				return TimeSpan.Zero;
 
-			double delay = 1.0 - Math.Sqrt((Core.TickCount - m_StartCastTime) / 1000 / GetCastDelay().TotalSeconds);
+			double delay = 1.0 - Math.Sqrt((Core.TickCount - m_StartCastTime) / 1000.0 / GetCastDelay().TotalSeconds);
 
 			if ( delay < 0.2 )
 				delay = 0.2;
