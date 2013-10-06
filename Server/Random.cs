@@ -38,6 +38,14 @@ namespace Server {
 			}
 		}
 
+		public static bool IsHardwareRNG {
+			get { return _Random is IHardwareRNG; }
+		}
+
+		public static Type Type {
+			get { return _Random.GetType(); }
+		}
+
 		public static double NextDouble() {
 			return _Random.NextDouble();
 		}

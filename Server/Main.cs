@@ -478,6 +478,8 @@ namespace Server
 			if ( GCSettings.IsServerGC )
 				Console.WriteLine("Core: Server garbage collection mode enabled");
 
+			Console.WriteLine("RandomImpl: {0} ({1})", RandomImpl.Type.Name, RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
+
 			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
 			{
 				Console.WriteLine( "Scripts: One or more scripts failed to compile or no script files were found." );
