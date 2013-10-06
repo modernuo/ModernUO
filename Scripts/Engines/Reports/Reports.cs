@@ -27,7 +27,7 @@ namespace Server.Engines.Reports
 			m_StaffHistory = new StaffHistory();
 			m_StaffHistory.Load();
 
-			DateTime now = DateTime.Now;
+			DateTime now = DateTime.UtcNow;
 
 			DateTime date = now.Date;
 			TimeSpan timeOfDay = now.TimeOfDay;
@@ -41,7 +41,7 @@ namespace Server.Engines.Reports
 
 		public static void CheckRegenerate()
 		{
-			if ( DateTime.Now < m_GenerateTime )
+			if ( DateTime.UtcNow < m_GenerateTime )
 				return;
 
 			Generate();
@@ -57,7 +57,7 @@ namespace Server.Engines.Reports
 		{
 			Snapshot ss = new Snapshot();
 
-			ss.TimeStamp = DateTime.Now;
+			ss.TimeStamp = DateTime.UtcNow;
 
 			FillSnapshot( ss );
 

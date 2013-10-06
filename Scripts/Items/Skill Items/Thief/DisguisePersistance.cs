@@ -47,7 +47,7 @@ namespace Server.Items
 				Mobile m = (Mobile)entry.Key;
 				
 				writer.Write( m );
-				writer.Write( ((Timer)entry.Value).Next - DateTime.Now );
+				writer.Write( ((Timer)entry.Value).Next - DateTime.UtcNow );
 				writer.Write( m.NameMod );
 			}
 		}

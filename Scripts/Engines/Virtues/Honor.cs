@@ -79,7 +79,7 @@ namespace Server
 				return;
 			}
 
-			TimeSpan waitTime = DateTime.Now - pm.LastHonorUse;
+			TimeSpan waitTime = DateTime.UtcNow - pm.LastHonorUse;
 			if ( waitTime < UseDelay )
 			{
 				TimeSpan remainingTime = UseDelay - waitTime;
@@ -113,7 +113,7 @@ namespace Server
 			Timer.DelayCall( TimeSpan.FromSeconds( duration ),
 				delegate() {
 					pm.HonorActive = false;
-					pm.LastHonorUse = DateTime.Now;
+					pm.LastHonorUse = DateTime.UtcNow;
 					pm.SendLocalizedMessage( 1063236 ); // You no longer embrace your honor
 				} );
 		}
@@ -231,11 +231,11 @@ namespace Server
 
 			m_Timer = new InternalTimer( this );
 			m_Timer.Start();
-			source.m_hontime = (DateTime.Now + TimeSpan.FromMinutes( 40 ));
+			source.m_hontime = (DateTime.UtcNow + TimeSpan.FromMinutes( 40 ));
 
 			Timer.DelayCall( TimeSpan.FromMinutes( 40 ),
 				delegate() {
-					if (source.m_hontime < DateTime.Now && source.SentHonorContext != null)
+					if (source.m_hontime < DateTime.UtcNow && source.SentHonorContext != null)
 					{
 						Cancel();
 					}

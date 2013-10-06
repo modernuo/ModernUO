@@ -37,7 +37,7 @@ namespace Server.Items
 		{
 			m_Title = title;
 			m_Rank = rank;
-			m_Date = DateTime.Now;
+			m_Date = DateTime.UtcNow;
 
 			LootType = LootType.Blessed;
 

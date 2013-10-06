@@ -13,7 +13,7 @@ namespace Server.Commands
 		[Description( "Returns the server's local time." )]
 		private static void Time_OnCommand( CommandEventArgs e )
 		{
-			e.Mobile.SendMessage( DateTime.Now.ToString() );
+			e.Mobile.SendMessage( DateTime.UtcNow.ToString() );
 		}
 	}
 }

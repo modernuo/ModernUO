@@ -35,7 +35,7 @@ namespace Server.Engines.Reports
 
 		public ResponseInfo( string sentBy, string message )
 		{
-			m_TimeStamp = DateTime.Now;
+			m_TimeStamp = DateTime.UtcNow;
 			m_SentBy = sentBy;
 			m_Message = message;
 		}

@@ -1156,7 +1156,7 @@ namespace Server.Engines.ConPVP
 			{
 				AggressorInfo info = m.Aggressed[i];
 
-				if ( info.Defender.Player && (DateTime.Now - info.LastCombatTime) < CombatDelay )
+				if ( info.Defender.Player && (DateTime.UtcNow - info.LastCombatTime) < CombatDelay )
 					return true;
 			}
 
@@ -1164,7 +1164,7 @@ namespace Server.Engines.ConPVP
 			{
 				AggressorInfo info = m.Aggressors[i];
 
-				if ( info.Attacker.Player && (DateTime.Now - info.LastCombatTime) < CombatDelay )
+				if ( info.Attacker.Player && (DateTime.UtcNow - info.LastCombatTime) < CombatDelay )
 					return true;
 			}
 
@@ -2050,14 +2050,14 @@ namespace Server.Engines.ConPVP
 				m_Mobile = mob;
 				m_Location = loc;
 				m_Facet = facet;
-				m_Expire = DateTime.Now + TimeSpan.FromMinutes( 30.0 );
+				m_Expire = DateTime.UtcNow + TimeSpan.FromMinutes( 30.0 );
 			}
 
-			public bool Expired{ get{ return ( DateTime.Now >= m_Expire ); } }
+			public bool Expired{ get{ return ( DateTime.UtcNow >= m_Expire ); } }
 
 			public void Update()
 			{
-				m_Expire = DateTime.Now + TimeSpan.FromMinutes( 30.0 );
+				m_Expire = DateTime.UtcNow + TimeSpan.FromMinutes( 30.0 );
 
 				if ( m_Mobile.Map == Map.Internal )
 				{

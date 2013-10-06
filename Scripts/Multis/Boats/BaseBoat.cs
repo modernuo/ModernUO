@@ -114,19 +114,19 @@ namespace Server.Multis
 			{
 				DateTime start = TimeOfDecay - BoatDecayDelay;
 
-				if ( DateTime.Now - start < TimeSpan.FromHours( 1.0 ) )
+				if ( DateTime.UtcNow - start < TimeSpan.FromHours( 1.0 ) )
 					return 1043010; // This structure is like new.
 
-				if ( DateTime.Now - start < TimeSpan.FromDays( 2.0 ) )
+				if ( DateTime.UtcNow - start < TimeSpan.FromDays( 2.0 ) )
 					return 1043011; // This structure is slightly worn.
 
-				if ( DateTime.Now - start < TimeSpan.FromDays( 3.0 ) )
+				if ( DateTime.UtcNow - start < TimeSpan.FromDays( 3.0 ) )
 					return 1043012; // This structure is somewhat worn.
 
-				if ( DateTime.Now - start < TimeSpan.FromDays( 4.0 ) )
+				if ( DateTime.UtcNow - start < TimeSpan.FromDays( 4.0 ) )
 					return 1043013; // This structure is fairly worn.
 
-				if ( DateTime.Now - start < TimeSpan.FromDays( 5.0 ) )
+				if ( DateTime.UtcNow - start < TimeSpan.FromDays( 5.0 ) )
 					return 1043014; // This structure is greatly worn.
 
 				return 1043015; // This structure is in danger of collapsing.
@@ -152,7 +152,7 @@ namespace Server.Multis
 
 		public BaseBoat() : base( 0x0 )
 		{
-			m_DecayTime = DateTime.Now + BoatDecayDelay;
+			m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
 
 			m_TillerMan = new TillerMan( this );
 			m_Hold = new Hold( this );
@@ -465,7 +465,7 @@ namespace Server.Multis
 
 		public void Refresh()
 		{
-			m_DecayTime = DateTime.Now + BoatDecayDelay;
+			m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
 
 			if( m_TillerMan != null )
 				m_TillerMan.InvalidateProperties();
@@ -507,7 +507,7 @@ namespace Server.Multis
 			if ( m_Decaying )
 				return true;
 
-			if ( !IsMoving && DateTime.Now >= m_DecayTime )
+			if ( !IsMoving && DateTime.UtcNow >= m_DecayTime )
 			{
 				new DecayTimer( this ).Start();
 

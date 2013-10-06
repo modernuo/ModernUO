@@ -75,7 +75,7 @@ namespace Server.Mobiles
 
 		public void AreaPeace()
 		{
-			if ( Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.Now || 0.1 < Utility.RandomDouble() )
+			if ( Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
 				return;
 
 			TimeSpan duration = TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 80 ) );
@@ -86,20 +86,20 @@ namespace Server.Mobiles
 
 				if ( IsValidTarget( p ) )
 				{
-					p.PeacedUntil = DateTime.Now + duration;
+					p.PeacedUntil = DateTime.UtcNow + duration;
 					p.SendLocalizedMessage( 1072065 ); // You gaze upon the dryad's beauty, and forget to continue battling!
 					p.FixedParticles( 0x376A, 1, 20, 0x7F5, EffectLayer.Waist );
 					p.Combatant = null;
 				}
 			}
 
-			m_NextPeace = DateTime.Now + TimeSpan.FromSeconds( 10 );
+			m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 			PlaySound( 0x1D3 );
 		}
 
 		public bool IsValidTarget( PlayerMobile m )
 		{
-			if ( m != null && m.PeacedUntil < DateTime.Now && !m.Hidden && m.AccessLevel == AccessLevel.Player && CanBeHarmful( m ) )
+			if ( m != null && m.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player && CanBeHarmful( m ) )
 				return true;
 
 			return false;
@@ -111,7 +111,7 @@ namespace Server.Mobiles
 
 		public void AreaUndress()
 		{
-			if ( Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.Now || 0.005 < Utility.RandomDouble() )
+			if ( Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble() )
 				return;
 
 			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
@@ -128,7 +128,7 @@ namespace Server.Mobiles
 				}
 			}
 
-			m_NextUndress = DateTime.Now + TimeSpan.FromMinutes( 1 );
+			m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
 		}
 
 		public void UndressItem( Mobile m, Layer layer )

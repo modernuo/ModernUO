@@ -114,7 +114,7 @@ namespace Server.Spells.Spellweaving
 		public override void DoFizzle()
 		{
 			Caster.PlaySound( 0x1D6 );
-			Caster.NextSpellTime = DateTime.Now;
+			Caster.NextSpellTime = Core.TickCount;
 		}
 
 		public override void DoHurtFizzle()

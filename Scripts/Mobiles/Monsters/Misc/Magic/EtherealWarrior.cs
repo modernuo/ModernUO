@@ -61,9 +61,9 @@ namespace Server.Mobiles
 		{
 			if (!from.Alive && (from is PlayerMobile))
 			{
-				if (!from.Frozen && (DateTime.Now >= m_NextResurrect) && InRange(from, 4) && !InRange(oldLocation, 4) && InLOS(from))
+				if (!from.Frozen && (DateTime.UtcNow >= m_NextResurrect) && InRange(from, 4) && !InRange(oldLocation, 4) && InLOS(from))
 				{
-					m_NextResurrect = DateTime.Now + ResurrectDelay;
+					m_NextResurrect = DateTime.UtcNow + ResurrectDelay;
 					if (!from.Criminal && (from.Kills < 5) && (from.Karma > 0))
 					{
 						if (from.Map != null && from.Map.CanFit(from.Location, 16, false, false))

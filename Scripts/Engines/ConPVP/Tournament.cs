@@ -689,7 +689,7 @@ namespace Server.Engines.ConPVP
 								fmt = "As you wish m'{0}. The tournament will begin {1}, but first you must name your team.";
 
 							string timeUntil;
-							int minutesUntil = (int)Math.Round( ( (tourny.SignupStart + tourny.SignupPeriod) - DateTime.Now ).TotalMinutes );
+							int minutesUntil = (int)Math.Round( ( (tourny.SignupStart + tourny.SignupPeriod) - DateTime.UtcNow ).TotalMinutes );
 
 							if ( minutesUntil == 0 )
 								timeUntil = "momentarily";
@@ -1263,7 +1263,7 @@ namespace Server.Engines.ConPVP
 			{
 				if ( m_Tournament.Stage == TournamentStage.Inactive )
 				{
-					m_Tournament.SignupStart = DateTime.Now;
+					m_Tournament.SignupStart = DateTime.UtcNow;
 					m_Tournament.Stage = TournamentStage.Signup;
 					m_Tournament.Participants.Clear();
 					m_Tournament.Pyramid.Levels.Clear();
@@ -1940,7 +1940,7 @@ namespace Server.Engines.ConPVP
 		{
 			if ( m_Stage == TournamentStage.Signup )
 			{
-				TimeSpan until = ( m_SignupStart + m_SignupPeriod ) - DateTime.Now;
+				TimeSpan until = ( m_SignupStart + m_SignupPeriod ) - DateTime.UtcNow;
 
 				if ( until <= TimeSpan.Zero )
 				{
@@ -1995,7 +1995,7 @@ namespace Server.Engines.ConPVP
 					else
 					{
 						Alert( "Is this all?", "Pitiful. Signup extended." );
-						m_SignupStart = DateTime.Now;
+						m_SignupStart = DateTime.UtcNow;
 					}
 				}
 				else if ( Math.Abs( until.TotalSeconds - TimeSpan.FromMinutes( 1.0 ).TotalSeconds ) < (SliceInterval.TotalSeconds/2) )
@@ -2722,7 +2722,7 @@ namespace Server.Engines.ConPVP
 
 					if ( m_Tournament.Stage == TournamentStage.Signup )
 					{
-						TimeSpan until = ( m_Tournament.SignupStart + m_Tournament.SignupPeriod ) - DateTime.Now;
+						TimeSpan until = ( m_Tournament.SignupStart + m_Tournament.SignupPeriod ) - DateTime.UtcNow;
 						string text;
 						int secs = (int) until.TotalSeconds;
 

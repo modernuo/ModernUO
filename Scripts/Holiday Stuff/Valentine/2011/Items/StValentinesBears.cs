@@ -67,7 +67,7 @@ namespace Server.Items
 
 		public bool CanSign
 		{
-			get { return ( !IsSigned || DateTime.Now <= m_EditLimit ); }
+			get { return ( !IsSigned || DateTime.UtcNow <= m_EditLimit ); }
 		}
 
 		public StValentinesBear( int itemid, string name )
@@ -210,7 +210,7 @@ namespace Server.Items
 				}
 
 				if ( !m_Bear.IsSigned )
-					m_Bear.EditLimit = DateTime.Now + TimeSpan.FromMinutes( 10 );
+					m_Bear.EditLimit = DateTime.UtcNow + TimeSpan.FromMinutes( 10 );
 
 				m_Bear.Line1 = Utility.FixHtml( line1 );
 				m_Bear.Line2 = Utility.FixHtml( line2 );

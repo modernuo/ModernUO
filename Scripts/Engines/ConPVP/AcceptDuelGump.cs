@@ -124,13 +124,13 @@ namespace Server.Engines.ConPVP
 			public DateTime m_Expire;
 
 			public Mobile Ignored{ get{ return m_Ignored; } }
-			public bool Expired{ get{ return ( DateTime.Now >= m_Expire ); } }
+			public bool Expired{ get{ return ( DateTime.UtcNow >= m_Expire ); } }
 
 			private static TimeSpan ExpireDelay = TimeSpan.FromMinutes( 15.0 );
 
 			public void Refresh()
 			{
-				m_Expire = DateTime.Now + ExpireDelay;
+				m_Expire = DateTime.UtcNow + ExpireDelay;
 			}
 
 			public IgnoreEntry( Mobile ignored )

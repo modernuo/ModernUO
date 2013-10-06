@@ -178,7 +178,7 @@ namespace Server
 			info.m_Language = pvSrc.ReadUnicodeStringLESafe( 4 );
 			info.m_Unknown = pvSrc.ReadStringSafe( 64 );
 
-            info.m_TimeReceived = DateTime.Now;
+            info.m_TimeReceived = DateTime.UtcNow;
 
 			Account acct = state.Account as Account;
 

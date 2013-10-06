@@ -32,7 +32,7 @@ namespace Server.Items
 			if ( decays )
 			{
 				m_Decays = true;
-				m_DecayTime = DateTime.Now + TimeSpan.FromMinutes( 2.0 );
+				m_DecayTime = DateTime.UtcNow + TimeSpan.FromMinutes( 2.0 );
 
 				m_Timer = new InternalTimer( this, m_DecayTime );
 				m_Timer.Start();
@@ -92,7 +92,7 @@ namespace Server.Items
 		{
 			private Item m_Item;
 
-			public InternalTimer( Item item, DateTime end ) : base( end - DateTime.Now )
+			public InternalTimer( Item item, DateTime end ) : base( end - DateTime.UtcNow )
 			{
 				m_Item = item;
 			}

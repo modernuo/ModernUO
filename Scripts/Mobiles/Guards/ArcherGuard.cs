@@ -74,7 +74,7 @@ namespace Server.Mobiles
 			Skills[SkillName.MagicResist].Base = 120.0;
 			Skills[SkillName.DetectHidden].Base = 100.0;
 
-			this.NextCombatTime = DateTime.Now + TimeSpan.FromSeconds( 0.5 );
+			this.NextCombatTime = Core.TickCount + 500;
 			this.Focus = target;
 		}
 
@@ -336,7 +336,7 @@ namespace Server.Mobiles
 
 			private bool TimeToSpare()
 			{
-				return (m_Owner.NextCombatTime - DateTime.Now) > TimeSpan.FromSeconds( 1.0 );
+				return (m_Owner.NextCombatTime - Core.TickCount) > 1000;
 			}
 
 			private bool OutOfMaxDistance( Mobile target )

@@ -53,7 +53,7 @@ namespace Server.Mobiles
 			if ( 0.02 > Utility.RandomDouble() )
 				PackItem( new BlackthornWelcomeBook() );
 
-			m_NextAbilityTime = DateTime.Now + TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 30 ) );
+			m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 30 ) );
 		}
 
 		public override void OnDeath( Container c )
@@ -146,10 +146,10 @@ namespace Server.Mobiles
 		{
 			Mobile combatant = Combatant;
 
-			if ( DateTime.Now < m_NextAbilityTime || combatant == null || combatant.Deleted || combatant.Map != Map || !InRange( combatant, 3 ) || !CanBeHarmful( combatant ) || !InLOS( combatant ) )
+			if ( DateTime.UtcNow < m_NextAbilityTime || combatant == null || combatant.Deleted || combatant.Map != Map || !InRange( combatant, 3 ) || !CanBeHarmful( combatant ) || !InLOS( combatant ) )
 				return;
 
-			m_NextAbilityTime = DateTime.Now + TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 30 ) );
+			m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 30 ) );
 
 			if ( Utility.RandomBool() )
 			{

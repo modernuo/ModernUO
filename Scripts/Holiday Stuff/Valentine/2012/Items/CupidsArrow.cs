@@ -49,7 +49,7 @@ namespace Server.Items
 
 		public static bool CheckSeason( Mobile from )
 		{
-			if ( DateTime.Now.Month == 2 )
+			if ( DateTime.UtcNow.Month == 2 )
 				return true;
 
 			from.SendLocalizedMessage( 1152318 ); // You may not use this item out of season.

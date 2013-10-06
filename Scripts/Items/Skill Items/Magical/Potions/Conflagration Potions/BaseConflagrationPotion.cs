@@ -124,8 +124,8 @@ namespace Server.Items
 		{
 			Timer timer = m_Delay[ m ] as Timer;
 
-			if ( timer != null && timer.Next > DateTime.Now )
-				return (int) (timer.Next - DateTime.Now).TotalSeconds;
+			if ( timer != null && timer.Next > DateTime.UtcNow )
+				return (int) (timer.Next - DateTime.UtcNow).TotalSeconds;
 
 			return 0;
 		}
@@ -211,7 +211,7 @@ namespace Server.Items
 				MoveToWorld( loc, map );
 
 				m_From = from;
-				m_End = DateTime.Now + TimeSpan.FromSeconds( 10 );
+				m_End = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 
 				SetDamage( min, max );
 
@@ -310,7 +310,7 @@ namespace Server.Items
 					if ( m_Item.Deleted )
 						return;
 
-					if ( DateTime.Now > m_End )
+					if ( DateTime.UtcNow > m_End )
 					{
 						m_Item.Delete();
 						Stop();

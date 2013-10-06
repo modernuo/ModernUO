@@ -191,7 +191,7 @@ namespace Server.Factions
 			Visible = false;
 
 			m_Faction = f;
-			m_TimeOfPlacement = DateTime.Now;
+			m_TimeOfPlacement = DateTime.UtcNow;
 			m_Placer = m;
 		}
 
@@ -206,7 +206,7 @@ namespace Server.Factions
 			if ( decayPeriod == TimeSpan.MaxValue )
 				return false;
 
-			if ( (m_TimeOfPlacement + decayPeriod) < DateTime.Now )
+			if ( (m_TimeOfPlacement + decayPeriod) < DateTime.UtcNow )
 			{
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
 				return true;

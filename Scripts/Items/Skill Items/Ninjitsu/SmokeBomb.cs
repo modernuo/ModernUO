@@ -28,7 +28,7 @@ namespace Server.Items
 				// You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
 				from.SendLocalizedMessage( 1063013, "50\tNinjitsu" );
 			}
-			else if ( from.NextSkillTime > DateTime.Now )
+			else if (Core.TickCount - from.NextSkillTime < 0)
 			{
 				// You must wait a few seconds before you can use that item.
 				from.SendLocalizedMessage( 1070772 );

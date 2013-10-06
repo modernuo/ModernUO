@@ -176,7 +176,7 @@ namespace Server.Mobiles
 			pack.Visible = false;
 			AddItem( pack );
 
-			m_LastRestock = DateTime.Now;
+			m_LastRestock = DateTime.UtcNow;
 		}
 
 		public BaseVendor( Serial serial )
@@ -228,7 +228,7 @@ namespace Server.Mobiles
 
 		protected void LoadSBInfo()
 		{
-			m_LastRestock = DateTime.Now;
+			m_LastRestock = DateTime.UtcNow;
 
 			for ( int i = 0; i < m_ArmorBuyInfo.Count; ++i )
 			{
@@ -510,7 +510,7 @@ namespace Server.Mobiles
 
 		public virtual void Restock()
 		{
-			m_LastRestock = DateTime.Now;
+			m_LastRestock = DateTime.UtcNow;
 
 			IBuyItemInfo[] buyInfo = this.GetBuyInfo();
 
@@ -534,7 +534,7 @@ namespace Server.Mobiles
 				return;
 			}
 
-			if ( DateTime.Now - m_LastRestock > RestockDelay )
+			if ( DateTime.UtcNow - m_LastRestock > RestockDelay )
 				Restock();
 
 			UpdateBuyInfo();
@@ -583,7 +583,7 @@ namespace Server.Mobiles
 
 				Item item = playerItems[i];
 
-				if ( ( item.LastMoved + InventoryDecayTime ) <= DateTime.Now )
+				if ( ( item.LastMoved + InventoryDecayTime ) <= DateTime.UtcNow )
 					item.Delete();
 			}
 
@@ -747,7 +747,7 @@ namespace Server.Mobiles
 			{
 				PlayerMobile pm = from as PlayerMobile;
 
-				if ( Core.ML && pm != null && pm.NextBODTurnInTime > DateTime.Now )
+				if ( Core.ML && pm != null && pm.NextBODTurnInTime > DateTime.UtcNow )
 				{
 					SayTo( from, 1079976 ); // You'll have to wait a few seconds while I inspect the last order.
 					return false;
@@ -788,7 +788,7 @@ namespace Server.Mobiles
 				OnSuccessfulBulkOrderReceive( from );
 
 				if ( Core.ML && pm != null )
-					pm.NextBODTurnInTime = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
+					pm.NextBODTurnInTime = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
 
 				dropped.Delete();
 				return true;

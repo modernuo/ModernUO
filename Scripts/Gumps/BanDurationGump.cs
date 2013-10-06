@@ -239,7 +239,7 @@ namespace Server.Gumps
 				{
 					Account a = (Account)m_List[i];
 
-					a.SetBanTags( from, DateTime.Now, duration );
+					a.SetBanTags( from, DateTime.UtcNow, duration );
 
 					if ( comment != null )
 						a.Comments.Add( new AccountComment( from.RawName, String.Format( "Duration: {0}, Comment: {1}", (( duration == TimeSpan.MaxValue )? "Infinite" : duration.ToString()), comment ) ) );

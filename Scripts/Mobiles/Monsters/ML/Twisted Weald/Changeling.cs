@@ -95,7 +95,7 @@ namespace Server.Mobiles
 					if ( value != null )
 					{
 						Morph( value );
-						m_LastMorph = DateTime.Now;
+						m_LastMorph = DateTime.UtcNow;
 					}
 
 					m_MorphedInto = value;
@@ -110,10 +110,10 @@ namespace Server.Mobiles
 
 			if ( Combatant != null )
 			{
-				if ( m_NextFireRing <= DateTime.Now && Utility.RandomDouble() < 0.02 )
+				if ( m_NextFireRing <= DateTime.UtcNow && Utility.RandomDouble() < 0.02 )
 				{
 					FireRing();
-					m_NextFireRing = DateTime.Now + TimeSpan.FromMinutes( 2 );
+					m_NextFireRing = DateTime.UtcNow + TimeSpan.FromMinutes( 2 );
 				}
 
 				if ( Combatant.Player && m_MorphedInto != Combatant && Utility.RandomDouble() < 0.05 )
@@ -125,7 +125,7 @@ namespace Server.Mobiles
 		{
 			bool idle = base.CheckIdle();
 
-			if ( idle && m_MorphedInto != null && DateTime.Now - m_LastMorph > TimeSpan.FromSeconds( 30 ) )
+			if ( idle && m_MorphedInto != null && DateTime.UtcNow - m_LastMorph > TimeSpan.FromSeconds( 30 ) )
 				MorphedInto = null;
 
 			return idle;

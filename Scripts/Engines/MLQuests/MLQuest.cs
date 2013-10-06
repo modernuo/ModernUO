@@ -237,7 +237,7 @@ namespace Server.Engines.MLQuests
 
 							return false;
 						}
-						else if ( nextAvailable > DateTime.Now )
+						else if ( nextAvailable > DateTime.UtcNow )
 						{
 							if ( message )
 								MLQuestSystem.Tell( quester, pm, 1075575 ); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?

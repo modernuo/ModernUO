@@ -52,11 +52,11 @@ namespace Server.Engines.MLQuests.Objectives
 
 			DateTime nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
 
-			if ( nextEscort > DateTime.Now )
+			if ( nextEscort > DateTime.UtcNow )
 			{
 				if ( message )
 				{
-					int minutes = (int)Math.Ceiling( ( nextEscort - DateTime.Now ).TotalMinutes );
+					int minutes = (int)Math.Ceiling( ( nextEscort - DateTime.UtcNow ).TotalMinutes );
 
 					if ( minutes == 1 )
 						MLQuestSystem.Tell( quester, pm, "You must rest 1 minute before we set out on this journey." );
@@ -111,7 +111,7 @@ namespace Server.Engines.MLQuests.Objectives
 			m_Objective = objective;
 			m_HasCompleted = false;
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), new TimerCallback( CheckDestination ) );
-			m_LastSeenEscorter = DateTime.Now;
+			m_LastSeenEscorter = DateTime.UtcNow;
 			m_Escort = instance.Quester as BaseCreature;
 
 			if ( MLQuestSystem.Debug && m_Escort == null && instance.Quester != null )
@@ -158,12 +158,12 @@ namespace Server.Engines.MLQuests.Objectives
 			}
 			else if ( pm.Map != m_Escort.Map || !pm.InRange( m_Escort, 30 ) ) // TODO: verify range
 			{
-				if ( m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.Now )
+				if ( m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.UtcNow )
 					Abandon();
 			}
 			else
 			{
-				m_LastSeenEscorter = DateTime.Now;
+				m_LastSeenEscorter = DateTime.UtcNow;
 			}
 		}
 
@@ -212,7 +212,7 @@ namespace Server.Engines.MLQuests.Objectives
 			MLQuestInstance instance = Instance;
 			PlayerMobile pm = instance.Player;
 
-			pm.LastEscortTime = DateTime.Now;
+			pm.LastEscortTime = DateTime.UtcNow;
 
 			if ( m_Escort != null )
 				BeginFollow( m_Escort, pm );

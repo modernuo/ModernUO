@@ -1408,7 +1408,7 @@ namespace Server.Network
 		{
 			Mobile from = state.Mobile;
 
-			if ( from.AccessLevel >= AccessLevel.Counselor || DateTime.Now >= from.NextActionTime )
+			if (from.AccessLevel >= AccessLevel.Counselor || Core.TickCount - from.NextActionTime >= 0)
 			{
 				int value = pvSrc.ReadInt32();
 
@@ -1436,7 +1436,7 @@ namespace Server.Network
 					}
 				}
 
-				from.NextActionTime = DateTime.Now + Mobile.ActionDelay;
+				from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
 			}
 			else
 			{
@@ -1627,7 +1627,7 @@ namespace Server.Network
 			if (from == null)
 				return;
 
-			if (from.AccessLevel >= AccessLevel.Counselor || DateTime.Now >= from.NextActionTime)
+			if (from.AccessLevel >= AccessLevel.Counselor || Core.TickCount - from.NextActionTime >= 0)
 			{
 				Item bandage = World.FindItem(pvSrc.ReadInt32());
 
@@ -1641,7 +1641,7 @@ namespace Server.Network
 
 				EventSink.InvokeBandageTargetRequest(new BandageTargetRequestEventArgs(from, bandage, target));
 
-				from.NextActionTime = DateTime.Now + Mobile.ActionDelay;
+				from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
 			}
 			else
 			{
@@ -2412,7 +2412,6 @@ namespace Server.Network
 			}
 		}
 
-
 		private static bool m_ClientVerification = true;
 
 		public static bool ClientVerification
@@ -2426,7 +2425,7 @@ namespace Server.Network
 			public ClientVersion Version;
 
 			public AuthIDPersistence( ClientVersion v ) {
-				Age = DateTime.Now;
+				Age = DateTime.UtcNow;
 				Version = v;
 			}
 		}

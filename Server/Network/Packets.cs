@@ -2731,7 +2731,7 @@ namespace Server.Network
 	{
 		public CurrentTime() : base( 0x5B, 4 )
 		{
-			DateTime now = DateTime.Now;
+			DateTime now = DateTime.UtcNow;
 
 			m_Stream.Write( (byte) now.Hour );
 			m_Stream.Write( (byte) now.Minute );
@@ -4590,7 +4590,7 @@ namespace Server.Network
 					Console.WriteLine( "Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})", m_PacketID, GetType().Name, length );
 					using ( StreamWriter op = new StreamWriter( "compression_overflow.log", true ) )
 					{
-						op.WriteLine( "{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})", DateTime.Now, m_PacketID, GetType().Name, length );
+						op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})", DateTime.UtcNow, m_PacketID, GetType().Name, length);
 						op.WriteLine( new System.Diagnostics.StackTrace() );
 					}
 				}

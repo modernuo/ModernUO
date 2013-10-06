@@ -42,7 +42,7 @@ namespace Server.Mobiles
 				return true;
 			}
 
-			if ( (m_Mobile.LastMoveTime + TimeSpan.FromSeconds( 1.0 )) < DateTime.Now )
+			if (Core.TickCount - m_Mobile.LastMoveTime > 1000)
 			{
 				if (WalkMobileRange(m_Mobile.Combatant, 1, true, m_Mobile.RangeFight, m_Mobile.Weapon.MaxRange))
 				{

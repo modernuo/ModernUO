@@ -34,12 +34,12 @@ namespace Server.RemoteAdmin
 
 			try
 			{
-				m_Output = new StreamWriter( Path.Combine( directory, String.Format( LogSubDirectory + "{0}.log", DateTime.Now.ToString( "yyyyMMdd" ) ) ), true );
+				m_Output = new StreamWriter( Path.Combine( directory, String.Format( LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString( "yyyyMMdd" ) ) ), true );
 
 				m_Output.AutoFlush = true;
 
 				m_Output.WriteLine( "##############################" );
-				m_Output.WriteLine( "Log started on {0}", DateTime.Now );
+				m_Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
 				m_Output.WriteLine();
 			}
 			catch
@@ -81,7 +81,7 @@ namespace Server.RemoteAdmin
 				string accesslevel = acct == null ? "NoAccount" : acct.AccessLevel.ToString();
 				string statestr = state == null ? "NULLSTATE" : state.ToString();
 
-				m_Output.WriteLine( "{0}: {1}: {2}: {3}", DateTime.Now, statestr, name, text );
+				m_Output.WriteLine( "{0}: {1}: {2}: {3}", DateTime.UtcNow, statestr, name, text );
 
 				string path = Core.BaseDirectory;
 
@@ -91,7 +91,7 @@ namespace Server.RemoteAdmin
 				path = Path.Combine( path, String.Format( "{0}.log", name ) );
 
 				using ( StreamWriter sw = new StreamWriter( path, true ) )
-					sw.WriteLine( "{0}: {1}: {2}", DateTime.Now, statestr, text );
+					sw.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, statestr, text );
 			}
 			catch
 			{

@@ -87,7 +87,7 @@ namespace Server.Spells.Eighth
 			{
 				from.SendLocalizedMessage( 501943 ); // Target cannot be seen. Try again.
 				from.Target = new InternalTarget( m_Owner );
-				from.Target.BeginTimeout( from, TimeoutTime - DateTime.Now );
+				from.Target.BeginTimeout( from, TimeoutTime - DateTime.UtcNow );
 				m_Owner = null;
 			}
 

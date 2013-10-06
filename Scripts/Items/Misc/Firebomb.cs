@@ -236,7 +236,7 @@ namespace Server.Items
 		{
 			Movable = false;
 			m_LitBy = litBy;
-			m_Expire = DateTime.Now + TimeSpan.FromSeconds( 10 );
+			m_Expire = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 			m_Burning = toDamage;
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), new TimerCallback( OnFirebombFieldTimerTick ) );
 		}
@@ -302,7 +302,7 @@ namespace Server.Items
 					m_Burning.RemoveAt( i );
 			}
 
-			if ( DateTime.Now >= m_Expire )
+			if ( DateTime.UtcNow >= m_Expire )
 			{
 				m_Timer.Stop();
 				Delete();

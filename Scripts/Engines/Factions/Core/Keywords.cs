@@ -104,7 +104,7 @@ namespace Server.Factions
 							if ( Faction.CheckLeaveTimer( from ) )
 								break;
 
-							TimeSpan remaining = ( pl.Leaving + Faction.LeavePeriod ) - DateTime.Now;
+							TimeSpan remaining = ( pl.Leaving + Faction.LeavePeriod ) - DateTime.UtcNow;
 
 							if( remaining.TotalDays >= 1 )
 								from.SendLocalizedMessage( 1042743, remaining.TotalDays.ToString( "N0" ) ) ;// Your term of service will come to an end in ~1_DAYS~ days.

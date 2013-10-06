@@ -150,13 +150,13 @@ namespace Server.SkillHandlers
 							else
 							{
 								if ( sig.IsBeingCorrupted )
-									sig.GraceStart = DateTime.Now; // begin grace period
+									sig.GraceStart = DateTime.UtcNow; // begin grace period
 
 								m_Thief.SendLocalizedMessage( 1010586 ); // YOU STOLE THE SIGIL!!!   (woah, calm down now)
 
 								if ( sig.LastMonolith != null && sig.LastMonolith.Sigil != null ) {
 									sig.LastMonolith.Sigil = null;
-									sig.LastStolen = DateTime.Now;
+									sig.LastStolen = DateTime.UtcNow;
 								}
 
 								return sig;
@@ -413,7 +413,7 @@ namespace Server.SkillHandlers
 		public Mobile Victim{ get{ return m_Victim; } }
 		public DateTime Expires{ get{ return m_Expires; } }
 
-		public bool IsExpired{ get{ return ( DateTime.Now >= m_Expires ); } }
+		public bool IsExpired{ get{ return ( DateTime.UtcNow >= m_Expires ); } }
 
 		public StolenItem( Item stolen, Mobile thief, Mobile victim )
 		{
@@ -421,7 +421,7 @@ namespace Server.SkillHandlers
 			m_Thief = thief;
 			m_Victim = victim;
 
-			m_Expires = DateTime.Now + StealTime;
+			m_Expires = DateTime.UtcNow + StealTime;
 		}
 
 		private static Queue m_Queue = new Queue();
@@ -469,7 +469,7 @@ namespace Server.SkillHandlers
 					else
 						si.m_Victim.SendLocalizedMessage( 1010463 ); // the item that was stolen from you falls to the ground.
 
-					si.m_Expires = DateTime.Now; // such a hack
+					si.m_Expires = DateTime.UtcNow; // such a hack
 				}
 			}
 		}

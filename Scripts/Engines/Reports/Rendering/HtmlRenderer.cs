@@ -55,7 +55,7 @@ namespace Server.Engines.Reports
 
 		public HtmlRenderer( string outputDirectory, StaffHistory history ) : this( outputDirectory )
 		{
-			m_TimeStamp = DateTime.Now;
+			m_TimeStamp = DateTime.UtcNow;
 
 			m_Objects = new ObjectCollection();
 

@@ -62,13 +62,13 @@ namespace Server.Engines.MLQuests.Objectives
 			m_Instance = instance;
 
 			if ( obj.IsTimed )
-				m_EndTime = DateTime.Now + obj.Duration;
+				m_EndTime = DateTime.UtcNow + obj.Duration;
 		}
 
 		public virtual void WriteToGump( Gump g, ref int y )
 		{
 			if ( IsTimed )
-				WriteTimeRemaining( g, ref y, ( m_EndTime > DateTime.Now ) ? ( m_EndTime - DateTime.Now ) : TimeSpan.Zero );
+				WriteTimeRemaining( g, ref y, ( m_EndTime > DateTime.UtcNow ) ? ( m_EndTime - DateTime.UtcNow ) : TimeSpan.Zero );
 		}
 
 		public static void WriteTimeRemaining( Gump g, ref int y, TimeSpan timeRemaining )

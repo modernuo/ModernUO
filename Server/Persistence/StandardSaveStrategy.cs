@@ -134,7 +134,8 @@ namespace Server {
 
 			idx.Write( ( int ) items.Count );
 			foreach ( Item item in items.Values ) {
-				if ( item.Decays && item.Parent == null && item.Map != Map.Internal && ( item.LastMoved + item.DecayTime ) <= DateTime.Now ) {
+				if (item.Decays && item.Parent == null && item.Map != Map.Internal && (item.LastMoved + item.DecayTime) <= DateTime.UtcNow)
+				{
 					_decayQueue.Enqueue( item );
 				}
 

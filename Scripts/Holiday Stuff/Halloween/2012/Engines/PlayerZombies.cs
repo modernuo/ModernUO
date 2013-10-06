@@ -50,7 +50,7 @@ namespace Server.Engines.Events
 			m_QueueDelaySeconds = 120;
 			m_QueueClearIntervalSeconds = 1800;
 
-			DateTime today = DateTime.Now;
+			DateTime today = DateTime.UtcNow;
 			TimeSpan tick = TimeSpan.FromSeconds( m_QueueDelaySeconds );
 			TimeSpan clear = TimeSpan.FromSeconds( m_QueueClearIntervalSeconds );
 
@@ -89,7 +89,7 @@ namespace Server.Engines.Events
 
 			m_DeathQueue.Clear();
 
-			if( DateTime.Now <= HolidaySettings.FinishHalloween )
+			if( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				m_ClearTimer.Stop();
 			}
@@ -99,7 +99,7 @@ namespace Server.Engines.Events
 		{
 			PlayerMobile player = null;
 
-			if( DateTime.Now <= HolidaySettings.FinishHalloween )
+			if( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
 				{

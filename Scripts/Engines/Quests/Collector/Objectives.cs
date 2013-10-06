@@ -119,9 +119,9 @@ namespace Server.Engines.Quests.Collector
 			{
 				if ( m_Begin == DateTime.MaxValue )
 				{
-					m_Begin = DateTime.Now;
+					m_Begin = DateTime.UtcNow;
 				}
-				else if ( DateTime.Now - m_Begin > TimeSpan.FromSeconds( 30.0 ) )
+				else if ( DateTime.UtcNow - m_Begin > TimeSpan.FromSeconds( 30.0 ) )
 				{
 					Complete();
 				}

@@ -71,7 +71,7 @@ namespace Server.Spells.Ninjitsu
 
 		private bool CasterIsMoving()
 		{
-			return (DateTime.Now - Caster.LastMoveTime <= Caster.ComputeMovementSpeed(Caster.Direction));
+			return (Core.TickCount - Caster.LastMoveTime <= Caster.ComputeMovementSpeed(Caster.Direction));
 		}
 
 		private bool m_WasMoving;

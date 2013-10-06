@@ -94,7 +94,7 @@ namespace Server.Factions
 
 				if ( entry.Chance > Utility.Random( 100 ) )
 				{
-					releaseTime = DateTime.Now + entry.Hold;
+					releaseTime = DateTime.UtcNow + entry.Hold;
 					return (Spell) Activator.CreateInstance( entry.Spell, new object[]{ mob, null } );
 				}
 			}
@@ -143,7 +143,7 @@ namespace Server.Factions
 				if ( m_Bandage == null )
 					return TimeSpan.MaxValue;
 
-				TimeSpan ts = ( m_BandageStart + m_Bandage.Timer.Delay ) - DateTime.Now;
+				TimeSpan ts = ( m_BandageStart + m_Bandage.Timer.Delay ) - DateTime.UtcNow;
 
 				if ( ts < TimeSpan.FromSeconds( -1.0 ) )
 				{
@@ -206,7 +206,7 @@ namespace Server.Factions
 				return false;
 
 			m_Bandage = BandageContext.BeginHeal( m_Guard, m_Guard );
-			m_BandageStart = DateTime.Now;
+			m_BandageStart = DateTime.UtcNow;
 			return ( m_Bandage != null );
 		}
 
@@ -486,9 +486,9 @@ namespace Server.Factions
 			Mobile dispelTarget = FindDispelTarget( true );
 
 			if ( m_Guard.Target != null && m_ReleaseTarget == DateTime.MinValue )
-				m_ReleaseTarget = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
+				m_ReleaseTarget = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
 
-			if ( m_Guard.Target != null && DateTime.Now > m_ReleaseTarget )
+			if ( m_Guard.Target != null && DateTime.UtcNow > m_ReleaseTarget )
 			{
 				Target targ = m_Guard.Target;
 
@@ -584,7 +584,7 @@ namespace Server.Factions
 					StartBandage();
 			}
 
-			if ( m_Mobile.Spell == null && DateTime.Now >= m_Mobile.NextSpellTime )
+			if ( m_Mobile.Spell == null && Core.TickCount - m_Mobile.NextSpellTime >= 0 )
 			{
 				Spell spell = null;
 
@@ -614,7 +614,7 @@ namespace Server.Factions
 					{
 						if ( m_Guard.Mana >= 11 && (m_Guard.Hits + 30) < m_Guard.HitsMax )
 							spell = new GreaterHealSpell( m_Guard, null );
-						else if ( (m_Guard.Hits + 10) < m_Guard.HitsMax && (m_Guard.Mana < 11 || (m_Guard.NextCombatTime - DateTime.Now) > TimeSpan.FromSeconds( 2.0 )) )
+						else if ( (m_Guard.Hits + 10) < m_Guard.HitsMax && (m_Guard.Mana < 11 || (m_Guard.NextCombatTime - Core.TickCount) > 2000) )
 							spell = new HealSpell( m_Guard, null );
 					}
 					else if ( m_Guard.CanBeginAction( typeof( BaseHealPotion ) ) )

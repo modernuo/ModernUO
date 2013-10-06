@@ -75,7 +75,7 @@ namespace Server.Mobiles
 						SayTo( from, 501047 ); // Thou art already a member of our guild.
 					else if ( pm.NpcGuild != NpcGuild.None )
 						SayTo( from, 501046 ); // Thou must resign from thy other guild first.
-					else if ( pm.GameTime < JoinGameAge || (pm.CreationTime + JoinAge) > DateTime.Now )
+					else if ( pm.GameTime < JoinGameAge || (pm.CreationTime + JoinAge) > DateTime.UtcNow )
 						SayTo( from, 501048 ); // You are too young to join my guild...
 					else if ( CheckCustomReqs( pm ) )
 						SayPriceTo( from );
@@ -88,7 +88,7 @@ namespace Server.Mobiles
 					{
 						SayTo( from, 501052 ); // Thou dost not belong to my guild!
 					}
-					else if ( (pm.NpcGuildJoinTime + QuitAge) > DateTime.Now || (pm.NpcGuildGameTime + QuitGameAge) > pm.GameTime )
+					else if ( (pm.NpcGuildJoinTime + QuitAge) > DateTime.UtcNow || (pm.NpcGuildGameTime + QuitGameAge) > pm.GameTime )
 					{
 						SayTo( from, 501053 ); // You just joined my guild! You must wait a week to resign.
 					}
@@ -119,7 +119,7 @@ namespace Server.Mobiles
 				{
 					SayTo( from, 501046 ); // Thou must resign from thy other guild first.
 				}
-				else if ( pm.GameTime < JoinGameAge || (pm.CreationTime + JoinAge) > DateTime.Now )
+				else if ( pm.GameTime < JoinGameAge || (pm.CreationTime + JoinAge) > DateTime.UtcNow )
 				{
 					SayTo( from, 501048 ); // You are too young to join my guild...
 				}
@@ -128,7 +128,7 @@ namespace Server.Mobiles
 					SayWelcomeTo( from );
 
 					pm.NpcGuild = this.NpcGuild;
-					pm.NpcGuildJoinTime = DateTime.Now;
+					pm.NpcGuildJoinTime = DateTime.UtcNow;
 					pm.NpcGuildGameTime = pm.GameTime;
 
 					dropped.Delete();

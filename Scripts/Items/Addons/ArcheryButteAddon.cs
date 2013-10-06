@@ -142,7 +142,7 @@ namespace Server.Items
 				return;
 			}
 
-			if ( DateTime.Now < (m_LastUse + UseDelay) )
+			if ( DateTime.UtcNow < (m_LastUse + UseDelay) )
 				return;
 
 			Point3D worldLoc = GetWorldLocation();
@@ -189,7 +189,7 @@ namespace Server.Items
 				return;
 			}
 
-			m_LastUse = DateTime.Now;
+			m_LastUse = DateTime.UtcNow;
 
 			from.Direction = from.GetDirectionTo( GetWorldLocation() );
 			bow.PlaySwingAnimation( from );

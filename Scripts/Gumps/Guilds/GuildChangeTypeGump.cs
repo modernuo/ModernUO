@@ -66,7 +66,7 @@ namespace Server.Gumps
 				{
 					m_Mobile.SendLocalizedMessage( 1010405 ); // You cannot change guild types while in a Faction!
 				}
-				else if ( m_Guild.TypeLastChange.AddDays( 7 ) > DateTime.Now )
+				else if ( m_Guild.TypeLastChange.AddDays( 7 ) > DateTime.UtcNow )
 				{
 					m_Mobile.SendLocalizedMessage( 1011142 ); // You have already changed your guild type recently.
 					// TODO: Clilocs 1011142-1011145 suggest a timer for pending changes

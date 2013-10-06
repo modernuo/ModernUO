@@ -197,7 +197,7 @@ namespace Server.Misc
 					state.Send( new DeleteResult( DeleteResultType.CharBeingPlayed ) );
 					state.Send( new CharacterListUpdate( acct ) );
 				}
-				else if ( RestrictDeletion && DateTime.Now < (m.CreationTime + DeleteDelay) )
+				else if ( RestrictDeletion && DateTime.UtcNow < (m.CreationTime + DeleteDelay) )
 				{
 					state.Send( new DeleteResult( DeleteResultType.CharTooYoung ) );
 					state.Send( new CharacterListUpdate( acct ) );
@@ -306,7 +306,7 @@ namespace Server.Misc
 				Console.WriteLine( "Login: {0}: Past IP limit threshold", e.State );
 
 				using ( StreamWriter op = new StreamWriter( "ipLimits.log", true ) )
-					op.WriteLine( "{0}\tPast IP limit threshold\t{1}", e.State, DateTime.Now );
+					op.WriteLine( "{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow );
 
 				return;
 			}
@@ -370,7 +370,7 @@ namespace Server.Misc
 				Console.WriteLine( "Login: {0}: Past IP limit threshold", e.State );
 
 				using ( StreamWriter op = new StreamWriter( "ipLimits.log", true ) )
-					op.WriteLine( "{0}\tPast IP limit threshold\t{1}", e.State, DateTime.Now );
+					op.WriteLine( "{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow );
 
 				return;
 			}

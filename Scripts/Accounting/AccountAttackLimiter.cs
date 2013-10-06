@@ -30,7 +30,7 @@ namespace Server.Accounting
 			if ( accessLog == null )
 				return true;
 
-			return ( DateTime.Now >= (accessLog.LastAccessTime + ComputeThrottle( accessLog.Counts )) );
+			return ( DateTime.UtcNow >= (accessLog.LastAccessTime + ComputeThrottle( accessLog.Counts )) );
 		}
 
 		private static List<InvalidAccountAccessLog> m_List = new List<InvalidAccountAccessLog>();
@@ -73,7 +73,7 @@ namespace Server.Accounting
 					using ( StreamWriter op = new StreamWriter( "throttle.log", true ) ) {
 						op.WriteLine(
 							"{0}\t{1}\t{2}",
-							DateTime.Now,
+							DateTime.UtcNow,
 							ns,
 							accessLog.Counts
 						);
@@ -125,7 +125,7 @@ namespace Server.Accounting
 
 		public bool HasExpired
 		{
-			get{ return ( DateTime.Now >= ( m_LastAccessTime + TimeSpan.FromHours( 1.0 ) ) ); }
+			get{ return ( DateTime.UtcNow >= ( m_LastAccessTime + TimeSpan.FromHours( 1.0 ) ) ); }
 		}
 
 		public int Counts
@@ -136,7 +136,7 @@ namespace Server.Accounting
 
 		public void RefreshAccessTime()
 		{
-			m_LastAccessTime = DateTime.Now;
+			m_LastAccessTime = DateTime.UtcNow;
 		}
 
 		public InvalidAccountAccessLog( IPAddress address )

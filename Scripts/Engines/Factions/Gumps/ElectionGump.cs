@@ -55,7 +55,7 @@ namespace Server.Factions
 			{
 				case ElectionState.Pending:
 				{
-					TimeSpan toGo = ( election.LastStateTime + Election.PendingPeriod ) - DateTime.Now;
+					TimeSpan toGo = ( election.LastStateTime + Election.PendingPeriod ) - DateTime.UtcNow;
 					int days = (int) (toGo.TotalDays + 0.5);
 
 					AddHtmlLocalized( 20, 40, 380, 20, 1038034, false, false ); // A new election campaign is pending
@@ -74,7 +74,7 @@ namespace Server.Factions
 				}
 				case ElectionState.Campaign:
 				{
-					TimeSpan toGo = ( election.LastStateTime + Election.CampaignPeriod ) - DateTime.Now;
+					TimeSpan toGo = ( election.LastStateTime + Election.CampaignPeriod ) - DateTime.UtcNow;
 					int days = (int) (toGo.TotalDays + 0.5);
 
 					AddHtmlLocalized( 20, 40, 380, 20, 1018058, false, false ); // There is an election campaign in progress.
@@ -106,7 +106,7 @@ namespace Server.Factions
 				}
 				case ElectionState.Election:
 				{
-					TimeSpan toGo = ( election.LastStateTime + Election.VotingPeriod ) - DateTime.Now;
+					TimeSpan toGo = ( election.LastStateTime + Election.VotingPeriod ) - DateTime.UtcNow;
 					int days = (int) Math.Ceiling( toGo.TotalDays );
 
 					AddHtmlLocalized( 20, 40, 380, 20, 1018060, false, false ); // There is an election vote in progress.

@@ -461,10 +461,10 @@ namespace Server
 			}
 			catch ( EndOfStreamException )
 			{
-				if ( DateTime.Now >= m_NextStaticWarning )
+				if ( DateTime.UtcNow >= m_NextStaticWarning )
 				{
 					Console.WriteLine( "Warning: Static EOS for {0} ({1}, {2})", m_Owner, x, y );
-					m_NextStaticWarning = DateTime.Now + TimeSpan.FromMinutes( 1.0 );
+					m_NextStaticWarning = DateTime.UtcNow + TimeSpan.FromMinutes( 1.0 );
 				}
 
 				return m_EmptyStaticBlock;
@@ -506,10 +506,10 @@ namespace Server
 			}
 			catch
 			{
-				if ( DateTime.Now >= m_NextLandWarning )
+				if ( DateTime.UtcNow >= m_NextLandWarning )
 				{
 					Console.WriteLine( "Warning: Land EOS for {0} ({1}, {2})", m_Owner, x, y );
-					m_NextLandWarning = DateTime.Now + TimeSpan.FromMinutes( 1.0 );
+					m_NextLandWarning = DateTime.UtcNow + TimeSpan.FromMinutes( 1.0 );
 				}
 
 				return m_InvalidLandBlock;

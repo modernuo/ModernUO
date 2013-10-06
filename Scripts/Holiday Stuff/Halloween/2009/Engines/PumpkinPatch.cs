@@ -22,9 +22,9 @@ namespace Server.Engines.Events
 
 		public static void Initialize()
 		{
-			DateTime now = DateTime.Now;
+			DateTime now = DateTime.UtcNow;
 
-			if( DateTime.Now >= HolidaySettings.StartHalloween && DateTime.Now <= HolidaySettings.FinishHalloween )
+			if( DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromMinutes( .50 ), 0, new TimerCallback( PumpkinPatchSpawnerCallback ));
 			}

@@ -66,14 +66,14 @@ namespace Server.Mobiles
 
 		public void Peace( Mobile target )
 		{
-			if ( target == null || Deleted || !Alive || m_NextPeace > DateTime.Now || 0.1 < Utility.RandomDouble() )
+			if ( target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
 				return;
 
 			PlayerMobile p = target as PlayerMobile;
 
-			if ( p != null && p.PeacedUntil < DateTime.Now && !p.Hidden && CanBeHarmful( p ) )
+			if ( p != null && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful( p ) )
 			{
-				p.PeacedUntil = DateTime.Now + TimeSpan.FromMinutes( 1 );
+				p.PeacedUntil = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
 				p.SendLocalizedMessage( 500616 ); // You hear lovely music, and forget to continue battling!
 				p.FixedParticles( 0x376A, 1, 32, 0x15BD, EffectLayer.Waist );
 				p.Combatant = null;
@@ -81,7 +81,7 @@ namespace Server.Mobiles
 				PlaySound( 0x58D );
 			}
 
-			m_NextPeace = DateTime.Now + TimeSpan.FromSeconds( 10 );
+			m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 		}
 		#endregion
 
@@ -91,7 +91,7 @@ namespace Server.Mobiles
 
 		public void Suppress( Mobile target )
 		{
-			if ( target == null || m_Suppressed.ContainsKey( target ) || Deleted || !Alive || m_NextSuppress > DateTime.Now || 0.1 < Utility.RandomDouble() )
+			if ( target == null || m_Suppressed.ContainsKey( target ) || Deleted || !Alive || m_NextSuppress > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
 				return;
 
 			TimeSpan delay = TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 80 ) );
@@ -115,7 +115,7 @@ namespace Server.Mobiles
 				PlaySound( 0x58C );
 			}
 
-			m_NextSuppress = DateTime.Now + TimeSpan.FromSeconds( 10 );
+			m_NextSuppress = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 		}
 
 		public static void SuppressRemove( Mobile target )
@@ -159,7 +159,7 @@ namespace Server.Mobiles
 
 		public void Undress( Mobile target )
 		{
-			if ( target == null || Deleted || !Alive || m_NextUndress > DateTime.Now || 0.005 < Utility.RandomDouble() )
+			if ( target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble() )
 				return;
 
 			if ( target.Player && target.Female && !target.Hidden && CanBeHarmful( target ) )
@@ -173,7 +173,7 @@ namespace Server.Mobiles
 				target.SendLocalizedMessage( 1072196 ); // The satyr's music makes your blood race. Your clothing is too confining.
 			}
 
-			m_NextUndress = DateTime.Now + TimeSpan.FromMinutes( 1 );
+			m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
 		}
 
 		public void UndressItem( Mobile m, Layer layer )
@@ -190,7 +190,7 @@ namespace Server.Mobiles
 
 		public void Provoke( Mobile target )
 		{
-			if ( target == null || Deleted || !Alive || m_NextProvoke > DateTime.Now || 0.05 < Utility.RandomDouble() )
+			if ( target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || 0.05 < Utility.RandomDouble() )
 				return;
 
 			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
@@ -212,7 +212,7 @@ namespace Server.Mobiles
 				}
 			}
 
-			m_NextProvoke = DateTime.Now + TimeSpan.FromSeconds( 10 );
+			m_NextProvoke = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 		}
 		#endregion
 

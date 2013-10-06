@@ -55,7 +55,7 @@ namespace Server
 		private DateTime m_Expire;
 
 		public TimedSkillMod( SkillName skill, bool relative, double value, TimeSpan delay )
-			: this( skill, relative, value, DateTime.Now + delay )
+			: this( skill, relative, value, DateTime.UtcNow + delay )
 		{
 		}
 
@@ -67,7 +67,7 @@ namespace Server
 
 		public override bool CheckCondition()
 		{
-			return (DateTime.Now < m_Expire);
+			return (DateTime.UtcNow < m_Expire);
 		}
 	}
 
@@ -326,7 +326,7 @@ namespace Server
 			if( m_Duration == TimeSpan.Zero )
 				return false;
 
-			return (DateTime.Now - m_Added) >= m_Duration;
+			return (DateTime.UtcNow - m_Added) >= m_Duration;
 		}
 
 		public StatMod( StatType type, string name, int offset, TimeSpan duration )
@@ -335,7 +335,7 @@ namespace Server
 			m_Name = name;
 			m_Offset = offset;
 			m_Duration = duration;
-			m_Added = DateTime.Now;
+			m_Added = DateTime.UtcNow;
 		}
 	}
 
@@ -351,7 +351,7 @@ namespace Server
 		public Mobile Damager { get { return m_Damager; } }
 		public int DamageGiven { get { return m_DamageGiven; } set { m_DamageGiven = value; } }
 		public DateTime LastDamage { get { return m_LastDamage; } set { m_LastDamage = value; } }
-		public bool HasExpired { get { return (DateTime.Now > (m_LastDamage + m_ExpireDelay)); } }
+		public bool HasExpired { get { return (DateTime.UtcNow > (m_LastDamage + m_ExpireDelay)); } }
 		public List<DamageEntry> Responsible { get { return m_Responsible; } set { m_Responsible = value; } }
 
 		private static TimeSpan m_ExpireDelay = TimeSpan.FromMinutes( 2.0 );
@@ -660,11 +660,11 @@ namespace Server
 
 		private class MovementRecord
 		{
-			public DateTime m_End;
+			public int m_End;
 
 			private static Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
 
-			public static MovementRecord NewInstance( DateTime end )
+			public static MovementRecord NewInstance( int end )
 			{
 				MovementRecord r;
 
@@ -682,14 +682,14 @@ namespace Server
 				return r;
 			}
 
-			private MovementRecord( DateTime end )
+			private MovementRecord( int end )
 			{
 				m_End = end;
 			}
 
 			public bool Expired()
 			{
-				bool v = (DateTime.Now >= m_End);
+				bool v = (Core.TickCount - m_End >= 0);
 
 				if( v )
 					m_InstancePool.Enqueue( this );
@@ -744,7 +744,7 @@ namespace Server
 		private int m_TithingPoints;
 		private bool m_DisplayGuildTitle;
 		private Mobile m_GuildFealty;
-		private DateTime m_NextSpellTime;
+		private int m_NextSpellTime;
 		private DateTime[] m_StuckMenuUses;
 		private Timer m_ExpireCombatant;
 		private Timer m_ExpireCriminal;
@@ -752,9 +752,9 @@ namespace Server
 		private Timer m_LogoutTimer;
 		private Timer m_CombatTimer;
 		private Timer m_ManaTimer, m_HitsTimer, m_StamTimer;
-		private DateTime m_NextSkillTime;
-		private DateTime m_NextActionTime;
-		private DateTime m_NextActionMessage;
+		private int m_NextSkillTime;
+		private int m_NextActionTime;
+		private int m_NextActionMessage;
 		private bool m_Paralyzed;
 		private ParalyzedTimer m_ParaTimer;
 		private bool m_Frozen;
@@ -1366,7 +1366,7 @@ namespace Server
 			if( m_Warmode == value )
 				return;
 
-			DateTime now = DateTime.Now, next = m_NextWarmodeChange;
+			DateTime now = DateTime.UtcNow, next = m_NextWarmodeChange;
 
 			if( now > next || m_WarmodeChanges == 0 )
 			{
@@ -1482,7 +1482,7 @@ namespace Server
 			}
 		}
 
-		public DateTime NextCombatTime
+		public int NextCombatTime
 		{
 			get
 			{
@@ -1586,7 +1586,7 @@ namespace Server
 			}
 		}
 
-		private DateTime m_LastMoveTime;
+		private int m_LastMoveTime;
 
 		/// <summary>
 		/// Gets or sets the number of steps this player may take when hidden before being revealed.
@@ -1664,7 +1664,7 @@ namespace Server
 			}
 		}
 
-		public DateTime LastMoveTime
+		public int LastMoveTime
 		{
 			get
 			{
@@ -1845,7 +1845,7 @@ namespace Server
 			return String.Format( "0x{0:X} \"{1}\"", m_Serial.Value, Name );
 		}
 
-		public DateTime NextActionTime
+		public int NextActionTime
 		{
 			get
 			{
@@ -1857,7 +1857,7 @@ namespace Server
 			}
 		}
 
-		public DateTime NextActionMessage
+		public int NextActionMessage
 		{
 			get
 			{
@@ -1869,9 +1869,9 @@ namespace Server
 			}
 		}
 
-		private static TimeSpan m_ActionMessageDelay = TimeSpan.FromSeconds( 0.125 );
+		private static int m_ActionMessageDelay = 125;
 
-		public static TimeSpan ActionMessageDelay
+		public static int ActionMessageDelay
 		{
 			get { return m_ActionMessageDelay; }
 			set { m_ActionMessageDelay = value; }
@@ -1879,20 +1879,20 @@ namespace Server
 
 		public virtual void SendSkillMessage()
 		{
-			if( DateTime.Now < m_NextActionMessage )
+			if (m_NextActionMessage - Core.TickCount >= 0)
 				return;
 
-			m_NextActionMessage = DateTime.Now + m_ActionMessageDelay;
+			m_NextActionMessage = Core.TickCount + m_ActionMessageDelay;
 
 			SendLocalizedMessage( 500118 ); // You must wait a few moments to use another skill.
 		}
 
 		public virtual void SendActionMessage()
 		{
-			if( DateTime.Now < m_NextActionMessage )
+			if (m_NextActionMessage - Core.TickCount >= 0)
 				return;
 
-			m_NextActionMessage = DateTime.Now + m_ActionMessageDelay;
+			m_NextActionMessage = Core.TickCount + m_ActionMessageDelay;
 
 			SendLocalizedMessage( 500119 ); // You must wait to perform another action.
 		}
@@ -2067,7 +2067,7 @@ namespace Server
 
 			protected override void OnTick()
 			{
-				if( DateTime.Now > m_Mobile.m_NextCombatTime )
+				if (Core.TickCount - m_Mobile.m_NextCombatTime >= 0)
 				{
 					Mobile combatant = m_Mobile.Combatant;
 
@@ -2087,7 +2087,7 @@ namespace Server
 					{
 						weapon.OnBeforeSwing( m_Mobile, combatant );	//OnBeforeSwing for checking in regards to being hidden and whatnot
 						m_Mobile.RevealingAction();
-						m_Mobile.m_NextCombatTime = DateTime.Now + weapon.OnSwing( m_Mobile, combatant );
+						m_Mobile.m_NextCombatTime = Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
 					}
 				}
 			}
@@ -2157,9 +2157,9 @@ namespace Server
 
 		#endregion
 
-		private DateTime m_NextCombatTime;
+		private int m_NextCombatTime;
 
-		public DateTime NextSkillTime
+		public int NextSkillTime
 		{
 			get
 			{
@@ -3068,17 +3068,17 @@ namespace Server
 			}
 		}
 
-		private static TimeSpan m_WalkFoot = TimeSpan.FromSeconds( 0.4 );
-		private static TimeSpan m_RunFoot = TimeSpan.FromSeconds( 0.2 );
-		private static TimeSpan m_WalkMount = TimeSpan.FromSeconds( 0.2 );
-		private static TimeSpan m_RunMount = TimeSpan.FromSeconds( 0.1 );
+		private static int m_WalkFoot = 400;
+		private static int m_RunFoot = 200;
+		private static int m_WalkMount = 200;
+		private static int m_RunMount = 100;
 
-		public static TimeSpan WalkFoot { get { return m_WalkFoot; } set { m_WalkFoot = value; } }
-		public static TimeSpan RunFoot { get { return m_RunFoot; } set { m_RunFoot = value; } }
-		public static TimeSpan WalkMount { get { return m_WalkMount; } set { m_WalkMount = value; } }
-		public static TimeSpan RunMount { get { return m_RunMount; } set { m_RunMount = value; } }
+		public static int WalkFoot { get { return m_WalkFoot; } set { m_WalkFoot = value; } }
+		public static int RunFoot { get { return m_RunFoot; } set { m_RunFoot = value; } }
+		public static int WalkMount { get { return m_WalkMount; } set { m_WalkMount = value; } }
+		public static int RunMount { get { return m_RunMount; } set { m_RunMount = value; } }
 
-		private DateTime m_EndQueue;
+		private int m_EndQueue;
 
 		private static ArrayList m_MoveList = new ArrayList();
 
@@ -3097,7 +3097,7 @@ namespace Server
 			if( m_MoveRecords != null && m_MoveRecords.Count > 0 )
 				m_MoveRecords.Clear();
 
-			m_EndQueue = DateTime.Now;
+			m_EndQueue = Core.TickCount;
 		}
 
 		public virtual bool CheckMovement( Direction d, out int newZ )
@@ -3277,21 +3277,21 @@ namespace Server
 								return false;
 						}
 
-						TimeSpan delay = ComputeMovementSpeed( d );
+						int delay = ComputeMovementSpeed( d );
 
-						DateTime end;
+						int end;
 
 						if( m_MoveRecords.Count > 0 )
 							end = m_EndQueue + delay;
 						else
-							end = DateTime.Now + delay;
+							end = Core.TickCount + delay;
 
 						m_MoveRecords.Enqueue( MovementRecord.NewInstance( end ) );
 
 						m_EndQueue = end;
 					}
 
-					m_LastMoveTime = DateTime.Now;
+					m_LastMoveTime = Core.TickCount;
 				}
 				else
 				{
@@ -3391,19 +3391,19 @@ namespace Server
 		{
 		}
 
-		public TimeSpan ComputeMovementSpeed()
+		public int ComputeMovementSpeed()
 		{
 			return ComputeMovementSpeed( this.Direction, false );
 		}
 
-		public TimeSpan ComputeMovementSpeed( Direction dir )
+		public int ComputeMovementSpeed( Direction dir )
 		{
 			return ComputeMovementSpeed( dir, true );
 		}
 
-		public virtual TimeSpan ComputeMovementSpeed( Direction dir, bool checkTurning )
+		public virtual int ComputeMovementSpeed( Direction dir, bool checkTurning )
 		{
-			TimeSpan delay;
+			int delay;
 
 			if( Mounted )
 				delay = (dir & Direction.Running) != 0 ? m_RunMount : m_WalkMount;
@@ -3531,7 +3531,7 @@ namespace Server
 			{
 				for( int i = 0; i < m_StuckMenuUses.Length; ++i )
 				{
-					if( (DateTime.Now - m_StuckMenuUses[i]) > TimeSpan.FromDays( 1.0 ) )
+					if( (DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays( 1.0 ) )
 					{
 						return true;
 					}
@@ -4287,9 +4287,9 @@ namespace Server
 				m.OnDoubleClick( this );
 		}
 
-		private static TimeSpan m_ActionDelay = TimeSpan.FromSeconds( 0.5 );
+		private static int m_ActionDelay = 500;
 
-		public static TimeSpan ActionDelay
+		public static int ActionDelay
 		{
 			get { return m_ActionDelay; }
 			set { m_ActionDelay = value; }
@@ -4306,7 +4306,7 @@ namespace Server
 			Mobile from = this;
 			NetState state = m_NetState;
 
-			if( from.AccessLevel >= AccessLevel.GameMaster || DateTime.Now >= from.NextActionTime )
+			if (from.AccessLevel >= AccessLevel.GameMaster || Core.TickCount - from.NextActionTime >= 0)
 			{
 				if( from.CheckAlive() )
 				{
@@ -4428,7 +4428,7 @@ namespace Server
 							if( liftSound != -1 )
 								from.Send( new PlaySound( liftSound, from ) );
 
-							from.NextActionTime = DateTime.Now + m_ActionDelay;
+							from.NextActionTime = Core.TickCount + m_ActionDelay;
 
 							if( fixMap != null && shouldFix )
 								fixMap.FixColumn( fixLoc.m_X, fixLoc.m_Y );
@@ -5144,7 +5144,7 @@ namespace Server
 				de = new DamageEntry( from );
 
 			de.DamageGiven += amount;
-			de.LastDamage = DateTime.Now;
+			de.LastDamage = DateTime.UtcNow;
 
 			m_DamageEntries.Remove( de );
 			m_DamageEntries.Add( de );
@@ -5175,7 +5175,7 @@ namespace Server
 					list.Add( resp = new DamageEntry( master ) );
 
 				resp.DamageGiven += amount;
-				resp.LastDamage = DateTime.Now;
+				resp.LastDamage = DateTime.UtcNow;
 			}
 
 			return de;
@@ -5419,9 +5419,9 @@ namespace Server
 
 			for( int i = 0; i < m_StuckMenuUses.Length; ++i )
 			{
-				if( (DateTime.Now - m_StuckMenuUses[i]) > TimeSpan.FromDays( 1.0 ) )
+				if( (DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays( 1.0 ) )
 				{
-					m_StuckMenuUses[i] = DateTime.Now;
+					m_StuckMenuUses[i] = DateTime.UtcNow;
 					return;
 				}
 			}
@@ -9888,7 +9888,7 @@ namespace Server
 			m_Serial = serial;
 			m_Aggressors = new List<AggressorInfo>();
 			m_Aggressed = new List<AggressorInfo>();
-			m_NextSkillTime = DateTime.MinValue;
+			m_NextSkillTime = Core.TickCount;
 			m_DamageEntries = new List<DamageEntry>();
 
 			Type ourType = this.GetType();
@@ -9936,8 +9936,8 @@ namespace Server
 			m_Stabled = new List<Mobile>();
 			m_DamageEntries = new List<DamageEntry>();
 
-			m_NextSkillTime = DateTime.MinValue;
-			m_CreationTime = DateTime.Now;
+			m_NextSkillTime = Core.TickCount;
+			m_CreationTime = DateTime.UtcNow;
 		}
 
 		private static Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
@@ -11335,7 +11335,7 @@ namespace Server
 			}
 		}
 
-		public DateTime NextSpellTime
+		public int NextSpellTime
 		{
 			get
 			{

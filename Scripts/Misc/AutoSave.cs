@@ -173,7 +173,7 @@ namespace Server.Misc
 
 		private static string GetTimeStamp()
 		{
-			DateTime now = DateTime.Now;
+			DateTime now = DateTime.UtcNow;
 
 			return String.Format( "{0}-{1}-{2} {3}-{4:D2}-{5:D2}",
 					now.Day,

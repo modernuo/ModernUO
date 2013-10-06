@@ -82,7 +82,7 @@ namespace Server.Items
 			#endregion
 			
 			#region Scroll of Alacrity
-			if (pm.AcceleratedStart > DateTime.Now)
+			if (pm.AcceleratedStart > DateTime.UtcNow)
 			{
 				from.SendLocalizedMessage(1077951); // You are already under the effect of an accelerated skillgain scroll.
 				return false;

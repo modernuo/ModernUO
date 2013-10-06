@@ -40,7 +40,7 @@ namespace Server.Misc
 			{
 				e.Mobile.SendMessage( "You have initiated server shutdown." );
 				Enabled = true;
-				m_RestartTime = DateTime.Now;
+				m_RestartTime = DateTime.UtcNow;
 			}
 		}
 
@@ -48,9 +48,9 @@ namespace Server.Misc
 		{
 			Priority = TimerPriority.FiveSeconds;
 
-			m_RestartTime = DateTime.Now.Date + RestartTime;
+			m_RestartTime = DateTime.UtcNow.Date + RestartTime;
 
-			if ( m_RestartTime < DateTime.Now )
+			if ( m_RestartTime < DateTime.UtcNow )
 				m_RestartTime += TimeSpan.FromDays( 1.0 );
 		}
 
@@ -69,7 +69,7 @@ namespace Server.Misc
 			if ( m_Restarting || !Enabled )
 				return;
 
-			if ( DateTime.Now < m_RestartTime )
+			if ( DateTime.UtcNow < m_RestartTime )
 				return;
 
 			if ( WarningDelay > TimeSpan.Zero )

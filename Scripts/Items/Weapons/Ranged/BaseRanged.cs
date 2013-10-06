@@ -52,7 +52,7 @@ namespace Server.Items
 			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 
 			// Make sure we've been standing still for .25/.5/1 second depending on Era
-			if ( DateTime.Now > (attacker.LastMoveTime + TimeSpan.FromSeconds( Core.SE ? 0.25 : (Core.AOS ? 0.5 : 1.0) )) || (Core.AOS && WeaponAbility.GetCurrentAbility( attacker ) is MovingShot) )
+			if (Core.TickCount - attacker.LastMoveTime >= (Core.SE ? 250 : Core.AOS ? 500 : 1000) || (Core.AOS && WeaponAbility.GetCurrentAbility(attacker) is MovingShot))
 			{
 				bool canSwing = true;
 

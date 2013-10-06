@@ -1089,7 +1089,7 @@ namespace Server {
 
 			try {
 				using ( StreamWriter op = new StreamWriter( "world-save-errors.log", true ) ) {
-					op.WriteLine( "{0}\t{1}", DateTime.Now, message );
+					op.WriteLine( "{0}\t{1}", DateTime.UtcNow, message );
 					op.WriteLine( new StackTrace( 2 ).ToString() );
 					op.WriteLine();
 				}

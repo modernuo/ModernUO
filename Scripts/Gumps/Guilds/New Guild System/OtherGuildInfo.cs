@@ -83,8 +83,8 @@ namespace Server.Guilds
 
 				TimeSpan timeRemaining = TimeSpan.Zero;
 
-				if( activeWar.WarLength != TimeSpan.Zero && (activeWar.WarBeginning + activeWar.WarLength) > DateTime.Now )
-					timeRemaining = (activeWar.WarBeginning + activeWar.WarLength) - DateTime.Now;
+				if( activeWar.WarLength != TimeSpan.Zero && (activeWar.WarBeginning + activeWar.WarLength) > DateTime.UtcNow )
+					timeRemaining = (activeWar.WarBeginning + activeWar.WarLength) - DateTime.UtcNow;
 
 				//time = String.Format( "{0:D2}:{1:D2}", timeRemaining.Hours.ToString(), timeRemaining.Subtract( TimeSpan.FromHours( timeRemaining.Hours ) ).Minutes );	//Is there a formatter for htis? it's 2AM and I'm tired and can't find it
 				time = String.Format( "{0:D2}:{1:mm}", timeRemaining.Hours, DateTime.MinValue + timeRemaining );
@@ -234,7 +234,7 @@ namespace Server.Guilds
 						{
 							//Accept the war
 							guild.PendingWars.Remove( war );
-							war.WarBeginning = DateTime.Now;
+							war.WarBeginning = DateTime.UtcNow;
 							guild.AcceptedWars.Add( war );
 
 							if( alliance != null && alliance.IsMember( guild ) )
@@ -250,7 +250,7 @@ namespace Server.Guilds
 							//Technically  SHOULD say Your guild is now at war w/out any info, intentional diff.
 
 							otherGuild.PendingWars.Remove( otherWar );
-							otherWar.WarBeginning = DateTime.Now;
+							otherWar.WarBeginning = DateTime.UtcNow;
 							otherGuild.AcceptedWars.Add( otherWar );
 
 							if( otherAlliance != null && m_Other.Alliance.IsMember( m_Other ) )

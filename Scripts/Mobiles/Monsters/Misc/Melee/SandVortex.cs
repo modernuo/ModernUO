@@ -56,10 +56,10 @@ namespace Server.Mobiles
 			if ( combatant == null || combatant.Deleted || combatant.Map != Map || !InRange( combatant, 12 ) || !CanBeHarmful( combatant ) || !InLOS( combatant ) )
 				return;
 
-			if ( DateTime.Now >= m_NextAttack )
+			if ( DateTime.UtcNow >= m_NextAttack )
 			{
 				SandAttack( combatant );
-				m_NextAttack = DateTime.Now + TimeSpan.FromSeconds( 10.0 + (10.0 * Utility.RandomDouble()) );
+				m_NextAttack = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 + (10.0 * Utility.RandomDouble()) );
 			}
 		}
 

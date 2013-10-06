@@ -134,7 +134,7 @@ namespace Server.Items
 			if ( m_Timer != null )
 				writer.Write( (DateTime) m_Timer.Next );
 			else
-				writer.Write( (DateTime) DateTime.Now + TimeSpan.FromDays( 1 ) );
+				writer.Write( (DateTime) DateTime.UtcNow + TimeSpan.FromDays( 1 ) );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -148,10 +148,10 @@ namespace Server.Items
 
 			DateTime next = reader.ReadDateTime();
 
-			if ( next < DateTime.Now )
-				next = DateTime.Now;
+			if ( next < DateTime.UtcNow )
+				next = DateTime.UtcNow;
 
-			m_Timer = Timer.DelayCall( next - DateTime.Now, TimeSpan.FromDays( 1 ), new TimerCallback( GiveLogs ) );
+			m_Timer = Timer.DelayCall( next - DateTime.UtcNow, TimeSpan.FromDays( 1 ), new TimerCallback( GiveLogs ) );
 		}
 	}
 

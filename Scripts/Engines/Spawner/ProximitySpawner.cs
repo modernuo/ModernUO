@@ -80,14 +80,14 @@ namespace Server.Mobiles
 			if ( !Running )
 				return;
 
-			End = DateTime.Now + delay;
+			End = DateTime.UtcNow + delay;
 		}
 
 		public override void Respawn()
 		{
 			RemoveSpawned();
 
-			End = DateTime.Now;
+			End = DateTime.UtcNow;
 		}
 
 		public override void Spawn()
@@ -128,7 +128,7 @@ namespace Server.Mobiles
 			if ( !Running )
 				return;
 
-			if ( IsEmpty && End <= DateTime.Now && m.InRange( GetWorldLocation(), m_TriggerRange ) && m.Location != oldLocation && ValidTrigger( m ) )
+			if ( IsEmpty && End <= DateTime.UtcNow && m.InRange( GetWorldLocation(), m_TriggerRange ) && m.Location != oldLocation && ValidTrigger( m ) )
 			{
 				TextDefinition.SendMessageTo( m, m_SpawnMessage );
 

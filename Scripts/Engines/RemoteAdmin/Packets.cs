@@ -83,7 +83,7 @@ namespace Server.RemoteAdmin
 			m_Stream.Write( (int) World.Items.Count );
 			m_Stream.Write( (int) Core.ScriptItems );
 
-			m_Stream.Write( (uint)(DateTime.Now - Clock.ServerStart).TotalSeconds );
+			m_Stream.Write( (uint)(DateTime.UtcNow - Clock.ServerStart).TotalSeconds );
 			m_Stream.Write( (uint) GC.GetTotalMemory( false ) );                        // TODO: uint not sufficient for TotalMemory (long). Fix protocol.
 			m_Stream.WriteAsciiNull( netVer );
 			m_Stream.WriteAsciiNull( os );
@@ -132,7 +132,7 @@ namespace Server.RemoteAdmin
 			m_Stream.Write( (int)NetState.Instances.Count - 1 );                      // Clients
 			m_Stream.Write( (int)World.Items.Count );                                 // Items
 			m_Stream.Write( (int)World.Mobiles.Count );                               // Mobiles
-			m_Stream.Write( (uint)(DateTime.Now - Clock.ServerStart).TotalSeconds );  // Age (seconds)
+			m_Stream.Write( (uint)(DateTime.UtcNow - Clock.ServerStart).TotalSeconds );  // Age (seconds)
 
 			long memory = GC.GetTotalMemory( false );
 			m_Stream.Write( (uint)(memory >> 32) );                                   // Memory high bytes

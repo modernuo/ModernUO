@@ -68,14 +68,14 @@ namespace Server.Mobiles
 				if ( !Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills[SkillName.Wrestling].Value >= 80.0 && m_Mobile.Skills[SkillName.ArmsLore].Value >= 80.0 && m_toDisarm != null )
 					EventSink.InvokeDisarmRequest( new DisarmRequestEventArgs( m_Mobile ) );
 
-				if ( m_toDisarm != null && m_toDisarm.IsChildOf( combatant.Backpack ) && m_Mobile.NextSkillTime <= DateTime.Now && (m_toDisarm.LootType != LootType.Blessed && m_toDisarm.LootType != LootType.Newbied) )
+				if (m_toDisarm != null && m_toDisarm.IsChildOf(combatant.Backpack) && Core.TickCount - m_Mobile.NextSkillTime >= 0 && (m_toDisarm.LootType != LootType.Blessed && m_toDisarm.LootType != LootType.Newbied))
 				{
 					m_Mobile.DebugSay( "Trying to steal from combatant." );
 					m_Mobile.UseSkill( SkillName.Stealing );
 					if ( m_Mobile.Target != null )
 						m_Mobile.Target.Invoke( m_Mobile, m_toDisarm );
 				}
-				else if ( m_toDisarm == null && m_Mobile.NextSkillTime <= DateTime.Now )
+				else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
 				{
 					Container cpack = combatant.Backpack;
 

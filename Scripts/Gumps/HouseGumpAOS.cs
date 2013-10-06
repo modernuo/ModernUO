@@ -1232,7 +1232,7 @@ namespace Server.Gumps
 								{
 									from.SendLocalizedMessage( 501389 ); // You cannot redeed a house with a guildstone inside.
 								}
-								else if ( Core.ML && from.AccessLevel < AccessLevel.GameMaster && DateTime.Now <= m_House.BuiltOn.AddHours ( 1 ) )
+								else if ( Core.ML && from.AccessLevel < AccessLevel.GameMaster && DateTime.UtcNow <= m_House.BuiltOn.AddHours ( 1 ) )
 								{
 									from.SendLocalizedMessage( 1080178 ); // You must wait one hour between each house demolition.
 								}

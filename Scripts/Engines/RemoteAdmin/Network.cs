@@ -32,7 +32,7 @@ namespace Server.RemoteAdmin
 			string outStr;
 			if ( m_NewLine )
 			{
-				outStr = String.Format( "[{0}]: {1}", DateTime.Now.ToString( DateFormat ), str );
+				outStr = String.Format( "[{0}]: {1}", DateTime.UtcNow.ToString( DateFormat ), str );
 				m_NewLine = false;
 			}
 			else
@@ -51,7 +51,7 @@ namespace Server.RemoteAdmin
 			if ( m_NewLine )
 			{
 				string outStr;
-				outStr = String.Format( "[{0}]: {1}", DateTime.Now.ToString( DateFormat ), ch );
+				outStr = String.Format( "[{0}]: {1}", DateTime.UtcNow.ToString( DateFormat ), ch );
 
 				m_ConsoleData.Append( outStr );
 				SendToAll( outStr );
@@ -71,7 +71,7 @@ namespace Server.RemoteAdmin
 		{
 			string outStr;
 			if ( m_NewLine )
-				outStr = String.Format( "[{0}]: {1}{2}", DateTime.Now.ToString( DateFormat ), line, Console.Out.NewLine );
+				outStr = String.Format( "[{0}]: {1}{2}", DateTime.UtcNow.ToString( DateFormat ), line, Console.Out.NewLine );
 			else
 				outStr = String.Format( "{0}{1}", line, Console.Out.NewLine );
 
@@ -127,7 +127,7 @@ namespace Server.RemoteAdmin
 			}
 			else if ( cmd == 0xFF )
 			{
-				string statStr = String.Format( ", Name={0}, Age={1}, Clients={2}, Items={3}, Chars={4}, Mem={5}K, Ver={6}", Server.Misc.ServerList.ServerName, (int)(DateTime.Now - Server.Items.Clock.ServerStart).TotalHours, NetState.Instances.Count, World.Items.Count, World.Mobiles.Count, (int)(System.GC.GetTotalMemory( false ) / 1024), ProtocolVersion );
+				string statStr = String.Format( ", Name={0}, Age={1}, Clients={2}, Items={3}, Chars={4}, Mem={5}K, Ver={6}", Server.Misc.ServerList.ServerName, (int)(DateTime.UtcNow - Server.Items.Clock.ServerStart).TotalHours, NetState.Instances.Count, World.Items.Count, World.Mobiles.Count, (int)(System.GC.GetTotalMemory( false ) / 1024), ProtocolVersion );
 				state.Send( new UOGInfo( statStr ) );
 				state.Dispose();
 			}
@@ -189,7 +189,7 @@ namespace Server.RemoteAdmin
 				Console.WriteLine( "ADMIN: Access granted to '{0}' from {1}", user, state );
 				state.Account = a;
 				a.LogAccess( state );
-				a.LastLogin = DateTime.Now;
+				a.LastLogin = DateTime.UtcNow;
 
 				state.Send( new Login( LoginResponse.OK ) );
 				TightTrimConsoleData();

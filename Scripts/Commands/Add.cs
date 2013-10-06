@@ -93,12 +93,12 @@ namespace Server.Commands
 				return;
 			}
 
-			DateTime time = DateTime.Now;
+			DateTime time = DateTime.UtcNow;
 
 			int built = BuildObjects( from, type, start, end, args, props, packs, outline, mapAvg );
 
 			if ( built > 0 )
-				from.SendMessage( "{0} object{1} generated in {2:F1} seconds.", built, built != 1 ? "s" : "", (DateTime.Now - time).TotalSeconds );
+				from.SendMessage( "{0} object{1} generated in {2:F1} seconds.", built, built != 1 ? "s" : "", (DateTime.UtcNow - time).TotalSeconds );
 			else
 				SendUsage( type, from );
 		}

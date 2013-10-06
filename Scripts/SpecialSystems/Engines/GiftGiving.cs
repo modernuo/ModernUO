@@ -33,7 +33,7 @@ namespace Server.Misc
 			if ( acct == null )
 				return;
 
-			DateTime now = DateTime.Now;
+			DateTime now = DateTime.UtcNow;
 
 			for ( int i = 0; i < m_Givers.Count; ++i )
 			{

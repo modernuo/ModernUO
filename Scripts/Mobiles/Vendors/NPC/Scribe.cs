@@ -47,14 +47,14 @@ namespace Server.Mobiles
 		{
 			base.OnSpeech( e );
 
-			if ( !e.Handled && m_NextShush <= DateTime.Now && InLOS( e.Mobile ) )
+			if ( !e.Handled && m_NextShush <= DateTime.UtcNow && InLOS( e.Mobile ) )
 			{
 				Direction = GetDirectionTo( e.Mobile );
 
 				PlaySound( Female ? 0x32F : 0x441 );
 				PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 1073990 ); // Shhhh!
 
-				m_NextShush = DateTime.Now + ShushDelay;
+				m_NextShush = DateTime.UtcNow + ShushDelay;
 				e.Handled = true;
 			}
 		}

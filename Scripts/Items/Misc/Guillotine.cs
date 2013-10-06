@@ -23,7 +23,7 @@ namespace Server.Items
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that
 			}
-			else if ( Visible && ( ItemID == 4656 || ItemID == 4702 ) && DateTime.Now >= m_NextUse )
+			else if ( Visible && ( ItemID == 4656 || ItemID == 4702 ) && DateTime.UtcNow >= m_NextUse )
 			{
 				Point3D p = this.GetWorldLocation();
 
@@ -41,7 +41,7 @@ namespace Server.Items
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 5.00 ), new TimerCallback( BackUp ) );
 
-				m_NextUse = DateTime.Now + TimeSpan.FromSeconds( 10.0 );
+				m_NextUse = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
 			}
 		}
 

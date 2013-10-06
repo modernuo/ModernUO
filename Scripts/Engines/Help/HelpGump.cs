@@ -86,7 +86,7 @@ namespace Server.Engines.Help
 			{
 				AggressorInfo info = m.Aggressed[i];
 
-				if ( DateTime.Now - info.LastCombatTime < TimeSpan.FromSeconds( 30.0 ) )
+				if ( DateTime.UtcNow - info.LastCombatTime < TimeSpan.FromSeconds( 30.0 ) )
 					return true;
 			}
 

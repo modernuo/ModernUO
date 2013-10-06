@@ -67,7 +67,7 @@ namespace Server.Factions
 
 		public bool TaxChangeReady
 		{
-			get{ return ( m_State.LastTaxChange + TaxChangePeriod ) < DateTime.Now; }
+			get{ return ( m_State.LastTaxChange + TaxChangePeriod ) < DateTime.UtcNow; }
 		}
 
 		public static Town FromRegion( Region reg )
@@ -224,7 +224,7 @@ namespace Server.Factions
 
 		public void CheckIncome()
 		{
-			if ( (LastIncome + IncomePeriod) > DateTime.Now || Owner == null )
+			if ( (LastIncome + IncomePeriod) > DateTime.UtcNow || Owner == null )
 				return;
 
 			ProcessIncome();
@@ -232,7 +232,7 @@ namespace Server.Factions
 
 		public void ProcessIncome()
 		{
-			LastIncome = DateTime.Now;
+			LastIncome = DateTime.UtcNow;
 
 			int flow = NetCashFlow;
 
@@ -447,7 +447,7 @@ namespace Server.Factions
 
 			if ( m_State.Owner == null ) // going from unowned to owned
 			{
-				LastIncome = DateTime.Now;
+				LastIncome = DateTime.UtcNow;
 				f.Silver += SilverCaptureBonus;
 			}
 			else if ( f == null ) // going from owned to unowned

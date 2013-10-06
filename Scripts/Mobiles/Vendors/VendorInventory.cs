@@ -29,7 +29,7 @@ namespace Server.Mobiles
 
 			m_Items = new List<Item>();
 
-			m_ExpireTime = DateTime.Now + GracePeriod;
+			m_ExpireTime = DateTime.UtcNow + GracePeriod;
 			m_ExpireTimer = new ExpireTimer( this, GracePeriod );
 			m_ExpireTimer.Start();
 		}
@@ -131,7 +131,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				TimeSpan delay = m_ExpireTime - DateTime.Now;
+				TimeSpan delay = m_ExpireTime - DateTime.UtcNow;
 				m_ExpireTimer = new ExpireTimer( this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero );
 				m_ExpireTimer.Start();
 			}

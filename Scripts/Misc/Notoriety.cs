@@ -296,7 +296,7 @@ namespace Server.Misc
 				if( target.Kills >= 5 || (body.IsMonster && IsSummoned( target.Owner as BaseCreature )) || (target.Owner is BaseCreature && (((BaseCreature)target.Owner).AlwaysMurderer || ((BaseCreature)target.Owner).IsAnimatedDead)) )
 					actual = Notoriety.Murderer;
 
-				if( DateTime.Now >= (target.TimeOfDeath + Corpse.MonsterLootRightSacrifice) )
+				if( DateTime.UtcNow >= (target.TimeOfDeath + Corpse.MonsterLootRightSacrifice) )
 					return actual;
 
 				Party sourceParty = Party.Get( source );

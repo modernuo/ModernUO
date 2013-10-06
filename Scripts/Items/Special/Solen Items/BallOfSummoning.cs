@@ -260,7 +260,7 @@ namespace Server.Items
 			{
 				from.Send( new AsciiMessage( this.Serial, this.ItemID, MessageType.Regular, 0x22, 3, "", "You cannot summon your pet to this location." ) );
 			}
-			else if ( Core.ML && from is PlayerMobile && DateTime.Now < ((PlayerMobile)from).LastPetBallTime.AddSeconds( 15.0 ) )
+			else if ( Core.ML && from is PlayerMobile && DateTime.UtcNow < ((PlayerMobile)from).LastPetBallTime.AddSeconds( 15.0 ) )
 			{
 				MessageHelper.SendLocalizedMessageTo( this, from, 1080072, 0x22 ); // You must wait a few seconds before you can summon your pet.
 			}
@@ -308,7 +308,7 @@ namespace Server.Items
 
 			if ( from is PlayerMobile )
 			{
-				((PlayerMobile)from).LastPetBallTime = DateTime.Now;
+				((PlayerMobile)from).LastPetBallTime = DateTime.UtcNow;
 			}
 		}
 

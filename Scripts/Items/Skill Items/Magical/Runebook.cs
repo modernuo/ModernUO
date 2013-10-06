@@ -337,7 +337,7 @@ namespace Server.Items
 					return;
 				}
 
-				if ( DateTime.Now < m_NextUse )
+				if ( DateTime.UtcNow < m_NextUse )
 				{
 					from.SendLocalizedMessage( 502406 ); // This book needs time to recharge.
 					return;
@@ -353,7 +353,7 @@ namespace Server.Items
 		public virtual void OnTravel()
 		{
 			if ( !Core.SA )
-				m_NextUse = DateTime.Now + UseDelay;
+				m_NextUse = DateTime.UtcNow + UseDelay;
 		}
 
 		public override void OnAfterDuped( Item newItem )

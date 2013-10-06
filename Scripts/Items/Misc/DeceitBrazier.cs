@@ -91,7 +91,7 @@ namespace Server.Items
 		{
 			Movable = false; 
 			Light = LightType.Circle225;
-			m_NextSpawn = DateTime.Now;
+			m_NextSpawn = DateTime.UtcNow;
 			m_NextSpawnDelay = TimeSpan.FromMinutes( 15.0 );
 			m_SpawnRange = 5;
 		}
@@ -122,7 +122,7 @@ namespace Server.Items
 				m_NextSpawnDelay = reader.ReadTimeSpan();
 			}
 
-			m_NextSpawn = DateTime.Now;
+			m_NextSpawn = DateTime.UtcNow;
 		}
 
 		public virtual void HeedWarning()
@@ -134,7 +134,7 @@ namespace Server.Items
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if( m_NextSpawn < DateTime.Now ) // means we haven't spawned anything if the next spawn is below
+			if( m_NextSpawn < DateTime.UtcNow ) // means we haven't spawned anything if the next spawn is below
 			{
 				if( Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) )
 				{
@@ -181,7 +181,7 @@ namespace Server.Items
 			{
 				try
 				{
-					if( m_NextSpawn < DateTime.Now )
+					if( m_NextSpawn < DateTime.UtcNow )
 					{
 						Map map = this.Map;
 						BaseCreature bc = (BaseCreature)Activator.CreateInstance( m_Creatures[Utility.Random( m_Creatures.Length )] );
@@ -205,7 +205,7 @@ namespace Server.Items
 								bc.ForceReacquire();
 							} );
 
-							m_NextSpawn = DateTime.Now + m_NextSpawnDelay;
+							m_NextSpawn = DateTime.UtcNow + m_NextSpawnDelay;
 						}
 					}
 					else

@@ -155,7 +155,7 @@ namespace Server.Spells.Spellweaving
 			{
 				to.SendLocalizedMessage( 1072828 ); // Your arcane focus is renewed.
 				focus.LifeSpan = duration;
-				focus.CreationTime = DateTime.Now;
+				focus.CreationTime = DateTime.UtcNow;
 				focus.StrengthBonus = strengthBonus;
 				focus.InvalidateProperties();
 				focus.SendTimeRemainingMessage( to );

@@ -177,7 +177,7 @@ namespace Server.Accounting
 
 				if ( GetBanTags( out banTime, out banDuration ) )
 				{
-					if ( banDuration != TimeSpan.MaxValue && DateTime.Now >= ( banTime + banDuration ) )
+					if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= ( banTime + banDuration ) )
 					{
 						SetUnspecifiedBan( null ); // clear
 						Banned = false;
@@ -235,7 +235,7 @@ namespace Server.Accounting
 				if( this.AccessLevel != AccessLevel.Player )
 					return false;
 
-				TimeSpan inactiveLength = DateTime.Now - m_LastLogin;
+				TimeSpan inactiveLength = DateTime.UtcNow - m_LastLogin;
 
 				return (inactiveLength > ((this.Count == 0) ? EmptyInactiveDuration : InactiveDuration));
 			}
@@ -254,7 +254,7 @@ namespace Server.Accounting
 					PlayerMobile m = m_Mobiles[i] as PlayerMobile;
 
 					if ( m != null && m.NetState != null )
-						return m_TotalGameTime + ( DateTime.Now - m.SessionStart );
+						return m_TotalGameTime + ( DateTime.UtcNow - m.SessionStart );
 				}
 
 				return m_TotalGameTime;
@@ -528,7 +528,7 @@ namespace Server.Accounting
 			if ( m == null )
 				return;
 
-			acc.m_TotalGameTime += DateTime.Now - m.SessionStart;
+			acc.m_TotalGameTime += DateTime.UtcNow - m.SessionStart;
 		}
 
 		private static void EventSink_Login( LoginEventArgs e )
@@ -607,7 +607,7 @@ namespace Server.Accounting
 
 			m_AccessLevel = AccessLevel.Player;
 
-			m_Created = m_LastLogin = DateTime.Now;
+			m_Created = m_LastLogin = DateTime.UtcNow;
 			m_TotalGameTime = TimeSpan.Zero;
 
 			m_Mobiles = new Mobile[7];
@@ -674,8 +674,8 @@ namespace Server.Accounting
 			m_AccessLevel = (AccessLevel)Enum.Parse( typeof( AccessLevel ), Utility.GetText( node["accessLevel"], "Player" ), true );
 #endif
 			m_Flags = Utility.GetXMLInt32( Utility.GetText( node["flags"], "0" ), 0 );
-			m_Created = Utility.GetXMLDateTime( Utility.GetText( node["created"], null ), DateTime.Now );
-			m_LastLogin = Utility.GetXMLDateTime( Utility.GetText( node["lastLogin"], null ), DateTime.Now );
+			m_Created = Utility.GetXMLDateTime( Utility.GetText( node["created"], null ), DateTime.UtcNow );
+			m_LastLogin = Utility.GetXMLDateTime( Utility.GetText( node["lastLogin"], null ), DateTime.UtcNow );
 
 			m_Mobiles = LoadMobiles( node );
 			m_Comments = LoadComments( node );

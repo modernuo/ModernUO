@@ -176,7 +176,7 @@ namespace Server.Items
 			public InternalTimer( MarkContainer container, TimeSpan delay ) : base( delay )
 			{
 				m_Container = container;
-				m_RelockTime = DateTime.Now + delay;
+				m_RelockTime = DateTime.UtcNow + delay;
 
 				Start();
 			}
@@ -257,7 +257,7 @@ namespace Server.Items
 			m_AutoLock = reader.ReadBool();
 
 			if ( !Locked && m_AutoLock )
-				m_RelockTimer = new InternalTimer( this, reader.ReadDeltaTime() - DateTime.Now );
+				m_RelockTimer = new InternalTimer( this, reader.ReadDeltaTime() - DateTime.UtcNow );
 
 			m_TargetMap = reader.ReadMap();
 			m_Target = reader.ReadPoint3D();

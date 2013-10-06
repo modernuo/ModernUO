@@ -37,9 +37,9 @@ namespace Server
 		{
 			m_OverrideAlgorithm = alg;
 
-			long start = DateTime.Now.Ticks;
+			long start = DateTime.UtcNow.Ticks;
 			MovementPath path = new MovementPath( from, new Point3D( p ) );
-			long end = DateTime.Now.Ticks;
+			long end = DateTime.UtcNow.Ticks;
 			double len = Math.Round( (end-start) / 10000.0, 2 );
 
 			if ( !path.Success )

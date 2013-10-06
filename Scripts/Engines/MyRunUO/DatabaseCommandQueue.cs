@@ -67,7 +67,7 @@ namespace Server.Engines.MyRunUO
 			OdbcCommand command = null;
 			OdbcTransaction transact = null;
 
-			DateTime start = DateTime.Now;
+			DateTime start = DateTime.UtcNow;
 
 			bool shouldWriteException = true;
 
@@ -118,7 +118,7 @@ namespace Server.Engines.MyRunUO
 								try{ m_Sync.Close(); }
 								catch{}
 
-								Console.WriteLine( m_CompletionString, (DateTime.Now - start).TotalSeconds );
+								Console.WriteLine( m_CompletionString, (DateTime.UtcNow - start).TotalSeconds );
 								m_HasCompleted = true;
 
 								return;

@@ -72,7 +72,7 @@ namespace Server.Mobiles
 			Hue = 0x41CE;
 
 			m_Target = target;
-			m_ExpireTime = DateTime.Now + TimeSpan.FromMinutes( 10.0 );
+			m_ExpireTime = DateTime.UtcNow + TimeSpan.FromMinutes( 10.0 );
 
 			SetStr( 401, 500 );
 			SetDex( 296, 315 );
@@ -129,7 +129,7 @@ namespace Server.Mobiles
 
 		public override void OnThink()
 		{
-			if ( !m_Target.Alive || DateTime.Now > m_ExpireTime )
+			if ( !m_Target.Alive || DateTime.UtcNow > m_ExpireTime )
 			{
 				Delete();
 				return;

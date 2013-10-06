@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public static void Initialize()
 		{
-			m_ServerStart = DateTime.Now;
+			m_ServerStart = DateTime.UtcNow;
 		}
 
 		[Constructable]
@@ -71,7 +71,7 @@ namespace Server.Items
 
 		public static void GetTime( Map map, int x, int y, out int hours, out int minutes, out int totalMinutes )
 		{
-			TimeSpan timeSpan = DateTime.Now - WorldStart;
+			TimeSpan timeSpan = DateTime.UtcNow - WorldStart;
 
 			totalMinutes = (int)(timeSpan.TotalSeconds / SecondsPerUOMinute);
 

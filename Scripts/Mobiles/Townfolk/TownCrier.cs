@@ -117,7 +117,7 @@ namespace Server.Mobiles
 
 		public string[] Lines{ get{ return m_Lines; } }
 		public DateTime ExpireTime{ get{ return m_ExpireTime; } }
-		public bool Expired{ get{ return ( DateTime.Now >= m_ExpireTime ); } }
+		public bool Expired{ get{ return ( DateTime.UtcNow >= m_ExpireTime ); } }
 
 		public TownCrierEntry( string[] lines, TimeSpan duration )
 		{
@@ -128,7 +128,7 @@ namespace Server.Mobiles
 			else if ( duration > TimeSpan.FromDays( 365.0 ) )
 				duration = TimeSpan.FromDays( 365.0 );
 
-			m_ExpireTime = DateTime.Now + duration;
+			m_ExpireTime = DateTime.UtcNow + duration;
 		}
 	}
 
@@ -233,7 +233,7 @@ namespace Server.Mobiles
 				if ( entries != null && index < entries.Count )
 				{
 					TownCrierEntry tce = entries[index];
-					TimeSpan ts = tce.ExpireTime - DateTime.Now;
+					TimeSpan ts = tce.ExpireTime - DateTime.UtcNow;
 
 					if ( ts < TimeSpan.Zero )
 						ts = TimeSpan.Zero;
@@ -280,7 +280,7 @@ namespace Server.Mobiles
 				{
 					TownCrierEntry tce = (TownCrierEntry)entries[i];
 
-					TimeSpan toExpire = tce.ExpireTime - DateTime.Now;
+					TimeSpan toExpire = tce.ExpireTime - DateTime.UtcNow;
 
 					if ( toExpire < TimeSpan.Zero )
 						toExpire = TimeSpan.Zero;

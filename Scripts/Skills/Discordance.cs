@@ -27,7 +27,7 @@ namespace Server.SkillHandlers
 			from.RevealingAction();
 			from.SendLocalizedMessage( 1049541 ); // Choose the target for your song of discordance.
 			from.Target = new DiscordanceTarget( from, instrument );
-			from.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 6.0 );
+			from.NextSkillTime = Core.TickCount + 6000;
 		}
 
 		private class DiscordanceInfo
@@ -44,7 +44,7 @@ namespace Server.SkillHandlers
 			{
 				m_From = from;
 				m_Creature = creature;
-				m_EndTime = DateTime.Now;
+				m_EndTime = DateTime.UtcNow;
 				m_Ending = false;
 				m_Effect = effect;
 				m_Mods = mods;
@@ -115,7 +115,7 @@ namespace Server.SkillHandlers
 					ends = true;
 			}
 
-			if ( ends && info.m_Ending && info.m_EndTime < DateTime.Now )
+			if ( ends && info.m_Ending && info.m_EndTime < DateTime.UtcNow )
 			{
 				if ( info.m_Timer != null )
 					info.m_Timer.Stop();
@@ -128,12 +128,12 @@ namespace Server.SkillHandlers
 				if ( ends && !info.m_Ending )
 				{
 					info.m_Ending = true;
-					info.m_EndTime = DateTime.Now + TimeSpan.FromSeconds( 15 );
+					info.m_EndTime = DateTime.UtcNow + TimeSpan.FromSeconds( 15 );
 				}
 				else if ( !ends )
 				{
 					info.m_Ending = false;
-					info.m_EndTime = DateTime.Now;
+					info.m_EndTime = DateTime.UtcNow;
 				}
 
 				targ.FixedEffect( 0x376A, 1, 32 );
@@ -152,7 +152,7 @@ namespace Server.SkillHandlers
 			protected override void OnTarget( Mobile from, object target )
 			{
 				from.RevealingAction();
-				from.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 1.0 );
+				from.NextSkillTime = Core.TickCount + 1000;
 
 				if ( !m_Instrument.IsChildOf( from.Backpack ) )
 				{
@@ -248,7 +248,7 @@ namespace Server.SkillHandlers
 							m_Instrument.ConsumeUse( from );
 						}
 
-						from.NextSkillTime = DateTime.Now + TimeSpan.FromSeconds( 12.0 );
+						from.NextSkillTime = Core.TickCount + 12000;
 					}
 					else
 					{

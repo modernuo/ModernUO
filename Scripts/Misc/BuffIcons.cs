@@ -74,7 +74,7 @@ namespace Server
 			: this( iconID, titleCliloc, secondaryCliloc )
 		{
 			m_TimeLength = length;
-			m_TimeStart = DateTime.Now;
+			m_TimeStart = DateTime.UtcNow;
 
 			m_Timer = Timer.DelayCall( length, new TimerCallback(
 				delegate
@@ -228,7 +228,7 @@ namespace Server
 	public sealed class AddBuffPacket : Packet
 	{
 		public AddBuffPacket( Mobile m, BuffInfo info )
-			: this( m, info.ID, info.TitleCliloc, info.SecondaryCliloc, info.Args, (info.TimeStart != DateTime.MinValue) ? ((info.TimeStart + info.TimeLength) - DateTime.Now) : TimeSpan.Zero )
+			: this( m, info.ID, info.TitleCliloc, info.SecondaryCliloc, info.Args, (info.TimeStart != DateTime.MinValue) ? ((info.TimeStart + info.TimeLength) - DateTime.UtcNow) : TimeSpan.Zero )
 		{
 		}
 		public AddBuffPacket( Mobile mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, TimeSpan length )

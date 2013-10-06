@@ -28,11 +28,11 @@ namespace Server.Commands
 			Network.NetState.FlushAll();
 			Network.NetState.Pause();
 
-			DateTime startTime = DateTime.Now;
+			DateTime startTime = DateTime.UtcNow;
 
 			bool generated = Document();
 
-			DateTime endTime = DateTime.Now;
+			DateTime endTime = DateTime.UtcNow;
 
 			Network.NetState.Resume();
 

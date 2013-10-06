@@ -73,7 +73,7 @@ namespace Server.Targeting
 
 		public void BeginTimeout( Mobile from, TimeSpan delay )
 		{
-			m_TimeoutTime = DateTime.Now + delay;
+			m_TimeoutTime = DateTime.UtcNow + delay;
 
 			if ( m_TimeoutTimer != null )
 				m_TimeoutTimer.Stop();

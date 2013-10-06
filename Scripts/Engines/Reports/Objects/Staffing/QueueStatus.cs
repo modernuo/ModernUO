@@ -31,7 +31,7 @@ namespace Server.Engines.Reports
 
 		public QueueStatus( int count )
 		{
-			m_TimeStamp = DateTime.Now;
+			m_TimeStamp = DateTime.UtcNow;
 			m_Count = count;
 		}
 

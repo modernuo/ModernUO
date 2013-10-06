@@ -942,11 +942,11 @@ namespace Server
 
 				if ( info.Callback != null )
 				{
-					if ( from.NextSkillTime <= DateTime.Now && from.Spell == null )
+					if (Core.TickCount - from.NextSkillTime >= 0 && from.Spell == null)
 					{
 						from.DisruptiveAction();
 
-						from.NextSkillTime = DateTime.Now + info.Callback( from );
+						from.NextSkillTime = Core.TickCount + (int)(info.Callback(from)).TotalMilliseconds;
 
 						return true;
 					}
