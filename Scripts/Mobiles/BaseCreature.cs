@@ -679,7 +679,7 @@ namespace Server.Mobiles
 		public virtual void BreathStallMovement()
 		{
 			if ( m_AI != null )
-				m_AI.NextMove = DateTime.UtcNow + TimeSpan.FromSeconds( BreathStallTime );
+				m_AI.NextMove = Core.TickCount + (int)(BreathStallTime * 1000);
 		}
 
 		public virtual void BreathPlayAngerSound()
@@ -1712,7 +1712,7 @@ namespace Server.Mobiles
 
 			m_Owners = new List<Mobile>();
 
-			m_NextReacquireTime = DateTime.UtcNow + ReacquireDelay;
+			m_NextReacquireTime = Core.TickCount + (int)ReacquireDelay.TotalMilliseconds;
 
 			ChangeAIType(AI);
 
@@ -2871,7 +2871,7 @@ namespace Server.Mobiles
 				if ( m_bSummoned == value )
 					return;
 
-				m_NextReacquireTime = DateTime.UtcNow;
+				m_NextReacquireTime = Core.TickCount;
 
 				m_bSummoned = value;
 				Delta( MobileDelta.Noto );
@@ -3607,7 +3607,7 @@ namespace Server.Mobiles
 
 		public virtual void ForceReacquire()
 		{
-			m_NextReacquireTime = DateTime.MinValue;
+			m_NextReacquireTime = Core.TickCount;
 		}
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
@@ -4962,9 +4962,9 @@ namespace Server.Mobiles
 		 * This functionality appears to be implemented on OSI as well
 		 */
 
-		private DateTime m_NextReacquireTime;
+		private int m_NextReacquireTime;
 
-		public DateTime NextReacquireTime{ get{ return m_NextReacquireTime; } set{ m_NextReacquireTime = value; } }
+		public int NextReacquireTime{ get{ return m_NextReacquireTime; } set{ m_NextReacquireTime = value; } }
 
 		public virtual TimeSpan ReacquireDelay{ get{ return TimeSpan.FromSeconds( 10.0 ); } }
 		public virtual bool ReacquireOnMovement{ get{ return false; } }

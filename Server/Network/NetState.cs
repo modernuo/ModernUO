@@ -709,6 +709,8 @@ namespace Server.Network {
 			if ( e.SocketError != SocketError.Success || byteCount <= 0 ) {
 				Dispose( false );
 				return;
+			} else if ( m_Disposing ) {
+				return;
 			}
 
 			m_NextCheckActivity = Core.TickCount + 90000;

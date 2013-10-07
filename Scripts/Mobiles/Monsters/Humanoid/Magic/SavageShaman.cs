@@ -129,7 +129,7 @@ namespace Server.Mobiles
 			Animate( 111, 5, 1, true, false, 0 ); // Do a little dance...
 
 			if ( AIObject != null )
-				AIObject.NextMove = DateTime.UtcNow + TimeSpan.FromSeconds( 1.0 );
+				AIObject.NextMove = Core.TickCount + 1000;
 
 			if ( list.Count >= 3 )
 			{
@@ -140,7 +140,7 @@ namespace Server.Mobiles
 					dancer.Animate( 111, 5, 1, true, false, 0 ); // Get down tonight...
 
 					if ( dancer.AIObject != null )
-						dancer.AIObject.NextMove = DateTime.UtcNow + TimeSpan.FromSeconds( 1.0 );
+						dancer.AIObject.NextMove = Core.TickCount + 1000;
 				}
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerCallback( EndSavageDance ) );

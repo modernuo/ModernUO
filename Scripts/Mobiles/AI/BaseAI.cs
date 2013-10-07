@@ -1999,9 +1999,9 @@ namespace Server.Mobiles
 			return delay;
 		}
 
-		private DateTime m_NextMove;
+		private int m_NextMove;
 
-		public DateTime NextMove
+		public int NextMove
 		{
 			get { return m_NextMove; }
 			set { m_NextMove = value; }
@@ -2009,7 +2009,7 @@ namespace Server.Mobiles
 
 		public virtual bool CheckMove()
 		{
-			return (DateTime.UtcNow >= m_NextMove);
+			return (Core.TickCount - m_NextMove >= 0);
 		}
 
 		public virtual bool DoMove(Direction d)
@@ -2036,12 +2036,12 @@ namespace Server.Mobiles
 			// This makes them always move one step, never any direction changes
 			m_Mobile.Direction = d;
 
-			TimeSpan delay = TimeSpan.FromSeconds(TransformMoveDelay(m_Mobile.CurrentSpeed));
+			int delay = (int)(TransformMoveDelay(m_Mobile.CurrentSpeed) * 1000);
 
 			m_NextMove += delay;
 
-			if (m_NextMove < DateTime.UtcNow)
-				m_NextMove = DateTime.UtcNow;
+			if (Core.TickCount - m_NextMove > 0)
+				m_NextMove = Core.TickCount;
 
 			m_Mobile.Pushing = false;
 
@@ -2470,13 +2470,13 @@ namespace Server.Mobiles
 				return false;
 			}
 
-			if (m_Mobile.NextReacquireTime > DateTime.UtcNow)
+			if (Core.TickCount - m_Mobile.NextReacquireTime < 0)
 			{
 				m_Mobile.FocusMob = null;
 				return false;
 			}
 
-			m_Mobile.NextReacquireTime = DateTime.UtcNow + m_Mobile.ReacquireDelay;
+			m_Mobile.NextReacquireTime = Core.TickCount + (int)m_Mobile.ReacquireDelay.TotalMilliseconds;
 
 			m_Mobile.DebugSay("Acquiring...");
 
