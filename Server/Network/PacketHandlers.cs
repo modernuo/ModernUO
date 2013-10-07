@@ -149,6 +149,7 @@ namespace Server.Network
 			Register( 0xD7,   0,  true, new OnPacketReceive( EncodedCommand ) );
 			Register( 0xE1,   0, false, new OnPacketReceive( ClientType ) );
 			Register( 0xEF,  21, false, new OnPacketReceive( LoginServerSeed ) );
+			Register( 0xF4,   0, false, new OnPacketReceive( CrashReport ) );
 			Register( 0xF8, 106, false, new OnPacketReceive( CreateCharacter70160 ) );
 
 			Register6017( 0x08, 15, true, new OnPacketReceive( DropReq6017 ) );
@@ -2566,7 +2567,40 @@ namespace Server.Network
 			state.Version = new ClientVersion( clientMaj, clientMin, clientRev, clientPat );
 		}
 
-		public static void AccountLogin( NetState state, PacketReader pvSrc )
+		public static void CrashReport(NetState state, PacketReader pvSrc)
+		{
+			byte clientMaj = pvSrc.ReadByte();
+			byte clientMin = pvSrc.ReadByte();
+			byte clientRev = pvSrc.ReadByte();
+			byte clientPat = pvSrc.ReadByte();
+
+			ushort x = pvSrc.ReadUInt16();
+			ushort y = pvSrc.ReadUInt16();
+			sbyte z = pvSrc.ReadSByte();
+			byte map = pvSrc.ReadByte();
+
+			string account = pvSrc.ReadString(32);
+			string character = pvSrc.ReadString(32);
+			string ip = pvSrc.ReadString(15);
+
+			int unk1 = pvSrc.ReadInt32();
+			int exception = pvSrc.ReadInt32();
+
+			string process = pvSrc.ReadString(100);
+			string report = pvSrc.ReadString(100);
+
+			pvSrc.ReadByte(); // 0x00
+
+			int offset = pvSrc.ReadInt32();
+
+			int count = (int)pvSrc.ReadByte();
+
+			for (int i = 0; i < count; i++) {
+				int address = pvSrc.ReadInt32();
+			}
+		}
+
+		public static void AccountLogin(NetState state, PacketReader pvSrc)
 		{
 			if ( state.SentFirstPacket )
 			{

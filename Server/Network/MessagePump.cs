@@ -37,7 +37,6 @@ namespace Server.Network
 		private Queue<NetState> m_Queue;
 		private Queue<NetState> m_WorkingQueue;
 		private Queue<NetState> m_Throttled;
-		private byte[] m_Peek;
 
 		public MessagePump()
 		{
@@ -64,7 +63,6 @@ namespace Server.Network
 			m_Queue = new Queue<NetState>();
 			m_WorkingQueue = new Queue<NetState>();
 			m_Throttled = new Queue<NetState>();
-			m_Peek = new byte[4];
 		}
 
 		public Listener[] Listeners
@@ -139,151 +137,136 @@ namespace Server.Network
 		private const int BufferSize = 4096;
 		private BufferPool m_Buffers = new BufferPool( "Processor", 4, BufferSize );
 
-		public bool HandleReceive( NetState ns )
+		private bool HandleSeed(NetState ns, ByteQueue buffer) {
+			if (buffer.GetPacketID() == 0xEF) {
+				// new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
+				// 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
+				ns.Seeded = true;
+				return true;
+			} else if (buffer.Length >= 4) {
+				byte[] m_Peek = new byte[4];
+
+				buffer.Dequeue(m_Peek, 0, 4);
+
+				int seed = (m_Peek[0] << 24) | (m_Peek[1] << 16) | (m_Peek[2] << 8) | m_Peek[3];
+
+				if (seed == 0) {
+					Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
+					ns.Dispose();
+					return false;
+				}
+
+				ns.m_Seed = seed;
+				ns.Seeded = true;
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		private bool CheckEncrypted(NetState ns, int packetID) {
+			if (!ns.SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 && packetID != 0x91 && packetID != 0xA4 && packetID != 0xEF) {
+				Console.WriteLine("Client: {0}: Encrypted client detected, disconnecting", ns);
+				ns.Dispose();
+				return true;
+			}
+			return false;
+		}
+
+		public void HandleReceive( NetState ns )
 		{
 			ByteQueue buffer = ns.Buffer;
 
 			if ( buffer == null || buffer.Length <= 0 )
-				return true;
+				return;
 
 			lock ( buffer )
 			{
-				int length = buffer.Length;
-
-				if ( !ns.Seeded )
-				{
-					if ( buffer.GetPacketID() == 0xEF )
-					{
-						// new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
-						// 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
-						ns.Seeded =	true;
-					}
-					else if ( buffer.Length >= 4 )
-					{
-						buffer.Dequeue( m_Peek, 0, 4 );
-
-						int seed = (m_Peek[0] << 24) | (m_Peek[1] << 16) | (m_Peek[2] << 8) | m_Peek[3];
-
-						if ( seed == 0 )
-						{
-							Console.WriteLine( "Login: {0}: Invalid client detected, disconnecting", ns );
-							ns.Dispose();
-							return false;
-						}
-
-						ns.m_Seed = seed;
-						ns.Seeded = true;
-
-						length = buffer.Length;
-					}
-					else
-					{
-						return true;
-					}
+				if ( !ns.Seeded ) {
+					if (!HandleSeed(ns, buffer))
+						return;
 				}
 
-				while ( length > 0 && ns.Running )
-				{
+				int length = buffer.Length;
+
+				while ( length > 0 && ns.Running ) {
 					int packetID = buffer.GetPacketID();
 
-					if ( !ns.SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 && packetID != 0x91 && packetID != 0xA4 && packetID != 0xEF )
-					{
-						Console.WriteLine( "Client: {0}: Encrypted client detected, disconnecting", ns );
-						ns.Dispose();
+					if (CheckEncrypted(ns, packetID))
 						break;
-					}
 
 					PacketHandler handler = ns.GetHandler( packetID );
 
-					if ( handler == null )
-					{
+					if ( handler == null ) {
 						byte[] data = new byte[length];
 						length = buffer.Dequeue( data, 0, length );
-
 						new PacketReader( data, length, false ).Trace( ns );
-
 						break;
 					}
 
 					int packetLength = handler.Length;
 
-					if ( packetLength <= 0 )
-					{
-						if ( length >= 3 )
-						{
+					if ( packetLength <= 0 ) 	{
+						if ( length >= 3 ) {
 							packetLength = buffer.GetPacketLength();
 
-							if ( packetLength < 3 )
-							{
+							if ( packetLength < 3 ) {
 								ns.Dispose();
 								break;
 							}
-						}
-						else
-						{
+						} else {
 							break;
 						}
 					}
 
-					if ( length >= packetLength )
-					{
-						if ( handler.Ingame && ns.Mobile == null )
-						{
+					if ( length >= packetLength ) {
+						if ( handler.Ingame && ns.Mobile == null ) {
 							Console.WriteLine( "Client: {0}: Sent ingame packet (0x{1:X2}) before having been attached to a mobile", ns, packetID );
 							ns.Dispose();
 							break;
-						}
-						else if ( handler.Ingame && ns.Mobile.Deleted )
-						{
+						} else if ( handler.Ingame && ns.Mobile.Deleted ) {
 							ns.Dispose();
 							break;
 						}
-						else
-						{
-							ThrottlePacketCallback throttler = handler.ThrottleCallback;
 
-							if ( throttler != null && !throttler( ns ) )
-							{
-								m_Throttled.Enqueue( ns );
-								return false;
-							}
+						ThrottlePacketCallback throttler = handler.ThrottleCallback;
 
-							PacketReceiveProfile prof = PacketReceiveProfile.Acquire( packetID );
-
-							if ( prof != null ) {
-								prof.Start();
-							}
-
-							byte[] packetBuffer;
-
-							if ( BufferSize >= packetLength )
-								packetBuffer = m_Buffers.AcquireBuffer();
-							else
-								packetBuffer = new byte[packetLength];
-
-							packetLength = buffer.Dequeue( packetBuffer, 0, packetLength );
-
-							PacketReader r =  new PacketReader( packetBuffer, packetLength, handler.Length != 0 );
-
-							handler.OnReceive( ns, r );
-							length = buffer.Length;
-
-							if ( BufferSize >= packetLength )
-								m_Buffers.ReleaseBuffer( packetBuffer );
-
-							if ( prof != null ) {
-								prof.Finish( packetLength );
-							}
+						if ( throttler != null && !throttler( ns ) ) {
+							m_Throttled.Enqueue( ns );
+							return;
 						}
-					}
-					else
-					{
+
+						PacketReceiveProfile prof = PacketReceiveProfile.Acquire( packetID );
+
+						if ( prof != null ) {
+							prof.Start();
+						}
+
+						byte[] packetBuffer;
+
+						if ( BufferSize >= packetLength )
+							packetBuffer = m_Buffers.AcquireBuffer();
+						else
+							packetBuffer = new byte[packetLength];
+
+						packetLength = buffer.Dequeue( packetBuffer, 0, packetLength );
+
+						PacketReader r =  new PacketReader( packetBuffer, packetLength, handler.Length != 0 );
+
+						handler.OnReceive( ns, r );
+						length = buffer.Length;
+
+						if ( BufferSize >= packetLength )
+							m_Buffers.ReleaseBuffer( packetBuffer );
+
+						if ( prof != null ) {
+							prof.Finish( packetLength );
+						}
+					} else {
 						break;
 					}
 				}
 			}
-
-			return true;
 		}
 	}
 }
