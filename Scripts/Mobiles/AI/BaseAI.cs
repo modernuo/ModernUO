@@ -45,7 +45,7 @@ namespace Server.Mobiles
 	{
 		public Timer m_Timer;
 		protected ActionType m_Action;
-		private DateTime m_NextStopGuard;
+		private int m_NextStopGuard;
 
 		public BaseCreature m_Mobile;
 
@@ -830,7 +830,7 @@ namespace Server.Mobiles
 					m_Mobile.FocusMob = null;
 					m_Mobile.Combatant = null;
 					m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-					m_NextStopGuard = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+					m_NextStopGuard = Core.TickCount + (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
 					m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
 					break;
 
@@ -928,7 +928,7 @@ namespace Server.Mobiles
 			{
 				m_Mobile.DebugSay("Praise the shepherd!");
 			}
-			else if (DateTime.UtcNow < m_NextStopGuard)
+			else if (Core.TickCount - m_NextStopGuard < 0)
 			{
 				m_Mobile.DebugSay("I am on guard");
 				//m_Mobile.Turn( Utility.Random(0, 2) - 1 );
@@ -2718,7 +2718,7 @@ namespace Server.Mobiles
 			m_Timer.Start();
 		}
 
-		private DateTime m_NextDetectHidden;
+		private int m_NextDetectHidden;
 
 		public virtual bool CanDetectHidden { get { return m_Mobile.Skills[SkillName.DetectHidden].Value > 0; } }
 
@@ -2734,7 +2734,7 @@ namespace Server.Mobiles
 			{
 				m_Owner = owner;
 
-				m_Owner.m_NextDetectHidden = DateTime.UtcNow;
+				m_Owner.m_NextDetectHidden = Core.TickCount;
 
 				Priority = TimerPriority.FiftyMS;
 			}
@@ -2802,7 +2802,7 @@ namespace Server.Mobiles
 					}
 				}
 
-				if (m_Owner.CanDetectHidden && DateTime.UtcNow > m_Owner.m_NextDetectHidden)
+				if (m_Owner.CanDetectHidden && Core.TickCount - m_Owner.m_NextDetectHidden >= 0)
 				{
 					m_Owner.DetectHidden();
 
@@ -2815,7 +2815,7 @@ namespace Server.Mobiles
 					int min = delay * (9 / 10); // 13s at 1000 int, 33s at 400 int, 54s at <250 int
 					int max = delay * (10 / 9); // 16s at 1000 int, 41s at 400 int, 66s at <250 int
 
-					m_Owner.m_NextDetectHidden = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(min, max));
+					m_Owner.m_NextDetectHidden = Core.TickCount + (int)TimeSpan.FromSeconds(Utility.RandomMinMax(min, max)).TotalMilliseconds;
 				}
 			}
 		}

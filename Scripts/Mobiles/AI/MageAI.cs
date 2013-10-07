@@ -15,8 +15,8 @@ namespace Server.Mobiles
 {
 	public class MageAI : BaseAI
 	{
-		private DateTime m_NextCastTime;
-		private DateTime m_NextHealTime;
+		private int m_NextCastTime;
+		private int m_NextHealTime;
 
 		public MageAI( BaseCreature m )
 			: base( m )
@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
 				m_Mobile.Combatant = m_Mobile.FocusMob;
 				Action = ActionType.Combat;
-				m_NextCastTime = DateTime.UtcNow;
+				m_NextCastTime = Core.TickCount;
 			}
 			else if( SmartAI && m_Mobile.Mana < m_Mobile.ManaMax && !m_Mobile.Meditating )
 			{
@@ -101,7 +101,7 @@ namespace Server.Mobiles
 
 			if( m_Mobile.Controlled )
 			{
-				if( DateTime.UtcNow < m_NextHealTime )
+				if (Core.TickCount - m_NextHealTime < 0)
 					return null;
 			}
 
@@ -144,7 +144,7 @@ namespace Server.Mobiles
 			else
 				delay = Math.Sqrt( 600 - m_Mobile.Int );
 
-			m_NextHealTime = DateTime.UtcNow + TimeSpan.FromSeconds( delay );
+			m_NextHealTime = Core.TickCount + (int)TimeSpan.FromSeconds(delay).TotalMilliseconds;
 
 			return spell;
 		}
@@ -664,7 +664,7 @@ namespace Server.Mobiles
 				}
 			}
 
-			if( m_Mobile.Spell == null && DateTime.UtcNow > m_NextCastTime && m_Mobile.InRange( c, Core.ML ? 10 : 12 ) )
+			if (m_Mobile.Spell == null && Core.TickCount - m_NextCastTime >= 0 && m_Mobile.InRange(c, Core.ML ? 10 : 12))
 			{
 				// We are ready to cast a spell
 
@@ -714,7 +714,7 @@ namespace Server.Mobiles
 				if( spell != null )
 					spell.Cast();
 
-				m_NextCastTime = DateTime.UtcNow + GetDelay( spell );
+				m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
 			}
 			else if( m_Mobile.Spell == null || !m_Mobile.Spell.IsCasting )
 			{
@@ -739,7 +739,7 @@ namespace Server.Mobiles
 				{
 					m_LastTarget = null;
 				}
-				else if( m_Mobile.Spell == null && DateTime.UtcNow > m_NextCastTime )
+				else if( m_Mobile.Spell == null && Core.TickCount - m_NextCastTime >= 0 )
 				{
 					m_Mobile.DebugSay( "I am going to reveal my last target" );
 
@@ -749,7 +749,7 @@ namespace Server.Mobiles
 					if( spell.Cast() )
 						m_LastTarget = null; // only do it once
 
-					m_NextCastTime = DateTime.UtcNow + GetDelay( spell );
+					m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
 				}
 			}
 

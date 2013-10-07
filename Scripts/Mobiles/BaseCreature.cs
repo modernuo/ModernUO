@@ -616,7 +616,7 @@ namespace Server.Mobiles
 		public virtual bool DisplayWeight{ get{ return Backpack is StrongBackpack; } }
 
 		#region Breath ability, like dragon fire breath
-		private DateTime m_NextBreathTime;
+		private int m_NextBreathTime;
 
 		// Must be overriden in subclass to enable
 		public virtual bool HasBreath{ get{ return false; } }
@@ -5152,7 +5152,7 @@ namespace Server.Mobiles
 		private const double MinutesToNextChanceMin = 0.25;
 		private const double MinutesToNextChanceMax = 0.75;
 
-		private DateTime m_NextRummageTime;
+		private int m_NextRummageTime;
 
 		public virtual bool CanBreath { get { return HasBreath && !Summoned; } }
 		public virtual bool IsDispellable { get { return Summoned && !IsAnimatedDead; } }
@@ -5174,8 +5174,8 @@ namespace Server.Mobiles
 		public virtual double HealOwnerInterval { get { return 30.0; } }
 		public virtual bool HealOwnerFully { get { return false; } }
 
-		private DateTime m_NextHealTime = DateTime.UtcNow;
-		private DateTime m_NextHealOwnerTime = DateTime.UtcNow;
+		private int m_NextHealTime = Core.TickCount;
+		private int m_NextHealOwnerTime = Core.TickCount;
 		private Timer m_HealTimer = null;
 
 		public bool IsHealing { get { return ( m_HealTimer != null ); } }
@@ -5292,7 +5292,7 @@ namespace Server.Mobiles
 		#endregion
 
 		#region Damaging Aura
-		private DateTime m_NextAura;
+		private int m_NextAura;
 
 		public virtual bool HasAura { get { return false; } }
 		public virtual TimeSpan AuraInterval { get { return TimeSpan.FromSeconds( 5 ); } }
@@ -5345,7 +5345,9 @@ namespace Server.Mobiles
 
 		public virtual void OnThink()
 		{
-			if ( EnableRummaging && CanRummageCorpses && !Summoned && !Controlled && DateTime.UtcNow >= m_NextRummageTime )
+			int tc = Core.TickCount;
+
+			if ( EnableRummaging && CanRummageCorpses && !Summoned && !Controlled && tc - m_NextRummageTime >= 0 )
 			{
 				double min, max;
 
@@ -5361,21 +5363,21 @@ namespace Server.Mobiles
 				}
 
 				double delay = min + (Utility.RandomDouble() * (max - min));
-				m_NextRummageTime = DateTime.UtcNow + TimeSpan.FromMinutes( delay );
+				m_NextRummageTime = tc + (int)TimeSpan.FromMinutes(delay).TotalMilliseconds;
 			}
 
-			if ( CanBreath && DateTime.UtcNow >= m_NextBreathTime ) // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
+			if ( CanBreath && tc - m_NextBreathTime >= 0 ) // tested: controlled dragons do breath fire, what about summoned skeletal dragons?
 			{
 				Mobile target = this.Combatant;
 
 				if( target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful( target ) && target.Map == this.Map && !IsDeadBondedPet && target.InRange( this, BreathRange ) && InLOS( target ) && !BardPacified )
 				{
-					if( ( DateTime.UtcNow - m_NextBreathTime ) < TimeSpan.FromSeconds( 30 ) && Utility.RandomBool() )
+					if( ( Core.TickCount - m_NextBreathTime ) < 30000 && Utility.RandomBool() )
 					{
 						BreathStart( target );
 					}
 
-					m_NextBreathTime = DateTime.UtcNow + TimeSpan.FromSeconds( BreathMinDelay + ( ( Utility.RandomDouble( ) * ( BreathMaxDelay - BreathMinDelay ) ) ) );
+					m_NextBreathTime = tc + (int)TimeSpan.FromSeconds( BreathMinDelay + ( ( Utility.RandomDouble( ) * ( BreathMaxDelay - BreathMinDelay ) ) ) ).TotalMilliseconds;
 				}
 			}
 
@@ -5383,17 +5385,17 @@ namespace Server.Mobiles
 			{
 				Mobile owner = this.ControlMaster;
 
-				if ( owner != null && CanHealOwner && DateTime.UtcNow >= m_NextHealOwnerTime && CanBeBeneficial( owner, true, true ) && owner.Map == this.Map && InRange( owner, HealStartRange ) && InLOS( owner ) && owner.Hits < HealOwnerTrigger * owner.HitsMax )
+				if ( owner != null && CanHealOwner && tc - m_NextHealOwnerTime >= 0 && CanBeBeneficial( owner, true, true ) && owner.Map == this.Map && InRange( owner, HealStartRange ) && InLOS( owner ) && owner.Hits < HealOwnerTrigger * owner.HitsMax )
 				{
 					HealStart( owner );
 
-					m_NextHealOwnerTime = DateTime.UtcNow + TimeSpan.FromSeconds( HealOwnerInterval );
+					m_NextHealOwnerTime = tc + (int)TimeSpan.FromSeconds( HealOwnerInterval ).TotalMilliseconds;
 				}
-				else if ( CanHeal && DateTime.UtcNow >= m_NextHealTime && CanBeBeneficial( this ) && ( Hits < HealTrigger * HitsMax || Poisoned ) )
+				else if ( CanHeal && tc - m_NextHealTime >= 0 && CanBeBeneficial( this ) && ( Hits < HealTrigger * HitsMax || Poisoned ) )
 				{
 					HealStart( this );
 
-					m_NextHealTime = DateTime.UtcNow + TimeSpan.FromSeconds( HealInterval );
+					m_NextHealTime = tc + (int)TimeSpan.FromSeconds( HealInterval ).TotalMilliseconds;
 				}
 			}
 
@@ -5416,10 +5418,10 @@ namespace Server.Mobiles
 				m_FailedReturnHome = 0;
 			}
 
-			if ( HasAura && DateTime.UtcNow >= m_NextAura )
+			if ( HasAura && tc - m_NextAura >= 0 )
 			{
 				AuraDamage();
-				m_NextAura = DateTime.UtcNow + AuraInterval;
+				m_NextAura = tc + (int)AuraInterval.TotalMilliseconds;
 			}
 		}
 
