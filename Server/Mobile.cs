@@ -660,11 +660,11 @@ namespace Server
 
 		private class MovementRecord
 		{
-			public int m_End;
+			public long m_End;
 
 			private static Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
 
-			public static MovementRecord NewInstance( int end )
+			public static MovementRecord NewInstance( long end )
 			{
 				MovementRecord r;
 
@@ -682,7 +682,7 @@ namespace Server
 				return r;
 			}
 
-			private MovementRecord( int end )
+			private MovementRecord( long end )
 			{
 				m_End = end;
 			}
@@ -744,7 +744,7 @@ namespace Server
 		private int m_TithingPoints;
 		private bool m_DisplayGuildTitle;
 		private Mobile m_GuildFealty;
-		private int m_NextSpellTime;
+		private long m_NextSpellTime;
 		private DateTime[] m_StuckMenuUses;
 		private Timer m_ExpireCombatant;
 		private Timer m_ExpireCriminal;
@@ -752,9 +752,9 @@ namespace Server
 		private Timer m_LogoutTimer;
 		private Timer m_CombatTimer;
 		private Timer m_ManaTimer, m_HitsTimer, m_StamTimer;
-		private int m_NextSkillTime;
-		private int m_NextActionTime;
-		private int m_NextActionMessage;
+		private long m_NextSkillTime;
+		private long m_NextActionTime;
+		private long m_NextActionMessage;
 		private bool m_Paralyzed;
 		private ParalyzedTimer m_ParaTimer;
 		private bool m_Frozen;
@@ -1482,7 +1482,7 @@ namespace Server
 			}
 		}
 
-		public int NextCombatTime
+		public long NextCombatTime
 		{
 			get
 			{
@@ -1586,7 +1586,7 @@ namespace Server
 			}
 		}
 
-		private int m_LastMoveTime;
+		private long m_LastMoveTime;
 
 		/// <summary>
 		/// Gets or sets the number of steps this player may take when hidden before being revealed.
@@ -1664,7 +1664,7 @@ namespace Server
 			}
 		}
 
-		public int LastMoveTime
+		public long LastMoveTime
 		{
 			get
 			{
@@ -1845,7 +1845,7 @@ namespace Server
 			return String.Format( "0x{0:X} \"{1}\"", m_Serial.Value, Name );
 		}
 
-		public int NextActionTime
+		public long NextActionTime
 		{
 			get
 			{
@@ -1857,7 +1857,7 @@ namespace Server
 			}
 		}
 
-		public int NextActionMessage
+		public long NextActionMessage
 		{
 			get
 			{
@@ -2157,9 +2157,9 @@ namespace Server
 
 		#endregion
 
-		private int m_NextCombatTime;
+		private long m_NextCombatTime;
 
-		public int NextSkillTime
+		public long NextSkillTime
 		{
 			get
 			{
@@ -3078,7 +3078,7 @@ namespace Server
 		public static int WalkMount { get { return m_WalkMount; } set { m_WalkMount = value; } }
 		public static int RunMount { get { return m_RunMount; } set { m_RunMount = value; } }
 
-		private int m_EndQueue;
+		private long m_EndQueue;
 
 		private static ArrayList m_MoveList = new ArrayList();
 
@@ -3279,7 +3279,7 @@ namespace Server
 
 						int delay = ComputeMovementSpeed( d );
 
-						int end;
+						long end;
 
 						if( m_MoveRecords.Count > 0 )
 							end = m_EndQueue + delay;
@@ -11335,7 +11335,7 @@ namespace Server
 			}
 		}
 
-		public int NextSpellTime
+		public long NextSpellTime
 		{
 			get
 			{

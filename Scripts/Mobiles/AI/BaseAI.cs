@@ -45,7 +45,7 @@ namespace Server.Mobiles
 	{
 		public Timer m_Timer;
 		protected ActionType m_Action;
-		private int m_NextStopGuard;
+		private long m_NextStopGuard;
 
 		public BaseCreature m_Mobile;
 
@@ -1999,9 +1999,9 @@ namespace Server.Mobiles
 			return delay;
 		}
 
-		private int m_NextMove;
+		private long m_NextMove;
 
-		public int NextMove
+		public long NextMove
 		{
 			get { return m_NextMove; }
 			set { m_NextMove = value; }
@@ -2718,7 +2718,7 @@ namespace Server.Mobiles
 			m_Timer.Start();
 		}
 
-		private int m_NextDetectHidden;
+		private long m_NextDetectHidden;
 
 		public virtual bool CanDetectHidden { get { return m_Mobile.Skills[SkillName.DetectHidden].Value > 0; } }
 

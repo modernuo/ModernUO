@@ -112,13 +112,71 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-		public static int TickCount {
+#if false && !MONO
+		[DllImport("kernel32")]
+		private static extern long GetTickCount64();
+#endif
+
+		/* DateTime.Now and DateTime.UtcNow depend on the system time which is undesirable.
+		 * GetTickCount64 is unavailable on Windows XP and Windows Server 2003.
+		 * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution,
+		 * but expensive to call and unreliable with certain system configurations.
+		 */
+
+		/* The following implementation is an effective substitute for GetTickCount64 that
+		 * is reliable as long as it is retrieved once every 2^32 ms (~49 days).
+		 */
+
+#if Framework_4_0
+		private static ThreadLocal<long> _HighOrder = new ThreadLocal<long>();
+		private static ThreadLocal<uint> _LastTickCount = new ThreadLocal<uint>();
+
+		private static readonly long _Frequency = Stopwatch.Frequency; 
+
+		public static long TickCount {
 			get {
-				if (Stopwatch.IsHighResolution) // TODO: GetTimestamp is unreliable with certain system configurations.
-					return (int)((double)Stopwatch.GetTimestamp() / Stopwatch.Frequency * 1000);
-				return Environment.TickCount;
+				if (Stopwatch.IsHighResolution) // TODO: Unreliable with certain system configurations.
+					return (long)((double)Stopwatch.GetTimestamp() / _Frequency * 1000);
+
+				uint t = (uint)Environment.TickCount;
+
+				if (_LastTickCount.Value > t) // Wrapped
+					_HighOrder.Value += 0x100000000;
+
+				_LastTickCount.Value = t;
+				
+				return _HighOrder.Value | _LastTickCount.Value;
 			}
 		}
+#else
+		private static long _HighOrder;
+		private static uint _LastTickCount;
+
+		private static object _TickSync = new object();
+
+		private static readonly long _Frequency = Stopwatch.Frequency; 
+
+		public static long TickCount
+		{
+			get
+			{
+				if (Stopwatch.IsHighResolution) // TODO: Unreliable with certain system configurations.
+					return (long)((double)Stopwatch.GetTimestamp() / _Frequency * 1000);
+
+				lock (_TickSync)
+				{
+					uint t = (uint)Environment.TickCount;
+
+					if (_LastTickCount > t) // Wrapped
+						_HighOrder += 0x100000000;
+
+					_LastTickCount = t;
+
+					return _HighOrder | _LastTickCount;
+				}
+			}
+		}
+#endif
 
 #if Framework_4_0
 		public static readonly bool Is64Bit = Environment.Is64BitProcess;
@@ -513,10 +571,10 @@ namespace Server
 
 			try
 			{
-				DateTime now, last = DateTime.UtcNow;
+				long now, last = TickCount;
 
 				const int sampleInterval = 100;
-				const float ticksPerSecond = (float)(TimeSpan.TicksPerSecond * sampleInterval);
+				const float ticksPerSecond = (float)(1000 * sampleInterval);
 				TimeSpan _oneMS = TimeSpan.FromMilliseconds( 1 );
 
 				long sample = 0;
@@ -539,9 +597,9 @@ namespace Server
 
 					if( (++sample % sampleInterval) == 0 )
 					{
-						now = DateTime.UtcNow;
+						now = TickCount;
 						m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] =
-							ticksPerSecond / (now.Ticks - last.Ticks);
+							ticksPerSecond / (now - last);
 						last = now;
 					}
 				}

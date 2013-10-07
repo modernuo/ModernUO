@@ -616,7 +616,7 @@ namespace Server.Mobiles
 		public virtual bool DisplayWeight{ get{ return Backpack is StrongBackpack; } }
 
 		#region Breath ability, like dragon fire breath
-		private int m_NextBreathTime;
+		private long m_NextBreathTime;
 
 		// Must be overriden in subclass to enable
 		public virtual bool HasBreath{ get{ return false; } }
@@ -4962,9 +4962,9 @@ namespace Server.Mobiles
 		 * This functionality appears to be implemented on OSI as well
 		 */
 
-		private int m_NextReacquireTime;
+		private long m_NextReacquireTime;
 
-		public int NextReacquireTime{ get{ return m_NextReacquireTime; } set{ m_NextReacquireTime = value; } }
+		public long NextReacquireTime { get { return m_NextReacquireTime; } set { m_NextReacquireTime = value; } }
 
 		public virtual TimeSpan ReacquireDelay{ get{ return TimeSpan.FromSeconds( 10.0 ); } }
 		public virtual bool ReacquireOnMovement{ get{ return false; } }
@@ -5152,7 +5152,7 @@ namespace Server.Mobiles
 		private const double MinutesToNextChanceMin = 0.25;
 		private const double MinutesToNextChanceMax = 0.75;
 
-		private int m_NextRummageTime;
+		private long m_NextRummageTime;
 
 		public virtual bool CanBreath { get { return HasBreath && !Summoned; } }
 		public virtual bool IsDispellable { get { return Summoned && !IsAnimatedDead; } }
@@ -5174,8 +5174,8 @@ namespace Server.Mobiles
 		public virtual double HealOwnerInterval { get { return 30.0; } }
 		public virtual bool HealOwnerFully { get { return false; } }
 
-		private int m_NextHealTime = Core.TickCount;
-		private int m_NextHealOwnerTime = Core.TickCount;
+		private long m_NextHealTime = Core.TickCount;
+		private long m_NextHealOwnerTime = Core.TickCount;
 		private Timer m_HealTimer = null;
 
 		public bool IsHealing { get { return ( m_HealTimer != null ); } }
@@ -5292,7 +5292,7 @@ namespace Server.Mobiles
 		#endregion
 
 		#region Damaging Aura
-		private int m_NextAura;
+		private long m_NextAura;
 
 		public virtual bool HasAura { get { return false; } }
 		public virtual TimeSpan AuraInterval { get { return TimeSpan.FromSeconds( 5 ); } }
@@ -5345,7 +5345,7 @@ namespace Server.Mobiles
 
 		public virtual void OnThink()
 		{
-			int tc = Core.TickCount;
+			long tc = Core.TickCount;
 
 			if ( EnableRummaging && CanRummageCorpses && !Summoned && !Controlled && tc - m_NextRummageTime >= 0 )
 			{

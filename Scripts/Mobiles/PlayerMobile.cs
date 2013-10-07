@@ -261,7 +261,7 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int LastMoved
+		public long LastMoved
 		{
 			get{ return LastMoveTime; }
 		}
@@ -4073,7 +4073,7 @@ namespace Server.Mobiles
 		private static bool FastwalkPrevention = true; // Is fastwalk prevention enabled?
 		private static int FastwalkThreshold = 400; // Fastwalk prevention will become active after 0.4 seconds
 
-		private int m_NextMovementTime;
+		private long m_NextMovementTime;
 		private bool m_HasMoved;
 
 		public virtual bool UsesFastwalkPrevention{ get{ return ( AccessLevel < AccessLevel.Counselor ); } }
@@ -4115,7 +4115,7 @@ namespace Server.Mobiles
 				return true;
 			}
 
-			int ts = pm.m_NextMovementTime - Core.TickCount;
+			long ts = pm.m_NextMovementTime - Core.TickCount;
 
 			if ( ts < 0 )
 			{

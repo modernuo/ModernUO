@@ -1025,7 +1025,7 @@ namespace Server.Network {
 			}
 		}
 
-		private int m_NextCheckActivity;
+		private long m_NextCheckActivity;
 
 		public bool CheckAlive() {
 			if ( m_Socket == null )

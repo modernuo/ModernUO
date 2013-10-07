@@ -444,10 +444,10 @@ namespace Server.Items
 
 			private int m_Count;
 
-			private int m_NextSkillTime;
-			private int m_NextSpellTime;
-			private int m_NextActionTime;
-			private int m_LastMoveTime;
+			private long m_NextSkillTime;
+			private long m_NextSpellTime;
+			private long m_NextActionTime;
+			private long m_LastMoveTime;
 
 			public DigTimer( Mobile from, TreasureMap treasureMap, Point3D location, Map map ) : base( TimeSpan.Zero, TimeSpan.FromSeconds( 1.0 ) )
 			{

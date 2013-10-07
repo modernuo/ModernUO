@@ -15,8 +15,8 @@ namespace Server.Mobiles
 {
 	public class MageAI : BaseAI
 	{
-		private int m_NextCastTime;
-		private int m_NextHealTime;
+		private long m_NextCastTime;
+		private long m_NextHealTime;
 
 		public MageAI( BaseCreature m )
 			: base( m )
