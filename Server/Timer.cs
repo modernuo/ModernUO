@@ -46,9 +46,9 @@ namespace Server
 
 	public class Timer
 	{
-		private DateTime m_Next;
-		private TimeSpan m_Delay;
-		private TimeSpan m_Interval;
+		private long m_Next;
+		private long m_Delay;
+		private long m_Interval;
 		private bool m_Running;
 		private int m_Index, m_Count;
 		private TimerPriority m_Priority;
@@ -91,19 +91,20 @@ namespace Server
 
 		public DateTime Next
 		{
-			get { return m_Next; }
+			// Obnoxious
+			get { return DateTime.UtcNow + TimeSpan.FromMilliseconds(m_Next-Core.TickCount); }
 		}
 
 		public TimeSpan Delay
 		{
-			get { return m_Delay; }
-			set { m_Delay = value; }
+			get { return TimeSpan.FromMilliseconds(m_Delay); }
+			set { m_Delay = (long)value.TotalMilliseconds; }
 		}
 
 		public TimeSpan Interval
 		{
-			get { return m_Interval; }
-			set { m_Interval = value; }
+			get { return TimeSpan.FromMilliseconds(m_Interval); }
+			set { m_Interval = (long)value.TotalMilliseconds; }
 		}
 
 		public bool Running
@@ -137,17 +138,17 @@ namespace Server
 		{
 			private static Queue m_ChangeQueue = Queue.Synchronized( new Queue() );
 
-			private static DateTime[] m_NextPriorities = new DateTime[8];
-			private static TimeSpan[] m_PriorityDelays = new TimeSpan[8]
+			private static long[] m_NextPriorities = new long[8];
+			private static long[] m_PriorityDelays = new long[8]
 			{
-				TimeSpan.Zero,
-				TimeSpan.FromMilliseconds( 10.0 ),
-				TimeSpan.FromMilliseconds( 25.0 ),
-				TimeSpan.FromMilliseconds( 50.0 ),
-				TimeSpan.FromMilliseconds( 250.0 ),
-				TimeSpan.FromSeconds( 1.0 ),
-				TimeSpan.FromSeconds( 5.0 ),
-				TimeSpan.FromMinutes( 1.0 )
+				0,
+				10,
+				25,
+				50,
+				250,
+				1000,
+				5000,
+				60000
 			};
 
 			private static List<Timer>[] m_Timers = new List<Timer>[8]
@@ -283,7 +284,7 @@ namespace Server
 
 					if ( tce.m_IsAdd )
 					{
-						timer.m_Next = DateTime.UtcNow + timer.m_Delay;
+						timer.m_Next = Core.TickCount + timer.m_Delay;
 						timer.m_Index = 0;
 					}
 
@@ -306,7 +307,7 @@ namespace Server
 
 			public void TimerMain()
 			{
-				DateTime now;
+				long now;
 				int i, j;
 				bool loaded;
 
@@ -318,7 +319,7 @@ namespace Server
 
 					for ( i = 0; i < m_Timers.Length; i++)
 					{
-						now = DateTime.UtcNow;
+						now = Core.TickCount;
 						if ( now < m_NextPriorities[i] )
 							break;
 
@@ -418,8 +419,8 @@ namespace Server
 
 		public Timer( TimeSpan delay, TimeSpan interval, int count )
 		{
-			m_Delay = delay;
-			m_Interval = interval;
+			m_Delay = (long)delay.TotalMilliseconds;
+			m_Interval = (long)interval.TotalMilliseconds;
 			m_Count = count;
 
 			if ( !m_PrioritySet ) {
