@@ -22,6 +22,10 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+#if Framework_4_0
+using System.Linq;
+using System.Threading.Tasks;
+#endif
 using Server.Network;
 using Server.Items;
 using Server.ContextMenus;
@@ -1635,14 +1639,17 @@ namespace Server
 			}
 		}
 
+		private object _opll = new object();
+
 		public Packet OPLPacket
 		{
 			get
 			{
-				if ( m_OPLPacket == null )
-				{
-					m_OPLPacket = new OPLInfo( PropertyList );
-					m_OPLPacket.SetStatic();
+				lock (_opll) {
+					if ( m_OPLPacket == null ) {
+						m_OPLPacket = new OPLInfo( PropertyList );
+						m_OPLPacket.SetStatic();
+					}
 				}
 
 				return m_OPLPacket;
@@ -1713,6 +1720,10 @@ namespace Server
 			}
 		}
 
+		private object _wpl = new object();
+		private object _wplsa = new object();
+		private object _wplhs = new object();
+
 		public Packet WorldPacket
 		{
 			get
@@ -1725,10 +1736,11 @@ namespace Server
 				//  - Packet Flags
 				//  - Direction
 
-				if ( m_WorldPacket == null )
-				{
-					m_WorldPacket = new WorldItem( this );
-					m_WorldPacket.SetStatic();
+				lock (_wpl) {
+					if ( m_WorldPacket == null ) {
+						m_WorldPacket = new WorldItem( this );
+						m_WorldPacket.SetStatic();
+					}
 				}
 
 				return m_WorldPacket;
@@ -1747,10 +1759,11 @@ namespace Server
 				//  - Packet Flags
 				//  - Direction
 
-				if ( m_WorldPacketSA == null )
-				{
-					m_WorldPacketSA = new WorldItemSA( this );
-					m_WorldPacketSA.SetStatic();
+				lock (_wplsa) {
+					if ( m_WorldPacketSA == null ) {
+						m_WorldPacketSA = new WorldItemSA( this );
+						m_WorldPacketSA.SetStatic();
+					}
 				}
 
 				return m_WorldPacketSA;
@@ -1769,10 +1782,11 @@ namespace Server
 				//  - Packet Flags
 				//  - Direction
 
-				if ( m_WorldPacketHS == null )
-				{
-					m_WorldPacketHS = new WorldItemHS( this );
-					m_WorldPacketHS.SetStatic();
+				lock (_wplhs) {
+					if ( m_WorldPacketHS == null ) {
+						m_WorldPacketHS = new WorldItemHS( this );
+						m_WorldPacketHS.SetStatic();
+					}
 				}
 
 				return m_WorldPacketHS;
@@ -3012,6 +3026,8 @@ namespace Server
 			{
 				SetFlag( ImplFlag.InQueue, true );
 
+				if (_processing)
+					Console.WriteLine(new System.Diagnostics.StackTrace());
 				m_DeltaQueue.Add( this );
 			}
 
@@ -3026,6 +3042,8 @@ namespace Server
 			{
 				SetFlag( ImplFlag.InQueue, false );
 
+				if (_processing)
+					Console.WriteLine(new System.Diagnostics.StackTrace());
 				m_DeltaQueue.Remove( this );
 			}
 		}
@@ -3124,41 +3142,44 @@ namespace Server
 
 						if ( openers != null )
 						{
-							for ( int i = 0; i < openers.Count; ++i )
+							lock (openers)
 							{
-								Mobile mob = openers[i];
-
-								int range = GetUpdateRange( mob );
-
-								if ( mob.Map != map || !mob.InRange( worldLoc, range ) )
+								for (int i = 0; i < openers.Count; ++i)
 								{
-									openers.RemoveAt( i-- );
-								}
-								else
-								{
-									if ( mob == rootParent || mob == tradeRecip )
-										continue;
+									Mobile mob = openers[i];
 
-									NetState ns = mob.NetState;
+									int range = GetUpdateRange(mob);
 
-									if ( ns != null )
+									if (mob.Map != map || !mob.InRange(worldLoc, range))
 									{
-										if ( mob.CanSee( this ) )
-										{
-											if ( ns.ContainerGridLines )
-												ns.Send( new ContainerContentUpdate6017( this ) );
-											else
-												ns.Send( new ContainerContentUpdate( this ) );
+										openers.RemoveAt(i--);
+									}
+									else
+									{
+										if (mob == rootParent || mob == tradeRecip)
+											continue;
 
-											if ( ObjectPropertyList.Enabled )
-												ns.Send( OPLPacket );
+										NetState ns = mob.NetState;
+
+										if (ns != null)
+										{
+											if (mob.CanSee(this))
+											{
+												if (ns.ContainerGridLines)
+													ns.Send(new ContainerContentUpdate6017(this));
+												else
+													ns.Send(new ContainerContentUpdate(this));
+
+												if (ObjectPropertyList.Enabled)
+													ns.Send(OPLPacket);
+											}
 										}
 									}
 								}
-							}
 
-							if ( openers.Count == 0 )
-								contParent.Openers = null;
+								if (openers.Count == 0)
+									contParent.Openers = null;
+							}
 						}
 						return;
 					}
@@ -3168,10 +3189,15 @@ namespace Server
 				{
 					Packet p = null;
 					Point3D worldLoc = GetWorldLocation();
+					object equipUpdateLock = new object();
 
 					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
+#if Framework_4_0
+					Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
 					foreach ( NetState state in eable ) {
+#endif
 						Mobile m = state.Mobile;
 
 						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
@@ -3185,8 +3211,11 @@ namespace Server
 										else
 											state.Send( new ContainerContentUpdate( this ) );
 									} else if ( m_Parent is Mobile ) {
-										p = new EquipUpdate( this );
-										p.Acquire();
+										lock (equipUpdateLock) {
+											p = new EquipUpdate(this);
+											p.Acquire();
+										}
+
 										state.Send( p );
 									}
 								} else {
@@ -3199,6 +3228,9 @@ namespace Server
 							}
 						}
 					}
+#if Framework_4_0
+					);
+#endif
 
 					if ( p != null )
 						Packet.Release( p );
@@ -3212,11 +3244,15 @@ namespace Server
 					{
 						Packet p = null;
 						Point3D worldLoc = GetWorldLocation();
+						object equipPacketLock = new object();
 
 						IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-						foreach ( NetState state in eable )
-						{
+#if Framework_4_0
+						Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
+						foreach ( NetState state in eable ) {
+#endif
 							Mobile m = state.Mobile;
 
 							if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
@@ -3224,8 +3260,9 @@ namespace Server
 								//if ( sendOPLUpdate )
 								//	state.Send( RemovePacket );
 
-								if ( p == null )
-									p = Packet.Acquire( new EquipUpdate( this ) );
+								lock (equipPacketLock)
+									if ( p == null )
+										p = Packet.Acquire( new EquipUpdate( this ) );
 
 								state.Send( p );
 
@@ -3233,6 +3270,9 @@ namespace Server
 									state.Send( OPLPacket );
 							}
 						}
+#if Framework_4_0
+						);
+#endif
 
 						Packet.Release( p );
 
@@ -3246,33 +3286,45 @@ namespace Server
 					Point3D worldLoc = GetWorldLocation();
 					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-					foreach ( NetState state in eable )
-					{
+#if Framework_4_0
+					Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
+					foreach ( NetState state in eable ) {
+#endif
 						Mobile m = state.Mobile;
 
 						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
 							state.Send( OPLPacket );
 					}
+#if Framework_4_0
+					);
+#endif
 
 					eable.Free();
 				}
 			}
 		}
 
+		private static bool _processing = false;
+
 		public static void ProcessDeltaQueue()
 		{
+#if Framework_4_0
+			_processing = true;
+			Parallel.ForEach( m_DeltaQueue, i => i.ProcessDelta() );
+			m_DeltaQueue.Clear();
+			_processing = false;
+#else
 			int count = m_DeltaQueue.Count;
 
-			for ( int i = 0; i < m_DeltaQueue.Count; ++i )
-			{
+			for (int i = 0; i < m_DeltaQueue.Count; ++i) {
 				m_DeltaQueue[i].ProcessDelta();
 
-				if ( i >= count )
+				if (i >= count)
 					break;
 			}
-
-			if ( m_DeltaQueue.Count > 0 )
-				m_DeltaQueue.Clear();
+			m_DeltaQueue.Clear();
+#endif
 		}
 
 		public virtual void OnDelete()

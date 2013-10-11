@@ -1315,7 +1315,8 @@ namespace Server.Items
 
 			int inPack = 1;
 
-			foreach ( Mobile m in defender.GetMobilesInRange( 1 ) )
+			IPooledEnumerable eable = defender.GetMobilesInRange( 1 );
+			foreach ( Mobile m in eable )
 			{
 				if ( m != attacker && m is BaseCreature )
 				{
@@ -1333,6 +1334,7 @@ namespace Server.Items
 						++inPack;
 				}
 			}
+			eable.Free();
 
 			if ( inPack >= 5 )
 				return 100;
@@ -1365,7 +1367,8 @@ namespace Server.Items
 			{
 				Clone bc;
 
-				foreach ( Mobile m in defender.GetMobilesInRange( 4 ) )
+				IPooledEnumerable eable = defender.GetMobilesInRange( 4 );
+				foreach ( Mobile m in eable)
 				{
 					bc = m as Clone;
 
@@ -1384,6 +1387,7 @@ namespace Server.Items
 						break;
 					}
 				}
+				eable.Free();
 			}
 
 			PlaySwingAnimation( attacker );
@@ -1912,11 +1916,13 @@ namespace Server.Items
 
 			int range = Core.ML ? 5 : 10;
 
-			foreach ( Mobile m in from.GetMobilesInRange( range ) )
+			IPooledEnumerable eable = from.GetMobilesInRange(range);
+			foreach ( Mobile m in eable )
 			{
 				if ( from != m && defender != m && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) && ( !Core.ML || from.InLOS( m ) ) )
 					list.Add( m );
 			}
+			eable.Free();
 
 			if ( list.Count == 0 )
 				return;

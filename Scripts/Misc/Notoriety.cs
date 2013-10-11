@@ -365,6 +365,8 @@ namespace Server.Misc
 			}
 		}
 
+		/* Must be thread-safe */
+
 		public static int MobileNotoriety( Mobile source, Mobile target )
 		{
 			if ( Core.AOS && ( target.Blessed || ( target is BaseCreature && ( (BaseCreature)target ).IsInvulnerable ) || target is PlayerVendor || target is TownCrier ) )

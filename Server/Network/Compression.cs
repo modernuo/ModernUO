@@ -83,92 +83,104 @@ namespace Server.Network {
 		// If our input exceeds this length, we may potentially overflow the buffer
 		private const int PossibleOverflow = ( ( BufferSize * 8 ) - TerminalCodeLength ) / MaximalCodeLength;
 
-		private static object _syncRoot = new object();
-
-		private static byte[] _outputBuffer = new byte[BufferSize];
-
-		[Obsolete( "Use Compress( byte[], int, int, ref int ) instead.", false )]
-		public static void Compress( byte[] input, int length, out byte[] output, out int outputLength ) {
-			outputLength = 0;
-			output = Compress( input, 0, length, ref outputLength );
-		}
-
-		public unsafe static byte[] Compress( byte[] input, int offset, int count, ref int length ) {
-			if ( input == null ) {
-				throw new ArgumentNullException( "input" );
-			} else if ( offset < 0 || offset >= input.Length ) {
-				throw new ArgumentOutOfRangeException( "offset" );
-			} else if ( count < 0 || count > input.Length ) {
-				throw new ArgumentOutOfRangeException( "count" );
-			} else if ( ( input.Length - offset ) < count ) {
+		public unsafe static void Compress(byte[] input, int offset, int count, byte[] output, ref int length)
+		{
+			if (input == null)
+			{
+				throw new ArgumentNullException("input");
+			}
+			else if (offset < 0 || offset >= input.Length)
+			{
+				throw new ArgumentOutOfRangeException("offset");
+			}
+			else if (count < 0 || count > input.Length)
+			{
+				throw new ArgumentOutOfRangeException("count");
+			}
+			else if ((input.Length - offset) < count)
+			{
 				throw new ArgumentException();
 			}
 
 			length = 0;
 
-			if ( count > DefiniteOverflow ) {
-				return null;
+			if (count > DefiniteOverflow)
+			{
+				return;
 			}
 
-			lock ( _syncRoot ) {
-				int bitCount = 0;
-				int bitValue = 0;
+			int bitCount = 0;
+			int bitValue = 0;
 
-				fixed ( int* pTable = _huffmanTable ) {
-					int* pEntry;
+			fixed (int* pTable = _huffmanTable)
+			{
+				int* pEntry;
 
-					fixed ( byte* pInputBuffer = input ) {
-						byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
+				fixed (byte* pInputBuffer = input)
+				{
+					byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
 
-						fixed ( byte* pOutputBuffer = _outputBuffer ) {
-							byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
+					fixed (byte* pOutputBuffer = output)
+					{
+						byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
 
-							while ( pInput < pInputEnd ) {
-								pEntry = &pTable[*pInput++ << 1];
-
-								bitCount += pEntry[CountIndex];
-
-								bitValue <<= pEntry[CountIndex];
-								bitValue |= pEntry[ValueIndex];
-
-								while ( bitCount >= 8 ) {
-									bitCount -= 8;
-
-									if ( pOutput < pOutputEnd ) {
-										*pOutput++ = ( byte ) ( bitValue >> bitCount );
-									} else {
-										return null;
-									}
-								}
-							}
-
-							// terminal code
-							pEntry = &pTable[0x200];
+						while (pInput < pInputEnd)
+						{
+							pEntry = &pTable[*pInput++ << 1];
 
 							bitCount += pEntry[CountIndex];
 
 							bitValue <<= pEntry[CountIndex];
 							bitValue |= pEntry[ValueIndex];
 
-							// align on byte boundary
-							if ( ( bitCount & 7 ) != 0 ) {
-								bitValue <<= ( 8 - ( bitCount & 7 ) );
-								bitCount += ( 8 - ( bitCount & 7 ) );
-							}
-
-							while ( bitCount >= 8 ) {
+							while (bitCount >= 8)
+							{
 								bitCount -= 8;
 
-								if ( pOutput < pOutputEnd ) {
-									*pOutput++ = ( byte ) ( bitValue >> bitCount );
-								} else {
-									return null;
+								if (pOutput < pOutputEnd)
+								{
+									*pOutput++ = (byte)(bitValue >> bitCount);
+								}
+								else
+								{
+									length = 0;
+									return;
 								}
 							}
-
-							length = ( int ) ( pOutput - pOutputBuffer );
-							return _outputBuffer;
 						}
+
+						// terminal code
+						pEntry = &pTable[0x200];
+
+						bitCount += pEntry[CountIndex];
+
+						bitValue <<= pEntry[CountIndex];
+						bitValue |= pEntry[ValueIndex];
+
+						// align on byte boundary
+						if ((bitCount & 7) != 0)
+						{
+							bitValue <<= (8 - (bitCount & 7));
+							bitCount += (8 - (bitCount & 7));
+						}
+
+						while (bitCount >= 8)
+						{
+							bitCount -= 8;
+
+							if (pOutput < pOutputEnd)
+							{
+								*pOutput++ = (byte)(bitValue >> bitCount);
+							}
+							else
+							{
+								length = 0;
+								return;
+							}
+						}
+
+						length = (int)(pOutput - pOutputBuffer);
+						return;
 					}
 				}
 			}

@@ -1210,27 +1210,17 @@ namespace Server.Mobiles
 			m_IsStealthing = false; // IsStealthing should be moved to Server.Mobiles
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public override bool Hidden
+		public override void OnHiddenChanged()
 		{
-			get
+			RemoveBuff(BuffIcon.Invisibility);	//Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
+
+			if (!Hidden)
 			{
-				return base.Hidden;
+				RemoveBuff(BuffIcon.HidingAndOrStealth);
 			}
-			set
+			else// if( !InvisibilitySpell.HasTimer( this ) )
 			{
-				base.Hidden = value;
-
-				RemoveBuff( BuffIcon.Invisibility );	//Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
-
-				if( !Hidden )
-				{
-					RemoveBuff( BuffIcon.HidingAndOrStealth );
-				}
-				else// if( !InvisibilitySpell.HasTimer( this ) )
-				{
-					BuffInfo.AddBuff( this, new BuffInfo( BuffIcon.HidingAndOrStealth, 1075655 ) );	//Hidden/Stealthing & You Are Hidden
-				}
+				BuffInfo.AddBuff(this, new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));	//Hidden/Stealthing & You Are Hidden
 			}
 		}
 

@@ -5429,7 +5429,8 @@ namespace Server.Mobiles
 		{
 			Corpse toRummage = null;
 
-			foreach ( Item item in this.GetItemsInRange( 2 ) )
+			IPooledEnumerable eable = this.GetItemsInRange(2);
+			foreach ( Item item in eable )
 			{
 				if ( item is Corpse && item.Items.Count > 0 )
 				{
@@ -5437,6 +5438,7 @@ namespace Server.Mobiles
 					break;
 				}
 			}
+			eable.Free();
 
 			if ( toRummage == null )
 				return false;

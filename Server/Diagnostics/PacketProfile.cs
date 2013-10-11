@@ -20,7 +20,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.IO;
 
 namespace Server.Diagnostics {
@@ -65,11 +67,8 @@ namespace Server.Diagnostics {
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static PacketSendProfile Acquire( Type type ) {
-			if ( !Core.Profiling ) {
-				return null;
-			}
-
 			PacketSendProfile prof;
 
 			if ( !_profiles.TryGetValue( type, out prof ) ) {
@@ -81,13 +80,8 @@ namespace Server.Diagnostics {
 
 		private long _created;
 
-		public long Created {
-			get {
-				return _created;
-			}
-			set {
-				_created = value;
-			}
+		public void Increment() {
+			Interlocked.Increment(ref _created);
 		}
 
 		public PacketSendProfile( Type type )
@@ -97,7 +91,7 @@ namespace Server.Diagnostics {
 		public override void WriteTo( TextWriter op ) {
 			base.WriteTo( op );
 
-			op.Write( "\t{0,12:N0}", Created );
+			op.Write( "\t{0,12:N0}", _created );
 		}
 	}
 
@@ -110,11 +104,8 @@ namespace Server.Diagnostics {
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static PacketReceiveProfile Acquire( int packetId ) {
-			if ( !Core.Profiling ) {
-				return null;
-			}
-
 			PacketReceiveProfile prof;
 
 			if ( !_profiles.TryGetValue( packetId, out prof ) ) {

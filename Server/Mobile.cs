@@ -23,6 +23,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+#if Framework_4_0
+using System.Linq;
+using System.Threading.Tasks;
+#endif
 using Server;
 using Server.Accounting;
 using Server.Commands;
@@ -4913,7 +4917,7 @@ namespace Server
 					}
 				}
 
-				//eable.Free();
+				eable.Free();
 
 				object mutateContext = null;
 				string mutatedText = text;
@@ -7988,7 +7992,7 @@ namespace Server
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool Hidden
+		public bool Hidden
 		{
 			get
 			{
@@ -7998,49 +8002,54 @@ namespace Server
 			{
 				if( m_Hidden != value )
 				{
-					m_AllowedStealthSteps = 0;
-
 					m_Hidden = value;
 					//Delta( MobileDelta.Flags );
 
-					if( m_Map != null )
+					OnHiddenChanged();	
+				}
+			}
+		}
+
+		public virtual void OnHiddenChanged()
+		{
+			m_AllowedStealthSteps = 0;
+
+			if (m_Map != null)
+			{
+				Packet p = null;
+
+				IPooledEnumerable eable = m_Map.GetClientsInRange(m_Location);
+
+				foreach (NetState state in eable)
+				{
+					if (!state.Mobile.CanSee(this))
 					{
-						Packet p = null;
+						if (p == null)
+							p = this.RemovePacket;
 
-						IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+						state.Send(p);
+					}
+					else
+					{
+						if (state.StygianAbyss)
+							state.Send(new MobileIncoming(state.Mobile, this));
+						else
+							state.Send(new MobileIncomingOld(state.Mobile, this));
 
-						foreach( NetState state in eable )
+						if (IsDeadBondedPet)
+							state.Send(new BondedStatus(0, m_Serial, 1));
+
+						if (ObjectPropertyList.Enabled)
 						{
-							if( !state.Mobile.CanSee( this ) )
-							{
-								if( p == null )
-									p = this.RemovePacket;
+							state.Send(OPLPacket);
 
-								state.Send( p );
-							}
-							else
-							{
-								if ( state.StygianAbyss )
-									state.Send( new MobileIncoming( state.Mobile, this ) );
-								else
-									state.Send( new MobileIncomingOld( state.Mobile, this ) );
-
-								if( IsDeadBondedPet )
-									state.Send( new BondedStatus( 0, m_Serial, 1 ) );
-
-								if( ObjectPropertyList.Enabled )
-								{
-									state.Send( OPLPacket );
-
-									//foreach ( Item item in m_Items )
-									//	state.Send( item.OPLPacket );
-								}
-							}
+							//foreach ( Item item in m_Items )
+							//	state.Send( item.OPLPacket );
 						}
-
-						eable.Free();
 					}
 				}
+
+				eable.Free();
 			}
 		}
 
@@ -9956,6 +9965,8 @@ namespace Server
 			{
 				m_InDeltaQueue = true;
 
+				if (_processing)
+					Console.WriteLine(new System.Diagnostics.StackTrace());
 				m_DeltaQueue.Enqueue( this );
 			}
 
@@ -10121,7 +10132,9 @@ namespace Server
 				sendPublicStats = true;
 			}
 
-			if( (delta & (MobileDelta.WeaponDamage | MobileDelta.Resistances | MobileDelta.Stat | MobileDelta.Weight | MobileDelta.Gold | MobileDelta.Armor | MobileDelta.StatCap | MobileDelta.Followers | MobileDelta.TithingPoints | MobileDelta.Race)) != 0 )
+			if( (delta & (MobileDelta.WeaponDamage | MobileDelta.Resistances | MobileDelta.Stat |
+				MobileDelta.Weight | MobileDelta.Gold | MobileDelta.Armor | MobileDelta.StatCap |
+				MobileDelta.Followers | MobileDelta.TithingPoints | MobileDelta.Race)) != 0 )
 			{
 				sendPrivateStats = true;
 			}
@@ -10142,6 +10155,9 @@ namespace Server
 				sendFacialHair = true;
 			}
 
+#if Framework_4_0
+			Packet[][] cache = new Packet[2][] { new Packet[8], new Packet[8] };
+#else
 			Packet[][] cache = m_MovingPacketCache;
 
 			if( sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow )
@@ -10150,6 +10166,7 @@ namespace Server
 					for( int j = 0; j < cache[i].Length; ++j )
 						Packet.Release( ref cache[i][j] );
 			}
+#endif
 
 			NetState ourState = m.m_NetState;
 
@@ -10252,22 +10269,42 @@ namespace Server
 			{
 				Mobile beholder;
 
-				IPooledEnumerable eable = m.Map.GetClientsInRange( m.m_Location );
-
 				Packet hitsPacket = null;
-				Packet statPacketTrue = null, statPacketFalse = null;
+				Packet statPacketTrue = null;
+				Packet statPacketFalse = null;
 				Packet deadPacket = null;
-				Packet hairPacket = null, facialhairPacket = null;
-				Packet hbpPacket = null, hbyPacket = null;
+				Packet hairPacket = null;
+				Packet facialhairPacket = null;
+				Packet hbpPacket = null;
+				Packet hbyPacket = null;
 
-				foreach( NetState state in eable )
-				{
+				// 9 Separate Locks.. Feels Dirty
+				object hitsPacketLock = new object();
+				object statPacketTrueLock = new object();
+				object statPacketFalseLock = new object();
+				object deadPacketLock = new object();
+				object hairPacketLock = new object();
+				object facialhairPacketLock = new object();
+				object hbpPacketLock = new object();
+				object hbyPacketLock = new object();
+				object cacheSync = new object();
+
+				Packet removePacket = RemovePacket;
+				Packet oplPacket = OPLPacket;
+
+				IPooledEnumerable eable = m.Map.GetClientsInRange(m.m_Location);
+
+#if Framework_4_0
+				Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
+				foreach ( NetState state in eable ) {
+#endif
 					beholder = state.Mobile;
 
 					if( beholder != m && beholder.CanSee( m ) )
 					{
 						if( sendRemove )
-							state.Send( m.RemovePacket );
+							state.Send(removePacket);
 
 						if( sendIncoming )
 						{
@@ -10279,8 +10316,11 @@ namespace Server
 
 							if( m.IsDeadBondedPet )
 							{
-								if( deadPacket == null )
-									deadPacket = Packet.Acquire( new BondedStatus( 0, m.m_Serial, 1 ) );
+								lock (deadPacketLock)
+								{
+									if (deadPacket == null)
+										deadPacket = Packet.Acquire(new BondedStatus(0, m.m_Serial, 1));
+								}
 
 								state.Send( deadPacket );
 							}
@@ -10291,24 +10331,36 @@ namespace Server
 							{
 								int noto = Notoriety.Compute( beholder, m );
 
-								Packet p = cache[0][noto];
+								Packet p;
 
-								if( p == null )
-									cache[0][noto] = p = Packet.Acquire( new MobileMoving( m, noto ) );
+								lock (cacheSync)
+								{
+									p = cache[0][noto];
+
+									if (p == null)
+										cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
+								}
 
 								state.Send( p );
 							}
 
 							if ( sendHealthbarPoison ) {
-								if ( hbpPacket == null )
-									hbpPacket = Packet.Acquire( new HealthbarPoison( m ) );
-								
+								lock (hbpPacketLock)
+								{
+									if (hbpPacket == null)
+										hbpPacket = Packet.Acquire(new HealthbarPoison(m));
+								}
+
 								state.Send( hbpPacket );
 							}
 
 							if ( sendHealthbarYellow ) {
-								if ( hbyPacket == null )
-									hbyPacket = Packet.Acquire( new HealthbarYellow( m ) );
+								lock (hbyPacketLock)
+								{
+									if (hbyPacket == null)
+										hbyPacket = Packet.Acquire(new HealthbarYellow(m));
+								}
+
 								state.Send( hbyPacket );
 							}
 						} else {
@@ -10316,10 +10368,15 @@ namespace Server
 							{
 								int noto = Notoriety.Compute( beholder, m );
 
-								Packet p = cache[1][noto];
+								Packet p;
 
-								if( p == null )
-									cache[1][noto] = p = Packet.Acquire( new MobileMovingOld( m, noto ) );
+								lock (cacheSync)
+								{
+									p = cache[1][noto];
+
+									if (p == null)
+										cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
+								}
 
 								state.Send( p );
 							}
@@ -10329,35 +10386,45 @@ namespace Server
 						{
 							if( m.CanBeRenamedBy( beholder ) )
 							{
-								if( statPacketTrue == null )
-									statPacketTrue = Packet.Acquire( new MobileStatusCompact( true, m ) );
+								lock (statPacketTrueLock)
+								{
+									if (statPacketTrue == null)
+										statPacketTrue = Packet.Acquire(new MobileStatusCompact(true, m));
+								}
 
 								state.Send( statPacketTrue );
 							}
 							else
 							{
-								if( statPacketFalse == null )
-									statPacketFalse = Packet.Acquire( new MobileStatusCompact( false, m ) );
+								lock (statPacketFalseLock)
+								{
+									if (statPacketFalse == null)
+										statPacketFalse = Packet.Acquire(new MobileStatusCompact(false, m));
+								}
 
 								state.Send( statPacketFalse );
 							}
 						}
 						else if( sendHits )
 						{
-							if( hitsPacket == null )
-								hitsPacket = Packet.Acquire( new MobileHitsN( m ) );
+							lock (hitsPacketLock)
+							{
+								if (hitsPacket == null)
+									hitsPacket = Packet.Acquire(new MobileHitsN(m));
+							}
 
 							state.Send( hitsPacket );
 						}
 
 						if( sendHair )
 						{
-							if( hairPacket == null )
-							{
-								if( removeHair )
-									hairPacket = Packet.Acquire( new RemoveHair( m ) );
-								else
-									hairPacket = Packet.Acquire( new HairEquipUpdate( m ) );
+							lock (hairPacketLock) {
+								if (hairPacket == null) {
+									if (removeHair)
+										hairPacket = Packet.Acquire(new RemoveHair(m));
+									else
+										hairPacket = Packet.Acquire(new HairEquipUpdate(m));
+								}
 							}
 
 							state.Send( hairPacket );
@@ -10365,21 +10432,25 @@ namespace Server
 
 						if( sendFacialHair )
 						{
-							if( facialhairPacket == null )
-							{
-								if( removeFacialHair )
-									facialhairPacket = Packet.Acquire( new RemoveFacialHair( m ) );
-								else
-									facialhairPacket = Packet.Acquire( new FacialHairEquipUpdate( m ) );
+							lock (facialhairPacketLock) {
+								if (facialhairPacket == null) {
+									if (removeFacialHair)
+										facialhairPacket = Packet.Acquire(new RemoveFacialHair(m));
+									else
+										facialhairPacket = Packet.Acquire(new FacialHairEquipUpdate(m));
+								}
 							}
 
 							state.Send( facialhairPacket );
 						}
 
 						if( sendOPLUpdate )
-							state.Send( OPLPacket );
+							state.Send(oplPacket);
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				Packet.Release( hitsPacket );
 				Packet.Release( statPacketTrue );
@@ -10396,18 +10467,27 @@ namespace Server
 			if( sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow )
 			{
 				for( int i = 0; i < cache.Length; ++i )
-					for( int j = 0; j < cache.Length; ++j )
-						Packet.Release( ref cache[i][j] );
+					for( int j = 0; j < cache[i].Length; ++j )
+						Packet.Release(ref cache[i][j]);
 			}
 		}
 
+		public static bool _processing = false;
+
 		public static void ProcessDeltaQueue()
 		{
+#if Framework_4_0
+			_processing = true;
+			Parallel.ForEach( m_DeltaQueue, m => m.ProcessDelta() );
+			m_DeltaQueue.Clear();
+			_processing = false;
+#else
 			int count = m_DeltaQueue.Count;
 			int index = 0;
 
 			while( m_DeltaQueue.Count > 0 && index++ < count )
 				m_DeltaQueue.Dequeue().ProcessDelta();
+#endif
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]

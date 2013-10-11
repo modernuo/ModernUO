@@ -236,7 +236,9 @@ namespace Server.Network
 							return;
 						}
 
-						PacketReceiveProfile prof = PacketReceiveProfile.Acquire( packetID );
+						PacketReceiveProfile prof = null;
+
+						if (Core.Profiling) prof = PacketReceiveProfile.Acquire( packetID );
 
 						if ( prof != null ) {
 							prof.Start();

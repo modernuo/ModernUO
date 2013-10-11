@@ -176,7 +176,8 @@ namespace Server.Regions
 		{
 			BaseGuard useGuard = null;
 
-			foreach ( Mobile m in focus.GetMobilesInRange( 8 ) )
+			IPooledEnumerable eable = focus.GetMobilesInRange( 8 );
+			foreach ( Mobile m in  eable)
 			{
 				if ( m is BaseGuard )
 				{
@@ -189,6 +190,8 @@ namespace Server.Regions
 					}
 				}
 			}
+
+			eable.Free();
 
 			if ( useGuard == null )
 			{

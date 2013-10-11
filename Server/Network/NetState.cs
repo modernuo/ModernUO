@@ -19,12 +19,14 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+#if Framework_4_0
+using System.Threading.Tasks;
+#endif
 using Server;
 using Server.Accounting;
 using Server.Network;
@@ -588,13 +590,14 @@ namespace Server.Network {
 			}
 		}
 
+		private bool _sending;
+		private object _sendL = new object();
+
 		public virtual void Send( Packet p ) {
 			if ( m_Socket == null || m_BlockAllPackets ) {
 				p.OnSend();
 				return;
 			}
-
-			PacketSendProfile prof = PacketSendProfile.Acquire( p.GetType() );
 
 			int length;
 			byte[] buffer = p.Compile( m_CompressionEnabled, out length );
@@ -604,6 +607,10 @@ namespace Server.Network {
 					p.OnSend();
 					return;
 				}
+
+				PacketSendProfile prof = null;
+				
+				if (Core.Profiling) prof = PacketSendProfile.Acquire(p.GetType());
 
 				if ( prof != null ) {
 					prof.Start();
@@ -616,22 +623,27 @@ namespace Server.Network {
 				try {
 					SendQueue.Gram gram;
 
-					lock ( m_SendQueue ) {
-						gram = m_SendQueue.Enqueue( buffer, length );
-					}
+					lock (_sendL) {
+						lock (m_SendQueue)
+							gram = m_SendQueue.Enqueue(buffer, length);
 
-					if ( gram != null ) {
+						if (gram != null) {
 #if NewAsyncSockets
-						m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
-						Send_Start();
+							m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
+							Send_Start();
 #else
-						try {
-							m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket );
-						} catch ( Exception ex ) {
-							TraceException( ex );
-							Dispose( false );
-						}
+							try {
+								if (!_sending) {
+									_sending = true;
+									m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
+								}
+							}
+							catch (Exception ex) {
+								TraceException(ex);
+								Dispose(false);
+							}
 #endif
+						}
 					}
 				} catch ( CapacityExceededException ) {
 					Console.WriteLine( "Client: {0}: Too much data pending, disconnecting...", this );
@@ -814,13 +826,15 @@ namespace Server.Network {
 		}
 
 		public bool Flush() {
-			if ( m_Socket == null || !m_SendQueue.IsFlushReady ) {
-				return false;
-			}
+			if ( m_Socket == null )
+					return false;
 
 			SendQueue.Gram gram;
 
 			lock ( m_SendQueue ) {
+				if (!m_SendQueue.IsFlushReady)
+					return false;
+
 				gram = m_SendQueue.CheckFlushReady();
 			}
 
@@ -914,23 +928,26 @@ namespace Server.Network {
 
 				m_NextCheckActivity = Core.TickCount + 90000;
 
-				if ( m_CoalesceSleep >= 0 ) {
-					Thread.Sleep( m_CoalesceSleep );
+				if (m_CoalesceSleep >= 0) {
+					Thread.Sleep(m_CoalesceSleep);
 				}
 
 				SendQueue.Gram gram;
 
-				lock ( m_SendQueue ) {
+				lock (m_SendQueue) {
 					gram = m_SendQueue.Dequeue();
 				}
 
-				if ( gram != null ) {
+				if (gram != null) {
 					try {
-						s.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s );
-					} catch ( Exception ex ) {
-						TraceException( ex );
-						Dispose( false );
+						s.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s);
+					} catch (Exception ex) {
+						TraceException(ex);
+						Dispose(false);
 					}
+				} else {
+					lock (_sendL)
+						_sending = false;
 				}
 			} catch ( Exception ){
 				Dispose( false );
@@ -974,23 +991,31 @@ namespace Server.Network {
 		}
 
 		public bool Flush() {
-			if ( m_Socket == null || !m_SendQueue.IsFlushReady ) {
+			if (m_Socket == null)
 				return false;
-			}
 
-			SendQueue.Gram gram;
+			lock (_sendL) {
+				if (_sending)
+					return false;
 
-			lock ( m_SendQueue ) {
-				gram = m_SendQueue.CheckFlushReady();
-			}
+				SendQueue.Gram gram;
 
-			if ( gram != null ) {
-				try {
-					m_Socket.BeginSend( gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket );
-					return true;
-				} catch ( Exception ex ) {
-					TraceException( ex );
-					Dispose( false );
+				lock (m_SendQueue) {
+					if (!m_SendQueue.IsFlushReady)
+						return false;
+
+					gram = m_SendQueue.CheckFlushReady();
+				}
+
+				if (gram != null) {
+					try {
+						_sending = true;
+						m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
+						return true;
+					} catch (Exception ex) {
+						TraceException(ex);
+						Dispose(false);
+					}
 				}
 			}
 
@@ -1007,11 +1032,13 @@ namespace Server.Network {
 		}
 
 		public static void FlushAll() {
+#if Framework_4_0
+			Parallel.ForEach( m_Instances, ns => ns.Flush() );
+#else
 			for ( int i = 0; i < m_Instances.Count; ++i ) {
-				NetState ns = m_Instances[i];
-
-				ns.Flush();
+				m_Instances[i].Flush();
 			}
+#endif
 		}
 
 		private static int m_CoalesceSleep = -1;
@@ -1109,10 +1136,11 @@ namespace Server.Network {
 
 			m_Running = false;
 
-			m_Disposed.Enqueue( this );
+			lock (m_Disposed)
+				m_Disposed.Enqueue( this );
 
-			if ( /*!flush &&*/ !m_SendQueue.IsEmpty ) {
-				lock ( m_SendQueue )
+			lock (m_SendQueue)
+				if ( /*!flush &&*/ !m_SendQueue.IsEmpty ) {
 					m_SendQueue.Clear();
 			}
 		}
@@ -1131,37 +1159,38 @@ namespace Server.Network {
 			}
 		}
 
-		private static Queue m_Disposed = Queue.Synchronized( new Queue() );
+		private static Queue<NetState> m_Disposed = new Queue<NetState>();
 
 		public static void ProcessDisposedQueue() {
-			int breakout = 0;
+			lock (m_Disposed) {
+				int breakout = 0;
 
-			while ( breakout < 200 && m_Disposed.Count > 0 ) {
-				++breakout;
+				while ( breakout < 200 && m_Disposed.Count > 0 ) {
+					++breakout;
+					NetState ns = m_Disposed.Dequeue();
 
-				NetState ns = ( NetState ) m_Disposed.Dequeue();
+					Mobile m = ns.m_Mobile;
+					IAccount a = ns.m_Account;
 
-				Mobile m = ns.m_Mobile;
-				IAccount a = ns.m_Account;
+					if ( m != null ) {
+						m.NetState = null;
+						ns.m_Mobile = null;
+					}
 
-				if ( m != null ) {
-					m.NetState = null;
-					ns.m_Mobile = null;
-				}
+					ns.m_Gumps.Clear();
+					ns.m_Menus.Clear();
+					ns.m_HuePickers.Clear();
+					ns.m_Account = null;
+					ns.m_ServerInfo = null;
+					ns.m_CityInfo = null;
 
-				ns.m_Gumps.Clear();
-				ns.m_Menus.Clear();
-				ns.m_HuePickers.Clear();
-				ns.m_Account = null;
-				ns.m_ServerInfo = null;
-				ns.m_CityInfo = null;
+					m_Instances.Remove( ns );
 
-				m_Instances.Remove( ns );
-
-				if ( a != null ) {
-					ns.WriteConsole( "Disconnected. [{0} Online] [{1}]", m_Instances.Count, a );
-				} else {
-					ns.WriteConsole( "Disconnected. [{0} Online]", m_Instances.Count );
+					if ( a != null ) {
+						ns.WriteConsole( "Disconnected. [{0} Online] [{1}]", m_Instances.Count, a );
+					} else {
+						ns.WriteConsole( "Disconnected. [{0} Online]", m_Instances.Count );
+					}
 				}
 			}
 		}

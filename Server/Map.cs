@@ -1098,30 +1098,9 @@ namespace Server
 		{
 			private IPooledEnumerator m_Enumerator;
 
-			private static Queue<PooledEnumerable> m_InstancePool = new Queue<PooledEnumerable>();
-			private static int m_Depth = 0;
-
 			public static PooledEnumerable Instantiate( IPooledEnumerator etor )
 			{
-				++m_Depth;
-
-				if ( m_Depth >= 5 )
-					Console.WriteLine( "Warning: Make sure to call .Free() on pooled enumerables." );
-
-				PooledEnumerable e;
-
-				if ( m_InstancePool.Count > 0 )
-				{
-					e = m_InstancePool.Dequeue();
-					e.m_Enumerator = etor;
-				}
-				else
-				{
-					e = new PooledEnumerable( etor );
-				}
-
-				etor.Enumerable = e;
-
+				PooledEnumerable e = new PooledEnumerable( etor );
 				return e;
 			}
 
@@ -1133,7 +1112,7 @@ namespace Server
 			public IEnumerator GetEnumerator()
 			{
 				if ( m_Enumerator == null )
-					throw new ObjectDisposedException( "PooledEnumerable", "GetEnumerator() called after Free()" );
+					throw new ObjectDisposedException("PooledEnumerable", "GetEnumerator() called after Free()");
 
 				return m_Enumerator;
 			}
@@ -1142,12 +1121,8 @@ namespace Server
 			{
 				if ( m_Enumerator != null )
 				{
-					m_InstancePool.Enqueue( this );
-
 					m_Enumerator.Free();
 					m_Enumerator = null;
-
-					--m_Depth;
 				}
 			}
 
@@ -1182,27 +1157,10 @@ namespace Server
 			private SectorEnumeratorType m_Type;
 			private object m_Current;
 
-			private static Queue<TypedEnumerator> m_InstancePool = new Queue<TypedEnumerator>();
+			public static TypedEnumerator Instantiate( Map map, Rectangle2D bounds, SectorEnumeratorType type ) {
+				TypedEnumerator e = new TypedEnumerator(map, bounds, type);
 
-			public static TypedEnumerator Instantiate( Map map, Rectangle2D bounds, SectorEnumeratorType type )
-			{
-				TypedEnumerator e;
-
-				if ( m_InstancePool.Count > 0 )
-				{
-					e = m_InstancePool.Dequeue();
-
-					e.m_Map = map;
-					e.m_Bounds = bounds;
-					e.m_Type = type;
-
-					e.Reset();
-				}
-				else
-				{
-					e = new TypedEnumerator( map, bounds, type );
-				}
-
+				e.Reset();
 				return e;
 			}
 
@@ -1211,18 +1169,13 @@ namespace Server
 				if ( m_Map == null )
 					return;
 
-				m_InstancePool.Enqueue( this );
-
-				m_Map = null;
-
 				if ( m_Enumerator != null )
 				{
 					m_Enumerator.Free();
 					m_Enumerator = null;
 				}
 
-				if ( m_Enumerable != null )
-					m_Enumerable.Free();
+				m_Map = null;
 			}
 
 			public TypedEnumerator( Map map, Rectangle2D bounds, SectorEnumeratorType type )
@@ -1230,22 +1183,22 @@ namespace Server
 				m_Map = map;
 				m_Bounds = bounds;
 				m_Type = type;
-
-				Reset();
 			}
 
-			public object Current
-			{
-				get
-				{
-					return m_Current;
-				}
+			public object Current {
+				get { return m_Current; }
 			}
 
 			public bool MoveNext()
 			{
 				while ( true )
 				{
+					if (m_Enumerator == null)
+					{
+						Console.WriteLine("hmm m_Enumerator null??");
+						return false;
+					}
+
 					if ( m_Enumerator.MoveNext() )
 					{
 						object o;
@@ -1256,6 +1209,7 @@ namespace Server
 						}
 						catch
 						{
+							Console.WriteLine("typed Enum current null");
 							continue;
 						}
 
@@ -1293,10 +1247,6 @@ namespace Server
 					else
 					{
 						m_Current = null;
-
-						m_Enumerator.Free();
-						m_Enumerator = null;
-
 						return false;
 					}
 				}
@@ -1305,11 +1255,7 @@ namespace Server
 			public void Reset()
 			{
 				m_Current = null;
-
-				if ( m_Enumerator != null )
-					m_Enumerator.Free();
-
-				m_Enumerator = SectorEnumerator.Instantiate( m_Map, m_Bounds, m_Type );//new SectorEnumerator( m_Map, m_Origin, m_Type, m_Range );
+				m_Enumerator = SectorEnumerator.Instantiate( m_Map, m_Bounds, m_Type );
 			}
 
 			public void Dispose()
@@ -1333,26 +1279,11 @@ namespace Server
 			private object m_Current;
 			private int m_Index;
 
-			private static Queue<MultiTileEnumerator> m_InstancePool = new Queue<MultiTileEnumerator>();
-
 			public static MultiTileEnumerator Instantiate( Sector sector, Point2D loc )
 			{
-				MultiTileEnumerator e;
+				MultiTileEnumerator e = new MultiTileEnumerator( sector, loc );
 
-				if ( m_InstancePool.Count > 0 )
-				{
-					e = m_InstancePool.Dequeue();
-
-					e.m_List = sector.Multis;
-					e.m_Location = loc;
-
-					e.Reset();
-				}
-				else
-				{
-					e = new MultiTileEnumerator( sector, loc );
-				}
-
+				e.Reset();
 				return e;
 			}
 
@@ -1360,14 +1291,10 @@ namespace Server
 			{
 				m_List = sector.Multis;
 				m_Location = loc;
-
-				Reset();
 			}
 
-			public object Current
-			{
-				get
-				{
+			public object Current {
+				get {
 					return m_Current;
 				}
 			}
@@ -1415,12 +1342,7 @@ namespace Server
 				if ( m_List == null )
 					return;
 
-				m_InstancePool.Enqueue( this );
-
 				m_List = null;
-
-				if ( m_Enumerable != null )
-					m_Enumerable.Free();
 			}
 
 			public void Reset()
@@ -1451,26 +1373,11 @@ namespace Server
 			private int m_Stage; // 0 = items, 1 = mobiles
 			private object m_Current;
 
-			private static Queue<ObjectEnumerator> m_InstancePool = new Queue<ObjectEnumerator>();
-
 			public static ObjectEnumerator Instantiate( Map map, Rectangle2D bounds )
 			{
-				ObjectEnumerator e;
+				ObjectEnumerator e = new ObjectEnumerator(map, bounds);
 
-				if ( m_InstancePool.Count > 0 )
-				{
-					e = m_InstancePool.Dequeue();
-
-					e.m_Map = map;
-					e.m_Bounds = bounds;
-
-					e.Reset();
-				}
-				else
-				{
-					e = new ObjectEnumerator( map, bounds );
-				}
-
+				e.Reset();
 				return e;
 			}
 
@@ -1479,8 +1386,6 @@ namespace Server
 				if ( m_Map == null )
 					return;
 
-				m_InstancePool.Enqueue( this );
-
 				m_Map = null;
 
 				if ( m_Enumerator != null )
@@ -1488,26 +1393,15 @@ namespace Server
 					m_Enumerator.Free();
 					m_Enumerator = null;
 				}
-
-				if ( m_Enumerable != null )
-					m_Enumerable.Free();
 			}
 
 			private ObjectEnumerator( Map map, Rectangle2D bounds )
 			{
 				m_Map = map;
 				m_Bounds = bounds;
-
-				Reset();
 			}
 
-			public object Current
-			{
-				get
-				{
-					return m_Current;
-				}
-			}
+			public object Current { get { return m_Current; } }
 
 			public bool MoveNext()
 			{
@@ -1523,6 +1417,7 @@ namespace Server
 						}
 						catch
 						{
+							Console.WriteLine("OBJ Enum current null");
 							continue;
 						}
 
@@ -1608,25 +1503,10 @@ namespace Server
 
 			private static Queue<SectorEnumerator> m_InstancePool = new Queue<SectorEnumerator>();
 
-			public static SectorEnumerator Instantiate( Map map, Rectangle2D bounds, SectorEnumeratorType type )
-			{
-				SectorEnumerator e;
+			public static SectorEnumerator Instantiate( Map map, Rectangle2D bounds, SectorEnumeratorType type ) {
+				SectorEnumerator e = new SectorEnumerator(map, bounds, type);
 
-				if ( m_InstancePool.Count > 0 )
-				{
-					e = m_InstancePool.Dequeue();
-
-					e.m_Map = map;
-					e.m_Bounds = bounds;
-					e.m_Type = type;
-
-					e.Reset();
-				}
-				else
-				{
-					e = new SectorEnumerator( map, bounds, type );
-				}
-
+				e.Reset();
 				return e;
 			}
 
@@ -1635,12 +1515,7 @@ namespace Server
 				if ( m_Map == null )
 					return;
 
-				m_InstancePool.Enqueue( this );
-
-				m_Map = null;
-
-				if ( m_Enumerable != null )
-					m_Enumerable.Free();
+				//m_Map = null;
 			}
 
 			private SectorEnumerator( Map map, Rectangle2D bounds, SectorEnumeratorType type )
@@ -1648,8 +1523,6 @@ namespace Server
 				m_Map = map;
 				m_Bounds = bounds;
 				m_Type = type;
-
-				Reset();
 			}
 
 			private IList GetListForSector( Sector sector )
@@ -1667,32 +1540,8 @@ namespace Server
 				}
 			}
 
-			public object Current
-			{
-				get
-				{
-					return m_CurrentList[m_CurrentIndex];
-					/*try
-					{
-						return m_CurrentList[m_CurrentIndex];
-					}
-					catch
-					{
-						Console.WriteLine( "Warning: Object removed during enumeration. May not be recoverable" );
-
-						m_CurrentIndex = -1;
-						m_CurrentList = GetListForSector( m_Map.InternalGetSector( m_xSector, m_ySector ) );
-
-						if ( MoveNext() )
-						{
-							return Current;
-						}
-						else
-						{
-							throw new Exception( "Object disposed during enumeration. Was not recoverable." );
-						}
-					}*/
-				}
+			public object Current {
+				get { return m_CurrentList[m_CurrentIndex]; }
 			}
 
 			public bool MoveNext()
@@ -1700,6 +1549,9 @@ namespace Server
 				while ( true )
 				{
 					++m_CurrentIndex;
+
+					if (m_CurrentList == null)
+						return false; // So much fail with PooledEnumerables ><
 
 					if ( m_CurrentIndex == m_CurrentList.Count )
 					{
