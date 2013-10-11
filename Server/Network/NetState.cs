@@ -627,16 +627,14 @@ namespace Server.Network {
 						lock (m_SendQueue)
 							gram = m_SendQueue.Enqueue(buffer, length);
 
-						if (gram != null) {
+						if (gram != null && !_sending) {
+							_sending = true;
 #if NewAsyncSockets
 							m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
 							Send_Start();
 #else
 							try {
-								if (!_sending) {
-									_sending = true;
 									m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
-								}
 							}
 							catch (Exception ex) {
 								TraceException(ex);
@@ -779,6 +777,9 @@ namespace Server.Network {
 			if ( gram != null ) {
 				m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
 				Send_Start();
+			} else {
+				lock (_sendL)
+					_sending = false;
 			}
 		}
 
@@ -829,18 +830,24 @@ namespace Server.Network {
 			if ( m_Socket == null )
 					return false;
 
-			SendQueue.Gram gram;
-
-			lock ( m_SendQueue ) {
-				if (!m_SendQueue.IsFlushReady)
+			lock (_sendL) {
+				if (_sending)
 					return false;
 
-				gram = m_SendQueue.CheckFlushReady();
-			}
+				SendQueue.Gram gram;
 
-			if ( gram != null ) {
-				m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
-				Send_Start();
+				lock ( m_SendQueue ) {
+					if (!m_SendQueue.IsFlushReady)
+						return false;
+
+					gram = m_SendQueue.CheckFlushReady();
+				}
+
+				if ( gram != null ) {
+					_sending = true;
+					m_SendEventArgs.SetBuffer( gram.Buffer, 0, gram.Length );
+					Send_Start();
+				}
 			}
 
 			return false;
