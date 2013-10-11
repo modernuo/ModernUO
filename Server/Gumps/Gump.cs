@@ -330,6 +330,9 @@ namespace Server.Gumps
 
 		public void Remove( GumpEntry g )
 		{
+			if (g == null || !m_Entries.Contains(g))
+				return;
+
 			Invalidate();
 			m_Entries.Remove( g );
 			g.Parent = null;
