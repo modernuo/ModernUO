@@ -168,7 +168,7 @@ namespace Server.Network {
 			return gram;
 		}
 
-		private const int PendingCap = 128 * 1024;
+		private const int PendingCap = 256 * 1024;
 
 		public Gram Enqueue( byte[] buffer, int length ) {
 			return Enqueue( buffer, 0, length );

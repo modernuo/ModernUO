@@ -1212,6 +1212,8 @@ namespace Server.Mobiles
 
 		public override void OnHiddenChanged()
 		{
+			base.OnHiddenChanged();
+
 			RemoveBuff(BuffIcon.Invisibility);	//Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
 
 			if (!Hidden)

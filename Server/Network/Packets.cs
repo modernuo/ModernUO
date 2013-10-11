@@ -2475,7 +2475,7 @@ namespace Server.Network
 			PacketWriter.ReleaseInstance( m_Strings );
 		}
 
-		private const int GumpBufferSize = 0x4000;
+		private const int GumpBufferSize = 0x5000;
 		private static BufferPool m_PackBuffers = new BufferPool("Gump", 4, GumpBufferSize);
 
 		private void WritePacked( PacketWriter src )

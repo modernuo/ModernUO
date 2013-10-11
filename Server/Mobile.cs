@@ -4391,26 +4391,32 @@ namespace Server
 							{
 								IPooledEnumerable eable = map.GetClientsInRange( from.Location );
 								Packet p = null;
+								object pLock = new object();
+#if Framework_4_0
+								Parallel.ForEach( eable.Cast<NetState>(), ns => {
+#else
+								foreach( NetState ns in eable ) {
+#endif
+									if( ns.Mobile != from && ns.Mobile.CanSee( from ) && ns.Mobile.InLOS( from ) && ns.Mobile.CanSee( root ) ) {
+										lock (pLock) {
+											if (p == null) {
+												IEntity src;
 
-								foreach( NetState ns in eable )
-								{
-									if( ns.Mobile != from && ns.Mobile.CanSee( from ) && ns.Mobile.InLOS( from ) && ns.Mobile.CanSee( root ) )
-									{
-										if( p == null )
-										{
-											IEntity src;
+												if (root == null)
+													src = new Entity(Serial.Zero, item.Location, map);
+												else
+													src = new Entity(((Item)root).Serial, ((Item)root).Location, map);
 
-											if( root == null )
-												src = new Entity( Serial.Zero, item.Location, map );
-											else
-												src = new Entity( ((Item)root).Serial, ((Item)root).Location, map );
-
-											p = Packet.Acquire( new DragEffect( src, from, item.ItemID, item.Hue, amount ) );
+												p = Packet.Acquire(new DragEffect(src, from, item.ItemID, item.Hue, amount));
+											}
 										}
 
 										ns.Send( p );
 									}
 								}
+#if Framework_4_0
+								);
+#endif
 
 								Packet.Release( p );
 
@@ -4529,34 +4535,44 @@ namespace Server
 				{
 					IPooledEnumerable eable = map.GetClientsInRange( m_Location );
 					Packet p = null;
+					object pLock = new object();
 
 					bool sameLoc = false;
 
-					foreach( NetState ns in eable )
-					{
-						if( ns.Mobile != this && ns.Mobile.CanSee( this ) && ns.Mobile.InLOS( this ) && ns.Mobile.CanSee( root ) )
-						{
-							if( p == null )
-							{
-								IEntity trg;
+#if Framework_4_0
+					Parallel.ForEach( eable.Cast<NetState>(), ns => {
+#else
+					foreach( NetState ns in eable ) {
+#endif
+						if( ns.Mobile != this && ns.Mobile.CanSee( this ) && ns.Mobile.InLOS( this ) && ns.Mobile.CanSee( root ) ) {
+							lock (pLock) {
+								if (p == null) {
+									IEntity trg;
 
-								if( root == null )
-									trg = new Entity( Serial.Zero, item.Location, map );
-								else
-									trg = new Entity( ((Item)root).Serial, ((Item)root).Location, map );
+									if (root == null)
+										trg = new Entity(Serial.Zero, item.Location, map);
+									else
+										trg = new Entity(((Item)root).Serial, ((Item)root).Location, map);
 
-								if ( m_Location == trg.Location )
-									sameLoc = true;
+									if (m_Location == trg.Location)
+										sameLoc = true;
 
-								p = Packet.Acquire( new DragEffect( this, trg, item.ItemID, item.Hue, item.Amount ) );
+									p = Packet.Acquire(new DragEffect(this, trg, item.ItemID, item.Hue, item.Amount));
+								}
 							}
 
 							if ( ns.StygianAbyss && sameLoc )
+#if Framework_4_0
+								return;
+#else
 								continue; // prevents crash
-
+#endif
 							ns.Send( p );
 						}
 					}
+#if Framework_4_0
+					);
+#endif
 
 					Packet.Release( p );
 
@@ -6287,13 +6303,16 @@ namespace Server
 
 				Packet p = null;
 				//Packet pNew = null;
+				object pLock = new object();
 
 				IPooledEnumerable eable = map.GetClientsInRange( m_Location );
 
-				foreach( NetState state in eable )
-				{
-					if( state.Mobile.CanSee( this ) )
-					{
+#if Framework_4_0
+				Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
+				foreach( NetState state in eable ) {
+#endif
+					if( state.Mobile.CanSee( this ) ) {
 						state.Mobile.ProcessDelta();
 
 						//if ( state.StygianAbyss ) {
@@ -6302,13 +6321,18 @@ namespace Server
 
 							//state.Send( pNew );
 						//} else {
+						lock (pLock) {
 							if( p == null )
 								p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
+						}
 
 							state.Send( p );
 						//}
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				Packet.Release( p );
 				//Packet.Release( pNew );
@@ -6633,24 +6657,26 @@ namespace Server
 			if( m_Map != null && ns != null )
 			{
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
-
-				foreach( object o in eable )
-				{
-					if( o is Mobile )
-					{
+#if Framework_4_0
+				Parallel.ForEach( eable.Cast<IEntity>(), o => {
+#else
+				foreach( object o in eable ) {
+#endif
+					if( o is Mobile ) {
 						Mobile m = (Mobile)o;
 
 						if( m != this && Utility.InUpdateRange( m_Location, m.m_Location ) )
 							ns.Send( m.RemovePacket );
-					}
-					else if( o is Item )
-					{
+					} else if( o is Item ) {
 						Item item = (Item)o;
 
 						if( InRange( item.Location, item.GetUpdateRange( this ) ) )
 							ns.Send( item.RemovePacket );
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				eable.Free();
 			}
@@ -6836,18 +6862,17 @@ namespace Server
 			if( m_Map != null && ns != null )
 			{
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
-
-				foreach( object o in eable )
-				{
-					if( o is Item )
-					{
+#if Framework_4_0
+				Parallel.ForEach( eable.Cast<IEntity>(), o => {
+#else
+				foreach( object o in eable ) {
+#endif
+					if( o is Item ) {
 						Item item = (Item)o;
 
 						if( CanSee( item ) && InRange( item.Location, item.GetUpdateRange( this ) ) )
 							item.SendInfoTo( ns );
-					}
-					else if( o is Mobile )
-					{
+					} else if( o is Mobile ) {
 						Mobile m = (Mobile)o;
 
 						if( CanSee( m ) && Utility.InUpdateRange( m_Location, m.m_Location ) )
@@ -6877,6 +6902,9 @@ namespace Server
 						}
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				eable.Free();
 			}
@@ -8016,21 +8044,15 @@ namespace Server
 
 			if (m_Map != null)
 			{
-				Packet p = null;
-
 				IPooledEnumerable eable = m_Map.GetClientsInRange(m_Location);
-
-				foreach (NetState state in eable)
-				{
-					if (!state.Mobile.CanSee(this))
-					{
-						if (p == null)
-							p = this.RemovePacket;
-
-						state.Send(p);
-					}
-					else
-					{
+#if Framework_4_0
+				Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
+				foreach (NetState state in eable) {
+#endif
+					if (!state.Mobile.CanSee(this)) {
+						state.Send(this.RemovePacket);
+					} else {
 						if (state.StygianAbyss)
 							state.Send(new MobileIncoming(state.Mobile, this));
 						else
@@ -8039,8 +8061,7 @@ namespace Server
 						if (IsDeadBondedPet)
 							state.Send(new BondedStatus(0, m_Serial, 1));
 
-						if (ObjectPropertyList.Enabled)
-						{
+						if (ObjectPropertyList.Enabled) {
 							state.Send(OPLPacket);
 
 							//foreach ( Item item in m_Items )
@@ -8048,6 +8069,9 @@ namespace Server
 						}
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				eable.Free();
 			}
@@ -8912,15 +8936,17 @@ namespace Server
 		}
 
 		private Packet m_RemovePacket;
+		private object rpLock = new object();
 
 		public Packet RemovePacket
 		{
 			get
 			{
-				if( m_RemovePacket == null )
-				{
-					m_RemovePacket = new RemoveMobile( this );
-					m_RemovePacket.SetStatic();
+				lock (rpLock) {
+					if (m_RemovePacket == null) {
+						m_RemovePacket = new RemoveMobile(this);
+						m_RemovePacket.SetStatic();
+					}
 				}
 
 				return m_RemovePacket;
@@ -8928,15 +8954,17 @@ namespace Server
 		}
 
 		private Packet m_OPLPacket;
+		private object oplLock = new object();
 
 		public Packet OPLPacket
 		{
 			get
 			{
-				if( m_OPLPacket == null )
-				{
-					m_OPLPacket = new OPLInfo( PropertyList );
-					m_OPLPacket.SetStatic();
+				lock (oplLock) {
+					if( m_OPLPacket == null ) {
+						m_OPLPacket = new OPLInfo( PropertyList );
+						m_OPLPacket.SetStatic();
+					}
 				}
 
 				return m_OPLPacket;
@@ -9154,20 +9182,21 @@ namespace Server
 				if( map != null )
 				{
 					// First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
-					Packet removeThis = null;
 
 					IPooledEnumerable eable = map.GetClientsInRange( oldLocation );
 
-					foreach( NetState ns in eable )
-					{
-						if( ns != m_NetState && !Utility.InUpdateRange( newLocation, ns.Mobile.Location ) )
-						{
-							if( removeThis == null )
-								removeThis = this.RemovePacket;
-
-							ns.Send( removeThis );
+#if Framework_4_0
+					Parallel.ForEach( eable.Cast<NetState>(), ns => {
+#else
+					foreach( NetState ns in eable ) {
+#endif
+						if( ns != m_NetState && !Utility.InUpdateRange( newLocation, ns.Mobile.Location ) ) {
+							ns.Send( this.RemovePacket );
 						}
 					}
+#if Framework_4_0
+					);
+#endif
 
 					eable.Free();
 
@@ -9179,8 +9208,11 @@ namespace Server
 						eable = map.GetObjectsInRange( newLocation, Core.GlobalMaxUpdateRange );
 
 						// We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
-						foreach( object o in eable )
-						{
+#if Framework_4_0
+						Parallel.ForEach( eable.Cast<IEntity>(), o => {
+#else
+						foreach( object o in eable ) {
+#endif
 							if( o is Item )
 							{
 								Item item = (Item)o;
@@ -9196,8 +9228,11 @@ namespace Server
 								Mobile m = (Mobile)o;
 
 								if( !Utility.InUpdateRange( newLocation, m.m_Location ) )
+#if Framework_4_0
+									return;
+#else
 									continue;
-
+#endif
 								bool inOldRange = Utility.InUpdateRange( oldLocation, m.m_Location );
 
 								if( m.m_NetState != null && ( ( isTeleport && ( !m.m_NetState.HighSeas || !m_NoMoveHS ) ) || !inOldRange ) && m.CanSee( this ) )
@@ -9253,6 +9288,9 @@ namespace Server
 								}
 							}
 						}
+#if Framework_4_0
+						);
+#endif
 
 						eable.Free();
 					}
@@ -9261,8 +9299,11 @@ namespace Server
 						eable = map.GetClientsInRange( newLocation );
 
 						// We're not attached to a client, so simply send an Incoming
-						foreach( NetState ns in eable )
-						{
+#if Framework_4_0
+						Parallel.ForEach( eable.Cast<NetState>(), ns => {
+#else
+						foreach( NetState ns in eable ) {
+#endif
 							if( ( ( isTeleport && ( !ns.HighSeas || !m_NoMoveHS ) ) || !Utility.InUpdateRange( oldLocation, ns.Mobile.Location )) && ns.Mobile.CanSee( this ) )
 							{
 								if ( ns.StygianAbyss ) {
@@ -9289,6 +9330,9 @@ namespace Server
 								}
 							}
 						}
+#if Framework_4_0
+						);
+#endif
 
 						eable.Free();
 					}
@@ -9600,8 +9644,11 @@ namespace Server
 			{
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-				foreach( NetState state in eable )
-				{
+#if Framework_4_0
+				Parallel.ForEach( eable.Cast<NetState>(), state => {
+#else
+				foreach( NetState state in eable ) {
+#endif
 					if( state.Mobile.CanSee( this ) )
 					{
 						if ( state.StygianAbyss ) {
@@ -9628,6 +9675,9 @@ namespace Server
 						}
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				eable.Free();
 			}
@@ -10289,9 +10339,6 @@ namespace Server
 				object hbyPacketLock = new object();
 				object cacheSync = new object();
 
-				Packet removePacket = RemovePacket;
-				Packet oplPacket = OPLPacket;
-
 				IPooledEnumerable eable = m.Map.GetClientsInRange(m.m_Location);
 
 #if Framework_4_0
@@ -10304,7 +10351,7 @@ namespace Server
 					if( beholder != m && beholder.CanSee( m ) )
 					{
 						if( sendRemove )
-							state.Send(removePacket);
+							state.Send(this.RemovePacket);
 
 						if( sendIncoming )
 						{
@@ -10445,7 +10492,7 @@ namespace Server
 						}
 
 						if( sendOPLUpdate )
-							state.Send(oplPacket);
+							state.Send(this.OPLPacket);
 					}
 				}
 #if Framework_4_0
