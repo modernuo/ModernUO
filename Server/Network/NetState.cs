@@ -772,6 +772,9 @@ namespace Server.Network {
 
 			lock ( m_SendQueue ) {
 				gram = m_SendQueue.Dequeue();
+
+				if (gram == null && m_SendQueue.IsFlushReady)
+					gram = m_SendQueue.CheckFlushReady();
 			}
 
 			if ( gram != null ) {
@@ -943,6 +946,9 @@ namespace Server.Network {
 
 				lock (m_SendQueue) {
 					gram = m_SendQueue.Dequeue();
+
+					if (gram == null && m_SendQueue.IsFlushReady)
+						gram = m_SendQueue.CheckFlushReady();
 				}
 
 				if (gram != null) {

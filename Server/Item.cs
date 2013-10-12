@@ -3039,9 +3039,17 @@ namespace Server
 			{
 				SetFlag( ImplFlag.InQueue, true );
 
-				if (_processing)
-					Console.WriteLine(new System.Diagnostics.StackTrace());
-				m_DeltaQueue.Add( this );
+				if (_processing) {
+					try {
+						using (StreamWriter op = new StreamWriter("delta-recursion.log", true)) {
+							op.WriteLine("# {0}", DateTime.UtcNow);
+							op.WriteLine(new System.Diagnostics.StackTrace());
+							op.WriteLine();
+						}
+					} catch { }
+				} else {
+					m_DeltaQueue.Add(this);
+				}
 			}
 
 			Core.Set();
@@ -3055,9 +3063,17 @@ namespace Server
 			{
 				SetFlag( ImplFlag.InQueue, false );
 
-				if (_processing)
-					Console.WriteLine(new System.Diagnostics.StackTrace());
-				m_DeltaQueue.Remove( this );
+				if (_processing) {
+					try {
+						using (StreamWriter op = new StreamWriter("delta-recursion.log", true)) {
+							op.WriteLine("# {0}", DateTime.UtcNow);
+							op.WriteLine(new System.Diagnostics.StackTrace());
+							op.WriteLine();
+						}
+					} catch { }
+				} else {
+					m_DeltaQueue.Remove( this );
+				}
 			}
 		}
 

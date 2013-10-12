@@ -10005,6 +10005,7 @@ namespace Server
 		}
 
 		private static Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
+		private static Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
 
 		private bool m_InDeltaQueue;
 		private MobileDelta m_DeltaFlags;
@@ -10020,9 +10021,21 @@ namespace Server
 			{
 				m_InDeltaQueue = true;
 
-				if (_processing)
-					Console.WriteLine(new System.Diagnostics.StackTrace());
-				m_DeltaQueue.Enqueue( this );
+				if (_processing) {
+					lock (m_DeltaQueueR) {
+						m_DeltaQueueR.Enqueue(this);
+
+						try {
+							using (StreamWriter op = new StreamWriter("delta-recursion.log", true)) {
+								op.WriteLine("# {0}", DateTime.UtcNow);
+								op.WriteLine(new System.Diagnostics.StackTrace());
+								op.WriteLine();
+							}
+						} catch { }
+					}
+				} else {
+					m_DeltaQueue.Enqueue( this );
+				}
 			}
 
 			Core.Set();
@@ -10524,7 +10537,7 @@ namespace Server
 			}
 		}
 
-		public static bool _processing = false;
+		private static bool _processing = false;
 
 		public static void ProcessDeltaQueue()
 		{
@@ -10533,6 +10546,8 @@ namespace Server
 			Parallel.ForEach( m_DeltaQueue, m => m.ProcessDelta() );
 			m_DeltaQueue.Clear();
 			_processing = false;
+			Parallel.ForEach( m_DeltaQueueR, m => m.ProcessDelta() );
+			m_DeltaQueueR.Clear();
 #else
 			int count = m_DeltaQueue.Count;
 			int index = 0;

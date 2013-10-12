@@ -220,13 +220,15 @@ namespace Server.Network
 					}
 
 					if ( length >= packetLength ) {
-						if ( handler.Ingame && ns.Mobile == null ) {
-							Console.WriteLine( "Client: {0}: Sent ingame packet (0x{1:X2}) before having been attached to a mobile", ns, packetID );
-							ns.Dispose();
-							break;
-						} else if ( handler.Ingame && ns.Mobile.Deleted ) {
-							ns.Dispose();
-							break;
+						if (handler.Ingame) {
+							if (ns.Mobile == null ) {
+								Console.WriteLine( "Client: {0}: Sent ingame packet (0x{1:X2}) before having been attached to a mobile", ns, packetID );
+								ns.Dispose();
+								break;
+							} else if (ns.Mobile.Deleted) {
+								ns.Dispose();
+								break;
+							}
 						}
 
 						ThrottlePacketCallback throttler = handler.ThrottleCallback;
