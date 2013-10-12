@@ -1125,8 +1125,10 @@ namespace Server.Network {
 				TraceException( ex );
 			}
 
-			if ( m_RecvBuffer != null )
-				m_ReceiveBufferPool.ReleaseBuffer( m_RecvBuffer );
+			if ( m_RecvBuffer != null ) {
+				lock (m_ReceiveBufferPool)
+					m_ReceiveBufferPool.ReleaseBuffer( m_RecvBuffer );
+			}
 
 			m_Socket = null;
 
@@ -1158,9 +1160,13 @@ namespace Server.Network {
 
 		public static void CheckAllAlive() {
 			try {
+#if Framework_4_0
+				Parallel.ForEach( m_Instances, ns => ns.CheckAlive() );
+#else
 				for ( int i = 0; i < m_Instances.Count; ++i ) {
 					m_Instances[i].CheckAlive();
 				}
+#endif
 			} catch ( Exception ex ) {
 				TraceException( ex );
 			}

@@ -5645,7 +5645,7 @@ namespace Server.Mobiles
 			return base.CanBeDamaged();
 		}
 
-		public virtual bool PlayerRangeSensitive{ get{ return (this.CurrentWayPoint == null); } }	//If they are following a waypoint, they'll continue to follow it even if players aren't around
+		public virtual bool PlayerRangeSensitive{ get{ return (this.CurrentWayPoint != null); } }	//If they are following a waypoint, they'll continue to follow it even if players aren't around
 
 		/* until we are sure about who should be getting deleted, move them instead */
 		/* On OSI, they despawn */

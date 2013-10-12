@@ -2,6 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+#if Framework_4_0
+using System.Linq;
+using System.Threading.Tasks;
+#endif
 using Server;
 using Server.Items;
 using Server.Targeting;
@@ -2490,6 +2494,7 @@ namespace Server.Mobiles
 
 				IPooledEnumerable eable = map.GetMobilesInRange(m_Mobile.Location, iRange);
 
+#if !Framework_4_0
 				foreach (Mobile m in eable)
 				{
 					if (m.Deleted || m.Blessed)
@@ -2582,6 +2587,105 @@ namespace Server.Mobiles
 						val = theirVal;
 					}
 				}
+#endif
+
+#if Framework_4_0
+				object valLock = new object();
+
+				Parallel.ForEach( eable.Cast<Mobile>(), m => {
+					if (m.Deleted || m.Blessed)
+						return;
+
+					// Let's not target ourselves...
+					if (m == m_Mobile || m is BaseFamiliar)
+						return;
+
+					// Dead targets are invalid.
+					if (!m.Alive || m.IsDeadBondedPet)
+						return;
+
+					// Staff members cannot be targeted.
+					if (m.AccessLevel > AccessLevel.Player)
+						return;
+
+					// Does it have to be a player?
+					if (bPlayerOnly && !m.Player)
+						return;
+
+					// Can't acquire a target we can't see.
+					if (!m_Mobile.CanSee(m))
+						return;
+
+					if (Core.AOS && m is BaseCreature && (m as BaseCreature).Summoned && !(m as BaseCreature).Controlled)
+						return;
+
+					if (m_Mobile.Summoned && m_Mobile.SummonMaster != null)
+					{
+						// If this is a summon, it can't target its controller.
+						if (m == m_Mobile.SummonMaster)
+							return;
+
+						// It also must abide by harmful spell rules.
+						if (!Server.Spells.SpellHelper.ValidIndirectTarget(m_Mobile.SummonMaster, m))
+							return;
+
+						// Animated creatures cannot attack players directly.
+						if (m is PlayerMobile && m_Mobile.IsAnimatedDead)
+							return;
+					}
+
+					// If we only want faction friends, make sure it's one.
+					if (bFacFriend && !m_Mobile.IsFriend(m))
+						return;
+
+					//Ignore anyone under EtherealVoyage
+					if (TransformationSpellHelper.UnderTransformation(m, typeof(EtherealVoyageSpell)))
+						return;
+
+					// Ignore players with activated honor
+					if (m is PlayerMobile && ((PlayerMobile)m).HonorActive && !(m_Mobile.Combatant == m))
+						return;
+
+					if (acqType == FightMode.Aggressor || acqType == FightMode.Evil)
+					{
+						bool bValid = IsHostile(m);
+
+						if (!bValid)
+							bValid = (m_Mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy || m_Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy);
+
+						if (acqType == FightMode.Evil && !bValid)
+						{
+							if (m is BaseCreature && ((BaseCreature)m).Controlled && ((BaseCreature)m).ControlMaster != null)
+								bValid = (((BaseCreature)m).ControlMaster.Karma < 0);
+							else
+								bValid = (m.Karma < 0);
+						}
+
+						if (!bValid)
+							return;
+					}
+					else
+					{
+						// Same goes for faction enemies.
+						if (bFacFoe && !m_Mobile.IsEnemy(m))
+							return;
+
+						// If it's an enemy factioned mobile, make sure we can be harmful to it.
+						if (bFacFoe && !bFacFriend && !m_Mobile.CanBeHarmful(m, false))
+							return;
+					}
+
+					theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
+
+					lock (valLock) {
+						if (theirVal > val && m_Mobile.InLOS(m))
+						{
+							newFocusMob = m;
+							val = theirVal;
+						}
+					}
+				});
+#endif
 
 				eable.Free();
 
