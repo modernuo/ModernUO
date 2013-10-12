@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+#if Framework_4_0
+using System.Threading.Tasks;
+#endif
 using Server.Regions;
 using Server.Targeting;
 using Server.Network;
@@ -5764,12 +5767,19 @@ namespace Server.Mobiles
 			// added array for wild creatures in house regions to be removed
 			List<BaseCreature> toRemove = new List<BaseCreature>();
 
-			foreach ( Mobile m in World.Mobiles.Values )
-			{
+#if Framework_4_0
+			Parallel.ForEach(World.Mobiles.Values, m => {
+#else
+			foreach ( Mobile m in World.Mobiles.Values ) {
+#endif
 				if ( m is BaseMount && ((BaseMount)m).Rider != null )
 				{
 					((BaseCreature)m).OwnerAbandonTime = DateTime.MinValue;
+#if Framework_4_0
+					return;
+#else
 					continue;
+#endif
 				}
 
 				if ( m is BaseCreature )
@@ -5782,10 +5792,12 @@ namespace Server.Mobiles
 
 						if ( !c.IsStabled && ( owner == null || owner.Deleted || owner.Map != c.Map || !owner.InRange( c, 12 ) || !c.CanSee( owner ) || !c.InLOS( owner ) ) )
 						{
-							if ( c.OwnerAbandonTime == DateTime.MinValue )
+							if ( c.OwnerAbandonTime == DateTime.MinValue ) {
 								c.OwnerAbandonTime = DateTime.UtcNow;
-							else if ( (c.OwnerAbandonTime + c.BondingAbandonDelay) <= DateTime.UtcNow )
-								toRemove.Add( c );
+							} else if ( (c.OwnerAbandonTime + c.BondingAbandonDelay) <= DateTime.UtcNow ) {
+								lock (toRemove)
+									toRemove.Add(c);
+							}
 						}
 						else
 						{
@@ -5807,7 +5819,8 @@ namespace Server.Mobiles
 							}
 
 							if ( c.Loyalty <= 0 )
-								toRelease.Add( c );
+								lock (toRelease)
+									toRelease.Add( c );
 						}
 					}
 
@@ -5817,7 +5830,8 @@ namespace Server.Mobiles
 						c.RemoveStep++;
 
 						if ( c.RemoveStep >= 20 )
-							toRemove.Add( c );
+							lock (toRemove)
+								toRemove.Add( c );
 					}
 					else
 					{
@@ -5825,6 +5839,9 @@ namespace Server.Mobiles
 					}
 				}
 			}
+#if Framework_4_0
+			);
+#endif
 
 			foreach ( BaseCreature c in toRelease )
 			{
