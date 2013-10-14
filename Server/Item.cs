@@ -1637,14 +1637,17 @@ namespace Server
 			set{ SetFlag( ImplFlag.Stackable, value ); }
 		}
 
+		private object _rpl = new object();
+
 		public Packet RemovePacket
 		{
 			get
 			{
-				if ( m_RemovePacket == null )
-				{
-					m_RemovePacket = new RemoveItem( this );
-					m_RemovePacket.SetStatic();
+				lock (_rpl) {
+					if ( m_RemovePacket == null ) {
+						m_RemovePacket = new RemoveItem( this );
+						m_RemovePacket.SetStatic();
+					}
 				}
 
 				return m_RemovePacket;
