@@ -933,12 +933,15 @@ namespace Server
 			}
 		}
 
+		private object tileLock = new object();
+
 		public TileMatrix Tiles
 		{
 			get
 			{
-				if ( m_Tiles == null )
-					m_Tiles = new TileMatrix( this, m_FileIndex, m_MapID, m_Width, m_Height );
+				lock (tileLock)
+					if ( m_Tiles == null )
+						m_Tiles = new TileMatrix( this, m_FileIndex, m_MapID, m_Width, m_Height );
 
 				return m_Tiles;
 			}

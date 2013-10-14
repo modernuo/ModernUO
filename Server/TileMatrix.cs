@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -51,13 +52,13 @@ namespace Server
 		private int[][] m_StaticPatches;
 		private int[][] m_LandPatches;
 
-		public Map Owner
+		/*public Map Owner
 		{
 			get
 			{
 				return m_Owner;
 			}
-		}
+		}*/
 
 		public TileMatrixPatch Patch
 		{
@@ -83,7 +84,7 @@ namespace Server
 			}
 		}
 
-		public int Width
+		/*public int Width
 		{
 			get
 			{
@@ -97,7 +98,7 @@ namespace Server
 			{
 				return m_Height;
 			}
-		}
+		}*/
 
 		public FileStream MapStream
 		{
@@ -105,10 +106,10 @@ namespace Server
 			set{ m_Map = value; }
 		}
 
-		public bool MapUOPPacked
+		/*public bool MapUOPPacked
 		{
 			get{ return ( m_MapIndex != null ); }
-		}
+		}*/
 
 		public FileStream IndexStream
 		{
@@ -138,18 +139,25 @@ namespace Server
 
 		public TileMatrix( Map owner, int fileIndex, int mapID, int width, int height )
 		{
-			for ( int i = 0; i < m_Instances.Count; ++i )
-			{
-				TileMatrix tm = m_Instances[i];
-
-				if ( tm.m_FileIndex == fileIndex )
+			lock (m_Instances) {
+				for ( int i = 0; i < m_Instances.Count; ++i )
 				{
-					tm.m_FileShare.Add( this );
-					m_FileShare.Add( tm );
+					TileMatrix tm = m_Instances[i];
+
+					if ( tm.m_FileIndex == fileIndex )
+					{
+						lock (m_FileShare) {
+							lock (tm.m_FileShare) {
+								tm.m_FileShare.Add( this );
+								m_FileShare.Add( tm );
+							}
+						}
+					}
 				}
+
+				m_Instances.Add( this );
 			}
 
-			m_Instances.Add( this );
 			m_FileIndex = fileIndex;
 			m_Width = width;
 			m_Height = height;
@@ -219,6 +227,7 @@ namespace Server
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void SetStaticBlock( int x, int y, StaticTile[][][] value )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight )
@@ -235,6 +244,7 @@ namespace Server
 			m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public StaticTile[][][] GetStaticBlock( int x, int y )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight || m_Statics == null || m_Index == null )
@@ -247,23 +257,27 @@ namespace Server
 
 			if ( tiles == null )
 			{
-				for ( int i = 0; tiles == null && i < m_FileShare.Count; ++i )
-				{
-					TileMatrix shared = m_FileShare[i];
-
-					if ( x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight )
+				lock (m_FileShare) {
+					for ( int i = 0; tiles == null && i < m_FileShare.Count; ++i )
 					{
-						StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
+						TileMatrix shared = m_FileShare[i];
 
-						if ( theirTiles != null )
-							tiles = theirTiles[y];
+						lock (shared) {
+							if ( x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight )
+							{
+								StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
 
-						if ( tiles != null )
-						{
-							int[] theirBits = shared.m_StaticPatches[x];
+								if ( theirTiles != null )
+									tiles = theirTiles[y];
 
-							if ( theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0 )
-								tiles = null;
+								if ( tiles != null )
+								{
+									int[] theirBits = shared.m_StaticPatches[x];
+
+									if ( theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0 )
+										tiles = null;
+								}
+							}
 						}
 					}
 				}
@@ -284,8 +298,9 @@ namespace Server
 			return tiles[x & 0x7][y & 0x7];
 		}
 
-		private static TileList m_TilesList = new TileList();
+		private TileList m_TilesList = new TileList();
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public StaticTile[] GetStaticTiles( int x, int y, bool multis )
 		{
 			StaticTile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
@@ -322,6 +337,7 @@ namespace Server
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void SetLandBlock( int x, int y, LandTile[] value )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight )
@@ -338,6 +354,7 @@ namespace Server
 			m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public LandTile[] GetLandBlock( int x, int y )
 		{
 			if ( x < 0 || y < 0 || x >= m_BlockWidth || y >= m_BlockHeight || m_Map == null )
@@ -350,23 +367,27 @@ namespace Server
 
 			if ( tiles == null )
 			{
-				for ( int i = 0; tiles == null && i < m_FileShare.Count; ++i )
-				{
-					TileMatrix shared = m_FileShare[i];
-
-					if ( x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight )
+				lock (m_FileShare) {
+					for ( int i = 0; tiles == null && i < m_FileShare.Count; ++i )
 					{
-						LandTile[][] theirTiles = shared.m_LandTiles[x];
+						TileMatrix shared = m_FileShare[i];
 
-						if ( theirTiles != null )
-							tiles = theirTiles[y];
+						lock (shared) {
+							if ( x >= 0 && x < shared.m_BlockWidth && y >= 0 && y < shared.m_BlockHeight )
+							{
+								LandTile[][] theirTiles = shared.m_LandTiles[x];
 
-						if ( tiles != null )
-						{
-							int[] theirBits = shared.m_LandPatches[x];
+								if ( theirTiles != null )
+									tiles = theirTiles[y];
 
-							if ( theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0 )
-								tiles = null;
+								if ( tiles != null )
+								{
+									int[] theirBits = shared.m_LandPatches[x];
+
+									if ( theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0 )
+										tiles = null;
+								}
+							}
 						}
 					}
 				}
@@ -387,10 +408,11 @@ namespace Server
 			return tiles[((y & 0x7) << 3) + (x & 0x7)];
 		}
 
-		private static TileList[][] m_Lists;
+		private TileList[][] m_Lists;
 
-		private static StaticTile[] m_TileBuffer = new StaticTile[128];
+		private StaticTile[] m_TileBuffer = new StaticTile[128];
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		private unsafe StaticTile[][][] ReadStaticBlock( int x, int y )
 		{
 			try
@@ -480,6 +502,7 @@ namespace Server
 				throw new Exception();
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		private unsafe LandTile[] ReadLandBlock( int x, int y )
 		{
 			try
@@ -531,7 +554,7 @@ namespace Server
 		}
 	}
 
-	[System.Runtime.InteropServices.StructLayout( System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1 )]
+	[StructLayout(LayoutKind.Sequential, Pack=1)]
 	public struct LandTile
 	{
 		internal short m_ID;
@@ -572,7 +595,7 @@ namespace Server
 		}
 	}
 
-	[System.Runtime.InteropServices.StructLayout( System.Runtime.InteropServices.LayoutKind.Sequential, Pack=1 )]
+	[StructLayout(LayoutKind.Sequential, Pack=1)]
 	public struct StaticTile
 	{
 		internal ushort m_ID;

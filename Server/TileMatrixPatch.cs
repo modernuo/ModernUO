@@ -21,6 +21,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Server
 {
@@ -46,7 +47,8 @@ namespace Server
 		{
 			get
 			{
-				return m_LandBlocks;
+				lock (this)
+					return m_LandBlocks;
 			}
 		}
 
@@ -54,7 +56,8 @@ namespace Server
 		{
 			get
 			{
-				return m_StaticBlocks;
+				lock (this)
+					return m_StaticBlocks;
 			}
 		}
 
@@ -77,6 +80,7 @@ namespace Server
 				m_StaticBlocks = PatchStatics( matrix, staDataPath, staIndexPath, staLookupPath );
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		private unsafe int PatchLand( TileMatrix matrix, string dataPath, string indexPath )
 		{
 			using ( FileStream fsData = new FileStream( dataPath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
@@ -116,8 +120,9 @@ namespace Server
 			}
 		}
 
-		private static StaticTile[] m_TileBuffer = new StaticTile[128];
+		private StaticTile[] m_TileBuffer = new StaticTile[128];
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		private unsafe int PatchStatics( TileMatrix matrix, string dataPath, string indexPath, string lookupPath )
 		{
 			using ( FileStream fsData = new FileStream( dataPath, FileMode.Open, FileAccess.Read, FileShare.Read ) )
