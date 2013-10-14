@@ -19,11 +19,13 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+#if Framework_4_0
+using System.Threading.Tasks;
+#endif
 using Server.Diagnostics;
 
 namespace Server
@@ -136,7 +138,7 @@ namespace Server
 
 		public class TimerThread
 		{
-			private static Queue m_ChangeQueue = Queue.Synchronized( new Queue() );
+			private static Dictionary<Timer,TimerChangeEntry> m_Changed = new Dictionary<Timer,TimerChangeEntry>();
 
 			private static long[] m_NextPriorities = new long[8];
 			private static long[] m_PriorityDelays = new long[8]
@@ -215,30 +217,29 @@ namespace Server
 
 				public void Free()
 				{
-					//m_InstancePool.Enqueue( this );
+					lock (m_InstancePool) {
+						if (m_InstancePool.Count <= 200) // Arbitrary
+							m_InstancePool.Enqueue( this );
+					}
 				}
 
 				private static Queue<TimerChangeEntry> m_InstancePool = new Queue<TimerChangeEntry>();
 
 				public static TimerChangeEntry GetInstance( Timer t, int newIndex, bool isAdd )
 				{
-					TimerChangeEntry e;
+					TimerChangeEntry e = null;
 
-					if ( m_InstancePool.Count > 0 )
-					{
-						e = m_InstancePool.Dequeue();
-
-						if ( e == null )
-							e = new TimerChangeEntry( t, newIndex, isAdd );
-						else
-						{
-							e.m_Timer = t;
-							e.m_NewIndex = newIndex;
-							e.m_IsAdd = isAdd;
+					lock (m_InstancePool) {
+						if ( m_InstancePool.Count > 0 ) {
+							e = m_InstancePool.Dequeue();
 						}
 					}
-					else
-					{
+
+					if (e != null) {
+						e.m_Timer = t;
+						e.m_NewIndex = newIndex;
+						e.m_IsAdd = isAdd;
+					} else {
 						e = new TimerChangeEntry( t, newIndex, isAdd );
 					}
 
@@ -252,7 +253,8 @@ namespace Server
 
 			public static void Change( Timer t, int newIndex, bool isAdd )
 			{
-				m_ChangeQueue.Enqueue( TimerChangeEntry.GetInstance( t, newIndex, isAdd ) );
+				lock (m_Changed)
+					m_Changed[t] = TimerChangeEntry.GetInstance(t, newIndex, isAdd);
 				m_Signal.Set();
 			}
 
@@ -271,34 +273,57 @@ namespace Server
 				Change( t, -1, false );
 			}
 
-			private static void ProcessChangeQueue()
+			private static void ProcessChanged()
 			{
-				while ( m_ChangeQueue.Count > 0 )
-				{
-					TimerChangeEntry tce = (TimerChangeEntry)m_ChangeQueue.Dequeue();
-					Timer timer = tce.m_Timer;
-					int newIndex = tce.m_NewIndex;
+				lock (m_Changed) {
+#if Framework_4_0
+					Parallel.ForEach(m_Changed.Values, tce => {
+						Timer timer = tce.m_Timer;
+						int newIndex = tce.m_NewIndex;
 
-					if ( timer.m_List != null )
-						timer.m_List.Remove( timer );
+						if (timer.m_List != null)
+							lock (timer.m_List)
+								timer.m_List.Remove(timer);
 
-					if ( tce.m_IsAdd )
-					{
-						timer.m_Next = Core.TickCount + timer.m_Delay;
-						timer.m_Index = 0;
+						if (tce.m_IsAdd) {
+							timer.m_Next = Core.TickCount + timer.m_Delay;
+							timer.m_Index = 0;
+						}
+
+						if (newIndex >= 0) {
+							timer.m_List = m_Timers[newIndex];
+							lock (timer.m_List)
+								timer.m_List.Add(timer);
+						} else {
+							timer.m_List = null;
+						}
+
+						tce.Free();
+					});
+#else
+					foreach (TimerChangeEntry tce in m_Changed.Values) {
+						Timer timer = tce.m_Timer;
+						int newIndex = tce.m_NewIndex;
+
+						if (timer.m_List != null)
+							timer.m_List.Remove(timer);
+
+						if (tce.m_IsAdd) {
+							timer.m_Next = Core.TickCount + timer.m_Delay;
+							timer.m_Index = 0;
+						}
+
+						if (newIndex >= 0) {
+							timer.m_List = m_Timers[newIndex];
+							timer.m_List.Add(timer);
+						} else {
+							timer.m_List = null;
+						}
+
+						tce.Free();
 					}
-
-					if ( newIndex >= 0 )
-					{
-						timer.m_List = m_Timers[newIndex];
-						timer.m_List.Add( timer );
-					}
-					else
-					{
-						timer.m_List = null;
-					}
-
-					tce.Free();
+#endif
+					m_Changed.Clear();
 				}
 			}
 
@@ -313,7 +338,7 @@ namespace Server
 
 				while ( !Core.Closing )
 				{
-					ProcessChangeQueue();
+					ProcessChanged();
 
 					loaded = false;
 

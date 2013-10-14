@@ -789,7 +789,7 @@ namespace Server
 
 		public static bool RandomBool()
 		{
-			return (RandomImpl.Next(2) == 0);
+			return RandomImpl.NextBool();
 		}
 
 		public static int RandomMinMax( int min, int max )
@@ -810,16 +810,11 @@ namespace Server
 
 		public static int Random( int from, int count )
 		{
-			if ( count == 0 )
-			{
+			if ( count == 0 ) {
 				return from;
-			}
-			else if ( count > 0 )
-			{
+			} else if ( count > 0 ) {
 				return from + RandomImpl.Next(count);
-			}
-			else
-			{
+			} else {
 				return from - RandomImpl.Next(-count);
 			}
 		}

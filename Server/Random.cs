@@ -46,23 +46,28 @@ namespace Server {
 			get { return _Random.GetType(); }
 		}
 
-		public static double NextDouble() {
-			return _Random.NextDouble();
-		}
-
 		public static int Next(int c) {
 			return _Random.Next(c);
+		}
+
+		public static bool NextBool() {
+			return _Random.NextBool();
 		}
 
 		public static void NextBytes(byte[] b) {
 			_Random.NextBytes(b);
 		}
+
+		public static double NextDouble() {
+			return _Random.NextDouble();
+		}
 	}
 
 	public interface IRandomImpl {
-		double NextDouble();
 		int Next(int c);
+		bool NextBool();
 		void NextBytes(byte[] b);
+		double NextDouble();
 	}
 
 	public interface IHardwareRNG {
@@ -75,13 +80,6 @@ namespace Server {
 		public SimpleRandom() {
 		}
 
-		public double NextDouble() {
-			double r;
-			lock (m_Random)
-				r = m_Random.NextDouble();
-			return r;
-		}
-
 		public int Next(int c) {
 			int r;
 			lock (m_Random)
@@ -89,9 +87,20 @@ namespace Server {
 			return r;
 		}
 
+		public bool NextBool() {
+			return NextDouble() >= .5;
+		}
+
 		public void NextBytes(byte[] b) {
 			lock (m_Random)
 				m_Random.NextBytes(b);
+		}
+
+		public double NextDouble() {
+			double r;
+			lock (m_Random)
+				r = m_Random.NextDouble();
+			return r;
 		}
 	}
 
@@ -145,16 +154,19 @@ namespace Server {
 			}
 		}
 
-		public double NextDouble() {
-			byte[] b = new byte[8];
-
-			_GetBytes(b);
-
-			return (double)BitConverter.ToUInt64(b, 0) / ulong.MaxValue;
-		}
-
 		public int Next(int c) {
 			return (int)(c * NextDouble());
+		}
+
+		public bool NextBool() {
+			return (NextByte() & 1) == 1;
+		}
+
+		private byte NextByte() {
+			CheckSwap(1);
+
+			lock(_sync)
+				return _Working[_Index++];
 		}
 
 		public void NextBytes(byte[] b) {
@@ -166,6 +178,19 @@ namespace Server {
 				return;
 			}
 			_GetBytes(b);
+		}
+
+		public double NextDouble() {
+			byte[] b = new byte[8];
+
+			_GetBytes(b);
+
+			/* double: 53 bits of significand precision
+			 * ulong.MaxValue >> 11 = 9007199254740991
+			 * 2^53 = 9007199254740992
+			 */
+
+			return ((double)(BitConverter.ToUInt64(b, 0) >> 11) / 9007199254740992);
 		}
 	}
 
@@ -227,14 +252,19 @@ namespace Server {
 			}
 		}
 
-		public double NextDouble() {
-			byte[] b = new byte[8];
-			_GetBytes(b);
-			return (double)BitConverter.ToUInt64(b, 0) / ulong.MaxValue;
-		}
-
 		public int Next(int c) {
 			return (int)(c * NextDouble());
+		}
+
+		public bool NextBool() {
+			return (NextByte() & 1) == 1;
+		}
+
+		private byte NextByte() {
+			CheckSwap(1);
+
+			lock(_sync)
+				return _Working[_Index++];
 		}
 
 		public void NextBytes(byte[] b) {
@@ -245,6 +275,18 @@ namespace Server {
 				return;
 			}
 			_GetBytes(b);
+		}
+
+		public double NextDouble() {
+			byte[] b = new byte[8];
+			_GetBytes(b);
+
+			/* double: 53 bits of significand precision
+			 * ulong.MaxValue >> 11 = 9007199254740991
+			 * 2^53 = 9007199254740992
+			 */
+
+			return ((double)(BitConverter.ToUInt64(b, 0) >> 11) / 9007199254740992);
 		}
 	}
 
@@ -306,14 +348,19 @@ namespace Server {
 			}
 		}
 
-		public double NextDouble() {
-			byte[] b = new byte[8];
-			_GetBytes(b);
-			return (double)BitConverter.ToUInt64(b, 0) / ulong.MaxValue;
-		}
-
 		public int Next(int c) {
 			return (int)(c * NextDouble());
+		}
+
+		public bool NextBool() {
+			return (NextByte() & 1) == 1;
+		}
+
+		private byte NextByte() {
+			CheckSwap(1);
+
+			lock(_sync)
+				return _Working[_Index++];
 		}
 
 		public void NextBytes(byte[] b) {
@@ -324,6 +371,18 @@ namespace Server {
 				return;
 			}
 			_GetBytes(b);
+		}
+
+		public double NextDouble() {
+			byte[] b = new byte[8];
+			_GetBytes(b);
+
+			/* double: 53 bits of significand precision
+			 * ulong.MaxValue >> 11 = 9007199254740991
+			 * 2^53 = 9007199254740992
+			 */
+
+			return ((double)(BitConverter.ToUInt64(b, 0) >> 11) / 9007199254740992);
 		}
 	}
 
