@@ -154,6 +154,15 @@ namespace Server {
 			}
 		}
 
+		private void _GetBytes(byte[] b, int offset, int count) {
+			CheckSwap(count);
+
+			lock (_sync) {
+				Buffer.BlockCopy(_Working, _Index, b, offset, count);
+				_Index += count;
+			}
+		}
+
 		public int Next(int c) {
 			return (int)(c * NextDouble());
 		}
@@ -180,17 +189,27 @@ namespace Server {
 			_GetBytes(b);
 		}
 
-		public double NextDouble() {
+		public unsafe double NextDouble() {
 			byte[] b = new byte[8];
 
-			_GetBytes(b);
+			if (BitConverter.IsLittleEndian) {
+				b[7] = 0;
+				_GetBytes(b, 0, 7);
+			} else {
+				b[0] = 0;
+				_GetBytes(b, 1, 7);
+			}
+
+			ulong r = 0;
+			fixed(byte* buf = b)
+				r = *(ulong*)(&buf[0]) >> 3;
 
 			/* double: 53 bits of significand precision
 			 * ulong.MaxValue >> 11 = 9007199254740991
 			 * 2^53 = 9007199254740992
 			 */
 
-			return ((double)(BitConverter.ToUInt64(b, 0) >> 11) / 9007199254740992);
+			return (double)r / 9007199254740992;
 		}
 	}
 
@@ -252,6 +271,15 @@ namespace Server {
 			}
 		}
 
+		private void _GetBytes(byte[] b, int offset, int count) {
+			CheckSwap(count);
+
+			lock (_sync) {
+				Buffer.BlockCopy(_Working, _Index, b, offset, count);
+				_Index += count;
+			}
+		}
+
 		public int Next(int c) {
 			return (int)(c * NextDouble());
 		}
@@ -277,16 +305,27 @@ namespace Server {
 			_GetBytes(b);
 		}
 
-		public double NextDouble() {
+		public unsafe double NextDouble() {
 			byte[] b = new byte[8];
-			_GetBytes(b);
+
+			if (BitConverter.IsLittleEndian) {
+				b[7] = 0;
+				_GetBytes(b, 0, 7);
+			} else {
+				b[0] = 0;
+				_GetBytes(b, 1, 7);
+			}
+
+			ulong r = 0;
+			fixed(byte* buf = b)
+				r = *(ulong*)(&buf[0]) >> 3;
 
 			/* double: 53 bits of significand precision
 			 * ulong.MaxValue >> 11 = 9007199254740991
 			 * 2^53 = 9007199254740992
 			 */
 
-			return ((double)(BitConverter.ToUInt64(b, 0) >> 11) / 9007199254740992);
+			return (double)r / 9007199254740992;
 		}
 	}
 
@@ -348,6 +387,15 @@ namespace Server {
 			}
 		}
 
+		private void _GetBytes(byte[] b, int offset, int count) {
+			CheckSwap(count);
+
+			lock (_sync) {
+				Buffer.BlockCopy(_Working, _Index, b, offset, count);
+				_Index += count;
+			}
+		}
+
 		public int Next(int c) {
 			return (int)(c * NextDouble());
 		}
@@ -373,16 +421,27 @@ namespace Server {
 			_GetBytes(b);
 		}
 
-		public double NextDouble() {
+		public unsafe double NextDouble() {
 			byte[] b = new byte[8];
-			_GetBytes(b);
+
+			if (BitConverter.IsLittleEndian) {
+				b[7] = 0;
+				_GetBytes(b, 0, 7);
+			} else {
+				b[0] = 0;
+				_GetBytes(b, 1, 7);
+			}
+
+			ulong r = 0;
+			fixed(byte* buf = b)
+				r = *(ulong*)(&buf[0]) >> 3;
 
 			/* double: 53 bits of significand precision
 			 * ulong.MaxValue >> 11 = 9007199254740991
 			 * 2^53 = 9007199254740992
 			 */
 
-			return ((double)(BitConverter.ToUInt64(b, 0) >> 11) / 9007199254740992);
+			return (double)r / 9007199254740992;
 		}
 	}
 
