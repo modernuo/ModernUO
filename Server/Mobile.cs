@@ -10257,24 +10257,9 @@ namespace Server
 				Packet hbpPacket = null;
 				Packet hbyPacket = null;
 
-				// 9 Separate Locks.. Feels Dirty
-				object hitsPacketLock = new object();
-				object statPacketTrueLock = new object();
-				object statPacketFalseLock = new object();
-				object deadPacketLock = new object();
-				object hairPacketLock = new object();
-				object facialhairPacketLock = new object();
-				object hbpPacketLock = new object();
-				object hbyPacketLock = new object();
-				object cacheSync = new object();
-
 				IPooledEnumerable eable = m.Map.GetClientsInRange(m.m_Location);
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach ( NetState state in eable ) {
-#endif
 					beholder = state.Mobile;
 
 					if( beholder != m && beholder.CanSee( m ) )
@@ -10292,11 +10277,8 @@ namespace Server
 
 							if( m.IsDeadBondedPet )
 							{
-								lock (deadPacketLock)
-								{
-									if (deadPacket == null)
-										deadPacket = Packet.Acquire(new BondedStatus(0, m.m_Serial, 1));
-								}
+								if (deadPacket == null)
+									deadPacket = Packet.Acquire(new BondedStatus(0, m.m_Serial, 1));
 
 								state.Send( deadPacket );
 							}
@@ -10307,35 +10289,24 @@ namespace Server
 							{
 								int noto = Notoriety.Compute( beholder, m );
 
-								Packet p;
+								Packet p = cache[0][noto];
 
-								lock (cacheSync)
-								{
-									p = cache[0][noto];
-
-									if (p == null)
-										cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
-								}
+								if (p == null)
+									cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
 
 								state.Send( p );
 							}
 
 							if ( sendHealthbarPoison ) {
-								lock (hbpPacketLock)
-								{
-									if (hbpPacket == null)
-										hbpPacket = Packet.Acquire(new HealthbarPoison(m));
-								}
+								if (hbpPacket == null)
+									hbpPacket = Packet.Acquire(new HealthbarPoison(m));
 
 								state.Send( hbpPacket );
 							}
 
 							if ( sendHealthbarYellow ) {
-								lock (hbyPacketLock)
-								{
-									if (hbyPacket == null)
-										hbyPacket = Packet.Acquire(new HealthbarYellow(m));
-								}
+								if (hbyPacket == null)
+									hbyPacket = Packet.Acquire(new HealthbarYellow(m));
 
 								state.Send( hbyPacket );
 							}
@@ -10344,15 +10315,10 @@ namespace Server
 							{
 								int noto = Notoriety.Compute( beholder, m );
 
-								Packet p;
+								Packet p = cache[1][noto];
 
-								lock (cacheSync)
-								{
-									p = cache[1][noto];
-
-									if (p == null)
-										cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
-								}
+								if (p == null)
+									cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
 
 								state.Send( p );
 							}
@@ -10362,45 +10328,34 @@ namespace Server
 						{
 							if( m.CanBeRenamedBy( beholder ) )
 							{
-								lock (statPacketTrueLock)
-								{
-									if (statPacketTrue == null)
-										statPacketTrue = Packet.Acquire(new MobileStatusCompact(true, m));
-								}
+								if (statPacketTrue == null)
+									statPacketTrue = Packet.Acquire(new MobileStatusCompact(true, m));
 
 								state.Send( statPacketTrue );
 							}
 							else
 							{
-								lock (statPacketFalseLock)
-								{
-									if (statPacketFalse == null)
-										statPacketFalse = Packet.Acquire(new MobileStatusCompact(false, m));
-								}
+								if (statPacketFalse == null)
+									statPacketFalse = Packet.Acquire(new MobileStatusCompact(false, m));
 
 								state.Send( statPacketFalse );
 							}
 						}
 						else if( sendHits )
 						{
-							lock (hitsPacketLock)
-							{
-								if (hitsPacket == null)
-									hitsPacket = Packet.Acquire(new MobileHitsN(m));
-							}
+							if (hitsPacket == null)
+								hitsPacket = Packet.Acquire(new MobileHitsN(m));
 
 							state.Send( hitsPacket );
 						}
 
 						if( sendHair )
 						{
-							lock (hairPacketLock) {
-								if (hairPacket == null) {
-									if (removeHair)
-										hairPacket = Packet.Acquire(new RemoveHair(m));
-									else
-										hairPacket = Packet.Acquire(new HairEquipUpdate(m));
-								}
+							if (hairPacket == null) {
+								if (removeHair)
+									hairPacket = Packet.Acquire(new RemoveHair(m));
+								else
+									hairPacket = Packet.Acquire(new HairEquipUpdate(m));
 							}
 
 							state.Send( hairPacket );
@@ -10408,13 +10363,11 @@ namespace Server
 
 						if( sendFacialHair )
 						{
-							lock (facialhairPacketLock) {
-								if (facialhairPacket == null) {
-									if (removeFacialHair)
-										facialhairPacket = Packet.Acquire(new RemoveFacialHair(m));
-									else
-										facialhairPacket = Packet.Acquire(new FacialHairEquipUpdate(m));
-								}
+							if (facialhairPacket == null) {
+								if (removeFacialHair)
+									facialhairPacket = Packet.Acquire(new RemoveFacialHair(m));
+								else
+									facialhairPacket = Packet.Acquire(new FacialHairEquipUpdate(m));
 							}
 
 							state.Send( facialhairPacket );
@@ -10424,9 +10377,6 @@ namespace Server
 							state.Send(this.OPLPacket);
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( hitsPacket );
 				Packet.Release( statPacketTrue );
@@ -10463,7 +10413,7 @@ namespace Server
 			int count = m_DeltaQueue.Count;
 			int index = 0;
 
-			while( m_DeltaQueue.Count > 0 && index++ < count )
+			while (m_DeltaQueue.Count > 0 && index++ < count)
 				m_DeltaQueue.Dequeue().ProcessDelta();
 #endif
 		}
