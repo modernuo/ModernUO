@@ -3084,7 +3084,8 @@ namespace Server
 
 		private long m_EndQueue;
 
-		private static ArrayList m_MoveList = new ArrayList();
+		private static List<IEntity> m_MoveList = new List<IEntity>();
+		private static List<Mobile> m_MoveClientList = new List<Mobile>();
 
 		private static AccessLevel m_FwdAccessOverride = AccessLevel.Counselor;
 		private static bool m_FwdEnabled = true;
@@ -3315,21 +3316,20 @@ namespace Server
 			{
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 
-				foreach( object o in eable )
-				{
-					if( o == this )
+				foreach(IEntity o in eable) {
+					if(o == this)
 						continue;
 
-					if( o is Mobile )
-					{
-						m_MoveList.Add( o );
-					}
-					else if( o is Item )
-					{
+					if(o is Mobile) {
+						Mobile mob = o as Mobile;
+						if (mob.NetState != null)
+							m_MoveClientList.Add(mob);
+						m_MoveList.Add(o);
+					} else if(o is Item) {
 						Item item = (Item)o;
 
-						if( item.HandlesOnMovement )
-							m_MoveList.Add( item );
+						if(item.HandlesOnMovement)
+							m_MoveList.Add(item);
 					}
 				}
 
@@ -3337,54 +3337,65 @@ namespace Server
 
 				Packet[][] cache = m_MovingPacketCache;
 
-				for( int i = 0; i < cache.Length; ++i )
+				/*for( int i = 0; i < cache.Length; ++i )
 					for( int j = 0; j < cache[i].Length; ++j )
-						Packet.Release( ref cache[i][j] );
+						Packet.Release( ref cache[i][j] );*/
 
-				for( int i = 0; i < m_MoveList.Count; ++i )
-				{
-					object o = m_MoveList[i];
+				object cacheSync = new object();
+#if Framework_4_0
+				Parallel.ForEach(m_MoveClientList, m => {
+#else
+				foreach(Mobile m in m_MoveClientList) {
+#endif
+					NetState ns = m.NetState;
 
-					if( o is Mobile )
-					{
-						Mobile m = (Mobile)m_MoveList[i];
-						NetState ns = m.NetState;
-
-						if( ns != null && Utility.InUpdateRange( m_Location, m.m_Location ) && m.CanSee( this ) )
-						{
-							Packet p = null;
-
-							if ( ns.StygianAbyss ) {
-								int noto = Notoriety.Compute( m, this );
+					if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this)) {
+						if (ns.StygianAbyss) {
+							Packet p;
+							int noto = Notoriety.Compute(m, this);
+							lock (cacheSync) {
 								p = cache[0][noto];
 
-								if( p == null )
-									cache[0][noto] = p = Packet.Acquire( new MobileMoving( this, noto ) );
-							} else {
-								int noto = Notoriety.Compute( m, this );
+								if (p == null)
+									cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
+							}
+							ns.Send(p);
+						} else {
+							Packet p;
+							int noto = Notoriety.Compute(m, this);
+							lock (cacheSync) {
 								p = cache[1][noto];
 
-								if( p == null )
-									cache[1][noto] = p = Packet.Acquire( new MobileMovingOld( this, noto ) );
+								if (p == null)
+									cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
 							}
-
-							ns.Send( p );
+							ns.Send(p);
 						}
-
-						m.OnMovement( this, oldLocation );
 					}
-					else if( o is Item )
-					{
+				}
+#if Framework_4_0
+				);
+#endif
+
+				for (int i = 0; i < cache.Length; ++i)
+					for (int j = 0; j < cache[i].Length; ++j)
+						Packet.Release(ref cache[i][j]);
+
+				for( int i = 0; i < m_MoveList.Count; ++i ) {
+					IEntity o = m_MoveList[i];
+
+					if(o is Mobile) {
+						((Mobile)o).OnMovement( this, oldLocation );
+					} else if( o is Item ) {
 						((Item)o).OnMovement( this, oldLocation );
 					}
 				}
 
-				for( int i = 0; i < cache.Length; ++i )
-					for( int j = 0; j < cache[i].Length; ++j )
-						Packet.Release( ref cache[i][j] );
-
-				if( m_MoveList.Count > 0 )
+				if (m_MoveList.Count > 0)
 					m_MoveList.Clear();
+
+				if (m_MoveClientList.Count > 0)
+					m_MoveClientList.Clear();
 			}
 
 			OnAfterMove( oldLocation );
@@ -4731,21 +4742,21 @@ namespace Server
 			return true;
 		}
 
-		private void AddSpeechItemsFrom( ArrayList list, Container cont )
+		private void AddSpeechItemsFrom(List<IEntity> list, Container cont)
 		{
-			for( int i = 0; i < cont.Items.Count; ++i )
-			{
+			for(int i = 0; i < cont.Items.Count; ++i) {
 				Item item = cont.Items[i];
 
-				if( item.HandlesOnSpeech )
-					list.Add( item );
+				if(item.HandlesOnSpeech)
+					lock (list)
+						list.Add( item );
 
-				if( item is Container )
-					AddSpeechItemsFrom( list, (Container)item );
+				if(item is Container)
+					AddSpeechItemsFrom(list, (Container)item);
 			}
 		}
 
-		private class LocationComparer : IComparer
+		private class LocationComparer : IComparer<IPoint3D>
 		{
 			private static LocationComparer m_Instance;
 
@@ -4784,12 +4795,9 @@ namespace Server
 				return (x * x) + (y * y) + (z * z);
 			}
 
-			public int Compare( object x, object y )
+			public int Compare(IPoint3D x, IPoint3D y)
 			{
-				IPoint3D a = x as IPoint3D;
-				IPoint3D b = y as IPoint3D;
-
-				return GetDistance( a ) - GetDistance( b );
+				return GetDistance(x) - GetDistance(y);
 			}
 		}
 
@@ -4837,8 +4845,8 @@ namespace Server
 
 		#endregion
 
-		private static List<Mobile> m_Hears;
-		private static ArrayList m_OnSpeech;
+		private static List<Mobile> m_Hears = new List<Mobile>();
+		private static List<IEntity> m_OnSpeech = new List<IEntity>();
 
 		public virtual void DoSpeech( string text, int[] keywords, MessageType type, int hue )
 		{
@@ -4882,43 +4890,38 @@ namespace Server
 			if( string.IsNullOrEmpty( text ) )
 				return;
 
-			if( m_Hears == null )
-				m_Hears = new List<Mobile>();
-			else if( m_Hears.Count > 0 )
-				m_Hears.Clear();
-
-			if( m_OnSpeech == null )
-				m_OnSpeech = new ArrayList();
-			else if( m_OnSpeech.Count > 0 )
-				m_OnSpeech.Clear();
-
 			List<Mobile> hears = m_Hears;
-			ArrayList onSpeech = m_OnSpeech;
+			List<IEntity> onSpeech = m_OnSpeech;
 
 			if( m_Map != null )
 			{
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, range );
 
-				foreach( object o in eable )
-				{
-					if( o is Mobile )
-					{
+#if Framework_4_0
+				Parallel.ForEach(eable.Cast<IEntity>(), o => {
+#else
+				foreach(IEntity o in eable) {
+#endif
+					if( o is Mobile ) {
 						Mobile heard = (Mobile)o;
 
 						if( heard.CanSee( this ) && (m_NoSpeechLOS || !heard.Player || heard.InLOS( this )) )
 						{
 							if( heard.m_NetState != null )
-								hears.Add( heard );
+								lock (hears)
+									hears.Add( heard );
 
 							if( heard.HandlesOnSpeech( this ) )
-								onSpeech.Add( heard );
+								lock (onSpeech)
+									onSpeech.Add( heard );
 
 							for( int i = 0; i < heard.Items.Count; ++i )
 							{
 								Item item = heard.Items[i];
 
 								if( item.HandlesOnSpeech )
-									onSpeech.Add( item );
+									lock (onSpeech)
+										onSpeech.Add( item );
 
 								if( item is Container )
 									AddSpeechItemsFrom( onSpeech, (Container)item );
@@ -4928,12 +4931,16 @@ namespace Server
 					else if( o is Item )
 					{
 						if( ((Item)o).HandlesOnSpeech )
-							onSpeech.Add( o );
+							lock (onSpeech)
+								onSpeech.Add(o);
 
 						if( o is Container )
 							AddSpeechItemsFrom( onSpeech, (Container)o );
 					}
 				}
+#if Framework_4_0
+				);
+#endif
 
 				eable.Free();
 
@@ -4951,32 +4958,28 @@ namespace Server
 				Packet regp = null;
 				Packet mutp = null;
 
-				for( int i = 0; i < hears.Count; ++i )
-				{
+				// TODO: Should this be sorted like onSpeech is below?
+
+				for( int i = 0; i < hears.Count; ++i ) {
 					Mobile heard = hears[i];
 
-					if( mutatedArgs == null || !CheckHearsMutatedSpeech( heard, mutateContext ) )
-					{
+					if( mutatedArgs == null || !CheckHearsMutatedSpeech( heard, mutateContext ) ) {
 						heard.OnSpeech( regArgs );
 
 						NetState ns = heard.NetState;
 
-						if( ns != null )
-						{
+						if( ns != null ) {
 							if( regp == null )
 								regp = Packet.Acquire( new UnicodeMessage( m_Serial, Body, type, hue, 3, m_Language, Name, text ) );
 
 							ns.Send( regp );
 						}
-					}
-					else
-					{
+					} else {
 						heard.OnSpeech( mutatedArgs );
 
 						NetState ns = heard.NetState;
 
-						if( ns != null )
-						{
+						if( ns != null ) {
 							if( mutp == null )
 								mutp = Packet.Acquire( new UnicodeMessage( m_Serial, Body, type, hue, 3, m_Language, Name, mutatedText ) );
 
@@ -4991,26 +4994,28 @@ namespace Server
 				if( onSpeech.Count > 1 )
 					onSpeech.Sort( LocationComparer.GetInstance( this ) );
 
-				for( int i = 0; i < onSpeech.Count; ++i )
-				{
-					object obj = onSpeech[i];
+				for( int i = 0; i < onSpeech.Count; ++i ) {
+					IEntity obj = onSpeech[i];
 
-					if( obj is Mobile )
-					{
+					if( obj is Mobile ) {
 						Mobile heard = (Mobile)obj;
 
 						if( mutatedArgs == null || !CheckHearsMutatedSpeech( heard, mutateContext ) )
 							heard.OnSpeech( regArgs );
 						else
 							heard.OnSpeech( mutatedArgs );
-					}
-					else
-					{
+					} else {
 						Item item = (Item)obj;
 
 						item.OnSpeech( regArgs );
 					}
 				}
+
+				if(m_Hears.Count > 0)
+					m_Hears.Clear();
+
+				if(m_OnSpeech.Count > 0)
+					m_OnSpeech.Clear();
 			}
 		}
 
@@ -10228,12 +10233,12 @@ namespace Server
 #else
 			Packet[][] cache = m_MovingPacketCache;
 
-			if( sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow )
+			/*if( sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow )
 			{
 				for( int i = 0; i < cache.Length; ++i )
 					for( int j = 0; j < cache[i].Length; ++j )
 						Packet.Release( ref cache[i][j] );
-			}
+			}*/
 #endif
 
 			NetState ourState = m.m_NetState;

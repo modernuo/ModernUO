@@ -1142,13 +1142,21 @@ namespace Server
 						m_Enumerator = null;
 				}
 
-				lock (m_InstancePool)
+				lock (m_InstancePool) {
+					if (m_InstancePool.Count < 200) // Arbitrary
 						m_InstancePool.Enqueue( this );
+				}
 			}
 
 			public void Dispose()
 			{
-				Free();
+				// Don't return disposed objects to the instance pool
+				//Free();
+
+				if (m_Enumerator != null) {
+					m_Enumerator.Free();
+					m_Enumerator = null;
+				}
 			}
 		}
 		#endregion
@@ -1214,8 +1222,10 @@ namespace Server
 					m_Enumerator = null;
 				}
 
-				lock (m_InstancePool) 
-					m_InstancePool.Enqueue( this );
+				lock (m_InstancePool) {
+					if (m_InstancePool.Count < 200) // Arbitrary
+						m_InstancePool.Enqueue( this );
+				}
 			}
 
 			public TypedEnumerator( Map map, Rectangle2D bounds, SectorEnumeratorType type )
@@ -1364,7 +1374,9 @@ namespace Server
 					return;
 
 				lock (m_InstancePool) {
-					m_InstancePool.Enqueue( this );
+					if (m_InstancePool.Count < 200) // Arbitrary
+						m_InstancePool.Enqueue( this );
+
 					m_List = null;
 				}
 			}
@@ -1428,8 +1440,10 @@ namespace Server
 					m_Enumerator = null;
 				}
 
-				lock (m_InstancePool)
-					m_InstancePool.Enqueue( this );
+				lock (m_InstancePool) {
+					if (m_InstancePool.Count < 200) // Arbitrary
+						m_InstancePool.Enqueue( this );
+				}
 			}
 
 			private ObjectEnumerator( Map map, Rectangle2D bounds )
@@ -1567,8 +1581,10 @@ namespace Server
 				if ( m_Enumerable != null )
 					m_Enumerable.Free();
 
-				lock (m_InstancePool)
-					m_InstancePool.Enqueue( this );
+				lock (m_InstancePool) {
+					if (m_InstancePool.Count < 200) // Arbitrary
+						m_InstancePool.Enqueue( this );
+				}
 			}
 
 			private SectorEnumerator( Map map, Rectangle2D bounds, SectorEnumeratorType type )

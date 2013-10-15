@@ -218,7 +218,7 @@ namespace Server
 				public void Free()
 				{
 					lock (m_InstancePool) {
-						if (m_InstancePool.Count <= 200) // Arbitrary
+						if (m_InstancePool.Count < 200) // Arbitrary
 							m_InstancePool.Enqueue( this );
 					}
 				}
