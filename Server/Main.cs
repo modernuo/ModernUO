@@ -131,12 +131,12 @@ namespace Server
 		private static ThreadLocal<long> _HighOrder = new ThreadLocal<long>();
 		private static ThreadLocal<uint> _LastTickCount = new ThreadLocal<uint>();
 
-		private static readonly long _Frequency = Stopwatch.Frequency; 
+		private static readonly double _Frequency = 1000.0 / Stopwatch.Frequency; 
 
 		public static long TickCount {
 			get {
 				if (Stopwatch.IsHighResolution) // TODO: Unreliable with certain system configurations.
-					return (long)((double)Stopwatch.GetTimestamp() / _Frequency * 1000);
+					return (long)((double)Stopwatch.GetTimestamp() * _Frequency);
 
 				uint t = (uint)Environment.TickCount;
 
@@ -154,14 +154,14 @@ namespace Server
 
 		private static object _TickSync = new object();
 
-		private static readonly long _Frequency = Stopwatch.Frequency; 
+		private static readonly double _Frequency = 1000.0 / Stopwatch.Frequency; 
 
 		public static long TickCount
 		{
 			get
 			{
 				if (Stopwatch.IsHighResolution) // TODO: Unreliable with certain system configurations.
-					return (long)((double)Stopwatch.GetTimestamp() / _Frequency * 1000);
+					return (long)((double)Stopwatch.GetTimestamp() * _Frequency);
 
 				lock (_TickSync)
 				{

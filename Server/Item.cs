@@ -1355,20 +1355,13 @@ namespace Server
 					{
 						IPooledEnumerable eable = m_Map.GetClientsInRange( oldLocation, GetMaxUpdateRange() );
 
-#if Framework_4_0
-						Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 						foreach ( NetState state in eable ) {
-#endif
 							Mobile m = state.Mobile;
 
 							if ( m.InRange( oldLocation, GetUpdateRange( m ) ) ) {
 								state.Send( this.RemovePacket );
 							}
 						}
-#if Framework_4_0
-						);
-#endif
 
 						eable.Free();
 					}
@@ -1398,19 +1391,12 @@ namespace Server
 				{
 					IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location, GetMaxUpdateRange() );
 
-#if Framework_4_0
-					Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 					foreach (NetState state in eable) {
-#endif
 						Mobile m = state.Mobile;
 
 						if ( m.CanSee( this ) && m.InRange( m_Location, GetUpdateRange( m ) ) )
 							SendInfoTo( state );
 					}
-#if Framework_4_0
-					);
-#endif
 
 					eable.Free();
 				}
@@ -1428,20 +1414,13 @@ namespace Server
 				{
 					eable = m_Map.GetClientsInRange( oldLocation, GetMaxUpdateRange() );
 
-#if Framework_4_0
-					Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 					foreach (NetState state in eable) {
-#endif
 						Mobile m = state.Mobile;
 
 						if ( !m.InRange( location, GetUpdateRange( m ) ) ) {
 							state.Send( this.RemovePacket );
 						}
 					}
-#if Framework_4_0
-					);
-#endif
 
 					eable.Free();
 				}
@@ -1455,19 +1434,12 @@ namespace Server
 
 				eable = m_Map.GetClientsInRange( m_Location, GetMaxUpdateRange() );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach (NetState state in eable) {
-#endif
 					Mobile m = state.Mobile;
 
 					if ( m.CanSee( this ) && m.InRange( m_Location, GetUpdateRange( m ) ) )
 						SendInfoTo( state );
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 
@@ -1832,20 +1804,13 @@ namespace Server
 
 						IPooledEnumerable eable = m_Map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-#if Framework_4_0
-						Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 						foreach (NetState state in eable) {
-#endif
 							Mobile m = state.Mobile;
 
 							if ( !m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
 								state.Send( this.RemovePacket );
 							}
 						}
-#if Framework_4_0
-						);
-#endif
 
 						eable.Free();
 					}
@@ -3221,15 +3186,10 @@ namespace Server
 				{
 					Packet p = null;
 					Point3D worldLoc = GetWorldLocation();
-					object equipUpdateLock = new object();
 
 					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-#if Framework_4_0
-					Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 					foreach ( NetState state in eable ) {
-#endif
 						Mobile m = state.Mobile;
 
 						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
@@ -3243,10 +3203,8 @@ namespace Server
 										else
 											state.Send( new ContainerContentUpdate( this ) );
 									} else if ( m_Parent is Mobile ) {
-										lock (equipUpdateLock) {
-											p = new EquipUpdate(this);
-											p.Acquire();
-										}
+										p = new EquipUpdate(this);
+										p.Acquire();
 
 										state.Send( p );
 									}
@@ -3260,9 +3218,6 @@ namespace Server
 							}
 						}
 					}
-#if Framework_4_0
-					);
-#endif
 
 					if ( p != null )
 						Packet.Release( p );
@@ -3276,15 +3231,10 @@ namespace Server
 					{
 						Packet p = null;
 						Point3D worldLoc = GetWorldLocation();
-						object equipPacketLock = new object();
 
 						IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-#if Framework_4_0
-						Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 						foreach ( NetState state in eable ) {
-#endif
 							Mobile m = state.Mobile;
 
 							if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
@@ -3292,9 +3242,8 @@ namespace Server
 								//if ( sendOPLUpdate )
 								//	state.Send( RemovePacket );
 
-								lock (equipPacketLock)
-									if ( p == null )
-										p = Packet.Acquire( new EquipUpdate( this ) );
+								if ( p == null )
+									p = Packet.Acquire( new EquipUpdate( this ) );
 
 								state.Send( p );
 
@@ -3302,9 +3251,6 @@ namespace Server
 									state.Send( OPLPacket );
 							}
 						}
-#if Framework_4_0
-						);
-#endif
 
 						Packet.Release( p );
 
@@ -3318,19 +3264,12 @@ namespace Server
 					Point3D worldLoc = GetWorldLocation();
 					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-#if Framework_4_0
-					Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 					foreach ( NetState state in eable ) {
-#endif
 						Mobile m = state.Mobile;
 
 						if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
 							state.Send( OPLPacket );
 					}
-#if Framework_4_0
-					);
-#endif
 
 					eable.Free();
 				}
@@ -3633,20 +3572,13 @@ namespace Server
 							{
 								eable = m_Map.GetClientsInRange( oldLocation, GetMaxUpdateRange() );
 
-#if Framework_4_0
-								Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 								foreach (NetState state in eable) {
-#endif
 									Mobile m = state.Mobile;
 
 									if ( !m.InRange( value, GetUpdateRange( m ) ) ) {
 										state.Send( this.RemovePacket );
 									}
 								}
-#if Framework_4_0
-								);
-#endif
 
 								eable.Free();
 							}
@@ -3659,19 +3591,12 @@ namespace Server
 
 							eable = m_Map.GetClientsInRange( m_Location, GetMaxUpdateRange() );
 
-#if Framework_4_0
-							Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 							foreach (NetState state in eable) {
-#endif
 								Mobile m = state.Mobile;
 
 								if ( m.CanSee( this ) && m.InRange( m_Location, GetUpdateRange( m ) ) && ( !state.HighSeas || !m_NoMoveHS || ( m_DeltaFlags & ItemDelta.Update ) != 0 || !m.InRange( oldLoc, GetUpdateRange( m ) ) ) )
 									SendInfoTo( state );
 							}
-#if Framework_4_0
-							);
-#endif
 
 							eable.Free();
 
@@ -4228,20 +4153,13 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach (NetState state in eable) {
-#endif
 					Mobile m = state.Mobile;
 
 					if ( m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
 						state.Send( this.RemovePacket );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 			}

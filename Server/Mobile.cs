@@ -4028,19 +4028,13 @@ namespace Server
 			if( m_Map != null )
 			{
 				Packet animPacket = null;
-				object pLock = new object();
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state != m_NetState ) {
-						lock (pLock)
-							if (animPacket == null)
-								animPacket = Packet.Acquire( new DeathAnimation( this, c ) );;
+						if (animPacket == null)
+							animPacket = Packet.Acquire( new DeathAnimation( this, c ) );;
 
 						state.Send( animPacket );
 
@@ -4049,9 +4043,6 @@ namespace Server
 						}
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( animPacket );
 
@@ -4404,32 +4395,23 @@ namespace Server
 							{
 								IPooledEnumerable eable = map.GetClientsInRange( from.Location );
 								Packet p = null;
-								object pLock = new object();
-#if Framework_4_0
-								Parallel.ForEach( eable.Cast<NetState>(), ns => {
-#else
+
 								foreach( NetState ns in eable ) {
-#endif
 									if( ns.Mobile != from && ns.Mobile.CanSee( from ) && ns.Mobile.InLOS( from ) && ns.Mobile.CanSee( root ) ) {
-										lock (pLock) {
-											if (p == null) {
-												IEntity src;
+										if (p == null) {
+											IEntity src;
 
-												if (root == null)
-													src = new Entity(Serial.Zero, item.Location, map);
-												else
-													src = new Entity(((Item)root).Serial, ((Item)root).Location, map);
+											if (root == null)
+												src = new Entity(Serial.Zero, item.Location, map);
+											else
+												src = new Entity(((Item)root).Serial, ((Item)root).Location, map);
 
-												p = Packet.Acquire(new DragEffect(src, from, item.ItemID, item.Hue, amount));
-											}
+											p = Packet.Acquire(new DragEffect(src, from, item.ItemID, item.Hue, amount));
 										}
 
 										ns.Send( p );
 									}
 								}
-#if Framework_4_0
-								);
-#endif
 
 								Packet.Release( p );
 
@@ -4548,44 +4530,30 @@ namespace Server
 				{
 					IPooledEnumerable eable = map.GetClientsInRange( m_Location );
 					Packet p = null;
-					object pLock = new object();
 
 					bool sameLoc = false;
 
-#if Framework_4_0
-					Parallel.ForEach( eable.Cast<NetState>(), ns => {
-#else
 					foreach( NetState ns in eable ) {
-#endif
 						if( ns.Mobile != this && ns.Mobile.CanSee( this ) && ns.Mobile.InLOS( this ) && ns.Mobile.CanSee( root ) ) {
-							lock (pLock) {
-								if (p == null) {
-									IEntity trg;
+							if (p == null) {
+								IEntity trg;
 
-									if (root == null)
-										trg = new Entity(Serial.Zero, item.Location, map);
-									else
-										trg = new Entity(((Item)root).Serial, ((Item)root).Location, map);
+								if (root == null)
+									trg = new Entity(Serial.Zero, item.Location, map);
+								else
+									trg = new Entity(((Item)root).Serial, ((Item)root).Location, map);
 
-									if (m_Location == trg.Location)
-										sameLoc = true;
+								if (m_Location == trg.Location)
+									sameLoc = true;
 
-									p = Packet.Acquire(new DragEffect(this, trg, item.ItemID, item.Hue, item.Amount));
-								}
+								p = Packet.Acquire(new DragEffect(this, trg, item.ItemID, item.Hue, item.Amount));
 							}
 
 							if ( ns.StygianAbyss && sameLoc )
-#if Framework_4_0
-								return;
-#else
 								continue; // prevents crash
-#endif
 							ns.Send( p );
 						}
 					}
-#if Framework_4_0
-					);
-#endif
 
 					Packet.Release( p );
 
@@ -5370,33 +5338,22 @@ namespace Server
 
 			Packet pNew = null;
 			Packet pOld = null;
-			object pLock1 = new object();
-			object pLock2 = new object();
 
-#if Framework_4_0
-			Parallel.ForEach( eable.Cast<NetState>(), ns => {
-#else
 			foreach( NetState ns in eable ) {
-#endif
 				if( ns.Mobile.CanSee( this ) ) {
 					if( ns.DamagePacket ) {
-						lock (pLock1)
-							if( pNew == null )
-								pNew = Packet.Acquire( new DamagePacket( this, amount ) );
+						if( pNew == null )
+							pNew = Packet.Acquire( new DamagePacket( this, amount ) );
 
 						ns.Send( pNew );
 					} else {
-						lock (pLock2)
-							if( pOld == null )
-								pOld = Packet.Acquire( new DamagePacketOld( this, amount ) );
+						if( pOld == null )
+							pOld = Packet.Acquire( new DamagePacketOld( this, amount ) );
 
 						ns.Send( pOld );
 					}
 				}
 			}
-#if Framework_4_0
-			);
-#endif
 
 			Packet.Release( pNew );
 			Packet.Release( pOld );
@@ -6312,15 +6269,10 @@ namespace Server
 
 				Packet p = null;
 				//Packet pNew = null;
-				object pLock = new object();
 
 				IPooledEnumerable eable = map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state.Mobile.CanSee( this ) ) {
 						state.Mobile.ProcessDelta();
 
@@ -6330,18 +6282,13 @@ namespace Server
 
 							//state.Send( pNew );
 						//} else {
-						lock (pLock) {
-							if( p == null )
-								p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
-						}
+						if( p == null )
+							p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
 
 							state.Send( p );
 						//}
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 				//Packet.Release( pNew );
@@ -6373,18 +6320,11 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state.Mobile.CanSee( this ) ) {
 						state.Send( p );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 
@@ -6644,17 +6584,10 @@ namespace Server
 			{
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state != m_NetState && (everyone || !state.Mobile.CanSee( this )) )
 						state.Send( this.RemovePacket );
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 			}
@@ -8055,11 +7988,8 @@ namespace Server
 			if (m_Map != null)
 			{
 				IPooledEnumerable eable = m_Map.GetClientsInRange(m_Location);
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
+
 				foreach (NetState state in eable) {
-#endif
 					if (!state.Mobile.CanSee(this)) {
 						state.Send(this.RemovePacket);
 					} else {
@@ -8079,9 +8009,6 @@ namespace Server
 						}
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 			}
@@ -9195,18 +9122,11 @@ namespace Server
 
 					IPooledEnumerable eable = map.GetClientsInRange( oldLocation );
 
-#if Framework_4_0
-					Parallel.ForEach( eable.Cast<NetState>(), ns => {
-#else
 					foreach( NetState ns in eable ) {
-#endif
 						if( ns != m_NetState && !Utility.InUpdateRange( newLocation, ns.Mobile.Location ) ) {
 							ns.Send( this.RemovePacket );
 						}
 					}
-#if Framework_4_0
-					);
-#endif
 
 					eable.Free();
 
@@ -9309,11 +9229,7 @@ namespace Server
 						eable = map.GetClientsInRange( newLocation );
 
 						// We're not attached to a client, so simply send an Incoming
-#if Framework_4_0
-						Parallel.ForEach( eable.Cast<NetState>(), ns => {
-#else
 						foreach( NetState ns in eable ) {
-#endif
 							if( ( ( isTeleport && ( !ns.HighSeas || !m_NoMoveHS ) ) || !Utility.InUpdateRange( oldLocation, ns.Mobile.Location )) && ns.Mobile.CanSee( this ) )
 							{
 								if ( ns.StygianAbyss ) {
@@ -9340,9 +9256,6 @@ namespace Server
 								}
 							}
 						}
-#if Framework_4_0
-						);
-#endif
 
 						eable.Free();
 					}
@@ -9654,11 +9567,7 @@ namespace Server
 			{
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state.Mobile.CanSee( this ) )
 					{
 						if ( state.StygianAbyss ) {
@@ -9685,9 +9594,6 @@ namespace Server
 						}
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 			}
@@ -10689,18 +10595,11 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state.Mobile.CanSee( this ) && (noLineOfSight || state.Mobile.InLOS( this )) ) {
 						state.Send( p );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 
@@ -10726,18 +10625,11 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state.Mobile.CanSee( this ) && (noLineOfSight || state.Mobile.InLOS( this )) ) {	
 						state.Send( p );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 
@@ -10758,18 +10650,11 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state.Mobile.CanSee( this ) && (noLineOfSight || state.Mobile.InLOS( this )) ) {
 						state.Send( p );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 
@@ -10840,18 +10725,11 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state != m_NetState && state.Mobile.CanSee( this ) ) {
 						state.Send( p );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 
@@ -10874,18 +10752,11 @@ namespace Server
 
 				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach( NetState state in eable ) {
-#endif
 					if( state != m_NetState && state.Mobile.CanSee( this ) ) {
 						state.Send( p );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( p );
 

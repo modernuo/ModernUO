@@ -69,25 +69,17 @@ namespace Server
 			if ( map != null )
 			{
 				Packet playSound = null;
-				object pLock = new object();
 
 				IPooledEnumerable eable = map.GetClientsInRange( new Point3D( p ) );
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
+
 				foreach ( NetState state in eable ) {
-#endif
 					state.Mobile.ProcessDelta();
 
-					lock (pLock)
-						if ( playSound == null )
-							playSound = Packet.Acquire( new PlaySound( soundID, p ) );
+					if ( playSound == null )
+						playSound = Packet.Acquire( new PlaySound( soundID, p ) );
 
 					state.Send( playSound );
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( playSound );
 
@@ -115,44 +107,31 @@ namespace Server
 			e.ProcessDelta();
 
 			Packet preEffect = null, boltEffect = null, playSound = null;
-			object pLock1 = new object();
-			object pLock2 = new object();
-			object pLock3 = new object();
 
 			IPooledEnumerable eable = map.GetClientsInRange( e.Location );
 
-#if Framework_4_0
-			Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 			foreach ( NetState state in eable ) {
-#endif
 				if ( state.Mobile.CanSee( e ) ) {
 					if ( SendParticlesTo( state ) ) {
-						lock (pLock1)
-							if ( preEffect == null )
-								preEffect = Packet.Acquire( new TargetParticleEffect( e, 0, 10, 5, 0, 0, 5031, 3, 0 ) );
+						if ( preEffect == null )
+							preEffect = Packet.Acquire( new TargetParticleEffect( e, 0, 10, 5, 0, 0, 5031, 3, 0 ) );
 
 						state.Send( preEffect );
 					}
 
-					lock (pLock2)
-						if ( boltEffect == null )
-							boltEffect = Packet.Acquire( new BoltEffect( e, hue ) );
+					if ( boltEffect == null )
+						boltEffect = Packet.Acquire( new BoltEffect( e, hue ) );
 
 					state.Send( boltEffect );
 
 					if ( sound ) {
-						lock (pLock3)
-							if ( playSound == null )
-								playSound = Packet.Acquire( new PlaySound( 0x29, e ) );
+						if ( playSound == null )
+							playSound = Packet.Acquire( new PlaySound( 0x29, e ) );
 
 						state.Send( playSound );
 					}
 				}
 			}
-#if Framework_4_0
-			);
-#endif
 
 			Packet.Release( preEffect );
 			Packet.Release( boltEffect );
@@ -198,35 +177,24 @@ namespace Server
 			if ( map != null )
 			{
 				Packet particles = null, regular = null;
-				object pLock1 = new object();
-				object pLock2 = new object();
 
 				IPooledEnumerable eable = map.GetClientsInRange( e.Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach ( NetState state in eable ) {
-#endif
 					state.Mobile.ProcessDelta();
 
 					if ( SendParticlesTo( state ) ) {
-						lock (pLock1)
-							if ( particles == null )
-								particles = Packet.Acquire( new LocationParticleEffect( e, itemID, speed, duration, hue, renderMode, effect, unknown ) );
+						if ( particles == null )
+							particles = Packet.Acquire( new LocationParticleEffect( e, itemID, speed, duration, hue, renderMode, effect, unknown ) );
 
 						state.Send( particles );
 					} else if ( itemID != 0 ) {
-						lock (pLock2)
-							if ( regular == null )
-								regular = Packet.Acquire( new LocationEffect( e, itemID, speed, duration, hue, renderMode ) );
+						if ( regular == null )
+							regular = Packet.Acquire( new LocationEffect( e, itemID, speed, duration, hue, renderMode ) );
 
 						state.Send( regular );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( particles );
 				Packet.Release( regular );
@@ -279,35 +247,24 @@ namespace Server
 			if ( map != null )
 			{
 				Packet particles = null, regular = null;
-				object pLock1 = new object();
-				object pLock2 = new object();
 
 				IPooledEnumerable eable = map.GetClientsInRange( target.Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach ( NetState state in eable ) {
-#endif
 					state.Mobile.ProcessDelta();
 
 					if ( SendParticlesTo( state ) ) {
-						lock (pLock1)
-							if ( particles == null )
-								particles = Packet.Acquire( new TargetParticleEffect( target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown ) );
+						if ( particles == null )
+							particles = Packet.Acquire( new TargetParticleEffect( target, itemID, speed, duration, hue, renderMode, effect, (int)layer, unknown ) );
 
 						state.Send( particles );
 					} else if ( itemID != 0 ) {
-						lock (pLock2)
-							if ( regular == null )
-								regular = Packet.Acquire( new TargetEffect( target, itemID, speed, duration, hue, renderMode ) );
+						if ( regular == null )
+							regular = Packet.Acquire( new TargetEffect( target, itemID, speed, duration, hue, renderMode ) );
 
 						state.Send( regular );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( particles );
 				Packet.Release( regular );
@@ -362,35 +319,24 @@ namespace Server
 			if ( map != null )
 			{
 				Packet particles = null, regular = null;
-				object pLock1 = new object();
-				object pLock2 = new object();
 
 				IPooledEnumerable eable = map.GetClientsInRange( from.Location );
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach ( NetState state in eable ) {
-#endif
 					state.Mobile.ProcessDelta();
 
 					if ( SendParticlesTo( state ) ) {
-						lock (pLock1)
-							if ( particles == null )
-								particles = Packet.Acquire( new MovingParticleEffect( from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect, explodeEffect, explodeSound, layer, unknown ) );
+						if ( particles == null )
+							particles = Packet.Acquire( new MovingParticleEffect( from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode, effect, explodeEffect, explodeSound, layer, unknown ) );
 
 						state.Send( particles );
 					} else if ( itemID > 1 ) {
-						lock (pLock2)
-							if ( regular == null )
-								regular = Packet.Acquire( new MovingEffect( from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode ) );
+						if ( regular == null )
+							regular = Packet.Acquire( new MovingEffect( from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode ) );
 
 						state.Send( regular );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				Packet.Release( particles );
 				Packet.Release( regular );
@@ -408,17 +354,10 @@ namespace Server
 
 				p.Acquire();
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach ( NetState state in eable ) {
-#endif
 					state.Mobile.ProcessDelta();
 					state.Send( p );
 				}
-#if Framework_4_0
-				);
-#endif
 
 				p.Release();
 
@@ -434,17 +373,10 @@ namespace Server
 
 				p.Acquire();
 
-#if Framework_4_0
-				Parallel.ForEach( eable.Cast<NetState>(), state => {
-#else
 				foreach ( NetState state in eable ) {
-#endif
 					state.Mobile.ProcessDelta();
 					state.Send( p );
 				}
-#if Framework_4_0
-				);
-#endif
 
 				p.Release();
 
