@@ -47,7 +47,6 @@ namespace Server
 
 	public interface IPooledEnumerator : IEnumerator
 	{
-		IPooledEnumerable Enumerable{ get; set; }
 		void Free();
 	}
 
@@ -1117,8 +1116,6 @@ namespace Server
 				if (e == null )
 					e = new PooledEnumerable( etor );
 
-				etor.Enumerable = e;
-
 				return e;
 			}
 
@@ -1171,14 +1168,6 @@ namespace Server
 
 		private class TypedEnumerator : IPooledEnumerator
 		{
-			private IPooledEnumerable m_Enumerable;
-
-			public IPooledEnumerable Enumerable
-			{
-				get { return m_Enumerable; }
-				set { m_Enumerable = value; }
-			}
-
 			private Map m_Map;
 			private Rectangle2D m_Bounds;
 			private SectorEnumerator m_Enumerator;
@@ -1285,14 +1274,6 @@ namespace Server
 
 		private class MultiTileEnumerator : IPooledEnumerator
 		{
-			private IPooledEnumerable m_Enumerable;
-
-			public IPooledEnumerable Enumerable
-			{
-				get { return m_Enumerable; }
-				set { m_Enumerable = value; }
-			}
-
 			private List<BaseMulti> m_List;
 			private Point2D m_Location;
 			private object m_Current;
@@ -1390,14 +1371,6 @@ namespace Server
 
 		private class ObjectEnumerator : IPooledEnumerator
 		{
-			private IPooledEnumerable m_Enumerable;
-
-			public IPooledEnumerable Enumerable
-			{
-				get { return m_Enumerable; }
-				set { m_Enumerable = value; }
-			}
-
 			private Map m_Map;
 			private Rectangle2D m_Bounds;
 			private SectorEnumerator m_Enumerator;
@@ -1528,14 +1501,6 @@ namespace Server
 
 		private class SectorEnumerator : IPooledEnumerator
 		{
-			private IPooledEnumerable m_Enumerable;
-
-			public IPooledEnumerable Enumerable
-			{
-				get { return m_Enumerable; }
-				set { m_Enumerable = value; }
-			}
-
 			private Map m_Map;
 			private Rectangle2D m_Bounds;
 
@@ -1577,9 +1542,6 @@ namespace Server
 					return;
 
 				m_Map = null;
-
-				if ( m_Enumerable != null )
-					m_Enumerable.Free();
 
 				lock (m_InstancePool) {
 					if (m_InstancePool.Count < 200) // Arbitrary
