@@ -307,7 +307,7 @@ namespace Server
 
 			if ( multis )
 			{
-				IPooledEnumerable eable = m_Owner.GetMultiTilesAt( x, y );
+				IPooledEnumerable<StaticTile[]> eable = m_Owner.GetMultiTilesAt( x, y );
 
 				if ( eable == Map.NullEnumerable<StaticTile[]>.Instance )
 					return tiles[x & 0x7][y & 0x7];

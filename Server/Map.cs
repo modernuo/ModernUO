@@ -466,7 +466,7 @@ namespace Server
 
 			List<Item> items = new List<Item>();
 
-			IPooledEnumerable eable = GetItemsInRange( new Point3D( x, y, 0 ), 0 );
+			IPooledEnumerable<Item> eable = GetItemsInRange( new Point3D( x, y, 0 ), 0 );
 
 			foreach ( Item item in eable )
 			{
@@ -1933,7 +1933,7 @@ namespace Server
 
 				if( contains && statics.Length == 0 )
 				{
-					IPooledEnumerable eable = GetItemsInRange( point, 0 );
+					IPooledEnumerable<Item> eable = GetItemsInRange( point, 0 );
 
 					foreach( Item item in eable )
 					{
@@ -1979,7 +1979,7 @@ namespace Server
 
 			Rectangle2D rect = new Rectangle2D( pTop.m_X, pTop.m_Y, (pBottom.m_X - pTop.m_X) + 1, (pBottom.m_Y - pTop.m_Y) + 1 );
 
-			IPooledEnumerable area = GetItemsInBounds( rect );
+			IPooledEnumerable<Item> area = GetItemsInBounds( rect );
 
 			foreach( Item i in area )
 			{

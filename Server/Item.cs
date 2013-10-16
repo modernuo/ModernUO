@@ -1353,7 +1353,7 @@ namespace Server
 
 					if ( oldLocation.m_X != 0 )
 					{
-						IPooledEnumerable eable = m_Map.GetClientsInRange( oldLocation, GetMaxUpdateRange() );
+						IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
 						foreach ( NetState state in eable ) {
 							Mobile m = state.Mobile;
@@ -1389,7 +1389,7 @@ namespace Server
 
 				if ( m_Map != null )
 				{
-					IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location, GetMaxUpdateRange() );
+					IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
 					foreach (NetState state in eable) {
 						Mobile m = state.Mobile;
@@ -1408,7 +1408,7 @@ namespace Server
 			}
 			else if ( m_Map != null )
 			{
-				IPooledEnumerable eable;
+				IPooledEnumerable<NetState> eable;
 
 				if ( oldLocation.m_X != 0 )
 				{
@@ -1802,7 +1802,7 @@ namespace Server
 					{
 						Point3D worldLoc = GetWorldLocation();
 
-						IPooledEnumerable eable = m_Map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+						IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 						foreach (NetState state in eable) {
 							Mobile m = state.Mobile;
@@ -2169,7 +2169,7 @@ namespace Server
 				writer.WriteEncodedInt( info.m_SavedFlags );
 		}
 
-		public IPooledEnumerable GetObjectsInRange( int range )
+		public IPooledEnumerable<IEntity> GetObjectsInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -2182,7 +2182,7 @@ namespace Server
 			return map.GetObjectsInRange( GetWorldLocation(), range );
 		}
 
-		public IPooledEnumerable GetItemsInRange( int range )
+		public IPooledEnumerable<Item> GetItemsInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -2195,7 +2195,7 @@ namespace Server
 			return map.GetItemsInRange( GetWorldLocation(), range );
 		}
 
-		public IPooledEnumerable GetMobilesInRange( int range )
+		public IPooledEnumerable<Mobile> GetMobilesInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -2208,7 +2208,7 @@ namespace Server
 			return map.GetMobilesInRange( GetWorldLocation(), range );
 		}
 
-		public IPooledEnumerable GetClientsInRange( int range )
+		public IPooledEnumerable<NetState> GetClientsInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -3187,7 +3187,7 @@ namespace Server
 					Packet p = null;
 					Point3D worldLoc = GetWorldLocation();
 
-					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+					IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 					foreach ( NetState state in eable ) {
 						Mobile m = state.Mobile;
@@ -3232,7 +3232,7 @@ namespace Server
 						Packet p = null;
 						Point3D worldLoc = GetWorldLocation();
 
-						IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+						IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 						foreach ( NetState state in eable ) {
 							Mobile m = state.Mobile;
@@ -3262,7 +3262,7 @@ namespace Server
 				if ( sendOPLUpdate )
 				{
 					Point3D worldLoc = GetWorldLocation();
-					IPooledEnumerable eable = map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+					IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 					foreach ( NetState state in eable ) {
 						Mobile m = state.Mobile;
@@ -3372,7 +3372,7 @@ namespace Server
 				Packet p = null;
 				Point3D worldLoc = GetWorldLocation();
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 				foreach ( NetState state in eable )
 				{
@@ -3412,7 +3412,7 @@ namespace Server
 				Packet p = null;
 				Point3D worldLoc = GetWorldLocation();
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 				foreach ( NetState state in eable )
 				{
@@ -3566,7 +3566,7 @@ namespace Server
 					{
 						if ( m_Parent == null )
 						{
-							IPooledEnumerable eable;
+							IPooledEnumerable<NetState> eable;
 
 							if ( m_Location.m_X != 0 )
 							{
@@ -3973,7 +3973,7 @@ namespace Server
 
 			List<Item> items = new List<Item>();
 
-			IPooledEnumerable eable = map.GetItemsInRange( p, 0 );
+			IPooledEnumerable<Item> eable = map.GetItemsInRange( p, 0 );
 
 			foreach ( Item item in eable )
 			{
@@ -4151,7 +4151,7 @@ namespace Server
 			{
 				Point3D worldLoc = GetWorldLocation();
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( worldLoc, GetMaxUpdateRange() );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
 				foreach (NetState state in eable) {
 					Mobile m = state.Mobile;

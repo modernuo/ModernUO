@@ -3314,7 +3314,7 @@ namespace Server
 
 			if( m_Map != null )
 			{
-				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
+				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 
 				foreach(IEntity o in eable) {
 					if(o == this)
@@ -4029,7 +4029,7 @@ namespace Server
 			{
 				Packet animPacket = null;
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state != m_NetState ) {
@@ -4393,7 +4393,7 @@ namespace Server
 
 							if( m_DragEffects && map != null && (root == null || root is Item) )
 							{
-								IPooledEnumerable eable = map.GetClientsInRange( from.Location );
+								IPooledEnumerable<NetState> eable = map.GetClientsInRange(from.Location);
 								Packet p = null;
 
 								foreach( NetState ns in eable ) {
@@ -4528,7 +4528,7 @@ namespace Server
 
 				if( map != null && (root == null || root is Item) )
 				{
-					IPooledEnumerable eable = map.GetClientsInRange( m_Location );
+					IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
 					Packet p = null;
 
 					bool sameLoc = false;
@@ -4771,7 +4771,7 @@ namespace Server
 
 		#region Get*InRange
 
-		public IPooledEnumerable GetItemsInRange( int range )
+		public IPooledEnumerable<Item> GetItemsInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -4781,7 +4781,7 @@ namespace Server
 			return map.GetItemsInRange( m_Location, range );
 		}
 
-		public IPooledEnumerable GetObjectsInRange( int range )
+		public IPooledEnumerable<IEntity> GetObjectsInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -4791,7 +4791,7 @@ namespace Server
 			return map.GetObjectsInRange( m_Location, range );
 		}
 
-		public IPooledEnumerable GetMobilesInRange( int range )
+		public IPooledEnumerable<Mobile> GetMobilesInRange( int range )
 		{
 			Map map = m_Map;
 
@@ -4801,7 +4801,7 @@ namespace Server
 			return map.GetMobilesInRange( m_Location, range );
 		}
 
-		public IPooledEnumerable GetClientsInRange( int range )
+		public IPooledEnumerable<NetState> GetClientsInRange(int range)
 		{
 			Map map = m_Map;
 
@@ -4863,7 +4863,7 @@ namespace Server
 
 			if( m_Map != null )
 			{
-				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, range );
+				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, range );
 
 #if Framework_4_0
 				Parallel.ForEach(eable, o => {
@@ -5334,7 +5334,7 @@ namespace Server
 			if( map == null )
 				return;
 
-			IPooledEnumerable eable = map.GetClientsInRange( m_Location );
+			IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
 
 			Packet pNew = null;
 			Packet pOld = null;
@@ -6270,7 +6270,7 @@ namespace Server
 				Packet p = null;
 				//Packet pNew = null;
 
-				IPooledEnumerable eable = map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state.Mobile.CanSee( this ) ) {
@@ -6318,7 +6318,7 @@ namespace Server
 			{
 				Packet p = Packet.Acquire(new PlaySound(soundID, this));
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state.Mobile.CanSee( this ) ) {
@@ -6582,7 +6582,7 @@ namespace Server
 		{
 			if( m_Map != null )
 			{
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state != m_NetState && (everyone || !state.Mobile.CanSee( this )) )
@@ -6599,11 +6599,11 @@ namespace Server
 
 			if( m_Map != null && ns != null )
 			{
-				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
+				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 #if Framework_4_0
 				Parallel.ForEach(eable, o => {
 #else
-				foreach ( object o in eable ) {
+				foreach ( IEntity o in eable ) {
 #endif
 					if( o is Mobile ) {
 						Mobile m = (Mobile)o;
@@ -6804,11 +6804,11 @@ namespace Server
 
 			if( m_Map != null && ns != null )
 			{
-				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
+				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 #if Framework_4_0
 				Parallel.ForEach(eable, o => {
 #else
-				foreach ( object o in eable ) {
+				foreach ( IEntity o in eable ) {
 #endif
 					if( o is Item ) {
 						Item item = (Item)o;
@@ -7987,7 +7987,7 @@ namespace Server
 
 			if (m_Map != null)
 			{
-				IPooledEnumerable eable = m_Map.GetClientsInRange(m_Location);
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach (NetState state in eable) {
 					if (!state.Mobile.CanSee(this)) {
@@ -9120,7 +9120,7 @@ namespace Server
 				{
 					// First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
 
-					IPooledEnumerable eable = map.GetClientsInRange( oldLocation );
+					IPooledEnumerable<NetState> eable = map.GetClientsInRange(oldLocation);
 
 					foreach( NetState ns in eable ) {
 						if( ns != m_NetState && !Utility.InUpdateRange( newLocation, ns.Mobile.Location ) ) {
@@ -9135,13 +9135,13 @@ namespace Server
 					// Check to see if we are attached to a client
 					if( ourState != null )
 					{
-						eable = map.GetObjectsInRange( newLocation, Core.GlobalMaxUpdateRange );
+						IPooledEnumerable<IEntity> eeable = map.GetObjectsInRange( newLocation, Core.GlobalMaxUpdateRange );
 
 						// We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
 #if Framework_4_0
 						Parallel.ForEach(eable, o => {
 #else
-						foreach ( object o in eable ) {
+						foreach ( IEntity o in eeable ) {
 #endif
 							if( o is Item )
 							{
@@ -9222,7 +9222,7 @@ namespace Server
 						);
 #endif
 
-						eable.Free();
+						eeable.Free();
 					}
 					else
 					{
@@ -9565,7 +9565,7 @@ namespace Server
 		{
 			if( m_Map != null )
 			{
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state.Mobile.CanSee( this ) )
@@ -10257,7 +10257,7 @@ namespace Server
 				Packet hbpPacket = null;
 				Packet hbyPacket = null;
 
-				IPooledEnumerable eable = m.Map.GetClientsInRange(m.m_Location);
+				IPooledEnumerable<NetState> eable = m.Map.GetClientsInRange(m.m_Location);
 
 				foreach ( NetState state in eable ) {
 					beholder = state.Mobile;
@@ -10543,7 +10543,7 @@ namespace Server
 
 				p.Acquire();
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state.Mobile.CanSee( this ) && (noLineOfSight || state.Mobile.InLOS( this )) ) {
@@ -10573,7 +10573,7 @@ namespace Server
 			{
 				Packet p = Packet.Acquire( new MessageLocalized( m_Serial, Body, type, hue, 3, number, Name, args ) );
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state.Mobile.CanSee( this ) && (noLineOfSight || state.Mobile.InLOS( this )) ) {	
@@ -10598,7 +10598,7 @@ namespace Server
 			{
 				Packet p = Packet.Acquire( new MessageLocalizedAffix( m_Serial, Body, type, hue, 3, number, Name, affixType, affix, args ) );
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state.Mobile.CanSee( this ) && (noLineOfSight || state.Mobile.InLOS( this )) ) {
@@ -10673,7 +10673,7 @@ namespace Server
 			{
 				Packet p = Packet.Acquire( new MessageLocalized( m_Serial, Body, type, hue, 3, number, Name, args ) );
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state != m_NetState && state.Mobile.CanSee( this ) ) {
@@ -10700,7 +10700,7 @@ namespace Server
 
 				p.Acquire();
 
-				IPooledEnumerable eable = m_Map.GetClientsInRange( m_Location );
+				IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
 				foreach( NetState state in eable ) {
 					if( state != m_NetState && state.Mobile.CanSee( this ) ) {
