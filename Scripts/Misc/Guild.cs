@@ -687,9 +687,9 @@ namespace Server.Guilds
 				pm.SendGump( new GuildInfoGump( pm, pm.Guild as Guild ) );
 		}
 
-		public static BaseGuild EventSink_CreateGuild( CreateGuildEventArgs args )
+		public static void EventSink_CreateGuild(CreateGuildEventArgs args)
 		{
-			return (BaseGuild)(new Guild( args.Id ));
+			args.Guild = new Guild(args.Id);
 		}
 		#endregion
 

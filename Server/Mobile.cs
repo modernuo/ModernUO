@@ -4776,7 +4776,7 @@ namespace Server
 			Map map = m_Map;
 
 			if( map == null )
-				return Server.Map.NullEnumerable.Instance;
+				return Server.Map.NullEnumerable<Item>.Instance;
 
 			return map.GetItemsInRange( m_Location, range );
 		}
@@ -4786,7 +4786,7 @@ namespace Server
 			Map map = m_Map;
 
 			if( map == null )
-				return Server.Map.NullEnumerable.Instance;
+				return Server.Map.NullEnumerable<IEntity>.Instance;
 
 			return map.GetObjectsInRange( m_Location, range );
 		}
@@ -4796,7 +4796,7 @@ namespace Server
 			Map map = m_Map;
 
 			if( map == null )
-				return Server.Map.NullEnumerable.Instance;
+				return Server.Map.NullEnumerable<Mobile>.Instance;
 
 			return map.GetMobilesInRange( m_Location, range );
 		}
@@ -4806,7 +4806,7 @@ namespace Server
 			Map map = m_Map;
 
 			if( map == null )
-				return Server.Map.NullEnumerable.Instance;
+				return Server.Map.NullEnumerable<NetState>.Instance;
 
 			return map.GetClientsInRange( m_Location, range );
 		}
@@ -4866,7 +4866,7 @@ namespace Server
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, range );
 
 #if Framework_4_0
-				Parallel.ForEach(eable.Cast<IEntity>(), o => {
+				Parallel.ForEach(eable, o => {
 #else
 				foreach(IEntity o in eable) {
 #endif
@@ -6601,9 +6601,9 @@ namespace Server
 			{
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 #if Framework_4_0
-				Parallel.ForEach( eable.Cast<IEntity>(), o => {
+				Parallel.ForEach(eable, o => {
 #else
-				foreach( object o in eable ) {
+				foreach ( object o in eable ) {
 #endif
 					if( o is Mobile ) {
 						Mobile m = (Mobile)o;
@@ -6806,9 +6806,9 @@ namespace Server
 			{
 				IPooledEnumerable eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 #if Framework_4_0
-				Parallel.ForEach( eable.Cast<IEntity>(), o => {
+				Parallel.ForEach(eable, o => {
 #else
-				foreach( object o in eable ) {
+				foreach ( object o in eable ) {
 #endif
 					if( o is Item ) {
 						Item item = (Item)o;
@@ -9139,9 +9139,9 @@ namespace Server
 
 						// We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
 #if Framework_4_0
-						Parallel.ForEach( eable.Cast<IEntity>(), o => {
+						Parallel.ForEach(eable, o => {
 #else
-						foreach( object o in eable ) {
+						foreach ( object o in eable ) {
 #endif
 							if( o is Item )
 							{

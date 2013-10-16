@@ -70,7 +70,7 @@ namespace Server
 	public delegate void SetAbilityEventHandler( SetAbilityEventArgs e );
 	public delegate void FastWalkEventHandler( FastWalkEventArgs e );
 	public delegate void ServerStartedEventHandler();
-	public delegate BaseGuild CreateGuildHandler( CreateGuildEventArgs e );
+	public delegate void CreateGuildHandler( CreateGuildEventArgs e );
 	public delegate void GuildGumpRequestHandler( GuildGumpRequestArgs e );
 	public delegate void QuestGumpRequestHandler( QuestGumpRequestArgs e );
 	public delegate void ClientVersionReceivedHandler( ClientVersionReceivedArgs e );
@@ -94,6 +94,9 @@ namespace Server
 	{
 		private int m_Id;
 		public int Id { get { return m_Id; } set { m_Id = value; } }
+
+		private BaseGuild m_Guild;
+		public BaseGuild Guild { get { return m_Guild; } set { m_Guild = value; } }
 
 		public CreateGuildEventArgs( int id )
 		{
@@ -853,6 +856,58 @@ namespace Server
 		public static event GuildGumpRequestHandler GuildGumpRequest;
 		public static event QuestGumpRequestHandler QuestGumpRequest;
 		public static event ClientVersionReceivedHandler ClientVersionReceived;
+		
+		/* The following is a .NET 2.0 "Generic EventHandler" implementation.
+		 * It is a breaking change; we would have to refactor all event handlers.
+		 * This style does not appear to be in widespread use.
+		 * We could also look into .NET 4.0 Action<T>/Func<T> implementations.
+		 */
+
+		/*
+		public static event EventHandler<CharacterCreatedEventArgs> CharacterCreated;
+		public static event EventHandler<OpenDoorMacroEventArgs> OpenDoorMacroUsed;
+		public static event EventHandler<SpeechEventArgs> Speech;
+		public static event EventHandler<LoginEventArgs> Login;
+		public static event EventHandler<ServerListEventArgs> ServerList;
+		public static event EventHandler<MovementEventArgs> Movement;
+		public static event EventHandler<HungerChangedEventArgs> HungerChanged;
+		public static event EventHandler<CrashedEventArgs> Crashed;
+		public static event EventHandler<ShutdownEventArgs> Shutdown;
+		public static event EventHandler<HelpRequestEventArgs> HelpRequest;
+		public static event EventHandler<DisarmRequestEventArgs> DisarmRequest;
+		public static event EventHandler<StunRequestEventArgs> StunRequest;
+		public static event EventHandler<OpenSpellbookRequestEventArgs> OpenSpellbookRequest;
+		public static event EventHandler<CastSpellRequestEventArgs> CastSpellRequest;
+		public static event EventHandler<BandageTargetRequestEventArgs> BandageTargetRequest;
+		public static event EventHandler<AnimateRequestEventArgs> AnimateRequest;
+		public static event EventHandler<LogoutEventArgs> Logout;
+		public static event EventHandler<SocketConnectEventArgs> SocketConnect;
+		public static event EventHandler<ConnectedEventArgs> Connected;
+		public static event EventHandler<DisconnectedEventArgs> Disconnected;
+		public static event EventHandler<RenameRequestEventArgs> RenameRequest;
+		public static event EventHandler<PlayerDeathEventArgs> PlayerDeath;
+		public static event EventHandler<VirtueGumpRequestEventArgs> VirtueGumpRequest;
+		public static event EventHandler<VirtueItemRequestEventArgs> VirtueItemRequest;
+		public static event EventHandler<VirtueMacroRequestEventArgs> VirtueMacroRequest;
+		public static event EventHandler<ChatRequestEventArgs> ChatRequest;
+		public static event EventHandler<AccountLoginEventArgs> AccountLogin;
+		public static event EventHandler<PaperdollRequestEventArgs> PaperdollRequest;
+		public static event EventHandler<ProfileRequestEventArgs> ProfileRequest;
+		public static event EventHandler<ChangeProfileRequestEventArgs> ChangeProfileRequest;
+		public static event EventHandler<AggressiveActionEventArgs> AggressiveAction;
+		public static event EventHandler<CommandEventArgs> Command;
+		public static event EventHandler<GameLoginEventArgs> GameLogin;
+		public static event EventHandler<DeleteRequestEventArgs> DeleteRequest;
+		public static event EventHandler<EventArgs> WorldLoad;
+		public static event EventHandler<WorldSaveEventArgs> WorldSave;
+		public static event EventHandler<SetAbilityEventArgs> SetAbility;
+		public static event EventHandler<FastWalkEventArgs> FastWalk;
+		public static event EventHandler<CreateGuildEventArgs> CreateGuild;
+		public static event EventHandler<EventArgs> ServerStarted;
+		public static event EventHandler<GuildGumpRequestArgs> GuildGumpRequest;
+		public static event EventHandler<QuestGumpRequestArgs> QuestGumpRequest;
+		public static event EventHandler<ClientVersionReceivedArgs> ClientVersionReceived;
+		*/
 
 		public static void InvokeClientVersionReceived( ClientVersionReceivedArgs e )
 		{
@@ -866,12 +921,10 @@ namespace Server
 				ServerStarted();
 		}
 
-		public static BaseGuild InvokeCreateGuild( CreateGuildEventArgs e )
+		public static void InvokeCreateGuild( CreateGuildEventArgs e )
 		{
 			if ( CreateGuild != null )
-				return CreateGuild( e );
-			else
-				return null;
+				CreateGuild( e );
 		}
 
 		public static void InvokeSetAbility( SetAbilityEventArgs e )

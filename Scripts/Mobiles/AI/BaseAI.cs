@@ -2592,7 +2592,7 @@ namespace Server.Mobiles
 #if Framework_4_0
 				object valLock = new object();
 
-				Parallel.ForEach( eable.Cast<Mobile>(), m => {
+				Parallel.ForEach(eable, m => {
 					if (m.Deleted || m.Blessed)
 						return;
 
