@@ -9139,7 +9139,7 @@ namespace Server
 
 						// We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
 #if Framework_4_0
-						Parallel.ForEach(eable, o => {
+						Parallel.ForEach(eeable, o => {
 #else
 						foreach ( IEntity o in eeable ) {
 #endif
