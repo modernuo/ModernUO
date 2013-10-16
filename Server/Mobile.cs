@@ -4724,34 +4724,34 @@ namespace Server
 			}
 		}
 
-		private class LocationComparer : IComparer<IPoint3D>
+		private class LocationComparer : IComparer<IEntity>
 		{
 			private static LocationComparer m_Instance;
 
-			public static LocationComparer GetInstance( IPoint3D relativeTo )
+			public static LocationComparer GetInstance(IEntity relativeTo)
 			{
 				if( m_Instance == null )
-					m_Instance = new LocationComparer( relativeTo );
+					m_Instance = new LocationComparer(relativeTo);
 				else
 					m_Instance.m_RelativeTo = relativeTo;
 
 				return m_Instance;
 			}
 
-			private IPoint3D m_RelativeTo;
+			private IEntity m_RelativeTo;
 
-			public IPoint3D RelativeTo
+			public IEntity RelativeTo
 			{
 				get { return m_RelativeTo; }
 				set { m_RelativeTo = value; }
 			}
 
-			public LocationComparer( IPoint3D relativeTo )
+			public LocationComparer(IEntity relativeTo)
 			{
 				m_RelativeTo = relativeTo;
 			}
 
-			private int GetDistance( IPoint3D p )
+			private int GetDistance(IEntity p)
 			{
 				int x = m_RelativeTo.X - p.X;
 				int y = m_RelativeTo.Y - p.Y;
@@ -4763,7 +4763,7 @@ namespace Server
 				return (x * x) + (y * y) + (z * z);
 			}
 
-			public int Compare(IPoint3D x, IPoint3D y)
+			public int Compare(IEntity x, IEntity y)
 			{
 				return GetDistance(x) - GetDistance(y);
 			}
