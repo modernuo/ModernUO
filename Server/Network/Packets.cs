@@ -23,6 +23,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+#if Framework_4_0
+using System.Threading;
+#endif
 using Server.Accounting;
 using Server.Targeting;
 using Server.Items;
@@ -3344,15 +3347,153 @@ namespace Server.Network
 
 	public sealed class MobileIncoming : Packet
 	{
+		public static Packet Create(NetState ns, Mobile beholder, Mobile beheld)
+		{
+			if (ns.NewMobileIncoming)
+				return new MobileIncoming(beholder, beheld);
+			else if (ns.StygianAbyss)
+				return new MobileIncomingSA(beholder, beheld);
+			else
+				return new MobileIncomingOld(beholder, beheld);
+		}
+
+#if Framework_4_0
+		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
+		private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
+#else
 		private static int[] m_DupedLayers = new int[256];
 		private static int m_Version;
+#endif
 
 		public Mobile m_Beheld;
 
-		public MobileIncoming( Mobile beholder, Mobile beheld ) : base( 0x78 )
+		public MobileIncoming(Mobile beholder, Mobile beheld) : base(0x78)
 		{
 			m_Beheld = beheld;
+
+#if Framework_4_0
+			int m_Version = ++(m_VersionTL.Value);
+			int[] m_DupedLayers = m_DupedLayersTL.Value;
+#else
 			++m_Version;
+#endif
+
+			List<Item> eq = beheld.Items;
+			int count = eq.Count;
+
+			if (beheld.HairItemID > 0)
+				count++;
+			if (beheld.FacialHairItemID > 0)
+				count++;
+
+			this.EnsureCapacity(23 + (count * 9));
+
+			int hue = beheld.Hue;
+
+			if (beheld.SolidHueOverride >= 0)
+				hue = beheld.SolidHueOverride;
+
+			m_Stream.Write((int)beheld.Serial);
+			m_Stream.Write((short)beheld.Body);
+			m_Stream.Write((short)beheld.X);
+			m_Stream.Write((short)beheld.Y);
+			m_Stream.Write((sbyte)beheld.Z);
+			m_Stream.Write((byte)beheld.Direction);
+			m_Stream.Write((short)hue);
+			m_Stream.Write((byte)beheld.GetPacketFlags());
+			m_Stream.Write((byte)Notoriety.Compute(beholder, beheld));
+
+			for (int i = 0; i < eq.Count; ++i)
+			{
+				Item item = eq[i];
+
+				byte layer = (byte)item.Layer;
+
+				if (!item.Deleted && beholder.CanSee(item) && m_DupedLayers[layer] != m_Version)
+				{
+					m_DupedLayers[layer] = m_Version;
+
+					hue = item.Hue;
+
+					if (beheld.SolidHueOverride >= 0)
+						hue = beheld.SolidHueOverride;
+
+					int itemID = item.ItemID & 0xFFFF;
+
+					m_Stream.Write((int)item.Serial);
+					m_Stream.Write((ushort)itemID);
+					m_Stream.Write((byte)layer);
+
+					m_Stream.Write((short)hue);
+				}
+			}
+
+			if (beheld.HairItemID > 0)
+			{
+				if (m_DupedLayers[(int)Layer.Hair] != m_Version)
+				{
+					m_DupedLayers[(int)Layer.Hair] = m_Version;
+					hue = beheld.HairHue;
+
+					if (beheld.SolidHueOverride >= 0)
+						hue = beheld.SolidHueOverride;
+
+					int itemID = beheld.HairItemID & 0xFFFF;
+
+					m_Stream.Write((int)HairInfo.FakeSerial(beheld));
+					m_Stream.Write((ushort)itemID);
+					m_Stream.Write((byte)Layer.Hair);
+
+					m_Stream.Write((short)hue);
+				}
+			}
+
+			if (beheld.FacialHairItemID > 0)
+			{
+				if (m_DupedLayers[(int)Layer.FacialHair] != m_Version)
+				{
+					m_DupedLayers[(int)Layer.FacialHair] = m_Version;
+					hue = beheld.FacialHairHue;
+
+					if (beheld.SolidHueOverride >= 0)
+						hue = beheld.SolidHueOverride;
+
+					int itemID = beheld.FacialHairItemID & 0xFFFF;
+
+					m_Stream.Write((int)FacialHairInfo.FakeSerial(beheld));
+					m_Stream.Write((ushort)itemID);
+					m_Stream.Write((byte)Layer.FacialHair);
+
+					m_Stream.Write((short)hue);
+				}
+			}
+
+			m_Stream.Write((int)0); // terminate
+		}
+	}
+
+	public sealed class MobileIncomingSA : Packet
+	{
+#if Framework_4_0
+		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
+		private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
+#else
+		private static int[] m_DupedLayers = new int[256];
+		private static int m_Version;
+#endif
+
+		public Mobile m_Beheld;
+
+		public MobileIncomingSA(Mobile beholder, Mobile beheld) : base(0x78)
+		{
+			m_Beheld = beheld;
+
+#if Framework_4_0
+			int m_Version = ++(m_VersionTL.Value);
+			int[] m_DupedLayers = m_DupedLayersTL.Value;
+#else
+			++m_Version;
+#endif
 
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;
@@ -3468,15 +3609,26 @@ namespace Server.Network
 	// Pre-7.0.0.0 Mobile Incoming
 	public sealed class MobileIncomingOld : Packet
 	{
+#if Framework_4_0
+		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
+		private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
+#else
 		private static int[] m_DupedLayers = new int[256];
 		private static int m_Version;
+#endif
 
 		public Mobile m_Beheld;
 
 		public MobileIncomingOld( Mobile beholder, Mobile beheld ) : base( 0x78 )
 		{
 			m_Beheld = beheld;
+
+#if Framework_4_0
+			int m_Version = ++(m_VersionTL.Value);
+			int[] m_DupedLayers = m_DupedLayersTL.Value;
+#else
 			++m_Version;
+#endif
 
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;

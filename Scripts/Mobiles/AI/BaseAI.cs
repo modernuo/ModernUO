@@ -2492,7 +2492,7 @@ namespace Server.Mobiles
 				double val = double.MinValue;
 				double theirVal;
 
-				IPooledEnumerable eable = map.GetMobilesInRange(m_Mobile.Location, iRange);
+				IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(m_Mobile.Location, iRange);
 
 #if !Framework_4_0
 				foreach (Mobile m in eable)
