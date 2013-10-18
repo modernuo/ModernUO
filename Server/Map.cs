@@ -1845,7 +1845,7 @@ namespace Server
 			int height;
 			bool found;
 			Point3D p;
-			Point3DList path = m_PathList;
+			Point3DList path = new Point3DList();
 			TileFlag flags;
 
 			if( org == dest )
@@ -2087,7 +2087,6 @@ namespace Server
 			set { m_InvalidLandTiles = value; }
 		}
 
-		private static Point3DList m_PathList = new Point3DList();
 		public int CompareTo( Map other )
 		{
 			if ( other == null )

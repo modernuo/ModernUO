@@ -276,31 +276,8 @@ namespace Server
 			private static void ProcessChanged()
 			{
 				lock (m_Changed) {
-#if Framework_4_0
-					Parallel.ForEach(m_Changed.Values, tce => {
-						Timer timer = tce.m_Timer;
-						int newIndex = tce.m_NewIndex;
+					long curTicks = Core.TickCount;
 
-						if (timer.m_List != null)
-							lock (timer.m_List)
-								timer.m_List.Remove(timer);
-
-						if (tce.m_IsAdd) {
-							timer.m_Next = Core.TickCount + timer.m_Delay;
-							timer.m_Index = 0;
-						}
-
-						if (newIndex >= 0) {
-							timer.m_List = m_Timers[newIndex];
-							lock (timer.m_List)
-								timer.m_List.Add(timer);
-						} else {
-							timer.m_List = null;
-						}
-
-						tce.Free();
-					});
-#else
 					foreach (TimerChangeEntry tce in m_Changed.Values) {
 						Timer timer = tce.m_Timer;
 						int newIndex = tce.m_NewIndex;
@@ -309,7 +286,7 @@ namespace Server
 							timer.m_List.Remove(timer);
 
 						if (tce.m_IsAdd) {
-							timer.m_Next = Core.TickCount + timer.m_Delay;
+							timer.m_Next = curTicks + timer.m_Delay;
 							timer.m_Index = 0;
 						}
 
@@ -322,7 +299,7 @@ namespace Server
 
 						tce.Free();
 					}
-#endif
+
 					m_Changed.Clear();
 				}
 			}

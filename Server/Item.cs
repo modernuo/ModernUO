@@ -1615,10 +1615,15 @@ namespace Server
 		{
 			get
 			{
-				lock (_rpl) {
-					if ( m_RemovePacket == null ) {
-						m_RemovePacket = new RemoveItem( this );
-						m_RemovePacket.SetStatic();
+				if (m_RemovePacket == null)
+				{
+					lock (_rpl)
+					{
+						if (m_RemovePacket == null)
+						{
+							m_RemovePacket = new RemoveItem(this);
+							m_RemovePacket.SetStatic();
+						}
 					}
 				}
 
@@ -1632,10 +1637,15 @@ namespace Server
 		{
 			get
 			{
-				lock (_opll) {
-					if ( m_OPLPacket == null ) {
-						m_OPLPacket = new OPLInfo( PropertyList );
-						m_OPLPacket.SetStatic();
+				if (m_OPLPacket == null)
+				{
+					lock (_opll)
+					{
+						if (m_OPLPacket == null)
+						{
+							m_OPLPacket = new OPLInfo(PropertyList);
+							m_OPLPacket.SetStatic();
+						}
 					}
 				}
 
@@ -1723,10 +1733,15 @@ namespace Server
 				//  - Packet Flags
 				//  - Direction
 
-				lock (_wpl) {
-					if ( m_WorldPacket == null ) {
-						m_WorldPacket = new WorldItem( this );
-						m_WorldPacket.SetStatic();
+				if (m_WorldPacket == null)
+				{
+					lock (_wpl)
+					{
+						if (m_WorldPacket == null)
+						{
+							m_WorldPacket = new WorldItem(this);
+							m_WorldPacket.SetStatic();
+						}
 					}
 				}
 
@@ -1746,10 +1761,15 @@ namespace Server
 				//  - Packet Flags
 				//  - Direction
 
-				lock (_wplsa) {
-					if ( m_WorldPacketSA == null ) {
-						m_WorldPacketSA = new WorldItemSA( this );
-						m_WorldPacketSA.SetStatic();
+				if (m_WorldPacketSA == null)
+				{
+					lock (_wplsa)
+					{
+						if (m_WorldPacketSA == null)
+						{
+							m_WorldPacketSA = new WorldItemSA(this);
+							m_WorldPacketSA.SetStatic();
+						}
 					}
 				}
 
@@ -1769,10 +1789,15 @@ namespace Server
 				//  - Packet Flags
 				//  - Direction
 
-				lock (_wplhs) {
-					if ( m_WorldPacketHS == null ) {
-						m_WorldPacketHS = new WorldItemHS( this );
-						m_WorldPacketHS.SetStatic();
+				if (m_WorldPacketHS == null)
+				{
+					lock (_wplhs)
+					{
+						if (m_WorldPacketHS == null)
+						{
+							m_WorldPacketHS = new WorldItemHS(this);
+							m_WorldPacketHS.SetStatic();
+						}
 					}
 				}
 
@@ -3282,8 +3307,15 @@ namespace Server
 		{
 #if Framework_4_0
 			_processing = true;
-			Parallel.ForEach( m_DeltaQueue, i => i.ProcessDelta() );
+
+			if (m_DeltaQueue.Count >= 64) {
+				Parallel.ForEach(m_DeltaQueue, i => i.ProcessDelta());
+			} else {
+				for (int i = 0; i < m_DeltaQueue.Count; i++) m_DeltaQueue[i].ProcessDelta();
+			}
+
 			m_DeltaQueue.Clear();
+
 			_processing = false;
 #else
 			int count = m_DeltaQueue.Count;

@@ -3317,41 +3317,31 @@ namespace Server
 					for( int j = 0; j < cache[i].Length; ++j )
 						Packet.Release( ref cache[i][j] );*/
 
-				object cacheSync = new object();
-#if Framework_4_0
-				Parallel.ForEach(m_MoveClientList, m => {
-#else
 				foreach(Mobile m in m_MoveClientList) {
-#endif
 					NetState ns = m.NetState;
 
 					if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this)) {
 						if (ns.StygianAbyss) {
 							Packet p;
 							int noto = Notoriety.Compute(m, this);
-							lock (cacheSync) {
-								p = cache[0][noto];
+							p = cache[0][noto];
 
-								if (p == null)
-									cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
-							}
+							if (p == null)
+								cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
+
 							ns.Send(p);
 						} else {
 							Packet p;
 							int noto = Notoriety.Compute(m, this);
-							lock (cacheSync) {
-								p = cache[1][noto];
+							p = cache[1][noto];
 
-								if (p == null)
-									cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
-							}
+							if (p == null)
+								cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
+
 							ns.Send(p);
 						}
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				for (int i = 0; i < cache.Length; ++i)
 					for (int j = 0; j < cache[i].Length; ++j)
@@ -4692,8 +4682,7 @@ namespace Server
 				Item item = cont.Items[i];
 
 				if(item.HandlesOnSpeech)
-					lock (list)
-						list.Add( item );
+					list.Add( item );
 
 				if(item is Container)
 					AddSpeechItemsFrom(list, (Container)item);
@@ -4841,31 +4830,24 @@ namespace Server
 			{
 				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, range );
 
-#if Framework_4_0
-				Parallel.ForEach(eable, o => {
-#else
 				foreach(IEntity o in eable) {
-#endif
 					if( o is Mobile ) {
 						Mobile heard = (Mobile)o;
 
 						if( heard.CanSee( this ) && (m_NoSpeechLOS || !heard.Player || heard.InLOS( this )) )
 						{
 							if( heard.m_NetState != null )
-								lock (hears)
-									hears.Add( heard );
+								hears.Add( heard );
 
 							if( heard.HandlesOnSpeech( this ) )
-								lock (onSpeech)
-									onSpeech.Add( heard );
+								onSpeech.Add( heard );
 
 							for( int i = 0; i < heard.Items.Count; ++i )
 							{
 								Item item = heard.Items[i];
 
 								if( item.HandlesOnSpeech )
-									lock (onSpeech)
-										onSpeech.Add( item );
+									onSpeech.Add( item );
 
 								if( item is Container )
 									AddSpeechItemsFrom( onSpeech, (Container)item );
@@ -4875,16 +4857,12 @@ namespace Server
 					else if( o is Item )
 					{
 						if( ((Item)o).HandlesOnSpeech )
-							lock (onSpeech)
-								onSpeech.Add(o);
+							onSpeech.Add(o);
 
 						if( o is Container )
 							AddSpeechItemsFrom( onSpeech, (Container)o );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 
@@ -6576,11 +6554,8 @@ namespace Server
 			if( m_Map != null && ns != null )
 			{
 				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
-#if Framework_4_0
-				Parallel.ForEach(eable, o => {
-#else
+
 				foreach ( IEntity o in eable ) {
-#endif
 					if( o is Mobile ) {
 						Mobile m = (Mobile)o;
 
@@ -6593,9 +6568,6 @@ namespace Server
 							ns.Send( item.RemovePacket );
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 			}
@@ -6781,11 +6753,8 @@ namespace Server
 			if( m_Map != null && ns != null )
 			{
 				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
-#if Framework_4_0
-				Parallel.ForEach(eable, o => {
-#else
+
 				foreach ( IEntity o in eable ) {
-#endif
 					if( o is Item ) {
 						Item item = (Item)o;
 
@@ -6819,9 +6788,6 @@ namespace Server
 						}
 					}
 				}
-#if Framework_4_0
-				);
-#endif
 
 				eable.Free();
 			}
@@ -8850,10 +8816,15 @@ namespace Server
 		{
 			get
 			{
-				lock (rpLock) {
-					if (m_RemovePacket == null) {
-						m_RemovePacket = new RemoveMobile(this);
-						m_RemovePacket.SetStatic();
+				if (m_RemovePacket == null)
+				{
+					lock (rpLock)
+					{
+						if (m_RemovePacket == null)
+						{
+							m_RemovePacket = new RemoveMobile(this);
+							m_RemovePacket.SetStatic();
+						}
 					}
 				}
 
@@ -8868,10 +8839,15 @@ namespace Server
 		{
 			get
 			{
-				lock (oplLock) {
-					if( m_OPLPacket == null ) {
-						m_OPLPacket = new OPLInfo( PropertyList );
-						m_OPLPacket.SetStatic();
+				if (m_OPLPacket == null)
+				{
+					lock (oplLock)
+					{
+						if (m_OPLPacket == null)
+						{
+							m_OPLPacket = new OPLInfo(PropertyList);
+							m_OPLPacket.SetStatic();
+						}
 					}
 				}
 
@@ -9109,11 +9085,8 @@ namespace Server
 						IPooledEnumerable<IEntity> eeable = map.GetObjectsInRange( newLocation, Core.GlobalMaxUpdateRange );
 
 						// We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
-#if Framework_4_0
-						Parallel.ForEach(eeable, o => {
-#else
+
 						foreach ( IEntity o in eeable ) {
-#endif
 							if( o is Item )
 							{
 								Item item = (Item)o;
@@ -9129,11 +9102,8 @@ namespace Server
 								Mobile m = (Mobile)o;
 
 								if( !Utility.InUpdateRange( newLocation, m.m_Location ) )
-#if Framework_4_0
-									return;
-#else
 									continue;
-#endif
+
 								bool inOldRange = Utility.InUpdateRange( oldLocation, m.m_Location );
 
 								if( m.m_NetState != null && ( ( isTeleport && ( !m.m_NetState.HighSeas || !m_NoMoveHS ) ) || !inOldRange ) && m.CanSee( this ) )
@@ -9185,9 +9155,6 @@ namespace Server
 								}
 							}
 						}
-#if Framework_4_0
-						);
-#endif
 
 						eeable.Free();
 					}
@@ -10360,11 +10327,17 @@ namespace Server
 		{
 #if Framework_4_0
 			_processing = true;
-			Parallel.ForEach( m_DeltaQueue, m => m.ProcessDelta() );
-			m_DeltaQueue.Clear();
+
+			if (m_DeltaQueue.Count >= 64) {
+				Parallel.ForEach(m_DeltaQueue, m => m.ProcessDelta());
+				m_DeltaQueue.Clear();
+			} else {
+				while (m_DeltaQueueR.Count > 0) m_DeltaQueueR.Dequeue().ProcessDelta();
+			}
+
 			_processing = false;
-			Parallel.ForEach( m_DeltaQueueR, m => m.ProcessDelta() );
-			m_DeltaQueueR.Clear();
+
+			while (m_DeltaQueueR.Count > 0) m_DeltaQueueR.Dequeue().ProcessDelta();
 #else
 			int count = m_DeltaQueue.Count;
 			int index = 0;

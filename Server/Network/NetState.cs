@@ -1052,12 +1052,13 @@ namespace Server.Network {
 
 		public static void FlushAll() {
 #if Framework_4_0
-			Parallel.ForEach( m_Instances, ns => ns.Flush() );
-#else
-			for ( int i = 0; i < m_Instances.Count; ++i ) {
-				m_Instances[i].Flush();
-			}
+			if (m_Instances.Count >= 128)
+				Parallel.ForEach(m_Instances, ns => ns.Flush());
+			else
 #endif
+				for ( int i = 0; i < m_Instances.Count; ++i ) {
+					m_Instances[i].Flush();
+				}
 		}
 
 		private static int m_CoalesceSleep = -1;
@@ -1073,18 +1074,18 @@ namespace Server.Network {
 
 		private long m_NextCheckActivity;
 
-		public bool CheckAlive() {
+		public void CheckAlive(long curTicks) {
 			if ( m_Socket == null )
-				return false;
+				return;
 
-			if (m_NextCheckActivity - Core.TickCount >= 0) {
-				return true;
+			if (m_NextCheckActivity - curTicks >= 0) {
+				return;
 			}
 
 			Console.WriteLine( "Client: {0}: Disconnecting due to inactivity...", this );
 
 			Dispose();
-			return false;
+			return;
 		}
 
 		public static void TraceException( Exception ex ) {
@@ -1172,13 +1173,15 @@ namespace Server.Network {
 
 		public static void CheckAllAlive() {
 			try {
+				long curTicks = Core.TickCount;
 #if Framework_4_0
-				Parallel.ForEach( m_Instances, ns => ns.CheckAlive() );
-#else
-				for ( int i = 0; i < m_Instances.Count; ++i ) {
-					m_Instances[i].CheckAlive();
-				}
+				if (m_Instances.Count >= 512)
+					Parallel.ForEach(m_Instances, ns => ns.CheckAlive(curTicks));
+				else
 #endif
+					for ( int i = 0; i < m_Instances.Count; ++i ) {
+						m_Instances[i].CheckAlive(curTicks);
+					}
 			} catch ( Exception ex ) {
 				TraceException( ex );
 			}
