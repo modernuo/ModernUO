@@ -3308,7 +3308,7 @@ namespace Server
 #if Framework_4_0
 			_processing = true;
 
-			if (m_DeltaQueue.Count >= 64) {
+			if (m_DeltaQueue.Count >= 512) {
 				Parallel.ForEach(m_DeltaQueue, i => i.ProcessDelta());
 			} else {
 				for (int i = 0; i < m_DeltaQueue.Count; i++) m_DeltaQueue[i].ProcessDelta();

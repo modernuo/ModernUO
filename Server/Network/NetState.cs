@@ -1052,7 +1052,7 @@ namespace Server.Network {
 
 		public static void FlushAll() {
 #if Framework_4_0
-			if (m_Instances.Count >= 128)
+			if (m_Instances.Count >= 1024)
 				Parallel.ForEach(m_Instances, ns => ns.Flush());
 			else
 #endif
@@ -1175,7 +1175,7 @@ namespace Server.Network {
 			try {
 				long curTicks = Core.TickCount;
 #if Framework_4_0
-				if (m_Instances.Count >= 512)
+				if (m_Instances.Count >= 1024)
 					Parallel.ForEach(m_Instances, ns => ns.CheckAlive(curTicks));
 				else
 #endif
