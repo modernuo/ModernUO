@@ -228,6 +228,7 @@ namespace Server.Network {
 		}
 	}
 
+	[Serializable]
 	public sealed class CapacityExceededException : Exception {
 		public CapacityExceededException()
 			: base( "Too much data pending." ) {
