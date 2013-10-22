@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>Output\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -1157,7 +1157,7 @@
     <Compile Include="Items\Champion Artifacts\Shared\DetectiveBoots.cs" />
     <Compile Include="Items\Champion Artifacts\Shared\DjinnisRing.cs" />
     <Compile Include="Items\Champion Artifacts\Shared\EmbroideredOakLeafCloak.cs" />
-    <Compile Include="Items\Champion Artifacts\Shared\GuantletsOfAnger.cs" />
+    <Compile Include="Items\Champion Artifacts\Shared\GauntletsOfAnger.cs" />
     <Compile Include="Items\Champion Artifacts\Shared\LieutenantOfTheBritannianRoyalGuard.cs" />
     <Compile Include="Items\Champion Artifacts\Shared\OblivionsNeedle.cs" />
     <Compile Include="Items\Champion Artifacts\Shared\RoyalGuardSurvivalKnife.cs" />
