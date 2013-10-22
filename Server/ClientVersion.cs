@@ -98,7 +98,7 @@ namespace Server
 			m_Patch = pat;
 			m_Type = type;
 
-			m_SourceString = ToString();
+			m_SourceString = _ToStringImpl();
 		}
 
 		public static bool operator == ( ClientVersion l, ClientVersion r )
@@ -153,34 +153,39 @@ namespace Server
 				&& m_Type == v.m_Type;
 		}
 
-		public override string ToString()
+		private string _ToStringImpl()
 		{
-			StringBuilder builder = new StringBuilder( 16 );
+			StringBuilder builder = new StringBuilder(16);
 
-			builder.Append( m_Major );
-			builder.Append( '.' );
-			builder.Append( m_Minor );
-			builder.Append( '.' );
-			builder.Append( m_Revision );
+			builder.Append(m_Major);
+			builder.Append('.');
+			builder.Append(m_Minor);
+			builder.Append('.');
+			builder.Append(m_Revision);
 
-			if( m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6 )	//Anything before 5.0.7
+			if (m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6)	//Anything before 5.0.7
 			{
-				if( m_Patch > 0 )
-					builder.Append( (char)('a' + (m_Patch - 1)) );
+				if (m_Patch > 0)
+					builder.Append((char)('a' + (m_Patch - 1)));
 			}
 			else
 			{
-				builder.Append( '.' );
-				builder.Append( m_Patch );
+				builder.Append('.');
+				builder.Append(m_Patch);
 			}
 
-			if ( m_Type != ClientType.Regular )
+			if (m_Type != ClientType.Regular)
 			{
-				builder.Append( ' ' );
-				builder.Append( m_Type.ToString() );
+				builder.Append(' ');
+				builder.Append(m_Type.ToString());
 			}
 
 			return builder.ToString();
+		}
+
+		public override string ToString()
+		{
+			return _ToStringImpl();
 		}
 
 		public ClientVersion( string fmt )

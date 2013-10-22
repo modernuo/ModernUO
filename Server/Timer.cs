@@ -410,7 +410,7 @@ namespace Server
 			get{ return true; }
 		}
 
-		public virtual void RegCreation()
+		public void RegCreation()
 		{
 			TimerProfile prof = GetProfile();
 

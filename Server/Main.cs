@@ -356,7 +356,7 @@ namespace Server
 			}
 		}
 
-		private enum ConsoleEventType
+		internal enum ConsoleEventType
 		{
 			CTRL_C_EVENT,
 			CTRL_BREAK_EVENT,
@@ -365,18 +365,20 @@ namespace Server
 			CTRL_SHUTDOWN_EVENT
 		}
 
-		private delegate bool ConsoleEventHandler( ConsoleEventType type );
-		private static ConsoleEventHandler m_ConsoleEventHandler;
+		internal delegate bool ConsoleEventHandler( ConsoleEventType type );
+		internal static ConsoleEventHandler m_ConsoleEventHandler;
 
-		[DllImport( "Kernel32" )]
-		private static extern bool SetConsoleCtrlHandler( ConsoleEventHandler callback, bool add );
+		internal class UnsafeNativeMethods {
+			[DllImport("Kernel32")]
+			internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
+		}
 
 		private static bool OnConsoleEvent( ConsoleEventType type )
 		{
 			if( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
 				return true;
 			
-			Kill();	//Kill -> HandleClosed will hadnle waiting for the completion of flushign to disk
+			Kill();	//Kill -> HandleClosed will handle waiting for the completion of flushing to disk
 
 			return true;
 		}
@@ -530,7 +532,7 @@ namespace Server
 			}
 			else {
 				m_ConsoleEventHandler = new ConsoleEventHandler( OnConsoleEvent );
-				SetConsoleCtrlHandler( m_ConsoleEventHandler, true );
+				UnsafeNativeMethods.SetConsoleCtrlHandler( m_ConsoleEventHandler, true );
 			}
 
 			if ( GCSettings.IsServerGC )

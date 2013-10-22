@@ -20,6 +20,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Server {
 	public static class NativeReader {
@@ -43,26 +44,35 @@ namespace Server {
 	}
 
 	public sealed class NativeReaderWin32 : INativeReader {
-		[DllImport( "kernel32" )]
-		private unsafe static extern int _lread( IntPtr hFile, void *lpBuffer, int wBytes );
+		internal class UnsafeNativeMethods {
+			/*[DllImport("kernel32")]
+			internal unsafe static extern int _lread(IntPtr hFile, void* lpBuffer, int wBytes);*/
+
+			[DllImport("kernel32")]
+			internal unsafe static extern bool ReadFile(IntPtr hFile, void* lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, NativeOverlapped* lpOverlapped);
+		}
 
 		public NativeReaderWin32() {
 		}
 
 		public unsafe void Read( IntPtr ptr, void *buffer, int length ) {
-			_lread( ptr, buffer, length );
+			//UnsafeNativeMethods._lread( ptr, buffer, length );
+			uint lpNumberOfBytesRead = 0;
+			UnsafeNativeMethods.ReadFile(ptr, buffer, (uint)length, ref lpNumberOfBytesRead, null);
 		}
 	}
 
 	public sealed class NativeReaderUnix : INativeReader {
-		[DllImport( "libc" )]
-		private unsafe static extern int read( IntPtr ptr, void *buffer, int length );
+		internal class UnsafeNativeMethods {
+			[DllImport("libc")]
+			internal unsafe static extern int read(IntPtr ptr, void* buffer, int length);
+		}
 
 		public NativeReaderUnix() {
 		}
 
 		public unsafe void Read( IntPtr ptr, void *buffer, int length ) {
-			read( ptr, buffer, length );
+			UnsafeNativeMethods.read( ptr, buffer, length );
 		}
 	}
 }

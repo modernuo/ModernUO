@@ -475,6 +475,7 @@ namespace Server
 	}
 	#endregion
 
+	[Serializable]
 	public class MobileNotConnectedException : Exception
 	{
 		public MobileNotConnectedException( Mobile source, string message )

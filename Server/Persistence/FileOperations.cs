@@ -37,8 +37,10 @@ namespace Server {
 #if !MONO
 		private const FileOptions NoBuffering = ( FileOptions ) 0x20000000;
 
-		[DllImport( "Kernel32", CharSet = CharSet.Auto, SetLastError = true )]
-		private static extern SafeFileHandle CreateFile( string lpFileName, int dwDesiredAccess, FileShare dwShareMode, IntPtr securityAttrs, FileMode dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile );
+		internal static class UnsafeNativeMethods {
+			[DllImport("Kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+			internal static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, FileShare dwShareMode, IntPtr securityAttrs, FileMode dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
+		}
 #endif
 
 		private static int bufferSize = 1 * MB;
@@ -101,7 +103,7 @@ namespace Server {
 				return new FileStream( path, mode, access, share, bufferSize, options );
 			}
 
-			SafeFileHandle fileHandle = CreateFile( path, (int) access, share, IntPtr.Zero, mode, (int) options, IntPtr.Zero );
+			SafeFileHandle fileHandle = UnsafeNativeMethods.CreateFile(path, (int)access, share, IntPtr.Zero, mode, (int)options, IntPtr.Zero);
 
 			if ( fileHandle.IsInvalid ) {
 				throw new IOException();

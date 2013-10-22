@@ -116,6 +116,7 @@ namespace Server {
 		private int _Index = 0;
 
 		private object _sync = new object();
+		private object _syncB = new object();
 
 		public CSPRandom() {
 			_CSP.GetBytes(_Working);
@@ -127,7 +128,7 @@ namespace Server {
 				if (_Index + c < BUFFER_SIZE)
 					return;
 
-				lock (_Buffer) {
+				lock (_syncB) {
 					byte[] b = _Working;
 					_Working = _Buffer;
 					_Buffer = b;
@@ -138,7 +139,7 @@ namespace Server {
 		}
 
 		private void Fill(object o) {
-			lock (_Buffer)
+			lock (_syncB)
 				lock (_CSP)
 					_CSP.GetBytes(_Buffer);
 		}
@@ -214,11 +215,13 @@ namespace Server {
 	}
 
 	public sealed class RDRand32 : IRandomImpl, IHardwareRNG {
-		[DllImport("rdrand32")]
-		private static extern RDRandError rdrand_32(ref uint rand, bool retry);
+		internal class SafeNativeMethods {
+			[DllImport("rdrand32")]
+			internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
 
-		[DllImport("rdrand32")]
-		private static extern RDRandError rdrand_get_bytes(int n, byte[] buffer);
+			[DllImport("rdrand32")]
+			internal static extern RDRandError rdrand_get_bytes(int n, byte[] buffer);
+		}
 
 		private static int BUFFER_SIZE = 0x10000;
 		private static int LARGE_REQUEST = 0x40;
@@ -229,15 +232,16 @@ namespace Server {
 		private int _Index = 0;
 
 		private object _sync = new object();
+		private object _syncB = new object();
 
 		public RDRand32() {
-			rdrand_get_bytes(BUFFER_SIZE, _Working);
+			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
 
 		public bool IsSupported() {
 			uint r = 0;
-			return rdrand_32(ref r, true) == RDRandError.Success;
+			return SafeNativeMethods.rdrand_32(ref r, true) == RDRandError.Success;
 		}
 
 		private void CheckSwap(int c) {
@@ -245,7 +249,7 @@ namespace Server {
 				if (_Index + c < BUFFER_SIZE)
 					return;
 
-				lock (_Buffer) {
+				lock (_syncB) {
 					byte[] b = _Working;
 					_Working = _Buffer;
 					_Buffer = b;
@@ -256,8 +260,8 @@ namespace Server {
 		}
 
 		private void Fill(object o) {
-			lock (_Buffer)
-				rdrand_get_bytes(BUFFER_SIZE, _Buffer);
+			lock (_syncB)
+				SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Buffer);
 		}
 
 		private void _GetBytes(byte[] b) {
@@ -299,7 +303,7 @@ namespace Server {
 			int c = b.Length;
 
 			if (c >= LARGE_REQUEST) {
-				rdrand_get_bytes(c, b);
+				SafeNativeMethods.rdrand_get_bytes(c, b);
 				return;
 			}
 			_GetBytes(b);
@@ -330,11 +334,13 @@ namespace Server {
 	}
 
 	public sealed class RDRand64 : IRandomImpl, IHardwareRNG {
-		[DllImport("rdrand64")]
-		private static extern RDRandError rdrand_64(ref ulong rand, bool retry);
+		internal class SafeNativeMethods {
+			[DllImport("rdrand64")]
+			internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
 
-		[DllImport("rdrand64")]
-		private static extern RDRandError rdrand_get_bytes(int n, byte[] buffer);
+			[DllImport("rdrand64")]
+			internal static extern RDRandError rdrand_get_bytes(int n, byte[] buffer);
+		}
 
 		private static int BUFFER_SIZE = 0x10000;
 		private static int LARGE_REQUEST = 0x40;
@@ -345,15 +351,16 @@ namespace Server {
 		private int _Index = 0;
 
 		private object _sync = new object();
+		private object _syncB = new object();
 
 		public RDRand64() {
-			rdrand_get_bytes(BUFFER_SIZE, _Working);
+			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
 
 		public bool IsSupported() {
 			ulong r = 0;
-			return rdrand_64(ref r, true) == RDRandError.Success;
+			return SafeNativeMethods.rdrand_64(ref r, true) == RDRandError.Success;
 		}
 
 		private void CheckSwap(int c) {
@@ -361,7 +368,7 @@ namespace Server {
 				if (_Index + c < BUFFER_SIZE)
 					return;
 
-				lock (_Buffer) {
+				lock (_syncB) {
 					byte[] b = _Working;
 					_Working = _Buffer;
 					_Buffer = b;
@@ -372,8 +379,8 @@ namespace Server {
 		}
 
 		private void Fill(object o) {
-			lock (_Buffer)
-				rdrand_get_bytes(BUFFER_SIZE, _Buffer);
+			lock (_syncB)
+				SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Buffer);
 		}
 
 		private void _GetBytes(byte[] b) {
@@ -415,7 +422,7 @@ namespace Server {
 			int c = b.Length;
 
 			if (c >= LARGE_REQUEST) {
-				rdrand_get_bytes(c, b);
+				SafeNativeMethods.rdrand_get_bytes(c, b);
 				return;
 			}
 			_GetBytes(b);

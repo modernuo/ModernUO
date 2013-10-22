@@ -796,7 +796,7 @@ namespace Server
 		}
 	}
 
-	public class FastWalkEventArgs
+	public class FastWalkEventArgs : EventArgs
 	{
 		private NetState m_State;
 		private bool m_Blocked;
