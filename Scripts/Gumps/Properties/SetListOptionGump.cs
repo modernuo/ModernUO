@@ -1,6 +1,7 @@
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using Server;
 using Server.Network;
 using Server.Commands;
@@ -12,7 +13,7 @@ namespace Server.Gumps
 		protected PropertyInfo m_Property;
 		protected Mobile m_Mobile;
 		protected object m_Object;
-		protected Stack m_Stack;
+		protected Stack<StackEntry> m_Stack;
 		protected int m_Page;
 		protected ArrayList m_List;
 
@@ -67,7 +68,7 @@ namespace Server.Gumps
 
 		protected object[] m_Values;
 
-		public SetListOptionGump( PropertyInfo prop, Mobile mobile, object o, Stack stack, int propspage, ArrayList list, string[] names, object[] values ) : base( GumpOffsetX, GumpOffsetY )
+		public SetListOptionGump( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage, ArrayList list, string[] names, object[] values ) : base( GumpOffsetX, GumpOffsetY )
 		{
 			m_Property = prop;
 			m_Mobile = mobile;

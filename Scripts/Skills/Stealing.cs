@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
 using Server.Targeting;
@@ -424,7 +425,7 @@ namespace Server.SkillHandlers
 			m_Expires = DateTime.UtcNow + StealTime;
 		}
 
-		private static Queue m_Queue = new Queue();
+		private static Queue<StolenItem> m_Queue = new Queue<StolenItem>();
 
 		public static void Add( Item item, Mobile thief, Mobile victim )
 		{
@@ -478,7 +479,7 @@ namespace Server.SkillHandlers
 		{
 			while ( m_Queue.Count > 0 )
 			{
-				StolenItem si = (StolenItem) m_Queue.Peek();
+				StolenItem si = m_Queue.Peek();
 
 				if ( si.IsExpired )
 					m_Queue.Dequeue();

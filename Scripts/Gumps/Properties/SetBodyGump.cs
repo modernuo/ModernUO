@@ -1,7 +1,7 @@
 using System;
-using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Server;
 using Server.Network;
 using Server.HuePickers;
@@ -14,7 +14,7 @@ namespace Server.Gumps
 		private PropertyInfo m_Property;
 		private Mobile m_Mobile;
 		private object m_Object;
-		private Stack m_Stack;
+		private Stack<StackEntry> m_Stack;
 		private int m_Page;
 		private ArrayList m_List;
 		private int m_OurPage;
@@ -25,7 +25,7 @@ namespace Server.Gumps
 		private const int SelectedColor32 = 0x8080FF;
 		private const int TextColor32 = 0xFFFFFF;
 
-		public SetBodyGump( PropertyInfo prop, Mobile mobile, object o, Stack stack, int page, ArrayList list )
+		public SetBodyGump( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list )
 			: this( prop, mobile, o, stack, page, list, 0, null, ModelBodyType.Invalid )
 		{
 		}
@@ -48,7 +48,7 @@ namespace Server.Gumps
 			AddHtml( x + 35, y, 200, 20, Color( text, isSelection ? SelectedColor32 : LabelColor32 ), false, false );
 		}
 
-		public SetBodyGump( PropertyInfo prop, Mobile mobile, object o, Stack stack, int page, ArrayList list, int ourPage, ArrayList ourList, ModelBodyType ourType )
+		public SetBodyGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list, int ourPage, ArrayList ourList, ModelBodyType ourType)
 			: base( 20, 30 )
 		{
 			m_Property = prop;

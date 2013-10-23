@@ -2028,7 +2028,7 @@ namespace Server.Mobiles
 			return (res == MoveResult.Success || res == MoveResult.SuccessAutoTurn || (badStateOk && res == MoveResult.BadState));
 		}
 
-		private static Queue m_Obstacles = new Queue();
+		private static Queue<Item> m_Obstacles = new Queue<Item>();
 
 		public virtual MoveResult DoMoveImpl(Direction d)
 		{
@@ -2117,7 +2117,7 @@ namespace Server.Mobiles
 
 						while (m_Obstacles.Count > 0)
 						{
-							Item item = (Item)m_Obstacles.Dequeue();
+							Item item = m_Obstacles.Dequeue();
 
 							if (item is BaseDoor)
 							{

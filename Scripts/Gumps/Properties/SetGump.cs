@@ -1,6 +1,7 @@
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using Server;
 using Server.Network;
 using Server.HuePickers;
@@ -13,7 +14,7 @@ namespace Server.Gumps
 		private PropertyInfo m_Property;
 		private Mobile m_Mobile;
 		private object m_Object;
-		private Stack m_Stack;
+		private Stack<StackEntry> m_Stack;
 		private int m_Page;
 		private ArrayList m_List;
 
@@ -59,7 +60,7 @@ namespace Server.Gumps
 		private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
 		private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
 
-		public SetGump( PropertyInfo prop, Mobile mobile, object o, Stack stack, int page, ArrayList list ) : base( GumpOffsetX, GumpOffsetY )
+		public SetGump( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list ) : base( GumpOffsetX, GumpOffsetY )
 		{
 			m_Property = prop;
 			m_Mobile = mobile;
@@ -160,11 +161,11 @@ namespace Server.Gumps
 			private PropertyInfo m_Property;
 			private Mobile m_Mobile;
 			private object m_Object;
-			private Stack m_Stack;
+			private Stack<StackEntry> m_Stack;
 			private int m_Page;
 			private ArrayList m_List;
 
-			public InternalPicker( PropertyInfo prop, Mobile mobile, object o, Stack stack, int page, ArrayList list ) : base( ((IHued)o).HuedItemID )
+			public InternalPicker( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list ) : base( ((IHued)o).HuedItemID )
 			{
 				m_Property = prop;
 				m_Mobile = mobile;

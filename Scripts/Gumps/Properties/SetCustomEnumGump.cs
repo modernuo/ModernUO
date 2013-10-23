@@ -1,6 +1,7 @@
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using Server;
 using Server.Network;
 using Server.Commands;
@@ -11,7 +12,7 @@ namespace Server.Gumps
 	{
 		private string[] m_Names;
 
-		public SetCustomEnumGump( PropertyInfo prop, Mobile mobile, object o, Stack stack, int propspage, ArrayList list, string[] names ) : base( prop, mobile, o, stack, propspage, list, names, null )
+		public SetCustomEnumGump( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage, ArrayList list, string[] names ) : base( prop, mobile, o, stack, propspage, list, names, null )
 		{
 			m_Names = names;
 		}

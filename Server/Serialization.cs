@@ -1410,7 +1410,7 @@ namespace Server
 		private BinaryWriter m_Bin;
 		private FileStream m_File;
 
-		private Queue m_WriteQueue;
+		private Queue<MemoryStream> m_WriteQueue;
 		private Thread m_WorkerThread;
 
 		public AsyncWriter( string filename, bool prefix )
@@ -1422,7 +1422,7 @@ namespace Server
 		{
 			PrefixStrings = prefix;
 			m_Closed = false;
-			m_WriteQueue = Queue.Synchronized( new Queue() );
+			m_WriteQueue = new Queue<MemoryStream>();
 			BufferSize = buffSize;
 
 			m_File = new FileStream( filename, FileMode.Create, FileAccess.Write, FileShare.None );
@@ -1432,7 +1432,8 @@ namespace Server
 
 		private void Enqueue( MemoryStream mem )
 		{
-			m_WriteQueue.Enqueue( mem );
+			lock (m_WriteQueue)
+				m_WriteQueue.Enqueue( mem );
 
 			if( m_WorkerThread == null || !m_WorkerThread.IsAlive )
 			{
@@ -1454,13 +1455,20 @@ namespace Server
 			public void Worker()
 			{
 				AsyncWriter.m_ThreadCount++;
-				while( m_Owner.m_WriteQueue.Count > 0 )
-				{
-					MemoryStream mem = (MemoryStream)m_Owner.m_WriteQueue.Dequeue();
 
-					if( mem != null && mem.Length > 0 )
-						mem.WriteTo( m_Owner.m_File );
-				}
+				int lastCount = 0;
+
+				do {
+					MemoryStream mem = null;
+
+					lock (m_Owner.m_WriteQueue) {
+						if ((lastCount = m_Owner.m_WriteQueue.Count) > 0)
+							mem = m_Owner.m_WriteQueue.Dequeue();
+					}
+
+					if (mem != null && mem.Length > 0)
+						mem.WriteTo(m_Owner.m_File);
+				} while (lastCount > 1);
 
 				if( m_Owner.m_Closed )
 					m_Owner.m_File.Close();

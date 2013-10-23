@@ -1,6 +1,7 @@
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using Server;
 using Server.Commands.Generic;
 using Server.Network;
@@ -11,6 +12,18 @@ using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Gumps
 {
+	public class StackEntry
+	{
+		public object m_Object;
+		public PropertyInfo m_Property;
+
+		public StackEntry(object obj, PropertyInfo prop)
+		{
+			m_Object = obj;
+			m_Property = prop;
+		}
+	}
+
 	public class PropertiesGump : Gump
 	{
 		private ArrayList m_List;
@@ -18,7 +31,7 @@ namespace Server.Gumps
 		private Mobile m_Mobile;
 		private object m_Object;
 		private Type m_Type;
-		private Stack m_Stack;
+		private Stack<StackEntry> m_Stack;
 
 		public static readonly bool OldStyle = PropsConfig.OldStyle;
 
@@ -86,7 +99,7 @@ namespace Server.Gumps
 			Initialize( 0 );
 		}
 
-		public PropertiesGump( Mobile mobile, object o, Stack stack, StackEntry parent ) : base( GumpOffsetX, GumpOffsetY )
+		public PropertiesGump( Mobile mobile, object o, Stack<StackEntry> stack, StackEntry parent ) : base( GumpOffsetX, GumpOffsetY )
 		{
 			m_Mobile = mobile;
 			m_Object = o;
@@ -97,7 +110,7 @@ namespace Server.Gumps
 			if ( parent != null )
 			{
 				if ( m_Stack == null )
-					m_Stack = new Stack();
+					m_Stack = new Stack<StackEntry>();
 
 				m_Stack.Push( parent );
 			}
@@ -105,7 +118,7 @@ namespace Server.Gumps
 			Initialize( 0 );
 		}
 
-		public PropertiesGump( Mobile mobile, object o, Stack stack, ArrayList list, int page ) : base( GumpOffsetX, GumpOffsetY )
+		public PropertiesGump( Mobile mobile, object o, Stack<StackEntry> stack, ArrayList list, int page ) : base( GumpOffsetX, GumpOffsetY )
 		{
 			m_Mobile = mobile;
 			m_Object = o;
@@ -231,18 +244,6 @@ namespace Server.Gumps
 		public static string[] m_PoisonNames = new string[]{ "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
 		public static object[] m_PoisonValues = new object[]{ null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
-		public class StackEntry
-		{
-			public object m_Object;
-			public PropertyInfo m_Property;
-
-			public StackEntry( object obj, PropertyInfo prop )
-			{
-				m_Object = obj;
-				m_Property = prop;
-			}
-		}
-
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
 			Mobile from = state.Mobile;
@@ -259,7 +260,7 @@ namespace Server.Gumps
 				{
 					if ( m_Stack != null && m_Stack.Count > 0 )
 					{
-						StackEntry entry = (StackEntry)m_Stack.Pop();
+						StackEntry entry = m_Stack.Pop();
 
 						from.SendGump( new PropertiesGump( from, entry.m_Object, m_Stack, null ) );
 					}
@@ -356,7 +357,7 @@ namespace Server.Gumps
 			return type.IsDefined( typeofCustomEnum, false );
 		}
 
-		public static void OnValueChanged( object obj, PropertyInfo prop, Stack stack )
+		public static void OnValueChanged( object obj, PropertyInfo prop, Stack<StackEntry> stack )
 		{
 			if ( stack == null || stack.Count == 0 )
 				return;
@@ -364,7 +365,7 @@ namespace Server.Gumps
 			if ( !prop.PropertyType.IsValueType )
 				return;
 
-			StackEntry peek = (StackEntry)stack.Peek();
+			StackEntry peek = stack.Peek();
 
 			if ( peek.m_Property.CanWrite )
 				peek.m_Property.SetValue( peek.m_Object, obj, null );

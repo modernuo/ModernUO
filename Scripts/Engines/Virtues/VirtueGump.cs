@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Mobiles;
@@ -11,7 +11,7 @@ namespace Server
 
 	public class VirtueGump : Gump
 	{
-		private static Hashtable m_Callbacks = new Hashtable();
+		private static Dictionary<int, OnVirtueUsed> m_Callbacks = new Dictionary<int, OnVirtueUsed>();
 
 		public static void Initialize()
 		{
@@ -38,7 +38,9 @@ namespace Server
 				return;
 			}
 
-			OnVirtueUsed callback = (OnVirtueUsed)m_Callbacks[e.GumpID];
+			OnVirtueUsed callback = null;
+			
+			m_Callbacks.TryGetValue(e.GumpID, out callback);
 
 			if ( callback != null )
 				callback( e.Beholder );

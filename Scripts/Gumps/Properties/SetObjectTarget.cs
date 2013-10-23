@@ -1,6 +1,7 @@
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using Server;
 using Server.Items;
 using Server.Targeting;
@@ -13,12 +14,12 @@ namespace Server.Gumps
 		private PropertyInfo m_Property;
 		private Mobile m_Mobile;
 		private object m_Object;
-		private Stack m_Stack;
+		private Stack<StackEntry> m_Stack;
 		private Type m_Type;
 		private int m_Page;
 		private ArrayList m_List;
 
-		public SetObjectTarget( PropertyInfo prop, Mobile mobile, object o, Stack stack, Type type, int page, ArrayList list ) : base( -1, false, TargetFlags.None )
+		public SetObjectTarget( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page, ArrayList list ) : base( -1, false, TargetFlags.None )
 		{
 			m_Property = prop;
 			m_Mobile = mobile;
