@@ -31,7 +31,7 @@ namespace Server.Items
 			set { m_TeleOffset = value; }
 		}
 
-		[CommandProperty( AccessLevel.Counselor )]
+		[CommandProperty(AccessLevel.GameMaster)]
 		public Point3D TelePoint
 		{
 			get   { return new Point3D( Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z ); }

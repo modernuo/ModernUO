@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0xC19, 0xC1a )]
+	[Flipable( 0xC19, 0xC1A )]
 	public class BrokenFallenChairComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076264; } } // Broken Fallen Chair
@@ -19,7 +19,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.WriteEncodedInt( 0 ); // version
+			writer.WriteEncodedInt( 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -27,6 +27,9 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
+
+			if (version < 1 && ItemID == 0xC17)
+				ItemID = 0xC19;
 		}
 	}
 

@@ -23,6 +23,7 @@ namespace Server.Misc
 		 */
 
 		public static readonly string EmailServer = null;
+		public static readonly int EmailPort = 25;
 		public static readonly string FromAddress = null;
 
 		public static readonly string CrashAddresses = null;
@@ -43,13 +44,21 @@ namespace Server.Misc
 		public static void Configure()
 		{
 			if ( EmailServer != null )
-				_Client = new SmtpClient( EmailServer );
+				_Client = new SmtpClient( EmailServer, EmailPort );
 		}
 
 		public static bool Send( MailMessage message )
 		{
 			try
 			{
+				// .NET relies on the MTA to generate Message-ID header. Not all MTAs will add this header.
+
+				DateTime now = DateTime.UtcNow;
+				string messageID = String.Format("<{0}.{1}@{2}>", now.ToString("yyyyMMdd"), now.ToString("HHmmssff"), EmailServer );
+				message.Headers.Add("Message-ID", messageID );
+
+				message.Headers.Add("X-Mailer", "RunUO");
+
 				lock ( _Client ) {
 					_Client.Send( message );
 				}

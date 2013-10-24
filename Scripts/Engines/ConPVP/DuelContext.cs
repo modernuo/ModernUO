@@ -494,6 +494,9 @@ namespace Server.Engines.ConPVP
 
 				pl.Eliminated = true;
 
+				if ( mob.Poison != null )
+					mob.Poison = null;
+
 				Requip( mob, corpse );
 				DelayBounce( TimeSpan.FromSeconds( 4.0 ), mob, corpse );
 
