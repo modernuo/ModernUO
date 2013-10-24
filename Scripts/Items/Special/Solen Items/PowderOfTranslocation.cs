@@ -29,8 +29,6 @@ namespace Server.Items
 			Amount = amount;
 		}
 
-		
-
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( from.InRange( this.GetWorldLocation(), 2 ) )

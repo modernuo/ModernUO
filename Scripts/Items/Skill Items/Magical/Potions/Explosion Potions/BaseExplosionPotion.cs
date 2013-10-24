@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Network;
 using Server.Targeting;
@@ -61,7 +62,9 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		private ArrayList m_Users;
+		public List<Mobile> Users { get { return m_Users; } }
+
+		private List<Mobile> m_Users;
 
 		public override void Drink( Mobile from )
 		{
@@ -80,7 +83,7 @@ namespace Server.Items
 			from.RevealingAction();
 
 			if ( m_Users == null )
-				m_Users = new ArrayList();
+				m_Users = new List<Mobile>();
 
 			if ( !m_Users.Contains( from ) )
 				m_Users.Add( from );
@@ -231,7 +234,7 @@ namespace Server.Items
 
 			for ( int i = 0; m_Users != null && i < m_Users.Count; ++i )
 			{
-				Mobile m = (Mobile)m_Users[i];
+				Mobile m = m_Users[i];
 				ThrowTarget targ = m.Target as ThrowTarget;
 
 				if ( targ != null && targ.Potion == this )
