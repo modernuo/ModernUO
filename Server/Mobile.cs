@@ -4510,7 +4510,7 @@ namespace Server
 									trg = new Entity(Serial.Zero, item.Location, map);
 								else
 									trg = new Entity(((Item)root).Serial, ((Item)root).Location, map);
-=
+
 								p = Packet.Acquire(new DragEffect(this, trg, item.ItemID, item.Hue, item.Amount));
 							}
 

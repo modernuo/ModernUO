@@ -112,32 +112,39 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-#if false && !MONO
-		[DllImport("kernel32")]
-		private static extern long GetTickCount64();
-#endif
-
-		/* DateTime.Now and DateTime.UtcNow depend on the system time which is undesirable.
+		/* DateTime.Now and DateTime.UtcNow are based on actual system clock time.
+		 * The resolution is acceptable but large clock jumps are possible and cause issues.
+		 * GetTickCount and GetTickCount64 have poor resolution.
 		 * GetTickCount64 is unavailable on Windows XP and Windows Server 2003.
-		 * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution,
-		 * but expensive to call and unreliable with certain system configurations.
+		 * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
+		 * somewhat expensive to call and unreliable with certain system configurations.
 		 */
 
-		/* The following implementation is an effective substitute for GetTickCount64 that
+		/* The following implementation contains an effective substitute for GetTickCount64 that
 		 * is reliable as long as it is retrieved once every 2^32 ms (~49 days).
 		 */
 
-#if Framework_4_0
+		/* We don't really need this, but it may be useful in the future.
 		private static ThreadLocal<long> _HighOrder = new ThreadLocal<long>();
 		private static ThreadLocal<uint> _LastTickCount = new ThreadLocal<uint>();
+		*/
 
+		private static readonly bool _HighRes = Stopwatch.IsHighResolution;
 		private static readonly double _Frequency = 1000.0 / Stopwatch.Frequency; 
 
 		public static long TickCount {
 			get {
-				if (Stopwatch.IsHighResolution) // TODO: Unreliable with certain system configurations.
-					return (long)((double)Stopwatch.GetTimestamp() * _Frequency);
+				long t = 0;
 
+				// TODO: Unreliable with certain system configurations.
+				if (_HighRes)
+					SafeNativeMethods.QueryPerformanceCounter(out t);
+				else
+					t = DateTime.UtcNow.Ticks;
+
+				return (long)((double)t * _Frequency);
+
+				/* We don't really need this, but it may be useful in the future.
 				uint t = (uint)Environment.TickCount;
 
 				if (_LastTickCount.Value > t) // Wrapped
@@ -146,37 +153,9 @@ namespace Server
 				_LastTickCount.Value = t;
 				
 				return _HighOrder.Value | _LastTickCount.Value;
+				*/
 			}
 		}
-#else
-		private static long _HighOrder;
-		private static uint _LastTickCount;
-
-		private static object _TickSync = new object();
-
-		private static readonly double _Frequency = 1000.0 / Stopwatch.Frequency; 
-
-		public static long TickCount
-		{
-			get
-			{
-				if (Stopwatch.IsHighResolution) // TODO: Unreliable with certain system configurations.
-					return (long)((double)Stopwatch.GetTimestamp() * _Frequency);
-
-				lock (_TickSync)
-				{
-					uint t = (uint)Environment.TickCount;
-
-					if (_LastTickCount > t) // Wrapped
-						_HighOrder += 0x100000000;
-
-					_LastTickCount = t;
-
-					return _HighOrder | _LastTickCount;
-				}
-			}
-		}
-#endif
 
 #if Framework_4_0
 		public static readonly bool Is64Bit = Environment.Is64BitProcess;
@@ -367,6 +346,11 @@ namespace Server
 
 		internal delegate bool ConsoleEventHandler( ConsoleEventType type );
 		internal static ConsoleEventHandler m_ConsoleEventHandler;
+
+		internal class SafeNativeMethods {
+			[DllImport("kernel32")]
+			internal static extern bool QueryPerformanceCounter(out long value);
+		}
 
 		internal class UnsafeNativeMethods {
 			[DllImport("Kernel32")]
