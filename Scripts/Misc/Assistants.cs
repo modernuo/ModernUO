@@ -17,8 +17,8 @@ namespace Server.Misc
 			public static readonly TimeSpan DisconnectDelay = TimeSpan.FromSeconds(15.0);
 
 			public const string WarningMessage = "The server was unable to negotiate features with your assistant. "
-								+ "You must download and run an updated version of <A HREF=\"http://www.runuo.com/products/assistuo\">AssistUO</A>"
-								+ " or <A HREF=\"http://www.runuo.com/products/razor\">Razor</A>."
+								+ "You must download and run an updated version of <A HREF=\"http://uosteam.com\">UOSteam</A>"
+								+ " or <A HREF=\"https://bitbucket.org/msturgill/razor-releases/downloads\">Razor</A>."
 								+ "<BR><BR>Make sure you've checked the option <B>Negotiate features with server</B>, "
 								+ "once you have this box checked you may log in and play normally."
 								+ "<BR><BR>You will be disconnected shortly.";
