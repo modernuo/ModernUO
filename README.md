@@ -14,3 +14,5 @@ Typical Linux Build (MONO)
 
 
 Latest Razor builds can be found at https://bitbucket.org/msturgill/razor-releases/downloads
+
+Latest UOSteam builds (previously AssistUO) can be found at http://uosteam.com
