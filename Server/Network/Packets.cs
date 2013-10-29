@@ -2831,7 +2831,7 @@ namespace Server.Network
 
 			if ( acct != null && acct.Limit >= 6 )
 			{
-				flags |= FeatureFlags.Unk7;
+				flags |= FeatureFlags.LiveAccount;
 				flags &= ~FeatureFlags.UOTD;
 
 				if ( acct.Limit > 6 )
