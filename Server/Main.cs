@@ -132,11 +132,12 @@ namespace Server
 		public static long TickCount {
 			get {
 				long t = 0;
-
+#if !MONO
 				// TODO: Unreliable with certain system configurations.
 				if (_HighRes)
 					SafeNativeMethods.QueryPerformanceCounter(out t);
 				else
+#endif
 					t = DateTime.UtcNow.Ticks;
 
 				return (long)((double)t * _Frequency);
