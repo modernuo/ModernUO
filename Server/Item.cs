@@ -22,10 +22,8 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-#if Framework_4_0
 using System.Linq;
 using System.Threading.Tasks;
-#endif
 using Server.Network;
 using Server.Items;
 using Server.ContextMenus;
@@ -3305,7 +3303,6 @@ namespace Server
 
 		public static void ProcessDeltaQueue()
 		{
-#if Framework_4_0
 			_processing = true;
 
 			if (m_DeltaQueue.Count >= 512) {
@@ -3317,17 +3314,6 @@ namespace Server
 			m_DeltaQueue.Clear();
 
 			_processing = false;
-#else
-			int count = m_DeltaQueue.Count;
-
-			for (int i = 0; i < m_DeltaQueue.Count; ++i) {
-				m_DeltaQueue[i].ProcessDelta();
-
-				if (i >= count)
-					break;
-			}
-			m_DeltaQueue.Clear();
-#endif
 		}
 
 		public virtual void OnDelete()

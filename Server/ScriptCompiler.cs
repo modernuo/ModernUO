@@ -55,11 +55,7 @@ namespace Server
 		{
 			List<string> list = new List<string>();
 
-#if Framework_4_0
 			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies_4_0.cfg" );
-#else
-			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies.cfg" );
-#endif
 
 			if( File.Exists( path ) )
 			{
@@ -93,14 +89,13 @@ namespace Server
 			AppendCompilerOption( ref sb, "/d:MONO" );
 #endif
 
-			//These two defines are legacy, ie, depreciated.
+			//These three defines are legacy, ie, depreciated.
 			if( Core.Is64Bit )
 				AppendCompilerOption( ref sb, "/d:x64" );
 
 			AppendCompilerOption( ref sb, "/d:Framework_2_0" );
-#if Framework_4_0
+
 			AppendCompilerOption( ref sb, "/d:Framework_4_0" );
-#endif
 
 			return (sb == null ? null : sb.ToString());
 		}

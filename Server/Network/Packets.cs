@@ -23,9 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-#if Framework_4_0
 using System.Threading;
-#endif
 using Server.Accounting;
 using Server.Targeting;
 using Server.Items;
@@ -3357,13 +3355,8 @@ namespace Server.Network
 				return new MobileIncomingOld(beholder, beheld);
 		}
 
-#if Framework_4_0
 		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
 		private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
-#else
-		private static int[] m_DupedLayers = new int[256];
-		private static int m_Version;
-#endif
 
 		public Mobile m_Beheld;
 
@@ -3371,12 +3364,8 @@ namespace Server.Network
 		{
 			m_Beheld = beheld;
 
-#if Framework_4_0
 			int m_Version = ++(m_VersionTL.Value);
 			int[] m_DupedLayers = m_DupedLayersTL.Value;
-#else
-			++m_Version;
-#endif
 
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;
@@ -3474,13 +3463,8 @@ namespace Server.Network
 
 	public sealed class MobileIncomingSA : Packet
 	{
-#if Framework_4_0
 		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
 		private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
-#else
-		private static int[] m_DupedLayers = new int[256];
-		private static int m_Version;
-#endif
 
 		public Mobile m_Beheld;
 
@@ -3488,12 +3472,8 @@ namespace Server.Network
 		{
 			m_Beheld = beheld;
 
-#if Framework_4_0
 			int m_Version = ++(m_VersionTL.Value);
 			int[] m_DupedLayers = m_DupedLayersTL.Value;
-#else
-			++m_Version;
-#endif
 
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;
@@ -3609,13 +3589,8 @@ namespace Server.Network
 	// Pre-7.0.0.0 Mobile Incoming
 	public sealed class MobileIncomingOld : Packet
 	{
-#if Framework_4_0
 		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
 		private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
-#else
-		private static int[] m_DupedLayers = new int[256];
-		private static int m_Version;
-#endif
 
 		public Mobile m_Beheld;
 
@@ -3623,12 +3598,8 @@ namespace Server.Network
 		{
 			m_Beheld = beheld;
 
-#if Framework_4_0
 			int m_Version = ++(m_VersionTL.Value);
 			int[] m_DupedLayers = m_DupedLayersTL.Value;
-#else
-			++m_Version;
-#endif
 
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;

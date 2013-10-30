@@ -23,9 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-#if Framework_4_0
 using System.Threading.Tasks;
-#endif
 using Server.Diagnostics;
 
 namespace Server

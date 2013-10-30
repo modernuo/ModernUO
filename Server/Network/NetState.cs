@@ -24,9 +24,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-#if Framework_4_0
 using System.Threading.Tasks;
-#endif
 using Server;
 using Server.Accounting;
 using Server.Network;
@@ -1051,11 +1049,9 @@ namespace Server.Network {
 		}
 
 		public static void FlushAll() {
-#if Framework_4_0
 			if (m_Instances.Count >= 1024)
 				Parallel.ForEach(m_Instances, ns => ns.Flush());
 			else
-#endif
 				for ( int i = 0; i < m_Instances.Count; ++i ) {
 					m_Instances[i].Flush();
 				}
@@ -1174,11 +1170,10 @@ namespace Server.Network {
 		public static void CheckAllAlive() {
 			try {
 				long curTicks = Core.TickCount;
-#if Framework_4_0
+
 				if (m_Instances.Count >= 1024)
 					Parallel.ForEach(m_Instances, ns => ns.CheckAlive(curTicks));
 				else
-#endif
 					for ( int i = 0; i < m_Instances.Count; ++i ) {
 						m_Instances[i].CheckAlive(curTicks);
 					}

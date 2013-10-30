@@ -31,17 +31,10 @@ namespace Server
 			{
 				int processorCount = Core.ProcessorCount;
 
-#if Framework_4_0
 				if (processorCount > 2)
 				{
-					return new DualSaveStrategy(); // return new DynamicSaveStrategy();
+					return new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
 				}
-#else
-				if (processorCount > 16)
-				{
-					return new DualSaveStrategy(); // return new ParallelSaveStrategy(processorCount);
-				}
-#endif
 				else
 				{
 					return new DualSaveStrategy();

@@ -18,7 +18,6 @@
  *
  ***************************************************************************/
 
-#if Framework_4_0
 
 using System;
 using System.Collections.Generic;
@@ -157,8 +156,6 @@ namespace Server
 
 			return commitTask;
 		}
-
-
 
 		private Task SaveMobiles()
 		{
@@ -314,4 +311,3 @@ namespace Server
 	}
 
 }
-#endif

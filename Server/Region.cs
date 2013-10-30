@@ -1139,7 +1139,7 @@ namespace Server
 				return false;
 
 			Type type = typeof(T);
-#if Framework_4_0
+
 			T tempVal;
 
 			if( type.IsEnum && Enum.TryParse( s, true, out tempVal ) )
@@ -1152,19 +1152,6 @@ namespace Server
 				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name );
 				return false;
 			}
-#else
-			try
-			{
-				value = (T)Enum.Parse(type, s, true);
-			}
-			catch
-			{
-				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name );
-				return false;
-			}
-
-			return true;
-#endif
 		}
 
 		public static bool ReadMap( XmlElement xml, string attribute, ref Map value )

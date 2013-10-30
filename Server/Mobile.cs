@@ -23,10 +23,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-#if Framework_4_0
 using System.Linq;
 using System.Threading.Tasks;
-#endif
 using Server;
 using Server.Accounting;
 using Server.Commands;
@@ -10061,18 +10059,7 @@ namespace Server
 				sendFacialHair = true;
 			}
 
-#if Framework_4_0
 			Packet[][] cache = new Packet[2][] { new Packet[8], new Packet[8] };
-#else
-			Packet[][] cache = m_MovingPacketCache;
-
-			/*if( sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow )
-			{
-				for( int i = 0; i < cache.Length; ++i )
-					for( int j = 0; j < cache[i].Length; ++j )
-						Packet.Release( ref cache[i][j] );
-			}*/
-#endif
 
 			NetState ourState = m.m_NetState;
 
@@ -10322,7 +10309,6 @@ namespace Server
 
 		public static void ProcessDeltaQueue()
 		{
-#if Framework_4_0
 			_processing = true;
 
 			if (m_DeltaQueue.Count >= 512) {
@@ -10335,13 +10321,6 @@ namespace Server
 			_processing = false;
 
 			while (m_DeltaQueueR.Count > 0) m_DeltaQueueR.Dequeue().ProcessDelta();
-#else
-			int count = m_DeltaQueue.Count;
-			int index = 0;
-
-			while (m_DeltaQueue.Count > 0 && index++ < count)
-				m_DeltaQueue.Dequeue().ProcessDelta();
-#endif
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]

@@ -55,7 +55,7 @@ namespace Server
 							continue;
 
 						string[] split = line.Split( '\t' );
-#if Framework_4_0
+
 						BodyType type;
 						int bodyID;
 
@@ -68,21 +68,6 @@ namespace Server
 							Console.WriteLine( "Warning: Invalid bodyTable entry:" );
 							Console.WriteLine( line );
 						}
-#else
-						try
-						{
-							int bodyID = int.Parse( split[0] );
-							BodyType type = (BodyType)Enum.Parse( typeof( BodyType ), split[1], true );
-
-							if ( bodyID >= 0 && bodyID < m_Types.Length )
-								m_Types[bodyID] = type;
-						}
-						catch
-						{
-							Console.WriteLine( "Warning: Invalid bodyTable entry:" );
-							Console.WriteLine( line );
-						}
-#endif
 					}
 				}
 			}

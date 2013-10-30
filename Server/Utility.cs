@@ -553,7 +553,7 @@ namespace Server
 				return defaultValue;
 			}
 		}
-#if Framework_4_0
+
 		public static DateTimeOffset GetXMLDateTimeOffset( string dateTimeOffsetString, DateTimeOffset defaultValue )
 		{
 			try
@@ -570,7 +570,7 @@ namespace Server
 				return defaultValue;
 			}
 		}
-#endif
+
 		public static TimeSpan GetXMLTimeSpan( string timeSpanString, TimeSpan defaultValue )
 		{
 			try

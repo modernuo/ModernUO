@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-#if Framework_4_0
 using System.Linq;
 using System.Threading.Tasks;
-#endif
 using Server;
 using Server.Items;
 using Server.Targeting;

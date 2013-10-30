@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-#if Framework_4_0
 using System.Threading.Tasks;
-#endif
 using Server.Regions;
 using Server.Targeting;
 using Server.Network;
@@ -5767,19 +5765,11 @@ namespace Server.Mobiles
 			// added array for wild creatures in house regions to be removed
 			List<BaseCreature> toRemove = new List<BaseCreature>();
 
-#if Framework_4_0
 			Parallel.ForEach(World.Mobiles.Values, m => {
-#else
-			foreach ( Mobile m in World.Mobiles.Values ) {
-#endif
 				if ( m is BaseMount && ((BaseMount)m).Rider != null )
 				{
 					((BaseCreature)m).OwnerAbandonTime = DateTime.MinValue;
-#if Framework_4_0
 					return;
-#else
-					continue;
-#endif
 				}
 
 				if ( m is BaseCreature )
@@ -5838,10 +5828,7 @@ namespace Server.Mobiles
 						c.RemoveStep = 0;
 					}
 				}
-			}
-#if Framework_4_0
-			);
-#endif
+			});
 
 			foreach ( BaseCreature c in toRelease )
 			{
