@@ -22,7 +22,7 @@ namespace Server {
 
 		static RandomImpl() {
 			if ( Core.Unix ) {
-				_Random = new SimpleRandom();
+				_Random = new CSPRandom();
 			} else if (Core.Is64Bit && File.Exists("rdrand64.dll")) {
 				_Random = new RDRand64();
 			} else if ( !Core.Is64Bit && File.Exists("rdrand32.dll") ) {
