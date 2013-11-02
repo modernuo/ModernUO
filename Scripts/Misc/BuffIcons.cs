@@ -222,7 +222,13 @@ namespace Server
 		Agility,			//*
 		Cunning,			//*
 		Strength,			//*
-		Bless				//*
+        Bless,				//*
+        Sleep,
+        StoneForm,
+        SpellPlague,
+        SpellTrigger,
+        NetherBolt,
+        Fly      
 	}
 
 	public sealed class AddBuffPacket : Packet
@@ -231,6 +237,7 @@ namespace Server
 			: this( m, info.ID, info.TitleCliloc, info.SecondaryCliloc, info.Args, (info.TimeStart != DateTime.MinValue) ? ((info.TimeStart + info.TimeLength) - DateTime.UtcNow) : TimeSpan.Zero )
 		{
 		}
+
 		public AddBuffPacket( Mobile mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, TimeSpan length )
 			: base( 0xDF )
 		{
@@ -292,12 +299,10 @@ namespace Server
 			this.EnsureCapacity( 13 );
 			m_Stream.Write( (int)mob.Serial );
 
-
 			m_Stream.Write( (short)iconID );	//ID
 			m_Stream.Write( (short)0x0 );	//Type 0 for removal. 1 for add 2 for Data
 
 			m_Stream.Fill( 4 );
 		}
 	}
-
 }

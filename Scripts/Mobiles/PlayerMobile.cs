@@ -86,6 +86,76 @@ namespace Server.Mobiles
 
 	public partial class PlayerMobile : Mobile, IHonorTarget
 	{
+		#region Stygian Abyss
+		public override void ToggleFlying()
+		{
+			if (Race != Race.Gargoyle)
+			{
+				return;
+			}
+			else if (Flying)
+			{
+				Freeze(TimeSpan.FromSeconds(1));
+				Animate(61, 10, 1, true, false, 0);
+				Flying = false;
+				BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+				SendMessage("You have landed.");
+
+				BaseMount.Dismount(this);
+				return;
+			}
+
+			BlockMountType type = MountBlockReason;
+
+			if (!Alive)
+			{
+				SendLocalizedMessage(1113082); // You may not fly while dead.
+			}
+			else if (IsBodyMod && !(BodyMod == 666 || BodyMod == 667))
+			{
+				SendLocalizedMessage(1112453); // You can't fly in your current form!
+			}
+			else if (type != BlockMountType.None)
+			{
+				switch (type)
+				{
+					case BlockMountType.Dazed:
+						SendLocalizedMessage(1112457);
+						break; // You are still too dazed to fly.
+					case BlockMountType.BolaRecovery:
+						SendLocalizedMessage(1112455);
+						break; // You cannot fly while recovering from a bola throw.
+					case BlockMountType.DismountRecovery:
+						SendLocalizedMessage(1112456);
+						break; // You cannot fly while recovering from a dismount maneuver.
+				}
+				return;
+			}
+			else if (Hits < 25) // TODO confirm
+			{
+				SendLocalizedMessage(1112454); // You must heal before flying.
+			}
+			else
+			{
+				if (!Flying)
+				{
+					// No message?
+					if (Spell is FlySpell)
+					{
+						FlySpell spell = (FlySpell)Spell;
+						spell.Stop();
+					}
+					new FlySpell(this).Cast();
+				}
+				else
+				{
+					Flying = false;
+					BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+				}
+			}
+		}
+		#endregion
+
 		private class CountAndTimeStamp
 		{
 			private int m_Count;
@@ -123,7 +193,7 @@ namespace Server.Mobiles
 		private int m_ExecutesLightningStrike; // move to Server.Mobiles??
 
 		private DateTime m_LastOnline;
-		private Server.Guilds.RankDefinition m_GuildRank;
+		private Guilds.RankDefinition m_GuildRank;
 
 		private int m_GuildMessageHue, m_AllianceMessageHue;
 
@@ -2756,6 +2826,14 @@ namespace Server.Mobiles
 			EndAction( typeof( IncognitoSpell ) );
 
 			MeerMage.StopEffect( this, false );
+
+			#region Stygian Abyss
+			if (Flying)
+			{
+				Flying = false;
+				BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+			}
+			#endregion
 
 			SkillHandlers.StolenItem.ReturnOnDeath( this, c );
 
