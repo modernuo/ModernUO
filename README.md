@@ -13,6 +13,8 @@ Typical Linux Build (MONO)
 ~/runuo$ dmcs -optimize+ -unsafe -t:exe -out:RunUO.exe -win32icon:Server/runuo.ico -d:MONO -recurse:Server/*.cs
 
 
+zlib is required for certain functionality. Windows zlib builds are packaged with releases and can also be obtained separately here: https://github.com/msturgill/zlib/releases/tag/v1.2.8
+
 Latest Razor builds can be found at https://bitbucket.org/msturgill/razor-releases/downloads
 
 Latest UOSteam builds (previously AssistUO) can be found at http://uosteam.com
