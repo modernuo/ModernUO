@@ -15,8 +15,9 @@ namespace Server.Misc
 			 * 4) Changing or removing any predefined races may cause server instability.
 			 */
 
-			RegisterRace( new Human	( 0, 0 ) );
-			RegisterRace( new Elf	( 1, 1 ) );
+			RegisterRace( new Human( 0, 0 ) );
+			RegisterRace( new Elf( 1, 1 ) );
+			RegisterRace( new Gargoyle( 2, 2 ) );
 		}
 
 		public static void RegisterRace( Race race )
@@ -219,5 +220,118 @@ namespace Server.Misc
 				return m_HairHues[Utility.Random( m_HairHues.Length )];
 			}
 		}
+
+        #region SA
+        private class Gargoyle : Race
+        {
+            public Gargoyle(int raceID, int raceIndex)
+                : base(raceID, raceIndex, "Gargoyle", "Gargoyles", 666, 667, 402, 403, Expansion.SA)
+            {
+            }
+
+            public override bool ValidateHair(bool female, int itemID)
+            {
+                if (female == false)
+                {
+                    return itemID >= 0x4258 && itemID <= 0x425F;
+                }
+                else
+                {
+                    return ((itemID == 0x4261 || itemID == 0x4262) || (itemID >= 0x4273 && itemID <= 0x4275) || (itemID == 0x42B0 || itemID == 0x42B1) || (itemID == 0x42AA || itemID == 0x42AB));
+                }
+            }
+
+            public override int RandomHair(bool female)
+            {
+                if (Utility.Random(9) == 0)
+                    return 0;
+                else if (!female)
+                    return 0x4258 + Utility.Random(8);
+                else
+                {
+                    switch (Utility.Random(9))
+                    {
+                        case 0:
+                            return 0x4261;
+                        case 1:
+                            return 0x4262;
+                        case 2:
+                            return 0x4273;
+                        case 3:
+                            return 0x4274;
+                        case 4:
+                            return 0x4275;
+                        case 5:
+                            return 0x42B0;
+                        case 6:
+                            return 0x42B1;
+                        case 7:
+                            return 0x42AA;
+                        case 8:
+                            return 0x42AB;
+                    }
+                    return 0;
+                }
+            }
+
+            public override bool ValidateFacialHair(bool female, int itemID)
+            {
+                if (female)
+                    return false;
+                else
+                    return itemID >= 0x42AD && itemID <= 0x42B0;
+            }
+
+            public override int RandomFacialHair(bool female)
+            {
+                if (female)
+                    return 0;
+                else
+                    return Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
+            }
+
+            // Todo Finish body hues
+            private static readonly int[] m_BodyHues = new int[]
+            {
+                0x86DB, 0x86DC, 0x86DD, 0x86DE,
+                0x86DF, 0x86E0, 0x86E1, 0x86E2,
+                0x86E3, 0x86E4, 0x86E5, 0x86E6
+                // 0x, 0x, 0x, 0x, // 86E7/86E8/86E9/86EA?
+                // 0x, 0x, 0x, 0x, // 86EB/86EC/86ED/86EE?
+                // 0x86F3, 0x86DB, 0x86DC, 0x86DD
+            };
+
+            public override int ClipSkinHue(int hue)
+            {
+                return hue; // for hue infomation gathering
+            }
+
+            public override int RandomSkinHue()
+            {
+                return m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
+            }
+
+            private static readonly int[] m_HornHues = new int[]
+            {
+                0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763,
+                0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF,
+                0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D
+            };
+
+            public override int ClipHairHue(int hue)
+            {
+                for (int i = 0; i < m_HornHues.Length; i++)
+                    if (m_HornHues[i] == hue)
+                        return hue;
+
+                return m_HornHues[0];
+            }
+
+            public override int RandomHairHue()
+            {
+                return m_HornHues[Utility.Random(m_HornHues.Length)];
+            }
+        }
+        #endregion
 	}
 }

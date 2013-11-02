@@ -170,6 +170,7 @@ namespace Server.Network
 			RegisterExtended( 0x1C,  true, new OnPacketReceive( CastSpell ) );
 			RegisterExtended( 0x24, false, new OnPacketReceive( UnhandledBF ) );
 			RegisterExtended( 0x2C,  true, new OnPacketReceive( BandageTarget ) );
+			RegisterExtended( 0x32,  true, new OnPacketReceive( ToggleFlying ) );
 
 			RegisterEncoded( 0x19, true, new OnEncodedPacketReceive( SetAbility ) );
 			RegisterEncoded( 0x28, true, new OnEncodedPacketReceive( GuildGumpRequest ) );
@@ -1650,6 +1651,10 @@ namespace Server.Network
 			}
 		}
 
+		public static void ToggleFlying(NetState state, PacketReader pvSrc)
+		{
+			state.Mobile.ToggleFlying();
+		}
 		public static void BatchQueryProperties( NetState state, PacketReader pvSrc )
 		{
 			if ( !ObjectPropertyList.Enabled )

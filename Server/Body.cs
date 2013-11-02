@@ -106,7 +106,20 @@ namespace Server
 					&& m_BodyID != 403
 					&& m_BodyID != 607
 					&& m_BodyID != 608
+					&& m_BodyID != 694
+					&& m_BodyID != 695
 					&& m_BodyID != 970;
+			}
+		}
+
+		public bool IsGargoyle
+		{
+			get
+			{
+				return m_BodyID == 666
+					|| m_BodyID == 667
+					|| m_BodyID == 694
+					|| m_BodyID == 695;
 			}
 		}
 
@@ -120,6 +133,8 @@ namespace Server
 					|| m_BodyID == 402
 					|| m_BodyID == 605
 					|| m_BodyID == 607
+					|| m_BodyID == 666
+					|| m_BodyID == 694
 					|| m_BodyID == 750;
 			}
 		}
@@ -134,6 +149,8 @@ namespace Server
 					|| m_BodyID == 403
 					|| m_BodyID == 606
 					|| m_BodyID == 608
+					|| m_BodyID == 667
+					|| m_BodyID == 695
 					|| m_BodyID == 751;
 			}
 		}
@@ -146,6 +163,8 @@ namespace Server
 					|| m_BodyID == 403
 					|| m_BodyID == 607
 					|| m_BodyID == 608
+					|| m_BodyID == 694
+					|| m_BodyID == 695
 					|| m_BodyID == 970;
 			}
 		}

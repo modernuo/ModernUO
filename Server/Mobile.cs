@@ -6231,10 +6231,62 @@ namespace Server
 
 							//state.Send( pNew );
 						//} else {
-						if( p == null )
-							p = Packet.Acquire( new MobileAnimation( this, action, frameCount, repeatCount, forward, repeat, delay ) );
+						if (p == null)
+						{
+							#region SA
+							if (Body.IsGargoyle)
+							{
+								frameCount = 10;
 
-							state.Send( p );
+								if (Flying)
+								{
+									if (action >= 9 && action <= 11)
+									{
+										action = 71;
+									}
+									else if (action >= 12 && action <= 14)
+									{
+										action = 72;
+									}
+									else if (action == 20)
+									{
+										action = 77;
+									}
+									else if (action == 31)
+									{
+										action = 71;
+									}
+									else if (action == 34)
+									{
+										action = 78;
+									}
+									else if (action >= 200 && action <= 259)
+									{
+										action = 75;
+									}
+									else if (action >= 260 && action <= 270)
+									{
+										action = 75;
+									}
+								}
+								else
+								{
+									if (action >= 200 && action <= 259)
+									{
+										action = 17;
+									}
+									else if (action >= 260 && action <= 270)
+									{
+										action = 16;
+									}
+								}
+							}
+							#endregion
+
+							p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat, delay));
+						}
+
+						state.Send( p );
 						//}
 					}
 				}
@@ -7846,6 +7898,10 @@ namespace Server
 					Delta( MobileDelta.Flags );
 				}
 			}
+		}
+
+		public virtual void ToggleFlying()
+		{
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
