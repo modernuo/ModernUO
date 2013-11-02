@@ -264,75 +264,75 @@ namespace Server.Items
 			}
 		}
 
-		public void PlaySound( object trigger )
+		public void PlaySound(IEntity trigger)
 		{
 			IEntity ent = null;
 
-			if ( m_PlaySoundAtTrigger )
+			if (m_PlaySoundAtTrigger)
 				ent = trigger as IEntity;
 
-			if ( ent == null )
+			if (ent == null)
 				ent = this;
 
-			Effects.PlaySound( (ent is Item) ? ((Item)ent).GetWorldLocation() : ent.Location, ent.Map, m_SoundID );
+			Effects.PlaySound((ent is Item) ? ((Item)ent).GetWorldLocation() : ent.Location, ent.Map, m_SoundID);
 		}
 
-		public void DoEffect( object trigger )
+		public void DoEffect(IEntity trigger)
 		{
-			if ( Deleted || m_TriggerType == EffectTriggerType.None )
+			if (Deleted || m_TriggerType == EffectTriggerType.None)
 				return;
 
-			if( trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).AccessLevel > AccessLevel.Player )
+			if (trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).AccessLevel > AccessLevel.Player)
 				return;
 
-			if ( m_SoundID > 0 )
-				Timer.DelayCall( m_SoundDelay, new TimerStateCallback( PlaySound ), trigger );
+			if (m_SoundID > 0)
+				Timer.DelayCall<IEntity>(m_SoundDelay, new TimerStateCallback<IEntity>(PlaySound), trigger);
 
-			if ( m_Trigger != null )
-				Timer.DelayCall( m_TriggerDelay, new TimerStateCallback( m_Trigger.DoEffect ), trigger );
+			if (m_Trigger != null)
+				Timer.DelayCall<IEntity>(m_TriggerDelay, new TimerStateCallback<IEntity>(m_Trigger.DoEffect), trigger);
 
-			if ( m_EffectType != ECEffectType.None )
-				Timer.DelayCall( m_EffectDelay, new TimerStateCallback( InternalDoEffect ), trigger );
+			if (m_EffectType != ECEffectType.None)
+				Timer.DelayCall<IEntity>(m_EffectDelay, new TimerStateCallback<IEntity>(InternalDoEffect), trigger);
 		}
 
-		public void InternalDoEffect( object trigger )
+		public void InternalDoEffect(IEntity trigger)
 		{
 			IEntity from = m_Source, to = m_Target;
-			
-			if ( from == null )
-				from = (IEntity)trigger;
 
-			if ( to == null )
-				to = (IEntity)trigger;
+			if (from == null)
+				from = trigger;
 
-			switch ( m_EffectType )
+			if (to == null)
+				to = trigger;
+
+			switch (m_EffectType)
 			{
 				case ECEffectType.Lightning:
-				{
-					Effects.SendBoltEffect( from, false, m_Hue );
-					break;
-				}
+					{
+						Effects.SendBoltEffect(from, false, m_Hue);
+						break;
+					}
 				case ECEffectType.Location:
-				{
-					Effects.SendLocationParticles( EffectItem.Create( from.Location, from.Map, EffectItem.DefaultDuration ), m_ItemID, m_Speed, m_Duration, m_Hue, m_RenderMode, m_ParticleEffect, m_Unknown );
-					break;
-				}
+					{
+						Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration), m_ItemID, m_Speed, m_Duration, m_Hue, m_RenderMode, m_ParticleEffect, m_Unknown);
+						break;
+					}
 				case ECEffectType.Moving:
-				{
-					if ( from == this )
-						from = EffectItem.Create( from.Location, from.Map, EffectItem.DefaultDuration );
+					{
+						if (from == this)
+							from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
 
-					if ( to == this )
-						to = EffectItem.Create( to.Location, to.Map, EffectItem.DefaultDuration );
+						if (to == this)
+							to = EffectItem.Create(to.Location, to.Map, EffectItem.DefaultDuration);
 
-					Effects.SendMovingParticles( from, to, m_ItemID, m_Speed, m_Duration, m_FixedDirection, m_Explodes, m_Hue, m_RenderMode, m_ParticleEffect, m_ExplodeParticleEffect, m_ExplodeSound, m_EffectLayer, m_Unknown );
-					break;
-				}
+						Effects.SendMovingParticles(from, to, m_ItemID, m_Speed, m_Duration, m_FixedDirection, m_Explodes, m_Hue, m_RenderMode, m_ParticleEffect, m_ExplodeParticleEffect, m_ExplodeSound, m_EffectLayer, m_Unknown);
+						break;
+					}
 				case ECEffectType.Target:
-				{
-					Effects.SendTargetParticles( from, m_ItemID, m_Speed, m_Duration, m_Hue, m_RenderMode, m_ParticleEffect, m_EffectLayer, m_Unknown );
-					break;
-				}
+					{
+						Effects.SendTargetParticles(from, m_ItemID, m_Speed, m_Duration, m_Hue, m_RenderMode, m_ParticleEffect, m_EffectLayer, m_Unknown);
+						break;
+					}
 			}
 		}
 	}

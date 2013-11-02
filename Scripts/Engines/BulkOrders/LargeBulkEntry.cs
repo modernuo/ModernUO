@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Collections;
 using Server;
 
 namespace Server.Engines.BulkOrders
@@ -127,22 +127,22 @@ namespace Server.Engines.BulkOrders
 		}
 
 
-		private static Hashtable m_Cache;
+		private static Dictionary<string,Dictionary<string,SmallBulkEntry[]>> m_Cache;
 
 		public static SmallBulkEntry[] GetEntries( string type, string name )
 		{
-			if ( m_Cache == null )
-				m_Cache = new Hashtable();
+			if (m_Cache == null)
+				m_Cache = new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
 
-			Hashtable table = (Hashtable)m_Cache[type];
+			Dictionary<string, SmallBulkEntry[]> table = null;
 
-			if ( table == null )
-				m_Cache[type] = table = new Hashtable();
+			if (!m_Cache.TryGetValue(type, out table))
+				m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
 
-			SmallBulkEntry[] entries = (SmallBulkEntry[])table[name];
+			SmallBulkEntry[] entries = null;
 
-			if ( entries == null )
-				table[name] = entries = SmallBulkEntry.LoadEntries( type, name );
+			if (!table.TryGetValue(name, out entries))
+				table[name] = entries = SmallBulkEntry.LoadEntries(type, name);
 
 			return entries;
 		}

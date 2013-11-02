@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 
 namespace Server.Engines.Plants
@@ -40,11 +40,11 @@ namespace Server.Engines.Plants
 
 	public class PlantHueInfo
 	{
-		private static Hashtable m_Table;
+		private static Dictionary<PlantHue, PlantHueInfo> m_Table;
 
 		static PlantHueInfo()
 		{
-			m_Table = new Hashtable();
+			m_Table = new Dictionary<PlantHue, PlantHueInfo>();
 
 			m_Table[PlantHue.Plain]			= new PlantHueInfo( 0,		1060813, PlantHue.Plain,		0x835 );
 			m_Table[PlantHue.Red]			= new PlantHueInfo( 0x66D,	1060814, PlantHue.Red,			0x24 );
@@ -69,12 +69,12 @@ namespace Server.Engines.Plants
 
 		public static PlantHueInfo GetInfo( PlantHue plantHue )
 		{
-			PlantHueInfo info = m_Table[plantHue] as PlantHueInfo;
+			PlantHueInfo info = null;
 
-			if ( info != null )
+			if (m_Table.TryGetValue(plantHue, out info))
 				return info;
 			else
-				return (PlantHueInfo)m_Table[PlantHue.Plain];
+				return m_Table[PlantHue.Plain];
 		}
 
 		public static PlantHue RandomFirstGeneration()

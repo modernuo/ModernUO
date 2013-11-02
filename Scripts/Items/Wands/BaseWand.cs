@@ -87,12 +87,12 @@ namespace Server.Items
 		public virtual void ApplyDelayTo( Mobile from )
 		{
 			from.BeginAction( typeof( BaseWand ) );
-			Timer.DelayCall( GetUseDelay, new TimerStateCallback( ReleaseWandLock_Callback ), from );
+			Timer.DelayCall<Mobile>(GetUseDelay, new TimerStateCallback<Mobile>(ReleaseWandLock_Callback), from);
 		}
 
-		public virtual void ReleaseWandLock_Callback( object state )
+		public virtual void ReleaseWandLock_Callback(Mobile state)
 		{
-			((Mobile)state).EndAction( typeof( BaseWand ) );
+			state.EndAction(typeof(BaseWand));
 		}
 
 		public override void OnDoubleClick( Mobile from )

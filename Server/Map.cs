@@ -1382,19 +1382,19 @@ namespace Server
 					{
 						IEntity e = (IEntity)m_CurrentList[m_CurrentIndex];
 
+						if (e.Deleted)
+							continue;
+
 						if (e is Item)
 						{
 							Item item = (Item)e;
 
-							if (!item.Deleted && item.Parent == null && m_Bounds.Contains(e.Location))
-								return true;
+							if (item.Parent != null)
+								continue;
 						}
-						else if (e is Mobile)
-						{
-							Mobile m = (Mobile)e;
-							if (!m.Deleted && m_Bounds.Contains(e.Location))
-								return true;
-						}
+						
+						if (m_Bounds.Contains(e.Location))
+							return true;
 					}
 				}
 			}
