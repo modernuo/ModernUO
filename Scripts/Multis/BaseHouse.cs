@@ -2433,7 +2433,7 @@ namespace Server.Multis
 			{
 				writer.Write( (Point3D) relEntity.RelativeLocation );
 
-				if ( ( relEntity.Entity is Item && ((Item)relEntity.Entity).Deleted ) || ( relEntity.Entity is Mobile && ((Mobile)relEntity.Entity).Deleted ) )
+				if (relEntity.Entity.Deleted)
 					writer.Write( (int) Serial.MinusOne );
 				else
 					writer.Write( (int) relEntity.Entity.Serial );

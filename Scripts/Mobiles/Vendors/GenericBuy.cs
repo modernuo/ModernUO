@@ -119,12 +119,7 @@ namespace Server.Mobiles
 
 		private bool IsDeleted( IEntity obj )
 		{
-			if ( obj is Item )
-				return ((Item)obj).Deleted;
-			else if ( obj is Mobile )
-				return ((Mobile)obj).Deleted;
-
-			return false;
+			return obj.Deleted;
 		}
 
 		public void DeleteDisplayEntity()
