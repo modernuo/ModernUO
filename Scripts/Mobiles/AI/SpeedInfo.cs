@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
 using Server.Factions;
@@ -48,7 +48,9 @@ namespace Server
 			if ( m_Table == null )
 				LoadTable();
 
-			SpeedInfo sp = (SpeedInfo)m_Table[obj.GetType()];
+			SpeedInfo sp = null;
+
+			m_Table.TryGetValue(obj.GetType(), out sp);
 
 			return ( sp != null );
 		}
@@ -61,7 +63,9 @@ namespace Server
 			if ( m_Table == null )
 				LoadTable();
 
-			SpeedInfo sp = (SpeedInfo)m_Table[obj.GetType()];
+			SpeedInfo sp = null;
+			
+			m_Table.TryGetValue(obj.GetType(), out sp);
 
 			if ( sp == null )
 				return false;
@@ -74,7 +78,7 @@ namespace Server
 
 		private static void LoadTable()
 		{
-			m_Table = new Hashtable();
+			m_Table = new Dictionary<Type, SpeedInfo>();
 
 			for ( int i = 0; i < m_Speeds.Length; ++i )
 			{
@@ -86,7 +90,7 @@ namespace Server
 			}
 		}
 
-		private static Hashtable m_Table;
+		private static Dictionary<Type, SpeedInfo> m_Table;
 
 		private static SpeedInfo[] m_Speeds = new SpeedInfo[]
 			{

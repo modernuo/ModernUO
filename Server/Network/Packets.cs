@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -378,15 +377,15 @@ namespace Server.Network
 
 	public sealed class VendorSellList : Packet
 	{
-		public VendorSellList( Mobile shopkeeper, Hashtable table ) : base( 0x9E )
+		public VendorSellList( Mobile shopkeeper, ICollection<SellItemState> sis ) : base( 0x9E )
 		{
 			this.EnsureCapacity( 256 );
 
 			m_Stream.Write( (int) shopkeeper.Serial );
 
-			m_Stream.Write( (ushort) table.Count );
+			m_Stream.Write( (ushort) sis.Count);
 
-			foreach ( SellItemState state in table.Values )
+			foreach (SellItemState state in sis)
 			{
 				m_Stream.Write( (int) state.Item.Serial );
 				m_Stream.Write( (ushort) state.Item.ItemID );

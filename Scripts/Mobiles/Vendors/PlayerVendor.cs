@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using Server;
@@ -276,7 +275,7 @@ namespace Server.Mobiles
 
 	public class PlayerVendor : Mobile
 	{
-		private Hashtable m_SellItems;
+		private Dictionary<Item, VendorItem> m_SellItems;
 
 		private Mobile m_Owner;
 		private BaseHouse m_House;
@@ -309,7 +308,7 @@ namespace Server.Mobiles
 
 			ShopName = "Shop Not Yet Named";
 
-			m_SellItems = new Hashtable();
+			m_SellItems = new Dictionary<Item, VendorItem>();
 
 			CantWalk = true;
 
@@ -384,9 +383,10 @@ namespace Server.Mobiles
 					m_BankAccount = reader.ReadInt();
 					m_HoldGold = reader.ReadInt();
 
-					m_SellItems = new Hashtable();
-
 					int count = reader.ReadInt();
+
+					m_SellItems = new Dictionary<Item, VendorItem>(count);
+
 					for ( int i = 0; i < count; i++ )
 					{
 						Item item = reader.ReadItem();
@@ -779,7 +779,9 @@ namespace Server.Mobiles
 
 		public VendorItem GetVendorItem( Item item )
 		{
-			return (VendorItem) m_SellItems[item];
+			VendorItem v = null;
+			m_SellItems.TryGetValue(item, out v);
+			return v;
 		}
 
 		private VendorItem SetVendorItem( Item item, int price, string description )
