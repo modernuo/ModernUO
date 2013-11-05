@@ -3157,6 +3157,7 @@
     <Compile Include="Spells\Fourth\Lightning.cs" />
     <Compile Include="Spells\Fourth\ManaDrain.cs" />
     <Compile Include="Spells\Fourth\Recall.cs" />
+    <Compile Include="Spells\Gargoyle\SpellDefinitions\FlySpell.cs" />
     <Compile Include="Spells\Initializer.cs" />
     <Compile Include="Spells\Necromancy\AnimateDeadSpell.cs" />
     <Compile Include="Spells\Necromancy\BloodOathSpell.cs" />
