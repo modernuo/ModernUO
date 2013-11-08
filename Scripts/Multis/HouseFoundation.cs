@@ -2147,12 +2147,15 @@ namespace Server.Multis
 	{
 		public const int MaxItemsPerStairBuffer = 750;
 
-		private static byte[][] m_PlaneBuffers;
-		private static bool[] m_PlaneUsed;
+		private static BufferPool m_PlaneBufferPool = new BufferPool("Housing Plane Buffers", 9, 0x400);
+		private static BufferPool m_StairBufferPool = new BufferPool("Housing Stair Buffers", 6, MaxItemsPerStairBuffer * 5);
+		private static BufferPool m_DeflatedBufferPool = new BufferPool("Housing Deflated Buffers", 1, 0x2000);
 
-		private static byte[][] m_StairBuffers;
+		private byte[][] m_PlaneBuffers;
+		private byte[][] m_StairBuffers;
 
-		private static byte[] m_PrimBuffer = new byte[4];
+		private bool[] m_PlaneUsed = new bool[9];
+		private byte[] m_PrimBuffer = new byte[4];
 
 		public void Write( int value )
 		{
@@ -2206,31 +2209,24 @@ namespace Server.Multis
 			int width = (xMax - xMin) + 1;
 			int height = (yMax - yMin) + 1;
 
-			if( m_PlaneBuffers == null )
+			m_PlaneBuffers = new byte[9][];
+
+			lock (m_PlaneBufferPool)
+				for (int i = 0; i < m_PlaneBuffers.Length; ++i)
+					m_PlaneBuffers[i] = m_PlaneBufferPool.AcquireBuffer();
+
+			m_StairBuffers = new byte[6][];
+
+			lock (m_StairBufferPool)
+				for (int i = 0; i < m_StairBuffers.Length; ++i)
+					m_StairBuffers[i] = m_StairBufferPool.AcquireBuffer();
+
+			Clear( m_PlaneBuffers[0], width * height * 2 );
+
+			for( int i = 0; i < 4; ++i )
 			{
-				m_PlaneBuffers = new byte[9][];
-				m_PlaneUsed = new bool[9];
-
-				for( int i = 0; i < m_PlaneBuffers.Length; ++i )
-					m_PlaneBuffers[i] = new byte[0x400];
-
-				m_StairBuffers = new byte[6][];
-
-				for( int i = 0; i < m_StairBuffers.Length; ++i )
-					m_StairBuffers[i] = new byte[MaxItemsPerStairBuffer * 5];
-			}
-			else
-			{
-				for( int i = 0; i < m_PlaneUsed.Length; ++i )
-					m_PlaneUsed[i] = false;
-
-				Clear( m_PlaneBuffers[0], width * height * 2 );
-
-				for( int i = 0; i < 4; ++i )
-				{
-					Clear( m_PlaneBuffers[1 + i], (width - 1) * (height - 2) * 2 );
-					Clear( m_PlaneBuffers[5 + i], width * (height - 1) * 2 );
-				}
+				Clear( m_PlaneBuffers[1 + i], (width - 1) * (height - 2) * 2 );
+				Clear( m_PlaneBuffers[5 + i], width * (height - 1) * 2 );
 			}
 
 			int totalStairsUsed = 0;
@@ -2315,10 +2311,17 @@ namespace Server.Multis
 
 			int planeCount = 0;
 
+			byte[] m_DeflatedBuffer = null;
+			lock (m_DeflatedBufferPool)
+				m_DeflatedBuffer = m_DeflatedBufferPool.AcquireBuffer();
+
 			for( int i = 0; i < m_PlaneBuffers.Length; ++i )
 			{
-				if( !m_PlaneUsed[i] )
+				if (!m_PlaneUsed[i])
+				{
+					m_PlaneBufferPool.ReleaseBuffer(m_PlaneBuffers[i]);
 					continue;
+				}
 
 				++planeCount;
 
@@ -2350,6 +2353,8 @@ namespace Server.Multis
 				Write( m_DeflatedBuffer, 0, deflatedLength );
 
 				totalLength += 4 + deflatedLength;
+				lock (m_PlaneBufferPool)
+					m_PlaneBufferPool.ReleaseBuffer(inflatedBuffer);
 			}
 
 			int totalStairBuffersUsed = (totalStairsUsed + (MaxItemsPerStairBuffer - 1)) / MaxItemsPerStairBuffer;
@@ -2386,14 +2391,18 @@ namespace Server.Multis
 				totalLength += 4 + deflatedLength;
 			}
 
+			lock (m_StairBufferPool)
+				for (int i = 0; i < m_StairBuffers.Length; ++i)
+					m_StairBufferPool.ReleaseBuffer(m_StairBuffers[i]);
+
+			lock (m_DeflatedBufferPool)
+				m_DeflatedBufferPool.ReleaseBuffer(m_DeflatedBuffer);
+
 			m_Stream.Seek( 15, System.IO.SeekOrigin.Begin );
 
 			Write( (short)totalLength ); // Buffer length
 			Write( (byte)planeCount ); // Plane count
 		}
-
-		private static byte[] m_InflatedBuffer = new byte[0x2000];
-		private static byte[] m_DeflatedBuffer = new byte[0x2000];
 
 		private class SendQueueEntry
 		{
@@ -2433,7 +2442,7 @@ namespace Server.Multis
 			m_Sync = new AutoResetEvent( false );
 
 			m_Thread = new Thread( new ThreadStart( CompressionThread ) );
-			m_Thread.Name = "AOS Compression Thread";
+			m_Thread.Name = "Housing Compression Thread";
 			m_Thread.Start();
 		}
 
@@ -2474,7 +2483,7 @@ namespace Server.Multis
 							}
 						}
 
-						Timer.DelayCall( TimeSpan.Zero, new TimerStateCallback( SendPacket_Sandbox ), new object[] { sqe.m_NetState, p } );
+						sqe.m_NetState.Send(p);
 					}
 					catch( Exception e )
 					{
@@ -2498,15 +2507,6 @@ namespace Server.Multis
 					//sqe.m_NetState.Send( new DesignStateDetailed( sqe.m_Serial, sqe.m_Revision, sqe.m_xMin, sqe.m_yMin, sqe.m_xMax, sqe.m_yMax, sqe.m_Tiles ) );
 				}
 			}
-		}
-
-		public static void SendPacket_Sandbox( object state )
-		{
-			object[] states = (object[])state;
-			NetState ns = (NetState)states[0];
-			Packet p = (Packet)states[1];
-
-			ns.Send( p );
 		}
 
 		public static void SendDetails( NetState ns, HouseFoundation house, DesignState state )
