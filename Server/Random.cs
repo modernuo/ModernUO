@@ -124,16 +124,14 @@ namespace Server {
 		}
 
 		private void CheckSwap(int c) {
-			lock (_sync) {
-				if (_Index + c < BUFFER_SIZE)
-					return;
+			if (_Index + c < BUFFER_SIZE)
+				return;
 
-				lock (_syncB) {
-					byte[] b = _Working;
-					_Working = _Buffer;
-					_Buffer = b;
-					_Index = 0;
-				}
+			lock (_syncB) {
+				byte[] b = _Working;
+				_Working = _Buffer;
+				_Buffer = b;
+				_Index = 0;
 			}
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
@@ -147,18 +145,16 @@ namespace Server {
 		private void _GetBytes(byte[] b) {
 			int c = b.Length;
 
-			CheckSwap(c);
-
 			lock (_sync) {
+				CheckSwap(c);
 				Buffer.BlockCopy(_Working, _Index, b, 0, c);
 				_Index += c;
 			}
 		}
 
 		private void _GetBytes(byte[] b, int offset, int count) {
-			CheckSwap(count);
-
 			lock (_sync) {
+				CheckSwap(count);
 				Buffer.BlockCopy(_Working, _Index, b, offset, count);
 				_Index += count;
 			}
@@ -173,10 +169,10 @@ namespace Server {
 		}
 
 		private byte NextByte() {
-			CheckSwap(1);
-
-			lock(_sync)
+			lock (_sync) {
+				CheckSwap(1);
 				return _Working[_Index++];
+			}	
 		}
 
 		public void NextBytes(byte[] b) {
@@ -245,16 +241,14 @@ namespace Server {
 		}
 
 		private void CheckSwap(int c) {
-			lock (_sync) {
-				if (_Index + c < BUFFER_SIZE)
-					return;
+			if (_Index + c < BUFFER_SIZE)
+				return;
 
-				lock (_syncB) {
-					byte[] b = _Working;
-					_Working = _Buffer;
-					_Buffer = b;
-					_Index = 0;
-				}
+			lock (_syncB) {
+				byte[] b = _Working;
+				_Working = _Buffer;
+				_Buffer = b;
+				_Index = 0;
 			}
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
@@ -267,18 +261,16 @@ namespace Server {
 		private void _GetBytes(byte[] b) {
 			int c = b.Length;
 
-			CheckSwap(c);
-
 			lock (_sync) {
+				CheckSwap(c);
 				Buffer.BlockCopy(_Working, _Index, b, 0, c);
 				_Index += c;
 			}
 		}
 
 		private void _GetBytes(byte[] b, int offset, int count) {
-			CheckSwap(count);
-
 			lock (_sync) {
+				CheckSwap(count);
 				Buffer.BlockCopy(_Working, _Index, b, offset, count);
 				_Index += count;
 			}
@@ -293,10 +285,10 @@ namespace Server {
 		}
 
 		private byte NextByte() {
-			CheckSwap(1);
-
-			lock(_sync)
+			lock (_sync) {
+				CheckSwap(1);
 				return _Working[_Index++];
+			}
 		}
 
 		public void NextBytes(byte[] b) {
@@ -364,16 +356,14 @@ namespace Server {
 		}
 
 		private void CheckSwap(int c) {
-			lock (_sync) {
-				if (_Index + c < BUFFER_SIZE)
-					return;
+			if (_Index + c < BUFFER_SIZE)
+				return;
 
-				lock (_syncB) {
-					byte[] b = _Working;
-					_Working = _Buffer;
-					_Buffer = b;
-					_Index = 0;
-				}
+			lock (_syncB) {
+				byte[] b = _Working;
+				_Working = _Buffer;
+				_Buffer = b;
+				_Index = 0;
 			}
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
@@ -386,18 +376,16 @@ namespace Server {
 		private void _GetBytes(byte[] b) {
 			int c = b.Length;
 
-			CheckSwap(c);
-
 			lock (_sync) {
+				CheckSwap(c);
 				Buffer.BlockCopy(_Working, _Index, b, 0, c);
 				_Index += c;
 			}
 		}
 
 		private void _GetBytes(byte[] b, int offset, int count) {
-			CheckSwap(count);
-
 			lock (_sync) {
+				CheckSwap(count);
 				Buffer.BlockCopy(_Working, _Index, b, offset, count);
 				_Index += count;
 			}
@@ -412,10 +400,10 @@ namespace Server {
 		}
 
 		private byte NextByte() {
-			CheckSwap(1);
-
-			lock(_sync)
+			lock (_sync) {
+				CheckSwap(1);
 				return _Working[_Index++];
+			}
 		}
 
 		public void NextBytes(byte[] b) {
