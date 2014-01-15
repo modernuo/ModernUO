@@ -1350,6 +1350,11 @@ namespace Server
 				{
 					++m_CurrentIndex;
 
+					if (m_CurrentIndex < 0 || m_CurrentIndex > m_CurrentList.Count) { // Sanity
+						Console.WriteLine("EntityEnumerator OOB: {0}", m_CurrentIndex);
+						return false;
+					}
+
 					if (m_CurrentIndex == m_CurrentList.Count)
 					{
 						++m_ySector;
