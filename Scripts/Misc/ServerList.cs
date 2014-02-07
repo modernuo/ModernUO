@@ -150,6 +150,7 @@ namespace Server.Misc
 			// 10.0.0.0/8
 			// 172.16.0.0/12
 			// 192.168.0.0/16
+			// 169.254.0.0/16
 
 			if ( ip.AddressFamily == AddressFamily.InterNetworkV6 )
 				return false;
@@ -159,6 +160,8 @@ namespace Server.Misc
 			else if ( Utility.IPMatch( "10.*", ip ) )
 				return true;
 			else if ( Utility.IPMatch( "172.16-31.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "169.254.*", ip ) )
 				return true;
 			else
 				return false;
