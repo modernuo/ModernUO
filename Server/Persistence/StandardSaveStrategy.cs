@@ -133,8 +133,11 @@ namespace Server {
 			}
 
 			idx.Write( ( int ) items.Count );
+
+			DateTime n = DateTime.UtcNow;
+
 			foreach ( Item item in items.Values ) {
-				if (item.Decays && item.Parent == null && item.Map != Map.Internal && (item.LastMoved + item.DecayTime) <= DateTime.UtcNow)
+				if (item.Decays && item.Parent == null && item.Map != Map.Internal && (item.LastMoved + item.DecayTime) <= n)
 				{
 					_decayQueue.Enqueue( item );
 				}
