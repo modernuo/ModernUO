@@ -127,20 +127,24 @@ namespace Server
 		*/
 
 		private static readonly bool _HighRes = Stopwatch.IsHighResolution;
-		private static readonly double _Frequency = 1000.0 / Stopwatch.Frequency; 
+		private static readonly double _Frequency = 1000.0 / Stopwatch.Frequency;
+
+		private static bool _UseHRT;
+
+		public static bool UsingHighResolutionTiming { get { return _UseHRT && _HighRes && !m_Unix; } }
 
 		public static long TickCount {
 			get {
-				long t = 0;
 #if !MONO
-				// TODO: Unreliable with certain system configurations.
-				if (_HighRes)
+				if (_UseHRT && _HighRes)
+				{
+					long t = 0;
 					SafeNativeMethods.QueryPerformanceCounter(out t);
+					return (long)((double)t * _Frequency);
+				}
 				else
 #endif
-					t = DateTime.UtcNow.Ticks;
-
-				return (long)((double)t * _Frequency);
+					return (long)((double)DateTime.UtcNow.Ticks * 0.0001);
 
 				/* We don't really need this, but it may be useful in the future.
 				uint t = (uint)Environment.TickCount;
@@ -450,6 +454,8 @@ namespace Server
 					m_HaltOnWarning = true;
 				else if ( Insensitive.Equals( args[i], "-vb" ) )
 					m_VBdotNET = true;
+				else if (Insensitive.Equals(args[i], "-usehrt"))
+					_UseHRT = true;
 			}
 
 			try
@@ -515,6 +521,9 @@ namespace Server
 
 			if ( GCSettings.IsServerGC )
 				Console.WriteLine("Core: Server garbage collection mode enabled");
+
+			if (_UseHRT)
+				Console.WriteLine("Core: Requested high resolution timing ({0})", UsingHighResolutionTiming ? "Supported" : "Unsupported");
 
 			Console.WriteLine("RandomImpl: {0} ({1})", RandomImpl.Type.Name, RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
