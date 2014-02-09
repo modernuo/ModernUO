@@ -116,7 +116,8 @@ namespace Server {
 		private int _Index = 0;
 
 		private object _sync = new object();
-		private object _syncB = new object();
+
+		private ManualResetEvent _filled = new ManualResetEvent(false);
 
 		public CSPRandom() {
 			_CSP.GetBytes(_Working);
@@ -127,19 +128,23 @@ namespace Server {
 			if (_Index + c < BUFFER_SIZE)
 				return;
 
-			lock (_syncB) {
-				byte[] b = _Working;
-				_Working = _Buffer;
-				_Buffer = b;
-				_Index = 0;
-			}
+			_filled.WaitOne();
+
+			byte[] b = _Working;
+			_Working = _Buffer;
+			_Buffer = b;
+			_Index = 0;
+
+			_filled.Reset();
+
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
 
 		private void Fill(object o) {
-			lock (_syncB)
-				lock (_CSP)
-					_CSP.GetBytes(_Buffer);
+			lock (_CSP)
+				_CSP.GetBytes(_Buffer);
+
+			_filled.Set();
 		}
 
 		private void _GetBytes(byte[] b) {
@@ -228,7 +233,8 @@ namespace Server {
 		private int _Index = 0;
 
 		private object _sync = new object();
-		private object _syncB = new object();
+
+		private ManualResetEvent _filled = new ManualResetEvent(false);
 
 		public RDRand32() {
 			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
@@ -244,18 +250,21 @@ namespace Server {
 			if (_Index + c < BUFFER_SIZE)
 				return;
 
-			lock (_syncB) {
-				byte[] b = _Working;
-				_Working = _Buffer;
-				_Buffer = b;
-				_Index = 0;
-			}
+			_filled.WaitOne();
+
+			byte[] b = _Working;
+			_Working = _Buffer;
+			_Buffer = b;
+			_Index = 0;
+
+			_filled.Reset();
+
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
 
 		private void Fill(object o) {
-			lock (_syncB)
-				SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Buffer);
+			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Buffer);
+			_filled.Set();
 		}
 
 		private void _GetBytes(byte[] b) {
@@ -343,7 +352,8 @@ namespace Server {
 		private int _Index = 0;
 
 		private object _sync = new object();
-		private object _syncB = new object();
+
+		private ManualResetEvent _filled = new ManualResetEvent(false);
 
 		public RDRand64() {
 			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
@@ -359,18 +369,21 @@ namespace Server {
 			if (_Index + c < BUFFER_SIZE)
 				return;
 
-			lock (_syncB) {
-				byte[] b = _Working;
-				_Working = _Buffer;
-				_Buffer = b;
-				_Index = 0;
-			}
+			_filled.WaitOne();
+			
+			byte[] b = _Working;
+			_Working = _Buffer;
+			_Buffer = b;
+			_Index = 0;
+
+			_filled.Reset();
+
 			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
 		}
 
 		private void Fill(object o) {
-			lock (_syncB)
-				SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Buffer);
+			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Buffer);
+			_filled.Set();
 		}
 
 		private void _GetBytes(byte[] b) {
