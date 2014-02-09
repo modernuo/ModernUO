@@ -452,7 +452,8 @@ namespace Server
 	{
 		None,
 		Related,
-		Everyone
+		Everyone,
+		Selective
 	}
 
 	public enum ResistanceType
@@ -5197,6 +5198,11 @@ namespace Server
 							SendVisibleDamageEveryone(amount);
 							break;
 						}
+					case VisibleDamageType.Selective:
+						{
+							SendVisibleDamageSelective(from, amount);
+							break;
+						}
 				}
 
 				OnDamage( amount, from, newHits < 0 );
@@ -5312,6 +5318,66 @@ namespace Server
 			Packet.Release( pOld );
 
 			eable.Free();
+		}
+
+		public static bool m_DefaultShowVisibleDamage, m_DefaultCanSeeVisibleDamage;
+
+		public static bool DefaultShowVisibleDamage { get { return m_DefaultShowVisibleDamage; } set { m_DefaultShowVisibleDamage = value; } }
+		public static bool DefaultCanSeeVisibleDamage { get { return m_DefaultCanSeeVisibleDamage; } set { m_DefaultCanSeeVisibleDamage = value; } }
+
+		public virtual bool ShowVisibleDamage { get { return m_DefaultShowVisibleDamage; } }
+		public virtual bool CanSeeVisibleDamage { get { return m_DefaultCanSeeVisibleDamage; } }
+
+		public void SendVisibleDamageSelective(Mobile from, int amount)
+		{
+			NetState ourState = m_NetState, theirState = (from == null ? null : from.m_NetState);
+
+			Mobile damager = from;
+			Mobile damaged = this;
+
+			if (ourState == null)
+			{
+				Mobile master = GetDamageMaster(from);
+
+				if (master != null)
+				{
+					damaged = master;
+					ourState = master.m_NetState;
+				}
+			}
+
+			if (!damaged.ShowVisibleDamage)
+				return;
+
+			if (theirState == null && from != null)
+			{
+				Mobile master = from.GetDamageMaster(this);
+
+				if (master != null)
+				{
+					damager = master;
+					theirState = master.m_NetState;
+				}
+			}
+
+			if (amount > 0 && (ourState != null || theirState != null))
+			{
+				if (damaged.CanSeeVisibleDamage && ourState != null)
+				{
+					if (ourState.DamagePacket)
+						ourState.Send(new DamagePacket(this, amount));
+					else
+						ourState.Send(new DamagePacketOld(this, amount));
+				}
+
+				if (theirState != null && theirState != ourState && damager.CanSeeVisibleDamage)
+				{
+					if (theirState.DamagePacket)
+						theirState.Send(new DamagePacket(this, amount));
+					else
+						theirState.Send(new DamagePacketOld(this, amount));
+				}
+			}
 		}
 
 		public void Heal( int amount )
