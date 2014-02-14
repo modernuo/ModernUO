@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Gumps;
 using Server.Spells;
@@ -307,13 +307,14 @@ namespace Server.Items
 		public static void CreateTimer( Mobile m, TimeSpan delay )
 		{
 			if ( m != null )
-				if ( !m_Timers.Contains( m ) )
+				if ( !m_Timers.ContainsKey( m ) )
 					m_Timers[m] = new InternalTimer( m, delay );
 		}
 		
 		public static void StartTimer( Mobile m )
 		{
-			Timer t = (Timer)m_Timers[m];
+			Timer t = null;
+			m_Timers.TryGetValue(m, out t);
 			
 			if ( t != null )
 				t.Start();
@@ -321,12 +322,13 @@ namespace Server.Items
 
 		public static bool IsDisguised( Mobile m )
 		{
-			return m_Timers.Contains( m );
+			return m_Timers.ContainsKey( m );
 		}
 
 		public static bool StopTimer( Mobile m )
 		{
-			Timer t = (Timer)m_Timers[m];
+			Timer t = null;
+			m_Timers.TryGetValue(m, out t);
 
 			if ( t != null )
 			{
@@ -339,7 +341,8 @@ namespace Server.Items
 		
 		public static bool RemoveTimer( Mobile m )
 		{
-			Timer t = (Timer)m_Timers[m];
+			Timer t = null;
+			m_Timers.TryGetValue(m, out t);
 
 			if ( t != null )
 			{
@@ -352,7 +355,8 @@ namespace Server.Items
 		
 		public static TimeSpan TimeRemaining( Mobile m )
 		{
-			Timer t = (Timer)m_Timers[m];
+			Timer t = null;
+			m_Timers.TryGetValue(m, out t);
 
 			if ( t != null )
 			{
@@ -362,9 +366,9 @@ namespace Server.Items
 			return TimeSpan.Zero;
 		}
 		
-		private static Hashtable m_Timers = new Hashtable();
-		
-		public static Hashtable Timers
+		private static Dictionary<Mobile, Timer> m_Timers = new Dictionary<Mobile, Timer>();
+
+		public static Dictionary<Mobile, Timer> Timers
 		{
 			get { return m_Timers; }
 		}
