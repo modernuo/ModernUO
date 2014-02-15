@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Targeting;
 using Server.Items;
@@ -76,16 +76,17 @@ namespace Server.Spells.Sixth
 			FinishSequence();
 		}
 
-		private static Hashtable m_Table = new Hashtable();
+		private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
 		public static bool HasTimer( Mobile m )
 		{
-			return m_Table[m] != null;
+			return m_Table.ContainsKey(m);
 		}
 
 		public static void RemoveTimer( Mobile m )
 		{
-			Timer t = (Timer)m_Table[m];
+			Timer t = null;
+			m_Table.TryGetValue(m, out t);
 
 			if ( t != null )
 			{

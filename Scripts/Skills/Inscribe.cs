@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Targeting;
 using Server.Items;
@@ -23,7 +23,7 @@ namespace Server.SkillHandlers
 			return TimeSpan.FromSeconds( 1.0 );
 		}
 
-		private static Hashtable m_UseTable = new Hashtable();
+		private static Dictionary<BaseBook, Mobile> m_UseTable = new Dictionary<BaseBook, Mobile>();
 
 		private static void SetUser( BaseBook book, Mobile mob )
 		{
@@ -37,7 +37,9 @@ namespace Server.SkillHandlers
 
 		public static Mobile GetUser( BaseBook book )
 		{
-			return (Mobile)m_UseTable[book];
+			Mobile m = null;
+			m_UseTable.TryGetValue(book, out m);
+			return m;
 		}
 
 		public static bool IsEmpty( BaseBook book )
