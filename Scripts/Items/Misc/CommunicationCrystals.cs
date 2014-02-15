@@ -126,7 +126,7 @@ namespace Server.Items
 
 		public override bool HandlesOnSpeech
 		{
-			get{ return Active && Receivers.Count > 0 && ( RootParent == null || RootParent is Mobile ); }
+			get{ return true; }
 		}
 
 		public override void OnSpeech( SpeechEventArgs e )
