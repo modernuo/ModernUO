@@ -3709,8 +3709,8 @@ namespace Server
 			}
 		}
 
-		[CommandProperty(AccessLevel.GameMaster)]
-		public virtual IEntity Parent
+		[CommandProperty(AccessLevel.GameMaster, AccessLevel.Developer)]
+		public IEntity Parent
 		{
 			get
 			{
