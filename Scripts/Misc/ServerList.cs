@@ -170,7 +170,7 @@ namespace Server.Misc
 		private static IPAddress FindPublicAddress()
 		{
 			try {
-				WebRequest req = HttpWebRequest.Create( "http://www.runuo.com/ip.php" );
+				WebRequest req = HttpWebRequest.Create( "https://zenvera.com/ip.php" );
 				req.Timeout = 15000;
 
 				WebResponse res = req.GetResponse();
