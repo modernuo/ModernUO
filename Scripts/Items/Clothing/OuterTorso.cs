@@ -265,7 +265,7 @@ namespace Server.Items
 
 		public override int BasePhysicalResistance{ get{ return 3; } }
 
-		public override void OnAdded( object parent )
+		public override void OnAdded(IEntity parent)
 		{
 			base.OnAdded( parent );
 
@@ -273,7 +273,7 @@ namespace Server.Items
 				((Mobile)parent).VirtualArmorMod += 2;
 		}
 
-		public override void OnRemoved(object parent)
+		public override void OnRemoved(IEntity parent)
 		{
 			base.OnRemoved( parent );
 
@@ -390,7 +390,7 @@ namespace Server.Items
 
 		public override int BasePhysicalResistance{ get{ return 3; } }
 
-		public override void OnAdded( object parent )
+		public override void OnAdded(IEntity parent)
 		{
 			base.OnAdded( parent );
 
@@ -398,7 +398,7 @@ namespace Server.Items
 				((Mobile)parent).VirtualArmorMod += 2;
 		}
 
-		public override void OnRemoved(object parent)
+		public override void OnRemoved(IEntity parent)
 		{
 			base.OnRemoved( parent );
 

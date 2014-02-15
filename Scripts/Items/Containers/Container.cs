@@ -280,7 +280,7 @@ namespace Server.Items
 		public override int DefaultMaxWeight {
 			get {
 				if ( Core.ML ) {
-					Mobile m = ParentEntity as Mobile;
+					Mobile m = Parent as Mobile;
 					if ( m != null && m.Player && m.Backpack == this ) {
 						return 550;
 					} else {

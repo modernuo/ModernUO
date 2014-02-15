@@ -2659,7 +2659,7 @@ namespace Server.Mobiles
 		{
 			if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured))
 			{
-				if (this.Backpack != item.ParentEntity)
+				if (this.Backpack != item.Parent)
 				{
 					return true;
 				}
