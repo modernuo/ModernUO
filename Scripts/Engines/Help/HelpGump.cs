@@ -239,7 +239,7 @@ namespace Server.Engines.Help
 					{
 						from.SendLocalizedMessage( 1061632 ); // You can't do that while carrying the sigil.
 					}
-					else if ( from.CanUseStuckMenu() && from.Region.CanUseStuckMenu( from ) && !CheckCombat( from ) && !from.Frozen && !from.Criminal && (Core.AOS || from.Kills < 5) )
+					else if ( from is PlayerMobile && ((PlayerMobile)from).CanUseStuckMenu() && from.Region.CanUseStuckMenu( from ) && !CheckCombat( from ) && !from.Frozen && !from.Criminal && (Core.AOS || from.Kills < 5) )
 					{
 						StuckMenu menu = new StuckMenu( from, from, true );
 

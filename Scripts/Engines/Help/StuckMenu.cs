@@ -1,4 +1,5 @@
 using System;
+using Server.Mobiles;
 using Server.Network;
 using Server.Gumps;
 
@@ -203,7 +204,8 @@ namespace Server.Menus.Questions
 
 				new TeleportTimer( m_Mobile, entry, TimeSpan.FromSeconds( 10.0 + (Utility.RandomDouble() * 110.0) ) ).Start();
 
-				m_Mobile.UsedStuckMenu();
+				if (m_Mobile is PlayerMobile)
+					((PlayerMobile)m_Mobile).UsedStuckMenu();
 			}
 			else
 			{

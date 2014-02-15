@@ -1151,7 +1151,11 @@ namespace Server
 			{
 				IEntity parent = bounce.m_Parent;
 
-				if ( parent is Item && !((Item)parent).Deleted )
+				if (parent.Deleted)
+				{
+					MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
+				}
+				else if ( parent is Item )
 				{
 					Item p = (Item)parent;
 					IEntity root = p.RootParent;
@@ -1165,7 +1169,7 @@ namespace Server
 						MoveToWorld( from.Location, from.Map );
 					}
 				}
-				else if ( parent is Mobile && !((Mobile)parent).Deleted )
+				else if ( parent is Mobile )
 				{
 					if ( !((Mobile)parent).EquipItem( this ) )
 						MoveToWorld( bounce.m_WorldLoc, bounce.m_Map );
@@ -2157,10 +2161,8 @@ namespace Server
 
 			if ( GetSaveFlag( flags, SaveFlag.Parent ) )
 			{
-				if ( m_Parent is Mobile && !( (Mobile) m_Parent ).Deleted )
-					writer.Write( ( (Mobile) m_Parent ).Serial );
-				else if ( m_Parent is Item && !( (Item) m_Parent ).Deleted )
-					writer.Write( ( (Item) m_Parent ).Serial );
+				if (m_Parent != null && !m_Parent.Deleted)
+					writer.Write(m_Parent.Serial);
 				else
 					writer.Write( (int) Serial.MinusOne );
 			}
