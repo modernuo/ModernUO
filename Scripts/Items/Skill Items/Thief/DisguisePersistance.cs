@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
 using Server.Network;
@@ -42,12 +42,12 @@ namespace Server.Items
 			
 			writer.Write( timerCount );
 				
-			foreach ( DictionaryEntry entry in DisguiseTimers.Timers )
+			foreach ( KeyValuePair<Mobile, Timer> entry in DisguiseTimers.Timers )
 			{
-				Mobile m = (Mobile)entry.Key;
+				Mobile m = entry.Key;
 				
 				writer.Write( m );
-				writer.Write( ((Timer)entry.Value).Next - DateTime.UtcNow );
+				writer.Write( entry.Value.Next - DateTime.UtcNow );
 				writer.Write( m.NameMod );
 			}
 		}
