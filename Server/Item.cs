@@ -470,7 +470,7 @@ namespace Server
 	{
 		public Map m_Map;
 		public Point3D m_Location, m_WorldLoc;
-		public object m_Parent;
+		public IEntity m_Parent;
 
 		public BounceInfo( Item item )
 		{
@@ -480,7 +480,7 @@ namespace Server
 			m_Parent = item.Parent;
 		}
 
-		private BounceInfo( Map map, Point3D loc, Point3D worldLoc, object parent )
+		private BounceInfo( Map map, Point3D loc, Point3D worldLoc, IEntity parent )
 		{
 			m_Map = map;
 			m_Location = loc;
@@ -496,7 +496,7 @@ namespace Server
 				Point3D loc = reader.ReadPoint3D();
 				Point3D worldLoc = reader.ReadPoint3D();
 
-				object parent;
+				IEntity parent;
 
 				Serial serial = reader.ReadInt();
 
@@ -594,7 +594,7 @@ namespace Server
 		private int m_Hue;
 		private int m_Amount;
 		private Layer m_Layer;
-		private object m_Parent; // Mobile, Item, or null=World
+		private IEntity m_Parent; // Mobile, Item, or null=World
 		private Map m_Map;
 		private LootType m_LootType;
 		private DateTime m_LastMovedTime;
@@ -1149,12 +1149,16 @@ namespace Server
 
 			if ( bounce != null )
 			{
-				object parent = bounce.m_Parent;
+				IEntity parent = bounce.m_Parent;
 
-				if ( parent is Item && !((Item)parent).Deleted )
+				if (parent.Deleted)
+				{
+					MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
+				}
+				else if ( parent is Item )
 				{
 					Item p = (Item)parent;
-					object root = p.RootParent;
+					IEntity root = p.RootParent;
 					if ( p.IsAccessibleTo( from ) && ( !(root is Mobile) || ((Mobile)root).CheckNonlocalDrop( from, this, p ) ) )
 					{
 						Location = bounce.m_Location;
@@ -1165,7 +1169,7 @@ namespace Server
 						MoveToWorld( from.Location, from.Map );
 					}
 				}
-				else if ( parent is Mobile && !((Mobile)parent).Deleted )
+				else if ( parent is Mobile )
 				{
 					if ( !((Mobile)parent).EquipItem( this ) )
 						MoveToWorld( bounce.m_WorldLoc, bounce.m_Map );
@@ -1898,11 +1902,11 @@ namespace Server
 		{
 		}
 
-		public virtual void OnRemoved( object parent )
+		public virtual void OnRemoved( IEntity parent )
 		{
 		}
 
-		public virtual void OnAdded( object parent )
+		public virtual void OnAdded( IEntity parent )
 		{
 		}
 
@@ -2157,10 +2161,8 @@ namespace Server
 
 			if ( GetSaveFlag( flags, SaveFlag.Parent ) )
 			{
-				if ( m_Parent is Mobile && !( (Mobile) m_Parent ).Deleted )
-					writer.Write( ( (Mobile) m_Parent ).Serial );
-				else if ( m_Parent is Item && !( (Item) m_Parent ).Deleted )
-					writer.Write( ( (Item) m_Parent ).Serial );
+				if (m_Parent != null && !m_Parent.Deleted)
+					writer.Write(m_Parent.Serial);
 				else
 					writer.Write( (int) Serial.MinusOne );
 			}
@@ -2918,11 +2920,12 @@ namespace Server
 			}
 		}
 
-		public object RootParent
+		[CommandProperty(AccessLevel.GameMaster)]
+		public IEntity RootParent
 		{
 			get
 			{
-				object p = m_Parent;
+				IEntity p = m_Parent;
 
 				while ( p is Item )
 				{
@@ -2944,7 +2947,7 @@ namespace Server
 
 		public bool ParentsContain<T>() where T : Item
 		{
-			object p = m_Parent;
+			IEntity p = m_Parent;
 
 			while( p is Item )
 			{
@@ -3325,7 +3328,7 @@ namespace Server
 			}
 		}
 
-		public virtual void OnParentDeleted( object parent )
+		public virtual void OnParentDeleted( IEntity parent )
 		{
 			this.Delete();
 		}
@@ -3539,28 +3542,6 @@ namespace Server
 			}
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public IEntity ParentEntity
-		{
-			get
-			{
-				IEntity p = Parent as IEntity;
-
-				return p;
-			}
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public IEntity RootParentEntity
-		{
-			get
-			{
-				IEntity p = RootParent as IEntity;
-
-				return p;
-			}
-		}
-
 		#region Location Location Location!
 
 		public virtual void OnLocationChange( Point3D oldLocation )
@@ -3728,7 +3709,8 @@ namespace Server
 			}
 		}
 
-		public virtual object Parent
+		[CommandProperty(AccessLevel.GameMaster, AccessLevel.Developer)]
+		public IEntity Parent
 		{
 			get
 			{
@@ -3739,7 +3721,7 @@ namespace Server
 				if ( m_Parent == value )
 					return;
 
-				object oldParent = m_Parent;
+				IEntity oldParent = m_Parent;
 
 				m_Parent = value;
 
@@ -4190,12 +4172,12 @@ namespace Server
 
 		public Point3D GetWorldLocation()
 		{
-			object root = RootParent;
+			IEntity root = RootParent;
 
 			if ( root == null )
 				return m_Location;
 			else
-				return ((IEntity)root).Location;
+				return root.Location;
 
 			//return root == null ? m_Location : new Point3D( (IPoint3D) root );
 		}
@@ -4204,22 +4186,22 @@ namespace Server
 
 		public Point3D GetSurfaceTop()
 		{
-			object root = RootParent;
+			IEntity root = RootParent;
 
 			if ( root == null )
 				return new Point3D( m_Location.m_X, m_Location.m_Y, m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0) );
 			else
-				return ((IEntity)root).Location;
+				return root.Location;
 		}
 
 		public Point3D GetWorldTop()
 		{
-			object root = RootParent;
+			IEntity root = RootParent;
 
 			if ( root == null )
 				return new Point3D( m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight );
 			else
-				return ((IEntity)root).Location;
+				return root.Location;
 		}
 
 		public void SendLocalizedMessageTo( Mobile to, int number )
@@ -4378,14 +4360,14 @@ namespace Server
 			return true;*/
 		}
 
-		public bool IsChildOf( object o )
+		public bool IsChildOf(IEntity o)
 		{
 			return IsChildOf( o, false );
 		}
 
-		public bool IsChildOf( object o, bool allowNull )
+		public bool IsChildOf(IEntity o, bool allowNull)
 		{
-			object p = m_Parent;
+			IEntity p = m_Parent;
 
 			if ( (p == null || o == null) && !allowNull )
 				return false;
@@ -4536,7 +4518,7 @@ namespace Server
 
 			int ourHue = Hue;
 			Map thisMap = this.Map;
-			object thisParent = this.m_Parent;
+			IEntity thisParent = this.m_Parent;
 			Point3D worldLoc = this.GetWorldLocation();
 			LootType type = this.LootType;
 

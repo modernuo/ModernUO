@@ -24,7 +24,7 @@ namespace Server.Items
 			Weight = 1.0;
 		}
 
-		public override void OnAdded( object parent )
+		public override void OnAdded(IEntity parent)
 		{
 			base.OnAdded( parent );
 

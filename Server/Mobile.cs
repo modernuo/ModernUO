@@ -749,7 +749,6 @@ namespace Server
 		private bool m_DisplayGuildTitle;
 		private Mobile m_GuildFealty;
 		private long m_NextSpellTime;
-		private DateTime[] m_StuckMenuUses;
 		private Timer m_ExpireCombatant;
 		private Timer m_ExpireCriminal;
 		private Timer m_ExpireAggrTimer;
@@ -3502,26 +3501,6 @@ namespace Server
 			this.Region.OnCriminalAction( this, message );
 		}
 
-		public virtual bool CanUseStuckMenu()
-		{
-			if( m_StuckMenuUses == null )
-			{
-				return true;
-			}
-			else
-			{
-				for( int i = 0; i < m_StuckMenuUses.Length; ++i )
-				{
-					if( (DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays( 1.0 ) )
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
-
 		public virtual bool IsSnoop( Mobile from )
 		{
 			return (from != this);
@@ -5415,23 +5394,6 @@ namespace Server
 		{
 		}
 
-		public void UsedStuckMenu()
-		{
-			if( m_StuckMenuUses == null )
-			{
-				m_StuckMenuUses = new DateTime[2];
-			}
-
-			for( int i = 0; i < m_StuckMenuUses.Length; ++i )
-			{
-				if( (DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays( 1.0 ) )
-				{
-					m_StuckMenuUses[i] = DateTime.UtcNow;
-					return;
-				}
-			}
-		}
-
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Squelched
 		{
@@ -5451,6 +5413,11 @@ namespace Server
 
 			switch( version )
 			{
+				case 32:
+					{
+						// Removed StuckMenu
+						goto case 31;
+					}
 				case 31:
 					{
 						m_LastStrGain = reader.ReadDeltaTime();
@@ -5714,18 +5681,16 @@ namespace Server
 						m_StatMods = new List<StatMod>();
 						m_SkillMods = new List<SkillMod>();
 
-						if( reader.ReadBool() )
+						if (version < 32)
 						{
-							m_StuckMenuUses = new DateTime[reader.ReadInt()];
-
-							for( int i = 0; i < m_StuckMenuUses.Length; ++i )
+							if (reader.ReadBool())
 							{
-								m_StuckMenuUses[i] = reader.ReadDateTime();
+								int count = reader.ReadInt();
+								for (int i = 0; i < count; ++i)
+								{
+									reader.ReadDateTime();
+								}
 							}
-						}
-						else
-						{
-							m_StuckMenuUses = null;
 						}
 
 						if( m_Player && m_Map != Map.Internal )
@@ -5883,7 +5848,7 @@ namespace Server
 
 		public virtual void Serialize( GenericWriter writer )
 		{
-			writer.Write( (int)31 ); // version
+			writer.Write( (int)32 ); // version
 
 			writer.WriteDeltaTime( m_LastStrGain );
 			writer.WriteDeltaTime( m_LastIntGain );
@@ -6001,22 +5966,6 @@ namespace Server
 			writer.Write( (byte)m_StrLock );
 			writer.Write( (byte)m_DexLock );
 			writer.Write( (byte)m_IntLock );
-
-			if( m_StuckMenuUses != null )
-			{
-				writer.Write( true );
-
-				writer.Write( m_StuckMenuUses.Length );
-
-				for( int i = 0; i < m_StuckMenuUses.Length; ++i )
-				{
-					writer.Write( m_StuckMenuUses[i] );
-				}
-			}
-			else
-			{
-				writer.Write( false );
-			}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]

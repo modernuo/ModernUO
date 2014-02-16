@@ -2661,7 +2661,7 @@ namespace Server.Mobiles
 		{
 			if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured))
 			{
-				if (this.Backpack != item.ParentEntity)
+				if (this.Backpack != item.Parent)
 				{
 					return true;
 				}
@@ -2937,6 +2937,47 @@ namespace Server.Mobiles
 				}
 			}
 		}
+
+		#region Stuck Menu
+		private DateTime[] m_StuckMenuUses;
+
+		public bool CanUseStuckMenu()
+		{
+			if (m_StuckMenuUses == null)
+			{
+				return true;
+			}
+			else
+			{
+				for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+				{
+					if ((DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays(1.0))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
+		public void UsedStuckMenu()
+		{
+			if (m_StuckMenuUses == null)
+			{
+				m_StuckMenuUses = new DateTime[2];
+			}
+
+			for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+			{
+				if ((DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays(1.0))
+				{
+					m_StuckMenuUses[i] = DateTime.UtcNow;
+					return;
+				}
+			}
+		}
+		#endregion
 
 		private List<Mobile> m_PermaFlags;
 		private List<Mobile> m_VisList;
@@ -3312,6 +3353,24 @@ namespace Server.Mobiles
 
 			switch ( version )
 			{
+				case 29:
+				{
+					if (reader.ReadBool())
+					{
+						m_StuckMenuUses = new DateTime[reader.ReadInt()];
+
+						for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+						{
+							m_StuckMenuUses[i] = reader.ReadDateTime();
+						}
+					}
+					else
+					{
+						m_StuckMenuUses = null;
+					}
+
+					goto case 28;
+				}
 				case 28:
 				{
 					m_PeacedUntil = reader.ReadDateTime();
@@ -3603,7 +3662,23 @@ namespace Server.Mobiles
 
 			base.Serialize( writer );
 
-			writer.Write( (int) 28 ); // version
+			writer.Write( (int) 29 ); // version
+
+			if (m_StuckMenuUses != null)
+			{
+				writer.Write(true);
+
+				writer.Write(m_StuckMenuUses.Length);
+
+				for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+				{
+					writer.Write(m_StuckMenuUses[i]);
+				}
+			}
+			else
+			{
+				writer.Write(false);
+			}
 
 			writer.Write( (DateTime) m_PeacedUntil );
 			writer.Write( (DateTime) m_AnkhNextUse );
