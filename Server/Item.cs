@@ -1151,7 +1151,7 @@ namespace Server
 			{
 				IEntity parent = bounce.m_Parent;
 
-				if (parent.Deleted)
+				if (parent == null || parent.Deleted)
 				{
 					MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
 				}
