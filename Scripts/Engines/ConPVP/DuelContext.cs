@@ -1956,6 +1956,56 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
+		private void MessageRuleset( Mobile mob ) {
+			if ( m_Ruleset == null ) {
+				return;
+			}
+
+			Ruleset ruleset = m_Ruleset;
+			Ruleset basedef = ruleset.Base;
+
+			mob.SendMessage( "Ruleset: {0}", basedef.Title );
+
+			BitArray defs;
+
+			if ( ruleset.Flavors.Count > 0 )
+			{
+				defs = new BitArray( basedef.Options );
+
+				for ( int i = 0; i < ruleset.Flavors.Count; ++i ) {
+					defs.Or( ((Ruleset)ruleset.Flavors[i]).Options );
+
+					mob.SendMessage( " + {0}", ((Ruleset)ruleset.Flavors[i]).Title );
+				}
+			}
+			else
+			{
+				defs = basedef.Options;
+			}
+
+			int changes = 0;
+
+			BitArray opts = ruleset.Options;
+
+			for ( int i = 0; i < opts.Length; ++i )
+			{
+				if ( defs[i] != opts[i] ) {
+					string name = ruleset.Layout.FindByIndex( i );
+
+					if ( name != null ) // sanity
+					{
+						++changes;
+
+						if ( changes == 1 ) {
+							mob.SendMessage( "Modifications:" );
+						}
+
+						mob.SendMessage( "{0}: {1}", name, opts[i] ? "enabled" : "disabled" );
+					}
+				}
+			}
+		}
+
 		public void SendBeginGump( int count )
 		{
 			if ( !m_Registered || m_Finished )

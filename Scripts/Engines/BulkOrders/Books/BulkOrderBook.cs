@@ -273,6 +273,16 @@ namespace Server.Engines.BulkOrders
 				list.Add( 1062481, m_BookName ); // Book Name: ~1_val~
 		}
 
+		public override void OnSingleClick(Mobile from)
+		{
+			base.OnSingleClick(from);
+
+			LabelTo(from, 1062344, m_Entries.Count.ToString()); // Deeds in book: ~1_val~
+
+			if (!String.IsNullOrEmpty(m_BookName))
+				LabelTo(from, 1062481, m_BookName);
+		}
+
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
 			base.GetContextMenuEntries( from, list );

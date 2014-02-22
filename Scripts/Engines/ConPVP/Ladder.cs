@@ -30,8 +30,10 @@ namespace Server.Engines.ConPVP
 
 		public override void Delete()
 		{
-			if ( Ladder.Instance != m_Ladder )
-				base.Delete();
+			if ( Ladder.Instance == m_Ladder )
+				Ladder.Instance = null;
+
+			base.Delete();
 		}
 
 		public LadderController( Serial serial ) : base( serial )
