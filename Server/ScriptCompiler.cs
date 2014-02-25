@@ -89,12 +89,11 @@ namespace Server
 			AppendCompilerOption( ref sb, "/d:MONO" );
 #endif
 
-			//These three defines are legacy, ie, depreciated.
+			//These three defines are deprecated
 			if( Core.Is64Bit )
 				AppendCompilerOption( ref sb, "/d:x64" );
 
 			AppendCompilerOption( ref sb, "/d:Framework_2_0" );
-
 			AppendCompilerOption( ref sb, "/d:Framework_4_0" );
 
 			return (sb == null ? null : sb.ToString());

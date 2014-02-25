@@ -267,12 +267,22 @@ namespace Server.Network
 			return array;
 		}
 
-		public void Dispose() {
-			Socket socket = Interlocked.Exchange<Socket>( ref m_Listener, null );
+		public void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				Socket socket = Interlocked.Exchange<Socket>(ref m_Listener, null);
 
-			if ( socket != null ) {
-				socket.Close();
+				if (socket != null)
+				{
+					socket.Close();
+				}
 			}
+		}
+
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }

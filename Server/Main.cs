@@ -735,7 +735,7 @@ namespace Server
 		}
 	}
 
-	public class FileLogger : TextWriter, IDisposable
+	public class FileLogger : TextWriter
 	{
 		private string m_FileName;
 		private bool m_NewLine;

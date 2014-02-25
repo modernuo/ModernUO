@@ -1394,7 +1394,6 @@ namespace Server
 		private static int m_ThreadCount = 0;
 		public static int ThreadCount { get { return m_ThreadCount; } }
 
-
 		private int BufferSize;
 
 		private long m_LastPos, m_CurPos;
