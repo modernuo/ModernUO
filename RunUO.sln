@@ -9,7 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{1B394627-C6BF-447D-8CBD-4A3B5262C5B4}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Assemblies.cfg = Data\Assemblies.cfg
 		Data\Assemblies_4_0.cfg = Data\Assemblies_4_0.cfg
 		Data\bodyTable.cfg = Data\bodyTable.cfg
 		Data\Common.map = Data\Common.map
