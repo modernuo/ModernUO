@@ -332,7 +332,11 @@ namespace Server.Items
 
 			if ( t != null )
 			{
-				t.Delay = t.Next - DateTime.UtcNow;
+				TimeSpan ts = t.Next - DateTime.UtcNow;
+				if (ts < TimeSpan.Zero)
+					ts = TimeSpan.Zero;
+
+				t.Delay = ts;
 				t.Stop();
 			}
 
