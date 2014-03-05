@@ -66,7 +66,7 @@ namespace Server
 		EigthAge			= 0x00000100,
 		NinthAge			= 0x00000200, /* Crystal/Shadow Custom House Tiles */
 		TenthAge			= 0x00000400,
-		InceasedStorage		= 0x00000800, /* Increased Housing/Bank Storage */
+		IncreasedStorage	= 0x00000800, /* Increased Housing/Bank Storage */
 		SeventhCharacterSlot= 0x00001000,
 		RoleplayFaces		= 0x00002000,
 		TrialAccount		= 0x00004000,
