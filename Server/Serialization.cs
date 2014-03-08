@@ -484,10 +484,16 @@ namespace Server
 			if( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
+#if MONO
+			byte[] bytes = BitConverter.GetBytes(value);
+			for(int i = 0; i < bytes.Length; i++)
+				m_Buffer[m_Index++] = bytes[i];
+#else
 			fixed( byte* pBuffer = m_Buffer )
 				*((double*)(pBuffer + m_Index)) = value;
 
 			m_Index += 8;
+#endif
 		}
 
 		public unsafe override void Write( float value )
@@ -495,10 +501,16 @@ namespace Server
 			if( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
-			fixed( byte* pBuffer = m_Buffer )
+#if MONO
+			byte[] bytes = BitConverter.GetBytes(value);
+			for(int i = 0; i < bytes.Length; i++)
+				m_Buffer[m_Index++] = bytes[i];
+#else
+			fixed ( byte* pBuffer = m_Buffer )
 				*((float*)(pBuffer + m_Index)) = value;
 
 			m_Index += 4;
+#endif
 		}
 
 		private char[] m_SingleCharBuffer = new char[1];
