@@ -96,6 +96,9 @@ namespace Server
 			AppendCompilerOption( ref sb, "/d:Framework_2_0" );
 			AppendCompilerOption( ref sb, "/d:Framework_4_0" );
 
+			AppendCompilerOption(ref sb, "/d:NEWTIMERS");
+			AppendCompilerOption(ref sb, "/d:NEWPARENT");
+
 			return (sb == null ? null : sb.ToString());
 		}
 
