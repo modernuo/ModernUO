@@ -2289,6 +2289,8 @@ namespace Server.Network
 			m_Stream.Write( (short) t.Offset.X );
 			m_Stream.Write( (short) t.Offset.Y );
 			m_Stream.Write( (short) t.Offset.Z );
+
+			// DWORD Hue
 		}
 	}
 
