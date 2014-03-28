@@ -739,6 +739,7 @@
     <Compile Include="Gumps\BaseImageTileButtonsGump.cs" />
     <Compile Include="Gumps\CategorizedAddGump.cs" />
     <Compile Include="Gumps\ClientGump.cs" />
+    <Compile Include="Gumps\CommentsGump.cs" />
     <Compile Include="Gumps\ConfirmBreakCrystalGump.cs" />
     <Compile Include="Gumps\ConfirmHeritageGump.cs" />
     <Compile Include="Gumps\ConfirmHouseResize.cs" />
