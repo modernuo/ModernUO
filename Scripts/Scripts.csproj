@@ -312,6 +312,12 @@
     <Compile Include="Engines\Factions\Items\BaseSystemController.cs" />
     <Compile Include="Engines\Factions\Items\FactionStone.cs" />
     <Compile Include="Engines\Factions\Items\JoinStone.cs" />
+    <Compile Include="Engines\Factions\Items\Power Faction Items\BloodRose.cs" />
+    <Compile Include="Engines\Factions\Items\Power Faction Items\ClarityPotion.cs" />
+    <Compile Include="Engines\Factions\Items\Power Faction Items\GemOfEmpowerment.cs" />
+    <Compile Include="Engines\Factions\Items\Power Faction Items\PowerFactionItem.cs" />
+    <Compile Include="Engines\Factions\Items\Power Faction Items\StormsEye.cs" />
+    <Compile Include="Engines\Factions\Items\Power Faction Items\UrnOfAscension.cs" />
     <Compile Include="Engines\Factions\Items\Sigil.cs" />
     <Compile Include="Engines\Factions\Items\Silver.cs" />
     <Compile Include="Engines\Factions\Items\StrongholdMonolith.cs" />
