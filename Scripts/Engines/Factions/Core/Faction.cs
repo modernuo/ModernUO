@@ -1149,6 +1149,8 @@ namespace Server.Factions
 
 					if ( victimState.CanGiveSilverTo( killer ) )
 					{
+						PowerFactionItem.CheckSpawn( killer, victim );
+
 						if ( victimState.KillPoints > 0 )
 						{
 							victimState.IsActive = true;

@@ -1683,6 +1683,8 @@ namespace Server.Engines.ConPVP
 			mob.RemoveStatMod( "[Magic] Dex Offset" );
 			mob.RemoveStatMod( "[Magic] Int Offset" );
 			mob.RemoveStatMod( "Concussion" );
+			mob.RemoveStatMod( "blood-rose" );
+			mob.RemoveStatMod( "clarity-potion" );
 
 			OrangePetals.RemoveContext( mob );
 
