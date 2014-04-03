@@ -170,7 +170,11 @@ namespace Server.Misc
 		private static IPAddress FindPublicAddress()
 		{
 			try {
-				WebRequest req = HttpWebRequest.Create( "https://uo.cx/ip.php" );
+#if MONO
+				WebRequest req = HttpWebRequest.Create( "http://req.azurewebsites.net/ip.aspx" );
+#else
+				WebRequest req = HttpWebRequest.Create( "https://req.azurewebsites.net/ip.aspx" );
+#endif
 				req.Timeout = 15000;
 
 				WebResponse res = req.GetResponse();
