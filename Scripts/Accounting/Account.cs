@@ -364,7 +364,7 @@ namespace Server.Accounting
 			if ( banTime == DateTime.MinValue )
 				RemoveTag( "BanTime" );
 			else
-				SetTag( "BanTime", XmlConvert.ToString( banTime, XmlDateTimeSerializationMode.Local ) );
+				SetTag( "BanTime", XmlConvert.ToString( banTime, XmlDateTimeSerializationMode.Utc ) );
 
 			if ( banDuration == TimeSpan.Zero )
 				RemoveTag( "BanDuration" );
@@ -1020,11 +1020,11 @@ namespace Server.Accounting
 			}
 
 			xml.WriteStartElement( "created" );
-			xml.WriteString( XmlConvert.ToString( m_Created, XmlDateTimeSerializationMode.Local ) );
+			xml.WriteString( XmlConvert.ToString( m_Created, XmlDateTimeSerializationMode.Utc ) );
 			xml.WriteEndElement();
 
 			xml.WriteStartElement( "lastLogin" );
-			xml.WriteString( XmlConvert.ToString( m_LastLogin, XmlDateTimeSerializationMode.Local ) );
+			xml.WriteString( XmlConvert.ToString( m_LastLogin, XmlDateTimeSerializationMode.Utc ) );
 			xml.WriteEndElement();
 
 			xml.WriteStartElement( "totalGameTime" );

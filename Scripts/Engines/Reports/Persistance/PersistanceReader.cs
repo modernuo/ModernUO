@@ -60,7 +60,7 @@ namespace Server.Engines.Reports
 			if ( val == null )
 				return DateTime.MinValue;
 
-			return XmlConvert.ToDateTime( val, XmlDateTimeSerializationMode.Local );
+			return XmlConvert.ToDateTime( val, XmlDateTimeSerializationMode.Utc );
 		}
 
 		private bool m_HasChild;
