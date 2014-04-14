@@ -151,6 +151,7 @@ namespace Server.Misc
 			// 172.16.0.0/12
 			// 192.168.0.0/16
 			// 169.254.0.0/16
+			// 100.64.0.0/10 RFC 6598
 
 			if ( ip.AddressFamily == AddressFamily.InterNetworkV6 )
 				return false;
@@ -162,6 +163,8 @@ namespace Server.Misc
 			else if ( Utility.IPMatch( "172.16-31.*", ip ) )
 				return true;
 			else if ( Utility.IPMatch( "169.254.*", ip ) )
+				return true;
+			else if ( Utility.IPMatch( "100.64-127.*", ip ) )
 				return true;
 			else
 				return false;
