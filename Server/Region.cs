@@ -1090,7 +1090,7 @@ namespace Server
 
 			try
 			{
-				value = XmlConvert.ToDateTime( s, XmlDateTimeSerializationMode.Local );
+				value = XmlConvert.ToDateTime( s, XmlDateTimeSerializationMode.Utc );
 			}
 			catch
 			{
