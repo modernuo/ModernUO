@@ -181,7 +181,11 @@
     <Compile Include="Engines\ConPVP\DuelContext.cs" />
     <Compile Include="Engines\ConPVP\DuelContextGump.cs" />
     <Compile Include="Engines\ConPVP\DuelTeleporterAddon.cs" />
+    <Compile Include="Engines\ConPVP\Games\BombingRun.cs" />
+    <Compile Include="Engines\ConPVP\Games\CTF.cs" />
+    <Compile Include="Engines\ConPVP\Games\DoubleDom.cs" />
     <Compile Include="Engines\ConPVP\Games\EventGame.cs" />
+    <Compile Include="Engines\ConPVP\Games\KingOfTheHill.cs" />
     <Compile Include="Engines\ConPVP\Ladder.cs" />
     <Compile Include="Engines\ConPVP\LadderGump.cs" />
     <Compile Include="Engines\ConPVP\Participant.cs" />
