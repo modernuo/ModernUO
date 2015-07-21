@@ -182,7 +182,7 @@ namespace Server.Items
 		private static void ApplySkillBonus( AosSkillBonuses attrs, int min, int max, int index, int low, int high )
 		{
 			List<SkillName> possibleSkills = new List<SkillName>( attrs.Owner is Spellbook ? m_PossibleSpellbookSkills : m_PossibleBonusSkills );
-			int count = ( Core.SE ? possibleSkills.Length : possibleSkills.Length - 2 );
+			int count = ( Core.SE ? possibleSkills.Count : possibleSkills.Count - 2 );
 
 			SkillName sk, check;
 			double bonus;
