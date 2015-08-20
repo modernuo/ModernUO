@@ -104,7 +104,7 @@ namespace Server.Spells.Fifth
 				if ( lowestStat > 150 ) 
 					lowestStat = 150;
 
-				double damage = GetDamageScalar(m)*(highestStat - lowestStat) / 4;//less damage
+				double damage = GetDamageScalar(m)*(highestStat - lowestStat) / 2; // Many users prefer 3 or 4
 				
 				if ( damage > 45 )
 					damage = 45;
