@@ -508,6 +508,7 @@
     <Compile Include="Engines\Party\PartyMemberInfo.cs" />
     <Compile Include="Engines\Party\RemoveFromParty.cs" />
     <Compile Include="Engines\Party\RemovePartyTarget.cs" />
+    <Compile Include="Engines\Pathing\FastMovement.cs" />
     <Compile Include="Engines\Pathing\FastAStarAlgorithm.cs" />
     <Compile Include="Engines\Pathing\Movement.cs" />
     <Compile Include="Engines\Pathing\MovementPath.cs" />
