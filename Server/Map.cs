@@ -61,7 +61,7 @@
  *	This update generally increases performance and reduces overall player
  *	connection latency.
  */
-//#define Map_NewEnumerables
+#define Map_NewEnumerables
 
 /*
  * UseMaxRange
