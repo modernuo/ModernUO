@@ -107,22 +107,16 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-		/* DateTime.Now and DateTime.UtcNow are based on actual system clock time.
+		/* 
+		 * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
 		 * The resolution is acceptable but large clock jumps are possible and cause issues.
 		 * GetTickCount and GetTickCount64 have poor resolution.
 		 * GetTickCount64 is unavailable on Windows XP and Windows Server 2003.
 		 * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
-		 * somewhat expensive to call and unreliable with certain system configurations.
+		 * somewhat expensive to call because of its defference to DateTime.Now,
+		 * which is why Stopwatch has been used to verify HRT before calling GetTimestamp(),
+		 * enabling the usage of DateTime.UtcNow instead.
 		 */
-
-		/* The following implementation contains an effective substitute for GetTickCount64 that
-		 * is reliable as long as it is retrieved once every 2^32 ms (~49 days).
-		 */
-
-		/* We don't really need this, but it may be useful in the future.
-		private static ThreadLocal<long> _HighOrder = new ThreadLocal<long>();
-		private static ThreadLocal<uint> _LastTickCount = new ThreadLocal<uint>();
-		*/
 
 		private static readonly bool _HighRes = Stopwatch.IsHighResolution;
 
