@@ -1725,7 +1725,7 @@ namespace Server
 
 		public sealed class PooledEnumerable<T> : IPooledEnumerable<T>, IDisposable
 		{
-			private static readonly Queue<PooledEnumerable<T>> _Buffer = new Queue<PooledEnumerable<T>>(0x200);
+			private static readonly Queue<PooledEnumerable<T>> _Buffer = new Queue<PooledEnumerable<T>>(0x400);
 
 			public static PooledEnumerable<T> Instantiate(Map map, Rectangle2D bounds, PooledEnumeration.Selector<T> selector)
 			{
@@ -1754,11 +1754,12 @@ namespace Server
 			}
 
 			private bool _IsDisposed;
-			private List<T> _Pool;
+
+			private List<T> _Pool = new List<T>(0x40);
 
 			public PooledEnumerable(IEnumerable<T> pool)
 			{
-				_Pool = new List<T>(pool);
+				_Pool.AddRange(pool);
 			}
 
 			IEnumerator IEnumerable.GetEnumerator()
@@ -1779,6 +1780,11 @@ namespace Server
 				}
 
 				_Pool.Clear();
+
+				if (_Pool.Capacity > 0x100)
+				{
+					_Pool.Capacity = 0x100;
+				}
 
 				lock (((ICollection)_Buffer).SyncRoot)
 				{

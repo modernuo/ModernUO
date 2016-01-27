@@ -1,21 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{DAE872E6-6899-427C-A75D-AD52526EBCDA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{1B394627-C6BF-447D-8CBD-4A3B5262C5B4}"
 	ProjectSection(SolutionItems) = preProject
-		Data\Assemblies_4_0.cfg = Data\Assemblies_4_0.cfg
+		Data\Assemblies.cfg = Data\Assemblies.cfg
 		Data\bodyTable.cfg = Data\bodyTable.cfg
 		Data\Common.map = Data\Common.map
 		Data\containers.cfg = Data\containers.cfg
 		Data\items.cfg = Data\items.cfg
 		Data\MLQuests.cfg = Data\MLQuests.cfg
 		Data\mobiles.cfg = Data\mobiles.cfg
+		Data\models.txt = Data\models.txt
 		Data\names.xml = Data\names.xml
 		Data\objects.xml = Data\objects.xml
 		Data\pageresponse.cfg = Data\pageresponse.cfg

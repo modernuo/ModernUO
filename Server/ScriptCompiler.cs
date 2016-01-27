@@ -55,7 +55,7 @@ namespace Server
 		{
 			List<string> list = new List<string>();
 
-			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies_4_0.cfg" );
+			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies.cfg" );
 
 			if( File.Exists( path ) )
 			{
@@ -89,15 +89,16 @@ namespace Server
 			AppendCompilerOption( ref sb, "/d:MONO" );
 #endif
 
-			//These three defines are deprecated
 			if( Core.Is64Bit )
 				AppendCompilerOption( ref sb, "/d:x64" );
-
-			AppendCompilerOption( ref sb, "/d:Framework_2_0" );
-			AppendCompilerOption( ref sb, "/d:Framework_4_0" );
-
+			
+#if NEWTIMERS
 			AppendCompilerOption(ref sb, "/d:NEWTIMERS");
+#endif
+
+#if NEWPARENT
 			AppendCompilerOption(ref sb, "/d:NEWPARENT");
+#endif
 
 			return (sb == null ? null : sb.ToString());
 		}

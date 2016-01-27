@@ -1,15 +1,22 @@
 using System;
+
+using Server.Accounting;
 using Server.Network;
 
 namespace Server
 {
 	public class CurrentExpansion
 	{
-		private static readonly Expansion Expansion = Expansion.HS;
+		private static readonly Expansion Expansion = Expansion.TOL;
 
 		public static void Configure()
 		{
 			Core.Expansion = Expansion;
+
+			AccountGold.Enabled = Core.TOL;
+			AccountGold.ConvertOnBank = true;
+			AccountGold.ConvertOnTrade = false;
+			VirtualCheck.UseEditGump = true;
 
 			bool Enabled = Core.AOS;
 

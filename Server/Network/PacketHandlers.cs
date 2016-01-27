@@ -376,6 +376,37 @@ namespace Server.Network
 
 					break;
 				}
+				case 3: // Update Gold
+				{
+					Serial serial = pvSrc.ReadInt32();
+
+					SecureTradeContainer cont = World.FindItem(serial) as SecureTradeContainer;
+
+					if (cont != null)
+					{
+						int gold = pvSrc.ReadInt32();
+						int plat = pvSrc.ReadInt32();
+
+						SecureTrade trade = cont.Trade;
+
+						if (trade != null)
+						{
+							if (trade.From.Mobile == state.Mobile)
+							{
+								trade.From.Gold = gold;
+								trade.From.Plat = plat;
+								trade.UpdateFromCurrency();
+							}
+							else if (trade.To.Mobile == state.Mobile)
+							{
+								trade.To.Gold = gold;
+								trade.To.Plat = plat;
+								trade.UpdateToCurrency();
+							}
+						}
+					}
+				}
+				break;
 			}
 		}
 

@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 using System;
+
+using Server.Accounting;
 using Server.Network;
 
 namespace Server.Items
@@ -161,6 +163,16 @@ namespace Server.Items
 		 		return base.OnDragDropInto (from, item, p);
 		 	else
 		 		return false;
+		}
+
+		public override int GetTotal(TotalType type)
+		{
+			if (AccountGold.Enabled && Owner != null && Owner.Account != null && type == TotalType.Gold)
+			{
+				return Owner.Account.TotalGold;
+			}
+
+			return base.GetTotal(type);
 		}
 	}
 }

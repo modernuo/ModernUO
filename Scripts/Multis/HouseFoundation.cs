@@ -1882,7 +1882,8 @@ namespace Server.Multis
 				return true;
 			else if( itemID >= 0x319C && itemID < 0x31B0 )
 				return true;
-			else if( itemID == 0x2D46 ||itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4 )	//ML doors begin here.  Note funkyness.
+			// ML doors
+			else if( itemID == 0x2D46 ||itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4 )
 				return true;
 			else if( itemID >= 0x2D63 && itemID < 0x2D70 )
 				return true;
@@ -1890,7 +1891,7 @@ namespace Server.Multis
 				return true;
 			else if( itemID >= 0x367B && itemID < 0x369B )
 				return true;
-			#region SA doors
+			// SA doors
 			else if( itemID >= 0x409B && itemID < 0x40A3 )
 				return true;
 			else if( itemID >= 0x410C && itemID < 0x4114 )
@@ -1909,7 +1910,11 @@ namespace Server.Multis
 				return true;
 			else if( itemID >= 0x5142 && itemID < 0x514A )
 				return true;
-			#endregion
+			// TOL doors
+			else if ( itemID >= 0x9AD7 && itemID < 0x9AE7 )
+				return true;
+			else if ( itemID >= 0x9B3C && itemID < 0x9B4C )
+				return true;
 
 			return false;
 		}

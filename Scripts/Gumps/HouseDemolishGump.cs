@@ -1,5 +1,6 @@
 using System;
 using Server;
+using Server.Accounting;
 using Server.Items;
 using Server.Multis;
 using Server.Multis.Deeds;
@@ -112,6 +113,23 @@ namespace Server.Gumps
 
 							if ( toGive == null && m_House.Price > 0 )
 								toGive = new BankCheck( m_House.Price );
+						}
+
+						if (AccountGold.Enabled && toGive is BankCheck)
+						{
+							var worth = ((BankCheck)toGive).Worth;
+
+							if (m_Mobile.Account != null && m_Mobile.Account.DepositGold(worth))
+							{
+								toGive.Delete();
+
+								m_Mobile.SendLocalizedMessage(1060397, worth.ToString("#,0"));
+								// ~1_AMOUNT~ gold has been deposited into your bank box.
+
+								m_House.RemoveKeys(m_Mobile);
+								m_House.Delete();
+								return;
+							}
 						}
 
 						if ( toGive != null )

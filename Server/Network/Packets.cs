@@ -162,44 +162,62 @@ namespace Server.Network
 
 	public sealed class DisplaySecureTrade : Packet
 	{
-		public DisplaySecureTrade( Mobile them, Container first, Container second, string name ) : base( 0x6F )
+		public DisplaySecureTrade(Mobile them, Container first, Container second, string name)
+			: base(0x6F)
 		{
-			if ( name == null )
+			if (name == null)
+			{
 				name = "";
+			}
 
-			EnsureCapacity( 18 + name.Length );
+			EnsureCapacity(18 + name.Length);
 
-			m_Stream.Write( (byte) 0 ); // Display
-			m_Stream.Write( (int) them.Serial );
-			m_Stream.Write( (int) first.Serial );
-			m_Stream.Write( (int) second.Serial );
-			m_Stream.Write( (bool) true );
+			m_Stream.Write((byte)0); // Display
+			m_Stream.Write(them.Serial);
+			m_Stream.Write(first.Serial);
+			m_Stream.Write(second.Serial);
+			m_Stream.Write(true);
 
-			m_Stream.WriteAsciiFixed( name, 30 );
+			m_Stream.WriteAsciiFixed(name, 30);
 		}
 	}
 
 	public sealed class CloseSecureTrade : Packet
 	{
-		public CloseSecureTrade( Container cont ) : base( 0x6F )
+		public CloseSecureTrade(Container cont)
+			: base(0x6F)
 		{
-			EnsureCapacity( 8 );
+			EnsureCapacity(8);
 
-			m_Stream.Write( (byte) 1 ); // Close
-			m_Stream.Write( (int) cont.Serial );
+			m_Stream.Write((byte)1); // Close
+			m_Stream.Write(cont.Serial);
 		}
+	}
+
+	public enum TradeFlag : byte
+	{
+		Display = 0x0,
+		Close = 0x1,
+		Update = 0x2,
+		UpdateGold = 0x3,
+		UpdateLedger = 0x4
 	}
 
 	public sealed class UpdateSecureTrade : Packet
 	{
-		public UpdateSecureTrade( Container cont, bool first, bool second ) : base( 0x6F )
-		{
-			EnsureCapacity( 8 );
+		public UpdateSecureTrade(Container cont, bool first, bool second)
+			: this(cont, TradeFlag.Update, first ? 1 : 0, second ? 1 : 0)
+		{ }
 
-			m_Stream.Write( (byte) 2 ); // Update
-			m_Stream.Write( (int) cont.Serial );
-			m_Stream.Write( (int) (first ? 1 : 0) );
-			m_Stream.Write( (int) (second ? 1 : 0) );
+		public UpdateSecureTrade(Container cont, TradeFlag flag, int first, int second)
+			: base(0x6F)
+		{
+			EnsureCapacity(17);
+
+			m_Stream.Write((byte)flag);
+			m_Stream.Write(cont.Serial);
+			m_Stream.Write(first);
+			m_Stream.Write(second);
 		}
 	}
 
@@ -2822,7 +2840,7 @@ namespace Server.Network
 
 		public SupportedFeatures( NetState ns ) : base( 0xB9, ns.ExtendedSupportedFeatures ? 5 : 3 )
 		{
-			FeatureFlags flags = ExpansionInfo.CurrentExpansion.SupportedFeatures;
+			FeatureFlags flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
 
 			flags |= m_AdditionalFlags;
 
@@ -4142,7 +4160,7 @@ namespace Server.Network
 				m_Stream.Write( (int) 0 );
 			}
 
-			CharacterListFlags flags = ExpansionInfo.CurrentExpansion.CharacterListFlags;
+			CharacterListFlags flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
 
 			if ( count > 6 )
 				flags |= (CharacterListFlags.SeventhCharacterSlot | CharacterListFlags.SixthCharacterSlot); // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
@@ -4237,7 +4255,7 @@ namespace Server.Network
 				m_Stream.WriteAsciiFixed( ci.Building, 31 );
 			}
 
-			CharacterListFlags flags = ExpansionInfo.CurrentExpansion.CharacterListFlags;
+			CharacterListFlags flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
 
 			if ( count > 6 )
 				flags |= (CharacterListFlags.SeventhCharacterSlot | CharacterListFlags.SixthCharacterSlot); // 7th Character Slot - TODO: Is SixthCharacterSlot Required?

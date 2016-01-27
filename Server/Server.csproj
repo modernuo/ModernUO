@@ -86,6 +86,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -145,6 +147,7 @@
     <Compile Include="Items\Container.cs" />
     <Compile Include="Items\Containers.cs" />
     <Compile Include="Items\SecureTradeContainer.cs" />
+    <Compile Include="Items\VirtualCheck.cs" />
     <Compile Include="Items\VirtualHair.cs" />
     <Compile Include="KeywordList.cs" />
     <Compile Include="Main.cs" />

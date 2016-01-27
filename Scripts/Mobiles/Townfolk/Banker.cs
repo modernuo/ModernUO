@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using Server.Accounting;
 using Server.Items;
 using Server.ContextMenus;
 using Server.Misc;
@@ -24,49 +27,88 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBBanker() );
 		}
 
-		public static int GetBalance( Mobile from )
+		public static int GetBalance(Mobile m)
 		{
-			Item[] gold, checks;
+			double balance = 0;
 
-			return GetBalance( from, out gold, out checks );
+			if (AccountGold.Enabled && m.Account != null)
+			{
+				int goldStub;
+				m.Account.GetGoldBalance(out goldStub, out balance);
+
+				if (balance > Int32.MaxValue)
+				{
+					return Int32.MaxValue;
+				}
+			}
+
+			Container bank = m.FindBankNoCreate();
+
+			if (bank != null)
+			{
+				var gold = bank.FindItemsByType<Gold>();
+				var checks = bank.FindItemsByType<BankCheck>();
+
+				balance += gold.Aggregate(0.0, (c, t) => c + t.Amount);
+				balance += checks.Aggregate(0.0, (c, t) => c + t.Worth);
+			}
+
+			return (int)Math.Max(0, Math.Min(Int32.MaxValue, balance));
 		}
 
-		public static int GetBalance( Mobile from, out Item[] gold, out Item[] checks )
+		public static int GetBalance(Mobile m, out Item[] gold, out Item[] checks)
 		{
-			int balance = 0;
+			double balance = 0;
 
-			Container bank = from.FindBankNoCreate();
-
-			if ( bank != null )
+			if (AccountGold.Enabled && m.Account != null)
 			{
-				gold = bank.FindItemsByType( typeof( Gold ) );
-				checks = bank.FindItemsByType( typeof( BankCheck ) );
+				int goldStub;
+				m.Account.GetGoldBalance(out goldStub, out balance);
 
-				for ( int i = 0; i < gold.Length; ++i )
-					balance += gold[i].Amount;
+				if (balance > Int32.MaxValue)
+				{
+					gold = checks = new Item[0];
+					return Int32.MaxValue;
+				}
+			}
 
-				for ( int i = 0; i < checks.Length; ++i )
-					balance += ((BankCheck)checks[i]).Worth;
+			Container bank = m.FindBankNoCreate();
+
+			if (bank != null)
+			{
+				gold = bank.FindItemsByType(typeof(Gold));
+				checks = bank.FindItemsByType(typeof(BankCheck));
+
+				balance += gold.OfType<Gold>().Aggregate(0.0, (c, t) => c + t.Amount);
+				balance += checks.OfType<BankCheck>().Aggregate(0.0, (c, t) => c + t.Worth);
 			}
 			else
 			{
 				gold = checks = new Item[0];
 			}
 
-			return balance;
+			return (int)Math.Max(0, Math.Min(Int32.MaxValue, balance));
 		}
 
-		public static bool Withdraw( Mobile from, int amount )
+		public static bool Withdraw(Mobile from, int amount)
 		{
-			Item[] gold, checks;
-			int balance = GetBalance( from, out gold, out checks );
-
-			if ( balance < amount )
-				return false;
-
-			for ( int i = 0; amount > 0 && i < gold.Length; ++i )
+			// If for whatever reason the TOL checks fail, we should still try old methods for withdrawing currency.
+			if (AccountGold.Enabled && from.Account != null && from.Account.WithdrawGold(amount))
 			{
-				if ( gold[i].Amount <= amount )
+				return true;
+			}
+
+			Item[] gold, checks;
+			var balance = GetBalance(from, out gold, out checks);
+
+			if (balance < amount)
+			{
+				return false;
+			}
+
+			for (var i = 0; amount > 0 && i < gold.Length; ++i)
+			{
+				if (gold[i].Amount <= amount)
 				{
 					amount -= gold[i].Amount;
 					gold[i].Delete();
@@ -78,11 +120,11 @@ namespace Server.Mobiles
 				}
 			}
 
-			for ( int i = 0; amount > 0 && i < checks.Length; ++i )
+			for (var i = 0; amount > 0 && i < checks.Length; ++i)
 			{
-				BankCheck check = (BankCheck)checks[i];
+				var check = (BankCheck)checks[i];
 
-				if ( check.Worth <= amount )
+				if (check.Worth <= amount)
 				{
 					amount -= check.Worth;
 					check.Delete();
@@ -97,41 +139,50 @@ namespace Server.Mobiles
 			return true;
 		}
 
-		public static bool Deposit( Mobile from, int amount )
+		public static bool Deposit(Mobile from, int amount)
 		{
-			BankBox box = from.FindBankNoCreate();
-			if ( box == null )
+			// If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
+			if (AccountGold.Enabled && from.Account != null && from.Account.DepositGold(amount))
+			{
+				return true;
+			}
+
+			var box = from.FindBankNoCreate();
+
+			if (box == null)
+			{
 				return false;
+			}
 
-			List<Item> items = new List<Item>();
+			var items = new List<Item>();
 
-			while ( amount > 0 )
+			while (amount > 0)
 			{
 				Item item;
-				if ( amount < 5000 )
+				if (amount < 5000)
 				{
-					item = new Gold( amount );
+					item = new Gold(amount);
 					amount = 0;
 				}
-				else if ( amount <= 1000000 )
+				else if (amount <= 1000000)
 				{
-					item = new BankCheck( amount );
+					item = new BankCheck(amount);
 					amount = 0;
 				}
 				else
 				{
-					item = new BankCheck( 1000000 );
+					item = new BankCheck(1000000);
 					amount -= 1000000;
 				}
 
-				if ( box.TryDropItem( from, item, false ) )
+				if (box.TryDropItem(from, item, false))
 				{
-					items.Add( item );
+					items.Add(item);
 				}
 				else
 				{
 					item.Delete();
-					foreach ( Item curItem in items )
+					foreach (var curItem in items)
 					{
 						curItem.Delete();
 					}
@@ -143,35 +194,44 @@ namespace Server.Mobiles
 			return true;
 		}
 
-		public static int DepositUpTo( Mobile from, int amount )
+		public static int DepositUpTo(Mobile from, int amount)
 		{
-			BankBox box = from.FindBankNoCreate();
-			if ( box == null )
-				return 0;
+			// If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
+			if (AccountGold.Enabled && from.Account != null && from.Account.DepositGold(amount))
+			{
+				return amount;
+			}
 
-			int amountLeft = amount;
-			while ( amountLeft > 0 )
+			var box = from.FindBankNoCreate();
+
+			if (box == null)
+			{
+				return 0;
+			}
+
+			var amountLeft = amount;
+			while (amountLeft > 0)
 			{
 				Item item;
 				int amountGiven;
 
-				if ( amountLeft < 5000 )
+				if (amountLeft < 5000)
 				{
-					item = new Gold( amountLeft );
+					item = new Gold(amountLeft);
 					amountGiven = amountLeft;
 				}
-				else if ( amountLeft <= 1000000 )
+				else if (amountLeft <= 1000000)
 				{
-					item = new BankCheck( amountLeft );
+					item = new BankCheck(amountLeft);
 					amountGiven = amountLeft;
 				}
 				else
 				{
-					item = new BankCheck( 1000000 );
+					item = new BankCheck(1000000);
 					amountGiven = 1000000;
 				}
 
-				if ( box.TryDropItem( from, item, false ) )
+				if (box.TryDropItem(from, item, false))
 				{
 					amountLeft -= amountGiven;
 				}
@@ -185,29 +245,29 @@ namespace Server.Mobiles
 			return amount - amountLeft;
 		}
 
-		public static void Deposit( Container cont, int amount )
+		public static void Deposit(Container cont, int amount)
 		{
-			while ( amount > 0 )
+			while (amount > 0)
 			{
 				Item item;
 
-				if ( amount < 5000 )
+				if (amount < 5000)
 				{
-					item = new Gold( amount );
+					item = new Gold(amount);
 					amount = 0;
 				}
-				else if ( amount <= 1000000 )
+				else if (amount <= 1000000)
 				{
-					item = new BankCheck( amount );
+					item = new BankCheck(amount);
 					amount = 0;
 				}
 				else
 				{
-					item = new BankCheck( 1000000 );
+					item = new BankCheck(1000000);
 					amount -= 1000000;
 				}
 
-				cont.DropItem( item );
+				cont.DropItem(item);
 			}
 		}
 

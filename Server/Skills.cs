@@ -22,6 +22,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+
 using Server.Network;
 
 namespace Server
@@ -689,7 +691,7 @@ namespace Server
 	}
 
 	[PropertyObject]
-	public class Skills : IEnumerable
+	public class Skills : IEnumerable<Skill>
 	{
 		private Mobile m_Owner;
 		private Skill[] m_Skills;
@@ -1108,9 +1110,14 @@ namespace Server
 				ns.Send( new SkillChange( skill ) );
 		}
 
-		public IEnumerator GetEnumerator()
+		public IEnumerator<Skill> GetEnumerator()
 		{
-			return m_Skills.GetEnumerator();
+			return m_Skills.Where(s => s != null).GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return m_Skills.Where(s => s != null).GetEnumerator();
 		}
 	}
 }

@@ -30,12 +30,12 @@ namespace Server.Multis
 			if ( val == -1 )
 				return false;
 
-			return ( val == 0 || (ExpansionInfo.CurrentExpansion.CustomHousingFlag & val) != 0 );
+			return ( val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0 );
 		}
 
 		public ComponentVerification()
 		{
-			m_ItemTable = CreateTable( 0x10000 );
+			m_ItemTable = CreateTable( TileData.MaxItemValue );
 			m_MultiTable = CreateTable( 0x4000 );
 
 			LoadItems( "Data/Components/walls.txt", "South1", "South2", "South3", "Corner", "East1", "East2", "East3", "Post", "WindowS", "AltWindowS", "WindowE", "AltWindowE", "SecondAltWindowS", "SecondAltWindowE" );
