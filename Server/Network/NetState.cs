@@ -361,19 +361,19 @@ namespace Server.Network {
 			}
 		}
 
-		public IEnumerable<Gump> Gumps {
+		public List<Gump> Gumps {
 			get {
 				return m_Gumps;
 			}
 		}
 
-		public IEnumerable<HuePicker> HuePickers {
+		public List<HuePicker> HuePickers {
 			get {
 				return m_HuePickers;
 			}
 		}
 
-		public IEnumerable<IMenu> Menus {
+		public List<IMenu> Menus {
 			get {
 				return m_Menus;
 			}
