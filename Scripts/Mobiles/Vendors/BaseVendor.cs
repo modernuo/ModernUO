@@ -889,8 +889,11 @@ namespace Server.Mobiles
 				m.MoveToWorld( buyer.Location, buyer.Map );
 				m.PlaySound( m.GetIdleSound() );
 
-				if ( m is BaseCreature )
-					( (BaseCreature)m ).SetControlMaster( buyer );
+                if (m is BaseCreature)
+                {
+                    ((BaseCreature)m).SetControlMaster(buyer);
+                    ((BaseCreature)m).ControlOrder = OrderType.Stop;
+                }
 
 				for ( int i = 1; i < amount; ++i )
 				{
@@ -901,8 +904,11 @@ namespace Server.Mobiles
 						m.Direction = (Direction)Utility.Random( 8 );
 						m.MoveToWorld( buyer.Location, buyer.Map );
 
-						if ( m is BaseCreature )
-							( (BaseCreature)m ).SetControlMaster( buyer );
+                        if (m is BaseCreature)
+                        {
+                            ((BaseCreature)m).SetControlMaster(buyer);
+                            ((BaseCreature)m).ControlOrder = OrderType.Stop;
+                        }
 					}
 				}
 			}
@@ -1103,9 +1109,9 @@ namespace Server.Mobiles
 				if ( buyer.AccessLevel >= AccessLevel.GameMaster )
 					SayTo( buyer, true, "I would not presume to charge thee anything.  Here are the goods you requested." );
 				else if ( fromBank )
-					SayTo( buyer, true, "The total of thy purchase is {0} gold, which has been withdrawn from your bank account.  My thanks for the patronage.", totalCost );
+                    SayTo(buyer, 1151638, totalCost.ToString());//The total of your purchase is ~1_val~ gold, which has been drawn from your bank account.  My thanks for the patronage.
 				else
-					SayTo( buyer, true, "The total of thy purchase is {0} gold.  My thanks for the patronage.", totalCost );
+                    SayTo(buyer, 1151639, totalCost.ToString());//The total of your purchase is ~1_val~ gold.  My thanks for the patronage.
 			}
 			else
 			{
