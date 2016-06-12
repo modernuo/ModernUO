@@ -1245,6 +1245,33 @@ namespace Server.Network
 
 			foreach ( Gump gump in state.Gumps ) {
 				if ( gump.Serial == serial && gump.TypeID == typeID ) {
+					var buttonExists = buttonID == 0; // 0 is always 'close'
+
+					if (!buttonExists)
+					{
+						foreach (var e in gump.Entries)
+						{
+							if (e is GumpButton && ((GumpButton)e).ButtonID == buttonID)
+							{
+								buttonExists = true;
+								break;
+							}
+
+							if (e is GumpImageTileButton && ((GumpImageTileButton)e).ButtonID == buttonID)
+							{
+								buttonExists = true;
+								break;
+							}
+						}
+					}
+
+					if (!buttonExists)
+					{
+						state.WriteConsole("Invalid gump response, disconnecting...");
+						state.Dispose();
+						return;
+					}
+
 					int switchCount = pvSrc.ReadInt32();
 
 					if ( switchCount < 0 || switchCount > gump.m_Switches ) {
