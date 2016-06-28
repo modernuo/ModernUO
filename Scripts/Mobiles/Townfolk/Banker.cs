@@ -326,7 +326,7 @@ namespace Server.Mobiles
 								{
 									BankBox box = e.Mobile.FindBankNoCreate();
 
-									if (box == null || !box.ConsumeTotal(typeof(Gold), amount))
+									if (box == null || !Withdraw(e.Mobile, amount))
 									{
 										this.Say(500384); // Ah, art thou trying to fool me? Thou hast not so much gold!
 									}
@@ -351,12 +351,14 @@ namespace Server.Mobiles
 								break;
 							}
 
-							BankBox box = e.Mobile.FindBankNoCreate();
-
-							if ( box != null )
-								this.Say( 1042759, box.TotalGold.ToString() ); // Thy current bank balance is ~1_AMOUNT~ gold.
+							if ( AccountGold.Enabled && e.Mobile.Account != null )
+							{
+								this.Say( 1155855, String.Format("{0:#,0}\t{1:#,0}", e.Mobile.Account.TotalPlat, e.Mobile.Account.TotalGold) ); // Thy current bank balance is ~1_AMOUNT~ platinum and ~2_AMOUNT~ gold.
+							}
 							else
-								this.Say( 1042759, "0" ); // Thy current bank balance is ~1_AMOUNT~ gold.
+							{
+								this.Say( 1042759, GetBalance(e.Mobile).ToString("#,0") ); // Thy current bank balance is ~1_AMOUNT~ gold.
+							}
 
 							break;
 						}
@@ -377,6 +379,9 @@ namespace Server.Mobiles
 						case 0x0003: // *check*
 						{
 							e.Handled = true;
+
+							if ( AccountGold.Enabled )
+								break;
 
 							if ( e.Mobile.Criminal )
 							{
