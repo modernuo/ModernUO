@@ -173,7 +173,7 @@ namespace Server.Misc
 		private static IPAddress FindPublicAddress()
 		{
 			try {
-				WebRequest req = HttpWebRequest.Create( "http://uo.cx/ip.php" );
+				WebRequest req = HttpWebRequest.Create( "https://api.ipify.org" );
 
 				req.Timeout = 15000;
 
