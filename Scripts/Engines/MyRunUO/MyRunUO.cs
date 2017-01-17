@@ -73,7 +73,7 @@ namespace Server.Engines.MyRunUO
 		}
 
 		[Usage( "InitMyRunUO" )]
-		[Description( "Initally creates the database tables." )]
+		[Description( "Initially creates the database schema." )]
 		public static void InitMyRunUO_OnCommand( CommandEventArgs e )
 		{
 			if ( m_Command != null && m_Command.HasCompleted )
@@ -96,16 +96,16 @@ namespace Server.Engines.MyRunUO
 			try
 			{
 				m_Command = new DatabaseCommandQueue( "MyRunUO: Tables created in {0:F1} seconds", "MyRunUO Status Database Thread" );
-				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters` ( `char_id` int(10) unsigned NOT NULL, `char_name` varchar(255) NOT NULL, `char_str` smallint(3) unsigned NOT NULL, `char_dex` smallint(3) unsigned NOT NULL, `char_int` smallint(3) unsigned NOT NULL, `char_female` tinyint(1) NOT NULL, `char_counts` smallint(6) NOT NULL, `char_guild` varchar(255) DEFAULT NULL, `char_guildtitle` varchar(255) DEFAULT NULL, `char_nototitle` varchar(255) DEFAULT NULL, `char_bodyhue` smallint(5) unsigned DEFAULT NULL, `char_public` tinyint(1) NOT NULL, PRIMARY KEY (`char_id`)) ENGINE=InnoDB" );
-				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters_layers` ( `char_id` int(10) unsigned NOT NULL, `layer_id` tinyint(3) unsigned NOT NULL, `item_id` smallint(5) unsigned NOT NULL, `item_hue` smallint(5) unsigned NOT NULL, PRIMARY KEY (`char_id`,`layer_id`)) ENGINE=InnoDB" );
-				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters_skills` ( `char_id` int(10) unsigned NOT NULL, `skill_id` tinyint(3) NOT NULL, `skill_value` smallint(5) unsigned NOT NULL, PRIMARY KEY (`char_id`,`skill_id`),  KEY `skill_id` (`skill_id`)) ENGINE=InnoDB" );
-				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_guilds` ( `guild_id` smallint(5) unsigned NOT NULL, `guild_name` varchar(255) NOT NULL, `guild_abbreviation` varchar(8) DEFAULT NULL, `guild_website` varchar(255) DEFAULT NULL, `guild_charter` varchar(255) DEFAULT NULL, `guild_type` varchar(8) NOT NULL, `guild_wars` smallint(5) unsigned NOT NULL, `guild_members` smallint(5) unsigned NOT NULL, `guild_master` int(10) unsigned NOT NULL, PRIMARY KEY (`guild_id`)) ENGINE=InnoDB " );
-				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_guilds_wars` ( `guild_1` smallint(5) unsigned NOT NULL DEFAULT '0', `guild_2` smallint(5) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`guild_1`,`guild_2`), KEY `guild1` (`guild_1`), KEY `guild2` (`guild_2`)) ENGINE=InnoDB" );
-				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_status` ( `char_id` int(10) NOT NULL, PRIMARY KEY (`char_id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters` ( `char_id` int(10) unsigned NOT NULL, `char_name` varchar(255) NOT NULL, `char_str` smallint(3) unsigned NOT NULL, `char_dex` smallint(3) unsigned NOT NULL, `char_int` smallint(3) unsigned NOT NULL, `char_female` tinyint(1) NOT NULL, `char_counts` smallint(6) NOT NULL, `char_guild` varchar(255) DEFAULT NULL, `char_guildtitle` varchar(255) DEFAULT NULL, `char_nototitle` varchar(255) DEFAULT NULL, `char_bodyhue` smallint(5) unsigned DEFAULT NULL, `char_public` tinyint(1) NOT NULL, PRIMARY KEY (`char_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters_layers` ( `char_id` int(10) unsigned NOT NULL, `layer_id` tinyint(3) unsigned NOT NULL, `item_id` smallint(5) unsigned NOT NULL, `item_hue` smallint(5) unsigned NOT NULL, PRIMARY KEY (`char_id`,`layer_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_characters_skills` ( `char_id` int(10) unsigned NOT NULL, `skill_id` tinyint(3) NOT NULL, `skill_value` smallint(5) unsigned NOT NULL, PRIMARY KEY (`char_id`,`skill_id`),  KEY `skill_id` (`skill_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_guilds` ( `guild_id` smallint(5) unsigned NOT NULL, `guild_name` varchar(255) NOT NULL, `guild_abbreviation` varchar(8) DEFAULT NULL, `guild_website` varchar(255) DEFAULT NULL, `guild_charter` varchar(255) DEFAULT NULL, `guild_type` varchar(8) NOT NULL, `guild_wars` smallint(5) unsigned NOT NULL, `guild_members` smallint(5) unsigned NOT NULL, `guild_master` int(10) unsigned NOT NULL, PRIMARY KEY (`guild_id`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_guilds_wars` ( `guild_1` smallint(5) unsigned NOT NULL DEFAULT '0', `guild_2` smallint(5) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`guild_1`,`guild_2`), KEY `guild1` (`guild_1`), KEY `guild2` (`guild_2`))" );
+				m_Command.Enqueue( "CREATE TABLE IF NOT EXISTS `myrunuo_status` ( `char_id` int(10) NOT NULL, PRIMARY KEY (`char_id`))" );
 			}
 			catch ( Exception e )
 			{
-				Console.WriteLine( "MyRunUO: Error creating tables" );
+				Console.WriteLine( "MyRunUO: Error creating tables." );
 				Console.WriteLine( e );
 			}
 			if ( m_Command != null )
