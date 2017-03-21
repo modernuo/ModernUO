@@ -81,6 +81,17 @@ namespace Server.Engines.Craft
 			m_Recipe = new Recipe( id, system, this );
 		}
 
+		public static int LabelNumber( Type type ) {
+			int number = ItemIDOf( type );
+
+			if ( number >= 0x4000 )
+				number += 1078872;
+			else
+				number += 1020000;
+
+			return number;
+		}
+
 		private static Dictionary<Type, int> _itemIds = new Dictionary<Type, int>();
 		
 		public static int ItemIDOf( Type type ) {
