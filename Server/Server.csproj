@@ -182,6 +182,7 @@
     <Compile Include="Persistence\FileOperations.cs" />
     <Compile Include="Persistence\FileQueue.cs" />
     <Compile Include="Persistence\ParallelSaveStrategy.cs" />
+    <Compile Include="Persistence\Persistence.cs" />
     <Compile Include="Persistence\QueuedMemoryWriter.cs" />
     <Compile Include="Persistence\SaveMetrics.cs" />
     <Compile Include="Persistence\SaveStrategy.cs" />
