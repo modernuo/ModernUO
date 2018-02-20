@@ -2436,7 +2436,7 @@ namespace Server.Mobiles
 
 		private static int CheckContentForTrade( Item item )
 		{
-			if ( item is TrapableContainer && ((TrapableContainer)item).TrapType != TrapType.None )
+			if ( item is TrappableContainer && ((TrappableContainer)item).TrapType != TrapType.None )
 				return 1004044; // You may not trade trapped items.
 
 			if ( SkillHandlers.StolenItem.IsStolen( item ) )

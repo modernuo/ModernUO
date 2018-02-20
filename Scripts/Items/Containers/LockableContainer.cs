@@ -5,7 +5,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public abstract class LockableContainer : TrapableContainer, ILockable, ILockpickable, ICraftable, IShipwreckedItem
+	public abstract class LockableContainer : TrappableContainer, ILockable, ILockpickable, ICraftable, IShipwreckedItem
 	{
 		private bool m_Locked;
 		private int m_LockLevel, m_MaxLockLevel, m_RequiredSkill;

@@ -45,9 +45,9 @@ namespace Server.SkillHandlers
 				{
 					from.SendLocalizedMessage( 502816 ); // You feel that such an action would be inappropriate
 				}
-				else if ( targeted is TrapableContainer )
+				else if ( targeted is TrappableContainer )
 				{
-					TrapableContainer targ = (TrapableContainer)targeted;
+					TrappableContainer targ = (TrappableContainer)targeted;
 
 					from.Direction = from.GetDirectionTo( targ );
 

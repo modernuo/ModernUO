@@ -27,7 +27,7 @@ namespace Server.Spells.Second
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public void Target( TrapableContainer item )
+		public void Target( TrappableContainer item )
 		{
 			if ( !Caster.CanSee( item ) )
 			{
@@ -70,9 +70,9 @@ namespace Server.Spells.Second
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				if ( o is TrapableContainer )
+				if ( o is TrappableContainer )
 				{
-					m_Owner.Target( (TrapableContainer)o );
+					m_Owner.Target( (TrappableContainer)o );
 				}
 				else
 				{

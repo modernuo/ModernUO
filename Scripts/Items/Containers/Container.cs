@@ -323,7 +323,7 @@ namespace Server.Items
 		}
 	}
 
-	public class Pouch : TrapableContainer
+	public class Pouch : TrappableContainer
 	{
 		[Constructable]
 		public Pouch() : base( 0xE79 )

@@ -93,8 +93,8 @@ namespace Server.Engines.Harvest
 
 			if ( item is Container )
 			{
-				if ( item is TrapableContainer )
-					(item as TrapableContainer).ExecuteTrap( from );
+				if ( item is TrappableContainer )
+					(item as TrappableContainer).ExecuteTrap( from );
 
 				((Container)item).Destroy();
 			}

@@ -1,6 +1,6 @@
 ﻿namespace Server.Items
 {
-	class ClosedBarrel : TrapableContainer
+	class ClosedBarrel : TrappableContainer
 	{	
 		public override int DefaultGumpID{ get { return 0x3e; } }
 

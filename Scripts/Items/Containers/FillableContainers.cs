@@ -11,7 +11,7 @@ namespace Server.Items
 		public virtual int MaxRespawnMinutes { get { return 90; } }
 
 		public virtual bool IsLockable { get { return true; } }
-		public virtual bool IsTrapable { get { return IsLockable; } }
+		public virtual bool IsTrappable { get { return IsLockable; } }
 
 		public virtual int SpawnThreshold { get { return 2; } }
 
@@ -153,7 +153,7 @@ namespace Server.Items
 				RequiredSkill = difficulty;
 			}
 
-			if( IsTrapable && ( m_Content.Level > 1 || 4 > Utility.Random( 5 ) ) )
+			if( IsTrappable && ( m_Content.Level > 1 || 4 > Utility.Random( 5 ) ) )
 			{
 				if( m_Content.Level > Utility.Random( 5 ) )
 					TrapType = TrapType.PoisonTrap;

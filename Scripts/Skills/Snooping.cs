@@ -84,7 +84,7 @@ namespace Server.SkillHandlers
 
 				if ( from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill( SkillName.Snooping, cont, 0.0, 100.0 ) )
 				{
-					if ( cont is TrapableContainer && ((TrapableContainer)cont).ExecuteTrap( from ) )
+					if ( cont is TrappableContainer && ((TrappableContainer)cont).ExecuteTrap( from ) )
 						return;
 
 					cont.DisplayTo( from );

@@ -11,7 +11,7 @@ namespace Server.Items
 		PoisonTrap
 	}
 
-	public abstract class TrapableContainer : BaseContainer, ITelekinesisable
+	public abstract class TrappableContainer : BaseContainer, ITelekinesisable
 	{
 		private TrapType m_TrapType;
 		private int m_TrapPower;
@@ -58,11 +58,11 @@ namespace Server.Items
 
 		public virtual bool TrapOnOpen{ get{ return true; } }
 
-		public TrapableContainer( int itemID ) : base( itemID )
+		public TrappableContainer( int itemID ) : base( itemID )
 		{
 		}
 
-		public TrapableContainer( Serial serial ) : base( serial )
+		public TrappableContainer( Serial serial ) : base( serial )
 		{
 		}
 

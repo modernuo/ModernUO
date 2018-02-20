@@ -353,9 +353,9 @@ namespace Server.Engines.ConPVP
 				title = "Items";
 				option = "Bandages";
 			}
-			else if ( item is TrapableContainer )
+			else if ( item is TrappableContainer )
 			{
-				if ( ((TrapableContainer)item).TrapType != TrapType.None )
+				if ( ((TrappableContainer)item).TrapType != TrapType.None )
 				{
 					title = "Items";
 					option = "Trapped Containers";
