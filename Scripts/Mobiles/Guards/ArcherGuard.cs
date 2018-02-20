@@ -278,7 +278,7 @@ namespace Server.Mobiles
 						((BaseCreature)target).NoKillAwards = true;
 
 					target.Damage( target.HitsMax, m_Owner );
-					target.Kill(); // just in case, maybe Damage is overriden on some shard
+					target.Kill(); // just in case, maybe Damage is overridden on some shard
 
 					if ( target.Corpse != null && !target.Player )
 						target.Corpse.Delete();

@@ -24,7 +24,7 @@ namespace Server.Targeting
 {
 	public enum TargetCancelType
 	{
-		Overriden,
+		Overridden,
 		Canceled,
 		Disconnected,
 		Timeout

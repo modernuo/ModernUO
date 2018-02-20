@@ -2750,7 +2750,7 @@ namespace Server
 				m_Target = null;
 
 				if( oldTarget != null && newTarget != null )
-					oldTarget.Cancel( this, TargetCancelType.Overriden );
+					oldTarget.Cancel( this, TargetCancelType.Overridden );
 
 				m_Target = newTarget;
 
@@ -3754,7 +3754,7 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Invoked after the mobile is deleted. When overriden, be sure to call the base method.
+		/// Overridable. Invoked after the mobile is deleted. When overridden, be sure to call the base method.
 		/// </summary>
 		public virtual void OnAfterDelete()
 		{

@@ -619,7 +619,7 @@ namespace Server.Mobiles
 		#region Breath ability, like dragon fire breath
 		private long m_NextBreathTime;
 
-		// Must be overriden in subclass to enable
+		// Must be overridden in subclass to enable
 		public virtual bool HasBreath{ get{ return false; } }
 
 		// Base damage given is: CurrentHitPoints * BreathDamageScalar
@@ -2994,7 +2994,7 @@ namespace Server.Mobiles
 		}
 
 		/*
-		 * This function can be overriden.. so a "Strongest" mobile, can have a different definition depending
+		 * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
 		 * on who check for value
 		 * -Could add a FightMode.Prefered
 		 *

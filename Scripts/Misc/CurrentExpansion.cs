@@ -31,7 +31,7 @@ namespace Server
 				AOS.DisableStatInfluences();
 
 				if ( ObjectPropertyList.Enabled )
-					PacketHandlers.SingleClickProps = true; // single click for everything is overriden to check object property list
+					PacketHandlers.SingleClickProps = true; // single click for everything is overridden to check object property list
 
 				Mobile.ActionDelay = 1000;
 				Mobile.AOSStatusHandler = new AOSStatusHandler( AOS.GetStatus );

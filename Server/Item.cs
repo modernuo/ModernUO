@@ -942,7 +942,7 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Adds the name of this item to the given <see cref="ObjectPropertyList" />. This method should be overriden if the item requires a complex naming format.
+		/// Overridable. Adds the name of this item to the given <see cref="ObjectPropertyList" />. This method should be overridden if the item requires a complex naming format.
 		/// </summary>
 		public virtual void AddNameProperty( ObjectPropertyList list )
 		{
@@ -1102,7 +1102,7 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overriden to add any custom properties.
+		/// Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overridden to add any custom properties.
 		/// </summary>
 		public virtual void GetProperties( ObjectPropertyList list )
 		{
@@ -1188,7 +1188,7 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It is overriden on spellbook and spell channeling weapons or shields.
+		/// Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It is overridden on spellbook and spell channeling weapons or shields.
 		/// </summary>
 		/// <returns>True if it may, false if not.</returns>
 		/// <example>
