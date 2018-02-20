@@ -346,7 +346,7 @@ namespace Server.Mobiles
 			if ( m_Mount != null )
 				m_Mount.Rider = null;
 
-			return DeathMoveResult.RemainEquiped;
+			return DeathMoveResult.RemainEquipped;
 		}
 
 		public override void Serialize( GenericWriter writer )

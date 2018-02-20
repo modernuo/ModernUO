@@ -196,7 +196,7 @@ namespace Server.SkillHandlers
 				}
 				else if ( toSteal.Parent is Mobile )
 				{
-					m_Thief.SendLocalizedMessage( 1005585 ); // You cannot steal items which are equiped.
+					m_Thief.SendLocalizedMessage( 1005585 ); // You cannot steal items which are equipped.
 				}
 				else if ( root == m_Thief )
 				{

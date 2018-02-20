@@ -467,9 +467,9 @@ namespace Server.Items
 		{
 		}
 
-		public override bool AllowEquipedCast( Mobile from )
+		public override bool AllowEquippedCast( Mobile from )
 		{
-			if ( base.AllowEquipedCast( from ) )
+			if ( base.AllowEquippedCast( from ) )
 				return true;
 
 			return ( m_AosAttributes.SpellChanneling != 0 );

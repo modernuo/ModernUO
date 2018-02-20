@@ -163,7 +163,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool AllowEquipedCast( Mobile from )
+		public override bool AllowEquippedCast( Mobile from )
 		{
 			return true;
 		}

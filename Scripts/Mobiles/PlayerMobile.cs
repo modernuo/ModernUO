@@ -2345,9 +2345,9 @@ namespace Server.Mobiles
 
 					for ( int i = 0; i < Items.Count; ++i )
 					{
-						Item equiped = Items[i];
+						Item equipped = Items[i];
 
-						if ( item != equiped && FactionItem.Find( equiped ) != null )
+						if ( item != equipped && FactionItem.Find( equipped ) != null )
 						{
 							if ( --maxWearables == 0 )
 							{

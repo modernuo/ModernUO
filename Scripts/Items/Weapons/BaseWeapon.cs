@@ -3105,9 +3105,9 @@ namespace Server.Items
 				/* list.Add( 1062613, Utility.FixHtml( m_EngravedText ) ); */
 		}
 
-		public override bool AllowEquipedCast( Mobile from )
+		public override bool AllowEquippedCast( Mobile from )
 		{
-			if ( base.AllowEquipedCast( from ) )
+			if ( base.AllowEquippedCast( from ) )
 				return true;
 
 			return ( m_AosAttributes.SpellChanneling != 0 );

@@ -347,7 +347,7 @@ namespace Server.Items
 			return base.CanEquip( from );
 		}
 
-		public override bool AllowEquipedCast( Mobile from )
+		public override bool AllowEquippedCast( Mobile from )
 		{
 			return true;
 		}

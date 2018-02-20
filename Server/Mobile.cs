@@ -73,12 +73,12 @@ namespace Server
 		}
 	}
 
-	public class EquipedSkillMod : SkillMod
+	public class EquippedSkillMod : SkillMod
 	{
 		private Item m_Item;
 		private Mobile m_Mobile;
 
-		public EquipedSkillMod( SkillName skill, bool relative, double value, Item item, Mobile mobile )
+		public EquippedSkillMod( SkillName skill, bool relative, double value, Item item, Mobile mobile )
 			: base( skill, relative, value )
 		{
 			m_Item = item;
@@ -497,7 +497,7 @@ namespace Server
 	public delegate bool AllowBeneficialHandler( Mobile from, Mobile target );
 	public delegate bool AllowHarmfulHandler( Mobile from, Mobile target );
 
-	public delegate Container CreateCorpseHandler( Mobile from, HairInfo hair, FacialHairInfo facialhair, List<Item> initialContent, List<Item> equipedItems );
+	public delegate Container CreateCorpseHandler( Mobile from, HairInfo hair, FacialHairInfo facialhair, List<Item> initialContent, List<Item> equippedItems );
 
 	public delegate int AOSStatusHandler( Mobile from, int index );
 
@@ -1900,7 +1900,7 @@ namespace Server
 
 		public virtual void ClearHand( Item item )
 		{
-			if( item != null && item.Movable && !item.AllowEquipedCast( this ) )
+			if( item != null && item.Movable && !item.AllowEquippedCast( this ) )
 			{
 				Container pack = this.Backpack;
 
@@ -6101,7 +6101,7 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Virtual event invoked when <paramref name="item" /> is <see cref="AddItem">added</see> from the Mobile, such as when it is equiped.
+		/// Overridable. Virtual event invoked when <paramref name="item" /> is <see cref="AddItem">added</see> from the Mobile, such as when it is equipped.
 		/// <seealso cref="Items" />
 		/// <seealso cref="OnItemRemoved" />
 		/// </summary>

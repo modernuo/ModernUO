@@ -15,7 +15,7 @@ namespace Server.Items
 			Hue = Utility.RandomBool() ? 244 : 997;
 		}
 
-		public override bool AllowEquipedCast( Mobile from )
+		public override bool AllowEquippedCast( Mobile from )
 		{
 			return true;
 		}

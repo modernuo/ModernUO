@@ -131,7 +131,7 @@ namespace Server.Items
 
 		public override DeathMoveResult OnParentDeath( Mobile parent )
 		{
-			return DeathMoveResult.RemainEquiped;
+			return DeathMoveResult.RemainEquipped;
 		}
 
 		public BankBox( Mobile owner ) : base( 0xE7C )

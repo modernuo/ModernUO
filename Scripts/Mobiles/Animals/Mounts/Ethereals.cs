@@ -240,7 +240,7 @@ namespace Server.Mobiles
 		{
 			Rider = null;//get off, move to pack
 
-			return DeathMoveResult.RemainEquiped;
+			return DeathMoveResult.RemainEquipped;
 		}
 
 		public static void Dismount( Mobile m )

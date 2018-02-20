@@ -184,7 +184,7 @@ namespace Server
 		/// </summary>
 		Update		= 0x00000001,
 		/// <summary>
-		/// Resend the item only if it is equiped.
+		/// Resend the item only if it is equipped.
 		/// </summary>
 		EquipOnly	= 0x00000002,
 		/// <summary>
@@ -203,9 +203,9 @@ namespace Server
 		/// </summary>
 		MoveToCorpse,
 		/// <summary>
-		/// The item should remain equiped.
+		/// The item should remain equipped.
 		/// </summary>
-		RemainEquiped,
+		RemainEquipped,
 		/// <summary>
 		/// The item should be placed into the owners backpack.
 		/// </summary>
@@ -1188,22 +1188,22 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Method checked to see if this item may be equiped while casting a spell. By default, this returns false. It is overriden on spellbook and spell channeling weapons or shields.
+		/// Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It is overriden on spellbook and spell channeling weapons or shields.
 		/// </summary>
 		/// <returns>True if it may, false if not.</returns>
 		/// <example>
 		/// <code>
-		///	public override bool AllowEquipedCast( Mobile from )
+		///	public override bool AllowEquippedCast( Mobile from )
 		///	{
 		///		if ( from.Int &gt;= 100 )
 		///			return true;
 		///		
-		///		return base.AllowEquipedCast( from );
+		///		return base.AllowEquippedCast( from );
 		/// }</code>
 		/// 
-		/// When placed in an Item script, the item may be cast when equiped if the <paramref name="from" /> has 100 or more intelligence. Otherwise, it will drop to their backpack.
+		/// When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more intelligence. Otherwise, it will drop to their backpack.
 		/// </example>
-		public virtual bool AllowEquipedCast( Mobile from )
+		public virtual bool AllowEquippedCast( Mobile from )
 		{
 			return false;
 		}
@@ -1242,7 +1242,7 @@ namespace Server
 		public virtual DeathMoveResult OnParentDeath( Mobile parent )
 		{
 			if ( !Movable )
-				return DeathMoveResult.RemainEquiped;
+				return DeathMoveResult.RemainEquipped;
 			else if ( parent.KeepsItemsOnDeath )
 				return DeathMoveResult.MoveToBackpack;
 			else if ( CheckBlessed( parent ) )
