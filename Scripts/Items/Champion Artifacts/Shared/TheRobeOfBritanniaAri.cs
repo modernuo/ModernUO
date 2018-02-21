@@ -14,7 +14,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public TheRobeOfBritanniaAri() : base( 0x2684 )
 		{
 			Hue = 0x48b;

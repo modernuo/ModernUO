@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ElvenSpinningwheelEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenSpinningwheelEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x2DD9 ), 0, 0, 0 );
@@ -111,7 +111,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ElvenSpinningwheelEastAddon(); } }
 		public override int LabelNumber{ get{ return 1073393; } } // elven spinning wheel (east)
 
-		[Constructable]
+		[Constructible]
 		public ElvenSpinningwheelEastDeed()
 		{
 		}

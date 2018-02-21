@@ -48,12 +48,12 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public SawTrap() : this( SawTrapType.NorthFloor )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SawTrap( SawTrapType type ) : base( GetBaseID( type ) )
 		{
 		}

@@ -5,17 +5,17 @@ namespace Server.Items
 {
 	public class BrownBook : BaseBook
 	{
-		[Constructable]
+		[Constructible]
 		public BrownBook() : base( 0xFEF )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrownBook( int pageCount, bool writable ) : base( 0xFEF, pageCount, writable )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrownBook( string title, string author, int pageCount, bool writable ) : base( 0xFEF, title, author, pageCount, writable )
 		{
 		}

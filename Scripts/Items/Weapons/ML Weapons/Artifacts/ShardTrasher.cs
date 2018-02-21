@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072918; } } // Shard Thrasher
 
-		[Constructable]
+		[Constructible]
 		public ShardThrasher()
 		{
 			Hue = 0x4F2;

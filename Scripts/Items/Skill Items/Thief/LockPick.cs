@@ -18,15 +18,15 @@ namespace Server.Items
 
 
 
-	[FlipableAttribute( 0x14fc, 0x14fb )]
+	[FlippableAttribute( 0x14fc, 0x14fb )]
 	public class Lockpick : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Lockpick() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lockpick( int amount ) : base( 0x14FC )
 		{
 			Stackable = true;

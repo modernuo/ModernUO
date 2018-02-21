@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName("a chaos dragoon elite corpse")]
 	public class ChaosDragoonElite : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public ChaosDragoonElite()
 			: base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.15, 0.4)
 		{

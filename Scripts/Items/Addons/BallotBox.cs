@@ -34,7 +34,7 @@ namespace Server.Items
 			get{ return m_No; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BallotBox() : base( 0x9A8 )
 		{
 			m_Topic = new string[0];
@@ -366,7 +366,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1044327; } } // ballot box
 
-		[Constructable]
+		[Constructible]
 		public BallotBoxDeed()
 		{
 		}

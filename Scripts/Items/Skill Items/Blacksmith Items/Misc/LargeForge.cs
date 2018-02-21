@@ -9,7 +9,7 @@ namespace Server.Items
 		private InternalItem m_Item;
 		private InternalItem2 m_Item2;
 
-		[Constructable]
+		[Constructible]
 		public LargeForgeWest() : base( 0x199A )
 		{
 			Movable = false;
@@ -185,7 +185,7 @@ namespace Server.Items
 		private InternalItem m_Item;
 		private InternalItem2 m_Item2;
 
-		[Constructable]
+		[Constructible]
 		public LargeForgeEast() : base( 0x197A )
 		{
 			Movable = false;

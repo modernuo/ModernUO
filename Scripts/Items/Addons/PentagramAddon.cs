@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new PentagramDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PentagramAddon()
 		{
 			AddComponent( new AddonComponent( 0xFE7 ), -1, -1, 0 );
@@ -45,7 +45,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new PentagramAddon(); } }
 		public override int LabelNumber{ get{ return 1044328; } } // pentagram
 
-		[Constructable]
+		[Constructible]
 		public PentagramDeed()
 		{
 		}

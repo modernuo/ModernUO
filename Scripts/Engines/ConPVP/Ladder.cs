@@ -16,7 +16,7 @@ namespace Server.Engines.ConPVP
 			get { return "ladder controller"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public LadderController() : base( 0x1B7A )
 		{
 			Visible = false;

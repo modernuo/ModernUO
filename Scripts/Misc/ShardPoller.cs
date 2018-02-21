@@ -151,7 +151,7 @@ namespace Server.Misc
 			get { return "shard poller"; }
 		}
 
-		[Constructable( AccessLevel.Administrator )]
+		[Constructible( AccessLevel.Administrator )]
 		public ShardPoller() : base( 0x1047 )
 		{
 			m_Duration = TimeSpan.FromHours( 24.0 );

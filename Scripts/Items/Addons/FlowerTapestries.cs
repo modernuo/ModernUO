@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new LightFlowerTapestryEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public LightFlowerTapestryEastAddon()
 		{
 			AddComponent( new AddonComponent( 0xFDC ), 0, 0, 0 );
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new LightFlowerTapestryEastAddon(); } }
 		public override int LabelNumber{ get{ return 1049393; } } // a flower tapestry deed facing east
 
-		[Constructable]
+		[Constructible]
 		public LightFlowerTapestryEastDeed()
 		{
 		}
@@ -66,7 +66,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new LightFlowerTapestrySouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public LightFlowerTapestrySouthAddon()
 		{
 			AddComponent( new AddonComponent( 0xFD9 ), 0, 0, 0 );
@@ -97,7 +97,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new LightFlowerTapestrySouthAddon(); } }
 		public override int LabelNumber{ get{ return 1049394; } } // a flower tapestry deed facing south
 
-		[Constructable]
+		[Constructible]
 		public LightFlowerTapestrySouthDeed()
 		{
 		}
@@ -125,7 +125,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new DarkFlowerTapestryEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public DarkFlowerTapestryEastAddon()
 		{
 			AddComponent( new AddonComponent( 0xFE0 ), 0, 0, 0 );
@@ -156,7 +156,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new DarkFlowerTapestryEastAddon(); } }
 		public override int LabelNumber{ get{ return 1049395; } } // a dark flower tapestry deed facing east
 
-		[Constructable]
+		[Constructible]
 		public DarkFlowerTapestryEastDeed()
 		{
 		}
@@ -184,7 +184,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new DarkFlowerTapestrySouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public DarkFlowerTapestrySouthAddon()
 		{
 			AddComponent( new AddonComponent( 0xFDD ), 0, 0, 0 );
@@ -215,7 +215,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new DarkFlowerTapestrySouthAddon(); } }
 		public override int LabelNumber{ get{ return 1049396; } } // a dark flower tapestry deed facing south
 
-		[Constructable]
+		[Constructible]
 		public DarkFlowerTapestrySouthDeed()
 		{
 		}

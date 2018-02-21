@@ -16,14 +16,14 @@ namespace Server.Items
 		private bool m_Drying;
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public AcidSlime() : this( TimeSpan.FromSeconds( 10.0 ), 5, 10 )
 		{
 		}
 
 		public override string DefaultName { get { return "slime"; } }
 
-		[Constructable]
+		[Constructible]
 		public AcidSlime( TimeSpan duration, int minDamage, int maxDamage )
 			: base( 0x122A )
 		{

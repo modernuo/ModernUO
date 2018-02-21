@@ -13,13 +13,13 @@ namespace Server.Items
 		public override int DefaultGumpID { get { return 0x3f; } }
 		public override int LabelNumber { get { return 1077596; } } // A Red Velvet Box
 
-		[Constructable]
+		[Constructible]
 		public RedVelvetGiftBox()
 			: this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RedVelvetGiftBox( bool fill )
 			: base( 0xE7A )
 		{

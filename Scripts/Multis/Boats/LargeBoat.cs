@@ -21,7 +21,7 @@ namespace Server.Multis
 
 		public override BaseDockedBoat DockedBoat{ get{ return new LargeDockedBoat( this ); } }
 
-		[Constructable]
+		[Constructible]
 		public LargeBoat()
 		{
 		}
@@ -50,7 +50,7 @@ namespace Server.Multis
 		public override int LabelNumber{ get{ return 1041209; } } // large ship deed
 		public override BaseBoat Boat{ get{ return new LargeBoat(); } }
 
-		[Constructable]
+		[Constructible]
 		public LargeBoatDeed() : base( 0x10, new Point3D( 0, -1, 0 ) )
 		{
 		}

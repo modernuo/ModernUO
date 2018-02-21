@@ -27,7 +27,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public CandleSkull() : base( 0x1853 )
 		{
 			if ( Burnout )

@@ -3,15 +3,15 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable(0x312D, 0x312E)]
+	[Flippable(0x312D, 0x312E)]
 	public class SeveredElfEars : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SeveredElfEars() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SeveredElfEars( int amount ) : base( Utility.RandomList( 0x312D, 0x312E ) )
 		{
 			Stackable = true;

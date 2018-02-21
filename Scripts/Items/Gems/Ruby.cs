@@ -10,12 +10,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Ruby() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Ruby( int amount ) : base( 0xF13 )
 		{
 			Stackable = true;

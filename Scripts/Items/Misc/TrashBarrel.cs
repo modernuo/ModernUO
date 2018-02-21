@@ -16,7 +16,7 @@ namespace Server.Items
 			get{ return false; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TrashBarrel() : base( 0xE77 )
 		{
 			Hue = 0x3B2;

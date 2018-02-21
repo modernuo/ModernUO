@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1077620; } } // Hallowed Spellbook
 
-		[Constructable]
+		[Constructible]
 		public HallowedSpellbook() : base( 0x3FFFFFFFF )
 		{
 			LootType = LootType.Blessed;

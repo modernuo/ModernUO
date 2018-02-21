@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0x1EA3, 0x1EA4 )]
+	[Flippable( 0x1EA3, 0x1EA4 )]
 	public class SmallFishingNetComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076286; } } // Small Fish Net
@@ -34,7 +34,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new SmallFishingNetDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public SmallFishingNetAddon() : base()
 		{
 			AddComponent( new SmallFishingNetComponent(), 0, 0, 0 );
@@ -64,7 +64,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new SmallFishingNetAddon(); } }
 		public override int LabelNumber { get { return 1076286; } } // Small Fish Net
 
-		[Constructable]
+		[Constructible]
 		public SmallFishingNetDeed() : base()
 		{
 			LootType = LootType.Blessed;

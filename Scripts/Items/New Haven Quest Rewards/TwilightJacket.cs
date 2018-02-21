@@ -13,7 +13,7 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 3; } }
 		public override int BaseEnergyResistance{ get{ return 3; } }
 
-		[Constructable]
+		[Constructible]
 		public TwilightJacket()
 		{
 			LootType = LootType.Blessed;

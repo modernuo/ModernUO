@@ -3,15 +3,15 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x1059, 0x105A )]
+	[Flippable( 0x1059, 0x105A )]
 	public class SextantParts : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SextantParts() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SextantParts( int amount ) : base( 0x1059 )
 		{
 			Stackable = true;

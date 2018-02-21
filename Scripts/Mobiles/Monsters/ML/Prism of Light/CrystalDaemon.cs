@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal daemon corpse" )]
 	public class CrystalDaemon : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public CrystalDaemon()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

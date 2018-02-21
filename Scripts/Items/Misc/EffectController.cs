@@ -146,7 +146,7 @@ namespace Server.Items
 			get { return "Effect Controller"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public EffectController() : base( 0x1B72 )
 		{
 			Movable = false;

@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072893; } } // enchanted switch
 
-		[Constructable]
+		[Constructible]
 		public EnchantedSwitch() : base( 0x2F5C )
 		{
 			Weight = 1.0;

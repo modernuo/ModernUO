@@ -38,7 +38,7 @@ namespace Server.Items
 
 	public class ThickGrayStoneWall : BaseWall
 	{
-		[Constructable]
+		[Constructible]
 		public ThickGrayStoneWall( ThickGrayStoneWallTypes type) : base( 0x007A + (int)type )
 		{
 		}

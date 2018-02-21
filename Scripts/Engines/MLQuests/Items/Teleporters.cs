@@ -26,19 +26,19 @@ namespace Server.Engines.MLQuests.Items
 			set { m_Message = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MLQuestTeleporter()
 			: this(Point3D.Zero, null, null, null)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MLQuestTeleporter(Point3D pointDest, Map mapDest)
 			: this(pointDest, mapDest, null, null)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MLQuestTeleporter(Point3D pointDest, Map mapDest, Type questType, TextDefinition message)
 			: base(pointDest, mapDest)
 		{
@@ -132,19 +132,19 @@ namespace Server.Engines.MLQuests.Items
 			set { m_Message = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TicketTeleporter()
 			: this(Point3D.Zero, null, null, null)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TicketTeleporter(Point3D pointDest, Map mapDest)
 			: this(pointDest, mapDest, null, null)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TicketTeleporter(Point3D pointDest, Map mapDest, Type ticketType, TextDefinition message)
 			: base(pointDest, mapDest)
 		{

@@ -19,7 +19,7 @@ namespace Server.Engines.ConPVP
 			get { return "preferences controller"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public PreferencesController() : base( 0x1B7A )
 		{
 			Visible = false;

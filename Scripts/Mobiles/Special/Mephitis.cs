@@ -15,7 +15,7 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Spider }; } }
 
-		[Constructable]
+		[Constructible]
 		public Mephitis() : base( AIType.AI_Melee )
 		{
 			Body = 173;

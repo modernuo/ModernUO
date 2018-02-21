@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class ShadowIronElemental : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public ShadowIronElemental() : this( 2 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ShadowIronElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a shadow iron elemental";

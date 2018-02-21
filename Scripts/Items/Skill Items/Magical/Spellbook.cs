@@ -430,12 +430,12 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Spellbook() : this( (ulong)0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Spellbook( ulong content ) : this( content, 0xEFA )
 		{
 		}

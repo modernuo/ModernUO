@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x100A/*East*/, 0x100B/*South*/ )]
+	[FlippableAttribute( 0x100A/*East*/, 0x100B/*South*/ )]
 	public class ArcheryButte : AddonComponent
 	{
 		private double m_MinSkill;
@@ -57,7 +57,7 @@ namespace Server.Items
 			set{ m_Bolts = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ArcheryButte() : this( 0x100A )
 		{
 		}
@@ -311,7 +311,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ArcheryButteDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ArcheryButteAddon()
 		{
 			AddComponent( new ArcheryButte( 0x100A ), 0, 0, 0 );
@@ -341,7 +341,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ArcheryButteAddon(); } }
 		public override int LabelNumber{ get{ return 1024106; } } // archery butte
 
-		[Constructable]
+		[Constructible]
 		public ArcheryButteDeed()
 		{
 		}

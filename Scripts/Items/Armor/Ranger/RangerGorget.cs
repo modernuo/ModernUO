@@ -24,7 +24,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041495; } } // studded gorget, ranger armor
 
-		[Constructable]
+		[Constructible]
 		public RangerGorget() : base( 0x13D6 )
 		{
 			Weight = 1.0;

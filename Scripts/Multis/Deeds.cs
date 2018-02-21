@@ -222,7 +222,7 @@ namespace Server.Multis.Deeds
 
 	public class StonePlasterHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public StonePlasterHouseDeed() : base( 0x64, new Point3D( 0, 4, 0 ) )
 		{
 		}
@@ -256,7 +256,7 @@ namespace Server.Multis.Deeds
 
 	public class FieldStoneHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public FieldStoneHouseDeed() : base( 0x66, new Point3D( 0, 4, 0 ) )
 		{
 		}
@@ -290,7 +290,7 @@ namespace Server.Multis.Deeds
 
 	public class SmallBrickHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public SmallBrickHouseDeed() : base( 0x68, new Point3D( 0, 4, 0 ) )
 		{
 		}
@@ -324,7 +324,7 @@ namespace Server.Multis.Deeds
 
 	public class WoodHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public WoodHouseDeed() : base( 0x6A, new Point3D( 0, 4, 0 ) )
 		{
 		}
@@ -358,7 +358,7 @@ namespace Server.Multis.Deeds
 
 	public class WoodPlasterHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public WoodPlasterHouseDeed() : base( 0x6C, new Point3D( 0, 4, 0 ) )
 		{
 		}
@@ -392,7 +392,7 @@ namespace Server.Multis.Deeds
 
 	public class ThatchedRoofCottageDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public ThatchedRoofCottageDeed() : base( 0x6E, new Point3D( 0, 4, 0 ) )
 		{
 		}
@@ -426,7 +426,7 @@ namespace Server.Multis.Deeds
 
 	public class BrickHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public BrickHouseDeed() : base( 0x74, new Point3D( -1, 7, 0 ) )
 		{
 		}
@@ -460,7 +460,7 @@ namespace Server.Multis.Deeds
 
 	public class TwoStoryWoodPlasterHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public TwoStoryWoodPlasterHouseDeed() : base( 0x76, new Point3D( -3, 7, 0 ) )
 		{
 		}
@@ -494,7 +494,7 @@ namespace Server.Multis.Deeds
 
 	public class TwoStoryStonePlasterHouseDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public TwoStoryStonePlasterHouseDeed() : base( 0x78, new Point3D( -3, 7, 0 ) )
 		{
 		}
@@ -528,7 +528,7 @@ namespace Server.Multis.Deeds
 
 	public class TowerDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public TowerDeed() : base( 0x7A, new Point3D( 0, 7, 0 ) )
 		{
 		}
@@ -562,7 +562,7 @@ namespace Server.Multis.Deeds
 
 	public class KeepDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public KeepDeed() : base( 0x7C, new Point3D( 0, 11, 0 ) )
 		{
 		}
@@ -596,7 +596,7 @@ namespace Server.Multis.Deeds
 
 	public class CastleDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public CastleDeed() : base( 0x7E, new Point3D( 0, 16, 0 ) )
 		{
 		}
@@ -630,7 +630,7 @@ namespace Server.Multis.Deeds
 
 	public class LargePatioDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public LargePatioDeed() : base( 0x8C, new Point3D( -4, 7, 0 ) )
 		{
 		}
@@ -664,7 +664,7 @@ namespace Server.Multis.Deeds
 
 	public class LargeMarbleDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public LargeMarbleDeed() : base( 0x96, new Point3D( -4, 7, 0 ) )
 		{
 		}
@@ -698,7 +698,7 @@ namespace Server.Multis.Deeds
 
 	public class SmallTowerDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public SmallTowerDeed() : base( 0x98, new Point3D( 3, 4, 0 ) )
 		{
 		}
@@ -732,7 +732,7 @@ namespace Server.Multis.Deeds
 
 	public class LogCabinDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public LogCabinDeed() : base( 0x9A, new Point3D( 1, 6, 0 ) )
 		{
 		}
@@ -766,7 +766,7 @@ namespace Server.Multis.Deeds
 
 	public class SandstonePatioDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public SandstonePatioDeed() : base( 0x9C, new Point3D( -1, 4, 0 ) )
 		{
 		}
@@ -800,7 +800,7 @@ namespace Server.Multis.Deeds
 
 	public class VillaDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public VillaDeed() : base( 0x9E, new Point3D( 3, 6, 0 ) )
 		{
 		}
@@ -834,7 +834,7 @@ namespace Server.Multis.Deeds
 
 	public class StoneWorkshopDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public StoneWorkshopDeed() : base( 0xA0, new Point3D( -1, 4, 0 ) )
 		{
 		}
@@ -868,7 +868,7 @@ namespace Server.Multis.Deeds
 
 	public class MarbleWorkshopDeed : HouseDeed
 	{
-		[Constructable]
+		[Constructible]
 		public MarbleWorkshopDeed() : base( 0xA2, new Point3D( -1, 4, 0 ) )
 		{
 		}

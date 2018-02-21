@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13B9, 0x13Ba )]
+	[FlippableAttribute( 0x13B9, 0x13Ba )]
 	public class VikingSword : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 100; } }
 
-		[Constructable]
+		[Constructible]
 		public VikingSword() : base( 0x13B9 )
 		{
 			Weight = 6.0;

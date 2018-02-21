@@ -5,17 +5,17 @@ namespace Server.Items
 {
 	public class RedBook : BaseBook
 	{
-		[Constructable]
+		[Constructible]
 		public RedBook() : base( 0xFF1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RedBook( int pageCount, bool writable ) : base( 0xFF1, pageCount, writable )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RedBook( string title, string author, int pageCount, bool writable ) : base( 0xFF1, title, author, pageCount, writable )
 		{
 		}

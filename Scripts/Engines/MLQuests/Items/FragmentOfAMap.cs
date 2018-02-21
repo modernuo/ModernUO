@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074533; } } // Fragment of a Map
 
-		[Constructable]
+		[Constructible]
 		public FragmentOfAMap() : base( 0x14ED )
 		{
 			LootType = LootType.Blessed;

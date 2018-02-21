@@ -3,15 +3,15 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xc77, 0xc78 )]
+	[FlippableAttribute( 0xc77, 0xc78 )]
 	public class Carrot : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Carrot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Carrot( int amount ) : base( amount, 0xc78 )
 		{
 			this.Weight = 1.0;
@@ -36,15 +36,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xc7b, 0xc7c )]
+	[FlippableAttribute( 0xc7b, 0xc7c )]
 	public class Cabbage : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Cabbage() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Cabbage( int amount ) : base( amount, 0xc7b )
 		{
 			this.Weight = 1.0;
@@ -69,15 +69,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xc6d, 0xc6e )]
+	[FlippableAttribute( 0xc6d, 0xc6e )]
 	public class Onion : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Onion() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Onion( int amount ) : base( amount, 0xc6d )
 		{
 			this.Weight = 1.0;
@@ -102,15 +102,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xc70, 0xc71 )]
+	[FlippableAttribute( 0xc70, 0xc71 )]
 	public class Lettuce : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Lettuce() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lettuce( int amount ) : base( amount, 0xc70 )
 		{
 			this.Weight = 1.0;
@@ -135,15 +135,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xC6A, 0xC6B )]
+	[FlippableAttribute( 0xC6A, 0xC6B )]
 	public class Pumpkin : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Pumpkin() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Pumpkin( int amount ) : base( amount, 0xC6A )
 		{
 			this.Weight = 1.0;
@@ -179,12 +179,12 @@ namespace Server.Items
 
 	public class SmallPumpkin : Food
 	{
-		[Constructable]
+		[Constructible]
 		public SmallPumpkin() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SmallPumpkin( int amount ) : base( amount, 0xC6C )
 		{
 			this.Weight = 1.0;

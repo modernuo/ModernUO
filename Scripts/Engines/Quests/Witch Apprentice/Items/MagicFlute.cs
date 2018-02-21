@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Hag
 	{
 		public override int LabelNumber{ get{ return 1055051; } } // magic flute
 
-		[Constructable]
+		[Constructible]
 		public MagicFlute() : base( 0x1421 )
 		{
 			Hue = 0x8AB;

@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B73, 0x316A )]
+	[FlippableAttribute( 0x2B73, 0x316A )]
 	public class WingedHelm : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
-		[Constructable]
+		[Constructible]
 		public WingedHelm() : base( 0x2B73 )
 		{
 			Weight = 5.0;

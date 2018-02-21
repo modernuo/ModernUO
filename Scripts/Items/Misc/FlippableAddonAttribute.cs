@@ -6,7 +6,7 @@ using Server.Multis;
 namespace Server.Items
 {
 	[AttributeUsage( AttributeTargets.Class )]
-	public class FlipableAddonAttribute : Attribute
+	public class FlippableAddonAttribute : Attribute
 	{
 		private static string m_MethodName = "Flip";
 
@@ -22,7 +22,7 @@ namespace Server.Items
 			get { return m_Directions; }
 		}
 
-		public FlipableAddonAttribute( params Direction[] directions )
+		public FlippableAddonAttribute( params Direction[] directions )
 		{
 			m_Directions = directions;
 		}

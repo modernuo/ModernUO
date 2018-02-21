@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Hag
 			from.Send( new AsciiMessage( Serial, ItemID, MessageType.Label, hue, 3, "", "a charred corpse" ) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public HagApprenticeCorpse() : base( GetOwner(), GetEquipment() )
 		{
 			Direction = Direction.South;

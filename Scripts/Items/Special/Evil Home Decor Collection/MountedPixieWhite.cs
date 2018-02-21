@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x2A79, 0x2A7A )]
+	[Flippable( 0x2A79, 0x2A7A )]
 	public class MountedPixieWhiteComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1074482; } } // Mounted pixie
@@ -73,7 +73,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new MountedPixieWhiteAddon(); } }
 		public override int LabelNumber { get { return 1074482; } } // Mounted pixie
 
-		[Constructable]
+		[Constructible]
 		public MountedPixieWhiteDeed() : base()
 		{
 			LootType = LootType.Blessed;

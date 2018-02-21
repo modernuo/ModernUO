@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class CleansingWindsScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public CleansingWindsScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public CleansingWindsScroll( int amount )
 			: base( 687, 0x2DA8, amount )
 		{

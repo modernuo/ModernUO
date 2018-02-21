@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class Zoel : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public Zoel() : base( "the Masterful Tactician" )
 		{
 		}

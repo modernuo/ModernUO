@@ -13,7 +13,7 @@ namespace Server.Items
 	{
 		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
 
-		[Constructable]
+		[Constructible]
 		public PublicMoongate() : base( 0xF6C )
 		{
 			Movable = false;

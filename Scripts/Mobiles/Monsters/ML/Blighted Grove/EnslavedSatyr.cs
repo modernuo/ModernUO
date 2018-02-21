@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an enslaved satyr corpse" )]
 	public class EnslavedSatyr : Satyr
 	{
-		[Constructable]
+		[Constructible]
 		public EnslavedSatyr()
 		{
 			Name = "an enslaved satyr";

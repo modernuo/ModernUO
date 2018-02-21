@@ -11,7 +11,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074269; } } // prismatic crystal
 
-		[Constructable]
+		[Constructible]
 		public PrismaticCrystal() : base( 0x2DA )
 		{
 			Movable = false;

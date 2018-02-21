@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072093; } } // Eternally Corrupt Tree
 
-		[Constructable]
+		[Constructible]
 		public EternallyCorruptTree() : base( 0x20FA )
 		{
 			Hue = Utility.RandomMinMax( 0x899, 0x8B0 );

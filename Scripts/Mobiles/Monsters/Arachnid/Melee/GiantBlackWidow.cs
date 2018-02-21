@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a giant black widow spider corpse" )] // stupid corpse name
 	public class GiantBlackWidow : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public GiantBlackWidow() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a giant black widow";

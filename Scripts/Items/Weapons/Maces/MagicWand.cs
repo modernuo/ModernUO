@@ -23,7 +23,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 110; } }
 
-		[Constructable]
+		[Constructible]
 		public MagicWand() : base( 0xDF2 )
 		{
 			Weight = 1.0;

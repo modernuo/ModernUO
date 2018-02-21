@@ -3,15 +3,15 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x104F, 0x1050 )]
+	[Flippable( 0x104F, 0x1050 )]
 	public class ClockParts : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ClockParts() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ClockParts( int amount ) : base( 0x104F )
 		{
 			Stackable = true;

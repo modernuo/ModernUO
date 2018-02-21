@@ -18,7 +18,7 @@ namespace Server.Items
 
 		public override int ArmorBase{ get{ return 7; } }
 
-		[Constructable]
+		[Constructible]
 		public Buckler() : base( 0x1B73 )
 		{
 			Weight = 5.0;

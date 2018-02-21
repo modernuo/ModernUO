@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.TinkersGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public Carpenter() : base( "the carpenter" )
 		{
 			SetSkill( SkillName.Carpentry, 85.0, 100.0 );

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073511; } } // mystical shortbow
 
-		[Constructable]
+		[Constructible]
 		public MysticalShortbow()
 		{
 			Attributes.SpellChanneling = 1;

@@ -9,7 +9,7 @@ using Server.Engines.PartySystem;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class ParagonChest : LockableContainer
 	{
 		private static int[] m_ItemIDs = new int[]
@@ -25,7 +25,7 @@ namespace Server.Items
 
 		private string m_Name;
 
-		[Constructable]
+		[Constructible]
 		public ParagonChest( string name, int level ) : base( Utility.RandomList( m_ItemIDs ) )
 		{
 			m_Name = name;

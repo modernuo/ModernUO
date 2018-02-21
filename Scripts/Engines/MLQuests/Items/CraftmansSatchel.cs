@@ -58,7 +58,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class TailorSatchel : BaseCraftmansSatchel
 	{
-		[Constructable]
+		[Constructible]
 		public TailorSatchel()
 		{
 			AddBaseLoot( Loot.MLArmorTypes, Loot.JewelryTypes, m_TalismanType );
@@ -89,7 +89,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class BlacksmithSatchel : BaseCraftmansSatchel
 	{
-		[Constructable]
+		[Constructible]
 		public BlacksmithSatchel()
 		{
 			AddBaseLoot( Loot.MLWeaponTypes, Loot.JewelryTypes, m_TalismanType );
@@ -120,7 +120,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class TinkerSatchel : BaseCraftmansSatchel
 	{
-		[Constructable]
+		[Constructible]
 		public TinkerSatchel()
 		{
 			AddBaseLoot( Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType );
@@ -163,7 +163,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class FletchingSatchel : BaseCraftmansSatchel
 	{
-		[Constructable]
+		[Constructible]
 		public FletchingSatchel()
 		{
 			AddBaseLoot( Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType );
@@ -196,7 +196,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class CarpentrySatchel : BaseCraftmansSatchel
 	{
-		[Constructable]
+		[Constructible]
 		public CarpentrySatchel()
 		{
 			AddBaseLoot( Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType );

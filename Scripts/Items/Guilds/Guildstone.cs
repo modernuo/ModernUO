@@ -272,7 +272,7 @@ namespace Server.Items
 		#endregion
 	}
 
-	[Flipable( 0x14F0, 0x14EF )]
+	[Flippable( 0x14F0, 0x14EF )]
 	public class GuildstoneDeed : Item
 	{
 		public override int LabelNumber { get { return 1041233; } } // deed to a guildstone
@@ -304,12 +304,12 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public GuildstoneDeed() : this( null, null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GuildstoneDeed( string guildName, string abbrev ) : this( null, guildName, abbrev )
 		{
 		}

@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1bdd, 0x1be0 )]
+	[FlippableAttribute( 0x1bdd, 0x1be0 )]
 	public class Log : Item, ICommodity, IAxe
 	{
 		private CraftResource m_Resource;
@@ -18,22 +18,22 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return CraftResources.IsStandard( m_Resource ) ? LabelNumber : 1075062 + ( (int)m_Resource - (int)CraftResource.RegularWood ); } }
 		bool ICommodity.IsDeedable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Log() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Log( int amount ) : this( CraftResource.RegularWood, amount )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Log( CraftResource resource )
 			: this( resource, 1 )
 		{
 		}
-		[Constructable]
+		[Constructible]
 		public Log( CraftResource resource, int amount )
 			: base( 0x1BDD )
 		{
@@ -116,11 +116,11 @@ namespace Server.Items
 	}
 	public class HeartwoodLog : Log
 	{
-		[Constructable]
+		[Constructible]
 		public HeartwoodLog() : this( 1 )
 		{
 		}
-		[Constructable]
+		[Constructible]
 		public HeartwoodLog( int amount ) 
 			: base( CraftResource.Heartwood, amount )
 		{
@@ -152,12 +152,12 @@ namespace Server.Items
 
 	public class BloodwoodLog : Log
 	{
-		[Constructable]
+		[Constructible]
 		public BloodwoodLog()
 			: this( 1 )
 		{
 		}
-		[Constructable]
+		[Constructible]
 		public BloodwoodLog( int amount )
 			: base( CraftResource.Bloodwood, amount )
 		{
@@ -190,13 +190,13 @@ namespace Server.Items
 
 	public class FrostwoodLog : Log
 	{
-		[Constructable]
+		[Constructible]
 		public FrostwoodLog()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FrostwoodLog( int amount )
 			: base( CraftResource.Frostwood, amount )
 		{
@@ -232,13 +232,13 @@ namespace Server.Items
 
 	public class OakLog : Log
 	{
-		[Constructable]
+		[Constructible]
 		public OakLog()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public OakLog( int amount )
 			: base( CraftResource.OakWood, amount )
 		{
@@ -274,13 +274,13 @@ namespace Server.Items
 
 	public class AshLog : Log
 	{
-		[Constructable]
+		[Constructible]
 		public AshLog()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AshLog( int amount )
 			: base( CraftResource.AshWood, amount )
 		{
@@ -316,13 +316,13 @@ namespace Server.Items
 
 	public class YewLog : Log
 	{
-		[Constructable]
+		[Constructible]
 		public YewLog()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public YewLog( int amount )
 			: base( CraftResource.YewWood, amount )
 		{

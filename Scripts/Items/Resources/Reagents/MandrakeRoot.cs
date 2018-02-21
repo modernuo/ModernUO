@@ -9,12 +9,12 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public MandrakeRoot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MandrakeRoot( int amount ) : base( 0xF86, amount )
 		{
 		}

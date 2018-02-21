@@ -51,7 +51,7 @@ namespace Server.Items
 
 	public class WhiteStoneWall : BaseWall
 	{
-		[Constructable]
+		[Constructible]
 		public WhiteStoneWall( WhiteStoneWallTypes type) : base( 0x0057 + (int)type )
 		{
 		}

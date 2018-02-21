@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class FruitBasket : Food
 	{
-		[Constructable]
+		[Constructible]
 		public FruitBasket() : base( 1, 0x993 )
 		{
 			Weight = 2.0;
@@ -41,15 +41,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x171f, 0x1720 )]
+	[FlippableAttribute( 0x171f, 0x1720 )]
 	public class Banana : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Banana() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Banana( int amount ) : base( amount, 0x171f )
 		{
 			this.Weight = 1.0;
@@ -74,15 +74,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1721, 0x1722 )]
+	[Flippable( 0x1721, 0x1722 )]
 	public class Bananas : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Bananas() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bananas( int amount ) : base( amount, 0x1721 )
 		{
 			this.Weight = 1.0;
@@ -109,12 +109,12 @@ namespace Server.Items
 
 	public class SplitCoconut : Food
 	{
-		[Constructable]
+		[Constructible]
 		public SplitCoconut() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SplitCoconut( int amount ) : base( amount, 0x1725 )
 		{
 			this.Weight = 1.0;
@@ -141,12 +141,12 @@ namespace Server.Items
 
 	public class Lemon : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Lemon() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lemon( int amount ) : base( amount, 0x1728 )
 		{
 			this.Weight = 1.0;
@@ -173,12 +173,12 @@ namespace Server.Items
 
 	public class Lemons : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Lemons() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lemons( int amount ) : base( amount, 0x1729 )
 		{
 			this.Weight = 1.0;
@@ -205,12 +205,12 @@ namespace Server.Items
 
 	public class Lime : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Lime() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lime( int amount ) : base( amount, 0x172a )
 		{
 			this.Weight = 1.0;
@@ -237,12 +237,12 @@ namespace Server.Items
 
 	public class Limes : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Limes() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Limes( int amount ) : base( amount, 0x172B )
 		{
 			this.Weight = 1.0;
@@ -269,12 +269,12 @@ namespace Server.Items
 
 	public class Coconut : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Coconut() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Coconut( int amount ) : base( amount, 0x1726 )
 		{
 			this.Weight = 1.0;
@@ -301,12 +301,12 @@ namespace Server.Items
 
 	public class OpenCoconut : Food
 	{
-		[Constructable]
+		[Constructible]
 		public OpenCoconut() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public OpenCoconut( int amount ) : base( amount, 0x1723 )
 		{
 			this.Weight = 1.0;
@@ -333,12 +333,12 @@ namespace Server.Items
 
 	public class Dates : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Dates() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Dates( int amount ) : base( amount, 0x1727 )
 		{
 			this.Weight = 1.0;
@@ -365,12 +365,12 @@ namespace Server.Items
 
 	public class Grapes : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Grapes() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Grapes( int amount ) : base( amount, 0x9D1 )
 		{
 			this.Weight = 1.0;
@@ -397,12 +397,12 @@ namespace Server.Items
 
 	public class Peach : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Peach() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Peach( int amount ) : base( amount, 0x9D2 )
 		{
 			this.Weight = 1.0;
@@ -429,12 +429,12 @@ namespace Server.Items
 
 	public class Pear : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Pear() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Pear( int amount ) : base( amount, 0x994 )
 		{
 			this.Weight = 1.0;
@@ -461,12 +461,12 @@ namespace Server.Items
 
 	public class Apple : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Apple() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Apple( int amount ) : base( amount, 0x9D0 )
 		{
 			this.Weight = 1.0;
@@ -493,12 +493,12 @@ namespace Server.Items
 
 	public class Watermelon : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Watermelon() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Watermelon( int amount ) : base( amount, 0xC5C )
 		{
 			this.Weight = 5.0;
@@ -534,12 +534,12 @@ namespace Server.Items
 
 	public class SmallWatermelon : Food
 	{
-		[Constructable]
+		[Constructible]
 		public SmallWatermelon() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SmallWatermelon( int amount ) : base( amount, 0xC5D )
 		{
 			this.Weight = 5.0;
@@ -564,15 +564,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xc72, 0xc73 )]
+	[FlippableAttribute( 0xc72, 0xc73 )]
 	public class Squash : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Squash() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Squash( int amount ) : base( amount, 0xc72 )
 		{
 			this.Weight = 1.0;
@@ -597,15 +597,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xc79, 0xc7a )]
+	[FlippableAttribute( 0xc79, 0xc7a )]
 	public class Cantaloupe : Food
 	{
-		[Constructable]
+		[Constructible]
 		public Cantaloupe() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Cantaloupe( int amount ) : base( amount, 0xc79 )
 		{
 			this.Weight = 1.0;

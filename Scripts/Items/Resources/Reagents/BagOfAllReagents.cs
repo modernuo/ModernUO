@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class BagOfAllReagents : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public BagOfAllReagents() : this( 50 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BagOfAllReagents( int amount )
 		{
 			DropItem( new BlackPearl   ( amount ) );

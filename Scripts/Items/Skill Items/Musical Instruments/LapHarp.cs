@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class LapHarp : BaseInstrument
 	{
-		[Constructable]
+		[Constructible]
 		public LapHarp() : base( 0xEB2, 0x45, 0x46 )
 		{
 			Weight = 10.0;

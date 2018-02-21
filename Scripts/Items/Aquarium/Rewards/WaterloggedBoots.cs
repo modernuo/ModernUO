@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074364; } } // Waterlogged boots
 
-		[Constructable]
+		[Constructible]
 		public WaterloggedBoots() : base( 0x1711 )
 		{
 			if ( Utility.RandomBool() )

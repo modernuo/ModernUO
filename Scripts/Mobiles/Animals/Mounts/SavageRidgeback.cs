@@ -6,12 +6,12 @@ namespace Server.Mobiles
 	[CorpseName( "a savage ridgeback corpse" )]
 	public class SavageRidgeback : BaseMount
 	{
-		[Constructable]
+		[Constructible]
 		public SavageRidgeback() : this( "a savage ridgeback" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SavageRidgeback( string name ) : base( name, 188, 0x3EB8, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			BaseSoundID = 0x3F3;

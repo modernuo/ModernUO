@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class Wasabi : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Wasabi() : base( 0x24E8 )
 		{
 			Weight = 1.0;
@@ -31,7 +31,7 @@ namespace Server.Items
 
 	public class WasabiClumps : Food
 	{
-		[Constructable]
+		[Constructible]
 		public WasabiClumps() : base( 0x24EB )
 		{
 			Stackable = false;
@@ -60,7 +60,7 @@ namespace Server.Items
 
 	public class EmptyBentoBox : Item
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyBentoBox() : base( 0x2834 )
 		{
 			Weight = 5.0;
@@ -87,7 +87,7 @@ namespace Server.Items
 
 	public class BentoBox : Food
 	{
-		[Constructable]
+		[Constructible]
 		public BentoBox() : base( 0x2836 )
 		{
 			Stackable = false;
@@ -125,7 +125,7 @@ namespace Server.Items
 
 	public class SushiRolls : Food
 	{
-		[Constructable]
+		[Constructible]
 		public SushiRolls() : base( 0x283E )
 		{
 			Stackable = false;
@@ -154,7 +154,7 @@ namespace Server.Items
 
 	public class SushiPlatter : Food
 	{
-		[Constructable]
+		[Constructible]
 		public SushiPlatter() : base( 0x2840 )
 		{
             Stackable = Core.ML;
@@ -183,7 +183,7 @@ namespace Server.Items
 
 	public class GreenTeaBasket : Item
 	{
-		[Constructable]
+		[Constructible]
 		public GreenTeaBasket() : base( 0x284B )
 		{
 			Weight = 10.0;
@@ -210,7 +210,7 @@ namespace Server.Items
 
 	public class GreenTea : Food
 	{
-		[Constructable]
+		[Constructible]
 		public GreenTea() : base( 0x284C )
 		{
 			Stackable = false;
@@ -239,7 +239,7 @@ namespace Server.Items
 
 	public class MisoSoup : Food
 	{
-		[Constructable]
+		[Constructible]
 		public MisoSoup() : base( 0x284D )
 		{
 			Stackable = false;
@@ -268,7 +268,7 @@ namespace Server.Items
 
 	public class WhiteMisoSoup : Food
 	{
-		[Constructable]
+		[Constructible]
 		public WhiteMisoSoup() : base( 0x284E )
 		{
 			Stackable = false;
@@ -297,7 +297,7 @@ namespace Server.Items
 
 	public class RedMisoSoup : Food
 	{
-		[Constructable]
+		[Constructible]
 		public RedMisoSoup() : base( 0x284F )
 		{
 			Stackable = false;
@@ -326,7 +326,7 @@ namespace Server.Items
 
 	public class AwaseMisoSoup : Food
 	{
-		[Constructable]
+		[Constructible]
 		public AwaseMisoSoup() : base( 0x2850 )
 		{
 			Stackable = false;

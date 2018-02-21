@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1097278; } }
 
-		[Constructable]
+		[Constructible]
 		public DragonEasterEgg()
 			: base( 0x47E6 )
 		{

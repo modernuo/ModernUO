@@ -15,7 +15,7 @@ namespace Server.Items
 		WaningCrescent
 	}
 
-	[Flipable( 0x104B, 0x104C )]
+	[Flippable( 0x104B, 0x104C )]
 	public class Clock : Item
 	{
 		private static DateTime m_ServerStart;
@@ -30,12 +30,12 @@ namespace Server.Items
 			m_ServerStart = DateTime.UtcNow;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Clock() : this( 0x104B )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Clock( int itemID ) : base( itemID )
 		{
 			Weight = 3.0;
@@ -164,10 +164,10 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x104B, 0x104C )]
+	[Flippable( 0x104B, 0x104C )]
 	public class ClockRight : Clock
 	{
-		[Constructable]
+		[Constructible]
 		public ClockRight() : base( 0x104B )
 		{
 		}
@@ -191,10 +191,10 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x104B, 0x104C )]
+	[Flippable( 0x104B, 0x104C )]
 	public class ClockLeft : Clock
 	{
-		[Constructable]
+		[Constructible]
 		public ClockLeft() : base( 0x104C )
 		{
 		}

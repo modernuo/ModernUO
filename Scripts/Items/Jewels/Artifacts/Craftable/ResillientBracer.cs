@@ -8,7 +8,7 @@ namespace Server.Items
 
 		public override int PhysicalResistance{ get { return 20; } }
 
-		[Constructable]
+		[Constructible]
 		public ResilientBracer()
 		{
 			Hue = 0x488;

@@ -14,7 +14,7 @@ namespace Server.Items
 			get { return 1.0; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public OilCloth() : base( 0x175D )
 		{
 			Hue = 2001;

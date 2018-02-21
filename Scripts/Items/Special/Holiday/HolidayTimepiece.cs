@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1041113; } } // a holiday timepiece
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public HolidayTimepiece()
 			: base( 0x1086 )
 		{

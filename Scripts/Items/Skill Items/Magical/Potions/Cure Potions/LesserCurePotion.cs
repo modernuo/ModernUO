@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override CureLevelInfo[] LevelInfo{ get{ return Core.AOS ? m_AosLevelInfo : m_OldLevelInfo; } }
 
-		[Constructable]
+		[Constructible]
 		public LesserCurePotion() : base( PotionEffect.CureLesser )
 		{
 		}

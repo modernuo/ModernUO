@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073139; } } // A Serpent Fang Sect Badge
 
-		[Constructable]
+		[Constructible]
 		public SerpentFangSectBadge() : base( 0x23C )
 		{
 			LootType = LootType.Blessed;

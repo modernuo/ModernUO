@@ -18,7 +18,7 @@ namespace Server.Items
 		public override int InitMaxHits{ get { return 255; } }
 
 
-		[Constructable]
+		[Constructible]
 		public FeyLeggings()
 		{
 			Attributes.BonusHits = 6;

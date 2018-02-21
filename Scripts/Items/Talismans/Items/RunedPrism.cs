@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073465; } } // runed prism
 
-		[Constructable]
+		[Constructible]
 		public RunedPrism() : base( 0x2F57 )
 		{
 			Weight = 1.0;

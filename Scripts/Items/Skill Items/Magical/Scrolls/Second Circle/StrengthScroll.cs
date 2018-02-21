@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class StrengthScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public StrengthScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StrengthScroll( int amount ) : base( 15, 0x1F3C, amount )
 		{
 		}

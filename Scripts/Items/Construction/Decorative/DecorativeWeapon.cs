@@ -3,10 +3,10 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x155E, 0x155F, 0x155C, 0x155D )] 
+	[FlippableAttribute( 0x155E, 0x155F, 0x155C, 0x155D )] 
 	public class DecorativeBowWest : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DecorativeBowWest() : base( Utility.Random( 0x155E, 2 ) )
 		{
 			Movable = false;
@@ -31,10 +31,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x155C, 0x155D, 0x155E, 0x155F )] 
+	[FlippableAttribute( 0x155C, 0x155D, 0x155E, 0x155F )] 
 	public class DecorativeBowNorth : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DecorativeBowNorth() : base( Utility.Random( 0x155C, 2 ) )
 		{
 			Movable = false;
@@ -59,10 +59,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1560, 0x1561, 0x1562, 0x1563 )] 
+	[FlippableAttribute( 0x1560, 0x1561, 0x1562, 0x1563 )] 
 	public class DecorativeAxeNorth : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DecorativeAxeNorth() : base( Utility.Random( 0x1560, 2 ) )
 		{
 			Movable = false;
@@ -87,10 +87,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1562, 0x1563, 0x1560, 0x1561 )] 
+	[FlippableAttribute( 0x1562, 0x1563, 0x1560, 0x1561 )] 
 	public class DecorativeAxeWest : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DecorativeAxeWest() : base( Utility.Random( 0x1562, 2 ) )
 		{
 			Movable = false;
@@ -119,7 +119,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public DecorativeSwordNorth() : base( 0x1565 )
 		{
 			Movable = false;
@@ -226,7 +226,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public DecorativeSwordWest() : base( 0x1566 )
 		{
 			Movable = false;
@@ -333,7 +333,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public DecorativeDAxeNorth() : base( 0x1569 )
 		{
 			Movable = false;
@@ -440,7 +440,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public DecorativeDAxeWest() : base( 0x156A )
 		{
 			Movable = false;

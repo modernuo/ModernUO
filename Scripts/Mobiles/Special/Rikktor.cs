@@ -22,7 +22,7 @@ namespace Server.Mobiles
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { 	MonsterStatuetteType.OphidianArchMage,
 														MonsterStatuetteType.OphidianWarrior }; } }
 
-		[Constructable]
+		[Constructible]
 		public Rikktor() : base( AIType.AI_Melee )
 		{
 			Body = 172;

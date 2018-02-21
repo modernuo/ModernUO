@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1040000; } } // savage kin paint
 
-		[Constructable]
+		[Constructible]
 		public TribalPaint() : base( 0x9EC )
 		{
 			Hue = 2101;

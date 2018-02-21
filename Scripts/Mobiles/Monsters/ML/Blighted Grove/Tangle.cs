@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Tangle corpse" )]
 	public class Tangle : BogThing
 	{
-		[Constructable]
+		[Constructible]
 		public Tangle()
 		{
 			// TODO: Not a paragon? No ML arties?

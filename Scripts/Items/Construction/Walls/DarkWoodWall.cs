@@ -28,7 +28,7 @@ namespace Server.Items
 
 	public class DarkWoodWall : BaseWall
 	{
-		[Constructable]
+		[Constructible]
 		public DarkWoodWall( DarkWoodWallTypes type ) : base( 0x0006 + (int)type )
 		{
 		}

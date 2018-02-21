@@ -9,12 +9,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public LargeStoneTableSouthAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public LargeStoneTableSouthAddon( int hue )
 		{
 			AddComponent( new AddonComponent( 0x1205 ), 0, 0, 0 );
@@ -47,7 +47,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new LargeStoneTableSouthAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1044512; } } // large stone table (South)
 
-		[Constructable]
+		[Constructible]
 		public LargeStoneTableSouthDeed()
 		{
 		}

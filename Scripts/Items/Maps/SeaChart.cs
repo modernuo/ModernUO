@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SeaChart : MapItem
 	{
-		[Constructable]
+		[Constructible]
 		public SeaChart()
 		{
 			SetDisplay( 0, 0, 5119, 4095, 400, 400 );

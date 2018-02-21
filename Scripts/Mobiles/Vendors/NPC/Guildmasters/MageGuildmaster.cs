@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.MagesGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public MageGuildmaster() : base( "mage" )
 		{
 			SetSkill( SkillName.EvalInt, 85.0, 100.0 );

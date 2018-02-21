@@ -10,12 +10,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Amethyst() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Amethyst( int amount ) : base( 0xF16 )
 		{
 			Stackable = true;

@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Doom
 	{
 		public override int LabelNumber{ get{ return 1041111; } } // a magic staff
 
-		[Constructable]
+		[Constructible]
 		public ChylothStaff()
 		{
 			Hue = 0x482;

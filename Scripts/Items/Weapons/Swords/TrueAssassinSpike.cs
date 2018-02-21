@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073517; } } // true assassin spike
 
-		[Constructable]
+		[Constructible]
 		public TrueAssassinSpike()
 		{
 			Attributes.AttackChance = 4;

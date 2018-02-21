@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1077666; } } // Jockles' Quicksword
 
-		[Constructable]
+		[Constructible]
 		public JocklesQuicksword()
 		{
 			LootType = LootType.Blessed;

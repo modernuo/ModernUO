@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0x2068, 0x207A )]
+	[Flippable( 0x2068, 0x207A )]
 	public class BoilingCauldronAddon : BaseAddonContainer
 	{
 		public override BaseAddonContainerDeed Deed { get { return new BoilingCauldronDeed(); } }
@@ -10,7 +10,7 @@ namespace Server.Items
 		public override int DefaultGumpID { get { return 0x9; } }
 		public override int DefaultDropSound { get { return 0x42; } }
 
-		[Constructable]
+		[Constructible]
 		public BoilingCauldronAddon() : base( 0x2068 )
 		{
 			AddComponent( new LocalizedContainerComponent( 0xFAC, 1076267 ), 0, 0, 0 );
@@ -41,7 +41,7 @@ namespace Server.Items
 		public override BaseAddonContainer Addon { get { return new BoilingCauldronAddon(); } }
 		public override int LabelNumber { get { return 1076267; } } // Boiling Cauldron
 
-		[Constructable]
+		[Constructible]
 		public BoilingCauldronDeed() : base()
 		{
 			LootType = LootType.Blessed;

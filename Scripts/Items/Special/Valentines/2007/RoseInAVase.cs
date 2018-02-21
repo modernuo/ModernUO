@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1023760; } } // A Rose in a Vase	1023760
 
-		[Constructable]
+		[Constructible]
 		public RoseInAVase( )
 			: base( 0x0EB0 )
 		{

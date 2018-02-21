@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1041421; } } // a wrist watch
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public WristWatch()
 			: base( 0x1086 )
 		{

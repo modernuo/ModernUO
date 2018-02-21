@@ -6,12 +6,12 @@ namespace Server.Mobiles
 	[CorpseName( "a sea horse corpse" )]
 	public class SeaHorse : BaseMount
 	{
-		[Constructable]
+		[Constructible]
 		public SeaHorse() : this( "a sea horse" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SeaHorse( string name ) : base( name, 0x90, 0x3EB3, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			InitStats( Utility.Random( 50, 30 ), Utility.Random( 50, 30 ), 10 );

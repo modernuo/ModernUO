@@ -12,7 +12,7 @@ namespace Server.Items
 
 		public override int AosStrReq{ get{ return 14; } }
 
-		[Constructable]
+		[Constructible]
 		public EscutcheonDeAriadne()
 		{
 			LootType = LootType.Blessed;

@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoHay2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoHay2() : base( 0xF34 )
 		{
 			Movable = true;

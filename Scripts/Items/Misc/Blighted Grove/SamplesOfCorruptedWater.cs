@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074999; } } // samples of corrupted water
 
-		[Constructable]
+		[Constructible]
 		public SamplesOfCorruptedWater() : base( 0xEFE )
 		{
 			LootType = LootType.Blessed;

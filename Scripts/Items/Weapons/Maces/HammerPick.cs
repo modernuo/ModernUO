@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x143D, 0x143C )]
+	[FlippableAttribute( 0x143D, 0x143C )]
 	public class HammerPick : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 70; } }
 
-		[Constructable]
+		[Constructible]
 		public HammerPick() : base( 0x143D )
 		{
 			Weight = 9.0;

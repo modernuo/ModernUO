@@ -291,7 +291,7 @@ namespace Server.Engines.MLQuests.Gumps
 	{
 		public override string DefaultName { get { return "a race change deed"; } }
 
-		[Constructable]
+		[Constructible]
 		public RaceChangeDeed()
 			: base( 0x14F0 )
 		{

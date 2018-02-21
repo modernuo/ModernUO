@@ -16,7 +16,7 @@ namespace Server.Items
 			set { m_Cut = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public PlagueBeastMutationCore() : base( 0x1CF0 )
 		{
 			m_Cut = true;

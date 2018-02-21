@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 	public override int LabelNumber{ get{ return 1072895; } } // hollow prism
 	
-		[Constructable]
+		[Constructible]
 		public HollowPrism() : base( 0x2F5D )
 		{
 			Weight = 1.0;

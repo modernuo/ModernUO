@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1070816; } } // Ghost Ship Anchor
 		
-		[Constructable]
+		[Constructible]
 		public GhostShipAnchor() : base( 0x14F7 )
 		{
 			Hue = 0x47E;

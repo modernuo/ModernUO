@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public abstract BaseCreature Summon{ get; }
 		
-		[Constructable]
+		[Constructible]
 		public BaseImprisonedMobile( int itemID ) : base( itemID )
 		{
 		}

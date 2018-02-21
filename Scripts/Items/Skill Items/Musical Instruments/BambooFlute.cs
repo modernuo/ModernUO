@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class BambooFlute : BaseInstrument
 	{
-		[Constructable]
+		[Constructible]
 		public BambooFlute() : base( 0x2805, 0x504, 0x503 )
 		{
 			Weight = 2.0;

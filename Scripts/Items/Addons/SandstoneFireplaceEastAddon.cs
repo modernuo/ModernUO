@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new SandstoneFireplaceEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public SandstoneFireplaceEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x489 ), 0, 0, 0 );
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new SandstoneFireplaceEastAddon(); } }
 		public override int LabelNumber{ get{ return 1061844; } } // sandstone fireplace (east)
 
-		[Constructable]
+		[Constructible]
 		public SandstoneFireplaceEastDeed()
 		{
 		}

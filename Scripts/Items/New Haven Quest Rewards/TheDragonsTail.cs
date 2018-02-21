@@ -10,7 +10,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 80; } }
 		public override int InitMaxHits{ get{ return 80; } }
 
-		[Constructable]
+		[Constructible]
 		public TheDragonsTail()
 		{
 			LootType = LootType.Blessed;

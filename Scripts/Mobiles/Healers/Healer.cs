@@ -18,7 +18,7 @@ namespace Server.Mobiles
 				|| ( skill == SkillName.Swords );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Healer()
 		{
 			Title = "the healer";

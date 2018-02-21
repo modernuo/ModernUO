@@ -43,12 +43,12 @@ namespace Server.Items
 		};
 	}
 
-	[FlipableAttribute(0x46A5, 0x46A6)]
+	[FlippableAttribute(0x46A5, 0x46A6)]
 	public class GiftBoxRectangle  : BaseContainer
 	{
 		public override int DefaultGumpID { get { return 0x11E; } }
 
-		[Constructable]
+		[Constructible]
 		public GiftBoxRectangle()
 			: base(Utility.RandomBool() ? 0x46A5 : 0x46A6)
 		{
@@ -77,7 +77,7 @@ namespace Server.Items
 	{
 		public override int DefaultGumpID { get { return 0x11B; } }
 
-		[Constructable]
+		[Constructible]
 		public GiftBoxCube()
 			: base(0x46A2)
 		{
@@ -106,7 +106,7 @@ namespace Server.Items
 	{
 		public override int DefaultGumpID { get { return 0x11C; } }
 
-		[Constructable]
+		[Constructible]
 		public GiftBoxCylinder()
 			: base(0x46A3)
 		{
@@ -135,7 +135,7 @@ namespace Server.Items
 	{
 		public override int DefaultGumpID { get { return 0x11D; } }
 
-		[Constructable]
+		[Constructible]
 		public GiftBoxOctogon()
 			: base(0x46A4)
 		{
@@ -164,7 +164,7 @@ namespace Server.Items
 	{
 		public override int DefaultGumpID { get { return 0x11F; } }
 
-		[Constructable]
+		[Constructible]
 		public GiftBoxAngel()
 			: base(0x46A7)
 		{
@@ -189,10 +189,10 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable(0x232A, 0x232B)]
+	[Flippable(0x232A, 0x232B)]
 	public class GiftBoxNeon : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public GiftBoxNeon()
 			: base(Utility.RandomBool() ? 0x232A : 0x232B)
 		{

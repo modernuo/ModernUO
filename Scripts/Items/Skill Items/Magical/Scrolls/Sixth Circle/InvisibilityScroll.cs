@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class InvisibilityScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public InvisibilityScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public InvisibilityScroll( int amount ) : base( 43, 0x1F58, amount )
 		{
 		}

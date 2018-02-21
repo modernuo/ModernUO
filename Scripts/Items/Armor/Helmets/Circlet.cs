@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B6E, 0x3165 )]
+	[FlippableAttribute( 0x2B6E, 0x3165 )]
 	public class Circlet : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 1; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override Race RequiredRace{ get { return Race.Elf; } }
 
-		[Constructable]
+		[Constructible]
 		public Circlet() : base( 0x2B6E )
 		{
 			Weight = 2.0;

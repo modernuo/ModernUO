@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{
 		public override bool SubdueBeforeTame { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public GiantIceWorm() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 89;

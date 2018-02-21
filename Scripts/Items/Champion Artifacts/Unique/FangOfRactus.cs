@@ -12,7 +12,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public FangOfRactus()
 		{
 			Hue = 0x117;

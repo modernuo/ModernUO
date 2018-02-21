@@ -13,7 +13,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041054; } } // guildstone teleporter
 
-		[Constructable]
+		[Constructible]
 		public GuildTeleporter() : this( null )
 		{
 		}

@@ -11,7 +11,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1060456; } } // fire horn
 
-		[Constructable]
+		[Constructible]
 		public FireHorn() : base( 0xFC7 )
 		{
 			Hue = 0x466;

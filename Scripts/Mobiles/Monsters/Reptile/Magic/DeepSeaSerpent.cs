@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a deep sea serpents corpse" )]
 	public class DeepSeaSerpent : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public DeepSeaSerpent() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a deep sea serpent";

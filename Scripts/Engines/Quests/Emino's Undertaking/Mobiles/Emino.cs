@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class Emino : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public Emino() : base( "the Notorious" )
 		{
 		}

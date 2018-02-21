@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override double Refresh{ get{ return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public TotalRefreshPotion() : base( PotionEffect.RefreshTotal )
 		{
 		}

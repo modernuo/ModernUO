@@ -5,12 +5,12 @@ namespace Server.Items
 {
 	public class BagOfSmokeBombs : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public BagOfSmokeBombs() : this( 20 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BagOfSmokeBombs( int amount )
 		{
 			for ( int i = 0; i < amount; ++i )

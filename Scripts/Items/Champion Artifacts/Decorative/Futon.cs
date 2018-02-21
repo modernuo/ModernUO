@@ -3,10 +3,10 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class Futon : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Futon() : base( Utility.RandomDouble() > 0.5 ? 0x295C : 0x295E )
 		{
 		}

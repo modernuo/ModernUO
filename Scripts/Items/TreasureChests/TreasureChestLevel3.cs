@@ -43,7 +43,7 @@ namespace Server.Items
 			get { return new Rectangle2D( 18, 105, 144, 73 ); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TreasureChestLevel3()
 			: base( 0xE41 )
 		{

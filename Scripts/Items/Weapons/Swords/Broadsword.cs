@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF5E, 0xF5F )]
+	[FlippableAttribute( 0xF5E, 0xF5F )]
 	public class Broadsword : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 100; } }
 
-		[Constructable]
+		[Constructible]
 		public Broadsword() : base( 0xF5E )
 		{
 			Weight = 6.0;

@@ -12,7 +12,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public BraveKnightOfTheBritannia()
 		{
 			Hue = 0x47e;

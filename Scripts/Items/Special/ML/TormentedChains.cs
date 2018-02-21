@@ -6,7 +6,7 @@ namespace Server.Items
 	public class TormentedChains : Item
 	{
 	
-		[Constructable]
+		[Constructible]
 		public TormentedChains() : base( Utility.Random( 6663, 2 ) )
 		{
 			Name = "chains of the tormented";

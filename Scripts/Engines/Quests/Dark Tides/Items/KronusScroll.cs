@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override int LabelNumber { get { return 1060149; } } // Calling of Kronus
 
-		[Constructable]
+		[Constructible]
 		public KronusScroll() : base( 0x227A )
 		{
 			Weight = 1.0;

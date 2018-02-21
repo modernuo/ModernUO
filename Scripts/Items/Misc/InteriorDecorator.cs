@@ -23,7 +23,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DecorateCommand Command{ get{ return m_Command; } set{ m_Command = value; InvalidateProperties(); } }
 
-		[Constructable]
+		[Constructible]
 		public InteriorDecorator() : base( 0xFC1 )
 		{
 			Weight = 1.0;
@@ -186,7 +186,7 @@ namespace Server.Items
 
 						if ( m_Decorator.Command == DecorateCommand.Turn )
 						{
-							FlipableAddonAttribute[] attributes = (FlipableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlipableAddonAttribute ), false );
+							FlippableAddonAttribute[] attributes = (FlippableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlippableAddonAttribute ), false );
 
 							if ( attributes.Length > 0 )
 								isDecorableComponent = true;
@@ -251,7 +251,7 @@ namespace Server.Items
 					else if ( item is BaseAddonContainer )
 						addon = (BaseAddonContainer) item;
 
-					FlipableAddonAttribute[] aAttributes = (FlipableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlipableAddonAttribute ), false );
+					FlippableAddonAttribute[] aAttributes = (FlippableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlippableAddonAttribute ), false );
 
 					if ( aAttributes.Length > 0 )
 					{
@@ -260,7 +260,7 @@ namespace Server.Items
 					}
 				}
 
-				FlipableAttribute[] attributes = (FlipableAttribute[]) item.GetType().GetCustomAttributes( typeof( FlipableAttribute ), false );
+				FlippableAttribute[] attributes = (FlippableAttribute[]) item.GetType().GetCustomAttributes( typeof( FlippableAttribute ), false );
 
 				if ( attributes.Length > 0 )
 					attributes[ 0 ].Flip( item );

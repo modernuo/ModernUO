@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
 	public class BrideGroom : BaseEscortable
 	{
-		[Constructable]
+		[Constructible]
 		public BrideGroom()
 		{
 			if ( Female )

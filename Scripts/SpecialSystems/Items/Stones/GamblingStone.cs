@@ -23,7 +23,7 @@ namespace Server.Items
 			get { return "a gambling stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public GamblingStone()
 			: base( 0xED4 )
 		{

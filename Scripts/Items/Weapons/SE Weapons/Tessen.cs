@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27A3, 0x27EE )]
+	[FlippableAttribute( 0x27A3, 0x27EE )]
 	public class Tessen : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Feint; } }
@@ -29,7 +29,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Bash2H; } }
 
-		[Constructable]
+		[Constructible]
 		public Tessen() : base( 0x27A3 )
 		{
 			Weight = 6.0;

@@ -13,12 +13,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Shaft() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Shaft( int amount ) : base( 0x1BD4 )
 		{
 			Stackable = true;

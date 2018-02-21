@@ -26,12 +26,12 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ContestMiniHouse() : base( MiniHouseType.MalasMountainPass )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ContestMiniHouse( MiniHouseType type ) : base( type )
 		{
 		}
@@ -81,12 +81,12 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}	
 		
-		[Constructable]
+		[Constructible]
 		public ContestMiniHouseDeed() : base( MiniHouseType.MalasMountainPass )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ContestMiniHouseDeed( MiniHouseType type ) : base( type )
 		{
 		}

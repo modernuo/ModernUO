@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073825; } } // A Killer Frog 
 		
-		[Constructable]
+		[Constructible]
 		public KillerFrog() : base( 0x3B0D )
 		{
 		}

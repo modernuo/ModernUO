@@ -12,7 +12,7 @@ namespace Server.Mobiles
 			return WeaponAbility.Dismount;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gibberling() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a gibberling";

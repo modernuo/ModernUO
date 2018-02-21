@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a krakens corpse" )]
 	public class Kraken : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Kraken() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a kraken";

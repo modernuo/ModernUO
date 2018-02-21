@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class HaochisKatanaGenerator : Item
 	{
-		[Constructable]
+		[Constructible]
 		public HaochisKatanaGenerator() : base( 0x1B7B )
 		{
 			Visible = false;

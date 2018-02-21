@@ -20,7 +20,7 @@ namespace Server.Mobiles
 	{
 		public Timer	m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public Dummy(AIType iAI, FightMode iFightMode, int iRangePerception, int iRangeFight, double dActiveSpeed, double dPassiveSpeed) : base(iAI, iFightMode, iRangePerception, iRangeFight, dActiveSpeed, dPassiveSpeed)
 		{
 			this.Body = 400 + Utility.Random(2);

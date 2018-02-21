@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Collector
 {
 	public class GabrielPiete : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public GabrielPiete() : base( "the renowned minstrel" )
 		{
 		}

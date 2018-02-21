@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1016492; } } // melted wax
 
-		[Constructable]
+		[Constructible]
 		public MeltedWax() : base( 0x122A )
 		{
 			Movable = false;

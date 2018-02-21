@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075400; } } // Transparent Heart
 
-		[Constructable]
+		[Constructible]
 		public TransparentHeart() : base()
 		{
 			LootType = LootType.Blessed;

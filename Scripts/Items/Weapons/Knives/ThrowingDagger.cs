@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF52, 0xF51 )]
+	[FlippableAttribute( 0xF52, 0xF51 )]
 	public class ThrowingDagger : Item
 	{
 		public override string DefaultName
@@ -12,7 +12,7 @@ namespace Server.Items
 			get { return "a throwing dagger"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ThrowingDagger() : base( 0xF52 )
 		{
 			Weight = 1.0;

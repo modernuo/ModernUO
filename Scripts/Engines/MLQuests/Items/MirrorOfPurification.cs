@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075304; } } // Mirror of Purification
 
-		[Constructable]
+		[Constructible]
 		public MirrorOfPurification() : base( 0x1008 )
 		{
 			LootType = LootType.Blessed;

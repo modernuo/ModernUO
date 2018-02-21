@@ -28,7 +28,7 @@ namespace Server.Mobiles
 			AddItem( new HalfApron( Utility.RandomBrightHue() ) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Barkeeper() : base( "the barkeeper" )
 		{
 		}

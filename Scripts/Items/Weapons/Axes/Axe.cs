@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF49, 0xF4a )]
+	[FlippableAttribute( 0xF49, 0xF4a )]
 	public class Axe : BaseAxe
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 110; } }
 
-		[Constructable]
+		[Constructible]
 		public Axe() : base( 0xF49 )
 		{
 			Weight = 4.0;

@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Serpant" )]
 	public class GiantSerpent : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public GiantSerpent() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a giant serpent";

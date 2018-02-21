@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LuckyDagger : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LuckyDagger() : base( 0xF52 )
 		{
 			Hue = 0x8A5;

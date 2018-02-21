@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B77, 0x316E )]
+	[FlippableAttribute( 0x2B77, 0x316E )]
 	public class HidePauldrons : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.Half; } }
 
-		[Constructable]
+		[Constructible]
 		public HidePauldrons() : base( 0x2B77 )
 		{
 			Weight = 4.0;

@@ -8,7 +8,7 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2790, 0x27DB )]
+	[FlippableAttribute( 0x2790, 0x27DB )]
 	public class LeatherNinjaBelt : BaseWaist, IDyable, INinjaWeapon
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
@@ -53,7 +53,7 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		[Constructable]
+		[Constructible]
 		public LeatherNinjaBelt() : base( 0x2790 )
 
 		{

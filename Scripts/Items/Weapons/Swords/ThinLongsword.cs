@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13B8, 0x13B7 )]
+	[FlippableAttribute( 0x13B8, 0x13B7 )]
 	public class ThinLongsword : BaseSword
 	{
 		public override int AosStrengthReq{ get{ return 35; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 110; } }
 
-		[Constructable]
+		[Constructible]
 		public ThinLongsword() : base( 0x13B8 )
 		{
 			Weight = 1.0;

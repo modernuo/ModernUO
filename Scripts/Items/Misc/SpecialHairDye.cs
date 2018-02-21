@@ -12,7 +12,7 @@ namespace Server.Items
 			get { return "Special Hair Dye"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpecialHairDye() : base( 0xE26 )
 		{
 			Weight = 1.0;

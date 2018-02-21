@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1094912; } } // Tattered Ancient Mummy Wrapping [Replica]
 
-		[Constructable]
+		[Constructible]
 		public TatteredAncientMummyWrapping() : base( 0xE21 )
 		{
 			Hue = 0x909;

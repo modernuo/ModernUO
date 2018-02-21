@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		public override bool Unprovokable { get { return true; } }
 		public override bool AreaPeaceImmune { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public PumpkinHead()
 			: base( Utility.RandomBool() ? AIType.AI_Melee : AIType.AI_Mage, FightMode.Closest, 10, 1, 0.05, 0.1 )
 		{

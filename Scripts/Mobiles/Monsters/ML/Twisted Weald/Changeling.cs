@@ -17,7 +17,7 @@ namespace Server.Mobiles
 		public virtual string DefaultName{ get{ return "a changeling"; } }
 		public virtual int DefaultHue{ get{ return 0; } }
 
-		[Constructable]
+		[Constructible]
 		public Changeling()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

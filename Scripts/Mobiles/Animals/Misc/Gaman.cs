@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a gaman corpse" )]
 	public class Gaman : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Gaman() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a gaman";

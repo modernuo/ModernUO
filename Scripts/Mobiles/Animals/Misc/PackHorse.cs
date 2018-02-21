@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	[CorpseName( "a horse corpse" )]
 	public class PackHorse : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public PackHorse() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a pack horse";

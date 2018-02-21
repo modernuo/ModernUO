@@ -51,7 +51,7 @@ namespace Server.SkillHandlers
 			}
 			else if ( Core.AOS && Server.Misc.RegenRates.GetArmorOffset( m ) > 0 )
 			{
-				m.SendLocalizedMessage( 500135 ); // Regenative forces cannot penetrate your armor!
+				m.SendLocalizedMessage( 500135 ); // Regenerative forces cannot penetrate your armor!
 
 				return TimeSpan.FromSeconds( 10.0 );
 			}

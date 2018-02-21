@@ -38,7 +38,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public LysanderNotebook1() : base( Utility.Random( 0xFF1, 2 ), false )
 		{
 		}
@@ -133,7 +133,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public LysanderNotebook2() : base( Utility.Random( 0xFF1, 2 ), false )
 		{
 		}
@@ -221,7 +221,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public LysanderNotebook3() : base( Utility.Random( 0xFF1, 2 ), false )
 		{
 		}
@@ -326,7 +326,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public LysanderNotebook7() : base( Utility.Random( 0xFF1, 2 ), false )
 		{
 		}
@@ -421,7 +421,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public LysanderNotebook8() : base( Utility.Random( 0xFF1, 2 ), false )
 		{
 		}
@@ -513,7 +513,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public LysanderNotebook11() : base( Utility.Random( 0xFF1, 2 ), false )
 		{
 		}

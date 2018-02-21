@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073526; } } // butcher's war cleaver
 
-		[Constructable]
+		[Constructible]
 		public ButchersWarCleaver() : base()
 		{
 		}

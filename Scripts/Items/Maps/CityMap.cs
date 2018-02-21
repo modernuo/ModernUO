@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class CityMap : MapItem
 	{
-		[Constructable]
+		[Constructible]
 		public CityMap()
 		{
 			SetDisplay( 0, 0, 5119, 4095, 400, 400 );

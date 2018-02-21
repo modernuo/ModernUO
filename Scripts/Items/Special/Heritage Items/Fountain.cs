@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new FountainDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public FountainAddon() : base()
 		{
 		}
@@ -35,7 +35,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new FountainAddon(); } }
 		public override int LabelNumber { get { return 1076283; } } // Fountain
 
-		[Constructable]
+		[Constructible]
 		public FountainDeed() : base()
 		{
 			LootType = LootType.Blessed;

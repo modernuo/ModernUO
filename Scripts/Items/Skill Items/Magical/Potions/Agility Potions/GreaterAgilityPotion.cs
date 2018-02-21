@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int DexOffset{ get{ return 20; } }
 		public override TimeSpan Duration{ get{ return TimeSpan.FromMinutes( 2.0 ); } }
 
-		[Constructable]
+		[Constructible]
 		public GreaterAgilityPotion() : base( PotionEffect.AgilityGreater )
 		{
 		}

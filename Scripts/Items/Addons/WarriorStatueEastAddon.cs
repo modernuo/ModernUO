@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new WarriorStatueEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public WarriorStatueEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x2D12 ), 0, 0, 0 );
@@ -37,7 +37,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new WarriorStatueEastAddon(); } }
 		public override int LabelNumber{ get{ return 1072888; } } // warrior statue (east)
 
-		[Constructable]
+		[Constructible]
 		public WarriorStatueEastDeed()
 		{
 		}

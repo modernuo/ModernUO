@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	[CorpseName( "a snow elemental corpse" )]
 	public class SnowElemental : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public SnowElemental() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a snow elemental";

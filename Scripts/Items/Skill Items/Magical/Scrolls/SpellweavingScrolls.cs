@@ -6,13 +6,13 @@ namespace Server.Items
 {
 	public class ArcaneCircleScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public ArcaneCircleScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ArcaneCircleScroll( int amount )
 			: base( 600, 0x2D51, amount )
 		{
@@ -41,13 +41,13 @@ namespace Server.Items
 
 	public class GiftOfRenewalScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public GiftOfRenewalScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GiftOfRenewalScroll( int amount )
 			: base( 601, 0x2D52, amount )
 		{
@@ -76,13 +76,13 @@ namespace Server.Items
 
 	public class ImmolatingWeaponScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public ImmolatingWeaponScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ImmolatingWeaponScroll( int amount )
 			: base( 602, 0x2D53, amount )
 		{
@@ -111,13 +111,13 @@ namespace Server.Items
 
 	public class AttuneWeaponScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public AttuneWeaponScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AttuneWeaponScroll( int amount )
 			: base( 603, 0x2D54, amount )
 		{
@@ -146,13 +146,13 @@ namespace Server.Items
 
 	public class ThunderstormScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public ThunderstormScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ThunderstormScroll( int amount )
 			: base( 604, 0x2D55, amount )
 		{
@@ -181,13 +181,13 @@ namespace Server.Items
 
 	public class NatureFuryScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public NatureFuryScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public NatureFuryScroll( int amount )
 			: base( 605, 0x2D56, amount )
 		{
@@ -216,13 +216,13 @@ namespace Server.Items
 
 	public class SummonFeyScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public SummonFeyScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SummonFeyScroll( int amount )
 			: base( 606, 0x2D57, amount )
 		{
@@ -251,13 +251,13 @@ namespace Server.Items
 
 	public class SummonFiendScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public SummonFiendScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SummonFiendScroll( int amount )
 			: base( 607, 0x2D58, amount )
 		{
@@ -286,13 +286,13 @@ namespace Server.Items
 
 	public class ReaperFormScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public ReaperFormScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ReaperFormScroll( int amount )
 			: base( 608, 0x2D59, amount )
 		{
@@ -321,13 +321,13 @@ namespace Server.Items
 
 	public class WildfireScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public WildfireScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WildfireScroll( int amount )
 			: base( 609, 0x2D5A, amount )
 		{
@@ -356,13 +356,13 @@ namespace Server.Items
 
 	public class EssenceOfWindScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public EssenceOfWindScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public EssenceOfWindScroll( int amount )
 			: base( 610, 0x2D5B, amount )
 		{
@@ -391,13 +391,13 @@ namespace Server.Items
 
 	public class DryadAllureScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public DryadAllureScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DryadAllureScroll( int amount )
 			: base( 611, 0x2D5C, amount )
 		{
@@ -426,13 +426,13 @@ namespace Server.Items
 
 	public class EtherealVoyageScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public EtherealVoyageScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public EtherealVoyageScroll( int amount )
 			: base( 612, 0x2D5D, amount )
 		{
@@ -461,13 +461,13 @@ namespace Server.Items
 
 	public class WordOfDeathScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public WordOfDeathScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WordOfDeathScroll( int amount )
 			: base( 613, 0x2D5E, amount )
 		{
@@ -496,13 +496,13 @@ namespace Server.Items
 
 	public class GiftOfLifeScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public GiftOfLifeScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GiftOfLifeScroll( int amount )
 			: base( 614, 0x2D5F, amount )
 		{
@@ -531,13 +531,13 @@ namespace Server.Items
 
 	public class ArcaneEmpowermentScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public ArcaneEmpowermentScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ArcaneEmpowermentScroll( int amount )
 			: base( 615, 0x2D60, amount )
 		{

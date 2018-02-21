@@ -17,7 +17,7 @@ namespace Server.Items
 		public override int InitMaxHits{ get{ return 255; } }
 
 
-		[Constructable]
+		[Constructible]
 		public AnthropomorphistGlasses()
 		{
 			Attributes.BonusHits = 5;

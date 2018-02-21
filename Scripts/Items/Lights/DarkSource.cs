@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class DarkSource : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DarkSource() : base( 0x1646 )
 		{
 			Layer = Layer.TwoHanded;

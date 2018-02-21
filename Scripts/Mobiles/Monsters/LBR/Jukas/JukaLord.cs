@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	[CorpseName( "a juka corpse" )] // Why is this 'juka' and warriors 'jukan' ? :-(
 	public class JukaLord : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public JukaLord() : base( AIType.AI_Archer, FightMode.Closest, 10, 3, 0.2, 0.4 )
 		{
 			Name = "a juka lord";

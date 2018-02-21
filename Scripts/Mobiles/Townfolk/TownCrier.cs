@@ -479,7 +479,7 @@ namespace Server.Mobiles
 			get{ return m_Instances; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TownCrier()
 		{
 			m_Instances.Add( this );

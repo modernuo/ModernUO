@@ -5,7 +5,7 @@ namespace Server.Items
 	public class EmptyToolKit2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public EmptyToolKit2() : base( 0x1EB7 )
 		{
 			Movable = true;

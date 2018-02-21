@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public ReginasLetter() : base( 0x14ED )
 		{
 			LootType = LootType.Blessed;

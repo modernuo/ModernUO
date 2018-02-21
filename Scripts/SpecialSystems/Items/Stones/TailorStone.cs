@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "a Tailor Supply Stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TailorStone() : base( 0xED4 )
 		{
 			Movable = false;

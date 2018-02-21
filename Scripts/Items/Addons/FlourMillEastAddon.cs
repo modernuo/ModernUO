@@ -159,7 +159,7 @@ namespace Server.Items
 				StartWorking( from );
 		}
 
-		[Constructable]
+		[Constructible]
 		public FlourMillEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1920 ),-1, 0, 0 );
@@ -204,7 +204,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new FlourMillEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044347; } } // flour mill (east)
 
-		[Constructable]
+		[Constructible]
 		public FlourMillEastDeed()
 		{
 		}

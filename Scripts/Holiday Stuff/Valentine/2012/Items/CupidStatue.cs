@@ -3,12 +3,12 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x4F7C, 0x4F7D )]
+	[FlippableAttribute( 0x4F7C, 0x4F7D )]
 	public class CupidStatue : Item
 	{
 		public override int LabelNumber { get { return 1099220; } } // cupid statue
 
-		[Constructable]
+		[Constructible]
 		public CupidStatue()
 			: base( 0x4F7D )
 		{

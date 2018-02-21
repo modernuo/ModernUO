@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073137; } } // A bauble
 
-		[Constructable]
+		[Constructible]
 		public ABauble() : base( 0x23B )
 		{
 			LootType = LootType.Blessed;

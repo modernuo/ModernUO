@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class CounselorRobe : BaseSuit
 	{
-		[Constructable]
+		[Constructible]
 		public CounselorRobe() : base( AccessLevel.Counselor, 0x3, 0x204F )
 		{
 		}

@@ -4,7 +4,7 @@ using Server.Gumps;
 
 namespace Server.Items
 {
-	[Flipable( 0x14ED, 0x14EE )]
+	[Flippable( 0x14ED, 0x14EE )]
 	public class SOS : Item
 	{
 		public override int LabelNumber
@@ -70,17 +70,17 @@ namespace Server.Items
 				Hue = 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public SOS() : this( Map.Trammel )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SOS( Map map ) : this( map, MessageInABottle.GetRandomLevel() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SOS( Map map, int level ) : base( 0x14EE )
 		{
 			Weight = 1.0;

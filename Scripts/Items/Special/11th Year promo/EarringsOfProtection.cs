@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class EarringBoxSet : RedVelvetGiftBox
 	{
-		[Constructable]
+		[Constructible]
 		public EarringBoxSet()
 			: base()
 		{
@@ -66,12 +66,12 @@ namespace Server.Items
 
 		private AosElementAttribute m_Attribute;
 
-		[Constructable]
+		[Constructible]
 		public EarringsOfProtection() : this( RandomType() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public EarringsOfProtection( AosElementAttribute element )
 			: base( 0x1087, Layer.Earrings )
 		{

@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0xC14, 0xC15 )]
+	[Flippable( 0xC14, 0xC15 )]
 	public class BrokenBookcaseComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076258; } } // Broken Bookcase
@@ -34,7 +34,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new BrokenBookcaseDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BrokenBookcaseAddon() : base()
 		{
 			AddComponent( new BrokenBookcaseComponent(), 0, 0, 0 );
@@ -64,7 +64,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new BrokenBookcaseAddon(); } }
 		public override int LabelNumber { get { return 1076258; } } // Broken Bookcase
 
-		[Constructable]
+		[Constructible]
 		public BrokenBookcaseDeed() : base()
 		{
 			LootType = LootType.Blessed;

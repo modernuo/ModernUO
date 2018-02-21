@@ -2,12 +2,12 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable(0x315C, 0x315D)]
+	[Flippable(0x315C, 0x315D)]
 	public class HornOfTheDreadhorn : Item
 	{
 		public override int LabelNumber{ get{ return 1072089; } } // Horn of the Dread
 
-		[Constructable]
+		[Constructible]
 		public HornOfTheDreadhorn() : base( 0x315C )
 		{
 		}

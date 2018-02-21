@@ -69,7 +69,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041073; } } // prized fish
 
-		[Constructable]
+		[Constructible]
 		public PrizedFish() : base( 51 )
 		{
 		}
@@ -103,7 +103,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041074; } } // wondrous fish
 
-		[Constructable]
+		[Constructible]
 		public WondrousFish() : base( 86 )
 		{
 		}
@@ -137,7 +137,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041075; } } // truly rare fish
 
-		[Constructable]
+		[Constructible]
 		public TrulyRareFish() : base( 76 )
 		{
 		}
@@ -168,7 +168,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041076; } } // highly peculiar fish
 
-		[Constructable]
+		[Constructible]
 		public PeculiarFish() : base( 66 )
 		{
 		}

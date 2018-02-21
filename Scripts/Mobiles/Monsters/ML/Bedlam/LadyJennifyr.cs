@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Lady Jennifyr corpse" )]
 	public class LadyJennifyr : SkeletalKnight
 	{
-		[Constructable]
+		[Constructible]
 		public LadyJennifyr()
 		{
 			IsParagon = true;

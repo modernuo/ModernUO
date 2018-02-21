@@ -16,7 +16,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041078; } } // a disguise kit
 
-		[Constructable]
+		[Constructible]
 		public DisguiseKit() : base( 0xE05 )
 		{
 			Weight = 1.0;

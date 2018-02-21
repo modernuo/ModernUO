@@ -6,7 +6,7 @@ namespace Server.Items
 	[Furniture]
 	public class ElegantLowTable : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ElegantLowTable() : base(0x2819)
 		{
 			Weight = 1.0;
@@ -35,7 +35,7 @@ namespace Server.Items
 	[Furniture]
 	public class PlainLowTable : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PlainLowTable() : base(0x281A)
 		{
 			Weight = 1.0;
@@ -62,10 +62,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable(0xB90,0xB7D)]
+	[Flippable(0xB90,0xB7D)]
 	public class LargeTable : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LargeTable() : base(0xB90)
 		{
 			Weight = 1.0;
@@ -94,10 +94,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable(0xB35,0xB34)]
+	[Flippable(0xB35,0xB34)]
 	public class Nightstand : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Nightstand() : base(0xB35)
 		{
 			Weight = 1.0;
@@ -126,10 +126,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable(0xB8F,0xB7C)]
+	[Flippable(0xB8F,0xB7C)]
 	public class YewWoodTable : Item
 	{
-		[Constructable]
+		[Constructible]
 		public YewWoodTable() : base(0xB8F)
 		{
 			Weight = 1.0;

@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1061103; } } // Bracelet of Health
 		public override int ArtifactRarity{ get{ return 11; } }
 
-		[Constructable]
+		[Constructible]
 		public BraceletOfHealth()
 		{
 			Hue = 0x21;

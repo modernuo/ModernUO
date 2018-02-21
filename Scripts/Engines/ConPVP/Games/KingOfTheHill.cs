@@ -18,7 +18,7 @@ namespace Server.Engines.ConPVP
         private Mobile m_King;
         private KingTimer m_KingTimer;
 
-        [Constructable]
+        [Constructible]
         public HillOfTheKing()
             : base(0x520)
         {
@@ -298,7 +298,7 @@ namespace Server.Engines.ConPVP
         public KHGame m_Game;
         private KHController m_Controller;
 
-        [Constructable]
+        [Constructible]
         public KHBoard()
             : base(7774)
         {
@@ -835,7 +835,7 @@ namespace Server.Engines.ConPVP
                 m_Boards.Add(b);
         }
 
-        [Constructable]
+        [Constructible]
         public KHController()
         {
             Visible = false;

@@ -3,10 +3,10 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x49CC, 0x49D0 )]
+	[FlippableAttribute( 0x49CC, 0x49D0 )]
 	public class AnimatedHeartShapedBox : HeartShapedBox
 	{
-		[Constructable]
+		[Constructible]
 		public AnimatedHeartShapedBox()
 		{
 			ItemID = 0x49CC;

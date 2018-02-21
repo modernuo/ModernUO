@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class MilitiaFighter : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public MilitiaFighter() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			InitStats( 40, 30, 5 );

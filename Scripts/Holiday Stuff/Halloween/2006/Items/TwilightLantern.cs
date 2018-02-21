@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override string DefaultName { get { return "Twilight Lantern"; } }
 
-		[Constructable]
+		[Constructible]
 		public TwilightLantern()
 			: base()
 		{

@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0x1E34, 0x1E35 )]
+	[Flippable( 0x1E34, 0x1E35 )]
 	public class ScarecrowComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076608; } } // Scarecrow
@@ -34,7 +34,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new ScarecrowDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ScarecrowAddon() : base()
 		{
 			AddComponent( new ScarecrowComponent(), 0, 0, 0 );
@@ -64,7 +64,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new ScarecrowAddon(); } }
 		public override int LabelNumber { get { return 1076608; } } // Scarecrow
 
-		[Constructable]
+		[Constructible]
 		public ScarecrowDeed() : base()
 		{
 			LootType = LootType.Blessed;

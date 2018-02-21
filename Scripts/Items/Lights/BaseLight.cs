@@ -67,7 +67,7 @@ namespace Server.Items
 			set { m_Duration = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BaseLight( int itemID ) : base( itemID )
 		{
 		}

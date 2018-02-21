@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1063489; } }
 		
-		[Constructable]
+		[Constructible]
 		public GoldBricks() : base( 0x1BEB )
 		{
 		}

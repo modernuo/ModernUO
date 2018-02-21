@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.WarriorsGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public WarriorGuildmaster() : base( "warrior" )
 		{
 			SetSkill( SkillName.ArmsLore, 75.0, 98.0 );

@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x1070, 0x1074 )]
+	[Flippable( 0x1070, 0x1074 )]
 	public class TrainingDummy : AddonComponent
 	{
 		private double m_MinSkill;
@@ -31,12 +31,12 @@ namespace Server.Items
 			get{ return ( m_Timer != null ); } 
 		}
 
-		[Constructable]
+		[Constructible]
 		public TrainingDummy() : this( 0x1074 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TrainingDummy( int itemID ) : base( itemID )
 		{
 			m_MinSkill = -25.0;
@@ -170,7 +170,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new TrainingDummyEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public TrainingDummyEastAddon()
 		{
 			AddComponent( new TrainingDummy( 0x1074 ), 0, 0, 0 );
@@ -200,7 +200,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new TrainingDummyEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044335; } } // training dummy (east)
 
-		[Constructable]
+		[Constructible]
 		public TrainingDummyEastDeed()
 		{
 		}
@@ -228,7 +228,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new TrainingDummySouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public TrainingDummySouthAddon()
 		{
 			AddComponent( new TrainingDummy( 0x1070 ), 0, 0, 0 );
@@ -258,7 +258,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new TrainingDummySouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044336; } } // training dummy (south)
 
-		[Constructable]
+		[Constructible]
 		public TrainingDummySouthDeed()
 		{
 		}

@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoMagicalCrystal : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoMagicalCrystal() : base( 0x1F19 )
 		{
 			Movable = true;

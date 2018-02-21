@@ -81,12 +81,12 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpikeTrap() : this( SpikeTrapType.WestFloor )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpikeTrap( SpikeTrapType type ) : base( GetBaseID( type ) )
 		{
 		}

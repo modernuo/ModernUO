@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class SnowyTree : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SnowyTree() : base( 0x2377 )
 		{
 			Weight = 1.0;

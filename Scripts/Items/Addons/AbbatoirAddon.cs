@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new AbbatoirDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public AbbatoirAddon()
 		{
 			AddComponent( new AddonComponent( 0x120E ), -1, -1, 0 );
@@ -45,7 +45,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new AbbatoirAddon(); } }
 		public override int LabelNumber{ get{ return 1044329; } } // abbatoir
 
-		[Constructable]
+		[Constructible]
 		public AbbatoirDeed()
 		{
 		}

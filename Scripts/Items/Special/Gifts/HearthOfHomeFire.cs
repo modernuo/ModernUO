@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new HearthOfHomeFireDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public HearthOfHomeFire( bool east )
 		{
 			if ( east )
@@ -58,7 +58,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1062919; } } // Hearth of the Home Fire
 
-		[Constructable]
+		[Constructible]
 		public HearthOfHomeFireDeed()
 		{
 			LootType = LootType.Blessed;

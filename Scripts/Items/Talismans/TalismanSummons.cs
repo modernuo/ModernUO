@@ -65,7 +65,7 @@ namespace Server.Mobiles
 
 	public class SummonedAntLion : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedAntLion() : base()
 		{
 			Name = "an ant lion";
@@ -94,7 +94,7 @@ namespace Server.Mobiles
 
 	public class SummonedArcticOgreLord : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedArcticOgreLord()	: base()
 		{
 			Name = "an arctic ogre lord";
@@ -123,7 +123,7 @@ namespace Server.Mobiles
 
 	public class SummonedBakeKitsune : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedBakeKitsune() : base()
 		{
 			Name = "a bake kitsune";
@@ -152,7 +152,7 @@ namespace Server.Mobiles
 
 	public class SummonedBogling : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedBogling() : base()
 		{
 			Name = "a bogling";
@@ -181,7 +181,7 @@ namespace Server.Mobiles
 
 	public class SummonedBullFrog : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedBullFrog() : base()
 		{
 			Name = "a bull frog";
@@ -211,7 +211,7 @@ namespace Server.Mobiles
 
 	public class SummonedChicken : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedChicken() : base()
 		{
 			Name = "a chicken";
@@ -240,7 +240,7 @@ namespace Server.Mobiles
 
 	public class SummonedCow : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedCow() : base()
 		{
 			Name = "a cow";
@@ -268,7 +268,7 @@ namespace Server.Mobiles
 	}
 	public class SummonedDoppleganger : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedDoppleganger() : base()
 		{
 			Name = "a doppleganger";
@@ -297,7 +297,7 @@ namespace Server.Mobiles
 
 	public class SummonedFrostSpider : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedFrostSpider() : base()
 		{
 			Name = "a frost spider";
@@ -326,7 +326,7 @@ namespace Server.Mobiles
 
 	public class SummonedGreatHart : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedGreatHart() : base()
 		{
 			Name = "a great hart";
@@ -355,7 +355,7 @@ namespace Server.Mobiles
 
 	public class SummonedLavaSerpent : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedLavaSerpent() : base()
 		{
 			Name = "a lava serpent";
@@ -428,7 +428,7 @@ namespace Server.Mobiles
 
 	public class SummonedOrcBrute : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedOrcBrute() : base()
 		{
 			Body = 189;
@@ -457,7 +457,7 @@ namespace Server.Mobiles
 
 	public class SummonedPanther : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedPanther() : base()
 		{
 			Name = "a panther";
@@ -487,7 +487,7 @@ namespace Server.Mobiles
 
 	public class SummonedSheep : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedSheep() : base()
 		{
 			Name = "a sheep";
@@ -517,7 +517,7 @@ namespace Server.Mobiles
 
 	public class SummonedSkeletalKnight : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedSkeletalKnight() : base()
 		{
 			Name = "a skeletal knight";
@@ -546,7 +546,7 @@ namespace Server.Mobiles
 
 	public class SummonedVorpalBunny : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedVorpalBunny() : base()
 		{
 			Name = "a vorpal bunny";
@@ -592,7 +592,7 @@ namespace Server.Mobiles
 
 	public class SummonedWailingBanshee : BaseTalismanSummon
 	{
-		[Constructable]
+		[Constructible]
 		public SummonedWailingBanshee() : base()
 		{
 			Name = "a wailing banshee";

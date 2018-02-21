@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.TinkersGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public Tinker() : base( "the tinker" )
 		{
 			SetSkill( SkillName.Lockpicking, 60.0, 83.0 );

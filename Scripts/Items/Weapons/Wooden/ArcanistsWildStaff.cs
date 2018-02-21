@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073549; } } // arcanist's wild staff
 
-		[Constructable]
+		[Constructible]
 		public ArcanistsWildStaff()
 		{
 			Attributes.BonusMana = 3;

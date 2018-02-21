@@ -9,7 +9,7 @@ namespace Server.Items
 
 		public override bool Redyable { get { return false; } }
 
-		[Constructable]
+		[Constructible]
 		public WhiteLeatherDyeTub()
 		{
 			DyedHue = Hue = 0x9C2;

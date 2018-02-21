@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Pyre corpse" )]
 	public class Pyre : Phoenix
 	{
-		[Constructable]
+		[Constructible]
 		public Pyre()
 		{
 			IsParagon = true;

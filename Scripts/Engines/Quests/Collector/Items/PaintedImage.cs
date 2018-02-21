@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Collector
 			set { m_Image = value; InvalidateProperties(); } 
 		}
 
-		[Constructable]
+		[Constructible]
 		public PaintedImage( ImageType image ) : base( 0xFF3 )
 		{
 			Weight = 1.0;

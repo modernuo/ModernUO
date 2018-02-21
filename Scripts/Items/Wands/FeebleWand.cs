@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class FeebleWand : BaseWand
 	{
-		[Constructable]
+		[Constructible]
 		public FeebleWand() : base( WandEffect.Feeblemindedness, 5, 30 )
 		{
 		}

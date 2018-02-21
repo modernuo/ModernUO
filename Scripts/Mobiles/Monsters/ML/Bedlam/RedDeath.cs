@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Red Death corpse" )]
 	public class RedDeath : SkeletalMount
 	{
-		[Constructable]
+		[Constructible]
 		public RedDeath()
 			: base( "Red Death" )
 		{

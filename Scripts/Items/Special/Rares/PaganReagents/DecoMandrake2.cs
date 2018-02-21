@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoMandrake2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoMandrake2() : base( 0x18E0 )
 		{
 			Movable = true;

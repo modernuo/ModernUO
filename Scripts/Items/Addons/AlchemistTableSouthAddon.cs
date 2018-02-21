@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new AlchemistTableSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public AlchemistTableSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0x2DD4 ), 0, 0, 0 );
@@ -37,7 +37,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new AlchemistTableSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1073396; } } // alchemist table (south)
 
-		[Constructable]
+		[Constructible]
 		public AlchemistTableSouthDeed()
 		{
 		}

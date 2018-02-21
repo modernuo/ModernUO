@@ -16,7 +16,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
-		[Constructable]
+		[Constructible]
 		public BurglarsBandana()
 		{
 			Hue = Utility.RandomBool() ? 0x58C : 0x10;

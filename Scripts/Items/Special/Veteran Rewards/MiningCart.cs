@@ -66,7 +66,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public MiningCart( MiningCartType type ) : base()
 		{
 			m_CartType = type;
@@ -349,7 +349,7 @@ namespace Server.Items
 			set{ m_Ore = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MiningCartDeed() : base()
 		{
 			LootType = LootType.Blessed;

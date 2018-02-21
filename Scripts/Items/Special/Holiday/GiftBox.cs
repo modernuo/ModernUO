@@ -5,15 +5,15 @@ using Server.Network;
 namespace Server.Items
 {
 	[Furniture]
-	[Flipable( 0x232A, 0x232B )]
+	[Flippable( 0x232A, 0x232B )]
 	public class GiftBox : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public GiftBox() : this( Utility.RandomDyedHue() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GiftBox( int hue ) : base( Utility.Random( 0x232A, 2 ) )
 		{
 			Weight = 2.0;

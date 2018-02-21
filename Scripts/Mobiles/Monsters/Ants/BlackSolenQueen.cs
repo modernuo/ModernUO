@@ -11,7 +11,7 @@ namespace Server.Mobiles
 		private bool m_BurstSac;
 		public bool BurstSac{ get{ return m_BurstSac; } }
 
-		[Constructable]
+		[Constructible]
 		public BlackSolenQueen() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a black solen queen";

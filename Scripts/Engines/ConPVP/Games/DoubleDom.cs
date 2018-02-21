@@ -20,7 +20,7 @@ namespace Server.Engines.ConPVP
 			get { return "scoreboard"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public DDBoard()
 			: base( 7774 )
 		{
@@ -489,7 +489,7 @@ namespace Server.Engines.ConPVP
 
 		public override string DefaultName { get { return "DD Controller"; } }
 
-		[Constructable]
+		[Constructible]
 		public DDController()
 		{
 			Visible = false;
@@ -1094,7 +1094,7 @@ namespace Server.Engines.ConPVP
 		private DDTeamInfo m_TeamOwner;
 		private DDGame m_Game;
 
-		[Constructable]
+		[Constructible]
 		public DDWayPoint()
 		{
 			this.ItemID = 0x519;

@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public OfficialSealingWax() : base( 0x1426 )
 		{
 			LootType = LootType.Blessed;

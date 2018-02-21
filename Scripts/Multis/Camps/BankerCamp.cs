@@ -7,7 +7,7 @@ namespace Server.Multis
 {
 	public class BankerCamp : BaseCamp
 	{
-		[Constructable]
+		[Constructible]
 		public BankerCamp() : base( 0x1F6 )
 		{
 		}

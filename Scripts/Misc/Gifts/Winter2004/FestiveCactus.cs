@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class FestiveCactus : Item
 	{
-		[Constructable]
+		[Constructible]
 		public FestiveCactus() : base( 0x2376 )
 		{
 			Weight = 1.0;

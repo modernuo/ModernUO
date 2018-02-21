@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074232; } } // Thorvald's Medallion
 
-		[Constructable]
+		[Constructible]
 		public ThorvaldsMedallion() : base( 0x2AAA )
 		{
 			LootType = LootType.Blessed;

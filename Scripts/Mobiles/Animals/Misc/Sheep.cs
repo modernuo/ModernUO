@@ -39,7 +39,7 @@ namespace Server.Mobiles
 			Body = ( DateTime.UtcNow >= m_NextWoolTime ) ? 0xCF : 0xDF;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Sheep() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a sheep";

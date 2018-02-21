@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072935; } } // Essence of Battle
 
-		[Constructable]
+		[Constructible]
 		public EssenceOfBattle()
 		{
 			Hue = 0x550;

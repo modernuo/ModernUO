@@ -5,7 +5,7 @@ namespace Server.Items
 	public class UnfinishedBarrel : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public UnfinishedBarrel() : base( 0x1EB5 )
 		{
 			Movable = true;

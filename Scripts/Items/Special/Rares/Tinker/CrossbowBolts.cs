@@ -5,7 +5,7 @@ namespace Server.Items
 	public class CrossbowBolts : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public CrossbowBolts() : base( 0x1BFC )
 		{
 			Movable = true;

@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041087; } } // Special Beard Dye
 
-		[Constructable]
+		[Constructible]
 		public SpecialBeardDye() : base( 0xE26 )
 		{
 			Weight = 1.0;

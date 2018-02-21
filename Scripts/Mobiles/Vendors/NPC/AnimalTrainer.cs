@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		[Constructable]
+		[Constructible]
 		public AnimalTrainer() : base( "the animal trainer" )
 		{
 			SetSkill( SkillName.AnimalLore, 64.0, 100.0 );

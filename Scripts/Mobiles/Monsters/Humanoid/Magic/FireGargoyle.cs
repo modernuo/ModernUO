@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a charred corpse" )]
 	public class FireGargoyle : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public FireGargoyle() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = NameList.RandomName( "fire gargoyle" );

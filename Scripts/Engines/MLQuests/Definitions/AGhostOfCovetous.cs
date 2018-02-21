@@ -108,7 +108,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Ben()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -155,7 +155,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Frederic()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -192,7 +192,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Leon()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -236,7 +236,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Andros()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{

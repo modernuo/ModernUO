@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class PottedTree : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PottedTree() : base(0x11C8)
 		{
 			Weight = 100;
@@ -31,7 +31,7 @@ namespace Server.Items
 
 	public class PottedTree1 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PottedTree1() : base(0x11C9)
 		{
 			Weight = 100;

@@ -86,7 +86,7 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1023633; } } // Brazier
 
-		[Constructable]
+		[Constructible]
 		public DeceitBrazier() : base( 0xE31 )
 		{
 			Movable = false; 

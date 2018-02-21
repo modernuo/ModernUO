@@ -81,7 +81,7 @@ namespace Server.Items
 
 	public class Granite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public Granite() : base( CraftResource.Iron )
 		{
 		}
@@ -107,7 +107,7 @@ namespace Server.Items
 
 	public class DullCopperGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public DullCopperGranite() : base( CraftResource.DullCopper )
 		{
 		}
@@ -133,7 +133,7 @@ namespace Server.Items
 
 	public class ShadowIronGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public ShadowIronGranite() : base( CraftResource.ShadowIron )
 		{
 		}
@@ -159,7 +159,7 @@ namespace Server.Items
 
 	public class CopperGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public CopperGranite() : base( CraftResource.Copper )
 		{
 		}
@@ -185,7 +185,7 @@ namespace Server.Items
 
 	public class BronzeGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public BronzeGranite() : base( CraftResource.Bronze )
 		{
 		}
@@ -211,7 +211,7 @@ namespace Server.Items
 
 	public class GoldGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public GoldGranite() : base( CraftResource.Gold )
 		{
 		}
@@ -237,7 +237,7 @@ namespace Server.Items
 
 	public class AgapiteGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public AgapiteGranite() : base( CraftResource.Agapite )
 		{
 		}
@@ -263,7 +263,7 @@ namespace Server.Items
 
 	public class VeriteGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public VeriteGranite() : base( CraftResource.Verite )
 		{
 		}
@@ -289,7 +289,7 @@ namespace Server.Items
 
 	public class ValoriteGranite : BaseGranite
 	{
-		[Constructable]
+		[Constructible]
 		public ValoriteGranite() : base( CraftResource.Valorite )
 		{
 		}

@@ -12,7 +12,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041116; } } // a deed for a holiday tree
 
-		[Constructable]
+		[Constructible]
 		public HolidayTreeDeed() : base( 0x14F0 )
 		{
 			Hue = 0x488;

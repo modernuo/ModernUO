@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073512; } } // assassin's shortbow
 
-		[Constructable]
+		[Constructible]
 		public AssassinsShortbow()
 		{
 			Attributes.AttackChance = 3;

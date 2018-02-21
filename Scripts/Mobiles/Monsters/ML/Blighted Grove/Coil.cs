@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		// TODO: Check faction allegiance
 
-		[Constructable]
+		[Constructible]
 		public Coil()
 		{
 			IsParagon = true;

@@ -71,7 +71,7 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public StoneFaceTrap() : base( 0x10FC )
 		{
 			Light = LightType.Circle225;
@@ -132,7 +132,7 @@ namespace Server.Items
 
 	public class StoneFaceTrapNoDamage : StoneFaceTrap
 	{
-		[Constructable]
+		[Constructible]
 		public StoneFaceTrapNoDamage()
 		{
 		}

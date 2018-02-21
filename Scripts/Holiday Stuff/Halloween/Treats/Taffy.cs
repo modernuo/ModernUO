@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1096949; } } /* taffy */
 
-		[Constructable]
+		[Constructible]
 		public Taffy()
 			: this( 1 )
 		{

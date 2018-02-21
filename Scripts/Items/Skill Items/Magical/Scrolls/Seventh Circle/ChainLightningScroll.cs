@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class ChainLightningScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public ChainLightningScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ChainLightningScroll( int amount ) : base( 48, 0x1F5D, amount )
 		{
 		}

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF50, 0xF4F )]
+	[FlippableAttribute( 0xF50, 0xF4F )]
 	public class Crossbow : BaseRanged
 	{
 		public override int EffectID{ get{ return 0x1BFE; } }
@@ -30,7 +30,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 80; } }
 
-		[Constructable]
+		[Constructible]
 		public Crossbow() : base( 0xF50 )
 		{
 			Weight = 7.0;

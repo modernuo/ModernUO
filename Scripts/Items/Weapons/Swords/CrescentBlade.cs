@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26C1, 0x26CB )]
+	[FlippableAttribute( 0x26C1, 0x26CB )]
 	public class CrescentBlade : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 51; } }
 		public override int InitMaxHits{ get{ return 80; } }
 
-		[Constructable]
+		[Constructible]
 		public CrescentBlade() : base( 0x26C1 )
 		{
 			Weight = 1.0;

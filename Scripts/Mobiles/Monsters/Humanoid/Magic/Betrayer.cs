@@ -11,7 +11,7 @@ namespace Server.Mobiles
 	{
 		private bool m_Stunning;
 
-		[Constructable]
+		[Constructible]
 		public Betrayer() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a betrayer";

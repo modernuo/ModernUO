@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new TableWithPurpleClothDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public TableWithPurpleClothAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0x118B, 1076275 ), 0, 0, 0 );
@@ -36,7 +36,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new TableWithPurpleClothAddon(); } }
 		public override int LabelNumber { get { return 1076275; } } // Table With A Purple Tablecloth
 
-		[Constructable]
+		[Constructible]
 		public TableWithPurpleClothDeed() : base()
 		{
 			LootType = LootType.Blessed;

@@ -10,7 +10,7 @@ namespace Server.Items
 
 		public override bool MetallicHues { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public MetallicLeatherDyeTub()
 		{
 			LootType = LootType.Blessed;

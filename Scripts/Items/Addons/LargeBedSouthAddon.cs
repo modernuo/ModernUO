@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new LargeBedSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public LargeBedSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0xA83 ), 0, 0, 0 );
@@ -40,7 +40,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new LargeBedSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044323; } } // large bed (south)
 
-		[Constructable]
+		[Constructible]
 		public LargeBedSouthDeed()
 		{
 		}

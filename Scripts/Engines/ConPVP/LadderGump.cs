@@ -22,7 +22,7 @@ namespace Server.Engines.ConPVP
 			get { return "1v1 leaderboard"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public LadderItem() : base( 0x117F )
 		{
 			Movable = false;

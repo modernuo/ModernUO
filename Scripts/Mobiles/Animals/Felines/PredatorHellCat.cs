@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Preditorhellcat" )]
 	public class PredatorHellCat : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public PredatorHellCat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a hell cat";

@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "a Scribe Supply Stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ScribeStone() : base( 0xED4 )
 		{
 			Movable = false;

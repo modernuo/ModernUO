@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1070638; } }
 
-		[Constructable]
+		[Constructible]
 		public AlchemistsBauble()
 		{
 			Hue = 0x290;

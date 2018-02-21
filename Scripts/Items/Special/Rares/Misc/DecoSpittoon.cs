@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoSpittoon : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoSpittoon() : base( 0x1003 )
 		{
 			Movable = true;

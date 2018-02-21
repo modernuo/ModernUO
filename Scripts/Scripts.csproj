@@ -1271,7 +1271,7 @@
     <Compile Include="Items\Containers\ParagonChest.cs" />
     <Compile Include="Items\Containers\SalvageBag.cs" />
     <Compile Include="Items\Containers\Strongbox.cs" />
-    <Compile Include="Items\Containers\TrapableContainer.cs" />
+    <Compile Include="Items\Containers\TrappableContainer.cs" />
     <Compile Include="Items\Containers\TreasureChest.cs" />
     <Compile Include="Items\Containers\TreasureMapChest.cs" />
     <Compile Include="Items\Decoration Artifacts\BaseDecorationArtifact.cs" />
@@ -1353,7 +1353,7 @@
     <Compile Include="Items\Jewels\Earrings.cs" />
     <Compile Include="Items\Jewels\Necklace.cs" />
     <Compile Include="Items\Jewels\Ring.cs" />
-    <Compile Include="Items\Lights\BaseEquipableLight.cs" />
+    <Compile Include="Items\Lights\BaseEquippableLight.cs" />
     <Compile Include="Items\Lights\BaseLight.cs" />
     <Compile Include="Items\Lights\Brazier.cs" />
     <Compile Include="Items\Lights\BrazierTall.cs" />
@@ -1478,8 +1478,8 @@
     <Compile Include="Items\Misc\EffectItem.cs" />
     <Compile Include="Items\Misc\ExecutionersCap.cs" />
     <Compile Include="Items\Misc\Firebomb.cs" />
-    <Compile Include="Items\Misc\FlipableAddonAttribute.cs" />
-    <Compile Include="Items\Misc\FlipableAttribute.cs" />
+    <Compile Include="Items\Misc\FlippableAddonAttribute.cs" />
+    <Compile Include="Items\Misc\FlippableAttribute.cs" />
     <Compile Include="Items\Misc\GlassItems.cs" />
     <Compile Include="Items\Misc\Gold.cs" />
     <Compile Include="Items\Misc\Guillotine.cs" />

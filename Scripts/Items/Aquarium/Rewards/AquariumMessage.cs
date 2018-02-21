@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073894; } } // Message in a Bottle
 
-		[Constructable]
+		[Constructible]
 		public AquariumMessage() : base()
 		{
 		}

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26C0, 0x26CA )]
+	[FlippableAttribute( 0x26C0, 0x26CA )]
 	public class Lance : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Dismount; } }
@@ -31,7 +31,7 @@ namespace Server.Items
 		public override WeaponType DefType{ get{ return WeaponType.Piercing; } }
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
 
-		[Constructable]
+		[Constructible]
 		public Lance() : base( 0x26C0 )
 		{
 			Weight = 12.0;

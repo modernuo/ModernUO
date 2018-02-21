@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public TaintedTreeSample() : base( 0xDE2 )
 		{
 			LootType = LootType.Blessed;

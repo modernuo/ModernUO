@@ -7,7 +7,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[Flipable( 0x14F0, 0x14EF )]
+	[Flippable( 0x14F0, 0x14EF )]
 	public abstract class BaseAddonContainerDeed : Item, ICraftable
 	{
 		public abstract BaseAddonContainer Addon{ get; }

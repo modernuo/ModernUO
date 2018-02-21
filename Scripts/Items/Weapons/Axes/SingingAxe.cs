@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073546; } } // singing axe
 
-		[Constructable]
+		[Constructible]
 		public SingingAxe()
 		{
 			SkillBonuses.SetValues( 0, SkillName.Musicianship, 5 );

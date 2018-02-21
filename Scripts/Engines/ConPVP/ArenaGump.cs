@@ -16,7 +16,7 @@ namespace Server.Engines.ConPVP
 			get { return "arena moongate"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ArenasMoongate() : base( 0x1FD4 )
 		{
 			Movable = false;

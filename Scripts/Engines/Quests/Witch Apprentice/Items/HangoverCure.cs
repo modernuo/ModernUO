@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Hag
 			set{ m_Uses = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public HangoverCure() : base( 0xE2B )
 		{
 			Weight = 1.0;

@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public CrateForSledge() : base( 0x1FFF, TimeSpan.FromHours( 1 ) )
 		{
 			LootType = LootType.Blessed;

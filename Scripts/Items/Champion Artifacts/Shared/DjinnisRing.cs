@@ -10,7 +10,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 150; } }
 		public override int InitMaxHits{ get{ return 150; } }
 
-		[Constructable]
+		[Constructible]
 		public DjinnisRing()
 		{
 			Attributes.BonusInt = 5;

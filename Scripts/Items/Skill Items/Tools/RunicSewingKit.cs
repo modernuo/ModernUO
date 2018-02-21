@@ -42,14 +42,14 @@ namespace Server.Items
 			LabelTo( from, 1061119, v ); // ~1_LEATHER_TYPE~ runic sewing kit
 		}
 
-		[Constructable]
+		[Constructible]
 		public RunicSewingKit( CraftResource resource ) : base( resource, 0xF9D )
 		{
 			Weight = 2.0;
 			Hue = CraftResources.GetHue( resource );
 		}
 
-		[Constructable]
+		[Constructible]
 		public RunicSewingKit( CraftResource resource, int uses ) : base( resource, uses, 0xF9D )
 		{
 			Weight = 2.0;

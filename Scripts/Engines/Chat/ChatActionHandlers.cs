@@ -61,7 +61,7 @@ namespace Server.Engines.Chat
 			if ( channel.CanTalk( from ) )
 				channel.SendIgnorableMessage( 57, from, from.GetColorCharacter() + from.Username, param ); // %1: %2
 			else
-				from.SendMessage( 36 ); // The moderator of this conference has not given you speaking priviledges.
+				from.SendMessage( 36 ); // The moderator of this conference has not given you speaking privileges.
 		}
 
 		public static void EmoteMessage( ChatUser from, Channel channel, string param )
@@ -69,7 +69,7 @@ namespace Server.Engines.Chat
 			if ( channel.CanTalk( from ) )
 				channel.SendIgnorableMessage( 58, from, from.GetColorCharacter() + from.Username, param ); // %1 %2
 			else
-				from.SendMessage( 36 ); // The moderator of this conference has not given you speaking priviledges.
+				from.SendMessage( 36 ); // The moderator of this conference has not given you speaking privileges.
 		}
 
 		public static void PrivateMessage( ChatUser from, Channel channel, string param )

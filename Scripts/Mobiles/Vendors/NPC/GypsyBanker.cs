@@ -15,7 +15,7 @@ namespace Server.Mobiles
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.None; } }
 		public override bool ClickTitle{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public GypsyBanker()
 		{
 			Title = "the gypsy banker";

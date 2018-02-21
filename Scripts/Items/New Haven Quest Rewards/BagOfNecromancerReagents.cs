@@ -5,12 +5,12 @@ namespace Server.Items
 {
 	public class BagOfNecromancerReagents : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public BagOfNecromancerReagents() : this( 50 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BagOfNecromancerReagents( int amount )
 		{
 			DropItem( new BatWing    ( amount ) );

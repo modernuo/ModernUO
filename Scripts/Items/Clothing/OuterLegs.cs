@@ -31,15 +31,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x230C, 0x230B )]
+	[Flippable( 0x230C, 0x230B )]
 	public class FurSarong : BaseOuterLegs
 	{
-		[Constructable]
+		[Constructible]
 		public FurSarong() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FurSarong( int hue ) : base( 0x230C, hue )
 		{
 			Weight = 3.0;
@@ -67,15 +67,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1516, 0x1531 )]
+	[Flippable( 0x1516, 0x1531 )]
 	public class Skirt : BaseOuterLegs
 	{
-		[Constructable]
+		[Constructible]
 		public Skirt() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Skirt( int hue ) : base( 0x1516, hue )
 		{
 			Weight = 4.0;
@@ -100,15 +100,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1537, 0x1538 )]
+	[Flippable( 0x1537, 0x1538 )]
 	public class Kilt : BaseOuterLegs
 	{
-		[Constructable]
+		[Constructible]
 		public Kilt() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Kilt( int hue ) : base( 0x1537, hue )
 		{
 			Weight = 2.0;
@@ -133,15 +133,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x279A, 0x27E5 )]
+	[Flippable( 0x279A, 0x27E5 )]
 	public class Hakama : BaseOuterLegs
 	{
-		[Constructable]
+		[Constructible]
 		public Hakama() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Hakama( int hue ) : base( 0x279A, hue )
 		{
 			Weight = 2.0;

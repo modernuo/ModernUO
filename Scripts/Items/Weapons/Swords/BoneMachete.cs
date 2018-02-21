@@ -18,7 +18,7 @@ namespace Server.Items
 		public override int InitMinHits { get { return 5; } }
 		public override int InitMaxHits { get { return 5; } }
 
-		[Constructable]
+		[Constructible]
 		public BoneMachete()
 		{
 			ItemID = 0x20E;

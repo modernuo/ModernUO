@@ -9,7 +9,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1075035; } } // Totem of the Void
 		public override bool ForceShowName{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public TotemOfVoid() : base( 0x2F5B )
 		{
 			Hue = 0x2D0;

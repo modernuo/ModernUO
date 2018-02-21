@@ -7,10 +7,10 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x1E5E, 0x1E5F )]
+	[Flippable( 0x1E5E, 0x1E5F )]
 	public class BulletinBoard : BaseBulletinBoard
 	{
-		[Constructable]
+		[Constructible]
 		public BulletinBoard() : base( 0x1E5E )
 		{
 		}

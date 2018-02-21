@@ -3,15 +3,15 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x1053, 0x1054 )]
+	[Flippable( 0x1053, 0x1054 )]
 	public class Gears : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Gears() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gears( int amount ) : base( 0x1053 )
 		{
 			Stackable = true;

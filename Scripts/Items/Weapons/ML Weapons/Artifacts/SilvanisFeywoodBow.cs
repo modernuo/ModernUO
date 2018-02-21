@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072955; } } // Silvani's Feywood Bow
 
-		[Constructable]
+		[Constructible]
 		public SilvanisFeywoodBow()
 		{
 			Hue = 0x1A;

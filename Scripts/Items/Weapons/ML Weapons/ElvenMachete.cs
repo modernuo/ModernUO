@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D35, 0x2D29 )]
+	[FlippableAttribute( 0x2D35, 0x2D29 )]
 	public class ElvenMachete : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DefenseMastery; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } }
 		public override int InitMaxHits{ get{ return 60; } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenMachete() : base( 0x2D35 )
 		{
 			Weight = 6.0;

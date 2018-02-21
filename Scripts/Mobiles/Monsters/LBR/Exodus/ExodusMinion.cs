@@ -15,7 +15,7 @@ namespace Server.Mobiles
 		public override bool IsScaredOfScaryThings{ get{ return false; } }
 		public override bool IsScaryToPets{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public ExodusMinion() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "exodus minion";

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Direwolf" )]
 	public class DireWolf : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public DireWolf() : base( AIType.AI_Melee,FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a dire wolf";

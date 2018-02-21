@@ -8,12 +8,12 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Bone() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bone( int amount ) : base( 0xf7e )
 		{
 			Stackable = true;

@@ -34,17 +34,17 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan CloseDelay{ get{ return m_CloseDelay; } set{ m_CloseDelay = value; } }
 
-		[Constructable]
+		[Constructible]
 		public RaisableItem( int itemID ) : this( itemID, 20, -1, -1, TimeSpan.FromMinutes( 1.0 ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RaisableItem( int itemID, int maxElevation, TimeSpan closeDelay ) : this( itemID, maxElevation, -1, -1, closeDelay )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RaisableItem( int itemID, int maxElevation, int moveSound, int stopSound, TimeSpan closeDelay ) : base( itemID )
 		{
 			Movable = false;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072907; } } // Blight Gripped Longbow
 
-		[Constructable]
+		[Constructible]
 		public BlightGrippedLongbow()
 		{
 			Hue = 0x8A4;

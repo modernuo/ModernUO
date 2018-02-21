@@ -19,7 +19,7 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.DreadHorn }; } }
 
-		[Constructable]
+		[Constructible]
 		public Twaulo()
 			: base(AIType.AI_Melee)
 		{

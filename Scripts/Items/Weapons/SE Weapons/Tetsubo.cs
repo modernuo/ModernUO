@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27A6, 0x27F1 )]
+	[FlippableAttribute( 0x27A6, 0x27F1 )]
 	public class Tetsubo : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.FrenziedWhirlwind; } }
@@ -29,7 +29,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Bash2H; } }
 
-		[Constructable]
+		[Constructible]
 		public Tetsubo() : base( 0x27A6 )
 		{
 			Weight = 8.0;

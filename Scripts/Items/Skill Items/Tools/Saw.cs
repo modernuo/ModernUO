@@ -4,18 +4,18 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1034, 0x1035 )]
+	[FlippableAttribute( 0x1034, 0x1035 )]
 	public class Saw : BaseTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefCarpentry.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public Saw() : base( 0x1034 )
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Saw( int uses ) : base( uses, 0x1034 )
 		{
 			Weight = 2.0;

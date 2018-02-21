@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1063476; } }
 		
-		[Constructable]
+		[Constructible]
 		public ShipModelOfTheHMSCape() : base( 0x14F3 )
 		{
 			Hue = 0x37B;

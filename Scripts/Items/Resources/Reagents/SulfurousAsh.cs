@@ -9,12 +9,12 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public SulfurousAsh() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SulfurousAsh( int amount ) : base( 0xF8C, amount )
 		{
 		}

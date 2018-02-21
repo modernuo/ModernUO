@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class GMRobe : BaseSuit
 	{
-		[Constructable]
+		[Constructible]
 		public GMRobe() : base( AccessLevel.GameMaster, 0x26, 0x204F )
 		{
 		}

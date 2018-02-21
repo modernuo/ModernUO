@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1016450; } } // a chessboard
 
-		[Constructable]
+		[Constructible]
 		public Chessboard() : base( 0xFA6 )
 		{
 		}

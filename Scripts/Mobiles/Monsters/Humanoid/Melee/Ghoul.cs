@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a ghostly corpse" )]
 	public class Ghoul : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Ghoul() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a ghoul";

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073534; } } // Orcish Machete
 
-		[Constructable]
+		[Constructible]
 		public OrcishMachete()
 		{
 			Attributes.BonusInt = -5;

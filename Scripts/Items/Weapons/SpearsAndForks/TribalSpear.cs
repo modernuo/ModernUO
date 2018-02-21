@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF62, 0xF63 )]
+	[FlippableAttribute( 0xF62, 0xF63 )]
 	public class TribalSpear : BaseSpear
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
@@ -31,7 +31,7 @@ namespace Server.Items
 			get { return "a tribal spear"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TribalSpear() : base( 0xF62 )
 		{
 			Weight = 7.0;

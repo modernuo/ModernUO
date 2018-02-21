@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1049786; } } // Happy Birthday!  ...
 
-		[Constructable]
+		[Constructible]
 		public RewardCake() : base( 0x9e9 )
 		{
 			Stackable = false;

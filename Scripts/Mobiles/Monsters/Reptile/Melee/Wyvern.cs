@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	[CorpseName( "a wyvern corpse" )]
 	public class Wyvern : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Wyvern () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a wyvern";

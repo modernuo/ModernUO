@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a bird corpse" )]
 	public class Bird : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Bird() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			if ( Utility.RandomBool() )
@@ -82,7 +82,7 @@ namespace Server.Mobiles
 	[CorpseName( "a bird corpse" )]
 	public class TropicalBird : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public TropicalBird() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Hue = Utility.RandomBirdHue();

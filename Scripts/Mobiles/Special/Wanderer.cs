@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	{
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public Wanderer()
 		{
 			this.Name = "Me";

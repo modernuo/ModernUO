@@ -6,17 +6,17 @@ namespace Server.Items
 	public class BlueBook : BaseBook
 	{
 
-		[Constructable]
+		[Constructible]
 		public BlueBook() : base( 0xFF2, 40, true )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BlueBook( int pageCount, bool writable ) : base( 0xFF2, pageCount, writable )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BlueBook( string title, string author, int pageCount, bool writable ) : base( 0xFF2, title, author, pageCount, writable )
 		{
 		}

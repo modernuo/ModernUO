@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072922; } } // Luminous Rune Blade
 
-		[Constructable]
+		[Constructible]
 		public LuminousRuneBlade()
 		{
 			WeaponAttributes.HitLightning = 40;

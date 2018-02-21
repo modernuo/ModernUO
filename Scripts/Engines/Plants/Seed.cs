@@ -68,12 +68,12 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Seed() : this( PlantTypeInfo.RandomFirstGeneration(), PlantHueInfo.RandomFirstGeneration(), false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Seed( PlantType plantType, PlantHue plantHue, bool showType ) : base( 0xDCF )
 		{
 			Weight = 1.0;

@@ -27,7 +27,7 @@ namespace Server.Mobiles
 			return WeaponAbility.Dismount;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Meraktus()
 			: base(AIType.AI_Melee)
 		{

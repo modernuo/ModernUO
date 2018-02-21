@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class NightSightPotion : BasePotion
 	{
-		[Constructable]
+		[Constructible]
 		public NightSightPotion() : base( 0xF06, PotionEffect.Nightsight )
 		{
 		}

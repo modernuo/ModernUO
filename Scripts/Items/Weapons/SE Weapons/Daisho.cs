@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27A9, 0x27F4 )]
+	[FlippableAttribute( 0x27A9, 0x27F4 )]
 	public class Daisho : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Feint; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 45; } }
 		public override int InitMaxHits{ get{ return 65; } }
 
-		[Constructable]
+		[Constructible]
 		public Daisho() : base( 0x27A9 )
 		{
 			Weight = 8.0;

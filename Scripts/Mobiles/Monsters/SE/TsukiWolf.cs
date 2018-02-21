@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a tsuki wolf corpse" )]
 	public class TsukiWolf : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public TsukiWolf()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

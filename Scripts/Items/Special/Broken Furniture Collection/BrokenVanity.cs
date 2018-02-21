@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new BrokenVanityDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BrokenVanityAddon( bool east ) : base()
 		{
 			if ( east ) // east
@@ -50,7 +50,7 @@ namespace Server.Items
 
 		private bool m_East;
 
-		[Constructable]
+		[Constructible]
 		public BrokenVanityDeed() : base()
 		{
 			LootType = LootType.Blessed;

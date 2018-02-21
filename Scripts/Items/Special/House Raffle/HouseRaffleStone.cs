@@ -85,7 +85,7 @@ namespace Server.Items
 		DeleteStone
 	}
 
-	[FlipableAttribute( 0xEDD, 0xEDE )]
+	[FlippableAttribute( 0xEDD, 0xEDE )]
 	public class HouseRaffleStone : Item
 	{
 		private const int EntryLimitPerIP = 4;
@@ -271,7 +271,7 @@ namespace Server.Items
 			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( CheckEnd_OnTick ) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public HouseRaffleStone()
 			: base( 0xEDD )
 		{

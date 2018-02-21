@@ -41,7 +41,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public PotionKeg() : base( 0x1940 )
 		{
 			UpdateWeight();

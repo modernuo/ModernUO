@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1074826; } } // Minotaur Artifact
 		public override double DefaultWeight{ get{ return 5.0; } }
 
-		[Constructable]
+		[Constructible]
 		public MinotaurArtifact() : base( Utility.RandomList( 0xB46, 0xB48, 0x9ED ) )
 		{
 			if ( ItemID == 0x9ED )

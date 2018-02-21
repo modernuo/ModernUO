@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.BlacksmithsGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public Blacksmith() : base( "the blacksmith" )
 		{
 			SetSkill( SkillName.ArmsLore, 36.0, 68.0 );

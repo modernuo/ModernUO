@@ -2350,7 +2350,7 @@ namespace Server.Mobiles
 			{
 				for (int i = 0; i < iSteps; i++)
 				{
-					// Get the curent distance
+					// Get the current distance
 					int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m);
 
 					if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
@@ -2396,7 +2396,7 @@ namespace Server.Mobiles
 					}
 				}
 
-				// Get the curent distance
+				// Get the current distance
 				int iNewDist = (int)m_Mobile.GetDistanceToSqrt(m);
 
 				if (iNewDist >= iWantDistMin && iNewDist <= iWantDistMax)
@@ -2409,7 +2409,7 @@ namespace Server.Mobiles
 		}
 
 		/*
-		 * Here we check to acquire a target from our surronding
+		 * Here we check to acquire a target from our surrounding
 		 * 
 		 *  iRange : The range
 		 *  acqType : A type of acquire we want (closest, strongest, etc)
@@ -2712,7 +2712,7 @@ namespace Server.Mobiles
 		}
 
 		/*
-		 *  The mobile changed it speed, we must ajust the timer
+		 *  The mobile changed it speed, we must adjust the timer
 		 */
 		public virtual void OnCurrentSpeedChanged()
 		{

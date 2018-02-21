@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074229; } } // Coil's Fang
 
-		[Constructable]
+		[Constructible]
 		public CoilsFang() : base( 0x10E8 )
 		{
 			LootType = LootType.Blessed;

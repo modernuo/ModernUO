@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LocalMap : MapItem
 	{
-		[Constructable]
+		[Constructible]
 		public LocalMap()
 		{
 			SetDisplay( 0, 0, 5119, 4095, 400, 400 );

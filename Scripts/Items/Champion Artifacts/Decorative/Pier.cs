@@ -25,7 +25,7 @@ namespace Server.Items
 			0x3486, 0x348b, 0x3ae
 		};
 
-		[Constructable]
+		[Constructible]
 		public Pier()
 			: base(m_itemids[Utility.Random(3)])
 		{

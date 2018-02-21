@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class BloodPentagram : BaseAddon
 	{
-		[Constructable]
+		[Constructible]
 		public BloodPentagram ()
 		{
 			AddComponent( new AddonComponent( 0x1CF9 ), 0, 1, 0 );

@@ -4,18 +4,18 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xFB5, 0xFB4 )]
+	[FlippableAttribute( 0xFB5, 0xFB4 )]
 	public class SledgeHammer : BaseTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefBlacksmithy.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public SledgeHammer() : base( 0xFB5 )
 		{
 			Layer = Layer.OneHanded;
 		}
 
-		[Constructable]
+		[Constructible]
 		public SledgeHammer( int uses ) : base( uses, 0xFB5 )
 		{
 			Layer = Layer.OneHanded;

@@ -7,13 +7,13 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1096936; } } /* nougat swirl */
 
-		[Constructable]
+		[Constructible]
 		public NougatSwirl() : this(1)
 		{
 
 		}
 
-		[Constructable]
+		[Constructible]
 		public NougatSwirl( int amount )
 			: base( 0x4690 )
 		{

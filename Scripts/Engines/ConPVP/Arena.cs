@@ -21,7 +21,7 @@ namespace Server.Engines.ConPVP
 			get { return "arena controller"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ArenaController() : base( 0x1B7A )
 		{
 			Visible = false;

@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a hell hound corpse" )]
 	public class HellHound : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public HellHound() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a hell hound";

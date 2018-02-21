@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.MagesGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public Glassblower() : base( "the alchemist" )
 		{
 			SetSkill( SkillName.Alchemy, 85.0, 100.0 );

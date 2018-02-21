@@ -11,12 +11,12 @@ namespace Server.Items
 			base.ScissorHelper( from, new RawFishSteak(), 4 );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Fish() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Fish( int amount ) : base( Utility.Random( 0x09CC, 4 ) )
 		{
 			Stackable = true;

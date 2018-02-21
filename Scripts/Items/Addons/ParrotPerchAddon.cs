@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ParrotPerchDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ParrotPerchAddon()
 		{
 			AddComponent( new AddonComponent( 0x2FF4 ), 0, 0, 0 );
@@ -37,7 +37,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ParrotPerchAddon(); } }
 		public override int LabelNumber{ get{ return 1072617; } } // parrot perch
 
-		[Constructable]
+		[Constructible]
 		public ParrotPerchDeed()
 		{
 		}

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ElvenWashBasinEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenWashBasinEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x30DF ), 0, 0, 0 );
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ElvenWashBasinEastAddon(); } }
 		public override int LabelNumber{ get{ return 1073387; } } // elven wash basin (east)
 
-		[Constructable]
+		[Constructible]
 		public ElvenWashBasinEastDeed()
 		{
 		}

@@ -9,13 +9,13 @@ namespace Server.Items
 		public override int BookOffset { get { return 677; } }
 		public override int BookCount { get { return 16; } }
 
-		[Constructable]
+		[Constructible]
 		public MysticSpellbook()
 			: this( (ulong) 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MysticSpellbook( ulong content )
 			: base( content, 0x2D9D )
 		{

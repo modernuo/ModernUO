@@ -2,11 +2,11 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xFAF, 0xFB0 )]
+	[FlippableAttribute( 0xFAF, 0xFB0 )]
 	[Server.Engines.Craft.Anvil]
 	public class Anvil : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Anvil() : base( 0xFAF )
 		{
 			Movable = false;
@@ -34,7 +34,7 @@ namespace Server.Items
 	[Server.Engines.Craft.Forge]
 	public class Forge : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Forge() : base( 0xFB1 )
 		{
 			Movable = false;

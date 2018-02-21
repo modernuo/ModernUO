@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075090; } } // Monsterous Interred Grizzle Maggots
 
-		[Constructable]
+		[Constructible]
 		public MonsterousInterredGrizzleMaggots() : base( 0x2633 )
 		{
 		}

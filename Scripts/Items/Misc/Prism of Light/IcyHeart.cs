@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073162; } } // Icy Heart
 
-		[Constructable]
+		[Constructible]
 		public IcyHeart() : base( 0x24B )
 		{
 		}

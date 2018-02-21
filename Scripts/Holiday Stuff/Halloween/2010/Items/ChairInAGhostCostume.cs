@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override double DefaultWeight { get { return 5; } }
 
-		[Constructable]
+		[Constructible]
 		public ChairInAGhostCostume()
 			: base( 0x3F26 )
 		{

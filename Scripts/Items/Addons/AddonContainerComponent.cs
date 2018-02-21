@@ -40,7 +40,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public AddonContainerComponent( int itemID ) : base( itemID )
 		{
 			Movable = false;

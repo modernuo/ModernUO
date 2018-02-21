@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new HangingSwordsDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public HangingSwordsAddon( bool east ) : base()
 		{
 			if ( east ) // east
@@ -50,7 +50,7 @@ namespace Server.Items
 
 		private bool m_East;
 
-		[Constructable]
+		[Constructible]
 		public HangingSwordsDeed() : base()
 		{
 			LootType = LootType.Blessed;

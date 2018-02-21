@@ -124,7 +124,7 @@ namespace Server.Gumps
 
 					for ( int j = 0; j < ctors.Length; ++j )
 					{
-						if ( ctors[j].GetParameters().Length == 0 && ctors[j].IsDefined( typeof( ConstructableAttribute ), false ) )
+						if ( ctors[j].GetParameters().Length == 0 && ctors[j].IsDefined( typeof( ConstructibleAttribute ), false ) )
 						{
 							results.Add( t );
 							break;

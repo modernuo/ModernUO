@@ -32,7 +32,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable]
+	[Flippable]
 	public class Cloak : BaseCloak, IArcaneEquip
 	{
 		#region Arcane Impl
@@ -94,12 +94,12 @@ namespace Server.Items
 		}
 		#endregion
 
-		[Constructable]
+		[Constructible]
 		public Cloak() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Cloak( int hue ) : base( 0x1515, hue )
 		{
 			Weight = 5.0;
@@ -155,7 +155,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable]
+	[Flippable]
 	public class RewardCloak : BaseCloak, IRewardItem
 	{
 		private int m_LabelNumber;
@@ -226,17 +226,17 @@ namespace Server.Items
 			return !m_IsRewardItem || Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( m, this, new object[]{ Hue, m_LabelNumber } );
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardCloak() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardCloak( int hue ) : this( hue, 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardCloak( int hue, int labelNumber ) : base( 0x1515, hue )
 		{
 			Weight = 5.0;
@@ -280,15 +280,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x230A, 0x2309 )]
+	[Flippable( 0x230A, 0x2309 )]
 	public class FurCape : BaseCloak
 	{
-		[Constructable]
+		[Constructible]
 		public FurCape() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FurCape( int hue ) : base( 0x230A, hue )
 		{
 			Weight = 4.0;

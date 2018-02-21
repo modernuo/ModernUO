@@ -11,7 +11,7 @@ namespace Server.Items
 			get { return "Making Valuables With Stonecrafting"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MasonryBook() : base( 0xFBE )
 		{
 			Weight = 1.0;

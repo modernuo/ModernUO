@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074596; } } // Shrimp
 		
-		[Constructable]
+		[Constructible]
 		public Shrimp() : base( 0x3B14 )
 		{
 		}

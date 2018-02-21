@@ -11,13 +11,13 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1152441; } } // enhanced bandage
 
-		[Constructable]
+		[Constructible]
 		public EnhancedBandage()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public EnhancedBandage( int amount )
 			: base( amount )
 		{
@@ -56,7 +56,7 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x2AC0, 0x2AC3 )]
+	[FlippableAttribute( 0x2AC0, 0x2AC3 )]
 	public class FountainOfLife : BaseAddonContainer
 	{
 		public override BaseAddonContainerDeed Deed
@@ -87,13 +87,13 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public FountainOfLife()
 			: this( 10 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FountainOfLife( int charges )
 			: base( 0x2AC0 )
 		{
@@ -240,13 +240,13 @@ namespace Server.Items
 			set { m_Charges = Math.Min( value, 10 ); InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public FountainOfLifeDeed()
 			: this( 10 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FountainOfLifeDeed( int charges )
 			: base()
 		{

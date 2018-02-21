@@ -5,7 +5,7 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13B0, 0x13AF )]
+	[FlippableAttribute( 0x13B0, 0x13AF )]
 	public class WarAxe : BaseAxe
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
@@ -34,7 +34,7 @@ namespace Server.Items
 
 		public override HarvestSystem HarvestSystem{ get{ return null; } }
 
-		[Constructable]
+		[Constructible]
 		public WarAxe() : base( 0x13B0 )
 		{
 			Weight = 8.0;

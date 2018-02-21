@@ -4,7 +4,7 @@ namespace Server.Items
 { 
 	public class StatueSouth : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueSouth() : base(0x139A) 
 		{ 
 			Weight = 10; 
@@ -33,7 +33,7 @@ namespace Server.Items
 
 	public class StatueSouth2 : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueSouth2() : base(0x1227) 
 		{ 
 			Weight = 10; 
@@ -62,7 +62,7 @@ namespace Server.Items
 
 	public class StatueNorth : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueNorth() : base(0x139B) 
 		{ 
 			Weight = 10; 
@@ -91,7 +91,7 @@ namespace Server.Items
 
 	public class StatueWest : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueWest() : base(0x1226) 
 		{ 
 			Weight = 10; 
@@ -120,7 +120,7 @@ namespace Server.Items
 
 	public class StatueEast : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueEast() : base(0x139C) 
 		{ 
 			Weight = 10; 
@@ -149,7 +149,7 @@ namespace Server.Items
 
 	public class StatueEast2 : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueEast2() : base(0x1224) 
 		{ 
 			Weight = 10; 
@@ -178,7 +178,7 @@ namespace Server.Items
 
 	public class StatueSouthEast : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatueSouthEast() : base(0x1225) 
 		{ 
 			Weight = 10; 
@@ -207,7 +207,7 @@ namespace Server.Items
 
 	public class BustSouth : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public BustSouth() : base(0x12CB) 
 		{ 
 			Weight = 10; 
@@ -236,7 +236,7 @@ namespace Server.Items
 
 	public class BustEast : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public BustEast() : base(0x12CA) 
 		{ 
 			Weight = 10; 
@@ -265,7 +265,7 @@ namespace Server.Items
 
 	public class StatuePegasus : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatuePegasus() : base(0x139D) 
 		{ 
 			Weight = 10; 
@@ -294,7 +294,7 @@ namespace Server.Items
 
 	public class StatuePegasus2 : Item 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public StatuePegasus2() : base(0x1228) 
 		{ 
 			Weight = 10; 
@@ -323,7 +323,7 @@ namespace Server.Items
 
 	public class SmallTowerSculpture : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SmallTowerSculpture() : base(0x241A)
 		{
 			Weight = 20.0;

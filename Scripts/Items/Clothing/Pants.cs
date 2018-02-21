@@ -31,15 +31,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x152e, 0x152f )]
+	[FlippableAttribute( 0x152e, 0x152f )]
 	public class ShortPants : BasePants
 	{
-		[Constructable]
+		[Constructible]
 		public ShortPants() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ShortPants( int hue ) : base( 0x152E, hue )
 		{
 			Weight = 2.0;
@@ -64,15 +64,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1539, 0x153a )]
+	[FlippableAttribute( 0x1539, 0x153a )]
 	public class LongPants : BasePants
 	{
-		[Constructable]
+		[Constructible]
 		public LongPants() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public LongPants( int hue ) : base( 0x1539, hue )
 		{
 			Weight = 2.0;
@@ -97,15 +97,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x279B, 0x27E6 )]
+	[Flippable( 0x279B, 0x27E6 )]
 	public class TattsukeHakama : BasePants
 	{
-		[Constructable]
+		[Constructible]
 		public TattsukeHakama() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TattsukeHakama( int hue ) : base( 0x279B, hue )
 		{
 			Weight = 2.0;
@@ -130,17 +130,17 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x2FC3, 0x3179 )]
+	[FlippableAttribute( 0x2FC3, 0x3179 )]
 	public class ElvenPants : BasePants
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenPants() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ElvenPants( int hue ) : base( 0x2FC3, hue )
 		{
 			Weight = 2.0;

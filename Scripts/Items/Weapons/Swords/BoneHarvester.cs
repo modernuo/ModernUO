@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26BB, 0x26C5 )]
+	[FlippableAttribute( 0x26BB, 0x26C5 )]
 	public class BoneHarvester : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ParalyzingBlow; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 70; } }
 
-		[Constructable]
+		[Constructible]
 		public BoneHarvester() : base( 0x26BB )
 		{
 			Weight = 3.0;

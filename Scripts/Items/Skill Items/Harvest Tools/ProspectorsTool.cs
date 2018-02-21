@@ -33,7 +33,7 @@ namespace Server.Items
 		public override int OldMaxDamage{ get{ return 8; } }
 		public override int OldSpeed{ get{ return 33; } }
 
-		[Constructable]
+		[Constructible]
 		public ProspectorsTool() : base( 0xFB4 )
 		{
 			Weight = 9.0;

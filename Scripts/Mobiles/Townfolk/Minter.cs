@@ -11,7 +11,7 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.MerchantsGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public Minter()
 		{
 			Title = "the minter";

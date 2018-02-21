@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoNightshade3 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoNightshade3() : base( 0x18E6 )
 		{
 			Movable = true;

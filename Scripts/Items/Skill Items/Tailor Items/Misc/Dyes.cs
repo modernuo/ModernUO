@@ -15,7 +15,7 @@ namespace Server.Items
 		private int m_UsesRemaining;
 		*/
 
-		[Constructable]
+		[Constructible]
 		public Dyes() : base( 0xFA9 )
 		{
 			Weight = 3.0;

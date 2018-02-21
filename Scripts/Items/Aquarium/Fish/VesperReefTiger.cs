@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073836; } } // A Vesper Reef Tiger
 		
-		[Constructable]
+		[Constructible]
 		public VesperReefTiger() : base( 0x3B08 )
 		{
 		}

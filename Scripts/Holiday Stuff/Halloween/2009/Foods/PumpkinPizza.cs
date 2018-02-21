@@ -12,7 +12,7 @@ namespace Server.Items
 	{
 		public override string DefaultName { get { return "Pumpkin Pizza"; } }
 
-		[Constructable]
+		[Constructible]
 		public PumpkinPizza( )
 			: base()
 		{

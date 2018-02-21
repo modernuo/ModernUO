@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public class SkullPileAddon : BaseAddon
 	{
-		[Constructable]
+		[Constructible]
 		public SkullPileAddon()
 		{
 			AddComponent( new AddonComponent( 6872 ), 1, 1, 0 );

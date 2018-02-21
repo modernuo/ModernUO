@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a corporeal brume corpse" )]
 	public class CorporealBrume : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public CorporealBrume()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

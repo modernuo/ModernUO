@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073835; } } // A Makoto Courtesan Fish
 		
-		[Constructable]
+		[Constructible]
 		public MakotoCourtesanFish() : base( 0x3AFD )
 		{
 		}

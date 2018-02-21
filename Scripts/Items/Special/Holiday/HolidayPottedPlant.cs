@@ -9,13 +9,13 @@ namespace Server.Items
 	{
 		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
 
-		[Constructable]
+		[Constructible]
 		public HolidayPottedPlant()
 			: this( Utility.RandomMinMax( 0x11C8, 0x11CC ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HolidayPottedPlant( int itemID )
 			: base( itemID )
 		{
@@ -46,7 +46,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1041114; } } // A deed for a potted plant.
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public PottedPlantDeed()
 			: base( 0x14F0 )
 		{

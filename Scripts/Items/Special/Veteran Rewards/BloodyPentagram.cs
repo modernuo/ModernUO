@@ -56,7 +56,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public BloodyPentagramAddon() : base()
 		{	
 			AddComponent( new BloodyPentagramComponent( 0x1CF9 ), 0, 1, 0 );
@@ -147,7 +147,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BloodyPentagramDeed() : base()
 		{
 			LootType = LootType.Blessed;

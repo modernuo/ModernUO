@@ -42,7 +42,7 @@ namespace Server.Mobiles
 
 		public virtual bool IsActiveVendor { get { return true; } }
 		public virtual bool IsActiveBuyer { get { return IsActiveVendor; } } // response to vendor SELL
-		public virtual bool IsActiveSeller { get { return IsActiveVendor; } } // repsonse to vendor BUY
+		public virtual bool IsActiveSeller { get { return IsActiveVendor; } } // response to vendor BUY
 
 		public virtual NpcGuild NpcGuild { get { return NpcGuild.None; } }
 
@@ -1508,7 +1508,7 @@ namespace Server
 		//max amount in stock
 		int MaxAmount { get; }
 
-		//Attempt to restock with item, (return true if restock sucessful)
+		//Attempt to restock with item, (return true if restock successful)
 		bool Restock( Item item, int amount );
 
 		//called when its time for the whole shop to restock

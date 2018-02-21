@@ -39,12 +39,12 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAddon( Direction.South, Direction.East )]
+	[FlippableAddon( Direction.South, Direction.East )]
 	public class BoneCouchAddon : BaseAddon
 	{
 		public override BaseAddonDeed Deed { get { return new BoneCouchDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BoneCouchAddon() : base()
 		{
 			Direction = Direction.South;
@@ -92,7 +92,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new BoneCouchAddon(); } }
 		public override int LabelNumber { get { return 1074477; } } // Bone couch
 
-		[Constructable]
+		[Constructible]
 		public BoneCouchDeed() : base()
 		{
 			LootType = LootType.Blessed;

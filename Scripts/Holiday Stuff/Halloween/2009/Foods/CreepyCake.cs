@@ -12,7 +12,7 @@ namespace Server.Items
 	{
 		public override string DefaultName { get { return "Creepy Cake"; } }
 
-		[Constructable]
+		[Constructible]
 		public CreepyCake()
 			: base( 0x9e9 )
 		{

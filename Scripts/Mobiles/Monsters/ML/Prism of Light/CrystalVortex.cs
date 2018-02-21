@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal vortex corpse" )]
 	public class CrystalVortex : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public CrystalVortex()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

@@ -40,12 +40,12 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int CurrentRange{ get{ return ItemID == InactiveItemID ? InRange : OutRange; } }
 
-		[Constructable]
+		[Constructible]
 		public MorphItem( int inactiveItemID, int activeItemID, int range ) : this( inactiveItemID, activeItemID, range, range )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MorphItem( int inactiveItemID, int activeItemID, int inRange, int outRange ) : base( inactiveItemID )
 		{
 			Movable = false;

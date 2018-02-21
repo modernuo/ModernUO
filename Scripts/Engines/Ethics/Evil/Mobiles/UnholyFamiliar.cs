@@ -11,7 +11,7 @@ namespace Server.Mobiles
 		public override bool IsDispellable { get { return false; } }
 		public override bool IsBondable { get { return false; } }
 
-		[Constructable]
+		[Constructible]
 		public UnholyFamiliar()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ElvenLoveseatEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenLoveseatEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x3089 ), 0, 0, 0 );
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ElvenLoveseatEastAddon(); } }
 		public override int LabelNumber{ get{ return 1073372; } } // elven loveseat (east)
 
-		[Constructable]
+		[Constructible]
 		public ElvenLoveseatEastDeed()
 		{
 		}

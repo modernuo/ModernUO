@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class LichFormScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public LichFormScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public LichFormScroll( int amount ) : base( 106, 0x2266, amount )
 		{
 		}

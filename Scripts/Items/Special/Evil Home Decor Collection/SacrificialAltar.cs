@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAddon( Direction.South, Direction.East )]
+	[FlippableAddon( Direction.South, Direction.East )]
 	public class SacrificialAltarAddon : BaseAddonContainer
 	{
 		public override BaseAddonContainerDeed Deed { get { return new SacrificialAltarDeed(); } }
@@ -13,7 +13,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public SacrificialAltarAddon() : base( 0x2A9B )
 		{
 			Direction = Direction.South;
@@ -137,7 +137,7 @@ namespace Server.Items
 		public override BaseAddonContainer Addon { get { return new SacrificialAltarAddon(); } }
 		public override int LabelNumber { get { return 1074818; } } // Sacrificial Altar
 
-		[Constructable]
+		[Constructible]
 		public SacrificialAltarDeed() : base()
 		{
 			LootType = LootType.Blessed;

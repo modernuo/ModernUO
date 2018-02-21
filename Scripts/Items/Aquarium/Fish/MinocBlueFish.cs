@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073829; } } // A Minoc Blue Fish
 		
-		[Constructable]
+		[Constructible]
 		public MinocBlueFish() : base( 0x3AFE )
 		{
 		}

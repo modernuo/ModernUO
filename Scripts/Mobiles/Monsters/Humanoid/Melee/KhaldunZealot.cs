@@ -12,7 +12,7 @@ namespace Server.Mobiles
 		public override bool ClickTitle{ get{ return false; } }
 		public override bool ShowFameTitle{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public KhaldunZealot(): base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 0x190;

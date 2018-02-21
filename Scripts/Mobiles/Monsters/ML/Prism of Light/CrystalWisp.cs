@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
 	public class CrystalWisp : Wisp
 	{
-		[Constructable]
+		[Constructible]
 		public CrystalWisp()
 		{
 			Name = "a crystal wisp";

@@ -44,7 +44,7 @@ namespace Server.Items
 
 	public class ThinBrickWall : BaseWall
 	{
-		[Constructable]
+		[Constructible]
 		public ThinBrickWall( ThinBrickWallTypes type ) : base( 0x0033 + (int)type )
 		{
 		}

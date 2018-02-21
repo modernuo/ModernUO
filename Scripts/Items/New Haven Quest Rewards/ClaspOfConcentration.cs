@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1077695; } } // Clasp of Concentration
 
-		[Constructable]
+		[Constructible]
 		public ClaspOfConcentration()
 		{
 			LootType = LootType.Blessed;

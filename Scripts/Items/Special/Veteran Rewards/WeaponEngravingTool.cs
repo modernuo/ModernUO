@@ -34,12 +34,12 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public WeaponEngravingTool() : this( 10 )
 		{
 		}
 	
-		[Constructable]
+		[Constructible]
 		public WeaponEngravingTool( int uses ) : base( 0x32F8 )
 		{
 			LootType = LootType.Blessed;

@@ -7,12 +7,12 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074557; } } // Gaman Horns
 
-		[Constructable]
+		[Constructible]
 		public GamanHorns() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GamanHorns( int amount ) : base( 0x1084 )
 		{
 			LootType = LootType.Blessed;

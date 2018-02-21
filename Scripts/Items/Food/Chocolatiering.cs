@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1080007; } } // Cocoa liquor
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public CocoaLiquor()
 			: base( 0x103F )
 		{
@@ -40,13 +40,13 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1080003; } } // Sack of sugar
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public SackOfSugar()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SackOfSugar( int amount )
 			: base( 0x1039 )
 		{
@@ -80,7 +80,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1080005; } } // Cocoa butter
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public CocoaButter()
 			: base( 0x1044 )
 		{
@@ -112,13 +112,13 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1080009; } } // Vanilla
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public Vanilla()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Vanilla( int amount )
 			: base( 0xE2A )
 		{
@@ -152,13 +152,13 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1080530; } } // cocoa pulp
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public CocoaPulp()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public CocoaPulp( int amount )
 			: base( 0xF7C )
 		{
@@ -192,7 +192,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1079994; } } // Dark chocolate
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public DarkChocolate()
 			: base( 0xF10 )
 		{
@@ -225,7 +225,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1079995; } } // Milk chocolate
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public MilkChocolate()
 			: base( 0xF18 )
 		{
@@ -258,7 +258,7 @@ namespace Server.Items
 		public override int LabelNumber { get { return 1079996; } } // White chocolate
 		public override double DefaultWeight { get { return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public WhiteChocolate()
 			: base( 0xF11 )
 		{

@@ -11,7 +11,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041055; } } // a guild deed
 
-		[Constructable]
+		[Constructible]
 		public GuildDeed() : base( 0x14F0 )
 		{
 			Weight = 1.0;

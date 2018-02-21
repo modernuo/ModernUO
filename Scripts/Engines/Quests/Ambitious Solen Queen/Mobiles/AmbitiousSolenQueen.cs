@@ -171,7 +171,7 @@ namespace Server.Engines.Quests.Ambitious
 	{
 		public override bool RedSolen{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public RedAmbitiousSolenQueen()
 		{
 		}
@@ -199,7 +199,7 @@ namespace Server.Engines.Quests.Ambitious
 	{
 		public override bool RedSolen{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public BlackAmbitiousSolenQueen()
 		{
 		}

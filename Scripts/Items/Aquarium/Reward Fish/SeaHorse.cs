@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074414; } } // A sea horse
 		
-		[Constructable]
+		[Constructible]
 		public SeaHorseFish() : base( 0x3B10 )
 		{
 		}

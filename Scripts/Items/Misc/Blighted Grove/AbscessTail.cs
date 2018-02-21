@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074231; } } // Abscess' Tail
 
-		[Constructable]
+		[Constructible]
 		public AbscessTail() : base( 0x1A9D )
 		{
 			LootType = LootType.Blessed;

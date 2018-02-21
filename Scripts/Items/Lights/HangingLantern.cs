@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LitItemID{ get { return 0xA1A; } }
 		public override int UnlitItemID{ get { return 0xA1D; } }
 		
-		[Constructable]
+		[Constructible]
 		public HangingLantern() : base( 0xA1D )
 		{
 			Movable = false;

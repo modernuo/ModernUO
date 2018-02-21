@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		public override string DefaultName{ get{ return "Spite"; } }
 		public override int DefaultHue{ get{ return 0x21; } }
 
-		[Constructable]
+		[Constructible]
 		public Spite()
 		{
 			IsParagon = true;

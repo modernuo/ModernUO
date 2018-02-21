@@ -10,10 +10,10 @@ namespace Server.Items
 		bool Scissor( Mobile from, Scissors scissors );
 	}
 
-	[FlipableAttribute( 0xf9f, 0xf9e )]
+	[FlippableAttribute( 0xf9f, 0xf9e )]
 	public class Scissors : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Scissors() : base( 0xF9F )
 		{
 			Weight = 1.0;

@@ -5,7 +5,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF52, 0xF51 )]
+	[FlippableAttribute( 0xF52, 0xF51 )]
 	public class Dagger : BaseKnife
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.InfectiousStrike; } }
@@ -29,7 +29,7 @@ namespace Server.Items
 		public override WeaponType DefType{ get{ return WeaponType.Piercing; } }
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
 
-		[Constructable]
+		[Constructible]
 		public Dagger() : base( 0xF52 )
 		{
 			Weight = 1.0;

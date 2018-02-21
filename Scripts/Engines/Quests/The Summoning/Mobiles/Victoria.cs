@@ -22,7 +22,7 @@ namespace Server.Engines.Quests.Doom
 			m_SBInfos.Add( new SBMage() );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Victoria() : base( "the Sorceress" )
 		{
 		}

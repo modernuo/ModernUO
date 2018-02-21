@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SandstoneFountainAddon : BaseAddon
 	{
-		[Constructable]
+		[Constructible]
 		public SandstoneFountainAddon()
 		{
 			int itemID = 0x19C3;

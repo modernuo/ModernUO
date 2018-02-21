@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Hag
 	{
 		public override int LabelNumber{ get{ return 1055065; } } // a bottle of magical moonfire brew
 
-		[Constructable]
+		[Constructible]
 		public MoonfireBrew() : base( 0xF04 )
 		{
 			Weight = 1.0;

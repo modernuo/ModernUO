@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26BD, 0x26C7 )]
+	[FlippableAttribute( 0x26BD, 0x26C7 )]
 	public class BladedStaff : BaseSpear
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override SkillName DefSkill{ get{ return SkillName.Swords; } }
 
-		[Constructable]
+		[Constructible]
 		public BladedStaff() : base( 0x26BD )
 		{
 			Weight = 4.0;

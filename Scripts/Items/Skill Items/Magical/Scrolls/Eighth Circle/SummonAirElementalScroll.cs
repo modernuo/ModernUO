@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class SummonAirElementalScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public SummonAirElementalScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SummonAirElementalScroll( int amount ) : base( 59, 0x1F68, amount )
 		{
 		}

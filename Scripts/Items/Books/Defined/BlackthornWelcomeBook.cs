@@ -43,7 +43,7 @@ namespace Server.Items
 				),
 				new BookPageInfo
 				(
-					"and passed judgement",
+					"and passed judgment",
 					"on our character.  He",
 					"suppressed our way of",
 					"life by denying our",
@@ -54,7 +54,7 @@ namespace Server.Items
 				),
 				new BookPageInfo
 				(
-					"today in the absense",
+					"today in the absence",
 					"of this man we still",
 					"see the symbol of his",
 					"tyranny, we watch his",
@@ -70,7 +70,7 @@ namespace Server.Items
 					"because you choose to",
 					"be free.  Like many",
 					"Britannians you have",
-					"felt the opression of",
+					"felt the oppression of",
 					"one man's ideas",
 					"weighing down upon"
 				),
@@ -125,7 +125,7 @@ namespace Server.Items
 					"of men blinded by",
 					"belief.  I forced",
 					"myself to bury the",
-					"very idealogy that",
+					"very ideology that",
 					"made me an individual.",
 					"I was fortunate that"
 				),
@@ -270,7 +270,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public BlackthornWelcomeBook() : base( false )
 		{
 			Hue = 0x89B;

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xF4D, 0xF4E )]
+	[FlippableAttribute( 0xF4D, 0xF4E )]
 	public class Bardiche : BasePoleArm
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ParalyzingBlow; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 100; } }
 
-		[Constructable]
+		[Constructible]
 		public Bardiche() : base( 0xF4D )
 		{
 			Weight = 7.0;

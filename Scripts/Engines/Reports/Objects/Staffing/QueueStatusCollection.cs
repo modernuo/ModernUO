@@ -182,7 +182,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Advances the enumerator to the next queue of the enumeration, if one is currently available.
             /// </summary>
-            /// <returns>true, if the enumerator was succesfully advanced to the next queue; false, if the enumerator has reached the end of the enumeration.</returns>
+            /// <returns>true, if the enumerator was successfully advanced to the next queue; false, if the enumerator has reached the end of the enumeration.</returns>
             public bool MoveNext()
             {
                 if ((_index 

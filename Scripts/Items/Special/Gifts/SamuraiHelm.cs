@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x236C, 0x236D )]
+	[FlippableAttribute( 0x236C, 0x236D )]
 	public class SamuraiHelm : BaseArmor
 	{
 		public override int LabelNumber{ get{ return 1062923; } } // Ancient Samurai Helm
@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
-		[Constructable]
+		[Constructible]
 		public SamuraiHelm() : base( 0x236C )
 		{
 			Weight = 5.0;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074593; } } // Jellyfish
 		
-		[Constructable]
+		[Constructible]
 		public Jellyfish() : base( 0x3B0E )
 		{
 		}

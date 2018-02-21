@@ -34,12 +34,12 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		[Constructable]
+		[Constructible]
 		public FukiyaDarts() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FukiyaDarts( int amount ) : base( 0x2806 )
 		{
 			Weight = 1.0;

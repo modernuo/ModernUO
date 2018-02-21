@@ -22,7 +22,7 @@ namespace Server.Items
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Studded; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		[Constructable]
+		[Constructible]
 		public StuddedDo() : base( 0x27C7 )
 		{
 			Weight = 8.0;

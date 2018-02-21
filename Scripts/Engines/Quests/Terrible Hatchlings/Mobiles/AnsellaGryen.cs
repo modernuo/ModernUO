@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Zento
 {
 	public class AnsellaGryen : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public AnsellaGryen()
 		{
 		}

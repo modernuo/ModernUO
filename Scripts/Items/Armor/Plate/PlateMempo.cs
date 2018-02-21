@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
-		[Constructable]
+		[Constructible]
 		public PlateMempo() : base( 0x2779 )
 		{
 			Weight = 3.0;

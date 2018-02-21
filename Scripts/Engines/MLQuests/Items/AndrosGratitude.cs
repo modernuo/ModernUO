@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075345; } } // Andros Gratitude
 
-		[Constructable]
+		[Constructible]
 		public AndrosGratitude() : base( 10 )
 		{
 			LootType = LootType.Blessed;

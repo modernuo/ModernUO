@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
-		[Constructable]
+		[Constructible]
 		public PlateHaidate() : base( 0x278D )
 		{
 			Weight = 7.0;

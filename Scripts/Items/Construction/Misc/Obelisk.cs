@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1016474; } } // an obelisk
 
-		[Constructable]
+		[Constructible]
 		public Obelisk() : base(0x1184)
 		{
 			Movable = false;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073525; } } // knight's war cleaver
 
-		[Constructable]
+		[Constructible]
 		public KnightsWarCleaver()
 		{
 			Attributes.RegenHits = 3;

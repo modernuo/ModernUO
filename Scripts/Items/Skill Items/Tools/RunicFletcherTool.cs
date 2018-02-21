@@ -21,14 +21,14 @@ namespace Server.Items
 			}
 		}
 		
-		[Constructable]
+		[Constructible]
 		public RunicFletcherTool( CraftResource resource ) : base( resource, 0x1022 )
 		{
 			Weight = 2.0;
 			Hue = CraftResources.GetHue( resource );
 		}
 
-		[Constructable]
+		[Constructible]
 		public RunicFletcherTool( CraftResource resource, int uses ) : base( resource, uses, 0x1022 )
 		{
 			Weight = 2.0;

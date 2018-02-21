@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SmokeBomb : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SmokeBomb() : base( 0x2808 )
 		{
 			Stackable = Core.ML;

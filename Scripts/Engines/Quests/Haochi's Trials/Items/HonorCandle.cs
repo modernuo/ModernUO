@@ -12,7 +12,7 @@ namespace Server.Engines.Quests.Samurai
 		public override int LitSound{ get{ return 0; } }
 		public override int UnlitSound{ get{ return 0; } }
 
-		[Constructable]
+		[Constructible]
 		public HonorCandle()
 		{
 			Movable = false;

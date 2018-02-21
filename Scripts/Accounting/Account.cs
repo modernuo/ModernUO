@@ -303,7 +303,7 @@ namespace Server.Accounting
 		}
 
 		/// <summary>
-		/// Gets or sets a flag indiciating if this account is banned.
+		/// Gets or sets a flag indicating if this account is banned.
 		/// </summary>
 		public bool Banned
 		{
@@ -1279,7 +1279,7 @@ namespace Server.Accounting
 		}
 
 		/// <summary>
-		/// Gets the maxmimum amount of characters that this account can hold.
+		/// Gets the maximum amount of characters that this account can hold.
 		/// </summary>
 		public int Length
 		{

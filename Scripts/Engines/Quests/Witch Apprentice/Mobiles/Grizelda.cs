@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Hag
 	{
 		public override bool ClickTitle{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Grizelda() : base( "the Hag" )
 		{
 		}

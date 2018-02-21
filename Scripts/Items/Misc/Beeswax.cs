@@ -4,12 +4,12 @@ namespace Server.Items
 {
 	public class Beeswax : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Beeswax() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Beeswax( int amount ) : base( 0x1422 )
 		{
 			Weight = 1.0;

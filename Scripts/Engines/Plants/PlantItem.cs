@@ -188,12 +188,12 @@ namespace Server.Engines.Plants
 
 		public static ArrayList Plants{ get{ return m_Instances; } }
 
-		[Constructable]
+		[Constructible]
 		public PlantItem() : this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PlantItem( bool fertileDirt ) : base( 0x1602 )
 		{
 			Weight = 1.0;

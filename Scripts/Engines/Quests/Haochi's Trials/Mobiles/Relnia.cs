@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class Relnia : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public Relnia() : base( "the Gypsy" )
 		{
 		}

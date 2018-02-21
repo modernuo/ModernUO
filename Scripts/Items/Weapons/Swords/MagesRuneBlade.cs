@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073538; } } // mage's rune blade
 
-		[Constructable]
+		[Constructible]
 		public MagesRuneBlade()
 		{
 			Attributes.CastSpeed = 1;

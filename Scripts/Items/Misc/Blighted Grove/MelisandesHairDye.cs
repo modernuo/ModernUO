@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041088; } } // Hair Dye
 
-		[Constructable]
+		[Constructible]
 		public MelisandesHairDye() : base( 0xEFF )
 		{
 			Hue = Utility.RandomMinMax( 0x47E, 0x499 );

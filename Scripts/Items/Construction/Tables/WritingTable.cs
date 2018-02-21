@@ -3,10 +3,10 @@ using System;
 namespace Server.Items
 {
 	[Furniture]
-	[Flipable(0xB4A,0xB49, 0xB4B, 0xB4C)]
+	[Flippable(0xB4A,0xB49, 0xB4B, 0xB4C)]
 	public class WritingTable : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WritingTable() : base(0xB4A)
 		{
 			Weight = 1.0;

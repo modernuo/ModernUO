@@ -8,13 +8,13 @@ namespace Server.Items
 	{
 		public override CraftSystem CraftSystem{ get{ return DefCarpentry.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public Hammer() : base( 0x102A )
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Hammer( int uses ) : base( uses, 0x102A )
 		{
 			Weight = 2.0;

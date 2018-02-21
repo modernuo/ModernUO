@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074233; } } // Tainted Seeds
 
-		[Constructable]
+		[Constructible]
 		public TaintedSeeds() : base( 0xDFA )
 		{
 			LootType = LootType.Blessed;

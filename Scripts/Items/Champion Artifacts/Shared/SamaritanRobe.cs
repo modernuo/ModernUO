@@ -14,7 +14,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public SamaritanRobe()
 		{
 			Hue = 0x2a3;

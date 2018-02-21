@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072912; } } // The Night Reaper
 
-		[Constructable]
+		[Constructible]
 		public TheNightReaper()
 		{
 			ItemID = 0x26CD;

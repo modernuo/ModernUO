@@ -55,15 +55,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2307, 0x2308 )]
+	[Flippable( 0x2307, 0x2308 )]
 	public class FurBoots : BaseShoes
 	{
-		[Constructable]
+		[Constructible]
 		public FurBoots() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FurBoots( int hue ) : base( 0x2307, hue )
 		{
 			Weight = 3.0;
@@ -88,17 +88,17 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x170b, 0x170c )]
+	[FlippableAttribute( 0x170b, 0x170c )]
 	public class Boots : BaseShoes
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		[Constructable]
+		[Constructible]
 		public Boots() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Boots( int hue ) : base( 0x170B, hue )
 		{
 			Weight = 3.0;
@@ -123,7 +123,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable]
+	[Flippable]
 	public class ThighBoots : BaseShoes, IArcaneEquip
 	{
 		#region Arcane Impl
@@ -187,12 +187,12 @@ namespace Server.Items
 
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		[Constructable]
+		[Constructible]
 		public ThighBoots() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ThighBoots( int hue ) : base( 0x1711, hue )
 		{
 			Weight = 4.0;
@@ -245,17 +245,17 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x170f, 0x1710 )]
+	[FlippableAttribute( 0x170f, 0x1710 )]
 	public class Shoes : BaseShoes
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		[Constructable]
+		[Constructible]
 		public Shoes() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Shoes( int hue ) : base( 0x170F, hue )
 		{
 			Weight = 2.0;
@@ -280,17 +280,17 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x170d, 0x170e )]
+	[FlippableAttribute( 0x170d, 0x170e )]
 	public class Sandals : BaseShoes
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		[Constructable]
+		[Constructible]
 		public Sandals() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Sandals( int hue ) : base( 0x170D, hue )
 		{
 			Weight = 1.0;
@@ -320,15 +320,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2797, 0x27E2 )]
+	[Flippable( 0x2797, 0x27E2 )]
 	public class NinjaTabi : BaseShoes
 	{
-		[Constructable]
+		[Constructible]
 		public NinjaTabi() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public NinjaTabi( int hue ) : base( 0x2797, hue )
 		{
 			Weight = 2.0;
@@ -353,15 +353,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2796, 0x27E1 )]
+	[Flippable( 0x2796, 0x27E1 )]
 	public class SamuraiTabi : BaseShoes
 	{
-		[Constructable]
+		[Constructible]
 		public SamuraiTabi() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SamuraiTabi( int hue ) : base( 0x2796, hue )
 		{
 			Weight = 2.0;
@@ -386,15 +386,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2796, 0x27E1 )]
+	[Flippable( 0x2796, 0x27E1 )]
 	public class Waraji : BaseShoes
 	{
-		[Constructable]
+		[Constructible]
 		public Waraji() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Waraji( int hue ) : base( 0x2796, hue )
 		{
 			Weight = 2.0;
@@ -419,19 +419,19 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x2FC4, 0x317A )]
+	[FlippableAttribute( 0x2FC4, 0x317A )]
 	public class ElvenBoots : BaseShoes
 	{
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
 		public override Race RequiredRace { get { return Race.Elf; } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenBoots() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ElvenBoots( int hue ) : base( 0x2FC4, hue )
 		{
 			Weight = 2.0;

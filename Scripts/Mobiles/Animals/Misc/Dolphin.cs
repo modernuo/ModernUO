@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	[CorpseName( "a dolphin corpse" )]
 	public class Dolphin : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Dolphin()
 			: base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{

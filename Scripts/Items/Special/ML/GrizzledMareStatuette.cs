@@ -9,7 +9,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1074475; } } // Grizzled Mare Statuette
 		public override BaseCreature Summon{ get { return new GrizzledMare(); } }
 	
-		[Constructable]
+		[Constructible]
 		public GrizzledMareStatuette() : base( 0x2617 )
 		{
 			Weight = 1.0;
@@ -43,7 +43,7 @@ namespace Server.Mobiles
 
 		private static readonly string m_Myname = "a grizzled mare";
 
-		[Constructable]
+		[Constructible]
 		public GrizzledMare()
 			: base( m_Myname  )
 		{

@@ -10,7 +10,7 @@ namespace Server.Engines.Plants
 	{
 		public override int LabelNumber { get { return 1060834; } } // a plant bowl
 
-		[Constructable]
+		[Constructible]
 		public PlantBowl() : base( 0x15FD )
 		{
 			Weight = 1.0;

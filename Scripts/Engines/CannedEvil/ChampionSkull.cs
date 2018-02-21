@@ -13,7 +13,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1049479 + (int)m_Type; } }
 
-		[Constructable]
+		[Constructible]
 		public ChampionSkull( ChampionSkullType type ) : base( 0x1AE1 )
 		{
 			m_Type = type;

@@ -44,12 +44,12 @@ namespace Server.Items
 			}
 		}
 		
-		[Constructable]
+		[Constructible]
 		public HangingSkeleton() : this( 0x1596 )
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public HangingSkeleton( int itemID ) : base( itemID )
 		{
 			LootType = LootType.Blessed;
@@ -129,7 +129,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public HangingSkeletonDeed() : base( 0x14F0 )
 		{			
 			LootType = LootType.Blessed;

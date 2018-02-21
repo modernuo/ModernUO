@@ -7,10 +7,10 @@ using Server.Network;
 namespace Server.Items
 {
 	[Furniture]
-	[Flipable( 0x2815, 0x2816 )]
+	[Flippable( 0x2815, 0x2816 )]
 	public class TallCabinet : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public TallCabinet() : base( 0x2815 )
 		{
 			Weight = 1.0;
@@ -34,10 +34,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x2817, 0x2818 )]
+	[Flippable( 0x2817, 0x2818 )]
 	public class ShortCabinet : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public ShortCabinet() : base( 0x2817 )
 		{
 			Weight = 1.0;
@@ -62,10 +62,10 @@ namespace Server.Items
 
 
 	[Furniture]
-	[Flipable( 0x2857, 0x2858 )]
+	[Flippable( 0x2857, 0x2858 )]
 	public class RedArmoire : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public RedArmoire() : base( 0x2857 )
 		{
 			Weight = 1.0;
@@ -89,10 +89,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x285D, 0x285E )]
+	[Flippable( 0x285D, 0x285E )]
 	public class CherryArmoire : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public CherryArmoire() : base( 0x285D )
 		{
 			Weight = 1.0;
@@ -116,10 +116,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x285B, 0x285C )]
+	[Flippable( 0x285B, 0x285C )]
 	public class MapleArmoire : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public MapleArmoire() : base( 0x285B )
 		{
 			Weight = 1.0;
@@ -143,10 +143,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x2859, 0x285A )]
+	[Flippable( 0x2859, 0x285A )]
 	public class ElegantArmoire : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public ElegantArmoire() : base( 0x2859 )
 		{
 			Weight = 1.0;
@@ -170,10 +170,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c )]
+	[Flippable( 0xa97, 0xa99, 0xa98, 0xa9a, 0xa9b, 0xa9c )]
 	public class FullBookcase : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public FullBookcase() : base( 0xA97 )
 		{
 			Weight = 1.0;
@@ -197,10 +197,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xa9d, 0xa9e )]
+	[Flippable( 0xa9d, 0xa9e )]
 	public class EmptyBookcase : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyBookcase() : base( 0xA9D )
 		{
 		}
@@ -227,10 +227,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xa2c, 0xa34 )]
+	[Flippable( 0xa2c, 0xa34 )]
 	public class Drawer : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public Drawer() : base( 0xA2C )
 		{
 			Weight = 1.0;
@@ -254,10 +254,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xa30, 0xa38 )]
+	[Flippable( 0xa30, 0xa38 )]
 	public class FancyDrawer : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public FancyDrawer() : base( 0xA30 )
 		{
 			Weight = 1.0;
@@ -281,10 +281,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xa4f, 0xa53 )]
+	[Flippable( 0xa4f, 0xa53 )]
 	public class Armoire : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public Armoire() : base( 0xA4F )
 		{
 			Weight = 1.0;
@@ -316,10 +316,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xa4d, 0xa51 )]
+	[Flippable( 0xa4d, 0xa51 )]
 	public class FancyArmoire : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public FancyArmoire() : base( 0xA4D )
 		{
 			Weight = 1.0;

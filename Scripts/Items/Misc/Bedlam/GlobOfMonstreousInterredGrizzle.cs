@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072117; } } // Glob of Monsterous Interred Grizzle
 
-		[Constructable]
+		[Constructible]
 		public GlobOfMonstreousInterredGrizzle() : base( 0x2F3 )
 		{
 		}

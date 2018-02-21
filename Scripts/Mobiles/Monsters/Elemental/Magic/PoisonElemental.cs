@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a poison elementals corpse" )]
 	public class PoisonElemental : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public PoisonElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a poison elemental";

@@ -33,13 +33,13 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Fireflies()
 			: this( 0x1596 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Fireflies( int itemID )
 			: base( itemID )
 		{
@@ -100,7 +100,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1150061; } } 
 
-		[Constructable]
+		[Constructible]
 		public FirefliesDeed()
 			: base( 0x14F0 )
 		{

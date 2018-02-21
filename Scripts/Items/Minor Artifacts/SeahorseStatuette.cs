@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SeahorseStatuette : MonsterStatuette
 	{
-		[Constructable]
+		[Constructible]
 		public SeahorseStatuette() : base( MonsterStatuetteType.Seahorse )
 		{
 			LootType = LootType.Regular;

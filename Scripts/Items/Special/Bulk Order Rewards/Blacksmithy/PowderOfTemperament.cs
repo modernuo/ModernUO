@@ -21,12 +21,12 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1049082; } } // powder of fortifying
 
-		[Constructable]
+		[Constructible]
 		public PowderOfTemperament() : this( 10 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PowderOfTemperament( int charges ) : base( 4102 )
 		{
 			Weight = 1.0;

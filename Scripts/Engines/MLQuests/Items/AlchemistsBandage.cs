@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public AlchemistsBandage() : base( 0xE21 )
 		{
 			LootType = LootType.Blessed;

@@ -83,7 +83,7 @@ namespace Server.Spells.Chivalry
 				if ( (m.Hits + toHeal) > m.HitsMax )
 					toHeal = m.HitsMax - m.Hits;
 
-				//m.Hits += toHeal;	//Was previosuly due to the message
+				//m.Hits += toHeal;	//Was previously due to the message
 				//m.Heal( toHeal, Caster, false );
 				SpellHelper.Heal( toHeal, m, Caster, false );
 

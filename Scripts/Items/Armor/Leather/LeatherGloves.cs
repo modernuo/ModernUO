@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class LeatherGloves : BaseArmor, IArcaneEquip
 	{
 		public override int BasePhysicalResistance{ get{ return 2; } }
@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
-		[Constructable]
+		[Constructible]
 		public LeatherGloves() : base( 0x13C6 )
 		{
 			Weight = 1.0;

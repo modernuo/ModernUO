@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xE89, 0xE8a )]
+	[FlippableAttribute( 0xE89, 0xE8a )]
 	public class QuarterStaff : BaseStaff
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 60; } }
 
-		[Constructable]
+		[Constructible]
 		public QuarterStaff() : base( 0xE89 )
 		{
 			Weight = 4.0;

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26BC, 0x26C6 )]
+	[FlippableAttribute( 0x26BC, 0x26C6 )]
 	public class Scepter : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 110; } }
 
-		[Constructable]
+		[Constructible]
 		public Scepter() : base( 0x26BC )
 		{
 			Weight = 8.0;

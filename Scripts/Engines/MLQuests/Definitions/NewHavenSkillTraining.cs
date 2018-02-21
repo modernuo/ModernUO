@@ -253,9 +253,9 @@ namespace Server.Engines.MLQuests.Definitions
 			Activated = true;
 			OneTimeOnly = true;
 			Title = 1077597; // Stopping the World
-			Description = 1077598; // Head East out of town and go to Old Haven. Use spells and abilites to deplete your mana and meditate there until you have raised your Meditation skill to 50.	Well met! I can teach you how to 'Stop the World' around you and focus your inner energies on replenishing you mana. What is mana? Mana is the life force for everyone who practices arcane arts. When a practitioner of magic invokes a spell or scribes a scroll. It consumes mana. Having a abundant supply of mana is vital to excelling as a practitioner of the arcane. Those of us who study the art of Meditation are also known as stotics. The Meditation skill allows stoics to increase the rate at which they regenerate mana A Stoic needs to perform abilities or cast spells to deplete mana before he can meditate to replenish it. Meditation can occur passively or actively. Actively Meditation is more difficult to master but allows for the stoic to replenish mana at a significantly faster rate. Metal armor inerferes with the regenerative properties of Meditation. It is wise to wear leather or cloth protection when meditating. Head east out of town and go to Old Haven. Use spells and abilities to deplete your mana and actively meditate to replenish it.	Come back once you feel you are at the worthy rank of Apprentice Stoic and i will reward you with a arcane prize.
+			Description = 1077598; // Head East out of town and go to Old Haven. Use spells and abilities to deplete your mana and meditate there until you have raised your Meditation skill to 50.	Well met! I can teach you how to 'Stop the World' around you and focus your inner energies on replenishing you mana. What is mana? Mana is the life force for everyone who practices arcane arts. When a practitioner of magic invokes a spell or scribes a scroll. It consumes mana. Having a abundant supply of mana is vital to excelling as a practitioner of the arcane. Those of us who study the art of Meditation are also known as stotics. The Meditation skill allows stoics to increase the rate at which they regenerate mana A Stoic needs to perform abilities or cast spells to deplete mana before he can meditate to replenish it. Meditation can occur passively or actively. Actively Meditation is more difficult to master but allows for the stoic to replenish mana at a significantly faster rate. Metal armor inerferes with the regenerative properties of Meditation. It is wise to wear leather or cloth protection when meditating. Head east out of town and go to Old Haven. Use spells and abilities to deplete your mana and actively meditate to replenish it.	Come back once you feel you are at the worthy rank of Apprentice Stoic and i will reward you with a arcane prize.
 			RefusalMessage = 1077599; // Seek me out if you ever wish to study the art of Meditation. Good journey.
-			InProgressMessage = 1077628; // You have not achived the rank of Apprentice Stoic. Come back to me once you feel that you are worthy of the rank Apprentice Stoic and i will reward you with a arcane prize.
+			InProgressMessage = 1077628; // You have not achieved the rank of Apprentice Stoic. Come back to me once you feel that you are worthy of the rank Apprentice Stoic and i will reward you with a arcane prize.
 			CompletionMessage = 1077626; // You have successfully begun your journey in becoming a true master of Magery. On behalf of the New Haven Mage Council I wish to present you with this bracelet. When worn, the Bracelet of Resilience will enhance your resistances vs. the elements, physical, and poison harm. The Bracelet of Resilience also magically enhances your ability fend off ranged and melee attacks. I hope it serves you well.
 			CompletionNotice = 1077600; // You have achieved the rank of Apprentice Stoic (for Meditation). Return to Gustar in New Haven to receive your arcane prize.
 
@@ -279,10 +279,10 @@ namespace Server.Engines.MLQuests.Definitions
 			Activated = true;
 			OneTimeOnly = true;
 			Title = 1077615; // Scribing Arcane Knowledge
-			Description = 1077616; // While Here ar the New Haven Magery Library, use scribe's pen and scribe 3rd and 4th circle Magery scrolls that you have in your spellbook. Remeber, you will need blank scrolls aswell. Do this until you have raised your Inscription skill to 50. Greetings and welcome to the New Haven Magery Library! You wish to learn how to scribe spell scrolls? You have come to the right place! Inscribeed in a steady hand and imbued with te power of reagents, a scroll can mean the difference between life and death in a perilous situation. Those knowledgeable in Inscription man transcribe spells to create useful and valuale magical scrolls. Before you can inscribe a spell, you must first be able to cast the spell without the aid of a scroll. This means that you need the appropriate level of proficiency as a mage, the required mana, and the required reagents. Second, you will need a blank scroll to write on and a scribe's pen. Then, you will need to decide which particular spell you wish to scribe. It may sound easy, but there is a bit more to it. As with the development of all skills, you need to practice Inscription of lower level spells before you can move onto the more difficult ones. The most important aspect of Inscription is mana. Inscribing a scroll with a magic spell drains your mana. When inscribing 3rd or lower spells this is will not be much of a problem for these spells consume a small amount of mana. However, when you are inscribing higher circle spells, you may see your mana drain rapidly. When this happens, pause or meditate before continuing.I suggest you begin scribing any 3rd and 4th circle spells that you know. If you don't possess ant, you can alwayers barter with one of the local mage merchants or a fellow adventurer that is a seasoned Scribe. Come back to me once you feel that you are the worthy rankof Apprentice Scribe and i will reward you with an arcane prize.
+			Description = 1077616; // While here at the New Haven Magery Library, use a scribe's pen and scribe and 3rd and 4th circle Magery scrolls that you have in your spellbook. Remember, you will need blank scrolls as well. Do this until you have raised your Inscription skill to 50.<br><center>------</center><br>Greetings and welcome to the New Haven Magery Library! You wish to learn how to scribe spell scrolls? You have come to the right place! Inscribed in a steady hand and imbued with the power of reagents, a scroll can mean the difference between life and death in a perilous situation. Those knowledgeable in Inscription may transcribe spells to create useful and valuable magical scrolls.<BR><BR>Before you inscribe a spell, you must first be able to cast the spell without the aid of a scroll. This means that you need the appropriate level of proficiency as a mage, the required mana, and the required reagents. Second, you will need a blank scroll to write on and a scribe's pen. Then, you will need to decide which particular spell you wish to scribe. It may sound easy, but there is a bit more to it. As with the development of all skills, you need to practice Inscription of lower level spells before you can move onto the more difficult ones.<BR><BR>The most important aspect of Inscription is mana. Inscribing a scroll with a magic spell drains your mana. When inscribing 3rd circle or lower spells this will not be much of a problem for these spells consume a small amount of mana. However, when you are inscribing higher circle spells, you may see your mana drain rapidly. When this happens, pause or meditate before continuing.<BR><BR>I suggest you begin scribing any 3rd and 4th circle spells that you know. If you don't possess any, you can always barter with one of the local mage merchants or a fellow adventurer that is a seasoned Scribe.<BR><BR>Come back to me once you feel that you are worthy of the rank of Apprentice Scribe and I will reward you with an arcane prize.
 			RefusalMessage = 1077617; // I understand. When you are ready, feel free to return to me for Inscription training. Thanks for stopping by!
-			InProgressMessage = 1077631; // You have not achived the rank of Apprentice Scribe. Come back to me once you feel that you are worthy of the rank Apprentice Scribe and i will reward you with a arcane prize.
-			CompletionMessage = 1077619; // Scribing is a very fulfilling pursuit. I am please to see you embark on this journey. You sling a pen well! On behalf of the New Haven Mage Council I wish to present you with this spellbook. When equipped, the Hallowed Spellbook greatly enhanced the potency of your offensive soells when used against Undead. Be mindful, though. While this book is equipped you invoke powerful spells and abilities vs Humanoids, such as other humans, orcs, ettins, and trolls. Your offensive spells will diminish in effectiveness. I suggest unequipping the Hallowed Spellbook when battling Humanoids. I hope this spellbook serves you well.
+			InProgressMessage = 1077631; // You have not achieved the rank of Apprentice Scribe. Come back to me once you feel that you are worthy of the rank Apprentice Scribe and i will reward you with a arcane prize.
+			CompletionMessage = 1077619; // Scribing is a very fulfilling pursuit. I am pleased to see you embark on this journey. You sling a pen well! On behalf of the New Haven Mage Council I wish to present you with this spellbook. When equipped, the Hallowed Spellbook greatly enhances the potency of your offensive spells when used against Undead. Be mindful, though. While this book is equipped, when you invoke your powerful spells and abilities vs. Humanoids such as other humans, orcs, ettins, trolls, and the like, your offensive spells will diminish in effectiveness. I suggest unequipping the Hallowed Spellbook when battling Humanoids. I hope this spellbook serves you well.
 			CompletionNotice = 1077618; // You have achieved the rank of Apprentice Scribe. Return to Jillian in New Haven to receive your arcane prize.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Inscribe, 500, true, true ) );
@@ -358,14 +358,14 @@ namespace Server.Engines.MLQuests.Definitions
 			OneTimeOnly = true;
 			Title = 1077741; // The Right Tool for the Job
 			Description = 1077744; // Create new scissors and hammers while inside Amelia's workshop. Try making scissors up to 45 skill, the switch to making hammers until 50 skill.<br><center>-----</center><br>Hello! I guess you're here to learn something about Tinkering, eh? You've come to the right place, as Tinkering is what I've dedicated my life to. <br><br>You'll need two things to get started: a supply of ingots and the right tools for the job. You can either buy ingots from the market, or go mine them yourself. As for tools, you can try making your own set of Tinker's Tools, or if you'd prefer to buy them, I have some for sale.<br><br>Working here in my shop will let me give you pointers as you go, so you'll be able to learn faster than anywhere else. Start off making scissors until you reach 45 tinkering skill, then switch to hammers until you've achieved 50. Once you've done that, come talk to me and I'll give you something for your hard work.
-			RefusalMessage = 1077745; // I’m disappointed that you aren’t interested in learning more about Tinkering. It’s really such a useful skill!<br><br>*Amelia smiles*<br><br>At least you know where to find me if you change your mind, since I rarely spend time outside of this shop.
+			RefusalMessage = 1077745; // Iâ€™m disappointed that you arenâ€™t interested in learning more about Tinkering. Itâ€™s really such a useful skill!<br><br>*Amelia smiles*<br><br>At least you know where to find me if you change your mind, since I rarely spend time outside of this shop.
 			InProgressMessage = 1077746; // Nice going! You're not quite at Apprentice Tinkering yet, though, so you better get back to work. Remember that the quickest way to learn is to make scissors up until 45 skill, and then switch to hammers. Also, don't forget that working here in my shop will let me give you tips so you can learn faster.
 			CompletionMessage = 1077748; // You've done it! Look at our brand new Apprentice Tinker! You've still got quite a lot to learn if you want to be a Grandmaster Tinker, but I believe you can do it! Just keep in mind that if you're tinkering just to practice and improve your skill, make items that are moderately difficult (60-80% success chance), and try to stick to ones that use less ingots.  <br><br>Come here, my brand new Apprentice Tinker, I want to give you something special. I created this just for you, so I hope you like it. It's a set of Tinker's Tools that contains a bit of magic. These tools have more charges than any Tinker's Tools a Tinker can make. You can even use them to make a normal set of tools, so that way you won't ever find yourself stuck somewhere with no tools!
 			CompletionNotice = 1077747; // You have achieved the rank of Apprentice Tinker. Talk to Amelia Youngstone in New Haven to see what kind of reward she has waiting for you.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Tinkering, 500, true, true ) );
 
-			Rewards.Add( new ItemReward( 1077749, typeof( AmeliasToolbox ) ) ); // Amelia’s Toolbox
+			Rewards.Add( new ItemReward( 1077749, typeof( AmeliasToolbox ) ) ); // Ameliaâ€™s Toolbox
 		}
 
 		public override void Generate()
@@ -662,11 +662,11 @@ namespace Server.Engines.MLQuests.Definitions
 		{
 			Activated = true;
 			OneTimeOnly = true;
-			Title = 1077750; // The Delucian’s Lost Mine
+			Title = 1077750; // The Delucianâ€™s Lost Mine
 			Description = 1077753; // Find Jacob's Lost Mine and mine iron ore there, using a pickaxe or shovel. Bring it back to Jacob's forge and smelt the ore into ingots, until you have raised your Mining skill to 50. You may find a packhorse useful for hauling the ore around. The animal trainer in New Haven has packhorses for sale.<br><center>-----</center><br>Howdy! Welcome to my camp. It's not much, I know, but it's all I'll be needin' up here. I don't need them fancy things those townspeople have down there in New Haven. Nope, not one bit. Just me, Bessie, my pick and a thick vein 'o valorite.<br><br>Anyhows, I'm guessin' that you're up here to ask me about minin', aren't ya? Well, don't be expectin' me to tell you where the valorite's at, cause I ain't gonna tell the King of Britannia, much less the likes of you. But I will show ya how to mine and smelt iron, cause there certainly is a 'nough of up in these hills.<br><br>*Jacob looks around, with a perplexed look on his face*<br><br>Problem is, I can't remember where my iron mine's at, so you'll have to find it yourself. Once you're there, have at it with a pickaxe or shovel, then haul it back to camp and I'll show ya how to smelt it. Ya look a bit wimpy, so you might wanna go buy yourself a packhorse in town from the animal trainer to help you haul around all that ore.<br><br>When you're an Apprentice Miner, talk to me and I'll give ya a little somethin' I've got layin' around here... somewhere.
-			RefusalMessage = 1077754; // Couldn’t find my iron mine, could ya? Well, neither can I!<br><br>*Jacob laughs*<br><br>Oh, ya don’t wanna find it? Well, allrighty then, ya might as well head on back down to town then and stop cluttering up my camp. Come back and talk to me if you’re interested in learnin’ ‘bout minin’.
-			InProgressMessage = 1077755; // Where ya been off a gallivantin’ all day, pilgrim? You ain’t seen no hard work yet! Get yer arse back out there to my mine and dig up some more iron. Don’t forget to take a pickaxe or shovel, and if you’re so inclined, a packhorse too.
-			CompletionMessage = 1077757; // Dang gun it! If that don't beat all! Ya went and did it, didn’t ya? What we got ourselves here is a mighty fine brand spankin’ new Apprentice Miner!<br><br>I can see ya put some meat on them bones too while you were at it!<br><br>Here’s that little somethin’ I told ya I had for ya. It’s a pickaxe with some high falutin’ magic inside that’ll help you find the good stuff when you’re off minin’. It wears out fast, though, so you can only use it a few times a day.<br><br>Welp, I’ve got some smeltin’ to do, so off with ya. Good luck, pilgrim!
+			RefusalMessage = 1077754; // Couldnâ€™t find my iron mine, could ya? Well, neither can I!<br><br>*Jacob laughs*<br><br>Oh, ya donâ€™t wanna find it? Well, allrighty then, ya might as well head on back down to town then and stop cluttering up my camp. Come back and talk to me if youâ€™re interested in learninâ€™ â€˜bout mininâ€™.
+			InProgressMessage = 1077755; // Where ya been off a gallivantinâ€™ all day, pilgrim? You ainâ€™t seen no hard work yet! Get yer arse back out there to my mine and dig up some more iron. Donâ€™t forget to take a pickaxe or shovel, and if youâ€™re so inclined, a packhorse too.
+			CompletionMessage = 1077757; // Dang gun it! If that don't beat all! Ya went and did it, didnâ€™t ya? What we got ourselves here is a mighty fine brand spankinâ€™ new Apprentice Miner!<br><br>I can see ya put some meat on them bones too while you were at it!<br><br>Hereâ€™s that little somethinâ€™ I told ya I had for ya. Itâ€™s a pickaxe with some high falutinâ€™ magic inside thatâ€™ll help you find the good stuff when youâ€™re off mininâ€™. It wears out fast, though, so you can only use it a few times a day.<br><br>Welp, Iâ€™ve got some smeltinâ€™ to do, so off with ya. Good luck, pilgrim!
 			CompletionNotice = 1077756; // You have achieved the rank of Apprentice Miner. Return to Jacob Waltz in at his camp in the hills above New Haven as soon as you can to claim your reward.
 
 			Objectives.Add( new GainSkillObjective( SkillName.Mining, 500, true, true ) );
@@ -688,10 +688,10 @@ namespace Server.Engines.MLQuests.Definitions
 		{
 			Activated = true;
 			OneTimeOnly = true;
-			Title = 1077732; // It’s Hammer Time!
+			Title = 1077732; // Itâ€™s Hammer Time!
 			Description = 1077735; // Create new daggers and maces using the forge and anvil in George's shop. Try making daggers up to 45 skill, the switch to making maces until 50 skill.<br><center>-----</center><br>Hail, and welcome to my humble shop. I'm George Hephaestus, New Haven's blacksmith. I assume that you're here to ask me to train you to be an Apprentice Blacksmith. I certainly can do that, but you're going to have to supply your own ingots.<br><br>You can always buy them at the market, but I highly suggest that you mine your own. That way, any items you sell will be pure profit!<br><br>So, once you have a supply of ingots, use my forge and anvil here to create items. You'll also need a supply of the proper tools; you can use a smith's hammer, a sledgehammer or tongs. You can either make them yourself if you have the tinkering skill, or buy them from a tinker at the market.<br><br>Since I'll be around to give you advice, you'll learn faster here than anywhere else. Start off making daggers until you reach 45 blacksmithing skill, then switch to maces until you've achieved 50. Once you've done that, come talk to me and I'll give you something for your hard work.
 			RefusalMessage = 1077736; // You're not interested in learning to be a smith, eh? I thought for sure that's why you were here. Oh well, if you change your mind, you can always come back and talk to me.
-			InProgressMessage = 1077737; // You’re doing well, but you’re not quite there yet. Remember that the quickest way to learn is to make daggers up until 45 skill, and then switch to maces. Also, don’t forget that using my forge and anvil will help you learn faster.
+			InProgressMessage = 1077737; // Youâ€™re doing well, but youâ€™re not quite there yet. Remember that the quickest way to learn is to make daggers up until 45 skill, and then switch to maces. Also, donâ€™t forget that using my forge and anvil will help you learn faster.
 			CompletionMessage = 1077739; // I've been watching you get better and better as you've been smithing, and I have to say, you're a natural! It's a long road to being a Grandmaster Blacksmith, but I have no doubt that if you put your mind to it you'll get there someday. Let me give you one final piece of advice. If you're smithing just to practice and improve your skill, make items that are moderately difficult (60-80% success chance), and try to stick to ones that use less ingots.<br><br>Now that you're an Apprentice Blacksmith, I have something for you. While you were busy practicing, I was crafting this hammer for you. It's finely balanced, and has a bit of magic imbued within that will help you craft better items. However, that magic needs to restore itself over time, so you can only use it so many times per day. I hope you find it useful!
 			CompletionNotice = 1077738; // You have achieved the rank of Apprentice Blacksmith. Return to George Hephaestus in New Haven to see what kind of reward he has waiting for you.
 
@@ -720,7 +720,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078133 ); // Hail, friend. Want to live the life of a paladin?
 		}
 
-		[Constructable]
+		[Constructible]
 		public Aelorn()
 		{
 			Name = "Aelorn";
@@ -786,7 +786,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078128 ); // You there! Wanna master hand to hand defense? Of course you do!
 		}
 
-		[Constructable]
+		[Constructible]
 		public Dimethro()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -845,7 +845,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078141 ); // Don't listen to Jockles. Real warriors wield mace weapons!
 		}
 
-		[Constructable]
+		[Constructible]
 		public Churchill()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -920,7 +920,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078202 ); // Archery requires a steady aim and dexterous fingers.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Robyn()
 		{
 			Name = "Robyn";
@@ -1005,7 +1005,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078187 ); // The art of fencing requires a dexterous hand, a quick wit and fleet feet.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Recaro()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1085,7 +1085,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078136 ); // There is an art to slaying your enemies swiftly. It's called tactics, and I can teach it to you.
 		}
 
-		[Constructable]
+		[Constructible]
 		public AldenArmstrong()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1146,7 +1146,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078135 ); // Talk to me to learn the way of the blade.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Jockles()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1207,7 +1207,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078140 ); // Want to learn how to parry blows?
 		}
 
-		[Constructable]
+		[Constructible]
 		public TylAriadne()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1288,7 +1288,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078130 ); // A mage should learn how to resist spells.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Alefian()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1344,7 +1344,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078126 ); // Meditation allows a mage to replenish mana quickly. I can teach you.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gustar()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1392,7 +1392,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class GustarShroud : BaseOuterTorso
 	{
 		public override string DefaultName{ get{ return " "; } }
-		[Constructable]
+		[Constructible]
 		public GustarShroud()  : base( 0x2684 )
 		{
 			Hue = 0x479;
@@ -1428,7 +1428,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078129 ); // I can teach you how to scribe magic scrolls.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Jillian()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1485,7 +1485,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078125 ); // Want to unlock the secrets of magery?
 		}
 
-		[Constructable]
+		[Constructible]
 		public Kaelynna()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1542,7 +1542,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078127 ); // Want to maximize your spell damage? I have a scholarly task for you!
 		}
 
-		[Constructable]
+		[Constructible]
 		public Mithneral()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1600,7 +1600,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078123 ); // Tinkering is very useful for a blacksmith. You can make your own tools.
 		}
 
-		[Constructable]
+		[Constructible]
 		public AmeliaYoungstone()
 		{
 			Name = "Amelia Youngstone";
@@ -1662,7 +1662,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078138 ); // Learning of the body will allow you to excel in combat.
 		}
 
-		[Constructable]
+		[Constructible]
 		public AndreasVesalius()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1722,7 +1722,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078137 ); // A warrior needs to learn how to apply bandages to wounds.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Avicenna()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1779,7 +1779,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078139 ); // Know yourself, and you will become a true warrior.
 		}
 
-		[Constructable]
+		[Constructible]
 		public SarsmeaSmythe()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1841,7 +1841,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078155 ); // I can teach you Ninjitsu. The Art of Stealth.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Ryuichi()
 			: base( "the Ninjitsu Instructor" )
 		{
@@ -1912,7 +1912,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078165 ); // To be undetected means you cannot be harmed.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Chiyo()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1961,7 +1961,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078175 ); // Walk Silently. Remain unseen. I can teach you.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Jun()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -2025,7 +2025,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Walker()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -2086,7 +2086,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078134 ); // Seek me to learn the way of the samurai.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Hamato()
 			: base( "the Bushido Instructor" )
 		{
@@ -2155,7 +2155,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078131 ); // Allured by dark magic, aren't you?
 		}
 
-		[Constructable]
+		[Constructible]
 		public Mulcivikh()
 		{
 			Name = "Mulcivikh";
@@ -2232,7 +2232,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078132 ); // Want to learn how to channel the supernatural?
 		}
 
-		[Constructable]
+		[Constructible]
 		public Morganna()
 		{
 			Name = "Morganna";
@@ -2292,7 +2292,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078124 ); // You there! I can use some help mining these rocks!
 		}
 
-		[Constructable]
+		[Constructible]
 		public JacobWaltz()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -2352,7 +2352,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1078122 ); // Wanna learn how to make powerful weapons and armor? Talk to me.
 		}
 
-		[Constructable]
+		[Constructible]
 		public GeorgeHephaestus()
 		{
 			Name = "George Hephaestus";

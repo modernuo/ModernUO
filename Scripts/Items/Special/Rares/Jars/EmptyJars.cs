@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class EmptyJar : Item
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyJar()
 			: base(0x1005)
 		{
@@ -34,7 +34,7 @@ namespace Server.Items
 
 	public class EmptyJars : Item
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyJars()
 			: base(0xe44)
 		{
@@ -64,7 +64,7 @@ namespace Server.Items
 
 	public class EmptyJars2 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyJars2()
 			: base(0xe45)
 		{
@@ -95,7 +95,7 @@ namespace Server.Items
 
 	public class EmptyJars3 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyJars3()
 			: base(0xe46)
 		{
@@ -125,7 +125,7 @@ namespace Server.Items
 
 	public class EmptyJars4 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public EmptyJars4()
 			: base(0xe47)
 		{

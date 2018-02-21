@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0x2A58, 0x2A59 )]
+	[Flippable( 0x2A58, 0x2A59 )]
 	public class BoneThroneComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1074476; } } // Bone throne
@@ -44,7 +44,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new BoneThroneDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BoneThroneAddon() : base()
 		{
 			AddComponent( new BoneThroneComponent(), 0, 0, 0 );
@@ -74,7 +74,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new BoneThroneAddon(); } }
 		public override int LabelNumber { get { return 1074476; } } // Bone throne
 
-		[Constructable]
+		[Constructible]
 		public BoneThroneDeed() : base()
 		{
 			LootType = LootType.Blessed;

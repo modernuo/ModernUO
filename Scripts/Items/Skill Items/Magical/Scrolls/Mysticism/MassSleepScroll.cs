@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class MassSleepScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public MassSleepScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MassSleepScroll( int amount )
 			: base( 686, 0x2DA7, amount )
 		{

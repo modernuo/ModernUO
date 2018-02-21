@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075038; } } // Quiver of Rage
 
-		[Constructable]
+		[Constructible]
 		public QuiverOfRage() : base()
 		{
 			Hue = 0x24C;

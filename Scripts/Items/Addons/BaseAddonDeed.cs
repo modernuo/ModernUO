@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-	[Flipable( 0x14F0, 0x14EF )]
+	[Flippable( 0x14F0, 0x14EF )]
 	public abstract class BaseAddonDeed : Item
 	{
 		public abstract BaseAddon Addon{ get;

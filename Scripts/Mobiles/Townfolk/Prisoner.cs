@@ -6,7 +6,7 @@ namespace Server.Mobiles.Townfolk
 {
 	public class Prisoner : BaseEscortable
 	{
-		[Constructable]
+		[Constructible]
 		public Prisoner()
 		{
 			Title = Female ? "the noblewoman" : "the nobleman";

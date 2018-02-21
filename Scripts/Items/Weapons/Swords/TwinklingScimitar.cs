@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073544; } } // twinkling scimitar
 
-		[Constructable]
+		[Constructible]
 		public TwinklingScimitar()
 		{
 			Attributes.DefendChance = 6;

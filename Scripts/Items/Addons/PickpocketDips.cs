@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x1EC0, 0x1EC3 )]
+	[Flippable( 0x1EC0, 0x1EC3 )]
 	public class PickpocketDip : AddonComponent
 	{
 		private double m_MinSkill;
@@ -160,7 +160,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new PickpocketDipEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PickpocketDipEastAddon()
 		{
 			AddComponent( new PickpocketDip( 0x1EC3 ), 0, 0, 0 );
@@ -190,7 +190,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new PickpocketDipEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044337; } } // pickpocket dip (east)
 
-		[Constructable]
+		[Constructible]
 		public PickpocketDipEastDeed()
 		{
 		}
@@ -218,7 +218,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new PickpocketDipSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PickpocketDipSouthAddon()
 		{
 			AddComponent( new PickpocketDip( 0x1EC0 ), 0, 0, 0 );
@@ -248,7 +248,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new PickpocketDipSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044338; } } // pickpocket dip (south)
 
-		[Constructable]
+		[Constructible]
 		public PickpocketDipSouthDeed()
 		{
 		}

@@ -8,7 +8,7 @@ namespace Server.Items
 {
 	public class Guillotine : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Guillotine()
 			: base( 4656 )
 		{

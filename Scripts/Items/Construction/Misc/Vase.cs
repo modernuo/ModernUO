@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class Vase : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Vase() : base( 0xB46 )
 		{
 			Weight = 10;
@@ -31,7 +31,7 @@ namespace Server.Items
 
 	public class LargeVase : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LargeVase() : base( 0xB45 )
 		{
 			Weight = 15;
@@ -58,7 +58,7 @@ namespace Server.Items
 
 	public class SmallUrn : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SmallUrn() : base( 0x241C )
 		{
 			Weight = 20.0;

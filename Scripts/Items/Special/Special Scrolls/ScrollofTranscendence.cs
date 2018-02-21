@@ -28,7 +28,7 @@ namespace Server.Items
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public ScrollofTranscendence( SkillName skill, double value ) : base( skill, value )
 		{
 			ItemID = 0x14EF;

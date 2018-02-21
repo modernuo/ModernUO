@@ -31,12 +31,12 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1016511; } } // the floor of the cavern seems to have collapsed here - a faint light is visible at the bottom of the pit
 
-		[Constructable]
+		[Constructible]
 		public KhaldunPitTeleporter() : this( new Point3D( 5451, 1374, 0 ), Map.Felucca )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public KhaldunPitTeleporter( Point3D pointDest, Map mapDest ) : base( 0x053B )
 		{
 			Movable = false;

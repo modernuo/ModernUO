@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.RangersGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public RangerGuildmaster() : base( "ranger" )
 		{
 			SetSkill( SkillName.AnimalLore, 64.0, 100.0 );

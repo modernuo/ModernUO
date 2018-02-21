@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new PeachTrunkDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PeachTrunkAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD9C, 1076786 ), 0, 0, 0 );
@@ -36,7 +36,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new PeachTrunkAddon(); } }
 		public override int LabelNumber { get { return 1076786; } } // Peach Trunk
 
-		[Constructable]
+		[Constructible]
 		public PeachTrunkDeed() : base()
 		{
 			LootType = LootType.Blessed;

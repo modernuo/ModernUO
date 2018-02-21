@@ -20,7 +20,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
 		public override bool IsActiveVendor { get { return false; } }
 
-		[Constructable]
+		[Constructible]
 		public SirHelper()
 		{
 			Name = "Sir Helper";

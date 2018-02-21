@@ -31,15 +31,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1541, 0x1542 )]
+	[Flippable( 0x1541, 0x1542 )]
 	public class BodySash : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public BodySash() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BodySash( int hue ) : base( 0x1541, hue )
 		{
 			Weight = 1.0;
@@ -64,15 +64,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x153d, 0x153e )]
+	[Flippable( 0x153d, 0x153e )]
 	public class FullApron : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public FullApron() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FullApron( int hue ) : base( 0x153d, hue )
 		{
 			Weight = 4.0;
@@ -97,15 +97,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1f7b, 0x1f7c )]
+	[Flippable( 0x1f7b, 0x1f7c )]
 	public class Doublet : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public Doublet() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Doublet( int hue ) : base( 0x1F7B, hue )
 		{
 			Weight = 2.0;
@@ -130,15 +130,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1ffd, 0x1ffe )]
+	[Flippable( 0x1ffd, 0x1ffe )]
 	public class Surcoat : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public Surcoat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Surcoat( int hue ) : base( 0x1FFD, hue )
 		{
 			Weight = 6.0;
@@ -166,15 +166,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1fa1, 0x1fa2 )]
+	[Flippable( 0x1fa1, 0x1fa2 )]
 	public class Tunic : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public Tunic() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tunic( int hue ) : base( 0x1FA1, hue )
 		{
 			Weight = 5.0;
@@ -199,15 +199,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2310, 0x230F )]
+	[Flippable( 0x2310, 0x230F )]
 	public class FormalShirt : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public FormalShirt() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FormalShirt( int hue ) : base( 0x2310, hue )
 		{
 			Weight = 1.0;
@@ -235,15 +235,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1f9f, 0x1fa0 )]
+	[Flippable( 0x1f9f, 0x1fa0 )]
 	public class JesterSuit : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public JesterSuit() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public JesterSuit( int hue ) : base( 0x1F9F, hue )
 		{
 			Weight = 4.0;
@@ -268,15 +268,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x27A1, 0x27EC )]
+	[Flippable( 0x27A1, 0x27EC )]
 	public class JinBaori : BaseMiddleTorso
 	{
-		[Constructable]
+		[Constructible]
 		public JinBaori() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public JinBaori( int hue ) : base( 0x27A1, hue )
 		{
 			Weight = 3.0;

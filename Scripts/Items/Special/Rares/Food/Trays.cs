@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoTray : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoTray() : base( Utility.Random(2) + 0x991 )
 		{
 			Movable = true;

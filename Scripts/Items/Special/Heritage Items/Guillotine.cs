@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x125E, 0x1230 )]
+	[Flippable( 0x125E, 0x1230 )]
 	public class GuillotineComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1024656; } } // Guillotine
@@ -37,7 +37,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new GuillotineDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public GuillotineAddon() : base()
 		{
 			AddComponent( new GuillotineComponent(), 0, 0, 0 );
@@ -148,7 +148,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new GuillotineAddon(); } }
 		public override int LabelNumber { get { return 1024656; } } // Guillotine
 
-		[Constructable]
+		[Constructible]
 		public GuillotineDeed() : base()
 		{
 			LootType = LootType.Blessed;

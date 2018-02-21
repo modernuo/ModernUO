@@ -5,7 +5,7 @@ namespace Server.Items
 	[Furniture]
 	public class Stool : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Stool() : base( 0xA2A )
 		{
 			Weight = 10.0;
@@ -36,7 +36,7 @@ namespace Server.Items
 	[Furniture]
 	public class FootStool : Item
 	{
-		[Constructable]
+		[Constructible]
 		public FootStool() : base( 0xB5E )
 		{
 			Weight = 6.0;

@@ -5,7 +5,7 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xE86, 0xE85 )]
+	[FlippableAttribute( 0xE86, 0xE85 )]
 	public class Pickaxe : BaseAxe, IUsesRemaining
 	{
 		public override HarvestSystem HarvestSystem{ get{ return Mining.System; } }
@@ -29,7 +29,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Slash1H; } }
 
-		[Constructable]
+		[Constructible]
 		public Pickaxe() : base( 0xE86 )
 		{
 			Weight = 11.0;

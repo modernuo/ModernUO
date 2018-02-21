@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ArcaneCircleDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ArcaneCircleAddon()
 		{
 			AddComponent( new AddonComponent( 0x3083 ), -1, -1, 0 );
@@ -61,7 +61,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ArcaneCircleAddon(); } }
 		public override int LabelNumber{ get{ return 1072703; } } // arcane circle
 
-		[Constructable]
+		[Constructible]
 		public ArcaneCircleDeed()
 		{
 		}

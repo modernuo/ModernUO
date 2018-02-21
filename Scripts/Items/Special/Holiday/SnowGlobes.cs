@@ -70,13 +70,13 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1041454 + (int) m_Type; } }
 
-		[Constructable]
+		[Constructible]
 		public SnowGlobeOne()
 			: this( (SnowGlobeTypeOne) Utility.Random( 19 ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SnowGlobeOne( SnowGlobeTypeOne type )
 		{
 			m_Type = type;
@@ -183,13 +183,13 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public SnowGlobeTwo()
 			: this( (SnowGlobeTypeTwo) Utility.Random( 19 ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SnowGlobeTwo( SnowGlobeTypeTwo type )
 		{
 			m_Type = type;
@@ -267,13 +267,13 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public SnowGlobeThree()
 			: this( (SnowGlobeTypeThree) Utility.Random( 16 ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SnowGlobeThree( SnowGlobeTypeThree type )
 		{
 			m_Type = type;

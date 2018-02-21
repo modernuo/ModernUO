@@ -9,7 +9,7 @@ namespace Server.Items
 			get { return "a swarm of flies"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SwarmOfFlies() : base( 0x91B )
 		{
 			Hue = 1;

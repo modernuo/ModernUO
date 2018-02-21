@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoRoseOfTrinsic3 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoRoseOfTrinsic3() : base( 0x234B )
 		{
 			Movable = true;

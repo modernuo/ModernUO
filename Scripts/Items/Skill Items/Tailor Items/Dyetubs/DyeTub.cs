@@ -123,7 +123,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable] 
+		[Constructible] 
 		public DyeTub() : base( 0xFAB )
 		{
 			Weight = 10.0;

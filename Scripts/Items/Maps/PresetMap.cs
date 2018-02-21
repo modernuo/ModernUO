@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		private int m_LabelNumber;
 
-		[Constructable]
+		[Constructible]
 		public PresetMap( PresetMapType type )
 		{
 			int v = (int)type;

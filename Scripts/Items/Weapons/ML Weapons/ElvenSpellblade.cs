@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D20, 0x2D2C )]
+	[FlippableAttribute( 0x2D20, 0x2D2C )]
 	public class ElvenSpellblade : BaseKnife
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.PsychicAttack; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } } // TODO
 		public override int InitMaxHits{ get{ return 60; } } // TODO
 
-		[Constructable]
+		[Constructible]
 		public ElvenSpellblade() : base( 0x2D20 )
 		{
 			Weight = 5.0;

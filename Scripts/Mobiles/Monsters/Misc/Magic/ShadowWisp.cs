@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a wisp corpse" )]
 	public class ShadowWisp : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public ShadowWisp() : base( AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.3, 0.6 )
 		{
 			Name = "a shadow wisp";

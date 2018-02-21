@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class PlagueBeastGland : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PlagueBeastGland() : base( 0x1CEF )
 		{
 			Name = "A Healthy Gland";

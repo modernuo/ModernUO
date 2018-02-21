@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class LeafGloves : BaseArmor, IArcaneEquip
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
-		[Constructable]
+		[Constructible]
 		public LeafGloves() : base( 0x2FC6 )
 		{
 			Weight = 2.0;

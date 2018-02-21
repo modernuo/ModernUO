@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.HealersGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public HealerGuildmaster() : base( "healer" )
 		{
 			SetSkill( SkillName.Anatomy, 85.0, 100.0 );

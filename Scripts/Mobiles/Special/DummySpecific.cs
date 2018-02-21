@@ -20,7 +20,7 @@ namespace Server.Mobiles
 	public class DummyMace : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummyMace() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Macer
@@ -96,7 +96,7 @@ namespace Server.Mobiles
 	public class DummyFence : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummyFence() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Fencer
@@ -172,7 +172,7 @@ namespace Server.Mobiles
 	public class DummySword : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummySword() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Swordsman
@@ -249,7 +249,7 @@ namespace Server.Mobiles
 	public class DummyNox : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummyNox() : base(AIType.AI_Mage, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 
@@ -320,7 +320,7 @@ namespace Server.Mobiles
 	public class DummyStun : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummyStun() : base(AIType.AI_Mage, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 
@@ -414,7 +414,7 @@ namespace Server.Mobiles
 	public class DummySuper : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummySuper() : base(AIType.AI_Mage, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Super Mage
@@ -512,7 +512,7 @@ namespace Server.Mobiles
 	public class DummyHealer : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummyHealer() : base(AIType.AI_Healer, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Healer Mage
@@ -603,7 +603,7 @@ namespace Server.Mobiles
 	public class DummyAssassin : Dummy
 	{
 
-		[Constructable]
+		[Constructible]
 		public DummyAssassin() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Hybrid Assassin
@@ -722,7 +722,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.DummyTheif" )]
 	public class DummyThief : Dummy
 	{
-		[Constructable]
+		[Constructible]
 		public DummyThief() : base(AIType.AI_Thief, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
 			// A Dummy Hybrid Thief

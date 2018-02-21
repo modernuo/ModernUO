@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LitItemID{ get { return 0x142C; } }
 		public override int UnlitItemID{ get { return 0x142F; } }
 
-		[Constructable]
+		[Constructible]
 		public CandleShort() : base( 0x142F )
 		{
 			if ( Burnout )

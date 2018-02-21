@@ -23,12 +23,12 @@ namespace Server.Factions
 
 		public override string DefaultName { get { return "faction stone"; } }
 
-		[Constructable]
+		[Constructible]
 		public FactionStone() : this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FactionStone( Faction faction ) : base( 0xEDC )
 		{
 			Movable = false;

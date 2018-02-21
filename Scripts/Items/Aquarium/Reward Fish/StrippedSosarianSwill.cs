@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074594; } } // Stripped Sosarian Swill
 		
-		[Constructable]
+		[Constructible]
 		public StrippedSosarianSwill() : base( 0x3B0A )
 		{
 		}

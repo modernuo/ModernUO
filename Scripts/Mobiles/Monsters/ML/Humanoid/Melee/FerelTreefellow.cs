@@ -12,7 +12,7 @@ namespace Server.Mobiles
 			return WeaponAbility.Dismount;
 		}
 
-		[Constructable]
+		[Constructible]
 		public FerelTreefellow() : base( AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a ferel treefellow";

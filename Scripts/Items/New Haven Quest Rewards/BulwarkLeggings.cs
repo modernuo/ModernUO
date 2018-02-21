@@ -13,7 +13,7 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 5; } }
 		public override int BaseEnergyResistance{ get{ return 3; } }
 
-		[Constructable]
+		[Constructible]
 		public BulwarkLeggings()
 		{
 			LootType = LootType.Blessed;

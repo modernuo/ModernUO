@@ -8,13 +8,13 @@ namespace Server.Items
 	{
 		public override CraftSystem CraftSystem { get { return DefMasonry.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public MalletAndChisel() : base( 0x12B3 )
 		{
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public MalletAndChisel( int uses ) : base( uses, 0x12B3 )
 		{
 			Weight = 1.0;

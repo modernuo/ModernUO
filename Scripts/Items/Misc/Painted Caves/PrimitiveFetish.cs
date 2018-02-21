@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074675; } } // Primitive Fetish
 
-		[Constructable]
+		[Constructible]
 		public PrimitiveFetish() : base( 0x23F )
 		{
 			LootType = LootType.Blessed;

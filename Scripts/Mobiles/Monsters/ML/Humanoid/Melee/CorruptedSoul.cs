@@ -13,7 +13,7 @@ namespace Server.Mobiles
 	{
 		public override bool DeleteCorpseOnDeath{ get{ return true; } }
 		
-		[Constructable]
+		[Constructible]
 		public CorruptedSoul() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, .1, 5 )
 		{
 			Name = "a corrupted soul";

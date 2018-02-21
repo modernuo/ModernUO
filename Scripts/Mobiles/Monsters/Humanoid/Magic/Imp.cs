@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an imp corpse" )]
 	public class Imp : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Imp() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an imp";

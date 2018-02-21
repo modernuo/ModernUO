@@ -5,7 +5,7 @@ namespace Server.Items
 	public class Chessmen2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public Chessmen2() : base( 0xE12 )
 		{
 			Movable = true;

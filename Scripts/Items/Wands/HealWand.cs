@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class HealWand : BaseWand
 	{
-		[Constructable]
+		[Constructible]
 		public HealWand() : base( WandEffect.Healing, 10, Core.ML ? 109 : 25 )
 		{
 		}

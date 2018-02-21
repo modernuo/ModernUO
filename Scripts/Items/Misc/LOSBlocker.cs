@@ -17,7 +17,7 @@ namespace Server.Items
 			get { return "no line of sight"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public LOSBlocker() : base( 0x21A2 )
 		{
 			Movable = false;

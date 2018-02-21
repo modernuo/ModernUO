@@ -13,7 +13,7 @@ namespace Server.Mobiles
 			get { return OppositionGroup.FeyAndUndead; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MLDryad() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a dryad";

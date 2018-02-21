@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class BlueSnowflake : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BlueSnowflake() : base( 0x232E )
 		{
 			Weight = 1.0;
@@ -34,7 +34,7 @@ namespace Server.Items
 
 	public class WhiteSnowflake : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WhiteSnowflake() : base( 0x232F )
 		{
 			Weight = 1.0;

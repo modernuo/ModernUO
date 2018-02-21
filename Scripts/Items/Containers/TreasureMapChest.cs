@@ -48,7 +48,7 @@ namespace Server.Items
 
 		public List<Mobile> Guardians { get { return m_Guardians; } }
 
-		[Constructable]
+		[Constructible]
 		public TreasureMapChest( int level ) : this( null, level, false )
 		{
 		}

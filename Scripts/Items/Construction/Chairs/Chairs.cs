@@ -3,10 +3,10 @@ using System;
 namespace Server.Items
 {
 	[Furniture]
-	[Flipable( 0xB4F, 0xB4E, 0xB50, 0xB51 )]
+	[Flippable( 0xB4F, 0xB4E, 0xB50, 0xB51 )]
 	public class FancyWoodenChairCushion : Item
 	{
-		[Constructable]
+		[Constructible]
 		public FancyWoodenChairCushion() : base(0xB4F)
 		{
 			Weight = 20.0;
@@ -35,10 +35,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xB53, 0xB52, 0xB54, 0xB55 )]
+	[Flippable( 0xB53, 0xB52, 0xB54, 0xB55 )]
 	public class WoodenChairCushion : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WoodenChairCushion() : base(0xB53)
 		{
 			Weight = 20.0;
@@ -67,10 +67,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xB57, 0xB56, 0xB59, 0xB58 )]
+	[Flippable( 0xB57, 0xB56, 0xB59, 0xB58 )]
 	public class WoodenChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WoodenChair() : base(0xB57)
 		{
 			Weight = 20.0;
@@ -99,10 +99,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xB5B, 0xB5A, 0xB5C, 0xB5D )]
+	[Flippable( 0xB5B, 0xB5A, 0xB5C, 0xB5D )]
 	public class BambooChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BambooChair() : base(0xB5B)
 		{
 			Weight = 20.0;
@@ -131,10 +131,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable(0x1218, 0x1219, 0x121A, 0x121B)]
+	[Flippable(0x1218, 0x1219, 0x121A, 0x121B)]
 	public class StoneChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public StoneChair() : base(0x1218)
 		{
 			Weight = 20;
@@ -160,10 +160,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable( 0x2DE3, 0x2DE4, 0x2DE5, 0x2DE6 )]
+	[Flippable( 0x2DE3, 0x2DE4, 0x2DE5, 0x2DE6 )]
 	public class OrnateElvenChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public OrnateElvenChair() : base( 0x2DE3 )
 		{
 			Weight = 1.0;
@@ -189,10 +189,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable( 0x2DEB, 0x2DEC, 0x2DED, 0x2DEE )]
+	[Flippable( 0x2DEB, 0x2DEC, 0x2DED, 0x2DEE )]
 	public class BigElvenChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BigElvenChair() : base( 0x2DEB )
 		{
 		}
@@ -217,10 +217,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable( 0x2DF5, 0x2DF6 )]
+	[Flippable( 0x2DF5, 0x2DF6 )]
 	public class ElvenReadingChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ElvenReadingChair() : base( 0x2DF5 )
 		{
 		}

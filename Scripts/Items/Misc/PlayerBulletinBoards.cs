@@ -15,7 +15,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1062421; } } // bulletin board (south)
 
-		[Constructable]
+		[Constructible]
 		public PlayerBBSouth() : base( 0x2311 )
 		{
 			Weight = 15.0;
@@ -44,7 +44,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1062420; } } // bulletin board (east)
 
-		[Constructable]
+		[Constructible]
 		public PlayerBBEast() : base( 0x2312 )
 		{
 			Weight = 15.0;

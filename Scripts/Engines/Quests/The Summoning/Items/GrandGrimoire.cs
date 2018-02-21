@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Doom
 	{
 		public override int LabelNumber{ get{ return 1060801; } } // The Grand Grimoire
 
-		[Constructable]
+		[Constructible]
 		public GrandGrimoire() : base( 0xEFA )
 		{
 			Weight = 1.0;

@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
 		public override bool ClickTitle{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public BlacksmithGuildmaster() : base( "blacksmith" )
 		{
 			SetSkill( SkillName.ArmsLore, 65.0, 88.0 );

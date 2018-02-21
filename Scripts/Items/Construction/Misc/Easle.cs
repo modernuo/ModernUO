@@ -3,10 +3,10 @@ using System;
 namespace Server.Items
 {
 	[Furniture]
-	[Flipable(0xF65, 0xF67, 0xF69)]
+	[Flippable(0xF65, 0xF67, 0xF69)]
 	public class Easle : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Easle() : base(0xF65)
 		{
 			Weight = 25.0;

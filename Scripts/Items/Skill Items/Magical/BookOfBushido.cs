@@ -10,12 +10,12 @@ namespace Server.Items
 		public override int BookOffset{ get{ return 400; } }
 		public override int BookCount{ get{ return 6; } }
 
-		[Constructable]
+		[Constructible]
 		public BookOfBushido() : this( (ulong)0x3F )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BookOfBushido( ulong content ) : base( content, 0x238C )
 		{
 			Layer = (Core.ML ? Layer.OneHanded : Layer.Invalid);

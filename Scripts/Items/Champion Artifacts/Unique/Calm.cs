@@ -12,7 +12,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public Calm()
 		{
 			Hue = 0x2cb;

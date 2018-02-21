@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27Ab, 0x27F6 )]
+	[FlippableAttribute( 0x27Ab, 0x27F6 )]
 	public class Tekagi : BaseKnife
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DualWield; } }
@@ -31,7 +31,7 @@ namespace Server.Items
 		public override WeaponType DefType{ get{ return WeaponType.Piercing; } }
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
 
-		[Constructable]
+		[Constructible]
 		public Tekagi() : base( 0x27AB )
 		{
 			Weight = 5.0;

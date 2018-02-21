@@ -8,7 +8,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[Flipable( 0x14EB, 0x14EC )]
+	[Flippable( 0x14EB, 0x14EC )]
 	public class MapItem : Item, ICraftable
 	{
 		private Rectangle2D m_Bounds;
@@ -55,7 +55,7 @@ namespace Server.Items
 			get { return m_Pins; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MapItem() : base( 0x14EC )
 		{
 			Weight = 1.0;

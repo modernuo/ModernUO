@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075299; } } // Prismatic Amber
 
-		[Constructable]
+		[Constructible]
 		public PrismaticAmber() : base()
 		{
 		}

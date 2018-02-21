@@ -2,10 +2,10 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAttribute(0xec6, 0xec7)]
+	[FlippableAttribute(0xec6, 0xec7)]
 	public class Dressform : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Dressform() : base(0xec6)
 		{
 			Weight = 10;

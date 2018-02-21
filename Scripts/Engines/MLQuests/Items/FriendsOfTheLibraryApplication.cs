@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public FriendsOfTheLibraryApplication() : base( 0xEC0 )
 		{
 			LootType = LootType.Blessed;

@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x3D98, 0x3D94 )]
+	[Flippable( 0x3D98, 0x3D94 )]
 	public class WallTorchComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076282; } } // Wall Torch
@@ -85,7 +85,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new WallTorchAddon(); } }
 		public override int LabelNumber { get { return 1076282; } } // Wall Torch
 
-		[Constructable]
+		[Constructible]
 		public WallTorchDeed() : base()
 		{
 			LootType = LootType.Blessed;

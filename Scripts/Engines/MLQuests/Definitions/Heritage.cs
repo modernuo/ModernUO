@@ -248,7 +248,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public MaulTheBear()
 		{
 			Name = "Maul";
@@ -281,7 +281,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Strongroot()
 		{
 			Name = "Strongroot";
@@ -313,7 +313,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Enigma()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -349,7 +349,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public override bool StaticMLQuester { get { return true; } }
 		public override bool InitialInnocent { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Bravehorn()
 		{
 		}
@@ -424,7 +424,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class BravehornsMate : Hind
 	{
-		[Constructable]
+		[Constructible]
 		public BravehornsMate()
 		{
 			Name = "bravehorn's mate";
@@ -455,7 +455,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Huntsman()
 		{
 			Name = "Huntsman";
@@ -487,7 +487,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Arielle()
 		{
 			Name = "Arielle";
@@ -662,7 +662,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Sledge()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -704,7 +704,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Patricus()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -756,7 +756,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, Utility.Random( 1074205, 2 ) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Belulah()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{

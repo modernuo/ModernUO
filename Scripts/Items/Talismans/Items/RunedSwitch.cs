@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072896; } } // runed switch
 
-		[Constructable]
+		[Constructible]
 		public RunedSwitch() : base( 0x2F61 )
 		{
 			Weight = 1.0;

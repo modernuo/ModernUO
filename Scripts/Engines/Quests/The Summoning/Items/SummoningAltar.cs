@@ -32,7 +32,7 @@ namespace Server.Engines.Quests.Doom
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public SummoningAltar()
 		{
 		}

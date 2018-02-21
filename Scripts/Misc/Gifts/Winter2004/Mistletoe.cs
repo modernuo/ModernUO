@@ -10,12 +10,12 @@ namespace Server.Items
 {
 	public class MistletoeAddon : Item, IDyable, IAddon
 	{
-		[Constructable]
+		[Constructible]
 		public MistletoeAddon() : this( Utility.RandomDyedHue() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MistletoeAddon( int hue ) : base( 0x2375 )
 		{
 			Hue = hue;
@@ -167,17 +167,17 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x14F0, 0x14EF )]
+	[Flippable( 0x14F0, 0x14EF )]
 	public class MistletoeDeed : Item
 	{
 		public override int LabelNumber{ get{ return 1070882; } } // Mistletoe Deed
 
-		[Constructable]
+		[Constructible]
 		public MistletoeDeed() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MistletoeDeed( int hue ) : base( 0x14F0 )
 		{
 			Hue = hue;

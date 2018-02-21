@@ -25,7 +25,7 @@ namespace Server.Items
 			return Utility.Random( 3166, 3 );
 		}
 
-		[Constructable]
+		[Constructible]
 		public FarmablePumpkin()
 			: base( GetCropID() )
 		{

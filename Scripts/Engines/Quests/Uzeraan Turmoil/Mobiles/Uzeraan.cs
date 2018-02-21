@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class Uzeraan : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public Uzeraan() : base( "the Conjurer" )
 		{
 		}

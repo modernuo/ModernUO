@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class BloodOathScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public BloodOathScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BloodOathScroll( int amount ) : base( 101, 0x2261, amount )
 		{
 		}

@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B79, 0x3170 )]
+	[FlippableAttribute( 0x2B79, 0x3170 )]
 	public class HideFemaleChest : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -29,7 +29,7 @@ namespace Server.Items
 
 		public override bool AllowMaleWearer{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public HideFemaleChest() : base( 0x2B79 )
 		{
 			Weight = 6.0;

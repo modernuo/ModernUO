@@ -11,19 +11,19 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1049498; } } // dark moongate
 
-		[Constructable]
+		[Constructible]
 		public StarRoomGate() : this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StarRoomGate( bool decays, Point3D loc, Map map ) : this( decays )
 		{
 			MoveToWorld( loc, map );
 			Effects.PlaySound( loc, map, 0x20E );
 		}
 
-		[Constructable]
+		[Constructible]
 		public StarRoomGate( bool decays ) : base( new Point3D( 5143, 1774, 0 ), Map.Felucca )
 		{
 			Dispellable = false;

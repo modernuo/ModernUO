@@ -18,7 +18,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public OrcChieftainHelm()
 		{
 			Hue = 0x2a3;

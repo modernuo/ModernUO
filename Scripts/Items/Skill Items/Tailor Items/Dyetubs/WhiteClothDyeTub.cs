@@ -9,7 +9,7 @@ namespace Server.Items /* High seas, loot from merchant ship's hold, also a "unc
 
 		public override bool Redyable { get { return false; } }
 
-		[Constructable]
+		[Constructible]
 		public WhiteClothDyeTub()
 		{
 			DyedHue = Hue = 0x9C2;

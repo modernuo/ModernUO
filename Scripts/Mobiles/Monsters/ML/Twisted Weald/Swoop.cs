@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Swoop corpse" )]
 	public class Swoop : Eagle
 	{
-		[Constructable]
+		[Constructible]
 		public Swoop()
 		{
 			IsParagon = true;

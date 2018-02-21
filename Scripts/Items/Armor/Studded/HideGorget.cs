@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B76, 0x316D )]
+	[FlippableAttribute( 0x2B76, 0x316D )]
 	public class HideGorget : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.Half; } }
 
-		[Constructable]
+		[Constructible]
 		public HideGorget() : base( 0x2B76 )
 		{
 			Weight = 3.0;

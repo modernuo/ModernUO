@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SeerRobe : BaseSuit
 	{
-		[Constructable]
+		[Constructible]
 		public SeerRobe() : base( AccessLevel.Seer, 0x1D3, 0x204F )
 		{
 		}

@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	[CorpseName( "a gorilla corpse" )]
 	public class Gorilla : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Gorilla() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a gorilla";

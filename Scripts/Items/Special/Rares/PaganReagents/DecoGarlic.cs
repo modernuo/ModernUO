@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoGarlic : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoGarlic() : base( 0x18E1 )
 		{
 			Movable = true;

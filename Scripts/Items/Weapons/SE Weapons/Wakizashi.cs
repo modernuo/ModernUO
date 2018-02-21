@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27A4, 0x27EF )]
+	[FlippableAttribute( 0x27A4, 0x27EF )]
 	public class Wakizashi : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.FrenziedWhirlwind; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 45; } }
 		public override int InitMaxHits{ get{ return 50; } }
 
-		[Constructable]
+		[Constructible]
 		public Wakizashi() : base( 0x27A4 )
 		{
 			Weight = 5.0;

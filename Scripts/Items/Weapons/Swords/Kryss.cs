@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1401, 0x1400 )]
+	[FlippableAttribute( 0x1401, 0x1400 )]
 	public class Kryss : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
@@ -31,7 +31,7 @@ namespace Server.Items
 		public override WeaponType DefType{ get{ return WeaponType.Piercing; } }
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
 
-		[Constructable]
+		[Constructible]
 		public Kryss() : base( 0x1401 )
 		{
 			Weight = 2.0;

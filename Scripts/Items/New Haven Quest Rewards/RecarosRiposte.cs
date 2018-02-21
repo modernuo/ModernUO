@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1078195; } } // Recaro's Riposte
 
-		[Constructable]
+		[Constructible]
 		public RecarosRiposte()
 		{
 			LootType = LootType.Blessed;

@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 503057; } } // Impassable!
 
-		[Constructable]
+		[Constructible]
 		public Blocker() : base( 0x21A4 )
 		{
 			Movable = false;

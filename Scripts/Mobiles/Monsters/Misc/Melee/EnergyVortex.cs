@@ -19,7 +19,7 @@ namespace Server.Mobiles
 			return ( m.Int + m.Skills[SkillName.Magery].Value ) / Math.Max( GetDistanceToSqrt( m ), 1.0 );
 		}
 
-		[Constructable]
+		[Constructible]
 		public EnergyVortex()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

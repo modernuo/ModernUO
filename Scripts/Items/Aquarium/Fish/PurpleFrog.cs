@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073823; } } // A Purple Frog
 		
-		[Constructable]
+		[Constructible]
 		public PurpleFrog() : base( 0x3B0D )
 		{
 			Hue = 0x4FA;

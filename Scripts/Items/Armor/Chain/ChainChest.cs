@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13bf, 0x13c4 )]
+	[FlippableAttribute( 0x13bf, 0x13c4 )]
 	public class ChainChest : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 4; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Chainmail; } }
 
-		[Constructable]
+		[Constructible]
 		public ChainChest() : base( 0x13BF )
 		{
 			Weight = 7.0;

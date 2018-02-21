@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class Scales : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Scales() : base( 0x1852 )
 		{
 			Weight = 4.0;

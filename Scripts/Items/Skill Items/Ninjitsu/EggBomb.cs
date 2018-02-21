@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return 1030249; }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public EggBomb() : base( 0x2808 )
 		{
 			// Item ID should be 0x2809 - Temporary solution for clients 7.0.0.0 and up

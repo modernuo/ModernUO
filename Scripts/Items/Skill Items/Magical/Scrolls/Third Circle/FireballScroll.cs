@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class FireballScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public FireballScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FireballScroll( int amount ) : base( 17, 0x1F3E, amount )
 		{
 		}

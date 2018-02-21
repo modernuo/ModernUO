@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new LargeForgeSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public LargeForgeSouthAddon()
 		{
 			AddComponent( new ForgeComponent( 0x197A ), 0, 0, 0 );
@@ -40,7 +40,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new LargeForgeSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044332; } } // large forge (south)
 
-		[Constructable]
+		[Constructible]
 		public LargeForgeSouthDeed()
 		{
 		}

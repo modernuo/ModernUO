@@ -273,7 +273,7 @@ namespace Server.Engines.MLQuests.Mobiles
 		public override TextDefinition[] Complete { get { return m_Complete; } }
 		public override Type[] Needed { get { return m_Needed; } }
 
-		[Constructable]
+		[Constructible]
 		public Darius()
 		{
 			Name = "Darius";
@@ -369,7 +369,7 @@ namespace Server.Engines.MLQuests.Mobiles
 		public override TextDefinition[] Complete { get { return m_Complete; } }
 		public override Type[] Needed { get { return m_Needed; } }
 
-		[Constructable]
+		[Constructible]
 		public Nedrick()
 		{
 			Name = "Nedrick";

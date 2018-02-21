@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073550; } } // ancient wild staff
 
-		[Constructable]
+		[Constructible]
 		public AncientWildStaff()
 		{
 			WeaponAttributes.ResistPoisonBonus = 5;

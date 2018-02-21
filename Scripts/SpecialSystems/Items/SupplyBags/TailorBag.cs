@@ -11,14 +11,14 @@ namespace Server.Items
 			get { return "a Tailoring Kit"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TailorBag() : this( 1 )
 		{
 			Movable = true;
 			Hue = 0x315;
 		}
 
-		[Constructable]
+		[Constructible]
 		public TailorBag( int amount )
 		{
 			DropItem( new SewingKit( 5 ) );

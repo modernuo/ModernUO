@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
 	public class Silvani : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Silvani() : base( AIType.AI_Mage, FightMode.Evil, 18, 1, 0.1, 0.2 )
 		{
 			Name = "Silvani";

@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoGinsengRoot2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoGinsengRoot2() : base( 0x18EC )
 		{
 			Movable = true;

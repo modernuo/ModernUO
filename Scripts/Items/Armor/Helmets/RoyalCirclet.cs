@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B6F, 0x3166 )]
+	[FlippableAttribute( 0x2B6F, 0x3166 )]
 	public class RoyalCirclet : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
-		[Constructable]
+		[Constructible]
 		public RoyalCirclet() : base( 0x2B6F )
 		{
 			Weight = 2.0;

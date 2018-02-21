@@ -12,7 +12,7 @@ namespace Server.Items
 		public override int DefaultGumpID { get { return 0x51; } }
 		public override int DefaultDropSound { get { return 0x42; } }
 
-		[Constructable]
+		[Constructible]
 		public VanityAddon( bool east ) : base( east ? 0xA44 : 0xA3C )
 		{
 			if ( east ) // east
@@ -51,7 +51,7 @@ namespace Server.Items
 
 		private bool m_East;
 
-		[Constructable]
+		[Constructible]
 		public VanityDeed() : base()
 		{
 			LootType = LootType.Blessed;

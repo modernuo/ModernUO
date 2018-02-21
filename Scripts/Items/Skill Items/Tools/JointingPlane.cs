@@ -4,18 +4,18 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[Flipable( 0x1030, 0x1031 )]
+	[Flippable( 0x1030, 0x1031 )]
 	public class JointingPlane : BaseTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefCarpentry.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public JointingPlane() : base( 0x1030 )
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public JointingPlane( int uses ) : base( uses, 0x1030 )
 		{
 			Weight = 2.0;

@@ -8,13 +8,13 @@ namespace Server.Items
 	{
 		public override CraftSystem CraftSystem{ get{ return DefTailoring.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public SewingKit() : base( 0xF9D )
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public SewingKit( int uses ) : base( uses, 0xF9D )
 		{
 			Weight = 2.0;

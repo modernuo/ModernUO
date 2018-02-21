@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an ophidian corpse" )]
 	public class OphidianMatriarch : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public OphidianMatriarch() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an ophidian matriarch";

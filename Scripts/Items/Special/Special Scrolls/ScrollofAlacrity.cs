@@ -43,7 +43,7 @@ namespace Server.Items
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public ScrollofAlacrity( SkillName skill ) : base( skill, 0.0 )
 		{
 			ItemID = 0x14EF;

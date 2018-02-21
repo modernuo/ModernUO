@@ -11,17 +11,17 @@ namespace Server.Items
 			get { return ( Core.ML ? ( 0.02 / 3 ) : 0.02 ); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gold() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gold( int amountFrom, int amountTo ) : this( Utility.RandomMinMax( amountFrom, amountTo ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gold( int amount ) : base( 0xEED )
 		{
 			Stackable = true;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073160; } } // Crystalline Fragments
 
-		[Constructable]
+		[Constructible]
 		public CrystallineFragments() : base( 0x223B )
 		{
 			LootType = LootType.Blessed;

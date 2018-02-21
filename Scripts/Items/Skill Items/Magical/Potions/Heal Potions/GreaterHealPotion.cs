@@ -9,7 +9,7 @@ namespace Server.Items
 		public override int MaxHeal { get { return (Core.AOS ? 25 : 30); } }
 		public override double Delay{ get{ return 10.0; } }
 
-		[Constructable]
+		[Constructible]
 		public GreaterHealPotion() : base( PotionEffect.HealGreater )
 		{
 		}

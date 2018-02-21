@@ -4,18 +4,18 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xfbb, 0xfbc )]
+	[FlippableAttribute( 0xfbb, 0xfbc )]
 	public class Tongs : BaseTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefBlacksmithy.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public Tongs() : base( 0xFBB )
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tongs( int uses ) : base( uses, 0xFBB )
 		{
 			Weight = 2.0;

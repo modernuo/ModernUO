@@ -3,13 +3,13 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class RoundPaperLantern : BaseLight
 	{
 		public override int LitItemID{ get { return 0x24C9; } }
 		public override int UnlitItemID{ get { return 0x24CA; } }
 		
-		[Constructable]
+		[Constructible]
 		public RoundPaperLantern() : base( 0x24CA )
 		{
 			Movable = true;

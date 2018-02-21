@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new UnmadeBedDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public UnmadeBedAddon( bool east ) : base()
 		{
 			if ( east ) // east
@@ -54,7 +54,7 @@ namespace Server.Items
 
 		private bool m_East;
 
-		[Constructable]
+		[Constructible]
 		public UnmadeBedDeed() : base()
 		{
 			LootType = LootType.Blessed;

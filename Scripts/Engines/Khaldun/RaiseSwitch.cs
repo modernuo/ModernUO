@@ -15,7 +15,7 @@ namespace Server.Items
 			set{ m_RaisableItem = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RaiseSwitch() : this( 0x1093 )
 		{
 		}
@@ -149,7 +149,7 @@ namespace Server.Items
 	{
 		public int CurrentRange{ get{ return Visible ? 3 : 2; } }
 
-		[Constructable]
+		[Constructible]
 		public DisappearingRaiseSwitch() : base( 0x108F )
 		{
 		}

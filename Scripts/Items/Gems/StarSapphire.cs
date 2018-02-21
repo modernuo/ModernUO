@@ -10,12 +10,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public StarSapphire() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StarSapphire( int amount ) : base( 0xF21 )
 		{
 			Stackable = true;

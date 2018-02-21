@@ -8,7 +8,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074819; } } // Aquarium food
 		
-		[Constructable]
+		[Constructible]
 		public AquariumFood() : base( 0xEFC )
 		{
 		}

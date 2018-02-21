@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Doom
 	{
 		public override int LabelNumber{ get{ return 1050018; } } // bell of the dead
 
-		[Constructable]
+		[Constructible]
 		public BellOfTheDead() : base( 0x91A )
 		{
 			Hue = 0x835;

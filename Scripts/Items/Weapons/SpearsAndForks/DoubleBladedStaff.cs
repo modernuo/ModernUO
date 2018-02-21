@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26BF, 0x26C9 )]
+	[FlippableAttribute( 0x26BF, 0x26C9 )]
 	public class DoubleBladedStaff : BaseSpear
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 80; } }
 
-		[Constructable]
+		[Constructible]
 		public DoubleBladedStaff() : base( 0x26BF )
 		{
 			Weight = 2.0;

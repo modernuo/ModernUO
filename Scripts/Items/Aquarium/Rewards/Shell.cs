@@ -9,7 +9,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1074598; } } // A shell
 		public override double DefaultWeight{ get{ return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public Shell() : base( Utility.RandomList( 0x3B12, 0x3B13 ) )
 		{
 		}

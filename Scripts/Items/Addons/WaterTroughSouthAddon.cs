@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new WaterTroughSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public WaterTroughSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0xB43 ), 0, 0, 0 );
@@ -44,7 +44,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new WaterTroughSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1044350; } } // water trough (south)
 
-		[Constructable]
+		[Constructible]
 		public WaterTroughSouthDeed()
 		{
 		}

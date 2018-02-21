@@ -14,7 +14,7 @@ namespace Server.Items
 
 		public List<Key> Keys { get { return m_Keys; } }
 
-		[Constructable]
+		[Constructible]
 		public KeyRing() : base( 0x1011 )
 		{
 			Weight = 1.0; // They seem to have no weight on OSI ?!

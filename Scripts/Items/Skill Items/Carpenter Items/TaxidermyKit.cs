@@ -6,12 +6,12 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1EBA, 0x1EBB )]
+	[FlippableAttribute( 0x1EBA, 0x1EBB )]
 	public class TaxidermyKit : Item
 	{
 		public override int LabelNumber{ get{ return 1041279; } } // a taxidermy kit
 
-		[Constructable]
+		[Constructible]
 		public TaxidermyKit() : base( 0x1EBA )
 		{
 			Weight = 1.0;
@@ -204,7 +204,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return m_AddonNumber; } }
 
-		[Constructable]
+		[Constructible]
 		public TrophyAddon( Mobile from, int itemID, int westID, int northID, int deedNumber, int addonNumber ) : this( from, itemID, westID, northID, deedNumber, addonNumber, null, 0 )
 		{
 		}
@@ -341,7 +341,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x14F0, 0x14EF )]
+	[Flippable( 0x14F0, 0x14EF )]
 	public class TrophyDeed : Item
 	{
 		private int m_WestID;
@@ -372,7 +372,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return m_DeedNumber; } }
 
-		[Constructable]
+		[Constructible]
 		public TrophyDeed( int westID, int northID, int deedNumber, int addonNumber ) : this( westID, northID, deedNumber, addonNumber, null, 0 )
 		{
 		}

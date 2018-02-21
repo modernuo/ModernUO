@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1078062; } } // Churchill's War Mace
 
-		[Constructable]
+		[Constructible]
 		public ChurchillsWarMace()
 		{
 			LootType = LootType.Blessed;

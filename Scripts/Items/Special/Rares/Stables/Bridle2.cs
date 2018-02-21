@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoBridle2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoBridle2() : base( 0x1375 )
 		{
 			Movable = true;

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
 	public class Sculptor : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Sculptor()
 			: base( AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4 )
 		{

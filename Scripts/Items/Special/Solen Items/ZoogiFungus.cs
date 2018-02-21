@@ -8,12 +8,12 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return (Core.ML); } }
 
-		[Constructable]
+		[Constructible]
 		public ZoogiFungus() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ZoogiFungus( int amount ) : base( 0x26B7 )
 		{
 			Stackable = true;

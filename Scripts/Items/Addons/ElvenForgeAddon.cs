@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new ElvenForgeDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenForgeAddon()
 		{
 			AddComponent( new AddonComponent( 0x2DD8 ), 0, 0, 0 );
@@ -37,7 +37,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new ElvenForgeAddon(); } }
 		public override int LabelNumber{ get{ return 1072875; } } // squirrel statue (east)
 
-		[Constructable]
+		[Constructible]
 		public ElvenForgeDeed()
 		{
 		}

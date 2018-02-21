@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27A2, 0x27ED )]
+	[FlippableAttribute( 0x27A2, 0x27ED )]
 	public class NoDachi : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 90; } }
 
-		[Constructable]
+		[Constructible]
 		public NoDachi() : base( 0x27A2 )
 		{
 			Weight = 10.0;

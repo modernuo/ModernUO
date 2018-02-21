@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		[Constructable]
+		[Constructible]
 		public HolyMage() : base( "the Holy Mage" )
 		{
 			SetSkill( SkillName.EvalInt, 65.0, 88.0 );

@@ -3,12 +3,12 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x1F03, 0x1F04 )]
+	[Flippable( 0x1F03, 0x1F04 )]
 	public class RobeOfTheEclipse : BaseOuterTorso
 	{
 		public override int LabelNumber{ get{ return 1075082; } } // Robe of the Eclipse
 
-		[Constructable]
+		[Constructible]
 		public RobeOfTheEclipse() : base( 0x1F03, 0x486 )
 		{
 			Weight = 3.0;

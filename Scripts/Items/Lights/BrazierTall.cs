@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LitItemID{ get { return 0x19AA; } }
 		
-		[Constructable]
+		[Constructible]
 		public BrazierTall() : base( 0x19AA )
 		{
 			Movable = false;

@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072919; } } // Phantom Staff
 
-		[Constructable]
+		[Constructible]
 		public PhantomStaff()
 		{
 			Hue = 0x1;

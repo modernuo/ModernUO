@@ -12,7 +12,7 @@ namespace Server.Mobiles
 			return WeaponAbility.BleedAttack;
 		}
 
-		[Constructable]
+		[Constructible]
 		public FleshGolem() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a flesh golem";

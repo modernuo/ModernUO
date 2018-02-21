@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class RedLeatherBook : BlueBook
 	{
-		[Constructable]
+		[Constructible]
 		public RedLeatherBook()
 		{
 			Hue = 0x485;

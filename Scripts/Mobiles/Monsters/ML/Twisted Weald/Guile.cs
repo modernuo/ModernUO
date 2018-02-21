@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		public override string DefaultName{ get{ return "Guile"; } }
 		public override int DefaultHue{ get{ return 0x3F; } }
 
-		[Constructable]
+		[Constructible]
 		public Guile()
 		{
 			IsParagon = true;

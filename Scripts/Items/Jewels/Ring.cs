@@ -31,7 +31,7 @@ namespace Server.Items
 
 	public class GoldRing : BaseRing
 	{
-		[Constructable]
+		[Constructible]
 		public GoldRing() : base( 0x108a )
 		{
 			Weight = 0.1;
@@ -58,7 +58,7 @@ namespace Server.Items
 
 	public class SilverRing : BaseRing
 	{
-		[Constructable]
+		[Constructible]
 		public SilverRing() : base( 0x1F09 )
 		{
 			Weight = 0.1;

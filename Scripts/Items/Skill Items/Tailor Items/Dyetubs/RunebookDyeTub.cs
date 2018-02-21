@@ -20,7 +20,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RunebookDyeTub()
 		{
 			LootType = LootType.Blessed;

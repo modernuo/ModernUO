@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.DeathWatchBeetleHatchling" )]
 	public class DeathwatchBeetleHatchling : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public DeathwatchBeetleHatchling() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a deathwatch beetle hatchling";

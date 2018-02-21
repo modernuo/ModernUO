@@ -3,10 +3,10 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xC10, 0xC11 )] 
+	[FlippableAttribute( 0xC10, 0xC11 )] 
 	public class RuinedFallenChairA : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedFallenChairA() : base( 0xC10 )
 		{
 			Movable = false;
@@ -32,10 +32,10 @@ namespace Server.Items
 
 	}
 
-	[FlipableAttribute( 0xC13, 0xC12 )] 
+	[FlippableAttribute( 0xC13, 0xC12 )] 
 	public class RuinedArmoire : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedArmoire() : base( 0xC13 )
 		{
 			Movable = false;
@@ -61,10 +61,10 @@ namespace Server.Items
 
 	}
 
-	[FlipableAttribute( 0xC14, 0xC15 )] 
+	[FlippableAttribute( 0xC14, 0xC15 )] 
 	public class RuinedBookcase : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedBookcase() : base( 0xC14 )
 		{
 			Movable = false;
@@ -92,7 +92,7 @@ namespace Server.Items
 
 	public class RuinedBooks : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedBooks() : base( 0xC16 )
 		{
 			Movable = false;
@@ -117,10 +117,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xC17, 0xC18 )] 
+	[FlippableAttribute( 0xC17, 0xC18 )] 
 	public class CoveredChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public CoveredChair() : base( 0xC17 )
 		{
 			Movable = false;
@@ -146,10 +146,10 @@ namespace Server.Items
 
 	}
 
-	[FlipableAttribute( 0xC19, 0xC1A )] 
+	[FlippableAttribute( 0xC19, 0xC1A )] 
 	public class RuinedFallenChairB : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedFallenChairB() : base( 0xC19 )
 		{
 			Movable = false;
@@ -175,10 +175,10 @@ namespace Server.Items
 
 	}
 
-	[FlipableAttribute( 0xC1B, 0xC1C, 0xC1E, 0xC1D )]
+	[FlippableAttribute( 0xC1B, 0xC1C, 0xC1E, 0xC1D )]
 	public class RuinedChair : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedChair() : base( 0xC1B )
 		{
 			Movable = false;
@@ -205,7 +205,7 @@ namespace Server.Items
 
 	public class RuinedClock : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedClock() : base( 0xC1F )
 		{
 			Movable = false;
@@ -230,10 +230,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xC24, 0xC25 )]
+	[FlippableAttribute( 0xC24, 0xC25 )]
 	public class RuinedDrawers : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedDrawers() : base( 0xC24 )
 		{
 			Movable = false;
@@ -260,7 +260,7 @@ namespace Server.Items
 
 	public class RuinedPainting : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RuinedPainting() : base( 0xC2C )
 		{
 			Movable = false;
@@ -285,10 +285,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xC2D, 0xC2F, 0xC2E, 0xC30 )]
+	[FlippableAttribute( 0xC2D, 0xC2F, 0xC2E, 0xC30 )]
 	public class WoodDebris : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WoodDebris() : base( 0xC2D )
 		{
 			Movable = false;

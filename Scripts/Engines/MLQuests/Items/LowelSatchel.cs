@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LowelSatchel : Backpack
 	{
-		[Constructable]
+		[Constructible]
 		public LowelSatchel()
 		{
 			Hue = Utility.RandomBrightHue();

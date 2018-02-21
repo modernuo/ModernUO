@@ -11,7 +11,7 @@ namespace Server.Mobiles
 	{
 		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Orc; } }
 
-		[Constructable]
+		[Constructible]
 		public OrcishLord() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an orcish lord";

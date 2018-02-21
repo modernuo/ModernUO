@@ -17,7 +17,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public CraftysFishingHat() : base( 0x1713 )
 		{
 		}

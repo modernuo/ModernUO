@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a centaur corpse" )]
 	public class Centaur : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Centaur() : base( AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Name = NameList.RandomName( "centaur" );

@@ -20,7 +20,7 @@ namespace Server.Mobiles
 				|| ( skill == SkillName.SpiritSpeak );
 		}
 
-		[Constructable]
+		[Constructible]
 		public EvilWanderingHealer()
 		{
 			Title = ( Core.AOS ) ? "the Priest Of Mondain" : "the evil wandering healer";

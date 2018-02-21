@@ -14,7 +14,7 @@ namespace Server.Mobiles
 			return WeaponAbility.ParalyzingBlow;
 		}
 
-		[Constructable]
+		[Constructible]
 		public MinotaurCaptain() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{
 			Name = "a minotaur captain";

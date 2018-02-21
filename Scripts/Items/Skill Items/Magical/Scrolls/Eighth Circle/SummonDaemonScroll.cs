@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class SummonDaemonScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public SummonDaemonScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SummonDaemonScroll( int amount ) : base( 60, 0x1F69, amount )
 		{
 		}

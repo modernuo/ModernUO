@@ -133,7 +133,7 @@ namespace Server.Items
 		public override TextDefinition ItemName { get { return 1071000; } }//soulstone fragment
 		public override TextDefinition ItemReceiveMessage{ get{ return 1070976; } } // A soulstone fragment has been created in your bank box.
 
-		[Constructable]
+		[Constructible]
 		public SoulstoneFragmentToken() : base()
 		{
 		}

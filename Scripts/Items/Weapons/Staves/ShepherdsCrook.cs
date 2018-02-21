@@ -7,7 +7,7 @@ using Server.Engines.CannedEvil;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xE81, 0xE82 )]
+	[FlippableAttribute( 0xE81, 0xE82 )]
 	public class ShepherdsCrook : BaseStaff
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 50; } }
 
-		[Constructable]
+		[Constructible]
 		public ShepherdsCrook() : base( 0xE81 )
 		{
 			Weight = 4.0;

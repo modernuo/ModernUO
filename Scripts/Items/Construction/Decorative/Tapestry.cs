@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry1N() : base( 0xEAA )
 		{
 			Movable = false;
@@ -115,7 +115,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry2N() : base( 0xEAC )
 		{
 			Movable = false;
@@ -222,7 +222,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry2W() : base( 0xEAE )
 		{
 			Movable = false;
@@ -330,7 +330,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry3N() : base( 0xFD6 )
 		{
 			Movable = false;
@@ -438,7 +438,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry3W() : base( 0xFD7 )
 		{
 			Movable = false;
@@ -546,7 +546,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry4N() : base( 0xFDA )
 		{
 			Movable = false;
@@ -653,7 +653,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry4W() : base( 0xFDB )
 		{
 			Movable = false;
@@ -762,7 +762,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry5N() : base( 0xFDE )
 		{
 			Movable = false;
@@ -869,7 +869,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry5W() : base( 0xFDF )
 		{
 			Movable = false;
@@ -978,7 +978,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry6N() : base( 0xFE2 )
 		{
 			Movable = false;
@@ -1085,7 +1085,7 @@ namespace Server.Items
 	{
 		private InternalItem m_Item;
 
-		[Constructable]
+		[Constructible]
 		public Tapestry6W() : base( 0xFE3 )
 		{
 			Movable = false;

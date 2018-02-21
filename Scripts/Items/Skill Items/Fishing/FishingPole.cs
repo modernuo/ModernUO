@@ -11,7 +11,7 @@ namespace Server.Items
 {
 	public class FishingPole : Item
 	{
-		[Constructable]
+		[Constructible]
 		public FishingPole() : base( 0x0DC0 )
 		{
 			Layer = Layer.TwoHanded;

@@ -12,7 +12,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041061; } } // a coupon for a free hair restyling
 
-		[Constructable]
+		[Constructible]
 		public HairRestylingDeed() : base( 0x14F0 )
 		{
 			Weight = 1.0;

@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a rai-ju corpse" )]
 	public class RaiJu : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public RaiJu() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a Rai-Ju";

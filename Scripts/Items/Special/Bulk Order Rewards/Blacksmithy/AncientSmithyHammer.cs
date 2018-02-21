@@ -4,7 +4,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13E4, 0x13E3 )]
+	[FlippableAttribute( 0x13E4, 0x13E3 )]
 	public class AncientSmithyHammer : BaseTool
 	{
 		private int m_Bonus;
@@ -68,12 +68,12 @@ namespace Server.Items
 		public override CraftSystem CraftSystem{ get{ return DefBlacksmithy.CraftSystem; } }
 		public override int LabelNumber{ get{ return 1045127; } } // ancient smithy hammer
 
-		[Constructable]
+		[Constructible]
 		public AncientSmithyHammer( int bonus ) : this( bonus, 600 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AncientSmithyHammer( int bonus, int uses ) : base( uses, 0x13E4 )
 		{
 			m_Bonus = bonus;

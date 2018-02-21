@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class MansionGuard : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public MansionGuard() : base( "the Mansion Guard" )
 		{
 		}

@@ -7,12 +7,12 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return (Core.ML); } }
 
-		[Constructable]
+		[Constructible]
 		public Bottle() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bottle( int amount ) : base( 0xF0E )
 		{
 			Stackable = true;

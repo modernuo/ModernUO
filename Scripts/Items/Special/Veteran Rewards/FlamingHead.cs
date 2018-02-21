@@ -33,12 +33,12 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public FlamingHead() : this( StoneFaceTrapType.NorthWall )
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public FlamingHead( StoneFaceTrapType type ) : base()
 		{
 			LootType = LootType.Blessed;
@@ -123,7 +123,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public FlamingHeadDeed() : base( 0x14F0 )
 		{			
 			LootType = LootType.Blessed;

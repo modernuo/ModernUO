@@ -3,12 +3,12 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x49CA, 0x49CB )]
+	[FlippableAttribute( 0x49CA, 0x49CB )]
 	public class HeartShapedBox : BaseContainer
 	{
 		public override int DefaultDropSound { get { return m_DropSound; } }
 
-		[Constructable]
+		[Constructible]
 		public HeartShapedBox()
 			: base( 0x49CA )
 		{

@@ -4,13 +4,13 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x14F3, 0x14F4 )]
+	[FlippableAttribute( 0x14F3, 0x14F4 )]
 	public class ToyBoat : Item
 	{
 		public override int LabelNumber{ get{ return 1074363; } } // A toy boat
 		public override double DefaultWeight{ get{ return 1.0; } }
 
-		[Constructable]
+		[Constructible]
 		public ToyBoat() : base( 0x14F4 )
 		{
 		}

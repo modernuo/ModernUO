@@ -174,7 +174,7 @@ namespace Server.Commands
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if ( !IsConstructable( ctor, from.AccessLevel ) )
+				if ( !IsConstructible( ctor, from.AccessLevel ) )
 					continue;
 
 				ParameterInfo[] paramList = ctor.GetParameters();
@@ -388,7 +388,7 @@ namespace Server.Commands
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if ( !IsConstructable( ctor, from.AccessLevel ) )
+				if ( !IsConstructible( ctor, from.AccessLevel ) )
 					continue;
 
 				if ( !foundCtor )
@@ -401,7 +401,7 @@ namespace Server.Commands
 			}
 
 			if ( !foundCtor )
-				from.SendMessage( "That type is not marked constructable." );
+				from.SendMessage( "That type is not marked constructible." );
 		}
 
 		public static void SendCtor( Type type, ConstructorInfo ctor, Mobile from )
@@ -648,16 +648,16 @@ namespace Server.Commands
 			return m_EntityType.IsAssignableFrom( t );
 		}
 
-		private static Type m_ConstructableType = typeof( ConstructableAttribute );
+		private static Type m_ConstructibleType = typeof( ConstructibleAttribute );
 
-		public static bool IsConstructable( ConstructorInfo ctor, AccessLevel accessLevel )
+		public static bool IsConstructible( ConstructorInfo ctor, AccessLevel accessLevel )
 		{
-			object[] attrs = ctor.GetCustomAttributes( m_ConstructableType, false );
+			object[] attrs = ctor.GetCustomAttributes( m_ConstructibleType, false );
 
 			if ( attrs.Length == 0 )
 				return false;
 
-			return accessLevel >= ((ConstructableAttribute)attrs[0]).AccessLevel;
+			return accessLevel >= ((ConstructibleAttribute)attrs[0]).AccessLevel;
 		}
 
 		private static Type m_EnumType = typeof( Enum );

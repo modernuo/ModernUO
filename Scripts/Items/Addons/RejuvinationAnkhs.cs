@@ -124,7 +124,7 @@ namespace Server.Items
 
 	public class RejuvinationAnkhWest : BaseRejuvinationAnkh
 	{
-		[Constructable]
+		[Constructible]
 		public RejuvinationAnkhWest()
 		{
 			AddComponent( new RejuvinationAddonComponent( 0x3 ), 0, 0, 0 );
@@ -152,7 +152,7 @@ namespace Server.Items
 
 	public class RejuvinationAnkhNorth : BaseRejuvinationAnkh
 	{
-		[Constructable]
+		[Constructible]
 		public RejuvinationAnkhNorth()
 		{
 			AddComponent( new RejuvinationAddonComponent( 0x4 ), 0, 0, 0 );

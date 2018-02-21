@@ -10,13 +10,13 @@ namespace Server.Items
 			0x10d7, 0x10d8, 0x10dd
 		};
 
-		[Constructable]
+		[Constructible]
 		public Web()
 			: base(m_itemids[Utility.Random(3)])
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Web( int itemid ) : base( itemid )
 		{
 		}

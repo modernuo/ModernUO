@@ -12,7 +12,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
-		[Constructable]
+		[Constructible]
 		public GlovesOfThePugilist()
 		{
 			Hue = 0x6D1;

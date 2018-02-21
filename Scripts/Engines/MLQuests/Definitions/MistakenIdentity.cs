@@ -185,7 +185,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Aernya()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -240,7 +240,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Gorrow()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -291,7 +291,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074186 ); // Come here, I have a task.
 		}
 
-		[Constructable]
+		[Constructible]
 		public MasterGnosos()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{

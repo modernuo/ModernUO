@@ -12,7 +12,7 @@ namespace Server.Items
 			get { return "a GM stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public GMStone() : base( 0xED4 )
 		{
 			Movable = false;

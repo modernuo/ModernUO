@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072915; } } // Rune Carving Knife
 
-		[Constructable]
+		[Constructible]
 		public RuneCarvingKnife()
 		{
 			Hue = 0x48D;

@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoHorseDung : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoHorseDung() : base( 0xF3B )
 		{
 			Movable = true;

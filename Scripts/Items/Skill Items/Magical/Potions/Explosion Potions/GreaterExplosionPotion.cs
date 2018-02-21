@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int MinDamage { get { return Core.AOS ? 20 : 15; } }
 		public override int MaxDamage { get { return Core.AOS ? 40 : 30; } }
 
-		[Constructable]
+		[Constructible]
 		public GreaterExplosionPotion() : base( PotionEffect.ExplosionGreater )
 		{
 		}

@@ -33,7 +33,7 @@ namespace Server.Items
 			set{ m_Level = Math.Max( 1, Math.Min( value, 4 ) ); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MessageInABottle() : this( Map.Trammel )
 		{
 		}
@@ -42,7 +42,7 @@ namespace Server.Items
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MessageInABottle( Map map, int level ) : base( 0x099F )
 		{
 			Weight = 1.0;

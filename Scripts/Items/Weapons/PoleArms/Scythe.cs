@@ -5,7 +5,7 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26BA, 0x26C4 )]
+	[FlippableAttribute( 0x26BA, 0x26C4 )]
 	public class Scythe : BasePoleArm
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.BleedAttack; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override HarvestSystem HarvestSystem{ get{ return null; } }
 
-		[Constructable]
+		[Constructible]
 		public Scythe() : base( 0x26BA )
 		{
 			Weight = 5.0;

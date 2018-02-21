@@ -96,7 +96,7 @@ namespace Server.Items
 
 	public class MarbleStatueMaker : CharacterStatueMaker
 	{
-		[Constructable]
+		[Constructible]
 		public MarbleStatueMaker() : base( StatueType.Marble )
 		{
 		}
@@ -122,7 +122,7 @@ namespace Server.Items
 
 	public class JadeStatueMaker : CharacterStatueMaker
 	{
-		[Constructable]
+		[Constructible]
 		public JadeStatueMaker() : base( StatueType.Jade )
 		{
 		}
@@ -148,7 +148,7 @@ namespace Server.Items
 
 	public class BronzeStatueMaker : CharacterStatueMaker
 	{
-		[Constructable]
+		[Constructible]
 		public BronzeStatueMaker() : base( StatueType.Bronze )
 		{
 		}

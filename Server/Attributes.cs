@@ -164,7 +164,7 @@ namespace Server
 	}
 
 	[AttributeUsage( AttributeTargets.Constructor )]
-	public class ConstructableAttribute : Attribute
+	public class ConstructibleAttribute : Attribute
 	{
 		private AccessLevel m_AccessLevel;
 
@@ -174,11 +174,11 @@ namespace Server
 			set { m_AccessLevel = value; }
 		}
 
-		public ConstructableAttribute() : this( AccessLevel.Player )	//Lowest accesslevel for current functionality (Level determined by access to [add)
+		public ConstructibleAttribute() : this( AccessLevel.Player )	//Lowest accesslevel for current functionality (Level determined by access to [add)
 		{
 		}
 
-		public ConstructableAttribute( AccessLevel accessLevel )
+		public ConstructibleAttribute( AccessLevel accessLevel )
 		{
 			m_AccessLevel = accessLevel;
 		}

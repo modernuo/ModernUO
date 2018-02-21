@@ -7,7 +7,7 @@ namespace Server.Mobiles
 { 
 	public class Actor : BaseCreature 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public Actor () : base( AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4 ) 
 		{ 
 			InitStats( 31, 41, 51 ); 

@@ -32,15 +32,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x230E, 0x230D )]
+	[Flippable( 0x230E, 0x230D )]
 	public class GildedDress : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public GildedDress() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GildedDress( int hue ) : base( 0x230E, hue )
 		{
 			Weight = 3.0;
@@ -65,15 +65,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1F00, 0x1EFF )]
+	[Flippable( 0x1F00, 0x1EFF )]
 	public class FancyDress : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public FancyDress() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FancyDress( int hue ) : base( 0x1F00, hue )
 		{
 			Weight = 3.0;
@@ -110,7 +110,7 @@ namespace Server.Items
 			get{ return false; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public DeathRobe()
 		{
 			LootType = LootType.Newbied;
@@ -232,7 +232,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable]
+	[Flippable]
 	public class RewardRobe : BaseOuterTorso, IRewardItem
 	{
 		private int m_LabelNumber;
@@ -303,17 +303,17 @@ namespace Server.Items
 			return !m_IsRewardItem || RewardSystem.CheckIsUsableBy( m, this, new object[]{ Hue, m_LabelNumber } );
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardRobe() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardRobe( int hue ) : this( hue, 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardRobe( int hue, int labelNumber ) : base( 0x1F03, hue )
 		{
 			Weight = 3.0;
@@ -357,7 +357,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable]
+	[Flippable]
 	public class RewardDress : BaseOuterTorso, IRewardItem
 	{
 		private int m_LabelNumber;
@@ -428,17 +428,17 @@ namespace Server.Items
 			return !m_IsRewardItem || RewardSystem.CheckIsUsableBy( m, this, new object[]{ Hue, m_LabelNumber } );
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardDress() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardDress( int hue ) : this( hue, 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardDress( int hue, int labelNumber ) : base( 0x1F01, hue )
 		{
 			Weight = 2.0;
@@ -482,7 +482,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable]
+	[Flippable]
 	public class Robe : BaseOuterTorso, IArcaneEquip
 	{
 		#region Arcane Impl
@@ -544,12 +544,12 @@ namespace Server.Items
 		}
 		#endregion
 
-		[Constructable]
+		[Constructible]
 		public Robe() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Robe( int hue ) : base( 0x1F03, hue )
 		{
 			Weight = 3.0;
@@ -604,12 +604,12 @@ namespace Server.Items
 
 	public class MonkRobe : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public MonkRobe() : this( 0x21E )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MonkRobe( int hue ) : base( 0x2687, hue )
 		{
 			Weight = 1.0;
@@ -640,15 +640,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x1f01, 0x1f02 )]
+	[Flippable( 0x1f01, 0x1f02 )]
 	public class PlainDress : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public PlainDress() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PlainDress( int hue ) : base( 0x1F01, hue )
 		{
 			Weight = 2.0;
@@ -676,15 +676,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2799, 0x27E4 )]
+	[Flippable( 0x2799, 0x27E4 )]
 	public class Kamishimo : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public Kamishimo() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Kamishimo( int hue ) : base( 0x2799, hue )
 		{
 			Weight = 3.0;
@@ -709,15 +709,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x279C, 0x27E7 )]
+	[Flippable( 0x279C, 0x27E7 )]
 	public class HakamaShita : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public HakamaShita() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HakamaShita( int hue ) : base( 0x279C, hue )
 		{
 			Weight = 3.0;
@@ -742,15 +742,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2782, 0x27CD )]
+	[Flippable( 0x2782, 0x27CD )]
 	public class MaleKimono : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public MaleKimono() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MaleKimono( int hue ) : base( 0x2782, hue )
 		{
 			Weight = 3.0;
@@ -777,15 +777,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2783, 0x27CE )]
+	[Flippable( 0x2783, 0x27CE )]
 	public class FemaleKimono : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public FemaleKimono() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FemaleKimono( int hue ) : base( 0x2783, hue )
 		{
 			Weight = 3.0;
@@ -812,17 +812,17 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2FB9, 0x3173 )]
+	[Flippable( 0x2FB9, 0x3173 )]
 	public class MaleElvenRobe : BaseOuterTorso
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
 
-		[Constructable]
+		[Constructible]
 		public MaleElvenRobe() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MaleElvenRobe( int hue ) : base( 0x2FB9, hue )
 		{
 			Weight = 2.0;
@@ -847,16 +847,16 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2FBA, 0x3174 )]
+	[Flippable( 0x2FBA, 0x3174 )]
 	public class FemaleElvenRobe : BaseOuterTorso
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
-		[Constructable]
+		[Constructible]
 		public FemaleElvenRobe() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FemaleElvenRobe( int hue ) : base( 0x2FBA, hue )
 		{
 			Weight = 2.0;

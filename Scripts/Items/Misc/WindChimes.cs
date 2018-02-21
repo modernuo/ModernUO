@@ -139,7 +139,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1030290; } }
 
-		[Constructable]
+		[Constructible]
 		public WindChimes() : base( 0x2832 )
 		{
 		}
@@ -165,7 +165,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1030291; } }
 
-		[Constructable]
+		[Constructible]
 		public FancyWindChimes() : base( 0x2833 )
 		{
 		}

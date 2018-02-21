@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class SkullPole : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SkullPole() : base( 0x2204 )
 		{
 			Weight = 5;

@@ -69,7 +69,7 @@ namespace Server.Engines.CannedEvil
 			set { m_HasBeenAdvanced = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ChampionSpawn() : base( 0xBD2 )
 		{
 			Movable = false;
@@ -116,7 +116,7 @@ namespace Server.Engines.CannedEvil
 			else
 			{
 				m_Region.Unregister();
-				//Why doesn't Region allow me to set it's map/Area meself? ><
+				//Why doesn't Region allow me to set it's map/Area myself? ><
 				m_Region = new ChampionSpawnRegion( this );
 			}
 			*/

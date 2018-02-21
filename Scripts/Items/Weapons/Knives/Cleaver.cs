@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xEC3, 0xEC2 )]
+	[FlippableAttribute( 0xEC3, 0xEC2 )]
 	public class Cleaver : BaseKnife
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.BleedAttack; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 50; } }
 
-		[Constructable]
+		[Constructible]
 		public Cleaver() : base( 0xEC3 )
 		{
 			Weight = 2.0;

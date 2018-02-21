@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.None; } }
 
-		[Constructable]
+		[Constructible]
 		public OrcHelm() : base( 0x1F0B )
 		{
 		}

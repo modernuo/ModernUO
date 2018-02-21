@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Chainmail; } }
 
-		[Constructable]
+		[Constructible]
 		public ChainHatsuburi() : base( 0x2774 )
 		{
 			Weight = 7.0;

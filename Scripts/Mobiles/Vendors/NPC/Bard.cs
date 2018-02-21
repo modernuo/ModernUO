@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.BardsGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public Bard() : base( "the bard" )
 		{
 			SetSkill( SkillName.Discordance, 64.0, 100.0 );

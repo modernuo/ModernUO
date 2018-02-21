@@ -39,7 +39,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 		public override string DefaultName { get { return "battered bucket"; } }
 
-		[Constructable]
+		[Constructible]
 		public BatteredBucket()
 			: base( 0x2004, TimeSpan.FromMinutes( 10 ) )
 		{

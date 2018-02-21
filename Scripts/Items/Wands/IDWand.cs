@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override TimeSpan GetUseDelay{ get{ return TimeSpan.Zero; } }
 
-		[Constructable]
+		[Constructible]
 		public IDWand() : base( WandEffect.Identification, 25, 175 )
 		{
 		}

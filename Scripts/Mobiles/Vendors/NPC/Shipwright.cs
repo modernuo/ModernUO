@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
 
-		[Constructable]
+		[Constructible]
 		public Shipwright() : base( "the shipwright" ) 
 		{ 
 			SetSkill( SkillName.Carpentry, 60.0, 83.0 );

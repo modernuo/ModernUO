@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LitItemID{ get { return 0x184A; } }
 		public override int UnlitItemID{ get { return 0x1849; } }
 
-		[Constructable]
+		[Constructible]
 		public HeatingStand() : base( 0x1849 )
 		{
 			if ( Burnout )

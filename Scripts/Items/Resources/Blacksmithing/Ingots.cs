@@ -121,15 +121,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class IronIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public IronIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public IronIngot( int amount ) : base( CraftResource.Iron, amount )
 		{
 		}
@@ -155,15 +155,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class DullCopperIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public DullCopperIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DullCopperIngot( int amount ) : base( CraftResource.DullCopper, amount )
 		{
 		}
@@ -189,15 +189,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class ShadowIronIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public ShadowIronIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ShadowIronIngot( int amount ) : base( CraftResource.ShadowIron, amount )
 		{
 		}
@@ -223,15 +223,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class CopperIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public CopperIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public CopperIngot( int amount ) : base( CraftResource.Copper, amount )
 		{
 		}
@@ -257,15 +257,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class BronzeIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public BronzeIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BronzeIngot( int amount ) : base( CraftResource.Bronze, amount )
 		{
 		}
@@ -291,15 +291,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class GoldIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public GoldIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GoldIngot( int amount ) : base( CraftResource.Gold, amount )
 		{
 		}
@@ -325,15 +325,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class AgapiteIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public AgapiteIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AgapiteIngot( int amount ) : base( CraftResource.Agapite, amount )
 		{
 		}
@@ -359,15 +359,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class VeriteIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public VeriteIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public VeriteIngot( int amount ) : base( CraftResource.Verite, amount )
 		{
 		}
@@ -393,15 +393,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1BF2, 0x1BEF )]
+	[FlippableAttribute( 0x1BF2, 0x1BEF )]
 	public class ValoriteIngot : BaseIngot
 	{
-		[Constructable]
+		[Constructible]
 		public ValoriteIngot() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ValoriteIngot( int amount ) : base( CraftResource.Valorite, amount )
 		{
 		}

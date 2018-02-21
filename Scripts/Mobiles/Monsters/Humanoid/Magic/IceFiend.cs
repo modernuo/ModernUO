@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an ice fiend corpse" )]
 	public class IceFiend : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public IceFiend () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an ice fiend";

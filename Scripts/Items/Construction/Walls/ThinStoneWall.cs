@@ -33,7 +33,7 @@ namespace Server.Items
 
 	public class ThinStoneWall : BaseWall
 	{
-		[Constructable]
+		[Constructible]
 		public ThinStoneWall( ThinStoneWallTypes type ) : base( 0x001A + (int)type )
 		{
 		}

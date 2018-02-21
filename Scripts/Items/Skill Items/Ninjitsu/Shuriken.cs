@@ -4,7 +4,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[Flipable( 0x27AC, 0x27F7 )]
+	[Flippable( 0x27AC, 0x27F7 )]
 	public class Shuriken : Item, ICraftable, INinjaAmmo
 	{
 		private int m_UsesRemaining;
@@ -35,12 +35,12 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		[Constructable]
+		[Constructible]
 		public Shuriken() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Shuriken( int amount ) : base( 0x27AC )
 		{
 			Weight = 1.0;

@@ -52,7 +52,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074188 ); // Weakling! You are not up to the task I have.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Drithen()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{

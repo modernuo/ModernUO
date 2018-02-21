@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class AgapiteElemental : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public AgapiteElemental() : this( 2 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AgapiteElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an agapite elemental";

@@ -84,7 +84,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string PetName{ get{ return m_PetName; } }
 
-		[Constructable]
+		[Constructible]
 		public BallOfSummoning() : base( 0xE2E )
 		{
 			Weight = 10.0;

@@ -12,7 +12,7 @@ namespace Server.Items
 		
 		public override int LabelNumber{ get{ return 1072849; } } // Darkglow Poison
 
-		[Constructable]
+		[Constructible]
 		public DarkglowPotion() : base( PotionEffect.Darkglow )
 		{
 			Hue = 0x96;

@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LitItemID{ get { return 0xB1D; } }
 		public override int UnlitItemID{ get { return 0xA27; } }
 
-		[Constructable]
+		[Constructible]
 		public Candelabra() : base( 0xA27 )
 		{
 			Duration = TimeSpan.Zero; // Never burnt out

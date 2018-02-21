@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class SpellPlagueScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public SpellPlagueScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpellPlagueScroll( int amount )
 			: base( 689, 0x2DAA, amount )
 		{

@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1075201; } } // Quiver of Infinity
 
-		[Constructable]
+		[Constructible]
 		public QuiverOfInfinity() : base( 0x2B02 )
 		{
 			LootType = LootType.Blessed;

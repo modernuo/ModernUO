@@ -100,7 +100,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public CannonAddon( CannonDirection direction )
 		{
 			m_CannonDirection = direction;
@@ -396,7 +396,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public CannonDeed() : base()
 		{		
 			LootType = LootType.Blessed;

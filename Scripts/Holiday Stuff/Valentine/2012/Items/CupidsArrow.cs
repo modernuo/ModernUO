@@ -32,7 +32,7 @@ namespace Server.Items
 			get { return ( m_From != null && m_To != null ); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public CupidsArrow()
 			: base( 0x4F7F )
 		{

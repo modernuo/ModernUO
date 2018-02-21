@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new PinkFancyRugDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PinkFancyRugAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xAEE, 1076590 ), 1, 1, 0 );
@@ -44,7 +44,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new PinkFancyRugAddon(); } }
 		public override int LabelNumber { get { return 1076590; } } // Pink fancy rug
 
-		[Constructable]
+		[Constructible]
 		public PinkFancyRugDeed() : base()
 		{
 			LootType = LootType.Blessed;

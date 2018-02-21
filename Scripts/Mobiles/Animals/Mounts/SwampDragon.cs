@@ -80,12 +80,12 @@ namespace Server.Mobiles
 			get{ return m_BardingExceptional ? 2500 : 1000; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SwampDragon() : this( "a swamp dragon" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SwampDragon( string name ) : base( name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			BaseSoundID = 0x16A;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074230; } } // Thrasher's Tail
 
-		[Constructable]
+		[Constructible]
 		public ThrashersTail() : base( 0x1A9D )
 		{
 			LootType = LootType.Blessed;

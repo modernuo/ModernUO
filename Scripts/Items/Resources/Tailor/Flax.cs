@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class Flax : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Flax() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Flax( int amount ) : base( 0x1A9C )
 		{
 			Stackable = true;

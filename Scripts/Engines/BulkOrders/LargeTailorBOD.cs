@@ -27,7 +27,7 @@ namespace Server.Engines.BulkOrders
 			return TailorRewardCalculator.Instance.ComputeGold( this );
 		}
 
-		[Constructable]
+		[Constructible]
 		public LargeTailorBOD()
 		{
 			LargeBulkEntry[] entries;

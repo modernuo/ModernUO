@@ -7,7 +7,7 @@ namespace Server.Multis
 {
 	public class MageCamp : BaseCamp
 	{
-		[Constructable]
+		[Constructible]
 		public MageCamp() : base( 0x1F5 )
 		{
 		}

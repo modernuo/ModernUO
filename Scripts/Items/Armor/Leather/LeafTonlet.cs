@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2FCA, 0x3180 )]
+	[FlippableAttribute( 0x2FCA, 0x3180 )]
 	public class LeafTonlet : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
-		[Constructable]
+		[Constructible]
 		public LeafTonlet() : base( 0x2FCA )
 		{
 			Weight = 2.0;

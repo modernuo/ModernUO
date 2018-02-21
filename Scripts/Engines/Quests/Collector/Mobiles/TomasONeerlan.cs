@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Collector
 {
 	public class TomasONeerlan : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public TomasONeerlan() : base( "the famed toymaker" )
 		{
 		}

@@ -1155,7 +1155,7 @@ namespace Server.Items
 		public override BaseAddonContainer Addon{ get{ return new Aquarium( 0x3062 ); } }
 		public override int LabelNumber{ get{ return 1074501; } } // Large Aquarium (east)
 
-		[Constructable]
+		[Constructible]
 		public AquariumEastDeed() : base()
 		{
 		}
@@ -1184,7 +1184,7 @@ namespace Server.Items
 		public override BaseAddonContainer Addon{ get{ return new Aquarium( 0x3060 ); } }
 		public override int LabelNumber{ get{ return 1074497; } } // Large Aquarium (north)
 
-		[Constructable]
+		[Constructible]
 		public AquariumNorthDeed() : base()
 		{
 		}

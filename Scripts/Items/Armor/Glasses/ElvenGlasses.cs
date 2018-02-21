@@ -34,7 +34,7 @@ namespace Server.Items
 			set{}
 		}
 
-		[Constructable]
+		[Constructible]
 		public ElvenGlasses() : base( 0x2FB8 )
 		{
 			Weight = 2;

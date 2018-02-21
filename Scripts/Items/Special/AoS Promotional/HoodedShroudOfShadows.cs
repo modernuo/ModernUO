@@ -3,15 +3,15 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable( 0x2684, 0x2683 )]
+	[Flippable( 0x2684, 0x2683 )]
 	public class HoodedShroudOfShadows : BaseOuterTorso
 	{
-		[Constructable]
+		[Constructible]
 		public HoodedShroudOfShadows() : this( 0x455 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HoodedShroudOfShadows( int hue ) : base( 0x2684, hue )
 		{
 			LootType = LootType.Blessed;

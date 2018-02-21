@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1077749; } } // Amelias Toolbox
 
-		[Constructable]
+		[Constructible]
 		public AmeliasToolbox() : base( 500 )
 		{
 			LootType = LootType.Blessed;

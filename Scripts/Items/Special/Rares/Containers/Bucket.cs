@@ -9,13 +9,13 @@
 		private static int vItemID = 0x14e0;
 		private static int fItemID = 0x2004;
 
-		[Constructable]
+		[Constructible]
 		public Bucket()
 			: this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bucket( bool filled )
 			: base( ( filled ) ? Bucket.fItemID : Bucket.vItemID, filled )
 		{

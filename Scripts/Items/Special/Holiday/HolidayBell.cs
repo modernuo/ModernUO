@@ -52,13 +52,13 @@ namespace Server.Items
 		private string m_Maker;
 		private int m_SoundID;
 
-		[Constructable]
+		[Constructible]
 		public HolidayBell()
 			: this(m_StaffNames[Utility.Random(m_StaffNames.Length)])
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HolidayBell(string maker)
 			: base(0x1C12)
 		{

@@ -9,12 +9,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public GozaMatEastAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GozaMatEastAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28a4, 1030688  ), 1, 0, 0 );
@@ -46,7 +46,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new GozaMatEastAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1030404; } } // goza (east)
 
-		[Constructable]
+		[Constructible]
 		public GozaMatEastDeed()
 		{
 		}
@@ -76,12 +76,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public GozaMatSouthAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GozaMatSouthAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28a6, 1030688 ), 0, 1, 0 );
@@ -113,7 +113,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new GozaMatSouthAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1030405; } } // goza (south)
 
-		[Constructable]
+		[Constructible]
 		public GozaMatSouthDeed()
 		{
 		}
@@ -144,12 +144,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public SquareGozaMatEastAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SquareGozaMatEastAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28a8, 1030688 ), 0, 0, 0 );
@@ -180,7 +180,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new SquareGozaMatEastAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1030407; } } // square goza (east)
 
-		[Constructable]
+		[Constructible]
 		public SquareGozaMatEastDeed()
 		{
 		}
@@ -210,12 +210,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public SquareGozaMatSouthAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SquareGozaMatSouthAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28a9, 1030688 ), 0, 0, 0 );
@@ -247,7 +247,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1030406; } } // square goza (south)
 
 
-		[Constructable]
+		[Constructible]
 		public SquareGozaMatSouthDeed()
 		{
 		}
@@ -277,12 +277,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public BrocadeGozaMatEastAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrocadeGozaMatEastAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28AB, 1030688 ), 0, 0, 0 );
@@ -314,7 +314,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new BrocadeGozaMatEastAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1030408; } } // brocade goza (east)
 
-		[Constructable]
+		[Constructible]
 		public BrocadeGozaMatEastDeed()
 		{
 		}
@@ -343,12 +343,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public BrocadeGozaMatSouthAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrocadeGozaMatSouthAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28AD, 1030688 ), 0, 0, 0 );
@@ -380,7 +380,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new BrocadeGozaMatSouthAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1030409; } } // brocade goza (south)
 
-		[Constructable]
+		[Constructible]
 		public BrocadeGozaMatSouthDeed()
 		{
 		}
@@ -409,12 +409,12 @@ namespace Server.Items
 
 			public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public BrocadeSquareGozaMatEastAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrocadeSquareGozaMatEastAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28AE, 1030688 ), 0, 0, 0 );
@@ -445,7 +445,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new BrocadeSquareGozaMatEastAddon( this.Hue ); } }
 		public override int LabelNumber{ get{ return 1030411; } } // brocade square goza (east)
 
-		[Constructable]
+		[Constructible]
 		public BrocadeSquareGozaMatEastDeed()
 		{
 		}
@@ -475,12 +475,12 @@ namespace Server.Items
 
 		public override bool RetainDeedHue{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public BrocadeSquareGozaMatSouthAddon() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrocadeSquareGozaMatSouthAddon( int hue )
 		{
 			AddComponent( new LocalizedAddonComponent( 0x28AF, 1030688 ), 0, 0, 0 );
@@ -512,7 +512,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1030410; } } // brocade square goza (south)
 
 
-		[Constructable]
+		[Constructible]
 		public BrocadeSquareGozaMatSouthDeed()
 		{
 		}

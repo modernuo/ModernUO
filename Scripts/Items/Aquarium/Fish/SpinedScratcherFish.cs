@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073832; } } // A Spined Scratcher Fish 
 		
-		[Constructable]
+		[Constructible]
 		public SpinedScratcherFish() : base( 0x3B05 )
 		{
 		}

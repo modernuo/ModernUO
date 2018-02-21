@@ -16,7 +16,7 @@ namespace Server.Mobiles
 			return m.Str / Math.Max( this.GetDistanceToSqrt( m ), 1.0 );
 		}
 
-		[Constructable]
+		[Constructible]
 		public AnimatedWeapon( Mobile caster, int level )
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
 		{

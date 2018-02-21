@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		[Constructable]
+		[Constructible]
 		public IronWorker() : base( "the iron worker" )
 		{
 			SetSkill( SkillName.ArmsLore, 36.0, 68.0 );

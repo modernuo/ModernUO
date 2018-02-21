@@ -16,7 +16,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public GiftForArielle() : base( 0x1882 )
 		{
 			Hue = 0x2C4;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075525; } } // an old necklace
 
-		[Constructable]
+		[Constructible]
 		public AnOldNecklace() : base()
 		{
 			Hue = 0x222;

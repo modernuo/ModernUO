@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Ninja
 	{
 		public override int LabelNumber{ get{ return 1026157; } } // teleporter
 
-		[Constructable]
+		[Constructible]
 		public BlueNinjaQuestTeleporter() : base( 0x51C, 0x2 )
 		{
 		}

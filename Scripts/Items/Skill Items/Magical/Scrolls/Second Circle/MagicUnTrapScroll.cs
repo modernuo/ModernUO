@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class MagicUnTrapScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public MagicUnTrapScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MagicUnTrapScroll( int amount ) : base( 13, 0x1F3A, amount )
 		{
 		}

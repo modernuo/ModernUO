@@ -231,7 +231,7 @@ namespace Server.Items
 
 		public override BookContent DefaultContent{ get{ return Content; } }
 
-		[Constructable]
+		[Constructible]
 		public KaburJournal() : base( false )
 		{
 		}

@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoDragonsBlood : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoDragonsBlood() : base( 0x4077 )
 		{
 			Movable = true;

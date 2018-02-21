@@ -15,7 +15,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new SpinningwheelEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public SpinningwheelEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1019 ), 0, 0, 0 );
@@ -121,7 +121,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new SpinningwheelEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044341; } } // spining wheel (east)
 
-		[Constructable]
+		[Constructible]
 		public SpinningwheelEastDeed()
 		{
 		}

@@ -15,7 +15,7 @@ namespace Server.Mobiles
 
 		public override bool BardImmune{ get{ return true; } } 
 
-		[Constructable]
+		[Constructible]
 		public OrderGuard()
 		{
 		}

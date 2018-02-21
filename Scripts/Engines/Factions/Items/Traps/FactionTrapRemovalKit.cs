@@ -17,7 +17,7 @@ namespace Server.Factions
 
 		public override int LabelNumber{ get{ return 1041508; } } // a faction trap removal kit
 
-		[Constructable]
+		[Constructible]
 		public FactionTrapRemovalKit() : base( 7867 )
 		{
 			LootType = LootType.Blessed;

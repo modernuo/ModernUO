@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0xC19, 0xC1A )]
+	[Flippable( 0xC19, 0xC1A )]
 	public class BrokenFallenChairComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076264; } } // Broken Fallen Chair
@@ -37,7 +37,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new BrokenFallenChairDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BrokenFallenChairAddon() : base()
 		{
 			AddComponent( new BrokenFallenChairComponent(), 0, 0, 0 );
@@ -67,7 +67,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new BrokenFallenChairAddon(); } }
 		public override int LabelNumber { get { return 1076264; } } // Broken Fallen Chair
 
-		[Constructable]
+		[Constructible]
 		public BrokenFallenChairDeed() : base()
 		{
 			LootType = LootType.Blessed;

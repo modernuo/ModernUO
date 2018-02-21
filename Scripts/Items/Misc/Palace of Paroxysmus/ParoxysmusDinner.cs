@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072086; } } // Paroxysmus' Dinner
 
-		[Constructable]
+		[Constructible]
 		public ParoxysmusDinner() : base( 0x1E95 )
 		{
 		}

@@ -13,7 +13,7 @@ namespace Server.Mobiles
 
 		private Mobile m_Focus;
 
-		[Constructable]
+		[Constructible]
 		public WarriorGuard() : this( null )
 		{
 		}

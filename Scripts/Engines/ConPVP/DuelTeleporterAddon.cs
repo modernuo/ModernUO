@@ -33,12 +33,12 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public DuelTeleporterAddon() : this( DuelTeleporterType.Squares )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DuelTeleporterAddon( DuelTeleporterType type )
 		{
 			int itemID = (int)type;

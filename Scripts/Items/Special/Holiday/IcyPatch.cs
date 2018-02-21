@@ -11,7 +11,7 @@ namespace Server.Items
 
 		/* On OSI, the iceypatch with itemid 0x122a is "rarer", so we will give it 1:10 chance of creating it that way */
 
-		[Constructable]
+		[Constructible]
 		public IcyPatch()
 			: this((Utility.Random(10) == 0) ? 0x122A : 0x122F)
 		{

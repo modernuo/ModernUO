@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Server.Engines.MLQuests.Objectives;
@@ -81,7 +81,7 @@ namespace Server.Engines.MLQuests.Definitions
 		{
 			Activated = true;
 			Title = 1072797; // Needs of the Many - The Heartwood
-			Description = 1072763; // The way of the Arcanist involves cooperation with others and a strong committment to the community of your people.  We have run low on the cotton we use to pack wounds and our people have need.  Bring 10 bales of cotton to me.
+			Description = 1072763; // The way of the Arcanist involves cooperation with others and a strong commitment to the community of your people.  We have run low on the cotton we use to pack wounds and our people have need.  Bring 10 bales of cotton to me.
 			RefusalMessage = 1072768; // You endanger your progress along the path with your unwillingness.
 			InProgressMessage = 1072775; // I care not where you acquire the cotton, merely that you provide it.
 			CompletionMessage = 1074110; // Well, where are the cotton bales?
@@ -175,7 +175,7 @@ namespace Server.Engines.MLQuests.Definitions
 			Activated = true;
 			Title = 1072752; // Discipline
 			Description = 1072761; // Learning to weave spells and control the forces of nature requires sacrifice, discipline, focus, and an unwavering dedication to Sosaria herself.  We do not teach the unworthy.  They do not comprehend the lessons nor the dedication required.  If you would walk the path of the Arcanist, then you must do as I require without hesitation or question.  Your first task is to rid our home of rats ... 50 of them in the next hour.
-			RefusalMessage = 1072767; // *nods* Not everyone has the temperment to undertake the way of the Arcanist.
+			RefusalMessage = 1072767; // *nods* Not everyone has the temperament to undertake the way of the Arcanist.
 			InProgressMessage = 1072773; // You waste my time.  The task is simple. Kill 50 rats in an hour.
 			// No completion message
 
@@ -202,7 +202,7 @@ namespace Server.Engines.MLQuests.Definitions
 		{
 			Activated = true;
 			Title = 1072754; // Needs of the Many - Sanctuary
-			Description = 1072763; // The way of the Arcanist involves cooperation with others and a strong committment to the community of your people.  We have run low on the cotton we use to pack wounds and our people have need.  Bring 10 bales of cotton to me.
+			Description = 1072763; // The way of the Arcanist involves cooperation with others and a strong commitment to the community of your people.  We have run low on the cotton we use to pack wounds and our people have need.  Bring 10 bales of cotton to me.
 			RefusalMessage = 1072768; // You endanger your progress along the path with your unwillingness.
 			InProgressMessage = 1072775; // I care not where you acquire the cotton, merely that you provide it.
 			CompletionMessage = 1074110; // Well, where are the cotton bales?
@@ -461,7 +461,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, Utility.Random( 1074206, 2 ) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Aeluva()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
@@ -519,7 +519,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Koole()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
@@ -582,7 +582,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074223 ); // Have you done it yet?  Oh, I haven’t told you, have I?
 		}
 
-		[Constructable]
+		[Constructible]
 		public Synaeva()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
@@ -645,7 +645,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public ElderBrae()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{

@@ -371,12 +371,12 @@ namespace Server.Items
 
 	public class IronOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public IronOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public IronOre( int amount ) : base( CraftResource.Iron, amount )
 		{
 		}
@@ -413,12 +413,12 @@ namespace Server.Items
 
 	public class DullCopperOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public DullCopperOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DullCopperOre( int amount ) : base( CraftResource.DullCopper, amount )
 		{
 		}
@@ -449,12 +449,12 @@ namespace Server.Items
 
 	public class ShadowIronOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public ShadowIronOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ShadowIronOre( int amount ) : base( CraftResource.ShadowIron, amount )
 		{
 		}
@@ -485,12 +485,12 @@ namespace Server.Items
 
 	public class CopperOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public CopperOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public CopperOre( int amount ) : base( CraftResource.Copper, amount )
 		{
 		}
@@ -521,12 +521,12 @@ namespace Server.Items
 
 	public class BronzeOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public BronzeOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BronzeOre( int amount ) : base( CraftResource.Bronze, amount )
 		{
 		}
@@ -557,12 +557,12 @@ namespace Server.Items
 
 	public class GoldOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public GoldOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GoldOre( int amount ) : base( CraftResource.Gold, amount )
 		{
 		}
@@ -593,12 +593,12 @@ namespace Server.Items
 
 	public class AgapiteOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public AgapiteOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AgapiteOre( int amount ) : base( CraftResource.Agapite, amount )
 		{
 		}
@@ -629,12 +629,12 @@ namespace Server.Items
 
 	public class VeriteOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public VeriteOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public VeriteOre( int amount ) : base( CraftResource.Verite, amount )
 		{
 		}
@@ -665,12 +665,12 @@ namespace Server.Items
 
 	public class ValoriteOre : BaseOre
 	{
-		[Constructable]
+		[Constructible]
 		public ValoriteOre() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ValoriteOre( int amount ) : base( CraftResource.Valorite, amount )
 		{
 		}

@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13BB, 0x13C0 )]
+	[FlippableAttribute( 0x13BB, 0x13C0 )]
 	public class ChainCoif : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 4; } }
@@ -22,7 +22,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Chainmail; } }
 
-		[Constructable]
+		[Constructible]
 		public ChainCoif() : base( 0x13BB )
 		{
 			Weight = 1.0;

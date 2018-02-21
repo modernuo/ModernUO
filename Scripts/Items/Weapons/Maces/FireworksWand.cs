@@ -17,12 +17,12 @@ namespace Server.Items
 			set{ m_Charges = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public FireworksWand() : this( 100 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FireworksWand( int charges )
 		{
 			m_Charges = charges;

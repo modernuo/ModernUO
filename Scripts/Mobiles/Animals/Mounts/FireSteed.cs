@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a fire steed corpse" )]
 	public class FireSteed : BaseMount
 	{
-		[Constructable]
+		[Constructible]
 		public FireSteed() : this( "a fire steed" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FireSteed( string name ) : base( name, 0xBE, 0x3E9E, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			BaseSoundID = 0xA8;

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Silk corpse" )]
 	public class Silk : GiantBlackWidow
 	{
-		[Constructable]
+		[Constructible]
 		public Silk()
 		{
 			IsParagon = true;

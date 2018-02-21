@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override double DefaultWeight { get { return 5; } }
 
-		[Constructable]
+		[Constructible]
 		public ExcellentIronMaiden()
 			: base( 0x3f15 )
 		{

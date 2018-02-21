@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074592; } } // Albino Courtesan Fish
 		
-		[Constructable]
+		[Constructible]
 		public AlbinoCourtesanFish() : base( 0x3B04 )
 		{
 		}

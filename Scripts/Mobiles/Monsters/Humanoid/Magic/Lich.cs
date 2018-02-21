@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a liche's corpse" )]
 	public class Lich : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Lich() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a lich";

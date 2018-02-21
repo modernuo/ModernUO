@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class BombardScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public BombardScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BombardScroll( int amount )
 			: base( 688, 0x2DA9, amount )
 		{

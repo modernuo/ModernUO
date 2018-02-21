@@ -80,7 +80,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public WallBanner( int bannerID ) : base()
 		{
 			m_East = ((bannerID % 2) == 1 );
@@ -284,7 +284,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public WallBannerDeed() : base()
 		{			
 			LootType = LootType.Blessed;

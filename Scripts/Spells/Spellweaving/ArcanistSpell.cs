@@ -102,7 +102,7 @@ namespace Server.Spells.Spellweaving
 
 		public override void GetCastSkills( out double min, out double max )
 		{
-			min = RequiredSkill - 12.5;	//per 5 on friday, 2/16/07
+			min = RequiredSkill - 12.5;	//per 5 on Friday, 2/16/07
 			max = RequiredSkill + 37.5;
 		}
 

@@ -49,7 +49,7 @@ namespace Server.Engines.BulkOrders
 			set{ m_ItemCount = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BulkOrderBook() : base( 0x2259 )
 		{
 			Weight = 1.0;

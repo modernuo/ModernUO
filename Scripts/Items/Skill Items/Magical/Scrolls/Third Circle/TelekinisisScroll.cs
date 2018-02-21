@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class TelekinisisScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public TelekinisisScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TelekinisisScroll( int amount ) : base( 20, 0x1F41, amount )
 		{
 		}

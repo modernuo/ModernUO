@@ -18,7 +18,7 @@ namespace Server.Items
 
 		public override int ArmorBase{ get{ return 10; } }
 
-		[Constructable]
+		[Constructible]
 		public BronzeShield() : base( 0x1B72 )
 		{
 			Weight = 6.0;

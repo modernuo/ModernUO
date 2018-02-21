@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1078148; } } // Ossian Grimoire
 
-		[Constructable]
+		[Constructible]
 		public OssianGrimoire()
 		{
 			LootType = LootType.Blessed;

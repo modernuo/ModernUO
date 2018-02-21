@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{ 
 		public override bool DeleteCorpseOnDeath{ get{ return true; } }
 
-		[Constructable] 
+		[Constructible] 
 		public SpectralArmour() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) 
 		{ 
 			Body = 637; 

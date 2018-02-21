@@ -15,12 +15,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public OrangePetals() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public OrangePetals( int amount ) : base( 0x1021 )
 		{
 			Stackable = true;

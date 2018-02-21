@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073530; } } // emerald mace
 
-		[Constructable]
+		[Constructible]
 		public EmeraldMace()
 		{
 			WeaponAttributes.ResistPoisonBonus = 5;

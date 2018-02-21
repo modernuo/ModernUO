@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13B6, 0x13B5 )]
+	[FlippableAttribute( 0x13B6, 0x13B5 )]
 	public class Scimitar : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 90; } }
 
-		[Constructable]
+		[Constructible]
 		public Scimitar() : base( 0x13B6 )
 		{
 			Weight = 5.0;

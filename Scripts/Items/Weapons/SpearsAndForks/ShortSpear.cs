@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1403, 0x1402 )]
+	[FlippableAttribute( 0x1403, 0x1402 )]
 	public class ShortSpear : BaseSpear
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ShadowStrike; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
 
-		[Constructable]
+		[Constructible]
 		public ShortSpear() : base( 0x1403 )
 		{
 			Weight = 4.0;

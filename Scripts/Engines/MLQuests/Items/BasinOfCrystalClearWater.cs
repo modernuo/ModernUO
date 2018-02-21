@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public BasinOfCrystalClearWater() : base( 0x1008 )
 		{
 			LootType = LootType.Blessed;

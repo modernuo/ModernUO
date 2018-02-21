@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1077627; } } // Bracelet of Resilience
 
-		[Constructable]
+		[Constructible]
 		public BraceletOfResilience()
 		{
 			LootType = LootType.Blessed;

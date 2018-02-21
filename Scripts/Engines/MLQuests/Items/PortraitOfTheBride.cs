@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public PortraitOfTheBride() : base( 0xE9F )
 		{
 			LootType = LootType.Blessed;

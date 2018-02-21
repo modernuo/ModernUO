@@ -12,7 +12,7 @@ namespace Server.Items
 		
 		public override int LabelNumber{ get{ return 1072848; } } // Parasitic Poison
 
-		[Constructable]
+		[Constructible]
 		public ParasiticPotion() : base( PotionEffect.Parasitic )
 		{
 			Hue = 0x17C;

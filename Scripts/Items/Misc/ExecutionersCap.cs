@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class ExecutionersCap : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ExecutionersCap() : base(0xF83)
 		{
 			Weight = 1.0;

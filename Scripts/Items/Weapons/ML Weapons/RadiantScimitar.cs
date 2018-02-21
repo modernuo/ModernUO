@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D33, 0x2D27 )]
+	[FlippableAttribute( 0x2D33, 0x2D27 )]
 	public class RadiantScimitar : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.WhirlwindAttack; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } }
 		public override int InitMaxHits{ get{ return 60; } }
 
-		[Constructable]
+		[Constructible]
 		public RadiantScimitar() : base( 0x2D33 )
 		{
 			Weight = 9.0;

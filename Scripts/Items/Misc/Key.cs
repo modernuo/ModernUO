@@ -199,22 +199,22 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Key() : this( KeyType.Iron, 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Key( KeyType type ) : this( type, 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Key( uint val ) : this ( KeyType.Iron, val )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Key( KeyType type, uint LockVal ) : this( type, LockVal, null )
 		{
 			m_KeyVal = LockVal;

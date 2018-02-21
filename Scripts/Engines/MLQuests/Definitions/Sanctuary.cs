@@ -664,7 +664,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Beotham()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -726,7 +726,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074197 ); // Pardon me, but if you could spare some time I’d greatly appreciate it.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Danoel()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -786,7 +786,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tallinin()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -843,7 +843,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tiana()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -910,7 +910,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074187 ); // Want a job?
 		}
 
-		[Constructable]
+		[Constructible]
 		public LorekeeperOolua()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -969,7 +969,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public LorekeeperRollarn()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1033,7 +1033,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Dallid()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1092,7 +1092,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Canir()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1139,7 +1139,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Yellienir()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -1195,7 +1195,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public ElderOnallan()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{

@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
 		public override TimeSpan JoinAge{ get{ return TimeSpan.FromDays( 7.0 ); } }
 
-		[Constructable]
+		[Constructible]
 		public ThiefGuildmaster() : base( "thief" )
 		{
 			SetSkill( SkillName.DetectHidden, 75.0, 98.0 );

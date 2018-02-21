@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class BronzeElemental : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public BronzeElemental() : this( 2 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BronzeElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			// TODO: Gas attack

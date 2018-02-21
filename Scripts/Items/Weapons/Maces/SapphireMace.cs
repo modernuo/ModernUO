@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073531; } } // sapphire mace
 
-		[Constructable]
+		[Constructible]
 		public SapphireMace()
 		{
 			WeaponAttributes.ResistEnergyBonus = 5;

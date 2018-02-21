@@ -24,13 +24,13 @@ namespace Server.Items
 			return ac;
 		}
 
-		[Constructable]
+		[Constructible]
 		public JackOLantern()
 			: this( 1 > Utility.Random( 2 ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public JackOLantern( bool south )
 		{
 			AddComponent( new AddonComponent( 5703 ), 0, 0, +0 );

@@ -10,7 +10,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074463; } } // An aquarium fishing net
 
-		[Constructable]
+		[Constructible]
 		public AquariumFishNet()
 		{
 			ItemID = 0xDC8;

@@ -10,12 +10,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Emerald() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Emerald( int amount ) : base( 0xF10 )
 		{
 			Stackable = true;

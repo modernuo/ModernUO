@@ -16,14 +16,14 @@ namespace Server.Items
 		private bool m_Drying;
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public PoolOfAcid() : this( TimeSpan.FromSeconds( 10.0 ), 2, 5 )
 		{
 		}
 
 		public override string DefaultName { get { return "a pool of acid"; } }
 
-		[Constructable]
+		[Constructible]
 		public PoolOfAcid( TimeSpan duration, int minDamage, int maxDamage )
 			: base( 0x122A )
 		{

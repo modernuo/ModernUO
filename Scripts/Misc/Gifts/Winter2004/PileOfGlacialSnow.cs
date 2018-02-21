@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class PileOfGlacialSnow : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PileOfGlacialSnow() : base( 0x913 )
 		{
 			Hue = 0x480;

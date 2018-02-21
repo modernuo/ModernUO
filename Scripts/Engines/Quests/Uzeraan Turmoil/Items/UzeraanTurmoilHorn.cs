@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Haven
 			return ( pm != null && pm.Quest is UzeraanTurmoilQuest );
 		}
 
-		[Constructable]
+		[Constructible]
 		public UzeraanTurmoilHorn()
 		{
 			DestLoc = new Point3D( 3597, 2582, 0 );

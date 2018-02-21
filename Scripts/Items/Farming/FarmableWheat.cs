@@ -21,7 +21,7 @@ namespace Server.Items
 			return Utility.Random( 3502, 2 );
 		}
 
-		[Constructable]
+		[Constructible]
 		public FarmableWheat() : base( GetCropID() )
 		{
 		}

@@ -7,7 +7,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1075088; } } // Dread Horn Tainted Mushroom
 		public override bool ForceShowProperties{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public TaintedMushroom() : base( Utility.RandomMinMax( 0x222E, 0x2231 ) )
 		{
 		}

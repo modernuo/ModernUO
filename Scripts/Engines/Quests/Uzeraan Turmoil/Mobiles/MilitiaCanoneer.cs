@@ -17,7 +17,7 @@ namespace Server.Engines.Quests.Haven
 			set { m_Active = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MilitiaCanoneer() : base( "the Militia Canoneer" )
 		{
 			m_Active = true;

@@ -30,7 +30,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041490 + (int)m_Type; } }
 
-		[Constructable]
+		[Constructible]
 		public Moonstone( MoonstoneType type ) : base( 0xF8B )
 		{
 			Weight = 1.0;

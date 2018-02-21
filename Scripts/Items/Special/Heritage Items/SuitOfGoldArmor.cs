@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[Flipable( 0x3DAA, 0x3DA9 )]
+	[Flippable( 0x3DAA, 0x3DA9 )]
 	public class SuitOfGoldArmorComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1076265; } } // Suit of Gold Armor
@@ -34,7 +34,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new SuitOfGoldArmorDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public SuitOfGoldArmorAddon() : base()
 		{
 			AddComponent( new SuitOfGoldArmorComponent(), 0, 0, 0 );
@@ -64,7 +64,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new SuitOfGoldArmorAddon(); } }
 		public override int LabelNumber { get { return 1076265; } } // Suit of Gold Armor
 
-		[Constructable]
+		[Constructible]
 		public SuitOfGoldArmorDeed() : base()
 		{
 			LootType = LootType.Blessed;

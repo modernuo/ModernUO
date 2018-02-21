@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13cc, 0x13d3 )]
+	[FlippableAttribute( 0x13cc, 0x13d3 )]
 	public class LeatherChest : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 2; } }
@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
-		[Constructable]
+		[Constructible]
 		public LeatherChest() : base( 0x13CC )
 		{
 			Weight = 6.0;

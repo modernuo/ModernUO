@@ -13,7 +13,7 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 7; } }
 		public override int BaseEnergyResistance{ get{ return 10; } }
 
-		[Constructable]
+		[Constructible]
 		public IronwoodCrown()
 		{
 			Hue = 0x1;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BrownBearRugEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BrownBearRugEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1E40 ), 1, 1, 0 );
@@ -45,7 +45,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new BrownBearRugEastAddon(); } }
 		public override int LabelNumber{ get{ return 1049397; } } // a brown bear rug deed facing east
 
-		[Constructable]
+		[Constructible]
 		public BrownBearRugEastDeed()
 		{
 		}
@@ -73,7 +73,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BrownBearRugSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BrownBearRugSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0x1E36 ), 1, 1, 0 );
@@ -111,7 +111,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new BrownBearRugSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1049398; } } // a brown bear rug deed facing south
 
-		[Constructable]
+		[Constructible]
 		public BrownBearRugSouthDeed()
 		{
 		}
@@ -139,7 +139,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new PolarBearRugEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PolarBearRugEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1E53 ), 1, 1, 0 );
@@ -177,7 +177,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new PolarBearRugEastAddon(); } }
 		public override int LabelNumber{ get{ return 1049399; } } // a polar bear rug deed facing east
 
-		[Constructable]
+		[Constructible]
 		public PolarBearRugEastDeed()
 		{
 		}
@@ -205,7 +205,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new PolarBearRugSouthDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public PolarBearRugSouthAddon()
 		{
 			AddComponent( new AddonComponent( 0x1E49 ), 1, 1, 0 );
@@ -243,7 +243,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new PolarBearRugSouthAddon(); } }
 		public override int LabelNumber{ get{ return 1049400; } } // a polar bear rug deed facing south
 
-		[Constructable]
+		[Constructible]
 		public PolarBearRugSouthDeed()
 		{
 		}

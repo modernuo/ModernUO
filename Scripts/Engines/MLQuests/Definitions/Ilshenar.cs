@@ -133,7 +133,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lissbet()
 		{
 		}
@@ -186,7 +186,7 @@ namespace Server.Engines.MLQuests.Definitions
 		public override bool IsInvulnerable { get { return true; } }
 		public override bool CanTeach { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public GrandpaCharley()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -243,7 +243,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074221 ); // Greetings!  I have a small task for you good traveler.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Jelrice()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
@@ -293,7 +293,7 @@ namespace Server.Engines.MLQuests.Definitions
 			MLQuestSystem.Tell( this, pm, 1074218 ); // Hey!  I want to talk to you, now.
 		}
 
-		[Constructable]
+		[Constructible]
 		public Yorus()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{

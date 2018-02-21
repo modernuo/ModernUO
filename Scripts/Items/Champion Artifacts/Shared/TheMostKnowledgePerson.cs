@@ -14,7 +14,7 @@ namespace Server.Items
 
 		public override bool CanBeBlessed{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public TheMostKnowledgePerson() : base( 0x2684 )
 		{
 			Hue = 0x117;

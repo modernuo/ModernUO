@@ -43,7 +43,7 @@ namespace Server.Engines.BulkOrders
 
 		public override int LabelNumber{ get{ return 1045151; } } // a bulk order deed
 
-		[Constructable]
+		[Constructible]
 		public SmallBOD( int hue, int amountMax, Type type, int number, int graphic, bool requireExeptional, BulkMaterialType material ) : base( Core.AOS ? 0x2258 : 0x14EF )
 		{
 			Weight = 1.0;

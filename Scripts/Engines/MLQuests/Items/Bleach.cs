@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1075375; } } // Bleach
 
-		[Constructable]
+		[Constructible]
 		public Bleach() : base( PigmentType.None )
 		{
 			LootType = LootType.Blessed;

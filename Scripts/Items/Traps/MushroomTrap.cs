@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class MushroomTrap : BaseTrap
 	{
-		[Constructable]
+		[Constructible]
 		public MushroomTrap() : base( 0x1125 )
 		{
 		}

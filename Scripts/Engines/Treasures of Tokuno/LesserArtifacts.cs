@@ -13,7 +13,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get { return 255; } }
 
-		[Constructable]
+		[Constructible]
 		public AncientFarmersKasa() : base()
 		{
 			Attributes.BonusStr = 5;
@@ -61,7 +61,7 @@ namespace Server.Items
 		public override int BasePoisonResistance { get { return 11; } }
 		public override int BaseEnergyResistance { get { return 8; } }
 
-		[Constructable]
+		[Constructible]
 		public AncientSamuraiDo() : base()
 		{
 			ArmorAttributes.LowerStatReq = 100;
@@ -99,7 +99,7 @@ namespace Server.Items
 		public override int BaseColdResistance { get { return 13; } }
 		public override int BasePoisonResistance { get { return 8; } }
 
-		[Constructable]
+		[Constructible]
 		public ArmsOfTacticalExcellence() : base()
 		{
 			Attributes.BonusDex = 5;
@@ -141,7 +141,7 @@ namespace Server.Items
 		public override int InitMinHits { get { return 255; } }
 		public override int InitMaxHits { get { return 255; } }
 
-		[Constructable]
+		[Constructible]
 		public BlackLotusHood() : base()
 		{
 			Attributes.LowerManaCost = 6;
@@ -180,7 +180,7 @@ namespace Server.Items
 
 		public override int BaseColdResistance { get { return 10; } }
 
-		[Constructable]
+		[Constructible]
 		public DaimyosHelm() : base()
 		{
 			ArmorAttributes.LowerStatReq = 100;
@@ -215,7 +215,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1070917; } } // Demon Forks
 
-		[Constructable]
+		[Constructible]
 		public DemonForks() : base()
 		{
 			WeaponAttributes.ResistFireBonus = 10;
@@ -252,7 +252,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1070914; } } // Dragon Nunchaku
 
-		[Constructable]
+		[Constructible]
 		public DragonNunchaku() : base()
 		{
 			WeaponAttributes.ResistFireBonus = 5;
@@ -289,7 +289,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1070913; } } // Exiler
 
-		[Constructable]
+		[Constructible]
 		public Exiler() : base()
 		{
 			WeaponAttributes.HitDispel = 33;
@@ -335,7 +335,7 @@ namespace Server.Items
 
 		public override int BaseFireResistance { get { return 24; } }
 
-		[Constructable]
+		[Constructible]
 		public GlovesOfTheSun() : base()
 		{
 			Attributes.RegenHits = 2;
@@ -370,7 +370,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1070918; } } // Hanzo's Bow
 
-		[Constructable]
+		[Constructible]
 		public HanzosBow() : base()
 		{
 			WeaponAttributes.HitLeechHits = 40;
@@ -410,7 +410,7 @@ namespace Server.Items
 		public override int BasePhysicalResistance { get { return 20; } }
 		public override int BasePoisonResistance { get { return 18; } }
 
-		[Constructable]
+		[Constructible]
 		public LegsOfStability() : base()
 		{
 			Attributes.BonusStam = 5;
@@ -446,7 +446,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1070912; } } // Peasant's Bokuto
 
-		[Constructable]
+		[Constructible]
 		public PeasantsBokuto() : base()
 		{
 			WeaponAttributes.SelfRepair = 3;
@@ -483,7 +483,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1070916; } } // Pilfered Dancer Fans
 
-		[Constructable]
+		[Constructible]
 		public PilferedDancerFans() : base()
 		{
 			Attributes.WeaponDamage = 20;
@@ -519,7 +519,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1070915; } } // The Destroyer
 
-		[Constructable]
+		[Constructible]
 		public TheDestroyer() : base()
 		{
 			WeaponAttributes.HitLeechStam = 40;
@@ -555,7 +555,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1070934; } } // Tome of Enlightenment
 
-		[Constructable]
+		[Constructible]
 		public TomeOfEnlightenment() : base()
 		{
 			LootType = LootType.Regular;
@@ -595,7 +595,7 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 10; } }
 		public override int BaseEnergyResistance{ get{ return 15; } }
 		
-		[Constructable]
+		[Constructible]
 		public LeurociansMempoOfFortune() : base()
 		{
 			LootType = LootType.Regular;
@@ -682,14 +682,14 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1071014; } } // Ancient Urn
 
-		[Constructable]
+		[Constructible]
 		public AncientUrn( string urnName ) : base( 0x241D )
 		{
 			m_UrnName = urnName;
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public AncientUrn() : this( m_Names[Utility.Random( m_Names.Length )] )
 		{
 		}
@@ -741,7 +741,7 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1071015; } } // Honorable Swords
 
-		[Constructable]
+		[Constructible]
 		public HonorableSwords( string swordsName ) : base( 0x2853 )
 		{
 			m_SwordsName = swordsName;
@@ -749,7 +749,7 @@ namespace Server.Items
 			Weight = 5.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public HonorableSwords() : this( AncientUrn.Names[Utility.Random( AncientUrn.Names.Length )] )
 		{
 		}
@@ -788,12 +788,12 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x2811, 0x2812 )]
+	[Flippable( 0x2811, 0x2812 )]
 	public class ChestOfHeirlooms : LockableContainer
 	{
 		public override int LabelNumber{ get{ return 1070937; } } // Chest of heirlooms
 		
-		[Constructable]
+		[Constructible]
 		public ChestOfHeirlooms() : base( 0x2811 )
 		{
 			Locked = true;
@@ -872,7 +872,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1070927; } } // Flute of Renewal
 
-		[Constructable]
+		[Constructible]
 		public FluteOfRenewal() : base()
 		{
 			Slayer = SlayerGroup.Groups[Utility.Random( SlayerGroup.Groups.Length - 1 )].Super.Name; //-1 to exclude Fey slayer.  Try to confrim no fey slayer on this on OSI
@@ -974,12 +974,12 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public LesserPigmentsOfTokuno() : this( (LesserPigmentType)Utility.Random(0,11) )
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public LesserPigmentsOfTokuno( LesserPigmentType type ) : base( 1 )
 		{
 			Weight = 1.0;
@@ -1015,7 +1015,7 @@ namespace Server.Items
 
 	public class MetalPigmentsOfTokuno : BasePigmentsOfTokuno
 	{
-		[Constructable]
+		[Constructible]
 		public MetalPigmentsOfTokuno() : base( 1 )
 		{
 			RandomHue();

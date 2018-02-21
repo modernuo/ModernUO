@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D24, 0x2D30 )]
+	[FlippableAttribute( 0x2D24, 0x2D30 )]
 	public class DiamondMace : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ConcussionBlow; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } } // TODO
 		public override int InitMaxHits{ get{ return 60; } } // TODO
 
-		[Constructable]
+		[Constructible]
 		public DiamondMace() : base( 0x2D24 )
 		{
 			Weight = 10.0;

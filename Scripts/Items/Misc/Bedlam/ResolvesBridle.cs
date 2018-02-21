@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074761; } } // Resolve's Bridle
 
-		[Constructable]
+		[Constructible]
 		public ResolvesBridle() : base( 0x1374 )
 		{
 		}

@@ -12,7 +12,7 @@ namespace Server.Mobiles
 		public override Faction FactionAllegiance { get { return Minax.Instance; } }
 		public override Ethics.Ethic EthicAllegiance { get { return Ethics.Ethic.Evil; } }
 
-		[Constructable]
+		[Constructible]
 		public OgreLord () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an ogre lord";

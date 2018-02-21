@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1078210; } } // Heartseeker
 
-		[Constructable]
+		[Constructible]
 		public Heartseeker()
 		{
 			LootType = LootType.Blessed;

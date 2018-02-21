@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073533; } } // adventurer's machete
 
-		[Constructable]
+		[Constructible]
 		public AdventurersMachete()
 		{
 			Attributes.Luck = 20;

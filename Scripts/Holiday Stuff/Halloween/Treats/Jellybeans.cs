@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1096932; } } /* jellybeans */
 
-		[Constructable]
+		[Constructible]
 		public JellyBeans() 
 			: this( 1 )
 		{

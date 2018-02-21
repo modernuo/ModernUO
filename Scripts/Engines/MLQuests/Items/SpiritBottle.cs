@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpiritBottle() : base( 0xEFB )
 		{
 			LootType = LootType.Blessed;

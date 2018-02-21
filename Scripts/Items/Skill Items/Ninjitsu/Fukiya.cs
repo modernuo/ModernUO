@@ -8,7 +8,7 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27AA, 0x27F5 )]
+	[FlippableAttribute( 0x27AA, 0x27F5 )]
 	public class Fukiya : Item, INinjaWeapon
 	{
 		public virtual int WrongAmmoMessage { get { return 1063329; } } //You can only load fukiya darts
@@ -51,7 +51,7 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		[Constructable]
+		[Constructible]
 		public Fukiya() : base( 0x27AA )
 		{
 			Weight = 4.0;

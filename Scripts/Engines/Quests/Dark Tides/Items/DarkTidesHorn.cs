@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Necro
 			return ( pm != null && pm.Quest is DarkTidesQuest );
 		}
 
-		[Constructable]
+		[Constructible]
 		public DarkTidesHorn()
 		{
 			DestLoc = new Point3D( 2103, 1319, -68 );

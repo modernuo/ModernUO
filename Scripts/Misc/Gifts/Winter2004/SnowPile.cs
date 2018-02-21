@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class SnowPile : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SnowPile() : base( 0x913 )
 		{
 			Hue = 0x481;

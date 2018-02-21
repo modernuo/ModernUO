@@ -27,7 +27,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Lantern() : base( 0xA25 )
 		{
 			if ( Burnout )
@@ -61,7 +61,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1061618; } } // Lantern of Souls
 
-		[Constructable]
+		[Constructible]
 		public LanternOfSouls()
 		{
 			Hue = 0x482;

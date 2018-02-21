@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	{
 		public override bool InitialInnocent{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Pixie() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
 			Name = NameList.RandomName( "pixie" );

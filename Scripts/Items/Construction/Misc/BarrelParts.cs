@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class BarrelLid : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BarrelLid() : base(0x1DB8)
 		{
 			Weight = 2;
@@ -29,10 +29,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute(0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4)]
+	[FlippableAttribute(0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4)]
 	public class BarrelStaves : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BarrelStaves() : base(0x1EB1)
 		{
 			Weight = 1;
@@ -61,7 +61,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1011228; } } // Barrel hoops
 
-		[Constructable]
+		[Constructible]
 		public BarrelHoops() : base(0x1DB7)
 		{
 			Weight = 5;
@@ -88,7 +88,7 @@ namespace Server.Items
 
 	public class BarrelTap : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BarrelTap() : base(0x1004)
 		{
 			Weight = 1;

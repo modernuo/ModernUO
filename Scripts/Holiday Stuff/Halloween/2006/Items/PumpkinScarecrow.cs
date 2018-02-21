@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1096947; } }
 
-		[Constructable]
+		[Constructible]
 		public PumpkinScarecrow()
 			: base( Utility.RandomBool() ? 0x469B : 0x469C )
 		{

@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13c6, 0x13ce )]
+	[FlippableAttribute( 0x13c6, 0x13ce )]
 	public class LeatherGlovesOfMining : BaseGlovesOfMining
 	{
 		public override int BasePhysicalResistance{ get{ return 2; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1045122; } } // leather blacksmith gloves of mining
 
-		[Constructable]
+		[Constructible]
 		public LeatherGlovesOfMining( int bonus ) : base( bonus, 0x13C6 )
 		{
 			Weight = 1;
@@ -49,7 +49,7 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x13d5, 0x13dd )]
+	[FlippableAttribute( 0x13d5, 0x13dd )]
 	public class StuddedGlovesOfMining : BaseGlovesOfMining
 	{
 		public override int BasePhysicalResistance{ get{ return 2; } }
@@ -71,7 +71,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1045123; } } // studded leather blacksmith gloves of mining
 
-		[Constructable]
+		[Constructible]
 		public StuddedGlovesOfMining( int bonus ) : base( bonus, 0x13D5 )
 		{
 			Weight = 2;
@@ -94,7 +94,7 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x13eb, 0x13f2 )]
+	[FlippableAttribute( 0x13eb, 0x13f2 )]
 	public class RingmailGlovesOfMining : BaseGlovesOfMining
 	{
 		public override int BasePhysicalResistance{ get{ return 3; } }
@@ -117,7 +117,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1045124; } } // ringmail blacksmith gloves of mining
 
-		[Constructable]
+		[Constructible]
 		public RingmailGlovesOfMining( int bonus ) : base( bonus, 0x13EB )
 		{
 			Weight = 1;

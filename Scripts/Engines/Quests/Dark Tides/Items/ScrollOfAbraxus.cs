@@ -12,7 +12,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override int LabelNumber { get { return 1028827; } } // Scroll of Abraxus
 
-		[Constructable]
+		[Constructible]
 		public ScrollOfAbraxus() : base( 0x227B )
 		{
 			Weight = 1.0;

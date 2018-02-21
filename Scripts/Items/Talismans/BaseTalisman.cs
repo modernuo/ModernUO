@@ -27,7 +27,7 @@ namespace Server.Items
 		}
 
 		[Usage("RandomTalisman <count>")]
-		[Description("Generates random talismans in your backback.")]
+		[Description("Generates random talismans in your backpack.")]
 		public static void RandomTalisman_OnCommand(CommandEventArgs e)
 		{
 			Mobile m = e.Mobile;

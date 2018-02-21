@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D25, 0x2D31 )]
+	[FlippableAttribute( 0x2D25, 0x2D31 )]
 	public class WildStaff : BaseStaff
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Block; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } }
 		public override int InitMaxHits{ get{ return 60; } }
 
-		[Constructable]
+		[Constructible]
 		public WildStaff() : base( 0x2D25 )
 		{
 			Weight = 8.0;

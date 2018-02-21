@@ -40,7 +40,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		[Constructable]
+		[Constructible]
 		public TreeStump( int itemID ) : base()
 		{
 			AddComponent( new AddonComponent( itemID ), 0, 0, 0 );
@@ -190,7 +190,7 @@ namespace Server.Items
 			set{ m_Logs = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TreeStumpDeed() : base()
 		{
 			LootType = LootType.Blessed;

@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class PurgeMagicScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public PurgeMagicScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PurgeMagicScroll( int amount )
 			: base( 679, 0x2DA0, amount )
 		{

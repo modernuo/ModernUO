@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoArrowShafts : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoArrowShafts() : base( Utility.Random(2) + 0x1024 )
 		{
 			Movable = true;

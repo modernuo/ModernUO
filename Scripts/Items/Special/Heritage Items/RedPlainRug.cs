@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new RedPlainRugDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public RedPlainRugAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xAC9, 1076588 ), 1, 1, 0 );
@@ -44,7 +44,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new RedPlainRugAddon(); } }
 		public override int LabelNumber { get { return 1076588; } } // Red plain rug
 
-		[Constructable]
+		[Constructible]
 		public RedPlainRugDeed() : base()
 		{
 			LootType = LootType.Blessed;

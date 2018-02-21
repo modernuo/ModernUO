@@ -5,7 +5,7 @@ namespace Server.Items
 	public class BrokenChair : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public BrokenChair() : base( Utility.Random(2) + 0xC19 )
 		{
 			Movable = true;

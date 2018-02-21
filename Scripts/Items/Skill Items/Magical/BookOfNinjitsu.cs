@@ -11,12 +11,12 @@ namespace Server.Items
 		public override int BookCount{ get{ return 8; } }
 
 
-		[Constructable]
+		[Constructible]
 		public BookOfNinjitsu() : this( (ulong)0xFF )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BookOfNinjitsu( ulong content ) : base( content, 0x23A0 )
 		{
 			Layer = (Core.ML ? Layer.OneHanded : Layer.Invalid);

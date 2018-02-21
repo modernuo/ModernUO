@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a vorpal bunny corpse" )]
 	public class VorpalBunny : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public VorpalBunny() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a vorpal bunny";

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1078163; } } // Silver Serpent Blade
 
-		[Constructable]
+		[Constructible]
 		public SilverSerpentBlade()
 		{
 			LootType = LootType.Blessed;

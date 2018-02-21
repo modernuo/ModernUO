@@ -12,7 +12,7 @@ namespace Server.Mobiles
 			return WeaponAbility.BleedAttack;
 		}
 
-		[Constructable]
+		[Constructible]
 		public CrystalElemental() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a crystal elemental";

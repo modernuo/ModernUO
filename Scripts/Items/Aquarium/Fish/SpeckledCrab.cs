@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073826; } } // A Speckled Crab 
 		
-		[Constructable]
+		[Constructible]
 		public SpeckledCrab() : base( 0x3AFC )
 		{
 		}

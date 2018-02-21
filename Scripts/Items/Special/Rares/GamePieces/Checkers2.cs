@@ -5,7 +5,7 @@ namespace Server.Items
 	public class Checkers2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public Checkers2() : base( 0xE1B )
 		{
 			Movable = true;

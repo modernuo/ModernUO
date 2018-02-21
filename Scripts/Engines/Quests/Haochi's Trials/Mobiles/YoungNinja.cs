@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Samurai
 	[CorpseName( "a young ninja's corpse" )]
 	public class YoungNinja : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public YoungNinja() : base( AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			InitStats( 45, 30, 5 );

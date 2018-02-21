@@ -30,7 +30,7 @@ namespace Server.Items
 		Conflagration,
 		ConflagrationGreater,
 		MaskOfDeath,		// Mask of Death is not available in OSI but does exist in cliloc files
-		MaskOfDeathGreater,	// included in enumeration for compatability if later enabled by OSI
+		MaskOfDeathGreater,	// included in enumeration for compatibility if later enabled by OSI
 		ConfusionBlast,
 		ConfusionBlastGreater,
 		Invisibility,

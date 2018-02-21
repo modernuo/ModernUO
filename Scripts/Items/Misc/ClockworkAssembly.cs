@@ -12,7 +12,7 @@ namespace Server.Items
 			get { return "clockwork assembly"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ClockworkAssembly() : base( 0x1EA8 )
 		{
 			Weight = 5.0;

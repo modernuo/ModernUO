@@ -96,7 +96,7 @@ namespace Server.Items
 		public override BaseAddonDeed Deed { get { return new AppleTreeDeed(); } }
 		public override Item Fruit { get { return new Apple(); } }
 
-		[Constructable]
+		[Constructible]
 		public AppleTreeAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD98, 1076269 ), 0, 0, 0 );
@@ -127,7 +127,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new AppleTreeAddon(); } }
 		public override int LabelNumber { get { return 1076269; } } // Apple Tree
 
-		[Constructable]
+		[Constructible]
 		public AppleTreeDeed() : base()
 		{
 			LootType = LootType.Blessed;
@@ -157,7 +157,7 @@ namespace Server.Items
 		public override BaseAddonDeed Deed { get { return new PeachTreeDeed(); } }
 		public override Item Fruit { get { return new Peach(); } }
 
-		[Constructable]
+		[Constructible]
 		public PeachTreeAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD9C, 1076270 ), 0, 0, 0 );
@@ -188,7 +188,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new PeachTreeAddon(); } }
 		public override int LabelNumber { get { return 1076270; } } // Peach Tree
 
-		[Constructable]
+		[Constructible]
 		public PeachTreeDeed() : base()
 		{
 			LootType = LootType.Blessed;

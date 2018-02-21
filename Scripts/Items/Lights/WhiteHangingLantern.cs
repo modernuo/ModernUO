@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class WhiteHangingLantern : BaseLight
 	{
 		public override int LitItemID
@@ -28,7 +28,7 @@ namespace Server.Items
 			}
 		}
 		
-		[Constructable]
+		[Constructible]
 		public WhiteHangingLantern() : base( 0x24C6 )
 		{
 			Movable = true;

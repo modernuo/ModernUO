@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "an Ingot stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public IngotStone() : base( 0xED4 )
 		{
 			Movable = false;

@@ -36,7 +36,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new WoodenCoffinDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public WoodenCoffinAddon( bool east ) : base()
 		{
 			if ( east ) // east
@@ -79,7 +79,7 @@ namespace Server.Items
 
 		private bool m_East;
 
-		[Constructable]
+		[Constructible]
 		public WoodenCoffinDeed() : base()
 		{
 			LootType = LootType.Blessed;

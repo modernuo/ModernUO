@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Moug-Guur corpse" )]
 	public class MougGuur : Ettin
 	{
-		[Constructable]
+		[Constructible]
 		public MougGuur()
 		{
 			Name = "Moug-Guur";

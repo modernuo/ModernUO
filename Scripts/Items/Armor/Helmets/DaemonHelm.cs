@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1451, 0x1456 )]
+	[FlippableAttribute( 0x1451, 0x1456 )]
 	public class DaemonHelm : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 6; } }
@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041374; } } // daemon bone helmet
 
-		[Constructable]
+		[Constructible]
 		public DaemonHelm() : base( 0x1451 )
 		{
 			Hue = 0x648;

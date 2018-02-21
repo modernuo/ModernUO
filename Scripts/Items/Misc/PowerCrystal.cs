@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "power crystal"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public PowerCrystal() : base( 0x1F1C )
 		{
 			Weight = 1.0;

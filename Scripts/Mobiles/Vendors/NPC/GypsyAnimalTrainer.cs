@@ -11,7 +11,7 @@ namespace Server.Mobiles
 {
 	public class GypsyAnimalTrainer : AnimalTrainer
 	{
-		[Constructable]
+		[Constructible]
 		public GypsyAnimalTrainer()
 		{
 			if ( Utility.RandomBool() )

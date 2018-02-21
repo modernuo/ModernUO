@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		public override bool CanTeach{ get{ return true; } }
 		public override bool ClickTitle{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public Samurai() : base( AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Title = "the samurai";

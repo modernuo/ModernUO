@@ -23,7 +23,7 @@ namespace Server.Items
 	// ********** Dough **********
 	public class Dough : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Dough() : base( 0x103d )
 		{
 			Stackable = Core.ML;
@@ -122,7 +122,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041340; } } // sweet dough
 
-		[Constructable]
+		[Constructible]
 		public SweetDough() : base( 0x103d )
 		{
 			Stackable = Core.ML;
@@ -226,7 +226,7 @@ namespace Server.Items
 	// ********** JarHoney **********
 	public class JarHoney : Item
 	{
-		[Constructable]
+		[Constructible]
 		public JarHoney() : base( 0x9ec )
 		{
 			Weight = 1.0;
@@ -295,7 +295,7 @@ namespace Server.Items
 	// ********** BowlFlour **********
 	public class BowlFlour : Item
 	{
-		[Constructable]
+		[Constructible]
 		public BowlFlour() : base( 0xa1e )
 		{
 			Weight = 1.0;
@@ -323,7 +323,7 @@ namespace Server.Items
 	// ********** WoodenBowl **********
 	public class WoodenBowl : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WoodenBowl() : base( 0x15f8 )
 		{
 			Weight = 1.0;
@@ -351,7 +351,7 @@ namespace Server.Items
 	// ********** PitcherWater **********
 	/*public class PitcherWater : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PitcherWater() : base(Utility.Random( 0x1f9d, 2 ))
 		{
 			Weight = 1.0;
@@ -434,7 +434,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public SackFlour() : base( 0x1039 )
 		{
 			Weight = 5.0;
@@ -502,7 +502,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1024166; } } // open sack of flour
 
-		[Constructable]
+		[Constructible]
 		public SackFlourOpen() : base(UtilityItem.RandomChoice( 0x1046, 0x103a ))
 		{
 			Weight = 1.0;
@@ -578,7 +578,7 @@ namespace Server.Items
 	// ********** Eggshells **********
 	public class Eggshells : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Eggshells() : base( 0x9b4 )
 		{
 			Weight = 0.5;
@@ -605,12 +605,12 @@ namespace Server.Items
 
 	public class WheatSheaf : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WheatSheaf() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WheatSheaf( int amount ) : base( 7869 )
 		{
 			Weight = 1.0;

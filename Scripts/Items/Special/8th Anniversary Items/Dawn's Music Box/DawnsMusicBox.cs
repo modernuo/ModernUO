@@ -17,7 +17,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2AF9, 0x2AFD )]
+	[Flippable( 0x2AF9, 0x2AFD )]
 	public class DawnsMusicBox : Item, ISecurable
 	{
 		public override int LabelNumber { get { return 1075198; } } // Dawn’s Music Box
@@ -38,7 +38,7 @@ namespace Server.Items
 			set { m_Level = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public DawnsMusicBox() : base( 0x2AF9 )
 		{
 			Weight = 1.0;

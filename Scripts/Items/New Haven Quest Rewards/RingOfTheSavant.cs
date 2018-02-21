@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1077608; } } // Ring of the Savant
 
-		[Constructable]
+		[Constructible]
 		public RingOfTheSavant()
 		{
 			LootType = LootType.Blessed;

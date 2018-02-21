@@ -11,12 +11,12 @@ namespace Server.Items
 
 		public bool East{ get{ return this.ItemID == 0x1E2F; } }
 
-		[Constructable]
+		[Constructible]
 		public DartBoard() : this( true )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DartBoard( bool east ) : base( east ? 0x1E2F : 0x1E2E )
 		{
 		}
@@ -134,7 +134,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1044326; } } // dartboard (east)
 
-		[Constructable]
+		[Constructible]
 		public DartBoardEastDeed()
 		{
 		}
@@ -192,7 +192,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1044325; } } // dartboard (south)
 
-		[Constructable]
+		[Constructible]
 		public DartBoardSouthDeed()
 		{
 		}

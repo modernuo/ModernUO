@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073506; } } // slayer longbow
 
-		[Constructable]
+		[Constructible]
 		public SlayerLongbow()
 		{
 			Slayer2 = (SlayerName) Utility.RandomMinMax( 1, 27 );

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class RightArm : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RightArm() : base( 0x1DA2 )
 		{
 		}

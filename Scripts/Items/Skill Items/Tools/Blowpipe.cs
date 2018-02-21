@@ -4,21 +4,21 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xE8A, 0xE89 )]
+	[FlippableAttribute( 0xE8A, 0xE89 )]
 	public class Blowpipe : BaseTool
 	{
 		public override CraftSystem CraftSystem { get { return DefGlassblowing.CraftSystem; } }
 
 		public override int LabelNumber{ get{ return 1044608; } } // blow pipe
 
-		[Constructable]
+		[Constructible]
 		public Blowpipe() : base( 0xE8A )
 		{
 			Weight = 4.0;
 			Hue = 0x3B9;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Blowpipe( int uses ) : base( uses, 0xE8A )
 		{
 			Weight = 4.0;

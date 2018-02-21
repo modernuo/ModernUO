@@ -10,10 +10,10 @@ using Server.Engines.Quests.Hag;
 
 namespace Server.Items
 {
-	[Flipable( 0x14F5, 0x14F6 )]
+	[Flippable( 0x14F5, 0x14F6 )]
 	public class Spyglass : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Spyglass() : base( 0x14F5 )
 		{
 			Weight = 3.0;

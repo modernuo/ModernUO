@@ -12,7 +12,7 @@ namespace Server.Mobiles
 	[CorpseName( "a ghostly corpse" )]
 	public class RestlessSoul : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public RestlessSoul() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{
 			Name = "restless soul";

@@ -25,12 +25,12 @@ namespace Server.Items
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpellScroll( int spellID, int itemID ) : this( spellID, itemID, 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpellScroll( int spellID, int itemID, int amount ) : base( itemID )
 		{
 			Stackable = true;

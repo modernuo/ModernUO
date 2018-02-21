@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class AdminRobe : BaseSuit
 	{
-		[Constructable]
+		[Constructible]
 		public AdminRobe() : base( AccessLevel.Administrator, 0x0, 0x204F ) // Blank hue
 		{
 		}

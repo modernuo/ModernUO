@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072920; } } // Overseer Sundered Blade
 
-		[Constructable]
+		[Constructible]
 		public OverseerSunderedBlade()
 		{
 			ItemID = 0x2D27;

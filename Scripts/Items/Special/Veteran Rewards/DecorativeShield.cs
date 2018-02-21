@@ -43,12 +43,12 @@ namespace Server.Items
 			}
 		}
 		
-		[Constructable]
+		[Constructible]
 		public DecorativeShield() : this( 0x156C )
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public DecorativeShield( int itemID ) : base( itemID )
 		{		
 			Movable = false;
@@ -127,7 +127,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public DecorativeShieldDeed() : base( 0x14F0 )
 		{			
 			LootType = LootType.Blessed;

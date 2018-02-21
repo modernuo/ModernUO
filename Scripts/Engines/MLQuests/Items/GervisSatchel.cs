@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class GervisSatchel : Backpack
 	{
-		[Constructable]
+		[Constructible]
 		public GervisSatchel()
 		{
 			Hue = Utility.RandomBrightHue();

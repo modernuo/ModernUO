@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class QuestDaemonBlood : QuestItem
 	{
-		[Constructable]
+		[Constructible]
 		public QuestDaemonBlood() : base( 0xF7D )
 		{
 			Weight = 1.0;

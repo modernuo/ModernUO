@@ -14,7 +14,7 @@ namespace Server.Items
 			get { return false; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public PyramidAddon()
 		{
 			AddComponent( new AddonComponent( 1006 ), 0, 0, 5 );

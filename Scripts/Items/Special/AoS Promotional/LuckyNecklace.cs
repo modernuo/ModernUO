@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int Hue{ get { return 1150; } }
 		public override int LabelNumber{ get { return 1075239; } }  //Lucky Necklace	1075239
 
-		[Constructable]
+		[Constructible]
 		public LuckyNecklace( )
 			: base( 0x1088, Layer.Neck  )
 		{

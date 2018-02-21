@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public SealingWaxOrderAddressedToPetrus() : base( 0xEBF )
 		{
 			LootType = LootType.Blessed;

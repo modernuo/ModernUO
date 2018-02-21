@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1439, 0x1438 )]
+	[FlippableAttribute( 0x1439, 0x1438 )]
 	public class WarHammer : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.WhirlwindAttack; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Bash2H; } }
 
-		[Constructable]
+		[Constructible]
 		public WarHammer() : base( 0x1439 )
 		{
 			Weight = 10.0;

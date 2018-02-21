@@ -154,7 +154,7 @@ namespace Server.Items
 
 	public class CreatureBackpack : Backpack	//Used on BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public CreatureBackpack( string name )
 		{
 			Name = name;
@@ -222,7 +222,7 @@ namespace Server.Items
 
 	public class StrongBackpack : Backpack	//Used on Pack animals
 	{
-		[Constructable]
+		[Constructible]
 		public StrongBackpack()
 		{
 			Layer = Layer.Backpack;
@@ -270,7 +270,7 @@ namespace Server.Items
 
 	public class Backpack : BaseContainer, IDyable
 	{
-		[Constructable]
+		[Constructible]
 		public Backpack() : base( 0xE75 )
 		{
 			Layer = Layer.Backpack;
@@ -325,7 +325,7 @@ namespace Server.Items
 
 	public class Pouch : TrappableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public Pouch() : base( 0xE79 )
 		{
 			Weight = 1.0;
@@ -388,7 +388,7 @@ namespace Server.Items
 
 	public class SmallBagBall : BaseBagBall
 	{
-		[Constructable]
+		[Constructible]
 		public SmallBagBall() : base( 0x2256 )
 		{
 		}
@@ -414,7 +414,7 @@ namespace Server.Items
 
 	public class LargeBagBall : BaseBagBall
 	{
-		[Constructable]
+		[Constructible]
 		public LargeBagBall() : base( 0x2257 )
 		{
 		}
@@ -440,7 +440,7 @@ namespace Server.Items
 
 	public class Bag : BaseContainer, IDyable
 	{
-		[Constructable]
+		[Constructible]
 		public Bag() : base( 0xE76 )
 		{
 			Weight = 2.0;
@@ -476,7 +476,7 @@ namespace Server.Items
 
 	public class Barrel : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public Barrel() : base( 0xE77 )
 		{
 			Weight = 25.0;
@@ -506,7 +506,7 @@ namespace Server.Items
 
 	public class Keg : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public Keg() : base( 0xE7F )
 		{
 			Weight = 15.0;
@@ -533,7 +533,7 @@ namespace Server.Items
 
 	public class PicnicBasket : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public PicnicBasket() : base( 0xE7A )
 		{
 			Weight = 2.0; // Stratics doesn't know weight
@@ -560,7 +560,7 @@ namespace Server.Items
 
 	public class Basket : BaseContainer
 	{
-		[Constructable]
+		[Constructible]
 		public Basket() : base( 0x990 )
 		{
 			Weight = 1.0; // Stratics doesn't know weight
@@ -586,10 +586,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x9AA, 0xE7D )]
+	[Flippable( 0x9AA, 0xE7D )]
 	public class WoodenBox : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public WoodenBox() : base( 0x9AA )
 		{
 			Weight = 4.0;
@@ -615,10 +615,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x9A9, 0xE7E )]
+	[Flippable( 0x9A9, 0xE7E )]
 	public class SmallCrate : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public SmallCrate() : base( 0x9A9 )
 		{
 			Weight = 2.0;
@@ -647,10 +647,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xE3F, 0xE3E )]
+	[Flippable( 0xE3F, 0xE3E )]
 	public class MediumCrate : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public MediumCrate() : base( 0xE3F )
 		{
 			Weight = 2.0;
@@ -679,10 +679,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xE3D, 0xE3C )]
+	[Flippable( 0xE3D, 0xE3C )]
 	public class LargeCrate : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public LargeCrate() : base( 0xE3D )
 		{
 			Weight = 1.0;
@@ -711,10 +711,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable( 0x9A8, 0xE80 )]
+	[Flippable( 0x9A8, 0xE80 )]
 	public class MetalBox : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public MetalBox() : base( 0x9A8 )
 		{
 		}
@@ -742,10 +742,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable( 0x9AB, 0xE7C )]
+	[Flippable( 0x9AB, 0xE7C )]
 	public class MetalChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public MetalChest() : base( 0x9AB )
 		{
 		}
@@ -773,10 +773,10 @@ namespace Server.Items
 	}
 
 	[DynamicFliping]
-	[Flipable( 0xE41, 0xE40 )]
+	[Flippable( 0xE41, 0xE40 )]
 	public class MetalGoldenChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public MetalGoldenChest() : base( 0xE41 )
 		{
 		}
@@ -804,10 +804,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0xe43, 0xe42 )]
+	[Flippable( 0xe43, 0xe42 )]
 	public class WoodenChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public WoodenChest() : base( 0xe43 )
 		{
 			Weight = 2.0;
@@ -836,10 +836,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x280B, 0x280C )]
+	[Flippable( 0x280B, 0x280C )]
 	public class PlainWoodenChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public PlainWoodenChest() : base( 0x280B )
 		{
 		}
@@ -867,10 +867,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x280D, 0x280E )]
+	[Flippable( 0x280D, 0x280E )]
 	public class OrnateWoodenChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public OrnateWoodenChest() : base( 0x280D )
 		{
 		}
@@ -898,10 +898,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x280F, 0x2810 )]
+	[Flippable( 0x280F, 0x2810 )]
 	public class GildedWoodenChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public GildedWoodenChest() : base( 0x280F )
 		{
 		}
@@ -929,10 +929,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x2811, 0x2812 )]
+	[Flippable( 0x2811, 0x2812 )]
 	public class WoodenFootLocker : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public WoodenFootLocker() : base( 0x2811 )
 		{
 			GumpID = 0x10B;
@@ -964,10 +964,10 @@ namespace Server.Items
 	}
 
 	[Furniture]
-	[Flipable( 0x2813, 0x2814 )]
+	[Flippable( 0x2813, 0x2814 )]
 	public class FinishedWoodenChest : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public FinishedWoodenChest() : base( 0x2813 )
 		{
 		}

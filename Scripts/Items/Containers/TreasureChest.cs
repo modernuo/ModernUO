@@ -6,10 +6,10 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xe43, 0xe42 )] 
+	[FlippableAttribute( 0xe43, 0xe42 )] 
 	public class WoodenTreasureChest : BaseTreasureChest 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public WoodenTreasureChest() : base( 0xE43 ) 
 		{ 
 		} 
@@ -33,10 +33,10 @@ namespace Server.Items
 		} 
 	} 
 
-	[FlipableAttribute( 0xe41, 0xe40 )] 
+	[FlippableAttribute( 0xe41, 0xe40 )] 
 	public class MetalGoldenTreasureChest : BaseTreasureChest 
 	{
-		[Constructable] 
+		[Constructible] 
 		public MetalGoldenTreasureChest() : base( 0xE41 ) 
 		{ 
 		} 
@@ -60,10 +60,10 @@ namespace Server.Items
 		} 
 	} 
 
-	[FlipableAttribute( 0x9ab, 0xe7c )] 
+	[FlippableAttribute( 0x9ab, 0xe7c )] 
 	public class MetalTreasureChest : BaseTreasureChest 
 	{
-		[Constructable] 
+		[Constructible] 
 		public MetalTreasureChest() : base( 0x9AB ) 
 		{ 
 		} 

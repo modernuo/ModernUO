@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class Beads : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Beads() : base( 0x108B )
 		{
 			Weight = 1.0;

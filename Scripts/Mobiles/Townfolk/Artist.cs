@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		public override bool CanTeach { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Artist()
 			: base( AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4 )
 		{

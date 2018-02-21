@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Haven
 		public override bool ClickTitle{ get { return true; } }
 		public override bool CanTeach{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Dryad() : base( "the Dryad" )
 		{
 			SetSkill( SkillName.Peacemaking, 80.0, 100.0 );

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073541; } } // true radiant scimitar
 
-		[Constructable]
+		[Constructible]
 		public TrueRadiantScimitar()
 		{
 			Attributes.NightSight = 1;

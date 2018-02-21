@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072090; } } // Travesty's Collection of Shells
 
-		[Constructable]
+		[Constructible]
 		public TravestysCollectionOfShells() : base( 0xFD3 )
 		{
 		}

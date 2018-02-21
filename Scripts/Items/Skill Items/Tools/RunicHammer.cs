@@ -4,7 +4,7 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13E4, 0x13E3 )]
+	[FlippableAttribute( 0x13E4, 0x13E3 )]
 	public class RunicHammer : BaseRunicTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefBlacksmithy.CraftSystem; } }
@@ -42,7 +42,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public RunicHammer( CraftResource resource ) : base( resource, 0x13E3 )
 		{
 			Weight = 8.0;
@@ -50,7 +50,7 @@ namespace Server.Items
 			Hue = CraftResources.GetHue( resource );
 		}
 
-		[Constructable]
+		[Constructible]
 		public RunicHammer( CraftResource resource, int uses ) : base( resource, uses, 0x13E3 )
 		{
 			Weight = 8.0;

@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class StoneFormScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public StoneFormScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StoneFormScroll( int amount )
 			: base( 684, 0x2DA5, amount )
 		{

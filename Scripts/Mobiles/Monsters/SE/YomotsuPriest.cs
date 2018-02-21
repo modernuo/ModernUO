@@ -13,7 +13,7 @@ namespace Server.Mobiles
 			return WeaponAbility.DoubleStrike;
 		}
 
-		[Constructable]
+		[Constructible]
 		public YomotsuPriest() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a yomotsu priest";

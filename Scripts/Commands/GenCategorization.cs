@@ -180,16 +180,16 @@ namespace Server.Commands
 
 		private static Type typeofItem = typeof( Item );
 		private static Type typeofMobile = typeof( Mobile );
-		private static Type typeofConstructable = typeof( ConstructableAttribute );
+		private static Type typeofConstructible = typeof( ConstructibleAttribute );
 
-		private static bool IsConstructable( Type type )
+		private static bool IsConstructible( Type type )
 		{
 			if ( !type.IsSubclassOf( typeofItem ) && !type.IsSubclassOf( typeofMobile ) )
 				return false;
 
 			ConstructorInfo ctor = type.GetConstructor( Type.EmptyTypes );
 
-			return ( ctor != null && ctor.IsDefined( typeofConstructable, false ) );
+			return ( ctor != null && ctor.IsDefined( typeofConstructible, false ) );
 		}
 
 		private static void AddTypes( Assembly asm, ArrayList types )
@@ -203,7 +203,7 @@ namespace Server.Commands
 				if ( type.IsAbstract )
 					continue;
 
-				if ( IsConstructable( type ) )
+				if ( IsConstructible( type ) )
 					types.Add( type );
 			}
 		}

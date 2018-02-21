@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D32, 0x2D26 )]
+	[FlippableAttribute( 0x2D32, 0x2D26 )]
 	public class RuneBlade : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Disarm; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } }
 		public override int InitMaxHits{ get{ return 60; } }
 
-		[Constructable]
+		[Constructible]
 		public RuneBlade() : base( 0x2D32 )
 		{
 			Weight = 7.0;

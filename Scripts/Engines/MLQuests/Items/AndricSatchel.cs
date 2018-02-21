@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class AndricSatchel : Backpack
 	{
-		[Constructable]
+		[Constructible]
 		public AndricSatchel()
 		{
 			Hue = Utility.RandomBrightHue();

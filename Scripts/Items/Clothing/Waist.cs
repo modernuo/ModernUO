@@ -32,15 +32,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x153b, 0x153c )]
+	[FlippableAttribute( 0x153b, 0x153c )]
 	public class HalfApron : BaseWaist
 	{
-		[Constructable]
+		[Constructible]
 		public HalfApron() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HalfApron( int hue ) : base( 0x153b, hue )
 		{
 			Weight = 2.0;
@@ -65,15 +65,15 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x27A0, 0x27EB )]
+	[Flippable( 0x27A0, 0x27EB )]
 	public class Obi : BaseWaist
 	{
-		[Constructable]
+		[Constructible]
 		public Obi() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Obi( int hue ) : base( 0x27A0, hue )
 		{
 			Weight = 1.0;
@@ -98,17 +98,17 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x2B68, 0x315F )]
+	[FlippableAttribute( 0x2B68, 0x315F )]
 	public class WoodlandBelt : BaseWaist
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
 
-		[Constructable]
+		[Constructible]
 		public WoodlandBelt() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WoodlandBelt( int hue ) : base( 0x2B68, hue )
 		{
 			Weight = 4.0;

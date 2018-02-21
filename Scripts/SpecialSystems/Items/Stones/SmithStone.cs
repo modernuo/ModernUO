@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "a Blacksmith Supply Stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SmithStone() : base( 0xED4 )
 		{
 			Movable = false;

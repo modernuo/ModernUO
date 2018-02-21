@@ -56,7 +56,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class SmallBagOfTrinkets : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public SmallBagOfTrinkets()
 		{
 			RewardBag.Fill( this, 1, 0.0 );
@@ -84,7 +84,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class BagOfTrinkets : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public BagOfTrinkets()
 		{
 			RewardBag.Fill( this, 2, 0.05 );
@@ -112,7 +112,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class BagOfTreasure : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public BagOfTreasure()
 		{
 			RewardBag.Fill( this, 3, 0.20 );
@@ -140,7 +140,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class LargeBagOfTreasure : Bag
 	{
-		[Constructable]
+		[Constructible]
 		public LargeBagOfTreasure()
 		{
 			RewardBag.Fill( this, 4, 0.50 );
@@ -168,7 +168,7 @@ namespace Server.Engines.MLQuests.Items
 
 	public class RewardStrongbox : WoodenBox
 	{
-		[Constructable]
+		[Constructible]
 		public RewardStrongbox()
 		{
 			RewardBag.Fill( this, 5, 1.0 );

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Master Mikael corpse" )]
 	public class MasterMikael : BoneMagi
 	{
-		[Constructable]
+		[Constructible]
 		public MasterMikael()
 		{
 			IsParagon = true;

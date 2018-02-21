@@ -4,20 +4,20 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x0FBF, 0x0FC0 )]
+	[FlippableAttribute( 0x0FBF, 0x0FC0 )]
 	public class ScribesPen : BaseTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefInscription.CraftSystem; } }
 
 		public override int LabelNumber{ get{ return 1044168; } } // scribe's pen
 
-		[Constructable]
+		[Constructible]
 		public ScribesPen() : base( 0x0FBF )
 		{
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public ScribesPen( int uses ) : base( uses, 0x0FBF )
 		{
 			Weight = 1.0;

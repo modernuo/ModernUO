@@ -109,7 +109,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new IronMaidenAddon(); } }
 		public override int LabelNumber { get { return 1076288; } } // Iron Maiden
 
-		[Constructable]
+		[Constructible]
 		public IronMaidenDeed() : base()
 		{
 			LootType = LootType.Blessed;

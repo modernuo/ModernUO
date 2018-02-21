@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "a resurrection gate"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ResGate() : base( 0xF6C )
 		{
 			Movable = false;

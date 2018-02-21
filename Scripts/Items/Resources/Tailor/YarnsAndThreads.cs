@@ -111,12 +111,12 @@ namespace Server.Items
 
 	public class DarkYarn : BaseClothMaterial
 	{
-		[Constructable]
+		[Constructible]
 		public DarkYarn() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DarkYarn( int amount ) : base( 0xE1D, amount )
 		{
 		}
@@ -142,12 +142,12 @@ namespace Server.Items
 
 	public class LightYarn : BaseClothMaterial
 	{
-		[Constructable]
+		[Constructible]
 		public LightYarn() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public LightYarn( int amount ) : base( 0xE1E, amount )
 		{
 		}
@@ -173,12 +173,12 @@ namespace Server.Items
 
 	public class LightYarnUnraveled : BaseClothMaterial
 	{
-		[Constructable]
+		[Constructible]
 		public LightYarnUnraveled() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public LightYarnUnraveled( int amount ) : base( 0xE1F, amount )
 		{
 		}
@@ -204,12 +204,12 @@ namespace Server.Items
 
 	public class SpoolOfThread : BaseClothMaterial
 	{
-		[Constructable]
+		[Constructible]
 		public SpoolOfThread() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpoolOfThread( int amount ) : base( 0xFA0, amount )
 		{
 		}

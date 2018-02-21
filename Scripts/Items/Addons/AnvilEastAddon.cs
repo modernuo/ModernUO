@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new AnvilEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public AnvilEastAddon()
 		{
 			AddComponent( new AnvilComponent( 0xFAF ), 0, 0, 0 );
@@ -37,7 +37,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new AnvilEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044333; } } // anvil (east)
 
-		[Constructable]
+		[Constructible]
 		public AnvilEastDeed()
 		{
 		}

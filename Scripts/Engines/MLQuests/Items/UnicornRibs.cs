@@ -7,12 +7,12 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074611; } } // Unicorn Ribs
 
-		[Constructable]
+		[Constructible]
 		public UnicornRibs() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public UnicornRibs( int amount ) : base( 0x9F1 )
 		{
 			LootType = LootType.Blessed;

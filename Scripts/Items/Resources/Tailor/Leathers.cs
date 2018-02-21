@@ -103,15 +103,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1081, 0x1082 )]
+	[FlippableAttribute( 0x1081, 0x1082 )]
 	public class Leather : BaseLeather
 	{
-		[Constructable]
+		[Constructible]
 		public Leather() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Leather( int amount ) : base( CraftResource.RegularLeather, amount )
 		{
 		}
@@ -137,15 +137,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1081, 0x1082 )]
+	[FlippableAttribute( 0x1081, 0x1082 )]
 	public class SpinedLeather : BaseLeather
 	{
-		[Constructable]
+		[Constructible]
 		public SpinedLeather() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpinedLeather( int amount ) : base( CraftResource.SpinedLeather, amount )
 		{
 		}
@@ -171,15 +171,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1081, 0x1082 )]
+	[FlippableAttribute( 0x1081, 0x1082 )]
 	public class HornedLeather : BaseLeather
 	{
-		[Constructable]
+		[Constructible]
 		public HornedLeather() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HornedLeather( int amount ) : base( CraftResource.HornedLeather, amount )
 		{
 		}
@@ -205,15 +205,15 @@ namespace Server.Items
 		
 	}
 
-	[FlipableAttribute( 0x1081, 0x1082 )]
+	[FlippableAttribute( 0x1081, 0x1082 )]
 	public class BarbedLeather : BaseLeather
 	{
-		[Constructable]
+		[Constructible]
 		public BarbedLeather() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BarbedLeather( int amount ) : base( CraftResource.BarbedLeather, amount )
 		{
 		}

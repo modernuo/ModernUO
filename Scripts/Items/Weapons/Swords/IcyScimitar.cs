@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073543; } } // icy scimitar
 
-		[Constructable]
+		[Constructible]
 		public IcyScimitar()
 		{
 			WeaponAttributes.HitHarm = 15;

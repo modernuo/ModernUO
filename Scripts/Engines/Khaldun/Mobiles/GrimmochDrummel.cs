@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		public override bool ShowFameTitle{ get{ return false; } }
 		public override bool DeleteCorpseOnDeath{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public GrimmochDrummel() : base( AIType.AI_Archer, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Title = "the Cursed";

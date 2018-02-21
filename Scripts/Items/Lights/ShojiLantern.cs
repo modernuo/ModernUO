@@ -3,13 +3,13 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class ShojiLantern : BaseLight
 	{
 		public override int LitItemID{ get { return 0x24BB; } }
 		public override int UnlitItemID{ get { return 0x24BC; } }
 		
-		[Constructable]
+		[Constructible]
 		public ShojiLantern() : base( 0x24BC )
 		{
 			Movable = true;

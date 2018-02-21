@@ -10,7 +10,7 @@ namespace Server.Engines.CannedEvil
 	{
 		private ChampionSkullBrazier m_Power, m_Enlightenment, m_Venom, m_Pain, m_Greed, m_Death;
 
-		[Constructable]
+		[Constructible]
 		public ChampionSkullPlatform()
 		{
 			AddComponent( new AddonComponent( 0x71A ), -1, -1, -1 );

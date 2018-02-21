@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
 	public class Merchant : BaseEscortable
 	{
-		[Constructable]
+		[Constructible]
 		public Merchant()
 		{
 			Title = "the merchant";

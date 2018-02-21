@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.MerchantsGuild; } }
 
-		[Constructable]
+		[Constructible]
 		public MerchantGuildmaster() : base( "merchant" )
 		{
 			SetSkill( SkillName.ItemID, 85.0, 100.0 );

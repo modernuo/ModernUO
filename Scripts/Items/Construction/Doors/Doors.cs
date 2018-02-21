@@ -21,7 +21,7 @@ namespace Server.Items
 
 	public class IronGateShort : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public IronGateShort( DoorFacing facing ) : base( 0x84c + (2 * (int)facing), 0x84d + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -47,7 +47,7 @@ namespace Server.Items
 
 	public class IronGate : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public IronGate( DoorFacing facing ) : base( 0x824 + (2 * (int)facing), 0x825 + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -73,7 +73,7 @@ namespace Server.Items
 
 	public class LightWoodGate : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public LightWoodGate( DoorFacing facing ) : base( 0x839 + (2 * (int)facing), 0x83A + (2 * (int)facing), 0xEB, 0xF2, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -99,7 +99,7 @@ namespace Server.Items
 
 	public class DarkWoodGate : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public DarkWoodGate( DoorFacing facing ) : base( 0x866 + (2 * (int)facing), 0x867 + (2 * (int)facing), 0xEB, 0xF2, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -125,7 +125,7 @@ namespace Server.Items
 
 	public class MetalDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public MetalDoor( DoorFacing facing ) : base( 0x675 + (2 * (int)facing), 0x676 + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -151,7 +151,7 @@ namespace Server.Items
 
 	public class BarredMetalDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public BarredMetalDoor( DoorFacing facing ) : base( 0x685 + (2 * (int)facing), 0x686 + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -177,7 +177,7 @@ namespace Server.Items
 
 	public class BarredMetalDoor2 : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public BarredMetalDoor2( DoorFacing facing ) : base( 0x1FED + (2 * (int)facing), 0x1FEE + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -203,7 +203,7 @@ namespace Server.Items
 
 	public class RattanDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public RattanDoor( DoorFacing facing ) : base( 0x695 + (2 * (int)facing), 0x696 + (2 * (int)facing), 0xEB, 0xF2, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -229,7 +229,7 @@ namespace Server.Items
 
 	public class DarkWoodDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public DarkWoodDoor( DoorFacing facing ) : base( 0x6A5 + (2 * (int)facing), 0x6A6 + (2 * (int)facing), 0xEA, 0xF1, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -255,7 +255,7 @@ namespace Server.Items
 
 	public class MediumWoodDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public MediumWoodDoor( DoorFacing facing ) : base( 0x6B5 + (2 * (int)facing), 0x6B6 + (2 * (int)facing), 0xEA, 0xF1, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -281,7 +281,7 @@ namespace Server.Items
 
 	public class MetalDoor2 : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public MetalDoor2( DoorFacing facing ) : base( 0x6C5 + (2 * (int)facing), 0x6C6 + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -307,7 +307,7 @@ namespace Server.Items
 
 	public class LightWoodDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public LightWoodDoor( DoorFacing facing ) : base( 0x6D5 + (2 * (int)facing), 0x6D6 + (2 * (int)facing), 0xEA, 0xF1, BaseDoor.GetOffset( facing ) )
 		{
 		}
@@ -333,7 +333,7 @@ namespace Server.Items
 
 	public class StrongWoodDoor : BaseDoor
 	{
-		[Constructable]
+		[Constructible]
 		public StrongWoodDoor( DoorFacing facing ) : base( 0x6E5 + (2 * (int)facing), 0x6E6 + (2 * (int)facing), 0xEA, 0xF1, BaseDoor.GetOffset( facing ) )
 		{
 		}

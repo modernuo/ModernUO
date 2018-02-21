@@ -24,7 +24,7 @@ namespace Server.Engines.Quests.Haven
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MilitiaCanoneer Canoneer { get { return m_Canoneer; } set { m_Canoneer = value; } }
 
-		[Constructable]
+		[Constructible]
 		public Cannon( CannonDirection direction )
 		{
 			m_CannonDirection = direction;

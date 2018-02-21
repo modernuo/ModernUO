@@ -395,12 +395,12 @@ namespace Server.Engines.Doom
 			get { return "doom spawner"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public GauntletSpawner() : this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GauntletSpawner( string typeName ) : base( 0x36FE )
 		{
 			Visible = false;

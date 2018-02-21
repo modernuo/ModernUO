@@ -10,12 +10,12 @@ namespace Server.Mobiles
 		public override int BreathChaosDamage { get { return 100; } }
 		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
 
-		[Constructable] 
+		[Constructible] 
 		public HellSteed() : this( "a hellsteed" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HellSteed( string name ) : base( name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			SetStats( this );

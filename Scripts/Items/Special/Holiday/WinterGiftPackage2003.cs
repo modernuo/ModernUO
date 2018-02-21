@@ -4,10 +4,10 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x232A, 0x232B )]
+	[Flippable( 0x232A, 0x232B )]
 	public class WinterGiftPackage2003 : GiftBox
 	{
-		[Constructable]
+		[Constructible]
 		public WinterGiftPackage2003()
 		{
 			DropItem( new Snowman() );

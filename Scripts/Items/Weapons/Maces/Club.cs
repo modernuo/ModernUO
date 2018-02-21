@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13b4, 0x13b3 )]
+	[FlippableAttribute( 0x13b4, 0x13b3 )]
 	public class Club : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ShadowStrike; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 40; } }
 
-		[Constructable]
+		[Constructible]
 		public Club() : base( 0x13B4 )
 		{
 			Weight = 9.0;

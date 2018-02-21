@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073528; } } // true war cleaver
 
-		[Constructable]
+		[Constructible]
 		public TrueWarCleaver()
 		{
 			Attributes.WeaponDamage = 4;

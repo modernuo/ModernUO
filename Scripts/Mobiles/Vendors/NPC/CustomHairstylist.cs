@@ -52,7 +52,7 @@ namespace Server.Mobiles
 			from.SendGump( new HairstylistBuyGump( from, this, m_SellList ) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public CustomHairstylist() : base( "the hairstylist" )
 		{
 		}

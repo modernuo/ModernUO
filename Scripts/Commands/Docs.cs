@@ -420,7 +420,7 @@ namespace Server.Commands
 				LoadTypes( asms[i], asms );
 
 			DocumentLoadedTypes();
-			DocumentConstructableObjects();
+			DocumentConstructibleObjects();
 
 			return true;
 		}
@@ -474,7 +474,7 @@ namespace Server.Commands
 				html.WriteLine( "   <body>" );
 
 				AddIndexLink( html, "commands.html", "Commands", "Every available command. This contains command name, usage, aliases, and description." );
-				AddIndexLink( html, "objects.html", "Constructable Objects", "Every constructable item or npc. This contains object name and usage. Hover mouse over parameters to see type description." );
+				AddIndexLink( html, "objects.html", "Constructible Objects", "Every constructable item or npc. This contains object name and usage. Hover mouse over parameters to see type description." );
 				AddIndexLink( html, "keywords.html", "Speech Keywords", "Lists speech keyword numbers and associated match patterns. These are used in some scripts for multi-language matching of client speech." );
 				AddIndexLink( html, "bodies.html", "Body List", "Every usable body number and name. Table is generated from a UO:3D client datafile. If you do not have UO:3D installed, this may be blank." );
 				AddIndexLink( html, "overview.html", "Class Overview", "Scripting reference. Contains every class type and contained methods in the core and scripts." );
@@ -1839,11 +1839,11 @@ namespace Server.Commands
 			return false;
 		}
 
-		#region Constructable Objects
+		#region Constructible Objects
 		private static Type typeofItem = typeof( Item ), typeofMobile = typeof( Mobile ), typeofMap = typeof( Map );
 		private static Type typeofCustomEnum = typeof( CustomEnumAttribute );
 
-		private static bool IsConstructable( Type t, out bool isItem )
+		private static bool IsConstructible( Type t, out bool isItem )
 		{
 			if( isItem = typeofItem.IsAssignableFrom( t ) )
 				return true;
@@ -1851,12 +1851,12 @@ namespace Server.Commands
 			return typeofMobile.IsAssignableFrom( t );
 		}
 
-		private static bool IsConstructable( ConstructorInfo ctor )
+		private static bool IsConstructible( ConstructorInfo ctor )
 		{
-			return ctor.IsDefined( typeof( ConstructableAttribute ), false );
+			return ctor.IsDefined( typeof( ConstructibleAttribute ), false );
 		}
 
-		private static void DocumentConstructableObjects()
+		private static void DocumentConstructibleObjects()
 		{
 			List<TypeInfo> types = new List<TypeInfo>( m_Types.Values );
 			types.Sort( new TypeComparer() );
@@ -1868,16 +1868,16 @@ namespace Server.Commands
 				Type t = types[i].m_Type;
 				bool isItem;
 
-				if( t.IsAbstract || !IsConstructable( t, out isItem ) )
+				if( t.IsAbstract || !IsConstructible( t, out isItem ) )
 					continue;
 
 				ConstructorInfo[] ctors = t.GetConstructors();
-				bool anyConstructable = false;
+				bool anyConstructible = false;
 
-				for( int j = 0; !anyConstructable && j < ctors.Length; ++j )
-					anyConstructable = IsConstructable( ctors[j] );
+				for( int j = 0; !anyConstructible && j < ctors.Length; ++j )
+					anyConstructible = IsConstructible( ctors[j] );
 
-				if( anyConstructable )
+				if( anyConstructible )
 				{
 					(isItem ? items : mobiles).Add( t );
 					(isItem ? items : mobiles).Add( ctors );
@@ -1888,12 +1888,12 @@ namespace Server.Commands
 			{
 				html.WriteLine( "<html>" );
 				html.WriteLine( "   <head>" );
-				html.WriteLine( "      <title>RunUO Documentation - Constructable Objects</title>" );
+				html.WriteLine( "      <title>RunUO Documentation - Constructible Objects</title>" );
 				html.WriteLine( "      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />" );
 				html.WriteLine( "   </head>" );
 				html.WriteLine( "   <body>" );
 				html.WriteLine( "      <h4><a href=\"index.html\">Back to the index</a></h4>" );
-				html.WriteLine( "      <h2>Constructable <a href=\"#items\">Items</a> and <a href=\"#mobiles\">Mobiles</a></h2>" );
+				html.WriteLine( "      <h2>Constructible <a href=\"#items\">Items</a> and <a href=\"#mobiles\">Mobiles</a></h2>" );
 
 				html.WriteLine( "      <a name=\"items\" />" );
 				html.WriteLine( "      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">" );
@@ -1902,7 +1902,7 @@ namespace Server.Commands
 				html.WriteLine( "         <tr><td class=\"header\">Item Name</td><td class=\"header\">Usage</td></tr>" );
 
 				for( int i = 0; i < items.Count; i += 2 )
-					DocumentConstructableObject( html, (Type)items[i], (ConstructorInfo[])items[i + 1] );
+					DocumentConstructibleObject( html, (Type)items[i], (ConstructorInfo[])items[i + 1] );
 
 				html.WriteLine( "      </table></td></tr></table><br><br>" );
 
@@ -1913,7 +1913,7 @@ namespace Server.Commands
 				html.WriteLine( "         <tr><td class=\"header\">Mobile Name</td><td class=\"header\">Usage</td></tr>" );
 
 				for( int i = 0; i < mobiles.Count; i += 2 )
-					DocumentConstructableObject( html, (Type)mobiles[i], (ConstructorInfo[])mobiles[i + 1] );
+					DocumentConstructibleObject( html, (Type)mobiles[i], (ConstructorInfo[])mobiles[i + 1] );
 
 				html.WriteLine( "      </table></td></tr></table>" );
 
@@ -1922,7 +1922,7 @@ namespace Server.Commands
 			}
 		}
 
-		private static void DocumentConstructableObject( StreamWriter html, Type t, ConstructorInfo[] ctors )
+		private static void DocumentConstructibleObject( StreamWriter html, Type t, ConstructorInfo[] ctors )
 		{
 			html.Write( "         <tr><td class=\"lentry\">{0}</td><td class=\"rentry\">", t.Name );
 
@@ -1932,7 +1932,7 @@ namespace Server.Commands
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if( !IsConstructable( ctor ) )
+				if( !IsConstructible( ctor ) )
 					continue;
 
 				if( !first )

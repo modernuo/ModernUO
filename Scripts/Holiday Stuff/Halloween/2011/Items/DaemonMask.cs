@@ -7,7 +7,7 @@ namespace Server.Items.Holiday
 	{
 		public override string MaskName { get { return "Daemon Mask"; } }
 
-		[Constructable]
+		[Constructible]
 		public PaintedDaemonMask()
 			: base( 0x4a92 )
 		{

@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2FC5, 0x317B )]
+	[FlippableAttribute( 0x2FC5, 0x317B )]
 	public class LeafChest : BaseArmor
 	{
 		public override Race RequiredRace { get { return Race.Elf; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
 
-		[Constructable]
+		[Constructible]
 		public LeafChest() : base( 0x2FC5 )
 		{
 			Weight = 2.0;

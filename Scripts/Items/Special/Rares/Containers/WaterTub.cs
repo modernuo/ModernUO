@@ -9,13 +9,13 @@
 		private static int vItemID = 0xe83;
 		private static int fItemID = 0xe7b;
 
-		[Constructable]
+		[Constructible]
 		public Tub()
 			: this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tub( bool filled )
 			: base( ( filled ) ? Tub.fItemID : Tub.vItemID, filled )
 		{

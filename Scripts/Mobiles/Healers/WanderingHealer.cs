@@ -20,7 +20,7 @@ namespace Server.Mobiles
 				|| ( skill == SkillName.SpiritSpeak );
 		}
 
-		[Constructable]
+		[Constructible]
 		public WanderingHealer()
 		{
 			Title = "the wandering healer";

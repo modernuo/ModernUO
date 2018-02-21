@@ -13,7 +13,7 @@ namespace Server.Items
 			get { return "arcane gem"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ArcaneGem() : base( 0x1EA7 )
 		{
 			Stackable = Core.ML;
@@ -68,7 +68,7 @@ namespace Server.Items
 					resource = ((BaseClothing)item).Resource;
 				else if( item is BaseArmor )
 					resource = ((BaseArmor)item).Resource;
-				else if( item is BaseWeapon ) // Sanity, weapons cannot recieve gems...
+				else if( item is BaseWeapon ) // Sanity, weapons cannot receive gems...
 					resource = ((BaseWeapon)item).Resource;
 
 				IArcaneEquip eq = (IArcaneEquip)obj;
@@ -137,7 +137,7 @@ namespace Server.Items
 							((BaseArmor)item).Crafter = from;
 							((BaseArmor)item).PhysicalBonus = ((BaseArmor)item).FireBonus = ((BaseArmor)item).ColdBonus = ((BaseArmor)item).PoisonBonus = ((BaseArmor)item).EnergyBonus = 0; // Is there a method to remove bonuses?
 						}
-						else if ( item is BaseWeapon ) // Sanity, weapons cannot recieve gems...
+						else if ( item is BaseWeapon ) // Sanity, weapons cannot receive gems...
 						{
 							((BaseWeapon)item).Quality = WeaponQuality.Regular;
 							((BaseWeapon)item).Crafter = from;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073133; } } // Speckled Poison Sac
 
-		[Constructable]
+		[Constructible]
 		public SpeckledPoisonSac() : base( 0x23A, TimeSpan.FromHours( 1 ) )
 		{
 			LootType = LootType.Blessed;

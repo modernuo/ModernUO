@@ -68,7 +68,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public VendorRentalContract() : base( 0x14F0 )
 		{
 			Weight = 1.0;
@@ -178,7 +178,7 @@ namespace Server.Items
 				}
 				else if ( !house.CanPlaceNewVendor() )
 				{
-					from.SendLocalizedMessage( 1062352 ); // You do not have enought storage available to place this contract.
+					from.SendLocalizedMessage( 1062352 ); // You do not have enough storage available to place this contract.
 				}
 				else
 				{

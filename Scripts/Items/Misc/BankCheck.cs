@@ -52,7 +52,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public BankCheck( int worth ) : base( 0x14F0 )
 		{
 			Weight = 1.0;

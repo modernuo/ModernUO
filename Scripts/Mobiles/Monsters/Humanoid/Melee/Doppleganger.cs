@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	[CorpseName( "a doppleganger corpse" )]
 	public class Doppleganger : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Doppleganger() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a doppleganger";

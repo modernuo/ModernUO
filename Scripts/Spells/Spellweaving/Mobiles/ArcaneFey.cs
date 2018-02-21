@@ -13,7 +13,7 @@ namespace Server.Mobiles
 		public override OppositionGroup OppositionGroup { get { return OppositionGroup.FeyAndUndead; } }
 		public override bool InitialInnocent { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public ArcaneFey() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
 			Name = NameList.RandomName( "pixie" );

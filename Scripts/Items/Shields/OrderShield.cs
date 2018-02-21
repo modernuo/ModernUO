@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public override int ArmorBase{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public OrderShield() : base( 0x1BC4 )
 		{
 			if ( !Core.AOS )

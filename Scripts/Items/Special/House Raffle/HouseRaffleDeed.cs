@@ -56,7 +56,7 @@ namespace Server.Items
 			get { return 1.0; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public HouseRaffleDeed()
 			: this ( null, null )
 		{

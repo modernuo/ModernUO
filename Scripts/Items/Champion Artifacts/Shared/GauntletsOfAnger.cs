@@ -18,7 +18,7 @@ namespace Server.Items
 
 		public override bool CanFortify{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public GuantletsOfAnger()
 		{
 			Hue = 0x29b;

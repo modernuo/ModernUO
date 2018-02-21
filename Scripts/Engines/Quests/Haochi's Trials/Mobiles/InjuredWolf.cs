@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Samurai
 	[CorpseName( "an injured wolf corpse" )]
 	public class InjuredWolf : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public InjuredWolf() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Body = 0xE1;

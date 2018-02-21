@@ -7,12 +7,12 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074613; } } // Pixie Leg
 
-		[Constructable]
+		[Constructible]
 		public PixieLeg() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PixieLeg( int amount ) : base( amount )
 		{
 			LootType = LootType.Blessed;

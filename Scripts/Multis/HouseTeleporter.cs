@@ -28,7 +28,7 @@ namespace Server.Items
 			set{ m_Level = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public HouseTeleporter( int itemID ) : this( itemID, null )
 		{
 		}

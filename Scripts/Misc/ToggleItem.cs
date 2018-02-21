@@ -63,13 +63,13 @@ namespace Server.Items
 			set { m_PlayersCanToggle = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ToggleItem( int inactiveItemID, int activeItemID )
 			: this( inactiveItemID, activeItemID, false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ToggleItem( int inactiveItemID, int activeItemID, bool playersCanToggle )
 			: base( inactiveItemID )
 		{

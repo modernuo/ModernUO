@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072937; } } // Pendant of the Magi
 
-		[Constructable]
+		[Constructible]
 		public PendantOfTheMagi()
 		{
 			Hue = 0x48D;

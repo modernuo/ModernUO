@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1095237; } } // Evil Idol
 
-		[Constructable]
+		[Constructible]
 		public EvilIdolSkull() : base( 0x1F18 )
 		{
 		}

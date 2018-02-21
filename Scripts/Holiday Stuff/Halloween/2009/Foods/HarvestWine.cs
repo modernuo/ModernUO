@@ -13,7 +13,7 @@ namespace Server.Items
 		public override string DefaultName { get { return "Harvest Wine"; } }
 		public override double DefaultWeight { get { return 1; } }
 
-		[Constructable]
+		[Constructible]
 		public HarvestWine()
 			: base( BeverageType.Wine )
 		{

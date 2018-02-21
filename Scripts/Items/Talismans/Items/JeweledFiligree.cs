@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072894; } } // jeweled filigree
 
-		[Constructable]
+		[Constructible]
 		public JeweledFiligree() : base( 0x2F5E )
 		{
 			Weight = 1.0;

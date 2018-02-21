@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041243; } } // a contract of employment
 
-		[Constructable]
+		[Constructible]
 		public ContractOfEmployment() : base( 0x14F0 )
 		{
 			Weight = 1.0;

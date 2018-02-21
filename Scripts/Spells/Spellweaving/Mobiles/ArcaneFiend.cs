@@ -13,7 +13,7 @@ namespace Server.Mobiles
 		public override PackInstinct PackInstinct { get { return PackInstinct.Daemon; } }
 		public override bool BleedImmune { get { return true; } }	//TODO: Verify on OSI.  Guide says this.
 
-		[Constructable]
+		[Constructible]
 		public ArcaneFiend() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an imp";

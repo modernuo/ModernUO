@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x2A69, 0x2A6D )]
+	[Flippable( 0x2A69, 0x2A6D )]
 	public class CreepyPortraitComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1074481; } } // Creepy portrait
@@ -81,7 +81,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new CreepyPortraitDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public CreepyPortraitAddon() : base()
 		{
 			AddComponent( new CreepyPortraitComponent(), 0, 0, 0 );
@@ -111,7 +111,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new CreepyPortraitAddon(); } }
 		public override int LabelNumber { get { return 1074481; } } // Creepy portrait
 
-		[Constructable]
+		[Constructible]
 		public CreepyPortraitDeed() : base()
 		{
 			LootType = LootType.Blessed;

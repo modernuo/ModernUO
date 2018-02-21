@@ -13,7 +13,7 @@ namespace Server.Items
 			get { return "unholy bone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public UnholyBone() : base( 0xF7E )
 		{
 			Movable = false;

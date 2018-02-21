@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Saliva corpse" )]
 	public class Saliva : Harpy
 	{
-		[Constructable]
+		[Constructible]
 		public Saliva()
 		{
 			// TODO: Not a paragon? No ML arties?

@@ -12,7 +12,7 @@ namespace Server.Items
 		Gold
 	}
 
-	[Flipable( 5020, 4647 )]
+	[Flippable( 5020, 4647 )]
 	public class Trophy : Item
 	{
 		private string m_Title;
@@ -32,7 +32,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime Date{ get{ return m_Date; } }
 
-		[Constructable]
+		[Constructible]
 		public Trophy( string title, TrophyRank rank ) : base( 5020 )
 		{
 			m_Title = title;

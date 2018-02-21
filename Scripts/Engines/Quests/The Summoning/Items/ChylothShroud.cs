@@ -4,7 +4,7 @@ namespace Server.Engines.Quests.Doom
 {
 	public class ChylothShroud : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ChylothShroud() : base( 0x204E )
 		{
 			Hue = 0x846;

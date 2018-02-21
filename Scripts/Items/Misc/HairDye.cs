@@ -9,7 +9,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041060; } } // Hair Dye
 
-		[Constructable]
+		[Constructible]
 		public HairDye() : base( 0xEFF )
 		{
 			Weight = 1.0;

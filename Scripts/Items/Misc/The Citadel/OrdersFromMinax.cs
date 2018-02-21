@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074639; } } // Orders from Minax
 
-		[Constructable]
+		[Constructible]
 		public OrdersFromMinax() : base( 0x2279 )
 		{
 			LootType = LootType.Blessed;

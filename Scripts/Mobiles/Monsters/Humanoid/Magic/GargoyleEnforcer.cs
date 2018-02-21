@@ -11,7 +11,7 @@ namespace Server.Mobiles
 			return WeaponAbility.WhirlwindAttack;
 		}
 
-		[Constructable]
+		[Constructible]
 		public GargoyleEnforcer() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "Gargoyle Enforcer";

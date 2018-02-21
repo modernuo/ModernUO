@@ -26,7 +26,7 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
 
-		[Constructable]
+		[Constructible]
 		public LordOaks() : base( AIType.AI_Mage, FightMode.Evil )
 		{
 			Body = 175;

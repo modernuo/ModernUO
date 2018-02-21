@@ -28,12 +28,12 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Slash1H; } }
 
-		[Constructable]
+		[Constructible]
 		public GargoylesPickaxe() : this( Utility.RandomMinMax( 101, 125 ))
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GargoylesPickaxe( int uses ) : base( 0xE85 + Utility.Random( 2 ))
 		{
 			Weight = 11.0;

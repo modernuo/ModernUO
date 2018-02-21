@@ -80,7 +80,7 @@ namespace Server.Items
 		}
 
 	}
-	[Flipable( 0x2798, 0x27E3 )]
+	[Flippable( 0x2798, 0x27E3 )]
 	public class Kasa : BaseHat
 	{
 		public override int BasePhysicalResistance{ get{ return 0; } }
@@ -92,12 +92,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public Kasa() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Kasa( int hue ) : base( 0x2798, hue )
 		{
 			Weight = 3.0;
@@ -122,7 +122,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x278F, 0x27DA )]
+	[Flippable( 0x278F, 0x27DA )]
 	public class ClothNinjaHood : BaseHat
 	{
 		public override int BasePhysicalResistance{ get{ return 3; } }
@@ -134,12 +134,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public ClothNinjaHood() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ClothNinjaHood( int hue ) : base( 0x278F, hue )
 		{
 			Weight = 2.0;
@@ -164,7 +164,7 @@ namespace Server.Items
 		}
 	}
 
-	[Flipable( 0x2306, 0x2305 )]
+	[Flippable( 0x2306, 0x2305 )]
 	public class FlowerGarland : BaseHat
 	{
 		public override int BasePhysicalResistance{ get{ return 3; } }
@@ -176,12 +176,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public FlowerGarland() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FlowerGarland( int hue ) : base( 0x2306, hue )
 		{
 			Weight = 1.0;
@@ -217,12 +217,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public FloppyHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FloppyHat( int hue ) : base( 0x1713, hue )
 		{
 			Weight = 1.0;
@@ -258,12 +258,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public WideBrimHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WideBrimHat( int hue ) : base( 0x1714, hue )
 		{
 			Weight = 1.0;
@@ -299,12 +299,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public Cap() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Cap( int hue ) : base( 0x1715, hue )
 		{
 			Weight = 1.0;
@@ -340,12 +340,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return ( Core.ML ? 14 : 7 ); } }
 		public override int InitMaxHits{ get{ return ( Core.ML ? 28 : 12 ); } }
 
-		[Constructable]
+		[Constructible]
 		public SkullCap() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SkullCap( int hue ) : base( 0x1544, hue )
 		{
 			Weight = 1.0;
@@ -381,12 +381,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public Bandana() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bandana( int hue ) : base( 0x1540, hue )
 		{
 			Weight = 1.0;
@@ -422,12 +422,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public BearMask() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BearMask( int hue ) : base( 0x1545, hue )
 		{
 			Weight = 5.0;
@@ -469,12 +469,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public DeerMask() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DeerMask( int hue ) : base( 0x1547, hue )
 		{
 			Weight = 4.0;
@@ -516,12 +516,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public HornedTribalMask() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HornedTribalMask( int hue ) : base( 0x1549, hue )
 		{
 			Weight = 2.0;
@@ -563,12 +563,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public TribalMask() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TribalMask( int hue ) : base( 0x154B, hue )
 		{
 			Weight = 2.0;
@@ -610,12 +610,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public TallStrawHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TallStrawHat( int hue ) : base( 0x1716, hue )
 		{
 			Weight = 1.0;
@@ -651,12 +651,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public StrawHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StrawHat( int hue ) : base( 0x1717, hue )
 		{
 			Weight = 1.0;
@@ -703,12 +703,12 @@ namespace Server.Items
 			get { return "a mask of orcish kin"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public OrcishKinMask() : this( 0x8A4 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public OrcishKinMask( int hue ) : base( 0x141B, hue )
 		{
 			Weight = 2.0;
@@ -785,12 +785,12 @@ namespace Server.Items
 			return false;
 		}
 
-		[Constructable]
+		[Constructible]
 		public SavageMask() : this( GetRandomHue() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SavageMask( int hue ) : base( 0x154B, hue )
 		{
 			Weight = 2.0;
@@ -829,12 +829,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public WizardsHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WizardsHat( int hue ) : base( 0x1718, hue )
 		{
 			Weight = 1.0;
@@ -876,12 +876,12 @@ namespace Server.Items
 		public override int BaseDexBonus{ get{ return -5; } }
 		public override int BaseIntBonus{ get{ return +5; } }
 
-		[Constructable]
+		[Constructible]
 		public MagicWizardsHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MagicWizardsHat( int hue ) : base( 0x1718, hue )
 		{
 			Weight = 1.0;
@@ -917,12 +917,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public Bonnet() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bonnet( int hue ) : base( 0x1719, hue )
 		{
 			Weight = 1.0;
@@ -958,12 +958,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public FeatheredHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FeatheredHat( int hue ) : base( 0x171A, hue )
 		{
 			Weight = 1.0;
@@ -999,12 +999,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public TricorneHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TricorneHat( int hue ) : base( 0x171B, hue )
 		{
 			Weight = 1.0;
@@ -1040,12 +1040,12 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 20; } }
 		public override int InitMaxHits{ get{ return 30; } }
 
-		[Constructable]
+		[Constructible]
 		public JesterHat() : this( 0 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public JesterHat( int hue ) : base( 0x171C, hue )
 		{
 			Weight = 1.0;

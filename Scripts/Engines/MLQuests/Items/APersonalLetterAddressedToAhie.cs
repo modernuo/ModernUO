@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public APersonalLetterAddressedToAhie() : base( 0x14ED, TimeSpan.FromMinutes( 30 ) )
 		{
 			LootType = LootType.Blessed;

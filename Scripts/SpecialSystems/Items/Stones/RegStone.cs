@@ -10,7 +10,7 @@ namespace Server.Items
 			get { return "a reagent stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RegStone() : base( 0xED4 )
 		{
 			Movable = false;

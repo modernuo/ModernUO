@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoSilverIngots2 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoSilverIngots2() : base( 0x1BF6 )
 		{
 			Movable = true;

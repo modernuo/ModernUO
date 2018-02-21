@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override double DefaultWeight { get { return 5; } }
 
-		[Constructable]
+		[Constructible]
 		public ColoredSmallWebs()
 			: base( Utility.RandomBool() ? 0x10d6 : 0x10d7 )
 		{

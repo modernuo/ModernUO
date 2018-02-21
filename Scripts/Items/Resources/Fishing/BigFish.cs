@@ -22,7 +22,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041112; } } // a big fish
 
-		[Constructable]
+		[Constructible]
 		public BigFish() : base( 0x09CC )
 		{
 			Weight = Utility.RandomMinMax( 3, 200 );	//TODO: Find correct formula.  max on OSI currently 200, OSI dev says it's not 200 as max, and ~ 1/1,000,000 chance to get highest

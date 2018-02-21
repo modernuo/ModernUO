@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073509; } } // ranger's shortbow
 
-		[Constructable]
+		[Constructible]
 		public RangersShortbow()
 		{
 			Attributes.WeaponSpeed = 5;

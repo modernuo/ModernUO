@@ -14,7 +14,7 @@ namespace Server.Engines.Quests.Doom
 {
 	public class Chyloth : BaseQuester
 	{
-		[Constructable]
+		[Constructible]
 		public Chyloth() : base( "the Ferryman" )
 		{
 		}

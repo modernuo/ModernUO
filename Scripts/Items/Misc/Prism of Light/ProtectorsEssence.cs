@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073159; } } // Protector's Essence
 
-		[Constructable]
+		[Constructible]
 		public ProtectorsEssence() : base( 0x23F )
 		{
 		}

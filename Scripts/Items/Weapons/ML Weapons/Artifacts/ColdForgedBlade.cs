@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072916; } } // Cold Forged Blade
 
-		[Constructable]
+		[Constructible]
 		public ColdForgedBlade()
 		{
 			WeaponAttributes.HitHarm = 40;

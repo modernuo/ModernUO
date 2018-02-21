@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		private DateTime m_NextShush;
 		public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes( 1 );
 
-		[Constructable]
+		[Constructible]
 		public Scribe() : base( "the scribe" )
 		{
 			SetSkill( SkillName.EvalInt, 60.0, 83.0 );

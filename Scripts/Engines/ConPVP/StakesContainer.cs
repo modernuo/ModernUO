@@ -7,7 +7,7 @@ using Server.Items;
 namespace Server.Engines.ConPVP
 {
 #if false
-	[Flipable( 0x9A8, 0xE80 )]
+	[Flippable( 0x9A8, 0xE80 )]
 	public class StakesContainer : LockableContainer
 	{
 		private Mobile m_Initiator;

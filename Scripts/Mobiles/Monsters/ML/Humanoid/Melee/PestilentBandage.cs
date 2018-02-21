@@ -15,7 +15,7 @@ namespace Server.Mobiles
 		// Loot and Fame/Karma are also guesses at this point.
 		//
 		// They also apparently have a Poison Attack, which I've stolen from Yamandons.
-		[Constructable]
+		[Constructible]
 		public PestilentBandage() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{
 			Name = "a pestilent bandage";

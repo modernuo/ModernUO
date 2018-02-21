@@ -65,12 +65,12 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		
-		[Constructable]
+		[Constructible]
 		public StoneAnkh() : this( true )
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public StoneAnkh( bool east ) : base()
 		{			
 			if ( east )
@@ -165,7 +165,7 @@ namespace Server.Items
 			} 
 		}
 
-		[Constructable]
+		[Constructible]
 		public StoneAnkhDeed() : base()
 		{
 			LootType = LootType.Blessed;

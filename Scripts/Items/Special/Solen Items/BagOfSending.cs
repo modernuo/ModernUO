@@ -92,12 +92,12 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public BagOfSending() : this( RandomHue() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BagOfSending( BagOfSendingHue hue ) : base( 0xE76 )
 		{
 			Weight = 2.0;

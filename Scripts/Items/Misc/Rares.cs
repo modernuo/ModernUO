@@ -4,12 +4,12 @@ namespace Server.Items
 {
 	public class Rope : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Rope() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Rope( int amount ) : base( 0x14F8 )
 		{
 			Stackable = true;
@@ -40,12 +40,12 @@ namespace Server.Items
 
 	public class IronWire : Item
 	{
-		[Constructable]
+		[Constructible]
 		public IronWire() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public IronWire( int amount ) : base( 0x1876 )
 		{
 			Stackable = true;
@@ -79,12 +79,12 @@ namespace Server.Items
 
 	public class SilverWire : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SilverWire() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SilverWire( int amount ) : base( 0x1877 )
 		{
 			Stackable = true;
@@ -118,12 +118,12 @@ namespace Server.Items
 
 	public class GoldWire : Item
 	{
-		[Constructable]
+		[Constructible]
 		public GoldWire() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GoldWire( int amount ) : base( 0x1878 )
 		{
 			Stackable = true;
@@ -157,12 +157,12 @@ namespace Server.Items
 
 	public class CopperWire : Item
 	{
-		[Constructable]
+		[Constructible]
 		public CopperWire() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public CopperWire( int amount ) : base( 0x1879 )
 		{
 			Stackable = true;
@@ -196,12 +196,12 @@ namespace Server.Items
 
 	public class WhiteDriedFlowers : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WhiteDriedFlowers() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public WhiteDriedFlowers( int amount ) : base( 0xC3C )
 		{
 			Stackable = true;
@@ -232,12 +232,12 @@ namespace Server.Items
 
 	public class GreenDriedFlowers : Item
 	{
-		[Constructable]
+		[Constructible]
 		public GreenDriedFlowers() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public GreenDriedFlowers( int amount ) : base( 0xC3E )
 		{
 			Stackable = true;
@@ -268,12 +268,12 @@ namespace Server.Items
 
 	public class DriedOnions : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DriedOnions() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DriedOnions( int amount ) : base( 0xC40 )
 		{
 			Stackable = true;
@@ -304,12 +304,12 @@ namespace Server.Items
 
 	public class DriedHerbs : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DriedHerbs() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DriedHerbs( int amount ) : base( 0xC42 )
 		{
 			Stackable = true;
@@ -340,7 +340,7 @@ namespace Server.Items
 
 	public class HorseShoes : Item
 	{
-		[Constructable]
+		[Constructible]
 		public HorseShoes() : base( 0xFB6 )
 		{
 			Weight = 3.0;
@@ -367,7 +367,7 @@ namespace Server.Items
 
 	public class ForgedMetal : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ForgedMetal() : base( 0xFB8 )
 		{
 			Weight = 5.0;
@@ -394,7 +394,7 @@ namespace Server.Items
 
 	public class Whip : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Whip() : base( 0x166E )
 		{
 			Weight = 1.0;
@@ -421,7 +421,7 @@ namespace Server.Items
 
 	public class PaintsAndBrush : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PaintsAndBrush() : base( 0xFC1 )
 		{
 			Weight = 1.0;
@@ -448,7 +448,7 @@ namespace Server.Items
 
 	public class PenAndInk : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PenAndInk() : base( 0xFBF )
 		{
 			Weight = 1.0;
@@ -475,7 +475,7 @@ namespace Server.Items
 
 	public class ChiselsNorth : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ChiselsNorth() : base( 0x1026 )
 		{
 			Weight = 1.0;
@@ -502,7 +502,7 @@ namespace Server.Items
 
 	public class ChiselsWest : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ChiselsWest() : base( 0x1027 )
 		{
 			Weight = 1.0;
@@ -529,7 +529,7 @@ namespace Server.Items
 
 	public class DirtyPan : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtyPan() : base( 0x9E8 )
 		{
 			Weight = 1.0;
@@ -556,7 +556,7 @@ namespace Server.Items
 
 	public class DirtySmallRoundPot : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtySmallRoundPot() : base( 0x9E7 )
 		{
 			Weight = 1.0;
@@ -583,7 +583,7 @@ namespace Server.Items
 
 	public class DirtyPot : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtyPot() : base( 0x9E6 )
 		{
 			Weight = 1.0;
@@ -610,7 +610,7 @@ namespace Server.Items
 
 	public class DirtyRoundPot : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtyRoundPot() : base( 0x9DF )
 		{
 			Weight = 1.0;
@@ -637,7 +637,7 @@ namespace Server.Items
 
 	public class DirtyFrypan : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtyFrypan() : base( 0x9DE )
 		{
 			Weight = 1.0;
@@ -664,7 +664,7 @@ namespace Server.Items
 
 	public class DirtySmallPot : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtySmallPot() : base( 0x9DD )
 		{
 			Weight = 1.0;
@@ -691,7 +691,7 @@ namespace Server.Items
 
 	public class DirtyKettle : Item
 	{
-		[Constructable]
+		[Constructible]
 		public DirtyKettle() : base( 0x9DC )
 		{
 			Weight = 1.0;

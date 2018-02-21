@@ -58,17 +58,17 @@ namespace Server.Items
 			get { return "a hole"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SHTeleComponent() : this( 0x1775 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SHTeleComponent( int itemID ) : this( itemID, new Point3D( 0, 0, 0 ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SHTeleComponent( int itemID, Point3D offset ) : base( itemID )
 		{
 			Movable = false;
@@ -300,12 +300,12 @@ namespace Server.Items
 		public SHTeleComponent DownTele { get { return m_DownTele; } }
 		public SHTeleComponent LeftTele { get { return m_LeftTele; } }
 
-		[Constructable]
+		[Constructible]
 		public SHTeleporter() : this( true )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SHTeleporter( bool external )
 		{
 			m_Changing = false;

@@ -7,12 +7,12 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074178; } } // Sap of Sosaria
 
-		[Constructable]
+		[Constructible]
 		public SapOfSosaria() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SapOfSosaria( int amount ) : base( 0x1848 )
 		{
 			LootType = LootType.Blessed;

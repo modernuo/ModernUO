@@ -19,7 +19,7 @@ namespace Server.Engines.Quests.Ninja
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Message{ get{ return m_Message; } set{ m_Message = value; } }
 
-		[Constructable]
+		[Constructible]
 		public HiddenFigure()
 		{
 			m_Message = Utility.RandomList( Messages );

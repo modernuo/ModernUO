@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074517; } } // Special Treat for Drithen
 
-		[Constructable]
+		[Constructible]
 		public SpecialTreatForDrithen() : base( 0x21B )
 		{
 			LootType = LootType.Blessed;

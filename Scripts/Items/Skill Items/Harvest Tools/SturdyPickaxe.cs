@@ -25,12 +25,12 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Slash1H; } }
 
-		[Constructable]
+		[Constructible]
 		public SturdyPickaxe() : this( 180 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SturdyPickaxe( int uses ) : base( 0xE86 )
 		{
 			Weight = 11.0;

@@ -20,7 +20,7 @@ namespace Server.Items
 
 		public override int ArmorBase { get { return 15; } }
 
-		[Constructable]
+		[Constructible]
 		public DupresShield() : base( 0x2B01 )
 		{
 			LootType = LootType.Blessed;

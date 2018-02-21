@@ -11,7 +11,7 @@ namespace Server.Items
 			get { return "Crafting Glass With Glassblowing"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public GlassblowingBook() : base( 0xFF4 )
 		{
 			Weight = 1.0;

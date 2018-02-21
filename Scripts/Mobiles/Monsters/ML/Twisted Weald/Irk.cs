@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		public override string DefaultName{ get{ return "Irk"; } }
 		public override int DefaultHue{ get{ return 0x489; } }
 
-		[Constructable]
+		[Constructible]
 		public Irk()
 		{
 			IsParagon = true;

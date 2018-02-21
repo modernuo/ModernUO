@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class HailStormScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public HailStormScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HailStormScroll( int amount )
 			: base( 690, 0x2DAB, amount )
 		{

@@ -15,7 +15,7 @@ namespace Server.Items
 		public override int MaxQuantity { get { return 5; } }
 		public override double DefaultWeight { get { return 1; } }
 
-		[Constructable]
+		[Constructible]
 		public MurkyMilk( )
 			: base( BeverageType.Milk )
 		{

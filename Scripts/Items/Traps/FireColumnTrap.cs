@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class FireColumnTrap : BaseTrap
 	{
-		[Constructable]
+		[Constructible]
 		public FireColumnTrap() : base( 0x1B71 )
 		{
 			m_MinDamage = 10;

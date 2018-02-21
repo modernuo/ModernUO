@@ -95,17 +95,17 @@ namespace Server.Items
 			get { return m_Pages; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BaseBook( int itemID ) : this( itemID, 20, true )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BaseBook( int itemID, int pageCount, bool writable ) : this( itemID, null, null, pageCount, writable )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BaseBook( int itemID, string title, string author, int pageCount, bool writable ) : base( itemID )
 		{
 			m_Title = title;

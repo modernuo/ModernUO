@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new BoneTableDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public BoneTableAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0x2A5C, 1074478 ), 0, 0, 0 );
@@ -36,7 +36,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new BoneTableAddon(); } }
 		public override int LabelNumber { get { return 1074478; } } // Bone table
 
-		[Constructable]
+		[Constructible]
 		public BoneTableDeed() : base()
 		{
 			LootType = LootType.Blessed;

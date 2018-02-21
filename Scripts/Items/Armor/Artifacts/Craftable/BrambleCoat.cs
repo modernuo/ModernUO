@@ -13,7 +13,7 @@ namespace Server.Items
 		public override int BasePoisonResistance{ get{ return 8; } }
 		public override int BaseEnergyResistance{ get{ return 7; } }
 
-		[Constructable]
+		[Constructible]
 		public BrambleCoat()
 		{
 			Hue = 0x1;

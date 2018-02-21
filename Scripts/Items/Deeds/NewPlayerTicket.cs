@@ -20,7 +20,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1062094; } } // a young player ticket
 
-		[Constructable]
+		[Constructible]
 		public NewPlayerTicket() : base( 0x14EF )
 		{
 			Weight = 1.0;

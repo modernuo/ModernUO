@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074676; } } // Grobu's Fur
 
-		[Constructable]
+		[Constructible]
 		public GrobusFur() : base( 0x11F4 )
 		{
 			LootType = LootType.Blessed;

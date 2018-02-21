@@ -31,7 +31,7 @@ namespace Server.Items
 			set{ m_Destination = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SerpentPillar() : this( null, new Rectangle2D(), false )
 		{
 		}

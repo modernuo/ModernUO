@@ -213,7 +213,7 @@ namespace Server.Mobiles
 		}
 
 
-		[Constructable]
+		[Constructible]
 		public IharaSoko() : base( "the Imperial Minister of Trade" )
 		{
 			Name = "Ihara Soko";

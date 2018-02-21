@@ -70,7 +70,7 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1046226; } } // an enchanted sextant
 
-		[Constructable]
+		[Constructible]
 		public EnchantedSextant() : base( 0x1058 )
 		{
 			Weight = 2.0;

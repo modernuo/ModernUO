@@ -693,7 +693,7 @@ namespace Server
 			Stackable		= 0x08,
 			InQueue			= 0x10,
 			Insured			= 0x20,
-			PayedInsurance	= 0x40,
+			PaidInsurance	= 0x40,
 			QuestItem		= 0x80
 		}
 
@@ -2086,7 +2086,7 @@ namespace Server
 				}
 			}
 
-			ImplFlag implFlags = ( m_Flags & ( ImplFlag.Visible | ImplFlag.Movable | ImplFlag.Stackable | ImplFlag.Insured | ImplFlag.PayedInsurance | ImplFlag.QuestItem ) );
+			ImplFlag implFlags = ( m_Flags & ( ImplFlag.Visible | ImplFlag.Movable | ImplFlag.Stackable | ImplFlag.Insured | ImplFlag.PaidInsurance | ImplFlag.QuestItem ) );
 
 			if ( implFlags != ( ImplFlag.Visible | ImplFlag.Movable ) )
 				flags |= SaveFlag.ImplFlags;
@@ -4587,10 +4587,10 @@ namespace Server
 			set{ SetFlag( ImplFlag.Insured, value ); InvalidateProperties(); }
 		}
 
-		public bool PayedInsurance
+		public bool PaidInsurance
 		{
-			get{ return GetFlag( ImplFlag.PayedInsurance ); }
-			set{ SetFlag( ImplFlag.PayedInsurance, value ); }
+			get{ return GetFlag( ImplFlag.PaidInsurance ); }
+			set{ SetFlag( ImplFlag.PaidInsurance, value ); }
 		}
 
 		public Mobile BlessedFor
@@ -4677,7 +4677,7 @@ namespace Server
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Item( int itemID ) : this()
 		{
 			m_ItemID = itemID;

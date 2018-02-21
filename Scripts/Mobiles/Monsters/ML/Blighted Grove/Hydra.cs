@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a hydra corpse" )]
 	public class Hydra : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public Hydra()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

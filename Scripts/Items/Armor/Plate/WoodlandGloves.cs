@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2B6A, 0x3161 )]
+	[FlippableAttribute( 0x2B6A, 0x3161 )]
 	public class WoodlandGloves : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 5; } }
@@ -23,7 +23,7 @@ namespace Server.Items
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 		public override Race RequiredRace { get { return Race.Elf; } }
 
-		[Constructable]
+		[Constructible]
 		public WoodlandGloves() : base( 0x2B6A )
 		{
 			Weight = 2.0;

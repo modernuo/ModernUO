@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073833; } } // A Spotted Buccaneer
 		
-		[Constructable]
+		[Constructible]
 		public SpottedBuccaneer() : base( 0x3B09 )
 		{
 		}

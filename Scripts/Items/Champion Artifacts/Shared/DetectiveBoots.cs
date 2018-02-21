@@ -21,7 +21,7 @@ namespace Server.Items
 			set{ m_Level = Math.Max( Math.Min( 2, value), 0 ); Attributes.BonusInt = 2 + m_Level; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public DetectiveBoots()
 		{
 			Hue = 0x455;

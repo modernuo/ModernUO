@@ -21,7 +21,7 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Slime }; } }
 
-		[Constructable]
+		[Constructible]
 		public Barracoon() : base( AIType.AI_Melee )
 		{
 			Name = "Barracoon";

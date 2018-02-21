@@ -19,7 +19,7 @@ namespace Server.Engines.ConPVP
 			get { return "scoreboard"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public CTFBoard()
 			: base( 7774 )
 		{
@@ -248,7 +248,7 @@ namespace Server.Engines.ConPVP
 		private int m_ReturnCount;
 		private Timer m_ReturnTimer;
 
-		[Constructable]
+		[Constructible]
 		public CTFFlag()
 			: base( 5643 )
 		{
@@ -837,7 +837,7 @@ namespace Server.Engines.ConPVP
 			return new CTFGame( this, context );
 		}
 
-		[Constructable]
+		[Constructible]
 		public CTFController()
 		{
 			Visible = false;

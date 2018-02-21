@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LargePainting : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LargePainting() : base( 0x0EA0 )
 		{
 			Movable = false;
@@ -30,10 +30,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x0E9F, 0x0EC8 )] 
+	[FlippableAttribute( 0x0E9F, 0x0EC8 )] 
 	public class WomanPortrait1 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WomanPortrait1() : base( 0x0E9F )
 		{
 			Movable = false;
@@ -58,10 +58,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x0EE7, 0x0EC9 )] 
+	[FlippableAttribute( 0x0EE7, 0x0EC9 )] 
 	public class WomanPortrait2 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WomanPortrait2() : base( 0x0EE7 )
 		{
 			Movable = false;
@@ -86,10 +86,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x0EA2, 0x0EA1 )] 
+	[FlippableAttribute( 0x0EA2, 0x0EA1 )] 
 	public class ManPortrait1 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ManPortrait1() : base( 0x0EA2 )
 		{
 			Movable = false;
@@ -114,10 +114,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x0EA3, 0x0EA4 )] 
+	[FlippableAttribute( 0x0EA3, 0x0EA4 )] 
 	public class ManPortrait2 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public ManPortrait2() : base( 0x0EA3 )
 		{
 			Movable = false;
@@ -142,10 +142,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x0EA6, 0x0EA5 )] 
+	[FlippableAttribute( 0x0EA6, 0x0EA5 )] 
 	public class LadyPortrait1 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LadyPortrait1() : base( 0x0EA6 )
 		{
 			Movable = false;
@@ -170,10 +170,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x0EA7, 0x0EA8 )] 
+	[FlippableAttribute( 0x0EA7, 0x0EA8 )] 
 	public class LadyPortrait2 : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LadyPortrait2() : base( 0x0EA7 )
 		{
 			Movable = false;

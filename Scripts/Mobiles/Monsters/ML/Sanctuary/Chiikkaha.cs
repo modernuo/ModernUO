@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Chiikkaha the Toothed corpse" )]
 	public class Chiikkaha : RatmanMage
 	{
-		[Constructable]
+		[Constructible]
 		public Chiikkaha()
 		{
 			Name = "Chiikkaha the Toothed";

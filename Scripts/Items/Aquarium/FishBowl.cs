@@ -34,7 +34,7 @@ namespace Server.Items
 
 		public override double DefaultWeight { get { return 2.0; } }
 
-		[Constructable]
+		[Constructible]
 		public FishBowl() : base( 0x241C )
 		{
 			Hue = 0x47E;

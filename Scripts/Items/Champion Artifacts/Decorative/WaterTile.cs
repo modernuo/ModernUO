@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class WaterTile : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WaterTile() : base( 0x346E )
 		{
 		}

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D1E, 0x2D2A )]
+	[FlippableAttribute( 0x2D1E, 0x2D2A )]
 	public class ElvenCompositeLongbow : BaseRanged
 	{
 		public override int EffectID{ get{ return 0xF42; } }
@@ -32,7 +32,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.ShootBow; } }
 
-		[Constructable]
+		[Constructible]
 		public ElvenCompositeLongbow() : base( 0x2D1E )
 		{
 			Weight = 8.0;

@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class PolymorphScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public PolymorphScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PolymorphScroll( int amount ) : base( 55, 0x1F64, amount )
 		{
 		}

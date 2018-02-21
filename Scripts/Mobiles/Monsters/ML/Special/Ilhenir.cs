@@ -36,7 +36,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public Ilhenir()
 			: base( AIType.AI_Mage )
 		{
@@ -332,13 +332,13 @@ namespace Server.Mobiles
 			set { m_Corrosive = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public StainedOoze()
 			: this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StainedOoze( bool corrosive )
 			: base( 0x122A )
 		{

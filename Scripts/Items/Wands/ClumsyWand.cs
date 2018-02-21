@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class ClumsyWand : BaseWand
 	{
-		[Constructable]
+		[Constructible]
 		public ClumsyWand() : base( WandEffect.Clumsiness, 5, 30 )
 		{
 		}

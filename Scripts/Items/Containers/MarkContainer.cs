@@ -106,17 +106,17 @@ namespace Server.Items
 			get{ return false; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public MarkContainer() : this( false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MarkContainer( bool bone ) : this( bone, false )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public MarkContainer( bool bone, bool locked ) : base( bone ? 0xECA : 0xE79 )
 		{
 			Movable = false;

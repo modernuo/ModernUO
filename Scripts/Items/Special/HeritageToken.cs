@@ -12,7 +12,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1076596; } } // A Heritage Token
 
-		[Constructable]
+		[Constructible]
 		public HeritageToken() : base( 0x367A )
 		{
 			LootType = LootType.Blessed;

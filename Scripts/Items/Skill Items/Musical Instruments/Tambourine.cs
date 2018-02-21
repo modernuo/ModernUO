@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class Tambourine : BaseInstrument
 	{
-		[Constructable]
+		[Constructible]
 		public Tambourine() : base( 0xE9D, 0x52, 0x53 )
 		{
 			Weight = 1.0;

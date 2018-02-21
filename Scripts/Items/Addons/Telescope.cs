@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class Telescope : BaseAddon
 	{
-		[Constructable]
+		[Constructible]
 		public Telescope()
 		{
 			AddComponent( new AddonComponent( 0x1494 ), 0, 5, 0 );

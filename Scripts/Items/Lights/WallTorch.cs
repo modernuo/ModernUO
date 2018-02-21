@@ -3,7 +3,7 @@ using Server;
 
 namespace Server.Items
 {
-	[Flipable]
+	[Flippable]
 	public class WallTorch : BaseLight
 	{
 		public override int LitItemID
@@ -28,7 +28,7 @@ namespace Server.Items
 			}
 		}
 		
-		[Constructable]
+		[Constructible]
 		public WallTorch() : base( 0xA05 )
 		{
 			Movable = false;

@@ -11,7 +11,7 @@ namespace Server.Items
 			get { return "Mining For Quality Stone"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public StoneMiningBook() : base( 0xFBE )
 		{
 			Weight = 1.0;

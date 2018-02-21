@@ -36,7 +36,7 @@ namespace Server.Engines.Quests
 
 		public override int LabelNumber{ get{ return 1049117; } } // Horn of Retreat
 
-		[Constructable]
+		[Constructible]
 		public HornOfRetreat() : base( 0xFC4 )
 		{
 			Hue = 0x482;

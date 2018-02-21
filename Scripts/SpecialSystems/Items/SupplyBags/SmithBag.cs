@@ -6,12 +6,12 @@ namespace Server.Items
 { 
 	public class SmithBag : Bag 
 	{ 
-		[Constructable] 
+		[Constructible] 
 		public SmithBag() : this( 5000 ) 
 		{ 
 		} 
 
-		[Constructable] 
+		[Constructible] 
 		public SmithBag( int amount ) 
 		{ 
 			DropItem( new DullCopperIngot   ( amount ) ); 

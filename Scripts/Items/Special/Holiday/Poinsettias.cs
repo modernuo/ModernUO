@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RedPoinsettia : Item
 	{
-		[Constructable]
+		[Constructible]
 		public RedPoinsettia() : base( 0x2330 )
 		{
 			Weight = 1.0;
@@ -34,7 +34,7 @@ namespace Server.Items
 
 	public class WhitePoinsettia : Item
 	{
-		[Constructable]
+		[Constructible]
 		public WhitePoinsettia() : base( 0x2331 )
 		{
 			Weight = 1.0;

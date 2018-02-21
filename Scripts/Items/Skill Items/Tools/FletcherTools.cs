@@ -4,18 +4,18 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1022, 0x1023 )]
+	[FlippableAttribute( 0x1022, 0x1023 )]
 	public class FletcherTools : BaseTool
 	{
 		public override CraftSystem CraftSystem{ get{ return DefBowFletching.CraftSystem; } }
 
-		[Constructable]
+		[Constructible]
 		public FletcherTools() : base( 0x1022 )
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public FletcherTools( int uses ) : base( uses, 0x1022 )
 		{
 			Weight = 2.0;

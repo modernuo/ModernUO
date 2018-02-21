@@ -21,7 +21,7 @@ namespace Server.Items
 			return 3254;
 		}
 
-		[Constructable]
+		[Constructible]
 		public FarmableCotton() : base( GetCropID() )
 		{
 		}

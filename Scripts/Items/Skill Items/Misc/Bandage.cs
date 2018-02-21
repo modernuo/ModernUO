@@ -23,12 +23,12 @@ namespace Server.Items
 			EventSink.BandageTargetRequest += new BandageTargetRequestEventHandler(EventSink_BandageTargetRequest);
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bandage() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Bandage( int amount ) : base( 0xE21 )
 		{
 			Stackable = true;

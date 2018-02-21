@@ -16,12 +16,12 @@ namespace Server.Items
 
 	public class PowderOfTranslocation : Item
 	{
-		[Constructable]
+		[Constructible]
 		public PowderOfTranslocation() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PowderOfTranslocation( int amount ) : base( 0x26B8 )
 		{
 			Stackable = true;

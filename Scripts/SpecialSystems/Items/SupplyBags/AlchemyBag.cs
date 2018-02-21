@@ -11,14 +11,14 @@ namespace Server.Items
 			get { return "an Alchemy Kit"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public AlchemyBag() : this( 1 )
 		{
 			Movable = true;
 			Hue = 0x250;
 		}
 
-		[Constructable]
+		[Constructible]
 		public AlchemyBag( int amount )
 		{
 			DropItem( new MortarPestle( 5 ) );

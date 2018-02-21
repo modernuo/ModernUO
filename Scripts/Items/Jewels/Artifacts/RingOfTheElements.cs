@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1061104; } } // Ring of the Elements
 		public override int ArtifactRarity{ get{ return 11; } }
 
-		[Constructable]
+		[Constructible]
 		public RingOfTheElements()
 		{
 			Hue = 0x4E9;

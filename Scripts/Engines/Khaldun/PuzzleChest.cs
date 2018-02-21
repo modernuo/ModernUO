@@ -737,10 +737,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xE41, 0xE40 )]
+	[FlippableAttribute( 0xE41, 0xE40 )]
 	public class MetalGoldenPuzzleChest : PuzzleChest
 	{
-		[Constructable]
+		[Constructible]
 		public MetalGoldenPuzzleChest() : base( 0xE41 )
 		{
 		}
@@ -764,10 +764,10 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0xE80, 0x9A8 )]
+	[FlippableAttribute( 0xE80, 0x9A8 )]
 	public class StrongBoxPuzzle : PuzzleChest
 	{
-		[Constructable]
+		[Constructible]
 		public StrongBoxPuzzle() : base( 0xE80 )
 		{
 		}

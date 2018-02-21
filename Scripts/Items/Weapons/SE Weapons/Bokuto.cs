@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27A8, 0x27F3 )]
+	[FlippableAttribute( 0x27A8, 0x27F3 )]
 	public class Bokuto : BaseSword
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Feint; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 25; } }
 		public override int InitMaxHits{ get{ return 50; } }
 
-		[Constructable]
+		[Constructible]
 		public Bokuto() : base( 0x27A8 )
 		{
 			Weight = 7.0;

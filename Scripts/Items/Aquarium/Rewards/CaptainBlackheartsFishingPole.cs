@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074571; } } // Captain Blackheart's Fishing Pole
 
-		[Constructable]
+		[Constructible]
 		public CaptainBlackheartsFishingPole() : base()
 		{
 		}

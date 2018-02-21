@@ -627,11 +627,11 @@ namespace Server.Mobiles
 
 				if ( type.IsDefined( typeof( FurnitureAttribute ), true ) || type.IsDefined( typeof( DynamicFlipingAttribute ), true ) )
 				{
-					object[] objs = type.GetCustomAttributes( typeof( FlipableAttribute ), true );
+					object[] objs = type.GetCustomAttributes( typeof( FlippableAttribute ), true );
 
 					if ( objs != null && objs.Length > 0 )
 					{
-						FlipableAttribute fp = objs[0] as FlipableAttribute;
+						FlippableAttribute fp = objs[0] as FlippableAttribute;
 
 						if ( fp != null )
 						{
@@ -1823,14 +1823,14 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				if ( !item.PayedInsurance )
+				if ( !item.PaidInsurance )
 				{
 					int cost = GetInsuranceCost( item );
 
 					if ( Banker.Withdraw( from, cost ) )
 					{
 						SendLocalizedMessage( 1060398, cost.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-						item.PayedInsurance = true;
+						item.PaidInsurance = true;
 					}
 					else
 					{
@@ -2742,20 +2742,20 @@ namespace Server.Mobiles
 					if ( Banker.Withdraw( this, cost ) )
 					{
 						m_InsuranceCost += cost;
-						item.PayedInsurance = true;
+						item.PaidInsurance = true;
 						SendLocalizedMessage(1060398, cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
 					}
 					else
 					{
 						SendLocalizedMessage( 1061079, "", 0x23 ); // You lack the funds to purchase the insurance
-						item.PayedInsurance = false;
+						item.PaidInsurance = false;
 						item.Insured = false;
 						m_NonAutoreinsuredItems++;
 					}
 				}
 				else
 				{
-					item.PayedInsurance = false;
+					item.PaidInsurance = false;
 					item.Insured = false;
 				}
 
@@ -3501,7 +3501,7 @@ namespace Server.Mobiles
 
 					goto case 13;
 				}
-				case 13: // just removed m_PayedInsurance list
+				case 13: // just removed m_PaidInsurance list
 				case 12:
 				{
 					m_BOBFilter = new Engines.BulkOrders.BOBFilter( reader );
@@ -3511,10 +3511,10 @@ namespace Server.Mobiles
 				{
 					if ( version < 13 )
 					{
-						List<Item> payed = reader.ReadStrongItemList();
+						List<Item> paid = reader.ReadStrongItemList();
 
-						for ( int i = 0; i < payed.Count; ++i )
-							payed[i].PayedInsurance = true;
+						for ( int i = 0; i < paid.Count; ++i )
+							paid[i].PaidInsurance = true;
 					}
 
 					goto case 10;

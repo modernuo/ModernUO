@@ -345,7 +345,7 @@ namespace Server.Misc
 			get { return "weather map"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public WeatherMap()
 		{
 			SetDisplay( 0, 0, 5119, 4095, 400, 400 );

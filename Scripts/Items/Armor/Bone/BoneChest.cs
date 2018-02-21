@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x144f, 0x1454 )]
+	[FlippableAttribute( 0x144f, 0x1454 )]
 	public class BoneChest : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 3; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Bone; } }
 		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
 
-		[Constructable]
+		[Constructible]
 		public BoneChest() : base( 0x144F )
 		{
 			Weight = 6.0;

@@ -9,7 +9,7 @@ namespace Server.Items
 		//TODO: Pre-AoS stuff
 		public override int LabelNumber{ get{ return 1017413; } } // Glacial Staff
 
-		[Constructable]
+		[Constructible]
 		public GlacialStaff()
 		{
 			Hue = 0x480;

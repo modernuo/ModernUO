@@ -70,7 +70,7 @@ namespace Server.Items
 				InvalidateProperties();
 		}
 
-		[Constructable]
+		[Constructible]
 		public TransientItem( int itemID, TimeSpan lifeSpan )
 			: base( itemID )
 		{

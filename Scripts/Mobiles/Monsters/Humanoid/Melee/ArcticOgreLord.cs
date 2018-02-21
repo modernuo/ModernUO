@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.ArticOgreLord" )]
 	public class ArcticOgreLord : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public ArcticOgreLord() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "an arctic ogre lord";

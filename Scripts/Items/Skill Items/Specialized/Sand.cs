@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x11EA, 0x11EB )]
+	[FlippableAttribute( 0x11EA, 0x11EB )]
 	public class Sand : Item, ICommodity
 	{
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
@@ -11,12 +11,12 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1044626; } } // sand
 
-		[Constructable]
+		[Constructible]
 		public Sand() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Sand( int amount ) : base( 0x11EA )
 		{
 			Stackable = Core.ML;

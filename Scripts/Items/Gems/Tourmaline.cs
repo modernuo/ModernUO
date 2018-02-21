@@ -10,12 +10,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tourmaline() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Tourmaline( int amount ) : base( 0xF2D )
 		{
 			Stackable = true;

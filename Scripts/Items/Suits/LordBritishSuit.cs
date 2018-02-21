@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LordBritishSuit : BaseSuit
 	{
-		[Constructable]
+		[Constructible]
 		public LordBritishSuit() : base( AccessLevel.GameMaster, 0x0, 0x2042 )
 		{
 		}

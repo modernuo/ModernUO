@@ -9,7 +9,7 @@ using Server.ContextMenus;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x234E, 0x234F )]
+	[FlippableAttribute( 0x234E, 0x234F )]
 	public class TapestryOfSosaria : Item, ISecurable
 	{
 		private SecureLevel m_Level;
@@ -23,7 +23,7 @@ namespace Server.Items
 			set{ m_Level = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TapestryOfSosaria() : base( 0x234E )
 		{
 			Weight = 1.0;

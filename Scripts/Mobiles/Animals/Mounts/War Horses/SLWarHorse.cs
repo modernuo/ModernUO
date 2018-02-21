@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
 	public class SLWarHorse : BaseWarHorse
 	{
-		[Constructable]
+		[Constructible]
 		public SLWarHorse() : base( 0x79, 0x3EB0, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 		}

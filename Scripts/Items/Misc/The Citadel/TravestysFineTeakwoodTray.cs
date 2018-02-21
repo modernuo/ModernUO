@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075094; } } // Travesty's Fine Teakwood Tray
 
-		[Constructable]
+		[Constructible]
 		public TravestysFineTeakwoodTray() : base( Utility.Random( 0x991, 2 ) )
 		{
 		}

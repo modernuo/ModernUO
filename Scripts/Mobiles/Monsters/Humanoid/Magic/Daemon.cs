@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		public override Faction FactionAllegiance { get { return Shadowlords.Instance; } }
 		public override Ethics.Ethic EthicAllegiance { get { return Ethics.Ethic.Evil; } }
 
-		[Constructable]
+		[Constructible]
 		public Daemon () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = NameList.RandomName( "daemon" );

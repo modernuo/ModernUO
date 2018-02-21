@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new StoneOvenEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public StoneOvenEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x92C ), 0, 0, 0 );
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new StoneOvenEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044345; } } // stone oven (east)
 
-		[Constructable]
+		[Constructible]
 		public StoneOvenEastDeed()
 		{
 		}

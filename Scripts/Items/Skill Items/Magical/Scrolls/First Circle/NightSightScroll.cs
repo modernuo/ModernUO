@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class NightSightScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public NightSightScroll() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public NightSightScroll( int amount ) : base( 5, 0x1F33, amount )
 		{
 		}

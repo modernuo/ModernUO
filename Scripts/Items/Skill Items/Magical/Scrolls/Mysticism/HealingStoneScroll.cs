@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class HealingStoneScroll : SpellScroll
 	{
-		[Constructable]
+		[Constructible]
 		public HealingStoneScroll()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HealingStoneScroll( int amount )
 			: base( 678, 0x2D9F, amount )
 		{

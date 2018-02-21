@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		public override bool InitialInnocent { get { return false; } }
 
-		[Constructable]
+		[Constructible]
 		public InsaneDryad()
 		{
 			Name = "an insane dryad";

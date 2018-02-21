@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class SmallEmptyPot : Item
 	{
-		[Constructable]
+		[Constructible]
 		public SmallEmptyPot() : base(0x11C6)
 		{
 			Weight = 100;
@@ -31,7 +31,7 @@ namespace Server.Items
 
 	public class LargeEmptyPot : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LargeEmptyPot() : base(0x11C7)
 		{
 			Weight = 6;

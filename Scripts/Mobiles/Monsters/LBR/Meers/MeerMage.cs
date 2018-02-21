@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	[CorpseName( "a meer's corpse" )]
 	public class MeerMage : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public MeerMage() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a meer mage";

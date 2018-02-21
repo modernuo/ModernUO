@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public NotarizedApplication() : base( 0x14EF )
 		{
 			LootType = LootType.Blessed;

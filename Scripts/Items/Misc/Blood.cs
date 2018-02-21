@@ -5,12 +5,12 @@ namespace Server.Items
 {
 	public class Blood : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Blood() : this( Utility.RandomList( 0x1645, 0x122A, 0x122B, 0x122C, 0x122D, 0x122E, 0x122F ))
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Blood( int itemID ) : base( itemID )
 		{
 			Movable = false;

@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public DreadSpiderSilk() : base( 0xDF8 )
 		{
 			LootType = LootType.Blessed;

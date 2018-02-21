@@ -15,7 +15,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public TuitionReimbursementForm() : base( 0xE3A )
 		{
 			LootType = LootType.Blessed;

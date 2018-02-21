@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x2328, 0x2329 )]
+	[Flippable( 0x2328, 0x2329 )]
 	public class Snowman : Item, IDyable
 	{
 		public static string GetRandomTitle()
@@ -82,22 +82,22 @@ namespace Server.Items
 			set{ m_Title = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Snowman() : this( Utility.RandomDyedHue(), GetRandomTitle() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Snowman( int hue ) : this( hue, GetRandomTitle() )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Snowman( string title ) : this( Utility.RandomDyedHue(), title )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Snowman( int hue, string title ) : base( Utility.Random( 0x2328, 2 ) )
 		{
 			Weight = 10.0;

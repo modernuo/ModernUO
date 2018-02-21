@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073539; } } // rune blade of knowledge
 
-		[Constructable]
+		[Constructible]
 		public RuneBladeOfKnowledge()
 		{
 			Attributes.SpellDamage = 5;

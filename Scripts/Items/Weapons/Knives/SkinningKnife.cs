@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xEC4, 0xEC5 )]
+	[FlippableAttribute( 0xEC4, 0xEC5 )]
 	public class SkinningKnife : BaseKnife
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ShadowStrike; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 31; } }
 		public override int InitMaxHits{ get{ return 40; } }
 
-		[Constructable]
+		[Constructible]
 		public SkinningKnife() : base( 0xEC4 )
 		{
 			Weight = 1.0;

@@ -303,7 +303,7 @@ namespace Server.Misc
 
             public override int ClipSkinHue(int hue)
             {
-                return hue; // for hue infomation gathering
+                return hue; // for hue information gathering
             }
 
             public override int RandomSkinHue()

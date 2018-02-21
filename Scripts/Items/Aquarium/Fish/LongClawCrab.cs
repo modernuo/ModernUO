@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1073827; } } // A Long Claw Crab 
 		
-		[Constructable]
+		[Constructible]
 		public LongClawCrab() : base( 0x3AFC )
 		{
 			Hue = 0x527;

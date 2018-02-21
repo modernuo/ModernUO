@@ -25,7 +25,7 @@ namespace Server.Items
 			return 3254;
 		}
 
-		[Constructable]
+		[Constructible]
 		public FarmableOnion() : base( GetCropID() )
 		{
 		}

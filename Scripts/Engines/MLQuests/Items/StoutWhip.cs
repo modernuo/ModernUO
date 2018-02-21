@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074812; } } // Stout Whip
 
-		[Constructable]
+		[Constructible]
 		public StoutWhip() : base( 0x166F )
 		{
 			LootType = LootType.Blessed;

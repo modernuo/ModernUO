@@ -9,12 +9,12 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1045125; } } // sturdy shovel
 		public override HarvestSystem HarvestSystem{ get{ return Mining.System; } }
 
-		[Constructable]
+		[Constructible]
 		public SturdyShovel() : this( 180 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SturdyShovel( int uses ) : base( uses, 0xF39 )
 		{
 			Weight = 5.0;

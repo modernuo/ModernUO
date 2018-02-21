@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a lady of the snow corpse" )]
 	public class LadyOfTheSnow : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public LadyOfTheSnow()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

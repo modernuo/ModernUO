@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Necro
 {
 	public class VaultOfSecretsBarrier : Item
 	{
-		[Constructable]
+		[Constructible]
 		public VaultOfSecretsBarrier() : base( 0x49E )
 		{
 			Movable = false;

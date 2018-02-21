@@ -81,12 +81,12 @@ namespace Server.Items
 			get{ return m_Receivers; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BroadcastCrystal() : this( 2000 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BroadcastCrystal( int charges ) : base( 0x1ED0 )
 		{
 			Light = LightType.Circle150;
@@ -340,7 +340,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public ReceiverCrystal() : base( 0x1ED0 )
 		{
 			Light = LightType.Circle150;

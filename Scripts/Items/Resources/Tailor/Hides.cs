@@ -103,15 +103,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1079, 0x1078 )]
+	[FlippableAttribute( 0x1079, 0x1078 )]
 	public class Hides : BaseHides, IScissorable
 	{
-		[Constructable]
+		[Constructible]
 		public Hides() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Hides( int amount ) : base( CraftResource.RegularLeather, amount )
 		{
 		}
@@ -149,15 +149,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1079, 0x1078 )]
+	[FlippableAttribute( 0x1079, 0x1078 )]
 	public class SpinedHides : BaseHides, IScissorable
 	{
-		[Constructable]
+		[Constructible]
 		public SpinedHides() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpinedHides( int amount ) : base( CraftResource.SpinedLeather, amount )
 		{
 		}
@@ -196,15 +196,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1079, 0x1078 )]
+	[FlippableAttribute( 0x1079, 0x1078 )]
 	public class HornedHides : BaseHides, IScissorable
 	{
-		[Constructable]
+		[Constructible]
 		public HornedHides() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HornedHides( int amount ) : base( CraftResource.HornedLeather, amount )
 		{
 		}
@@ -243,15 +243,15 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x1079, 0x1078 )]
+	[FlippableAttribute( 0x1079, 0x1078 )]
 	public class BarbedHides : BaseHides, IScissorable
 	{
-		[Constructable]
+		[Constructible]
 		public BarbedHides() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BarbedHides( int amount ) : base( CraftResource.BarbedLeather, amount )
 		{
 		}

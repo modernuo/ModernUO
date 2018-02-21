@@ -11,7 +11,7 @@ namespace Server.Items
 			"Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios", "Zippy"
 		};
 
-		[Constructable]
+		[Constructible]
 		public HalloweenPumpkin()
 			: base()
 		{

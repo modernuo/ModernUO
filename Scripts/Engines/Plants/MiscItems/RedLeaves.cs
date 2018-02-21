@@ -13,12 +13,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RedLeaves() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RedLeaves( int amount ) : base( 0x1E85 )
 		{
 			Stackable = true;

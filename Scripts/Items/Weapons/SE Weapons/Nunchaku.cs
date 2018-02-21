@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x27AE, 0x27F9 )]
+	[FlippableAttribute( 0x27AE, 0x27F9 )]
 	public class Nunchaku : BaseBashing
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Block; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 40; } }
 		public override int InitMaxHits{ get{ return 55; } }
 
-		[Constructable]
+		[Constructible]
 		public Nunchaku() : base( 0x27AE )
 		{
 			Weight = 5.0;

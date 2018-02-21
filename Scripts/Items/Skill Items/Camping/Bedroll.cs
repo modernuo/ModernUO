@@ -6,10 +6,10 @@ using Server.Gumps;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0xA57, 0xA58, 0xA59 )]
+	[FlippableAttribute( 0xA57, 0xA58, 0xA59 )]
 	public class Bedroll : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Bedroll() : base( 0xA57 )
 		{
 			Weight = 5.0;

@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public class Wool : Item, IDyable
 	{
-		[Constructable]
+		[Constructible]
 		public Wool() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Wool( int amount ) : base( 0xDF8 )
 		{
 			Stackable = true;
@@ -115,12 +115,12 @@ namespace Server.Items
 	}
 	public class TaintedWool : Wool
 	{
-		[Constructable]
+		[Constructible]
 		public TaintedWool() : this( 1 )
 		{
 		}
 		
-		[Constructable]
+		[Constructible]
 		public TaintedWool( int amount ) : base( 0x101F )
 		{
 			Stackable = true;

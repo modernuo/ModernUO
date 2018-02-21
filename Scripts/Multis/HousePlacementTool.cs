@@ -13,7 +13,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1060651; } } // a house placement tool
 
-		[Constructable]
+		[Constructible]
 		public HousePlacementTool() : base( 0x14F6 )
 		{
 			Weight = 3.0;

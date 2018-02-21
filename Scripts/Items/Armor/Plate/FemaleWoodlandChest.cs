@@ -4,7 +4,7 @@ using Server.Items;
 namespace Server.Items
 {
 	//Is this a filler-type item? the clilocs don't match up and at a glacnce I can't find direct reference of it
-	[FlipableAttribute( 0x2B6D, 0x3164 )]
+	[FlippableAttribute( 0x2B6D, 0x3164 )]
 	public class FemaleElvenPlateChest : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 5; } }
@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
-		[Constructable]
+		[Constructible]
 		public FemaleElvenPlateChest() : base( 0x2B6D )
 		{
 			Weight = 8.0;

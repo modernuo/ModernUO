@@ -174,12 +174,12 @@ namespace Server.Items
 	// ********** RawRibs **********
 	public class RawRibs : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public RawRibs() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RawRibs( int amount ) : base( 0x9F1, 10 )
 		{
 			Weight = 1.0;
@@ -215,12 +215,12 @@ namespace Server.Items
 	// ********** RawLambLeg **********
 	public class RawLambLeg : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public RawLambLeg() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RawLambLeg( int amount ) : base( 0x1609, 10 )
 		{
 			Stackable = true;
@@ -257,7 +257,7 @@ namespace Server.Items
 	// ********** RawChickenLeg **********
 	public class RawChickenLeg : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public RawChickenLeg() : base( 0x1607, 10 )
 		{
 			Weight = 1.0;
@@ -292,12 +292,12 @@ namespace Server.Items
 	// ********** RawBird **********
 	public class RawBird : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public RawBird() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RawBird( int amount ) : base( 0x9B9, 10 )
 		{
 			Weight = 1.0;
@@ -335,7 +335,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041335; } } // unbaked peach cobbler
 
-		[Constructable]
+		[Constructible]
 		public UnbakedPeachCobbler() : base( 0x1042, 25 )
 		{
 			Weight = 1.0;
@@ -369,7 +369,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041334; } } // unbaked fruit pie
 
-		[Constructable]
+		[Constructible]
 		public UnbakedFruitPie() : base( 0x1042, 25 )
 		{
 			Weight = 1.0;
@@ -404,7 +404,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041338; } } // unbaked meat pie
 
-		[Constructable]
+		[Constructible]
 		public UnbakedMeatPie() : base( 0x1042, 25 )
 		{
 			Weight = 1.0;
@@ -439,7 +439,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041342; } } // unbaked pumpkin pie
 
-		[Constructable]
+		[Constructible]
 		public UnbakedPumpkinPie() : base( 0x1042, 25 )
 		{
 			Weight = 1.0;
@@ -474,7 +474,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041336; } } // unbaked apple pie
 
-		[Constructable]
+		[Constructible]
 		public UnbakedApplePie() : base( 0x1042, 25 )
 		{
 			Weight = 1.0;
@@ -510,7 +510,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041341; } } // uncooked cheese pizza
 
-		[Constructable]
+		[Constructible]
 		public UncookedCheesePizza() : base( 0x1083, 20 )
 		{
 			Weight = 1.0;
@@ -551,7 +551,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041337; } } // uncooked sausage pizza
 
-		[Constructable]
+		[Constructible]
 		public UncookedSausagePizza() : base( 0x1083, 20 )
 		{
 			Weight = 1.0;
@@ -585,7 +585,7 @@ namespace Server.Items
 	// ********** UncookedPizza **********
 	public class UncookedPizza : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public UncookedPizza() : base( 0x1083, 20 )
 		{
 			Weight = 1.0;
@@ -627,7 +627,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041339; } } // unbaked quiche
 
-		[Constructable]
+		[Constructible]
 		public UnbakedQuiche() : base( 0x1042, 25 )
 		{
 			Weight = 1.0;
@@ -660,12 +660,12 @@ namespace Server.Items
 	// ********** Eggs **********
 	public class Eggs : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public Eggs() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Eggs( int amount ) : base( 0x9B5, 15 )
 		{
 			Weight = 1.0;
@@ -713,7 +713,7 @@ namespace Server.Items
 			get { return "brightly colored eggs"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BrightlyColoredEggs() : base( 0x9B5, 15 )
 		{
 			Weight = 0.5;
@@ -749,7 +749,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1016105; } } // Easter Eggs
 
-		[Constructable]
+		[Constructible]
 		public EasterEggs() : base( 0x9B5, 15 )
 		{
 			Weight = 0.5;
@@ -783,7 +783,7 @@ namespace Server.Items
 	// ********** CookieMix **********
 	public class CookieMix : CookableFood
 	{
-		[Constructable]
+		[Constructible]
 		public CookieMix() : base( 0x103F, 20 )
 		{
 			Weight = 1.0;
@@ -818,7 +818,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1041002; } } // cake mix
 
-		[Constructable]
+		[Constructible]
 		public CakeMix() : base( 0x103F, 40 )
 		{
 			Weight = 1.0;
@@ -855,12 +855,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RawFishSteak() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RawFishSteak( int amount ) : base( 0x097A, 10 )
 		{
 			Stackable = true;

@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1077582; } } // Ember Staff
 
-		[Constructable]
+		[Constructible]
 		public EmberStaff()
 		{
 			LootType = LootType.Blessed;

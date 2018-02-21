@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075043; } } // Crimson Cincture
 	
-		[Constructable]
+		[Constructible]
 		public CrimsonCincture() : base()
 		{
 			Hue = 0x485;

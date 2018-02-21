@@ -6,7 +6,7 @@ namespace Server.Items
 	[Server.Engines.Craft.Anvil]
 	public class AnvilComponent : AddonComponent
 	{
-		[Constructable]
+		[Constructible]
 		public AnvilComponent( int itemID ) : base( itemID )
 		{
 		}
@@ -33,7 +33,7 @@ namespace Server.Items
 	[Server.Engines.Craft.Forge]
 	public class ForgeComponent : AddonComponent
 	{
-		[Constructable]
+		[Constructible]
 		public ForgeComponent( int itemID ) : base( itemID )
 		{
 		}
@@ -70,7 +70,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return m_LabelNumber; } }
 
-		[Constructable]
+		[Constructible]
 		public LocalizedAddonComponent( int itemID, int labelNumber ) : base( itemID )
 		{
 			m_LabelNumber = labelNumber;
@@ -156,7 +156,7 @@ namespace Server.Items
 		public virtual bool NeedsWall{ get{ return false; } }
 		public virtual Point3D WallPosition{ get{ return Point3D.Zero; } }
 
-		[Constructable]
+		[Constructible]
 		public AddonComponent( int itemID ) : base( itemID )
 		{
 			Movable = false;

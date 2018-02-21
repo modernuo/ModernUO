@@ -177,7 +177,7 @@ namespace Server.Multis
 
 	public class LockableBarrel : LockableContainer
 	{
-		[Constructable]
+		[Constructible]
 		public LockableBarrel() : base(0xE77)
 		{
 			Weight = 1.0;

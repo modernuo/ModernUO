@@ -45,7 +45,7 @@ namespace Server.Items
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RecipeScroll( int recipeID )
 			: base( 0x2831 )
 		{

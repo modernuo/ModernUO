@@ -46,7 +46,7 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TournamentController Tournament{ get{ return m_Tournament; } set{ m_Tournament = value; } }
 
-		[Constructable]
+		[Constructible]
 		public TournamentRegistrar()
 		{
 			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), new TimerCallback( Announce_Callback ) );
@@ -151,7 +151,7 @@ namespace Server.Engines.ConPVP
 			get { return "tournament signup book"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TournamentSignupItem() : base( 4029 )
 		{
 			Movable = false;
@@ -1254,7 +1254,7 @@ namespace Server.Engines.ConPVP
 			get { return "tournament controller"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TournamentController() : base( 0x1B7A )
 		{
 			Visible = false;
@@ -3590,7 +3590,7 @@ namespace Server.Engines.ConPVP
 			get { return "tournament bracket"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TournamentBracketItem() : base( 3774 )
 		{
 			Movable = false;

@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		[Constructable]
+		[Constructible]
 		public Armorer() : base( "the armorer" )
 		{
 			SetSkill( SkillName.ArmsLore, 64.0, 100.0 );

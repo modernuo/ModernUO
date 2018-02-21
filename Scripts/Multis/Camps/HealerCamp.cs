@@ -7,7 +7,7 @@ namespace Server.Multis
 {
 	public class HealerCamp : BaseCamp
 	{
-		[Constructable]
+		[Constructible]
 		public HealerCamp() : base( 0x1F4 )
 		{
 		}

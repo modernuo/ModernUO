@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class DullCopperElemental : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public DullCopperElemental() : this( 2 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public DullCopperElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a dull copper elemental";

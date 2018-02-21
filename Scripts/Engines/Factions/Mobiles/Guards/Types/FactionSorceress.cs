@@ -8,7 +8,7 @@ namespace Server.Factions
 	{
 		public override GuardAI GuardAI{ get{ return GuardAI.Magic | GuardAI.Bless | GuardAI.Curse; } }
 
-		[Constructable]
+		[Constructible]
 		public FactionSorceress() : base( "the sorceress" )
 		{
 			GenerateBody( true, false );

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Putrefier corpse" )]
 	public class Putrefier : Balron
 	{
-		[Constructable]
+		[Constructible]
 		public Putrefier()
 		{
 			IsParagon = true;

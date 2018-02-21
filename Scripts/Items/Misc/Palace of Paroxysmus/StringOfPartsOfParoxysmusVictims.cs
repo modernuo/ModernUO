@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1072082; } } // String of Parts of Paroxysmus' Victims
 
-		[Constructable]
+		[Constructible]
 		public StringOfPartsOfParoxysmusVictims() : base( 0xFD2 )
 		{
 		}

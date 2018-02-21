@@ -2,10 +2,10 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1f81, 0x1f82, 0x1f83, 0x1f84 )]
+	[FlippableAttribute( 0x1f81, 0x1f82, 0x1f83, 0x1f84 )]
 	public class Glass : Item
 	{
-		[Constructable]
+		[Constructible]
 		public Glass() : base( 0x1f81 )
 		{
 			this.Weight = 0.1;
@@ -32,7 +32,7 @@ namespace Server.Items
 
 	public class GlassBottle : Item
 	{
-		[Constructable]
+		[Constructible]
 		public GlassBottle() : base( 0xe2b )
 		{
 			this.Weight = 0.3;

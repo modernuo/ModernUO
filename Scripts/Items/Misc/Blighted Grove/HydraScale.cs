@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074760; } } // A hydra scale.
 
-		[Constructable]
+		[Constructible]
 		public HydraScale() : base( 0x26B4 )
 		{
 			LootType = LootType.Blessed;

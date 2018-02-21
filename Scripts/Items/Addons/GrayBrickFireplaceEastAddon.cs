@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new GrayBrickFireplaceEastDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public GrayBrickFireplaceEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x93D ), 0, 0, 0 );
@@ -38,7 +38,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new GrayBrickFireplaceEastAddon(); } }
 		public override int LabelNumber{ get{ return 1061846; } } // grey brick fireplace (east)
 
-		[Constructable]
+		[Constructible]
 		public GrayBrickFireplaceEastDeed()
 		{
 		}

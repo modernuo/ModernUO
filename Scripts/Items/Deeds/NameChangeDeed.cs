@@ -13,7 +13,7 @@ namespace Server.Items
 			get { return "a name change deed"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public NameChangeDeed() : base( 0x14F0 )
 		{
 			LootType = LootType.Blessed;

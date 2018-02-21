@@ -16,7 +16,7 @@ namespace Server.Items
 
 		public int Phase{ get{ return m_Phase; } set{ m_Phase = value; } }
 
-		[Constructable]
+		[Constructible]
 		public LoomEastAddon()
 		{
 			AddComponent( new AddonComponent( 0x1060 ), 0, 0, 0 );
@@ -58,7 +58,7 @@ namespace Server.Items
 		public override BaseAddon Addon{ get{ return new LoomEastAddon(); } }
 		public override int LabelNumber{ get{ return 1044343; } } // loom (east)
 
-		[Constructable]
+		[Constructible]
 		public LoomEastDeed()
 		{
 		}

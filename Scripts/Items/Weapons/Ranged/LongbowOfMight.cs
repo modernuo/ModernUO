@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073508; } } // longbow of might
 
-		[Constructable]
+		[Constructible]
 		public LongbowOfMight()
 		{
 			Attributes.WeaponDamage = 5;

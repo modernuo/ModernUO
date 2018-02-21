@@ -9,7 +9,7 @@ using Server.ContextMenus;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x234C, 0x234D )]
+	[FlippableAttribute( 0x234C, 0x234D )]
 	public class RoseOfTrinsic : Item, ISecurable
 	{
 		private static readonly TimeSpan m_SpawnTime = TimeSpan.FromHours( 4.0 );
@@ -55,7 +55,7 @@ namespace Server.Items
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public RoseOfTrinsic() : base( 0x234D )
 		{
 			Weight = 1.0;
@@ -166,12 +166,12 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1062926; } } // Petal of the Rose of Trinsic
 
-		[Constructable]
+		[Constructible]
 		public RoseOfTrinsicPetal() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RoseOfTrinsicPetal( int amount ) : base( 0x1021 )
 		{
 			Stackable = true;

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
 	public class Messenger : BaseEscortable
 	{
-		[Constructable]
+		[Constructible]
 		public Messenger()
 		{
 			Title = "the messenger";

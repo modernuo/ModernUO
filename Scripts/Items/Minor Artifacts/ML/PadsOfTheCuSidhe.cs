@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075048; } } // Pads of the Cu Sidhe
 
-		[Constructable]
+		[Constructible]
 		public PadsOfTheCuSidhe() : base( 0x47E )
 		{
 		}

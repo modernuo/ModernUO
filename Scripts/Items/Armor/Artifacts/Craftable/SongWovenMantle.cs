@@ -11,7 +11,7 @@ namespace Server.Items
 		public override int BaseColdResistance{ get{ return 14; } }
 		public override int BaseEnergyResistance{ get{ return 16; } }
 
-		[Constructable]
+		[Constructible]
 		public SongWovenMantle()
 		{
 			Hue = 0x493;

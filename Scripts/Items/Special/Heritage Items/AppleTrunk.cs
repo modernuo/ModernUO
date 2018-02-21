@@ -6,7 +6,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new AppleTrunkDeed(); } }
 		
-		[Constructable]
+		[Constructible]
 		public AppleTrunkAddon() : base()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD98, 1076785 ), 0, 0, 0 );
@@ -36,7 +36,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new AppleTrunkAddon(); } }
 		public override int LabelNumber { get { return 1076785; } } // Apple Trunk
 
-		[Constructable]
+		[Constructible]
 		public AppleTrunkDeed() : base()
 		{
 			LootType = LootType.Blessed;

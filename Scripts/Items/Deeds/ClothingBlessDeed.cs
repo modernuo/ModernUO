@@ -68,7 +68,7 @@ namespace Server.Items
 			get { return "a clothing bless deed"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ClothingBlessDeed() : base( 0x14F0 )
 		{
 			Weight = 1.0;

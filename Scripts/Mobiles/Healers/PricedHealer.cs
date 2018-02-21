@@ -15,12 +15,12 @@ namespace Server.Mobiles
 			set{ m_Price = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public PricedHealer() : this( 5000 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public PricedHealer( int price )
 		{
 			m_Price = price;

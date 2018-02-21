@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a mantra effervescence corpse" )]
 	public class MantraEffervescence : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public MantraEffervescence()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

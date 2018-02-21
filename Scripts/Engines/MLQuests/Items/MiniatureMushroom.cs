@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073138; } } // Miniature mushroom
 
-		[Constructable]
+		[Constructible]
 		public MiniatureMushroom() : base( 0xD16 )
 		{
 			LootType = LootType.Blessed;

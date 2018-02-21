@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074588; } } // Coral
 		
-		[Constructable]
+		[Constructible]
 		public Coral() : base( Utility.RandomList( 0x3AF9, 0x3AFA, 0x3AFB ) )
 		{
 		}

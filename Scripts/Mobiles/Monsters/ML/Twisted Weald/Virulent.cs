@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Virulent corpse" )]
 	public class Virulent : DreadSpider
 	{
-		[Constructable]
+		[Constructible]
 		public Virulent()
 		{
 			IsParagon = true;

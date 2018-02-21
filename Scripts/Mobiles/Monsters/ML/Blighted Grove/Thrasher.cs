@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Thrasher corpse" )]
 	public class Thrasher : Alligator
 	{
-		[Constructable]
+		[Constructible]
 		public Thrasher()
 		{
 			IsParagon = true;

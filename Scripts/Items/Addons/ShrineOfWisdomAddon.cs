@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ShrineOfWisdomAddon : BaseAddon
 	{
-		[Constructable]
+		[Constructible]
 		public ShrineOfWisdomAddon()
 		{
 			AddComponent( new ShrineOfWisdomComponent( 0x14C3 ), 0, 0, 0 );
@@ -39,7 +39,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1062046; } } // Shrine of Wisdom
 
-		[Constructable]
+		[Constructible]
 		public ShrineOfWisdomComponent( int itemID ) : base( itemID )
 		{
 		}

@@ -20,7 +20,7 @@ namespace Server.Items
 			set{ m_InUse = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SpecialFishingNet() : base( 0x0DCA )
 		{
 			Weight = 1.0;
@@ -366,7 +366,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1063451; } } // a fabled fishing net
 
-		[Constructable]
+		[Constructible]
 		public FabledFishingNet()
 		{
 			Hue = 0x481;

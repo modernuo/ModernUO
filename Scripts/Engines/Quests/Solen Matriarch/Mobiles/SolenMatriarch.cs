@@ -285,7 +285,7 @@ namespace Server.Engines.Quests.Matriarch
 	{
 		public override bool RedSolen{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public RedSolenMatriarch()
 		{
 		}
@@ -313,7 +313,7 @@ namespace Server.Engines.Quests.Matriarch
 	{
 		public override bool RedSolen{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public BlackSolenMatriarch()
 		{
 		}

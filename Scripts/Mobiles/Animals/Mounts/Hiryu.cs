@@ -75,7 +75,7 @@ namespace Server.Mobiles
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Hiryu()
 			: base( "a hiryu", 243, 0x3E94, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

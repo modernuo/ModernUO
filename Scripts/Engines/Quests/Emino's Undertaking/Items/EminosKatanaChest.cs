@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class EminosKatanaChest : WoodenChest
 	{
-		[Constructable]
+		[Constructible]
 		public EminosKatanaChest()
 		{
 			Movable = false;

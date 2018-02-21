@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	[CorpseName( "an orcish corpse" )]
 	public class OrcBrute : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public OrcBrute() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 189;

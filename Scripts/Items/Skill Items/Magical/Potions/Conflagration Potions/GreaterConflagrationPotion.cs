@@ -10,7 +10,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1072098; } } // a Greater Conflagration potion
 
-		[Constructable]
+		[Constructible]
 		public GreaterConflagrationPotion() : base( PotionEffect.ConflagrationGreater )
 		{
 		}

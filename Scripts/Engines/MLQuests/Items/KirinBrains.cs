@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074612; } } // Ki-Rin Brains
 
-		[Constructable]
+		[Constructible]
 		public KirinBrains() : base( 0x1CF0 )
 		{
 			LootType = LootType.Blessed;

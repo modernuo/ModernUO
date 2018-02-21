@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D2B, 0x2D1F )]
+	[FlippableAttribute( 0x2D2B, 0x2D1F )]
 	public class MagicalShortbow : BaseRanged
 	{
 		public override int EffectID{ get{ return 0xF42; } }
@@ -30,7 +30,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 41; } }
 		public override int InitMaxHits{ get{ return 90; } }
 
-		[Constructable]
+		[Constructible]
 		public MagicalShortbow() : base( 0x2D2B )
 		{
 			Weight = 6.0;

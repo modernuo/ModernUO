@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1094925; } } // Wind Spirit [Replica]
 
-		[Constructable]
+		[Constructible]
 		public WindSpirit() : base( 0x1F1F )
 		{
 		}

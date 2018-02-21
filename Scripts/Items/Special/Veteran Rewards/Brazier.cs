@@ -34,12 +34,12 @@ namespace Server.Items
 			0x19AA, 0x19BB
 		};
 		
-		[Constructable]
+		[Constructible]
 		public RewardBrazier() : this( Utility.RandomList( m_Art ) )
 		{	
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardBrazier( int itemID ) : base( itemID )
 		{
 			LootType = LootType.Blessed;
@@ -141,7 +141,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardBrazierDeed() : base( 0x14F0 )
 		{
 			LootType = LootType.Blessed;

@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Necro
 {
 	public class KronusScrollBox : MetalBox
 	{
-		[Constructable]
+		[Constructible]
 		public KronusScrollBox()
 		{
 			ItemID = 0xE80;

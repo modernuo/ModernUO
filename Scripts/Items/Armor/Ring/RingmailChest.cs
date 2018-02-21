@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13ec, 0x13ed )]
+	[FlippableAttribute( 0x13ec, 0x13ed )]
 	public class RingmailChest : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 3; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Ringmail; } }
 
-		[Constructable]
+		[Constructible]
 		public RingmailChest() : base( 0x13EC )
 		{
 			Weight = 15.0;

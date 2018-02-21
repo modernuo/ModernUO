@@ -281,7 +281,7 @@ namespace Server.Engines.Chat
 				m_Voices.Add( user );
 
 				if ( moderator != null )
-					user.SendMessage( 54, moderator.Username ); // %1, a conference moderator, has granted you speaking priviledges in this conference.
+					user.SendMessage( 54, moderator.Username ); // %1, a conference moderator, has granted you speaking privileges in this conference.
 
 				SendMessage( 52, user, user.Username ); // %1 now has speaking privileges in this conference.
 				SendCommand( ChatCommand.AddUserToChannel, user, user.GetColorCharacter() + user.Username );
@@ -298,7 +298,7 @@ namespace Server.Engines.Chat
 				m_Voices.Remove( user );
 
 				if ( moderator != null )
-					user.SendMessage( 53, moderator.Username ); // %1, a conference moderator, has removed your speaking priviledges for this conference.
+					user.SendMessage( 53, moderator.Username ); // %1, a conference moderator, has removed your speaking privileges for this conference.
 
 				SendMessage( 51, user, user.Username ); // %1 no longer has speaking privileges in this conference.
 				SendCommand( ChatCommand.AddUserToChannel, user, user.GetColorCharacter() + user.Username );

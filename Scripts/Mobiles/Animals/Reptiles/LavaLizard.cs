@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Lavalizard" )]
 	public class LavaLizard : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public LavaLizard() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a lava lizard";

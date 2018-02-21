@@ -56,19 +56,19 @@ namespace Server.Items
 
 		public virtual bool ShowFeluccaWarning{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public Moongate() : this( Point3D.Zero, null )
 		{
 			m_bDispellable = true;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Moongate(bool bDispellable) : this( Point3D.Zero, null )
 		{
 			m_bDispellable = bDispellable;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Moongate( Point3D target, Map targetMap ) : base( 0xF6C )
 		{
 			Movable = false;
@@ -320,12 +320,12 @@ namespace Server.Items
 			set{ m_MessageString = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ConfirmationMoongate() : this( Point3D.Zero, null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ConfirmationMoongate( Point3D target, Map targetMap ) : base( target, targetMap )
 		{
 		}

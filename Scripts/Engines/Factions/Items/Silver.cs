@@ -10,17 +10,17 @@ namespace Server.Factions
 			get { return 0.02; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Silver() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Silver( int amountFrom, int amountTo ) : this( Utility.RandomMinMax( amountFrom, amountTo ) )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Silver( int amount ) : base( 0xEF0 )
 		{
 			Stackable = true;

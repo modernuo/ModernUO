@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073524; } } // leafblade of ease
 
-		[Constructable]
+		[Constructible]
 		public LeafbladeOfEase()
 		{
 			WeaponAttributes.UseBestSkill = 1;

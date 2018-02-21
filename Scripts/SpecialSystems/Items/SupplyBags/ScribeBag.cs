@@ -11,14 +11,14 @@ namespace Server.Items
 			get { return "a Scribe Kit"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public ScribeBag() : this( 1 )
 		{
 			Movable = true;
 			Hue = 0x105;
 		}
 
-		[Constructable]
+		[Constructible]
 		public ScribeBag( int amount )
 		{
 			DropItem( new BagOfReagents( 5000 ) );

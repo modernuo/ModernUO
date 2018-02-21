@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x13d5, 0x13dd )]
+	[FlippableAttribute( 0x13d5, 0x13dd )]
 	public class RangerGloves : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 2; } }
@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041494; } } // studded gloves, ranger armor
 
-		[Constructable]
+		[Constructible]
 		public RangerGloves() : base( 0x13D5 )
 		{
 			Weight = 1.0;

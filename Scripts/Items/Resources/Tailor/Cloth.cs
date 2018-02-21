@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1766, 0x1768 )]
+	[FlippableAttribute( 0x1766, 0x1768 )]
 	public class Cloth : Item, IScissorable, IDyable, ICommodity
 	{
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
@@ -15,12 +15,12 @@ namespace Server.Items
 			get { return 0.1; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Cloth() : this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Cloth( int amount ) : base( 0x1766 )
 		{
 			Stackable = true;

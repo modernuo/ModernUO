@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Necro
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D SpawnLocation { get { return m_SpawnLocation; } set { m_SpawnLocation = value; } }
 
-		[Constructable]
+		[Constructible]
 		public MaabusCoffin()
 		{
 			AddComponent( new MaabusCoffinComponent( 0x1C2B, 0x1C2B ), -1, -1, 0 );

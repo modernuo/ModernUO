@@ -7,7 +7,7 @@ namespace Server.Items
 	{		
 		public override int LabelNumber{ get{ return 1074590; } } // Small Mouth Sucker Fin
 		
-		[Constructable]
+		[Constructible]
 		public SmallMouthSuckerFin() : base( 0x3B01 )
 		{
 		}

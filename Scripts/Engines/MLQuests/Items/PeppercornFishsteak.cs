@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075557; } } // peppercorn fishsteak
 
-		[Constructable]
+		[Constructible]
 		public PeppercornFishsteak() : base()
 		{
 			Hue = 0x222;

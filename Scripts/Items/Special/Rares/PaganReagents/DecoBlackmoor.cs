@@ -5,7 +5,7 @@ namespace Server.Items
 	public class DecoBlackmoor : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public DecoBlackmoor() : base( 0xF79 )
 		{
 			Movable = true;

@@ -8,12 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a cu sidhe corpse" )]
 	public class CuSidhe : BaseMount
 	{
-		[Constructable]
+		[Constructible]
 		public CuSidhe() : this( "a cu sidhe" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public CuSidhe( string name ) : base( name, 277, 0x3E91, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			double chance = Utility.RandomDouble() * 23301;

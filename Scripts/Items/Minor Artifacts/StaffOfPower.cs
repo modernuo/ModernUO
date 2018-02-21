@@ -10,7 +10,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 255; } }
 		public override int InitMaxHits{ get{ return 255; } }
 
-		[Constructable]
+		[Constructible]
 		public StaffOfPower()
 		{
 			Hue = 0x4F2;

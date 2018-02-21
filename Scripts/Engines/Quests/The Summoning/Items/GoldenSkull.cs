@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Doom
 	{
 		public override int LabelNumber{ get{ return 1061619; } } // a golden skull
 
-		[Constructable]
+		[Constructible]
 		public GoldenSkull() : base( Utility.Random( 0x1AE2, 3 ) )
 		{
 			Weight = 1.0;

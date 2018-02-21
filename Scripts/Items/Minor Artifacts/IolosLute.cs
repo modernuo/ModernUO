@@ -10,7 +10,7 @@ namespace Server.Items
 		public override int InitMinUses{ get{ return 1600; } }
 		public override int InitMaxUses{ get{ return 1600; } }
 
-		[Constructable]
+		[Constructible]
 		public IolosLute()
 		{
 			Hue = 0x47E;

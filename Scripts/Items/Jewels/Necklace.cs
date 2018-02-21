@@ -31,7 +31,7 @@ namespace Server.Items
 
 	public class Necklace : BaseNecklace
 	{
-		[Constructable]
+		[Constructible]
 		public Necklace() : base( 0x1085 )
 		{
 			Weight = 0.1;
@@ -58,7 +58,7 @@ namespace Server.Items
 
 	public class GoldNecklace : BaseNecklace
 	{
-		[Constructable]
+		[Constructible]
 		public GoldNecklace() : base( 0x1088 )
 		{
 			Weight = 0.1;
@@ -85,7 +85,7 @@ namespace Server.Items
 
 	public class GoldBeadNecklace : BaseNecklace
 	{
-		[Constructable]
+		[Constructible]
 		public GoldBeadNecklace() : base( 0x1089 )
 		{
 			Weight = 0.1;
@@ -113,7 +113,7 @@ namespace Server.Items
 
 	public class SilverNecklace : BaseNecklace
 	{
-		[Constructable]
+		[Constructible]
 		public SilverNecklace() : base( 0x1F08 )
 		{
 			Weight = 0.1;
@@ -140,7 +140,7 @@ namespace Server.Items
 
 	public class SilverBeadNecklace : BaseNecklace
 	{
-		[Constructable]
+		[Constructible]
 		public SilverBeadNecklace() : base( 0x1F05 )
 		{
 			Weight = 0.1;

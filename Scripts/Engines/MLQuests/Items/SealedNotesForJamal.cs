@@ -16,7 +16,7 @@ namespace Server.Items
 			AddQuestItemProperty( list );
 		}
 
-		[Constructable]
+		[Constructible]
 		public SealedNotesForJamal() : base( 0xEF9 )
 		{
 			LootType = LootType.Blessed;

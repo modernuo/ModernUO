@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1073516; } } // spellblade of defense
 
-		[Constructable]
+		[Constructible]
 		public SpellbladeOfDefense()
 		{
 			Attributes.DefendChance = 5;

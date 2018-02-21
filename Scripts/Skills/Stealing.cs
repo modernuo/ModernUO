@@ -267,7 +267,7 @@ namespace Server.SkillHandlers
 
 						if ( stolen != null )
 						{
-							m_Thief.SendLocalizedMessage( 502724 ); // You succesfully steal the item.
+							m_Thief.SendLocalizedMessage( 502724 ); // You successfully steal the item.
 
 							if ( si != null )
 							{

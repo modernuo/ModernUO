@@ -101,12 +101,12 @@ namespace Server.Items
 			get{ return m_SkillValue <= 0.0; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SoulStone() : this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SoulStone( string account )
 			: this( account, 0x2A93, 0x2A94 )
 		{
@@ -821,22 +821,22 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1071000; } } // soulstone fragment
 
-		[Constructable]
+		[Constructible]
 		public SoulstoneFragment() : this( 5, null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SoulstoneFragment( int usesRemaining ) : this( usesRemaining, null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SoulstoneFragment( string account ) : this( 5, account )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public SoulstoneFragment( int usesRemaining, string account ) : base( account, Utility.Random( 0x2AA1, 9 ) )
 		{
 			m_UsesRemaining = usesRemaining;
@@ -921,16 +921,16 @@ namespace Server.Items
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 	}
 
-	[Flipable]
+	[Flippable]
 	public class BlueSoulstone : SoulStone
 	{
-		[Constructable]
+		[Constructible]
 		public BlueSoulstone()
 			: this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BlueSoulstone( string account )
 			: base( account, 0x2ADC, 0x2ADD )
 		{
@@ -969,13 +969,13 @@ namespace Server.Items
 
 	public class RedSoulstone : SoulStone, IRewardItem
 	{
-		[Constructable]
+		[Constructible]
 		public RedSoulstone()
 			: this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public RedSoulstone( string account )
 			: base( account, 0x32F3, 0x32F4 )
 		{

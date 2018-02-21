@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal sea serpent corpse" )]
 	public class CrystalSeaSerpent : SeaSerpent
 	{
-		[Constructable]
+		[Constructible]
 		public CrystalSeaSerpent()
 		{
 			Name = "a crystal sea serpent";

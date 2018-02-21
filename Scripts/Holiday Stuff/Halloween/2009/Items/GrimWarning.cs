@@ -12,7 +12,7 @@ namespace Server.Items
 	{
 		public override double DefaultWeight { get { return 1; } }
 
-		[Constructable]
+		[Constructible]
 		public GrimWarning ()
 			: base( 0x42BD )
 		{

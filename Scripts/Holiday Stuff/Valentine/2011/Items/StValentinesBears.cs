@@ -228,16 +228,16 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x48E0, 0x48E1 )]
+	[FlippableAttribute( 0x48E0, 0x48E1 )]
 	public class StValentinesPanda : StValentinesBear
 	{
-		[Constructable]
+		[Constructible]
 		public StValentinesPanda()
 			: this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StValentinesPanda( string name )
 			: base( 0x48E0, name )
 		{
@@ -263,16 +263,16 @@ namespace Server.Items
 		}
 	}
 
-	[FlipableAttribute( 0x48E2, 0x48E3 )]
+	[FlippableAttribute( 0x48E2, 0x48E3 )]
 	public class StValentinesPolarBear : StValentinesBear
 	{
-		[Constructable]
+		[Constructible]
 		public StValentinesPolarBear()
 			: this( null )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public StValentinesPolarBear( string name )
 			: base( 0x48E2, name )
 		{

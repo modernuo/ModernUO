@@ -9,7 +9,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1072108; } } // a Greater Confusion Blast potion
 
-		[Constructable]
+		[Constructible]
 		public GreaterConfusionBlastPotion() : base( PotionEffect.ConfusionBlastGreater )
 		{
 		}

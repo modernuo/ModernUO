@@ -238,25 +238,25 @@ namespace Server.Mobiles
 			set { m_Group = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public Spawner()
 			: this(null)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Spawner( string spawnName )
 			: this( 1, 5, 10, 0, 4, spawnName)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Spawner( int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName )
 			: this( amount, TimeSpan.FromMinutes( minDelay ), TimeSpan.FromMinutes( maxDelay ), team, homeRange, spawnName )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Spawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, string spawnName)
 			: base(0x1f13)
 		{
@@ -573,7 +573,7 @@ namespace Server.Mobiles
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if ( !Add.IsConstructable( ctor, AccessLevel.GameMaster ) )
+				if ( !Add.IsConstructible( ctor, AccessLevel.GameMaster ) )
 					continue;
 
 				ParameterInfo[] paramList = ctor.GetParameters();

@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[Flipable( 0x2A65, 0x2A67 )]
+	[Flippable( 0x2A65, 0x2A67 )]
 	public class UnsettlingPortraitComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1074480; } } // Unsettling portrait
@@ -69,7 +69,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed { get { return new UnsettlingPortraitDeed(); } }
 
-		[Constructable]
+		[Constructible]
 		public UnsettlingPortraitAddon() : base()
 		{
 			AddComponent( new UnsettlingPortraitComponent(), 0, 0, 0 );
@@ -99,7 +99,7 @@ namespace Server.Items
 		public override BaseAddon Addon { get { return new UnsettlingPortraitAddon(); } }
 		public override int LabelNumber { get { return 1074480; } } // Unsettling portrait
 
-		[Constructable]
+		[Constructible]
 		public UnsettlingPortraitDeed() : base()
 		{
 			LootType = LootType.Blessed;

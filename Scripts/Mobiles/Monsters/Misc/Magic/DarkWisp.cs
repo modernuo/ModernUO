@@ -15,7 +15,7 @@ namespace Server.Mobiles
 
 		public override TimeSpan ReacquireDelay { get { return TimeSpan.FromSeconds( 1.0 ); } }
 
-		[Constructable]
+		[Constructible]
 		public DarkWisp() : base( AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a wisp";

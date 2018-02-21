@@ -15,7 +15,7 @@ namespace Server.Items
 			set{ m_IsRewardItem = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public RewardBlackDyeTub()
 		{
 			Hue = DyedHue = 0x0001;

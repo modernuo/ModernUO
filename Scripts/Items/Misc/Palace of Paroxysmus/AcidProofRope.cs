@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074886; } } // Acid Proof Rope
 
-		[Constructable]
+		[Constructible]
 		public AcidProofRope() : base( 0x20D )
 		{
 			Hue = 0x3D1; // TODO check

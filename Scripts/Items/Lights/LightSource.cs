@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class LightSource : Item
 	{
-		[Constructable]
+		[Constructible]
 		public LightSource() : base( 0x1647 )
 		{
 			Layer = Layer.TwoHanded;

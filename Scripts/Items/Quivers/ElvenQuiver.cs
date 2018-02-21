@@ -3,12 +3,12 @@ using Server;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2FB7, 0x3171 )]
+	[FlippableAttribute( 0x2FB7, 0x3171 )]
 	public class ElvenQuiver : BaseQuiver
 	{
 		public override int LabelNumber{ get{ return 1032657; } } // elven quiver
 		
-		[Constructable]
+		[Constructible]
 		public ElvenQuiver() : base()
 		{
 			WeightReduction = 30;

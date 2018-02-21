@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an unfrozen mummy corpse" )]
 	public class UnfrozenMummy : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public UnfrozenMummy()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{

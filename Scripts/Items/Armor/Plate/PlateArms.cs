@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1410, 0x1417 )]
+	[FlippableAttribute( 0x1410, 0x1417 )]
 	public class PlateArms : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 5; } }
@@ -24,7 +24,7 @@ namespace Server.Items
 
 		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
 
-		[Constructable]
+		[Constructible]
 		public PlateArms() : base( 0x1410 )
 		{
 			Weight = 5.0;

@@ -90,19 +90,19 @@ namespace Server.Items
 
 		public override int LabelNumber { get { return 1026095; } } // teleporter
 
-		[Constructable]
+		[Constructible]
 		public Teleporter()
 			: this(new Point3D(0, 0, 0), null, false)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Teleporter(Point3D pointDest, Map mapDest)
 			: this(pointDest, mapDest, false)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Teleporter(Point3D pointDest, Map mapDest, bool creatures)
 			: base(0x1BC3)
 		{
@@ -378,7 +378,7 @@ namespace Server.Items
 				list.Add(1060662, "Message\t#{0}", m_MessageNumber);
 		}
 
-		[Constructable]
+		[Constructible]
 		public SkillTeleporter()
 		{
 		}
@@ -500,7 +500,7 @@ namespace Server.Items
 				list.Add(1060663, "Substring\t{0}", m_Substring);
 		}
 
-		[Constructable]
+		[Constructible]
 		public KeywordTeleporter()
 		{
 			m_Keyword = -1;
@@ -607,7 +607,7 @@ namespace Server.Items
 			set { m_ShowTimeRemaining = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public WaitTeleporter()
 		{
 		}
@@ -740,19 +740,19 @@ namespace Server.Items
 			set { m_TimeoutDelay = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TimeoutTeleporter()
 			: this(new Point3D(0, 0, 0), null, false)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TimeoutTeleporter(Point3D pointDest, Map mapDest)
 			: this(pointDest, mapDest, false)
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public TimeoutTeleporter(Point3D pointDest, Map mapDest, bool creatures)
 			: base(pointDest, mapDest, creatures)
 		{
@@ -858,7 +858,7 @@ namespace Server.Items
 			set { m_Teleporter = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public TimeoutGoal()
 			: base(0x1822)
 		{
@@ -1068,7 +1068,7 @@ namespace Server.Items
 			return true;
 		}
 
-		[Constructable]
+		[Constructible]
 		public ConditionTeleporter()
 		{
 		}

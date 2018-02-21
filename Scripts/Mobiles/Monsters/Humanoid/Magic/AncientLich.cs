@@ -4,10 +4,10 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an ancient liche's corpse" )]
+	[CorpseName( "an ancient lich's corpse" )]
 	public class AncientLich : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public AncientLich() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = NameList.RandomName( "ancient lich" );

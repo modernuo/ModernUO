@@ -27,7 +27,7 @@ namespace Server.Mobiles
 			set{ m_ExpireTime = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public PlagueSpawn() : this( null )
 		{
 		}

@@ -11,7 +11,7 @@ namespace Server.Items
 			get { return "Find Glass-Quality Sand"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public SandMiningBook() : base( 0xFF4 )
 		{
 			Weight = 1.0;

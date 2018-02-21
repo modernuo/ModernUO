@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "an orcish corpse" )]
 	public class SpawnedOrcishLord : OrcishLord
 	{
-		[Constructable]
+		[Constructible]
 		public SpawnedOrcishLord()
 		{
 			Container pack = this.Backpack;

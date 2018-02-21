@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074234; } } // Saliva's Feather
 
-		[Constructable]
+		[Constructible]
 		public SalivasFeather() : base( 0x1020 )
 		{
 			LootType = LootType.Blessed;

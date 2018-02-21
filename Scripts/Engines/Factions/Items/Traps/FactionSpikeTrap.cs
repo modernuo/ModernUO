@@ -24,7 +24,7 @@ namespace Server.Factions
 			m.Damage( Utility.Dice( 6, 10, 40 ), m );
 		}
 
-		[Constructable]
+		[Constructible]
 		public FactionSpikeTrap() : this( null )
 		{
 		}

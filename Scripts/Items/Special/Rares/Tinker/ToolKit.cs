@@ -5,7 +5,7 @@ namespace Server.Items
 	public class ToolKit : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public ToolKit() : base( Utility.Random(2) + 0x1EBA )
 		{
 			Movable = true;

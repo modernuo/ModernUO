@@ -33,7 +33,7 @@ namespace Server.Mobiles
 			set { m_IsDonationItem = value; InvalidateProperties(); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public EtherealMount( int itemID, int mountID )
 			: base( itemID )
 		{
@@ -450,7 +450,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1041298; } } // Ethereal Horse Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealHorse()
 			: base( 0x20DD, 0x3EAA )
 		{
@@ -486,7 +486,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1041300; } } // Ethereal Llama Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealLlama()
 			: base( 0x20F6, 0x3EAB )
 		{
@@ -519,7 +519,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1041299; } } // Ethereal Ostard Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealOstard()
 			: base( 0x2135, 0x3EAC )
 		{
@@ -552,7 +552,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1049747; } } // Ethereal Ridgeback Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealRidgeback()
 			: base( 0x2615, 0x3E9A )
 		{
@@ -585,7 +585,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1049745; } } // Ethereal Unicorn Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealUnicorn()
 			: base( 0x25CE, 0x3E9B )
 		{
@@ -618,7 +618,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1049748; } } // Ethereal Beetle Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealBeetle()
 			: base( 0x260F, 0x3E97 )
 		{
@@ -651,7 +651,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1049746; } } // Ethereal Ki-Rin Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealKirin()
 			: base( 0x25A0, 0x3E9C )
 		{
@@ -684,7 +684,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1049749; } } // Ethereal Swamp Dragon Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealSwampDragon()
 			: base( 0x2619, 0x3E98 )
 		{
@@ -718,7 +718,7 @@ namespace Server.Mobiles
 		public override int LabelNumber { get { return 1076159; } } // Rideable Polar Bear 
 		public override int EtherealHue { get { return 0; } }
 
-		[Constructable]
+		[Constructible]
 		public RideablePolarBear()
 			: base( 0x20E1, 0x3EC5 )
 		{
@@ -748,7 +748,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1080386; } } // Ethereal Cu Sidhe Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealCuSidhe()
 			: base( 0x2D96, 0x3E91 )
 		{
@@ -778,7 +778,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1113813; } } // Ethereal Hiryu Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealHiryu()
 			: base( 0x276A, 0x3E94 )
 		{
@@ -808,7 +808,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1113812; } } // Ethereal Reptalon Statuette
 
-		[Constructable]
+		[Constructible]
 		public EtherealReptalon()
 			: base( 0x2d95, 0x3e90 )
 		{
@@ -838,7 +838,7 @@ namespace Server.Mobiles
 	{
 		public override int LabelNumber { get { return 1074816; } } // Charger of the Fallen Statuette
 
-		[Constructable]
+		[Constructible]
 		public ChargerOfTheFallen()
 			: base( 0x2D9C, 0x3E92 )
 		{

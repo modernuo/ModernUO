@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override string DefaultName{ get { return "Mr Plain's Cookies"; } }
 
-		[Constructable]
+		[Constructible]
 		public MrPlainsCookies( )
 			: base( 0x160C )
 		{

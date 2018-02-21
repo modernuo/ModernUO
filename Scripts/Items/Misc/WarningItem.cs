@@ -41,7 +41,7 @@ namespace Server.Items
 			set{ m_ResetDelay = value; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public WarningItem( int itemID, int range, int warning ) : base( itemID )
 		{
 			if ( range > 18 )
@@ -53,7 +53,7 @@ namespace Server.Items
 			m_Range = range;
 		}
 
-		[Constructable]
+		[Constructible]
 		public WarningItem( int itemID, int range, string warning ) : base( itemID )
 		{
 			if ( range > 18 )
@@ -190,13 +190,13 @@ namespace Server.Items
 
 		public override bool OnlyToTriggerer{ get{ return true; } }
 
-		[Constructable]
+		[Constructible]
 		public HintItem( int itemID, int range, int warning, int hint ) : base( itemID, range, warning )
 		{
 			m_HintNumber = hint;
 		}
 
-		[Constructable]
+		[Constructible]
 		public HintItem( int itemID, int range, string warning, string hint ) : base( itemID, range, warning )
 		{
 			m_HintString = hint;

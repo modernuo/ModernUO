@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class Globe : Item
 	{
-		[Constructable]
-		public Globe() : base( 0x1047 ) // It isn't flipable
+		[Constructible]
+		public Globe() : base( 0x1047 ) // It isn't flippable
 		{
 			Weight = 3.0;
 		}

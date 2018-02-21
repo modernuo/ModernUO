@@ -11,7 +11,7 @@ namespace Server.Mobiles
 	{
 		private bool m_Stunning;
 
-		[Constructable]
+		[Constructible]
 		public Juggernaut() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
 		{
 			Name = "a blackthorn juggernaut";

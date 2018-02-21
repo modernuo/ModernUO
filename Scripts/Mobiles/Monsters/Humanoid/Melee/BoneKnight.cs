@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a skeletal corpse" )]
 	public class BoneKnight : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public BoneKnight() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Name = "a bone knight";

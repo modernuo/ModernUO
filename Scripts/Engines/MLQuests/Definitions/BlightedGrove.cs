@@ -180,7 +180,7 @@ namespace Server.Engines.MLQuests.Definitions
 	{
 		public override bool IsInvulnerable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Jamal()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.2, 0.4 )
 		{
@@ -233,7 +233,7 @@ namespace Server.Engines.MLQuests.Definitions
 			) );
 		}
 
-		[Constructable]
+		[Constructible]
 		public Iosep()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.2, 0.4 )
 		{

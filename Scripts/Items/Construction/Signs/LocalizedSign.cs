@@ -12,13 +12,13 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Number{ get{ return m_LabelNumber; } set{ m_LabelNumber = value; InvalidateProperties(); } }
 
-		[Constructable]
+		[Constructible]
 		public LocalizedSign( SignType type, SignFacing facing, int labelNumber ) : base( ( 0xB95 + (2 * (int)type) ) + (int)facing )
 		{
 			m_LabelNumber = labelNumber;
 		}
 
-		[Constructable]
+		[Constructible]
 		public LocalizedSign( int itemID, int labelNumber ) : base( itemID )
 		{
 			m_LabelNumber = labelNumber;

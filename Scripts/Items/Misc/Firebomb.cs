@@ -13,12 +13,12 @@ namespace Server.Items
 		private Mobile m_LitBy;
 		private List<Mobile> m_Users;
 
-		[Constructable]
+		[Constructible]
 		public Firebomb() : this( 0x99B )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Firebomb( int itemID ) : base( itemID )
 		{
 			//Name = "a firebomb";

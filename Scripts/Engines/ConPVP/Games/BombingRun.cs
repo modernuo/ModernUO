@@ -858,7 +858,7 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
-		[Constructable]
+		[Constructible]
 		public BRGoal()
 		{
 			Name = "Bombing Run Goal";
@@ -951,7 +951,7 @@ namespace Server.Engines.ConPVP
 	{
 		public BRTeamInfo m_TeamInfo;
 
-		[Constructable]
+		[Constructible]
 		public BRBoard()
 			: base( 7774 )
 		{
@@ -1467,7 +1467,7 @@ namespace Server.Engines.ConPVP
 			return new BRGame( this, context );
 		}
 
-		[Constructable]
+		[Constructible]
 		public BRController()
 		{
 			Visible = false;

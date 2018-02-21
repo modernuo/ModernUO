@@ -29,7 +29,7 @@ namespace Server.Items
 	{
 	}
 
-	// TODO: Flipable attributes
+	// TODO: Flippable attributes
 
 	[TypeAlias( "Server.Items.BottleAle", "Server.Items.BottleLiquor", "Server.Items.BottleWine" )]
 	public class BeverageBottle : BaseBeverage
@@ -56,7 +56,7 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public BeverageBottle( BeverageType type )
 			: base( type )
 		{
@@ -125,7 +125,7 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Jug( BeverageType type )
 			: base( type )
 		{
@@ -167,13 +167,13 @@ namespace Server.Items
 			return 0x995;
 		}
 
-		[Constructable]
+		[Constructible]
 		public CeramicMug()
 		{
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public CeramicMug( BeverageType type )
 			: base( type )
 		{
@@ -213,13 +213,13 @@ namespace Server.Items
 			return 0xFFF;
 		}
 
-		[Constructable]
+		[Constructible]
 		public PewterMug()
 		{
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public PewterMug( BeverageType type )
 			: base( type )
 		{
@@ -259,13 +259,13 @@ namespace Server.Items
 			return 0x99A;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Goblet()
 		{
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Goblet( BeverageType type )
 			: base( type )
 		{
@@ -318,13 +318,13 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public GlassMug()
 		{
 			Weight = 1.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public GlassMug( BeverageType type )
 			: base( type )
 		{
@@ -461,13 +461,13 @@ namespace Server.Items
 			return 0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Pitcher()
 		{
 			Weight = 2.0;
 		}
 
-		[Constructable]
+		[Constructible]
 		public Pitcher( BeverageType type )
 			: base( type )
 		{

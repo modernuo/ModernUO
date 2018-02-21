@@ -16,7 +16,7 @@ namespace Server.Items
 			get{ return ( ItemID == 0x3B0C ); }
 		}
 
-		[Constructable]
+		[Constructible]
 		public BaseFish( int itemID ) : base( itemID )
 		{
 			StartTimer();

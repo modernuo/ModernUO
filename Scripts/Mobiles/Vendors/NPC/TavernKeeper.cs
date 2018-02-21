@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
 
-		[Constructable]
+		[Constructible]
 		public TavernKeeper() : base( "the tavern keeper" ) 
 		{ 
 		} 

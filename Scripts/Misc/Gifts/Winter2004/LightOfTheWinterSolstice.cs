@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x236E, 0x2371 )]
+	[FlippableAttribute( 0x236E, 0x2371 )]
 	public class LightOfTheWinterSolstice  : Item
 	{
 		private static string[] m_StaffNames = new string[]
@@ -32,12 +32,12 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Dipper{ get{ return m_Dipper; } set{ m_Dipper = value; } }
 
-		[Constructable]
+		[Constructible]
 		public LightOfTheWinterSolstice() : this( m_StaffNames[Utility.Random( m_StaffNames.Length )] )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public LightOfTheWinterSolstice( string dipper ) : base( 0x236E )
 		{
 			m_Dipper = dipper;

@@ -4,10 +4,10 @@ using Server.Network;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1B09, 0x1B10 )]
+	[FlippableAttribute( 0x1B09, 0x1B10 )]
 	public class BonePile : Item, IScissorable
 	{
-		[Constructable]
+		[Constructible]
 		public BonePile( ) : base( 0x1B09 + Utility.Random( 8 ) )
 		{
 			Stackable = false;

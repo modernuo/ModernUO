@@ -122,7 +122,7 @@ namespace Server.Engines.Quests.Collector
 
 		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
 
-		[Constructable]
+		[Constructible]
 		public Obsidian() : base( 0x1EA7 )
 		{
 			Hue = 0x497;

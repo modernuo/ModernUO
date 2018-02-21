@@ -24,7 +24,7 @@ namespace Server.Factions
 			m.ApplyPoison( m, Poison.Lethal );
 		}
 
-		[Constructable]
+		[Constructible]
 		public FactionGasTrap() : this( null )
 		{
 		}

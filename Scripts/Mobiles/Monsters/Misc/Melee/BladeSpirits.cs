@@ -19,7 +19,7 @@ namespace Server.Mobiles
 			return ( m.Str + m.Skills[SkillName.Tactics].Value ) / Math.Max( GetDistanceToSqrt( m ), 1.0 );
 		}
 
-		[Constructable]
+		[Constructible]
 		public BladeSpirits()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
 		{

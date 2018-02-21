@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		public override bool HasBreath { get { return true; } }
 		public override bool CanBreath { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public UnholySteed()
 			: base( "a dark steed", 0x74, 0x3EA7, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{

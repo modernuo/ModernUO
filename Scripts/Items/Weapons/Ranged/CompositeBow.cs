@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x26C2, 0x26CC )]
+	[FlippableAttribute( 0x26C2, 0x26CC )]
 	public class CompositeBow : BaseRanged
 	{
 		public override int EffectID{ get{ return 0xF42; } }
@@ -32,7 +32,7 @@ namespace Server.Items
 
 		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.ShootBow; } }
 
-		[Constructable]
+		[Constructible]
 		public CompositeBow() : base( 0x26C2 )
 		{
 			Weight = 5.0;

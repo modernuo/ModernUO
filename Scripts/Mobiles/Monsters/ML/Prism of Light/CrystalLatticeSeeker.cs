@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Crystal Lattice Seeker corpse" )]
 	public class CrystalLatticeSeeker : BaseCreature
 	{
-		[Constructable]
+		[Constructible]
 		public CrystalLatticeSeeker()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

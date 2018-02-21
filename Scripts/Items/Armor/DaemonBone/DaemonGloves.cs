@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1450, 0x1455 )]
+	[FlippableAttribute( 0x1450, 0x1455 )]
 	public class DaemonGloves : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 6; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override int LabelNumber{ get{ return 1041373; } } // daemon bone gloves
 
-		[Constructable]
+		[Constructible]
 		public DaemonGloves() : base( 0x1450 )
 		{
 			Weight = 2.0;

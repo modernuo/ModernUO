@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x2D28, 0x2D34 )]
+	[FlippableAttribute( 0x2D28, 0x2D34 )]
 	public class OrnateAxe : BaseAxe
 	{
 		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Disarm; } }
@@ -26,7 +26,7 @@ namespace Server.Items
 		public override int InitMinHits{ get{ return 30; } }
 		public override int InitMaxHits{ get{ return 60; } }
 
-		[Constructable]
+		[Constructible]
 		public OrnateAxe() : base( 0x2D28 )
 		{
 			Weight = 12.0;

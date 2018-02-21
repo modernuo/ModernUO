@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an Abscess corpse" )]
 	public class Abscess : Hydra
 	{
-		[Constructable]
+		[Constructible]
 		public Abscess()
 		{
 			IsParagon = true;

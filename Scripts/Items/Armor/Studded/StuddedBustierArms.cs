@@ -3,7 +3,7 @@ using Server.Items;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1c0c, 0x1c0d )]
+	[FlippableAttribute( 0x1c0c, 0x1c0d )]
 	public class StuddedBustierArms : BaseArmor
 	{
 		public override int BasePhysicalResistance{ get{ return 2; } }
@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override bool AllowMaleWearer{ get{ return false; } }
 
-		[Constructable]
+		[Constructible]
 		public StuddedBustierArms() : base( 0x1C0C )
 		{
 			Weight = 1.0;

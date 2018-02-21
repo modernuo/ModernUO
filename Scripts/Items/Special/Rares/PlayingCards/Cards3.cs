@@ -5,7 +5,7 @@ namespace Server.Items
 	public class Cards3 : Item
 	{
 
-		[Constructable]
+		[Constructible]
 		public Cards3() : base( 0xE15 )
 		{
 			Movable = true;

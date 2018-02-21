@@ -33,7 +33,7 @@ namespace Server.Engines.BulkOrders
 			return SmithRewardCalculator.Instance.ComputeGold( this );
 		}
 
-		[Constructable]
+		[Constructible]
 		public LargeSmithBOD()
 		{
 			LargeBulkEntry[] entries;

@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1BD7, 0x1BDA )]
+	[FlippableAttribute( 0x1BD7, 0x1BDA )]
 	public class Board : Item, ICommodity
 	{
 		private CraftResource m_Resource;
@@ -34,13 +34,13 @@ namespace Server.Items
 
 		bool ICommodity.IsDeedable { get { return true; } }
 
-		[Constructable]
+		[Constructible]
 		public Board()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Board( int amount )
 			: this( CraftResource.RegularWood, amount )
 		{
@@ -51,12 +51,12 @@ namespace Server.Items
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Board( CraftResource resource ) : this( resource, 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public Board( CraftResource resource, int amount )
 			: base( 0x1BD7 )
 		{
@@ -120,13 +120,13 @@ namespace Server.Items
 
 	public class HeartwoodBoard : Board
 	{
-		[Constructable]
+		[Constructible]
 		public HeartwoodBoard()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public HeartwoodBoard( int amount )
 			: base( CraftResource.Heartwood, amount )
 		{
@@ -154,13 +154,13 @@ namespace Server.Items
 
 	public class BloodwoodBoard : Board
 	{
-		[Constructable]
+		[Constructible]
 		public BloodwoodBoard()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public BloodwoodBoard( int amount )
 			: base( CraftResource.Bloodwood, amount )
 		{
@@ -188,13 +188,13 @@ namespace Server.Items
 
 	public class FrostwoodBoard : Board
 	{
-		[Constructable]
+		[Constructible]
 		public FrostwoodBoard()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public FrostwoodBoard( int amount )
 			: base( CraftResource.Frostwood, amount )
 		{
@@ -222,13 +222,13 @@ namespace Server.Items
 
 	public class OakBoard : Board
 	{
-		[Constructable]
+		[Constructible]
 		public OakBoard()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public OakBoard( int amount )
 			: base( CraftResource.OakWood, amount )
 		{
@@ -256,13 +256,13 @@ namespace Server.Items
 
 	public class AshBoard : Board
 	{
-		[Constructable]
+		[Constructible]
 		public AshBoard()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public AshBoard( int amount )
 			: base( CraftResource.AshWood, amount )
 		{
@@ -290,13 +290,13 @@ namespace Server.Items
 
 	public class YewBoard : Board
 	{
-		[Constructable]
+		[Constructible]
 		public YewBoard()
 			: this( 1 )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public YewBoard( int amount )
 			: base( CraftResource.YewWood, amount )
 		{

@@ -6,12 +6,12 @@ namespace Server.Mobiles
 	[CorpseName( "a swamp dragon corpse" )]
 	public class ScaledSwampDragon : BaseMount
 	{
-		[Constructable]
+		[Constructible]
 		public ScaledSwampDragon() : this( "a swamp dragon" )
 		{
 		}
 
-		[Constructable]
+		[Constructible]
 		public ScaledSwampDragon( string name ) : base( name, 0x31F, 0x3EBE, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			SetStr( 201, 300 );

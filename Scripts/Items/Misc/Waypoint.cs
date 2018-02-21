@@ -5,7 +5,7 @@ using Server.Commands;
 
 namespace Server.Items
 {
-	[FlipableAttribute( 0x1f14, 0x1f15, 0x1f16, 0x1f17 )]
+	[FlippableAttribute( 0x1f14, 0x1f15, 0x1f16, 0x1f17 )]
 	public class WayPoint : Item
 	{
 		public static void Initialize()
@@ -26,7 +26,7 @@ namespace Server.Items
 			get { return "AI Way Point"; }
 		}
 
-		[Constructable]
+		[Constructible]
 		public WayPoint() : base( 0x1f14 )
 		{
 			this.Hue = 0x498;
