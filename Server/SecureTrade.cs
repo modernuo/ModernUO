@@ -282,10 +282,10 @@ namespace Server
 				{
 					if (m_From.Mobile.Account != null)
 					{
-						var cur = m_From.Mobile.Account.TotalCurrency;
-						var off = m_From.Plat + (m_From.Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
+						int totalPlat = m_From.Mobile.Account.TotalPlat;
+						int totalGold = m_From.Mobile.Account.TotalGold;
 
-						if (off > cur)
+						if (totalPlat < m_From.Plat || totalGold < m_From.Gold)
 						{
 							allowed = false;
 							m_From.Mobile.SendMessage("You do not have enough currency to complete this trade.");
@@ -294,10 +294,10 @@ namespace Server
 
 					if (m_To.Mobile.Account != null)
 					{
-						var cur = m_To.Mobile.Account.TotalCurrency;
-						var off = m_To.Plat + (m_To.Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
+						int totalPlat = m_To.Mobile.Account.TotalPlat;
+						int totalGold = m_To.Mobile.Account.TotalGold;
 
-						if (off > cur)
+						if (totalPlat < m_To.Plat || totalGold < m_To.Gold)
 						{
 							allowed = false;
 							m_To.Mobile.SendMessage("You do not have enough currency to complete this trade.");

@@ -344,10 +344,10 @@ namespace Server
 						}
 						else
 						{
-							var cur = User.Account.TotalCurrency;
-							var off = _Plat + (_Gold / Math.Max(1.0, AccountGold.CurrencyThreshold));
+							int totalPlat = User.Account.TotalPlat;
+							int totalGold = User.Account.TotalGold;
 
-							if (off > cur)
+							if (totalPlat < _Plat || totalGold < _Gold)
 							{
 								_Plat = User.Account.TotalPlat;
 								_Gold = User.Account.TotalGold;

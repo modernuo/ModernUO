@@ -134,9 +134,8 @@ namespace Server.Items
 			{
 				if (owner.NetState != null && !owner.NetState.NewSecureTrading)
 				{
-					var total = Worth / Math.Max(1.0, Account.CurrencyThreshold);
-					var plat = (int)Math.Truncate(total);
-					var gold = (int)((total - plat) * Account.CurrencyThreshold);
+					int gold;
+					int plat = Math.DivRem(Worth, AccountGold.CurrencyThreshold, out gold);
 
 					tradeInfo.Plat += plat;
 					tradeInfo.Gold += gold;
