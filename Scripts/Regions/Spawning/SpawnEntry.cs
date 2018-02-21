@@ -46,6 +46,7 @@ namespace Server.Regions
 
 		public int ID{ get{ return m_ID; } }
 		public BaseRegion Region{ get{ return m_Region; } }
+		Region ISpawner.Region{ get{ return m_Region; } }
 		public Point3D HomeLocation{ get{ return m_Home; } }
 		public int HomeRange{ get{ return m_Range; } }
 		public Direction Direction{ get{ return m_Direction; } }

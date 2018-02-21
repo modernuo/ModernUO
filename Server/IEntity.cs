@@ -27,6 +27,7 @@ namespace Server
 		Serial Serial{ get; }
 		Point3D Location{ get; }
 		Map Map{ get; }
+		void MoveToWorld(Point3D location, Map map);
 		bool Deleted { get; }
 
 		void Delete();
@@ -103,6 +104,12 @@ namespace Server
 			get {
 				return m_Map;
 			}
+		}
+
+		public virtual void MoveToWorld(Point3D newLocation, Map map)
+		{
+			m_Location = newLocation;
+			m_Map = map;
 		}
 
 		public bool Deleted {

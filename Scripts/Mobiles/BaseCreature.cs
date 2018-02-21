@@ -190,7 +190,8 @@ namespace Server.Mobiles
 		private double	m_dPassiveSpeed;		// Timer speed when not active
 		private double	m_dCurrentSpeed;		// The current speed, lets say it could be changed by something;
 
-		private Point3D m_pHome;				// The home position of the creature, used by some AI
+		private Point3D m_pHome;                // The home position of the creature, used by some AI
+		private Map     m_HomeMap;              // Used by grim reaper and guards that follow across maps!
 		private int		m_iRangeHome = 10;		// The home range of the creature
 
 		List<Type>		m_arSpellAttack;		// List of attack spell/power
@@ -1740,7 +1741,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 18 ); // version
+			writer.Write( (int) 19 ); // version
 
 			writer.Write( (int)m_CurrentAI );
 			writer.Write( (int)m_DefaultAI );
@@ -1859,6 +1860,9 @@ namespace Server.Mobiles
 
 			// Version 18
 			writer.Write( m_CorpseNameOverride );
+
+			// Version 19
+			writer.Write( m_HomeMap );
 		}
 
 		private static double[] m_StandardActiveSpeeds = new double[]
@@ -2082,6 +2086,9 @@ namespace Server.Mobiles
 
 			if ( version >= 18 )
 				m_CorpseNameOverride = reader.ReadString();
+
+			if ( version >= 19 )
+				m_HomeMap = reader.ReadMap();
 
 			if( version <= 14 && m_Paragon && Hue == 0x31 )
 			{
@@ -2603,6 +2610,19 @@ namespace Server.Mobiles
 			set
 			{
 				m_pHome = value;
+			}
+		}
+
+		[CommandProperty(AccessLevel.GameMaster)]
+		public Map HomeMap
+		{
+			get
+			{
+				return m_HomeMap;
+			}
+			set
+			{
+				m_HomeMap = value;
 			}
 		}
 

@@ -74,8 +74,6 @@ namespace Server.Commands
 			Register( "Light", AccessLevel.Counselor, new CommandEventHandler( Light_OnCommand ) );
 			Register( "Stats", AccessLevel.Counselor, new CommandEventHandler( Stats_OnCommand ) );
 
-			Register( "ReplaceBankers", AccessLevel.Administrator, new CommandEventHandler( ReplaceBankers_OnCommand ) );
-
 			Register( "SpeedBoost", AccessLevel.Counselor, new CommandEventHandler( SpeedBoost_OnCommand ) );
 		}
 
@@ -331,46 +329,6 @@ namespace Server.Commands
 			{
 				from.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( GetFollowers_OnTarget ) );
 				from.SendMessage( "That is not a player. Try again." );
-			}
-		}
-
-		public static void ReplaceBankers_OnCommand( CommandEventArgs e )
-		{
-			List<Mobile> list = new List<Mobile>();
-
-			foreach ( Mobile m in World.Mobiles.Values )
-				if ( (m is Banker) && !(m is BaseCreature) )
-					list.Add( m );
-
-			foreach ( Mobile m in list )
-			{
-				Map map = m.Map;
-
-				if ( map != null )
-				{
-					bool hasBankerSpawner = false;
-
-					foreach ( Item item in m.GetItemsInRange( 0 ) )
-					{
-						if ( item is Spawner )
-						{
-							Spawner spawner = (Spawner)item;
-
-							for ( int i = 0; !hasBankerSpawner && i < spawner.SpawnNames.Count; ++i )
-								hasBankerSpawner = Insensitive.Equals( (string)spawner.SpawnNames[i], "banker" );
-
-							if ( hasBankerSpawner )
-								break;
-						}
-					}
-
-					if ( !hasBankerSpawner )
-					{
-						Spawner spawner = new Spawner( 1, 1, 5, 0, 4, "banker" );
-
-						spawner.MoveToWorld( m.Location, map );
-					}
-				}
 			}
 		}
 

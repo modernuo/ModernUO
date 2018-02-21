@@ -112,7 +112,7 @@ namespace Server.Regions
 
 		public override ISpawnable Spawn( SpawnEntry entry )
 		{
-			BaseRegion region = entry.Region;
+			Region region = entry.Region;
 			Map map = region.Map;
 
 			Point3D loc = entry.RandomSpawnLocation( this.Height, this.Land, this.Water );
@@ -184,6 +184,7 @@ namespace Server.Regions
 			if ( creature != null )
 			{
 				creature.Home = entry.HomeLocation;
+				creature.HomeMap = map;
 				creature.RangeHome = entry.HomeRange;
 			}
 

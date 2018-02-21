@@ -63,6 +63,7 @@ namespace Server
 		public abstract Rectangle3D ReadRect3D();
 		public abstract Map ReadMap();
 
+		public abstract IEntity ReadEntity();
 		public abstract Item ReadItem();
 		public abstract Mobile ReadMobile();
 		public abstract BaseGuild ReadGuild();
@@ -134,6 +135,7 @@ namespace Server
 		public abstract void Write( Rectangle3D value );
 		public abstract void Write( Map value );
 
+		public abstract void WriteEntity( IEntity value );
 		public abstract void Write( Item value );
 		public abstract void Write( Mobile value );
 		public abstract void Write( BaseGuild value );
@@ -189,7 +191,7 @@ namespace Server
 		public abstract void WriteGuildSet<T>( HashSet<T> set ) where T : BaseGuild;
 		public abstract void WriteGuildSet<T>( HashSet<T> set, bool tidy ) where T : BaseGuild;
 
-		// Compiler won't notice their 'where' to differentiate the generic methods.
+		// Compiler won't notice there 'where' to differentiate the generic methods.
 	}
 
 	public class BinaryFileWriter : GenericWriter
@@ -589,6 +591,14 @@ namespace Server
 				Write( (byte)value.RaceIndex );
 			else
 				Write( (byte)0xFF );
+		}
+
+		public override void WriteEntity( IEntity value )
+		{
+			if ( value == null || value.Deleted )
+				Write( Serial.MinusOne );
+			else
+				Write( value.Serial );
 		}
 
 		public override void Write( Item value )
@@ -1124,6 +1134,16 @@ namespace Server
 		public override Map ReadMap()
 		{
 			return Map.Maps[ReadByte()];
+		}
+
+		public override IEntity ReadEntity()
+		{
+			Serial serial = ReadInt();
+			IEntity entity = World.FindEntity( serial );
+			if ( entity == null )
+				return new Entity( serial, new Point3D( 0, 0, 0 ), Map.Internal );
+			else
+				return entity;
 		}
 
 		public override Item ReadItem()
@@ -1723,6 +1743,14 @@ namespace Server
 				Write( (byte)value.RaceIndex );
 			else
 				Write( (byte)0xFF );
+		}
+
+		public override void WriteEntity( IEntity value )
+		{
+			if ( value == null || value.Deleted )
+				Write( Serial.MinusOne );
+			else
+				Write( value.Serial );
 		}
 
 		public override void Write( Item value )

@@ -4,6 +4,7 @@ using Server;
 
 namespace Server.Regions
 {
+	[TypeAlias( "Server.Regions.SpawnPersistance" )]
 	public class SpawnPersistence : Item
 	{
 		private static SpawnPersistence m_Instance;

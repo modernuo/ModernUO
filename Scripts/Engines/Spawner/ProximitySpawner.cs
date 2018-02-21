@@ -10,21 +10,21 @@ namespace Server.Mobiles
 		private TextDefinition m_SpawnMessage;
 		private bool m_InstantFlag;
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Developer )]
 		public int TriggerRange
 		{
 			get { return m_TriggerRange; }
 			set { m_TriggerRange = value; }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Developer )]
 		public TextDefinition SpawnMessage
 		{
 			get { return m_SpawnMessage; }
 			set { m_SpawnMessage = value; }
 		}
 
-		[CommandProperty( AccessLevel.GameMaster )]
+		[CommandProperty( AccessLevel.Developer )]
 		public bool InstantFlag
 		{
 			get { return m_InstantFlag; }
@@ -49,7 +49,7 @@ namespace Server.Mobiles
 		}
 
 		[Constructible]
-		public ProximitySpawner( int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName, int triggerRange, string spawnMessage, bool instantFlag )
+		public ProximitySpawner( int amount, int minDelay, int maxDelay, int team, int homeRange, int triggerRange, string spawnMessage, bool instantFlag, string spawnName )
 			: base( amount, minDelay, maxDelay, team, homeRange, spawnName )
 		{
 			m_TriggerRange = triggerRange;
@@ -57,13 +57,13 @@ namespace Server.Mobiles
 			m_InstantFlag = instantFlag;
 		}
 
-		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, List<string> spawnNames )
-			: base( amount, minDelay, maxDelay, team, homeRange, spawnNames )
+		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, params string[] spawnedNames )
+			: base( amount, minDelay, maxDelay, team, homeRange, spawnedNames )
 		{
 		}
 
-		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, List<string> spawnNames, int triggerRange, TextDefinition spawnMessage, bool instantFlag )
-			: base( amount, minDelay, maxDelay, team, homeRange, spawnNames )
+		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, int triggerRange, TextDefinition spawnMessage, bool instantFlag, params string[] spawnedNames )
+			: base( amount, minDelay, maxDelay, team, homeRange, spawnedNames )
 		{
 			m_TriggerRange = triggerRange;
 			m_SpawnMessage = spawnMessage;
@@ -85,23 +85,9 @@ namespace Server.Mobiles
 
 		public override void Respawn()
 		{
-			RemoveSpawned();
+			RemoveSpawns();
 
 			End = DateTime.UtcNow;
-		}
-
-		public override void Spawn()
-		{
-			for ( int i = 0; i < SpawnNamesCount; ++i )
-			{
-				for ( int j = 0; j < Count; ++j )
-					Spawn( i );
-			}
-		}
-
-		public override bool CheckSpawnerFull()
-		{
-			return false;
 		}
 
 		public override bool HandlesOnMovement { get { return true; } }
@@ -110,17 +96,13 @@ namespace Server.Mobiles
 		{
 			if ( m is BaseCreature )
 			{
-				BaseCreature bc = (BaseCreature)m;
+				BaseCreature bc = m as BaseCreature;
 
-				if ( !bc.Controlled && !bc.Summoned )
+				if ( bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned) )
 					return false;
 			}
-			else if ( !m.Player )
-			{
-				return false;
-			}
 
-			return ( m.Alive && !m.IsDeadBondedPet && m.CanBeDamaged() && !m.Hidden );
+			return m.AccessLevel == AccessLevel.Player && ( m.Player || ( m.Alive && !m.Hidden && m.CanBeDamaged() ) );
 		}
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
@@ -137,11 +119,9 @@ namespace Server.Mobiles
 
 				if ( m_InstantFlag )
 				{
-					foreach ( ISpawnable spawned in Spawned )
-					{
+					foreach ( ISpawnable spawned in Spawned.Keys )
 						if ( spawned is Mobile )
 							((Mobile)spawned).Combatant = m;
-					}
 				}
 			}
 		}
@@ -155,7 +135,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.WriteEncodedInt( (int) 0 ); // version
 
 			writer.Write( m_TriggerRange );
 			TextDefinition.Serialize( writer, m_SpawnMessage );
@@ -166,7 +146,7 @@ namespace Server.Mobiles
 		{
 			base.Deserialize( reader );
 
-			int version = reader.ReadInt();
+			int version = reader.ReadEncodedInt();
 
 			m_TriggerRange = reader.ReadInt();
 			m_SpawnMessage = TextDefinition.Deserialize( reader );

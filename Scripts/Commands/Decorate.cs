@@ -454,7 +454,7 @@ namespace Server.Commands
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							sp.SpawnNames.Add( m_Params[i].Substring( ++indexOf ) );
+							sp.AddEntry( m_Params[i].Substring( ++indexOf ), 100, 1 );
 					}
 					else if ( m_Params[i].StartsWith( "MinDelay" ) )
 					{
@@ -482,7 +482,11 @@ namespace Server.Commands
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
+						{
 							sp.Count = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
+							for ( int se = 0;se < sp.Entries.Count; se++ )
+								sp.Entries[se].SpawnedMaxCount = sp.Count;
+						}
 					}
 					else if ( m_Params[i].StartsWith( "Team" ) )
 					{
