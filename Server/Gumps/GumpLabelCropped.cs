@@ -112,14 +112,14 @@ namespace Server.Gumps
 			m_Text = text;
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			return String.Format( "{{ croppedtext {0} {1} {2} {3} {4} {5} }}", m_X, m_Y, m_Width, m_Height, m_Hue, Parent.Intern( m_Text ) );
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "croppedtext" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_LayoutName );
 			disp.AppendLayout( m_X );

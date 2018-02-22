@@ -85,14 +85,14 @@ namespace Server.Gumps
 			}
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			return String.Format( "{{ text {0} {1} {2} {3} }}", m_X, m_Y, m_Hue, Parent.Intern( m_Text ) );
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "text" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_LayoutName );
 			disp.AppendLayout( m_X );

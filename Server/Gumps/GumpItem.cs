@@ -89,7 +89,7 @@ namespace Server.Gumps
 			}
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			if ( m_Hue == 0 )
 				return String.Format( "{{ tilepic {0} {1} {2} }}", m_X, m_Y, m_ItemID );
@@ -100,7 +100,7 @@ namespace Server.Gumps
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "tilepic" );
 		private static byte[] m_LayoutNameHue = Gump.StringToBuffer( "tilepichue" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_Hue == 0 ? m_LayoutName : m_LayoutNameHue );
 			disp.AppendLayout( m_X );

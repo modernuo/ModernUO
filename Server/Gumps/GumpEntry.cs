@@ -36,11 +36,6 @@ namespace Server.Gumps
 			if ( var != val )
 			{
 				var = val;
-
-				if ( m_Parent != null )
-				{
-					m_Parent.Invalidate();
-				}
 			}
 		}
 
@@ -49,11 +44,6 @@ namespace Server.Gumps
 			if ( var != val )
 			{
 				var = val;
-
-				if ( m_Parent != null )
-				{
-					m_Parent.Invalidate();
-				}
 			}
 		}
 
@@ -62,32 +52,39 @@ namespace Server.Gumps
 			if ( var != val )
 			{
 				var = val;
-
-				if ( m_Parent != null )
-				{
-					m_Parent.Invalidate();
-				}
 			}
 		}
 
-		public Gump Parent {
-			get {
+		protected void Delta( ref object[] var, object[] val )
+		{
+			if ( var != val )
+			{
+				var = val;
+			}
+		}
+
+		public Gump Parent
+		{
+			get
+			{
 				return m_Parent;
 			}
-			set {
-				if (m_Parent != value) {
-					if (m_Parent != null)
-						m_Parent.Remove(this);
+			set
+			{
+				if ( m_Parent != value )
+				{
+					if ( m_Parent != null )
+						m_Parent.Remove( this );
 
 					m_Parent = value;
 
-					if (m_Parent != null)
-						m_Parent.Add(this);
+					if ( m_Parent != null )
+						m_Parent.Add( this );
 				}
 			}
 		}
 
-		public abstract string Compile();
-		public abstract void AppendTo( IGumpWriter disp );
+		public abstract string Compile( NetState ns );
+		public abstract void AppendTo( NetState ns, IGumpWriter disp );
 	}
 }

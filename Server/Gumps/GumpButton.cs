@@ -142,14 +142,14 @@ namespace Server.Gumps
 			}
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			return String.Format( "{{ button {0} {1} {2} {3} {4} {5} {6} }}", m_X, m_Y, m_ID1, m_ID2, (int)m_Type, m_Param, m_ButtonID );
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "button" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_LayoutName );
 			disp.AppendLayout( m_X );

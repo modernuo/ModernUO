@@ -211,7 +211,7 @@ namespace Server.Gumps
 			m_Type = GumpHtmlLocalizedType.Args;
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			switch ( m_Type )
 			{
@@ -230,7 +230,7 @@ namespace Server.Gumps
 		private static byte[] m_LayoutNameColor = Gump.StringToBuffer( "xmfhtmlgumpcolor" );
 		private static byte[] m_LayoutNameArgs = Gump.StringToBuffer( "xmfhtmltok" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			switch ( m_Type )
 			{

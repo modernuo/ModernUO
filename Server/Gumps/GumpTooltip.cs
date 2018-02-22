@@ -44,14 +44,14 @@ namespace Server.Gumps
 			}
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			return String.Format( "{{ tooltip {0} }}", m_Number );
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "tooltip" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_LayoutName );
 			disp.AppendLayout( m_Number );

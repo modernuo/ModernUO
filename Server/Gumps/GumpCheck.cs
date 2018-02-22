@@ -112,14 +112,14 @@ namespace Server.Gumps
 			m_SwitchID = switchID;
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			return String.Format( "{{ checkbox {0} {1} {2} {3} {4} {5} }}", m_X, m_Y, m_ID1, m_ID2, m_InitialState ? 1 : 0, m_SwitchID );
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "checkbox" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_LayoutName );
 			disp.AppendLayout( m_X );

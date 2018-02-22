@@ -407,7 +407,7 @@ namespace Server.Gumps
 				e = m_Entries[i];
 
 				disp.AppendLayout( m_BeginLayout );
-				e.AppendTo( disp );
+				e.AppendTo( ns, disp );
 				disp.AppendLayout( m_EndLayout );
 			}
 
@@ -425,7 +425,8 @@ namespace Server.Gumps
 		{
 		}
 
-		public virtual void OnServerClose( NetState owner ) {
+		public virtual void OnServerClose( NetState owner )
+		{
 		}
 	}
 }

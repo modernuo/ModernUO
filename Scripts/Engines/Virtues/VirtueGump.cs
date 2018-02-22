@@ -144,7 +144,7 @@ namespace Server
 			if( value < 10000 )
 				vl = 0;
 			else if( value >= 20000 && index == 5)
- 				vl = 2;
+				vl = 2;
 			else if( value >= 21000 && index != 1)
 				vl = 2;
 			else if( value >= 22000 && index == 1)
@@ -162,16 +162,16 @@ namespace Server
 			{
 			}
 
-			public override string Compile()
+			public override string Compile( NetState ns )
 			{
 				return String.Format( "{{ gumppic {0} {1} {2} hue={3} class=VirtueGumpItem }}", X, Y, GumpID, Hue );
 			}
 
 			private static byte[] m_Class = Gump.StringToBuffer( " class=VirtueGumpItem" );
 
-			public override void AppendTo( IGumpWriter disp )
+			public override void AppendTo( NetState ns, IGumpWriter disp )
 			{
-				base.AppendTo( disp );
+				base.AppendTo( ns, disp );
 
 				disp.AppendLayout( m_Class );
 			}

@@ -214,7 +214,7 @@ namespace Server.Gumps
 			}
 		}
 
-		public override string Compile()
+		public override string Compile( NetState ns )
 		{
 			if( m_LocalizedTooltip > 0 )
 				return String.Format( "{{ buttontileart {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} }}{{ tooltip {11} }}", m_X, m_Y, m_ID1, m_ID2, (int)m_Type, m_Param, m_ButtonID, m_ItemID, m_Hue, m_Width, m_Height, m_LocalizedTooltip );
@@ -225,7 +225,7 @@ namespace Server.Gumps
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "buttontileart" );
 		private static byte[] m_LayoutTooltip = Gump.StringToBuffer( " }{ tooltip" );
 
-		public override void AppendTo( IGumpWriter disp )
+		public override void AppendTo( NetState ns, IGumpWriter disp )
 		{
 			disp.AppendLayout( m_LayoutName );
 			disp.AppendLayout( m_X );
