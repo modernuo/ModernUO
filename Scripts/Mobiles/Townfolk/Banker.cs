@@ -75,6 +75,7 @@ namespace Server.Mobiles
 				checks = bank.FindItemsByType(typeof(BankCheck));
 
 				balance += gold.OfType<Gold>().Aggregate(0L, (c, t) => c + t.Amount);
+				if (balance >= Int32.MaxValue) { return Int32.MaxValue; }
 				balance += checks.OfType<BankCheck>().Aggregate(0L, (c, t) => c + t.Worth);
 			}
 			else
