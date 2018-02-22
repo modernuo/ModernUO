@@ -71,45 +71,40 @@ namespace Server.Items
 			{
 				if ( m_Item.Deleted ) return;
 
+				Item targetItem = targeted as Item;
+				if ( targetItem == null || targetItem.Deleted ) return;
+
+				m_Item.Consume();
+
 				if ( targeted is Eggs )
 				{
-					m_Item.Delete();
-
-					((Eggs)targeted).Consume();
+					targetItem.Consume();
 
 					from.AddToBackpack( new UnbakedQuiche() );
 					from.AddToBackpack( new Eggshells() );
 				}
 				else if ( targeted is CheeseWheel )
 				{
-					m_Item.Delete();
-
-					((CheeseWheel)targeted).Consume();
+					targetItem.Consume();
 
 					from.AddToBackpack( new CheesePizza() );
 				}
 				else if ( targeted is Sausage )
 				{
-					m_Item.Delete();
-
-					((Sausage)targeted).Consume();
+					targetItem.Consume();
 
 					from.AddToBackpack( new SausagePizza() );
 				}
 				else if ( targeted is Apple )
 				{
-					m_Item.Delete();
-
-					((Apple)targeted).Consume();
+					targetItem.Consume();
 
 					from.AddToBackpack( new UnbakedApplePie() );
 				}
 
 				else if ( targeted is Peach )
 				{
-					m_Item.Delete();
-
-					((Peach)targeted).Consume();
+					targetItem.Consume();
 
 					from.AddToBackpack( new UnbakedPeachCobbler() );
 				}
@@ -174,9 +169,10 @@ namespace Server.Items
 			{
 				if ( m_Item.Deleted ) return;
 
+				m_Item.Consume();
+
 				if ( targeted is BowlFlour )
 				{
-					m_Item.Delete();
 					((BowlFlour)targeted).Delete();
 
 					from.AddToBackpack( new CakeMix() );
@@ -184,7 +180,6 @@ namespace Server.Items
 				else if ( targeted is Campfire )
 				{
 					from.PlaySound( 0x225 );
-					m_Item.Delete();
 					InternalTimer t = new InternalTimer( from, (Campfire)targeted );
 					t.Start();
 				}
@@ -273,9 +268,10 @@ namespace Server.Items
 			{
 				if ( m_Item.Deleted ) return;
 
+				m_Item.Consume();
+
 				if ( targeted is Dough )
 				{
-					m_Item.Delete();
 					((Dough)targeted).Consume();
 
 					from.AddToBackpack( new SweetDough() );
@@ -283,7 +279,6 @@ namespace Server.Items
 				
 				if (targeted is BowlFlour)
 				{
-					m_Item.Consume();
 					((BowlFlour)targeted).Delete();
 
 					from.AddToBackpack( new CookieMix() );
@@ -420,12 +415,7 @@ namespace Server.Items
 			get{ return m_Quantity; }
 			set
 			{
-				if ( value < 0 )
-					value = 0;
-				else if ( value > 20 )
-					value = 20;
-
-				m_Quantity = value;
+				m_Quantity = Math.Min(20, Math.Max(0, value));
 
 				if ( m_Quantity == 0 )
 					Delete();

@@ -132,7 +132,9 @@ namespace Server.Items
 		}
 
 		public virtual Rectangle2D Bounds{ get{ return ContainerData.Bounds; } }
+		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int DefaultGumpID{ get{ return ContainerData.GumpID; } }
+		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int DefaultDropSound{ get{ return ContainerData.DropSound; } }
 
 		public virtual int DefaultMaxItems{ get{ return m_GlobalMaxItems; } }
@@ -190,7 +192,7 @@ namespace Server.Items
 
 		public virtual bool CheckHold( Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight )
 		{
-			if ( m.AccessLevel < AccessLevel.GameMaster )
+			if ( m != null && m.AccessLevel < AccessLevel.GameMaster )
 			{
 				if ( IsDecoContainer )
 				{
@@ -209,17 +211,13 @@ namespace Server.Items
 
 					return false;
 				}
-				else
+				
+				if ( MaxWeight != 0 && (this.TotalWeight + plusWeight + item.TotalWeight + item.PileWeight) > MaxWeight )
 				{
-					int maxWeight = this.MaxWeight;
+					if ( message )
+						SendFullWeightMessage( m, item );
 
-					if ( maxWeight != 0 && (this.TotalWeight + plusWeight + item.TotalWeight + item.PileWeight) > maxWeight )
-					{
-						if ( message )
-							SendFullWeightMessage( m, item );
-
-						return false;
-					}
+					return false;
 				}
 			}
 
@@ -356,7 +354,7 @@ namespace Server.Items
 							if ( callback != null )
 								callback( item, theirAmount );
 
-							item.Delete();
+							item.Consume( theirAmount );
 							need -= theirAmount;
 						}
 						else
@@ -456,7 +454,7 @@ namespace Server.Items
 								if ( callback != null )
 									callback( item, theirAmount );
 
-								item.Delete();
+								item.Consume( theirAmount );
 								need -= theirAmount;
 							}
 							else
@@ -556,7 +554,7 @@ namespace Server.Items
 								if ( callback != null )
 									callback( item, theirAmount );
 
-								item.Delete();
+								item.Consume( theirAmount );
 								need -= theirAmount;
 							}
 							else
@@ -621,7 +619,7 @@ namespace Server.Items
 						if ( callback != null )
 							callback( item, theirAmount );
 
-						item.Delete();
+						item.Consume( theirAmount );
 						need -= theirAmount;
 					}
 					else
@@ -682,7 +680,7 @@ namespace Server.Items
 						if ( callback != null )
 							callback( item, theirAmount );
 
-						item.Delete();
+						item.Consume( theirAmount );
 						need -= theirAmount;
 					}
 					else
@@ -736,7 +734,7 @@ namespace Server.Items
 						if( callback != null )
 							callback( item, theirAmount );
 
-						item.Delete();
+						item.Consume( theirAmount );
 						need -= theirAmount;
 					}
 					else
@@ -1164,7 +1162,7 @@ namespace Server.Items
 
 		public List<T> FindItemsByType<T>( Predicate<T> predicate ) where T : Item
 		{
-			return FindItemsByType<T>( true, predicate ); 
+			return FindItemsByType<T>( true, predicate );
 		}
 
 		public List<T> FindItemsByType<T>( bool recurse, Predicate<T> predicate ) where T : Item
@@ -1466,10 +1464,7 @@ namespace Server.Items
 
 		public virtual bool OnStackAttempt( Mobile from, Item stack, Item dropped )
 		{
-			if ( !CheckHold( from, dropped, true, false ) )
-				return false;
-
-			return stack.StackWith( from, dropped );
+			return CheckHold( from, dropped, true, false ) && stack.StackWith( from, dropped );
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
@@ -1488,22 +1483,94 @@ namespace Server.Items
 
 		public virtual bool TryDropItem( Mobile from, Item dropped, bool sendFullMessage )
 		{
-			if ( !CheckHold( from, dropped, sendFullMessage, true ) )
-				return false;
+			return TryDropItem( from, dropped, sendFullMessage, false );
+		}
 
+		public virtual bool TryDropItem( Mobile from, Item dropped, bool sendFullMessage, bool playSound )
+		{
 			List<Item> list = this.Items;
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
 				Item item = list[i];
 
-				if ( !(item is Container) && item.StackWith( from, dropped, false ) )
+				if ( !(item is Container) && CheckHold( from, dropped, false, false ) && item.StackWith( from, dropped, playSound ) )
 					return true;
 			}
 
-			DropItem( dropped );
+			if ( CheckHold( from, dropped, sendFullMessage, true ) )
+			{
+				DropItem( dropped );
+				return true;
+			}
 
-			return true;
+			return false;
+		}
+
+		public virtual bool TryDropItems( Mobile from, bool sendFullMessage, params Item[] droppedItems )
+		{
+			List<Item> dropItems = new List<Item>();
+			List<ItemStackEntry> stackItems = new List<ItemStackEntry>();
+
+			int extraItems = 0;
+			int extraWeight = 0;
+
+//			from.SendMessage( String.Format( "There are {0} items in this container.", this.Items.Count ) );
+//			from.SendMessage( String.Format( "There are {0} items being dropped into this container.", droppedItems.Length ) );
+
+			for ( int i = 0; i < droppedItems.Length; i++ )
+			{
+				Item dropped = droppedItems[i];
+
+				List<Item> list = this.Items;
+
+				bool stacked = false;
+
+				for ( int j = 0; j < list.Count; ++j )
+				{
+					Item item = list[j];
+
+					if ( !(item is Container) && CheckHold( from, dropped, false, false, 0, extraWeight ) && item.CanStackWith( dropped ) )
+					{
+						stackItems.Add( new ItemStackEntry( item, dropped ) );
+						extraWeight += (int)Math.Ceiling( item.Weight * (item.Amount + dropped.Amount) ) - item.PileWeight; //extra weight delta, do not need TotalWeight as we do not have hybrid stackable container types
+						stacked = true;
+						break;
+					}
+				}
+
+				if ( !stacked && CheckHold( from, dropped, false, true, extraItems, extraWeight ) )
+				{
+					dropItems.Add( dropped );
+					extraItems++;
+					extraWeight += dropped.TotalWeight + dropped.PileWeight;
+				}
+			}
+
+			if ( dropItems.Count + stackItems.Count == droppedItems.Length ) //All good
+			{
+				for ( int i = 0; i < dropItems.Count; i++ )
+					DropItem( dropItems[i] );
+
+				for ( int i = 0; i < stackItems.Count; i++ )
+					stackItems[i].m_StackItem.StackWith( from, stackItems[i].m_DropItem, false );
+
+				return true;
+			}
+
+			return false;
+		}
+
+		private struct ItemStackEntry
+		{
+			public Item m_StackItem;
+			public Item m_DropItem;
+
+			public ItemStackEntry( Item stack, Item drop )
+			{
+				m_StackItem = stack;
+				m_DropItem = drop;
+			}
 		}
 
 		public virtual void Destroy()
@@ -1582,13 +1649,13 @@ namespace Server.Items
 
 		public virtual bool CheckContentDisplay( Mobile from )
 		{
-			if ( !DisplaysContent )
-				return false;
+			if ( DisplaysContent )
+			{
+				object root = this.RootParent;
 
-			object root = this.RootParent;
-
-			if ( root == null || root is Item || root == from || from.AccessLevel > AccessLevel.Player )
-				return true;
+				if ( root == null || root is Item || root == from || from.AccessLevel > AccessLevel.Player )
+					return true;
+			}
 
 			return false;
 		}
@@ -1598,8 +1665,8 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			if ( CheckContentDisplay( from ) )
-				LabelTo(from, "({0} items, {1} stones)", TotalItems, TotalWeight);
-				//LabelTo(from, 1050044, String.Format("{0}\t{1}", TotalItems, TotalWeight)); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+				LabelTo( from, "({0} item{2}, {1} stones)", TotalItems, TotalWeight, TotalItems != 1 ? "s" : String.Empty );
+				//LabelTo( from, 1050044, String.Format( "{0}\t{1}", TotalItems.ToString(), TotalWeight.ToString() ) );
 		}
 
 		private List<Mobile> m_Openers;
@@ -1625,25 +1692,22 @@ namespace Server.Items
 
 			NetState ns = to.NetState;
 
-			if ( ns == null )
-				return;
-
-			if ( ns.HighSeas )
-				to.Send( new ContainerDisplayHS( this ) );
-			else
-				to.Send( new ContainerDisplay( this ) );
-			
-			if ( ns.ContainerGridLines )
-				to.Send( new ContainerContent6017( to, this ) );
-			else
-				to.Send( new ContainerContent( to, this ) );
-
-			if ( ObjectPropertyList.Enabled )
+			if ( ns != null )
 			{
-				List<Item> items = this.Items;
+				if ( ns.HighSeas )
+					to.Send( new ContainerDisplayHS( this ) );
+				else
+					to.Send( new ContainerDisplay( this ) );
 
-				for ( int i = 0; i < items.Count; ++i )
-					to.Send( items[i].OPLPacket );
+				SendContentTo( ns );
+
+				if ( ObjectPropertyList.Enabled )
+				{
+					List<Item> items = this.Items;
+
+					for ( int i = 0; i < items.Count; ++i )
+						to.Send( items[i].OPLPacket );
+				}
 			}
 		}
 
@@ -1663,9 +1727,7 @@ namespace Server.Items
 						Mobile mob = m_Openers[i];
 
 						if ( mob == opener )
-						{
 							contains = true;
-						}
 						else
 						{
 							int range = GetUpdateRange( mob );
@@ -1679,26 +1741,30 @@ namespace Server.Items
 				if ( !contains )
 				{
 					if ( m_Openers == null )
-					{
 						m_Openers = new List<Mobile>();
-					}
 
 					m_Openers.Add( opener );
 				}
 				else if ( m_Openers != null && m_Openers.Count == 0 )
-				{
 					m_Openers = null;
-				}
 			}
+		}
+
+		public virtual void SendContentTo( NetState state )
+		{
+			if ( state != null && state.ContainerGridLines )
+				state.Send( new ContainerContent6017( state.Mobile, this ) );
+			else
+				state.Send( new ContainerContent( state.Mobile, this ) );
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
 
-			if( DisplaysContent )//CheckContentDisplay( from ) )
+			if ( DisplaysContent )//CheckContentDisplay( from ) )
 			{
-				if( Core.ML )
+				if ( Core.ML )
 				{
 					if( ParentsContain<BankBox>() )	//Root Parent is the Mobile.  Parent could be another containter.
 						list.Add( 1073841, "{0}\t{1}\t{2}", TotalItems, MaxItems, TotalWeight ); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
@@ -1708,9 +1774,7 @@ namespace Server.Items
 					//TODO: Where do the other clilocs come into play? 1073839 & 1073840?
 				}
 				else
-				{
 					list.Add( 1050044, "{0}\t{1}", TotalItems, TotalWeight ); // ~1_COUNT~ items, ~2_WEIGHT~ stones
-				}
 			}
 		}
 

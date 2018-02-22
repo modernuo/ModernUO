@@ -96,6 +96,10 @@ namespace Server.Items
 		public BaseOre( Serial serial ) : base( serial )
 		{
 		}
+		public override bool CanStackWith(Item dropped)
+		{
+			return dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.Hue == Hue && dropped.Name == Name && (dropped.Amount + Amount) <= 60000 && dropped != this;
+		}
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{

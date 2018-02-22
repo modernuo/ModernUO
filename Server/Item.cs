@@ -1525,6 +1525,11 @@ namespace Server
 			}
 		}
 
+		public virtual bool CanStackWith( Item dropped )
+		{
+			return dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.ItemID == ItemID && dropped.Hue == Hue && dropped.Name == Name && (dropped.Amount + Amount) <= 60000 && dropped != this;
+		}
+
 		public bool StackWith( Mobile from, Item dropped )
 		{
 			return StackWith( from, dropped, true );
@@ -1532,7 +1537,7 @@ namespace Server
 
 		public virtual bool StackWith( Mobile from, Item dropped, bool playSound )
 		{
-			if ( dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.ItemID == ItemID && dropped.Hue == Hue && dropped.Name == Name && (dropped.Amount + Amount) <= 60000 && dropped != this && !dropped.Nontransferable && !Nontransferable )
+			if ( CanStackWith( dropped ) )
 			{
 				if ( m_LootType != dropped.m_LootType )
 					m_LootType = LootType.Regular;
@@ -1558,10 +1563,19 @@ namespace Server
 
 		public virtual bool OnDragDrop( Mobile from, Item dropped )
 		{
+			bool success = false;
 			if ( Parent is Container )
-				return ((Container)Parent).OnStackAttempt( from, this, dropped );
+				success = ((Container)Parent).OnStackAttempt( from, this, dropped );
+			else
+				success = StackWith( from, dropped );
 
-			return StackWith( from, dropped );
+			if ( success && Spawner != null )
+			{
+				Spawner.Remove( this );
+				Spawner = null;
+			}
+
+			return success;
 		}
 
 		public Rectangle2D GetGraphicBounds()
