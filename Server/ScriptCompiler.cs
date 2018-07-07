@@ -80,7 +80,9 @@ namespace Server
 
 		public static string GetCompilerOptions( bool debug )
 		{
-			StringBuilder sb = null;
+			StringBuilder sb = null;			
+
+			AppendCompilerOption( ref sb, "/unsafe" );
 
 			if( !debug )
 				AppendCompilerOption( ref sb, "/optimize" );
