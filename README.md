@@ -7,9 +7,15 @@ runuo
 
 RunUO Git Repository
 
+*** 
+RunUO is no longer officially supported by a core team.
+
+If you wish to find support in a wider UO development commuity, visit [ServUO - Ultima Online Emulation](http://www.servuo.com)
+***
+
 Typical Windows Build
 
-PS C:\runuo> C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc /optimize /unsafe /t:exe /out:RunUO.exe /win32icon:Server\runuo.ico /d:NEWTIMERS /d:NEWPARENT /reference:System.Drawing /recurse:Server\\*.cs
+PS C:\runuo> C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc /optimize /unsafe /t:exe /out:RunUO.exe /win32icon:Server\runuo.ico /d:NEWTIMERS /d:NEWPARENT /recurse:Server\\*.cs
 
 
 Typical Linux Build (MONO)
@@ -25,4 +31,3 @@ Latest Razor builds can be found at https://github.com/msturgill/razor/releases/
 
 Latest UOSteam builds (previously AssistUO) can be found at http://uosteam.com
 
-IRC: chat.freenode.net #runuo

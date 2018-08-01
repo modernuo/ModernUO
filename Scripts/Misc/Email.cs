@@ -24,7 +24,11 @@ namespace Server.Misc
 
 		public static readonly string EmailServer = null;
 		public static readonly int EmailPort = 25;
+
 		public static readonly string FromAddress = null;
+		public static readonly string EmailUsername = null;
+		public static readonly string EmailPassword = null;
+
 
 		public static readonly string CrashAddresses = null;
 		public static readonly string SpeechLogPageAddresses = null;
@@ -44,7 +48,13 @@ namespace Server.Misc
 		public static void Configure()
 		{
 			if ( EmailServer != null )
+			{
 				_Client = new SmtpClient( EmailServer, EmailPort );
+				if ( EmailUsername != null )
+				{
+					_Client.Credentials = new System.Net.NetworkCredential( EmailUsername, EmailPassword );
+				}
+			}
 		}
 
 		public static bool Send( MailMessage message )
