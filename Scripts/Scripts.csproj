@@ -3299,6 +3299,7 @@
       <Name>Server</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
