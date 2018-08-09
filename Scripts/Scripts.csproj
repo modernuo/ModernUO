@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Output\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NEWTIMERS, NEWPARENT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NEWTIMERS;NEWPARENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -26,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Output\</OutputPath>
-    <DefineConstants>TRACE;NEWTIMERS, NEWPARENT</DefineConstants>
+    <DefineConstants>TRACE;NEWTIMERS;NEWPARENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -37,7 +37,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>Output\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NEWTIMERS, NEWPARENT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NEWTIMERS;NEWPARENT</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>Output\</OutputPath>
-    <DefineConstants>TRACE;NEWTIMERS, NEWPARENT</DefineConstants>
+    <DefineConstants>TRACE;NEWTIMERS;NEWPARENT</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -55,14 +55,12 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounting\AccessRestrictions.cs" />
@@ -810,17 +808,17 @@
     <Compile Include="Gumps\PetResurrectGump.cs" />
     <Compile Include="Gumps\PlayerVendorGumps.cs" />
     <Compile Include="Gumps\PolymorphGump.cs" />
-    <Compile Include="Gumps\Properties\PropsConfig.cs" />
-    <Compile Include="Gumps\Properties\PropsGump.cs" />
-    <Compile Include="Gumps\Properties\SetBodyGump.cs" />
-    <Compile Include="Gumps\Properties\SetCustomEnumGump.cs" />
-    <Compile Include="Gumps\Properties\SetGump.cs" />
-    <Compile Include="Gumps\Properties\SetListOptionGump.cs" />
-    <Compile Include="Gumps\Properties\SetObjectGump.cs" />
-    <Compile Include="Gumps\Properties\SetObjectTarget.cs" />
-    <Compile Include="Gumps\Properties\SetPoint2DGump.cs" />
-    <Compile Include="Gumps\Properties\SetPoint3DGump.cs" />
-    <Compile Include="Gumps\Properties\SetTimeSpanGump.cs" />
+    <Compile Include="Gumps\Props\PropsConfig.cs" />
+    <Compile Include="Gumps\Props\PropsGump.cs" />
+    <Compile Include="Gumps\Props\SetBodyGump.cs" />
+    <Compile Include="Gumps\Props\SetCustomEnumGump.cs" />
+    <Compile Include="Gumps\Props\SetGump.cs" />
+    <Compile Include="Gumps\Props\SetListOptionGump.cs" />
+    <Compile Include="Gumps\Props\SetObjectGump.cs" />
+    <Compile Include="Gumps\Props\SetObjectTarget.cs" />
+    <Compile Include="Gumps\Props\SetPoint2DGump.cs" />
+    <Compile Include="Gumps\Props\SetPoint3DGump.cs" />
+    <Compile Include="Gumps\Props\SetTimeSpanGump.cs" />
     <Compile Include="Gumps\ReclaimVendorGump.cs" />
     <Compile Include="Gumps\ReportMurderer.cs" />
     <Compile Include="Gumps\ResurrectGump.cs" />
@@ -3300,7 +3298,7 @@
       <Name>Server</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
