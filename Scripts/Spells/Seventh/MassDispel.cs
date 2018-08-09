@@ -49,10 +49,10 @@ namespace Server.Spells.Seventh
 
 				if ( map != null )
 				{
-					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), 8 );
+					IPooledEnumerable<BaseCreature> eable = map.GetMobilesInRange<BaseCreature>( new Point3D( p ), 8 );
 
-					foreach ( Mobile m in eable )
-						if ( m is BaseCreature && (m as BaseCreature).IsDispellable && Caster.CanBeHarmful( m, false ) )
+					foreach ( BaseCreature m in eable )
+						if ( m.IsDispellable && Caster.CanBeHarmful( m, false ) )
 							targets.Add( m );
 
 					eable.Free();

@@ -57,7 +57,7 @@ namespace Server.Spells.Fourth
 					if ( directTarget != null && Caster.CanBeBeneficial( directTarget, false ) )
 						targets.Add( directTarget );
 
-					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), 2 );
+					IPooledEnumerable<Mobile> eable = map.GetMobilesInRange( new Point3D( p ), 2 );
 
 					foreach ( Mobile m in eable )
 					{

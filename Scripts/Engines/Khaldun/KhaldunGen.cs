@@ -15,7 +15,7 @@ namespace Server.Commands
 		
 		public static bool FindMorphItem( int x, int y, int z, int inactiveItemID, int activeItemID )
 		{
-			IPooledEnumerable eable = Map.Felucca.GetItemsInRange( new Point3D( x, y, z ), 0 );
+			IPooledEnumerable<Item> eable = Map.Felucca.GetItemsInRange( new Point3D( x, y, z ), 0 );
 
 				foreach ( Item item in eable )
 				{
@@ -49,7 +49,7 @@ namespace Server.Commands
 		
 		public static Item TryCreateItem( int x, int y, int z, Item srcItem )
 		{
-			IPooledEnumerable eable = Map.Felucca.GetItemsInBounds( new Rectangle2D( x, y, 1, 1 ) );
+			IPooledEnumerable<Item> eable = Map.Felucca.GetItemsInBounds( new Rectangle2D( x, y, 1, 1 ) );
 
 				foreach ( Item item in eable )
 				{

@@ -144,15 +144,12 @@ namespace Server
 					xTotal += fp.X;
 					yTotal += fp.Y;
 
-					IPooledEnumerable eable = map.GetItemsInRange( new Point3D( fp.X, fp.Y, 0 ), 0 );
+					IPooledEnumerable<Spawner> eable = map.GetItemsInRange<Spawner>( new Point3D( fp.X, fp.Y, 0 ), 0 );
 
-					foreach ( Item item in eable )
+					foreach ( Spawner item in eable )
 					{
-						if ( item is Spawner )
-						{
-							hasSpawner = true;
-							break;
-						}
+						hasSpawner = true;
+						break;
 					}
 
 					eable.Free();

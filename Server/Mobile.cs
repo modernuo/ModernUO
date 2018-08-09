@@ -4710,15 +4710,18 @@ namespace Server
 		}
 
 		#region Get*InRange
-
-		public IPooledEnumerable<Item> GetItemsInRange( int range )
+		public IPooledEnumerable<Item> GetItemsInRange(int range)
+		{
+			return GetItemsInRange<Item>(range);
+		}
+		public IPooledEnumerable<T> GetItemsInRange<T>( int range ) where T : Item
 		{
 			Map map = m_Map;
 
 			if( map == null )
-				return Server.Map.NullEnumerable<Item>.Instance;
+				return Server.Map.NullEnumerable<T>.Instance;
 
-			return map.GetItemsInRange( m_Location, range );
+			return map.GetItemsInRange<T>( m_Location, range );
 		}
 
 		public IPooledEnumerable<IEntity> GetObjectsInRange( int range )
@@ -4733,12 +4736,16 @@ namespace Server
 
 		public IPooledEnumerable<Mobile> GetMobilesInRange( int range )
 		{
+			return GetMobilesInRange<Mobile>(range);
+		}
+		public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile
+		{
 			Map map = m_Map;
 
-			if( map == null )
-				return Server.Map.NullEnumerable<Mobile>.Instance;
+			if (map == null)
+				return Server.Map.NullEnumerable<T>.Instance;
 
-			return map.GetMobilesInRange( m_Location, range );
+			return map.GetMobilesInRange<T>(m_Location, range);
 		}
 
 		public IPooledEnumerable<NetState> GetClientsInRange(int range)

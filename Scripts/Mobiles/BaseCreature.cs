@@ -5450,12 +5450,12 @@ namespace Server.Mobiles
 		{
 			Corpse toRummage = null;
 
-			IPooledEnumerable eable = this.GetItemsInRange(2);
-			foreach ( Item item in eable )
+			IPooledEnumerable<Corpse> eable = this.GetItemsInRange<Corpse>(2);
+			foreach ( Corpse item in eable )
 			{
-				if ( item is Corpse && item.Items.Count > 0 )
+				if ( item.Items.Count > 0 )
 				{
-					toRummage = (Corpse)item;
+					toRummage = item;
 					break;
 				}
 			}

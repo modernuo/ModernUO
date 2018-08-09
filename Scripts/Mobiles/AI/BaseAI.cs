@@ -2078,7 +2078,7 @@ namespace Server.Mobiles
 
 						int destroyables = 0;
 
-						IPooledEnumerable eable = map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1);
+						IPooledEnumerable<Item> eable = map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1);
 
 						foreach (Item item in eable)
 						{
@@ -2634,7 +2634,7 @@ namespace Server.Mobiles
 			if (srcSkill <= 0)
 				return;
 
-			IPooledEnumerable eable = m_Mobile.GetMobilesInRange(m_Mobile.RangePerception);
+			IPooledEnumerable<Mobile> eable = m_Mobile.GetMobilesInRange(m_Mobile.RangePerception);
 			foreach (Mobile trg in eable)
 			{
 				if (trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden && trg.AccessLevel == AccessLevel.Player && m_Mobile.InLOS(trg))

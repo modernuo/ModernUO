@@ -2084,10 +2084,10 @@ namespace Server.Network
 					if ( match )
 						authOK = true;
 				}
-                else
-                {
-                    pvSrc.Seek( 16, SeekOrigin.Current );
-                }
+				else
+				{
+					pvSrc.Seek( 16, SeekOrigin.Current );
+				}
 
 				ThirdPartyAuthCallback( state, authOK );
 			}

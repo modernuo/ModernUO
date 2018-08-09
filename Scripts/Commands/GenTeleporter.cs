@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server;
 using Server.Items;
 
@@ -37,11 +37,11 @@ namespace Server.Commands
 			{
 			}
 
-			private static Queue m_Queue = new Queue();
+			private static Queue<Item> m_Queue = new Queue<Item>();
 
 			public static bool FindTeleporter( Map map, Point3D p )
 			{
-				IPooledEnumerable eable = map.GetItemsInRange( p, 0 );
+				IPooledEnumerable<Item> eable = map.GetItemsInRange( p, 0 );
 
 				foreach ( Item item in eable )
 				{
@@ -57,7 +57,7 @@ namespace Server.Commands
 				eable.Free();
 
 				while ( m_Queue.Count > 0 )
-					((Item)m_Queue.Dequeue()).Delete();
+					m_Queue.Dequeue().Delete();
 
 				return false;
 			}
@@ -96,7 +96,7 @@ namespace Server.Commands
 			public void DestroyTeleporter( int x, int y, int z, Map map )
 			{
 				Point3D p = new Point3D( x, y, z );
-				IPooledEnumerable eable = map.GetItemsInRange( p, 0 );
+				IPooledEnumerable<Item> eable = map.GetItemsInRange( p, 0 );
 
 				foreach ( Item item in eable )
 				{
@@ -107,7 +107,7 @@ namespace Server.Commands
 				eable.Free();
 
 				while ( m_Queue.Count > 0 )
-					((Item)m_Queue.Dequeue()).Delete();
+					m_Queue.Dequeue().Delete();
 			}
 
 			public void CreateTeleportersMap( Map map )

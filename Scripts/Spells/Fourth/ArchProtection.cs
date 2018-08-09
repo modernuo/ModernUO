@@ -48,7 +48,7 @@ namespace Server.Spells.Fourth
 
 				if ( map != null )
 				{
-					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), Core.AOS ? 2 : 3 );
+					IPooledEnumerable<Mobile> eable = map.GetMobilesInRange( new Point3D( p ), Core.AOS ? 2 : 3 );
 
 					foreach ( Mobile m in eable )
 					{

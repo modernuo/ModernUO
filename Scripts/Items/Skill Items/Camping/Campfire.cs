@@ -128,7 +128,7 @@ namespace Server.Items
 				}
 			}
 
-			IPooledEnumerable eable = this.GetClientsInRange( SecureRange );
+			IPooledEnumerable<NetState> eable = this.GetClientsInRange( SecureRange );
 
 			foreach ( NetState state in eable )
 			{

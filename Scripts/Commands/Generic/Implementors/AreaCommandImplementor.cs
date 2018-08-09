@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server;
 
 namespace Server.Commands.Generic
@@ -47,20 +48,16 @@ namespace Server.Commands.Generic
 				if ( !CheckObjectTypes( from, command, ext, out items, out mobiles ) )
 					return;
 
-				IPooledEnumerable eable;
+				IPooledEnumerable<IEntity> eable;
 
-				if ( items && mobiles )
-					eable = map.GetObjectsInBounds( rect );
-				else if ( items )
-					eable = map.GetItemsInBounds( rect );
-				else if ( mobiles )
-					eable = map.GetMobilesInBounds( rect );
+				if (items || mobiles)
+					eable = map.GetObjectsInBounds(rect, items, mobiles);
 				else
 					return;
 
 				ArrayList objs = new ArrayList();
 
-				foreach ( object obj in eable )
+				foreach ( IEntity obj in eable )
 				{
 					if ( mobiles && obj is Mobile && !BaseCommand.IsAccessible( from, obj ) )
 						continue;

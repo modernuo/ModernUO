@@ -76,14 +76,10 @@ namespace Server.Commands
 
 			Rectangle2D rect = new Rectangle2D( start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1 );
 
-			IPooledEnumerable eable;
+			IPooledEnumerable<IEntity> eable;
 
 			if ( (items || multis) && mobiles )
-				eable = map.GetObjectsInBounds( rect );
-			else if ( items || multis )
-				eable = map.GetItemsInBounds( rect );
-			else if ( mobiles )
-				eable = map.GetMobilesInBounds( rect );
+				eable = map.GetObjectsInBounds( rect, items || multis, mobiles );
 			else
 				return;
 

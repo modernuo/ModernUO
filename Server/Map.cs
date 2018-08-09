@@ -172,8 +172,8 @@ namespace Server
 		{
 			ClientSelector = SelectClients;
 			EntitySelector = SelectEntities;
-			MobileSelector = SelectMobiles;
-			ItemSelector = SelectItems;
+			MobileSelector = SelectMobiles<Mobile>;
+			ItemSelector = SelectItems<Item>;
 			MultiSelector = SelectMultis;
 			MultiTileSelector = SelectMultiTiles;
 		}
@@ -185,21 +185,27 @@ namespace Server
 
 		public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds)
 		{
-			return
-				Enumerable.Empty<IEntity>()
-						  .Union(s.Mobiles.Where(o => o != null && !o.Deleted))
-						  .Union(s.Items.Where(o => o != null && !o.Deleted && o.Parent == null))
-						  .Where(bounds.Contains);
+			return SelectEntities(s, true, true, bounds);
 		}
 
-		public static IEnumerable<Mobile> SelectMobiles(Sector s, Rectangle2D bounds)
+		public static IEnumerable<IEntity> SelectEntities(Sector s, bool items, bool mobiles, Rectangle2D bounds)
 		{
-			return s.Mobiles.Where(o => o != null && !o.Deleted && bounds.Contains(o));
+			IEnumerable<IEntity> eable = Enumerable.Empty<IEntity>();
+			if (mobiles)
+				eable = eable.Union(s.Mobiles.Where(o => o != null && !o.Deleted));
+			if (items)
+				eable = eable.Union(s.Items.Where(o => o != null && !o.Deleted && o.Parent == null));
+
+			return eable.Where(bounds.Contains);
 		}
 
-		public static IEnumerable<Item> SelectItems(Sector s, Rectangle2D bounds)
+		public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
 		{
-			return s.Items.Where(o => o != null && !o.Deleted && o.Parent == null && bounds.Contains(o));
+			return s.Mobiles.OfType<T>().Where(o => o != null && !o.Deleted && bounds.Contains(o));
+		}
+		public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
+		{
+			return s.Items.OfType<T>().Where(o => o != null && !o.Deleted && o.Parent == null && o is T && bounds.Contains(o));
 		}
 
 		public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
@@ -262,17 +268,25 @@ namespace Server
 
 		public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds)
 		{
+			return GetEntities(map, bounds, true, true);
+		}
+
+		public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds, bool items, bool mobiles)
+		{
 			return Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
 		}
 
 		public static Map.PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds)
 		{
-			return Map.PooledEnumerable<Mobile>.Instantiate(map, bounds, MobileSelector ?? SelectMobiles);
+			return GetMobiles<Mobile>(map, bounds);
 		}
-
-		public static Map.PooledEnumerable<Item> GetItems(Map map, Rectangle2D bounds)
+		public static Map.PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile
 		{
-			return Map.PooledEnumerable<Item>.Instantiate(map, bounds, ItemSelector ?? SelectItems);
+			return Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
+		}
+		public static Map.PooledEnumerable<T> GetItems<T>(Map map, Rectangle2D bounds) where T : Item
+		{
+			return Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectItems<T>);
 		}
 
 		public static Map.PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds)
@@ -615,10 +629,20 @@ namespace Server
 
 		public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range)
 		{
-			return GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
+			return GetObjectsInRange(p, range, true, true);
+		}
+
+		public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items, bool mobiles)
+		{
+			return GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1), items, mobiles);
 		}
 
 		public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds)
+		{
+			return GetObjectsInBounds(bounds, true, true);
+		}
+
+		public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items, bool mobiles)
 		{
 			return PooledEnumeration.GetEntities(this, bounds);
 		}
@@ -650,15 +674,21 @@ namespace Server
 			return GetItemsInRange(p, 18);
 #endif
 		}
-
 		public IPooledEnumerable<Item> GetItemsInRange(Point3D p, int range)
 		{
-			return GetItemsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
+			return GetItemsInRange<Item>(p, range);
 		}
-
+		public IPooledEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item
+		{
+			return GetItemsInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
+		}
 		public IPooledEnumerable<Item> GetItemsInBounds(Rectangle2D bounds)
 		{
-			return PooledEnumeration.GetItems(this, bounds);
+			return GetItemsInBounds<Item>(bounds);
+		}
+		public IPooledEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds) where T : Item
+		{
+			return PooledEnumeration.GetItems<T>(this, bounds);
 		}
 
 		public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p)
@@ -672,12 +702,22 @@ namespace Server
 
 		public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p, int range)
 		{
-			return GetMobilesInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
+			return GetMobilesInRange<Mobile>(p, range);
+		}
+
+		public IPooledEnumerable<T> GetMobilesInRange<T>(Point3D p, int range) where T : Mobile
+		{
+			return GetMobilesInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 		}
 
 		public IPooledEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds)
 		{
-			return PooledEnumeration.GetMobiles(this, bounds);
+			return GetMobilesInBounds<Mobile>(bounds);
+		}
+
+		public IPooledEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds) where T : Mobile
+		{
+			return PooledEnumeration.GetMobiles<T>(this, bounds);
 		}
 		#endregion
 

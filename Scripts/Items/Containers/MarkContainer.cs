@@ -30,11 +30,11 @@ namespace Server.Items
 
 		private static bool FindMarkContainer( Point3D p, Map map )
 		{
-			IPooledEnumerable eable = map.GetItemsInRange( p, 0 );
+			IPooledEnumerable<MarkContainer> eable = map.GetItemsInRange<MarkContainer>( p, 0 );
 
 			foreach ( Item item in eable )
 			{
-				if ( item.Z == p.Z && item is MarkContainer )
+				if ( item.Z == p.Z )
 				{
 					eable.Free();
 					return true;

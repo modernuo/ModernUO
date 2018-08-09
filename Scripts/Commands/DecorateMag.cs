@@ -870,7 +870,7 @@ namespace Server.Commands
 
 			bool res = false;
 
-			IPooledEnumerable eable;
+			IPooledEnumerable<Item> eable;
 
 			if ( srcItem is BaseDoor )
 			{
@@ -999,16 +999,16 @@ namespace Server.Commands
 
 						if ( item is BaseDoor )
 						{
-							IPooledEnumerable eable = maps[j].GetItemsInRange( loc, 1 );
+							IPooledEnumerable<BaseDoor> eable = maps[j].GetItemsInRange<BaseDoor>( loc, 1 );
 
 							Type itemType = item.GetType();
 
-							foreach ( Item link in eable )
+							foreach ( BaseDoor link in eable )
 							{
 								if ( link != item && link.Z == item.Z && link.GetType() == itemType )
 								{
-									((BaseDoor)item).Link = (BaseDoor)link;
-									((BaseDoor)link).Link = (BaseDoor)item;
+									((BaseDoor)item).Link = link;
+									link.Link = (BaseDoor)item;
 									break;
 								}
 							}

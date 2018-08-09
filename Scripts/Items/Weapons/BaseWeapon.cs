@@ -1315,22 +1315,20 @@ namespace Server.Items
 
 			int inPack = 1;
 
-			IPooledEnumerable eable = defender.GetMobilesInRange( 1 );
-			foreach ( Mobile m in eable )
+			IPooledEnumerable<BaseCreature> eable = defender.GetMobilesInRange<BaseCreature>( 1 );
+			foreach ( BaseCreature m in eable )
 			{
-				if ( m != attacker && m is BaseCreature )
+				if ( m != attacker )
 				{
-					BaseCreature tc = (BaseCreature)m;
-
-					if ( (tc.PackInstinct & bc.PackInstinct) == 0 || (!tc.Controlled && !tc.Summoned) )
+					if ( (m.PackInstinct & bc.PackInstinct) == 0 || (!m.Controlled && !m.Summoned) )
 						continue;
 
-					Mobile theirMaster = tc.ControlMaster;
+					Mobile theirMaster = m.ControlMaster;
 
 					if ( theirMaster == null )
-						theirMaster = tc.SummonMaster;
+						theirMaster = m.SummonMaster;
 
-					if ( master == theirMaster && tc.Combatant == defender )
+					if ( master == theirMaster && m.Combatant == defender )
 						++inPack;
 				}
 			}
@@ -1365,14 +1363,10 @@ namespace Server.Items
 		{
 			if ( MirrorImage.HasClone( defender ) && (defender.Skills.Ninjitsu.Value / 150.0) > Utility.RandomDouble() )
 			{
-				Clone bc;
-
-				IPooledEnumerable eable = defender.GetMobilesInRange( 4 );
-				foreach ( Mobile m in eable)
+				IPooledEnumerable<Clone> eable = defender.GetMobilesInRange<Clone>( 4 );
+				foreach ( Clone m in eable )
 				{
-					bc = m as Clone;
-
-					if ( bc != null && bc.Summoned && bc.SummonMaster == defender )
+					if ( m != null && m.Summoned && m.SummonMaster == defender )
 					{
 						attacker.SendLocalizedMessage( 1063141 ); // Your attack has been diverted to a nearby mirror image of your target!
 						defender.SendLocalizedMessage( 1063140 ); // You manage to divert the attack onto one of your nearby mirror images.
@@ -1916,7 +1910,7 @@ namespace Server.Items
 
 			int range = Core.ML ? 5 : 10;
 
-			IPooledEnumerable eable = from.GetMobilesInRange(range);
+			IPooledEnumerable<Mobile> eable = from.GetMobilesInRange(range);
 			foreach ( Mobile m in eable )
 			{
 				if ( from != m && defender != m && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) && ( !Core.ML || from.InLOS( m ) ) )

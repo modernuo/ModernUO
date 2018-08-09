@@ -172,7 +172,7 @@ namespace Server.Engines.ConPVP
 			if ( m_Flying || !Visible || m_Game == null || this.Parent != null )
 				return;
 
-			IPooledEnumerable eable = this.GetClientsInRange( 0 );
+			IPooledEnumerable<NetState> eable = this.GetClientsInRange( 0 );
 			foreach ( NetState ns in eable )
 			{
 				Mobile m = ns.Mobile;
@@ -518,7 +518,7 @@ namespace Server.Engines.ConPVP
 					if ( landTile.ID == 0x244 && statics.Length == 0 ) // 0x244 = invalid land tile
 					{
 						bool empty = true;
-						IPooledEnumerable eable = this.Map.GetItemsInRange( point, 0 );
+						IPooledEnumerable<Item> eable = this.Map.GetItemsInRange( point, 0 );
 
 						foreach ( Item item in eable )
 						{
@@ -559,7 +559,7 @@ namespace Server.Engines.ConPVP
 
 				Rectangle2D rect = new Rectangle2D( pTop.X, pTop.Y, ( pBottom.X - pTop.X ) + 1, ( pBottom.Y - pTop.Y ) + 1 );
 
-				IPooledEnumerable area = this.Map.GetItemsInBounds( rect );
+				IPooledEnumerable<Item> area = this.Map.GetItemsInBounds( rect );
 				foreach ( Item i in area )
 				{
 					if ( i == this || i.ItemID >= 0x4000 )
@@ -620,8 +620,8 @@ namespace Server.Engines.ConPVP
 
 				area.Free();
 			
-				area = this.Map.GetClientsInBounds( rect );
-				foreach ( NetState ns in area )
+				IPooledEnumerable<NetState> clients = this.Map.GetClientsInBounds( rect );
+				foreach ( NetState ns in clients)
 				{
 					Mobile m = ns.Mobile;
 
@@ -645,7 +645,7 @@ namespace Server.Engines.ConPVP
 					if ( !found )
 						continue;
 
-					area.Free();
+					clients.Free();
 					
 					// TODO: probably need to change this a lot...
 					DoCatch( m );
@@ -653,7 +653,7 @@ namespace Server.Engines.ConPVP
 					return;
 				}
 
-				area.Free();
+				clients.Free();
 				
 				m_PathIdx = pathCheckEnd;
 
@@ -683,7 +683,7 @@ namespace Server.Engines.ConPVP
 						myZ = t.Z + height;
 				}
 
-				IPooledEnumerable eable = this.GetItemsInRange( 0 );
+				IPooledEnumerable<Item> eable = this.GetItemsInRange( 0 );
 				foreach ( Item item in eable )
 				{
 					if ( item.Visible && item != this )

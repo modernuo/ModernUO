@@ -100,7 +100,7 @@ namespace Server.Commands
 
 		public static void Add_Static( int itemID, Point3D location, Map map, string name )
 		{
-			IPooledEnumerable eable = map.GetItemsInRange( location, 0 );
+			IPooledEnumerable<Item> eable = map.GetItemsInRange( location, 0 );
 
 			foreach ( Item item in eable )
 			{

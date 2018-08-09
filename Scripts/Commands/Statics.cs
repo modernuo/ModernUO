@@ -127,7 +127,7 @@ namespace Server
 
 				CommandLogging.WriteLine( from, "{0} {1} invoking freeze from {2} to {3} in {4}", from.AccessLevel, CommandLogging.Format( from ), start, end, targetMap );
 
-				IPooledEnumerable eable = targetMap.GetItemsInBounds( new Rectangle2D( start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1 ) );
+				IPooledEnumerable<Item> eable = targetMap.GetItemsInBounds( new Rectangle2D( start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1 ) );
 
 				foreach ( Item item in eable )
 				{

@@ -251,16 +251,12 @@ namespace Server.Factions
 			bool mobs = type.IsSubclassOf( typeof( Mobile ) );
 			bool items = type.IsSubclassOf( typeof( Item ) );
 
-			IPooledEnumerable eable;
-
-			if ( mobs )
-				eable = mob.GetMobilesInRange( range );
-			else if ( items )
-				eable = mob.GetItemsInRange( range );
-			else
+			if ( !(items || mobs) )
 				return false;
 
-			foreach ( object obj in eable )
+			IPooledEnumerable<IEntity> eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
+
+			foreach ( IEntity obj in eable )
 			{
 				if ( type.IsAssignableFrom( obj.GetType() ) )
 				{
@@ -275,15 +271,15 @@ namespace Server.Factions
 
 		public static bool IsNearType( Mobile mob, Type[] types, int range )
 		{
-			IPooledEnumerable eable = mob.GetObjectsInRange( range );
+			IPooledEnumerable<IEntity> eable = mob.GetObjectsInRange( range );
 
-			foreach( object obj in eable )
+			foreach( IEntity obj in eable )
 			{
 				Type objType = obj.GetType();
 
 				for( int i = 0; i < types.Length; i++ )
 				{
-					if( types[i].IsAssignableFrom( objType ) )
+					if ( types[i].IsAssignableFrom( objType ) )
 					{
 						eable.Free();
 						return true;

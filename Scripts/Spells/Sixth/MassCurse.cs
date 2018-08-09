@@ -49,7 +49,7 @@ namespace Server.Spells.Sixth
 
 				if ( map != null )
 				{
-					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), 2 );
+					IPooledEnumerable<Mobile> eable = map.GetMobilesInRange( new Point3D( p ), 2 );
 
 					foreach ( Mobile m in eable )
 					{

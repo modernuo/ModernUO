@@ -46,7 +46,7 @@ namespace Server.Spells.Sixth
 
 				if ( map != null )
 				{
-					IPooledEnumerable eable = map.GetMobilesInRange( new Point3D( p ), 1 + (int)(Caster.Skills[SkillName.Magery].Value / 20.0) );
+					IPooledEnumerable<Mobile> eable = map.GetMobilesInRange( new Point3D( p ), 1 + (int)(Caster.Skills[SkillName.Magery].Value / 20.0) );
 
 					foreach ( Mobile m in eable )
 					{

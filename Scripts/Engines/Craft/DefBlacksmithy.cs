@@ -64,7 +64,7 @@ namespace Server.Engines.Craft
 			if ( map == null )
 				return;
 
-			IPooledEnumerable eable = map.GetItemsInRange( from.Location, range );
+			IPooledEnumerable<Item> eable = map.GetItemsInRange( from.Location, range );
 
 			foreach ( Item item in eable )
 			{

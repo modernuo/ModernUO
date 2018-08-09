@@ -605,7 +605,7 @@ namespace Server.Mobiles
 
 			if ( Core.AOS )
 			{
-				IPooledEnumerable mobiles = Map.GetMobilesInRange( location, 0 );
+				IPooledEnumerable<Mobile> mobiles = Map.GetMobilesInRange( location, 0 );
 
 				foreach ( Mobile m in mobiles )
 				{

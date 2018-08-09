@@ -612,7 +612,7 @@ namespace Server.Multis
 			if ( from.AccessLevel < AccessLevel.GameMaster && from != m_Owner )
 			{
 				if ( m_TillerMan != null )
-					m_TillerMan.Say( Utility.Random( 1042876, 4 ) ); // Arr, don't do that! | Arr, leave me alone! | Arr, watch what thour'rt doing, matey! | Arr! Do that again and I’ll throw ye overhead!
+					m_TillerMan.Say( Utility.Random( 1042876, 4 ) ); // Arr, don't do that! | Arr, leave me alone! | Arr, watch what thour'rt doing, matey! | Arr! Do that again and Iâ€™ll throw ye overhead!
 
 				return;
 			}
@@ -897,8 +897,8 @@ namespace Server.Multis
 			{
 				string sNumber = navPoint.Substring( start );
 
-                if ( !int.TryParse( sNumber, out number ) )
-                    number = -1;
+				if ( !int.TryParse( sNumber, out number ) )
+					number = -1;
 
 				if ( number != -1 )
 				{
@@ -1225,7 +1225,7 @@ namespace Server.Multis
 				}
 			}
 
-			IPooledEnumerable eable = map.GetItemsInBounds( new Rectangle2D( p.X + newComponents.Min.X, p.Y + newComponents.Min.Y, newComponents.Width, newComponents.Height ) );
+			IPooledEnumerable<Item> eable = map.GetItemsInBounds( new Rectangle2D( p.X + newComponents.Min.X, p.Y + newComponents.Min.Y, newComponents.Width, newComponents.Height ) );
 
 			foreach ( Item item in eable )
 			{

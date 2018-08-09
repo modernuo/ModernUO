@@ -66,7 +66,7 @@ namespace Server.Spells.Seventh
 		{
 			bool _gateFound = false;
 
-			IPooledEnumerable eable = map.GetItemsInRange( loc, 0 );
+			IPooledEnumerable<Item> eable = map.GetItemsInRange( loc, 0 );
 			foreach ( Item item in eable )
 			{
 				if ( item is Moongate || item is PublicMoongate )

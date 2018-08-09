@@ -100,7 +100,7 @@ namespace Server.Spells.Third
 
 				m.PlaySound( 0x1FE );
 
-				IPooledEnumerable eable = m.GetItemsInRange( 0 );
+				IPooledEnumerable<Item> eable = m.GetItemsInRange( 0 );
 
 				foreach ( Item item in eable )
 				{

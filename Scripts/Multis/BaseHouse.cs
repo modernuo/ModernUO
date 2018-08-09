@@ -448,7 +448,7 @@ namespace Server.Multis
 			vendor = false;
 			rentalContract = false;
 
-			IPooledEnumerable eable = map.GetObjectsInRange( location, 0 );
+			IPooledEnumerable<IEntity> eable = map.GetObjectsInRange( location, 0 );
 
 			foreach ( IEntity entity in eable )
 			{
@@ -902,7 +902,7 @@ namespace Server.Multis
 
 			List<Item> list = new List<Item>();
 
-			IPooledEnumerable eable = this.Map.GetItemsInBounds( rect );
+			IPooledEnumerable<Item> eable = this.Map.GetItemsInBounds( rect );
 
 			foreach ( Item item in eable )
 				if ( item.Movable && IsInside( item ) )
@@ -1689,7 +1689,7 @@ namespace Server.Multis
 				bool valid = m_House != null && Sextant.Format( m_House.Location, m_House.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth );
 
 				if ( valid )
-					location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+					location = String.Format( "{0}Â° {1}'{2}, {3}Â° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 				else
 					location = "unknown";
 
@@ -3465,14 +3465,14 @@ namespace Server.Multis
 				return null;
 
 			MultiComponentList mcl = Components;
-			IPooledEnumerable eable = map.GetItemsInBounds( new Rectangle2D( X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height ) );
+			IPooledEnumerable<Guildstone> eable = map.GetItemsInBounds<Guildstone>( new Rectangle2D( X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height ) );
 
-			foreach ( Item item in eable )
+			foreach ( Guildstone item in eable )
 			{
-				if ( item is Guildstone && Contains( item ) )
+				if ( Contains( item ) )
 				{
 					eable.Free();
-					return (Guildstone)item;
+					return item;
 				}
 			}
 

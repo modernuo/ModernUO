@@ -133,12 +133,11 @@ namespace Server.Items
 					else if ( RootParent == null )
 					{
 						List<Mobile> toDamage = new List<Mobile>();
-						IPooledEnumerable eable = Map.GetMobilesInRange( Location, 1 );
+						IPooledEnumerable<Mobile> eable = Map.GetMobilesInRange( Location, 1 );
 
 						foreach ( Mobile m in eable )
-						{
 							toDamage.Add( m );
-						}
+
 						eable.Free();
 
 						Mobile victim;

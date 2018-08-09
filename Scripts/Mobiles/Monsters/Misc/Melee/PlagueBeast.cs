@@ -182,20 +182,15 @@ namespace Server.Mobiles
 			base.OnThink();
 
 			// Check to see if we need to devour any corpses
-			IPooledEnumerable eable = GetItemsInRange( 3 ); // Get all corpses in range
+			IPooledEnumerable<Corpse> eable = GetItemsInRange<Corpse>( 3 ); // Get all corpses in range
 
-			foreach( Item item in eable )
+			foreach( Corpse item in eable )
 			{
-				if( item is Corpse ) // For each Corpse
+				// Ensure that the corpse was killed by us
+				if ( item.Killer == this && item.Owner != null )
 				{
-					Corpse corpse = item as Corpse;
-
-					// Ensure that the corpse was killed by us
-					if( corpse != null && corpse.Killer == this && corpse.Owner != null )
-					{
-						if( !corpse.DevourCorpse() && !corpse.Devoured )
-							PublicOverheadMessage( MessageType.Emote, 0x3B2, 1053032 ); // * The plague beast attempts to absorb the remains, but cannot! *
-					}
+					if( !item.DevourCorpse() && !item.Devoured )
+						PublicOverheadMessage( MessageType.Emote, 0x3B2, 1053032 ); // * The plague beast attempts to absorb the remains, but cannot! *
 				}
 			}
 			eable.Free();
@@ -229,10 +224,10 @@ namespace Server.Mobiles
 
 		private void IncreaseHits( int hp )
 		{
-            int maxhits = 2000;
+			int maxhits = 2000;
 
-            if ( this.IsParagon )
-                maxhits = (int)(maxhits * Paragon.HitsBuff);
+			if ( this.IsParagon )
+				maxhits = (int)(maxhits * Paragon.HitsBuff);
 
 			if( hp < 1000 && !Core.AOS )
 				hp = (hp * 100) / 60;
@@ -241,9 +236,9 @@ namespace Server.Mobiles
 			{
 				HitsMaxSeed = maxhits;
 
-                int newHits = this.Hits + hp + Utility.RandomMinMax( 10, 20 ); // increase the hp until it hits if it goes over it'll max at 2000
+				int newHits = this.Hits + hp + Utility.RandomMinMax( 10, 20 ); // increase the hp until it hits if it goes over it'll max at 2000
 
-                this.Hits = Math.Min( maxhits, newHits );
+				this.Hits = Math.Min( maxhits, newHits );
 				// Also provide heal for each devour on top of the hp increase
 			}
 			else

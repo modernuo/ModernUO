@@ -163,14 +163,14 @@ namespace Server.Items
 
 			public static SHTeleporter FindSHTeleporter( Map map, Point3D p )
 			{
-				IPooledEnumerable eable = map.GetItemsInRange( p, 0 );
+				IPooledEnumerable<SHTeleporter> eable = map.GetItemsInRange<SHTeleporter>( p, 0 );
 
-				foreach ( Item item in eable )
+				foreach (SHTeleporter item in eable )
 				{
-					if ( item is SHTeleporter && item.Z == p.Z )
+					if ( item.Z == p.Z )
 					{
 						eable.Free();
-						return (SHTeleporter)item;
+						return item;
 					}
 				}
 

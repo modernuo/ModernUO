@@ -252,12 +252,12 @@ namespace Server.Items
 			if ( direct )
 				alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
 
-			IPooledEnumerable eable = LeveledExplosion ? (IPooledEnumerable)map.GetObjectsInRange( loc, ExplosionRange ) : (IPooledEnumerable)map.GetMobilesInRange( loc, ExplosionRange );
-			ArrayList toExplode = new ArrayList();
+			IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion, true);
+			List<IEntity> toExplode = new List<IEntity>();
 
 			int toDamage = 0;
 
-			foreach ( object o in eable )
+			foreach ( IEntity o in eable )
 			{
 				if ( o is Mobile && (from == null || (SpellHelper.ValidIndirectTarget( from, (Mobile)o ) && from.CanBeHarmful( (Mobile)o, false ))))
 				{

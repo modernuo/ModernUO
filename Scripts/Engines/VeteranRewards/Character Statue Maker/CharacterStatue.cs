@@ -376,7 +376,7 @@ namespace Server.Mobiles
 
 				Packet p = null;
 
-				IPooledEnumerable eable = Map.GetClientsInRange( Location );
+				IPooledEnumerable<NetState> eable = Map.GetClientsInRange( Location );
 
 				foreach( NetState state in eable )
 				{

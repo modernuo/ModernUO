@@ -67,7 +67,7 @@ namespace Server.SkillHandlers
 					{
 						string message = String.Format( "You notice {0} attempting to peek into {1}'s belongings.", from.Name, root.Name );
 
-						IPooledEnumerable eable = map.GetClientsInRange( from.Location, 8 );
+						IPooledEnumerable<NetState> eable = map.GetClientsInRange( from.Location, 8 );
 
 						foreach ( NetState ns in eable )
 						{

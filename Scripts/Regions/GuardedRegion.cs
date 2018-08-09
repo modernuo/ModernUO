@@ -176,18 +176,13 @@ namespace Server.Regions
 		{
 			BaseGuard useGuard = null;
 
-			IPooledEnumerable eable = focus.GetMobilesInRange( 8 );
-			foreach ( Mobile m in  eable)
+			IPooledEnumerable<BaseGuard> eable = focus.GetMobilesInRange<BaseGuard>( 8 );
+			foreach (BaseGuard m in  eable)
 			{
-				if ( m is BaseGuard )
+				if ( m.Focus == null ) // idling
 				{
-					BaseGuard g = (BaseGuard)m;
-
-					if ( g.Focus == null ) // idling
-					{
-						useGuard = g;
-						break;
-					}
+					useGuard = m;
+					break;
 				}
 			}
 
@@ -322,7 +317,7 @@ namespace Server.Regions
 			if ( IsDisabled() )
 				return;
 
-			IPooledEnumerable eable = Map.GetMobilesInRange( p, 14 );
+			IPooledEnumerable<Mobile> eable = Map.GetMobilesInRange( p, 14 );
 
 			foreach ( Mobile m in eable )
 			{

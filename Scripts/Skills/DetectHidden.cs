@@ -58,7 +58,7 @@ namespace Server.SkillHandlers
 
 				if ( range > 0 )
 				{
-					IPooledEnumerable inRange = src.Map.GetMobilesInRange( p, range );
+					IPooledEnumerable<Mobile> inRange = src.Map.GetMobilesInRange( p, range );
 
 					foreach ( Mobile trg in inRange )
 					{
@@ -83,23 +83,18 @@ namespace Server.SkillHandlers
 
 					if ( Faction.Find( src ) != null )
 					{
-						IPooledEnumerable itemsInRange = src.Map.GetItemsInRange( p, range );
+						IPooledEnumerable<BaseFactionTrap> itemsInRange = src.Map.GetItemsInRange<BaseFactionTrap>( p, range );
 
-						foreach ( Item item in itemsInRange )
+						foreach ( BaseFactionTrap trap in itemsInRange )
 						{
-							if ( item is BaseFactionTrap )
+							if ( src.CheckTargetSkill( SkillName.DetectHidden, trap, 80.0, 100.0 ) )
 							{
-								BaseFactionTrap trap = (BaseFactionTrap) item;
+								src.SendLocalizedMessage( 1042712, true, " " + (trap.Faction == null ? "" : trap.Faction.Definition.FriendlyName) ); // You reveal a trap placed by a faction:
 
-								if ( src.CheckTargetSkill( SkillName.DetectHidden, trap, 80.0, 100.0 ) )
-								{
-									src.SendLocalizedMessage( 1042712, true, " " + (trap.Faction == null ? "" : trap.Faction.Definition.FriendlyName) ); // You reveal a trap placed by a faction:
+								trap.Visible = true;
+								trap.BeginConceal();
 
-									trap.Visible = true;
-									trap.BeginConceal();
-
-									foundAnyone = true;
-								}
+								foundAnyone = true;
 							}
 						}
 

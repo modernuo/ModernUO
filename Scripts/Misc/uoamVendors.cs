@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Server.Mobiles;
 using Server.Items;
@@ -40,7 +40,6 @@ namespace Server
 
 			if ( File.Exists( vendor_path ) )
 			{
-				ArrayList list = new ArrayList();
 				from.SendMessage( "Generating Vendors..." );
 
 				using ( StreamReader ip = new StreamReader( vendor_path ) )
@@ -295,15 +294,14 @@ namespace Server
 			return z;
 		}
 
-		private static Queue m_ToDelete = new Queue();
-
 		public static void ClearSpawners( int x, int y, int z, Map map )
 		{
-			IPooledEnumerable eable = map.GetItemsInRange( new Point3D( x, y, z ), 0 );
+			IPooledEnumerable<Spawner> eable = map.GetItemsInRange<Spawner>( new Point3D( x, y, z ), 0 );
+			Queue<Spawner> m_ToDelete = new Queue<Spawner>();
 
-			foreach ( Item item in eable )
+			foreach ( Spawner item in eable )
 			{
-				if ( item is Spawner && item.Z == z )
+				if ( item.Z == z )
 					m_ToDelete.Enqueue( item );
 			}
 

@@ -86,7 +86,7 @@ namespace Server.Spells.Spellweaving
 					return true;
 			}
 
-			IPooledEnumerable eable = map.GetItemsInRange( location, 0 );      // Added  Tiles
+			IPooledEnumerable<Item> eable = map.GetItemsInRange( location, 0 );      // Added  Tiles
 
 			foreach( Item item in eable )
 			{
