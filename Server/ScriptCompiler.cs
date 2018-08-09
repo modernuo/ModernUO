@@ -219,7 +219,7 @@ namespace Server
 
 			DeleteFiles( "Scripts.CS*.dll" );
 
-			using ( CSharpCodeProvider provider = new CSharpCodeProvider() )
+			using (CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp"))
 			{
 				string path = GetUnusedPath( "Scripts.CS" );
 
@@ -233,32 +233,33 @@ namespace Server
 				if( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
 
-#if !MONO
+				if (Core.Unix)
+				{
+					parms.CompilerOptions = String.Format("{0} /nowarn:169,219,414 /recurse:Scripts/*.cs", parms.CompilerOptions);
+					files = new string[0];
+				}
+
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, files );
-#else
-				parms.CompilerOptions = String.Format( "{0} /nowarn:169,219,414 /recurse:Scripts/*.cs", parms.CompilerOptions );
-				CompilerResults results = provider.CompileAssemblyFromFile( parms, "" );
-#endif
 				m_AdditionalReferences.Add( path );
 
 				Display( results );
 
-#if !MONO
-				if( results.Errors.Count > 0 )
+				if ( results.Errors.Count > 0 )
 				{
-					assembly = null;
-					return false;
-				}
-#else
-				if( results.Errors.Count > 0 ) {
-					foreach( CompilerError err in results.Errors ) {
-						if ( !err.IsWarning ) {
+					if (!Core.Unix) {
+						assembly = null;
+						return false;
+					}
+
+					foreach (CompilerError err in results.Errors)
+					{
+						if (!err.IsWarning)
+						{
 							assembly = null;
 							return false;
 						}
 					}
 				}
-#endif
 
 
 				if( cache && Path.GetFileName( path ) == "Scripts.CS.dll" )
@@ -359,7 +360,7 @@ namespace Server
 
 			DeleteFiles( "Scripts.VB*.dll" );
 
-			using ( VBCodeProvider provider = new VBCodeProvider() )
+			using (CodeDomProvider provider = CodeDomProvider.CreateProvider("VisualBasic"))
 			{
 				string path = GetUnusedPath( "Scripts.VB" );
 
@@ -373,15 +374,32 @@ namespace Server
 				if( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
 
+				if (Core.Unix)
+				{
+					parms.CompilerOptions = String.Format("{0} /nowarn:169,219,414 /recurse:Scripts/*.vb", parms.CompilerOptions);
+					files = new string[0];
+				}
+
 				CompilerResults results = provider.CompileAssemblyFromFile( parms, files );
 				m_AdditionalReferences.Add( path );
 
 				Display( results );
 
-				if( results.Errors.Count > 0 )
+				if ( results.Errors.Count > 0 )
 				{
-					assembly = null;
-					return false;
+					if (!Core.Unix) {
+						assembly = null;
+						return false;
+					}
+
+					foreach (CompilerError err in results.Errors)
+					{
+						if (!err.IsWarning)
+						{
+							assembly = null;
+							return false;
+						}
+					}
 				}
 
 				if( cache && Path.GetFileName( path ) == "Scripts.VB.dll" )

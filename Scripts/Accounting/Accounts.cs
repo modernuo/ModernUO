@@ -29,9 +29,7 @@ namespace Server.Accounting
 
 		public static IAccount GetAccount( string username )
 		{
-			IAccount a;
-
-			m_Accounts.TryGetValue( username, out a );
+			m_Accounts.TryGetValue( username, out IAccount a );
 
 			return a;
 		}
