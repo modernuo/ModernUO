@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a flesh golem corpse" )]
 	public class FleshGolem : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+
+		public override string DefaultName => "a flesh golem";
 
 		[Constructible]
 		public FleshGolem() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a flesh golem";
 			Body = 304;
 			BaseSoundID = 684;
 
@@ -50,7 +48,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public FleshGolem( Serial serial ) : base( serial )

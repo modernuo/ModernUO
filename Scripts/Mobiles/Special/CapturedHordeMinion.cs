@@ -11,7 +11,7 @@ namespace Server.Mobiles
 			this.FightMode = FightMode.None;
 		}
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override bool CanBeDamaged()
 		{

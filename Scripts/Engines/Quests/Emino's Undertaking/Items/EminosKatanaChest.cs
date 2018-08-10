@@ -21,7 +21,7 @@ namespace Server.Engines.Quests.Ninja
 		{
 		}
 
-		public override bool IsDecoContainer{ get{ return false; } }
+		public override bool IsDecoContainer => false;
 
 		private void GenerateTreasure()
 		{

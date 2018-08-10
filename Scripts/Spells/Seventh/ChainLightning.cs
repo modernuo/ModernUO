@@ -30,7 +30,7 @@ namespace Server.Spells.Seventh
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public override bool DelayedDamage{ get{ return true; } }
+		public override bool DelayedDamage => true;
 
 		public void Target( IPoint3D p )
 		{

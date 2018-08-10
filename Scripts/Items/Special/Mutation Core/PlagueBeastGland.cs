@@ -5,10 +5,11 @@ namespace Server.Items
 {
 	public class PlagueBeastGland : Item
 	{
+		public override string DefaultName => "a healthy gland";
+
 		[Constructible]
 		public PlagueBeastGland() : base( 0x1CEF )
 		{
-			Name = "A Healthy Gland";
 			Weight = 1.0;
 			Hue = 0x6;
 		}

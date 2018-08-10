@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName("an interred grizzle corpse")]
 	public class InterredGrizzle  : BaseCreature
 	{
+		public override string DefaultName => "a interred grizzle";
+
 		[Constructible]
 		public  InterredGrizzle () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an interred grizzle";
 			Body = 259;
 
 			SetStr( 451, 500 );
@@ -57,7 +58,7 @@ namespace Server.Mobiles
 		 * Damage is resistable (physical)
 		 * Acid last 10 seconds
 		 */
-		 
+
 		public override int GetAngerSound()
 		{
 			return 0x581;

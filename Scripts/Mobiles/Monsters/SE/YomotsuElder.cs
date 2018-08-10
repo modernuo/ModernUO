@@ -9,15 +9,12 @@ namespace Server.Mobiles
 	[CorpseName( "a wrinkly yomotsu corpse" )]
 	public class YomotsuElder : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.DoubleStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
+		public override string DefaultName => "a yomotsu elder";
 
 		[Constructible]
 		public YomotsuElder() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a yomotsu elder";
 			Body = 255;
 			BaseSoundID = 0x452;
 
@@ -79,7 +76,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 2 );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		// TODO: Axe Throw
@@ -102,7 +99,7 @@ namespace Server.Mobiles
 				defender.Paralyze( TimeSpan.FromSeconds( 4.0 ) );
 			}
 		}
-		
+
 		public YomotsuElder( Serial serial ) : base( serial )
 		{
 		}
@@ -118,7 +115,7 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 		}
-		
+
 		public override int GetIdleSound()
 		{
 			return 0x42A;

@@ -9,11 +9,11 @@ namespace Server.Mobiles
 	[CorpseName( "a Chiikkaha the Toothed corpse" )]
 	public class Chiikkaha : RatmanMage
 	{
+		public override string DefaultName { get { return "Chiikkaha the Toothed"; } }
+
 		[Constructible]
 		public Chiikkaha()
 		{
-			Name = "Chiikkaha the Toothed";
-
 			SetStr( 450, 476 );
 			SetDex( 157, 179 );
 			SetInt( 251, 275 );

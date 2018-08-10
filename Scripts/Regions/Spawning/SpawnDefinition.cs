@@ -224,8 +224,8 @@ namespace Server.Regions
 		protected int m_Height;
 
 		public override int Height{ get{ EnsureInit(); return m_Height; } }
-		public override bool Land{ get{ return true; } }
-		public override bool Water{ get{ return false; } }
+		public override bool Land => true;
+		public override bool Water => false;
 
 		protected SpawnItem( Type type ) : base( type )
 		{

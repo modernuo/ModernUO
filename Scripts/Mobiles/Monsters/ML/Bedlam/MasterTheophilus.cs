@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Master Theophilus corpse" )]
 	public class MasterTheophilus : EvilMageLord
 	{
+		public override string DefaultName => "Master Theophilus";
+
 		[Constructible]
 		public MasterTheophilus()
 		{
 			IsParagon = true;
 
-			Name = "Master Theophilus";
 			Title = "the necromancer";
 			Hue = 0;
 
@@ -65,12 +66,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ParalyzingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public MasterTheophilus( Serial serial )

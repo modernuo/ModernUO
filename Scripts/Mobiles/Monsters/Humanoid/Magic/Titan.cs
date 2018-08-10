@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a titans corpse" )]
 	public class Titan : BaseCreature
 	{
+		public override string DefaultName => "a titan";
+
 		[Constructible]
 		public Titan() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a titan";
 			Body = 76;
 			BaseSoundID = 609;
 
@@ -53,7 +54,7 @@ namespace Server.Mobiles
 		}
 
 		public override int Meat{ get{ return 4; } }
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public Titan( Serial serial ) : base( serial )

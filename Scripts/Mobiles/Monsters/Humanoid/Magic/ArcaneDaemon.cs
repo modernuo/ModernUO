@@ -6,15 +6,13 @@ namespace Server.Mobiles
 	[CorpseName( "an arcane daemon corpse" )]
 	public class ArcaneDaemon : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ConcussionBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ConcussionBlow;
+
+		public override string DefaultName => "an arcane daemon";
 
 		[Constructible]
 		public ArcaneDaemon() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an arcane daemon";
 			Body = 0x310;
 			BaseSoundID = 0x47D;
 
@@ -53,7 +51,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average, 2 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+		public override Poison PoisonImmune => Poison.Deadly;
 
 		public ArcaneDaemon( Serial serial ) : base( serial )
 		{

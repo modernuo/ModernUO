@@ -10,9 +10,10 @@ namespace Server.Mobiles
 	[CorpseName( "a dark wolf corpse" )]
 	public class DarkWolfFamiliar : BaseFamiliar
 	{
+		public override string DefaultName => "a dark wolf";
+
 		public DarkWolfFamiliar()
 		{
-			Name = "a dark wolf";
 			Body = 99;
 			Hue = 0x901;
 			BaseSoundID = 0xE5;

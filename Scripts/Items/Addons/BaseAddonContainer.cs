@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public abstract class BaseAddonContainer : BaseContainer, IChopable, IAddon
 	{
-		public override bool DisplayWeight { get { return false; } }
+		public override bool DisplayWeight => false;
 
 		[Hue, CommandProperty( AccessLevel.GameMaster )]
 		public override int Hue

@@ -13,7 +13,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Seasons : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public Seasons()
 		{
@@ -49,7 +49,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class CaretakerOfTheLand : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public CaretakerOfTheLand()
 		{
@@ -85,7 +85,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class WisdomOfTheSphynx : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public WisdomOfTheSphynx()
 		{
@@ -117,7 +117,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 		private class InternalObjective : CollectObjective
 		{
-			public override bool ShowDetailed { get { return false; } }
+			public override bool ShowDetailed => false;
 
 			public InternalObjective()
 				: base( 1, typeof( Pitcher ), 1074869 ) // The answer to the riddle.
@@ -135,7 +135,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class DefendingTheHerd : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public DefendingTheHerd()
 		{
@@ -171,7 +171,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheBalanceOfNature : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public TheBalanceOfNature()
 		{
@@ -206,7 +206,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheJoysOfLife : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public TheJoysOfLife()
 		{
@@ -246,12 +246,12 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Maul" )]
 	public class MaulTheBear : GrizzlyBear
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Maul";
 
 		[Constructible]
 		public MaulTheBear()
 		{
-			Name = "Maul";
 			AI = AIType.AI_Vendor;
 			FightMode = FightMode.None;
 			Tamable = false;
@@ -279,12 +279,12 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Strongroot : Treefellow
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Strongroot";
 
 		[Constructible]
 		public Strongroot()
 		{
-			Name = "Strongroot";
 			AI = AIType.AI_Vendor;
 			FightMode = FightMode.None;
 		}
@@ -311,13 +311,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Enigma : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Enigma";
 
 		[Constructible]
 		public Enigma()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Enigma";
 			BodyValue = 788;
 			BaseSoundID = 0x3EE;
 
@@ -346,8 +346,9 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Bravehorn : BaseEscortable
 	{
-		public override bool StaticMLQuester { get { return true; } }
-		public override bool InitialInnocent { get { return true; } }
+		public override bool StaticMLQuester => true;
+		public override bool InitialInnocent => true;
+		public override string DefaultName => "Bravehorn";
 
 		[Constructible]
 		public Bravehorn()
@@ -356,7 +357,6 @@ namespace Server.Engines.MLQuests.Definitions
 
 		public override void InitBody()
 		{
-			Name = "Bravehorn";
 			Body = 0xEA;
 
 			SetStr( 41, 71 );
@@ -424,10 +424,11 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class BravehornsMate : Hind
 	{
+		public override string DefaultName => "bravehorn's mate";
+
 		[Constructible]
 		public BravehornsMate()
 		{
-			Name = "bravehorn's mate";
 			Tamable = false;
 		}
 
@@ -453,12 +454,12 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Huntsman : Centaur
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Huntsman";
 
 		[Constructible]
 		public Huntsman()
 		{
-			Name = "Huntsman";
 			AI = AIType.AI_Vendor;
 			FightMode = FightMode.None;
 		}
@@ -485,12 +486,12 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Arielle : Pixie
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Arielle";
 
 		[Constructible]
 		public Arielle()
 		{
-			Name = "Arielle";
 			AI = AIType.AI_Vendor;
 			FightMode = FightMode.None;
 		}
@@ -521,7 +522,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Ingenuity : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public Ingenuity()
 		{
@@ -558,7 +559,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class HeaveHo : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public HeaveHo()
 		{
@@ -593,7 +594,7 @@ namespace Server.Engines.MLQuests.Definitions
 	// This is not a real quest, it is only used as a reference
 	public class HumanInNeed : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public HumanInNeed()
 		{
@@ -612,7 +613,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class AllSeasonAdventurer : MLQuest
 	{
-		public override bool RecordCompletion { get { return true; } }
+		public override bool RecordCompletion => true;
 
 		public AllSeasonAdventurer()
 		{
@@ -651,9 +652,9 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Sledge (Buc's Den)" )]
 	public class Sledge : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Sledge";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -666,7 +667,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Sledge()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Sledge";
 			Title = "the Versatile";
 			Body = 400;
 			Hue = Race.RandomSkinHue();
@@ -702,13 +702,13 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Patricus (Vesper)" )]
 	public class Patricus : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Patricus";
 
 		[Constructible]
 		public Patricus()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Patricus";
 			Title = "the Trader";
 			Body = 400;
 			Hue = Race.RandomSkinHue();
@@ -744,9 +744,9 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Belulah (Nujel'm)" )] // On OSI it's "Belulah (Nu'Jelm)" (incorrect spelling)
 	public class Belulah : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Belulah";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			/*
@@ -760,7 +760,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Belulah()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Belulah";
 			Title = "the scorned";
 			Female = true;
 			Body = 401;

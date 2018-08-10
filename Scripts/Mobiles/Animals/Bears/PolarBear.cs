@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Polarbear" )]
 	public class PolarBear : BaseCreature
 	{
+		public override string DefaultName => "a polar bear";
+
 		[Constructible]
 		public PolarBear() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a polar bear";
 			Body = 213;
 			BaseSoundID = 0xA3;
 

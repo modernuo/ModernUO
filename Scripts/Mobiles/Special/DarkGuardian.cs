@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a dark guardians' corpse" )]
 	public class DarkGuardian : BaseCreature
 	{
+		public override string DefaultName => "a dark guardian";
+
 		[Constructible]
 		public DarkGuardian() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a dark guardian";
 			Body = 78;
 			BaseSoundID = 0x3E9;
 
@@ -62,9 +63,9 @@ namespace Server.Mobiles
 		}
 
 		public override int TreasureMapLevel{ get{ return 2; } }
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override bool Unprovokable { get { return true; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override bool Unprovokable => true;
 
 		public override void Serialize( GenericWriter writer )
 		{

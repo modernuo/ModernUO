@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a phoenix corpse" )]
 	public class Phoenix : BaseCreature
 	{
+		public override string DefaultName => "a phoenix";
+
 		[Constructible]
 		public Phoenix() : base( AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a phoenix";
 			Body = 5;
 			Hue = 0x674;
 			BaseSoundID = 0x8F;
@@ -53,7 +54,7 @@ namespace Server.Mobiles
 		public override int Meat{ get{ return 1; } }
 		public override MeatType MeatType{ get{ return MeatType.Bird; } }
 		public override int Feathers{ get{ return 36; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public Phoenix( Serial serial ) : base( serial )
 		{

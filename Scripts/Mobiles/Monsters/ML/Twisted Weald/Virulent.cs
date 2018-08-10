@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Virulent corpse" )]
 	public class Virulent : DreadSpider
 	{
+		public override string DefaultName => "Virulent";
+
 		[Constructible]
 		public Virulent()
 		{
 			IsParagon = true;
-
-			Name = "Virulent";
 			Hue = 0x8FD;
 
 			SetStr( 207, 252 );
@@ -50,10 +50,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.MortalStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
 
 		/*
 		// TODO: uncomment once added
@@ -75,7 +72,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public Virulent( Serial serial )
 			: base( serial )

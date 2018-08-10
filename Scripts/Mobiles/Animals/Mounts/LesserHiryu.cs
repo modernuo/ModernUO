@@ -10,12 +10,9 @@ namespace Server.Mobiles
 	{
 		public override double WeaponAbilityChance { get { return 0.07; } } /* 1 in 15 chance of using; 1 in 5 chance of success */
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
-		public override bool StatLossAfterTame { get { return true; } }
+		public override bool StatLossAfterTame => true;
 
 		private static int GetHue()
 		{
@@ -153,7 +150,7 @@ namespace Server.Mobiles
 		public override int Meat { get { return 16; } }
 		public override int Hides { get { return 60; } }
 		public override FoodType FavoriteFood { get { return FoodType.Meat; } }
-		public override bool CanAngerOnTame { get { return true; } }
+		public override bool CanAngerOnTame => true;
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{

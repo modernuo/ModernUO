@@ -49,7 +49,7 @@ namespace Server.Items
 			m_Destination = destination;
 		}
 
-		public override bool HandlesOnSpeech{ get{ return true; } }
+		public override bool HandlesOnSpeech => true;
 
 		public override void OnSpeech( SpeechEventArgs e )
 		{

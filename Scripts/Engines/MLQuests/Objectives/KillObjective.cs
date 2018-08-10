@@ -96,7 +96,7 @@ namespace Server.Engines.MLQuests.Objectives
 	{
 		private TimeSpan m_Duration;
 
-		public override bool IsTimed { get { return true; } }
+		public override bool IsTimed => true;
 		public override TimeSpan Duration { get { return m_Duration; } }
 
 		public TimedKillObjective( TimeSpan duration, int amount, Type[] types, TextDefinition name )

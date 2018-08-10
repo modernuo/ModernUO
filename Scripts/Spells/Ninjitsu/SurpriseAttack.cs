@@ -44,7 +44,7 @@ namespace Server.Spells.Ninjitsu
 
 		}
 
-		public override bool ValidatesDuringHit { get { return false; } }
+		public override bool ValidatesDuringHit => false;
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

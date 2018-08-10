@@ -4,13 +4,14 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a liche's corpse" )]
+	[CorpseName( "a lich's corpse" )]
 	public class Lich : BaseCreature
 	{
+		public override string DefaultName => "a lich";
+
 		[Constructible]
 		public Lich() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a lich";
 			Body = 24;
 			BaseSoundID = 0x3E9;
 
@@ -61,9 +62,9 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool CanRummageCorpses => true;
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 3; } }
 
 		public Lich( Serial serial ) : base( serial )

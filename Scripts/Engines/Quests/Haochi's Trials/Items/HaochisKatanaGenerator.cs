@@ -6,11 +6,12 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class HaochisKatanaGenerator : Item
 	{
+		public override string DefaultName => "Haochi's katana generator";
+
 		[Constructible]
 		public HaochisKatanaGenerator() : base( 0x1B7B )
 		{
 			Visible = false;
-			Name = "Haochi's katana generator";
 			Movable = false;
 		}
 

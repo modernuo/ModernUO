@@ -12,13 +12,14 @@ namespace Server.Mobiles
 		public bool FieldActive{ get{ return m_FieldActive; } }
 		public bool CanUseField{ get{ return Hits >= HitsMax * 9 / 10; } } // TODO: an OSI bug prevents to verify this
 
-		public override bool IsScaredOfScaryThings{ get{ return false; } }
-		public override bool IsScaryToPets{ get{ return true; } }
+		public override bool IsScaredOfScaryThings => false;
+		public override bool IsScaryToPets => true;
+
+		public override string DefaultName => "an exodus minion";
 
 		[Constructible]
 		public ExodusMinion() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "exodus minion";
 			Body = 0x2F5;
 
 			SetStr( 851, 950 );
@@ -63,9 +64,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AutoDispel => true;
+		public override bool BardImmune => !Core.AOS;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int GetIdleSound()
 		{
@@ -188,8 +189,8 @@ namespace Server.Mobiles
 
 			m_FieldActive = CanUseField;
 
-			if( this.Name == "Exodus Minion" )
-				this.Name = "exodus minion";
+			if ( this.Name == "Exodus Minion" )
+				this.Name = null;
 		}
 	}
 }

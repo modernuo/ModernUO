@@ -32,7 +32,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public override void DisplayPaperdollTo(Mobile to)
 		{
@@ -62,12 +62,13 @@ namespace Server.Mobiles
 			}
 		}
 
+		public override string DefaultName => "a plague spawn";
+
 		public PlagueSpawn( Mobile owner ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			m_Owner = owner;
 			m_ExpireTime = DateTime.UtcNow + TimeSpan.FromMinutes( 1.0 );
 
-			Name = "a plague spawn";
 			Hue = Utility.Random( 0x11, 15 );
 
 			switch ( Utility.Random( 12 ) )

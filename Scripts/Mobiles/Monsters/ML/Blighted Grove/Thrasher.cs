@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Thrasher corpse" )]
 	public class Thrasher : Alligator
 	{
+		public override string DefaultName => "Thrasher";
+
 		[Constructible]
 		public Thrasher()
 		{
 			IsParagon = true;
 
-			Name = "Thrasher";
 			Hue = 0x497;
 
 			SetStr( 93, 327 );
@@ -43,10 +44,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich, 4 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ArmorIgnore;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ArmorIgnore;
 
 		public override void OnDeath( Container c )
 		{
@@ -55,7 +53,7 @@ namespace Server.Mobiles
 			c.DropItem( new ThrashersTail() );
 		}
 
-		public override bool GivesMLMinorArtifact { get { return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int Hides { get { return 48; } }
 		public override int Meat { get { return 1; } }
 

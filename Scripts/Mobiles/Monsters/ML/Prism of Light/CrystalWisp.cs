@@ -6,10 +6,11 @@ namespace Server.Mobiles
 {
 	public class CrystalWisp : Wisp
 	{
+		public override string DefaultName { get { return "a crystal wisp"; } }
+
 		[Constructible]
 		public CrystalWisp()
 		{
-			Name = "a crystal wisp";
 			Hue = 0x482;
 
 			PackArcaneScroll( 0, 1 );

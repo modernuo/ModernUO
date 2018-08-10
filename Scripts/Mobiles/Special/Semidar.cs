@@ -15,10 +15,11 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
 
+		public override string DefaultName => "Semidar";
+
 		[Constructible]
 		public Semidar() : base( AIType.AI_Mage )
 		{
-			Name = "Semidar";
 			Body = 174;
 			BaseSoundID = 0x4B0;
 
@@ -59,8 +60,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich );
 		}
 
-		public override bool Unprovokable{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool Unprovokable => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override void CheckReflect( Mobile caster, ref bool reflect )
 		{

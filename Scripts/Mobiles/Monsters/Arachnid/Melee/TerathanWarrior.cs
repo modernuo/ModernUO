@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a terathan warrior corpse" )]
 	public class TerathanWarrior : BaseCreature
 	{
+		public override string DefaultName => "a terathan warrior";
+
 		[Constructible]
 		public TerathanWarrior() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a terathan warrior";
 			Body = 70;
 			BaseSoundID = 589;
 

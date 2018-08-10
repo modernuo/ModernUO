@@ -22,7 +22,7 @@ namespace Server.Spells.Necromancy
 		{
 		}
 
-		public override bool BlockedByHorrificBeast{ get{ return false; } }
+		public override bool BlockedByHorrificBeast => false;
 
 		public override bool CheckCast()
 		{

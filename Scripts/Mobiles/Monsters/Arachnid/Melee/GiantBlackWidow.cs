@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a giant black widow spider corpse" )] // stupid corpse name
 	public class GiantBlackWidow : BaseCreature
 	{
+		public override string DefaultName => "a giant black wide";
+
 		[Constructible]
 		public GiantBlackWidow() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a giant black widow";
 			Body =  0x9D;
 			BaseSoundID = 0x388; // TODO: validate
 
@@ -53,8 +54,8 @@ namespace Server.Mobiles
 		}
 
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
-		public override Poison HitPoison{ get{ return Poison.Deadly; } }
+		public override Poison PoisonImmune => Poison.Deadly;
+		public override Poison HitPoison => Poison.Deadly;
 
 		public GiantBlackWidow( Serial serial ) : base( serial )
 		{

@@ -25,7 +25,7 @@ namespace Server.Spells.Eighth
 		{
 		}
 
-		public override bool DelayedDamage{ get{ return !Core.AOS; } }
+		public override bool DelayedDamage => !Core.AOS;
 
 		public override void OnCast()
 		{

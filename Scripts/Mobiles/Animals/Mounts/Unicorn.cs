@@ -8,10 +8,10 @@ namespace Server.Mobiles
 	[CorpseName( "a unicorn corpse" )]
 	public class Unicorn : BaseMount
 	{
-		public override bool AllowMaleRider{ get{ return false; } }
-		public override bool AllowMaleTamer{ get{ return false; } }
+		public override bool AllowMaleRider => false;
+		public override bool AllowMaleTamer => false;
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override TimeSpan MountAbilityDelay { get { return TimeSpan.FromHours( 1.0 ); } }
 
@@ -114,7 +114,7 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int Meat{ get{ return 3; } }
 		public override int Hides{ get{ return 10; } }
 		public override HideType HideType{ get{ return HideType.Horned; } }

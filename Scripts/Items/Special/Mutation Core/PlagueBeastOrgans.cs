@@ -153,7 +153,7 @@ namespace Server.Items
 
 			if ( Owner != null )
 				Owner.PlaySound( 0x187 );
-			
+
 			AddComponent( new PlagueBeastComponent( 0x1D0D, 0x0 ), 22, 3 );
 			AddComponent( new PlagueBeastComponent( 0x1D12, 0x0 ), 15, 18 );
 			AddComponent( new PlagueBeastComponent( 0x1DA3, 0x21 ), 26, 46 );
@@ -185,8 +185,8 @@ namespace Server.Items
 
 	public class PlagueBeastRockOrgan : PlagueBeastOrgan
 	{
-		public override bool IsCuttable { get { return true; } }
-		
+		public override bool IsCuttable => true;
+
 		public PlagueBeastRockOrgan() : base( 0x177A, 0x60 )
 		{
 		}
@@ -194,7 +194,7 @@ namespace Server.Items
 		public override void Carve( Mobile from, Item with )
 		{
 			if ( IsAccessibleTo( from ) )
-				with.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071896 ); // This is too crude an implement for such a procedure. 
+				with.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071896 ); // This is too crude an implement for such a procedure.
 		}
 
 		public override bool OnLifted( Mobile from, PlagueBeastComponent c )
@@ -218,7 +218,7 @@ namespace Server.Items
 			AddComponent( new PlagueBeastComponent( 0x1777, 0x1 ), 10, 14 );
 
 			if ( BrainHue > 0 )
-				AddComponent( new PlagueBeastComponent( 0x1CF0, BrainHue, true ), 1, 24 ); // 22, 29 
+				AddComponent( new PlagueBeastComponent( 0x1CF0, BrainHue, true ), 1, 24 ); // 22, 29
 			else
 				AddComponent( new PlagueBeastBlood(), -7, 24 );
 		}
@@ -245,7 +245,7 @@ namespace Server.Items
 	public class PlagueBeastRubbleOrgan : PlagueBeastOrgan
 	{
 		private int m_Veins;
-		
+
 		public PlagueBeastRubbleOrgan() : base()
 		{
 			m_Veins = 3;
@@ -351,14 +351,14 @@ namespace Server.Items
 			m_Veins = reader.ReadInt();
 		}
 	}
-	
+
 	public class PlagueBeastBackupOrgan : PlagueBeastOrgan
 	{
-		public override bool IsCuttable { get { return true; } }
+		public override bool IsCuttable => true;
 
 		private Timer m_Timer;
 		private Item m_Gland;
-		
+
 		public PlagueBeastBackupOrgan() : base( 0x1362, 0x6 )
 		{
 		}
@@ -377,7 +377,7 @@ namespace Server.Items
 		public override void Carve( Mobile from, Item with )
 		{
 			if ( IsAccessibleTo( from ) )
-				with.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071896 ); // This is too crude an implement for such a procedure. 
+				with.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071896 ); // This is too crude an implement for such a procedure.
 		}
 
 		public override bool OnLifted( Mobile from, PlagueBeastComponent c )
@@ -530,7 +530,7 @@ namespace Server.Items
 						return true;
 					}
 				}
-				
+
 				if ( m_Brains == 4 )
 					FinishOpening( from );
 

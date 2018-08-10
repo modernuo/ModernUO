@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Putrefier corpse" )]
 	public class Putrefier : Balron
 	{
+		public override string DefaultName => "Putrefier";
+
 		[Constructible]
 		public Putrefier()
 		{
 			IsParagon = true;
 
-			Name = "Putrefier";
 			Hue = 63;
 
 			SetStr( 1057, 1400 );
@@ -68,8 +69,8 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
-		public override Poison HitPoison{ get{ return Poison.Deadly; } } // Becomes Lethal with Paragon bonus
+		public override bool GivesMLMinorArtifact => true;
+		public override Poison HitPoison => Poison.Deadly; // Becomes Lethal with Paragon bonus
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public Putrefier( Serial serial )

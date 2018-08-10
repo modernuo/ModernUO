@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a ferret corpse" )]
 	public class Ferret : BaseCreature
 	{
+		public override string DefaultName => "a ferret";
+
 		[Constructible]
 		public Ferret() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a ferret";
 			Body = 0x117;
 
 			SetStr( 41, 48 );
@@ -47,7 +48,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override void OnMovement( Mobile m, Point3D oldLocation ) 
+		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
 			if ( m is Ferret && m.InRange( this, 3 ) && m.Alive )
 				Talk( (Ferret) m );
@@ -75,7 +76,7 @@ namespace Server.Mobiles
 					QuestSystem.FocusTo( this, to );
 
 				Say( m_Vocabulary[ Utility.Random( m_Vocabulary.Length ) ] );
-			
+
 				if ( to != null && Utility.RandomBool() )
 					Timer.DelayCall( TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 8 ) ), new TimerCallback( delegate() { to.Talk(); } ) );
 

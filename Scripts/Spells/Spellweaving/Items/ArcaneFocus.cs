@@ -37,7 +37,7 @@ namespace Server.Items
 		public ArcaneFocus( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
@@ -46,7 +46,7 @@ namespace Server.Items
 		}
 
 		public override TextDefinition InvalidTransferMessage{ get { return 1073480; } } // Your arcane focus disappears.
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 
 		public override void Serialize( GenericWriter writer )
 		{

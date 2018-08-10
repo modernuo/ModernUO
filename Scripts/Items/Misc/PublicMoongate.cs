@@ -11,7 +11,7 @@ namespace Server.Items
 {
 	public class PublicMoongate : Item
 	{
-		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		[Constructible]
 		public PublicMoongate() : base( 0xF6C )
@@ -44,7 +44,7 @@ namespace Server.Items
 			return true;
 		}
 
-		public override bool HandlesOnMovement{ get{ return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a rai-ju corpse" )]
 	public class RaiJu : BaseCreature
 	{
+		public override string DefaultName => "a Rai-Ju";
+
 		[Constructible]
 		public RaiJu() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a Rai-Ju";
 			Body = 199;
 			BaseSoundID = 0x346;
 
@@ -39,7 +40,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 55.1, 65.0 );
 			SetSkill( SkillName.MagicResist, 110.1, 125.0 );
 			SetSkill( SkillName.Anatomy, 25.1, 35.0 );
-		
+
 			Fame = 8000;
 			Karma = -8000;
 
@@ -50,7 +51,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich, 2 );
 			AddLoot( LootPack.Gems, 2 );
 		}
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{
@@ -68,11 +69,11 @@ namespace Server.Mobiles
 
 				defender.FixedEffect( 0x37B9, 10, 5 );
 				defender.SendLocalizedMessage( 1070839 ); // The creature attacks with stunning force!
- 
+
 				// This should be done in place of the normal attack damage.
 				//AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
 
-				defender.Frozen = true; 
+				defender.Frozen = true;
 
 				ExpireTimer timer = new ExpireTimer( defender, TimeSpan.FromSeconds( 4.0 ) );
 				timer.Start();

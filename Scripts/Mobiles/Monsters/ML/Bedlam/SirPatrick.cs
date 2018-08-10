@@ -9,12 +9,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Sir Patrick corpse" )]
 	public class SirPatrick : SkeletalKnight
 	{
+		public override string DefaultName => "Sir Patrick";
+
 		[Constructible]
 		public SirPatrick()
 		{
 			IsParagon = true;
 
-			Name = "Sir Patrick";
 			Hue = 0x47E;
 
 			SetStr( 208, 319 );
@@ -114,7 +115,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public SirPatrick( Serial serial )
 			: base( serial )

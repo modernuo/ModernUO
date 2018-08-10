@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a hell hound corpse" )]
 	public class HellHound : BaseCreature
 	{
+		public override string DefaultName => "a hell hound";
+
 		[Constructible]
 		public HellHound() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a hell hound";
 			Body = 98;
 			BaseSoundID = 229;
 
@@ -49,7 +50,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool HasBreath => true; // fire breath enabled
 		public override int Meat{ get{ return 1; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public override PackInstinct PackInstinct{ get{ return PackInstinct.Canine; } }

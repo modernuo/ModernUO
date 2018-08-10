@@ -83,7 +83,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool HandlesOnMovement{ get{ return true; } }
+		public override bool HandlesOnMovement => true;
 
 		private DateTime m_NextMessage;
 

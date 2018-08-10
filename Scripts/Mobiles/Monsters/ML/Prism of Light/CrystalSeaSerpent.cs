@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal sea serpent corpse" )]
 	public class CrystalSeaSerpent : SeaSerpent
 	{
+		public override string DefaultName { get { return "a crystal sea serpent"; } }
+
 		[Constructible]
 		public CrystalSeaSerpent()
 		{
-			Name = "a crystal sea serpent";
 			Hue = 0x47E;
 
 			SetStr( 250, 450 );

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
 	public class Artist : BaseCreature
 	{
-		public override bool CanTeach { get { return true; } }
+		public override bool CanTeach => true;
 
 		[Constructible]
 		public Artist()
@@ -49,7 +49,7 @@ namespace Server.Mobiles
 			AddItem( pack );
 		}
 
-		public override bool ClickTitle { get { return false; } }
+		public override bool ClickTitle => false;
 
 
 		public Artist( Serial serial )
@@ -61,7 +61,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int)0 ); // version 
+			writer.Write( (int)0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )

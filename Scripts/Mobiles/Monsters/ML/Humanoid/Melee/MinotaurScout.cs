@@ -9,17 +9,15 @@ namespace Server.Mobiles
 	[CorpseName( "a minotaur corpse" )]
 	public class MinotaurScout : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ParalyzingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
+
+		public override string DefaultName => "a minotaur scout";
 
 		[Constructible]
 		public MinotaurScout() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{
-			Name = "a minotaur scout";
 			Body = 281;
-		   
+
 			SetStr( 353, 375 );
 			SetDex( 111, 130 );
 			SetInt( 34, 50 );

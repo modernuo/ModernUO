@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Grizzlybear" )]
 	public class RagingGrizzlyBear : BaseCreature
 	{
+		public override string DefaultName => "a raging grizzly bear";
+
 		[Constructible]
 		public RagingGrizzlyBear() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a raging grizzly bear";
 			Body = 212;
 			BaseSoundID = 0xA3;
 
@@ -41,7 +42,7 @@ namespace Server.Mobiles
 			VirtualArmor = 24;
 
 			Tamable = false;
-			
+
 		}
 
 		public override int Meat{ get{ return 4; } }

@@ -7,13 +7,14 @@ namespace Server.Mobiles
 	[CorpseName( "a Saliva corpse" )]
 	public class Saliva : Harpy
 	{
+		public override string DefaultName => "Saliva";
+
 		[Constructible]
 		public Saliva()
 		{
 			// TODO: Not a paragon? No ML arties?
 			// It moves like a paragon on OSI...
 
-			Name = "Saliva";
 			Hue = 0x11E;
 
 			SetStr( 110, 206 );

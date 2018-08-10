@@ -11,12 +11,12 @@ namespace Server.Mobiles
 	{
 		private bool m_Stunning;
 
+		public override string DefaultName => "a betrayer";
+
 		[Constructible]
 		public Betrayer() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a betrayer";
 			Body = 767;
-
 
 			SetStr( 401, 500 );
 			SetDex( 81, 100 );
@@ -96,9 +96,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 1 );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AlwaysMurderer => true;
+		public override bool BardImmune => !Core.AOS;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int Meat{ get{ return 1; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
 

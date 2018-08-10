@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a plant corpse" )]
 	public class BogThing : BaseCreature
 	{
+		public override string DefaultName { get { return "a bog thing"; } }
+
 		[Constructible]
 		public BogThing() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.6, 1.2 )
 		{
-			Name = "a bog thing";
 			Body = 780;
 
 			SetStr( 801, 900 );
@@ -55,8 +56,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average, 2 );
 		}
 
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BardImmune => !Core.AOS;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public BogThing( Serial serial ) : base( serial )
 		{
@@ -107,7 +108,7 @@ namespace Server.Mobiles
 		public void EatBoglings()
 		{
 			ArrayList toEat = new ArrayList();
-  
+
 			foreach ( Mobile m in this.GetMobilesInRange( 2 ) )
 			{
 				if ( m is Bogling )

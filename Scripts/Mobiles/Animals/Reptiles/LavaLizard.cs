@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Lavalizard" )]
 	public class LavaLizard : BaseCreature
 	{
+		public override string DefaultName => "a lava lizard";
+
 		[Constructible]
 		public LavaLizard() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a lava lizard";
 			Body = 0xCE;
 			Hue = Utility.RandomList( 0x647, 0x650, 0x659, 0x662, 0x66B, 0x674 );
 			BaseSoundID = 0x5A;
@@ -53,7 +54,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool HasBreath => true; // fire breath enabled
 		public override int Hides{ get{ return 12; } }
 		public override HideType HideType{ get{ return HideType.Spined; } }
 

@@ -6,9 +6,9 @@ namespace Server.Items
 	{
 		private const int m_Level = 3;
 
-		public override bool Decays { get { return true; } }
+		public override bool Decays => true;
 
-		public override bool IsDecoContainer { get { return false; } }
+		public override bool IsDecoContainer => false;
 
 		public override TimeSpan DecayTime { get { return TimeSpan.FromMinutes( Utility.Random( 15, 60 ) ); } }
 

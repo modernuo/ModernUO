@@ -5,16 +5,17 @@ namespace Server.Mobiles
 {
 	public class ServantOfSemidar : BaseCreature
 	{
+		public override string DefaultName => "a Servant of Semidar";
+
 		[Constructible]
 		public ServantOfSemidar() : base( AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a servant of Semidar";
 			Body = 0x26;
 		}
 
-		public override bool DisallowAllMoves{ get{ return true; } }
+		public override bool DisallowAllMoves => true;
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override bool CanBeDamaged()
 		{

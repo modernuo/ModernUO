@@ -43,10 +43,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Drithen (Umbra)" )]
 	public class Drithen : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Drithen";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074188 ); // Weakling! You are not up to the task I have.
@@ -56,7 +56,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Drithen()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Drithen";
 			Title = "the Fierce";
 			Race = Race.Human;
 			BodyValue = 0x190;

@@ -15,8 +15,8 @@ namespace Server.Mobiles.Townfolk
 			IsPrisoner = true;
 		}
 
-		public override bool CanTeach { get { return true; } }
-		public override bool ClickTitle { get { return false; } }
+		public override bool CanTeach => true;
+		public override bool ClickTitle => false;
 
 		public override void InitOutfit()
 		{

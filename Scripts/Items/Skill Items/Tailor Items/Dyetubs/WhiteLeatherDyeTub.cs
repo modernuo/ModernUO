@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber { get { return 1149900; } } // White Leather Dye Tub
 
-		public override bool Redyable { get { return false; } }
+		public override bool Redyable => false;
 
 		[Constructible]
 		public WhiteLeatherDyeTub()

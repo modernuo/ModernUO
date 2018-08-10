@@ -14,13 +14,11 @@ namespace Server.Engines.Quests.Matriarch
 	public abstract class BaseSolenMatriarch : BaseQuester
 	{
 		public abstract bool RedSolen{ get; }
-
-		public override bool DisallowAllMoves{ get{ return false; } }
+		public override string DefaultName => "the solen matriarch";
+		public override bool DisallowAllMoves => false;
 
 		public BaseSolenMatriarch()
 		{
-			Name = "the solen matriarch";
-
 			Body = 0x328;
 
 			if ( !RedSolen )
@@ -283,7 +281,7 @@ namespace Server.Engines.Quests.Matriarch
 
 	public class RedSolenMatriarch : BaseSolenMatriarch
 	{
-		public override bool RedSolen{ get{ return true; } }
+		public override bool RedSolen => true;
 
 		[Constructible]
 		public RedSolenMatriarch()
@@ -311,7 +309,7 @@ namespace Server.Engines.Quests.Matriarch
 
 	public class BlackSolenMatriarch : BaseSolenMatriarch
 	{
-		public override bool RedSolen{ get{ return false; } }
+		public override bool RedSolen => false;
 
 		[Constructible]
 		public BlackSolenMatriarch()

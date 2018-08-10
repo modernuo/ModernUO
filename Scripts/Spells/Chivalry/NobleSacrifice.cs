@@ -26,7 +26,7 @@ namespace Server.Spells.Chivalry
 		public override int RequiredMana{ get{ return 20; } }
 		public override int RequiredTithing{ get{ return 30; } }
 		public override int MantraNumber{ get{ return 1060725; } } // Dium Prostra
-		public override bool BlocksMovement{ get{ return false; } }
+		public override bool BlocksMovement => false;
 
 		public NobleSacrificeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

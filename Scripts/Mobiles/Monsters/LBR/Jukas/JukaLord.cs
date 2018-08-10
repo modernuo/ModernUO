@@ -6,13 +6,14 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a juka corpse" )] // Why is this 'juka' and warriors 'jukan' ? :-(
+	[CorpseName( "a jukan corpse" )]
 	public class JukaLord : BaseCreature
 	{
+		public override string DefaultName => "a juka lord";
+
 		[Constructible]
 		public JukaLord() : base( AIType.AI_Archer, FightMode.Closest, 10, 3, 0.2, 0.4 )
 		{
-			Name = "a juka lord";
 			Body = 766;
 
 			SetStr( 401, 500 );
@@ -104,9 +105,9 @@ namespace Server.Mobiles
 			return 0x28D;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
+		public override bool BardImmune => !Core.AOS;
+		public override bool CanRummageCorpses => true;
 		public override int Meat{ get{ return 1; } }
 
 		public JukaLord( Serial serial ) : base( serial )

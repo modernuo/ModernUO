@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Jackrabbit" )]
 	public class JackRabbit : BaseCreature
 	{
+		public override string DefaultName => "a jack rabbit";
+
 		[Constructible]
 		public JackRabbit() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a jack rabbit";
 			Body = 0xCD;
 			Hue = 0x1BB;
 
@@ -49,20 +50,20 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override int GetAttackSound() 
-		{ 
-			return 0xC9; 
-		} 
+		public override int GetAttackSound()
+		{
+			return 0xC9;
+		}
 
-		public override int GetHurtSound() 
-		{ 
-			return 0xCA; 
-		} 
+		public override int GetHurtSound()
+		{
+			return 0xCA;
+		}
 
-		public override int GetDeathSound() 
-		{ 
-			return 0xCB; 
-		} 
+		public override int GetDeathSound()
+		{
+			return 0xCB;
+		}
 
 		public override void Serialize(GenericWriter writer)
 		{

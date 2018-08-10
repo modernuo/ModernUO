@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a vorpal bunny corpse" )]
 	public class VorpalBunny : BaseCreature
 	{
+		public override string DefaultName => "a vorpal bunny";
+
 		[Constructible]
 		public VorpalBunny() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a vorpal bunny";
 			Body = 205;
 			Hue = 0x480;
 
@@ -54,11 +55,12 @@ namespace Server.Mobiles
 
 		public class BunnyHole : Item
 		{
+			public override string DefaultName => "a mysterious rabbit hole";
+
 			public BunnyHole() : base( 0x913 )
 			{
 				Movable = false;
 				Hue = 1;
-				Name = "a mysterious rabbit hole";
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 40.0 ), new TimerCallback( Delete ) );
 			}
@@ -105,7 +107,7 @@ namespace Server.Mobiles
 
 		public override int Meat{ get{ return 1; } }
 		public override int Hides{ get{ return 1; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
+		public override bool BardImmune => !Core.AOS;
 
 		public VorpalBunny( Serial serial ) : base( serial )
 		{

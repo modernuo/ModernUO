@@ -22,12 +22,12 @@ namespace Server.Multis
 			get
 			{
 				return m_DecayDelay;
-			} 
+			}
 			set
 			{
 				m_DecayDelay = value;
 				RefreshDecay( true );
-			} 
+			}
 		}
 
 		public BaseCamp( int multiID ) : base( multiID )
@@ -44,7 +44,7 @@ namespace Server.Multis
 		{
 			if ( Deleted )
 				return;
-			
+
 			AddComponents();
 		}
 
@@ -84,8 +84,8 @@ namespace Server.Multis
 
 			if ( bc != null )
 			{
-				bc.RangeHome = wanderRange; 
-				bc.Home = loc; 
+				bc.RangeHome = wanderRange;
+				bc.Home = loc;
 			}
 
 			if ( m is BaseVendor || m is Banker )
@@ -104,7 +104,7 @@ namespace Server.Multis
 			RefreshDecay( true );
 		}
 
-		public override bool HandlesOnMovement{ get{ return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

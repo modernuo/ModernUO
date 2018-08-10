@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a dragon corpse" )]
 	public class SerpentineDragon : BaseCreature
 	{
+		public override string DefaultName => "a serpentine dragon";
+
 		[Constructible]
 		public SerpentineDragon() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a serpentine dragon";
 			Body = 103;
 			BaseSoundID = 362;
 
@@ -78,11 +79,11 @@ namespace Server.Mobiles
 			return 0x2C3;
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool ReacquireOnMovement => true;
+		public override bool HasBreath => true; // fire breath enabled
 		public override double BonusPetDamageScalar{ get{ return (Core.SE) ? 3.0 : 1.0; } }
 
-		public override bool AutoDispel{ get{ return true; } }
+		public override bool AutoDispel => true;
 		public override HideType HideType{ get{ return HideType.Barbed; } }
 		public override int Hides{ get{ return 20; } }
 		public override int Meat{ get{ return 19; } }

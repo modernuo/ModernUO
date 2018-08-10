@@ -6,9 +6,9 @@ namespace Server.Items
 	{
 		public override CustomHuePicker CustomHuePicker{ get{ return null; } }
 
-		public override int LabelNumber { get { return 1153495; } } // Metallic Leather ... 
+		public override int LabelNumber { get { return 1153495; } } // Metallic Leather ...
 
-		public override bool MetallicHues { get { return true; } }
+		public override bool MetallicHues => true;
 
 		[Constructible]
 		public MetallicLeatherDyeTub()

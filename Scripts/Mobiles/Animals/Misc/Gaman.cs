@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gaman corpse" )]
 	public class Gaman : BaseCreature
 	{
+		public override string DefaultName => "a gaman";
+
 		[Constructible]
 		public Gaman() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a gaman";
 			Body = 248;
 
 			SetStr( 146, 175 );

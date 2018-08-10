@@ -10,12 +10,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Pyre corpse" )]
 	public class Pyre : Phoenix
 	{
+		public override string DefaultName => "Pyre";
+
 		[Constructible]
 		public Pyre()
 		{
 			IsParagon = true;
 
-			Name = "Pyre";
 			Hue = 0x489;
 
 			FightMode = FightMode.Closest;
@@ -61,9 +62,9 @@ namespace Server.Mobiles
 				return WeaponAbility.BleedAttack;
 		}
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int TreasureMapLevel{ get{ return 5; } }
-		public override bool HasAura{ get{ return true; } }
+		public override bool HasAura => true;
 
 		public Pyre( Serial serial )
 			: base( serial )

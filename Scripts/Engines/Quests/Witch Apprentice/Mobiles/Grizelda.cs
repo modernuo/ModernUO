@@ -8,7 +8,8 @@ namespace Server.Engines.Quests.Hag
 {
 	public class Grizelda : BaseQuester
 	{
-		public override bool ClickTitle{ get{ return true; } }
+		public override bool ClickTitle => true;
+		public override string DefaultName => "Grizelda";
 
 		[Constructible]
 		public Grizelda() : base( "the Hag" )
@@ -27,7 +28,6 @@ namespace Server.Engines.Quests.Hag
 
 			Female = true;
 			Body = 0x191;
-			Name = "Grizelda";
 		}
 
 		public override void InitOutfit()
@@ -133,7 +133,7 @@ namespace Server.Engines.Quests.Hag
 								else
 								{
 									Item item;
-							
+
 									if ( Core.AOS )
 									{
 										item = Loot.RandomArmorOrShieldOrJewelry();

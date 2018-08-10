@@ -28,7 +28,7 @@ namespace Server.Spells.Sixth
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public override bool DelayedDamage { get { return false; } }
+		public override bool DelayedDamage => false;
 
 		public void Target( Mobile m )
 		{

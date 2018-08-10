@@ -9,8 +9,8 @@ namespace Server.Mobiles
 {
 	public abstract class BaseChampion : BaseCreature
 	{
-		public override bool CanMoveOverObstacles { get { return true; } }
-		public override bool CanDestroyObstacles { get { return true; } }
+		public override bool CanMoveOverObstacles => true;
+		public override bool CanDestroyObstacles => true;
 
 		public BaseChampion( AIType aiType ) : this( aiType, FightMode.Closest )
 		{
@@ -65,7 +65,7 @@ namespace Server.Mobiles
 				return null;
 
 			int random = Utility.Random( list.Length );
-			
+
 			Type type = list[random];
 
 			Item artifact = Loot.Construct( type );
@@ -294,7 +294,7 @@ namespace Server.Mobiles
 					return;
 
 				Gold g = new Gold( 500, 1000 );
-				
+
 				g.MoveToWorld( new Point3D( m_X, m_Y, z ), m_Map );
 
 				if ( 0.5 >= Utility.RandomDouble() )

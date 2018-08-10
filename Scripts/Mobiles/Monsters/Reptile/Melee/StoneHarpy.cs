@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a stone harpy corpse" )]
 	public class StoneHarpy : BaseCreature
 	{
+		public override string DefaultName => "a stone harpy";
+
 		[Constructible]
 		public StoneHarpy() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a stone harpy";
 			Body = 73;
 			BaseSoundID = 402;
 
@@ -76,7 +77,7 @@ namespace Server.Mobiles
 
 		public override int Meat{ get{ return 1; } }
 		public override int Feathers{ get{ return 50; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public StoneHarpy( Serial serial ) : base( serial )
 		{

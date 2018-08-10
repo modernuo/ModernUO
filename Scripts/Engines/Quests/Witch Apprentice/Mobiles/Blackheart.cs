@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Hag
 {
 	public class Blackheart : BaseQuester
 	{
+		public override string DefaultName => "Captain Blackheart";
+
 		[Constructible]
 		public Blackheart() : base( "the Drunken Pirate" )
 		{
@@ -25,7 +27,6 @@ namespace Server.Engines.Quests.Hag
 
 			Female = false;
 			Body = 0x190;
-			Name = "Captain Blackheart";
 		}
 
 		public override void InitOutfit()

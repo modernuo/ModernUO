@@ -18,7 +18,7 @@ namespace Server.Mobiles
 		public static readonly TimeSpan AbandonDelay = MLQuestSystem.Enabled ? TimeSpan.FromMinutes( 1.0 ) : TimeSpan.FromMinutes( 2.0 );
 		public static readonly TimeSpan DeleteTime = MLQuestSystem.Enabled ? TimeSpan.FromSeconds( 100 ) : TimeSpan.FromSeconds( 30 );
 
-		public override bool StaticMLQuester { get { return false; } } // Suppress automatic quest registration on creation/deserialization
+		public override bool StaticMLQuester => false; // Suppress automatic quest registration on creation/deserialization
 
 		private MLQuest m_MLQuest;
 
@@ -104,7 +104,7 @@ namespace Server.Mobiles
 			get { return ( m_DeleteTimer != null ); }
 		}
 
-		public override bool Commandable { get { return false; } } // Our master cannot boss us around!
+		public override bool Commandable => false; // Our master cannot boss us around!
 		public override bool DeleteCorpseOnDeath { get { return m_DeleteCorpse; } }
 
 		[CommandProperty(AccessLevel.GameMaster)]

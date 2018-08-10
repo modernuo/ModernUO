@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a ghostly corpse" )]
 	public class Bogle : BaseCreature
 	{
+		public override string DefaultName => "a bogle";
+
 		[Constructible]
 		public Bogle() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a bogle";
 			Body = 153;
 			BaseSoundID = 0x482;
 
@@ -41,8 +42,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public Bogle( Serial serial ) : base( serial )
 		{

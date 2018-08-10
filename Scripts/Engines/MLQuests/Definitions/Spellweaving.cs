@@ -75,7 +75,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class NeedsOfTheManyHeartwood1 : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( NeedsOfTheManyHeartwood2 ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public NeedsOfTheManyHeartwood1()
 		{
@@ -95,7 +95,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class NeedsOfTheManyHeartwood2 : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( MakingAContributionHeartwood ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public NeedsOfTheManyHeartwood2()
 		{
@@ -115,7 +115,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class MakingAContributionHeartwood : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( UnnaturalCreations ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public MakingAContributionHeartwood()
 		{
@@ -136,7 +136,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class UnnaturalCreations : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public UnnaturalCreations()
 		{
@@ -196,7 +196,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class NeedsOfTheManySanctuary : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( MakingAContributionSanctuary ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public NeedsOfTheManySanctuary()
 		{
@@ -216,7 +216,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class MakingAContributionSanctuary : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( SuppliesForSanctuary ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public MakingAContributionSanctuary()
 		{
@@ -236,7 +236,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class SuppliesForSanctuary : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( TheHumanBlight ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public SuppliesForSanctuary()
 		{
@@ -257,7 +257,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheHumanBlight : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public TheHumanBlight()
 		{
@@ -317,7 +317,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class TokenOfFriendship : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( Alliance ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public TokenOfFriendship()
 		{
@@ -336,7 +336,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Alliance : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public Alliance()
 		{
@@ -397,7 +397,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class CrackingTheWhipI : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( CrackingTheWhipII ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public CrackingTheWhipI()
 		{
@@ -417,7 +417,7 @@ namespace Server.Engines.MLQuests.Definitions
 	// TODO: Verify
 	public class CrackingTheWhipII : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public CrackingTheWhipII()
 		{
@@ -448,10 +448,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Aeluva (The Heartwood)" )]
 	public class Aeluva : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Aeluva";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			/*
@@ -465,7 +465,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Aeluva()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
-			Name = "Aeluva";
 			Title = "the arcanist";
 			Race = Race.Elf;
 			Female = true;
@@ -507,10 +506,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Koole (Sanctuary)" )]
 	public class Koole : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Koole";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -523,7 +522,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Koole()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
-			Name = "Koole";
 			Title = "the arcanist";
 			Race = Race.Elf;
 			Body = 605;
@@ -573,10 +571,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Synaeva (The Heartwood)" )]
 	public class Synaeva : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Synaeva";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074223 ); // Have you done it yet?  Oh, I haven’t told you, have I?
@@ -586,7 +584,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Synaeva()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
-			Name = "Synaeva";
 			Title = "the arcanist";
 			Race = Race.Elf;
 			Female = true;
@@ -633,10 +630,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Elder Brae (Sanctuary)" )]
 	public class ElderBrae : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Elder Brae";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -649,7 +646,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public ElderBrae()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2.0 )
 		{
-			Name = "Elder Brae";
 			Title = "the wise";
 			Race = Race.Elf;
 			Female = true;

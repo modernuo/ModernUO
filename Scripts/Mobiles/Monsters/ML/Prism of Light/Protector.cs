@@ -7,6 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "a human corpse" )]
 	public class Protector : BaseCreature
 	{
+		public override string DefaultName => "a Protector";
+
 		[Constructible]
 		public Protector()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -17,7 +19,6 @@ namespace Server.Mobiles
 			HairItemID = Race.Human.RandomHair( this );
 			HairHue = Race.Human.RandomHairHue();
 
-			Name = "a Protector";
 			Title = "the mystic llamaherder";
 
 			SetStr( 700, 800 );
@@ -57,9 +58,9 @@ namespace Server.Mobiles
 			AddItem( shroud );
 		}
 
-		public override bool AlwaysMurderer { get { return true; } }
-		public override bool PropertyTitle { get { return false; } }
-		public override bool ShowFameTitle { get { return false; } }
+		public override bool AlwaysMurderer => true;
+		public override bool PropertyTitle => false;
+		public override bool ShowFameTitle => false;
 
 		public Protector( Serial serial )
 			: base( serial )

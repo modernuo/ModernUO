@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal daemon corpse" )]
 	public class CrystalDaemon : BaseCreature
 	{
+		public override string DefaultName { get { return "a crystal daemon"; } }
+
 		[Constructible]
 		public CrystalDaemon()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a crystal daemon";
 			Body = 0x310;
 			Hue = 0x3E8;
 			BaseSoundID = 0x47D;

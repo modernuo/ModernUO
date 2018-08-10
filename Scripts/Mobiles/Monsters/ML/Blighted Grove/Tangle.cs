@@ -7,13 +7,14 @@ namespace Server.Mobiles
 	[CorpseName( "a Tangle corpse" )]
 	public class Tangle : BogThing
 	{
+		public override string DefaultName => "Tangle";
+
 		[Constructible]
 		public Tangle()
 		{
 			// TODO: Not a paragon? No ML arties?
 			// It moves like a paragon on OSI...
 
-			Name = "Tangle";
 			Hue = 0x21;
 
 			SetStr( 870, 940 );

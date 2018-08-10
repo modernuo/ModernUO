@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "an ice fiend corpse" )]
 	public class IceFiend : BaseCreature
 	{
+		public override string DefaultName => "an ice fiend";
+
 		[Constructible]
 		public IceFiend () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an ice fiend";
 			Body = 43;
 			BaseSoundID = 357;
 
@@ -49,7 +50,7 @@ namespace Server.Mobiles
 
 		public override int TreasureMapLevel{ get{ return 4; } }
 		public override int Meat{ get{ return 1; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public IceFiend( Serial serial ) : base( serial )
 		{

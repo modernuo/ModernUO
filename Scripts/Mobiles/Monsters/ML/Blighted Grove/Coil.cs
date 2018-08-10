@@ -9,12 +9,13 @@ namespace Server.Mobiles
 	{
 		// TODO: Check faction allegiance
 
+		public override string DefaultName => "Coil";
+
 		[Constructible]
 		public Coil()
 		{
 			IsParagon = true;
 
-			Name = "Coil";
 			Hue = 0x3F;
 
 			SetStr( 205, 343 );
@@ -51,10 +52,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.MortalStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
 
 		public override void OnDeath( Container c )
 		{
@@ -80,7 +78,7 @@ namespace Server.Mobiles
 
 		public override Poison HitPoison { get { return Poison.Lethal; } }
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
-		public override bool GivesMLMinorArtifact { get { return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int Hides { get { return 48; } }
 		public override int Meat { get { return 1; } }
 

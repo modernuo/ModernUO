@@ -19,7 +19,7 @@ namespace Server.Items
 		{
 			return ( Validate( attacker ) && CheckMana( attacker, true ) );
 		}
-		
+
 		public override void OnMiss( Mobile attacker, Mobile defender )
 		{
 			//Validates in OnSwing for accuracy scalar
@@ -29,7 +29,7 @@ namespace Server.Items
 			attacker.SendLocalizedMessage( 1060089 ); // You fail to execute your special move
 		}
 
-		public override bool ValidatesDuringHit { get { return false; } }
+		public override bool ValidatesDuringHit => false;
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

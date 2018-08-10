@@ -64,9 +64,9 @@ namespace Server.Items
 			Fletching
 		}
 
-		public override bool DisplayLootType { get { return false; } }
+		public override bool DisplayLootType => false;
 
-		private RepairSkillType m_Skill; 
+		private RepairSkillType m_Skill;
 		private double m_SkillLevel;
 
 		private Mobile m_Crafter;

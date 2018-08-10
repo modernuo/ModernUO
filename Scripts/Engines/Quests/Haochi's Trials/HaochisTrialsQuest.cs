@@ -64,14 +64,14 @@ namespace Server.Engines.Quests.Samurai
 			{
 				/* <i>As you enter the courtyard you notice a faded sign.
 				 * It reads: </i><br><br>
-				 * 
+				 *
 				 * Welcome to your new home, Samurai.<br><br>
-				 * 
+				 *
 				 * Though your skills are only a shadow of what they can be some day,
 				 * you must prove your adherence to the code of the Bushido.<br><br>
-				 * 
+				 *
 				 * Seek Daimyo Haochi for guidance.<br><br>
-				 * 
+				 *
 				 * <i>Will you accept the challenge?</i>
 				 */
 				return 1063023;
@@ -79,7 +79,7 @@ namespace Server.Engines.Quests.Samurai
 		}
 
 		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
-		public override bool IsTutorial{ get{ return true; } }
+		public override bool IsTutorial => true;
 
 		public override int Picture{ get{ return 0x15D7; } }
 

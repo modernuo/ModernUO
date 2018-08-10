@@ -7,17 +7,15 @@ namespace Server.Mobiles
 	[CorpseName( "a fleshrenderer corpse" )]
 	public class FleshRenderer : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.ParalyzingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.ParalyzingBlow;
 
 		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+
+		public override string DefaultName => "a fleshrenderer";
 
 		[Constructible]
 		public FleshRenderer() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a fleshrenderer";
 			Body = 315;
 
 			SetStr( 401, 460 );
@@ -62,11 +60,11 @@ namespace Server.Mobiles
 				DemonKnight.DistributeArtifact( this );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
+		public override bool AutoDispel => true;
 		public override bool BardImmune { get { return !Core.SE; } }
 		public override bool Unprovokable { get { return Core.SE; } }
 		public override bool AreaPeaceImmune { get { return Core.SE; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int TreasureMapLevel{ get{ return 1; } }
 

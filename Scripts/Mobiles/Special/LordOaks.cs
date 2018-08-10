@@ -26,12 +26,12 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
 
+		public override string DefaultName => "Lord Oaks";
+
 		[Constructible]
 		public LordOaks() : base( AIType.AI_Mage, FightMode.Evil )
 		{
 			Body = 175;
-			Name = "Lord Oaks";
-
 			SetStr( 403, 850 );
 			SetDex( 101, 150 );
 			SetInt( 503, 800 );
@@ -68,18 +68,18 @@ namespace Server.Mobiles
 		{
 			AddLoot( LootPack.UltraRich, 5 );
 		}
-		
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool CanFly { get { return true; } }
-		public override bool BardImmune{ get{ return !Core.SE; } }
-		public override bool Unprovokable{ get{ return Core.SE; } }
-		public override bool Uncalmable{ get{ return Core.SE; } }
+
+		public override bool AutoDispel => true;
+		public override bool CanFly => true;
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
+		public override bool Uncalmable => Core.SE;
 		public override OppositionGroup OppositionGroup
 		{
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
-		
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+
+		public override Poison PoisonImmune => Poison.Deadly;
 
 		public void SpawnPixies( Mobile target )
 		{

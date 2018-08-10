@@ -21,7 +21,7 @@ namespace Server.Items
 			StartRechargeTimer();
 		}
 
-		public override bool BreakOnDepletion { get { return false; } }
+		public override bool BreakOnDepletion => false;
 		/* Note:
 		 * On EA, it also leaves the crafting gump open when it reaches 0 charges.
 		 * When crafting again, only then the crafting gump closes with the 1072306 system message.

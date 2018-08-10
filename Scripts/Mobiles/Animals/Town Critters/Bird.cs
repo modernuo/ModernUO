@@ -76,17 +76,18 @@ namespace Server.Mobiles
 
 			if ( Hue == 0 )
 				Hue = Utility.RandomBirdHue();
-		} 
+		}
 	}
 
 	[CorpseName( "a bird corpse" )]
 	public class TropicalBird : BaseCreature
 	{
+		public override string DefaultName => "a tropical bird";
+
 		[Constructible]
 		public TropicalBird() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Hue = Utility.RandomBirdHue();
-			Name = "a tropical bird";
 
 			Body = 6;
 			BaseSoundID = 0xBF;
@@ -134,6 +135,6 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
-		} 
+		}
 	}
 }

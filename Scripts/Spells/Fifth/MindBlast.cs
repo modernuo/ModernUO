@@ -46,7 +46,7 @@ namespace Server.Spells.Fifth
 			}
 		}
 
-		public override bool DelayedDamage{ get{ return !Core.AOS; } }
+		public override bool DelayedDamage => !Core.AOS;
 
 		public void Target( Mobile m )
 		{
@@ -101,11 +101,11 @@ namespace Server.Spells.Fifth
 				if ( highestStat > 150 )
 					highestStat = 150;
 
-				if ( lowestStat > 150 ) 
+				if ( lowestStat > 150 )
 					lowestStat = 150;
 
 				double damage = GetDamageScalar(m)*(highestStat - lowestStat) / 2; // Many users prefer 3 or 4
-				
+
 				if ( damage > 45 )
 					damage = 45;
 

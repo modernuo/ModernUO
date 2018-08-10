@@ -12,10 +12,11 @@ namespace Server.Mobiles
 	[CorpseName( "a ghostly corpse" )]
 	public class RestlessSoul : BaseCreature
 	{
+		public override string DefaultName => "a restless soul";
+
 		[Constructible]
 		public RestlessSoul() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{
-			Name = "restless soul";
 			Body = 0x3CA;
 			Hue = 0x453;
 
@@ -51,8 +52,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Poor );
 		}
 
-		public override bool AlwaysAttackable{ get{ return true; } }
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool AlwaysAttackable => true;
+		public override bool BleedImmune => true;
 
 		public override void DisplayPaperdollTo(Mobile to)
 		{

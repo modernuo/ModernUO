@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Collector
 {
 	public class ElwoodMcCarrin : BaseQuester
 	{
+		public override string DefaultName => "Elwood McCarrin";
+
 		[Constructible]
 		public ElwoodMcCarrin() : base( "the well-known collector" )
 		{
@@ -25,7 +27,6 @@ namespace Server.Engines.Quests.Collector
 
 			Female = false;
 			Body = 0x190;
-			Name = "Elwood McCarrin";
 		}
 
 		public override void InitOutfit()

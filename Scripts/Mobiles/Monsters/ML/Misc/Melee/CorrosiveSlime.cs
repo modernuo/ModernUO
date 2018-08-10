@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a slimey corpse" )]
 	public class CorrosiveSlime : BaseCreature
 	{
+		public override string DefaultName { get { return "a corrosive slime"; } }
+
 		[Constructible]
 		public CorrosiveSlime() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a corrosive slime";
 			Body = 51;
 			BaseSoundID = 456;
 

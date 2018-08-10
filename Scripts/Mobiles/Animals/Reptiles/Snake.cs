@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a snake corpse" )]
 	public class Snake : BaseCreature
 	{
+		public override string DefaultName => "a snake";
+
 		[Constructible]
 		public Snake() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a snake";
 			Body = 52;
 			Hue = Utility.RandomSnakeHue();
 			BaseSoundID = 0xDB;
@@ -43,10 +44,10 @@ namespace Server.Mobiles
 			MinTameSkill = 59.1;
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lesser; } }
-		public override Poison HitPoison{ get{ return Poison.Lesser; } }
+		public override Poison PoisonImmune => Poison.Lesser;
+		public override Poison HitPoison => Poison.Lesser;
 
-		public override bool DeathAdderCharmable{ get{ return true; } }
+		public override bool DeathAdderCharmable => true;
 
 		public override int Meat{ get{ return 1; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Eggs; } }

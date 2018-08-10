@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a hydra corpse" )]
 	public class Hydra : BaseCreature
 	{
+		public override string DefaultName => "a hydra";
+
 		[Constructible]
 		public Hydra()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a hydra";
 			Body = 0x109;
 			BaseSoundID = 0x16A;
 
@@ -64,7 +65,7 @@ namespace Server.Mobiles
 			*/
 		}
 
-		public override bool HasBreath { get { return true; } }
+		public override bool HasBreath => true;
 		public override int Hides { get { return 40; } }
 		public override int Meat { get { return 19; } }
 		public override int TreasureMapLevel { get { return 5; } }

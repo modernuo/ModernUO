@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074475; } } // Grizzled Mare Statuette
 		public override BaseCreature Summon{ get { return new GrizzledMare(); } }
-	
+
 		[Constructible]
 		public GrizzledMareStatuette() : base( 0x2617 )
 		{
@@ -22,14 +22,14 @@ namespace Server.Items
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			
+
 			writer.Write( (int) 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			
+
 			int version = reader.ReadInt();
 		}
 	}
@@ -39,7 +39,7 @@ namespace Server.Mobiles
 {
 	public class GrizzledMare : HellSteed
 	{
-		public override bool DeleteOnRelease { get { return true; } }
+		public override bool DeleteOnRelease => true;
 
 		private static readonly string m_Myname = "a grizzled mare";
 
@@ -59,18 +59,18 @@ namespace Server.Mobiles
 		public GrizzledMare( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			
+
 			writer.Write( (int) 1 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
-			
+
 			int version = reader.ReadInt();
 
 			if( version < 1 )

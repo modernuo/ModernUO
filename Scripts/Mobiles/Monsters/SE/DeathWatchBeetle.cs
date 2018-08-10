@@ -9,14 +9,13 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.DeathWatchBeetle" )]
 	public class DeathwatchBeetle : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.CrushingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
+
+		public override string DefaultName { get { return "a deathwatch beetle"; } }
+
 		[Constructible]
 		public DeathwatchBeetle() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 ) 
 		{
-			Name = "a deathwatch beetle";
 			Body = 242;
 
 			SetStr( 136, 160 );

@@ -9,11 +9,11 @@ namespace Server.Mobiles
 	{
 		public override double DispelDifficulty{ get{ return 117.5; } }
 		public override double DispelFocus{ get{ return 45.0; } }
+		public override string DefaultName => "a water elemental";
 
 		[Constructible]
 		public SummonedWaterElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a water elemental";
 			Body = 16;
 			BaseSoundID = 278;
 

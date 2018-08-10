@@ -4,13 +4,14 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an eagle corpse" )]
+	[CorpseName( "a bird corpse" )]
 	public class Eagle : BaseCreature
 	{
+		public override string DefaultName => "an eagle";
+
 		[Constructible]
 		public Eagle() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an eagle";
 			Body = 5;
 			BaseSoundID = 0x2EE;
 
@@ -49,7 +50,7 @@ namespace Server.Mobiles
 		public override MeatType MeatType{ get{ return MeatType.Bird; } }
 		public override int Feathers{ get{ return 36; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public Eagle(Serial serial) : base(serial)
 		{

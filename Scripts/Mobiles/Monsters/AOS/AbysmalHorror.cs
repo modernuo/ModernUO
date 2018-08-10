@@ -7,17 +7,15 @@ namespace Server.Mobiles
 	[CorpseName( "an abysmal horror corpse" )]
 	public class AbysmalHorror : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.WhirlwindAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.WhirlwindAttack;
 
 		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+
+		public override string DefaultName => "an abysmal horror";
 
 		[Constructible]
 		public AbysmalHorror() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an abysmal horror";
 			Body = 312;
 			BaseSoundID = 0x451;
 
@@ -64,10 +62,10 @@ namespace Server.Mobiles
 				DemonKnight.DistributeArtifact( this );
 		}
 
-		public override bool BardImmune{ get{ return !Core.SE; } }
-		public override bool Unprovokable{ get{ return Core.SE; } }
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
 		public override bool AreaPeaceImmune { get { return Core.SE; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public AbysmalHorror( Serial serial ) : base( serial )

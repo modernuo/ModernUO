@@ -6,8 +6,10 @@ namespace Server.Mobiles
 	[CorpseName( "an undead horse corpse" )]
 	public class SkeletalMount : BaseMount
 	{
-		[Constructible] 
-		public SkeletalMount() : this( "a skeletal steed" )
+		public override string DefaultName => "a skeletal steed";
+
+		[Constructible]
+		public SkeletalMount() : this( null )
 		{
 		}
 
@@ -38,8 +40,8 @@ namespace Server.Mobiles
 			Karma = 0;
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override bool BleedImmune{ get{ return true; } }
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override bool BleedImmune => true;
 
 		public SkeletalMount( Serial serial ) : base( serial )
 		{
@@ -62,7 +64,6 @@ namespace Server.Mobiles
 			{
 				case 0:
 				{
-					Name = "a skeletal steed";
 					Tamable = false;
 					MinTameSkill = 0.0;
 					ControlSlots = 0;

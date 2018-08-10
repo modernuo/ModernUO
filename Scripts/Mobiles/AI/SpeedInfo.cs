@@ -64,7 +64,7 @@ namespace Server
 				LoadTable();
 
 			SpeedInfo sp = null;
-			
+
 			m_Table.TryGetValue(obj.GetType(), out sp);
 
 			if ( sp == null )
@@ -104,7 +104,7 @@ namespace Server
 					typeof( HeadlessOne ),		typeof( Jwilson ),			typeof( Mummy ),
 					typeof( Ogre ),				typeof( OgreLord ),			typeof( PlagueBeast ),
 					typeof( Quagmire ),			typeof( Rat ),				typeof( RottingCorpse ),
-					typeof( Sewerrat ),			typeof( Skeleton ),			typeof( Slime ),
+					typeof( SewerRat ),			typeof( Skeleton ),			typeof( Slime ),
 					typeof( Zombie ),			typeof( Walrus ),			typeof( RestlessSoul ),
 					typeof( CrystalElemental ),	typeof( DarknightCreeper ),	typeof( MoundOfMaggots ),
 					typeof( Juggernaut ),		typeof( Yamandon ),			typeof( Serado )

@@ -10,7 +10,7 @@ namespace Server.Engines.ConPVP
 	{
 		public static readonly int SafeZonePriority = HouseRegion.HousePriority + 1;
 
-		/*public override bool AllowReds{ get{ return true; } }*/
+		/*public override bool AllowReds => true;*/
 
 		public SafeZone( Rectangle2D area, Point3D goloc, Map map, bool isGuarded ) : base( null, map, SafeZonePriority, area )
 		{

@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a vampire bat corpse" )]
 	public class VampireBat : BaseCreature
 	{
+		public override string DefaultName => "a vampire bat";
+
 		[Constructible]
 		public VampireBat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a vampire bat";
 			Body = 317;
 			BaseSoundID = 0x270;
 

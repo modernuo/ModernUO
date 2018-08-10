@@ -10,9 +10,10 @@ namespace Server.Mobiles
 	[CorpseName( "a shadow wisp corpse" )]
 	public class ShadowWispFamiliar : BaseFamiliar
 	{
+		public override string DefaultName => "a shadow wisp";
+
 		public ShadowWispFamiliar()
 		{
-			Name = "a shadow wisp";
 			Body = 165;
 			Hue = 0x901;
 			BaseSoundID = 466;

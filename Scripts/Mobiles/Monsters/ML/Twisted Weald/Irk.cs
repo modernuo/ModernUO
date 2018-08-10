@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an Irk corpse" )]
 	public class Irk : Changeling
 	{
-		public override string DefaultName{ get{ return "Irk"; } }
+		public override string DefaultName => "Irk";
 		public override int DefaultHue{ get{ return 0x489; } }
 
 		[Constructible]
@@ -46,7 +46,7 @@ namespace Server.Mobiles
 
 		// TODO: Angry fire
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public override void GenerateLoot()
 		{

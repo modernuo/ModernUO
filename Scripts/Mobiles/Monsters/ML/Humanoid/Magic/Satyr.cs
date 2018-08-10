@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a satyr's corpse" )]
 	public class Satyr : BaseCreature
 	{
+		public override string DefaultName => "a satyr";
+
 		[Constructible]
 		public Satyr() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a satyr";
 			Body = 271;
 			BaseSoundID = 0x586;
 

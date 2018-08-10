@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Rend corpse" )]
 	public class Rend : Reptalon
 	{
+		public override string DefaultName => "Rend";
+
 		[Constructible]
 		public Rend()
 		{
 			IsParagon = true;
 
-			Name = "Rend";
 			Hue = 0x455;
 
 			SetStr( 1261, 1284 );
@@ -55,7 +56,7 @@ namespace Server.Mobiles
 				return WeaponAbility.BleedAttack;
 		}
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public Rend( Serial serial )
 			: base( serial )

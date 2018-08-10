@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Master Mikael corpse" )]
 	public class MasterMikael : BoneMagi
 	{
+		public override string DefaultName => "Master Mikael";
+
 		[Constructible]
 		public MasterMikael()
 		{
 			IsParagon = true;
 
-			Name = "Master Mikael";
 			Hue = 0x8FD;
 
 			SetStr( 93, 122 );
@@ -72,7 +73,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public MasterMikael( Serial serial )
 			: base( serial )

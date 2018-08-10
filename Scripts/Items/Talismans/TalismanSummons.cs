@@ -11,10 +11,10 @@ namespace Server.Mobiles
 {
 	public class BaseTalismanSummon : BaseCreature
 	{
-		public override bool Commandable{ get{ return false; } }
-		public override bool InitialInnocent{ get{ return true; } }
-		//public override bool IsInvulnerable{ get{ return true; } } // TODO: Wailing banshees are NOT invulnerable, are any of the others?
-	
+		public override bool Commandable => false;
+		public override bool InitialInnocent => true;
+		//public override bool IsInvulnerable => true; // TODO: Wailing banshees are NOT invulnerable, are any of the others?
+
 		public BaseTalismanSummon() : base( AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4 )
 		{
 			// TODO: Stats/skills
@@ -23,7 +23,7 @@ namespace Server.Mobiles
 		public BaseTalismanSummon( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void AddCustomContextEntries( Mobile from, List<ContextMenuEntry> list )
 		{
 			if ( from.Alive && ControlMaster == from )
@@ -65,10 +65,11 @@ namespace Server.Mobiles
 
 	public class SummonedAntLion : BaseTalismanSummon
 	{
+		public override string DefaultName => "an ant lion";
+
 		[Constructible]
 		public SummonedAntLion() : base()
 		{
-			Name = "an ant lion";
 			Body = 787;
 			BaseSoundID = 1006;
 		}
@@ -94,10 +95,11 @@ namespace Server.Mobiles
 
 	public class SummonedArcticOgreLord : BaseTalismanSummon
 	{
+		public override string DefaultName => "an arctic ogre lord";
+
 		[Constructible]
 		public SummonedArcticOgreLord()	: base()
 		{
-			Name = "an arctic ogre lord";
 			Body = 135;
 			BaseSoundID = 427;
 		}
@@ -123,10 +125,11 @@ namespace Server.Mobiles
 
 	public class SummonedBakeKitsune : BaseTalismanSummon
 	{
+		public override string DefaultName => "a bake kitsune";
+
 		[Constructible]
 		public SummonedBakeKitsune() : base()
 		{
-			Name = "a bake kitsune";
 			Body = 246;
 			BaseSoundID = 0x4DD;
 		}
@@ -152,10 +155,11 @@ namespace Server.Mobiles
 
 	public class SummonedBogling : BaseTalismanSummon
 	{
+		public override string DefaultName => "a bogling";
+
 		[Constructible]
 		public SummonedBogling() : base()
 		{
-			Name = "a bogling";
 			Body = 779;
 			BaseSoundID = 422;
 		}
@@ -181,10 +185,11 @@ namespace Server.Mobiles
 
 	public class SummonedBullFrog : BaseTalismanSummon
 	{
+		public override string DefaultName => "a bull frog";
+
 		[Constructible]
 		public SummonedBullFrog() : base()
 		{
-			Name = "a bull frog";
 			Body = 81;
 			Hue = Utility.RandomList( 0x5AC, 0x5A3, 0x59A, 0x591, 0x588, 0x57F );
 			BaseSoundID = 0x266;
@@ -211,10 +216,11 @@ namespace Server.Mobiles
 
 	public class SummonedChicken : BaseTalismanSummon
 	{
+		public override string DefaultName => "a chicken";
+
 		[Constructible]
 		public SummonedChicken() : base()
 		{
-			Name = "a chicken";
 			Body = 0xD0;
 			BaseSoundID = 0x6E;
 		}
@@ -240,10 +246,11 @@ namespace Server.Mobiles
 
 	public class SummonedCow : BaseTalismanSummon
 	{
+		public override string DefaultName => "a cow";
+
 		[Constructible]
 		public SummonedCow() : base()
 		{
-			Name = "a cow";
 			Body = Utility.RandomList( 0xD8, 0xE7 );
 			BaseSoundID = 0x78;
 		}
@@ -268,10 +275,11 @@ namespace Server.Mobiles
 	}
 	public class SummonedDoppleganger : BaseTalismanSummon
 	{
+		public override string DefaultName => "a doppleganger";
+
 		[Constructible]
 		public SummonedDoppleganger() : base()
 		{
-			Name = "a doppleganger";
 			Body = 0x309;
 			BaseSoundID = 0x451;
 		}
@@ -297,10 +305,11 @@ namespace Server.Mobiles
 
 	public class SummonedFrostSpider : BaseTalismanSummon
 	{
+		public override string DefaultName => "a frost spider";
+
 		[Constructible]
 		public SummonedFrostSpider() : base()
 		{
-			Name = "a frost spider";
 			Body = 20;
 			BaseSoundID = 0x388;
 		}
@@ -326,10 +335,11 @@ namespace Server.Mobiles
 
 	public class SummonedGreatHart : BaseTalismanSummon
 	{
+		public override string DefaultName => "a great hart";
+
 		[Constructible]
 		public SummonedGreatHart() : base()
 		{
-			Name = "a great hart";
 			Body = 0xEA;
 			BaseSoundID = 0x82;
 		}
@@ -355,10 +365,11 @@ namespace Server.Mobiles
 
 	public class SummonedLavaSerpent : BaseTalismanSummon
 	{
+		public override string DefaultName => "a lava serpent";
+
 		[Constructible]
 		public SummonedLavaSerpent() : base()
 		{
-			Name = "a lava serpent";
 			Body = 90;
 			BaseSoundID = 219;
 		}
@@ -410,7 +421,7 @@ namespace Server.Mobiles
 				}
 
 				GuardedRegion r = Region as GuardedRegion;
-				
+
 				if ( r != null && mob.Alive )
 				{
 					foreach ( Mobile m in GetMobilesInRange( 2 ) )
@@ -428,11 +439,12 @@ namespace Server.Mobiles
 
 	public class SummonedOrcBrute : BaseTalismanSummon
 	{
+		public override string DefaultName => "an orc brute";
+
 		[Constructible]
 		public SummonedOrcBrute() : base()
 		{
 			Body = 189;
-			Name = "an orc brute";
 			BaseSoundID = 0x45A;
 		}
 
@@ -457,10 +469,11 @@ namespace Server.Mobiles
 
 	public class SummonedPanther : BaseTalismanSummon
 	{
+		public override string DefaultName => "a panther";
+
 		[Constructible]
 		public SummonedPanther() : base()
 		{
-			Name = "a panther";
 			Body = 0xD6;
 			Hue = 0x901;
 			BaseSoundID = 0x462;
@@ -487,10 +500,11 @@ namespace Server.Mobiles
 
 	public class SummonedSheep : BaseTalismanSummon
 	{
+		public override string DefaultName => "a sheep";
+
 		[Constructible]
 		public SummonedSheep() : base()
 		{
-			Name = "a sheep";
 			Body = 0xCF;
 			BaseSoundID = 0xD6;
 		}
@@ -498,7 +512,7 @@ namespace Server.Mobiles
 		public SummonedSheep( Serial serial ) : base( serial )
 		{
 		}
-		
+
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -517,10 +531,11 @@ namespace Server.Mobiles
 
 	public class SummonedSkeletalKnight : BaseTalismanSummon
 	{
+		public override string DefaultName => "a skeletal knight";
+
 		[Constructible]
 		public SummonedSkeletalKnight() : base()
 		{
-			Name = "a skeletal knight";
 			Body = 147;
 			BaseSoundID = 451;
 		}
@@ -546,10 +561,11 @@ namespace Server.Mobiles
 
 	public class SummonedVorpalBunny : BaseTalismanSummon
 	{
+		public override string DefaultName => "a vorpal bunny";
+
 		[Constructible]
 		public SummonedVorpalBunny() : base()
 		{
-			Name = "a vorpal bunny";
 			Body = 205;
 			Hue = 0x480;
 			BaseSoundID = 0xC9;
@@ -592,10 +608,11 @@ namespace Server.Mobiles
 
 	public class SummonedWailingBanshee : BaseTalismanSummon
 	{
+		public override string DefaultName => "a wailing banshee";
+
 		[Constructible]
 		public SummonedWailingBanshee() : base()
 		{
-			Name = "a wailing banshee";
 			Body = 310;
 			BaseSoundID = 0x482;
 		}

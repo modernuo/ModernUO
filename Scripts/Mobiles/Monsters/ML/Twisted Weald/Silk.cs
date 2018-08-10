@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Silk corpse" )]
 	public class Silk : GiantBlackWidow
 	{
+		public override string DefaultName => "Silk";
+
 		[Constructible]
 		public Silk()
 		{
 			IsParagon = true;
-
-			Name = "Silk";
 			Hue = 0x47E;
 
 			SetStr( 80, 131 );
@@ -48,12 +48,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 2 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ParalyzingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public Silk( Serial serial )
 			: base( serial )

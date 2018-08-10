@@ -22,11 +22,12 @@ namespace Server.Mobiles
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { 	MonsterStatuetteType.OphidianArchMage,
 														MonsterStatuetteType.OphidianWarrior }; } }
 
+		public override string DefaultName => "Rikktor";
+
 		[Constructible]
 		public Rikktor() : base( AIType.AI_Melee )
 		{
 			Body = 172;
-			Name = "Rikktor";
 
 			SetStr( 701, 900 );
 			SetDex( 201, 350 );
@@ -62,7 +63,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 4 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override ScaleType ScaleType{ get{ return ScaleType.All; } }
 		public override int Scales{ get{ return 20; } }
 

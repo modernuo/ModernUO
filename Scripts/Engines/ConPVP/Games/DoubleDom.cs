@@ -355,7 +355,7 @@ namespace Server.Engines.ConPVP
 			{
 				if ( mob == null )
 					return null;
-	
+
 				 DDPlayerInfo val;
 
 				if ( !m_Players.TryGetValue( mob, out val ) )
@@ -970,13 +970,13 @@ namespace Server.Engines.ConPVP
 			if ( point == null || from == null || team == null || !m_Capturable )
 				return;
 
-			bool wasDom = ( m_Controller.PointA != null && m_Controller.PointB != null && 
+			bool wasDom = ( m_Controller.PointA != null && m_Controller.PointB != null &&
 				m_Controller.PointA.TeamOwner == m_Controller.PointB.TeamOwner && m_Controller.PointA.TeamOwner != null );
 
 			point.TeamOwner = team;
 			Alert( "{0} has captured {1}!", team.Name, point.Name );
 
-			bool isDom = ( m_Controller.PointA != null && m_Controller.PointB != null && 
+			bool isDom = ( m_Controller.PointA != null && m_Controller.PointB != null &&
 				m_Controller.PointA.TeamOwner == m_Controller.PointB.TeamOwner && m_Controller.PointA.TeamOwner != null );
 
 			if ( wasDom && !isDom )
@@ -993,7 +993,7 @@ namespace Server.Engines.ConPVP
 					m_CaptureTimer.Stop();
 				m_CaptureTimer = null;
 			}
-			
+
 			if ( !wasDom && isDom )
 			{
 				m_CapStage = 0;
@@ -1010,7 +1010,7 @@ namespace Server.Engines.ConPVP
 				team = m_Controller.PointA.TeamOwner;
 			else if ( m_Controller.PointB != null && m_Controller.PointB.TeamOwner != null )
 				team = m_Controller.PointB.TeamOwner;
-			
+
 			if ( team == null )
 			{
 				m_Capturable = true;
@@ -1060,7 +1060,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		private void UncaptureTick()
-		{			
+		{
 			m_Capturable = true;
 
 			if ( m_CaptureTimer != null )
@@ -1134,32 +1134,32 @@ namespace Server.Engines.ConPVP
 			int version = reader.ReadInt();
 		}
 
-		public override bool ShareHue{ get{ return false; } }
+		public override bool ShareHue => false;
 
 		public DDGame Game
-		{ 
-			get{ return m_Game; } 
+		{
+			get{ return m_Game; }
 			set
-			{ 
-				m_Game = value; 
+			{
+				m_Game = value;
 				m_TeamOwner = null;
-				
+
 				if ( m_Game != null )
-					SetNonCaptureHue(); 
+					SetNonCaptureHue();
 				else
 					SetUncapturableHue();
 			}
 		}
 
 		public DDTeamInfo TeamOwner
-		{ 
-			get{ return m_TeamOwner; } 
+		{
+			get{ return m_TeamOwner; }
 			set
-			{ 
-				m_TeamOwner = value; 
+			{
+				m_TeamOwner = value;
 
 				SetNonCaptureHue();
-			} 
+			}
 		}
 
 		public const int UncapturableHue = 0x497;

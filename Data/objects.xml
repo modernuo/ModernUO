@@ -2894,7 +2894,7 @@
 					<object type="Server.Mobiles.JackRabbit" gfx="8485" hue="443" />
 					<object type="Server.Mobiles.Rabbit" gfx="8485" />
 					<object type="Server.Mobiles.Rat" gfx="8483" />
-					<object type="Server.Mobiles.Sewerrat" gfx="8483" />
+					<object type="Server.Mobiles.SewerRat" gfx="8483" />
 				</category>
 				<category title="Ruminants">
 					<object type="Server.Mobiles.Goat" gfx="9600" />

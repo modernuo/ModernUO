@@ -33,14 +33,14 @@ namespace Server.Items
 			m_Table[ TalismanSlayerName.Vermin ] = new Type[]
 			{
 				typeof( RatmanMage ), typeof( RatmanMage ), typeof( RatmanArcher ), typeof( Barracoon),
-				typeof( Ratman ), typeof( Sewerrat ), typeof( Rat ), typeof( GiantRat ) //, typeof( Chiikkaha )
+				typeof( Ratman ), typeof( SewerRat ), typeof( Rat ), typeof( GiantRat ) //, typeof( Chiikkaha )
 			};
 
 			m_Table[ TalismanSlayerName.Bat ] = new Type[]
 			{
 				typeof( Mongbat ), typeof( StrongMongbat ), typeof( VampireBat )
 			};
-			
+
 			m_Table[ TalismanSlayerName.Mage ] = new Type[]
 			{
 				typeof( EvilMage ), typeof( EvilMageLord ), typeof( AncientLich ), typeof( Lich ), typeof( LichLord ),
@@ -62,7 +62,7 @@ namespace Server.Items
 			};
 
 			m_Table[ TalismanSlayerName.Ice ] = new Type[]
-			{ 
+			{
 				typeof( ArcticOgreLord ), typeof( IceElemental ), typeof( SnowElemental ), typeof( FrostOoze ),
 				typeof( IceFiend ), /*typeof( UnfrozenMummy ),*/ typeof( FrostSpider ), typeof( LadyOfTheSnow ),
 				typeof( FrostTroll ),
@@ -70,7 +70,7 @@ namespace Server.Items
 				  // TODO WinterReaper, check
 				typeof( IceSnake ), typeof( SnowLeopard ), typeof( PolarBear ),  typeof( IceSerpent ), typeof( GiantIceWorm )
 			};
-			
+
 			m_Table[ TalismanSlayerName.Flame ] = new Type[]
 			{
 				typeof( FireBeetle ), typeof( HellHound ), typeof( LavaSerpent ), typeof( FireElemental ),
@@ -96,7 +96,7 @@ namespace Server.Items
 				return false;
 
 			Type[] types = m_Table[ name ];
-			
+
 			if ( types == null || m == null )
 				return false;
 

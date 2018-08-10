@@ -16,6 +16,8 @@ namespace Server.Mobiles
 			set{ m_Fisher = value; }
 		}
 
+		public override string DefaultName => "a leviathan";
+
 		[Constructible]
 		public Leviathan() : this( null )
 		{
@@ -27,7 +29,6 @@ namespace Server.Mobiles
 			m_Fisher = fisher;
 
 			// May not be OSI accurate; mostly copied from krakens
-			Name = "a leviathan";
 			Body = 77;
 			BaseSoundID = 353;
 
@@ -76,7 +77,7 @@ namespace Server.Mobiles
 			PackItem( rope );
 		}
 
-		public override bool HasBreath{ get{ return true; } }
+		public override bool HasBreath => true;
 		public override int BreathPhysicalDamage{ get{ return 70; } } // TODO: Verify damage type
 		public override int BreathColdDamage{ get{ return 30; } }
 		public override int BreathFireDamage{ get{ return 0; } }

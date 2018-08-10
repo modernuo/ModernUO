@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class DartBoard : AddonComponent
 	{
-		public override bool NeedsWall{ get{ return true; } }
+		public override bool NeedsWall => true;
 		public override Point3D WallPosition{ get{ return this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 ); } }
 
 		public bool East{ get{ return this.ItemID == 0x1E2F; } }

@@ -14,7 +14,7 @@ namespace Server.Spells.Spellweaving
 		public override SkillName CastSkill { get { return SkillName.Spellweaving; } }
 		public override SkillName DamageSkill { get { return SkillName.Spellweaving; } }
 
-		public override bool ClearHandsOnCast { get { return false; } }
+		public override bool ClearHandsOnCast => false;
 
 		private int m_CastTimeFocusLevel;
 

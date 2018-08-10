@@ -16,12 +16,12 @@ namespace Server.Items
 			set { m_Cut = value; }
 		}
 
+		public override string DefaultName => "a plague beast mutation core";
+
 		[Constructible]
 		public PlagueBeastMutationCore() : base( 0x1CF0 )
 		{
 			m_Cut = true;
-
-			Name = "a plague beast mutation core";
 			Weight = 1.0;
 			Hue = 0x480;
 		}
@@ -36,7 +36,7 @@ namespace Server.Items
 				Movable = true;
 
 				from.AddToBackpack( this );
-				from.LocalOverheadMessage( MessageType.Regular, 0x34, 1071906 ); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *				
+				from.LocalOverheadMessage( MessageType.Regular, 0x34, 1071906 ); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *
 
 				if ( owner != null )
 					Timer.DelayCall<PlagueBeastLord>( TimeSpan.FromSeconds( 1 ), new TimerStateCallback<PlagueBeastLord>( KillParent ), owner );

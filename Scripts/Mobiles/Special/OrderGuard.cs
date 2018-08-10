@@ -13,7 +13,7 @@ namespace Server.Mobiles
 		public override int SignupNumber{ get{ return 1007141; } } // Sign up with a guild of order if thou art interested.
 		public override GuildType Type{ get{ return GuildType.Order; } }
 
-		public override bool BardImmune{ get{ return true; } } 
+		public override bool BardImmune => true;
 
 		[Constructible]
 		public OrderGuard()

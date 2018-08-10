@@ -8,12 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Swoop corpse" )]
 	public class Swoop : Eagle
 	{
+		public override string DefaultName => "Swoop";
+
 		[Constructible]
 		public Swoop()
 		{
 			IsParagon = true;
-
-			Name = "Swoop";
 			Hue = 0xE0;
 
 			AI = AIType.AI_Melee;
@@ -109,8 +109,8 @@ namespace Server.Mobiles
 			}
 		}
 
-		public override bool CanFly { get { return true; } }
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool CanFly => true;
+		public override bool GivesMLMinorArtifact => true;
 		public override int Feathers{ get{ return 72; } }
 
 		/*

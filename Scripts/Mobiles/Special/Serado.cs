@@ -19,15 +19,13 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.DoubleStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
+
+		public override string DefaultName => "Serado";
 
 		[Constructible]
 		public Serado() : base( AIType.AI_Melee )
 		{
-			Name = "Serado";
 			Title = "the awakened";
 
 			Body = 249;
@@ -72,14 +70,14 @@ namespace Server.Mobiles
 
 		public override int TreasureMapLevel{ get{ return 5; } }
 
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison HitPoison => Poison.Lethal;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override double HitPoisonChance{	get{ return 0.8; } }
 
 		public override int Feathers{ get{ return 30; } }
 
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ShowFameTitle => false;
+		public override bool ClickTitle => false;
 
 		// TODO: Hit Lightning Area
 

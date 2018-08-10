@@ -9,11 +9,11 @@ namespace Server.Mobiles
 	[CorpseName( "a kappa corpse" )]
 	public class Kappa : BaseCreature
 	{
+		public override string DefaultName => "a kappa";
 
 		[Constructible]
 		public Kappa() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a kappa";
 			Body = 240;
 
 			SetStr( 186, 230 );
@@ -60,7 +60,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 			AddLoot( LootPack.Average );
 		}
-		 
+
 		public override int GetAngerSound()
 		{
 			return 0x50B;
@@ -151,13 +151,13 @@ namespace Server.Mobiles
 			if ( from != null && from.Map != null )
 			{
 				int amt=0;
-				Mobile target = this; 
+				Mobile target = this;
 				int rand = Utility.Random( 1, 100 );
 				if ( willKill )
 				{
 					amt = ((( rand % 5 ) >> 2 ) + 3);
-				} 
-				if ( ( Hits < 100 ) && ( rand < 21 ) ) 
+				}
+				if ( ( Hits < 100 ) && ( rand < 21 ) )
 				{
 					target = ( rand % 2 ) < 1 ? this : from;
 					amt++;
@@ -165,7 +165,7 @@ namespace Server.Mobiles
 				if ( amt > 0 )
 				{
 					SpillAcid( target, amt );
-					from.SendLocalizedMessage( 1070820 ); 
+					from.SendLocalizedMessage( 1070820 );
 					if ( Mana > 14)
 						Mana -= 15;
 					amt ^= amt;

@@ -6,15 +6,13 @@ namespace Server.Mobiles
 	[CorpseName( "a gargoyle corpse" )]
 	public class GargoyleEnforcer : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.WhirlwindAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.WhirlwindAttack;
+
+		public override string DefaultName => "a gargoyle enforcer";
 
 		[Constructible]
 		public GargoyleEnforcer() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "Gargoyle Enforcer";
 			Body = 0x2F2;
 			BaseSoundID = 0x174;
 
@@ -50,7 +48,7 @@ namespace Server.Mobiles
 				PackItem( new GargoylesPickaxe() );
 		}
 
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public override void GenerateLoot()
 		{

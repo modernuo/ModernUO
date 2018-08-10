@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Direwolf" )]
 	public class DireWolf : BaseCreature
 	{
+		public override string DefaultName => "a dire wolf";
+
 		[Constructible]
 		public DireWolf() : base( AIType.AI_Melee,FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a dire wolf";
 			Body = 23;
 			BaseSoundID = 0xE5;
 

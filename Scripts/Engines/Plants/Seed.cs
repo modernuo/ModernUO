@@ -90,7 +90,7 @@ namespace Server.Engines.Plants
 		{
 		}
 
-		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		private int GetLabel( out string args )
 		{

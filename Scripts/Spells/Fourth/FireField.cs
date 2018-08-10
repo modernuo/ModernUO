@@ -97,7 +97,7 @@ namespace Server.Spells.Fourth
 			private Mobile m_Caster;
 			private int m_Damage;
 
-			public override bool BlocksFit{ get{ return true; } }
+			public override bool BlocksFit => true;
 
 			public FireFieldItem( int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val )
 				: this( itemID, loc, caster, map, duration, val, 2 )
@@ -187,7 +187,7 @@ namespace Server.Spells.Fourth
 				{
 					if ( SpellHelper.CanRevealCaster( m ) )
 						m_Caster.RevealingAction();
-					
+
 					m_Caster.DoHarmful( m );
 
 					int damage = m_Damage;
@@ -264,7 +264,7 @@ namespace Server.Spells.Fourth
 							while ( m_Queue.Count > 0 )
 							{
 								Mobile m = (Mobile)m_Queue.Dequeue();
-								
+
 								if ( SpellHelper.CanRevealCaster( m ) )
 									caster.RevealingAction();
 

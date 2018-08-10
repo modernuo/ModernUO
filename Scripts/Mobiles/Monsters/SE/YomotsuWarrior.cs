@@ -8,15 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a yomotsu corpse" )]
 	public class YomotsuWarrior : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.DoubleStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
+		public override string DefaultName => "a yomotsu warrior";
 
 		[Constructible]
 		public YomotsuWarrior() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a yomotsu warrior";
 			Body = 245;
 			BaseSoundID = 0x452;
 
@@ -42,7 +39,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 95.1, 105.0 );
 			SetSkill( SkillName.Wrestling, 97.6, 107.5 );
 
-			Fame = 4200;	
+			Fame = 4200;
 			Karma = -4200;
 
 			PackItem( new GreenGourd() );
@@ -76,12 +73,12 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems,2);
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel{ get{ return 3; } }
 
 		// TODO: Throwing Dagger
 
-		public override void OnGaveMeleeAttack( Mobile defender ) 
+		public override void OnGaveMeleeAttack( Mobile defender )
 		{
 			base.OnGaveMeleeAttack( defender );
 
@@ -99,7 +96,7 @@ namespace Server.Mobiles
 				defender.Paralyze( TimeSpan.FromSeconds( 4.0 ) );
  			}
 		}
-		
+
 		public YomotsuWarrior( Serial serial ) : base( serial )
 		{
 		}
@@ -115,7 +112,7 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 		}
-		
+
 		public override int GetIdleSound()
 		{
 			return 0x42A;

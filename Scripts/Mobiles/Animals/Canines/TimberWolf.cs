@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Timberwolf" )]
 	public class TimberWolf : BaseCreature
 	{
+		public override string DefaultName => "a timber wolf";
+
 		[Constructible]
 		public TimberWolf() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a timber wolf";
 			Body = 225;
 			BaseSoundID = 0xE5;
 

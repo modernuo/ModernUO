@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a sand vortex corpse" )]
 	public class SandVortex : BaseCreature
 	{
+		public override string DefaultName => "a sand vortex";
+
 		[Constructible]
 		public SandVortex() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a sand vortex";
 			Body = 790;
 			BaseSoundID = 263;
 

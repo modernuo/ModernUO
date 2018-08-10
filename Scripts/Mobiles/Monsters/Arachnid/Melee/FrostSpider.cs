@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a frost spider corpse" )]
 	public class FrostSpider : BaseCreature
 	{
+		public override string DefaultName => "a frost spider";
+
 		[Constructible]
 		public FrostSpider() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a frost spider";
 			Body = 20;
 			BaseSoundID = 0x388;
 
@@ -38,7 +39,7 @@ namespace Server.Mobiles
 			Fame = 775;
 			Karma = -775;
 
-			VirtualArmor = 28; 
+			VirtualArmor = 28;
 
 			Tamable = true;
 			ControlSlots = 1;

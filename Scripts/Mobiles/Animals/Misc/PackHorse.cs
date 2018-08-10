@@ -10,10 +10,11 @@ namespace Server.Mobiles
 	[CorpseName( "a horse corpse" )]
 	public class PackHorse : BaseCreature
 	{
+		public override string DefaultName => "a pack horse";
+
 		[Constructible]
 		public PackHorse() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a pack horse";
 			Body = 291;
 			BaseSoundID = 0xA8;
 

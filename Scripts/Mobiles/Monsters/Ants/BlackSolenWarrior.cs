@@ -11,10 +11,11 @@ namespace Server.Mobiles
 		private bool m_BurstSac;
 		public bool BurstSac{ get{ return m_BurstSac; } }
 
+		public override string DefaultName => "a black solen warrior";
+
 		[Constructible]
 		public BlackSolenWarrior() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a black solen warrior";
 			Body = 806;
 			BaseSoundID = 959;
 			Hue = 0x453;
@@ -145,7 +146,7 @@ namespace Server.Mobiles
 					m_BurstSac = reader.ReadBool();
 					break;
 				}
-			}	
+			}
 		}
 	}
 }

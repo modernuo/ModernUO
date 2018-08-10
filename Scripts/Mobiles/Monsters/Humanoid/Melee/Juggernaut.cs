@@ -11,10 +11,11 @@ namespace Server.Mobiles
 	{
 		private bool m_Stunning;
 
+		public override string DefaultName => "a blackthorn juggernaut";
+
 		[Constructible]
 		public Juggernaut() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
 		{
-			Name = "a blackthorn juggernaut";
 			Body = 768;
 
 
@@ -92,10 +93,10 @@ namespace Server.Mobiles
 			return 0x140;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AlwaysMurderer => true;
+		public override bool BardImmune => !Core.AOS;
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int Meat{ get{ return 1; } }
 		public override int TreasureMapLevel{ get{ return 5; } }
 

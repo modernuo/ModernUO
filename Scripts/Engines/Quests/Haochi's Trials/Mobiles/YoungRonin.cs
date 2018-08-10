@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Samurai
 	[CorpseName( "a young ronin's corpse" )]
 	public class YoungRonin : BaseCreature
 	{
+		public override string DefaultName => "a young ronin";
+
 		[Constructible]
 		public YoungRonin() : base( AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
@@ -16,7 +18,6 @@ namespace Server.Engines.Quests.Samurai
 
 			Hue = Utility.RandomSkinHue();
 			Body = 0x190;
-			Name = "a young ronin";
 
 			Utility.AssignRandomHair( this );
 			Utility.AssignRandomFacialHair( this );
@@ -45,7 +46,7 @@ namespace Server.Engines.Quests.Samurai
 			SetSkill( SkillName.Tactics, 50.0 );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public YoungRonin( Serial serial ) : base( serial )
 		{

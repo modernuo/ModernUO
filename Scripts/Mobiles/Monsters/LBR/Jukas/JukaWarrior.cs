@@ -9,10 +9,11 @@ namespace Server.Mobiles
 	[CorpseName( "a jukan corpse" )]
 	public class JukaWarrior : BaseCreature
 	{
+		public override string DefaultName => "a juka warrior";
+
 		[Constructible]
 		public JukaWarrior() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a juka warrior";
 			Body = 764;
 
 			SetStr( 251, 350 );
@@ -75,8 +76,8 @@ namespace Server.Mobiles
 			return 0x28D;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
+		public override bool CanRummageCorpses => true;
 		public override int Meat{ get{ return 1; } }
 
 		public override void OnGaveMeleeAttack( Mobile defender )

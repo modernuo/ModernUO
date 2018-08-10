@@ -7,21 +7,21 @@ namespace Server.Mobiles
 	public class NatureFury : BaseCreature
 	{
 		public override bool DeleteCorpseOnDeath { get { return Core.AOS; } }
-		public override bool IsHouseSummonable { get { return true; } }
+		public override bool IsHouseSummonable => true;
 
 		public override double DispelDifficulty { get { return 125.0; } }
 		public override double DispelFocus { get { return 90.0; } }
 
-		public override bool BleedImmune { get { return true; } }
+		public override bool BleedImmune => true;
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
 
-		public override bool AlwaysMurderer { get { return true; } }
+		public override bool AlwaysMurderer => true;
+		public override string DefaultName => "a nature's fury";
 
 		[Constructible]
 		public NatureFury()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a nature's fury";
 			Body = 0x33;
 			Hue = 0x4001;
 

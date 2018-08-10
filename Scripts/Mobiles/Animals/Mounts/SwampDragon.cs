@@ -152,14 +152,14 @@ namespace Server.Mobiles
 			return 1.0;
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
-		public override bool AutoDispel{ get{ return !Controlled; } }
+		public override bool ReacquireOnMovement => true;
+		public override bool AutoDispel => !Controlled;
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public override int Meat{ get{ return 19; } }
 		public override int Hides{ get{ return 20; } }
 		public override int Scales{ get{ return 5; } }
 		public override ScaleType ScaleType{ get{ return ScaleType.Green; } }
-		public override bool CanAngerOnTame { get { return true; } }
+		public override bool CanAngerOnTame => true;
 
 		public SwampDragon( Serial serial ) : base( serial )
 		{

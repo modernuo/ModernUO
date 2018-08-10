@@ -236,7 +236,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
 			InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-			Objectives.Add( new KillObjective( 10, new Type[] { typeof( Sewerrat ) }, "sewer rats" ) );
+			Objectives.Add( new KillObjective( 10, new Type[] { typeof( SewerRat ) }, "sewer rats" ) );
 
 			Rewards.Add( ItemReward.SmallBagOfTrinkets );
 		}
@@ -1158,7 +1158,7 @@ namespace Server.Engines.MLQuests.Definitions
 		{
 			Activated = true;
 			HasRestartDelay = true;
-			Title = 1073901; // Hâute Couture
+			Title = 1073901; // HÃ¢ute Couture
 			Description = 1074091; // Most human apparel is interesting to elven eyes. But there is one garment - the flower garland - which sounds very elven indeed. Could I see how a human crafts such an object of beauty? In exchange, I could share with you the wonders of elven garments.
 			RefusalMessage = 1073921; // I will patiently await your reconsideration.
 			InProgressMessage = 1073947; // I will be in your debt if you bring me flower garlands.
@@ -1269,7 +1269,7 @@ namespace Server.Engines.MLQuests.Definitions
 			Description = 1074710; // I'm working on a striking necklace -- something really unique -- and I know just what I need to finish it up.  A huge fang!  Won't that catch the eye?  I would like to employ you to find me such an item, perhaps a snake would make the ideal donor.  I'll make it worth your while, of course.
 			RefusalMessage = 1074723; // I understand.  I don't like snakes much either.  They're so creepy.
 			InProgressMessage = 1074722; // Those really big snakes like swamps, I've heard.  You might try the blighted grove.
-			CompletionMessage = 1074721; // Do you have it?  *gasp* What a tooth!  Here … I must get right to work.
+			CompletionMessage = 1074721; // Do you have it?  *gasp* What a tooth!  Here ï¿½ I must get right to work.
 
 			Objectives.Add( new CollectObjective( 1, typeof( CoilsFang ), "coil's fang" ) );
 
@@ -1824,10 +1824,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Saril (The Heartwood)" )]
 	public class Saril : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Saril";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -1840,7 +1841,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Saril()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Saril";
 			Title = "the guard";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -1885,15 +1885,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Cailla (The Heartwood)" )]
 	public class Cailla : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Cailla";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074187, // Want a job?
-				1074210 // Hi.  Looking for something to do?
+				1074210 // Hi.ï¿½ Looking for something to do?
 			) );
 		}
 
@@ -1901,7 +1902,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Cailla()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Cailla";
 			Title = "the guard";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -1947,14 +1947,15 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Tamm (The Heartwood)" )]
 	public class Tamm : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Tamm";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074213, // Hey buddy.  Looking for work?
+				1074213, // Hey buddy.ï¿½ Looking for work?
 				1074187 // Want a job?
 			) );
 		}
@@ -1963,7 +1964,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Tamm()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Tamm";
 			Title = "the guard";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2007,15 +2007,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Landy (The Heartwood)" )]
 	public class Landy : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Landy";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074211, // I could use some help.
-				1074218 // Hey!  I want to talk to you, now.
+				1074218 // Hey!ï¿½ I want to talk to you, now.
 			) );
 		}
 
@@ -2023,7 +2024,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Landy()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Landy";
 			Title = "the soil nurturer";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2068,20 +2068,20 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Elder Alejaha (The Heartwood)" )]
 	public class Alejaha : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Alejaha";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
-			MLQuestSystem.Tell( this, pm, 1074223 ); // Have you done it yet?  Oh, I haven’t told you, have I?
+			MLQuestSystem.Tell( this, pm, 1074223 ); // Have you done it yet?ï¿½ Oh, I havenï¿½t told you, have I?
 		}
 
 		[Constructible]
 		public Alejaha()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Alejaha";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -2128,15 +2128,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Mielan (The Heartwood)" )]
 	public class Mielan : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Mielan";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074219, // Hello there, can I have a moment of your time?
-				1074223 // Have you done it yet?  Oh, I haven’t told you, have I?
+				1074223 // Have you done it yet?ï¿½ Oh, I havenï¿½t told you, have I?
 			) );
 		}
 
@@ -2144,7 +2145,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Mielan()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Mielan";
 			Title = "the arcanist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2186,10 +2186,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Ciala (The Heartwood)" )]
 	public class Ciala : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Ciala";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -2202,7 +2203,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Ciala()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Ciala";
 			Title = "the arborist";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -2248,14 +2248,15 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Aniel (The Heartwood)" )]
 	public class Aniel : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Aniel";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074220, // May I call you friend?  I have a favor to beg of you.
+				1074220, // May I call you friend?ï¿½ I have a favor to beg of you.
 				1074222 // Could I trouble you for some assistance?
 			) );
 		}
@@ -2264,7 +2265,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Aniel()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Aniel";
 			Title = "the arborist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2306,15 +2306,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Aulan (The Heartwood)" )]
 	public class Aulan : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Aulan";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074188, // Weakling! You are not up to the task I have.
-				1074191, // Just keep walking away!  I thought so. Coward!  I’ll bite your legs off!
+				1074191, // Just keep walking away!ï¿½ I thought so. Coward!ï¿½ Iï¿½ll bite your legs off!
 				1074195 // You there, in the stupid hat!   Come here.
 			) );
 		}
@@ -2323,7 +2324,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Aulan()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Aulan";
 			Title = "the expeditionist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2378,14 +2378,14 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Brinnae (The Heartwood)" )]
 	public class Brinnae : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Brinnae";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074212, // *yawn* You busy?
-				1074210 // Hi.  Looking for something to do?
+				1074210 // Hi.ï¿½ Looking for something to do?
 			) );
 		}
 
@@ -2393,7 +2393,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Brinnae()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Brinnae";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -2433,15 +2432,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Elder Caelas (The Heartwood)" )]
 	public class Caelas : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Caelas";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
-				1074201 // Waste not a minute! There’s work to be done.
+				1074204, // Greetings seeker.ï¿½ I have an urgent matter for you, if you are willing.
+				1074201 // Waste not a minute! Thereï¿½s work to be done.
 			) );
 		}
 
@@ -2449,7 +2449,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Caelas()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Caelas";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2491,10 +2490,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Clehin (The Heartwood)" )]
 	public class Clehin : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Clehin";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -2507,7 +2507,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Clehin()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Clehin";
 			Title = "the soil nurturer";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -2547,10 +2546,11 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Cloorne : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Cloorne";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -2563,7 +2563,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Cloorne()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Cloorne";
 			Title = "the expeditionist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2618,14 +2617,15 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Salaenih (The Heartwood)" )]
 	public class Salaenih : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Salaenih";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074207, // Good day to you friend! Allow me to offer you a fabulous opportunity!  Thrills and adventure await!
+				1074207, // Good day to you friend! Allow me to offer you a fabulous opportunity!ï¿½ Thrills and adventure await!
 				1074209 // Hey, could you help me out with something?
 			) );
 		}
@@ -2634,7 +2634,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Salaenih()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Salaenih";
 			Title = "the expeditionist";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -2696,15 +2695,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Vilo (The Heartwood)" )]
 	public class Vilo : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Vilo";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074210, // Hi.  Looking for something to do?
-				1074220 // May I call you friend?  I have a favor to beg of you.
+				1074210, // Hi.ï¿½ Looking for something to do?
+				1074220 // May I call you friend?ï¿½ I have a favor to beg of you.
 			) );
 		}
 
@@ -2712,7 +2712,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Vilo()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Vilo";
 			Title = "the guard";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2758,10 +2757,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Tholef (The Heartwood)" )]
 	public class Tholef : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Tholef";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -2774,7 +2774,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Tholef()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Tholef";
 			Title = "the grape tender";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2822,10 +2821,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Tillanil (The Heartwood)" )]
 	public class Tillanil : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Tillanil";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -2838,7 +2838,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Tillanil()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Tillanil";
 			Title = "the grape tender";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -2879,15 +2878,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Waelian (The Heartwood)" )]
 	public class Waelian : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Waelian";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074221, // Greetings!  I have a small task for you good traveler.
-				1074201 // Waste not a minute! There’s work to be done.
+				1074221, // Greetings!ï¿½ I have a small task for you good traveler.
+				1074201 // Waste not a minute! Thereï¿½s work to be done.
 			) );
 		}
 
@@ -2895,7 +2895,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Waelian()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Waelian";
 			Title = "the trinket weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -2943,14 +2942,15 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Sleen (The Heartwood)" )]
 	public class Sleen : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Sleen";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074200, // Thank goodness you are here, there’s no time to lose.
+				1074200, // Thank goodness you are here, thereï¿½s no time to lose.
 				1074206 // Excuse me please traveler, might I have a little of your time?
 			) );
 		}
@@ -2959,7 +2959,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Sleen()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Sleen";
 			Title = "the trinket weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3001,10 +3000,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Unoelil (The Heartwood)" )]
 	public class Unoelil : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Unoelil";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -3017,7 +3017,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Unoelil()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Unoelil";
 			Title = "the bark weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3058,14 +3057,14 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Anolly (The Heartwood)" )]
 	public class Anolly : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Anolly";
+		public override bool CanTeach => true;
 
 		[Constructible]
 		public Anolly()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Anolly";
 			Title = "the bark weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3107,15 +3106,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Jusae (The Heartwood)" )]
 	public class Jusae : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Jusae";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074210, // Hi.  Looking for something to do?
-				1074213 // Hey buddy.  Looking for work?
+				1074210, // Hi.ï¿½ Looking for something to do?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -3123,7 +3123,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Jusae()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Jusae";
 			Title = "the bowcrafter";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3174,15 +3173,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Cillitha (The Heartwood)" )]
 	public class Cillitha : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Cillitha";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074223, // Have you done it yet?  Oh, I haven’t told you, have I?
-				1074213 // Hey buddy.  Looking for work?
+				1074223, // Have you done it yet?ï¿½ Oh, I havenï¿½t told you, have I?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -3190,7 +3190,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Cillitha()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Cillitha";
 			Title = "the bowcrafter";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3231,10 +3230,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Lohn (The Heartwood)" )]
 	public class Lohn : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lohn";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -3247,7 +3247,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Lohn()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lohn";
 			Title = "the metal weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3295,10 +3294,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Olla (The Heartwood)" )]
 	public class Olla : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Olla";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -3311,7 +3311,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Olla()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Olla";
 			Title = "the metal weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3355,14 +3354,15 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Thallary (The Heartwood)" )]
 	public class Thallary : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Thallary";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074221, // Greetings!  I have a small task for you good traveler.
+				1074221, // Greetings!ï¿½ I have a small task for you good traveler.
 				1074212 // *yawn* You busy?
 			) );
 		}
@@ -3371,7 +3371,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Thallary()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Thallary";
 			Title = "the cloth weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3414,10 +3413,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Ahie (The Heartwood)" )]
 	public class Ahie : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Ahie";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -3430,7 +3430,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Ahie()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Ahie";
 			Title = "the cloth weaver";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3472,13 +3471,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Tyeelor : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Tyeelor";
 
 		[Constructible]
 		public Tyeelor()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Tyeelor";
 			Title = "the expeditionist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3536,13 +3535,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Athailon : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Athailon";
 
 		[Constructible]
 		public Athailon()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Athailon";
 			Title = "the expeditionist";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3598,13 +3597,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ElderTaellia : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Taellia";
 
 		[Constructible]
 		public ElderTaellia()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Taellia";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3643,13 +3642,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ElderMallew : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Mallew";
 
 		[Constructible]
 		public ElderMallew()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Mallew";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3701,13 +3700,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ElderAbbein : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Abbein";
 
 		[Constructible]
 		public ElderAbbein()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Abbein";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3745,13 +3744,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ElderVicaie : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Vicaie";
 
 		[Constructible]
 		public ElderVicaie()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Vicaie";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3794,13 +3793,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ElderJothan : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Jothan";
 
 		[Constructible]
 		public ElderJothan()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Jothan";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3840,13 +3839,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ElderAlethanian : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Alethanian";
 
 		[Constructible]
 		public ElderAlethanian()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Alethanian";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3886,13 +3885,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Rebinil : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Rebinil";
 
 		[Constructible]
 		public Rebinil()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Rebinil";
 			Title = "the healer";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -3930,13 +3929,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Aluniol : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Aluniol";
 
 		[Constructible]
 		public Aluniol()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Aluniol";
 			Title = "the healer";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -3974,13 +3973,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Olaeni : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Olaeni";
 
 		[Constructible]
 		public Olaeni()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Olaeni";
 			Title = "the thaumaturgist";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -4019,13 +4018,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Bolaevin : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Bolaevin";
 
 		[Constructible]
 		public Bolaevin()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Bolaevin";
 			Title = "the arcanist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -4070,13 +4069,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class LorekeeperAneen : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lorekeeper Aneen";
 
 		[Constructible]
 		public LorekeeperAneen()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lorekeeper Aneen";
 			Title = "the keeper of tradition";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -4114,13 +4113,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Daelas : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Daelas";
 
 		[Constructible]
 		public Daelas()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Daelas";
 			Title = "the arborist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -4167,13 +4166,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Alelle : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Alelle";
 
 		[Constructible]
 		public Alelle()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Alelle";
 			Title = "the arborist";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -4224,14 +4223,14 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Nillaen (The Heartwood)" )]
 	public class LorekeeperNillaen : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lorekeeper Nillaen";
+		public override bool CanTeach => true;
 
 		[Constructible]
 		public LorekeeperNillaen()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lorekeeper Nillaen";
 			Title = "the keeper of tradition";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -4275,15 +4274,16 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Ryal (The Heartwood)" )]
 	public class LorekeeperRyal : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lorekeeper Ryal";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
-				1074200 // Thank goodness you are here, there’s no time to lose.
+				1074204, // Greetings seeker.ï¿½ I have an urgent matter for you, if you are willing.
+				1074200 // Thank goodness you are here, thereï¿½s no time to lose.
 			) );
 		}
 
@@ -4291,7 +4291,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public LorekeeperRyal()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lorekeeper Ryal";
 			Title = "the keeper of tradition";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -4334,10 +4333,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Braen (The Heartwood)" )]
 	public class Braen : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Braen";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074187 ); // Want a job?
@@ -4347,7 +4347,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Braen()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Braen";
 			Title = "the thaumaturgist";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -4388,20 +4387,20 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Elder Acob (The Heartwood)" )]
 	public class ElderAcob : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Elder Acob";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
-			MLQuestSystem.Tell( this, pm, 1074197 ); // Pardon me, but if you could spare some time I’d greatly appreciate it.
+			MLQuestSystem.Tell( this, pm, 1074197 ); // Pardon me, but if you could spare some time Iï¿½d greatly appreciate it.
 		}
 
 		[Constructible]
 		public ElderAcob()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Elder Acob";
 			Title = "the wise";
 			Race = Race.Elf;
 			BodyValue = 0x25D;
@@ -4441,20 +4440,20 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class LorekeeperCalendor : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lorekeeper Calendor";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
-			MLQuestSystem.Tell( this, pm, 1074204 ); // Greetings seeker.  I have an urgent matter for you, if you are willing.
+			MLQuestSystem.Tell( this, pm, 1074204 ); // Greetings seeker.ï¿½ I have an urgent matter for you, if you are willing.
 		}
 
 		[Constructible]
 		public LorekeeperCalendor()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lorekeeper Calendor";
 			Title = "the keeper of tradition";
 			Race = Race.Elf;
 			BodyValue = 0x25E;
@@ -4495,10 +4494,11 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class LorekeeperSiarra : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lorekeeper Siarra";
+		public override bool CanTeach => true;
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074206 ); // Excuse me please traveler, might I have a little of your time?
@@ -4508,7 +4508,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public LorekeeperSiarra()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lorekeeper Siarra";
 			Title = "the keeper of tradition";
 			Race = Race.Elf;
 			BodyValue = 0x25E;

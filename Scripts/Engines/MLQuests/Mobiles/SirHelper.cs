@@ -18,12 +18,12 @@ namespace Server.Engines.MLQuests.Mobiles
 
 		private DateTime m_NextShout;
 
-		public override bool IsActiveVendor { get { return false; } }
+		public override string DefaultName => "Sir Helper";
+		public override bool IsActiveVendor => false;
 
 		[Constructible]
 		public SirHelper()
 		{
-			Name = "Sir Helper";
 			Title = "the Profession Guide"; // TODO: Don't display in paperdoll
 
 			Hue = 0x83EA;

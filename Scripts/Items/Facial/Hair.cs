@@ -5,7 +5,7 @@ namespace Server.Items
 	public abstract class Hair : Item
 	{
 		/*
-		
+
 		public static Hair GetRandomHair( bool female )
 		{
 			return GetRandomHair( female, Utility.RandomHairHue() );
@@ -82,7 +82,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool DisplayLootType { get { return false; } }
+		public override bool DisplayLootType => false;
 
 		public override bool VerifyMove( Mobile from )
 		{

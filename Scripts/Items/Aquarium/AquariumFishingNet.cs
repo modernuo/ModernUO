@@ -23,7 +23,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool RequireDeepWater { get { return false; } }
+		public override bool RequireDeepWater => false;
 
 		protected override void FinishEffect( Point3D p, Map map, Mobile from )
 		{

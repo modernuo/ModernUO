@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
 	public class Brigand : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
 
 		[Constructible]
 		public Brigand() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -78,7 +78,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public Brigand( Serial serial ) : base( serial )
 		{

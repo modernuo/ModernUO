@@ -127,7 +127,7 @@ namespace Server.Items
 			m_Broadcasting = false;
 		}
 
-		public override bool HandlesOnMovement{ get{ return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
@@ -188,7 +188,7 @@ namespace Server.Items
 			set{ m_HintNumber = value; }
 		}
 
-		public override bool OnlyToTriggerer{ get{ return true; } }
+		public override bool OnlyToTriggerer => true;
 
 		[Constructible]
 		public HintItem( int itemID, int range, int warning, int hint ) : base( itemID, range, warning )

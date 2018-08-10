@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Giantrat" )]
 	public class GiantRat : BaseCreature
 	{
+		public override string DefaultName => "a giant rat";
+
 		[Constructible]
 		public GiantRat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a giant rat";
 			Body = 0xD7;
 			BaseSoundID = 0x188;
 

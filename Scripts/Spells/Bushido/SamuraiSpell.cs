@@ -15,9 +15,9 @@ namespace Server.Spells.Bushido
 		public override SkillName CastSkill{ get{ return SkillName.Bushido; } }
 		public override SkillName DamageSkill{ get{ return SkillName.Bushido; } }
 
-		public override bool ClearHandsOnCast{ get{ return false; } }
-		public override bool BlocksMovement{ get{ return false; } }
-		public override bool ShowHandMovement{ get{ return false; } }
+		public override bool ClearHandsOnCast => false;
+		public override bool BlocksMovement => false;
+		public override bool ShowHandMovement => false;
 
 		//public override int CastDelayBase{ get{ return 1; } }
 		public override double CastDelayFastScalar{ get{ return 0; } }

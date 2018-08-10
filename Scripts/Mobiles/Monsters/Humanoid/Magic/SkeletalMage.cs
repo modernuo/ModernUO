@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a skeletal corpse" )]
 	public class SkeletalMage : BaseCreature
 	{
+		public override string DefaultName => "a skeletal mage";
+
 		[Constructible]
 		public SkeletalMage() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a skeletal mage";
 			Body = 148;
 			BaseSoundID = 451;
 
@@ -53,15 +54,15 @@ namespace Server.Mobiles
 			AddLoot( LootPack.LowScrolls );
 			AddLoot( LootPack.Potions );
 		}
-		
-		public override bool BleedImmune{ get{ return true; } }
+
+		public override bool BleedImmune => true;
 
 		public override OppositionGroup OppositionGroup
 		{
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 
 		public SkeletalMage( Serial serial ) : base( serial )
 		{

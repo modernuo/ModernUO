@@ -9,10 +9,10 @@ namespace Server.Mobiles
 	[CorpseName( "a fan dancer corpse" )]
 	public class FanDancer : BaseCreature
 	{
+		public override string DefaultName => "a fan dancer";
 		[Constructible]
 		public FanDancer() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a fan dancer";
 			Body = 247;
 			BaseSoundID = 0x372;
 
@@ -42,25 +42,25 @@ namespace Server.Mobiles
 
 			Fame = 9000;
 			Karma = -9000;
-			
+
 			if ( Utility.RandomDouble() < .33 )
 				PackItem( Engines.Plants.Seed.RandomBonsaiSeed() );
-				
+
 			AddItem( new Tessen() );
-			
+
 			if ( 0.02 >= Utility.RandomDouble() )
 				PackItem( new OrigamiPaper() );
 		}
-				
-				
+
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.FilthyRich );
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.Gems, 2 );
 		}
-			
-		public override bool Uncalmable{ get{ return true; } }
+
+		public override bool Uncalmable => true;
 
 		/* TODO: Repel Magic
 		 * 10% chance of repelling a melee attack (why did they call it repel magic anyway?)
@@ -127,7 +127,7 @@ namespace Server.Mobiles
 				//AOS.Damage( defender, this, Utility.RandomMinMax( 35, 45 ), 0, 100, 0, 0, 0 );
 
 				defender.AddResistanceMod( mod );
-		
+
 				ExpireTimer timer = new ExpireTimer( defender, mod, TimeSpan.FromSeconds( 10.0 ) );
 				timer.Start();
 				m_Table[defender] = timer;

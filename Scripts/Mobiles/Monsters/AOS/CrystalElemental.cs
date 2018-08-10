@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal elemental corpse" )]
 	public class CrystalElemental : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+
+		public override string DefaultName => "a crystal elemental";
 
 		[Constructible]
 		public CrystalElemental() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a crystal elemental";
 			Body = 300;
 			BaseSoundID = 278;
 
@@ -55,8 +53,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public CrystalElemental( Serial serial ) : base( serial )

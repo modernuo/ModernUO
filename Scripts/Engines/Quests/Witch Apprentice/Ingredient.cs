@@ -36,7 +36,7 @@ namespace Server.Engines.Quests.Hag
 				// chicken gizzard
 				new IngredientInfo( 1055023, 5, typeof( Chicken ) ),
 				// rat tail
-				new IngredientInfo( 1055024, 5, typeof( Rat ), typeof( GiantRat ), typeof( Sewerrat ) ),
+				new IngredientInfo( 1055024, 5, typeof( Rat ), typeof( GiantRat ), typeof( SewerRat ) ),
 				// frog's leg
 				new IngredientInfo( 1055025, 5, typeof( BullFrog ) ),
 				// deer heart

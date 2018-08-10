@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "an Abscess corpse" )]
 	public class Abscess : Hydra
 	{
+		public override string DefaultName => "Abscess";
+
 		[Constructible]
 		public Abscess()
 		{
 			IsParagon = true;
 
-			Name = "Abscess";
 			Hue = 0x8FD;
 
 			SetStr( 845, 871 );
@@ -55,7 +56,7 @@ namespace Server.Mobiles
 			c.DropItem( new AbscessTail() );
 		}
 
-		public override bool GivesMLMinorArtifact { get { return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public Abscess( Serial serial )
 			: base( serial )

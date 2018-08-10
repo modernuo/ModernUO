@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a corporeal brume corpse" )]
 	public class CorporealBrume : BaseCreature
 	{
+		public override string DefaultName { get { return "a corporeal brume"; } }
+
 		[Constructible]
 		public CorporealBrume()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a corporeal brume";
 			Body = 0x104; // TODO: Verify
 			BaseSoundID = 0x56B;
 

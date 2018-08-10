@@ -121,10 +121,11 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Lissbet : BaseEscortable
 	{
-		public override bool StaticMLQuester { get { return true; } }
-		public override bool InitialInnocent { get { return true; } }
+		public override bool StaticMLQuester => true;
+		public override bool InitialInnocent => true;
+		public override string DefaultName => "Lissbet";
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -147,7 +148,7 @@ namespace Server.Engines.MLQuests.Definitions
 			Hue = Utility.RandomSkinHue();
 			Female = true;
 			Body = 401;
-			Name = "Lissbet";
+
 			Title = "the flower girl";
 
 			HairItemID = 0x203D;
@@ -183,14 +184,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class GrandpaCharley : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Grandpa Charley";
+		public override bool CanTeach => true;
 
 		[Constructible]
 		public GrandpaCharley()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Grandpa Charley";
 			Title = "the farmer";
 			Body = 400;
 			Hue = Race.RandomSkinHue();
@@ -235,9 +236,9 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Jelrice (Ilshenar)" )]
 	public class Jelrice : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Jelrice";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074221 ); // Greetings!  I have a small task for you good traveler.
@@ -247,7 +248,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Jelrice()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Jelrice";
 			Title = "the trader";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -285,9 +285,9 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Yorus (Ilshenar)" )]
 	public class Yorus : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Yorus";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074218 ); // Hey!  I want to talk to you, now.
@@ -297,7 +297,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Yorus()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Yorus";
 			Title = "the tinker";
 			Race = Race.Human;
 			BodyValue = 0x190;

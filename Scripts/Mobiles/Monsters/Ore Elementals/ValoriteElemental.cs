@@ -7,6 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class ValoriteElemental : BaseCreature
 	{
+		public override string DefaultName => "a valorite elemental";
+
 		[Constructible]
 		public ValoriteElemental() : this( 2 )
 		{
@@ -16,7 +18,6 @@ namespace Server.Mobiles
 		public ValoriteElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			// TODO: Gas attack
-			Name = "a valorite elemental";
 			Body = 112;
 			BaseSoundID = 268;
 
@@ -59,8 +60,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 4 );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool AutoDispel => true;
+		public override bool BleedImmune => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public override void AlterMeleeDamageFrom( Mobile from, ref int damage )

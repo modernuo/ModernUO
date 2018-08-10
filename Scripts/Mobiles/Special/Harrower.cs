@@ -77,12 +77,12 @@ namespace Server.Mobiles
 			}
 		}
 
+		public override string DefaultName => "the harrower";
+
 		[Constructible]
 		public Harrower() : base( AIType.AI_Mage, FightMode.Closest, 18, 1, 0.2, 0.4 )
 		{
 			m_Instances.Add( this );
-
-			Name = "the harrower";
 			BodyValue = 146;
 
 			SetStr( 900, 1000 );
@@ -122,9 +122,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool Unprovokable{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AutoDispel => true;
+		public override bool Unprovokable => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		private static readonly double[] m_Offsets = new double[]
 			{
@@ -220,7 +220,7 @@ namespace Server.Mobiles
 			base.OnAfterDelete();
 		}
 
-		public override bool DisallowAllMoves{ get{ return m_TrueForm; } }
+		public override bool DisallowAllMoves => m_TrueForm;
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -500,7 +500,7 @@ namespace Server.Mobiles
 				return null;
 
 			int random = Utility.Random( list.Length );
-			
+
 			Type type = list[random];
 
 			return Loot.Construct( type );
@@ -636,7 +636,7 @@ namespace Server.Mobiles
 					return;
 
 				Gold g = new Gold( 750, 1250 );
-				
+
 				g.MoveToWorld( new Point3D( m_X, m_Y, z ), m_Map );
 
 				if ( 0.5 >= Utility.RandomDouble() )

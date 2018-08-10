@@ -46,7 +46,7 @@ namespace Server.Mobiles
 			AddItem( pack );
 		}
 
-		public override bool ClickTitle { get { return false; } }
+		public override bool ClickTitle => false;
 
 		public Sculptor( Serial serial )
 			: base( serial )
@@ -57,7 +57,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int)0 ); // version 
+			writer.Write( (int)0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )

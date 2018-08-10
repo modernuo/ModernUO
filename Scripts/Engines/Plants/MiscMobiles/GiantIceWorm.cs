@@ -6,13 +6,13 @@ namespace Server.Mobiles
 	[CorpseName( "a giant ice worm corpse" )]
 	public class GiantIceWorm : BaseCreature
 	{
-		public override bool SubdueBeforeTame { get { return true; } }
+		public override bool SubdueBeforeTame => true;
+		public override string DefaultName => "a giant ice worm";
 
 		[Constructible]
 		public GiantIceWorm() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 89;
-			Name = "a giant ice worm";
 			BaseSoundID = 0xDC;
 
 			SetStr( 216, 245 );

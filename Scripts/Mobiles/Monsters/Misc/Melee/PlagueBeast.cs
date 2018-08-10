@@ -33,10 +33,11 @@ namespace Server.Mobiles
 			get { return m_HasMetalChest; }
 		}
 
+		public override string DefaultName => "a plague beast";
+
 		[Constructible]
 		public PlagueBeast() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a plague beast";
 			Body = 775;
 
 			SetStr( 302, 500 );
@@ -107,8 +108,8 @@ namespace Server.Mobiles
 			base.OnDamagedBySpell( caster );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AutoDispel => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override void OnGotMeleeAttack( Mobile attacker )
 		{

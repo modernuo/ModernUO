@@ -6,15 +6,13 @@ namespace Server.Mobiles
 	[CorpseName( "a moloch corpse" )]
 	public class Moloch : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ConcussionBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ConcussionBlow;
+
+		public override string DefaultName => "a moloch";
 
 		[Constructible]
 		public Moloch() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a moloch";
 			Body = 0x311;
 			BaseSoundID = 0x300;
 
@@ -47,7 +45,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 
 		public Moloch( Serial serial ) : base( serial )
 		{

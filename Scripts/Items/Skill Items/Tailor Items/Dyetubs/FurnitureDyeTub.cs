@@ -4,8 +4,8 @@ namespace Server.Items
 {
 	public class FurnitureDyeTub : DyeTub, Engines.VeteranRewards.IRewardItem
 	{
-		public override bool AllowDyables{ get{ return false; } }
-		public override bool AllowFurniture{ get{ return true; } }
+		public override bool AllowDyables => false;
+		public override bool AllowFurniture => true;
 		public override int TargetMessage{ get{ return 501019; } } // Select the furniture to dye.
 		public override int FailMessage{ get{ return 501021; } } // That is not a piece of furniture.
 		public override int LabelNumber{ get{ return 1041246; } } // Furniture Dye Tub

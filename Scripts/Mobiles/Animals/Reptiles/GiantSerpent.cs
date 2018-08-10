@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Serpant" )]
 	public class GiantSerpent : BaseCreature
 	{
+		public override string DefaultName => "a giant snake";
+
 		[Constructible]
 		public GiantSerpent() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a giant serpent";
 			Body = 0x15;
 			Hue = Utility.RandomSnakeHue();
 			BaseSoundID = 219;
@@ -53,10 +54,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
-		public override Poison HitPoison{ get{ return (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly); } }
+		public override Poison PoisonImmune => Poison.Greater;
+		public override Poison HitPoison => (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly);
 
-		public override bool DeathAdderCharmable{ get{ return true; } }
+		public override bool DeathAdderCharmable => true;
 
 		public override int Meat{ get{ return 4; } }
 		public override int Hides{ get{ return 15; } }

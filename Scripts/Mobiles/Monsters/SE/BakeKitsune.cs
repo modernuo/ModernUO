@@ -7,11 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a bake kitsune corpse" )]
 	public class BakeKitsune : BaseCreature
 	{
+		public override string DefaultName{ get { return "a bake kitsune";  } }
 
 		[Constructible]
 		public BakeKitsune() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a bake kitsune";
 			Body = 246;
 
 			SetStr( 171, 220 );
@@ -60,9 +60,9 @@ namespace Server.Mobiles
 		public override int Hides{ get{ return 10; } }
 		public override HideType HideType{ get{ return HideType.Barbed; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Fish; } }
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool ClickTitle{ get{ return false; } }
-		public override bool PropertyTitle{ get{ return false; } }
+		public override bool ShowFameTitle => false;
+		public override bool ClickTitle => false;
+		public override bool PropertyTitle => false;
 
 		public override void OnCombatantChange()
 		{
@@ -126,8 +126,8 @@ namespace Server.Mobiles
 		{
 			if ( !IsBodyMod )
 				return;
-			
-			Name = "a bake kitsune";
+
+			Name = null;
 			Title = null;
 			BodyMod = 0;
 			Hue = 0;
@@ -164,7 +164,7 @@ namespace Server.Mobiles
 				 * Damage: 2 hps per second for 5 seconds
 				 * End cliloc: 1070824
 				 */
-			
+
 				ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
 				if ( timer != null )
@@ -182,7 +182,7 @@ namespace Server.Mobiles
 		}
 
 		private static Hashtable m_Table = new Hashtable();
-	
+
 		private class ExpireTimer : Timer
 		{
 			private Mobile m_Mobile;
@@ -221,7 +221,7 @@ namespace Server.Mobiles
 				}
 			}
 		}
-		
+
 		public override int GetAngerSound()
 		{
 			return 0x4DE;

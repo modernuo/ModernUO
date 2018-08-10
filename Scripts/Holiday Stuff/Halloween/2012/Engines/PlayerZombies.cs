@@ -248,7 +248,7 @@ namespace Server.Engines.Events
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool BleedImmune { get { return true; } }
+		public override bool BleedImmune => true;
 
 		public override Poison PoisonImmune { get { return Poison.Regular; } }
 

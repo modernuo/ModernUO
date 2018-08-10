@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	public class BladeSpirits : BaseCreature
 	{
 		public override bool DeleteCorpseOnDeath { get { return Core.AOS; } }
-		public override bool IsHouseSummonable { get { return true; } }
+		public override bool IsHouseSummonable => true;
 
 		public override double DispelDifficulty { get { return 0.0; } }
 		public override double DispelFocus { get { return 20.0; } }
@@ -19,11 +19,12 @@ namespace Server.Mobiles
 			return ( m.Str + m.Skills[SkillName.Tactics].Value ) / Math.Max( GetDistanceToSqrt( m ), 1.0 );
 		}
 
+		public override string DefaultName => "a blade spirit";
+
 		[Constructible]
 		public BladeSpirits()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
 		{
-			Name = "a blade spirit";
 			Body = 574;
 
 			SetStr( 150 );
@@ -57,7 +58,7 @@ namespace Server.Mobiles
 			ControlSlots = ( Core.SE ) ? 2 : 1;
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
 
 		public override int GetAngerSound()

@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Iceserpant" )]
 	public class IceSerpent : BaseCreature
 	{
+		public override string DefaultName => "a giant ice serpent";
+
 		[Constructible]
 		public IceSerpent() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a giant ice serpent";
 			Body = 89;
 			BaseSoundID = 219;
 
@@ -43,7 +44,7 @@ namespace Server.Mobiles
 			VirtualArmor = 32;
 
 			PackItem( Loot.RandomArmorOrShieldOrWeapon() );
-			
+
 			switch ( Utility.Random( 10 ))
 			{
 				case 0: PackItem( new LeftArm() ); break;
@@ -67,7 +68,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool DeathAdderCharmable{ get{ return true; } }
+		public override bool DeathAdderCharmable => true;
 
 		public override int Meat{ get{ return 4; } }
 		public override int Hides{ get{ return 15; } }

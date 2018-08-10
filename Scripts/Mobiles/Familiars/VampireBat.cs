@@ -10,9 +10,10 @@ namespace Server.Mobiles
 	[CorpseName( "a vampire bat corpse" )]
 	public class VampireBatFamiliar : BaseFamiliar
 	{
+		public override string DefaultName => "a vampire bat";
+
 		public VampireBatFamiliar()
 		{
-			Name = "a vampire bat";
 			Body = 317;
 			BaseSoundID = 0x270;
 

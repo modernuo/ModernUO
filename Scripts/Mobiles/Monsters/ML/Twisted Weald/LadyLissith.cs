@@ -8,12 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Lady Lissith corpse" )]
 	public class LadyLissith : GiantBlackWidow
 	{
+		public override string DefaultName => "Lady Lissith";
+
 		[Constructible]
 		public LadyLissith()
 		{
 			IsParagon = true;
-
-			Name = "Lady Lissith";
 			Hue = 0x452;
 
 			SetStr( 81, 130 );
@@ -49,10 +49,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 2 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
 		/*
 		// TODO: uncomment once added
@@ -71,7 +68,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public LadyLissith( Serial serial )
 			: base( serial )

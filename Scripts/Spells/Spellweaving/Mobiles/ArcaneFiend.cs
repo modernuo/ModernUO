@@ -11,12 +11,12 @@ namespace Server.Mobiles
 		public override double DispelFocus { get { return 20.0; } }
 
 		public override PackInstinct PackInstinct { get { return PackInstinct.Daemon; } }
-		public override bool BleedImmune { get { return true; } }	//TODO: Verify on OSI.  Guide says this.
+		public override bool BleedImmune => true;	//TODO: Verify on OSI.  Guide says this.
+		public override string DefaultName => "an imp";
 
 		[Constructible]
 		public ArcaneFiend() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an imp";
 			Body = 74;
 			BaseSoundID = 422;
 

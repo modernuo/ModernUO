@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Zento
 {
 	public class AnsellaGryen : BaseQuester
 	{
+		public override string DefaultName => "Ansella Gryen";
+
 		[Constructible]
 		public AnsellaGryen()
 		{
@@ -21,7 +23,6 @@ namespace Server.Engines.Quests.Zento
 
 			Female = true;
 			Body = 0x191;
-			Name = "Ansella Gryen";
 		}
 
 		public override void InitOutfit()

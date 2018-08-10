@@ -8,15 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a revenant lion corpse" )]
 	public class RevenantLion : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+		public override string DefaultName => "a Revenant Lion";
 
 		[Constructible]
 		public RevenantLion() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a Revenant Lion";
 			Body = 251;
 
 			SetStr( 276, 325 );
@@ -48,7 +45,7 @@ namespace Server.Mobiles
 			Fame = 4000;
 			Karma = -4000;
 			PackNecroReg( 6, 8 );
-			
+
 			switch ( Utility.Random( 10 ))
 			{
 				case 0: PackItem( new LeftArm() ); break;
@@ -97,9 +94,9 @@ namespace Server.Mobiles
 			// TODO: Bone Pile
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
-		public override Poison HitPoison{ get{ return Poison.Greater; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Greater;
+		public override Poison HitPoison => Poison.Greater;
 
 		public RevenantLion( Serial serial ) : base( serial )
 		{

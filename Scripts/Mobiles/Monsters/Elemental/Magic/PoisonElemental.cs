@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a poison elementals corpse" )]
 	public class PoisonElemental : BaseCreature
 	{
+		public override string DefaultName => "a poison elemental";
+
 		[Constructible]
 		public PoisonElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a poison elemental";
 			Body = 162;
 			BaseSoundID = 263;
 
@@ -55,10 +56,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override Poison HitPoison => Poison.Lethal;
 		public override double HitPoisonChance{ get{ return 0.75; } }
 
 		public override int TreasureMapLevel{ get{ return 5; } }

@@ -7,14 +7,11 @@ namespace Server.Items
 {
 	public class PlagueBeastInnard : Item, IScissorable, ICarvable
 	{
-		public PlagueBeastLord Owner
-		{
-			get { return RootParent as PlagueBeastLord; }
-		}
+		public PlagueBeastLord Owner => RootParent as PlagueBeastLord;
+		public override string DefaultName => "plague beast innards";
 
 		public PlagueBeastInnard( int itemID, int hue ) : base( itemID )
 		{
-			Name = "plague beast innards";
 			Hue = hue;
 			Movable = false;
 			Weight = 1.0;

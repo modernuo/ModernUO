@@ -11,9 +11,9 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		public override bool IsActiveVendor{ get{ return false; } }
+		public override bool IsActiveVendor => false;
 
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
 
 		public virtual int JoinCost{ get{ return 500; } }
 

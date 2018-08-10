@@ -17,11 +17,11 @@ namespace Server.Misc
 		ToTTwo,
 		ToTThree
 	}
-	
+
 	public class TreasuresOfTokuno
 	{
 		public const int ItemsPerReward = 10;
-		
+
 		private static Type[] m_LesserArtifactsTotal = new Type[]
 			{
 				typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
@@ -30,18 +30,18 @@ namespace Server.Misc
 				typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( PigmentsOfTokuno ), typeof( FluteOfRenewal ),
 				typeof( LeurociansMempoOfFortune ), typeof( LesserPigmentsOfTokuno ), typeof( MetalPigmentsOfTokuno ), typeof( ChestOfHeirlooms )
  			};
-		
+
 		public static Type[] LesserArtifactsTotal { get { return m_LesserArtifactsTotal; } }
-		
+
 		private static TreasuresOfTokunoEra _DropEra = TreasuresOfTokunoEra.None;
 		private static TreasuresOfTokunoEra _RewardEra = TreasuresOfTokunoEra.ToTOne;
-		
+
 		public static TreasuresOfTokunoEra DropEra
 		{
 			get { return _DropEra; }
 			set { _DropEra = value; }
 		}
-		
+
 		public static TreasuresOfTokunoEra RewardEra
 		{
 			get { return _RewardEra; }
@@ -62,7 +62,7 @@ namespace Server.Misc
 			new Type[] {
 				typeof( MetalPigmentsOfTokuno ), typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ),
 				typeof( MetalPigmentsOfTokuno ), typeof( BlackLotusHood ), typeof( DaimyosHelm ), typeof( DemonForks ),
-				typeof( MetalPigmentsOfTokuno ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ), typeof( HanzosBow ), 
+				typeof( MetalPigmentsOfTokuno ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ), typeof( HanzosBow ),
 				typeof( MetalPigmentsOfTokuno ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
 				typeof( MetalPigmentsOfTokuno ), typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ),
 				typeof( MetalPigmentsOfTokuno ), typeof( FluteOfRenewal ), typeof( ChestOfHeirlooms )
@@ -78,13 +78,13 @@ namespace Server.Misc
 			}
 		};
 
-		public static Type[] LesserArtifacts 
-		{ 
+		public static Type[] LesserArtifacts
+		{
 			get { return m_LesserArtifacts[(int)RewardEra-1]; }
 		}
 
 		private static Type[][] m_GreaterArtifacts = null;
-		
+
 		public static Type[] GreaterArtifacts
 		{
 			get
@@ -92,11 +92,11 @@ namespace Server.Misc
 				if( m_GreaterArtifacts == null )
 				{
 					m_GreaterArtifacts = new Type[ToTRedeemGump.NormalRewards.Length][];
-					
+
 					for( int i = 0; i < m_GreaterArtifacts.Length; i++ )
 					{
 						m_GreaterArtifacts[i] = new Type[ToTRedeemGump.NormalRewards[i].Length];
-						
+
 						for( int j = 0; j < m_GreaterArtifacts[i].Length; j++ )
 						{
 							m_GreaterArtifacts[i][j] = ToTRedeemGump.NormalRewards[i][j].Type;
@@ -153,7 +153,7 @@ namespace Server.Misc
 			if( chance > Utility.RandomDouble() )
 			{
 				Item i = null;
-				
+
 				try
 				{
 					i = Activator.CreateInstance( m_LesserArtifacts[(int)DropEra-1][Utility.Random( m_LesserArtifacts[(int)DropEra-1].Length )] ) as Item;
@@ -164,7 +164,7 @@ namespace Server.Misc
 				if( i != null )
 				{
 					pm.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
-					
+
 					if( !pm.PlaceInBackpack( i ) )
 					{
 						if( pm.BankBox != null && pm.BankBox.TryDropItem( killer, i, false ) )
@@ -175,7 +175,7 @@ namespace Server.Misc
 							i.MoveToWorld( pm.Location, pm.Map );
 						}
 					}
-					
+
 					pm.ToTTotalMonsterFame = 0;
 				}
 			}
@@ -187,15 +187,16 @@ namespace Server.Mobiles
 {
 	public class IharaSoko : BaseVendor
 	{
-		public override bool IsActiveVendor { get { return false; } }
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool DisallowAllMoves { get { return true; } }
-		public override bool ClickTitle { get { return true; } }
-		public override bool CanTeach { get { return false; } }
+		public override bool IsActiveVendor => false;
+		public override bool IsInvulnerable => true;
+		public override bool DisallowAllMoves => true;
+		public override bool ClickTitle => true;
+		public override bool CanTeach => false;
+		public override string DefaultName => "Ihara Soko";
 
         protected List<SBInfo> m_SBInfos = new List<SBInfo>();
         protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
-		
+
 		public override void InitSBInfo()
 		{
 		}
@@ -212,11 +213,9 @@ namespace Server.Mobiles
 			AddItem( item );
 		}
 
-
 		[Constructible]
 		public IharaSoko() : base( "the Imperial Minister of Trade" )
 		{
-			Name = "Ihara Soko";
 			Female = false;
 			Body = 0x190;
 			Hue = 0x8403;
@@ -232,7 +231,7 @@ namespace Server.Mobiles
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
@@ -260,7 +259,7 @@ namespace Server.Mobiles
 						SayTo( pm, 1070980 ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
 						pm.CloseGump( typeof( ToTTurnInGump ) );	//Sanity
-						
+
 						if( !pm.HasGump( typeof( ToTRedeemGump ) ) )
 							pm.SendGump( new ToTRedeemGump( this, false ) );
 					}
@@ -326,10 +325,10 @@ namespace Server.Gumps
 				Item item = (Item)items[i];
 				if( item is ChestOfHeirlooms && !((ChestOfHeirlooms)item).Locked )
 					continue;
-				
+
 				if( item is ChestOfHeirlooms && ((ChestOfHeirlooms)item).TrapLevel != 10 )
 					continue;
-				
+
 				if( item is PigmentsOfTokuno && ((PigmentsOfTokuno)item).Type != PigmentType.None )
 					continue;
 
@@ -390,7 +389,7 @@ namespace Server.Gumps
 
 			if( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
 				return;
-			
+
 			if( pm.ToTItemsTurnedIn == 0 )
 				m_Collector.SayTo( pm, 1071013 ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
 			else if( pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward )	//This case should ALWAYS be true with this gump, jsut a sanity check
@@ -494,7 +493,7 @@ namespace Server.Gumps
 		#endregion
 
 		public static TypeTileButtonInfo[][] NormalRewards
-		{ 
+		{
 			get { return m_NormalRewards; }
 		}
 
@@ -543,7 +542,7 @@ namespace Server.Gumps
 		#endregion
 
 		public static PigmentsTileButtonInfo[][] PigmentRewards
-		{ 
+		{
 			get { return m_PigmentRewards; }
 		}
 

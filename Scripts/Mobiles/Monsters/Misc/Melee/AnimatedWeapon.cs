@@ -5,8 +5,8 @@ namespace Server.Mobiles
 	[CorpseName( "an animated weapon corpse" )]
 	public class AnimatedWeapon : BaseCreature
 	{
-		public override bool DeleteCorpseOnDeath { get { return true; } }
-		public override bool IsHouseSummonable { get { return true; } }
+		public override bool DeleteCorpseOnDeath => true;
+		public override bool IsHouseSummonable => true;
 
 		public override double DispelDifficulty { get { return 0.0; } }
 		public override double DispelFocus { get { return 20.0; } }
@@ -16,11 +16,12 @@ namespace Server.Mobiles
 			return m.Str / Math.Max( this.GetDistanceToSqrt( m ), 1.0 );
 		}
 
+		public override string DefaultName => "an animated weapon";
+
 		[Constructible]
 		public AnimatedWeapon( Mobile caster, int level )
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
 		{
-			Name = "an animated weapon";
 			Body = 692;
 
 			SetStr( 10 + level );
@@ -69,7 +70,7 @@ namespace Server.Mobiles
 			ControlSlots = 4;
 		}
 
-		public override bool BleedImmune { get { return true; } }
+		public override bool BleedImmune => true;
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
 
 		public override int GetAngerSound()

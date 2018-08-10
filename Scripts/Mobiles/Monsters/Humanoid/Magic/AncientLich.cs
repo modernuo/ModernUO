@@ -47,7 +47,7 @@ namespace Server.Mobiles
 
 			VirtualArmor = 60;
 			PackNecroReg( 30, 275 );
-			
+
 		}
 
 		public override OppositionGroup OppositionGroup
@@ -86,15 +86,15 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override bool Unprovokable{ get{ return true; } }
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool Unprovokable => true;
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public AncientLich( Serial serial ) : base( serial )
 		{
 		}
-    
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

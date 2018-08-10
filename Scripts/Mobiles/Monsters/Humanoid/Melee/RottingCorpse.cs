@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a rotting corpse" )]
 	public class RottingCorpse : BaseCreature
 	{
+		public override string DefaultName => "a rotting corpse";
+
 		[Constructible]
 		public RottingCorpse() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a rotting corpse";
 			Body = 155;
 			BaseSoundID = 471;
 
@@ -51,9 +52,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich, 2 );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public RottingCorpse( Serial serial ) : base( serial )

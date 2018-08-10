@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a skeletal corpse" )]
 	public class BoneKnight : BaseCreature
 	{
+		public override string DefaultName => "a bone knight";
+
 		[Constructible]
 		public BoneKnight() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a bone knight";
 			Body = 57;
 			BaseSoundID = 451;
 
@@ -62,7 +63,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public BoneKnight( Serial serial ) : base( serial )
 		{

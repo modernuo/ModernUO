@@ -36,7 +36,7 @@ namespace Server.Items
 	{
 		public override int BaseLabelNumber { get { return 1042959; } } // a bottle of Ale
 		public override int MaxQuantity { get { return 5; } }
-		public override bool Fillable { get { return false; } }
+		public override bool Fillable => false;
 
 		public override int ComputeItemID()
 		{
@@ -115,7 +115,7 @@ namespace Server.Items
 	{
 		public override int BaseLabelNumber { get { return 1042965; } } // a jug of Ale
 		public override int MaxQuantity { get { return 10; } }
-		public override bool Fillable { get { return false; } }
+		public override bool Fillable => false;
 
 		public override int ComputeItemID()
 		{
@@ -1026,7 +1026,7 @@ namespace Server.Items
 			else if( targ is BaseWaterContainer )
 			{
 				BaseWaterContainer bwc = targ as BaseWaterContainer;
-				
+
 				if( Content != BeverageType.Water )
 				{
 					from.SendLocalizedMessage( 500842 ); // Can't pour that in there.
@@ -1036,7 +1036,7 @@ namespace Server.Items
 					from.SendLocalizedMessage( 500841 ); // That has something in it.
 				}
 				else
-				{				
+				{
 					int itNeeds = Math.Min( ( bwc.MaxQuantity - bwc.Quantity ), Quantity );
 
 					if( itNeeds > 0 )

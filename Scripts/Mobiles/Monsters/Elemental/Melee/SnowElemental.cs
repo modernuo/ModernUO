@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a snow elemental corpse" )]
 	public class SnowElemental : BaseCreature
 	{
+		public override string DefaultName => "a snow elemental";
+
 		[Constructible]
 		public SnowElemental() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a snow elemental";
 			Body = 163;
 			BaseSoundID = 263;
 
@@ -50,7 +51,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public override int TreasureMapLevel{ get{ return Utility.RandomList( 2, 3 ); } }
 

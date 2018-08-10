@@ -6,11 +6,12 @@ namespace Server.Mobiles
 	[CorpseName("a parrot corpse")]
 	public class Parrot : BaseCreature
 	{
+		public override string DefaultName => "a parrot";
+
 		[Constructible]
 		public Parrot() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			this.Body = 831;
-			this.Name = ("a parrot");
 			this.VirtualArmor = Utility.Random(0,6);
 
 			this.InitStats((10),Utility.Random(25,16),(10));
@@ -31,30 +32,30 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override int GetAngerSound() 
-		{ 
-			return 0x1B; 
-		} 
+		public override int GetAngerSound()
+		{
+			return 0x1B;
+		}
 
-		public override int GetIdleSound() 
-		{ 
-			return 0x1C; 
-		} 
+		public override int GetIdleSound()
+		{
+			return 0x1C;
+		}
 
-		public override int GetAttackSound() 
-		{ 
-			return 0x1D; 
-		} 
+		public override int GetAttackSound()
+		{
+			return 0x1D;
+		}
 
-		public override int GetHurtSound() 
-		{ 
-			return 0x1E; 
-		} 
+		public override int GetHurtSound()
+		{
+			return 0x1E;
+		}
 
-		public override int GetDeathSound() 
-		{ 
-			return 0x1F; 
-		} 
+		public override int GetDeathSound()
+		{
+			return 0x1F;
+		}
 
 		public override void Serialize(GenericWriter writer)
 		{

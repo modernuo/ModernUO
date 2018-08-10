@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a terathan avenger corpse" )]
 	public class TerathanAvenger : BaseCreature
 	{
+		public override string DefaultName => "a terathan avenger";
+
 		[Constructible]
 		public TerathanAvenger() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a terathan avenger";
 			Body = 152;
 			BaseSoundID = 0x24D;
 
@@ -50,8 +51,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich, 2 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
-		public override Poison HitPoison{ get{ return Poison.Deadly; } }
+		public override Poison PoisonImmune => Poison.Deadly;
+		public override Poison HitPoison => Poison.Deadly;
 		public override int TreasureMapLevel{ get{ return 3; } }
 		public override int Meat{ get{ return 2; } }
 

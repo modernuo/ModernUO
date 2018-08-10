@@ -59,8 +59,8 @@ namespace Server.Mobiles
 
 		public override int Meat{ get{ return 2; } }
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 3; } }
 
 		public override OppositionGroup OppositionGroup

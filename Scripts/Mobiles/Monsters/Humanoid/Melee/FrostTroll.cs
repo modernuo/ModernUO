@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a frost troll corpse" )]
 	public class FrostTroll : BaseCreature
 	{
+		public override string DefaultName => "a frost troll";
+
 		[Constructible]
 		public FrostTroll() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a frost troll";
 			Body = 55;
 			BaseSoundID = 461;
 

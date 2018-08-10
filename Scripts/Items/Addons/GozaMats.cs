@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new GozaMatEastDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public GozaMatEastAddon() : this( 0 )
@@ -74,7 +74,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new GozaMatSouthDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public GozaMatSouthAddon() : this( 0 )
@@ -142,7 +142,7 @@ namespace Server.Items
 		public override BaseAddonDeed Deed{ get{ return new SquareGozaMatEastDeed(); } }
 		public override int LabelNumber{ get{ return 1030688; } } // goza mat
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public SquareGozaMatEastAddon() : this( 0 )
@@ -208,7 +208,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new SquareGozaMatSouthDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public SquareGozaMatSouthAddon() : this( 0 )
@@ -275,7 +275,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BrocadeGozaMatEastDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public BrocadeGozaMatEastAddon() : this( 0 )
@@ -341,7 +341,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BrocadeGozaMatSouthDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public BrocadeGozaMatSouthAddon() : this( 0 )
@@ -407,7 +407,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BrocadeSquareGozaMatEastDeed(); } }
 
-			public override bool RetainDeedHue{ get{ return true; } }
+			public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public BrocadeSquareGozaMatEastAddon() : this( 0 )
@@ -473,7 +473,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new BrocadeSquareGozaMatSouthDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public BrocadeSquareGozaMatSouthAddon() : this( 0 )

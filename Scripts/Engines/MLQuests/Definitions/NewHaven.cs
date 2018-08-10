@@ -9,7 +9,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class NewHavenEscort : BaseEscort
 	{
 		// New Haven escorts do not count for 'helping a human in need'
-		public override bool AwardHumanInNeed { get { return false; } }
+		public override bool AwardHumanInNeed => false;
 
 		// Escort reward
 		private static readonly BaseReward m_Reward = new ItemReward( "Gold", typeof( Gold ), 500 );

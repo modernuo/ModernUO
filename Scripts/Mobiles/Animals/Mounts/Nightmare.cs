@@ -92,12 +92,12 @@ namespace Server.Mobiles
 			return base.GetAngerSound();
 		}
 
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool HasBreath => true; // fire breath enabled
 		public override int Meat{ get{ return 5; } }
 		public override int Hides{ get{ return 10; } }
 		public override HideType HideType{ get{ return HideType.Barbed; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
-		public override bool CanAngerOnTame { get { return true; } }
+		public override bool CanAngerOnTame => true;
 
 		public Nightmare( Serial serial ) : base( serial )
 		{

@@ -8,12 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a kaze kemono corpse" )]
 	public class KazeKemono : BaseCreature
 	{
+		public override string DefaultName => "a kaze kemono";
 
 		[Constructible]
 		public KazeKemono()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a kaze kemono";
 			Body = 196;
 			BaseSoundID = 655;
 
@@ -52,7 +52,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich, 3 );
 		}
 
-		public override bool BleedImmune { get { return true; } }
+		public override bool BleedImmune => true;
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{

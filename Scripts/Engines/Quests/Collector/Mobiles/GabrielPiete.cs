@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Collector
 {
 	public class GabrielPiete : BaseQuester
 	{
+		public override string DefaultName => "Gabriel Piete";
+
 		[Constructible]
 		public GabrielPiete() : base( "the renowned minstrel" )
 		{
@@ -25,7 +27,6 @@ namespace Server.Engines.Quests.Collector
 
 			Female = false;
 			Body = 0x190;
-			Name = "Gabriel Piete";
 		}
 
 		public override void InitOutfit()

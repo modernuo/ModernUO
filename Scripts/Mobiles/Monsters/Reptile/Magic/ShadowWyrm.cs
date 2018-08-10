@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a shadow wyrm corpse" )]
 	public class ShadowWyrm : BaseCreature
 	{
+		public override string DefaultName => "a shadow wyrm";
+
 		[Constructible]
 		public ShadowWyrm() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a shadow wyrm";
 			Body = 106;
 			BaseSoundID = 362;
 
@@ -60,11 +61,11 @@ namespace Server.Mobiles
 			return 0x2D1;
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
-		public override bool AutoDispel{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
-		public override Poison HitPoison{ get{ return Poison.Deadly; } }
+		public override bool ReacquireOnMovement => true;
+		public override bool HasBreath => true; // fire breath enabled
+		public override bool AutoDispel => true;
+		public override Poison PoisonImmune => Poison.Deadly;
+		public override Poison HitPoison => Poison.Deadly;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public override int Meat{ get{ return 19; } }
@@ -72,7 +73,7 @@ namespace Server.Mobiles
 		public override int Scales{ get{ return 10; } }
 		public override ScaleType ScaleType{ get{ return ScaleType.Black; } }
 		public override HideType HideType{ get{ return HideType.Barbed; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public ShadowWyrm( Serial serial ) : base( serial )
 		{

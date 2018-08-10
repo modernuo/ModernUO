@@ -8,11 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a Moug-Guur corpse" )]
 	public class MougGuur : Ettin
 	{
+		public override string DefaultName => "Moug-Guur";
+
 		[Constructible]
 		public MougGuur()
 		{
-			Name = "Moug-Guur";
-
 			SetStr( 556, 575 );
 			SetDex( 84, 94 );
 			SetInt( 59, 73 );

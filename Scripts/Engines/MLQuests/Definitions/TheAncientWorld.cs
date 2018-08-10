@@ -42,7 +42,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class TheGoldenHorn : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( Bullish ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public TheGoldenHorn()
 		{
@@ -62,7 +62,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class Bullish : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( LostCivilization ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public Bullish()
 		{
@@ -81,7 +81,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class LostCivilization : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public LostCivilization()
 		{
@@ -105,20 +105,19 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Broolol (The Heartwood)" )]
 	public class LorekeeperBroolol : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Lorekeeper Broolol";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
-			MLQuestSystem.Tell( this, pm, 1074200 ); // Thank goodness you are here, there’s no time to lose.
+			MLQuestSystem.Tell( this, pm, 1074200 ); // Thank goodness you are here, thereï¿½s no time to lose.
 		}
 
 		[Constructible]
 		public LorekeeperBroolol()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lorekeeper Broolol";
 			Title = "the keeper of tradition";
 			Race = Race.Elf;
 			BodyValue = 0x25E;

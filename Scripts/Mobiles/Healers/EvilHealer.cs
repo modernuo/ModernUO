@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
 	public class EvilHealer : BaseHealer
 	{
-		public override bool CanTeach{ get{ return true; } }
+		public override bool CanTeach => true;
 
 		public override bool CheckTeach( SkillName skill, Mobile from )
 		{
@@ -30,8 +30,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Swords, 80.0, 100.0 );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool IsActiveVendor{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
+		public override bool IsActiveVendor => true;
 
 		public override void InitSBInfo()
 		{

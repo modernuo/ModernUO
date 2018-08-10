@@ -9,6 +9,8 @@ namespace Server.Engines.Quests.Haven
 {
 	public class Uzeraan : BaseQuester
 	{
+		public override string DefaultName => "Uzeraan";
+
 		[Constructible]
 		public Uzeraan() : base( "the Conjurer" )
 		{
@@ -22,7 +24,6 @@ namespace Server.Engines.Quests.Haven
 
 			Female = false;
 			Body = 0x190;
-			Name = "Uzeraan";
 		}
 
 		public override void InitOutfit()

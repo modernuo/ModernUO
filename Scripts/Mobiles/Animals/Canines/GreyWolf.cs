@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Greywolf" )]
 	public class GreyWolf : BaseCreature
 	{
+		public override string DefaultName => "a grey wolf";
+
 		[Constructible]
 		public GreyWolf() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a grey wolf";
 			Body = Utility.RandomList( 25, 27 );
 			BaseSoundID = 0xE5;
 

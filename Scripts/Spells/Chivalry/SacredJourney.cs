@@ -22,7 +22,7 @@ namespace Server.Spells.Chivalry
 		public override int RequiredMana{ get{ return 10; } }
 		public override int RequiredTithing{ get{ return 15; } }
 		public override int MantraNumber{ get{ return 1060727; } } // Sanctum Viatas
-		public override bool BlocksMovement{ get{ return false; } }
+		public override bool BlocksMovement => false;
 
 		private RunebookEntry m_Entry;
 		private Runebook m_Book;
@@ -188,7 +188,7 @@ namespace Server.Spells.Chivalry
 					from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357, from.Name, "" ) ); // I can not recall from that object.
 				}
 			}
-			
+
 			protected override void OnNonlocalTarget( Mobile from, object o )
 			{
 			}

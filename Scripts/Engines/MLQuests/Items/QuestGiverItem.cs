@@ -34,7 +34,7 @@ namespace Server.Engines.MLQuests.Items
 		{
 		}
 
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 
 		public override void AddNameProperties( ObjectPropertyList list )
 		{
@@ -111,7 +111,7 @@ namespace Server.Engines.MLQuests.Items
 		{
 		}
 
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 
 		public override void HandleInvalidTransfer( Mobile from )
 		{

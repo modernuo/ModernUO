@@ -20,7 +20,7 @@ namespace Server.Spells.Chivalry
 		public override int RequiredMana{ get{ return 15; } }
 		public override int RequiredTithing{ get{ return 10; } }
 		public override int MantraNumber{ get{ return 1060722; } } // Divinum Furis
-		public override bool BlocksMovement{ get{ return false; } }
+		public override bool BlocksMovement => false;
 
 		public DivineFurySpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

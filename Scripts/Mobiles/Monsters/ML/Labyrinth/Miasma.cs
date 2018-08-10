@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Miasma corpse" )]
 	public class Miasma : Scorpion
 	{
+		public override string DefaultName => "Miasma";
+
 		[Constructible]
 		public Miasma()
 		{
 			IsParagon = true;
 
-			Name = "Miasma";
 			Hue = 0x8FD;
 
 			SetStr( 255, 847 );
@@ -47,8 +48,8 @@ namespace Server.Mobiles
 		public override double WeaponAbilityChance { get { return 0.75; } }
 		public override double HitPoisonChance { get { return 0.35; } }
 		public override Poison HitPoison { get { return ( Poison.Lethal ); } }
-		public override bool HasManaOveride { get { return true; } }
-		public override bool GivesMLMinorArtifact { get { return true; } }
+		public override bool HasManaOveride => true;
+		public override bool GivesMLMinorArtifact => true;
 		public override int TreasureMapLevel { get { return 5; } }
 
 		public override void GenerateLoot()
@@ -56,10 +57,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 4 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.MortalStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
 
 		/*
 		// TODO: uncomment once added

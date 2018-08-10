@@ -6,15 +6,13 @@ namespace Server.Mobiles
 	[CorpseName( "a tormented minotaur corpse" )]
 	public class TormentedMinotaur : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+
+		public override string DefaultName => "Tormented Minotaur";
 
 		[Constructible]
 		public TormentedMinotaur() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "Tormented Minotaur";
 			Body = 262;
 
 			SetStr( 822, 930 );
@@ -48,7 +46,7 @@ namespace Server.Mobiles
 			AddLoot(LootPack.FilthyRich, 10);
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+		public override Poison PoisonImmune => Poison.Deadly;
 		public override int TreasureMapLevel{ get{ return 3; } }
 
 		public override int GetDeathSound()	{ return 0x596; }

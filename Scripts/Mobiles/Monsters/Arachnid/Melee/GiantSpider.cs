@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a giant spider corpse" )]
 	public class GiantSpider : BaseCreature
 	{
+		public override string DefaultName => "a giant spider";
+
 		[Constructible]
 		public GiantSpider() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a giant spider";
 			Body = 28;
 			BaseSoundID = 0x388;
 
@@ -53,8 +54,8 @@ namespace Server.Mobiles
 
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public override PackInstinct PackInstinct{ get{ return PackInstinct.Arachnid; } }
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
-		public override Poison HitPoison{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
+		public override Poison HitPoison => Poison.Regular;
 
 		public GiantSpider( Serial serial ) : base( serial )
 		{

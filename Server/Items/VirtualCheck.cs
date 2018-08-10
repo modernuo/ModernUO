@@ -19,10 +19,10 @@ namespace Server
 	{
 		public static bool UseEditGump = false;
 
-		public override bool IsVirtualItem { get { return true; } }
+		public override bool IsVirtualItem => true;
 
-		public override bool DisplayWeight { get { return false; } }
-		public override bool DisplayLootType { get { return false; } }
+		public override bool DisplayWeight => false;
+		public override bool DisplayLootType => false;
 
 		public override double DefaultWeight { get { return 0; } }
 

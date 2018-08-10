@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Master Jonath corpse" )]
 	public class MasterJonath : BoneMagi
 	{
+		public override string DefaultName => "Master Jonath";
+
 		[Constructible]
 		public MasterJonath()
 		{
 			IsParagon = true;
 
-			Name = "Master Jonath";
 			Hue = 0x455;
 
 			SetStr( 109, 131 );
@@ -73,7 +74,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public MasterJonath( Serial serial )

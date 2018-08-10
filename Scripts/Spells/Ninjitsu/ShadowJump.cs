@@ -21,7 +21,7 @@ namespace Server.Spells.Ninjitsu
 		public override double RequiredSkill{ get{ return 50.0; } }
 		public override int RequiredMana{ get{ return 15; } }
 
-		public override bool BlockedByAnimalForm{ get{ return false; } }
+		public override bool BlockedByAnimalForm => false;
 
 		public Shadowjump( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -101,7 +101,7 @@ namespace Server.Spells.Ninjitsu
 				Effects.SendLocationParticles( EffectItem.Create( from, m.Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 2023 );
 
 				m.PlaySound( 0x512 );
-				
+
 				Server.SkillHandlers.Stealth.OnUse( m ); // stealth check after the a jump
 			}
 

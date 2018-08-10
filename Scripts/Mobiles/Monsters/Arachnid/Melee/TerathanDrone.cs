@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a terathan drone corpse" )]
 	public class TerathanDrone : BaseCreature
 	{
+		public override string DefaultName => "a terathan drone";
+
 		[Constructible]
 		public TerathanDrone() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a terathan drone";
 			Body = 71;
 			BaseSoundID = 594;
 
@@ -41,7 +42,7 @@ namespace Server.Mobiles
 			Karma = -2000;
 
 			VirtualArmor = 24;
-			
+
 			PackItem( new SpidersSilk( 2 ) );
 		}
 

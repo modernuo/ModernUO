@@ -9,12 +9,13 @@ namespace Server.Mobiles
 	[CorpseName( "a troglodyte corpse" )]
 	public class Troglodyte : BaseCreature
 	{
+		public override string DefaultName => "a troglodyte";
+
 		[Constructible]
 		public Troglodyte() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{
-			Name = "a troglodyte";
 			Body = 267;
-			BaseSoundID = 0x59F; 
+			BaseSoundID = 0x59F;
 
 			SetStr( 148, 217 );
 			SetDex( 91, 120 );
@@ -47,7 +48,7 @@ namespace Server.Mobiles
 			PackItem( new Ribs() );
 		}
 
-		public override bool CanHeal { get { return true; } }
+		public override bool CanHeal => true;
 
 		public override void GenerateLoot()
 		{

@@ -120,7 +120,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool HandlesOnMovement{ get{ return true; } } // Tell the core that we implement OnMovement
+		public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
@@ -219,7 +219,7 @@ namespace Server.Items
 					m_Item.Delete();
 			}
 
-			public override bool HandlesOnMovement{ get{ return true; } } // Tell the core that we implement OnMovement
+			public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
 			public override void OnMovement( Mobile m, Point3D oldLocation )
 			{
@@ -288,7 +288,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool HandlesOnMovement{ get{ return true; } } // Tell the core that we implement OnMovement
+		public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
@@ -389,7 +389,7 @@ namespace Server.Items
 					m_Item.Delete();
 			}
 
-			public override bool HandlesOnMovement{ get{ return true; } } // Tell the core that we implement OnMovement
+			public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
 			public override void OnMovement( Mobile m, Point3D oldLocation )
 			{

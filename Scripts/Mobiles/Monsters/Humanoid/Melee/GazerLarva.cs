@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gazer larva corpse" )]
 	public class GazerLarva : BaseCreature
 	{
+		public override string DefaultName => "a gazer larva";
+
 		[Constructible]
 		public GazerLarva () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a gazer larva";
 			Body = 778;
 			BaseSoundID = 377;
 

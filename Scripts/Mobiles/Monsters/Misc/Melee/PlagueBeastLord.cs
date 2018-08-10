@@ -42,10 +42,11 @@ namespace Server.Mobiles
 
 		private DecayTimer m_Timer;
 
+		public override string DefaultName => "a plague beast lord";
+
 		[Constructible]
 		public PlagueBeastLord() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a plague beast lord";
 			Body = 775;
 			BaseSoundID = 679;
 			SpeechHue = 0x3B2;
@@ -99,7 +100,7 @@ namespace Server.Mobiles
 		public override void OnDeath( Container c )
 		{
 			base.OnDeath( c );
-			
+
 			for ( int i = c.Items.Count - 1; i >= 0; i-- )
 				c.Items[ i ].Delete();
 		}
@@ -204,10 +205,10 @@ namespace Server.Mobiles
 			if ( m_OpenedBy == null && IsAccessibleTo( from ) )
 			{
 				m_OpenedBy = from;
-				
+
 				if ( m_Timer == null )
 					m_Timer = new DecayTimer( this );
-				
+
 				if ( !m_Timer.Running )
 					m_Timer.Start();
 

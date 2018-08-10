@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Lady Sabrix corpse" )]
 	public class LadySabrix : GiantBlackWidow
 	{
+		public override string DefaultName => "Lady Sabrix";
+
 		[Constructible]
 		public LadySabrix()
 		{
 			IsParagon = true;
-
-			Name = "Lady Sabrix";
 			Hue = 0x497;
 
 			SetStr( 82, 130 );
@@ -48,10 +48,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 2 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ArmorIgnore;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ArmorIgnore;
 
 		/*
 		// TODO: uncomment once added
@@ -76,7 +73,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public LadySabrix( Serial serial )
 			: base( serial )

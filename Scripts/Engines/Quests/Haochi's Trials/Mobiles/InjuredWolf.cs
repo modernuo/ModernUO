@@ -6,11 +6,12 @@ namespace Server.Engines.Quests.Samurai
 	[CorpseName( "an injured wolf corpse" )]
 	public class InjuredWolf : BaseCreature
 	{
+		public override string DefaultName => "an injured wolf";
+
 		[Constructible]
 		public InjuredWolf() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
 			Body = 0xE1;
-			Name = "an injured wolf";
 			BaseSoundID = 0xE5;
 
 			Hue = Utility.RandomAnimalHue();

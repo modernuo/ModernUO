@@ -60,22 +60,22 @@ namespace Server.Engines.Quests.Haven
 			get
 			{
 				/* <I>The guard speaks to you as you come closer... </I><BR><BR>
-				 * 
+				 *
 				 * Greetings traveler! <BR><BR>
-				 * 
+				 *
 				 * Uzeraan, the lord of this house and overseer of this city -
 				 * <a href="?ForceTopic72">Haven</a>, has requested an audience with you. <BR><BR>
-				 * 
+				 *
 				 * Hordes of gruesome hell spawn are beginning to overrun the
 				 * city and terrorize the inhabitants.  No one seems to be able
 				 * to stop them.<BR><BR>
-				 * 
+				 *
 				 * Our fine city militia is falling to the evil creatures
 				 * one battalion after the other.<BR><BR>
-				 * 
+				 *
 				 * Uzeraan, whom you can find through these doors, is looking to
 				 * hire mercenaries to aid in the battle. <BR><BR>
-				 * 
+				 *
 				 * Will you assist us?
 				 */
 				return 1049008;
@@ -83,7 +83,7 @@ namespace Server.Engines.Quests.Haven
 		}
 
 		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
-		public override bool IsTutorial{ get{ return true; } }
+		public override bool IsTutorial => true;
 
 		public override int Picture
 		{

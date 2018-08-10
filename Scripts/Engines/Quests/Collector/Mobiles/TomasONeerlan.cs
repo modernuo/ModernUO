@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Collector
 {
 	public class TomasONeerlan : BaseQuester
 	{
+		public override string DefaultName => "Tomas O'Neerlan";
+
 		[Constructible]
 		public TomasONeerlan() : base( "the famed toymaker" )
 		{
@@ -25,7 +27,6 @@ namespace Server.Engines.Quests.Collector
 
 			Female = false;
 			Body = 0x190;
-			Name = "Tomas O'Neerlan";
 		}
 
 		public override void InitOutfit()

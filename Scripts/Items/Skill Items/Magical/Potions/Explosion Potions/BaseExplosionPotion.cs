@@ -13,7 +13,7 @@ namespace Server.Items
 		public abstract int MinDamage { get; }
 		public abstract int MaxDamage { get; }
 
-		public override bool RequireFreeHand{ get{ return false; } }
+		public override bool RequireFreeHand => false;
 
 		private static bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
 		private static bool InstantExplosion = false; // Should explosion potions explode on impact?
@@ -207,7 +207,7 @@ namespace Server.Items
 
 				if( p is Mobile )
 				{
-					if( !RelativeLocation ) // explosion location = current mob location. 
+					if( !RelativeLocation ) // explosion location = current mob location.
 						p = ((Mobile)p).Location;
 					else
 						to = (Mobile)p;
@@ -287,7 +287,7 @@ namespace Server.Items
 						from.DoHarmful( m );
 
 					int damage = Utility.RandomMinMax( min, max );
-					
+
 					damage += alchemyBonus;
 
 					if ( !Core.AOS && damage > 40 )

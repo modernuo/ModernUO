@@ -4,13 +4,14 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a squirrel corpse" )]	
+	[CorpseName( "a squirrel corpse" )]
 	public class Squirrel : BaseCreature
 	{
+		public override string DefaultName => "a squirrell";
+
 		[Constructible]
 		public Squirrel() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a squirrel";
 			Body = 0x116;
 
 			SetStr( 44, 50 );
@@ -33,7 +34,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 4.0 );
 			SetSkill( SkillName.Wrestling, 4.0 );
 
-			Tamable = true;	
+			Tamable = true;
 			ControlSlots = 1;
 			MinTameSkill = -21.3;
 		}

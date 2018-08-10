@@ -265,7 +265,7 @@ namespace Server.Items
 			set{ m_TimeOfDeath = value; }
 		}
 
-		public override bool DisplayWeight { get { return false; } }
+		public override bool DisplayWeight => false;
 
 		public HairInfo Hair { get { return m_Hair; } }
 		public FacialHairInfo FacialHair { get { return m_FacialHair; } }
@@ -528,7 +528,7 @@ namespace Server.Items
 		}
 
 		// Why was this public?
-		// public override bool IsPublicContainer{ get{ return true; } }
+		// public override bool IsPublicContainer => true;
 
 		public Corpse( Mobile owner, List<Item> equipItems ) : this( owner, null, null, equipItems )
 		{
@@ -1209,7 +1209,7 @@ namespace Server.Items
 			return false;
 		}
 
-		public override bool DisplaysContent{ get{ return false; } }
+		public override bool DisplaysContent => false;
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{

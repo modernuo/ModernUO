@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Grobu corpse" )]
 	public class Grobu : BlackBear
 	{
+		public override string DefaultName => "Grobu";
+
 		[Constructible]
 		public Grobu()
 		{
 			IsParagon = true;
 
-			Name = "Grobu";
 			Hue = 0x455;
 
 			AI = AIType.AI_Melee;
@@ -57,7 +58,7 @@ namespace Server.Mobiles
 			c.DropItem( new GrobusFur() );
 		}
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public Grobu( Serial serial )
 			: base( serial )

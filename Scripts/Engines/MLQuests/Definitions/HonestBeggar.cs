@@ -22,13 +22,13 @@ namespace Server.Engines.MLQuests.Definitions
 			Title = 1075392; // Honest Beggar
 			Description = 1075393; // Beg pardon, sir. I mean, madam. Uh, can I ask a favor of you? I found this jeweled ring.  Most people would sell it and keep the money, but not me. I ain't never stole nothing, and I ain't about to start. I tried to take it over to Brit castle, figgerin' it must belong to some highborn lady, but the guards threw me out. You look like they might let you pass. Will you take the ring over there and see if you can find the owner?
 			RefusalMessage = 1075395; // I see. Too good to help an honest beggar like me, eh?
-			InProgressMessage = 1075396; // A jewel like this must be worth a lot, so it must belong to some noble or another. I would show it around the castle. Someone’s bound to recognize it.
+			InProgressMessage = 1075396; // A jewel like this must be worth a lot, so it must belong to some noble or another. I would show it around the castle. Someoneï¿½s bound to recognize it.
 			CompletionMessage = 1075397; // Didst thou find my ring? I thank thee very much! It is an old ring, and a gift from my husband. I was most distraught when I realized it was missing.
 			CompletionNotice = CompletionNoticeShort;
 
 			Objectives.Add( new DeliverObjective( typeof( ReginasRing ), 1, "Regina's Ring", typeof( Regina ) ) );
 
-			Rewards.Add( new DummyReward( 1075394 ) ); // Find the ring’s owner.
+			Rewards.Add( new DummyReward( 1075394 ) ); // Find the ringï¿½s owner.
 		}
 
 		public override void Generate()
@@ -42,14 +42,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ReginasThanks : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public ReginasThanks()
 		{
 			Activated = true;
 			OneTimeOnly = true;
-			Title = 1075398; // Regina’s Thanks
-			Description = 1075399; // What’s that you say? It was a humble beggar that found my ring? Such honesty must be rewarded. Here, take this packet and return it to him, and I will be in your debt.
+			Title = 1075398; // Reginaï¿½s Thanks
+			Description = 1075399; // Whatï¿½s that you say? It was a humble beggar that found my ring? Such honesty must be rewarded. Here, take this packet and return it to him, and I will be in your debt.
 			RefusalMessage = 1075401; // Hmph. Very well. What did you say his name was?
 			InProgressMessage = 1075402; // Take the packet and return it to the beggar who found my ring.
 			CompletionMessage = 1075403; // What? For me? Let me see . . . these sapphire earrings are for you, it says. Oh, she wants to offer me a job! This is the most wonderful thing that ever happened to me!
@@ -75,13 +75,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Evan : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Evan";
 
 		[Constructible]
 		public Evan()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Evan";
 			Title = "the Beggar";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -119,13 +119,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Regina : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Regina";
 
 		[Constructible]
 		public Regina()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Regina";
 			Title = "the Noble";
 			Race = Race.Human;
 			BodyValue = 0x191;

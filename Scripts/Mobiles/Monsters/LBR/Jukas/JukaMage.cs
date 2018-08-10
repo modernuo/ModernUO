@@ -7,13 +7,14 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a juka corpse" )] // Why is this 'juka' and warriors 'jukan' ? :-(
+	[CorpseName( "a jukan corpse" )]
 	public class JukaMage : BaseCreature
 	{
+		public override string DefaultName => "a juka mage";
+
 		[Constructible]
 		public JukaMage() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a juka mage";
 			Body = 765;
 
 			SetStr( 201, 300 );
@@ -96,8 +97,8 @@ namespace Server.Mobiles
 			return 0x28D;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
+		public override bool CanRummageCorpses => true;
 		public override int Meat{ get{ return 1; } }
 
 		private DateTime m_NextAbilityTime;

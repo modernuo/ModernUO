@@ -8,17 +8,14 @@ namespace Server.Mobiles
 	[CorpseName( "a tsuki wolf corpse" )]
 	public class TsukiWolf : BaseCreature
 	{
+		public override string DefaultName => "a tsuki wolf";
+
 		[Constructible]
 		public TsukiWolf()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a tsuki wolf";
 			Body = 250;
-
-			switch( Utility.Random( 3 ) )
-			{
-				case 0: Hue = Utility.RandomNeutralHue(); break; //No, this really isn't accurate ;->
-			}
+			Hue = Utility.Random(3) == 0 ? Utility.RandomNeutralHue() : 0;
 
 			SetStr( 401, 450 );
 			SetDex( 151, 200 );

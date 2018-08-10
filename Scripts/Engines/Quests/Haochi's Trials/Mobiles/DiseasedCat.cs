@@ -5,10 +5,11 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class DiseasedCat : BaseCreature
 	{
+		public override string DefaultName => "a diseased cat";
+
 		[Constructible]
 		public DiseasedCat() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a diseased cat";
 			Body = 0xC9;
 			Hue = Utility.RandomAnimalHue();
 			BaseSoundID = 0x69;
@@ -33,7 +34,7 @@ namespace Server.Engines.Quests.Samurai
 			VirtualArmor = 8;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public DiseasedCat( Serial serial ) : base( serial )
 		{
@@ -51,9 +52,6 @@ namespace Server.Engines.Quests.Samurai
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-
-			if( Name == "a deseased cat" )
-				Name = "a diseased cat";
 		}
 	}
 }

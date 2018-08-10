@@ -8,7 +8,7 @@ namespace Server.Items
 		public override int LabelNumber{ get{ return 1074356; } } // gift for arielle
 		public override int DefaultGumpID { get { return 0x41; } }
 
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 
 		public override void AddNameProperties( ObjectPropertyList list )
 		{

@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName("a fetid essence corpse")]
 	public class  FetidEssence  : BaseCreature
 	{
+		public override string DefaultName => "a fetid essence";
+
 		[Constructible]
 		public  FetidEssence () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a fetid essence";
 			Body = 273;
 
 			SetStr( 101, 150 );
@@ -49,8 +50,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich );
 		}
 
-		public override Poison HitPoison{ get{ return Poison.Deadly; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+		public override Poison HitPoison => Poison.Deadly;
+		public override Poison PoisonImmune => Poison.Deadly;
 
 		public override int GetAngerSound()
 		{

@@ -11,12 +11,12 @@ namespace Server.Mobiles
 	{
 		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Orc; } }
 
+		public override string DefaultName => "an orc bomber";
+
 		[Constructible]
 		public OrcBomber() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 182;
-
-			Name = "an orc bomber";
 			BaseSoundID = 0x45A;
 
 			SetStr( 147, 215 );
@@ -62,7 +62,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 
 		public override OppositionGroup OppositionGroup
 		{

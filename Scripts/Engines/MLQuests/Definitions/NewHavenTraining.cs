@@ -145,7 +145,7 @@ namespace Server.Engines.MLQuests.Definitions
 			Title = 1075530; // More Ore Please
 			Description = 1075529; // Have a pickaxe? My supplier is late and I need some iron ore so I can complete a bulk order for another merchant. If you can get me some soon I'll pay you double what it's worth on the market. Just find a cave or mountainside and try to use your pickaxe there, maybe you'll strike a good vein! 5 large pieces should do it.
 			RefusalMessage = 1075531; // Not feeling strong enough today? Its alright, I didn't need a bucket of rocks anyway.
-			InProgressMessage = 1075532; // Hmmm… we need some more Ore. Try finding a mountain or cave, and give it a whack.
+			InProgressMessage = 1075532; // Hmmmï¿½ we need some more Ore. Try finding a mountain or cave, and give it a whack.
 			CompletionMessage = 1075533; // I see you found a good vien! Great!  This will help get this order out on time. Good work!
 
 			Objectives.Add( new InternalObjective() );
@@ -331,15 +331,15 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Andric : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Andric";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213 // Hey buddy.  Looking for work?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -347,7 +347,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Andric()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Andric";
 			Title = "the archer trainer";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -405,13 +404,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Kashiel : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override string DefaultName => "Kashiel";
+		public override bool IsInvulnerable => true;
 
 		[Constructible]
 		public Kashiel()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Kashiel";
 			Title = "the archer";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -467,14 +466,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Asandos : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Asandos";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213 // Hey buddy.  Looking for work?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -482,7 +481,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Asandos()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Asandos";
 			Title = "the chef";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -523,14 +521,14 @@ namespace Server.Engines.MLQuests.Definitions
 	//[QuesterName( "Clarisse" )] // On OSI the gumps refer to her as this, different from actual name
 	public class Clairesse : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Clairesse";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213 // Hey buddy.  Looking for work?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -538,7 +536,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Clairesse()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Clairesse";
 			Title = "the servant";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -575,15 +572,15 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Gervis : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Gervis";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213, // Hey buddy.  Looking for work?
+				1074213, // Hey buddy.ï¿½ Looking for work?
 				1074211 // I could use some help.
 			) );
 		}
@@ -592,7 +589,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Gervis()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Gervis";
 			Title = "the blacksmith trainer";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -639,9 +635,9 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Mugg : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Mugg";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074211 ); // I could use some help.
@@ -651,7 +647,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Mugg()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Mugg";
 			Title = "the miner";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -692,14 +687,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Lowel : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lowel";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213 // Hey buddy.  Looking for work?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -707,7 +702,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Lowel()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lowel";
 			Title = "the carpenter";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -746,14 +740,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Lyle : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Lyle";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213 // Hey buddy.  Looking for work?
+				1074213 // Hey buddy.ï¿½ Looking for work?
 			) );
 		}
 
@@ -761,7 +755,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Lyle()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Lyle";
 			Title = "the mage";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -798,13 +791,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Nibbet : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override string DefaultName => "Nibbet";
+		public override bool IsInvulnerable => true;
 
 		[Constructible]
 		public Nibbet()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Nibbet";
 			Title = "the tinker";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -843,14 +836,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Norton : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Norton";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213, // Hey buddy.  Looking for work?
+				1074213, // Hey buddy.ï¿½ Looking for work?
 				1074211 // I could use some help.
 			) );
 		}
@@ -859,7 +852,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Norton()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Norton";
 			Title = "the fisher";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -897,14 +889,14 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Sadrah : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Sadrah";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
 				1074205, // Oh great adventurer, would you please assist a weak soul in need of aid?
-				1074213, // Hey buddy.  Looking for work?
+				1074213, // Hey buddy.ï¿½ Looking for work?
 				1074211 // I could use some help.
 			) );
 		}
@@ -913,7 +905,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Sadrah()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Sadrah";
 			Title = "the courier";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -953,13 +944,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Hargrove : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Hargrove";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074213, // Hey buddy.  Looking for work?
+				1074213, // Hey buddy.ï¿½ Looking for work?
 				1074211 // I could use some help.
 			) );
 		}
@@ -968,7 +959,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Hargrove()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Hargrove";
 			Title = "the Lumberjack";
 			Race = Race.Human;
 			BodyValue = 0x190;

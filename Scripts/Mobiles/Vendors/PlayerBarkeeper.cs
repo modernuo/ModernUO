@@ -174,11 +174,11 @@ namespace Server.Mobiles
 			set{ m_TipMessage = value; }
 		}
 
-		public override bool IsActiveBuyer{ get{ return false; } }
-		public override bool IsActiveSeller{ get{ return ( m_SBInfos.Count > 0 ); } }
+		public override bool IsActiveBuyer => false;
+		public override bool IsActiveSeller => ( m_SBInfos.Count > 0 );
 
-		public override bool DisallowAllMoves{ get{ return true; } }
-		public override bool NoHouseRestrictions{ get{ return true; } }
+		public override bool DisallowAllMoves => true;
+		public override bool NoHouseRestrictions => true;
 
 		public BarkeeperRumor[] Rumors{ get{ return m_Rumors; } }
 
@@ -488,8 +488,8 @@ namespace Server.Mobiles
 			}
 		}
 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
+		private List<SBInfo> m_SBInfos = new List<SBInfo>();
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
 		public override void InitSBInfo()
 		{
@@ -974,7 +974,7 @@ namespace Server.Mobiles
 			AddButton( 130, 120, 4005, 4007, GetButtonID( 5, 0 ), GumpButtonType.Reply, 0 );
 			AddHtml( 170, 120, 120, 20, "Title", false, false );
 
-			if ( m_Barkeeper.BodyValue != 0x340 && m_Barkeeper.BodyValue != 0x402 ) {			
+			if ( m_Barkeeper.BodyValue != 0x340 && m_Barkeeper.BodyValue != 0x402 ) {
 				AddButton( 130, 200, 4005, 4007, GetButtonID( 5, 1 ), GumpButtonType.Reply, 0 );
 				AddHtml( 170, 200, 120, 20, "Appearance", false, false );
 

@@ -11,7 +11,7 @@ namespace Server.Mobiles
 		public override double DispelFocus { get { return 20.0; } }
 
 		public override OppositionGroup OppositionGroup { get { return OppositionGroup.FeyAndUndead; } }
-		public override bool InitialInnocent { get { return true; } }
+		public override bool InitialInnocent => true;
 
 		[Constructible]
 		public ArcaneFey() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
@@ -34,7 +34,7 @@ namespace Server.Mobiles
 			SetResistance( ResistanceType.Poison, 40, 50 );
 			SetResistance( ResistanceType.Energy, 40, 50 );
 
-			SetSkill( SkillName.EvalInt, 70.1, 80.0 ); 
+			SetSkill( SkillName.EvalInt, 70.1, 80.0 );
 			SetSkill( SkillName.Magery, 70.1, 80.0 );
 			SetSkill( SkillName.Meditation, 70.1, 80.0 );
 			SetSkill( SkillName.MagicResist, 50.5, 100.0 );

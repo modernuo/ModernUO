@@ -51,17 +51,17 @@ namespace Server.Spells.Ninjitsu
 
 		}
 
-		public override bool ValidatesDuringHit { get { return false; } }
+		public override bool ValidatesDuringHit => false;
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
 			//Validates before swing
-			
+
 			ClearCurrentMove( attacker );
 
 			attacker.SendLocalizedMessage( 1063090 ); // You quickly stab your opponent as you come out of hiding!
 
-			defender.FixedParticles( 0x37B9, 1, 5, 0x251D, 0x651, 0, EffectLayer.Waist );						
+			defender.FixedParticles( 0x37B9, 1, 5, 0x251D, 0x651, 0, EffectLayer.Waist );
 
 			attacker.RevealingAction();
 

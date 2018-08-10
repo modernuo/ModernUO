@@ -7,17 +7,16 @@ namespace Server.Mobiles
 	[CorpseName( "a ronin corpse" )]
 	public class Ronin : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
+		public override string DefaultName => "a ronin";
 
 		[Constructible]
 		public Ronin() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			SpeechHue = Utility.RandomDyedHue();
 			Hue = Utility.RandomSkinHue();
-			Name = "a ronin";
-			Body = (( this.Female = Utility.RandomBool() ) ? Body = 0x191 : Body = 0x190);
-			
-			Hue = Utility.RandomSkinHue();
+			Female = Utility.RandomBool();
+			Body = Female ? 0x191 : 0x190;
 
 			SetStr( 326, 375 );
 			SetDex( 31, 45 );
@@ -67,9 +66,9 @@ namespace Server.Mobiles
 				case 1: AddItem( new LeatherSuneate() ); break;
 				case 2: AddItem( new PlateSuneate() ); break;
 			}
-			
 
-			
+
+
 			if( Utility.RandomDouble() > .2 )
 				AddItem( new NoDachi() );
 			else
@@ -80,7 +79,7 @@ namespace Server.Mobiles
 
 			Utility.AssignRandomHair( this );
 		}
-		
+
 		public override void OnDeath( Container c )
  		{
 			base.OnDeath( c );
@@ -96,9 +95,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 2 );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool BardImmune{ get{ return true; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
+		public override bool BardImmune => true;
+		public override bool CanRummageCorpses => true;
 
 		public Ronin( Serial serial ) : base( serial )
 		{

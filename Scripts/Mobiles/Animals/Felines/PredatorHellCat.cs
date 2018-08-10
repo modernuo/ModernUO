@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Preditorhellcat" )]
 	public class PredatorHellCat : BaseCreature
 	{
+		public override string DefaultName => "a hell cat";
+
 		[Constructible]
 		public PredatorHellCat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a hell cat";
 			Body = 127;
 			BaseSoundID = 0xBA;
 
@@ -48,7 +49,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool HasBreath => true; // fire breath enabled
 		public override int Hides{ get{ return 10; } }
 		public override HideType HideType{ get{ return HideType.Spined; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }

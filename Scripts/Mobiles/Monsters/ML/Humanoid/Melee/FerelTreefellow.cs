@@ -5,17 +5,16 @@ using Server.Items;
 namespace Server.Mobiles
 {
 	[CorpseName( "a treefellow corpse" )]
-	public class FerelTreefellow : BaseCreature
+	[TypeAlias("Server.Mobiles.FerelTreefellow")]
+	public class FeralTreefellow : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+
+		public override string DefaultName => "a feral treefellow";
 
 		[Constructible]
-		public FerelTreefellow() : base( AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4 )
+		public FeralTreefellow() : base( AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a ferel treefellow";
 			Body = 301;
 
 			SetStr( 1351, 1600 );
@@ -64,14 +63,14 @@ namespace Server.Mobiles
 			return 672;
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Average ); //Unknown
 		}
 
-		public FerelTreefellow( Serial serial ) : base( serial )
+		public FeralTreefellow( Serial serial ) : base( serial )
 		{
 		}
 

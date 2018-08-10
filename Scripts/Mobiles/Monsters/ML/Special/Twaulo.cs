@@ -19,11 +19,12 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.DreadHorn }; } }
 
+		public override string DefaultName => "Twaulo";
+
 		[Constructible]
 		public Twaulo()
 			: base(AIType.AI_Melee)
 		{
-			Name = "Twaulo";
 			Title = "of the Glade";
 			Body = 101;
 			BaseSoundID = 679;
@@ -75,8 +76,8 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override bool Unprovokable{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override bool Unprovokable => true;
+		public override Poison PoisonImmune => Poison.Regular;
 		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Meat { get { return 1; } }
 		public override int Hides { get { return 8; } }

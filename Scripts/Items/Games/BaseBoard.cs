@@ -47,9 +47,9 @@ namespace Server.Items
 			piece.Location = new Point3D( x, y, 0 );
 		}
 
-		public override bool DisplaysContent{ get{ return false; } } // Do not display (x items, y stones)
+		public override bool DisplaysContent => false; // Do not display (x items, y stones)
 
-		public override bool IsDecoContainer{ get{ return false; } }
+		public override bool IsDecoContainer => false;
 
 		public BaseBoard( Serial serial ) : base( serial )
 		{

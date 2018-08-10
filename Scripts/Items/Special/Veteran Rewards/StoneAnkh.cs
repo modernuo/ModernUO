@@ -6,10 +6,10 @@ using Server.Network;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
-{	
+{
 	public class StoneAnkhComponent : AddonComponent
 	{
-		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		public StoneAnkhComponent( int itemID ) : base( itemID )
 		{
@@ -19,11 +19,11 @@ namespace Server.Items
 		public StoneAnkhComponent( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-			
+
 			if ( Addon is StoneAnkh && ((StoneAnkh) Addon).IsRewardItem )
 				list.Add( 1076221 ); // 5th Year Veteran Reward
 		}
@@ -34,7 +34,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 		}
-			
+
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
@@ -46,14 +46,14 @@ namespace Server.Items
 	public class StoneAnkh : BaseAddon, IRewardItem
 	{
 		public override BaseAddonDeed Deed
-		{ 
+		{
 			get
-			{ 
+			{
 				StoneAnkhDeed deed = new StoneAnkhDeed();
 				deed.IsRewardItem = m_IsRewardItem;
 
-				return deed; 
-			} 
+				return deed;
+			}
 		}
 
 		private bool m_IsRewardItem;
@@ -64,15 +64,15 @@ namespace Server.Items
 			get{ return m_IsRewardItem; }
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
-		
+
 		[Constructible]
 		public StoneAnkh() : this( true )
 		{
 		}
-		
+
 		[Constructible]
 		public StoneAnkh( bool east ) : base()
-		{			
+		{
 			if ( east )
 			{
 				AddComponent( new StoneAnkhComponent( 0x2 ), 0, 0, 0 );
@@ -88,7 +88,7 @@ namespace Server.Items
 		public StoneAnkh( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void OnChop( Mobile from )
 		{
 			from.SendLocalizedMessage( 500489 ); // You can't use an axe on that.
@@ -98,7 +98,7 @@ namespace Server.Items
 			public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-			
+
 			if ( Core.ML && m_IsRewardItem )
 				list.Add( 1076221 ); // 5th Year Veteran Reward
 		}
@@ -107,8 +107,8 @@ namespace Server.Items
 		{
 			if ( from.InRange( Location, 2 ) )
 			{
-				BaseHouse house = BaseHouse.FindHouseAt( this );  
-			
+				BaseHouse house = BaseHouse.FindHouseAt( this );
+
 				if ( house != null && house.IsOwner( from ) )
 				{
 					from.CloseGump( typeof( RewardDemolitionGump ) );
@@ -126,24 +126,24 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.WriteEncodedInt( 0 ); // version
-			
+
 			writer.Write( (bool) m_IsRewardItem );
 		}
-			
+
 			public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 		}
-	}	
-	
+	}
+
 	public class StoneAnkhDeed : BaseAddonDeed, IRewardItem
 	{
 		public override int LabelNumber{ get{ return 1049773; } } // deed for a stone ankh
-		
+
 		private bool m_East;
 		private bool m_IsRewardItem;
 
@@ -155,14 +155,14 @@ namespace Server.Items
 		}
 
 		public override BaseAddon Addon
-		{ 
+		{
 			get
-			{ 
+			{
 				StoneAnkh addon = new StoneAnkh( m_East );
 				addon.IsRewardItem = m_IsRewardItem;
 
-				return addon; 
-			} 
+				return addon;
+			}
 		}
 
 		[Constructible]
@@ -174,30 +174,30 @@ namespace Server.Items
 		public StoneAnkhDeed( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 				return;
-			
+
 			if ( IsChildOf( from.Backpack ) )
 			{
 				from.CloseGump( typeof( InternalGump ) );
 				from.SendGump( new InternalGump( this ) );
 			}
 			else
-				from.SendLocalizedMessage( 1042038 ); // You must have the object in your backpack to use it.    
+				from.SendLocalizedMessage( 1042038 ); // You must have the object in your backpack to use it.
 		}
-		
+
 		private void SendTarget( Mobile m )
 		{
 			base.OnDoubleClick( m );
 		}
-		
+
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-			
+
 			if ( m_IsRewardItem )
 				list.Add( 1076221 ); // 5th Year Veteran Reward
 		}
@@ -216,14 +216,14 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 		}
-		
+
 		private class InternalGump : Gump
 		{
 			private StoneAnkhDeed m_Deed;
-				
+
 			private enum Buttons
 			{
 				Cancel,
@@ -233,8 +233,8 @@ namespace Server.Items
 
 			public InternalGump( StoneAnkhDeed deed ) : base( 150, 50 )
 			{
-				m_Deed = deed;				
-				
+				m_Deed = deed;
+
 				Closable = true;
 				Disposable = true;
 				Dragable = true;
@@ -257,7 +257,7 @@ namespace Server.Items
 			{
 				if ( m_Deed == null || m_Deed.Deleted )
 					return;
-					
+
 				if ( info.ButtonID != (int) Buttons.Cancel )
 				{
 					m_Deed.m_East = ( info.ButtonID == (int) Buttons.East );

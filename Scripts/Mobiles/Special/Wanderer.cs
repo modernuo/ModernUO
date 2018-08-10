@@ -10,9 +10,9 @@ namespace Server.Mobiles
 		[Constructible]
 		public Wanderer()
 		{
-			this.Name = "Me";
-			this.Body = 0x1;
-			this.AccessLevel = AccessLevel.Counselor;
+			Name = "Me";
+			Body = 0x1;
+			AccessLevel = AccessLevel.Counselor;
 
 			m_Timer = new InternalTimer( this );
 			m_Timer.Start();

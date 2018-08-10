@@ -10,6 +10,8 @@ namespace Server.Engines.Quests.Necro
 {
 	public class Mardoth : BaseQuester
 	{
+		public override string DefaultName => "Mardoth";
+
 		[Constructible]
 		public Mardoth() : base( "the Ancient Necromancer" )
 		{
@@ -21,8 +23,6 @@ namespace Server.Engines.Quests.Necro
 
 			Hue = 0x8849;
 			Body = 0x190;
-
-			Name = "Mardoth";
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )

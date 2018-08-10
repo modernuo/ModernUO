@@ -10,10 +10,11 @@ namespace Server.Mobiles
 	{
 		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Orc; } }
 
+		public override string DefaultName => "an orcish mage";
+
 		[Constructible]
 		public OrcishMage () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an orcish mage";
 			Body = 140;
 			BaseSoundID = 0x45A;
 
@@ -57,7 +58,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.LowScrolls );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 		public override int Meat{ get{ return 1; } }
 

@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a dread spider corpse" )]
 	public class DreadSpider : BaseCreature
 	{
+		public override string DefaultName => "a dread spider";
+
 		[Constructible]
 		public DreadSpider () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a dread spider";
 			Body = 11;
 			BaseSoundID = 1170;
 
@@ -51,8 +52,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 3; } }
 
 		public DreadSpider( Serial serial ) : base( serial )

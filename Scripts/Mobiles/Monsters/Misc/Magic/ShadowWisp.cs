@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a wisp corpse" )]
 	public class ShadowWisp : BaseCreature
 	{
+		public override string DefaultName => "a shadow wisp";
+
 		[Constructible]
 		public ShadowWisp() : base( AIType.AI_Mage, FightMode.Aggressor, 10, 1, 0.3, 0.6 )
 		{
-			Name = "a shadow wisp";
 			Body = 165;
 			BaseSoundID = 466;
 

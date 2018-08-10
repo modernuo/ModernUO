@@ -41,7 +41,7 @@ namespace Server.Spells.Necromancy
 		}
 
 
-		public override bool DelayedDamage { get { return false; } }
+		public override bool DelayedDamage => false;
 
 		private static readonly int Range = (Core.ML ? 48 : 18);
 

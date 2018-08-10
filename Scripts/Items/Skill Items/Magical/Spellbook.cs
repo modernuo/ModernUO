@@ -31,15 +31,15 @@ namespace Server.Items
 	{
 		private string m_EngravedText;
 		private BookQuality m_Quality;
-				
-		[CommandProperty( AccessLevel.GameMaster )]		
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public string EngravedText
 		{
 			get{ return m_EngravedText; }
 			set{ m_EngravedText = value; InvalidateProperties(); }
 		}
-				
-		[CommandProperty( AccessLevel.GameMaster )]		
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public BookQuality Quality
 		{
 			get{ return m_Quality; }
@@ -135,7 +135,7 @@ namespace Server.Items
 				else
 				{
 					Spell spell = SpellRegistry.NewSpell( spellID, from, null );
-	
+
 					if ( spell != null )
 						spell.Cast();
 					else
@@ -299,7 +299,7 @@ namespace Server.Items
 			return ( book.SpellbookType == type && ( spellID == -1 || book.HasSpell( spellID ) ) );
 		}
 
-		public override bool DisplayWeight { get { return false; } }
+		public override bool DisplayWeight => false;
 
 		private AosAttributes m_AosAttributes;
 		private AosSkillBonuses m_AosSkillBonuses;
@@ -582,21 +582,21 @@ namespace Server.Items
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
 
-		public override bool DisplayLootType{ get{ return Core.AOS; } }
+		public override bool DisplayLootType => Core.AOS;
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-	
+
 			if ( m_Quality == BookQuality.Exceptional )
 				list.Add( 1063341 ); // exceptional
-				
+
 			if ( m_EngravedText != null )
 				list.Add( 1072305, m_EngravedText ); // Engraved: ~1_INSCRIPTION~
 
 			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
-				
+
 			m_AosSkillBonuses.GetProperties( list );
 
 			if( m_Slayer != SlayerName.None )
@@ -735,9 +735,9 @@ namespace Server.Items
 
 			writer.Write( (int) 5 ); // version
 
-			writer.Write( (byte) m_Quality );	
-		
-			writer.Write( (string) m_EngravedText );	
+			writer.Write( (byte) m_Quality );
+
+			writer.Write( (string) m_EngravedText );
 
 			writer.Write( m_Crafter );
 
@@ -761,13 +761,13 @@ namespace Server.Items
 			{
 				case 5:
 				{
-					m_Quality = (BookQuality) reader.ReadByte();		
+					m_Quality = (BookQuality) reader.ReadByte();
 
 					goto case 4;
 				}
 				case 4:
 				{
-					m_EngravedText = reader.ReadString();		
+					m_EngravedText = reader.ReadString();
 
 					goto case 3;
 				}

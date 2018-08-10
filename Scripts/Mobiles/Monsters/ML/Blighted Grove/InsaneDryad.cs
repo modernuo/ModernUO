@@ -7,13 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "an insane dryad corpse" )]
 	public class InsaneDryad : MLDryad
 	{
-		public override bool InitialInnocent { get { return false; } }
+		public override bool InitialInnocent => false;
+
+		public override string DefaultName => "an insane dryad";
 
 		[Constructible]
 		public InsaneDryad()
 		{
-			Name = "an insane dryad";
-
 			// TODO: Perhaps these should have negative karma?
 		}
 

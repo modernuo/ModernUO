@@ -43,7 +43,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class YouScratchMyBack : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( FoolingAernya ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public YouScratchMyBack()
 		{
@@ -73,7 +73,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class FoolingAernya : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( NotQuiteThatEasy ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public FoolingAernya()
 		{
@@ -94,7 +94,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class NotQuiteThatEasy : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( ConvinceMe ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public NotQuiteThatEasy()
 		{
@@ -127,7 +127,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class ConvinceMe : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( TuitionReimbursement ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public ConvinceMe()
 		{
@@ -158,7 +158,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TuitionReimbursement : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public TuitionReimbursement()
 		{
@@ -183,13 +183,13 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Aernya (Umbra)" )]
 	public class Aernya : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Aernya";
 
 		[Constructible]
 		public Aernya()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Aernya";
 			Title = "the Mistress of Admissions";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -229,13 +229,13 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Gorrow (Luna)" )]
 	public class Gorrow : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Gorrow";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
-				1074200, // Thank goodness you are here, there’s no time to lose.
+				1074200, // Thank goodness you are here, thereï¿½s no time to lose.
 				1074203 // Hello friend. I realize you are busy but if you would be willing to render me a service I can assure you that you will be judiciously renumerated.
 			) );
 		}
@@ -244,7 +244,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Gorrow()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Gorrow";
 			Title = "the Mayor";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -282,10 +281,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Master Gnosos (Bedlam)" )]
 	public class MasterGnosos : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
-		public override bool CanTeach { get { return true; } }
-
-		public override bool CanShout { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override bool CanTeach => true;
+		public override string DefaultName => "Master Gnosos";
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074186 ); // Come here, I have a task.
@@ -295,7 +294,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public MasterGnosos()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Master Gnosos";
 			Title = "the necromancer";
 			Race = Race.Human;
 			BodyValue = 0x190;

@@ -8,12 +8,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Lady Jennifyr corpse" )]
 	public class LadyJennifyr : SkeletalKnight
 	{
+		public override string DefaultName => "Lady Jennifyr";
+
 		[Constructible]
 		public LadyJennifyr()
 		{
 			IsParagon = true;
 
-			Name = "Lady Jennifyr";
 			Hue = 0x76D;
 
 			SetStr( 208, 309 );
@@ -114,7 +115,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public LadyJennifyr( Serial serial )
 			: base( serial )

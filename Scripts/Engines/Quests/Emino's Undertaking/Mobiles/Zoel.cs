@@ -9,6 +9,8 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class Zoel : BaseQuester
 	{
+		public override string DefaultName => "Elite Ninja Zoel";
+
 		[Constructible]
 		public Zoel() : base( "the Masterful Tactician" )
 		{
@@ -22,7 +24,6 @@ namespace Server.Engines.Quests.Ninja
 
 			Female = false;
 			Body = 0x190;
-			Name = "Elite Ninja Zoel";
 		}
 
 		public override void InitOutfit()

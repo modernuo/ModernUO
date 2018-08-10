@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a ghostly corpse" )]
 	public class Wraith : BaseCreature
 	{
+		public override string DefaultName => "a wraith";
+
 		[Constructible]
 		public Wraith() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a wraith";
 			Body = 26;
 			Hue = 0x4001;
 			BaseSoundID = 0x482;
@@ -48,15 +49,15 @@ namespace Server.Mobiles
 		{
 			AddLoot( LootPack.Meager );
 		}
-		
-		public override bool BleedImmune{ get{ return true; } }
+
+		public override bool BleedImmune => true;
 
 		public override OppositionGroup OppositionGroup
 		{
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public Wraith( Serial serial ) : base( serial )
 		{

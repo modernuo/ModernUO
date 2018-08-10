@@ -65,34 +65,34 @@ namespace Server.Engines.Quests.Necro
 				 * of his translucently pale and heavily wrinkled skin, turns
 				 * to you and gives you a half-cocked grin that makes you
 				 * feel somewhat uneasy.<BR><BR>
-				 * 
+				 *
 				 * After a short pause, he begins to speak to you...</I><BR><BR>
-				 * 
+				 *
 				 * Hmm. What's this?  Another budding Necromancer to join the
 				 * ranks of Evil?  Here... let me take a look at you...  Ah
 				 * yes...  Very Good! I sense the forces of evil are strong
-				 * within you, child – but you need training so that you can
+				 * within you, child ï¿½ but you need training so that you can
 				 * learn to focus your skills against those aligned against
 				 * our cause.  You are destined to become a legendary
 				 * Necromancer - with the proper training, that only I can
 				 * give you.<BR><BR>
-				 * 
+				 *
 				 * <I>Mardoth pauses just long enough to give you a wide,
 				 * skin-crawling grin.</I><BR><BR>
-				 * 
+				 *
 				 * Let me introduce myself. I am Mardoth, the guildmaster of
 				 * the Necromantic Brotherhood.  I have taken it upon myself
 				 * to train anyone willing to learn the dark arts of Necromancy.
 				 * The path of destruction, decay and obliteration is not an
 				 * easy one.  Only the most evil and the most dedicated can
 				 * hope to master the sinister art of death.<BR><BR>
-				 * 
-				 * I can lend you training and help supply you with equipment –
+				 *
+				 * I can lend you training and help supply you with equipment ï¿½
 				 * in exchange for a few services rendered by you, of course.
 				 * Nothing major, just a little death and destruction here and
 				 * there - the tasks should be easy as a tasty meat pie for one
 				 * as treacherous and evil as yourself.<BR><BR>
-				 * 
+				 *
 				 * What do you say?  Do we have a deal?
 				 */
 				return 1060094;
@@ -100,7 +100,7 @@ namespace Server.Engines.Quests.Necro
 		}
 
 		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
-		public override bool IsTutorial{ get{ return true; } }
+		public override bool IsTutorial => true;
 
 		public override int Picture{ get{ return 0x15B5; } }
 

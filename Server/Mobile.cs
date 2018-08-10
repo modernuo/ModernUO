@@ -8386,18 +8386,18 @@ namespace Server
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Name
+		public virtual string Name
 		{
 			get
 			{
-				if( m_NameMod != null )
+				if ( m_NameMod != null )
 					return m_NameMod;
 
 				return m_Name;
 			}
 			set
 			{
-				if( m_Name != value ) // I'm leaving out the && m_NameMod == null
+				if ( m_Name != value ) // I'm leaving out the && m_NameMod == null
 				{
 					string oldName = m_Name;
 					m_Name = value;

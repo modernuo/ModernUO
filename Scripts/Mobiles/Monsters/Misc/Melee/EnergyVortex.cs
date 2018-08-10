@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	public class EnergyVortex : BaseCreature
 	{
 		public override bool DeleteCorpseOnDeath { get { return Summoned; } }
-		public override bool AlwaysMurderer{ get{ return true; } } // Or Llama vortices will appear gray.
+		public override bool AlwaysMurderer => true; // Or Llama vortices will appear gray.
 
 		public override double DispelDifficulty { get { return 80.0; } }
 		public override double DispelFocus { get { return 20.0; } }
@@ -19,13 +19,13 @@ namespace Server.Mobiles
 			return ( m.Int + m.Skills[SkillName.Magery].Value ) / Math.Max( GetDistanceToSqrt( m ), 1.0 );
 		}
 
+		public override string DefaultName => "an energy vortex";
+
 		[Constructible]
 		public EnergyVortex()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an energy vortex";
-
-			if( Core.SE && 0.002 > Utility.RandomDouble() ) // Per OSI FoF, it's a 1/500 chance.
+			if ( Core.SE && 0.002 > Utility.RandomDouble() ) // Per OSI FoF, it's a 1/500 chance.
 			{
 				// Llama vortex!
 				Body = 0xDC;
@@ -66,7 +66,7 @@ namespace Server.Mobiles
 			ControlSlots = ( Core.SE ) ? 2 : 1;
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 		public override Poison PoisonImmune { get { return Poison.Lethal; } }
 
 		public override int GetAngerSound()

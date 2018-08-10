@@ -11,10 +11,11 @@ namespace Server.Mobiles
 		public override double DispelDifficulty{ get{ return 117.5; } }
 		public override double DispelFocus{ get{ return 45.0; } }
 
+		public override string DefaultName => "an earth elemental";
+
 		[Constructible]
 		public EarthElemental() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an earth elemental";
 			Body = 14;
 			BaseSoundID = 268;
 
@@ -46,7 +47,7 @@ namespace Server.Mobiles
 
 			PackItem( new FertileDirt( Utility.RandomMinMax( 1, 4 ) ) );
 			PackItem( new MandrakeRoot() );
-			
+
 			Item ore = new IronOre( 5 );
 			ore.ItemID = 0x19B7;
 			PackItem( ore );
@@ -59,7 +60,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public EarthElemental( Serial serial ) : base( serial )

@@ -1,33 +1,33 @@
-using System; 
-using System.Collections; 
-using Server.Items; 
-using Server.ContextMenus; 
-using Server.Misc; 
-using Server.Network; 
+using System;
+using System.Collections;
+using Server.Items;
+using Server.ContextMenus;
+using Server.Misc;
+using Server.Network;
 
-namespace Server.Mobiles 
-{ 
-	public class Executioner : BaseCreature 
-	{ 
-		[Constructible] 
-		public Executioner() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) 
-		{ 
-			SpeechHue = Utility.RandomDyedHue(); 
-			Title = "the executioner"; 
-			Hue = Utility.RandomSkinHue(); 
+namespace Server.Mobiles
+{
+	public class Executioner : BaseCreature
+	{
+		[Constructible]
+		public Executioner() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		{
+			SpeechHue = Utility.RandomDyedHue();
+			Title = "the executioner";
+			Hue = Utility.RandomSkinHue();
 
-			if ( this.Female = Utility.RandomBool() ) 
-			{ 
-				this.Body = 0x191; 
-				this.Name = NameList.RandomName( "female" ); 
-				AddItem( new Skirt( Utility.RandomRedHue() ) ); 
-			} 
-			else 
-			{ 
-				this.Body = 0x190; 
-				this.Name = NameList.RandomName( "male" ); 
-				AddItem( new ShortPants( Utility.RandomRedHue() ) ); 
-			} 
+			if ( this.Female = Utility.RandomBool() )
+			{
+				this.Body = 0x191;
+				this.Name = NameList.RandomName( "female" );
+				AddItem( new Skirt( Utility.RandomRedHue() ) );
+			}
+			else
+			{
+				this.Body = 0x190;
+				this.Name = NameList.RandomName( "male" );
+				AddItem( new ShortPants( Utility.RandomRedHue() ) );
+			}
 
 			SetStr( 386, 400 );
 			SetDex( 151, 165 );
@@ -57,8 +57,8 @@ namespace Server.Mobiles
 
 			VirtualArmor = 40;
 
-			AddItem( new ThighBoots( Utility.RandomRedHue() ) ); 
-			AddItem( new Surcoat( Utility.RandomRedHue() ) );    
+			AddItem( new ThighBoots( Utility.RandomRedHue() ) );
+			AddItem( new Surcoat( Utility.RandomRedHue() ) );
 			AddItem( new ExecutionersAxe());
 
 			Utility.AssignRandomHair( this );
@@ -70,24 +70,24 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
-		public Executioner( Serial serial ) : base( serial ) 
-		{ 
-		} 
+		public Executioner( Serial serial ) : base( serial )
+		{
+		}
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version 
-		} 
+			writer.Write( (int) 0 ); // version
+		}
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
 
-			int version = reader.ReadInt(); 
-		} 
-	} 
+			int version = reader.ReadInt();
+		}
+	}
 }

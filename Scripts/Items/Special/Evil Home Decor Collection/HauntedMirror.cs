@@ -6,7 +6,7 @@ namespace Server.Items
 	public class HaunterMirrorComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1074800; } } // Haunted Mirror
-		public override bool HandlesOnMovement { get { return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public HaunterMirrorComponent() : base( 0x2A7B )
 		{

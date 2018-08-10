@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a swamp tentacle corpse" )]
 	public class SwampTentacle : BaseCreature
 	{
+		public override string DefaultName => "a swamp tentacle";
+
 		[Constructible]
 		public SwampTentacle() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a swamp tentacle";
 			Body = 66;
 			BaseSoundID = 352;
 
@@ -48,7 +49,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
+		public override Poison PoisonImmune => Poison.Greater;
 
 		public SwampTentacle( Serial serial ) : base( serial )
 		{

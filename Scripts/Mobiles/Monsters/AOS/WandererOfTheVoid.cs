@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a wanderer of the void corpse" )]
 	public class WandererOfTheVoid : BaseCreature
 	{
+		public override string DefaultName => "a wanderer of the void";
+
 		[Constructible]
 		public WandererOfTheVoid() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a wanderer of the void";
 			Body = 316;
 			BaseSoundID = 377;
 
@@ -50,8 +51,8 @@ namespace Server.Mobiles
 				PackItem( new TreasureMap( 3, Map.Trammel ) );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return Core.AOS ? 4 : 1; } }
 
 		public override void GenerateLoot()

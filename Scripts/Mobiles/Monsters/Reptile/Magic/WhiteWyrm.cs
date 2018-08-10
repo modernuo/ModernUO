@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a white wyrm corpse" )]
 	public class WhiteWyrm : BaseCreature
 	{
+		public override string DefaultName => "a white wyrm";
+
 		[Constructible]
 		public WhiteWyrm() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = Utility.RandomBool() ? 180 : 49;
-			Name = "a white wyrm";
 			BaseSoundID = 362;
 
 			SetStr( 721, 760 );
@@ -54,7 +55,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, Utility.Random( 1, 5 ) );
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
+		public override bool ReacquireOnMovement => true;
 		public override int TreasureMapLevel{ get{ return 4; } }
 		public override int Meat{ get{ return 19; } }
 		public override int Hides{ get{ return 20; } }
@@ -62,8 +63,8 @@ namespace Server.Mobiles
 		public override int Scales{ get{ return 9; } }
 		public override ScaleType ScaleType{ get{ return ScaleType.White; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Gold; } }
-		public override bool CanAngerOnTame { get { return true; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanAngerOnTame => true;
+		public override bool CanFly => true;
 
 		public WhiteWyrm( Serial serial ) : base( serial )
 		{

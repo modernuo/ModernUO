@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "an enslaved satyr corpse" )]
 	public class EnslavedSatyr : Satyr
 	{
+		public override string DefaultName => "an enslaved satyr";
+
 		[Constructible]
 		public EnslavedSatyr()
 		{
-			Name = "an enslaved satyr";
 		}
 
 		/*

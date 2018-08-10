@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a mantra effervescence corpse" )]
 	public class MantraEffervescence : BaseCreature
 	{
+		public override string DefaultName => "a mantra effervescence";
+
 		[Constructible]
 		public MantraEffervescence()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a mantra effervescence";
 			Body = 0x111;
 			BaseSoundID = 0x56E;
 

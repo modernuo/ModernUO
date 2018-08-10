@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a corpser corpse" )]
 	public class Corpser : BaseCreature
 	{
+		public override string DefaultName { get { return "a corpser"; } }
+
 		[Constructible]
 		public Corpser() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a corpser";
 			Body = 8;
 			BaseSoundID = 684;
 
@@ -54,8 +55,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lesser; } }
-		public override bool DisallowAllMoves{ get{ return true; } }
+		public override Poison PoisonImmune => Poison.Lesser;
+		public override bool DisallowAllMoves => true;
 
 		public Corpser( Serial serial ) : base( serial )
 		{

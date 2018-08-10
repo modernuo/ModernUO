@@ -16,8 +16,8 @@ namespace Server.Items
 		public static readonly TimeSpan UseDelay = TimeSpan.FromSeconds( 7.0 );
 
 		private BookQuality m_Quality;
-		
-		[CommandProperty( AccessLevel.GameMaster )]		
+
+		[CommandProperty( AccessLevel.GameMaster )]
 		public BookQuality Quality
 		{
 			get{ return m_Quality; }
@@ -30,9 +30,9 @@ namespace Server.Items
 		private int m_DefaultIndex;
 		private SecureLevel m_Level;
 		private Mobile m_Crafter;
-		
+
 		private DateTime m_NextUse;
-		
+
 		private List<Mobile> m_Openers = new List<Mobile>();
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -95,7 +95,7 @@ namespace Server.Items
 				m_MaxCharges = value;
 			}
 		}
-		
+
 		public List<Mobile> Openers
 		{
 			get
@@ -180,7 +180,7 @@ namespace Server.Items
 
 			writer.Write( (int) 3 );
 
-			writer.Write( (byte) m_Quality );	
+			writer.Write( (byte) m_Quality );
 
 			writer.Write( m_Crafter );
 
@@ -212,7 +212,7 @@ namespace Server.Items
 			{
 				case 3:
 				{
-					m_Quality = (BookQuality) reader.ReadByte();		
+					m_Quality = (BookQuality) reader.ReadByte();
 					goto case 2;
 				}
 				case 2:
@@ -283,7 +283,7 @@ namespace Server.Items
 			return false;
 		}
 
-		public override bool DisplayLootType{ get{ return Core.AOS; } }
+		public override bool DisplayLootType => Core.AOS;
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
@@ -298,7 +298,7 @@ namespace Server.Items
 			if ( m_Description != null && m_Description.Length > 0 )
 				list.Add( m_Description );
 		}
-		
+
 		public override bool OnDragLift( Mobile from )
 		{
 			if ( from.HasGump( typeof( RunebookGump ) ) )
@@ -306,13 +306,13 @@ namespace Server.Items
 				from.SendLocalizedMessage( 500169 ); // You cannot pick that up.
 				return false;
 			}
-			
+
 			foreach ( Mobile m in m_Openers )
 				if ( IsOpen( m ) )
 					m.CloseGump( typeof( RunebookGump ) );
-				
+
 			m_Openers.Clear();
-			
+
 			return true;
 		}
 
@@ -345,7 +345,7 @@ namespace Server.Items
 
 				from.CloseGump( typeof( RunebookGump ) );
 				from.SendGump( new RunebookGump( from, this ) );
-				
+
 				m_Openers.Add( from );
 			}
 		}

@@ -13,8 +13,8 @@ namespace Server.Mobiles
 			Title = "the messenger";
 		}
 
-		public override bool CanTeach{ get{ return true; } }
-		public override bool ClickTitle{ get{ return false; } } // Do not display 'the messenger' when single-clicking
+		public override bool CanTeach => true;
+		public override bool ClickTitle => false; // Do not display 'the messenger' when single-clicking
 
 		private static int GetRandomHue()
 		{

@@ -6,14 +6,15 @@ namespace Server.Mobiles
 {
 	public class ShadowFiend : BaseCreature
 	{
-		public override bool DeleteCorpseOnDeath{ get{ return true; } }
+		public override bool DeleteCorpseOnDeath => true;
 
 		private UnhideTimer m_Timer;
+
+		public override string DefaultName => "a shadow fiend";
 
 		[Constructible]
 		public ShadowFiend() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a shadow fiend";
 			Body = 0xA8;
 
 			// this to allow shadow fiend to loot from corpses
@@ -75,7 +76,7 @@ namespace Server.Mobiles
 			return 0x380;
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 
 		public override bool OnBeforeDeath()
 		{

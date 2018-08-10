@@ -7,6 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class ShadowIronElemental : BaseCreature
 	{
+		public override string DefaultName => "a shadow iron elemental";
+
 		[Constructible]
 		public ShadowIronElemental() : this( 2 )
 		{
@@ -15,7 +17,6 @@ namespace Server.Mobiles
 		[Constructible]
 		public ShadowIronElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a shadow iron elemental";
 			Body = 111;
 			BaseSoundID = 268;
 
@@ -55,11 +56,11 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 2 );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool AutoDispel => true;
+		public override bool BleedImmune => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
-		public override bool BreathImmune{ get{ return true; } }
+		public override Poison PoisonImmune => Poison.Deadly;
+		public override bool BreathImmune => true;
 
 		public override void AlterMeleeDamageFrom( Mobile from, ref int damage )
 		{
@@ -76,7 +77,7 @@ namespace Server.Mobiles
 		{
 			scalar = 0.0; // Immune to magic
 		}
-		
+
 		public override void AlterSpellDamageFrom( Mobile from, ref int damage )
 		{
 			damage = 0;

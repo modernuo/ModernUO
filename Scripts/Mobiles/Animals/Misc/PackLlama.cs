@@ -9,10 +9,11 @@ namespace Server.Mobiles
 	[CorpseName("a llama corpse")]
 	public class PackLlama : BaseCreature
 	{
+		public override string DefaultName => "a pack llama";
+
 		[Constructible]
 		public PackLlama() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a pack llama";
 			Body = 292;
 			BaseSoundID = 0x3F3;
 

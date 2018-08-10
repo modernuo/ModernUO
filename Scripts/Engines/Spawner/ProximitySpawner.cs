@@ -90,7 +90,7 @@ namespace Server.Mobiles
 			End = DateTime.UtcNow;
 		}
 
-		public override bool HandlesOnMovement { get { return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public virtual bool ValidTrigger( Mobile m )
 		{

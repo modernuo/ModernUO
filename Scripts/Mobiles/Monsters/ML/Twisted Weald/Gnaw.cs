@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Gnaw corpse" )]
 	public class Gnaw : DireWolf
 	{
+		public override string DefaultName => "Gnaw";
+
 		[Constructible]
 		public Gnaw()
 		{
 			IsParagon = true;
 
-			Name = "Gnaw";
 			Hue = 0x130;
 
 			SetStr( 151, 172 );
@@ -46,7 +47,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich, 2 );
 		}
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int Hides{ get{ return 28; } }
 		public override int Meat{ get{ return 4; } }
 

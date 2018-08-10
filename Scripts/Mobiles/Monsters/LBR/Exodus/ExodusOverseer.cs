@@ -12,13 +12,14 @@ namespace Server.Mobiles
 		public bool FieldActive{ get{ return m_FieldActive; } }
 		public bool CanUseField{ get{ return Hits >= HitsMax * 9 / 10; } } // TODO: an OSI bug prevents to verify this
 
-		public override bool IsScaredOfScaryThings{ get{ return false; } }
-		public override bool IsScaryToPets{ get{ return true; } }
+		public override bool IsScaredOfScaryThings => false;
+		public override bool IsScaryToPets => true;
+
+		public override string DefaultName => "an exodus overseer";
 
 		[Constructible]
 		public ExodusOverseer() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "exodus overseer";
 			Body = 0x2F4;
 
 			SetStr( 561, 650 );
@@ -59,9 +60,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AutoDispel => true;
+		public override bool BardImmune => !Core.AOS;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int GetIdleSound()
 		{
@@ -157,7 +158,7 @@ namespace Server.Mobiles
 				this.FixedParticles( 0, 10, 0, 0x2530, EffectLayer.Waist );
 
 			return move;
-		}		
+		}
 
 		public void SendEBolt( Mobile to )
 		{
@@ -185,7 +186,7 @@ namespace Server.Mobiles
 			m_FieldActive = CanUseField;
 
 			if( this.Name == "Exodus Overseer" )
-				this.Name = "exodus overseer";
+				this.Name = null;
 		}
 	}
 }

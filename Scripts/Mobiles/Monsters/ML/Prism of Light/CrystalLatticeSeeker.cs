@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Crystal Lattice Seeker corpse" )]
 	public class CrystalLatticeSeeker : BaseCreature
 	{
+		public override string DefaultName { get { return "Crystal Lattice Seeker"; } }
+
 		[Constructible]
 		public CrystalLatticeSeeker()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "Crystal Lattice Seeker";
 			Body = 0x7B;
 			Hue = 0x47E;
 

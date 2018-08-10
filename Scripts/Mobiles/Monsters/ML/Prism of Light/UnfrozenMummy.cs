@@ -7,11 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "an unfrozen mummy corpse" )]
 	public class UnfrozenMummy : BaseCreature
 	{
+		public override string DefaultName => "an unfrozen mummy";
+
 		[Constructible]
 		public UnfrozenMummy()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{
-			Name = "an unfrozen mummy";
 			Body = 0x9B;
 			Hue = 0x480;
 			BaseSoundID = 0x1D7;

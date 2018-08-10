@@ -13,6 +13,8 @@ namespace Server.Engines.ConPVP
 {
 	public class BRBomb : Item
 	{
+		public override string DefaultName => "da bomb";
+
 		private BRGame m_Game;
 		private Mobile m_Thrower;
 		private EffectTimer m_Timer;
@@ -33,12 +35,11 @@ namespace Server.Engines.ConPVP
 
 		public BRBomb( BRGame game ) : base( 0x103C ) // 0x103C = bread, 0x1042 = pie, 0x1364 = rock, 0x13a8 = pillow, 0x2256 = bagball
 		{
-			Name = "da bomb";
 			Movable = false;
 			Hue = 0x35;
 
 			m_Game = game;
-			
+
 			m_Helpers = new ArrayList();
 
 			m_Timer = new EffectTimer( this );
@@ -63,14 +64,14 @@ namespace Server.Engines.ConPVP
 				{
 					if ( !m_Bomb.m_Flying && m_Bomb.Map != Map.Internal )
 						Effects.SendLocationEffect( m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue, 0 );
-					
+
 					if ( m_Bomb.Location != m_Bomb.m_Game.Controller.BombHome )
 					{
 						if ( ++m_Count >= 30 )
 						{
 							m_Bomb.m_Game.ReturnBomb();
 							m_Bomb.m_Game.Alert( "The bomb has been returned to it's starting point." );
-							
+
 							m_Count = 0;
 							m_Bomb.m_Helpers.Clear();
 						}
@@ -130,7 +131,7 @@ namespace Server.Engines.ConPVP
 				//int theifRank = mob.Skills.Stealing.Value + mob.Skills.Snooping.Value + mob.Skills.Hiding.Value + mob.Skills.Stealth.Value + mob.Skills.RemoveTrap.Value + mob.Skills.Lockpicking.Value + mob.Skills.ItemID.Value;
 
 				// To Do: Give them a special ability while holding the ball maybe based on skills?
-			} 
+			}
 		}
 
 		public override void OnRemoved(IEntity parent)
@@ -189,7 +190,7 @@ namespace Server.Engines.ConPVP
 		public override void OnAfterDelete()
 		{
 			base.OnAfterDelete ();
-			
+
 			if ( m_Timer != null )
 				m_Timer.Stop();
 		}
@@ -266,7 +267,7 @@ namespace Server.Engines.ConPVP
 		{
 			if ( m_Game == null )
 				return true;
-			
+
 			if ( !IsChildOf( from.Backpack ) )
 				return true;
 
@@ -297,7 +298,7 @@ namespace Server.Engines.ConPVP
 		{
 			DoAnim( this.GetWorldLocation(), ballLoc, this.Map );
 			this.MoveToWorld( ballLoc );
-			
+
 			m_Path.Clear();
 			m_PathIdx = 0;
 
@@ -321,7 +322,7 @@ namespace Server.Engines.ConPVP
 			else if ( zdiff < 16 )
 				return Utility.RandomBool(); // 50% chance
 			else
-				return false; 
+				return false;
 		}
 
 		private void DoAnim( Point3D start, Point3D end, Map map )
@@ -465,11 +466,11 @@ namespace Server.Engines.ConPVP
 					int xp = ( i - (count / 2) );
 
 					p.Z += (int)Math.Ceiling( coeff * xp * xp + height );
-					
+
 					list[i] = p;
 				}
 			}
-			
+
 			m_Path.Clear();
 			for (int i = 0; i < list.Count; i++)
 				m_Path.Add( (Point3D)list[i] );
@@ -619,7 +620,7 @@ namespace Server.Engines.ConPVP
 				}
 
 				area.Free();
-			
+
 				IPooledEnumerable<NetState> clients = this.Map.GetClientsInBounds( rect );
 				foreach ( NetState ns in clients)
 				{
@@ -630,7 +631,7 @@ namespace Server.Engines.ConPVP
 
 					Point3D point;
 					Point3D loc = m.Location;
-				
+
 					for ( int j = m_PathIdx; j < pathCheckEnd && !found; j++ )
 					{
 						point = m_Path[j];
@@ -646,7 +647,7 @@ namespace Server.Engines.ConPVP
 						continue;
 
 					clients.Free();
-					
+
 					// TODO: probably need to change this a lot...
 					DoCatch( m );
 
@@ -654,7 +655,7 @@ namespace Server.Engines.ConPVP
 				}
 
 				clients.Free();
-				
+
 				m_PathIdx = pathCheckEnd;
 
 				if ( m_PathIdx > 0 && m_PathIdx - 1 < m_Path.Count )
@@ -670,7 +671,7 @@ namespace Server.Engines.ConPVP
 					this.MoveToWorld( m_Path.Last );
 
 				int myZ = this.Map.GetAverageZ( this.X, this.Y );
-		
+
 				StaticTile[] statics = this.Map.Tiles.GetStaticTiles( this.X, this.Y, true );
 				for ( int j = 0; j < statics.Length; j++ )
 				{
@@ -737,7 +738,7 @@ namespace Server.Engines.ConPVP
 			}
 
 			m_Game.ReturnBomb();
-			
+
 			m_Flying = false;
 			this.Visible = true;
 			m_Path.Clear();
@@ -764,7 +765,7 @@ namespace Server.Engines.ConPVP
 
 				if ( m_Helpers.Contains( m ) )
 					m_Helpers.Remove( m );
-				
+
 				if ( m_Helpers.Count > 0 )
 				{
 					Mobile last = (Mobile)m_Helpers[0];
@@ -819,19 +820,19 @@ namespace Server.Engines.ConPVP
 
 			// Center Sparkle
 			this.AddComponent( new AddonComponent( 0x375A ),  0,  0, -1 );
-			
+
 			if ( !m_North )
 			{
 				// Pillars
 				this.AddComponent( new AddonComponent( 0x0CE ),  0, +1, -2 );
 				this.AddComponent( new AddonComponent( 0x0CC ),  0, -1, -2 );
 				this.AddComponent( new AddonComponent( 0x0D0 ),  0,  0, -2 );
-			
+
 				// Yellow parts
 				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0, +1, 7 );
 				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0,  0, 16 );
 				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0, -1, 7 );
-			
+
 				// Blue Sparkles
 				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, +1, 12 );
 				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, +1, -1 );
@@ -844,12 +845,12 @@ namespace Server.Engines.ConPVP
 				this.AddComponent( new AddonComponent( 0x0CF ), +1,  0, -2 );
 				this.AddComponent( new AddonComponent( 0x0CC ), -1,  0, -2 );
 				this.AddComponent( new AddonComponent( 0x0D1 ),  0,  0, -2 );
-			
+
 				// Yellow parts
 				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ), +1,  0, 7 );
 				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0,  0, 16 );
 				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ), -1,  0, 7 );
-			
+
 				// Blue Sparkles
 				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  +1,  0, 12 );
 				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  +1,  0, -1 );
@@ -858,11 +859,11 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
+		public override string DefaultName => "Bombing Run Goal";
+
 		[Constructible]
 		public BRGoal()
 		{
-			Name = "Bombing Run Goal";
-
 			this.ItemID = 0x51D;
 			this.Hue = 0x84C;
 			this.Visible = true;
@@ -905,19 +906,19 @@ namespace Server.Engines.ConPVP
 			this.Hue = 0x84C;
 		}
 
-		public override bool ShareHue{ get{ return false; } }
+		public override bool ShareHue => false;
 
-		public BRTeamInfo Team 
-		{ 
-			get { return m_Team; } 
-			set 
+		public BRTeamInfo Team
+		{
+			get { return m_Team; }
+			set
 			{
-				m_Team = value; 
+				m_Team = value;
 				if ( m_Team != null && m_Team.Color != 0 )
 					this.Hue = m_Team.Color;
 				else
 					this.Hue = 0x84C;
-			} 
+			}
 		}
 
 		private BRTeamInfo m_Team;
@@ -949,13 +950,14 @@ namespace Server.Engines.ConPVP
 
 	public sealed class BRBoard : Item
 	{
+		public override string DefaultName => "Scoreboard";
+
 		public BRTeamInfo m_TeamInfo;
 
 		[Constructible]
 		public BRBoard()
 			: base( 7774 )
 		{
-			Name = "Scoreboard";
 			Movable = false;
 		}
 
@@ -1211,7 +1213,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		public int Captures
-		{			
+		{
 			get
 			{
 				return m_Captures;
@@ -1346,9 +1348,9 @@ namespace Server.Engines.ConPVP
 		public BRGoal Goal
 		{
 			get { return m_Goal; }
-			set 
+			set
 			{
-				m_Goal = value; 
+				m_Goal = value;
 				if ( m_Goal != null )
 					m_Goal.Team = this;
 			}
@@ -1452,10 +1454,8 @@ namespace Server.Engines.ConPVP
 			set { m_BombHome = value; }
 		}
 
-		public override string Title
-		{
-			get { return "Bombing Run"; }
-		}
+		public override string Title => "Bombing Run";
+		public override string DefaultName => "Bombing Run Controller";
 
 		public override string GetTeamName( int teamID )
 		{
@@ -1472,8 +1472,6 @@ namespace Server.Engines.ConPVP
 		{
 			Visible = false;
 			Movable = false;
-
-			Name = "Bombing Run Controller";
 
 			m_Duration = TimeSpan.FromMinutes( 30.0 );
 
@@ -1943,7 +1941,7 @@ namespace Server.Engines.ConPVP
 			}
 
 			ReturnBomb();
-			
+
 			if( m_Bomb != null )
 				m_Bomb.Delete();
 

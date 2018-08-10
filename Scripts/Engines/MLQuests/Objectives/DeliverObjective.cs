@@ -131,7 +131,7 @@ namespace Server.Engines.MLQuests.Objectives
 	{
 		private TimeSpan m_Duration;
 
-		public override bool IsTimed { get { return true; } }
+		public override bool IsTimed => true;
 		public override TimeSpan Duration { get { return m_Duration; } }
 
 		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination )

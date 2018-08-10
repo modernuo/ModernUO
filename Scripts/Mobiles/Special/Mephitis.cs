@@ -15,12 +15,12 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Spider }; } }
 
+		public override string DefaultName => "Mephitis";
+
 		[Constructible]
 		public Mephitis() : base( AIType.AI_Melee )
 		{
 			Body = 173;
-			Name = "Mephitis";
-
 			BaseSoundID = 0x183;
 
 			SetStr( 505, 1000 );
@@ -56,8 +56,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 4 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => Poison.Lethal;
 
 		public override void OnGotMeleeAttack( Mobile attacker )
 		{

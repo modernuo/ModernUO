@@ -8,15 +8,13 @@ namespace Server.Mobiles
 	[CorpseName( "a chaos daemon corpse" )]
 	public class ChaosDaemon : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.CrushingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
+
+		public override string DefaultName => "a chaos daemon";
 
 		[Constructible]
 		public ChaosDaemon() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a chaos daemon";
 			Body = 792;
 			BaseSoundID = 0x3E9;
 

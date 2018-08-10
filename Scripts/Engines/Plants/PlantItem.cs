@@ -57,7 +57,7 @@ namespace Server.Engines.Plants
 
 		public PlantSystem PlantSystem { get { return m_PlantSystem; } }
 
-		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		public override void OnSingleClick( Mobile from )
 		{

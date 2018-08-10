@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.Half; } }
 
-		public override bool AllowMaleWearer{ get{ return false; } }
+		public override bool AllowMaleWearer => false;
 
 		[Constructible]
 		public StuddedBustierArms() : base( 0x1C0C )
@@ -36,13 +36,13 @@ namespace Server.Items
 		public StuddedBustierArms( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

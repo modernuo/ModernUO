@@ -10,10 +10,11 @@ namespace Server.Mobiles
 	[CorpseName( "a meer's corpse" )]
 	public class MeerMage : BaseCreature
 	{
+		public override string DefaultName => "a meer mage";
+
 		[Constructible]
 		public MeerMage() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a meer mage";
 			Body = 770;
 
 			SetStr( 171, 200 );
@@ -54,12 +55,12 @@ namespace Server.Mobiles
 			// TODO: Daemon bone ...
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool AutoDispel => true;
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel{ get{ return 3; } }
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override int GetHurtSound()
 		{
@@ -103,7 +104,7 @@ namespace Server.Mobiles
 
 					if( Utility.RandomDouble() < .1 )
 					{
-						int[][] coord = 
+						int[][] coord =
 						{
 							new int[]{-4,-6}, new int[]{4,-6}, new int[]{0,-8}, new int[]{-5,5}, new int[]{5,5}
 						};

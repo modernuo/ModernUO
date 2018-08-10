@@ -8,11 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a Szavetra corpse" )]
 	public class Szavetra : Succubus
 	{
+		public override string DefaultName => "Szavetra";
+
 		[Constructible]
 		public Szavetra()
 		{
-			Name = "Szavetra";
-
 			SetStr( 627, 655 );
 			SetDex( 164, 193 );
 			SetInt( 566, 595 );

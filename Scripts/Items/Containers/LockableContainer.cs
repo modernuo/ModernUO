@@ -267,7 +267,7 @@ namespace Server.Items
 			return true;
 		}
 
-		public override bool DisplaysContent{ get{ return !m_Locked; } }
+		public override bool DisplaysContent => !m_Locked;
 
 		public virtual bool CheckLocked( Mobile from )
 		{

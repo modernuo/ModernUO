@@ -178,7 +178,7 @@ namespace Server.Mobiles
 				m_Item = item;
 			}
 
-			public override bool NonLocalUse{ get{ return true; } }
+			public override bool NonLocalUse => true;
 
 			public override void OnClick()
 			{
@@ -405,7 +405,7 @@ namespace Server.Mobiles
 						}
 					}
 
-					break;	
+					break;
 				}
 			}
 
@@ -554,7 +554,7 @@ namespace Server.Mobiles
 
 		public PlayerVendorPlaceholder Placeholder
 		{
-			get{ return m_Placeholder; } 
+			get{ return m_Placeholder; }
 			set{ m_Placeholder = value; }
 		}
 
@@ -576,7 +576,7 @@ namespace Server.Mobiles
 		public int ChargePerDay
 		{
 			get
-			{ 
+			{
 				if ( BaseHouse.NewVendorSystem )
 				{
 					return ChargePerRealWorldDay / 12;
@@ -657,7 +657,7 @@ namespace Server.Mobiles
 				FixDresswear();
 
 			/* Possible cases regarding item return:
-			 * 
+			 *
 			 * 1. No item must be returned
 			 *       -> do nothing.
 			 * 2. ( toBackpack is false OR the vendor is in the internal map ) AND the vendor is associated with a AOS house
@@ -1302,7 +1302,7 @@ namespace Server.Mobiles
 
 					e.Handled = true;
 				}
-			} 
+			}
 			else if ( e.HasKeyword( 0x3D ) || (e.HasKeyword( 0x172 ) && WasNamed( e.Speech )) ) // vendor browse, *browse
 			{
 				if ( House != null && House.IsBanned( from ) && !IsOwner( from ) )
@@ -1316,14 +1316,14 @@ namespace Server.Mobiles
 					else
 					{
 						IPooledEnumerable<PlayerVendor> mobiles = e.Mobile.GetMobilesInRange<PlayerVendor>( 2 );
-						
+
 						foreach ( PlayerVendor m in mobiles )
 							if ( m.CanSee( e.Mobile ) && m.InLOS( e.Mobile ) )
 								m.OpenBackpack( from );
-						
+
 						mobiles.Free();
 					}
-					
+
 					e.Handled = true;
 				}
 			}
@@ -1346,7 +1346,7 @@ namespace Server.Mobiles
 				}
 				else
 				{
-					SayTo( from, 503226 ); // What do you care? You don't run this shop.	
+					SayTo( from, 503226 ); // What do you care? You don't run this shop.
 				}
 			}
 			else if ( e.HasKeyword( 0x40 ) || (e.HasKeyword( 0x175 ) && WasNamed( e.Speech )) ) // vendor dismiss, *dismiss

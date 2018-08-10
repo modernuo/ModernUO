@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a doppleganger corpse" )]
 	public class Doppleganger : BaseCreature
 	{
+		public override string DefaultName => "a doppleganger";
+
 		[Constructible]
 		public Doppleganger() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a doppleganger";
 			Body = 0x309;
 			BaseSoundID = 0x451;
 

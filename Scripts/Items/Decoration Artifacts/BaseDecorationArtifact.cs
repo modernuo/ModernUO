@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public abstract int ArtifactRarity{ get; }
 
-		public override bool ForceShowProperties{ get{ return true; } }
+		public override bool ForceShowProperties => true;
 
 		public BaseDecorationArtifact( int itemID ) : base( itemID )
 		{
@@ -44,7 +44,7 @@ namespace Server.Items
 	{
 		public abstract int ArtifactRarity{ get; }
 
-		public override bool ForceShowProperties{ get{ return true; } }
+		public override bool ForceShowProperties => true;
 
 		public BaseDecorationContainerArtifact( int itemID ) : base( itemID )
 		{

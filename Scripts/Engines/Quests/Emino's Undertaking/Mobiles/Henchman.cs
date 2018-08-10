@@ -7,6 +7,8 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class Henchman : BaseCreature
 	{
+		public override string DefaultName => "a henchman";
+
 		[Constructible]
 		public Henchman() : base( AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
@@ -14,7 +16,6 @@ namespace Server.Engines.Quests.Ninja
 
 			Hue = Utility.RandomSkinHue();
 			Body = 0x190;
-			Name = "a henchman";
 
 			Utility.AssignRandomHair( this );
 			Utility.AssignRandomFacialHair( this );
@@ -32,7 +33,7 @@ namespace Server.Engines.Quests.Ninja
 			SetSkill( SkillName.Tactics, 50.0 );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public Henchman( Serial serial ) : base( serial )
 		{

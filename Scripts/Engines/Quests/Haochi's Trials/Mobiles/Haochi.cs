@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class Haochi : BaseQuester
 	{
+		public override string DefaultName => "Daimyo Haochi";
+
 		[Constructible]
 		public Haochi() : base( "the Honorable Samurai Legend" )
 		{
@@ -21,7 +23,6 @@ namespace Server.Engines.Quests.Samurai
 
 			Female = false;
 			Body = 0x190;
-			Name = "Daimyo Haochi";
 		}
 
 		public override void InitOutfit()

@@ -145,7 +145,7 @@ namespace Server.Spells.Seventh
 		[DispellableField]
 		private class InternalItem : Moongate
 		{
-			public override bool ShowFeluccaWarning{ get{ return Core.AOS; } }
+			public override bool ShowFeluccaWarning => Core.AOS;
 
 			public InternalItem( Point3D target, Map map ) : base( target, map )
 			{
@@ -244,7 +244,7 @@ namespace Server.Spells.Seventh
 					from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501030, from.Name, "" ) ); // I can not gate travel from that object.
 				}
 			}
-			
+
 			protected override void OnNonlocalTarget( Mobile from, object o )
 			{
 			}

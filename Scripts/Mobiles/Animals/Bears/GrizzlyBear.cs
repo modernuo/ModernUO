@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Grizzlybear" )]
 	public class GrizzlyBear : BaseCreature
 	{
+		public override string DefaultName => "a grizzly bear";
+
 		[Constructible]
 		public GrizzlyBear() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a grizzly bear";
 			Body = 212;
 			BaseSoundID = 0xA3;
 

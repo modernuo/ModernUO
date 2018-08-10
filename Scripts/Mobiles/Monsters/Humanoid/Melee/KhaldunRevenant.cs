@@ -14,7 +14,7 @@ namespace Server.Mobiles
 		{
 			EventSink.PlayerDeath += new PlayerDeathEventHandler( EventSink_PlayerDeath );
 		}
- 
+
 		public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
 		{
 			Mobile m = e.Mobile;
@@ -56,18 +56,19 @@ namespace Server.Mobiles
 		private Mobile m_Target;
 		private DateTime m_ExpireTime;
 
-		public override bool DeleteCorpseOnDeath{ get{ return true; } }
+		public override bool DeleteCorpseOnDeath => true;
 
 		public override void DisplayPaperdollTo( Mobile to )
 		{
 		}
 
 		public override Mobile ConstantFocus{ get{ return m_Target; } }
-		public override bool AlwaysAttackable{ get{ return true; } }
+		public override bool AlwaysAttackable => true;
+
+		public override string DefaultName => "a revenant";
 
 		public KhaldunRevenant( Mobile target ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.18, 0.36 )
 		{
-			Name = "a revenant";
 			Body = 0x3CA;
 			Hue = 0x41CE;
 
@@ -124,8 +125,8 @@ namespace Server.Mobiles
 			return 0xFD;
 		}
 
-		public override bool BardImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BardImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override void OnThink()
 		{

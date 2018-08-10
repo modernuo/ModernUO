@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gargoyle corpse" )]
 	public class Gargoyle : BaseCreature
 	{
+		public override string DefaultName => "a gargoyle";
+
 		[Constructible]
 		public Gargoyle() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a gargoyle";
 			Body = 4;
 			BaseSoundID = 372;
 
@@ -44,7 +45,7 @@ namespace Server.Mobiles
 				PackItem( new GargoylesPickaxe() );
 		}
 
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public override void GenerateLoot()
 		{

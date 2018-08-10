@@ -410,7 +410,7 @@ namespace Server.Engines.CannedEvil
 		private ScrollofTranscendence CreateRandomSoT( bool felucca )
 		{
 			int level = Utility.RandomMinMax( 1, 5 );
-			
+
 			if ( felucca )
 				level += 5;
 
@@ -427,7 +427,7 @@ namespace Server.Engines.CannedEvil
 				killer.SendLocalizedMessage( 1094936 ); // You have received a Scroll of Transcendence!
 			else
 				killer.SendLocalizedMessage( 1049524 ); // You have received a scroll of power!
-			
+
 			if ( killer.Alive )
 				killer.AddToBackpack( scroll );
 			else
@@ -437,13 +437,13 @@ namespace Server.Engines.CannedEvil
 				else
 					killer.AddToBackpack( scroll );
 			}
-			
+
 			// Justice reward
 			PlayerMobile pm = (PlayerMobile)killer;
 			for (int j = 0; j < pm.JusticeProtectors.Count; ++j)
 			{
 				Mobile prot = (Mobile)pm.JusticeProtectors[j];
-				
+
 				if ( prot.Map != killer.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( killer, prot ) )
 					continue;
 
@@ -463,7 +463,7 @@ namespace Server.Engines.CannedEvil
 						prot.SendLocalizedMessage( 1049368 ); // You have been rewarded for your dedication to Justice!
 
 						SpecialScroll scrollDupe = Activator.CreateInstance( scroll.GetType() ) as SpecialScroll;
-					
+
 						if ( scrollDupe != null )
 						{
 							scrollDupe.Skill = scroll.Skill;
@@ -547,7 +547,7 @@ namespace Server.Engines.CannedEvil
 									{
 										PlayerMobile pm = (PlayerMobile)killer;
 										double random = Utility.Random ( 49 );
-										
+
 										if ( random <= 24 )
 										{
 											ScrollofTranscendence SoTF = CreateRandomSoT( true );
@@ -1258,7 +1258,7 @@ namespace Server.Engines.CannedEvil
 
 	public class ChampionSpawnRegion : BaseRegion
 	{
-		public override bool YoungProtected { get { return false; } }
+		public override bool YoungProtected => false;
 
 		private ChampionSpawn m_Spawn;
 

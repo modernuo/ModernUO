@@ -203,7 +203,7 @@ namespace Server.Items
 				Hue = 0xF4;
 		}
 
-		public override bool HandlesOnMovement{ get{ return m_TurnedOn && IsLockedDown; } }
+		public override bool HandlesOnMovement => m_TurnedOn && IsLockedDown;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

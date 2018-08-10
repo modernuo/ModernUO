@@ -19,7 +19,7 @@ namespace Server.Mobiles
 			SetHits( 833, 931 );
 
 			SetDamage( 21, 28 );
-			
+
 			SetDamageType( ResistanceType.Physical, 0 );
 			SetDamageType( ResistanceType.Poison, 25 );
 			SetDamageType( ResistanceType.Energy, 75 );
@@ -34,7 +34,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 101.7, 108.2 );
 			SetSkill( SkillName.MagicResist, 76.4, 89.9 );
 			SetSkill( SkillName.Anatomy, 56.4, 59.7 );
-			
+
 			Tamable = true;
 			ControlSlots = 4;
 			MinTameSkill = 101.1;
@@ -45,19 +45,16 @@ namespace Server.Mobiles
 			AddLoot( LootPack.AosUltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.ParalyzingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
 		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Meat{ get{ return 5; } }
 		public override int Hides{ get{ return 10; } }
-		public override bool CanBreath{ get{ return true; } }
+		public override bool CanBreath => true;
 		public override bool CanAngerOnTame{ get { return true; } }
-		public override bool StatLossAfterTame{ get{ return true; } }
+		public override bool StatLossAfterTame => true;
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public Reptalon( Serial serial ) : base( serial )
 		{

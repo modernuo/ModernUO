@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a reapers corpse" )]
 	public class Reaper : BaseCreature
 	{
+		public override string DefaultName => "a reaper";
+
 		[Constructible]
 		public Reaper() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a reaper";
 			Body = 47;
 			BaseSoundID = 442;
 
@@ -52,9 +53,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
+		public override Poison PoisonImmune => Poison.Greater;
 		public override int TreasureMapLevel{ get{ return 2; } }
-		public override bool DisallowAllMoves{ get{ return true; } }
+		public override bool DisallowAllMoves => true;
 
 		public Reaper( Serial serial ) : base( serial )
 		{

@@ -6,10 +6,11 @@ namespace Server.Mobiles
 {
 	public class Silvani : BaseCreature
 	{
+		public override string DefaultName => "Silvani";
+
 		[Constructible]
 		public Silvani() : base( AIType.AI_Mage, FightMode.Evil, 18, 1, 0.1, 0.2 )
 		{
-			Name = "Silvani";
 			Body = 176;
 			BaseSoundID = 0x467;
 
@@ -53,9 +54,9 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override bool CanFly { get { return true; } }
-		public override bool Unprovokable{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override bool CanFly => true;
+		public override bool Unprovokable => true;
+		public override Poison PoisonImmune => Poison.Regular;
 		public override int TreasureMapLevel{ get{ return 5; } }
 
 		public void SpawnPixies( Mobile target )

@@ -8,15 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a yamandon corpse" )]
 	public class Yamandon : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.DoubleStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
+		public override string DefaultName => "a yamandon";
 
 		[Constructible]
 		public Yamandon() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a yamandon";
 			Body = 249;
 
 			SetStr( 786, 930 );
@@ -59,9 +56,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 6 );
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Utility.RandomBool() ? Poison.Deadly : Poison.Lethal; } } 
+		public override bool ReacquireOnMovement => true;
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => Utility.RandomBool() ? Poison.Deadly : Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Hides{ get{ return 20; } }
 
@@ -101,7 +98,7 @@ namespace Server.Mobiles
 				if ( attacker is BaseCreature )
 				{
 					Mobile m = ((BaseCreature)attacker).GetMaster();
-					
+
 					if( m != null )
 						target = m;
 				}
@@ -137,7 +134,7 @@ namespace Server.Mobiles
 				}
 			}
 		}
-		
+
 		public override int GetAttackSound()
 		{
 			return 1260;

@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a ravager corpse" )]
 	public class Ravager : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
+
+		public override string DefaultName => "a ravager";
 
 		[Constructible]
 		public Ravager() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a ravager";
 			Body = 314;
 			BaseSoundID = 357;
 

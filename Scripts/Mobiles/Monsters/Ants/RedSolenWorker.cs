@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a solen worker corpse" )]
 	public class RedSolenWorker : BaseCreature
 	{
+		public override string DefaultName => "a red solen worker";
+
 		[Constructible]
 		public RedSolenWorker() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a red solen worker";
 			Body = 781;
 			BaseSoundID = 959;
 

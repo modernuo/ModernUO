@@ -34,11 +34,11 @@ namespace Server.Mobiles
 
 		private DateTime m_NextTrickOrTreat;
 
-		public override bool CanTeach { get { return true; } }
+		public override bool CanTeach => true;
 
-		public override bool BardImmune { get { return true; } }
+		public override bool BardImmune => true;
 
-		public override bool PlayerRangeSensitive { get { return true; } }
+		public override bool PlayerRangeSensitive => true;
 
 		public virtual bool IsActiveVendor { get { return true; } }
 		public virtual bool IsActiveBuyer { get { return IsActiveVendor; } } // response to vendor SELL
@@ -46,11 +46,11 @@ namespace Server.Mobiles
 
 		public virtual NpcGuild NpcGuild { get { return NpcGuild.None; } }
 
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
 
 		public virtual DateTime NextTrickOrTreat { get { return m_NextTrickOrTreat; } set { m_NextTrickOrTreat = value; } }
 
-		public override bool ShowFameTitle { get { return false; } }
+		public override bool ShowFameTitle => false;
 
 		public virtual bool IsValidBulkOrder( Item item )
 		{
@@ -1398,7 +1398,7 @@ namespace Server.Mobiles
 			{
 				if ( SupportsBulkOrders( from ) )
 					list.Add( new BulkOrderInfoEntry( from, this ) );
-				
+
 				if ( IsActiveSeller )
 					list.Add( new VendorBuyEntry( from, this ) );
 

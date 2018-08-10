@@ -7,12 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Lurg corpse" )]
 	public class Lurg : Troglodyte
 	{
+		public override string DefaultName => "Lurg";
+
 		[Constructible]
 		public Lurg()
 		{
 			IsParagon = true;
 
-			Name = "Lurg";
 			Hue = 0x455;
 
 			SetStr( 584, 625 );
@@ -48,12 +49,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 2 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.CrushingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 		public override int TreasureMapLevel{ get{ return 4; } }
 
 		public Lurg( Serial serial )

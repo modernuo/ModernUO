@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a Malefic corpse" )]
 	public class Malefic : DreadSpider
 	{
+		public override string DefaultName => "Malefic";
+
 		[Constructible]
 		public Malefic()
 		{
 			IsParagon = true;
-
-			Name = "Malefic";
 			Hue = 0x455;
 
 			SetStr( 210, 284 );
@@ -56,12 +56,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public Malefic( Serial serial )
 			: base( serial )

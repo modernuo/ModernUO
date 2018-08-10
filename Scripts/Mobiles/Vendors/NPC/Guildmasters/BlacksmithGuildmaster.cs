@@ -8,9 +8,9 @@ namespace Server.Mobiles
 	{
 		public override NpcGuild NpcGuild{ get{ return NpcGuild.BlacksmithsGuild; } }
 
-		public override bool IsActiveVendor{ get{ return true; } }
+		public override bool IsActiveVendor => true;
 
-		public override bool ClickTitle{ get{ return true; } }
+		public override bool ClickTitle => true;
 
 		[Constructible]
 		public BlacksmithGuildmaster() : base( "blacksmith" )

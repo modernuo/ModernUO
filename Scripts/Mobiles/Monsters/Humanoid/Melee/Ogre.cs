@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "an ogre corpse" )]
 	public class Ogre : BaseCreature
 	{
+		public override string DefaultName => "an ogre";
+
 		[Constructible]
 		public Ogre () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an ogre";
 			Body = 1;
 			BaseSoundID = 427;
 
@@ -50,7 +51,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Potions );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 		public override int Meat{ get{ return 2; } }
 

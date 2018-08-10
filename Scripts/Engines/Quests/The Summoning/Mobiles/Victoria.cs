@@ -13,9 +13,10 @@ namespace Server.Engines.Quests.Doom
 	public class Victoria : BaseQuester
 	{
 		public override int TalkNumber{ get{ return 6159; } } // Ask about Chyloth
-		public override bool ClickTitle{ get{ return true; } }
-		public override bool IsActiveVendor{ get{ return true; } }
-		public override bool DisallowAllMoves{ get{ return false; } }
+		public override string DefaultName => "Victoria";
+		public override bool ClickTitle => true;
+		public override bool IsActiveVendor => true;
+		public override bool DisallowAllMoves => false;
 
 		public override void InitSBInfo()
 		{
@@ -38,8 +39,6 @@ namespace Server.Engines.Quests.Doom
 			Female = true;
 			Hue = 0x8835;
 			Body = 0x191;
-
-			Name = "Victoria";
 		}
 
 		private SummoningAltar m_Altar;

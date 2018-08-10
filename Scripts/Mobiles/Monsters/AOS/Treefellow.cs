@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a treefellow corpse" )]
 	public class Treefellow : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+
+		public override string DefaultName => "a treefellow";
 
 		[Constructible]
 		public Treefellow() : base( AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a treefellow";
 			Body = 301;
 
 			SetStr( 196, 220 );
@@ -64,7 +62,7 @@ namespace Server.Mobiles
 			return 672;
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public override void GenerateLoot()
 		{

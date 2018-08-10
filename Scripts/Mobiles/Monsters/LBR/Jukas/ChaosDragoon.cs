@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a chaos dragoon corpse" )]
 	public class ChaosDragoon : BaseCreature
 	{
+		public override string DefaultName => "a chaos dragoon";
+
 		[Constructible]
 		public ChaosDragoon() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4 )
 		{
-			Name = "a chaos dragoon";
 			Body = 0x190;
 			Hue = Utility.RandomSkinHue();
 
@@ -139,15 +140,15 @@ namespace Server.Mobiles
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Rich );
-			//AddLoot( LootPack.Gems );	
+			//AddLoot( LootPack.Gems );
 		}
 
-		public override bool HasBreath{ get{ return true; } }
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool ShowFameTitle{ get{ return false; } }
+		public override bool HasBreath => true;
+		public override bool AutoDispel => true;
+		public override bool BardImmune => !Core.AOS;
+		public override bool CanRummageCorpses => true;
+		public override bool AlwaysMurderer => true;
+		public override bool ShowFameTitle => false;
 
 		public override bool OnBeforeDeath()
 		{

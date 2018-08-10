@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class EnshroudedFigure : BaseQuester
 	{
+		public override string DefaultName => "an enshrouded figure";
+
 		[Constructible]
 		public EnshroudedFigure()
 		{
@@ -20,7 +22,6 @@ namespace Server.Engines.Quests.Ninja
 			Hue = 0x8401;
 			Female = false;
 			Body = 0x190;
-			Name = "enshrouded figure";
 		}
 
 		public override void InitOutfit()

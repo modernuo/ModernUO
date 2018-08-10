@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a mummy corpse" )]
 	public class Mummy : BaseCreature
 	{
+		public override string DefaultName => "a mummy";
+
 		[Constructible]
 		public Mummy() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{
-			Name = "a mummy";
 			Body = 154;
 			BaseSoundID = 471;
 
@@ -55,8 +56,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Potions );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lesser; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lesser;
 
 		public Mummy( Serial serial ) : base( serial )
 		{

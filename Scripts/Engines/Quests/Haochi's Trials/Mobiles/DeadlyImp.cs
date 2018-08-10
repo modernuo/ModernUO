@@ -5,10 +5,11 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class DeadlyImp : BaseCreature
 	{
+		public override string DefaultName => "a deadly imp";
+
 		[Constructible]
 		public DeadlyImp() : base( AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a deadly imp";
 			Body = 74;
 			BaseSoundID = 422;
 			Hue = 0x66A;

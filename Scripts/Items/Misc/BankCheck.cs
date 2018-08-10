@@ -62,7 +62,7 @@ namespace Server.Items
 			m_Worth = worth;
 		}
 
-		public override bool DisplayLootType{ get{ return Core.AOS; } }
+		public override bool DisplayLootType => Core.AOS;
 
 		public override int LabelNumber{ get{ return 1041361; } } // A bank check
 

@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a quagmire corpse" )]
 	public class Quagmire : BaseCreature
 	{
+		public override string DefaultName => "a quagmire";
+
 		[Constructible]
 		public Quagmire() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
 		{
-			Name = "a quagmire";
 			Body = 789;
 			BaseSoundID = 352;
 
@@ -50,8 +51,8 @@ namespace Server.Mobiles
 			return 353;
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => Poison.Lethal;
 		public override double HitPoisonChance{ get{ return 0.1; } }
 
 		public Quagmire( Serial serial ) : base( serial )

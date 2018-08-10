@@ -24,7 +24,7 @@ namespace Server.Items
 			AddComponent( new ControlPanel( sideLength ), 1, 0, -2 );
 		}
 
-		public override bool ShareHue{ get{ return false; } }
+		public override bool ShareHue => false;
 
 		private void AddGeneratorComponent( int itemID, int x, int y, int z )
 		{

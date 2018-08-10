@@ -22,7 +22,7 @@ namespace Server.Items
 				if ( map == Map.Trammel || map == Map.Felucca )
 				{
 					from.MoveToWorld( new Point3D( 5922, 2024, 0 ), map );
-					PublicOverheadMessage( MessageType.Regular, 0x3B2, true, String.Format( "* {0} dives into the hole and disappears!*", from.Name ) ); 
+					PublicOverheadMessage( MessageType.Regular, 0x3B2, true, String.Format( "* {0} dives into the hole and disappears!*", from.Name ) );
 				}
 			}
 			else
@@ -51,8 +51,8 @@ namespace Server.Items
 
 	public class SolenAntHole : BaseAddon
 	{
-		public override bool ShareHue { get { return false; } }
-		public override bool HandlesOnMovement { get { return true; } }
+		public override bool ShareHue => false;
+		public override bool HandlesOnMovement => true;
 
 		private List<Mobile> m_Spawned;
 
@@ -77,7 +77,7 @@ namespace Server.Items
 		{
 			if ( !m.Player || !m.Alive || m.Hidden || !SpawnKilled() )
 				return;
-				
+
 			if ( Utility.InRange( Location, m.Location, 3 ) && !Utility.InRange( Location, oldLocation, 3 ) )
 			{
 				int count = 1 + Utility.Random( 4 );

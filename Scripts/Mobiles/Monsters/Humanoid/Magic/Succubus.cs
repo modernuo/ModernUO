@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a succubus corpse" )]
 	public class Succubus : BaseCreature
 	{
+		public override string DefaultName => "a succubus";
+
 		[Constructible]
 		public Succubus () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a succubus";
 			Body = 149;
 			BaseSoundID = 0x4B0;
 

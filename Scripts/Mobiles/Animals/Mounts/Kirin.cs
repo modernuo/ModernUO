@@ -8,10 +8,10 @@ namespace Server.Mobiles
 	[CorpseName( "a ki-rin corpse" )]
 	public class Kirin : BaseMount
 	{
-		public override bool AllowFemaleRider{ get{ return false; } }
-		public override bool AllowFemaleTamer{ get{ return false; } }
+		public override bool AllowFemaleRider => false;
+		public override bool AllowFemaleTamer => false;
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override TimeSpan MountAbilityDelay { get { return TimeSpan.FromHours( 1.0 ); } }
 

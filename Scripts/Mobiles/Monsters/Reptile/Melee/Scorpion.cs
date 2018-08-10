@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a scorpion corpse" )]
 	public class Scorpion : BaseCreature
 	{
+		public override string DefaultName => "a scorpion";
+
 		[Constructible]
 		public Scorpion() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a scorpion";
 			Body = 48;
 			BaseSoundID = 397;
 
@@ -58,8 +59,8 @@ namespace Server.Mobiles
 		public override int Meat{ get{ return 1; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public override PackInstinct PackInstinct{ get{ return PackInstinct.Arachnid; } }
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
-		public override Poison HitPoison{ get{ return (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly); } }
+		public override Poison PoisonImmune => Poison.Greater;
+		public override Poison HitPoison => (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly);
 
 		public Scorpion( Serial serial ) : base( serial )
 		{

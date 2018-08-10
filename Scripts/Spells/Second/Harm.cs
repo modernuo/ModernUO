@@ -25,7 +25,7 @@ namespace Server.Spells.Second
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public override bool DelayedDamage{ get{ return false; } }
+		public override bool DelayedDamage => false;
 
 
 		public override double GetSlayerDamageScalar( Mobile target )
@@ -47,7 +47,7 @@ namespace Server.Spells.Second
 				SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );
 
 				double damage;
-				
+
 				if ( Core.AOS )
 				{
 					damage = GetNewAosDamage( 17, 1, 5, m );

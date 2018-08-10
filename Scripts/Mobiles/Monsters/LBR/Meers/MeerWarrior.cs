@@ -10,10 +10,11 @@ namespace Server.Mobiles
 	[CorpseName( "a meer corpse" )]
 	public class MeerWarrior : BaseCreature
 	{
+		public override string DefaultName => "a meer warrior";
+
 		[Constructible]
 		public MeerWarrior() : base( AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a meer warrior";
 			Body = 771;
 
 			SetStr( 86, 100 );
@@ -47,10 +48,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool BardImmune => !Core.AOS;
+		public override bool CanRummageCorpses => true;
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{

@@ -11,27 +11,28 @@ namespace Server.Mobiles
 	[CorpseName( "the remains of Meraktus" )]
 	public class Meraktus : BaseChampion
 	{
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
+		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-		public override Type[] UniqueList{ get{ return new Type[] { typeof( Subdue ) }; } }
-		public override Type[] SharedList{ get{ return new Type[] { }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( ArtifactLargeVase ),
-										typeof( ArtifactVase ),
-										typeof( MinotaurStatueDeed ) }; } }
+		public override Type[] UniqueList => new [] { typeof( Subdue ) };
+		public override Type[] SharedList => new Type[] { };
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { 	
-			MonsterStatuetteType.Minotaur }; } }
-
-		public override WeaponAbility GetWeaponAbility()
+		public override Type[] DecorativeList => new Type[]
 		{
-			return WeaponAbility.Dismount;
-		}
+			typeof(ArtifactLargeVase),
+			typeof(ArtifactVase),
+			typeof(MinotaurStatueDeed),
+		};
+
+		public override MonsterStatuetteType[] StatueTypes => new [] { MonsterStatuetteType.Minotaur };
+
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+
+		public override string DefaultName => "Meraktus";
 
 		[Constructible]
 		public Meraktus()
 			: base(AIType.AI_Melee)
 		{
-			Name = "Meraktus";
 			Title = "the Tormented";
 			Body = 263;
 			BaseSoundID = 680;
@@ -99,7 +100,7 @@ namespace Server.Mobiles
 
 		public override void OnDeath( Container c )
 		{
-			base.OnDeath( c );		
+			base.OnDeath( c );
 
 			if ( Core.ML ) {
 				c.DropItem( new MalletAndChisel() );
@@ -154,11 +155,11 @@ namespace Server.Mobiles
 		public override int Meat { get { return 2; } }
 		public override int Hides { get { return 10; } }
 		public override HideType HideType { get { return HideType.Regular; } }
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 		public override int TreasureMapLevel{ get{ return 3; } }
-		public override bool BardImmune{ get{ return true; } }
-		public override bool Unprovokable{ get{ return true; } }
-		public override bool Uncalmable { get { return true; } }
+		public override bool BardImmune => true;
+		public override bool Unprovokable => true;
+		public override bool Uncalmable => true;
 
 		public override void OnGaveMeleeAttack(Mobile defender)
 		{

@@ -16,14 +16,15 @@ namespace Server.Mobiles
 		}
 
 		public override Mobile ConstantFocus{ get{ return m_Target; } }
-		public override bool NoHouseRestrictions{ get{ return true; } }
+		public override bool NoHouseRestrictions => true;
 
 		public override double DispelDifficulty{ get{ return 80.0; } }
 		public override double DispelFocus{ get{ return 20.0; } }
 
+		public override string DefaultName => "a revenant";
+
 		public Revenant( Mobile caster, Mobile target, TimeSpan duration ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.18, 0.36 )
 		{
-			Name = "a revenant";
 			Body = 400;
 			Hue = 1;
 			// TODO: Sound values?
@@ -78,11 +79,11 @@ namespace Server.Mobiles
 			AddItem( weapon );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override bool BardImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override bool BardImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override void OnThink()
 		{

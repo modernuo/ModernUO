@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a headless corpse" )]
 	public class HeadlessOne : BaseCreature
 	{
+		public override string DefaultName => "a headless one";
+
 		[Constructible]
 		public HeadlessOne() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a headless one";
 			Body = 31;
 			Hue = Utility.RandomSkinHue() & 0x7FFF;
 			BaseSoundID = 0x39D;
@@ -44,7 +45,7 @@ namespace Server.Mobiles
 			// TODO: body parts
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int Meat{ get{ return 1; } }
 
 		public HeadlessOne( Serial serial ) : base( serial )

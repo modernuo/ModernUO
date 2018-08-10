@@ -19,8 +19,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.MagicResist, 80.0, 100.0 );
 		}
 
-		public override bool CanTeach{ get{ return true; } }
-		public override bool ClickTitle{ get{ return false; } } // Do not display 'the mage' when single-clicking
+		public override bool CanTeach => true;
+		public override bool ClickTitle => false; // Do not display 'the mage' when single-clicking
 
 		private static int GetRandomHue()
 		{

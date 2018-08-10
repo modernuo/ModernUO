@@ -5,9 +5,10 @@ namespace Server.Mobiles
 {
 	public class LysanderGathenwale : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool DeleteCorpseOnDeath{ get{ return true; } }
+		public override bool ClickTitle => false;
+		public override bool ShowFameTitle => false;
+		public override bool DeleteCorpseOnDeath => true;
+		public override string DefaultName => "Lysander Gatherwale";
 
 		[Constructible]
 		public LysanderGathenwale() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -16,7 +17,6 @@ namespace Server.Mobiles
 
 			Hue = 0x8838;
 			Body = 0x190;
-			Name = "Lysander Gathenwale";
 
 			AddItem( new Boots( 0x599 ) );
 			AddItem( new Cloak( 0x96F ) );
@@ -109,7 +109,7 @@ namespace Server.Mobiles
 			return true;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public LysanderGathenwale( Serial serial ) : base( serial )
 		{

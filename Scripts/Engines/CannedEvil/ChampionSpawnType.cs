@@ -78,7 +78,7 @@ namespace Server.Engines.CannedEvil
 				} ),
 				new ChampionSpawnInfo( "Unholy Terror", typeof( Neira ), new string[]{ "Scourge", "Punisher", "Nemesis" }, new Type[][]	// Unholy Terror
 				{																											// Unholy Terror
-					(Core.AOS ? 
+					(Core.AOS ?
 					new Type[]{ typeof( Bogle ), typeof( Ghoul ), typeof( Shade ), typeof( Spectre ), typeof( Wraith ) }	// Level 1 (Pre-AoS)
 					: new Type[]{ typeof( Ghoul ), typeof( Shade ), typeof( Spectre ), typeof( Wraith ) } ),				// Level 1
 
@@ -98,7 +98,7 @@ namespace Server.Engines.CannedEvil
 					new Type[]{ typeof( Pixie ), typeof( ShadowWisp ) },
 					new Type[]{ typeof( Centaur ), typeof( MLDryad ) },
 					new Type[]{ typeof( Satyr ), typeof( CuSidhe ) },
-					new Type[]{ typeof( FerelTreefellow ), typeof( RagingGrizzlyBear ) }
+					new Type[]{ typeof( FeralTreefellow ), typeof( RagingGrizzlyBear ) }
 				} ),
 				new ChampionSpawnInfo( "The Corrupt", typeof( Ilhenir ), new string[]{ "Cleanser", "Expunger", "Depurator" } , new Type[][]
 				{																											// Unholy Terror

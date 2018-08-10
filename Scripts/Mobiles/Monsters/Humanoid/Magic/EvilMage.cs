@@ -3,14 +3,14 @@ using Server;
 using Server.Misc;
 using Server.Items;
 
-namespace Server.Mobiles 
-{ 
-	[CorpseName( "an evil mage corpse" )] 
-	public class EvilMage : BaseCreature 
-	{ 
-		[Constructible] 
-		public EvilMage() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 ) 
-		{ 
+namespace Server.Mobiles
+{
+	[CorpseName( "an evil mage corpse" )]
+	public class EvilMage : BaseCreature
+	{
+		[Constructible]
+		public EvilMage() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		{
 			Name = NameList.RandomName( "evil mage" );
 			Title = "the evil mage";
 			Body = 124;
@@ -51,8 +51,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
+		public override bool AlwaysMurderer => true;
 		public override int Meat{ get{ return 1; } }
 		public override int TreasureMapLevel{ get{ return Core.AOS ? 1 : 0; } }
 

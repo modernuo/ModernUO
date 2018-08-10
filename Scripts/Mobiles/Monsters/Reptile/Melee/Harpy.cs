@@ -8,10 +8,10 @@ namespace Server.Mobiles
 	[CorpseName( "a harpy corpse" )]
 	public class Harpy : BaseCreature
 	{
+		public override string DefaultName => "a harpy";
 		[Constructible]
 		public Harpy() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a harpy";
 			Body = 30;
 			BaseSoundID = 402;
 
@@ -71,11 +71,11 @@ namespace Server.Mobiles
 			return 918;
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int Meat{ get{ return 4; } }
 		public override MeatType MeatType{ get{ return MeatType.Bird; } }
 		public override int Feathers{ get{ return 50; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public Harpy( Serial serial ) : base( serial )
 		{

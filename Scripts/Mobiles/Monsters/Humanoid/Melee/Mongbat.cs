@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a mongbat corpse" )]
 	public class Mongbat : BaseCreature
 	{
+		public override string DefaultName => "a mongbat";
+
 		[Constructible]
 		public Mongbat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a mongbat";
 			Body = 39;
 			BaseSoundID = 422;
 
@@ -42,7 +43,7 @@ namespace Server.Mobiles
 			MinTameSkill = -18.9;
 		}
 
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public override void GenerateLoot()
 		{

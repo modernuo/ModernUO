@@ -8,12 +8,13 @@ namespace Server.Mobiles
 	[CorpseName( "a Lady Marai corpse" )]
 	public class LadyMarai : SkeletalKnight
 	{
+		public override string DefaultName => "Lady Marai";
+
 		[Constructible]
 		public LadyMarai()
 		{
 			IsParagon = true;
 
-			Name = "Lady Marai";
 			Hue = 0x21;
 
 			SetStr( 221, 304 );
@@ -47,10 +48,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.CrushingBlow;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
 		/*
 		// TODO: Uncomment once added
@@ -66,7 +64,7 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
 
 		public LadyMarai( Serial serial )
 			: base( serial )

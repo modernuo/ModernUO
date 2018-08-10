@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a wailing banshee corpse" )]
 	public class WailingBanshee : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.MortalStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
+
+		public override string DefaultName => "a wailing banshee";
 
 		[Constructible]
 		public WailingBanshee() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a wailing banshee";
 			Body = 310;
 			BaseSoundID = 0x482;
 
@@ -52,7 +50,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public WailingBanshee( Serial serial ) : base( serial )
 		{

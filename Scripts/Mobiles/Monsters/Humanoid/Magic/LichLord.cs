@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a lich's corpse" )]
 	public class LichLord : BaseCreature
 	{
+		public override string DefaultName => "a lich lord";
+
 		[Constructible]
 		public LichLord() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a lich lord";
 			Body = 79;
 			BaseSoundID = 412;
 
@@ -60,9 +61,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool CanRummageCorpses => true;
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return 4; } }
 
 		public LichLord( Serial serial ) : base( serial )

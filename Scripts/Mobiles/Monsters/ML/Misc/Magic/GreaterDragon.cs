@@ -7,12 +7,12 @@ namespace Server.Mobiles
 	[CorpseName( "a dragon corpse" )]
 	public class GreaterDragon : BaseCreature
 	{
-		public override bool StatLossAfterTame { get { return true; } }
+		public override bool StatLossAfterTame => true;
+		public override string DefaultName => "a greater dragon";
 
 		[Constructible]
 		public GreaterDragon () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.3, 0.5 )
 		{
-			Name = "a greater dragon";
 			Body = Utility.RandomList( 12, 59 );
 			BaseSoundID = 362;
 
@@ -58,9 +58,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 8 );
 		}
 
-		public override bool ReacquireOnMovement{ get{ return !Controlled; } }
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
-		public override bool AutoDispel{ get{ return !Controlled; } }
+		public override bool ReacquireOnMovement => !Controlled;
+		public override bool HasBreath => true; // fire breath enabled
+		public override bool AutoDispel => !Controlled;
 		public override int TreasureMapLevel{ get{ return 5; } }
 		public override int Meat{ get{ return 19; } }
 		public override int Hides{ get{ return 30; } }
@@ -68,13 +68,10 @@ namespace Server.Mobiles
 		public override int Scales{ get{ return 7; } }
 		public override ScaleType ScaleType{ get{ return ( Body == 12 ? ScaleType.Yellow : ScaleType.Red ); } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
-		public override bool CanAngerOnTame { get { return true; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanAngerOnTame => true;
+		public override bool CanFly => true;
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
 		public GreaterDragon( Serial serial ) : base( serial )
 		{

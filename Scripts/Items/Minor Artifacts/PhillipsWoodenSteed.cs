@@ -11,7 +11,7 @@ namespace Server.Items
 			LootType = LootType.Regular;
 		}
 
-		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		public PhillipsWoodenSteed( Serial serial ) : base( serial )
 		{
@@ -23,7 +23,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

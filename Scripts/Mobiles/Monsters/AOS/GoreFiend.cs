@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gore fiend corpse" )]
 	public class GoreFiend : BaseCreature
 	{
+		public override string DefaultName => "a gore fiend";
+
 		[Constructible]
 		public GoreFiend() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a gore fiend";
 			Body = 305;
 			BaseSoundID = 224;
 
@@ -51,7 +52,7 @@ namespace Server.Mobiles
 			return 1218;
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public GoreFiend( Serial serial ) : base( serial )
 		{

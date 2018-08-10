@@ -8,11 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a lady of the snow corpse" )]
 	public class LadyOfTheSnow : BaseCreature
 	{
+		public override string DefaultName => "a lady of the snow";
+
 		[Constructible]
 		public LadyOfTheSnow()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a lady of the snow";
 			Body = 252;
 			BaseSoundID = 0x482;
 
@@ -62,8 +63,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override bool BleedImmune { get { return true; } }
-		public override bool CanRummageCorpses { get { return true; } }
+		public override bool BleedImmune => true;
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel { get { return 4; } }
 
 		// TODO: Snowball

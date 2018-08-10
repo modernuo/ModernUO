@@ -3,13 +3,15 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a sewer rat corpse" )]
-	public class Sewerrat : BaseCreature
+	[CorpseName( "a rat corpse" )]
+	[TypeAlias("Server.Mobiles.Sewerrat")]
+	public class SewerRat : BaseCreature
 	{
+		public override string DefaultName => "a sewer rat";
+
 		[Constructible]
-		public Sewerrat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		public SewerRat() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a sewer rat";
 			Body = 238;
 			BaseSoundID = 0xCC;
 
@@ -47,10 +49,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Poor );
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Eggs | FoodType.FruitsAndVegies; } }
+		public override int Meat => 1;
+		public override FoodType FavoriteFood => FoodType.Meat | FoodType.Eggs | FoodType.FruitsAndVegies;
 
-		public Sewerrat(Serial serial) : base(serial)
+		public SewerRat(Serial serial) : base(serial)
 		{
 		}
 

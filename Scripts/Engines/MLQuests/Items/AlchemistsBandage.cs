@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1075452; } } // Alchemist's Bandage
 
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 
 		public override void AddNameProperties( ObjectPropertyList list )
 		{

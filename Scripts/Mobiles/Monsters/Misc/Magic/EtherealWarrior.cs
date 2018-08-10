@@ -3,16 +3,16 @@ using Server;
 using Server.Items;
 using Server.Gumps;
 
-namespace Server.Mobiles 
-{ 
-	[CorpseName( "an ethereal warrior corpse" )] 
-	public class EtherealWarrior : BaseCreature 
-	{ 
-		public override bool InitialInnocent{ get{ return true; } }
+namespace Server.Mobiles
+{
+	[CorpseName( "an ethereal warrior corpse" )]
+	public class EtherealWarrior : BaseCreature
+	{
+		public override bool InitialInnocent => true;
 
-		[Constructible] 
-		public EtherealWarrior() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 ) 
-		{ 
+		[Constructible]
+		public EtherealWarrior() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
+		{
 			Name = NameList.RandomName( "ethereal warrior" );
 			Body = 123;
 
@@ -129,20 +129,20 @@ namespace Server.Mobiles
 			attacker.Mana -= Utility.Random( 10, 10 );
 		}
 
-		public EtherealWarrior( Serial serial ) : base( serial ) 
-		{ 
-		} 
+		public EtherealWarrior( Serial serial ) : base( serial )
+		{
+		}
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
-			writer.Write( (int) 0 ); 
-		} 
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+			writer.Write( (int) 0 );
+		}
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
-			int version = reader.ReadInt(); 
-		} 
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+			int version = reader.ReadInt();
+		}
 	}
 }

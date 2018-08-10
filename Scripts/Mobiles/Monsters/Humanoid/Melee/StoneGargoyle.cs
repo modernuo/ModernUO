@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gargoyle corpse" )]
 	public class StoneGargoyle : BaseCreature
 	{
+		public override string DefaultName => "a stone gargoyle";
+
 		[Constructible]
 		public StoneGargoyle() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a stone gargoyle";
 			Body = 67;
 			BaseSoundID = 0x174;
 

@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class Emino : BaseQuester
 	{
+		public override string DefaultName => "Daimyo Emino";
+
 		[Constructible]
 		public Emino() : base( "the Notorious" )
 		{
@@ -21,7 +23,6 @@ namespace Server.Engines.Quests.Ninja
 
 			Female = false;
 			Body = 0x190;
-			Name = "Daimyo Emino";
 		}
 
 		public override void InitOutfit()

@@ -10,10 +10,11 @@ namespace Server.Mobiles
 	[CorpseName( "a meer's corpse" )]
 	public class MeerEternal : BaseCreature
 	{
+		public override string DefaultName => "a meer eternal";
+
 		[Constructible]
 		public MeerEternal() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a meer eternal";
 			Body = 772;
 
 			SetStr( 416, 505 );
@@ -54,13 +55,13 @@ namespace Server.Mobiles
 			AddLoot( LootPack.HighScrolls, 2 );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool AutoDispel => true;
+		public override bool BardImmune => !Core.AOS;
+		public override bool CanRummageCorpses => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int TreasureMapLevel{ get{ return Core.AOS ? 5 : 4; } }
 
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		public override int GetHurtSound()
 		{

@@ -75,7 +75,7 @@ namespace Server.Items
 			m_Poison = poison;
 		}
 
-		public override bool PassivelyTriggered{ get{ return false; } }
+		public override bool PassivelyTriggered => false;
 		public override TimeSpan PassiveTriggerDelay{ get{ return TimeSpan.Zero; } }
 		public override int PassiveTriggerRange{ get{ return 0; } }
 		public override TimeSpan ResetDelay{ get{ return TimeSpan.FromSeconds( 0.0 ); } }

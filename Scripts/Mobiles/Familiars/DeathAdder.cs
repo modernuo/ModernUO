@@ -6,9 +6,10 @@ namespace Server.Mobiles
 	[CorpseName( "a death adder corpse" )]
 	public class DeathAdder : BaseFamiliar
 	{
+		public override string DefaultName => "a death adder";
+
 		public DeathAdder()
 		{
-			Name = "a death adder";
 			Body = 0x15;
 			Hue = 0x455;
 			BaseSoundID = 219;
@@ -35,7 +36,7 @@ namespace Server.Mobiles
 			ControlSlots = 1;
 		}
 
-		public override Poison HitPoison{ get{ return (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly); } }
+		public override Poison HitPoison => (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly);
 
 		public DeathAdder( Serial serial ) : base( serial )
 		{

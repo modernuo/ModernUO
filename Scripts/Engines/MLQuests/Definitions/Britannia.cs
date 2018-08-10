@@ -42,7 +42,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Aemaeth2 : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public Aemaeth2()
 		{
@@ -110,13 +110,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Aurelia : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Aurelia";
 
 		[Constructible]
 		public Aurelia()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Aurelia";
 			Title = "the Architect's Daughter";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -160,13 +160,13 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Szandor" )]
 	public class SkeletonOfSzandor : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Skeleton of Szandor";
 
 		[Constructible]
 		public SkeletonOfSzandor()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Skeleton of Szandor";
 			Title = "the Late Architect";
 			Hue = 0x83F2; // TODO: Random human hue? Why???
 			Body = 0x32;

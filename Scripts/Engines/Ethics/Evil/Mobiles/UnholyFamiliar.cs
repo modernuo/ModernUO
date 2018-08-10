@@ -8,14 +8,14 @@ namespace Server.Mobiles
 	[CorpseName( "an evil corpse" )]
 	public class UnholyFamiliar : BaseCreature
 	{
-		public override bool IsDispellable { get { return false; } }
-		public override bool IsBondable { get { return false; } }
+		public override bool IsDispellable => false;
+		public override bool IsBondable => false;
+		public override string DefaultName => "a dark wolf";
 
 		[Constructible]
 		public UnholyFamiliar()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a dark wolf";
 			Body = 99;
 			BaseSoundID = 0xE5;
 

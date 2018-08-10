@@ -29,13 +29,13 @@ namespace Server.Mobiles
 				NameHue = 0x35;
 		}
 
-		public override bool IsInvulnerable{ get{ return true; } }
+		public override bool IsInvulnerable => true;
 
 		public override void InitSBInfo()
 		{
 		}
 
-		public override bool HealsYoungPlayers{ get{ return false; } }
+		public override bool HealsYoungPlayers => false;
 
 		public override void OfferResurrection( Mobile m )
 		{

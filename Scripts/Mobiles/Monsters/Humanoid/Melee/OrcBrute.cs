@@ -9,12 +9,12 @@ namespace Server.Mobiles
 	[CorpseName( "an orcish corpse" )]
 	public class OrcBrute : BaseCreature
 	{
+		public override string DefaultName => "an orc brute";
+
 		[Constructible]
 		public OrcBrute() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 189;
-
-			Name = "an orc brute";
 			BaseSoundID = 0x45A;
 
 			SetStr( 767, 945 );
@@ -61,8 +61,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BardImmune => !Core.AOS;
+		public override Poison PoisonImmune => Poison.Lethal;
 		public override int Meat{ get{ return 2; } }
 
 		public override OppositionGroup OppositionGroup
@@ -93,8 +93,8 @@ namespace Server.Mobiles
 			}
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override bool AutoDispel{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
+		public override bool AutoDispel => true;
 
 		public override void OnDamagedBySpell( Mobile caster )
 		{

@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.Half; } }
 
-		public override bool AllowMaleWearer{ get{ return false; } }
+		public override bool AllowMaleWearer => false;
 
 		[Constructible]
 		public HideFemaleChest() : base( 0x2B79 )
@@ -45,7 +45,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

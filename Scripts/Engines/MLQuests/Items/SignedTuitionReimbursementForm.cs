@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber{ get{ return 1074614; } } // Signed Tuition Reimbursement Form
 
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 
 		public override void AddNameProperties( ObjectPropertyList list )
 		{

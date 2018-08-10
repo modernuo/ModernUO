@@ -13,10 +13,10 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
 
-		public override bool IsActiveBuyer{ get{ return false; } }
-		public override bool IsActiveSeller{ get{ return true; } }
+		public override bool IsActiveBuyer => false;
+		public override bool IsActiveSeller => true;
 
         public override bool OnBuyItems( Mobile buyer, List<BuyItemResponse> list )
 		{

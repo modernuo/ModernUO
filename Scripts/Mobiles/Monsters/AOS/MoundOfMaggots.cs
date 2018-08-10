@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a maggoty corpse" )] // TODO: Corpse name?
 	public class MoundOfMaggots : BaseCreature
 	{
+		public override string DefaultName => "a mound of maggots";
+
 		[Constructible]
 		public MoundOfMaggots() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a mound of maggots";
 			Body = 319;
 			BaseSoundID = 898;
 
@@ -43,7 +44,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int TreasureMapLevel{ get{ return 1; } }
 

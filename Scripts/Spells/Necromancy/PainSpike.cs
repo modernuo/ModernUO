@@ -30,7 +30,7 @@ namespace Server.Spells.Necromancy
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public override bool DelayedDamage{ get{ return false; } }
+		public override bool DelayedDamage => false;
 
 		public void Target( Mobile m )
 		{
@@ -41,7 +41,7 @@ namespace Server.Spells.Necromancy
 				//SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m ); //Irrelevent asfter AoS
 
 				/* Temporarily causes intense physical pain to the target, dealing direct damage.
-				 * After 10 seconds the spell wears off, and if the target is still alive, 
+				 * After 10 seconds the spell wears off, and if the target is still alive,
 				 * some of the Hit Points lost through Pain Spike are restored.
 				 */
 

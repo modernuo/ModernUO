@@ -7,6 +7,8 @@ namespace Server.Engines.Quests.Necro
 {
 	public class Maabus : BaseQuester
 	{
+		public override string DefaultName => "Maabus";
+
 		public Maabus()
 		{
 		}
@@ -14,7 +16,6 @@ namespace Server.Engines.Quests.Necro
 		public override void InitBody()
 		{
 			Body = 0x94;
-			Name = "Maabus";
 		}
 
 		public Maabus( Serial serial ) : base( serial )

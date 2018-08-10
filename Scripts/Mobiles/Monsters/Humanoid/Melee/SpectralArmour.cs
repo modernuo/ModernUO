@@ -1,19 +1,20 @@
-using System; 
-using Server.Items; 
+using System;
+using Server.Items;
 
-namespace Server.Mobiles 
-{ 
-    
-	public class SpectralArmour : BaseCreature 
-	{ 
-		public override bool DeleteCorpseOnDeath{ get{ return true; } }
+namespace Server.Mobiles
+{
 
-		[Constructible] 
-		public SpectralArmour() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) 
-		{ 
-			Body = 637; 
-			Hue = 0x8026; 
-			Name = "spectral armour"; 
+	public class SpectralArmour : BaseCreature
+	{
+		public override bool DeleteCorpseOnDeath => true;
+
+		public override string DefaultName => "a spectral armour";
+
+		[Constructible]
+		public SpectralArmour() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
+		{
+			Body = 637;
+			Hue = 0x8026;
 
 			Buckler buckler = new Buckler();
 			ChainCoif coif = new ChainCoif();
@@ -27,8 +28,8 @@ namespace Server.Mobiles
 			AddItem( coif );
 			AddItem( gloves );
 
-			SetStr( 101, 110 ); 
-			SetDex( 101, 110 ); 
+			SetStr( 101, 110 );
+			SetDex( 101, 110 );
 			SetInt( 101, 110 );
 
 			SetHits( 178, 201 );
@@ -45,13 +46,13 @@ namespace Server.Mobiles
 			SetResistance( ResistanceType.Poison, 20, 30 );
 			SetResistance( ResistanceType.Energy, 20, 30 );
 
-			SetSkill( SkillName.Wrestling, 75.1, 100.0 ); 
-			SetSkill( SkillName.Tactics, 90.1, 100.0 ); 
-			SetSkill( SkillName.MagicResist, 90.1, 100 ); 
+			SetSkill( SkillName.Wrestling, 75.1, 100.0 );
+			SetSkill( SkillName.Tactics, 90.1, 100.0 );
+			SetSkill( SkillName.MagicResist, 90.1, 100 );
 
-			VirtualArmor = 40; 
-			Fame = 7000; 
-			Karma = -7000;             
+			VirtualArmor = 40;
+			Fame = 7000;
+			Karma = -7000;
 		}
 
 		public override int GetIdleSound()
@@ -76,22 +77,22 @@ namespace Server.Mobiles
 			return true;
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 
-		public SpectralArmour( Serial serial ) : base( serial ) 
-		{ 
-		} 
+		public SpectralArmour( Serial serial ) : base( serial )
+		{
+		}
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
-			writer.Write( (int) 0 ); 
-		} 
+		public override void Serialize( GenericWriter writer )
+		{
+			base.Serialize( writer );
+			writer.Write( (int) 0 );
+		}
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
-			int version = reader.ReadInt(); 
-		} 
-	} 
+		public override void Deserialize( GenericReader reader )
+		{
+			base.Deserialize( reader );
+			int version = reader.ReadInt();
+		}
+	}
 }

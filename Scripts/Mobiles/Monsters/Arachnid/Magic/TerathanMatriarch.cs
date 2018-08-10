@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a terathan matriarch corpse" )]
 	public class TerathanMatriarch : BaseCreature
 	{
+		public override string DefaultName => "a terathan matriarch";
+
 		[Constructible]
 		public TerathanMatriarch() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a terathan matriarch";
 			Body = 72;
 			BaseSoundID = 599;
 

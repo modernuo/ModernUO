@@ -63,7 +63,7 @@ namespace Server.Items
 				#endregion
 
 				#region Random Critters
-				typeof( Sewerrat ),			typeof( GiantRat ), 			typeof( DireWolf ),				typeof( TimberWolf ),
+				typeof( SewerRat ),			typeof( GiantRat ), 			typeof( DireWolf ),				typeof( TimberWolf ),
 				typeof( Cougar ), 			typeof( Alligator )
 				#endregion
 			};
@@ -89,7 +89,7 @@ namespace Server.Items
 		[Constructible]
 		public DeceitBrazier() : base( 0xE31 )
 		{
-			Movable = false; 
+			Movable = false;
 			Light = LightType.Circle225;
 			m_NextSpawn = DateTime.UtcNow;
 			m_NextSpawnDelay = TimeSpan.FromMinutes( 15.0 );
@@ -130,7 +130,7 @@ namespace Server.Items
 			PublicOverheadMessage( MessageType.Regular, 0x3B2, 500761 );// Heed this warning well, and use this brazier at your own peril.
 		}
 
-		public override bool HandlesOnMovement { get { return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

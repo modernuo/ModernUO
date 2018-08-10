@@ -34,7 +34,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool DisplayLootType{ get{ return false; } }
+		public override bool DisplayLootType => false;
 
 		public override bool VerifyMove( Mobile from )
 		{
@@ -69,12 +69,12 @@ namespace Server.Items
 
 	public class GenericBeard : Beard
 	{
-		
+
 		private GenericBeard( int itemID ) : this( itemID, 0 )
 		{
 		}
 
-		
+
 		private GenericBeard( int itemID, int hue ) : base( itemID, hue )
 		{
 		}

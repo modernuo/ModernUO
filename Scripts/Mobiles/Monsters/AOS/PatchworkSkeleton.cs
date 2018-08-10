@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a patchwork skeletal corpse" )]
 	public class PatchworkSkeleton : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+
+		public override string DefaultName => "a patchwork skeleton";
 
 		[Constructible]
 		public PatchworkSkeleton() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a patchwork skeleton";
 			Body = 309;
 			BaseSoundID = 0x48D;
 
@@ -51,8 +49,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int TreasureMapLevel{ get{ return 1; } }
 

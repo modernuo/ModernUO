@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "an acid elemental corpse" )]
 	public class AcidElemental : BaseCreature
 	{
+		public override string DefaultName => "an acid elemental";
+
 		[Constructible]
 		public AcidElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an acid elemental";
 			Body = 0x9E;
 			BaseSoundID = 278;
 
@@ -52,8 +53,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
+		public override bool BleedImmune => true;
+		public override Poison HitPoison => Poison.Lethal;
 		public override double HitPoisonChance{ get{ return 0.6; } }
 
 		public override int TreasureMapLevel{ get{ return Core.AOS ? 2 : 3; } }

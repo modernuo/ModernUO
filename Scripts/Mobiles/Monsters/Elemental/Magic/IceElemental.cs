@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "an ice elemental corpse" )]
 	public class IceElemental : BaseCreature
 	{
+		public override string DefaultName => "an ice elemental";
+
 		[Constructible]
 		public IceElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an ice elemental";
 			Body = 161;
 			BaseSoundID = 268;
 
@@ -51,7 +52,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average, 2 );
 			AddLoot( LootPack.Gems, 2 );
 		}
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 
 		public IceElemental( Serial serial ) : base( serial )
 		{

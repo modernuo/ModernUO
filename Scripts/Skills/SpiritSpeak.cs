@@ -30,7 +30,7 @@ namespace Server.SkillHandlers
 			m.RevealingAction();
 
 			if ( m.CheckSkill( SkillName.SpiritSpeak, 0, 100 ) )
-			{	
+			{
 				if ( !m.CanHearGhosts )
 				{
 					Timer t = new SpiritSpeakTimer( m );
@@ -76,13 +76,13 @@ namespace Server.SkillHandlers
 		{
 			private static SpellInfo m_Info = new SpellInfo( "Spirit Speak", "", 269 );
 
-			public override bool BlockedByHorrificBeast{ get{ return false; } }
+			public override bool BlockedByHorrificBeast => false;
 
 			public SpiritSpeakSpell( Mobile caster ) : base( caster, null, m_Info )
 			{
 			}
 
-			public override bool ClearHandsOnCast{ get{ return false; } }
+			public override bool ClearHandsOnCast => false;
 
 			public override double CastDelayFastScalar { get { return 0; } }
 			public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
@@ -108,7 +108,7 @@ namespace Server.SkillHandlers
 				return true;
 			}
 
-			public override bool CheckNextSpellTime{ get{ return false; } }
+			public override bool CheckNextSpellTime => false;
 
 			public override void OnDisturb( DisturbType type, bool message )
 			{

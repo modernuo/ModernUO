@@ -9,14 +9,15 @@ namespace Server.Mobiles
 {
 	public class KhaldunZealot : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
-		public override bool ShowFameTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
+		public override bool ShowFameTitle => false;
+
+		public override string DefaultName => "Zealot of Khaldun";
 
 		[Constructible]
 		public KhaldunZealot(): base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 0x190;
-			Name = "Zealot of Khaldun";
 			Title = "the Knight";
 			Hue = 0;
 
@@ -100,9 +101,9 @@ namespace Server.Mobiles
 			return 0x19F;
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool Unprovokable{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+		public override bool AlwaysMurderer => true;
+		public override bool Unprovokable => true;
+		public override Poison PoisonImmune => Poison.Deadly;
 
 		public KhaldunZealot( Serial serial ) : base( serial )
 		{

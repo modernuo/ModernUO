@@ -65,7 +65,7 @@ namespace Server.Engines.Quests.Ninja
 		}
 
 		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
-		public override bool IsTutorial{ get{ return true; } }
+		public override bool IsTutorial => true;
 
 		public override int Picture{ get{ return 0x15D5; } }
 

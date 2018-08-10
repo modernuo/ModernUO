@@ -86,13 +86,13 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Kia (Bedlam)" )]
 	public class Kia : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Kia";
 
 		[Constructible]
 		public Kia()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Kia";
 			Title = "the student";
 			Race = Race.Human;
 			BodyValue = 0x191;
@@ -130,9 +130,11 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Emerillo (Bedlam)" )]
 	public class Emerillo : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Emerillo";
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
+
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, 1074222 ); // Could I trouble you for some assistance?
@@ -142,7 +144,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Emerillo()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Emerillo";
 			Title = "the cook";
 			Race = Race.Human;
 			BodyValue = 0x190;
@@ -181,13 +182,13 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Nythalia : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Mythalia";
 
 		[Constructible]
 		public Nythalia()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2 )
 		{
-			Name = "Nythalia";
 			Title = "the student";
 			Race = Race.Human;
 			BodyValue = 0x191;

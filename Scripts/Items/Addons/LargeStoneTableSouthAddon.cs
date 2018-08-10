@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public override BaseAddonDeed Deed{ get{ return new LargeStoneTableSouthDeed(); } }
 
-		public override bool RetainDeedHue{ get{ return true; } }
+		public override bool RetainDeedHue => true;
 
 		[Constructible]
 		public LargeStoneTableSouthAddon() : this( 0 )

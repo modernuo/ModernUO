@@ -31,7 +31,7 @@ namespace Server.Spells.Necromancy
 			Caster.Target = new InternalTarget( this );
 		}
 
-		public override bool DelayedDamage { get { return false; } }
+		public override bool DelayedDamage => false;
 
 		public void Target( Mobile m )
 		{
@@ -50,10 +50,10 @@ namespace Server.Spells.Necromancy
 				Effects.PlaySound( m.Location, m.Map, 0x229 );
 
 				double damage = Utility.RandomMinMax( (Core.ML ? 32 : 36), 40 ) * ((300 + (GetDamageSkill( Caster ) * 9)) / 1000);
-				
+
 				double sdiBonus = (double)AosAttributes.GetValue( Caster, AosAttribute.SpellDamage )/100;
 				double pvmDamage = damage * (1 + sdiBonus);
-				
+
 				if ( Core.ML && sdiBonus > 0.15 )
 					sdiBonus = 0.15;
 				double pvpDamage = damage * (1 + sdiBonus);
@@ -63,7 +63,7 @@ namespace Server.Spells.Necromancy
 				if( map != null )
 				{
 					List<Mobile> targets = new List<Mobile>();
-			
+
 					if ( Caster.CanBeHarmful(m, false ) )
 						targets.Add( m );
 

@@ -89,7 +89,7 @@ namespace Server.Spells.Sixth
 			private Mobile m_Caster;
 			private DateTime m_End;
 
-			public override bool BlocksFit{ get{ return true; } }
+			public override bool BlocksFit => true;
 
 			public InternalItem( Mobile caster, int itemID, Point3D loc, Map map, TimeSpan duration ) : base( itemID )
 			{
@@ -188,7 +188,7 @@ namespace Server.Spells.Sixth
 
 					m.PlaySound( 0x204 );
 					m.FixedEffect( 0x376A, 10, 16 );
-					
+
 					if ( m is BaseCreature )
 						((BaseCreature) m).OnHarmfulSpell( m_Caster );
 				}

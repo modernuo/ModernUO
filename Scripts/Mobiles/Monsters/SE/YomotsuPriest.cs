@@ -8,15 +8,12 @@ namespace Server.Mobiles
 	[CorpseName( "a glowing yomotsu corpse" )]
 	public class YomotsuPriest : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.DoubleStrike;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
+		public override string DefaultName => "a yomotsu priest";
 
 		[Constructible]
 		public YomotsuPriest() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a yomotsu priest";
 			Body = 253;
 			BaseSoundID = 0x452;
 
@@ -80,7 +77,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 4);
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 
 		// TODO: Body Transformation
 
@@ -118,7 +115,7 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 		}
-		
+
 		public override int GetIdleSound()
 		{
 			return 0x42A;

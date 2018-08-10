@@ -7,10 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an impaler corpse" )]
 	public class Impaler : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.BleedAttack;
 
 		public override bool IgnoreYoungProtection { get { return Core.ML; } }
 
@@ -63,12 +60,12 @@ namespace Server.Mobiles
 				DemonKnight.DistributeArtifact( this );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.SE; } }
-		public override bool Unprovokable{ get{ return Core.SE; } }
+		public override bool AutoDispel => true;
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
 		public override bool AreaPeaceImmune { get { return Core.SE; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override Poison HitPoison{ get{ return (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly); } }
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override Poison HitPoison => (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly);
 
 		public override int TreasureMapLevel{ get{ return 1; } }
 

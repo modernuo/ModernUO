@@ -20,7 +20,7 @@ namespace Server.Items
 
 		public override int OldDexBonus{ get{ return -5; } }
 
-		public override bool AllowMaleWearer{ get{ return false; } }
+		public override bool AllowMaleWearer => false;
 
 		public override int ArmorBase{ get{ return 30; } }
 
@@ -35,13 +35,13 @@ namespace Server.Items
 		public FemalePlateChest( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

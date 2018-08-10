@@ -56,10 +56,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.WhirlwindAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.WhirlwindAttack;
 
 		public override void OnDeath( Container c )
 		{
@@ -68,9 +65,9 @@ namespace Server.Mobiles
 			c.DropItem( new ResolvesBridle() );
 		}
 
-		public override bool GivesMLMinorArtifact{ get{ return true; } }
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool HasBreath{ get{ return true; } }
+		public override bool GivesMLMinorArtifact => true;
+		public override bool AlwaysMurderer => true;
+		public override bool HasBreath => true;
 		public override int BreathChaosDamage{ get { return 100; } }
 		public override int BreathFireDamage{ get{ return 0; } }
 

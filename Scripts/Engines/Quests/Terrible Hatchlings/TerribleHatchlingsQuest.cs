@@ -39,7 +39,7 @@ namespace Server.Engines.Quests.Zento
 				 * hatchlings. If you kill 10 of them, you will be rewarded.
 				 * The Deathwatch Beetle Hatchlings live in The Waste -
 				 * the desert close to this city.<BR><BR>
-				 * 
+				 *
 				 * Will you accept this challenge?
 				 */
 				return 1063315;
@@ -47,7 +47,7 @@ namespace Server.Engines.Quests.Zento
 		}
 
 		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
-		public override bool IsTutorial{ get{ return true; } }
+		public override bool IsTutorial => true;
 
 		public override int Picture{ get{ return 0x15CF; } }
 

@@ -48,7 +48,7 @@ namespace Server.Multis
 		public int SignpostGraphic { get { return m_SignpostGraphic; } set { m_SignpostGraphic = value; } }
 		public Mobile Customizer { get { return m_Customizer; } set { m_Customizer = value; } }
 
-		public override bool IsAosRules { get { return true; } }
+		public override bool IsAosRules => true;
 
 		public override bool IsActive { get { return Customizer == null; } }
 

@@ -4,8 +4,8 @@ namespace Server.Items
 {
 	public class RunebookDyeTub : DyeTub, Engines.VeteranRewards.IRewardItem
 	{
-		public override bool AllowDyables{ get{ return false; } }
-		public override bool AllowRunebooks{ get{ return true; } }
+		public override bool AllowDyables => false;
+		public override bool AllowRunebooks => true;
 		public override int TargetMessage{ get{ return 1049774; } } // Target the runebook or runestone to dye
 		public override int FailMessage{ get{ return 1049775; } } // You can only dye runestones or runebooks with this tub.
 		public override int LabelNumber{ get{ return 1049740; } } // Runebook Dye Tub

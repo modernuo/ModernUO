@@ -39,16 +39,16 @@ namespace Server.Engines.Quests.Ambitious
 			get
 			{
 				/* <I>The Solen queen considers you eagerly for a moment then says,</I><BR><BR>
-				 * 
+				 *
 				 * Yes. Yes, I think you could be of use. Normally, of course, I would handle
 				 * these things on my own, but these are busy times. Much to do, much to do.
 				 * And besides, if I am to one day become the Matriarch, then it will be good to
 				 * have experience trusting others to carry out various tasks for me. Yes.<BR><BR>
-				 * 
+				 *
 				 * That is my plan, you see - I will become the next Matriarch. Our current
 				 * Matriarch is fine and all, but she won't be around forever. And when she steps
 				 * down, I intend to be the next in line. Ruling others is my destiny, you see.<BR><BR>
-				 * 
+				 *
 				 * What I ask of you is quite simple. First, I need you to remove some of the
 				 * - well - competition, I suppose. Though I dare say most are hardly competent to
 				 * live up to such a title. I'm referring to the other queens of this colony,
@@ -57,9 +57,9 @@ namespace Server.Engines.Quests.Ambitious
 				 * at me - this is how things work in a proper society, and ours has been more proper
 				 * than most since the dawn of time. It's them or me, and whenever I give it
 				 * any thought, I'm quite sure I'd prefer it to be them.<BR><BR>
-				 * 
+				 *
 				 * I also need you to gather some zoogi fungus for me - 50 should do the trick.<BR><BR>
-				 * 
+				 *
 				 * Will you accept my offer?
 				 */
 				return 1054060;
@@ -67,7 +67,7 @@ namespace Server.Engines.Quests.Ambitious
 		}
 
 		public override TimeSpan RestartDelay{ get{ return TimeSpan.Zero; } }
-		public override bool IsTutorial{ get{ return false; } }
+		public override bool IsTutorial => false;
 
 		public override int Picture{ get{ return 0x15C9; } }
 

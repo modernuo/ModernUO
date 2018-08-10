@@ -8,8 +8,10 @@ namespace Server.Mobiles
 	[CorpseName( "a cu sidhe corpse" )]
 	public class CuSidhe : BaseMount
 	{
+		public override string DefaultName => "a cu sidhe";
+
 		[Constructible]
-		public CuSidhe() : this( "a cu sidhe" )
+		public CuSidhe() : this( null )
 		{
 		}
 
@@ -90,18 +92,15 @@ namespace Server.Mobiles
 			base.OnDoubleClick( from );
 		}
 
-		public override bool CanHeal{ get{ return true; } }
-		public override bool CanHealOwner{ get{ return true; } }
+		public override bool CanHeal => true;
+		public override bool CanHealOwner => true;
 		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies; } }
 		public override bool CanAngerOnTame{ get { return true; } }
-		public override bool StatLossAfterTame{ get{ return true; } }
+		public override bool StatLossAfterTame => true;
 		public override int Hides{ get{ return 10; } }
 		public override int Meat{ get{ return 3; } }
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
 		public CuSidhe( Serial serial ) : base( serial )
 		{
@@ -127,7 +126,7 @@ namespace Server.Mobiles
 			int version = reader.ReadInt();
 
 			if ( version < 1 && Name == "a Cu Sidhe" )
-				Name = "a cu sidhe";
+				Name = null;
 		}
 	}
 }

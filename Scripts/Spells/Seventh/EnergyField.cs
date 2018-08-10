@@ -102,7 +102,7 @@ namespace Server.Spells.Seventh
 			private Timer m_Timer;
 			private Mobile m_Caster;
 
-			public override bool BlocksFit{ get{ return true; } }
+			public override bool BlocksFit => true;
 
 			public InternalItem( Point3D loc, Map map, TimeSpan duration, int itemID, Mobile caster ) : base( itemID )
 			{

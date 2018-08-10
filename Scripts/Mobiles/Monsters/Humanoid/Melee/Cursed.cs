@@ -6,8 +6,8 @@ namespace Server.Mobiles
 	[CorpseName( "an inhuman corpse" )]
 	public class Cursed : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
-		public override bool ShowFameTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
+		public override bool ShowFameTitle => false;
 
 		[Constructible]
 		public Cursed() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -62,7 +62,7 @@ namespace Server.Mobiles
 			//AddLoot( LootPack.Miscellaneous );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public Cursed( Serial serial ) : base( serial )
 		{

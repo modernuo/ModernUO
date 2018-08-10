@@ -5,12 +5,14 @@ using Server.Items;
 namespace Server.Mobiles
 {
 	[CorpseName( "a skeletal corpse" )]
+	[TypeAlias("Server.Mobiles.BoneMage")]
 	public class BoneMagi : BaseCreature
 	{
+		public override string DefaultName => "a bone mage";
+
 		[Constructible]
 		public BoneMagi() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a bone mage";
 			Body = 148;
 			BaseSoundID = 451;
 
@@ -54,15 +56,15 @@ namespace Server.Mobiles
 			AddLoot( LootPack.LowScrolls );
 			AddLoot( LootPack.Potions );
 		}
-		
-		public override bool BleedImmune{ get{ return true; } }
-		
+
+		public override bool BleedImmune => true;
+
 		public override OppositionGroup OppositionGroup
 		{
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 
 		public BoneMagi( Serial serial ) : base( serial )
 		{

@@ -10,10 +10,11 @@ namespace Server.Engines.Quests.Haven
 {
 	public class Dryad : BaseQuester
 	{
-		public override bool IsActiveVendor{ get{ return true; } }
-		public override bool DisallowAllMoves{ get{ return false; } }
+		public override bool IsActiveVendor => true;
+		public override bool DisallowAllMoves => false;
 		public override bool ClickTitle{ get { return true; } }
-		public override bool CanTeach{ get{ return true; } }
+		public override bool CanTeach => true;
+		public override string DefaultName => "Anwin Brenna";
 
 		[Constructible]
 		public Dryad() : base( "the Dryad" )
@@ -39,7 +40,6 @@ namespace Server.Engines.Quests.Haven
 
 			Female = true;
 			Body = 0x191;
-			Name = "Anwin Brenna";
 		}
 
 		public override void InitOutfit()
@@ -180,7 +180,7 @@ namespace Server.Engines.Quests.Haven
 				Add( new GenericBuyInfo( typeof( Garlic ), 3, 20, 0xF84, 0 ) );
 				Add( new GenericBuyInfo( typeof( Bloodmoss ), 5, 20, 0xF7B, 0 ) );
 				Add( new GenericBuyInfo( typeof( Nightshade ), 3, 20, 0xF88, 0 ) );
-				Add( new GenericBuyInfo( typeof( SpidersSilk ), 3, 20, 0xF8D, 0 ) ); 
+				Add( new GenericBuyInfo( typeof( SpidersSilk ), 3, 20, 0xF8D, 0 ) );
 				Add( new GenericBuyInfo( typeof( MandrakeRoot ), 3, 20, 0xF86, 0 ) );
 			}
 		}
@@ -194,7 +194,7 @@ namespace Server.Engines.Quests.Haven
 				Add( typeof( Ginseng ), 2 );
 				Add( typeof( Bloodmoss ), 3 );
 				Add( typeof( Nightshade ), 2 );
-				Add( typeof( SpidersSilk ), 2 ); 
+				Add( typeof( SpidersSilk ), 2 );
 				Add( typeof( MandrakeRoot ), 2 );
 			}
 		}

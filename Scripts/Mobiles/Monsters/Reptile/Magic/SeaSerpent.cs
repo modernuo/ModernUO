@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Seaserpant" )]
 	public class SeaSerpent : BaseCreature
 	{
+		public override string DefaultName => "a sea serpent";
+
 		[Constructible]
 		public SeaSerpent() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a sea serpent";
 			Body = 150;
 			BaseSoundID = 447;
 
@@ -59,7 +60,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool HasBreath{ get{ return true; } }
+		public override bool HasBreath => true;
 		public override int TreasureMapLevel{ get{ return 2; } }
 
 		public override int Hides{ get{ return 10; } }

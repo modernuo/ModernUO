@@ -9,16 +9,17 @@ namespace Server.Mobiles
 {
 	public class EliteNinja : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
+		public override string DefaultName => "an elite ninja";
 
 		[Constructible]
 		public EliteNinja() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			SpeechHue = Utility.RandomDyedHue();
 			Hue = Utility.RandomSkinHue();
-			Name = "an elite ninja";
+			Female = Utility.RandomBool();
 
-			Body = ( this.Female = Utility.RandomBool() ) ? 0x191 : 0x190;
+			Body = Female ? 0x191 : 0x190;
 
 			SetHits( 251, 350 );
 
@@ -52,21 +53,21 @@ namespace Server.Mobiles
 			Fame = 8500;
 			Karma = -8500;
 
-			/* TODO:	
+			/* TODO:
 					Uses Smokebombs
 					Hides
 					Stealths
 					Can use Ninjitsu Abilities
 					Can change weapons during a fight
 			*/
-					
+
 
 			AddItem( new NinjaTabi() );
 			AddItem( new LeatherNinjaJacket());
 			AddItem( new LeatherNinjaHood());
 			AddItem( new LeatherNinjaPants());
 			AddItem( new LeatherNinjaMitts());
-			
+
 			if( Utility.RandomDouble() < 0.33 )
 				AddItem( new SmokeBomb() );
 
@@ -91,7 +92,7 @@ namespace Server.Mobiles
 			c.DropItem( new BookOfNinjitsu() );
 		}
 
-		public override bool BardImmune{ get{ return true; } }
+		public override bool BardImmune => true;
 
 		public override void GenerateLoot()
 		{
@@ -99,8 +100,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 			AddLoot( LootPack.Gems, 2 );
 		}
-		
-		public override bool AlwaysMurderer{ get{ return true; } }
+
+		public override bool AlwaysMurderer => true;
 
 		public EliteNinja( Serial serial ) : base( serial )
 		{

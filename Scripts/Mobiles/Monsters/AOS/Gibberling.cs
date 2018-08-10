@@ -7,15 +7,13 @@ namespace Server.Mobiles
 	[CorpseName( "a gibberling corpse" )]
 	public class Gibberling : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.Dismount;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+
+		public override string DefaultName => "a gibberling";
 
 		[Constructible]
 		public Gibberling() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a gibberling";
 			Body = 307;
 			BaseSoundID = 422;
 

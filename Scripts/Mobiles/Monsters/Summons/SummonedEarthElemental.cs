@@ -10,11 +10,11 @@ namespace Server.Mobiles
 	{
 		public override double DispelDifficulty{ get{ return 117.5; } }
 		public override double DispelFocus{ get{ return 45.0; } }
+		public override string DefaultName => "an earth elemental";
 
 		[Constructible]
 		public SummonedEarthElemental() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an earth elemental";
 			Body = 14;
 			BaseSoundID = 268;
 

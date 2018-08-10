@@ -4,8 +4,8 @@ namespace Server.Items
 {
 	public class LeatherDyeTub : DyeTub, Engines.VeteranRewards.IRewardItem
 	{
-		public override bool AllowDyables{ get{ return false; } }
-		public override bool AllowLeather{ get{ return true; } }
+		public override bool AllowDyables => false;
+		public override bool AllowLeather => true;
 		public override int TargetMessage{ get{ return 1042416; } } // Select the leather item to dye.
 		public override int FailMessage{ get{ return 1042418; } } // You can only dye leather with this tub.
 		public override int LabelNumber{ get{ return 1041284; } } // Leather Dye Tub

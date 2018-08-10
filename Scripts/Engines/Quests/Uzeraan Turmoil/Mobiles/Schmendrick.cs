@@ -9,6 +9,8 @@ namespace Server.Engines.Quests.Haven
 {
 	public class Schmendrick : BaseQuester
 	{
+		public override string DefaultName => "Schmendrick";
+
 		[Constructible]
 		public Schmendrick() : base( "the High Mage" )
 		{
@@ -22,7 +24,6 @@ namespace Server.Engines.Quests.Haven
 
 			Female = false;
 			Body = 0x190;
-			Name = "Schmendrick";
 		}
 
 		public override void InitOutfit()

@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "an ophidian corpse" )]
 	public class OphidianMatriarch : BaseCreature
 	{
+		public override string DefaultName => "an ophidian matriarch";
+
 		[Constructible]
 		public OphidianMatriarch() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an ophidian matriarch";
 			Body = 87;
 			BaseSoundID = 644;
 
@@ -50,7 +51,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
+		public override Poison PoisonImmune => Poison.Greater;
 		public override int TreasureMapLevel{ get{ return 4; } }
 
 		public override OppositionGroup OppositionGroup

@@ -9,19 +9,21 @@ namespace Server.Mobiles
 	[CorpseName("a pestilent bandage corpse")]
 	public class PestilentBandage : BaseCreature
 	{
-		// Neither Stratics nor UOGuide have much description 
-		// beyond being a "Grey Mummy". BodyValue, Sound and 
+		// Neither Stratics nor UOGuide have much description
+		// beyond being a "Grey Mummy". BodyValue, Sound and
 		// Hue are all guessed until they can be verified.
 		// Loot and Fame/Karma are also guesses at this point.
 		//
 		// They also apparently have a Poison Attack, which I've stolen from Yamandons.
+
+		public override string DefaultName => "a pestilent bandage";
+
 		[Constructible]
 		public PestilentBandage() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 ) // NEED TO CHECK
 		{
-			Name = "a pestilent bandage";
 			Body = 154;
-			Hue = 0x515; 
-			BaseSoundID = 471; 
+			Hue = 0x515;
+			BaseSoundID = 471;
 
 			SetStr( 691, 740 );
 			SetDex( 141, 180 );
@@ -56,8 +58,8 @@ namespace Server.Mobiles
 
 		}
 
-		public override Poison HitPoison{ get{ return Poison.Lethal; } }
-		public override bool CanHeal { get { return true; } }
+		public override Poison HitPoison => Poison.Lethal;
+		public override bool CanHeal => true;
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.Rich );  // Need to verify

@@ -274,7 +274,7 @@ namespace Server.Items
 
 		}
 
-		
+
 		public void SummonPet( Mobile from )
 		{
 			BaseCreature pet = this.Pet;
@@ -393,8 +393,8 @@ namespace Server.Items
 				m_Ball = ball;
 			}
 
-			public override bool ClearHandsOnCast { get { return false; } }
-			public override bool RevealOnCast { get { return true; } }
+			public override bool ClearHandsOnCast => false;
+			public override bool RevealOnCast => true;
 
 			public override TimeSpan GetCastRecovery()
 			{

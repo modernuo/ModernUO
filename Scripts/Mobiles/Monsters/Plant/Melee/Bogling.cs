@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a plant corpse" )]
 	public class Bogling : BaseCreature
 	{
+		public override string DefaultName { get { return "a bogling"; } }
+
 		[Constructible]
 		public Bogling() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a bogling";
 			Body = 779;
 			BaseSoundID = 422;
 

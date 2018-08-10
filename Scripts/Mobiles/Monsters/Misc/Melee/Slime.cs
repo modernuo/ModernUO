@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a slimey corpse" )]
 	public class Slime : BaseCreature
 	{
+		public override string DefaultName => "a slime";
+
 		[Constructible]
 		public Slime() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a slime";
 			Body = 51;
 			BaseSoundID = 456;
 
@@ -51,8 +52,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lesser; } }
-		public override Poison HitPoison{ get{ return Poison.Lesser; } }
+		public override Poison PoisonImmune => Poison.Lesser;
+		public override Poison HitPoison => Poison.Lesser;
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish | FoodType.FruitsAndVegies | FoodType.GrainsAndHay | FoodType.Eggs; } }
 
 		public Slime( Serial serial ) : base( serial )

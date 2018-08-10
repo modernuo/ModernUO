@@ -21,10 +21,11 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Slime }; } }
 
+		public override string DefaultName => "Barracoon";
+
 		[Constructible]
 		public Barracoon() : base( AIType.AI_Melee )
 		{
-			Name = "Barracoon";
 			Title = "the piper";
 			Body = 0x190;
 			Hue = 0x83EC;
@@ -70,16 +71,16 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 3 );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool AutoDispel{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
+		public override bool AutoDispel => true;
 		public override double AutoDispelChance{ get{ return 1.0; } }
-		public override bool BardImmune{ get{ return !Core.SE; } }
-		public override bool Unprovokable{ get{ return Core.SE; } }
-		public override bool Uncalmable{ get{ return Core.SE; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
+		public override bool Uncalmable => Core.SE;
+		public override Poison PoisonImmune => Poison.Deadly;
 
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ShowFameTitle => false;
+		public override bool ClickTitle => false;
 
 		public void Polymorph( Mobile m )
 		{

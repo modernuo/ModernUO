@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a walrus corpse" )]
 	public class Walrus : BaseCreature
 	{
+		public override string DefaultName => "a walrus";
+
 		[Constructible]
 		public Walrus() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a walrus";
 			Body = 0xDD;
 			BaseSoundID = 0xE0;
 

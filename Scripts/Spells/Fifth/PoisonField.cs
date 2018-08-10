@@ -91,7 +91,7 @@ namespace Server.Spells.Fifth
 			private DateTime m_End;
 			private Mobile m_Caster;
 
-			public override bool BlocksFit{ get{ return true; } }
+			public override bool BlocksFit => true;
 
 			public InternalItem( int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val ) : base( itemID )
 			{

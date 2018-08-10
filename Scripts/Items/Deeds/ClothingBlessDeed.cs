@@ -94,7 +94,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override bool DisplayLootType{ get{ return false; } }
+		public override bool DisplayLootType => false;
 
 		public override void OnDoubleClick( Mobile from ) // Override double click of the deed to call our target
 		{
@@ -107,6 +107,6 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1005018 ); // What would you like to bless? (Clothes Only)
 				from.Target = new ClothingBlessTarget( this ); // Call our target
 			 }
-		}	
+		}
 	}
 }

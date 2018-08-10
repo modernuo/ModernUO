@@ -18,10 +18,11 @@ namespace Server.Mobiles
 
 		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
 
+		public override string DefaultName => "Neira";
+
 		[Constructible]
 		public Neira() : base( AIType.AI_Mage )
 		{
-			Name = "Neira";
 			Title = "the necromancer";
 			Body = 401;
 			Hue = 0x83EC;
@@ -92,7 +93,7 @@ namespace Server.Mobiles
 
 			return base.OnBeforeDeath();
 		}
-		
+
 		private bool m_SpeedBoost;
 
 		public override void OnDamage( int amount, Mobile from, bool willKill )
@@ -100,9 +101,9 @@ namespace Server.Mobiles
 			CheckSpeedBoost();
 			base.OnDamage( amount, from, willKill );
 		}
-		
+
 		private const double SpeedBoostScalar = 1.2;
-		
+
 		private void CheckSpeedBoost()
 		{
 			if( Hits < (HitsMax / 4 ) )
@@ -112,7 +113,7 @@ namespace Server.Mobiles
 					ActiveSpeed /= SpeedBoostScalar;
 					PassiveSpeed /= SpeedBoostScalar;
 					m_SpeedBoost = true;
-				}				
+				}
 			}
 			else if( m_SpeedBoost )
 			{
@@ -193,14 +194,14 @@ namespace Server.Mobiles
 			}
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
-		public override bool BardImmune{ get{ return !Core.SE; } }
-		public override bool Unprovokable{ get{ return Core.SE; } }
-		public override bool Uncalmable{ get{ return Core.SE; } }
-		public override Poison PoisonImmune{ get{ return Poison.Deadly; } }
+		public override bool AlwaysMurderer => true;
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
+		public override bool Uncalmable => Core.SE;
+		public override Poison PoisonImmune => Poison.Deadly;
 
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ShowFameTitle => false;
+		public override bool ClickTitle => false;
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{
@@ -284,7 +285,7 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 
 			int version = reader.ReadInt();
-			
+
 			switch( version )
 			{
 				case 1:

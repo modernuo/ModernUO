@@ -43,7 +43,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class ARockAndAHardPlace : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( SympatheticMagic ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public ARockAndAHardPlace()
 		{
@@ -65,7 +65,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class SympatheticMagic : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( AlreadyDead ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public SympatheticMagic()
 		{
@@ -85,7 +85,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class AlreadyDead : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( Eureka ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public AlreadyDead()
 		{
@@ -103,7 +103,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 		private class InternalObjective : CollectObjective
 		{
-			public override bool ShowDetailed { get { return false; } }
+			public override bool ShowDetailed => false;
 
 			public InternalObjective()
 				: base( 10, typeof( Bone ), 1074963 ) // (10) workable samples
@@ -115,7 +115,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class Eureka : MLQuest
 	{
 		public override Type NextQuest { get { return typeof( SubContracting ); } }
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public Eureka()
 		{
@@ -152,7 +152,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class SubContracting : MLQuest
 	{
-		public override bool IsChainTriggered { get { return true; } }
+		public override bool IsChainTriggered => true;
 
 		public SubContracting()
 		{
@@ -178,13 +178,13 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Jamal (near Blighted Grove)" )]
 	public class Jamal : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Jamal";
 
 		[Constructible]
 		public Jamal()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.2, 0.4 )
 		{
-			Name = "Jamal";
 			Title = "the Fisherman";
 			Body = 400;
 			Hue = Race.RandomSkinHue();
@@ -222,9 +222,10 @@ namespace Server.Engines.MLQuests.Definitions
 	[QuesterName( "Iosep (Jhelom)" )]
 	public class Iosep : BaseCreature
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
+		public override string DefaultName => "Iosep";
 
-		public override bool CanShout { get { return true; } }
+		public override bool CanShout => true;
 		public override void Shout( PlayerMobile pm )
 		{
 			MLQuestSystem.Tell( this, pm, Utility.RandomList(
@@ -237,7 +238,6 @@ namespace Server.Engines.MLQuests.Definitions
 		public Iosep()
 			: base( AIType.AI_Vendor, FightMode.None, 2, 1, 0.2, 0.4 )
 		{
-			Name = "Iosep";
 			Title = "the Exporter";
 			Body = 400;
 			Hue = Race.RandomSkinHue();

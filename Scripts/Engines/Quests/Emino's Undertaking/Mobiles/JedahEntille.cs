@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class JedahEntille : BaseQuester
 	{
+		public override string DefaultName => "Jedah Entille";
+
 		[Constructible]
 		public JedahEntille() : base( "the Silent" )
 		{
@@ -20,7 +22,6 @@ namespace Server.Engines.Quests.Ninja
 			Hue = 0x83FE;
 			Female = true;
 			Body = 0x191;
-			Name = "Jedah Entille";
 		}
 
 		public override void InitOutfit()

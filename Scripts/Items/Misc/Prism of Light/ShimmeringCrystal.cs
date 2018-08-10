@@ -6,7 +6,7 @@ namespace Server.Items
 	public class ShimmeringCrystals : Item
 	{
 		public override int LabelNumber{ get{ return 1075095; } } // Shimmering Crystals
-		public override bool ForceShowProperties{ get{ return true; } }
+		public override bool ForceShowProperties => true;
 
 		private static readonly int[] m_ItemIDs = new int[]
 		{

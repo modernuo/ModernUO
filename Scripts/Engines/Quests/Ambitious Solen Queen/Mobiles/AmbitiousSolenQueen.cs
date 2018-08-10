@@ -8,8 +8,8 @@ namespace Server.Engines.Quests.Ambitious
 	public abstract class BaseAmbitiousSolenQueen : BaseQuester
 	{
 		public abstract bool RedSolen{ get; }
-
-		public override bool DisallowAllMoves{ get{ return false; } }
+		public override string DefaultName => "an ambitious solen queen";
+		public override bool DisallowAllMoves => false;
 
 		public BaseAmbitiousSolenQueen()
 		{
@@ -17,8 +17,6 @@ namespace Server.Engines.Quests.Ambitious
 
 		public override void InitBody()
 		{
-			Name = "an ambitious solen queen";
-
 			Body = 0x30F;
 
 			if ( !RedSolen )
@@ -169,7 +167,7 @@ namespace Server.Engines.Quests.Ambitious
 
 	public class RedAmbitiousSolenQueen : BaseAmbitiousSolenQueen
 	{
-		public override bool RedSolen{ get{ return true; } }
+		public override bool RedSolen => true;
 
 		[Constructible]
 		public RedAmbitiousSolenQueen()
@@ -197,7 +195,7 @@ namespace Server.Engines.Quests.Ambitious
 
 	public class BlackAmbitiousSolenQueen : BaseAmbitiousSolenQueen
 	{
-		public override bool RedSolen{ get{ return false; } }
+		public override bool RedSolen => false;
 
 		[Constructible]
 		public BlackAmbitiousSolenQueen()

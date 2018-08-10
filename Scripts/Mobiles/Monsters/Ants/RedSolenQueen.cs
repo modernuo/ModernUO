@@ -11,10 +11,11 @@ namespace Server.Mobiles
 		private bool m_BurstSac;
 		public bool BurstSac{ get{ return m_BurstSac; } }
 
+		public override string DefaultName => "a red solen queen";
+
 		[Constructible]
 		public RedSolenQueen() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a red solen queen";
 			Body = 783;
 			BaseSoundID = 959;
 
@@ -144,7 +145,7 @@ namespace Server.Mobiles
 					m_BurstSac = reader.ReadBool();
 					break;
 				}
-			}	
+			}
 		}
 	}
 }

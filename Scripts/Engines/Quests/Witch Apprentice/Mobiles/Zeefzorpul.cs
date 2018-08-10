@@ -7,6 +7,8 @@ namespace Server.Engines.Quests.Hag
 {
 	public class Zeefzorpul : BaseQuester
 	{
+		public override string DefaultName => "Zeefzorpul";
+
 		public Zeefzorpul()
 		{
 		}
@@ -14,7 +16,6 @@ namespace Server.Engines.Quests.Hag
 		public override void InitBody()
 		{
 			Body = 0x4A;
-			Name = "Zeefzorpul";
 		}
 
 		public Zeefzorpul( Serial serial ) : base( serial )

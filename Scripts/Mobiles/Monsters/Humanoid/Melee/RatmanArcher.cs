@@ -54,7 +54,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int Hides{ get{ return 8; } }
 		public override HideType HideType{ get{ return HideType.Spined; } }
 

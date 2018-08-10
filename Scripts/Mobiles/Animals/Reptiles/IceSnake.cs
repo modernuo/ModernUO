@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Icesnake" )]
 	public class IceSnake : BaseCreature
 	{
+		public override string DefaultName => "an ice snake";
+
 		[Constructible]
 		public IceSnake() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an ice snake";
 			Body = 52;
 			Hue = 0x480;
 			BaseSoundID = 0xDB;
@@ -47,7 +48,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool DeathAdderCharmable{ get{ return true; } }
+		public override bool DeathAdderCharmable => true;
 
 		public override int Meat{ get{ return 1; } }
 

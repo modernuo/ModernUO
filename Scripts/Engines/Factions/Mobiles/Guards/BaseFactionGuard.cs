@@ -15,7 +15,7 @@ namespace Server.Factions
 		private Town m_Town;
 		private Orders m_Orders;
 
-		public override bool BardImmune{ get{ return true; } }
+		public override bool BardImmune => true;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public Faction Faction
@@ -56,7 +56,7 @@ namespace Server.Factions
 		}
 
 		public override TimeSpan ReacquireDelay{ get{ return TimeSpan.FromSeconds( 2.0 ); } }
- 
+
 		public override bool IsEnemy( Mobile m )
 		{
 			Faction ourFaction = m_Faction;
@@ -93,7 +93,7 @@ namespace Server.Factions
 
 			return false;
 		}
- 
+
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
 			if ( m.Player && m.Alive && InRange( m, 10 ) && !InRange( oldLocation, 10 ) && InLOS( m ) && m_Orders.GetReaction( Faction.Find( m ) ).Type == ReactionType.Warn )
@@ -167,7 +167,7 @@ namespace Server.Factions
 
 			return ( name != null && Insensitive.StartsWith( speech, name ) );
 		}
- 
+
 		public override void OnSpeech( SpeechEventArgs e )
 		{
 			base.OnSpeech( e );
@@ -406,7 +406,7 @@ namespace Server.Factions
 				GenerateRandomHair();
 		}
 
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
 
 		public BaseFactionGuard( string title ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

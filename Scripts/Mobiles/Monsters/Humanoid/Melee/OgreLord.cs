@@ -12,10 +12,11 @@ namespace Server.Mobiles
 		public override Faction FactionAllegiance { get { return Minax.Instance; } }
 		public override Ethics.Ethic EthicAllegiance { get { return Ethics.Ethic.Evil; } }
 
+		public override string DefaultName => "an ogre lord";
+
 		[Constructible]
 		public OgreLord () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an ogre lord";
 			Body = 83;
 			BaseSoundID = 427;
 
@@ -52,8 +53,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Rich, 2 );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Regular; } }
+		public override bool CanRummageCorpses => true;
+		public override Poison PoisonImmune => Poison.Regular;
 		public override int TreasureMapLevel{ get{ return 3; } }
 		public override int Meat{ get{ return 2; } }
 

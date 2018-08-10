@@ -8,14 +8,14 @@ using Server.ContextMenus;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
-{	
+{
 	public class AnkhOfSacrificeComponent : AddonComponent
-	{		
-		public override bool ForceShowProperties{ get{ return ObjectPropertyList.Enabled; } }
+	{
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 		public override int LabelNumber{ get{ return 1027772; } } // Ankh of Sacrifice
 
 		public AnkhOfSacrificeComponent( int itemID ) : base( itemID )
-		{			
+		{
 		}
 
 		public AnkhOfSacrificeComponent( Serial serial ) : base( serial )
@@ -25,7 +25,7 @@ namespace Server.Items
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
 			base.GetContextMenuEntries( from, list );
-						
+
 			if ( from is PlayerMobile )
 				list.Add( new LockKarmaEntry( (PlayerMobile)from, Addon as AnkhOfSacrificeAddon ) );
 
@@ -60,13 +60,13 @@ namespace Server.Items
 				m.SendLocalizedMessage( 1060197 ); // You are not dead, and thus cannot be resurrected!
 			}
 			else if ( m.AnkhNextUse > DateTime.UtcNow )
-			{			
+			{
 				TimeSpan delay = m.AnkhNextUse - DateTime.UtcNow;
 
 				if ( delay.TotalMinutes > 0 )
 					m.SendLocalizedMessage( 1079265, Math.Round( delay.TotalMinutes ).ToString() ); // You must wait ~1_minutes~ minutes before you can use this item.
 				else
-					m.SendLocalizedMessage( 1079263, Math.Round( delay.TotalSeconds ).ToString() ); // You must wait ~1_seconds~ seconds before you can use this item.		
+					m.SendLocalizedMessage( 1079263, Math.Round( delay.TotalSeconds ).ToString() ); // You must wait ~1_seconds~ seconds before you can use this item.
 			}
 			else
 			{
@@ -152,17 +152,17 @@ namespace Server.Items
 	}
 	public class AnkhOfSacrificeAddon : BaseAddon, IRewardItem
 	{
-		public override bool HandlesOnMovement{ get{ return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public override BaseAddonDeed Deed
-		{ 
+		{
 			get
-			{ 
+			{
 				AnkhOfSacrificeDeed deed = new AnkhOfSacrificeDeed();
 				deed.IsRewardItem = m_IsRewardItem;
 
-				return deed; 
-			} 
+				return deed;
+			}
 		}
 
 		private bool m_IsRewardItem;
@@ -172,11 +172,11 @@ namespace Server.Items
 		{
 			get{ return m_IsRewardItem; }
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
-		}		
-		
+		}
+
 		[Constructible]
 		public AnkhOfSacrificeAddon( bool east ) : base()
-		{			
+		{
 			if ( east )
 			{
 				AddComponent( new AnkhOfSacrificeComponent( 0x1D98 ), 0, 0, 0 );
@@ -212,35 +212,35 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.WriteEncodedInt( 0 ); // version
-			
+
 			writer.Write( (bool) m_IsRewardItem );
 		}
-            
+
         public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 		}
-	}	
-	
+	}
+
 	public class AnkhOfSacrificeDeed : BaseAddonDeed, IRewardItem, IRewardOption
 	{
 		public override int LabelNumber{ get{ return 1080397; } } // Deed For An Ankh Of Sacrifice
 
 		public override BaseAddon Addon
-		{ 
+		{
 			get
-			{ 
+			{
 				AnkhOfSacrificeAddon addon = new AnkhOfSacrificeAddon( m_East );
 				addon.IsRewardItem = m_IsRewardItem;
 
-				return addon; 
-			} 
+				return addon;
+			}
 		}
-		
+
 		private bool m_East;
 		private bool m_IsRewardItem;
 
@@ -250,7 +250,7 @@ namespace Server.Items
 			get{ return m_IsRewardItem; }
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
-		
+
 		[Constructible]
 		public AnkhOfSacrificeDeed() : this( false )
 		{
@@ -267,25 +267,25 @@ namespace Server.Items
 		public AnkhOfSacrificeDeed( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 				return;
-			
+
 			if ( IsChildOf( from.Backpack ) )
 			{
 				from.CloseGump( typeof( RewardOptionGump ) );
 				from.SendGump( new RewardOptionGump( this ) );
 			}
 			else
-				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.   
+				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.
 		}
-		
+
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-			
+
 			if ( m_IsRewardItem )
 				list.Add( 1080457 ); // 10th Year Veteran Reward
 		}
@@ -304,7 +304,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 		}
 

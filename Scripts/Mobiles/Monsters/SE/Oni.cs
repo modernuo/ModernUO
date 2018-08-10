@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "an oni corpse" )]
 	public class Oni : BaseCreature
 	{
+		public override string DefaultName => "an oni";
+
 		[Constructible]
 		public Oni() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an oni";
 			Body = 241;
 
 			SetStr( 801, 910 );
@@ -78,7 +79,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich, 3 );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int TreasureMapLevel{ get{ return 4; } }
 
 		/* TODO: Angry Fire

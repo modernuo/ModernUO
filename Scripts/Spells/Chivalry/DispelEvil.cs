@@ -22,13 +22,13 @@ namespace Server.Spells.Chivalry
 		public override int RequiredMana{ get{ return 10; } }
 		public override int RequiredTithing{ get{ return 10; } }
 		public override int MantraNumber{ get{ return 1060721; } } // Dispiro Malas
-		public override bool BlocksMovement{ get{ return false; } }
+		public override bool BlocksMovement => false;
 
 		public DispelEvilSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
 		}
 
-		public override bool DelayedDamage{ get{ return false; } }
+		public override bool DelayedDamage => false;
 
 		public override void SendCastEffect()
 		{
@@ -46,7 +46,7 @@ namespace Server.Spells.Chivalry
 					if ( Caster != m && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
 						targets.Add( m );
 				}
-				
+
 				Caster.PlaySound( 0xF5 );
 				Caster.PlaySound( 0x299 );
 				Caster.FixedParticles( 0x37C4, 1, 25, 9922, 14, 3, EffectLayer.Head );

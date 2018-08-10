@@ -19,7 +19,7 @@ namespace Server.Items
 		public override int AosStrReq{ get{ return 95; } }
 		public override int OldStrReq{ get{ return 95; } }
 
-		public override bool AllowMaleWearer{ get{ return false; } }
+		public override bool AllowMaleWearer => false;
 
 		public override int ArmorBase{ get{ return 30; } }
 

@@ -17,8 +17,8 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Tactics, 80.0, 100.0 );
 		}
 
-		public override bool CanTeach{ get{ return true; } }
-		public override bool ClickTitle{ get{ return false; } } // Do not display 'the noble' when single-clicking
+		public override bool CanTeach => true;
+		public override bool ClickTitle => false; // Do not display 'the noble' when single-clicking
 
 		private static int GetRandomHue()
 		{

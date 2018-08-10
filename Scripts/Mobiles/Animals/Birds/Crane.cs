@@ -3,13 +3,14 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a crane corpse" )]
+	[CorpseName( "a bird corpse" )]
 	public class Crane : BaseCreature
 	{
+		public override string DefaultName => "a crane";
+
 		[Constructible]
 		public Crane() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a crane";
 			Body = 254;
 			BaseSoundID = 0x4D7;
 

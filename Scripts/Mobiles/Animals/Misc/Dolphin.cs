@@ -6,11 +6,12 @@ namespace Server.Mobiles
 	[CorpseName( "a dolphin corpse" )]
 	public class Dolphin : BaseCreature
 	{
+		public override string DefaultName => "a dolphin";
+
 		[Constructible]
 		public Dolphin()
 			: base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a dolphin";
 			Body = 0x97;
 			BaseSoundID = 0x8A;
 

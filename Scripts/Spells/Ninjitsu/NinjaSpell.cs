@@ -15,11 +15,11 @@ namespace Server.Spells.Ninjitsu
 		public override SkillName CastSkill{ get{ return SkillName.Ninjitsu; } }
 		public override SkillName DamageSkill{ get{ return SkillName.Ninjitsu; } }
 
-		public override bool RevealOnCast{ get{ return false; } }
-		public override bool ClearHandsOnCast{ get{ return false; } }
-		public override bool ShowHandMovement{ get{ return false; } }
+		public override bool RevealOnCast => false;
+		public override bool ClearHandsOnCast => false;
+		public override bool ShowHandMovement => false;
 
-		public override bool BlocksMovement{ get{ return false; } }
+		public override bool BlocksMovement => false;
 
 		//public override int CastDelayBase{ get{ return 1; } }
 

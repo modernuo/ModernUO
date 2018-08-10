@@ -7,26 +7,27 @@ namespace Server.Mobiles
 	[CorpseName( "a hare corpse" )]
 	public class EnragedRabbit : BaseEnraged
 	{
+		public override string DefaultName => "a rabbit";
+
 		public EnragedRabbit( Mobile summoner ) : base( summoner )
 		{
-			Name = "a rabbit";
 			Body = 0xcd;
 		}
 
-		public override int GetAttackSound() 
-		{ 
-			return 0xC9; 
-		} 
+		public override int GetAttackSound()
+		{
+			return 0xC9;
+		}
 
-		public override int GetHurtSound() 
-		{ 
-			return 0xCA; 
-		} 
+		public override int GetHurtSound()
+		{
+			return 0xCA;
+		}
 
-		public override int GetDeathSound() 
-		{ 
-			return 0xCB; 
-		} 
+		public override int GetDeathSound()
+		{
+			return 0xCB;
+		}
 
 		public EnragedRabbit( Serial serial ) : base( serial )
 		{
@@ -48,26 +49,27 @@ namespace Server.Mobiles
 	[CorpseName( "a deer corpse" )]
 	public class EnragedHart : BaseEnraged
 	{
+		public override string DefaultName => "a great hart";
+
 		public EnragedHart( Mobile summoner ) : base( summoner )
 		{
-			Name = "a great hart";
 			Body = 0xea;
 		}
 
-		public override int GetAttackSound() 
-		{ 
-			return 0x82; 
-		} 
+		public override int GetAttackSound()
+		{
+			return 0x82;
+		}
 
-		public override int GetHurtSound() 
-		{ 
-			return 0x83; 
-		} 
+		public override int GetHurtSound()
+		{
+			return 0x83;
+		}
 
-		public override int GetDeathSound() 
-		{ 
-			return 0x84; 
-		} 
+		public override int GetDeathSound()
+		{
+			return 0x84;
+		}
 
 		public EnragedHart( Serial serial ) : base( serial )
 		{
@@ -89,25 +91,26 @@ namespace Server.Mobiles
 	[CorpseName( "a deer corpse" )]
 	public class EnragedHind : BaseEnraged
 	{
+		public override string DefaultName => "a hind";
+
 		public EnragedHind( Mobile summoner ) : base( summoner )
 		{
-			Name = "a hind";
 			Body = 0xed;
 		}
-		public override int GetAttackSound() 
-		{ 
-			return 0x82; 
-		} 
+		public override int GetAttackSound()
+		{
+			return 0x82;
+		}
 
-		public override int GetHurtSound() 
-		{ 
-			return 0x83; 
-		} 
+		public override int GetHurtSound()
+		{
+			return 0x83;
+		}
 
-		public override int GetDeathSound() 
-		{ 
-			return 0x84; 
-		} 
+		public override int GetDeathSound()
+		{
+			return 0x84;
+		}
 
 		public EnragedHind( Serial serial ) : base( serial )
 		{
@@ -129,9 +132,10 @@ namespace Server.Mobiles
 	[CorpseName( "a bear corpse" )]
 	public class EnragedBlackBear : BaseEnraged
 	{
+		public override string DefaultName => "a black bear";
+
 		public EnragedBlackBear( Mobile summoner ) : base( summoner )
 		{
-			Name = "a black bear";
 			Body = 0xd3;
 			BaseSoundID = 0xa3;
 		}
@@ -155,9 +159,10 @@ namespace Server.Mobiles
 	[CorpseName( "an eagle corpse" )]
 	public class EnragedEagle : BaseEnraged
 	{
+		public override string DefaultName => "an eagle";
+
 		public EnragedEagle( Mobile summoner ) : base( summoner )
 		{
-			Name = "an eagle";
 			Body = 0x5;
 			BaseSoundID = 0x2ee;
 		}
@@ -178,7 +183,7 @@ namespace Server.Mobiles
 
 	public class BaseEnraged : BaseCreature
 	{
-		public BaseEnraged( Mobile summoner ) 
+		public BaseEnraged( Mobile summoner )
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			SetStr( 50, 200 );
@@ -186,7 +191,7 @@ namespace Server.Mobiles
 			SetHits( 50, 200 );
 			SetStam( 50, 200 );
 
-			/* 
+			/*
 				On OSI, all stats are random 50-200, but
 				str is never less than hits, and dex is never
 				less than stam.
@@ -254,7 +259,7 @@ namespace Server.Mobiles
 		{
 			Mobile combatant = mobile.Combatant;
 			if( combatant == null || combatant.Deleted )
-			{	
+			{
 				return false;
 			}
 			else if ( combatant.IsDeadBondedPet || !combatant.Alive )

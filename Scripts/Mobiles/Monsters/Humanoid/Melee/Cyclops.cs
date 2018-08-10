@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a cyclopean corpse" )]
 	public class Cyclops : BaseCreature
 	{
+		public override string DefaultName => "a cyclopean warrior";
+
 		[Constructible]
 		public Cyclops() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a cyclopean warrior";
 			Body = 75;
 			BaseSoundID = 604;
 

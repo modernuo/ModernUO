@@ -8,7 +8,7 @@ namespace Server.Items
 	public class CreepyPortraitComponent : AddonComponent
 	{
 		public override int LabelNumber { get { return 1074481; } } // Creepy portrait
-		public override bool HandlesOnMovement { get { return true; } }
+		public override bool HandlesOnMovement => true;
 
 		public CreepyPortraitComponent() : base( 0x2A69 )
 		{
@@ -71,7 +71,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			if ( version == 0 && ItemID != 0x2A69 && ItemID != 0x2A6D )
 				ItemID = 0x2A69;
 		}

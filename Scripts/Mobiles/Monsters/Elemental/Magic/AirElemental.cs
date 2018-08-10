@@ -10,10 +10,11 @@ namespace Server.Mobiles
 		public override double DispelDifficulty{ get{ return 117.5; } }
 		public override double DispelFocus{ get{ return 45.0; } }
 
+		public override string DefaultName => "an air elemental";
+
 		[Constructible]
 		public AirElemental () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an air elemental";
 			Body = 13;
 			Hue = 0x4001;
 			BaseSoundID = 655;
@@ -57,7 +58,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool BleedImmune => true;
 		public override int TreasureMapLevel{ get{ return 2; } }
 
 		public AirElemental( Serial serial ) : base( serial )

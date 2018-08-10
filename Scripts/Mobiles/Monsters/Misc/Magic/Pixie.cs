@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a pixie corpse" )]
 	public class Pixie : BaseCreature
 	{
-		public override bool InitialInnocent{ get{ return true; } }
+		public override bool InitialInnocent => true;
 
 		[Constructible]
 		public Pixie() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )

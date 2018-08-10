@@ -274,7 +274,7 @@ namespace Server.Items
 	[Flippable( 0xA97, 0xA99, 0xA98, 0xA9A, 0xA9B, 0xA9C )]
 	public class LibraryBookcase : FillableContainer
 	{
-		public override bool IsLockable { get { return false; } }
+		public override bool IsLockable => false;
 		public override int SpawnThreshold { get { return 5; } }
 
 		protected override int GetSpawnCount()
@@ -447,7 +447,7 @@ namespace Server.Items
 
 	public class FillableBarrel : FillableContainer
 	{
-		public override bool IsLockable { get { return false; } }
+		public override bool IsLockable => false;
 
 		[Constructible]
 		public FillableBarrel()

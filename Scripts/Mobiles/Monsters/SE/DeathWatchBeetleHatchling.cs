@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.DeathWatchBeetleHatchling" )]
 	public class DeathwatchBeetleHatchling : BaseCreature
 	{
+		public override string DefaultName { get { return "a deathwatch beetle hatchling"; } }
+
 		[Constructible]
 		public DeathwatchBeetleHatchling() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a deathwatch beetle hatchling";
 			Body = 242;
 
 			SetStr( 26, 50 );

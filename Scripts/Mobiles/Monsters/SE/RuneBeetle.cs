@@ -9,15 +9,12 @@ namespace Server.Mobiles
 	[CorpseName( "a rune beetle corpse" )]
 	public class RuneBeetle : BaseCreature
 	{
-		public override WeaponAbility GetWeaponAbility()
-		{
-			return WeaponAbility.BleedAttack;
-		}
+		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+		public override string DefaultName => "a rune beetle";
 
 		[Constructible]
 		public RuneBeetle() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a rune beetle";
 			Body = 244;
 
 			SetStr( 401, 460 );
@@ -47,11 +44,11 @@ namespace Server.Mobiles
 
 			Fame = 15000;
 			Karma = -15000;
-			
-			
+
+
 			if ( Utility.RandomDouble() < .25 )
 				PackItem( Engines.Plants.Seed.RandomBonsaiSeed() );
-				
+
 			switch ( Utility.Random( 10 ))
 			{
 				case 0: PackItem( new LeftArm() ); break;
@@ -65,10 +62,10 @@ namespace Server.Mobiles
 				case 8: PackItem( new BonePile() ); break;
 				case 9: PackItem( new BonePile() ); break;
 			}
-				
+
 			Tamable = true;
 			ControlSlots = 3;
-			MinTameSkill = 93.9;			
+			MinTameSkill = 93.9;
 
 		}
 
@@ -96,17 +93,17 @@ namespace Server.Mobiles
 		{
 			return 0x4E5;
 		}
-		
+
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.FilthyRich, 2 );
 			AddLoot( LootPack.MedScrolls, 1 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Greater; } }
-		public override Poison HitPoison{ get{ return Poison.Greater; } }
+		public override Poison PoisonImmune => Poison.Greater;
+		public override Poison HitPoison => Poison.Greater;
 		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
-		public override bool CanAngerOnTame { get { return true; } }
+		public override bool CanAngerOnTame => true;
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{

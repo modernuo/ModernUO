@@ -8,14 +8,15 @@ namespace Server.Mobiles
 	[CorpseName( "a holy corpse" )]
 	public class HolyFamiliar : BaseCreature
 	{
-		public override bool IsDispellable { get { return false; } }
-		public override bool IsBondable { get { return false; } }
+		public override bool IsDispellable => false;
+		public override bool IsBondable => false;
+
+		public override string DefaultName => "a silver wolf";
 
 		[Constructible]
 		public HolyFamiliar()
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a silver wolf";
 			Body = 100;
 			BaseSoundID = 0xE5;
 

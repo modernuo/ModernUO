@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gargoyle corpse" )]
 	public class GargoyleDestroyer : BaseCreature
 	{
+		public override string DefaultName => "a gargoyle destroyer";
+
 		[Constructible]
 		public GargoyleDestroyer() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "Gargoyle Destroyer";
 			Body = 0x2F3;
 			BaseSoundID = 0x174;
 
@@ -55,9 +56,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 2 );
 		}
 
-		public override bool BardImmune{ get{ return !Core.AOS; } }
+		public override bool BardImmune => !Core.AOS;
 		public override int Meat{ get{ return 1; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public override void OnDamagedBySpell( Mobile from )
 		{

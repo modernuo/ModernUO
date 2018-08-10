@@ -14,14 +14,13 @@ namespace Server.Mobiles
 	[CorpseName( "a changeling corpse" )]
 	public class Changeling : BaseCreature
 	{
-		public virtual string DefaultName{ get{ return "a changeling"; } }
-		public virtual int DefaultHue{ get{ return 0; } }
+		public override string DefaultName => "a changeling";
+		public virtual int DefaultHue => 0;
 
 		[Constructible]
 		public Changeling()
 			: base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = DefaultName;
 			Body = 264;
 			Hue = DefaultHue;
 
@@ -61,8 +60,8 @@ namespace Server.Mobiles
 			PackArcaneScroll( 0, 1 );
 		}
 
-		public override bool ShowFameTitle{ get{ return false; } }
-		public override bool InitialInnocent{ get{ return ( m_MorphedInto != null ); } }
+		public override bool ShowFameTitle => false;
+		public override bool InitialInnocent => m_MorphedInto != null;
 
 		public override void GenerateLoot()
 		{
@@ -145,7 +144,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		private static readonly int[] m_FireNorth = new int[]
+		private static readonly int[] m_FireNorth =
 		{
 			-1, -1,
 			1, -1,
@@ -153,7 +152,7 @@ namespace Server.Mobiles
 			1, 2
 		};
 
-		private static readonly int[] m_FireEast = new int[]
+		private static readonly int[] m_FireEast =
 		{
 			-1, 0,
 			2, 0

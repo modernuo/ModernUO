@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	// TODO: Needs some Spellweaving abilities
 	public class ElfBrigand : BaseCreature
 	{
-		public override bool ClickTitle{ get{ return false; } }
+		public override bool ClickTitle => false;
 
 		[Constructible]
 		public ElfBrigand() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -91,7 +91,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override bool AlwaysMurderer{ get{ return true; } }
+		public override bool AlwaysMurderer => true;
 
 		public ElfBrigand( Serial serial ) : base( serial )
 		{

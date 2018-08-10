@@ -6,13 +6,14 @@ namespace Server.Mobiles
 	[CorpseName( "a hare corpse" )]
 	public class Rabbit : BaseCreature
 	{
+		public override string DefaultName => "a rabbit";
+
 		[Constructible]
 		public Rabbit() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a rabbit";
 			Body = 205;
 
-			if ( 0.5 >= Utility.RandomDouble() )
+			if ( Utility.RandomBool() )
 				Hue = Utility.RandomAnimalHue();
 
 			SetStr( 6, 10 );
@@ -50,20 +51,20 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override int GetAttackSound() 
-		{ 
-			return 0xC9; 
-		} 
+		public override int GetAttackSound()
+		{
+			return 0xC9;
+		}
 
-		public override int GetHurtSound() 
-		{ 
-			return 0xCA; 
-		} 
+		public override int GetHurtSound()
+		{
+			return 0xCA;
+		}
 
-		public override int GetDeathSound() 
-		{ 
-			return 0xCB; 
-		} 
+		public override int GetDeathSound()
+		{
+			return 0xCB;
+		}
 
 		public override void Serialize(GenericWriter writer)
 		{

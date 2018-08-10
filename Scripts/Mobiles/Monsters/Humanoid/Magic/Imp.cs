@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "an imp corpse" )]
 	public class Imp : BaseCreature
 	{
+		public override string DefaultName => "an imp";
+
 		[Constructible]
 		public Imp() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an imp";
 			Body = 74;
 			BaseSoundID = 422;
 
@@ -59,7 +60,7 @@ namespace Server.Mobiles
 		public override HideType HideType{ get{ return HideType.Spined; } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public override PackInstinct PackInstinct{ get{ return PackInstinct.Daemon; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public Imp( Serial serial ) : base( serial )
 		{

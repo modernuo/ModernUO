@@ -15,7 +15,7 @@ namespace Server.Spells.Chivalry
 		public override SkillName CastSkill{ get{ return SkillName.Chivalry; } }
 		public override SkillName DamageSkill{ get{ return SkillName.Chivalry; } }
 
-		public override bool ClearHandsOnCast{ get{ return false; } }
+		public override bool ClearHandsOnCast => false;
 
 		//public override int CastDelayBase{ get{ return 1; } }
 

@@ -14,9 +14,10 @@ namespace Server.Mobiles
 	{
 		public override bool DisplayWeight{ get { return true; } }
 
+		public override string DefaultName => "a horde minion";
+
 		public HordeMinionFamiliar()
 		{
-			Name = "a horde minion";
 			Body = 776;
 			BaseSoundID = 0x39D;
 

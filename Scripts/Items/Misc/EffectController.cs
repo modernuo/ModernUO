@@ -161,7 +161,7 @@ namespace Server.Items
 				DoEffect( from );
 		}
 
-		public override bool HandlesOnMovement{ get{ return ( m_TriggerType == EffectTriggerType.InRange ); } }
+		public override bool HandlesOnMovement => ( m_TriggerType == EffectTriggerType.InRange );
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a deep sea serpents corpse" )]
 	public class DeepSeaSerpent : BaseCreature
 	{
+		public override string DefaultName { get { return "a deep sea serpent"; } }
+
 		[Constructible]
 		public DeepSeaSerpent() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a deep sea serpent";
 			Body = 150;
 			BaseSoundID = 447;
 
@@ -56,7 +57,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override bool HasBreath{ get{ return true; } }
+		public override bool HasBreath => true;
 		public override int Meat{ get{ return 1; } }
 		public override int Scales{ get{ return 8; } }
 		public override ScaleType ScaleType{ get{ return ScaleType.Blue; } }

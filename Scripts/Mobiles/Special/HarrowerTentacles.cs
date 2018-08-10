@@ -24,16 +24,16 @@ namespace Server.Mobiles
 			}
 		}
 
+		public override string DefaultName => "tentacles of the harrower";
+
 		[Constructible]
 		public HarrowerTentacles() : this( null )
 		{
 		}
-		
+
 		public HarrowerTentacles( Mobile harrower ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			m_Harrower = harrower;
-
-			Name = "tentacles of the harrower";
 			Body = 129;
 
 			SetStr( 901, 1000 );
@@ -111,10 +111,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.HighScrolls, 2 );
 		}
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override bool Unprovokable{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override bool DisallowAllMoves{ get{ return true; } }
+		public override bool AutoDispel => true;
+		public override bool Unprovokable => true;
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override bool DisallowAllMoves => true;
 
 		public HarrowerTentacles( Serial serial ) : base( serial )
 		{

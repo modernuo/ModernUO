@@ -7,6 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class AgapiteElemental : BaseCreature
 	{
+		public override string DefaultName{ get { return "an agapite elemental";  } }
+
 		[Constructible]
 		public AgapiteElemental() : this( 2 )
 		{
@@ -15,7 +17,6 @@ namespace Server.Mobiles
 		[Constructible]
 		public AgapiteElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "an agapite elemental";
 			Body = 107;
 			BaseSoundID = 268;
 
@@ -55,8 +56,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 2 );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override bool AutoDispel{ get{ return true; } }
+		public override bool BleedImmune => true;
+		public override bool AutoDispel => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public AgapiteElemental( Serial serial ) : base( serial )

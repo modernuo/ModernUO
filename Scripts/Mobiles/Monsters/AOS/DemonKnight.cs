@@ -9,50 +9,51 @@ namespace Server.Mobiles
 	[CorpseName( "a demon knight corpse" )]
 	public class DemonKnight : BaseCreature
 	{
-		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+		public override bool IgnoreYoungProtection => Core.ML;
 
-		public static Type[] ArtifactRarity10 { get { return m_ArtifactRarity10; } }
-		public static Type[] ArtifactRarity11 { get { return m_ArtifactRarity11; } }
-		private static Type[] m_ArtifactRarity10 = new Type[]
-			{
-				typeof( LegacyOfTheDreadLord ),
-				typeof( TheTaskmaster )
-			};
+		public static Type[] ArtifactRarity10 => m_ArtifactRarity10;
+		public static Type[] ArtifactRarity11 => m_ArtifactRarity11;
 
-		private static Type[] m_ArtifactRarity11 = new Type[]
-			{
-				typeof( TheDragonSlayer ),
-				typeof( ArmorOfFortune ),
-				typeof( GauntletsOfNobility ),
-				typeof( HelmOfInsight ),
-				typeof( HolyKnightsBreastplate ),
-				typeof( JackalsCollar ),
-				typeof( LeggingsOfBane ),
-				typeof( MidnightBracers ),
-				typeof( OrnateCrownOfTheHarrower ),
-				typeof( ShadowDancerLeggings ),
-				typeof( TunicOfFire ),
-				typeof( VoiceOfTheFallenKing ),
-				typeof( BraceletOfHealth ),
-				typeof( OrnamentOfTheMagician ),
-				typeof( RingOfTheElements ),
-				typeof( RingOfTheVile ),
-				typeof( Aegis ),
-				typeof( ArcaneShield ),
-				typeof( AxeOfTheHeavens ),
-				typeof( BladeOfInsanity ),
-				typeof( BoneCrusher ),
-				typeof( BreathOfTheDead ),
-				typeof( Frostbringer ),
-				typeof( SerpentsFang ),
-				typeof( StaffOfTheMagi ),
-				typeof( TheBeserkersMaul ),
-				typeof( TheDryadBow ),
-				typeof( DivineCountenance ),
-				typeof( HatOfTheMagi ),
-				typeof( HuntersHeaddress ),
-				typeof( SpiritOfTheTotem )
-			};
+		private static Type[] m_ArtifactRarity10 =
+		{
+			typeof( LegacyOfTheDreadLord ),
+			typeof( TheTaskmaster )
+		};
+
+		private static Type[] m_ArtifactRarity11 =
+		{
+			typeof( TheDragonSlayer ),
+			typeof( ArmorOfFortune ),
+			typeof( GauntletsOfNobility ),
+			typeof( HelmOfInsight ),
+			typeof( HolyKnightsBreastplate ),
+			typeof( JackalsCollar ),
+			typeof( LeggingsOfBane ),
+			typeof( MidnightBracers ),
+			typeof( OrnateCrownOfTheHarrower ),
+			typeof( ShadowDancerLeggings ),
+			typeof( TunicOfFire ),
+			typeof( VoiceOfTheFallenKing ),
+			typeof( BraceletOfHealth ),
+			typeof( OrnamentOfTheMagician ),
+			typeof( RingOfTheElements ),
+			typeof( RingOfTheVile ),
+			typeof( Aegis ),
+			typeof( ArcaneShield ),
+			typeof( AxeOfTheHeavens ),
+			typeof( BladeOfInsanity ),
+			typeof( BoneCrusher ),
+			typeof( BreathOfTheDead ),
+			typeof( Frostbringer ),
+			typeof( SerpentsFang ),
+			typeof( StaffOfTheMagi ),
+			typeof( TheBeserkersMaul ),
+			typeof( TheDryadBow ),
+			typeof( DivineCountenance ),
+			typeof( HatOfTheMagi ),
+			typeof( HuntersHeaddress ),
+			typeof( SpiritOfTheTotem )
+		};
 
 		public static Item CreateRandomArtifact()
 		{
@@ -214,10 +215,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.HighScrolls, Utility.RandomMinMax( 6, 60 ) );
 		}
 
-		public override bool BardImmune{ get{ return !Core.SE; } }
-		public override bool Unprovokable{ get{ return Core.SE; } }
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
 		public override bool AreaPeaceImmune { get { return Core.SE; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int TreasureMapLevel{ get{ return 1; } }
 
@@ -264,11 +265,12 @@ namespace Server.Mobiles
 						continue;
 				}
 
-				UnholyBone bone = new UnholyBone();
-
-				bone.Hue = 0;
-				bone.Name = "unholy bones";
-				bone.ItemID = Utility.Random( 0xECA, 9 );
+				UnholyBone bone = new UnholyBone
+				{
+					Hue = 0,
+					Name = "unholy bones",
+					ItemID = Utility.Random(0xECA, 9),
+				};
 
 				bone.MoveToWorld( new Point3D( x, y, z ), map );
 			}

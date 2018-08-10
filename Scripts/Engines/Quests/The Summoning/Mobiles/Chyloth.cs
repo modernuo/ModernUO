@@ -14,6 +14,8 @@ namespace Server.Engines.Quests.Doom
 {
 	public class Chyloth : BaseQuester
 	{
+		public override string DefaultName => "Chyloth";
+
 		[Constructible]
 		public Chyloth() : base( "the Ferryman" )
 		{
@@ -29,8 +31,6 @@ namespace Server.Engines.Quests.Doom
 
 			Hue = 0x8455;
 			Body = 0x190;
-
-			Name = "Chyloth";
 		}
 
 		public override void InitOutfit()

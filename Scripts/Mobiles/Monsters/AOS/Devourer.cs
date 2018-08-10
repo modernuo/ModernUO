@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a devourer of souls corpse" )]
 	public class Devourer : BaseCreature
 	{
+		public override string DefaultName => "a devourer of souls";
+
 		[Constructible]
 		public Devourer() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a devourer of souls";
 			Body = 303;
 			BaseSoundID = 357;
 
@@ -52,7 +53,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.FilthyRich, 2 );
 		}
 
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int Meat{ get{ return 3; } }
 

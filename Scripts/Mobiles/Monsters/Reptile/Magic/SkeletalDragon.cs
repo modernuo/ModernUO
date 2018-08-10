@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a skeletal dragon corpse" )]
 	public class SkeletalDragon : BaseCreature
 	{
+		public override string DefaultName => "a skeletal dragon";
+
 		[Constructible]
 		public SkeletalDragon () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a skeletal dragon";
 			Body = 104;
 			BaseSoundID = 0x488;
 
@@ -51,17 +52,17 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 5 );
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool ReacquireOnMovement => true;
+		public override bool HasBreath => true; // fire breath enabled
 		public override int BreathFireDamage{ get{ return 0; } }
 		public override int BreathColdDamage{ get{ return 100; } }
 		public override int BreathEffectHue{ get{ return 0x480; } }
 		public override double BonusPetDamageScalar{ get{ return (Core.SE)? 3.0 : 1.0; } }
 		// TODO: Undead summoning?
 
-		public override bool AutoDispel{ get{ return true; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
-		public override bool BleedImmune{ get{ return true; } }
+		public override bool AutoDispel => true;
+		public override Poison PoisonImmune => Poison.Lethal;
+		public override bool BleedImmune => true;
 		public override int Meat{ get{ return 19; } } // where's it hiding these? :)
 		public override int Hides{ get{ return 20; } }
 		public override HideType HideType{ get{ return HideType.Barbed; } }

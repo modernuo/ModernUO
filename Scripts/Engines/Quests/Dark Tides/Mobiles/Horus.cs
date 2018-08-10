@@ -13,6 +13,8 @@ namespace Server.Engines.Quests.Necro
 {
 	public class Horus : BaseQuester
 	{
+		public override string DefaultName => "Horus";
+
 		[Constructible]
 		public Horus() : base( "the Guardian" )
 		{
@@ -24,8 +26,6 @@ namespace Server.Engines.Quests.Necro
 
 			Hue = 0x83F3;
 			Body = 0x190;
-
-			Name = "Horus";
 		}
 
 		public override void InitOutfit()

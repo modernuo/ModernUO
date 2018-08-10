@@ -6,10 +6,11 @@ namespace Server.Mobiles
 	[CorpseName( "a whipping vine corpse" )]
 	public class WhippingVine : BaseCreature
 	{
+		public override string DefaultName => "a whipping vine";
+
 		[Constructible]
 		public WhippingVine() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a whipping vine";
 			Body = 8;
 			Hue = 0x851;
 			BaseSoundID = 352;
@@ -49,8 +50,8 @@ namespace Server.Mobiles
 			PackItem( new Vines() );
 		}
 
-		public override bool BardImmune{ get{ return !Core.AOS; } }
-		public override Poison PoisonImmune{ get{ return Poison.Lethal; } }
+		public override bool BardImmune => !Core.AOS;
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public WhippingVine( Serial serial ) : base( serial )
 		{

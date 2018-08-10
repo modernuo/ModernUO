@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a drake corpse" )]
 	public class Drake : BaseCreature
 	{
+		public override string DefaultName => "a drake";
+
 		[Constructible]
 		public Drake () : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a drake";
 			Body = Utility.RandomList( 60, 61 );
 			BaseSoundID = 362;
 
@@ -53,8 +54,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override bool ReacquireOnMovement{ get{ return true; } }
-		public override bool HasBreath{ get{ return true; } } // fire breath enabled
+		public override bool ReacquireOnMovement => true;
+		public override bool HasBreath => true; // fire breath enabled
 		public override int TreasureMapLevel{ get{ return 2; } }
 		public override int Meat{ get{ return 10; } }
 		public override int Hides{ get{ return 20; } }
@@ -62,7 +63,7 @@ namespace Server.Mobiles
 		public override int Scales{ get{ return 2; } }
 		public override ScaleType ScaleType{ get{ return ( Body == 60 ? ScaleType.Yellow : ScaleType.Red ); } }
 		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish; } }
-		public override bool CanFly { get { return true; } }
+		public override bool CanFly => true;
 
 		public Drake( Serial serial ) : base( serial )
 		{

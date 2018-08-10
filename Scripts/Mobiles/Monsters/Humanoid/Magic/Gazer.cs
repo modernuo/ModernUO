@@ -7,10 +7,11 @@ namespace Server.Mobiles
 	[CorpseName( "a gazer corpse" )]
 	public class Gazer : BaseCreature
 	{
+		public override string DefaultName => "a gazer";
+
 		[Constructible]
 		public Gazer () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a gazer";
 			Body = 22;
 			BaseSoundID = 377;
 

@@ -11,7 +11,7 @@ namespace Server.Engines.MLQuests.Mobiles
 {
 	public abstract class DoneQuestCollector : BaseCreature, IRaceChanger
 	{
-		public override bool IsInvulnerable { get { return true; } }
+		public override bool IsInvulnerable => true;
 
 		public abstract TextDefinition[] Offer { get; }
 		public abstract TextDefinition[] Incomplete { get; }
@@ -273,10 +273,11 @@ namespace Server.Engines.MLQuests.Mobiles
 		public override TextDefinition[] Complete { get { return m_Complete; } }
 		public override Type[] Needed { get { return m_Needed; } }
 
+		public override string DefaultName => "Darius";
+
 		[Constructible]
 		public Darius()
 		{
-			Name = "Darius";
 			Title = "the wise";
 			Race = Race.Elf;
 			Hue = Race.RandomSkinHue();
@@ -369,10 +370,11 @@ namespace Server.Engines.MLQuests.Mobiles
 		public override TextDefinition[] Complete { get { return m_Complete; } }
 		public override Type[] Needed { get { return m_Needed; } }
 
+		public override string DefaultName => "Nedrick";
+
 		[Constructible]
 		public Nedrick()
 		{
-			Name = "Nedrick";
 			Title = "the iron worker";
 			Race = Race.Human;
 			Hue = Race.RandomSkinHue();

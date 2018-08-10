@@ -18,8 +18,8 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override bool SubdueBeforeTame{ get{ return true; } } // Must be beaten into submission
-		public override bool ReduceSpeedWithDamage{ get{ return false; } }
+		public override bool SubdueBeforeTame => true; // Must be beaten into submission
+		public override bool ReduceSpeedWithDamage => false;
 
 		[Constructible]
 		public Beetle( string name ) : base( name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.25, 0.5 )

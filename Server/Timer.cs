@@ -343,7 +343,7 @@ namespace Server
 									m_Queue.Enqueue( t );
 
 								loaded = true;
-									
+
 								if ( t.m_Count != 0 && (++t.m_Index >= t.m_Count) )
 								{
 									t.Stop();
@@ -569,7 +569,7 @@ namespace Server
 
 			public TimerCallback Callback{ get{ return m_Callback; } }
 
-			public override bool DefRegCreation{ get{ return false; } }
+			public override bool DefRegCreation => false;
 
 			public DelayCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerCallback callback ) : base( delay, interval, count )
 			{
@@ -596,7 +596,7 @@ namespace Server
 
 			public TimerStateCallback Callback{ get{ return m_Callback; } }
 
-			public override bool DefRegCreation{ get{ return false; } }
+			public override bool DefRegCreation => false;
 
 			public DelayStateCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerStateCallback callback, object state ) : base( delay, interval, count )
 			{
@@ -625,7 +625,7 @@ namespace Server
 
 			public TimerStateCallback<T> Callback { get { return m_Callback; } }
 
-			public override bool DefRegCreation { get { return false; } }
+			public override bool DefRegCreation => false;
 
 			public DelayStateCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state )
 				: base( delay, interval, count )

@@ -29,7 +29,7 @@ namespace Server.Items
 			get{ return m_Sounds; }
 		}
 
-		public override bool HandlesOnMovement{ get{ return m_TurnedOn && IsLockedDown; } }
+		public override bool HandlesOnMovement => m_TurnedOn && IsLockedDown;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

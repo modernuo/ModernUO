@@ -27,7 +27,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		public override bool Nontransferable { get { return true; } }
+		public override bool Nontransferable => true;
 		public override void HandleInvalidTransfer( Mobile from )
 		{
 			if( InvalidTransferMessage != null )

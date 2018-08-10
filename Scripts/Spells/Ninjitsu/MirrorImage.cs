@@ -54,7 +54,7 @@ namespace Server.Spells.Ninjitsu
 		public override double RequiredSkill{ get{ return Core.ML ? 20.0 : 40.0; } }
 		public override int RequiredMana{ get{ return 10; } }
 
-		public override bool BlockedByAnimalForm{ get{ return false; } }
+		public override bool BlockedByAnimalForm => false;
 
 		public MirrorImage( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -192,7 +192,7 @@ namespace Server.Mobiles
 			Delete();
 		}
 
-		public override bool DeleteCorpseOnDeath { get { return true; } }
+		public override bool DeleteCorpseOnDeath => true;
 
 		public override void OnDelete()
 		{
@@ -207,8 +207,8 @@ namespace Server.Mobiles
 			base.OnAfterDelete();
 		}
 
-		public override bool IsDispellable { get { return false; } }
-		public override bool Commandable { get { return false; } }
+		public override bool IsDispellable => false;
+		public override bool Commandable => false;
 
 		public Clone( Serial serial ) : base( serial )
 		{
@@ -263,7 +263,7 @@ namespace Server.Mobiles
 
 			return true;
 		}
-		
-		public override bool CanDetectHidden { get { return false; } }
+
+		public override bool CanDetectHidden => false;
 	}
 }

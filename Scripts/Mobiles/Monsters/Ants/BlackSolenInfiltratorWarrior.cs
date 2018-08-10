@@ -8,10 +8,11 @@ namespace Server.Mobiles
 	[CorpseName( "a solen infiltrator corpse" )]
 	public class BlackSolenInfiltratorWarrior : BaseCreature
 	{
+		public override string DefaultName => "a black solen infiltrator";
+
 		[Constructible]
 		public BlackSolenInfiltratorWarrior() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			Name = "a black solen infiltrator";
 			Body = 806;
 			BaseSoundID = 959;
 			Hue = 0x453;
@@ -44,7 +45,7 @@ namespace Server.Mobiles
 
 			SolenHelper.PackPicnicBasket( this );
 
-			PackItem( new ZoogiFungus( ( 0.05 > Utility.RandomDouble() )? 13 : 3 ) );		
+			PackItem( new ZoogiFungus( ( 0.05 > Utility.RandomDouble() )? 13 : 3 ) );
 		}
 
 		public override int GetAngerSound()

@@ -73,7 +73,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager, 2 );
 		}
 
-		public override bool CanRummageCorpses{ get{ return true; } }
+		public override bool CanRummageCorpses => true;
 		public override int Meat{ get{ return 1; } }
 
 		public override OppositionGroup OppositionGroup

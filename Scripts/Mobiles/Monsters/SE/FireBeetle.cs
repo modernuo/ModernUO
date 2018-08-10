@@ -8,10 +8,10 @@ namespace Server.Mobiles
 	[Server.Engines.Craft.Forge]
 	public class FireBeetle : BaseMount
 	{
-		public override bool SubdueBeforeTame{ get{ return true; } } // Must be beaten into submission
-		public override bool StatLossAfterTame{ get{ return true; } }
+		public override bool SubdueBeforeTame => true; // Must be beaten into submission
+		public override bool StatLossAfterTame => true;
 		public virtual double BoostedSpeed{ get{ return 0.1; } }
-		public override bool ReduceSpeedWithDamage{ get{ return false; } }
+		public override bool ReduceSpeedWithDamage => false;
 
 		[Constructible]
 		public FireBeetle() : base( "a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )

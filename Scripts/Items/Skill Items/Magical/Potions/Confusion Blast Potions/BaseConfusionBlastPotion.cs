@@ -14,7 +14,7 @@ namespace Server.Items
 	{
 		public abstract int Radius{ get; }
 
-		public override bool RequireFreeHand{ get{ return false; } }
+		public override bool RequireFreeHand => false;
 
 		public BaseConfusionBlastPotion( PotionEffect effect ) : base( 0xF06, effect )
 		{
@@ -120,11 +120,11 @@ namespace Server.Items
 			if ( map.CanFit( p, 12, true, false ) )
 				Effects.SendLocationEffect( p, map, 0x376A, 4, 9 );
 		}
-		
+
 		public void CircleEffect2( object state )
 		{
 			object[] states = (object[]) state;
-				
+
 			Geometry.Circle2D( (Point3D)states[0], (Map)states[1], Radius, new DoEffect_Callback( BlastEffect ), 90, 270 );
 		}
 		#endregion
@@ -139,7 +139,7 @@ namespace Server.Items
 			if ( timer != null )
 				timer.Stop();
 
-			m_Delay[ m ] = Timer.DelayCall( TimeSpan.FromSeconds( 60 ), new TimerStateCallback( EndDelay_Callback ), m );	
+			m_Delay[ m ] = Timer.DelayCall( TimeSpan.FromSeconds( 60 ), new TimerStateCallback( EndDelay_Callback ), m );
 		}
 
 		public static int GetDelay( Mobile m )
@@ -168,7 +168,7 @@ namespace Server.Items
 				m_Delay.Remove( m );
 			}
 		}
-		#endregion		
+		#endregion
 
 		private class ThrowTarget : Target
 		{

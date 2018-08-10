@@ -10,15 +10,16 @@ namespace Server.Mobiles
 	/// You can set its value in game
 	/// It die after 5 minutes, so your test server stay clean
 	/// Create a macro to help your creation "[add Dummy 1 15 7 -1 0.5 2"
-	/// 
+	///
 	/// A iTeam of negative will set a faction at random
-	/// 
+	///
 	/// Say Kill if you want them to die
-	/// 
+	///
 	/// </summary>
 
 	public class DummyMace : Dummy
 	{
+		public override string DefaultName => "Macer";
 
 		[Constructible]
 		public DummyMace() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
@@ -33,10 +34,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Anatomy].Base = 120;
 			this.Skills[SkillName.Healing].Base = 120;
 			this.Skills[SkillName.Tactics].Base = 120;
-
-
-			// Name
-			this.Name = "Macer";
 
 			// Equip
 			WarHammer war = new WarHammer();
@@ -95,6 +92,7 @@ namespace Server.Mobiles
 
 	public class DummyFence : Dummy
 	{
+		public override string DefaultName => "Fencer";
 
 		[Constructible]
 		public DummyFence() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
@@ -109,9 +107,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Anatomy].Base = 120;
 			this.Skills[SkillName.Healing].Base = 120;
 			this.Skills[SkillName.Tactics].Base = 120;
-
-			// Name
-			this.Name = "Fencer";
 
 			// Equip
 			Spear ssp = new Spear();
@@ -171,7 +166,7 @@ namespace Server.Mobiles
 
 	public class DummySword : Dummy
 	{
-
+		public override string DefaultName => "Swordsman";
 		[Constructible]
 		public DummySword() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
@@ -186,10 +181,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Healing].Base = 120;
 			this.Skills[SkillName.Tactics].Base = 120;
 			this.Skills[SkillName.Parry].Base = 120;
-
-
-			// Name
-			this.Name = "Swordsman";
 
 			// Equip
 			Katana kat = new Katana();
@@ -248,7 +239,7 @@ namespace Server.Mobiles
 
 	public class DummyNox : Dummy
 	{
-
+		public override string DefaultName => "Nox Mage";
 		[Constructible]
 		public DummyNox() : base(AIType.AI_Mage, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
@@ -265,10 +256,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Wrestling].Base = 120;
 			this.Skills[SkillName.Meditation].Base = 120;
 			this.Skills[SkillName.Poisoning].Base = 100;
-
-
-			// Name
-			this.Name = "Nox Mage";
 
 			// Equip
 			Spellbook book = new Spellbook();
@@ -319,6 +306,7 @@ namespace Server.Mobiles
 
 	public class DummyStun : Dummy
 	{
+		public override string DefaultName => "Stun Mage";
 
 		[Constructible]
 		public DummyStun() : base(AIType.AI_Mage, FightMode.Closest, 15, 1, 0.2, 0.6)
@@ -336,10 +324,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Wrestling].Base = 80;
 			this.Skills[SkillName.Meditation].Base = 100;
 			this.Skills[SkillName.Poisoning].Base = 100;
-
-
-			// Name
-			this.Name = "Stun Mage";
 
 			// Equip
 			Spellbook book = new Spellbook();
@@ -413,6 +397,7 @@ namespace Server.Mobiles
 
 	public class DummySuper : Dummy
 	{
+		public override string DefaultName => "Super Mage";
 
 		[Constructible]
 		public DummySuper() : base(AIType.AI_Mage, FightMode.Closest, 15, 1, 0.2, 0.6)
@@ -430,9 +415,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Meditation].Base = 120;
 			this.Skills[SkillName.Poisoning].Base = 100;
 			this.Skills[SkillName.Inscribe].Base = 100;
-
-			// Name
-			this.Name = "Super Mage";
 
 			// Equip
 			Spellbook book = new Spellbook();
@@ -511,7 +493,7 @@ namespace Server.Mobiles
 
 	public class DummyHealer : Dummy
 	{
-
+		public override string DefaultName => "Healer";
 		[Constructible]
 		public DummyHealer() : base(AIType.AI_Healer, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
@@ -527,9 +509,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Wrestling].Base = 120;
 			this.Skills[SkillName.Meditation].Base = 120;
 			this.Skills[SkillName.Healing].Base = 100;
-
-			// Name
-			this.Name = "Healer";
 
 			// Equip
 			Spellbook book = new Spellbook();
@@ -602,6 +581,7 @@ namespace Server.Mobiles
 
 	public class DummyAssassin : Dummy
 	{
+		public override string DefaultName => "Hybrid Assassin";
 
 		[Constructible]
 		public DummyAssassin() : base(AIType.AI_Melee, FightMode.Closest, 15, 1, 0.2, 0.6)
@@ -618,9 +598,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.Tactics].Base = 120;
 			this.Skills[SkillName.Meditation].Base = 120;
 			this.Skills[SkillName.Poisoning].Base = 100;
-
-			// Name
-			this.Name = "Hybrid Assassin";
 
 			// Equip
 			Spellbook book = new Spellbook();
@@ -722,6 +699,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.DummyTheif" )]
 	public class DummyThief : Dummy
 	{
+		public override string DefaultName => "Hybrid Thief";
 		[Constructible]
 		public DummyThief() : base(AIType.AI_Thief, FightMode.Closest, 15, 1, 0.2, 0.6)
 		{
@@ -737,9 +715,6 @@ namespace Server.Mobiles
 			this.Skills[SkillName.ArmsLore].Base = 100;
 			this.Skills[SkillName.Meditation].Base = 120;
 			this.Skills[SkillName.Wrestling].Base = 120;
-
-			// Name
-			this.Name = "Hybrid Thief";
 
 			// Equip
 			Spellbook book = new Spellbook();

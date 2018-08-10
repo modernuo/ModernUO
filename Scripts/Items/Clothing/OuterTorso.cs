@@ -616,7 +616,7 @@ namespace Server.Items
 			StrRequirement = 0;
 		}
 		public override int LabelNumber{ get{ return 1076584; } } // A monk's robe
-		public override bool CanBeBlessed { get { return false; } }
+		public override bool CanBeBlessed => false;
 		public override bool Dye( Mobile from, DyeTub sender )
 		{
 			from.SendLocalizedMessage( sender.FailMessage );
@@ -756,7 +756,7 @@ namespace Server.Items
 			Weight = 3.0;
 		}
 
-		public override bool AllowFemaleWearer{ get{ return false; } }
+		public override bool AllowFemaleWearer => false;
 
 		public MaleKimono( Serial serial ) : base( serial )
 		{
@@ -791,7 +791,7 @@ namespace Server.Items
 			Weight = 3.0;
 		}
 
-		public override bool AllowMaleWearer{ get{ return false; } }
+		public override bool AllowMaleWearer => false;
 
 		public FemaleKimono( Serial serial ) : base( serial )
 		{
@@ -862,7 +862,7 @@ namespace Server.Items
 			Weight = 2.0;
 		}
 
-		public override bool AllowMaleWearer{ get{ return false; } }
+		public override bool AllowMaleWearer => false;
 
 		public FemaleElvenRobe( Serial serial ) : base( serial )
 		{

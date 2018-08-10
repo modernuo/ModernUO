@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class Relnia : BaseQuester
 	{
+		public override string DefaultName => "Disheveled Relnia";
+
 		[Constructible]
 		public Relnia() : base( "the Gypsy" )
 		{
@@ -21,7 +23,6 @@ namespace Server.Engines.Quests.Samurai
 
 			Female = true;
 			Body = 0x191;
-			Name = "Disheveled Relnia";
 		}
 
 		public override void InitOutfit()

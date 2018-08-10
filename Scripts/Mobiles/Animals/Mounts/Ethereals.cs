@@ -102,7 +102,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override bool DisplayLootType { get { return false; } }
+		public override bool DisplayLootType => false;
 
 		public virtual int FollowerSlots { get { return 1; } }
 
@@ -367,8 +367,8 @@ namespace Server.Mobiles
 				m_Mount = mount;
 			}
 
-			public override bool ClearHandsOnCast { get { return false; } }
-			public override bool RevealOnCast { get { return false; } }
+			public override bool ClearHandsOnCast => false;
+			public override bool RevealOnCast => false;
 
 			public override TimeSpan GetCastRecovery()
 			{
@@ -715,7 +715,7 @@ namespace Server.Mobiles
 
 	public class RideablePolarBear : EtherealMount
 	{
-		public override int LabelNumber { get { return 1076159; } } // Rideable Polar Bear 
+		public override int LabelNumber { get { return 1076159; } } // Rideable Polar Bear
 		public override int EtherealHue { get { return 0; } }
 
 		[Constructible]

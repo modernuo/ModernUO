@@ -7,6 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class BronzeElemental : BaseCreature
 	{
+		public override string DefaultName { get { return "a bronze elemental"; } }
+
 		[Constructible]
 		public BronzeElemental() : this( 2 )
 		{
@@ -16,7 +18,6 @@ namespace Server.Mobiles
 		public BronzeElemental( int oreAmount ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			// TODO: Gas attack
-			Name = "a bronze elemental";
 			Body = 108;
 			BaseSoundID = 268;
 
@@ -57,8 +58,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems, 2 );
 		}
 
-		public override bool BleedImmune{ get{ return true; } }
-		public override bool AutoDispel{ get{ return true; } }
+		public override bool BleedImmune => true;
+		public override bool AutoDispel => true;
 		public override int TreasureMapLevel{ get{ return 1; } }
 
 		public BronzeElemental( Serial serial ) : base( serial )

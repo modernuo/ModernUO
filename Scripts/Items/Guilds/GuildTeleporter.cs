@@ -30,7 +30,7 @@ namespace Server.Items
 		{
 		}
 
-		public override bool DisplayLootType{ get{ return false; } }
+		public override bool DisplayLootType => false;
 
 		public override void Serialize( GenericWriter writer )
 		{

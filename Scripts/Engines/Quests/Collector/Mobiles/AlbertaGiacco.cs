@@ -8,6 +8,8 @@ namespace Server.Engines.Quests.Collector
 {
 	public class AlbertaGiacco : BaseQuester
 	{
+		public override string DefaultName => "Alberta Giacco";
+
 		[Constructible]
 		public AlbertaGiacco() : base( "the respected painter" )
 		{
@@ -25,7 +27,6 @@ namespace Server.Engines.Quests.Collector
 
 			Female = true;
 			Body = 0x191;
-			Name = "Alberta Giacco";
 		}
 
 		public override void InitOutfit()
