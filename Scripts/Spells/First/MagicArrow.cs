@@ -13,13 +13,13 @@ namespace Server.Spells.First
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.First; } }
+		public override SpellCircle Circle => SpellCircle.First;
 
 		public MagicArrowSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
 		}
 
-        public override bool DelayedDamageStacking { get { return !Core.AOS; } }
+        public override bool DelayedDamageStacking => !Core.AOS;
 
 		public override void OnCast()
 		{

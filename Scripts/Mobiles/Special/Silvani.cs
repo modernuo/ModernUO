@@ -57,7 +57,7 @@ namespace Server.Mobiles
 		public override bool CanFly => true;
 		public override bool Unprovokable => true;
 		public override Poison PoisonImmune => Poison.Regular;
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int TreasureMapLevel => 5;
 
 		public void SpawnPixies( Mobile target )
 		{

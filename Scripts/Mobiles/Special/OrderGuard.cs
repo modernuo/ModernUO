@@ -8,10 +8,10 @@ namespace Server.Mobiles
 {
 	public class OrderGuard : BaseShieldGuard
 	{
-		public override int Keyword{ get{ return 0x21; } } // *order shield*
-		public override BaseShield Shield{ get{ return new OrderShield(); } }
-		public override int SignupNumber{ get{ return 1007141; } } // Sign up with a guild of order if thou art interested.
-		public override GuildType Type{ get{ return GuildType.Order; } }
+		public override int Keyword => 0x21; // *order shield*
+		public override BaseShield Shield => new OrderShield();
+		public override int SignupNumber => 1007141; // Sign up with a guild of order if thou art interested.
+		public override GuildType Type => GuildType.Order;
 
 		public override bool BardImmune => true;
 

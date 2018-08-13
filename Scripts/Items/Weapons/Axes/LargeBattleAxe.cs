@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0x13FB, 0x13FA )]
 	public class LargeBattleAxe : BaseAxe
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.WhirlwindAttack; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.BleedAttack; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;
 
-		public override int AosStrengthReq{ get{ return 80; } }
-		public override int AosMinDamage{ get{ return 16; } }
-		public override int AosMaxDamage{ get{ return 17; } }
-		public override int AosSpeed{ get{ return 29; } }
-		public override float MlSpeed{ get{ return 3.75f; } }
+		public override int AosStrengthReq => 80;
+		public override int AosMinDamage => 16;
+		public override int AosMaxDamage => 17;
+		public override int AosSpeed => 29;
+		public override float MlSpeed => 3.75f;
 
-		public override int OldStrengthReq{ get{ return 40; } }
-		public override int OldMinDamage{ get{ return 6; } }
-		public override int OldMaxDamage{ get{ return 38; } }
-		public override int OldSpeed{ get{ return 30; } }
+		public override int OldStrengthReq => 40;
+		public override int OldMinDamage => 6;
+		public override int OldMaxDamage => 38;
+		public override int OldSpeed => 30;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 70; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 70;
 
 		[Constructible]
 		public LargeBattleAxe() : base( 0x13FB )

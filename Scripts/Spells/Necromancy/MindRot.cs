@@ -17,10 +17,10 @@ namespace Server.Spells.Necromancy
 				Reagent.DaemonBlood
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return 30.0; } }
-		public override int RequiredMana{ get{ return 17; } }
+		public override double RequiredSkill => 30.0;
+		public override int RequiredMana => 17;
 
 		public MindRotSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -48,7 +48,7 @@ namespace Server.Spells.Necromancy
 
 				 if ( m.Spell != null )
 					m.Spell.OnCasterHurt();
-				
+
 				m.PlaySound( 0x1FB );
 				m.PlaySound( 0x258 );
 				m.FixedParticles( 0x373A, 1, 17, 9903, 15, 4, EffectLayer.Head );
@@ -147,7 +147,7 @@ namespace Server.Spells.Necromancy
 			m_End = DateTime.UtcNow + delay;
 			Priority = TimerPriority.TwoFiftyMS;
 		}
-		
+
 		public void RenewDelay(TimeSpan delay)
 		{
 			m_End = DateTime.UtcNow + delay;

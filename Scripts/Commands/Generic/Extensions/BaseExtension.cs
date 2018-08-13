@@ -97,9 +97,7 @@ namespace Server.Commands.Generic
 
 			for ( int i = args.Length - 1; i >= 0; --i )
 			{
-				ExtensionInfo extInfo = null;
-
-				if ( !ExtensionInfo.Table.TryGetValue( args[i], out extInfo ) )
+				if ( !ExtensionInfo.Table.TryGetValue( args[i], out ExtensionInfo extInfo ) )
 					continue;
 
 				if ( extInfo.IsFixedSize && i != ( size - extInfo.Size - 1 ) )

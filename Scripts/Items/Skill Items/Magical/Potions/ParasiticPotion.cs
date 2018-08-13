@@ -5,12 +5,13 @@ namespace Server.Items
 {
 	public class ParasiticPotion : BasePoisonPotion
 	{
-		public override Poison Poison{ get{ return Poison.Greater; } } 		/* public override Poison Poison{ get{ return Poison.Darkglow; } }  MUST be restored when prerequisites are done */
+		/* public override Poison Poison => Poison.Darkglow;  MUST be restored when prerequisites are done */
+		public override Poison Poison => Poison.Greater;
 
-		public override double MinPoisoningSkill{ get{ return 95.0; } }
-		public override double MaxPoisoningSkill{ get{ return 100.0; } }
-		
-		public override int LabelNumber{ get{ return 1072848; } } // Parasitic Poison
+		public override double MinPoisoningSkill => 95.0;
+		public override double MaxPoisoningSkill => 100.0;
+
+		public override int LabelNumber => 1072848; // Parasitic Poison
 
 		[Constructible]
 		public ParasiticPotion() : base( PotionEffect.Parasitic )

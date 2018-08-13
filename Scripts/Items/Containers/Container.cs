@@ -234,7 +234,7 @@ namespace Server.Items
 			return base.CheckHold( m, item, false, checkItems, plusItems, plusWeight );
 		}
 
-		public override int DefaultMaxWeight{ get{ return 1600; } }
+		public override int DefaultMaxWeight => 1600;
 
 		public override bool CheckContentDisplay( Mobile from )
 		{
@@ -957,7 +957,7 @@ namespace Server.Items
 
 			if ( version == 0 && Weight == 15 )
 				Weight = -1;
-			
+
 			if ( version < 2 )
 				GumpID = 0x10B;
 		}

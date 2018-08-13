@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class FullMoonFish : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1074597; } } // A Full Moon Fish
-		
+	{
+		public override int LabelNumber => 1074597; // A Full Moon Fish
+
 		[Constructible]
 		public FullMoonFish() : base( 0x3B15 )
 		{
-		}		
+		}
 
 		public FullMoonFish( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

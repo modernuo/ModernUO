@@ -26,10 +26,10 @@ namespace Server.Gumps
 		private int m_Points;
 		private RewardPickedHandler m_OnPicked;
 
-		public TextDefinition Title { get { return m_Title; } }
-		public IRewardEntry[] Rewards { get { return m_Rewards; } }
-		public int Points { get { return m_Points; } }
-		public RewardPickedHandler OnPicked { get { return m_OnPicked; } }
+		public TextDefinition Title  => m_Title;
+		public IRewardEntry[] Rewards  => m_Rewards;
+		public int Points  => m_Points;
+		public RewardPickedHandler OnPicked  => m_OnPicked;
 
 		public RewardGump( TextDefinition title, IRewardEntry[] rewards, int points, RewardPickedHandler onPicked )
 			: base( 250, 50 )

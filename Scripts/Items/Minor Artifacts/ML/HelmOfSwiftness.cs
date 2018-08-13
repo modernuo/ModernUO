@@ -5,22 +5,22 @@ namespace Server.Items
 {
 	public class HelmOfSwiftness : WingedHelm
 	{
-		public override int LabelNumber{ get{ return 1075037; } } // Helm of Swiftness
-		
-		public override int BasePhysicalResistance{ get{ return 6; } }
-		public override int BaseFireResistance{ get{ return 5; } }
-		public override int BaseColdResistance{ get{ return 6; } }
-		public override int BasePoisonResistance{ get{ return 6; } }
-		public override int BaseEnergyResistance{ get{ return 8; } }
+		public override int LabelNumber => 1075037; // Helm of Swiftness
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int BasePhysicalResistance => 6;
+		public override int BaseFireResistance => 5;
+		public override int BaseColdResistance => 6;
+		public override int BasePoisonResistance => 6;
+		public override int BaseEnergyResistance => 8;
+
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
-		public HelmOfSwiftness() : base()
+		public HelmOfSwiftness()
 		{
 			Hue = 0x592;
-			
+
 			Attributes.BonusInt = 5;
 			Attributes.CastSpeed = 1;
 			Attributes.CastRecovery = 2;

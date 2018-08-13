@@ -12,14 +12,14 @@ namespace Server.Spells.Chivalry
 		public abstract int RequiredTithing{ get; }
 		public abstract int MantraNumber{ get; }
 
-		public override SkillName CastSkill{ get{ return SkillName.Chivalry; } }
-		public override SkillName DamageSkill{ get{ return SkillName.Chivalry; } }
+		public override SkillName CastSkill => SkillName.Chivalry;
+		public override SkillName DamageSkill => SkillName.Chivalry;
 
 		public override bool ClearHandsOnCast => false;
 
-		//public override int CastDelayBase{ get{ return 1; } }
+		//public override int CastDelayBase => 1;
 
-		public override int CastRecoveryBase{ get{ return 7; } }
+		public override int CastRecoveryBase => 7;
 
 		public PaladinSpell( Mobile caster, Item scroll, SpellInfo info ) : base( caster, scroll, info )
 		{

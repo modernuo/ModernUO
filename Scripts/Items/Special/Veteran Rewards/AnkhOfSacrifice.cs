@@ -12,7 +12,7 @@ namespace Server.Items
 	public class AnkhOfSacrificeComponent : AddonComponent
 	{
 		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-		public override int LabelNumber{ get{ return 1027772; } } // Ankh of Sacrifice
+		public override int LabelNumber => 1027772; // Ankh of Sacrifice
 
 		public AnkhOfSacrificeComponent( int itemID ) : base( itemID )
 		{
@@ -175,7 +175,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public AnkhOfSacrificeAddon( bool east ) : base()
+		public AnkhOfSacrificeAddon( bool east )
 		{
 			if ( east )
 			{
@@ -228,7 +228,7 @@ namespace Server.Items
 
 	public class AnkhOfSacrificeDeed : BaseAddonDeed, IRewardItem, IRewardOption
 	{
-		public override int LabelNumber{ get{ return 1080397; } } // Deed For An Ankh Of Sacrifice
+		public override int LabelNumber => 1080397; // Deed For An Ankh Of Sacrifice
 
 		public override BaseAddon Addon
 		{
@@ -257,7 +257,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public AnkhOfSacrificeDeed( bool isRewardItem ) : base()
+		public AnkhOfSacrificeDeed( bool isRewardItem )
 		{
 			LootType = LootType.Blessed;
 

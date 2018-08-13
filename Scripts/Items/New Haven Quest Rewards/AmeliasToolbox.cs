@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class AmeliasToolbox : TinkerTools
 	{
-		public override int LabelNumber{ get{ return 1077749; } } // Amelias Toolbox
+		public override int LabelNumber => 1077749; // Amelias Toolbox
 
 		[Constructible]
 		public AmeliasToolbox() : base( 500 )

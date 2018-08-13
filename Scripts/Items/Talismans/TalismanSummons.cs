@@ -68,7 +68,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "an ant lion";
 
 		[Constructible]
-		public SummonedAntLion() : base()
+		public SummonedAntLion()
 		{
 			Body = 787;
 			BaseSoundID = 1006;
@@ -128,7 +128,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a bake kitsune";
 
 		[Constructible]
-		public SummonedBakeKitsune() : base()
+		public SummonedBakeKitsune()
 		{
 			Body = 246;
 			BaseSoundID = 0x4DD;
@@ -158,7 +158,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a bogling";
 
 		[Constructible]
-		public SummonedBogling() : base()
+		public SummonedBogling()
 		{
 			Body = 779;
 			BaseSoundID = 422;
@@ -188,7 +188,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a bull frog";
 
 		[Constructible]
-		public SummonedBullFrog() : base()
+		public SummonedBullFrog()
 		{
 			Body = 81;
 			Hue = Utility.RandomList( 0x5AC, 0x5A3, 0x59A, 0x591, 0x588, 0x57F );
@@ -219,7 +219,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a chicken";
 
 		[Constructible]
-		public SummonedChicken() : base()
+		public SummonedChicken()
 		{
 			Body = 0xD0;
 			BaseSoundID = 0x6E;
@@ -249,7 +249,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a cow";
 
 		[Constructible]
-		public SummonedCow() : base()
+		public SummonedCow()
 		{
 			Body = Utility.RandomList( 0xD8, 0xE7 );
 			BaseSoundID = 0x78;
@@ -278,7 +278,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a doppleganger";
 
 		[Constructible]
-		public SummonedDoppleganger() : base()
+		public SummonedDoppleganger()
 		{
 			Body = 0x309;
 			BaseSoundID = 0x451;
@@ -308,7 +308,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a frost spider";
 
 		[Constructible]
-		public SummonedFrostSpider() : base()
+		public SummonedFrostSpider()
 		{
 			Body = 20;
 			BaseSoundID = 0x388;
@@ -338,7 +338,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a great hart";
 
 		[Constructible]
-		public SummonedGreatHart() : base()
+		public SummonedGreatHart()
 		{
 			Body = 0xEA;
 			BaseSoundID = 0x82;
@@ -368,7 +368,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a lava serpent";
 
 		[Constructible]
-		public SummonedLavaSerpent() : base()
+		public SummonedLavaSerpent()
 		{
 			Body = 90;
 			BaseSoundID = 219;
@@ -442,7 +442,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "an orc brute";
 
 		[Constructible]
-		public SummonedOrcBrute() : base()
+		public SummonedOrcBrute()
 		{
 			Body = 189;
 			BaseSoundID = 0x45A;
@@ -472,7 +472,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a panther";
 
 		[Constructible]
-		public SummonedPanther() : base()
+		public SummonedPanther()
 		{
 			Body = 0xD6;
 			Hue = 0x901;
@@ -503,7 +503,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a sheep";
 
 		[Constructible]
-		public SummonedSheep() : base()
+		public SummonedSheep()
 		{
 			Body = 0xCF;
 			BaseSoundID = 0xD6;
@@ -534,7 +534,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a skeletal knight";
 
 		[Constructible]
-		public SummonedSkeletalKnight() : base()
+		public SummonedSkeletalKnight()
 		{
 			Body = 147;
 			BaseSoundID = 451;
@@ -564,7 +564,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a vorpal bunny";
 
 		[Constructible]
-		public SummonedVorpalBunny() : base()
+		public SummonedVorpalBunny()
 		{
 			Body = 205;
 			Hue = 0x480;
@@ -611,7 +611,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "a wailing banshee";
 
 		[Constructible]
-		public SummonedWailingBanshee() : base()
+		public SummonedWailingBanshee()
 		{
 			Body = 310;
 			BaseSoundID = 0x482;

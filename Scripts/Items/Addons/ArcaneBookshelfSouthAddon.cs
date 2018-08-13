@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ArcaneBookshelfSouthAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new ArcaneBookshelfSouthDeed(); } }
+		public override BaseAddonDeed Deed => new ArcaneBookshelfSouthDeed();
 
 		[Constructible]
 		public ArcaneBookshelfSouthAddon()
@@ -35,8 +35,8 @@ namespace Server.Items
 
 	public class ArcaneBookshelfSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ArcaneBookshelfSouthAddon(); } }
-		public override int LabelNumber{ get{ return 1072871; } } // arcane bookshelf (south)
+		public override BaseAddon Addon => new ArcaneBookshelfSouthAddon();
+		public override int LabelNumber => 1072871; // arcane bookshelf (south)
 
 		[Constructible]
 		public ArcaneBookshelfSouthDeed()

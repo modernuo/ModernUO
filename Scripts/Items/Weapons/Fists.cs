@@ -14,26 +14,26 @@ namespace Server.Items
 			EventSink.StunRequest += new StunRequestEventHandler( EventSink_StunRequest );
 		}
 
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Disarm; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ParalyzingBlow; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
 
-		public override int AosStrengthReq{ get{ return 0; } }
-		public override int AosMinDamage{ get{ return 1; } }
-		public override int AosMaxDamage{ get{ return 4; } }
-		public override int AosSpeed{ get{ return 50; } }
-		public override float MlSpeed{ get{ return 2.50f; } }
+		public override int AosStrengthReq => 0;
+		public override int AosMinDamage => 1;
+		public override int AosMaxDamage => 4;
+		public override int AosSpeed => 50;
+		public override float MlSpeed => 2.50f;
 
-		public override int OldStrengthReq{ get{ return 0; } }
-		public override int OldMinDamage{ get{ return 1; } }
-		public override int OldMaxDamage{ get{ return 8; } }
-		public override int OldSpeed{ get{ return 30; } }
+		public override int OldStrengthReq => 0;
+		public override int OldMinDamage => 1;
+		public override int OldMaxDamage => 8;
+		public override int OldSpeed => 30;
 
-		public override int DefHitSound{ get{ return -1; } }
-		public override int DefMissSound{ get{ return -1; } }
+		public override int DefHitSound => -1;
+		public override int DefMissSound => -1;
 
-		public override SkillName DefSkill{ get{ return SkillName.Wrestling; } }
-		public override WeaponType DefType{ get{ return WeaponType.Fists; } }
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Wrestle; } }
+		public override SkillName DefSkill => SkillName.Wrestling;
+		public override WeaponType DefType => WeaponType.Fists;
+		public override WeaponAnimation DefAnimation => WeaponAnimation.Wrestle;
 
 		public Fists() : base( 0 )
 		{

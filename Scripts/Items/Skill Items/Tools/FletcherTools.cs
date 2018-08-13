@@ -7,7 +7,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x1022, 0x1023 )]
 	public class FletcherTools : BaseTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefBowFletching.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefBowFletching.CraftSystem;
 
 		[Constructible]
 		public FletcherTools() : base( 0x1022 )

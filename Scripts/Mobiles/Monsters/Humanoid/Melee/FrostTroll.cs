@@ -50,8 +50,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems );
 		}
 
-		public override int Meat{ get{ return 2; } }
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int Meat => 2;
+		public override int TreasureMapLevel => 1;
 
 		public FrostTroll( Serial serial ) : base( serial )
 		{

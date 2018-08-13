@@ -5,9 +5,9 @@ namespace Server.Items
 {
 	public class HangingLantern : BaseLight
 	{
-		public override int LitItemID{ get { return 0xA1A; } }
-		public override int UnlitItemID{ get { return 0xA1D; } }
-		
+		public override int LitItemID => 0xA1A;
+		public override int UnlitItemID => 0xA1D;
+
 		[Constructible]
 		public HangingLantern() : base( 0xA1D )
 		{

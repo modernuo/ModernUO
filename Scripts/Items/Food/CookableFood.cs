@@ -136,7 +136,7 @@ namespace Server.Items
 				private IPoint3D m_Point;
 				private Map m_Map;
 				private CookableFood m_CookableFood;
-			
+
 				public InternalTimer( Mobile from, IPoint3D p, Map map, CookableFood cookableFood ) : base( TimeSpan.FromSeconds( 5.0 ) )
 				{
 					m_From = from;
@@ -333,7 +333,7 @@ namespace Server.Items
 	// ********** UnbakedPeachCobbler **********
 	public class UnbakedPeachCobbler : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041335; } } // unbaked peach cobbler
+		public override int LabelNumber => 1041335; // unbaked peach cobbler
 
 		[Constructible]
 		public UnbakedPeachCobbler() : base( 0x1042, 25 )
@@ -367,7 +367,7 @@ namespace Server.Items
 	// ********** UnbakedFruitPie **********
 	public class UnbakedFruitPie : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041334; } } // unbaked fruit pie
+		public override int LabelNumber => 1041334; // unbaked fruit pie
 
 		[Constructible]
 		public UnbakedFruitPie() : base( 0x1042, 25 )
@@ -402,7 +402,7 @@ namespace Server.Items
 	// ********** UnbakedMeatPie **********
 	public class UnbakedMeatPie : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041338; } } // unbaked meat pie
+		public override int LabelNumber => 1041338; // unbaked meat pie
 
 		[Constructible]
 		public UnbakedMeatPie() : base( 0x1042, 25 )
@@ -437,7 +437,7 @@ namespace Server.Items
 	// ********** UnbakedPumpkinPie **********
 	public class UnbakedPumpkinPie : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041342; } } // unbaked pumpkin pie
+		public override int LabelNumber => 1041342; // unbaked pumpkin pie
 
 		[Constructible]
 		public UnbakedPumpkinPie() : base( 0x1042, 25 )
@@ -472,7 +472,7 @@ namespace Server.Items
 	// ********** UnbakedApplePie **********
 	public class UnbakedApplePie : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041336; } } // unbaked apple pie
+		public override int LabelNumber => 1041336; // unbaked apple pie
 
 		[Constructible]
 		public UnbakedApplePie() : base( 0x1042, 25 )
@@ -508,7 +508,7 @@ namespace Server.Items
 	[TypeAlias( "Server.Items.UncookedPizza" )]
 	public class UncookedCheesePizza : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041341; } } // uncooked cheese pizza
+		public override int LabelNumber => 1041341; // uncooked cheese pizza
 
 		[Constructible]
 		public UncookedCheesePizza() : base( 0x1083, 20 )
@@ -549,7 +549,7 @@ namespace Server.Items
 	// ********** UncookedSausagePizza **********
 	public class UncookedSausagePizza : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041337; } } // uncooked sausage pizza
+		public override int LabelNumber => 1041337; // uncooked sausage pizza
 
 		[Constructible]
 		public UncookedSausagePizza() : base( 0x1083, 20 )
@@ -625,7 +625,7 @@ namespace Server.Items
 	// ********** UnbakedQuiche **********
 	public class UnbakedQuiche : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041339; } } // unbaked quiche
+		public override int LabelNumber => 1041339; // unbaked quiche
 
 		[Constructible]
 		public UnbakedQuiche() : base( 0x1042, 25 )
@@ -747,7 +747,7 @@ namespace Server.Items
 	// ********** EasterEggs **********
 	public class EasterEggs : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1016105; } } // Easter Eggs
+		public override int LabelNumber => 1016105; // Easter Eggs
 
 		[Constructible]
 		public EasterEggs() : base( 0x9B5, 15 )
@@ -816,7 +816,7 @@ namespace Server.Items
 	// ********** CakeMix **********
 	public class CakeMix : CookableFood
 	{
-		public override int LabelNumber{ get{ return 1041002; } } // cake mix
+		public override int LabelNumber => 1041002; // cake mix
 
 		[Constructible]
 		public CakeMix() : base( 0x103F, 40 )

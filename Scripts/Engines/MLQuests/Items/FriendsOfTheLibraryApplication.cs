@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class FriendsOfTheLibraryApplication : Item
 	{
-		public override int LabelNumber{ get{ return 1073131; } } // Friends of the Library Application
+		public override int LabelNumber => 1073131; // Friends of the Library Application
 
 		public override bool Nontransferable => true;
 

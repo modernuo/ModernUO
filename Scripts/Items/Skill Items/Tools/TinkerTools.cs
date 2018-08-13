@@ -7,7 +7,7 @@ namespace Server.Items
 	[Flippable( 0x1EB8, 0x1EB9 )]
 	public class TinkerTools : BaseTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefTinkering.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefTinkering.CraftSystem;
 
 		[Constructible]
 		public TinkerTools() : base( 0x1EB8 )
@@ -42,7 +42,7 @@ namespace Server.Items
 
 	public class TinkersTools : BaseTool
 	{
-		public override CraftSystem CraftSystem { get { return DefTinkering.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefTinkering.CraftSystem;
 
 		[Constructible]
 		public TinkersTools()

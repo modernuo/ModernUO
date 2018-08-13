@@ -20,7 +20,7 @@ namespace Server.Spells.Sixth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
+		public override SpellCircle Circle => SpellCircle.Sixth;
 
 		public MassCurseSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -75,7 +75,7 @@ namespace Server.Spells.Sixth
 
 					m.FixedParticles( 0x374A, 10, 15, 5028, EffectLayer.Waist );
 					m.PlaySound( 0x1FB );
-					
+
 					HarmfulSpell( m );
 				}
 			}

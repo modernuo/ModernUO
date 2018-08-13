@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class DiseasedMachete : ElvenMachete
 	{
-		public override int LabelNumber{ get{ return 1073536; } } // Diseased Machete
+		public override int LabelNumber => 1073536; // Diseased Machete
 
 		[Constructible]
 		public DiseasedMachete()

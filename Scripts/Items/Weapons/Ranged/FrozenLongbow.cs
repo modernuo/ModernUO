@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class FrozenLongbow : ElvenCompositeLongbow
 	{
-		public override int LabelNumber{ get{ return 1073507; } } // frozen longbow
+		public override int LabelNumber => 1073507; // frozen longbow
 
 		[Constructible]
 		public FrozenLongbow()

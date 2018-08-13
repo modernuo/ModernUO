@@ -6,9 +6,9 @@ namespace Server.Items
 {
 	public class BookOfChivalry : Spellbook
 	{
-		public override SpellbookType SpellbookType{ get{ return SpellbookType.Paladin; } }
-		public override int BookOffset{ get{ return 200; } }
-		public override int BookCount{ get{ return 10; } }
+		public override SpellbookType SpellbookType => SpellbookType.Paladin;
+		public override int BookOffset => 200;
+		public override int BookCount => 10;
 
 		[Constructible]
 		public BookOfChivalry() : this( (ulong)0x3FF )

@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Ninja
 	{
 		public static int[] Messages = new int[]
 			{
-				1063191, // They won’t find me here.
+				1063191, // They wonï¿½t find me here.
 				1063192  // Ah, a quiet hideout.
 			};
 
@@ -64,7 +64,7 @@ namespace Server.Engines.Quests.Ninja
 			return 3;
 		}
 
-		public override int TalkNumber{ get{ return -1; } }
+		public override int TalkNumber => -1;
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )
 		{

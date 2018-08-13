@@ -6,23 +6,23 @@ namespace Server.Items
 	[FlippableAttribute( 0x1414, 0x1418 )]
 	public class PlateGloves : BaseArmor
 	{
-		public override int BasePhysicalResistance{ get{ return 5; } }
-		public override int BaseFireResistance{ get{ return 3; } }
-		public override int BaseColdResistance{ get{ return 2; } }
-		public override int BasePoisonResistance{ get{ return 3; } }
-		public override int BaseEnergyResistance{ get{ return 2; } }
+		public override int BasePhysicalResistance => 5;
+		public override int BaseFireResistance => 3;
+		public override int BaseColdResistance => 2;
+		public override int BasePoisonResistance => 3;
+		public override int BaseEnergyResistance => 2;
 
-		public override int InitMinHits{ get{ return 50; } }
-		public override int InitMaxHits{ get{ return 65; } }
+		public override int InitMinHits => 50;
+		public override int InitMaxHits => 65;
 
-		public override int AosStrReq{ get{ return 70; } }
-		public override int OldStrReq{ get{ return 30; } }
+		public override int AosStrReq => 70;
+		public override int OldStrReq => 30;
 
-		public override int OldDexBonus{ get{ return -2; } }
+		public override int OldDexBonus => -2;
 
-		public override int ArmorBase{ get{ return 40; } }
+		public override int ArmorBase => 40;
 
-		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
+		public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
 
 		[Constructible]
 		public PlateGloves() : base( 0x1414 )
@@ -33,13 +33,13 @@ namespace Server.Items
 		public PlateGloves( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

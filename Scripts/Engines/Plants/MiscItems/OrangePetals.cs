@@ -8,7 +8,7 @@ namespace Server.Items
 {
 	public class OrangePetals : Item
 	{
-		public override int LabelNumber { get { return 1053122; } } // orange petals
+		public override int LabelNumber => 1053122; // orange petals
 
 		public override double DefaultWeight
 		{
@@ -32,8 +32,8 @@ namespace Server.Items
 		{
 		}
 
-		public override bool CheckItemUse( Mobile from, Item item ) 
-		{ 
+		public override bool CheckItemUse( Mobile from, Item item )
+		{
 			if ( item != this )
 				return base.CheckItemUse( from, item );
 

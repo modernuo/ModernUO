@@ -21,7 +21,7 @@ namespace Server.Spells.Fifth
 				Reagent.Nightshade
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
+		public override SpellCircle Circle => SpellCircle.Fifth;
 
 		public IncognitoSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

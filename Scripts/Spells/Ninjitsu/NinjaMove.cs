@@ -9,7 +9,7 @@ namespace Server.Spells
 {
 	public class NinjaMove : SpecialMove
 	{
-		public override SkillName MoveSkill{ get{ return SkillName.Ninjitsu; } }
+		public override SkillName MoveSkill => SkillName.Ninjitsu;
 
 		public override void CheckGain( Mobile m )
 		{

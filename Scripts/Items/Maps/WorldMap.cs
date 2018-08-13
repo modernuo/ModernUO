@@ -27,7 +27,7 @@ namespace Server.Items
 			SetDisplay( 1344 - x20, 1600 - x20, 1472 + x20, 1728 + x20, size, size );
 		}
 
-		public override int LabelNumber{ get{ return 1015233; } } // world map
+		public override int LabelNumber => 1015233; // world map
 
 		public WorldMap( Serial serial ) : base( serial )
 		{

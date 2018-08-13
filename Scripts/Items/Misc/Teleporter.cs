@@ -88,7 +88,7 @@ namespace Server.Items
 			set { m_CriminalCheck = value; InvalidateProperties(); }
 		}
 
-		public override int LabelNumber { get { return 1026095; } } // teleporter
+		public override int LabelNumber => 1026095; // teleporter
 
 		[Constructible]
 		public Teleporter()
@@ -557,9 +557,8 @@ namespace Server.Items
 		public static void EventSink_Logout(LogoutEventArgs e)
 		{
 			Mobile from = e.Mobile;
-			TeleportingInfo info;
 
-			if (from == null || !m_Table.TryGetValue(from, out info))
+			if (from == null || !m_Table.TryGetValue(from, out TeleportingInfo info))
 				return;
 
 			info.Timer.Stop();
@@ -636,9 +635,7 @@ namespace Server.Items
 
 		public override void StartTeleport(Mobile m)
 		{
-			TeleportingInfo info;
-
-			if (m_Table.TryGetValue(m, out info))
+			if (m_Table.TryGetValue( m, out TeleportingInfo info ))
 			{
 				if (info.Teleporter == this)
 				{
@@ -717,8 +714,8 @@ namespace Server.Items
 			private WaitTeleporter m_Teleporter;
 			private Timer m_Timer;
 
-			public WaitTeleporter Teleporter { get { return m_Teleporter; } }
-			public Timer Timer { get { return m_Timer; } }
+			public WaitTeleporter Teleporter  => m_Teleporter;
+			public Timer Timer  => m_Timer;
 
 			public TeleportingInfo(WaitTeleporter tele, Timer t)
 			{
@@ -766,9 +763,7 @@ namespace Server.Items
 
 		private void StartTimer(Mobile m, TimeSpan delay)
 		{
-			Timer t;
-
-			if (m_Teleporting.TryGetValue(m, out t))
+			if (m_Teleporting.TryGetValue( m, out Timer t ))
 				t.Stop();
 
 			m_Teleporting[m] = Timer.DelayCall<Mobile>(delay, StartTeleport, m);
@@ -776,9 +771,7 @@ namespace Server.Items
 
 		public void StopTimer(Mobile m)
 		{
-			Timer t;
-
-			if (m_Teleporting.TryGetValue(m, out t))
+			if (m_Teleporting.TryGetValue( m, out Timer t ))
 			{
 				t.Stop();
 				m_Teleporting.Remove(m);

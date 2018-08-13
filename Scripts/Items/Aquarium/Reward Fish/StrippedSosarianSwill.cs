@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class StrippedSosarianSwill : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1074594; } } // Stripped Sosarian Swill
-		
+	{
+		public override int LabelNumber => 1074594; // Stripped Sosarian Swill
+
 		[Constructible]
 		public StrippedSosarianSwill() : base( 0x3B0A )
 		{
 		}
 
 		public StrippedSosarianSwill( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

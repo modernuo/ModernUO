@@ -7,10 +7,10 @@ namespace Server.Items
 {
 	public class BrokenVanityAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new BrokenVanityDeed(); } }
+		public override BaseAddonDeed Deed => new BrokenVanityDeed();
 
 		[Constructible]
-		public BrokenVanityAddon( bool east ) : base()
+		public BrokenVanityAddon( bool east )
 		{
 			if ( east ) // east
 			{
@@ -45,13 +45,13 @@ namespace Server.Items
 
 	public class BrokenVanityDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new BrokenVanityAddon( m_East ); } }
-		public override int LabelNumber { get { return 1076260; } } // Broken Vanity
+		public override BaseAddon Addon => new BrokenVanityAddon( m_East );
+		public override int LabelNumber => 1076260; // Broken Vanity
 
 		private bool m_East;
 
 		[Constructible]
-		public BrokenVanityDeed() : base()
+		public BrokenVanityDeed()
 		{
 			LootType = LootType.Blessed;
 		}

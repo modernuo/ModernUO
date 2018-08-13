@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Samurai
 {
 	public class HaochisKatana : QuestItem
 	{
-		public override int LabelNumber{ get{ return 1063165; } } // Daimyo Haochi's Katana
+		public override int LabelNumber => 1063165; // Daimyo Haochi's Katana
 
 		[Constructible]
 		public HaochisKatana() : base( 0x13FF )

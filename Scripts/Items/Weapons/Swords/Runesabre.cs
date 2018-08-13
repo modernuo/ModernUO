@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class Runesabre : RuneBlade
 	{
-		public override int LabelNumber{ get{ return 1073537; } } // runesabre
+		public override int LabelNumber => 1073537; // runesabre
 
 		[Constructible]
 		public Runesabre()

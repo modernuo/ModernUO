@@ -152,11 +152,11 @@ namespace Server.Mobiles
 			return 0x59c;
 		}
 
-		public override int Meat { get { return 2; } }
-		public override int Hides { get { return 10; } }
-		public override HideType HideType { get { return HideType.Regular; } }
+		public override int Meat => 2;
+		public override int Hides => 10;
+		public override HideType HideType => HideType.Regular;
 		public override Poison PoisonImmune => Poison.Regular;
-		public override int TreasureMapLevel{ get{ return 3; } }
+		public override int TreasureMapLevel => 3;
 		public override bool BardImmune => true;
 		public override bool Unprovokable => true;
 		public override bool Uncalmable => true;

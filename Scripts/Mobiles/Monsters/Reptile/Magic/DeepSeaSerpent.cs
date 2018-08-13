@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a deep sea serpents corpse" )]
 	public class DeepSeaSerpent : BaseCreature
 	{
-		public override string DefaultName { get { return "a deep sea serpent"; } }
+		public override string DefaultName => "a deep sea serpent";
 
 		[Constructible]
 		public DeepSeaSerpent() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -58,9 +58,9 @@ namespace Server.Mobiles
 		}
 
 		public override bool HasBreath => true;
-		public override int Meat{ get{ return 1; } }
-		public override int Scales{ get{ return 8; } }
-		public override ScaleType ScaleType{ get{ return ScaleType.Blue; } }
+		public override int Meat => 1;
+		public override int Scales => 8;
+		public override ScaleType ScaleType => ScaleType.Blue;
 
 		public DeepSeaSerpent( Serial serial ) : base( serial )
 		{

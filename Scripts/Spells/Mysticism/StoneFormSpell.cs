@@ -22,10 +22,10 @@ namespace Server.Spells.Mysticism
 				Reagent.Garlic
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill { get { return 33.0; } }
-		public override int RequiredMana { get { return 11; } }
+		public override double RequiredSkill => 33.0;
+		public override int RequiredMana => 11;
 
 		private static Hashtable m_Table = new Hashtable();
 

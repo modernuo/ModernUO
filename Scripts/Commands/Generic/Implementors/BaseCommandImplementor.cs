@@ -282,8 +282,7 @@ namespace Server.Commands.Generic
 		{
 			if ( e.Length >= 1 )
 			{
-				BaseCommand command = null;
-				m_Commands.TryGetValue( e.GetString( 0 ), out command );
+				m_Commands.TryGetValue( e.GetString( 0 ), out BaseCommand command );
 
 				if ( command == null )
 				{

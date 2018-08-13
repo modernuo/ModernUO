@@ -7,13 +7,13 @@ namespace Server.Items
 {
 	public class DarkenedSky : Kama
 	{
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
-		public override int LabelNumber { get { return 1070966; } } // Darkened Sky
+		public override int LabelNumber => 1070966; // Darkened Sky
 
 		[Constructible]
-		public DarkenedSky() : base()
+		public DarkenedSky()
 		{
 			WeaponAttributes.HitLightning = 60;
 			Attributes.WeaponSpeed = 25;
@@ -48,19 +48,19 @@ namespace Server.Items
 
 	public class KasaOfTheRajin : Kasa
 	{
-		public override int LabelNumber { get { return 1070969; } } // Kasa of the Raj-in
+		public override int LabelNumber => 1070969; // Kasa of the Raj-in
 
-		public override int BasePhysicalResistance { get { return 12; } }
-		public override int BaseFireResistance { get { return 17; } }
-		public override int BaseColdResistance { get { return 21; } }
-		public override int BasePoisonResistance { get { return 17; } }
-		public override int BaseEnergyResistance { get { return 17; } }
+		public override int BasePhysicalResistance => 12;
+		public override int BaseFireResistance => 17;
+		public override int BaseColdResistance => 21;
+		public override int BasePoisonResistance => 17;
+		public override int BaseEnergyResistance => 17;
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
-		public KasaOfTheRajin() : base()
+		public KasaOfTheRajin()
 		{
 			Attributes.SpellDamage = 12;
 		}
@@ -96,16 +96,16 @@ namespace Server.Items
 
 	public class RuneBeetleCarapace : PlateDo
 	{
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
-		public override int LabelNumber{ get{ return 1070968; } } // Rune Beetle Carapace
+		public override int LabelNumber => 1070968; // Rune Beetle Carapace
 
-		public override int BaseColdResistance { get { return 14; } }
-		public override int BaseEnergyResistance { get { return 14; } }
+		public override int BaseColdResistance => 14;
+		public override int BaseEnergyResistance => 14;
 
 		[Constructible]
-		public RuneBeetleCarapace() : base()
+		public RuneBeetleCarapace()
 		{
 			Attributes.BonusMana = 10;
 			Attributes.RegenMana = 3;
@@ -136,17 +136,17 @@ namespace Server.Items
 
 	public class Stormgrip : LeatherNinjaMitts
 	{
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
-		public override int LabelNumber{ get{ return 1070970; } } // Stormgrip
+		public override int LabelNumber => 1070970; // Stormgrip
 
-		public override int BasePhysicalResistance { get { return 10; } }
-		public override int BaseColdResistance { get { return 18; } }
-		public override int BaseEnergyResistance { get { return 18; } }
+		public override int BasePhysicalResistance => 10;
+		public override int BaseColdResistance => 18;
+		public override int BaseEnergyResistance => 18;
 
 		[Constructible]
-		public Stormgrip() : base()
+		public Stormgrip()
 		{
 			Attributes.BonusInt = 8;
 			Attributes.Luck = 125;
@@ -175,13 +175,13 @@ namespace Server.Items
 
 	public class SwordOfTheStampede : NoDachi
 	{
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
-		public override int LabelNumber { get { return 1070964; } } // Sword of the Stampede
+		public override int LabelNumber => 1070964; // Sword of the Stampede
 
 		[Constructible]
-		public SwordOfTheStampede() : base()
+		public SwordOfTheStampede()
 		{
 			WeaponAttributes.HitHarm = 100;
 			Attributes.AttackChance = 10;
@@ -216,13 +216,13 @@ namespace Server.Items
 
 	public class SwordsOfProsperity : Daisho
 	{
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
-		public override int LabelNumber { get { return 1070963; } } // Swords of Prosperity
+		public override int LabelNumber => 1070963; // Swords of Prosperity
 
 		[Constructible]
-		public SwordsOfProsperity() : base()
+		public SwordsOfProsperity()
 		{
 			WeaponAttributes.MageWeapon = 30;
 			Attributes.SpellChanneling = 1;
@@ -258,13 +258,13 @@ namespace Server.Items
 
 	public class TheHorselord : Yumi
 	{
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
-		public override int LabelNumber { get { return 1070967; } } // The Horselord
+		public override int LabelNumber => 1070967; // The Horselord
 
 		[Constructible]
-		public TheHorselord() : base()
+		public TheHorselord()
 		{
 			Attributes.BonusDex = 5;
 			Attributes.RegenMana = 1;
@@ -296,10 +296,10 @@ namespace Server.Items
 
 	public class TomeOfLostKnowledge : Spellbook
 	{
-		public override int LabelNumber { get { return 1070971; } } // Tome of Lost Knowledge
+		public override int LabelNumber => 1070971; // Tome of Lost Knowledge
 
 		[Constructible]
-		public TomeOfLostKnowledge() : base()
+		public TomeOfLostKnowledge()
 		{
 			LootType = LootType.Regular;
 			Hue = 0x530;
@@ -331,10 +331,10 @@ namespace Server.Items
 
 	public class WindsEdge : Tessen
 	{
-		public override int LabelNumber { get { return 1070965; } } // Wind's Edge
+		public override int LabelNumber => 1070965; // Wind's Edge
 
 		[Constructible]
-		public WindsEdge() : base()
+		public WindsEdge()
 		{
 			WeaponAttributes.HitLeechMana = 40;
 
@@ -368,8 +368,8 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public enum PigmentType
@@ -422,14 +422,14 @@ namespace Server.Items
 			new int[]{ /*PigmentType.FadedRose,*/ 0x97B, 1079586 },
 			new int[]{ /*PigmentType.DeepRose,*/ 0x97E, 1079587 }
 		};
-		
+
 		public static int[] GetInfo( PigmentType type )
 		{
 			int v = (int)type;
 
 			if( v < 0 || v >= m_Table.Length )
 				v = 0;
-			
+
 			return m_Table[v];
 		}
 
@@ -442,7 +442,7 @@ namespace Server.Items
 			set
 			{
 				m_Type = value;
-				
+
 				int v = (int)m_Type;
 
 				if ( v >= 0 && v < m_Table.Length )
@@ -457,8 +457,8 @@ namespace Server.Items
 				}
 			}
 		}
-		
-		public override int LabelNumber { get { return 1070933; } } // Pigments of Tokuno
+
+		public override int LabelNumber => 1070933; // Pigments of Tokuno
 
 		[Constructible]
 		public PigmentsOfTokuno() : this( PigmentType.None, 10 )
@@ -495,7 +495,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = ( InheritsItem ? 0 : reader.ReadInt() ); // Required for BasePigmentsOfTokuno insertion
-			
+
 			switch ( version )
 			{
 				case 1: Type = (PigmentType)reader.ReadEncodedInt(); break;

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LongbowOfMight : ElvenCompositeLongbow
 	{
-		public override int LabelNumber{ get{ return 1073508; } } // longbow of might
+		public override int LabelNumber => 1073508; // longbow of might
 
 		[Constructible]
 		public LongbowOfMight()

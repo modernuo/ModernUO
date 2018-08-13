@@ -19,7 +19,7 @@ namespace Server.Spells.Seventh
 				Reagent.MandrakeRoot
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Seventh; } }
+		public override SpellCircle Circle => SpellCircle.Seventh;
 
 		private int m_NewBody;
 
@@ -64,7 +64,7 @@ namespace Server.Spells.Seventh
 			{
 				if( Core.ML )
 					EndPolymorph( Caster );
-				else 
+				else
 					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				return false;
 			}
@@ -88,7 +88,7 @@ namespace Server.Spells.Seventh
 			/*if ( Caster.Mounted )
 			{
 				Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
-			} 
+			}
 			else */
 			if ( Factions.Sigil.ExistsOn( Caster ) )
 			{

@@ -10,7 +10,7 @@ namespace Server.Items
 {
 	public class HairRestylingDeed : Item
 	{
-		public override int LabelNumber{ get{ return 1041061; } } // a coupon for a free hair restyling
+		public override int LabelNumber => 1041061; // a coupon for a free hair restyling
 
 		[Constructible]
 		public HairRestylingDeed() : base( 0x14F0 )
@@ -103,8 +103,8 @@ namespace Server.Items
 					m_Deed.Delete();
 				}
 			}
-/* 
-		gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY 
+/*
+		gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
 */
 
 			int[][] LayoutArray =
@@ -127,8 +127,8 @@ namespace Server.Items
 */
 			int[][] HumanArray = /* why on earth cant these utilies be consistent with hex/dec */
 			{
-				new int[] { 0 }, 
-				new int[] { 1011064, 1011064, 0, 0, 0, 0  },  // bald 
+				new int[] { 0 },
+				new int[] { 1011064, 1011064, 0, 0, 0, 0  },  // bald
 				new int[] { 1011052, 1011052, 0x203B, 0x203B, 0xed1c, 0xC60C }, // Short
 				new int[] { 1011053, 1011053, 0x203C, 0x203C, 0xed1d, 0xc60d }, // Long
 				new int[] { 1011054, 1011054, 0x203D, 0x203D, 0xed1e, 0xc60e }, // Ponytail
@@ -139,7 +139,7 @@ namespace Server.Items
 				new int[] { 1011050, 1011050, 0x204A, 0x204A, 0xED29, 0xED29 }, // Topknot
 				new int[] { 1011396, 1011396, 0x2047, 0x2047, 0xed25, 0xc618 }  // Curly
 			};
-			int[][] ElvenArray = 
+			int[][] ElvenArray =
 			{
 				new int[] { 0 },
 				new int[] { 1011064, 1011064, 0, 0, 0, 0, },  // bald

@@ -75,7 +75,7 @@ namespace Server.Items
 				Weight = 5.0;
 		}
 
-		public override TimeSpan DecayTime{ get{ return TimeSpan.FromDays( 1.0 ); } }
+		public override TimeSpan DecayTime => TimeSpan.FromDays( 1.0 );
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{

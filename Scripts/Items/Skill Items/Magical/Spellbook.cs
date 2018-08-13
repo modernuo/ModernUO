@@ -221,9 +221,7 @@ namespace Server.Items
 				return null;
 			}
 
-			List<Spellbook> list = null;
-
-			m_Table.TryGetValue( from, out list );
+			m_Table.TryGetValue( from, out List<Spellbook> list );
 
 			bool searchAgain = false;
 

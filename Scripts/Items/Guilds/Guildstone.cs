@@ -37,7 +37,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int LabelNumber { get { return 1041429; } } // a guildstone
+		public override int LabelNumber => 1041429; // a guildstone
 
 		public Guildstone( Guild g ) : this( g, g.Name, g.Abbreviation )
 		{
@@ -275,7 +275,7 @@ namespace Server.Items
 	[Flippable( 0x14F0, 0x14EF )]
 	public class GuildstoneDeed : Item
 	{
-		public override int LabelNumber { get { return 1041233; } } // deed to a guildstone
+		public override int LabelNumber => 1041233; // deed to a guildstone
 
 		private Guild m_Guild;
 		private string m_GuildName;

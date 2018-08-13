@@ -59,7 +59,7 @@ namespace Server.Items
 			typeof( ShaminoCrossbow )
 		};
 
-		public override int LabelNumber { get { return 1070933; } } // Pigments of Tokuno
+		public override int LabelNumber => 1070933; // Pigments of Tokuno
 
 		private int m_UsesRemaining;
 		private TextDefinition m_Label;

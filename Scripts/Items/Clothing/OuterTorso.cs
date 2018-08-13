@@ -263,7 +263,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int BasePhysicalResistance{ get{ return 3; } }
+		public override int BasePhysicalResistance => 3;
 
 		public override void OnAdded(IEntity parent)
 		{
@@ -388,7 +388,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int BasePhysicalResistance{ get{ return 3; } }
+		public override int BasePhysicalResistance => 3;
 
 		public override void OnAdded(IEntity parent)
 		{
@@ -615,7 +615,7 @@ namespace Server.Items
 			Weight = 1.0;
 			StrRequirement = 0;
 		}
-		public override int LabelNumber{ get{ return 1076584; } } // A monk's robe
+		public override int LabelNumber => 1076584; // A monk's robe
 		public override bool CanBeBlessed => false;
 		public override bool Dye( Mobile from, DyeTub sender )
 		{
@@ -815,7 +815,7 @@ namespace Server.Items
 	[Flippable( 0x2FB9, 0x3173 )]
 	public class MaleElvenRobe : BaseOuterTorso
 	{
-		public override Race RequiredRace { get { return Race.Elf; } }
+		public override Race RequiredRace => Race.Elf;
 
 		[Constructible]
 		public MaleElvenRobe() : this( 0 )
@@ -850,7 +850,7 @@ namespace Server.Items
 	[Flippable( 0x2FBA, 0x3174 )]
 	public class FemaleElvenRobe : BaseOuterTorso
 	{
-		public override Race RequiredRace { get { return Race.Elf; } }
+		public override Race RequiredRace => Race.Elf;
 		[Constructible]
 		public FemaleElvenRobe() : this( 0 )
 		{

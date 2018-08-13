@@ -21,7 +21,7 @@ namespace Server.Items
 		{
 		}
 
-		public override string DefaultName { get { return "slime"; } }
+		public override string DefaultName => "slime";
 
 		[Constructible]
 		public AcidSlime( TimeSpan duration, int minDamage, int maxDamage )

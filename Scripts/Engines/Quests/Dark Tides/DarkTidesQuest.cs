@@ -46,7 +46,7 @@ namespace Server.Engines.Quests.Necro
 				typeof( Necro.HorusRewardConversation )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -99,10 +99,10 @@ namespace Server.Engines.Quests.Necro
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
+		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
 		public override bool IsTutorial => true;
 
-		public override int Picture{ get{ return 0x15B5; } }
+		public override int Picture => 0x15B5;
 
 		public DarkTidesQuest( PlayerMobile from ) : base( from )
 		{

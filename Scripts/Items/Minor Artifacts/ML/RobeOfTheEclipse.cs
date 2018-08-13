@@ -6,7 +6,7 @@ namespace Server.Items
 	[Flippable( 0x1F03, 0x1F04 )]
 	public class RobeOfTheEclipse : BaseOuterTorso
 	{
-		public override int LabelNumber{ get{ return 1075082; } } // Robe of the Eclipse
+		public override int LabelNumber => 1075082; // Robe of the Eclipse
 
 		[Constructible]
 		public RobeOfTheEclipse() : base( 0x1F03, 0x486 )

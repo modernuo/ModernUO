@@ -69,7 +69,7 @@ namespace Server.Mobiles
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
 		public override bool GivesMLMinorArtifact => true;
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int TreasureMapLevel => 5;
 
 		public MasterTheophilus( Serial serial )
 			: base( serial )

@@ -92,7 +92,7 @@ namespace Server.Items
 		}
 
 		public virtual bool OnlyToTriggerer{ get{ return false; } }
-		public virtual int NeighborRange { get { return 5; } }
+		public virtual int NeighborRange  => 5;
 
 		public virtual void Broadcast( Mobile triggerer )
 		{

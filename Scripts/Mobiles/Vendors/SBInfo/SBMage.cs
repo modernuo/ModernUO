@@ -13,8 +13,8 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } }
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } }
+		public override IShopSellInfo SellInfo => m_SellInfo;
+		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
 		public class InternalBuyInfo : List<GenericBuyInfo>
 		{
@@ -24,7 +24,7 @@ namespace Server.Mobiles
 
 				if ( Core.AOS )
 					Add( new GenericBuyInfo( typeof( NecromancerSpellbook ), 115, 10, 0x2253, 0 ) );
-				
+
 				Add( new GenericBuyInfo( typeof( ScribesPen ), 8, 10, 0xFBF, 0 ) );
 
 				Add( new GenericBuyInfo( typeof( BlankScroll ), 5, 20, 0x0E34, 0 ) );
@@ -83,14 +83,14 @@ namespace Server.Mobiles
 			public InternalSellInfo()
 			{
 				Add( typeof( WizardsHat ), 15 );
-				Add( typeof( BlackPearl ), 3 ); 
-				Add( typeof( Bloodmoss ),4 ); 
-				Add( typeof( MandrakeRoot ), 2 ); 
-				Add( typeof( Garlic ), 2 ); 
-				Add( typeof( Ginseng ), 2 ); 
-				Add( typeof( Nightshade ), 2 ); 
-				Add( typeof( SpidersSilk ), 2 ); 
-				Add( typeof( SulfurousAsh ), 2 ); 
+				Add( typeof( BlackPearl ), 3 );
+				Add( typeof( Bloodmoss ),4 );
+				Add( typeof( MandrakeRoot ), 2 );
+				Add( typeof( Garlic ), 2 );
+				Add( typeof( Ginseng ), 2 );
+				Add( typeof( Nightshade ), 2 );
+				Add( typeof( SpidersSilk ), 2 );
+				Add( typeof( SulfurousAsh ), 2 );
 
 				if ( Core.AOS )
 				{

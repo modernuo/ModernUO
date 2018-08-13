@@ -63,7 +63,7 @@ namespace Server.Mobiles
 
 		public override bool BardImmune => !Core.AOS;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int Meat{ get{ return 2; } }
+		public override int Meat => 2;
 
 		public override OppositionGroup OppositionGroup
 		{

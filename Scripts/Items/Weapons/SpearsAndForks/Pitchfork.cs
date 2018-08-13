@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xE87, 0xE88 )]
 	public class Pitchfork : BaseSpear
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.BleedAttack; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Dismount; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;
 
-		public override int AosStrengthReq{ get{ return 55; } }
-		public override int AosMinDamage{ get{ return 13; } }
-		public override int AosMaxDamage{ get{ return 14; } }
-		public override int AosSpeed{ get{ return 43; } }
-		public override float MlSpeed{ get{ return 2.50f; } }
+		public override int AosStrengthReq => 55;
+		public override int AosMinDamage => 13;
+		public override int AosMaxDamage => 14;
+		public override int AosSpeed => 43;
+		public override float MlSpeed => 2.50f;
 
-		public override int OldStrengthReq{ get{ return 15; } }
-		public override int OldMinDamage{ get{ return 4; } }
-		public override int OldMaxDamage{ get{ return 16; } }
-		public override int OldSpeed{ get{ return 45; } }
+		public override int OldStrengthReq => 15;
+		public override int OldMinDamage => 4;
+		public override int OldMaxDamage => 16;
+		public override int OldSpeed => 45;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 60; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 60;
 
 		[Constructible]
 		public Pitchfork() : base( 0xE87 )

@@ -20,7 +20,7 @@ namespace Server.Spells.Eighth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
+		public override SpellCircle Circle => SpellCircle.Eighth;
 
 		public SummonDaemonSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -43,7 +43,7 @@ namespace Server.Spells.Eighth
 		public override void OnCast()
 		{
 			if ( CheckSequence() )
-			{	
+			{
 				TimeSpan duration = TimeSpan.FromSeconds( (2 * Caster.Skills.Magery.Fixed) / 5 );
 
 				if ( Core.AOS )  /* Why two diff daemons? TODO: solve this */

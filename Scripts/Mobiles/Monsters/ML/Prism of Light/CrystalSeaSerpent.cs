@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal sea serpent corpse" )]
 	public class CrystalSeaSerpent : SeaSerpent
 	{
-		public override string DefaultName { get { return "a crystal sea serpent"; } }
+		public override string DefaultName => "a crystal sea serpent";
 
 		[Constructible]
 		public CrystalSeaSerpent()

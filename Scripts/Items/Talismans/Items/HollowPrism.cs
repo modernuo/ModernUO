@@ -4,8 +4,8 @@ namespace Server.Items
 {
 	public class HollowPrism : Item
 	{
-	public override int LabelNumber{ get{ return 1072895; } } // hollow prism
-	
+	public override int LabelNumber => 1072895; // hollow prism
+
 		[Constructible]
 		public HollowPrism() : base( 0x2F5D )
 		{

@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class OrigamiPaper : Item
 	{
-		public override int LabelNumber{ get{ return 1030288; } } // origami paper
+		public override int LabelNumber => 1030288; // origami paper
 
 		[Constructible]
 		public OrigamiPaper() : base( 0x2830 )
@@ -63,7 +63,7 @@ namespace Server.Items
 
 	public class OrigamiButterfly : Item
 	{
-		public override int LabelNumber{ get{ return 1030296; } } // a delicate origami butterfly
+		public override int LabelNumber => 1030296; // a delicate origami butterfly
 
 		[Constructible]
 		public OrigamiButterfly() : base( 0x2838 )
@@ -92,14 +92,14 @@ namespace Server.Items
 
 	public class OrigamiSwan : Item
 	{
-		public override int LabelNumber{ get{ return 1030297; } } // a delicate origami swan
+		public override int LabelNumber => 1030297; // a delicate origami swan
 
 		[Constructible]
 		public OrigamiSwan() : base( 0x2839 )
 		{
 			LootType = LootType.Blessed;
 
-			
+
 		}
 
 		public OrigamiSwan( Serial serial ) : base( serial )
@@ -123,14 +123,14 @@ namespace Server.Items
 
 	public class OrigamiFrog : Item
 	{
-		public override int LabelNumber{ get{ return 1030298; } } // a delicate origami frog
+		public override int LabelNumber => 1030298; // a delicate origami frog
 
 		[Constructible]
 		public OrigamiFrog() : base( 0x283A )
 		{
 			LootType = LootType.Blessed;
 
-			
+
 		}
 
 		public OrigamiFrog( Serial serial ) : base( serial )
@@ -154,14 +154,14 @@ namespace Server.Items
 
 	public class OrigamiShape : Item
 	{
-		public override int LabelNumber{ get{ return 1030299; } } // an intricate geometric origami shape
+		public override int LabelNumber => 1030299; // an intricate geometric origami shape
 
 		[Constructible]
 		public OrigamiShape() : base( 0x283B )
 		{
 			LootType = LootType.Blessed;
 
-			
+
 		}
 
 		public OrigamiShape( Serial serial ) : base( serial )
@@ -185,14 +185,14 @@ namespace Server.Items
 
 	public class OrigamiSongbird : Item
 	{
-		public override int LabelNumber{ get{ return 1030300; } } // a delicate origami songbird
+		public override int LabelNumber => 1030300; // a delicate origami songbird
 
 		[Constructible]
 		public OrigamiSongbird() : base( 0x283C )
 		{
 			LootType = LootType.Blessed;
 
-			
+
 		}
 
 		public OrigamiSongbird( Serial serial ) : base( serial )
@@ -216,14 +216,14 @@ namespace Server.Items
 
 	public class OrigamiFish : Item
 	{
-		public override int LabelNumber{ get{ return 1030301; } } // a delicate origami fish
+		public override int LabelNumber => 1030301; // a delicate origami fish
 
 		[Constructible]
 		public OrigamiFish() : base( 0x283D )
 		{
 			LootType = LootType.Blessed;
 
-			
+
 		}
 
 		public OrigamiFish( Serial serial ) : base( serial )

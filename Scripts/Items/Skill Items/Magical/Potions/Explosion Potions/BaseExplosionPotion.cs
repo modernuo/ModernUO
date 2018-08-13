@@ -62,7 +62,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		public List<Mobile> Users { get { return m_Users; } }
+		public List<Mobile> Users  => m_Users;
 
 		private List<Mobile> m_Users;
 

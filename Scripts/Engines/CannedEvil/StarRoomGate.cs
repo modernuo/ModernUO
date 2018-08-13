@@ -9,7 +9,7 @@ namespace Server.Items
 		private DateTime m_DecayTime;
 		private Timer m_Timer;
 
-		public override int LabelNumber{ get{ return 1049498; } } // dark moongate
+		public override int LabelNumber => 1049498; // dark moongate
 
 		[Constructible]
 		public StarRoomGate() : this( false )

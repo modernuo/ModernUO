@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class GhostShipAnchor : Item
 	{
-		public override int LabelNumber{ get{ return 1070816; } } // Ghost Ship Anchor
-		
+		public override int LabelNumber => 1070816; // Ghost Ship Anchor
+
 		[Constructible]
 		public GhostShipAnchor() : base( 0x14F7 )
 		{
@@ -23,7 +23,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

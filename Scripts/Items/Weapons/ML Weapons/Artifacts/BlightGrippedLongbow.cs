@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class BlightGrippedLongbow : ElvenCompositeLongbow
 	{
-		public override int LabelNumber{ get{ return 1072907; } } // Blight Gripped Longbow
+		public override int LabelNumber => 1072907; // Blight Gripped Longbow
 
 		[Constructible]
 		public BlightGrippedLongbow()

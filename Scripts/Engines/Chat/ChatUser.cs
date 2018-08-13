@@ -107,7 +107,7 @@ namespace Server.Engines.Chat
 				m_IgnorePrivateMessage = value;
 			}
 		}
- 
+
 		public const char NormalColorCharacter = '0';
 		public const char ModeratorColorCharacter = '1';
 		public const char VoicedColorCharacter = '2';
@@ -249,7 +249,7 @@ namespace Server.Engines.Chat
 
 				m_Users.Remove( user );
 				m_Table.Remove( user.m_Mobile );
-			} 
+			}
 		}
 
 		public static void RemoveChatUser( Mobile from )
@@ -261,8 +261,7 @@ namespace Server.Engines.Chat
 
 		public static ChatUser GetChatUser( Mobile from )
 		{
-			ChatUser c;
-			m_Table.TryGetValue( from, out c );
+			m_Table.TryGetValue( from, out ChatUser c );
 			return c;
 		}
 

@@ -94,11 +94,11 @@ namespace Server.Mobiles
 
 		public override bool CanHeal => true;
 		public override bool CanHealOwner => true;
-		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies; } }
-		public override bool CanAngerOnTame{ get { return true; } }
+		public override FoodType FavoriteFood => FoodType.FruitsAndVegies;
+		public override bool CanAngerOnTame => true;
 		public override bool StatLossAfterTame => true;
-		public override int Hides{ get{ return 10; } }
-		public override int Meat{ get{ return 3; } }
+		public override int Hides => 10;
+		public override int Meat => 3;
 
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 

@@ -64,7 +64,7 @@ namespace Server.Items
 
 		public override bool DisplayLootType => Core.AOS;
 
-		public override int LabelNumber{ get{ return 1041361; } } // A bank check
+		public override int LabelNumber => 1041361; // A bank check
 
 		public override void GetProperties( ObjectPropertyList list )
 		{

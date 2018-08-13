@@ -18,7 +18,7 @@ namespace Server.Spells.Fifth
 				Reagent.Garlic
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
+		public override SpellCircle Circle => SpellCircle.Fifth;
 
 		public DispelFieldSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

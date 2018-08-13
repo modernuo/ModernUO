@@ -5,9 +5,9 @@ namespace Server.Items
 {
 	public class LampPost2 : BaseLight
 	{
-		public override int LitItemID{ get { return 0xB22; } }
-		public override int UnlitItemID{ get { return 0xB23; } }
-		
+		public override int LitItemID => 0xB22;
+		public override int UnlitItemID => 0xB23;
+
 		[Constructible]
 		public LampPost2() : base( 0xB23 )
 		{

@@ -14,7 +14,7 @@ namespace Server.Spells.Second
 				Reagent.SpidersSilk
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Second; } }
+		public override SpellCircle Circle => SpellCircle.Second;
 
 		public HarmSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -12,7 +12,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class VilePoison : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( ARockAndAHardPlace ); } }
+		public override Type NextQuest => typeof( ARockAndAHardPlace );
 
 		public VilePoison()
 		{
@@ -42,7 +42,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ARockAndAHardPlace : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( SympatheticMagic ); } }
+		public override Type NextQuest => typeof( SympatheticMagic );
 		public override bool IsChainTriggered => true;
 
 		public ARockAndAHardPlace()
@@ -64,7 +64,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class SympatheticMagic : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( AlreadyDead ); } }
+		public override Type NextQuest => typeof( AlreadyDead );
 		public override bool IsChainTriggered => true;
 
 		public SympatheticMagic()
@@ -84,7 +84,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class AlreadyDead : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( Eureka ); } }
+		public override Type NextQuest => typeof( Eureka );
 		public override bool IsChainTriggered => true;
 
 		public AlreadyDead()
@@ -114,7 +114,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Eureka : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( SubContracting ); } }
+		public override Type NextQuest => typeof( SubContracting );
 		public override bool IsChainTriggered => true;
 
 		public Eureka()

@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0x143B, 0x143A )]
 	public class Maul : BaseBashing
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ConcussionBlow; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
 
-		public override int AosStrengthReq{ get{ return 45; } }
-		public override int AosMinDamage{ get{ return 14; } }
-		public override int AosMaxDamage{ get{ return 16; } }
-		public override int AosSpeed{ get{ return 32; } }
-		public override float MlSpeed{ get{ return 3.50f; } }
+		public override int AosStrengthReq => 45;
+		public override int AosMinDamage => 14;
+		public override int AosMaxDamage => 16;
+		public override int AosSpeed => 32;
+		public override float MlSpeed => 3.50f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 10; } }
-		public override int OldMaxDamage{ get{ return 30; } }
-		public override int OldSpeed{ get{ return 30; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 10;
+		public override int OldMaxDamage => 30;
+		public override int OldSpeed => 30;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 70; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 70;
 
 		[Constructible]
 		public Maul() : base( 0x143B )

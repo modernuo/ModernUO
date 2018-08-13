@@ -99,7 +99,7 @@ namespace Server.Mobiles
 
 		public override bool AlwaysMurderer => true;
 		public override bool CanRummageCorpses => true;
-		public override int Meat{ get{ return 1; } }
+		public override int Meat => 1;
 
 		private DateTime m_NextAbilityTime;
 

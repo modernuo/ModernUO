@@ -64,10 +64,10 @@ namespace Server.Items
 
 	public class PrizedFish : BaseMagicFish
 	{
-		public override int Bonus{ get{ return 5; } }
-		public override StatType Type{ get{ return StatType.Int; } }
+		public override int Bonus => 5;
+		public override StatType Type => StatType.Int;
 
-		public override int LabelNumber{ get{ return 1041073; } } // prized fish
+		public override int LabelNumber => 1041073; // prized fish
 
 		[Constructible]
 		public PrizedFish() : base( 51 )
@@ -98,10 +98,10 @@ namespace Server.Items
 
 	public class WondrousFish : BaseMagicFish
 	{
-		public override int Bonus{ get{ return 5; } }
-		public override StatType Type{ get{ return StatType.Dex; } }
+		public override int Bonus => 5;
+		public override StatType Type => StatType.Dex;
 
-		public override int LabelNumber{ get{ return 1041074; } } // wondrous fish
+		public override int LabelNumber => 1041074; // wondrous fish
 
 		[Constructible]
 		public WondrousFish() : base( 86 )
@@ -132,10 +132,10 @@ namespace Server.Items
 
 	public class TrulyRareFish : BaseMagicFish
 	{
-		public override int Bonus{ get{ return 5; } }
-		public override StatType Type{ get{ return StatType.Str; } }
+		public override int Bonus => 5;
+		public override StatType Type => StatType.Str;
 
-		public override int LabelNumber{ get{ return 1041075; } } // truly rare fish
+		public override int LabelNumber => 1041075; // truly rare fish
 
 		[Constructible]
 		public TrulyRareFish() : base( 76 )
@@ -166,7 +166,7 @@ namespace Server.Items
 
 	public class PeculiarFish : BaseMagicFish
 	{
-		public override int LabelNumber{ get{ return 1041076; } } // highly peculiar fish
+		public override int LabelNumber => 1041076; // highly peculiar fish
 
 		[Constructible]
 		public PeculiarFish() : base( 66 )

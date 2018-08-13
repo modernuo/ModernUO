@@ -30,7 +30,7 @@ namespace Server.Items
 			LootType = LootType.Blessed;
 		}
 
-		public override int LabelNumber{ get{ return 1041280; } } // an interior decorator
+		public override int LabelNumber => 1041280; // an interior decorator
 
 		public InteriorDecorator( Serial serial ) : base( serial )
 		{
@@ -62,7 +62,7 @@ namespace Server.Items
 		{
 			if ( !CheckUse( this, from ) )
 				return;
-			
+
 			if ( from.FindGump( typeof( InteriorDecorator.InternalGump ) ) == null )
 				from.SendGump( new InternalGump( this ) );
 
@@ -154,7 +154,7 @@ namespace Server.Items
 				{
 					BaseHouse house = BaseHouse.FindHouseAt( from );
 					Item item = (Item)targeted;
-					
+
 					bool isDecorableComponent = false;
 
 					if ( item is AddonComponent || item is AddonContainerComponent || item is BaseAddonContainer )
@@ -228,10 +228,10 @@ namespace Server.Items
 						}
 					}
 				}
-				
+
 				from.Target = new InternalTarget( m_Decorator );
 			}
-			
+
 			protected override void OnTargetCancel( Mobile from, TargetCancelType cancelType )
 			{
 				if ( cancelType == TargetCancelType.Canceled )

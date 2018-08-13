@@ -927,9 +927,7 @@ namespace Server.Factions
 
 		public static bool ClearSkillLoss( Mobile mob )
 		{
-			SkillLossContext context;
-
-			if ( !m_SkillLoss.TryGetValue( mob, out context ) )
+			if (!m_SkillLoss.TryGetValue( mob, out SkillLossContext context ))
 				return false;
 
 			m_SkillLoss.Remove( mob );
@@ -1111,7 +1109,7 @@ namespace Server.Factions
 			{
 				if ( victimState.KillPoints <= -6 )
 				{
-					killer.SendLocalizedMessage( 501693 ); // This victim is not worth enough to get kill points from. 
+					killer.SendLocalizedMessage( 501693 ); // This victim is not worth enough to get kill points from.
 
 					#region Ethics
 					Ethics.Player killerEPL = Ethics.Player.Find( killer );
@@ -1153,7 +1151,7 @@ namespace Server.Factions
 
 							if ( 1 > Utility.Random( 3 ) )
 								killerState.IsActive = true;
-							
+
 							int silver = 0;
 
 							silver = killerState.Faction.AwardSilver( killer, award * 40 );

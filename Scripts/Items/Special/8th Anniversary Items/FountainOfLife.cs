@@ -7,9 +7,9 @@ namespace Server.Items
 {
 	public class EnhancedBandage : Bandage
 	{
-		public static int HealingBonus { get { return 10; } }
+		public static int HealingBonus  => 10;
 
-		public override int LabelNumber { get { return 1152441; } } // enhanced bandage
+		public override int LabelNumber => 1152441; // enhanced bandage
 
 		[Constructible]
 		public EnhancedBandage()
@@ -71,10 +71,10 @@ namespace Server.Items
 
 		public virtual TimeSpan RechargeTime { get { return TimeSpan.FromDays( 1 ); } }
 
-		public override int LabelNumber { get { return 1075197; } } // Fountain of Life
-		public override int DefaultGumpID { get { return 0x484; } }
-		public override int DefaultDropSound { get { return 66; } }
-		public override int DefaultMaxItems { get { return 125; } }
+		public override int LabelNumber => 1075197; // Fountain of Life
+		public override int DefaultGumpID => 0x484;
+		public override int DefaultDropSound => 66;
+		public override int DefaultMaxItems => 125;
 
 		private int m_Charges;
 
@@ -228,8 +228,8 @@ namespace Server.Items
 
 	public class FountainOfLifeDeed : BaseAddonContainerDeed
 	{
-		public override int LabelNumber { get { return 1075197; } } // Fountain of Life
-		public override BaseAddonContainer Addon { get { return new FountainOfLife( m_Charges ); } }
+		public override int LabelNumber => 1075197; // Fountain of Life
+		public override BaseAddonContainer Addon => new FountainOfLife( m_Charges );
 
 		private int m_Charges;
 
@@ -248,7 +248,6 @@ namespace Server.Items
 
 		[Constructible]
 		public FountainOfLifeDeed( int charges )
-			: base()
 		{
 			LootType = LootType.Blessed;
 			m_Charges = charges;

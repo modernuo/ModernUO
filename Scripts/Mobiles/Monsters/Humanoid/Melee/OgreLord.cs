@@ -9,8 +9,8 @@ namespace Server.Mobiles
 	[CorpseName( "an ogre lords corpse" )]
 	public class OgreLord : BaseCreature
 	{
-		public override Faction FactionAllegiance { get { return Minax.Instance; } }
-		public override Ethics.Ethic EthicAllegiance { get { return Ethics.Ethic.Evil; } }
+		public override Faction FactionAllegiance => Minax.Instance;
+		public override Ethics.Ethic EthicAllegiance => Ethics.Ethic.Evil;
 
 		public override string DefaultName => "an ogre lord";
 
@@ -55,8 +55,8 @@ namespace Server.Mobiles
 
 		public override bool CanRummageCorpses => true;
 		public override Poison PoisonImmune => Poison.Regular;
-		public override int TreasureMapLevel{ get{ return 3; } }
-		public override int Meat{ get{ return 2; } }
+		public override int TreasureMapLevel => 3;
+		public override int Meat => 2;
 
 		public OgreLord( Serial serial ) : base( serial )
 		{

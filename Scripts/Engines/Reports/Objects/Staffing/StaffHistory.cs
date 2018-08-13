@@ -15,7 +15,7 @@ namespace Server.Engines.Reports
 			return new StaffHistory();
 		}
 
-		public override PersistableType TypeID{ get{ return ThisTypeID; } }
+		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
 		private PageInfoCollection m_Pages;
@@ -286,7 +286,7 @@ namespace Server.Engines.Reports
 		{
 			int[] totals = new int[24];
 			int[] counts = new int[24];
-			
+
 			DateTime[] dates = new DateTime[24];
 
 			DateTime max = DateTime.UtcNow;

@@ -56,13 +56,13 @@ namespace Server.Mobiles
 
 		public override bool ReacquireOnMovement => true;
 		public override bool HasBreath => true; // fire breath enabled
-		public override int TreasureMapLevel{ get{ return 2; } }
-		public override int Meat{ get{ return 10; } }
-		public override int Hides{ get{ return 20; } }
-		public override HideType HideType{ get{ return HideType.Horned; } }
-		public override int Scales{ get{ return 2; } }
-		public override ScaleType ScaleType{ get{ return ( Body == 60 ? ScaleType.Yellow : ScaleType.Red ); } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish; } }
+		public override int TreasureMapLevel => 2;
+		public override int Meat => 10;
+		public override int Hides => 20;
+		public override HideType HideType => HideType.Horned;
+		public override int Scales => 2;
+		public override ScaleType ScaleType => ( Body == 60 ? ScaleType.Yellow : ScaleType.Red );
+		public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
 		public override bool CanFly => true;
 
 		public Drake( Serial serial ) : base( serial )

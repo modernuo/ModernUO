@@ -2437,7 +2437,7 @@ namespace Server.Engines.ConPVP
 		public TournyMatch m_Match;
 		public EventGame m_EventGame;
 
-		public Tournament Tournament { get { return m_Tournament; } }
+		public Tournament Tournament  => m_Tournament;
 
 		public void SendReadyGump( int count )
 		{
@@ -2491,7 +2491,7 @@ namespace Server.Engines.ConPVP
 				}
 
 				Arena arena = m_OverrideArena;
-				
+
 				if ( arena == null )
 					arena = Arena.FindArena( players );
 

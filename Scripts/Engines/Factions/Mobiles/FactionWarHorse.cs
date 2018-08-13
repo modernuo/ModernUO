@@ -64,7 +64,7 @@ namespace Server.Factions
 			Faction = faction;
 		}
 
-		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
+		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
 		public FactionWarHorse( Serial serial ) : base( serial )
 		{

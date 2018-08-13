@@ -6,10 +6,10 @@ namespace Server.Items
 {
 	public class BaseQuiver : Container, ICraftable
 	{
-		public override int DefaultGumpID{ get{ return 0x108; } }
-		public override int DefaultMaxItems{ get{ return 1; } }
-		public override int DefaultMaxWeight{ get{ return 50; } }
-		public override double DefaultWeight{ get{ return 2.0; } }
+		public override int DefaultGumpID => 0x108;
+		public override int DefaultMaxItems => 1;
+		public override int DefaultMaxWeight => 50;
+		public override double DefaultWeight => 2.0;
 
 		private AosAttributes m_Attributes;
 		private int m_Capacity;
@@ -68,7 +68,7 @@ namespace Server.Items
 			get{ return m_Quality; }
 			set{ m_Quality = value; InvalidateProperties(); }
 		}
-		
+
 		public Item Ammo
 		{
 			get{ return Items.Count > 0 ? Items[ 0 ] : null; }
@@ -184,7 +184,7 @@ namespace Server.Items
 
 			InvalidateWeight();
 		}
-		
+
 		public override void RemoveItem( Item dropped )
 		{
 			base.RemoveItem( dropped );
@@ -215,7 +215,7 @@ namespace Server.Items
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-				
+
 			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
@@ -238,7 +238,7 @@ namespace Server.Items
 
 			if ( (prop = m_DamageIncrease) != 0 )
 				list.Add( 1074762, prop.ToString() ); // Damage modifier: ~1_PERCENT~%
-			
+
 			int phys, fire, cold, pois, nrgy, chaos, direct;
 			phys = fire = cold = pois = nrgy = chaos = direct = 0;
 
@@ -295,7 +295,7 @@ namespace Server.Items
 				list.Add( 1060433, prop.ToString() ); // lower mana cost ~1_val~%
 
 			if ( (prop = m_Attributes.LowerRegCost) != 0 )
-				list.Add( 1060434, prop.ToString() ); // lower reagent cost ~1_val~%	
+				list.Add( 1060434, prop.ToString() ); // lower reagent cost ~1_val~%
 
 			if ( (prop = m_Attributes.Luck) != 0 )
 				list.Add( 1060436, prop.ToString() ); // luck ~1_val~
@@ -341,9 +341,9 @@ namespace Server.Items
 			list.Add( 1072241, "{0}\t{1}\t{2}\t{3}", Items.Count, DefaultMaxItems, (int) weight, DefaultMaxWeight ); // Contents: ~1_COUNT~/~2_MAXCOUNT items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
 
 			if ( (prop = m_WeightReduction) != 0 )
-				list.Add( 1072210, prop.ToString() ); // Weight reduction: ~1_PERCENTAGE~%	
+				list.Add( 1072210, prop.ToString() ); // Weight reduction: ~1_PERCENTAGE~%
 		}
-		
+
 		private static void SetSaveFlag( ref SaveFlag flags, SaveFlag toSet, bool setIf )
 		{
 			if ( setIf )
@@ -454,7 +454,7 @@ namespace Server.Items
 				m.UpdateTotals();
 			}
 		}
-		
+
 		#region ICraftable
 		public virtual int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
 		{

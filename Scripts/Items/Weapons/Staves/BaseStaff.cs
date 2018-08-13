@@ -6,12 +6,12 @@ namespace Server.Items
 {
 	public abstract class BaseStaff : BaseMeleeWeapon
 	{
-		public override int DefHitSound{ get{ return 0x233; } }
-		public override int DefMissSound{ get{ return 0x239; } }
+		public override int DefHitSound => 0x233;
+		public override int DefMissSound => 0x239;
 
-		public override SkillName DefSkill{ get{ return SkillName.Macing; } }
-		public override WeaponType DefType{ get{ return WeaponType.Staff; } }
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Bash2H; } }
+		public override SkillName DefSkill => SkillName.Macing;
+		public override WeaponType DefType => WeaponType.Staff;
+		public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
 
 		public BaseStaff( int itemID ) : base( itemID )
 		{

@@ -36,7 +36,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public LysanderNotebook1() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -131,7 +131,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public LysanderNotebook2() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -219,7 +219,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public LysanderNotebook3() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -324,7 +324,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public LysanderNotebook7() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -419,7 +419,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public LysanderNotebook8() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -511,7 +511,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public LysanderNotebook11() : base( Utility.Random( 0xFF1, 2 ), false )

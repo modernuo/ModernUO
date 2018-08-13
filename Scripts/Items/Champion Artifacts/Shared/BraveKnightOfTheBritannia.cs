@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class BraveKnightOfTheBritannia : Katana
 	{
-		public override int LabelNumber{ get{ return 1094909; } } // Brave Knight of The Britannia [Replica]
+		public override int LabelNumber => 1094909; // Brave Knight of The Britannia [Replica]
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+		public override int InitMinHits => 150;
+		public override int InitMaxHits => 150;
 
 		public override bool CanFortify => false;
 

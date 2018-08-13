@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Necro
 {
 	public class ScrollOfAbraxus : QuestItem
 	{
-		public override int LabelNumber { get { return 1028827; } } // Scroll of Abraxus
+		public override int LabelNumber => 1028827; // Scroll of Abraxus
 
 		[Constructible]
 		public ScrollOfAbraxus() : base( 0x227B )
@@ -105,39 +105,39 @@ namespace Server.Engines.Quests.Necro
 			AddImage( 340, 255, 9005 );
 
 			/* Security at the Crystal Cave<BR><BR>
-			 * 
+			 *
 			 * We have taken great measuresto ensure the safety of the
 			 * Scroll of Calling, which we have so valiantly taken from
 			 * the Necromancer Maabus during the battle of the wood
 			 * nearly 200 years ago.<BR><BR>
-			 * 
+			 *
 			 * The scroll must never fall into the hands of the
 			 * Necromancers again, lest they use it to summon the ancient
 			 * daemon Kronus.  The scroll of calling is a necessity in the
 			 * series of dark rites the Necromancers must perform to once again
 			 * re-awaken Kronus.<BR><BR>
-			 * 
+			 *
 			 * Should Kronus ever rise again, the days of the Paladins, and
 			 * indeed humanity as we know it will be numbered.<BR><BR>
-			 * 
+			 *
 			 * For this reason, we have posted the honorable Horus, former
 			 * General of the Northern Legions to guard the entrance of the
 			 * Crystal Cave where we keep the Scroll of Calling.  Horus was
 			 * infused with magical life from the tree Urywen during his last
 			 * battle.  The power gave him eternal life, but it also,
 			 * unfortunately, took his eye sight.<BR><BR>
-			 * 
+			 *
 			 * Since Horus cannot see those he admits to the Crystal Cave,
 			 * he will only allow those that know the secret password to enter.
 			 * Speak the following word to Horus and he shall grant you passage
 			 * to the Crystal Cave:<BR><BR>
-			 * 
+			 *
 			 * <I>Urywen</I><BR><BR>
-			 * 
+			 *
 			 * Do not speak this password anywhere except when seeking passage
 			 * into the Crystal Cave, as our adversaries are lurking in the
-			 * shadows – they are everywhere.<BR><BR>Go with the light, friend.<BR><BR>
-			 * 
+			 * shadows ï¿½ they are everywhere.<BR><BR>Go with the light, friend.<BR><BR>
+			 *
 			 * <I>- Frater Melkeer</I>
 			 */
 			AddHtmlLocalized( 25, 36, 350, 210, 1060116, 1, false, true );

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class HydraScale : Item
 	{
-		public override int LabelNumber{ get{ return 1074760; } } // A hydra scale.
+		public override int LabelNumber => 1074760; // A hydra scale.
 
 		[Constructible]
 		public HydraScale() : base( 0x26B4 )

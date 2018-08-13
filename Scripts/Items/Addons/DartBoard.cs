@@ -7,7 +7,7 @@ namespace Server.Items
 	public class DartBoard : AddonComponent
 	{
 		public override bool NeedsWall => true;
-		public override Point3D WallPosition{ get{ return this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 ); } }
+		public override Point3D WallPosition => this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 );
 
 		public bool East{ get{ return this.ItemID == 0x1E2F; } }
 
@@ -102,7 +102,7 @@ namespace Server.Items
 
 	public class DartBoardEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new DartBoardEastDeed(); } }
+		public override BaseAddonDeed Deed => new DartBoardEastDeed();
 
 		public DartBoardEastAddon()
 		{
@@ -130,9 +130,9 @@ namespace Server.Items
 
 	public class DartBoardEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new DartBoardEastAddon(); } }
+		public override BaseAddon Addon => new DartBoardEastAddon();
 
-		public override int LabelNumber{ get{ return 1044326; } } // dartboard (east)
+		public override int LabelNumber => 1044326; // dartboard (east)
 
 		[Constructible]
 		public DartBoardEastDeed()
@@ -160,7 +160,7 @@ namespace Server.Items
 
 	public class DartBoardSouthAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new DartBoardSouthDeed(); } }
+		public override BaseAddonDeed Deed => new DartBoardSouthDeed();
 
 		public DartBoardSouthAddon()
 		{
@@ -188,9 +188,9 @@ namespace Server.Items
 
 	public class DartBoardSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new DartBoardSouthAddon(); } }
+		public override BaseAddon Addon => new DartBoardSouthAddon();
 
-		public override int LabelNumber{ get{ return 1044325; } } // dartboard (south)
+		public override int LabelNumber => 1044325; // dartboard (south)
 
 		[Constructible]
 		public DartBoardSouthDeed()

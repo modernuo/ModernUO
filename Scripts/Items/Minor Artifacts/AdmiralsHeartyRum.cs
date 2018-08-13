@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class AdmiralsHeartyRum : BeverageBottle
 	{
-		public override int LabelNumber{ get{ return 1063477; } }
-		
+		public override int LabelNumber => 1063477;
+
 		[Constructible]
 		public AdmiralsHeartyRum() : base( BeverageType.Ale )
 		{
@@ -23,7 +23,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

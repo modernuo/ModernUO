@@ -66,7 +66,7 @@ namespace Server.Engines.Craft
 
 		private static Dictionary<int, Recipe> m_Recipes = new Dictionary<int, Recipe>();
 
-		public static Dictionary<int, Recipe> Recipes { get { return m_Recipes; } }
+		public static Dictionary<int, Recipe> Recipes  => m_Recipes;
 
 		private static int m_LargestRecipeID;
 		public  static int LargestRecipeID{ get{ return m_LargestRecipeID; } }

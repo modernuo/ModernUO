@@ -14,7 +14,7 @@ namespace Server.Spells.First
 				Reagent.Nightshade
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.First; } }
+		public override SpellCircle Circle => SpellCircle.First;
 
 		public WeakenSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -116,7 +116,7 @@ namespace Server.Items
 
 	public class DecorativeShieldDeed : Item, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1049771; } } // deed for a decorative shield wall hanging
+		public override int LabelNumber => 1049771; // deed for a decorative shield wall hanging
 
 		private bool m_IsRewardItem;
 

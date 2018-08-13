@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class WoodenCoffinComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076274; } } // Coffin
+		public override int LabelNumber => 1076274; // Coffin
 
 		public WoodenCoffinComponent( int itemID ) : base( itemID )
 		{
@@ -34,10 +34,10 @@ namespace Server.Items
 
 	public class WoodenCoffinAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new WoodenCoffinDeed(); } }
+		public override BaseAddonDeed Deed => new WoodenCoffinDeed();
 
 		[Constructible]
-		public WoodenCoffinAddon( bool east ) : base()
+		public WoodenCoffinAddon( bool east )
 		{
 			if ( east ) // east
 			{
@@ -74,13 +74,13 @@ namespace Server.Items
 
 	public class WoodenCoffinDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new WoodenCoffinAddon( m_East ); } }
-		public override int LabelNumber { get { return 1076274; } } // Coffin
+		public override BaseAddon Addon => new WoodenCoffinAddon( m_East );
+		public override int LabelNumber => 1076274; // Coffin
 
 		private bool m_East;
 
 		[Constructible]
-		public WoodenCoffinDeed() : base()
+		public WoodenCoffinDeed()
 		{
 			LootType = LootType.Blessed;
 		}

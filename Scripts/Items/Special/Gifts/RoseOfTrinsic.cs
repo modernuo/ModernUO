@@ -20,7 +20,7 @@ namespace Server.Items
 
 		private SecureLevel m_Level;
 
-		public override int LabelNumber{ get{ return 1062913; } } // Rose of Trinsic
+		public override int LabelNumber => 1062913; // Rose of Trinsic
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
@@ -164,7 +164,7 @@ namespace Server.Items
 
 	public class RoseOfTrinsicPetal : Item
 	{
-		public override int LabelNumber{ get{ return 1062926; } } // Petal of the Rose of Trinsic
+		public override int LabelNumber => 1062926; // Petal of the Rose of Trinsic
 
 		[Constructible]
 		public RoseOfTrinsicPetal() : this( 1 )
@@ -181,7 +181,7 @@ namespace Server.Items
 			Hue = 0xE;
 		}
 
-		
+
 
 		public override void OnDoubleClick( Mobile from )
 		{

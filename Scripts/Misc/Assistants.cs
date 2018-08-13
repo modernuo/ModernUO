@@ -82,7 +82,7 @@ namespace Server.Misc
 					m_DisallowedFeatures &= ~feature;
 			}
 
-			public static Features DisallowedFeatures { get { return m_DisallowedFeatures; } }
+			public static Features DisallowedFeatures  => m_DisallowedFeatures;
 		}
 
 		private static class Negotiator
@@ -107,13 +107,12 @@ namespace Server.Misc
 
 				if (m != null && m.NetState != null && m.NetState.Running)
 				{
-					Timer t;
 					m.Send(new BeginHandshake());
 
 					if (Settings.KickOnFailure)
 						m.Send(new BeginHandshake());
 
-					if (m_Dictionary.TryGetValue(m, out t) && t != null)
+					if (m_Dictionary.TryGetValue(m, out Timer t) && t != null)
 						t.Stop();
 
 					m_Dictionary[m] = t = Timer.DelayCall(Settings.HandshakeTimeout, OnHandshakeTimeout_Callback, m);
@@ -128,10 +127,8 @@ namespace Server.Misc
 				if (state == null || state.Mobile == null || !state.Running)
 					return;
 
-				Timer t;
 				Mobile m = state.Mobile;
-
-				if (m_Dictionary.TryGetValue(m, out t))
+				if (m_Dictionary.TryGetValue( m, out Timer t ))
 				{
 					if (t != null)
 						t.Stop();

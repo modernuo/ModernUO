@@ -7,13 +7,13 @@ namespace Server.Mobiles
 {
 	public class Mephitis : BaseChampion
 	{
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Venom; } }
+		public override ChampionSkullType SkullType => ChampionSkullType.Venom;
 
-		public override Type[] UniqueList{ get{ return new Type[] { typeof( Calm ) }; } }
-		public override Type[] SharedList { get { return new Type[] { typeof(OblivionsNeedle), typeof(ANecromancerShroud), typeof(EmbroideredOakLeafCloak), typeof(TheMostKnowledgePerson) }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( Web ), typeof( MonsterStatuette ) }; } }
+		public override Type[] UniqueList => new Type[] { typeof( Calm ) };
+		public override Type[] SharedList => new Type[] { typeof(OblivionsNeedle), typeof(ANecromancerShroud), typeof(EmbroideredOakLeafCloak), typeof(TheMostKnowledgePerson) };
+		public override Type[] DecorativeList => new Type[] { typeof( Web ), typeof( MonsterStatuette ) };
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Spider }; } }
+		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { MonsterStatuetteType.Spider };
 
 		public override string DefaultName => "Mephitis";
 

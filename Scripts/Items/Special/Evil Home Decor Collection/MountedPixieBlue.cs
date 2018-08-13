@@ -7,7 +7,7 @@ namespace Server.Items
 	[Flippable( 0x2A75, 0x2A76 )]
 	public class MountedPixieBlueComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1074482; } } // Mounted pixie
+		public override int LabelNumber => 1074482; // Mounted pixie
 
 		public MountedPixieBlueComponent() : base( 0x2A75 )
 		{
@@ -42,9 +42,9 @@ namespace Server.Items
 
 	public class MountedPixieBlueAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new MountedPixieBlueDeed(); } }
+		public override BaseAddonDeed Deed => new MountedPixieBlueDeed();
 
-		public MountedPixieBlueAddon() : base()
+		public MountedPixieBlueAddon()
 		{
 			AddComponent( new MountedPixieBlueComponent(), 0, 0, 0 );
 		}
@@ -70,11 +70,11 @@ namespace Server.Items
 
 	public class MountedPixieBlueDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new MountedPixieBlueAddon(); } }
-		public override int LabelNumber { get { return 1074482; } } // Mounted pixie
+		public override BaseAddon Addon => new MountedPixieBlueAddon();
+		public override int LabelNumber => 1074482; // Mounted pixie
 
 		[Constructible]
-		public MountedPixieBlueDeed() : base()
+		public MountedPixieBlueDeed()
 		{
 			LootType = LootType.Blessed;
 		}

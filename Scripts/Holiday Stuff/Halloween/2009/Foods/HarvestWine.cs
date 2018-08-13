@@ -3,15 +3,15 @@ using Server;
 
 namespace Server.Items
 {
-	/* 
-	first seen halloween 2009.  subsequently in 2010, 
+	/*
+	first seen halloween 2009.  subsequently in 2010,
 	2011 and 2012. GM Beggar-only Semi-Rare Treats
 	*/
 
 	public class HarvestWine : BeverageBottle
 	{
-		public override string DefaultName { get { return "Harvest Wine"; } }
-		public override double DefaultWeight { get { return 1; } }
+		public override string DefaultName => "Harvest Wine";
+		public override double DefaultWeight => 1;
 
 		[Constructible]
 		public HarvestWine()

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TrueWarCleaver : WarCleaver
 	{
-		public override int LabelNumber{ get{ return 1073528; } } // true war cleaver
+		public override int LabelNumber => 1073528; // true war cleaver
 
 		[Constructible]
 		public TrueWarCleaver()

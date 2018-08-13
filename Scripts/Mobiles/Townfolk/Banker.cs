@@ -15,7 +15,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.MerchantsGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.MerchantsGuild;
 
 		[Constructible]
 		public Banker() : base( "the banker" )

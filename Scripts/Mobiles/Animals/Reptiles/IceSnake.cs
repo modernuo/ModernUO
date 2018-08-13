@@ -50,7 +50,7 @@ namespace Server.Mobiles
 
 		public override bool DeathAdderCharmable => true;
 
-		public override int Meat{ get{ return 1; } }
+		public override int Meat => 1;
 
 		public IceSnake(Serial serial) : base(serial)
 		{

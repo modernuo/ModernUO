@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		public const int VacationDays = 7;
 
-		public override int LabelNumber{ get{ return 1074431; } } // An aquarium flake sphere
+		public override int LabelNumber => 1074431; // An aquarium flake sphere
 
 		[Constructible]
 		public VacationWafer() : base( 0x973 )

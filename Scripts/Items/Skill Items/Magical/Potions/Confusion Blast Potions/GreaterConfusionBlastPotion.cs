@@ -5,9 +5,9 @@ namespace Server.Items
 {
 	public class GreaterConfusionBlastPotion : BaseConfusionBlastPotion
 	{
-		public override int Radius{ get{ return 7; } }
+		public override int Radius => 7;
 
-		public override int LabelNumber{ get{ return 1072108; } } // a Greater Confusion Blast potion
+		public override int LabelNumber => 1072108; // a Greater Confusion Blast potion
 
 		[Constructible]
 		public GreaterConfusionBlastPotion() : base( PotionEffect.ConfusionBlastGreater )

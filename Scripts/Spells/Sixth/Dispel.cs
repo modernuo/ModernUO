@@ -18,7 +18,7 @@ namespace Server.Spells.Sixth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
+		public override SpellCircle Circle => SpellCircle.Sixth;
 
 		public DispelSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

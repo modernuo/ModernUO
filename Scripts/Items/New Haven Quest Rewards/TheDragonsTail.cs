@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class TheDragonsTail : NoDachi
 	{
-		public override int LabelNumber { get { return 1078015; } } // The Dragon's Tail
+		public override int LabelNumber => 1078015; // The Dragon's Tail
 
-		public override int InitMinHits{ get{ return 80; } }
-		public override int InitMaxHits{ get{ return 80; } }
+		public override int InitMinHits => 80;
+		public override int InitMaxHits => 80;
 
 		[Constructible]
 		public TheDragonsTail()

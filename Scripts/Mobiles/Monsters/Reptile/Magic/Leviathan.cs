@@ -78,21 +78,21 @@ namespace Server.Mobiles
 		}
 
 		public override bool HasBreath => true;
-		public override int BreathPhysicalDamage{ get{ return 70; } } // TODO: Verify damage type
-		public override int BreathColdDamage{ get{ return 30; } }
-		public override int BreathFireDamage{ get{ return 0; } }
-		public override int BreathEffectHue{ get{ return 0x1ED; } }
-		public override double BreathDamageScalar{ get{ return 0.05; } }
-		public override double BreathMinDelay{ get{ return 5.0; } }
-		public override double BreathMaxDelay{ get{ return 7.5; } }
+		public override int BreathPhysicalDamage => 70; // TODO: Verify damage type
+		public override int BreathColdDamage => 30;
+		public override int BreathFireDamage => 0;
+		public override int BreathEffectHue => 0x1ED;
+		public override double BreathDamageScalar => 0.05;
+		public override double BreathMinDelay => 5.0;
+		public override double BreathMaxDelay => 7.5;
 
 		public override void GenerateLoot()
 		{
 			AddLoot( LootPack.FilthyRich, 5 );
 		}
 
-		public override double TreasureMapChance{ get{ return 0.25; } }
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override double TreasureMapChance => 0.25;
+		public override int TreasureMapLevel => 5;
 
 		public Leviathan( Serial serial ) : base( serial )
 		{
@@ -112,7 +112,7 @@ namespace Server.Mobiles
 			int version = reader.ReadInt();
 		}
 
-		public static Type[] Artifacts { get { return m_Artifacts; } }
+		public static Type[] Artifacts  => m_Artifacts;
 
 		private static Type[] m_Artifacts = new Type[]
 		{

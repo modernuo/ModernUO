@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class StoneOvenEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new StoneOvenEastDeed(); } }
+		public override BaseAddonDeed Deed => new StoneOvenEastDeed();
 
 		[Constructible]
 		public StoneOvenEastAddon()
@@ -35,8 +35,8 @@ namespace Server.Items
 
 	public class StoneOvenEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new StoneOvenEastAddon(); } }
-		public override int LabelNumber{ get{ return 1044345; } } // stone oven (east)
+		public override BaseAddon Addon => new StoneOvenEastAddon();
+		public override int LabelNumber => 1044345; // stone oven (east)
 
 		[Constructible]
 		public StoneOvenEastDeed()

@@ -19,8 +19,8 @@ namespace Server.Commands
 		private static Dictionary<string, CommandInfo> m_HelpInfos = new Dictionary<string, CommandInfo>();
 		private static List<CommandInfo> m_SortedHelpInfo = new List<CommandInfo>();	//No need for SortedList cause it's only sorted once at creation...
 
-		public static Dictionary<string, CommandInfo> HelpInfos{ get { return m_HelpInfos; } }
-		public static List<CommandInfo> SortedHelpInfo { get { return m_SortedHelpInfo; } }
+		public static Dictionary<string, CommandInfo> HelpInfos => m_HelpInfos;
+		public static List<CommandInfo> SortedHelpInfo  => m_SortedHelpInfo;
 
 		[CallPriority( 100 )]
 		public static void Initialize()
@@ -37,9 +37,7 @@ namespace Server.Commands
 			if( e.Length > 0 )
 			{
 				string arg = e.GetString( 0 ).ToLower();
-				CommandInfo c;
-
-				if( m_HelpInfos.TryGetValue( arg, out c ) )
+				if (m_HelpInfos.TryGetValue( arg, out CommandInfo c ))
 				{
 					Mobile m = e.Mobile;
 

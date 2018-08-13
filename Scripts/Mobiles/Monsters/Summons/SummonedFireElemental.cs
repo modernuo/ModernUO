@@ -7,8 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "a fire elemental corpse" )]
 	public class SummonedFireElemental : BaseCreature
 	{
-		public override double DispelDifficulty{ get{ return 117.5; } }
-		public override double DispelFocus{ get{ return 45.0; } }
+		public override double DispelDifficulty => 117.5;
+		public override double DispelFocus => 45.0;
 		public override string DefaultName => "a fire elemental";
 
 		[Constructible]

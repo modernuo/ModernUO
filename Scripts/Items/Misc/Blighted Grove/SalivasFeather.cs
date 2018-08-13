@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SalivasFeather : Item
 	{
-		public override int LabelNumber{ get{ return 1074234; } } // Saliva's Feather
+		public override int LabelNumber => 1074234; // Saliva's Feather
 
 		[Constructible]
 		public SalivasFeather() : base( 0x1020 )

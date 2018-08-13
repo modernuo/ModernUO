@@ -18,10 +18,10 @@ namespace Server.Spells.Necromancy
 				Reagent.PigIron
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill{ get{ return 80.0; } }
-		public override int RequiredMana{ get{ return 41; } }
+		public override double RequiredSkill => 80.0;
+		public override int RequiredMana => 41;
 
 		public VengefulSpiritSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

@@ -68,8 +68,8 @@ namespace Server.Mobiles
 		public override bool GivesMLMinorArtifact => true;
 		public override bool AlwaysMurderer => true;
 		public override bool HasBreath => true;
-		public override int BreathChaosDamage{ get { return 100; } }
-		public override int BreathFireDamage{ get{ return 0; } }
+		public override int BreathChaosDamage => 100;
+		public override int BreathFireDamage => 0;
 
 		public RedDeath( Serial serial )
 			: base( serial )

@@ -16,7 +16,7 @@ namespace Server.Spells.Fourth
 				Reagent.SpidersSilk
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
+		public override SpellCircle Circle => SpellCircle.Fourth;
 
 		public ManaDrainSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

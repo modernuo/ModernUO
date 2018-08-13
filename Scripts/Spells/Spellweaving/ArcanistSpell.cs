@@ -11,8 +11,8 @@ namespace Server.Spells.Spellweaving
 		public abstract double RequiredSkill { get; }
 		public abstract int RequiredMana { get; }
 
-		public override SkillName CastSkill { get { return SkillName.Spellweaving; } }
-		public override SkillName DamageSkill { get { return SkillName.Spellweaving; } }
+		public override SkillName CastSkill => SkillName.Spellweaving;
+		public override SkillName DamageSkill => SkillName.Spellweaving;
 
 		public override bool ClearHandsOnCast => false;
 

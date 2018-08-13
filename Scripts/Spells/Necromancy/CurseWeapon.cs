@@ -15,10 +15,10 @@ namespace Server.Spells.Necromancy
 				Reagent.PigIron
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.75 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 0.75 );
 
-		public override double RequiredSkill{ get{ return 0.0; } }
-		public override int RequiredMana{ get{ return 7; } }
+		public override double RequiredSkill => 0.0;
+		public override int RequiredMana => 7;
 
 		public CurseWeaponSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -37,10 +37,10 @@ namespace Server.Spells.Necromancy
 				/* Temporarily imbues a weapon with a life draining effect.
 				 * Half the damage that the weapon inflicts is added to the necromancer's health.
 				 * The effects lasts for (Spirit Speak skill level / 34) + 1 seconds.
-				 * 
+				 *
 				 * NOTE: Above algorithm is fixed point, should be :
 				 * (Spirit Speak skill level / 3.4) + 1
-				 * 
+				 *
 				 * TODO: What happens if you curse a weapon then give it to someone else? Should they get the drain effect?
 				 */
 

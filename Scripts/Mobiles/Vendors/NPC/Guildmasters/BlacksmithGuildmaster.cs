@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
 	public class BlacksmithGuildmaster : BaseGuildmaster
 	{
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.BlacksmithsGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.BlacksmithsGuild;
 
 		public override bool IsActiveVendor => true;
 

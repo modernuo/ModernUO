@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class PeachTrunkAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new PeachTrunkDeed(); } }
+		public override BaseAddonDeed Deed => new PeachTrunkDeed();
 
 		[Constructible]
-		public PeachTrunkAddon() : base()
+		public PeachTrunkAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD9C, 1076786 ), 0, 0, 0 );
 		}
@@ -33,11 +33,11 @@ namespace Server.Items
 
 	public class PeachTrunkDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new PeachTrunkAddon(); } }
-		public override int LabelNumber { get { return 1076786; } } // Peach Trunk
+		public override BaseAddon Addon => new PeachTrunkAddon();
+		public override int LabelNumber => 1076786; // Peach Trunk
 
 		[Constructible]
-		public PeachTrunkDeed() : base()
+		public PeachTrunkDeed()
 		{
 			LootType = LootType.Blessed;
 		}

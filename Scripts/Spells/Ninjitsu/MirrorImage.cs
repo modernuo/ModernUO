@@ -49,10 +49,10 @@ namespace Server.Spells.Ninjitsu
 			9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return Core.ML ? 20.0 : 40.0; } }
-		public override int RequiredMana{ get{ return 10; } }
+		public override double RequiredSkill => Core.ML ? 20.0 : 40.0;
+		public override int RequiredMana => 10;
 
 		public override bool BlockedByAnimalForm => false;
 

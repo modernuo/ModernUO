@@ -18,7 +18,7 @@ namespace Server.Spells.Third
 				Reagent.Garlic
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Third; } }
+		public override SpellCircle Circle => SpellCircle.Third;
 
 		public WallOfStoneSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

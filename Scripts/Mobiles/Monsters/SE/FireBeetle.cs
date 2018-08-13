@@ -93,8 +93,8 @@ namespace Server.Mobiles
 		}
 
 
-		public override int Meat{ get{ return 16; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override int Meat => 16;
+		public override FoodType FavoriteFood => FoodType.Meat;
 
 		public override double GetControlChance( Mobile m, bool useBaseSkill )
 		{

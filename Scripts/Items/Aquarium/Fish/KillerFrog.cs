@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class KillerFrog : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073825; } } // A Killer Frog 
-		
+	{
+		public override int LabelNumber => 1073825; // A Killer Frog
+
 		[Constructible]
 		public KillerFrog() : base( 0x3B0D )
 		{
 		}
 
 		public KillerFrog( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

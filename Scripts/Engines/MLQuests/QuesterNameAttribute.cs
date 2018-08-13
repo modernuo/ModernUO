@@ -9,7 +9,7 @@ namespace Server.Engines.MLQuests
 	{
 		private string m_QuesterName;
 
-		public string QuesterName { get { return m_QuesterName; } }
+		public string QuesterName  => m_QuesterName;
 
 		public QuesterNameAttribute( string questerName )
 		{
@@ -24,9 +24,7 @@ namespace Server.Engines.MLQuests
 			if ( t == null )
 				return "";
 
-			string result;
-
-			if ( m_Cache.TryGetValue( t, out result ) )
+			if (m_Cache.TryGetValue( t, out string result ))
 				return result;
 
 			object[] attributes = t.GetCustomAttributes( m_Type, false );

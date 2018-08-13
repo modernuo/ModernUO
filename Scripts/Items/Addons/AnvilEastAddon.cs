@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class AnvilEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new AnvilEastDeed(); } }
+		public override BaseAddonDeed Deed => new AnvilEastDeed();
 
 		[Constructible]
 		public AnvilEastAddon()
@@ -34,8 +34,8 @@ namespace Server.Items
 
 	public class AnvilEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new AnvilEastAddon(); } }
-		public override int LabelNumber{ get{ return 1044333; } } // anvil (east)
+		public override BaseAddon Addon => new AnvilEastAddon();
+		public override int LabelNumber => 1044333; // anvil (east)
 
 		[Constructible]
 		public AnvilEastDeed()

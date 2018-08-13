@@ -55,7 +55,7 @@ namespace Server.Mobiles
 
 		public override bool BleedImmune => true;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public CrystalElemental( Serial serial ) : base( serial )
 		{

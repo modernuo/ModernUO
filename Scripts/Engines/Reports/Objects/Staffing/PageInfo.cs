@@ -25,7 +25,7 @@ namespace Server.Engines.Reports
 			return new PageInfo();
 		}
 
-		public override PersistableType TypeID{ get{ return ThisTypeID; } }
+		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
 		private StaffHistory m_History;
@@ -140,7 +140,7 @@ namespace Server.Engines.Reports
 		{
 			string resolvedBy;
 			DateTime timeResolved;
-			PageResolution res = GetResolution( out resolvedBy, out timeResolved ); 
+			PageResolution res = GetResolution( out resolvedBy, out timeResolved );
 
 			if ( m_History != null && IsStaffResolution( res ) )
 				Resolver = m_History.GetStaffInfo( resolvedBy );

@@ -38,9 +38,7 @@ namespace Server {
 
 		public static SaveOption SaveType = SaveOption.Normal;
 
-		public override string Name {
-			get { return "Standard"; }
-		}
+		public override string Name  => "Standard";
 
 		private Queue<Item> _decayQueue;
 		private bool _permitBackgroundWrite;

@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public class FireHorn : Item
 	{
-		public override int LabelNumber{ get{ return 1060456; } } // fire horn
+		public override int LabelNumber => 1060456; // fire horn
 
 		[Constructible]
 		public FireHorn() : base( 0xFC7 )

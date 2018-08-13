@@ -24,10 +24,10 @@ namespace Server.Engines.CannedEvil
 		private Type[][] m_SpawnTypes;
 		private string[] m_LevelNames;
 
-		public string Name { get { return m_Name; } }
-		public Type Champion { get { return m_Champion; } }
-		public Type[][] SpawnTypes { get { return m_SpawnTypes; } }
-		public string[] LevelNames { get { return m_LevelNames; } }
+		public string Name  => m_Name;
+		public Type Champion  => m_Champion;
+		public Type[][] SpawnTypes  => m_SpawnTypes;
+		public string[] LevelNames  => m_LevelNames;
 
 		public ChampionSpawnInfo( string name, Type champion, string[] levelNames, Type[][] spawnTypes )
 		{
@@ -37,7 +37,7 @@ namespace Server.Engines.CannedEvil
 			m_SpawnTypes = spawnTypes;
 		}
 
-		public static ChampionSpawnInfo[] Table{ get { return m_Table; } }
+		public static ChampionSpawnInfo[] Table => m_Table;
 
 		private static readonly ChampionSpawnInfo[] m_Table = new ChampionSpawnInfo[]
 			{

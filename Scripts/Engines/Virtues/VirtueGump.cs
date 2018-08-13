@@ -38,9 +38,7 @@ namespace Server
 				return;
 			}
 
-			OnVirtueUsed callback = null;
-			
-			m_Callbacks.TryGetValue(e.GumpID, out callback);
+			m_Callbacks.TryGetValue(e.GumpID, out OnVirtueUsed callback);
 
 			if ( callback != null )
 				callback( e.Beholder );
@@ -137,10 +135,10 @@ namespace Server
 
 			if( value >= 30000 )
 				value = 20000;	//Sanity
-				
-			
+
+
 			int vl;
-			
+
 			if( value < 10000 )
 				vl = 0;
 			else if( value >= 20000 && index == 5)
@@ -151,7 +149,7 @@ namespace Server
 				vl = 2;
 			else
 				vl = 1;
-			
+
 
 			return m_Table[(index * 3) + (int) vl];
 		}

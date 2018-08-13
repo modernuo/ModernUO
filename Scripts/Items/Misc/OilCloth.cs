@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class OilCloth : Item, IScissorable, IDyable
 	{
-		public override int LabelNumber{ get{ return 1041498; } } // oil cloth
+		public override int LabelNumber => 1041498; // oil cloth
 
 		public override double DefaultWeight
 		{

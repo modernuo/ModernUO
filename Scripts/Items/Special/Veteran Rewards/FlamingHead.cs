@@ -10,7 +10,7 @@ namespace Server.Items
 {
 	public class FlamingHead : StoneFaceTrapNoDamage, IAddon, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1041266; } } // Flaming Head
+		public override int LabelNumber => 1041266; // Flaming Head
 		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		public Item Deed
@@ -39,7 +39,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public FlamingHead( StoneFaceTrapType type ) : base()
+		public FlamingHead( StoneFaceTrapType type )
 		{
 			LootType = LootType.Blessed;
 			Movable = false;
@@ -112,7 +112,7 @@ namespace Server.Items
 
 	public class FlamingHeadDeed : Item, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1041050; } } // a flaming head deed
+		public override int LabelNumber => 1041050; // a flaming head deed
 
 		private bool m_IsRewardItem;
 

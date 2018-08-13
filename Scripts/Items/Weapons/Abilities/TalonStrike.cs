@@ -11,14 +11,14 @@ namespace Server.Items
 	public class TalonStrike : WeaponAbility
 	{
 		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry { get { return m_Registry; } }
+		public static Hashtable Registry  => m_Registry;
 
 		public TalonStrike()
 		{
 		}
 
-		public override int BaseMana { get { return 30; } }
-		public override double DamageScalar { get { return 1.2; } }
+		public override int BaseMana => 30;
+		public override double DamageScalar => 1.2;
 
 		public override bool CheckSkills( Mobile from )
 		{

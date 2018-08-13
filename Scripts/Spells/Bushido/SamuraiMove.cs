@@ -5,7 +5,7 @@ namespace Server.Spells
 {
 	public class SamuraiMove : SpecialMove
 	{
-		public override SkillName MoveSkill{ get{ return SkillName.Bushido; } }
+		public override SkillName MoveSkill => SkillName.Bushido;
 
 		public override void CheckGain( Mobile m )
 		{

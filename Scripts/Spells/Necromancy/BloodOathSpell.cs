@@ -15,10 +15,10 @@ namespace Server.Spells.Necromancy
 				Reagent.DaemonBlood
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return 20.0; } }
-		public override int RequiredMana{ get{ return 13; } }
+		public override double RequiredSkill => 20.0;
+		public override int RequiredMana => 13;
 
 		public BloodOathSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -53,7 +53,7 @@ namespace Server.Spells.Necromancy
 				/* Temporarily creates a dark pact between the caster and the target.
 				 * Any damage dealt by the target to the caster is increased, but the target receives the same amount of damage.
 				 * The effect lasts for ((Spirit Speak skill level - target's Resist Magic skill level) / 80 ) + 8 seconds.
-				 * 
+				 *
 				 * NOTE: The above algorithm must be fixed point, it should be:
 				 * ((ss-rm)/8)+8
 				 */
@@ -67,7 +67,7 @@ namespace Server.Spells.Necromancy
 
 				 if ( m.Spell != null )
 					m.Spell.OnCasterHurt();
-				
+
 				Caster.PlaySound( 0x175 );
 
 				Caster.FixedParticles( 0x375A, 1, 17, 9919, 33, 7, EffectLayer.Waist );

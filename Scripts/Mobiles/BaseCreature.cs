@@ -360,14 +360,14 @@ namespace Server.Mobiles
 		}
 
 		public virtual bool CanGiveMLQuest { get { return ( MLQuests.Count != 0 ); } }
-		public virtual bool StaticMLQuester { get { return true; } }
+		public virtual bool StaticMLQuester  => true;
 
 		protected virtual List<MLQuest> ConstructQuestList()
 		{
 			return null;
 		}
 
-		public virtual bool CanShout { get { return false; } }
+		public virtual bool CanShout  => false;
 
 		public const int ShoutRange = 8;
 		public static readonly TimeSpan ShoutDelay = TimeSpan.FromMinutes( 1 );
@@ -540,11 +540,11 @@ namespace Server.Mobiles
 
 		#region Elemental Resistance/Damage
 
-		public override int BasePhysicalResistance{ get{ return m_PhysicalResistance; } }
-		public override int BaseFireResistance{ get{ return m_FireResistance; } }
-		public override int BaseColdResistance{ get{ return m_ColdResistance; } }
-		public override int BasePoisonResistance{ get{ return m_PoisonResistance; } }
-		public override int BaseEnergyResistance{ get{ return m_EnergyResistance; } }
+		public override int BasePhysicalResistance => m_PhysicalResistance;
+		public override int BaseFireResistance => m_FireResistance;
+		public override int BaseColdResistance => m_ColdResistance;
+		public override int BasePoisonResistance => m_PoisonResistance;
+		public override int BaseEnergyResistance => m_EnergyResistance;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int PhysicalResistanceSeed{ get{ return m_PhysicalResistance; } set{ m_PhysicalResistance = value; UpdateResistances(); } }
@@ -603,12 +603,12 @@ namespace Server.Mobiles
 			}
 		}
 
-		public virtual bool HasManaOveride { get { return false; } }
+		public virtual bool HasManaOveride  => false;
 
 		public virtual FoodType FavoriteFood{ get{ return FoodType.Meat; } }
 		public virtual PackInstinct PackInstinct{ get{ return PackInstinct.None; } }
 
-		public List<Mobile> Owners { get { return m_Owners; } }
+		public List<Mobile> Owners  => m_Owners;
 
 		public virtual bool AllowMaleTamer{ get{ return true; } }
 		public virtual bool AllowFemaleTamer{ get{ return true; } }
@@ -663,7 +663,7 @@ namespace Server.Mobiles
 		public virtual int BreathRange{ get{ return RangePerception; } }
 
 		// Damage types
-		public virtual int BreathChaosDamage{ get { return 0; } }
+		public virtual int BreathChaosDamage => 0;
 		public virtual int BreathPhysicalDamage{ get{ return 0; } }
 		public virtual int BreathFireDamage{ get{ return 100; } }
 		public virtual int BreathColdDamage{ get{ return 0; } }
@@ -802,7 +802,7 @@ namespace Server.Mobiles
 
 		#endregion
 
-		public virtual bool CanFly { get { return false; } }
+		public virtual bool CanFly  => false;
 
 		#region Spill Acid
 
@@ -893,7 +893,7 @@ namespace Server.Mobiles
 
 		#endregion
 
-		public virtual bool IsInvulnerable { get { return false; } }
+		public virtual bool IsInvulnerable  => false;
 
 		public BaseAI AIObject{ get{ return m_AI; } }
 
@@ -905,7 +905,7 @@ namespace Server.Mobiles
 		}
 
 		#region Friends
-		public List<Mobile> Friends { get { return m_Friends; } }
+		public List<Mobile> Friends  => m_Friends;
 
 		public virtual bool AllowNewPetFriend
 		{
@@ -949,7 +949,7 @@ namespace Server.Mobiles
 		#endregion
 
 		#region Allegiance
-		public virtual Ethics.Ethic EthicAllegiance { get { return null; } }
+		public virtual Ethics.Ethic EthicAllegiance  => null;
 
 		public enum Allegiance
 		{
@@ -3408,7 +3408,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public virtual bool CanDrop { get { return IsBonded; } }
+		public virtual bool CanDrop  => IsBonded;
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
@@ -4566,7 +4566,7 @@ namespace Server.Mobiles
 		public virtual double TreasureMapChance{ get{ return TreasureMap.LootChance; } }
 		public virtual int TreasureMapLevel{ get{ return -1; } }
 
-		public virtual bool IgnoreYoungProtection { get { return false; } }
+		public virtual bool IgnoreYoungProtection  => false;
 
 		public override bool OnBeforeDeath()
 		{
@@ -5010,8 +5010,8 @@ namespace Server.Mobiles
 
 		public virtual TimeSpan ReacquireDelay{ get{ return TimeSpan.FromSeconds( 10.0 ); } }
 		public virtual bool ReacquireOnMovement{ get{ return false; } }
-		public virtual bool AcquireOnApproach{ get { return m_Paragon; } }
-		public virtual int AcquireOnApproachRange { get { return 10; } }
+		public virtual bool AcquireOnApproach => m_Paragon;
+		public virtual int AcquireOnApproachRange  => 10;
 
 		public override void OnDelete()
 		{
@@ -5200,21 +5200,21 @@ namespace Server.Mobiles
 		public virtual bool IsDispellable { get { return Summoned && !IsAnimatedDead; } }
 
 		#region Healing
-		public virtual bool CanHeal { get { return false; } }
-		public virtual bool CanHealOwner { get { return false; } }
-		public virtual double HealScalar { get { return 1.0; } }
+		public virtual bool CanHeal  => false;
+		public virtual bool CanHealOwner  => false;
+		public virtual double HealScalar  => 1.0;
 
-		public virtual int HealSound { get { return 0x57; } }
-		public virtual int HealStartRange { get { return 2; } }
-		public virtual int HealEndRange { get { return RangePerception; } }
-		public virtual double HealTrigger { get { return 0.78; } }
-		public virtual double HealDelay { get { return 6.5; } }
-		public virtual double HealInterval { get { return 0.0; } }
-		public virtual bool HealFully { get { return true; } }
-		public virtual double HealOwnerTrigger { get { return 0.78; } }
-		public virtual double HealOwnerDelay { get { return 6.5; } }
-		public virtual double HealOwnerInterval { get { return 30.0; } }
-		public virtual bool HealOwnerFully { get { return false; } }
+		public virtual int HealSound  => 0x57;
+		public virtual int HealStartRange  => 2;
+		public virtual int HealEndRange  => RangePerception;
+		public virtual double HealTrigger  => 0.78;
+		public virtual double HealDelay  => 6.5;
+		public virtual double HealInterval  => 0.0;
+		public virtual bool HealFully  => true;
+		public virtual double HealOwnerTrigger  => 0.78;
+		public virtual double HealOwnerDelay  => 6.5;
+		public virtual double HealOwnerInterval  => 30.0;
+		public virtual bool HealOwnerFully  => false;
 
 		private long m_NextHealTime = Core.TickCount;
 		private long m_NextHealOwnerTime = Core.TickCount;
@@ -5336,17 +5336,17 @@ namespace Server.Mobiles
 		#region Damaging Aura
 		private long m_NextAura;
 
-		public virtual bool HasAura { get { return false; } }
+		public virtual bool HasAura  => false;
 		public virtual TimeSpan AuraInterval { get { return TimeSpan.FromSeconds( 5 ); } }
-		public virtual int AuraRange { get { return 4; } }
+		public virtual int AuraRange  => 4;
 
-		public virtual int AuraBaseDamage { get { return 5; } }
-		public virtual int AuraPhysicalDamage { get { return 0; } }
-		public virtual int AuraFireDamage { get { return 100; } }
-		public virtual int AuraColdDamage { get { return 0; } }
-		public virtual int AuraPoisonDamage { get { return 0; } }
-		public virtual int AuraEnergyDamage { get { return 0; } }
-		public virtual int AuraChaosDamage { get { return 0; } }
+		public virtual int AuraBaseDamage  => 5;
+		public virtual int AuraPhysicalDamage  => 0;
+		public virtual int AuraFireDamage  => 100;
+		public virtual int AuraColdDamage  => 0;
+		public virtual int AuraPoisonDamage  => 0;
+		public virtual int AuraEnergyDamage  => 0;
+		public virtual int AuraChaosDamage  => 0;
 
 		public virtual void AuraDamage()
 		{

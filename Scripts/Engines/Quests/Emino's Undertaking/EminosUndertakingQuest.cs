@@ -44,7 +44,7 @@ namespace Server.Engines.Quests.Ninja
 				typeof( Ninja.GiveEminoSwordObjective )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -64,10 +64,10 @@ namespace Server.Engines.Quests.Ninja
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
+		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
 		public override bool IsTutorial => true;
 
-		public override int Picture{ get{ return 0x15D5; } }
+		public override int Picture => 0x15D5;
 
 		public EminosUndertakingQuest( PlayerMobile from ) : base( from )
 		{

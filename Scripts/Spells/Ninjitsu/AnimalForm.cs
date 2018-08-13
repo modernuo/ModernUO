@@ -30,11 +30,11 @@ namespace Server.Spells.Ninjitsu
 			9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds(1.0); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.0);
 
-		public override double RequiredSkill { get { return 0.0; } }
-		public override int RequiredMana { get { return (Core.ML ? 10 : 0); } }
-		public override int CastRecoveryBase { get { return (Core.ML ? 10 : base.CastRecoveryBase); } }
+		public override double RequiredSkill => 0.0;
+		public override int RequiredMana => (Core.ML ? 10 : 0);
+		public override int CastRecoveryBase => (Core.ML ? 10 : base.CastRecoveryBase);
 
 		public override bool BlockedByAnimalForm => false;
 
@@ -332,17 +332,17 @@ namespace Server.Spells.Ninjitsu
 			private bool m_SpeedBoost;
 			private bool m_StealingBonus;
 
-			public Type Type { get { return m_Type; } }
-			public TextDefinition Name { get { return m_Name; } }
-			public int ItemID { get { return m_ItemID; } }
-			public int Hue { get { return m_Hue; } }
-			public int Tooltip { get { return m_Tooltip; } }
-			public double ReqSkill { get { return m_ReqSkill; } }
-			public int BodyMod { get { return m_BodyMod; } }
+			public Type Type  => m_Type;
+			public TextDefinition Name  => m_Name;
+			public int ItemID  => m_ItemID;
+			public int Hue  => m_Hue;
+			public int Tooltip  => m_Tooltip;
+			public double ReqSkill  => m_ReqSkill;
+			public int BodyMod  => m_BodyMod;
 			public int HueMod { get { return Utility.RandomMinMax( m_HueModMin, m_HueModMax ); } }
-			public bool StealthBonus { get { return m_StealthBonus; } }
-			public bool SpeedBoost { get { return m_SpeedBoost; } }
-			public bool StealingBonus { get { return m_StealingBonus; } }
+			public bool StealthBonus  => m_StealthBonus;
+			public bool SpeedBoost  => m_SpeedBoost;
+			public bool StealingBonus  => m_StealingBonus;
 			/*
 			private AnimalFormCallback m_TransformCallback;
 			private AnimalFormCallback m_UntransformCallback;
@@ -386,7 +386,7 @@ namespace Server.Spells.Ninjitsu
 				new AnimalFormEntry( typeof( Reptalon ),     1075202, 11669,    0, 1075222,  90.0, 0x114,     0,     0, false, false, false ),
 			};
 
-		public static AnimalFormEntry[] Entries { get { return m_Entries; } }
+		public static AnimalFormEntry[] Entries  => m_Entries;
 
 		public class AnimalFormGump : Gump
 		{
@@ -507,11 +507,11 @@ namespace Server.Spells.Ninjitsu
 		private Type m_Type;
 		private SkillMod m_StealingMod;
 
-		public Timer Timer { get { return m_Timer; } }
-		public SkillMod Mod { get { return m_Mod; } }
-		public bool SpeedBoost { get { return m_SpeedBoost; } }
-		public Type Type { get { return m_Type; } }
-		public SkillMod StealingMod { get { return m_StealingMod; } }
+		public Timer Timer  => m_Timer;
+		public SkillMod Mod  => m_Mod;
+		public bool SpeedBoost  => m_SpeedBoost;
+		public Type Type  => m_Type;
+		public SkillMod StealingMod  => m_StealingMod;
 
 		public AnimalFormContext(Timer timer, SkillMod mod, bool speedBoost, Type type, SkillMod stealingMod)
 		{

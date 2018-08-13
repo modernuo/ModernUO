@@ -54,7 +54,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Potions );
 		}
 
-		public override int TreasureMapLevel{ get{ return 2; } }
+		public override int TreasureMapLevel => 2;
 
 		public StoneGargoyle( Serial serial ) : base( serial )
 		{

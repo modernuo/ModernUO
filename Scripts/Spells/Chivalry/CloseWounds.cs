@@ -15,12 +15,12 @@ namespace Server.Spells.Chivalry
 				9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return 0.0; } }
-		public override int RequiredMana{ get{ return 10; } }
-		public override int RequiredTithing{ get{ return 10; } }
-		public override int MantraNumber{ get{ return 1060719; } } // Obsu Vulni
+		public override double RequiredSkill => 0.0;
+		public override int RequiredMana => 10;
+		public override int RequiredTithing => 10;
+		public override int MantraNumber => 1060719; // Obsu Vulni
 
 		public CloseWoundsSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

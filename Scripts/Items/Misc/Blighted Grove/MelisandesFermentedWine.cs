@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class MelisandesFermentedWine : GreaterExplosionPotion
 	{
-		public override int LabelNumber{ get{ return 1072114; } } // Melisande's Fermented Wine
+		public override int LabelNumber => 1072114; // Melisande's Fermented Wine
 
 		[Constructible]
 		public MelisandesFermentedWine()

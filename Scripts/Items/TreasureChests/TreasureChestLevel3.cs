@@ -10,7 +10,7 @@ namespace Server.Items
 
 		public override bool IsDecoContainer => false;
 
-		public override TimeSpan DecayTime { get { return TimeSpan.FromMinutes( Utility.Random( 15, 60 ) ); } }
+		public override TimeSpan DecayTime => TimeSpan.FromMinutes( Utility.Random( 15, 60 ) );
 
 		private void SetChestAppearance()
 		{
@@ -34,9 +34,9 @@ namespace Server.Items
 			}
 		}
 
-		public override int DefaultGumpID { get { return 0x42; } }
+		public override int DefaultGumpID => 0x42;
 
-		public override int DefaultDropSound { get { return 0x42; } }
+		public override int DefaultDropSound => 0x42;
 
 		public override Rectangle2D Bounds
 		{

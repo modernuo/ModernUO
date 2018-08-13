@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class ValentinesCard : Item
 	{
-		public override string DefaultName { get { return "a Valentine's card"; } }
+		public override string DefaultName => "a Valentine's card";
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public virtual string From { get { return m_From; } set { m_From = value; } }

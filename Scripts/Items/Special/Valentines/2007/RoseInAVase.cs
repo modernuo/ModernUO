@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class RoseInAVase : Item /* TODO: when dye tub changes are implemented, furny dyable this */
 	{
-		public override int LabelNumber { get { return 1023760; } } // A Rose in a Vase	1023760
+		public override int LabelNumber => 1023760; // A Rose in a Vase	1023760
 
 		[Constructible]
 		public RoseInAVase( )

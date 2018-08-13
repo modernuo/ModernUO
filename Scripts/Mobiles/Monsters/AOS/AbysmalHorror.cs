@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.WhirlwindAttack;
 
-		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+		public override bool IgnoreYoungProtection => Core.ML;
 
 		public override string DefaultName => "an abysmal horror";
 
@@ -64,9 +64,9 @@ namespace Server.Mobiles
 
 		public override bool BardImmune => !Core.SE;
 		public override bool Unprovokable => Core.SE;
-		public override bool AreaPeaceImmune { get { return Core.SE; } }
+		public override bool AreaPeaceImmune => Core.SE;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public AbysmalHorror( Serial serial ) : base( serial )
 		{

@@ -52,7 +52,7 @@ namespace Server.Mobiles
 			// TODO: weapon?
 		}
 
-		public override int Meat{ get{ return 4; } }
+		public override int Meat => 4;
 
 		public override OppositionGroup OppositionGroup
 		{

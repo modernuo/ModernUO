@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	[CorpseName( "a ratman's corpse" )]
 	public class Ratman : BaseCreature
 	{
-		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Ratman; } }
+		public override InhumanSpeech SpeechType => InhumanSpeech.Ratman;
 
 		[Constructible]
 		public Ratman() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -51,8 +51,8 @@ namespace Server.Mobiles
 		}
 
 		public override bool CanRummageCorpses => true;
-		public override int Hides{ get{ return 8; } }
-		public override HideType HideType{ get{ return HideType.Spined; } }
+		public override int Hides => 8;
+		public override HideType HideType => HideType.Spined;
 
 		public Ratman( Serial serial ) : base( serial )
 		{

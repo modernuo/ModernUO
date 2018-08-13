@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal vortex corpse" )]
 	public class CrystalVortex : BaseCreature
 	{
-		public override string DefaultName { get { return "a crystal vortex"; } }
+		public override string DefaultName => "a crystal vortex";
 
 		[Constructible]
 		public CrystalVortex()

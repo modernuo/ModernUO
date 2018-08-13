@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	[CorpseName( "a plant corpse" )]
 	public class Bogling : BaseCreature
 	{
-		public override string DefaultName { get { return "a bogling"; } }
+		public override string DefaultName => "a bogling";
 
 		[Constructible]
 		public Bogling() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -48,8 +48,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override int Hides{ get{ return 6; } }
-		public override int Meat{ get{ return 1; } }
+		public override int Hides => 6;
+		public override int Meat => 1;
 
 		public Bogling( Serial serial ) : base( serial )
 		{

@@ -84,8 +84,8 @@ namespace Server.SkillHandlers
 
 			public override bool ClearHandsOnCast => false;
 
-			public override double CastDelayFastScalar { get { return 0; } }
-			public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
+			public override double CastDelayFastScalar => 0;
+			public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.0 );
 
 			public override int GetMana()
 			{

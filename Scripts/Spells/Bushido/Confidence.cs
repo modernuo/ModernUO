@@ -14,10 +14,10 @@ namespace Server.Spells.Bushido
 				9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.25 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 0.25 );
 
-		public override double RequiredSkill{ get{ return 25.0; } }
-		public override int RequiredMana{ get{ return 10; } }
+		public override double RequiredSkill => 25.0;
+		public override int RequiredMana => 10;
 
 		public Confidence( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

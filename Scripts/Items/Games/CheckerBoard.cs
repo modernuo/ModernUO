@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class CheckerBoard : BaseBoard
 	{
-		public override int LabelNumber{ get{ return 1016449; } } // a checker board
+		public override int LabelNumber => 1016449; // a checker board
 
 		[Constructible]
 		public CheckerBoard() : base( 0xFA6 )

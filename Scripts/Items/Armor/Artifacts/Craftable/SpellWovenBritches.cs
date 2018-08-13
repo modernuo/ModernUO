@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class SpellWovenBritches : LeafLegs
 	{
-		public override int LabelNumber{ get{ return 1072929; } } // Spell Woven Britches
+		public override int LabelNumber => 1072929; // Spell Woven Britches
 
-		public override int BaseFireResistance{ get{ return 15; } }
-		public override int BasePoisonResistance{ get{ return 16; } }
+		public override int BaseFireResistance => 15;
+		public override int BasePoisonResistance => 16;
 
 		[Constructible]
 		public SpellWovenBritches()

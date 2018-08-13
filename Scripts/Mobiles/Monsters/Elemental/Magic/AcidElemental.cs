@@ -55,9 +55,9 @@ namespace Server.Mobiles
 
 		public override bool BleedImmune => true;
 		public override Poison HitPoison => Poison.Lethal;
-		public override double HitPoisonChance{ get{ return 0.6; } }
+		public override double HitPoisonChance => 0.6;
 
-		public override int TreasureMapLevel{ get{ return Core.AOS ? 2 : 3; } }
+		public override int TreasureMapLevel => Core.AOS ? 2 : 3;
 
 		public AcidElemental( Serial serial )
 			: base( serial )

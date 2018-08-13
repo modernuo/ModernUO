@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class CrateForSledge : TransientItem
 	{
-		public override int LabelNumber{ get{ return 1074520; } } // Crate for Sledge
+		public override int LabelNumber => 1074520; // Crate for Sledge
 
 		public override bool Nontransferable => true;
 

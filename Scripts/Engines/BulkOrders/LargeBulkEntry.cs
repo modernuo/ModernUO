@@ -134,14 +134,10 @@ namespace Server.Engines.BulkOrders
 			if (m_Cache == null)
 				m_Cache = new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
 
-			Dictionary<string, SmallBulkEntry[]> table = null;
-
-			if (!m_Cache.TryGetValue(type, out table))
+			if (!m_Cache.TryGetValue( type, out Dictionary<string, SmallBulkEntry[]> table ))
 				m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
 
-			SmallBulkEntry[] entries = null;
-
-			if (!table.TryGetValue(name, out entries))
+			if (!table.TryGetValue( name, out SmallBulkEntry[] entries ))
 				table[name] = entries = SmallBulkEntry.LoadEntries(type, name);
 
 			return entries;

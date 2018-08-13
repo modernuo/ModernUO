@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class DreadPirateHat : TricorneHat
 	{
-		public override int LabelNumber{ get{ return 1063467; } }
+		public override int LabelNumber => 1063467;
 
-		public override int BaseColdResistance{ get{ return 14; } }
-		public override int BasePoisonResistance{ get{ return 10; } }
+		public override int BaseColdResistance => 14;
+		public override int BasePoisonResistance => 10;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public DreadPirateHat()
@@ -28,14 +28,14 @@ namespace Server.Items
 		public DreadPirateHat( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 
 			writer.Write( (int) 3 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

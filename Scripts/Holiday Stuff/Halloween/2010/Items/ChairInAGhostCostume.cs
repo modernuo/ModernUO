@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ChairInAGhostCostume : Item
 	{
-		public override double DefaultWeight { get { return 5; } }
+		public override double DefaultWeight => 5;
 
 		[Constructible]
 		public ChairInAGhostCostume()

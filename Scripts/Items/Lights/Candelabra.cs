@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class Candelabra : BaseLight, IShipwreckedItem
 	{
-		public override int LitItemID{ get { return 0xB1D; } }
-		public override int UnlitItemID{ get { return 0xA27; } }
+		public override int LitItemID => 0xB1D;
+		public override int UnlitItemID => 0xA27;
 
 		[Constructible]
 		public Candelabra() : base( 0xA27 )

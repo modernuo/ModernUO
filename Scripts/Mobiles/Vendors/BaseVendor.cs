@@ -40,11 +40,11 @@ namespace Server.Mobiles
 
 		public override bool PlayerRangeSensitive => true;
 
-		public virtual bool IsActiveVendor { get { return true; } }
-		public virtual bool IsActiveBuyer { get { return IsActiveVendor; } } // response to vendor SELL
-		public virtual bool IsActiveSeller { get { return IsActiveVendor; } } // response to vendor BUY
+		public virtual bool IsActiveVendor  => true;
+		public virtual bool IsActiveBuyer  => IsActiveVendor; // response to vendor SELL
+		public virtual bool IsActiveSeller  => IsActiveVendor; // response to vendor BUY
 
-		public virtual NpcGuild NpcGuild { get { return NpcGuild.None; } }
+		public virtual NpcGuild NpcGuild  => NpcGuild.None;
 
 		public override bool IsInvulnerable => true;
 

@@ -17,7 +17,7 @@ namespace Server.Spells.Eighth
 				Reagent.SpidersSilk
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
+		public override SpellCircle Circle => SpellCircle.Eighth;
 
 		public AirElementalSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

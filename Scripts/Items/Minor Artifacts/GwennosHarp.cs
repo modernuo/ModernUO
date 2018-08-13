@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class GwennosHarp : LapHarp
 	{
-		public override int LabelNumber{ get{ return 1063480; } }
+		public override int LabelNumber => 1063480;
 
-		public override int InitMinUses{ get{ return 1600; } }
-		public override int InitMaxUses{ get{ return 1600; } }
+		public override int InitMinUses => 1600;
+		public override int InitMaxUses => 1600;
 
 		[Constructible]
 		public GwennosHarp()

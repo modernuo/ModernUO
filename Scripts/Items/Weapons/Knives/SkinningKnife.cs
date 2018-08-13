@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xEC4, 0xEC5 )]
 	public class SkinningKnife : BaseKnife
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ShadowStrike; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Disarm; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int AosStrengthReq{ get{ return 5; } }
-		public override int AosMinDamage{ get{ return 9; } }
-		public override int AosMaxDamage{ get{ return 11; } }
-		public override int AosSpeed{ get{ return 49; } }
-		public override float MlSpeed{ get{ return 2.25f; } }
+		public override int AosStrengthReq => 5;
+		public override int AosMinDamage => 9;
+		public override int AosMaxDamage => 11;
+		public override int AosSpeed => 49;
+		public override float MlSpeed => 2.25f;
 
-		public override int OldStrengthReq{ get{ return 5; } }
-		public override int OldMinDamage{ get{ return 1; } }
-		public override int OldMaxDamage{ get{ return 10; } }
-		public override int OldSpeed{ get{ return 40; } }
+		public override int OldStrengthReq => 5;
+		public override int OldMinDamage => 1;
+		public override int OldMaxDamage => 10;
+		public override int OldSpeed => 40;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 40; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 40;
 
 		[Constructible]
 		public SkinningKnife() : base( 0xEC4 )

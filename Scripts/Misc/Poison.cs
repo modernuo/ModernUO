@@ -65,8 +65,8 @@ namespace Server
 			m_MessageInterval = messageInterval;
 		}
 
-		public override string Name{ get{ return m_Name; } }
-		public override int Level{ get{ return m_Level; } }
+		public override string Name => m_Name;
+		public override int Level => m_Level;
 
 		public class PoisonTimer : Timer
 		{

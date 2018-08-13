@@ -12,7 +12,7 @@ namespace Server.Engines.Harvest
 		public double ReqSkill { get { return m_ReqSkill; } set { m_ReqSkill = value; } }
 		public double Chance { get { return m_Chance; } set { m_Chance = value; } }
 
-		public TextDefinition SuccessMessage { get { return m_SuccessMessage; } }
+		public TextDefinition SuccessMessage  => m_SuccessMessage;
 
 		public void SendSuccessTo( Mobile m )
 		{

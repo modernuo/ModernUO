@@ -80,7 +80,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool CanRummageCorpses => true;
-		public override int TreasureMapLevel{ get{ return 4; } }
+		public override int TreasureMapLevel => 4;
 
 		/* TODO: Angry Fire
 		 * cliloc 1070823

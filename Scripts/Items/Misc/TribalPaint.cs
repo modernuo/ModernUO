@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class TribalPaint : Item
 	{
-		public override int LabelNumber{ get{ return 1040000; } } // savage kin paint
+		public override int LabelNumber => 1040000; // savage kin paint
 
 		[Constructible]
 		public TribalPaint() : base( 0x9EC )

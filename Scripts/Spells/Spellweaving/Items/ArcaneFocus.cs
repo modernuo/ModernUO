@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ArcaneFocus : TransientItem
 	{
-		public override int LabelNumber { get { return 1032629; } } // Arcane Focus
+		public override int LabelNumber => 1032629; // Arcane Focus
 
 		private int m_StrengthBonus;
 
@@ -45,7 +45,7 @@ namespace Server.Items
 			list.Add( 1060485, m_StrengthBonus.ToString() ); // strength bonus ~1_val~
 		}
 
-		public override TextDefinition InvalidTransferMessage{ get { return 1073480; } } // Your arcane focus disappears.
+		public override TextDefinition InvalidTransferMessage => 1073480; // Your arcane focus disappears.
 		public override bool Nontransferable => true;
 
 		public override void Serialize( GenericWriter writer )

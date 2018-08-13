@@ -40,9 +40,9 @@ namespace Server.Gumps
 			m_Y = Y;
 		}
 
-		public int ArtID { get { return m_Art; } }
-		public int BodyID { get { return m_Body; } }
-		public int LocNumber{ get { return m_Num; } }
+		public int ArtID  => m_Art;
+		public int BodyID  => m_Body;
+		public int LocNumber => m_Num;
 		public int X{ get{ return m_X; } }
 		public int Y{ get{ return m_Y; } }
 	}
@@ -61,8 +61,8 @@ namespace Server.Gumps
 				m_Entries = entries;
 			}
 
-			public PolymorphEntry[] Entries{ get { return m_Entries; } }
-			public int LocNumber{ get { return m_Num; } }
+			public PolymorphEntry[] Entries => m_Entries;
+			public int LocNumber => m_Num;
 		}
 
 		private static PolymorphCategory[] Categories = new PolymorphCategory[]

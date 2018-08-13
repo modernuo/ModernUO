@@ -7,25 +7,25 @@ namespace Server.Items
 	[FlippableAttribute( 0x27A2, 0x27ED )]
 	public class NoDachi : BaseSword
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.RidingSwipe; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.RidingSwipe;
 
-		public override int AosStrengthReq{ get{ return 40; } }
-		public override int AosMinDamage{ get{ return 16; } }
-		public override int AosMaxDamage{ get{ return 18; } }
-		public override int AosSpeed{ get{ return 35; } }
-		public override float MlSpeed{ get{ return 3.50f; } }
+		public override int AosStrengthReq => 40;
+		public override int AosMinDamage => 16;
+		public override int AosMaxDamage => 18;
+		public override int AosSpeed => 35;
+		public override float MlSpeed => 3.50f;
 
-		public override int OldStrengthReq{ get{ return 40; } }
-		public override int OldMinDamage{ get{ return 16; } }
-		public override int OldMaxDamage{ get{ return 18; } }
-		public override int OldSpeed{ get{ return 35; } }
+		public override int OldStrengthReq => 40;
+		public override int OldMinDamage => 16;
+		public override int OldMaxDamage => 18;
+		public override int OldSpeed => 35;
 
-		public override int DefHitSound{ get{ return 0x23B; } }
-		public override int DefMissSound{ get{ return 0x23A; } }
+		public override int DefHitSound => 0x23B;
+		public override int DefMissSound => 0x23A;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 90; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 90;
 
 		[Constructible]
 		public NoDachi() : base( 0x27A2 )

@@ -77,15 +77,13 @@ namespace Server.Engines.Harvest
 			x /= m_BankWidth;
 			y /= m_BankHeight;
 
-			Dictionary<Point2D, HarvestBank> banks = null;
-			m_BanksByMap.TryGetValue( map, out banks );
+			 m_BanksByMap.TryGetValue( map, out Dictionary<Point2D, HarvestBank> banks );
 
 			if ( banks == null )
 				m_BanksByMap[map] = banks = new Dictionary<Point2D, HarvestBank>();
 
 			Point2D key = new Point2D( x, y );
-			HarvestBank bank = null;
-			banks.TryGetValue( key, out bank );
+			banks.TryGetValue( key, out HarvestBank bank );
 
 			if ( bank == null )
 				banks[key] = bank = new HarvestBank( this, GetVeinAt( map, x, y ) );

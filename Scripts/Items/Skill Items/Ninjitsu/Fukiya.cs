@@ -11,18 +11,18 @@ namespace Server.Items
 	[FlippableAttribute( 0x27AA, 0x27F5 )]
 	public class Fukiya : Item, INinjaWeapon
 	{
-		public virtual int WrongAmmoMessage { get { return 1063329; } } //You can only load fukiya darts
-		public virtual int NoFreeHandMessage { get { return 1063327; } } //You must have a free hand to use a fukiya.
-		public virtual int EmptyWeaponMessage { get { return 1063325; } } //You have no fukiya darts!
-		public virtual int RecentlyUsedMessage { get { return 1063326; } } //You are already using that fukiya.
-		public virtual int FullWeaponMessage { get { return 1063330; } } //You can only load fukiya darts
+		public virtual int WrongAmmoMessage  => 1063329; //You can only load fukiya darts
+		public virtual int NoFreeHandMessage  => 1063327; //You must have a free hand to use a fukiya.
+		public virtual int EmptyWeaponMessage  => 1063325; //You have no fukiya darts!
+		public virtual int RecentlyUsedMessage  => 1063326; //You are already using that fukiya.
+		public virtual int FullWeaponMessage  => 1063330; //You can only load fukiya darts
 
-		public virtual int WeaponMinRange { get { return 0; } }
-		public virtual int WeaponMaxRange { get { return 6; } }
+		public virtual int WeaponMinRange  => 0;
+		public virtual int WeaponMaxRange  => 6;
 
 		public virtual int WeaponDamage { get { return Utility.RandomMinMax(4, 6); } }
 
-		public  Type AmmoType{ get { return typeof(FukiyaDarts); } }
+		public  Type AmmoType => typeof(FukiyaDarts);
 
 		private int m_UsesRemaining;
 		private Poison m_Poison;

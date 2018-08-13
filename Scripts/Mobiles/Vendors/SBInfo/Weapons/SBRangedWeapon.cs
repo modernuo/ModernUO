@@ -13,8 +13,8 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } }
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } }
+		public override IShopSellInfo SellInfo => m_SellInfo;
+		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
 		public class InternalBuyInfo : List<GenericBuyInfo>
 		{
@@ -42,7 +42,7 @@ namespace Server.Mobiles
 				Add( typeof( Bolt ), 1 );
 				Add( typeof( Arrow ), 1 );
 				Add( typeof( Shaft ), 1 );
-				Add( typeof( Feather ), 1 );			
+				Add( typeof( Feather ), 1 );
 
 				Add( typeof( HeavyCrossbow ), 27 );
 				Add( typeof( Bow ), 17 );

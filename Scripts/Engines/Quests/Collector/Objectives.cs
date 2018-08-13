@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Collector
 			}
 		}
 
-		public override int MaxProgress{ get{ return 6; } }
+		public override int MaxProgress => 6;
 
 		public FishPearlsObjective()
 		{

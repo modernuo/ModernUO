@@ -14,10 +14,10 @@ namespace Server.Engines.Mahjong
 		private int m_DealerPosition;
 		private ArrayList m_Spectators;
 
-		public MahjongGame Game { get { return m_Game; } }
-		public int Seats { get { return m_Players.Length; } }
-		public Mobile Dealer { get { return m_Players[m_DealerPosition]; } }
-		public int DealerPosition { get { return m_DealerPosition; } }
+		public MahjongGame Game  => m_Game;
+		public int Seats  => m_Players.Length;
+		public Mobile Dealer  => m_Players[m_DealerPosition];
+		public int DealerPosition  => m_DealerPosition;
 
 		public MahjongPlayers( MahjongGame game, int maxPlayers, int baseScore )
 		{

@@ -117,7 +117,7 @@ namespace Server.Engines.MLQuests.Objectives
 		private TimeSpan m_Duration;
 
 		public override bool IsTimed => true;
-		public override TimeSpan Duration { get { return m_Duration; } }
+		public override TimeSpan Duration => m_Duration;
 
 		public TimedCollectObjective( TimeSpan duration, int amount, Type type, TextDefinition name )
 			: base( amount, type, name )

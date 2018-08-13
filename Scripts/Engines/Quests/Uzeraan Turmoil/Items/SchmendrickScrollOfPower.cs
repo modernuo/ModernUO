@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class SchmendrickScrollOfPower : QuestItem
 	{
-		public override int LabelNumber { get { return 1049118; } } // a scroll with ancient markings
+		public override int LabelNumber => 1049118; // a scroll with ancient markings
 
 		public SchmendrickScrollOfPower() : base( 0xE34 )
 		{

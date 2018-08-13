@@ -42,15 +42,15 @@ namespace Server.Multis
 
 		public FoundationType Type { get { return m_Type; } set { m_Type = value; } }
 		public int LastRevision { get { return m_LastRevision; } set { m_LastRevision = value; } }
-		public List<Item> Fixtures { get { return m_Fixtures; } }
-		public Item SignHanger { get { return m_SignHanger; } }
-		public Item Signpost { get { return m_Signpost; } }
+		public List<Item> Fixtures  => m_Fixtures;
+		public Item SignHanger  => m_SignHanger;
+		public Item Signpost  => m_Signpost;
 		public int SignpostGraphic { get { return m_SignpostGraphic; } set { m_SignpostGraphic = value; } }
 		public Mobile Customizer { get { return m_Customizer; } set { m_Customizer = value; } }
 
 		public override bool IsAosRules => true;
 
-		public override bool IsActive { get { return Customizer == null; } }
+		public override bool IsActive => Customizer == null;
 
 		public virtual int CustomizationCost { get { return (Core.AOS ? 0 : 10000); } }
 
@@ -573,7 +573,7 @@ namespace Server.Multis
 			}
 		}
 
-		public override Point3D BaseBanLocation { get { return new Point3D( Components.Min.X, Components.Height - 1 - Components.Center.Y, 0 ); } }
+		public override Point3D BaseBanLocation => new Point3D( Components.Min.X, Components.Height - 1 - Components.Center.Y, 0 );
 
 		public void CheckSignpost()
 		{
@@ -715,7 +715,7 @@ namespace Server.Multis
 
 		private int m_DefaultPrice;
 
-		public override int DefaultPrice { get { return m_DefaultPrice; } }
+		public override int DefaultPrice => m_DefaultPrice;
 
 		public override void Deserialize( GenericReader reader )
 		{
@@ -1701,9 +1701,9 @@ namespace Server.Multis
 			}
 		}
 
-		public HouseFoundation Foundation { get { return m_Foundation; } }
-		public MultiComponentList Components { get { return m_Components; } }
-		public MultiTileEntry[] Fixtures { get { return m_Fixtures; } }
+		public HouseFoundation Foundation  => m_Foundation;
+		public MultiComponentList Components  => m_Components;
+		public MultiTileEntry[] Fixtures  => m_Fixtures;
 		public int Revision { get { return m_Revision; } set { m_Revision = value; } }
 
 		public DesignState( HouseFoundation foundation, MultiComponentList components )
@@ -1982,9 +1982,9 @@ namespace Server.Multis
 		private HouseFoundation m_Foundation;
 		private int m_Level;
 
-		public HouseFoundation Foundation { get { return m_Foundation; } }
+		public HouseFoundation Foundation  => m_Foundation;
 		public int Level { get { return m_Level; } set { m_Level = value; } }
-		public int MaxLevels { get { return m_Foundation.MaxLevels; } }
+		public int MaxLevels  => m_Foundation.MaxLevels;
 
 		public DesignContext( HouseFoundation foundation )
 		{
@@ -1994,15 +1994,14 @@ namespace Server.Multis
 
 		private static Dictionary<Mobile, DesignContext> m_Table = new Dictionary<Mobile, DesignContext>();
 
-		public static Dictionary<Mobile, DesignContext> Table { get { return m_Table; } }
+		public static Dictionary<Mobile, DesignContext> Table  => m_Table;
 
 		public static DesignContext Find( Mobile from )
 		{
 			if( from == null )
 				return null;
 
-			DesignContext d;
-			m_Table.TryGetValue( from, out d );
+			m_Table.TryGetValue( from, out DesignContext d );
 
 			return d;
 		}

@@ -5,7 +5,7 @@ namespace Server.Items
 	[Flippable( 0x3D86, 0x3D87 )]
 	public class SuitOfSilverArmorComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076266; } } // Suit of Silver Armor
+		public override int LabelNumber => 1076266; // Suit of Silver Armor
 
 		public SuitOfSilverArmorComponent() : base( 0x3D86 )
 		{
@@ -32,10 +32,10 @@ namespace Server.Items
 
 	public class SuitOfSilverArmorAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new SuitOfSilverArmorDeed(); } }
+		public override BaseAddonDeed Deed => new SuitOfSilverArmorDeed();
 
 		[Constructible]
-		public SuitOfSilverArmorAddon() : base()
+		public SuitOfSilverArmorAddon()
 		{
 			AddComponent( new SuitOfSilverArmorComponent(), 0, 0, 0 );
 		}
@@ -61,11 +61,11 @@ namespace Server.Items
 
 	public class SuitOfSilverArmorDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new SuitOfSilverArmorAddon(); } }
-		public override int LabelNumber { get { return 1076266; } } // Suit of Silver Armor
+		public override BaseAddon Addon => new SuitOfSilverArmorAddon();
+		public override int LabelNumber => 1076266; // Suit of Silver Armor
 
 		[Constructible]
-		public SuitOfSilverArmorDeed() : base()
+		public SuitOfSilverArmorDeed()
 		{
 			LootType = LootType.Blessed;
 		}

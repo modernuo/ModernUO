@@ -11,10 +11,10 @@ namespace Server.Mobiles
 	{
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
-		public override string DefaultName { get { return "a deathwatch beetle"; } }
+		public override string DefaultName => "a deathwatch beetle";
 
 		[Constructible]
-		public DeathwatchBeetle() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 ) 
+		public DeathwatchBeetle() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			Body = 242;
 
@@ -125,7 +125,7 @@ namespace Server.Mobiles
 			m.SendLocalizedMessage( 1070821, this.Name ); // %s spits a poisonous substance at you!
 		}
 
-		public override int Hides{ get{ return 8; } }	
+		public override int Hides => 8;
 		public DeathwatchBeetle( Serial serial ) : base( serial )
 		{
 		}

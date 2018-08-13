@@ -108,7 +108,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int LabelNumber{ get{ return 1041267; } } // runebook
+		public override int LabelNumber => 1041267; // runebook
 
 		[Constructible]
 		public Runebook( int maxCharges ) : base( Core.AOS ? 0x22C5 : 0xEFA )

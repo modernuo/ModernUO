@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class MirrorOfPurification : Item
 	{
-		public override int LabelNumber{ get{ return 1075304; } } // Mirror of Purification
+		public override int LabelNumber => 1075304; // Mirror of Purification
 
 		[Constructible]
 		public MirrorOfPurification() : base( 0x1008 )

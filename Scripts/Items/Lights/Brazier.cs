@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class Brazier : BaseLight
 	{
-		public override int LitItemID{ get { return 0xE31; } }
-		
+		public override int LitItemID => 0xE31;
+
 		[Constructible]
 		public Brazier() : base( 0xE31 )
 		{

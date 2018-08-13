@@ -133,7 +133,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x2FC3, 0x3179 )]
 	public class ElvenPants : BasePants
 	{
-		public override Race RequiredRace { get { return Race.Elf; } }
+		public override Race RequiredRace => Race.Elf;
 
 		[Constructible]
 		public ElvenPants() : this( 0 )

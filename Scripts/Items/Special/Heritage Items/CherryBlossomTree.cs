@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class CherryBlossomTreeAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new CherryBlossomTreeDeed(); } }
+		public override BaseAddonDeed Deed => new CherryBlossomTreeDeed();
 
 		[Constructible]
-		public CherryBlossomTreeAddon() : base()
+		public CherryBlossomTreeAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0x26EE, 1076268 ), 0, 0, 0 );
 			AddComponent( new LocalizedAddonComponent( 0x3122, 1076268 ), 0, 0, 0 );
@@ -34,11 +34,11 @@ namespace Server.Items
 
 	public class CherryBlossomTreeDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new CherryBlossomTreeAddon(); } }
-		public override int LabelNumber { get { return 1076268; } } // Cherry Blossom Tree
+		public override BaseAddon Addon => new CherryBlossomTreeAddon();
+		public override int LabelNumber => 1076268; // Cherry Blossom Tree
 
 		[Constructible]
-		public CherryBlossomTreeDeed() : base()
+		public CherryBlossomTreeDeed()
 		{
 			LootType = LootType.Blessed;
 		}

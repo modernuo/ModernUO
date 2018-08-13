@@ -11,7 +11,7 @@ namespace Server.Items
 	{
 		private Item m_Stone;
 
-		public override int LabelNumber{ get{ return 1041054; } } // guildstone teleporter
+		public override int LabelNumber => 1041054; // guildstone teleporter
 
 		[Constructible]
 		public GuildTeleporter() : this( null )

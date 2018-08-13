@@ -17,18 +17,18 @@ namespace Server.Spells.Necromancy
 				Reagent.NoxCrystal
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill{ get{ return 70.0; } }
-		public override int RequiredMana{ get{ return 23; } }
+		public override double RequiredSkill => 70.0;
+		public override int RequiredMana => 23;
 
-		public override int Body{ get{ return 749; } }
+		public override int Body => 749;
 
-		public override int FireResistOffset{ get{ return -10; } }
-		public override int ColdResistOffset{ get{ return +10; } }
-		public override int PoisResistOffset{ get{ return +10; } }
+		public override int FireResistOffset => -10;
+		public override int ColdResistOffset => +10;
+		public override int PoisResistOffset => +10;
 
-		public override double TickRate{ get{ return 2.5; } }
+		public override double TickRate => 2.5;
 
 		public LichFormSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

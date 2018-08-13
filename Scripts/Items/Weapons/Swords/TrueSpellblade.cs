@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TrueSpellblade : ElvenSpellblade
 	{
-		public override int LabelNumber{ get{ return 1073513; } } // true spellblade
+		public override int LabelNumber => 1073513; // true spellblade
 
 		[Constructible]
 		public TrueSpellblade()

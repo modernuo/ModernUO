@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RewardCake : Item
 	{
-		public override int LabelNumber{ get{ return 1049786; } } // Happy Birthday!  ...
+		public override int LabelNumber => 1049786; // Happy Birthday!  ...
 
 		[Constructible]
 		public RewardCake() : base( 0x9e9 )

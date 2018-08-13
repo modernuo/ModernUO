@@ -5,7 +5,7 @@ namespace Server.Items.Holiday
 {
 	public class PaintedDaemonMask : BasePaintedMask
 	{
-		public override string MaskName { get { return "Daemon Mask"; } }
+		public override string MaskName => "Daemon Mask";
 
 		[Constructible]
 		public PaintedDaemonMask()

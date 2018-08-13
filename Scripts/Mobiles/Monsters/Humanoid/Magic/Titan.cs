@@ -53,9 +53,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls );
 		}
 
-		public override int Meat{ get{ return 4; } }
+		public override int Meat => 4;
 		public override Poison PoisonImmune => Poison.Regular;
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int TreasureMapLevel => 5;
 
 		public Titan( Serial serial ) : base( serial )
 		{

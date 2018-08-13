@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class PendantOfTheMagi : GoldNecklace
 	{
-		public override int LabelNumber{ get{ return 1072937; } } // Pendant of the Magi
+		public override int LabelNumber => 1072937; // Pendant of the Magi
 
 		[Constructible]
 		public PendantOfTheMagi()

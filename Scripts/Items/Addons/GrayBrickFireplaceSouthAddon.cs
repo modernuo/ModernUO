@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class GrayBrickFireplaceSouthAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new GrayBrickFireplaceSouthDeed(); } }
+		public override BaseAddonDeed Deed => new GrayBrickFireplaceSouthDeed();
 
 		[Constructible]
 		public GrayBrickFireplaceSouthAddon()
@@ -35,8 +35,8 @@ namespace Server.Items
 
 	public class GrayBrickFireplaceSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new GrayBrickFireplaceSouthAddon(); } }
-		public override int LabelNumber{ get{ return 1061847; } } // grey brick fireplace (south)
+		public override BaseAddon Addon => new GrayBrickFireplaceSouthAddon();
+		public override int LabelNumber => 1061847; // grey brick fireplace (south)
 
 		[Constructible]
 		public GrayBrickFireplaceSouthDeed()

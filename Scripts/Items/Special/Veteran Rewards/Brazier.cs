@@ -130,7 +130,7 @@ namespace Server.Items
 
 	public class RewardBrazierDeed : Item, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1080527; } } // Brazier Deed
+		public override int LabelNumber => 1080527; // Brazier Deed
 
 		private bool m_IsRewardItem;
 

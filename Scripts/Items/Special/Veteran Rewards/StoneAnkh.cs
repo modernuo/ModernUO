@@ -71,7 +71,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public StoneAnkh( bool east ) : base()
+		public StoneAnkh( bool east )
 		{
 			if ( east )
 			{
@@ -142,7 +142,7 @@ namespace Server.Items
 
 	public class StoneAnkhDeed : BaseAddonDeed, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1049773; } } // deed for a stone ankh
+		public override int LabelNumber => 1049773; // deed for a stone ankh
 
 		private bool m_East;
 		private bool m_IsRewardItem;
@@ -166,7 +166,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public StoneAnkhDeed() : base()
+		public StoneAnkhDeed()
 		{
 			LootType = LootType.Blessed;
 		}

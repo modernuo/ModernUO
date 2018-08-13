@@ -48,9 +48,7 @@ namespace Server
 			if ( m_Table == null )
 				LoadTable();
 
-			SpeedInfo sp = null;
-
-			m_Table.TryGetValue(obj.GetType(), out sp);
+			m_Table.TryGetValue( obj.GetType(), out SpeedInfo sp );
 
 			return ( sp != null );
 		}
@@ -63,9 +61,7 @@ namespace Server
 			if ( m_Table == null )
 				LoadTable();
 
-			SpeedInfo sp = null;
-
-			m_Table.TryGetValue(obj.GetType(), out sp);
+			m_Table.TryGetValue( obj.GetType(), out SpeedInfo sp );
 
 			if ( sp == null )
 				return false;

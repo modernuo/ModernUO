@@ -5,7 +5,7 @@ namespace Server.Items
 	[Flippable( 0x2A58, 0x2A59 )]
 	public class BoneThroneComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1074476; } } // Bone throne
+		public override int LabelNumber => 1074476; // Bone throne
 
 		public BoneThroneComponent() : base( 0x2A58 )
 		{
@@ -42,10 +42,10 @@ namespace Server.Items
 
 	public class BoneThroneAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new BoneThroneDeed(); } }
+		public override BaseAddonDeed Deed => new BoneThroneDeed();
 
 		[Constructible]
-		public BoneThroneAddon() : base()
+		public BoneThroneAddon()
 		{
 			AddComponent( new BoneThroneComponent(), 0, 0, 0 );
 		}
@@ -71,11 +71,11 @@ namespace Server.Items
 
 	public class BoneThroneDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new BoneThroneAddon(); } }
-		public override int LabelNumber { get { return 1074476; } } // Bone throne
+		public override BaseAddon Addon => new BoneThroneAddon();
+		public override int LabelNumber => 1074476; // Bone throne
 
 		[Constructible]
-		public BoneThroneDeed() : base()
+		public BoneThroneDeed()
 		{
 			LootType = LootType.Blessed;
 		}

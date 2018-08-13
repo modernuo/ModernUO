@@ -10,7 +10,7 @@ namespace Server.Items
 	/// <summary>
 	/// Make your opponent bleed profusely with this wicked use of your weapon.
 	/// When successful, the target will bleed for several seconds, taking damage as time passes for up to ten seconds.
-	/// The rate of damage slows down as time passes, and the blood loss can be completely staunched with the use of bandages. 
+	/// The rate of damage slows down as time passes, and the blood loss can be completely staunched with the use of bandages.
 	/// </summary>
 	public class BleedAttack : WeaponAbility
 	{
@@ -18,7 +18,7 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana{ get{ return 30; } }
+		public override int BaseMana => 30;
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

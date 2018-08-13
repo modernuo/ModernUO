@@ -54,7 +54,7 @@ namespace Server.Mobiles
 		}
 
 		public override Poison PoisonImmune => Poison.Greater;
-		public override int TreasureMapLevel{ get{ return 2; } }
+		public override int TreasureMapLevel => 2;
 		public override bool DisallowAllMoves => true;
 
 		public Reaper( Serial serial ) : base( serial )

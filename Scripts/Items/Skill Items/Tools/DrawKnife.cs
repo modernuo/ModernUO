@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class DrawKnife : BaseTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefCarpentry.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
 		[Constructible]
 		public DrawKnife() : base( 0x10E4 )

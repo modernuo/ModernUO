@@ -6,16 +6,16 @@ namespace Server.Items
 {
 	public class JesterHatofChuckles : BaseHat, ITokunoDyable
 	{
-		public override int LabelNumber { get { return 1073256; } }  //Jester Hat of Chuckles - Museum of Vesper Replica	1073256
+		public override int LabelNumber => 1073256;  //Jester Hat of Chuckles - Museum of Vesper Replica	1073256
 
-		public override int BasePhysicalResistance { get { return 12; } }
-		public override int BaseFireResistance { get { return 12; } }
-		public override int BaseColdResistance { get { return 12; } }
-		public override int BasePoisonResistance { get { return 12; } }
-		public override int BaseEnergyResistance { get { return 12; } }
+		public override int BasePhysicalResistance => 12;
+		public override int BaseFireResistance => 12;
+		public override int BaseColdResistance => 12;
+		public override int BasePoisonResistance => 12;
+		public override int BaseEnergyResistance => 12;
 
-		public override int InitMinHits{ get{ return 100; } }
-		public override int InitMaxHits{ get{ return 100; } }
+		public override int InitMinHits => 100;
+		public override int InitMaxHits => 100;
 
 		[Constructible]
 		public JesterHatofChuckles() : this( Utility.RandomList( 0x13e, 0x03, 0x172, 0x3f ) )

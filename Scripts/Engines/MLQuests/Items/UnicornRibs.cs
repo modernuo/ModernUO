@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class UnicornRibs : Item
 	{
-		public override int LabelNumber{ get{ return 1074611; } } // Unicorn Ribs
+		public override int LabelNumber => 1074611; // Unicorn Ribs
 
 		[Constructible]
 		public UnicornRibs() : this( 1 )

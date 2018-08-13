@@ -12,7 +12,7 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana{ get{ return 20; } }
+		public override int BaseMana => 20;
 
 		// No longer active in pub21:
 		/*public override bool CheckSkills( Mobile from )

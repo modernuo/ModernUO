@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class TransparentHeart : GoldEarrings
 	{
-		public override int LabelNumber{ get{ return 1075400; } } // Transparent Heart
+		public override int LabelNumber => 1075400; // Transparent Heart
 
 		[Constructible]
-		public TransparentHeart() : base()
+		public TransparentHeart()
 		{
 			LootType = LootType.Blessed;
 			Hue = 0x4AB;

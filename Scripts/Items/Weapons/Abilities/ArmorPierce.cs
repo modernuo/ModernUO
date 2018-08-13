@@ -23,8 +23,8 @@ namespace Server.Items
 			return base.CheckSkills( from );
 		}
 
-		public override int BaseMana{ get{ return 30; } }
-		public override double DamageScalar{ get{ return 1.5; } }
+		public override int BaseMana => 30;
+		public override double DamageScalar => 1.5;
 
 		public override bool RequiresSE => true;
 

@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RunedSwitch : Item
 	{
-		public override int LabelNumber{ get{ return 1072896; } } // runed switch
+		public override int LabelNumber => 1072896; // runed switch
 
 		[Constructible]
 		public RunedSwitch() : base( 0x2F61 )
@@ -42,7 +42,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 		}
-		
+
 		private class InternalTarget : Target
 		{
 			private RunedSwitch m_Item;

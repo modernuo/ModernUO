@@ -13,7 +13,6 @@ namespace Server.Items
 
 		[Constructible]
 		public HalloweenPumpkin()
-			: base()
 		{
 			Weight = Utility.RandomMinMax( 3, 20 );
 			ItemID = ( Utility.RandomDouble() <= .02 ) ? Utility.RandomList( 0x4694, 0x4698 ) : Utility.RandomList( 0xc6a, 0xc6b, 0xc6c );

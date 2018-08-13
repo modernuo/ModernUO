@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class LeggingsOfBane : ChainLegs
 	{
-		public override int LabelNumber{ get{ return 1061100; } } // Leggings of Bane
-		public override int ArtifactRarity{ get{ return 11; } }
+		public override int LabelNumber => 1061100; // Leggings of Bane
+		public override int ArtifactRarity => 11;
 
-		public override int BasePoisonResistance{ get{ return 36; } }
+		public override int BasePoisonResistance => 36;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public LeggingsOfBane()
@@ -33,7 +33,7 @@ namespace Server.Items
 
 			writer.Write( (int) 2 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

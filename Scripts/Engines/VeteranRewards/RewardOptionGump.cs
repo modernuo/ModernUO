@@ -39,7 +39,7 @@ namespace Server.Gumps
 
 			AddButton( 10, 294, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0 );
 			AddHtmlLocalized( 45, 296, 450, 20, 1060051, 0x7FFF, false, false ); // CANCEL
-			
+
 			if ( title > 0 )
 				AddHtmlLocalized( 14, 12, 273, 20, title, 0x7FFF, false, false );
 			else
@@ -50,14 +50,14 @@ namespace Server.Gumps
 			for ( int i = 0; i < m_Options.Count; i++ )
 			{
 				AddButton( 19, 49 + i * 24, 0x845, 0x846, m_Options[ i ].ID, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 44, 47 + i * 24, 213, 20, m_Options[ i ].Cliloc, 0x7FFF, false, false ); 
+				AddHtmlLocalized( 44, 47 + i * 24, 213, 20, m_Options[ i ].Cliloc, 0x7FFF, false, false );
 			}
 		}
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
 			if ( m_Option != null && Contains( info.ButtonID ) )
-				m_Option.OnOptionSelected( sender.Mobile, info.ButtonID );			
+				m_Option.OnOptionSelected( sender.Mobile, info.ButtonID );
 		}
 
 		private bool Contains( int chosen )
@@ -92,7 +92,7 @@ namespace Server.Gumps
 
 	public class RewardOptionList : List<RewardOption>
 	{
-		public RewardOptionList() : base()
+		public RewardOptionList()
 		{
 		}
 

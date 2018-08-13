@@ -6,10 +6,10 @@ namespace Server.Items
 {
 	public class CaptainBlackheartsFishingPole : FishingPole
 	{
-		public override int LabelNumber{ get{ return 1074571; } } // Captain Blackheart's Fishing Pole
+		public override int LabelNumber => 1074571; // Captain Blackheart's Fishing Pole
 
 		[Constructible]
-		public CaptainBlackheartsFishingPole() : base()
+		public CaptainBlackheartsFishingPole()
 		{
 		}
 

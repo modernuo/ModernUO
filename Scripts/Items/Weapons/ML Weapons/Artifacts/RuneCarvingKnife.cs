@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RuneCarvingKnife : AssassinSpike
 	{
-		public override int LabelNumber{ get{ return 1072915; } } // Rune Carving Knife
+		public override int LabelNumber => 1072915; // Rune Carving Knife
 
 		[Constructible]
 		public RuneCarvingKnife()

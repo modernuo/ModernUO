@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	public class Irk : Changeling
 	{
 		public override string DefaultName => "Irk";
-		public override int DefaultHue{ get{ return 0x489; } }
+		public override int DefaultHue => 0x489;
 
 		[Constructible]
 		public Irk()

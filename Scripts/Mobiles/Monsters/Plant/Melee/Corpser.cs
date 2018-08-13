@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a corpser corpse" )]
 	public class Corpser : BaseCreature
 	{
-		public override string DefaultName { get { return "a corpser"; } }
+		public override string DefaultName => "a corpser";
 
 		[Constructible]
 		public Corpser() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )

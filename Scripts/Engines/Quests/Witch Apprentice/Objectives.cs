@@ -165,7 +165,7 @@ namespace Server.Engines.Quests.Hag
 			}
 		}
 
-		public override int MaxProgress{ get{ return m_MaxProgress; } }
+		public override int MaxProgress => m_MaxProgress;
 
 		public KillImpsObjective( bool init )
 		{
@@ -473,7 +473,7 @@ namespace Server.Engines.Quests.Hag
 		public void NextStep()
 		{
 			System.From.SendLocalizedMessage( 1055046 ); // You have completed your current task on the Hag's Magic Brew Recipe list.
-			
+
 			if ( Step < 3 )
 				System.AddObjective( new FindIngredientObjective( m_Ingredients ) );
 			else

@@ -19,7 +19,7 @@ namespace Server.Engines.Quests.Haven
 		private MilitiaCanoneer m_Canoneer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CannonDirection CannonDirection { get { return m_CannonDirection; } }
+		public CannonDirection CannonDirection  => m_CannonDirection;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MilitiaCanoneer Canoneer { get { return m_Canoneer; } set { m_Canoneer = value; } }
@@ -95,7 +95,7 @@ namespace Server.Engines.Quests.Haven
 			target.Damage( 9999, from );
 		}
 
-		public override bool HandlesOnMovement { get { return m_Canoneer != null && !m_Canoneer.Deleted && m_Canoneer.Active; } }
+		public override bool HandlesOnMovement => m_Canoneer != null && !m_Canoneer.Deleted && m_Canoneer.Active;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{

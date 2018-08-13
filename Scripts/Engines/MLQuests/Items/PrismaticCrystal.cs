@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public class PrismaticCrystal : Item
 	{
-		public override int LabelNumber{ get{ return 1074269; } } // prismatic crystal
+		public override int LabelNumber => 1074269; // prismatic crystal
 
 		[Constructible]
 		public PrismaticCrystal() : base( 0x2DA )

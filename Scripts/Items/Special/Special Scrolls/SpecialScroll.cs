@@ -21,7 +21,7 @@ namespace Server.Items
 		#endregion
 
 		public abstract int Message{ get; }
-		public virtual int Title{ get { return 0; } }
+		public virtual int Title => 0;
 		public abstract string DefaultTitle{ get; }
 
 		public SpecialScroll( SkillName skill, double value ) : base( 0x14F0 )

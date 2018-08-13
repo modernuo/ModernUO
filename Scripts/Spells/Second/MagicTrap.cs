@@ -16,7 +16,7 @@ namespace Server.Spells.Second
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Second; } }
+		public override SpellCircle Circle => SpellCircle.Second;
 
 		public MagicTrapSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

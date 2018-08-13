@@ -8,7 +8,7 @@ namespace Server.Items
 	[Flippable( 0x3D98, 0x3D94 )]
 	public class WallTorchComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076282; } } // Wall Torch
+		public override int LabelNumber => 1076282; // Wall Torch
 
 		public WallTorchComponent() : base( 0x3D98 )
 		{
@@ -54,9 +54,9 @@ namespace Server.Items
 
 	public class WallTorchAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new WallTorchDeed(); } }
+		public override BaseAddonDeed Deed => new WallTorchDeed();
 
-		public WallTorchAddon() : base()
+		public WallTorchAddon()
 		{
 			AddComponent( new WallTorchComponent(), 0, 0, 0 );
 		}
@@ -82,11 +82,11 @@ namespace Server.Items
 
 	public class WallTorchDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new WallTorchAddon(); } }
-		public override int LabelNumber { get { return 1076282; } } // Wall Torch
+		public override BaseAddon Addon => new WallTorchAddon();
+		public override int LabelNumber => 1076282; // Wall Torch
 
 		[Constructible]
-		public WallTorchDeed() : base()
+		public WallTorchDeed()
 		{
 			LootType = LootType.Blessed;
 		}

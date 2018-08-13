@@ -13,7 +13,7 @@ namespace Server.Mobiles
 
 		public override bool InitialInnocent => true;
 
-		public override TimeSpan MountAbilityDelay { get { return TimeSpan.FromHours( 1.0 ); } }
+		public override TimeSpan MountAbilityDelay => TimeSpan.FromHours( 1.0 );
 
 		public override void OnDisallowedRider( Mobile m )
 		{
@@ -115,10 +115,10 @@ namespace Server.Mobiles
 		}
 
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int Meat{ get{ return 3; } }
-		public override int Hides{ get{ return 10; } }
-		public override HideType HideType{ get{ return HideType.Horned; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
+		public override int Meat => 3;
+		public override int Hides => 10;
+		public override HideType HideType => HideType.Horned;
+		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
 		public Unicorn( Serial serial ) : base( serial )
 		{

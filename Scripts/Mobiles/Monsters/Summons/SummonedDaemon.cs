@@ -7,8 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "a daemon corpse" )]
 	public class SummonedDaemon : BaseCreature
 	{
-		public override double DispelDifficulty{ get{ return 125.0; } }
-		public override double DispelFocus{ get{ return 45.0; } }
+		public override double DispelDifficulty => 125.0;
+		public override double DispelFocus => 45.0;
 
 		[Constructible]
 		public SummonedDaemon () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )

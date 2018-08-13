@@ -1,28 +1,28 @@
-using System; 
-using System.Collections.Generic; 
-using Server.Items; 
+using System;
+using System.Collections.Generic;
+using Server.Items;
 
-namespace Server.Mobiles 
-{ 
-	public class SBBlacksmith : SBInfo 
-	{ 
-		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo(); 
-		private IShopSellInfo m_SellInfo = new InternalSellInfo(); 
+namespace Server.Mobiles
+{
+	public class SBBlacksmith : SBInfo
+	{
+		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
+		private IShopSellInfo m_SellInfo = new InternalSellInfo();
 
-		public SBBlacksmith() 
-		{ 
-		} 
+		public SBBlacksmith()
+		{
+		}
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } } 
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } } 
+		public override IShopSellInfo SellInfo => m_SellInfo;
+		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
-		public class InternalBuyInfo : List<GenericBuyInfo> 
-		{ 
-			public InternalBuyInfo() 
-			{ 	
+		public class InternalBuyInfo : List<GenericBuyInfo>
+		{
+			public InternalBuyInfo()
+			{
 				Add( new GenericBuyInfo( typeof( IronIngot ), 5, 16, 0x1BF2, 0 ) );
-				Add( new GenericBuyInfo( typeof( Tongs ), 13, 14, 0xFBB, 0 ) ); 
- 
+				Add( new GenericBuyInfo( typeof( Tongs ), 13, 14, 0xFBB, 0 ) );
+
 				Add( new GenericBuyInfo( typeof( BronzeShield ), 66, 20, 0x1B72, 0 ) );
 				Add( new GenericBuyInfo( typeof( Buckler ), 50, 20, 0x1B73, 0 ) );
 				Add( new GenericBuyInfo( typeof( MetalKiteShield ), 123, 20, 0x1B74, 0 ) );
@@ -115,15 +115,15 @@ namespace Server.Mobiles
 					Add( new GenericBuyInfo( typeof( Scepter ), 39, 20, 0x26BC, 0 ) );
 					Add( new GenericBuyInfo( typeof( BladedStaff ), 40, 20, 0x26BD, 0 ) );
 				}
-			} 
-		} 
+			}
+		}
 
-		public class InternalSellInfo : GenericSellInfo 
-		{ 
-			public InternalSellInfo() 
-			{ 
-				Add( typeof( Tongs ), 7 ); 
-				Add( typeof( IronIngot ), 4 ); 
+		public class InternalSellInfo : GenericSellInfo
+		{
+			public InternalSellInfo()
+			{
+				Add( typeof( Tongs ), 7 );
+				Add( typeof( IronIngot ), 4 );
 
 				Add( typeof( Buckler ), 25 );
 				Add( typeof( BronzeShield ), 33 );
@@ -189,7 +189,7 @@ namespace Server.Mobiles
 
 				Add( typeof( HeavyCrossbow ), 27 );
 				Add( typeof( Bow ), 17 );
-				Add( typeof( Crossbow ), 23 ); 
+				Add( typeof( Crossbow ), 23 );
 
 				if( Core.AOS )
 				{
@@ -228,7 +228,7 @@ namespace Server.Mobiles
 				Add( typeof( VikingSword ), 27 );
 
 
-			} 
-		} 
-	} 
+			}
+		}
+	}
 }

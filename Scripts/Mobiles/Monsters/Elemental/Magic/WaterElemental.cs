@@ -7,8 +7,8 @@ namespace Server.Mobiles
 	[CorpseName( "a water elemental corpse" )]
 	public class WaterElemental : BaseCreature
 	{
-		public override double DispelDifficulty{ get{ return 117.5; } }
-		public override double DispelFocus{ get{ return 45.0; } }
+		public override double DispelDifficulty => 117.5;
+		public override double DispelFocus => 45.0;
 
 		public override string DefaultName => "a water elemental";
 
@@ -58,7 +58,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool BleedImmune => true;
-		public override int TreasureMapLevel{ get{ return 2; } }
+		public override int TreasureMapLevel => 2;
 
 		public WaterElemental( Serial serial ) : base( serial )
 		{

@@ -22,7 +22,7 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Item Skull{ get{ return m_Skull; } set{ m_Skull = value; if ( m_Platform != null ) m_Platform.Validate(); } }
 
-		public override int LabelNumber{ get{ return 1049489 + (int)m_Type; } }
+		public override int LabelNumber => 1049489 + (int)m_Type;
 
 		public ChampionSkullBrazier( ChampionSkullPlatform platform, ChampionSkullType type ) : base( 0x19BB )
 		{

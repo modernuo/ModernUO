@@ -54,7 +54,7 @@ namespace Server.Items
 			set{ m_LabelNumber = value; InvalidateProperties(); }
 		}
 
-		public override int LabelNumber{ get{ return m_LabelNumber; } }
+		public override int LabelNumber => m_LabelNumber;
 
 		[Constructible]
 		public LocalizedStatic( int itemID ) : this( itemID, itemID < 0x4000 ? 1020000 + itemID : 1078872 + itemID )

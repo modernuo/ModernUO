@@ -17,7 +17,7 @@ namespace Server.Spells.Sixth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
+		public override SpellCircle Circle => SpellCircle.Sixth;
 
 		public RevealSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -74,10 +74,10 @@ namespace Server.Spells.Sixth
 			FinishSequence();
 		}
 
-		// Reveal uses magery and detect hidden vs. hide and stealth 
+		// Reveal uses magery and detect hidden vs. hide and stealth
 		private static bool CheckDifficulty( Mobile from, Mobile m )
 		{
-			// Reveal always reveals vs. invisibility spell 
+			// Reveal always reveals vs. invisibility spell
 			if ( !Core.AOS || InvisibilitySpell.HasTimer( m ) )
 				return true;
 

@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class SilvanisFeywoodBow : ElvenCompositeLongbow
 	{
-		public override int LabelNumber{ get{ return 1072955; } } // Silvani's Feywood Bow
+		public override int LabelNumber => 1072955; // Silvani's Feywood Bow
 
 		[Constructible]
 		public SilvanisFeywoodBow()

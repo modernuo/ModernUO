@@ -8,11 +8,11 @@ namespace Server.Items
 {
 	public class StatCapScroll : SpecialScroll
 	{
-		public override int Message { get { return 1049469; } } /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
+		public override int Message => 1049469; /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
 																* When used, the effect is not immediately seen without a gain of points with that skill or statistics.
 																* You can view your maximum skill values in your skills window.
 																* You can view your maximum statistic value in your statistics window. */
-		public override int Title 
+		public override int Title
 		{
 			get
 			{
@@ -24,17 +24,17 @@ namespace Server.Items
 											* Mythical Scroll (+15 Maximum Stats): OR
 											* Legendary Scroll (+20 Maximum Stats): OR
 											* Ultimate Scroll (+25 Maximum Stats): */
-				
+
 				return 0;
 			}
 		}
-		
-		public override string DefaultTitle { get { return String.Format( "<basefont color=#FFFFFF>Power Scroll ({0}{1} Maximum Stats):</basefont>", ( (int)Value - 225 ) >= 0 ? "+" : "", (int)Value - 225 ); } }
+
+		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Power Scroll ({0}{1} Maximum Stats):</basefont>", ( (int)Value - 225 ) >= 0 ? "+" : "", (int)Value - 225 );
 
 		public StatCapScroll() : this( 105 )
 		{
 		}
-		
+
 		[Constructible]
 		public StatCapScroll( int value ) : base( SkillName.Alchemy, value )
 		{
@@ -48,7 +48,7 @@ namespace Server.Items
 		public override void AddNameProperty(ObjectPropertyList list)
 		{
 			int level = ( (int)Value - 230 ) / 5;
-			
+
 			if ( level >= 0 && level <= 4 && (int)Value % 5 == 0 )
 				list.Add( 1049463 + level, "#1049476" );	/* a wonderous scroll of ~1_type~ (+5 Maximum Stats) OR
 															* an exalted scroll of ~1_type~ (+10 Maximum Stats) OR
@@ -62,32 +62,32 @@ namespace Server.Items
 		public override void OnSingleClick( Mobile from )
 		{
 			int level = ( (int)Value - 230 ) / 5;
-			
+
 			if ( level >= 0 && level <= 4 && (int)Value % 5 == 0 )
 				base.LabelTo( from, 1049463 + level, "#1049476" );
 			else
 				base.LabelTo( from, "a scroll of power ({0}{1} Maximum Stats)", (Value - 225) >= 0 ? "+" : "", Value - 225 );
 		}
-		
+
 		public override bool CanUse( Mobile from )
 		{
 			if ( !base.CanUse( from ) )
 				return false;
-			
+
 			int newValue = (int)Value;
-			
+
 			if ( from is PlayerMobile && ((PlayerMobile)from).HasStatReward )
 				newValue += 5;
-			
+
 			if ( from.StatCap >= newValue )
 			{
 				from.SendLocalizedMessage( 1049510 ); // Your stats are too high for this power scroll.
 				return false;
 			}
-			
+
 			return true;
 		}
-		
+
 		public override void Use( Mobile from )
 		{
 			if ( !CanUse( from ) )

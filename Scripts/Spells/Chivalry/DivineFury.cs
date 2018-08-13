@@ -14,12 +14,12 @@ namespace Server.Spells.Chivalry
 				9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.0 );
 
-		public override double RequiredSkill{ get{ return 25.0; } }
-		public override int RequiredMana{ get{ return 15; } }
-		public override int RequiredTithing{ get{ return 10; } }
-		public override int MantraNumber{ get{ return 1060722; } } // Divinum Furis
+		public override double RequiredSkill => 25.0;
+		public override int RequiredMana => 15;
+		public override int RequiredTithing => 10;
+		public override int MantraNumber => 1060722; // Divinum Furis
 		public override bool BlocksMovement => false;
 
 		public DivineFurySpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )

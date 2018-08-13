@@ -133,7 +133,7 @@ namespace Server.Regions
 		{
 			m_GuardType = DefaultGuardType;
 		}
-		
+
 		public GuardedRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{
 			XmlElement el = xml["guards"];
@@ -262,8 +262,7 @@ namespace Server.Regions
 
 			if ( IsGuardCandidate( m ) )
 			{
-				GuardTimer timer = null;
-				m_GuardCandidates.TryGetValue( m, out timer );
+				m_GuardCandidates.TryGetValue( m, out GuardTimer timer );
 
 				if ( timer == null )
 				{
@@ -323,8 +322,7 @@ namespace Server.Regions
 			{
 				if ( IsGuardCandidate( m ) && ( ( !AllowReds && m.Kills >= 5 && m.Region.IsPartOf( this ) ) || m_GuardCandidates.ContainsKey( m ) ) )
 				{
-					GuardTimer timer = null;
-					m_GuardCandidates.TryGetValue( m, out timer );
+					m_GuardCandidates.TryGetValue( m, out GuardTimer timer );
 
 					if ( timer != null )
 					{

@@ -28,7 +28,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Swinging
 		{
-			get{ return ( m_Timer != null ); } 
+			get{ return ( m_Timer != null ); }
 		}
 
 		[Constructible]
@@ -168,7 +168,7 @@ namespace Server.Items
 
 	public class TrainingDummyEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new TrainingDummyEastDeed(); } }
+		public override BaseAddonDeed Deed => new TrainingDummyEastDeed();
 
 		[Constructible]
 		public TrainingDummyEastAddon()
@@ -197,8 +197,8 @@ namespace Server.Items
 
 	public class TrainingDummyEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new TrainingDummyEastAddon(); } }
-		public override int LabelNumber{ get{ return 1044335; } } // training dummy (east)
+		public override BaseAddon Addon => new TrainingDummyEastAddon();
+		public override int LabelNumber => 1044335; // training dummy (east)
 
 		[Constructible]
 		public TrainingDummyEastDeed()
@@ -226,7 +226,7 @@ namespace Server.Items
 
 	public class TrainingDummySouthAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new TrainingDummySouthDeed(); } }
+		public override BaseAddonDeed Deed => new TrainingDummySouthDeed();
 
 		[Constructible]
 		public TrainingDummySouthAddon()
@@ -255,8 +255,8 @@ namespace Server.Items
 
 	public class TrainingDummySouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new TrainingDummySouthAddon(); } }
-		public override int LabelNumber{ get{ return 1044336; } } // training dummy (south)
+		public override BaseAddon Addon => new TrainingDummySouthAddon();
+		public override int LabelNumber => 1044336; // training dummy (south)
 
 		[Constructible]
 		public TrainingDummySouthDeed()

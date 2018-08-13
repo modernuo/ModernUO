@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Matriarch
 			}
 		}
 
-		public override int MaxProgress{ get{ return 7; } }
+		public override int MaxProgress => 7;
 
 		public KillInfiltratorsObjective()
 		{
@@ -107,7 +107,7 @@ namespace Server.Engines.Quests.Matriarch
 			}
 		}
 
-		public override int MaxProgress{ get{ return 40; } }
+		public override int MaxProgress => 40;
 
 		public GatherWaterObjective()
 		{

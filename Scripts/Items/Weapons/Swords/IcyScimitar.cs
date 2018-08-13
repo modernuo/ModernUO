@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class IcyScimitar : RadiantScimitar
 	{
-		public override int LabelNumber{ get{ return 1073543; } } // icy scimitar
+		public override int LabelNumber => 1073543; // icy scimitar
 
 		[Constructible]
 		public IcyScimitar()

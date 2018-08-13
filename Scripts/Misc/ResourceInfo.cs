@@ -501,9 +501,7 @@ namespace Server.Items
 			if ( m_TypeTable == null )
 				return CraftResource.None;
 
-			CraftResource res;
-			
-			if (!m_TypeTable.TryGetValue(resourceType, out res))
+			if (!m_TypeTable.TryGetValue(resourceType, out CraftResource res))
 				return CraftResource.None;
 
 			return res;

@@ -5,15 +5,15 @@ namespace Server.Items
 {
 	public class ShadowDancerLeggings : LeatherLegs
 	{
-		public override int LabelNumber{ get{ return 1061598; } } // Shadow Dancer Leggings
-		public override int ArtifactRarity{ get{ return 11; } }
+		public override int LabelNumber => 1061598; // Shadow Dancer Leggings
+		public override int ArtifactRarity => 11;
 
-		public override int BasePhysicalResistance{ get{ return 17; } }
-		public override int BasePoisonResistance{ get{ return 18; } }
-		public override int BaseEnergyResistance{ get{ return 18; } }
+		public override int BasePhysicalResistance => 17;
+		public override int BasePoisonResistance => 18;
+		public override int BaseEnergyResistance => 18;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public ShadowDancerLeggings()
@@ -34,7 +34,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

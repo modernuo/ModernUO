@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class GamanHorns : Item
 	{
-		public override int LabelNumber{ get{ return 1074557; } } // Gaman Horns
+		public override int LabelNumber => 1074557; // Gaman Horns
 
 		[Constructible]
 		public GamanHorns() : this( 1 )

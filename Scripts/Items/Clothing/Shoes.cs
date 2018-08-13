@@ -91,7 +91,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x170b, 0x170c )]
 	public class Boots : BaseShoes
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
+		public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
 		[Constructible]
 		public Boots() : this( 0 )
@@ -185,7 +185,7 @@ namespace Server.Items
 		}
 		#endregion
 
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
+		public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
 		[Constructible]
 		public ThighBoots() : this( 0 )
@@ -248,7 +248,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x170f, 0x1710 )]
 	public class Shoes : BaseShoes
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
+		public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
 		[Constructible]
 		public Shoes() : this( 0 )
@@ -283,7 +283,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x170d, 0x170e )]
 	public class Sandals : BaseShoes
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
+		public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
 		[Constructible]
 		public Sandals() : this( 0 )
@@ -422,9 +422,9 @@ namespace Server.Items
 	[FlippableAttribute( 0x2FC4, 0x317A )]
 	public class ElvenBoots : BaseShoes
 	{
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
+		public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-		public override Race RequiredRace { get { return Race.Elf; } }
+		public override Race RequiredRace => Race.Elf;
 
 		[Constructible]
 		public ElvenBoots() : this( 0 )

@@ -16,7 +16,7 @@ namespace Server.Spells.Sixth
 				Reagent.Nightshade
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
+		public override SpellCircle Circle => SpellCircle.Sixth;
 
 		public InvisibilitySpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -85,8 +85,7 @@ namespace Server.Spells.Sixth
 
 		public static void RemoveTimer( Mobile m )
 		{
-			Timer t = null;
-			m_Table.TryGetValue(m, out t);
+			m_Table.TryGetValue( m, out Timer t );
 
 			if ( t != null )
 			{

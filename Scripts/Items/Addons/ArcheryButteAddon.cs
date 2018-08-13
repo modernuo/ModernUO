@@ -309,7 +309,7 @@ namespace Server.Items
 
 	public class ArcheryButteAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new ArcheryButteDeed(); } }
+		public override BaseAddonDeed Deed => new ArcheryButteDeed();
 
 		[Constructible]
 		public ArcheryButteAddon()
@@ -338,8 +338,8 @@ namespace Server.Items
 
 	public class ArcheryButteDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ArcheryButteAddon(); } }
-		public override int LabelNumber{ get{ return 1024106; } } // archery butte
+		public override BaseAddon Addon => new ArcheryButteAddon();
+		public override int LabelNumber => 1024106; // archery butte
 
 		[Constructible]
 		public ArcheryButteDeed()

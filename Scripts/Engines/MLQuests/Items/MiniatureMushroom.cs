@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class MiniatureMushroom : Food
 	{
-		public override int LabelNumber{ get{ return 1073138; } } // Miniature mushroom
+		public override int LabelNumber => 1073138; // Miniature mushroom
 
 		[Constructible]
 		public MiniatureMushroom() : base( 0xD16 )

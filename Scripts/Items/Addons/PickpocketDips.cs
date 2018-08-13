@@ -28,7 +28,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Swinging
 		{
-			get{ return ( m_Timer != null ); } 
+			get{ return ( m_Timer != null ); }
 		}
 
 		public PickpocketDip( int itemID ) : base( itemID )
@@ -158,7 +158,7 @@ namespace Server.Items
 
 	public class PickpocketDipEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new PickpocketDipEastDeed(); } }
+		public override BaseAddonDeed Deed => new PickpocketDipEastDeed();
 
 		[Constructible]
 		public PickpocketDipEastAddon()
@@ -187,8 +187,8 @@ namespace Server.Items
 
 	public class PickpocketDipEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new PickpocketDipEastAddon(); } }
-		public override int LabelNumber{ get{ return 1044337; } } // pickpocket dip (east)
+		public override BaseAddon Addon => new PickpocketDipEastAddon();
+		public override int LabelNumber => 1044337; // pickpocket dip (east)
 
 		[Constructible]
 		public PickpocketDipEastDeed()
@@ -216,7 +216,7 @@ namespace Server.Items
 
 	public class PickpocketDipSouthAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new PickpocketDipSouthDeed(); } }
+		public override BaseAddonDeed Deed => new PickpocketDipSouthDeed();
 
 		[Constructible]
 		public PickpocketDipSouthAddon()
@@ -245,8 +245,8 @@ namespace Server.Items
 
 	public class PickpocketDipSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new PickpocketDipSouthAddon(); } }
-		public override int LabelNumber{ get{ return 1044338; } } // pickpocket dip (south)
+		public override BaseAddon Addon => new PickpocketDipSouthAddon();
+		public override int LabelNumber => 1044338; // pickpocket dip (south)
 
 		[Constructible]
 		public PickpocketDipSouthDeed()

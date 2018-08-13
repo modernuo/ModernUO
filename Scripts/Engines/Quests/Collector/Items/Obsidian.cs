@@ -120,7 +120,7 @@ namespace Server.Engines.Quests.Collector
 			set { m_StatueName = value; InvalidateProperties(); }
 		}
 
-		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		[Constructible]
 		public Obsidian() : base( 0x1EA7 )

@@ -240,7 +240,7 @@ namespace Server.Engines.ConPVP
 
 		private int m_Score;
 
-		public Mobile Player { get { return m_Player; } }
+		public Mobile Player  => m_Player;
 
 		public string Name
 		{
@@ -322,7 +322,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		public DDGame Game { get { return m_Game; } set { m_Game = value; } }
-		public int TeamID { get { return m_TeamID; } }
+		public int TeamID  => m_TeamID;
 
 		public int Kills { get { return m_Kills; } set { m_Kills = value; } }
 		public int Captures { get { return m_Captures; } set { m_Captures = value; } }
@@ -356,9 +356,7 @@ namespace Server.Engines.ConPVP
 				if ( mob == null )
 					return null;
 
-				 DDPlayerInfo val;
-
-				if ( !m_Players.TryGetValue( mob, out val ) )
+				 if (!m_Players.TryGetValue( mob, out DDPlayerInfo val ))
 					m_Players[mob] = val = new DDPlayerInfo( this, mob );
 
 				return val;
@@ -449,7 +447,7 @@ namespace Server.Engines.ConPVP
 
 		private TimeSpan m_Duration;
 
-		public DDTeamInfo[] TeamInfo { get { return m_TeamInfo; } }
+		public DDTeamInfo[] TeamInfo  => m_TeamInfo;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DDTeamInfo Team1 { get { return m_TeamInfo[0]; } set { } }
@@ -487,7 +485,7 @@ namespace Server.Engines.ConPVP
 			return new DDGame( this, context );
 		}
 
-		public override string DefaultName { get { return "DD Controller"; } }
+		public override string DefaultName => "DD Controller";
 
 		[Constructible]
 		public DDController()
@@ -554,7 +552,7 @@ namespace Server.Engines.ConPVP
 	{
 		private DDController m_Controller;
 
-		public DDController Controller { get { return m_Controller; } }
+		public DDController Controller  => m_Controller;
 
 		public void Alert( string text )
 		{

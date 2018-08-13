@@ -8,8 +8,8 @@ namespace Server.Mobiles
 	[CorpseName( "an earth elemental corpse" )]
 	public class SummonedEarthElemental : BaseCreature
 	{
-		public override double DispelDifficulty{ get{ return 117.5; } }
-		public override double DispelFocus{ get{ return 45.0; } }
+		public override double DispelDifficulty => 117.5;
+		public override double DispelFocus => 45.0;
 		public override string DefaultName => "an earth elemental";
 
 		[Constructible]

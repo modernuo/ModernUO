@@ -7,13 +7,13 @@ namespace Server.Items
 {
 	public abstract class FillableContainer : LockableContainer
 	{
-		public virtual int MinRespawnMinutes { get { return 60; } }
-		public virtual int MaxRespawnMinutes { get { return 90; } }
+		public virtual int MinRespawnMinutes  => 60;
+		public virtual int MaxRespawnMinutes  => 90;
 
-		public virtual bool IsLockable { get { return true; } }
-		public virtual bool IsTrappable { get { return IsLockable; } }
+		public virtual bool IsLockable  => true;
+		public virtual bool IsTrappable  => IsLockable;
 
-		public virtual int SpawnThreshold { get { return 2; } }
+		public virtual int SpawnThreshold  => 2;
 
 		protected FillableContent m_Content;
 
@@ -21,7 +21,7 @@ namespace Server.Items
 		protected Timer m_RespawnTimer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime NextRespawnTime { get { return m_NextRespawnTime; } }
+		public DateTime NextRespawnTime  => m_NextRespawnTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public FillableContentType ContentType
@@ -275,7 +275,7 @@ namespace Server.Items
 	public class LibraryBookcase : FillableContainer
 	{
 		public override bool IsLockable => false;
-		public override int SpawnThreshold { get { return 5; } }
+		public override int SpawnThreshold => 5;
 
 		protected override int GetSpawnCount()
 		{
@@ -579,8 +579,8 @@ namespace Server.Items
 		protected Type[] m_Types;
 		protected int m_Weight;
 
-		public Type[] Types { get { return m_Types; } }
-		public int Weight { get { return m_Weight; } }
+		public Type[] Types  => m_Types;
+		public int Weight  => m_Weight;
 
 		public FillableEntry( Type type )
 			: this( 1, new Type[] { type } )
@@ -631,7 +631,7 @@ namespace Server.Items
 	{
 		private BeverageType m_Content;
 
-		public BeverageType Content { get { return m_Content; } }
+		public BeverageType Content  => m_Content;
 
 		public FillableBvrge( Type type, BeverageType content )
 			: this( 1, type, content )
@@ -700,8 +700,8 @@ namespace Server.Items
 		private FillableEntry[] m_Entries;
 		private int m_Weight;
 
-		public int Level { get { return m_Level; } }
-		public Type[] Vendors { get { return m_Vendors; } }
+		public int Level  => m_Level;
+		public Type[] Vendors  => m_Vendors;
 
 		public FillableContentType TypeID { get { return Lookup( this ); } }
 

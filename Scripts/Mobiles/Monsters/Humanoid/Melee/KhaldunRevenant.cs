@@ -62,7 +62,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override Mobile ConstantFocus{ get{ return m_Target; } }
+		public override Mobile ConstantFocus => m_Target;
 		public override bool AlwaysAttackable => true;
 
 		public override string DefaultName => "a revenant";

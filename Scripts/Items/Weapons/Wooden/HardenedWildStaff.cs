@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class HardenedWildStaff : WildStaff
 	{
-		public override int LabelNumber{ get{ return 1073552; } } // hardened wild staff
+		public override int LabelNumber => 1073552; // hardened wild staff
 
 		[Constructible]
 		public HardenedWildStaff()

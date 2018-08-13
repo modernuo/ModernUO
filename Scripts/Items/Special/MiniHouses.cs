@@ -14,7 +14,7 @@ namespace Server.Items
 			set{ m_Type = value; Construct(); }
 		}
 
-		public override BaseAddonDeed Deed{ get{ return new MiniHouseDeed( m_Type ); } }
+		public override BaseAddonDeed Deed => new MiniHouseDeed( m_Type );
 
 		[Constructible]
 		public MiniHouseAddon() : this( MiniHouseType.StoneAndPlaster )
@@ -91,8 +91,8 @@ namespace Server.Items
 			set{ m_Type = value; InvalidateProperties(); }
 		}
 
-		public override BaseAddon Addon{ get{ return new MiniHouseAddon( m_Type ); } }
-		public override int LabelNumber{ get{ return 1062096; } } // a mini house deed
+		public override BaseAddon Addon => new MiniHouseAddon( m_Type );
+		public override int LabelNumber => 1062096; // a mini house deed
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
@@ -168,7 +168,7 @@ namespace Server.Items
 		TwoStoryLogCabin,
 		TwoStoryVilla,
 		SandstoneHouseWithPatio,
-		SmallStoneWorkshop, 
+		SmallStoneWorkshop,
 		SmallMarbleWorkshop,
 		MalasMountainPass,	//Veteran reward house
 		ChurchAtNight		//Veteran reward house

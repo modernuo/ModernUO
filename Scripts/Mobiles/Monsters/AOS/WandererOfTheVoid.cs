@@ -53,7 +53,7 @@ namespace Server.Mobiles
 
 		public override bool BleedImmune => true;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int TreasureMapLevel{ get{ return Core.AOS ? 4 : 1; } }
+		public override int TreasureMapLevel => Core.AOS ? 4 : 1;
 
 		public override void GenerateLoot()
 		{

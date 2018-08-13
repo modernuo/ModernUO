@@ -98,7 +98,7 @@ namespace Server
 		public string Unknown{ get{ return m_Unknown; } }
 
         [CommandProperty( AccessLevel.GameMaster )]
-        public DateTime TimeReceived { get { return m_TimeReceived; } }
+        public DateTime TimeReceived  => m_TimeReceived;
 
 		public static void Initialize()
 		{

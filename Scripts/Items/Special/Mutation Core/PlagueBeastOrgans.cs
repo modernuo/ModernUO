@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class PlagueBeastOrgan : PlagueBeastInnard
 	{
-		public virtual bool IsCuttable { get { return false; } }
+		public virtual bool IsCuttable  => false;
 
 		private List<PlagueBeastComponent> m_Components;
 
@@ -246,7 +246,7 @@ namespace Server.Items
 	{
 		private int m_Veins;
 
-		public PlagueBeastRubbleOrgan() : base()
+		public PlagueBeastRubbleOrgan()
 		{
 			m_Veins = 3;
 		}
@@ -474,7 +474,7 @@ namespace Server.Items
 			get { return m_Brains >= 4; }
 		}
 
-		public PlagueBeastMainOrgan() : base()
+		public PlagueBeastMainOrgan()
 		{
 			m_Brains = 0;
 		}

@@ -56,9 +56,9 @@ namespace Server.Mobiles
 		public override bool DeathAdderCharmable => true;
 
 		public override bool HasBreath => true; // fire breath enabled
-		public override int Meat{ get{ return 4; } }
-		public override int Hides{ get{ return 15; } }
-		public override HideType HideType{ get{ return HideType.Spined; } }
+		public override int Meat => 4;
+		public override int Hides => 15;
+		public override HideType HideType => HideType.Spined;
 
 		public LavaSerpent(Serial serial) : base(serial)
 		{

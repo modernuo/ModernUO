@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0x13F8, 0x13F9 )]
 	public class GnarledStaff : BaseStaff
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ConcussionBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ParalyzingBlow; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 15; } }
-		public override int AosMaxDamage{ get{ return 17; } }
-		public override int AosSpeed{ get{ return 33; } }
-		public override float MlSpeed{ get{ return 3.25f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 15;
+		public override int AosMaxDamage => 17;
+		public override int AosSpeed => 33;
+		public override float MlSpeed => 3.25f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 10; } }
-		public override int OldMaxDamage{ get{ return 30; } }
-		public override int OldSpeed{ get{ return 33; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 10;
+		public override int OldMaxDamage => 30;
+		public override int OldSpeed => 33;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 50; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 50;
 
 		[Constructible]
 		public GnarledStaff() : base( 0x13F8 )

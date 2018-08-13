@@ -215,7 +215,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		public List<Mobile> AutoStabled { get { return m_AutoStabled; } }
+		public List<Mobile> AutoStabled  => m_AutoStabled;
 
 		public bool NinjaWepCooldown
 		{
@@ -826,7 +826,7 @@ namespace Server.Mobiles
 			UpdateResistances();
 		}
 
-		public override int MaxWeight { get { return (((Core.ML && this.Race == Race.Human) ? 100 : 40) + (int)(3.5 * this.Str)); } }
+		public override int MaxWeight => (((Core.ML && this.Race == Race.Human) ? 100 : 40) + (int)(3.5 * this.Str));
 
 		private int m_LastGlobalLight = -1, m_LastPersonalLight = -1;
 
@@ -3281,7 +3281,7 @@ namespace Server.Mobiles
 			get{ return m_PermaFlags; }
 		}
 
-		public override int Luck{ get{ return AosAttributes.GetValue( this, AosAttribute.Luck ); } }
+		public override int Luck => AosAttributes.GetValue( this, AosAttribute.Luck );
 
 		public override bool IsHarmfulCriminal( Mobile target )
 		{
@@ -3906,7 +3906,7 @@ namespace Server.Mobiles
 			DisguiseTimers.RemoveTimer( this );
 		}
 
-		public override bool NewGuildDisplay { get { return Server.Guilds.Guild.NewGuildSystem; } }
+		public override bool NewGuildDisplay => Server.Guilds.Guild.NewGuildSystem;
 
 		public override void GetProperties( ObjectPropertyList list )
 		{

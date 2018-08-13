@@ -5,16 +5,16 @@ namespace Server.Items
 {
 	public class CrownOfTalKeesh : Bandana
 	{
-		public override int LabelNumber{ get{ return 1094903; } } // Crown of Tal'Keesh [Replica]
+		public override int LabelNumber => 1094903; // Crown of Tal'Keesh [Replica]
 
-		public override int BasePhysicalResistance{ get{ return 0; } }
-		public override int BaseFireResistance{ get{ return 5; } }
-		public override int BaseColdResistance{ get{ return 9; } }
-		public override int BasePoisonResistance{ get{ return 20; } }
-		public override int BaseEnergyResistance{ get{ return 20; } }
+		public override int BasePhysicalResistance => 0;
+		public override int BaseFireResistance => 5;
+		public override int BaseColdResistance => 9;
+		public override int BasePoisonResistance => 20;
+		public override int BaseEnergyResistance => 20;
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+		public override int InitMinHits => 150;
+		public override int InitMaxHits => 150;
 
 		public override bool CanFortify => false;
 

@@ -116,7 +116,7 @@ namespace Server.Items
 
 	public class BannerDeed : Item, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1041007; } } // a banner deed
+		public override int LabelNumber => 1041007; // a banner deed
 
 		private bool m_IsRewardItem;
 

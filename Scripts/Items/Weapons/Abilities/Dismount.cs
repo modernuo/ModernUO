@@ -15,7 +15,7 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana{ get{ return 20; } }
+		public override int BaseMana => 20;
 
 		public override bool Validate( Mobile from )
 		{
@@ -31,7 +31,7 @@ namespace Server.Items
 			return true;
 		}
 
-		public static readonly TimeSpan RemountDelay = TimeSpan.FromSeconds( 10.0 ); 
+		public static readonly TimeSpan RemountDelay = TimeSpan.FromSeconds( 10.0 );
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
@@ -105,7 +105,7 @@ namespace Server.Items
 					pm.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, false );
 				}
 			}
-				
+
 			if ( !attacker.Mounted )
 				AOS.Damage( defender, attacker, Utility.RandomMinMax( 15, 25 ), 100, 0, 0, 0, 0 );
 		}

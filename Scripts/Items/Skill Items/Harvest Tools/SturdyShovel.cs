@@ -6,8 +6,8 @@ namespace Server.Items
 {
 	public class SturdyShovel : BaseHarvestTool
 	{
-		public override int LabelNumber{ get{ return 1045125; } } // sturdy shovel
-		public override HarvestSystem HarvestSystem{ get{ return Mining.System; } }
+		public override int LabelNumber => 1045125; // sturdy shovel
+		public override HarvestSystem HarvestSystem => Mining.System;
 
 		[Constructible]
 		public SturdyShovel() : this( 180 )

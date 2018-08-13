@@ -26,7 +26,7 @@ namespace Server.Items
 
 		private class Ornament : Item
 		{
-			public override int LabelNumber{ get{ return 1041118; } } // a tree ornament
+			public override int LabelNumber => 1041118; // a tree ornament
 
 			public Ornament( int itemID ) : base( itemID )
 			{
@@ -56,7 +56,7 @@ namespace Server.Items
 		{
 			private HolidayTree m_Tree;
 
-			public override int LabelNumber{ get{ return 1041117; } } // a tree for the holidays
+			public override int LabelNumber => 1041117; // a tree for the holidays
 
 			public TreeTrunk( HolidayTree tree, int itemID ) : base( itemID )
 			{
@@ -106,7 +106,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int LabelNumber{ get{ return 1041117; } } // a tree for the holidays
+		public override int LabelNumber => 1041117; // a tree for the holidays
 
 		public HolidayTree( Mobile from, HolidayTreeType type, Point3D loc ) : base( 1 )
 		{

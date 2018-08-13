@@ -71,7 +71,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int LabelNumber { get { return 1070997; } } // A promotional token
+		public override int LabelNumber => 1070997; // A promotional token
 
 
 		private class PromotionalTokenGump : Gump
@@ -129,12 +129,12 @@ namespace Server.Items
 				return null;
 		}
 
-		public override TextDefinition ItemGumpName{ get{ return 1070999; } }// <center>Soulstone Fragment</center>
-		public override TextDefinition ItemName { get { return 1071000; } }//soulstone fragment
-		public override TextDefinition ItemReceiveMessage{ get{ return 1070976; } } // A soulstone fragment has been created in your bank box.
+		public override TextDefinition ItemGumpName => 1070999;// <center>Soulstone Fragment</center>
+		public override TextDefinition ItemName => 1071000;//soulstone fragment
+		public override TextDefinition ItemReceiveMessage => 1070976; // A soulstone fragment has been created in your bank box.
 
 		[Constructible]
-		public SoulstoneFragmentToken() : base()
+		public SoulstoneFragmentToken()
 		{
 		}
 

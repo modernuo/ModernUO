@@ -7,24 +7,24 @@ namespace Server.Items
 	[FlippableAttribute( 0x1403, 0x1402 )]
 	public class ShortSpear : BaseSpear
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ShadowStrike; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.MortalStrike; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
 
-		public override int AosStrengthReq{ get{ return 40; } }
-		public override int AosMinDamage{ get{ return 10; } }
-		public override int AosMaxDamage{ get{ return 13; } }
-		public override int AosSpeed{ get{ return 55; } }
-		public override float MlSpeed{ get{ return 2.00f; } }
+		public override int AosStrengthReq => 40;
+		public override int AosMinDamage => 10;
+		public override int AosMaxDamage => 13;
+		public override int AosSpeed => 55;
+		public override float MlSpeed => 2.00f;
 
-		public override int OldStrengthReq{ get{ return 15; } }
-		public override int OldMinDamage{ get{ return 4; } }
-		public override int OldMaxDamage{ get{ return 32; } }
-		public override int OldSpeed{ get{ return 50; } }
+		public override int OldStrengthReq => 15;
+		public override int OldMinDamage => 4;
+		public override int OldMaxDamage => 32;
+		public override int OldSpeed => 50;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 70; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 70;
 
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
+		public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
 
 		[Constructible]
 		public ShortSpear() : base( 0x1403 )

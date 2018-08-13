@@ -13,7 +13,7 @@ namespace Server.SkillHandlers
 
 		public static double HidingRequirement { get { return ( Core.ML ? 30.0 : ( Core.SE ? 50.0 : 80.0 ) ); } }
 
-		public static int[,] ArmorTable { get { return m_ArmorTable; } }
+		public static int[,] ArmorTable  => m_ArmorTable;
 		private static int[,] m_ArmorTable = new int[,]
 			{
 							//	Gorget	Gloves	Helmet	Arms	Legs	Chest	Shield

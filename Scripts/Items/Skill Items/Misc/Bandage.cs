@@ -11,7 +11,7 @@ namespace Server.Items
 {
 	public class Bandage : Item, IDyable
 	{
-		public static int Range = ( Core.AOS ? 2 : 1 ); 
+		public static int Range = ( Core.AOS ? 2 : 1 );
 
 		public override double DefaultWeight
 		{
@@ -204,8 +204,7 @@ namespace Server.Items
 
 		public static BandageContext GetContext( Mobile healer )
 		{
-			BandageContext bc = null;
-			m_Table.TryGetValue( healer, out bc );
+			m_Table.TryGetValue( healer, out BandageContext bc );
 			return bc;
 		}
 
@@ -514,7 +513,7 @@ namespace Server.Items
 					else if ( Core.AOS )
 					{
 						if (dex < 204)
-						{		
+						{
 							seconds = 3.2-(Math.Sin((double)dex/130)*2.5) + resDelay;
 						}
 						else
@@ -538,7 +537,7 @@ namespace Server.Items
 				if ( context != null )
 					context.StopHeal();
 				seconds *= 1000;
-				
+
 				context = new BandageContext( healer, patient, TimeSpan.FromMilliseconds( seconds ) );
 
 				m_Table[healer] = context;

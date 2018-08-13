@@ -71,7 +71,7 @@ namespace Server.Mobiles
 
 		public override bool GivesMLMinorArtifact => true;
 		public override Poison HitPoison => Poison.Deadly; // Becomes Lethal with Paragon bonus
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int TreasureMapLevel => 5;
 
 		public Putrefier( Serial serial )
 			: base( serial )

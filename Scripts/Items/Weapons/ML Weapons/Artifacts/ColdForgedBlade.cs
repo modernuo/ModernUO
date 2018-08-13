@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class ColdForgedBlade : ElvenSpellblade
 	{
-		public override int LabelNumber{ get{ return 1072916; } } // Cold Forged Blade
+		public override int LabelNumber => 1072916; // Cold Forged Blade
 
 		[Constructible]
 		public ColdForgedBlade()

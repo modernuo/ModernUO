@@ -65,8 +65,8 @@ namespace Server.Items
 			m_SkillMod = null;
 		}
 
-		public override CraftSystem CraftSystem{ get{ return DefBlacksmithy.CraftSystem; } }
-		public override int LabelNumber{ get{ return 1045127; } } // ancient smithy hammer
+		public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
+		public override int LabelNumber => 1045127; // ancient smithy hammer
 
 		[Constructible]
 		public AncientSmithyHammer( int bonus ) : this( bonus, 600 )

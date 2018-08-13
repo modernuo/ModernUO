@@ -15,7 +15,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class MistakenIdentity : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( YouScratchMyBack ); } }
+		public override Type NextQuest => typeof( YouScratchMyBack );
 
 		public MistakenIdentity()
 		{
@@ -42,7 +42,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class YouScratchMyBack : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( FoolingAernya ); } }
+		public override Type NextQuest => typeof( FoolingAernya );
 		public override bool IsChainTriggered => true;
 
 		public YouScratchMyBack()
@@ -72,7 +72,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class FoolingAernya : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( NotQuiteThatEasy ); } }
+		public override Type NextQuest => typeof( NotQuiteThatEasy );
 		public override bool IsChainTriggered => true;
 
 		public FoolingAernya()
@@ -93,7 +93,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class NotQuiteThatEasy : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( ConvinceMe ); } }
+		public override Type NextQuest => typeof( ConvinceMe );
 		public override bool IsChainTriggered => true;
 
 		public NotQuiteThatEasy()
@@ -126,7 +126,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class ConvinceMe : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( TuitionReimbursement ); } }
+		public override Type NextQuest => typeof( TuitionReimbursement );
 		public override bool IsChainTriggered => true;
 
 		public ConvinceMe()

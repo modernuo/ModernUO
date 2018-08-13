@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class FragmentOfAMapDelivery : Item
 	{
-		public override int LabelNumber{ get{ return 1074533; } } // Fragment of a Map
+		public override int LabelNumber => 1074533; // Fragment of a Map
 
 		public override bool Nontransferable => true;
 

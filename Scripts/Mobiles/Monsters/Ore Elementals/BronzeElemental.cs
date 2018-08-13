@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class BronzeElemental : BaseCreature
 	{
-		public override string DefaultName { get { return "a bronze elemental"; } }
+		public override string DefaultName => "a bronze elemental";
 
 		[Constructible]
 		public BronzeElemental() : this( 2 )
@@ -60,7 +60,7 @@ namespace Server.Mobiles
 
 		public override bool BleedImmune => true;
 		public override bool AutoDispel => true;
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public BronzeElemental( Serial serial ) : base( serial )
 		{

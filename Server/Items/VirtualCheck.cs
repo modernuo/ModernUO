@@ -24,9 +24,9 @@ namespace Server
 		public override bool DisplayWeight => false;
 		public override bool DisplayLootType => false;
 
-		public override double DefaultWeight { get { return 0; } }
+		public override double DefaultWeight => 0;
 
-		public override string DefaultName { get { return "Offer Of Currency"; } }
+		public override string DefaultName => "Offer Of Currency";
 
 		public EditGump Editor { get; private set; }
 

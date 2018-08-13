@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public class FishBowl : BaseContainer
 	{
-		public override int LabelNumber{ get{ return 1074499; } } // A fish bowl
+		public override int LabelNumber => 1074499; // A fish bowl
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Empty
@@ -32,7 +32,7 @@ namespace Server.Items
 			}
 		}
 
-		public override double DefaultWeight { get { return 2.0; } }
+		public override double DefaultWeight => 2.0;
 
 		[Constructible]
 		public FishBowl() : base( 0x241C )

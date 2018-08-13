@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class HeatingStand : BaseLight
 	{
-		public override int LitItemID{ get { return 0x184A; } }
-		public override int UnlitItemID{ get { return 0x1849; } }
+		public override int LitItemID => 0x184A;
+		public override int UnlitItemID => 0x1849;
 
 		[Constructible]
 		public HeatingStand() : base( 0x1849 )

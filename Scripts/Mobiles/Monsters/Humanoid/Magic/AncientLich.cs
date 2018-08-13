@@ -89,7 +89,7 @@ namespace Server.Mobiles
 		public override bool Unprovokable => true;
 		public override bool BleedImmune => true;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int TreasureMapLevel => 5;
 
 		public AncientLich( Serial serial ) : base( serial )
 		{

@@ -17,7 +17,7 @@ namespace Server.Spells.Fifth
 				Reagent.SpidersSilk
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
+		public override SpellCircle Circle => SpellCircle.Fifth;
 
 		public ParalyzeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -45,11 +45,11 @@ namespace Server.Spells.Fifth
 				SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );
 
 				double duration;
-				
+
 				if ( Core.AOS )
 				{
 					int secs = (int)((GetDamageSkill( Caster ) / 10) - (GetResistSkill( m ) / 10));
-					
+
 					if( !Core.SE )
 						secs += 2;
 

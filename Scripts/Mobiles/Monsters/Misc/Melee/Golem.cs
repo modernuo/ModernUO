@@ -14,7 +14,7 @@ namespace Server.Mobiles
 
 		public override bool IsBondable => false;
 
-		public override FoodType FavoriteFood { get { return FoodType.None; } }
+		public override FoodType FavoriteFood => FoodType.None;
 
 		public override bool CanBeDistracted => false;
 

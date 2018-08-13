@@ -66,11 +66,11 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int HitPoints
 		{
-			get 
+			get
 			{
 				return m_HitPoints;
 			}
-			set 
+			set
 			{
 				if ( value != m_HitPoints && MaxHitPoints > 0 )
 				{
@@ -157,11 +157,11 @@ namespace Server.Items
 		public virtual int BasePoisonResistance{ get{ return 0; } }
 		public virtual int BaseEnergyResistance{ get{ return 0; } }
 
-		public override int PhysicalResistance{ get{ return BasePhysicalResistance + m_AosResistances.Physical; } }
-		public override int FireResistance{ get{ return BaseFireResistance + m_AosResistances.Fire; } }
-		public override int ColdResistance{ get{ return BaseColdResistance + m_AosResistances.Cold; } }
-		public override int PoisonResistance{ get{ return BasePoisonResistance + m_AosResistances.Poison; } }
-		public override int EnergyResistance{ get{ return BaseEnergyResistance + m_AosResistances.Energy; } }
+		public override int PhysicalResistance => BasePhysicalResistance + m_AosResistances.Physical;
+		public override int FireResistance => BaseFireResistance + m_AosResistances.Fire;
+		public override int ColdResistance => BaseColdResistance + m_AosResistances.Cold;
+		public override int PoisonResistance => BasePoisonResistance + m_AosResistances.Poison;
+		public override int EnergyResistance => BaseEnergyResistance + m_AosResistances.Energy;
 
 		public virtual int ArtifactRarity{ get{ return 0; } }
 
@@ -177,7 +177,7 @@ namespace Server.Items
 			return base.AllowSecureTrade( from, to, newOwner, accepted );
 		}
 
-		public virtual Race RequiredRace { get { return null; } }
+		public virtual Race RequiredRace  => null;
 
 		public override bool CanEquip( Mobile from )
 		{
@@ -378,7 +378,7 @@ namespace Server.Items
 
 			damageTaken -= Absorbed;
 
-			if ( damageTaken < 0 ) 
+			if ( damageTaken < 0 )
 				damageTaken = 0;
 
 			if ( 25 > Utility.Random( 100 ) ) // 25% chance to lower durability

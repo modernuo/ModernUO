@@ -6,7 +6,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x49CA, 0x49CB )]
 	public class HeartShapedBox : BaseContainer
 	{
-		public override int DefaultDropSound { get { return m_DropSound; } }
+		public override int DefaultDropSound => m_DropSound;
 
 		[Constructible]
 		public HeartShapedBox()

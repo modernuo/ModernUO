@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class APersonalLetterAddressedToAhie : TransientItem
 	{
-		public override int LabelNumber{ get{ return 1073128; } } // A personal letter addressed to: Ahie
+		public override int LabelNumber => 1073128; // A personal letter addressed to: Ahie
 
 		public override bool Nontransferable => true;
 

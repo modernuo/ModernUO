@@ -36,7 +36,7 @@ namespace Server
 {
 	public sealed class DynamicSaveStrategy : SaveStrategy
 	{
-		public override string Name { get { return "Dynamic"; } }
+		public override string Name => "Dynamic";
 
 		private SaveMetrics _metrics;
 
@@ -122,7 +122,7 @@ namespace Server
 			IEnumerable<Item> items = World.Items.Values;
 
 			//Start the producer.
-			Parallel.ForEach(items, () => new QueuedMemoryWriter(), 
+			Parallel.ForEach(items, () => new QueuedMemoryWriter(),
 				(Item item, ParallelLoopState state, QueuedMemoryWriter writer) =>
 				{
 					long startPosition = writer.Position;
@@ -152,7 +152,7 @@ namespace Server
 					_itemThreadWriters.Add(writer);
 				});
 
-			_itemThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task 
+			_itemThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task
 
 			return commitTask;
 		}
@@ -228,7 +228,7 @@ namespace Server
 					_guildThreadWriters.Add(writer);
 				});
 
-			_guildThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task 
+			_guildThreadWriters.CompleteAdding();	//We only get here after the Parallel.ForEach completes.  Lets our task
 
 			return commitTask;
 		}

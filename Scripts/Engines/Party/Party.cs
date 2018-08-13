@@ -361,7 +361,7 @@ namespace Server.Engines.PartySystem
 		}
 
 		private void SendToStaffMessage( Mobile from, string text )
-		{	
+		{
 			Packet p = null;
 
 			foreach( NetState ns in from.GetClientsInRange( 8 ) )
@@ -460,7 +460,7 @@ namespace Server.Engines.PartySystem
 		public bool Active{ get{ return m_Members.Count > 1; } }
 		public Mobile Leader{ get{ return m_Leader; } }
 		public List<PartyMemberInfo> Members{ get{ return m_Members; } }
-        public List<Mobile> Candidates { get { return m_Candidates; } }
+        public List<Mobile> Candidates  => m_Candidates;
 
 		public PartyMemberInfo this[int index]{ get{ return m_Members[index]; } }
 		public PartyMemberInfo this[Mobile m]

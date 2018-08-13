@@ -63,7 +63,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		public override int TreasureMapLevel{ get{ return Core.AOS ? 4 : 5; } }
+		public override int TreasureMapLevel => Core.AOS ? 4 : 5;
 
 		public Efreet( Serial serial ) : base( serial )
 		{

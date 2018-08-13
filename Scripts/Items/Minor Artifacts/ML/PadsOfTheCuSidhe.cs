@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class PadsOfTheCuSidhe : FurBoots
 	{
-		public override int LabelNumber{ get{ return 1075048; } } // Pads of the Cu Sidhe
+		public override int LabelNumber => 1075048; // Pads of the Cu Sidhe
 
 		[Constructible]
 		public PadsOfTheCuSidhe() : base( 0x47E )

@@ -49,8 +49,8 @@ namespace Server.Mobiles
 
 		public override bool DeathAdderCharmable => true;
 
-		public override int Meat{ get{ return 1; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Eggs; } }
+		public override int Meat => 1;
+		public override FoodType FavoriteFood => FoodType.Eggs;
 
 		public Snake(Serial serial) : base(serial)
 		{

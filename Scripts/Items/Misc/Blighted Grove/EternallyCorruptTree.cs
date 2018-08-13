@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class EternallyCorruptTree : Item
 	{
-		public override int LabelNumber{ get{ return 1072093; } } // Eternally Corrupt Tree
+		public override int LabelNumber => 1072093; // Eternally Corrupt Tree
 
 		[Constructible]
 		public EternallyCorruptTree() : base( 0x20FA )

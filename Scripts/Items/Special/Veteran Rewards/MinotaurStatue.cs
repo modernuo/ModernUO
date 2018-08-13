@@ -23,7 +23,7 @@ namespace Server.Items
 				MinotaurStatueDeed deed = new MinotaurStatueDeed();
 				deed.IsRewardItem = m_IsRewardItem;
 
-				return deed; 
+				return deed;
 			}
 		}
 
@@ -37,7 +37,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public MinotaurStatue( MinotaurStatueType type ) : base()
+		public MinotaurStatue( MinotaurStatueType type )
 		{
 			switch ( type )
 			{
@@ -72,7 +72,7 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.WriteEncodedInt( 0 ); // version
-			
+
 			writer.Write( (bool) m_IsRewardItem );
 		}
 
@@ -81,26 +81,26 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 		}
-	}	
-	
+	}
+
 	public class MinotaurStatueDeed : BaseAddonDeed, IRewardItem, IRewardOption
 	{
-		public override int LabelNumber{ get{ return 1080409; } } // Minotaur Statue Deed
+		public override int LabelNumber => 1080409; // Minotaur Statue Deed
 
 		public override BaseAddon Addon
-		{ 
+		{
 			get
-			{ 
+			{
 				MinotaurStatue addon = new MinotaurStatue( m_StatueType );
 				addon.IsRewardItem = m_IsRewardItem;
 
-				return addon; 
-			} 
+				return addon;
+			}
 		}
-		
+
 		private MinotaurStatueType m_StatueType;
 		private bool m_IsRewardItem;
 
@@ -112,7 +112,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public MinotaurStatueDeed() : base()
+		public MinotaurStatueDeed()
 		{
 			LootType = LootType.Blessed;
 		}
@@ -120,25 +120,25 @@ namespace Server.Items
 		public MinotaurStatueDeed( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 				return;
-			
+
 			if ( IsChildOf( from.Backpack ) )
 			{
 				from.CloseGump( typeof( RewardOptionGump ) );
 				from.SendGump( new RewardOptionGump( this ) );
 			}
 			else
-				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.    
+				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
 			base.GetProperties( list );
-			
+
 			if ( m_IsRewardItem )
 				list.Add( 1076218 ); // 2nd Year Veteran Reward
 		}
@@ -157,7 +157,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			m_IsRewardItem = reader.ReadBool();
 		}
 

@@ -59,7 +59,7 @@ namespace Server.Items
 
 	public class LanternOfSouls : Lantern
 	{
-		public override int LabelNumber{ get{ return 1061618; } } // Lantern of Souls
+		public override int LabelNumber => 1061618; // Lantern of Souls
 
 		[Constructible]
 		public LanternOfSouls()

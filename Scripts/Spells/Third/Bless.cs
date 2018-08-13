@@ -14,7 +14,7 @@ namespace Server.Spells.Third
 				Reagent.MandrakeRoot
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Third; } }
+		public override SpellCircle Circle => SpellCircle.Third;
 
 		public BlessSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

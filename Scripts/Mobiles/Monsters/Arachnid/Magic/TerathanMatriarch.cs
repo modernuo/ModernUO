@@ -52,7 +52,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Potions );
 		}
 
-		public override int TreasureMapLevel{ get{ return 4; } }
+		public override int TreasureMapLevel => 4;
 
 		public override OppositionGroup OppositionGroup
 		{

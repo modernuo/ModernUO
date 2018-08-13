@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.TinkersGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
 
 		[Constructible]
 		public Carpenter() : base( "the carpenter" )
@@ -23,7 +23,7 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBStavesWeapon() );
 			m_SBInfos.Add( new SBCarpenter() );
 			m_SBInfos.Add( new SBWoodenShields() );
-			
+
 			if ( IsTokunoVendor )
 				m_SBInfos.Add( new SBSECarpenter() );
 		}

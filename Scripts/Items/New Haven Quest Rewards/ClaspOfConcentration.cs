@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ClaspOfConcentration : SilverBracelet
 	{
-		public override int LabelNumber{ get{ return 1077695; } } // Clasp of Concentration
+		public override int LabelNumber => 1077695; // Clasp of Concentration
 
 		[Constructible]
 		public ClaspOfConcentration()

@@ -221,13 +221,9 @@ namespace Server
 		private static int m_MaxLandValue;
 		private static int m_MaxItemValue;
 
-		public static int MaxLandValue {
-			get { return m_MaxLandValue; }
-		}
+		public static int MaxLandValue  => m_MaxLandValue;
 
-		public static int MaxItemValue {
-			get { return m_MaxItemValue; }
-		}
+		public static int MaxItemValue  => m_MaxItemValue;
 
 		private static byte[] m_StringBuffer = new byte[20];
 

@@ -56,8 +56,8 @@ namespace Server.Ethics
 
 		private DateTime m_Shield;
 
-		public Ethic Ethic { get { return m_Ethic; } }
-		public Mobile Mobile { get { return m_Mobile; } }
+		public Ethic Ethic  => m_Ethic;
+		public Mobile Mobile  => m_Mobile;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public int Power { get { return m_Power; } set { m_Power = value; } }

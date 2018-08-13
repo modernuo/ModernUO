@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
 	public class MageGuildmaster : BaseGuildmaster
 	{
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.MagesGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.MagesGuild;
 
 		[Constructible]
 		public MageGuildmaster() : base( "mage" )

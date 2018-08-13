@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class WoundingAssassinSpike : AssassinSpike
 	{
-		public override int LabelNumber{ get{ return 1073520; } } // wounding assassin spike
+		public override int LabelNumber => 1073520; // wounding assassin spike
 
 		[Constructible]
 		public WoundingAssassinSpike()

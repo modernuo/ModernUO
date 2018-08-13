@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class StitchersMittens : LeafGloves
 	{
-		public override int LabelNumber{ get{ return 1072932; } } // Stitcher's Mittens
+		public override int LabelNumber => 1072932; // Stitcher's Mittens
 
-		public override int BasePhysicalResistance{ get{ return 20; } }
-		public override int BaseColdResistance{ get{ return 20; } }
+		public override int BasePhysicalResistance => 20;
+		public override int BaseColdResistance => 20;
 
 		[Constructible]
 		public StitchersMittens()

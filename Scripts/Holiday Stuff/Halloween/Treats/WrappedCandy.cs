@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class WrappedCandy : CandyCane
 	{
-		public override int LabelNumber { get { return 1096950; } } /* wrapped candy */ 
+		public override int LabelNumber => 1096950; /* wrapped candy */
 
 		[Constructible]
 		public WrappedCandy()

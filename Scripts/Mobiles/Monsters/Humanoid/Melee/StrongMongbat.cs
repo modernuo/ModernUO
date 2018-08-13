@@ -48,9 +48,9 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Poor );
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override int Hides{ get{ return 6; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override int Meat => 1;
+		public override int Hides => 6;
+		public override FoodType FavoriteFood => FoodType.Meat;
 
 		public StrongMongbat( Serial serial ) : base( serial )
 		{

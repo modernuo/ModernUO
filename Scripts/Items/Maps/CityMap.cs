@@ -29,7 +29,7 @@ namespace Server.Items
 			SetDisplay( from.X - dist, from.Y - dist, from.X + dist, from.Y + dist, size, size );
 		}
 
-		public override int LabelNumber{ get{ return 1015231; } } // city map
+		public override int LabelNumber => 1015231; // city map
 
 		public CityMap( Serial serial ) : base( serial )
 		{

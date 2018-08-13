@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TuitionReimbursementForm : Item
 	{
-		public override int LabelNumber{ get{ return 1074610; } } // Tuition Reimbursement Form (in triplicate)
+		public override int LabelNumber => 1074610; // Tuition Reimbursement Form (in triplicate)
 
 		public override bool Nontransferable => true;
 

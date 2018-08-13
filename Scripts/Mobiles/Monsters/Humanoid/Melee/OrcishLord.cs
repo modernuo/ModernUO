@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	[CorpseName( "an orcish corpse" )]
 	public class OrcishLord : BaseCreature
 	{
-		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Orc; } }
+		public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
 
 		public override string DefaultName => "an orcish lord";
 
@@ -69,8 +69,8 @@ namespace Server.Mobiles
 		}
 
 		public override bool CanRummageCorpses => true;
-		public override int TreasureMapLevel{ get{ return 1; } }
-		public override int Meat{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
+		public override int Meat => 1;
 
 		public override OppositionGroup OppositionGroup
 		{

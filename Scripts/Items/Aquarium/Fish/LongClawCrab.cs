@@ -4,9 +4,9 @@ using Server;
 namespace Server.Items
 {
 	public class LongClawCrab : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073827; } } // A Long Claw Crab 
-		
+	{
+		public override int LabelNumber => 1073827; // A Long Claw Crab
+
 		[Constructible]
 		public LongClawCrab() : base( 0x3AFC )
 		{
@@ -14,7 +14,7 @@ namespace Server.Items
 		}
 
 		public LongClawCrab( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

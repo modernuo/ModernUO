@@ -7,7 +7,7 @@ namespace Server.Items
 	[Flippable( 0x2A65, 0x2A67 )]
 	public class UnsettlingPortraitComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1074480; } } // Unsettling portrait
+		public override int LabelNumber => 1074480; // Unsettling portrait
 
 		private Timer m_Timer;
 
@@ -67,10 +67,10 @@ namespace Server.Items
 
 	public class UnsettlingPortraitAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new UnsettlingPortraitDeed(); } }
+		public override BaseAddonDeed Deed => new UnsettlingPortraitDeed();
 
 		[Constructible]
-		public UnsettlingPortraitAddon() : base()
+		public UnsettlingPortraitAddon()
 		{
 			AddComponent( new UnsettlingPortraitComponent(), 0, 0, 0 );
 		}
@@ -96,11 +96,11 @@ namespace Server.Items
 
 	public class UnsettlingPortraitDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new UnsettlingPortraitAddon(); } }
-		public override int LabelNumber { get { return 1074480; } } // Unsettling portrait
+		public override BaseAddon Addon => new UnsettlingPortraitAddon();
+		public override int LabelNumber => 1074480; // Unsettling portrait
 
 		[Constructible]
-		public UnsettlingPortraitDeed() : base()
+		public UnsettlingPortraitDeed()
 		{
 			LootType = LootType.Blessed;
 		}

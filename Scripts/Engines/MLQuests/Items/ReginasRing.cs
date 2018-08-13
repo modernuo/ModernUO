@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ReginasRing : SilverRing
 	{
-		public override int LabelNumber{ get{ return 1075305; } } // Regina's Ring
+		public override int LabelNumber => 1075305; // Regina's Ring
 
 		public override bool Nontransferable => true;
 
@@ -16,7 +16,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public ReginasRing() : base()
+		public ReginasRing()
 		{
 			LootType = LootType.Blessed;
 		}

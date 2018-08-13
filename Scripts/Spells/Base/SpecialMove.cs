@@ -204,7 +204,7 @@ namespace Server.Spells
 			}
 		}
 
-		public virtual bool ValidatesDuringHit{ get { return true; } }
+		public virtual bool ValidatesDuringHit => true;
 
 		public static SpecialMove GetCurrentMove( Mobile m )
 		{
@@ -217,8 +217,7 @@ namespace Server.Spells
 				return null;
 			}
 
-			SpecialMove move = null;
-			m_Table.TryGetValue( m, out move );
+			m_Table.TryGetValue( m, out SpecialMove move );
 
 			if ( move != null && move.ValidatesDuringHit && !move.Validate( m ) )
 			{
@@ -271,8 +270,7 @@ namespace Server.Spells
 
 		public static void ClearCurrentMove( Mobile m )
 		{
-			SpecialMove move = null;
-			m_Table.TryGetValue( m, out move );
+			m_Table.TryGetValue( m, out SpecialMove move );
 
 			if ( move != null )
 			{
@@ -318,8 +316,7 @@ namespace Server.Spells
 
 		public static bool GetContext( Mobile m, Type type )
 		{
-			SpecialMoveContext context = null;
-			m_PlayersTable.TryGetValue( m, out context );
+			m_PlayersTable.TryGetValue( m, out SpecialMoveContext context );
 
 			if ( context == null )
 				return false;

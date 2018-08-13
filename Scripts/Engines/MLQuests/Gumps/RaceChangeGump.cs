@@ -117,9 +117,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 		private static void CloseCurrent( NetState ns )
 		{
-			RaceChangeState state;
-
-			if ( m_Pending.TryGetValue( ns, out state ) )
+			if (m_Pending.TryGetValue( ns, out RaceChangeState state ))
 			{
 				state.m_Timeout.Stop();
 				m_Pending.Remove( ns );
@@ -190,9 +188,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 		private static void RaceChangeReply( NetState state, PacketReader pvSrc )
 		{
-			RaceChangeState raceChangeState;
-
-			if ( !m_Pending.TryGetValue( state, out raceChangeState ) )
+			if (!m_Pending.TryGetValue( state, out RaceChangeState raceChangeState ))
 				return;
 
 			CloseCurrent( state );
@@ -289,7 +285,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 	public class RaceChangeDeed : Item, IRaceChanger
 	{
-		public override string DefaultName { get { return "a race change deed"; } }
+		public override string DefaultName => "a race change deed";
 
 		[Constructible]
 		public RaceChangeDeed()

@@ -5,19 +5,19 @@ namespace Server.Items
 {
 	public class BrightsightLenses : ElvenGlasses
 	{
-		public override int LabelNumber{ get{ return 1075039; } } // Brightsight Lenses
+		public override int LabelNumber => 1075039; // Brightsight Lenses
 
-		public override int BasePhysicalResistance{ get{ return 9; } }
-		public override int BaseFireResistance{ get{ return 29; } }
-		public override int BaseColdResistance{ get{ return 7; } }
-		public override int BasePoisonResistance{ get{ return 8; } }
-		public override int BaseEnergyResistance{ get{ return 7; } }
+		public override int BasePhysicalResistance => 9;
+		public override int BaseFireResistance => 29;
+		public override int BaseColdResistance => 7;
+		public override int BasePoisonResistance => 8;
+		public override int BaseEnergyResistance => 7;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
-		public BrightsightLenses() : base()
+		public BrightsightLenses()
 		{
 			Hue = 0x501;
 

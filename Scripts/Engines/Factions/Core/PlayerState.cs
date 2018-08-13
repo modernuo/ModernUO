@@ -24,15 +24,15 @@ namespace Server.Factions
 
 		public Mobile Mobile{ get{ return m_Mobile; } }
 		public Faction Faction{ get{ return m_Faction; } }
-		public List<PlayerState> Owner { get { return m_Owner; } }
+		public List<PlayerState> Owner  => m_Owner;
 		public MerchantTitle MerchantTitle{ get{ return m_MerchantTitle; } set{ m_MerchantTitle = value; Invalidate(); } }
 		public Town Sheriff{ get{ return m_Sheriff; } set{ m_Sheriff = value; Invalidate(); } }
 		public Town Finance{ get{ return m_Finance; } set{ m_Finance = value; Invalidate(); } }
-		public List<SilverGivenEntry> SilverGiven { get { return m_SilverGiven; } }
+		public List<SilverGivenEntry> SilverGiven  => m_SilverGiven;
 
-		public int KillPoints { 
-			get { return m_KillPoints; } 
-			set { 
+		public int KillPoints {
+			get { return m_KillPoints; }
+			set {
 				if ( m_KillPoints != value ) {
 					if ( value > m_KillPoints ) {
 						if ( m_KillPoints <= 0 ) {
@@ -41,7 +41,7 @@ namespace Server.Factions
 								Invalidate();
 								return;
 							}
-							
+
 							m_Owner.Remove( this );
 							m_Owner.Insert( m_Faction.ZeroRankOffset, this );
 
@@ -104,9 +104,9 @@ namespace Server.Factions
 		private int  m_RankIndex = -1;
 
 		public int RankIndex { get { return m_RankIndex; } set { if ( m_RankIndex != value ) { m_RankIndex = value; m_InvalidateRank = true; } } }
-		
-		public RankDefinition Rank { 
-			get { 
+
+		public RankDefinition Rank {
+			get {
 				if ( m_InvalidateRank ) {
 					RankDefinition[] ranks = m_Faction.Definition.Ranks;
 					int percent;

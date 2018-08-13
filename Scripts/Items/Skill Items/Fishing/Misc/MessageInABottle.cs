@@ -14,7 +14,7 @@ namespace Server.Items
 			return Utility.RandomMinMax( 1, 3 );
 		}
 
-		public override int LabelNumber{ get{ return 1041080; } } // a message in a bottle
+		public override int LabelNumber => 1041080; // a message in a bottle
 
 		private Map m_TargetMap;
 		private int m_Level;

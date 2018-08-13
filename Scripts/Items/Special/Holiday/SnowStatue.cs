@@ -8,7 +8,7 @@ namespace Server.Items
 	[Flippable( 0x456E, 0x456F )]
 	public class SnowStatuePegasus : Item
 	{
-		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		[Constructible]
 		public SnowStatuePegasus()
@@ -39,7 +39,7 @@ namespace Server.Items
 	[Flippable( 0x4578, 0x4579 )]
 	public class SnowStatueSeahorse : Item
 	{
-		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		[Constructible]
 		public SnowStatueSeahorse()
@@ -70,7 +70,7 @@ namespace Server.Items
 	[Flippable( 0x457A, 0x457B )]
 	public class SnowStatueMermaid : Item
 	{
-		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		[Constructible]
 		public SnowStatueMermaid()
@@ -101,7 +101,7 @@ namespace Server.Items
 	[Flippable( 0x457C, 0x457D )]
 	public class SnowStatueGriffon : Item
 	{
-		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		[Constructible]
 		public SnowStatueGriffon()
@@ -131,8 +131,8 @@ namespace Server.Items
 
 	public class SnowStatueDeed : Item
 	{
-		public override int LabelNumber { get { return 1114296; } } // snow statue deed
-		public override double DefaultWeight { get { return 1.0; } }
+		public override int LabelNumber => 1114296; // snow statue deed
+		public override double DefaultWeight => 1.0;
 
 		[Constructible]
 		public SnowStatueDeed()

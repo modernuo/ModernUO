@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class SpecialBeardDye : Item
 	{
-		public override int LabelNumber{ get{ return 1041087; } } // Special Beard Dye
+		public override int LabelNumber => 1041087; // Special Beard Dye
 
 		[Constructible]
 		public SpecialBeardDye() : base( 0xE26 )
@@ -19,7 +19,7 @@ namespace Server.Items
 		public SpecialBeardDye( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

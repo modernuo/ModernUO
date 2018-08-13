@@ -12,10 +12,10 @@ namespace Server.Spells.Spellweaving
 				-1
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 0.5 );
 
-		public override double RequiredSkill { get { return 0.0; } }
-		public override int RequiredMana { get { return 24; } }
+		public override double RequiredSkill => 0.0;
+		public override int RequiredMana => 24;
 
 		public ArcaneCircleSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )
@@ -66,7 +66,7 @@ namespace Server.Spells.Spellweaving
 
 		private static bool IsValidLocation( Point3D location, Map map )
 		{
-			LandTile lt = map.Tiles.GetLandTile( location.X, location.Y );         // Land   Tiles            
+			LandTile lt = map.Tiles.GetLandTile( location.X, location.Y );         // Land   Tiles
 
 			if( IsValidTile( lt.ID ) && lt.Z == location.Z )
 				return true;
@@ -91,7 +91,7 @@ namespace Server.Spells.Spellweaving
 			foreach( Item item in eable )
 			{
 				ItemData id = item.ItemData;
-				
+
 				if( item == null || item.Z + id.CalcHeight != location.Z )
 					continue;
 				else if( IsValidTile( item.ItemID ) )

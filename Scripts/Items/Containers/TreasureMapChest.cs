@@ -11,9 +11,9 @@ namespace Server.Items
 {
 	public class TreasureMapChest : LockableContainer
 	{
-		public override int LabelNumber{ get{ return 3000541; } }
+		public override int LabelNumber => 3000541;
 
-		public static Type[] Artifacts { get { return m_Artifacts; } }
+		public static Type[] Artifacts  => m_Artifacts;
 
 		private static Type[] m_Artifacts = new Type[]
 		{
@@ -46,7 +46,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Temporary{ get{ return m_Temporary; } set{ m_Temporary = value; } }
 
-		public List<Mobile> Guardians { get { return m_Guardians; } }
+		public List<Mobile> Guardians  => m_Guardians;
 
 		[Constructible]
 		public TreasureMapChest( int level ) : this( null, level, false )
@@ -71,7 +71,7 @@ namespace Server.Items
 		private static void GetRandomAOSStats( out int attributeCount, out int min, out int max )
 		{
 			int rnd = Utility.Random( 15 );
-			
+
 			if ( Core.SE )
 			{
 				if ( rnd < 1 )
@@ -135,7 +135,7 @@ namespace Server.Items
 			cont.Movable = false;
 			cont.Locked = true;
 			int numberItems;
-			
+
 			if ( level == 0 )
 			{
 				cont.LockLevel = 0; // Can't be unlocked
@@ -163,11 +163,11 @@ namespace Server.Items
 
 				cont.LockLevel = cont.RequiredSkill - 10;
 				cont.MaxLockLevel = cont.RequiredSkill + 40;
-				
+
 				//Publish 67 gold change
 				//if ( Core.SA )
 				//	cont.DropItem( new Gold( level * 5000 ) );
-				//else					
+				//else
 					cont.DropItem( new Gold( level * 1000 ) );
 
 				for ( int i = 0; i < level * 5; ++i )
@@ -188,7 +188,7 @@ namespace Server.Items
 				}
 				else
 					numberItems = level * 6;
-				
+
 				for ( int i = 0; i < numberItems; ++i )
 				{
 					Item item;

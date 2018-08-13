@@ -10,22 +10,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xE81, 0xE82 )]
 	public class ShepherdsCrook : BaseStaff
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Disarm; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 13; } }
-		public override int AosMaxDamage{ get{ return 15; } }
-		public override int AosSpeed{ get{ return 40; } }
-		public override float MlSpeed{ get{ return 2.75f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 13;
+		public override int AosMaxDamage => 15;
+		public override int AosSpeed => 40;
+		public override float MlSpeed => 2.75f;
 
-		public override int OldStrengthReq{ get{ return 10; } }
-		public override int OldMinDamage{ get{ return 3; } }
-		public override int OldMaxDamage{ get{ return 12; } }
-		public override int OldSpeed{ get{ return 30; } }
+		public override int OldStrengthReq => 10;
+		public override int OldMinDamage => 3;
+		public override int OldMaxDamage => 12;
+		public override int OldSpeed => 30;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 50; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 50;
 
 		[Constructible]
 		public ShepherdsCrook() : base( 0xE81 )
@@ -78,7 +78,7 @@ namespace Server.Items
 						{
 							bc.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502467, from.NetState ); // That animal looks tame already.
 						}
-						else 
+						else
 						{
 							from.SendLocalizedMessage( 502475 ); // Click where you wish the animal to go.
 							from.Target = new InternalTarget( bc );
@@ -100,7 +100,7 @@ namespace Server.Items
 				typeof( StrongMongbat ), typeof( Imp ), typeof( Scorpion ), typeof( GiantSpider ),
 				typeof( Snake ), typeof( LavaLizard ), typeof( Drake ), typeof( Dragon ),
 				typeof( Kirin ), typeof( Unicorn ), typeof( GiantRat ), typeof( Slime ),
-				typeof( DireWolf ), typeof( HellHound ), typeof( DeathwatchBeetle ), 
+				typeof( DireWolf ), typeof( HellHound ), typeof( DeathwatchBeetle ),
 				typeof( LesserHiryu ), typeof( Hiryu )
 			};
 

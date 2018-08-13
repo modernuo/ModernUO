@@ -14,7 +14,7 @@ namespace Server.Engines.Quests.Naturalist
 				/* Find an entrance to the Solen Hive, and search within for the Solen
 				 * Egg Nests. Each Nest must be studied for some time without a break in
 				 * concentration in order to gather useful information.<BR><BR>
-				 * 
+				 *
 				 * Once you have completed your study of the Nests, return to the Naturalist
 				 * who gave you this task.
 				 */
@@ -22,7 +22,7 @@ namespace Server.Engines.Quests.Naturalist
 			}
 		}
 
-		public override int MaxProgress{ get{ return NestArea.NonSpecialCount; } }
+		public override int MaxProgress => NestArea.NonSpecialCount;
 
 		private NestArea m_CurrentNest;
 		private DateTime m_StudyBegin;

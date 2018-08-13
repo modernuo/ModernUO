@@ -14,7 +14,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Aemaeth1 : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( Aemaeth2 ); } }
+		public override Type NextQuest => typeof( Aemaeth2 );
 
 		public Aemaeth1()
 		{

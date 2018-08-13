@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public class SpecialFishingNet : Item
 	{
-		public override int LabelNumber{ get{ return 1041079; } } // a special fishing net
+		public override int LabelNumber => 1041079; // a special fishing net
 
 		private bool m_InUse;
 
@@ -364,7 +364,7 @@ namespace Server.Items
 
 	public class FabledFishingNet : SpecialFishingNet
 	{
-		public override int LabelNumber{ get{ return 1063451; } } // a fabled fishing net
+		public override int LabelNumber => 1063451; // a fabled fishing net
 
 		[Constructible]
 		public FabledFishingNet()

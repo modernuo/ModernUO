@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SamplesOfCorruptedWater : Item
 	{
-		public override int LabelNumber{ get{ return 1074999; } } // samples of corrupted water
+		public override int LabelNumber => 1074999; // samples of corrupted water
 
 		[Constructible]
 		public SamplesOfCorruptedWater() : base( 0xEFE )

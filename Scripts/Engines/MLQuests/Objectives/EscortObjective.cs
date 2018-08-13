@@ -274,7 +274,7 @@ namespace Server.Engines.MLQuests.Objectives
 			// No extra instance stuff printed for this objective
 		}
 
-		public override DataType ExtraDataType { get { return DataType.EscortObjective; } }
+		public override DataType ExtraDataType => DataType.EscortObjective;
 
 		public override void Serialize( GenericWriter writer )
 		{

@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class SmallMouthSuckerFin : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1074590; } } // Small Mouth Sucker Fin
-		
+	{
+		public override int LabelNumber => 1074590; // Small Mouth Sucker Fin
+
 		[Constructible]
 		public SmallMouthSuckerFin() : base( 0x3B01 )
 		{
 		}
 
 		public SmallMouthSuckerFin( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

@@ -17,7 +17,7 @@ namespace Server.Spells.Sixth
 				Reagent.MandrakeRoot
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
+		public override SpellCircle Circle => SpellCircle.Sixth;
 
 		public MarkSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

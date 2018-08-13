@@ -181,8 +181,8 @@ namespace Server.Commands
 				//				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
 			}
 
-			public string FileName { get { return m_FileName; } }
-			public string TypeName { get { return m_TypeName; } }
+			public string FileName  => m_FileName;
+			public string TypeName  => m_TypeName;
 
 			public string LinkName( string dirRoot )
 			{
@@ -336,8 +336,7 @@ namespace Server.Commands
 			string fullName = realType.FullName;
 			string aliased = null;// = realType.Name;
 
-			TypeInfo info = null;
-			m_Types.TryGetValue( realType, out info );
+			m_Types.TryGetValue( realType, out TypeInfo info );
 
 			if( info != null )
 			{
@@ -1419,8 +1418,8 @@ namespace Server.Commands
 			private int m_Index;
 			private List<string> m_Strings;
 
-			public int Index { get { return m_Index; } }
-			public List<string> Strings { get { return m_Strings; } }
+			public int Index  => m_Index;
+			public List<string> Strings  => m_Strings;
 
 			public SpeechEntry( int index )
 			{
@@ -1471,8 +1470,7 @@ namespace Server.Commands
 
 						lastIndex = index;
 
-						SpeechEntry entry = null;
-						table.TryGetValue( index, out entry );
+						table.TryGetValue( index, out SpeechEntry entry );
 
 						if( entry == null )
 							table[index] = entry = new SpeechEntry( index );
@@ -1496,11 +1494,11 @@ namespace Server.Commands
 			private string m_Usage;
 			private string m_Description;
 
-			public AccessLevel AccessLevel { get { return m_AccessLevel; } }
-			public string Name { get { return m_Name; } }
-			public string[] Aliases { get { return m_Aliases; } }
-			public string Usage { get { return m_Usage; } }
-			public string Description { get { return m_Description; } }
+			public AccessLevel AccessLevel  => m_AccessLevel;
+			public string Name  => m_Name;
+			public string[] Aliases  => m_Aliases;
+			public string Usage  => m_Usage;
+			public string Description  => m_Description;
 
 			public DocCommandEntry( AccessLevel accessLevel, string name, string[] aliases, string usage, string description )
 			{
@@ -1767,8 +1765,7 @@ namespace Server.Commands
 				TypeInfo info = new TypeInfo( type );
 				m_Types[type] = info;
 
-				List<TypeInfo> nspaces = null;
-				m_Namespaces.TryGetValue( nspace, out nspaces );
+				m_Namespaces.TryGetValue( nspace, out List<TypeInfo> nspaces );
 
 				if( nspaces == null )
 					m_Namespaces[nspace] = nspaces = new List<TypeInfo>();
@@ -1779,8 +1776,7 @@ namespace Server.Commands
 
 				if( baseType != null && InAssemblies( baseType, asms ) )
 				{
-					TypeInfo baseInfo = null;
-					m_Types.TryGetValue( baseType, out baseInfo );
+					m_Types.TryGetValue( baseType, out TypeInfo baseInfo );
 
 					if( baseInfo == null )
 						m_Types[baseType] = baseInfo = new TypeInfo( baseType );
@@ -1795,8 +1791,7 @@ namespace Server.Commands
 
 				if( decType != null )
 				{
-					TypeInfo decInfo = null;
-					m_Types.TryGetValue( decType, out decInfo );
+					m_Types.TryGetValue( decType, out TypeInfo decInfo );
 
 					if( decInfo == null )
 						m_Types[decType] = decInfo = new TypeInfo( decType );
@@ -1814,8 +1809,7 @@ namespace Server.Commands
 					if( !InAssemblies( iface, asms ) )
 						continue;
 
-					TypeInfo ifaceInfo = null;
-					m_Types.TryGetValue( iface, out ifaceInfo );
+					m_Types.TryGetValue( iface, out TypeInfo ifaceInfo );
 
 					if( ifaceInfo == null )
 						m_Types[iface] = ifaceInfo = new TypeInfo( iface );
@@ -1948,8 +1942,7 @@ namespace Server.Commands
 				{
 					html.Write( " <a " );
 
-					TypeInfo typeInfo = null;
-					m_Types.TryGetValue( parms[j].ParameterType, out typeInfo );
+					m_Types.TryGetValue( parms[j].ParameterType, out TypeInfo typeInfo );
 
 					if( typeInfo != null )
 						html.Write( "href=\"types/{0}\" ", typeInfo.FileName );
@@ -2178,8 +2171,7 @@ namespace Server.Commands
 
 				typeHtml.Write( '(' );
 
-				TypeInfo decInfo = null;
-				m_Types.TryGetValue( decType, out decInfo );
+				m_Types.TryGetValue( decType, out TypeInfo decInfo );
 
 				if( decInfo == null )
 					typeHtml.Write( decType.Name );
@@ -2201,8 +2193,7 @@ namespace Server.Commands
 			{
 				typeHtml.Write( " : " );
 
-				TypeInfo baseInfo = null;
-				m_Types.TryGetValue( baseType, out baseInfo );
+				m_Types.TryGetValue( baseType, out TypeInfo baseInfo );
 
 				if( baseInfo == null )
 					typeHtml.Write( baseType.Name );
@@ -2222,8 +2213,7 @@ namespace Server.Commands
 				for( int i = 0; i < ifaces.Length; ++i )
 				{
 					Type iface = ifaces[i];
-					TypeInfo ifaceInfo = null;
-					m_Types.TryGetValue( iface, out ifaceInfo );
+					m_Types.TryGetValue( iface, out TypeInfo ifaceInfo );
 
 					if( extendCount != 0 )
 						typeHtml.Write( ", " );
@@ -2565,9 +2555,9 @@ namespace Server.Commands
 		private ModelBodyType m_BodyType;
 		private string m_Name;
 
-		public Body Body { get { return m_Body; } }
-		public ModelBodyType BodyType { get { return m_BodyType; } }
-		public string Name { get { return m_Name; } }
+		public Body Body  => m_Body;
+		public ModelBodyType BodyType  => m_BodyType;
+		public string Name  => m_Name;
 
 		public BodyEntry( Body body, ModelBodyType bodyType, string name )
 		{

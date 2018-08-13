@@ -61,7 +61,7 @@ namespace Server.Items
 		{
 		}
 
-		public override int LabelNumber{ get{ return 1044607; } } // high quality granite
+		public override int LabelNumber => 1044607; // high quality granite
 
 		public override void GetProperties( ObjectPropertyList list )
 		{

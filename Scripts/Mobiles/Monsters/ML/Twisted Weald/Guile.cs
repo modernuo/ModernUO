@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	public class Guile : Changeling
 	{
 		public override string DefaultName => "Guile";
-		public override int DefaultHue{ get{ return 0x3F; } }
+		public override int DefaultHue => 0x3F;
 
 		[Constructible]
 		public Guile()

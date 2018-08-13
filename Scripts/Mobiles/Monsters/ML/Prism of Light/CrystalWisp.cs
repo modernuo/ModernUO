@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
 	public class CrystalWisp : Wisp
 	{
-		public override string DefaultName { get { return "a crystal wisp"; } }
+		public override string DefaultName => "a crystal wisp";
 
 		[Constructible]
 		public CrystalWisp()

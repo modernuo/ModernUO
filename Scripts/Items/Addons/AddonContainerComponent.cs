@@ -7,8 +7,8 @@ namespace Server.Items
 {
 	public class AddonContainerComponent : Item, IChopable
 	{
-		public virtual bool NeedsWall { get { return false; } }
-		public virtual Point3D WallPosition { get { return Point3D.Zero; } }
+		public virtual bool NeedsWall  => false;
+		public virtual Point3D WallPosition  => Point3D.Zero;
 
 		private Point3D m_Offset;
 		private BaseAddonContainer m_Addon;

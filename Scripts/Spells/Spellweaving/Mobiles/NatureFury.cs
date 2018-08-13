@@ -6,14 +6,14 @@ namespace Server.Mobiles
 {
 	public class NatureFury : BaseCreature
 	{
-		public override bool DeleteCorpseOnDeath { get { return Core.AOS; } }
+		public override bool DeleteCorpseOnDeath => Core.AOS;
 		public override bool IsHouseSummonable => true;
 
-		public override double DispelDifficulty { get { return 125.0; } }
-		public override double DispelFocus { get { return 90.0; } }
+		public override double DispelDifficulty => 125.0;
+		public override double DispelFocus => 90.0;
 
 		public override bool BleedImmune => true;
-		public override Poison PoisonImmune { get { return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override bool AlwaysMurderer => true;
 		public override string DefaultName => "a nature's fury";

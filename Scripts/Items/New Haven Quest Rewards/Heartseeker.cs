@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class Heartseeker : CompositeBow
 	{
-		public override int LabelNumber{ get{ return 1078210; } } // Heartseeker
+		public override int LabelNumber => 1078210; // Heartseeker
 
 		[Constructible]
 		public Heartseeker()

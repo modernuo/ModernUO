@@ -1288,7 +1288,7 @@ namespace Server.Engines.CannedEvil
 	{
 		private ChampionSpawn m_Spawn;
 
-		public ChampionSpawn Spawn { get { return m_Spawn; } }
+		public ChampionSpawn Spawn  => m_Spawn;
 
 		public override string DefaultName
 		{

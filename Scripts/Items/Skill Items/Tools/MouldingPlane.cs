@@ -7,7 +7,7 @@ namespace Server.Items
 	[Flippable( 0x102C, 0x102D )]
 	public class MouldingPlane : BaseTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefCarpentry.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
 		[Constructible]
 		public MouldingPlane() : base( 0x102C )

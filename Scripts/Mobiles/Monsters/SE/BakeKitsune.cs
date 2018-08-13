@@ -56,10 +56,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override int Meat{ get{ return 5; } }
-		public override int Hides{ get{ return 10; } }
-		public override HideType HideType{ get{ return HideType.Barbed; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Fish; } }
+		public override int Meat => 5;
+		public override int Hides => 10;
+		public override HideType HideType => HideType.Barbed;
+		public override FoodType FavoriteFood => FoodType.Fish;
 		public override bool ShowFameTitle => false;
 		public override bool ClickTitle => false;
 		public override bool PropertyTitle => false;

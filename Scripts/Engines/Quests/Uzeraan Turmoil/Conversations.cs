@@ -210,7 +210,7 @@ namespace Server.Engines.Quests.Haven
 				new QuestItemInfo( 1023676, 0xE68 ) // glowing rune
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public UzeraanFirstTaskConversation()
 		{
@@ -300,7 +300,7 @@ namespace Server.Engines.Quests.Haven
 				new QuestItemInfo( 1048032, 0xE76 ) // a bag
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public UzeraanReportConversation()
 		{
@@ -376,7 +376,7 @@ namespace Server.Engines.Quests.Haven
 				new QuestItemInfo( 1023637, 0xE34 ) // scroll
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public SchmendrickConversation()
 		{
@@ -438,7 +438,7 @@ namespace Server.Engines.Quests.Haven
 				new QuestItemInfo( 1049117, 0xFC4 ) // Horn of Retreat
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public UzeraanScrollOfPowerConversation()
 		{
@@ -546,7 +546,7 @@ namespace Server.Engines.Quests.Haven
 				new QuestItemInfo( 1022581, 0xA22 ), // lantern
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public UzeraanFertileDirtConversation()
 		{

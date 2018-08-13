@@ -1383,7 +1383,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class GustarShroud : BaseOuterTorso
 	{
-		public override string DefaultName{ get{ return " "; } }
+		public override string DefaultName => " ";
 		[Constructible]
 		public GustarShroud()  : base( 0x2684 )
 		{

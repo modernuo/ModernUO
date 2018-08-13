@@ -69,9 +69,7 @@ namespace Server.Engines.Plants
 
 		public static PlantHueInfo GetInfo( PlantHue plantHue )
 		{
-			PlantHueInfo info = null;
-
-			if (m_Table.TryGetValue(plantHue, out info))
+			if (m_Table.TryGetValue( plantHue, out PlantHueInfo info ))
 				return info;
 			else
 				return m_Table[PlantHue.Plain];
@@ -150,10 +148,10 @@ namespace Server.Engines.Plants
 		private PlantHue m_PlantHue;
 		private int m_GumpHue;
 
-		public int Hue { get { return m_Hue; } }
-		public int Name { get { return m_Name; } }
-		public PlantHue PlantHue { get { return m_PlantHue; } }
-		public int GumpHue { get { return m_GumpHue; } }
+		public int Hue  => m_Hue;
+		public int Name  => m_Name;
+		public PlantHue PlantHue  => m_PlantHue;
+		public int GumpHue  => m_GumpHue;
 
 		private PlantHueInfo( int hue, int name, PlantHue plantHue ) : this( hue, name, plantHue, hue )
 		{

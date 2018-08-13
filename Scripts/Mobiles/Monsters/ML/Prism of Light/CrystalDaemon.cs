@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a crystal daemon corpse" )]
 	public class CrystalDaemon : BaseCreature
 	{
-		public override string DefaultName { get { return "a crystal daemon"; } }
+		public override string DefaultName => "a crystal daemon";
 
 		[Constructible]
 		public CrystalDaemon()

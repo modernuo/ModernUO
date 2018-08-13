@@ -18,12 +18,12 @@ namespace Server.Regions
 
 	public class BaseRegion : Region
 	{
-		public virtual bool YoungProtected { get { return true; } }
-		public virtual bool YoungMayEnter { get { return true; } }
-		public virtual bool MountsAllowed { get { return true; } }
-		public virtual bool DeadMayEnter { get { return true; } }
-		public virtual bool ResurrectionAllowed { get { return true; } }
-		public virtual bool LogoutAllowed { get { return true; } }
+		public virtual bool YoungProtected  => true;
+		public virtual bool YoungMayEnter  => true;
+		public virtual bool MountsAllowed  => true;
+		public virtual bool DeadMayEnter  => true;
+		public virtual bool ResurrectionAllowed  => true;
+		public virtual bool LogoutAllowed  => true;
 
 		public static void Configure()
 		{

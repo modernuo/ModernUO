@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		private Mobile m_Harrower;
 
-		public override int LabelNumber{ get{ return 1049498; } } // dark moongate
+		public override int LabelNumber => 1049498; // dark moongate
 
 		public HarrowerGate( Mobile harrower, Point3D loc, Map map, Point3D targLoc, Map targMap ) : base( targLoc, targMap )
 		{

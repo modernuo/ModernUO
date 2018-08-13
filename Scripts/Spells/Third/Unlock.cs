@@ -15,7 +15,7 @@ namespace Server.Spells.Third
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Third; } }
+		public override SpellCircle Circle => SpellCircle.Third;
 
 		public UnlockSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -56,7 +56,7 @@ namespace Server.Spells.Third
 					else {
 						LockableContainer cont = (LockableContainer)o;
 
-						if ( Multis.BaseHouse.CheckSecured( cont ) ) 
+						if ( Multis.BaseHouse.CheckSecured( cont ) )
 							from.SendLocalizedMessage( 503098 ); // You cannot cast this on a secure item.
 						else if ( !cont.Locked )
 							from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503101 ); // That did not need to be unlocked.
@@ -73,7 +73,7 @@ namespace Server.Spells.Third
 							}
 							else
 								from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 503099 ); // My spell does not seem to have an effect on that lock.
-						}		
+						}
 					}
 				}
 

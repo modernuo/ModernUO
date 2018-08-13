@@ -157,7 +157,7 @@ namespace Server.Regions
 		protected bool m_Land;
 		protected bool m_Water;
 
-		public override int Height{ get{ return 16; } }
+		public override int Height => 16;
 		public override bool Land{ get{ EnsureInit(); return m_Land; } }
 		public override bool Water{ get{ EnsureInit(); return m_Water; } }
 

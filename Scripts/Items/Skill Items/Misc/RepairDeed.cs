@@ -16,11 +16,11 @@ namespace Server.Items
 			private TextDefinition m_NotNearbyMessage, m_Name;
 
 			public TextDefinition NotNearbyMessage{	get { return m_NotNearbyMessage; } }
-			public TextDefinition Name { get { return m_Name; } }
+			public TextDefinition Name  => m_Name;
 
 
-			public CraftSystem System { get { return m_System; } }
-			public Type[] NearbyTypes { get { return m_NearbyTypes; } }
+			public CraftSystem System  => m_System;
+			public Type[] NearbyTypes  => m_NearbyTypes;
 
 			public RepairSkillInfo( CraftSystem system, Type[] nearbyTypes, TextDefinition notNearbyMessage, TextDefinition name )
 			{
@@ -35,7 +35,7 @@ namespace Server.Items
 			{
 			}
 
-			public static RepairSkillInfo[] Table { get { return m_Table; } }
+			public static RepairSkillInfo[] Table  => m_Table;
 			private static RepairSkillInfo[] m_Table = new RepairSkillInfo[]
 				{
 					new RepairSkillInfo( DefBlacksmithy.CraftSystem, typeof( Blacksmith ), 1047013, 1023015 ),

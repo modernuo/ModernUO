@@ -9,11 +9,11 @@ namespace Server.Mobiles
 	[CorpseName( "a wisp corpse" )]
 	public class DarkWisp : BaseCreature
 	{
-		public override InhumanSpeech SpeechType{ get{ return InhumanSpeech.Wisp; } }
+		public override InhumanSpeech SpeechType => InhumanSpeech.Wisp;
 
-		public override Ethics.Ethic EthicAllegiance { get { return Ethics.Ethic.Evil; } }
+		public override Ethics.Ethic EthicAllegiance => Ethics.Ethic.Evil;
 
-		public override TimeSpan ReacquireDelay { get { return TimeSpan.FromSeconds( 1.0 ); } }
+		public override TimeSpan ReacquireDelay => TimeSpan.FromSeconds( 1.0 );
 
 		public override string DefaultName => "a wisp";
 

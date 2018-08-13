@@ -14,8 +14,8 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } }
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } }
+		public override IShopSellInfo SellInfo => m_SellInfo;
+		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
 		public class InternalBuyInfo : List<GenericBuyInfo>
 		{
@@ -33,11 +33,11 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( Backpack ), 15, 20, 0x9B2, 0 ) );
 				Add( new GenericBuyInfo( typeof( Pouch ), 6, 20, 0xE79, 0 ) );
 				Add( new GenericBuyInfo( typeof( Bag ), 6, 20, 0xE76, 0 ) );
-				
+
 				Add( new GenericBuyInfo( typeof( Candle ), 6, 20, 0xA28, 0 ) );
 				Add( new GenericBuyInfo( typeof( Torch ), 8, 20, 0xF6B, 0 ) );
 				Add( new GenericBuyInfo( typeof( Lantern ), 2, 20, 0xA25, 0 ) );
-					
+
 				//TODO: Oil Flask @ 8GP
 
 				Add( new GenericBuyInfo( typeof( Lockpick ), 12, 20, 0x14FC, 0 ) );

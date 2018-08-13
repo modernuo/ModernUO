@@ -12,7 +12,7 @@ namespace Server.Engines.VeteranRewards
 
 		public int Name{ get{ return m_Name; } }
 		public string NameString{ get{ return m_NameString; } }
-		public List<RewardEntry> Entries { get { return m_Entries; } }
+		public List<RewardEntry> Entries  => m_Entries;
 
 		public RewardCategory( int name )
 		{

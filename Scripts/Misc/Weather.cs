@@ -17,7 +17,7 @@ namespace Server.Misc
 			m_Facets = new Map[]{ Map.Felucca, Map.Trammel };
 
 			/* Static weather:
-			 * 
+			 *
 			 * Format:
 			 *   AddWeather( temperature, chanceOfPercipitation, chanceOfExtremeTemperature, <area ...> );
 			 */
@@ -33,7 +33,7 @@ namespace Server.Misc
 
 
 			/* Dynamic weather:
-			 * 
+			 *
 			 * Format:
 			 *   AddDynamicWeather( temperature, chanceOfPercipitation, chanceOfExtremeTemperature, moveSpeed, width, height, bounds );
 			 */
@@ -47,8 +47,7 @@ namespace Server.Misc
 			if ( facet == null )
 				return null;
 
-			List<Weather> list = null;
-			m_WeatherByFacet.TryGetValue( facet, out list );
+			m_WeatherByFacet.TryGetValue( facet, out List<Weather> list );
 
 			if ( list == null )
 				m_WeatherByFacet[facet] = list = new List<Weather>();

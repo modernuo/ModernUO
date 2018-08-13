@@ -58,7 +58,7 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return (Core.ML); } }
 
-		public override int LabelNumber{ get{ return 1041314 + (int)m_PotionEffect; } }
+		public override int LabelNumber => 1041314 + (int)m_PotionEffect;
 
 		public BasePotion( int itemID, PotionEffect effect ) : base( itemID )
 		{
@@ -84,7 +84,7 @@ namespace Server.Items
 			if ( handTwo is BaseRanged )
 			{
 				BaseRanged ranged = (BaseRanged) handTwo;
-				
+
 				if ( ranged.Balanced )
 					return true;
 			}

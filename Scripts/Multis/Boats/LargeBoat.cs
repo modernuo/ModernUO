@@ -6,20 +6,20 @@ namespace Server.Multis
 {
 	public class LargeBoat : BaseBoat
 	{
-		public override int NorthID{ get{ return 0x10; } }
-		public override int  EastID{ get{ return 0x11; } }
-		public override int SouthID{ get{ return 0x12; } }
-		public override int  WestID{ get{ return 0x13; } }
+		public override int NorthID => 0x10;
+		public override int  EastID => 0x11;
+		public override int SouthID => 0x12;
+		public override int  WestID => 0x13;
 
-		public override int HoldDistance{ get{ return 5; } }
-		public override int TillerManDistance{ get{ return -5; } }
+		public override int HoldDistance => 5;
+		public override int TillerManDistance => -5;
 
-		public override Point2D StarboardOffset{ get{ return new Point2D(  2, -1 ); } }
-		public override Point2D      PortOffset{ get{ return new Point2D( -2, -1 ); } }
+		public override Point2D StarboardOffset => new Point2D(  2, -1 );
+		public override Point2D      PortOffset => new Point2D( -2, -1 );
 
-		public override Point3D MarkOffset{ get{ return new Point3D( 0, 0, 3 ); } }
+		public override Point3D MarkOffset => new Point3D( 0, 0, 3 );
 
-		public override BaseDockedBoat DockedBoat{ get{ return new LargeDockedBoat( this ); } }
+		public override BaseDockedBoat DockedBoat => new LargeDockedBoat( this );
 
 		[Constructible]
 		public LargeBoat()
@@ -47,8 +47,8 @@ namespace Server.Multis
 
 	public class LargeBoatDeed : BaseBoatDeed
 	{
-		public override int LabelNumber{ get{ return 1041209; } } // large ship deed
-		public override BaseBoat Boat{ get{ return new LargeBoat(); } }
+		public override int LabelNumber => 1041209; // large ship deed
+		public override BaseBoat Boat => new LargeBoat();
 
 		[Constructible]
 		public LargeBoatDeed() : base( 0x10, new Point3D( 0, -1, 0 ) )
@@ -76,7 +76,7 @@ namespace Server.Multis
 
 	public class LargeDockedBoat : BaseDockedBoat
 	{
-		public override BaseBoat Boat{ get{ return new LargeBoat(); } }
+		public override BaseBoat Boat => new LargeBoat();
 
 		public LargeDockedBoat( BaseBoat boat ) : base( 0x10, new Point3D( 0, -1, 0 ), boat )
 		{

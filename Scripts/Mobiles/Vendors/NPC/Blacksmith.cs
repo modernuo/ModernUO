@@ -10,7 +10,7 @@ namespace Server.Mobiles
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
 		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.BlacksmithsGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.BlacksmithsGuild;
 
 		[Constructible]
 		public Blacksmith() : base( "the blacksmith" )
@@ -44,11 +44,11 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBMaceWeapon() );
 			m_SBInfos.Add( new SBSpearForkWeapon() );
 			m_SBInfos.Add( new SBSwordWeapon() );*/
-			
+
 			m_SBInfos.Add( new SBBlacksmith() );
 			if ( IsTokunoVendor )
 			{
-				m_SBInfos.Add( new SBSEArmor() );	
+				m_SBInfos.Add( new SBSEArmor() );
 				m_SBInfos.Add( new SBSEWeapons() );
 			}
 		}

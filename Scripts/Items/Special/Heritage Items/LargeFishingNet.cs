@@ -5,7 +5,7 @@ namespace Server.Items
 	[Flippable( 0x3D8E, 0x3D8F )]
 	public class LargeFishingNetComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076285; } } // Large Fish Net
+		public override int LabelNumber => 1076285; // Large Fish Net
 
 		public LargeFishingNetComponent() : base( 0x3D8E )
 		{
@@ -32,10 +32,10 @@ namespace Server.Items
 
 	public class LargeFishingNetAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new LargeFishingNetDeed(); } }
+		public override BaseAddonDeed Deed => new LargeFishingNetDeed();
 
 		[Constructible]
-		public LargeFishingNetAddon() : base()
+		public LargeFishingNetAddon()
 		{
 			AddComponent( new LargeFishingNetComponent(), 0, 0, 0 );
 		}
@@ -61,11 +61,11 @@ namespace Server.Items
 
 	public class LargeFishingNetDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new LargeFishingNetAddon(); } }
-		public override int LabelNumber { get { return 1076285; } } // Large Fish Net
+		public override BaseAddon Addon => new LargeFishingNetAddon();
+		public override int LabelNumber => 1076285; // Large Fish Net
 
 		[Constructible]
-		public LargeFishingNetDeed() : base()
+		public LargeFishingNetDeed()
 		{
 			LootType = LootType.Blessed;
 		}

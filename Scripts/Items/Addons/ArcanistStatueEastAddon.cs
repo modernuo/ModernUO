@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ArcanistStatueEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new ArcanistStatueEastDeed(); } }
+		public override BaseAddonDeed Deed => new ArcanistStatueEastDeed();
 
 		[Constructible]
 		public ArcanistStatueEastAddon()
@@ -34,8 +34,8 @@ namespace Server.Items
 
 	public class ArcanistStatueEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ArcanistStatueEastAddon(); } }
-		public override int LabelNumber{ get{ return 1072886; } } // arcanist statue (east)
+		public override BaseAddon Addon => new ArcanistStatueEastAddon();
+		public override int LabelNumber => 1072886; // arcanist statue (east)
 
 		[Constructible]
 		public ArcanistStatueEastDeed()

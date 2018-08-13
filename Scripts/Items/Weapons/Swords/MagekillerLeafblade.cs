@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class MagekillerLeafblade : Leafblade
 	{
-		public override int LabelNumber{ get{ return 1073523; } } // maagekiller leafblade
+		public override int LabelNumber => 1073523; // maagekiller leafblade
 
 		[Constructible]
 		public MagekillerLeafblade()

@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "an ore elemental corpse" )]
 	public class CopperElemental : BaseCreature
 	{
-		public override string DefaultName { get { return "a copper elemental"; } }
+		public override string DefaultName => "a copper elemental";
 
 		[Constructible]
 		public CopperElemental() : this( 2 )
@@ -58,7 +58,7 @@ namespace Server.Mobiles
 
 		public override bool BleedImmune => true;
 		public override bool AutoDispel => true;
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public override void CheckReflect( Mobile caster, ref bool reflect )
 		{

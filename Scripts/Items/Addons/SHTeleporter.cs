@@ -293,12 +293,12 @@ namespace Server.Items
 		private bool m_Changing;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool External { get { return m_External; } }
+		public bool External  => m_External;
 
-		public SHTeleComponent UpTele { get { return m_UpTele; } }
-		public SHTeleComponent RightTele { get { return m_RightTele; } }
-		public SHTeleComponent DownTele { get { return m_DownTele; } }
-		public SHTeleComponent LeftTele { get { return m_LeftTele; } }
+		public SHTeleComponent UpTele  => m_UpTele;
+		public SHTeleComponent RightTele  => m_RightTele;
+		public SHTeleComponent DownTele  => m_DownTele;
+		public SHTeleComponent LeftTele  => m_LeftTele;
 
 		[Constructible]
 		public SHTeleporter() : this( true )
@@ -353,7 +353,7 @@ namespace Server.Items
 			m_Changing = false;
 		}
 
-		public override bool ShareHue{ get { return false; } }
+		public override bool ShareHue => false;
 
 		public void ChangeActive( bool active )
 		{

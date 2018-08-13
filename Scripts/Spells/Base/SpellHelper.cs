@@ -75,12 +75,12 @@ namespace Server.Spells
 		{
 			return CheckMulti( p, map, true, 0);
 		}
-		
+
 		public static bool CheckMulti(Point3D p, Map map, bool houses)
 		{
 			return CheckMulti(p, map, houses, 0);
 		}
-		
+
 		public static bool CheckMulti( Point3D p, Map map, bool houses, int housingrange )
 		{
 			if( map == null || map == Map.Internal )
@@ -182,11 +182,11 @@ namespace Server.Spells
 			if ( m is BaseCreature )
 			{
 				BaseCreature c = (BaseCreature)m;
-						
+
 				if ( !c.Controlled )
 					return true;
 			}
-			
+
 			return false;
 		}
 
@@ -1246,9 +1246,7 @@ namespace Server.Spells
 
 		public static TransformContext GetContext( Mobile m )
 		{
-			TransformContext context = null;
-
-			m_Table.TryGetValue( m, out context );
+			m_Table.TryGetValue( m, out TransformContext context );
 
 			return context;
 		}
@@ -1407,10 +1405,10 @@ namespace Server.Spells
 		private Type m_Type;
 		private ITransformationSpell m_Spell;
 
-		public Timer Timer { get { return m_Timer; } }
-		public List<ResistanceMod> Mods { get { return m_Mods; } }
-		public Type Type { get { return m_Type; } }
-		public ITransformationSpell Spell { get { return m_Spell; } }
+		public Timer Timer  => m_Timer;
+		public List<ResistanceMod> Mods  => m_Mods;
+		public Type Type  => m_Type;
+		public ITransformationSpell Spell  => m_Spell;
 
 		public TransformContext( Timer timer, List<ResistanceMod> mods, Type type, ITransformationSpell spell )
 		{

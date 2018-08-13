@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class BlueDecorativeRugAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new BlueDecorativeRugDeed(); } }
-		
+		public override BaseAddonDeed Deed => new BlueDecorativeRugDeed();
+
 		[Constructible]
-		public BlueDecorativeRugAddon() : base()
+		public BlueDecorativeRugAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xAD2, 1076589 ), 1, 1, 0 );
 			AddComponent( new LocalizedAddonComponent( 0xAD3, 1076589 ), -1, -1, 0 );
@@ -41,11 +41,11 @@ namespace Server.Items
 
 	public class BlueDecorativeRugDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new BlueDecorativeRugAddon(); } }
-		public override int LabelNumber { get { return 1076589; } } // Blue decorative rug
+		public override BaseAddon Addon => new BlueDecorativeRugAddon();
+		public override int LabelNumber => 1076589; // Blue decorative rug
 
 		[Constructible]
-		public BlueDecorativeRugDeed() : base()
+		public BlueDecorativeRugDeed()
 		{
 			LootType = LootType.Blessed;
 		}

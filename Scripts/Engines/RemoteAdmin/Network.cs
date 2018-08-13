@@ -147,13 +147,13 @@ namespace Server.RemoteAdmin
 		{
 			Timer.DelayCall( TimeSpan.FromSeconds( 15.0 ), new TimerStateCallback( Disconnect ), state );
 		}
-		
+
 		private static void Disconnect( object state )
 		{
 			m_Auth.Remove( state );
 			((NetState)state).Dispose();
 		}
-		
+
 		public static void Authenticate( NetState state, PacketReader pvSrc )
 		{
 			string user = pvSrc.ReadString( 30 );
@@ -181,7 +181,7 @@ namespace Server.RemoteAdmin
 			else if ( a.AccessLevel < AccessLevel.Administrator || a.Banned )
 			{
 				Console.WriteLine( "ADMIN: Account '{0}' does not have admin access. Connection Denied.", user );
-				state.Send( new Login( LoginResponse.NoAccess ) ); 
+				state.Send( new Login( LoginResponse.NoAccess ) );
 				DelayedDisconnect( state );
 			}
 			else
@@ -244,7 +244,7 @@ namespace Server.RemoteAdmin
 			}
 		}
 	}
-	
+
 	public class EventTextWriter : System.IO.TextWriter
 	{
 		public delegate void OnConsoleChar( char ch );
@@ -280,6 +280,6 @@ namespace Server.RemoteAdmin
 				m_OnLine( line );
 		}
 
-		public override System.Text.Encoding Encoding{ get{ return System.Text.Encoding.ASCII; } }
+		public override System.Text.Encoding Encoding => System.Text.Encoding.ASCII;
 	}
 }

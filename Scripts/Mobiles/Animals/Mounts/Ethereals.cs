@@ -104,7 +104,7 @@ namespace Server.Mobiles
 
 		public override bool DisplayLootType => false;
 
-		public virtual int FollowerSlots { get { return 1; } }
+		public virtual int FollowerSlots  => 1;
 
 		public void RemoveFollowers()
 		{
@@ -287,7 +287,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		public virtual int EtherealHue { get { return 0x4001; } }
+		public virtual int EtherealHue  => 0x4001;
 
 		public void UnmountMe()
 		{
@@ -375,7 +375,7 @@ namespace Server.Mobiles
 				return TimeSpan.Zero;
 			}
 
-			public override double CastDelayFastScalar { get { return 0; } }
+			public override double CastDelayFastScalar => 0;
 
 			public override TimeSpan CastDelayBase
 			{
@@ -448,7 +448,7 @@ namespace Server.Mobiles
 
 	public class EtherealHorse : EtherealMount
 	{
-		public override int LabelNumber { get { return 1041298; } } // Ethereal Horse Statuette
+		public override int LabelNumber => 1041298; // Ethereal Horse Statuette
 
 		[Constructible]
 		public EtherealHorse()
@@ -484,7 +484,7 @@ namespace Server.Mobiles
 
 	public class EtherealLlama : EtherealMount
 	{
-		public override int LabelNumber { get { return 1041300; } } // Ethereal Llama Statuette
+		public override int LabelNumber => 1041300; // Ethereal Llama Statuette
 
 		[Constructible]
 		public EtherealLlama()
@@ -517,7 +517,7 @@ namespace Server.Mobiles
 
 	public class EtherealOstard : EtherealMount
 	{
-		public override int LabelNumber { get { return 1041299; } } // Ethereal Ostard Statuette
+		public override int LabelNumber => 1041299; // Ethereal Ostard Statuette
 
 		[Constructible]
 		public EtherealOstard()
@@ -550,7 +550,7 @@ namespace Server.Mobiles
 
 	public class EtherealRidgeback : EtherealMount
 	{
-		public override int LabelNumber { get { return 1049747; } } // Ethereal Ridgeback Statuette
+		public override int LabelNumber => 1049747; // Ethereal Ridgeback Statuette
 
 		[Constructible]
 		public EtherealRidgeback()
@@ -583,7 +583,7 @@ namespace Server.Mobiles
 
 	public class EtherealUnicorn : EtherealMount
 	{
-		public override int LabelNumber { get { return 1049745; } } // Ethereal Unicorn Statuette
+		public override int LabelNumber => 1049745; // Ethereal Unicorn Statuette
 
 		[Constructible]
 		public EtherealUnicorn()
@@ -616,7 +616,7 @@ namespace Server.Mobiles
 
 	public class EtherealBeetle : EtherealMount
 	{
-		public override int LabelNumber { get { return 1049748; } } // Ethereal Beetle Statuette
+		public override int LabelNumber => 1049748; // Ethereal Beetle Statuette
 
 		[Constructible]
 		public EtherealBeetle()
@@ -649,7 +649,7 @@ namespace Server.Mobiles
 
 	public class EtherealKirin : EtherealMount
 	{
-		public override int LabelNumber { get { return 1049746; } } // Ethereal Ki-Rin Statuette
+		public override int LabelNumber => 1049746; // Ethereal Ki-Rin Statuette
 
 		[Constructible]
 		public EtherealKirin()
@@ -682,7 +682,7 @@ namespace Server.Mobiles
 
 	public class EtherealSwampDragon : EtherealMount
 	{
-		public override int LabelNumber { get { return 1049749; } } // Ethereal Swamp Dragon Statuette
+		public override int LabelNumber => 1049749; // Ethereal Swamp Dragon Statuette
 
 		[Constructible]
 		public EtherealSwampDragon()
@@ -715,8 +715,8 @@ namespace Server.Mobiles
 
 	public class RideablePolarBear : EtherealMount
 	{
-		public override int LabelNumber { get { return 1076159; } } // Rideable Polar Bear
-		public override int EtherealHue { get { return 0; } }
+		public override int LabelNumber => 1076159; // Rideable Polar Bear
+		public override int EtherealHue => 0;
 
 		[Constructible]
 		public RideablePolarBear()
@@ -746,7 +746,7 @@ namespace Server.Mobiles
 
 	public class EtherealCuSidhe : EtherealMount
 	{
-		public override int LabelNumber { get { return 1080386; } } // Ethereal Cu Sidhe Statuette
+		public override int LabelNumber => 1080386; // Ethereal Cu Sidhe Statuette
 
 		[Constructible]
 		public EtherealCuSidhe()
@@ -776,7 +776,7 @@ namespace Server.Mobiles
 
 	public class EtherealHiryu : EtherealMount
 	{
-		public override int LabelNumber { get { return 1113813; } } // Ethereal Hiryu Statuette
+		public override int LabelNumber => 1113813; // Ethereal Hiryu Statuette
 
 		[Constructible]
 		public EtherealHiryu()
@@ -806,7 +806,7 @@ namespace Server.Mobiles
 
 	public class EtherealReptalon : EtherealMount
 	{
-		public override int LabelNumber { get { return 1113812; } } // Ethereal Reptalon Statuette
+		public override int LabelNumber => 1113812; // Ethereal Reptalon Statuette
 
 		[Constructible]
 		public EtherealReptalon()
@@ -836,7 +836,7 @@ namespace Server.Mobiles
 
 	public class ChargerOfTheFallen : EtherealMount
 	{
-		public override int LabelNumber { get { return 1074816; } } // Charger of the Fallen Statuette
+		public override int LabelNumber => 1074816; // Charger of the Fallen Statuette
 
 		[Constructible]
 		public ChargerOfTheFallen()
@@ -844,7 +844,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override int EtherealHue { get { return 0; } }
+		public override int EtherealHue => 0;
 
 		public ChargerOfTheFallen( Serial serial )
 			: base( serial )

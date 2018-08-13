@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class BoneCouchComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1074477; } } // Bone couch
+		public override int LabelNumber => 1074477; // Bone couch
 
 		public BoneCouchComponent( int itemID ) : base( itemID )
 		{
@@ -42,10 +42,10 @@ namespace Server.Items
 	[FlippableAddon( Direction.South, Direction.East )]
 	public class BoneCouchAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new BoneCouchDeed(); } }
+		public override BaseAddonDeed Deed => new BoneCouchDeed();
 
 		[Constructible]
-		public BoneCouchAddon() : base()
+		public BoneCouchAddon()
 		{
 			Direction = Direction.South;
 
@@ -89,11 +89,11 @@ namespace Server.Items
 
 	public class BoneCouchDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new BoneCouchAddon(); } }
-		public override int LabelNumber { get { return 1074477; } } // Bone couch
+		public override BaseAddon Addon => new BoneCouchAddon();
+		public override int LabelNumber => 1074477; // Bone couch
 
 		[Constructible]
-		public BoneCouchDeed() : base()
+		public BoneCouchDeed()
 		{
 			LootType = LootType.Blessed;
 		}

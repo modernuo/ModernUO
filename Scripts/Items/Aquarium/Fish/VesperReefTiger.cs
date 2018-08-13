@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class VesperReefTiger : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073836; } } // A Vesper Reef Tiger
-		
+	{
+		public override int LabelNumber => 1073836; // A Vesper Reef Tiger
+
 		[Constructible]
 		public VesperReefTiger() : base( 0x3B08 )
 		{
 		}
 
 		public VesperReefTiger( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

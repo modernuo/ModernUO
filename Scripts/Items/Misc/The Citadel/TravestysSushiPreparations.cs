@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TravestysSushiPreparations : Item
 	{
-		public override int LabelNumber{ get{ return 1075093; } } // Travesty's Sushi Preparations
+		public override int LabelNumber => 1075093; // Travesty's Sushi Preparations
 
 		[Constructible]
 		public TravestysSushiPreparations() : base( Utility.Random( 0x1E15, 2 ) )

@@ -41,7 +41,7 @@ namespace Server.Engines.BulkOrders
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Complete{ get{ return ( m_AmountCur == m_AmountMax ); } }
 
-		public override int LabelNumber{ get{ return 1045151; } } // a bulk order deed
+		public override int LabelNumber => 1045151; // a bulk order deed
 
 		[Constructible]
 		public SmallBOD( int hue, int amountMax, Type type, int number, int graphic, bool requireExeptional, BulkMaterialType material ) : base( Core.AOS ? 0x2258 : 0x14EF )

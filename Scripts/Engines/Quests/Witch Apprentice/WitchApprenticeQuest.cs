@@ -32,7 +32,7 @@ namespace Server.Engines.Quests.Hag
 				typeof( Hag.RecentlyFinishedConversation )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -86,10 +86,10 @@ namespace Server.Engines.Quests.Hag
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.FromMinutes( 5.0 ); } }
+		public override TimeSpan RestartDelay => TimeSpan.FromMinutes( 5.0 );
 		public override bool IsTutorial => false;
 
-		public override int Picture{ get{ return 0x15D3; } }
+		public override int Picture => 0x15D3;
 
 		public WitchApprenticeQuest( PlayerMobile from ) : base( from )
 		{

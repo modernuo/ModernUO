@@ -18,7 +18,7 @@ namespace Server.Spells.Eighth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
+		public override SpellCircle Circle => SpellCircle.Eighth;
 
 		public FireElementalSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

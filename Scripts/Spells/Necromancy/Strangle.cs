@@ -16,10 +16,10 @@ namespace Server.Spells.Necromancy
 				Reagent.NoxCrystal
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill{ get{ return 65.0; } }
-		public override int RequiredMana{ get{ return 29; } }
+		public override double RequiredSkill => 65.0;
+		public override int RequiredMana => 29;
 
 		public StrangleSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -54,7 +54,7 @@ namespace Server.Spells.Necromancy
 
 				 if ( m.Spell != null )
 					m.Spell.OnCasterHurt();
-				
+
 				m.PlaySound( 0x22F );
 				m.FixedParticles( 0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head );
 				m.FixedParticles( 0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255 );
@@ -210,7 +210,7 @@ namespace Server.Spells.Necromancy
 						damage *= 1.75;
 
 					AOS.Damage( m_Target, m_From, (int)damage, 0, 0, 0, 100, 0 );
-					
+
 					if ( 0.60 <= Utility.RandomDouble() ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
 						m_Target.RevealingAction();
 				}

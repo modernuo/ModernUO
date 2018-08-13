@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class SewingKit : BaseTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefTailoring.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
 
 		[Constructible]
 		public SewingKit() : base( 0xF9D )

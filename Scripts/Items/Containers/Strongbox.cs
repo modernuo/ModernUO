@@ -12,8 +12,8 @@ namespace Server.Items
 		private Mobile m_Owner;
 		private BaseHouse m_House;
 
-		public override double DefaultWeight{ get{ return 100; } }
-		public override int LabelNumber { get { return 1023712; } }
+		public override double DefaultWeight => 100;
+		public override int LabelNumber => 1023712;
 
 		public StrongBox( Mobile owner, BaseHouse house ) : base( 0xE80 )
 		{
@@ -37,7 +37,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int DefaultMaxWeight{ get{ return 0; } }
+		public override int DefaultMaxWeight => 0;
 
 		public StrongBox( Serial serial ) : base(serial)
 		{

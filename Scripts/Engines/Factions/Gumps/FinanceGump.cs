@@ -21,7 +21,7 @@ namespace Server.Factions
 				+50, +100, +150, +200, +250, +300
 			};
 
-		public override int ButtonTypes{ get{ return 2; } }
+		public override int ButtonTypes => 2;
 
 		public FinanceGump( PlayerMobile from, Faction faction, Town town ) : base( 50, 50 )
 		{
@@ -44,7 +44,7 @@ namespace Server.Factions
 			AddHtmlLocalized( 55, 90, 200, 25, 1011539, false, false ); // CHANGE PRICES
 			AddButton( 20, 90, 4005, 4007, 0, GumpButtonType.Page, 2 );
 
-			AddHtmlLocalized( 55, 120, 200, 25, 1011540, false, false ); // BUY SHOPKEEPERS	
+			AddHtmlLocalized( 55, 120, 200, 25, 1011540, false, false ); // BUY SHOPKEEPERS
 			AddButton( 20, 120, 4005, 4007, 0, GumpButtonType.Page, 3 );
 
 			AddHtmlLocalized( 55, 150, 200, 25, 1011495, false, false ); // VIEW FINANCES
@@ -114,20 +114,20 @@ namespace Server.Factions
 
 
 			AddHtmlLocalized( 20, 30, 300, 25, 1011524, false, false ); // FINANCE STATEMENT
-	
-			AddHtmlLocalized( 20, 80, 300, 25, 1011538, false, false ); // Current total money for town : 
+
+			AddHtmlLocalized( 20, 80, 300, 25, 1011538, false, false ); // Current total money for town :
 			AddLabel( 20, 100, 0x44, town.Silver.ToString() );
 
-			AddHtmlLocalized( 20, 130, 300, 25, 1011520, false, false ); // Finance Minister Upkeep : 
+			AddHtmlLocalized( 20, 130, 300, 25, 1011520, false, false ); // Finance Minister Upkeep :
 			AddLabel( 20, 150, 0x44, financeUpkeep.ToString( "N0" ) ); // NOTE: Added 'N0'
 
-			AddHtmlLocalized( 20, 180, 300, 25, 1011521, false, false ); // Sheriff Upkeep : 
+			AddHtmlLocalized( 20, 180, 300, 25, 1011521, false, false ); // Sheriff Upkeep :
 			AddLabel( 20, 200, 0x44, sheriffUpkeep.ToString( "N0" ) ); // NOTE: Added 'N0'
 
-			AddHtmlLocalized( 20, 230, 300, 25, 1011522, false, false ); // Town Income : 
+			AddHtmlLocalized( 20, 230, 300, 25, 1011522, false, false ); // Town Income :
 			AddLabel( 20, 250, 0x44, dailyIncome.ToString( "N0" ) ); // NOTE: Added 'N0'
 
-			AddHtmlLocalized( 20, 280, 300, 25, 1011523, false, false ); // Net Cash flow per day : 
+			AddHtmlLocalized( 20, 280, 300, 25, 1011523, false, false ); // Net Cash flow per day :
 			AddLabel( 20, 300, 0x44, netCashFlow.ToString( "N0" ) ); // NOTE: Added 'N0'
 
 			AddHtmlLocalized( 55, 360, 200, 25, 1011067, false, false ); // Previous page
@@ -144,10 +144,10 @@ namespace Server.Factions
 				AddHtmlText( 60, 30, 300, 25, vendorList.Definition.Header, false, false );
 				AddItem( 20, 30, vendorList.Definition.ItemID );
 
-				AddHtmlLocalized( 20, 90, 200, 25, 1011514, false, false ); // You have : 
+				AddHtmlLocalized( 20, 90, 200, 25, 1011514, false, false ); // You have :
 				AddLabel( 230, 90, 0x26, vendorList.Vendors.Count.ToString() );
 
-				AddHtmlLocalized( 20, 120, 200, 25, 1011515, false, false ); // Maximum : 
+				AddHtmlLocalized( 20, 120, 200, 25, 1011515, false, false ); // Maximum :
 				AddLabel( 230, 120, 0x256, vendorList.Definition.Maximum.ToString() );
 
 				AddHtmlLocalized( 20, 150, 200, 25, 1011516, false, false ); // Cost :
@@ -221,7 +221,7 @@ namespace Server.Factions
 									m_From.SendLocalizedMessage( 1042167 ); // You must wait up to an hour before changing prices again.
 								else if ( remaining.TotalHours < 4 )
 									m_From.SendLocalizedMessage( 1042168 ); // You must wait a few hours before changing prices again.
-								else 
+								else
 									m_From.SendLocalizedMessage( 1042169 ); // You must wait several hours before changing prices again.
 							}
 							else

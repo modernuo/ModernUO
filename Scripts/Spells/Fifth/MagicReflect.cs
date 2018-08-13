@@ -17,7 +17,7 @@ namespace Server.Spells.Fifth
 				Reagent.SpidersSilk
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
+		public override SpellCircle Circle => SpellCircle.Fifth;
 
 		public MagicReflectSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -52,7 +52,7 @@ namespace Server.Spells.Fifth
 				 * Physical decrease = 25 - (Inscription/20).
 				 * Elemental resistance = +10 (-20 physical, +10 elemental at GM Inscription)
 				 * The magic reflection spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-				 * Reactive Armor, Protection, and Magic Reflection will stay on—even after logging out, even after dying—until you “turn them off” by casting them again. 
+				 * Reactive Armor, Protection, and Magic Reflection will stay onï¿½even after logging out, even after dyingï¿½until you ï¿½turn them offï¿½ by casting them again.
 				 */
 
 				if ( CheckSequence() )

@@ -28,7 +28,7 @@ namespace Server.Engines.Craft
 			}
 		}
 
-		public override CraftECA ECA{ get{ return CraftECA.ChanceMinusSixtyToFourtyFive; } }
+		public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
@@ -97,7 +97,7 @@ namespace Server.Engines.Craft
 					return 1044156; // You create an exceptional quality item and affix your maker's mark.
 				else if ( quality == 2 )
 					return 1044155; // You create an exceptional quality item.
-				else				
+				else
 					return 1044154; // You create the item.
 			}
 		}
@@ -128,7 +128,7 @@ namespace Server.Engines.Craft
 				index = AddCraft( typeof( ClothNinjaHood ), 1011375, 1030202, 80.0, 105.0, typeof( Cloth ), 1044286, 13, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
 
-				index = AddCraft( typeof( Kasa ), 1011375, 1030211, 60.0, 85.0, typeof( Cloth ), 1044286, 12, 1044287 );	
+				index = AddCraft( typeof( Kasa ), 1011375, 1030211, 60.0, 85.0, typeof( Cloth ), 1044286, 12, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
 			}
 			#endregion
@@ -368,7 +368,7 @@ namespace Server.Engines.Craft
 			#region Bone Armor
 			index = AddCraft( typeof( BoneHelm ), 1049149, 1025206, 85.0, 110.0, typeof( Leather ), 1044462, 4, 1044463 );
 			AddRes( index, typeof( Bone ), 1049064, 2, 1049063 );
-			
+
 			index = AddCraft( typeof( BoneGloves ), 1049149, 1025205, 89.0, 114.0, typeof( Leather ), 1044462, 6, 1044463 );
 			AddRes( index, typeof( Bone ), 1049064, 2, 1049063 );
 
@@ -377,7 +377,7 @@ namespace Server.Engines.Craft
 
 			index = AddCraft( typeof( BoneLegs ), 1049149, 1025202, 95.0, 120.0, typeof( Leather ), 1044462, 10, 1044463 );
 			AddRes( index, typeof( Bone ), 1049064, 6, 1049063 );
-		
+
 			index = AddCraft( typeof( BoneChest ), 1049149, 1025199, 96.0, 121.0, typeof( Leather ), 1044462, 12, 1044463 );
 			AddRes( index, typeof( Bone ), 1049064, 10, 1049063 );
 

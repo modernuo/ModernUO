@@ -5,11 +5,11 @@ namespace Server.Items
 {
 	public class SongWovenMantle : LeafArms
 	{
-		public override int LabelNumber{ get{ return 1072931; } } // Song Woven Mantle
+		public override int LabelNumber => 1072931; // Song Woven Mantle
 
-		public override int BasePhysicalResistance{ get{ return 14; } }
-		public override int BaseColdResistance{ get{ return 14; } }
-		public override int BaseEnergyResistance{ get{ return 16; } }
+		public override int BasePhysicalResistance => 14;
+		public override int BaseColdResistance => 14;
+		public override int BaseEnergyResistance => 16;
 
 		[Constructible]
 		public SongWovenMantle()

@@ -32,8 +32,7 @@ namespace Server.Mobiles
 
 			public IEntity Lookup( Type key )
 			{
-				IEntity e = null;
-				m_Table.TryGetValue( key, out e );
+				m_Table.TryGetValue( key, out IEntity e );
 				return e;
 			}
 
@@ -115,7 +114,7 @@ namespace Server.Mobiles
 
 		public virtual int ControlSlots{ get{ return 0; } }
 
-		public virtual bool CanCacheDisplay{ get{ return false; } } //return ( m_Args == null || m_Args.Length == 0 ); } 
+		public virtual bool CanCacheDisplay{ get{ return false; } } //return ( m_Args == null || m_Args.Length == 0 ); }
 
 		private bool IsDeleted( IEntity obj )
 		{

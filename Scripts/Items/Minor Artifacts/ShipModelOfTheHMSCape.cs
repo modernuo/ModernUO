@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class ShipModelOfTheHMSCape : Item
 	{
-		public override int LabelNumber{ get{ return 1063476; } }
-		
+		public override int LabelNumber => 1063476;
+
 		[Constructible]
 		public ShipModelOfTheHMSCape() : base( 0x14F3 )
 		{
@@ -23,7 +23,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

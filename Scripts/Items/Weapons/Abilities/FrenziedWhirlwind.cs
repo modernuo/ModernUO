@@ -26,10 +26,10 @@ namespace Server.Items
 			return base.CheckSkills( from );
 		}
 
-		public override int BaseMana { get { return 30; } }
+		public override int BaseMana => 30;
 
 		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry { get { return m_Registry; } }
+		public static Hashtable Registry  => m_Registry;
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

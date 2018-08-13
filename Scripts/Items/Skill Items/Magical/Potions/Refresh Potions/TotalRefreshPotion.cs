@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TotalRefreshPotion : BaseRefreshPotion
 	{
-		public override double Refresh{ get{ return 1.0; } }
+		public override double Refresh => 1.0;
 
 		[Constructible]
 		public TotalRefreshPotion() : base( PotionEffect.RefreshTotal )

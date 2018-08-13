@@ -16,10 +16,10 @@ namespace Server.Spells.Necromancy
 				Reagent.GraveDust
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return 20.0; } }
-		public override int RequiredMana{ get{ return 11; } }
+		public override double RequiredSkill => 20.0;
+		public override int RequiredMana => 11;
 
 		public CorpseSkinSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -39,12 +39,12 @@ namespace Server.Spells.Necromancy
 				/* Transmogrifies the flesh of the target creature or player to resemble rotted corpse flesh,
 				 * making them more vulnerable to Fire and Poison damage,
 				 * but increasing their resistance to Physical and Cold damage.
-				 * 
+				 *
 				 * The effect lasts for ((Spirit Speak skill level - target's Resist Magic skill level) / 25 ) + 40 seconds.
-				 * 
+				 *
 				 * NOTE: Algorithm above is fixed point, should be:
 				 * ((ss-mr)/2.5) + 40
-				 * 
+				 *
 				 * NOTE: Resistance is not checked if targeting yourself
 				 */
 
@@ -57,7 +57,7 @@ namespace Server.Spells.Necromancy
 
 				 if ( m.Spell != null )
 					m.Spell.OnCasterHurt();
-				
+
 				m.FixedParticles( 0x373A, 1, 15, 9913, 67, 7, EffectLayer.Head );
 				m.PlaySound( 0x1BB );
 

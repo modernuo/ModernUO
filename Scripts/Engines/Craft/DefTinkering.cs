@@ -110,7 +110,7 @@ namespace Server.Engines.Craft
 					return 1044156; // You create an exceptional quality item and affix your maker's mark.
 				else if ( quality == 2 )
 					return 1044155; // You create an exceptional quality item.
-				else				
+				else
 					return 1044154; // You create the item.
 			}
 		}
@@ -326,7 +326,7 @@ namespace Server.Engines.Craft
 			AddRes( index, typeof( IronIngot ), 1044036, 10, 1044037 );
 			AddRes( index, typeof( Gears ), 1044254, 1, 1044253 );
 
-			// Faction Spike Trap			
+			// Faction Spike Trap
 			index = AddCraft( typeof( FactionSpikeTrapDeed ), 1044052, 1044601, 65.0, 115.0, typeof( Silver ), 1044572, Core.AOS ? 250 : 1000, 1044253 );
 			AddRes( index, typeof( IronIngot ), 1044036, 10, 1044037 );
 			AddRes( index, typeof( Springs ), 1044171, 1, 1044253 );
@@ -498,7 +498,7 @@ namespace Server.Engines.Craft
 	[CraftItemID( 0x1BFC )]
 	public class DartTrapCraft : TrapCraft
 	{
-		public override TrapType TrapType{ get{ return TrapType.DartTrap; } }
+		public override TrapType TrapType => TrapType.DartTrap;
 
 		public DartTrapCraft( Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool, int quality ) : base( from, craftItem, craftSystem, typeRes, tool, quality )
 		{
@@ -508,7 +508,7 @@ namespace Server.Engines.Craft
 	[CraftItemID( 0x113E )]
 	public class PoisonTrapCraft : TrapCraft
 	{
-		public override TrapType TrapType{ get{ return TrapType.PoisonTrap; } }
+		public override TrapType TrapType => TrapType.PoisonTrap;
 
 		public PoisonTrapCraft( Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool, int quality ) : base( from, craftItem, craftSystem, typeRes, tool, quality )
 		{
@@ -518,7 +518,7 @@ namespace Server.Engines.Craft
 	[CraftItemID( 0x370C )]
 	public class ExplosionTrapCraft : TrapCraft
 	{
-		public override TrapType TrapType{ get{ return TrapType.ExplosionTrap; } }
+		public override TrapType TrapType => TrapType.ExplosionTrap;
 
 		public ExplosionTrapCraft( Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool, int quality ) : base( from, craftItem, craftSystem, typeRes, tool, quality )
 		{

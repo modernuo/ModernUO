@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class Shrimp : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1074596; } } // Shrimp
-		
+	{
+		public override int LabelNumber => 1074596; // Shrimp
+
 		[Constructible]
 		public Shrimp() : base( 0x3B14 )
 		{
 		}
 
 		public Shrimp( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

@@ -5,7 +5,7 @@ namespace Server.Items
 	[Flippable( 0xC1B, 0xC1C, 0xC1E, 0xC1D )]
 	public class StandingBrokenChairComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076259; } } // Standing Broken Chair
+		public override int LabelNumber => 1076259; // Standing Broken Chair
 
 		public StandingBrokenChairComponent() : base( 0xC1B )
 		{
@@ -32,10 +32,10 @@ namespace Server.Items
 
 	public class StandingBrokenChairAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new StandingBrokenChairDeed(); } }
+		public override BaseAddonDeed Deed => new StandingBrokenChairDeed();
 
 		[Constructible]
-		public StandingBrokenChairAddon() : base()
+		public StandingBrokenChairAddon()
 		{
 			AddComponent( new StandingBrokenChairComponent(), 0, 0, 0 );
 		}
@@ -61,11 +61,11 @@ namespace Server.Items
 
 	public class StandingBrokenChairDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new StandingBrokenChairAddon(); } }
-		public override int LabelNumber { get { return 1076259; } } // Standing Broken Chair
+		public override BaseAddon Addon => new StandingBrokenChairAddon();
+		public override int LabelNumber => 1076259; // Standing Broken Chair
 
 		[Constructible]
-		public StandingBrokenChairDeed() : base()
+		public StandingBrokenChairDeed()
 		{
 			LootType = LootType.Blessed;
 		}

@@ -43,8 +43,7 @@ namespace Server
 
 		public static NameList GetNameList( string type )
 		{
-			NameList n = null;
-			m_Table.TryGetValue( type, out n );
+			m_Table.TryGetValue( type, out NameList n );
 			return n;
 		}
 

@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public abstract class BaseScales : Item, ICommodity
 	{
-		public override int LabelNumber{ get{ return 1053139; } } // dragon scales
+		public override int LabelNumber => 1053139; // dragon scales
 
 		private CraftResource m_Resource;
 
@@ -21,7 +21,7 @@ namespace Server.Items
 		{
 			get { return 0.1; }
 		}
-		
+
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return true; } }
 
@@ -98,7 +98,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		
+
 	}
 
 	public class YellowScales : BaseScales
@@ -131,7 +131,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		
+
 	}
 
 	public class BlackScales : BaseScales
@@ -164,7 +164,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		
+
 	}
 
 	public class GreenScales : BaseScales
@@ -197,7 +197,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		
+
 	}
 
 	public class WhiteScales : BaseScales
@@ -230,12 +230,12 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		
+
 	}
 
 	public class BlueScales : BaseScales
 	{
-		public override int LabelNumber{ get{ return 1053140; } } // sea serpent scales
+		public override int LabelNumber => 1053140; // sea serpent scales
 
 		[Constructible]
 		public BlueScales() : this( 1 )
@@ -265,6 +265,6 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		
+
 	}
 }

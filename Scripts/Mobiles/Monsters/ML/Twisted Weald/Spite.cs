@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	public class Spite : Changeling
 	{
 		public override string DefaultName => "Spite";
-		public override int DefaultHue{ get{ return 0x21; } }
+		public override int DefaultHue => 0x21;
 
 		[Constructible]
 		public Spite()

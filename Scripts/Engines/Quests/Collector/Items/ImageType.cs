@@ -90,11 +90,11 @@ namespace Server.Engines.Quests.Collector
 		private int m_X;
 		private int m_Y;
 
-		public int Figurine { get { return m_Figurine; } }
-		public Type Type { get { return m_Type; } }
+		public int Figurine  => m_Figurine;
+		public Type Type  => m_Type;
 		public int Name { get { return m_Figurine < 0x4000 ? 1020000 + m_Figurine : 1078872 + m_Figurine; } }
-		public int X { get { return m_X; } }
-		public int Y { get { return m_Y; } }
+		public int X  => m_X;
+		public int Y  => m_Y;
 
 		public ImageTypeInfo( int figurine, Type type, int x, int y )
 		{

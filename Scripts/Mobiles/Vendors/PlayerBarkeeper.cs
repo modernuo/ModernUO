@@ -182,7 +182,7 @@ namespace Server.Mobiles
 
 		public BarkeeperRumor[] Rumors{ get{ return m_Rumors; } }
 
-		public override VendorShoeType ShoeType{ get{ return Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots; } }
+		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
 
 		public override bool GetGender()
 		{

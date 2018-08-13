@@ -8,15 +8,15 @@ namespace Server.Mobiles
 {
 	public class Neira : BaseChampion
 	{
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Death; } }
+		public override ChampionSkullType SkullType => ChampionSkullType.Death;
 
-		public override Type[] UniqueList{ get{ return new Type[] { typeof( ShroudOfDeciet ) }; } }
+		public override Type[] UniqueList => new Type[] { typeof( ShroudOfDeciet ) };
 		public override Type[] SharedList{ get{ return new Type[] { 	typeof( ANecromancerShroud ),
 
 										typeof( CaptainJohnsHat ) }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( WallBlood ), typeof( TatteredAncientMummyWrapping ) }; } }
+		public override Type[] DecorativeList => new Type[] { typeof( WallBlood ), typeof( TatteredAncientMummyWrapping ) };
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
+		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 
 		public override string DefaultName => "Neira";
 
@@ -148,7 +148,7 @@ namespace Server.Mobiles
 			private Mobile m_Rider;
 			private VirtualMount m_Mount;
 
-			public Mobile Rider { get { return m_Rider; } }
+			public Mobile Rider  => m_Rider;
 
 			public VirtualMountItem( Mobile mob )
 				: base( 0x3EBB )

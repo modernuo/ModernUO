@@ -12,10 +12,10 @@ namespace Server.Spells.Spellweaving
 				-1
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 3.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 3.0 );
 
-		public override double RequiredSkill { get { return 0.0; } }
-		public override int RequiredMana { get { return 24; } }
+		public override double RequiredSkill => 0.0;
+		public override int RequiredMana => 24;
 
 		public GiftOfRenewalSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )
@@ -143,9 +143,7 @@ namespace Server.Spells.Spellweaving
 
 		public static bool StopEffect( Mobile m )
 		{
-			GiftOfRenewalInfo info;
-
-			if( m_Table.TryGetValue( m, out info ) )
+			if (m_Table.TryGetValue( m, out GiftOfRenewalInfo info ))
 			{
 				m_Table.Remove( m );
 

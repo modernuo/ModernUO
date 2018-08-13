@@ -14,7 +14,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheAncientWorld : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( TheGoldenHorn ); } }
+		public override Type NextQuest => typeof( TheGoldenHorn );
 
 		public TheAncientWorld()
 		{
@@ -41,7 +41,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheGoldenHorn : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( Bullish ); } }
+		public override Type NextQuest => typeof( Bullish );
 		public override bool IsChainTriggered => true;
 
 		public TheGoldenHorn()
@@ -61,7 +61,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Bullish : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( LostCivilization ); } }
+		public override Type NextQuest => typeof( LostCivilization );
 		public override bool IsChainTriggered => true;
 
 		public Bullish()

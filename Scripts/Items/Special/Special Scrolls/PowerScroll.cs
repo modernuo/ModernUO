@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public class PowerScroll : SpecialScroll
 	{
-		public override int Message { get { return 1049469; } } /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
+		public override int Message => 1049469; /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
 																* When used, the effect is not immediately seen without a gain of points with that skill or statistics.
 																* You can view your maximum skill values in your skills window.
 																* You can view your maximum statistic value in your statistics window. */
@@ -29,7 +29,7 @@ namespace Server.Items
 			}
 		}
 
-		public override string DefaultTitle{ get{ return String.Format( "<basefont color=#FFFFFF>Power Scroll ({0} Skill):</basefont>", Value ); } }
+		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Power Scroll ({0} Skill):</basefont>", Value );
 
 		private static SkillName[] m_Skills = new SkillName[]
 			{

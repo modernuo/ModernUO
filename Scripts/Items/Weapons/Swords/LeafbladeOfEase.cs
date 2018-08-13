@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LeafbladeOfEase : Leafblade
 	{
-		public override int LabelNumber{ get{ return 1073524; } } // leafblade of ease
+		public override int LabelNumber => 1073524; // leafblade of ease
 
 		[Constructible]
 		public LeafbladeOfEase()

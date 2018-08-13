@@ -8,7 +8,7 @@ namespace Server.Spells.Fifth
 	public class BladeSpiritsSpell : MagerySpell
 	{
 		private static SpellInfo m_Info = new SpellInfo(
-				"Blade Spirits", "In Jux Hur Ylem", 
+				"Blade Spirits", "In Jux Hur Ylem",
 				266,
 				9040,
 				false,
@@ -17,7 +17,7 @@ namespace Server.Spells.Fifth
 				Reagent.Nightshade
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fifth; } }
+		public override SpellCircle Circle => SpellCircle.Fifth;
 
 		public BladeSpiritsSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

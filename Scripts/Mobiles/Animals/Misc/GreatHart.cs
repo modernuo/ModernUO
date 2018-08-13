@@ -42,9 +42,9 @@ namespace Server.Mobiles
 			MinTameSkill = 59.1;
 		}
 
-		public override int Meat{ get{ return 6; } }
-		public override int Hides{ get{ return 15; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
+		public override int Meat => 6;
+		public override int Hides => 15;
+		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
 		public GreatHart(Serial serial) : base(serial)
 		{

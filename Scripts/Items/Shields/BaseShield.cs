@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class BaseShield : BaseArmor
 	{
-		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Plate; } }
+		public override ArmorMaterialType MaterialType => ArmorMaterialType.Plate;
 
 		public BaseShield( int itemID ) : base( itemID )
 		{
@@ -125,11 +125,11 @@ namespace Server.Items
 				if( chance < 0.01 )
 					chance = 0.01;
 				/*
-				FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) ÷ 200) + 1 
+				FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) ï¿½ 200) + 1
 
 				FORMULA: % Chance of Blocking = parry skill - (shieldAR * 2)
 
-				FORMULA: Melee Damage Absorbed = (AR of Shield) / 2 | Archery Damage Absorbed = AR of Shield 
+				FORMULA: Melee Damage Absorbed = (AR of Shield) / 2 | Archery Damage Absorbed = AR of Shield
 				*/
 				if( owner.CheckSkill( SkillName.Parry, chance ) )
 				{

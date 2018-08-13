@@ -16,11 +16,11 @@ namespace Server.Engines.Quests.Doom
 				/* Find 1000 Daemon bones and hand them
 				 * to Victoria as you find them.
 				 */
-				return 1050026; 
+				return 1050026;
 			}
 		}
 
-		public override int MaxProgress{ get{ return 1000; } }
+		public override int MaxProgress => 1000;
 
 		public CollectBonesObjective()
 		{

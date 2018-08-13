@@ -6,10 +6,10 @@ namespace Server.Items
 {
 	public class PlagueBeastBackpack : BaseContainer
 	{
-		public override int DefaultMaxWeight { get { return 0; } }
-		public override int DefaultMaxItems { get { return 0; } }
-		public override int DefaultGumpID { get { return 0x2A63; } }
-		public override int DefaultDropSound { get { return 0x23F; } }
+		public override int DefaultMaxWeight => 0;
+		public override int DefaultMaxItems => 0;
+		public override int DefaultGumpID => 0x2A63;
+		public override int DefaultDropSound => 0x23F;
 
 		private static int[,,] m_Positions = new int[,,]
 		{

@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Hag
 {
 	public class MagicFlute : Item
 	{
-		public override int LabelNumber{ get{ return 1055051; } } // magic flute
+		public override int LabelNumber => 1055051; // magic flute
 
 		[Constructible]
 		public MagicFlute() : base( 0x1421 )

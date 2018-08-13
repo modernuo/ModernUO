@@ -80,8 +80,8 @@ namespace Server.Misc
 			private Point3D m_Location;
 			private Map m_Map;
 
-			public Point3D Location { get { return m_Location; } }
-			public Map Map { get { return m_Map; } }
+			public Point3D Location  => m_Location;
+			public Map Map  => m_Map;
 
 			public LocationInfo( Point3D loc, Map map )
 			{

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class RuneBladeOfKnowledge : RuneBlade
 	{
-		public override int LabelNumber{ get{ return 1073539; } } // rune blade of knowledge
+		public override int LabelNumber => 1073539; // rune blade of knowledge
 
 		[Constructible]
 		public RuneBladeOfKnowledge()

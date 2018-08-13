@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class FandancerFish : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1074591; } } // Fandancer Fish
-		
+	{
+		public override int LabelNumber => 1074591; // Fandancer Fish
+
 		[Constructible]
 		public FandancerFish() : base( 0x3B02 )
 		{
 		}
 
 		public FandancerFish( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

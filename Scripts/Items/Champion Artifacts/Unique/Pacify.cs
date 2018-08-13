@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class Pacify : Pike
 	{
-		public override int LabelNumber{ get{ return 1094929; } } // Pacify [Replica]
+		public override int LabelNumber => 1094929; // Pacify [Replica]
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+		public override int InitMinHits => 150;
+		public override int InitMaxHits => 150;
 
 		public override bool CanFortify => false;
 

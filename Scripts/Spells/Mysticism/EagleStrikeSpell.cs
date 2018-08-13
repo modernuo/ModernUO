@@ -15,10 +15,10 @@ namespace Server.Spells.Mysticism
 				Reagent.MandrakeRoot
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.25 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.25 );
 
-		public override double RequiredSkill { get { return 20.0; } }
-		public override int RequiredMana { get { return 9; } }
+		public override double RequiredSkill => 20.0;
+		public override int RequiredMana => 9;
 
 		public EagleStrikeSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )

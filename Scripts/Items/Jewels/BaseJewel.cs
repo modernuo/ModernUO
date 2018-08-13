@@ -38,11 +38,11 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int HitPoints
 		{
-			get 
+			get
 			{
 				return m_HitPoints;
 			}
-			set 
+			set
 			{
 				if ( value != m_HitPoints && MaxHitPoints > 0 )
 				{
@@ -93,11 +93,11 @@ namespace Server.Items
 			set{ m_GemType = value; InvalidateProperties(); }
 		}
 
-		public override int PhysicalResistance{ get{ return m_AosResistances.Physical; } }
-		public override int FireResistance{ get{ return m_AosResistances.Fire; } }
-		public override int ColdResistance{ get{ return m_AosResistances.Cold; } }
-		public override int PoisonResistance{ get{ return m_AosResistances.Poison; } }
-		public override int EnergyResistance{ get{ return m_AosResistances.Energy; } }
+		public override int PhysicalResistance => m_AosResistances.Physical;
+		public override int FireResistance => m_AosResistances.Fire;
+		public override int ColdResistance => m_AosResistances.Cold;
+		public override int PoisonResistance => m_AosResistances.Poison;
+		public override int EnergyResistance => m_AosResistances.Energy;
 		public virtual int BaseGemTypeNumber{ get{ return 0; } }
 
 		public virtual int InitMinHits{ get{ return 0; } }

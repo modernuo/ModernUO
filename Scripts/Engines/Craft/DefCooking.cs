@@ -28,7 +28,7 @@ namespace Server.Engines.Craft
 			}
 		}
 
-		public override CraftECA ECA{ get{ return CraftECA.ChanceMinusSixtyToFourtyFive; } }
+		public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
@@ -73,7 +73,7 @@ namespace Server.Engines.Craft
 					return 1044156; // You create an exceptional quality item and affix your maker's mark.
 				else if ( quality == 2 )
 					return 1044155; // You create an exceptional quality item.
-				else				
+				else
 					return 1044154; // You create the item.
 			}
 		}

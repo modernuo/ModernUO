@@ -215,7 +215,7 @@ namespace Server.Items
 				list.Add( Solution.Cylinders[i] );
 
 			m_Hints = new PuzzleChestCylinder[HintsCount];
-			
+
 			for ( int i = 0; i < m_Hints.Length; i++ ) {
 				int pos = Utility.Random( list.Count );
 				m_Hints[i] = list[pos];
@@ -252,8 +252,7 @@ namespace Server.Items
 
 		public PuzzleChestSolutionAndTime GetLastGuess( Mobile m )
 		{
-			PuzzleChestSolutionAndTime pcst = null;
-			m_Guesses.TryGetValue( m, out pcst );
+			m_Guesses.TryGetValue( m, out PuzzleChestSolutionAndTime pcst );
 			return pcst;
 		}
 

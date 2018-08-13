@@ -35,9 +35,9 @@ namespace Server.Engines.MLQuests.Definitions
 	public class BatteredBucket : TransientQuestGiverItem
 	{
 		// Original label, doesn't fit the expiration message well
-		//public override int LabelNumber { get { return 1073129; } } // A battered bucket.
+		//public override int LabelNumber => 1073129; // A battered bucket.
 
-		public override string DefaultName { get { return "battered bucket"; } }
+		public override string DefaultName => "battered bucket";
 
 		[Constructible]
 		public BatteredBucket()

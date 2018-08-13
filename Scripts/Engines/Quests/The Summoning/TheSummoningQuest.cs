@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Doom
 				typeof( Doom.VanquishDaemonObjective )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		private Victoria m_Victoria;
 		private bool m_WaitForSummon;
@@ -74,8 +74,8 @@ namespace Server.Engines.Quests.Doom
 		}
 
 		public override bool IsTutorial => false;
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.Zero; } }
-		public override int Picture{ get{ return 0x15B5; } }
+		public override TimeSpan RestartDelay => TimeSpan.Zero;
+		public override int Picture => 0x15B5;
 
 		// NOTE: Quest not entirely OSI-accurate: some changes made to prevent numerous OSI bugs
 

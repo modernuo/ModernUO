@@ -6,8 +6,8 @@ namespace Server.Items
 {
 	public class GrizzledMareStatuette : BaseImprisonedMobile
 	{
-		public override int LabelNumber{ get{ return 1074475; } } // Grizzled Mare Statuette
-		public override BaseCreature Summon{ get { return new GrizzledMare(); } }
+		public override int LabelNumber => 1074475; // Grizzled Mare Statuette
+		public override BaseCreature Summon => new GrizzledMare();
 
 		[Constructible]
 		public GrizzledMareStatuette() : base( 0x2617 )

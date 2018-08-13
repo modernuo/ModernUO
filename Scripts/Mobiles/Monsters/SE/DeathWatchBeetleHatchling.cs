@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.DeathWatchBeetleHatchling" )]
 	public class DeathwatchBeetleHatchling : BaseCreature
 	{
-		public override string DefaultName { get { return "a deathwatch beetle hatchling"; } }
+		public override string DefaultName => "a deathwatch beetle hatchling";
 
 		[Constructible]
 		public DeathwatchBeetleHatchling() : base( AIType.AI_Melee, Core.ML ? FightMode.Aggressor : FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -47,7 +47,7 @@ namespace Server.Mobiles
 				i.Amount = 3;
 				PackItem( i );
 			}
-			
+
 			switch ( Utility.Random( 12 ) )
 			{
 				case 0: PackItem( new LeatherGorget() ); break;
@@ -93,7 +93,7 @@ namespace Server.Mobiles
 		public DeathwatchBeetleHatchling( Serial serial ) : base( serial )
 		{
 		}
-		public override int Hides{ get{ return 8; } }
+		public override int Hides => 8;
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

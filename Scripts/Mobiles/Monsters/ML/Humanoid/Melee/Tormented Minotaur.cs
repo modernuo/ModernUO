@@ -47,7 +47,7 @@ namespace Server.Mobiles
 		}
 
 		public override Poison PoisonImmune => Poison.Deadly;
-		public override int TreasureMapLevel{ get{ return 3; } }
+		public override int TreasureMapLevel => 3;
 
 		public override int GetDeathSound()	{ return 0x596; }
 		public override int GetAttackSound() { return 0x597; }

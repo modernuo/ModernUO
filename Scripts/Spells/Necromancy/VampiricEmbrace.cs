@@ -17,15 +17,15 @@ namespace Server.Spells.Necromancy
 				Reagent.PigIron
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill{ get{ return 99.0; } }
-		public override int RequiredMana{ get{ return 23; } }
+		public override double RequiredSkill => 99.0;
+		public override int RequiredMana => 23;
 
-		public override int Body{ get{ return Caster.Female ? 745 : 744; } }
-		public override int Hue{ get{ return 0x847E; } }
+		public override int Body => Caster.Female ? 745 : 744;
+		public override int Hue => 0x847E;
 
-		public override int FireResistOffset{ get{ return -25; } }
+		public override int FireResistOffset => -25;
 
 		public VampiricEmbraceSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

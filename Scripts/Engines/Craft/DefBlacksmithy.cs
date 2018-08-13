@@ -28,7 +28,7 @@ namespace Server.Engines.Craft
 			}
 		}
 
-		public override CraftECA ECA{ get{ return CraftECA.ChanceMinusSixtyToFourtyFive; } }
+		public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
@@ -38,17 +38,17 @@ namespace Server.Engines.Craft
 		private DefBlacksmithy() : base( 1, 1, 1.25 )// base( 1, 2, 1.7 )
 		{
 			/*
-			
+
 			base( MinCraftEffect, MaxCraftEffect, Delay )
-			
+
 			MinCraftEffect	: The minimum number of time the mobile will play the craft effect
 			MaxCraftEffect	: The maximum number of time the mobile will play the craft effect
 			Delay			: The delay between each craft effect
-			
+
 			Example: (3, 6, 1.7) would make the mobile do the PlayCraftEffect override
 			function between 3 and 6 time, with a 1.7 second delay each time.
-			
-			*/ 
+
+			*/
 		}
 
 		private static Type typeofAnvil = typeof( AnvilAttribute );
@@ -178,7 +178,7 @@ namespace Server.Engines.Craft
 					return 1044156; // You create an exceptional quality item and affix your maker's mark.
 				else if ( quality == 2 )
 					return 1044155; // You create an exceptional quality item.
-				else				
+				else
 					return 1044154; // You create the item.
 			}
 		}
@@ -188,7 +188,7 @@ namespace Server.Engines.Craft
 			/*
 			Synthax for a SIMPLE craft item
 			AddCraft( ObjectType, Group, MinSkill, MaxSkill, ResourceType, Amount, Message )
-			
+
 			ObjectType		: The type of the object you want to add to the build list.
 			Group			: The group in wich the object will be showed in the craft menu.
 			MinSkill		: The minimum of skill value
@@ -196,10 +196,10 @@ namespace Server.Engines.Craft
 			ResourceType	: The type of the resource the mobile need to create the item
 			Amount			: The amount of the ResourceType it need to create the item
 			Message			: String or Int for Localized.  The message that will be sent to the mobile, if the specified resource is missing.
-			
+
 			Synthax for a COMPLEXE craft item.  A complexe item is an item that need either more than
 			only one skill, or more than only one resource.
-			
+
 			Coming soon....
 			*/
 
@@ -245,7 +245,7 @@ namespace Server.Engines.Craft
 
 				index = AddCraft( typeof( PlateHaidate ), 1011078, 1030200, 65.0, 115.0, typeof( IronIngot ), 1044036, 20, 1044037 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 			}
 			#endregion
 
@@ -266,16 +266,16 @@ namespace Server.Engines.Craft
 
 				index = AddCraft( typeof( HeavyPlateJingasa ), 1011079, 1030178, 45.0, 95.0, typeof( IronIngot ), 1044036, 20, 1044037 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 				index = AddCraft( typeof( LightPlateJingasa ), 1011079, 1030188, 45.0, 95.0, typeof( IronIngot ), 1044036, 20, 1044037 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 				index = AddCraft( typeof( SmallPlateJingasa ), 1011079, 1030191, 45.0, 95.0, typeof( IronIngot ), 1044036, 20, 1044037 );
 				SetNeededExpansion( index, Expansion.SE );
 
 				index = AddCraft( typeof( DecorativePlateKabuto ), 1011079, 1030179, 90.0, 140.0, typeof( IronIngot ), 1044036, 25, 1044037 );
 				SetNeededExpansion( index, Expansion.SE );
-				
+
 				index = AddCraft( typeof( PlateBattleKabuto ), 1011079, 1030192, 90.0, 140.0, typeof( IronIngot ), 1044036, 25, 1044037 );
 				SetNeededExpansion( index, Expansion.SE );
 
@@ -589,7 +589,7 @@ namespace Server.Engines.Craft
 				AddRes( index, typeof( Turquoise ), 1032691, 1, 1044240 );
 				AddRecipe( index, 36 );
 				SetNeededExpansion( index, Expansion.ML );
-			 
+
 			}
 			#endregion
 
@@ -693,7 +693,7 @@ namespace Server.Engines.Craft
 			index = AddCraft( typeof( DragonChest ), 1053114, 1029793, 85.0, 135.0, typeof( RedScales ), 1060883, 36, 1060884 );
 			SetUseSubRes2( index, true );
 			#endregion
-			
+
 			// Set the overridable material
 			SetSubRes( typeof( IronIngot ), 1044022 );
 

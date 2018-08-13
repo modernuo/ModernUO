@@ -5,7 +5,7 @@ namespace Server.Items
 	[Flippable( 0xC24, 0xC25 )]
 	public class BrokenChestOfDrawersComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076261; } } // Broken Chest of Drawers
+		public override int LabelNumber => 1076261; // Broken Chest of Drawers
 
 		public BrokenChestOfDrawersComponent() : base( 0xC24 )
 		{
@@ -32,10 +32,10 @@ namespace Server.Items
 
 	public class BrokenChestOfDrawersAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new BrokenChestOfDrawersDeed(); } }
+		public override BaseAddonDeed Deed => new BrokenChestOfDrawersDeed();
 
 		[Constructible]
-		public BrokenChestOfDrawersAddon() : base()
+		public BrokenChestOfDrawersAddon()
 		{
 			AddComponent( new BrokenChestOfDrawersComponent(), 0, 0, 0 );
 		}
@@ -61,11 +61,11 @@ namespace Server.Items
 
 	public class BrokenChestOfDrawersDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new BrokenChestOfDrawersAddon(); } }
-		public override int LabelNumber { get { return 1076261; } } // Broken Chest of Drawers
+		public override BaseAddon Addon => new BrokenChestOfDrawersAddon();
+		public override int LabelNumber => 1076261; // Broken Chest of Drawers
 
 		[Constructible]
-		public BrokenChestOfDrawersDeed() : base()
+		public BrokenChestOfDrawersDeed()
 		{
 			LootType = LootType.Blessed;
 		}

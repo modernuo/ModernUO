@@ -93,7 +93,7 @@ namespace Server
 			}
 
 			BaseQuiver quiver = null;
-			
+
 			if ( archer && from != null )
 				quiver = from.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
 
@@ -1023,7 +1023,7 @@ namespace Server
 		private static int[] m_Empty = new int[0];
 
 		public bool IsEmpty { get { return (m_Names == 0); } }
-		public Item Owner { get { return m_Owner; } }
+		public Item Owner  => m_Owner;
 
 		public BaseAttributes( Item owner )
 		{

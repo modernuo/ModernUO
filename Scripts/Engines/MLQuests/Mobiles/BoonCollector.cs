@@ -268,10 +268,10 @@ namespace Server.Engines.MLQuests.Mobiles
 			typeof( TheJoysOfLife )
 		};
 
-		public override TextDefinition[] Offer { get { return m_Offer; } }
-		public override TextDefinition[] Incomplete { get { return m_Incomplete; } }
-		public override TextDefinition[] Complete { get { return m_Complete; } }
-		public override Type[] Needed { get { return m_Needed; } }
+		public override TextDefinition[] Offer => m_Offer;
+		public override TextDefinition[] Incomplete => m_Incomplete;
+		public override TextDefinition[] Complete => m_Complete;
+		public override Type[] Needed => m_Needed;
 
 		public override string DefaultName => "Darius";
 
@@ -365,10 +365,10 @@ namespace Server.Engines.MLQuests.Mobiles
 			typeof( AllSeasonAdventurer )
 		};
 
-		public override TextDefinition[] Offer { get { return m_Offer; } }
-		public override TextDefinition[] Incomplete { get { return m_Incomplete; } }
-		public override TextDefinition[] Complete { get { return m_Complete; } }
-		public override Type[] Needed { get { return m_Needed; } }
+		public override TextDefinition[] Offer => m_Offer;
+		public override TextDefinition[] Incomplete => m_Incomplete;
+		public override TextDefinition[] Complete => m_Complete;
+		public override Type[] Needed => m_Needed;
 
 		public override string DefaultName => "Nedrick";
 

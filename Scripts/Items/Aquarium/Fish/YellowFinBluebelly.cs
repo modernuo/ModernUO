@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class YellowFinBluebelly : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073831; } } // A Yellow Fin Bluebelly  
-		
+	{
+		public override int LabelNumber => 1073831; // A Yellow Fin Bluebelly
+
 		[Constructible]
 		public YellowFinBluebelly() : base( 0x3B07 )
 		{
 		}
 
 		public YellowFinBluebelly( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

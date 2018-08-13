@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class TribalBerry : Item
 	{
-		public override int LabelNumber{ get{ return 1040001; } } // tribal berry
+		public override int LabelNumber => 1040001; // tribal berry
 
 		[Constructible]
 		public TribalBerry() : this( 1 )
@@ -24,7 +24,7 @@ namespace Server.Items
 		{
 		}
 
-		
+
 
 		public override void Serialize( GenericWriter writer )
 		{

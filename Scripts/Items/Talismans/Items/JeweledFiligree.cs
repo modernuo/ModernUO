@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class JeweledFiligree : Item
 	{
-		public override int LabelNumber{ get{ return 1072894; } } // jeweled filigree
+		public override int LabelNumber => 1072894; // jeweled filigree
 
 		[Constructible]
 		public JeweledFiligree() : base( 0x2F5E )

@@ -15,11 +15,11 @@ namespace Server.Mobiles
 			// Do nothing
 		}
 
-		public override Mobile ConstantFocus{ get{ return m_Target; } }
+		public override Mobile ConstantFocus => m_Target;
 		public override bool NoHouseRestrictions => true;
 
-		public override double DispelDifficulty{ get{ return 80.0; } }
-		public override double DispelFocus{ get{ return 20.0; } }
+		public override double DispelDifficulty => 80.0;
+		public override double DispelFocus => 20.0;
 
 		public override string DefaultName => "a revenant";
 

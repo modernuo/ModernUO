@@ -36,8 +36,7 @@ namespace Server.Commands.Generic
 				}
 				else
 				{
-					BaseCommand command = null;
-					Commands.TryGetValue( e.GetString( 1 ), out command );
+					Commands.TryGetValue( e.GetString( 1 ), out BaseCommand command );
 
 					if ( command == null )
 					{

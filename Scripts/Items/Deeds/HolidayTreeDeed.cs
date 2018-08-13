@@ -10,7 +10,7 @@ namespace Server.Items
 {
 	public class HolidayTreeDeed : Item
 	{
-		public override int LabelNumber{ get{ return 1041116; } } // a deed for a holiday tree
+		public override int LabelNumber => 1041116; // a deed for a holiday tree
 
 		[Constructible]
 		public HolidayTreeDeed() : base( 0x14F0 )
@@ -108,7 +108,7 @@ namespace Server.Items
 			this.Delete();
 			HolidayTree tree = new HolidayTree( from, type, loc );
 			BaseHouse house = BaseHouse.FindHouseAt( tree );
-			if ( house != null ) 
+			if ( house != null )
 				house.Addons.Add( tree );
 		}
 

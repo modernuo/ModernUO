@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class AnOldRing : GoldRing
 	{
-		public override int LabelNumber{ get{ return 1075524; } } // an old ring
+		public override int LabelNumber => 1075524; // an old ring
 
 		[Constructible]
-		public AnOldRing() : base()
+		public AnOldRing()
 		{
 			Hue = 0x222;
 		}

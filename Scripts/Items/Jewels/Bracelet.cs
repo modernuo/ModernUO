@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public abstract class BaseBracelet : BaseJewel
 	{
-		public override int BaseGemTypeNumber{ get{ return 1044221; } } // star sapphire bracelet
+		public override int BaseGemTypeNumber => 1044221; // star sapphire bracelet
 
 		public BaseBracelet( int itemID ) : base( itemID, Layer.Bracelet )
 		{

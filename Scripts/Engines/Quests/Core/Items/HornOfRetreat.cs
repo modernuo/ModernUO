@@ -34,7 +34,7 @@ namespace Server.Engines.Quests
 			set{ m_Charges = value; InvalidateProperties(); }
 		}
 
-		public override int LabelNumber{ get{ return 1049117; } } // Horn of Retreat
+		public override int LabelNumber => 1049117; // Horn of Retreat
 
 		[Constructible]
 		public HornOfRetreat() : base( 0xFC4 )
@@ -146,7 +146,7 @@ namespace Server.Engines.Quests
 
 	public class HornOfRetreatMoongate : Moongate
 	{
-		public override int LabelNumber{ get{ return 1049114; } } // Sanctuary Gate
+		public override int LabelNumber => 1049114; // Sanctuary Gate
 
 		private Mobile m_Caster;
 

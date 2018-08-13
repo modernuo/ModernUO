@@ -64,9 +64,9 @@ namespace Server.Mobiles
 				FightMode = FightMode.Closest;
 		}
 
-		public override int Meat{ get{ return 8; } }
-		public override int Hides{ get{ return 12; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
+		public override int Meat => 8;
+		public override int Hides => 12;
+		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
 		public override void OnDoubleClick( Mobile from )
 		{

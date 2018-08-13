@@ -58,11 +58,11 @@ namespace Server.Items
 			get { return this.Deed; }
 		}
 
-		public virtual bool RetainDeedHue { get { return false; } }
-		public virtual bool NeedsWall { get { return false; } }
-		public virtual bool ShareHue { get { return true; } }
-		public virtual Point3D WallPosition { get { return Point3D.Zero; } }
-		public virtual BaseAddonContainerDeed Deed { get { return null; } }
+		public virtual bool RetainDeedHue  => false;
+		public virtual bool NeedsWall  => false;
+		public virtual bool ShareHue  => true;
+		public virtual Point3D WallPosition  => Point3D.Zero;
+		public virtual BaseAddonContainerDeed Deed  => null;
 
 		private List<AddonContainerComponent> m_Components;
 

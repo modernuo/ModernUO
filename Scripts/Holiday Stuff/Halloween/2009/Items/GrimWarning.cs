@@ -3,14 +3,14 @@ using Server;
 
 namespace Server.Items
 {
-	/* 
-	first seen halloween 2009.  subsequently in 2010, 
+	/*
+	first seen halloween 2009.  subsequently in 2010,
 	2011 and 2012. GM Beggar-only Semi-Rare Treats
 	*/
 
 	public class GrimWarning  : Item
 	{
-		public override double DefaultWeight { get { return 1; } }
+		public override double DefaultWeight => 1;
 
 		[Constructible]
 		public GrimWarning ()

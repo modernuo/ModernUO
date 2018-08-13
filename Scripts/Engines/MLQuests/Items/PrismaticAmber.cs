@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class PrismaticAmber : Amber
 	{
-		public override int LabelNumber{ get{ return 1075299; } } // Prismatic Amber
+		public override int LabelNumber => 1075299; // Prismatic Amber
 
 		[Constructible]
-		public PrismaticAmber() : base()
+		public PrismaticAmber()
 		{
 		}
 

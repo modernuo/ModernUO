@@ -9,14 +9,14 @@ namespace Server.Spells.Necromancy
 		public abstract double RequiredSkill{ get; }
 		public abstract int RequiredMana{ get; }
 
-		public override SkillName CastSkill{ get{ return SkillName.Necromancy; } }
-		public override SkillName DamageSkill{ get{ return SkillName.SpiritSpeak; } }
+		public override SkillName CastSkill => SkillName.Necromancy;
+		public override SkillName DamageSkill => SkillName.SpiritSpeak;
 
-		//public override int CastDelayBase{ get{ return base.CastDelayBase; } } // Reference, 3
+		//public override int CastDelayBase => base.CastDelayBase; // Reference, 3
 
 		public override bool ClearHandsOnCast => false;
 
-		public override double CastDelayFastScalar{ get{ return (Core.SE? base.CastDelayFastScalar : 0); } } // Necromancer spells are not affected by fast cast items, though they are by fast cast recovery
+		public override double CastDelayFastScalar => (Core.SE? base.CastDelayFastScalar : 0); // Necromancer spells are not affected by fast cast items, though they are by fast cast recovery
 
 		public NecromancerSpell( Mobile caster, Item scroll, SpellInfo info ) : base( caster, scroll, info )
 		{

@@ -25,7 +25,7 @@ namespace Server.Items
 			private int m_Eaten;
 			private Mobile m_Eater;
 
-			public Mobile Eater { get { return m_Eater; } }
+			public Mobile Eater  => m_Eater;
 			public int Eaten { get { return m_Eaten; } set { m_Eaten = value; } }
 
 			public CandyCaneTimer( Mobile eater )
@@ -71,9 +71,7 @@ namespace Server.Items
 
 		private static CandyCaneTimer EnsureTimer( Mobile from )
 		{
-			CandyCaneTimer timer;
-
-			if ( !m_ToothAches.TryGetValue( from, out timer ) )
+			if (!m_ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
 				m_ToothAches[from] = timer = new CandyCaneTimer( from );
 
 			return timer;
@@ -81,9 +79,7 @@ namespace Server.Items
 
 		public static int GetToothAche( Mobile from )
 		{
-			CandyCaneTimer timer;
-
-			if ( m_ToothAches.TryGetValue( from, out timer ) )
+			if (m_ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
 				return timer.Eaten;
 
 			return 0;
@@ -141,9 +137,9 @@ namespace Server.Items
 			1077396, // Noooo!
 			1077397, // Please don't eat me... *whimper*
 			1077405, // Not the face!
-			1077406, // Ahhhhhh! My foot’s gone!
+			1077406, // Ahhhhhh! My footï¿½s gone!
 			1077407, // Please. No! I have gingerkids!
-			1077408, // No, no! I’m really made of poison. Really.
+			1077408, // No, no! Iï¿½m really made of poison. Really.
 			1077409 // Run, run as fast as you can! You can't catch me! I'm the gingerbread man!
 		};
 

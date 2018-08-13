@@ -7,25 +7,25 @@ namespace Server.Items
 	[FlippableAttribute( 0x13FF, 0x13FE )]
 	public class Katana : BaseSword
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ArmorIgnore;
 
-		public override int AosStrengthReq{ get{ return 25; } }
-		public override int AosMinDamage{ get{ return 11; } }
-		public override int AosMaxDamage{ get{ return 13; } }
-		public override int AosSpeed{ get{ return 46; } }
-		public override float MlSpeed{ get{ return 2.50f; } }
+		public override int AosStrengthReq => 25;
+		public override int AosMinDamage => 11;
+		public override int AosMaxDamage => 13;
+		public override int AosSpeed => 46;
+		public override float MlSpeed => 2.50f;
 
-		public override int OldStrengthReq{ get{ return 10; } }
-		public override int OldMinDamage{ get{ return 5; } }
-		public override int OldMaxDamage{ get{ return 26; } }
-		public override int OldSpeed{ get{ return 58; } }
+		public override int OldStrengthReq => 10;
+		public override int OldMinDamage => 5;
+		public override int OldMaxDamage => 26;
+		public override int OldSpeed => 58;
 
-		public override int DefHitSound{ get{ return 0x23B; } }
-		public override int DefMissSound{ get{ return 0x23A; } }
+		public override int DefHitSound => 0x23B;
+		public override int DefMissSound => 0x23A;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 90; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 90;
 
 		[Constructible]
 		public Katana() : base( 0x13FF )

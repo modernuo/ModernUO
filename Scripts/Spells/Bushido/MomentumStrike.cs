@@ -13,10 +13,10 @@ namespace Server.Spells.Bushido
 		{
 		}
 
-		public override int BaseMana{ get{ return 10; } }
-		public override double RequiredSkill{ get{ return 70.0; } }
+		public override int BaseMana => 10;
+		public override double RequiredSkill => 70.0;
 
-		public override TextDefinition AbilityMessage{ get{ return new TextDefinition( 1070757 ); } } // You prepare to strike two enemies with one blow.
+		public override TextDefinition AbilityMessage => new TextDefinition( 1070757 ); // You prepare to strike two enemies with one blow.
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

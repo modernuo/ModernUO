@@ -12,7 +12,7 @@ namespace Server.Mobiles
 		private Item m_InternalItem;
 		private DateTime m_NextMountAbility;
 
-		public virtual TimeSpan MountAbilityDelay { get { return TimeSpan.Zero; } }
+		public virtual TimeSpan MountAbilityDelay  => TimeSpan.Zero;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime NextMountAbility
@@ -317,7 +317,7 @@ namespace Server.Mobiles
 	{
 		private BaseMount m_Mount;
 
-		public override double DefaultWeight { get { return 0; } }
+		public override double DefaultWeight => 0;
 
 		public MountItem( BaseMount mount, int itemID ) : base( itemID )
 		{

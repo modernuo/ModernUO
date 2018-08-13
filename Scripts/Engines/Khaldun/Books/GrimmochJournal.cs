@@ -65,7 +65,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal1() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -172,7 +172,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal2() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -276,7 +276,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal3() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -375,7 +375,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal6() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -462,7 +462,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal7() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -532,7 +532,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal11() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -619,7 +619,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal14() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -711,7 +711,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal17() : base( Utility.Random( 0xFF1, 2 ), false )
@@ -751,7 +751,7 @@ namespace Server.Items
 				)
 			);
 
-		public override BookContent DefaultContent{ get{ return Content; } }
+		public override BookContent DefaultContent => Content;
 
 		[Constructible]
 		public GrimmochJournal23() : base( Utility.Random( 0xFF1, 2 ), false )

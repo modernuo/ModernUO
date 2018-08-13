@@ -51,8 +51,8 @@ namespace Server.Mobiles
 		}
 
 		public override bool HasBreath => true; // fire breath enabled
-		public override int TreasureMapLevel{ get{ return 1; } }
-		public override int Meat{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
+		public override int Meat => 1;
 		public override bool CanFly => true;
 
 		public FireGargoyle( Serial serial ) : base( serial )

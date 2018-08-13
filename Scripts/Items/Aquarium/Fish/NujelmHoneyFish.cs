@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class NujelmHoneyFish : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073830; } } // A Nujel'm Honey Fish
-		
+	{
+		public override int LabelNumber => 1073830; // A Nujel'm Honey Fish
+
 		[Constructible]
 		public NujelmHoneyFish() : base( 0x3B06 )
 		{
 		}
 
 		public NujelmHoneyFish( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

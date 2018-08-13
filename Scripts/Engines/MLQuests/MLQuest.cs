@@ -122,8 +122,8 @@ namespace Server.Engines.MLQuests
 			get { return ( m_OneTimeOnly || m_HasRestartDelay ); }
 		}
 
-		public virtual bool IsChainTriggered { get { return false; } }
-		public virtual Type NextQuest { get { return null; } }
+		public virtual bool IsChainTriggered  => false;
+		public virtual Type NextQuest  => null;
 
 		public TextDefinition Title { get { return m_Title; } set { m_Title = value; } }
 		public TextDefinition Description { get { return m_Description; } set { m_Description = value; } }
@@ -336,7 +336,7 @@ namespace Server.Engines.MLQuests
 			quest.m_Deserialized = true;
 		}
 
-		public virtual int Version { get { return 0; } }
+		public virtual int Version  => 0;
 
 		public virtual void Refresh( int oldVersion )
 		{

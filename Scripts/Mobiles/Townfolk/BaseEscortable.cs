@@ -79,7 +79,7 @@ namespace Server.Mobiles
 			return result;
 		}
 
-		public override bool CanShout { get { return ( !Controlled && !IsBeingDeleted ); } }
+		public override bool CanShout => ( !Controlled && !IsBeingDeleted );
 
 		public override void Shout( PlayerMobile pm )
 		{
@@ -105,7 +105,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool Commandable => false; // Our master cannot boss us around!
-		public override bool DeleteCorpseOnDeath { get { return m_DeleteCorpse; } }
+		public override bool DeleteCorpseOnDeath => m_DeleteCorpse;
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public string Destination

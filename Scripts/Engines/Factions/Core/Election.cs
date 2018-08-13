@@ -24,7 +24,7 @@ namespace Server.Factions
 
 		public Faction Faction{ get{ return m_Faction; } }
 
-		public List<Candidate> Candidates { get { return m_Candidates; } }
+		public List<Candidate> Candidates  => m_Candidates;
 
 		public ElectionState State{ get{ return m_State; } set{ m_State = value; m_LastStateTime = DateTime.UtcNow; } }
 		public DateTime LastStateTime{ get{ return m_LastStateTime; } }
@@ -483,7 +483,7 @@ namespace Server.Factions
 		private List<Voter> m_Voters;
 
 		public Mobile Mobile{ get{ return m_Mobile; } }
-		public List<Voter> Voters { get { return m_Voters; } }
+		public List<Voter> Voters  => m_Voters;
 
 		public int Votes{ get{ return m_Voters.Count; } }
 

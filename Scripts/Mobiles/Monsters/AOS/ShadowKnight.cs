@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.ConcussionBlow : WeaponAbility.CrushingBlow;
 
-		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+		public override bool IgnoreYoungProtection => Core.ML;
 
 		[Constructible]
 		public ShadowKnight() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -169,7 +169,7 @@ namespace Server.Mobiles
 		public override bool AreaPeaceImmune => Core.SE;
 		public override Poison PoisonImmune => Poison.Lethal;
 
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public ShadowKnight( Serial serial ) : base( serial )
 		{

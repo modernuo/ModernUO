@@ -166,8 +166,8 @@ namespace Server.Items
 			private MarkContainer m_Container;
 			private DateTime m_RelockTime;
 
-			public MarkContainer Container { get { return m_Container; } }
-			public DateTime RelockTime { get { return m_RelockTime; } }
+			public MarkContainer Container  => m_Container;
+			public DateTime RelockTime  => m_RelockTime;
 
 			public InternalTimer( MarkContainer container ) : this( container, TimeSpan.FromMinutes( 5.0 ) )
 			{

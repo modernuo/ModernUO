@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a corporeal brume corpse" )]
 	public class CorporealBrume : BaseCreature
 	{
-		public override string DefaultName { get { return "a corporeal brume"; } }
+		public override string DefaultName => "a corporeal brume";
 
 		[Constructible]
 		public CorporealBrume()
@@ -48,13 +48,13 @@ namespace Server.Mobiles
 		}
 
 		// TODO: Verify area attack specifics
-		public override bool HasAura { get { return ( Combatant != null ); } }
-		public override TimeSpan AuraInterval { get { return TimeSpan.FromSeconds( 20 ); } }
-		public override int AuraRange { get { return 10; } }
+		public override bool HasAura => ( Combatant != null );
+		public override TimeSpan AuraInterval => TimeSpan.FromSeconds( 20 );
+		public override int AuraRange => 10;
 
-		public override int AuraBaseDamage { get { return Utility.RandomMinMax( 25, 35 ); } }
-		public override int AuraFireDamage { get { return 0; } }
-		public override int AuraColdDamage { get { return 100; } }
+		public override int AuraBaseDamage => Utility.RandomMinMax( 25, 35 );
+		public override int AuraFireDamage => 0;
+		public override int AuraColdDamage => 100;
 
 		public override void AuraEffect( Mobile m )
 		{

@@ -4,11 +4,11 @@ using Server;
 namespace Server.Items
 {
 	public class QuiverOfLightning : ElvenQuiver
-	{		
-		public override int LabelNumber{ get{ return 1073112; } } // Quiver of Lightning
-		
+	{
+		public override int LabelNumber => 1073112; // Quiver of Lightning
+
 		[Constructible]
-		public QuiverOfLightning() : base()
+		public QuiverOfLightning()
 		{
 			Hue = 0x4F9;
 		}

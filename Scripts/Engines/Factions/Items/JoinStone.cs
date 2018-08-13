@@ -22,7 +22,7 @@ namespace Server.Factions
 			}
 		}
 
-		public override string DefaultName { get { return "faction signup stone"; } }
+		public override string DefaultName => "faction signup stone";
 
 		[Constructible]
 		public JoinStone() : this( null )

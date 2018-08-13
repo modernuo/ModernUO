@@ -20,7 +20,7 @@ namespace Server.Items
 			base.ScissorHelper( from, new RawFishSteak(), Math.Max( 16, (int)Weight ) / 4 , false );
 		}
 
-		public override int LabelNumber{ get{ return 1041112; } } // a big fish
+		public override int LabelNumber => 1041112; // a big fish
 
 		[Constructible]
 		public BigFish() : base( 0x09CC )

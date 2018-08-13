@@ -54,9 +54,7 @@ namespace Server.Mobiles
 
 			if ( Utility.RandomDouble() < 0.1 )
 			{
-				ExpireTimer timer;
-
-				if ( m_Table.TryGetValue( defender, out timer ) )
+				if (m_Table.TryGetValue( defender, out ExpireTimer timer ))
 					timer.DoExpire();
 
 				defender.FixedParticles( 0x3709, 10, 30, 5052, EffectLayer.LeftFoot );

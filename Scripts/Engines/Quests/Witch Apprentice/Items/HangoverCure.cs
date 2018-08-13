@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Hag
 	{
 		private int m_Uses;
 
-		public override int LabelNumber{ get{ return 1055060; } } // Grizelda's Extra Strength Hangover Cure
+		public override int LabelNumber => 1055060; // Grizelda's Extra Strength Hangover Cure
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Uses

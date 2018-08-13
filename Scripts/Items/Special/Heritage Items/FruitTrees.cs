@@ -24,7 +24,7 @@ namespace Server.Items
 			}
 		}
 
-		public BaseFruitTreeAddon() : base()
+		public BaseFruitTreeAddon()
 		{
 			Timer.DelayCall( TimeSpan.FromMinutes( 5 ), new TimerCallback( Respawn ) );
 		}
@@ -47,7 +47,7 @@ namespace Server.Items
 					if ( !from.PlaceInBackpack( fruit ) )
 					{
 						fruit.Delete();
-						from.SendLocalizedMessage( 501015 ); // There is no room in your backpack for the fruit.					
+						from.SendLocalizedMessage( 501015 ); // There is no room in your backpack for the fruit.
 					}
 					else
 					{
@@ -93,11 +93,11 @@ namespace Server.Items
 
 	public class AppleTreeAddon : BaseFruitTreeAddon
 	{
-		public override BaseAddonDeed Deed { get { return new AppleTreeDeed(); } }
-		public override Item Fruit { get { return new Apple(); } }
+		public override BaseAddonDeed Deed => new AppleTreeDeed();
+		public override Item Fruit => new Apple();
 
 		[Constructible]
-		public AppleTreeAddon() : base()
+		public AppleTreeAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD98, 1076269 ), 0, 0, 0 );
 			AddComponent( new LocalizedAddonComponent( 0x3124, 1076269 ), 0, 0, 0 );
@@ -124,11 +124,11 @@ namespace Server.Items
 
 	public class AppleTreeDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new AppleTreeAddon(); } }
-		public override int LabelNumber { get { return 1076269; } } // Apple Tree
+		public override BaseAddon Addon => new AppleTreeAddon();
+		public override int LabelNumber => 1076269; // Apple Tree
 
 		[Constructible]
-		public AppleTreeDeed() : base()
+		public AppleTreeDeed()
 		{
 			LootType = LootType.Blessed;
 		}
@@ -154,11 +154,11 @@ namespace Server.Items
 
 	public class PeachTreeAddon : BaseFruitTreeAddon
 	{
-		public override BaseAddonDeed Deed { get { return new PeachTreeDeed(); } }
-		public override Item Fruit { get { return new Peach(); } }
+		public override BaseAddonDeed Deed => new PeachTreeDeed();
+		public override Item Fruit => new Peach();
 
 		[Constructible]
-		public PeachTreeAddon() : base()
+		public PeachTreeAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD9C, 1076270 ), 0, 0, 0 );
 			AddComponent( new LocalizedAddonComponent( 0x3123, 1076270 ), 0, 0, 0 );
@@ -185,11 +185,11 @@ namespace Server.Items
 
 	public class PeachTreeDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new PeachTreeAddon(); } }
-		public override int LabelNumber { get { return 1076270; } } // Peach Tree
+		public override BaseAddon Addon => new PeachTreeAddon();
+		public override int LabelNumber => 1076270; // Peach Tree
 
 		[Constructible]
-		public PeachTreeDeed() : base()
+		public PeachTreeDeed()
 		{
 			LootType = LootType.Blessed;
 		}

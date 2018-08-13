@@ -2,11 +2,11 @@
 {
 	class WaterBarrel : BaseWaterContainer
 	{
-		public override int LabelNumber { get { return 1025453; } }  /* water barrel */
+		public override int LabelNumber => 1025453;  /* water barrel */
 
-		public override int voidItem_ID { get { return vItemID; } }
-		public override int fullItem_ID { get { return fItemID; } }
-		public override int MaxQuantity { get { return 100; } }
+		public override int voidItem_ID => vItemID;
+		public override int fullItem_ID => fItemID;
+		public override int MaxQuantity => 100;
 
 		private static int vItemID = 0xe77;
 		private static int fItemID = 0x154d;

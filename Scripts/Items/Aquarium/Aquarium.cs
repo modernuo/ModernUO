@@ -132,7 +132,7 @@ namespace Server.Items
 			}
 		}
 
-		public override double DefaultWeight{ get{ return 10.0; } }
+		public override double DefaultWeight => 10.0;
 
 		public Aquarium( int itemID ) : base( itemID )
 		{
@@ -342,9 +342,9 @@ namespace Server.Items
 			this.LabelTo( from, 1074251, "#" + WaterNumber() ); // Water state: ~1_STATE~
 
 			if ( m_Food.State == (int) FoodState.Dead )
-				this.LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Improve) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~ 				
+				this.LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Improve) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
 			else if ( m_Food.State == (int) FoodState.Overfed )
-				this.LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Maintain) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~ 
+				this.LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Maintain) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
 			else
 				this.LabelTo( from, 1074253, String.Format("{0}\t{1}\t{2}", m_Food.Added, m_Food.Maintain, m_Food.Improve) ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
 
@@ -1152,11 +1152,11 @@ namespace Server.Items
 
 	public class AquariumEastDeed : BaseAddonContainerDeed
 	{
-		public override BaseAddonContainer Addon{ get{ return new Aquarium( 0x3062 ); } }
-		public override int LabelNumber{ get{ return 1074501; } } // Large Aquarium (east)
+		public override BaseAddonContainer Addon => new Aquarium( 0x3062 );
+		public override int LabelNumber => 1074501; // Large Aquarium (east)
 
 		[Constructible]
-		public AquariumEastDeed() : base()
+		public AquariumEastDeed()
 		{
 		}
 
@@ -1181,11 +1181,11 @@ namespace Server.Items
 
 	public class AquariumNorthDeed : BaseAddonContainerDeed
 	{
-		public override BaseAddonContainer Addon{ get{ return new Aquarium( 0x3060 ); } }
-		public override int LabelNumber{ get{ return 1074497; } } // Large Aquarium (north)
+		public override BaseAddonContainer Addon => new Aquarium( 0x3060 );
+		public override int LabelNumber => 1074497; // Large Aquarium (north)
 
 		[Constructible]
-		public AquariumNorthDeed() : base()
+		public AquariumNorthDeed()
 		{
 		}
 

@@ -52,8 +52,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int Meat => 1;
+		public override int TreasureMapLevel => 5;
 
 		public void DrainLife()
 		{

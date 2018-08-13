@@ -34,8 +34,8 @@ namespace Server.Items
 	[TypeAlias( "Server.Items.BottleAle", "Server.Items.BottleLiquor", "Server.Items.BottleWine" )]
 	public class BeverageBottle : BaseBeverage
 	{
-		public override int BaseLabelNumber { get { return 1042959; } } // a bottle of Ale
-		public override int MaxQuantity { get { return 5; } }
+		public override int BaseLabelNumber => 1042959; // a bottle of Ale
+		public override int MaxQuantity => 5;
 		public override bool Fillable => false;
 
 		public override int ComputeItemID()
@@ -113,8 +113,8 @@ namespace Server.Items
 
 	public class Jug : BaseBeverage
 	{
-		public override int BaseLabelNumber { get { return 1042965; } } // a jug of Ale
-		public override int MaxQuantity { get { return 10; } }
+		public override int BaseLabelNumber => 1042965; // a jug of Ale
+		public override int MaxQuantity => 10;
 		public override bool Fillable => false;
 
 		public override int ComputeItemID()
@@ -154,8 +154,8 @@ namespace Server.Items
 
 	public class CeramicMug : BaseBeverage
 	{
-		public override int BaseLabelNumber { get { return 1042982; } } // a ceramic mug of Ale
-		public override int MaxQuantity { get { return 1; } }
+		public override int BaseLabelNumber => 1042982; // a ceramic mug of Ale
+		public override int MaxQuantity => 1;
 
 		public override int ComputeItemID()
 		{
@@ -202,8 +202,8 @@ namespace Server.Items
 
 	public class PewterMug : BaseBeverage
 	{
-		public override int BaseLabelNumber { get { return 1042994; } } // a pewter mug with Ale
-		public override int MaxQuantity { get { return 1; } }
+		public override int BaseLabelNumber => 1042994; // a pewter mug with Ale
+		public override int MaxQuantity => 1;
 
 		public override int ComputeItemID()
 		{
@@ -248,8 +248,8 @@ namespace Server.Items
 
 	public class Goblet : BaseBeverage
 	{
-		public override int BaseLabelNumber { get { return 1043000; } } // a goblet of Ale
-		public override int MaxQuantity { get { return 1; } }
+		public override int BaseLabelNumber => 1043000; // a goblet of Ale
+		public override int MaxQuantity => 1;
 
 		public override int ComputeItemID()
 		{
@@ -296,9 +296,9 @@ namespace Server.Items
 		 "Server.Items.GlassMilk", "Server.Items.GlassWine", "Server.Items.GlassWater" )]
 	public class GlassMug : BaseBeverage
 	{
-		public override int EmptyLabelNumber { get { return 1022456; } } // mug
-		public override int BaseLabelNumber { get { return 1042976; } } // a mug of Ale
-		public override int MaxQuantity { get { return 5; } }
+		public override int EmptyLabelNumber => 1022456; // mug
+		public override int BaseLabelNumber => 1042976; // a mug of Ale
+		public override int MaxQuantity => 5;
 
 		public override int ComputeItemID()
 		{
@@ -399,8 +399,8 @@ namespace Server.Items
 		"Server.Items.GlassPitcher" )]
 	public class Pitcher : BaseBeverage
 	{
-		public override int BaseLabelNumber { get { return 1048128; } } // a Pitcher of Ale
-		public override int MaxQuantity { get { return 5; } }
+		public override int BaseLabelNumber => 1048128; // a Pitcher of Ale
+		public override int MaxQuantity => 5;
 
 		public override int ComputeItemID()
 		{
@@ -566,11 +566,11 @@ namespace Server.Items
 		}
 
 		public virtual bool ShowQuantity { get { return ( MaxQuantity > 1 ); } }
-		public virtual bool Fillable { get { return true; } }
-		public virtual bool Pourable { get { return true; } }
+		public virtual bool Fillable  => true;
+		public virtual bool Pourable  => true;
 
-		public virtual int EmptyLabelNumber { get { return base.LabelNumber; } }
-		public virtual int BaseLabelNumber { get { return 0; } }
+		public virtual int EmptyLabelNumber  => base.LabelNumber;
+		public virtual int BaseLabelNumber  => 0;
 
 		public abstract int MaxQuantity { get; }
 

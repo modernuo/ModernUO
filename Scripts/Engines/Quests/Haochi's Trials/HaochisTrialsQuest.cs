@@ -47,7 +47,7 @@ namespace Server.Engines.Quests.Samurai
 				typeof( Samurai.SeventhTrialReturnObjective )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -78,10 +78,10 @@ namespace Server.Engines.Quests.Samurai
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
+		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
 		public override bool IsTutorial => true;
 
-		public override int Picture{ get{ return 0x15D7; } }
+		public override int Picture => 0x15D7;
 
 		public HaochisTrialsQuest( PlayerMobile from ) : base( from )
 		{

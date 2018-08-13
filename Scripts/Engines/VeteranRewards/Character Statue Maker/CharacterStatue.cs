@@ -100,7 +100,7 @@ namespace Server.Mobiles
 			set{ m_IsRewardItem = value; }
 		}
 
-		public CharacterStatue( Mobile from, StatueType type ) : base()
+		public CharacterStatue( Mobile from, StatueType type )
 		{
 			m_Type = type;
 			m_Pose = StatuePose.Ready;

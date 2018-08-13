@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TrueLeafblade : Leafblade
 	{
-		public override int LabelNumber{ get{ return 1073521; } } // true leafblade
+		public override int LabelNumber => 1073521; // true leafblade
 
 		[Constructible]
 		public TrueLeafblade()

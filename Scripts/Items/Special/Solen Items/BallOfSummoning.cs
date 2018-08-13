@@ -401,7 +401,7 @@ namespace Server.Items
 				return TimeSpan.Zero;
 			}
 
-			public override double CastDelayFastScalar { get { return 0; } }
+			public override double CastDelayFastScalar => 0;
 
 			public override TimeSpan CastDelayBase
 			{

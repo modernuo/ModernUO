@@ -38,7 +38,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				/* Go to the shrine inside of Uzeraan's Mansion, near the front doors and
 				 * <a href = "?ForceTopic109">tithe</a> at least 500 gold.<BR><BR>
-				 * 
+				 *
 				 * Return to Uzeraan when you are done.
 				 */
 				return 1060386;
@@ -103,7 +103,7 @@ namespace Server.Engines.Quests.Haven
 	{
 		private KillHordeMinionsStep m_Step;
 
-		public KillHordeMinionsStep Step { get { return m_Step; } }
+		public KillHordeMinionsStep Step  => m_Step;
 
 		public override object Message
 		{
@@ -114,7 +114,7 @@ namespace Server.Engines.Quests.Haven
 					case KillHordeMinionsStep.First:
 						/* Find the mountain pass beyond the house which lies at the
 						 * end of the runic road.<BR><BR>
-						 * 
+						 *
 						 * Assist the city Militia by slaying <I>Horde Minions</I>
 						 */
 						return 1049089;
@@ -267,7 +267,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				/* It's no use... The <I>Horde Minions</I> are too many.
 				 * They are appearing out of nowhere.<BR><BR>
-				 * 
+				 *
 				 * Return to Uzeraan and report your findings.
 				 */
 				return 1049091;
@@ -292,7 +292,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				/* Prepare for battle and step onto the teleporter,
 				 * located against the wall in the main hall of Uzeraan's mansion.<BR><BR>
-				 * 
+				 *
 				 * Find Schmendrick within the mines.
 				 */
 				return 1049120;
@@ -348,7 +348,7 @@ namespace Server.Engines.Quests.Haven
 			get
 			{
 				/* You have obtained the scroll of power!  Find your way out of the cave.<BR><BR>
-				 * 
+				 *
 				 * Hand the scroll to Uzeraan (drag and drop) once you arrive in his mansion.
 				 */
 				return 1049324;
@@ -373,7 +373,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				/* Find the Dryad in the woods of Haven and get a patch
 				 * of fertile dirt from her.<BR><BR>
-				 * 
+				 *
 				 * Use Uzeraan's teleporter to get there if necessary.
 				 */
 				return 1049358;
@@ -397,7 +397,7 @@ namespace Server.Engines.Quests.Haven
 			get
 			{
 				/* You have acquired the <I>Fertile Dirt</I>!<BR><BR>
-				 * 
+				 *
 				 * Return to the mansion (<a href = "?ForceTopic13">North-East</a>
 				 * of the Dryad's Grove) and hand it to Uzeraan.
 				 */
@@ -422,7 +422,7 @@ namespace Server.Engines.Quests.Haven
 			get
 			{
 				/* Bring back a vial of blood.<BR><BR>
-				 * 
+				 *
 				 * Follow the road leading north from the mansion and walk into the hut
 				 * to find the chest that contains the vial
 				 */
@@ -486,7 +486,7 @@ namespace Server.Engines.Quests.Haven
 			get
 			{
 				/* You have the vial of blood!<BR><BR>
-				 * 
+				 *
 				 * Return to Uzeraan's mansion and hand him the vial.
 				 */
 				return 1049332;
@@ -528,7 +528,7 @@ namespace Server.Engines.Quests.Haven
 				else
 				{
 					/* Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
-					 * 
+					 *
 					 * Slay the undead until you find a <I>Daemon Bone</I>.
 					 */
 					return 1049362;

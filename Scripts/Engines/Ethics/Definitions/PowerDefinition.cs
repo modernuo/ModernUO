@@ -12,11 +12,11 @@ namespace Server.Ethics
 		private TextDefinition m_Phrase;
 		private TextDefinition m_Description;
 
-		public int Power { get { return m_Power; } }
+		public int Power  => m_Power;
 
-		public TextDefinition Name { get { return m_Name; } }
-		public TextDefinition Phrase { get { return m_Phrase; } }
-		public TextDefinition Description { get { return m_Description; } }
+		public TextDefinition Name  => m_Name;
+		public TextDefinition Phrase  => m_Phrase;
+		public TextDefinition Description  => m_Description;
 
 		public PowerDefinition( int power, TextDefinition name, TextDefinition phrase, TextDefinition description )
 		{

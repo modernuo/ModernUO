@@ -34,9 +34,9 @@ namespace Server.Engines.Plants
 		private PlantHue m_PlantHue;
 		private Type m_ResourceType;
 
-		public PlantType PlantType { get { return m_PlantType; } }
-		public PlantHue PlantHue { get { return m_PlantHue; } }
-		public Type ResourceType { get { return m_ResourceType; } }
+		public PlantType PlantType  => m_PlantType;
+		public PlantHue PlantHue  => m_PlantHue;
+		public Type ResourceType  => m_ResourceType;
 
 		private PlantResourceInfo( PlantType plantType, PlantHue plantHue, Type resourceType )
 		{

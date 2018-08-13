@@ -15,7 +15,7 @@ namespace Server.Factions
 			set{ m_Charges = value; }
 		}
 
-		public override int LabelNumber{ get{ return 1041508; } } // a faction trap removal kit
+		public override int LabelNumber => 1041508; // a faction trap removal kit
 
 		[Constructible]
 		public FactionTrapRemovalKit() : base( 7867 )

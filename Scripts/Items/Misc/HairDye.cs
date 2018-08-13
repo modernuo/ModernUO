@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class HairDye : Item
 	{
-		public override int LabelNumber{ get{ return 1041060; } } // Hair Dye
+		public override int LabelNumber => 1041060; // Hair Dye
 
 		[Constructible]
 		public HairDye() : base( 0xEFF )
@@ -18,7 +18,7 @@ namespace Server.Items
 		public HairDye( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -43,7 +43,7 @@ namespace Server.Items
 			else
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 906, 1019045 ); // I can't reach that.
-			}	
+			}
 		}
 	}
 
@@ -147,7 +147,7 @@ namespace Server.Items
 			Mobile m = from.Mobile;
 			int[] switches = info.Switches;
 
-			if ( !m_HairDye.IsChildOf( m.Backpack ) ) 
+			if ( !m_HairDye.IsChildOf( m.Backpack ) )
 			{
 				m.SendLocalizedMessage( 1042010 ); //You must have the objectin your backpack to use it.
 				return;

@@ -21,8 +21,7 @@ namespace Server.Mobiles
 
 		public int GetSellPriceFor( Item item )
 		{
-			int price = 0;
-			m_Table.TryGetValue( item.GetType(), out price );
+			m_Table.TryGetValue( item.GetType(), out int price );
 
 			if ( item is BaseArmor ) {
 				BaseArmor armor = (BaseArmor)item;
@@ -112,7 +111,7 @@ namespace Server.Mobiles
 
 			return IsInList( item.GetType() );
 		}
-	 
+
 		public bool IsResellable( Item item )
 		{
 			if ( item.Nontransferable )

@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Ambitious
 			}
 		}
 
-		public override int MaxProgress{ get{ return 5; } }
+		public override int MaxProgress => 5;
 
 		public KillQueensObjective()
 		{

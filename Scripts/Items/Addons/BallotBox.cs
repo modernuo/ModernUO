@@ -13,7 +13,7 @@ namespace Server.Items
 	{
 		public static readonly int MaxTopicLines = 6;
 
-		public override int LabelNumber{ get{ return 1041006; } } // a ballot box
+		public override int LabelNumber => 1041006; // a ballot box
 
 		private string[] m_Topic;
 		private List<Mobile> m_Yes;
@@ -334,7 +334,7 @@ namespace Server.Items
 
 	public class BallotBoxAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new BallotBoxDeed(); } }
+		public override BaseAddonDeed Deed => new BallotBoxDeed();
 
 		public BallotBoxAddon()
 		{
@@ -362,9 +362,9 @@ namespace Server.Items
 
 	public class BallotBoxDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new BallotBoxAddon(); } }
+		public override BaseAddon Addon => new BallotBoxAddon();
 
-		public override int LabelNumber{ get{ return 1044327; } } // ballot box
+		public override int LabelNumber => 1044327; // ballot box
 
 		[Constructible]
 		public BallotBoxDeed()

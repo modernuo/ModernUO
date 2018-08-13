@@ -6,10 +6,10 @@ namespace Server.Items
 {
 	public class TalonBite : OrnateAxe
 	{
-		public override int LabelNumber{ get{ return 1075029; } } // Talon Bite
+		public override int LabelNumber => 1075029; // Talon Bite
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public TalonBite()

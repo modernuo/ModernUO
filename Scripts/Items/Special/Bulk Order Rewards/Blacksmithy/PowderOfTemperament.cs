@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		public override int LabelNumber{ get{ return 1049082; } } // powder of fortifying
+		public override int LabelNumber => 1049082; // powder of fortifying
 
 		[Constructible]
 		public PowderOfTemperament() : this( 10 )
@@ -37,7 +37,7 @@ namespace Server.Items
 		public PowderOfTemperament( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
@@ -45,7 +45,7 @@ namespace Server.Items
 			writer.Write( (int) 0 );
 			writer.Write( (int) m_UsesRemaining );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

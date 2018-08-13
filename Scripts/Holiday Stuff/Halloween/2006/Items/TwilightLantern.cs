@@ -6,11 +6,10 @@ namespace Server.Items
 
 	public class TwilightLantern : Lantern
 	{
-		public override string DefaultName { get { return "Twilight Lantern"; } }
+		public override string DefaultName => "Twilight Lantern";
 
 		[Constructible]
 		public TwilightLantern()
-			: base()
 		{
 			Hue = Utility.RandomBool() ? 244 : 997;
 		}

@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class MinotaurArtifact : Item
 	{
-		public override int LabelNumber{ get{ return 1074826; } } // Minotaur Artifact
-		public override double DefaultWeight{ get{ return 5.0; } }
+		public override int LabelNumber => 1074826; // Minotaur Artifact
+		public override double DefaultWeight => 5.0;
 
 		[Constructible]
 		public MinotaurArtifact() : base( Utility.RandomList( 0xB46, 0xB48, 0x9ED ) )

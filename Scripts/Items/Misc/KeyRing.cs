@@ -12,7 +12,7 @@ namespace Server.Items
 
 		private List<Key> m_Keys;
 
-		public List<Key> Keys { get { return m_Keys; } }
+		public List<Key> Keys  => m_Keys;
 
 		[Constructible]
 		public KeyRing() : base( 0x1011 )

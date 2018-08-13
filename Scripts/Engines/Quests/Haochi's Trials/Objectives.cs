@@ -65,7 +65,7 @@ namespace Server.Engines.Quests.Samurai
 		private int m_CursedSoulsKilled;
 		private int m_YoungRoninKilled;
 
-		public override int MaxProgress{ get{ return 3; } }
+		public override int MaxProgress => 3;
 
 		public override void OnKill( BaseCreature creature, Container corpse )
 		{
@@ -410,7 +410,7 @@ namespace Server.Engines.Quests.Samurai
 		{
 			get
 			{
-				// Retrieve Daimyo Haochi’s katana from the treasure room.
+				// Retrieve Daimyo Haochiï¿½s katana from the treasure room.
 				return 1063072;
 			}
 		}
@@ -514,7 +514,7 @@ namespace Server.Engines.Quests.Samurai
 			}
 		}
 
-		public override int MaxProgress{ get{ return 3; } }
+		public override int MaxProgress => 3;
 
 		public SeventhTrialIntroObjective()
 		{

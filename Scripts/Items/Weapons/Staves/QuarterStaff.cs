@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xE89, 0xE8a )]
 	public class QuarterStaff : BaseStaff
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ConcussionBlow; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
 
-		public override int AosStrengthReq{ get{ return 30; } }
-		public override int AosMinDamage{ get{ return 11; } }
-		public override int AosMaxDamage{ get{ return 14; } }
-		public override int AosSpeed{ get{ return 48; } }
-		public override float MlSpeed{ get{ return 2.25f; } }
+		public override int AosStrengthReq => 30;
+		public override int AosMinDamage => 11;
+		public override int AosMaxDamage => 14;
+		public override int AosSpeed => 48;
+		public override float MlSpeed => 2.25f;
 
-		public override int OldStrengthReq{ get{ return 30; } }
-		public override int OldMinDamage{ get{ return 8; } }
-		public override int OldMaxDamage{ get{ return 28; } }
-		public override int OldSpeed{ get{ return 48; } }
+		public override int OldStrengthReq => 30;
+		public override int OldMinDamage => 8;
+		public override int OldMaxDamage => 28;
+		public override int OldSpeed => 48;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 60; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 60;
 
 		[Constructible]
 		public QuarterStaff() : base( 0xE89 )

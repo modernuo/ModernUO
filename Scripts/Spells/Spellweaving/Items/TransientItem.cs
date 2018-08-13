@@ -36,7 +36,7 @@ namespace Server.Items
 			this.Delete();
 		}
 
-		public virtual TextDefinition InvalidTransferMessage { get { return null; } }
+		public virtual TextDefinition InvalidTransferMessage  => null;
 
 
 		public virtual void Expire( Mobile parent )

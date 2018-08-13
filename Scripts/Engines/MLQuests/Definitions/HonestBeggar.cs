@@ -14,7 +14,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class HonestBeggar : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( ReginasThanks ); } }
+		public override Type NextQuest => typeof( ReginasThanks );
 
 		public HonestBeggar()
 		{

@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xF43, 0xF44 )]
 	public class Hatchet : BaseAxe
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Disarm; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 13; } }
-		public override int AosMaxDamage{ get{ return 15; } }
-		public override int AosSpeed{ get{ return 41; } }
-		public override float MlSpeed{ get{ return 2.75f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 13;
+		public override int AosMaxDamage => 15;
+		public override int AosSpeed => 41;
+		public override float MlSpeed => 2.75f;
 
-		public override int OldStrengthReq{ get{ return 15; } }
-		public override int OldMinDamage{ get{ return 2; } }
-		public override int OldMaxDamage{ get{ return 17; } }
-		public override int OldSpeed{ get{ return 40; } }
+		public override int OldStrengthReq => 15;
+		public override int OldMinDamage => 2;
+		public override int OldMaxDamage => 17;
+		public override int OldSpeed => 40;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 80; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 80;
 
 		[Constructible]
 		public Hatchet() : base( 0xF43 )

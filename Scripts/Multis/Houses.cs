@@ -10,12 +10,12 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D(-3,-3,7,7 ), new Rectangle2D( -1, 4, 3, 1 ) };
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 2, 4, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 2, 4, 0 );
 
-		public override int DefaultPrice{ get{ return 43800; } }
+		public override int DefaultPrice => 43800;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.TwoStoryFoundations[0]; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[0];
 
 		public SmallOldHouse( Mobile owner, int id ) : base( id, owner, 425, 3 )
 		{
@@ -30,7 +30,7 @@ namespace Server.Multis
 		{
 		}
 
-		public override HouseDeed GetDeed() 
+		public override HouseDeed GetDeed()
 		{
 			switch ( ItemID )
 			{
@@ -38,8 +38,8 @@ namespace Server.Multis
 				case 0x66: return new FieldStoneHouseDeed();
 				case 0x68: return new SmallBrickHouseDeed();
 				case 0x6A: return new WoodHouseDeed();
-				case 0x6C: return new WoodPlasterHouseDeed(); 
-				case 0x6E: 
+				case 0x6C: return new WoodPlasterHouseDeed();
+				case 0x6E:
 				default: return new ThatchedRoofCottageDeed();
 			}
 		}
@@ -61,14 +61,14 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -7, -7, 14, 14 ), new Rectangle2D( -2, 7, 4, 1 ) };
 
-		public override int DefaultPrice{ get{ return 144500; } }
+		public override int DefaultPrice => 144500;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.ThreeStoryFoundations[20]; } }
-		public override int ConvertOffsetX{ get{ return -1; } }
-		public override int ConvertOffsetY{ get{ return -1; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.ThreeStoryFoundations[20];
+		public override int ConvertOffsetX => -1;
+		public override int ConvertOffsetY => -1;
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 4, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 4, 8, 0 );
 
 		public GuildHouse( Mobile owner ) : base( 0x74, owner, 1100, 8 )
 		{
@@ -105,10 +105,10 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -7, 0, 14, 7 ), new Rectangle2D( -7, -7, 9, 7 ), new Rectangle2D( -4, 7, 4, 1 ) };
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 2, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 2, 8, 0 );
 
-		public override int DefaultPrice{ get{ return 192400; } }
+		public override int DefaultPrice => 192400;
 
 		public TwoStoryHouse( Mobile owner, int id ) : base( id, owner, 1370, 10 )
 		{
@@ -126,8 +126,8 @@ namespace Server.Multis
 		{
 		}
 
-		public override HouseDeed GetDeed() 
-		{ 
+		public override HouseDeed GetDeed()
+		{
 			switch( ItemID )
 			{
 				case 0x76: return new TwoStoryWoodPlasterHouseDeed();
@@ -153,13 +153,13 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -7, -7, 16, 14 ), new Rectangle2D( -1, 7, 4, 2 ), new Rectangle2D( -11, 0, 4, 7 ), new Rectangle2D( 9, 0, 4, 7 ) };
 
-		public override int DefaultPrice{ get{ return 433200; } }
+		public override int DefaultPrice => 433200;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.ThreeStoryFoundations[37]; } }
-		public override int ConvertOffsetY{ get{ return -1; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.ThreeStoryFoundations[37];
+		public override int ConvertOffsetY => -1;
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 5, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 5, 8, 0 );
 
 		public Tower( Mobile owner ) : base( 0x7A, owner, 2119, 15 )
 		{
@@ -197,17 +197,17 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -11, -11, 7, 8 ), new Rectangle2D( -11, 5, 7, 8 ), new Rectangle2D( 6, -11, 7, 8 ), new Rectangle2D( 6, 5, 7, 8 ), new Rectangle2D( -9, -3, 5, 8 ), new Rectangle2D( 6, -3, 5, 8 ), new Rectangle2D( -4, -9, 10, 20 ), new Rectangle2D( -1, 11, 4, 1 ) };
 
-		public override int DefaultPrice{ get{ return 665200; } }
+		public override int DefaultPrice => 665200;
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 5, 13, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 5, 13, 0 );
 
 		public Keep( Mobile owner ) : base( 0x7C, owner, 2625, 18 )
 		{
 			uint keyValue = CreateKeys( owner );
 
 			AddSouthDoors( false, 0, 10, 6, keyValue );
-			
+
 			SetSign( 5, 12, 16 );
 		}
 
@@ -234,10 +234,10 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{  new Rectangle2D( -15, -15, 31, 31 ), new Rectangle2D( -1, 16, 4, 1 ) };
 
-		public override int DefaultPrice{ get{ return 1022800; } }
+		public override int DefaultPrice => 1022800;
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 5, 17, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 5, 17, 0 );
 
 		public Castle( Mobile owner ) : base( 0x7E, owner, 4076, 28 )
 		{
@@ -275,20 +275,20 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -7, -7, 15, 14 ), new Rectangle2D( -5, 7, 4, 1 ) };
 
-		public override int DefaultPrice{ get{ return 152800; } }
+		public override int DefaultPrice => 152800;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.ThreeStoryFoundations[29]; } }
-		public override int ConvertOffsetY{ get{ return -1; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.ThreeStoryFoundations[29];
+		public override int ConvertOffsetY => -1;
 
-		public override Rectangle2D[] Area { get { return AreaArray; } }
-		public override Point3D BaseBanLocation { get { return new Point3D( 1, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 1, 8, 0 );
 
 		public LargePatioHouse( Mobile owner ) : base( 0x8C, owner, 1100, 8 )
 		{
 			uint keyValue = CreateKeys( owner );
 
 			AddSouthDoors( -4, 6, 7, keyValue );
-			
+
 			SetSign( 1, 8, 16 );
 
 			AddEastDoor( 1, 4, 7 );
@@ -319,13 +319,13 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -7, -7, 15, 14 ), new Rectangle2D( -6, 7, 6, 1 ) };
 
-		public override int DefaultPrice{ get{ return 192000; } }
+		public override int DefaultPrice => 192000;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.ThreeStoryFoundations[29]; } }
-		public override int ConvertOffsetY{ get{ return -1; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.ThreeStoryFoundations[29];
+		public override int ConvertOffsetY => -1;
 
-		public override Rectangle2D[] Area { get { return AreaArray; } }
-		public override Point3D BaseBanLocation { get { return new Point3D( 1, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 1, 8, 0 );
 
 		public LargeMarbleHouse( Mobile owner ) : base( 0x96, owner, 1370, 10 )
 		{
@@ -359,12 +359,12 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -3, -3, 8, 7 ), new Rectangle2D( 2, 4, 3, 1 ) };
 
-		public override int DefaultPrice{ get{ return 88500; } }
+		public override int DefaultPrice => 88500;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.TwoStoryFoundations[6]; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[6];
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 1, 4, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 1, 4, 0 );
 
 		public SmallTower( Mobile owner ) : base( 0x98, owner, 580, 4 )
 		{
@@ -398,19 +398,19 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -3, -6, 8, 13 ) };
 
-		public override int DefaultPrice{ get{ return 97800; } }
+		public override int DefaultPrice => 97800;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.TwoStoryFoundations[12]; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[12];
 
-		public override Rectangle2D[] Area { get { return AreaArray; } }
-		public override Point3D BaseBanLocation { get { return new Point3D( 5, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 5, 8, 0 );
 
 		public LogCabin( Mobile owner ) : base( 0x9A, owner, 1100, 8 )
 		{
 			uint keyValue = CreateKeys( owner );
 
 			AddSouthDoor( 1, 4, 8, keyValue );
-			
+
 			SetSign( 5, 8, 20 );
 
 			AddSouthDoor( 1, 0, 29 );
@@ -439,20 +439,20 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -5, -4, 12, 8 ), new Rectangle2D( -2, 4, 3, 1 ) };
 
-		public override int DefaultPrice{ get{ return 90900; } }
+		public override int DefaultPrice => 90900;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.TwoStoryFoundations[35]; } }
-		public override int ConvertOffsetY{ get{ return -1; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[35];
+		public override int ConvertOffsetY => -1;
 
-		public override Rectangle2D[] Area { get { return AreaArray; } }
-		public override Point3D BaseBanLocation { get { return new Point3D( 4, 6, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 4, 6, 0 );
 
 		public SandStonePatio( Mobile owner ) : base( 0x9C, owner, 850, 6 )
 		{
 			uint keyValue = CreateKeys( owner );
 
 			AddSouthDoor( -1, 3, 6, keyValue );
-			
+
 			SetSign( 4, 6, 24 );
 		}
 
@@ -479,19 +479,19 @@ namespace Server.Multis
 	{
 		public static Rectangle2D[] AreaArray = new Rectangle2D[]{ new Rectangle2D( -5, -5, 11, 11 ), new Rectangle2D( 2, 6, 4, 1 ) };
 
-		public override int DefaultPrice{ get{ return 136500; } }
+		public override int DefaultPrice => 136500;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.TwoStoryFoundations[31]; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[31];
 
-		public override Rectangle2D[] Area{ get{ return AreaArray; } }
-		public override Point3D BaseBanLocation{ get{ return new Point3D( 3, 8, 0 ); } }
+		public override Rectangle2D[] Area => AreaArray;
+		public override Point3D BaseBanLocation => new Point3D( 3, 8, 0 );
 
 		public TwoStoryVilla( Mobile owner ) : base( 0x9E, owner, 1100, 8 )
 		{
 			uint keyValue = CreateKeys( owner );
 
 			AddSouthDoors( 3, 1, 5, keyValue );
-			
+
 			SetSign( 3, 8, 24 );
 
 			AddEastDoor( 1, 0, 25 );
@@ -519,12 +519,12 @@ namespace Server.Multis
 
 	public class SmallShop : BaseHouse
 	{
-		public override Rectangle2D[] Area { get { return ( ItemID == 0x40A2 ? AreaArray1 : AreaArray2 ); } }
-		public override Point3D BaseBanLocation { get { return new Point3D( 3, 4, 0 ); } }
+		public override Rectangle2D[] Area => ( ItemID == 0x40A2 ? AreaArray1 : AreaArray2 );
+		public override Point3D BaseBanLocation => new Point3D( 3, 4, 0 );
 
-		public override int DefaultPrice{ get{ return 63000; } }
+		public override int DefaultPrice => 63000;
 
-		public override HousePlacementEntry ConvertEntry{ get{ return HousePlacementEntry.TwoStoryFoundations[0]; } }
+		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[0];
 
 		public static Rectangle2D[] AreaArray1 = new Rectangle2D[]{ new Rectangle2D(-3,-3,7,7), new Rectangle2D( -1, 4, 4, 1 ) };
 		public static Rectangle2D[] AreaArray2 = new Rectangle2D[]{ new Rectangle2D(-3,-3,7,7), new Rectangle2D( -2, 4, 3, 1 ) };
@@ -544,7 +544,7 @@ namespace Server.Multis
 			AddDoor( door, -2, 0, id == 0xA2 ? 24 : 27 );
 
 			//AddSouthDoor( false, -2, 0, 27 - (id == 0xA2 ? 3 : 0), keyValue );
-			
+
 			SetSign( 3, 4, 7 - (id == 0xA2 ? 2 : 0) );
 		}
 
@@ -552,11 +552,11 @@ namespace Server.Multis
 		{
 		}
 
-		public override HouseDeed GetDeed() 
-		{ 
+		public override HouseDeed GetDeed()
+		{
 			switch ( ItemID )
 			{
-				case 0xA0: return new StoneWorkshopDeed(); 
+				case 0xA0: return new StoneWorkshopDeed();
 				case 0xA2:
 				default: return new MarbleWorkshopDeed();
 			}

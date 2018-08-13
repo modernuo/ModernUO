@@ -2,8 +2,8 @@
 {
 	public class SnowPileDeco : Item
 	{
-		public override string DefaultName{ get { return "Snow Pile"; } }
-		public override double DefaultWeight{ get { return 2.0; } }
+		public override string DefaultName => "Snow Pile";
+		public override double DefaultWeight => 2.0;
 
 		private static readonly int[] m_Types = new int[] { 0x8E2, 0x8E0, 0x8E6, 0x8E5, 0x8E3 };
 

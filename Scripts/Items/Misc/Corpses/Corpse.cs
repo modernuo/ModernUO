@@ -148,9 +148,7 @@ namespace Server.Items
 
 			if ( m_InstancedItems != null )
 			{
-				InstancedItemInfo info;
-
-				if ( m_InstancedItems.TryGetValue( child, out info ) && (InstancedCorpse || info.Perpetual) )
+				if ( m_InstancedItems.TryGetValue( child, out InstancedItemInfo info ) && (InstancedCorpse || info.Perpetual) )
 				{
 					return info.IsOwner( m );   //IsOwner checks Party stuff.
 				}
@@ -267,8 +265,8 @@ namespace Server.Items
 
 		public override bool DisplayWeight => false;
 
-		public HairInfo Hair { get { return m_Hair; } }
-		public FacialHairInfo FacialHair { get { return m_FacialHair; } }
+		public HairInfo Hair  => m_Hair;
+		public FacialHairInfo FacialHair  => m_FacialHair;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsBones

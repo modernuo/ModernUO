@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class CoilsFang : Item
 	{
-		public override int LabelNumber{ get{ return 1074229; } } // Coil's Fang
+		public override int LabelNumber => 1074229; // Coil's Fang
 
 		[Constructible]
 		public CoilsFang() : base( 0x10E8 )

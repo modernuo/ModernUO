@@ -37,8 +37,7 @@ namespace Server.SkillHandlers
 
 		public static Mobile GetUser( BaseBook book )
 		{
-			Mobile m = null;
-			m_UseTable.TryGetValue(book, out m);
+			m_UseTable.TryGetValue( book, out Mobile m );
 			return m;
 		}
 

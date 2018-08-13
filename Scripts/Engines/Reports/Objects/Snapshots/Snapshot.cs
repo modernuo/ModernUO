@@ -13,7 +13,7 @@ namespace Server.Engines.Reports
 			return new Snapshot();
 		}
 
-		public override PersistableType TypeID{ get{ return ThisTypeID; } }
+		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
 		private DateTime m_TimeStamp;

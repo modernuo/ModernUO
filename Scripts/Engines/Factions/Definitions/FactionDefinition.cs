@@ -47,7 +47,7 @@ namespace Server.Factions
 
 		public string FriendlyName{ get{ return m_FriendlyName; } }
 		public string Keyword{ get{ return m_Keyword; } }
-		public string Abbreviation{ get { return m_Abbreviation; } }
+		public string Abbreviation => m_Abbreviation;
 
 		public TextDefinition Name{ get{ return m_Name; } }
 		public TextDefinition PropName{ get{ return m_PropName; } }

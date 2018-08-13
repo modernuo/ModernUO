@@ -37,7 +37,7 @@ namespace Server.Items
 	[Server.Engines.Craft.Forge]
 	public class ShrineOfWisdomComponent : AddonComponent
 	{
-		public override int LabelNumber{ get{ return 1062046; } } // Shrine of Wisdom
+		public override int LabelNumber => 1062046; // Shrine of Wisdom
 
 		[Constructible]
 		public ShrineOfWisdomComponent( int itemID ) : base( itemID )

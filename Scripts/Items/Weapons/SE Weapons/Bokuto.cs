@@ -7,25 +7,25 @@ namespace Server.Items
 	[FlippableAttribute( 0x27A8, 0x27F3 )]
 	public class Bokuto : BaseSword
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Feint; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.NerveStrike; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.NerveStrike;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 9; } }
-		public override int AosMaxDamage{ get{ return 11; } }
-		public override int AosSpeed{ get{ return 53; } }
-		public override float MlSpeed{ get{ return 2.00f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 9;
+		public override int AosMaxDamage => 11;
+		public override int AosSpeed => 53;
+		public override float MlSpeed => 2.00f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 9; } }
-		public override int OldMaxDamage{ get{ return 11; } }
-		public override int OldSpeed{ get{ return 53; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 9;
+		public override int OldMaxDamage => 11;
+		public override int OldSpeed => 53;
 
-		public override int DefHitSound{ get{ return 0x536; } }
-		public override int DefMissSound{ get{ return 0x23A; } }
+		public override int DefHitSound => 0x536;
+		public override int DefMissSound => 0x23A;
 
-		public override int InitMinHits{ get{ return 25; } }
-		public override int InitMaxHits{ get{ return 50; } }
+		public override int InitMinHits => 25;
+		public override int InitMaxHits => 50;
 
 		[Constructible]
 		public Bokuto() : base( 0x27A8 )

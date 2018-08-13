@@ -107,7 +107,7 @@ namespace Server
 		public static Thread Thread { get { return m_Thread; } }
 		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
 
-		/* 
+		/*
 		 * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
 		 * The resolution is acceptable but large clock jumps are possible and cause issues.
 		 * GetTickCount and GetTickCount64 have poor resolution.
@@ -151,7 +151,7 @@ namespace Server
 		public static int ProcessorCount { get { return m_ProcessorCount; } }
 
 		private static bool m_Unix;
-		
+
 		public static bool Unix { get { return m_Unix; } }
 
 		public static string FindDataFile( string path )
@@ -333,7 +333,7 @@ namespace Server
 		{
 			if( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
 				return true;
-			
+
 			Kill();	//Kill -> HandleClosed will handle waiting for the completion of flushing to disk
 
 			return true;
@@ -489,18 +489,18 @@ namespace Server
 			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
 			{
 				Console.WriteLine( "Scripts: One or more scripts failed to compile or no script files were found." );
-				
+
 				if( m_Service )
 					return;
 
 				Console.WriteLine( " - Press return to exit, or R to try again." );
-				
+
 				if( Console.ReadKey( true ).Key != ConsoleKey.R )
 					return;
 			}
 
 			ScriptCompiler.Invoke( "Configure" );
-			
+
 			Region.Load();
 			World.Load();
 
@@ -626,7 +626,7 @@ namespace Server
 		}
 
 		private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
-	
+
 		private static void VerifyType(Type t)
 		{
 			var isItem = t.IsSubclassOf(typeof(Item));
@@ -726,7 +726,7 @@ namespace Server
 						new FileStream(FileName, append ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read)))
 			{
 				writer.WriteLine(">>>Logging started on {0}.", DateTime.UtcNow.ToString("f"));
-				//f = Tuesday, April 10, 2001 3:51 PM 
+				//f = Tuesday, April 10, 2001 3:51 PM
 			}
 
 			_NewLine = true;
@@ -774,7 +774,7 @@ namespace Server
 			}
 		}
 
-		public override Encoding Encoding { get { return Encoding.Default; } }
+		public override Encoding Encoding => Encoding.Default;
 	}
 
 	public class MultiTextWriter : TextWriter
@@ -822,6 +822,6 @@ namespace Server
 			WriteLine(String.Format(line, args));
 		}
 
-		public override Encoding Encoding { get { return Encoding.Default; } }
+		public override Encoding Encoding => Encoding.Default;
 	}
 }

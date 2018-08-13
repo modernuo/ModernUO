@@ -5,11 +5,11 @@ namespace Server.Items
 {
 	public class SerpentsFang : Kryss
 	{
-		public override int LabelNumber{ get{ return 1061601; } } // Serpent's Fang
-		public override int ArtifactRarity{ get{ return 11; } }
+		public override int LabelNumber => 1061601; // Serpent's Fang
+		public override int ArtifactRarity => 11;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public SerpentsFang()
@@ -39,7 +39,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

@@ -8,7 +8,7 @@ namespace Server.Items
 {
 	public class AquariumFishNet : SpecialFishingNet
 	{
-		public override int LabelNumber{ get{ return 1074463; } } // An aquarium fishing net
+		public override int LabelNumber => 1074463; // An aquarium fishing net
 
 		[Constructible]
 		public AquariumFishNet()
@@ -137,7 +137,7 @@ namespace Server.Items
 	// Legacy code
 	public class AquariumFishingNet : Item
 	{
-		public override int LabelNumber{ get{ return 1074463; } } // An aquarium fishing net
+		public override int LabelNumber => 1074463; // An aquarium fishing net
 
 		public AquariumFishingNet()
 		{

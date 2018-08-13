@@ -14,10 +14,10 @@ namespace Server.Spells.Spellweaving
 				-1
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 4.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 4.0 );
 
-		public override double RequiredSkill { get { return 38.0; } }
-		public override int RequiredMana { get { return 70; } }
+		public override double RequiredSkill => 38.0;
+		public override int RequiredMana => 70;
 
 		public GiftOfLifeSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )
@@ -99,9 +99,7 @@ namespace Server.Spells.Spellweaving
 
 		private static void HandleDeath_OnCallback( Mobile m )
 		{
-			ExpireTimer timer;
-
-			if( m_Table.TryGetValue( m, out timer ) )
+			if (m_Table.TryGetValue( m, out ExpireTimer timer ))
 			{
 				double hitsScalar = timer.Spell.HitsScalar;
 
@@ -162,7 +160,7 @@ namespace Server.Spells.Spellweaving
 
 			private GiftOfLifeSpell m_Spell;
 
-			public GiftOfLifeSpell Spell { get { return m_Spell; } }
+			public GiftOfLifeSpell Spell  => m_Spell;
 
 			public ExpireTimer( Mobile m, TimeSpan delay, GiftOfLifeSpell spell )
 				: base( delay )

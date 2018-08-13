@@ -8,8 +8,8 @@ namespace Server.Mobiles
 	[CorpseName( "an earth elemental corpse" )]
 	public class EarthElemental : BaseCreature
 	{
-		public override double DispelDifficulty{ get{ return 117.5; } }
-		public override double DispelFocus{ get{ return 45.0; } }
+		public override double DispelDifficulty => 117.5;
+		public override double DispelFocus => 45.0;
 
 		public override string DefaultName => "an earth elemental";
 
@@ -61,7 +61,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool BleedImmune => true;
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public EarthElemental( Serial serial ) : base( serial )
 		{

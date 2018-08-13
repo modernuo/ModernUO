@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RunicDovetailSaw : BaseRunicTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefCarpentry.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
 		public override int LabelNumber
 		{
@@ -16,11 +16,11 @@ namespace Server.Items
 
 				if ( index >= 1 && index <= 6 )
 					return 1072633 + index;
-					
+
 				return 1024137; // dovetail saw
 			}
 		}
-		
+
 		[Constructible]
 		public RunicDovetailSaw( CraftResource resource ) : base( resource, 0x1028 )
 		{

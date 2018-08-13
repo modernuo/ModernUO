@@ -45,7 +45,7 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public override int LabelNumber{ get { return 1060810; } } // seed
+		public override int LabelNumber => 1060810; // seed
 
 		public static Seed RandomBonsaiSeed()
 		{

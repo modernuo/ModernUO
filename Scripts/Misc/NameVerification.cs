@@ -112,8 +112,8 @@ namespace Server.Misc
 			return true;
 		}
 
-		public static string[] StartDisallowed { get { return m_StartDisallowed; } }
-		public static string[] Disallowed { get { return m_Disallowed; } }
+		public static string[] StartDisallowed  => m_StartDisallowed;
+		public static string[] Disallowed  => m_Disallowed;
 
 		private static string[] m_StartDisallowed = new string[]
 			{

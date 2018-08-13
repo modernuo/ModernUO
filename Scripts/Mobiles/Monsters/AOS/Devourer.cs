@@ -55,7 +55,7 @@ namespace Server.Mobiles
 
 		public override Poison PoisonImmune => Poison.Lethal;
 
-		public override int Meat{ get{ return 3; } }
+		public override int Meat => 3;
 
 		public Devourer( Serial serial ) : base( serial )
 		{

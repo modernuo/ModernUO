@@ -16,7 +16,7 @@ namespace Server.Engines.Quests
 
 		public abstract bool CanDrop( PlayerMobile pm );
 
-		public virtual bool Accepted { get { return Deleted; } }
+		public virtual bool Accepted  => Deleted;
 
 		public override bool DropToWorld( Mobile from, Point3D p )
 		{

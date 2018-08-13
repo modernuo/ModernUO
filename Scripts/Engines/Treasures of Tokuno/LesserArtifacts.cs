@@ -7,14 +7,14 @@ namespace Server.Items
 {
 	public class AncientFarmersKasa : Kasa
 	{
-		public override int LabelNumber{ get{ return 1070922; } } // Ancient Farmer's Kasa
-		public override int BaseColdResistance { get { return 19; } }
+		public override int LabelNumber => 1070922; // Ancient Farmer's Kasa
+		public override int BaseColdResistance => 19;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
-		public AncientFarmersKasa() : base()
+		public AncientFarmersKasa()
 		{
 			Attributes.BonusStr = 5;
 			Attributes.BonusStam = 5;
@@ -33,7 +33,7 @@ namespace Server.Items
 
 			writer.Write( (int) 2 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );
@@ -51,18 +51,18 @@ namespace Server.Items
 		}
 	}
 
-	public class AncientSamuraiDo : PlateDo 
+	public class AncientSamuraiDo : PlateDo
 	{
-		public override int LabelNumber { get { return 1070926; } } // Ancient Samurai Do
+		public override int LabelNumber => 1070926; // Ancient Samurai Do
 
-		public override int BasePhysicalResistance { get { return 15; } }
-		public override int BaseFireResistance { get { return 12; } }
-		public override int BaseColdResistance { get { return 10; } }
-		public override int BasePoisonResistance { get { return 11; } }
-		public override int BaseEnergyResistance { get { return 8; } }
+		public override int BasePhysicalResistance => 15;
+		public override int BaseFireResistance => 12;
+		public override int BaseColdResistance => 10;
+		public override int BasePoisonResistance => 11;
+		public override int BaseEnergyResistance => 8;
 
 		[Constructible]
-		public AncientSamuraiDo() : base()
+		public AncientSamuraiDo()
 		{
 			ArmorAttributes.LowerStatReq = 100;
 			ArmorAttributes.MageArmor = 1;
@@ -87,20 +87,20 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class ArmsOfTacticalExcellence : LeatherHiroSode
 	{
-		public override int LabelNumber { get { return 1070921; } } // Arms of Tactical Excellence
+		public override int LabelNumber => 1070921; // Arms of Tactical Excellence
 
-		public override int BaseFireResistance { get { return 9; } }
-		public override int BaseColdResistance { get { return 13; } }
-		public override int BasePoisonResistance { get { return 8; } }
+		public override int BaseFireResistance => 9;
+		public override int BaseColdResistance => 13;
+		public override int BasePoisonResistance => 8;
 
 		[Constructible]
-		public ArmsOfTacticalExcellence() : base()
+		public ArmsOfTacticalExcellence()
 		{
 			Attributes.BonusDex = 5;
 			SkillBonuses.SetValues( 0, SkillName.Tactics, 12.0 );
@@ -124,25 +124,25 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class BlackLotusHood : ClothNinjaHood
 	{
-		public override int LabelNumber { get { return 1070919; } } // Black Lotus Hood
+		public override int LabelNumber => 1070919; // Black Lotus Hood
 
-		public override int BasePhysicalResistance { get { return 0; } }
-		public override int BaseFireResistance { get { return 11; } }
-		public override int BaseColdResistance { get { return 15; } }
-		public override int BasePoisonResistance { get { return 11; } }
-		public override int BaseEnergyResistance { get { return 11; } }
+		public override int BasePhysicalResistance => 0;
+		public override int BaseFireResistance => 11;
+		public override int BaseColdResistance => 15;
+		public override int BasePoisonResistance => 11;
+		public override int BaseEnergyResistance => 11;
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
-		public BlackLotusHood() : base()
+		public BlackLotusHood()
 		{
 			Attributes.LowerManaCost = 6;
 			Attributes.AttackChance = 6;
@@ -176,12 +176,12 @@ namespace Server.Items
 
 	public class DaimyosHelm : PlateBattleKabuto
 	{
-		public override int LabelNumber { get { return 1070920; } } // Daimyo's Helm
+		public override int LabelNumber => 1070920; // Daimyo's Helm
 
-		public override int BaseColdResistance { get { return 10; } }
+		public override int BaseColdResistance => 10;
 
 		[Constructible]
-		public DaimyosHelm() : base()
+		public DaimyosHelm()
 		{
 			ArmorAttributes.LowerStatReq = 100;
 			ArmorAttributes.MageArmor = 1;
@@ -207,16 +207,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class DemonForks : Sai
 	{
-		public override int LabelNumber{ get{ return 1070917; } } // Demon Forks
+		public override int LabelNumber => 1070917; // Demon Forks
 
 		[Constructible]
-		public DemonForks() : base()
+		public DemonForks()
 		{
 			WeaponAttributes.ResistFireBonus = 10;
 			WeaponAttributes.ResistPoisonBonus = 10;
@@ -244,16 +244,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class DragonNunchaku : Nunchaku
 	{
-		public override int LabelNumber{ get{ return 1070914; } } // Dragon Nunchaku
+		public override int LabelNumber => 1070914; // Dragon Nunchaku
 
 		[Constructible]
-		public DragonNunchaku() : base()
+		public DragonNunchaku()
 		{
 			WeaponAttributes.ResistFireBonus = 5;
 			WeaponAttributes.SelfRepair = 3;
@@ -281,16 +281,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class Exiler : Tetsubo
 	{
-		public override int LabelNumber{ get{ return 1070913; } } // Exiler
+		public override int LabelNumber => 1070913; // Exiler
 
 		[Constructible]
-		public Exiler() : base()
+		public Exiler()
 		{
 			WeaponAttributes.HitDispel = 33;
 			Slayer = SlayerName.Exorcism;
@@ -325,18 +325,18 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class GlovesOfTheSun : LeatherNinjaMitts
 	{
-		public override int LabelNumber { get { return 1070924; } } // Gloves of the Sun
+		public override int LabelNumber => 1070924; // Gloves of the Sun
 
-		public override int BaseFireResistance { get { return 24; } }
+		public override int BaseFireResistance => 24;
 
 		[Constructible]
-		public GlovesOfTheSun() : base()
+		public GlovesOfTheSun()
 		{
 			Attributes.RegenHits = 2;
 			Attributes.NightSight = 1;
@@ -362,16 +362,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class HanzosBow : Yumi
 	{
-		public override int LabelNumber { get { return 1070918; } } // Hanzo's Bow
+		public override int LabelNumber => 1070918; // Hanzo's Bow
 
 		[Constructible]
-		public HanzosBow() : base()
+		public HanzosBow()
 		{
 			WeaponAttributes.HitLeechHits = 40;
 			WeaponAttributes.SelfRepair = 3;
@@ -399,19 +399,19 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class LegsOfStability : PlateSuneate
 	{
-		public override int LabelNumber { get { return 1070925; } } // Legs of Stability
+		public override int LabelNumber => 1070925; // Legs of Stability
 
-		public override int BasePhysicalResistance { get { return 20; } }
-		public override int BasePoisonResistance { get { return 18; } }
+		public override int BasePhysicalResistance => 20;
+		public override int BasePoisonResistance => 18;
 
 		[Constructible]
-		public LegsOfStability() : base()
+		public LegsOfStability()
 		{
 			Attributes.BonusStam = 5;
 
@@ -438,16 +438,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class PeasantsBokuto : Bokuto
 	{
-		public override int LabelNumber { get { return 1070912; } } // Peasant's Bokuto
+		public override int LabelNumber => 1070912; // Peasant's Bokuto
 
 		[Constructible]
-		public PeasantsBokuto() : base()
+		public PeasantsBokuto()
 		{
 			WeaponAttributes.SelfRepair = 3;
 			WeaponAttributes.HitLowerDefend = 30;
@@ -475,16 +475,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class PilferedDancerFans : Tessen
 	{
-		public override int LabelNumber { get { return 1070916; } } // Pilfered Dancer Fans
+		public override int LabelNumber => 1070916; // Pilfered Dancer Fans
 
 		[Constructible]
-		public PilferedDancerFans() : base()
+		public PilferedDancerFans()
 		{
 			Attributes.WeaponDamage = 20;
 			Attributes.WeaponSpeed = 20;
@@ -511,16 +511,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class TheDestroyer : NoDachi
 	{
-		public override int LabelNumber { get { return 1070915; } } // The Destroyer
+		public override int LabelNumber => 1070915; // The Destroyer
 
 		[Constructible]
-		public TheDestroyer() : base()
+		public TheDestroyer()
 		{
 			WeaponAttributes.HitLeechStam = 40;
 
@@ -547,16 +547,16 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	public class TomeOfEnlightenment : Spellbook
 	{
-		public override int LabelNumber { get { return 1070934; } } // Tome of Enlightenment
+		public override int LabelNumber => 1070934; // Tome of Enlightenment
 
 		[Constructible]
-		public TomeOfEnlightenment() : base()
+		public TomeOfEnlightenment()
 		{
 			LootType = LootType.Regular;
 			Hue = 0x455;
@@ -584,19 +584,19 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 	}
-	
+
 	public class LeurociansMempoOfFortune : LeatherMempo
 	{
-		public override int LabelNumber { get { return 1071460; } } // Leurocian's mempo of fortune
+		public override int LabelNumber => 1071460; // Leurocian's mempo of fortune
 
-		public override int BasePhysicalResistance{ get{ return 15; } }
-		public override int BaseFireResistance{ get{ return 10; } }
-		public override int BaseColdResistance{ get{ return 10; } }
-		public override int BasePoisonResistance{ get{ return 10; } }
-		public override int BaseEnergyResistance{ get{ return 15; } }
-		
+		public override int BasePhysicalResistance => 15;
+		public override int BaseFireResistance => 10;
+		public override int BaseColdResistance => 10;
+		public override int BasePoisonResistance => 10;
+		public override int BaseEnergyResistance => 15;
+
 		[Constructible]
-		public LeurociansMempoOfFortune() : base()
+		public LeurociansMempoOfFortune()
 		{
 			LootType = LootType.Regular;
 			Hue = 0x501;
@@ -622,8 +622,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 		}
-		public override int InitMinHits { get { return 255; } }
-		public override int InitMaxHits { get { return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 	}
 
 	//Non weapon/armor ones:
@@ -639,7 +639,7 @@ namespace Server.Items
 				"Emiko",
 				"Fumiyo",
 				"Gennai",
-				"Gennosuke", 
+				"Gennosuke",
 				"Genjo",
 				"Hamato",
 				"Harumi",
@@ -669,7 +669,7 @@ namespace Server.Items
 				"Zeshin"
 			};
 
-		public static string[] Names { get { return m_Names; } }
+		public static string[] Names  => m_Names;
 
 		private string m_UrnName;
 
@@ -680,7 +680,7 @@ namespace Server.Items
 			set { m_UrnName = value; }
 		}
 
-		public override int LabelNumber { get { return 1071014; } } // Ancient Urn
+		public override int LabelNumber => 1071014; // Ancient Urn
 
 		[Constructible]
 		public AncientUrn( string urnName ) : base( 0x241D )
@@ -739,7 +739,7 @@ namespace Server.Items
 			set { m_SwordsName = value; }
 		}
 
-		public override int LabelNumber { get { return 1071015; } } // Honorable Swords
+		public override int LabelNumber => 1071015; // Honorable Swords
 
 		[Constructible]
 		public HonorableSwords( string swordsName ) : base( 0x2853 )
@@ -791,8 +791,8 @@ namespace Server.Items
 	[Flippable( 0x2811, 0x2812 )]
 	public class ChestOfHeirlooms : LockableContainer
 	{
-		public override int LabelNumber{ get{ return 1070937; } } // Chest of heirlooms
-		
+		public override int LabelNumber => 1070937; // Chest of heirlooms
+
 		[Constructible]
 		public ChestOfHeirlooms() : base( 0x2811 )
 		{
@@ -800,21 +800,21 @@ namespace Server.Items
 			LockLevel = 95;
 			MaxLockLevel = 140;
 			RequiredSkill = 95;
-			
+
 			TrapType = TrapType.ExplosionTrap;
 			TrapLevel = 10;
 			TrapPower = 100;
-			
+
 			GumpID = 0x10B;
-			
+
 			for ( int i = 0; i < 10; ++i )
 			{
 				Item item = Loot.ChestOfHeirloomsContains();
-				
+
 				int attributeCount = Utility.RandomMinMax( 1, 5 );
 				int min = 20;
 				int max = 80;
-				
+
 				if ( item is BaseWeapon )
 				{
 					BaseWeapon weapon = (BaseWeapon)item;
@@ -844,7 +844,7 @@ namespace Server.Items
 					BaseRunicTool.ApplyAttributesTo( (BaseHat)item, attributeCount, min, max );
 				else if( item is BaseJewel && Core.AOS )
 					BaseRunicTool.ApplyAttributesTo( (BaseJewel)item, attributeCount, min, max );
-				
+
 				DropItem( item );
 			}
 		}
@@ -870,18 +870,18 @@ namespace Server.Items
 
 	public class FluteOfRenewal : BambooFlute
 	{
-		public override int LabelNumber { get { return 1070927; } } // Flute of Renewal
+		public override int LabelNumber => 1070927; // Flute of Renewal
 
 		[Constructible]
-		public FluteOfRenewal() : base()
+		public FluteOfRenewal()
 		{
 			Slayer = SlayerGroup.Groups[Utility.Random( SlayerGroup.Groups.Length - 1 )].Super.Name; //-1 to exclude Fey slayer.  Try to confrim no fey slayer on this on OSI
 
 			ReplenishesCharges = true;
 		}
 
-		public override int InitMinUses { get { return 300; } }
-		public override int InitMaxUses { get { return 300; } }
+		public override int InitMinUses => 300;
+		public override int InitMaxUses => 300;
 
 		public FluteOfRenewal( Serial serial ) : base( serial )
 		{
@@ -904,7 +904,7 @@ namespace Server.Items
 				Slayer = SlayerGroup.Groups[Utility.Random( SlayerGroup.Groups.Length - 1 )].Super.Name;
 		}
 	}
-	
+
 	public enum LesserPigmentType
 	{
 		None,
@@ -922,7 +922,7 @@ namespace Server.Items
 
 	public class LesserPigmentsOfTokuno : BasePigmentsOfTokuno
 	{
-		
+
 		private static int[][] m_Table = new int[][]
 		{
 			// Hue, Label
@@ -938,14 +938,14 @@ namespace Server.Items
 			new int[]{ /*PigmentType.DeepBrown,*/ 0x3F0, 1071452 },
 			new int[]{ /*PigmentType.BurntBrown,*/ 0x41A, 1071453 }
 		};
-		
+
 		public static int[] GetInfo( LesserPigmentType type )
 		{
 			int v = (int)type;
 
 			if( v < 0 || v >= m_Table.Length )
 				v = 0;
-			
+
 			return m_Table[v];
 		}
 
@@ -958,7 +958,7 @@ namespace Server.Items
 			set
 			{
 				m_Type = value;
-				
+
 				int v = (int)m_Type;
 
 				if ( v >= 0 && v < m_Table.Length )
@@ -978,7 +978,7 @@ namespace Server.Items
 		public LesserPigmentsOfTokuno() : this( (LesserPigmentType)Utility.Random(0,11) )
 		{
 		}
-		
+
 		[Constructible]
 		public LesserPigmentsOfTokuno( LesserPigmentType type ) : base( 1 )
 		{
@@ -1004,7 +1004,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = ( InheritsItem ? 0 : reader.ReadInt() ); // Required for BasePigmentsOfTokuno insertion
-			
+
 			switch ( version )
 			{
 				case 1: Type = (LesserPigmentType)reader.ReadEncodedInt(); break;
@@ -1021,11 +1021,11 @@ namespace Server.Items
 			RandomHue();
 			Label = -1;
 		}
-		
+
 		public MetalPigmentsOfTokuno( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public void RandomHue()
 		{
 			int a = Utility.Random(0,30);

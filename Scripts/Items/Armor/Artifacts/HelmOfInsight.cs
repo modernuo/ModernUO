@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class HelmOfInsight : PlateHelm
 	{
-		public override int LabelNumber{ get{ return 1061096; } } // Helm of Insight
-		public override int ArtifactRarity{ get{ return 11; } }
+		public override int LabelNumber => 1061096; // Helm of Insight
+		public override int ArtifactRarity => 11;
 
-		public override int BaseEnergyResistance{ get{ return 17; } }
+		public override int BaseEnergyResistance => 17;
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public HelmOfInsight()
@@ -33,7 +33,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

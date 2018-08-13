@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.ParalyzingBlow;
 
-		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+		public override bool IgnoreYoungProtection => Core.ML;
 
 		public override string DefaultName => "a fleshrenderer";
 
@@ -61,12 +61,12 @@ namespace Server.Mobiles
 		}
 
 		public override bool AutoDispel => true;
-		public override bool BardImmune { get { return !Core.SE; } }
-		public override bool Unprovokable { get { return Core.SE; } }
-		public override bool AreaPeaceImmune { get { return Core.SE; } }
+		public override bool BardImmune => !Core.SE;
+		public override bool Unprovokable => Core.SE;
+		public override bool AreaPeaceImmune => Core.SE;
 		public override Poison PoisonImmune => Poison.Lethal;
 
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public override int GetAttackSound()
 		{

@@ -393,7 +393,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class MougGuurMustDie : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( LeaderOfThePack ); } }
+		public override Type NextQuest => typeof( LeaderOfThePack );
 
 		public MougGuurMustDie()
 		{
@@ -412,7 +412,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class LeaderOfThePack : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( SayonaraSzavetra ); } }
+		public override Type NextQuest => typeof( SayonaraSzavetra );
 		public override bool IsChainTriggered => true;
 
 		public LeaderOfThePack()
@@ -522,7 +522,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class Marauders : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( TheBrainsOfTheOperation ); } }
+		public override Type NextQuest => typeof( TheBrainsOfTheOperation );
 
 		public Marauders()
 		{
@@ -540,7 +540,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheBrainsOfTheOperation : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( TheBrawn ); } }
+		public override Type NextQuest => typeof( TheBrawn );
 		public override bool IsChainTriggered => true;
 
 		public TheBrainsOfTheOperation()
@@ -559,7 +559,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TheBrawn : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( TheBiggerTheyAre ); } }
+		public override Type NextQuest => typeof( TheBiggerTheyAre );
 		public override bool IsChainTriggered => true;
 
 		public TheBrawn()

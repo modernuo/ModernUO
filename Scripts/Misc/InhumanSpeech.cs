@@ -371,7 +371,7 @@ namespace Server.Misc
 				}
 
 				int syllableCount;
-                                                       
+
 				if ( 30 > Utility.Random( 100 ) )
 					syllableCount = Utility.Random( 1, 5 );
 				else
@@ -433,8 +433,7 @@ namespace Server.Misc
 
 			for ( int i = 0; i < split.Length; ++i )
 			{
-				string keyword;
-				m_KeywordHash.TryGetValue( split[i], out keyword );
+				m_KeywordHash.TryGetValue( split[i], out string keyword );
 
 				if ( keyword != null )
 					keywordsFound.Add( keyword );

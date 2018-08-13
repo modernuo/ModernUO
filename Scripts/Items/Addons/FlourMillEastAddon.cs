@@ -21,7 +21,7 @@ namespace Server.Items
 
 	public class FlourMillEastAddon : BaseAddon, IFlourMill
 	{
-		public override BaseAddonDeed Deed{ get{ return new FlourMillEastDeed(); } }
+		public override BaseAddonDeed Deed => new FlourMillEastDeed();
 
 		private int m_Flour;
 		private Timer m_Timer;
@@ -201,8 +201,8 @@ namespace Server.Items
 
 	public class FlourMillEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new FlourMillEastAddon(); } }
-		public override int LabelNumber{ get{ return 1044347; } } // flour mill (east)
+		public override BaseAddon Addon => new FlourMillEastAddon();
+		public override int LabelNumber => 1044347; // flour mill (east)
 
 		[Constructible]
 		public FlourMillEastDeed()

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SmallForgeAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new SmallForgeDeed(); } }
+		public override BaseAddonDeed Deed => new SmallForgeDeed();
 
 		[Constructible]
 		public SmallForgeAddon()
@@ -34,8 +34,8 @@ namespace Server.Items
 
 	public class SmallForgeDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new SmallForgeAddon(); } }
-		public override int LabelNumber{ get{ return 1044330; } } // small forge
+		public override BaseAddon Addon => new SmallForgeAddon();
+		public override int LabelNumber => 1044330; // small forge
 
 		[Constructible]
 		public SmallForgeDeed()

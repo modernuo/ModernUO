@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class SealedNotesForJamal : Item
 	{
-		public override int LabelNumber{ get{ return 1074998; } } // Sealed Notes For Jamal
-		public override double DefaultWeight{ get{ return 1.0; } }
+		public override int LabelNumber => 1074998; // Sealed Notes For Jamal
+		public override double DefaultWeight => 1.0;
 
 		public override bool Nontransferable => true;
 

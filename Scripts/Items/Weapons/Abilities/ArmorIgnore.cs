@@ -13,8 +13,8 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana{ get{ return 30; } }
-		public override double DamageScalar{ get{ return 0.9; } }
+		public override int BaseMana => 30;
+		public override double DamageScalar => 0.9;
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

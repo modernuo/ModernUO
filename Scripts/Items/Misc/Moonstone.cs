@@ -28,7 +28,7 @@ namespace Server.Items
 			}
 		}
 
-		public override int LabelNumber{ get{ return 1041490 + (int)m_Type; } }
+		public override int LabelNumber => 1041490 + (int)m_Type;
 
 		[Constructible]
 		public Moonstone( MoonstoneType type ) : base( 0xF8B )

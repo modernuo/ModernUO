@@ -7,13 +7,13 @@ namespace Server.Mobiles
 {
 	public class Semidar : BaseChampion
 	{
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Pain; } }
+		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-		public override Type[] UniqueList{ get{ return new Type[] { typeof( GladiatorsCollar ) }; } }
-		public override Type[] SharedList { get { return new Type[] { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( LavaTile ), typeof( DemonSkull ) }; } }
+		public override Type[] UniqueList => new Type[] { typeof( GladiatorsCollar ) };
+		public override Type[] SharedList => new Type[] { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) };
+		public override Type[] DecorativeList => new Type[] { typeof( LavaTile ), typeof( DemonSkull ) };
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
+		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 
 		public override string DefaultName => "Semidar";
 

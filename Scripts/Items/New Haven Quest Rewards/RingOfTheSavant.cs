@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class RingOfTheSavant : GoldRing
 	{
-		public override int LabelNumber{ get{ return 1077608; } } // Ring of the Savant
+		public override int LabelNumber => 1077608; // Ring of the Savant
 
 		[Constructible]
 		public RingOfTheSavant()

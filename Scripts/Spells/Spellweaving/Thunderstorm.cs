@@ -11,10 +11,10 @@ namespace Server.Spells.Spellweaving
 				-1
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill { get { return 10.0; } }
-		public override int RequiredMana { get { return 32; } }
+		public override double RequiredSkill => 10.0;
+		public override int RequiredMana => 32;
 
 		public ThunderstormSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )
@@ -32,13 +32,13 @@ namespace Server.Spells.Spellweaving
 				int damage = Math.Max( 11, 10 + (int)(skill / 24) ) + FocusLevel;
 
 				int sdiBonus = AosAttributes.GetValue( Caster, AosAttribute.SpellDamage );
-						
+
 				int pvmDamage = damage * ( 100 + sdiBonus );
 				pvmDamage /= 100;
 
 				if ( sdiBonus > 15 )
 					sdiBonus = 15;
-						
+
 				int pvpDamage = damage * ( 100 + sdiBonus );
 				pvpDamage /= 100;
 
@@ -87,9 +87,7 @@ namespace Server.Spells.Spellweaving
 
 		public static void DoExpire( Mobile m )
 		{
-			Timer t;
-
-			if( m_Table.TryGetValue( m, out t ) )
+			if (m_Table.TryGetValue( m, out Timer t ))
 			{
 				t.Stop();
 				m_Table.Remove( m );

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SpecialTreatForDrithen : Item
 	{
-		public override int LabelNumber{ get{ return 1074517; } } // Special Treat for Drithen
+		public override int LabelNumber => 1074517; // Special Treat for Drithen
 
 		[Constructible]
 		public SpecialTreatForDrithen() : base( 0x21B )

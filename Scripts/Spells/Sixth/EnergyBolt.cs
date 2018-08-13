@@ -14,7 +14,7 @@ namespace Server.Spells.Sixth
 				Reagent.Nightshade
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Sixth; } }
+		public override SpellCircle Circle => SpellCircle.Sixth;
 
 		public EnergyBoltSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

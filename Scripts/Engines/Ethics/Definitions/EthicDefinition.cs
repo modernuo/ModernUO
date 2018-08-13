@@ -15,14 +15,14 @@ namespace Server.Ethics
 
 		private Power[] m_Powers;
 
-		public int PrimaryHue { get { return m_PrimaryHue; } }
+		public int PrimaryHue  => m_PrimaryHue;
 
-		public TextDefinition Title { get { return m_Title; } }
-		public TextDefinition Adjunct { get { return m_Adjunct; } }
+		public TextDefinition Title  => m_Title;
+		public TextDefinition Adjunct  => m_Adjunct;
 
-		public TextDefinition JoinPhrase { get { return m_JoinPhrase; } }
+		public TextDefinition JoinPhrase  => m_JoinPhrase;
 
-		public Power[] Powers { get { return m_Powers; } }
+		public Power[] Powers  => m_Powers;
 
 		public EthicDefinition( int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase, Power[] powers )
 		{

@@ -266,7 +266,7 @@ namespace Server.Regions
 						m_SpawnTimer.Stop();
 
 					TimeSpan delay = m_NextSpawn - DateTime.UtcNow;
-					m_SpawnTimer = Timer.DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( TimerCallback ) ); 
+					m_SpawnTimer = Timer.DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( TimerCallback ) );
 				}
 			}
 
@@ -335,9 +335,7 @@ namespace Server.Regions
 			else
 			{
 				string name = args.GetString( 0 );
-				//reg = (Region) from.Map.Regions[name];
-
-				if ( !from.Map.Regions.TryGetValue( name, out reg ) )
+				//reg = if (!from.Map.Regions.TryGetValue( name, out (Region) from.Map.Regions[name] ))
 				{
 					from.SendMessage( "Could not find region '{0}'.", name );
 					return null;

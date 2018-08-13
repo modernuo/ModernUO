@@ -55,7 +55,7 @@ namespace Server.Mobiles
 				c.DropItem( new TaintedSeeds() );
 		}
 
-		public override Poison PoisonImmune { get { return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public Tangle( Serial serial )
 			: base( serial )

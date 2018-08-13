@@ -14,7 +14,7 @@ namespace Server.Items
 		public virtual int AccuracyBonus{ get{ return 0; } }
 		public virtual double DamageScalar{ get{ return 1.0; } }
 
-		public virtual bool RequiresSE { get { return false; } }
+		public virtual bool RequiresSE  => false;
 
 		public virtual void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
@@ -76,7 +76,7 @@ namespace Server.Items
 			scalar -= (double)lmc / 100;
 			mana = (int)(mana * scalar);
 
-			// Using a special move within 3 seconds of the previous special move costs double mana 
+			// Using a special move within 3 seconds of the previous special move costs double mana
 			if ( GetContext( from ) != null )
 				mana *= 2;
 
@@ -181,7 +181,7 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1063456 ); // You must upgrade to Samurai Empire in order to use that ability.
 				return false;
 			}
-			
+
 			if ( Spells.Bushido.HonorableExecution.IsUnderPenalty( from ) || Spells.Ninjitsu.AnimalForm.UnderTransformation( from ) )
 			{
 				from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
@@ -243,7 +243,7 @@ namespace Server.Items
 				option = "Double Shot";
 			else if ( this is ArmorPierce )
 				option = "Armor Pierce";
-				
+
 
 			if ( option != null && !Engines.ConPVP.DuelContext.AllowSpecialAbility( from, option, true ) )
 				return false;
@@ -341,7 +341,7 @@ namespace Server.Items
 			return ( weapon != null && (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a) );
 		}
 
-		public virtual bool ValidatesDuringHit{ get { return true; } }
+		public virtual bool ValidatesDuringHit => true;
 
 		public static WeaponAbility GetCurrentAbility( Mobile m )
 		{

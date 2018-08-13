@@ -4,16 +4,16 @@ using Server;
 namespace Server.Items
 {
 	public class Jellyfish : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1074593; } } // Jellyfish
-		
+	{
+		public override int LabelNumber => 1074593; // Jellyfish
+
 		[Constructible]
 		public Jellyfish() : base( 0x3B0E )
 		{
 		}
 
 		public Jellyfish( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

@@ -16,12 +16,12 @@ namespace Server.Spells.Chivalry
 				9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 0.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 0.5 );
 
-		public override double RequiredSkill{ get{ return 45.0; } }
-		public override int RequiredMana{ get{ return 20; } }
-		public override int RequiredTithing{ get{ return 10; } }
-		public override int MantraNumber{ get{ return 1060723; } } // Forul Solum
+		public override double RequiredSkill => 45.0;
+		public override int RequiredMana => 20;
+		public override int RequiredTithing => 10;
+		public override int MantraNumber => 1060723; // Forul Solum
 		public override bool BlocksMovement => false;
 
 		public EnemyOfOneSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )

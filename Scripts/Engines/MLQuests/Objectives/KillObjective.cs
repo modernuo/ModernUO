@@ -97,7 +97,7 @@ namespace Server.Engines.MLQuests.Objectives
 		private TimeSpan m_Duration;
 
 		public override bool IsTimed => true;
-		public override TimeSpan Duration { get { return m_Duration; } }
+		public override TimeSpan Duration => m_Duration;
 
 		public TimedKillObjective( TimeSpan duration, int amount, Type[] types, TextDefinition name )
 			: this( duration, amount, types, name, null )
@@ -182,7 +182,7 @@ namespace Server.Engines.MLQuests.Objectives
 			y += 16;
 		}
 
-		public override DataType ExtraDataType { get { return DataType.KillObjective; } }
+		public override DataType ExtraDataType => DataType.KillObjective;
 
 		public override void Serialize( GenericWriter writer )
 		{

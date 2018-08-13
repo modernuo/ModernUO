@@ -7,9 +7,9 @@ namespace Server.Items
 {
 	public abstract class BaseSword : BaseMeleeWeapon
 	{
-		public override SkillName DefSkill{ get{ return SkillName.Swords; } }
-		public override WeaponType DefType{ get{ return WeaponType.Slashing; } }
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Slash1H; } }
+		public override SkillName DefSkill => SkillName.Swords;
+		public override WeaponType DefType => WeaponType.Slashing;
+		public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
 
 		public BaseSword( int itemID ) : base( itemID )
 		{

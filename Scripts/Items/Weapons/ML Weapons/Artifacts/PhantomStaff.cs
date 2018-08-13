@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class PhantomStaff : WildStaff
 	{
-		public override int LabelNumber{ get{ return 1072919; } } // Phantom Staff
+		public override int LabelNumber => 1072919; // Phantom Staff
 
 		[Constructible]
 		public PhantomStaff()

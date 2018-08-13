@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ThorvaldsMedallion : Item
 	{
-		public override int LabelNumber{ get{ return 1074232; } } // Thorvald's Medallion
+		public override int LabelNumber => 1074232; // Thorvald's Medallion
 
 		[Constructible]
 		public ThorvaldsMedallion() : base( 0x2AAA )

@@ -6,16 +6,16 @@ namespace Server.Items
 {
 	public class Boomstick : WildStaff
 	{
-		public override int LabelNumber{ get{ return 1075032; } } // Boomstick
+		public override int LabelNumber => 1075032; // Boomstick
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
-		public Boomstick() : base()
+		public Boomstick()
 		{
 			Hue = 0x25;
-			
+
 			Attributes.SpellChanneling = 1;
 			Attributes.RegenMana = 3;
 			Attributes.CastSpeed = 1;

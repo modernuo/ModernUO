@@ -7,7 +7,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x13E3, 0x13E4 )]
 	public class SmithHammer : BaseTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefBlacksmithy.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 
 		[Constructible]
 		public SmithHammer() : base( 0x13E3 )

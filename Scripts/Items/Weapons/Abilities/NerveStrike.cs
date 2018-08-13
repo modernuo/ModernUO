@@ -12,7 +12,7 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana { get { return 30; } }
+		public override int BaseMana => 30;
 
 		public override bool CheckSkills( Mobile from )
 		{
@@ -67,7 +67,7 @@ namespace Server.Items
 				if (!cantpara && ((150.0 / 7.0 + (4.0 * attacker.Skills[SkillName.Bushido].Value) / 7.0) / 100.0) > Utility.RandomDouble())
 				{
 					defender.Paralyze( TimeSpan.FromSeconds( 2.0 ) );
-					Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );				
+					Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );
 				}
 			}
 			else if( !cantpara )

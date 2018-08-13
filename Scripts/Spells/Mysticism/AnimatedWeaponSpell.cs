@@ -16,10 +16,10 @@ namespace Server.Spells.Mysticism
 				Reagent.Nightshade
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill { get { return 33.0; } }
-		public override int RequiredMana { get { return 11; } }
+		public override double RequiredSkill => 33.0;
+		public override int RequiredMana => 11;
 
 		public AnimatedWeaponSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )

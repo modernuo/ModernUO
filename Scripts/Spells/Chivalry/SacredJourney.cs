@@ -16,12 +16,12 @@ namespace Server.Spells.Chivalry
 				9002
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return 15.0; } }
-		public override int RequiredMana{ get{ return 10; } }
-		public override int RequiredTithing{ get{ return 15; } }
-		public override int MantraNumber{ get{ return 1060727; } } // Sanctum Viatas
+		public override double RequiredSkill => 15.0;
+		public override int RequiredMana => 10;
+		public override int RequiredTithing => 15;
+		public override int MantraNumber => 1060727; // Sanctum Viatas
 		public override bool BlocksMovement => false;
 
 		private RunebookEntry m_Entry;

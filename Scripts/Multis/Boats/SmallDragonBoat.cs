@@ -6,20 +6,20 @@ namespace Server.Multis
 {
 	public class SmallDragonBoat : BaseBoat
 	{
-		public override int NorthID{ get{ return 0x4; } }
-		public override int  EastID{ get{ return 0x5; } }
-		public override int SouthID{ get{ return 0x6; } }
-		public override int  WestID{ get{ return 0x7; } }
+		public override int NorthID => 0x4;
+		public override int  EastID => 0x5;
+		public override int SouthID => 0x6;
+		public override int  WestID => 0x7;
 
-		public override int HoldDistance{ get{ return 4; } }
-		public override int TillerManDistance{ get{ return -4; } }
+		public override int HoldDistance => 4;
+		public override int TillerManDistance => -4;
 
-		public override Point2D StarboardOffset{ get{ return new Point2D(  2, 0 ); } }
-		public override Point2D      PortOffset{ get{ return new Point2D( -2, 0 ); } }
+		public override Point2D StarboardOffset => new Point2D(  2, 0 );
+		public override Point2D      PortOffset => new Point2D( -2, 0 );
 
-		public override Point3D MarkOffset{ get{ return new Point3D( 0, 1, 3 ); } }
+		public override Point3D MarkOffset => new Point3D( 0, 1, 3 );
 
-		public override BaseDockedBoat DockedBoat{ get{ return new SmallDockedDragonBoat( this ); } }
+		public override BaseDockedBoat DockedBoat => new SmallDockedDragonBoat( this );
 
 		[Constructible]
 		public SmallDragonBoat()
@@ -47,8 +47,8 @@ namespace Server.Multis
 
 	public class SmallDragonBoatDeed : BaseBoatDeed
 	{
-		public override int LabelNumber{ get{ return 1041206; } } // small dragon ship deed
-		public override BaseBoat Boat{ get{ return new SmallDragonBoat(); } }
+		public override int LabelNumber => 1041206; // small dragon ship deed
+		public override BaseBoat Boat => new SmallDragonBoat();
 
 		[Constructible]
 		public SmallDragonBoatDeed() : base( 0x4, Point3D.Zero )
@@ -76,7 +76,7 @@ namespace Server.Multis
 
 	public class SmallDockedDragonBoat : BaseDockedBoat
 	{
-		public override BaseBoat Boat{ get{ return new SmallDragonBoat(); } }
+		public override BaseBoat Boat => new SmallDragonBoat();
 
 		public SmallDockedDragonBoat( BaseBoat boat ) : base( 0x4, Point3D.Zero, boat )
 		{

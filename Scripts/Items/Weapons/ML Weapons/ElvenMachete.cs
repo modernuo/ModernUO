@@ -7,25 +7,25 @@ namespace Server.Items
 	[FlippableAttribute( 0x2D35, 0x2D29 )]
 	public class ElvenMachete : BaseSword
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.DefenseMastery; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Bladeweave; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.DefenseMastery;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 13; } }
-		public override int AosMaxDamage{ get{ return 15; } }
-		public override int AosSpeed{ get{ return 41; } }
-		public override float MlSpeed{ get{ return 2.75f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 13;
+		public override int AosMaxDamage => 15;
+		public override int AosSpeed => 41;
+		public override float MlSpeed => 2.75f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 13; } }
-		public override int OldMaxDamage{ get{ return 15; } }
-		public override int OldSpeed{ get{ return 41; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 13;
+		public override int OldMaxDamage => 15;
+		public override int OldSpeed => 41;
 
-		public override int DefHitSound{ get{ return 0x23B; } }
-		public override int DefMissSound{ get{ return 0x239; } }
+		public override int DefHitSound => 0x23B;
+		public override int DefMissSound => 0x239;
 
-		public override int InitMinHits{ get{ return 30; } }
-		public override int InitMaxHits{ get{ return 60; } }
+		public override int InitMinHits => 30;
+		public override int InitMaxHits => 60;
 
 		[Constructible]
 		public ElvenMachete() : base( 0x2D35 )

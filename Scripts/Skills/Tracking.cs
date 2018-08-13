@@ -52,8 +52,7 @@ namespace Server.SkillHandlers
 
 		public static double GetStalkingBonus( Mobile tracker, Mobile target )
 		{
-			TrackingInfo info = null;
-			m_Table.TryGetValue( tracker, out info );
+			m_Table.TryGetValue( tracker, out TrackingInfo info );
 
 			if ( info == null || info.m_Target != target || info.m_Map != target.Map )
 				return 0.0;
@@ -179,7 +178,7 @@ namespace Server.SkillHandlers
 
 			foreach ( Mobile m in from.GetMobilesInRange( range ) )
 			{
-				// Ghosts can no longer be tracked 
+				// Ghosts can no longer be tracked
 				if ( m != from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check( m ) && CheckDifficulty( from, m ) )
 					list.Add( m );
 			}
@@ -202,7 +201,7 @@ namespace Server.SkillHandlers
 			}
 		}
 
-		// Tracking players uses tracking and detect hidden vs. hiding and stealth 
+		// Tracking players uses tracking and detect hidden vs. hiding and stealth
 		private static bool CheckDifficulty( Mobile from, Mobile m )
 		{
 			if ( !Core.AOS || !m.Player )
@@ -210,7 +209,7 @@ namespace Server.SkillHandlers
 
 
 
-			int tracking = from.Skills[SkillName.Tracking].Fixed;	
+			int tracking = from.Skills[SkillName.Tracking].Fixed;
 			int detectHidden = from.Skills[SkillName.DetectHidden].Fixed;
 
 			if( Core.ML && m.Race == Race.Elf )
@@ -220,7 +219,7 @@ namespace Server.SkillHandlers
 			int stealth = m.Skills[SkillName.Stealth].Fixed;
 			int divisor = hiding + stealth;
 
-			// Necromancy forms affect tracking difficulty 
+			// Necromancy forms affect tracking difficulty
 			if ( TransformationSpellHelper.UnderTransformation( m, typeof( HorrificBeastSpell ) ) )
 				divisor -= 200;
 			else if ( TransformationSpellHelper.UnderTransformation( m, typeof( VampiricEmbraceSpell ) ) && divisor < 500 )

@@ -7,25 +7,25 @@ namespace Server.Items
 	[FlippableAttribute( 0x2D33, 0x2D27 )]
 	public class RadiantScimitar : BaseSword
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.WhirlwindAttack; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Bladeweave; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 12; } }
-		public override int AosMaxDamage{ get{ return 14; } }
-		public override int AosSpeed{ get{ return 43; } }
-		public override float MlSpeed{ get{ return 2.50f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 12;
+		public override int AosMaxDamage => 14;
+		public override int AosSpeed => 43;
+		public override float MlSpeed => 2.50f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 12; } }
-		public override int OldMaxDamage{ get{ return 14; } }
-		public override int OldSpeed{ get{ return 43; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 12;
+		public override int OldMaxDamage => 14;
+		public override int OldSpeed => 43;
 
-		public override int DefHitSound{ get{ return 0x23B; } }
-		public override int DefMissSound{ get{ return 0x239; } }
+		public override int DefHitSound => 0x23B;
+		public override int DefMissSound => 0x239;
 
-		public override int InitMinHits{ get{ return 30; } }
-		public override int InitMaxHits{ get{ return 60; } }
+		public override int InitMinHits => 30;
+		public override int InitMaxHits => 60;
 
 		[Constructible]
 		public RadiantScimitar() : base( 0x2D33 )

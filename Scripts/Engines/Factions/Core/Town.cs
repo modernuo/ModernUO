@@ -436,7 +436,7 @@ namespace Server.Factions
 			return ( mob.AccessLevel >= AccessLevel.GameMaster || mob == Finance );
 		}
 
-		public static List<Town> Towns { get { return Reflector.Towns; } }
+		public static List<Town> Towns  => Reflector.Towns;
 
 		public const int SilverCaptureBonus = 10000;
 

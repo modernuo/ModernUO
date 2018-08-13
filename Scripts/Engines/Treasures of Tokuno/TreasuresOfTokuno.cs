@@ -31,7 +31,7 @@ namespace Server.Misc
 				typeof( LeurociansMempoOfFortune ), typeof( LesserPigmentsOfTokuno ), typeof( MetalPigmentsOfTokuno ), typeof( ChestOfHeirlooms )
  			};
 
-		public static Type[] LesserArtifactsTotal { get { return m_LesserArtifactsTotal; } }
+		public static Type[] LesserArtifactsTotal  => m_LesserArtifactsTotal;
 
 		private static TreasuresOfTokunoEra _DropEra = TreasuresOfTokunoEra.None;
 		private static TreasuresOfTokunoEra _RewardEra = TreasuresOfTokunoEra.ToTOne;
@@ -409,7 +409,7 @@ namespace Server.Gumps
 		{
 			private Type m_Type;
 
-			public Type Type { get { return m_Type; } }
+			public Type Type  => m_Type;
 
 			public TypeTileButtonInfo( Type type, int itemID, int hue, TextDefinition label, int localizedToolTip ) : base( itemID, hue, label, localizedToolTip )
 			{

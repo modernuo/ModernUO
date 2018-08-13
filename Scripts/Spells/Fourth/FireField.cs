@@ -20,7 +20,7 @@ namespace Server.Spells.Fourth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
+		public override SpellCircle Circle => SpellCircle.Fourth;
 
 		public FireFieldSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

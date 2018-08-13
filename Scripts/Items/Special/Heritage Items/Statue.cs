@@ -7,10 +7,10 @@ namespace Server.Items
 {
 	public class StoneStatueAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new StoneStatueDeed(); } }
+		public override BaseAddonDeed Deed => new StoneStatueDeed();
 
 		[Constructible]
-		public StoneStatueAddon( bool east ) : base()
+		public StoneStatueAddon( bool east )
 		{
 			if ( east ) // east
 			{
@@ -47,13 +47,13 @@ namespace Server.Items
 
 	public class StoneStatueDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new StoneStatueAddon( m_East ); } }
-		public override int LabelNumber { get { return 1076284; } } // Statue
+		public override BaseAddon Addon => new StoneStatueAddon( m_East );
+		public override int LabelNumber => 1076284; // Statue
 
 		private bool m_East;
 
 		[Constructible]
-		public StoneStatueDeed() : base()
+		public StoneStatueDeed()
 		{
 			LootType = LootType.Blessed;
 		}

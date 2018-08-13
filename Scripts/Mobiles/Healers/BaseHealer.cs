@@ -61,7 +61,7 @@ namespace Server.Mobiles
 			PackItem( new CurePotion() );
 		}
 
-		public override VendorShoeType ShoeType{ get{ return VendorShoeType.Sandals; } }
+		public override VendorShoeType ShoeType => VendorShoeType.Sandals;
 
 		public virtual int GetRobeColor()
 		{

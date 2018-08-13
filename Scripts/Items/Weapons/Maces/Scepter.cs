@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0x26BC, 0x26C6 )]
 	public class Scepter : BaseBashing
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.MortalStrike; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
 
-		public override int AosStrengthReq{ get{ return 40; } }
-		public override int AosMinDamage{ get{ return 14; } }
-		public override int AosMaxDamage{ get{ return 17; } }
-		public override int AosSpeed{ get{ return 30; } }
-		public override float MlSpeed{ get{ return 3.50f; } }
+		public override int AosStrengthReq => 40;
+		public override int AosMinDamage => 14;
+		public override int AosMaxDamage => 17;
+		public override int AosSpeed => 30;
+		public override float MlSpeed => 3.50f;
 
-		public override int OldStrengthReq{ get{ return 40; } }
-		public override int OldMinDamage{ get{ return 14; } }
-		public override int OldMaxDamage{ get{ return 17; } }
-		public override int OldSpeed{ get{ return 30; } }
+		public override int OldStrengthReq => 40;
+		public override int OldMinDamage => 14;
+		public override int OldMaxDamage => 17;
+		public override int OldSpeed => 30;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 110; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 110;
 
 		[Constructible]
 		public Scepter() : base( 0x26BC )

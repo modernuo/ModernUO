@@ -68,7 +68,7 @@ namespace Server.Items
 				#endregion
 			};
 
-		public static Type[] Creatures { get { return m_Creatures; } }
+		public static Type[] Creatures  => m_Creatures;
 
 		private Timer m_Timer;
 		private DateTime m_NextSpawn;
@@ -76,7 +76,7 @@ namespace Server.Items
 		private TimeSpan m_NextSpawnDelay;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime NextSpawn { get { return m_NextSpawn; } }
+		public DateTime NextSpawn  => m_NextSpawn;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SpawnRange { get { return m_SpawnRange; } set { m_SpawnRange = value; } }
@@ -84,7 +84,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan NextSpawnDelay { get { return m_NextSpawnDelay; } set { m_NextSpawnDelay = value; } }
 
-		public override int LabelNumber { get { return 1023633; } } // Brazier
+		public override int LabelNumber => 1023633; // Brazier
 
 		[Constructible]
 		public DeceitBrazier() : base( 0xE31 )

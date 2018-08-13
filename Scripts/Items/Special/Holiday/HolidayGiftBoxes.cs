@@ -46,7 +46,7 @@ namespace Server.Items
 	[FlippableAttribute(0x46A5, 0x46A6)]
 	public class GiftBoxRectangle  : BaseContainer
 	{
-		public override int DefaultGumpID { get { return 0x11E; } }
+		public override int DefaultGumpID => 0x11E;
 
 		[Constructible]
 		public GiftBoxRectangle()
@@ -75,7 +75,7 @@ namespace Server.Items
 
 	public class GiftBoxCube : BaseContainer
 	{
-		public override int DefaultGumpID { get { return 0x11B; } }
+		public override int DefaultGumpID => 0x11B;
 
 		[Constructible]
 		public GiftBoxCube()
@@ -104,7 +104,7 @@ namespace Server.Items
 
 	public class GiftBoxCylinder : BaseContainer
 	{
-		public override int DefaultGumpID { get { return 0x11C; } }
+		public override int DefaultGumpID => 0x11C;
 
 		[Constructible]
 		public GiftBoxCylinder()
@@ -133,7 +133,7 @@ namespace Server.Items
 
 	public class GiftBoxOctogon : BaseContainer
 	{
-		public override int DefaultGumpID { get { return 0x11D; } }
+		public override int DefaultGumpID => 0x11D;
 
 		[Constructible]
 		public GiftBoxOctogon()
@@ -162,7 +162,7 @@ namespace Server.Items
 
 	public class GiftBoxAngel : BaseContainer
 	{
-		public override int DefaultGumpID { get { return 0x11F; } }
+		public override int DefaultGumpID => 0x11F;
 
 		[Constructible]
 		public GiftBoxAngel()

@@ -6,7 +6,7 @@ namespace Server.Engines.MLQuests.Definitions
 	// Base class for escorts providing the AwardHumanInNeed option
 	public class BaseEscort : MLQuest
 	{
-		public virtual bool AwardHumanInNeed { get { return true; } }
+		public virtual bool AwardHumanInNeed  => true;
 
 		public BaseEscort()
 		{

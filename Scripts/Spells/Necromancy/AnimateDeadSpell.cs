@@ -19,10 +19,10 @@ namespace Server.Spells.Necromancy
 				Reagent.DaemonBlood
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 1.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.5 );
 
-		public override double RequiredSkill{ get{ return 40.0; } }
-		public override int RequiredMana{ get{ return 23; } }
+		public override double RequiredSkill => 40.0;
+		public override int RequiredMana => 23;
 
 		public AnimateDeadSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -239,8 +239,7 @@ namespace Server.Spells.Necromancy
 			if ( master == null )
 				return;
 
-			List<Mobile> list = null;
-			m_Table.TryGetValue( master, out list );
+			m_Table.TryGetValue( master, out List<Mobile> list );
 
 			if ( list == null )
 				return;
@@ -256,8 +255,7 @@ namespace Server.Spells.Necromancy
 			if ( master == null )
 				return;
 
-			List<Mobile> list = null;
-			m_Table.TryGetValue( master, out list );
+			m_Table.TryGetValue( master, out List<Mobile> list );
 
 			if ( list == null )
 				m_Table[master] = list = new List<Mobile>();

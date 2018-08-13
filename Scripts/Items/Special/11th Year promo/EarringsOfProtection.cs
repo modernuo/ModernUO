@@ -8,7 +8,6 @@ namespace Server.Items
 	{
 		[Constructible]
 		public EarringBoxSet()
-			: base()
 		{
 			DropItem( new EarringsOfProtection( AosElementAttribute.Physical ) );
 			DropItem( new EarringsOfProtection( AosElementAttribute.Fire ) );

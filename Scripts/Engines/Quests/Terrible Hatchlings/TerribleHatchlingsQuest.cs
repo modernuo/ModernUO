@@ -19,7 +19,7 @@ namespace Server.Engines.Quests.Zento
 				typeof( ReturnObjective )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -46,10 +46,10 @@ namespace Server.Engines.Quests.Zento
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
+		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
 		public override bool IsTutorial => true;
 
-		public override int Picture{ get{ return 0x15CF; } }
+		public override int Picture => 0x15CF;
 
 		public TerribleHatchlingsQuest( PlayerMobile from ) : base( from )
 		{

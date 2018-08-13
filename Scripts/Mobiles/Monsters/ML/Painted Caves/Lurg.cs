@@ -52,7 +52,7 @@ namespace Server.Mobiles
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
 		public override bool GivesMLMinorArtifact => true;
-		public override int TreasureMapLevel{ get{ return 4; } }
+		public override int TreasureMapLevel => 4;
 
 		public Lurg( Serial serial )
 			: base( serial )

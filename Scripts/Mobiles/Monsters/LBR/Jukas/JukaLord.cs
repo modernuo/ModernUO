@@ -108,7 +108,7 @@ namespace Server.Mobiles
 		public override bool AlwaysMurderer => true;
 		public override bool BardImmune => !Core.AOS;
 		public override bool CanRummageCorpses => true;
-		public override int Meat{ get{ return 1; } }
+		public override int Meat => 1;
 
 		public JukaLord( Serial serial ) : base( serial )
 		{

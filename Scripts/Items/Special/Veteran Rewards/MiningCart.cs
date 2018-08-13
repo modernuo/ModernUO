@@ -67,7 +67,7 @@ namespace Server.Items
 		private Timer m_Timer;
 
 		[Constructible]
-		public MiningCart( MiningCartType type ) : base()
+		public MiningCart( MiningCartType type )
 		{
 			m_CartType = type;
 
@@ -305,7 +305,7 @@ namespace Server.Items
 
 	public class MiningCartDeed : BaseAddonDeed, IRewardItem, IRewardOption
 	{
-		public override int LabelNumber{ get{ return 1080385; } } // deed for a mining cart decoration
+		public override int LabelNumber => 1080385; // deed for a mining cart decoration
 
 		public override BaseAddon Addon
 		{
@@ -350,7 +350,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public MiningCartDeed() : base()
+		public MiningCartDeed()
 		{
 			LootType = LootType.Blessed;
 		}

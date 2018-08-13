@@ -401,7 +401,7 @@ namespace Server.Engines.ConPVP
 		{
 			if ( m_TeamInfo == null )
 				return;
-			
+
 			if ( !IsChildOf( from.Backpack ) )
 				return;
 
@@ -549,7 +549,7 @@ namespace Server.Engines.ConPVP
 
 		private int m_Score;
 
-		public Mobile Player { get { return m_Player; } }
+		public Mobile Player  => m_Player;
 
 		string IRankedCTF.Name
 		{
@@ -632,7 +632,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		public CTFGame Game { get { return m_Game; } set { m_Game = value; } }
-		public int TeamID { get { return m_TeamID; } }
+		public int TeamID  => m_TeamID;
 
 		public int Kills { get { return m_Kills; } set { m_Kills = value; } }
 		public int Captures { get { return m_Captures; } set { m_Captures = value; } }
@@ -666,9 +666,7 @@ namespace Server.Engines.ConPVP
 				if ( mob == null )
 					return null;
 
-				CTFPlayerInfo val;
-
-				if ( !m_Players.TryGetValue( mob, out val ) )
+				if (!m_Players.TryGetValue( mob, out CTFPlayerInfo val ))
 					m_Players[mob] = val = new CTFPlayerInfo( this, mob );
 
 				return val;
@@ -789,7 +787,7 @@ namespace Server.Engines.ConPVP
 
 		private TimeSpan m_Duration;
 
-		public CTFTeamInfo[] TeamInfo { get { return m_TeamInfo; } }
+		public CTFTeamInfo[] TeamInfo  => m_TeamInfo;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CTFTeamInfo Team1 { get { return m_TeamInfo[0]; } set { } }
@@ -919,7 +917,7 @@ namespace Server.Engines.ConPVP
 
 		private CTFController m_Controller;
 
-		public CTFController Controller { get { return m_Controller; } }
+		public CTFController Controller  => m_Controller;
 
 		public void Alert( string text )
 		{

@@ -250,7 +250,7 @@ namespace Server.Engines.Events
 
 		public override bool BleedImmune => true;
 
-		public override Poison PoisonImmune { get { return Poison.Regular; } }
+		public override Poison PoisonImmune => Poison.Regular;
 
 		public ZombieSkeleton( Serial serial )
 			: base( serial )

@@ -7,24 +7,24 @@ namespace Server.Items
 	[FlippableAttribute( 0x2D28, 0x2D34 )]
 	public class OrnateAxe : BaseAxe
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Disarm; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
 
-		public override int AosStrengthReq{ get{ return 45; } }
-		public override int AosMinDamage{ get{ return 18; } }
-		public override int AosMaxDamage{ get{ return 20; } }
-		public override int AosSpeed{ get{ return 26; } }
-		public override float MlSpeed{ get{ return 3.50f; } }
+		public override int AosStrengthReq => 45;
+		public override int AosMinDamage => 18;
+		public override int AosMaxDamage => 20;
+		public override int AosSpeed => 26;
+		public override float MlSpeed => 3.50f;
 
-		public override int OldStrengthReq{ get{ return 45; } }
-		public override int OldMinDamage{ get{ return 18; } }
-		public override int OldMaxDamage{ get{ return 20; } }
-		public override int OldSpeed{ get{ return 26; } }
+		public override int OldStrengthReq => 45;
+		public override int OldMinDamage => 18;
+		public override int OldMaxDamage => 20;
+		public override int OldSpeed => 26;
 
-		public override int DefMissSound{ get{ return 0x239; } }
+		public override int DefMissSound => 0x239;
 
-		public override int InitMinHits{ get{ return 30; } }
-		public override int InitMaxHits{ get{ return 60; } }
+		public override int InitMinHits => 30;
+		public override int InitMaxHits => 60;
 
 		[Constructible]
 		public OrnateAxe() : base( 0x2D28 )

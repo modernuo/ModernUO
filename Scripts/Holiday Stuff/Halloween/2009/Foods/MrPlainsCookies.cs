@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class MrPlainsCookies : Food
 	{
-		public override string DefaultName{ get { return "Mr Plain's Cookies"; } }
+		public override string DefaultName => "Mr Plain's Cookies";
 
 		[Constructible]
 		public MrPlainsCookies( )

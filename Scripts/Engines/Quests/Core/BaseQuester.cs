@@ -34,7 +34,7 @@ namespace Server.Engines.Quests
 		public override bool IsActiveVendor => false;
 		public override bool IsInvulnerable => true;
 		public override bool DisallowAllMoves => true;
-		public override bool ClickTitle{ get { return false; } }
+		public override bool ClickTitle => false;
 		public override bool CanTeach => false;
 
 		public virtual int TalkNumber{ get{ return 6146; } } // Talk

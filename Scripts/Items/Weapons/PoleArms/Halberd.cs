@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0x143E, 0x143F )]
 	public class Halberd : BasePoleArm
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.WhirlwindAttack; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ConcussionBlow; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
 
-		public override int AosStrengthReq{ get{ return 95; } }
-		public override int AosMinDamage{ get{ return 18; } }
-		public override int AosMaxDamage{ get{ return 19; } }
-		public override int AosSpeed{ get{ return 25; } }
-		public override float MlSpeed{ get{ return 4.25f; } }
+		public override int AosStrengthReq => 95;
+		public override int AosMinDamage => 18;
+		public override int AosMaxDamage => 19;
+		public override int AosSpeed => 25;
+		public override float MlSpeed => 4.25f;
 
-		public override int OldStrengthReq{ get{ return 45; } }
-		public override int OldMinDamage{ get{ return 5; } }
-		public override int OldMaxDamage{ get{ return 49; } }
-		public override int OldSpeed{ get{ return 25; } }
+		public override int OldStrengthReq => 45;
+		public override int OldMinDamage => 5;
+		public override int OldMaxDamage => 49;
+		public override int OldSpeed => 25;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 80; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 80;
 
 		[Constructible]
 		public Halberd() : base( 0x143E )

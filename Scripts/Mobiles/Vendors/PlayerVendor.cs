@@ -95,7 +95,7 @@ namespace Server.Mobiles
 			Weight = 1.0;
 		}
 
-		public override int DefaultMaxWeight{ get{ return 0; } }
+		public override int DefaultMaxWeight => 0;
 
 		public override bool CheckHold( Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight )
 		{
@@ -779,8 +779,7 @@ namespace Server.Mobiles
 
 		public VendorItem GetVendorItem( Item item )
 		{
-			VendorItem v = null;
-			m_SellItems.TryGetValue(item, out v);
+			m_SellItems.TryGetValue( item, out VendorItem v );
 			return v;
 		}
 

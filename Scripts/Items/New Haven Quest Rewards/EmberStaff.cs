@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class EmberStaff : QuarterStaff
 	{
-		public override int LabelNumber{ get{ return 1077582; } } // Ember Staff
+		public override int LabelNumber => 1077582; // Ember Staff
 
 		[Constructible]
 		public EmberStaff()

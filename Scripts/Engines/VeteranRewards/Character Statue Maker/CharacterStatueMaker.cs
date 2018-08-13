@@ -8,7 +8,7 @@ namespace Server.Items
 {
 	public class CharacterStatueMaker : Item, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1076173; } } // Character Statue Maker
+		public override int LabelNumber => 1076173; // Character Statue Maker
 
 		private bool m_IsRewardItem;
 		private StatueType m_Type;

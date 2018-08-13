@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ParoxysmusCorrodedStein : Item
 	{
-		public override int LabelNumber{ get{ return 1072083; } } // Paroxysmus' Corroded Stein
+		public override int LabelNumber => 1072083; // Paroxysmus' Corroded Stein
 
 		[Constructible]
 		public ParoxysmusCorrodedStein() : base( 0x9D6 )

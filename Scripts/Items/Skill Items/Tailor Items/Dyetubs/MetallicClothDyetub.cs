@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class MetallicClothDyetub : DyeTub
 	{
-		public override int LabelNumber { get { return 1152920; } } // Metallic Cloth ...
+		public override int LabelNumber => 1152920; // Metallic Cloth ...
 
 		public override bool MetallicHues => true;
 

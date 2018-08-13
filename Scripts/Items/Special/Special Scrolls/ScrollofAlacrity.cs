@@ -31,18 +31,18 @@ namespace Server.Items
 {
 	public class ScrollofAlacrity : SpecialScroll
 	{
-		public override int LabelNumber { get { return 1078604; } } // Scroll of Alacrity
-		
-		public override int Message { get { return 1078602; } } /*Using a Scroll of Transcendence for a given skill will permanently increase your current 
+		public override int LabelNumber => 1078604; // Scroll of Alacrity
+
+		public override int Message => 1078602; /*Using a Scroll of Transcendence for a given skill will permanently increase your current
 																*level in that skill by the amount of points displayed on the scroll.
 																*As you may not gain skills beyond your maximum skill cap, any excess points will be lost.*/
-		
-		public override string DefaultTitle { get { return String.Format( "<basefont color=#FFFFFF>Scroll of Alacrity:</basefont>" ); } }
+
+		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Scroll of Alacrity:</basefont>" );
 
 		public ScrollofAlacrity() : this( SkillName.Alchemy )
 		{
 		}
-		
+
 		[Constructible]
 		public ScrollofAlacrity( SkillName skill ) : base( skill, 0.0 )
 		{
@@ -60,20 +60,20 @@ namespace Server.Items
 
 			list.Add(1071345, "{0} 15 Minutes", GetName()); // Skill: ~1_val~
 		}
-		
+
 		public override bool CanUse( Mobile from )
 		{
 			if ( !base.CanUse( from ) )
 				return false;
-			
+
 			PlayerMobile pm = from as PlayerMobile;
-			
+
 			if ( pm == null )
 				return false;
-			
+
 			#region Mondain's Legacy
 			/* to add when skillgain quests will be implemented
-			
+
 			for (int i = pm.Quests.Count - 1; i >= 0; i--)
 			{
 				BaseQuest quest = pm.Quests[i];
@@ -89,10 +89,10 @@ namespace Server.Items
 					}
 				}
 			}
-			
+
 			*/
 			#endregion
-			
+
 			#region Scroll of Alacrity
 			if (pm.AcceleratedStart > DateTime.UtcNow)
 			{
@@ -100,7 +100,7 @@ namespace Server.Items
 				return false;
 			}
 			#endregion
-			
+
 			return true;
 		}
 
@@ -108,12 +108,12 @@ namespace Server.Items
 		{
 			if ( !CanUse( from ) )
 				return;
-			
+
 			PlayerMobile pm = from as PlayerMobile;
-			
+
 			if ( pm == null )
 				return;
-			
+
 			double tskill = from.Skills[Skill].Base;
 			double tcap = from.Skills[Skill].Cap;
 
@@ -123,9 +123,9 @@ namespace Server.Items
 														*If you are at your total skill cap, you must use a Powerscroll to increase your current skill cap.*/
 				return;
 			}
-			
+
 			from.SendLocalizedMessage( 1077956 ); // You are infused with intense energy. You are under the effects of an accelerated skillgain scroll.
-			
+
 			Effects.PlaySound( from.Location, from.Map, 0x1E9 );
 			Effects.SendTargetParticles( from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100 );
 

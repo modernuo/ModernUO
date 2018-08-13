@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ABauble : Item
 	{
-		public override int LabelNumber{ get{ return 1073137; } } // A bauble
+		public override int LabelNumber => 1073137; // A bauble
 
 		[Constructible]
 		public ABauble() : base( 0x23B )

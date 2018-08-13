@@ -44,7 +44,7 @@ namespace Server.Engines.Quests.Haven
 				typeof( Haven.FewReagentsConversation )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -82,7 +82,7 @@ namespace Server.Engines.Quests.Haven
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.MaxValue; } }
+		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
 		public override bool IsTutorial => true;
 
 		public override int Picture

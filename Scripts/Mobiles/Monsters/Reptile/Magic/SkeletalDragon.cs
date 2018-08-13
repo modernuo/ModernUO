@@ -54,18 +54,18 @@ namespace Server.Mobiles
 
 		public override bool ReacquireOnMovement => true;
 		public override bool HasBreath => true; // fire breath enabled
-		public override int BreathFireDamage{ get{ return 0; } }
-		public override int BreathColdDamage{ get{ return 100; } }
-		public override int BreathEffectHue{ get{ return 0x480; } }
-		public override double BonusPetDamageScalar{ get{ return (Core.SE)? 3.0 : 1.0; } }
+		public override int BreathFireDamage => 0;
+		public override int BreathColdDamage => 100;
+		public override int BreathEffectHue => 0x480;
+		public override double BonusPetDamageScalar => (Core.SE)? 3.0 : 1.0;
 		// TODO: Undead summoning?
 
 		public override bool AutoDispel => true;
 		public override Poison PoisonImmune => Poison.Lethal;
 		public override bool BleedImmune => true;
-		public override int Meat{ get{ return 19; } } // where's it hiding these? :)
-		public override int Hides{ get{ return 20; } }
-		public override HideType HideType{ get{ return HideType.Barbed; } }
+		public override int Meat => 19; // where's it hiding these? :)
+		public override int Hides => 20;
+		public override HideType HideType => HideType.Barbed;
 
 		public SkeletalDragon( Serial serial ) : base( serial )
 		{

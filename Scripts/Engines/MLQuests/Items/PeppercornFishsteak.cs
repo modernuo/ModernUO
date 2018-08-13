@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class PeppercornFishsteak : FishSteak
 	{
-		public override int LabelNumber{ get{ return 1075557; } } // peppercorn fishsteak
+		public override int LabelNumber => 1075557; // peppercorn fishsteak
 
 		[Constructible]
-		public PeppercornFishsteak() : base()
+		public PeppercornFishsteak()
 		{
 			Hue = 0x222;
 		}

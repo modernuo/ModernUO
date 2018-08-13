@@ -12,7 +12,7 @@ namespace Server.Engines.Reports
 			return new ReportItem();
 		}
 
-		public override PersistableType TypeID{ get{ return ThisTypeID; } }
+		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
 		private ItemValueCollection m_Values;

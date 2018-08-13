@@ -27,7 +27,7 @@ namespace Server.Spells
 		public string Mantra{ get{ return m_Info.Mantra; } }
 		public Type[] Reagents{ get{ return m_Info.Reagents; } }
 		public Item Scroll{ get{ return m_Scroll; } }
-		public long StartCastTime { get { return m_StartCastTime; } }
+		public long StartCastTime  => m_StartCastTime;
 
 		private static TimeSpan NextSpellDelay = TimeSpan.FromSeconds( 0.75 );
 		private static TimeSpan AnimateDelay = TimeSpan.FromSeconds( 1.5 );
@@ -41,9 +41,9 @@ namespace Server.Spells
 
 		public virtual bool DelayedDamage{ get{ return false; } }
 
-        public virtual bool DelayedDamageStacking { get { return true; } }
-        //In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only 
-        //Expo & Magic Arrow have enough delay and a short enough cast time to bring up 
+        public virtual bool DelayedDamageStacking  => true;
+        //In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
+        //Expo & Magic Arrow have enough delay and a short enough cast time to bring up
         //the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
 		//of course, two MA's won't.
 
@@ -55,8 +55,7 @@ namespace Server.Spells
 
 			public void Add( Mobile m, Timer t )
 			{
-				Timer oldTimer;
-				if( m_Contexts.TryGetValue( m, out oldTimer ) )
+				if (m_Contexts.TryGetValue( m, out Timer oldTimer ))
 				{
 					oldTimer.Stop();
 					m_Contexts.Remove( m );
@@ -76,9 +75,7 @@ namespace Server.Spells
 			if( DelayedDamageStacking )
 				return; //Sanity
 
-			DelayedDamageContextWrapper contexts;
-
-			if( !m_ContextTable.TryGetValue( GetType(), out contexts ) )
+			if (!m_ContextTable.TryGetValue( GetType(), out DelayedDamageContextWrapper contexts ))
 			{
 				contexts = new DelayedDamageContextWrapper();
 				m_ContextTable.Add( GetType(), contexts );
@@ -89,9 +86,7 @@ namespace Server.Spells
 
 		public void RemoveDelayedDamageContext( Mobile m )
 		{
-			DelayedDamageContextWrapper contexts;
-
-			if( !m_ContextTable.TryGetValue( GetType(), out contexts ) )
+			if (!m_ContextTable.TryGetValue( GetType(), out DelayedDamageContextWrapper contexts ))
 				return;
 
 			contexts.Remove( m );
@@ -140,7 +135,7 @@ namespace Server.Spells
 			damageBonus += intBonus;
 
 			int sdiBonus = AosAttributes.GetValue( m_Caster, AosAttribute.SpellDamage );
-			// PvP spell damage increase cap of 15% from an item’s magic property
+			// PvP spell damage increase cap of 15% from an itemï¿½s magic property
 			if ( playerVsPlayer && sdiBonus > 15 )
 				sdiBonus = 15;
 
@@ -667,8 +662,8 @@ namespace Server.Spells
 
 		public abstract TimeSpan CastDelayBase { get; }
 
-		public virtual double CastDelayFastScalar { get { return 1; } }
-		public virtual double CastDelaySecondsPerTick { get { return 0.25; } }
+		public virtual double CastDelayFastScalar  => 1;
+		public virtual double CastDelaySecondsPerTick  => 0.25;
 		public virtual TimeSpan CastDelayMinimum { get { return TimeSpan.FromSeconds( 0.25 ); } }
 
 		//public virtual int CastDelayBase{ get{ return 3; } }
@@ -681,10 +676,10 @@ namespace Server.Spells
 			if ( m_Scroll is BaseWand )
 				return Core.ML ? CastDelayBase : TimeSpan.Zero; // TODO: Should FC apply to wands?
 
-			// Faster casting cap of 2 (if not using the protection spell) 
-			// Faster casting cap of 0 (if using the protection spell) 
-			// Paladin spells are subject to a faster casting cap of 4 
-			// Paladins with magery of 70.0 or above are subject to a faster casting cap of 2 
+			// Faster casting cap of 2 (if not using the protection spell)
+			// Faster casting cap of 0 (if using the protection spell)
+			// Paladin spells are subject to a faster casting cap of 4
+			// Paladins with magery of 70.0 or above are subject to a faster casting cap of 2
 			int fcMax = 4;
 
 			if ( CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy || ( CastSkill == SkillName.Chivalry && m_Caster.Skills[SkillName.Magery].Value >= 70.0 ) )

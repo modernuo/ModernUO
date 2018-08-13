@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class GrizzledSkullCollection : Item
 	{
-		public override int LabelNumber{ get{ return 1072116; } } // Grizzled Skull collection
+		public override int LabelNumber => 1072116; // Grizzled Skull collection
 
 		[Constructible]
 		public GrizzledSkullCollection() : base( 0x21FC )

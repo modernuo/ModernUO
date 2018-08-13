@@ -16,10 +16,10 @@ namespace Server.Spells.Necromancy
 				Reagent.NoxCrystal
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( (Core.ML ? 1.75 : 1.5) ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( (Core.ML ? 1.75 : 1.5) );
 
-		public override double RequiredSkill { get { return 50.0; } }
-		public override int RequiredMana { get { return 17; } }
+		public override double RequiredSkill => 50.0;
+		public override int RequiredMana => 17;
 
 		public PoisonStrikeSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )

@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a hiryu corpse" )]
 	public class LesserHiryu : BaseMount
 	{
-		public override double WeaponAbilityChance { get { return 0.07; } } /* 1 in 15 chance of using; 1 in 5 chance of success */
+		public override double WeaponAbilityChance => 0.07; /* 1 in 15 chance of using; 1 in 5 chance of success */
 
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
@@ -146,10 +146,10 @@ namespace Server.Mobiles
 			return bushidoChance > tamingChance ? bushidoChance : tamingChance;
 		}
 
-		public override int TreasureMapLevel { get { return 3; } }
-		public override int Meat { get { return 16; } }
-		public override int Hides { get { return 60; } }
-		public override FoodType FavoriteFood { get { return FoodType.Meat; } }
+		public override int TreasureMapLevel => 3;
+		public override int Meat => 16;
+		public override int Hides => 60;
+		public override FoodType FavoriteFood => FoodType.Meat;
 		public override bool CanAngerOnTame => true;
 
 		public override void OnGaveMeleeAttack( Mobile defender )

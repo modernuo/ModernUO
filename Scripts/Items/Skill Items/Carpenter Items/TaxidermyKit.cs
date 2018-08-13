@@ -9,7 +9,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x1EBA, 0x1EBB )]
 	public class TaxidermyKit : Item
 	{
-		public override int LabelNumber{ get{ return 1041279; } } // a taxidermy kit
+		public override int LabelNumber => 1041279; // a taxidermy kit
 
 		[Constructible]
 		public TaxidermyKit() : base( 0x1EBA )
@@ -78,10 +78,10 @@ namespace Server.Items
             private int m_DeedNumber;
             private int m_AddonNumber;
 
-            public Type CreatureType { get { return m_CreatureType; } }
-            public int NorthID { get { return m_NorthID; } }
-            public int DeedNumber { get { return m_DeedNumber; } }
-            public int AddonNumber { get { return m_AddonNumber; } }
+            public Type CreatureType  => m_CreatureType;
+            public int NorthID  => m_NorthID;
+            public int DeedNumber  => m_DeedNumber;
+            public int AddonNumber  => m_AddonNumber;
         }
 
 
@@ -174,7 +174,7 @@ namespace Server.Items
 
 	public class TrophyAddon : Item, IAddon
 	{
-		public override bool ForceShowProperties { get { return ObjectPropertyList.Enabled; } }
+		public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
 		private int m_WestID;
 		private int m_NorthID;
@@ -202,7 +202,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int AnimalWeight{ get{ return m_AnimalWeight; } set{ m_AnimalWeight = value; InvalidateProperties(); } }
 
-		public override int LabelNumber{ get{ return m_AddonNumber; } }
+		public override int LabelNumber => m_AddonNumber;
 
 		[Constructible]
 		public TrophyAddon( Mobile from, int itemID, int westID, int northID, int deedNumber, int addonNumber ) : this( from, itemID, westID, northID, deedNumber, addonNumber, null, 0 )
@@ -370,7 +370,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int AnimalWeight{ get{ return m_AnimalWeight; } set{ m_AnimalWeight = value; InvalidateProperties(); } }
 
-		public override int LabelNumber{ get{ return m_DeedNumber; } }
+		public override int LabelNumber => m_DeedNumber;
 
 		[Constructible]
 		public TrophyDeed( int westID, int northID, int deedNumber, int addonNumber ) : this( westID, northID, deedNumber, addonNumber, null, 0 )

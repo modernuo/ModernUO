@@ -7,10 +7,10 @@ namespace Server.Items
 {
 	public class VanityAddon : BaseAddonContainer
 	{
-		public override BaseAddonContainerDeed Deed { get { return new VanityDeed(); } }
-		public override int LabelNumber { get { return 1074027; } } // Vanity
-		public override int DefaultGumpID { get { return 0x51; } }
-		public override int DefaultDropSound { get { return 0x42; } }
+		public override BaseAddonContainerDeed Deed => new VanityDeed();
+		public override int LabelNumber => 1074027; // Vanity
+		public override int DefaultGumpID => 0x51;
+		public override int DefaultDropSound => 0x42;
 
 		[Constructible]
 		public VanityAddon( bool east ) : base( east ? 0xA44 : 0xA3C )
@@ -46,13 +46,13 @@ namespace Server.Items
 
 	public class VanityDeed : BaseAddonContainerDeed
 	{
-		public override BaseAddonContainer Addon { get { return new VanityAddon( m_East ); } }
-		public override int LabelNumber { get { return 1074027; } } // Vanity
+		public override BaseAddonContainer Addon => new VanityAddon( m_East );
+		public override int LabelNumber => 1074027; // Vanity
 
 		private bool m_East;
 
 		[Constructible]
-		public VanityDeed() : base()
+		public VanityDeed()
 		{
 			LootType = LootType.Blessed;
 		}

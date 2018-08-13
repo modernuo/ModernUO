@@ -9,13 +9,13 @@ namespace Server.Spells.Spellweaving
 				-1
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 3.5 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 3.5 );
 
-		public override double RequiredSkill { get { return 24.0; } }
-		public override int RequiredMana { get { return 32; } }
+		public override double RequiredSkill => 24.0;
+		public override int RequiredMana => 32;
 
-		public override int Body { get { return 0x302; } }
-		public override int Hue { get { return 0x48F; } }
+		public override int Body => 0x302;
+		public override int Hue => 0x48F;
 
 		public EtherealVoyageSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )

@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class CurtainsComponent : AddonComponent, IDyable
 	{
-		public override int LabelNumber { get { return 1076280; } } // Curtains
+		public override int LabelNumber => 1076280; // Curtains
 		public override bool DisplayWeight => false;
 
 		private int m_ClosedID;
@@ -85,11 +85,11 @@ namespace Server.Items
 
 	public class CurtainsAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new CurtainsDeed(); } }
+		public override BaseAddonDeed Deed => new CurtainsDeed();
 		public override bool RetainDeedHue => true;
 
 		[Constructible]
-		public CurtainsAddon( bool east ) : base()
+		public CurtainsAddon( bool east )
 		{
 			if ( east ) // east
 			{
@@ -128,13 +128,13 @@ namespace Server.Items
 
 	public class CurtainsDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new CurtainsAddon( m_East ); } }
-		public override int LabelNumber { get { return 1076280; } } // Curtains
+		public override BaseAddon Addon => new CurtainsAddon( m_East );
+		public override int LabelNumber => 1076280; // Curtains
 
 		private bool m_East;
 
 		[Constructible]
-		public CurtainsDeed() : base()
+		public CurtainsDeed()
 		{
 			LootType = LootType.Blessed;
 		}

@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RuinedTapestry : Item
 	{
-		public override string DefaultName{ get { return "Ruined Tapestry "; } }
+		public override string DefaultName => "Ruined Tapestry ";
 
 		[Constructible]
 		public RuinedTapestry()

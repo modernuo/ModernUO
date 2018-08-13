@@ -38,13 +38,9 @@ namespace Server {
 			}
 		}
 
-		public static bool IsHardwareRNG {
-			get { return _Random is IHardwareRNG; }
-		}
+		public static bool IsHardwareRNG  => _Random is IHardwareRNG;
 
-		public static Type Type {
-			get { return _Random.GetType(); }
-		}
+		public static Type Type  => _Random.GetType();
 
 		public static int Next(int c) {
 			return _Random.Next(c);
@@ -177,7 +173,7 @@ namespace Server {
 			lock (_sync) {
 				CheckSwap(1);
 				return _Working[_Index++];
-			}	
+			}
 		}
 
 		public void NextBytes(byte[] b) {
@@ -510,7 +506,7 @@ namespace Server {
 				return;
 
 			_filled.WaitOne();
-			
+
 			byte[] b = _Working;
 			_Working = _Buffer;
 			_Buffer = b;

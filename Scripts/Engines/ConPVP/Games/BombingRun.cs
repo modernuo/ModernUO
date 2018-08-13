@@ -705,7 +705,7 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
-		public Mobile Thrower { get { return m_Thrower; } }
+		public Mobile Thrower  => m_Thrower;
 
 		public bool CheckScore( BRGoal goal, Mobile m, int points )
 		{
@@ -1178,7 +1178,7 @@ namespace Server.Engines.ConPVP
 
 		private int m_Score;
 
-		public Mobile Player { get { return m_Player; } }
+		public Mobile Player  => m_Player;
 
 		public int CompareTo( object obj )
 		{
@@ -1287,7 +1287,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		public BRGame Game { get { return m_Game; } set { m_Game = value; } }
-		public int TeamID { get { return m_TeamID; } }
+		public int TeamID  => m_TeamID;
 
 		public int Kills { get { return m_Kills; } set { m_Kills = value; } }
 		public int Captures { get { return m_Captures; } set { m_Captures = value; } }
@@ -1426,7 +1426,7 @@ namespace Server.Engines.ConPVP
 		private TimeSpan m_Duration;
 		private Point3D m_BombHome;
 
-		public BRTeamInfo[] TeamInfo { get { return m_TeamInfo; } }
+		public BRTeamInfo[] TeamInfo  => m_TeamInfo;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BRTeamInfo Team1 { get { return m_TeamInfo[0]; } set { } }
@@ -1571,7 +1571,7 @@ namespace Server.Engines.ConPVP
 
 		private BRController m_Controller;
 
-		public BRController Controller { get { return m_Controller; } }
+		public BRController Controller  => m_Controller;
 
 		public void Alert( string text )
 		{

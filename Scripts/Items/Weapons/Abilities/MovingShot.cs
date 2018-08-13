@@ -12,8 +12,8 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana{ get{ return 15; } }
-		public override int AccuracyBonus{ get{ return -25; } }
+		public override int BaseMana => 15;
+		public override int AccuracyBonus => -25;
 
 		public override bool OnBeforeSwing( Mobile attacker, Mobile defender )
 		{

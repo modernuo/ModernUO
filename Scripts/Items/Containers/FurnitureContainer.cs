@@ -385,9 +385,7 @@ namespace Server.Items
 
 		public static void Close( Container c )
 		{
-			Timer t = null;
-
-			m_Table.TryGetValue( c, out t );
+			m_Table.TryGetValue( c, out Timer t );
 
 			if ( t != null )
 			{

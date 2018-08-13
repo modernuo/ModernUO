@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	[CorpseName( "a slimey corpse" )]
 	public class CorrosiveSlime : BaseCreature
 	{
-		public override string DefaultName { get { return "a corrosive slime"; } }
+		public override string DefaultName => "a corrosive slime";
 
 		[Constructible]
 		public CorrosiveSlime() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -53,10 +53,10 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems );
 		}
 
-		public override Poison PoisonImmune { get { return Poison.Regular; } }
-		public override Poison HitPoison { get { return Poison.Regular; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Fish; } }
-		
+		public override Poison PoisonImmune => Poison.Regular;
+		public override Poison HitPoison => Poison.Regular;
+		public override FoodType FavoriteFood => FoodType.Fish;
+
 		//TODO: Damage weapon via acid
 
 		public CorrosiveSlime( Serial serial ) : base( serial )

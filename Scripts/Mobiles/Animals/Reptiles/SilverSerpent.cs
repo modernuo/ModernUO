@@ -8,8 +8,8 @@ namespace Server.Mobiles
 	[TypeAlias( "Server.Mobiles.Silverserpant" )]
 	public class SilverSerpent : BaseCreature
 	{
-		public override Faction FactionAllegiance { get { return TrueBritannians.Instance; } }
-		public override Ethics.Ethic EthicAllegiance { get { return Ethics.Ethic.Hero; } }
+		public override Faction FactionAllegiance => TrueBritannians.Instance;
+		public override Ethics.Ethic EthicAllegiance => Ethics.Ethic.Hero;
 
 		public override string DefaultName => "a silver serpent";
 
@@ -55,7 +55,7 @@ namespace Server.Mobiles
 
 		public override bool DeathAdderCharmable => true;
 
-		public override int Meat{ get{ return 1; } }
+		public override int Meat => 1;
 		public override Poison PoisonImmune => Poison.Lethal;
 		public override Poison HitPoison => Poison.Lethal;
 

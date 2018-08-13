@@ -45,7 +45,7 @@ namespace Server.Mobiles
 			VirtualArmor = 50;
 		}
 
-		public override int TreasureMapLevel{ get{ return Core.AOS ? 4 : 0; } }
+		public override int TreasureMapLevel => Core.AOS ? 4 : 0;
 
 		public override void GenerateLoot()
 		{

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class NotarizedApplication : Item
 	{
-		public override int LabelNumber{ get{ return 1073135; } } // Notarized Application
+		public override int LabelNumber => 1073135; // Notarized Application
 
 		public override bool Nontransferable => true;
 

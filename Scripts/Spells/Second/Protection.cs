@@ -8,7 +8,7 @@ namespace Server.Spells.Second
 	public class ProtectionSpell : MagerySpell
 	{
 		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry { get { return m_Registry; } }
+		public static Hashtable Registry  => m_Registry;
 
 		private static SpellInfo m_Info = new SpellInfo(
 				"Protection", "Uus Sanct",
@@ -19,7 +19,7 @@ namespace Server.Spells.Second
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Second; } }
+		public override SpellCircle Circle => SpellCircle.Second;
 
 		public ProtectionSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -53,8 +53,8 @@ namespace Server.Spells.Second
 			 * a decreased "resisting spells" skill value by -35 + (Inscription/20),
 			 * and a slower casting speed modifier (technically, a negative "faster cast speed") of 2 points.
 			 * The protection spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-			 * Reactive Armor, Protection, and Magic Reflection will stay on—even after logging out,
-			 * even after dying—until you “turn them off” by casting them again.
+			 * Reactive Armor, Protection, and Magic Reflection will stay onï¿½even after logging out,
+			 * even after dyingï¿½until you ï¿½turn them offï¿½ by casting them again.
 			 */
 
 			object[] mods = (object[])m_Table[target];

@@ -11,7 +11,7 @@ namespace Server.Items
 {
 	public class SoulStone : Item, ISecurable
 	{
-		public override int LabelNumber { get { return 1030899; } } // soulstone
+		public override int LabelNumber => 1030899; // soulstone
 
 		private int m_ActiveItemID;
 		private int m_InactiveItemID;
@@ -819,7 +819,7 @@ namespace Server.Items
 	{
 		private int m_UsesRemaining;
 
-		public override int LabelNumber { get { return 1071000; } } // soulstone fragment
+		public override int LabelNumber => 1071000; // soulstone fragment
 
 		[Constructible]
 		public SoulstoneFragment() : this( 5, null )

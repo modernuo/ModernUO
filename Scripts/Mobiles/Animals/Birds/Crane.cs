@@ -37,8 +37,8 @@ namespace Server.Mobiles
 			VirtualArmor = 5;
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override int Feathers{ get{ return 25; } }
+		public override int Meat => 1;
+		public override int Feathers => 25;
 
 
 		public override int GetAngerSound()

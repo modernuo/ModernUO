@@ -5,7 +5,7 @@ namespace Server.Items
 	[Flippable( 0xC14, 0xC15 )]
 	public class BrokenBookcaseComponent : AddonComponent
 	{
-		public override int LabelNumber { get { return 1076258; } } // Broken Bookcase
+		public override int LabelNumber => 1076258; // Broken Bookcase
 
 		public BrokenBookcaseComponent() : base( 0xC14 )
 		{
@@ -32,10 +32,10 @@ namespace Server.Items
 
 	public class BrokenBookcaseAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new BrokenBookcaseDeed(); } }
+		public override BaseAddonDeed Deed => new BrokenBookcaseDeed();
 
 		[Constructible]
-		public BrokenBookcaseAddon() : base()
+		public BrokenBookcaseAddon()
 		{
 			AddComponent( new BrokenBookcaseComponent(), 0, 0, 0 );
 		}
@@ -61,11 +61,11 @@ namespace Server.Items
 
 	public class BrokenBookcaseDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new BrokenBookcaseAddon(); } }
-		public override int LabelNumber { get { return 1076258; } } // Broken Bookcase
+		public override BaseAddon Addon => new BrokenBookcaseAddon();
+		public override int LabelNumber => 1076258; // Broken Bookcase
 
 		[Constructible]
-		public BrokenBookcaseDeed() : base()
+		public BrokenBookcaseDeed()
 		{
 			LootType = LootType.Blessed;
 		}

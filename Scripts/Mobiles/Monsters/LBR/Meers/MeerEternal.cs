@@ -59,7 +59,7 @@ namespace Server.Mobiles
 		public override bool BardImmune => !Core.AOS;
 		public override bool CanRummageCorpses => true;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int TreasureMapLevel{ get{ return Core.AOS ? 5 : 4; } }
+		public override int TreasureMapLevel => Core.AOS ? 5 : 4;
 
 		public override bool InitialInnocent => true;
 

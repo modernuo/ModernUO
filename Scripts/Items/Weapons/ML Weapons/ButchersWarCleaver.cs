@@ -5,21 +5,21 @@ namespace Server.Items
 {
 	public class ButchersWarCleaver : WarCleaver
 	{
-		public override int LabelNumber{ get{ return 1073526; } } // butcher's war cleaver
+		public override int LabelNumber => 1073526; // butcher's war cleaver
 
 		[Constructible]
-		public ButchersWarCleaver() : base()
+		public ButchersWarCleaver()
 		{
 		}
 
 		public ButchersWarCleaver( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void AppendChildNameProperties( ObjectPropertyList list )
 		{
 			base.AppendChildNameProperties( list );
-			
+
 			list.Add( 1072512 ); // Bovine Slayer
 		}
 

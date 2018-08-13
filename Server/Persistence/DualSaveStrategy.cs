@@ -30,14 +30,12 @@ using Server.Guilds;
 
 namespace Server {
 	public sealed class DualSaveStrategy : StandardSaveStrategy {
-		public override string Name {
-			get { return "Dual"; }
-		}
+		public override string Name  => "Dual";
 
 		public DualSaveStrategy() {
 		}
 
-		public override void Save( SaveMetrics metrics, bool permitBackgroundWrite ) 
+		public override void Save( SaveMetrics metrics, bool permitBackgroundWrite )
 		{
 			this.PermitBackgroundWrite = permitBackgroundWrite;
 

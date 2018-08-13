@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class StoutWhip : Item
 	{
-		public override int LabelNumber{ get{ return 1074812; } } // Stout Whip
+		public override int LabelNumber => 1074812; // Stout Whip
 
 		[Constructible]
 		public StoutWhip() : base( 0x166F )

@@ -13,8 +13,8 @@ namespace Server.Engines.Mahjong
 		private MahjongGame m_Game;
 		private Point2D m_Position;
 
-		public MahjongGame Game { get { return m_Game; } }
-		public Point2D Position { get { return m_Position; } }
+		public MahjongGame Game  => m_Game;
+		public Point2D Position  => m_Position;
 
 		public MahjongWallBreakIndicator( MahjongGame game, Point2D position )
 		{

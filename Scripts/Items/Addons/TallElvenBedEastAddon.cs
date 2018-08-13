@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class TallElvenBedEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new TallElvenBedEastDeed(); } }
+		public override BaseAddonDeed Deed => new TallElvenBedEastDeed();
 
 		[Constructible]
 		public TallElvenBedEastAddon()
@@ -37,8 +37,8 @@ namespace Server.Items
 
 	public class TallElvenBedEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new TallElvenBedEastAddon(); } }
-		public override int LabelNumber{ get{ return 1072859; } } // tall elven bed (east)
+		public override BaseAddon Addon => new TallElvenBedEastAddon();
+		public override int LabelNumber => 1072859; // tall elven bed (east)
 
 		[Constructible]
 		public TallElvenBedEastDeed()

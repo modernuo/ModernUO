@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class DeadlyPoisonPotion : BasePoisonPotion
 	{
-		public override Poison Poison{ get{ return Poison.Deadly; } }
+		public override Poison Poison => Poison.Deadly;
 
-		public override double MinPoisoningSkill{ get{ return 95.0; } }
-		public override double MaxPoisoningSkill{ get{ return 100.0; } }
+		public override double MinPoisoningSkill => 95.0;
+		public override double MaxPoisoningSkill => 100.0;
 
 		[Constructible]
 		public DeadlyPoisonPotion() : base( PotionEffect.PoisonDeadly )

@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class RunedPrism : Item
 	{
-		public override int LabelNumber{ get{ return 1073465; } } // runed prism
+		public override int LabelNumber => 1073465; // runed prism
 
 		[Constructible]
 		public RunedPrism() : base( 0x2F57 )

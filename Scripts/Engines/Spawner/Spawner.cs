@@ -28,7 +28,7 @@ namespace Server.Mobiles
 		private bool m_Group;
 		private WayPoint m_WayPoint;
 
-		public override string DefaultName{ get{ return "Spawner"; } }
+		public override string DefaultName => "Spawner";
 		public bool IsFull{ get{ return ( m_Spawned != null && m_Spawned.Count >= m_Count ); } }
 		public bool IsEmpty{ get{ return ( m_Spawned != null && m_Spawned.Count == 0 ); } }
 
@@ -735,8 +735,7 @@ namespace Server.Mobiles
 
 			if ( spawn != null )
 			{
-				SpawnerEntry entry;
-				m_Spawned.TryGetValue( spawn, out entry );
+				m_Spawned.TryGetValue( spawn, out SpawnerEntry entry );
 
 				if ( entry != null )
 					entry.Spawned.Remove( spawn );
@@ -1118,7 +1117,7 @@ namespace Server.Mobiles
 
 		public EntryFlags Valid{ get{ return m_Valid; } set{ m_Valid = value; } }
 
-		public List<ISpawnable> Spawned{ get { return m_Spawned; } }
+		public List<ISpawnable> Spawned => m_Spawned;
 		public bool IsFull{ get{ return m_Spawned.Count >= m_SpawnedMaxCount; } }
 
 		public SpawnerEntry( string name, int probability, int maxcount )

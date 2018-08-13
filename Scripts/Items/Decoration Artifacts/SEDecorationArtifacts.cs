@@ -6,7 +6,7 @@ namespace Server.Items
 	#region Basket1Artifact
 	public class Basket1Artifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 1; } }
+		public override int ArtifactRarity => 1;
 
 		[Constructible]
 		public Basket1Artifact() : base( 0x24DD )
@@ -36,7 +36,7 @@ namespace Server.Items
 	#region Basket2Artifact
 	public class Basket2Artifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 1; } }
+		public override int ArtifactRarity => 1;
 
 		[Constructible]
 		public Basket2Artifact() : base( 0x24D7 )
@@ -66,7 +66,7 @@ namespace Server.Items
 	#region Basket3WestArtifact
 	public class Basket3WestArtifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 1; } }
+		public override int ArtifactRarity => 1;
 
 		[Constructible]
 		public Basket3WestArtifact() : base( 0x24D9 )
@@ -96,7 +96,7 @@ namespace Server.Items
 	#region Basket3NorthArtifact
 	public class Basket3NorthArtifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 1; } }
+		public override int ArtifactRarity => 1;
 
 		[Constructible]
 		public Basket3NorthArtifact() : base( 0x24DA )
@@ -126,7 +126,7 @@ namespace Server.Items
 	#region Basket4Artifact
 	public class Basket4Artifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 2; } }
+		public override int ArtifactRarity => 2;
 
 		[Constructible]
 		public Basket4Artifact() : base( 0x24D8 )
@@ -156,7 +156,7 @@ namespace Server.Items
 	#region Basket5WestArtifact
 	public class Basket5WestArtifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 2; } }
+		public override int ArtifactRarity => 2;
 
 		[Constructible]
 		public Basket5WestArtifact() : base( 0x24DC )
@@ -186,7 +186,7 @@ namespace Server.Items
 	#region Basket5NorthArtifact
 	public class Basket5NorthArtifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 2; } }
+		public override int ArtifactRarity => 2;
 
 		[Constructible]
 		public Basket5NorthArtifact() : base( 0x24DB )
@@ -216,7 +216,7 @@ namespace Server.Items
 	#region Basket6Artifact
 	public class Basket6Artifact : BaseDecorationContainerArtifact
 	{
-		public override int ArtifactRarity{ get{ return 2; } }
+		public override int ArtifactRarity => 2;
 
 		[Constructible]
 		public Basket6Artifact() : base( 0x24D5 )
@@ -246,7 +246,7 @@ namespace Server.Items
 	#region BowlArtifact
 	public class BowlArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public BowlArtifact() : base( 0x24DE )
@@ -276,7 +276,7 @@ namespace Server.Items
 	#region BowlsVerticalArtifact
 	public class BowlsVerticalArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public BowlsVerticalArtifact() : base( 0x24DF )
@@ -306,7 +306,7 @@ namespace Server.Items
 	#region BowlsHorizontalArtifact
 	public class BowlsHorizontalArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public BowlsHorizontalArtifact() : base( 0x24E0 )
@@ -336,7 +336,7 @@ namespace Server.Items
 	#region CupsArtifact
 	public class CupsArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public CupsArtifact() : base( 0x24E1 )
@@ -366,7 +366,7 @@ namespace Server.Items
 	#region FanWestArtifact
 	public class FanWestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public FanWestArtifact() : base( 0x240A )
@@ -396,7 +396,7 @@ namespace Server.Items
 	#region FanNorthArtifact
 	public class FanNorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public FanNorthArtifact() : base( 0x2409 )
@@ -426,7 +426,7 @@ namespace Server.Items
 	#region TripleFanWestArtifact
 	public class TripleFanWestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public TripleFanWestArtifact() : base( 0x240C )
@@ -456,7 +456,7 @@ namespace Server.Items
 	#region TripleFanNorthArtifact
 	public class TripleFanNorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public TripleFanNorthArtifact() : base( 0x240B )
@@ -486,7 +486,7 @@ namespace Server.Items
 	#region FlowersArtifact
 	public class FlowersArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 7; } }
+		public override int ArtifactRarity => 7;
 
 		[Constructible]
 		public FlowersArtifact() : base( 0x284A )
@@ -516,7 +516,7 @@ namespace Server.Items
 	#region Painting1WestArtifact
 	public class Painting1WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public Painting1WestArtifact() : base( 0x240E )
@@ -546,7 +546,7 @@ namespace Server.Items
 	#region Painting1NorthArtifact
 	public class Painting1NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public Painting1NorthArtifact() : base( 0x240D )
@@ -576,7 +576,7 @@ namespace Server.Items
 	#region Painting2WestArtifact
 	public class Painting2WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public Painting2WestArtifact() : base( 0x2410 )
@@ -606,7 +606,7 @@ namespace Server.Items
 	#region Painting2NorthArtifact
 	public class Painting2NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public Painting2NorthArtifact() : base( 0x240F )
@@ -636,7 +636,7 @@ namespace Server.Items
 	#region Painting3Artifact
 	public class Painting3Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 5; } }
+		public override int ArtifactRarity => 5;
 
 		[Constructible]
 		public Painting3Artifact() : base( 0x2411 )
@@ -666,7 +666,7 @@ namespace Server.Items
 	#region Painting4WestArtifact
 	public class Painting4WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 6; } }
+		public override int ArtifactRarity => 6;
 
 		[Constructible]
 		public Painting4WestArtifact() : base( 0x2412 )
@@ -696,7 +696,7 @@ namespace Server.Items
 	#region Painting4NorthArtifact
 	public class Painting4NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 6; } }
+		public override int ArtifactRarity => 6;
 
 		[Constructible]
 		public Painting4NorthArtifact() : base( 0x2411 )
@@ -726,7 +726,7 @@ namespace Server.Items
 	#region Painting5WestArtifact
 	public class Painting5WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public Painting5WestArtifact() : base( 0x2416 )
@@ -756,7 +756,7 @@ namespace Server.Items
 	#region Painting5NorthArtifact
 	public class Painting5NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public Painting5NorthArtifact() : base( 0x2415 )
@@ -786,7 +786,7 @@ namespace Server.Items
 	#region Painting6WestArtifact
 	public class Painting6WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public Painting6WestArtifact() : base( 0x2418 )
@@ -816,7 +816,7 @@ namespace Server.Items
 	#region Painting6NorthArtifact
 	public class Painting6NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public Painting6NorthArtifact() : base( 0x2417 )
@@ -846,7 +846,7 @@ namespace Server.Items
 	#region SakeArtifact
 	public class SakeArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 4; } }
+		public override int ArtifactRarity => 4;
 
 		[Constructible]
 		public SakeArtifact() : base( 0x24E2 )
@@ -876,7 +876,7 @@ namespace Server.Items
 	#region Sculpture1Artifact
 	public class Sculpture1Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public Sculpture1Artifact() : base( 0x2419 )
@@ -906,7 +906,7 @@ namespace Server.Items
 	#region Sculpture2Artifact
 	public class Sculpture2Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public Sculpture2Artifact() : base( 0x241B )
@@ -936,7 +936,7 @@ namespace Server.Items
 	#region DolphinLeftArtifact
 	public class DolphinLeftArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public DolphinLeftArtifact() : base( 0x2846 )
@@ -966,7 +966,7 @@ namespace Server.Items
 	#region DolphinRightArtifact
 	public class DolphinRightArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public DolphinRightArtifact() : base( 0x2847 )
@@ -996,7 +996,7 @@ namespace Server.Items
 	#region ManStatuetteSouthArtifact
 	public class ManStatuetteSouthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public ManStatuetteSouthArtifact() : base( 0x2848 )
@@ -1026,7 +1026,7 @@ namespace Server.Items
 	#region ManStatuetteEastArtifact
 	public class ManStatuetteEastArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public ManStatuetteEastArtifact() : base( 0x2849 )
@@ -1056,7 +1056,7 @@ namespace Server.Items
 	#region SwordDisplay1WestArtifact
 	public class SwordDisplay1WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 5; } }
+		public override int ArtifactRarity => 5;
 
 		[Constructible]
 		public SwordDisplay1WestArtifact() : base( 0x2842 )
@@ -1086,7 +1086,7 @@ namespace Server.Items
 	#region SwordDisplay1NorthArtifact
 	public class SwordDisplay1NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 5; } }
+		public override int ArtifactRarity => 5;
 
 		[Constructible]
 		public SwordDisplay1NorthArtifact() : base( 0x2843 )
@@ -1116,7 +1116,7 @@ namespace Server.Items
 	#region SwordDisplay2WestArtifact
 	public class SwordDisplay2WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 6; } }
+		public override int ArtifactRarity => 6;
 
 		[Constructible]
 		public SwordDisplay2WestArtifact() : base( 0x2844 )
@@ -1146,7 +1146,7 @@ namespace Server.Items
 	#region SwordDisplay2NorthArtifact
 	public class SwordDisplay2NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 6; } }
+		public override int ArtifactRarity => 6;
 
 		[Constructible]
 		public SwordDisplay2NorthArtifact() : base( 0x2845 )
@@ -1176,7 +1176,7 @@ namespace Server.Items
 	#region SwordDisplay3SouthArtifact
 	public class SwordDisplay3SouthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public SwordDisplay3SouthArtifact() : base( 0x2855 )
@@ -1206,7 +1206,7 @@ namespace Server.Items
 	#region SwordDisplay3EastArtifact
 	public class SwordDisplay3EastArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public SwordDisplay3EastArtifact() : base( 0x2856 )
@@ -1236,7 +1236,7 @@ namespace Server.Items
 	#region SwordDisplay4WestArtifact
 	public class SwordDisplay4WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 8; } }
+		public override int ArtifactRarity => 8;
 
 		[Constructible]
 		public SwordDisplay4WestArtifact() : base( 0x2853 )
@@ -1266,7 +1266,7 @@ namespace Server.Items
 	#region SwordDisplay4NorthArtifact
 	public class SwordDisplay4NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public SwordDisplay4NorthArtifact() : base( 0x2854 )
@@ -1296,7 +1296,7 @@ namespace Server.Items
 	#region SwordDisplay5WestArtifact
 	public class SwordDisplay5WestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public SwordDisplay5WestArtifact() : base( 0x2851 )
@@ -1326,7 +1326,7 @@ namespace Server.Items
 	#region SwordDisplay5NorthArtifact
 	public class SwordDisplay5NorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 9; } }
+		public override int ArtifactRarity => 9;
 
 		[Constructible]
 		public SwordDisplay5NorthArtifact() : base( 0x2852 )
@@ -1356,7 +1356,7 @@ namespace Server.Items
 	#region TeapotWestArtifact
 	public class TeapotWestArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public TeapotWestArtifact() : base( 0x24E7 )
@@ -1386,7 +1386,7 @@ namespace Server.Items
 	#region TeapotNorthArtifact
 	public class TeapotNorthArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public TeapotNorthArtifact() : base( 0x24E6 )
@@ -1416,7 +1416,7 @@ namespace Server.Items
 	#region TowerLanternArtifact
 	public class TowerLanternArtifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsOn
@@ -1478,7 +1478,7 @@ namespace Server.Items
 	#region Urn1Artifact
 	public class Urn1Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public Urn1Artifact() : base( 0x241D )
@@ -1508,7 +1508,7 @@ namespace Server.Items
 	#region Urn2Artifact
 	public class Urn2Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public Urn2Artifact() : base( 0x241E )
@@ -1538,7 +1538,7 @@ namespace Server.Items
 	#region ZenRock1Artifact
 	public class ZenRock1Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 2; } }
+		public override int ArtifactRarity => 2;
 
 		[Constructible]
 		public ZenRock1Artifact() : base( 0x24E4 )
@@ -1568,7 +1568,7 @@ namespace Server.Items
 	#region ZenRock2Artifact
 	public class ZenRock2Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public ZenRock2Artifact() : base( 0x24E3 )
@@ -1598,7 +1598,7 @@ namespace Server.Items
 	#region ZenRock3Artifact
 	public class ZenRock3Artifact : BaseDecorationArtifact
 	{
-		public override int ArtifactRarity{ get{ return 3; } }
+		public override int ArtifactRarity => 3;
 
 		[Constructible]
 		public ZenRock3Artifact() : base( 0x24E5 )

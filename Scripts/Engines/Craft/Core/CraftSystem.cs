@@ -29,14 +29,14 @@ namespace Server.Engines.Craft
 		private List<int> m_Recipes;
 		private List<int> m_RareRecipes;
 
-		public int MinCraftEffect { get { return m_MinCraftEffect; } }
-		public int MaxCraftEffect { get { return m_MaxCraftEffect; } }
-		public double Delay { get { return m_Delay; } }
+		public int MinCraftEffect  => m_MinCraftEffect;
+		public int MaxCraftEffect  => m_MaxCraftEffect;
+		public double Delay  => m_Delay;
 
-		public CraftItemCol CraftItems{ get { return m_CraftItems; } }
-		public CraftGroupCol CraftGroups{ get { return m_CraftGroups; } }
-		public CraftSubResCol CraftSubRes{ get { return m_CraftSubRes; } }
-		public CraftSubResCol CraftSubRes2{ get { return m_CraftSubRes2; } }
+		public CraftItemCol CraftItems => m_CraftItems;
+		public CraftGroupCol CraftGroups => m_CraftGroups;
+		public CraftSubResCol CraftSubRes => m_CraftSubRes;
+		public CraftSubResCol CraftSubRes2 => m_CraftSubRes2;
 
 		public abstract SkillName MainSkill{ get; }
 
@@ -65,8 +65,7 @@ namespace Server.Engines.Craft
 				return null;
 			}
 
-			CraftContext c = null;
-			m_ContextTable.TryGetValue( m, out c );
+			m_ContextTable.TryGetValue( m, out CraftContext c );
 
 			if ( c == null )
 				m_ContextTable[m] = c = new CraftContext();
@@ -129,7 +128,7 @@ namespace Server.Engines.Craft
 		}
 
 		public void CreateItem( Mobile from, Type type, Type typeRes, BaseTool tool, CraftItem realCraftItem )
-		{	
+		{
 			// Verify if the type is in the list of the craftable item
 			CraftItem craftItem = m_CraftItems.SearchFor( type );
 			if ( craftItem != null )
@@ -224,7 +223,7 @@ namespace Server.Engines.Craft
 			CraftItem craftItem = m_CraftItems.GetAt( index );
 			craftItem.Hits = hits;
 		}
-		
+
 		public void SetUseAllRes( int index, bool useAll )
 		{
 			CraftItem craftItem = m_CraftItems.GetAt( index );

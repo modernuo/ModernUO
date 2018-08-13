@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class OfficialSealingWax : Item
 	{
-		public override int LabelNumber{ get{ return 1072744; } } // Official Sealing Wax
+		public override int LabelNumber => 1072744; // Official Sealing Wax
 
 		public override bool Nontransferable => true;
 

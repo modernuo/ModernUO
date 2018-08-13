@@ -14,7 +14,7 @@ namespace Server.Spells.First
 				Reagent.MandrakeRoot
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.First; } }
+		public override SpellCircle Circle => SpellCircle.First;
 
 		public CreateFoodSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

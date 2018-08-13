@@ -5,11 +5,11 @@ namespace Server.Items
 	[FlippableAddon( Direction.South, Direction.East )]
 	public class SacrificialAltarAddon : BaseAddonContainer
 	{
-		public override BaseAddonContainerDeed Deed { get { return new SacrificialAltarDeed(); } }
-		public override int LabelNumber { get { return 1074818; } } // Sacrificial Altar
-		public override int DefaultMaxWeight { get { return 0; } }
-		public override int DefaultGumpID { get { return 0x107; } }
-		public override int DefaultDropSound { get { return 0x42; } }
+		public override BaseAddonContainerDeed Deed => new SacrificialAltarDeed();
+		public override int LabelNumber => 1074818; // Sacrificial Altar
+		public override int DefaultMaxWeight => 0;
+		public override int DefaultGumpID => 0x107;
+		public override int DefaultDropSound => 0x42;
 
 		private Timer m_Timer;
 
@@ -134,11 +134,11 @@ namespace Server.Items
 
 	public class SacrificialAltarDeed : BaseAddonContainerDeed
 	{
-		public override BaseAddonContainer Addon { get { return new SacrificialAltarAddon(); } }
-		public override int LabelNumber { get { return 1074818; } } // Sacrificial Altar
+		public override BaseAddonContainer Addon => new SacrificialAltarAddon();
+		public override int LabelNumber => 1074818; // Sacrificial Altar
 
 		[Constructible]
-		public SacrificialAltarDeed() : base()
+		public SacrificialAltarDeed()
 		{
 			LootType = LootType.Blessed;
 		}

@@ -137,7 +137,7 @@ namespace Server.Items
 
 	public class WindChimes : BaseWindChimes
 	{
-		public override int LabelNumber{ get{ return 1030290; } }
+		public override int LabelNumber => 1030290;
 
 		[Constructible]
 		public WindChimes() : base( 0x2832 )
@@ -163,7 +163,7 @@ namespace Server.Items
 
 	public class FancyWindChimes : BaseWindChimes
 	{
-		public override int LabelNumber{ get{ return 1030291; } }
+		public override int LabelNumber => 1030291;
 
 		[Constructible]
 		public FancyWindChimes() : base( 0x2833 )

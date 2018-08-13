@@ -59,9 +59,9 @@ namespace Server.Mobiles
 
 		public override bool DeathAdderCharmable => true;
 
-		public override int Meat{ get{ return 4; } }
-		public override int Hides{ get{ return 15; } }
-		public override HideType HideType{ get{ return HideType.Spined; } }
+		public override int Meat => 4;
+		public override int Hides => 15;
+		public override HideType HideType => HideType.Spined;
 
 		public GiantSerpent(Serial serial) : base(serial)
 		{

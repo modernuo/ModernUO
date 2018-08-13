@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class CandleLarge : BaseLight
 	{
-		public override int LitItemID{ get { return 0xB1A; } }
-		public override int UnlitItemID{ get { return 0xA26; } }
+		public override int LitItemID => 0xB1A;
+		public override int UnlitItemID => 0xA26;
 
 		[Constructible]
 		public CandleLarge() : base( 0xA26 )

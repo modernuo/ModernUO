@@ -5,8 +5,8 @@ namespace Server.Items
 {
 	public class GiftForArielle : BaseContainer
 	{
-		public override int LabelNumber{ get{ return 1074356; } } // gift for arielle
-		public override int DefaultGumpID { get { return 0x41; } }
+		public override int LabelNumber => 1074356; // gift for arielle
+		public override int DefaultGumpID => 0x41;
 
 		public override bool Nontransferable => true;
 

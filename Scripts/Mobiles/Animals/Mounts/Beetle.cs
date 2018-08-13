@@ -87,7 +87,7 @@ namespace Server.Mobiles
 			return 0x21D;
 		}
 
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override FoodType FavoriteFood => FoodType.Meat;
 
 		public Beetle( Serial serial ) : base( serial )
 		{

@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class FireworksWand : MagicWand
 	{
-		public override int LabelNumber{ get{ return 1041424; } } // a fireworks wand
+		public override int LabelNumber => 1041424; // a fireworks wand
 
 		private int m_Charges;
 

@@ -5,9 +5,9 @@ using Server.Mobiles;
 namespace Server.Items
 {
 	public class AquariumFood : Item
-	{		
-		public override int LabelNumber{ get{ return 1074819; } } // Aquarium food
-		
+	{
+		public override int LabelNumber => 1074819; // Aquarium food
+
 		[Constructible]
 		public AquariumFood() : base( 0xEFC )
 		{
@@ -15,7 +15,7 @@ namespace Server.Items
 
 		public AquariumFood( Serial serial ) : base( serial )
 		{
-		
+
 		}
 
 		public override void Serialize( GenericWriter writer )

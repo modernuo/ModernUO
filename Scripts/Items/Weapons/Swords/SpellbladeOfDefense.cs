@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SpellbladeOfDefense : ElvenSpellblade
 	{
-		public override int LabelNumber{ get{ return 1073516; } } // spellblade of defense
+		public override int LabelNumber => 1073516; // spellblade of defense
 
 		[Constructible]
 		public SpellbladeOfDefense()

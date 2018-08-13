@@ -64,7 +64,7 @@ namespace Server.Mobiles
 		public override bool CanRummageCorpses => true;
 		public override bool BleedImmune => true;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int TreasureMapLevel{ get{ return 4; } }
+		public override int TreasureMapLevel => 4;
 
 		public LichLord( Serial serial ) : base( serial )
 		{

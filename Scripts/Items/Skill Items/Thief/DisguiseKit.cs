@@ -14,7 +14,7 @@ namespace Server.Items
 {
 	public class DisguiseKit : Item
 	{
-		public override int LabelNumber{ get{ return 1041078; } } // a disguise kit
+		public override int LabelNumber => 1041078; // a disguise kit
 
 		[Constructible]
 		public DisguiseKit() : base( 0xE05 )
@@ -225,7 +225,7 @@ namespace Server.Items
 				m_From.SendGump( new DisguiseGump( m_From, m_Kit, hair, true ) );
 
 				DisguiseTimers.RemoveTimer( m_From );
-				
+
 				DisguiseTimers.CreateTimer( m_From, TimeSpan.FromHours( 2.0 ) );
 				DisguiseTimers.StartTimer( m_From );
 			}
@@ -275,18 +275,18 @@ namespace Server.Items
 			}
 		}
 	}
-	
+
 	public class DisguiseTimers
 	{
 		public static void Initialize()
 		{
 			new DisguisePersistance();
 		}
-		
+
 		private class InternalTimer : Timer
 		{
 			private Mobile m_Player;
-			
+
 			public InternalTimer( Mobile m, TimeSpan delay ) : base( delay )
 			{
 				m_Player = m;
@@ -299,23 +299,22 @@ namespace Server.Items
 
 				if ( m_Player is PlayerMobile )
 					((PlayerMobile)m_Player).SetHairMods( -1, -1 );
-			
+
 				DisguiseTimers.RemoveTimer( m_Player );
 			}
 		}
-		
+
 		public static void CreateTimer( Mobile m, TimeSpan delay )
 		{
 			if ( m != null )
 				if ( !m_Timers.ContainsKey( m ) )
 					m_Timers[m] = new InternalTimer( m, delay );
 		}
-		
+
 		public static void StartTimer( Mobile m )
 		{
-			Timer t = null;
-			m_Timers.TryGetValue(m, out t);
-			
+			m_Timers.TryGetValue( m, out Timer t );
+
 			if ( t != null )
 				t.Start();
 		}
@@ -327,8 +326,7 @@ namespace Server.Items
 
 		public static bool StopTimer( Mobile m )
 		{
-			Timer t = null;
-			m_Timers.TryGetValue(m, out t);
+			m_Timers.TryGetValue( m, out Timer t );
 
 			if ( t != null )
 			{
@@ -342,34 +340,32 @@ namespace Server.Items
 
 			return ( t != null );
 		}
-		
+
 		public static bool RemoveTimer( Mobile m )
 		{
-			Timer t = null;
-			m_Timers.TryGetValue(m, out t);
+			m_Timers.TryGetValue( m, out Timer t );
 
 			if ( t != null )
 			{
 				t.Stop();
 				m_Timers.Remove( m );
 			}
-			
+
 			return ( t != null );
 		}
-		
+
 		public static TimeSpan TimeRemaining( Mobile m )
 		{
-			Timer t = null;
-			m_Timers.TryGetValue(m, out t);
+			m_Timers.TryGetValue( m, out Timer t );
 
 			if ( t != null )
 			{
 				return t.Next - DateTime.UtcNow;
 			}
-			
+
 			return TimeSpan.Zero;
 		}
-		
+
 		private static Dictionary<Mobile, Timer> m_Timers = new Dictionary<Mobile, Timer>();
 
 		public static Dictionary<Mobile, Timer> Timers

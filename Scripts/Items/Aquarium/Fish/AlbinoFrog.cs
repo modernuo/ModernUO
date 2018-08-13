@@ -4,9 +4,9 @@ using Server;
 namespace Server.Items
 {
 	public class AlbinoFrog : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073824; } } // An Albino Frog
-		
+	{
+		public override int LabelNumber => 1073824; // An Albino Frog
+
 		[Constructible]
 		public AlbinoFrog() : base( 0x3B0D )
 		{
@@ -14,7 +14,7 @@ namespace Server.Items
 		}
 
 		public AlbinoFrog( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

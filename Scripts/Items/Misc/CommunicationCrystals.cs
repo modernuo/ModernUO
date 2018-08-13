@@ -49,7 +49,7 @@ namespace Server.Items
 	{
 		public static readonly int MaxCharges = 2000;
 
-		public override int LabelNumber{ get{ return 1060740; } } // communication crystal
+		public override int LabelNumber => 1060740; // communication crystal
 
 		private int m_Charges;
 		private List<ReceiverCrystal> m_Receivers;
@@ -303,7 +303,7 @@ namespace Server.Items
 
 	public class ReceiverCrystal : Item
 	{
-		public override int LabelNumber{ get{ return 1060740; } } // communication crystal
+		public override int LabelNumber => 1060740; // communication crystal
 
 		private BroadcastCrystal m_Sender;
 

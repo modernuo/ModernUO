@@ -15,7 +15,7 @@ namespace Server.Items
 			LootType = LootType.Blessed;
 		}
 
-		public override int LabelNumber{ get{ return 1070874; } } // a Pile of Glacial Snow
+		public override int LabelNumber => 1070874; // a Pile of Glacial Snow
 
 		public PileOfGlacialSnow( Serial serial ) : base( serial )
 		{

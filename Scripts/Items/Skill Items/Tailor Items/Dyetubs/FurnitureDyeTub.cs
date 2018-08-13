@@ -6,9 +6,9 @@ namespace Server.Items
 	{
 		public override bool AllowDyables => false;
 		public override bool AllowFurniture => true;
-		public override int TargetMessage{ get{ return 501019; } } // Select the furniture to dye.
-		public override int FailMessage{ get{ return 501021; } } // That is not a piece of furniture.
-		public override int LabelNumber{ get{ return 1041246; } } // Furniture Dye Tub
+		public override int TargetMessage => 501019; // Select the furniture to dye.
+		public override int FailMessage => 501021; // That is not a piece of furniture.
+		public override int LabelNumber => 1041246; // Furniture Dye Tub
 
 		private bool m_IsRewardItem;
 

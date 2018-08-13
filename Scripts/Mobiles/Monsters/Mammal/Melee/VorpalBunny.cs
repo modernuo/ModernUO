@@ -105,8 +105,8 @@ namespace Server.Mobiles
 			Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerCallback( Delete ) );
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override int Hides{ get{ return 1; } }
+		public override int Meat => 1;
+		public override int Hides => 1;
 		public override bool BardImmune => !Core.AOS;
 
 		public VorpalBunny( Serial serial ) : base( serial )

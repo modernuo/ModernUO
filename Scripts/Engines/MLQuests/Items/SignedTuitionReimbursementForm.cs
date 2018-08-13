@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SignedTuitionReimbursementForm : Item
 	{
-		public override int LabelNumber{ get{ return 1074614; } } // Signed Tuition Reimbursement Form
+		public override int LabelNumber => 1074614; // Signed Tuition Reimbursement Form
 
 		public override bool Nontransferable => true;
 

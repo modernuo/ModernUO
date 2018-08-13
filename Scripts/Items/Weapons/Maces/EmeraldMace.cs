@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class EmeraldMace : DiamondMace
 	{
-		public override int LabelNumber{ get{ return 1073530; } } // emerald mace
+		public override int LabelNumber => 1073530; // emerald mace
 
 		[Constructible]
 		public EmeraldMace()

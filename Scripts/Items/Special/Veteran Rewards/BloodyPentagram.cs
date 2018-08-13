@@ -9,7 +9,7 @@ namespace Server.Items
 	public class BloodyPentagramComponent : AddonComponent
 	{
 		public override bool DisplayWeight => false;
-		public override int LabelNumber{ get{ return 1080279; } } // Bloody Pentagram
+		public override int LabelNumber => 1080279; // Bloody Pentagram
 
 		public BloodyPentagramComponent( int itemID ) : base( itemID )
 		{
@@ -57,7 +57,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public BloodyPentagramAddon() : base()
+		public BloodyPentagramAddon()
 		{
 			AddComponent( new BloodyPentagramComponent( 0x1CF9 ), 0, 1, 0 );
 			AddComponent( new BloodyPentagramComponent( 0x1CF8 ), 0, 2, 0 );
@@ -125,7 +125,7 @@ namespace Server.Items
 
 	public class BloodyPentagramDeed : BaseAddonDeed, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1080384; } } // Bloody Pentagram
+		public override int LabelNumber => 1080384; // Bloody Pentagram
 
 		public override BaseAddon Addon
 		{
@@ -148,7 +148,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public BloodyPentagramDeed() : base()
+		public BloodyPentagramDeed()
 		{
 			LootType = LootType.Blessed;
 		}

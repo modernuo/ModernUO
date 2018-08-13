@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class PumpkinScarecrow : Item
 	{
-		public override int LabelNumber { get { return 1096947; } }
+		public override int LabelNumber => 1096947;
 
 		[Constructible]
 		public PumpkinScarecrow()

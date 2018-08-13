@@ -989,8 +989,7 @@ namespace Server.Multis
 
 			if ( m != null )
 			{
-				List<BaseHouse> exists = null;
-				m_Table.TryGetValue( m, out exists );
+				m_Table.TryGetValue( m, out List<BaseHouse> exists );
 
 				if ( exists != null )
 				{
@@ -1246,8 +1245,7 @@ namespace Server.Multis
 
 			if ( owner != null )
 			{
-				List<BaseHouse> list = null;
-				m_Table.TryGetValue( owner, out list );
+				m_Table.TryGetValue( owner, out List<BaseHouse> list );
 
 				if ( list == null )
 					m_Table[owner] = list = new List<BaseHouse>();
@@ -2702,8 +2700,7 @@ namespace Server.Multis
 
 					if ( m_Owner != null )
 					{
-						List<BaseHouse> list = null;
-						m_Table.TryGetValue( m_Owner, out list );
+						m_Table.TryGetValue( m_Owner, out List<BaseHouse> list );
 
 						if ( list == null )
 							m_Table[m_Owner] = list = new List<BaseHouse>();
@@ -2821,8 +2818,7 @@ namespace Server.Multis
 			{
 				if ( m_Owner != null )
 				{
-					List<BaseHouse> list = null;
-					m_Table.TryGetValue( m_Owner, out list );
+					m_Table.TryGetValue( m_Owner, out List<BaseHouse> list );
 
 					if ( list == null )
 						m_Table[m_Owner] = list = new List<BaseHouse>();
@@ -2835,8 +2831,7 @@ namespace Server.Multis
 
 				if ( m_Owner != null )
 				{
-					List<BaseHouse> list = null;
-					m_Table.TryGetValue( m_Owner, out list );
+					m_Table.TryGetValue( m_Owner, out List<BaseHouse> list );
 
 					if ( list == null )
 						m_Table[m_Owner] = list = new List<BaseHouse>();
@@ -3085,8 +3080,7 @@ namespace Server.Multis
 
 			if ( m_Owner != null )
 			{
-				List<BaseHouse> list = null;
-				m_Table.TryGetValue( m_Owner, out list );
+				m_Table.TryGetValue( m_Owner, out List<BaseHouse> list );
 
 				if ( list == null )
 					m_Table[m_Owner] = list = new List<BaseHouse>();
@@ -3239,8 +3233,7 @@ namespace Server.Multis
 			if ( m == null )
 				return false;
 
-			List<BaseHouse> list = null;
-			m_Table.TryGetValue( m, out list );
+			m_Table.TryGetValue( m, out List<BaseHouse> list );
 
 			if ( list == null )
 				return false;

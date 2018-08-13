@@ -6,24 +6,24 @@ namespace Server.Items
 	[FlippableAttribute( 0x1db9, 0x1dba )]
 	public class LeatherCap : BaseArmor
 	{
-		public override int BasePhysicalResistance{ get{ return 2; } }
-		public override int BaseFireResistance{ get{ return 4; } }
-		public override int BaseColdResistance{ get{ return 3; } }
-		public override int BasePoisonResistance{ get{ return 3; } }
-		public override int BaseEnergyResistance{ get{ return 3; } }
+		public override int BasePhysicalResistance => 2;
+		public override int BaseFireResistance => 4;
+		public override int BaseColdResistance => 3;
+		public override int BasePoisonResistance => 3;
+		public override int BaseEnergyResistance => 3;
 
-		public override int InitMinHits{ get{ return 30; } }
-		public override int InitMaxHits{ get{ return 40; } }
+		public override int InitMinHits => 30;
+		public override int InitMaxHits => 40;
 
-		public override int AosStrReq{ get{ return 20; } }
-		public override int OldStrReq{ get{ return 15; } }
+		public override int AosStrReq => 20;
+		public override int OldStrReq => 15;
 
-		public override int ArmorBase{ get{ return 13; } }
+		public override int ArmorBase => 13;
 
-		public override ArmorMaterialType MaterialType{ get{ return ArmorMaterialType.Leather; } }
-		public override CraftResource DefaultResource{ get{ return CraftResource.RegularLeather; } }
+		public override ArmorMaterialType MaterialType => ArmorMaterialType.Leather;
+		public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-		public override ArmorMeditationAllowance DefMedAllowance{ get{ return ArmorMeditationAllowance.All; } }
+		public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
 		[Constructible]
 		public LeatherCap() : base( 0x1DB9 )
@@ -34,13 +34,13 @@ namespace Server.Items
 		public LeatherCap( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

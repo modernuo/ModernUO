@@ -110,21 +110,13 @@ namespace Server {
 			base.Dispose( disposing );
 		}
 
-		public override bool CanRead {
-			get { return false; }
-		}
+		public override bool CanRead  => false;
 
-		public override bool CanSeek {
-			get { return false; }
-		}
+		public override bool CanSeek  => false;
 
-		public override bool CanWrite {
-			get { return true; }
-		}
+		public override bool CanWrite  => true;
 
-		public override long Length {
-			get { return this.Position; }
-		}
+		public override long Length  => this.Position;
 
 		public override int Read( byte[] buffer, int offset, int count ) {
 			throw new InvalidOperationException();

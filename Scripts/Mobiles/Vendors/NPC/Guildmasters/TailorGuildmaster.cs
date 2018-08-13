@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
 	public class TailorGuildmaster : BaseGuildmaster
 	{
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.TailorsGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.TailorsGuild;
 
 		[Constructible]
 		public TailorGuildmaster() : base( "tailor" )

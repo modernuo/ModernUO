@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class GrobusFur : Item
 	{
-		public override int LabelNumber{ get{ return 1074676; } } // Grobu's Fur
+		public override int LabelNumber => 1074676; // Grobu's Fur
 
 		[Constructible]
 		public GrobusFur() : base( 0x11F4 )

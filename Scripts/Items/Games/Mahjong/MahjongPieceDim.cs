@@ -9,9 +9,9 @@ namespace Server.Engines.Mahjong
 		private int m_Width;
 		private int m_Height;
 
-		public Point2D Position { get { return m_Position; } }
-		public int Width { get { return m_Width; } }
-		public int Height { get { return m_Height; } }
+		public Point2D Position  => m_Position;
+		public int Width  => m_Width;
+		public int Height  => m_Height;
 
 		public MahjongPieceDim( Point2D position, int width, int height )
 		{

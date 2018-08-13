@@ -31,7 +31,7 @@ namespace Server.Items
 			Bounds = entry.Bounds;
 		}
 
-		public override int LabelNumber{ get{ return (m_LabelNumber == 0 ? base.LabelNumber : m_LabelNumber); } }
+		public override int LabelNumber => (m_LabelNumber == 0 ? base.LabelNumber : m_LabelNumber);
 
 		public PresetMap( Serial serial ) : base( serial )
 		{

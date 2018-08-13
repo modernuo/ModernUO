@@ -46,10 +46,10 @@ namespace Server.Mobiles
 			MinTameSkill = 53.1;
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override int Hides{ get{ return 8; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat | FoodType.Fish; } }
-		public override PackInstinct PackInstinct{ get{ return PackInstinct.Feline; } }
+		public override int Meat => 1;
+		public override int Hides => 8;
+		public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
+		public override PackInstinct PackInstinct => PackInstinct.Feline;
 
 		public SnowLeopard(Serial serial) : base(serial)
 		{

@@ -19,7 +19,7 @@ namespace Server.Spells.Eighth
 				Reagent.SulfurousAsh
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Eighth; } }
+		public override SpellCircle Circle => SpellCircle.Eighth;
 
 		public EarthquakeSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

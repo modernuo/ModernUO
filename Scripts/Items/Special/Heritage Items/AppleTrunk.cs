@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class AppleTrunkAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new AppleTrunkDeed(); } }
-		
+		public override BaseAddonDeed Deed => new AppleTrunkDeed();
+
 		[Constructible]
-		public AppleTrunkAddon() : base()
+		public AppleTrunkAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xD98, 1076785 ), 0, 0, 0 );
 		}
@@ -33,11 +33,11 @@ namespace Server.Items
 
 	public class AppleTrunkDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new AppleTrunkAddon(); } }
-		public override int LabelNumber { get { return 1076785; } } // Apple Trunk
+		public override BaseAddon Addon => new AppleTrunkAddon();
+		public override int LabelNumber => 1076785; // Apple Trunk
 
 		[Constructible]
-		public AppleTrunkDeed() : base()
+		public AppleTrunkDeed()
 		{
 			LootType = LootType.Blessed;
 		}

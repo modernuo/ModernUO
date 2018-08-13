@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class WalkersLeggings : LeatherNinjaPants
 	{
-		public override int LabelNumber{ get{ return 1078222; } } // Walker's Leggings
+		public override int LabelNumber => 1078222; // Walker's Leggings
 
-		public override int BasePhysicalResistance{ get{ return 10; } }
-		public override int BaseFireResistance{ get{ return 6; } }
-		public override int BaseColdResistance{ get{ return 6; } }
-		public override int BasePoisonResistance{ get{ return 3; } }
-		public override int BaseEnergyResistance{ get{ return 3; } }
+		public override int BasePhysicalResistance => 10;
+		public override int BaseFireResistance => 6;
+		public override int BaseColdResistance => 6;
+		public override int BasePoisonResistance => 3;
+		public override int BaseEnergyResistance => 3;
 
 		[Constructible]
 		public WalkersLeggings()

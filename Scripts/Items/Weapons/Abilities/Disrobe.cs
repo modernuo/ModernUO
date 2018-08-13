@@ -11,7 +11,7 @@ namespace Server.Items
 		{
 		}
 
-		public override int BaseMana{ get{ return 20; } } // Not Sure what amount of mana a creature uses.
+		public override int BaseMana => 20; // Not Sure what amount of mana a creature uses.
 
 		public static readonly TimeSpan BlockEquipDuration = TimeSpan.FromSeconds( 5.0 );
 
@@ -21,7 +21,7 @@ namespace Server.Items
 				return;
 
 			ClearCurrentAbility( attacker );
-			Item toDisrobe = defender.FindItemOnLayer(Layer.InnerTorso);			
+			Item toDisrobe = defender.FindItemOnLayer(Layer.InnerTorso);
 
 			if ( toDisrobe == null || !toDisrobe.Movable )
 				toDisrobe = defender.FindItemOnLayer( Layer.OuterTorso );

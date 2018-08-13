@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0x13F6, 0x13F7 )]
 	public class ButcherKnife : BaseKnife
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.InfectiousStrike; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Disarm; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.InfectiousStrike;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int AosStrengthReq{ get{ return 5; } }
-		public override int AosMinDamage{ get{ return 9; } }
-		public override int AosMaxDamage{ get{ return 11; } }
-		public override int AosSpeed{ get{ return 49; } }
-		public override float MlSpeed{ get{ return 2.25f; } }
+		public override int AosStrengthReq => 5;
+		public override int AosMinDamage => 9;
+		public override int AosMaxDamage => 11;
+		public override int AosSpeed => 49;
+		public override float MlSpeed => 2.25f;
 
-		public override int OldStrengthReq{ get{ return 5; } }
-		public override int OldMinDamage{ get{ return 2; } }
-		public override int OldMaxDamage{ get{ return 14; } }
-		public override int OldSpeed{ get{ return 40; } }
+		public override int OldStrengthReq => 5;
+		public override int OldMinDamage => 2;
+		public override int OldMaxDamage => 14;
+		public override int OldSpeed => 40;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 40; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 40;
 
 		[Constructible]
 		public ButcherKnife() : base( 0x13F6 )

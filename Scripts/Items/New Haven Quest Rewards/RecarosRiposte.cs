@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class RecarosRiposte : WarFork
 	{
-		public override int LabelNumber{ get{ return 1078195; } } // Recaro's Riposte
+		public override int LabelNumber => 1078195; // Recaro's Riposte
 
 		[Constructible]
 		public RecarosRiposte()

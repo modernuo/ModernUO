@@ -10,9 +10,9 @@ namespace Server.Mobiles
 		private Mobile m_Queen;
 		private bool m_SpawnedQueen;
 
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Enlightenment; } }
+		public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
 
-		public override Type[] UniqueList{ get{ return new Type[] { typeof( OrcChieftainHelm ) }; } }
+		public override Type[] UniqueList => new Type[] { typeof( OrcChieftainHelm ) };
 		public override Type[] SharedList{ get{ return new Type[] { 	typeof( RoyalGuardSurvivalKnife ),
 										typeof( DjinnisRing ),
 										typeof( LieutenantOfTheBritannianRoyalGuard ),
@@ -24,7 +24,7 @@ namespace Server.Mobiles
 										typeof( Pier ),
 										typeof( DirtPatch )}; } }
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { }; } }
+		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 
 		public override string DefaultName => "Lord Oaks";
 

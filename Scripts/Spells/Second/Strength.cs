@@ -14,7 +14,7 @@ namespace Server.Spells.Second
 				Reagent.Nightshade
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Second; } }
+		public override SpellCircle Circle => SpellCircle.Second;
 
 		public StrengthSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -67,7 +67,7 @@ namespace Server.Spells.Second
 			public InternalTarget( StrengthSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
 			{
 				m_Owner = owner;
-			} 
+			}
 
 			protected override void OnTarget( Mobile from, object o )
 			{

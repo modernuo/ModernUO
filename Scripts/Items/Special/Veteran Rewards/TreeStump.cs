@@ -41,7 +41,7 @@ namespace Server.Items
 		private Timer m_Timer;
 
 		[Constructible]
-		public TreeStump( int itemID ) : base()
+		public TreeStump( int itemID )
 		{
 			AddComponent( new AddonComponent( itemID ), 0, 0, 0 );
 
@@ -157,7 +157,7 @@ namespace Server.Items
 
 	public class TreeStumpDeed : BaseAddonDeed, IRewardItem, IRewardOption
 	{
-		public override int LabelNumber{ get{ return 1080406; } } // a deed for a tree stump decoration
+		public override int LabelNumber => 1080406; // a deed for a tree stump decoration
 
 		public override BaseAddon Addon
 		{
@@ -191,7 +191,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public TreeStumpDeed() : base()
+		public TreeStumpDeed()
 		{
 			LootType = LootType.Blessed;
 		}

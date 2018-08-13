@@ -23,7 +23,7 @@ namespace Server.Engines.Quests.Necro
 				new QuestItemInfo( 1023643, 8787 ) // spellbook
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public AnimateMaabusCorpseObjective()
 		{
@@ -188,7 +188,7 @@ namespace Server.Engines.Quests.Necro
 				new QuestItemInfo( 1023676, 3679 ) // glowing rune
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public FindVaultOfSecretsObjective()
 		{
@@ -307,7 +307,7 @@ namespace Server.Engines.Quests.Necro
 				new QuestItemInfo( 1026153, 6178 ) // teleporter
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public ReturnToCrystalCaveObjective()
 		{

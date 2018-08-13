@@ -81,15 +81,15 @@ namespace Server.Mobiles
 
 		public override bool ReacquireOnMovement => true;
 		public override bool HasBreath => true; // fire breath enabled
-		public override double BonusPetDamageScalar{ get{ return (Core.SE) ? 3.0 : 1.0; } }
+		public override double BonusPetDamageScalar => (Core.SE) ? 3.0 : 1.0;
 
 		public override bool AutoDispel => true;
-		public override HideType HideType{ get{ return HideType.Barbed; } }
-		public override int Hides{ get{ return 20; } }
-		public override int Meat{ get{ return 19; } }
-		public override int Scales{ get{ return 6; } }
-		public override ScaleType ScaleType{ get{ return ( Utility.RandomBool() ? ScaleType.Black : ScaleType.White ); } }
-		public override int TreasureMapLevel{ get{ return 4; } }
+		public override HideType HideType => HideType.Barbed;
+		public override int Hides => 20;
+		public override int Meat => 19;
+		public override int Scales => 6;
+		public override ScaleType ScaleType => ( Utility.RandomBool() ? ScaleType.Black : ScaleType.White );
+		public override int TreasureMapLevel => 4;
 
 		public SerpentineDragon( Serial serial ) : base( serial )
 		{

@@ -5,16 +5,16 @@ namespace Server.Items
 {
 	public class GladiatorsCollar : PlateGorget
 	{
-		public override int LabelNumber{ get{ return 1094917; } } // Gladiator's Collar [Replica]
+		public override int LabelNumber => 1094917; // Gladiator's Collar [Replica]
 
-		public override int BasePhysicalResistance{ get{ return 18; } }
-		public override int BaseFireResistance{ get{ return 18; } }
-		public override int BaseColdResistance{ get{ return 17; } }
-		public override int BasePoisonResistance{ get{ return 18; } }
-		public override int BaseEnergyResistance{ get{ return 16; } }
+		public override int BasePhysicalResistance => 18;
+		public override int BaseFireResistance => 18;
+		public override int BaseColdResistance => 17;
+		public override int BasePoisonResistance => 18;
+		public override int BaseEnergyResistance => 16;
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+		public override int InitMinHits => 150;
+		public override int InitMaxHits => 150;
 
 		public override bool CanFortify => false;
 

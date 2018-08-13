@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a Crystal Lattice Seeker corpse" )]
 	public class CrystalLatticeSeeker : BaseCreature
 	{
-		public override string DefaultName { get { return "Crystal Lattice Seeker"; } }
+		public override string DefaultName => "Crystal Lattice Seeker";
 
 		[Constructible]
 		public CrystalLatticeSeeker()
@@ -123,8 +123,8 @@ namespace Server.Mobiles
 		}
 		*/
 
-		public override int Feathers { get { return 100; } }
-		public override int TreasureMapLevel { get { return 5; } }
+		public override int Feathers => 100;
+		public override int TreasureMapLevel => 5;
 
 		public override int GetAttackSound() { return 0x2F6; }
 		public override int GetDeathSound() { return 0x2F7; }

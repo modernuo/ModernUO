@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class PixieLeg : ChickenLeg
 	{
-		public override int LabelNumber{ get{ return 1074613; } } // Pixie Leg
+		public override int LabelNumber => 1074613; // Pixie Leg
 
 		[Constructible]
 		public PixieLeg() : this( 1 )

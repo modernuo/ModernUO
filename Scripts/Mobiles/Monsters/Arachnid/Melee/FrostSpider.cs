@@ -54,8 +54,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Poor );
 		}
 
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
-		public override PackInstinct PackInstinct{ get{ return PackInstinct.Arachnid; } }
+		public override FoodType FavoriteFood => FoodType.Meat;
+		public override PackInstinct PackInstinct => PackInstinct.Arachnid;
 
 		public FrostSpider( Serial serial ) : base( serial )
 		{

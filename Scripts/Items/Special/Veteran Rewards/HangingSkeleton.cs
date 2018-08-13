@@ -118,7 +118,7 @@ namespace Server.Items
 
 	public class HangingSkeletonDeed : Item, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1049772; } } // deed for a hanging skeleton decoration
+		public override int LabelNumber => 1049772; // deed for a hanging skeleton decoration
 
 		private bool m_IsRewardItem;
 

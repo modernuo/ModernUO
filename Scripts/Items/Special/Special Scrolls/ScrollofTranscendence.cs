@@ -9,13 +9,13 @@ namespace Server.Items
 {
 	public class ScrollofTranscendence : SpecialScroll
 	{
-		public override int LabelNumber { get { return 1094934; } } // Scroll of Transcendence
-		
-		public override int Message { get { return 1094933; } } /*Using a Scroll of Transcendence for a given skill will permanently increase your current 
+		public override int LabelNumber => 1094934; // Scroll of Transcendence
+
+		public override int Message => 1094933; /*Using a Scroll of Transcendence for a given skill will permanently increase your current
 																*level in that skill by the amount of points displayed on the scroll.
 																*As you may not gain skills beyond your maximum skill cap, any excess points will be lost.*/
-																
-		public override string DefaultTitle { get { return String.Format( "<basefont color=#FFFFFF>Scroll of Transcendence ({0} Skill):</basefont>", Value ); } }
+
+		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Scroll of Transcendence ({0} Skill):</basefont>", Value );
 
 		public static ScrollofTranscendence CreateRandom( int min, int max )
 		{
@@ -27,7 +27,7 @@ namespace Server.Items
 		public ScrollofTranscendence() : this( SkillName.Alchemy, 0.0 )
 		{
 		}
-		
+
 		[Constructible]
 		public ScrollofTranscendence( SkillName skill, double value ) : base( skill, value )
 		{
@@ -48,20 +48,20 @@ namespace Server.Items
 			else
 				list.Add(1076759, "{0}\t{1} Skill Points", GetName(), Value);
 		}
-		
+
 		public override bool CanUse( Mobile from )
 		{
 			if ( !base.CanUse( from ) )
 				return false;
-			
+
 			PlayerMobile pm = from as PlayerMobile;
-			
+
 			if ( pm == null )
 				return false;
-			
+
 			#region Mondain's Legacy
 			/* to add when skillgain quests will be implemented
-			
+
 			for (int i = pm.Quests.Count - 1; i >= 0; i--)
 			{
 				BaseQuest quest = pm.Quests[i];
@@ -77,10 +77,10 @@ namespace Server.Items
 					}
 				}
 			}
-			
+
 			*/
 			#endregion
-			
+
 			#region Scroll of Alacrity
 			if (pm.AcceleratedStart > DateTime.UtcNow)
 			{
@@ -88,7 +88,7 @@ namespace Server.Items
 				return false;
 			}
 			#endregion
-			
+
 			return true;
 		}
 
@@ -96,11 +96,11 @@ namespace Server.Items
 		{
 			if ( !CanUse( from ) )
 				return;
-			
+
 			double tskill = from.Skills[Skill].Base; // value of skill without item bonuses etc
 			double tcap = from.Skills[Skill].Cap; // maximum value permitted
 			bool canGain = false;
-			
+
 			double newValue = Value;
 
 			if ( ( tskill + newValue ) > tcap )
@@ -126,7 +126,7 @@ namespace Server.Items
 				else
 					canGain = true;
 			}
-			
+
 			if ( !canGain )
 			{
 				from.SendLocalizedMessage( 1094935 );	/*You cannot increase this skill at this time. The skill may be locked or set to lower in your skill menu.
@@ -135,7 +135,7 @@ namespace Server.Items
 			}
 
 			from.SendLocalizedMessage( 1049513, GetNameLocalized() ); // You feel a surge of magic as the scroll enhances your ~1_type~!
-					
+
 			from.Skills[Skill].Base += newValue;
 
 			Effects.PlaySound( from.Location, from.Map, 0x1F7 );
@@ -144,7 +144,7 @@ namespace Server.Items
 
 			Delete();
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize(writer);

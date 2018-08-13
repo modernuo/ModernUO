@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SpeckledPoisonSac : TransientItem
 	{
-		public override int LabelNumber{ get{ return 1073133; } } // Speckled Poison Sac
+		public override int LabelNumber => 1073133; // Speckled Poison Sac
 
 		[Constructible]
 		public SpeckledPoisonSac() : base( 0x23A, TimeSpan.FromHours( 1 ) )

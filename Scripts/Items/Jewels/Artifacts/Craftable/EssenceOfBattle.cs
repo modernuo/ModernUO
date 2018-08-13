@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class EssenceOfBattle : GoldRing
 	{
-		public override int LabelNumber{ get{ return 1072935; } } // Essence of Battle
+		public override int LabelNumber => 1072935; // Essence of Battle
 
 		[Constructible]
 		public EssenceOfBattle()

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SerpentFangSectBadge : Item
 	{
-		public override int LabelNumber{ get{ return 1073139; } } // A Serpent Fang Sect Badge
+		public override int LabelNumber => 1073139; // A Serpent Fang Sect Badge
 
 		[Constructible]
 		public SerpentFangSectBadge() : base( 0x23C )

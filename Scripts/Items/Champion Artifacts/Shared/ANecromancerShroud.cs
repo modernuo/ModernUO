@@ -5,12 +5,12 @@ namespace Server.Items
 {
 	public class ANecromancerShroud : Robe
 	{
-		public override int LabelNumber{ get{ return 1094913; } } // A Necromancer Shroud [Replica]
+		public override int LabelNumber => 1094913; // A Necromancer Shroud [Replica]
 
-		public override int BaseColdResistance{ get{ return 5; } }
+		public override int BaseColdResistance => 5;
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+		public override int InitMinHits => 150;
+		public override int InitMaxHits => 150;
 
 		public override bool CanFortify => false;
 

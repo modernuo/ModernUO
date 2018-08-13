@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LoomSouthAddon : BaseAddon, ILoom
 	{
-		public override BaseAddonDeed Deed{ get{ return new LoomSouthDeed(); } }
+		public override BaseAddonDeed Deed => new LoomSouthDeed();
 
 		private int m_Phase;
 
@@ -50,8 +50,8 @@ namespace Server.Items
 
 	public class LoomSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new LoomSouthAddon(); } }
-		public override int LabelNumber{ get{ return 1044344; } } // loom (south)
+		public override BaseAddon Addon => new LoomSouthAddon();
+		public override int LabelNumber => 1044344; // loom (south)
 
 		[Constructible]
 		public LoomSouthDeed()

@@ -210,7 +210,7 @@ namespace Server.Engines.ConPVP
             private int m_Total;
             private int m_Counter;
 
-            public int Captures { get { return m_Total; } }
+            public int Captures  => m_Total;
 
             public KingTimer(HillOfTheKing hill)
                 : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
@@ -537,7 +537,7 @@ namespace Server.Engines.ConPVP
             m_Player = player;
         }
 
-        public Mobile Player { get { return m_Player; } }
+        public Mobile Player  => m_Player;
 
         public int CompareTo(object obj)
         {
@@ -647,7 +647,7 @@ namespace Server.Engines.ConPVP
         }
 
         public KHGame Game { get { return m_Game; } set { m_Game = value; } }
-        public int TeamID { get { return m_TeamID; } }
+        public int TeamID  => m_TeamID;
 
         public int Kills { get { return m_Kills; } set { m_Kills = value; } }
         public int Captures { get { return m_Captures; } set { m_Captures = value; } }
@@ -756,7 +756,7 @@ namespace Server.Engines.ConPVP
         private TimeSpan m_Duration;
         private int m_ScoreInterval;
 
-        public KHTeamInfo[] TeamInfo { get { return m_TeamInfo; } }
+        public KHTeamInfo[] TeamInfo  => m_TeamInfo;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public KHTeamInfo Team1_W { get { return m_TeamInfo[0]; } set { } }
@@ -782,7 +782,7 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public KHTeamInfo Team8_NE { get { return m_TeamInfo[7]; } set { } }
 
-        public HillOfTheKing[] Hills { get { return m_Hills; } }
+        public HillOfTheKing[] Hills  => m_Hills;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public HillOfTheKing Hill1 { get { return m_Hills[0]; } set { m_Hills[0] = value; } }
@@ -796,7 +796,7 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public HillOfTheKing Hill4 { get { return m_Hills[3]; } set { m_Hills[3] = value; } }
 
-        public ArrayList Boards { get { return m_Boards; } }
+        public ArrayList Boards  => m_Boards;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan Duration
@@ -911,7 +911,7 @@ namespace Server.Engines.ConPVP
     {
         private KHController m_Controller;
 
-        public KHController Controller { get { return m_Controller; } }
+        public KHController Controller  => m_Controller;
 
         public override bool CantDoAnything(Mobile mob)
         {

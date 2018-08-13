@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class MysticSpellbook : Spellbook
 	{
-		public override SpellbookType SpellbookType { get { return SpellbookType.Mystic; } }
+		public override SpellbookType SpellbookType => SpellbookType.Mystic;
 
-		public override int BookOffset { get { return 677; } }
-		public override int BookCount { get { return 16; } }
+		public override int BookOffset => 677;
+		public override int BookCount => 16;
 
 		[Constructible]
 		public MysticSpellbook()

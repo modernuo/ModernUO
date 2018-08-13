@@ -106,7 +106,7 @@ namespace Server.Engines.Quests.Necro
 				new QuestItemInfo( 1048032, 3702 )  // a bag
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public ReanimateMaabusConversation()
 		{
@@ -157,7 +157,7 @@ namespace Server.Engines.Quests.Necro
 				new QuestItemInfo( 1026153, 6178 ) // teleporter
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public MaabasConversation()
 		{
@@ -282,7 +282,7 @@ namespace Server.Engines.Quests.Necro
 				new QuestItemInfo( 1023643, 8787 ) // spellbook
 			};
 
-		public override QuestItemInfo[] Info{ get{ return m_Info; } }
+		public override QuestItemInfo[] Info => m_Info;
 
 		public VaultOfSecretsConversation()
 		{

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class GingerBreadHouseAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new GingerBreadHouseDeed(); } }
+		public override BaseAddonDeed Deed => new GingerBreadHouseDeed();
 
 		public GingerBreadHouseAddon()
 		{
@@ -13,7 +13,7 @@ namespace Server.Items
 			{
 				LocalizedAddonComponent laoc = new LocalizedAddonComponent( i, 1077395 ); // Gingerbread House
 				laoc.Light = LightType.SouthSmall;
-				AddComponent( laoc, (i==0x2be5) ? -1 : 0, (i==0x2be7) ? -1 : 0, 0 ); 
+				AddComponent( laoc, (i==0x2be5) ? -1 : 0, (i==0x2be7) ? -1 : 0, 0 );
 			}
 		}
 
@@ -36,11 +36,11 @@ namespace Server.Items
 
 	public class GingerBreadHouseDeed : BaseAddonDeed
 	{
-		public override int LabelNumber{ get{ return 1077394; } } //a Gingerbread House Deed
-		public override BaseAddon Addon{ get{ return new GingerBreadHouseAddon(); } }
+		public override int LabelNumber => 1077394; //a Gingerbread House Deed
+		public override BaseAddon Addon => new GingerBreadHouseAddon();
 
 		[Constructible]
-		public GingerBreadHouseDeed() 
+		public GingerBreadHouseDeed()
 		{
 			Weight = 1.0;
 			LootType = LootType.Blessed;

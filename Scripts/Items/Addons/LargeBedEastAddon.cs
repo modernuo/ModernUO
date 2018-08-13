@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class LargeBedEastAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed{ get{ return new LargeBedEastDeed(); } }
+		public override BaseAddonDeed Deed => new LargeBedEastDeed();
 
 		[Constructible]
 		public LargeBedEastAddon()
@@ -37,8 +37,8 @@ namespace Server.Items
 
 	public class LargeBedEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new LargeBedEastAddon(); } }
-		public override int LabelNumber{ get{ return 1044324; } } // large bed (east)
+		public override BaseAddon Addon => new LargeBedEastAddon();
+		public override int LabelNumber => 1044324; // large bed (east)
 
 		[Constructible]
 		public LargeBedEastDeed()

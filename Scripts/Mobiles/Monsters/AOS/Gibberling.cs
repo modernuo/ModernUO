@@ -50,7 +50,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Meager );
 		}
 
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public Gibberling( Serial serial ) : base( serial )
 		{

@@ -8,31 +8,31 @@ namespace Server.Items
 	[FlippableAttribute( 0x13B0, 0x13AF )]
 	public class WarAxe : BaseAxe
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.BleedAttack; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;
 
-		public override int AosStrengthReq{ get{ return 35; } }
-		public override int AosMinDamage{ get{ return 14; } }
-		public override int AosMaxDamage{ get{ return 15; } }
-		public override int AosSpeed{ get{ return 33; } }
-		public override float MlSpeed{ get{ return 3.25f; } }
+		public override int AosStrengthReq => 35;
+		public override int AosMinDamage => 14;
+		public override int AosMaxDamage => 15;
+		public override int AosSpeed => 33;
+		public override float MlSpeed => 3.25f;
 
-		public override int OldStrengthReq{ get{ return 35; } }
-		public override int OldMinDamage{ get{ return 9; } }
-		public override int OldMaxDamage{ get{ return 27; } }
-		public override int OldSpeed{ get{ return 40; } }
+		public override int OldStrengthReq => 35;
+		public override int OldMinDamage => 9;
+		public override int OldMaxDamage => 27;
+		public override int OldSpeed => 40;
 
-		public override int DefHitSound{ get{ return 0x233; } }
-		public override int DefMissSound{ get{ return 0x239; } }
+		public override int DefHitSound => 0x233;
+		public override int DefMissSound => 0x239;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 80; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 80;
 
-		public override SkillName DefSkill{ get{ return SkillName.Macing; } }
-		public override WeaponType DefType{ get{ return WeaponType.Bashing; } }
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Bash1H; } }
+		public override SkillName DefSkill => SkillName.Macing;
+		public override WeaponType DefType => WeaponType.Bashing;
+		public override WeaponAnimation DefAnimation => WeaponAnimation.Bash1H;
 
-		public override HarvestSystem HarvestSystem{ get{ return null; } }
+		public override HarvestSystem HarvestSystem => null;
 
 		[Constructible]
 		public WarAxe() : base( 0x13B0 )

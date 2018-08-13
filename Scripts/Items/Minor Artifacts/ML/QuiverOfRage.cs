@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class QuiverOfRage : BaseQuiver
 	{
-		public override int LabelNumber{ get{ return 1075038; } } // Quiver of Rage
+		public override int LabelNumber => 1075038; // Quiver of Rage
 
 		[Constructible]
-		public QuiverOfRage() : base()
+		public QuiverOfRage()
 		{
 			Hue = 0x24C;
 

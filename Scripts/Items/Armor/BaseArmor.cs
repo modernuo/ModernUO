@@ -33,7 +33,7 @@ namespace Server.Items
 
 
 		/* Armor internals work differently now (Jun 19 2003)
-		 * 
+		 *
 		 * The attributes defined below default to -1.
 		 * If the value is -1, the corresponding virtual 'Aos/Old' property is used.
 		 * If not, the attribute value itself is used. Here's the list:
@@ -129,8 +129,8 @@ namespace Server.Items
 					return m_ArmorBase;
 			}
 			set
-			{ 
-				m_ArmorBase = value; Invalidate(); 
+			{
+				m_ArmorBase = value; Invalidate();
 			}
 		}
 
@@ -289,11 +289,11 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int HitPoints
 		{
-			get 
+			get
 			{
 				return m_HitPoints;
 			}
-			set 
+			set
 			{
 				if ( value != m_HitPoints && MaxHitPoints > 0 )
 				{
@@ -317,7 +317,7 @@ namespace Server.Items
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
 
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ArmorQuality Quality
 		{
@@ -425,11 +425,11 @@ namespace Server.Items
 		public virtual int BasePoisonResistance{ get{ return 0; } }
 		public virtual int BaseEnergyResistance{ get{ return 0; } }
 
-		public override int PhysicalResistance{ get{ return BasePhysicalResistance + GetProtOffset() + GetResourceAttrs().ArmorPhysicalResist + m_PhysicalBonus; } }
-		public override int FireResistance{ get{ return BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + m_FireBonus; } }
-		public override int ColdResistance{ get{ return BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + m_ColdBonus; } }
-		public override int PoisonResistance{ get{ return BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + m_PoisonBonus; } }
-		public override int EnergyResistance{ get{ return BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus; } }
+		public override int PhysicalResistance => BasePhysicalResistance + GetProtOffset() + GetResourceAttrs().ArmorPhysicalResist + m_PhysicalBonus;
+		public override int FireResistance => BaseFireResistance + GetProtOffset() + GetResourceAttrs().ArmorFireResist + m_FireBonus;
+		public override int ColdResistance => BaseColdResistance + GetProtOffset() + GetResourceAttrs().ArmorColdResist + m_ColdBonus;
+		public override int PoisonResistance => BasePoisonResistance + GetProtOffset() + GetResourceAttrs().ArmorPoisonResist + m_PoisonBonus;
+		public override int EnergyResistance => BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus;
 
 		public virtual int InitMinHits{ get{ return 0; } }
 		public virtual int InitMaxHits{ get{ return 0; } }
@@ -1163,7 +1163,7 @@ namespace Server.Items
 			return base.AllowSecureTrade( from, to, newOwner, accepted );
 		}
 
-		public virtual Race RequiredRace { get { return null; } }
+		public virtual Race RequiredRace  => null;
 
 		public override bool CanEquip( Mobile from )
 		{
@@ -1292,7 +1292,7 @@ namespace Server.Items
 			int Absorbed = (int)(HalfAr + HalfAr*Utility.RandomDouble());
 
 			damageTaken -= Absorbed;
-			if ( damageTaken < 0 ) 
+			if ( damageTaken < 0 )
 				damageTaken = 0;
 
 			if ( Absorbed < 2 )

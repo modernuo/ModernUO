@@ -7,25 +7,25 @@ namespace Server.Items
 	[FlippableAttribute( 0x27A4, 0x27EF )]
 	public class Wakizashi : BaseSword
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.FrenziedWhirlwind; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.DoubleStrike; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.FrenziedWhirlwind;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.DoubleStrike;
 
-		public override int AosStrengthReq{ get{ return 20; } }
-		public override int AosMinDamage{ get{ return 11; } }
-		public override int AosMaxDamage{ get{ return 13; } }
-		public override int AosSpeed{ get{ return 44; } }
-		public override float MlSpeed{ get{ return 2.50f; } }
+		public override int AosStrengthReq => 20;
+		public override int AosMinDamage => 11;
+		public override int AosMaxDamage => 13;
+		public override int AosSpeed => 44;
+		public override float MlSpeed => 2.50f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 11; } }
-		public override int OldMaxDamage{ get{ return 13; } }
-		public override int OldSpeed{ get{ return 44; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 11;
+		public override int OldMaxDamage => 13;
+		public override int OldSpeed => 44;
 
-		public override int DefHitSound{ get{ return 0x23B; } }
-		public override int DefMissSound{ get{ return 0x23A; } }
+		public override int DefHitSound => 0x23B;
+		public override int DefMissSound => 0x23A;
 
-		public override int InitMinHits{ get{ return 45; } }
-		public override int InitMaxHits{ get{ return 50; } }
+		public override int InitMinHits => 45;
+		public override int InitMaxHits => 50;
 
 		[Constructible]
 		public Wakizashi() : base( 0x27A4 )

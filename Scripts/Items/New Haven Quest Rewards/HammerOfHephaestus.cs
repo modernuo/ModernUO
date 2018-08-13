@@ -6,7 +6,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x13E3, 0x13E4 )]
 	public class HammerOfHephaestus : SmithHammer
 	{
-		public override int LabelNumber{ get{ return 1077740; } } // Hammer of Hephaestus
+		public override int LabelNumber => 1077740; // Hammer of Hephaestus
 
 		public static readonly TimeSpan RechargeDelay = TimeSpan.FromMinutes( 5 );
 

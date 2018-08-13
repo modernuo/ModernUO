@@ -8,10 +8,10 @@ namespace Server.Spells.Spellweaving
 	{
 		private static SpellInfo m_Info = new SpellInfo( "Essence of Wind", "Anathrae", -1 );
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 3.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 3.0 );
 
-		public override double RequiredSkill { get { return 52.0; } }
-		public override int RequiredMana { get { return 40; } }
+		public override double RequiredSkill => 52.0;
+		public override int RequiredMana => 40;
 
 		public EssenceOfWindSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -70,10 +70,10 @@ namespace Server.Spells.Spellweaving
 			private int m_SSIMalus;
 			private ExpireTimer m_Timer;
 
-			public Mobile Defender { get { return m_Defender; } }
-			public int FCMalus { get { return m_FCMalus; } }
-			public int SSIMalus { get { return m_SSIMalus; } }
-			public ExpireTimer Timer { get { return m_Timer; } }
+			public Mobile Defender  => m_Defender;
+			public int FCMalus  => m_FCMalus;
+			public int SSIMalus  => m_SSIMalus;
+			public ExpireTimer Timer  => m_Timer;
 
 			public EssenceOfWindInfo( Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration )
 			{
@@ -88,9 +88,7 @@ namespace Server.Spells.Spellweaving
 
 		public static int GetFCMalus( Mobile m )
 		{
-			EssenceOfWindInfo info;
-
-			if( m_Table.TryGetValue( m, out info ) )
+			if (m_Table.TryGetValue( m, out EssenceOfWindInfo info ))
 				return info.FCMalus;
 
 			return 0;
@@ -98,9 +96,7 @@ namespace Server.Spells.Spellweaving
 
 		public static int GetSSIMalus( Mobile m )
 		{
-			EssenceOfWindInfo info;
-
-			if( m_Table.TryGetValue( m, out info ) )
+			if (m_Table.TryGetValue( m, out EssenceOfWindInfo info ))
 				return info.SSIMalus;
 
 			return 0;
@@ -113,9 +109,7 @@ namespace Server.Spells.Spellweaving
 
 		public static void StopDebuffing( Mobile m, bool message )
 		{
-			EssenceOfWindInfo info;
-
-			if( m_Table.TryGetValue( m, out info ) )
+			if (m_Table.TryGetValue( m, out EssenceOfWindInfo info ))
 				info.Timer.DoExpire( message );
 		}
 

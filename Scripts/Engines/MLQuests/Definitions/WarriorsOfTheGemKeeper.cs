@@ -12,7 +12,7 @@ namespace Server.Engines.MLQuests.Definitions
 {
 	public class WarriorsOfTheGemkeeper : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( CloseEnough ); } }
+		public override Type NextQuest => typeof( CloseEnough );
 
 		public WarriorsOfTheGemkeeper()
 		{
@@ -31,7 +31,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class CloseEnough : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( TakingTheBullByTheHorns ); } }
+		public override Type NextQuest => typeof( TakingTheBullByTheHorns );
 		public override bool IsChainTriggered => true;
 
 		public CloseEnough()
@@ -51,7 +51,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class TakingTheBullByTheHorns : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( EmissaryToTheMinotaur ); } }
+		public override Type NextQuest => typeof( EmissaryToTheMinotaur );
 		public override bool IsChainTriggered => true;
 
 		public TakingTheBullByTheHorns()

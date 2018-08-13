@@ -99,8 +99,8 @@ namespace Server.Mobiles
 		public override bool AlwaysMurderer => true;
 		public override bool BardImmune => !Core.AOS;
 		public override Poison PoisonImmune => Poison.Lethal;
-		public override int Meat{ get{ return 1; } }
-		public override int TreasureMapLevel{ get{ return 5; } }
+		public override int Meat => 1;
+		public override int TreasureMapLevel => 5;
 
 		public override void OnGaveMeleeAttack( Mobile defender )
 		{

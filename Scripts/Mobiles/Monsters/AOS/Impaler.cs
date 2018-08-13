@@ -9,7 +9,7 @@ namespace Server.Mobiles
 	{
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.BleedAttack;
 
-		public override bool IgnoreYoungProtection { get { return Core.ML; } }
+		public override bool IgnoreYoungProtection => Core.ML;
 
 		[Constructible]
 		public Impaler() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
@@ -63,11 +63,11 @@ namespace Server.Mobiles
 		public override bool AutoDispel => true;
 		public override bool BardImmune => !Core.SE;
 		public override bool Unprovokable => Core.SE;
-		public override bool AreaPeaceImmune { get { return Core.SE; } }
+		public override bool AreaPeaceImmune => Core.SE;
 		public override Poison PoisonImmune => Poison.Lethal;
 		public override Poison HitPoison => (0.8 >= Utility.RandomDouble() ? Poison.Greater : Poison.Deadly);
 
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public Impaler( Serial serial ) : base( serial )
 		{

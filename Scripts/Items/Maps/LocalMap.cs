@@ -19,7 +19,7 @@ namespace Server.Items
 			SetDisplay( from.X - dist, from.Y - dist, from.X + dist, from.Y + dist, 200, 200 );
 		}
 
-		public override int LabelNumber{ get{ return 1015230; } } // local map
+		public override int LabelNumber => 1015230; // local map
 
 		public LocalMap( Serial serial ) : base( serial )
 		{

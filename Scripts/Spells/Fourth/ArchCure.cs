@@ -18,7 +18,7 @@ namespace Server.Spells.Fourth
 				Reagent.MandrakeRoot
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
+		public override SpellCircle Circle => SpellCircle.Fourth;
 
 		public ArchCureSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{
@@ -30,7 +30,7 @@ namespace Server.Spells.Fourth
 		}
 
 		// Arch cure is now 1/4th of a second faster
-		public override TimeSpan CastDelayBase{ get{ return base.CastDelayBase - TimeSpan.FromSeconds( 0.25 ); } }
+		public override TimeSpan CastDelayBase => base.CastDelayBase - TimeSpan.FromSeconds( 0.25 );
 
 		public void Target( IPoint3D p )
 		{

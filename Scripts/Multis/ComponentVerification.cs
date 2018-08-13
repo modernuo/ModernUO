@@ -120,7 +120,7 @@ namespace Server.Multis
 		private ColumnInfo[] m_Columns;
 		private DataRecord[] m_Records;
 
-		public DataRecord[] Records { get { return m_Records; } }
+		public DataRecord[] Records  => m_Records;
 
 		public int GetColumnID( string name )
 		{
@@ -200,8 +200,8 @@ namespace Server.Multis
 		private Spreadsheet m_Spreadsheet;
 		private object[] m_Data;
 
-		public Spreadsheet Spreadsheet { get { return m_Spreadsheet; } }
-		public object[] Data { get { return m_Data; } }
+		public Spreadsheet Spreadsheet  => m_Spreadsheet;
+		public object[] Data  => m_Data;
 
 		public DataRecord( Spreadsheet ss, object[] data )
 		{

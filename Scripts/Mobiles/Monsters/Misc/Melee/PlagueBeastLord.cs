@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a plague beast lord corpse" )]
 	public class PlagueBeastLord : BaseCreature, ICarvable, IScissorable
 	{
-		public override Poison PoisonImmune { get { return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		private Mobile m_OpenedBy;
 

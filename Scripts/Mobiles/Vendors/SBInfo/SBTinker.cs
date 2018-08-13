@@ -1,25 +1,25 @@
-using System; 
-using System.Collections.Generic; 
-using Server.Items; 
+using System;
+using System.Collections.Generic;
+using Server.Items;
 
-namespace Server.Mobiles 
-{ 
-	public class SBTinker: SBInfo 
-	{ 
-		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo(); 
-		private IShopSellInfo m_SellInfo = new InternalSellInfo(); 
+namespace Server.Mobiles
+{
+	public class SBTinker: SBInfo
+	{
+		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
+		private IShopSellInfo m_SellInfo = new InternalSellInfo();
 
-		public SBTinker() 
-		{ 
-		} 
+		public SBTinker()
+		{
+		}
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } } 
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } } 
+		public override IShopSellInfo SellInfo => m_SellInfo;
+		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
-		public class InternalBuyInfo : List<GenericBuyInfo> 
-		{ 
-			public InternalBuyInfo() 
-			{ 
+		public class InternalBuyInfo : List<GenericBuyInfo>
+		{
+			public InternalBuyInfo()
+			{
 				Add( new GenericBuyInfo( typeof( Clock ), 22, 20, 0x104B, 0 ) );
 				Add( new GenericBuyInfo( typeof( Nails ), 3, 20, 0x102E, 0 ) );
 				Add( new GenericBuyInfo( typeof( ClockParts ), 3, 20, 0x104F, 0 ) );
@@ -74,13 +74,13 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( Tambourine ), 21, 20, 0x0E9E, 0 ) );
 				Add( new GenericBuyInfo( typeof( LapHarp ), 21, 20, 0x0EB2, 0 ) );
 				Add( new GenericBuyInfo( typeof( Lute ), 21, 20, 0x0EB3, 0 ) );
-			} 
-		} 
+			}
+		}
 
-		public class InternalSellInfo : GenericSellInfo 
-		{ 
-			public InternalSellInfo() 
-			{ 
+		public class InternalSellInfo : GenericSellInfo
+		{
+			public InternalSellInfo()
+			{
 				Add( typeof( Drums ), 10 );
 				Add( typeof( Tambourine ), 10 );
 				Add( typeof( LapHarp ), 10 );
@@ -124,7 +124,7 @@ namespace Server.Mobiles
 				Add( typeof( Hammer ), 3 );
 				Add( typeof( SmithHammer ), 11 );
 				Add( typeof( ButcherKnife ), 6 );
-			} 
-		} 
-	} 
+			}
+		}
+	}
 }

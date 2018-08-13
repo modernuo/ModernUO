@@ -6,9 +6,9 @@ namespace Server.Items
 	[Flippable]
 	public class PaperLantern : BaseLight
 	{
-		public override int LitItemID{ get { return 0x24BD; } }
-		public override int UnlitItemID{ get { return 0x24BE; } }
-		
+		public override int LitItemID => 0x24BD;
+		public override int UnlitItemID => 0x24BE;
+
 		[Constructible]
 		public PaperLantern() : base( 0x24BE )
 		{

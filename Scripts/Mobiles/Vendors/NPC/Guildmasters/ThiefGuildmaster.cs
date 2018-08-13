@@ -7,9 +7,9 @@ namespace Server.Mobiles
 {
 	public class ThiefGuildmaster : BaseGuildmaster
 	{
-		public override NpcGuild NpcGuild{ get{ return NpcGuild.ThievesGuild; } }
+		public override NpcGuild NpcGuild => NpcGuild.ThievesGuild;
 
-		public override TimeSpan JoinAge{ get{ return TimeSpan.FromDays( 7.0 ); } }
+		public override TimeSpan JoinAge => TimeSpan.FromDays( 7.0 );
 
 		[Constructible]
 		public ThiefGuildmaster() : base( "thief" )

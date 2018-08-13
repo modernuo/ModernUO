@@ -9,7 +9,7 @@ namespace Server.Items
 		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
 		bool ICommodity.IsDeedable { get { return true; } }
 
-		public override int LabelNumber{ get{ return 1044626; } } // sand
+		public override int LabelNumber => 1044626; // sand
 
 		[Constructible]
 		public Sand() : this( 1 )

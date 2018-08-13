@@ -14,7 +14,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class UnfadingMemoriesPartOne : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( UnfadingMemoriesPartTwo ); } }
+		public override Type NextQuest => typeof( UnfadingMemoriesPartTwo );
 
 		public UnfadingMemoriesPartOne()
 		{
@@ -42,7 +42,7 @@ namespace Server.Engines.MLQuests.Definitions
 
 	public class UnfadingMemoriesPartTwo : MLQuest
 	{
-		public override Type NextQuest { get { return typeof( UnfadingMemoriesPartThree ); } }
+		public override Type NextQuest => typeof( UnfadingMemoriesPartThree );
 		public override bool IsChainTriggered => true;
 
 		public UnfadingMemoriesPartTwo()

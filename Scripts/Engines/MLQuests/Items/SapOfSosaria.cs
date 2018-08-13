@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class SapOfSosaria : Item
 	{
-		public override int LabelNumber{ get{ return 1074178; } } // Sap of Sosaria
+		public override int LabelNumber => 1074178; // Sap of Sosaria
 
 		[Constructible]
 		public SapOfSosaria() : this( 1 )

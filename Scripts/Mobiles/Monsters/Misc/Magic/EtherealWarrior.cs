@@ -46,7 +46,7 @@ namespace Server.Mobiles
 			VirtualArmor = 120;
 		}
 
-		public override int TreasureMapLevel{ get{ return Core.AOS ? 5 : 0; } }
+		public override int TreasureMapLevel => Core.AOS ? 5 : 0;
 
 		public override void GenerateLoot()
 		{
@@ -84,7 +84,7 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override int Feathers{ get{ return 100; } }
+		public override int Feathers => 100;
 
 		public override int GetAngerSound()
 		{

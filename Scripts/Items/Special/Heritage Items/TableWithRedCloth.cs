@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class TableWithRedClothAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new TableWithRedClothDeed(); } }
+		public override BaseAddonDeed Deed => new TableWithRedClothDeed();
 
 		[Constructible]
-		public TableWithRedClothAddon() : base()
+		public TableWithRedClothAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0x118D, 1076277 ), 0, 0, 0 );
 		}
@@ -33,11 +33,11 @@ namespace Server.Items
 
 	public class TableWithRedClothDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new TableWithRedClothAddon(); } }
-		public override int LabelNumber { get { return 1076277; } } // Table With A Red Tablecloth
+		public override BaseAddon Addon => new TableWithRedClothAddon();
+		public override int LabelNumber => 1076277; // Table With A Red Tablecloth
 
 		[Constructible]
-		public TableWithRedClothDeed() : base()
+		public TableWithRedClothDeed()
 		{
 			LootType = LootType.Blessed;
 		}

@@ -55,7 +55,7 @@ namespace Server.Engines.Plants
 		private int m_AvailableResources;
 		private int m_LeftResources;
 
-		public PlantItem Plant { get { return m_Plant; } }
+		public PlantItem Plant  => m_Plant;
 
 		public bool FertileDirt
 		{

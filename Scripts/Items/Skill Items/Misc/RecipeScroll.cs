@@ -8,7 +8,7 @@ namespace Server.Items
 {
 	public class RecipeScroll : Item
 	{
-		public override int LabelNumber { get { return 1074560; } } // recipe scroll
+		public override int LabelNumber => 1074560; // recipe scroll
 
 		private int m_RecipeID;
 
@@ -91,7 +91,7 @@ namespace Server.Items
 				{
 					pm.SendLocalizedMessage( 1073427 ); // You already know this recipe.
 				}
-				
+
 			}
 		}
 

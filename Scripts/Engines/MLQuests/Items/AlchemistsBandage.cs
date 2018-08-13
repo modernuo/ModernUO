@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class AlchemistsBandage : Item
 	{
-		public override int LabelNumber{ get{ return 1075452; } } // Alchemist's Bandage
+		public override int LabelNumber => 1075452; // Alchemist's Bandage
 
 		public override bool Nontransferable => true;
 

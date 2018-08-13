@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class RedPlainRugAddon : BaseAddon
 	{
-		public override BaseAddonDeed Deed { get { return new RedPlainRugDeed(); } }
+		public override BaseAddonDeed Deed => new RedPlainRugDeed();
 
 		[Constructible]
-		public RedPlainRugAddon() : base()
+		public RedPlainRugAddon()
 		{
 			AddComponent( new LocalizedAddonComponent( 0xAC9, 1076588 ), 1, 1, 0 );
 			AddComponent( new LocalizedAddonComponent( 0xACA, 1076588 ), -1, -1, 0 );
@@ -41,11 +41,11 @@ namespace Server.Items
 
 	public class RedPlainRugDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new RedPlainRugAddon(); } }
-		public override int LabelNumber { get { return 1076588; } } // Red plain rug
+		public override BaseAddon Addon => new RedPlainRugAddon();
+		public override int LabelNumber => 1076588; // Red plain rug
 
 		[Constructible]
-		public RedPlainRugDeed() : base()
+		public RedPlainRugDeed()
 		{
 			LootType = LootType.Blessed;
 		}

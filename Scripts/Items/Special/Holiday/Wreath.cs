@@ -119,7 +119,7 @@ namespace Server.Items
 					return false;
 				}
 			}
-			else 
+			else
 			{
 				return false;
 			}
@@ -170,7 +170,7 @@ namespace Server.Items
 	[Flippable( 0x14F0, 0x14EF )]
 	public class WreathDeed : Item
 	{
-		public override int LabelNumber{ get{ return 1062837; } } // holiday wreath deed
+		public override int LabelNumber => 1062837; // holiday wreath deed
 
 		[Constructible]
 		public WreathDeed() : this( Utility.RandomDyedHue() )

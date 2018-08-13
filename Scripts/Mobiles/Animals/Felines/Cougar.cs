@@ -44,10 +44,10 @@ namespace Server.Mobiles
 			MinTameSkill = 41.1;
 		}
 
-		public override int Meat{ get{ return 1; } }
-		public override int Hides{ get{ return 10; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.Fish | FoodType.Meat; } }
-		public override PackInstinct PackInstinct{ get{ return PackInstinct.Feline; } }
+		public override int Meat => 1;
+		public override int Hides => 10;
+		public override FoodType FavoriteFood => FoodType.Fish | FoodType.Meat;
+		public override PackInstinct PackInstinct => PackInstinct.Feline;
 
 		public Cougar(Serial serial) : base(serial)
 		{

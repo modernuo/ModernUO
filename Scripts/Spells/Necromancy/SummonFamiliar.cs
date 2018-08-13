@@ -19,10 +19,10 @@ namespace Server.Spells.Necromancy
 				Reagent.DaemonBlood
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill{ get{ return 30.0; } }
-		public override int RequiredMana{ get{ return 17; } }
+		public override double RequiredSkill => 30.0;
+		public override int RequiredMana => 17;
 
 		public SummonFamiliarSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

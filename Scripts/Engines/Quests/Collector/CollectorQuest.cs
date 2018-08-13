@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Collector
 				typeof( Collector.MakeRoomObjective )
 			};
 
-		public override Type[] TypeReferenceTable{ get{ return m_TypeReferenceTable; } }
+		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
 		public override object Name
 		{
@@ -91,10 +91,10 @@ namespace Server.Engines.Quests.Collector
 			}
 		}
 
-		public override TimeSpan RestartDelay{ get{ return TimeSpan.Zero; } }
+		public override TimeSpan RestartDelay => TimeSpan.Zero;
 		public override bool IsTutorial => false;
 
-		public override int Picture{ get{ return 0x15A9; } }
+		public override int Picture => 0x15A9;
 
 		public CollectorQuest( PlayerMobile from ) : base( from )
 		{

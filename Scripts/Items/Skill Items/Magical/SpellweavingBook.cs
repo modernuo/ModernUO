@@ -6,9 +6,9 @@ namespace Server.Items
 {
 	public class SpellweavingBook : Spellbook
 	{
-		public override SpellbookType SpellbookType{ get{ return SpellbookType.Arcanist; } }
-		public override int BookOffset{ get{ return 600; } }
-		public override int BookCount{ get{ return 16; } }
+		public override SpellbookType SpellbookType => SpellbookType.Arcanist;
+		public override int BookOffset => 600;
+		public override int BookCount => 16;
 
 		[Constructible]
 		public SpellweavingBook() : this( (ulong)0 )

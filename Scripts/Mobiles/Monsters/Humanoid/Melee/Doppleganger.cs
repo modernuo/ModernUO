@@ -43,8 +43,8 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override int Hides{ get{ return 6; } }
-		public override int Meat{ get{ return 1; } }
+		public override int Hides => 6;
+		public override int Meat => 1;
 
 		public Doppleganger( Serial serial ) : base( serial )
 		{

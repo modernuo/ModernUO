@@ -7,7 +7,7 @@ namespace Server.Items
 	public class GlacialStaff : BlackStaff
 	{
 		//TODO: Pre-AoS stuff
-		public override int LabelNumber{ get{ return 1017413; } } // Glacial Staff
+		public override int LabelNumber => 1017413; // Glacial Staff
 
 		[Constructible]
 		public GlacialStaff()

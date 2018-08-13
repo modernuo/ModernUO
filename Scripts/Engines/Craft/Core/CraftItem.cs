@@ -93,11 +93,9 @@ namespace Server.Engines.Craft
 		}
 
 		private static Dictionary<Type, int> _itemIds = new Dictionary<Type, int>();
-		
-		public static int ItemIDOf( Type type ) {
-			int itemId;
 
-			if ( !_itemIds.TryGetValue( type, out itemId ) ) {
+		public static int ItemIDOf( Type type ) {
+			if (!_itemIds.TryGetValue( type, out int itemId )) {
 				if ( type == typeof( FactionExplosionTrap ) ) {
 					itemId = 14034;
 				} else if ( type == typeof( FactionGasTrap ) ) {
@@ -323,7 +321,7 @@ namespace Server.Engines.Craft
 				0x398C, 0x399F,  // Fire field
 				0x2DDB, 0x2DDC,	//Elven stove
 				0x19AA, 0x19BB,	// Veteran Reward Brazier
-				0x197A, 0x19A9, // Large Forge 
+				0x197A, 0x19A9, // Large Forge
 				0x0FB1, 0x0FB1, // Small Forge
 				0x2DD8, 0x2DD8 // Elven Forge
 			};
@@ -753,7 +751,7 @@ namespace Server.Engines.Craft
 					return false;
 				}
 			}
-			
+
 			int index = 0;
 
 			// Consume ALL
@@ -872,7 +870,7 @@ namespace Server.Engines.Craft
 			if ( from.Talisman is BaseTalisman )
 			{
 				BaseTalisman talisman = (BaseTalisman) from.Talisman;
-				
+
 				if ( talisman.Skill == system.MainSkill )
 				{
 					chance -= talisman.SuccessBonus / 100.0;
@@ -960,7 +958,7 @@ namespace Server.Engines.Craft
 			if ( allRequiredSkills && from.Talisman is BaseTalisman )
 			{
 				BaseTalisman talisman = (BaseTalisman) from.Talisman;
-				
+
 				if ( talisman.Skill == craftSystem.MainSkill )
 					chance += talisman.SuccessBonus / 100.0;
 			}

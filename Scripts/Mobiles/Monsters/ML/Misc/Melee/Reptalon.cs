@@ -47,13 +47,13 @@ namespace Server.Mobiles
 
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
-		public override int TreasureMapLevel{ get{ return 5; } }
-		public override int Meat{ get{ return 5; } }
-		public override int Hides{ get{ return 10; } }
+		public override int TreasureMapLevel => 5;
+		public override int Meat => 5;
+		public override int Hides => 10;
 		public override bool CanBreath => true;
-		public override bool CanAngerOnTame{ get { return true; } }
+		public override bool CanAngerOnTame => true;
 		public override bool StatLossAfterTame => true;
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override FoodType FavoriteFood => FoodType.Meat;
 		public override bool CanFly => true;
 
 		public Reptalon( Serial serial ) : base( serial )

@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ElvenSpinningwheelSouthAddon : BaseAddon, ISpinningWheel
 	{
-		public override BaseAddonDeed Deed{ get{ return new ElvenSpinningwheelSouthDeed(); } }
+		public override BaseAddonDeed Deed => new ElvenSpinningwheelSouthDeed();
 
 		[Constructible]
 		public ElvenSpinningwheelSouthAddon()
@@ -110,8 +110,8 @@ namespace Server.Items
 
 	public class ElvenSpinningwheelSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon{ get{ return new ElvenSpinningwheelSouthAddon(); } }
-		public override int LabelNumber{ get{ return 1072878; } } // spinning wheel (south)
+		public override BaseAddon Addon => new ElvenSpinningwheelSouthAddon();
+		public override int LabelNumber => 1072878; // spinning wheel (south)
 
 		[Constructible]
 		public ElvenSpinningwheelSouthDeed()

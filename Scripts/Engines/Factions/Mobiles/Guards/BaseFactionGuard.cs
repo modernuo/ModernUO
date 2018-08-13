@@ -55,7 +55,7 @@ namespace Server.Factions
 			get { return new FactionGuardAI( this ); }
 		}
 
-		public override TimeSpan ReacquireDelay{ get{ return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan ReacquireDelay => TimeSpan.FromSeconds( 2.0 );
 
 		public override bool IsEnemy( Mobile m )
 		{

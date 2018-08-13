@@ -18,20 +18,20 @@ namespace Server.Items
 
 		public bool ShowUsesRemaining{ get{ return true; } set{} }
 
-		public override int LabelNumber{ get{ return 1049065; } } // prospector's tool
+		public override int LabelNumber => 1049065; // prospector's tool
 
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.CrushingBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.ShadowStrike; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;
 
-		public override int AosStrengthReq{ get{ return 40; } }
-		public override int AosMinDamage{ get{ return 13; } }
-		public override int AosMaxDamage{ get{ return 15; } }
-		public override int AosSpeed{ get{ return 33; } }
+		public override int AosStrengthReq => 40;
+		public override int AosMinDamage => 13;
+		public override int AosMaxDamage => 15;
+		public override int AosSpeed => 33;
 
-		public override int OldStrengthReq{ get{ return 10; } }
-		public override int OldMinDamage{ get{ return 6; } }
-		public override int OldMaxDamage{ get{ return 8; } }
-		public override int OldSpeed{ get{ return 33; } }
+		public override int OldStrengthReq => 10;
+		public override int OldMinDamage => 6;
+		public override int OldMaxDamage => 8;
+		public override int OldSpeed => 33;
 
 		[Constructible]
 		public ProspectorsTool() : base( 0xFB4 )

@@ -80,7 +80,7 @@ namespace Server.Engines.Quests.Ninja
 
 		public bool TaughtHowToUseSkills
 		{
-			get{ return m_TaughtHowToUseSkills; } 
+			get{ return m_TaughtHowToUseSkills; }
 			set{ m_TaughtHowToUseSkills = value; }
 		}
 
@@ -152,8 +152,8 @@ namespace Server.Engines.Quests.Ninja
 		{
 			get
 			{
-				/* Bring the note to Elite Ninja Zoel and speak with him again. 
-				 * He is near the cave entrance. You can hand the note to Zoel 
+				/* Bring the note to Elite Ninja Zoel and speak with him again.
+				 * He is near the cave entrance. You can hand the note to Zoel
 				 * by dragging it and dropping it on his body.
 				 */
 				return 1063185;
@@ -208,7 +208,7 @@ namespace Server.Engines.Quests.Ninja
 		{
 			get
 			{
-				// Go back through the blue teleporter and tell Daimyo Emino what you’ve overheard.
+				// Go back through the blue teleporter and tell Daimyo Emino what youï¿½ve overheard.
 				return 1063197;
 			}
 		}
@@ -229,9 +229,9 @@ namespace Server.Engines.Quests.Ninja
 		{
 			get
 			{
-				/* Take the white teleporter and check the chests for the sword. 
-				 * Leave everything else behind. Avoid damage from traps you may 
-				 * encounter. To use a potion, make sure at least one hand is 
+				/* Take the white teleporter and check the chests for the sword.
+				 * Leave everything else behind. Avoid damage from traps you may
+				 * encounter. To use a potion, make sure at least one hand is
 				 * free and double click on the bottle.
 				 */
 				return 1063200;
@@ -262,8 +262,8 @@ namespace Server.Engines.Quests.Ninja
 		{
 			get
 			{
-				/* Walk through the hallway being careful 
-				 * to avoid the traps. You may be able to 
+				/* Walk through the hallway being careful
+				 * to avoid the traps. You may be able to
 				 * time the traps to avoid injury.
 				 */
 				return 1063202;
@@ -338,7 +338,7 @@ namespace Server.Engines.Quests.Ninja
 		{
 		}
 
-		public override int MaxProgress{ get{ return 3; } }
+		public override int MaxProgress => 3;
 
 		public override void RenderProgress( BaseQuestGump gump )
 		{

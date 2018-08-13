@@ -15,7 +15,7 @@ namespace Server.Multis
 		public static readonly int HorizontalSpacing = 25;
 		public static readonly int VerticalSpacing = 25;
 
-		public override int LabelNumber{ get{ return 1061690; } } // Packing Crate
+		public override int LabelNumber => 1061690; // Packing Crate
 
 		private BaseHouse m_House;
 
@@ -27,8 +27,8 @@ namespace Server.Multis
 			set{ m_House = value; }
 		}
 
-		public override int DefaultMaxItems{ get{ return 0; } }
-		public override int DefaultMaxWeight{ get{ return 0; } }
+		public override int DefaultMaxItems => 0;
+		public override int DefaultMaxWeight => 0;
 
 		public MovingCrate( BaseHouse house ) : base( 0xE3D )
 		{
@@ -241,7 +241,7 @@ namespace Server.Multis
 			int version = reader.ReadEncodedInt();
 
 			m_House = reader.ReadItem() as BaseHouse;
-			
+
 			if( m_House != null )
 			{
 				m_House.MovingCrate = this;
@@ -276,18 +276,18 @@ namespace Server.Multis
 
 	public class PackingBox : BaseContainer
 	{
-		public override int LabelNumber{ get{ return 1061690; } } // Packing Crate
+		public override int LabelNumber => 1061690; // Packing Crate
 
-		public override int DefaultGumpID{ get{ return 0x4B; } }
-		public override int DefaultDropSound{ get{ return 0x42; } }
+		public override int DefaultGumpID => 0x4B;
+		public override int DefaultDropSound => 0x42;
 
 		public override Rectangle2D Bounds
 		{
 			get{ return new Rectangle2D( 16, 51, 168, 73 ); }
 		}
 
-		public override int DefaultMaxItems{ get{ return 0; } }
-		public override int DefaultMaxWeight{ get{ return 0; } }
+		public override int DefaultMaxItems => 0;
+		public override int DefaultMaxWeight => 0;
 
 		public PackingBox() : base( 0x9A8 )
 		{

@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xF5C, 0xF5D )]
 	public class Mace : BaseBashing
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ConcussionBlow; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Disarm; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int AosStrengthReq{ get{ return 45; } }
-		public override int AosMinDamage{ get{ return 12; } }
-		public override int AosMaxDamage{ get{ return 14; } }
-		public override int AosSpeed{ get{ return 40; } }
-		public override float MlSpeed{ get{ return 2.75f; } }
+		public override int AosStrengthReq => 45;
+		public override int AosMinDamage => 12;
+		public override int AosMaxDamage => 14;
+		public override int AosSpeed => 40;
+		public override float MlSpeed => 2.75f;
 
-		public override int OldStrengthReq{ get{ return 20; } }
-		public override int OldMinDamage{ get{ return 8; } }
-		public override int OldMaxDamage{ get{ return 32; } }
-		public override int OldSpeed{ get{ return 30; } }
+		public override int OldStrengthReq => 20;
+		public override int OldMinDamage => 8;
+		public override int OldMaxDamage => 32;
+		public override int OldSpeed => 30;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 70; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 70;
 
 		[Constructible]
 		public Mace() : base( 0xF5C )

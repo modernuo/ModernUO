@@ -4,9 +4,9 @@ using Server;
 namespace Server.Items
 {
 	public class PurpleFrog : BaseFish
-	{		
-		public override int LabelNumber{ get{ return 1073823; } } // A Purple Frog
-		
+	{
+		public override int LabelNumber => 1073823; // A Purple Frog
+
 		[Constructible]
 		public PurpleFrog() : base( 0x3B0D )
 		{
@@ -14,7 +14,7 @@ namespace Server.Items
 		}
 
 		public PurpleFrog( Serial serial ) : base( serial )
-		{		
+		{
 		}
 
 		public override void Serialize( GenericWriter writer )

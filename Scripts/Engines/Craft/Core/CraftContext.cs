@@ -20,7 +20,7 @@ namespace Server.Engines.Craft
 		private bool m_DoNotColor;
 		private CraftMarkOption m_MarkOption;
 
-		public List<CraftItem> Items { get { return m_Items; } }
+		public List<CraftItem> Items  => m_Items;
 		public int LastResourceIndex{ get{ return m_LastResourceIndex; } set{ m_LastResourceIndex = value; } }
 		public int LastResourceIndex2{ get{ return m_LastResourceIndex2; } set{ m_LastResourceIndex2 = value; } }
 		public int LastGroupIndex{ get{ return m_LastGroupIndex; } set{ m_LastGroupIndex = value; } }

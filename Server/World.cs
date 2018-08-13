@@ -73,13 +73,9 @@ namespace Server {
 			m_DiskWriteHandle.WaitOne();
 		}
 
-		public static Dictionary<Serial, Mobile> Mobiles {
-			get { return m_Mobiles; }
-		}
+		public static Dictionary<Serial, Mobile> Mobiles  => m_Mobiles;
 
-		public static Dictionary<Serial, Item> Items {
-			get { return m_Items; }
-		}
+		public static Dictionary<Serial, Item> Items  => m_Items;
 
 		public static bool OnDelete( IEntity entity ) {
 			if ( m_Saving || m_Loading ) {
@@ -276,9 +272,7 @@ namespace Server {
 
 		private static string m_LoadingType;
 
-		public static string LoadingType {
-			get { return m_LoadingType; }
-		}
+		public static string LoadingType  => m_LoadingType;
 
 		private static readonly Type[] m_SerialTypeArray = new Type[1] { typeof(Serial) };
 

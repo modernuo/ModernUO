@@ -15,7 +15,7 @@ namespace Server.Spells.First
 				Reagent.SpidersSilk
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.First; } }
+		public override SpellCircle Circle => SpellCircle.First;
 
 		public NightSightSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

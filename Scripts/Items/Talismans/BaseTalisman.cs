@@ -39,8 +39,8 @@ namespace Server.Items
 			}
 		}
 
-		public override int LabelNumber { get { return 1071023; } } // Talisman
-		public virtual bool ForceShowName { get { return false; } } // used to override default summoner/removal name
+		public override int LabelNumber => 1071023; // Talisman
+		public virtual bool ForceShowName  => false; // used to override default summoner/removal name
 
 		private int m_MaxCharges;
 		private int m_Charges;

@@ -20,7 +20,7 @@ namespace Server.Items
 	[Flippable( 0x2AF9, 0x2AFD )]
 	public class DawnsMusicBox : Item, ISecurable
 	{
-		public override int LabelNumber { get { return 1075198; } } // Dawn’s Music Box
+		public override int LabelNumber => 1075198; // Dawnï¿½s Music Box
 
 		private List<MusicName> m_Tracks;
 

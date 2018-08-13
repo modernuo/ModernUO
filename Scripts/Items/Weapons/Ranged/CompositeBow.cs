@@ -7,30 +7,30 @@ namespace Server.Items
 	[FlippableAttribute( 0x26C2, 0x26CC )]
 	public class CompositeBow : BaseRanged
 	{
-		public override int EffectID{ get{ return 0xF42; } }
-		public override Type AmmoType{ get{ return typeof( Arrow ); } }
-		public override Item Ammo{ get{ return new Arrow(); } }
+		public override int EffectID => 0xF42;
+		public override Type AmmoType => typeof( Arrow );
+		public override Item Ammo => new Arrow();
 
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.MovingShot; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.MovingShot;
 
-		public override int AosStrengthReq{ get{ return 45; } }
-		public override int AosMinDamage{ get{ return Core.ML ? 13 : 15; } }
-		public override int AosMaxDamage{ get{ return 17; } }
-		public override int AosSpeed{ get{ return 25; } }
-		public override float MlSpeed{ get{ return 4.00f; } }
+		public override int AosStrengthReq => 45;
+		public override int AosMinDamage => Core.ML ? 13 : 15;
+		public override int AosMaxDamage => 17;
+		public override int AosSpeed => 25;
+		public override float MlSpeed => 4.00f;
 
-		public override int OldStrengthReq{ get{ return 45; } }
-		public override int OldMinDamage{ get{ return 15; } }
-		public override int OldMaxDamage{ get{ return 17; } }
-		public override int OldSpeed{ get{ return 25; } }
+		public override int OldStrengthReq => 45;
+		public override int OldMinDamage => 15;
+		public override int OldMaxDamage => 17;
+		public override int OldSpeed => 25;
 
-		public override int DefMaxRange{ get{ return 10; } }
+		public override int DefMaxRange => 10;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 70; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 70;
 
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.ShootBow; } }
+		public override WeaponAnimation DefAnimation => WeaponAnimation.ShootBow;
 
 		[Constructible]
 		public CompositeBow() : base( 0x26C2 )

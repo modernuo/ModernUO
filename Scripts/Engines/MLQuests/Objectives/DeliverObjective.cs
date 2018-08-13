@@ -132,7 +132,7 @@ namespace Server.Engines.MLQuests.Objectives
 		private TimeSpan m_Duration;
 
 		public override bool IsTimed => true;
-		public override TimeSpan Duration { get { return m_Duration; } }
+		public override TimeSpan Duration => m_Duration;
 
 		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination )
 			: this( duration, delivery, amount, name, destination, true )
@@ -272,7 +272,7 @@ namespace Server.Engines.MLQuests.Objectives
 			// No extra instance stuff printed for this objective
 		}
 
-		public override DataType ExtraDataType { get { return DataType.DeliverObjective; } }
+		public override DataType ExtraDataType => DataType.DeliverObjective;
 
 		public override void Serialize( GenericWriter writer )
 		{

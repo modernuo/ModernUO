@@ -13,7 +13,7 @@ namespace Server.Spells.Third
 				Reagent.BlackPearl
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Third; } }
+		public override SpellCircle Circle => SpellCircle.Third;
 
 		public FireballSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

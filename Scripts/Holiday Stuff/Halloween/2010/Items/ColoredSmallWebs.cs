@@ -5,13 +5,13 @@ namespace Server.Items
 {
 	public class ColoredSmallWebs : Item
 	{
-		public override double DefaultWeight { get { return 5; } }
+		public override double DefaultWeight => 5;
 
 		[Constructible]
 		public ColoredSmallWebs()
 			: base( Utility.RandomBool() ? 0x10d6 : 0x10d7 )
 		{
-			Hue = Utility.RandomBool() ? 0x455 : 0x4E9;  
+			Hue = Utility.RandomBool() ? 0x455 : 0x4E9;
 		}
 
 		public ColoredSmallWebs( Serial serial )

@@ -4,10 +4,10 @@ namespace Server.Items
 {
 	public class FountainAddon : StoneFountainAddon
 	{
-		public override BaseAddonDeed Deed { get { return new FountainDeed(); } }
+		public override BaseAddonDeed Deed => new FountainDeed();
 
 		[Constructible]
-		public FountainAddon() : base()
+		public FountainAddon()
 		{
 		}
 
@@ -32,11 +32,11 @@ namespace Server.Items
 
 	public class FountainDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon { get { return new FountainAddon(); } }
-		public override int LabelNumber { get { return 1076283; } } // Fountain
+		public override BaseAddon Addon => new FountainAddon();
+		public override int LabelNumber => 1076283; // Fountain
 
 		[Constructible]
-		public FountainDeed() : base()
+		public FountainDeed()
 		{
 			LootType = LootType.Blessed;
 		}

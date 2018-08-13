@@ -13,13 +13,13 @@ namespace Server.Items
 		private TimeSpan m_Duration = TimeSpan.Zero;
 
 		public abstract int LitItemID{ get; }
-		
-		public virtual int UnlitItemID{ get { return 0; } }
-		public virtual int BurntOutItemID{ get { return 0; } }
-		
-		public virtual int LitSound{ get { return 0x47; } }
-		public virtual int UnlitSound{ get { return 0x3be; } }
-		public virtual int BurntOutSound{ get { return 0x4b8; } }
+
+		public virtual int UnlitItemID => 0;
+		public virtual int BurntOutItemID => 0;
+
+		public virtual int LitSound => 0x47;
+		public virtual int UnlitSound => 0x3be;
+		public virtual int BurntOutSound => 0x4b8;
 
 		public static readonly bool Burnout = false;
 
@@ -82,9 +82,9 @@ namespace Server.Items
 			{
 				Point3D loc = GetWorldLocation();
 				Effects.PlaySound( loc, Map, LitSound );
-			}					
+			}
 		}
-		
+
 		public virtual void PlayUnlitSound()
 		{
 			int sound = UnlitSound;
@@ -92,12 +92,12 @@ namespace Server.Items
 			if ( m_BurntOut && BurntOutSound != 0 )
 				sound = BurntOutSound;
 
-			
+
 			if ( sound != 0 )
 			{
 				Point3D loc = GetWorldLocation();
 				Effects.PlaySound( loc, Map, sound );
-			}					
+			}
 		}
 
 		public virtual void Ignite()
@@ -115,7 +115,7 @@ namespace Server.Items
 		public virtual void Douse()
 		{
 			m_Burning = false;
-			
+
 			if ( m_BurntOut && BurntOutItemID != 0 )
 				ItemID = BurntOutItemID;
 			else
@@ -141,7 +141,7 @@ namespace Server.Items
 		private void DoTimer( TimeSpan delay )
 		{
 			m_Duration = delay;
-			
+
 			if ( m_Timer != null )
 				m_Timer.Stop();
 

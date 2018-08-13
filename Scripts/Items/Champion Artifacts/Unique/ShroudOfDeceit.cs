@@ -5,16 +5,16 @@ namespace Server.Items
 {
 	public class ShroudOfDeciet : BoneChest
 	{
-		public override int LabelNumber{ get{ return 1094914; } } // Shroud of Deceit [Replica]
+		public override int LabelNumber => 1094914; // Shroud of Deceit [Replica]
 
-		public override int BasePhysicalResistance{ get{ return 11; } }
-		public override int BaseFireResistance{ get{ return 6; } }
-		public override int BaseColdResistance{ get{ return 18; } }
-		public override int BasePoisonResistance{ get{ return 15; } }
-		public override int BaseEnergyResistance{ get{ return 13; } }
+		public override int BasePhysicalResistance => 11;
+		public override int BaseFireResistance => 6;
+		public override int BaseColdResistance => 18;
+		public override int BasePoisonResistance => 15;
+		public override int BaseEnergyResistance => 13;
 
-		public override int InitMinHits{ get{ return 150; } }
-		public override int InitMaxHits{ get{ return 150; } }
+		public override int InitMinHits => 150;
+		public override int InitMaxHits => 150;
 
 		public override bool CanFortify => false;
 

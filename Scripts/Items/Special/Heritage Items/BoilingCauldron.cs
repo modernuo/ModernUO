@@ -5,10 +5,10 @@ namespace Server.Items
 	[Flippable( 0x2068, 0x207A )]
 	public class BoilingCauldronAddon : BaseAddonContainer
 	{
-		public override BaseAddonContainerDeed Deed { get { return new BoilingCauldronDeed(); } }
-		public override int LabelNumber { get { return 1076267; } } // Boiling Cauldron
-		public override int DefaultGumpID { get { return 0x9; } }
-		public override int DefaultDropSound { get { return 0x42; } }
+		public override BaseAddonContainerDeed Deed => new BoilingCauldronDeed();
+		public override int LabelNumber => 1076267; // Boiling Cauldron
+		public override int DefaultGumpID => 0x9;
+		public override int DefaultDropSound => 0x42;
 
 		[Constructible]
 		public BoilingCauldronAddon() : base( 0x2068 )
@@ -38,11 +38,11 @@ namespace Server.Items
 
 	public class BoilingCauldronDeed : BaseAddonContainerDeed
 	{
-		public override BaseAddonContainer Addon { get { return new BoilingCauldronAddon(); } }
-		public override int LabelNumber { get { return 1076267; } } // Boiling Cauldron
+		public override BaseAddonContainer Addon => new BoilingCauldronAddon();
+		public override int LabelNumber => 1076267; // Boiling Cauldron
 
 		[Constructible]
-		public BoilingCauldronDeed() : base()
+		public BoilingCauldronDeed()
 		{
 			LootType = LootType.Blessed;
 		}

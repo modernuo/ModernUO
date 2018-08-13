@@ -48,8 +48,8 @@ namespace Server.Mobiles
 		}
 
 		public override bool GivesMLMinorArtifact => true;
-		public override int Hides{ get{ return 28; } }
-		public override int Meat{ get{ return 4; } }
+		public override int Hides => 28;
+		public override int Meat => 4;
 
 		/*
 		// TODO: uncomment once added

@@ -49,7 +49,7 @@ namespace Server.Mobiles
 			ControlSlots = 1;
 		}
 
-		public override FoodType FavoriteFood { get { return FoodType.FruitsAndVegies | FoodType.GrainsAndHay; } }
+		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
 		public UnholySteed( Serial serial )
 			: base( serial )

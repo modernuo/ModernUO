@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class RunicFletcherTool : BaseRunicTool
 	{
-		public override CraftSystem CraftSystem{ get{ return DefBowFletching.CraftSystem; } }
+		public override CraftSystem CraftSystem => DefBowFletching.CraftSystem;
 
 		public override int LabelNumber
 		{
@@ -16,11 +16,11 @@ namespace Server.Items
 
 				if ( index >= 1 && index <= 6 )
 					return 1072627 + index;
-					
+
 				return 1044559; // Fletcher's Tools
 			}
 		}
-		
+
 		[Constructible]
 		public RunicFletcherTool( CraftResource resource ) : base( resource, 0x1022 )
 		{

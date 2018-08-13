@@ -11,9 +11,9 @@ namespace Server.Items
 	public class WallBannerComponent : AddonComponent, IDyable
 	{
 		public override bool NeedsWall => true;
-		public override Point3D WallPosition{ get{ return this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 ); } }
+		public override Point3D WallPosition => this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 );
 
-		public bool East{ get { return ((WallBanner)Addon).East; } }
+		public bool East => ((WallBanner)Addon).East;
 
 		public WallBannerComponent( int itemID ) : base( itemID )
 		{
@@ -81,7 +81,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public WallBanner( int bannerID ) : base()
+		public WallBanner( int bannerID )
 		{
 			m_East = ((bannerID % 2) == 1 );
 
@@ -261,7 +261,7 @@ namespace Server.Items
 
 	public class WallBannerDeed : BaseAddonDeed, IRewardItem
 	{
-		public override int LabelNumber{ get{ return 1080549; } } // Wall Banner Deed
+		public override int LabelNumber => 1080549; // Wall Banner Deed
 
 		public override BaseAddon Addon
 		{
@@ -285,7 +285,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public WallBannerDeed() : base()
+		public WallBannerDeed()
 		{
 			LootType = LootType.Blessed;
 		}

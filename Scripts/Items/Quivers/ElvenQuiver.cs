@@ -6,10 +6,10 @@ namespace Server.Items
 	[FlippableAttribute( 0x2FB7, 0x3171 )]
 	public class ElvenQuiver : BaseQuiver
 	{
-		public override int LabelNumber{ get{ return 1032657; } } // elven quiver
-		
+		public override int LabelNumber => 1032657; // elven quiver
+
 		[Constructible]
-		public ElvenQuiver() : base()
+		public ElvenQuiver()
 		{
 			WeightReduction = 30;
 		}

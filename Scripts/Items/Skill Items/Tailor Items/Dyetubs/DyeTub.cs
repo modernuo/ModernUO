@@ -51,7 +51,7 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.Write( (int) 1 ); // version
-			
+
 			writer.Write( (int)m_SecureLevel );
 			writer.Write( (bool) m_Redyable );
 			writer.Write( (int) m_DyedHue );
@@ -109,7 +109,7 @@ namespace Server.Items
 				}
 			}
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
@@ -123,13 +123,13 @@ namespace Server.Items
 			}
 		}
 
-		[Constructible] 
+		[Constructible]
 		public DyeTub() : base( 0xFAB )
 		{
 			Weight = 10.0;
 			m_Redyable = true;
 		}
-		
+
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
 			base.GetContextMenuEntries( from, list );
@@ -141,7 +141,7 @@ namespace Server.Items
 		}
 
 		// Three metallic tubs now.
-		public virtual bool MetallicHues{ get { return false; } }
+		public virtual bool MetallicHues => false;
 
 		// Select the clothing to dye.
 		public virtual int TargetMessage{ get{ return 500859; } }

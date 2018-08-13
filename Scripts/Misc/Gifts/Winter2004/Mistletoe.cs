@@ -119,7 +119,7 @@ namespace Server.Items
 					return false;
 				}
 			}
-			else 
+			else
 			{
 				return false;
 			}
@@ -170,7 +170,7 @@ namespace Server.Items
 	[Flippable( 0x14F0, 0x14EF )]
 	public class MistletoeDeed : Item
 	{
-		public override int LabelNumber{ get{ return 1070882; } } // Mistletoe Deed
+		public override int LabelNumber => 1070882; // Mistletoe Deed
 
 		[Constructible]
 		public MistletoeDeed() : this( 0 )

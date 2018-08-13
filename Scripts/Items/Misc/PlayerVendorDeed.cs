@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class ContractOfEmployment : Item
 	{
-		public override int LabelNumber{ get{ return 1041243; } } // a contract of employment
+		public override int LabelNumber => 1041243; // a contract of employment
 
 		[Constructible]
 		public ContractOfEmployment() : base( 0x14F0 )
@@ -59,7 +59,7 @@ namespace Server.Items
 
 				if ( house == null )
 				{
-					from.SendLocalizedMessage( 503240 ); // Vendors can only be placed in houses.	
+					from.SendLocalizedMessage( 503240 ); // Vendors can only be placed in houses.
 				}
 				else if ( !BaseHouse.NewVendorSystem && !house.IsFriend( from ) )
 				{
@@ -69,7 +69,7 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1062423 ); // Only the house owner can directly place vendors.  Please ask the house owner to offer you a vendor contract so that you may place a vendor in this house.
 				}
-				else if ( !house.Public || !house.CanPlaceNewVendor() ) 
+				else if ( !house.Public || !house.CanPlaceNewVendor() )
 				{
 					from.SendLocalizedMessage( 503241 ); // You cannot place this vendor or barkeep.  Make sure the house is public and has sufficient storage available.
 				}

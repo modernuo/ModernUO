@@ -20,7 +20,7 @@ namespace Server.Spells.Fourth
 				Reagent.MandrakeRoot
 			);
 
-		public override SpellCircle Circle { get { return SpellCircle.Fourth; } }
+		public override SpellCircle Circle => SpellCircle.Fourth;
 
 		private RunebookEntry m_Entry;
 		private Runebook m_Book;
@@ -193,7 +193,7 @@ namespace Server.Spells.Fourth
 					from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357, from.Name, "" ) ); // I can not recall from that object.
 				}
 			}
-			
+
 			protected override void OnNonlocalTarget( Mobile from, object o )
 			{
 			}

@@ -53,7 +53,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override FoodType FavoriteFood{ get{ return FoodType.Meat; } }
+		public override FoodType FavoriteFood => FoodType.Meat;
 		public override Poison PoisonImmune => Poison.Deadly;
 		public override Poison HitPoison => Poison.Deadly;
 

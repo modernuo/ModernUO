@@ -5,10 +5,10 @@ namespace Server.Items
 {
 	public class PixieSwatter : Scepter
 	{
-		public override int LabelNumber{ get{ return 1070854; } } // Pixie Swatter
+		public override int LabelNumber => 1070854; // Pixie Swatter
 
-		public override int InitMinHits{ get{ return 255; } }
-		public override int InitMaxHits{ get{ return 255; } }
+		public override int InitMinHits => 255;
+		public override int InitMaxHits => 255;
 
 		[Constructible]
 		public PixieSwatter()
@@ -16,7 +16,7 @@ namespace Server.Items
 			Hue = 0x8A;
 			WeaponAttributes.HitPoisonArea = 75;
 			Attributes.WeaponSpeed = 30;
-            
+
 			WeaponAttributes.UseBestSkill = 1;
 			WeaponAttributes.ResistFireBonus = 12;
 			WeaponAttributes.ResistEnergyBonus = 12;
@@ -41,7 +41,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 		}
-		
+
 		public override void Deserialize(GenericReader reader)
 		{
 			base.Deserialize( reader );

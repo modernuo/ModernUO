@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class MacheteOfDefense : ElvenMachete
 	{
-		public override int LabelNumber{ get{ return 1073535; } } // machete of defense
+		public override int LabelNumber => 1073535; // machete of defense
 
 		[Constructible]
 		public MacheteOfDefense()

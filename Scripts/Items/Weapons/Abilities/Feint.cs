@@ -11,13 +11,13 @@ namespace Server.Items
 	public class Feint : WeaponAbility
 	{
 		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry { get { return m_Registry; } }
+		public static Hashtable Registry  => m_Registry;
 
 		public Feint()
 		{
 		}
 
-		public override int BaseMana { get { return 30; } }
+		public override int BaseMana => 30;
 
 		public override bool CheckSkills( Mobile from )
 		{
@@ -60,7 +60,7 @@ namespace Server.Items
 			private Mobile m_Defender;
 			private int m_SwingSpeedReduction;
 
-			public int SwingSpeedReduction { get { return m_SwingSpeedReduction; } }
+			public int SwingSpeedReduction  => m_SwingSpeedReduction;
 
 			public FeintTimer( Mobile defender, int swingSpeedReduction )
 				: base( TimeSpan.FromSeconds( 6.0 ) )

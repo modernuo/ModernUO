@@ -20,10 +20,10 @@ namespace Server.Spells.Necromancy
 				Reagent.GraveDust
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill { get { return 80.0; } }
-		public override int RequiredMana { get { return 40; } }
+		public override double RequiredSkill => 80.0;
+		public override int RequiredMana => 40;
 
 		public ExorcismSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

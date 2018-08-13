@@ -7,29 +7,29 @@ namespace Server.Items
 	[FlippableAttribute( 0x2D2F, 0x2D23 )]
 	public class WarCleaver : BaseKnife
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.Disarm; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Bladeweave; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
 
-		public override int AosStrengthReq{ get{ return 15; } }
-		public override int AosMinDamage{ get{ return 9; } }
-		public override int AosMaxDamage{ get{ return 11; } }
-		public override int AosSpeed{ get{ return 48; } }
-		public override float MlSpeed{ get{ return 2.25f; } }
+		public override int AosStrengthReq => 15;
+		public override int AosMinDamage => 9;
+		public override int AosMaxDamage => 11;
+		public override int AosSpeed => 48;
+		public override float MlSpeed => 2.25f;
 
-		public override int OldStrengthReq{ get{ return 15; } }
-		public override int OldMinDamage{ get{ return 9; } }
-		public override int OldMaxDamage{ get{ return 11; } }
-		public override int OldSpeed{ get{ return 48; } }
+		public override int OldStrengthReq => 15;
+		public override int OldMinDamage => 9;
+		public override int OldMaxDamage => 11;
+		public override int OldSpeed => 48;
 
-		public override int DefHitSound{ get{ return 0x23B; } }
-		public override int DefMissSound{ get{ return 0x239; } }
+		public override int DefHitSound => 0x23B;
+		public override int DefMissSound => 0x239;
 
-		public override int InitMinHits{ get{ return 30; } } // TODO
-		public override int InitMaxHits{ get{ return 60; } } // TODO
+		public override int InitMinHits => 30; // TODO
+		public override int InitMaxHits => 60; // TODO
 
-		public override SkillName DefSkill{ get{ return SkillName.Fencing; } }
-		public override WeaponType DefType{ get{ return WeaponType.Piercing; } }
-		public override WeaponAnimation DefAnimation{ get{ return WeaponAnimation.Pierce1H; } }
+		public override SkillName DefSkill => SkillName.Fencing;
+		public override WeaponType DefType => WeaponType.Piercing;
+		public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce1H;
 
 		[Constructible]
 		public WarCleaver() : base( 0x2D2F )

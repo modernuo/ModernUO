@@ -18,7 +18,7 @@ namespace Server.Items
 			set{ m_Owner = value; }
 		}
 
-		public override int LabelNumber{ get{ return 1062094; } } // a young player ticket
+		public override int LabelNumber => 1062094; // a young player ticket
 
 		[Constructible]
 		public NewPlayerTicket() : base( 0x14EF )

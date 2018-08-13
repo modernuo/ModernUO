@@ -8,7 +8,7 @@ namespace Server
 {
 	public class BuffInfo
 	{
-		public static bool Enabled { get { return Core.ML; } }
+		public static bool Enabled  => Core.ML;
 
 		public static void Initialize()
 		{
@@ -17,7 +17,7 @@ namespace Server
 				EventSink.ClientVersionReceived += new ClientVersionReceivedHandler( delegate( ClientVersionReceivedArgs args )
 				{
 					PlayerMobile pm = args.State.Mobile as PlayerMobile;
-					
+
 					if( pm != null )
 						Timer.DelayCall( TimeSpan.Zero, pm.ResendBuffs );
 				} );
@@ -26,28 +26,28 @@ namespace Server
 
 		#region Properties
 		private BuffIcon m_ID;
-		public BuffIcon ID { get { return m_ID; } }
+		public BuffIcon ID  => m_ID;
 
 		private int m_TitleCliloc;
-		public int TitleCliloc { get { return m_TitleCliloc; } }
+		public int TitleCliloc  => m_TitleCliloc;
 
 		private int m_SecondaryCliloc;
-		public int SecondaryCliloc { get { return m_SecondaryCliloc; } }
+		public int SecondaryCliloc  => m_SecondaryCliloc;
 
 		private TimeSpan m_TimeLength;
-		public TimeSpan TimeLength { get { return m_TimeLength; } }
+		public TimeSpan TimeLength  => m_TimeLength;
 
 		private DateTime m_TimeStart;
-		public DateTime TimeStart { get { return m_TimeStart; } }
+		public DateTime TimeStart  => m_TimeStart;
 
 		private Timer m_Timer;
-		public Timer Timer { get { return m_Timer; } }
+		public Timer Timer  => m_Timer;
 
 		private bool m_RetainThroughDeath;
-		public bool RetainThroughDeath { get { return m_RetainThroughDeath; } }
+		public bool RetainThroughDeath  => m_RetainThroughDeath;
 
 		private TextDefinition m_Args;
-		public TextDefinition Args { get { return m_Args; } }
+		public TextDefinition Args  => m_Args;
 
 		#endregion
 
@@ -228,7 +228,7 @@ namespace Server
         SpellPlague,
         SpellTrigger,
         NetherBolt,
-        Fly      
+        Fly
 	}
 
 	public sealed class AddBuffPacket : Packet

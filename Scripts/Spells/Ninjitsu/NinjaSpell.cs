@@ -12,8 +12,8 @@ namespace Server.Spells.Ninjitsu
 		public abstract double RequiredSkill{ get; }
 		public abstract int RequiredMana{ get; }
 
-		public override SkillName CastSkill{ get{ return SkillName.Ninjitsu; } }
-		public override SkillName DamageSkill{ get{ return SkillName.Ninjitsu; } }
+		public override SkillName CastSkill => SkillName.Ninjitsu;
+		public override SkillName DamageSkill => SkillName.Ninjitsu;
 
 		public override bool RevealOnCast => false;
 		public override bool ClearHandsOnCast => false;
@@ -21,9 +21,9 @@ namespace Server.Spells.Ninjitsu
 
 		public override bool BlocksMovement => false;
 
-		//public override int CastDelayBase{ get{ return 1; } }
+		//public override int CastDelayBase => 1;
 
-		public override int CastRecoveryBase{ get{ return 7; } }
+		public override int CastRecoveryBase => 7;
 
 		public NinjaSpell( Mobile caster, Item scroll, SpellInfo info ) : base( caster, scroll, info )
 		{

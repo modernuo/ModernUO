@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class ReginasLetter : Item
 	{
-		public override int LabelNumber{ get{ return 1075306; } } // Regina's Letter
+		public override int LabelNumber => 1075306; // Regina's Letter
 
 		public override bool Nontransferable => true;
 

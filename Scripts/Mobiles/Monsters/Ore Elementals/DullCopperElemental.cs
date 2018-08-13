@@ -58,7 +58,7 @@ namespace Server.Mobiles
 
 		public override bool AutoDispel => true;
 		public override bool BleedImmune => true;
-		public override int TreasureMapLevel{ get{ return 1; } }
+		public override int TreasureMapLevel => 1;
 
 		public DullCopperElemental( Serial serial ) : base( serial )
 		{

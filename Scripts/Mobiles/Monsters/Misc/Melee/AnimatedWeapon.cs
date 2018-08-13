@@ -8,8 +8,8 @@ namespace Server.Mobiles
 		public override bool DeleteCorpseOnDeath => true;
 		public override bool IsHouseSummonable => true;
 
-		public override double DispelDifficulty { get { return 0.0; } }
-		public override double DispelFocus { get { return 20.0; } }
+		public override double DispelDifficulty => 0.0;
+		public override double DispelFocus => 20.0;
 
 		public override double GetFightModeRanking( Mobile m, FightMode acqType, bool bPlayerOnly )
 		{
@@ -71,7 +71,7 @@ namespace Server.Mobiles
 		}
 
 		public override bool BleedImmune => true;
-		public override Poison PoisonImmune { get { return Poison.Lethal; } }
+		public override Poison PoisonImmune => Poison.Lethal;
 
 		public override int GetAngerSound()
 		{

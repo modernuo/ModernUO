@@ -7,24 +7,24 @@ namespace Server.Items
 	[FlippableAttribute( 0x26BD, 0x26C7 )]
 	public class BladedStaff : BaseSpear
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.ArmorIgnore; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.Dismount; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;
 
-		public override int AosStrengthReq{ get{ return 40; } }
-		public override int AosMinDamage{ get{ return 14; } }
-		public override int AosMaxDamage{ get{ return 16; } }
-		public override int AosSpeed{ get{ return 37; } }
-		public override float MlSpeed{ get{ return 3.00f; } }
+		public override int AosStrengthReq => 40;
+		public override int AosMinDamage => 14;
+		public override int AosMaxDamage => 16;
+		public override int AosSpeed => 37;
+		public override float MlSpeed => 3.00f;
 
-		public override int OldStrengthReq{ get{ return 40; } }
-		public override int OldMinDamage{ get{ return 14; } }
-		public override int OldMaxDamage{ get{ return 16; } }
-		public override int OldSpeed{ get{ return 37; } }
+		public override int OldStrengthReq => 40;
+		public override int OldMinDamage => 14;
+		public override int OldMaxDamage => 16;
+		public override int OldSpeed => 37;
 
-		public override int InitMinHits{ get{ return 21; } }
-		public override int InitMaxHits{ get{ return 110; } }
+		public override int InitMinHits => 21;
+		public override int InitMaxHits => 110;
 
-		public override SkillName DefSkill{ get{ return SkillName.Swords; } }
+		public override SkillName DefSkill => SkillName.Swords;
 
 		[Constructible]
 		public BladedStaff() : base( 0x26BD )

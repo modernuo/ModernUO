@@ -11,15 +11,15 @@ namespace Server.Mobiles
 {
 	public class Barkeeper : BaseVendor
 	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
+		private List<SBInfo> m_SBInfos = new List<SBInfo>();
+		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
 
 		public override void InitSBInfo()
 		{
-			m_SBInfos.Add( new SBBarkeeper() ); 
+			m_SBInfos.Add( new SBBarkeeper() );
 		}
 
-		public override VendorShoeType ShoeType{ get{ return Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots; } }
+		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
 
 		public override void InitOutfit()
 		{

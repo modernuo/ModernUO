@@ -11,7 +11,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ChampionSkullType Type{ get{ return m_Type; } set{ m_Type = value; InvalidateProperties(); } }
 
-		public override int LabelNumber{ get{ return 1049479 + (int)m_Type; } }
+		public override int LabelNumber => 1049479 + (int)m_Type;
 
 		[Constructible]
 		public ChampionSkull( ChampionSkullType type ) : base( 0x1AE1 )
@@ -59,12 +59,12 @@ namespace Server.Items
 					break;
 				}
 			}
-			
+
 			if( version == 0 )
 			{
 				if ( LootType != LootType.Cursed )
 					LootType = LootType.Cursed;
-	
+
 				if ( Insured )
 					Insured = false;
 			}

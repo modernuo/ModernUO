@@ -12,7 +12,7 @@ namespace Server.Factions
 		private PlayerMobile m_From;
 		private Faction m_Faction;
 
-		public override int ButtonTypes{ get{ return 4; } }
+		public override int ButtonTypes => 4;
 
 		public FactionStoneGump( PlayerMobile from, Faction faction ) : base( 20, 30 )
 		{
@@ -29,16 +29,16 @@ namespace Server.Factions
 
 			AddHtmlText( 20, 30, 510, 20, faction.Definition.Header, false, false );
 
-			AddHtmlLocalized( 20, 60, 100, 20, 1011429, false, false ); // Led By : 
+			AddHtmlLocalized( 20, 60, 100, 20, 1011429, false, false ); // Led By :
 			AddHtml( 125, 60, 200, 20, faction.Commander != null ? faction.Commander.Name : "Nobody", false, false );
 
-			AddHtmlLocalized( 20, 80, 100, 20, 1011457, false, false ); // Tithe rate : 
+			AddHtmlLocalized( 20, 80, 100, 20, 1011457, false, false ); // Tithe rate :
 			if ( faction.Tithe >= 0 && faction.Tithe <= 100 && (faction.Tithe % 10) == 0 )
 				AddHtmlLocalized( 125, 80, 350, 20, 1011480 + (faction.Tithe / 10), false, false );
 			else
 				AddHtml( 125, 80, 350, 20, faction.Tithe + "%", false, false );
 
-			AddHtmlLocalized( 20, 100, 100, 20, 1011458, false, false ); // Traps placed : 
+			AddHtmlLocalized( 20, 100, 100, 20, 1011458, false, false ); // Traps placed :
 			AddHtml( 125, 100, 50, 20, faction.Traps.Count.ToString(), false, false );
 
 			AddHtmlLocalized( 55, 225, 200, 20, 1011428, false, false ); // VOTE FOR LEADERSHIP
@@ -126,13 +126,13 @@ namespace Server.Factions
 
 			AddHtmlLocalized( 20, 30, 150, 20, 1011444, false, false ); // STATISTICS
 
-			AddHtmlLocalized( 20, 100, 100, 20, 1011445, false, false ); // Name : 
+			AddHtmlLocalized( 20, 100, 100, 20, 1011445, false, false ); // Name :
 			AddHtml( 120, 100, 150, 20, from.Name, false, false );
 
-			AddHtmlLocalized( 20, 130, 100, 20, 1018064, false, false ); // score : 
+			AddHtmlLocalized( 20, 130, 100, 20, 1018064, false, false ); // score :
 			AddHtml( 120, 130, 100, 20, (pl != null ? pl.KillPoints : 0).ToString(), false, false );
 
-			AddHtmlLocalized( 20, 160, 100, 20, 1011446, false, false ); // Rank : 
+			AddHtmlLocalized( 20, 160, 100, 20, 1011446, false, false ); // Rank :
 			AddHtml( 120, 160, 100, 20, (pl != null ? pl.Rank.Rank : 0).ToString(), false, false );
 
 			AddHtmlLocalized( 55, 250, 100, 20, 1011447, false, false ); // BACK
@@ -175,13 +175,13 @@ namespace Server.Factions
 
 				AddHtmlLocalized( 20, 30, 200, 20, 1011461, false, false ); // COMMANDER OPTIONS
 
-				AddHtmlLocalized( 20, 70, 120, 20, 1011457, false, false ); // Tithe rate : 
+				AddHtmlLocalized( 20, 70, 120, 20, 1011457, false, false ); // Tithe rate :
 				if ( faction.Tithe >= 0 && faction.Tithe <= 100 && (faction.Tithe % 10) == 0 )
 					AddHtmlLocalized( 140, 70, 250, 20, 1011480 + (faction.Tithe / 10), false, false );
 				else
 					AddHtml( 140, 70, 250, 20, faction.Tithe + "%", false, false );
 
-				AddHtmlLocalized( 20, 100, 120, 20, 1011474, false, false ); // Silver available : 
+				AddHtmlLocalized( 20, 100, 120, 20, 1011474, false, false ); // Silver available :
 				AddHtml( 140, 100, 50, 20, faction.Silver.ToString( "N0" ), false, false ); // NOTE: Added 'N0' formatting
 
 				AddHtmlLocalized( 55, 130, 200, 20, 1011478, false, false ); // CHANGE TITHE RATE

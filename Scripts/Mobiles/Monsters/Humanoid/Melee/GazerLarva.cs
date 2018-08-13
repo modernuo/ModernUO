@@ -44,7 +44,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Poor );
 		}
 
-		public override int Meat{ get{ return 1; } }
+		public override int Meat => 1;
 
 		public GazerLarva( Serial serial ) : base( serial )
 		{

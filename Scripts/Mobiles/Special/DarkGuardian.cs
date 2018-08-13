@@ -62,7 +62,7 @@ namespace Server.Mobiles
 			get{ return OppositionGroup.FeyAndUndead; }
 		}
 
-		public override int TreasureMapLevel{ get{ return 2; } }
+		public override int TreasureMapLevel => 2;
 		public override bool BleedImmune => true;
 		public override Poison PoisonImmune => Poison.Lethal;
 		public override bool Unprovokable => true;

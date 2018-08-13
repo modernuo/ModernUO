@@ -45,9 +45,9 @@ namespace Server.Mobiles
 			MinTameSkill = -0.9;
 		}
 
-		public override int Meat{ get{ return 2; } }
-		public override int Hides{ get{ return 12; } }
-		public override FoodType FavoriteFood{ get{ return FoodType.GrainsAndHay | FoodType.FruitsAndVegies; } }
+		public override int Meat => 2;
+		public override int Hides => 12;
+		public override FoodType FavoriteFood => FoodType.GrainsAndHay | FoodType.FruitsAndVegies;
 
 		public MountainGoat(Serial serial) : base(serial)
 		{

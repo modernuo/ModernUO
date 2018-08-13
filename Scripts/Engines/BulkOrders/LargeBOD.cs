@@ -80,7 +80,7 @@ namespace Server.Engines.BulkOrders
 			return BulkMaterialType.None;
 		}
 
-		public override int LabelNumber{ get{ return 1045151; } } // a bulk order deed
+		public override int LabelNumber => 1045151; // a bulk order deed
 
 		public LargeBOD( int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries ) : base( Core.AOS ? 0x2258 : 0x14EF )
 		{

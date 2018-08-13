@@ -7,22 +7,22 @@ namespace Server.Items
 	[FlippableAttribute( 0xf45, 0xf46 )]
 	public class ExecutionersAxe : BaseAxe
 	{
-		public override WeaponAbility PrimaryAbility{ get{ return WeaponAbility.BleedAttack; } }
-		public override WeaponAbility SecondaryAbility{ get{ return WeaponAbility.MortalStrike; } }
+		public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
+		public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
 
-		public override int AosStrengthReq{ get{ return 40; } }
-		public override int AosMinDamage{ get{ return 15; } }
-		public override int AosMaxDamage{ get{ return 17; } }
-		public override int AosSpeed{ get{ return 33; } }
-		public override float MlSpeed{ get{ return 3.25f; } }
+		public override int AosStrengthReq => 40;
+		public override int AosMinDamage => 15;
+		public override int AosMaxDamage => 17;
+		public override int AosSpeed => 33;
+		public override float MlSpeed => 3.25f;
 
-		public override int OldStrengthReq{ get{ return 35; } }
-		public override int OldMinDamage{ get{ return 6; } }
-		public override int OldMaxDamage{ get{ return 33; } }
-		public override int OldSpeed{ get{ return 37; } }
+		public override int OldStrengthReq => 35;
+		public override int OldMinDamage => 6;
+		public override int OldMaxDamage => 33;
+		public override int OldSpeed => 37;
 
-		public override int InitMinHits{ get{ return 31; } }
-		public override int InitMaxHits{ get{ return 70; } }
+		public override int InitMinHits => 31;
+		public override int InitMaxHits => 70;
 
 		[Constructible]
 		public ExecutionersAxe() : base( 0xF45 )

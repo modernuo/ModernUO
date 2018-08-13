@@ -5,7 +5,7 @@ namespace Server.Items
 {
 	public class JocklesQuicksword : Longsword
 	{
-		public override int LabelNumber{ get{ return 1077666; } } // Jockles' Quicksword
+		public override int LabelNumber => 1077666; // Jockles' Quicksword
 
 		[Constructible]
 		public JocklesQuicksword()

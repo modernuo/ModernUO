@@ -10,16 +10,16 @@ namespace Server.Mobiles
 {
 	public class Barracoon : BaseChampion
 	{
-		public override ChampionSkullType SkullType{ get{ return ChampionSkullType.Greed; } }
+		public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
-		public override Type[] UniqueList{ get{ return new Type[] { typeof( FangOfRactus ) }; } }
+		public override Type[] UniqueList => new Type[] { typeof( FangOfRactus ) };
 		public override Type[] SharedList{ get{ return new Type[] { 	typeof( EmbroideredOakLeafCloak ),
 										typeof( DjinnisRing ),
 										typeof( DetectiveBoots ),
 										typeof( GuantletsOfAnger ) }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( SwampTile ), typeof( MonsterStatuette ) }; } }
+		public override Type[] DecorativeList => new Type[] { typeof( SwampTile ), typeof( MonsterStatuette ) };
 
-		public override MonsterStatuetteType[] StatueTypes{ get{ return new MonsterStatuetteType[] { MonsterStatuetteType.Slime }; } }
+		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { MonsterStatuetteType.Slime };
 
 		public override string DefaultName => "Barracoon";
 
@@ -73,7 +73,7 @@ namespace Server.Mobiles
 
 		public override bool AlwaysMurderer => true;
 		public override bool AutoDispel => true;
-		public override double AutoDispelChance{ get{ return 1.0; } }
+		public override double AutoDispelChance => 1.0;
 		public override bool BardImmune => !Core.SE;
 		public override bool Unprovokable => Core.SE;
 		public override bool Uncalmable => Core.SE;

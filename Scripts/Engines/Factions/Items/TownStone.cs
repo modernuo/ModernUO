@@ -21,7 +21,7 @@ namespace Server.Factions
 			}
 		}
 
-		public override string DefaultName { get { return "faction town stone"; } }
+		public override string DefaultName => "faction town stone";
 
 		[Constructible]
 		public TownStone() : this( null )

@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class DragonEasterEgg : Item, IDyable
 	{
-		public override int LabelNumber { get { return 1097278; } }
+		public override int LabelNumber => 1097278;
 
 		[Constructible]
 		public DragonEasterEgg()

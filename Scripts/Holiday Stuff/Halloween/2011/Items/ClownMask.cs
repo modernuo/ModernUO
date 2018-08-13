@@ -5,7 +5,7 @@ namespace Server.Items.Holiday
 {
 	public class PaintedEvilClownMask : BasePaintedMask
 	{
-		public override string MaskName { get { return "Evil Clown Mask"; } }
+		public override string MaskName => "Evil Clown Mask";
 
 		[Constructible]
 		public PaintedEvilClownMask( )

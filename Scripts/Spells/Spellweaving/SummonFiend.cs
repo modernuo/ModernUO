@@ -11,17 +11,17 @@ namespace Server.Spells.Spellweaving
 				-1
 			);
 
-		public override TimeSpan CastDelayBase { get { return TimeSpan.FromSeconds( 2.0 ); } }
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
 
-		public override double RequiredSkill { get { return 38.0; } }
-		public override int RequiredMana { get { return 10; } }
+		public override double RequiredSkill => 38.0;
+		public override int RequiredMana => 10;
 
 		public SummonFiendSpell( Mobile caster, Item scroll )
 			: base( caster, scroll, m_Info )
 		{
 		}
 
-		public override int Sound { get { return 0x216; } }
+		public override int Sound => 0x216;
 
 		public override bool CheckSequence()
 		{

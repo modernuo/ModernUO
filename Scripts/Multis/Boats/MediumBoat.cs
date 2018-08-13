@@ -6,20 +6,20 @@ namespace Server.Multis
 {
 	public class MediumBoat : BaseBoat
 	{
-		public override int NorthID{ get{ return 0x8; } }
-		public override int  EastID{ get{ return 0x9; } }
-		public override int SouthID{ get{ return 0xA; } }
-		public override int  WestID{ get{ return 0xB; } }
+		public override int NorthID => 0x8;
+		public override int  EastID => 0x9;
+		public override int SouthID => 0xA;
+		public override int  WestID => 0xB;
 
-		public override int HoldDistance{ get{ return 4; } }
-		public override int TillerManDistance{ get{ return -5; } }
+		public override int HoldDistance => 4;
+		public override int TillerManDistance => -5;
 
-		public override Point2D StarboardOffset{ get{ return new Point2D(  2, 0 ); } }
-		public override Point2D      PortOffset{ get{ return new Point2D( -2, 0 ); } }
+		public override Point2D StarboardOffset => new Point2D(  2, 0 );
+		public override Point2D      PortOffset => new Point2D( -2, 0 );
 
-		public override Point3D MarkOffset{ get{ return new Point3D( 0, 1, 3 ); } }
+		public override Point3D MarkOffset => new Point3D( 0, 1, 3 );
 
-		public override BaseDockedBoat DockedBoat{ get{ return new MediumDockedBoat( this ); } }
+		public override BaseDockedBoat DockedBoat => new MediumDockedBoat( this );
 
 		[Constructible]
 		public MediumBoat()
@@ -47,8 +47,8 @@ namespace Server.Multis
 
 	public class MediumBoatDeed : BaseBoatDeed
 	{
-		public override int LabelNumber{ get{ return 1041207; } } // medium ship deed
-		public override BaseBoat Boat{ get{ return new MediumBoat(); } }
+		public override int LabelNumber => 1041207; // medium ship deed
+		public override BaseBoat Boat => new MediumBoat();
 
 		[Constructible]
 		public MediumBoatDeed() : base( 0x8, Point3D.Zero )
@@ -76,7 +76,7 @@ namespace Server.Multis
 
 	public class MediumDockedBoat : BaseDockedBoat
 	{
-		public override BaseBoat Boat{ get{ return new MediumBoat(); } }
+		public override BaseBoat Boat => new MediumBoat();
 
 		public MediumDockedBoat( BaseBoat boat ) : base( 0x8, Point3D.Zero, boat )
 		{

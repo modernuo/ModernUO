@@ -9,8 +9,8 @@ namespace Server.Engines.MLQuests.Objectives
 {
 	public abstract class BaseObjective
 	{
-		public virtual bool IsTimed { get { return false; } }
-		public virtual TimeSpan Duration { get { return TimeSpan.Zero; } }
+		public virtual bool IsTimed  => false;
+		public virtual TimeSpan Duration  => TimeSpan.Zero;
 
 		public BaseObjective()
 		{
@@ -146,7 +146,7 @@ namespace Server.Engines.MLQuests.Objectives
 			DeliverObjective
 		}
 
-		public virtual DataType ExtraDataType { get { return DataType.None; } }
+		public virtual DataType ExtraDataType  => DataType.None;
 
 		public virtual void Serialize( GenericWriter writer )
 		{

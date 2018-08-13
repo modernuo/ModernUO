@@ -62,9 +62,9 @@ namespace Server.Mobiles
 				c.DropItem( new PixieLeg() );
 		}
 
-		public override HideType HideType{ get{ return HideType.Spined; } }
-		public override int Hides{ get{ return 5; } }
-		public override int Meat{ get{ return 1; } }
+		public override HideType HideType => HideType.Spined;
+		public override int Hides => 5;
+		public override int Meat => 1;
 
 		public Pixie( Serial serial ) : base( serial )
 		{

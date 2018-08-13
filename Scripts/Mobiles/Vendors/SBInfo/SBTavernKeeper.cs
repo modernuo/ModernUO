@@ -13,8 +13,8 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override IShopSellInfo SellInfo { get { return m_SellInfo; } }
-		public override List<GenericBuyInfo> BuyInfo { get { return m_BuyInfo; } }
+		public override IShopSellInfo SellInfo => m_SellInfo;
+		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
 
 		public class InternalBuyInfo : List<GenericBuyInfo>
 		{
@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
 				if ( Multis.BaseHouse.NewVendorSystem )
 					Add( new GenericBuyInfo( "1062332", typeof( VendorRentalContract ), 1252, 20, 0x14F0, 0x672 ) );
-					
+
 				/*if ( Map == Tokuno )
 					{
 						Add( new GenericBuyInfo( typeof( Wasabi ), 2, 20, 0x24E8, 0 ) );

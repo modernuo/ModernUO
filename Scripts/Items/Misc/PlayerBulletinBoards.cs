@@ -13,7 +13,7 @@ namespace Server.Items
 {
 	public class PlayerBBSouth : BasePlayerBB
 	{
-		public override int LabelNumber{ get{ return 1062421; } } // bulletin board (south)
+		public override int LabelNumber => 1062421; // bulletin board (south)
 
 		[Constructible]
 		public PlayerBBSouth() : base( 0x2311 )
@@ -42,7 +42,7 @@ namespace Server.Items
 
 	public class PlayerBBEast : BasePlayerBB
 	{
-		public override int LabelNumber{ get{ return 1062420; } } // bulletin board (east)
+		public override int LabelNumber => 1062420; // bulletin board (east)
 
 		[Constructible]
 		public PlayerBBEast() : base( 0x2312 )

@@ -8,7 +8,7 @@ namespace Server.Items
 	{
 		// TODO: Check messages
 
-		public override int LabelNumber { get { return 1152270; } } // Cupid's Arrow 2012
+		public override int LabelNumber => 1152270; // Cupid's Arrow 2012
 
 		private string m_From;
 		private string m_To;

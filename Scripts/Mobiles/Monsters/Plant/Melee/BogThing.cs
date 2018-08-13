@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	[CorpseName( "a plant corpse" )]
 	public class BogThing : BaseCreature
 	{
-		public override string DefaultName { get { return "a bog thing"; } }
+		public override string DefaultName => "a bog thing";
 
 		[Constructible]
 		public BogThing() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.6, 1.2 )
