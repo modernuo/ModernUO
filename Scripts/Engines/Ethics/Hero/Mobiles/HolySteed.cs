@@ -5,9 +5,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a holy corpse" )]
 	public class HolySteed : BaseMount
 	{
+		public override string CorpseName => "a holy corpse";
 		public override bool IsDispellable  => false;
 		public override bool IsBondable => false;
 

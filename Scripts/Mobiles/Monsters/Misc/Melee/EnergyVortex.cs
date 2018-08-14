@@ -5,9 +5,9 @@ using System.Collections;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an energy vortex corpse" )]
 	public class EnergyVortex : BaseCreature
 	{
+		public override string CorpseName => "an energy vortex corpse";
 		public override bool DeleteCorpseOnDeath => Summoned;
 		public override bool AlwaysMurderer => true; // Or Llama vortices will appear gray.
 

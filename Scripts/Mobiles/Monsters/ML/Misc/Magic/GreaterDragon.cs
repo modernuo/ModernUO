@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a dragon corpse" )]
 	public class GreaterDragon : BaseCreature
 	{
+		public override string CorpseName => "a dragon corpse";
 		public override bool StatLossAfterTame => true;
 		public override string DefaultName => "a greater dragon";
 

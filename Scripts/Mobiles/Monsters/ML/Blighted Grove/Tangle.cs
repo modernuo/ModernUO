@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a Tangle corpse" )]
 	public class Tangle : BogThing
 	{
+		public override string CorpseName => "a Tangle corpse";
 		public override string DefaultName => "Tangle";
 
 		[Constructible]

@@ -9,9 +9,9 @@ using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a ghostly corpse" )]
 	public class RestlessSoul : BaseCreature
 	{
+		public override string CorpseName => "a ghostly corpse";
 		public override string DefaultName => "a restless soul";
 
 		[Constructible]

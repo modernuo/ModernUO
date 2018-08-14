@@ -6,9 +6,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a betrayer corpse" )]
 	public class Betrayer : BaseCreature
 	{
+		public override string CorpseName => "a betrayer corpse";
 		private bool m_Stunning;
 
 		public override string DefaultName => "a betrayer";

@@ -6,9 +6,9 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a troglodyte corpse" )]
 	public class Troglodyte : BaseCreature
 	{
+		public override string CorpseName => "a troglodyte corpse";
 		public override string DefaultName => "a troglodyte";
 
 		[Constructible]

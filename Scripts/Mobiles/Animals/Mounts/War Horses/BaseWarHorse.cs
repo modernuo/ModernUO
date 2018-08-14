@@ -4,9 +4,10 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a war horse corpse" )]
 	public abstract class BaseWarHorse : BaseMount
 	{
+		public override string CorpseName => "a war horse corpse";
+
 		public BaseWarHorse( int bodyID, int itemID, AIType aiType, FightMode fightMode, int rangePerception, int rangeFight, double activeSpeed, double passiveSpeed ) : base ( "a war horse", bodyID, itemID, aiType, fightMode, rangePerception, rangeFight, activeSpeed, passiveSpeed )
 		{
 			BaseSoundID = 0xA8;

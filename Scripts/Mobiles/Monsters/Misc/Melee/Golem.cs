@@ -4,9 +4,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a golem corpse" )]
 	public class Golem : BaseCreature
 	{
+		public override string CorpseName => "a golem corpse";
 		private bool m_Stunning;
 
 		public override bool IsScaredOfScaryThings => false;

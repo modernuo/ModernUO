@@ -4,10 +4,10 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a fire beetle corpse" )]
 	[Server.Engines.Craft.Forge]
 	public class FireBeetle : BaseMount
 	{
+		public override string CorpseName => "a fire beetle corpse";
 		public override bool SubdueBeforeTame => true; // Must be beaten into submission
 		public override bool StatLossAfterTame => true;
 		public virtual double BoostedSpeed{ get{ return 0.1; } }

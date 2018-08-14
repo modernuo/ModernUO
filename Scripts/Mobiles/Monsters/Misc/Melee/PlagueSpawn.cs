@@ -7,9 +7,9 @@ using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a plague spawn corpse" )]
 	public class PlagueSpawn : BaseCreature
 	{
+		public override string CorpseName => "a plague spawn corpse";
 		private Mobile m_Owner;
 		private DateTime m_ExpireTime;
 

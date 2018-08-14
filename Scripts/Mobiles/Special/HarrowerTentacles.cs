@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a tentacles corpse" )]
 	public class HarrowerTentacles : BaseCreature
 	{
+		public override string CorpseName => "a tentacles corpse";
 		private Mobile m_Harrower;
 
 		private DrainTimer m_Timer;

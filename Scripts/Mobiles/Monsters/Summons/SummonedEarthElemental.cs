@@ -5,9 +5,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an earth elemental corpse" )]
 	public class SummonedEarthElemental : BaseCreature
 	{
+		public override string CorpseName => "an earth elemental corpse";
 		public override double DispelDifficulty => 117.5;
 		public override double DispelFocus => 45.0;
 		public override string DefaultName => "an earth elemental";

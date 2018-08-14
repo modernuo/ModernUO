@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a Rend corpse" )]
 	public class Rend : Reptalon
 	{
+		public override string CorpseName => "a Rend corpse";
 		public override string DefaultName => "Rend";
 
 		[Constructible]

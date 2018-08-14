@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a ravager corpse" )]
 	public class Ravager : BaseCreature
 	{
+		public override string CorpseName => "a ravager corpse";
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
 
 		public override string DefaultName => "a ravager";

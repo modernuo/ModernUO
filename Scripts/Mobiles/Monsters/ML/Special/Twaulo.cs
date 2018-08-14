@@ -8,9 +8,9 @@ using Server.Engines.CannedEvil;
 
 namespace Server.Mobiles
 {
-	[CorpseName("a corpse of Twaulo")]
 	public class Twaulo : BaseChampion
 	{
+		public override string CorpseName => "a corpse of Twaulo";
 		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
 		public override Type[] UniqueList => new Type[] { typeof( Quell ) };

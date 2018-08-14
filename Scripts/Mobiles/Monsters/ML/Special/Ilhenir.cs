@@ -9,9 +9,9 @@ using Server.Engines.CannedEvil;
 
 namespace Server.Mobiles
 {
-	[CorpseName("a corpse of Ilhenir")]
 	public class Ilhenir : BaseChampion
 	{
+		public override string CorpseName => "a corpse of Ilhenir";
 		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
 		public override Type[] UniqueList => new Type[] { };

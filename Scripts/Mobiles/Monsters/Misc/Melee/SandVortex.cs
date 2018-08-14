@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a sand vortex corpse" )]
 	public class SandVortex : BaseCreature
 	{
+		public override string CorpseName => "a sand vortex corpse";
 		public override string DefaultName => "a sand vortex";
 
 		[Constructible]

@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an impaler corpse" )]
 	public class Impaler : BaseCreature
 	{
+		public override string CorpseName => "an impaler corpse";
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.BleedAttack;
 
 		public override bool IgnoreYoungProtection => Core.ML;

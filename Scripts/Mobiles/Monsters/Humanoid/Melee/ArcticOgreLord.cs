@@ -5,10 +5,10 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a frozen ogre lord's corpse" )]
 	[TypeAlias( "Server.Mobiles.ArticOgreLord" )]
 	public class ArcticOgreLord : BaseCreature
 	{
+		public override string CorpseName => "a frozen ogre lord's corpse";
 		public override string DefaultName => "an arctic ogre lord";
 
 		[Constructible]

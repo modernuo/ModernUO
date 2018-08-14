@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a darknight creeper corpse" )]
 	public class DarknightCreeper : BaseCreature
 	{
+		public override string CorpseName => "a darknight creeper corpse";
 		public override bool IgnoreYoungProtection => Core.ML;
 
 		[Constructible]

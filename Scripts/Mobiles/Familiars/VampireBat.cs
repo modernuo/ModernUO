@@ -7,9 +7,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a vampire bat corpse" )]
 	public class VampireBatFamiliar : BaseFamiliar
 	{
+		public override string CorpseName => "a vampire bat corpse";
 		public override string DefaultName => "a vampire bat";
 
 		public VampireBatFamiliar()

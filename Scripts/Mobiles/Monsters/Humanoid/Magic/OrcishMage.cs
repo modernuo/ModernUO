@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a glowing orc corpse" )]
 	public class OrcishMage : BaseCreature
 	{
+		public override string CorpseName => "a glowing orc corpse";
 		public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
 
 		public override string DefaultName => "an orcish mage";

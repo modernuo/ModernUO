@@ -5,9 +5,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a solen queen corpse" )]
 	public class BlackSolenQueen : BaseCreature
 	{
+		public override string CorpseName => "a solen queen corpse";
 		private bool m_BurstSac;
 		public bool BurstSac{ get{ return m_BurstSac; } }
 

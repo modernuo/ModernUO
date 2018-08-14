@@ -4,9 +4,9 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a bird corpse" )]
 	public class Bird : BaseCreature
 	{
+		public override string CorpseName => "a bird corpse";
 		[Constructible]
 		public Bird() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
 		{
@@ -79,9 +79,9 @@ namespace Server.Mobiles
 		}
 	}
 
-	[CorpseName( "a bird corpse" )]
 	public class TropicalBird : BaseCreature
 	{
+		public override string CorpseName => "a bird corpse";
 		public override string DefaultName => "a tropical bird";
 
 		[Constructible]

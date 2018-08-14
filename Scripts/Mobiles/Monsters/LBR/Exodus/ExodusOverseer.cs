@@ -5,9 +5,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an overseer's corpse" )]
 	public class ExodusOverseer : BaseCreature
 	{
+		public override string CorpseName => "an overseer's corpse";
 		private bool m_FieldActive;
 		public bool FieldActive{ get{ return m_FieldActive; } }
 		public bool CanUseField{ get{ return Hits >= HitsMax * 9 / 10; } } // TODO: an OSI bug prevents to verify this

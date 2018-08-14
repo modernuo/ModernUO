@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a llama corpse" )]
 	public class RidableLlama : BaseMount
 	{
+		public override string CorpseName => "a llama corpse";
 		[Constructible]
 		public RidableLlama() : this( "a ridable llama" )
 		{

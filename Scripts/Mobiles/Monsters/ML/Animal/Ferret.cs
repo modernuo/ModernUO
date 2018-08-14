@@ -4,9 +4,9 @@ using Server.Engines.Quests;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a ferret corpse" )]
 	public class Ferret : BaseCreature
 	{
+		public override string CorpseName => "a ferret corpse";
 		public override string DefaultName => "a ferret";
 
 		[Constructible]

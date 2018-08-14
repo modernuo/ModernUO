@@ -6,9 +6,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a demon knight corpse" )]
 	public class DemonKnight : BaseCreature
 	{
+		public override string CorpseName => "a demon knight corpse";
 		public override bool IgnoreYoungProtection => Core.ML;
 
 		public static Type[] ArtifactRarity10 => m_ArtifactRarity10;

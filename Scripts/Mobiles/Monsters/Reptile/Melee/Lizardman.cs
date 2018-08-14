@@ -6,9 +6,9 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a lizardman corpse" )]
 	public class Lizardman : BaseCreature
 	{
+		public override string CorpseName => "a lizardman corpse";
 		public override InhumanSpeech SpeechType => InhumanSpeech.Lizardman;
 
 		[Constructible]

@@ -3,9 +3,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an arcane daemon corpse" )]
 	public class ArcaneDaemon : BaseCreature
 	{
+		public override string CorpseName => "an arcane daemon corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ConcussionBlow;
 
 		public override string DefaultName => "an arcane daemon";

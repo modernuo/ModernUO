@@ -6,9 +6,9 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an orcish corpse" )]
 	public class OrcBrute : BaseCreature
 	{
+		public override string CorpseName => "an orcish corpse";
 		public override string DefaultName => "an orc brute";
 
 		[Constructible]

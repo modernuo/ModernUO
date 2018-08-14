@@ -6,9 +6,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a fan dancer corpse" )]
 	public class FanDancer : BaseCreature
 	{
+		public override string CorpseName => "a fan dancer corpse";
 		public override string DefaultName => "a fan dancer";
 		[Constructible]
 		public FanDancer() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )

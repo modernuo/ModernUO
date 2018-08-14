@@ -6,9 +6,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a killer pumpkin corpse" )]
 	public class PumpkinHead : BaseCreature
 	{
+		public override string CorpseName => "a killer pumpkin corpse";
 		public override bool AutoDispel => true;
 		public override bool BardImmune => true;
 		public override bool Unprovokable => true;

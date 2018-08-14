@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a satyr's corpse" )]
 	public class Satyr : BaseCreature
 	{
+		public override string CorpseName => "a satyr's corpse";
 		public override string DefaultName => "a satyr";
 
 		[Constructible]

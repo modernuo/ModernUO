@@ -4,9 +4,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a swamp dragon corpse" )]
 	public class SwampDragon : BaseMount
 	{
+		public override string CorpseName => "a swamp dragon corpse";
 		private bool m_BardingExceptional;
 		private Mobile m_BardingCrafter;
 		private int m_BardingHP;

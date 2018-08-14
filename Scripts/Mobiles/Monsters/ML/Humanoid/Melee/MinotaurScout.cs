@@ -6,9 +6,9 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a minotaur corpse" )]
 	public class MinotaurScout : BaseCreature
 	{
+		public override string CorpseName => "a minotaur corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
 		public override string DefaultName => "a minotaur scout";

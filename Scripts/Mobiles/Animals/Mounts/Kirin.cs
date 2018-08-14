@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a ki-rin corpse" )]
 	public class Kirin : BaseMount
 	{
+		public override string CorpseName => "a ki-rin corpse";
 		public override bool AllowFemaleRider => false;
 		public override bool AllowFemaleTamer => false;
 

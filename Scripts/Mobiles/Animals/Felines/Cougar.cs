@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a cougar corpse" )]
 	public class Cougar : BaseCreature
 	{
+		public override string CorpseName => "a cougar corpse";
 		public override string DefaultName => "a cougar";
 
 		[Constructible]

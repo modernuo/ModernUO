@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a hellsteed corpse" )]
 	public class HellSteed : BaseMount
 	{
+		public override string CorpseName => "a hellsteed corpse";
 		public override bool HasBreath => true;
 		public override int BreathChaosDamage => 100;
 		public override Poison PoisonImmune => Poison.Lethal;

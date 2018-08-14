@@ -2,9 +2,9 @@
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an animated weapon corpse" )]
 	public class AnimatedWeapon : BaseCreature
 	{
+		public override string CorpseName => "an animated weapon corpse";
 		public override bool DeleteCorpseOnDeath => true;
 		public override bool IsHouseSummonable => true;
 

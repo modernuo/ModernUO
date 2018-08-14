@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a patchwork skeletal corpse" )]
 	public class PatchworkSkeleton : BaseCreature
 	{
+		public override string CorpseName => "a patchwork skeletal corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
 		public override string DefaultName => "a patchwork skeleton";

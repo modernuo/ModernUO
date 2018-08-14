@@ -6,9 +6,9 @@ using Server.Misc;
 
 namespace Server.Mobiles
 {
-	[CorpseName("a pestilent bandage corpse")]
 	public class PestilentBandage : BaseCreature
 	{
+		public override string CorpseName => "a pestilent bandage corpse";
 		// Neither Stratics nor UOGuide have much description
 		// beyond being a "Grey Mummy". BodyValue, Sound and
 		// Hue are all guessed until they can be verified.

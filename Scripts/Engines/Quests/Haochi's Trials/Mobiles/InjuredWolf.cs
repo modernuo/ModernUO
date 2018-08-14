@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Samurai
 {
-	[CorpseName( "an injured wolf corpse" )]
 	public class InjuredWolf : BaseCreature
 	{
+		public override string CorpseName => "an injured wolf corpse";
 		public override string DefaultName => "an injured wolf";
 
 		[Constructible]

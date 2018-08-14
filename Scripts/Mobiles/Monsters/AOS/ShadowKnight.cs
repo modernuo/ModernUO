@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a shadow knight corpse" )]
 	public class ShadowKnight : BaseCreature
 	{
+		public override string CorpseName => "a shadow knight corpse";
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.ConcussionBlow : WeaponAbility.CrushingBlow;
 
 		public override bool IgnoreYoungProtection => Core.ML;

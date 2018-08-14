@@ -6,9 +6,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an orcish corpse" )]
 	public class OrcCaptain : BaseCreature
 	{
+		public override string CorpseName => "an orcish corpse";
 		public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
 
 		[Constructible]

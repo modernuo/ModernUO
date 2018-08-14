@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an insane dryad corpse" )]
 	public class InsaneDryad : MLDryad
 	{
+		public override string CorpseName => "an insane dryad corpse";
 		public override bool InitialInnocent => false;
 
 		public override string DefaultName => "an insane dryad";

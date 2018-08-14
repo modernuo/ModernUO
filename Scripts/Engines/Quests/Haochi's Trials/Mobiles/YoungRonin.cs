@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Engines.Quests.Samurai
 {
-	[CorpseName( "a young ronin's corpse" )]
 	public class YoungRonin : BaseCreature
 	{
+		public override string CorpseName => "a young ronin's corpse";
 		public override string DefaultName => "a young ronin";
 
 		[Constructible]

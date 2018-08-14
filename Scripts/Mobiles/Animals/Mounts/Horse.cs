@@ -3,10 +3,10 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a horse corpse" )]
 	[TypeAlias( "Server.Mobiles.BrownHorse", "Server.Mobiles.DirtyHorse", "Server.Mobiles.GrayHorse", "Server.Mobiles.TanHorse" )]
 	public class Horse : BaseMount
 	{
+		public override string CorpseName => "a horse corpse";
 		private static int[] m_IDs = new int[]
 			{
 				0xC8, 0x3E9F,

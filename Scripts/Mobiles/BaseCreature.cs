@@ -135,13 +135,7 @@ namespace Server.Mobiles
 		//future use: Talisman 'Protection/Bonus vs. Specific Creature
 		private TextDefinition m_FriendlyName;
 
-		public TextDefinition FriendlyName
-		{
-			get
-			{
-				return m_FriendlyName;
-			}
-		}
+		public TextDefinition FriendlyName => m_FriendlyName;
 
 		public FriendlyNameAttribute( TextDefinition friendlyName )
 		{
@@ -254,7 +248,8 @@ namespace Server.Mobiles
 
 		#endregion
 
-		public virtual string DefaultName{ get{ return null; } }
+		public virtual string DefaultName => null;
+		public virtual string CorpseName => null;
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public override string Name

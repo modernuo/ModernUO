@@ -6,9 +6,9 @@ using Server.Factions;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a wisp corpse" )]
 	public class DarkWisp : BaseCreature
 	{
+		public override string CorpseName => "a wisp corpse";
 		public override InhumanSpeech SpeechType => InhumanSpeech.Wisp;
 
 		public override Ethics.Ethic EthicAllegiance => Ethics.Ethic.Evil;

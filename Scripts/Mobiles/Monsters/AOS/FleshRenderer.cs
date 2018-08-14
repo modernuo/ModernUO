@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a fleshrenderer corpse" )]
 	public class FleshRenderer : BaseCreature
 	{
+		public override string CorpseName => "a fleshrenderer corpse";
 		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.ParalyzingBlow;
 
 		public override bool IgnoreYoungProtection => Core.ML;

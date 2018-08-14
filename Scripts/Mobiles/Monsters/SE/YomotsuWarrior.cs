@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a yomotsu corpse" )]
 	public class YomotsuWarrior : BaseCreature
 	{
+		public override string CorpseName => "a yomotsu corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
 		public override string DefaultName => "a yomotsu warrior";
 

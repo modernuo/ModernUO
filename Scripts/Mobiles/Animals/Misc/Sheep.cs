@@ -6,9 +6,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a sheep corpse" )]
 	public class Sheep : BaseCreature, ICarvable
 	{
+		public override string CorpseName => "a sheep corpse";
 		private DateTime m_NextWoolTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]

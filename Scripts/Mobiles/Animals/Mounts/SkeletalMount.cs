@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an undead horse corpse" )]
 	public class SkeletalMount : BaseMount
 	{
+		public override string CorpseName => "an undead horse corpse";
 		public override string DefaultName => "a skeletal steed";
 
 		[Constructible]

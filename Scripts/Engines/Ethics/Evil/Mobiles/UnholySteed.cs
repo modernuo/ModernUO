@@ -5,9 +5,9 @@ using Server.Ethics;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an unholy corpse" )]
 	public class UnholySteed : BaseMount
 	{
+		public override string CorpseName => "an unholy corpse";
 		public override bool IsDispellable => false;
 		public override bool IsBondable => false;
 

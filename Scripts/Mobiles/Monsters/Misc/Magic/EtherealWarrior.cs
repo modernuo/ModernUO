@@ -5,9 +5,9 @@ using Server.Gumps;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an ethereal warrior corpse" )]
 	public class EtherealWarrior : BaseCreature
 	{
+		public override string CorpseName => "an ethereal warrior corpse";
 		public override bool InitialInnocent => true;
 
 		[Constructible]

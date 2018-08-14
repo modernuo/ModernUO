@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a Guile corpse" )]
 	public class Guile : Changeling
 	{
+		public override string CorpseName => "a Guile corpse";
 		public override string DefaultName => "Guile";
 		public override int DefaultHue => 0x3F;
 

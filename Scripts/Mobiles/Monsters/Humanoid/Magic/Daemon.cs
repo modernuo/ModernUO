@@ -5,9 +5,9 @@ using Server.Factions;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a daemon corpse" )]
 	public class Daemon : BaseCreature
 	{
+		public override string CorpseName => "a daemon corpse";
 		public override double DispelDifficulty => 125.0;
 		public override double DispelFocus => 45.0;
 

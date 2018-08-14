@@ -5,9 +5,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a tsuki wolf corpse" )]
 	public class TsukiWolf : BaseCreature
 	{
+		public override string CorpseName => "a tsuki wolf corpse";
 		public override string DefaultName => "a tsuki wolf";
 
 		[Constructible]

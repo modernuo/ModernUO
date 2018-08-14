@@ -3,9 +3,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an inhuman corpse" )]
 	public class Cursed : BaseCreature
 	{
+		public override string CorpseName => "an inhuman corpse";
 		public override bool ClickTitle => false;
 		public override bool ShowFameTitle => false;
 

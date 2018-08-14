@@ -5,9 +5,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a chaos daemon corpse" )]
 	public class ChaosDaemon : BaseCreature
 	{
+		public override string CorpseName => "a chaos daemon corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
 		public override string DefaultName => "a chaos daemon";

@@ -4,9 +4,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a hare corpse" )]
 	public class EnragedRabbit : BaseEnraged
 	{
+		public override string CorpseName => "a hare corpse";
 		public override string DefaultName => "a rabbit";
 
 		public EnragedRabbit( Mobile summoner ) : base( summoner )
@@ -46,9 +46,9 @@ namespace Server.Mobiles
 		}
 	}
 
-	[CorpseName( "a deer corpse" )]
 	public class EnragedHart : BaseEnraged
 	{
+		public override string CorpseName => "a deer corpse";
 		public override string DefaultName => "a great hart";
 
 		public EnragedHart( Mobile summoner ) : base( summoner )
@@ -88,9 +88,9 @@ namespace Server.Mobiles
 		}
 	}
 
-	[CorpseName( "a deer corpse" )]
 	public class EnragedHind : BaseEnraged
 	{
+		public override string CorpseName => "a deer corpse";
 		public override string DefaultName => "a hind";
 
 		public EnragedHind( Mobile summoner ) : base( summoner )
@@ -129,9 +129,9 @@ namespace Server.Mobiles
 		}
 	}
 
-	[CorpseName( "a bear corpse" )]
 	public class EnragedBlackBear : BaseEnraged
 	{
+		public override string CorpseName => "a bear corpse";
 		public override string DefaultName => "a black bear";
 
 		public EnragedBlackBear( Mobile summoner ) : base( summoner )
@@ -156,9 +156,9 @@ namespace Server.Mobiles
 		}
 	}
 
-	[CorpseName( "an eagle corpse" )]
 	public class EnragedEagle : BaseEnraged
 	{
+		public override string CorpseName => "an eagle corpse";
 		public override string DefaultName => "an eagle";
 
 		public EnragedEagle( Mobile summoner ) : base( summoner )

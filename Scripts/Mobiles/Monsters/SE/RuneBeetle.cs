@@ -6,9 +6,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a rune beetle corpse" )]
 	public class RuneBeetle : BaseCreature
 	{
+		public override string CorpseName => "a rune beetle corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 		public override string DefaultName => "a rune beetle";
 

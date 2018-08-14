@@ -3,9 +3,9 @@ using Server;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a death adder corpse" )]
 	public class DeathAdder : BaseFamiliar
 	{
+		public override string CorpseName => "a death adder corpse";
 		public override string DefaultName => "a death adder";
 
 		public DeathAdder()

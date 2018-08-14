@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a Coil corpse" )]
 	public class Coil : SilverSerpent
 	{
+		public override string CorpseName => "a Coil corpse";
 		// TODO: Check faction allegiance
 
 		public override string DefaultName => "Coil";

@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a daemon corpse" )]
 	public class SummonedDaemon : BaseCreature
 	{
+		public override string CorpseName => "a daemon corpse";
 		public override double DispelDifficulty => 125.0;
 		public override double DispelFocus => 45.0;
 

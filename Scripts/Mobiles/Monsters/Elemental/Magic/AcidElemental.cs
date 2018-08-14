@@ -5,9 +5,9 @@ using Server.Items;
 namespace Server.Mobiles
 {
 	[TypeAlias( "Server.Mobiles.ToxicElemental" )]
-	[CorpseName( "an acid elemental corpse" )]
 	public class AcidElemental : BaseCreature
 	{
+		public override string CorpseName => "an acid elemental corpse";
 		public override string DefaultName => "an acid elemental";
 
 		[Constructible]

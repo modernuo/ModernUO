@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a hiryu corpse" )]
 	public class Hiryu : BaseMount
 	{
+		public override string CorpseName => "a hiryu corpse";
 		public override double WeaponAbilityChance => 0.07; /* 1 in 15 chance of using per landed hit */
 
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;

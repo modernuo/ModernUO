@@ -3,9 +3,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a tormented minotaur corpse" )]
 	public class TormentedMinotaur : BaseCreature
 	{
+		public override string CorpseName => "a tormented minotaur corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
 		public override string DefaultName => "Tormented Minotaur";

@@ -5,10 +5,10 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a deathwatchbeetle corpse" )]
 	[TypeAlias( "Server.Mobiles.DeathWatchBeetle" )]
 	public class DeathwatchBeetle : BaseCreature
 	{
+		public override string CorpseName => "a deathwatchbeetle corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
 		public override string DefaultName => "a deathwatch beetle";

@@ -5,9 +5,9 @@ using Server.Gumps;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a cu sidhe corpse" )]
 	public class CuSidhe : BaseMount
 	{
+		public override string CorpseName => "a cu sidhe corpse";
 		public override string DefaultName => "a cu sidhe";
 
 		[Constructible]

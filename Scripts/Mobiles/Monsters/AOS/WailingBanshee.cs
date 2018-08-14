@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a wailing banshee corpse" )]
 	public class WailingBanshee : BaseCreature
 	{
+		public override string CorpseName => "a wailing banshee corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
 
 		public override string DefaultName => "a wailing banshee";

@@ -6,9 +6,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a juggernaut corpse" )]
 	public class Juggernaut : BaseCreature
 	{
+		public override string CorpseName => "a juggernaut corpse";
 		private bool m_Stunning;
 
 		public override string DefaultName => "a blackthorn juggernaut";

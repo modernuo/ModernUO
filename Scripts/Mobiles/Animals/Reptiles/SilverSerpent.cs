@@ -4,10 +4,10 @@ using Server.Factions;
 
 namespace Server.Mobiles
 {
-	[CorpseName("a silver serpent corpse")]
 	[TypeAlias( "Server.Mobiles.Silverserpant" )]
 	public class SilverSerpent : BaseCreature
 	{
+		public override string CorpseName => "a silver serpent corpse";
 		public override Faction FactionAllegiance => TrueBritannians.Instance;
 		public override Ethics.Ethic EthicAllegiance => Ethics.Ethic.Hero;
 

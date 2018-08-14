@@ -7,9 +7,9 @@ using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a horse corpse" )]
 	public class PackHorse : BaseCreature
 	{
+		public override string CorpseName => "a horse corpse";
 		public override string DefaultName => "a pack horse";
 
 		[Constructible]

@@ -4,9 +4,9 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a plague beast lord corpse" )]
 	public class PlagueBeastLord : BaseCreature, ICarvable, IScissorable
 	{
+		public override string CorpseName => "a plague beast lord corpse";
 		public override Poison PoisonImmune => Poison.Lethal;
 
 		private Mobile m_OpenedBy;

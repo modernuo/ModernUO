@@ -439,21 +439,7 @@ namespace Server.Items
 			if ( m is BaseCreature )
 			{
 				BaseCreature bc = (BaseCreature)m;
-
-				if ( bc.CorpseNameOverride != null )
-					return bc.CorpseNameOverride;
-			}
-
-			Type t = m.GetType();
-
-			object[] attrs = t.GetCustomAttributes( typeof( CorpseNameAttribute ), true );
-
-			if ( attrs != null && attrs.Length > 0 )
-			{
-				CorpseNameAttribute attr = attrs[0] as CorpseNameAttribute;
-
-				if ( attr != null )
-					return attr.Name;
+				return bc.CorpseNameOverride ?? bc.CorpseName;
 			}
 
 			return null;

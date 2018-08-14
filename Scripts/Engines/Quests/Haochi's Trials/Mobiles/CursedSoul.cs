@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Engines.Quests.Samurai
 {
-	[CorpseName( "a cursed soul corpse" )]
 	public class CursedSoul : BaseCreature
 	{
+		public override string CorpseName => "a cursed soul corpse";
 		public override string DefaultName => "a cursed soul";
 
 		[Constructible]

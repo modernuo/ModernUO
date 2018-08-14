@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an evil mage lord corpse" )]
 	public class EvilMageLord : BaseCreature
 	{
+		public override string CorpseName => "an evil mage lord corpse";
 		[Constructible]
 		public EvilMageLord() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{

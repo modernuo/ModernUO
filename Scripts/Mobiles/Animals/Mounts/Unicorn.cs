@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a unicorn corpse" )]
 	public class Unicorn : BaseMount
 	{
+		public override string CorpseName => "a unicorn corpse";
 		public override bool AllowMaleRider => false;
 		public override bool AllowMaleTamer => false;
 

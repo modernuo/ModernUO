@@ -5,9 +5,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a Swoop corpse" )]
 	public class Swoop : Eagle
 	{
+		public override string CorpseName => "a Swoop corpse";
 		public override string DefaultName => "Swoop";
 
 		[Constructible]

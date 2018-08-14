@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a Red Death corpse" )]
 	public class RedDeath : SkeletalMount
 	{
+		public override string CorpseName => "a Red Death corpse";
 		[Constructible]
 		public RedDeath()
 			: base( "Red Death" )

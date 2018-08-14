@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a blade spirit corpse" )]
 	public class BladeSpirits : BaseCreature
 	{
+		public override string CorpseName => "a blade spirit corpse";
 		public override bool DeleteCorpseOnDeath => Core.AOS;
 		public override bool IsHouseSummonable => true;
 

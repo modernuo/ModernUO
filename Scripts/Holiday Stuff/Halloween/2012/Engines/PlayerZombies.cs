@@ -181,9 +181,9 @@ namespace Server.Engines.Events
 		}
 	}
 
-	[CorpseName( "a rotting corpse" )]
 	public class ZombieSkeleton : BaseCreature
 	{
+		public override string CorpseName => "a rotting corpse";
 		private static readonly string m_Name = "Zombie Skeleton";
 
 		private PlayerMobile m_DeadPlayer;

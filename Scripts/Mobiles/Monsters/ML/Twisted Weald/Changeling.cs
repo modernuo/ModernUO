@@ -11,9 +11,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a changeling corpse" )]
 	public class Changeling : BaseCreature
 	{
+		public override string CorpseName => "a changeling corpse";
 		public override string DefaultName => "a changeling";
 		public virtual int DefaultHue => 0;
 

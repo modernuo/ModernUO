@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a cow corpse" )]
 	public class Cow : BaseCreature
 	{
+		public override string CorpseName => "a cow corpse";
 		private DateTime m_MilkedOn;
 
 		[CommandProperty( AccessLevel.GameMaster )]

@@ -8,9 +8,9 @@ using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a giant beetle corpse" )]
 	public class Beetle : BaseMount
 	{
+		public override string CorpseName => "a giant beetle corpse";
 		public virtual double BoostedSpeed{ get{ return 0.1; } }
 
 		[Constructible]

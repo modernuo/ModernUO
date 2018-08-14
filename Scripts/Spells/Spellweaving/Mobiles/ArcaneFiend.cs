@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an imp corpse" )]
 	public class ArcaneFiend : BaseCreature
 	{
+		public override string CorpseName => "an imp corpse";
 		public override double DispelDifficulty => 70.0;
 		public override double DispelFocus => 20.0;
 

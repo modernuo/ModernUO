@@ -5,9 +5,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a pixie corpse" )]
 	public class Pixie : BaseCreature
 	{
+		public override string CorpseName => "a pixie corpse";
 		public override bool InitialInnocent => true;
 
 		[Constructible]

@@ -6,9 +6,9 @@ using Server.Factions;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an ogre lords corpse" )]
 	public class OgreLord : BaseCreature
 	{
+		public override string CorpseName => "an ogre lords corpse";
 		public override Faction FactionAllegiance => Minax.Instance;
 		public override Ethics.Ethic EthicAllegiance => Ethics.Ethic.Evil;
 

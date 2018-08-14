@@ -4,10 +4,10 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a treefellow corpse" )]
 	[TypeAlias("Server.Mobiles.FerelTreefellow")]
 	public class FeralTreefellow : BaseCreature
 	{
+		public override string CorpseName => "a treefellow corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
 		public override string DefaultName => "a feral treefellow";

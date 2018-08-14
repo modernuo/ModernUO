@@ -5,9 +5,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an evil corpse" )]
 	public class UnholyFamiliar : BaseCreature
 	{
+		public override string CorpseName => "an evil corpse";
 		public override bool IsDispellable => false;
 		public override bool IsBondable => false;
 		public override string DefaultName => "a dark wolf";

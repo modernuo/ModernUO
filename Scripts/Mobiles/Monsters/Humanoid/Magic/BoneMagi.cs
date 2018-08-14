@@ -4,10 +4,10 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a skeletal corpse" )]
 	[TypeAlias("Server.Mobiles.BoneMage")]
 	public class BoneMagi : BaseCreature
 	{
+		public override string CorpseName => "a skeletal corpse";
 		public override string DefaultName => "a bone mage";
 
 		[Constructible]

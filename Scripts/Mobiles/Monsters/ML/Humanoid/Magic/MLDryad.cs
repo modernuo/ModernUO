@@ -3,9 +3,9 @@ using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a dryad's corpse" )]
 	public class MLDryad : BaseCreature
 	{
+		public override string CorpseName => "a dryad's corpse";
 		public override bool InitialInnocent => true;
 
 		public override OppositionGroup OppositionGroup

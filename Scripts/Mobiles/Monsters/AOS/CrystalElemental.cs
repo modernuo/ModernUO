@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a crystal elemental corpse" )]
 	public class CrystalElemental : BaseCreature
 	{
+		public override string CorpseName => "a crystal elemental corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
 		public override string DefaultName => "a crystal elemental";

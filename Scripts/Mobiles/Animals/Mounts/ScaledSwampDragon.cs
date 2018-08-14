@@ -3,9 +3,9 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a swamp dragon corpse" )]
 	public class ScaledSwampDragon : BaseMount
 	{
+		public override string CorpseName => "a swamp dragon corpse";
 		[Constructible]
 		public ScaledSwampDragon() : this( "a swamp dragon" )
 		{

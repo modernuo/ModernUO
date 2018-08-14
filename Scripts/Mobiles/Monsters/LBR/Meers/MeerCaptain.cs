@@ -7,9 +7,9 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a meer corpse" )]
 	public class MeerCaptain : BaseCreature
 	{
+		public override string CorpseName => "a meer corpse";
 		public override string DefaultName => "a meer captain";
 
 		[Constructible]

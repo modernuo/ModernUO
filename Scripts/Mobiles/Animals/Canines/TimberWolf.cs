@@ -3,10 +3,10 @@ using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a timber wolf corpse" )]
 	[TypeAlias( "Server.Mobiles.Timberwolf" )]
 	public class TimberWolf : BaseCreature
 	{
+		public override string CorpseName => "a timber wolf corpse";
 		public override string DefaultName => "a timber wolf";
 
 		[Constructible]

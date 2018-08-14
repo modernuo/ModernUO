@@ -4,9 +4,9 @@ using Server.Mobiles;
 
 namespace Server.Factions
 {
-	[CorpseName( "a war horse corpse" )]
 	public class FactionWarHorse : BaseMount
 	{
+		public override string CorpseName => "a war horse corpse";
 		private Faction m_Faction;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]

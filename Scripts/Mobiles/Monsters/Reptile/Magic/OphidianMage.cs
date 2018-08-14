@@ -4,10 +4,10 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "an ophidian corpse" )]
 	[TypeAlias( "Server.Mobiles.OphidianShaman" )]
 	public class OphidianMage : BaseCreature
 	{
+		public override string CorpseName => "an ophidian corpse";
 		private static string[] m_Names = new string[]
 			{
 				"an ophidian apprentice mage",

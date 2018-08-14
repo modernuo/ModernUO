@@ -9,9 +9,9 @@ using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a horde minion corpse" )]
 	public class HordeMinionFamiliar : BaseFamiliar
 	{
+		public override string CorpseName => "a horde minion corpse";
 		public override bool DisplayWeight => true;
 
 		public override string DefaultName => "a horde minion";

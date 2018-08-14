@@ -4,9 +4,9 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a water elemental corpse" )]
 	public class WaterElemental : BaseCreature
 	{
+		public override string CorpseName => "a water elemental corpse";
 		public override double DispelDifficulty => 117.5;
 		public override double DispelFocus => 45.0;
 

@@ -5,9 +5,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a revenant lion corpse" )]
 	public class RevenantLion : BaseCreature
 	{
+		public override string CorpseName => "a revenant lion corpse";
 		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 		public override string DefaultName => "a Revenant Lion";
 

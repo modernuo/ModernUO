@@ -3,9 +3,9 @@ using Server;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a giant ice worm corpse" )]
 	public class GiantIceWorm : BaseCreature
 	{
+		public override string CorpseName => "a giant ice worm corpse";
 		public override bool SubdueBeforeTame => true;
 		public override string DefaultName => "a giant ice worm";
 

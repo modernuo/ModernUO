@@ -5,9 +5,9 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	[CorpseName( "a solen infiltrator corpse" )]
 	public class BlackSolenInfiltratorWarrior : BaseCreature
 	{
+		public override string CorpseName => "a solen infiltrator corpse";
 		public override string DefaultName => "a black solen infiltrator";
 
 		[Constructible]
