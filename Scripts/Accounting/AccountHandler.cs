@@ -82,9 +82,8 @@ namespace Server.Misc
 		public static void Password_OnCommand( CommandEventArgs e )
 		{
 			Mobile from = e.Mobile;
-			Account acct = from.Account as Account;
 
-			if ( acct == null )
+			if ( !(from.Account is Account acct) )
 				return;
 
 			IPAddress[] accessList = acct.LoginIPs;
@@ -102,7 +101,7 @@ namespace Server.Misc
 				from.SendMessage( "You must specify the new password." );
 				return;
 			}
-			else if ( e.Length == 1 )
+			if ( e.Length == 1 )
 			{
 				from.SendMessage( "To prevent potential typing mistakes, you must type the password twice. Use the format:" );
 				from.SendMessage( "Password \"(newPassword)\" \"(repeated)\"" );
@@ -172,9 +171,7 @@ namespace Server.Misc
 			NetState state = e.State;
 			int index = e.Index;
 
-			Account acct = state.Account as Account;
-
-			if ( acct == null )
+			if ( !(state.Account is Account acct) )
 			{
 				state.Dispose();
 			}
@@ -315,9 +312,8 @@ namespace Server.Misc
 			string pw = e.Password;
 
 			e.Accepted = false;
-			Account acct = Accounts.GetAccount( un ) as Account;
 
-			if ( acct == null )
+			if ( !(Accounts.GetAccount( un ) is Account acct) )
 			{
 				if ( AutoAccountCreation && un.Trim().Length > 0 ) // To prevent someone from making an account of just '' or a bunch of meaningless spaces
 				{
@@ -378,9 +374,7 @@ namespace Server.Misc
 			string un = e.Username;
 			string pw = e.Password;
 
-			Account acct = Accounts.GetAccount( un ) as Account;
-
-			if ( acct == null )
+			if ( !(Accounts.GetAccount( un ) is Account acct) )
 			{
 				e.Accepted = false;
 			}
@@ -415,17 +409,12 @@ namespace Server.Misc
 
 		public static bool CheckAccount( Mobile mobCheck, Mobile accCheck )
 		{
-			if ( accCheck != null )
+			if ( accCheck?.Account is Account a )
 			{
-				Account a = accCheck.Account as Account;
-
-				if ( a != null )
+				for ( int i = 0; i < a.Length; ++i )
 				{
-					for ( int i = 0; i < a.Length; ++i )
-					{
-						if ( a[i] == mobCheck )
-							return true;
-					}
+					if ( a[i] == mobCheck )
+						return true;
 				}
 			}
 

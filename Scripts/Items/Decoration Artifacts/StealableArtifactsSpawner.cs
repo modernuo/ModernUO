@@ -166,7 +166,7 @@ namespace Server.Items
 		{
 			get
 			{
-				if( m_TypesOfEntries == null )
+				if ( m_TypesOfEntries == null )
 				{
 					m_TypesOfEntries = new Type[m_Entries.Length];
 

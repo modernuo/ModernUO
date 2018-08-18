@@ -99,17 +99,17 @@ namespace Server.Engines.CannedEvil
 
 		public void UpdateRegion()
 		{
-			if( m_Region != null )
+			if ( m_Region != null )
 				m_Region.Unregister();
 
-			if( !Deleted && this.Map != Map.Internal )
+			if ( !Deleted && this.Map != Map.Internal )
 			{
 				m_Region = new ChampionSpawnRegion( this );
 				m_Region.Register();
 			}
 
 			/*
-			if( m_Region == null )
+			if ( m_Region == null )
 			{
 				m_Region = new ChampionSpawnRegion( this );
 			}
@@ -229,7 +229,7 @@ namespace Server.Engines.CannedEvil
 			}
 			set
 			{
-				if( value )
+				if ( value )
 					Start();
 				else
 					Stop();
@@ -322,24 +322,24 @@ namespace Server.Engines.CannedEvil
 
 		public void Start()
 		{
-			if( m_Active || Deleted )
+			if ( m_Active || Deleted )
 				return;
 
 			m_Active = true;
 			m_HasBeenAdvanced = false;
 
-			if( m_Timer != null )
+			if ( m_Timer != null )
 				m_Timer.Stop();
 
 			m_Timer = new SliceTimer( this );
 			m_Timer.Start();
 
-			if( m_RestartTimer != null )
+			if ( m_RestartTimer != null )
 				m_RestartTimer.Stop();
 
 			m_RestartTimer = null;
 
-			if( m_Altar != null )
+			if ( m_Altar != null )
 			{
 				if ( m_Champion != null )
 					m_Altar.Hue = 0x26;
@@ -353,23 +353,23 @@ namespace Server.Engines.CannedEvil
 
 		public void Stop()
 		{
-			if( !m_Active || Deleted )
+			if ( !m_Active || Deleted )
 				return;
 
 			m_Active = false;
 			m_HasBeenAdvanced = false;
 
-			if( m_Timer != null )
+			if ( m_Timer != null )
 				m_Timer.Stop();
 
 			m_Timer = null;
 
-			if( m_RestartTimer != null )
+			if ( m_RestartTimer != null )
 				m_RestartTimer.Stop();
 
 			m_RestartTimer = null;
 
-			if( m_Altar != null )
+			if ( m_Altar != null )
 				m_Altar.Hue = 0;
 
 			if ( m_Platform != null )
@@ -378,7 +378,7 @@ namespace Server.Engines.CannedEvil
 
 		public void BeginRestart( TimeSpan ts )
 		{
-			if( m_RestartTimer != null )
+			if ( m_RestartTimer != null )
 				m_RestartTimer.Stop();
 
 			m_RestartTime = DateTime.UtcNow + ts;
@@ -389,7 +389,7 @@ namespace Server.Engines.CannedEvil
 
 		public void EndRestart()
 		{
-			if( RandomizeType )
+			if ( RandomizeType )
 			{
 				switch( Utility.Random( 5 ) )
 				{
@@ -420,7 +420,7 @@ namespace Server.Engines.CannedEvil
 
 		public static void GiveScrollTo( Mobile killer, SpecialScroll scroll )
 		{
-			if( scroll == null || killer == null )	//sanity
+			if ( scroll == null || killer == null )	//sanity
 				return;
 
 			if ( scroll is ScrollofTranscendence )
@@ -432,7 +432,7 @@ namespace Server.Engines.CannedEvil
 				killer.AddToBackpack( scroll );
 			else
 			{
-				if( killer.Corpse != null && !killer.Corpse.Deleted )
+				if ( killer.Corpse != null && !killer.Corpse.Deleted )
 					killer.Corpse.DropItem( scroll );
 				else
 					killer.AddToBackpack( scroll );
@@ -462,9 +462,7 @@ namespace Server.Engines.CannedEvil
 					{
 						prot.SendLocalizedMessage( 1049368 ); // You have been rewarded for your dedication to Justice!
 
-						SpecialScroll scrollDupe = Activator.CreateInstance( scroll.GetType() ) as SpecialScroll;
-
-						if ( scrollDupe != null )
+						if ( Activator.CreateInstance( scroll.GetType() ) is SpecialScroll scrollDupe )
 						{
 							scrollDupe.Skill = scroll.Skill;
 							scrollDupe.Value = scroll.Value;
@@ -478,28 +476,28 @@ namespace Server.Engines.CannedEvil
 
 		public void OnSlice()
 		{
-			if( !m_Active || Deleted )
+			if ( !m_Active || Deleted )
 				return;
 
-			if( m_Champion != null )
+			if ( m_Champion != null )
 			{
-				if( m_Champion.Deleted )
+				if ( m_Champion.Deleted )
 				{
 					RegisterDamageTo( m_Champion );
 
-					if( m_Champion is BaseChampion )
-						AwardArtifact( ((BaseChampion)m_Champion).GetArtifact() );
+					if ( m_Champion is BaseChampion champion )
+						AwardArtifact( champion.GetArtifact() );
 
 					m_DamageEntries.Clear();
 
-					if( m_Platform != null )
+					if ( m_Platform != null )
 						m_Platform.Hue = 0x497;
 
-					if( m_Altar != null )
+					if ( m_Altar != null )
 					{
 						m_Altar.Hue = 0;
 
-						if( !Core.ML || Map == Map.Felucca )
+						if ( !Core.ML || Map == Map.Felucca )
 						{
 							new StarRoomGate( true, m_Altar.Location, m_Altar.Map );
 						}
@@ -521,7 +519,7 @@ namespace Server.Engines.CannedEvil
 
 					if ( m.Deleted )
 					{
-						if( m.Corpse != null && !m.Corpse.Deleted )
+						if ( m.Corpse != null && !m.Corpse.Deleted )
 						{
 							((Corpse)m.Corpse).BeginDecay( TimeSpan.FromMinutes( 1 ));
 						}
@@ -533,10 +531,10 @@ namespace Server.Engines.CannedEvil
 
 						RegisterDamageTo( m );
 
-						if( killer is BaseCreature )
-							killer = ((BaseCreature)killer).GetMaster();
+						if ( killer is BaseCreature bc )
+							killer = bc.GetMaster();
 
-						if( killer is PlayerMobile )
+						if ( killer is PlayerMobile pm )
 						{
 							#region Scroll of Transcendence
 							if ( Core.ML )
@@ -545,7 +543,6 @@ namespace Server.Engines.CannedEvil
 								{
 									if ( Utility.RandomDouble() < 0.001 )
 									{
-										PlayerMobile pm = (PlayerMobile)killer;
 										double random = Utility.Random ( 49 );
 
 										if ( random <= 24 )
@@ -565,9 +562,9 @@ namespace Server.Engines.CannedEvil
 								{
 									if ( Utility.RandomDouble() < 0.0015 )
 									{
-										killer.SendLocalizedMessage( 1094936 ); // You have received a Scroll of Transcendence!
+										pm.SendLocalizedMessage( 1094936 ); // You have received a Scroll of Transcendence!
 										ScrollofTranscendence SoTT = CreateRandomSoT( false );
-										killer.AddToBackpack( SoTT );
+										pm.AddToBackpack( SoTT );
 									}
 								}
 							}
@@ -575,15 +572,15 @@ namespace Server.Engines.CannedEvil
 
 							int mobSubLevel = GetSubLevelFor( m ) + 1;
 
-							if( mobSubLevel >= 0 )
+							if ( mobSubLevel >= 0 )
 							{
 								bool gainedPath = false;
 
 								int pointsToGain = mobSubLevel * 40;
 
-								if( VirtueHelper.Award( killer, VirtueName.Valor, pointsToGain, ref gainedPath ) )
+								if ( VirtueHelper.Award( pm, VirtueName.Valor, pointsToGain, ref gainedPath ) )
 								{
-									if( gainedPath )
+									if ( gainedPath )
 										m.SendLocalizedMessage( 1054032 ); // You have gained a path in Valor!
 									else
 										m.SendLocalizedMessage( 1054030 ); // You have gained in Valor!
@@ -591,7 +588,7 @@ namespace Server.Engines.CannedEvil
 									//No delay on Valor gains
 								}
 
-								PlayerMobile.ChampionTitleInfo info = ((PlayerMobile)killer).ChampionTitles;
+								PlayerMobile.ChampionTitleInfo info = pm.ChampionTitles;
 
 								info.Award( m_Type, mobSubLevel );
 							}
@@ -606,12 +603,12 @@ namespace Server.Engines.CannedEvil
 				double n = m_Kills / (double)MaxKills;
 				int p = (int)(n * 100);
 
-				if( p >= 90 )
+				if ( p >= 90 )
 					AdvanceLevel();
-				else if( p > 0 )
+				else if ( p > 0 )
 					SetWhiteSkullCount( p / 20 );
 
-				if( DateTime.UtcNow >= m_ExpireTime )
+				if ( DateTime.UtcNow >= m_ExpireTime )
 					Expire();
 
 				Respawn();
@@ -622,14 +619,14 @@ namespace Server.Engines.CannedEvil
 		{
 			m_ExpireTime = DateTime.UtcNow + m_ExpireDelay;
 
-			if( Level < 16 )
+			if ( Level < 16 )
 			{
 				m_Kills = 0;
 				++Level;
 				InvalidateProperties();
 				SetWhiteSkullCount( 0 );
 
-				if( m_Altar != null )
+				if ( m_Altar != null )
 				{
 					Effects.PlaySound( m_Altar.Location, m_Altar.Map, 0x29 );
 					Effects.SendLocationEffect( new Point3D( m_Altar.X + 1, m_Altar.Y + 1, m_Altar.Z ), m_Altar.Map, 0x3728, 10 );
@@ -643,7 +640,7 @@ namespace Server.Engines.CannedEvil
 
 		public void SpawnChampion()
 		{
-			if( m_Altar != null )
+			if ( m_Altar != null )
 				m_Altar.Hue = 0x26;
 
 			if ( m_Platform != null )
@@ -660,20 +657,20 @@ namespace Server.Engines.CannedEvil
 			}
 			catch { }
 
-			if( m_Champion != null )
+			if ( m_Champion != null )
 				m_Champion.MoveToWorld( new Point3D( X, Y, Z - 15 ), Map );
 		}
 
 		public void Respawn()
 		{
-			if( !m_Active || Deleted || m_Champion != null )
+			if ( !m_Active || Deleted || m_Champion != null )
 				return;
 
 			while( m_Creatures.Count < ( ( m_SPawnSzMod * ( 200 / 12 ) ) ) - ( GetSubLevel() * ( m_SPawnSzMod * ( 40 / 12 ) ) ) )
 			{
 				Mobile m = Spawn();
 
-				if( m == null )
+				if ( m == null )
 					return;
 
 				Point3D loc = GetSpawnLocation();
@@ -684,12 +681,11 @@ namespace Server.Engines.CannedEvil
 				m_Creatures.Add( m );
 				m.MoveToWorld( loc, Map );
 
-				if( m is BaseCreature )
+				if ( m is BaseCreature bc )
 				{
-					BaseCreature bc = m as BaseCreature;
 					bc.Tamable = false;
 
-					if( !m_ConfinedRoaming )
+					if ( !m_ConfinedRoaming )
 					{
 						bc.Home = this.Location;
 						bc.RangeHome = (int)(Math.Sqrt( m_SpawnArea.Width * m_SpawnArea.Width + m_SpawnArea.Height * m_SpawnArea.Height )/2);
@@ -716,7 +712,7 @@ namespace Server.Engines.CannedEvil
 		{
 			Map map = Map;
 
-			if( map == null )
+			if ( map == null )
 				return Location;
 
 			// Try 20 times to find a spawnable location.
@@ -732,11 +728,11 @@ namespace Server.Engines.CannedEvil
 
 				int z = Map.GetAverageZ( x, y );
 
-				if( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
+				if ( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
 					return new Point3D( x, y, z );
 
 				/* try @ platform Z if map z fails */
-				else if( Map.CanSpawnMobile( new Point2D( x, y ), m_Platform.Location.Z ) )
+				else if ( Map.CanSpawnMobile( new Point2D( x, y ), m_Platform.Location.Z ) )
 					return new Point3D( x, y, m_Platform.Location.Z );
 			}
 
@@ -751,11 +747,11 @@ namespace Server.Engines.CannedEvil
 		{
 			int level = this.Level;
 
-			if( level <= Level1 )
+			if ( level <= Level1 )
 				return 0;
-			else if( level <= Level2 )
+			else if ( level <= Level2 )
 				return 1;
-			else if( level <= Level3 )
+			else if ( level <= Level3 )
 				return 2;
 
 			return 3;
@@ -772,7 +768,7 @@ namespace Server.Engines.CannedEvil
 
 				for( int j = 0; j < individualTypes.Length; j++ )
 				{
-					if( t == individualTypes[j] )
+					if ( t == individualTypes[j] )
 						return i;
 				}
 			}
@@ -786,7 +782,7 @@ namespace Server.Engines.CannedEvil
 
 			int v = GetSubLevel();
 
-			if( v >= 0 && v < types.Length )
+			if ( v >= 0 && v < types.Length )
 				return Spawn( types[v] );
 
 			return null;
@@ -808,11 +804,11 @@ namespace Server.Engines.CannedEvil
 		{
 			m_Kills = 0;
 
-			if( m_WhiteSkulls.Count == 0 )
+			if ( m_WhiteSkulls.Count == 0 )
 			{
 				// They didn't even get 20%, go back a level
 
-				if( Level > 0 )
+				if ( Level > 0 )
 					--Level;
 
 				InvalidateProperties();
@@ -829,17 +825,17 @@ namespace Server.Engines.CannedEvil
 		{
 			int x, y;
 
-			if( index < 5 )
+			if ( index < 5 )
 			{
 				x = index - 2;
 				y = -2;
 			}
-			else if( index < 9 )
+			else if ( index < 9 )
 			{
 				x = 2;
 				y = index - 6;
 			}
-			else if( index < 13 )
+			else if ( index < 13 )
 			{
 				x = 10 - index;
 				y = 2;
@@ -878,7 +874,7 @@ namespace Server.Engines.CannedEvil
 		{
 			base.GetProperties( list );
 
-			if( m_Active )
+			if ( m_Active )
 			{
 				list.Add( 1060742 ); // active
 				list.Add( 1060658, "Type\t{0}", m_Type ); // ~1_val~: ~2_val~
@@ -894,7 +890,7 @@ namespace Server.Engines.CannedEvil
 
 		public override void OnSingleClick( Mobile from )
 		{
-			if( m_Active )
+			if ( m_Active )
 				LabelTo( from, "{0} (Active; Level: {1}; Kills: {2}/{3})", m_Type, Level, m_Kills, MaxKills );
 			else
 				LabelTo( from, "{0} (Inactive)", m_Type );
@@ -907,25 +903,25 @@ namespace Server.Engines.CannedEvil
 
 		public override void OnLocationChange( Point3D oldLoc )
 		{
-			if( Deleted )
+			if ( Deleted )
 				return;
 
-			if( m_Platform != null )
+			if ( m_Platform != null )
 				m_Platform.Location = new Point3D( X, Y, Z - 20 );
 
-			if( m_Altar != null )
+			if ( m_Altar != null )
 				m_Altar.Location = new Point3D( X, Y, Z - 15 );
 
-			if( m_Idol != null )
+			if ( m_Idol != null )
 				m_Idol.Location = new Point3D( X, Y, Z - 15 );
 
-			if( m_RedSkulls != null )
+			if ( m_RedSkulls != null )
 			{
 				for( int i = 0; i < m_RedSkulls.Count; ++i )
 					m_RedSkulls[i].Location = GetRedSkullLocation( i );
 			}
 
-			if( m_WhiteSkulls != null )
+			if ( m_WhiteSkulls != null )
 			{
 				for( int i = 0; i < m_WhiteSkulls.Count; ++i )
 					m_WhiteSkulls[i].Location = GetWhiteSkullLocation( i );
@@ -939,25 +935,25 @@ namespace Server.Engines.CannedEvil
 
 		public override void OnMapChange()
 		{
-			if( Deleted )
+			if ( Deleted )
 				return;
 
-			if( m_Platform != null )
+			if ( m_Platform != null )
 				m_Platform.Map = Map;
 
-			if( m_Altar != null )
+			if ( m_Altar != null )
 				m_Altar.Map = Map;
 
-			if( m_Idol != null )
+			if ( m_Idol != null )
 				m_Idol.Map = Map;
 
-			if( m_RedSkulls != null )
+			if ( m_RedSkulls != null )
 			{
 				for( int i = 0; i < m_RedSkulls.Count; ++i )
 					m_RedSkulls[i].Map = Map;
 			}
 
-			if( m_WhiteSkulls != null )
+			if ( m_WhiteSkulls != null )
 			{
 				for( int i = 0; i < m_WhiteSkulls.Count; ++i )
 					m_WhiteSkulls[i].Map = Map;
@@ -970,16 +966,16 @@ namespace Server.Engines.CannedEvil
 		{
 			base.OnAfterDelete();
 
-			if( m_Platform != null )
+			if ( m_Platform != null )
 				m_Platform.Delete();
 
-			if( m_Altar != null )
+			if ( m_Altar != null )
 				m_Altar.Delete();
 
-			if( m_Idol != null )
+			if ( m_Idol != null )
 				m_Idol.Delete();
 
-			if( m_RedSkulls != null )
+			if ( m_RedSkulls != null )
 			{
 				for( int i = 0; i < m_RedSkulls.Count; ++i )
 					m_RedSkulls[i].Delete();
@@ -987,7 +983,7 @@ namespace Server.Engines.CannedEvil
 				m_RedSkulls.Clear();
 			}
 
-			if( m_WhiteSkulls != null )
+			if ( m_WhiteSkulls != null )
 			{
 				for( int i = 0; i < m_WhiteSkulls.Count; ++i )
 					m_WhiteSkulls[i].Delete();
@@ -995,20 +991,20 @@ namespace Server.Engines.CannedEvil
 				m_WhiteSkulls.Clear();
 			}
 
-			if( m_Creatures != null )
+			if ( m_Creatures != null )
 			{
 				for( int i = 0; i < m_Creatures.Count; ++i )
 				{
 					Mobile mob = m_Creatures[i];
 
-					if( !mob.Player )
+					if ( !mob.Player )
 						mob.Delete();
 				}
 
 				m_Creatures.Clear();
 			}
 
-			if( m_Champion != null && !m_Champion.Player )
+			if ( m_Champion != null && !m_Champion.Player )
 				m_Champion.Delete();
 
 			Stop();
@@ -1022,19 +1018,19 @@ namespace Server.Engines.CannedEvil
 
 		public virtual void RegisterDamageTo( Mobile m )
 		{
-			if( m == null )
+			if ( m == null )
 				return;
 
 			foreach( DamageEntry de in m.DamageEntries )
 			{
-				if( de.HasExpired )
+				if ( de.HasExpired )
 					continue;
 
 				Mobile damager = de.Damager;
 
 				Mobile master = damager.GetDamageMaster( m );
 
-				if( master != null )
+				if ( master != null )
 					damager = master;
 
 				RegisterDamage( damager, de.DamageGiven );
@@ -1043,10 +1039,10 @@ namespace Server.Engines.CannedEvil
 
 		public void RegisterDamage( Mobile from, int amount )
 		{
-			if( from == null || !from.Player )
+			if ( from == null || !from.Player )
 				return;
 
-			if( m_DamageEntries.ContainsKey( from ) )
+			if ( m_DamageEntries.ContainsKey( from ) )
 				m_DamageEntries[from] += amount;
 			else
 				m_DamageEntries.Add( from, amount );
@@ -1063,7 +1059,7 @@ namespace Server.Engines.CannedEvil
 
 			foreach (KeyValuePair<Mobile, int> kvp in m_DamageEntries)
 			{
-				if( IsEligible( kvp.Key, artifact ) )
+				if ( IsEligible( kvp.Key, artifact ) )
 				{
 					validEntries.Add( kvp.Key, kvp.Value );
 					totalDamage += kvp.Value;
@@ -1078,7 +1074,7 @@ namespace Server.Engines.CannedEvil
 			{
 				totalDamage += kvp.Value;
 
-				if( totalDamage >= randomDamage )
+				if ( totalDamage >= randomDamage )
 				{
 					GiveArtifact( kvp.Key, artifact );
 					return;
@@ -1144,7 +1140,7 @@ namespace Server.Engines.CannedEvil
 
 			writer.Write( m_RestartTimer != null );
 
-			if( m_RestartTimer != null )
+			if ( m_RestartTimer != null )
 				writer.WriteDeltaTime( m_RestartTime );
 		}
 
@@ -1203,7 +1199,7 @@ namespace Server.Engines.CannedEvil
 				}
 				case 1:
 				{
-					if( version < 3 )
+					if ( version < 3 )
 					{
 						int oldRange = reader.ReadInt();
 
@@ -1216,7 +1212,7 @@ namespace Server.Engines.CannedEvil
 				}
 				case 0:
 				{
-					if( version < 1 )
+					if ( version < 1 )
 						m_SpawnArea = new Rectangle2D( new Point2D( X - 24, Y - 24 ), new Point2D( X + 24, Y + 24 ) );	//Default was 24
 
 					bool active = reader.ReadBool();
@@ -1231,21 +1227,21 @@ namespace Server.Engines.CannedEvil
 					m_Champion = reader.ReadMobile();
 					m_RestartDelay = reader.ReadTimeSpan();
 
-					if( reader.ReadBool() )
+					if ( reader.ReadBool() )
 					{
 						m_RestartTime = reader.ReadDeltaTime();
 						BeginRestart( m_RestartTime - DateTime.UtcNow );
 					}
 
-					if( version < 4 )
+					if ( version < 4 )
 					{
 						m_Idol = new IdolOfTheChampion( this );
 						m_Idol.MoveToWorld( new Point3D( X, Y, Z - 15 ), Map );
 					}
 
-					if( m_Platform == null || m_Altar == null || m_Idol == null )
+					if ( m_Platform == null || m_Altar == null || m_Idol == null )
 						Delete();
-					else if( active )
+					else if ( active )
 						Start();
 
 					break;

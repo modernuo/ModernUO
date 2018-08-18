@@ -16,7 +16,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
+			if ( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1063347, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
 				return false;
@@ -37,9 +37,9 @@ namespace Server.Items
 
 		public override bool Validate( Mobile from )
 		{
-			if( base.Validate( from ) )
+			if ( base.Validate( from ) )
 			{
-				if( from.Mounted )
+				if ( from.Mounted )
 					return true;
 				else
 				{
@@ -53,7 +53,7 @@ namespace Server.Items
 
 		public void Use( Mobile attacker, Mobile defender )
 		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) || attacker.Weapon == null )	//sanity
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) || attacker.Weapon == null )	//sanity
 				return;
 
 			ClearCurrentAbility( attacker );

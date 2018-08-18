@@ -63,10 +63,10 @@ namespace Server.Engines.Harvest
 
 		public void SendMessageTo( Mobile from, object message )
 		{
-			if ( message is int )
-				from.SendLocalizedMessage( (int)message );
-			else if ( message is string )
-				from.SendMessage( (string)message );
+			if ( message is int messageInt )
+				from.SendLocalizedMessage( messageInt );
+			else
+				from.SendMessage( message.ToString() );
 		}
 
 		public HarvestBank GetBank( Map map, int x, int y )

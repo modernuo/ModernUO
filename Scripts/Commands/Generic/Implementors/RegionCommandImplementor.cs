@@ -35,7 +35,7 @@ namespace Server.Commands.Generic
 				{
 					foreach ( Mobile mob in reg.GetMobiles() )
 					{
-						if( !BaseCommand.IsAccessible( from, mob ) )
+						if ( !BaseCommand.IsAccessible( from, mob ) )
 							continue;
 
 						if ( ext.IsValid( mob ) )

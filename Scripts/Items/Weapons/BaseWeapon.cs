@@ -578,9 +578,9 @@ namespace Server.Items
 			if ( !Ethics.Ethic.CheckEquip( from, this ) )
 				return false;
 
-			if( RequiredRace != null && from.Race != RequiredRace )
+			if ( RequiredRace != null && from.Race != RequiredRace )
 			{
-				if( RequiredRace == Race.Elf )
+				if ( RequiredRace == Race.Elf )
 					from.SendLocalizedMessage( 1072203 ); // Only Elves may use this.
 				else
 					from.SendMessage( "Only {0} may use this.", RequiredRace.PluralName );
@@ -893,15 +893,15 @@ namespace Server.Items
 				// Bonus granted by successful use of Honorable Execution.
 				bonus += HonorableExecution.GetSwingBonus( m );
 
-				if( DualWield.Registry.Contains( m ) )
+				if ( DualWield.Registry.Contains( m ) )
 					bonus += ((DualWield.DualWieldTimer)DualWield.Registry[m]).BonusSwingSpeed;
 
-				if( Feint.Registry.Contains( m ) )
+				if ( Feint.Registry.Contains( m ) )
 					bonus -= ((Feint.FeintTimer)Feint.Registry[m]).SwingSpeedReduction;
 
 				TransformContext context = TransformationSpellHelper.GetContext( m );
 
-				if( context != null && context.Spell is ReaperFormSpell )
+				if ( context != null && context.Spell is ReaperFormSpell )
 					bonus += ((ReaperFormSpell)context.Spell).SwingSpeedBonus;
 
 				int discordanceEffect = 0;
@@ -910,7 +910,7 @@ namespace Server.Items
 				if ( SkillHandlers.Discordance.GetEffect( m, ref discordanceEffect ) )
 					bonus -= discordanceEffect;
 
-				if( EssenceOfWindSpell.IsDebuffed( m ) )
+				if ( EssenceOfWindSpell.IsDebuffed( m ) )
 					bonus -= EssenceOfWindSpell.GetSSIMalus( m );
 
 				if ( bonus > 60 )
@@ -985,12 +985,12 @@ namespace Server.Items
 		{
 			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 
-			if( a != null && !a.OnBeforeSwing( attacker, defender ) )
+			if ( a != null && !a.OnBeforeSwing( attacker, defender ) )
 				WeaponAbility.ClearCurrentAbility( attacker );
 
 			SpecialMove move = SpecialMove.GetCurrentMove( attacker );
 
-			if( move != null && !move.OnBeforeSwing( attacker, defender ) )
+			if ( move != null && !move.OnBeforeSwing( attacker, defender ) )
 				SpecialMove.ClearCurrentMove( attacker );
 		}
 
@@ -1135,22 +1135,22 @@ namespace Server.Items
 				double aosChance = parry / 800.0;
 
 				// Parry or Bushido over 100 grant a 5% bonus.
-				if( parry >= 100.0 )
+				if ( parry >= 100.0 )
 				{
 					chance += 0.05;
 					aosChance += 0.05;
 				}
-				else if( bushido >= 100.0 )
+				else if ( bushido >= 100.0 )
 				{
 					chance += 0.05;
 				}
 
 				// Evasion grants a variable bonus post ML. 50% prior.
-				if( Evasion.IsEvading( defender ) )
+				if ( Evasion.IsEvading( defender ) )
 					chance *= Evasion.GetParryScalar( defender );
 
 				// Low dexterity lowers the chance.
-				if( defender.Dex < 80 )
+				if ( defender.Dex < 80 )
 					chance = chance * (20 + defender.Dex) / 100;
 
 				if ( chance > aosChance )
@@ -1216,15 +1216,15 @@ namespace Server.Items
 
 				Item armorItem;
 
-				if( positionChance < 0.07 )
+				if ( positionChance < 0.07 )
 					armorItem = defender.NeckArmor;
-				else if( positionChance < 0.14 )
+				else if ( positionChance < 0.14 )
 					armorItem = defender.HandArmor;
-				else if( positionChance < 0.28 )
+				else if ( positionChance < 0.28 )
 					armorItem = defender.ArmsArmor;
-				else if( positionChance < 0.43 )
+				else if ( positionChance < 0.43 )
 					armorItem = defender.HeadArmor;
-				else if( positionChance < 0.65 )
+				else if ( positionChance < 0.65 )
 					armorItem = defender.LegsArmor;
 				else
 					armorItem = defender.ChestArmor;
@@ -1251,15 +1251,15 @@ namespace Server.Items
 
 			Item armorItem;
 
-			if( chance < 0.07 )
+			if ( chance < 0.07 )
 				armorItem = defender.NeckArmor;
-			else if( chance < 0.14 )
+			else if ( chance < 0.14 )
 				armorItem = defender.HandArmor;
-			else if( chance < 0.28 )
+			else if ( chance < 0.28 )
 				armorItem = defender.ArmsArmor;
-			else if( chance < 0.43 )
+			else if ( chance < 0.43 )
 				armorItem = defender.HeadArmor;
-			else if( chance < 0.65 )
+			else if ( chance < 0.65 )
 				armorItem = defender.LegsArmor;
 			else
 				armorItem = defender.ChestArmor;
@@ -1402,12 +1402,12 @@ namespace Server.Items
 			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 			SpecialMove move = SpecialMove.GetCurrentMove( attacker );
 
-			if( a != null )
+			if ( a != null )
 			{
 				percentageBonus += (int)(a.DamageScalar * 100) - 100;
 			}
 
-			if( move != null )
+			if ( move != null )
 			{
 				percentageBonus += (int)(move.GetDamageScalar( attacker, defender ) * 100) - 100;
 			}
@@ -1426,11 +1426,9 @@ namespace Server.Items
 
 			if ( !attacker.Player )
 			{
-				if ( defender is PlayerMobile )
+				if ( defender is PlayerMobile pm )
 				{
-					PlayerMobile pm = (PlayerMobile)defender;
-
-					if( pm.EnemyOfOneType != null && pm.EnemyOfOneType != attacker.GetType() )
+					if ( pm.EnemyOfOneType != null && pm.EnemyOfOneType != attacker.GetType() )
 					{
 						percentageBonus += 100;
 					}
@@ -1459,19 +1457,19 @@ namespace Server.Items
 
 			int packInstinctBonus = GetPackInstinctBonus( attacker, defender );
 
-			if( packInstinctBonus != 0 )
+			if ( packInstinctBonus != 0 )
 			{
 				percentageBonus += packInstinctBonus;
 			}
 
-			if( m_InDoubleStrike )
+			if ( m_InDoubleStrike )
 			{
 				percentageBonus -= 10;
 			}
 
 			TransformContext context = TransformationSpellHelper.GetContext( defender );
 
-			if( (m_Slayer == SlayerName.Silver || m_Slayer2 == SlayerName.Silver) && context != null && context.Spell is NecromancerSpell && context.Type != typeof( HorrificBeastSpell ) )
+			if ( (m_Slayer == SlayerName.Silver || m_Slayer2 == SlayerName.Silver) && context != null && context.Spell is NecromancerSpell && context.Type != typeof( HorrificBeastSpell ) )
 			{
 				// Every necromancer transformation other than horrific beast takes an additional 25% damage
 				percentageBonus += 25;
@@ -1481,12 +1479,12 @@ namespace Server.Items
 			{
 				PlayerMobile pmAttacker = (PlayerMobile) attacker;
 
-				if( pmAttacker.HonorActive && pmAttacker.InRange( defender, 1 ) )
+				if ( pmAttacker.HonorActive && pmAttacker.InRange( defender, 1 ) )
 				{
 					percentageBonus += 25;
 				}
 
-				if( pmAttacker.SentHonorContext != null && pmAttacker.SentHonorContext.Target == defender )
+				if ( pmAttacker.SentHonorContext != null && pmAttacker.SentHonorContext.Target == defender )
 				{
 					percentageBonus += pmAttacker.SentHonorContext.PerfectionDamageBonus;
 				}
@@ -1502,11 +1500,11 @@ namespace Server.Items
 			damage = AOS.Scale( damage, 100 + percentageBonus );
 			#endregion
 
-			if ( attacker is BaseCreature )
-				((BaseCreature)attacker).AlterMeleeDamageTo( defender, ref damage );
+			BaseCreature bcAtt = attacker as BaseCreature;
+			BaseCreature bcDef = defender as BaseCreature;
 
-			if ( defender is BaseCreature )
-				((BaseCreature)defender).AlterMeleeDamageFrom( attacker, ref damage );
+			bcAtt?.AlterMeleeDamageTo( defender, ref damage );
+			bcDef?.AlterMeleeDamageFrom( attacker, ref damage );
 
 			damage = AbsorbDamage( attacker, defender, damage );
 
@@ -1531,9 +1529,7 @@ namespace Server.Items
 
 			if ( Core.ML && this is BaseRanged )
 			{
-				BaseQuiver quiver = attacker.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
-
-				if ( quiver != null )
+				if ( attacker.FindItemOnLayer( Layer.Cloak ) is BaseQuiver quiver )
 					quiver.AlterBowDamage( ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct );
 			}
 
@@ -1661,13 +1657,9 @@ namespace Server.Items
 				}
 			}
 
-			if ( attacker is VampireBatFamiliar )
+			if ( attacker is VampireBatFamiliar bc )
 			{
-				BaseCreature bc = (BaseCreature)attacker;
-				Mobile caster = bc.ControlMaster;
-
-				if ( caster == null )
-					caster = bc.SummonMaster;
+				Mobile caster = bc.ControlMaster ?? bc.SummonMaster;
 
 				if ( caster != null && caster.Map == bc.Map && caster.InRange( bc, 2 ) )
 					caster.Hits += damage;
@@ -1729,20 +1721,14 @@ namespace Server.Items
 					DoLowerDefense( attacker, defender );
 			}
 
-			if ( attacker is BaseCreature )
-				((BaseCreature)attacker).OnGaveMeleeAttack( defender );
+			bcAtt?.OnGaveMeleeAttack( defender );
+			bcDef?.OnGotMeleeAttack( attacker );
 
-			if ( defender is BaseCreature )
-				((BaseCreature)defender).OnGotMeleeAttack( attacker );
+			a?.OnHit( attacker, defender, damage );
+			move?.OnHit( attacker, defender, damage );
 
-			if ( a != null )
-				a.OnHit( attacker, defender, damage );
-
-			if ( move != null )
-				move.OnHit( attacker, defender, damage );
-
-			if ( defender is IHonorTarget && ((IHonorTarget)defender).ReceivedHonorContext != null )
-				((IHonorTarget)defender).ReceivedHonorContext.OnTargetHit( attacker );
+			if ( defender is IHonorTarget it )
+				it.ReceivedHonorContext?.OnTargetHit( attacker );
 
 			if ( !(this is BaseRanged) )
 			{
@@ -1777,7 +1763,7 @@ namespace Server.Items
 
 				TransformContext context = TransformationSpellHelper.GetContext( attacker );
 
-				if( context != null && context.Spell is ReaperFormSpell )
+				if ( context != null && context.Spell is ReaperFormSpell )
 					damageBonus += ((ReaperFormSpell)context.Spell).SpellDamageBonus;
 			}
 
@@ -1930,11 +1916,11 @@ namespace Server.Items
 				double scalar = Core.ML ? 1.0 : ( 11 - from.GetDistanceToSqrt( m ) ) / 10;
 				double damage = GetBaseDamage( from );
 
-				if(scalar <= 0)
+				if (scalar <= 0)
 				{
 					continue;
 				}
-				else if( scalar < 1.0 )
+				else if ( scalar < 1.0 )
 				{
 					damage *= ( 11 - from.GetDistanceToSqrt( m ) ) / 10;
 				}
@@ -1952,7 +1938,7 @@ namespace Server.Items
 			SlayerEntry atkSlayer = SlayerGroup.GetEntryByName( atkWeapon.Slayer );
 			SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName( atkWeapon.Slayer2 );
 
-			if( atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays( TalismanSlayerName.Bovine, defender ) )
+			if ( atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays( TalismanSlayerName.Bovine, defender ) )
 				return CheckSlayerResult.Slayer;
 
 			if ( atkSlayer != null && atkSlayer.Slays( defender )  || atkSlayer2 != null && atkSlayer2.Slays( defender ) )
@@ -1967,15 +1953,15 @@ namespace Server.Items
 			{
 				ISlayer defISlayer = Spellbook.FindEquippedSpellbook( defender );
 
-				if( defISlayer == null )
+				if ( defISlayer == null )
 					defISlayer = defender.Weapon as ISlayer;
 
-				if( defISlayer != null )
+				if ( defISlayer != null )
 				{
 					SlayerEntry defSlayer = SlayerGroup.GetEntryByName( defISlayer.Slayer );
 					SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName( defISlayer.Slayer2 );
 
-					if( defSlayer != null && defSlayer.Group.OppositionSuperSlays( attacker ) || defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays( attacker ) )
+					if ( defSlayer != null && defSlayer.Group.OppositionSuperSlays( attacker ) || defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays( attacker ) )
 						return CheckSlayerResult.Opposition;
 				}
 			}
@@ -2003,7 +1989,7 @@ namespace Server.Items
 
 		public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
 		{
-			if( wielder is BaseCreature )
+			if ( wielder is BaseCreature )
 			{
 				BaseCreature bc = (BaseCreature)wielder;
 
@@ -2028,11 +2014,11 @@ namespace Server.Items
 
 				CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
 
-				if( resInfo != null )
+				if ( resInfo != null )
 				{
 					CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
 
-					if( attrInfo != null )
+					if ( attrInfo != null )
 					{
 						int left = phys;
 
@@ -2051,7 +2037,7 @@ namespace Server.Items
 
 		private int ApplyCraftAttributeElementDamage( int attrDamage, ref int element, int totalRemaining )
 		{
-			if( totalRemaining <= 0 )
+			if ( totalRemaining <= 0 )
 				return 0;
 
 			if ( attrDamage <= 0 )
@@ -2062,7 +2048,7 @@ namespace Server.Items
 			if ( (appliedDamage + element) > 100 )
 				appliedDamage = 100 - element;
 
-			if( appliedDamage > totalRemaining )
+			if ( appliedDamage > totalRemaining )
 				appliedDamage = totalRemaining;
 
 			element += appliedDamage;
@@ -2241,7 +2227,7 @@ namespace Server.Items
 			int damageBonus = AosAttributes.GetValue( attacker, AosAttribute.WeaponDamage );
 
 			// Horrific Beast transformation gives a +25% bonus to damage.
-			if( TransformationSpellHelper.UnderTransformation( attacker, typeof( HorrificBeastSpell ) ) )
+			if ( TransformationSpellHelper.UnderTransformation( attacker, typeof( HorrificBeastSpell ) ) )
 				damageBonus += 25;
 
 			// Divine Fury gives a +10% bonus to damage.
@@ -2593,10 +2579,10 @@ namespace Server.Items
 			if ( GetSaveFlag( flags, SaveFlag.Slayer2 ) )
 				writer.Write( (int)m_Slayer2 );
 
-			if( GetSaveFlag( flags, SaveFlag.ElementalDamages ) )
+			if ( GetSaveFlag( flags, SaveFlag.ElementalDamages ) )
 				m_AosElementDamages.Serialize( writer );
 
-			if( GetSaveFlag( flags, SaveFlag.EngravedText ) )
+			if ( GetSaveFlag( flags, SaveFlag.EngravedText ) )
 				writer.Write( (string) m_EngravedText );
 		}
 
@@ -2801,20 +2787,20 @@ namespace Server.Items
 					if ( GetSaveFlag( flags, SaveFlag.PlayerConstructed ) )
 						m_PlayerConstructed = true;
 
-					if( GetSaveFlag( flags, SaveFlag.SkillBonuses ) )
+					if ( GetSaveFlag( flags, SaveFlag.SkillBonuses ) )
 						m_AosSkillBonuses = new AosSkillBonuses( this, reader );
 					else
 						m_AosSkillBonuses = new AosSkillBonuses( this );
 
-					if( GetSaveFlag( flags, SaveFlag.Slayer2 ) )
+					if ( GetSaveFlag( flags, SaveFlag.Slayer2 ) )
 						m_Slayer2 = (SlayerName)reader.ReadInt();
 
-					if( GetSaveFlag( flags, SaveFlag.ElementalDamages ) )
+					if ( GetSaveFlag( flags, SaveFlag.ElementalDamages ) )
 						m_AosElementDamages = new AosElementAttributes( this, reader );
 					else
 						m_AosElementDamages = new AosElementAttributes( this );
 
-					if( GetSaveFlag( flags, SaveFlag.EngravedText ) )
+					if ( GetSaveFlag( flags, SaveFlag.EngravedText ) )
 						m_EngravedText = reader.ReadString();
 
 					break;
@@ -3020,25 +3006,25 @@ namespace Server.Items
 			int currentMax = 50;
 			int hue = 0;
 
-			if( pois >= currentMax )
+			if ( pois >= currentMax )
 			{
 				hue = 1267 + (pois - 50) / 10;
 				currentMax = pois;
 			}
 
-			if( fire >= currentMax )
+			if ( fire >= currentMax )
 			{
 				hue = 1255 + (fire - 50) / 10;
 				currentMax = fire;
 			}
 
-			if( nrgy >= currentMax )
+			if ( nrgy >= currentMax )
 			{
 				hue = 1273 + (nrgy - 50) / 10;
 				currentMax = nrgy;
 			}
 
-			if( cold >= currentMax )
+			if ( cold >= currentMax )
 			{
 				hue = 1261 + (cold - 50) / 10;
 				currentMax = cold;
@@ -3145,7 +3131,7 @@ namespace Server.Items
 			if ( m_Quality == WeaponQuality.Exceptional )
 				list.Add( 1060636 ); // exceptional
 
-			if( RequiredRace == Race.Elf )
+			if ( RequiredRace == Race.Elf )
 				list.Add( 1075086 ); // Elves Only
 
 			if ( ArtifactRarity > 0 )
@@ -3157,17 +3143,17 @@ namespace Server.Items
 			if ( m_Poison != null && m_PoisonCharges > 0 )
 				list.Add( 1062412 + m_Poison.Level, m_PoisonCharges.ToString() );
 
-			if( m_Slayer != SlayerName.None )
+			if ( m_Slayer != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer );
-				if( entry != null )
+				if ( entry != null )
 					list.Add( entry.Title );
 			}
 
-			if( m_Slayer2 != SlayerName.None )
+			if ( m_Slayer2 != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer2 );
-				if( entry != null )
+				if ( entry != null )
 					list.Add( entry.Title );
 			}
 
@@ -3396,17 +3382,17 @@ namespace Server.Items
 
 			if ( m_Identified || from.AccessLevel >= AccessLevel.GameMaster )
 			{
-				if( m_Slayer != SlayerName.None )
+				if ( m_Slayer != SlayerName.None )
 				{
 					SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer );
-					if( entry != null )
+					if ( entry != null )
 						attrs.Add( new EquipInfoAttribute( entry.Title ) );
 				}
 
-				if( m_Slayer2 != SlayerName.None )
+				if ( m_Slayer2 != SlayerName.None )
 				{
 					SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer2 );
-					if( entry != null )
+					if ( entry != null )
 						attrs.Add( new EquipInfoAttribute( entry.Title ) );
 				}
 
@@ -3419,7 +3405,7 @@ namespace Server.Items
 				if ( m_AccuracyLevel != WeaponAccuracyLevel.Regular )
 					attrs.Add( new EquipInfoAttribute( 1038010 + (int)m_AccuracyLevel ) );
 			}
-			else if( m_Slayer != SlayerName.None || m_Slayer2 != SlayerName.None || m_DurabilityLevel != WeaponDurabilityLevel.Regular || m_DamageLevel != WeaponDamageLevel.Regular || m_AccuracyLevel != WeaponAccuracyLevel.Regular )
+			else if ( m_Slayer != SlayerName.None || m_Slayer2 != SlayerName.None || m_DurabilityLevel != WeaponDurabilityLevel.Regular || m_DamageLevel != WeaponDamageLevel.Regular || m_AccuracyLevel != WeaponAccuracyLevel.Regular )
 				attrs.Add( new EquipInfoAttribute( 1038000 ) ); // Unidentified
 
 			if ( m_Poison != null && m_PoisonCharges > 0 )
@@ -3488,7 +3474,7 @@ namespace Server.Items
 					else
 						Attributes.WeaponDamage = 15;
 
-					if( Core.ML )
+					if ( Core.ML )
 					{
 						Attributes.WeaponDamage += (int)(from.Skills.ArmsLore.Value / 20);
 

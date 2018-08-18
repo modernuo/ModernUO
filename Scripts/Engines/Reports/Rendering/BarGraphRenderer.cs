@@ -48,13 +48,13 @@ namespace Server.Engines.Reports
 		private float	_maxTickValueWidth;					// Used to calculate left offset of bar graph
 		private float	_totalHeight;
 		private float	_totalWidth;
-		
+
 		// Graph related members
 		private float	_barWidth;
 		private float	_bottomBuffer;	// Space from bottom to x axis
-		private bool	_displayBarData;	
+		private bool	_displayBarData;
 		private Color	_fontColor;
-		private float	_graphHeight;		
+		private float	_graphHeight;
 		private float	_graphWidth;
 		private float	_maxValue = 0.0f;	// = final tick value * tick count
 		private float	_scaleFactor;		// = _maxValue / _graphHeight
@@ -72,7 +72,7 @@ namespace Server.Engines.Reports
 		private string	_longestLabel = string.Empty;	// Used to calculate legend width
 		private float	_maxLabelWidth = 0.0f;
 
-		public string FontFamily 
+		public string FontFamily
 		{
 			get{ return _fontFamily; }
 			set{ _fontFamily = value; }
@@ -84,56 +84,56 @@ namespace Server.Engines.Reports
 			set{ _renderMode = value; }
 		}
 
-		public Color BackgroundColor 
+		public Color BackgroundColor
 		{
 			set{ _backColor = value; }
 		}
 
-		public int BottomBuffer 
+		public int BottomBuffer
 		{
 			set { _bottomBuffer = Convert.ToSingle(value); }
 		}
 
-		public Color FontColor 
+		public Color FontColor
 		{
 			set{ _fontColor = value; }
 		}
 
-		public int Height 
+		public int Height
 		{
 			get{ return Convert.ToInt32(_totalHeight); }
-			set{ _totalHeight = Convert.ToSingle(value); }  
+			set{ _totalHeight = Convert.ToSingle(value); }
 		}
 
-		public int Width 
+		public int Width
 		{
 			get{ return Convert.ToInt32(_totalWidth); }
-			set{ _totalWidth = Convert.ToSingle(value); }	
+			set{ _totalWidth = Convert.ToSingle(value); }
 		}
 
-		public bool ShowLegend 
+		public bool ShowLegend
 		{
 			get{ return _displayLegend; }
 			set{ _displayLegend = value; }
 		}
 
-		public bool ShowData 
+		public bool ShowData
 		{
 			get{ return _displayBarData; }
 			set{ _displayBarData = value; }
 		}
-		public int TopBuffer 
+		public int TopBuffer
 		{
 			set { _topBuffer = Convert.ToSingle(value); }
 		}
 
-		public string VerticalLabel 
+		public string VerticalLabel
 		{
 			get{ return _yLabel; }
 			set{ _yLabel = value; }
 		}
 
-		public int VerticalTickCount 
+		public int VerticalTickCount
 		{
 			get{ return _yTickCount; }
 			set{ _yTickCount = value; }
@@ -160,7 +160,7 @@ namespace Server.Engines.Reports
 
 		//*********************************************************************
 		//
-		// This method collects all data points and calculate all the necessary dimensions 
+		// This method collects all data points and calculate all the necessary dimensions
 		// to draw the bar graph.  It is the method called before invoking the Draw() method.
 		// labels is the x values.
 		// values is the y values.
@@ -169,7 +169,7 @@ namespace Server.Engines.Reports
 
 		public void CollectDataPoints(string[] labels, string[] values)
 		{
-			if (labels.Length == values.Length) 
+			if (labels.Length == values.Length)
 			{
 				for(int i=0; i<labels.Length; i++)
 				{
@@ -178,16 +178,16 @@ namespace Server.Engines.Reports
 
 					// For now put 0.0 for start position and sweep size
 					DataPoints.Add(new DataItem(shortLbl, labels[i], temp, 0.0f, 0.0f, GetColor(i)));
-				
+
 					// Find max value from data; this is only temporary _maxValue
 					if (_maxValue < temp) _maxValue = temp;
 
 					// Find the longest description
-					if (_displayLegend) 
+					if (_displayLegend)
 					{
 						string currentLbl = labels[i] + " (" + shortLbl + ")";
 						float currentWidth = CalculateImgFontWidth(currentLbl, _legendFontSize, FontFamily);
-						if(_maxLabelWidth < currentWidth)
+						if (_maxLabelWidth < currentWidth)
 						{
 							_longestLabel = currentLbl;
 							_maxLabelWidth = currentWidth;
@@ -203,7 +203,7 @@ namespace Server.Engines.Reports
 			else
 				throw new Exception("X data count is different from Y data count");
 		}
-		
+
 		//*********************************************************************
 		//
 		// Same as above; called when user doesn't care about the x values
@@ -263,7 +263,7 @@ namespace Server.Engines.Reports
 
 		//*********************************************************************
 		//
-		// This method returns a bar graph bitmap to the calling function.  It is called after 
+		// This method returns a bar graph bitmap to the calling function.  It is called after
 		// all dimensions and data points are calculated.
 		//
 		//*********************************************************************
@@ -274,7 +274,7 @@ namespace Server.Engines.Reports
 			int width = Convert.ToInt32(_totalWidth);
 
 			Bitmap bmp = new Bitmap(width, height);
-			
+
 			using(Graphics graph = Graphics.FromImage(bmp))
 			{
 				graph.CompositingQuality = CompositingQuality.HighQuality;
@@ -310,7 +310,7 @@ namespace Server.Engines.Reports
 			Font valFont = null;
 			StringFormat sfFormat = null;
 
-			try 
+			try
 			{
 				brsFont = new SolidBrush(_fontColor);
 				valFont = new Font(_fontFamily, _labelFontSize);
@@ -402,7 +402,7 @@ namespace Server.Engines.Reports
 											}
 										}
 
-										graph.DrawString(item.Value.ToString("#,###.##"), valFont, brsFont, recVal, sfFormat);	
+										graph.DrawString(item.Value.ToString("#,###.##"), valFont, brsFont, recVal, sfFormat);
 									}
 								}
 
@@ -452,7 +452,7 @@ namespace Server.Engines.Reports
 											}
 										}
 
-										graph.DrawString(item.Value.ToString("#,###.##"), valFont, brsFont, recVal, sfFormat);	
+										graph.DrawString(item.Value.ToString("#,###.##"), valFont, brsFont, recVal, sfFormat);
 									}
 								}
 							}
@@ -460,7 +460,7 @@ namespace Server.Engines.Reports
 					}
 				}
 			}
-			finally 
+			finally
 			{
 				if (brsFont != null) brsFont.Dispose();
 				if (valFont != null) valFont.Dispose();
@@ -483,7 +483,7 @@ namespace Server.Engines.Reports
 			StringFormat sfVLabel = null;
 
 			float fo = (_yTitle==null?0.0f:20.0f);
-			
+
 			try
 			{
 				brs = new SolidBrush(_fontColor);
@@ -524,9 +524,9 @@ namespace Server.Engines.Reports
 						float currentY = _topBuffer + (i * _yTickValue/_scaleFactor);	// Position for tick mark
 						float labelY = currentY-lblFont.Height/2;						// Place label in the middle of tick
 						RectangleF lblRec = new RectangleF(_spacer+fo-6, labelY, _maxTickValueWidth, lblFont.Height);
-				
+
 						float currentTick = _maxValue - i*_yTickValue;					// Calculate tick value from top to bottom
-						graph.DrawString(currentTick.ToString("#,###.##"), lblFont, brs, lblRec, lblFormat);	// Draw tick value  
+						graph.DrawString(currentTick.ToString("#,###.##"), lblFont, brs, lblRec, lblFormat);	// Draw tick value
 						graph.DrawLine(pen, _xOrigin, currentY, _xOrigin - 4.0f, currentY);						// Draw tick mark
 
 						graph.DrawLine(smallPen, _xOrigin, currentY, _xOrigin + _graphWidth, currentY );
@@ -631,7 +631,7 @@ namespace Server.Engines.Reports
 				// Draw x labels
 				foreach(DataItem item in DataPoints)
 				{
-					if((i%_interval)==0)
+					if ((i%_interval)==0)
 					{
 						currentX = _xOrigin + (i * labelWidth)+of+(labelWidth/2);
 						RectangleF recLbl = new RectangleF(currentX-((labelWidth*_interval)/2), currentY+of, labelWidth*_interval, lblFont.Height*2);
@@ -713,12 +713,12 @@ namespace Server.Engines.Reports
 		//
 		//*********************************************************************
 
-		private void CalculateGraphDimension() 
+		private void CalculateGraphDimension()
 		{
 			FindLongestTickValue();
-			
+
 			// Need to add another character for spacing; this is not used for drawing, just for calculation
-			_longestTickValue += "0";		
+			_longestTickValue += "0";
 			//_maxTickValueWidth = CalculateImgFontWidth(_longestTickValue, _labelFontSize, FontFamily);
 			_maxTickValueWidth = 0.0f;
 
@@ -727,7 +727,7 @@ namespace Server.Engines.Reports
 			string tickString;
 			for (int i=0; i<_yTickCount; i++)
 			{
-				currentTick = _maxValue - i*_yTickValue;	
+				currentTick = _maxValue - i*_yTickValue;
 				tickString = currentTick.ToString("#,###.##");
 
 				float measured = CalculateImgFontWidth( tickString, _labelFontSize, FontFamily );
@@ -739,7 +739,7 @@ namespace Server.Engines.Reports
 			float leftOffset = _spacer + _maxTickValueWidth + (_yTitle == null ? 0.0f : 20.0f);
 			float rtOffset = 0.0f;
 
-			if (_displayLegend) 
+			if (_displayLegend)
 			{
 				_legendWidth = _spacer + _legendRectangleSize + _spacer + _maxLabelWidth + _spacer;
 				rtOffset = _graphLegendSpacer + _legendWidth + _spacer;
@@ -774,7 +774,7 @@ namespace Server.Engines.Reports
 			string tickString;
 			for (int i=0; i<_yTickCount; i++)
 			{
-				currentTick = _maxValue - i*_yTickValue;	
+				currentTick = _maxValue - i*_yTickValue;
 				tickString = currentTick.ToString("#,###.##");
 				if (_longestTickValue.Length < tickString.Length)
 					_longestTickValue = tickString;
@@ -802,7 +802,7 @@ namespace Server.Engines.Reports
 				graph = Graphics.FromImage(bmp);
 				SizeF oSize = graph.MeasureString(text, font);
 				oSize.Width=4+(float)Math.Ceiling(oSize.Width);
-			
+
 				return oSize.Width;
 			}
 			finally
@@ -812,7 +812,7 @@ namespace Server.Engines.Reports
 				if (font != null) font.Dispose();
 			}
 		}
-		
+
 		//*********************************************************************
 		//
 		// This method creates abbreviation from long description; used for making legend
@@ -822,7 +822,7 @@ namespace Server.Engines.Reports
 		private string MakeShortLabel(string text)
 		{
 			string label = text;
-			if (text.Length > 2) 
+			if (text.Length > 2)
 			{
 				int midPostition = Convert.ToInt32(Math.Floor(text.Length/2.0));
 				label = text.Substring(0,1) + text.Substring(midPostition, 1) + text.Substring(text.Length-1,1);
@@ -877,7 +877,7 @@ namespace Server.Engines.Reports
 			{
 				// This implementation does not support negative value
 				if (item.Value >= 0) item.SweepSize = item.Value/_scaleFactor;
-				
+
 				// (_spaceBtwBars/2) makes half white space for the first bar
 				item.StartPos = (_spaceBtwBars/2) + i * (_barWidth+_spaceBtwBars);
 				i++;
@@ -893,14 +893,14 @@ namespace Server.Engines.Reports
 		private void CalculateBarWidth(int dataCount, float barGraphWidth)
 		{
 			// White space between each bar is the same as bar width itself
-			_barWidth = barGraphWidth / (dataCount * 2);  // Each bar has 1 white space 
+			_barWidth = barGraphWidth / (dataCount * 2);  // Each bar has 1 white space
 			//_barWidth =/* (float)Math.Floor(*/_barWidth/*)*/;
 			_spaceBtwBars = _barWidth;
 		}
 
 		//*********************************************************************
 		//
-		// This method assigns default value to the bar graph properties and is only 
+		// This method assigns default value to the bar graph properties and is only
 		// called from BarGraph constructors
 		//
 		//*********************************************************************

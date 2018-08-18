@@ -56,7 +56,7 @@ namespace Server.Mobiles
 			}
 
 			Utility.AssignRandomHair( this );
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 				Utility.AssignRandomFacialHair( this, HairHue );
 
 			VikingSword weapon = new VikingSword();

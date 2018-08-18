@@ -26,7 +26,7 @@ namespace Server.Spells.Spellweaving
 		{
 			EventSink.AggressiveAction += new AggressiveActionEventHandler( delegate( AggressiveActionEventArgs e )
 			{
-				if( TransformationSpellHelper.UnderTransformation( e.Aggressor, typeof( EtherealVoyageSpell ) ) )
+				if ( TransformationSpellHelper.UnderTransformation( e.Aggressor, typeof( EtherealVoyageSpell ) ) )
 				{
 					TransformationSpellHelper.RemoveContext( e.Aggressor, true );
 				}
@@ -35,15 +35,15 @@ namespace Server.Spells.Spellweaving
 
 		public override bool CheckCast()
 		{
-			if( TransformationSpellHelper.UnderTransformation( Caster, typeof( EtherealVoyageSpell ) ) )
+			if ( TransformationSpellHelper.UnderTransformation( Caster, typeof( EtherealVoyageSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 501775 ); // This spell is already in effect.
 			}
-			else if( !Caster.CanBeginAction( typeof( EtherealVoyageSpell ) ) )
+			else if ( !Caster.CanBeginAction( typeof( EtherealVoyageSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1075124 ); // You must wait before casting that spell again.
 			}
-			else if( Caster.Combatant != null )
+			else if ( Caster.Combatant != null )
 			{
 				Caster.SendLocalizedMessage( 1072586 ); // You cannot cast Ethereal Voyage while you are in combat.
 			}

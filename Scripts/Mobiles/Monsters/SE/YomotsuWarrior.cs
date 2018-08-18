@@ -45,7 +45,7 @@ namespace Server.Mobiles
 			PackItem( new GreenGourd() );
 			PackItem( new ExecutionersAxe() );
 
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 				PackItem( new LongPants() );
 			else
 				PackItem( new ShortPants() );

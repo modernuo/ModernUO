@@ -328,12 +328,10 @@ namespace Server.Commands
 
 						sb.AppendFormat( "0x{0:X}; ", built.Serial.Value );
 
-						if ( built is Item ) {
-							Container pack = packs[i];
-							pack.DropItem( (Item)built );
+						if ( built is Item item ) {
+							packs[i].DropItem( item );
 						}
-						else if ( built is Mobile ) {
-							Mobile m = (Mobile)built;
+						else if ( built is Mobile m ) {
 							m.MoveToWorld( new Point3D( start.X, start.Y, start.Z ), map );
 						}
 					}
@@ -356,12 +354,10 @@ namespace Server.Commands
 
 							sb.AppendFormat( "0x{0:X}; ", built.Serial.Value );
 
-							if ( built is Item ) {
-								Item item = (Item)built;
+							if ( built is Item item ) {
 								item.MoveToWorld( new Point3D( x, y, z ), map );
 							}
-							else if ( built is Mobile ) {
-								Mobile m = (Mobile)built;
+							else if ( built is Mobile m ) {
 								m.MoveToWorld( new Point3D( x, y, z ), map );
 							}
 						}
@@ -438,14 +434,12 @@ namespace Server.Commands
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				IPoint3D p = o as IPoint3D;
-
-				if ( p != null )
+				if ( o is IPoint3D p )
 				{
-					if ( p is Item )
-						p = ((Item)p).GetWorldTop();
-					else if ( p is Mobile )
-						p = ((Mobile)p).Location;
+					if ( p is Item item )
+						p = item.GetWorldTop();
+					else if ( p is Mobile m )
+						p = m.Location;
 
 					Point3D point = new Point3D( p );
 					Add.Invoke( from, point, point, m_Args );

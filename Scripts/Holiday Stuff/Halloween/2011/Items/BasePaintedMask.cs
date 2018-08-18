@@ -11,7 +11,7 @@ namespace Server.Items.Holiday
 		{
 			get
 			{
-				if( m_Staffer != null )
+				if ( m_Staffer != null )
 				{
 					return String.Format( "{0} hand painted by {1}", MaskName, m_Staffer );
 				}
@@ -24,7 +24,7 @@ namespace Server.Items.Holiday
 
 		private string m_Staffer;
 
-		private static string[] m_Staffers = 
+		private static string[] m_Staffers =
 		{
 				  "Ryan",
 				  "Mark",
@@ -68,7 +68,7 @@ namespace Server.Items.Holiday
 
 			int version = reader.ReadInt();
 
-			if( version == 1 )
+			if ( version == 1 )
 			{
 				m_Staffer = Utility.Intern( reader.ReadString() );
 			}

@@ -28,9 +28,9 @@ namespace Server.Engines.BulkOrders
 
 					if ( vi != null && !vi.IsForSale )
 					{
-						if ( m_Object is BOBLargeEntry )
-							price = ((BOBLargeEntry)m_Object).Price;
-						else if ( m_Object is BOBSmallEntry )
+						if ( m_Object is BOBLargeEntry entry )
+							price = entry.Price;
+						else
 							price = ((BOBSmallEntry)m_Object).Price;
 					}
 
@@ -46,9 +46,9 @@ namespace Server.Engines.BulkOrders
 					{
 						Item item = null;
 
-						if ( m_Object is BOBLargeEntry )
-							item = ((BOBLargeEntry)m_Object).Reconstruct();
-						else if ( m_Object is BOBSmallEntry )
+						if ( m_Object is BOBLargeEntry entry )
+							item = entry.Reconstruct();
+						else
 							item = ((BOBSmallEntry)m_Object).Reconstruct();
 
 						if ( item == null )
@@ -75,7 +75,7 @@ namespace Server.Engines.BulkOrders
 									pv.HoldGold += price;
 									m_From.AddToBackpack( item );
 									m_From.SendLocalizedMessage( 1045152 ); // The bulk order deed has been placed in your backpack.
-									
+
 									if ( m_Book.Entries.Count / 5 < m_Book.ItemCount )
 									{
 										m_Book.ItemCount--;

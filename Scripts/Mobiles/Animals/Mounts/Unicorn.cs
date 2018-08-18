@@ -22,21 +22,21 @@ namespace Server.Mobiles
 
 		public override bool DoMountAbility( int damage, Mobile attacker )
 		{
-			if( Rider == null || attacker == null )	//sanity
+			if ( Rider == null || attacker == null )	//sanity
 				return false;
 
-			if( Rider.Poisoned && ((Rider.Hits - damage) < 40) )
+			if ( Rider.Poisoned && ((Rider.Hits - damage) < 40) )
 			{
 				Poison p = Rider.Poison;
 
-				if( p != null )
+				if ( p != null )
 				{
 					int chanceToCure = 10000 + (int)(this.Skills[SkillName.Magery].Value * 75) - ((p.Level + 1) * (Core.AOS ? (p.Level < 4 ? 3300 : 3100) : 1750));
 					chanceToCure /= 100;
 
-					if( chanceToCure > Utility.Random( 100 ) )
+					if ( chanceToCure > Utility.Random( 100 ) )
 					{
-						if( Rider.CurePoison( this ) )	//TODO: Confirm if mount is the one flagged for curing it or the rider is
+						if ( Rider.CurePoison( this ) )	//TODO: Confirm if mount is the one flagged for curing it or the rider is
 						{
 							Rider.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, true, "Your mount senses you are in danger and aids you with magic." );
 							Rider.FixedParticles( 0x373A, 10, 15, 5012, EffectLayer.Waist );

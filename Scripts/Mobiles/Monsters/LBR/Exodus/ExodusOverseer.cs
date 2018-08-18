@@ -103,7 +103,7 @@ namespace Server.Mobiles
 
 		public override void OnDamagedBySpell( Mobile from )
 		{
-			if( from != null && from.Alive && 0.4 > Utility.RandomDouble() )
+			if ( from != null && from.Alive && 0.4 > Utility.RandomDouble() )
 			{
 				SendEBolt( from );
 			}
@@ -135,7 +135,7 @@ namespace Server.Mobiles
 				attacker.SendAsciiMessage( "Your weapon cannot penetrate the creature's magical barrier" );
 			}
 
-			if( attacker != null && attacker.Alive && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble() )
+			if ( attacker != null && attacker.Alive && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble() )
 			{
 				SendEBolt( attacker );
 			}
@@ -185,7 +185,7 @@ namespace Server.Mobiles
 
 			m_FieldActive = CanUseField;
 
-			if( this.Name == "Exodus Overseer" )
+			if ( this.Name == "Exodus Overseer" )
 				this.Name = null;
 		}
 	}

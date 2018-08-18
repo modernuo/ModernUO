@@ -35,14 +35,14 @@ namespace Server.Items
 			get { return m_Content; }
 			set
 			{
-				if( m_Content == value )
+				if ( m_Content == value )
 					return;
 
 				m_Content = value;
 
 				for( int i = Items.Count - 1; i >= 0; --i )
 				{
-					if( i < Items.Count )
+					if ( i < Items.Count )
 						Items[ i ].Delete();
 				}
 
@@ -70,12 +70,12 @@ namespace Server.Items
 
 		public virtual void AcquireContent()
 		{
-			if( m_Content != null )
+			if ( m_Content != null )
 				return;
 
 			m_Content = FillableContent.Acquire( this.GetWorldLocation(), this.Map );
 
-			if( m_Content != null )
+			if ( m_Content != null )
 				Respawn();
 		}
 
@@ -88,7 +88,7 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if( m_RespawnTimer != null )
+			if ( m_RespawnTimer != null )
 			{
 				m_RespawnTimer.Stop();
 				m_RespawnTimer = null;
@@ -111,9 +111,9 @@ namespace Server.Items
 		{
 			bool canSpawn = ( m_Content != null && !Deleted && GetItemsCount() <= SpawnThreshold && !Movable && Parent == null && !IsLockedDown && !IsSecure );
 
-			if( canSpawn )
+			if ( canSpawn )
 			{
-				if( m_RespawnTimer == null )
+				if ( m_RespawnTimer == null )
 				{
 					int mins = Utility.RandomMinMax( this.MinRespawnMinutes, this.MaxRespawnMinutes );
 					TimeSpan delay = TimeSpan.FromMinutes( mins );
@@ -122,7 +122,7 @@ namespace Server.Items
 					m_RespawnTimer = Timer.DelayCall( delay, new TimerCallback( Respawn ) );
 				}
 			}
-			else if( m_RespawnTimer != null )
+			else if ( m_RespawnTimer != null )
 			{
 				m_RespawnTimer.Stop();
 				m_RespawnTimer = null;
@@ -131,18 +131,18 @@ namespace Server.Items
 
 		public void Respawn()
 		{
-			if( m_RespawnTimer != null )
+			if ( m_RespawnTimer != null )
 			{
 				m_RespawnTimer.Stop();
 				m_RespawnTimer = null;
 			}
 
-			if( m_Content == null || Deleted )
+			if ( m_Content == null || Deleted )
 				return;
 
 			GenerateContent();
 
-			if( IsLockable )
+			if ( IsLockable )
 			{
 				Locked = true;
 
@@ -153,9 +153,9 @@ namespace Server.Items
 				RequiredSkill = difficulty;
 			}
 
-			if( IsTrappable && ( m_Content.Level > 1 || 4 > Utility.Random( 5 ) ) )
+			if ( IsTrappable && ( m_Content.Level > 1 || 4 > Utility.Random( 5 ) ) )
 			{
-				if( m_Content.Level > Utility.Random( 5 ) )
+				if ( m_Content.Level > Utility.Random( 5 ) )
 					TrapType = TrapType.PoisonTrap;
 				else
 					TrapType = TrapType.ExplosionTrap;
@@ -177,7 +177,7 @@ namespace Server.Items
 		{
 			int itemsCount = GetItemsCount();
 
-			if( itemsCount > SpawnThreshold )
+			if ( itemsCount > SpawnThreshold )
 				return 0;
 
 			int maxSpawnCount = ( 1 + SpawnThreshold - itemsCount ) * 2;
@@ -187,7 +187,7 @@ namespace Server.Items
 
 		public virtual void GenerateContent()
 		{
-			if( m_Content == null || Deleted )
+			if ( m_Content == null || Deleted )
 				return;
 
 			int toSpawn = GetSpawnCount();
@@ -196,7 +196,7 @@ namespace Server.Items
 			{
 				Item item = m_Content.Construct();
 
-				if( item != null )
+				if ( item != null )
 				{
 					List<Item> list = this.Items;
 
@@ -204,11 +204,11 @@ namespace Server.Items
 					{
 						Item subItem = list[ j ];
 
-						if( !( subItem is Container ) && subItem.StackWith( null, item, false ) )
+						if ( !( subItem is Container ) && subItem.StackWith( null, item, false ) )
 							break;
 					}
 
-					if( item != null && !item.Deleted )
+					if ( item != null && !item.Deleted )
 						DropItem( item );
 				}
 			}
@@ -227,7 +227,7 @@ namespace Server.Items
 
 			writer.Write( (int)ContentType );
 
-			if( m_RespawnTimer != null )
+			if ( m_RespawnTimer != null )
 			{
 				writer.Write( true );
 				writer.WriteDeltaTime( (DateTime)m_NextRespawnTime );
@@ -253,7 +253,7 @@ namespace Server.Items
 					}
 				case 0:
 					{
-						if( reader.ReadBool() )
+						if ( reader.ReadBool() )
 						{
 							m_NextRespawnTime = reader.ReadDeltaTime();
 
@@ -284,12 +284,12 @@ namespace Server.Items
 
 		public override void AcquireContent()
 		{
-			if( m_Content != null )
+			if ( m_Content != null )
 				return;
 
 			m_Content = FillableContent.Library;
 
-			if( m_Content != null )
+			if ( m_Content != null )
 				Respawn();
 		}
 
@@ -318,7 +318,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			if( version == 0 && m_Content == null )
+			if ( version == 0 && m_Content == null )
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( AcquireContent ) );
 		}
 	}
@@ -440,7 +440,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			if( version == 0 && Weight == 3 )
+			if ( version == 0 && Weight == 3 )
 				Weight = -1;
 		}
 	}
@@ -473,7 +473,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			if( version == 0 && Weight == 25 )
+			if ( version == 0 && Weight == 25 )
 				Weight = -1;
 		}
 	}
@@ -505,7 +505,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version == 0 && Weight == 25 )
+			if ( version == 0 && Weight == 25 )
 				Weight = -1;
 		}
 	}
@@ -537,7 +537,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version == 0 && Weight == 25 )
+			if ( version == 0 && Weight == 25 )
 				Weight = -1;
 		}
 	}
@@ -569,7 +569,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version == 0 && Weight == 2 )
+			if ( version == 0 && Weight == 2 )
 				Weight = -1;
 		}
 	}
@@ -616,11 +616,11 @@ namespace Server.Items
 		{
 			Item item = Loot.Construct( m_Types );
 
-			if( item is Key )
+			if ( item is Key )
 				( (Key)item ).ItemID = Utility.RandomList( (int)KeyType.Copper, (int)KeyType.Gold, (int)KeyType.Iron, (int)KeyType.Rusty );
-			else if( item is Arrow || item is Bolt )
+			else if ( item is Arrow || item is Bolt )
 				item.Amount = Utility.RandomMinMax( 2, 6 );
-			else if( item is Bandage || item is Lockpick )
+			else if ( item is Bandage || item is Lockpick )
 				item.Amount = Utility.RandomMinMax( 1, 3 );
 
 			return item;
@@ -650,11 +650,11 @@ namespace Server.Items
 
 			int index = Utility.Random( m_Types.Length );
 
-			if( m_Types[ index ] == typeof( BeverageBottle ) )
+			if ( m_Types[ index ] == typeof( BeverageBottle ) )
 			{
 				item = new BeverageBottle( m_Content );
 			}
-			else if( m_Types[ index ] == typeof( Jug ) )
+			else if ( m_Types[ index ] == typeof( Jug ) )
 			{
 				item = new Jug( m_Content );
 			}
@@ -662,7 +662,7 @@ namespace Server.Items
 			{
 				item = base.Construct();
 
-				if( item is BaseBeverage )
+				if ( item is BaseBeverage )
 				{
 					BaseBeverage bev = (BaseBeverage)item;
 
@@ -723,7 +723,7 @@ namespace Server.Items
 			{
 				FillableEntry entry = m_Entries[ i ];
 
-				if( index < entry.Weight )
+				if ( index < entry.Weight )
 					return entry.Construct();
 
 				index -= entry.Weight;
@@ -1456,7 +1456,7 @@ namespace Server.Items
 		{
 			int v = (int)type;
 
-			if( v >= 0 && v < m_ContentTypes.Length )
+			if ( v >= 0 && v < m_ContentTypes.Length )
 				return m_ContentTypes[ v ];
 
 			return null;
@@ -1464,7 +1464,7 @@ namespace Server.Items
 
 		public static FillableContentType Lookup( FillableContent content )
 		{
-			if( content == null )
+			if ( content == null )
 				return FillableContentType.None;
 
 			return (FillableContentType)Array.IndexOf( m_ContentTypes, content );
@@ -1490,10 +1490,10 @@ namespace Server.Items
 
 		public static FillableContent Acquire( Point3D loc, Map map )
 		{
-			if( map == null || map == Map.Internal )
+			if ( map == null || map == Map.Internal )
 				return null;
 
-			if( m_AcquireTable == null )
+			if ( m_AcquireTable == null )
 			{
 				m_AcquireTable = new Hashtable();
 
@@ -1511,12 +1511,12 @@ namespace Server.Items
 
 			foreach( Mobile mob in map.GetMobilesInRange( loc, 20 ) )
 			{
-				if( nearest != null && mob.GetDistanceToSqrt( loc ) > nearest.GetDistanceToSqrt( loc ) && !( nearest is Cobbler && mob is Provisioner ) )
+				if ( nearest != null && mob.GetDistanceToSqrt( loc ) > nearest.GetDistanceToSqrt( loc ) && !( nearest is Cobbler && mob is Provisioner ) )
 					continue;
 
 				FillableContent check = m_AcquireTable[ mob.GetType() ] as FillableContent;
 
-				if( check != null )
+				if ( check != null )
 				{
 					nearest = mob;
 					content = check;

@@ -58,7 +58,7 @@ namespace Server.Items
 			set {
 				if ( base.Locked != value ) {
 					base.Locked = value;
-					
+
 					if ( !value )
 						StartResetTimer();
 				}
@@ -119,7 +119,7 @@ namespace Server.Items
 			m_MinSpawnTime = reader.ReadShort();
 			m_MaxSpawnTime = reader.ReadShort();
 
-			if( !Locked )
+			if ( !Locked )
 				StartResetTimer();
 		}
 
@@ -155,7 +155,7 @@ namespace Server.Items
 
 		private void StartResetTimer()
 		{
-			if( m_ResetTimer == null )
+			if ( m_ResetTimer == null )
 				m_ResetTimer = new TreasureResetTimer( this );
 			else
 				m_ResetTimer.Delay = TimeSpan.FromMinutes( Utility.Random( m_MinSpawnTime, m_MaxSpawnTime ));
@@ -215,9 +215,9 @@ namespace Server.Items
 
 		public void Reset()
 		{
-			if( m_ResetTimer != null )
+			if ( m_ResetTimer != null )
 			{
-				if( m_ResetTimer.Running )
+				if ( m_ResetTimer.Running )
 					m_ResetTimer.Stop();
 			}
 
@@ -228,13 +228,13 @@ namespace Server.Items
 
 		public enum TreasureLevel
 		{
-			Level1, 
-			Level2, 
-			Level3, 
-			Level4, 
+			Level1,
+			Level2,
+			Level3,
+			Level4,
 			Level5,
 			Level6,
-		}; 
+		};
 
 		private class TreasureResetTimer : Timer
 		{

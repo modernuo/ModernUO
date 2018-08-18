@@ -69,7 +69,7 @@ namespace Server.Engines.Quests.Haven
 				BaseCreature bc = (BaseCreature)m;
 
 				Mobile master = bc.GetMaster();
-				if( master != null )
+				if ( master != null )
 					return IsEnemy( master );
 			}
 

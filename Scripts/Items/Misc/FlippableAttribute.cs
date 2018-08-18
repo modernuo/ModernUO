@@ -29,18 +29,18 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if( targeted is Item )
+				if ( targeted is Item )
 				{
 					Item item = (Item)targeted;
 
-					if( item.Movable == false && from.AccessLevel == AccessLevel.Player )
+					if ( item.Movable == false && from.AccessLevel == AccessLevel.Player )
 						return;
 
 					Type type = targeted.GetType();
 
 					FlippableAttribute[] AttributeArray = (FlippableAttribute[])type.GetCustomAttributes( typeof( FlippableAttribute ), false );
 
-					if( AttributeArray.Length == 0 )
+					if ( AttributeArray.Length == 0 )
 					{
 						return;
 					}
@@ -83,12 +83,12 @@ namespace Server.Items
 
 		public virtual void Flip( Item item )
 		{
-			if( m_ItemIDs == null )
+			if ( m_ItemIDs == null )
 			{
 				try
 				{
 					MethodInfo flipMethod = item.GetType().GetMethod( "Flip", Type.EmptyTypes );
-					if( flipMethod != null )
+					if ( flipMethod != null )
 						flipMethod.Invoke( item, new object[0] );
 				}
 				catch
@@ -101,14 +101,14 @@ namespace Server.Items
 				int index = 0;
 				for( int i = 0; i < m_ItemIDs.Length; i++ )
 				{
-					if( item.ItemID == m_ItemIDs[i] )
+					if ( item.ItemID == m_ItemIDs[i] )
 					{
 						index = i + 1;
 						break;
 					}
 				}
 
-				if( index > m_ItemIDs.Length - 1 )
+				if ( index > m_ItemIDs.Length - 1 )
 					index = 0;
 
 				item.ItemID = m_ItemIDs[index];

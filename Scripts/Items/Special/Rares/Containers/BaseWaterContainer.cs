@@ -23,7 +23,7 @@
 			}
 			set
 			{
-				if( value != m_Quantity )
+				if ( value != m_Quantity )
 				{
 					m_Quantity = ( value < 1 ) ? 0 : ( value > MaxQuantity ) ? MaxQuantity : value;
 
@@ -31,11 +31,11 @@
 
 					ItemID = ( IsEmpty ) ? voidItem_ID : fullItem_ID;
 
-					if( !IsEmpty )
+					if ( !IsEmpty )
 					{
 						IEntity rootParent = RootParent;
 
-						if( rootParent != null && rootParent.Map != null && rootParent.Map != Map.Internal )
+						if ( rootParent != null && rootParent.Map != null && rootParent.Map != Map.Internal )
 							MoveToWorld( rootParent.Location, rootParent.Map );
 					}
 
@@ -54,7 +54,7 @@
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 			{
 				base.OnDoubleClick( from );
 			}
@@ -62,13 +62,13 @@
 
 		public override void OnSingleClick( Mobile from )
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 			{
 				base.OnSingleClick( from );
 			}
 			else
 			{
-				if( Name == null )
+				if ( Name == null )
 					LabelTo( from, LabelNumber );
 				else
 					LabelTo( from, Name );
@@ -77,13 +77,13 @@
 
 		public override void OnAosSingleClick( Mobile from )
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 			{
 				base.OnAosSingleClick( from );
 			}
 			else
 			{
-				if( Name == null )
+				if ( Name == null )
 					LabelTo( from, LabelNumber );
 				else
 					LabelTo( from, Name );
@@ -92,7 +92,7 @@
 
 		public override void GetProperties( ObjectPropertyList list )
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 			{
 				base.GetProperties( list );
 			}
@@ -100,7 +100,7 @@
 
 		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
 		{
-			if( !IsEmpty )
+			if ( !IsEmpty )
 			{
 				return false;
 			}

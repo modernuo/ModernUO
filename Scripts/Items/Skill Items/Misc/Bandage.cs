@@ -280,7 +280,7 @@ namespace Server.Items
 						{
 							Mobile master = petPatient.ControlMaster;
 
-							if( master != null && m_Healer == master )
+							if ( master != null && m_Healer == master )
 							{
 								petPatient.ResurrectPet();
 

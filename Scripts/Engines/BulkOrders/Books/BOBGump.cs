@@ -22,9 +22,9 @@ namespace Server.Engines.BulkOrders
 		{
 			Item item = null;
 
-			if ( obj is BOBLargeEntry )
-				item = ((BOBLargeEntry)obj).Reconstruct();
-			else if ( obj is BOBSmallEntry )
+			if ( obj is BOBLargeEntry entry )
+				item = entry.Reconstruct();
+			else
 				item = ((BOBSmallEntry)obj).Reconstruct();
 
 			return item;
@@ -32,17 +32,13 @@ namespace Server.Engines.BulkOrders
 
 		public bool CheckFilter( object obj )
 		{
-			if ( obj is BOBLargeEntry )
+			if ( obj is BOBLargeEntry entry )
 			{
-				BOBLargeEntry e = (BOBLargeEntry)obj;
-
-				return CheckFilter( e.Material, e.AmountMax, true, e.RequireExceptional, e.DeedType, ( e.Entries.Length > 0 ? e.Entries[0].ItemType : null ) );
+				return CheckFilter( entry.Material, entry.AmountMax, true, entry.RequireExceptional, entry.DeedType, ( entry.Entries.Length > 0 ? entry.Entries[0].ItemType : null ) );
 			}
-			else if ( obj is BOBSmallEntry )
+			if ( obj is BOBSmallEntry smallEntry )
 			{
-				BOBSmallEntry e = (BOBSmallEntry)obj;
-
-				return CheckFilter( e.Material, e.AmountMax, false, e.RequireExceptional, e.DeedType, e.ItemType );
+				return CheckFilter( smallEntry.Material, smallEntry.AmountMax, false, smallEntry.RequireExceptional, smallEntry.DeedType, smallEntry.ItemType );
 			}
 
 			return false;
@@ -57,25 +53,25 @@ namespace Server.Engines.BulkOrders
 
 			if ( f.Quality == 1 && reqExc )
 				return false;
-			else if ( f.Quality == 2 && !reqExc )
+			if ( f.Quality == 2 && !reqExc )
 				return false;
 
 			if ( f.Quantity == 1 && amountMax != 10 )
 				return false;
-			else if ( f.Quantity == 2 && amountMax != 15 )
+			if ( f.Quantity == 2 && amountMax != 15 )
 				return false;
-			else if ( f.Quantity == 3 && amountMax != 20 )
+			if ( f.Quantity == 3 && amountMax != 20 )
 				return false;
 
 			if ( f.Type == 1 && isLarge )
 				return false;
-			else if ( f.Type == 2 && !isLarge )
+			if ( f.Type == 2 && !isLarge )
 				return false;
 
 			switch ( f.Material )
 			{
 				default:
-				case  0: return true;
+				return true;
 				case  1: return ( deedType == BODType.Smith );
 				case  2: return ( deedType == BODType.Tailor );
 
@@ -122,8 +118,8 @@ namespace Server.Engines.BulkOrders
 				{
 					int add;
 
-					if ( obj is BOBLargeEntry )
-						add = ((BOBLargeEntry)obj).Entries.Length;
+					if ( obj is BOBLargeEntry entry )
+						add = entry.Entries.Length;
 					else
 						add = 1;
 
@@ -156,8 +152,8 @@ namespace Server.Engines.BulkOrders
 				obj = list[i];
 				if (CheckFilter(obj))
 				{
-					if (obj is BOBLargeEntry)
-						add = ((BOBLargeEntry)obj).Entries.Length;
+					if (obj is BOBLargeEntry entry)
+						add = entry.Entries.Length;
 					else
 						add = 1;
 					count += add;
@@ -185,8 +181,8 @@ namespace Server.Engines.BulkOrders
 					obj = list[i];
 					if (CheckFilter(obj))
 					{
-						if (obj is BOBLargeEntry)
-							count += ((BOBLargeEntry)obj).Entries.Length;
+						if (obj is BOBLargeEntry entry)
+							count += entry.Entries.Length;
 						else
 							count += 1;
 					}
@@ -327,8 +323,8 @@ namespace Server.Engines.BulkOrders
 									if (m_Book.IsChildOf(m_From.Backpack))
 									{
 										int sizeOfDroppedBod;
-										if (obj is BOBLargeEntry)
-											sizeOfDroppedBod = ((BOBLargeEntry)obj).Entries.Length;
+										if (obj is BOBLargeEntry entry)
+											sizeOfDroppedBod = entry.Entries.Length;
 										else
 											sizeOfDroppedBod = 1;
 
@@ -336,13 +332,13 @@ namespace Server.Engines.BulkOrders
 										m_From.SendLocalizedMessage(1045152); // The bulk order deed has been placed in your backpack.
 										m_Book.Entries.Remove(obj);
 										m_Book.InvalidateProperties();
-										
+
 										if ( m_Book.Entries.Count / 5 < m_Book.ItemCount )
 										{
 											m_Book.ItemCount--;
 											m_Book.InvalidateItems();
 										}
-										
+
 										if (m_Book.Entries.Count > 0)
 										{
 											m_Page = GetPageForIndex(index, sizeOfDroppedBod);
@@ -366,19 +362,18 @@ namespace Server.Engines.BulkOrders
 							m_From.Prompt = new SetPricePrompt( m_Book, obj, m_Page, m_List );
 							m_From.SendLocalizedMessage( 1062383 ); // Type in a price for the deed:
 						}
-						else if ( m_Book.RootParent is PlayerVendor )
+						else if ( m_Book.RootParent is PlayerVendor pv )
 						{
-							PlayerVendor pv = (PlayerVendor)m_Book.RootParent;
 							VendorItem vi = pv.GetVendorItem( m_Book );
 
 							if (vi != null && !vi.IsForSale)
 							{
 								int sizeOfDroppedBod;
 								int price = 0;
-								if (obj is BOBLargeEntry)
+								if (obj is BOBLargeEntry entry)
 								{
-									price = ((BOBLargeEntry)obj).Price;
-									sizeOfDroppedBod = ((BOBLargeEntry)obj).Entries.Length;
+									price = entry.Price;
+									sizeOfDroppedBod = entry.Entries.Length;
 								}
 								else
 								{
@@ -443,34 +438,34 @@ namespace Server.Engines.BulkOrders
 						if ( !m_Book.Entries.Contains( obj ) )
 							continue;
 
-						if ( obj is BOBLargeEntry )
-							((BOBLargeEntry)obj).Price = price;
-						else if ( obj is BOBSmallEntry )
+						if ( obj is BOBLargeEntry entry )
+							entry.Price = price;
+						else
 							((BOBSmallEntry)obj).Price = price;
 					}
 
 					from.SendMessage( "Deed prices set." );
 
-					if ( from is PlayerMobile )
-						from.SendGump( new BOBGump( (PlayerMobile)from, m_Book, m_Page, m_List ) );
+					if ( from is PlayerMobile mobile )
+						mobile.SendGump( new BOBGump( mobile, m_Book, m_Page, m_List ) );
 				}
-				else if ( m_Object is BOBLargeEntry )
+				else if ( m_Object is BOBLargeEntry entry )
 				{
-					((BOBLargeEntry)m_Object).Price = price;
+					entry.Price = price;
 
 					from.SendLocalizedMessage( 1062384 ); // Deed price set.
 
-					if ( from is PlayerMobile )
-						from.SendGump( new BOBGump( (PlayerMobile)from, m_Book, m_Page, m_List ) );
+					if ( from is PlayerMobile mobile )
+						mobile.SendGump( new BOBGump( mobile, m_Book, m_Page, m_List ) );
 				}
-				else if ( m_Object is BOBSmallEntry )
+				else
 				{
 					((BOBSmallEntry)m_Object).Price = price;
 
 					from.SendLocalizedMessage( 1062384 ); // Deed price set.
 
-					if ( from is PlayerMobile )
-						from.SendGump( new BOBGump( (PlayerMobile)from, m_Book, m_Page, m_List ) );
+					if ( from is PlayerMobile mobile )
+						mobile.SendGump( new BOBGump( mobile, m_Book, m_Page, m_List ) );
 				}
 			}
 		}
@@ -553,9 +548,9 @@ namespace Server.Engines.BulkOrders
 
 				AddImageTiled( 24, 94 + (tableIndex * 32), canPrice ? 573 : 489, 2, 2624 );
 
-				if ( obj is BOBLargeEntry )
-					tableIndex += ((BOBLargeEntry)obj).Entries.Length;
-				else if ( obj is BOBSmallEntry )
+				if ( obj is BOBLargeEntry entry )
+					tableIndex += entry.Entries.Length;
+				else
 					++tableIndex;
 			}
 
@@ -628,79 +623,77 @@ namespace Server.Engines.BulkOrders
 				if ( !CheckFilter( obj ) )
 					continue;
 
-				if ( obj is BOBLargeEntry )
+				if ( obj is BOBLargeEntry entry )
 				{
-					BOBLargeEntry e = (BOBLargeEntry)obj;
-
 					int y = 96 + (tableIndex * 32);
 
 					if ( canDrop )
 						AddButton( 35, y + 2, 5602, 5606, 5 + (i * 2), GumpButtonType.Reply, 0 );
 
-					if ( canDrop || (canBuy && e.Price > 0) )
+					if ( canDrop || (canBuy && entry.Price > 0) )
 					{
 						AddButton( 579, y + 2, 2117, 2118, 6 + (i * 2), GumpButtonType.Reply, 0 );
-						AddLabel( 495, y, 1152, e.Price.ToString() );
+						AddLabel( 495, y, 1152, entry.Price.ToString() );
 					}
 
 					AddHtmlLocalized( 61, y, 50, 32, 1062225, LabelColor, false, false ); // Large
 
-					for ( int j = 0; j < e.Entries.Length; ++j )
+					for ( int j = 0; j < entry.Entries.Length; ++j )
 					{
-						BOBLargeSubEntry sub = e.Entries[j];
+						BOBLargeSubEntry sub = entry.Entries[j];
 
 						AddHtmlLocalized( 103, y, 130, 32, sub.Number, LabelColor, false, false );
 
-						if ( e.RequireExceptional )
+						if ( entry.RequireExceptional )
 							AddHtmlLocalized( 235, y, 80, 20, 1060636, LabelColor, false, false ); // exceptional
 						else
 							AddHtmlLocalized( 235, y, 80, 20, 1011542, LabelColor, false, false ); // normal
 
-						object name = GetMaterialName( e.Material, e.DeedType, sub.ItemType );
+						object name = GetMaterialName( entry.Material, entry.DeedType, sub.ItemType );
 
-						if ( name is int )
-							AddHtmlLocalized( 316, y, 100, 20, (int)name, LabelColor, false, false );
-						else if ( name is string )
-							AddLabel( 316, y, 1152, (string)name );
+						if ( name is int intName )
+							AddHtmlLocalized( 316, y, 100, 20, intName, LabelColor, false, false );
+						else
+							AddLabel( 316, y, 1152, name.ToString() );
 
-						AddLabel( 421, y, 1152, String.Format( "{0} / {1}", sub.AmountCur, e.AmountMax ) );
+						AddLabel( 421, y, 1152, String.Format( "{0} / {1}", sub.AmountCur, entry.AmountMax ) );
 
 						++tableIndex;
 						y += 32;
 					}
 				}
-				else if ( obj is BOBSmallEntry )
+				else
 				{
-					BOBSmallEntry e = (BOBSmallEntry)obj;
+					BOBSmallEntry smallEntry = (BOBSmallEntry)obj;
 
 					int y = 96 + (tableIndex++ * 32);
 
 					if ( canDrop )
 						AddButton( 35, y + 2, 5602, 5606, 5 + (i * 2), GumpButtonType.Reply, 0 );
 
-					if ( canDrop || (canBuy && e.Price > 0) )
+					if ( canDrop || (canBuy && smallEntry.Price > 0) )
 					{
 						AddButton( 579, y + 2, 2117, 2118, 6 + (i * 2), GumpButtonType.Reply, 0 );
-						AddLabel( 495, y, 1152, e.Price.ToString() );
+						AddLabel( 495, y, 1152, smallEntry.Price.ToString() );
 					}
 
 					AddHtmlLocalized( 61, y, 50, 32, 1062224, LabelColor, false, false ); // Small
 
-					AddHtmlLocalized( 103, y, 130, 32, e.Number, LabelColor, false, false );
+					AddHtmlLocalized( 103, y, 130, 32, smallEntry.Number, LabelColor, false, false );
 
-					if ( e.RequireExceptional )
+					if ( smallEntry.RequireExceptional )
 						AddHtmlLocalized( 235, y, 80, 20, 1060636, LabelColor, false, false ); // exceptional
 					else
 						AddHtmlLocalized( 235, y, 80, 20, 1011542, LabelColor, false, false ); // normal
 
-					object name = GetMaterialName( e.Material, e.DeedType, e.ItemType );
+					object name = GetMaterialName( smallEntry.Material, smallEntry.DeedType, smallEntry.ItemType );
 
-					if ( name is int )
-						AddHtmlLocalized( 316, y, 100, 20, (int)name, LabelColor, false, false );
-					else if ( name is string )
-						AddLabel( 316, y, 1152, (string)name );
+					if ( name is int intName )
+						AddHtmlLocalized( 316, y, 100, 20, intName, LabelColor, false, false );
+					else
+						AddLabel( 316, y, 1152, name.ToString() );
 
-					AddLabel( 421, y, 1152, String.Format( "{0} / {1}", e.AmountCur, e.AmountMax ) );
+					AddLabel( 421, y, 1152, String.Format( "{0} / {1}", smallEntry.AmountCur, smallEntry.AmountMax ) );
 				}
 			}
 		}

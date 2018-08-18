@@ -21,7 +21,7 @@ namespace Server
 
 		public static void OnVirtueUsed( Mobile from )
 		{
-			if( from.Alive )
+			if ( from.Alive )
 			{
 				from.SendLocalizedMessage( 1054034 ); // Target the Champion Idol of the Champion you wish to challenge!.
 				from.Target = new InternalTarget();
@@ -32,14 +32,14 @@ namespace Server
 		{
 			PlayerMobile pm = from as PlayerMobile;
 
-			if( pm == null )
+			if ( pm == null )
 				return;
 
 			try
 			{
-				if( (pm.LastValorLoss + LossDelay) < DateTime.UtcNow )
+				if ( (pm.LastValorLoss + LossDelay) < DateTime.UtcNow )
 				{
-					if( VirtueHelper.Atrophy( from, VirtueName.Valor, LossAmount ) )
+					if ( VirtueHelper.Atrophy( from, VirtueName.Valor, LossAmount ) )
 						from.SendLocalizedMessage( 1054040 ); // You have lost some Valor.
 
 					pm.LastValorLoss = DateTime.UtcNow;
@@ -54,18 +54,18 @@ namespace Server
 		{
 			IdolOfTheChampion idol = targ as IdolOfTheChampion;
 
-			if( idol == null || idol.Deleted || idol.Spawn == null || idol.Spawn.Deleted )
+			if ( idol == null || idol.Deleted || idol.Spawn == null || idol.Spawn.Deleted )
 				from.SendLocalizedMessage( 1054035 ); // You must target a Champion Idol to challenge the Champion's spawn!
-			else if( from.Hidden )
+			else if ( from.Hidden )
 				from.SendLocalizedMessage( 1052015 ); // You cannot do that while hidden.
-			else if( idol.Spawn.HasBeenAdvanced )
+			else if ( idol.Spawn.HasBeenAdvanced )
 				from.SendLocalizedMessage( 1054038 ); // The Champion of this region has already been challenged!
 			else
 			{
 				VirtueLevel vl = VirtueHelper.GetLevel( from, VirtueName.Valor );
-				if( idol.Spawn.Active )
+				if ( idol.Spawn.Active )
 				{
-					if( idol.Spawn.Champion != null )	//TODO: Message?
+					if ( idol.Spawn.Champion != null )	//TODO: Message?
 						return;
 
 					int needed, consumed;
@@ -95,7 +95,7 @@ namespace Server
 						}
 					}
 
-					if( from.Virtues.GetValue( (int)VirtueName.Valor ) >= needed )
+					if ( from.Virtues.GetValue( (int)VirtueName.Valor ) >= needed )
 					{
 						VirtueHelper.Atrophy( from, VirtueName.Valor, consumed );
 						from.SendLocalizedMessage( 1054037 ); // Your challenge is heard by the Champion of this region! Beware its wrath!
@@ -107,7 +107,7 @@ namespace Server
 				}
 				else
 				{
-					if( vl == VirtueLevel.Knight )
+					if ( vl == VirtueLevel.Knight )
 					{
 						VirtueHelper.Atrophy( from, VirtueName.Valor, 11000 );
 						from.SendLocalizedMessage( 1054037 ); // Your challenge is heard by the Champion of this region! Beware its wrath!

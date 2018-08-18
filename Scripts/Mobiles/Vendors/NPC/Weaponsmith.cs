@@ -24,7 +24,7 @@ namespace Server.Mobiles
 		public override void InitSBInfo()
 		{
 			m_SBInfos.Add( new SBWeaponSmith() );
-			
+
 			if ( IsTokunoVendor )
 				m_SBInfos.Add( new SBSEWeapons() );
 		}
@@ -91,7 +91,7 @@ namespace Server.Mobiles
 
 		public override void OnSuccessfulBulkOrderReceive( Mobile from )
 		{
-			if( Core.SE && from is PlayerMobile )
+			if ( Core.SE && from is PlayerMobile )
 				((PlayerMobile)from).NextSmithBulkOrder = TimeSpan.Zero;
 		}
 		#endregion

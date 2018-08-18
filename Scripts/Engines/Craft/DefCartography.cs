@@ -39,7 +39,7 @@ namespace Server.Engines.Craft
 
 		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
 		{
-			if( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
+			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
 			else if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
@@ -72,7 +72,7 @@ namespace Server.Engines.Craft
 					return 1044156; // You create an exceptional quality item and affix your maker's mark.
 				else if ( quality == 2 )
 					return 1044155; // You create an exceptional quality item.
-				else				
+				else
 					return 1044154; // You create the item.
 			}
 		}

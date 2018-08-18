@@ -26,7 +26,7 @@ namespace Server.Spells.Ninjitsu
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
 			ClearCurrentMove( attacker );
@@ -39,12 +39,12 @@ namespace Server.Spells.Ninjitsu
 			if ( attacker.Weapon is BaseRanged )
 				isRanged = true;
 
-			if( ninjitsu < 100 ) //This formula is an approximation from OSI data.  TODO: find correct formula
+			if ( ninjitsu < 100 ) //This formula is an approximation from OSI data.  TODO: find correct formula
 				chance = 30 + (ninjitsu - 85) * 2.2;
 			else
 				chance = 63 + (ninjitsu - 100) * 1.1;
 
-			if( (chance / 100) < Utility.RandomDouble() )
+			if ( (chance / 100) < Utility.RandomDouble() )
 			{
 				attacker.SendLocalizedMessage( 1070779 ); // You missed your opponent with a Death Strike.
 				return;
@@ -55,16 +55,16 @@ namespace Server.Spells.Ninjitsu
 
 			int damageBonus = 0;
 
-			if( m_Table.Contains( defender ) )
+			if ( m_Table.Contains( defender ) )
 			{
 				defender.SendLocalizedMessage( 1063092 ); // Your opponent lands another Death Strike!
 
 				info = (DeathStrikeInfo)m_Table[defender];
 
-				if( info.m_Steps > 0 )
+				if ( info.m_Steps > 0 )
 					damageBonus = attacker.Skills[SkillName.Ninjitsu].Fixed / 150;
 
-				if( info.m_Timer != null )
+				if ( info.m_Timer != null )
 					info.m_Timer.Stop();
 
 				m_Table.Remove( defender );
@@ -112,10 +112,10 @@ namespace Server.Spells.Ninjitsu
 		{
 			DeathStrikeInfo info = m_Table[m] as DeathStrikeInfo;
 
-			if( info == null )
+			if ( info == null )
 				return;
 
-			if( ++info.m_Steps >= 5 )
+			if ( ++info.m_Steps >= 5 )
 				ProcessDeathStrike( m );
 		}
 
@@ -125,7 +125,7 @@ namespace Server.Spells.Ninjitsu
 
 			DeathStrikeInfo info = m_Table[defender] as DeathStrikeInfo;
 
-			if( info == null )	//sanity
+			if ( info == null )	//sanity
 				return;
 
 			int maxDamage, damage = 0;
@@ -163,7 +163,7 @@ namespace Server.Spells.Ninjitsu
 			else
 				AOS.Damage( info.m_Target, info.m_Attacker, damage, true, 100, 0, 0, 0, 0, 0, 0, false, false, true ); // Damage is physical.
 
-			if( info.m_Timer != null )
+			if ( info.m_Timer != null )
 				info.m_Timer.Stop();
 
 			m_Table.Remove( info.m_Target );

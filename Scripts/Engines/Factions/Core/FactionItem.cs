@@ -45,17 +45,16 @@ namespace Server.Factions
 
 		public void Attach()
 		{
-			if ( m_Item is IFactionItem )
-				((IFactionItem)m_Item).FactionItemState = this;
+			if ( m_Item is IFactionItem item )
+				item.FactionItemState = this;
 
-			if ( m_Faction != null )
-				m_Faction.State.FactionItems.Add( this );
+			m_Faction?.State.FactionItems.Add( this );
 		}
 
 		public void Detach()
 		{
-			if ( m_Item is IFactionItem )
-				((IFactionItem)m_Item).FactionItemState = null;
+			if ( m_Item is IFactionItem item )
+				item.FactionItemState = null;
 
 			if ( m_Faction != null && m_Faction.State.FactionItems.Contains( this ) )
 				m_Faction.State.FactionItems.Remove( this );
@@ -107,11 +106,11 @@ namespace Server.Factions
 
 		public static FactionItem Find( Item item )
 		{
-			if ( item is IFactionItem )
+			if ( item is IFactionItem factionItem )
 			{
-				FactionItem state = ((IFactionItem)item).FactionItemState;
+				FactionItem state = factionItem.FactionItemState;
 
-				if ( state != null && state.HasExpired )
+				if ( state?.HasExpired == true )
 				{
 					state.Detach();
 					state = null;

@@ -22,7 +22,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Bushido ) < 50.0 )
+			if ( GetSkill( from, SkillName.Bushido ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1070768, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido skill to perform that attack!
 				return false;
@@ -33,24 +33,24 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !defender.Mounted )
+			if ( !defender.Mounted )
 			{
 				attacker.SendLocalizedMessage( 1060848 ); // This attack only works on mounted targets
 				ClearCurrentAbility( attacker );
 				return;
 			}
 
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
 			ClearCurrentAbility( attacker );
 
-			if( !attacker.Mounted )
+			if ( !attacker.Mounted )
 			{
 				Mobile mount = defender.Mount as Mobile;
 				BaseMount.Dismount( defender );
 
-				if( mount != null )	//Ethy mounts don't take damage
+				if ( mount != null )	//Ethy mounts don't take damage
 				{
 					int amount = 10 + (int)(10.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 5);
 
@@ -65,7 +65,7 @@ namespace Server.Items
 
 				AOS.Damage( defender, attacker, amount, 100, 0, 0, 0, 0 );
 
-				if( Server.Items.ParalyzingBlow.IsImmune( defender ) )	//Does it still do damage?
+				if ( Server.Items.ParalyzingBlow.IsImmune( defender ) )	//Does it still do damage?
 				{
 					attacker.SendLocalizedMessage( 1070804 ); // Your target resists paralysis.
 					defender.SendLocalizedMessage( 1070813 ); // You resist paralysis.

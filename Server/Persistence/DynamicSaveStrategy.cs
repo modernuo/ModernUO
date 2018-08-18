@@ -239,7 +239,7 @@ namespace Server
 
 			while( _decayBag.TryTake( out item ) )
 			{
-				if( item.OnDecay() )
+				if ( item.OnDecay() )
 				{
 					item.Delete();
 				}

@@ -23,12 +23,12 @@ namespace Server.Spells.Spellweaving
 
 		public override bool CheckCast()
 		{
-			if( m_Table.ContainsKey( Caster ) )
+			if ( m_Table.ContainsKey( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 501775 ); // This spell is already in effect.
 				return false;
 			}
-			else if( !Caster.CanBeginAction( typeof( AttuneWeaponSpell ) ) )
+			else if ( !Caster.CanBeginAction( typeof( AttuneWeaponSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1075124 ); // You must wait before casting that spell again.
 				return false;
@@ -39,7 +39,7 @@ namespace Server.Spells.Spellweaving
 
 		public override void OnCast()
 		{
-			if( CheckSequence() )
+			if ( CheckSequence() )
 			{
 				Caster.PlaySound( 0x5C3 );
 				Caster.FixedParticles( 0x3728, 1, 13, 0x26B8, 0x455, 7, EffectLayer.Waist );
@@ -69,7 +69,7 @@ namespace Server.Spells.Spellweaving
 
 		public static void TryAbsorb( Mobile defender, ref int damage )
 		{
-			if( damage == 0 || !IsAbsorbing( defender ) || defender.MeleeDamageAbsorb <= 0 )
+			if ( damage == 0 || !IsAbsorbing( defender ) || defender.MeleeDamageAbsorb <= 0 )
 				return;
 
 			int absorbed = Math.Min( damage, defender.MeleeDamageAbsorb );
@@ -79,7 +79,7 @@ namespace Server.Spells.Spellweaving
 
 			defender.SendLocalizedMessage( 1075127, String.Format( "{0}\t{1}", absorbed, defender.MeleeDamageAbsorb ) ); // ~1_damage~ point(s) of damage have been absorbed. A total of ~2_remaining~ point(s) of shielding remain.
 
-			if( defender.MeleeDamageAbsorb <= 0 )
+			if ( defender.MeleeDamageAbsorb <= 0 )
 				StopAbsorbing( defender, true );
 		}
 
@@ -117,7 +117,7 @@ namespace Server.Spells.Spellweaving
 
 				m_Mobile.MeleeDamageAbsorb = 0;
 
-				if( message )
+				if ( message )
 				{
 					m_Mobile.SendLocalizedMessage( 1075126 ); // Your attunement fades.
 					m_Mobile.PlaySound( 0x1F8 );

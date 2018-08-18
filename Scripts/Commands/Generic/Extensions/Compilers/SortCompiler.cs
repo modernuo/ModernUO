@@ -130,7 +130,7 @@ namespace Server.Commands.Generic
 					emitter.Chain( prop );
 
 					bool couldCompare =
-					emitter.CompareTo( sign, delegate()
+					emitter.CompareTo( sign, delegate
 					{
 						emitter.LoadLocal( b );
 						emitter.Chain( prop );

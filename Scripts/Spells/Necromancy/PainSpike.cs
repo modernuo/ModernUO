@@ -57,12 +57,12 @@ namespace Server.Spells.Necromancy
 
 				TimeSpan buffTime = TimeSpan.FromSeconds( 10.0 );
 
-				if( m_Table.Contains( m ) )
+				if ( m_Table.Contains( m ) )
 				{
 					damage = Utility.RandomMinMax( 3, 7 );
 					Timer t = m_Table[m] as Timer;
 
-					if( t != null )
+					if ( t != null )
 					{
 						t.Delay += TimeSpan.FromSeconds( 2.0 );
 

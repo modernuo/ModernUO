@@ -115,7 +115,7 @@ namespace Server.Mobiles
 
 		public void BeginSavageDance()
 		{
-			if( this.Map == null )
+			if ( this.Map == null )
 				return;
 
 			ArrayList list = new ArrayList();

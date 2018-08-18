@@ -16,7 +16,7 @@ namespace Server.Misc
 		private static string CustomPath = null;
 
 		/* The following is a list of files which a required for proper execution:
-		 * 
+		 *
 		 * Multi.idx
 		 * Multi.mul
 		 * VerData.mul
@@ -39,13 +39,13 @@ namespace Server.Misc
 			string pathSA = GetPath( @"Electronic Arts\EA Games\Ultima Online Stygian Abyss Classic", "InstallDir" );
 			string pathHS = GetPath( @"Electronic Arts\EA Games\Ultima Online Classic", "InstallDir" );
 
-			if ( CustomPath != null ) 
-				Core.DataDirectories.Add( CustomPath ); 
+			if ( CustomPath != null )
+				Core.DataDirectories.Add( CustomPath );
 
-			if ( pathUO != null ) 
-				Core.DataDirectories.Add( pathUO ); 
+			if ( pathUO != null )
+				Core.DataDirectories.Add( pathUO );
 
-			if ( pathTD != null ) 
+			if ( pathTD != null )
 				Core.DataDirectories.Add( pathTD );
 
 			if ( pathKR != null )
@@ -72,19 +72,19 @@ namespace Server.Misc
 			{
 				string keyString;
 
-				if( Core.Is64Bit )
+				if ( Core.Is64Bit )
 					keyString = @"SOFTWARE\Wow6432Node\{0}";
 				else
 					keyString = @"SOFTWARE\{0}";
 
 				using( RegistryKey key = Registry.LocalMachine.OpenSubKey( String.Format( keyString, subName ) ) )
 				{
-					if( key == null )
+					if ( key == null )
 						return null;
 
 					string v = key.GetValue( keyName ) as string;
 
-					if( String.IsNullOrEmpty( v ) )
+					if ( String.IsNullOrEmpty( v ) )
 						return null;
 
 					if ( keyName == "InstallDir" )

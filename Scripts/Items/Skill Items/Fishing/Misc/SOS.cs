@@ -153,10 +153,10 @@ namespace Server.Items
 			if ( version < 3 )
 				UpdateHue();
 
-			if( version < 4 && m_TargetMap == Map.Tokuno )
+			if ( version < 4 && m_TargetMap == Map.Tokuno )
 				m_TargetMap = Map.Trammel;
 		}
-		
+
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( IsChildOf( from.Backpack ) )

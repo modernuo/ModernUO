@@ -23,7 +23,7 @@ namespace Server.Spells.Spellweaving
 
 		public override void OnCast()
 		{
-			if( CheckSequence() )
+			if ( CheckSequence() )
 			{
 				Caster.PlaySound( 0x5CE );
 
@@ -49,7 +49,7 @@ namespace Server.Spells.Spellweaving
 
 				foreach( Mobile m in Caster.GetMobilesInRange( range ) )
 				{
-					if( Caster != m && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) && Caster.InLOS( m ) )
+					if ( Caster != m && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) && Caster.InLOS( m ) )
 						targets.Add( m );
 				}
 
@@ -63,9 +63,9 @@ namespace Server.Spells.Spellweaving
 
 					SpellHelper.Damage( this, m, ( m.Player && Caster.Player ) ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100 );
 
-					if( oldSpell != null && oldSpell != m.Spell )
+					if ( oldSpell != null && oldSpell != m.Spell )
 					{
-						if( !CheckResisted( m ) )
+						if ( !CheckResisted( m ) )
 						{
 							m_Table[m] = Timer.DelayCall<Mobile>( duration, DoExpire, m );
 

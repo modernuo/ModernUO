@@ -20,8 +20,8 @@ namespace Server.Factions
 
 		private FactionItemDefinition m_Definition;
 
-		public FactionImbueGump( int quality, Item item, Mobile from, CraftSystem craftSystem, BaseTool tool, object notice, int availableSilver, Faction faction, FactionItemDefinition def ) : base( 100, 200 )			
-		{	
+		public FactionImbueGump( int quality, Item item, Mobile from, CraftSystem craftSystem, BaseTool tool, object notice, int availableSilver, Faction faction, FactionItemDefinition def ) : base( 100, 200 )
+		{
 			m_Item = item;
 			m_Mobile = from;
 			m_Faction = faction;
@@ -39,13 +39,13 @@ namespace Server.Factions
 			AddHtmlLocalized( 20, 20, 210, 25, 1011569, false, false ); // Imbue with Faction properties?
 
 
-			AddHtmlLocalized( 20, 60, 170, 25, 1018302, false, false ); // Item quality: 
+			AddHtmlLocalized( 20, 60, 170, 25, 1018302, false, false ); // Item quality:
 			AddHtmlLocalized( 175, 60, 100, 25, 1018305 - m_Quality, false, false ); //	Exceptional, Average, Low
 
-			AddHtmlLocalized( 20, 80, 170, 25, 1011572, false, false ); // Item Cost : 
+			AddHtmlLocalized( 20, 80, 170, 25, 1011572, false, false ); // Item Cost :
 			AddLabel( 175, 80, 0x34, def.SilverCost.ToString( "N0" ) ); // NOTE: Added 'N0'
 
-			AddHtmlLocalized( 20, 100, 170, 25, 1011573, false, false ); // Your Silver : 
+			AddHtmlLocalized( 20, 100, 170, 25, 1011573, false, false ); // Your Silver :
 			AddLabel( 175, 100, 0x34, availableSilver.ToString( "N0" ) ); // NOTE: Added 'N0'
 
 
@@ -95,10 +95,10 @@ namespace Server.Factions
 
 			if ( m_Tool != null && !m_Tool.Deleted && m_Tool.UsesRemaining > 0 )
 				m_Mobile.SendGump( new CraftGump( m_Mobile, m_CraftSystem, m_Tool, m_Notice ) );
-			else if ( m_Notice is string )
-				m_Mobile.SendMessage( (string) m_Notice );
-			else if ( m_Notice is int && ((int)m_Notice) > 0 )
-				m_Mobile.SendLocalizedMessage( (int) m_Notice );
+			else if ( m_Notice is string s )
+				m_Mobile.SendMessage( s );
+			else if ( m_Notice is int i && i > 0 )
+				m_Mobile.SendLocalizedMessage( i );
 		}
 	}
 }

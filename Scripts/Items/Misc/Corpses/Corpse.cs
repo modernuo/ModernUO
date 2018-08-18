@@ -458,7 +458,7 @@ namespace Server.Items
 			//	shouldFillCorpse = !((BaseCreature)owner).IsBonded;
 
 			Corpse c;
-			if( owner is MilitiaFighter )
+			if ( owner is MilitiaFighter )
 				c = new MilitiaFighterCorpse( owner, hair, facialhair, shouldFillCorpse ? equipItems : new List<Item>() );
 			else
 				c = new Corpse( owner, hair, facialhair, shouldFillCorpse ? equipItems : new List<Item>() );
@@ -591,7 +591,7 @@ namespace Server.Items
 				BaseCreature bc = (BaseCreature)owner;
 
 				Mobile master = bc.GetMaster();
-				if( master != null )
+				if ( master != null )
 					m_Aggressors.Add( master );
 
 				List<DamageStore> rights = BaseCreature.GetLootingRights( bc.DamageEntries, bc.HitsMax );
@@ -716,13 +716,13 @@ namespace Server.Items
 					{
 						Item item = reader.ReadItem();
 
-						if( reader.ReadBool() )
+						if ( reader.ReadBool() )
 							SetRestoreInfo( item, reader.ReadPoint3D() );
-						else if( item != null )
+						else if ( item != null )
 							SetRestoreInfo( item, item.Location );
 					}
 
-					if( reader.ReadBool() )
+					if ( reader.ReadBool() )
 						BeginDecay( reader.ReadDeltaTime() - DateTime.UtcNow );
 
 					m_Looters = reader.ReadStrongMobileList();
@@ -840,7 +840,7 @@ namespace Server.Items
 
 		public bool DevourCorpse()
 		{
-			if( Devoured || Deleted || m_Killer == null || m_Killer.Deleted || !m_Killer.Alive || !(m_Killer is IDevourer) || m_Owner == null || m_Owner.Deleted )
+			if ( Devoured || Deleted || m_Killer == null || m_Killer.Deleted || !m_Killer.Alive || !(m_Killer is IDevourer) || m_Owner == null || m_Owner.Deleted )
 				return false;
 
 			m_Devourer = (IDevourer)m_Killer; // Set the devourer the killer

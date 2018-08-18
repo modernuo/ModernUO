@@ -90,7 +90,7 @@ namespace Server.SkillHandlers
 				}
 				#region Sigils
 				else if ( toSteal is Sigil )
-				{						
+				{
 					PlayerState pl = PlayerState.Find( m_Thief );
 					Faction faction = ( pl == null ? null : pl.Faction );
 
@@ -116,9 +116,9 @@ namespace Server.SkillHandlers
 						}
 						else if ( !m_Thief.CanBeginAction( typeof( PolymorphSpell ) ) )
 						{
-							m_Thief.SendLocalizedMessage( 1010582 ); //	You cannot steal the sigil while polymorphed				
+							m_Thief.SendLocalizedMessage( 1010582 ); //	You cannot steal the sigil while polymorphed
 						}
-						else if( TransformationSpellHelper.UnderTransformation( m_Thief ) )
+						else if ( TransformationSpellHelper.UnderTransformation( m_Thief ) )
 						{
 							m_Thief.SendLocalizedMessage( 1061622 ); // You cannot steal the sigil while in that form.
 						}
@@ -299,7 +299,7 @@ namespace Server.SkillHandlers
 				{
 					root = ((Item)target).RootParent;
 					stolen = TryStealItem( (Item)target, ref caught );
-				} 
+				}
 				else if ( target is Mobile )
 				{
 					Container pack = ((Mobile)target).Backpack;
@@ -311,8 +311,8 @@ namespace Server.SkillHandlers
 						root = target;
 						stolen = TryStealItem( pack.Items[randomIndex], ref caught );
 					}
-				} 
-				else 
+				}
+				else
 				{
 					m_Thief.SendLocalizedMessage( 502710 ); // You can't steal that!
 				}

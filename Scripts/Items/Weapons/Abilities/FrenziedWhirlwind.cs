@@ -17,7 +17,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
+			if ( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1063347, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
 				return false;
@@ -33,19 +33,19 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !Validate( attacker ) )	//Mana check after check that there are targets
+			if ( !Validate( attacker ) )	//Mana check after check that there are targets
 				return;
 
 			ClearCurrentAbility( attacker );
 
 			Map map = attacker.Map;
 
-			if( map == null )
+			if ( map == null )
 				return;
 
 			BaseWeapon weapon = attacker.Weapon as BaseWeapon;
 
-			if( weapon == null )
+			if ( weapon == null )
 				return;
 
 			ArrayList list = new ArrayList();
@@ -59,22 +59,22 @@ namespace Server.Items
 			{
 				Mobile m = (Mobile)list[i];
 
-				if( m != defender && m != attacker && SpellHelper.ValidIndirectTarget( attacker, m ) )
+				if ( m != defender && m != attacker && SpellHelper.ValidIndirectTarget( attacker, m ) )
 				{
-					if( m == null || m.Deleted || m.Map != attacker.Map || !m.Alive || !attacker.CanSee( m ) || !attacker.CanBeHarmful( m ) )
+					if ( m == null || m.Deleted || m.Map != attacker.Map || !m.Alive || !attacker.CanSee( m ) || !attacker.CanBeHarmful( m ) )
 						continue;
 
-					if( !attacker.InRange( m, weapon.MaxRange ) )
+					if ( !attacker.InRange( m, weapon.MaxRange ) )
 						continue;
 
-					if( attacker.InLOS( m ) )
+					if ( attacker.InLOS( m ) )
 						targets.Add( m );
 				}
 			}
 
-			if( targets.Count > 0 )
+			if ( targets.Count > 0 )
 			{
-				if( !CheckMana( attacker, true ) )
+				if ( !CheckMana( attacker, true ) )
 					return;
 
 				attacker.FixedEffect( 0x3728, 10, 15 );
@@ -90,7 +90,7 @@ namespace Server.Items
 
 					Timer t = Registry[m] as Timer;
 
-					if( t != null )
+					if ( t != null )
 					{
 						t.Stop();
 						Registry.Remove( m );
@@ -136,7 +136,7 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				if( !m_Defender.Alive || m_DamageRemaining <= 0 )
+				if ( !m_Defender.Alive || m_DamageRemaining <= 0 )
 				{
 					Stop();
 					Server.Items.FrenziedWhirlwind.Registry.Remove( m_Defender );
@@ -146,18 +146,18 @@ namespace Server.Items
 				m_DamageRemaining -= DamagePerTick;
 				m_DamageToDo += DamagePerTick;
 
-				if( m_DamageRemaining <= 0 && m_DamageToDo < 1 )
+				if ( m_DamageRemaining <= 0 && m_DamageToDo < 1 )
 					m_DamageToDo = 1.0; //Confirm this 'round up' at the end
 
 				int damage = (int)m_DamageToDo;
 
-				if( damage > 0 )
+				if ( damage > 0 )
 				{
 					m_Defender.Damage( damage, m_Attacker );
 					m_DamageToDo -= damage;
 				}
 
-				if( !m_Defender.Alive || m_DamageRemaining <= 0 )
+				if ( !m_Defender.Alive || m_DamageRemaining <= 0 )
 				{
 					Stop();
 					Server.Items.FrenziedWhirlwind.Registry.Remove( m_Defender );

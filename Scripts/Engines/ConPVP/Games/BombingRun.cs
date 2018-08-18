@@ -24,11 +24,11 @@ namespace Server.Engines.ConPVP
 
 		private Mobile FindOwner( object parent )
 		{
-			if ( parent is Item )
-				return ( (Item) parent ).RootParent as Mobile;
+			if ( parent is Item item )
+				return item.RootParent as Mobile;
 
-			if ( parent is Mobile )
-				return (Mobile) parent;
+			if ( parent is Mobile mobile )
+				return mobile;
 
 			return null;
 		}
@@ -282,8 +282,8 @@ namespace Server.Engines.ConPVP
 
 			if ( obj is Mobile )
 				pt.Z += 10;
-			else if ( obj is Item )
-				pt.Z += ((Item)obj).ItemData.CalcHeight + 1;
+			else if ( obj is Item item )
+				pt.Z += item.ItemData.CalcHeight + 1;
 
 			m_Flying = true;
 			this.Visible = false;
@@ -317,12 +317,12 @@ namespace Server.Engines.ConPVP
 
 			if ( zdiff < 0 )
 				return false;
-			else if ( zdiff < 12 )
+			if ( zdiff < 12 )
 				return true;
-			else if ( zdiff < 16 )
+			if ( zdiff < 16 )
 				return Utility.RandomBool(); // 50% chance
-			else
-				return false;
+
+			return false;
 		}
 
 		private void DoAnim( Point3D start, Point3D end, Map map )
@@ -604,10 +604,10 @@ namespace Server.Engines.ConPVP
 						continue;
 
 					area.Free();
-					if ( i is BRGoal )
+					if ( i is BRGoal goal )
 					{
 						Point3D oldLoc = new Point3D( this.GetWorldLocation() );
-						if ( CheckScore( (BRGoal)i, m_Thrower, 3 ) )
+						if ( CheckScore( goal, m_Thrower, 3 ) )
 							DoAnim( oldLoc, point, this.Map );
 						else
 							HitObject( point, loc.Z, height );
@@ -939,9 +939,7 @@ namespace Server.Engines.ConPVP
 			else
 				this.Hue = 0x84C;
 
-			BRBomb b = m.Backpack.FindItemByType( typeof( BRBomb ), true ) as BRBomb;
-
-			if ( b != null )
+			if ( m.Backpack.FindItemByType( typeof( BRBomb ), true ) is BRBomb b )
 				b.CheckScore( this, m, 7 );
 
 			return true;
@@ -1321,9 +1319,7 @@ namespace Server.Engines.ConPVP
 				if ( mob == null )
 					return null;
 
-				BRPlayerInfo val = m_Players[mob] as BRPlayerInfo;
-
-				if ( val == null )
+				if ( !(m_Players[mob] is BRPlayerInfo val) )
 					m_Players[mob] = val = new BRPlayerInfo( this, mob );
 
 				return val;
@@ -1623,15 +1619,8 @@ namespace Server.Engines.ConPVP
 
 		public int GetTeamID( Mobile mob )
 		{
-			PlayerMobile pm = mob as PlayerMobile;
-
-			if ( pm == null )
-			{
-				if ( mob is BaseCreature )
-					return ((BaseCreature)mob).Team - 1;
-				else
-					return -1;
-			}
+			if ( !(mob is PlayerMobile pm) )
+				return mob is BaseCreature creature ? creature.Team - 1 : -1;
 
 			if ( pm.DuelContext == null || pm.DuelContext != m_Context )
 				return -1;
@@ -1644,12 +1633,7 @@ namespace Server.Engines.ConPVP
 
 		public int GetColor( Mobile mob )
 		{
-			BRTeamInfo teamInfo = GetTeamInfo( mob );
-
-			if ( teamInfo != null )
-				return teamInfo.Color;
-
-			return -1;
+			return GetTeamInfo( mob )?.Color ?? -1;
 		}
 
 		private void ApplyHues( Participant p, int hueOverride )
@@ -1674,8 +1658,8 @@ namespace Server.Engines.ConPVP
 
 			DuelPlayer dp = null;
 
-			if ( mob is PlayerMobile )
-				dp = ( mob as PlayerMobile ).DuelPlayer;
+			if ( mob is PlayerMobile mobile )
+				dp = mobile.DuelPlayer;
 
 			m_Context.RemoveAggressions( mob );
 
@@ -1896,9 +1880,7 @@ namespace Server.Engines.ConPVP
 
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 			{
-				Participant p = m_Context.Participants[i] as Participant;
-
-				if ( p == null || p.Players == null )
+				if ( !(m_Context.Participants[i] is Participant p) || p.Players == null )
 					continue;
 
 				for ( int j = 0; j < p.Players.Length; ++j )
@@ -1915,7 +1897,7 @@ namespace Server.Engines.ConPVP
 				if ( i == winner.TeamID )
 					continue;
 
-				if ( p != null && p.Players != null )
+				if ( p.Players != null )
 				{
 					for ( int j = 0; j < p.Players.Length; ++j )
 					{
@@ -1942,15 +1924,12 @@ namespace Server.Engines.ConPVP
 
 			ReturnBomb();
 
-			if( m_Bomb != null )
-				m_Bomb.Delete();
+			m_Bomb?.Delete();
 
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 				ApplyHues( m_Context.Participants[i] as Participant, -1 );
 
-			if ( m_FinishTimer != null )
-				m_FinishTimer.Stop();
-
+			m_FinishTimer?.Stop();
 			m_FinishTimer = null;
 		}
 	}

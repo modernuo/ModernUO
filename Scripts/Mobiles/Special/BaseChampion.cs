@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
 		public Item CreateArtifact( Type[] list )
 		{
-			if( list.Length == 0 )
+			if ( list.Length == 0 )
 				return null;
 
 			int random = Utility.Random( list.Length );
@@ -70,7 +70,7 @@ namespace Server.Mobiles
 
 			Item artifact = Loot.Construct( type );
 
-			if( artifact is MonsterStatuette && StatueTypes.Length > 0 )
+			if ( artifact is MonsterStatuette && StatueTypes.Length > 0 )
 			{
 				((MonsterStatuette)artifact).Type = StatueTypes[Utility.Random( StatueTypes.Length )];
 				((MonsterStatuette)artifact).LootType = LootType.Regular;
@@ -117,16 +117,16 @@ namespace Server.Mobiles
 			{
 				Mobile m = toGive[i];
 
-				if( !(m is PlayerMobile) )
+				if ( !(m is PlayerMobile) )
 					continue;
 
 				bool gainedPath = false;
 
 				int pointsToGain = 800;
 
-				if( VirtueHelper.Award( m, VirtueName.Valor, pointsToGain, ref gainedPath ) )
+				if ( VirtueHelper.Award( m, VirtueName.Valor, pointsToGain, ref gainedPath ) )
 				{
-					if( gainedPath )
+					if ( gainedPath )
 						m.SendLocalizedMessage( 1054032 ); // You have gained a path in Valor!
 					else
 						m.SendLocalizedMessage( 1054030 ); // You have gained in Valor!
@@ -156,22 +156,22 @@ namespace Server.Mobiles
 
 		public static void GivePowerScrollTo( Mobile m, PowerScroll ps )
 		{
-			if( ps == null || m == null )	//sanity
+			if ( ps == null || m == null )	//sanity
 				return;
 
 			m.SendLocalizedMessage( 1049524 ); // You have received a scroll of power!
 
-			if( !Core.SE || m.Alive )
+			if ( !Core.SE || m.Alive )
 				m.AddToBackpack( ps );
 			else
 			{
-				if( m.Corpse != null && !m.Corpse.Deleted )
+				if ( m.Corpse != null && !m.Corpse.Deleted )
 					m.Corpse.DropItem( ps );
 				else
 					m.AddToBackpack( ps );
 			}
 
-			if( m is PlayerMobile )
+			if ( m is PlayerMobile )
 			{
 				PlayerMobile pm = (PlayerMobile)m;
 
@@ -179,7 +179,7 @@ namespace Server.Mobiles
 				{
 					Mobile prot = pm.JusticeProtectors[j];
 
-					if( prot.Map != m.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( m, prot ) )
+					if ( prot.Map != m.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( m, prot ) )
 						continue;
 
 					int chance = 0;
@@ -191,17 +191,17 @@ namespace Server.Mobiles
 						case VirtueLevel.Knight: chance = 100; break;
 					}
 
-					if( chance > Utility.Random( 100 ) )
+					if ( chance > Utility.Random( 100 ) )
 					{
 						PowerScroll powerScroll = new PowerScroll( ps.Skill, ps.Value );
 
 						prot.SendLocalizedMessage( 1049368 ); // You have been rewarded for your dedication to Justice!
 
-						if( !Core.SE || prot.Alive )
+						if ( !Core.SE || prot.Alive )
 							prot.AddToBackpack( powerScroll );
 						else
 						{
-							if( prot.Corpse != null && !prot.Corpse.Deleted )
+							if ( prot.Corpse != null && !prot.Corpse.Deleted )
 								prot.Corpse.DropItem( powerScroll );
 							else
 								prot.AddToBackpack( powerScroll );
@@ -217,7 +217,7 @@ namespace Server.Mobiles
 			{
 				GivePowerScrolls();
 
-				if( NoGoodies )
+				if ( NoGoodies )
 					return base.OnBeforeDeath();
 
 				Map map = this.Map;

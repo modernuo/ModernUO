@@ -130,9 +130,7 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			Item item = obj as Item;
-
-			if ( item != null )
+			if ( obj is Item item )
 			{
 				if ( e.Mobile.PlaceInBackpack( item ) )
 					AddResponse( "The item has been placed in your backpack." );
@@ -156,9 +154,9 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			if ( obj is HouseSign )
+			if ( obj is HouseSign sign )
 			{
-				BaseHouse house = ((HouseSign)obj).Owner;
+				BaseHouse house = sign.Owner;
 
 				if ( house == null )
 				{
@@ -416,10 +414,10 @@ namespace Server.Commands.Generic
 				object obj = list[i];
 				Container cont = null;
 
-				if ( obj is Mobile )
-					cont = ((Mobile)obj).Backpack;
-				else if ( obj is Container )
-					cont = (Container)obj;
+				if ( obj is Mobile mobile )
+					cont = mobile.Backpack;
+				else if ( obj is Container container )
+					cont = container;
 
 				if ( cont != null )
 					packs.Add( cont );
@@ -480,15 +478,13 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			IPoint3D p = obj as IPoint3D;
-
-			if ( p == null )
+			if ( !(obj is IPoint3D p) )
 				return;
 
-			if ( p is Item )
-				p = ((Item)p).GetWorldTop();
-			else if ( p is Mobile )
-				p = ((Mobile)p).Location;
+			if ( p is Item item )
+				p = item.GetWorldTop();
+			else if ( p is Mobile m )
+				p = m.Location;
 
 			Add.Invoke( e.Mobile, new Point3D( p ), new Point3D( p ), e.Arguments );
 		}
@@ -508,9 +504,7 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			IPoint3D p = obj as IPoint3D;
-
-			if ( p == null )
+			if ( !(obj is IPoint3D p) )
 				return;
 
 			Mobile from = e.Mobile;
@@ -560,9 +554,9 @@ namespace Server.Commands.Generic
 			{
 				Item item = mob.Items[i];
 
-				if ( item is IMountItem )
+				if ( item is IMountItem mountItem )
 				{
-					IMount mount = ((IMountItem)item).Mount;
+					IMount mount = mountItem.Mount;
 
 					if ( mount != null )
 					{
@@ -608,11 +602,11 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			if ( obj is BaseVendor )
+			if ( obj is BaseVendor vendor )
 			{
-				CommandLogging.WriteLine( e.Mobile, "{0} {1} restocking {2}", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), CommandLogging.Format( obj ) );
+				CommandLogging.WriteLine( e.Mobile, "{0} {1} restocking {2}", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), CommandLogging.Format( vendor ) );
 
-				((BaseVendor)obj).Restock();
+				vendor.Restock();
 				AddResponse( "The vendor has been restocked." );
 			}
 			else
@@ -816,16 +810,16 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			if ( obj is Item )
+			if ( obj is Item item )
 			{
-				CommandLogging.WriteLine( e.Mobile, "{0} {1} deleting {2}", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), CommandLogging.Format( obj ) );
-				((Item)obj).Delete();
+				CommandLogging.WriteLine( e.Mobile, "{0} {1} deleting {2}", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), CommandLogging.Format( item ) );
+				item.Delete();
 				AddResponse( "The item has been deleted." );
 			}
-			else if ( obj is Mobile && !((Mobile)obj).Player )
+			else if ( obj is Mobile mobile && !mobile.Player )
 			{
-				CommandLogging.WriteLine( e.Mobile, "{0} {1} deleting {2}", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), CommandLogging.Format( obj ) );
-				((Mobile)obj).Delete();
+				CommandLogging.WriteLine( e.Mobile, "{0} {1} deleting {2}", e.Mobile.AccessLevel, CommandLogging.Format( e.Mobile ), CommandLogging.Format( mobile ) );
+				mobile.Delete();
 				AddResponse( "The mobile has been deleted." );
 			}
 			else
@@ -887,9 +881,7 @@ namespace Server.Commands.Generic
 			{
 				if ( mob.IsDeadBondedPet )
 				{
-					BaseCreature bc = mob as BaseCreature;
-
-					if ( bc != null )
+					if ( mob is BaseCreature bc )
 					{
 						CommandLogging.WriteLine( from, "{0} {1} resurrecting {2}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( mob ) );
 
@@ -1048,10 +1040,7 @@ namespace Server.Commands.Generic
 
 				if ( fromState != null && targState != null )
 				{
-					Account fromAccount = fromState.Account as Account;
-					Account targAccount = targState.Account as Account;
-
-					if ( fromAccount != null && targAccount != null )
+					if ( fromState.Account is Account && targState.Account is Account targAccount )
 					{
 						CommandLogging.WriteLine( from, "{0} {1} {2} {3}", from.AccessLevel, CommandLogging.Format( from ), m_Ban ? "banning" : "kicking", CommandLogging.Format( targ ) );
 
@@ -1095,9 +1084,7 @@ namespace Server.Commands.Generic
 
 		public override void Execute( CommandEventArgs e, object obj )
 		{
-			Item item = obj as Item;
-
-			if ( item == null )
+			if ( !(obj is Item item) )
 				return;
 
 			if ( !item.IsLockedDown && !item.IsSecure )

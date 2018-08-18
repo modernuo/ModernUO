@@ -231,7 +231,7 @@ namespace Server
 
 		public void Flush()
 		{
-			if( m_Index > 0 )
+			if ( m_Index > 0 )
 			{
 				m_Position += m_Index;
 
@@ -254,7 +254,7 @@ namespace Server
 		{
 			get
 			{
-				if( m_Index > 0 )
+				if ( m_Index > 0 )
 					Flush();
 
 				return m_File;
@@ -263,7 +263,7 @@ namespace Server
 
 		public override void Close()
 		{
-			if( m_Index > 0 )
+			if ( m_Index > 0 )
 				Flush();
 
 			m_File.Close();
@@ -275,14 +275,14 @@ namespace Server
 
 			while( v >= 0x80 )
 			{
-				if( (m_Index + 1) > m_Buffer.Length )
+				if ( (m_Index + 1) > m_Buffer.Length )
 					Flush();
 
 				m_Buffer[m_Index++] = (byte)(v | 0x80);
 				v >>= 7;
 			}
 
-			if( (m_Index + 1) > m_Buffer.Length )
+			if ( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index++] = (byte)v;
@@ -298,13 +298,13 @@ namespace Server
 
 			WriteEncodedInt( length );
 
-			if( m_CharacterBuffer == null )
+			if ( m_CharacterBuffer == null )
 			{
 				m_CharacterBuffer = new byte[LargeByteBufferSize];
 				m_MaxBufferChars = LargeByteBufferSize / m_Encoding.GetMaxByteCount( 1 );
 			}
 
-			if( length > LargeByteBufferSize )
+			if ( length > LargeByteBufferSize )
 			{
 				int current = 0;
 				int charsLeft = value.Length;
@@ -314,7 +314,7 @@ namespace Server
 					int charCount = (charsLeft > m_MaxBufferChars) ? m_MaxBufferChars : charsLeft;
 					int byteLength = m_Encoding.GetBytes( value, current, charCount, m_CharacterBuffer, 0 );
 
-					if( (m_Index + byteLength) > m_Buffer.Length )
+					if ( (m_Index + byteLength) > m_Buffer.Length )
 						Flush();
 
 					Buffer.BlockCopy( m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength );
@@ -328,7 +328,7 @@ namespace Server
 			{
 				int byteLength = m_Encoding.GetBytes( value, 0, value.Length, m_CharacterBuffer, 0 );
 
-				if( (m_Index + byteLength) > m_Buffer.Length )
+				if ( (m_Index + byteLength) > m_Buffer.Length )
 					Flush();
 
 				Buffer.BlockCopy( m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength );
@@ -338,18 +338,18 @@ namespace Server
 
 		public override void Write( string value )
 		{
-			if( PrefixStrings )
+			if ( PrefixStrings )
 			{
-				if( value == null )
+				if ( value == null )
 				{
-					if( (m_Index + 1) > m_Buffer.Length )
+					if ( (m_Index + 1) > m_Buffer.Length )
 						Flush();
 
 					m_Buffer[m_Index++] = 0;
 				}
 				else
 				{
-					if( (m_Index + 1) > m_Buffer.Length )
+					if ( (m_Index + 1) > m_Buffer.Length )
 						Flush();
 
 					m_Buffer[m_Index++] = 1;
@@ -382,7 +382,7 @@ namespace Server
 			TimeSpan d;
 
 			try { d = new TimeSpan( ticks-now ); }
-			catch { if( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
+			catch { if ( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
 
 			Write( d );
 		}
@@ -407,7 +407,7 @@ namespace Server
 
 		public override void Write( long value )
 		{
-			if( (m_Index + 8) > m_Buffer.Length )
+			if ( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index] = (byte)value;
@@ -423,7 +423,7 @@ namespace Server
 
 		public override void Write( ulong value )
 		{
-			if( (m_Index + 8) > m_Buffer.Length )
+			if ( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index] = (byte)value;
@@ -439,7 +439,7 @@ namespace Server
 
 		public override void Write( int value )
 		{
-			if( (m_Index + 4) > m_Buffer.Length )
+			if ( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index] = (byte)value;
@@ -451,7 +451,7 @@ namespace Server
 
 		public override void Write( uint value )
 		{
-			if( (m_Index + 4) > m_Buffer.Length )
+			if ( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index] = (byte)value;
@@ -463,7 +463,7 @@ namespace Server
 
 		public override void Write( short value )
 		{
-			if( (m_Index + 2) > m_Buffer.Length )
+			if ( (m_Index + 2) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index] = (byte)value;
@@ -473,7 +473,7 @@ namespace Server
 
 		public override void Write( ushort value )
 		{
-			if( (m_Index + 2) > m_Buffer.Length )
+			if ( (m_Index + 2) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index] = (byte)value;
@@ -483,7 +483,7 @@ namespace Server
 
 		public unsafe override void Write( double value )
 		{
-			if( (m_Index + 8) > m_Buffer.Length )
+			if ( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
 #if MONO
@@ -500,7 +500,7 @@ namespace Server
 
 		public unsafe override void Write( float value )
 		{
-			if( (m_Index + 4) > m_Buffer.Length )
+			if ( (m_Index + 4) > m_Buffer.Length )
 				Flush();
 
 #if MONO
@@ -519,7 +519,7 @@ namespace Server
 
 		public override void Write( char value )
 		{
-			if( (m_Index + 8) > m_Buffer.Length )
+			if ( (m_Index + 8) > m_Buffer.Length )
 				Flush();
 
 			m_SingleCharBuffer[0] = value;
@@ -530,7 +530,7 @@ namespace Server
 
 		public override void Write( byte value )
 		{
-			if( (m_Index + 1) > m_Buffer.Length )
+			if ( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index++] = value;
@@ -538,7 +538,7 @@ namespace Server
 
 		public override void Write( sbyte value )
 		{
-			if( (m_Index + 1) > m_Buffer.Length )
+			if ( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index++] = (byte)value;
@@ -546,7 +546,7 @@ namespace Server
 
 		public override void Write( bool value )
 		{
-			if( (m_Index + 1) > m_Buffer.Length )
+			if ( (m_Index + 1) > m_Buffer.Length )
 				Flush();
 
 			m_Buffer[m_Index++] = (byte)(value ? 1 : 0);
@@ -579,7 +579,7 @@ namespace Server
 
 		public override void Write( Map value )
 		{
-			if( value != null )
+			if ( value != null )
 				Write( (byte)value.MapIndex );
 			else
 				Write( (byte)0xFF );
@@ -587,7 +587,7 @@ namespace Server
 
 		public override void Write( Race value )
 		{
-			if( value != null )
+			if ( value != null )
 				Write( (byte)value.RaceIndex );
 			else
 				Write( (byte)0xFF );
@@ -603,7 +603,7 @@ namespace Server
 
 		public override void Write( Item value )
 		{
-			if( value == null || value.Deleted )
+			if ( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -611,7 +611,7 @@ namespace Server
 
 		public override void Write( Mobile value )
 		{
-			if( value == null || value.Deleted )
+			if ( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -619,7 +619,7 @@ namespace Server
 
 		public override void Write( BaseGuild value )
 		{
-			if( value == null )
+			if ( value == null )
 				Write( 0 );
 			else
 				Write( value.Id );
@@ -646,11 +646,11 @@ namespace Server
 		}
 		public override void WriteMobileList( ArrayList list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( ((Mobile)list[i]).Deleted )
+					if ( ((Mobile)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -669,11 +669,11 @@ namespace Server
 		}
 		public override void WriteItemList( ArrayList list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( ((Item)list[i]).Deleted )
+					if ( ((Item)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -692,11 +692,11 @@ namespace Server
 		}
 		public override void WriteGuildList( ArrayList list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( ((BaseGuild)list[i]).Disbanded )
+					if ( ((BaseGuild)list[i]).Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -715,11 +715,11 @@ namespace Server
 		}
 		public override void Write( List<Item> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -738,11 +738,11 @@ namespace Server
 		}
 		public override void WriteItemList<T>( List<T> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -761,7 +761,7 @@ namespace Server
 		}
 		public override void Write( HashSet<Item> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( item => item.Deleted );
 			}
@@ -778,9 +778,9 @@ namespace Server
 		{
 			WriteItemSet( set, false );
 		}
-		public override void WriteItemSet<T>( HashSet<T> set, bool tidy ) 
+		public override void WriteItemSet<T>( HashSet<T> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( item => item.Deleted );
 			}
@@ -799,11 +799,11 @@ namespace Server
 		}
 		public override void Write( List<Mobile> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -822,11 +822,11 @@ namespace Server
 		}
 		public override void WriteMobileList<T>( List<T> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -845,7 +845,7 @@ namespace Server
 		}
 		public override void Write( HashSet<Mobile> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( mobile => mobile.Deleted );
 			}
@@ -864,7 +864,7 @@ namespace Server
 		}
 		public override void WriteMobileSet<T>( HashSet<T> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( mob => mob.Deleted );
 			}
@@ -883,11 +883,11 @@ namespace Server
 		}
 		public override void Write( List<BaseGuild> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Disbanded )
+					if ( list[i].Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -906,11 +906,11 @@ namespace Server
 		}
 		public override void WriteGuildList<T>( List<T> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Disbanded )
+					if ( list[i].Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -929,7 +929,7 @@ namespace Server
 		}
 		public override void Write( HashSet<BaseGuild> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( guild => guild.Disbanded );
 			}
@@ -948,7 +948,7 @@ namespace Server
 		}
 		public override void WriteGuildSet<T>( HashSet<T> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( guild => guild.Disbanded );
 			}
@@ -988,7 +988,7 @@ namespace Server
 
 		public override string ReadString()
 		{
-			if( ReadByte() != 0 )
+			if ( ReadByte() != 0 )
 				return m_File.ReadString();
 			else
 				return null;
@@ -999,13 +999,13 @@ namespace Server
 			long ticks = m_File.ReadInt64();
 			long now = DateTime.UtcNow.Ticks;
 
-			if( ticks > 0 && (ticks+now) < 0 )
+			if ( ticks > 0 && (ticks+now) < 0 )
 				return DateTime.MaxValue;
-			else if( ticks < 0 && (ticks+now) < 0 )
+			else if ( ticks < 0 && (ticks+now) < 0 )
 				return DateTime.MinValue;
 
 			try { return new DateTime( now+ticks ); }
-			catch { if( ticks > 0 ) return DateTime.MaxValue; else return DateTime.MinValue; }
+			catch { if ( ticks > 0 ) return DateTime.MaxValue; else return DateTime.MinValue; }
 		}
 
 		public override IPAddress ReadIPAddress()
@@ -1274,7 +1274,7 @@ namespace Server
 		{
 			int count = ReadInt();
 
-			if( count > 0 )
+			if ( count > 0 )
 			{
 				HashSet<T> set = new HashSet<T>();
 
@@ -1282,7 +1282,7 @@ namespace Server
 				{
 					T item = ReadItem() as T;
 
-					if( item != null )
+					if ( item != null )
 					{
 						set.Add( item );
 					}
@@ -1331,7 +1331,7 @@ namespace Server
 		{
 			int count = ReadInt();
 
-			if( count > 0 )
+			if ( count > 0 )
 			{
 				HashSet<T> set = new HashSet<T>();
 
@@ -1339,7 +1339,7 @@ namespace Server
 				{
 					T item = ReadMobile() as T;
 
-					if( item != null )
+					if ( item != null )
 					{
 						set.Add( item );
 					}
@@ -1388,7 +1388,7 @@ namespace Server
 		{
 			int count = ReadInt();
 
-			if( count > 0 )
+			if ( count > 0 )
 			{
 				HashSet<T> set = new HashSet<T>();
 
@@ -1396,7 +1396,7 @@ namespace Server
 				{
 					T item = ReadGuild() as T;
 
-					if( item != null )
+					if ( item != null )
 					{
 						set.Add( item );
 					}
@@ -1461,7 +1461,7 @@ namespace Server
 			lock (m_WriteQueue)
 				m_WriteQueue.Enqueue( mem );
 
-			if( m_WorkerThread == null || !m_WorkerThread.IsAlive )
+			if ( m_WorkerThread == null || !m_WorkerThread.IsAlive )
 			{
 				m_WorkerThread = new Thread( new ThreadStart( new WorkerThread( this ).Worker ) );
 				m_WorkerThread.Priority = ThreadPriority.BelowNormal;
@@ -1496,7 +1496,7 @@ namespace Server
 						mem.WriteTo(m_Owner.m_File);
 				} while (lastCount > 1);
 
-				if( m_Owner.m_Closed )
+				if ( m_Owner.m_Closed )
 					m_Owner.m_File.Close();
 
 				AsyncWriter.m_ThreadCount--;
@@ -1511,7 +1511,7 @@ namespace Server
 			long curlen = m_Mem.Length;
 			m_CurPos += curlen - m_LastPos;
 			m_LastPos = curlen;
-			if( curlen >= BufferSize )
+			if ( curlen >= BufferSize )
 			{
 				Enqueue( m_Mem );
 				m_Mem = new MemoryStream( BufferSize + 1024 );
@@ -1528,7 +1528,7 @@ namespace Server
 			}
 			set
 			{
-				if( m_Mem.Length > 0 )
+				if ( m_Mem.Length > 0 )
 					Enqueue( m_Mem );
 
 				m_Mem = value;
@@ -1561,9 +1561,9 @@ namespace Server
 
 		public override void Write( string value )
 		{
-			if( PrefixStrings )
+			if ( PrefixStrings )
 			{
-				if( value == null )
+				if ( value == null )
 				{
 					m_Bin.Write( (byte)0 );
 				}
@@ -1588,7 +1588,7 @@ namespace Server
 			TimeSpan d;
 
 			try { d = new TimeSpan( ticks-now ); }
-			catch { if( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
+			catch { if ( ticks < now ) d = TimeSpan.MaxValue; else d = TimeSpan.MaxValue; }
 
 			Write( d );
 		}
@@ -1731,7 +1731,7 @@ namespace Server
 
 		public override void Write( Map value )
 		{
-			if( value != null )
+			if ( value != null )
 				Write( (byte)value.MapIndex );
 			else
 				Write( (byte)0xFF );
@@ -1739,7 +1739,7 @@ namespace Server
 
 		public override void Write( Race value )
 		{
-			if( value != null )
+			if ( value != null )
 				Write( (byte)value.RaceIndex );
 			else
 				Write( (byte)0xFF );
@@ -1755,7 +1755,7 @@ namespace Server
 
 		public override void Write( Item value )
 		{
-			if( value == null || value.Deleted )
+			if ( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -1763,7 +1763,7 @@ namespace Server
 
 		public override void Write( Mobile value )
 		{
-			if( value == null || value.Deleted )
+			if ( value == null || value.Deleted )
 				Write( Serial.MinusOne );
 			else
 				Write( value.Serial );
@@ -1771,7 +1771,7 @@ namespace Server
 
 		public override void Write( BaseGuild value )
 		{
-			if( value == null )
+			if ( value == null )
 				Write( 0 );
 			else
 				Write( value.Id );
@@ -1798,11 +1798,11 @@ namespace Server
 		}
 		public override void WriteMobileList( ArrayList list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( ((Mobile)list[i]).Deleted )
+					if ( ((Mobile)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1821,11 +1821,11 @@ namespace Server
 		}
 		public override void WriteItemList( ArrayList list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( ((Item)list[i]).Deleted )
+					if ( ((Item)list[i]).Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1844,11 +1844,11 @@ namespace Server
 		}
 		public override void WriteGuildList( ArrayList list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( ((BaseGuild)list[i]).Disbanded )
+					if ( ((BaseGuild)list[i]).Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1867,11 +1867,11 @@ namespace Server
 		}
 		public override void Write( List<Item> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1890,11 +1890,11 @@ namespace Server
 		}
 		public override void WriteItemList<T>( List<T> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1913,7 +1913,7 @@ namespace Server
 		}
 		public override void Write( HashSet<Item> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( item => item.Deleted );
 			}
@@ -1932,7 +1932,7 @@ namespace Server
 		}
 		public override void WriteItemSet<T>( HashSet<T> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( item => item.Deleted );
 			}
@@ -1951,11 +1951,11 @@ namespace Server
 		}
 		public override void Write( List<Mobile> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1974,11 +1974,11 @@ namespace Server
 		}
 		public override void WriteMobileList<T>( List<T> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Deleted )
+					if ( list[i].Deleted )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -1997,7 +1997,7 @@ namespace Server
 		}
 		public override void Write( HashSet<Mobile> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( mobile => mobile.Deleted );
 			}
@@ -2016,7 +2016,7 @@ namespace Server
 		}
 		public override void WriteMobileSet<T>( HashSet<T> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( mob => mob.Deleted );
 			}
@@ -2035,11 +2035,11 @@ namespace Server
 		}
 		public override void Write( List<BaseGuild> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Disbanded )
+					if ( list[i].Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -2058,11 +2058,11 @@ namespace Server
 		}
 		public override void WriteGuildList<T>( List<T> list, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				for( int i = 0; i < list.Count; )
 				{
-					if( list[i].Disbanded )
+					if ( list[i].Disbanded )
 						list.RemoveAt( i );
 					else
 						++i;
@@ -2081,7 +2081,7 @@ namespace Server
 		}
 		public override void Write( HashSet<BaseGuild> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( guild => guild.Disbanded );
 			}
@@ -2100,7 +2100,7 @@ namespace Server
 		}
 		public override void WriteGuildSet<T>( HashSet<T> set, bool tidy )
 		{
-			if( tidy )
+			if ( tidy )
 			{
 				set.RemoveWhere( guild => guild.Disbanded );
 			}

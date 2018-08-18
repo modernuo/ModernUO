@@ -64,11 +64,11 @@ namespace Server.Items
 				Item item = (Item)obj;
 				CraftResource resource = CraftResource.None;
 
-				if( item is BaseClothing )
+				if ( item is BaseClothing )
 					resource = ((BaseClothing)item).Resource;
-				else if( item is BaseArmor )
+				else if ( item is BaseArmor )
 					resource = ((BaseArmor)item).Resource;
-				else if( item is BaseWeapon ) // Sanity, weapons cannot receive gems...
+				else if ( item is BaseWeapon ) // Sanity, weapons cannot receive gems...
 					resource = ((BaseWeapon)item).Resource;
 
 				IArcaneEquip eq = (IArcaneEquip)obj;

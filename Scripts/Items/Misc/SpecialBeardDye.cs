@@ -149,7 +149,7 @@ namespace Server.Items
 
 			if ( info.ButtonID != 0 && switches.Length > 0 )
 			{
-				if( m.FacialHairItemID == 0 )
+				if ( m.FacialHairItemID == 0 )
 				{
 					m.SendLocalizedMessage( 502623 );	// You have no hair to dye and cannot use this
 				}

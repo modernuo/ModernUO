@@ -72,7 +72,7 @@ namespace Server.Items
 
 			if ( version == 0 )
 			{
-				Timer.DelayCall( TimeSpan.Zero, delegate()
+				Timer.DelayCall( TimeSpan.Zero, delegate
 				{
 					for ( int i = 0; i < Components.Count; ++i )
 					{
@@ -86,7 +86,7 @@ namespace Server.Items
 
 			if ( version <= 1 )
 			{
-				Timer.DelayCall( TimeSpan.Zero, delegate()
+				Timer.DelayCall( TimeSpan.Zero, delegate
 				{
 					for ( int i = 0; i < Components.Count; ++i )
 					{

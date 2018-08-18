@@ -103,11 +103,11 @@ namespace Server.Guilds
 
 		public void CheckLeader()
 		{
-			if( m_Leader == null || m_Leader.Disbanded )
+			if ( m_Leader == null || m_Leader.Disbanded )
 			{
 				CalculateAllianceLeader();
 
-				if( m_Leader == null )
+				if ( m_Leader == null )
 					Disband();
 			}
 		}
@@ -121,19 +121,19 @@ namespace Server.Guilds
 			}
 			set
 			{
-				if( m_Leader != value && value != null )
+				if ( m_Leader != value && value != null )
 					AllianceMessage( 1070765, value.Name ); // Your Alliance is now led by ~1_GUILDNAME~
 
 				m_Leader = value;
 
-				if( m_Leader == null )
+				if ( m_Leader == null )
 					CalculateAllianceLeader();
 			}
 		}
 
 		public bool IsPendingMember( Guild g )
 		{
-			if( g.Alliance != this )
+			if ( g.Alliance != this )
 				return false;
 
 			return m_PendingMembers.Contains( g );
@@ -141,7 +141,7 @@ namespace Server.Guilds
 
 		public bool IsMember( Guild g )
 		{
-			if( g.Alliance != this )
+			if ( g.Alliance != this )
 				return false;
 
 			return m_Members.Contains( g );
@@ -158,7 +158,7 @@ namespace Server.Guilds
 			leader.Alliance = this;
 			partner.Alliance = this;
 
-			if( !m_Alliances.ContainsKey( m_Name.ToLower() ) )
+			if ( !m_Alliances.ContainsKey( m_Name.ToLower() ) )
 				m_Alliances.Add( m_Name.ToLower(), this );
 		}
 
@@ -172,7 +172,7 @@ namespace Server.Guilds
 			writer.WriteGuildList( m_Members, true );
 			writer.WriteGuildList( m_PendingMembers, true );
 
-			if( !m_Alliances.ContainsKey( m_Name.ToLower() ) )
+			if ( !m_Alliances.ContainsKey( m_Name.ToLower() ) )
 				m_Alliances.Add( m_Name.ToLower(), this );
 		}
 
@@ -197,7 +197,7 @@ namespace Server.Guilds
 
 		public void AddPendingGuild( Guild g )
 		{
-			if( g.Alliance != this || m_PendingMembers.Contains( g ) || m_Members.Contains( g ) )
+			if ( g.Alliance != this || m_PendingMembers.Contains( g ) || m_Members.Contains( g ) )
 				return;
 
 			m_PendingMembers.Add( g );
@@ -205,7 +205,7 @@ namespace Server.Guilds
 
 		public void TurnToMember( Guild g )
 		{
-			if( g.Alliance != this || !m_PendingMembers.Contains( g ) || m_Members.Contains( g ) )
+			if ( g.Alliance != this || !m_PendingMembers.Contains( g ) || m_Members.Contains( g ) )
 				return;
 
 			g.GuildMessage( 1070760, this.Name ); // Your Guild has joined the ~1_ALLIANCENAME~ Alliance.
@@ -218,12 +218,12 @@ namespace Server.Guilds
 
 		public void RemoveGuild( Guild g )
 		{
-			if( m_PendingMembers.Contains( g ) )
+			if ( m_PendingMembers.Contains( g ) )
 			{
 				m_PendingMembers.Remove( g );
 			}
 
-			if( m_Members.Contains( g ) )	//Sanity, just incase someone with a custom script adds a character to BOTH arrays
+			if ( m_Members.Contains( g ) )	//Sanity, just incase someone with a custom script adds a character to BOTH arrays
 			{
 				m_Members.Remove( g );
 				g.InvalidateMemberProperties();
@@ -236,19 +236,19 @@ namespace Server.Guilds
 			//to check on OSI: have 3 guilds, make 2 of them a member, one pending.  remove one of the memebers.  alliance still exist?
 			//ANSWER: NO
 
-			if( g == m_Leader )
+			if ( g == m_Leader )
 			{
 				CalculateAllianceLeader();
 
 				/*
-				if( m_Leader == null ) //only when m_members.count < 2
+				if ( m_Leader == null ) //only when m_members.count < 2
 					Disband();
 				else
 					AllianceMessage( 1070765, m_Leader.Name ); // Your Alliance is now led by ~1_GUILDNAME~
 				*/
 			}
 
-			if( m_Members.Count < 2 )
+			if ( m_Members.Count < 2 )
 				Disband();
 		}
 
@@ -264,7 +264,7 @@ namespace Server.Guilds
 
 			m_Alliances.TryGetValue( m_Name.ToLower(), out AllianceInfo aInfo );
 
-			if( aInfo == this )
+			if ( aInfo == this )
 				m_Alliances.Remove( m_Name.ToLower() );
 		}
 
@@ -353,9 +353,9 @@ namespace Server.Guilds
 
 					NetState state = m.NetState;
 
-					if( state != null )
+					if ( state != null )
 					{
-						if( p == null )
+						if ( p == null )
 							p = Packet.Acquire( new UnicodeMessage( from.Serial, from.Body, MessageType.Alliance, hue, 3, from.Language, from.Name, text ) );
 
 						state.Send( p );
@@ -397,7 +397,7 @@ namespace Server.Guilds
 
 			public override void OnResponse( NetState sender, RelayInfo info )
 			{
-				if( info.ButtonID != 8 ) //So that they can't get to the AdvancedSearch button
+				if ( info.ButtonID != 8 ) //So that they can't get to the AdvancedSearch button
 					base.OnResponse( sender, info );
 			}
 		}
@@ -514,34 +514,34 @@ namespace Server.Guilds
 		{
 			get
 			{
-				if( m_Opponent == null || m_Opponent.Disbanded )
+				if ( m_Opponent == null || m_Opponent.Disbanded )
 					return WarStatus.Win;
 
-				if( m_Guild == null || m_Guild.Disbanded )
+				if ( m_Guild == null || m_Guild.Disbanded )
 					return WarStatus.Lose;
 
 				WarDeclaration w = m_Opponent.FindActiveWar( m_Guild );
 
-				if( m_Opponent.FindPendingWar( m_Guild ) != null && m_Guild.FindPendingWar( m_Opponent ) != null )
+				if ( m_Opponent.FindPendingWar( m_Guild ) != null && m_Guild.FindPendingWar( m_Opponent ) != null )
 					return WarStatus.Pending;
 
-				if( w == null )
+				if ( w == null )
 					return WarStatus.Win;
 
-				if( m_WarLength != TimeSpan.Zero && (m_WarBeginning + m_WarLength) < DateTime.UtcNow )
+				if ( m_WarLength != TimeSpan.Zero && (m_WarBeginning + m_WarLength) < DateTime.UtcNow )
 				{
-					if( m_Kills > w.m_Kills )
+					if ( m_Kills > w.m_Kills )
 						return WarStatus.Win;
-					else if( m_Kills < w.m_Kills )
+					else if ( m_Kills < w.m_Kills )
 						return WarStatus.Lose;
 					else
 						return WarStatus.Draw;
 				}
-				else if( m_MaxKills > 0 )
+				else if ( m_MaxKills > 0 )
 				{
-					if( m_Kills >= m_MaxKills )
+					if ( m_Kills >= m_MaxKills )
 						return WarStatus.Win;
-					else if( w.m_Kills >= w.MaxKills )
+					else if ( w.m_Kills >= w.MaxKills )
 						return WarStatus.Lose;
 				}
 
@@ -556,7 +556,7 @@ namespace Server.Guilds
 
 		public static void Initialize()
 		{
-			if( Guild.NewGuildSystem )
+			if ( Guild.NewGuildSystem )
 				new WarTimer().Start();
 		}
 
@@ -592,7 +592,7 @@ namespace Server.Guilds
 			string arg = e.ArgString.Trim();
 			Mobile from = e.Mobile;
 
-			if( arg.Length == 0 )
+			if ( arg.Length == 0 )
 			{
 				e.Mobile.Target = new GuildPropsTarget();
 			}
@@ -602,14 +602,14 @@ namespace Server.Guilds
 
                 int id;
 
-                if( int.TryParse( arg, out id ) )
+                if ( int.TryParse( arg, out id ) )
                     g = Guild.Find( id ) as Guild;
 
-				if( g == null )
+				if ( g == null )
 				{
 					g = Guild.FindByAbbrev( arg ) as Guild;
 
-					if( g == null )
+					if ( g == null )
 						g = Guild.FindByName( arg ) as Guild;
 				}
 
@@ -632,7 +632,7 @@ namespace Server.Guilds
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				if( !BaseCommand.IsAccessible( from, o ) )
+				if ( !BaseCommand.IsAccessible( from, o ) )
 				{
 					from.SendMessage( "That is not accessible." );
 					return;
@@ -640,10 +640,10 @@ namespace Server.Guilds
 
 				Guild g = null;
 
-				if( o is Guildstone )
+				if ( o is Guildstone )
 				{
 					Guildstone stone = o as Guildstone;
-					if( stone.Guild == null || stone.Guild.Disbanded )
+					if ( stone.Guild == null || stone.Guild.Disbanded )
 					{
 						from.SendMessage( "The guild associated with that Guildstone no longer exists" );
 						return;
@@ -651,16 +651,16 @@ namespace Server.Guilds
 					else
 						g = stone.Guild;
 				}
-				else if( o is Mobile )
+				else if ( o is Mobile )
 				{
 					g = ((Mobile)o).Guild as Guild;
 				}
 
-				if( g != null )
+				if ( g != null )
 				{
 					from.SendGump( new PropertiesGump( from, g ) );
 
-					if( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && from is PlayerMobile )
+					if ( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && from is PlayerMobile )
 						from.SendGump( new GuildInfoGump( (PlayerMobile)from, g ) );
 				}
 				else
@@ -675,10 +675,10 @@ namespace Server.Guilds
 		public static void EventSink_GuildGumpRequest( GuildGumpRequestArgs args )
 		{
 			PlayerMobile pm = args.Mobile as PlayerMobile;
-			if( !NewGuildSystem || pm == null )
+			if ( !NewGuildSystem || pm == null )
 				return;
 
-			if( pm.Guild == null )
+			if ( pm.Guild == null )
 				pm.SendGump( new CreateGuildGump( pm ) );
 			else
 				pm.SendGump( new GuildInfoGump( pm, pm.Guild as Guild ) );
@@ -705,7 +705,7 @@ namespace Server.Guilds
 		public AllianceInfo Alliance
 		{
 			get{
-				if( m_AllianceInfo != null )
+				if ( m_AllianceInfo != null )
 					return m_AllianceInfo;
 				else if ( m_AllianceLeader != null )
 					return m_AllianceLeader.m_AllianceInfo;
@@ -716,18 +716,18 @@ namespace Server.Guilds
 			{
 				AllianceInfo current = this.Alliance;
 
-				if( value == current )
+				if ( value == current )
 					return;
 
-				if( current != null )
+				if ( current != null )
 				{
 					current.RemoveGuild( this );
 				}
 
-				if( value != null )
+				if ( value != null )
 				{
 
-					if( value.Leader == this )
+					if ( value.Leader == this )
 						m_AllianceInfo = value;
 					else
 						m_AllianceLeader = value.Leader;
@@ -748,7 +748,7 @@ namespace Server.Guilds
 			get
 			{
 				AllianceInfo al = this.Alliance;
-				if( al != null )
+				if ( al != null )
 					return al.Name;
 
 				return null;
@@ -762,7 +762,7 @@ namespace Server.Guilds
 			{
 				AllianceInfo al = this.Alliance;
 
-				if( al != null )
+				if ( al != null )
 					return al.Leader;
 
 				return null;
@@ -776,7 +776,7 @@ namespace Server.Guilds
 			{
 				AllianceInfo al = this.Alliance;
 
-				if( al != null )
+				if ( al != null )
 					return al.IsMember( this );
 
 				return false;
@@ -790,7 +790,7 @@ namespace Server.Guilds
 			{
 				AllianceInfo al = this.Alliance;
 
-				if( al != null )
+				if ( al != null )
 					return al.IsPendingMember( this );
 
 				return false;
@@ -827,7 +827,7 @@ namespace Server.Guilds
 			{
 				WarDeclaration w = PendingWars[i];
 
-				if( w.Opponent == g )
+				if ( w.Opponent == g )
 					return w;
 			}
 
@@ -840,7 +840,7 @@ namespace Server.Guilds
 			{
 				WarDeclaration w = AcceptedWars[i];
 
-				if( w.Opponent == g )
+				if ( w.Opponent == g )
 					return w;
 			}
 
@@ -856,7 +856,7 @@ namespace Server.Guilds
 
 				WarStatus status = w.Status;
 
-				if( status != WarStatus.InProgress )
+				if ( status != WarStatus.InProgress )
 				{
 					AllianceInfo myAlliance = this.Alliance;
 					bool inAlliance = ( myAlliance != null && myAlliance.IsMember( this ) );
@@ -864,7 +864,7 @@ namespace Server.Guilds
 					AllianceInfo otherAlliance = ((g != null) ? g.Alliance : null);
 					bool otherInAlliance = ( otherAlliance != null && otherAlliance.IsMember( this ) );
 
-					if( inAlliance )
+					if ( inAlliance )
 					{
 						myAlliance.AllianceMessage( 1070739 + (int)status, (g == null) ? "a deleted opponent" : (otherInAlliance ? otherAlliance.Name : g.Name) );
 						myAlliance.InvalidateMemberProperties();
@@ -877,12 +877,12 @@ namespace Server.Guilds
 
 					this.AcceptedWars.Remove( w );
 
-					if( g != null )
+					if ( g != null )
 					{
-						if( status != WarStatus.Draw )
+						if ( status != WarStatus.Draw )
 							status = (WarStatus)((int)status + 1 % 2);
 
-						if( otherInAlliance )
+						if ( otherInAlliance )
 						{
 							otherAlliance.AllianceMessage( 1070739 + (int)status, ( inAlliance ? this.Alliance.Name : this.Name ) );
 							otherAlliance.InvalidateMemberProperties();
@@ -903,12 +903,12 @@ namespace Server.Guilds
 				WarDeclaration w = PendingWars[i];
 				Guild g = w.Opponent;
 
-				if( w.Status != WarStatus.Pending )
+				if ( w.Status != WarStatus.Pending )
 				{
 					//All sanity in here
 					this.PendingWars.Remove( w );
 
-					if( g != null )
+					if ( g != null )
 					{
 						g.PendingWars.Remove( g.FindPendingWar( this ) );
 					}
@@ -923,13 +923,13 @@ namespace Server.Guilds
 
 		public static void HandleDeath( Mobile victim, Mobile killer )
 		{
-			if( !NewGuildSystem )
+			if ( !NewGuildSystem )
 				return;
 
 			if ( killer == null )
 				killer = victim.FindMostRecentDamager( false );
 
-			if( killer == null || victim.Guild == null || killer.Guild == null )
+			if ( killer == null || victim.Guild == null || killer.Guild == null )
 				return;
 
 			Guild victimGuild = GetAllianceLeader( victim.Guild as Guild );
@@ -937,7 +937,7 @@ namespace Server.Guilds
 
 			WarDeclaration war = killerGuild.FindActiveWar( victimGuild );
 
-			if( war == null )
+			if ( war == null )
 				return;
 
 			war.Kills++;
@@ -1006,7 +1006,7 @@ namespace Server.Guilds
 
 			AddMember( m_Leader );
 
-			if( m_Leader is PlayerMobile )
+			if ( m_Leader is PlayerMobile )
 				((PlayerMobile)m_Leader).GuildRank = RankDefinition.Leader;
 
 			m_AcceptedWars = new List<WarDeclaration>();
@@ -1082,15 +1082,15 @@ namespace Server.Guilds
 			}
 			set
 			{
-				if( value != null )
+				if ( value != null )
 					this.AddMember( value ); //Also removes from old guild.
 
-				if( m_Leader is PlayerMobile && m_Leader.Guild == this )
+				if ( m_Leader is PlayerMobile && m_Leader.Guild == this )
 					((PlayerMobile)m_Leader).GuildRank = RankDefinition.Member;
 
 				m_Leader = value;
 
-				if( m_Leader is PlayerMobile )
+				if ( m_Leader is PlayerMobile )
 					((PlayerMobile)m_Leader).GuildRank = RankDefinition.Leader;
 			}
 		}
@@ -1120,7 +1120,7 @@ namespace Server.Guilds
 			{
 				m.SendLocalizedMessage( 502131 ); // Your guild has disbanded.
 
-				if( m is PlayerMobile )
+				if ( m is PlayerMobile )
 					((PlayerMobile)m).GuildRank = RankDefinition.Lowest;
 
 				m.Guild = null;
@@ -1154,7 +1154,7 @@ namespace Server.Guilds
 
 		public bool IsAlly( Guild g )
 		{
-			if( NewGuildSystem )
+			if ( NewGuildSystem )
 			{
 				return (Alliance != null && Alliance.IsMember( this ) && Alliance.IsMember( g ));
 			}
@@ -1164,7 +1164,7 @@ namespace Server.Guilds
 
 		public bool IsEnemy( Guild g )
 		{
-			if( Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type )
+			if ( Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type )
 				return true;
 
 			return IsWar( g );
@@ -1172,10 +1172,10 @@ namespace Server.Guilds
 
 		public bool IsWar( Guild g )
 		{
-			if( g == null )
+			if ( g == null )
 				return false;
 
-			if( NewGuildSystem )
+			if ( NewGuildSystem )
 			{
 				Guild guild = GetAllianceLeader( this );
 				Guild otherGuild = GetAllianceLeader( g );
@@ -1198,7 +1198,7 @@ namespace Server.Guilds
 
 			CheckExpiredWars();
 
-			if( Alliance != null )
+			if ( Alliance != null )
 				Alliance.CheckLeader();
 
 			writer.Write( (int) 5 );//version
@@ -1224,7 +1224,7 @@ namespace Server.Guilds
 			bool isAllianceLeader = (m_AllianceLeader == null && m_AllianceInfo != null );
 			writer.Write( isAllianceLeader );
 
-			if( isAllianceLeader )
+			if ( isAllianceLeader )
 				m_AllianceInfo.Serialize( writer );
 			else
 				writer.Write( m_AllianceLeader );
@@ -1287,7 +1287,7 @@ namespace Server.Guilds
 
 					bool isAllianceLeader = reader.ReadBool();
 
-					if( isAllianceLeader )
+					if ( isAllianceLeader )
 						m_AllianceInfo = new AllianceInfo( reader );
 					else
 						m_AllianceLeader = reader.ReadGuild() as Guild;
@@ -1324,7 +1324,7 @@ namespace Server.Guilds
 				{
 					m_Leader = reader.ReadMobile();
 
-					if( m_Leader is PlayerMobile )
+					if ( m_Leader is PlayerMobile )
 						((PlayerMobile)m_Leader).GuildRank = RankDefinition.Leader;
 
 					m_Name = reader.ReadString();
@@ -1373,19 +1373,19 @@ namespace Server.Guilds
 
 		private void VerifyGuild_Callback()
 		{
-			if( (!NewGuildSystem && m_Guildstone == null) || m_Members.Count == 0 )
+			if ( (!NewGuildSystem && m_Guildstone == null) || m_Members.Count == 0 )
 				Disband();
 
 			CheckExpiredWars();
 
 			AllianceInfo alliance = this.Alliance;
 
-			if( alliance != null )
+			if ( alliance != null )
 				alliance.CheckLeader();
 
 			alliance = this.Alliance;	//CheckLeader could possibly change the value of this.Alliance
 
-			if( alliance != null && !alliance.IsMember( this ) && !alliance.IsPendingMember( this ) )	//This block is there to fix a bug in the code in an older version.
+			if ( alliance != null && !alliance.IsMember( this ) && !alliance.IsPendingMember( this ) )	//This block is there to fix a bug in the code in an older version.
 				this.Alliance = null;	//Will call Alliance.RemoveGuild which will set it null & perform all the pertient checks as far as alliacne disbanding
 
 		}
@@ -1403,12 +1403,12 @@ namespace Server.Guilds
 				m_Members.Add( m );
 				m.Guild = this;
 
-				if( !NewGuildSystem )
+				if ( !NewGuildSystem )
 					m.GuildFealty = m_Leader;
 				else
 					m.GuildFealty = null;
 
-				if( m is PlayerMobile )
+				if ( m is PlayerMobile )
 					((PlayerMobile)m).GuildRank = RankDefinition.Lowest;
 
 				Guild guild = m.Guild as Guild;
@@ -1432,10 +1432,10 @@ namespace Server.Guilds
 
 				m.Guild = null;
 
-				if( m is PlayerMobile )
+				if ( m is PlayerMobile )
 					((PlayerMobile)m).GuildRank = RankDefinition.Lowest;
 
-				if( message > 0 )
+				if ( message > 0 )
 					m.SendLocalizedMessage( message );
 
 				if ( m == m_Leader )
@@ -1558,9 +1558,9 @@ namespace Server.Guilds
 
 				NetState state = m.NetState;
 
-				if( state != null )
+				if ( state != null )
 				{
-					if( p == null )
+					if ( p == null )
 						p = Packet.Acquire( new UnicodeMessage( from.Serial, from.Body, MessageType.Guild, hue, 3, from.Language, from.Name, text ) );
 
 					state.Send( p );
@@ -1581,10 +1581,10 @@ namespace Server.Guilds
 		#region Voting
 		public bool CanVote( Mobile m )
 		{
-			if( NewGuildSystem )
+			if ( NewGuildSystem )
 			{
 				PlayerMobile pm = m as PlayerMobile;
-				if( pm == null || !pm.GuildRank.GetFlag( RankFlags.CanVote ) )
+				if ( pm == null || !pm.GuildRank.GetFlag( RankFlags.CanVote ) )
 					return false;
 			}
 
@@ -1592,10 +1592,10 @@ namespace Server.Guilds
 		}
 		public bool CanBeVotedFor( Mobile m )
 		{
-			if( NewGuildSystem )
+			if ( NewGuildSystem )
 			{
 				PlayerMobile pm = m as PlayerMobile;
-				if( pm == null || pm.LastOnline + InactiveTime < DateTime.UtcNow )
+				if ( pm == null || pm.LastOnline + InactiveTime < DateTime.UtcNow )
 					return false;
 			}
 
@@ -1617,7 +1617,7 @@ namespace Server.Guilds
 
 				Mobile m = memb.GuildFealty;
 
-				if( !CanBeVotedFor( m ) )
+				if ( !CanBeVotedFor( m ) )
 				{
 					if ( m_Leader != null && !m_Leader.Deleted && m_Leader.Guild == this )
 						m = m_Leader;
@@ -1628,7 +1628,7 @@ namespace Server.Guilds
 				if ( m == null )
 					continue;
 
-				if( !votes.TryGetValue( m, out int v ) )
+				if ( !votes.TryGetValue( m, out int v ) )
 					votes[m] = 1;
 				else
 					votes[m] = v + 1;
@@ -1651,7 +1651,7 @@ namespace Server.Guilds
 				}
 			}
 
-			if( NewGuildSystem && (highVotes * 100) / Math.Max( votingMembers, 1 ) < MajorityPercentage && m_Leader != null && winner != m_Leader && !m_Leader.Deleted && m_Leader.Guild == this )
+			if ( NewGuildSystem && (highVotes * 100) / Math.Max( votingMembers, 1 ) < MajorityPercentage && m_Leader != null && winner != m_Leader && !m_Leader.Deleted && m_Leader.Guild == this )
 				winner = m_Leader;
 
 			if ( m_Leader != winner && winner != null )
@@ -1734,7 +1734,7 @@ namespace Server.Guilds
 
 				InvalidateMemberProperties( true );
 
-				if( m_Guildstone != null )
+				if ( m_Guildstone != null )
 					m_Guildstone.InvalidateProperties();
 			}
 		}

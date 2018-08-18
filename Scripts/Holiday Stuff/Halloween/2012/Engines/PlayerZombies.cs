@@ -57,7 +57,7 @@ namespace Server.Engines.Events
 			m_ReAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
 			m_DeathQueue = new List<PlayerMobile>();
 
-			if( today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween )
+			if ( today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween )
 			{
 				m_Timer = Timer.DelayCall( tick, tick, new TimerCallback( Timer_Callback ) );
 
@@ -69,13 +69,13 @@ namespace Server.Engines.Events
 
 		public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
 		{
-			if( e.Mobile != null && !e.Mobile.Deleted ) /* not sure .. better safe than sorry? */
+			if ( e.Mobile != null && !e.Mobile.Deleted ) /* not sure .. better safe than sorry? */
 			{
-				if( e.Mobile is PlayerMobile )
+				if ( e.Mobile is PlayerMobile )
 				{
 					PlayerMobile player = e.Mobile as PlayerMobile;
 
-					if( m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
+					if ( m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
 					{
 						m_DeathQueue.Add( player );
 					}
@@ -89,7 +89,7 @@ namespace Server.Engines.Events
 
 			m_DeathQueue.Clear();
 
-			if( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
+			if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				m_ClearTimer.Stop();
 			}
@@ -99,11 +99,11 @@ namespace Server.Engines.Events
 		{
 			PlayerMobile player = null;
 
-			if( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
+			if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
 				{
-					if( !m_ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
+					if ( !m_ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
 					{
 						player = m_DeathQueue[ index ];
 
@@ -111,13 +111,13 @@ namespace Server.Engines.Events
 					}
 				}
 
-				if( player != null && !player.Deleted && m_ReAnimated.Count < m_TotalZombieLimit )
+				if ( player != null && !player.Deleted && m_ReAnimated.Count < m_TotalZombieLimit )
 				{
 					Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
 
 					Point3D home = ( GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map ));
 
-					if( map.CanSpawnMobile( home ) )
+					if ( map.CanSpawnMobile( home ) )
 					{
 						ZombieSkeleton zombieskel = new ZombieSkeleton( player );
 
@@ -241,7 +241,7 @@ namespace Server.Engines.Events
 				case 2: PackItem( new Torso() ); break;
 				case 3: PackItem( new Bone() ); break;
 				case 4: PackItem( new RibCage() ); break;
-				case 5: if( m_DeadPlayer != null && !m_DeadPlayer.Deleted ) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
+				case 5: if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted ) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
 				default: break;
 			}
 
@@ -259,11 +259,11 @@ namespace Server.Engines.Events
 
 		public override void OnDelete()
 		{
-			if( HalloweenHauntings.ReAnimated != null )
+			if ( HalloweenHauntings.ReAnimated != null )
 			{
-				if( m_DeadPlayer != null && !m_DeadPlayer.Deleted )
+				if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted )
 				{
-					if( HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
+					if ( HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
 					{
 						HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
 					}

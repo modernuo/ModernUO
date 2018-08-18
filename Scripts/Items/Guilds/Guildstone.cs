@@ -60,7 +60,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			if( m_Guild != null && !m_Guild.Disbanded )
+			if ( m_Guild != null && !m_Guild.Disbanded )
 			{
 				m_GuildName = m_Guild.Name;
 				m_GuildAbbrev = m_Guild.Abbreviation;
@@ -109,16 +109,16 @@ namespace Server.Items
 				}
 			}
 
-			if( Guild.NewGuildSystem && ItemID == 0xED4 )
+			if ( Guild.NewGuildSystem && ItemID == 0xED4 )
 				ItemID = 0xED6;
 
-			if( version <= 2 )
+			if ( version <= 2 )
 				m_BeforeChangeover = true;
 
-			if( Guild.NewGuildSystem && m_BeforeChangeover )
+			if ( Guild.NewGuildSystem && m_BeforeChangeover )
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( AddToHouse ) );
 
-			if( !Guild.NewGuildSystem && m_Guild == null )
+			if ( !Guild.NewGuildSystem && m_Guild == null )
 				this.Delete();
 		}
 
@@ -126,7 +126,7 @@ namespace Server.Items
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if( Guild.NewGuildSystem && m_BeforeChangeover && house != null && !house.Addons.Contains( this ) )
+			if ( Guild.NewGuildSystem && m_BeforeChangeover && house != null && !house.Addons.Contains( this ) )
 			{
 				house.Addons.Add( this );
 				m_BeforeChangeover = false;
@@ -137,21 +137,21 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if( m_Guild != null && !m_Guild.Disbanded )
+			if ( m_Guild != null && !m_Guild.Disbanded )
 			{
 				string name;
 				string abbr;
 
-				if( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
+				if ( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
 					name = "(unnamed)";
 
-				if( (abbr = m_Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0 )
+				if ( (abbr = m_Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0 )
 					abbr = "";
 
 				//list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( name ), Utility.FixHtml( abbr ) ) );
 			}
-			else if( m_GuildName != null && m_GuildAbbrev != null )
+			else if ( m_GuildName != null && m_GuildAbbrev != null )
 			{
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( m_GuildName ), Utility.FixHtml( m_GuildAbbrev ) ) );
 			}
@@ -161,16 +161,16 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			if( m_Guild != null && !m_Guild.Disbanded )
+			if ( m_Guild != null && !m_Guild.Disbanded )
 			{
 				string name;
 
-				if( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
+				if ( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
 					name = "(unnamed)";
 
 				this.LabelTo( from, name );
 			}
-			else if( m_GuildName != null )
+			else if ( m_GuildName != null )
 			{
 				this.LabelTo( from, m_GuildName );
 			}
@@ -178,24 +178,24 @@ namespace Server.Items
 
 		public override void OnAfterDelete()
 		{
-			if( !Guild.NewGuildSystem && m_Guild != null && !m_Guild.Disbanded )
+			if ( !Guild.NewGuildSystem && m_Guild != null && !m_Guild.Disbanded )
 				m_Guild.Disband();
 		}
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( Guild.NewGuildSystem )
+			if ( Guild.NewGuildSystem )
 				return;
 
-			if( m_Guild == null || m_Guild.Disbanded )
+			if ( m_Guild == null || m_Guild.Disbanded )
 			{
 				Delete();
 			}
-			else if( !from.InRange( GetWorldLocation(), 2 ) )
+			else if ( !from.InRange( GetWorldLocation(), 2 ) )
 			{
 				from.SendLocalizedMessage( 500446 ); // That is too far away.
 			}
-			else if( m_Guild.Accepted.Contains( from ) )
+			else if ( m_Guild.Accepted.Contains( from ) )
 			{
 				#region Factions
 				PlayerState guildState = PlayerState.Find( m_Guild.Leader );
@@ -204,10 +204,10 @@ namespace Server.Items
 				Faction guildFaction = (guildState == null ? null : guildState.Faction);
 				Faction targetFaction = (targetState == null ? null : targetState.Faction);
 
-				if( guildFaction != targetFaction || (targetState != null && targetState.IsLeaving) )
+				if ( guildFaction != targetFaction || (targetState != null && targetState.IsLeaving) )
 					return;
 
-				if( guildState != null && targetState != null )
+				if ( guildState != null && targetState != null )
 					targetState.Leaving = guildState.Leaving;
 				#endregion
 
@@ -217,7 +217,7 @@ namespace Server.Items
 				GuildGump.EnsureClosed( from );
 				from.SendGump( new GuildGump( from, m_Guild ) );
 			}
-			else if( from.AccessLevel < AccessLevel.GameMaster && !m_Guild.IsMember( from ) )
+			else if ( from.AccessLevel < AccessLevel.GameMaster && !m_Guild.IsMember( from ) )
 			{
 				from.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, 501158, "", "" ) ); // You are not a member ...
 			}
@@ -245,24 +245,24 @@ namespace Server.Items
 
 		public void OnChop( Mobile from )
 		{
-			if( !Guild.NewGuildSystem )
+			if ( !Guild.NewGuildSystem )
 				return;
 
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if( ( house == null && m_BeforeChangeover ) || ( house != null && house.IsOwner( from ) && house.Addons.Contains( this ) ))
+			if ( ( house == null && m_BeforeChangeover ) || ( house != null && house.IsOwner( from ) && house.Addons.Contains( this ) ))
 			{
 				Effects.PlaySound( GetWorldLocation(), Map, 0x3B3 );
 				from.SendLocalizedMessage( 500461 ); // You destroy the item.
 
 				Delete();
 
-				if( house != null && house.Addons.Contains( this ) )
+				if ( house != null && house.Addons.Contains( this ) )
 					house.Addons.Remove( this );
 
 				Item deed = Deed;
 
-				if( deed != null )
+				if ( deed != null )
 				{
 					from.AddToBackpack( deed );
 				}
@@ -331,7 +331,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			if( m_Guild != null && !m_Guild.Disbanded )
+			if ( m_Guild != null && !m_Guild.Disbanded )
 			{
 				m_GuildName = m_Guild.Name;
 				m_GuildAbbrev = m_Guild.Abbreviation;
@@ -369,21 +369,21 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if( m_Guild != null && !m_Guild.Disbanded )
+			if ( m_Guild != null && !m_Guild.Disbanded )
 			{
 				string name;
 				string abbr;
 
-				if( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
+				if ( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
 					name = "(unnamed)";
 
-				if( (abbr = m_Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0 )
+				if ( (abbr = m_Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0 )
 					abbr = "";
 
 				//list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( name ), Utility.FixHtml( abbr ) ) );
 			}
-			else if( m_GuildName != null && m_GuildAbbrev != null )
+			else if ( m_GuildName != null && m_GuildAbbrev != null )
 			{
 				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( m_GuildName ), Utility.FixHtml( m_GuildAbbrev ) ) );
 			}
@@ -391,11 +391,11 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( IsChildOf( from.Backpack ) )
+			if ( IsChildOf( from.Backpack ) )
 			{
 				BaseHouse house = BaseHouse.FindHouseAt( from );
 
-				if( house != null && house.IsOwner( from ) )
+				if ( house != null && house.IsOwner( from ) )
 				{
 					from.SendLocalizedMessage( 1062838 ); // Where would you like to place this decoration?
 					from.BeginTarget( -1, true, Targeting.TargetFlags.None, new TargetStateCallback( Placement_OnTarget ), null );
@@ -415,16 +415,16 @@ namespace Server.Items
 		{
 			IPoint3D p = targeted as IPoint3D;
 
-			if( p == null || Deleted )
+			if ( p == null || Deleted )
 				return;
 
 			Point3D loc = new Point3D( p );
 
 			BaseHouse house = BaseHouse.FindHouseAt( loc, from.Map, 16 );
 
-			if( IsChildOf( from.Backpack ) )
+			if ( IsChildOf( from.Backpack ) )
 			{
-				if( house != null && house.IsOwner( from ) )
+				if ( house != null && house.IsOwner( from ) )
 				{
 					Item addon = new Guildstone( m_Guild, m_GuildName, m_GuildAbbrev );
 

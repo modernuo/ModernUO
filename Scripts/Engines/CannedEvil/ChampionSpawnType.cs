@@ -113,7 +113,7 @@ namespace Server.Engines.CannedEvil
 		{
 			int v = (int)type;
 
-			if( v < 0 || v >= m_Table.Length )
+			if ( v < 0 || v >= m_Table.Length )
 				v = 0;
 
 			return m_Table[v];

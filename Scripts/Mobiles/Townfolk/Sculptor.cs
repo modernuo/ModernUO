@@ -17,7 +17,7 @@ namespace Server.Mobiles
 			Title = "the sculptor";
 			Hue = Utility.RandomSkinHue();
 
-			if( this.Female = Utility.RandomBool() )
+			if ( this.Female = Utility.RandomBool() )
 			{
 				this.Body = 0x191;
 				this.Name = NameList.RandomName( "female" );

@@ -57,7 +57,7 @@ namespace Server.Items
 		{
 			base.AddEquipInfoAttributes( from, attrs );
 
-			if( m_IsShipwreckedItem )
+			if ( m_IsShipwreckedItem )
 				attrs.Add( new EquipInfoAttribute( 1041645 ) );	// recovered from a shipwreck
 		}
 
@@ -73,7 +73,7 @@ namespace Server.Items
 		{
 			Quality = (ClothingQuality)quality;
 
-			if( Quality == ClothingQuality.Exceptional )
+			if ( Quality == ClothingQuality.Exceptional )
 				DistributeBonuses( (tool is BaseRunicTool ? 6 : (Core.SE ? 15 : 14)) );	//BLAME OSI. (We can't confirm it's an OSI bug yet.)
 
 			return base.OnCraft( quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue );

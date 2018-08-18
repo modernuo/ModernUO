@@ -32,18 +32,14 @@ namespace Server.Engines.Craft
 			if ( !(item is BaseArmor) && !(item is BaseWeapon) )
 				return EnhanceResult.BadItem;
 
-			if ( item is IArcaneEquip )
-			{
-				IArcaneEquip eq = (IArcaneEquip)item;
-				if ( eq.IsArcane )
-					return EnhanceResult.BadItem;
-			}
+			if ( item is IArcaneEquip eq && eq.IsArcane )
+				return EnhanceResult.BadItem;
 
 			if ( CraftResources.IsStandard( resource ) )
 				return EnhanceResult.BadResource;
-			
+
 			int num = craftSystem.CanCraft( from, tool, item.GetType() );
-			
+
 			if ( num > 0 )
 			{
 				resMessage = num;
@@ -56,7 +52,7 @@ namespace Server.Engines.Craft
 				return EnhanceResult.BadItem;
 
 			bool allRequiredSkills = false;
-			if( craftItem.GetSuccessChance( from, resType, craftSystem, false, ref allRequiredSkills ) <= 0.0 )
+			if ( craftItem.GetSuccessChance( from, resType, craftSystem, false, ref allRequiredSkills ) <= 0.0 )
 				return EnhanceResult.NoSkill;
 
 			CraftResourceInfo info = CraftResources.GetInfo( resource );
@@ -76,8 +72,7 @@ namespace Server.Engines.Craft
 
 			if ( craftSystem is DefBlacksmithy )
 			{
-				AncientSmithyHammer hammer = from.FindItemOnLayer( Layer.OneHanded ) as AncientSmithyHammer;
-				if ( hammer != null )
+				if ( from.FindItemOnLayer( Layer.OneHanded ) is AncientSmithyHammer hammer )
 				{
 					hammer.UsesRemaining--;
 					if ( hammer.UsesRemaining < 1 )
@@ -99,10 +94,8 @@ namespace Server.Engines.Craft
 			bool lreqBonus = false;
 			bool dincBonus = false;
 
-			if ( item is BaseWeapon )
+			if ( item is BaseWeapon weapon )
 			{
-				BaseWeapon weapon = (BaseWeapon)item;
-
 				if ( !CraftResources.IsStandard( weapon.Resource ) )
 					return EnhanceResult.AlreadyEnhanced;
 
@@ -203,17 +196,15 @@ namespace Server.Engines.Craft
 					if ( !craftItem.ConsumeRes( from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref resMessage ) )
 						return EnhanceResult.NoResources;
 
-					if( item is BaseWeapon )
+					if ( item is BaseWeapon w )
 					{
-						BaseWeapon w = (BaseWeapon)item;
-
 						w.Resource = resource;
 
 						int hue = w.GetElementalDamageHue();
-						if( hue > 0 )
+						if ( hue > 0 )
 							w.Hue = hue;
 					}
-					else if( item is BaseArmor )	//Sanity
+					else
 					{
 						((BaseArmor)item).Resource = resource;
 					}
@@ -302,10 +293,10 @@ namespace Server.Engines.Craft
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Item )
+				if ( targeted is Item item )
 				{
 					object message = null;
-					EnhanceResult res = Enhance.Invoke( from, m_CraftSystem, m_Tool, (Item)targeted, m_Resource, m_ResourceType, ref message );
+					EnhanceResult res = Enhance.Invoke( from, m_CraftSystem, m_Tool, item, m_Resource, m_ResourceType, ref message );
 
 					switch ( res )
 					{

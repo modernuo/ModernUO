@@ -9,7 +9,7 @@ using System.Collections.Generic;
 	/*
 	this is From me to you, Under no terms, Conditions...   K?  to apply you
 	just simply Unpatch/delete, Stick these in, Same location.. Restart
-	*/ 
+	*/
 
 namespace Server.Engines.Doom
 {
@@ -75,7 +75,7 @@ namespace Server.Engines.Doom
 			{
 				for (int i=0; i<5; i++)
 				{
-					if( GetOccupant( i ) == null)
+					if ( GetOccupant( i ) == null)
 					{
 						return false;
 					}
@@ -107,7 +107,7 @@ namespace Server.Engines.Doom
 			for (; i<19; i++)
 				m_Statues.Add( AddLeverPuzzlePart( TA[i], new LeverPuzzleStatue( TA[++i], this )));
 
-			if(!installed)
+			if (!installed)
 				Delete();
 			else
 				Enabled=true;
@@ -119,7 +119,7 @@ namespace Server.Engines.Doom
 
 		public static Item AddLeverPuzzlePart( int[] Loc, Item newitem  )
 		{
-			if( newitem == null || newitem.Deleted  )
+			if ( newitem == null || newitem.Deleted  )
 			{
 				installed=false;
 			}
@@ -141,7 +141,7 @@ namespace Server.Engines.Doom
 			NukeItemList( m_Statues );
 			NukeItemList( m_Levers );
 
-			if( m_LampRoom != null )
+			if ( m_LampRoom != null )
 			{
 				m_LampRoom.Unregister();
 			}
@@ -152,7 +152,7 @@ namespace Server.Engines.Doom
 					region.Unregister();
 				}
 			}
-			if( m_Box != null && !m_Box.Deleted )
+			if ( m_Box != null && !m_Box.Deleted )
 			{
 				m_Box.Delete();
 			}
@@ -164,7 +164,7 @@ namespace Server.Engines.Doom
 			{
 				foreach ( Item item in list )
 				{
-					if( item != null && !item.Deleted )
+					if ( item != null && !item.Deleted )
 					{
 						item.Delete();
 					}
@@ -178,7 +178,7 @@ namespace Server.Engines.Doom
 
 			if ( region != null )
 			{
-				if( region.Occupant != null && region.Occupant.Alive )
+				if ( region.Occupant != null && region.Occupant.Alive )
 				{
 					return (PlayerMobile)region.Occupant;
 				}
@@ -190,7 +190,7 @@ namespace Server.Engines.Doom
 		{
 			LeverPuzzleStatue statue = (LeverPuzzleStatue)m_Statues[index];
 
-			if( statue != null && !statue.Deleted )
+			if ( statue != null && !statue.Deleted )
 			{
 				return statue;
 			}
@@ -201,7 +201,7 @@ namespace Server.Engines.Doom
 		{
 			LeverPuzzleLever lever = (LeverPuzzleLever)m_Levers[index];
 
-			if( lever != null && !lever.Deleted )
+			if ( lever != null && !lever.Deleted )
 			{
 				return lever;
 			}
@@ -213,7 +213,7 @@ namespace Server.Engines.Doom
 			for( int i=0; i<2; i++)
 			{
 				Item s;
-				if(( s = GetStatue( i )) != null )
+				if (( s = GetStatue( i )) != null )
 				{
 					s.PublicOverheadMessage( MessageType.Regular, 0x3B2, message, fstring );
 				}
@@ -231,7 +231,7 @@ namespace Server.Engines.Doom
 			for(int i=0;i<4; i++)
 			{
 				Item l;
-				if(( l = GetLever( i )) != null )
+				if (( l = GetLever( i )) != null )
 				{
 					l.ItemID=0x108E;
 					Effects.PlaySound( l.Location, Map, 0x3E8 );
@@ -266,24 +266,24 @@ namespace Server.Engines.Doom
 
 			/* if one bit in each of the four nibbles is set, this is false */
 
-			if( (TheirKey=(ushort)(code|(TheirKey<<=4))) < 0x0FFF )
+			if ( (TheirKey=(ushort)(code|(TheirKey<<=4))) < 0x0FFF )
 			{
 				l_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), new TimerCallback( ResetPuzzle ));
 				return;
 			}
 
-			if( !CircleComplete )
+			if ( !CircleComplete )
 			{
 				PuzzleStatus( 1050004, null ); // The circle is the key...
 			}
 			else
 			{
-				if( TheirKey == MyKey )
+				if ( TheirKey == MyKey )
 				{
 					GenKey();
 					if (( m_Successful = ( m_Player=GetOccupant( 0 ))) != null )
 					{
-						SendLocationEffect( lp_Center,  0x1153, 0, 60, 1 ); 
+						SendLocationEffect( lp_Center,  0x1153, 0, 60, 1 );
 						PlaySounds( lp_Center, cs1 );
 
 						Effects.SendBoltEffect( m_Player, true );
@@ -298,7 +298,7 @@ namespace Server.Engines.Doom
 				{
 					for(int i=0; i<16; i++)  /* Count matching SET bits, ie correct codes */
 					{
-						if( (((MyKey>>i)&1)==1)&&(((TheirKey>>i)&1)==1) )
+						if ( (((MyKey>>i)&1)==1)&&(((TheirKey>>i)&1)==1) )
 						{
 							Correct++;
 						}
@@ -308,7 +308,7 @@ namespace Server.Engines.Doom
 
 					for (int i=0; i<5; i++)
 					{
-						if(( m_Player=GetOccupant( i )) != null )
+						if (( m_Player=GetOccupant( i )) != null )
 						{
 							Timer smash = new RockTimer( m_Player, this );
 							smash.Start();
@@ -324,7 +324,7 @@ namespace Server.Engines.Doom
 			UInt16 tmp; int n, i; ushort[] CA = { 1,2,4,8 };
 			for (i=0; i<4; i++)
 			{
-				n=(((n = Utility.Random(0,3))==i) ? n&~i : n ); /* if(i==n) { return pointless; } */
+				n=(((n = Utility.Random(0,3))==i) ? n&~i : n ); /* if (i==n) { return pointless; } */
 				tmp = CA[i];
 				CA[i]=CA[n];
 				CA[n]=tmp;
@@ -338,7 +338,7 @@ namespace Server.Engines.Doom
 			private Mobile m_Player;
 			private LeverPuzzleController m_Controller;
 
-			public RockTimer( Mobile player, LeverPuzzleController Controller ) 
+			public RockTimer( Mobile player, LeverPuzzleController Controller )
 				: base( TimeSpan.Zero, TimeSpan.FromSeconds( .25 ) )
 			{
 				Count = 0;
@@ -353,7 +353,7 @@ namespace Server.Engines.Doom
 
 			protected override void OnTick()
 			{
-				if( m_Player == null || !(m_Player.Map == Map.Malas) )
+				if ( m_Player == null || !(m_Player.Map == Map.Malas) )
 				{
 					Stop();
 				}
@@ -361,7 +361,7 @@ namespace Server.Engines.Doom
 				{
 					Count++;
 					if ( Count == 1 ) /* TODO consolidate */
-					{	
+					{
 						m_Player.Paralyze( TimeSpan.FromSeconds(2) );
 						Effects.SendTargetEffect( m_Player, 0x11B7, 20, 10 );
 						PlayerSendASCII( m_Player, 0 );  // You are pinned down ...
@@ -376,7 +376,7 @@ namespace Server.Engines.Doom
 						PlaySounds( m_Player.Location, exp );
 						PlayerSendASCII( m_Player, 1 ); // A speeding rock  ...
 
-						if( AniSafe( m_Player ))
+						if ( AniSafe( m_Player ))
 						{
 							m_Player.Animate( 21, 10, 1, true, true, 0 );
 						}
@@ -401,12 +401,12 @@ namespace Server.Engines.Doom
 							}
 							for( int k=0; k<mobiles.Count; k++ )
 							{
-								if( IsValidDamagable( mobiles[k] ) && mobiles[k] != m_Player  )
+								if ( IsValidDamagable( mobiles[k] ) && mobiles[k] != m_Player  )
 								{
 									PlayEffect( m_Player, mobiles[k], Rock(), 8, true );
 									DoDamage( mobiles[k], 25, 30, false );
 
-									if( mobiles[k].Player )
+									if ( mobiles[k].Player )
 									{
 										POHMessage( mobiles[k], 2 ); // OUCH!
 									}
@@ -423,7 +423,7 @@ namespace Server.Engines.Doom
 		{
 			private Mobile m;
 
-			public LampRoomKickTimer( Mobile player ) 
+			public LampRoomKickTimer( Mobile player )
 				: base( TimeSpan.FromSeconds( .25 ) )
 			{
 				m = player;
@@ -440,7 +440,7 @@ namespace Server.Engines.Doom
 			public int ticks;
 			public int level;
 
-			public LampRoomTimer( LeverPuzzleController controller ) 
+			public LampRoomTimer( LeverPuzzleController controller )
 				: base( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromSeconds( 5.0 ) )
 			{
 				level=0;
@@ -457,7 +457,7 @@ namespace Server.Engines.Doom
 				{
 					foreach ( Mobile mobile in mobiles )
 					{
-						if( mobile != null && !mobile.Deleted && !mobile.IsDeadBondedPet )
+						if ( mobile != null && !mobile.Deleted && !mobile.IsDeadBondedPet )
 						{
 							mobile.Kill();
 						}
@@ -480,7 +480,7 @@ namespace Server.Engines.Doom
 								if ( mobile.Player )
 								{
 									mobile.Say( 1062092 );
-									if( AniSafe( mobile ))
+									if ( AniSafe( mobile ))
 									{
 										mobile.Animate( 32, 5, 1, true, false, 0 );
 									}
@@ -509,19 +509,10 @@ namespace Server.Engines.Doom
 		{
 			if ( m != null && !m.Deleted )
 			{
-				if( m.Player && m.Alive )
-				{
+				if ( m.Player && m.Alive )
 					return true;
-				}
 
-				if( m is BaseCreature )
-				{
-					BaseCreature bc=(BaseCreature)m;
-					if ( ( bc.Controlled || bc.Summoned ) && !bc.IsDeadBondedPet )
-					{
-						return true;
-					}
-				}
+				return m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet;
 			}
 			return false;
 		}
@@ -530,9 +521,9 @@ namespace Server.Engines.Doom
 		{
 			if ( m != null )
 			{
-				if( m is PlayerMobile && !m.Alive )
+				if ( m is PlayerMobile && !m.Alive )
 				{
-					if( m.Corpse != null && !m.Corpse.Deleted )
+					if ( m.Corpse != null && !m.Corpse.Deleted )
 					{
 						m.Corpse.MoveToWorld( lr_Exit, Map.Malas );
 					}
@@ -597,7 +588,7 @@ namespace Server.Engines.Doom
 		}
 
 			/* I cant find any better way to send "speech" using fonts other than default */
-		public static void POHMessage( Mobile from, int index ) 
+		public static void POHMessage( Mobile from, int index )
 		{
 			Packet p = new AsciiMessage( from.Serial, from.Body, MessageType.Regular, MsgParams[index][0], MsgParams[index][1], from.Name, Msgs[index] );
 			p.Acquire();
@@ -607,7 +598,7 @@ namespace Server.Engines.Doom
 			Packet.Release( p );
 		}
 
-		public static string[] Msgs = 
+		public static string[] Msgs =
 		{
 			"You are pinned down by the weight of the boulder!!!",	// 0
 			"A speeding rock hits you in the head!",		// 1
@@ -615,7 +606,7 @@ namespace Server.Engines.Doom
 		};
 			/* font&hue for above msgs. index matches */
 
-		public static int[][] MsgParams = 
+		public static int[][] MsgParams =
 		{
 			new int[]{ 0x66d, 3 },
 			new int[]{ 0x66d, 3 },
@@ -623,26 +614,26 @@ namespace Server.Engines.Doom
 		};
 			/* World data for items */
 
-		public static int[][] TA = 
-		{ 
+		public static int[][] TA =
+		{
 
 			new int[]{316, 64, 5},					/* 3D Coords for levers */
-			new int[]{323, 58, 5}, 
-			new int[]{332, 63, 5}, 
+			new int[]{323, 58, 5},
+			new int[]{332, 63, 5},
 			new int[]{323, 71, 5},
 
 			new int[]{324, 64},					/* 2D Coords for standing regions */
-			new int[]{316, 65}, 
-			new int[]{324, 58}, 
-			new int[]{332, 64}, 
+			new int[]{316, 65},
+			new int[]{324, 58},
+			new int[]{332, 64},
 			new int[]{323, 72},
 
 			new int[]{468, 92, -1}, new int[]{0x181D, 0x482}, 	/* 3D coord, itemid+hue for L.R. teles */
-			new int[]{469, 92, -1}, new int[]{0x1821, 0x3fd}, 
-			new int[]{470, 92, -1}, new int[]{0x1825, 0x66d}, 
+			new int[]{469, 92, -1}, new int[]{0x1821, 0x3fd},
+			new int[]{470, 92, -1}, new int[]{0x1825, 0x66d},
 
 			new int[]{319, 70, 18}, new int[]{0x12d8}, 		/* 3D coord, itemid for statues */
-			new int[]{329, 60, 18}, new int[]{0x12d9}, 
+			new int[]{329, 60, 18}, new int[]{0x12d9},
 
 			new int[]{469, 96, 6}					/* 3D Coords for Fake Box */
 		};
@@ -666,8 +657,8 @@ namespace Server.Engines.Doom
 
 			/* Lamp Room area Poison message data */
 
-		public static int[][] PA = 
-		{ 
+		public static int[][] PA =
+		{
 			new int[]{ 0, 0, 0xA6 },
 			new int[]{ 1050001, 0x485, 0xAA },
 			new int[]{ 1050003, 0x485, 0xAC },
@@ -675,14 +666,14 @@ namespace Server.Engines.Doom
 			new int[]{ 1050057, 0x485, 0xA4 },
 			new int[]{ 1062091, 0x23F3, 0xAC }
 		};
-		public static Poison[] PA2 = 
+		public static Poison[] PA2 =
 		{
-			Poison.Lesser, 
-			Poison.Regular, 
-			Poison.Greater, 
-			Poison.Deadly, 
-			Poison.Lethal, 
-			Poison.Lethal 
+			Poison.Lesser,
+			Poison.Regular,
+			Poison.Greater,
+			Poison.Deadly,
+			Poison.Lethal,
+			Poison.Lethal
 		};
 
 			/* SOUNDS */

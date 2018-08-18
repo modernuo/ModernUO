@@ -167,26 +167,24 @@ namespace Server.Engines.BulkOrders
 
 		public void EndCombine( Mobile from, object o )
 		{
-			if ( o is Item && ((Item)o).IsChildOf( from.Backpack ) )
+			if ( o is Item item && item.IsChildOf( from.Backpack ) )
 			{
-				Type objectType = o.GetType();
+				Type objectType = item.GetType();
 
 				if ( m_AmountCur >= m_AmountMax )
 				{
 					from.SendLocalizedMessage( 1045166 ); // The maximum amount of requested items have already been combined to this deed.
 				}
-				else if ( m_Type == null || (objectType != m_Type && !objectType.IsSubclassOf( m_Type )) || (!(o is BaseWeapon) && !(o is BaseArmor) && !(o is BaseClothing)) )
+				else if ( m_Type == null || (objectType != m_Type && !objectType.IsSubclassOf( m_Type )) || (!(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing)) )
 				{
 					from.SendLocalizedMessage( 1045169 ); // The item is not in the request.
 				}
 				else
 				{
-					BulkMaterialType material = BulkMaterialType.None;
+					BaseArmor armor = item as BaseArmor;
+					BaseClothing clothing = item as BaseClothing;
 
-					if ( o is BaseArmor )
-						material = GetMaterial( ((BaseArmor)o).Resource );
-					else if ( o is BaseClothing )
-						material = GetMaterial( ((BaseClothing)o).Resource );
+					BulkMaterialType material = GetMaterial( armor?.Resource ?? clothing?.Resource ?? CraftResource.None );
 
 					if ( m_Material >= BulkMaterialType.DullCopper && m_Material <= BulkMaterialType.Valorite && material != m_Material )
 					{
@@ -198,14 +196,14 @@ namespace Server.Engines.BulkOrders
 					}
 					else
 					{
-						bool isExceptional = false;
+						bool isExceptional;
 
-						if ( o is BaseWeapon )
-							isExceptional = ( ((BaseWeapon)o).Quality == WeaponQuality.Exceptional );
-						else if ( o is BaseArmor )
-							isExceptional = ( ((BaseArmor)o).Quality == ArmorQuality.Exceptional );
-						else if ( o is BaseClothing )
-							isExceptional = ( ((BaseClothing)o).Quality == ClothingQuality.Exceptional );
+						if ( item is BaseWeapon weapon )
+							isExceptional = weapon.Quality == WeaponQuality.Exceptional;
+						else if ( armor != null )
+							isExceptional = armor.Quality == ArmorQuality.Exceptional;
+						else
+							isExceptional = clothing.Quality == ClothingQuality.Exceptional;
 
 						if ( m_RequireExceptional && !isExceptional )
 						{
@@ -213,7 +211,7 @@ namespace Server.Engines.BulkOrders
 						}
 						else
 						{
-							((Item)o).Delete();
+							item.Delete();
 							++AmountCur;
 
 							from.SendLocalizedMessage( 1045170 ); // The item has been combined with the deed.

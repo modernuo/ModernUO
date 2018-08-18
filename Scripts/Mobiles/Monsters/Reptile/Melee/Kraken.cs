@@ -50,7 +50,7 @@ namespace Server.Mobiles
 			rope.ItemID = 0x14F8;
 			PackItem( rope );
 
-			if( Utility.RandomDouble() < .05 )
+			if ( Utility.RandomDouble() < .05 )
 				PackItem( new MessageInABottle() );
 
 			PackItem( new SpecialFishingNet() ); //Confirm?

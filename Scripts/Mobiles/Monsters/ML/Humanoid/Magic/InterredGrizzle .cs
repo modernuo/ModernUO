@@ -86,7 +86,7 @@ namespace Server.Mobiles
 
 		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{
-			if( Utility.RandomDouble() < 0.1 )
+			if ( Utility.RandomDouble() < 0.1 )
 				DropOoze();
 
 			base.OnDamage( amount, from, willKill );
@@ -104,7 +104,7 @@ namespace Server.Mobiles
 
 		public virtual Point3D GetSpawnPosition( Point3D from, Map map, int range )
 		{
-			if( map == null )
+			if ( map == null )
 				return from;
 
 			Point3D loc = new Point3D( ( RandomPoint( X ) ), ( RandomPoint( Y ) ), Z );
@@ -130,22 +130,22 @@ namespace Server.Mobiles
 					bool found = false;
 
 					foreach( Item item in Map.GetItemsInRange( p, 0 ) )
-						if( item is StainedOoze )
+						if ( item is StainedOoze )
 						{
 							found = true;
 							break;
 						}
 
-					if( !found )
+					if ( !found )
 						break;
 				}
 
 				ooze.MoveToWorld( p, Map );
 			}
 
-			if( Combatant != null )
+			if ( Combatant != null )
 			{
-				if( corrosive )
+				if ( corrosive )
 					Combatant.SendLocalizedMessage( 1072071 ); // A corrosive gas seeps out of your enemy's skin!
 				else
 					Combatant.SendLocalizedMessage( 1072072 ); // A poisonous gas seeps out of your enemy's skin!

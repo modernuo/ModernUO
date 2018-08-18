@@ -856,7 +856,7 @@ namespace Server
 		public static event GuildGumpRequestHandler GuildGumpRequest;
 		public static event QuestGumpRequestHandler QuestGumpRequest;
 		public static event ClientVersionReceivedHandler ClientVersionReceived;
-		
+
 		/* The following is a .NET 2.0 "Generic EventHandler" implementation.
 		 * It is a breaking change; we would have to refactor all event handlers.
 		 * This style does not appear to be in widespread use.
@@ -911,7 +911,7 @@ namespace Server
 
 		public static void InvokeClientVersionReceived( ClientVersionReceivedArgs e )
 		{
-			if( ClientVersionReceived != null )
+			if ( ClientVersionReceived != null )
 				ClientVersionReceived( e );
 		}
 
@@ -935,13 +935,13 @@ namespace Server
 
 		public static void InvokeGuildGumpRequest( GuildGumpRequestArgs e )
 		{
-			if( GuildGumpRequest != null )
+			if ( GuildGumpRequest != null )
 				GuildGumpRequest( e );
 		}
 
 		public static void InvokeQuestGumpRequest( QuestGumpRequestArgs e )
 		{
-			if( QuestGumpRequest != null )
+			if ( QuestGumpRequest != null )
 				QuestGumpRequest( e );
 		}
 

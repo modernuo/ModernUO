@@ -23,12 +23,12 @@ namespace Server.Items
 		public override ArmorMaterialType MaterialType => ArmorMaterialType.Chainmail;
 
 		[Constructible]
-		public ChainCoif() : base( 0x13BB )
+		public ChainCoif () : base( 0x13BB )
 		{
 			Weight = 1.0;
 		}
 
-		public ChainCoif( Serial serial ) : base( serial )
+		public ChainCoif ( Serial serial ) : base( serial )
 		{
 		}
 

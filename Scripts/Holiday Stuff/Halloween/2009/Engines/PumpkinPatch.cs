@@ -24,7 +24,7 @@ namespace Server.Engines.Events
 		{
 			DateTime now = DateTime.UtcNow;
 
-			if( DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween )
+			if ( DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromMinutes( .50 ), 0, new TimerCallback( PumpkinPatchSpawnerCallback ));
 			}
@@ -47,13 +47,13 @@ namespace Server.Engines.Events
 
 				foreach( Item item in map.GetItemsInBounds( rect ) )
 				{
-					if( item is HalloweenPumpkin )
+					if ( item is HalloweenPumpkin )
 					{
 						pumpkins++;
 					}
 				}
 
-				if( spawncount > pumpkins )
+				if ( spawncount > pumpkins )
 				{
 					Item item = new HalloweenPumpkin();
 

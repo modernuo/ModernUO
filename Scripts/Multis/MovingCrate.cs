@@ -242,7 +242,7 @@ namespace Server.Multis
 
 			m_House = reader.ReadItem() as BaseHouse;
 
-			if( m_House != null )
+			if ( m_House != null )
 			{
 				m_House.MovingCrate = this;
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Hide ) );

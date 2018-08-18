@@ -20,7 +20,7 @@ namespace Server.Items
 		{
 			bool allow = base.OnMoveOver( m );
 
-			if( allow && Addon is BedOfNailsAddon )
+			if ( allow && Addon is BedOfNailsAddon )
 				( (BedOfNailsAddon)Addon ).OnMoveOver( m );
 
 			return allow;
@@ -64,17 +64,17 @@ namespace Server.Items
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			if( m.Alive && ( m.AccessLevel == AccessLevel.Player || !m.Hidden ) )
+			if ( m.Alive && ( m.AccessLevel == AccessLevel.Player || !m.Hidden ) )
 			{
-				if( m.Player )
+				if ( m.Player )
 				{
-					if( m.Female )
+					if ( m.Female )
 						Effects.PlaySound( Location, Map, Utility.RandomMinMax( 0x53B, 0x53D ) );
 					else
 						Effects.PlaySound( Location, Map, Utility.RandomMinMax( 0x53E, 0x540 ) );
 				}
 
-				if( m_Timer == null || !m_Timer.Running )
+				if ( m_Timer == null || !m_Timer.Running )
 					( m_Timer = new InternalTimer( m ) ).Start();
 			}
 
@@ -124,13 +124,13 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				if( m_Mobile == null || m_Mobile.Map == null || m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Map == Map.Internal )
+				if ( m_Mobile == null || m_Mobile.Map == null || m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Map == Map.Internal )
 				{
 					Stop();
 				}
 				else
 				{
-					if( m_Location != m_Mobile.Location )
+					if ( m_Location != m_Mobile.Location )
 					{
 						int amount = Utility.RandomMinMax( 0, 7 );
 
@@ -140,11 +140,11 @@ namespace Server.Items
 							int y = m_Mobile.Y + Utility.RandomMinMax( -1, 1 );
 							int z = m_Mobile.Z;
 
-							if( !m_Mobile.Map.CanFit( x, y, z, 1, false, false, true ) )
+							if ( !m_Mobile.Map.CanFit( x, y, z, 1, false, false, true ) )
 							{
 								z = m_Mobile.Map.GetAverageZ( x, y );
 
-								if( !m_Mobile.Map.CanFit( x, y, z, 1, false, false, true ) )
+								if ( !m_Mobile.Map.CanFit( x, y, z, 1, false, false, true ) )
 								{
 									continue;
 								}

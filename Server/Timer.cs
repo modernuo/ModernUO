@@ -551,7 +551,7 @@ namespace Server
 		{
 			Timer t = new DelayStateCallTimer<T>( delay, interval, count, callback, state );
 
-			if( count == 1 )
+			if ( count == 1 )
 				t.Priority = ComputePriority( delay );
 			else
 				t.Priority = ComputePriority( interval );
@@ -638,7 +638,7 @@ namespace Server
 
 			protected override void OnTick()
 			{
-				if( m_Callback != null )
+				if ( m_Callback != null )
 					m_Callback( m_State );
 			}
 

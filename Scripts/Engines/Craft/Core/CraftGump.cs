@@ -104,8 +104,8 @@ namespace Server.Engines.Craft
 			}
 			// ****************************************
 
-			if ( notice is int && (int)notice > 0 )
-				AddHtmlLocalized( 170, 295, 350, 40, (int)notice, LabelColor, false, false );
+			if ( notice is int noticeInt && noticeInt > 0 )
+				AddHtmlLocalized( 170, 295, 350, 40, noticeInt, LabelColor, false, false );
 			else if ( notice is string )
 				AddHtml( 170, 295, 350, 40, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", FontColor, notice ), false, false );
 
@@ -115,7 +115,7 @@ namespace Server.Engines.Craft
 				string nameString = craftSystem.CraftSubRes.NameString;
 				int nameNumber = craftSystem.CraftSubRes.NameNumber;
 
-				int resIndex = ( context == null ? -1 : context.LastResourceIndex );
+				int resIndex = context?.LastResourceIndex ?? -1;
 
 				Type resourceType = craftSystem.CraftSubRes.ResType;
 

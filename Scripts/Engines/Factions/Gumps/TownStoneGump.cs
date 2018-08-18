@@ -124,9 +124,8 @@ namespace Server.Factions
 			{
 				from.SendLocalizedMessage( 1010342 ); // You must fire your Sheriff before you can elect a new one
 			}
-			else if ( obj is Mobile )
+			else if ( obj is Mobile targ )
 			{
-				Mobile targ = (Mobile)obj;
 				PlayerState pl = PlayerState.Find( targ );
 
 				if ( pl == null )
@@ -163,15 +162,13 @@ namespace Server.Factions
 			if ( m_Town.Owner != m_Faction || !m_Faction.IsCommander( from ) )
 			{
 				from.SendLocalizedMessage( 1010339 ); // You no longer control this city
-				return;
 			}
 			else if ( m_Town.Finance != null )
 			{
 				from.SendLocalizedMessage( 1010342 ); // You must fire your Sheriff before you can elect a new one
 			}
-			else if ( obj is Mobile )
+			else if ( obj is Mobile targ )
 			{
-				Mobile targ = (Mobile)obj;
 				PlayerState pl = PlayerState.Find( targ );
 
 				if ( pl == null )

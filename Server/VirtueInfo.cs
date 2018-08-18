@@ -108,7 +108,7 @@ namespace Server
 				}
 			}
 
-			if( version == 0 )
+			if ( version == 0 )
 			{
 				Compassion *= 200;
 				Sacrifice *= 250;	//Even though 40 (the max) only gives 10k, It's because it was formerly too easy

@@ -41,7 +41,7 @@ namespace Server.Mobiles
 			Karma = -700;
 
 
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 			{
 				Item i = Loot.RandomReagent();
 				i.Amount = 3;

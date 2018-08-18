@@ -31,7 +31,7 @@ namespace Server.Engines.Craft
 
 		public override double GetChanceAtMin( CraftItem item )
 		{
-			if( item.ItemType == typeof( HollowPrism ) )
+			if ( item.ItemType == typeof( HollowPrism ) )
 				return 0.5; // 50%
 
 			return 0.0; // 0%
@@ -43,13 +43,13 @@ namespace Server.Engines.Craft
 
 		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
 		{
-			if( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
+			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
-			else if ( !BaseTool.CheckTool( tool, from ) )
+			if ( !BaseTool.CheckTool( tool, from ) )
 				return 1048146; // If you have a tool equipped, you must use that tool.
-			else if ( !(from is PlayerMobile && ((PlayerMobile)from).Glassblowing && from.Skills[SkillName.Alchemy].Base >= 100.0) )
+			if ( !(from is PlayerMobile mobile && mobile.Glassblowing && mobile.Skills[SkillName.Alchemy].Base >= 100.0) )
 				return 1044634; // You havent learned glassblowing.
-			else if ( !BaseTool.CheckAccessible( tool, from ) )
+			if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
 
 			bool anvil, forge;

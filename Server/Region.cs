@@ -1142,7 +1142,7 @@ namespace Server
 
 			T tempVal;
 
-			if( type.IsEnum && Enum.TryParse( s, true, out tempVal ) )
+			if ( type.IsEnum && Enum.TryParse( s, true, out tempVal ) )
 			{
 				value = tempVal;
 				return true;

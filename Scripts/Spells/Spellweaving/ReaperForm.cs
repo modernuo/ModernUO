@@ -18,7 +18,7 @@ namespace Server.Spells.Spellweaving
 		{
 			TransformContext context = TransformationSpellHelper.GetContext( e.Mobile );
 
-			if( context != null && context.Type == typeof( ReaperFormSpell ) )
+			if ( context != null && context.Type == typeof( ReaperFormSpell ) )
 				e.Mobile.Send( SpeedControl.WalkSpeed );
 		}
 

@@ -467,7 +467,7 @@ namespace Server.Multis
 		{
 			m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
 
-			if( m_TillerMan != null )
+			if ( m_TillerMan != null )
 				m_TillerMan.InvalidateProperties();
 		}
 
@@ -1299,9 +1299,9 @@ namespace Server.Multis
 
 		public static Rectangle2D[] GetWrapFor( Map m )
 		{
-			if( m == Map.Ilshenar )
+			if ( m == Map.Ilshenar )
 				return m_IlshWrap;
-			else if( m == Map.Tokuno )
+			else if ( m == Map.Tokuno )
 				return m_TokunoWrap;
 			else
 				return m_BritWrap;

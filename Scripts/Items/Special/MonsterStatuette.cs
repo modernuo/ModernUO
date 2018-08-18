@@ -160,11 +160,11 @@ namespace Server.Items
 				m_Type = value;
 				ItemID = MonsterStatuetteInfo.GetInfo( m_Type ).ItemID;
 
-				if( m_Type == MonsterStatuetteType.Slime )
+				if ( m_Type == MonsterStatuetteType.Slime )
 					Hue = Utility.RandomSlimeHue();
-				else if( m_Type == MonsterStatuetteType.RedDeath )
+				else if ( m_Type == MonsterStatuetteType.RedDeath )
 					Hue = 0x21;
-				else if( m_Type == MonsterStatuetteType.HalloweenGhoul )
+				else if ( m_Type == MonsterStatuetteType.HalloweenGhoul )
 					Hue = 0xF4;
 				else
 					Hue = 0;
@@ -195,11 +195,11 @@ namespace Server.Items
 
 			m_Type = type;
 
-			if( m_Type == MonsterStatuetteType.Slime )
+			if ( m_Type == MonsterStatuetteType.Slime )
 				Hue = Utility.RandomSlimeHue();
-			else if( m_Type == MonsterStatuetteType.RedDeath )
+			else if ( m_Type == MonsterStatuetteType.RedDeath )
 				Hue = 0x21;
-			else if( m_Type == MonsterStatuetteType.HalloweenGhoul )
+			else if ( m_Type == MonsterStatuetteType.HalloweenGhoul )
 				Hue = 0xF4;
 		}
 
@@ -211,7 +211,7 @@ namespace Server.Items
 			{
 				int[] sounds = MonsterStatuetteInfo.GetInfo( m_Type ).Sounds;
 
-				if( sounds.Length > 0 )
+				if ( sounds.Length > 0 )
 					Effects.PlaySound( this.Location, this.Map, sounds[Utility.Random( sounds.Length )] );
 			}
 

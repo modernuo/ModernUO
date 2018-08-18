@@ -72,7 +72,7 @@ namespace Server.Spells
 
 		public void StartDelayedDamageContext( Mobile m, Timer t )
 		{
-			if( DelayedDamageStacking )
+			if ( DelayedDamageStacking )
 				return; //Sanity
 
 			if (!m_ContextTable.TryGetValue( GetType(), out DelayedDamageContextWrapper contexts ))
@@ -107,7 +107,7 @@ namespace Server.Spells
 
 		public virtual int GetNewAosDamage( int bonus, int dice, int sides, Mobile singleTarget )
 		{
-			if( singleTarget != null )
+			if ( singleTarget != null )
 			{
 				return GetNewAosDamage( bonus, dice, sides, (Caster.Player && singleTarget.Player), GetDamageScalar( singleTarget ) );
 			}
@@ -143,7 +143,7 @@ namespace Server.Spells
 
 			TransformContext context = TransformationSpellHelper.GetContext( Caster );
 
-			if( context != null && context.Spell is ReaperFormSpell )
+			if ( context != null && context.Spell is ReaperFormSpell )
 				damageBonus += ((ReaperFormSpell)context.Spell).SpellDamageBonus;
 
 			damage = AOS.Scale( damage, 100 + damageBonus );
@@ -285,19 +285,19 @@ namespace Server.Spells
 		{
 			double scalar = 1.0;
 
-			if( !Core.AOS )	//EvalInt stuff for AoS is handled elsewhere
+			if ( !Core.AOS )	//EvalInt stuff for AoS is handled elsewhere
 			{
 				double casterEI = m_Caster.Skills[DamageSkill].Value;
 				double targetRS = target.Skills[SkillName.MagicResist].Value;
 
 				/*
-				if( Core.AOS )
+				if ( Core.AOS )
 					targetRS = 0;
 				*/
 
 				//m_Caster.CheckSkill( DamageSkill, 0.0, 120.0 );
 
-				if( casterEI > targetRS )
+				if ( casterEI > targetRS )
 					scalar = (1.0 + ((casterEI - targetRS) / 500.0));
 				else
 					scalar = (1.0 + ((casterEI - targetRS) / 200.0));
@@ -305,7 +305,7 @@ namespace Server.Spells
 				// magery damage bonus, -25% at 0 skill, +0% at 100 skill, +5% at 120 skill
 				scalar += (m_Caster.Skills[CastSkill].Value - 100.0) / 400.0;
 
-				if( !target.Player && !target.Body.IsHuman /*&& !Core.AOS*/ )
+				if ( !target.Player && !target.Body.IsHuman /*&& !Core.AOS*/ )
 					scalar *= 2.0; // Double magery damage to monsters/animals if not AOS
 			}
 
@@ -315,12 +315,12 @@ namespace Server.Spells
 			if ( m_Caster is BaseCreature )
 				((BaseCreature)m_Caster).AlterDamageScalarTo( target, ref scalar );
 
-			if( Core.SE )
+			if ( Core.SE )
 				scalar *= GetSlayerDamageScalar( target );
 
 			target.Region.SpellDamageScalar( m_Caster, target, ref scalar );
 
-			if( Evasion.CheckSpellEvasion( target ) )	//Only single target spells an be evaded
+			if ( Evasion.CheckSpellEvasion( target ) )	//Only single target spells an be evaded
 				scalar = 0;
 
 			return scalar;
@@ -331,12 +331,12 @@ namespace Server.Spells
 			Spellbook atkBook = Spellbook.FindEquippedSpellbook( m_Caster );
 
 			double scalar = 1.0;
-			if( atkBook != null )
+			if ( atkBook != null )
 			{
 				SlayerEntry atkSlayer = SlayerGroup.GetEntryByName( atkBook.Slayer );
 				SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName( atkBook.Slayer2 );
 
-				if( atkSlayer != null && atkSlayer.Slays( defender ) || atkSlayer2 != null && atkSlayer2.Slays( defender ) )
+				if ( atkSlayer != null && atkSlayer.Slays( defender ) || atkSlayer2 != null && atkSlayer2.Slays( defender ) )
 				{
 					defender.FixedEffect( 0x37B9, 10, 5 );	//TODO: Confirm this displays on OSIs
 					scalar = 2.0;
@@ -345,24 +345,24 @@ namespace Server.Spells
 
 				TransformContext context = TransformationSpellHelper.GetContext( defender );
 
-				if( (atkBook.Slayer == SlayerName.Silver || atkBook.Slayer2 == SlayerName.Silver) && context != null && context.Type != typeof( HorrificBeastSpell ) )
+				if ( (atkBook.Slayer == SlayerName.Silver || atkBook.Slayer2 == SlayerName.Silver) && context != null && context.Type != typeof( HorrificBeastSpell ) )
 					scalar +=.25; // Every necromancer transformation other than horrific beast take an additional 25% damage
 
-				if( scalar != 1.0 )
+				if ( scalar != 1.0 )
 					return scalar;
 			}
 
 			ISlayer defISlayer = Spellbook.FindEquippedSpellbook( defender );
 
-			if( defISlayer == null )
+			if ( defISlayer == null )
 				defISlayer = defender.Weapon as ISlayer;
 
-			if( defISlayer != null )
+			if ( defISlayer != null )
 			{
 				SlayerEntry defSlayer = SlayerGroup.GetEntryByName( defISlayer.Slayer );
 				SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName( defISlayer.Slayer2 );
 
-				if( defSlayer != null && defSlayer.Group.OppositionSuperSlays( m_Caster ) || defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays( m_Caster ) )
+				if ( defSlayer != null && defSlayer.Group.OppositionSuperSlays( m_Caster ) || defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays( m_Caster ) )
 					scalar = 2.0;
 			}
 
@@ -407,7 +407,7 @@ namespace Server.Spells
 
 			if ( m_State == SpellState.Casting )
 			{
-				if( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
+				if ( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
 				m_State = SpellState.None;
@@ -428,7 +428,7 @@ namespace Server.Spells
 			}
 			else if ( m_State == SpellState.Sequencing )
 			{
-				if( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
+				if ( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
 				m_State = SpellState.None;
@@ -693,7 +693,7 @@ namespace Server.Spells
 			if ( ProtectionSpell.Registry.Contains( m_Caster ) )
 				fc -= 2;
 
-			if( EssenceOfWindSpell.IsDebuffed( m_Caster ) )
+			if ( EssenceOfWindSpell.IsDebuffed( m_Caster ) )
 				fc -= EssenceOfWindSpell.GetFCMalus( m_Caster );
 
 			TimeSpan baseDelay = CastDelayBase;
@@ -787,7 +787,7 @@ namespace Server.Spells
 				if ( karma != 0 )
 					Misc.Titles.AwardKarma( Caster, karma, true );
 
-				if( TransformationSpellHelper.UnderTransformation( m_Caster, typeof( VampiricEmbraceSpell ) ) )
+				if ( TransformationSpellHelper.UnderTransformation( m_Caster, typeof( VampiricEmbraceSpell ) ) )
 				{
 					bool garlic = false;
 

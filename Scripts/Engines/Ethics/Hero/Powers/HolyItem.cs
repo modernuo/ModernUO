@@ -25,11 +25,10 @@ namespace Server.Ethics.Hero
 
 		private void Power_OnTarget( Mobile fromMobile, object obj, object state )
 		{
-			Player from = state as Player;
+			if (!(state is Player from))
+				return;
 
-			Item item = obj as Item;
-
-			if ( item == null )
+			if ( !(obj is Item item) )
 			{
 				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You may not imbue that." );
 				return;

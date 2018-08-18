@@ -133,19 +133,19 @@ namespace Server
 			if ( value < 4000 )
 				return 2402;
 
-			if( value >= 30000 )
+			if ( value >= 30000 )
 				value = 20000;	//Sanity
 
 
 			int vl;
 
-			if( value < 10000 )
+			if ( value < 10000 )
 				vl = 0;
-			else if( value >= 20000 && index == 5)
+			else if ( value >= 20000 && index == 5)
 				vl = 2;
-			else if( value >= 21000 && index != 1)
+			else if ( value >= 21000 && index != 1)
 				vl = 2;
-			else if( value >= 22000 && index == 1)
+			else if ( value >= 22000 && index == 1)
 				vl = 2;
 			else
 				vl = 1;

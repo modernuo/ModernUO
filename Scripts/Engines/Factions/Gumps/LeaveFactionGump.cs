@@ -20,7 +20,7 @@ namespace Server.Factions
 			AddBackground( 0, 0, 270, 120, 5054 );
 			AddBackground( 10, 10, 250, 100, 3000 );
 
-			if ( from.Guild is Guild && ((Guild)from.Guild).Leader == from )
+			if ( from.Guild is Guild guild && guild.Leader == from )
 				AddHtmlLocalized( 20, 15, 230, 60, 1018057, true, true ); // Are you sure you want your entire guild to leave this faction?
 			else
 				AddHtmlLocalized( 20, 15, 230, 60, 1018063, true, true ); // Are you sure you want to leave this faction?
@@ -38,9 +38,7 @@ namespace Server.Factions
 			{
 				case 1: // continue
 				{
-					Guild guild = m_From.Guild as Guild;
-
-					if ( guild == null )
+					if ( !(m_From.Guild is Guild guild) )
 					{
 						PlayerState pl = PlayerState.Find( m_From );
 

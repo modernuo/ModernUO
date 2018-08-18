@@ -36,7 +36,7 @@ namespace Server.Factions
 			AddItem( new ChainLegs() );
 			AddItem( new RingmailArms() );
 			AddItem( new RingmailGloves() );
-			AddItem( new ChainCoif() );
+			AddItem( new ChainCoif () );
 			AddItem( new Boots() );
 			AddItem( Newbied( new ShortSpear() ) );
 

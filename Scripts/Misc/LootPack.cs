@@ -17,7 +17,7 @@ namespace Server
 			int luck = killer.Luck;
 
 			PlayerMobile pmKiller = killer as PlayerMobile;
-			if( pmKiller != null && pmKiller.SentHonorContext != null && pmKiller.SentHonorContext.Target == victim )
+			if ( pmKiller != null && pmKiller.SentHonorContext != null && pmKiller.SentHonorContext.Target == victim )
 				luck += pmKiller.SentHonorContext.PerfectionLuckBonus;
 
 			if ( luck < 0 )
@@ -78,7 +78,7 @@ namespace Server
 				{
 					checkLuck = false;
 
-					if( LootPack.CheckLuck( luckChance ) )
+					if ( LootPack.CheckLuck( luckChance ) )
 						shouldAdd = ( entry.Chance > Utility.Random( 10000 ) );
 				}
 

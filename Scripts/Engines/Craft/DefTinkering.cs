@@ -45,7 +45,7 @@ namespace Server.Engines.Craft
 
 		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
 		{
-			if( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
+			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
 			else if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
@@ -158,7 +158,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( Axle ), 1044042, 1024187, -25.0, 25.0, typeof( Log ), 1044041, 2, 1044351 );
 			AddCraft( typeof( RollingPin ), 1044042, 1024163, 0.0, 50.0, typeof( Log ), 1044041, 5, 1044351 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( Nunchaku ), 1044042, 1030158, 70.0, 120.0, typeof( IronIngot ), 1044036, 3, 1044037 );
 				AddRes( index, typeof( Log ), 1044041, 8, 1044351 );

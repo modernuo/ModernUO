@@ -25,11 +25,10 @@ namespace Server.Ethics.Hero
 
 		private void Power_OnTarget( Mobile fromMobile, object obj, object state )
 		{
-			Player from = state as Player;
+			if (!(state is Player from))
+				return;
 
-			IPoint3D p = obj as IPoint3D;
-
-			if ( p == null )
+			if ( !(obj is IPoint3D p) )
 				return;
 
 			if ( !CheckInvoke( from ) )

@@ -209,9 +209,7 @@ namespace Server.Engines.ConPVP
 			{
 				case 1: // okay
 				{
-					PlayerMobile pm = m_From as PlayerMobile;
-
-					if ( pm == null )
+					if ( !(m_From is PlayerMobile pm) )
 						break;
 
 					pm.DuelPlayer.Ready = true;

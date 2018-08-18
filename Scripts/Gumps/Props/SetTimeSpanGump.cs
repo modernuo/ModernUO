@@ -126,7 +126,7 @@ namespace Server.Gumps
 				case 2: // From H:M:S
 				{
 					bool successfulParse = false;
-					if( h != null && m != null && s != null )
+					if ( h != null && m != null && s != null )
 					{
 						successfulParse = TimeSpan.TryParse( h.Text + ":" + m.Text + ":" + s.Text, out toSet );
 					}

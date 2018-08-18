@@ -36,7 +36,7 @@ namespace Server.Items
 
 			Recipe r = this.Recipe;
 
-			if( r != null )
+			if ( r != null )
 				list.Add( 1049644, r.TextDefinition.ToString() ); // [~1_stuff~]
 		}
 
@@ -59,7 +59,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( !from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return;
@@ -67,11 +67,11 @@ namespace Server.Items
 
 			Recipe r = this.Recipe;
 
-			if( r != null && from is PlayerMobile )
+			if ( r != null && from is PlayerMobile )
 			{
 				PlayerMobile pm = from as PlayerMobile;
 
-				if( !pm.HasRecipe( r ) )
+				if ( !pm.HasRecipe( r ) )
 				{
 					bool allRequiredSkills = true;
 					double chance = r.CraftItem.GetSuccessChance( from, null, r.CraftSystem, false, ref allRequiredSkills );

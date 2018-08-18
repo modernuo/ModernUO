@@ -50,7 +50,7 @@ namespace Server.Spells.Fifth
 				{
 					int secs = (int)((GetDamageSkill( Caster ) / 10) - (GetResistSkill( m ) / 10));
 
-					if( !Core.SE )
+					if ( !Core.SE )
 						secs += 2;
 
 					if ( !m.Player )

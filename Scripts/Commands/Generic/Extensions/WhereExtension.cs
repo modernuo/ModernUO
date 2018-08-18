@@ -8,7 +8,7 @@ namespace Server.Commands.Generic
 {
 	public sealed class WhereExtension : BaseExtension
 	{
-		public static ExtensionInfo ExtInfo = new ExtensionInfo( 20, "Where", -1, delegate() { return new WhereExtension(); } );
+		public static ExtensionInfo ExtInfo = new ExtensionInfo( 20, "Where", -1, delegate { return new WhereExtension(); } );
 
 		public static void Initialize()
 		{

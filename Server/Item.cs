@@ -1009,9 +1009,9 @@ namespace Server
 		}
 
 		/// <summary>
-		/// Overridable. Determines whether the item will show <see cref="AddWeightProperty" />. 
+		/// Overridable. Determines whether the item will show <see cref="AddWeightProperty" />.
 		/// </summary>
-		public virtual bool DisplayWeight 
+		public virtual bool DisplayWeight
 		{
 			get
 			{
@@ -1022,11 +1022,11 @@ namespace Server
 					return false;
 
 				return true;
-			} 
+			}
 		}
 
 		/// <summary>
-		/// Overridable. Displays cliloc 1072788-1072789. 
+		/// Overridable. Displays cliloc 1072788-1072789.
 		/// </summary>
 		public virtual void AddWeightProperty( ObjectPropertyList list )
 		{
@@ -1062,7 +1062,7 @@ namespace Server
 			if ( DisplayWeight )
 				AddWeightProperty( list );
 
-			if( QuestItem )
+			if ( QuestItem )
 				AddQuestItemProperty( list );
 
 
@@ -1197,10 +1197,10 @@ namespace Server
 		///	{
 		///		if ( from.Int &gt;= 100 )
 		///			return true;
-		///		
+		///
 		///		return base.AllowEquippedCast( from );
 		/// }</code>
-		/// 
+		///
 		/// When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more intelligence. Otherwise, it will drop to their backpack.
 		/// </example>
 		public virtual bool AllowEquippedCast( Mobile from )
@@ -1249,7 +1249,7 @@ namespace Server
 				return DeathMoveResult.MoveToBackpack;
 			else if ( CheckNewbied() && parent.Kills < 5 )
 				return DeathMoveResult.MoveToBackpack;
-			else if( parent.Player && Nontransferable )
+			else if ( parent.Player && Nontransferable )
 				return DeathMoveResult.MoveToBackpack;
 			else
 				return DeathMoveResult.MoveToCorpse;
@@ -1265,7 +1265,7 @@ namespace Server
 				return DeathMoveResult.MoveToBackpack;
 			else if ( CheckNewbied() && parent.Kills < 5 )
 				return DeathMoveResult.MoveToBackpack;
-			else if( parent.Player && Nontransferable )
+			else if ( parent.Player && Nontransferable )
 				return DeathMoveResult.MoveToBackpack;
 			else
 				return DeathMoveResult.MoveToCorpse;
@@ -2766,7 +2766,7 @@ namespace Server
 				else if ( m_Parent is Mobile )
 					( m_Parent as Mobile ).UpdateTotal( sender, type, delta );
 				else if ( this.HeldBy != null )
-					( this.HeldBy as Mobile ).UpdateTotal( sender, type, delta );			
+					( this.HeldBy as Mobile ).UpdateTotal( sender, type, delta );
 			}
 		}
 
@@ -2899,7 +2899,7 @@ namespace Server
 		public virtual void HandleInvalidTransfer( Mobile from )
 		{
 			// OSI sends 1074769, bug!
-			if( QuestItem )
+			if ( QuestItem )
 				from.SendLocalizedMessage( 1049343 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
 		}
 
@@ -2927,7 +2927,7 @@ namespace Server
 			{
 				List<Item> items = LookupItems();
 
-				if( items == null )
+				if ( items == null )
 					items = EmptyItems;
 
 				return items;
@@ -2965,12 +2965,12 @@ namespace Server
 
 			while( p is Item )
 			{
-				if( p is T )
+				if ( p is T )
 					return true;
 
 				Item item = (Item)p;
 
-				if( item.m_Parent == null )
+				if ( item.m_Parent == null )
 				{
 					break;
 				}
@@ -3511,7 +3511,7 @@ namespace Server
 		}
 
 		public ISpawner Spawner
-		{ 
+		{
 			get
 			{
 				CompactInfo info = LookupCompactInfo();
@@ -3521,7 +3521,7 @@ namespace Server
 
 				return null;
 
-			} 
+			}
 			set
 			{
 				CompactInfo info = AcquireCompactInfo();
@@ -3530,7 +3530,7 @@ namespace Server
 
 				if (info.m_Spawner == null)
 					VerifyCompactInfo();
-			} 
+			}
 		}
 
 		public virtual void OnBeforeSpawn( Point3D location, Map m )
@@ -3834,7 +3834,7 @@ namespace Server
 
 		public virtual bool OnDroppedToMobile( Mobile from, Mobile target )
 		{
-			if( Nontransferable && from.Player )
+			if ( Nontransferable && from.Player )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3863,11 +3863,11 @@ namespace Server
 
 		public virtual bool OnDroppedInto( Mobile from, Container target, Point3D p )
 		{
-			if( !from.OnDroppedItemInto( this, target, p ) )
+			if ( !from.OnDroppedItemInto( this, target, p ) )
 			{
 				return false;
 			}
-			else if( Nontransferable && from.Player && target != from.Backpack )
+			else if ( Nontransferable && from.Player && target != from.Backpack )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3888,7 +3888,7 @@ namespace Server
 				return false;
 			else if ( !from.OnDroppedItemOnto( this, target ) )
 				return false;
-			else if( Nontransferable && from.Player && target != from.Backpack )
+			else if ( Nontransferable && from.Player && target != from.Backpack )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3922,7 +3922,7 @@ namespace Server
 
 		public virtual bool OnDroppedToWorld( Mobile from, Point3D p )
 		{
-			if( Nontransferable && from.Player )
+			if ( Nontransferable && from.Player )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -4583,9 +4583,9 @@ namespace Server
 		public bool QuestItem
 		{
 			get { return GetFlag( ImplFlag.QuestItem ); }
-			set 
-			{ 
-				SetFlag( ImplFlag.QuestItem, value ); 
+			set
+			{
+				SetFlag( ImplFlag.QuestItem, value );
 
 				InvalidateProperties();
 

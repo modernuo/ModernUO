@@ -107,8 +107,8 @@ namespace Server.Commands.Generic
 
 				ext.Parse( from, args, i + 1, size - i - 1 );
 
-				if ( ext is WhereExtension )
-					baseType = ( ext as WhereExtension ).Conditional.Type;
+				if ( ext is WhereExtension extension )
+					baseType = extension.Conditional.Type;
 
 				parsed.Add( ext );
 

@@ -36,7 +36,7 @@ namespace Server.Commands
 
 			Network.NetState.Resume();
 
-			if( generated )
+			if ( generated )
 			{
 				World.Broadcast( 0x35, true, "Documentation has been completed. The entire process took {0:F1} seconds.", (endTime - startTime).TotalSeconds );
 				Console.WriteLine( "Documentation complete." );
@@ -52,7 +52,7 @@ namespace Server.Commands
 		{
 			public int Compare( object x, object y )
 			{
-				if( x == y )
+				if ( x == y )
 					return 0;
 
 				ConstructorInfo aCtor = x as ConstructorInfo;
@@ -67,44 +67,44 @@ namespace Server.Commands
 				bool aStatic = GetStaticFor( aCtor, aProp, aMethod );
 				bool bStatic = GetStaticFor( bCtor, bProp, bMethod );
 
-				if( aStatic && !bStatic )
+				if ( aStatic && !bStatic )
 					return -1;
-				else if( !aStatic && bStatic )
+				else if ( !aStatic && bStatic )
 					return 1;
 
 				int v = 0;
 
-				if( aCtor != null )
+				if ( aCtor != null )
 				{
-					if( bCtor == null )
+					if ( bCtor == null )
 						v = -1;
 				}
-				else if( bCtor != null )
+				else if ( bCtor != null )
 				{
-					if( aCtor == null )
+					if ( aCtor == null )
 						v = 1;
 				}
-				else if( aProp != null )
+				else if ( aProp != null )
 				{
-					if( bProp == null )
+					if ( bProp == null )
 						v = -1;
 				}
-				else if( bProp != null )
+				else if ( bProp != null )
 				{
-					if( aProp == null )
+					if ( aProp == null )
 						v = 1;
 				}
 
-				if( v == 0 )
+				if ( v == 0 )
 				{
 					v = GetNameFrom( aCtor, aProp, aMethod ).CompareTo( GetNameFrom( bCtor, bProp, bMethod ) );
 				}
 
-				if( v == 0 && aCtor != null && bCtor != null )
+				if ( v == 0 && aCtor != null && bCtor != null )
 				{
 					v = aCtor.GetParameters().Length.CompareTo( bCtor.GetParameters().Length );
 				}
-				else if( v == 0 && aMethod != null && bMethod != null )
+				else if ( v == 0 && aMethod != null && bMethod != null )
 				{
 					v = aMethod.GetParameters().Length.CompareTo( bMethod.GetParameters().Length );
 				}
@@ -114,12 +114,12 @@ namespace Server.Commands
 
 			private bool GetStaticFor( ConstructorInfo ctor, PropertyInfo prop, MethodInfo method )
 			{
-				if( ctor != null )
+				if ( ctor != null )
 					return ctor.IsStatic;
-				else if( method != null )
+				else if ( method != null )
 					return method.IsStatic;
 
-				if( prop != null )
+				if ( prop != null )
 				{
 					MethodInfo getMethod = prop.GetGetMethod();
 					MethodInfo setMethod = prop.GetGetMethod();
@@ -132,11 +132,11 @@ namespace Server.Commands
 
 			private string GetNameFrom( ConstructorInfo ctor, PropertyInfo prop, MethodInfo method )
 			{
-				if( ctor != null )
+				if ( ctor != null )
 					return ctor.DeclaringType.Name;
-				else if( prop != null )
+				else if ( prop != null )
 					return prop.Name;
-				else if( method != null )
+				else if ( method != null )
 					return method.Name;
 				else
 					return "";
@@ -147,11 +147,11 @@ namespace Server.Commands
 		{
 			public int Compare( TypeInfo x, TypeInfo y )
 			{
-				if( x == null && y == null )
+				if ( x == null && y == null )
 					return 0;
-				else if( x == null )
+				else if ( x == null )
 					return -1;
-				else if( y == null )
+				else if ( y == null )
 					return 1;
 
 				return x.TypeName.CompareTo( y.TypeName );
@@ -195,7 +195,7 @@ namespace Server.Commands
 
 		public static string GetFileName( string root, string name, string ext )
 		{
-			if( name.IndexOfAny( ReplaceChars ) >= 0 )
+			if ( name.IndexOfAny( ReplaceChars ) >= 0 )
 			{
 				StringBuilder sb = new StringBuilder( name );
 
@@ -224,7 +224,7 @@ namespace Server.Commands
 		{
 			path = Path.Combine( m_RootDirectory, path );
 
-			if( !Directory.Exists( path ) )
+			if ( !Directory.Exists( path ) )
 				Directory.CreateDirectory( path );
 		}
 
@@ -232,7 +232,7 @@ namespace Server.Commands
 		{
 			path = Path.Combine( m_RootDirectory, path );
 
-			if( Directory.Exists( path ) )
+			if ( Directory.Exists( path ) )
 				Directory.Delete( path, true );
 		}
 
@@ -278,17 +278,17 @@ namespace Server.Commands
 
 			Type realType = varType;
 
-			if( varType.IsByRef )
+			if ( varType.IsByRef )
 			{
-				if( !ignoreRef )
+				if ( !ignoreRef )
 					prepend = RefString;
 
 				realType = varType.GetElementType();
 			}
 
-			if( realType.IsPointer )
+			if ( realType.IsPointer )
 			{
-				if( realType.IsArray )
+				if ( realType.IsArray )
 				{
 					append.Append( '*' );
 
@@ -312,7 +312,7 @@ namespace Server.Commands
 					append.Append( " *" );
 				}
 			}
-			else if( realType.IsArray )
+			else if ( realType.IsArray )
 			{
 				do
 				{
@@ -338,7 +338,7 @@ namespace Server.Commands
 
 			m_Types.TryGetValue( realType, out TypeInfo info );
 
-			if( info != null )
+			if ( info != null )
 			{
 				aliased = "<!-- DBG-0 -->"+info.LinkName( null );
 				//aliased = String.Format( "<a href=\"{0}\">{1}</a>", info.m_FileName, info.m_TypeName );
@@ -346,7 +346,7 @@ namespace Server.Commands
 			else
 			{
 				//FormatGeneric( );
-				if( realType.IsGenericType )
+				if ( realType.IsGenericType )
 				{
 					string typeName = "";
 					string fileName = "";
@@ -360,7 +360,7 @@ namespace Server.Commands
 				{
 					for( int i = 0; i < m_AliasLength; ++i )
 					{
-						if( m_Aliases[i, 0] == fullName )
+						if ( m_Aliases[i, 0] == fullName )
 						{
 							aliased = m_Aliases[i, 1];
 							break;
@@ -368,7 +368,7 @@ namespace Server.Commands
 					}
 				}
 
-				if( aliased == null )
+				if ( aliased == null )
 					aliased = realType.Name;
 			}
 
@@ -608,7 +608,7 @@ namespace Server.Commands
 				sbod.Type = typeof( LeatherCap );
 				for( BulkMaterialType mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat )
 				{
-					if( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
+					if ( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
 						continue;
 
 					sbod.Material = mat;
@@ -629,7 +629,7 @@ namespace Server.Commands
 				sbod.Type = typeof( LeatherCap );
 				for( BulkMaterialType mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat )
 				{
-					if( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
+					if ( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
 						continue;
 
 					sbod.Material = mat;
@@ -650,7 +650,7 @@ namespace Server.Commands
 				sbod.Type = typeof( LeatherCap );
 				for( BulkMaterialType mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat )
 				{
-					if( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
+					if ( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
 						continue;
 
 					sbod.Material = mat;
@@ -671,7 +671,7 @@ namespace Server.Commands
 				sbod.Type = typeof( LeatherCap );
 				for( BulkMaterialType mat = BulkMaterialType.None; mat <= BulkMaterialType.Barbed; ++mat )
 				{
-					if( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
+					if ( mat >= BulkMaterialType.DullCopper && mat <= BulkMaterialType.Valorite )
 						continue;
 
 					sbod.Material = mat;
@@ -714,11 +714,11 @@ namespace Server.Commands
 			lbod.RequireExceptional = false;
 			lbod.AmountMax = 10;
 
-			if( showCloth )
+			if ( showCloth )
 			{
 				lbod.Material = BulkMaterialType.None;
 
-				if( expandCloth )
+				if ( expandCloth )
 				{
 					lbod.AmountMax = 10;
 					DocumentTailorBOD( html, lbod.ComputeRewards( true ), "10, 15", lbod.Material, type );
@@ -734,7 +734,7 @@ namespace Server.Commands
 
 			lbod.Material = BulkMaterialType.None;
 
-			if( expandPlain )
+			if ( expandPlain )
 			{
 				lbod.AmountMax = 10;
 				DocumentTailorBOD( html, lbod.ComputeRewards( true ), "10, 15, 20", lbod.Material, typeof( LeatherCap ) );
@@ -763,11 +763,11 @@ namespace Server.Commands
 			lbod.RequireExceptional = true;
 			lbod.AmountMax = 10;
 
-			if( showCloth )
+			if ( showCloth )
 			{
 				lbod.Material = BulkMaterialType.None;
 
-				if( expandCloth )
+				if ( expandCloth )
 				{
 					lbod.AmountMax = 10;
 					DocumentTailorBOD( html, lbod.ComputeRewards( true ), "10, 15", lbod.Material, type );
@@ -783,7 +783,7 @@ namespace Server.Commands
 
 			lbod.Material = BulkMaterialType.None;
 
-			if( expandPlain )
+			if ( expandPlain )
 			{
 				lbod.AmountMax = 10;
 				DocumentTailorBOD( html, lbod.ComputeRewards( true ), "10, 15, 20", lbod.Material, typeof( LeatherCap ) );
@@ -885,52 +885,48 @@ namespace Server.Commands
 			{
 				Item item = (Item)items[i];
 
-				if( item is Sandals )
+				if ( item is Sandals )
 					rewards[5] = true;
-				else if( item is SmallStretchedHideEastDeed || item is SmallStretchedHideSouthDeed )
+				else if ( item is SmallStretchedHideEastDeed || item is SmallStretchedHideSouthDeed )
 					rewards[10] = rewards[11] = true;
-				else if( item is MediumStretchedHideEastDeed || item is MediumStretchedHideSouthDeed )
+				else if ( item is MediumStretchedHideEastDeed || item is MediumStretchedHideSouthDeed )
 					rewards[10] = rewards[11] = true;
-				else if( item is LightFlowerTapestryEastDeed || item is LightFlowerTapestrySouthDeed )
+				else if ( item is LightFlowerTapestryEastDeed || item is LightFlowerTapestrySouthDeed )
 					rewards[12] = rewards[13] = true;
-				else if( item is DarkFlowerTapestryEastDeed || item is DarkFlowerTapestrySouthDeed )
+				else if ( item is DarkFlowerTapestryEastDeed || item is DarkFlowerTapestrySouthDeed )
 					rewards[12] = rewards[13] = true;
-				else if( item is BrownBearRugEastDeed || item is BrownBearRugSouthDeed )
+				else if ( item is BrownBearRugEastDeed || item is BrownBearRugSouthDeed )
 					rewards[14] = rewards[15] = true;
-				else if( item is PolarBearRugEastDeed || item is PolarBearRugSouthDeed )
+				else if ( item is PolarBearRugEastDeed || item is PolarBearRugSouthDeed )
 					rewards[14] = rewards[15] = true;
-				else if( item is ClothingBlessDeed )
+				else if ( item is ClothingBlessDeed )
 					rewards[16] = true;
-				else if( item is PowerScroll )
+				else if ( item is PowerScroll ps )
 				{
-					PowerScroll ps = (PowerScroll)item;
-
-					if( ps.Value == 105.0 )
+					if ( ps.Value == 105.0 )
 						rewards[6] = true;
-					else if( ps.Value == 110.0 )
+					else if ( ps.Value == 110.0 )
 						rewards[7] = true;
-					else if( ps.Value == 115.0 )
+					else if ( ps.Value == 115.0 )
 						rewards[8] = true;
-					else if( ps.Value == 120.0 )
+					else if ( ps.Value == 120.0 )
 						rewards[9] = true;
 				}
-				else if( item is UncutCloth )
+				else if ( item is UncutCloth )
 				{
-					if( item.Hue == 0x483 || item.Hue == 0x48C || item.Hue == 0x488 || item.Hue == 0x48A )
+					if ( item.Hue == 0x483 || item.Hue == 0x48C || item.Hue == 0x488 || item.Hue == 0x48A )
 						rewards[0] = true;
-					else if( item.Hue == 0x495 || item.Hue == 0x48B || item.Hue == 0x486 || item.Hue == 0x485 )
+					else if ( item.Hue == 0x495 || item.Hue == 0x48B || item.Hue == 0x486 || item.Hue == 0x485 )
 						rewards[1] = true;
-					else if( item.Hue == 0x48D || item.Hue == 0x490 || item.Hue == 0x48E || item.Hue == 0x491 )
+					else if ( item.Hue == 0x48D || item.Hue == 0x490 || item.Hue == 0x48E || item.Hue == 0x491 )
 						rewards[2] = true;
-					else if( item.Hue == 0x48F || item.Hue == 0x494 || item.Hue == 0x484 || item.Hue == 0x497 )
+					else if ( item.Hue == 0x48F || item.Hue == 0x494 || item.Hue == 0x484 || item.Hue == 0x497 )
 						rewards[3] = true;
 					else
 						rewards[4] = true;
 				}
-				else if( item is RunicSewingKit )
+				else if ( item is RunicSewingKit rkit )
 				{
-					RunicSewingKit rkit = (RunicSewingKit)item;
-
 					rewards[16 + CraftResources.GetIndex( rkit.Resource )] = true;
 				}
 
@@ -944,7 +940,7 @@ namespace Server.Commands
 			{
 				case BulkMaterialType.None:
 					{
-						if( type.IsSubclassOf( typeof( BaseArmor ) ) || type.IsSubclassOf( typeof( BaseShoes ) ) )
+						if ( type.IsSubclassOf( typeof( BaseArmor ) ) || type.IsSubclassOf( typeof( BaseShoes ) ) )
 						{
 							style = "pl";
 							name = "Plain";
@@ -969,7 +965,7 @@ namespace Server.Commands
 
 			while( index < 20 )
 			{
-				if( rewards[index] )
+				if ( rewards[index] )
 				{
 					html.WriteLine( "            <td width=\"25\" class=\"{0}\"><center><b>X</b></center></td>", style );
 					++index;
@@ -983,7 +979,7 @@ namespace Server.Commands
 						++count;
 						++index;
 
-						if( index == 5 || index == 6 || index == 10 || index == 17 )
+						if ( index == 5 || index == 6 || index == 10 || index == 17 )
 							break;
 					}
 
@@ -1121,54 +1117,48 @@ namespace Server.Commands
 
 			for( int i = 0; i < items.Count; ++i )
 			{
-				Item item = (Item)items[i];
+				Item item = items[i];
 
-				if( item is SturdyPickaxe || item is SturdyShovel )
+				if ( item is SturdyPickaxe || item is SturdyShovel )
 					rewards[0] = true;
-				else if( item is LeatherGlovesOfMining )
+				else if ( item is LeatherGlovesOfMining )
 					rewards[1] = true;
-				else if( item is StuddedGlovesOfMining )
+				else if ( item is StuddedGlovesOfMining )
 					rewards[2] = true;
-				else if( item is RingmailGlovesOfMining )
+				else if ( item is RingmailGlovesOfMining )
 					rewards[3] = true;
-				else if( item is GargoylesPickaxe )
+				else if ( item is GargoylesPickaxe )
 					rewards[4] = true;
-				else if( item is ProspectorsTool )
+				else if ( item is ProspectorsTool )
 					rewards[5] = true;
-				else if( item is PowderOfTemperament )
+				else if ( item is PowderOfTemperament )
 					rewards[6] = true;
-				else if( item is ColoredAnvil )
+				else if ( item is ColoredAnvil )
 					rewards[7] = true;
-				else if( item is PowerScroll )
+				else if ( item is PowerScroll ps )
 				{
-					PowerScroll ps = (PowerScroll)item;
-
-					if( ps.Value == 105.0 )
+					if ( ps.Value == 105.0 )
 						rewards[8] = true;
-					else if( ps.Value == 110.0 )
+					else if ( ps.Value == 110.0 )
 						rewards[9] = true;
-					else if( ps.Value == 115.0 )
+					else if ( ps.Value == 115.0 )
 						rewards[10] = true;
-					else if( ps.Value == 120.0 )
+					else if ( ps.Value == 120.0 )
 						rewards[11] = true;
 				}
-				else if( item is RunicHammer )
+				else if ( item is RunicHammer rh )
 				{
-					RunicHammer rh = (RunicHammer)item;
-
 					rewards[11 + CraftResources.GetIndex( rh.Resource )] = true;
 				}
-				else if( item is AncientSmithyHammer )
+				else if ( item is AncientSmithyHammer ash )
 				{
-					AncientSmithyHammer ash = (AncientSmithyHammer)item;
-
-					if( ash.Bonus == 10 )
+					if ( ash.Bonus == 10 )
 						rewards[20] = true;
-					else if( ash.Bonus == 15 )
+					else if ( ash.Bonus == 15 )
 						rewards[21] = true;
-					else if( ash.Bonus == 30 )
+					else if ( ash.Bonus == 30 )
 						rewards[22] = true;
-					else if( ash.Bonus == 60 )
+					else if ( ash.Bonus == 60 )
 						rewards[23] = true;
 				}
 
@@ -1198,7 +1188,7 @@ namespace Server.Commands
 
 			while( index < 24 )
 			{
-				if( rewards[index] )
+				if ( rewards[index] )
 				{
 					html.WriteLine( "            <td width=\"25\" class=\"{0}\"><center><b>X</b></center></td>", style );
 					++index;
@@ -1212,7 +1202,7 @@ namespace Server.Commands
 						++count;
 						++index;
 
-						if( index == 4 || index == 8 || index == 12 || index == 20 )
+						if ( index == 4 || index == 8 || index == 12 || index == 20 )
 							break;
 					}
 
@@ -1234,7 +1224,7 @@ namespace Server.Commands
 
 			string path = Core.FindDataFile( "models/models.txt" );
 
-			if( File.Exists( path ) )
+			if ( File.Exists( path ) )
 			{
 				using( StreamReader ip = new StreamReader( path ) )
 				{
@@ -1244,12 +1234,12 @@ namespace Server.Commands
 					{
 						line = line.Trim();
 
-						if( line.Length == 0 || line.StartsWith( "#" ) )
+						if ( line.Length == 0 || line.StartsWith( "#" ) )
 							continue;
 
 						string[] split = line.Split( '\t' );
 
-						if( split.Length >= 9 )
+						if ( split.Length >= 9 )
 						{
 							Body body = Utility.ToInt32( split[0] );
 							ModelBodyType type = (ModelBodyType)Utility.ToInt32( split[1] );
@@ -1257,7 +1247,7 @@ namespace Server.Commands
 
 							BodyEntry entry = new BodyEntry( body, type, name );
 
-							if( !list.Contains( entry ) )
+							if ( !list.Contains( entry ) )
 								list.Add( entry );
 						}
 					}
@@ -1282,7 +1272,7 @@ namespace Server.Commands
 				html.WriteLine( "      <a name=\"Top\" />" );
 				html.WriteLine( "      <h4><a href=\"index.html\">Back to the index</a></h4>" );
 
-				if( list.Count > 0 )
+				if ( list.Count > 0 )
 				{
 					html.WriteLine( "      <h2>Body List</h2>" );
 
@@ -1295,9 +1285,9 @@ namespace Server.Commands
 						BodyEntry entry = list[i];
 						ModelBodyType type = entry.BodyType;
 
-						if( type != lastType )
+						if ( type != lastType )
 						{
-							if( lastType != ModelBodyType.Invalid )
+							if ( lastType != ModelBodyType.Invalid )
 								html.WriteLine( "      </table></td></tr></table><br>" );
 
 							lastType = type;
@@ -1355,7 +1345,7 @@ namespace Server.Commands
 				{
 					Dictionary<int, SpeechEntry> table = tables[p];
 
-					if( p > 0 )
+					if ( p > 0 )
 						html.WriteLine( "      <br>" );
 
 					html.WriteLine( "      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">" );
@@ -1376,7 +1366,7 @@ namespace Server.Commands
 
 						for( int j = 0; j < entry.Strings.Count; ++j )
 						{
-							if( j > 0 )
+							if ( j > 0 )
 								html.Write( "<br>" );
 
 							string v = entry.Strings[j];
@@ -1385,17 +1375,17 @@ namespace Server.Commands
 							{
 								char c = v[k];
 
-								if( c == '<' )
+								if ( c == '<' )
 									html.Write( "&lt;" );
-								else if( c == '>' )
+								else if ( c == '>' )
 									html.Write( "&gt;" );
-								else if( c == '&' )
+								else if ( c == '&' )
 									html.Write( "&amp;" );
-								else if( c == '"' )
+								else if ( c == '"' )
 									html.Write( "&quot;" );
-								else if( c == '\'' )
+								else if ( c == '\'' )
 									html.Write( "&apos;" );
-								else if( c >= 0x20 && c < 0x7F )
+								else if ( c >= 0x20 && c < 0x7F )
 									html.Write( c );
 								else
 									html.Write( "&#{0};", (int)c );
@@ -1445,7 +1435,7 @@ namespace Server.Commands
 
 			string path = Core.FindDataFile( "speech.mul" );
 
-			if( File.Exists( path ) )
+			if ( File.Exists( path ) )
 			{
 				using( FileStream ip = new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read ) )
 				{
@@ -1457,12 +1447,12 @@ namespace Server.Commands
 						int length = (bin.ReadByte() << 8) | bin.ReadByte();
 						string text = Encoding.UTF8.GetString( bin.ReadBytes( length ) ).Trim();
 
-						if( text.Length == 0 )
+						if ( text.Length == 0 )
 							continue;
 
-						if( table == null || lastIndex > index )
+						if ( table == null || lastIndex > index )
 						{
-							if( index == 0 && text == "*withdraw*" )
+							if ( index == 0 && text == "*withdraw*" )
 								tables.Insert( 0, table = new Dictionary<int, SpeechEntry>() );
 							else
 								tables.Add( table = new Dictionary<int, SpeechEntry>() );
@@ -1472,7 +1462,7 @@ namespace Server.Commands
 
 						table.TryGetValue( index, out SpeechEntry entry );
 
-						if( entry == null )
+						if ( entry == null )
 							table[index] = entry = new SpeechEntry( index );
 
 						entry.Strings.Add( text );
@@ -1516,7 +1506,7 @@ namespace Server.Commands
 			{
 				int v = b.AccessLevel.CompareTo( a.AccessLevel );
 
-				if( v == 0 )
+				if ( v == 0 )
 					v = a.Name.CompareTo( b.Name );
 
 				return v;
@@ -1552,19 +1542,17 @@ namespace Server.Commands
 
 					object[] attrs = mi.GetCustomAttributes( typeof( UsageAttribute ), false );
 
-					if( attrs.Length == 0 )
+					if ( attrs.Length == 0 )
 						continue;
 
 					UsageAttribute usage = attrs[0] as UsageAttribute;
 
 					attrs = mi.GetCustomAttributes( typeof( DescriptionAttribute ), false );
 
-					if( attrs.Length == 0 )
+					if ( attrs.Length == 0 )
 						continue;
 
-					DescriptionAttribute desc = attrs[0] as DescriptionAttribute;
-
-					if( usage == null || desc == null )
+					if ( usage == null || !(attrs[0] is DescriptionAttribute desc) )
 						continue;
 
 					attrs = mi.GetCustomAttributes( typeof( AliasesAttribute ), false );
@@ -1573,7 +1561,7 @@ namespace Server.Commands
 
 					string descString = desc.Description.Replace( "<", "&lt;" ).Replace( ">", "&gt;" );
 
-					if( aliases == null )
+					if ( aliases == null )
 						list.Add( new DocCommandEntry( e.AccessLevel, e.Command, null, usage.Usage, descString ) );
 					else
 						list.Add( new DocCommandEntry( e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString ) );
@@ -1586,7 +1574,7 @@ namespace Server.Commands
 					string usage = command.Usage;
 					string desc = command.Description;
 
-					if( usage == null || desc == null )
+					if ( usage == null || desc == null )
 						continue;
 
 					string[] cmds = command.Commands;
@@ -1598,31 +1586,31 @@ namespace Server.Commands
 
 					desc = desc.Replace( "<", "&lt;" ).Replace( ">", "&gt;" );
 
-					if( command.Supports != CommandSupport.Single )
+					if ( command.Supports != CommandSupport.Single )
 					{
 						StringBuilder sb = new StringBuilder( 50 + desc.Length );
 
 						sb.Append( "Modifiers: " );
 
-						if( (command.Supports & CommandSupport.Global) != 0 )
+						if ( (command.Supports & CommandSupport.Global) != 0 )
 							sb.Append( "<i><a href=\"#Global\">Global</a></i>, " );
 
-						if( (command.Supports & CommandSupport.Online) != 0 )
+						if ( (command.Supports & CommandSupport.Online) != 0 )
 							sb.Append( "<i><a href=\"#Online\">Online</a></i>, " );
 
-						if( (command.Supports & CommandSupport.Region) != 0 )
+						if ( (command.Supports & CommandSupport.Region) != 0 )
 							sb.Append( "<i><a href=\"#Region\">Region</a></i>, " );
 
-						if( (command.Supports & CommandSupport.Contained) != 0 )
+						if ( (command.Supports & CommandSupport.Contained) != 0 )
 							sb.Append( "<i><a href=\"#Contained\">Contained</a></i>, " );
 
-						if( (command.Supports & CommandSupport.Multi) != 0 )
+						if ( (command.Supports & CommandSupport.Multi) != 0 )
 							sb.Append( "<i><a href=\"#Multi\">Multi</a></i>, " );
 
-						if( (command.Supports & CommandSupport.Area) != 0 )
+						if ( (command.Supports & CommandSupport.Area) != 0 )
 							sb.Append( "<i><a href=\"#Area\">Area</a></i>, " );
 
-						if( (command.Supports & CommandSupport.Self) != 0 )
+						if ( (command.Supports & CommandSupport.Self) != 0 )
 							sb.Append( "<i><a href=\"#Self\">Self</a></i>, " );
 
 						sb.Remove( sb.Length - 2, 2 );
@@ -1644,7 +1632,7 @@ namespace Server.Commands
 					string usage = command.Usage;
 					string desc = command.Description;
 
-					if( usage == null || desc == null )
+					if ( usage == null || desc == null )
 						continue;
 
 					string[] cmds = command.Accessors;
@@ -1665,9 +1653,9 @@ namespace Server.Commands
 
 				foreach( DocCommandEntry e in list )
 				{
-					if( e.AccessLevel != last )
+					if ( e.AccessLevel != last )
 					{
-						if( last != AccessLevel.Player )
+						if ( last != AccessLevel.Player )
 							html.WriteLine( "      </table></td></tr></table><br>" );
 
 						last = e.AccessLevel;
@@ -1708,7 +1696,7 @@ namespace Server.Commands
 				{
 					CommandEntry c = list[j];
 
-					if( e.Handler.Method == c.Handler.Method )
+					if ( e.Handler.Method == c.Handler.Method )
 					{
 						list.RemoveAt( j );
 						--j;
@@ -1725,7 +1713,7 @@ namespace Server.Commands
 
 			html.Write( "         <tr><a name=\"{0}\" /><td class=\"lentry\">{0}</td>", e.Name );
 
-			if( aliases == null || aliases.Length == 0 )
+			if ( aliases == null || aliases.Length == 0 )
 			{
 				html.Write( "<td class=\"rentry\"><b>Usage: {0}</b><br>{1}</td>", usage.Replace( "<", "&lt;" ).Replace( ">", "&gt;" ), desc );
 			}
@@ -1735,7 +1723,7 @@ namespace Server.Commands
 
 				for( int i = 0; i < aliases.Length; ++i )
 				{
-					if( i != 0 )
+					if ( i != 0 )
 						html.Write( ", " );
 
 					html.Write( aliases[i] );
@@ -1759,7 +1747,7 @@ namespace Server.Commands
 
 				string nspace = type.Namespace;
 
-				if( nspace == null || type.IsSpecialName )
+				if ( nspace == null || type.IsSpecialName )
 					continue;
 
 				TypeInfo info = new TypeInfo( type );
@@ -1767,21 +1755,21 @@ namespace Server.Commands
 
 				m_Namespaces.TryGetValue( nspace, out List<TypeInfo> nspaces );
 
-				if( nspaces == null )
+				if ( nspaces == null )
 					m_Namespaces[nspace] = nspaces = new List<TypeInfo>();
 
 				nspaces.Add( info );
 
 				Type baseType = info.m_BaseType;
 
-				if( baseType != null && InAssemblies( baseType, asms ) )
+				if ( baseType != null && InAssemblies( baseType, asms ) )
 				{
 					m_Types.TryGetValue( baseType, out TypeInfo baseInfo );
 
-					if( baseInfo == null )
+					if ( baseInfo == null )
 						m_Types[baseType] = baseInfo = new TypeInfo( baseType );
 
-					if( baseInfo.m_Derived == null )
+					if ( baseInfo.m_Derived == null )
 						baseInfo.m_Derived = new List<TypeInfo>();
 
 					baseInfo.m_Derived.Add( info );
@@ -1789,14 +1777,14 @@ namespace Server.Commands
 
 				Type decType = info.m_Declaring;
 
-				if( decType != null )
+				if ( decType != null )
 				{
 					m_Types.TryGetValue( decType, out TypeInfo decInfo );
 
-					if( decInfo == null )
+					if ( decInfo == null )
 						m_Types[decType] = decInfo = new TypeInfo( decType );
 
-					if( decInfo.m_Nested == null )
+					if ( decInfo.m_Nested == null )
 						decInfo.m_Nested = new List<TypeInfo>();
 
 					decInfo.m_Nested.Add( info );
@@ -1806,15 +1794,15 @@ namespace Server.Commands
 				{
 					Type iface = info.m_Interfaces[j];
 
-					if( !InAssemblies( iface, asms ) )
+					if ( !InAssemblies( iface, asms ) )
 						continue;
 
 					m_Types.TryGetValue( iface, out TypeInfo ifaceInfo );
 
-					if( ifaceInfo == null )
+					if ( ifaceInfo == null )
 						m_Types[iface] = ifaceInfo = new TypeInfo( iface );
 
-					if( ifaceInfo.m_Derived == null )
+					if ( ifaceInfo.m_Derived == null )
 						ifaceInfo.m_Derived = new List<TypeInfo>();
 
 					ifaceInfo.m_Derived.Add( info );
@@ -1827,7 +1815,7 @@ namespace Server.Commands
 			Assembly a = t.Assembly;
 
 			for( int i = 0; i < asms.Length; ++i )
-				if( a == asms[i] )
+				if ( a == asms[i] )
 					return true;
 
 			return false;
@@ -1839,7 +1827,7 @@ namespace Server.Commands
 
 		private static bool IsConstructible( Type t, out bool isItem )
 		{
-			if( isItem = typeofItem.IsAssignableFrom( t ) )
+			if ( isItem = typeofItem.IsAssignableFrom( t ) )
 				return true;
 
 			return typeofMobile.IsAssignableFrom( t );
@@ -1862,7 +1850,7 @@ namespace Server.Commands
 				Type t = types[i].m_Type;
 				bool isItem;
 
-				if( t.IsAbstract || !IsConstructible( t, out isItem ) )
+				if ( t.IsAbstract || !IsConstructible( t, out isItem ) )
 					continue;
 
 				ConstructorInfo[] ctors = t.GetConstructors();
@@ -1871,7 +1859,7 @@ namespace Server.Commands
 				for( int j = 0; !anyConstructible && j < ctors.Length; ++j )
 					anyConstructible = IsConstructible( ctors[j] );
 
-				if( anyConstructible )
+				if ( anyConstructible )
 				{
 					(isItem ? items : mobiles).Add( t );
 					(isItem ? items : mobiles).Add( ctors );
@@ -1926,10 +1914,10 @@ namespace Server.Commands
 			{
 				ConstructorInfo ctor = ctors[i];
 
-				if( !IsConstructible( ctor ) )
+				if ( !IsConstructible( ctor ) )
 					continue;
 
-				if( !first )
+				if ( !first )
 					html.Write( "<br>" );
 
 				first = false;
@@ -1944,7 +1932,7 @@ namespace Server.Commands
 
 					m_Types.TryGetValue( parms[j].ParameterType, out TypeInfo typeInfo );
 
-					if( typeInfo != null )
+					if ( typeInfo != null )
 						html.Write( "href=\"types/{0}\" ", typeInfo.FileName );
 
 					html.Write( "title=\"{0}\">{1}</a>", GetTooltipFor( parms[j] ), parms[j].Name );
@@ -1985,11 +1973,11 @@ namespace Server.Commands
 			{
 				Type checkType = (Type)m_Tooltips[i, 0];
 
-				if( paramType == checkType )
+				if ( paramType == checkType )
 					return String.Format( (string)m_Tooltips[i, 1], HtmlNewLine );
 			}
 
-			if( paramType.IsEnum )
+			if ( paramType.IsEnum )
 			{
 				StringBuilder sb = new StringBuilder();
 
@@ -2002,30 +1990,25 @@ namespace Server.Commands
 
 				return sb.ToString();
 			}
-			else if( paramType.IsDefined( typeofCustomEnum, false ) )
+			if ( paramType.IsDefined( typeofCustomEnum, false ) )
 			{
 				object[] attributes = paramType.GetCustomAttributes( typeofCustomEnum, false );
 
-				if( attributes != null && attributes.Length > 0 )
+				if ( attributes.Length > 0 && attributes[0] is CustomEnumAttribute attr )
 				{
-					CustomEnumAttribute attr = attributes[0] as CustomEnumAttribute;
+					StringBuilder sb = new StringBuilder();
 
-					if( attr != null )
-					{
-						StringBuilder sb = new StringBuilder();
+					sb.AppendFormat( "Enumeration value or name. Possible named values include:{0}", HtmlNewLine );
 
-						sb.AppendFormat( "Enumeration value or name. Possible named values include:{0}", HtmlNewLine );
+					string[] names = attr.Names;
 
-						string[] names = attr.Names;
+					for( int i = 0; i < names.Length; ++i )
+						sb.AppendFormat( "{0}- {1}", HtmlNewLine, names[i] );
 
-						for( int i = 0; i < names.Length; ++i )
-							sb.AppendFormat( "{0}- {1}", HtmlNewLine, names[i] );
-
-						return sb.ToString();
-					}
+					return sb.ToString();
 				}
 			}
-			else if( paramType == typeofMap )
+			else if ( paramType == typeofMap )
 			{
 				StringBuilder sb = new StringBuilder();
 
@@ -2110,7 +2093,7 @@ namespace Server.Commands
 
 		private static void SaveType( TypeInfo info, StreamWriter nsHtml, string nsFileName, string nsName )
 		{
-			if( info.m_Declaring == null )
+			if ( info.m_Declaring == null )
 				nsHtml.WriteLine( "      <!-- DBG-ST -->"+info.LinkName( "../types/" ) + "<br>" );
 
 			using( StreamWriter typeHtml = Docs.GetWriter( info.FileName ) )
@@ -2122,7 +2105,7 @@ namespace Server.Commands
 				typeHtml.WriteLine( "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">" );
 				typeHtml.WriteLine( "      <h4><a href=\"../namespaces/{0}\">Back to {1}</a></h4>", nsFileName, nsName );
 
-				if( info.m_Type.IsEnum )
+				if ( info.m_Type.IsEnum )
 					WriteEnum( info, typeHtml );
 				else
 					WriteType( info, typeHtml );
@@ -2144,7 +2127,7 @@ namespace Server.Commands
 			bool flags = type.IsDefined( typeof( FlagsAttribute ), false );
 			string format;
 
-			if( flags )
+			if ( flags )
 				format = "      {0:G} = 0x{1:X}{2}<br>";
 			else
 				format = "      {0:G} = {1:D}{2}<br>";
@@ -2165,7 +2148,7 @@ namespace Server.Commands
 
 			Type decType = info.m_Declaring;
 
-			if( decType != null )
+			if ( decType != null )
 			{
 				// We are a nested type
 
@@ -2173,7 +2156,7 @@ namespace Server.Commands
 
 				m_Types.TryGetValue( decType, out TypeInfo decInfo );
 
-				if( decInfo == null )
+				if ( decInfo == null )
 					typeHtml.Write( decType.Name );
 				else
 					//typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
@@ -2189,13 +2172,13 @@ namespace Server.Commands
 
 			int extendCount = 0;
 
-			if( baseType != null && baseType != typeof( object ) && baseType != typeof( ValueType ) && !baseType.IsPrimitive )
+			if ( baseType != null && baseType != typeof( object ) && baseType != typeof( ValueType ) && !baseType.IsPrimitive )
 			{
 				typeHtml.Write( " : " );
 
 				m_Types.TryGetValue( baseType, out TypeInfo baseInfo );
 
-				if( baseInfo == null )
+				if ( baseInfo == null )
 					typeHtml.Write( baseType.Name );
 				else
 				{
@@ -2205,9 +2188,9 @@ namespace Server.Commands
 				++extendCount;
 			}
 
-			if( ifaces.Length > 0 )
+			if ( ifaces.Length > 0 )
 			{
-				if( extendCount == 0 )
+				if ( extendCount == 0 )
 					typeHtml.Write( " : " );
 
 				for( int i = 0; i < ifaces.Length; ++i )
@@ -2215,12 +2198,12 @@ namespace Server.Commands
 					Type iface = ifaces[i];
 					m_Types.TryGetValue( iface, out TypeInfo ifaceInfo );
 
-					if( extendCount != 0 )
+					if ( extendCount != 0 )
 						typeHtml.Write( ", " );
 
 					++extendCount;
 
-					if( ifaceInfo == null )
+					if ( ifaceInfo == null )
 					{
 						string typeName = "";
 						string fileName = "";
@@ -2240,7 +2223,7 @@ namespace Server.Commands
 
 			List<TypeInfo> derived = info.m_Derived;
 
-			if( derived != null )
+			if ( derived != null )
 			{
 				typeHtml.Write( "<h4>Derived Types: " );
 
@@ -2250,7 +2233,7 @@ namespace Server.Commands
 				{
 					TypeInfo derivedInfo = derived[i];
 
-					if( i != 0 )
+					if ( i != 0 )
 						typeHtml.Write( ", " );
 
 					//typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
@@ -2262,7 +2245,7 @@ namespace Server.Commands
 
 			List<TypeInfo> nested = info.m_Nested;
 
-			if( nested != null )
+			if ( nested != null )
 			{
 				typeHtml.Write( "<h4>Nested Types: " );
 
@@ -2272,7 +2255,7 @@ namespace Server.Commands
 				{
 					TypeInfo nestedInfo = nested[i];
 
-					if( i != 0 )
+					if ( i != 0 )
 						typeHtml.Write( ", " );
 
 					//typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
@@ -2290,12 +2273,12 @@ namespace Server.Commands
 			{
 				MemberInfo mi = membs[i];
 
-				if( mi is PropertyInfo )
-					WriteProperty( (PropertyInfo)mi, typeHtml );
-				else if( mi is ConstructorInfo )
-					WriteCtor( info.TypeName, (ConstructorInfo)mi, typeHtml );
-				else if( mi is MethodInfo )
-					WriteMethod( (MethodInfo)mi, typeHtml );
+				if ( mi is PropertyInfo propertyInfo )
+					WriteProperty( propertyInfo, typeHtml );
+				else if ( mi is ConstructorInfo constructorInfo )
+					WriteCtor( info.TypeName, constructorInfo, typeHtml );
+				else if ( mi is MethodInfo methodInfo )
+					WriteMethod( methodInfo, typeHtml );
 			}
 		}
 
@@ -2306,16 +2289,16 @@ namespace Server.Commands
 			MethodInfo getMethod = pi.GetGetMethod();
 			MethodInfo setMethod = pi.GetSetMethod();
 
-			if( (getMethod != null && getMethod.IsStatic) || (setMethod != null && setMethod.IsStatic) )
+			if ( (getMethod != null && getMethod.IsStatic) || (setMethod != null && setMethod.IsStatic) )
 				html.Write( StaticString );
 
 			html.Write( GetPair( pi.PropertyType, pi.Name, false ) );
 			html.Write( '(' );
 
-			if( pi.CanRead )
+			if ( pi.CanRead )
 				html.Write( GetString );
 
-			if( pi.CanWrite )
+			if ( pi.CanWrite )
 				html.Write( SetString );
 
 			html.WriteLine( " )<br>" );
@@ -2323,7 +2306,7 @@ namespace Server.Commands
 
 		private static void WriteCtor( string name, ConstructorInfo ctor, StreamWriter html )
 		{
-			if( ctor.IsStatic )
+			if ( ctor.IsStatic )
 				return;
 
 			html.Write( "      " );
@@ -2333,7 +2316,7 @@ namespace Server.Commands
 
 			ParameterInfo[] parms = ctor.GetParameters();
 
-			if( parms.Length > 0 )
+			if ( parms.Length > 0 )
 			{
 				html.Write( ' ' );
 
@@ -2341,12 +2324,12 @@ namespace Server.Commands
 				{
 					ParameterInfo pi = parms[i];
 
-					if( i != 0 )
+					if ( i != 0 )
 						html.Write( ", " );
 
-					if( pi.IsIn )
+					if ( pi.IsIn )
 						html.Write( InString );
-					else if( pi.IsOut )
+					else if ( pi.IsOut )
 						html.Write( OutString );
 
 					html.Write( GetPair( pi.ParameterType, pi.Name, pi.IsOut ) );
@@ -2360,15 +2343,15 @@ namespace Server.Commands
 
 		private static void WriteMethod( MethodInfo mi, StreamWriter html )
 		{
-			if( mi.IsSpecialName )
+			if ( mi.IsSpecialName )
 				return;
 
 			html.Write( "      " );
 
-			if( mi.IsStatic )
+			if ( mi.IsStatic )
 				html.Write( StaticString );
 
-			if( mi.IsVirtual )
+			if ( mi.IsVirtual )
 				html.Write( VirtString );
 
 			html.Write( GetPair( mi.ReturnType, mi.Name, false ) );
@@ -2376,7 +2359,7 @@ namespace Server.Commands
 
 			ParameterInfo[] parms = mi.GetParameters();
 
-			if( parms.Length > 0 )
+			if ( parms.Length > 0 )
 			{
 				html.Write( ' ' );
 
@@ -2384,12 +2367,12 @@ namespace Server.Commands
 				{
 					ParameterInfo pi = parms[i];
 
-					if( i != 0 )
+					if ( i != 0 )
 						html.Write( ", " );
 
-					if( pi.IsIn )
+					if ( pi.IsIn )
 						html.Write( InString );
-					else if( pi.IsOut )
+					else if ( pi.IsOut )
 						html.Write( OutString );
 
 					html.Write( GetPair( pi.ParameterType, pi.Name, pi.IsOut ) );
@@ -2408,18 +2391,18 @@ namespace Server.Commands
 			string fnam = null;
 			string link = null;
 
-			if( type.IsGenericType )
+			if ( type.IsGenericType )
 			{
 				int index = type.Name.IndexOf( '`' );
 
-				if( index > 0 )
+				if ( index > 0 )
 				{
 					string rootType = type.Name.Substring( 0, index );
 
 					StringBuilder nameBuilder = new StringBuilder( rootType );
 					StringBuilder fnamBuilder = new StringBuilder( "docs/types/" + Docs.SanitizeType( rootType ) );
 					StringBuilder linkBuilder;
-					if( DontLink( type ) )//if( DontLink( rootType ) )
+					if ( DontLink( type ) )//if ( DontLink( rootType ) )
 						linkBuilder = new StringBuilder( "<font color=\"blue\">" + rootType + "</font>" );
 					else
 						linkBuilder = new StringBuilder( "<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>" );
@@ -2432,7 +2415,7 @@ namespace Server.Commands
 
 					for( int i = 0; i < typeArguments.Length; i++ )
 					{
-						if( i != 0 )
+						if ( i != 0 )
 						{
 							nameBuilder.Append( ',' );
 							fnamBuilder.Append( ',' );
@@ -2444,7 +2427,7 @@ namespace Server.Commands
 
 						nameBuilder.Append( sanitizedName );
 						fnamBuilder.Append( "T" );
-						if( DontLink( typeArguments[i] ) )//if( DontLink( typeArguments[i].Name ) )
+						if ( DontLink( typeArguments[i] ) )//if ( DontLink( typeArguments[i].Name ) )
 							linkBuilder.Append( "<font color=\"blue\">" + aliasedName + "</font>" );
 						else
 							linkBuilder.Append( "<a href=\"" + "@directory@" + aliasedName + ".html\">" + aliasedName + "</a>" );
@@ -2459,15 +2442,15 @@ namespace Server.Commands
 					link = linkBuilder.ToString();
 				}
 			}
-			if( name == null ) typeName = type.Name;
+			if ( name == null ) typeName = type.Name;
 			else typeName = name;
 
-			if( fnam == null ) fileName = "docs/types/" + Docs.SanitizeType( type.Name ) + ".html";
+			if ( fnam == null ) fileName = "docs/types/" + Docs.SanitizeType( type.Name ) + ".html";
 			else fileName = fnam + ".html";
 
-			if( link == null )
+			if ( link == null )
 			{
-				if( DontLink( type ) ) //if( DontLink( type.Name ) )
+				if ( DontLink( type ) ) //if ( DontLink( type.Name ) )
 					linkName =  "<font color=\"blue\">" + Docs.SanitizeType( type.Name ) + "</font>";
 				else
 					linkName =  "<a href=\"" + "@directory@" + Docs.SanitizeType( type.Name ) + ".html\">" + Docs.SanitizeType( type.Name ) + "</a>";
@@ -2480,11 +2463,11 @@ namespace Server.Commands
 		public static string SanitizeType( string name )
 		{
 			bool anonymousType = false;
-			if( name.Contains( "<" ) ) anonymousType = true;
+			if ( name.Contains( "<" ) ) anonymousType = true;
 			StringBuilder sb = new StringBuilder( name );
 			for( int i = 0; i < ReplaceChars.Length; ++i ) { sb.Replace( ReplaceChars[i], '-' ); }
 
-			if( anonymousType ) return "(Anonymous-Type)"+sb.ToString();
+			if ( anonymousType ) return "(Anonymous-Type)"+sb.ToString();
 			else return sb.ToString();
 		}
 
@@ -2492,7 +2475,7 @@ namespace Server.Commands
 		{
 			for( int i = 0; i < m_AliasLength; ++i )
 			{
-				if( m_Aliases[i, 0] == name )
+				if ( m_Aliases[i, 0] == name )
 				{
 					return m_Aliases[i, 1];
 				}
@@ -2520,7 +2503,7 @@ namespace Server.Commands
 		public static bool DontLink( string name )
 		{
 			foreach( string dontLink in m_DontLink )
-				if( dontLink == name ) return true;
+				if ( dontLink == name ) return true;
 			return false;
 		}
 		*/
@@ -2531,7 +2514,7 @@ namespace Server.Commands
 			if ( type.Name == "T" || String.IsNullOrEmpty( type.Namespace ) || m_Namespaces == null )
 				return true;
 
-			if( type.Namespace.StartsWith( "Server" ) )
+			if ( type.Namespace.StartsWith( "Server" ) )
 				return false;
 
 			return  !m_Namespaces.ContainsKey( type.Namespace );
@@ -2585,10 +2568,10 @@ namespace Server.Commands
 		{
 			int v = a.BodyType.CompareTo( b.BodyType );
 
-			if( v == 0 )
+			if ( v == 0 )
 				v = a.Body.BodyID.CompareTo( b.Body.BodyID );
 
-			if( v == 0 )
+			if ( v == 0 )
 				v = a.Name.CompareTo( b.Name );
 
 			return v;

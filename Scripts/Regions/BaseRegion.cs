@@ -129,7 +129,7 @@ namespace Server.Regions
 		{
 			if (m is PlayerMobile && ((PlayerMobile)m).Young)
 			{
-				if(!this.YoungProtected)
+				if (!this.YoungProtected)
 				{
 					m.SendGump(new YoungDungeonWarning());
 				}

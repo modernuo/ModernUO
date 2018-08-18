@@ -39,10 +39,10 @@ namespace Server.Guilds
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
-			
+
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( !IsMember( pm, guild ) )
+			if ( !IsMember( pm, guild ) )
 				return;
 
 			RankDefinition playerRank = pm.GuildRank;
@@ -52,18 +52,18 @@ namespace Server.Guilds
 				case 1:
 				{
 					AllianceInfo alliance = guild.Alliance;
-					AllianceInfo otherAlliance = m_Other.Alliance;	
+					AllianceInfo otherAlliance = m_Other.Alliance;
 
-					if( !playerRank.GetFlag( RankFlags.ControlWarStatus ) )
+					if ( !playerRank.GetFlag( RankFlags.ControlWarStatus ) )
 					{
 						pm.SendLocalizedMessage( 1063440 ); // You don't have permission to negotiate wars.
 					}
-					else if( alliance != null && alliance.Leader != guild )
+					else if ( alliance != null && alliance.Leader != guild )
 					{
 						pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
 						pm.SendLocalizedMessage( 1070707, alliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 					}
-					else if( otherAlliance != null && otherAlliance.Leader != m_Other )
+					else if ( otherAlliance != null && otherAlliance.Leader != m_Other )
 					{
 						pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", m_Other.Name, otherAlliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
 						pm.SendLocalizedMessage( 1070707, otherAlliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
@@ -72,7 +72,7 @@ namespace Server.Guilds
 					{
 						WarDeclaration activeWar = guild.FindActiveWar( m_Other );
 
-						if( activeWar == null )
+						if ( activeWar == null )
 						{
 							WarDeclaration war = guild.FindPendingWar( m_Other );
 							WarDeclaration otherWar = m_Other.FindPendingWar( guild );
@@ -84,7 +84,7 @@ namespace Server.Guilds
 							int maxKills = (tKills == null)? 0 : Math.Max( Math.Min( Utility.ToInt32( info.GetTextEntry( 11 ).Text ), 0xFFFF ), 0 );
 							TimeSpan warLength = TimeSpan.FromHours( (tWarLength == null) ? 0 : Math.Max( Math.Min( Utility.ToInt32( info.GetTextEntry( 10 ).Text ), 0xFFFF ), 0 ) );
 
-							if( war != null )
+							if ( war != null )
 							{
 								war.MaxKills = maxKills;
 								war.WarLength = warLength;
@@ -95,7 +95,7 @@ namespace Server.Guilds
 								guild.PendingWars.Add( new WarDeclaration( guild, m_Other, maxKills, warLength, true ) );
 							}
 
-							if( otherWar != null )
+							if ( otherWar != null )
 							{
 								otherWar.MaxKills = maxKills;
 								otherWar.WarLength = warLength;
@@ -106,7 +106,7 @@ namespace Server.Guilds
 								m_Other.PendingWars.Add( new WarDeclaration( m_Other, guild, maxKills, warLength, false ) );
 							}
 
-							if( war != null )
+							if ( war != null )
 							{
 								pm.SendLocalizedMessage( 1070752 ); // The proposal has been updated.
 								//m_Other.GuildMessage( 1070782 ); // ~1_val~ has responded to your proposal.

@@ -211,7 +211,7 @@ namespace Server.Items
 
 					return false;
 				}
-				
+
 				if ( MaxWeight != 0 && (this.TotalWeight + plusWeight + item.TotalWeight + item.PileWeight) > MaxWeight )
 				{
 					if ( message )
@@ -717,7 +717,7 @@ namespace Server.Items
 			for( int i = 0; i < items.Length; ++i )
 				total += items[i].Amount;
 
-			if( total >= amount )
+			if ( total >= amount )
 			{
 				// We've enough, so consume it
 
@@ -729,9 +729,9 @@ namespace Server.Items
 
 					int theirAmount = item.Amount;
 
-					if( theirAmount < need )
+					if ( theirAmount < need )
 					{
-						if( callback != null )
+						if ( callback != null )
 							callback( item, theirAmount );
 
 						item.Consume( theirAmount );
@@ -739,7 +739,7 @@ namespace Server.Items
 					}
 					else
 					{
-						if( callback != null )
+						if ( callback != null )
 							callback( item, need );
 
 						item.Consume( need );
@@ -773,7 +773,7 @@ namespace Server.Items
 
 		private static void RecurseConsumeUpTo( Item current, Type type, int amount, bool recurse, ref int consumed, Queue<Item> toDelete )
 		{
-			if( current != null && current.Items.Count > 0 )
+			if ( current != null && current.Items.Count > 0 )
 			{
 				List<Item> list = current.Items;
 
@@ -781,12 +781,12 @@ namespace Server.Items
 				{
 					Item item = list[i];
 
-					if( type.IsAssignableFrom( item.GetType() ) )
+					if ( type.IsAssignableFrom( item.GetType() ) )
 					{
 						int need = amount - consumed;
 						int theirAmount = item.Amount;
 
-						if( theirAmount <= need )
+						if ( theirAmount <= need )
 						{
 							toDelete.Enqueue( item );
 							consumed += theirAmount;
@@ -799,7 +799,7 @@ namespace Server.Items
 							return;
 						}
 					}
-					else if( recurse && item is Container )
+					else if ( recurse && item is Container )
 					{
 						RecurseConsumeUpTo( item, type, amount, recurse, ref consumed, toDelete );
 					}
@@ -812,7 +812,7 @@ namespace Server.Items
 		#region Get[BestGroup]Amount
 		public int GetBestGroupAmount( Type type, bool recurse, CheckItemGroup grouper )
 		{
-			if( grouper == null )
+			if ( grouper == null )
 				throw new ArgumentNullException();
 
 			int best = 0;
@@ -834,7 +834,7 @@ namespace Server.Items
 					Item b = typedItems[idx];
 					int v = grouper( a, b );
 
-					if( v == 0 )
+					if ( v == 0 )
 						group.Add( b );
 					else
 						break;
@@ -855,7 +855,7 @@ namespace Server.Items
 				for( int j = 0; j < items.Length; ++j )
 					total += items[j].Amount;
 
-				if( total >= best )
+				if ( total >= best )
 					best = total;
 			}
 
@@ -864,7 +864,7 @@ namespace Server.Items
 
 		public int GetBestGroupAmount( Type[] types, bool recurse, CheckItemGroup grouper )
 		{
-			if( grouper == null )
+			if ( grouper == null )
 				throw new ArgumentNullException();
 
 			int best = 0;
@@ -886,7 +886,7 @@ namespace Server.Items
 					Item b = typedItems[idx];
 					int v = grouper( a, b );
 
-					if( v == 0 )
+					if ( v == 0 )
 						group.Add( b );
 					else
 						break;
@@ -906,7 +906,7 @@ namespace Server.Items
 				for( int k = 0; k < items.Length; ++k )
 					total += items[k].Amount;
 
-				if( total >= best )
+				if ( total >= best )
 					best = total;
 			}
 
@@ -915,7 +915,7 @@ namespace Server.Items
 
 		public int GetBestGroupAmount( Type[][] types, bool recurse, CheckItemGroup grouper )
 		{
-			if( grouper == null )
+			if ( grouper == null )
 				throw new ArgumentNullException();
 
 			int best = 0;
@@ -939,7 +939,7 @@ namespace Server.Items
 						Item b = typedItems[idx];
 						int v = grouper( a, b );
 
-						if( v == 0 )
+						if ( v == 0 )
 							group.Add( b );
 						else
 							break;
@@ -959,7 +959,7 @@ namespace Server.Items
 					for( int k = 0; k < items.Length; ++k )
 						total += items[k].Amount;
 
-					if( total >= best )
+					if ( total >= best )
 						best = total;
 				}
 			}
@@ -1046,7 +1046,7 @@ namespace Server.Items
 
 		public Item[] FindItemsByType( Type[] types, bool recurse )
 		{
-			if( m_FindItemsList.Count > 0 )
+			if ( m_FindItemsList.Count > 0 )
 				m_FindItemsList.Clear();
 
 			RecurseFindItemsByType( this, types, recurse, m_FindItemsList );
@@ -1056,7 +1056,7 @@ namespace Server.Items
 
 		private static void RecurseFindItemsByType( Item current, Type[] types, bool recurse, List<Item> list )
 		{
-			if( current != null && current.Items.Count > 0 )
+			if ( current != null && current.Items.Count > 0 )
 			{
 				List<Item> items = current.Items;
 
@@ -1064,10 +1064,10 @@ namespace Server.Items
 				{
 					Item item = items[i];
 
-					if( InTypeList( item, types ) )
+					if ( InTypeList( item, types ) )
 						list.Add( item );
 
-					if( recurse && item is Container )
+					if ( recurse && item is Container )
 						RecurseFindItemsByType( item, types, recurse, list );
 				}
 			}
@@ -1085,7 +1085,7 @@ namespace Server.Items
 
 		private static Item RecurseFindItemByType( Item current, Type type, bool recurse )
 		{
-			if( current != null && current.Items.Count > 0 )
+			if ( current != null && current.Items.Count > 0 )
 			{
 				List<Item> list = current.Items;
 
@@ -1093,15 +1093,15 @@ namespace Server.Items
 				{
 					Item item = list[i];
 
-					if( type.IsAssignableFrom( item.GetType() ) )
+					if ( type.IsAssignableFrom( item.GetType() ) )
 					{
 						return item;
 					}
-					else if( recurse && item is Container )
+					else if ( recurse && item is Container )
 					{
 						Item check = RecurseFindItemByType( item, type, recurse );
 
-						if( check != null )
+						if ( check != null )
 							return check;
 					}
 				}
@@ -1122,7 +1122,7 @@ namespace Server.Items
 
 		private static Item RecurseFindItemByType( Item current, Type[] types, bool recurse )
 		{
-			if( current != null && current.Items.Count > 0 )
+			if ( current != null && current.Items.Count > 0 )
 			{
 				List<Item> list = current.Items;
 
@@ -1130,15 +1130,15 @@ namespace Server.Items
 				{
 					Item item = list[i];
 
-					if( InTypeList( item, types ) )
+					if ( InTypeList( item, types ) )
 					{
 						return item;
 					}
-					else if( recurse && item is Container )
+					else if ( recurse && item is Container )
 					{
 						Item check = RecurseFindItemByType( item, types, recurse );
 
-						if( check != null )
+						if ( check != null )
 							return check;
 					}
 				}
@@ -1167,11 +1167,11 @@ namespace Server.Items
 
 		public List<T> FindItemsByType<T>( bool recurse, Predicate<T> predicate ) where T : Item
 		{
-			if( m_FindItemsList.Count > 0 )
+			if ( m_FindItemsList.Count > 0 )
 				m_FindItemsList.Clear();
 
 			List<T> list = new List<T>();
-			
+
 			RecurseFindItemsByType<T>( this, recurse, list, predicate );
 
 			return list;
@@ -1179,7 +1179,7 @@ namespace Server.Items
 
 		private static void RecurseFindItemsByType<T>( Item current, bool recurse, List<T> list, Predicate<T> predicate ) where T : Item
 		{
-			if( current != null && current.Items.Count > 0 )
+			if ( current != null && current.Items.Count > 0 )
 			{
 				List<Item> items = current.Items;
 
@@ -1187,15 +1187,15 @@ namespace Server.Items
 				{
 					Item item = items[i];
 
-					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
+					if ( typeof( T ).IsAssignableFrom( item.GetType() ) )
 					{
 						T typedItem = (T)item;
 
-						if( predicate == null || predicate( typedItem ) )
+						if ( predicate == null || predicate( typedItem ) )
 							list.Add( typedItem );
 					}
 
-					if( recurse && item is Container )
+					if ( recurse && item is Container )
 						RecurseFindItemsByType<T>( item, recurse, list, predicate );
 				}
 			}
@@ -1224,7 +1224,7 @@ namespace Server.Items
 
 		private static T RecurseFindItemByType<T>( Item current, bool recurse, Predicate<T> predicate ) where T : Item
 		{
-			if( current != null && current.Items.Count > 0 )
+			if ( current != null && current.Items.Count > 0 )
 			{
 				List<Item> list = current.Items;
 
@@ -1232,18 +1232,18 @@ namespace Server.Items
 				{
 					Item item = list[i];
 
-					if( typeof( T ).IsAssignableFrom( item.GetType() ) )
+					if ( typeof( T ).IsAssignableFrom( item.GetType() ) )
 					{
 						T typedItem = (T)item;
 
-						if( predicate == null || predicate( typedItem ) )
+						if ( predicate == null || predicate( typedItem ) )
 							return typedItem;
 					}
-					else if( recurse && item is Container )
+					else if ( recurse && item is Container )
 					{
 						T check = RecurseFindItemByType<T>( item, recurse, predicate );
 
-						if( check != null )
+						if ( check != null )
 							return check;
 					}
 				}
@@ -1766,7 +1766,7 @@ namespace Server.Items
 			{
 				if ( Core.ML )
 				{
-					if( ParentsContain<BankBox>() )	//Root Parent is the Mobile.  Parent could be another containter.
+					if ( ParentsContain<BankBox>() )	//Root Parent is the Mobile.  Parent could be another containter.
 						list.Add( 1073841, "{0}\t{1}\t{2}", TotalItems, MaxItems, TotalWeight ); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
 					else
 						list.Add( 1072241, "{0}\t{1}\t{2}\t{3}", TotalItems, MaxItems, TotalWeight, MaxWeight ); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones

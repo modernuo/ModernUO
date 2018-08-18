@@ -62,9 +62,9 @@ namespace Server.Engines.Craft
 			AddButton( 15, 387, 4014, 4016, 0, GumpButtonType.Reply, 0 );
 			AddHtmlLocalized( 50, 390, 150, 18, 1044150, LabelColor, false, false ); // BACK
 
-			bool needsRecipe = ( craftItem.Recipe != null && from is PlayerMobile && !((PlayerMobile)from).HasRecipe( craftItem.Recipe ) );
+			bool needsRecipe = ( craftItem.Recipe != null && from is PlayerMobile mobile && !mobile.HasRecipe( craftItem.Recipe ) );
 
-			if( needsRecipe )
+			if ( needsRecipe )
 			{
 				AddButton( 270, 387, 4005, 4007, 0, GumpButtonType.Page, 0 );
 				AddHtmlLocalized( 305, 390, 150, 18, 1044151, GreyLabelColor, false, false ); // MAKE NOW
@@ -88,17 +88,17 @@ namespace Server.Engines.Craft
 			DrawResource();
 
 			/*
-			if( craftItem.RequiresSE )
+			if ( craftItem.RequiresSE )
 				AddHtmlLocalized( 170, 302 + (m_OtherCount++ * 20), 310, 18, 1063363, LabelColor, false, false ); //* Requires the "Samurai Empire" expansion
 			 * */
 
-			if( craftItem.RequiredExpansion != Expansion.None )
+			if ( craftItem.RequiredExpansion != Expansion.None )
 			{
 				bool supportsEx = (from.NetState != null && from.NetState.SupportsExpansion( craftItem.RequiredExpansion ));
 				TextDefinition.AddHtmlText( this, 170, 302 + (m_OtherCount++ * 20), 310, 18, RequiredExpansionMessage( craftItem.RequiredExpansion ), false, false, supportsEx ? LabelColor : RedLabelColor, supportsEx ? LabelHue : RedLabelHue );
 			}
 
-			if( needsRecipe )
+			if ( needsRecipe )
 				AddHtmlLocalized( 170, 302 + (m_OtherCount++ * 20), 310, 18, 1073620, RedLabelColor, false, false ); // You have not learned this recipe.
 
 		}
@@ -167,9 +167,9 @@ namespace Server.Engines.Craft
 
 			if ( m_ShowExceptionalChance )
 			{
-				if( excepChance < 0.0 )
+				if ( excepChance < 0.0 )
 					excepChance = 0.0;
-				else if( excepChance > 1.0 )
+				else if ( excepChance > 1.0 )
 					excepChance = 1.0;
 
 				AddHtmlLocalized( 170, 100, 250, 18, 1044058, 32767, false, false ); // Exceptional Chance:
@@ -207,7 +207,7 @@ namespace Server.Engines.Craft
 				type = craftResource.ItemType;
 				nameString = craftResource.NameString;
 				nameNumber = craftResource.NameNumber;
-				
+
 				// Resource Mutation
 				if ( type == res.ResType && resIndex > -1 )
 				{

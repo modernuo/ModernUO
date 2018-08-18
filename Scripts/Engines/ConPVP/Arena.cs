@@ -615,12 +615,8 @@ namespace Server.Engines.ConPVP
 				List<Mobile> pets = new List<Mobile>();
 
 				foreach ( Mobile mob in facet.GetMobilesInBounds( m_Bounds ) ) {
-					BaseCreature pet = mob as BaseCreature;
-
-					if ( pet != null && pet.Controlled && pet.ControlMaster != null ) {
-						if ( m_Players.Contains( pet.ControlMaster ) ) {
-							pets.Add( pet );
-						}
+					if ( mob is BaseCreature pet && pet.Controlled && pet.ControlMaster != null && m_Players.Contains( pet.ControlMaster ) ) {
+						pets.Add( pet );
 					}
 				}
 

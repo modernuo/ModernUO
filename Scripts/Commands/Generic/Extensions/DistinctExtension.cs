@@ -8,7 +8,7 @@ namespace Server.Commands.Generic
 {
 	public sealed class DistinctExtension : BaseExtension
 	{
-		public static ExtensionInfo ExtInfo = new ExtensionInfo( 30, "Distinct", -1, delegate() { return new DistinctExtension(); } );
+		public static ExtensionInfo ExtInfo = new ExtensionInfo( 30, "Distinct", -1, delegate { return new DistinctExtension(); } );
 
 		public static void Initialize()
 		{

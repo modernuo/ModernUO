@@ -30,7 +30,7 @@ namespace Server.Mobiles
 
 			protected override void OnTick()
 			{
-				if( !m_Owner.Deleted && m_Owner.IsParagon && m_Owner .Map != Map.Internal )
+				if ( !m_Owner.Deleted && m_Owner.IsParagon && m_Owner .Map != Map.Internal )
 				{
 					m_Owner.Stam++;
 
@@ -117,7 +117,7 @@ namespace Server.Mobiles
 			{
 				bc.Karma = (int)( bc.Karma * KarmaBuff );
 
-				if( Math.Abs( bc.Karma ) > 32000 )
+				if ( Math.Abs( bc.Karma ) > 32000 )
 					bc.Karma = 32000 * Math.Sign( bc.Karma );
 			}
 
@@ -126,12 +126,12 @@ namespace Server.Mobiles
 
 		public static void UnConvert( BaseCreature bc )
 		{
-			if( !bc.IsParagon )
+			if ( !bc.IsParagon )
 				return;
 
 			bc.Hue = 0;
 
-			if( bc.HitsMaxSeed >= 0 )
+			if ( bc.HitsMaxSeed >= 0 )
 				bc.HitsMaxSeed = (int)( bc.HitsMaxSeed / HitsBuff );
 
 			bc.RawStr = (int)( bc.RawStr / StrBuff );

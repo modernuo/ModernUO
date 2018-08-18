@@ -62,7 +62,7 @@ namespace Server {
 
 		public static void NotifyDiskWriteComplete()
 		{
-			if( m_DiskWriteHandle.Set())
+			if ( m_DiskWriteHandle.Set())
 			{
 				Console.WriteLine("Closing Save Files. ");
 			}

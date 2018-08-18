@@ -73,7 +73,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( version < 1 )
+			if ( version < 1 )
 			{
 				Timer.DelayCall( TimeSpan.FromSeconds( 0 ), new TimerCallback( OnAfterDeserialize_Callback ) );
 			}

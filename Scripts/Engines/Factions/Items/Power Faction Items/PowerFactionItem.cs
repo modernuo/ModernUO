@@ -119,16 +119,16 @@ namespace Server {
 		public override void OnDoubleClick( Mobile from ) {
 			if ( !IsChildOf( from.Backpack ) ) {
 				from.SendLocalizedMessage( 1042038 ); // You must have the object in your backpack to use it.
-			} else if ( from is PlayerMobile && ((PlayerMobile)from).DuelContext != null ) {
-				from.SendMessage( "You can't use that." );
+			} else if ( from is PlayerMobile mobile && mobile.DuelContext != null ) {
+				mobile.SendMessage( "You can't use that." );
 			} else if ( Faction.Find( from ) == null ) {
 				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2119, false, "The object vanishes from your hands as you touch it." );
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), delegate() {
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), delegate {
 					from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2118, false, "You feel a strange tingling sensation throughout your body." );
 				} );
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 4.0 ), delegate() {
+				Timer.DelayCall( TimeSpan.FromSeconds( 4.0 ), delegate {
 					from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2118, false, "Your skin begins to burn." );
 				} );
 

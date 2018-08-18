@@ -26,7 +26,7 @@ namespace Server.Items
 		{
 			get
 			{
-				if( ItemID == 0x2336 )
+				if ( ItemID == 0x2336 )
 					return true;
 
 				return false;
@@ -54,11 +54,11 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( from.InRange( Location, 3 ) )
+			if ( from.InRange( Location, 3 ) )
 			{
 				BaseHouse house = BaseHouse.FindHouseAt( this );
 
-				if( house != null && house.IsOwner( from ) )
+				if ( house != null && house.IsOwner( from ) )
 				{
 					from.CloseGump( typeof( RewardDemolitionGump ) );
 					from.SendGump( new RewardDemolitionGump( this, 1049783 ) ); // Do you wish to re-deed this decoration?
@@ -86,10 +86,10 @@ namespace Server.Items
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
-			if( map == null || !map.CanFit( p.X, p.Y, p.Z, ItemData.Height ) )
+			if ( map == null || !map.CanFit( p.X, p.Y, p.Z, ItemData.Height ) )
 				return false;
 
-			if( FacingSouth )
+			if ( FacingSouth )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // north wall
 			else
 				return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // west wall
@@ -115,15 +115,15 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( IsChildOf( from.Backpack ) )
+			if ( IsChildOf( from.Backpack ) )
 			{
 				BaseHouse house = BaseHouse.FindHouseAt( from );
 
-				if( house != null && house.IsOwner( from ) )
+				if ( house != null && house.IsOwner( from ) )
 				{
 					from.CloseGump( typeof( FacingGump ) );
 
-					if( !from.SendGump( new FacingGump( this, from ) ) )
+					if ( !from.SendGump( new FacingGump( this, from ) ) )
 					{
 						from.SendLocalizedMessage( 1150062  ); // You fail to re-deed the holiday fireflies.
 					}
@@ -213,29 +213,29 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if( m_FirefliesDeed == null || m_FirefliesDeed.Deleted )
+				if ( m_FirefliesDeed == null || m_FirefliesDeed.Deleted )
 					return;
 
-				if( m_FirefliesDeed.IsChildOf( from.Backpack ) )
+				if ( m_FirefliesDeed.IsChildOf( from.Backpack ) )
 				{
 					BaseHouse house = BaseHouse.FindHouseAt( from );
 
-					if( house != null && house.IsOwner( from ) )
+					if ( house != null && house.IsOwner( from ) )
 					{
 						IPoint3D p = targeted as IPoint3D;
 						Map map = from.Map;
 
-						if( p == null || map == null || map == Map.Internal )
+						if ( p == null || map == null || map == Map.Internal )
 							return;
 
 						Point3D p3d = new Point3D( p );
 						ItemData id = TileData.ItemTable[ m_ItemID & TileData.MaxItemValue ];
 
-						if( map.CanFit( p3d, id.Height ) )
+						if ( map.CanFit( p3d, id.Height ) )
 						{
 							house = BaseHouse.FindHouseAt( p3d, map, id.Height );
 
-							if( house != null && house.IsOwner( from ) )
+							if ( house != null && house.IsOwner( from ) )
 							{
 								bool north = BaseAddon.IsWall( p3d.X, p3d.Y - 1, p3d.Z, map );
 								bool west = BaseAddon.IsWall( p3d.X - 1, p3d.Y, p3d.Z, map );
@@ -244,13 +244,13 @@ namespace Server.Items
 
 								foreach( Item item in Map.Malas.GetItemsInRange( p3d, 0 ) )
 								{
-									if( item is Fireflies )
+									if ( item is Fireflies )
 									{
 										isclear = false;
 									}
 								}
 
-								if( ( ( m_ItemID == 0x2336 && north ) || ( m_ItemID == 0x2332 && west ) ) && isclear )
+								if ( ( ( m_ItemID == 0x2336 && north ) || ( m_ItemID == 0x2332 && west ) ) && isclear )
 								{
 									Fireflies flies = new Fireflies( m_ItemID );
 

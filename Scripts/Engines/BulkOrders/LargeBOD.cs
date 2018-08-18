@@ -146,12 +146,10 @@ namespace Server.Engines.BulkOrders
 
 		public void EndCombine( Mobile from, object o )
 		{
-			if ( o is Item && ((Item)o).IsChildOf( from.Backpack ) )
+			if ( o is Item item && item.IsChildOf( from.Backpack ) )
 			{
-				if ( o is SmallBOD )
+				if ( item is SmallBOD small )
 				{
-					SmallBOD small = (SmallBOD)o;
-
 					LargeBulkEntry entry = null;
 
 					for ( int i = 0; entry == null && i < m_Entries.Length; ++i )

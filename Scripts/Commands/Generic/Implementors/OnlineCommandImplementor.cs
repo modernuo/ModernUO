@@ -47,7 +47,7 @@ namespace Server.Commands.Generic
 					if ( mob == null )
 						continue;
 
-					if( !BaseCommand.IsAccessible( from, mob ) )
+					if ( !BaseCommand.IsAccessible( from, mob ) )
 						continue;
 
 					if ( ext.IsValid( mob ) )

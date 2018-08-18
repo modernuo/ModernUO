@@ -448,10 +448,8 @@ namespace Server.Engines.ConPVP
 					from.LocalOverheadMessage( MessageType.Regular, 0x26, false, "Those are not my cookies." );
 				}
 			}
-			else if ( obj is Mobile )
+			else if ( obj is Mobile passTo )
 			{
-				Mobile passTo = obj as Mobile;
-
 				CTFTeamInfo passTeam = m_TeamInfo.Game.GetTeamInfo( passTo );
 
 				if ( passTo == from )
@@ -481,11 +479,11 @@ namespace Server.Engines.ConPVP
 
 		private Mobile FindOwner( object parent )
 		{
-			if ( parent is Item )
-				return ( (Item) parent ).RootParent as Mobile;
+			if ( parent is Item item )
+				return item.RootParent as Mobile;
 
-			if ( parent is Mobile )
-				return (Mobile) parent;
+			if ( parent is Mobile mobile )
+				return mobile;
 
 			return null;
 		}
@@ -969,9 +967,7 @@ namespace Server.Engines.ConPVP
 
 		public int GetTeamID( Mobile mob )
 		{
-			PlayerMobile pm = mob as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(mob is PlayerMobile pm) )
 				return -1;
 
 			if ( pm.DuelContext == null || pm.DuelContext != m_Context )
@@ -1015,8 +1011,8 @@ namespace Server.Engines.ConPVP
 
 			DuelPlayer dp = null;
 
-			if ( mob is PlayerMobile )
-				dp = ( mob as PlayerMobile ).DuelPlayer;
+			if ( mob is PlayerMobile mobile )
+				dp = mobile.DuelPlayer;
 
 			m_Context.RemoveAggressions( mob );
 
@@ -1088,9 +1084,7 @@ namespace Server.Engines.ConPVP
 							{
 								for ( int j = 0; j < ourFlagCarrier.Aggressors.Count; ++j )
 								{
-									AggressorInfo aggr = ourFlagCarrier.Aggressors[j] as AggressorInfo;
-
-									if ( aggr == null || aggr.Defender != ourFlagCarrier || aggr.Attacker != mob )
+									if ( !(ourFlagCarrier.Aggressors[j] is AggressorInfo aggr) || aggr.Defender != ourFlagCarrier || aggr.Attacker != mob )
 										continue;
 
 									playerInfo.Score += 2; // helped defend guy capturing enemy flag

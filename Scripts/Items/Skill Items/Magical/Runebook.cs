@@ -203,7 +203,7 @@ namespace Server.Items
 
 			LootType = LootType.Blessed;
 
-			if( Core.SE && Weight == 3.0 )
+			if ( Core.SE && Weight == 3.0 )
 				Weight = 1.0;
 
 			int version = reader.ReadInt();

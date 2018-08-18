@@ -49,14 +49,9 @@ namespace Server.Engines.Doom
 						return;
 					}
 				}
-				else if ( m is BaseCreature )
-				{
-					BaseCreature bc = (BaseCreature)m;
-					if(( bc.Controlled && bc.ControlMaster == Controller.Successful ) || bc.Summoned )
-					{
-						return;
-					}
-				}
+				else if (m is BaseCreature bc && ((bc.Controlled && bc.ControlMaster == Controller.Successful) ||
+				         bc.Summoned))
+					return;
 			}
 			Timer kick = new LeverPuzzleController.LampRoomKickTimer( m );
 			kick.Start();
@@ -64,16 +59,16 @@ namespace Server.Engines.Doom
 
 		public override void OnExit( Mobile m )
 		{
-			if( m != null && m == Controller.Successful )
+			if ( m != null && m == Controller.Successful )
 				Controller.RemoveSuccessful();
 		}
 
 		public override void OnDeath( Mobile m )
 		{
-			if( m != null && !m.Deleted &&  !(m is WandererOfTheVoid) )
+			if ( m != null && !m.Deleted &&  !(m is WandererOfTheVoid) )
 			{
 				Timer kick = new LeverPuzzleController.LampRoomKickTimer( m );
-				kick.Start();;
+				kick.Start();
 			}
 		}
 
@@ -103,7 +98,7 @@ namespace Server.Engines.Doom
 			}
 		}
 
-		public LeverPuzzleRegion ( LeverPuzzleController controller, int[] loc ) 
+		public LeverPuzzleRegion ( LeverPuzzleController controller, int[] loc )
 			: base( null, Map.Malas, Region.Find( LeverPuzzleController.lr_Enter, Map.Malas ), new Rectangle2D(loc[0],loc[1],1,1) )
 		{
 			Controller = controller;
@@ -112,13 +107,13 @@ namespace Server.Engines.Doom
 
 		public override void OnEnter( Mobile m )
 		{
-			if( m != null && m_Occupant == null && m is PlayerMobile && m.Alive )
+			if ( m != null && m_Occupant == null && m is PlayerMobile && m.Alive )
 				m_Occupant = m;
 		}
 
 		public override void OnExit( Mobile m )
 		{
-			if( m != null && m == m_Occupant )
+			if ( m != null && m == m_Occupant )
 				m_Occupant = null;
 		}
 	}

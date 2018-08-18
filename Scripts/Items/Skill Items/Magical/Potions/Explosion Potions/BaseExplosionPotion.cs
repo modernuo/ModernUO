@@ -94,7 +94,7 @@ namespace Server.Items
 			{
 				from.SendLocalizedMessage( 500236 ); // You should throw it now!
 
-				if( Core.ML )
+				if ( Core.ML )
 					m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.25 ), 5, new TimerStateCallback( Detonate_OnTick ), new object[]{ from, 3 } ); // 3.6 seconds explosion delay
 				else
 					m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 0.75 ), TimeSpan.FromSeconds( 1.0 ), 4, new TimerStateCallback( Detonate_OnTick ), new object[]{ from, 3 } ); // 2.6 seconds explosion delay
@@ -205,9 +205,9 @@ namespace Server.Items
 
 				to = new Entity( Serial.Zero, new Point3D( p ), map );
 
-				if( p is Mobile )
+				if ( p is Mobile )
 				{
-					if( !RelativeLocation ) // explosion location = current mob location.
+					if ( !RelativeLocation ) // explosion location = current mob location.
 						p = ((Mobile)p).Location;
 					else
 						to = (Mobile)p;
@@ -215,7 +215,7 @@ namespace Server.Items
 
 				Effects.SendMovingEffect( from, to, m_Potion.ItemID, 7, 0, false, false, m_Potion.Hue, 0 );
 
-				if( m_Potion.Amount > 1 )
+				if ( m_Potion.Amount > 1 )
 				{
 					Mobile.LiftItemDupe( m_Potion, 1 );
 				}

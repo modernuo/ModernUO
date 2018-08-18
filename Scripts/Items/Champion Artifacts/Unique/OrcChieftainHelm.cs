@@ -26,7 +26,7 @@ namespace Server.Items
 			Attributes.Luck = 100;
 			Attributes.RegenHits = 3;
 
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 				Attributes.BonusHits = 30;
 			else
 				Attributes.AttackChance = 30;

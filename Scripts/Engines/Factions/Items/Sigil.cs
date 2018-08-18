@@ -15,7 +15,7 @@ namespace Server.Factions
 		public static readonly TimeSpan CorruptionGrace = TimeSpan.FromMinutes( (Core.SE) ? 30.0 : 15.0 );
 
 		// Sigil must be held at a stronghold for this amount of time in order to become corrupted
-		public static readonly TimeSpan CorruptionPeriod = ( (Core.SE) ? TimeSpan.FromHours( 10.0 ) : TimeSpan.FromHours( 24.0 ) ); 
+		public static readonly TimeSpan CorruptionPeriod = ( (Core.SE) ? TimeSpan.FromHours( 10.0 ) : TimeSpan.FromHours( 24.0 ) );
 
 		// After a sigil has been corrupted it must be returned to the town within this period of time
 		public static readonly TimeSpan ReturnPeriod = TimeSpan.FromHours( 1.0 );
@@ -177,11 +177,11 @@ namespace Server.Factions
 
 		private Mobile FindOwner( object parent )
 		{
-			if ( parent is Item )
-				return ((Item)parent).RootParent as Mobile;
+			if ( parent is Item item )
+				return item.RootParent as Mobile;
 
-			if ( parent is Mobile )
-				return (Mobile) parent;
+			if ( parent is Mobile mobile )
+				return mobile;
 
 			return null;
 		}
@@ -227,7 +227,7 @@ namespace Server.Factions
 		{
 			Container pack = mob.Backpack;
 
-			return ( pack != null && pack.FindItemByType( typeof( Sigil ) ) != null );
+			return ( pack?.FindItemByType( typeof( Sigil ) ) != null );
 		}
 
 		private void BeginCorrupting( Faction faction )
@@ -267,10 +267,8 @@ namespace Server.Factions
 			#region Give To Mobile
 			if ( obj is Mobile )
 			{
-				if ( obj is PlayerMobile )
+				if ( obj is PlayerMobile targ )
 				{
-					PlayerMobile targ = (PlayerMobile)obj;
-
 					Faction toFaction = Faction.Find( targ );
 					Faction fromFaction = Faction.Find( from );
 
@@ -280,14 +278,13 @@ namespace Server.Factions
 						from.SendLocalizedMessage( 1005222 ); // You cannot give the sigil to someone not in your faction
 					else if ( Sigil.ExistsOn( targ ) )
 						from.SendLocalizedMessage( 1005220 ); // You cannot give this sigil to someone who already has a sigil
-					else if( !targ.Alive )
+					else if ( !targ.Alive )
 						from.SendLocalizedMessage( 1042248 ); // You cannot give a sigil to a dead person.
 					else if ( from.NetState != null && targ.NetState != null )
 					{
 						Container pack = targ.Backpack;
 
-						if ( pack != null )
-							pack.DropItem( this );
+						pack?.DropItem( this );
 					}
 				}
 				else
@@ -299,19 +296,17 @@ namespace Server.Factions
 			else if ( obj is BaseMonolith )
 			{
 				#region Put in Stronghold
-				if ( obj is StrongholdMonolith )
+				if ( obj is StrongholdMonolith sm )
 				{
-					StrongholdMonolith m = (StrongholdMonolith)obj;
-
-					if ( m.Faction == null || m.Faction != Faction.Find( from ) )
+					if ( sm.Faction == null || sm.Faction != Faction.Find( from ) )
 						from.SendLocalizedMessage( 1042246 ); // You can't place that on an enemy monolith
-					else if ( m.Town == null || m.Town != m_Town )
+					else if ( sm.Town == null || sm.Town != m_Town )
 						from.SendLocalizedMessage( 1042247 ); // That is not the correct faction monolith
 					else
 					{
-						m.Sigil = this;
+						sm.Sigil = this;
 
-						Faction newController = m.Faction;
+						Faction newController = sm.Faction;
 						Faction oldController = m_Corrupting;
 
 						if ( oldController == null )
@@ -343,17 +338,15 @@ namespace Server.Factions
 				#endregion
 
 				#region Put in Town
-				else if ( obj is TownMonolith )
+				else if ( obj is TownMonolith tm )
 				{
-					TownMonolith m = (TownMonolith)obj;
-
-					if ( m.Town == null || m.Town != m_Town )
+					if ( tm.Town == null || tm.Town != m_Town )
 						from.SendLocalizedMessage( 1042245 ); // This is not the correct town sigil monolith
 					else if ( m_Corrupted == null || m_Corrupted != Faction.Find( from ) )
 						from.SendLocalizedMessage( 1042244 ); // Your faction did not corrupt this sigil.  Take it to your stronghold.
 					else
 					{
-						m.Sigil = this;
+						tm.Sigil = this;
 
 						m_Corrupting = null;
 						m_PurificationStart = DateTime.UtcNow;
@@ -367,7 +360,7 @@ namespace Server.Factions
 			}
 			else
 			{
-				from.SendLocalizedMessage( 1005224 );	//	You can't use the sigil on that 
+				from.SendLocalizedMessage( 1005224 );	//	You can't use the sigil on that
 			}
 
 			Update();
@@ -419,9 +412,7 @@ namespace Server.Factions
 
 					Update();
 
-					Mobile mob = RootParent as Mobile;
-
-					if ( mob != null )
+					if ( RootParent is Mobile mob )
 						mob.SolidHueOverride = OwnershipHue;
 
 					break;

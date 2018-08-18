@@ -182,7 +182,7 @@ namespace Server.Regions
 
 				bool uncontrolled = !(spawnable is BaseCreature) || !((BaseCreature)spawnable).Controlled;
 
-				if( uncontrolled )
+				if ( uncontrolled )
 					spawnable.Delete();
 			}
 

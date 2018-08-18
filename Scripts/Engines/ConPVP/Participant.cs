@@ -19,10 +19,8 @@ namespace Server.Engines.ConPVP
 
 		public DuelPlayer Find( Mobile mob )
 		{
-			if ( mob is PlayerMobile )
+			if ( mob is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)mob;
-
 				if ( pm.DuelContext == m_Context && pm.DuelPlayer.Participant == this )
 					return pm.DuelPlayer;
 
@@ -229,8 +227,8 @@ namespace Server.Engines.ConPVP
 			m_Mobile = mob;
 			m_Participant = p;
 
-			if ( mob is PlayerMobile )
-				((PlayerMobile)mob).DuelPlayer = this;
+			if ( mob is PlayerMobile mobile )
+				mobile.DuelPlayer = this;
 		}
 	}
 }

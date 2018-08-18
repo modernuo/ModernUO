@@ -93,12 +93,12 @@ namespace Server.Items
 		public bool ReplenishesCharges
 		{
 			get { return m_ReplenishesCharges; }
-			set 
+			set
 			{
-				if( value != m_ReplenishesCharges && value )
+				if ( value != m_ReplenishesCharges && value )
 					m_LastReplenished = DateTime.UtcNow;
 
-				m_ReplenishesCharges = value; 
+				m_ReplenishesCharges = value;
 			}
 		}
 
@@ -109,17 +109,17 @@ namespace Server.Items
 
 		public void CheckReplenishUses( bool invalidate )
 		{
-			if( !m_ReplenishesCharges || m_UsesRemaining >= InitMaxUses )
+			if ( !m_ReplenishesCharges || m_UsesRemaining >= InitMaxUses )
 				return;
 
-			if( m_LastReplenished + ChargeReplenishRate < DateTime.UtcNow )
+			if ( m_LastReplenished + ChargeReplenishRate < DateTime.UtcNow )
 			{
 				TimeSpan timeDifference = DateTime.UtcNow - m_LastReplenished;
 
 				m_UsesRemaining = Math.Min( m_UsesRemaining + (int)( timeDifference.Ticks / ChargeReplenishRate.Ticks), InitMaxUses );	//How rude of TimeSpan to not allow timespan division.
 				m_LastReplenished = DateTime.UtcNow;
 
-				if( invalidate )
+				if ( invalidate )
 					InvalidateProperties();
 
 			}
@@ -354,24 +354,24 @@ namespace Server.Items
 
 			list.Add( 1060584, m_UsesRemaining.ToString() ); // uses remaining: ~1_val~
 
-			if( m_ReplenishesCharges )
+			if ( m_ReplenishesCharges )
 				list.Add( 1070928 ); // Replenish Charges
 
-			if( m_Slayer != SlayerName.None )
+			if ( m_Slayer != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer );
-				if( entry != null )
+				if ( entry != null )
 					list.Add( entry.Title );
 			}
 
-			if( m_Slayer2 != SlayerName.None )
+			if ( m_Slayer2 != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer2 );
-				if( entry != null )
+				if ( entry != null )
 					list.Add( entry.Title );
 			}
 
-			if( m_UsesRemaining != oldUses )
+			if ( m_UsesRemaining != oldUses )
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( InvalidateProperties ) );
 		}
 
@@ -390,21 +390,21 @@ namespace Server.Items
 			if ( m_Quality == InstrumentQuality.Exceptional )
 				attrs.Add( new EquipInfoAttribute( 1018305 - (int)m_Quality ) );
 
-			if( m_ReplenishesCharges )
+			if ( m_ReplenishesCharges )
 				attrs.Add( new EquipInfoAttribute( 1070928 ) ); // Replenish Charges
 
 			// TODO: Must this support item identification?
-			if( m_Slayer != SlayerName.None )
+			if ( m_Slayer != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer );
-				if( entry != null )
+				if ( entry != null )
 					attrs.Add( new EquipInfoAttribute( entry.Title ) );
 			}
 
-			if( m_Slayer2 != SlayerName.None )
+			if ( m_Slayer2 != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer2 );
-				if( entry != null )
+				if ( entry != null )
 					attrs.Add( new EquipInfoAttribute( entry.Title ) );
 			}
 
@@ -439,7 +439,7 @@ namespace Server.Items
 			writer.Write( (int) 3 ); // version
 
 			writer.Write( m_ReplenishesCharges );
-			if( m_ReplenishesCharges )
+			if ( m_ReplenishesCharges )
 				writer.Write( m_LastReplenished );
 
 
@@ -467,7 +467,7 @@ namespace Server.Items
 				{
 					m_ReplenishesCharges = reader.ReadBool();
 
-					if( m_ReplenishesCharges )
+					if ( m_ReplenishesCharges )
 						m_LastReplenished = reader.ReadDateTime();
 
 					goto case 2;
@@ -484,7 +484,7 @@ namespace Server.Items
 
 					m_WellSound = reader.ReadEncodedInt();
 					m_BadlySound = reader.ReadEncodedInt();
-					
+
 					break;
 				}
 				case 1:

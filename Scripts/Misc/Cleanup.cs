@@ -84,7 +84,7 @@ namespace Server.Misc
 							items.Add( item );
 							continue;
 						}
-						else if( item.Parent == rootMobile )
+						else if ( item.Parent == rootMobile )
 						{
 							hairCleanup.Add( rootMobile );
 							continue;

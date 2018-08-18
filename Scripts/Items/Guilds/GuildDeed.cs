@@ -40,7 +40,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( Guild.NewGuildSystem )
+			if ( Guild.NewGuildSystem )
 				return;
 
 			if ( !IsChildOf( from.Backpack ) )

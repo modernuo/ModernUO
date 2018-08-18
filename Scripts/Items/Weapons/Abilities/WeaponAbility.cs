@@ -141,7 +141,7 @@ namespace Server.Items
 
 			if ( from.Mana < mana )
 			{
-				if( ( from is BaseCreature ) && ( from as BaseCreature ).HasManaOveride )
+				if ( ( from is BaseCreature ) && ( from as BaseCreature ).HasManaOveride )
 				{
 					return true;
 				}
@@ -176,7 +176,7 @@ namespace Server.Items
 			if ( state == null )
 				return false;
 
-			if( RequiresSE && !state.SupportsExpansion( Expansion.SE ) )
+			if ( RequiresSE && !state.SupportsExpansion( Expansion.SE ) )
 			{
 				from.SendLocalizedMessage( 1063456 ); // You must upgrade to Samurai Empire in order to use that ability.
 				return false;

@@ -50,12 +50,12 @@ namespace Server.Mobiles
 		{
 			base.GetProperties( list );
 
-			if( m_IsDonationItem )
+			if ( m_IsDonationItem )
 			{
 				list.Add( "Donation Ethereal" );
 				list.Add( "7.5 sec slower cast time if not a 9mo. Veteran" );
 			}
-			if( Core.ML && m_IsRewardItem )
+			if ( Core.ML && m_IsRewardItem )
 				list.Add( RewardSystem.GetRewardYearLabel( this, new object[] { } ) ); // X Year Veteran Reward
 		}
 
@@ -68,11 +68,11 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if( m_MountedID != value )
+				if ( m_MountedID != value )
 				{
 					m_MountedID = value;
 
-					if( m_Rider != null )
+					if ( m_Rider != null )
 						ItemID = value;
 				}
 			}
@@ -87,11 +87,11 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if( m_RegularID != value )
+				if ( m_RegularID != value )
 				{
 					m_RegularID = value;
 
-					if( m_Rider == null )
+					if ( m_Rider == null )
 						ItemID = value;
 				}
 			}
@@ -108,57 +108,57 @@ namespace Server.Mobiles
 
 		public void RemoveFollowers()
 		{
-			if( m_Rider != null )
+			if ( m_Rider != null )
 				m_Rider.Followers -= FollowerSlots;
 
-			if( m_Rider != null && m_Rider.Followers < 0 )
+			if ( m_Rider != null && m_Rider.Followers < 0 )
 				m_Rider.Followers = 0;
 		}
 
 		public void AddFollowers()
 		{
-			if( m_Rider != null )
+			if ( m_Rider != null )
 				m_Rider.Followers += FollowerSlots;
 		}
 
 		public virtual bool Validate( Mobile from )
 		{
-			if( Parent == null )
+			if ( Parent == null )
 			{
 				from.SayTo( from, 1010095 ); // This must be on your person to use.
 				return false;
 			}
-			else if( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
+			else if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 			{
 				// CheckIsUsableBy sends the message
 				return false;
 			}
-			else if( !BaseMount.CheckMountAllowed( from ) )
+			else if ( !BaseMount.CheckMountAllowed( from ) )
 			{
 				// CheckMountAllowed sends the message
 				return false;
 			}
-			else if( from.Mounted )
+			else if ( from.Mounted )
 			{
 				from.SendLocalizedMessage( 1005583 ); // Please dismount first.
 				return false;
 			}
-			else if( from.IsBodyMod && !from.Body.IsHuman )
+			else if ( from.IsBodyMod && !from.Body.IsHuman )
 			{
 				from.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 				return false;
 			}
-			else if( from.HasTrade )
+			else if ( from.HasTrade )
 			{
 				from.SendLocalizedMessage( 1042317, "", 0x41 ); // You may not ride at this time
 				return false;
 			}
-			else if( ( from.Followers + FollowerSlots ) > from.FollowersMax )
+			else if ( ( from.Followers + FollowerSlots ) > from.FollowersMax )
 			{
 				from.SendLocalizedMessage( 1049679 ); // You have too many followers to summon your mount.
 				return false;
 			}
-			else if( !Multis.DesignContext.Check( from ) )
+			else if ( !Multis.DesignContext.Check( from ) )
 			{
 				// Check sends the message
 				return false;
@@ -169,7 +169,7 @@ namespace Server.Mobiles
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( Validate( from ) )
+			if ( Validate( from ) )
 				new EtherealSpell( this, from ).Cast();
 		}
 
@@ -223,7 +223,7 @@ namespace Server.Mobiles
 					m_RegularID = reader.ReadInt();
 					m_Rider = reader.ReadMobile();
 
-					if( m_MountedID == 0x3EA2 )
+					if ( m_MountedID == 0x3EA2 )
 						m_MountedID = 0x3EAA;
 
 					break;
@@ -232,7 +232,7 @@ namespace Server.Mobiles
 
 			AddFollowers();
 
-			if( version < 3 && Weight == 0 )
+			if ( version < 3 && Weight == 0 )
 				Weight = -1;
 		}
 
@@ -247,7 +247,7 @@ namespace Server.Mobiles
 		{
 			IMount mount = m.Mount;
 
-			if( mount != null )
+			if ( mount != null )
 				mount.Rider = null;
 		}
 
@@ -260,9 +260,9 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if( value != m_Rider )
+				if ( value != m_Rider )
 				{
-					if( value == null )
+					if ( value == null )
 					{
 						Internalize();
 						UnmountMe();
@@ -272,7 +272,7 @@ namespace Server.Mobiles
 					}
 					else
 					{
-						if( m_Rider != null )
+						if ( m_Rider != null )
 							Dismount( m_Rider );
 
 						Dismount( value );
@@ -297,10 +297,10 @@ namespace Server.Mobiles
 			Layer = Layer.Invalid;
 			Movable = true;
 
-			if( Hue == EtherealHue )
+			if ( Hue == EtherealHue )
 				Hue = 0;
 
-			if( bp != null )
+			if ( bp != null )
 			{
 				bp.DropItem( this );
 			}
@@ -309,7 +309,7 @@ namespace Server.Mobiles
 				Point3D loc = m_Rider.Location;
 				Map map = m_Rider.Map;
 
-				if( map == null || map == Map.Internal )
+				if ( map == null || map == Map.Internal )
 				{
 					loc = m_Rider.LogoutLocation;
 					map = m_Rider.LogoutMap;
@@ -325,7 +325,7 @@ namespace Server.Mobiles
 			Layer = Layer.Mount;
 			Movable = false;
 
-			if( Hue == 0 )
+			if ( Hue == 0 )
 				Hue = EtherealHue;
 
 			ProcessDelta();
@@ -345,7 +345,7 @@ namespace Server.Mobiles
 
 		public static void StopMounting( Mobile mob )
 		{
-			if( mob.Spell is EtherealSpell )
+			if ( mob.Spell is EtherealSpell )
 				( (EtherealSpell)mob.Spell ).Stop();
 		}
 
@@ -410,7 +410,7 @@ namespace Server.Mobiles
 
 			public override bool CheckDisturb( DisturbType type, bool checkFirst, bool resistable )
 			{
-				if( type == DisturbType.EquipRequest || type == DisturbType.UseRequest/* || type == DisturbType.Hurt*/ )
+				if ( type == DisturbType.EquipRequest || type == DisturbType.UseRequest/* || type == DisturbType.Hurt*/ )
 					return false;
 
 				return true;
@@ -418,19 +418,19 @@ namespace Server.Mobiles
 
 			public override void DoHurtFizzle()
 			{
-				if( !m_Stop )
+				if ( !m_Stop )
 					base.DoHurtFizzle();
 			}
 
 			public override void DoFizzle()
 			{
-				if( !m_Stop )
+				if ( !m_Stop )
 					base.DoFizzle();
 			}
 
 			public override void OnDisturb( DisturbType type, bool message )
 			{
-				if( message && !m_Stop )
+				if ( message && !m_Stop )
 					Caster.SendLocalizedMessage( 1049455 ); // You have been disrupted while attempting to summon your ethereal mount!
 
 				//m_Mount.UnmountMe();
@@ -438,7 +438,7 @@ namespace Server.Mobiles
 
 			public override void OnCast()
 			{
-				if( !m_Mount.Deleted && m_Mount.Rider == null && m_Mount.Validate( m_Rider ) )
+				if ( !m_Mount.Deleted && m_Mount.Rider == null && m_Mount.Validate( m_Rider ) )
 					m_Mount.Rider = m_Rider;
 
 				FinishSequence();
@@ -474,10 +474,10 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal horse" )
+			if ( Name == "an ethereal horse" )
 				Name = null;
 
-			if( ItemID == 0x2124 )
+			if ( ItemID == 0x2124 )
 				ItemID = 0x20DD;
 		}
 	}
@@ -510,7 +510,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal llama" )
+			if ( Name == "an ethereal llama" )
 				Name = null;
 		}
 	}
@@ -543,7 +543,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal ostard" )
+			if ( Name == "an ethereal ostard" )
 				Name = null;
 		}
 	}
@@ -576,7 +576,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal ridgeback" )
+			if ( Name == "an ethereal ridgeback" )
 				Name = null;
 		}
 	}
@@ -609,7 +609,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal unicorn" )
+			if ( Name == "an ethereal unicorn" )
 				Name = null;
 		}
 	}
@@ -642,7 +642,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal beetle" )
+			if ( Name == "an ethereal beetle" )
 				Name = null;
 		}
 	}
@@ -675,7 +675,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal kirin" )
+			if ( Name == "an ethereal kirin" )
 				Name = null;
 		}
 	}
@@ -708,7 +708,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( Name == "an ethereal swamp dragon" )
+			if ( Name == "an ethereal swamp dragon" )
 				Name = null;
 		}
 	}
@@ -864,7 +864,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( version <= 1 && Hue != 0 )
+			if ( version <= 1 && Hue != 0 )
 			{
 				Hue = 0;
 			}

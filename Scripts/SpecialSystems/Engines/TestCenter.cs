@@ -14,7 +14,7 @@ namespace Server.Misc
 		public static void Initialize()
 		{
 			// Register our speech handler
-			if( Enabled )
+			if ( Enabled )
 				EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
 		}
 
@@ -22,7 +22,7 @@ namespace Server.Misc
 		{
 			if ( !args.Handled )
 			{
-				if( Insensitive.StartsWith( args.Speech, "set" ) )
+				if ( Insensitive.StartsWith( args.Speech, "set" ) )
 				{
 					Mobile from = args.Mobile;
 
@@ -49,7 +49,7 @@ namespace Server.Misc
 						}
 					}
 				}
-				else if( Insensitive.Equals( args.Speech, "help" ) )
+				else if ( Insensitive.Equals( args.Speech, "help" ) )
 				{
 					args.Mobile.SendGump( new TCHelpGump() );
 
@@ -122,7 +122,7 @@ namespace Server.Misc
 		{
 			SkillName index;
 
-			if( !Enum.TryParse( name, true, out index ) || (!Core.SE && (int)index > 51) || (!Core.AOS && (int)index > 48) )
+			if ( !Enum.TryParse( name, true, out index ) || (!Core.SE && (int)index > 51) || (!Core.AOS && (int)index > 48) )
 			{
 				from.SendLocalizedMessage( 1005631 ); // You have specified an invalid skill to set.
 				return;
@@ -157,7 +157,7 @@ namespace Server.Misc
 			}
 		}
 
-		
+
 		public class TCHelpGump : Gump
 		{
 			public TCHelpGump() : base( 40, 40 )

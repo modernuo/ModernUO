@@ -27,9 +27,7 @@ namespace Server.Ethics.Evil
 		{
 			Player from = state as Player;
 
-			IPoint3D p = obj as IPoint3D;
-
-			if ( p == null )
+			if ( !(obj is IPoint3D p) )
 				return;
 
 			if ( !CheckInvoke( from ) )

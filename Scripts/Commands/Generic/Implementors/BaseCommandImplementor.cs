@@ -121,9 +121,9 @@ namespace Server.Commands.Generic
 
 			foreach ( BaseExtension check in ext )
 			{
-				if ( check is WhereExtension )
+				if ( check is WhereExtension extension )
 				{
-					cond = ( check as WhereExtension ).Conditional;
+					cond = extension.Conditional;
 
 					break;
 				}
@@ -234,10 +234,8 @@ namespace Server.Commands.Generic
 
 				bool flushToLog = false;
 
-				if ( obj is ArrayList )
+				if ( obj is ArrayList list )
 				{
-					ArrayList list = (ArrayList)obj;
-
 					if ( list.Count > 20 )
 						CommandLogging.Enabled = false;
 					else if ( list.Count == 0 )
@@ -255,9 +253,7 @@ namespace Server.Commands.Generic
 				{
 					if ( command.ListOptimized )
 					{
-						ArrayList list = new ArrayList();
-						list.Add( obj );
-						command.ExecuteList( e, list );
+						command.ExecuteList( e, new ArrayList{ obj } );
 					}
 					else
 					{

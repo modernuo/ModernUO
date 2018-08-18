@@ -334,17 +334,10 @@ namespace Server.Engines.Doom
 
 				object obj = Activator.CreateInstance( type );
 
-				if ( obj == null )
-					return;
-
-				if ( obj is Item )
+				if ( obj is Item item )
+					item.Delete();
+				else if ( obj is Mobile mob )
 				{
-					((Item)obj).Delete();
-				}
-				else if ( obj is Mobile )
-				{
-					Mobile mob = (Mobile)obj;
-
 					mob.MoveToWorld( GetWorldLocation(), this.Map );
 
 					m_Creatures.Add( mob );
@@ -414,7 +407,7 @@ namespace Server.Engines.Doom
 		public GauntletSpawner( Serial serial ) : base( serial )
 		{
 		}
-		
+
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );

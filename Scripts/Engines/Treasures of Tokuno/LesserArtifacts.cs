@@ -46,7 +46,7 @@ namespace Server.Items
 				HitPoints = 255;
 			}
 
-			if( version == 0 )
+			if ( version == 0 )
 				SkillBonuses.SetValues( 0, SkillName.AnimalLore, 5.0 );
 		}
 	}
@@ -840,9 +840,9 @@ namespace Server.Items
 						armor.Durability = (ArmorDurabilityLevel)Utility.Random( 6 );
 					}
 				}
-				else if( item is BaseHat && Core.AOS )
+				else if ( item is BaseHat && Core.AOS )
 					BaseRunicTool.ApplyAttributesTo( (BaseHat)item, attributeCount, min, max );
-				else if( item is BaseJewel && Core.AOS )
+				else if ( item is BaseJewel && Core.AOS )
 					BaseRunicTool.ApplyAttributesTo( (BaseJewel)item, attributeCount, min, max );
 
 				DropItem( item );
@@ -900,7 +900,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version == 0 && Slayer == SlayerName.Fey )
+			if ( version == 0 && Slayer == SlayerName.Fey )
 				Slayer = SlayerGroup.Groups[Utility.Random( SlayerGroup.Groups.Length - 1 )].Super.Name;
 		}
 	}
@@ -943,7 +943,7 @@ namespace Server.Items
 		{
 			int v = (int)type;
 
-			if( v < 0 || v >= m_Table.Length )
+			if ( v < 0 || v >= m_Table.Length )
 				v = 0;
 
 			return m_Table[v];

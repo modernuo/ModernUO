@@ -68,7 +68,7 @@ namespace Server.Mobiles
 			AddItem( new LeatherNinjaPants());
 			AddItem( new LeatherNinjaMitts());
 
-			if( Utility.RandomDouble() < 0.33 )
+			if ( Utility.RandomDouble() < 0.33 )
 				AddItem( new SmokeBomb() );
 
 			switch ( Utility.Random( 8 ))

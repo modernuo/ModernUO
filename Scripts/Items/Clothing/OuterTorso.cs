@@ -197,7 +197,7 @@ namespace Server.Items
 
 			writer.Write( m_DecayTimer != null );
 
-			if( m_DecayTimer != null )
+			if ( m_DecayTimer != null )
 				writer.WriteDeltaTime( m_DecayTime );
 		}
 
@@ -211,7 +211,7 @@ namespace Server.Items
 			{
 				case 2:
 				{
-					if( reader.ReadBool() )
+					if ( reader.ReadBool() )
 					{
 						m_DecayTime = reader.ReadDeltaTime();
 						BeginDecay( m_DecayTime - DateTime.UtcNow );

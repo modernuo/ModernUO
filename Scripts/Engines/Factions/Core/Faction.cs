@@ -198,10 +198,8 @@ namespace Server.Factions
 
 		public void HonorLeadership_OnTarget( Mobile from, object obj )
 		{
-			if ( obj is Mobile )
+			if ( obj is Mobile recv )
 			{
-				Mobile recv = (Mobile) obj;
-
 				PlayerState giveState = PlayerState.Find( from );
 				PlayerState recvState = PlayerState.Find( recv );
 
@@ -353,7 +351,7 @@ namespace Server.Factions
 
 			int killPoints = pl.KillPoints;
 
-			if( mob.Backpack != null )
+			if ( mob.Backpack != null )
 			{
 				//Ordinarily, through normal faction removal, this will never find any sigils.
 				//Only with a leave delay less than the ReturnPeriod or a Faction Kick/Ban, will this ever do anything
@@ -377,8 +375,8 @@ namespace Server.Factions
 
 			Members.Remove( pl );
 
-			if ( mob is PlayerMobile )
-				((PlayerMobile)mob).FactionPlayerState = null;
+			if ( mob is PlayerMobile mobile )
+				mobile.FactionPlayerState = null;
 
 			mob.InvalidateProperties();
 			mob.Delta( MobileDelta.Noto );
@@ -397,8 +395,8 @@ namespace Server.Factions
 			if ( Commander == mob )
 				Commander = null;
 
-			if ( mob is PlayerMobile )
-				((PlayerMobile)mob).ValidateEquipment();
+			if ( mob is PlayerMobile playerMobile )
+				playerMobile.ValidateEquipment();
 
 			if ( killPoints > 0 )
 				DistributePoints( killPoints );
@@ -436,9 +434,7 @@ namespace Server.Factions
 
 		private bool AlreadyHasCharInFaction( Mobile mob )
 		{
-			Account acct = mob.Account as Account;
-
-			if ( acct != null )
+			if ( mob.Account is Account acct )
 			{
 				for ( int i = 0; i < acct.Length; ++i )
 				{
@@ -454,9 +450,7 @@ namespace Server.Factions
 
 		public static bool IsFactionBanned( Mobile mob )
 		{
-			Account acct = mob.Account as Account;
-
-			if ( acct == null )
+			if ( !(mob.Account is Account acct) )
 				return false;
 
 			return ( acct.GetTag( "FactionBanned" ) != null );
@@ -464,9 +458,7 @@ namespace Server.Factions
 
 		public void OnJoinAccepted( Mobile mob )
 		{
-			PlayerMobile pm = mob as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(mob is PlayerMobile pm) )
 				return; // sanity
 
 			PlayerState pl = PlayerState.Find( pm );
@@ -483,7 +475,7 @@ namespace Server.Factions
 			{
 				Guild guild = pm.Guild as Guild;
 
-				if ( guild.Leader != pm )
+				if ( guild?.Leader != pm )
 					pm.SendLocalizedMessage( 1005057 ); // You cannot join a faction because you are in a guild and not the guildmaster
 				else if ( guild.Type != GuildType.Regular )
 					pm.SendLocalizedMessage( 1042161 ); // You cannot join a faction because your guild is an Order or Chaos type.
@@ -499,9 +491,7 @@ namespace Server.Factions
 
 					for ( int i = 0; i < members.Count; ++i )
 					{
-						PlayerMobile member = members[i] as PlayerMobile;
-
-						if ( member == null )
+						if ( !(members[i] is PlayerMobile member) )
 							continue;
 
 						JoinGuilded( member, guild );
@@ -745,9 +735,9 @@ namespace Server.Factions
 
 		public static void FactionCommander_OnTarget( Mobile from, object obj )
 		{
-			if ( obj is PlayerMobile )
+			if ( obj is PlayerMobile mobile )
 			{
-				Mobile targ = (Mobile)obj;
+				Mobile targ = mobile;
 				PlayerState pl = PlayerState.Find( targ );
 
 				if ( pl != null )
@@ -774,9 +764,9 @@ namespace Server.Factions
 
 		public static void FactionElection_OnTarget( Mobile from, object obj )
 		{
-			if ( obj is FactionStone )
+			if ( obj is FactionStone stone )
 			{
-				Faction faction = ((FactionStone)obj).Faction;
+				Faction faction = stone.Faction;
 
 				if ( faction != null )
 					from.SendGump( new ElectionManagementGump( faction.Election ) );
@@ -798,10 +788,9 @@ namespace Server.Factions
 
 		public static void FactionKick_OnTarget( Mobile from, object obj )
 		{
-			if ( obj is Mobile )
+			if ( obj is Mobile mob )
 			{
-				Mobile mob = (Mobile) obj;
-				PlayerState pl = PlayerState.Find( (Mobile) mob );
+				PlayerState pl = PlayerState.Find( mob );
 
 				if ( pl != null )
 				{
@@ -1004,7 +993,7 @@ namespace Server.Factions
 
 		public bool CanHandleInflux( int influx )
 		{
-			if( !StabilityActive())
+			if ( !StabilityActive())
 				return true;
 
 			Faction smallest = FindSmallestFaction();
@@ -1063,9 +1052,8 @@ namespace Server.Factions
 			if ( killerState == null )
 				return;
 
-			if ( victim is BaseCreature )
+			if ( victim is BaseCreature bc )
 			{
-				BaseCreature bc = (BaseCreature)victim;
 				Faction victimFaction = bc.FactionAllegiance;
 
 				if ( bc.Map == Faction.Facet && victimFaction != null && killerState.Faction != victimFaction )
@@ -1261,17 +1249,15 @@ namespace Server.Factions
 			if ( pl != null )
 				return pl.Faction;
 
-			if ( inherit && mob is BaseCreature )
+			if ( inherit && mob is BaseCreature bc )
 			{
-				BaseCreature bc = (BaseCreature)mob;
-
 				if ( bc.Controlled )
 					return Find( bc.ControlMaster, false );
-				else if ( bc.Summoned )
+				if ( bc.Summoned )
 					return Find( bc.SummonMaster, false );
-				else if ( creatureAllegiances && mob is BaseFactionGuard )
-					return ((BaseFactionGuard)mob).Faction;
-				else if ( creatureAllegiances )
+				if ( creatureAllegiances && bc is BaseFactionGuard guard )
+					return guard.Faction;
+				if ( creatureAllegiances )
 					return bc.FactionAllegiance;
 			}
 
@@ -1364,9 +1350,7 @@ namespace Server.Factions
 				}
 				case FactionKickType.Ban:
 				{
-					Account acct = mob.Account as Account;
-
-					if ( acct != null )
+					if ( mob.Account is Account acct )
 					{
 						if ( acct.GetTag( "FactionBanned" ) == null )
 						{
@@ -1404,9 +1388,7 @@ namespace Server.Factions
 				}
 				case FactionKickType.Unban:
 				{
-					Account acct = mob.Account as Account;
-
-					if ( acct != null )
+					if ( mob.Account is Account acct )
 					{
 						if ( acct.GetTag( "FactionBanned" ) == null )
 						{

@@ -55,11 +55,11 @@ namespace Server.Mobiles
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if( 0.1 > Utility.RandomDouble() )
+			if ( 0.1 > Utility.RandomDouble() )
 			{
 				ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
-				if( timer != null )
+				if ( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070837 ); // The creature lands another blow in your weakened state.

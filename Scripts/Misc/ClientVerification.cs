@@ -97,11 +97,11 @@ namespace Server.Misc
 			//ClientVersion.Required = null;
 			//Required = new ClientVersion( "6.0.0.0" );
 
-			if( m_DetectClientRequirement )
+			if ( m_DetectClientRequirement )
 			{
 				string path = Core.FindDataFile( "client.exe" );
 
-				if( File.Exists( path ) )
+				if ( File.Exists( path ) )
 				{
 					FileVersionInfo info = FileVersionInfo.GetVersionInfo( path );
 
@@ -112,7 +112,7 @@ namespace Server.Misc
 				}
 			}
 
-			if( Required != null )
+			if ( Required != null )
 			{
 				Utility.PushColor( ConsoleColor.White );
 				Console.WriteLine( "Restricting client version to {0}. Action to be taken: {1}", Required, m_OldClientResponse );
@@ -129,53 +129,53 @@ namespace Server.Misc
 			if ( state.Mobile == null || state.Mobile.AccessLevel > AccessLevel.Player )
 				return;
 
-			if( Required != null && version < Required && ( m_OldClientResponse == OldClientResponse.Kick ||( m_OldClientResponse == OldClientResponse.LenientKick && (DateTime.UtcNow - state.Mobile.CreationTime) > m_AgeLeniency && state.Mobile is PlayerMobile && ((PlayerMobile)state.Mobile).GameTime > m_GameTimeLeniency )))
+			if ( Required != null && version < Required && ( m_OldClientResponse == OldClientResponse.Kick ||( m_OldClientResponse == OldClientResponse.LenientKick && (DateTime.UtcNow - state.Mobile.CreationTime) > m_AgeLeniency && state.Mobile is PlayerMobile && ((PlayerMobile)state.Mobile).GameTime > m_GameTimeLeniency )))
 			{
 				kickMessage = String.Format( "This server requires your client version be at least {0}.", Required );
 			}
-			else if( !AllowGod || !AllowRegular || !AllowUOTD )
+			else if ( !AllowGod || !AllowRegular || !AllowUOTD )
 			{
-				if( !AllowGod && version.Type == ClientType.God )
+				if ( !AllowGod && version.Type == ClientType.God )
 					kickMessage = "This server does not allow god clients to connect.";
-				else if( !AllowRegular && version.Type == ClientType.Regular )
+				else if ( !AllowRegular && version.Type == ClientType.Regular )
 					kickMessage = "This server does not allow regular clients to connect.";
-				else if( !AllowUOTD && state.IsUOTDClient )
+				else if ( !AllowUOTD && state.IsUOTDClient )
 					kickMessage = "This server does not allow UO:TD clients to connect.";
 
-				if( !AllowGod && !AllowRegular && !AllowUOTD )
+				if ( !AllowGod && !AllowRegular && !AllowUOTD )
 				{
 					kickMessage = "This server does not allow any clients to connect.";
 				}
-				else if( AllowGod && !AllowRegular && !AllowUOTD && version.Type != ClientType.God )
+				else if ( AllowGod && !AllowRegular && !AllowUOTD && version.Type != ClientType.God )
 				{
 					kickMessage = "This server requires you to use the god client.";
 				}
-				else if( kickMessage != null )
+				else if ( kickMessage != null )
 				{
-					if( AllowRegular && AllowUOTD )
+					if ( AllowRegular && AllowUOTD )
 						kickMessage += " You can use regular or UO:TD clients.";
-					else if( AllowRegular )
+					else if ( AllowRegular )
 						kickMessage += " You can use regular clients.";
-					else if( AllowUOTD )
+					else if ( AllowUOTD )
 						kickMessage += " You can use UO:TD clients.";
 				}
 			}
 
-			if( kickMessage != null )
+			if ( kickMessage != null )
 			{
 				state.Mobile.SendMessage( 0x22, kickMessage );
 				state.Mobile.SendMessage( 0x22, "You will be disconnected in {0} seconds.", KickDelay.TotalSeconds );
 
 				Timer.DelayCall( KickDelay, delegate
 				{
-					if( state.Socket != null )
+					if ( state.Socket != null )
 					{
 						Console.WriteLine( "Client: {0}: Disconnecting, bad version", state );
 						state.Dispose();
 					}
 				} );
 			}
-			else if( Required != null && version < Required )
+			else if ( Required != null && version < Required )
 			{
 				switch( m_OldClientResponse )
 				{
@@ -197,7 +197,7 @@ namespace Server.Misc
 
 		private static void SendAnnoyGump( Mobile m )
 		{
-			if( m.NetState != null && m.NetState.Version < Required )
+			if ( m.NetState != null && m.NetState.Version < Required )
 			{
 				Gump g = new WarningGump( 1060637, 30720, String.Format( "Your client is out of date. Please update your client.<br>This server recommends that your client version be at least {0}.<br> <br>You are currently using version {1}.<br> <br>To patch, run UOPatch.exe inside your Ultima Online folder.", Required, m.NetState.Version ), 0xFFC000, 480, 360,
 					delegate( Mobile mob, bool selection, object o )

@@ -176,7 +176,7 @@ namespace Server.Gumps
 		private static int[] m_FoundationNumbers = (Core.ML ? new int[]
 			{
 				20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676
-			}: 
+			}:
 			new int[]
 			{
 				20, 189, 765, 65, 101
@@ -279,7 +279,7 @@ namespace Server.Gumps
 			{
 				case HouseGumpPageAOS.Information:
 				{
-					AddHtmlLocalized( 20, 130, 200, 20, 1011242, LabelColor, false, false ); // Owned By: 
+					AddHtmlLocalized( 20, 130, 200, 20, 1011242, LabelColor, false, false ); // Owned By:
 					AddLabel( 210, 130, LabelHue, GetOwnerName() );
 
 					AddHtmlLocalized( 20, 170, 380, 20, 1018032, SelectedColor, false, false ); // This house is properly placed.
@@ -316,7 +316,7 @@ namespace Server.Gumps
 					AddHtmlLocalized( 20, 330, 200, 20, 1061793, SelectedColor, false, false ); // House Value
 					AddLabel( 250, 330, LabelHue, house.Price.ToString() );
 
-					AddHtmlLocalized( 20, 360, 300, 20, 1011241, SelectedColor, false, false ); // Number of visits this building has had: 
+					AddHtmlLocalized( 20, 360, 300, 20, 1011241, SelectedColor, false, false ); // Number of visits this building has had:
 					AddLabel( 350, 360, LabelHue, house.Visits.ToString() );
 
 					break;
@@ -382,7 +382,7 @@ namespace Server.Gumps
 
 					int bonusStorage = (int)((house.BonusStorageScalar * 100)-100);
 
-					if( bonusStorage > 0 )
+					if ( bonusStorage > 0 )
 					{
 						AddHtmlLocalized( 10, 150, 300, 20, 1072519, LabelColor, false, false ); // Increased Storage
 						AddLabel( 310, 150, LabelHue, String.Format( "{0}%", bonusStorage ) );
@@ -489,7 +489,7 @@ namespace Server.Gumps
 				case HouseGumpPageAOS.ChangeSign:
 				{
 					int index = 0;
-					
+
 					if ( _HouseSigns.Count == 0 )
 					{
 						// Add standard signs
@@ -502,7 +502,7 @@ namespace Server.Gumps
 						_HouseSigns.Add( 2966 );
 						_HouseSigns.Add( 3140 );
 					}
-					
+
 					int signsPerPage = Core.ML ? 24 : 18;
 					int totalSigns = Core.ML ? 56 : 54;
 					int pages = (int) Math.Ceiling( (double) totalSigns / signsPerPage );
@@ -769,7 +769,7 @@ namespace Server.Gumps
 								((PlayerBarkeeper)mobile).House = newHouse;
 						}
 
-						if( house.MovingCrate != null )
+						if ( house.MovingCrate != null )
 						{
 							newHouse.MovingCrate = house.MovingCrate;
 							newHouse.MovingCrate.House = newHouse;
@@ -1146,7 +1146,7 @@ namespace Server.Gumps
 								#region Mondain's Legacy
 								else if ( m_House.HasAddonContainers )
 								{
-									// The house can not be customized when add-on containers such as aquariums, elven furniture containers, vanities, and boiling cauldrons 
+									// The house can not be customized when add-on containers such as aquariums, elven furniture containers, vanities, and boiling cauldrons
 									// are present in the house.  Please re-deed the add-on containers before customizing the house.
 									from.SendGump( new NoticeGump( 1060637, 30720, 1074863, 32512, 320, 180, new NoticeGumpCallback( CustomizeNotice_Callback ), m_House ) );
 								}
@@ -1228,7 +1228,7 @@ namespace Server.Gumps
 						{
 							if ( isOwner && m_House.MovingCrate == null && m_House.InternalizedVendors.Count == 0 )
 							{
-								if( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null ) 
+								if ( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null )
 								{
 									from.SendLocalizedMessage( 501389 ); // You cannot redeed a house with a guildstone inside.
 								}
@@ -1236,7 +1236,7 @@ namespace Server.Gumps
 								{
 									from.SendLocalizedMessage( 1080178 ); // You must wait one hour between each house demolition.
 								}
-								else 
+								else
 								{
 									from.CloseGump( typeof( HouseDemolishGump ) );
 									from.SendGump( new HouseDemolishGump( from, m_House ) );
@@ -1292,14 +1292,14 @@ namespace Server.Gumps
 					{
 						FoundationType newType;
 
-						if( Core.ML && index >= 5 )
+						if ( Core.ML && index >= 5 )
 						{
 							switch( index )
 							{
 								case 5: newType = FoundationType.ElvenGrey; break;
 								case 6: newType = FoundationType.ElvenNatural; break;
 								case 7: newType = FoundationType.Crystal; break;
-								case 8: newType = FoundationType.Shadow; break; 
+								case 8: newType = FoundationType.Shadow; break;
 								default: return;
 							}
 						}

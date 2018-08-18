@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
+			if ( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1063347, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
 				return false;
@@ -32,10 +32,10 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
-			if( Registry.Contains( defender ) )
+			if ( Registry.Contains( defender ) )
 			{
 				FeintTimer existingtimer = (FeintTimer)Registry[defender];
 				existingtimer.Stop();

@@ -15,7 +15,7 @@ namespace Server.Engines.ConPVP
 		private DuelContext m_Context;
 		private Participant m_Participant;
 
-		public Mobile From{ get{ return m_From; } } 
+		public Mobile From{ get{ return m_From; } }
 		public DuelContext Context{ get{ return m_Context; } }
 		public Participant Participant{ get{ return m_Participant; } }
 
@@ -52,7 +52,7 @@ namespace Server.Engines.ConPVP
 				count = 4;
 
 			AddPage( 0 );
-			
+
 			int height = 35 + 10 + 22 + 22 + 30 + 22 + 2 + (count * 22) + 2 + 30;
 
 			AddBackground( 0, 0, 300, height, 9250 );
@@ -203,9 +203,7 @@ namespace Server.Engines.ConPVP
 				if ( index < 0 || index >= m_Participant.Players.Length )
 					return;
 
-				Mobile mob = targeted as Mobile;
-
-				if ( mob == null )
+				if ( !(targeted is Mobile mob) )
 				{
 					from.SendMessage( "That is not a player." );
 				}
@@ -222,9 +220,7 @@ namespace Server.Engines.ConPVP
 				}
 				else
 				{
-					PlayerMobile pm = mob as PlayerMobile;
-
-					if ( pm == null )
+					if ( !(mob is PlayerMobile pm) )
 						return;
 
 					if ( pm.DuelContext != null )

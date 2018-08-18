@@ -203,7 +203,7 @@ namespace Server.Items
 				m_TargetMap = m.Map;
 			}
 
-			if( !setDesc )
+			if ( !setDesc )
 				m_Description = BaseRegion.GetRuneNameFor( Region.Find( m_Target, m_TargetMap ) );
 
 			CalculateHue();

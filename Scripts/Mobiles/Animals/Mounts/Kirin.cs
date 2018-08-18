@@ -22,10 +22,10 @@ namespace Server.Mobiles
 
 		public override bool DoMountAbility( int damage, Mobile attacker )
 		{
-			if( Rider == null || attacker == null )	//sanity
+			if ( Rider == null || attacker == null )	//sanity
 				return false;
 
-			if( (Rider.Hits - damage) < 30 && Rider.Map == attacker.Map && Rider.InRange( attacker, 18 ) )	//Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+			if ( (Rider.Hits - damage) < 30 && Rider.Map == attacker.Map && Rider.InRange( attacker, 18 ) )	//Range and map checked here instead of other base fuction because of abiliites that don't need to check this
 			{
 				attacker.BoltEffect( 0 );
 				// 35~100 damage, unresistable, by the Ki-rin.

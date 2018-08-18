@@ -38,7 +38,7 @@ namespace Server.Engines.BulkOrders
 		{
 			LargeBulkEntry[] entries;
 			bool useMaterials = true;
-			
+
 			int rand = Utility.Random( 8 );
 
 			switch ( rand )
@@ -53,8 +53,8 @@ namespace Server.Engines.BulkOrders
 				case  6: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargePolearms );	 break;
 				case  7: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeSwords );	 break;
 			}
-			
-			if( rand > 2 && rand < 8 )
+
+			if ( rand > 2 && rand < 8 )
 				useMaterials = false;
 
 			int hue = 0x44E;

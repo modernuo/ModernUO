@@ -105,7 +105,7 @@ namespace Server.Gumps
 						nodes.Add( new CAGObject( this, xml ) );
 					else if ( xml.NodeType == XmlNodeType.Element && xml.Name == "category" )
 					{
-						if( !xml.IsEmptyElement )
+						if ( !xml.IsEmptyElement )
 							nodes.Add( new CAGCategory( this, xml ) );
 					}
 					else

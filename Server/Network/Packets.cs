@@ -303,7 +303,7 @@ namespace Server.Network
 			for ( int i = list.Count - 1; i >= 0; --i )
 			{
 				BuyItemState bis = (BuyItemState)list[i];
-		
+
 				m_Stream.Write( (int)bis.MySerial );
 				m_Stream.Write( (ushort)bis.ItemID );
 				m_Stream.Write( (byte)0 );//itemid offset
@@ -331,7 +331,7 @@ namespace Server.Network
 			for ( int i = list.Count - 1; i >= 0; --i )
 			{
 				BuyItemState bis = (BuyItemState)list[i];
-		
+
 				m_Stream.Write( (int)bis.MySerial );
 				m_Stream.Write( (ushort)bis.ItemID );
 				m_Stream.Write( (byte)0 );//itemid offset
@@ -575,7 +575,7 @@ namespace Server.Network
 
 				m_Stream.Write( (int) -3 );
 
-				if ( name == null ) 
+				if ( name == null )
 					m_Stream.Write( (ushort) 0 );
 				else
 				{
@@ -837,7 +837,7 @@ namespace Server.Network
 
 			string question = menu.Question;
 
-			if ( question == null ) 
+			if ( question == null )
 				m_Stream.Write( (byte) 0 );
 			else
 			{
@@ -858,7 +858,7 @@ namespace Server.Network
 
 				string answer = answers[i];
 
-				if ( answer == null ) 
+				if ( answer == null )
 					m_Stream.Write( (byte) 0 );
 				else
 				{
@@ -1193,7 +1193,7 @@ namespace Server.Network
 
 				itemID &= 0x3FFF;
 
-				m_Stream.Write( (short) itemID ); 
+				m_Stream.Write( (short) itemID );
 
 				m_Stream.Write( (byte) 0 );
 			/*} else if (  ) {
@@ -1201,7 +1201,7 @@ namespace Server.Network
 
 				m_Stream.Write( (int) item.Serial );
 
-				m_Stream.Write( (short) itemID ); 
+				m_Stream.Write( (short) itemID );
 
 				m_Stream.Write( (byte) item.Direction );*/
 			} else {
@@ -1211,7 +1211,7 @@ namespace Server.Network
 
 				itemID &= 0x7FFF;
 
-				m_Stream.Write( (short) itemID ); 
+				m_Stream.Write( (short) itemID );
 
 				m_Stream.Write( (byte) 0 );
 			}
@@ -1248,7 +1248,7 @@ namespace Server.Network
 
 				itemID &= 0x3FFF;
 
-				m_Stream.Write( (ushort) itemID ); 
+				m_Stream.Write( (ushort) itemID );
 
 				m_Stream.Write( (byte) 0 );
 			/*} else if (  ) {
@@ -1256,7 +1256,7 @@ namespace Server.Network
 
 				m_Stream.Write( (int) item.Serial );
 
-				m_Stream.Write( (ushort) itemID ); 
+				m_Stream.Write( (ushort) itemID );
 
 				m_Stream.Write( (byte) item.Direction );*/
 			} else {
@@ -1266,7 +1266,7 @@ namespace Server.Network
 
 				itemID &= 0xFFFF;
 
-				m_Stream.Write( (ushort) itemID ); 
+				m_Stream.Write( (ushort) itemID );
 
 				m_Stream.Write( (byte) 0 );
 			}
@@ -1622,7 +1622,7 @@ namespace Server.Network
 
 		public ScreenFadeOut()
 			: base( ScreenEffectType.FadeOut )
-		{ 
+		{
 		}
 	}
 
@@ -1642,7 +1642,7 @@ namespace Server.Network
 
 		public ScreenFadeInOut()
 			: base( ScreenEffectType.FadeInOut )
-		{ 
+		{
 		}
 	}
 
@@ -1662,7 +1662,7 @@ namespace Server.Network
 
 		public ScreenDarkFlash()
 			: base( ScreenEffectType.DarkFlash )
-		{ 
+		{
 		}
 	}
 
@@ -3285,7 +3285,7 @@ namespace Server.Network
 
 			m_Stream.Write( (int)   m.Serial );
 			m_Stream.Write( (short) 1 );
-			
+
 			m_Stream.Write( (short) 1 );
 
 			Poison p = m.Poison;
@@ -3497,9 +3497,9 @@ namespace Server.Network
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;
 
-			if( beheld.HairItemID > 0 )
+			if ( beheld.HairItemID > 0 )
 				count++;
-			if( beheld.FacialHairItemID > 0 )
+			if ( beheld.FacialHairItemID > 0 )
 				count++;
 
 			this.EnsureCapacity( 23 + (count * 9) );
@@ -3549,54 +3549,54 @@ namespace Server.Network
 				}
 			}
 
-			if( beheld.HairItemID > 0 )
+			if ( beheld.HairItemID > 0 )
 			{
-				if( m_DupedLayers[(int)Layer.Hair] != m_Version )
+				if ( m_DupedLayers[(int)Layer.Hair] != m_Version )
 				{
 					m_DupedLayers[(int)Layer.Hair] = m_Version;
 					hue = beheld.HairHue;
 
-					if( beheld.SolidHueOverride >= 0 )
+					if ( beheld.SolidHueOverride >= 0 )
 						hue = beheld.SolidHueOverride;
 
 					int itemID = beheld.HairItemID & 0x7FFF;
 
 					bool writeHue = (hue != 0);
 
-					if( writeHue )
+					if ( writeHue )
 						itemID |= 0x8000;
 
 					m_Stream.Write( (int)HairInfo.FakeSerial( beheld ) );
 					m_Stream.Write( (ushort)itemID );
 					m_Stream.Write( (byte)Layer.Hair );
 
-					if( writeHue )
+					if ( writeHue )
 						m_Stream.Write( (short)hue );
 				}
 			}
 
-			if( beheld.FacialHairItemID > 0 )
+			if ( beheld.FacialHairItemID > 0 )
 			{
-				if( m_DupedLayers[(int)Layer.FacialHair] != m_Version )
+				if ( m_DupedLayers[(int)Layer.FacialHair] != m_Version )
 				{
 					m_DupedLayers[(int)Layer.FacialHair] = m_Version;
 					hue = beheld.FacialHairHue;
 
-					if( beheld.SolidHueOverride >= 0 )
+					if ( beheld.SolidHueOverride >= 0 )
 						hue = beheld.SolidHueOverride;
 
 					int itemID = beheld.FacialHairItemID & 0x7FFF;
 
 					bool writeHue = (hue != 0);
 
-					if( writeHue )
+					if ( writeHue )
 						itemID |= 0x8000;
 
 					m_Stream.Write( (int)FacialHairInfo.FakeSerial( beheld ) );
 					m_Stream.Write( (ushort)itemID );
 					m_Stream.Write( (byte)Layer.FacialHair );
 
-					if( writeHue )
+					if ( writeHue )
 						m_Stream.Write( (short)hue );
 				}
 			}
@@ -3623,9 +3623,9 @@ namespace Server.Network
 			List<Item> eq = beheld.Items;
 			int count = eq.Count;
 
-			if( beheld.HairItemID > 0 )
+			if ( beheld.HairItemID > 0 )
 				count++;
-			if( beheld.FacialHairItemID > 0 )
+			if ( beheld.FacialHairItemID > 0 )
 				count++;
 
 			this.EnsureCapacity( 23 + (count * 9) );
@@ -3675,54 +3675,54 @@ namespace Server.Network
 				}
 			}
 
-			if( beheld.HairItemID > 0 )
+			if ( beheld.HairItemID > 0 )
 			{
-				if( m_DupedLayers[(int)Layer.Hair] != m_Version )
+				if ( m_DupedLayers[(int)Layer.Hair] != m_Version )
 				{
 					m_DupedLayers[(int)Layer.Hair] = m_Version;
 					hue = beheld.HairHue;
 
-					if( beheld.SolidHueOverride >= 0 )
+					if ( beheld.SolidHueOverride >= 0 )
 						hue = beheld.SolidHueOverride;
 
 					int itemID = beheld.HairItemID & 0x7FFF;
 
 					bool writeHue = (hue != 0);
 
-					if( writeHue )
+					if ( writeHue )
 						itemID |= 0x8000;
 
 					m_Stream.Write( (int)HairInfo.FakeSerial( beheld ) );
 					m_Stream.Write( (ushort)itemID );
 					m_Stream.Write( (byte)Layer.Hair );
 
-					if( writeHue )
+					if ( writeHue )
 						m_Stream.Write( (short)hue );
 				}
 			}
 
-			if( beheld.FacialHairItemID > 0 )
+			if ( beheld.FacialHairItemID > 0 )
 			{
-				if( m_DupedLayers[(int)Layer.FacialHair] != m_Version )
+				if ( m_DupedLayers[(int)Layer.FacialHair] != m_Version )
 				{
 					m_DupedLayers[(int)Layer.FacialHair] = m_Version;
 					hue = beheld.FacialHairHue;
 
-					if( beheld.SolidHueOverride >= 0 )
+					if ( beheld.SolidHueOverride >= 0 )
 						hue = beheld.SolidHueOverride;
 
 					int itemID = beheld.FacialHairItemID & 0x7FFF;
 
 					bool writeHue = (hue != 0);
 
-					if( writeHue )
+					if ( writeHue )
 						itemID |= 0x8000;
 
 					m_Stream.Write( (int)FacialHairInfo.FakeSerial( beheld ) );
 					m_Stream.Write( (ushort)itemID );
 					m_Stream.Write( (byte)Layer.FacialHair );
 
-					if( writeHue )
+					if ( writeHue )
 						m_Stream.Write( (short)hue );
 				}
 			}

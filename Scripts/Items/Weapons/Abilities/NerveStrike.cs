@@ -16,7 +16,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Bushido ) < 50.0 )
+			if ( GetSkill( from, SkillName.Bushido ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1070768, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido skill to perform that attack!
 				return false;
@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public override bool OnBeforeSwing( Mobile attacker, Mobile defender )
 		{
-			if( defender.Paralyzed )
+			if ( defender.Paralyzed )
 			{
 				attacker.SendLocalizedMessage( 1061923 ); // The target is already frozen.
 				return false;
@@ -38,7 +38,7 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
 			ClearCurrentAbility( attacker );
@@ -70,7 +70,7 @@ namespace Server.Items
 					Server.Items.ParalyzingBlow.BeginImmunity( defender, Server.Items.ParalyzingBlow.FreezeDelayDuration );
 				}
 			}
-			else if( !cantpara )
+			else if ( !cantpara )
 			{
 				AOS.Damage( defender, attacker, (int)(15.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 10), true, 100, 0, 0, 0, 0 ); //10-25
 				defender.Freeze(TimeSpan.FromSeconds(2.0));

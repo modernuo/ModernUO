@@ -90,7 +90,7 @@ namespace Server.Gumps
 
 				int pageNum = i / itemsPerPage + 1;
 
-				if( position == 0 && i != 0 )
+				if ( position == 0 && i != 0 )
 				{
 					AddButton( x-100, y+54, 0xFA5, 0xFA7, 0, GumpButtonType.Page, pageNum );
 					AddHtmlLocalized( x-60, y+56, 60, 20, 1043353, 0x7FFF, false, false ); // Next
@@ -113,7 +113,7 @@ namespace Server.Gumps
 		{
 			int adjustedID = info.ButtonID - 100;
 
-			if( adjustedID >= 0 && adjustedID < Buttons.Length )
+			if ( adjustedID >= 0 && adjustedID < Buttons.Length )
 				HandleButtonResponse( sender, adjustedID, Buttons[adjustedID] );
 			else
 				HandleCancel( sender );

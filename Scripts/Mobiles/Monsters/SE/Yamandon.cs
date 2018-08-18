@@ -78,7 +78,7 @@ namespace Server.Mobiles
 
 		private void DoCounter( Mobile attacker )
 		{
-			if( this.Map == null )
+			if ( this.Map == null )
 				return;
 
 			if ( attacker is BaseCreature && ((BaseCreature)attacker).BardProvoked )
@@ -99,7 +99,7 @@ namespace Server.Mobiles
 				{
 					Mobile m = ((BaseCreature)attacker).GetMaster();
 
-					if( m != null )
+					if ( m != null )
 						target = m;
 				}
 

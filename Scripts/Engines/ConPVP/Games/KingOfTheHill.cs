@@ -673,9 +673,7 @@ namespace Server.Engines.ConPVP
                 if (mob == null)
                     return null;
 
-                KHPlayerInfo val = m_Players[mob] as KHPlayerInfo;
-
-                if (val == null)
+	            if (!(m_Players[mob] is KHPlayerInfo val))
                     m_Players[mob] = val = new KHPlayerInfo(this, mob);
 
                 return val;
@@ -978,15 +976,8 @@ namespace Server.Engines.ConPVP
 
         public int GetTeamID(Mobile mob)
         {
-            PlayerMobile pm = mob as PlayerMobile;
-
-            if (pm == null)
-            {
-                if (mob is BaseCreature)
-                    return ((BaseCreature)mob).Team - 1;
-                else
-                    return -1;
-            }
+	        if (!(mob is PlayerMobile pm))
+		        return mob is BaseCreature creature ? creature.Team - 1 : -1;
 
             if (pm.DuelContext == null || pm.DuelContext != m_Context)
                 return -1;
@@ -999,12 +990,7 @@ namespace Server.Engines.ConPVP
 
         public int GetColor(Mobile mob)
         {
-            KHTeamInfo teamInfo = GetTeamInfo(mob);
-
-            if (teamInfo != null)
-                return teamInfo.Color;
-
-            return -1;
+	        return GetTeamInfo(mob)?.Color ?? -1;
         }
 
         private void ApplyHues(Participant p, int hueOverride)
@@ -1029,8 +1015,8 @@ namespace Server.Engines.ConPVP
 
             DuelPlayer dp = null;
 
-            if (mob is PlayerMobile)
-                dp = (mob as PlayerMobile).DuelPlayer;
+            if (mob is PlayerMobile mobile)
+                dp = mobile.DuelPlayer;
 
             m_Context.RemoveAggressions(mob);
 
@@ -1252,16 +1238,14 @@ namespace Server.Engines.ConPVP
 
             for (int i = 0; i < m_Context.Participants.Count; ++i)
             {
-                Participant p = m_Context.Participants[i] as Participant;
-
-                if (p == null || p.Players == null)
+	            if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
                     continue;
 
                 for (int j = 0; j < p.Players.Length; ++j)
                 {
                     DuelPlayer dp = p.Players[j];
 
-                    if (dp != null && dp.Mobile != null)
+                    if (dp?.Mobile != null)
                     {
                         dp.Mobile.CloseGump(typeof(KHBoardGump));
                         dp.Mobile.SendGump(new KHBoardGump(dp.Mobile, this));
@@ -1271,7 +1255,7 @@ namespace Server.Engines.ConPVP
                 if (i == winner.TeamID)
                     continue;
 
-                if (p != null && p.Players != null)
+                if (p?.Players != null)
                 {
                     for (int j = 0; j < p.Players.Length; ++j)
                     {
@@ -1304,9 +1288,8 @@ namespace Server.Engines.ConPVP
             for (int i = 0; i < m_Context.Participants.Count; ++i)
                 ApplyHues(m_Context.Participants[i] as Participant, -1);
 
-            if (m_FinishTimer != null)
-                m_FinishTimer.Stop();
-            m_FinishTimer = null;
+	        m_FinishTimer?.Stop();
+	        m_FinishTimer = null;
         }
     }
 }

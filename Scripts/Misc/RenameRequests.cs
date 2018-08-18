@@ -20,16 +20,16 @@ namespace Server.Misc
 			{
 				name = name.Trim();
 
-				if( NameVerification.Validate( name, 1, 16, true, false, true, 0, NameVerification.Empty, NameVerification.StartDisallowed, ( Core.ML ? NameVerification.Disallowed :  new string[]{} ) ) )
+				if ( NameVerification.Validate( name, 1, 16, true, false, true, 0, NameVerification.Empty, NameVerification.StartDisallowed, ( Core.ML ? NameVerification.Disallowed :  new string[]{} ) ) )
 				{
 
-					if( Core.ML )
+					if ( Core.ML )
 					{
 						string[] disallowed = ProfanityProtection.Disallowed;
 
 						for( int i = 0; i < disallowed.Length; i++ )
 						{
-							if( name.IndexOf( disallowed[i] ) != -1 )
+							if ( name.IndexOf( disallowed[i] ) != -1 )
 							{
 								from.SendLocalizedMessage( 1072622 ); // That name isn't very polite.
 								return;

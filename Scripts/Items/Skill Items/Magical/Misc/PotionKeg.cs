@@ -91,16 +91,16 @@ namespace Server.Items
 		}
 
 		public override int LabelNumber
-		{ 
+		{
 			get
 			{
-				if( m_Held > 0 && ( int )m_Type >= ( int )PotionEffect.Conflagration )
+				if ( m_Held > 0 && ( int )m_Type >= ( int )PotionEffect.Conflagration )
 				{
 					return 1072658 + ( int )m_Type - ( int )PotionEffect.Conflagration;
 				}
 
-				return (m_Held > 0 ? 1041620 + (int)m_Type : 1041641); 
-			} 
+				return (m_Held > 0 ? 1041620 + (int)m_Type : 1041641);
+			}
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -248,7 +248,7 @@ namespace Server.Items
 
                         item.Consume( toHold );
 
-						if( !item.Deleted )
+						if ( !item.Deleted )
 							item.Bounce( from );
 
 						return true;
@@ -276,7 +276,7 @@ namespace Server.Items
 
 						item.Consume( toHold );
 
-						if( !item.Deleted )
+						if ( !item.Deleted )
 							item.Bounce( from );
 
 						return true;
@@ -342,7 +342,7 @@ namespace Server.Items
 				case PotionEffect.ExplosionLesser:		return new LesserExplosionPotion();
 				case PotionEffect.Explosion:			return new ExplosionPotion();
 				case PotionEffect.ExplosionGreater:		return new GreaterExplosionPotion();
-				
+
 				case PotionEffect.Conflagration:		return new ConflagrationPotion();
 				case PotionEffect.ConflagrationGreater:		return new GreaterConflagrationPotion();
 

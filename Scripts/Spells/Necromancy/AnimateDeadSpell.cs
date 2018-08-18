@@ -185,7 +185,7 @@ namespace Server.Spells.Necromancy
 
 			Corpse c = obj as Corpse;
 
-			if( c == null )
+			if ( c == null )
 			{
 				Caster.SendLocalizedMessage( 1061084 ); // You cannot animate that.
 			}
@@ -193,12 +193,12 @@ namespace Server.Spells.Necromancy
 			{
 				Type type = null;
 
-				if( c.Owner != null )
+				if ( c.Owner != null )
 				{
 					type = c.Owner.GetType();
 				}
 
-				if( c.ItemID != 0x2006 || c.Animated || type == typeof( PlayerMobile ) || type == null || ( c.Owner != null && c.Owner.Fame < 100 ) || ( ( c.Owner != null ) && ( c.Owner is BaseCreature ) && ( ( ( BaseCreature )c.Owner ).Summoned || ( ( BaseCreature )c.Owner ).IsBonded ) ) )
+				if ( c.ItemID != 0x2006 || c.Animated || type == typeof( PlayerMobile ) || type == null || ( c.Owner != null && c.Owner.Fame < 100 ) || ( ( c.Owner != null ) && ( c.Owner is BaseCreature ) && ( ( ( BaseCreature )c.Owner ).Summoned || ( ( BaseCreature )c.Owner ).IsBonded ) ) )
 				{
 					Caster.SendLocalizedMessage( 1061085 ); // There's not enough life force there to animate.
 				}
@@ -206,18 +206,18 @@ namespace Server.Spells.Necromancy
 				{
 					CreatureGroup group = FindGroup( type );
 
-					if( group != null )
+					if ( group != null )
 					{
-						if( group.m_Entries.Length == 0 || type == typeof( DemonKnight ) )
+						if ( group.m_Entries.Length == 0 || type == typeof( DemonKnight ) )
 						{
 							Caster.SendLocalizedMessage( 1061086 ); // You cannot animate undead remains.
 						}
-						else if( CheckSequence() )
+						else if ( CheckSequence() )
 						{
 							Point3D p = c.GetWorldLocation();
 							Map map = c.Map;
 
-							if( map != null )
+							if ( map != null )
 							{
 								Effects.PlaySound( p, map, 0x1FB );
 								Effects.SendLocationParticles( EffectItem.Create( p, map, EffectItem.DefaultDuration ), 0x3789, 1, 40, 0x3F, 3, 9907, 0 );

@@ -62,8 +62,8 @@ namespace Server.Factions
 			Faction ourFaction = m_Faction;
 			Faction theirFaction = Faction.Find( m );
 
-			if ( theirFaction == null && m is BaseFactionGuard )
-				theirFaction = ((BaseFactionGuard)m).Faction;
+			if ( theirFaction == null && m is BaseFactionGuard guard )
+				theirFaction = guard.Faction;
 
 			if ( ourFaction != null && theirFaction != null && ourFaction != theirFaction )
 			{
@@ -72,22 +72,14 @@ namespace Server.Factions
 				if ( reactionType == ReactionType.Attack )
 					return true;
 
-				if ( theirFaction != null )
+				List<AggressorInfo> list = m.Aggressed;
+
+				for ( int i = 0; i < list.Count; ++i )
 				{
-					List<AggressorInfo> list = m.Aggressed;
+					AggressorInfo ai = list[i];
 
-					for ( int i = 0; i < list.Count; ++i )
-					{
-						AggressorInfo ai = list[i];
-
-						if ( ai.Defender is BaseFactionGuard )
-						{
-							BaseFactionGuard bf = (BaseFactionGuard)ai.Defender;
-
-							if ( bf.Faction == ourFaction )
-								return true;
-						}
-					}
+					if ( ai.Defender is BaseFactionGuard bf && bf.Faction == ourFaction )
+						return true;
 				}
 			}
 

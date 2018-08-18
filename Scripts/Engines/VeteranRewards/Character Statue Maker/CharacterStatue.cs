@@ -232,7 +232,7 @@ namespace Server.Mobiles
 
 			Frozen = true;
 
-			if( m_SculptedBy == null || Map == Map.Internal ) // Remove preview statues
+			if ( m_SculptedBy == null || Map == Map.Internal ) // Remove preview statues
 			{
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
 			}
@@ -370,7 +370,7 @@ namespace Server.Mobiles
 						break;
 			}
 
-			if( Map != null )
+			if ( Map != null )
 			{
 				ProcessDelta();
 
@@ -382,7 +382,7 @@ namespace Server.Mobiles
 				{
 					state.Mobile.ProcessDelta();
 
-					if( p == null )
+					if ( p == null )
 						p = Packet.Acquire( new UpdateStatueAnimation( this, 1, m_Animation, m_Frames ) );
 
 					state.Send( p );

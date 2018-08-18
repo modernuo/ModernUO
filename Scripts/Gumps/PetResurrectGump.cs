@@ -55,7 +55,7 @@ namespace Server.Gumps
 					from.SendLocalizedMessage( 503256 ); // You fail to resurrect the creature.
 					return;
 				}
-				else if( m_Pet.Region != null && m_Pet.Region.IsPartOf( "Khaldun" ) )	//TODO: Confirm for pets, as per Bandage's script.
+				else if ( m_Pet.Region != null && m_Pet.Region.IsPartOf( "Khaldun" ) )	//TODO: Confirm for pets, as per Bandage's script.
 				{
 					from.SendLocalizedMessage( 1010395 ); // The veil of death in this area is too strong and resists thy efforts to restore life.
 					return;
@@ -67,7 +67,7 @@ namespace Server.Gumps
 
 				double decreaseAmount;
 
-				if( from == m_Pet.ControlMaster )
+				if ( from == m_Pet.ControlMaster )
 					decreaseAmount = 0.1;
 				else
 					decreaseAmount = 0.2;
@@ -75,7 +75,7 @@ namespace Server.Gumps
 				for ( int i = 0; i < m_Pet.Skills.Length; ++i )	//Decrease all skills on pet.
 					m_Pet.Skills[i].Base -= decreaseAmount;
 
-				if( !m_Pet.IsDeadPet && m_HitsScalar > 0 )
+				if ( !m_Pet.IsDeadPet && m_HitsScalar > 0 )
 					m_Pet.Hits = (int)(m_Pet.HitsMax * m_HitsScalar);
 			}
 

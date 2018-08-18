@@ -197,9 +197,7 @@ namespace Server.Engines.ConPVP
 
 			if ( info.IsSwitched( 1 ) )
 			{
-				PlayerMobile pm = m_Challenged as PlayerMobile;
-
-				if ( pm == null )
+				if ( !(m_Challenged is PlayerMobile pm) )
 					return;
 
 				if ( pm.DuelContext != null )
@@ -254,25 +252,15 @@ namespace Server.Engines.ConPVP
 						{
 							foreach ( Gump g in ns.Gumps )
 							{
-								if ( g is ParticipantGump )
+								if ( g is ParticipantGump pg && pg.Participant == m_Participant )
 								{
-									ParticipantGump pg = (ParticipantGump)g;
-
-									if ( pg.Participant == m_Participant )
-									{
-										m_Challenger.SendGump( new ParticipantGump( m_Challenger, m_Context, m_Participant ) );
-										break;
-									}
+									m_Challenger.SendGump( new ParticipantGump( m_Challenger, m_Context, m_Participant ) );
+									break;
 								}
-								else if ( g is DuelContextGump )
+								if ( g is DuelContextGump dcg && dcg.Context == m_Context )
 								{
-									DuelContextGump dcg = (DuelContextGump)g;
-
-									if ( dcg.Context == m_Context )
-									{
-										m_Challenger.SendGump( new DuelContextGump( m_Challenger, m_Context ) );
-										break;
-									}
+									m_Challenger.SendGump( new DuelContextGump( m_Challenger, m_Context ) );
+									break;
 								}
 							}
 						}

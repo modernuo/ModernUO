@@ -17,7 +17,7 @@ namespace Server.Mobiles
 			Hue = 0x8026;
 
 			Buckler buckler = new Buckler();
-			ChainCoif coif = new ChainCoif();
+			ChainCoif coif = new ChainCoif ();
 			PlateGloves gloves = new PlateGloves();
 
 			buckler.Hue = 0x835; buckler.Movable = false;

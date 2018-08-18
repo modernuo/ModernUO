@@ -106,16 +106,16 @@ namespace Server.Mobiles
 
 		private void CheckSpeedBoost()
 		{
-			if( Hits < (HitsMax / 4 ) )
+			if ( Hits < (HitsMax / 4 ) )
 			{
-				if( !m_SpeedBoost )
+				if ( !m_SpeedBoost )
 				{
 					ActiveSpeed /= SpeedBoostScalar;
 					PassiveSpeed /= SpeedBoostScalar;
 					m_SpeedBoost = true;
 				}
 			}
-			else if( m_SpeedBoost )
+			else if ( m_SpeedBoost )
 			{
 					ActiveSpeed *= SpeedBoostScalar;
 					PassiveSpeed *= SpeedBoostScalar;
@@ -189,7 +189,7 @@ namespace Server.Mobiles
 
 				m_Rider = reader.ReadMobile();
 
-				if( m_Rider == null )
+				if ( m_Rider == null )
 					Delete();
 			}
 		}
@@ -231,7 +231,7 @@ namespace Server.Mobiles
 
 		public void AddUnholyBone( Mobile target, double chanceToThrow )
 		{
-			if( this.Map == null )
+			if ( this.Map == null )
 				return;
 
 			if ( chanceToThrow >= Utility.RandomDouble() )

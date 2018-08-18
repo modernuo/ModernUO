@@ -28,7 +28,7 @@ namespace Server.Mobiles
 
 		public override void OnResponse( Mobile from, string text )
 		{
-			if( text.Length > 130 )
+			if ( text.Length > 130 )
 				text = text.Substring( 0, 130 );
 
 			m_Barkeeper.EndChangeRumor( from, m_RumorIndex, text );
@@ -53,7 +53,7 @@ namespace Server.Mobiles
 
 		public override void OnResponse( Mobile from, string text )
 		{
-			if( text.Length > 130 )
+			if ( text.Length > 130 )
 				text = text.Substring( 0, 130 );
 
 			m_Barkeeper.EndChangeKeyword( from, m_RumorIndex, text );

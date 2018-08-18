@@ -30,9 +30,7 @@ namespace Server {
 			if ( this.Movable ) {
 				user.BeginTarget( 12, true, Server.Targeting.TargetFlags.None, delegate( Mobile from, object obj ) {
 					if ( this.Movable && !this.Deleted ) {
-						IPoint3D pt = obj as IPoint3D;
-
-						if ( pt != null ) {
+						if ( obj is IPoint3D pt ) {
 							SpellHelper.GetSurfaceTop( ref pt );
 
 							Point3D origin = new Point3D( pt );
@@ -46,7 +44,7 @@ namespace Server {
 									this.ItemID & 0x3FFF, 7, 0, false, false, this.Hue - 1, 0
 								);
 
-								Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), delegate() {
+								Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), delegate {
 									this.Delete();
 
 									Effects.PlaySound( origin, facet, 530 );
@@ -57,7 +55,7 @@ namespace Server {
 										14284, 96, 1, 0, 2
 									);
 
-									Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), delegate() {
+									Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), delegate {
 										List<Mobile> targets = new List<Mobile>();
 
 										foreach ( Mobile mob in facet.GetMobilesInRange( origin, 12 ) ) {
@@ -88,7 +86,7 @@ namespace Server {
 											SpellHelper.Damage( TimeSpan.FromSeconds( 0.70 ), mob, from, damage / 3, 0, 0, 0, 0, 100 );
 											SpellHelper.Damage( TimeSpan.FromSeconds( 1.00 ), mob, from, damage / 3, 0, 0, 0, 0, 100 );
 
-											Timer.DelayCall( TimeSpan.FromSeconds( 0.50 ), delegate() {
+											Timer.DelayCall( TimeSpan.FromSeconds( 0.50 ), delegate {
 												mob.PlaySound( 0x1FB );
 											} );
 										}

@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
 		public override void InitOutfit()
 		{
-			if( Female )
+			if ( Female )
 				AddItem( new PlainDress() );
 			else
 				AddItem( new Shirt( GetRandomHue() ) );
@@ -44,13 +44,13 @@ namespace Server.Mobiles
 
 			AddItem( new ThighBoots() );
 
-			if( Female )
+			if ( Female )
 				AddItem( new FancyDress( lowHue ) );
 			else
 				AddItem( new FancyShirt( lowHue ) );
 			AddItem( new LongPants( lowHue ) );
 
-			if( !Female )
+			if ( !Female )
 				AddItem( new BodySash( lowHue ) );
 
 

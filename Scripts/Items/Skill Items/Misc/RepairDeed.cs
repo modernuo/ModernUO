@@ -49,7 +49,7 @@ namespace Server.Items
 			{
 				int v = (int)type;
 
-				if( v < 0 || v >= m_Table.Length )
+				if ( v < 0 || v >= m_Table.Length )
 					v = 0;
 
 				return m_Table[v];
@@ -101,7 +101,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if( m_Crafter != null )
+			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
 			//On OSI it says it's exceptional.  Intentional difference.
@@ -114,7 +114,7 @@ namespace Server.Items
 
 			this.LabelTo( from, 1061133, String.Format( "{0}\t{1}", GetSkillTitle( m_SkillLevel ).ToString(), RepairSkillInfo.GetInfo( m_Skill ).Name ) ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
 
-			if( m_Crafter != null )
+			if ( m_Crafter != null )
 				this.LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 		}
 
@@ -139,7 +139,7 @@ namespace Server.Items
 
 		public RepairDeed( RepairSkillType skill, double level, Mobile crafter, bool normalizeLevel ) : base( 0x14F0 )
 		{
-			if( normalizeLevel )
+			if ( normalizeLevel )
 				SkillLevel = (int)(level/10)*10;
 			else
 				SkillLevel = level;
@@ -158,9 +158,9 @@ namespace Server.Items
 		{
 			int skill = (int)(skillLevel/10);
 
-			if( skill >= 11 )
+			if ( skill >= 11 )
 				return (1062008 + skill-11);
-			else if( skill >=5 )
+			else if ( skill >=5 )
 				return (1061123 + skill-5);
 
 			switch( skill )
@@ -178,7 +178,7 @@ namespace Server.Items
 		{
 			for( int i = 0; i < RepairSkillInfo.Table.Length; i++ )
 			{
-				if( RepairSkillInfo.Table[i].System == s )
+				if ( RepairSkillInfo.Table[i].System == s )
 					return (RepairSkillType)i;
 			}
 
@@ -187,15 +187,15 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( Check( from ) )
+			if ( Check( from ) )
 				Repair.Do( from, RepairSkillInfo.GetInfo( m_Skill ).System, this );
 		}
 
 		public bool Check( Mobile from )
 		{
-			if( !IsChildOf( from.Backpack ) )
+			if ( !IsChildOf( from.Backpack ) )
 				from.SendLocalizedMessage( 1047012 ); // The contract must be in your backpack to use it.
-			else if( !VerifyRegion( from ) )
+			else if ( !VerifyRegion( from ) )
 				TextDefinition.SendMessageTo( from, RepairSkillInfo.GetInfo( m_Skill ).NotNearbyMessage );
 			else
 				return true;
@@ -207,7 +207,7 @@ namespace Server.Items
 		{
 			//TODO: When the entire region system data is in, convert to that instead of a proximity thing.
 
-			if( !m.Region.IsPartOf( typeof( TownRegion ) ) )
+			if ( !m.Region.IsPartOf( typeof( TownRegion ) ) )
 				return false;
 
 			return Server.Factions.Faction.IsNearType( m, RepairSkillInfo.GetInfo( m_Skill ).NearbyTypes, 6 );

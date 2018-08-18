@@ -58,7 +58,7 @@ namespace Server.Mobiles
 
 		public override void GenerateLoot()
 		{
-			if( Utility.RandomDouble() < .05 )
+			if ( Utility.RandomDouble() < .05 )
 			{
 				//PackItem( new TwilightLantern() );  OLD Halloween
 
@@ -79,7 +79,7 @@ namespace Server.Mobiles
 
 		public virtual void Lifted_Callback( Mobile from )
 		{
-			if( from != null && !from.Deleted && from is PlayerMobile )
+			if ( from != null && !from.Deleted && from is PlayerMobile )
 			{
 				Combatant = from;
 
@@ -100,9 +100,9 @@ namespace Server.Mobiles
 
 		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 			{
-				if( from != null && from.Map != null && Map != Map.Internal && Map == from.Map && from.InRange( this, 12 ) )
+				if ( from != null && from.Map != null && Map != Map.Internal && Map == from.Map && from.InRange( this, 12 ) )
 				{
 					SpillAcid( ( willKill ) ? this : from, ( willKill ) ? 3 : 1 );
 				}

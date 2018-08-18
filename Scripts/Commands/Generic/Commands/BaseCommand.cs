@@ -76,19 +76,14 @@ namespace Server.Commands.Generic
 			if ( from.AccessLevel >= AccessLevel.Administrator || obj == null )
 				return true;
 
-			Mobile mob;
+			Mobile mob = null;
 
-			if ( obj is Mobile )
-				mob = (Mobile)obj;
-			else if ( obj is Item )
-				mob = ((Item)obj).RootParent as Mobile;
-			else
-				mob = null;
+			if ( obj is Mobile m )
+				mob = m;
+			else if ( obj is Item item )
+				mob = item.RootParent as Mobile;
 
-			if ( mob == null || mob == from || from.AccessLevel > mob.AccessLevel )
-				return true;
-
-			return false;
+			return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
 		}
 
 		public virtual void ExecuteList( CommandEventArgs e, ArrayList list )
@@ -179,16 +174,16 @@ namespace Server.Commands.Generic
 				{
 					object obj = m_Responses[i];
 
-					if ( obj is MessageEntry )
+					if ( obj is MessageEntry entry )
 					{
-						from.SendMessage( ((MessageEntry)obj).ToString() );
+						from.SendMessage( entry.ToString() );
 
 						if ( flushToLog )
-							CommandLogging.WriteLine( from, ((MessageEntry)obj).ToString() );
+							CommandLogging.WriteLine( from, entry.ToString() );
 					}
-					else if ( obj is Gump )
+					else if ( obj is Gump gump )
 					{
-						from.SendGump( (Gump) obj );
+						from.SendGump( gump );
 					}
 				}
 			}

@@ -93,9 +93,9 @@ namespace Server.SkillHandlers
 						from.SendLocalizedMessage( 500353 ); // You are not certain...
 					}
 				}
-				else if(targeted is BaseArmor)
+				else if (targeted is BaseArmor)
 				{
-					if( from.CheckTargetSkill(SkillName.ArmsLore, targeted, 0, 100) )
+					if ( from.CheckTargetSkill(SkillName.ArmsLore, targeted, 0, 100) )
 					{
 						BaseArmor arm = (BaseArmor)targeted;
 

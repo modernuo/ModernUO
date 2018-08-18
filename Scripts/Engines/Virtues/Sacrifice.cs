@@ -27,7 +27,7 @@ namespace Server
 				else
 					Resurrect( from );
 			}
-			else 
+			else
 				from.SendLocalizedMessage( 1052015 ); // You cannot do that while hidden.
 		}
 
@@ -132,9 +132,9 @@ namespace Server
 			{
 				int toGain;
 
-				if( from.Fame < 5000 )
+				if ( from.Fame < 5000 )
 					toGain = 500;
-				else if( from.Fame < 10000 )
+				else if ( from.Fame < 10000 )
 					toGain = 1000;
 				else
 					toGain = 2000;

@@ -247,7 +247,7 @@ namespace Server.Mobiles
 					}
 					else
 					{
-						if( m_Rider != null )
+						if ( m_Rider != null )
 						{
 							Dismount( m_Rider );
 						}
@@ -261,7 +261,7 @@ namespace Server.Mobiles
 
 						Internalize();
 
-						if( value.Target is Bola.BolaTarget )
+						if ( value.Target is Bola.BolaTarget )
 						{
 							Target.Cancel( value );
 						}
@@ -292,16 +292,16 @@ namespace Server.Mobiles
 
 		public virtual void OnRiderDamaged( int amount, Mobile from, bool willKill )
 		{
-			if( m_Rider == null )
+			if ( m_Rider == null )
 				return;
 
 			Mobile attacker = from;
-			if( attacker == null )
+			if ( attacker == null )
 				attacker = m_Rider.FindMostRecentDamager( true );
 
-			if( !(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < m_NextMountAbility) )
+			if ( !(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < m_NextMountAbility) )
 			{
-				if( DoMountAbility( amount, from ) )
+				if ( DoMountAbility( amount, from ) )
 					m_NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
 
 			}

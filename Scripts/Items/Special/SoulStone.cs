@@ -33,7 +33,7 @@ namespace Server.Items
 			{
 				m_ActiveItemID = value;
 
-				if( !IsEmpty )
+				if ( !IsEmpty )
 					this.ItemID = m_ActiveItemID;
 			}
 		}
@@ -46,7 +46,7 @@ namespace Server.Items
 			{
 				m_InactiveItemID = value;
 
-				if( IsEmpty )
+				if ( IsEmpty )
 					this.ItemID = m_InactiveItemID;
 			}
 		}
@@ -642,11 +642,11 @@ namespace Server.Items
 
 				Effects.SendTargetParticles( from, 0x375A, 35, 90, 0x00, 0x00, 9502, (EffectLayer)255, 0x100 );
 
-				if( m_Stone is SoulstoneFragment )
+				if ( m_Stone is SoulstoneFragment )
 				{
 					SoulstoneFragment frag = m_Stone as SoulstoneFragment;
 
-					if( --frag.UsesRemaining <= 0 )
+					if ( --frag.UsesRemaining <= 0 )
 						from.SendLocalizedMessage( 1070974 ); // You have used up your soulstone fragment.
 				}
 			}
@@ -807,7 +807,7 @@ namespace Server.Items
 					}
 			}
 
-			if( version == 0 )
+			if ( version == 0 )
 			{
 				m_ActiveItemID = 0x2A94;
 				m_InactiveItemID = 0x2A93;
@@ -879,9 +879,9 @@ namespace Server.Items
 
 			m_UsesRemaining = reader.ReadEncodedInt();
 
-			if( version <= 1 )
+			if ( version <= 1 )
 			{
-				if( ItemID == 0x2A93 || ItemID == 0x2A94 )
+				if ( ItemID == 0x2A93 || ItemID == 0x2A94 )
 				{
 					ActiveItemID = Utility.Random( 0x2AA1, 9 );
 				}
@@ -905,9 +905,9 @@ namespace Server.Items
 		{
 			bool canUse = base.CheckUse( from );
 
-			if( canUse )
+			if ( canUse )
 			{
-				if( m_UsesRemaining <= 0 )
+				if ( m_UsesRemaining <= 0 )
 				{
 					from.SendLocalizedMessage( 1070975 ); // That soulstone fragment has no more uses.
 					return false;

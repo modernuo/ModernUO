@@ -39,7 +39,7 @@ namespace Server.Spells.Fourth
 		{
 			if ( TransformationSpellHelper.UnderTransformation( Caster, typeof( WraithFormSpell ) ) )
 				min = max = 0;
-			else if( Core.SE && m_Book != null )	//recall using Runebook charge
+			else if ( Core.SE && m_Book != null )	//recall using Runebook charge
 				min = max = 0;
 			else
 				base.GetCastSkills( out min, out max );

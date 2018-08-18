@@ -258,7 +258,7 @@ namespace Server.Items
 						}
 						else
 						{
-							if( relay.Text.Length > 64 )
+							if ( relay.Text.Length > 64 )
 								m_Target.EngravedText = Utility.FixHtml( relay.Text.Substring( 0, 64 ) );
 							else
 								m_Target.EngravedText = Utility.FixHtml( relay.Text );

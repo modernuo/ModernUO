@@ -73,7 +73,7 @@ namespace Server.Mobiles
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if( 0.1 > Utility.RandomDouble() )
+			if ( 0.1 > Utility.RandomDouble() )
 			{
 				/* Cold Wind
 				 * Graphics: Message - Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(928 164, 34)" ToLocation: "(928 164, 34)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
@@ -85,7 +85,7 @@ namespace Server.Mobiles
 
 				ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
-				if( timer != null )
+				if ( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070831 ); // The freezing wind continues to blow!
@@ -123,7 +123,7 @@ namespace Server.Mobiles
 
 			public void DrainLife()
 			{
-				if( m_Mobile.Alive )
+				if ( m_Mobile.Alive )
 					m_Mobile.Damage( 2, m_From );
 				else
 					DoExpire();
@@ -133,7 +133,7 @@ namespace Server.Mobiles
 			{
 				DrainLife();
 
-				if( ++m_Count >= 5 )
+				if ( ++m_Count >= 5 )
 				{
 					DoExpire();
 					m_Mobile.SendLocalizedMessage( 1070830 ); // The icy wind dissipates.

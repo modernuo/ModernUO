@@ -72,7 +72,7 @@ namespace Server.Spells.Chivalry
 						{
 							Caster.SendLocalizedMessage( 1010395 ); // The veil of death in this area is too strong and resists thy efforts to restore life.
 						}
-						else if( resChance > Utility.RandomDouble() )
+						else if ( resChance > Utility.RandomDouble() )
 						{
 							m.FixedParticles( 0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head );
 							m.CloseGump( typeof( ResurrectGump ) );

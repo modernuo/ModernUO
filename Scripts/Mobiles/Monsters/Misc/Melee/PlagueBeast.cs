@@ -190,7 +190,7 @@ namespace Server.Mobiles
 				// Ensure that the corpse was killed by us
 				if ( item.Killer == this && item.Owner != null )
 				{
-					if( !item.DevourCorpse() && !item.Devoured )
+					if ( !item.DevourCorpse() && !item.Devoured )
 						PublicOverheadMessage( MessageType.Emote, 0x3B2, 1053032 ); // * The plague beast attempts to absorb the remains, but cannot! *
 				}
 			}
@@ -201,10 +201,10 @@ namespace Server.Mobiles
 
 		public bool Devour( Corpse corpse )
 		{
-			if( corpse == null || corpse.Owner == null ) // sorry we can't devour because the corpse's owner is null
+			if ( corpse == null || corpse.Owner == null ) // sorry we can't devour because the corpse's owner is null
 				return false;
 
-			if( corpse.Owner.Body.IsHuman )
+			if ( corpse.Owner.Body.IsHuman )
 				corpse.TurnToBones(); // Not bones yet, and we are a human body therefore we turn to bones.
 
 			IncreaseHits( (int)Math.Ceiling( (double)corpse.Owner.HitsMax * 0.75 ) );
@@ -212,7 +212,7 @@ namespace Server.Mobiles
 
 			PublicOverheadMessage( MessageType.Emote, 0x3B2, 1053033 ); // * The plague beast absorbs the fleshy remains of the corpse *
 
-			if( !m_HasMetalChest && m_DevourTotal >= DevourGoal )
+			if ( !m_HasMetalChest && m_DevourTotal >= DevourGoal )
 			{
 				PackItem( new MetalChest() );
 				m_HasMetalChest = true;
@@ -230,10 +230,10 @@ namespace Server.Mobiles
 			if ( this.IsParagon )
 				maxhits = (int)(maxhits * Paragon.HitsBuff);
 
-			if( hp < 1000 && !Core.AOS )
+			if ( hp < 1000 && !Core.AOS )
 				hp = (hp * 100) / 60;
 
-			if( HitsMaxSeed >= maxhits )
+			if ( HitsMaxSeed >= maxhits )
 			{
 				HitsMaxSeed = maxhits;
 

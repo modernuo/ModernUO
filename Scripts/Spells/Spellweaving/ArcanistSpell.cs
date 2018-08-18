@@ -32,7 +32,7 @@ namespace Server.Spells.Spellweaving
 		{
 			ArcaneFocus focus = FindArcaneFocus( from );
 
-			if( focus == null || focus.Deleted )
+			if ( focus == null || focus.Deleted )
 				return 0;
 
 			return focus.StrengthBonus;
@@ -40,7 +40,7 @@ namespace Server.Spells.Spellweaving
 
 		public static ArcaneFocus FindArcaneFocus( Mobile from )
 		{
-			if( from == null || from.Backpack == null )
+			if ( from == null || from.Backpack == null )
 				return null;
 
 			if ( from.Holding is ArcaneFocus )
@@ -51,10 +51,10 @@ namespace Server.Spells.Spellweaving
 
 		public static bool CheckExpansion( Mobile from )
 		{
-			if( !(from is PlayerMobile) )
+			if ( !(from is PlayerMobile) )
 				return true;
 
-			if( from.NetState == null )
+			if ( from.NetState == null )
 				return false;
 
 			return from.NetState.SupportsExpansion( Expansion.ML );
@@ -62,7 +62,7 @@ namespace Server.Spells.Spellweaving
 
 		public override bool CheckCast()
 		{
-			if( !base.CheckCast() )
+			if ( !base.CheckCast() )
 				return false;
 
 			Mobile caster = Caster;
@@ -126,7 +126,7 @@ namespace Server.Spells.Spellweaving
 		{
 			base.OnDisturb( type, message );
 
-			if( message )
+			if ( message )
 				Caster.PlaySound( 0x1D6 );
 		}
 
@@ -147,10 +147,10 @@ namespace Server.Spells.Spellweaving
 		{
 			double percent = (50 + 2*(GetResistSkill( m ) - GetDamageSkill( Caster )))/100;	//TODO: According to the guide this is it.. but.. is it correct per OSI?
 
-			if( percent <= 0 )
+			if ( percent <= 0 )
 				return false;
 
-			if( percent >= 1.0 )
+			if ( percent >= 1.0 )
 				return true;
 
 			return (percent >= Utility.RandomDouble());

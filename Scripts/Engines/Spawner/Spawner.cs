@@ -512,7 +512,7 @@ namespace Server.Mobiles
 
 							int walkrange = GetWalkingRange();
 
-							if( walkrange >= 0 )
+							if ( walkrange >= 0 )
 								c.RangeHome = walkrange;
 							else
 								c.RangeHome = m_HomeRange;

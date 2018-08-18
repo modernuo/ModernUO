@@ -197,9 +197,9 @@ namespace Server.Mobiles
 				less than stam.
 			*/
 
-			if( Str < Hits )
+			if ( Str < Hits )
 				Str = Hits;
-			if( Dex < Stam )
+			if ( Dex < Stam )
 				Dex = Stam;
 
 			Karma = -1000;
@@ -211,7 +211,7 @@ namespace Server.Mobiles
 		public override void OnThink()
 		{
 
-			if( SummonMaster == null || SummonMaster.Deleted )
+			if ( SummonMaster == null || SummonMaster.Deleted )
 			{
 				Delete();
 			}
@@ -222,9 +222,9 @@ namespace Server.Mobiles
 				but never actually "follow".
 			*/
 
-			else if( !Combat( this ))
+			else if ( !Combat( this ))
 			{
-				if( AIObject != null )
+				if ( AIObject != null )
 				{
 					AIObject.MoveTo( SummonMaster, false , 5 );
 				}
@@ -237,14 +237,14 @@ namespace Server.Mobiles
 				engaged in combat.
 			*/
 
-			else if( !Combat( SummonMaster ))
+			else if ( !Combat( SummonMaster ))
 			{
 				BaseCreature bc = null;
-				if( Combatant is BaseCreature )
+				if ( Combatant is BaseCreature )
 				{
 					bc = (BaseCreature)Combatant;
 				}
-				if( Combatant.Player || ( bc != null && ( bc.Controlled || bc.SummonMaster != null )))
+				if ( Combatant.Player || ( bc != null && ( bc.Controlled || bc.SummonMaster != null )))
 				{
 					SummonMaster.Combatant = Combatant;
 				}
@@ -258,7 +258,7 @@ namespace Server.Mobiles
 		private bool Combat( Mobile mobile )
 		{
 			Mobile combatant = mobile.Combatant;
-			if( combatant == null || combatant.Deleted )
+			if ( combatant == null || combatant.Deleted )
 			{
 				return false;
 			}

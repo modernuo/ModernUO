@@ -100,7 +100,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if( m_Label != null && m_Label > 0 )
+			if ( m_Label != null && m_Label > 0 )
 				TextDefinition.AddTo( list, m_Label );
 
 			list.Add( 1060584, m_UsesRemaining.ToString() ); // uses remaining: ~1_val~
@@ -108,7 +108,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( IsAccessibleTo( from ) && from.InRange( GetWorldLocation(), 3 ) )
+			if ( IsAccessibleTo( from ) && from.InRange( GetWorldLocation(), 3 ) )
 			{
 				from.SendLocalizedMessage( 1070929 ); // Select the artifact or enhanced magic item to dye.
 				from.BeginTarget( 3, false, Server.Targeting.TargetFlags.None, new TargetStateCallback( InternalCallback ), this );
@@ -121,35 +121,35 @@ namespace Server.Items
 		{
 			BasePigmentsOfTokuno pigment = (BasePigmentsOfTokuno)state;
 
-			if( pigment.Deleted || pigment.UsesRemaining <= 0 || !from.InRange( pigment.GetWorldLocation(), 3 ) || !pigment.IsAccessibleTo( from ))
+			if ( pigment.Deleted || pigment.UsesRemaining <= 0 || !from.InRange( pigment.GetWorldLocation(), 3 ) || !pigment.IsAccessibleTo( from ))
 				return;
 
 			Item i = targeted as Item;
 
-			if( i == null )
+			if ( i == null )
 				from.SendLocalizedMessage( 1070931 ); // You can only dye artifacts and enhanced magic items with this tub.
-			else if( !from.InRange( i.GetWorldLocation(), 3 ) || !IsAccessibleTo( from ) )
+			else if ( !from.InRange( i.GetWorldLocation(), 3 ) || !IsAccessibleTo( from ) )
 				from.SendLocalizedMessage( 502436 ); // That is not accessible.
-			else if( from.Items.Contains( i ) )
+			else if ( from.Items.Contains( i ) )
 				from.SendLocalizedMessage( 1070930 ); // Can't dye artifacts or enhanced magic items that are being worn.
-			else if( i.IsLockedDown )
+			else if ( i.IsLockedDown )
 				from.SendLocalizedMessage( 1070932 ); // You may not dye artifacts and enhanced magic items which are locked down.
-			else if( i.QuestItem )
+			else if ( i.QuestItem )
 				from.SendLocalizedMessage( 1151836 ); // You may not dye toggled quest items.
-			else if( i is MetalPigmentsOfTokuno )
+			else if ( i is MetalPigmentsOfTokuno )
 				from.SendLocalizedMessage( 1042417 ); // You cannot dye that.
-			else if( i is LesserPigmentsOfTokuno )
+			else if ( i is LesserPigmentsOfTokuno )
 				from.SendLocalizedMessage( 1042417 ); // You cannot dye that.
-			else if( i is PigmentsOfTokuno )
+			else if ( i is PigmentsOfTokuno )
 				from.SendLocalizedMessage( 1042417 ); // You cannot dye that.
-			else if( !IsValidItem( i ) )
+			else if ( !IsValidItem( i ) )
 				from.SendLocalizedMessage( 1070931 ); // You can only dye artifacts and enhanced magic items with this tub.	//Yes, it says tub on OSI.  Don't ask me why ;p
 			else
 			{
 				//Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
 				i.Hue = Hue;
 
-				if( --pigment.UsesRemaining <= 0 )
+				if ( --pigment.UsesRemaining <= 0 )
 					pigment.Delete();
 
 				from.PlaySound(0x23E); // As per OSI TC1
@@ -158,21 +158,21 @@ namespace Server.Items
 
 		public static bool IsValidItem( Item i )
 		{
-			if( i is BasePigmentsOfTokuno )
+			if ( i is BasePigmentsOfTokuno )
 				return false;
 
 			Type t = i.GetType();
 
 			CraftResource resource = CraftResource.None;
 
-			if( i is BaseWeapon )
+			if ( i is BaseWeapon )
 				resource = ((BaseWeapon)i).Resource;
-			else if( i is BaseArmor )
+			else if ( i is BaseArmor )
 				resource = ((BaseArmor)i).Resource;
 			else if (i is BaseClothing)
 				resource = ((BaseClothing)i).Resource;
 
-			if( !CraftResources.IsStandard( resource ) )
+			if ( !CraftResources.IsStandard( resource ) )
 				return true;
 
 			if ( i is ITokunoDyable )
@@ -198,7 +198,7 @@ namespace Server.Items
 		{
 			for( int i = 0; i < list.Length; i++ )
 			{
-				if( list[i] == t ) return true;
+				if ( list[i] == t ) return true;
 			}
 
 			return false;

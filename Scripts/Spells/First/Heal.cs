@@ -72,7 +72,7 @@ namespace Server.Spells.First
 					toHeal = Caster.Skills.Magery.Fixed / 120;
 					toHeal += Utility.RandomMinMax( 1, 4 );
 
-					if( Core.SE && Caster != m )
+					if ( Core.SE && Caster != m )
 						toHeal = (int)(toHeal * 1.5);
 				}
 				else

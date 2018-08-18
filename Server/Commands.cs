@@ -285,7 +285,7 @@ namespace Server.Commands
 		{
 			if ( text.StartsWith( m_Prefix ) || type == MessageType.Command )
 			{
-				if( type != MessageType.Command )
+				if ( type != MessageType.Command )
 					text = text.Substring( m_Prefix.Length );
 
 				int indexOf = text.IndexOf( ' ' );

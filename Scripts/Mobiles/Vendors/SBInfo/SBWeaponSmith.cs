@@ -33,7 +33,7 @@ namespace Server.Mobiles
 				Add( new GenericBuyInfo( typeof( WarHammer ), 25, 20, 0x1439, 0 ) );
 				Add( new GenericBuyInfo( typeof( WarMace ), 31, 20, 0x1407, 0 ) );
 
-				if( Core.AOS )
+				if ( Core.AOS )
 				{
 					Add( new GenericBuyInfo( typeof( Scepter ), 39, 20, 0x26BC, 0 ) );
 					Add( new GenericBuyInfo( typeof( BladedStaff ), 40, 20, 0x26BD, 0 ) );
@@ -138,7 +138,7 @@ namespace Server.Mobiles
 				Add( typeof( Bow ), 17 );
 				Add( typeof( Crossbow ), 23 );
 
-				if( Core.AOS )
+				if ( Core.AOS )
 				{
 					Add( typeof( CompositeBow ), 25 );
 					Add( typeof( RepeatingCrossbow ), 28 );

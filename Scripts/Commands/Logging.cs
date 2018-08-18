@@ -43,19 +43,15 @@ namespace Server.Commands
 
 		public static object Format( object o )
 		{
-			if ( o is Mobile )
+			if ( o is Mobile m )
 			{
-				Mobile m = (Mobile)o;
-
 				if ( m.Account == null )
 					return String.Format( "{0} (no account)", m );
-				else
-					return String.Format( "{0} ('{1}')", m, m.Account.Username );
-			}
-			else if ( o is Item )
-			{
-				Item item = (Item)o;
 
+				return String.Format( "{0} ('{1}')", m, m.Account.Username );
+			}
+			if ( o is Item item )
+			{
 				return String.Format( "0x{0:X} ({1})", item.Serial.Value, item.GetType().Name );
 			}
 
@@ -81,9 +77,7 @@ namespace Server.Commands
 
 				string path = Core.BaseDirectory;
 
-				Account acct = from.Account as Account;
-
-				string name = ( acct == null ? from.Name : acct.Username );
+				string name = ( !(from.Account is Account acct) ? from.Name : acct.Username );
 
 				AppendPath( ref path, "Logs" );
 				AppendPath( ref path, "Commands" );

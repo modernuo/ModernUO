@@ -20,7 +20,7 @@ namespace Server.Engines.Harvest
 
 		public virtual bool CheckTool( Mobile from, Item tool )
 		{
-			bool wornOut = ( tool == null || tool.Deleted || (tool is IUsesRemaining && ((IUsesRemaining)tool).UsesRemaining <= 0) );
+			bool wornOut = ( tool == null || tool.Deleted || (tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0) );
 
 			if ( wornOut )
 				from.SendLocalizedMessage( 1044038 ); // You have worn out your tool!
@@ -176,11 +176,11 @@ namespace Server.Engines.Harvest
 							bool eligableForRacialBonus = ( def.RaceBonus && from.Race == Race.Human );
 							bool inFelucca = (map == Map.Felucca);
 
-							if( eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount && 0.1 > Utility.RandomDouble() )
+							if ( eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount && 0.1 > Utility.RandomDouble() )
 								item.Amount = feluccaRacialAmount;
-							else if( inFelucca && bank.Current >= feluccaAmount )
+							else if ( inFelucca && bank.Current >= feluccaAmount )
 								item.Amount = feluccaAmount;
-							else if( eligableForRacialBonus && bank.Current >= racialAmount && 0.1 > Utility.RandomDouble() )
+							else if ( eligableForRacialBonus && bank.Current >= racialAmount && 0.1 > Utility.RandomDouble() )
 								item.Amount = racialAmount;
 							else
 								item.Amount = amount;
@@ -214,10 +214,8 @@ namespace Server.Engines.Harvest
 							}
 						}
 
-						if ( tool is IUsesRemaining )
+						if ( tool is IUsesRemaining toolWithUses )
 						{
-							IUsesRemaining toolWithUses = (IUsesRemaining)tool;
-
 							toolWithUses.ShowUsesRemaining = true;
 
 							if ( toolWithUses.UsesRemaining > 0 )
@@ -316,7 +314,7 @@ namespace Server.Engines.Harvest
 		{
 			bool racialBonus = (def.RaceBonus && from.Race == Race.Elf );
 
-			if( vein.ChanceToFallback > (Utility.RandomDouble() + (racialBonus ? .20 : 0)) )
+			if ( vein.ChanceToFallback > (Utility.RandomDouble() + (racialBonus ? .20 : 0)) )
 				return fallback;
 
 			double skillValue = from.Skills[def.Skill].Value;
@@ -447,29 +445,23 @@ namespace Server.Engines.Harvest
 
 		public virtual bool GetHarvestDetails( Mobile from, Item tool, object toHarvest, out int tileID, out Map map, out Point3D loc )
 		{
-			if ( toHarvest is Static && !((Static)toHarvest).Movable )
+			if ( toHarvest is Static staticObj && !staticObj.Movable )
 			{
-				Static obj = (Static)toHarvest;
-
-				tileID = (obj.ItemID & 0x3FFF) | 0x4000;
-				map = obj.Map;
-				loc = obj.GetWorldLocation();
+				tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+				map = staticObj.Map;
+				loc = staticObj.GetWorldLocation();
 			}
-			else if ( toHarvest is StaticTarget )
+			else if ( toHarvest is StaticTarget staticTarget )
 			{
-				StaticTarget obj = (StaticTarget)toHarvest;
-
-				tileID = (obj.ItemID & 0x3FFF) | 0x4000;
+				tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
 				map = from.Map;
-				loc = obj.Location;
+				loc = staticTarget.Location;
 			}
-			else if ( toHarvest is LandTarget )
+			else if ( toHarvest is LandTarget landTarget )
 			{
-				LandTarget obj = (LandTarget)toHarvest;
-
-				tileID = obj.TileID;
+				tileID = landTarget.TileID;
 				map = from.Map;
-				loc = obj.Location;
+				loc = landTarget.Location;
 			}
 			else
 			{

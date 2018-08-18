@@ -24,10 +24,10 @@ namespace Server.Engines.Craft
 			m.BeginTarget( -1, false, Server.Targeting.TargetFlags.None, new TargetCallback(
 				delegate( Mobile from, object targeted )
 				{
-					if( targeted is PlayerMobile )
+					if ( targeted is PlayerMobile mobile )
 					{
 						foreach( KeyValuePair<int, Recipe> kvp in m_Recipes )
-							((PlayerMobile)targeted).AcquireRecipe( kvp.Key );
+							mobile.AcquireRecipe( kvp.Key );
 
 						m.SendMessage( "You teach them all of the recipies." );
 					}
@@ -49,9 +49,9 @@ namespace Server.Engines.Craft
 			m.BeginTarget( -1, false, Server.Targeting.TargetFlags.None, new TargetCallback(
 				delegate( Mobile from, object targeted )
 				{
-					if( targeted is PlayerMobile )
+					if ( targeted is PlayerMobile mobile )
 					{
-						((PlayerMobile)targeted).ResetRecipes();
+						mobile.ResetRecipes();
 
 						m.SendMessage( "They forget all their recipies." );
 					}
@@ -99,7 +99,7 @@ namespace Server.Engines.Craft
 		{
 			get
 			{
-				if( m_TD == null )
+				if ( m_TD == null )
 					m_TD = new TextDefinition( m_CraftItem.NameNumber, m_CraftItem.NameString );
 
 				return m_TD;
@@ -112,7 +112,7 @@ namespace Server.Engines.Craft
 			m_System = system;
 			m_CraftItem = item;
 
-			if( m_Recipes.ContainsKey( id ) )
+			if ( m_Recipes.ContainsKey( id ) )
 				throw new Exception( "Attempting to create recipe with preexisting ID." );
 
 			m_Recipes.Add( id, this );

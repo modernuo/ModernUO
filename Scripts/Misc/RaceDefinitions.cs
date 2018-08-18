@@ -8,7 +8,7 @@ namespace Server.Misc
 		public static void Configure()
 		{
 			/* Here we configure all races. Some notes:
-			 * 
+			 *
 			 * 1) The first 32 races are reserved for core use.
 			 * 2) Race 0x7F is reserved for core use.
 			 * 3) Race 0xFF is reserved for core use.
@@ -35,16 +35,16 @@ namespace Server.Misc
 
 			public override bool ValidateHair( bool female, int itemID )
 			{
-				if( itemID == 0 )
+				if ( itemID == 0 )
 					return true;
 
-				if( (female && itemID == 0x2048) || (!female && itemID == 0x2046 ) )
+				if ( (female && itemID == 0x2048) || (!female && itemID == 0x2046 ) )
 					return false;	//Buns & Receeding Hair
 
-				if( itemID >= 0x203B && itemID <= 0x203D )
+				if ( itemID >= 0x203B && itemID <= 0x203D )
 					return true;
 
-				if( itemID >= 0x2044 && itemID <= 0x204A )
+				if ( itemID >= 0x2044 && itemID <= 0x204A )
 					return true;
 
 				return false;
@@ -68,16 +68,16 @@ namespace Server.Misc
 
 			public override bool ValidateFacialHair( bool female, int itemID )
 			{
-				if( itemID == 0 )
+				if ( itemID == 0 )
 					return true;
 
-				if( female )
+				if ( female )
 					return false;
 
-				if( itemID >= 0x203E && itemID <= 0x2041 )
+				if ( itemID >= 0x203E && itemID <= 0x2041 )
 					return true;
 
-				if( itemID >= 0x204B && itemID <= 0x204D )
+				if ( itemID >= 0x204B && itemID <= 0x204D )
 					return true;
 
 				return false;
@@ -85,7 +85,7 @@ namespace Server.Misc
 
 			public override int RandomFacialHair( bool female )
 			{
-				if( female )
+				if ( female )
 					return 0;
 
 				int rand = Utility.Random( 7 );
@@ -95,9 +95,9 @@ namespace Server.Misc
 
 			public override int ClipSkinHue( int hue )
 			{
-				if( hue < 1002 )
+				if ( hue < 1002 )
 					return 1002;
-				else if( hue > 1058 )
+				else if ( hue > 1058 )
 					return 1058;
 				else
 					return hue;
@@ -110,9 +110,9 @@ namespace Server.Misc
 
 			public override int ClipHairHue( int hue )
 			{
-				if( hue < 1102 )
+				if ( hue < 1102 )
 					return 1102;
-				else if( hue > 1149 )
+				else if ( hue > 1149 )
 					return 1149;
 				else
 					return hue;
@@ -152,16 +152,16 @@ namespace Server.Misc
 
 			public override bool ValidateHair( bool female, int itemID )
 			{
-				if( itemID == 0 )
+				if ( itemID == 0 )
 					return true;
 
-				if( (female && (itemID == 0x2FCD || itemID == 0x2FBF)) || (!female && (itemID == 0x2FCC || itemID == 0x2FD0)) )
+				if ( (female && (itemID == 0x2FCD || itemID == 0x2FBF)) || (!female && (itemID == 0x2FCC || itemID == 0x2FD0)) )
 					return false;
 
-				if( itemID >= 0x2FBF && itemID <= 0x2FC2 )
+				if ( itemID >= 0x2FBF && itemID <= 0x2FC2 )
 					return true;
 
-				if( itemID >= 0x2FCC && itemID <= 0x2FD1 )
+				if ( itemID >= 0x2FCC && itemID <= 0x2FD1 )
 					return true;
 
 				return false;
@@ -195,7 +195,7 @@ namespace Server.Misc
 			public override int ClipSkinHue( int hue )
 			{
 				for( int i = 0; i < m_SkinHues.Length; i++ )
-					if( m_SkinHues[i] == hue )
+					if ( m_SkinHues[i] == hue )
 						return hue;
 
 				return m_SkinHues[0];
@@ -209,7 +209,7 @@ namespace Server.Misc
 			public override int ClipHairHue( int hue )
 			{
 				for( int i = 0; i < m_HairHues.Length; i++ )
-					if( m_HairHues[i] == hue )
+					if ( m_HairHues[i] == hue )
 						return hue;
 
 				return m_HairHues[0];

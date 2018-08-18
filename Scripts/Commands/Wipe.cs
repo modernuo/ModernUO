@@ -89,8 +89,8 @@ namespace Server.Commands
 					toDelete.Add( obj );
 				else if ( multis && (obj is BaseMulti) )
 					toDelete.Add( obj );
-				else if ( mobiles && (obj is Mobile) && !((Mobile)obj).Player )
-					toDelete.Add( obj );
+				else if ( mobiles && (obj is Mobile mobile) && !mobile.Player )
+					toDelete.Add( mobile );
 			}
 
 			eable.Free();

@@ -24,17 +24,17 @@ namespace Server.Mobiles
 
 		public virtual void RangeCheck()
 		{
-			if( !Deleted && ControlMaster != null && !ControlMaster.Deleted )
+			if ( !Deleted && ControlMaster != null && !ControlMaster.Deleted )
 			{
 				int range = ( RangeHome - 2 );
 
-				if( !InRange( ControlMaster.Location, RangeHome ) )
+				if ( !InRange( ControlMaster.Location, RangeHome ) )
 				{
 					Mobile master = ControlMaster;
 
 					Point3D m_Loc = Point3D.Zero;
 
-					if( Map == master.Map )
+					if ( Map == master.Map )
 					{
 						int x = ( X > master.X ) ? ( master.X + range ) : ( master.X - range );
 						int y = ( Y > master.Y ) ? ( master.Y + range ) : ( master.Y - range );
@@ -46,7 +46,7 @@ namespace Server.Mobiles
 
 							m_Loc.Z = Map.GetAverageZ( m_Loc.X, m_Loc.Y );
 
-							if( Map.CanSpawnMobile( m_Loc ) )
+							if ( Map.CanSpawnMobile( m_Loc ) )
 							{
 								break;
 							}
@@ -54,7 +54,7 @@ namespace Server.Mobiles
 							m_Loc = master.Location;
 						}
 
-						if( !Deleted )
+						if ( !Deleted )
 						{
 							SetLocation( m_Loc, true );
 						}
@@ -67,11 +67,11 @@ namespace Server.Mobiles
 		{
 			Mobile master = ControlMaster;
 
-			if( Deleted )
+			if ( Deleted )
 			{
 				return;
 			}
-			if( master == null || master.Deleted )
+			if ( master == null || master.Deleted )
 			{
 				DropPackContents();
 				EndRelease( null );
@@ -80,10 +80,10 @@ namespace Server.Mobiles
 
 			RangeCheck();
 
-			if( m_LastHidden != master.Hidden )
+			if ( m_LastHidden != master.Hidden )
 				Hidden = m_LastHidden = master.Hidden;
 
-			if( AIObject != null && AIObject.WalkMobileRange( master,  5, true, 1, 1 ))
+			if ( AIObject != null && AIObject.WalkMobileRange( master,  5, true, 1, 1 ))
 			{
 				Warmode = master.Warmode;
 				Combatant = master.Combatant;

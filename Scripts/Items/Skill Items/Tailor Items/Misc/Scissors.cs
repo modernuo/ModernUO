@@ -63,7 +63,7 @@ namespace Server.Items
 					from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
 				}
 				else */
-				if( Core.AOS && targeted == from )
+				if ( Core.AOS && targeted == from )
 				{
 					from.SendLocalizedMessage( 1062845 + Utility.Random( 3 ) );	//"That doesn't seem like the smartest thing to do." / "That was an encounter you don't wish to repeat." / "Ha! You missed!"
 				}
@@ -71,9 +71,9 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1063305 ); // Didn't your parents ever tell you not to run with scissors in your hand?!
 				}
-				else if( targeted is Item && !((Item)targeted).Movable ) 
+				else if ( targeted is Item && !((Item)targeted).Movable )
 				{
-					if( targeted is IScissorable && ( targeted is PlagueBeastInnard || targeted is PlagueBeastMutationCore ) )
+					if ( targeted is IScissorable && ( targeted is PlagueBeastInnard || targeted is PlagueBeastMutationCore ) )
 					{
 						IScissorable obj = (IScissorable) targeted;
 

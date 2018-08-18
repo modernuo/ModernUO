@@ -33,7 +33,7 @@ namespace Server.Misc
 					}
 					case 0x0032: // *i must consider my sins*
 					{
-						if( !Core.SE )
+						if ( !Core.SE )
 						{
 							from.SendMessage( "Short Term Murders : {0}", from.ShortTermMurders );
 							from.SendMessage( "Long Term Murders : {0}",  from.Kills );

@@ -65,7 +65,7 @@ namespace Server.Mobiles
 			}
 			Utility.AssignRandomHair( this );
 
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 				Utility.AssignRandomFacialHair( this, HairHue );
 
 			Halberd weapon = new Halberd();
@@ -264,7 +264,7 @@ namespace Server.Mobiles
 
 				Mobile target = m_Owner.Focus;
 
-				if ( target != null && (target.Deleted || !target.Alive || !m_Owner.CanBeHarmful( target )) )	
+				if ( target != null && (target.Deleted || !target.Alive || !m_Owner.CanBeHarmful( target )) )
 				{
 					m_Owner.Focus = null;
 					Stop();

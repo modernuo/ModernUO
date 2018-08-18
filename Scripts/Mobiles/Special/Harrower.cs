@@ -399,7 +399,7 @@ namespace Server.Mobiles
 
 		public virtual void RegisterDamageTo( Mobile m )
 		{
-			if( m == null )
+			if ( m == null )
 				return;
 
 			foreach( DamageEntry de in m.DamageEntries )
@@ -408,7 +408,7 @@ namespace Server.Mobiles
 
 				Mobile master = damager.GetDamageMaster( m );
 
-				if( master != null )
+				if ( master != null )
 					damager = master;
 
 				RegisterDamage( damager, de.DamageGiven );
@@ -417,10 +417,10 @@ namespace Server.Mobiles
 
 		public void RegisterDamage( Mobile from, int amount )
 		{
-			if( from == null || !from.Player )
+			if ( from == null || !from.Player )
 				return;
 
-			if( m_DamageEntries.ContainsKey( from ) )
+			if ( m_DamageEntries.ContainsKey( from ) )
 				m_DamageEntries[from] += amount;
 			else
 				m_DamageEntries.Add( from, amount );
@@ -439,7 +439,7 @@ namespace Server.Mobiles
 
 			foreach (KeyValuePair<Mobile, int> kvp in m_DamageEntries)
 			{
-				if( IsEligible( kvp.Key, artifact ) )
+				if ( IsEligible( kvp.Key, artifact ) )
 				{
 					validEntries.Add( kvp.Key, kvp.Value );
 					totalDamage += kvp.Value;
@@ -454,7 +454,7 @@ namespace Server.Mobiles
 			{
 				totalDamage += kvp.Value;
 
-				if( totalDamage >= randomDamage )
+				if ( totalDamage >= randomDamage )
 				{
 					GiveArtifact( kvp.Key, artifact );
 					return;
@@ -496,7 +496,7 @@ namespace Server.Mobiles
 
 		public Item CreateArtifact( Type[] list )
 		{
-			if( list.Length == 0 )
+			if ( list.Length == 0 )
 				return null;
 
 			int random = Utility.Random( list.Length );

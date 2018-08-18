@@ -453,7 +453,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version <= 0 && ItemID == 0x318F )
+			if ( version <= 0 && ItemID == 0x318F )
 				ItemID = 0x318C;
 		}
 	}
@@ -981,7 +981,7 @@ namespace Server.Items
 		public PristineDreadHorn()
 			: base( 0x315A )
 		{
-			
+
 		}
 
 		public PristineDreadHorn( Serial serial )

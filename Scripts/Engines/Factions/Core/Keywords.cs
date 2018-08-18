@@ -40,8 +40,8 @@ namespace Server.Factions
 
 						if ( FactionGump.Exists( from ) )
 							from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
-						else if ( town.Owner != null && from is PlayerMobile )
-							from.SendGump( new FinanceGump( (PlayerMobile)from, town.Owner, town ) );
+						else if ( town.Owner != null && from is PlayerMobile mobile )
+							mobile.SendGump( new FinanceGump( mobile, town.Owner, town ) );
 
 						break;
 					}
@@ -75,7 +75,7 @@ namespace Server.Factions
 					{
 						PlayerState pl = PlayerState.Find( from );
 
-						if ( pl != null && pl.Finance != null )
+						if ( pl?.Finance != null )
 						{
 							pl.Finance.Finance = null;
 							from.SendLocalizedMessage( 1005081 ); // You have been fired as Finance Minister
@@ -87,7 +87,7 @@ namespace Server.Factions
 					{
 						PlayerState pl = PlayerState.Find( from );
 
-						if ( pl != null && pl.Sheriff != null )
+						if ( pl?.Sheriff != null )
 						{
 							pl.Sheriff.Sheriff = null;
 							from.SendLocalizedMessage( 1010270 ); // You have been fired as Sheriff
@@ -99,16 +99,16 @@ namespace Server.Factions
 					{
 						PlayerState pl = PlayerState.Find( from );
 
-						if ( pl != null && pl.IsLeaving )
+						if ( pl?.IsLeaving == true )
 						{
 							if ( Faction.CheckLeaveTimer( from ) )
 								break;
 
 							TimeSpan remaining = ( pl.Leaving + Faction.LeavePeriod ) - DateTime.UtcNow;
 
-							if( remaining.TotalDays >= 1 )
+							if ( remaining.TotalDays >= 1 )
 								from.SendLocalizedMessage( 1042743, remaining.TotalDays.ToString( "N0" ) ) ;// Your term of service will come to an end in ~1_DAYS~ days.
-							else if( remaining.TotalHours >= 1 )
+							else if ( remaining.TotalHours >= 1 )
 								from.SendLocalizedMessage( 1042741, remaining.TotalHours.ToString( "N0" ) ); // Your term of service will come to an end in ~1_HOURS~ hours.
 							else
 								from.SendLocalizedMessage( 1042742 ); // Your term of service will come to an end in less than one hour.

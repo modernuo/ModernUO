@@ -25,7 +25,7 @@ namespace Server.Commands
 			else
 			{
 				SkillName skill;
-				if( Enum.TryParse( arg.GetString( 0 ), true, out skill ) )
+				if ( Enum.TryParse( arg.GetString( 0 ), true, out skill ) )
 				{
 					arg.Mobile.Target = new SkillTarget( skill, arg.GetDouble( 1 ) );
 				}
@@ -61,7 +61,7 @@ namespace Server.Commands
 			else
 			{
 				SkillName skill;
-				if( Enum.TryParse( arg.GetString( 0 ), true, out skill ) )
+				if ( Enum.TryParse( arg.GetString( 0 ), true, out skill ) )
 				{
 					arg.Mobile.Target = new SkillTarget( skill );
 				}
@@ -83,9 +83,8 @@ namespace Server.Commands
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Mobile )
+				if ( targeted is Mobile targ )
 				{
-					Mobile targ = (Mobile)targeted;
 					Server.Skills skills = targ.Skills;
 
 					for ( int i = 0; i < skills.Length; ++i )
@@ -121,9 +120,8 @@ namespace Server.Commands
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Mobile )
+				if ( targeted is Mobile targ )
 				{
-					Mobile targ = (Mobile)targeted;
 					Skill skill = targ.Skills[m_Skill];
 
 					if ( skill == null )

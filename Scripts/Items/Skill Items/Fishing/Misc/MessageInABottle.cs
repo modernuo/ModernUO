@@ -94,7 +94,7 @@ namespace Server.Items
 			if ( version < 2 )
 				m_Level = GetRandomLevel();
 
-			if( version < 3 && m_TargetMap == Map.Tokuno )
+			if ( version < 3 && m_TargetMap == Map.Tokuno )
 				m_TargetMap = Map.Trammel;
 		}
 

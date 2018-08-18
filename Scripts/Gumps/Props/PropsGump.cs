@@ -326,7 +326,7 @@ namespace Server.Gumps
 							from.SendGump( new PropertiesGump( from, m_Object, m_Stack, m_List, m_Page ) );
 							from.SendGump( new SkillsGump( from, (Mobile)m_Object ) );
 						}
-						else if( HasAttribute( type, typeofPropertyObject, true ) )
+						else if ( HasAttribute( type, typeofPropertyObject, true ) )
 						{
 							object obj = prop.GetValue( m_Object, null );
 

@@ -121,7 +121,7 @@ namespace Server
 
 		public static string FixHtml( string str )
 		{
-			if( str == null )
+			if ( str == null )
 				return "";
 
 			bool hasOpen  = ( str.IndexOf( '<' ) >= 0 );
@@ -320,7 +320,7 @@ namespace Server
 			| ( ( source & 0x0000FF00 ) << 8 )
 			| ( ( source & 0x00FF0000 ) >> 8 )
 			| ( ( source & 0xFF000000 ) >> 0x18 ) ) );
-		} 
+		}
 
 		public static bool TryConvertIPv6toIPv4( ref IPAddress address )
 		{
@@ -511,7 +511,7 @@ namespace Server
 		{
 			int i;
 
-			if( value.StartsWith( "0x" ) )
+			if ( value.StartsWith( "0x" ) )
 				int.TryParse( value.Substring( 2 ), NumberStyles.HexNumber, null, out i );
 			else
 				int.TryParse( value, out i );
@@ -563,7 +563,7 @@ namespace Server
 			{
 				DateTime d;
 
-				if( DateTime.TryParse( dateTimeString, out d ) )
+				if ( DateTime.TryParse( dateTimeString, out d ) )
 					return d;
 
 				return defaultValue;
@@ -580,7 +580,7 @@ namespace Server
 			{
 				DateTimeOffset d;
 
-				if( DateTimeOffset.TryParse( dateTimeOffsetString, out d ) )
+				if ( DateTimeOffset.TryParse( dateTimeOffsetString, out d ) )
 					return d;
 
 				return defaultValue;
@@ -1318,7 +1318,7 @@ namespace Server
 		{
 			m.HairItemID = m.Race.RandomHair( m );
 
-			if( randomHue )
+			if ( randomHue )
 				m.HairHue = m.Race.RandomHairHue();
 		}
 
@@ -1337,7 +1337,7 @@ namespace Server
 		{
 			m.FacialHairItemID = m.Race.RandomFacialHair( m );
 
-			if( randomHue )
+			if ( randomHue )
 				m.FacialHairHue = m.Race.RandomHairHue();
 		}
 
@@ -1354,7 +1354,7 @@ namespace Server
 			{
 				TOutput t = list[i] as TOutput;
 
-				if( t != null )
+				if ( t != null )
 					output.Add( t );
 			}
 

@@ -21,7 +21,7 @@ namespace Server.Spells.Ninjitsu
 
 		public override bool Validate( Mobile from )
 		{
-			if( !from.Hidden || from.AllowedStealthSteps <= 0 )
+			if ( !from.Hidden || from.AllowedStealthSteps <= 0 )
 			{
 				from.SendLocalizedMessage( 1063087 ); // You must be in stealth mode to use this ability.
 				return false;
@@ -34,7 +34,7 @@ namespace Server.Spells.Ninjitsu
 		{
 			bool valid = Validate( attacker ) && CheckMana( attacker, true );
 
-			if( valid )
+			if ( valid )
 			{
 				attacker.BeginAction( typeof( Stealth ) );
 				Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), delegate { attacker.EndAction( typeof( Stealth ) ); } );

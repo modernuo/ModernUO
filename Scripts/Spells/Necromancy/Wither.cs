@@ -31,7 +31,7 @@ namespace Server.Spells.Necromancy
 
 		public override void OnCast()
 		{
-			if( CheckSequence() )
+			if ( CheckSequence() )
 			{
 				/* Creates a withering frost around the Caster,
 				 * which deals Cold Damage to all valid targets in a radius of 5 tiles.
@@ -39,7 +39,7 @@ namespace Server.Spells.Necromancy
 
 				Map map = Caster.Map;
 
-				if( map != null )
+				if ( map != null )
 				{
 					List<Mobile> targets = new List<Mobile>();
 
@@ -48,7 +48,7 @@ namespace Server.Spells.Necromancy
 
 					foreach( Mobile m in Caster.GetMobilesInRange( Core.ML ? 4 : 5 ) )
 					{
-						if( Caster != m && Caster.InLOS( m ) && ( isMonster || SpellHelper.ValidIndirectTarget( Caster, m ) ) && Caster.CanBeHarmful( m, false ) )
+						if ( Caster != m && Caster.InLOS( m ) && ( isMonster || SpellHelper.ValidIndirectTarget( Caster, m ) ) && Caster.CanBeHarmful( m, false ) )
 						{
 							if ( isMonster )
 							{
@@ -88,7 +88,7 @@ namespace Server.Spells.Necromancy
 						int sdiBonus = AosAttributes.GetValue( Caster, AosAttribute.SpellDamage );
 
 						// PvP spell damage increase cap of 15% from an item�s magic property in Publish 33(SE)
-						if( Core.SE && m.Player && Caster.Player && sdiBonus > 15 )
+						if ( Core.SE && m.Player && Caster.Player && sdiBonus > 15 )
 							sdiBonus = 15;
 
 						damage *= ( 100 + sdiBonus );

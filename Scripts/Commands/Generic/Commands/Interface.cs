@@ -137,17 +137,13 @@ namespace Server.Commands.Generic
 				object obj = m_List[i];
 				bool isDeleted = false;
 
-				if ( obj is Item )
+				if ( obj is Item item )
 				{
-					Item item = (Item)obj;
-
 					if ( !(isDeleted = item.Deleted) )
 						AddEntryHtml( 40 + 130, item.GetType().Name );
 				}
-				else if ( obj is Mobile )
+				else if ( obj is Mobile mob )
 				{
-					Mobile mob = (Mobile)obj;
-
 					if ( !(isDeleted = mob.Deleted) )
 						AddEntryHtml( 40 + 130, mob.Name );
 				}
@@ -231,10 +227,10 @@ namespace Server.Commands.Generic
 							break;
 						}
 
-						if ( obj is Item && !((Item)obj).Deleted )
-							m_From.SendGump( new InterfaceItemGump( m_From, m_Columns, m_List, m_Page, (Item) obj ) );
-						else if ( obj is Mobile && !((Mobile)obj).Deleted )
-							m_From.SendGump( new InterfaceMobileGump( m_From, m_Columns, m_List, m_Page, (Mobile) obj ) );
+						if ( obj is Item item && !item.Deleted )
+							m_From.SendGump( new InterfaceItemGump( m_From, m_Columns, m_List, m_Page, item ) );
+						else if ( obj is Mobile mobile && !mobile.Deleted )
+							m_From.SendGump( new InterfaceMobileGump( m_From, m_Columns, m_List, m_Page, mobile ) );
 						else
 							m_From.SendGump( new InterfaceGump( m_From, m_Columns, m_List, m_Page, m_Select ) );
 					}

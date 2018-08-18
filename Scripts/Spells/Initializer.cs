@@ -107,7 +107,7 @@ namespace Server.Spells
 				Register( 114, typeof( Necromancy.WitherSpell ) );
 				Register( 115, typeof( Necromancy.WraithFormSpell ) );
 
-				if( Core.SE )
+				if ( Core.SE )
 					Register( 116, typeof( Necromancy.ExorcismSpell ) );
 
 				// Paladin abilities

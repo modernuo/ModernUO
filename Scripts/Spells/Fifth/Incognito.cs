@@ -99,7 +99,7 @@ namespace Server.Spells.Fifth
 
 					int timeVal = ((6 * Caster.Skills.Magery.Fixed) / 50) + 1;
 
-					if( timeVal > 144 )
+					if ( timeVal > 144 )
 						timeVal = 144;
 
 					TimeSpan length = TimeSpan.FromSeconds( timeVal );

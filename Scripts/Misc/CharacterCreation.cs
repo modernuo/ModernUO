@@ -361,7 +361,7 @@ namespace Server.Misc
 
 			PlaceItemIn( bank, 18, 124, cont );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				cont = new Bag();
 				cont.Hue = 0x501;
@@ -391,7 +391,7 @@ namespace Server.Misc
 				PlaceItemIn( bank, 58, 124, cont );
 			}
 
-			if( Core.SE )	//This bag came only after SE.
+			if ( Core.SE )	//This bag came only after SE.
 			{
 				cont = new Bag();
 				cont.Name = "Bag of Bows";
@@ -407,7 +407,7 @@ namespace Server.Misc
 				{
 					BaseRanged bow = cont.Items[i] as BaseRanged;
 
-					if( bow != null )
+					if ( bow != null )
 					{
 						bow.Attributes.WeaponSpeed = 35;
 						bow.Attributes.WeaponDamage = 35;
@@ -590,7 +590,7 @@ namespace Server.Misc
 
 		private static void AddShoes( Mobile m )
 		{
-			if( m.Race == Race.Elf )
+			if ( m.Race == Race.Elf )
 				EquipItem( new ElvenBoots(), true );
 			else
 				EquipItem( new Shoes( Utility.RandomYellowHue() ), true );
@@ -636,7 +636,7 @@ namespace Server.Misc
 			newChar.Female = args.Female;
 			//newChar.Body = newChar.Female ? 0x191 : 0x190;
 
-			if( Core.Expansion >= args.Race.RequiredExpansion )
+			if ( Core.Expansion >= args.Race.RequiredExpansion )
 				newChar.Race = args.Race;	//Sets body
 			else
 				newChar.Race = Race.DefaultRace;
@@ -667,13 +667,13 @@ namespace Server.Misc
 
 			Race race = newChar.Race;
 
-			if( race.ValidateHair( newChar, args.HairID ) )
+			if ( race.ValidateHair( newChar, args.HairID ) )
 			{
 				newChar.HairItemID = args.HairID;
 				newChar.HairHue = race.ClipHairHue( args.HairHue & 0x3FFF );
 			}
 
-			if( race.ValidateFacialHair( newChar, args.BeardID ) )
+			if ( race.ValidateFacialHair( newChar, args.BeardID ) )
 			{
 				newChar.FacialHairItemID = args.BeardID;
 				newChar.FacialHairHue = race.ClipHairHue( args.BeardHue & 0x3FFF );
@@ -686,7 +686,7 @@ namespace Server.Misc
 				AddShoes( newChar );
 			}
 
-			if( TestCenter.Enabled )
+			if ( TestCenter.Enabled )
 				FillBankbox( newChar );
 
 			if ( young )
@@ -742,9 +742,9 @@ namespace Server.Misc
 
 		private static CityInfo GetStartLocation( CharacterCreatedEventArgs args, bool isYoung )
 		{
-			if( Core.ML )
+			if ( Core.ML )
 			{
-				//if( args.State != null && args.State.NewHaven )
+				//if ( args.State != null && args.State.NewHaven )
 				return m_NewHavenInfo;	//We don't get the client Version until AFTER Character creation
 
 				//return args.City;  TODO: Uncomment when the old quest system is actually phased out
@@ -765,14 +765,14 @@ namespace Server.Misc
 					}
 					else
 					{
-						useHaven = true; 
+						useHaven = true;
 
 						new BadStartMessage( m, 1062205 );
 						/*
-						 * Unfortunately you are playing on a *NON-Age-Of-Shadows* game 
-						 * installation and cannot be transported to Malas.  
-						 * You will not be able to take your new player quest in Malas 
-						 * without an AOS client.  You are now being taken to the city of 
+						 * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
+						 * installation and cannot be transported to Malas.
+						 * You will not be able to take your new player quest in Malas
+						 * without an AOS client.  You are now being taken to the city of
 						 * Haven on the Trammel facet.
 						 * */
 					}
@@ -795,10 +795,10 @@ namespace Server.Misc
 
 						new BadStartMessage( m, 1063487 );
 						/*
-						 * Unfortunately you are playing on a *NON-Samurai-Empire* game 
-						 * installation and cannot be transported to Tokuno. 
-						 * You will not be able to take your new player quest in Tokuno 
-						 * without an SE client. You are now being taken to the city of 
+						 * Unfortunately you are playing on a *NON-Samurai-Empire* game
+						 * installation and cannot be transported to Tokuno.
+						 * You will not be able to take your new player quest in Tokuno
+						 * without an SE client. You are now being taken to the city of
 						 * Haven on the Trammel facet.
 						 * */
 					}
@@ -817,10 +817,10 @@ namespace Server.Misc
 
 						new BadStartMessage( m, 1063487 );
 						/*
-						 * Unfortunately you are playing on a *NON-Samurai-Empire* game 
-						 * installation and cannot be transported to Tokuno. 
-						 * You will not be able to take your new player quest in Tokuno 
-						 * without an SE client. You are now being taken to the city of 
+						 * Unfortunately you are playing on a *NON-Samurai-Empire* game
+						 * installation and cannot be transported to Tokuno.
+						 * You will not be able to take your new player quest in Tokuno
+						 * without an SE client. You are now being taken to the city of
 						 * Haven on the Trammel facet.
 						 * */
 					}
@@ -829,7 +829,7 @@ namespace Server.Misc
 				}
 			}
 
-			if( useHaven )
+			if ( useHaven )
 				return m_NewHavenInfo;
 			else
 				return args.City;
@@ -1151,12 +1151,12 @@ namespace Server.Misc
 				{
 					addSkillItems = false;
 					EquipItem( new Kasa() );
-					
+
 					int[] hues = new int[] { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89	};
 					//TODO: Verify that's ALL the hues for that above.
 
 					EquipItem( new TattsukeHakama( hues[Utility.Random(hues.Length)] ) );
-					
+
 					EquipItem( new HakamaShita( 0x2C3 ) );
 					EquipItem( new NinjaTabi( 0x2C3 ) );
 
@@ -1351,7 +1351,7 @@ namespace Server.Misc
 						EquipItem( new ElvenCompositeLongbow() );
 					else
 						EquipItem( new Bow() );
-					
+
 					break;
 				}
 				case SkillName.ArmsLore:
@@ -1442,7 +1442,7 @@ namespace Server.Misc
 				}
 				case SkillName.Chivalry:
 				{
-					if( Core.ML )
+					if ( Core.ML )
 						PackItem( new BookOfChivalry( (ulong)0x3FF ) );
 
 					break;
@@ -1566,7 +1566,7 @@ namespace Server.Misc
 					{
 						EquipItem( new Circlet() );
 
-						if( m.Female )
+						if ( m.Female )
 							EquipItem( new FemaleElvenRobe( Utility.RandomBlueHue() ) );
 						else
 							EquipItem( new MaleElvenRobe( Utility.RandomBlueHue() ) );
@@ -1591,7 +1591,7 @@ namespace Server.Misc
 				}
 				case SkillName.Necromancy:
 				{
-					if( Core.ML )
+					if ( Core.ML )
 					{
 						Container regs = new BagOfNecroReagents( 50 );
 

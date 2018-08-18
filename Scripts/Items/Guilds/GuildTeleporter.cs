@@ -64,7 +64,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( Guild.NewGuildSystem )
+			if ( Guild.NewGuildSystem )
 				return;
 
 			Guildstone stone = m_Stone as Guildstone;
@@ -89,7 +89,7 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 501141 ); // You can only place a guildstone in a house you own!
 				}
-				else if( house.FindGuildstone() != null )
+				else if ( house.FindGuildstone() != null )
 				{
 					from.SendLocalizedMessage( 501142 );//Only one guildstone may reside in a given house.
 				}

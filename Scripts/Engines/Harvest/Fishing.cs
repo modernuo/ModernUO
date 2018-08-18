@@ -140,9 +140,7 @@ namespace Server.Engines.Harvest
 
 		public override bool SpecialHarvest( Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc )
 		{
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 
@@ -230,14 +228,14 @@ namespace Server.Engines.Harvest
 			if ( type == typeof( TreasureMap ) )
 			{
 				int level;
-				if ( from is PlayerMobile && ((PlayerMobile)from).Young && from.Map == Map.Trammel && TreasureMap.IsInHavenIsland( from ) )
+				if ( @from is PlayerMobile mobile && mobile.Young && mobile.Map == Map.Trammel && TreasureMap.IsInHavenIsland( from ) )
 					level = 0;
 				else
 					level = 1;
 
 				return new TreasureMap( level, from.Map == Map.Felucca ? Map.Felucca : Map.Trammel );
 			}
-			else if ( type == typeof( MessageInABottle ) )
+			if ( type == typeof( MessageInABottle ) )
 			{
 				return new MessageInABottle( from.Map == Map.Felucca ? Map.Felucca : Map.Trammel );
 			}
@@ -329,14 +327,14 @@ namespace Server.Engines.Harvest
 
 						if ( preLoot != null )
 						{
-							if ( preLoot is IShipwreckedItem )
-								( (IShipwreckedItem)preLoot ).IsShipwreckedItem = true;
+							if ( preLoot is IShipwreckedItem shipwreckedItem )
+								shipwreckedItem.IsShipwreckedItem = true;
 
 							return preLoot;
 						}
 
 						LockableContainer chest;
-						
+
 						if ( Utility.RandomBool() )
 							chest = new MetalGoldenChest();
 						else
@@ -418,11 +416,10 @@ namespace Server.Engines.Harvest
 
 		public override void SendSuccessTo( Mobile from, Item item, HarvestResource resource )
 		{
-			if ( item is BigFish )
+			if ( item is BigFish fish )
 			{
 				from.SendLocalizedMessage( 1042635 ); // Your fishing pole bends as you pull a big fish from the depths!
-
-				((BigFish)item).Fisher = from;
+				fish.Fisher = from;
 			}
 			else if ( item is WoodenChest || item is MetalGoldenChest )
 			{
@@ -496,10 +493,10 @@ namespace Server.Engines.Harvest
 			Point3D loc;
 
 			if ( GetHarvestDetails( from, tool, toHarvest, out tileID, out map, out loc ) )
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), 
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ),
 					delegate
 					{
-						if( Core.ML )
+						if ( Core.ML )
 							from.RevealingAction();
 
 						Effects.SendLocationEffect( loc, map, 0x352D, 16, 4 );

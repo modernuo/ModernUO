@@ -169,9 +169,8 @@ namespace Server.Factions
 
 		public void Invalidate()
 		{
-			if ( m_Mobile is PlayerMobile )
+			if ( m_Mobile is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)m_Mobile;
 				pm.InvalidateProperties();
 				pm.InvalidateMyRunUO();
 			}
@@ -179,8 +178,8 @@ namespace Server.Factions
 
 		public void Attach()
 		{
-			if ( m_Mobile is PlayerMobile )
-				((PlayerMobile)m_Mobile).FactionPlayerState = this;
+			if ( m_Mobile is PlayerMobile mobile )
+				mobile.FactionPlayerState = this;
 		}
 
 		public PlayerState( Mobile mob, Faction faction, List<PlayerState> owner )
@@ -241,10 +240,7 @@ namespace Server.Factions
 
 		public static PlayerState Find( Mobile mob )
 		{
-			if ( mob is PlayerMobile )
-				return ((PlayerMobile)mob).FactionPlayerState;
-
-			return null;
+			return mob is PlayerMobile mobile ? mobile.FactionPlayerState : null;
 		}
 
 		public int CompareTo( object obj )

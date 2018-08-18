@@ -59,16 +59,12 @@ namespace Server.Factions
 
 					if ( type.IsSubclassOf( typeof( Faction ) ) )
 					{
-						Faction faction = Construct( type ) as Faction;
-
-						if ( faction != null )
+						if ( Construct( type ) is Faction faction )
 							Faction.Factions.Add( faction );
 					}
 					else if ( type.IsSubclassOf( typeof( Town ) ) )
 					{
-						Town town = Construct( type ) as Town;
-
-						if ( town != null )
+						if ( Construct( type ) is Town town )
 							Town.Towns.Add( town );
 					}
 				}

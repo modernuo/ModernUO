@@ -409,8 +409,8 @@ namespace Server.Factions
 		{
 			TimeSpan gameTime = TimeSpan.Zero;
 
-			if ( m_From is PlayerMobile )
-				gameTime = ((PlayerMobile)m_From).GameTime;
+			if ( m_From is PlayerMobile mobile )
+				gameTime = mobile.GameTime;
 
 			int kp = 0;
 

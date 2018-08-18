@@ -64,7 +64,7 @@ namespace Server.Items
 			{
 				case 1: // Okay
 				{
-					if( info.Switches.Length > 0 )
+					if ( info.Switches.Length > 0 )
 					{
 						m_Callback( m_From, m_State, info.Switches[ 0 ] );
 					}

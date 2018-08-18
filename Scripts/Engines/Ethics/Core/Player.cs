@@ -23,13 +23,11 @@ namespace Server.Ethics
 
 			if ( pm == null )
 			{
-				if ( inherit && mob is BaseCreature )
+				if ( inherit && mob is BaseCreature bc )
 				{
-					BaseCreature bc = mob as BaseCreature;
-
-					if ( bc != null && bc.Controlled )
+					if ( bc.Controlled )
 						pm = bc.ControlMaster as PlayerMobile;
-					else if ( bc != null && bc.Summoned )
+					else if ( bc.Summoned )
 						pm = bc.SummonMaster as PlayerMobile;
 				}
 
@@ -114,16 +112,16 @@ namespace Server.Ethics
 
 		public void Attach()
 		{
-			if ( m_Mobile is PlayerMobile )
-				( m_Mobile as PlayerMobile ).EthicPlayer = this;
+			if ( m_Mobile is PlayerMobile mobile )
+				mobile.EthicPlayer = this;
 
 			m_Ethic.Players.Add( this );
 		}
 
 		public void Detach()
 		{
-			if ( m_Mobile is PlayerMobile )
-				( m_Mobile as PlayerMobile ).EthicPlayer = null;
+			if ( m_Mobile is PlayerMobile mobile )
+				mobile.EthicPlayer = null;
 
 			m_Ethic.Players.Remove( this );
 		}

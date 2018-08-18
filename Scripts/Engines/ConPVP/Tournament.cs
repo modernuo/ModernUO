@@ -163,9 +163,9 @@ namespace Server.Engines.ConPVP
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that
 			}
-			else if ( m_Tournament != null )
+			else
 			{
-				Tournament tourny = m_Tournament.Tournament;
+				Tournament tourny = m_Tournament?.Tournament;
 
 				if ( tourny != null )
 				{
@@ -194,60 +194,46 @@ namespace Server.Engines.ConPVP
 						}
 						case TournamentStage.Inactive:
 						{
-							if ( m_Registrar != null )
-								m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-									0x35, false, "The tournament is closed.", from.NetState );
+							m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								0x35, false, "The tournament is closed.", from.NetState );
 
 							break;
 						}
 						case TournamentStage.Signup:
 						{
 							Ladder ladder = Ladder.Instance;
+							LadderEntry entry = ladder?.Find( from );
 
-							if ( ladder != null )
+							if ( entry != null && Ladder.GetLevel( entry.Experience ) < tourny.LevelRequirement )
 							{
-								LadderEntry entry = ladder.Find( from );
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+									0x35, false, "You have not yet proven yourself a worthy dueler.", from.NetState );
 
-								if ( entry != null && Ladder.GetLevel( entry.Experience ) < tourny.LevelRequirement )
-								{
-									if ( m_Registrar != null )
-									{
-										m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-											0x35, false, "You have not yet proven yourself a worthy dueler.", from.NetState );
-									}
-
-									break;
-								}
+								break;
 							}
 
 							if ( tourny.IsFactionRestricted && Faction.Find( from ) == null )
 							{
-								if ( m_Registrar != null )
-								{
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-										0x35, false, "Only those who have declared their faction allegiance may participate.", from.NetState );
-								}
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+									0x35, false, "Only those who have declared their faction allegiance may participate.", from.NetState );
 
 								break;
 							}
 
 							if ( from.HasGump( typeof( AcceptTeamGump ) ) )
 							{
-								if ( m_Registrar != null )
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-										0x22, false, "You must first respond to the offer I've given you.", from.NetState );
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+									0x22, false, "You must first respond to the offer I've given you.", from.NetState );
 							}
 							else if ( from.HasGump( typeof( AcceptDuelGump ) ) )
 							{
-								if ( m_Registrar != null )
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-										0x22, false, "You must first cancel your duel offer.", from.NetState );
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+									0x22, false, "You must first cancel your duel offer.", from.NetState );
 							}
-							else if ( from is PlayerMobile && ((PlayerMobile)from).DuelContext != null )
+							else if ( from is PlayerMobile mobile && mobile.DuelContext != null )
 							{
-								if ( m_Registrar != null )
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-										0x22, false, "You are already participating in a duel.", from.NetState );
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+									0x22, false, "You are already participating in a duel.", mobile.NetState );
 							}
 							else if ( !tourny.HasParticipant( from ) )
 							{
@@ -256,9 +242,9 @@ namespace Server.Engines.ConPVP
 								from.CloseGump( typeof( ConfirmSignupGump ) );
 								from.SendGump( new ConfirmSignupGump( from, m_Registrar, tourny, players ) );
 							}
-							else if ( m_Registrar != null )
+							else
 							{
-								m_Registrar.PrivateOverheadMessage( MessageType.Regular,
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x35, false, "You have already entered this tournament.", from.NetState );
 							}
 
@@ -642,7 +628,7 @@ namespace Server.Engines.ConPVP
 						{
 							Mobile mob = (Mobile)m_Players[i];
 
-							LadderEntry entry = ( ladder == null ? null : ladder.Find( mob ) );
+							LadderEntry entry = ladder?.Find( mob );
 
 							if ( entry != null && Ladder.GetLevel( entry.Experience ) < tourny.LevelRequirement )
 							{
@@ -663,18 +649,15 @@ namespace Server.Engines.ConPVP
 								m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 								return;
 							}
-							else if ( tourny.IsFactionRestricted && Faction.Find( mob ) == null )
+							if ( tourny.IsFactionRestricted && Faction.Find( mob ) == null )
 							{
-								if ( m_Registrar != null )
-								{
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-										0x35, false, "Only those who have declared their faction allegiance may participate.", from.NetState );
-								}
+								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+									0x35, false, "Only those who have declared their faction allegiance may participate.", from.NetState );
 
 								m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 								return;
 							}
-							else if ( tourny.HasParticipant( mob ) )
+							if ( tourny.HasParticipant( mob ) )
 							{
 								if ( m_Registrar != null )
 								{
@@ -693,20 +676,17 @@ namespace Server.Engines.ConPVP
 								m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 								return;
 							}
-							else if ( mob is PlayerMobile && ((PlayerMobile)mob).DuelContext != null )
+							if ( mob is PlayerMobile mobile && mobile.DuelContext != null )
 							{
-								if ( m_Registrar != null )
+								if ( mob == from )
 								{
-									if ( mob == from )
-									{
-										m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-											0x35, false, "You are already assigned to a duel. You must yield it before joining this tournament.", from.NetState );
-									}
-									else
-									{
-										m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-											0x35, false, String.Format( "{0} is already assigned to a duel. They must yield it before joining this tournament.", mob.Name ), from.NetState );
-									}
+									m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+										0x35, false, "You are already assigned to a duel. You must yield it before joining this tournament.", from.NetState );
+								}
+								else
+								{
+									m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+										0x35, false, String.Format( "{0} is already assigned to a duel. They must yield it before joining this tournament.", mobile.Name ), from.NetState );
 								}
 
 								m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
@@ -766,15 +746,12 @@ namespace Server.Engines.ConPVP
 
 		private void AddPlayer_OnTarget( Mobile from, object obj )
 		{
-			Mobile mob = obj as Mobile;
-
-			if ( mob == null || mob == from )
+			if ( !(obj is Mobile mob) || mob == from )
 			{
 				m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-				if ( m_Registrar != null )
-					m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-						0x22, false, "Excuse me?", from.NetState );
+				m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+					0x22, false, "Excuse me?", from.NetState );
 			}
 			else if ( !mob.Player )
 			{
@@ -789,73 +766,63 @@ namespace Server.Engines.ConPVP
 			{
 				m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-				if ( m_Registrar != null )
-					m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-						0x22, false, "They ignore your invitation.", from.NetState );
+				m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+					0x22, false, "They ignore your invitation.", from.NetState );
 			}
 			else
 			{
-				PlayerMobile pm = mob as PlayerMobile;
-
-				if ( pm == null )
+				if ( !(mob is PlayerMobile pm) )
 					return;
 
 				if ( pm.DuelContext != null )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They are already assigned to another duel.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They are already assigned to another duel.", from.NetState );
 				}
 				else if ( mob.HasGump( typeof( AcceptTeamGump ) ) )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They have already been offered a partnership.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They have already been offered a partnership.", from.NetState );
 				}
 				else if ( mob.HasGump( typeof( ConfirmSignupGump ) ) )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They are already trying to join this tournament.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They are already trying to join this tournament.", from.NetState );
 				}
 				else if ( m_Players.Contains( mob ) )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "You have already named them as a team member.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "You have already named them as a team member.", from.NetState );
 				}
 				else if ( m_Tournament.HasParticipant( mob ) )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They have already entered this tournament.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They have already entered this tournament.", from.NetState );
 				}
 				else if ( m_Players.Count >= m_Tournament.PlayersPerParticipant )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "Your team is full.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "Your team is full.", from.NetState );
 				}
 				else
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 					mob.SendGump( new AcceptTeamGump( from, mob, m_Tournament, m_Registrar, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x59, false, String.Format( "As you command m'{0}. I've given your offer to {1}.", from.Female ? "Lady" : "Lord", mob.Name ), from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x59, false, String.Format( "As you command m'{0}. I've given your offer to {1}.", from.Female ? "Lady" : "Lord", mob.Name ), from.NetState );
 				}
 			}
 		}
@@ -1144,50 +1111,43 @@ namespace Server.Engines.ConPVP
 
 			if ( info.IsSwitched( 1 ) )
 			{
-				PlayerMobile pm = mob as PlayerMobile;
-
-				if ( pm == null )
+				if ( !(mob is PlayerMobile pm) )
 					return;
 
 				if ( AcceptDuelGump.IsIgnored( mob, from ) || mob.Blessed )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They ignore your invitation.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They ignore your invitation.", from.NetState );
 				}
 				else if ( pm.DuelContext != null )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They are already assigned to another duel.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They are already assigned to another duel.", from.NetState );
 				}
 				else if ( m_Players.Contains( mob ) )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "You have already named them as a team member.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "You have already named them as a team member.", from.NetState );
 				}
 				else if ( m_Tournament.HasParticipant( mob ) )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "They have already entered this tournament.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "They have already entered this tournament.", from.NetState );
 				}
 				else if ( m_Players.Count >= m_Tournament.PlayersPerParticipant )
 				{
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 
-					if ( m_Registrar != null )
-						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x22, false, "Your team is full.", from.NetState );
+					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+						0x22, false, "Your team is full.", from.NetState );
 				}
 				else
 				{
@@ -3094,9 +3054,7 @@ namespace Server.Engines.ConPVP
 
 						if ( m_Tournament.TournyType != TournyType.Standard && part.Players.Count == 1 )
 						{
-							PlayerMobile pm = part.Players[0] as PlayerMobile;
-
-							if ( pm != null && pm.DuelPlayer != null )
+							if ( part.Players[0] is PlayerMobile pm && pm.DuelPlayer != null )
 								name = Color( name, pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666 );
 						}
 
@@ -3107,9 +3065,7 @@ namespace Server.Engines.ConPVP
 				}
 				case TournyBracketGumpType.Participant_Info:
 				{
-					TournyParticipant part = obj as TournyParticipant;
-
-					if ( part == null )
+					if ( !(obj is TournyParticipant part) )
 						break;
 
 					AddPage( 0 );
@@ -3130,9 +3086,7 @@ namespace Server.Engines.ConPVP
 
 						if ( m_Tournament.TournyType != TournyType.Standard )
 						{
-							PlayerMobile pm = mob as PlayerMobile;
-
-							if ( pm != null && pm.DuelPlayer != null )
+							if ( mob is PlayerMobile pm && pm.DuelPlayer != null )
 								name = Color( name, pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666 );
 						}
 
@@ -3171,13 +3125,11 @@ namespace Server.Engines.ConPVP
 					AddLeftArrow( 25, 11, ToButtonID( 0, 3 ) );
 					AddHtml( 25, 35, 250, 20, Center( "Participants" ), false, false );
 
-					Mobile mob = obj as Mobile;
-
-					if ( mob == null )
+					if ( !(obj is Mobile mob) )
 						break;
 
 					Ladder ladder = Ladder.Instance;
-					LadderEntry entry = ( ladder == null ? null : ladder.Find( mob ) );
+					LadderEntry entry = ladder?.Find( mob );
 
 					AddHtml( 25, 53, 250, 20, String.Format( "Name: {0}", mob.Name ), false, false );
 					AddHtml( 25, 73, 250, 20, String.Format( "Guild: {0}", mob.Guild == null ? "None" : mob.Guild.Name + " [" + mob.Guild.Abbreviation + "]" ), false, false );
@@ -3204,7 +3156,7 @@ namespace Server.Engines.ConPVP
 
 					for ( int i = 0; i < count; ++i, y += 18 )
 					{
-						PyramidLevel level = (PyramidLevel)m_List[index + i];
+						// PyramidLevel level = (PyramidLevel)m_List[index + i];
 
 						AddRightArrow( 25, y, ToButtonID( 3, index + i ), "Round #" + (index + i + 1) );
 					}
@@ -3219,9 +3171,7 @@ namespace Server.Engines.ConPVP
 					AddLeftArrow( 25, 11, ToButtonID( 0, 2 ) );
 					AddHtml( 25, 35, 250, 20, Center( "Rounds" ), false, false );
 
-					PyramidLevel level = m_Object as PyramidLevel;
-
-					if ( level == null )
+					if ( !(m_Object is PyramidLevel level) )
 						break;
 
 					if ( m_List == null )
@@ -3343,9 +3293,7 @@ namespace Server.Engines.ConPVP
 				}
 				case TournyBracketGumpType.Match_Info:
 				{
-					TournyMatch match = obj as TournyMatch;
-
-					if ( match == null )
+					if ( !(obj is TournyMatch match) )
 						break;
 
 					int ct = ( m_Tournament.TournyType == TournyType.FreeForAll ? 2 : match.Participants.Count );
@@ -3358,7 +3306,7 @@ namespace Server.Engines.ConPVP
 
 					AddHtml( 25, 53, 250, 20, String.Format( "Winner: {0}", match.Winner == null ? "N/A" : match.Winner.NameList ), false, false );
 					AddHtml( 25, 73, 250, 20, String.Format( "State: {0}", match.InProgress ? "In progress" : match.Context != null ? "Complete" : "Waiting" ), false, false );
-					AddHtml( 25, 93, 250, 20, String.Format( "Participants:" ), false, false );
+					AddHtml( 25, 93, 250, 20, "Participants:", false, false );
 
 					if ( m_Tournament.TournyType == TournyType.Standard )
 					{
@@ -3465,9 +3413,7 @@ namespace Server.Engines.ConPVP
 						}
 						case 5:
 						{
-							TournyMatch match = m_Object as TournyMatch;
-
-							if ( match == null )
+							if ( !(m_Object is TournyMatch match) )
 								break;
 
 							for ( int i = 0; i < m_Tournament.Pyramid.Levels.Count; ++i )
@@ -3531,9 +3477,7 @@ namespace Server.Engines.ConPVP
 					if ( m_Type != TournyBracketGumpType.Participant_Info )
 						break;
 
-					TournyParticipant part = m_Object as TournyParticipant;
-
-					if ( part != null && index >= 0 && index < part.Players.Count )
+					if ( m_Object is TournyParticipant part && index >= 0 && index < part.Players.Count )
 						m_From.SendGump( new TournamentBracketGump( m_From, m_Tournament, TournyBracketGumpType.Player_Info, null, 0, part.Players[index] ) );
 
 					break;
@@ -3543,9 +3487,7 @@ namespace Server.Engines.ConPVP
 					if ( m_Type != TournyBracketGumpType.Round_Info )
 						break;
 
-					PyramidLevel level = m_Object as PyramidLevel;
-
-					if ( level == null )
+					if ( !(m_Object is PyramidLevel level) )
 						break;
 
 					if ( index == 0 )
@@ -3567,9 +3509,7 @@ namespace Server.Engines.ConPVP
 					if ( m_Type != TournyBracketGumpType.Match_Info )
 						break;
 
-					TournyMatch match = m_Object as TournyMatch;
-
-					if ( match != null && index >= 0 && index < match.Participants.Count )
+					if ( m_Object is TournyMatch match && index >= 0 && index < match.Participants.Count )
 						m_From.SendGump( new TournamentBracketGump( m_From, m_Tournament, TournyBracketGumpType.Participant_Info, null, 0, match.Participants[index] ) );
 
 					break;
@@ -3602,9 +3542,9 @@ namespace Server.Engines.ConPVP
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that
 			}
-			else if ( m_Tournament != null )
+			else
 			{
-				Tournament tourny = m_Tournament.Tournament;
+				Tournament tourny = m_Tournament?.Tournament;
 
 				if ( tourny != null )
 				{

@@ -53,10 +53,10 @@ namespace Server
 
 		public static int GetMaxAmount( VirtueName virtue )
 		{
-			if( virtue == VirtueName.Honor )
+			if ( virtue == VirtueName.Honor )
 				return 20000;
 
-			if( virtue == VirtueName.Sacrifice )
+			if ( virtue == VirtueName.Sacrifice )
 				return 22000;
 
 			return 21000;
@@ -71,7 +71,7 @@ namespace Server
 			if ( current >= maxAmount )
 				return false;
 
-			if( (current + amount) >= maxAmount )
+			if ( (current + amount) >= maxAmount )
 				amount = maxAmount - current;
 
 			VirtueLevel oldLevel = GetLevel( from, virtue );
@@ -92,7 +92,7 @@ namespace Server
 		{
 			int current = from.Virtues.GetValue( (int)virtue );
 
-			if( (current - amount) >= 0 )
+			if ( (current - amount) >= 0 )
 				from.Virtues.SetValue( (int)virtue, current - amount );
 			else
 				from.Virtues.SetValue( (int)virtue, 0 );

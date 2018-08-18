@@ -84,7 +84,7 @@ namespace Server.Ethics
 
 		public static void Initialize()
 		{
-			if( Enabled )
+			if ( Enabled )
 				EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
 		}
 
@@ -134,7 +134,7 @@ namespace Server.Ethics
 			}
 			else
 			{
-				if ( e.Mobile is PlayerMobile && ( e.Mobile as PlayerMobile ).DuelContext != null )
+				if ( e.Mobile is PlayerMobile mobile && mobile.DuelContext != null )
 					return;
 
 				Ethic ethic = pl.Ethic;
@@ -188,15 +188,13 @@ namespace Server.Ethics
 			if ( pl != null )
 				return pl.Ethic;
 
-			if ( inherit && mob is BaseCreature )
+			if ( inherit && mob is BaseCreature bc )
 			{
-				BaseCreature bc = (BaseCreature) mob;
-
 				if ( bc.Controlled )
 					return Find( bc.ControlMaster, false );
-				else if ( bc.Summoned )
+				if ( bc.Summoned )
 					return Find( bc.SummonMaster, false );
-				else if ( allegiance )
+				if ( allegiance )
 					return bc.EthicAllegiance;
 			}
 

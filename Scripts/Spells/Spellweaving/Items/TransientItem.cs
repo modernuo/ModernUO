@@ -30,7 +30,7 @@ namespace Server.Items
 		public override bool Nontransferable => true;
 		public override void HandleInvalidTransfer( Mobile from )
 		{
-			if( InvalidTransferMessage != null )
+			if ( InvalidTransferMessage != null )
 				TextDefinition.SendMessageTo( from, InvalidTransferMessage );
 
 			this.Delete();
@@ -41,7 +41,7 @@ namespace Server.Items
 
 		public virtual void Expire( Mobile parent )
 		{
-			if( parent != null )
+			if ( parent != null )
 				parent.SendLocalizedMessage( 1072515, (this.Name == null ? String.Format( "#{0}", LabelNumber ): this.Name) ); // The ~1_name~ expired...
 
 			Effects.PlaySound( GetWorldLocation(), Map, 0x201 );
@@ -56,7 +56,7 @@ namespace Server.Items
 
 		public override void OnDelete()
 		{
-			if( m_Timer != null )
+			if ( m_Timer != null )
 				m_Timer.Stop();
 
 			base.OnDelete();
@@ -64,7 +64,7 @@ namespace Server.Items
 
 		public virtual void CheckExpiry()
 		{
-			if( (m_CreationTime + m_LifeSpan) < DateTime.UtcNow )
+			if ( (m_CreationTime + m_LifeSpan) < DateTime.UtcNow )
 				Expire( RootParent as Mobile );
 			else
 				InvalidateProperties();

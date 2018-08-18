@@ -41,7 +41,7 @@ namespace Server.Engines.Craft
 
 		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
 		{
-			if( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
+			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
 			else if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
@@ -123,7 +123,7 @@ namespace Server.Engines.Craft
 			if ( Core.AOS )
 				AddCraft( typeof( FlowerGarland ), 1011375, 1028965, 10.0, 35.0, typeof( Cloth ), 1044286, 5, 1044287 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( ClothNinjaHood ), 1011375, 1030202, 80.0, 105.0, typeof( Cloth ), 1044286, 13, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -152,7 +152,7 @@ namespace Server.Engines.Craft
 				AddCraft( typeof( FormalShirt ), 1015269, 1028975, 26.0, 51.0, typeof( Cloth ), 1044286, 16, 1044287 );
 			}
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( ClothNinjaJacket ), 1015269, 1030207, 75.0, 100.0, typeof( Cloth ), 1044286, 12, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -179,7 +179,7 @@ namespace Server.Engines.Craft
 			if ( Core.AOS )
 				AddCraft( typeof( FurSarong ), 1015279, 1028971, 35.0, 60.0, typeof( Cloth ), 1044286, 12, 1044287 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( Hakama ), 1015279, 1030213, 50.0, 75.0, typeof( Cloth ), 1044286, 16, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -194,13 +194,13 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( HalfApron ), 1015283, 1025435, 20.7, 45.7, typeof( Cloth ), 1044286, 6, 1044287 );
 			AddCraft( typeof( FullApron ), 1015283, 1025437, 29.0, 54.0, typeof( Cloth ), 1044286, 10, 1044287 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( Obi ), 1015283, 1030219, 20.0, 45.0, typeof( Cloth ), 1044286, 6, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
-			if( Core.ML )
+			if ( Core.ML )
 			{
 				index = AddCraft( typeof( ElvenQuiver ), 1015283, 1032657, 65.0, 115.0, typeof( Leather ), 1044462, 28, 1044463 );
 				AddRecipe( index, 501 );
@@ -229,7 +229,7 @@ namespace Server.Engines.Craft
 
 			AddCraft( typeof( OilCloth ), 1015283, 1041498, 74.6, 99.6, typeof( Cloth ), 1044286, 1, 1044287 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( GozaMatEastDeed ), 1015283, 1030404, 55.0, 80.0, typeof( Cloth ), 1044286, 25, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -255,7 +255,7 @@ namespace Server.Engines.Craft
 			if ( Core.AOS )
 				AddCraft( typeof( FurBoots ), 1015288, 1028967, 50.0, 75.0, typeof( Cloth ), 1044286, 12, 1044287 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( NinjaTabi ), 1015288, 1030210, 70.0, 95.0, typeof( Cloth ), 1044286, 10, 1044287 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -305,7 +305,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( LeatherLegs ), 1015293, 1025067, 66.3, 91.3, typeof( Leather ), 1044462, 10, 1044463 );
 			AddCraft( typeof( LeatherChest ), 1015293, 1025068, 70.5, 95.5, typeof( Leather ), 1044462, 12, 1044463 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( LeatherJingasa ), 1015293, 1030177, 45.0, 70.0, typeof( Leather ), 1044462, 4, 1044463 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -340,7 +340,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( StuddedLegs ), 1015300, 1025082, 91.2, 116.2, typeof( Leather ), 1044462, 12, 1044463 );
 			AddCraft( typeof( StuddedChest ), 1015300, 1025083, 94.0, 119.0, typeof( Leather ), 1044462, 14, 1044463 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( StuddedMempo ), 1015300, 1030216, 80.0, 105.0, typeof( Leather ), 1044462, 8, 1044463 );
 				SetNeededExpansion( index, Expansion.SE );

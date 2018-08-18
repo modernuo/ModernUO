@@ -6,6 +6,7 @@ using Server;
 using Server.Items;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
+using Server.Mobiles;
 
 namespace Server.Commands
 {
@@ -388,12 +389,10 @@ namespace Server.Commands
 				throw new Exception( String.Format( "Bad type: {0}", m_Type ), e );
 			}
 
-			if ( item is BaseAddon )
+			if ( item is BaseAddon addon )
 			{
-				if ( item is MaabusCoffin )
+				if ( addon is MaabusCoffin coffin )
 				{
-					MaabusCoffin coffin = (MaabusCoffin)item;
-
 					for ( int i = 0; i < m_Params.Length; ++i )
 					{
 						if ( m_Params[i].StartsWith( "SpawnLocation" ) )
@@ -407,18 +406,18 @@ namespace Server.Commands
 				}
 				else if ( m_ItemID > 0 )
 				{
-					List<AddonComponent> comps = ((BaseAddon)item).Components;
+					List<AddonComponent> comps = addon.Components;
 
 					for ( int i = 0; i < comps.Count; ++i )
 					{
-						AddonComponent comp = (AddonComponent)comps[i];
+						AddonComponent comp = comps[i];
 
 						if ( comp.Offset == Point3D.Zero )
 							comp.ItemID = m_ItemID;
 					}
 				}
 			}
-			else if ( item is BaseLight )
+			else if ( item is BaseLight light )
 			{
 				bool unlit = false, unprotected = false;
 
@@ -428,23 +427,21 @@ namespace Server.Commands
 						unlit = true;
 					else if ( !unprotected && m_Params[i] == "Unprotected" )
 						unprotected = true;
-					
+
 					if ( unlit && unprotected )
 						break;
 				}
 
 				if ( !unlit )
-					((BaseLight)item).Ignite();
+					light.Ignite();
 				if ( !unprotected )
-					((BaseLight)item).Protected = true;
+					light.Protected = true;
 
 				if ( m_ItemID > 0 )
-					item.ItemID = m_ItemID;
+					light.ItemID = m_ItemID;
 			}
-			else if ( item is Server.Mobiles.Spawner )
+			else if ( item is Spawner sp )
 			{
-				Server.Mobiles.Spawner sp = (Server.Mobiles.Spawner)item;
-
 				sp.NextSpawn = TimeSpan.Zero;
 
 				for ( int i = 0; i < m_Params.Length; ++i )
@@ -518,10 +515,8 @@ namespace Server.Commands
 					}
 				}
 			}
-			else if ( item is RecallRune )
+			else if ( item is RecallRune rune )
 			{
-				RecallRune rune = (RecallRune)item;
-
 				for ( int i = 0; i < m_Params.Length; ++i )
 				{
 					if ( m_Params[i].StartsWith( "Description" ) )
@@ -554,10 +549,8 @@ namespace Server.Commands
 					}
 				}
 			}
-			else if ( item is SkillTeleporter )
+			else if ( item is SkillTeleporter st )
 			{
-				SkillTeleporter tp = (SkillTeleporter)item;
-
 				for ( int i = 0; i < m_Params.Length; ++i )
 				{
 					if ( m_Params[i].StartsWith( "Skill" ) )
@@ -565,94 +558,92 @@ namespace Server.Commands
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Skill = (SkillName)Enum.Parse( typeof( SkillName ), m_Params[i].Substring( ++indexOf ), true );
+							st.Skill = (SkillName)Enum.Parse( typeof( SkillName ), m_Params[i].Substring( ++indexOf ), true );
 					}
 					else if ( m_Params[i].StartsWith( "RequiredFixedPoint" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Required = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) ) * 0.1;
+							st.Required = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) ) * 0.1;
 					}
 					else if ( m_Params[i].StartsWith( "Required" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Required = Utility.ToDouble( m_Params[i].Substring( ++indexOf ) );
+							st.Required = Utility.ToDouble( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "MessageString" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.MessageString = m_Params[i].Substring( ++indexOf );
+							st.MessageString = m_Params[i].Substring( ++indexOf );
 					}
 					else if ( m_Params[i].StartsWith( "MessageNumber" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.MessageNumber = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
+							st.MessageNumber = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "PointDest" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.PointDest = Point3D.Parse( m_Params[i].Substring( ++indexOf ) );
+							st.PointDest = Point3D.Parse( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "MapDest" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.MapDest = Map.Parse( m_Params[i].Substring( ++indexOf ) );
+							st.MapDest = Map.Parse( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "Creatures" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Creatures = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
+							st.Creatures = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "SourceEffect" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.SourceEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
+							st.SourceEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "DestEffect" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.DestEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
+							st.DestEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "SoundID" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.SoundID = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
+							st.SoundID = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "Delay" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Delay = TimeSpan.Parse( m_Params[i].Substring( ++indexOf ) );
+							st.Delay = TimeSpan.Parse( m_Params[i].Substring( ++indexOf ) );
 					}
 				}
 
 				if ( m_ItemID > 0 )
-					item.ItemID = m_ItemID;
+					st.ItemID = m_ItemID;
 			}
-			else if ( item is KeywordTeleporter )
+			else if ( item is KeywordTeleporter kt )
 			{
-				KeywordTeleporter tp = (KeywordTeleporter)item;
-
 				for ( int i = 0; i < m_Params.Length; ++i )
 				{
 					if ( m_Params[i].StartsWith( "Substring" ) )
@@ -660,80 +651,78 @@ namespace Server.Commands
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Substring = m_Params[i].Substring( ++indexOf );
+							kt.Substring = m_Params[i].Substring( ++indexOf );
 					}
 					else if ( m_Params[i].StartsWith( "Keyword" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Keyword = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
+							kt.Keyword = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "Range" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Range = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
+							kt.Range = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "PointDest" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.PointDest = Point3D.Parse( m_Params[i].Substring( ++indexOf ) );
+							kt.PointDest = Point3D.Parse( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "MapDest" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.MapDest = Map.Parse( m_Params[i].Substring( ++indexOf ) );
+							kt.MapDest = Map.Parse( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "Creatures" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Creatures = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
+							kt.Creatures = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "SourceEffect" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.SourceEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
+							kt.SourceEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "DestEffect" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.DestEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
+							kt.DestEffect = Utility.ToBoolean( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "SoundID" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.SoundID = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
+							kt.SoundID = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
 					}
 					else if ( m_Params[i].StartsWith( "Delay" ) )
 					{
 						int indexOf = m_Params[i].IndexOf( '=' );
 
 						if ( indexOf >= 0 )
-							tp.Delay = TimeSpan.Parse( m_Params[i].Substring( ++indexOf ) );
+							kt.Delay = TimeSpan.Parse( m_Params[i].Substring( ++indexOf ) );
 					}
 				}
 
 				if ( m_ItemID > 0 )
-					item.ItemID = m_ItemID;
+					kt.ItemID = m_ItemID;
 			}
-			else if ( item is Teleporter )
+			else if ( item is Teleporter tp )
 			{
-				Teleporter tp = (Teleporter)item;
-
 				for ( int i = 0; i < m_Params.Length; ++i )
 				{
 					if ( m_Params[i].StartsWith( "PointDest" ) )
@@ -788,12 +777,10 @@ namespace Server.Commands
 				}
 
 				if ( m_ItemID > 0 )
-					item.ItemID = m_ItemID;
+					tp.ItemID = m_ItemID;
 			}
-			else if ( item is FillableContainer )
+			else if ( item is FillableContainer cont )
 			{
-				FillableContainer cont = (FillableContainer) item;
-
 				for ( int i = 0; i < m_Params.Length; ++i )
 				{
 					if ( m_Params[i].StartsWith( "ContentType" ) )
@@ -806,7 +793,7 @@ namespace Server.Commands
 				}
 
 				if ( m_ItemID > 0 )
-					item.ItemID = m_ItemID;
+					cont.ItemID = m_ItemID;
 			}
 			else if ( m_ItemID > 0 )
 			{
@@ -832,8 +819,8 @@ namespace Server.Commands
 					{
 						int hue = Utility.ToInt32( m_Params[i].Substring( ++indexOf ) );
 
-						if ( item is DyeTub )
-							((DyeTub)item).DyedHue = hue;
+						if ( item is DyeTub tub )
+							tub.DyedHue = hue;
 						else
 							item.Hue = hue;
 					}
@@ -1000,27 +987,30 @@ namespace Server.Commands
 						item.MoveToWorld( loc, maps[j] );
 						++count;
 
-						if ( item is BaseDoor )
+						if ( item is BaseDoor door )
 						{
 							IPooledEnumerable<BaseDoor> eable = maps[j].GetItemsInRange<BaseDoor>( loc, 1 );
 
-							Type itemType = item.GetType();
+							Type itemType = door.GetType();
 
 							foreach ( BaseDoor link in eable )
 							{
-								if ( link != item && link.Z == item.Z && link.GetType() == itemType )
+								if ( link != item && link.Z == door.Z && link.GetType() == itemType )
 								{
-									((BaseDoor)item).Link = link;
-									link.Link = (BaseDoor)item;
+									door.Link = link;
+									link.Link = door;
 									break;
 								}
 							}
 
 							eable.Free();
 						}
-						else if ( item is MarkContainer )
+						else if ( item is MarkContainer markCont )
 						{
-							try{ ((MarkContainer)item).Target = Point3D.Parse( extra ); }
+							try
+							{
+								markCont.Target = Point3D.Parse( extra );
+							}
 							catch{}
 						}
 

@@ -36,11 +36,11 @@ namespace Server.Engines.Quests
 			if ( m.AccessLevel > AccessLevel.Player )
 				return true;
 
-			if( m is BaseCreature )
+			if ( m is BaseCreature )
 			{
 				BaseCreature bc = m as BaseCreature;
 
-				if( !bc.Controlled && !bc.Summoned )
+				if ( !bc.Controlled && !bc.Summoned )
 					return true;
 			}
 

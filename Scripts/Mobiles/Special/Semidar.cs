@@ -77,7 +77,7 @@ namespace Server.Mobiles
 
 		public void DrainLife()
 		{
-			if( this.Map == null )
+			if ( this.Map == null )
 				return;
 
 			ArrayList list = new ArrayList();

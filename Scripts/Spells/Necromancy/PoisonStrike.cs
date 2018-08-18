@@ -35,7 +35,7 @@ namespace Server.Spells.Necromancy
 
 		public void Target( Mobile m )
 		{
-			if( CheckHSequence( m ) )
+			if ( CheckHSequence( m ) )
 			{
 				SpellHelper.Turn( Caster, m );
 
@@ -60,7 +60,7 @@ namespace Server.Spells.Necromancy
 
 				Map map = m.Map;
 
-				if( map != null )
+				if ( map != null )
 				{
 					List<Mobile> targets = new List<Mobile>();
 
@@ -68,8 +68,8 @@ namespace Server.Spells.Necromancy
 						targets.Add( m );
 
 					foreach( Mobile targ in m.GetMobilesInRange( 2 ) )
-						if(!(Caster is BaseCreature && targ is BaseCreature ))
-							if( ( targ != Caster && m != targ ) && ( SpellHelper.ValidIndirectTarget( Caster, targ ) && Caster.CanBeHarmful( targ, false) ) )
+						if (!(Caster is BaseCreature && targ is BaseCreature ))
+							if ( ( targ != Caster && m != targ ) && ( SpellHelper.ValidIndirectTarget( Caster, targ ) && Caster.CanBeHarmful( targ, false) ) )
 								targets.Add( targ );
 
 					for( int i = 0; i < targets.Count; ++i )
@@ -77,9 +77,9 @@ namespace Server.Spells.Necromancy
 						Mobile targ = targets[i];
 						int num;
 
-						if( targ.InRange( m.Location, 0 ) )
+						if ( targ.InRange( m.Location, 0 ) )
 							num = 1;
-						else if( targ.InRange( m.Location, 1 ) )
+						else if ( targ.InRange( m.Location, 1 ) )
 							num = 2;
 						else
 							num = 3;
@@ -105,7 +105,7 @@ namespace Server.Spells.Necromancy
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				if( o is Mobile )
+				if ( o is Mobile )
 					m_Owner.Target( (Mobile)o );
 			}
 

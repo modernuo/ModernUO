@@ -48,27 +48,27 @@ namespace Server.Factions
 			{
 				from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
 			}
-			else if ( from is PlayerMobile )
+			else if ( from is PlayerMobile mobile )
 			{
-				Faction existingFaction = Faction.Find( from );
+				Faction existingFaction = Faction.Find( mobile );
 
-				if ( existingFaction == m_Faction || from.AccessLevel >= AccessLevel.GameMaster )
+				if ( existingFaction == m_Faction || mobile.AccessLevel >= AccessLevel.GameMaster )
 				{
-					PlayerState pl = PlayerState.Find( from );
+					PlayerState pl = PlayerState.Find( mobile );
 
 					if ( pl != null && pl.IsLeaving )
-						from.SendLocalizedMessage( 1005051 ); // You cannot use the faction stone until you have finished quitting your current faction
+						mobile.SendLocalizedMessage( 1005051 ); // You cannot use the faction stone until you have finished quitting your current faction
 					else
-						from.SendGump( new FactionStoneGump( (PlayerMobile) from, m_Faction ) );
+						mobile.SendGump( new FactionStoneGump( mobile, m_Faction ) );
 				}
 				else if ( existingFaction != null )
 				{
 					// TODO: Validate
-					from.SendLocalizedMessage( 1005053 ); // This is not your faction stone!
+					mobile.SendLocalizedMessage( 1005053 ); // This is not your faction stone!
 				}
 				else
 				{
-					from.SendGump( new JoinStoneGump( (PlayerMobile) from, m_Faction ) );
+					mobile.SendGump( new JoinStoneGump( mobile, m_Faction ) );
 				}
 			}
 		}

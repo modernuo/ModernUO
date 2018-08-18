@@ -52,13 +52,13 @@ namespace Server.Mobiles
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( from.AccessLevel >= AccessLevel.GameMaster )
+			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				Jump();
 		}
 
 		public virtual void Jump()
 		{
-			if( Utility.RandomBool() )
+			if ( Utility.RandomBool() )
 				Animate( 3, 16, 1, true, false, 0 );
 			else
 				Animate( 4, 20, 1, true, false, 0 );
@@ -66,7 +66,7 @@ namespace Server.Mobiles
 
 		public override void OnThink()
 		{
-			if( Utility.RandomDouble() < .005 ) // slim chance to jump
+			if ( Utility.RandomDouble() < .005 ) // slim chance to jump
 				Jump();
 
 			base.OnThink();

@@ -98,14 +98,14 @@ namespace Server.Regions
 			{
 				m.Location = m_House.BanLocation;
 
-				if( !Core.SE )
+				if ( !Core.SE )
 					m.SendLocalizedMessage( 501284 ); // You may not enter.
 			}
 			else if ( m_House.IsAosRules && !m_House.Public && !m_House.HasAccess( m ) && m_House.IsInside( m ) )
 			{
 				m.Location = m_House.BanLocation;
 
-				if( !Core.SE )
+				if ( !Core.SE )
 					m.SendLocalizedMessage( 501284 ); // You may not enter.
 			}
 			else if ( m_House.IsCombatRestricted( m ) && m_House.IsInside( m ) && !m_House.IsInside( oldLocation, 16 ) )
@@ -159,14 +159,14 @@ namespace Server.Regions
 			{
 				from.Location = m_House.BanLocation;
 
-				if( !Core.SE )
+				if ( !Core.SE )
 					from.SendLocalizedMessage( 501284 ); // You may not enter.
 
 				return false;
 			}
 			else if ( m_House.IsAosRules && !m_House.Public && !m_House.HasAccess( from ) && m_House.IsInside( newLocation, 16 ) )
 			{
-				if( !Core.SE )
+				if ( !Core.SE )
 					from.SendLocalizedMessage( 501284 ); // You may not enter.
 
 				return false;
@@ -257,7 +257,7 @@ namespace Server.Regions
 				{
 					from.CloseGump( typeof( ConfirmHouseResize ) );
 					from.CloseGump( typeof( HouseGumpAOS ) );
-					from.SendGump( new ConfirmHouseResize( from, m_House ) );	
+					from.SendGump( new ConfirmHouseResize( from, m_House ) );
 				}
 				else
 				{

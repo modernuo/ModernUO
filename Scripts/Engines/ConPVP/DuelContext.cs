@@ -55,15 +55,13 @@ namespace Server.Engines.ConPVP
 		{
 			if ( m_EventGame != null )
 				return m_EventGame.CantDoAnything( mob );
-			else
+
 				return false;
 		}
 
 		public static bool IsFreeConsume( Mobile mob )
 		{
-			PlayerMobile pm = mob as PlayerMobile;
-
-			if ( pm == null || pm.DuelContext == null || pm.DuelContext.m_EventGame == null )
+			if ( !(mob is PlayerMobile pm) || pm.DuelContext?.m_EventGame == null )
 				return false;
 
 			return pm.DuelContext.m_EventGame.FreeConsume;
@@ -76,14 +74,13 @@ namespace Server.Engines.ConPVP
 
 		public static bool AllowSpecialMove( Mobile from, string name, SpecialMove move )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return true;
 
 			DuelContext dc = pm.DuelContext;
 
-			return (dc == null || dc.InstAllowSpecialMove( from, name, move ));
+			// No DuelContext, or InstaAllowSpecialMove
+			return dc?.InstAllowSpecialMove( from, name, move ) != false;
 		}
 
 		public bool InstAllowSpecialMove( Mobile from, string name, SpecialMove move )
@@ -102,9 +99,9 @@ namespace Server.Engines.ConPVP
 
 			string title = null;
 
-			if( move is NinjaMove )
+			if ( move is NinjaMove )
 				title = "Bushido";
-			else if( move is SamuraiMove )
+			else if ( move is SamuraiMove )
 				title = "Ninjitsu";
 
 
@@ -133,7 +130,7 @@ namespace Server.Engines.ConPVP
 
 			string title = null, option = null;
 
-			if( spell is ArcanistSpell )
+			if ( spell is ArcanistSpell )
 			{
 				title = "Spellweaving";
 				option = spell.Name;
@@ -158,9 +155,9 @@ namespace Server.Engines.ConPVP
 				title = "Bushido";
 				option = spell.Name;
 			}
-			else if( spell is MagerySpell )
+			else if ( spell is MagerySpell magerySpell )
 			{
-				switch( ((MagerySpell)spell).Circle )
+				switch( magerySpell.Circle )
 				{
 					case SpellCircle.First: title = "1st Circle"; break;
 					case SpellCircle.Second: title = "2nd Circle"; break;
@@ -172,7 +169,7 @@ namespace Server.Engines.ConPVP
 					case SpellCircle.Eighth: title = "8th Circle"; break;
 				}
 
-				option = spell.Name;
+				option = magerySpell.Name;
 			}
 			else
 			{
@@ -206,14 +203,13 @@ namespace Server.Engines.ConPVP
 
 		public static bool AllowSpecialAbility( Mobile from, string name, bool message )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return true;
 
 			DuelContext dc = pm.DuelContext;
 
-			return ( dc == null || dc.InstAllowSpecialAbility( from, name, message ) );
+			// No DuelContext or InstAllowSpecialAbility
+			return dc?.InstAllowSpecialAbility( from, name, message ) != false;
 		}
 
 		public bool InstAllowSpecialAbility( Mobile from, string name, bool message )
@@ -223,7 +219,7 @@ namespace Server.Engines.ConPVP
 
 			DuelPlayer pl = Find( from );
 
-			if ( pl == null || pl.Eliminated )
+			if ( pl?.Eliminated != false )
 				return true;
 
 			if ( CantDoAnything( from ) )
@@ -245,10 +241,8 @@ namespace Server.Engines.ConPVP
 				if ( !m_Ruleset.GetOption( "Weapons", "Wrestling" ) )
 					return false;
 			}
-			else if ( item is BaseArmor )
+			else if ( item is BaseArmor armor )
 			{
-				BaseArmor armor = (BaseArmor)item;
-
 				if ( armor.ProtectionLevel > ArmorProtectionLevel.Regular && !m_Ruleset.GetOption( "Armor", "Magical" ) )
 					return false;
 
@@ -258,10 +252,8 @@ namespace Server.Engines.ConPVP
 				if ( armor is BaseShield && !m_Ruleset.GetOption( "Armor", "Shields" ) )
 					return false;
 			}
-			else if ( item is BaseWeapon )
+			else if ( item is BaseWeapon weapon )
 			{
-				BaseWeapon weapon = (BaseWeapon)item;
-
 				if ( (weapon.DamageLevel > WeaponDamageLevel.Regular || weapon.AccuracyLevel > WeaponAccuracyLevel.Regular) && !m_Ruleset.GetOption( "Weapons", "Magical" ) )
 					return false;
 
@@ -353,9 +345,9 @@ namespace Server.Engines.ConPVP
 				title = "Items";
 				option = "Bandages";
 			}
-			else if ( item is TrappableContainer )
+			else if ( item is TrappableContainer container )
 			{
-				if ( ((TrappableContainer)item).TrapType != TrapType.None )
+				if ( container.TrapType != TrapType.None )
 				{
 					title = "Items";
 					option = "Trapped Containers";
@@ -402,12 +394,12 @@ namespace Server.Engines.ConPVP
 				from.SendMessage( "You may not use this item before the duel begins." );
 				return false;
 			}
-			else if ( item is BasePotion && !(item is BaseExplosionPotion) && !(item is BaseRefreshPotion) && IsSuddenDeath )
+			if ( item is BasePotion && !(item is BaseExplosionPotion) && !(item is BaseRefreshPotion) && IsSuddenDeath )
 			{
 				from.SendMessage( 0x22, "You may not drink potions in sudden death." );
 				return false;
 			}
-			else if ( item is Bandage && IsSuddenDeath )
+			if ( item is Bandage && IsSuddenDeath )
 			{
 				from.SendMessage( 0x22, "You may not use bandages in sudden death." );
 				return false;
@@ -529,14 +521,11 @@ namespace Server.Engines.ConPVP
 
 		public void Requip( Mobile from, Container cont )
 		{
-			Corpse corpse = cont as Corpse;
-
-			if ( corpse == null )
+			if ( !(cont is Corpse corpse) )
 				return;
 
 			List<Item> items = new List<Item>( corpse.Items );
 
-			bool gathered = false;
 			bool didntFit = false;
 
 			Container pack = from.Backpack;
@@ -544,20 +533,14 @@ namespace Server.Engines.ConPVP
 			for ( int i = 0; !didntFit && i < items.Count; ++i )
 			{
 				Item item = items[i];
-				Point3D loc = item.Location;
 
 				if ( (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair) || !item.Movable )
 					continue;
 
 				if ( pack != null )
-				{
 					pack.DropItem( item );
-					gathered = true;
-				}
 				else
-				{
 					didntFit = true;
-				}
 			}
 
 			corpse.Carved = true;
@@ -578,10 +561,11 @@ namespace Server.Engines.ConPVP
 
 			from.PlaySound( 0x3E3 );
 
-			if ( gathered && !didntFit )
-				from.SendLocalizedMessage( 1062471 ); // You quickly gather all of your belongings.
-			else if ( gathered && didntFit )
-				from.SendLocalizedMessage( 1062472 ); // You gather some of your belongings. The rest remain on the corpse.
+			if (didntFit)
+				from.SendLocalizedMessage(1062472); // You gather some of your belongings. The rest remain on the corpse.
+			else
+				from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
+
 		}
 
 		public void Refresh( Mobile mob, Container cont )
@@ -590,15 +574,11 @@ namespace Server.Engines.ConPVP
 			{
 				mob.Resurrect();
 
-				DeathRobe robe = mob.FindItemOnLayer( Layer.OuterTorso ) as DeathRobe;
-
-				if ( robe != null )
+				if ( mob.FindItemOnLayer( Layer.OuterTorso ) is DeathRobe robe )
 					robe.Delete();
 
-				if ( cont is Corpse )
+				if ( cont is Corpse corpse )
 				{
-					Corpse corpse = (Corpse) cont;
-
 					for ( int i = 0; i < corpse.EquipItems.Count; ++i )
 					{
 						Item item = corpse.EquipItems[i];
@@ -774,13 +754,13 @@ namespace Server.Engines.ConPVP
 
 				for ( int j = 0; j < p.Players.Length; ++j )
 				{
-					DuelPlayer pl = (DuelPlayer)p.Players[j];
+					DuelPlayer pl = p.Players[j];
 
 					if ( pl == null )
 						continue;
 
-					if ( pl.Mobile is PlayerMobile )
-						((PlayerMobile)pl.Mobile).DuelPlayer = null;
+					if ( pl.Mobile is PlayerMobile mobile )
+						mobile.DuelPlayer = null;
 
 					for ( int k = 0; k < types.Length; ++k )
 						pl.Mobile.CloseGump( types[k] );
@@ -822,10 +802,8 @@ namespace Server.Engines.ConPVP
 
 		public DuelPlayer Find( Mobile mob )
 		{
-			if ( mob is PlayerMobile )
+			if ( mob is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)mob;
-
 				if ( pm.DuelContext == this )
 					return pm.DuelPlayer;
 
@@ -985,15 +963,7 @@ namespace Server.Engines.ConPVP
 
 		public static bool CheckSuddenDeath( Mobile mob )
 		{
-			if ( mob is PlayerMobile )
-			{
-				PlayerMobile pm = (PlayerMobile)mob;
-
-				if ( pm.DuelPlayer != null && !pm.DuelPlayer.Eliminated && pm.DuelContext != null && pm.DuelContext.IsSuddenDeath )
-					return true;
-			}
-
-			return false;
+			return mob is PlayerMobile pm && pm.DuelPlayer?.Eliminated == false && pm.DuelContext?.IsSuddenDeath == true;
 		}
 
 		public void ActivateSuddenDeath()
@@ -1134,10 +1104,8 @@ namespace Server.Engines.ConPVP
 
 		private static void vli_ot( Mobile from, object obj )
 		{
-			if ( obj is PlayerMobile )
+			if ( obj is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)obj;
-
 				Ladder ladder = Ladder.Instance;
 
 				if ( ladder == null )
@@ -1176,9 +1144,7 @@ namespace Server.Engines.ConPVP
 
 		private static void EventSink_Login( LoginEventArgs e )
 		{
-			PlayerMobile pm = e.Mobile as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(e.Mobile is PlayerMobile pm) )
 				return;
 
 			DuelContext dc = pm.DuelContext;
@@ -1202,9 +1168,8 @@ namespace Server.Engines.ConPVP
 
 		private static void ViewLadder_OnTarget( Mobile from, object obj, object state )
 		{
-			if ( obj is PlayerMobile )
+			if ( obj is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)obj;
 				Ladder ladder = (Ladder)state;
 
 				LadderEntry entry = ladder.Find( pm );
@@ -1216,10 +1181,8 @@ namespace Server.Engines.ConPVP
 
 				pm.PrivateOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, from==pm?"You":"They" ), from.NetState );
 			}
-			else if ( obj is Mobile )
+			else if ( obj is Mobile mob )
 			{
-				Mobile mob = (Mobile)obj;
-
 				if ( mob.Body.IsHuman )
 					mob.PrivateOverheadMessage( MessageType.Regular, mob.SpeechHue, false, "I'm not a duelist, and quite frankly, I resent the implication.", from.NetState );
 				else
@@ -1236,9 +1199,7 @@ namespace Server.Engines.ConPVP
 			if ( e.Handled )
 				return;
 
-			PlayerMobile pm = e.Mobile as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(e.Mobile is PlayerMobile pm) )
 				return;
 
 			if ( Insensitive.Contains( e.Speech, "i wish to duel" ) )
@@ -1388,25 +1349,15 @@ namespace Server.Engines.ConPVP
 								{
 									foreach ( Gump g in ns.Gumps )
 									{
-										if ( g is ParticipantGump )
+										if (g is ParticipantGump pg && pg.Participant == p)
 										{
-											ParticipantGump pg = (ParticipantGump)g;
-
-											if ( pg.Participant == p )
-											{
-												init.SendGump( new ParticipantGump( init, dc, p ) );
-												break;
-											}
+											init.SendGump( new ParticipantGump( init, dc, p ) );
+											break;
 										}
-										else if ( g is DuelContextGump )
+										if ( g is DuelContextGump dcg && dcg.Context == dc )
 										{
-											DuelContextGump dcg = (DuelContextGump)g;
-
-											if ( dcg.Context == dc )
-											{
-												init.SendGump( new DuelContextGump( init, dc ) );
-												break;
-											}
+											init.SendGump( new DuelContextGump( init, dc ) );
+											break;
 										}
 									}
 								}
@@ -1433,31 +1384,22 @@ namespace Server.Engines.ConPVP
 
 								if ( ns != null )
 								{
-									bool send=true;
+									bool send = true;
 
 									foreach ( Gump g in ns.Gumps )
 									{
-										if ( g is ParticipantGump )
+										if ( g is ParticipantGump pg && pg.Participant == p )
 										{
-											ParticipantGump pg = (ParticipantGump)g;
-
-											if ( pg.Participant == p )
-											{
-												init.SendGump( new ParticipantGump( init, dc, p ) );
-												send=false;
-												break;
-											}
+											init.SendGump( new ParticipantGump( init, dc, p ) );
+											send=false;
+											break;
 										}
-										else if ( g is DuelContextGump )
-										{
-											DuelContextGump dcg = (DuelContextGump)g;
 
-											if ( dcg.Context == dc )
-											{
-												init.SendGump( new DuelContextGump( init, dc ) );
-												send=false;
-												break;
-											}
+										if ( g is DuelContextGump dcg && dcg.Context == dc )
+										{
+											init.SendGump( new DuelContextGump( init, dc ) );
+											send=false;
+											break;
 										}
 									}
 
@@ -1468,9 +1410,8 @@ namespace Server.Engines.ConPVP
 						}
 						else
 						{
-							if ( pm.DuelContext.m_Countdown != null )
-								pm.DuelContext.m_Countdown.Stop();
-							pm.DuelContext.m_Countdown= null;
+							pm.DuelContext.m_Countdown?.Stop();
+							pm.DuelContext.m_Countdown = null;
 
 							pm.DuelContext.m_StartedReadyCountdown=false;
 							p.Broadcast( 0x22, null, "{0} has yielded.", "You have yielded." );
@@ -1492,31 +1433,21 @@ namespace Server.Engines.ConPVP
 
 								if ( ns != null )
 								{
-									bool send=true;
+									bool send = true;
 
 									foreach ( Gump g in ns.Gumps )
 									{
-										if ( g is ParticipantGump )
+										if ( g is ParticipantGump pg && pg.Participant == p )
 										{
-											ParticipantGump pg = (ParticipantGump)g;
-
-											if ( pg.Participant == p )
-											{
-												init.SendGump( new ParticipantGump( init, dc, p ) );
-												send=false;
-												break;
-											}
+											init.SendGump( new ParticipantGump( init, dc, p ) );
+											send=false;
+											break;
 										}
-										else if ( g is DuelContextGump )
+										if ( g is DuelContextGump dcg && dcg.Context == dc )
 										{
-											DuelContextGump dcg = (DuelContextGump)g;
-
-											if ( dcg.Context == dc )
-											{
-												init.SendGump( new DuelContextGump( init, dc ) );
-												send=false;
-												break;
-											}
+											init.SendGump( new DuelContextGump( init, dc ) );
+											send=false;
+											break;
 										}
 									}
 
@@ -1705,10 +1636,10 @@ namespace Server.Engines.ConPVP
 			TransformationSpellHelper.RemoveContext( mob, true );
 			AnimalForm.RemoveContext( mob, true );
 
-			if( DisguiseTimers.IsDisguised( mob ) )
+			if ( DisguiseTimers.IsDisguised( mob ) )
 				DisguiseTimers.StopTimer( mob );
 
-			if( !mob.CanBeginAction( typeof( PolymorphSpell ) ) )
+			if ( !mob.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
 				mob.BodyMod = 0;
 				mob.HueMod = -1;
@@ -1727,8 +1658,8 @@ namespace Server.Engines.ConPVP
 
 		public static void CancelSpell( Mobile mob )
 		{
-			if ( mob.Spell is Spells.Spell )
-				((Spells.Spell)mob.Spell).Disturb( Spells.DisturbType.Kill );
+			if ( mob.Spell is Spell spell )
+				spell.Disturb( DisturbType.Kill );
 
 			Targeting.Target.Cancel( mob );
 		}
@@ -2529,9 +2460,7 @@ namespace Server.Engines.ConPVP
 						m_GateFacet = m_Initiator.Map;
 					}
 
-					ExitTeleporter tp = arena.Teleporter as ExitTeleporter;
-
-					if ( tp == null )
+					if ( !(arena.Teleporter is ExitTeleporter tp) )
 					{
 						arena.Teleporter = tp = new ExitTeleporter();
 						tp.MoveToWorld( arena.GateOut == Point3D.Zero ? arena.Outside : arena.GateOut, arena.Facet );

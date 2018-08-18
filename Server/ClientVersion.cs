@@ -207,11 +207,11 @@ namespace Server
 				m_Minor = Utility.ToInt32( fmt.Substring( br1 + 1, br2 - br1 - 1 ) );
 				m_Revision = Utility.ToInt32( fmt.Substring( br2 + 1, br3 - br2 - 1 ) );
 
-				if( br3 < fmt.Length )
+				if ( br3 < fmt.Length )
 				{
-					if( m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6 )	//Anything before 5.0.7
+					if ( m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6 )	//Anything before 5.0.7
 					{
-						if( !Char.IsWhiteSpace( fmt, br3 ) )
+						if ( !Char.IsWhiteSpace( fmt, br3 ) )
 							m_Patch = (fmt[br3] - 'a') + 1;
 					}
 					else

@@ -51,7 +51,7 @@ namespace Server.Factions
 			for ( int i = 0; i < members.Count; ++i )
 			{
 				PlayerState ps = members[i];
-					
+
 				if ( ps.IsActive )
 				{
 					ps.IsActive = false;
@@ -219,7 +219,7 @@ namespace Server.Factions
 					}
 
 					m_Faction.State = this;
-					
+
 					m_Faction.ZeroRankOffset = m_Members.Count;
 					m_Members.Sort();
 
@@ -254,9 +254,7 @@ namespace Server.Factions
 
 						for ( int i = 0; i < factionTrapCount; ++i )
 						{
-							BaseFactionTrap trap = reader.ReadItem() as BaseFactionTrap;
-
-							if ( trap != null && !trap.CheckDecay() )
+							if ( reader.ReadItem() is BaseFactionTrap trap && !trap.CheckDecay() )
 								m_FactionTraps.Add( trap );
 						}
 					}

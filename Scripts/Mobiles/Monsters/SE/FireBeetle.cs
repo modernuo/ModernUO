@@ -118,7 +118,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			if( version == 0 )
+			if ( version == 0 )
 				Hue = 0x489;
 		}
 	}

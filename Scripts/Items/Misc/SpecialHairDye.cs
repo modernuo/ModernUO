@@ -47,8 +47,8 @@ namespace Server.Items
 			else
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 906, 1019045 ); // I can't reach that.
-			}	
-					
+			}
+
 		}
 	}
 
@@ -145,7 +145,7 @@ namespace Server.Items
 			Mobile m = from.Mobile;
 			int[] switches = info.Switches;
 
-			if ( !m_SpecialHairDye.IsChildOf( m.Backpack ) ) 
+			if ( !m_SpecialHairDye.IsChildOf( m.Backpack ) )
 			{
 				m.SendLocalizedMessage( 1042010 ); //You must have the objectin your backpack to use it.
 				return;
@@ -153,7 +153,7 @@ namespace Server.Items
 
 			if ( info.ButtonID != 0 && switches.Length > 0 )
 			{
-				if( m.HairItemID == 0 )
+				if ( m.HairItemID == 0 )
 				{
 					m.SendLocalizedMessage( 502623 );	// You have no hair to dye and cannot use this
 				}
@@ -175,7 +175,7 @@ namespace Server.Items
 							int hue = e.HueStart + hueOffset;
 
 							m.HairHue = hue;
-							
+
 							m.SendLocalizedMessage( 501199 );  // You dye your hair
 							m.PlaySound( 0x4E );
 						}

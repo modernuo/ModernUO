@@ -53,16 +53,16 @@ namespace Server.Guilds
 
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( pm == null || !IsMember( pm, guild ) )
+			if ( pm == null || !IsMember( pm, guild ) )
 				return;
 
 			GuildDisplayType display = m_Display;
 
-			if( info.ButtonID == 5 )
+			if ( info.ButtonID == 5 )
 			{
 				for( int i = 0; i < 3; i++ )
 				{
-					if( info.IsSwitched( i ) )
+					if ( info.IsSwitched( i ) )
 					{
 						display = (GuildDisplayType)i;
 						m_Callback( display );

@@ -31,15 +31,15 @@ namespace Server.Gumps
 			AddImageTiled( 10, 40, 400, 200, 0xA40 );
 			AddAlphaRegion( 10, 40, 400, 200 );
 
-			/* You are attempting to resize your house. You will be refunded the house's 
-			value directly to your bank box. All items in the house will *remain behind* 
-			and can be *freely picked up by anyone*. Once the house is demolished, however, 
-			only this account will be able to place on the land for one hour. This *will* 
-			circumvent the normal 7-day waiting period (if it applies to you). This action 
-			will not un-condemn any other houses on your account. If you have other, 
-			grandfathered houses, this action *WILL* condemn them. Are you sure you wish 
+			/* You are attempting to resize your house. You will be refunded the house's
+			value directly to your bank box. All items in the house will *remain behind*
+			and can be *freely picked up by anyone*. Once the house is demolished, however,
+			only this account will be able to place on the land for one hour. This *will*
+			circumvent the normal 7-day waiting period (if it applies to you). This action
+			will not un-condemn any other houses on your account. If you have other,
+			grandfathered houses, this action *WILL* condemn them. Are you sure you wish
 			to continue?*/
-			AddHtmlLocalized( 10, 40, 400, 200, 1080196, 0x7F00, false, true ); 
+			AddHtmlLocalized( 10, 40, 400, 200, 1080196, 0x7F00, false, true );
 
 			AddImageTiled( 10, 250, 400, 20, 0xA40 );
 			AddAlphaRegion( 10, 250, 400, 20 );
@@ -61,7 +61,7 @@ namespace Server.Gumps
 						m_Mobile.SendLocalizedMessage( 1080455 ); // You can not resize your house at this time. Please remove all items fom the moving crate and try again.
 						return;
 					}
-					else if( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null )
+					else if ( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null )
 					{
 						m_Mobile.SendLocalizedMessage( 501389 ); // You cannot redeed a house with a guildstone inside.
 						return;

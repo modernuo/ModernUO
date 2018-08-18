@@ -90,7 +90,7 @@ namespace Server.Mobiles
 
 			SetDamage( 24, 33 );
 
-			if( version == 0 )
+			if ( version == 0 )
 			{
 				Server.SkillHandlers.AnimalTaming.ScaleStats( this, 0.50 );
 				Server.SkillHandlers.AnimalTaming.ScaleSkills( this, 0.80, 0.90 ); // 90% * 80% = 72% of original skills trainable to 90%

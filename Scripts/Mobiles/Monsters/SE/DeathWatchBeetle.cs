@@ -111,7 +111,7 @@ namespace Server.Mobiles
 			if ( combatant == null || combatant.Deleted || combatant.Map != Map || !InRange( combatant, 12 ) || !CanBeHarmful( combatant ) || !InLOS( combatant ) )
 				return;
 
-			if( Utility.Random( 10 ) == 0 )
+			if ( Utility.Random( 10 ) == 0 )
 				PoisonAttack( combatant );
 
 			base.OnDamage( amount, from, willKill );

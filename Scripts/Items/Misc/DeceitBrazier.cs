@@ -116,7 +116,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version >= 0 )
+			if ( version >= 0 )
 			{
 				m_SpawnRange = reader.ReadInt();
 				m_NextSpawnDelay = reader.ReadTimeSpan();
@@ -134,11 +134,11 @@ namespace Server.Items
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if( m_NextSpawn < DateTime.UtcNow ) // means we haven't spawned anything if the next spawn is below
+			if ( m_NextSpawn < DateTime.UtcNow ) // means we haven't spawned anything if the next spawn is below
 			{
-				if( Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) )
+				if ( Utility.InRange( m.Location, Location, 1 ) && !Utility.InRange( oldLocation, Location, 1 ) && m.Player && !(m.AccessLevel > AccessLevel.Player || m.Hidden) )
 				{
-					if( m_Timer == null || !m_Timer.Running )
+					if ( m_Timer == null || !m_Timer.Running )
 						m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 2 ), new TimerCallback( HeedWarning ) );
 				}
 			}
@@ -150,7 +150,7 @@ namespace Server.Items
 		{
 			Map map = Map;
 
-			if( map == null )
+			if ( map == null )
 				return Location;
 
 			// Try 10 times to find a Spawnable location.
@@ -160,9 +160,9 @@ namespace Server.Items
 				int y = Location.Y + (Utility.Random( (m_SpawnRange * 2) + 1 ) - m_SpawnRange);
 				int z = Map.GetAverageZ( x, y );
 
-				if( Map.CanSpawnMobile( new Point2D( x, y ), this.Z ) )
+				if ( Map.CanSpawnMobile( new Point2D( x, y ), this.Z ) )
 					return new Point3D( x, y, this.Z );
-				else if( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
+				else if ( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
 					return new Point3D( x, y, z );
 			}
 
@@ -177,22 +177,22 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( Utility.InRange( from.Location, Location, 2 ) )
+			if ( Utility.InRange( from.Location, Location, 2 ) )
 			{
 				try
 				{
-					if( m_NextSpawn < DateTime.UtcNow )
+					if ( m_NextSpawn < DateTime.UtcNow )
 					{
 						Map map = this.Map;
 						BaseCreature bc = (BaseCreature)Activator.CreateInstance( m_Creatures[Utility.Random( m_Creatures.Length )] );
 
-						if( bc != null )
+						if ( bc != null )
 						{
 							Point3D spawnLoc = GetSpawnPosition();
 
 							DoEffect( spawnLoc, map );
 
-							Timer.DelayCall( TimeSpan.FromSeconds( 1 ), delegate()
+							Timer.DelayCall( TimeSpan.FromSeconds( 1 ), delegate
 							{
 								bc.Home = Location;
 								bc.RangeHome = m_SpawnRange;

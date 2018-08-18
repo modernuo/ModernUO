@@ -134,13 +134,8 @@ namespace Server.Factions
 
 				foreach ( BaseMonolith monolith in monoliths )
 				{
-					if ( monolith is TownMonolith )
-					{
-						TownMonolith townMonolith = (TownMonolith)monolith;
-
-						if ( townMonolith.Town == this )
-							return townMonolith;
-					}
+					if ( monolith is TownMonolith townMonolith && townMonolith.Town == this )
+						return townMonolith;
 				}
 
 				return null;
@@ -184,20 +179,10 @@ namespace Server.Factions
 			else if ( isSheriff )
 				type = "guard";
 
-			if ( obj is BaseFactionVendor )
-			{
-				BaseFactionVendor vendor = (BaseFactionVendor)obj;
-
-				if ( vendor.Town == this && isFinance )
-					vendor.Delete();
-			}
-			else if ( obj is BaseFactionGuard )
-			{
-				BaseFactionGuard guard = (BaseFactionGuard)obj;
-
-				if ( guard.Town == this && isSheriff )
-					guard.Delete();
-			}
+			if ( obj is BaseFactionVendor vendor && vendor.Town == this && isFinance )
+				vendor.Delete();
+			else if ( obj is BaseFactionGuard guard && guard.Town == this && isSheriff )
+				guard.Delete();
 			else
 			{
 				from.SendMessage( "That is not a {0}!", type );
@@ -208,16 +193,14 @@ namespace Server.Factions
 
 		public void StartIncomeTimer()
 		{
-			if ( m_IncomeTimer != null )
-				m_IncomeTimer.Stop();
+			m_IncomeTimer?.Stop();
 
 			m_IncomeTimer = Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( CheckIncome ) );
 		}
 
 		public void StopIncomeTimer()
 		{
-			if ( m_IncomeTimer != null )
-				m_IncomeTimer.Stop();
+			m_IncomeTimer?.Stop();
 
 			m_IncomeTimer = null;
 		}

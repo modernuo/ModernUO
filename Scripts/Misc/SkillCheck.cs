@@ -348,7 +348,7 @@ namespace Server.Misc
 						if ( (from.LastStrGain + m_PetStatGainDelay) >= DateTime.UtcNow )
 							return;
 					}
-					else if( (from.LastStrGain + m_StatGainDelay) >= DateTime.UtcNow )
+					else if ( (from.LastStrGain + m_StatGainDelay) >= DateTime.UtcNow )
 						return;
 
 					from.LastStrGain = DateTime.UtcNow;
@@ -360,7 +360,7 @@ namespace Server.Misc
 						if ( (from.LastDexGain + m_PetStatGainDelay) >= DateTime.UtcNow )
 							return;
 					}
-					else if( (from.LastDexGain + m_StatGainDelay) >= DateTime.UtcNow )
+					else if ( (from.LastDexGain + m_StatGainDelay) >= DateTime.UtcNow )
 						return;
 
 					from.LastDexGain = DateTime.UtcNow;
@@ -373,7 +373,7 @@ namespace Server.Misc
 							return;
 					}
 
-					else if( (from.LastIntGain + m_StatGainDelay) >= DateTime.UtcNow )
+					else if ( (from.LastIntGain + m_StatGainDelay) >= DateTime.UtcNow )
 						return;
 
 					from.LastIntGain = DateTime.UtcNow;

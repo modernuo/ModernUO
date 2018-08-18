@@ -242,9 +242,9 @@ namespace Server.Accounting
 		/// </summary>
 		public bool Inactive
 		{
-			get 
+			get
 			{
-				if( this.AccessLevel != AccessLevel.Player )
+				if ( this.AccessLevel != AccessLevel.Player )
 					return false;
 
 				TimeSpan inactiveLength = DateTime.UtcNow - m_LastLogin;
@@ -263,9 +263,7 @@ namespace Server.Accounting
 			{
 				for ( int i = 0; i < m_Mobiles.Length; i++ )
 				{
-					PlayerMobile m = m_Mobiles[i] as PlayerMobile;
-
-					if ( m != null && m.NetState != null )
+					if ( m_Mobiles[i] is PlayerMobile m && m.NetState != null )
 						return m_TotalGameTime + ( DateTime.UtcNow - m.SessionStart );
 				}
 
@@ -511,9 +509,7 @@ namespace Server.Accounting
 
 		private static void EventSink_Connected( ConnectedEventArgs e )
 		{
-			Account acc = e.Mobile.Account as Account;
-
-			if ( acc == null )
+			if ( !(e.Mobile.Account is Account acc) )
 				return;
 
 			if ( acc.Young && acc.m_YoungTimer == null )
@@ -525,9 +521,7 @@ namespace Server.Accounting
 
 		private static void EventSink_Disconnected( DisconnectedEventArgs e )
 		{
-			Account acc = e.Mobile.Account as Account;
-
-			if ( acc == null )
+			if ( !(e.Mobile.Account is Account acc) )
 				return;
 
 			if ( acc.m_YoungTimer != null )
@@ -536,8 +530,7 @@ namespace Server.Accounting
 				acc.m_YoungTimer = null;
 			}
 
-			PlayerMobile m = e.Mobile as PlayerMobile;
-			if ( m == null )
+			if ( !(e.Mobile is PlayerMobile m) )
 				return;
 
 			acc.m_TotalGameTime += DateTime.UtcNow - m.SessionStart;
@@ -545,14 +538,10 @@ namespace Server.Accounting
 
 		private static void EventSink_Login( LoginEventArgs e )
 		{
-			PlayerMobile m = e.Mobile as PlayerMobile;
-
-			if ( m == null )
+			if ( !(e.Mobile is PlayerMobile m) )
 				return;
 
-			Account acc = m.Account as Account;
-
-			if ( acc == null )
+			if ( !(m.Account is Account acc) )
 				return;
 
 			if ( m.Young && acc.Young )
@@ -570,9 +559,7 @@ namespace Server.Accounting
 
 			for ( int i = 0; i < m_Mobiles.Length; i++ )
 			{
-				PlayerMobile m = m_Mobiles[i] as PlayerMobile;
-
-				if ( m != null && m.Young )
+				if ( m_Mobiles[i] is PlayerMobile m && m.Young )
 				{
 					m.Young = false;
 
@@ -614,7 +601,7 @@ namespace Server.Accounting
 		public Account( string username, string password )
 		{
 			m_Username = username;
-			
+
 			SetPassword( password );
 
 			m_AccessLevel = AccessLevel.Player;
@@ -685,7 +672,7 @@ namespace Server.Accounting
 			m_Flags = Utility.GetXMLInt32( Utility.GetText( node["flags"], "0" ), 0 );
 			m_Created = Utility.GetXMLDateTime( Utility.GetText( node["created"], null ), DateTime.UtcNow );
 			m_LastLogin = Utility.GetXMLDateTime( Utility.GetText( node["lastLogin"], null ), DateTime.UtcNow );
-			
+
 			TotalGold = Utility.GetXMLInt32( Utility.GetText(node["totalGold"], "0" ), 0 );
 			TotalPlat = Utility.GetXMLInt32(Utility.GetText(node["totalPlat"], "0"), 0);
 
@@ -706,9 +693,7 @@ namespace Server.Accounting
 			{
 				for ( int i = 0; i < m_Mobiles.Length; i++ )
 				{
-					PlayerMobile m = m_Mobiles[i] as PlayerMobile;
-
-					if ( m != null )
+					if ( m_Mobiles[i] is PlayerMobile m )
 						totalGameTime += m.GameTime;
 				}
 			}
@@ -776,7 +761,7 @@ namespace Server.Accounting
 					{
 						IPAddress address;
 
-						if( IPAddress.TryParse( Utility.GetText( ip, null ), out address ) )
+						if ( IPAddress.TryParse( Utility.GetText( ip, null ), out address ) )
 						{
 							list[count] = Utility.Intern( address );
 							count++;
@@ -1221,8 +1206,8 @@ namespace Server.Accounting
 
 		public int CompareTo( object obj )
 		{
-			if ( obj is Account )
-				return this.CompareTo( (Account) obj );
+			if ( obj is Account account )
+				return this.CompareTo( account );
 
 			throw new ArgumentException();
 		}

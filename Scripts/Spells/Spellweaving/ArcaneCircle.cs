@@ -24,7 +24,7 @@ namespace Server.Spells.Spellweaving
 
 		public override bool CheckCast()
 		{
-			if( !IsValidLocation( Caster.Location, Caster.Map ) )
+			if ( !IsValidLocation( Caster.Location, Caster.Map ) )
 			{
 				Caster.SendLocalizedMessage( 1072705 ); // You must be standing on an arcane circle, pentagram or abbatoir to use this spell.
 				return false;
@@ -41,7 +41,7 @@ namespace Server.Spells.Spellweaving
 
 		public override void OnCast()
 		{
-			if( CheckSequence() )
+			if ( CheckSequence() )
 			{
 				Caster.FixedParticles( 0x3779, 10, 20, 0x0, EffectLayer.Waist );
 				Caster.PlaySound( 0x5C0 );
@@ -68,7 +68,7 @@ namespace Server.Spells.Spellweaving
 		{
 			LandTile lt = map.Tiles.GetLandTile( location.X, location.Y );         // Land   Tiles
 
-			if( IsValidTile( lt.ID ) && lt.Z == location.Z )
+			if ( IsValidTile( lt.ID ) && lt.Z == location.Z )
 				return true;
 
 			StaticTile[] tiles = map.Tiles.GetStaticTiles( location.X, location.Y ); // Static Tiles
@@ -80,9 +80,9 @@ namespace Server.Spells.Spellweaving
 
 				int tand = t.ID;
 
-				if( t.Z + id.CalcHeight != location.Z )
+				if ( t.Z + id.CalcHeight != location.Z )
 					continue;
-				else if( IsValidTile( tand ) )
+				else if ( IsValidTile( tand ) )
 					return true;
 			}
 
@@ -92,9 +92,9 @@ namespace Server.Spells.Spellweaving
 			{
 				ItemData id = item.ItemData;
 
-				if( item == null || item.Z + id.CalcHeight != location.Z )
+				if ( item == null || item.Z + id.CalcHeight != location.Z )
 					continue;
-				else if( IsValidTile( item.ItemID ) )
+				else if ( IsValidTile( item.ItemID ) )
 				{
 					eable.Free();
 					return true;
@@ -132,15 +132,15 @@ namespace Server.Spells.Spellweaving
 
 		private void GiveArcaneFocus( Mobile to, TimeSpan duration, int strengthBonus )
 		{
-			if( to == null )	//Sanity
+			if ( to == null )	//Sanity
 				return;
 
 			ArcaneFocus focus = FindArcaneFocus( to );
 
-			if( focus == null )
+			if ( focus == null )
 			{
 				ArcaneFocus f = new ArcaneFocus( duration, strengthBonus );
-				if( to.PlaceInBackpack( f ) )
+				if ( to.PlaceInBackpack( f ) )
 				{
 					f.SendTimeRemainingMessage( to );
 					to.SendLocalizedMessage( 1072740 ); // An arcane focus appears in your backpack.

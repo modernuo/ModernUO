@@ -97,16 +97,12 @@ namespace Server.Commands
 
 				xml.WriteAttributeString( "type", cte.Type.ToString() );
 
-				object obj = cte.Object;
-
-				if ( obj is Item )
+				if ( cte.Object is Item item )
 				{
-					Item item = (Item)obj;
-
 					int itemID = item.ItemID;
 
-					if ( item is BaseAddon && ((BaseAddon)item).Components.Count == 1 )
-						itemID = ((AddonComponent)(((BaseAddon)item).Components[0])).ItemID;
+					if ( item is BaseAddon addon && addon.Components.Count == 1 )
+						itemID = addon.Components[0].ItemID;
 
 					if ( itemID > TileData.MaxItemValue )
 						itemID = 1;
@@ -123,10 +119,8 @@ namespace Server.Commands
 
 					item.Delete();
 				}
-				else if ( obj is Mobile )
+				else if ( cte.Object is Mobile mob )
 				{
-					Mobile mob = (Mobile)obj;
-
 					int itemID = ShrinkTable.Lookup( mob, 1 );
 
 					xml.WriteAttributeString( "gfx", XmlConvert.ToString( itemID ) );
@@ -251,15 +245,15 @@ namespace Server.Commands
 		{
 			string a = null, b = null;
 
-			if ( x is CategoryEntry )
-				a = ((CategoryEntry)x).Title;
-			else if ( x is CategoryTypeEntry )
-				a = ((CategoryTypeEntry)x).Type.Name;
+			if ( x is CategoryEntry entry )
+				a = entry.Title;
+			else if ( x is CategoryTypeEntry typeEntry )
+				a = typeEntry.Type.Name;
 
-			if ( y is CategoryEntry )
-				b = ((CategoryEntry)y).Title;
-			else if ( y is CategoryTypeEntry )
-				b = ((CategoryTypeEntry)y).Type.Name;
+			if ( y is CategoryEntry categoryEntry )
+				b = categoryEntry.Title;
+			else if ( y is CategoryTypeEntry typeEntry )
+				b = typeEntry.Type.Name;
 
 			if ( a == null && b == null )
 				return 0;

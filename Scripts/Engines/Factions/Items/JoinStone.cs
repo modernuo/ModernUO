@@ -45,8 +45,8 @@ namespace Server.Factions
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else if ( FactionGump.Exists( from ) )
 				from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
-			else if ( Faction.Find( from ) == null && from is PlayerMobile )
-				from.SendGump( new JoinStoneGump( (PlayerMobile) from, m_Faction ) );
+			else if ( Faction.Find( from ) == null && from is PlayerMobile mobile )
+				mobile.SendGump( new JoinStoneGump( mobile, m_Faction ) );
 		}
 
 		public JoinStone( Serial serial ) : base( serial )

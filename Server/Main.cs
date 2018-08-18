@@ -73,12 +73,12 @@ namespace Server
 			get { return m_Profiling; }
 			set
 			{
-				if( m_Profiling == value )
+				if ( m_Profiling == value )
 					return;
 
 				m_Profiling = value;
 
-				if( m_ProfileStart > DateTime.MinValue )
+				if ( m_ProfileStart > DateTime.MinValue )
 					m_ProfileTime += DateTime.UtcNow - m_ProfileStart;
 
 				m_ProfileStart = (m_Profiling ? DateTime.UtcNow : DateTime.MinValue);
@@ -89,7 +89,7 @@ namespace Server
 		{
 			get
 			{
-				if( m_ProfileStart > DateTime.MinValue )
+				if ( m_ProfileStart > DateTime.MinValue )
 					return m_ProfileTime + (DateTime.UtcNow - m_ProfileStart);
 
 				return m_ProfileTime;
@@ -156,7 +156,7 @@ namespace Server
 
 		public static string FindDataFile( string path )
 		{
-			if( m_DataDirectories.Count == 0 )
+			if ( m_DataDirectories.Count == 0 )
 				throw new InvalidOperationException( "Attempted to FindDataFile before DataDirectories list has been filled." );
 
 			string fullPath = null;
@@ -165,7 +165,7 @@ namespace Server
 			{
 				fullPath = Path.Combine( p, path );
 
-				if( File.Exists( fullPath ) )
+				if ( File.Exists( fullPath ) )
 					break;
 
 				fullPath = null;
@@ -249,13 +249,13 @@ namespace Server
 		{
 			get
 			{
-				if( m_BaseDirectory == null )
+				if ( m_BaseDirectory == null )
 				{
 					try
 					{
 						m_BaseDirectory = ExePath;
 
-						if( m_BaseDirectory.Length > 0 )
+						if ( m_BaseDirectory.Length > 0 )
 							m_BaseDirectory = Path.GetDirectoryName( m_BaseDirectory );
 					}
 					catch
@@ -273,7 +273,7 @@ namespace Server
 			Console.WriteLine( e.IsTerminating ? "Error:" : "Warning:" );
 			Console.WriteLine( e.ExceptionObject );
 
-			if( e.IsTerminating )
+			if ( e.IsTerminating )
 			{
 				m_Crashed = true;
 
@@ -291,7 +291,7 @@ namespace Server
 				{
 				}
 
-				if( !close && !m_Service )
+				if ( !close && !m_Service )
 				{
 					try
 					{
@@ -331,7 +331,7 @@ namespace Server
 
 		private static bool OnConsoleEvent( ConsoleEventType type )
 		{
-			if( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
+			if ( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
 				return true;
 
 			Kill();	//Kill -> HandleClosed will handle waiting for the completion of flushing to disk
@@ -371,7 +371,7 @@ namespace Server
 
 		private static void HandleClosed()
 		{
-			if( m_Closing )
+			if ( m_Closing )
 				return;
 
 			m_Closing = true;
@@ -380,7 +380,7 @@ namespace Server
 
 			World.WaitForWriteCompletion();
 
-			if( !m_Crashed )
+			if ( !m_Crashed )
 				EventSink.InvokeShutdown( new ShutdownEventArgs() );
 
 			Timer.TimerThread.Set();
@@ -417,9 +417,9 @@ namespace Server
 
 			try
 			{
-				if( m_Service )
+				if ( m_Service )
 				{
-					if( !Directory.Exists( "Logs" ) )
+					if ( !Directory.Exists( "Logs" ) )
 						Directory.CreateDirectory( "Logs" );
 
 					Console.SetOut( m_MultiConOut = new MultiTextWriter( new FileLogger( "Logs/Console.log" ) ) );
@@ -437,10 +437,10 @@ namespace Server
 			m_Process = Process.GetCurrentProcess();
 			m_Assembly = Assembly.GetEntryAssembly();
 
-			if( m_Thread != null )
+			if ( m_Thread != null )
 				m_Thread.Name = "Core Thread";
 
-			if( BaseDirectory.Length > 0 )
+			if ( BaseDirectory.Length > 0 )
 				Directory.SetCurrentDirectory( BaseDirectory );
 
 			Timer.TimerThread ttObj = new Timer.TimerThread();
@@ -457,19 +457,19 @@ namespace Server
 
 			string s = Arguments;
 
-			if( s.Length > 0 )
+			if ( s.Length > 0 )
 				Console.WriteLine( "Core: Running with arguments: {0}", s );
 
 			m_ProcessorCount = Environment.ProcessorCount;
 
-			if( m_ProcessorCount > 1 )
+			if ( m_ProcessorCount > 1 )
 				m_MultiProcessor = true;
 
-			if( m_MultiProcessor || Is64Bit )
+			if ( m_MultiProcessor || Is64Bit )
 				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", m_ProcessorCount, m_ProcessorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
 
 			int platform = (int)Environment.OSVersion.Platform;
-			if( platform == 4 || platform == 128 ) { // MS 4, MONO 128
+			if ( platform == 4 || platform == 128 ) { // MS 4, MONO 128
 				m_Unix = true;
 				Console.WriteLine( "Core: Unix environment detected" );
 			}
@@ -490,12 +490,12 @@ namespace Server
 			{
 				Console.WriteLine( "Scripts: One or more scripts failed to compile or no script files were found." );
 
-				if( m_Service )
+				if ( m_Service )
 					return;
 
 				Console.WriteLine( " - Press return to exit, or R to try again." );
 
-				if( Console.ReadKey( true ).Key != ConsoleKey.R )
+				if ( Console.ReadKey( true ).Key != ConsoleKey.R )
 					return;
 			}
 
@@ -539,7 +539,7 @@ namespace Server
 					NetState.FlushAll();
 					NetState.ProcessDisposedQueue();
 
-					if( Slice != null )
+					if ( Slice != null )
 						Slice();
 
 					if (sample++ % sampleInterval != 0)
@@ -564,19 +564,19 @@ namespace Server
 			{
 				StringBuilder sb = new StringBuilder();
 
-				if( m_Debug )
+				if ( m_Debug )
 					Utility.Separate( sb, "-debug", " " );
 
-				if( m_Service )
+				if ( m_Service )
 					Utility.Separate( sb, "-service", " " );
 
-				if( m_Profiling )
+				if ( m_Profiling )
 					Utility.Separate( sb, "-profile", " " );
 
-				if( !m_Cache )
+				if ( !m_Cache )
 					Utility.Separate( sb, "-nocache", " " );
 
-				if( m_HaltOnWarning )
+				if ( m_HaltOnWarning )
 					Utility.Separate( sb, "-haltonwarning", " " );
 
 				if ( m_VBdotNET )

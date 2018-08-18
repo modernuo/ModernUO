@@ -263,7 +263,7 @@ namespace Server.Commands
 			{
 				object obj = realProps[i].GetValue( realObjs[i], null );
 
-				if( !( obj is IConvertible ) )
+				if ( !( obj is IConvertible ) )
 					return "Property is not IConvertable.";
 
 				try
@@ -509,9 +509,8 @@ namespace Server.Commands
 		{
 			try
 			{
-				if ( toSet is AccessLevel )
+				if ( toSet is AccessLevel newLevel )
 				{
-					AccessLevel newLevel = (AccessLevel) toSet;
 					AccessLevel reqLevel = AccessLevel.Administrator;
 
 					if ( newLevel == AccessLevel.Administrator )

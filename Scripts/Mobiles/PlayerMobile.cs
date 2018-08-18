@@ -233,7 +233,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( m_AllFollowers == null )
+				if ( m_AllFollowers == null )
 					m_AllFollowers = new List<Mobile>();
 				return m_AllFollowers;
 			}
@@ -243,7 +243,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( this.AccessLevel >= AccessLevel.GameMaster )
+				if ( this.AccessLevel >= AccessLevel.GameMaster )
 					return Server.Guilds.RankDefinition.Leader;
 				else
 					return m_GuildRank;
@@ -294,7 +294,7 @@ namespace Server.Mobiles
 			}
 			set
 			{
-				if( m_IgnoreMobiles != value )
+				if ( m_IgnoreMobiles != value )
 				{
 					m_IgnoreMobiles = value;
 					Delta( MobileDelta.Flags );
@@ -722,7 +722,7 @@ namespace Server.Mobiles
 			EventSink.Connected += new ConnectedEventHandler( EventSink_Connected );
 			EventSink.Disconnected += new DisconnectedEventHandler( EventSink_Disconnected );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckPets ) );
 			}
@@ -732,11 +732,11 @@ namespace Server.Mobiles
 		{
 			foreach( Mobile m in World.Mobiles.Values )
 			{
-				if( m is PlayerMobile )
+				if ( m is PlayerMobile )
 				{
 					PlayerMobile pm = (PlayerMobile)m;
 
-					if((( !pm.Mounted || ( pm.Mount != null && pm.Mount is EtherealMount )) && ( pm.AllFollowers.Count > pm.AutoStabled.Count )) ||
+					if ((( !pm.Mounted || ( pm.Mount != null && pm.Mount is EtherealMount )) && ( pm.AllFollowers.Count > pm.AutoStabled.Count )) ||
 						( pm.Mounted && ( pm.AllFollowers.Count  > ( pm.AutoStabled.Count +1 ))))
 					{
 						pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
@@ -780,19 +780,19 @@ namespace Server.Mobiles
 
 		public void SetMountBlock( BlockMountType type, TimeSpan duration, bool dismount )
 		{
-			if( dismount )
+			if ( dismount )
 			{
 				if ( this.Mount != null )
 				{
 					this.Mount.Rider = null;
 				}
-				else if( AnimalForm.UnderTransformation( this ) )
+				else if ( AnimalForm.UnderTransformation( this ) )
 				{
 					AnimalForm.RemoveContext(this, true);
 				}
 			}
 
-			if( ( m_MountBlock == null ) || !m_MountBlock.m_Timer.Running || ( m_MountBlock.m_Timer.Next < ( DateTime.UtcNow + duration ) ) )
+			if ( ( m_MountBlock == null ) || !m_MountBlock.m_Timer.Running || ( m_MountBlock.m_Timer.Next < ( DateTime.UtcNow + duration ) ) )
 			{
 				m_MountBlock = new MountBlock( duration, type, this );
 			}
@@ -814,7 +814,7 @@ namespace Server.Mobiles
 			if ( type != ResistanceType.Physical && 60 < max && Spells.Fourth.CurseSpell.UnderEffect( this ) )
 				max = 60;
 
-			if( Core.ML && this.Race == Race.Elf && type == ResistanceType.Energy )
+			if ( Core.ML && this.Race == Race.Elf && type == ResistanceType.Energy )
 				max += 5; //Intended to go after the 60 max from curse
 
 			return max;
@@ -939,7 +939,7 @@ namespace Server.Mobiles
 				return;
 			}
 
-			if( from is PlayerMobile )
+			if ( from is PlayerMobile )
 				((PlayerMobile)from).ClaimAutoStabledPets();
 		}
 
@@ -1027,13 +1027,13 @@ namespace Server.Mobiles
 
 						bool drop = false;
 
-						if( dex < weapon.DexRequirement )
+						if ( dex < weapon.DexRequirement )
 							drop = true;
-						else if( str < AOS.Scale( weapon.StrRequirement, 100 - weapon.GetLowerStatReq() ) )
+						else if ( str < AOS.Scale( weapon.StrRequirement, 100 - weapon.GetLowerStatReq() ) )
 							drop = true;
-						else if( intel < weapon.IntRequirement )
+						else if ( intel < weapon.IntRequirement )
 							drop = true;
-						else if( weapon.RequiredRace != null && weapon.RequiredRace != this.Race )
+						else if ( weapon.RequiredRace != null && weapon.RequiredRace != this.Race )
 							drop = true;
 
 						if ( drop )
@@ -1062,7 +1062,7 @@ namespace Server.Mobiles
 						{
 							drop = true;
 						}
-						else if( armor.RequiredRace != null && armor.RequiredRace != this.Race )
+						else if ( armor.RequiredRace != null && armor.RequiredRace != this.Race )
 						{
 							drop = true;
 						}
@@ -1072,11 +1072,11 @@ namespace Server.Mobiles
 							int dexBonus = armor.ComputeStatBonus( StatType.Dex ), dexReq = armor.ComputeStatReq( StatType.Dex );
 							int intBonus = armor.ComputeStatBonus( StatType.Int ), intReq = armor.ComputeStatReq( StatType.Int );
 
-							if( dex < dexReq || (dex + dexBonus) < 1 )
+							if ( dex < dexReq || (dex + dexBonus) < 1 )
 								drop = true;
-							else if( str < strReq || (str + strBonus) < 1 )
+							else if ( str < strReq || (str + strBonus) < 1 )
 								drop = true;
-							else if( intel < intReq || (intel + intBonus) < 1 )
+							else if ( intel < intReq || (intel + intBonus) < 1 )
 								drop = true;
 						}
 
@@ -1110,7 +1110,7 @@ namespace Server.Mobiles
 						{
 							drop = true;
 						}
-						else if( clothing.RequiredRace != null && clothing.RequiredRace != this.Race )
+						else if ( clothing.RequiredRace != null && clothing.RequiredRace != this.Race )
 						{
 							drop = true;
 						}
@@ -1119,7 +1119,7 @@ namespace Server.Mobiles
 							int strBonus = clothing.ComputeStatBonus( StatType.Str );
 							int strReq = clothing.ComputeStatReq( StatType.Str );
 
-							if( str < strReq || (str + strBonus) < 1 )
+							if ( str < strReq || (str + strBonus) < 1 )
 								drop = true;
 						}
 
@@ -1192,7 +1192,7 @@ namespace Server.Mobiles
 
 		private static void OnLogout( LogoutEventArgs e )
 		{
-			if( e.Mobile is PlayerMobile )
+			if ( e.Mobile is PlayerMobile )
 				((PlayerMobile)e.Mobile).AutoStablePets();
 		}
 
@@ -1290,7 +1290,7 @@ namespace Server.Mobiles
 			{
 				RemoveBuff(BuffIcon.HidingAndOrStealth);
 			}
-			else// if( !InvisibilitySpell.HasTimer( this ) )
+			else// if ( !InvisibilitySpell.HasTimer( this ) )
 			{
 				BuffInfo.AddBuff(this, new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));	//Hidden/Stealthing & You Are Hidden
 			}
@@ -1397,7 +1397,7 @@ namespace Server.Mobiles
 		{
 			BaseArmor ar = armor as BaseArmor;
 
-			if( ar != null && ( !Core.AOS || ar.ArmorAttributes.MageArmor == 0 ))
+			if ( ar != null && ( !Core.AOS || ar.ArmorAttributes.MageArmor == 0 ))
 				rating += ar.ArmorRatingScaled;
 		}
 
@@ -1450,7 +1450,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if ( Core.ML && this.AccessLevel == AccessLevel.Player )
 					return Math.Min( base.Str, 150 );
 
 				return base.Str;
@@ -1466,7 +1466,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if ( Core.ML && this.AccessLevel == AccessLevel.Player )
 					return Math.Min( base.Int, 150 );
 
 				return base.Int;
@@ -1482,7 +1482,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if ( Core.ML && this.AccessLevel == AccessLevel.Player )
 					return Math.Min( base.Dex, 150 );
 
 				return base.Dex;
@@ -1578,7 +1578,7 @@ namespace Server.Mobiles
 			{
 				for( int i = 0; i < m_AnimalFormRestrictedSkills.Length; i++ )
 				{
-					if( m_AnimalFormRestrictedSkills[i] == skill )
+					if ( m_AnimalFormRestrictedSkills[i] == skill )
 					{
 						SendLocalizedMessage( 1070771 ); // You cannot use that skill in this form.
 						return false;
@@ -1684,7 +1684,7 @@ namespace Server.Mobiles
 				if ( m_JusticeProtectors.Count > 0 )
 					list.Add( new CallbackEntry( 6157, new ContextCallback( CancelProtection ) ) );
 
-				if( Alive )
+				if ( Alive )
 					list.Add( new CallbackEntry( 6210, new ContextCallback( ToggleChampionTitleDisplay ) ) );
 
 				if ( Core.HS )
@@ -1720,7 +1720,7 @@ namespace Server.Mobiles
 
 				BaseHouse curhouse = BaseHouse.FindHouseAt( this );
 
-				if( curhouse != null )
+				if ( curhouse != null )
 				{
 					if ( Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend( from ) )
 						list.Add( new EjectPlayerEntry( from, this ) );
@@ -1865,9 +1865,9 @@ namespace Server.Mobiles
 			if ( !CheckAlive() )
 				return;
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
-				if( !HasGump( typeof( CancelRenewInventoryInsuranceGump ) ) )
+				if ( !HasGump( typeof( CancelRenewInventoryInsuranceGump ) ) )
 					SendGump( new CancelRenewInventoryInsuranceGump( this, null ) );
 			}
 			else
@@ -2283,7 +2283,7 @@ namespace Server.Mobiles
 
 		public override void DisruptiveAction()
 		{
-			if( Meditating )
+			if ( Meditating )
 			{
 				RemoveBuff( BuffIcon.ActiveMeditation );
 			}
@@ -2545,7 +2545,7 @@ namespace Server.Mobiles
 
 		public override bool CheckShove( Mobile shoved )
 		{
-			if( m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation( shoved, typeof( WraithFormSpell ) ) )
+			if ( m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation( shoved, typeof( WraithFormSpell ) ) )
 				return true;
 			else
 				return base.CheckShove( shoved );
@@ -2603,7 +2603,7 @@ namespace Server.Mobiles
 					c.Slip();
 			}
 
-			if( Confidence.IsRegenerating( this ) )
+			if ( Confidence.IsRegenerating( this ) )
 				Confidence.StopRegenerating( this );
 
 			WeightOverloading.FatigueOnDamage( this, amount );
@@ -2638,7 +2638,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( Core.ML && this.Race == Race.Human )
+				if ( Core.ML && this.Race == Race.Human )
 					return 20.0;
 
 				return 0;
@@ -2859,7 +2859,7 @@ namespace Server.Mobiles
 			{
 				Mobile m = FindMostRecentDamager( false );
 
-				if( m is BaseCreature )
+				if ( m is BaseCreature )
 					m = ((BaseCreature)m).GetMaster();
 
 				if ( m != null && m is PlayerMobile && m != this )
@@ -2902,7 +2902,7 @@ namespace Server.Mobiles
 				BaseCreature bc = (BaseCreature)killer;
 
 				Mobile master = bc.GetMaster();
-				if( master != null )
+				if ( master != null )
 					killer = master;
 			}
 
@@ -2924,13 +2924,13 @@ namespace Server.Mobiles
 				m_DuelContext.OnDeath( this, c );
 			#endregion
 
-			if( m_BuffTable != null )
+			if ( m_BuffTable != null )
 			{
 				List<BuffInfo> list = new List<BuffInfo>();
 
 				foreach( BuffInfo buff in m_BuffTable.Values )
 				{
-					if( !buff.RetainThroughDeath )
+					if ( !buff.RetainThroughDeath )
 					{
 						list.Add( buff );
 					}
@@ -3121,16 +3121,16 @@ namespace Server.Mobiles
 
 		public override void DoSpeech( string text, int[] keywords, MessageType type, int hue )
 		{
-			if( Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance) )
+			if ( Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance) )
 			{
 				Guilds.Guild g = this.Guild as Guilds.Guild;
-				if( g == null )
+				if ( g == null )
 				{
 					SendLocalizedMessage( 1063142 ); // You are not in a guild!
 				}
-				else if( type == MessageType.Alliance )
+				else if ( type == MessageType.Alliance )
 				{
-					if( g.Alliance != null && g.Alliance.IsMember( g ) )
+					if ( g.Alliance != null && g.Alliance.IsMember( g ) )
 					{
 						//g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
 						g.Alliance.AllianceChat( this, text );
@@ -3165,9 +3165,9 @@ namespace Server.Mobiles
 			{
 				Mobile mob = ns.Mobile;
 
-				if( mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel )
+				if ( mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel )
 				{
-					if( p == null )
+					if ( p == null )
 						p = Packet.Acquire( new UnicodeMessage( from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3, from.Language, from.Name, text ) );
 
 					ns.Send( p );
@@ -3197,12 +3197,12 @@ namespace Server.Mobiles
 			{
 				amount = (int)(amount * 1.1);
 
-				if( amount > 35 && from is PlayerMobile )  /* capped @ 35, seems no expansion */
+				if ( amount > 35 && from is PlayerMobile )  /* capped @ 35, seems no expansion */
 				{
 					amount = 35;
 				}
 
-				if( Core.ML )
+				if ( Core.ML )
 				{
 					from.Damage( (int)(amount * ( 1 - ((( from.Skills.MagicResist.Value * .5 ) + 10) / 100 ))), this );
 				}
@@ -3398,14 +3398,14 @@ namespace Server.Mobiles
 				{
 					int recipeCount = reader.ReadInt();
 
-					if( recipeCount > 0 )
+					if ( recipeCount > 0 )
 					{
 						m_AcquiredRecipes = new Dictionary<int, bool>();
 
 						for( int i = 0; i < recipeCount; i++ )
 						{
 							int r = reader.ReadInt();
-							if( reader.ReadBool() )	//Don't add in recipies which we haven't gotten or have been removed
+							if ( reader.ReadBool() )	//Don't add in recipies which we haven't gotten or have been removed
 								m_AcquiredRecipes.Add( r, true );
 						}
 					}
@@ -3443,7 +3443,7 @@ namespace Server.Mobiles
 				{
 					int rank = reader.ReadEncodedInt();
 					int maxRank = Guilds.RankDefinition.Ranks.Length -1;
-					if( rank > maxRank )
+					if ( rank > maxRank )
 						rank = maxRank;
 
 					m_GuildRank = Guilds.RankDefinition.Ranks[rank];
@@ -3592,7 +3592,7 @@ namespace Server.Mobiles
 				}
 				case 0:
 				{
-					if( version < 26 )
+					if ( version < 26 )
 						m_AutoStabled = new List<Mobile>();
 					break;
 				}
@@ -3614,13 +3614,13 @@ namespace Server.Mobiles
 			if ( m_BOBFilter == null )
 				m_BOBFilter = new Engines.BulkOrders.BOBFilter();
 
-			if( m_GuildRank == null )
+			if ( m_GuildRank == null )
 				m_GuildRank = Guilds.RankDefinition.Member;	//Default to member if going from older version to new version (only time it should be null)
 
-			if( m_LastOnline == DateTime.MinValue && Account != null )
+			if ( m_LastOnline == DateTime.MinValue && Account != null )
 				m_LastOnline = ((Account)Account).LastLogin;
 
-			if( m_ChampionTitles == null )
+			if ( m_ChampionTitles == null )
 				m_ChampionTitles = new ChampionTitleInfo();
 
 			if ( AccessLevel > AccessLevel.Player )
@@ -3641,7 +3641,7 @@ namespace Server.Mobiles
 
 			CheckAtrophies( this );
 
-			if( Hidden )	//Hiding is the only buff where it has an effect that's serialized.
+			if ( Hidden )	//Hiding is the only buff where it has an effect that's serialized.
 				AddBuff( new BuffInfo( BuffIcon.HidingAndOrStealth, 1075655 ) );
 		}
 
@@ -3689,7 +3689,7 @@ namespace Server.Mobiles
 			writer.Write( (DateTime) m_AnkhNextUse );
 			writer.Write( m_AutoStabled, true );
 
-			if( m_AcquiredRecipes == null )
+			if ( m_AcquiredRecipes == null )
 			{
 				writer.Write( (int)0 );
 			}
@@ -3795,7 +3795,7 @@ namespace Server.Mobiles
 			CompassionVirtue.CheckAtrophy( m );
 			ValorVirtue.CheckAtrophy( m );
 
-			if( m is PlayerMobile )
+			if ( m is PlayerMobile )
 				ChampionTitleInfo.CheckAtrophy( (PlayerMobile)m );
 		}
 
@@ -3858,7 +3858,7 @@ namespace Server.Mobiles
 
 					Mobile master = bc.GetMaster();
 
-					if( master != null )
+					if ( master != null )
 						owner = master;
 				}
 
@@ -3871,7 +3871,7 @@ namespace Server.Mobiles
 
 		public virtual void CheckedAnimate( int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay )
 		{
-			if( !Mounted )
+			if ( !Mounted )
 			{
 				base.Animate( action, frameCount, repeatCount, forward, repeat, delay );
 			}
@@ -3988,24 +3988,24 @@ namespace Server.Mobiles
 
 		protected override bool OnMove( Direction d )
 		{
-			if( !Core.SE )
+			if ( !Core.SE )
 				return base.OnMove( d );
 
-			if( AccessLevel != AccessLevel.Player )
+			if ( AccessLevel != AccessLevel.Player )
 				return true;
 
-			if( Hidden && DesignContext.Find( this ) == null )	//Hidden & NOT customizing a house
+			if ( Hidden && DesignContext.Find( this ) == null )	//Hidden & NOT customizing a house
 			{
-				if( !Mounted && Skills.Stealth.Value >= 25.0 )
+				if ( !Mounted && Skills.Stealth.Value >= 25.0 )
 				{
 					bool running = (d & Direction.Running) != 0;
 
-					if( running )
+					if ( running )
 					{
-						if( (AllowedStealthSteps -= 2) <= 0 )
+						if ( (AllowedStealthSteps -= 2) <= 0 )
 							RevealingAction();
 					}
-					else if( AllowedStealthSteps-- <= 0 )
+					else if ( AllowedStealthSteps-- <= 0 )
 					{
 						Server.SkillHandlers.Stealth.OnUse( this );
 					}
@@ -4038,7 +4038,7 @@ namespace Server.Mobiles
 			{
 				base.Paralyzed = value;
 
-				if( value )
+				if ( value )
 					AddBuff( new BuffInfo( BuffIcon.Paralyze, 1075827 ) );	//Paralyze/You are frozen and can not move
 				else
 					RemoveBuff( BuffIcon.Paralyze );
@@ -4246,7 +4246,7 @@ namespace Server.Mobiles
 
 			AnimalFormContext animalContext = AnimalForm.GetContext( this );
 
-			if( onHorse || (animalContext != null && animalContext.SpeedBoost) )
+			if ( onHorse || (animalContext != null && animalContext.SpeedBoost) )
 				return ( running ? Mobile.RunMount : Mobile.WalkMount );
 
 			return ( running ? Mobile.RunFoot : Mobile.WalkFoot );
@@ -4349,7 +4349,7 @@ namespace Server.Mobiles
 
 		private void CreateHair( bool hair, int id, int hue )
 		{
-			if( hair )
+			if ( hair )
 			{
 				//TODO Verification?
 				HairItemID = id;
@@ -4372,7 +4372,7 @@ namespace Server.Mobiles
 			else
 				FacialHairItemID = 0;
 
-			//if( id != 0 )
+			//if ( id != 0 )
 			CreateHair( hair, id, hue );
 
 			id = -1;
@@ -4500,7 +4500,7 @@ namespace Server.Mobiles
 			if ( Region is BaseRegion && !((BaseRegion)Region).YoungProtected )
 				return false;
 
-			if( from is BaseCreature && ((BaseCreature)from).IgnoreYoungProtection )
+			if ( from is BaseCreature && ((BaseCreature)from).IgnoreYoungProtection )
 				return false;
 
 			if ( this.Quest != null && this.Quest.IgnoreYoungProtection( from ) )
@@ -4671,10 +4671,10 @@ namespace Server.Mobiles
 
 		private void ToggleChampionTitleDisplay()
 		{
-			if( !CheckAlive() )
+			if ( !CheckAlive() )
 				return;
 
-			if( DisplayChampionTitle )
+			if ( DisplayChampionTitle )
 				SendLocalizedMessage( 1062419, "", 0x23 ); // You have chosen to hide your monster kill title.
 			else
 				SendLocalizedMessage( 1062418, "", 0x23 ); // You have chosen to display your monster kill title.
@@ -4745,10 +4745,10 @@ namespace Server.Mobiles
 
 			public int GetValue( int index )
 			{
-				if( m_Values == null || index < 0 || index >= m_Values.Length )
+				if ( m_Values == null || index < 0 || index >= m_Values.Length )
 					return 0;
 
-				if( m_Values[index] == null )
+				if ( m_Values[index] == null )
 					m_Values[index] = new TitleInfo();
 
 				return m_Values[index].Value;
@@ -4756,10 +4756,10 @@ namespace Server.Mobiles
 
 			public DateTime GetLastDecay( int index )
 			{
-				if( m_Values == null || index < 0 || index >= m_Values.Length )
+				if ( m_Values == null || index < 0 || index >= m_Values.Length )
 					return DateTime.MinValue;
 
-				if( m_Values[index] == null )
+				if ( m_Values[index] == null )
 					m_Values[index] = new TitleInfo();
 
 				return m_Values[index].LastDecay;
@@ -4767,16 +4767,16 @@ namespace Server.Mobiles
 
 			public void SetValue( int index, int value )
 			{
-				if( m_Values == null )
+				if ( m_Values == null )
 					m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
-				if( value < 0 )
+				if ( value < 0 )
 					value = 0;
 
-				if( index < 0 || index >= m_Values.Length )
+				if ( index < 0 || index >= m_Values.Length )
 					return;
 
-				if( m_Values[index] == null )
+				if ( m_Values[index] == null )
 					m_Values[index] = new TitleInfo();
 
 				m_Values[index].Value = value;
@@ -4784,13 +4784,13 @@ namespace Server.Mobiles
 
 			public void Award( int index, int value )
 			{
-				if( m_Values == null )
+				if ( m_Values == null )
 					m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
-				if( index < 0 || index >= m_Values.Length || value <= 0 )
+				if ( index < 0 || index >= m_Values.Length || value <= 0 )
 					return;
 
-				if( m_Values[index] == null )
+				if ( m_Values[index] == null )
 					m_Values[index] = new TitleInfo();
 
 				m_Values[index].Value += value;
@@ -4798,23 +4798,23 @@ namespace Server.Mobiles
 
 			public void Atrophy( int index, int value )
 			{
-				if( m_Values == null )
+				if ( m_Values == null )
 					m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
-				if( index < 0 || index >= m_Values.Length || value <= 0 )
+				if ( index < 0 || index >= m_Values.Length || value <= 0 )
 					return;
 
-				if( m_Values[index] == null )
+				if ( m_Values[index] == null )
 					m_Values[index] = new TitleInfo();
 
 				int before = m_Values[index].Value;
 
-				if( (m_Values[index].Value - value) < 0 )
+				if ( (m_Values[index].Value - value) < 0 )
 					m_Values[index].Value = 0;
 				else
 					m_Values[index].Value -= value;
 
-				if( before != m_Values[index].Value )
+				if ( before != m_Values[index].Value )
 					m_Values[index].LastDecay = DateTime.UtcNow;
 			}
 
@@ -4872,7 +4872,7 @@ namespace Server.Mobiles
 							m_Values[i] = new TitleInfo( reader );
 						}
 
-						if( m_Values.Length != ChampionSpawnInfo.Table.Length )
+						if ( m_Values.Length != ChampionSpawnInfo.Table.Length )
 						{
 							TitleInfo[] oldValues = m_Values;
 							m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
@@ -4898,7 +4898,7 @@ namespace Server.Mobiles
 
 				for( int i = 0; i < length; i++ )
 				{
-					if( titles.m_Values[i] == null )
+					if ( titles.m_Values[i] == null )
 						titles.m_Values[i] = new TitleInfo();
 
 					TitleInfo.Serialize( writer, titles.m_Values[i] );
@@ -4908,15 +4908,15 @@ namespace Server.Mobiles
 			public static void CheckAtrophy( PlayerMobile pm )
 			{
 				ChampionTitleInfo t = pm.m_ChampionTitles;
-				if( t == null )
+				if ( t == null )
 					return;
 
-				if( t.m_Values == null )
+				if ( t.m_Values == null )
 					t.m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
 				for( int i = 0; i < t.m_Values.Length; i++ )
 				{
-					if( (t.GetLastDecay( i ) + LossDelay) < DateTime.UtcNow )
+					if ( (t.GetLastDecay( i ) + LossDelay) < DateTime.UtcNow )
 					{
 						t.Atrophy( i, LossAmount );
 					}
@@ -4926,17 +4926,17 @@ namespace Server.Mobiles
 			public static void AwardHarrowerTitle( PlayerMobile pm )	//Called when killing a harrower.  Will give a minimum of 1 point.
 			{
 				ChampionTitleInfo t = pm.m_ChampionTitles;
-				if( t == null )
+				if ( t == null )
 					return;
 
-				if( t.m_Values == null )
+				if ( t.m_Values == null )
 					t.m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
 				int count = 1;
 
 				for( int i = 0; i < t.m_Values.Length; i++ )
 				{
-					if( t.m_Values[i].Value > 900 )
+					if ( t.m_Values[i].Value > 900 )
 						count++;
 				}
 
@@ -4952,7 +4952,7 @@ namespace Server.Mobiles
 
 		public virtual bool HasRecipe( Recipe r )
 		{
-			if( r == null )
+			if ( r == null )
 				return false;
 
 			return HasRecipe( r.ID );
@@ -4960,7 +4960,7 @@ namespace Server.Mobiles
 
 		public virtual bool HasRecipe( int recipeID )
 		{
-			if( m_AcquiredRecipes != null && m_AcquiredRecipes.ContainsKey( recipeID ) )
+			if ( m_AcquiredRecipes != null && m_AcquiredRecipes.ContainsKey( recipeID ) )
 				return m_AcquiredRecipes[recipeID];
 
 			return false;
@@ -4968,13 +4968,13 @@ namespace Server.Mobiles
 
 		public virtual void AcquireRecipe( Recipe r )
 		{
-			if( r != null )
+			if ( r != null )
 				AcquireRecipe( r.ID );
 		}
 
 		public virtual void AcquireRecipe( int recipeID )
 		{
-			if( m_AcquiredRecipes == null )
+			if ( m_AcquiredRecipes == null )
 				m_AcquiredRecipes = new Dictionary<int, bool>();
 
 			m_AcquiredRecipes[recipeID] = true;
@@ -4990,7 +4990,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if( m_AcquiredRecipes == null )
+				if ( m_AcquiredRecipes == null )
 					return 0;
 
 				return m_AcquiredRecipes.Count;
@@ -5003,12 +5003,12 @@ namespace Server.Mobiles
 
 		public void ResendBuffs()
 		{
-			if( !BuffInfo.Enabled || m_BuffTable == null )
+			if ( !BuffInfo.Enabled || m_BuffTable == null )
 				return;
 
 			NetState state = this.NetState;
 
-			if( state != null && state.BuffIcon )
+			if ( state != null && state.BuffIcon )
 			{
 				foreach( BuffInfo info in m_BuffTable.Values )
 				{
@@ -5021,19 +5021,19 @@ namespace Server.Mobiles
 
 		public void AddBuff( BuffInfo b )
 		{
-			if( !BuffInfo.Enabled || b == null )
+			if ( !BuffInfo.Enabled || b == null )
 				return;
 
 			RemoveBuff( b );	//Check & subsequently remove the old one.
 
-			if( m_BuffTable == null )
+			if ( m_BuffTable == null )
 				m_BuffTable = new Dictionary<BuffIcon, BuffInfo>();
 
 			m_BuffTable.Add( b.ID, b );
 
 			NetState state = this.NetState;
 
-			if( state != null && state.BuffIcon )
+			if ( state != null && state.BuffIcon )
 			{
 				state.Send( new AddBuffPacket( this, b ) );
 			}
@@ -5041,7 +5041,7 @@ namespace Server.Mobiles
 
 		public void RemoveBuff( BuffInfo b )
 		{
-			if( b == null )
+			if ( b == null )
 				return;
 
 			RemoveBuff( b.ID );
@@ -5049,24 +5049,24 @@ namespace Server.Mobiles
 
 		public void RemoveBuff( BuffIcon b )
 		{
-			if( m_BuffTable == null || !m_BuffTable.ContainsKey( b ) )
+			if ( m_BuffTable == null || !m_BuffTable.ContainsKey( b ) )
 				return;
 
 			BuffInfo info = m_BuffTable[b];
 
-			if( info.Timer != null && info.Timer.Running )
+			if ( info.Timer != null && info.Timer.Running )
 				info.Timer.Stop();
 
 			m_BuffTable.Remove( b );
 
 			NetState state = this.NetState;
 
-			if( state != null && state.BuffIcon )
+			if ( state != null && state.BuffIcon )
 			{
 				state.Send( new RemoveBuffPacket( this, b ) );
 			}
 
-			if( m_BuffTable.Count <= 0 )
+			if ( m_BuffTable.Count <= 0 )
 				m_BuffTable = null;
 		}
 

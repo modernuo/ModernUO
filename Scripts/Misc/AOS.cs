@@ -60,13 +60,13 @@ namespace Server
 
 		public static int Damage( Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy, int chaos, int direct, bool keepAlive, bool archer, bool deathStrike )
 		{
-			if( m == null || m.Deleted || !m.Alive || damage <= 0 )
+			if ( m == null || m.Deleted || !m.Alive || damage <= 0 )
 				return 0;
 
-			if( phys == 0 && fire == 100 && cold == 0 && pois == 0 && nrgy == 0 )
+			if ( phys == 0 && fire == 100 && cold == 0 && pois == 0 && nrgy == 0 )
 				Mobiles.MeerMage.StopEffect( m, true );
 
-			if( !Core.AOS )
+			if ( !Core.AOS )
 			{
 				m.Damage( damage, from );
 				return damage;
@@ -99,7 +99,7 @@ namespace Server
 
 			int totalDamage;
 
-			if( !ignoreArmor )
+			if ( !ignoreArmor )
 			{
 				// Armor Ignore on OSI ignores all defenses, not just physical.
 				int resPhys = m.PhysicalResistance;
@@ -124,10 +124,10 @@ namespace Server
 						totalDamage += totalDamage * quiver.DamageIncrease / 100;
 				}
 
-				if( totalDamage < 1 )
+				if ( totalDamage < 1 )
 					totalDamage = 1;
 			}
-			else if( Core.ML && m is PlayerMobile && from is PlayerMobile )
+			else if ( Core.ML && m is PlayerMobile && from is PlayerMobile )
 			{
 				if ( quiver != null )
 					damage += damage * quiver.DamageIncrease / 100;
@@ -146,11 +146,11 @@ namespace Server
 			}
 
 			#region Dragon Barding
-			if( (from == null || !from.Player) && m.Player && m.Mount is SwampDragon )
+			if ( (from == null || !from.Player) && m.Player && m.Mount is SwampDragon )
 			{
 				SwampDragon pet = m.Mount as SwampDragon;
 
-				if( pet != null && pet.HasBarding )
+				if ( pet != null && pet.HasBarding )
 				{
 					int percent = (pet.BardingExceptional ? 20 : 10);
 					int absorbed = Scale( totalDamage, percent );
@@ -158,7 +158,7 @@ namespace Server
 					totalDamage -= absorbed;
 					pet.BardingHP -= absorbed;
 
-					if( pet.BardingHP < 0 )
+					if ( pet.BardingHP < 0 )
 					{
 						pet.HasBarding = false;
 						pet.BardingHP = 0;
@@ -169,16 +169,16 @@ namespace Server
 			}
 			#endregion
 
-			if( keepAlive && totalDamage > m.Hits )
+			if ( keepAlive && totalDamage > m.Hits )
 				totalDamage = m.Hits;
 
-			if( from != null && !from.Deleted && from.Alive )
+			if ( from != null && !from.Deleted && from.Alive )
 			{
 				int reflectPhys = AosAttributes.GetValue( m, AosAttribute.ReflectPhysical );
 
-				if( reflectPhys != 0 )
+				if ( reflectPhys != 0 )
 				{
-					if( from is ExodusMinion && ((ExodusMinion)from).FieldActive || from is ExodusOverseer && ((ExodusOverseer)from).FieldActive )
+					if ( from is ExodusMinion && ((ExodusMinion)from).FieldActive || from is ExodusOverseer && ((ExodusOverseer)from).FieldActive )
 					{
 						from.FixedParticles( 0x376A, 20, 10, 0x2530, EffectLayer.Waist );
 						from.PlaySound( 0x2F4 );
@@ -197,7 +197,7 @@ namespace Server
 
 		public static void Fix( ref int val )
 		{
-			if( val < 0 )
+			if ( val < 0 )
 				val = 0;
 		}
 
@@ -279,7 +279,7 @@ namespace Server
 
 		public static int GetValue( Mobile m, AosAttribute attribute )
 		{
-			if( !Core.AOS )
+			if ( !Core.AOS )
 				return 0;
 
 			List<Item> items = m.Items;
@@ -289,52 +289,52 @@ namespace Server
 			{
 				Item obj = items[i];
 
-				if( obj is BaseWeapon )
+				if ( obj is BaseWeapon )
 				{
 					AosAttributes attrs = ((BaseWeapon)obj).Attributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 
-					if( attribute == AosAttribute.Luck )
+					if ( attribute == AosAttribute.Luck )
 						value += ((BaseWeapon)obj).GetLuckBonus();
 				}
-				else if( obj is BaseArmor )
+				else if ( obj is BaseArmor )
 				{
 					AosAttributes attrs = ((BaseArmor)obj).Attributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 
-					if( attribute == AosAttribute.Luck )
+					if ( attribute == AosAttribute.Luck )
 						value += ((BaseArmor)obj).GetLuckBonus();
 				}
-				else if( obj is BaseJewel )
+				else if ( obj is BaseJewel )
 				{
 					AosAttributes attrs = ((BaseJewel)obj).Attributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
-				else if( obj is BaseClothing )
+				else if ( obj is BaseClothing )
 				{
 					AosAttributes attrs = ((BaseClothing)obj).Attributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
-				else if( obj is Spellbook )
+				else if ( obj is Spellbook )
 				{
 					AosAttributes attrs = ((Spellbook)obj).Attributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
-				else if( obj is BaseQuiver )
+				else if ( obj is BaseQuiver )
 				{
 					AosAttributes attrs = ((BaseQuiver)obj).Attributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
 				else if ( obj is BaseTalisman )
@@ -516,7 +516,7 @@ namespace Server
 
 		public static int GetValue( Mobile m, AosWeaponAttribute attribute )
 		{
-			if( !Core.AOS )
+			if ( !Core.AOS )
 				return 0;
 
 			List<Item> items = m.Items;
@@ -526,18 +526,18 @@ namespace Server
 			{
 				Item obj = items[i];
 
-				if( obj is BaseWeapon )
+				if ( obj is BaseWeapon )
 				{
 					AosWeaponAttributes attrs = ((BaseWeapon)obj).WeaponAttributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
 				else if ( obj is ElvenGlasses )
 				{
 					AosWeaponAttributes attrs = ((ElvenGlasses)obj).WeaponAttributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
 			}
@@ -660,7 +660,7 @@ namespace Server
 
 		public static int GetValue( Mobile m, AosArmorAttribute attribute )
 		{
-			if( !Core.AOS )
+			if ( !Core.AOS )
 				return 0;
 
 			List<Item> items = m.Items;
@@ -670,18 +670,18 @@ namespace Server
 			{
 				Item obj = items[i];
 
-				if( obj is BaseArmor )
+				if ( obj is BaseArmor )
 				{
 					AosArmorAttributes attrs = ((BaseArmor)obj).ArmorAttributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
-				else if( obj is BaseClothing )
+				else if ( obj is BaseClothing )
 				{
 					AosArmorAttributes attrs = ((BaseClothing)obj).ClothingAttributes;
 
-					if( attrs != null )
+					if ( attrs != null )
 						value += attrs[attribute];
 				}
 			}
@@ -739,7 +739,7 @@ namespace Server
 				SkillName skill;
 				double bonus;
 
-				if( !GetValues( i, out skill, out bonus ) )
+				if ( !GetValues( i, out skill, out bonus ) )
 					continue;
 
 				list.Add( 1060451 + i, "#{0}\t{1}", GetLabel( skill ), bonus );
@@ -766,10 +766,10 @@ namespace Server
 				SkillName skill;
 				double bonus;
 
-				if( !GetValues( i, out skill, out bonus ) )
+				if ( !GetValues( i, out skill, out bonus ) )
 					continue;
 
-				if( m_Mods == null )
+				if ( m_Mods == null )
 					m_Mods = new List<SkillMod>();
 
 				SkillMod sk = new DefaultSkillMod( skill, true, bonus );
@@ -781,7 +781,7 @@ namespace Server
 
 		public void Remove()
 		{
-			if( m_Mods == null )
+			if ( m_Mods == null )
 				return;
 
 			for( int i = 0; i < m_Mods.Count; ++i ) {
@@ -1083,17 +1083,17 @@ namespace Server
 
 		public int GetValue( int bitmask )
 		{
-			if( !Core.AOS )
+			if ( !Core.AOS )
 				return 0;
 
 			uint mask = (uint)bitmask;
 
-			if( (m_Names & mask) == 0 )
+			if ( (m_Names & mask) == 0 )
 				return 0;
 
 			int index = GetIndex( mask );
 
-			if( index >= 0 && index < m_Values.Length )
+			if ( index >= 0 && index < m_Values.Length )
 				return m_Values[index];
 
 			return 0;
@@ -1101,35 +1101,35 @@ namespace Server
 
 		public void SetValue( int bitmask, int value )
 		{
-			if( (bitmask == (int)AosWeaponAttribute.DurabilityBonus) && (this is AosWeaponAttributes) )
+			if ( (bitmask == (int)AosWeaponAttribute.DurabilityBonus) && (this is AosWeaponAttributes) )
 			{
-				if( m_Owner is BaseWeapon )
+				if ( m_Owner is BaseWeapon )
 					((BaseWeapon)m_Owner).UnscaleDurability();
 			}
-			else if( (bitmask == (int)AosArmorAttribute.DurabilityBonus) && (this is AosArmorAttributes) )
+			else if ( (bitmask == (int)AosArmorAttribute.DurabilityBonus) && (this is AosArmorAttributes) )
 			{
-				if( m_Owner is BaseArmor )
+				if ( m_Owner is BaseArmor )
 					((BaseArmor)m_Owner).UnscaleDurability();
-				else if( m_Owner is BaseClothing )
+				else if ( m_Owner is BaseClothing )
 					((BaseClothing)m_Owner).UnscaleDurability();
 			}
 
 			uint mask = (uint)bitmask;
 
-			if( value != 0 )
+			if ( value != 0 )
 			{
-				if( (m_Names & mask) != 0 )
+				if ( (m_Names & mask) != 0 )
 				{
 					int index = GetIndex( mask );
 
-					if( index >= 0 && index < m_Values.Length )
+					if ( index >= 0 && index < m_Values.Length )
 						m_Values[index] = value;
 				}
 				else
 				{
 					int index = GetIndex( mask );
 
-					if( index >= 0 && index <= m_Values.Length )
+					if ( index >= 0 && index <= m_Values.Length )
 					{
 						int[] old = m_Values;
 						m_Values = new int[old.Length + 1];
@@ -1146,15 +1146,15 @@ namespace Server
 					}
 				}
 			}
-			else if( (m_Names & mask) != 0 )
+			else if ( (m_Names & mask) != 0 )
 			{
 				int index = GetIndex( mask );
 
-				if( index >= 0 && index < m_Values.Length )
+				if ( index >= 0 && index < m_Values.Length )
 				{
 					m_Names &= ~mask;
 
-					if( m_Values.Length == 1 )
+					if ( m_Values.Length == 1 )
 					{
 						m_Values = m_Empty;
 					}
@@ -1172,20 +1172,20 @@ namespace Server
 				}
 			}
 
-			if( (bitmask == (int)AosWeaponAttribute.DurabilityBonus) && (this is AosWeaponAttributes) )
+			if ( (bitmask == (int)AosWeaponAttribute.DurabilityBonus) && (this is AosWeaponAttributes) )
 			{
-				if( m_Owner is BaseWeapon )
+				if ( m_Owner is BaseWeapon )
 					((BaseWeapon)m_Owner).ScaleDurability();
 			}
-			else if( (bitmask == (int)AosArmorAttribute.DurabilityBonus) && (this is AosArmorAttributes) )
+			else if ( (bitmask == (int)AosArmorAttribute.DurabilityBonus) && (this is AosArmorAttributes) )
 			{
-				if( m_Owner is BaseArmor )
+				if ( m_Owner is BaseArmor )
 					((BaseArmor)m_Owner).ScaleDurability();
-				else if( m_Owner is BaseClothing )
+				else if ( m_Owner is BaseClothing )
 					((BaseClothing)m_Owner).ScaleDurability();
 			}
 
-			if( m_Owner.Parent is Mobile )
+			if ( m_Owner.Parent is Mobile )
 			{
 				Mobile m = (Mobile)m_Owner.Parent;
 
@@ -1193,7 +1193,7 @@ namespace Server
 				m.UpdateResistances();
 				m.Delta( MobileDelta.Stat | MobileDelta.WeaponDamage | MobileDelta.Hits | MobileDelta.Stam | MobileDelta.Mana );
 
-				if( this is AosSkillBonuses )
+				if ( this is AosSkillBonuses )
 				{
 					((AosSkillBonuses)this).Remove();
 					((AosSkillBonuses)this).AddTo( m );
@@ -1211,10 +1211,10 @@ namespace Server
 
 			while( currentBit != mask )
 			{
-				if( (ourNames & currentBit) != 0 )
+				if ( (ourNames & currentBit) != 0 )
 					++index;
 
-				if( currentBit == 0x80000000 )
+				if ( currentBit == 0x80000000 )
 					return -1;
 
 				currentBit <<= 1;

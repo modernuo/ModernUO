@@ -158,9 +158,9 @@ namespace Server.Items
 				return SpellbookType.Necromancer;
 			else if ( spellID >= 200 && spellID < 210 )
 				return SpellbookType.Paladin;
-			else if( spellID >= 400 && spellID < 406 )
+			else if ( spellID >= 400 && spellID < 406 )
 				return SpellbookType.Samurai;
-			else if( spellID >= 500 && spellID < 508 )
+			else if ( spellID >= 500 && spellID < 508 )
 				return SpellbookType.Ninja;
 			else if ( spellID >= 600 && spellID < 617 )
 				return SpellbookType.Arcanist;
@@ -597,17 +597,17 @@ namespace Server.Items
 
 			m_AosSkillBonuses.GetProperties( list );
 
-			if( m_Slayer != SlayerName.None )
+			if ( m_Slayer != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer );
-				if( entry != null )
+				if ( entry != null )
 					list.Add( entry.Title );
 			}
 
-			if( m_Slayer2 != SlayerName.None )
+			if ( m_Slayer2 != SlayerName.None )
 			{
 				SlayerEntry entry = SlayerGroup.GetEntryByName( m_Slayer2 );
-				if( entry != null )
+				if ( entry != null )
 					list.Add( entry.Title );
 			}
 
@@ -879,9 +879,9 @@ namespace Server.Items
 
 				if ( magery >= 1000 )
 				{
-					if( magery >= 1200 )
+					if ( magery >= 1200 )
 						propertyCounts = m_LegendPropertyCounts;
-					else if( magery >= 1100 )
+					else if ( magery >= 1100 )
 						propertyCounts = m_ElderPropertyCounts;
 					else
 						propertyCounts = m_GrandPropertyCounts;

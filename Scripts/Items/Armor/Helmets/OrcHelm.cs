@@ -46,7 +46,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			if( version == 0 && ( Weight == 1 || Weight == 5 ) )
+			if ( version == 0 && ( Weight == 1 || Weight == 5 ) )
 			{
 				Weight = -1;
 			}

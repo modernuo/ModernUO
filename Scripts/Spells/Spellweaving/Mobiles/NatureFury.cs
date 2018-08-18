@@ -61,7 +61,7 @@ namespace Server.Mobiles
 			PlaySound( 0xE );
 			PlaySound( 0x1BC );
 
-			if( Alive && !Deleted )
+			if ( Alive && !Deleted )
 				Timer.DelayCall( TimeSpan.FromSeconds( 7.0 ), DoEffects );
 		}
 

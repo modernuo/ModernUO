@@ -42,10 +42,10 @@ namespace Server.Spells.Necromancy
 
 		public override bool ConsumeReagents()
 		{
-			if( base.ConsumeReagents() )
+			if ( base.ConsumeReagents() )
 				return true;
 
-			if( ArcaneGem.ConsumeCharges( Caster, 1 ) )
+			if ( ArcaneGem.ConsumeCharges( Caster, 1 ) )
 				return true;
 
 			return false;

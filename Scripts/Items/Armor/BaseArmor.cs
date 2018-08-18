@@ -613,9 +613,9 @@ namespace Server.Items
 				{
 					BaseArmor armor = (BaseArmor)item;
 
-					if( armor.RequiredRace != null && m.Race != armor.RequiredRace )
+					if ( armor.RequiredRace != null && m.Race != armor.RequiredRace )
 					{
-						if( armor.RequiredRace == Race.Elf )
+						if ( armor.RequiredRace == Race.Elf )
 							m.SendLocalizedMessage( 1072203 ); // Only Elves may use this.
 						else
 							m.SendMessage( "Only {0} may use this.", armor.RequiredRace.PluralName );
@@ -1167,32 +1167,32 @@ namespace Server.Items
 
 		public override bool CanEquip( Mobile from )
 		{
-			if( !Ethics.Ethic.CheckEquip( from, this ) )
+			if ( !Ethics.Ethic.CheckEquip( from, this ) )
 				return false;
 
-			if( from.AccessLevel < AccessLevel.GameMaster )
+			if ( from.AccessLevel < AccessLevel.GameMaster )
 			{
-				if( RequiredRace != null && from.Race != RequiredRace )
+				if ( RequiredRace != null && from.Race != RequiredRace )
 				{
-					if( RequiredRace == Race.Elf )
+					if ( RequiredRace == Race.Elf )
 						from.SendLocalizedMessage( 1072203 ); // Only Elves may use this.
 					else
 						from.SendMessage( "Only {0} may use this.", RequiredRace.PluralName );
 
 					return false;
 				}
-				else if( !AllowMaleWearer && !from.Female )
+				else if ( !AllowMaleWearer && !from.Female )
 				{
-					if( AllowFemaleWearer )
+					if ( AllowFemaleWearer )
 						from.SendLocalizedMessage( 1010388 ); // Only females can wear this.
 					else
 						from.SendMessage( "You may not wear this." );
 
 					return false;
 				}
-				else if( !AllowFemaleWearer && from.Female )
+				else if ( !AllowFemaleWearer && from.Female )
 				{
-					if( AllowMaleWearer )
+					if ( AllowMaleWearer )
 						from.SendLocalizedMessage( 1063343 ); // Only males can wear this.
 					else
 						from.SendMessage( "You may not wear this." );
@@ -1205,17 +1205,17 @@ namespace Server.Items
 					int dexBonus = ComputeStatBonus( StatType.Dex ), dexReq = ComputeStatReq( StatType.Dex );
 					int intBonus = ComputeStatBonus( StatType.Int ), intReq = ComputeStatReq( StatType.Int );
 
-					if( from.Dex < dexReq || (from.Dex + dexBonus) < 1 )
+					if ( from.Dex < dexReq || (from.Dex + dexBonus) < 1 )
 					{
 						from.SendLocalizedMessage( 502077 ); // You do not have enough dexterity to equip this item.
 						return false;
 					}
-					else if( from.Str < strReq || (from.Str + strBonus) < 1 )
+					else if ( from.Str < strReq || (from.Str + strBonus) < 1 )
 					{
 						from.SendLocalizedMessage( 500213 ); // You are not strong enough to equip that.
 						return false;
 					}
-					else if( from.Int < intReq || (from.Int + intBonus) < 1 )
+					else if ( from.Int < intReq || (from.Int + intBonus) < 1 )
 					{
 						from.SendMessage( "You are not smart enough to equip that." );
 						return false;
@@ -1443,7 +1443,7 @@ namespace Server.Items
 				list.Add( 1041350 ); // faction item
 			#endregion
 
-			if( RequiredRace == Race.Elf )
+			if ( RequiredRace == Race.Elf )
 				list.Add( 1075086 ); // Elves Only
 
 			m_AosSkillBonuses.GetProperties( list );
@@ -1619,12 +1619,12 @@ namespace Server.Items
 			if ( context != null && context.DoNotColor )
 				Hue = 0;
 
-			if( Quality == ArmorQuality.Exceptional )
+			if ( Quality == ArmorQuality.Exceptional )
 			{
 				if ( !( Core.ML && this is BaseShield ))		// Guessed Core.ML removed exceptional resist bonuses from crafted shields
 					DistributeBonuses( (tool is BaseRunicTool ? 6 : Core.SE ? 15 : 14) ); // Not sure since when, but right now 15 points are added, not 14.
 
-				if( Core.ML && !(this is BaseShield) )
+				if ( Core.ML && !(this is BaseShield) )
 				{
 					int bonus = (int)(from.Skills.ArmsLore.Value / 20);
 

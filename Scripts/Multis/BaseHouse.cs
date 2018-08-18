@@ -610,11 +610,11 @@ namespace Server.Multis
 					bool retainDeedHue = false;	//if the items aren't hued but the deed itself is
 					int hue = 0;
 
-					if( addon is IAddon )
+					if ( addon is IAddon )
 					{
 						deed = ((IAddon)addon).Deed;
 
-						if( addon is BaseAddon && ((BaseAddon)addon).RetainDeedHue)	//There are things that are IAddon which aren't BaseAddon
+						if ( addon is BaseAddon && ((BaseAddon)addon).RetainDeedHue)	//There are things that are IAddon which aren't BaseAddon
 						{
 							BaseAddon ba = (BaseAddon)addon;
 							retainDeedHue = true;
@@ -623,7 +623,7 @@ namespace Server.Multis
 							{
 								AddonComponent c = ba.Components[i];
 
-								if( c.Hue != 0 )
+								if ( c.Hue != 0 )
 									hue = c.Hue;
 							}
 						}
@@ -645,7 +645,7 @@ namespace Server.Multis
 
 						addon.Delete();
 
-						if( retainDeedHue )
+						if ( retainDeedHue )
 							deed.Hue = hue;
 
 						DropToMovingCrate( deed );
@@ -803,13 +803,13 @@ namespace Server.Multis
 							if ( item is StrongBox )
 								relocateItem = ((StrongBox)item).ConvertToStandardContainer();
 
-							if( item is IAddon )
+							if ( item is IAddon )
 							{
 								Item deed = ((IAddon)item).Deed;
 								bool retainDeedHue = false;	//if the items aren't hued but the deed itself is
 								int hue = 0;
 
-								if( item is BaseAddon && ((BaseAddon)item).RetainDeedHue )	//There are things that are IAddon which aren't BaseAddon
+								if ( item is BaseAddon && ((BaseAddon)item).RetainDeedHue )	//There are things that are IAddon which aren't BaseAddon
 								{
 									BaseAddon ba = (BaseAddon)item;
 									retainDeedHue = true;
@@ -818,7 +818,7 @@ namespace Server.Multis
 									{
 										AddonComponent c = ba.Components[i];
 
-										if( c.Hue != 0 )
+										if ( c.Hue != 0 )
 											hue = c.Hue;
 									}
 								}
@@ -893,7 +893,7 @@ namespace Server.Multis
 
 		public List<Item> GetItems()
 		{
-			if( this.Map == null || this.Map == Map.Internal )
+			if ( this.Map == null || this.Map == Map.Internal )
 				return new List<Item>();
 
 			Point2D start = new Point2D( this.X + Components.Min.X, this.Y + Components.Min.Y );
@@ -915,7 +915,7 @@ namespace Server.Multis
 
 		public List<Mobile> GetMobiles()
 		{
-			if( this.Map == null || this.Map == Map.Internal )
+			if ( this.Map == null || this.Map == Map.Internal )
 				return new List<Mobile>();
 
 			List<Mobile> list = new List<Mobile>();
@@ -1893,7 +1893,7 @@ namespace Server.Multis
 						{
 							to.SendLocalizedMessage( 1062071 ); // You cannot trade a house while you have other trades pending.
 						}
-						else if( !to.Alive )
+						else if ( !to.Alive )
 						{
 							// TODO: Check if the message is correct.
 							from.SendLocalizedMessage( 1062069 ); // You cannot transfer this house to that person.
@@ -3179,14 +3179,14 @@ namespace Server.Multis
 
 					if ( item != null )
 					{
-						if( !item.Deleted && item is IAddon )
+						if ( !item.Deleted && item is IAddon )
 						{
 
 							Item deed = ((IAddon)item).Deed;
 							bool retainDeedHue = false;	//if the items aren't hued but the deed itself is
 							int hue = 0;
 
-							if( item is BaseAddon && ((BaseAddon)item).RetainDeedHue )	//There are things that are IAddon which aren't BaseAddon
+							if ( item is BaseAddon && ((BaseAddon)item).RetainDeedHue )	//There are things that are IAddon which aren't BaseAddon
 							{
 								BaseAddon ba = (BaseAddon)item;
 								retainDeedHue = true;
@@ -3195,14 +3195,14 @@ namespace Server.Multis
 								{
 									AddonComponent c = ba.Components[j];
 
-									if( c.Hue != 0 )
+									if ( c.Hue != 0 )
 										hue = c.Hue;
 								}
 							}
 
-							if( deed != null )
+							if ( deed != null )
 							{
-								if( retainDeedHue )
+								if ( retainDeedHue )
 									deed.Hue = hue;
 								deed.MoveToWorld( item.Location, item.Map );
 							}
@@ -3287,7 +3287,7 @@ namespace Server.Multis
 
 		public bool IsGuildMember( Mobile m )
 		{
-			if( m == null || Owner == null || Owner.Guild == null )
+			if ( m == null || Owner == null || Owner.Guild == null )
 				return false;
 
 			return ( m.Guild == Owner.Guild );

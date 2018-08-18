@@ -24,11 +24,11 @@ namespace Server.Spells.Spellweaving
 
 		public void Target( Mobile m )
 		{
-			if( !Caster.CanSee( m ) )
+			if ( !Caster.CanSee( m ) )
 			{
 				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
 			}
-			else if( CheckHSequence( m ) )
+			else if ( CheckHSequence( m ) )
 			{
 				Point3D loc = m.Location;
 				loc.Z += 50;
@@ -42,7 +42,7 @@ namespace Server.Spells.Spellweaving
 
 				int damage;
 
-				if( !m.Player && (((double)m.Hits / (double)m.HitsMax) < percentage ))
+				if ( !m.Player && (((double)m.Hits / (double)m.HitsMax) < percentage ))
 				{
 					damage = 300;
 				}
@@ -78,7 +78,7 @@ namespace Server.Spells.Spellweaving
 
 			protected override void OnTarget( Mobile m, object o )
 			{
-				if( o is Mobile )
+				if ( o is Mobile )
 				{
 					m_Owner.Target( (Mobile)o );
 				}

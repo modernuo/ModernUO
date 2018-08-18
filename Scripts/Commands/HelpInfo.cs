@@ -34,14 +34,14 @@ namespace Server.Commands
 		[Description( "Gives information on a specified command, or when no argument specified, displays a gump containing all commands" )]
 		private static void HelpInfo_OnCommand( CommandEventArgs e )
 		{
-			if( e.Length > 0 )
+			if ( e.Length > 0 )
 			{
 				string arg = e.GetString( 0 ).ToLower();
 				if (m_HelpInfos.TryGetValue( arg, out CommandInfo c ))
 				{
 					Mobile m = e.Mobile;
 
-					if( m.AccessLevel >= c.AccessLevel )
+					if ( m.AccessLevel >= c.AccessLevel )
 						m.SendGump( new CommandInfoGump( c ) );
 					else
 						m.SendMessage( "You don't have access to that command." );
@@ -73,19 +73,17 @@ namespace Server.Commands
 
 				object[] attrs = mi.GetCustomAttributes( typeof( UsageAttribute ), false );
 
-				if( attrs.Length == 0 )
+				if ( attrs.Length == 0 )
 					continue;
 
 				UsageAttribute usage = attrs[0] as UsageAttribute;
 
 				attrs = mi.GetCustomAttributes( typeof( DescriptionAttribute ), false );
 
-				if( attrs.Length == 0 )
+				if ( attrs.Length == 0 )
 					continue;
 
-				DescriptionAttribute desc = attrs[0] as DescriptionAttribute;
-
-				if( usage == null || desc == null )
+				if ( usage == null || !(attrs[0] is DescriptionAttribute desc) )
 					continue;
 
 				attrs = mi.GetCustomAttributes( typeof( AliasesAttribute ), false );
@@ -94,7 +92,7 @@ namespace Server.Commands
 
 				string descString = desc.Description.Replace( "<", "(" ).Replace( ">", ")" );
 
-				if( aliases == null )
+				if ( aliases == null )
 					list.Add( new CommandInfo( e.AccessLevel, e.Command, null, usage.Usage, descString ) );
 				else
 				{
@@ -121,7 +119,7 @@ namespace Server.Commands
 				string usage = command.Usage;
 				string desc = command.Description;
 
-				if( usage == null || desc == null )
+				if ( usage == null || desc == null )
 					continue;
 
 				string[] cmds = command.Commands;
@@ -133,31 +131,31 @@ namespace Server.Commands
 
 				desc = desc.Replace( "<", "(" ).Replace( ">", ")" );
 
-				if( command.Supports != CommandSupport.Single )
+				if ( command.Supports != CommandSupport.Single )
 				{
 					StringBuilder sb = new StringBuilder( 50 + desc.Length );
 
 					sb.Append( "Modifiers: " );
 
-					if( (command.Supports & CommandSupport.Global) != 0 )
+					if ( (command.Supports & CommandSupport.Global) != 0 )
 						sb.Append( "<i>Global</i>, " );
 
-					if( (command.Supports & CommandSupport.Online) != 0 )
+					if ( (command.Supports & CommandSupport.Online) != 0 )
 						sb.Append( "<i>Online</i>, " );
 
-					if( (command.Supports & CommandSupport.Region) != 0 )
+					if ( (command.Supports & CommandSupport.Region) != 0 )
 						sb.Append( "<i>Region</i>, " );
 
-					if( (command.Supports & CommandSupport.Contained) != 0 )
+					if ( (command.Supports & CommandSupport.Contained) != 0 )
 						sb.Append( "<i>Contained</i>, " );
 
-					if( (command.Supports & CommandSupport.Multi) != 0 )
+					if ( (command.Supports & CommandSupport.Multi) != 0 )
 						sb.Append( "<i>Multi</i>, " );
 
-					if( (command.Supports & CommandSupport.Area) != 0 )
+					if ( (command.Supports & CommandSupport.Area) != 0 )
 						sb.Append( "<i>Area</i>, " );
 
-					if( (command.Supports & CommandSupport.Self) != 0 )
+					if ( (command.Supports & CommandSupport.Self) != 0 )
 						sb.Append( "<i>Self</i>, " );
 
 					sb.Remove( sb.Length - 2, 2 );
@@ -190,7 +188,7 @@ namespace Server.Commands
 				string usage = command.Usage;
 				string desc = command.Description;
 
-				if( usage == null || desc == null )
+				if ( usage == null || desc == null )
 					continue;
 
 				string[] cmds = command.Accessors;
@@ -222,7 +220,7 @@ namespace Server.Commands
 
 			foreach( CommandInfo c in m_SortedHelpInfo )
 			{
-				if( !m_HelpInfos.ContainsKey( c.Name.ToLower() ) )
+				if ( !m_HelpInfos.ContainsKey( c.Name.ToLower() ) )
 					m_HelpInfos.Add( c.Name.ToLower(), c );
 			}
 		}
@@ -239,13 +237,13 @@ namespace Server.Commands
 			{
 				m_Page = page;
 
-				if( list == null )
+				if ( list == null )
 				{
 					m_List = new List<CommandInfo>();
 
 					foreach( CommandInfo c in m_SortedHelpInfo )
 					{
-						if( from.AccessLevel >= c.AccessLevel )
+						if ( from.AccessLevel >= c.AccessLevel )
 							m_List.Add( c );
 					}
 				}
@@ -255,14 +253,14 @@ namespace Server.Commands
 
 				AddNewPage();
 
-				if( m_Page > 0 )
+				if ( m_Page > 0 )
 					AddEntryButton( 20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight );
 				else
 					AddEntryHeader( 20 );
 
 				AddEntryHtml( 160, Center( String.Format( "Page {0} of {1}", m_Page+1, (m_List.Count + EntriesPerPage - 1) / EntriesPerPage ) ) );
 
-				if( (m_Page + 1) * EntriesPerPage < m_List.Count )
+				if ( (m_Page + 1) * EntriesPerPage < m_List.Count )
 					AddEntryButton( 20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight );
 				else
 					AddEntryHeader( 20 );
@@ -272,9 +270,9 @@ namespace Server.Commands
 				for( int i = m_Page * EntriesPerPage, line = 0; line < EntriesPerPage && i < m_List.Count; ++i, ++line )
 				{
 					CommandInfo c = m_List[i];
-					if( from.AccessLevel >= c.AccessLevel )
+					if ( from.AccessLevel >= c.AccessLevel )
 					{
-						if( (int)c.AccessLevel != last )
+						if ( (int)c.AccessLevel != last )
 						{
 							AddNewLine();
 
@@ -308,14 +306,14 @@ namespace Server.Commands
 						}
 					case 1:
 						{
-							if( m_Page > 0 )
+							if ( m_Page > 0 )
 								m.SendGump( new CommandListGump( m_Page - 1, m, m_List ) );
 
 							break;
 						}
 					case 2:
 						{
-							if( (m_Page + 1) * EntriesPerPage < m_SortedHelpInfo.Count )
+							if ( (m_Page + 1) * EntriesPerPage < m_SortedHelpInfo.Count )
 								m.SendGump( new CommandListGump( m_Page + 1, m, m_List ) );
 
 							break;
@@ -325,11 +323,11 @@ namespace Server.Commands
 
 							int v = info.ButtonID - 3;
 
-							if( v >= 0 && v < m_List.Count )
+							if ( v >= 0 && v < m_List.Count )
 							{
 								CommandInfo c = m_List[v];
 
-								if( m.AccessLevel >= c.AccessLevel )
+								if ( m.AccessLevel >= c.AccessLevel )
 								{
 									m.SendGump( new CommandInfoGump( c ) );
 									m.SendGump( new CommandListGump( m_Page, m, m_List ) );
@@ -387,13 +385,13 @@ namespace Server.Commands
 
 				string[] aliases = info.Aliases;
 
-				if( aliases != null && aliases.Length != 0 )
+				if ( aliases != null && aliases.Length != 0 )
 				{
 					sb.Append( String.Format( "Alias{0}: ", aliases.Length == 1 ? "" : "es" ) );
 
 					for( int i = 0; i < aliases.Length; ++i )
 					{
-						if( i != 0 )
+						if ( i != 0 )
 							sb.Append( ", " );
 
 						sb.Append( aliases[i] );

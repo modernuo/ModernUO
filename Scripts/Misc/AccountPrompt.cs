@@ -13,7 +13,7 @@ namespace Server.Misc
 				Console.WriteLine( "This server has no accounts." );
 				Console.Write( "Do you want to create the owner account now? (y/n)" );
 
-				if( Console.ReadKey( true ).Key == ConsoleKey.Y )
+				if ( Console.ReadKey( true ).Key == ConsoleKey.Y )
 				{
 					Console.WriteLine();
 

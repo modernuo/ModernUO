@@ -30,7 +30,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( ItemID == 0x1F47 )
+			if ( ItemID == 0x1F47 )
 				ItemID = 0x14F7;
 		}
 	}

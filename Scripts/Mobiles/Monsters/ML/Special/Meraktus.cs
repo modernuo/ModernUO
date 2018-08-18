@@ -187,10 +187,10 @@ namespace Server.Mobiles
 			for (int i = 0; i < targets.Count; ++i)
 			{
 				Mobile m = (Mobile)targets[i];
-				if( m != null && !m.Deleted && m is PlayerMobile )
+				if ( m != null && !m.Deleted && m is PlayerMobile )
 				{
 					PlayerMobile pm = m as PlayerMobile;
-					if(pm != null && pm.Mounted)
+					if (pm != null && pm.Mounted)
 					{
 						pm.Mount.Rider=null;
 					}

@@ -175,8 +175,8 @@ namespace Server.Engines.Harvest
 		public override void OnHarvestStarted( Mobile from, Item tool, HarvestDefinition def, object toHarvest )
 		{
 			base.OnHarvestStarted( from, tool, def, toHarvest );
-			
-			if( Core.ML )
+
+			if ( Core.ML )
 				from.RevealingAction();
 		}
 

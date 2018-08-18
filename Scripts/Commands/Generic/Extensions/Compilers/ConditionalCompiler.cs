@@ -87,22 +87,22 @@ namespace Server.Commands.Generic
 			}
 			else
 			{
-				if ( m_Value is int )
-					method.Load( (int) m_Value );
-				else if ( m_Value is long )
-					method.Load( (long) m_Value );
-				else if ( m_Value is float )
-					method.Load( (float) m_Value );
-				else if ( m_Value is double )
-					method.Load( (double) m_Value );
-				else if ( m_Value is char )
-					method.Load( (char) m_Value );
-				else if ( m_Value is bool )
-					method.Load( (bool) m_Value );
-				else if ( m_Value is string )
-					method.Load( (string) m_Value );
-				else if ( m_Value is Enum )
-					method.Load( (Enum) m_Value );
+				if ( m_Value is int i )
+					method.Load( i );
+				else if ( m_Value is long l )
+					method.Load( l );
+				else if ( m_Value is float f )
+					method.Load( f );
+				else if ( m_Value is double d )
+					method.Load( d );
+				else if ( m_Value is char c )
+					method.Load( c );
+				else if ( m_Value is bool b )
+					method.Load( b );
+				else if ( m_Value is string s )
+					method.Load( s );
+				else if ( m_Value is Enum e )
+					method.Load( e );
 				else
 					throw new InvalidOperationException( "Unrecognized comparison value." );
 			}
@@ -110,10 +110,8 @@ namespace Server.Commands.Generic
 
 		public void Acquire( TypeBuilder typeBuilder, ILGenerator il, string fieldName )
 		{
-			if ( m_Value is string )
+			if ( m_Value is string toParse )
 			{
-				string toParse = (string) m_Value;
-
 				if ( !m_Type.IsValueType && toParse == "null" )
 				{
 					m_Value = null;
@@ -391,7 +389,7 @@ namespace Server.Commands.Generic
 			bool inverse = false;
 
 			bool couldCompare =
-			emitter.CompareTo( 1, delegate()
+			emitter.CompareTo( 1, delegate
 			{
 				m_Value.Load( emitter );
 			} );

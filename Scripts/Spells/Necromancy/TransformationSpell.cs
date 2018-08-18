@@ -26,7 +26,7 @@ namespace Server.Spells.Necromancy
 
 		public override bool CheckCast()
 		{
-			if( !TransformationSpellHelper.CheckCast( Caster, this ) )
+			if ( !TransformationSpellHelper.CheckCast( Caster, this ) )
 				return false;
 
 			return base.CheckCast();

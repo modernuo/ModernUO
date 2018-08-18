@@ -165,9 +165,7 @@ namespace Server.Factions
 			if ( pack == null )
 				return false;
 
-			Item weapon = m_Guard.Weapon as Item;
-
-			if ( weapon != null && weapon.Parent == m_Guard && !(weapon is Fists) )
+			if ( m_Guard.Weapon is Item weapon && weapon.Parent == m_Guard && !(weapon is Fists) )
 			{
 				pack.DropItem( weapon );
 				return true;
@@ -180,10 +178,7 @@ namespace Server.Factions
 		{
 			Container pack = m_Guard.Backpack;
 
-			if ( pack == null )
-				return false;
-
-			Item weapon = pack.FindItemByType( typeof( BaseWeapon ) );
+			Item weapon = pack?.FindItemByType( typeof( BaseWeapon ) );
 
 			if ( weapon == null )
 				return false;
@@ -197,10 +192,7 @@ namespace Server.Factions
 
 			Container pack = m_Guard.Backpack;
 
-			if ( pack == null )
-				return false;
-
-			Item bandage = pack.FindItemByType( typeof( Bandage ) );
+			Item bandage = pack?.FindItemByType( typeof( Bandage ) );
 
 			if ( bandage == null )
 				return false;
@@ -214,10 +206,7 @@ namespace Server.Factions
 		{
 			Container pack = m_Guard.Backpack;
 
-			if ( pack == null )
-				return false;
-
-			Item item = pack.FindItemByType( type );
+			Item item = pack?.FindItemByType( type );
 
 			if ( item == null )
 				return false;
@@ -375,7 +364,7 @@ namespace Server.Factions
 
 		public bool CanDispel( Mobile m )
 		{
-			return ( m is BaseCreature && ((BaseCreature)m).Summoned && m_Mobile.CanBeHarmful( m, false ) && !((BaseCreature)m).IsAnimatedDead );
+			return ( m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful( creature, false ) && !creature.IsAnimatedDead );
 		}
 
 		public void RunTo( Mobile m )
@@ -606,7 +595,7 @@ namespace Server.Factions
 				}
 				else if ( IsDamaged && (m_Guard.HitsMax - m_Guard.Hits) > Utility.Random( 200 ) )
 				{
-					if( IsAllowed( GuardAI.Magic ) && ((m_Guard.Hits * 100) / Math.Max( m_Guard.HitsMax, 1 )) < 10 && m_Guard.Home != Point3D.Zero && !Utility.InRange( m_Guard.Location, m_Guard.Home, 15 ) && m_Guard.Mana >= 11 )
+					if ( IsAllowed( GuardAI.Magic ) && ((m_Guard.Hits * 100) / Math.Max( m_Guard.HitsMax, 1 )) < 10 && m_Guard.Home != Point3D.Zero && !Utility.InRange( m_Guard.Location, m_Guard.Home, 15 ) && m_Guard.Mana >= 11 )
 					{
 						spell = new RecallSpell( m_Guard, null, new RunebookEntry( m_Guard.Home, m_Guard.Map, "Guard's Home", null ), null  );
 					}
@@ -768,7 +757,7 @@ namespace Server.Factions
 				if ( spell == null || !spell.Cast() )
 					EquipWeapon();
 			}
-			else if ( m_Mobile.Spell is Spell && ((Spell)m_Mobile.Spell).State == SpellState.Sequencing )
+			else if ( m_Mobile.Spell is Spell spell && spell.State == SpellState.Sequencing )
 			{
 				EquipWeapon();
 			}

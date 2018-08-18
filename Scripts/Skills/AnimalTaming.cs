@@ -119,7 +119,7 @@ namespace Server.SkillHandlers
 
 			public virtual void ResetPacify( object obj )
 			{
-				if( obj is BaseCreature )
+				if ( obj is BaseCreature )
 				{
 					((BaseCreature)obj).BardPacified = true;
 				}
@@ -192,7 +192,7 @@ namespace Server.SkillHandlers
 								creature.PlaySound( creature.GetAngerSound() );
 								creature.Direction = creature.GetDirectionTo( from );
 
-								if( creature.BardPacified && Utility.RandomDouble() > .24)
+								if ( creature.BardPacified && Utility.RandomDouble() > .24)
 								{
 									Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( ResetPacify ), creature );
 								}
@@ -400,7 +400,7 @@ namespace Server.SkillHandlers
 					if ( p == null )
 						return false;
 
-					if( m_Creature.InRange( new Point3D( p ), 1 ) )
+					if ( m_Creature.InRange( new Point3D( p ), 1 ) )
 						return true;
 
 					MovementPath path = new MovementPath( m_Creature, new Point3D( p ) );

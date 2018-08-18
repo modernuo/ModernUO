@@ -32,7 +32,7 @@ namespace Server.Items
 
 			if ( !m.InRange( item.GetWorldLocation(), ResurrectRange ) )
 				m.SendLocalizedMessage( 500446 ); // That is too far away.
-			else if( m.Map != null && m.Map.CanFit( m.Location, 16, false, false ) )
+			else if ( m.Map != null && m.Map.CanFit( m.Location, 16, false, false ) )
 			{
 				m.CloseGump( typeof( ResurrectGump ) );
 				m.SendGump( new ResurrectGump( m, ResurrectMessage.VirtueShrine ) );

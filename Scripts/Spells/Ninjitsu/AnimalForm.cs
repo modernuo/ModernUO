@@ -191,7 +191,7 @@ namespace Server.Spells.Ninjitsu
 			}
 
 			/*
-			if( !m.CheckSkill( SkillName.Ninjitsu, entry.ReqSkill, entry.ReqSkill + 37.5 ) )
+			if ( !m.CheckSkill( SkillName.Ninjitsu, entry.ReqSkill, entry.ReqSkill + 37.5 ) )
 				return MorphResult.Fail;
 			 *
 			 * On OSI,it seems you can only gain starting at '0' using Animal form.
@@ -472,7 +472,7 @@ namespace Server.Spells.Ninjitsu
 				{
 					m_Caster.SendLocalizedMessage(1060174, mana.ToString()); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				}
-				else if( ( m_Caster is PlayerMobile ) && ( m_Caster as PlayerMobile ).MountBlockReason != BlockMountType.None )
+				else if ( ( m_Caster is PlayerMobile ) && ( m_Caster as PlayerMobile ).MountBlockReason != BlockMountType.None )
 				{
 					m_Caster.SendLocalizedMessage( 1063108 ); // You cannot use this ability right now.
 				}

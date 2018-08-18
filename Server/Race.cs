@@ -67,14 +67,14 @@ namespace Server
 
 			for( int i = 0; i < m_RaceNames.Length; ++i )
 			{
-				if( Insensitive.Equals( m_RaceNames[i], value ) )
+				if ( Insensitive.Equals( m_RaceNames[i], value ) )
 					return m_RaceValues[i];
 			}
 
 			int index;
-			if( int.TryParse( value, out index ) )
+			if ( int.TryParse( value, out index ) )
 			{
-				if( index >= 0 && index < m_Races.Length && m_Races[index] != null )
+				if ( index >= 0 && index < m_Races.Length && m_Races[index] != null )
 					return m_Races[index];
 			}
 
@@ -83,7 +83,7 @@ namespace Server
 
 		private static void CheckNamesAndValues()
 		{
-			if( m_RaceNames != null && m_RaceNames.Length == m_AllRaces.Count )
+			if ( m_RaceNames != null && m_RaceNames.Length == m_AllRaces.Count )
 				return;
 
 			m_RaceNames = new string[m_AllRaces.Count];
@@ -151,7 +151,7 @@ namespace Server
 
 		public virtual int Body( Mobile m )
 		{
-			if( m.Alive )
+			if ( m.Alive )
 				return AliveBody( m.Female );
 
 			return GhostBody( m.Female );

@@ -220,7 +220,7 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			if( version < 1 )
+			if ( version < 1 )
 			{
 				for ( int i = 0; i < Skills.Length; ++i )
 				{

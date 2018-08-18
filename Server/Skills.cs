@@ -366,7 +366,7 @@ namespace Server
 
 				double raceBonus = m_Owner.Owner.RacialSkillBonus;
 
-				if( raceBonus > value )
+				if ( raceBonus > value )
 					value = raceBonus;
 
 				return value;
@@ -381,7 +381,7 @@ namespace Server
 				double baseValue = Base;
 				double inv = 100.0 - baseValue;
 
-				if( inv < 0.0 ) inv = 0.0;
+				if ( inv < 0.0 ) inv = 0.0;
 
 				inv /= 100.0;
 
@@ -390,7 +390,7 @@ namespace Server
 
 				statsOffset *= inv;
 
-				if( statsOffset > statTotal )
+				if ( statsOffset > statTotal )
 					statsOffset = statTotal;
 
 				double value = baseValue + statsOffset;
@@ -405,11 +405,11 @@ namespace Server
 				{
 					SkillMod mod = mods[i];
 
-					if( mod.Skill == (SkillName)m_Info.SkillID )
+					if ( mod.Skill == (SkillName)m_Info.SkillID )
 					{
-						if( mod.Relative )
+						if ( mod.Relative )
 						{
-							if( mod.ObeyCap )
+							if ( mod.ObeyCap )
 								bonusObey += mod.Value;
 							else
 								bonusNotObey += mod.Value;
@@ -425,11 +425,11 @@ namespace Server
 
 				value += bonusNotObey;
 
-				if( value < Cap )
+				if ( value < Cap )
 				{
 					value += bonusObey;
 
-					if( value > Cap )
+					if ( value > Cap )
 						value = Cap;
 				}
 
@@ -878,7 +878,7 @@ namespace Server
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
 		public int Cap
 		{
-			get{ return m_Cap; } 
+			get{ return m_Cap; }
 			set{ m_Cap = value; }
 		}
 

@@ -46,7 +46,7 @@ namespace Server.Gumps
 			AddButton( 10, height - 30, 4005, 4007, 1, GumpButtonType.Reply, 0 );
 			AddHtmlLocalized( 40, height - 30, 170, 20, 1011036, 32767, false, false ); // OKAY
 
-			if( m_CancelButton )
+			if ( m_CancelButton )
 			{
 				AddButton( 10 + ((width - 20) / 2), height - 30, 4005, 4007, 0, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 40 + ((width - 20) / 2), height - 30, 170, 20, 1011012, 32767, false, false ); // CANCEL

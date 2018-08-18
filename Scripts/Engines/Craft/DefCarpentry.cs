@@ -39,7 +39,7 @@ namespace Server.Engines.Craft
 
 		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
 		{
-			if( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
+			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
 			else if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
@@ -98,7 +98,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( TallMusicStand ),				1044294, 1044315,	81.5, 106.5,	typeof( Log ), 1044041, 20, 1044351 );
 			AddCraft( typeof( Easle ),						1044294, 1044317,	86.8, 111.8,	typeof( Log ), 1044041, 20, 1044351 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( RedHangingLantern ), 1044294, 1029412, 65.0, 90.0, typeof( Log ), 1044041, 5, 1044351 );
 				AddRes( index, typeof( BlankScroll ), 1044377, 10, 1044378 );
@@ -119,7 +119,7 @@ namespace Server.Engines.Craft
 				SetNeededExpansion( index, Expansion.SE );
 			}
 
-			if( Core.AOS )	//Duplicate Entries to preserve ordering depending on era
+			if ( Core.AOS )	//Duplicate Entries to preserve ordering depending on era
 			{
 				index = AddCraft( typeof( FishingPole ), 1044294, 1023519, 68.4, 93.4, typeof( Log ), 1044041, 5, 1044351 ); //This is in the categor of Other during AoS
 				AddSkill( index, SkillName.Tailoring, 40.0, 45.0 );
@@ -177,7 +177,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( YewWoodTable ),				1044291, 1044307,	63.1,  88.1,	typeof( Log ), 1044041, 23, 1044351 );
 			AddCraft( typeof( LargeTable ),					1044291, 1044308,	84.2, 109.2,	typeof( Log ), 1044041, 27, 1044351 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( ElegantLowTable ),	1044291, 1030265,	80.0, 105.0,	typeof( Log ), 1044041, 35, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -203,7 +203,7 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( FancyArmoire ),				1044292, 1044312,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );
 			AddCraft( typeof( Armoire ),					1044292, 1022643,	84.2, 109.2,	typeof( Log ), 1044041, 35, 1044351 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( PlainWoodenChest ),	1044292, 1030251, 90.0, 115.0,	typeof( Log ), 1044041, 30, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -291,14 +291,14 @@ namespace Server.Engines.Craft
 			AddCraft( typeof( GnarledStaff ), Core.ML ? 1044566 : 1044295, 1025112, 78.9, 103.9, typeof( Log ), 1044041, 7, 1044351 );
 			AddCraft( typeof( WoodenShield ), Core.ML ? 1062760 : 1044295, 1027034, 52.6, 77.6, typeof( Log ), 1044041, 9, 1044351 );
 
-			if( !Core.AOS )	//Duplicate Entries to preserve ordering depending on era
+			if ( !Core.AOS )	//Duplicate Entries to preserve ordering depending on era
 			{
 				index = AddCraft( typeof( FishingPole ), Core.ML ? 1044294 : 1044295, 1023519, 68.4, 93.4, typeof( Log ), 1044041, 5, 1044351 ); //This is in the categor of Other during AoS
 				AddSkill( index, SkillName.Tailoring, 40.0, 45.0 );
 				AddRes( index, typeof( Cloth ), 1044286, 5, 1044287 );
 			}
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( Bokuto ), Core.ML ? 1044566 : 1044295, 1030227, 70.0, 95.0, typeof( Log ), 1044041, 6, 1044351 );
 				SetNeededExpansion( index, Expansion.SE );
@@ -386,7 +386,7 @@ namespace Server.Engines.Craft
 			AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );
 			AddRes( index, typeof( Cloth ), 1044286, 15, 1044287 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( BambooFlute ), 1044293, 1030247, 80.0, 105.0, typeof( Log ), 1044041, 15, 1044351 );
 				AddSkill( index, SkillName.Musicianship, 45.0, 50.0 );

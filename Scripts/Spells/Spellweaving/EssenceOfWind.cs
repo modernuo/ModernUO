@@ -19,7 +19,7 @@ namespace Server.Spells.Spellweaving
 
 		public override void OnCast()
 		{
-			if( CheckSequence() )
+			if ( CheckSequence() )
 			{
 				Caster.PlaySound( 0x5C6 );
 
@@ -37,7 +37,7 @@ namespace Server.Spells.Spellweaving
 
 				foreach( Mobile m in Caster.GetMobilesInRange( range ) )
 				{
-					if( Caster != m && Caster.InLOS( m ) && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
+					if ( Caster != m && Caster.InLOS( m ) && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
 						targets.Add( m );
 				}
 
@@ -49,7 +49,7 @@ namespace Server.Spells.Spellweaving
 
 					SpellHelper.Damage( this, m, damage, 0, 0, 100, 0, 0 );
 
-					if( !CheckResisted( m ) )	//No message on resist
+					if ( !CheckResisted( m ) )	//No message on resist
 					{
 						m_Table[m] = new EssenceOfWindInfo( m, fcMalus, ssiMalus, duration );
 
@@ -131,7 +131,7 @@ namespace Server.Spells.Spellweaving
 			{
 				Stop();
 				/*
-				if( message )
+				if ( message )
 				{
 				}
 				*/

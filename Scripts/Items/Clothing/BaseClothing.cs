@@ -184,29 +184,29 @@ namespace Server.Items
 			if ( !Ethics.Ethic.CheckEquip( from, this ) )
 				return false;
 
-			if( from.AccessLevel < AccessLevel.GameMaster )
+			if ( from.AccessLevel < AccessLevel.GameMaster )
 			{
-				if( RequiredRace != null && from.Race != RequiredRace )
+				if ( RequiredRace != null && from.Race != RequiredRace )
 				{
-					if( RequiredRace == Race.Elf )
+					if ( RequiredRace == Race.Elf )
 						from.SendLocalizedMessage( 1072203 ); // Only Elves may use this.
 					else
 						from.SendMessage( "Only {0} may use this.", RequiredRace.PluralName );
 
 					return false;
 				}
-				else if( !AllowMaleWearer && !from.Female )
+				else if ( !AllowMaleWearer && !from.Female )
 				{
-					if( AllowFemaleWearer )
+					if ( AllowFemaleWearer )
 						from.SendLocalizedMessage( 1010388 ); // Only females can wear this.
 					else
 						from.SendMessage( "You may not wear this." );
 
 					return false;
 				}
-				else if( !AllowFemaleWearer && from.Female )
+				else if ( !AllowFemaleWearer && from.Female )
 				{
-					if( AllowMaleWearer )
+					if ( AllowMaleWearer )
 						from.SendLocalizedMessage( 1063343 ); // Only males can wear this.
 					else
 						from.SendMessage( "You may not wear this." );
@@ -218,7 +218,7 @@ namespace Server.Items
 					int strBonus = ComputeStatBonus( StatType.Str );
 					int strReq = ComputeStatReq( StatType.Str );
 
-					if( from.Str < strReq || (from.Str + strBonus) < 1 )
+					if ( from.Str < strReq || (from.Str + strBonus) < 1 )
 					{
 						from.SendLocalizedMessage( 500213 ); // You are not strong enough to equip that.
 						return false;
@@ -296,9 +296,9 @@ namespace Server.Items
 				{
 					BaseClothing clothing = (BaseClothing)item;
 
-					if( clothing.RequiredRace != null && m.Race != clothing.RequiredRace )
+					if ( clothing.RequiredRace != null && m.Race != clothing.RequiredRace )
 					{
-						if( clothing.RequiredRace == Race.Elf )
+						if ( clothing.RequiredRace == Race.Elf )
 							m.SendLocalizedMessage( 1072203 ); // Only Elves may use this.
 						else
 							m.SendMessage( "Only {0} may use this.", clothing.RequiredRace.PluralName );
@@ -568,7 +568,7 @@ namespace Server.Items
 			if ( m_Quality == ClothingQuality.Exceptional )
 				list.Add( 1060636 ); // exceptional
 
-			if( RequiredRace == Race.Elf )
+			if ( RequiredRace == Race.Elf )
 				list.Add( 1075086 ); // Elves Only
 
 			if ( m_AosSkillBonuses != null )

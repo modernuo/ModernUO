@@ -12,13 +12,13 @@ namespace Server
 
 		public static void Initialize()
 		{
-			if( Enabled )
+			if ( Enabled )
 			{
 				EventSink.ClientVersionReceived += new ClientVersionReceivedHandler( delegate( ClientVersionReceivedArgs args )
 				{
 					PlayerMobile pm = args.State.Mobile as PlayerMobile;
 
-					if( pm != null )
+					if ( pm != null )
 						Timer.DelayCall( TimeSpan.Zero, pm.ResendBuffs );
 				} );
 			}
@@ -81,7 +81,7 @@ namespace Server
 				{
 					PlayerMobile pm = m as PlayerMobile;
 
-					if( pm == null )
+					if ( pm == null )
 						return;
 
 					pm.RemoveBuff( this );
@@ -152,7 +152,7 @@ namespace Server
 		{
 			PlayerMobile pm = m as PlayerMobile;
 
-			if( pm != null )
+			if ( pm != null )
 				pm.AddBuff( b );
 		}
 
@@ -160,7 +160,7 @@ namespace Server
 		{
 			PlayerMobile pm = m as PlayerMobile;
 
-			if( pm != null )
+			if ( pm != null )
 				pm.RemoveBuff( b );
 		}
 
@@ -168,7 +168,7 @@ namespace Server
 		{
 			PlayerMobile pm = m as PlayerMobile;
 
-			if( pm != null )
+			if ( pm != null )
 				pm.RemoveBuff( b );
 		}
 		#endregion
@@ -257,7 +257,7 @@ namespace Server
 
 			m_Stream.Fill( 4 );
 
-			if( length < TimeSpan.Zero )
+			if ( length < TimeSpan.Zero )
 				length = TimeSpan.Zero;
 
 			m_Stream.Write( (short)length.TotalSeconds );	//Time in seconds
@@ -266,7 +266,7 @@ namespace Server
 			m_Stream.Write( (int)titleCliloc );
 			m_Stream.Write( (int)secondaryCliloc );
 
-			if( !hasArgs )
+			if ( !hasArgs )
 			{
 				//m_Stream.Fill( 2 );
 				m_Stream.Fill( 10 );

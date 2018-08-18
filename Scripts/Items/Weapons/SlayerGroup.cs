@@ -100,10 +100,10 @@ namespace Server.Items
 			abyss.Opposition = new SlayerGroup[]{ elemental, fey };
 			abyss.FoundOn = new Type[]{ typeof( BloodElemental ) };
 
-			if( Core.AOS )
+			if ( Core.AOS )
 			{
 				abyss.Super = new SlayerEntry( SlayerName.Exorcism, typeof( AbysmalHorror ), typeof( ArcaneDaemon ), typeof( Balron ), typeof( BoneDemon ), typeof( ChaosDaemon ), typeof( Daemon ), typeof( SummonedDaemon ), typeof( DemonKnight ), typeof( Devourer ), typeof( EnslavedGargoyle ), typeof( FanDancer ), typeof( FireGargoyle ), typeof( Gargoyle ), typeof( GargoyleDestroyer ), typeof( GargoyleEnforcer ), typeof( Gibberling ), typeof( HordeMinion ), typeof( IceFiend ), typeof( Imp ), typeof( Impaler ), typeof( Moloch ), typeof( Oni ), typeof( Ravager ), typeof( Semidar ), typeof( StoneGargoyle ), typeof( Succubus ), typeof( TsukiWolf ) );
-	
+
 				abyss.Entries = new SlayerEntry[]
 					{
 						// Daemon Dismissal & Balron Damnation have been removed and moved up to super slayer on OSI.

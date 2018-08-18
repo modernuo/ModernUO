@@ -9,8 +9,8 @@ namespace Server
 {
 	public class HonorVirtue
 	{
-		
-		private static readonly TimeSpan UseDelay = TimeSpan.FromMinutes( 5.0 ); 
+
+		private static readonly TimeSpan UseDelay = TimeSpan.FromMinutes( 5.0 );
 
 		public static void Initialize()
 		{
@@ -88,9 +88,9 @@ namespace Server
 				pm.SendLocalizedMessage( 1063240, remainingMinutes.ToString() ); // You must wait ~1_HONOR_WAIT~ minutes before embracing honor again
 				return;
 			}
-			
+
 			pm.SendGump( new HonorSelf( pm ) );
-			
+
 		}
 
 		public static void ActivateEmbrace( PlayerMobile pm )
@@ -111,7 +111,7 @@ namespace Server
 			pm.SendLocalizedMessage( 1063235 ); // You embrace your honor
 
 			Timer.DelayCall( TimeSpan.FromSeconds( duration ),
-				delegate() {
+				delegate {
 					pm.HonorActive = false;
 					pm.LastHonorUse = DateTime.UtcNow;
 					pm.SendLocalizedMessage( 1063236 ); // You no longer embrace your honor
@@ -149,8 +149,8 @@ namespace Server
 			if ( target.Body.IsHuman && (cret == null || (!cret.AlwaysAttackable && !cret.AlwaysMurderer)) )
 			{
 
-				if( reg == null || reg.IsDisabled() )
-				{				
+				if ( reg == null || reg.IsDisabled() )
+				{
 					//Allow honor on blue if Out of guardzone
 				}
 				else if ( map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0 )
@@ -164,7 +164,7 @@ namespace Server
 				}
 			}
 
-			if( Core.ML && target is PlayerMobile )
+			if ( Core.ML && target is PlayerMobile )
 			{
 				source.SendLocalizedMessage( 1075614 ); // You cannot honor other players.
 				return;
@@ -234,7 +234,7 @@ namespace Server
 			source.m_hontime = (DateTime.UtcNow + TimeSpan.FromMinutes( 40 ));
 
 			Timer.DelayCall( TimeSpan.FromMinutes( 40 ),
-				delegate() {
+				delegate {
 					if (source.m_hontime < DateTime.UtcNow && source.SentHonorContext != null)
 					{
 						Cancel();

@@ -45,7 +45,7 @@ namespace Server.Spells.Seventh
 				Caster.SendLocalizedMessage( 1010521 ); // You cannot polymorph while you have a Town Sigil
 				return false;
 			}
-			else if( TransformationSpellHelper.UnderTransformation( Caster ) )
+			else if ( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1061633 ); // You cannot polymorph while in that form.
 				return false;
@@ -62,7 +62,7 @@ namespace Server.Spells.Seventh
 			}
 			else if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
-				if( Core.ML )
+				if ( Core.ML )
 					EndPolymorph( Caster );
 				else
 					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
@@ -96,12 +96,12 @@ namespace Server.Spells.Seventh
 			}
 			else if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
-				if( Core.ML )
+				if ( Core.ML )
 					EndPolymorph( Caster );
 				else
 					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 			}
-			else if( TransformationSpellHelper.UnderTransformation( Caster ) )
+			else if ( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1061633 ); // You cannot polymorph while in that form.
 			}
@@ -141,7 +141,7 @@ namespace Server.Spells.Seventh
 						BaseArmor.ValidateMobile( Caster );
 						BaseClothing.ValidateMobile( Caster );
 
-						if( !Core.ML )
+						if ( !Core.ML )
 						{
 							StopTimer( Caster );
 
@@ -179,7 +179,7 @@ namespace Server.Spells.Seventh
 
 		private static void EndPolymorph( Mobile m )
 		{
-			if( !m.CanBeginAction( typeof( PolymorphSpell ) ) )
+			if ( !m.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
 				m.BodyMod = 0;
 				m.HueMod = -1;

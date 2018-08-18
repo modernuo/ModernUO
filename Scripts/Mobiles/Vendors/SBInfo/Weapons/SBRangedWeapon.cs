@@ -22,7 +22,7 @@ namespace Server.Mobiles
 			{
 				Add( new GenericBuyInfo( typeof( Crossbow ), 55, 20, 0xF50, 0 ) );
 				Add( new GenericBuyInfo( typeof( HeavyCrossbow ), 55, 20, 0x13FD, 0 ) );
-				if( Core.AOS )
+				if ( Core.AOS )
 				{
 					Add( new GenericBuyInfo( typeof( RepeatingCrossbow ), 46, 20, 0x26C3, 0 ) );
 					Add( new GenericBuyInfo( typeof( CompositeBow ), 45, 20, 0x26C2, 0 ) );
@@ -48,7 +48,7 @@ namespace Server.Mobiles
 				Add( typeof( Bow ), 17 );
 				Add( typeof( Crossbow ), 25 );
 
-				if( Core.AOS )
+				if ( Core.AOS )
 				{
 					Add( typeof( CompositeBow ), 23 );
 					Add( typeof( RepeatingCrossbow ), 22 );

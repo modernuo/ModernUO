@@ -40,7 +40,7 @@ namespace Server.Factions
 
 			AddItem( Immovable( Rehued( new ChainChest(), 2125 ) ) );
 			AddItem( Immovable( Rehued( new ChainLegs(), 2125 ) ) );
-			AddItem( Immovable( Rehued( new ChainCoif(), 2125 ) ) );
+			AddItem( Immovable( Rehued( new ChainCoif (), 2125 ) ) );
 			AddItem( Immovable( Rehued( new PlateArms(), 2125 ) ) );
 			AddItem( Immovable( Rehued( new PlateGloves(), 2125 ) ) );
 

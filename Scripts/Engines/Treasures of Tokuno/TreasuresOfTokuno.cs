@@ -89,7 +89,7 @@ namespace Server.Misc
 		{
 			get
 			{
-				if( m_GreaterArtifacts == null )
+				if ( m_GreaterArtifacts == null )
 				{
 					m_GreaterArtifacts = new Type[ToTRedeemGump.NormalRewards.Length][];
 
@@ -112,11 +112,11 @@ namespace Server.Misc
 		{
 			Region r = m.Region;
 
-			if( r.IsPartOf( typeof( Server.Regions.HouseRegion ) ) || Server.Multis.BaseBoat.FindBoatAt( m, m.Map ) != null )
+			if ( r.IsPartOf( typeof( Server.Regions.HouseRegion ) ) || Server.Multis.BaseBoat.FindBoatAt( m, m.Map ) != null )
 				return false;
 			//TODO: a CanReach of something check as opposed to above?
 
-			if( r.IsPartOf( "Yomotsu Mines" ) || r.IsPartOf( "Fan Dancer's Dojo" ) )
+			if ( r.IsPartOf( "Yomotsu Mines" ) || r.IsPartOf( "Fan Dancer's Dojo" ) )
 				return true;
 
 			return (m.Map == Map.Tokuno);
@@ -127,10 +127,10 @@ namespace Server.Misc
 			PlayerMobile pm = killer as PlayerMobile;
 			BaseCreature bc = victim as BaseCreature;
 
-			if( DropEra == TreasuresOfTokunoEra.None || pm == null || bc == null || !CheckLocation( bc ) || !CheckLocation( pm )|| !killer.InRange( victim, 18 ))
+			if ( DropEra == TreasuresOfTokunoEra.None || pm == null || bc == null || !CheckLocation( bc ) || !CheckLocation( pm )|| !killer.InRange( victim, 18 ))
 				return;
 
-			if( bc.Controlled || bc.Owners.Count > 0 || bc.Fame <= 0 )
+			if ( bc.Controlled || bc.Owners.Count > 0 || bc.Fame <= 0 )
 				return;
 
 			//25000 for 1/100 chance, 10 hyrus
@@ -150,7 +150,7 @@ namespace Server.Misc
 
 			double chance = A * Math.Pow( 10, B * x );
 
-			if( chance > Utility.RandomDouble() )
+			if ( chance > Utility.RandomDouble() )
 			{
 				Item i = null;
 
@@ -161,13 +161,13 @@ namespace Server.Misc
 				catch
 				{ }
 
-				if( i != null )
+				if ( i != null )
 				{
 					pm.SendLocalizedMessage( 1062317 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
 
-					if( !pm.PlaceInBackpack( i ) )
+					if ( !pm.PlaceInBackpack( i ) )
 					{
-						if( pm.BankBox != null && pm.BankBox.TryDropItem( killer, i, false ) )
+						if ( pm.BankBox != null && pm.BankBox.TryDropItem( killer, i, false ) )
 							pm.SendLocalizedMessage( 1079730 ); // The item has been placed into your bank box.
 						else
 						{
@@ -246,40 +246,40 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if( m.Alive && m is PlayerMobile )
+			if ( m.Alive && m is PlayerMobile )
 			{
 				PlayerMobile pm = (PlayerMobile)m;
 
 				int range = 3;
 
-				if( m.Alive && Math.Abs( Z - m.Z ) < 16 && InRange( m, range ) && !InRange( oldLocation, range ) )
+				if ( m.Alive && Math.Abs( Z - m.Z ) < 16 && InRange( m, range ) && !InRange( oldLocation, range ) )
 				{
-					if( pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward )
+					if ( pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward )
 					{
 						SayTo( pm, 1070980 ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
 						pm.CloseGump( typeof( ToTTurnInGump ) );	//Sanity
 
-						if( !pm.HasGump( typeof( ToTRedeemGump ) ) )
+						if ( !pm.HasGump( typeof( ToTRedeemGump ) ) )
 							pm.SendGump( new ToTRedeemGump( this, false ) );
 					}
 					else
 					{
-						if( pm.ToTItemsTurnedIn == 0 )
+						if ( pm.ToTItemsTurnedIn == 0 )
 							SayTo( pm, 1071013 ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
 						else
 							SayTo( pm, 1070981, String.Format( "{0}\t{1}", pm.ToTItemsTurnedIn, TreasuresOfTokuno.ItemsPerReward ) ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 
 						ArrayList buttons = ToTTurnInGump.FindRedeemableItems( pm );
 
-						if( buttons.Count > 0 && !pm.HasGump( typeof( ToTTurnInGump ) ) )
+						if ( buttons.Count > 0 && !pm.HasGump( typeof( ToTTurnInGump ) ) )
 							pm.SendGump( new ToTTurnInGump( this, buttons ) );
 					}
 				}
 
 				int leaveRange = 7;
 
-				if( !InRange( m, leaveRange ) && InRange( oldLocation, leaveRange ) )
+				if ( !InRange( m, leaveRange ) && InRange( oldLocation, leaveRange ) )
 				{
 					pm.CloseGump( typeof( ToTRedeemGump ) );
 					pm.CloseGump( typeof( ToTTurnInGump ) );
@@ -314,7 +314,7 @@ namespace Server.Gumps
 		public static ArrayList FindRedeemableItems( Mobile m )
 		{
 			Backpack pack = (Backpack)m.Backpack;
-			if( pack == null )
+			if ( pack == null )
 				return new ArrayList();
 
 			ArrayList items = new ArrayList( pack.FindItemsByType( TreasuresOfTokuno.LesserArtifactsTotal ) );
@@ -323,13 +323,13 @@ namespace Server.Gumps
 			for( int i = 0; i < items.Count; i++ )
 			{
 				Item item = (Item)items[i];
-				if( item is ChestOfHeirlooms && !((ChestOfHeirlooms)item).Locked )
+				if ( item is ChestOfHeirlooms && !((ChestOfHeirlooms)item).Locked )
 					continue;
 
-				if( item is ChestOfHeirlooms && ((ChestOfHeirlooms)item).TrapLevel != 10 )
+				if ( item is ChestOfHeirlooms && ((ChestOfHeirlooms)item).TrapLevel != 10 )
 					continue;
 
-				if( item is PigmentsOfTokuno && ((PigmentsOfTokuno)item).Type != PigmentType.None )
+				if ( item is PigmentsOfTokuno && ((PigmentsOfTokuno)item).Type != PigmentType.None )
 					continue;
 
 				buttons.Add( new ItemTileButtonInfo( item ) );
@@ -356,18 +356,18 @@ namespace Server.Gumps
 
 			Item item = ((ItemTileButtonInfo)buttonInfo).Item;
 
-			if( !( pm != null && item.IsChildOf( pm.Backpack ) && pm.InRange( m_Collector.Location, 7 )) )
+			if ( !( pm != null && item.IsChildOf( pm.Backpack ) && pm.InRange( m_Collector.Location, 7 )) )
 				return;
 
 			item.Delete();
 
-			if( ++pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward )
+			if ( ++pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward )
 			{
 				m_Collector.SayTo( pm, 1070980 ); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
 				pm.CloseGump( typeof( ToTTurnInGump ) );	//Sanity
 
-				if( !pm.HasGump( typeof( ToTRedeemGump ) ) )
+				if ( !pm.HasGump( typeof( ToTRedeemGump ) ) )
 					pm.SendGump( new ToTRedeemGump( m_Collector, false ) );
 			}
 			else
@@ -378,7 +378,7 @@ namespace Server.Gumps
 
 				pm.CloseGump( typeof( ToTTurnInGump ) ); //Sanity
 
-				if( buttons.Count > 0 )
+				if ( buttons.Count > 0 )
 					pm.SendGump( new ToTTurnInGump( m_Collector, buttons ) );
 			}
 		}
@@ -387,12 +387,12 @@ namespace Server.Gumps
 		{
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
+			if ( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
 				return;
 
-			if( pm.ToTItemsTurnedIn == 0 )
+			if ( pm.ToTItemsTurnedIn == 0 )
 				m_Collector.SayTo( pm, 1071013 ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
-			else if( pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward )	//This case should ALWAYS be true with this gump, jsut a sanity check
+			else if ( pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward )	//This case should ALWAYS be true with this gump, jsut a sanity check
 				m_Collector.SayTo( pm, 1070981, String.Format( "{0}\t{1}", pm.ToTItemsTurnedIn, TreasuresOfTokuno.ItemsPerReward ) ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 			else
 				m_Collector.SayTo( pm, 1070982 ); // When you wish to choose your reward, you have but to approach me again.
@@ -557,14 +557,14 @@ namespace Server.Gumps
 		{
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( pm == null || !pm.InRange( m_Collector.Location, 7 ) || !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward) )
+			if ( pm == null || !pm.InRange( m_Collector.Location, 7 ) || !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward) )
 				return;
 
 			bool pigments = (buttonInfo is PigmentsTileButtonInfo);
 
 			Item item = null;
 
-			if( pigments )
+			if ( pigments )
 			{
 				PigmentsTileButtonInfo p = buttonInfo as PigmentsTileButtonInfo;
 
@@ -574,7 +574,7 @@ namespace Server.Gumps
 			{
 				TypeTileButtonInfo t = buttonInfo as TypeTileButtonInfo;
 
-				if( t.Type == typeof( PigmentsOfTokuno ) )	//Special case of course.
+				if ( t.Type == typeof( PigmentsOfTokuno ) )	//Special case of course.
 				{
 					pm.CloseGump( typeof( ToTTurnInGump ) );	//Sanity
 					pm.CloseGump( typeof( ToTRedeemGump ) );
@@ -591,10 +591,10 @@ namespace Server.Gumps
 				catch { }
 			}
 
-			if( item == null )
+			if ( item == null )
 				return; //Sanity
 
-			if( pm.AddToBackpack( item ) )
+			if ( pm.AddToBackpack( item ) )
 			{
 				pm.ToTItemsTurnedIn -= TreasuresOfTokuno.ItemsPerReward;
 				m_Collector.SayTo( pm, 1070984, (item.Name == null || item.Name.Length <= 0)? String.Format( "#{0}", item.LabelNumber ) : item.Name ); // You have earned the gratitude of the Empire. I have placed the ~1_OBJTYPE~ in your backpack.
@@ -612,12 +612,12 @@ namespace Server.Gumps
 		{
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
+			if ( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
 				return;
 
-			if( pm.ToTItemsTurnedIn == 0 )
+			if ( pm.ToTItemsTurnedIn == 0 )
 				m_Collector.SayTo( pm, 1071013 ); // Bring me 10 of the lost treasures of Tokuno and I will reward you with a valuable item.
-			else if( pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward )	//This and above case should ALWAYS be FALSE with this gump, jsut a sanity check
+			else if ( pm.ToTItemsTurnedIn < TreasuresOfTokuno.ItemsPerReward )	//This and above case should ALWAYS be FALSE with this gump, jsut a sanity check
 				m_Collector.SayTo( pm, 1070981, String.Format( "{0}\t{1}", pm.ToTItemsTurnedIn, TreasuresOfTokuno.ItemsPerReward ) ); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 			else
 				m_Collector.SayTo( pm, 1070982 ); // When you wish to choose your reward, you have but to approach me again.

@@ -31,7 +31,7 @@ namespace Server.Spells.Necromancy
 
 		public override bool CheckCast()
 		{
-			if( Caster.Skills.SpiritSpeak.Value < 100.0 )
+			if ( Caster.Skills.SpiritSpeak.Value < 100.0 )
 			{
 				Caster.SendLocalizedMessage( 1072112 ); // You must have GM Spirit Speak to use this spell
 				return false;
@@ -54,20 +54,20 @@ namespace Server.Spells.Necromancy
 		{
 			ChampionSpawnRegion r = Caster.Region.GetRegion( typeof( ChampionSpawnRegion ) ) as ChampionSpawnRegion;
 
-			if( r == null || !Caster.InRange( r.ChampionSpawn, Range ) )
+			if ( r == null || !Caster.InRange( r.ChampionSpawn, Range ) )
 			{
 				Caster.SendLocalizedMessage( 1072111 ); // You are not in a valid exorcism region.
 			}
-			else if( CheckSequence() )
+			else if ( CheckSequence() )
 			{
 				Map map = Caster.Map;
 
-				if( map != null )
+				if ( map != null )
 				{
 					List<Mobile> targets = new List<Mobile>();
 
 					foreach( Mobile m in r.ChampionSpawn.GetMobilesInRange( Range ) )
-						if( IsValidTarget( m ) )
+						if ( IsValidTarget( m ) )
 							targets.Add( m );
 
 					for( int i = 0; i < targets.Count; ++i )
@@ -86,18 +86,18 @@ namespace Server.Spells.Necromancy
 
 		private bool IsValidTarget( Mobile m )
 		{
-			if( !m.Player || m.Alive )
+			if ( !m.Player || m.Alive )
 				return false;
 
 			Corpse c = m.Corpse as Corpse;
 			Map map = m.Map;
 
-			if( c != null && !c.Deleted && map != null && c.Map == map )
+			if ( c != null && !c.Deleted && map != null && c.Map == map )
 			{
-				if( SpellHelper.IsAnyT2A( map, c.Location ) && SpellHelper.IsAnyT2A( map, m.Location ) )
+				if ( SpellHelper.IsAnyT2A( map, c.Location ) && SpellHelper.IsAnyT2A( map, m.Location ) )
 					return false;	//Same Map, both in T2A, ie, same 'sub server'.
 
-				if( m.Region.IsPartOf( typeof( DungeonRegion ) ) == Region.Find( c.Location, map ).IsPartOf( typeof( DungeonRegion ) ) )
+				if ( m.Region.IsPartOf( typeof( DungeonRegion ) ) == Region.Find( c.Location, map ).IsPartOf( typeof( DungeonRegion ) ) )
 					return false; //Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
 
 				//Just an approximation cause RunUO doens't divide up the world the same way OSI does ;p
@@ -106,24 +106,24 @@ namespace Server.Spells.Necromancy
 
 			Party p = Party.Get( m );
 
-			if( p != null && p.Contains( Caster ) )
+			if ( p != null && p.Contains( Caster ) )
 				return false;
 
-			if( m.Guild != null && Caster.Guild != null )
+			if ( m.Guild != null && Caster.Guild != null )
 			{
 				Guild mGuild = m.Guild as Guild;
 				Guild cGuild = Caster.Guild as Guild;
 
-				if( mGuild.IsAlly( cGuild ) )
+				if ( mGuild.IsAlly( cGuild ) )
 					return false;
 
-				if( mGuild == cGuild )
+				if ( mGuild == cGuild )
 					return false;
 			}
 
 			Faction f = Faction.Find( m );
 
-			if( Faction.Facet == m.Map && f != null && f == Faction.Find( Caster ) )
+			if ( Faction.Facet == m.Map && f != null && f == Faction.Find( Caster ) )
 				return false;
 
 			return true;
@@ -136,13 +136,13 @@ namespace Server.Spells.Necromancy
 			Point3D[] locList;
 
 
-			if( map == Map.Felucca || map == Map.Trammel )
+			if ( map == Map.Felucca || map == Map.Trammel )
 				locList = m_BritanniaLocs;
-			else if( map == Map.Ilshenar )
+			else if ( map == Map.Ilshenar )
 				locList = m_IllshLocs;
-			else if( map == Map.Tokuno )
+			else if ( map == Map.Tokuno )
 				locList = m_TokunoLocs;
-			else if( map == Map.Malas )
+			else if ( map == Map.Malas )
 				locList = m_MalasLocs;
 			else
 				locList = new Point3D[0];
@@ -155,7 +155,7 @@ namespace Server.Spells.Necromancy
 				Point3D p = locList[i];
 
 				double dist = m.GetDistanceToSqrt( p );
-				if( minDist > dist )
+				if ( minDist > dist )
 				{
 					closest = p;
 					minDist = dist;

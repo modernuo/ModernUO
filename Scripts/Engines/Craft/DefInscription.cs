@@ -43,16 +43,15 @@ namespace Server.Engines.Craft
 		{
 			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
-			if ( !BaseTool.CheckAccessible( tool, @from ) )
+			if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
 
 			if ( typeItem != null )
 			{
 				var o = Activator.CreateInstance( typeItem );
 
-				if ( o is SpellScroll )
+				if ( o is SpellScroll scroll )
 				{
-					var scroll = (SpellScroll) o;
 					var book = Spellbook.Find( from, scroll.SpellID );
 
 					var hasSpell = ( book != null && book.HasSpell( scroll.SpellID ) );
@@ -61,9 +60,10 @@ namespace Server.Engines.Craft
 
 					return ( hasSpell ? 0 : 1042404 ); // null : You don't have that spell!
 				}
-				else if ( o is Item )
+
+				if ( o is Item item )
 				{
-					( (Item) o ).Delete();
+					item.Delete();
 				}
 			}
 

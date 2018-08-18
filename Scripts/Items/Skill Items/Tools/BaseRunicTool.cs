@@ -365,7 +365,7 @@ namespace Server.Items
 				AosElementAttribute.Poison
 			};
 
-			if( randomizeOrder )
+			if ( randomizeOrder )
 			{
 				for( int i = 0; i < attrs.Length; i++ )
 				{
@@ -399,7 +399,7 @@ namespace Server.Items
 
 		private static int AssignElementalDamage( BaseWeapon weapon, AosElementAttribute attr, int totalDamage )
 		{
-			if( totalDamage <= 0 )
+			if ( totalDamage <= 0 )
 				return 0;
 
 			int random = Utility.Random( (int)(totalDamage/10) + 1 ) * 10;

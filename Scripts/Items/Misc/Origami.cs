@@ -39,7 +39,7 @@ namespace Server.Items
 					case 5: i = new OrigamiFish();		break;
 				}
 
-				if( i != null )
+				if ( i != null )
 					from.AddToBackpack( i );
 
 				from.SendLocalizedMessage( 1070822 ); // You fold the paper into an interesting shape.

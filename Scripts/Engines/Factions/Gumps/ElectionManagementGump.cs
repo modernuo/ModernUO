@@ -154,9 +154,9 @@ namespace Server.Factions
 					{
 						object obj = fields[j];
 
-						if ( obj is Mobile )
+						if ( obj is Mobile mobile )
 						{
-							AddHtml( x + 2, 140 + (idx * 20), 150, 20, Color( ((Mobile)obj).Name, LabelColor ), false, false );
+							AddHtml( x + 2, 140 + (idx * 20), 150, 20, Color( mobile.Name, LabelColor ), false, false );
 							x += 150;
 						}
 						else if ( obj is System.Net.IPAddress )
@@ -164,14 +164,14 @@ namespace Server.Factions
 							AddHtml( x, 140 + (idx * 20), 100, 20, Color( Center( obj.ToString() ), LabelColor ), false, false );
 							x += 100;
 						}
-						else if ( obj is DateTime )
+						else if ( obj is DateTime time )
 						{
-							AddHtml( x, 140 + (idx * 20), 80, 20, Color( Center( FormatTimeSpan( ((DateTime)obj) - election.LastStateTime ) ), LabelColor ), false, false );
+							AddHtml( x, 140 + (idx * 20), 80, 20, Color( Center( FormatTimeSpan( time - election.LastStateTime ) ), LabelColor ), false, false );
 							x += 80;
 						}
-						else if ( obj is int )
+						else if ( obj is int i1 )
 						{
-							AddHtml( x, 140 + (idx * 20), 60, 20, Color( Center( (int)obj + "%" ), LabelColor ), false, false );
+							AddHtml( x, 140 + (idx * 20), 60, 20, Color( Center( i1 + "%" ), LabelColor ), false, false );
 							x += 60;
 						}
 					}

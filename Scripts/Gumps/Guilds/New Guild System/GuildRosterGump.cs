@@ -108,7 +108,7 @@ namespace Server.Guilds
 
 		#endregion
 
-		private static InfoField<PlayerMobile>[] m_Fields = 
+		private static InfoField<PlayerMobile>[] m_Fields =
 			new InfoField<PlayerMobile>[]
 			{
 				new InfoField<PlayerMobile>( 1062955, 130, GuildRosterGump.NameComparer.Instance	),	//Name
@@ -147,14 +147,14 @@ namespace Server.Guilds
 
 			string name = String.Format( "{0}{1}", pm.Name, ( player.GuildFealty == pm && player.GuildFealty != guild.Leader ) ? " *" : "" );
 
-			if( pm == player )
+			if ( pm == player )
 				name = Color( name, 0x006600 );
-			else if( pm.NetState != null )
+			else if ( pm.NetState != null )
 				name = Color( name, 0x000066 );
 
 			defs[0] = name;
 			defs[1] = pm.GuildRank.Name;
-			defs[2] = (pm.NetState != null) ? new TextDefinition( 1063015 ): new TextDefinition( pm.LastOnline.ToString( "yyyy-MM-dd" ) ); 
+			defs[2] = (pm.NetState != null) ? new TextDefinition( 1063015 ): new TextDefinition( pm.LastOnline.ToString( "yyyy-MM-dd" ) );
 			defs[3] = (pm.GuildTitle == null) ? "" : pm.GuildTitle;
 
 			return defs;
@@ -162,7 +162,7 @@ namespace Server.Guilds
 
 		protected override bool IsFiltered( PlayerMobile pm, string filter )
 		{
-			if( pm == null )
+			if ( pm == null )
 				return true;
 
 			return !Insensitive.Contains( pm.Name, filter );
@@ -184,12 +184,12 @@ namespace Server.Guilds
 
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( pm == null || !IsMember( pm, guild ) )
+			if ( pm == null || !IsMember( pm, guild ) )
 				return;
 
-			if( info.ButtonID == 8 )
+			if ( info.ButtonID == 8 )
 			{
-				if( pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
+				if ( pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
 				{
 					pm.SendLocalizedMessage( 1063048 ); // Whom do you wish to invite into your guild?
 					pm.BeginTarget( -1, false, Targeting.TargetFlags.None, new TargetStateCallback( InvitePlayer_Callback ), guild );
@@ -212,32 +212,32 @@ namespace Server.Guilds
 			Faction guildFaction = ( guildState == null ? null : guildState.Faction );
 			Faction targetFaction = ( targetState == null ? null : targetState.Faction );
 
-			if( pm == null || !IsMember( pm, guild ) || !pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
+			if ( pm == null || !IsMember( pm, guild ) || !pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
 			{
 				pm.SendLocalizedMessage( 503301 ); // You don't have permission to do that.
 			}
-			else if( targ == null )
+			else if ( targ == null )
 			{
 				pm.SendLocalizedMessage( 1063334 ); // That isn't a valid player.
 			}
-			else if( !targ.AcceptGuildInvites )
+			else if ( !targ.AcceptGuildInvites )
 			{
 				pm.SendLocalizedMessage( 1063049, targ.Name ); // ~1_val~ is not accepting guild invitations.
 			}
-			else if( g.IsMember( targ ) )
+			else if ( g.IsMember( targ ) )
 			{
 				pm.SendLocalizedMessage( 1063050, targ.Name ); // ~1_val~ is already a member of your guild!
 			}
-			else if( targ.Guild != null )
+			else if ( targ.Guild != null )
 			{
 				pm.SendLocalizedMessage( 1063051, targ.Name ); // ~1_val~ is already a member of a guild.
 			}
-			else if( targ.HasGump( typeof( BaseGuildGump ) ) || targ.HasGump( typeof( CreateGuildGump ) ))	//TODO: Check message if CreateGuildGump Open
+			else if ( targ.HasGump( typeof( BaseGuildGump ) ) || targ.HasGump( typeof( CreateGuildGump ) ))	//TODO: Check message if CreateGuildGump Open
 			{
 				pm.SendLocalizedMessage( 1063052, targ.Name ); // ~1_val~ is currently considering another guild invitation.
 			}
 			#region Factions
-			else if( targ.Young && guildFaction != null )
+			else if ( targ.Young && guildFaction != null )
 			{
 				pm.SendLocalizedMessage( 1070766 ); // You cannot invite a young player to your faction-aligned guild.
 			}

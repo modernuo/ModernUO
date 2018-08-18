@@ -60,16 +60,14 @@ namespace Server.Commands
 				CommandLogging.WriteLine( from, "{0} {1} duping {2} (inBag={3}; amount={4})", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( targ ), m_InBag, m_Amount );
 
 				Item copy = (Item)targ;
-				Container pack;
+				Container pack = null;
 
 				if ( m_InBag )
 				{
-					if ( copy.Parent is Container )
-						pack = (Container)copy.Parent;
-					else if ( copy.Parent is Mobile )
-						pack = ( (Mobile)copy.Parent ).Backpack;
-					else
-						pack = null;
+					if ( copy.Parent is Container cont )
+						pack = cont;
+					else if ( copy.Parent is Mobile m )
+						pack = m.Backpack;
 				}
 				else
 					pack = from.Backpack;
@@ -87,11 +85,8 @@ namespace Server.Commands
 						from.SendMessage( "Duping {0}...", m_Amount );
 						for ( int i = 0; i < m_Amount; i++ )
 						{
-							object o = c.Invoke( null );
-
-							if ( o != null && o is Item )
+							if ( c.Invoke( null ) is Item newItem )
 							{
-								Item newItem = (Item)o;
 								CopyProperties( newItem, copy );//copy.Dupe( item, copy.Amount );
 								copy.OnAfterDuped( newItem );
 								newItem.Parent = null;

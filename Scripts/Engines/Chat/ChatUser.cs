@@ -48,18 +48,14 @@ namespace Server.Engines.Chat
 		{
 			get
 			{
-				Account acct = m_Mobile.Account as Account;
-
-				if ( acct != null )
+				if ( m_Mobile.Account is Account acct )
 					return acct.GetTag( "ChatName" );
 
 				return null;
 			}
 			set
 			{
-				Account acct = m_Mobile.Account as Account;
-
-				if ( acct != null )
+				if ( m_Mobile.Account is Account acct )
 					acct.SetTag( "ChatName", value );
 			}
 		}

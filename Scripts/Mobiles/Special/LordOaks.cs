@@ -146,7 +146,7 @@ namespace Server.Mobiles
 
 		public void CheckQueen()
 		{
-			if( this.Map == null )
+			if ( this.Map == null )
 				return;
 
 			if ( !m_SpawnedQueen )

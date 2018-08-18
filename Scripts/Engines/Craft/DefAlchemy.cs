@@ -39,7 +39,7 @@ namespace Server.Engines.Craft
 
 		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
 		{
-			if( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
+			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
 			else if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
@@ -154,7 +154,7 @@ namespace Server.Engines.Craft
 			index = AddCraft( typeof( GreaterExplosionPotion ), 1044537, 1044557, 65.0, 115.0, typeof( SulfurousAsh ), 1044359, 10, 1044367 );
 			AddRes( index, typeof ( Bottle ), 1044529, 1, 500315 );
 
-			if( Core.SE )
+			if ( Core.SE )
 			{
 				index = AddCraft( typeof( SmokeBomb ), 1044537, 1030248, 90.0, 120.0, typeof( Eggs ), 1044477, 1, 1044253 );
 				AddRes( index, typeof ( Ginseng ), 1044356, 3, 1044364 );

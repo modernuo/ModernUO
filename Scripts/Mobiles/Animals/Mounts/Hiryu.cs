@@ -41,31 +41,31 @@ namespace Server.Mobiles
 			1	1075	Strong Green	0.09%	0x855C
 			 * */
 
-			if( rand <= 0 )
+			if ( rand <= 0 )
 				return 0x855C;
-			else if( rand <= 1 )
+			else if ( rand <= 1 )
 				return 0x8490;
-			else if( rand <= 3 )
+			else if ( rand <= 3 )
 				return 0x8030;
-			else if( rand <= 5 )
+			else if ( rand <= 5 )
 				return 0x8037;
-			else if( rand <= 8 )
+			else if ( rand <= 8 )
 				return 0x8295;
-			else if( rand <= 11 )
+			else if ( rand <= 11 )
 				return 0x8123;
-			else if( rand <= 16 )
+			else if ( rand <= 16 )
 				return 0x8482;
-			else if( rand <= 24 )
+			else if ( rand <= 24 )
 				return 0x8487;
-			else if( rand <= 34 )
+			else if ( rand <= 34 )
 				return 0x8032;
-			else if( rand <= 44 )
+			else if ( rand <= 44 )
 				return 0x8899;
-			else if( rand <= 54 )
+			else if ( rand <= 54 )
 				return 0x8495;
-			else if( rand <= 64 )
+			else if ( rand <= 64 )
 				return 0x848D;
-			else if( rand <= 74 )
+			else if ( rand <= 74 )
 				return 0x847F;
 
 
@@ -107,7 +107,7 @@ namespace Server.Mobiles
 			ControlSlots = 4;
 			MinTameSkill = 98.7;
 
-			if( Utility.RandomDouble() < .33 )
+			if ( Utility.RandomDouble() < .33 )
 				PackItem( Engines.Plants.Seed.RandomBonsaiSeed() );
 
 			if ( Core.ML && Utility.RandomDouble() < .33 )
@@ -156,7 +156,7 @@ namespace Server.Mobiles
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if( 0.1 > Utility.RandomDouble() )
+			if ( 0.1 > Utility.RandomDouble() )
 			{
 				/* Grasping Claw
 				 * Start cliloc: 1070836
@@ -167,7 +167,7 @@ namespace Server.Mobiles
 
 				ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
-				if( timer != null )
+				if ( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070837 ); // The creature lands another blow in your weakened state.
@@ -233,13 +233,13 @@ namespace Server.Mobiles
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			if( version == 0 )
+			if ( version == 0 )
 				Timer.DelayCall( TimeSpan.Zero, delegate { Hue = GetHue(); } );
 
-			if( version <= 1 )
-				Timer.DelayCall( TimeSpan.Zero, delegate { if( InternalItem != null ) { InternalItem.Hue = this.Hue; } } );
+			if ( version <= 1 )
+				Timer.DelayCall( TimeSpan.Zero, delegate { if ( InternalItem != null ) { InternalItem.Hue = this.Hue; } } );
 
-			if( version < 2 )
+			if ( version < 2 )
 			{
 				for ( int i = 0; i < Skills.Length; ++i )
 				{

@@ -15,7 +15,7 @@ namespace Server.Engines.Events
 		{
 			DateTime now = DateTime.UtcNow;
 
-			if( DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween )
+			if ( DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
 			}
@@ -24,7 +24,7 @@ namespace Server.Engines.Events
 		private static void EventSink_Speech( SpeechEventArgs e )
 		{
 
-			if( Insensitive.Contains( e.Speech, "trick or treat" ) )
+			if ( Insensitive.Contains( e.Speech, "trick or treat" ) )
 			{
 				e.Mobile.Target = new TrickOrTreatTarget();
 
@@ -41,14 +41,14 @@ namespace Server.Engines.Events
 
 			protected override void OnTarget( Mobile from, object targ )
 			{
-				if( targ != null && CheckMobile( from ) )
+				if ( targ != null && CheckMobile( from ) )
 				{
-					if( !( targ is Mobile ) )
+					if ( !( targ is Mobile ) )
 					{
 						from.SendLocalizedMessage( 1076781 ); /* There is little chance of getting candy from that! */
 						return;
 					}
-					if( !( targ is BaseVendor ) || ( ( BaseVendor )targ ).Deleted )
+					if ( !( targ is BaseVendor ) || ( ( BaseVendor )targ ).Deleted )
 					{
 						from.SendLocalizedMessage( 1076765 ); /* That doesn't look friendly. */
 						return;
@@ -58,9 +58,9 @@ namespace Server.Engines.Events
 
 					BaseVendor m_Begged = targ as BaseVendor;
 
-					if( CheckMobile( m_Begged ) )
+					if ( CheckMobile( m_Begged ) )
 					{
-						if( m_Begged.NextTrickOrTreat > now )
+						if ( m_Begged.NextTrickOrTreat > now )
 						{
 							from.SendLocalizedMessage( 1076767 ); /* That doesn't appear to have any more candy. */
 							return;
@@ -68,9 +68,9 @@ namespace Server.Engines.Events
 
 						m_Begged.NextTrickOrTreat = now + TimeSpan.FromMinutes( Utility.RandomMinMax( 5, 10 ) );
 
-						if( from.Backpack != null && !from.Backpack.Deleted )
+						if ( from.Backpack != null && !from.Backpack.Deleted )
 						{
-							if( Utility.RandomDouble() > .10 )
+							if ( Utility.RandomDouble() > .10 )
 							{
 								switch( Utility.Random( 3 ) )
 								{
@@ -80,7 +80,7 @@ namespace Server.Engines.Events
 									default: break;
 								}
 
-								if( Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100 )
+								if ( Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100 )
 								{
 									from.AddToBackpack( HolidaySettings.RandomGMBeggerItem );
 
@@ -99,11 +99,11 @@ namespace Server.Engines.Events
 
 								int m_Action = Utility.Random( 4 );
 
-								if( m_Action == 0 )
+								if ( m_Action == 0 )
 								{
 									Timer.DelayCall<Mobile>( OneSecond, OneSecond, 10, new TimerStateCallback<Mobile>( Bleeding ), from );
 								}
-								else if( m_Action == 1 )
+								else if ( m_Action == 1 )
 								{
 									Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( 2 ), new TimerStateCallback<Mobile>( SolidHueMobile ), from );
 								}
@@ -120,9 +120,9 @@ namespace Server.Engines.Events
 
 		public static void Bleeding( Mobile m_From )
 		{
-			if( TrickOrTreat.CheckMobile( m_From ) )
+			if ( TrickOrTreat.CheckMobile( m_From ) )
 			{
-				if( m_From.Location != Point3D.Zero )
+				if ( m_From.Location != Point3D.Zero )
 				{
 					int amount = Utility.RandomMinMax( 3, 7 );
 
@@ -136,7 +136,7 @@ namespace Server.Engines.Events
 
 		public static void RemoveHueMod( Mobile target )
 		{
-			if( target != null && !target.Deleted )
+			if ( target != null && !target.Deleted )
 			{
 				target.SolidHueOverride = -1;
 			}
@@ -144,7 +144,7 @@ namespace Server.Engines.Events
 
 		public static void SolidHueMobile( Mobile target )
 		{
-			if( CheckMobile( target ) )
+			if ( CheckMobile( target ) )
 			{
 				target.SolidHueOverride = Utility.RandomMinMax( 2501, 2644 );
 
@@ -156,21 +156,21 @@ namespace Server.Engines.Events
 		{
 			List<Item> m_Items = new List<Item>();
 
-			if( CheckMobile( m_From ) )
+			if ( CheckMobile( m_From ) )
 			{
 				Mobile twin = new NaughtyTwin( m_From );
 
-				if( twin != null && !twin.Deleted )
+				if ( twin != null && !twin.Deleted )
 				{
 					foreach( Item item in m_From.Items )
 					{
-						if( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
+						if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
 						{
 							m_Items.Add( item );
 						}
 					}
 
-					if( m_Items.Count > 0 )
+					if ( m_Items.Count > 0 )
 					{
 						for( int i = 0; i < m_Items.Count; i++ ) /* dupe exploits start out like this ... */
 						{
@@ -179,7 +179,7 @@ namespace Server.Engines.Events
 
 						foreach( Item item in twin.Items ) /* ... and end like this */
 						{
-							if( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
+							if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
 							{
 								item.Movable = false;
 							}
@@ -201,7 +201,7 @@ namespace Server.Engines.Events
 
 		public static void DeleteTwin( Mobile m_Twin )
 		{
-			if( TrickOrTreat.CheckMobile( m_Twin ) )
+			if ( TrickOrTreat.CheckMobile( m_Twin ) )
 			{
 				m_Twin.Delete();
 			}
@@ -267,7 +267,7 @@ namespace Server.Engines.Events
 		public NaughtyTwin( Mobile from )
 			: base( AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4 )
 		{
-			if( TrickOrTreat.CheckMobile( from ) )
+			if ( TrickOrTreat.CheckMobile( from ) )
 			{
 				Body = from.Body;
 
@@ -280,7 +280,7 @@ namespace Server.Engines.Events
 
 		public override void OnThink()
 		{
-			if( m_From == null || m_From.Deleted )
+			if ( m_From == null || m_From.Deleted )
 			{
 				Delete();
 			}
@@ -290,13 +290,13 @@ namespace Server.Engines.Events
 		{
 			Type[] types = { typeof( WrappedCandy ), typeof( Lollipops ), typeof( NougatSwirl ), typeof( Taffy ), typeof( JellyBeans ) };
 
-			if( TrickOrTreat.CheckMobile( target ) )
+			if ( TrickOrTreat.CheckMobile( target ) )
 			{
 				for( int i = 0; i < types.Length; i++ )
 				{
 					Item item = target.Backpack.FindItemByType( types[ i ] );
 
-					if( item != null )
+					if ( item != null )
 					{
 						return item;
 					}
@@ -307,13 +307,13 @@ namespace Server.Engines.Events
 
 		public static void StealCandy( Mobile target )
 		{
-			if( TrickOrTreat.CheckMobile( target ) )
+			if ( TrickOrTreat.CheckMobile( target ) )
 			{
 				Item item = FindCandyTypes( target );
 
 				target.SendLocalizedMessage( 1113967 ); /* Your naughty twin steals some of your candy. */
 
-				if( item != null && !item.Deleted )
+				if ( item != null && !item.Deleted )
 				{
 					item.Delete();
 				}
@@ -322,7 +322,7 @@ namespace Server.Engines.Events
 
 		public static void ToGate( Mobile target )
 		{
-			if( TrickOrTreat.CheckMobile( target ) )
+			if ( TrickOrTreat.CheckMobile( target ) )
 			{
 				target.SendLocalizedMessage( 1113972 ); /* Your naughty twin teleports you away with a naughty laugh! */
 

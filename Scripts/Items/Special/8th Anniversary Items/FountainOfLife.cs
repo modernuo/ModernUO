@@ -109,11 +109,11 @@ namespace Server.Items
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if( dropped is Bandage )
+			if ( dropped is Bandage )
 			{
 				bool allow = base.OnDragDrop( from, dropped );
 
-				if( allow )
+				if ( allow )
 					Enhance( from );
 
 				return allow;
@@ -127,11 +127,11 @@ namespace Server.Items
 
 		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
 		{
-			if( item is Bandage )
+			if ( item is Bandage )
 			{
 				bool allow = base.OnDragDropInto( from, item, p );
 
-				if( allow )
+				if ( allow )
 					Enhance( from );
 
 				return allow;
@@ -152,7 +152,7 @@ namespace Server.Items
 
 		public override void OnDelete()
 		{
-			if( m_Timer != null )
+			if ( m_Timer != null )
 				m_Timer.Stop();
 
 			base.OnDelete();
@@ -178,7 +178,7 @@ namespace Server.Items
 
 			DateTime next = reader.ReadDateTime();
 
-			if( next < DateTime.UtcNow )
+			if ( next < DateTime.UtcNow )
 				m_Timer = Timer.DelayCall( TimeSpan.Zero, RechargeTime, new TimerCallback( Recharge ) );
 			else
 				m_Timer = Timer.DelayCall( next - DateTime.UtcNow, RechargeTime, new TimerCallback( Recharge ) );
@@ -200,11 +200,11 @@ namespace Server.Items
 
 				Bandage bandage = Items[i] as Bandage;
 
-				if( bandage != null )
+				if ( bandage != null )
 				{
 					Item enhanced;
 
-					if( bandage.Amount > m_Charges )
+					if ( bandage.Amount > m_Charges )
 					{
 						bandage.Amount -= m_Charges;
 						enhanced = new EnhancedBandage( m_Charges );

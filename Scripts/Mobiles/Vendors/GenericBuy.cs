@@ -310,7 +310,7 @@ namespace Server.Mobiles
 
 				object Obj_Disp = GetDisplayEntity();
 
-				if( Core.ML && Obj_Disp is Item && !( Obj_Disp as Item ).Stackable )
+				if ( Core.ML && Obj_Disp is Item && !( Obj_Disp as Item ).Stackable )
 				{
 					m_MaxAmount = Math.Min( 20, m_MaxAmount );
 				}

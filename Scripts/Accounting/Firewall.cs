@@ -34,20 +34,18 @@ namespace Server
 
 			public override bool Equals( object obj )
 			{
-				if( obj is IPAddress )
+				if ( obj is IPAddress )
 				{
 					return obj.Equals( m_Address );
 				}
-				else if( obj is string )
+				if ( obj is string s )
 				{
-					IPAddress otherAddress;
-
-					if( IPAddress.TryParse( (string)obj, out otherAddress ) )
+					if ( IPAddress.TryParse( s, out IPAddress otherAddress ) )
 						return otherAddress.Equals( m_Address );
 				}
-				else if( obj is IPFirewallEntry )
+				else if ( obj is IPFirewallEntry entry )
 				{
-					return m_Address.Equals( ((IPFirewallEntry)obj).m_Address );
+					return m_Address.Equals( entry.m_Address );
 				}
 
 				return false;
@@ -82,31 +80,22 @@ namespace Server
 
 			public override bool Equals( object obj )
 			{
-
-				if( obj is string )
+				if ( obj is string entry )
 				{
-					string entry= (string)obj;
-
 					string[] str = entry.Split( '/' );
 
-					if( str.Length == 2 )
+					if ( str.Length == 2 )
 					{
-						IPAddress cidrPrefix;
-
-						if( IPAddress.TryParse( str[0], out cidrPrefix ) )
+						if ( IPAddress.TryParse( str[0], out IPAddress cidrPrefix ) )
 						{
-							int cidrLength;
-
-							if( int.TryParse( str[1], out cidrLength ) )
+							if ( int.TryParse( str[1], out int cidrLength ) )
 								return m_CIDRPrefix.Equals( cidrPrefix ) && m_CIDRLength.Equals( cidrLength );
 						}
 					}
 				}
-				else if( obj is CIDRFirewallEntry )
+				else if ( obj is CIDRFirewallEntry cidrEntry )
 				{
-					CIDRFirewallEntry entry = obj as CIDRFirewallEntry;
-
-					return m_CIDRPrefix.Equals( entry.m_CIDRPrefix ) && m_CIDRLength.Equals( entry.m_CIDRLength );
+					return m_CIDRPrefix.Equals( cidrEntry.m_CIDRPrefix ) && m_CIDRLength.Equals( cidrEntry.m_CIDRLength );
 				}
 
 				return false;
@@ -131,7 +120,7 @@ namespace Server
 
 			public bool IsBlocked( IPAddress address )
 			{
-				if( !m_Valid )
+				if ( !m_Valid )
 					return false;	//Why process if it's invalid?  it'll return false anyway after processing it.
 
 				return Utility.IPMatch( m_Entry, address, ref m_Valid );
@@ -139,17 +128,15 @@ namespace Server
 
 			public override string ToString()
 			{
-				return m_Entry.ToString();
+				return m_Entry;
 			}
 
 			public override bool Equals( object obj )
 			{
-				if( obj is string )
+				if ( obj is string )
 					return obj.Equals( m_Entry );
-				else if( obj is WildcardIPFirewallEntry )
-					return m_Entry.Equals( ((WildcardIPFirewallEntry)obj).m_Entry );
 
-				return false;
+				return obj is WildcardIPFirewallEntry entry && m_Entry.Equals( entry.m_Entry );
 			}
 
 			public override int GetHashCode()
@@ -186,7 +173,7 @@ namespace Server
 						object toAdd;
 
 						IPAddress addr;
-						if( IPAddress.TryParse( line, out addr ) )
+						if ( IPAddress.TryParse( line, out addr ) )
 							toAdd = addr;
 						else
 							toAdd = line;
@@ -208,35 +195,29 @@ namespace Server
 
 		public static IFirewallEntry ToFirewallEntry( object entry )
 		{
-			if( entry is IFirewallEntry )
-				return (IFirewallEntry)entry;
-			else if( entry is IPAddress )
-				return new IPFirewallEntry( (IPAddress)entry );
-			else if( entry is string )
-				return ToFirewallEntry( (string)entry );
+			if ( entry is IFirewallEntry firewallEntry )
+				return firewallEntry;
+			if ( entry is IPAddress address )
+				return new IPFirewallEntry( address );
+			if ( entry is string s )
+				return ToFirewallEntry( s );
 
 			return null;
 		}
 
 		public static IFirewallEntry ToFirewallEntry( string entry )
 		{
-			IPAddress addr;
-
-			if( IPAddress.TryParse( entry, out addr ) )
+			if ( IPAddress.TryParse( entry, out IPAddress addr ) )
 				return new IPFirewallEntry( addr );
 
 			//Try CIDR parse
 			string[] str = entry.Split( '/' );
 
-			if( str.Length == 2 )
+			if ( str.Length == 2 )
 			{
-				IPAddress cidrPrefix;
-
-				if( IPAddress.TryParse( str[0], out cidrPrefix ) )
+				if ( IPAddress.TryParse( str[0], out IPAddress cidrPrefix ) )
 				{
-					int cidrLength;
-
-					if( int.TryParse( str[1], out cidrLength ) )
+					if ( int.TryParse( str[1], out int cidrLength ) )
 						return new CIDRFirewallEntry( cidrPrefix, cidrLength );
 				}
 			}
@@ -254,7 +235,7 @@ namespace Server
 		{
 			IFirewallEntry entry = ToFirewallEntry( obj );
 
-			if( entry != null )
+			if ( entry != null )
 			{
 				m_Blocked.Remove( entry );
 				Save();
@@ -263,17 +244,17 @@ namespace Server
 
 		public static void Add( object obj )
 		{
-			if( obj is IPAddress )
-				Add( (IPAddress)obj );
-			else if( obj is string )
-				Add( (string)obj );
-			else if( obj is IFirewallEntry )
-				Add( (IFirewallEntry)obj );
+			if ( obj is IPAddress address )
+				Add( address );
+			else if ( obj is string s )
+				Add( s );
+			else if ( obj is IFirewallEntry entry )
+				Add( entry );
 		}
 
 		public static void Add( IFirewallEntry entry )
 		{
-			if( !m_Blocked.Contains( entry ) )
+			if ( !m_Blocked.Contains( entry ) )
 				m_Blocked.Add( entry );
 
 			Save();
@@ -283,7 +264,7 @@ namespace Server
 		{
 			IFirewallEntry entry = ToFirewallEntry( pattern );
 
-			if( !m_Blocked.Contains( entry ) )
+			if ( !m_Blocked.Contains( entry ) )
 				m_Blocked.Add( entry );
 
 			Save();
@@ -293,7 +274,7 @@ namespace Server
 		{
 			IFirewallEntry entry = new IPFirewallEntry( ip );
 
-			if( !m_Blocked.Contains( entry ) )
+			if ( !m_Blocked.Contains( entry ) )
 				m_Blocked.Add( entry );
 
 			Save();
@@ -314,7 +295,7 @@ namespace Server
 		{
 			for( int i = 0; i < m_Blocked.Count; i++ )
 			{
-				if( m_Blocked[i].IsBlocked( ip ) )
+				if ( m_Blocked[i].IsBlocked( ip ) )
 					return true;
 			}
 
@@ -332,7 +313,7 @@ namespace Server
 
                     contains = Utility.IPMatchCIDR( s, ip );
 
-                    if( !contains )
+                    if ( !contains )
                         contains = Utility.IPMatch( s, ip );
                 }
 			}

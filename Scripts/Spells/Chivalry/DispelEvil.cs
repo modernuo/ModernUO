@@ -96,7 +96,7 @@ namespace Server.Spells.Chivalry
 					}
 
 					TransformContext context = TransformationSpellHelper.GetContext( m );
-					if( context != null && context.Spell is NecromancerSpell )	//Trees are not evil!	TODO: OSI confirm?
+					if ( context != null && context.Spell is NecromancerSpell )	//Trees are not evil!	TODO: OSI confirm?
 					{
 						// transformed ..
 

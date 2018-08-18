@@ -33,7 +33,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( !IsChildOf( from.Backpack ) )
+			if ( !IsChildOf( from.Backpack ) )
 			{
 				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.
 			}
@@ -48,12 +48,12 @@ namespace Server.Items
 		{
 			Mobile m = null;
 
-			if( parent is Item )
+			if ( parent is Item )
 				m = ((Item)parent).RootParent as Mobile;
-			else if( parent is Mobile )
+			else if ( parent is Mobile )
 				m = (Mobile)parent;
 
-			if( m != null )
+			if ( m != null )
 				m.CloseGump( typeof( PromotionalTokenGump ) );
 		}
 
@@ -94,12 +94,12 @@ namespace Server.Items
 
 			public override void OnResponse( NetState sender, RelayInfo info )
 			{
-				if( info.ButtonID != 1 )
+				if ( info.ButtonID != 1 )
 					return;
 
 				Mobile from = sender.Mobile;
 
-				if( !m_Token.IsChildOf( from.Backpack ) )
+				if ( !m_Token.IsChildOf( from.Backpack ) )
 				{
 					from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.
 				}
@@ -107,7 +107,7 @@ namespace Server.Items
 				{
 					Item i = m_Token.CreateItemFor( from );
 
-					if( i != null )
+					if ( i != null )
 					{
 						from.BankBox.AddItem( i );
 						TextDefinition.SendMessageTo( from, m_Token.ItemReceiveMessage );
@@ -123,7 +123,7 @@ namespace Server.Items
 
 		public override Item CreateItemFor( Mobile from )
 		{
-			if( from != null && from.Account != null )
+			if ( from != null && from.Account != null )
 				return new SoulstoneFragment( from.Account.ToString() );
 			else
 				return null;

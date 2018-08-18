@@ -32,7 +32,7 @@ namespace Server.Guilds
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
-			if( guild.Disbanded || player.Guild != null )
+			if ( guild.Disbanded || player.Guild != null )
 				return;
 
 			switch( info.ButtonID )
@@ -50,7 +50,7 @@ namespace Server.Guilds
 
 					break;
 				}
-				case 2: 
+				case 2:
 				{
 					player.AcceptGuildInvites = false;
 					player.SendLocalizedMessage( 1070698 ); // You are now ignoring guild invitations.

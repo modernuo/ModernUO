@@ -173,7 +173,7 @@ namespace Server.Items
 				}
 				else
 				{
-					if( Core.ML )
+					if ( Core.ML )
 					{
 						number = 1080526; // That must be in your bank box or commodity deed box to use it.
 					}
@@ -189,7 +189,7 @@ namespace Server.Items
 			}
 			else if ( ( box == null || !IsChildOf( box ) ) && cox == null )
 			{
-				if( Core.ML )
+				if ( Core.ML )
 				{
 					number = 1080526; // That must be in your bank box or commodity deed box to use it.
 				}
@@ -249,7 +249,7 @@ namespace Server.Items
 					}
 					else
 					{
-						if( Core.ML )
+						if ( Core.ML )
 						{
 							number = 1080526; // That must be in your bank box or commodity deed box to use it.
 						}

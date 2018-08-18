@@ -177,7 +177,7 @@ namespace Server.Spells.Fourth
 					}
 				}
 
-				if( version < 2 )
+				if ( version < 2 )
 					m_Damage = 2;
 			}
 

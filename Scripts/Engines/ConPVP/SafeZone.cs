@@ -39,15 +39,10 @@ namespace Server.Engines.ConPVP
 
 			PlayerMobile pm = m as PlayerMobile;
 
-			if ( pm == null && m is BaseCreature )
-			{
-				BaseCreature bc = (BaseCreature)m;
+			if ( pm == null && m is BaseCreature bc && bc.Summoned )
+				pm = bc.SummonMaster as PlayerMobile;
 
-				if ( bc.Summoned )
-					pm = bc.SummonMaster as PlayerMobile;
-			}
-
-			if ( pm != null && pm.DuelContext != null && pm.DuelContext.StartedBeginCountdown )
+			if ( pm?.DuelContext != null && pm.DuelContext.StartedBeginCountdown )
 				return true;
 
 			if ( DuelContext.CheckCombat( m ) )

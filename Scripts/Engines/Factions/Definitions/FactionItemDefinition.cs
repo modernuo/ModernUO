@@ -28,9 +28,9 @@ namespace Server.Factions
 
 		public static FactionItemDefinition Identify( Item item )
 		{
-			if ( item is BaseArmor )
+			if ( item is BaseArmor armor )
 			{
-				if ( CraftResources.GetType( ((BaseArmor)item).Resource ) == CraftResourceType.Leather )
+				if ( CraftResources.GetType( armor.Resource ) == CraftResourceType.Leather )
 					return m_LeatherArmor;
 
 				return m_MetalArmor;
@@ -38,11 +38,11 @@ namespace Server.Factions
 
 			if ( item is BaseRanged )
 				return m_RangedWeapon;
-			else if ( item is BaseWeapon )
+			if ( item is BaseWeapon )
 				return m_Weapon;
-			else if ( item is BaseClothing )
+			if ( item is BaseClothing )
 				return m_Clothing;
-			else if ( item is SpellScroll )
+			if ( item is SpellScroll )
 				return m_Scroll;
 
 			return null;

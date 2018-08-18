@@ -40,7 +40,7 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( !IsEmpty )
+			if ( !IsEmpty )
 			{
 				switch( Content )
 				{
@@ -85,17 +85,17 @@ namespace Server.Items
 			{
 				case 0:
 					{
-						if( CheckType( "BottleAle" ) )
+						if ( CheckType( "BottleAle" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Ale;
 						}
-						else if( CheckType( "BottleLiquor" ) )
+						else if ( CheckType( "BottleLiquor" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Liquor;
 						}
-						else if( CheckType( "BottleWine" ) )
+						else if ( CheckType( "BottleWine" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Wine;
@@ -119,7 +119,7 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( !IsEmpty )
+			if ( !IsEmpty )
 				return 0x9C8;
 
 			return 0;
@@ -159,9 +159,9 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( ItemID >= 0x995 && ItemID <= 0x999 )
+			if ( ItemID >= 0x995 && ItemID <= 0x999 )
 				return ItemID;
-			else if( ItemID == 0x9CA )
+			else if ( ItemID == 0x9CA )
 				return ItemID;
 
 			return 0x995;
@@ -207,7 +207,7 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( ItemID >= 0xFFF && ItemID <= 0x1002 )
+			if ( ItemID >= 0xFFF && ItemID <= 0x1002 )
 				return ItemID;
 
 			return 0xFFF;
@@ -253,7 +253,7 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( ItemID == 0x99A || ItemID == 0x9B3 || ItemID == 0x9BF || ItemID == 0x9CB )
+			if ( ItemID == 0x99A || ItemID == 0x9B3 || ItemID == 0x9BF || ItemID == 0x9CB )
 				return ItemID;
 
 			return 0x99A;
@@ -302,7 +302,7 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 				return ( ItemID >= 0x1F81 && ItemID <= 0x1F84 ? ItemID : 0x1F81 );
 
 			switch( Content )
@@ -353,32 +353,32 @@ namespace Server.Items
 			{
 				case 0:
 					{
-						if( CheckType( "MugAle" ) )
+						if ( CheckType( "MugAle" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Ale;
 						}
-						else if( CheckType( "GlassCider" ) )
+						else if ( CheckType( "GlassCider" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Cider;
 						}
-						else if( CheckType( "GlassLiquor" ) )
+						else if ( CheckType( "GlassLiquor" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Liquor;
 						}
-						else if( CheckType( "GlassMilk" ) )
+						else if ( CheckType( "GlassMilk" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Milk;
 						}
-						else if( CheckType( "GlassWine" ) )
+						else if ( CheckType( "GlassWine" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Wine;
 						}
-						else if( CheckType( "GlassWater" ) )
+						else if ( CheckType( "GlassWater" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Water;
@@ -404,9 +404,9 @@ namespace Server.Items
 
 		public override int ComputeItemID()
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 			{
-				if( ItemID == 0x9A7 || ItemID == 0xFF7 )
+				if ( ItemID == 0x9A7 || ItemID == 0xFF7 )
 					return ItemID;
 
 				return 0xFF6;
@@ -416,42 +416,42 @@ namespace Server.Items
 			{
 				case BeverageType.Ale:
 					{
-						if( ItemID == 0x1F96 )
+						if ( ItemID == 0x1F96 )
 							return ItemID;
 
 						return 0x1F95;
 					}
 				case BeverageType.Cider:
 					{
-						if( ItemID == 0x1F98 )
+						if ( ItemID == 0x1F98 )
 							return ItemID;
 
 						return 0x1F97;
 					}
 				case BeverageType.Liquor:
 					{
-						if( ItemID == 0x1F9A )
+						if ( ItemID == 0x1F9A )
 							return ItemID;
 
 						return 0x1F99;
 					}
 				case BeverageType.Milk:
 					{
-						if( ItemID == 0x9AD )
+						if ( ItemID == 0x9AD )
 							return ItemID;
 
 						return 0x9F0;
 					}
 				case BeverageType.Wine:
 					{
-						if( ItemID == 0x1F9C )
+						if ( ItemID == 0x1F9C )
 							return ItemID;
 
 						return 0x1F9B;
 					}
 				case BeverageType.Water:
 					{
-						if( ItemID == 0xFF8 || ItemID == 0xFF9 || ItemID == 0x1F9E )
+						if ( ItemID == 0xFF8 || ItemID == 0xFF9 || ItemID == 0x1F9E )
 							return ItemID;
 
 						return 0x1F9D;
@@ -488,7 +488,7 @@ namespace Server.Items
 
 		public override void Deserialize( GenericReader reader )
 		{
-			if( CheckType( "PitcherWater" ) || CheckType( "GlassPitcher" ) )
+			if ( CheckType( "PitcherWater" ) || CheckType( "GlassPitcher" ) )
 				base.InternalDeserialize( reader, false );
 			else
 				base.InternalDeserialize( reader, true );
@@ -499,37 +499,37 @@ namespace Server.Items
 			{
 				case 0:
 					{
-						if( CheckType( "PitcherAle" ) )
+						if ( CheckType( "PitcherAle" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Ale;
 						}
-						else if( CheckType( "PitcherCider" ) )
+						else if ( CheckType( "PitcherCider" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Cider;
 						}
-						else if( CheckType( "PitcherLiquor" ) )
+						else if ( CheckType( "PitcherLiquor" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Liquor;
 						}
-						else if( CheckType( "PitcherMilk" ) )
+						else if ( CheckType( "PitcherMilk" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Milk;
 						}
-						else if( CheckType( "PitcherWine" ) )
+						else if ( CheckType( "PitcherWine" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Wine;
 						}
-						else if( CheckType( "PitcherWater" ) )
+						else if ( CheckType( "PitcherWater" ) )
 						{
 							Quantity = MaxQuantity;
 							Content = BeverageType.Water;
 						}
-						else if( CheckType( "GlassPitcher" ) )
+						else if ( CheckType( "GlassPitcher" ) )
 						{
 							Quantity = 0;
 							Content = BeverageType.Water;
@@ -558,7 +558,7 @@ namespace Server.Items
 			{
 				int num = BaseLabelNumber;
 
-				if( IsEmpty || num == 0 )
+				if ( IsEmpty || num == 0 )
 					return EmptyLabelNumber;
 
 				return BaseLabelNumber + (int)m_Content;
@@ -620,7 +620,7 @@ namespace Server.Items
 
 				int itemID = ComputeItemID();
 
-				if( itemID > 0 )
+				if ( itemID > 0 )
 					ItemID = itemID;
 				else
 					Delete();
@@ -633,9 +633,9 @@ namespace Server.Items
 			get { return m_Quantity; }
 			set
 			{
-				if( value < 0 )
+				if ( value < 0 )
 					value = 0;
-				else if( value > MaxQuantity )
+				else if ( value > MaxQuantity )
 					value = MaxQuantity;
 
 				m_Quantity = value;
@@ -644,7 +644,7 @@ namespace Server.Items
 
 				int itemID = ComputeItemID();
 
-				if( itemID > 0 )
+				if ( itemID > 0 )
 					ItemID = itemID;
 				else
 					Delete();
@@ -655,11 +655,11 @@ namespace Server.Items
 		{
 			int perc = ( m_Quantity * 100 ) / MaxQuantity;
 
-			if( perc <= 0 )
+			if ( perc <= 0 )
 				return 1042975; // It's empty.
-			else if( perc <= 33 )
+			else if ( perc <= 33 )
 				return 1042974; // It's nearly empty.
-			else if( perc <= 66 )
+			else if ( perc <= 66 )
 				return 1042973; // It's half full.
 			else
 				return 1042972; // It's full.
@@ -669,7 +669,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if( ShowQuantity )
+			if ( ShowQuantity )
 				list.Add( GetQuantityDescription() );
 		}
 
@@ -677,31 +677,31 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			if( ShowQuantity )
+			if ( ShowQuantity )
 				LabelTo( from, GetQuantityDescription() );
 		}
 
 		public virtual bool ValidateUse( Mobile from, bool message )
 		{
-			if( Deleted )
+			if ( Deleted )
 				return false;
 
-			if( !Movable && !Fillable )
+			if ( !Movable && !Fillable )
 			{
 				Multis.BaseHouse house = Multis.BaseHouse.FindHouseAt( this );
 
-				if( house == null || !house.IsLockedDown( this ) )
+				if ( house == null || !house.IsLockedDown( this ) )
 				{
-					if( message )
+					if ( message )
 						from.SendLocalizedMessage( 502946, "", 0x59 ); // That belongs to someone else.
 
 					return false;
 				}
 			}
 
-			if( from.Map != Map || !from.InRange( GetWorldLocation(), 2 ) || !from.InLOS( this ) )
+			if ( from.Map != Map || !from.InRange( GetWorldLocation(), 2 ) || !from.InLOS( this ) )
 			{
-				if( message )
+				if ( message )
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 
 				return false;
@@ -712,21 +712,21 @@ namespace Server.Items
 
 		public virtual void Fill_OnTarget( Mobile from, object targ )
 		{
-			if( !IsEmpty || !Fillable || !ValidateUse( from, false ) )
+			if ( !IsEmpty || !Fillable || !ValidateUse( from, false ) )
 				return;
 
-			if( targ is BaseBeverage )
+			if ( targ is BaseBeverage )
 			{
 				BaseBeverage bev = (BaseBeverage)targ;
 
-				if( bev.IsEmpty || !bev.ValidateUse( from, true ) )
+				if ( bev.IsEmpty || !bev.ValidateUse( from, true ) )
 					return;
 
 				this.Content = bev.Content;
 				this.Poison = bev.Poison;
 				this.Poisoner = bev.Poisoner;
 
-				if( bev.Quantity > this.MaxQuantity )
+				if ( bev.Quantity > this.MaxQuantity )
 				{
 					this.Quantity = this.MaxQuantity;
 					bev.Quantity -= this.MaxQuantity;
@@ -737,15 +737,15 @@ namespace Server.Items
 					bev.Quantity = 0;
 				}
 			}
-			else if( targ is BaseWaterContainer )
+			else if ( targ is BaseWaterContainer )
 			{
 				BaseWaterContainer bwc = targ as BaseWaterContainer;
 
-				if( Quantity == 0 || ( Content == BeverageType.Water && !IsFull ) )
+				if ( Quantity == 0 || ( Content == BeverageType.Water && !IsFull ) )
 				{
 					int iNeed = Math.Min( ( MaxQuantity - Quantity ), bwc.Quantity );
 
-					if( iNeed > 0 && !bwc.IsEmpty && !IsFull )
+					if ( iNeed > 0 && !bwc.IsEmpty && !IsFull )
 					{
 						bwc.Quantity -= iNeed;
 						Quantity += iNeed;
@@ -755,20 +755,20 @@ namespace Server.Items
 					}
 				}
 			}
-			else if( targ is Item )
+			else if ( targ is Item )
 			{
 				Item item = (Item)targ;
 				IWaterSource src;
 
 				src = ( item as IWaterSource );
 
-				if( src == null && item is AddonComponent )
+				if ( src == null && item is AddonComponent )
 					src = ( ( (AddonComponent)item ).Addon as IWaterSource );
 
-				if( src == null || src.Quantity <= 0 )
+				if ( src == null || src.Quantity <= 0 )
 					return;
 
-				if( from.Map != item.Map || !from.InRange( item.GetWorldLocation(), 2 ) || !from.InLOS( item ) )
+				if ( from.Map != item.Map || !from.InRange( item.GetWorldLocation(), 2 ) || !from.InLOS( item ) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 					return;
@@ -778,7 +778,7 @@ namespace Server.Items
 				this.Poison = null;
 				this.Poisoner = null;
 
-				if( src.Quantity > this.MaxQuantity )
+				if ( src.Quantity > this.MaxQuantity )
 				{
 					this.Quantity = this.MaxQuantity;
 					src.Quantity -= this.MaxQuantity;
@@ -791,39 +791,39 @@ namespace Server.Items
 
 				from.SendLocalizedMessage( 1010089 ); // You fill the container with water.
 			}
-			else if( targ is Cow )
+			else if ( targ is Cow )
 			{
 				Cow cow = (Cow)targ;
 
-				if( cow.TryMilk( from ) )
+				if ( cow.TryMilk( from ) )
 				{
 					Content = BeverageType.Milk;
 					Quantity = MaxQuantity;
 					from.SendLocalizedMessage( 1080197 ); // You fill the container with milk.
 				}
 			}
-			else if( targ is LandTarget )
+			else if ( targ is LandTarget )
 			{
 				int tileID = ( (LandTarget)targ ).TileID;
 
 				PlayerMobile player = from as PlayerMobile;
 
-				if( player != null )
+				if ( player != null )
 				{
 					QuestSystem qs = player.Quest;
 
-					if( qs is WitchApprenticeQuest )
+					if ( qs is WitchApprenticeQuest )
 					{
 						FindIngredientObjective obj = qs.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
 
-						if( obj != null && !obj.Completed && obj.Ingredient == Ingredient.SwampWater )
+						if ( obj != null && !obj.Completed && obj.Ingredient == Ingredient.SwampWater )
 						{
 							bool contains = false;
 
 							for( int i = 0; !contains && i < m_SwampTiles.Length; i += 2 )
 								contains = ( tileID >= m_SwampTiles[ i ] && tileID <= m_SwampTiles[ i + 1 ] );
 
-							if( contains )
+							if ( contains )
 							{
 								Delete();
 
@@ -862,13 +862,13 @@ namespace Server.Items
 
 		public static void CheckHeaveTimer( Mobile from )
 		{
-			if( from.BAC > 0 && from.Map != Map.Internal && !from.Deleted )
+			if ( from.BAC > 0 && from.Map != Map.Internal && !from.Deleted )
 			{
 				Timer t = (Timer)m_Table[ from ];
 
-				if( t == null )
+				if ( t == null )
 				{
-					if( from.BAC > 60 )
+					if ( from.BAC > 60 )
 						from.BAC = 60;
 
 					t = new HeaveTimer( from );
@@ -881,7 +881,7 @@ namespace Server.Items
 			{
 				Timer t = (Timer)m_Table[ from ];
 
-				if( t != null )
+				if ( t != null )
 				{
 					t.Stop();
 					m_Table.Remove( from );
@@ -905,27 +905,27 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				if( m_Drunk.Deleted || m_Drunk.Map == Map.Internal )
+				if ( m_Drunk.Deleted || m_Drunk.Map == Map.Internal )
 				{
 					Stop();
 					m_Table.Remove( m_Drunk );
 				}
-				else if( m_Drunk.Alive )
+				else if ( m_Drunk.Alive )
 				{
-					if( m_Drunk.BAC > 60 )
+					if ( m_Drunk.BAC > 60 )
 						m_Drunk.BAC = 60;
 
 					// chance to get sober
-					if( 10 > Utility.Random( 100 ) )
+					if ( 10 > Utility.Random( 100 ) )
 						--m_Drunk.BAC;
 
 					// lose some stats
 					m_Drunk.Stam -= 1;
 					m_Drunk.Mana -= 1;
 
-					if( Utility.Random( 1, 4 ) == 1 )
+					if ( Utility.Random( 1, 4 ) == 1 )
 					{
-						if( !m_Drunk.Mounted )
+						if ( !m_Drunk.Mounted )
 						{
 							// turn in a random direction
 							m_Drunk.Direction = (Direction)Utility.Random( 8 );
@@ -938,7 +938,7 @@ namespace Server.Items
 						m_Drunk.PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 500849 );
 					}
 
-					if( m_Drunk.BAC <= 0 )
+					if ( m_Drunk.BAC <= 0 )
 					{
 						Stop();
 						m_Table.Remove( m_Drunk );
@@ -953,21 +953,21 @@ namespace Server.Items
 
 		public virtual void Pour_OnTarget( Mobile from, object targ )
 		{
-			if( IsEmpty || !Pourable || !ValidateUse( from, false ) )
+			if ( IsEmpty || !Pourable || !ValidateUse( from, false ) )
 				return;
 
-			if( targ is BaseBeverage )
+			if ( targ is BaseBeverage )
 			{
 				BaseBeverage bev = (BaseBeverage)targ;
 
-				if( !bev.ValidateUse( from, true ) )
+				if ( !bev.ValidateUse( from, true ) )
 					return;
 
-				if( bev.IsFull && bev.Content == this.Content )
+				if ( bev.IsFull && bev.Content == this.Content )
 				{
 					from.SendLocalizedMessage( 500848 ); // Couldn't pour it there.  It was already full.
 				}
-				else if( !bev.IsEmpty )
+				else if ( !bev.IsEmpty )
 				{
 					from.SendLocalizedMessage( 500846 ); // Can't pour it there.
 				}
@@ -977,7 +977,7 @@ namespace Server.Items
 					bev.Poison = this.Poison;
 					bev.Poisoner = this.Poisoner;
 
-					if( this.Quantity > bev.MaxQuantity )
+					if ( this.Quantity > bev.MaxQuantity )
 					{
 						bev.Quantity = bev.MaxQuantity;
 						this.Quantity -= bev.MaxQuantity;
@@ -991,12 +991,12 @@ namespace Server.Items
 					from.PlaySound( 0x4E );
 				}
 			}
-			else if( from == targ )
+			else if ( from == targ )
 			{
-				if( from.Thirst < 20 )
+				if ( from.Thirst < 20 )
 					from.Thirst += 1;
 
-				if( ContainsAlchohol )
+				if ( ContainsAlchohol )
 				{
 					int bac = 0;
 
@@ -1010,7 +1010,7 @@ namespace Server.Items
 
 					from.BAC += bac;
 
-					if( from.BAC > 60 )
+					if ( from.BAC > 60 )
 						from.BAC = 60;
 
 					CheckHeaveTimer( from );
@@ -1018,20 +1018,20 @@ namespace Server.Items
 
 				from.PlaySound( Utility.RandomList( 0x30, 0x2D6 ) );
 
-				if( m_Poison != null )
+				if ( m_Poison != null )
 					from.ApplyPoison( m_Poisoner, m_Poison );
 
 				--Quantity;
 			}
-			else if( targ is BaseWaterContainer )
+			else if ( targ is BaseWaterContainer )
 			{
 				BaseWaterContainer bwc = targ as BaseWaterContainer;
 
-				if( Content != BeverageType.Water )
+				if ( Content != BeverageType.Water )
 				{
 					from.SendLocalizedMessage( 500842 ); // Can't pour that in there.
 				}
-				else if( bwc.Items.Count != 0 )
+				else if ( bwc.Items.Count != 0 )
 				{
 					from.SendLocalizedMessage( 500841 ); // That has something in it.
 				}
@@ -1039,7 +1039,7 @@ namespace Server.Items
 				{
 					int itNeeds = Math.Min( ( bwc.MaxQuantity - bwc.Quantity ), Quantity );
 
-					if( itNeeds > 0 )
+					if ( itNeeds > 0 )
 					{
 						bwc.Quantity += itNeeds;
 						Quantity -= itNeeds;
@@ -1048,32 +1048,32 @@ namespace Server.Items
 					}
 				}
 			}
-			else if( targ is PlantItem )
+			else if ( targ is PlantItem )
 			{
 				( (PlantItem)targ ).Pour( from, this );
 			}
-			else if( targ is AddonComponent &&
+			else if ( targ is AddonComponent &&
 				( ( (AddonComponent)targ ).Addon is WaterVatEast || ( (AddonComponent)targ ).Addon is WaterVatSouth ) &&
 				this.Content == BeverageType.Water )
 			{
 				PlayerMobile player = from as PlayerMobile;
 
-				if( player != null )
+				if ( player != null )
 				{
 					SolenMatriarchQuest qs = player.Quest as SolenMatriarchQuest;
 
-					if( qs != null )
+					if ( qs != null )
 					{
 						QuestObjective obj = qs.FindObjective( typeof( GatherWaterObjective ) );
 
-						if( obj != null && !obj.Completed )
+						if ( obj != null && !obj.Completed )
 						{
 							BaseAddon vat = ( (AddonComponent)targ ).Addon;
 
-							if( vat.X > 5784 && vat.X < 5814 && vat.Y > 1903 && vat.Y < 1934 &&
+							if ( vat.X > 5784 && vat.X < 5814 && vat.Y > 1903 && vat.Y < 1934 &&
 								( ( qs.RedSolen && vat.Map == Map.Trammel ) || ( !qs.RedSolen && vat.Map == Map.Felucca ) ) )
 							{
-								if( obj.CurProgress + Quantity > obj.MaxProgress )
+								if ( obj.CurProgress + Quantity > obj.MaxProgress )
 								{
 									int delta = obj.MaxProgress - obj.CurProgress;
 
@@ -1098,15 +1098,15 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if( IsEmpty )
+			if ( IsEmpty )
 			{
-				if( !Fillable || !ValidateUse( from, true ) )
+				if ( !Fillable || !ValidateUse( from, true ) )
 					return;
 
 				from.BeginTarget( -1, true, TargetFlags.None, new TargetCallback( Fill_OnTarget ) );
 				SendLocalizedMessageTo( from, 500837 ); // Fill from what?
 			}
-			else if( Pourable && ValidateUse( from, true ) )
+			else if ( Pourable && ValidateUse( from, true ) )
 			{
 				from.BeginTarget( -1, true, TargetFlags.None, new TargetCallback( Pour_OnTarget ) );
 				from.SendLocalizedMessage( 1010086 ); // What do you want to use this on?
@@ -1129,11 +1129,11 @@ namespace Server.Items
 			{
 				BaseBeverage bev = items[ i ] as BaseBeverage;
 
-				if( bev != null && bev.Content == content && !bev.IsEmpty )
+				if ( bev != null && bev.Content == content && !bev.IsEmpty )
 					total += bev.Quantity;
 			}
 
-			if( total >= quantity )
+			if ( total >= quantity )
 			{
 				// We've enough, so consume it
 
@@ -1143,12 +1143,12 @@ namespace Server.Items
 				{
 					BaseBeverage bev = items[ i ] as BaseBeverage;
 
-					if( bev == null || bev.Content != content || bev.IsEmpty )
+					if ( bev == null || bev.Content != content || bev.IsEmpty )
 						continue;
 
 					int theirQuantity = bev.Quantity;
 
-					if( theirQuantity < need )
+					if ( theirQuantity < need )
 					{
 						bev.Quantity = 0;
 						need -= theirQuantity;
@@ -1208,7 +1208,7 @@ namespace Server.Items
 		{
 			base.Deserialize( reader );
 
-			if( !read )
+			if ( !read )
 				return;
 
 			int version = reader.ReadInt();

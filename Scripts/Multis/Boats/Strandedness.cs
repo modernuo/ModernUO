@@ -128,13 +128,13 @@ namespace Server.Misc
 
 			Point2D[] list;
 
-			if( map == Map.Felucca )
+			if ( map == Map.Felucca )
 				list = m_Felucca;
-			else if( map == Map.Trammel )
+			else if ( map == Map.Trammel )
 				list = m_Trammel;
-			else if( map == Map.Ilshenar )
+			else if ( map == Map.Ilshenar )
 				list = m_Ilshenar;
-			else if( map == Map.Tokuno )
+			else if ( map == Map.Tokuno )
 				list = m_Tokuno;
 			else
 				return;

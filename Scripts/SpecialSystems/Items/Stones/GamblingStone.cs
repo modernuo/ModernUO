@@ -48,14 +48,14 @@ namespace Server.Items
 		{
 			Container pack = from.Backpack;
 
-			if( pack != null && pack.ConsumeTotal( typeof( Gold ), 250 ) )
+			if ( pack != null && pack.ConsumeTotal( typeof( Gold ), 250 ) )
 			{
 				m_GamblePot += 150;
 				InvalidateProperties();
 
 				int roll = Utility.Random( 1200 );
 
-				if( roll == 0 ) // Jackpot
+				if ( roll == 0 ) // Jackpot
 				{
 					int maxCheck = 1000000;
 
@@ -72,17 +72,17 @@ namespace Server.Items
 
 					m_GamblePot = 2500;
 				}
-				else if( roll <= 20 ) // Chance for a regbag
+				else if ( roll <= 20 ) // Chance for a regbag
 				{
 					from.SendMessage( 0x35, "You win a bag of reagents!" );
 					from.AddToBackpack( new BagOfReagents( 50 ) );
 				}
-				else if( roll <= 40 ) // Chance for gold
+				else if ( roll <= 40 ) // Chance for gold
 				{
 					from.SendMessage( 0x35, "You win 1500gp!" );
 					from.AddToBackpack( new BankCheck( 1500 ) );
 				}
-				else if( roll <= 100 ) // Another chance for gold
+				else if ( roll <= 100 ) // Another chance for gold
 				{
 					from.SendMessage( 0x35, "You win 1000gp!" );
 					from.AddToBackpack( new BankCheck( 1000 ) );

@@ -143,13 +143,13 @@ namespace Server.Spells.Necromancy
 			}
 			public void DoExpire()
 			{
-				if( m_OathTable.Contains( m_Caster ) )
+				if ( m_OathTable.Contains( m_Caster ) )
 				{
 					m_Caster.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
 					m_OathTable.Remove ( m_Caster );
 				}
 
-				if( m_OathTable.Contains( m_Target ) )
+				if ( m_OathTable.Contains( m_Target ) )
 				{
 					m_Target.SendLocalizedMessage( 1061620 ); // Your Blood Oath has been broken.
 					m_OathTable.Remove ( m_Target );

@@ -242,7 +242,7 @@ namespace Server.Items
 				m_MinDamage = min;
 				m_MaxDamage = max;
 
-				if( m_From == null )
+				if ( m_From == null )
 					return;
 
 				int alchemySkill = m_From.Skills.Alchemy.Fixed;

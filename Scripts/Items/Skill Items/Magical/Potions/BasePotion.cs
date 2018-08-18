@@ -161,7 +161,7 @@ namespace Server.Items
 				}
 			}
 
-			if( version ==  0 )
+			if ( version ==  0 )
 				Stackable = Core.ML;
 		}
 
@@ -223,7 +223,7 @@ namespace Server.Items
 
 		public override bool StackWith( Mobile from, Item dropped, bool playSound )
 		{
-			if( dropped is BasePotion && ((BasePotion)dropped).m_PotionEffect == m_PotionEffect )
+			if ( dropped is BasePotion && ((BasePotion)dropped).m_PotionEffect == m_PotionEffect )
 				return base.StackWith( from, dropped, playSound );
 
 			return false;

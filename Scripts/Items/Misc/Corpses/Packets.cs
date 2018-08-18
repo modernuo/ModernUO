@@ -14,9 +14,9 @@ namespace Server.Network
 			List<Item> list = beheld.EquipItems;
 
 			int count = list.Count;
-			if( beheld.Hair != null && beheld.Hair.ItemID > 0 )
+			if ( beheld.Hair != null && beheld.Hair.ItemID > 0 )
 				count++;
-			if( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
+			if ( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
 				count++;
 
 			EnsureCapacity( 8 + (count * 5) );
@@ -34,13 +34,13 @@ namespace Server.Network
 				}
 			}
 
-			if( beheld.Hair != null && beheld.Hair.ItemID > 0 )
+			if ( beheld.Hair != null && beheld.Hair.ItemID > 0 )
 			{
 				m_Stream.Write( (byte)(Layer.Hair + 1) );
 				m_Stream.Write( (int)HairInfo.FakeSerial( beheld.Owner ) - 2 );
 			}
 
-			if( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
+			if ( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
 			{
 				m_Stream.Write( (byte)(Layer.FacialHair + 1) );
 				m_Stream.Write( (int)FacialHairInfo.FakeSerial( beheld.Owner ) - 2 );
@@ -58,9 +58,9 @@ namespace Server.Network
 			List<Item> items = beheld.EquipItems;
 			int count = items.Count;
 
-			if( beheld.Hair != null && beheld.Hair.ItemID > 0 )
+			if ( beheld.Hair != null && beheld.Hair.ItemID > 0 )
 				count++;
-			if( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
+			if ( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
 				count++;
 
 			EnsureCapacity( 5 + (count * 19) );
@@ -75,7 +75,7 @@ namespace Server.Network
 			{
 				Item child = items[i];
 
-				if( !child.Deleted && child.Parent == beheld && beholder.CanSee( child ) )
+				if ( !child.Deleted && child.Parent == beheld && beholder.CanSee( child ) )
 				{
 					m_Stream.Write( (int)child.Serial );
 					m_Stream.Write( (ushort)child.ItemID );
@@ -90,7 +90,7 @@ namespace Server.Network
 				}
 			}
 
-			if( beheld.Hair != null && beheld.Hair.ItemID > 0 )
+			if ( beheld.Hair != null && beheld.Hair.ItemID > 0 )
 			{
 				m_Stream.Write( (int)HairInfo.FakeSerial( beheld.Owner ) - 2 );
 				m_Stream.Write( (ushort)beheld.Hair.ItemID );
@@ -104,7 +104,7 @@ namespace Server.Network
 				++written;
 			}
 
-			if( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
+			if ( beheld.FacialHair != null && beheld.FacialHair.ItemID > 0 )
 			{
 				m_Stream.Write( (int)FacialHairInfo.FakeSerial( beheld.Owner ) - 2 );
 				m_Stream.Write( (ushort)beheld.FacialHair.ItemID );

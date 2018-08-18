@@ -29,26 +29,26 @@ namespace Server.Spells.Spellweaving
 
 		public void Target( Mobile m )
 		{
-			if( !Caster.CanSee( m ) )
+			if ( !Caster.CanSee( m ) )
 			{
 				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
 			}
-			if( m_Table.ContainsKey( m ) )
+			if ( m_Table.ContainsKey( m ) )
 			{
 				Caster.SendLocalizedMessage( 501775 ); // This spell is already in effect.
 			}
-			else if( !Caster.CanBeginAction( typeof( GiftOfRenewalSpell ) ) )
+			else if ( !Caster.CanBeginAction( typeof( GiftOfRenewalSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 501789 ); // You must wait before trying again.
 			}
-			else if( CheckBSequence( m ) )
+			else if ( CheckBSequence( m ) )
 			{
 				SpellHelper.Turn( Caster, m );
 
 				Caster.FixedEffect( 0x374A, 10, 20 );
 				Caster.PlaySound( 0x5C9 );
 
-				if( m.Poisoned )
+				if ( m.Poisoned )
 				{
 					m.CurePoison( m );
 				}
@@ -64,7 +64,7 @@ namespace Server.Spells.Spellweaving
 					Timer.DelayCall( duration,
 						delegate
 						{
-							if( StopEffect( m ) )
+							if ( StopEffect( m ) )
 							{
 								m.PlaySound( 0x455 );
 								m.SendLocalizedMessage( 1075071 ); // The Gift of Renewal has faded.
@@ -118,20 +118,20 @@ namespace Server.Spells.Spellweaving
 			{
 				Mobile m = m_Info.m_Mobile;
 
-				if( !m_Table.ContainsKey( m ) )
+				if ( !m_Table.ContainsKey( m ) )
 				{
 					Stop();
 					return;
 				}
 
-				if( !m.Alive )
+				if ( !m.Alive )
 				{
 					Stop();
 					StopEffect( m );
 					return;
 				}
 
-				if( m.Hits >= m.HitsMax )
+				if ( m.Hits >= m.HitsMax )
 					return;
 
 				int toHeal = m_Info.m_HitsPerRound;
@@ -170,7 +170,7 @@ namespace Server.Spells.Spellweaving
 
 			protected override void OnTarget( Mobile m, object o )
 			{
-				if( o is Mobile )
+				if ( o is Mobile )
 				{
 					m_Owner.Target( (Mobile)o );
 				}

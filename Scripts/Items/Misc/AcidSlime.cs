@@ -38,7 +38,7 @@ namespace Server.Items
 
 		public override void OnAfterDelete()
 		{
-			if( m_Timer != null )
+			if ( m_Timer != null )
 				m_Timer.Stop();
 		}
 
@@ -47,10 +47,10 @@ namespace Server.Items
 			DateTime now = DateTime.UtcNow;
 			TimeSpan age = now - m_Created;
 
-			if( age > m_Duration ) {
+			if ( age > m_Duration ) {
 				Delete();
 			} else {
-				if( !m_Drying && age > (m_Duration - age) )
+				if ( !m_Drying && age > (m_Duration - age) )
 				{
 					m_Drying = true;
 					ItemID = 0x122B;
@@ -61,7 +61,7 @@ namespace Server.Items
 				foreach( Mobile m in GetMobilesInRange( 0 ) )
 				{
 					BaseCreature bc = m as BaseCreature;
-					if( m.Alive && !m.IsDeadBondedPet && (bc == null || bc.Controlled || bc.Summoned) )
+					if ( m.Alive && !m.IsDeadBondedPet && (bc == null || bc.Controlled || bc.Summoned) )
 					{
 						toDamage.Add( m );
 					}

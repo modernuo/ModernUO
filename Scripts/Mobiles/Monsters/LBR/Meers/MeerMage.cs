@@ -89,11 +89,11 @@ namespace Server.Mobiles
 				{
 					m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 30 ) );
 
-					if( combatant is BaseCreature )
+					if ( combatant is BaseCreature )
 					{
 						BaseCreature bc = (BaseCreature)combatant;
 
-						if( bc.Controlled && bc.ControlMaster != null && !bc.ControlMaster.Deleted && bc.ControlMaster.Alive )
+						if ( bc.Controlled && bc.ControlMaster != null && !bc.ControlMaster.Deleted && bc.ControlMaster.Alive )
 						{
 							if ( bc.ControlMaster.Map == this.Map && bc.ControlMaster.InRange( this, 12 ) && !UnderEffect( bc.ControlMaster ) )
 							{
@@ -102,7 +102,7 @@ namespace Server.Mobiles
 						}
 					}
 
-					if( Utility.RandomDouble() < .1 )
+					if ( Utility.RandomDouble() < .1 )
 					{
 						int[][] coord =
 						{

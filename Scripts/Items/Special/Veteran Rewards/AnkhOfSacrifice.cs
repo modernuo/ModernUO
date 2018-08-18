@@ -132,9 +132,9 @@ namespace Server.Items
 			{
 				Mobile from = state.Mobile;
 
-				if( info.ButtonID == 1 || info.ButtonID == 2 )
+				if ( info.ButtonID == 1 || info.ButtonID == 2 )
 				{
-					if( from.Map == null || !from.Map.CanFit( from.Location, 16, false, false ) )
+					if ( from.Map == null || !from.Map.CanFit( from.Location, 16, false, false ) )
 					{
 						from.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
 						return;

@@ -172,11 +172,11 @@ namespace Server.Misc
 				title.Append( beheld.Name );
 			}
 
-			if( beheld is PlayerMobile && ((PlayerMobile)beheld).DisplayChampionTitle )
+			if ( beheld is PlayerMobile && ((PlayerMobile)beheld).DisplayChampionTitle )
 			{
 				PlayerMobile.ChampionTitleInfo info = ((PlayerMobile)beheld).ChampionTitles;
 
-				if( info.Harrower > 0 )
+				if ( info.Harrower > 0 )
 					title.AppendFormat( ": {0} of Evil", HarrowerTitles[Math.Min( HarrowerTitles.Length, info.Harrower )-1] );
 				else
 				{
@@ -185,7 +185,7 @@ namespace Server.Misc
 					{
 						int v = info.GetValue( i );
 
-						if( v > highestValue )
+						if ( v > highestValue )
 						{
 							highestValue = v;
 							highestType = i;
@@ -193,12 +193,12 @@ namespace Server.Misc
 					}
 
 					int offset = 0;
-					if( highestValue > 800 )
+					if ( highestValue > 800 )
 						offset = 3;
-					else if( highestValue > 300 )
+					else if ( highestValue > 300 )
 						offset = (int)(highestValue/300);
 
-					if( offset > 0 )
+					if ( offset > 0 )
 					{
 						ChampionSpawnInfo champInfo = ChampionSpawnInfo.GetInfo( (ChampionSpawnType)highestType );
 						title.AppendFormat( ": {0} of the {1}", champInfo.LevelNames[Math.Min( offset, champInfo.LevelNames.Length ) -1], champInfo.Name );

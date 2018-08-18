@@ -77,7 +77,7 @@ namespace Server.Items
 
 			public virtual void SetTubHue( Mobile from, object state,  int hue )
 			{
-				if( state is DyeTub )
+				if ( state is DyeTub )
 				{
 					DyeTub tub = state as DyeTub;
 
@@ -95,11 +95,11 @@ namespace Server.Items
 
 					if ( tub.Redyable )
 					{
-						if( tub.MetallicHues )   /* OSI has three metallic tubs now */
+						if ( tub.MetallicHues )   /* OSI has three metallic tubs now */
 						{
 							from.SendGump( new MetallicHuePicker( from, new MetallicHuePicker.MetallicHuePickerCallback( SetTubHue ), tub ) );
 						}
-						else if( tub.CustomHuePicker != null )
+						else if ( tub.CustomHuePicker != null )
 						{
 							from.SendGump( new CustomHuePickerGump( from, tub.CustomHuePicker, new CustomHuePickerCallback( SetTubHue ), tub ) );
 						}

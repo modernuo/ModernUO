@@ -57,7 +57,7 @@ namespace Server
 
 			string path = Path.Combine( Core.BaseDirectory, "Data/Assemblies.cfg" );
 
-			if( File.Exists( path ) )
+			if ( File.Exists( path ) )
 			{
 				using( StreamReader ip = new StreamReader( path ) )
 				{
@@ -65,7 +65,7 @@ namespace Server
 
 					while( (line = ip.ReadLine()) != null )
 					{
-						if( line.Length > 0 && !line.StartsWith( "#" ) )
+						if ( line.Length > 0 && !line.StartsWith( "#" ) )
 							list.Add( line );
 					}
 				}
@@ -80,20 +80,20 @@ namespace Server
 
 		public static string GetCompilerOptions( bool debug )
 		{
-			StringBuilder sb = null;			
+			StringBuilder sb = null;
 
 			AppendCompilerOption( ref sb, "/unsafe" );
 
-			if( !debug )
+			if ( !debug )
 				AppendCompilerOption( ref sb, "/optimize" );
 
 #if MONO
 			AppendCompilerOption( ref sb, "/d:MONO" );
 #endif
 
-			if( Core.Is64Bit )
+			if ( Core.Is64Bit )
 				AppendCompilerOption( ref sb, "/d:x64" );
-			
+
 #if NEWTIMERS
 			AppendCompilerOption(ref sb, "/d:NEWTIMERS");
 #endif
@@ -107,7 +107,7 @@ namespace Server
 
 		private static void AppendCompilerOption( ref StringBuilder sb, string define )
 		{
-			if( sb == null )
+			if ( sb == null )
 				sb = new StringBuilder();
 			else
 				sb.Append( ' ' );
@@ -160,16 +160,16 @@ namespace Server
 			Console.Write( "Scripts: Compiling C# scripts..." );
 			string[] files = GetScripts( "*.cs" );
 
-			if( files.Length == 0 )
+			if ( files.Length == 0 )
 			{
 				Console.WriteLine( "no files found." );
 				assembly = null;
 				return true;
 			}
 
-			if( File.Exists( "Scripts/Output/Scripts.CS.dll" ) )
+			if ( File.Exists( "Scripts/Output/Scripts.CS.dll" ) )
 			{
-				if( cache && File.Exists( "Scripts/Output/Scripts.CS.hash" ) )
+				if ( cache && File.Exists( "Scripts/Output/Scripts.CS.hash" ) )
 				{
 					try
 					{
@@ -181,24 +181,24 @@ namespace Server
 							{
 								byte[] bytes = bin.ReadBytes( hashCode.Length );
 
-								if( bytes.Length == hashCode.Length )
+								if ( bytes.Length == hashCode.Length )
 								{
 									bool valid = true;
 
 									for( int i = 0; i < bytes.Length; ++i )
 									{
-										if( bytes[i] != hashCode[i] )
+										if ( bytes[i] != hashCode[i] )
 										{
 											valid = false;
 											break;
 										}
 									}
 
-									if( valid )
+									if ( valid )
 									{
 										assembly = Assembly.LoadFrom( "Scripts/Output/Scripts.CS.dll" );
 
-										if( !m_AdditionalReferences.Contains( assembly.Location ) )
+										if ( !m_AdditionalReferences.Contains( assembly.Location ) )
 										{
 											m_AdditionalReferences.Add( assembly.Location );
 										}
@@ -227,10 +227,10 @@ namespace Server
 
 				string options = GetCompilerOptions( debug );
 
-				if( options != null )
+				if ( options != null )
 					parms.CompilerOptions = options;
 
-				if( Core.HaltOnWarning )
+				if ( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
 
 				if (Core.Unix)
@@ -262,7 +262,7 @@ namespace Server
 				}
 
 
-				if( cache && Path.GetFileName( path ) == "Scripts.CS.dll" )
+				if ( cache && Path.GetFileName( path ) == "Scripts.CS.dll" )
 				{
 					try
 					{
@@ -301,16 +301,16 @@ namespace Server
 			Console.Write( "Scripts: Compiling VB.NET scripts..." );
 			string[] files = GetScripts( "*.vb" );
 
-			if( files.Length == 0 )
+			if ( files.Length == 0 )
 			{
 				Console.WriteLine( "no files found." );
 				assembly = null;
 				return true;
 			}
 
-			if( File.Exists( "Scripts/Output/Scripts.VB.dll" ) )
+			if ( File.Exists( "Scripts/Output/Scripts.VB.dll" ) )
 			{
-				if( cache && File.Exists( "Scripts/Output/Scripts.VB.hash" ) )
+				if ( cache && File.Exists( "Scripts/Output/Scripts.VB.hash" ) )
 				{
 					byte[] hashCode = GetHashCode( "Scripts/Output/Scripts.VB.dll", files, debug );
 
@@ -322,24 +322,24 @@ namespace Server
 							{
 								byte[] bytes = bin.ReadBytes( hashCode.Length );
 
-								if( bytes.Length == hashCode.Length )
+								if ( bytes.Length == hashCode.Length )
 								{
 									bool valid = true;
 
 									for( int i = 0; i < bytes.Length; ++i )
 									{
-										if( bytes[i] != hashCode[i] )
+										if ( bytes[i] != hashCode[i] )
 										{
 											valid = false;
 											break;
 										}
 									}
 
-									if( valid )
+									if ( valid )
 									{
 										assembly = Assembly.LoadFrom( "Scripts/Output/Scripts.VB.dll" );
 
-										if( !m_AdditionalReferences.Contains( assembly.Location ) )
+										if ( !m_AdditionalReferences.Contains( assembly.Location ) )
 										{
 											m_AdditionalReferences.Add( assembly.Location );
 										}
@@ -368,10 +368,10 @@ namespace Server
 
 				string options = GetCompilerOptions( debug );
 
-				if( options != null )
+				if ( options != null )
 					parms.CompilerOptions = options;
 
-				if( Core.HaltOnWarning )
+				if ( Core.HaltOnWarning )
 					parms.WarningLevel = 4;
 
 				if (Core.Unix)
@@ -402,7 +402,7 @@ namespace Server
 					}
 				}
 
-				if( cache && Path.GetFileName( path ) == "Scripts.VB.dll" )
+				if ( cache && Path.GetFileName( path ) == "Scripts.VB.dll" )
 				{
 					try
 					{
@@ -428,7 +428,7 @@ namespace Server
 
 		public static void Display( CompilerResults results )
 		{
-			if( results.Errors.Count > 0 )
+			if ( results.Errors.Count > 0 )
 			{
 				Dictionary<string, List<CompilerError>> errors = new Dictionary<string, List<CompilerError>>( results.Errors.Count, StringComparer.OrdinalIgnoreCase );
 				Dictionary<string, List<CompilerError>> warnings = new Dictionary<string, List<CompilerError>>( results.Errors.Count, StringComparer.OrdinalIgnoreCase );
@@ -448,13 +448,13 @@ namespace Server
 					List<CompilerError> list = null;
 					table.TryGetValue( file, out list );
 
-					if( list == null )
+					if ( list == null )
 						table[file] = list = new List<CompilerError>();
 
 					list.Add( e );
 				}
 
-				if( errors.Count > 0 )
+				if ( errors.Count > 0 )
 					Console.WriteLine( "failed ({0} errors, {1} warnings)", errors.Count, warnings.Count );
 				else
 					Console.WriteLine( "done ({0} errors, {1} warnings)", errors.Count, warnings.Count );
@@ -464,7 +464,7 @@ namespace Server
 
 				Utility.PushColor( ConsoleColor.Yellow );
 
-				if( warnings.Count > 0 )
+				if ( warnings.Count > 0 )
 					Console.WriteLine( "Warnings:" );
 
 				foreach( KeyValuePair<string, List<CompilerError>> kvp in warnings )
@@ -489,7 +489,7 @@ namespace Server
 
 				Utility.PushColor( ConsoleColor.Red );
 
-				if( errors.Count > 0 )
+				if ( errors.Count > 0 )
 					Console.WriteLine( "Errors:" );
 
 				foreach( KeyValuePair<string, List<CompilerError>> kvp in errors )
@@ -562,16 +562,16 @@ namespace Server
 			EnsureDirectory( "Scripts/" );
 			EnsureDirectory( "Scripts/Output/" );
 
-			if( m_AdditionalReferences.Count > 0 )
+			if ( m_AdditionalReferences.Count > 0 )
 				m_AdditionalReferences.Clear();
 
 			List<Assembly> assemblies = new List<Assembly>();
 
 			Assembly assembly;
 
-			if( CompileCSScripts( debug, cache, out assembly ) )
+			if ( CompileCSScripts( debug, cache, out assembly ) )
 			{
-				if( assembly != null )
+				if ( assembly != null )
 				{
 					assemblies.Add( assembly );
 				}
@@ -600,7 +600,7 @@ namespace Server
 				Console.WriteLine( "Scripts: Skipping VB.NET Scripts...done (use -vb to enable)");
 			}
 
-			if( assemblies.Count == 0 )
+			if ( assemblies.Count == 0 )
 			{
 				return false;
 			}
@@ -610,9 +610,9 @@ namespace Server
 			Console.Write( "Scripts: Verifying..." );
 
 			Stopwatch watch = Stopwatch.StartNew();
-			
+
 			Core.VerifySerialization();
-			
+
 			watch.Stop();
 
 			Console.WriteLine("done ({0} items, {1} mobiles) ({2:F2} seconds)", Core.ScriptItems, Core.ScriptMobiles, watch.Elapsed.TotalSeconds);
@@ -632,7 +632,7 @@ namespace Server
 				{
 					MethodInfo m = types[i].GetMethod( method, BindingFlags.Static | BindingFlags.Public );
 
-					if( m != null )
+					if ( m != null )
 						invoke.Add( m );
 				}
 			}
@@ -648,9 +648,9 @@ namespace Server
 
 		public static TypeCache GetTypeCache( Assembly asm )
 		{
-			if( asm == null )
+			if ( asm == null )
 			{
-				if( m_NullCache == null )
+				if ( m_NullCache == null )
 					m_NullCache = new TypeCache( null );
 
 				return m_NullCache;
@@ -659,7 +659,7 @@ namespace Server
 			TypeCache c = null;
 			m_TypeCaches.TryGetValue( asm, out c );
 
-			if( c == null )
+			if ( c == null )
 				m_TypeCaches[asm] = c = new TypeCache( asm );
 
 			return c;
@@ -677,7 +677,7 @@ namespace Server
 			for( int i = 0; type == null && i < m_Assemblies.Length; ++i )
 				type = GetTypeCache( m_Assemblies[i] ).GetTypeByFullName( fullName, ignoreCase );
 
-			if( type == null )
+			if ( type == null )
 				type = GetTypeCache( Core.Assembly ).GetTypeByFullName( fullName, ignoreCase );
 
 			return type;
@@ -695,7 +695,7 @@ namespace Server
 			for( int i = 0; type == null && i < m_Assemblies.Length; ++i )
 				type = GetTypeCache( m_Assemblies[i] ).GetTypeByName( name, ignoreCase );
 
-			if( type == null )
+			if ( type == null )
 				type = GetTypeCache( Core.Assembly ).GetTypeByName( name, ignoreCase );
 
 			return type;
@@ -705,7 +705,7 @@ namespace Server
 		{
 			string path = Path.Combine( Core.BaseDirectory, dir );
 
-			if( !Directory.Exists( path ) )
+			if ( !Directory.Exists( path ) )
 				Directory.CreateDirectory( path );
 		}
 
@@ -748,7 +748,7 @@ namespace Server
 
 		public TypeCache( Assembly asm )
 		{
-			if( asm == null )
+			if ( asm == null )
 				m_Types = Type.EmptyTypes;
 			else
 				m_Types = asm.GetTypes();
@@ -765,15 +765,15 @@ namespace Server
 				m_Names.Add( type.Name, type );
 				m_FullNames.Add( type.FullName, type );
 
-				if( type.IsDefined( typeofTypeAliasAttribute, false ) )
+				if ( type.IsDefined( typeofTypeAliasAttribute, false ) )
 				{
 					object[] attrs = type.GetCustomAttributes( typeofTypeAliasAttribute, false );
 
-					if( attrs != null && attrs.Length > 0 )
+					if ( attrs != null && attrs.Length > 0 )
 					{
 						TypeAliasAttribute attr = attrs[0] as TypeAliasAttribute;
 
-						if( attr != null )
+						if ( attr != null )
 						{
 							for( int j = 0; j < attr.Aliases.Length; ++j )
 								m_FullNames.Add( attr.Aliases[j], type );
@@ -798,7 +798,7 @@ namespace Server
 		{
 			Type t = null;
 
-			if( ignoreCase )
+			if ( ignoreCase )
 				m_Insensitive.TryGetValue( key, out t );
 			else
 				m_Sensitive.TryGetValue( key, out t );

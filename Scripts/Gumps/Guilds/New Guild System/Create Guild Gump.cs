@@ -24,7 +24,7 @@ namespace Server.Guilds
 			AddHtmlLocalized( 25, 60, 450, 60, 1062940, 0x0, false, false ); // As you are not a member of any guild, you can create your own by providing a unique guild name and paying the standard guild registration fee.
 			AddHtmlLocalized( 25, 135, 120, 25, 1062941, 0x0, false, false ); // Registration Fee:
 			AddLabel( 155, 135, 0x481, Guild.RegistrationFee.ToString() );
-			AddHtmlLocalized( 25, 165, 120, 25, 1011140, 0x0, false, false ); // Enter Guild Name: 
+			AddHtmlLocalized( 25, 165, 120, 25, 1011140, 0x0, false, false ); // Enter Guild Name:
 			AddBackground( 155, 160, 320, 26, 0xBB8 );
 			AddTextEntry( 160, 163, 315, 21, 0x481, 5, guildName );
 			AddHtmlLocalized( 25, 191, 120, 26, 1063035, 0x0, false, false ); // Abbreviation:
@@ -33,7 +33,7 @@ namespace Server.Guilds
 			AddButton( 415, 217, 0xF7, 0xF8, 1, GumpButtonType.Reply, 0 );
 			AddButton( 345, 217, 0xF2, 0xF1, 0, GumpButtonType.Reply, 0 );
 
-			if( pm.AcceptGuildInvites )
+			if ( pm.AcceptGuildInvites )
 				AddButton( 20, 260, 0xD2, 0xD3, 2, GumpButtonType.Reply, 0 );
 			else
 				AddButton( 20, 260, 0xD3, 0xD2, 2, GumpButtonType.Reply, 0 );
@@ -45,7 +45,7 @@ namespace Server.Guilds
 		{
 			PlayerMobile pm = sender.Mobile as PlayerMobile;
 
-			if( pm == null || pm.Guild != null )
+			if ( pm == null || pm.Guild != null )
 				return;		//Sanity
 
 			switch( info.ButtonID )
@@ -61,19 +61,19 @@ namespace Server.Guilds
 					guildName = Utility.FixHtml( guildName.Trim() );
 					guildAbbrev = Utility.FixHtml( guildAbbrev.Trim() );
 
-					if( guildName.Length <= 0 )
+					if ( guildName.Length <= 0 )
 						pm.SendLocalizedMessage( 1070884 ); // Guild name cannot be blank.
-					else if( guildAbbrev.Length <= 0 )
+					else if ( guildAbbrev.Length <= 0 )
 						pm.SendLocalizedMessage( 1070885 ); // You must provide a guild abbreviation.
-                    else if( guildName.Length > Guild.NameLimit )
+                    else if ( guildName.Length > Guild.NameLimit )
 						pm.SendLocalizedMessage( 1063036, Guild.NameLimit.ToString() ); // A guild name cannot be more than ~1_val~ characters in length.
-					else if( guildAbbrev.Length > Guild.AbbrevLimit )
+					else if ( guildAbbrev.Length > Guild.AbbrevLimit )
 						pm.SendLocalizedMessage( 1063037, Guild.AbbrevLimit.ToString() ); // An abbreviation cannot exceed ~1_val~ characters in length.
-					else if( Guild.FindByAbbrev( guildAbbrev ) != null || !BaseGuildGump.CheckProfanity( guildAbbrev ) )
+					else if ( Guild.FindByAbbrev( guildAbbrev ) != null || !BaseGuildGump.CheckProfanity( guildAbbrev ) )
 						pm.SendLocalizedMessage( 501153 ); // That abbreviation is not available.
-					else if( Guild.FindByName( guildName ) != null || !BaseGuildGump.CheckProfanity( guildName ) )
+					else if ( Guild.FindByName( guildName ) != null || !BaseGuildGump.CheckProfanity( guildName ) )
 						pm.SendLocalizedMessage( 1063000 ); // That guild name is not available.
-					else if( !Banker.Withdraw( pm, Guild.RegistrationFee ) )
+					else if ( !Banker.Withdraw( pm, Guild.RegistrationFee ) )
 						pm.SendLocalizedMessage( 1063001, Guild.RegistrationFee.ToString() ); // You do not possess the ~1_val~ gold piece fee required to create a guild.
 					else
 					{
@@ -88,7 +88,7 @@ namespace Server.Guilds
 				{
 					pm.AcceptGuildInvites = !pm.AcceptGuildInvites;
 
-					if( pm.AcceptGuildInvites )
+					if ( pm.AcceptGuildInvites )
 						pm.SendLocalizedMessage( 1070699 ); // You are now accepting guild invitations.
 					else
 						pm.SendLocalizedMessage( 1070698 ); // You are now ignoring guild invitations.

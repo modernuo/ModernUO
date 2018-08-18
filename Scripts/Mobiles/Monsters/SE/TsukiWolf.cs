@@ -75,7 +75,7 @@ namespace Server.Mobiles
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if( 0.1 > Utility.RandomDouble() )
+			if ( 0.1 > Utility.RandomDouble() )
 			{
 				/* Blood Bath
 				 * Start cliloc 1070826
@@ -87,7 +87,7 @@ namespace Server.Mobiles
 
 				ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
-				if( timer != null )
+				if ( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070825 ); // The creature continues to rage!
@@ -125,7 +125,7 @@ namespace Server.Mobiles
 
 			public void DrainLife()
 			{
-				if( m_Mobile.Alive )
+				if ( m_Mobile.Alive )
 					m_Mobile.Damage( 2, m_From );
 				else
 					DoExpire();
@@ -135,7 +135,7 @@ namespace Server.Mobiles
 			{
 				DrainLife();
 
-				if( ++m_Count >= 5 )
+				if ( ++m_Count >= 5 )
 				{
 					DoExpire();
 					m_Mobile.SendLocalizedMessage( 1070824 ); // The creature's rage subsides.

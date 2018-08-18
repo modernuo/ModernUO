@@ -33,7 +33,7 @@ namespace Server.Items
 
 		public bool Dye( Mobile from, DyeTub sender )
 		{
-			if( Deleted || !sender.AllowDyables )
+			if ( Deleted || !sender.AllowDyables )
 				return false;
 
 			Hue = sender.DyedHue;

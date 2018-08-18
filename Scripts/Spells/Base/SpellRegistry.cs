@@ -58,7 +58,7 @@ namespace Server.Spells
 
 		public static int GetRegistryNumber( Type type )
 		{
-			if( m_IDsFromTypes.ContainsKey( type ) )
+			if ( m_IDsFromTypes.ContainsKey( type ) )
 				return m_IDsFromTypes[type];
 
 			return -1;
@@ -74,10 +74,10 @@ namespace Server.Spells
 
 			m_Types[spellID] = type;
 
-			if( !m_IDsFromTypes.ContainsKey( type ) )
+			if ( !m_IDsFromTypes.ContainsKey( type ) )
 				m_IDsFromTypes.Add( type, spellID );
 
-			if( type.IsSubclassOf( typeof( SpecialMove ) ) )
+			if ( type.IsSubclassOf( typeof( SpecialMove ) ) )
 			{
 				SpecialMove spm = null;
 
@@ -89,7 +89,7 @@ namespace Server.Spells
 				{
 				}
 
-				if( spm != null )
+				if ( spm != null )
 					m_SpecialMoves.Add( spellID, spm );
 			}
 		}
@@ -116,7 +116,7 @@ namespace Server.Spells
 
 			Type t = m_Types[spellID];
 
-			if( t != null && !t.IsSubclassOf( typeof( SpecialMove ) ) )
+			if ( t != null && !t.IsSubclassOf( typeof( SpecialMove ) ) )
 			{
 				m_Params[0] = caster;
 				m_Params[1] = scroll;

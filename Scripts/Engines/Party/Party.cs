@@ -368,9 +368,9 @@ namespace Server.Engines.PartySystem
 			{
 				Mobile mob = ns.Mobile;
 
-				if( mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel && mob.Party != this && !m_Listeners.Contains( mob ) )
+				if ( mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel && mob.Party != this && !m_Listeners.Contains( mob ) )
 				{
-					if( p == null )
+					if ( p == null )
 						p = Packet.Acquire( new UnicodeMessage( from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3, from.Language, from.Name, text ) );
 
 					ns.Send( p );

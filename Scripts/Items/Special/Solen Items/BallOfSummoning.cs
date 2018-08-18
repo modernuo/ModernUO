@@ -154,7 +154,7 @@ namespace Server.Items
 
 			AnimalFormContext animalContext = AnimalForm.GetContext( from );
 
-			if( Core.ML && animalContext != null )
+			if ( Core.ML && animalContext != null )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1080073 ); // You cannot use a Crystal Ball of Pet Summoning while in animal form.
 				return;
@@ -266,7 +266,7 @@ namespace Server.Items
 			}
 			else
 			{
-				if( Core.ML )
+				if ( Core.ML )
 					new PetSummoningSpell( this, from ).Cast();
 				else
 					SummonPet( from );
@@ -436,7 +436,7 @@ namespace Server.Items
 
 			public override bool CheckDisturb( DisturbType type, bool checkFirst, bool resistable )
 			{
-				if( type == DisturbType.EquipRequest || type == DisturbType.UseRequest/* || type == DisturbType.Hurt*/ )
+				if ( type == DisturbType.EquipRequest || type == DisturbType.UseRequest/* || type == DisturbType.Hurt*/ )
 					return false;
 
 				return true;
@@ -444,19 +444,19 @@ namespace Server.Items
 
 			public override void DoHurtFizzle()
 			{
-				if( !m_Stop )
+				if ( !m_Stop )
 					base.DoHurtFizzle();
 			}
 
 			public override void DoFizzle()
 			{
-				if( !m_Stop )
+				if ( !m_Stop )
 					base.DoFizzle();
 			}
 
 			public override void OnDisturb( DisturbType type, bool message )
 			{
-				if( message && !m_Stop )
+				if ( message && !m_Stop )
 					Caster.SendLocalizedMessage( 1080074 ); // You have been disrupted while attempting to summon your pet!
 			}
 

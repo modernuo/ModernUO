@@ -136,7 +136,7 @@ namespace Server.Engines.ConPVP
 								"Suprise Attack"
 							} ) );
 
-							if( Core.ML )
+							if ( Core.ML )
 							{
 								entries.Add( new RulesetLayout( "Spellweaving", new string[]
 									{
@@ -280,7 +280,7 @@ namespace Server.Engines.ConPVP
 							} ) );
 					}
 
-					if( Core.SE )
+					if ( Core.SE )
 					{
 						entries.Add( new RulesetLayout( "Items", new RulesetLayout[]
 						{
@@ -342,7 +342,7 @@ namespace Server.Engines.ConPVP
 
 					// Set up default rulesets
 
-					if( !Core.AOS )
+					if ( !Core.AOS )
 					{
 						#region Mage 5x
 						Ruleset m5x = new Ruleset( m_Root );

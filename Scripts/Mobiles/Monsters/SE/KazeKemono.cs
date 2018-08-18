@@ -58,7 +58,7 @@ namespace Server.Mobiles
 		{
 			base.OnGaveMeleeAttack( defender );
 
-			if( 0.1 > Utility.RandomDouble() )
+			if ( 0.1 > Utility.RandomDouble() )
 			{
 				/* Flurry of Twigs
 				 * Start cliloc: 1070850
@@ -69,7 +69,7 @@ namespace Server.Mobiles
 
 				ExpireTimer timer = (ExpireTimer)m_FlurryOfTwigsTable[defender];
 
-				if( timer != null )
+				if ( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070851 ); // The creature lands another blow in your weakened state.
@@ -88,7 +88,7 @@ namespace Server.Mobiles
 				timer.Start();
 				m_FlurryOfTwigsTable[defender] = timer;
 			}
-			else if( 0.05 > Utility.RandomDouble() )
+			else if ( 0.05 > Utility.RandomDouble() )
 			{
 				/* Chlorophyl Blast
 				 * Start cliloc: 1070827
@@ -99,7 +99,7 @@ namespace Server.Mobiles
 
 				ExpireTimer timer = (ExpireTimer)m_ChlorophylBlastTable[defender];
 
-				if( timer != null )
+				if ( timer != null )
 				{
 					timer.DoExpire();
 					defender.SendLocalizedMessage( 1070828 ); // The creature continues to hinder your energy resistance!
@@ -147,7 +147,7 @@ namespace Server.Mobiles
 
 			protected override void OnTick()
 			{
-				if( m_Mod.Type == ResistanceType.Physical )
+				if ( m_Mod.Type == ResistanceType.Physical )
 					m_Mobile.SendLocalizedMessage( 1070852 ); // Your resistance to physical attacks has returned.
 				else
 					m_Mobile.SendLocalizedMessage( 1070829 ); // Your resistance to energy attacks has returned.

@@ -37,7 +37,7 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 501699 ); // You cannot disguise yourself while polymorphed.
 				}
-				else if( TransformationSpellHelper.UnderTransformation( from ) )
+				else if ( TransformationSpellHelper.UnderTransformation( from ) )
 				{
 					from.SendLocalizedMessage( 501699 ); // You cannot disguise yourself while polymorphed.
 				}

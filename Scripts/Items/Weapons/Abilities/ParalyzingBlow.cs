@@ -50,7 +50,7 @@ namespace Server.Items
 
 		public override bool OnBeforeSwing( Mobile attacker, Mobile defender )
 		{
-			if( defender.Paralyzed )
+			if ( defender.Paralyzed )
 			{
 				attacker.SendLocalizedMessage( 1061923 ); // The target is already frozen.
 				return false;
@@ -61,12 +61,12 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
 			ClearCurrentAbility( attacker );
 
-			if( IsImmune( defender ) )	//Intentionally going after Mana consumption
+			if ( IsImmune( defender ) )	//Intentionally going after Mana consumption
 			{
 				attacker.SendLocalizedMessage( 1070804 ); // Your target resists paralysis.
 				defender.SendLocalizedMessage( 1070813 ); // You resist paralysis.

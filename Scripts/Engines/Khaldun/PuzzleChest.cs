@@ -634,11 +634,11 @@ namespace Server.Items
 
 					DropItem( item );
 				}
-				else if( item is BaseHat )
+				else if ( item is BaseHat )
 				{
 					BaseHat hat = (BaseHat)item;
 
-					if( Core.AOS )
+					if ( Core.AOS )
 					{
 						int attributeCount;
 						int min, max;
@@ -650,7 +650,7 @@ namespace Server.Items
 
 					DropItem( item );
 				}
-				else if( item is BaseJewel )
+				else if ( item is BaseJewel )
 				{
 					int attributeCount;
 					int min, max;

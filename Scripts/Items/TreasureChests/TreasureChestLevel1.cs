@@ -75,7 +75,7 @@ namespace Server.Items
 			//DropItem( new Bolt( 10 ) );
 
 			// Gems
-			if( Utility.RandomBool() == true )
+			if ( Utility.RandomBool() == true )
 			{
 				Item GemLoot = Loot.RandomGem();
 				GemLoot.Amount = Utility.Random( 1, 3 );
@@ -83,19 +83,19 @@ namespace Server.Items
 			}
 
 			// Weapon
-			if( Utility.RandomBool() == true )
+			if ( Utility.RandomBool() == true )
 				DropItem( Loot.RandomWeapon() );
 
 			// Armour
-			if( Utility.RandomBool() == true )
+			if ( Utility.RandomBool() == true )
 				DropItem( Loot.RandomArmorOrShield() );
 
 			// Clothing
-			if( Utility.RandomBool() == true )
+			if ( Utility.RandomBool() == true )
 				DropItem( Loot.RandomClothing() );
 
 			// Jewelry
-			if( Utility.RandomBool() == true )
+			if ( Utility.RandomBool() == true )
 				DropItem( Loot.RandomJewelry() );
 		}
 

@@ -41,25 +41,25 @@ namespace Server.Spells.Spellweaving
 		{
 			BaseCreature bc = m as BaseCreature;
 
-			if( !Caster.CanSee( m ) )
+			if ( !Caster.CanSee( m ) )
 			{
 				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
 			}
-			else if( m.IsDeadBondedPet || !m.Alive )
+			else if ( m.IsDeadBondedPet || !m.Alive )
 			{
 				// As per Osi: Nothing happens.
 			}
-			else if( m != Caster && (bc == null || !bc.IsBonded || bc.ControlMaster != Caster) )
+			else if ( m != Caster && (bc == null || !bc.IsBonded || bc.ControlMaster != Caster) )
 			{
 				Caster.SendLocalizedMessage( 1072077 ); // You may only cast this spell on yourself or a bonded pet.
 			}
-			else if( m_Table.ContainsKey( m ) )
+			else if ( m_Table.ContainsKey( m ) )
 			{
 				Caster.SendLocalizedMessage( 501775 ); // This spell is already in effect.
 			}
-			else if( CheckBSequence( m ) )
+			else if ( CheckBSequence( m ) )
 			{
-				if( Caster == m )
+				if ( Caster == m )
 				{
 					Caster.SendLocalizedMessage( 1074774 ); // You weave powerful magic, protecting yourself from death.
 				}
@@ -93,7 +93,7 @@ namespace Server.Spells.Spellweaving
 
 		public static void HandleDeath( Mobile m )
 		{
-			if( m_Table.ContainsKey( m ) )
+			if ( m_Table.ContainsKey( m ) )
 				Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( Utility.RandomMinMax( 2, 4 ) ), new TimerStateCallback<Mobile>( HandleDeath_OnCallback ), m );
 		}
 
@@ -103,12 +103,12 @@ namespace Server.Spells.Spellweaving
 			{
 				double hitsScalar = timer.Spell.HitsScalar;
 
-				if( m is BaseCreature && m.IsDeadBondedPet )
+				if ( m is BaseCreature && m.IsDeadBondedPet )
 				{
 					BaseCreature pet = (BaseCreature)m;
 					Mobile master = pet.GetMaster();
 
-					if( master != null && master.NetState != null && Utility.InUpdateRange( pet, master ) )
+					if ( master != null && master.NetState != null && Utility.InUpdateRange( pet, master ) )
 					{
 						master.CloseGump( typeof( PetResurrectGump ) );
 						master.SendGump( new PetResurrectGump( master, pet, hitsScalar ) );
@@ -121,7 +121,7 @@ namespace Server.Spells.Spellweaving
 						{
 							Mobile friend = friends[i];
 
-							if( friend.NetState != null && Utility.InUpdateRange( pet, friend ) )
+							if ( friend.NetState != null && Utility.InUpdateRange( pet, friend ) )
 							{
 								friend.CloseGump( typeof( PetResurrectGump ) );
 								friend.SendGump( new PetResurrectGump( friend, pet ) );
@@ -148,7 +148,7 @@ namespace Server.Spells.Spellweaving
 		{
 			Mobile m = e.Mobile;
 
-			if( m == null || m.Alive || m_Table[m] == null )
+			if ( m == null || m.Alive || m_Table[m] == null )
 				return;
 
 			HandleDeath_OnCallback( m );
@@ -197,7 +197,7 @@ namespace Server.Spells.Spellweaving
 
 			protected override void OnTarget( Mobile m, object o )
 			{
-				if( o is Mobile )
+				if ( o is Mobile )
 				{
 					m_Owner.Target( (Mobile)o );
 				}

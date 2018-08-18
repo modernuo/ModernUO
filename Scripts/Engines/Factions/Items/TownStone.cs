@@ -51,8 +51,8 @@ namespace Server.Factions
 				from.SendLocalizedMessage( 1005242 ); // Only faction Leaders can use townstones
 			else if ( FactionGump.Exists( from ) )
 				from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
-			else if ( from is PlayerMobile )
-				from.SendGump( new TownStoneGump( (PlayerMobile)from, m_Town.Owner, m_Town ) );
+			else if ( @from is PlayerMobile mobile )
+				mobile.SendGump( new TownStoneGump( mobile, m_Town.Owner, m_Town ) );
 		}
 
 		public TownStone( Serial serial ) : base( serial )

@@ -351,7 +351,7 @@ namespace Server.Gumps
 						}
 					}
 
-					
+
 					AddLabel( 20, 200, LabelHue, "Pooling:" );
 					AddHtml( 20, 220, 380, 150, sb.ToString(), true, true );
 
@@ -1223,7 +1223,7 @@ namespace Server.Gumps
 
 							for( int i = 0; !contains && i < loginList.Length; ++i )
 							{
-								if( ((Firewall.IFirewallEntry)state).IsBlocked( loginList[i] ) )
+								if ( ((Firewall.IFirewallEntry)state).IsBlocked( loginList[i] ) )
 								{
 									m_List.Add( acct );
 									break;
@@ -1266,7 +1266,7 @@ namespace Server.Gumps
 
 						if ( online )
 							AddLabelCropped( 252, offset, 120, 20, GreenHue, "Online" );
-						else if( a.Banned )
+						else if ( a.Banned )
 							AddLabelCropped( 252, offset, 120, 20, RedHue, "Banned" );
 						else
 							AddLabelCropped( 252, offset, 120, 20, RedHue, "Offline" );

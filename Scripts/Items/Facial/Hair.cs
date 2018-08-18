@@ -13,7 +13,7 @@ namespace Server.Items
 
 		public static Hair GetRandomHair( bool female, int hairHue )
 		{
-			if( female )
+			if ( female )
 			{
 				switch ( Utility.Random( 9 ) )
 				{

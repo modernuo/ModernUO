@@ -22,7 +22,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Ninjitsu ) < 50.0 )
+			if ( GetSkill( from, SkillName.Ninjitsu ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1063352, "50" ); // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
 				return false;
@@ -33,7 +33,7 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( Registry.Contains( defender ) || !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( Registry.Contains( defender ) || !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
 			ClearCurrentAbility( attacker );
@@ -73,7 +73,7 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				if( !m_Defender.Alive || m_DamageRemaining <= 0 )
+				if ( !m_Defender.Alive || m_DamageRemaining <= 0 )
 				{
 					Stop();
 					Server.Items.TalonStrike.Registry.Remove( m_Defender );
@@ -83,19 +83,19 @@ namespace Server.Items
 				m_DamageRemaining -= DamagePerTick;
 				m_DamageToDo += DamagePerTick;
 
-				if( m_DamageRemaining <= 0 && m_DamageToDo < 1 )
+				if ( m_DamageRemaining <= 0 && m_DamageToDo < 1 )
 					m_DamageToDo = 1.0; //Confirm this 'round up' at the end
 
 				int damage = (int)m_DamageToDo;
 
-				if( damage > 0 )
+				if ( damage > 0 )
 				{
 					//m_Defender.Damage( damage, m_Attacker, false );
 					m_Defender.Hits -= damage;	//Don't show damage, don't disrupt
 					m_DamageToDo -= damage;
 				}
 
-				if( !m_Defender.Alive || m_DamageRemaining <= 0 )
+				if ( !m_Defender.Alive || m_DamageRemaining <= 0 )
 				{
 					Stop();
 					Server.Items.TalonStrike.Registry.Remove( m_Defender );

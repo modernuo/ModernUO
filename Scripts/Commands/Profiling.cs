@@ -109,13 +109,11 @@ namespace Server.Commands
 
 			private int GetCount( object obj )
 			{
-				if ( obj is int )
-					return (int) obj;
+				if ( obj is int intObj )
+					return intObj;
 
-				if ( obj is int[] )
+				if ( obj is int[] list )
 				{
-					int[] list = (int[]) obj;
-
 					int total = 0;
 
 					for ( int i = 0; i < list.Length; ++i )
@@ -207,9 +205,7 @@ namespace Server.Commands
 
 				do
 				{
-					int[] countTable = typeTable[itemType] as int[];
-
-					if ( countTable == null )
+					if ( !(typeTable[itemType] is int[] countTable) )
 						typeTable[itemType] = countTable = new int[9];
 
 					if ( ( flags & ExpandFlag.Name ) != 0 )

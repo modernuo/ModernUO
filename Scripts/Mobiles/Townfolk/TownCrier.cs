@@ -145,7 +145,7 @@ namespace Server.Mobiles
 		{
 			TimeSpan ts;
 
-			if( !TimeSpan.TryParse( text, out ts ) )
+			if ( !TimeSpan.TryParse( text, out ts ) )
 			{
 				from.SendMessage( "Value was not properly formatted. Use: <hours:minutes:seconds>" );
 				from.SendGump( new TownCrierGump( from, m_Owner ) );

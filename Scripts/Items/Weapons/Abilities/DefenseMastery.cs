@@ -15,7 +15,7 @@ namespace Server.Items
 
 		public override bool CheckSkills( Mobile from )
 		{
-			if( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
+			if ( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
 			{
 				from.SendLocalizedMessage( 1063347, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
 				return false;
@@ -28,7 +28,7 @@ namespace Server.Items
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
+			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
 				return;
 
 			ClearCurrentAbility( attacker );
@@ -41,7 +41,7 @@ namespace Server.Items
 
 			DefenseMasteryInfo info = m_Table[attacker] as DefenseMasteryInfo;
 
-			if( info != null )
+			if ( info != null )
 				EndDefense( (object)info );
 
 			ResistanceMod mod = new ResistanceMod( ResistanceType.Physical, 50 + modifier );
@@ -76,7 +76,7 @@ namespace Server.Items
 		{
 			DefenseMasteryInfo info = m_Table[targ] as DefenseMasteryInfo;
 
-			if( info == null )
+			if ( info == null )
 				return false;
 
 			damageMalus = info.m_DamageMalus;
@@ -87,10 +87,10 @@ namespace Server.Items
 		{
 			DefenseMasteryInfo info = (DefenseMasteryInfo)state;
 
-			if( info.m_Mod != null )
+			if ( info.m_Mod != null )
 				info.m_From.RemoveResistanceMod( info.m_Mod );
 
-			if( info.m_Timer != null )
+			if ( info.m_Timer != null )
 				info.m_Timer.Stop();
 
 			// No message is sent to the player.

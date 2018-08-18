@@ -90,15 +90,15 @@ namespace Server.Items
 				defender.Mount.Rider = null;
 			}
 
-			if( attacker is PlayerMobile )
+			if ( attacker is PlayerMobile )
 			{
 				(attacker as PlayerMobile).SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, true );
 			}
-			else if( Core.ML && attacker is BaseCreature )
+			else if ( Core.ML && attacker is BaseCreature )
 			{
 				BaseCreature bc = attacker as BaseCreature;
 
-				if( bc.ControlMaster is PlayerMobile )
+				if ( bc.ControlMaster is PlayerMobile )
 				{
 					PlayerMobile pm = bc.ControlMaster as PlayerMobile;
 

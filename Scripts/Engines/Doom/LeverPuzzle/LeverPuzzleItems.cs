@@ -41,7 +41,7 @@ namespace Server.Engines.Doom
 		}
 		public override void OnAfterDelete()
 		{
-			if( m_Controller!=null && !m_Controller.Deleted )
+			if ( m_Controller!=null && !m_Controller.Deleted )
 				m_Controller.Delete();
 		}
 		public LampRoomBox( Serial serial ) : base( serial )
@@ -75,7 +75,7 @@ namespace Server.Engines.Doom
 		}
 		public override void OnAfterDelete()
 		{
-			if( m_Controller!=null && !m_Controller.Deleted )
+			if ( m_Controller!=null && !m_Controller.Deleted )
 				m_Controller.Delete();
 		}
 		public LeverPuzzleStatue( Serial serial ) : base( serial )
@@ -130,7 +130,7 @@ namespace Server.Engines.Doom
 
 		public override void OnAfterDelete()
 		{
-			if( m_Controller != null && !m_Controller.Deleted )
+			if ( m_Controller != null && !m_Controller.Deleted )
 				m_Controller.Delete();
 		}
 
@@ -166,7 +166,7 @@ namespace Server.Engines.Doom
 		public override bool HandlesOnMovement => true;
 		public override bool OnMoveOver( Mobile m )
 		{
-			if( m != null && m is PlayerMobile )
+			if ( m != null && m is PlayerMobile )
 			{
 				if ( SpellHelper.CheckCombat( m ) )
 				{

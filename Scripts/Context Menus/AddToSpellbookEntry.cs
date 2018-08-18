@@ -13,8 +13,8 @@ namespace Server.ContextMenus
 
 		public override void OnClick()
 		{
-			if ( Owner.From.CheckAlive() && Owner.Target is SpellScroll )
-				Owner.From.Target = new InternalTarget( (SpellScroll)Owner.Target );
+			if ( Owner.From.CheckAlive() && Owner.Target is SpellScroll scroll )
+				Owner.From.Target = new InternalTarget( scroll );
 		}
 
 		private class InternalTarget : Target
@@ -28,12 +28,10 @@ namespace Server.ContextMenus
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Spellbook )
+				if ( targeted is Spellbook book )
 				{
 					if ( from.CheckAlive() && !m_Scroll.Deleted && m_Scroll.Movable && m_Scroll.Amount >= 1 && m_Scroll.CheckItemUse( from ) )
 					{
-						Spellbook book = (Spellbook)targeted;
-
 						SpellbookType type = Spellbook.GetTypeForSpell( m_Scroll.SpellID );
 
 						if ( type != book.SpellbookType )

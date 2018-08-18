@@ -40,9 +40,9 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if( version <= 1 )
+			if ( version <= 1 )
 			{
-				if( this.HitPoints > 255 || this.MaxHitPoints > 255 )
+				if ( this.HitPoints > 255 || this.MaxHitPoints > 255 )
 					this.HitPoints = this.MaxHitPoints = 255;
 			}
 

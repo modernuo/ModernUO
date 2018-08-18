@@ -16,10 +16,10 @@ namespace Server.Engines.Harvest
 
 		public void SendSuccessTo( Mobile m )
 		{
-			if ( m_SuccessMessage is int )
-				m.SendLocalizedMessage( (int)m_SuccessMessage );
-			else if ( m_SuccessMessage is string )
-				m.SendMessage( (string)m_SuccessMessage );
+			if ( m_SuccessMessage is int messageInt )
+				m.SendLocalizedMessage( messageInt );
+			else
+				m.SendMessage( m_SuccessMessage.ToString() );
 		}
 
 		public HarvestResource( double reqSkill, double minSkill, double maxSkill, object message, params Type[] types )

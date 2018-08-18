@@ -110,7 +110,7 @@ namespace Server.Factions
 
 		public abstract void DoVisibleEffect();
 		public abstract void DoAttackEffect( Mobile m );
-        
+
 		public virtual int IsValidLocation()
 		{
 			return IsValidLocation( GetWorldLocation(), Map );
@@ -118,14 +118,14 @@ namespace Server.Factions
 
 		public virtual int IsValidLocation( Point3D p, Map m )
 		{
-			if( m == null )
+			if ( m == null )
 				return 502956; // You cannot place a trap on that.
 
-			if( Core.ML )
+			if ( Core.ML )
 			{
 				foreach( Item item in m.GetItemsInRange( p, 0 ) )
 				{
-					if( item is BaseFactionTrap && ((BaseFactionTrap)item).Faction == this.Faction )
+					if ( item is BaseFactionTrap trap && trap.Faction == this.Faction )
 						return 1075263; // There is already a trap belonging to your faction at this location.;
 				}
 			}
@@ -282,8 +282,8 @@ namespace Server.Factions
 
 			Faction faction = Faction.Find( mob, true );
 
-			if ( faction == null && mob is BaseFactionGuard )
-				faction = ((BaseFactionGuard)mob).Faction;
+			if ( faction == null && mob is BaseFactionGuard guard )
+				faction = guard.Faction;
 
 			if ( faction == null )
 				return false;

@@ -122,7 +122,7 @@ namespace Server
 		{
 			int hue = parent.HairHue;
 
-			if( parent.SolidHueOverride >= 0 )
+			if ( parent.SolidHueOverride >= 0 )
 				hue = parent.SolidHueOverride;
 
 			int hairSerial = HairInfo.FakeSerial( parent );
@@ -143,7 +143,7 @@ namespace Server
 		{
 			int hue = parent.FacialHairHue;
 
-			if( parent.SolidHueOverride >= 0 )
+			if ( parent.SolidHueOverride >= 0 )
 				hue = parent.SolidHueOverride;
 
 			int hairSerial = FacialHairInfo.FakeSerial( parent );

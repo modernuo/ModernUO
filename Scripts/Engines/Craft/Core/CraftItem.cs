@@ -72,7 +72,7 @@ namespace Server.Engines.Craft
 
 		public void AddRecipe( int id, CraftSystem system )
 		{
-			if( m_Recipe != null )
+			if ( m_Recipe != null )
 			{
 				Console.WriteLine( "Warning: Attempted add of recipe #{0} to the crafting of {1} in CraftSystem {2}.", id, this.m_Type.Name, system );
 				return;
@@ -395,7 +395,7 @@ namespace Server.Engines.Craft
 
 		public bool IsMarkable( Type type )
 		{
-			if( m_ForceNonExceptional )	//Don't even display the stuff for marking if it can't ever be exceptional.
+			if ( m_ForceNonExceptional )	//Don't even display the stuff for marking if it can't ever be exceptional.
 				return false;
 
 			for ( int i = 0; i < m_MarkableTable.Length; ++i )
@@ -526,15 +526,13 @@ namespace Server.Engines.Craft
 
 				for ( int j = 0; j < items[i].Length; ++j )
 				{
-					IHasQuantity hq = items[i][j] as IHasQuantity;
-
-					if ( hq == null )
+					if ( !(items[i][j] is IHasQuantity hq) )
 					{
 						totals[i] += items[i][j].Amount;
 					}
 					else
 					{
-						if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != m_RequiredBeverage )
+						if ( hq is BaseBeverage beverage && beverage.Content != m_RequiredBeverage )
 							continue;
 
 						totals[i] += hq.Quantity;
@@ -552,9 +550,8 @@ namespace Server.Engines.Craft
 				for ( int j = 0; j < items[i].Length; ++j )
 				{
 					Item item = items[i][j];
-					IHasQuantity hq = item as IHasQuantity;
 
-					if ( hq == null )
+					if ( !(item is IHasQuantity hq) )
 					{
 						int theirAmount = item.Amount;
 
@@ -571,7 +568,7 @@ namespace Server.Engines.Craft
 					}
 					else
 					{
-						if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != m_RequiredBeverage )
+						if ( hq is BaseBeverage beverage && beverage.Content != m_RequiredBeverage )
 							continue;
 
 						int theirAmount = hq.Quantity;
@@ -601,15 +598,13 @@ namespace Server.Engines.Craft
 
 			for ( int i = 0; i < items.Length; ++i )
 			{
-				IHasQuantity hq = items[i] as IHasQuantity;
-
-				if ( hq == null )
+				if ( !(items[i] is IHasQuantity hq) )
 				{
 					amount += items[i].Amount;
 				}
 				else
 				{
-					if ( hq is BaseBeverage && ((BaseBeverage)hq).Content != m_RequiredBeverage )
+					if ( hq is BaseBeverage beverage && beverage.Content != m_RequiredBeverage )
 						continue;
 
 					amount += hq.Quantity;
@@ -862,26 +857,20 @@ namespace Server.Engines.Craft
 
 		public double GetExceptionalChance( CraftSystem system, double chance, Mobile from )
 		{
-			if( m_ForceNonExceptional )
+			if ( m_ForceNonExceptional )
 				return 0.0;
 
 			double bonus = 0.0;
 
-			if ( from.Talisman is BaseTalisman )
+			if ( from.Talisman is BaseTalisman talisman && talisman.Skill == system.MainSkill )
 			{
-				BaseTalisman talisman = (BaseTalisman) from.Talisman;
-
-				if ( talisman.Skill == system.MainSkill )
-				{
-					chance -= talisman.SuccessBonus / 100.0;
-					bonus = talisman.ExceptionalBonus / 100.0;
-				}
+				chance -= talisman.SuccessBonus / 100.0;
+				bonus = talisman.ExceptionalBonus / 100.0;
 			}
 
 			switch ( system.ECA )
 			{
-				default:
-				case CraftECA.ChanceMinusSixty: chance -= 0.6; break;
+				default: chance -= 0.6; break;
 				case CraftECA.FiftyPercentChanceMinusTenPercent: chance = chance * 0.5 - 0.1; break;
 				case CraftECA.ChanceMinusSixtyToFourtyFive:
 				{
@@ -955,13 +944,8 @@ namespace Server.Engines.Craft
 			else
 				chance = 0.0;
 
-			if ( allRequiredSkills && from.Talisman is BaseTalisman )
-			{
-				BaseTalisman talisman = (BaseTalisman) from.Talisman;
-
-				if ( talisman.Skill == craftSystem.MainSkill )
-					chance += talisman.SuccessBonus / 100.0;
-			}
+			if ( allRequiredSkills && from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill )
+				chance += talisman.SuccessBonus / 100.0;
 
 			if ( allRequiredSkills && valMainSkill == maxMainSkill )
 				chance = 1.0;
@@ -973,32 +957,32 @@ namespace Server.Engines.Craft
 		{
 			if ( from.BeginAction( typeof( CraftSystem ) ) )
 			{
-				if( RequiredExpansion == Expansion.None || ( from.NetState != null && from.NetState.SupportsExpansion( RequiredExpansion ) ) )
+				if ( RequiredExpansion == Expansion.None || ( from.NetState != null && from.NetState.SupportsExpansion( RequiredExpansion ) ) )
 				{
 					bool allRequiredSkills = true;
 					double chance = GetSuccessChance( from, typeRes, craftSystem, false, ref allRequiredSkills );
 
 					if ( allRequiredSkills && chance >= 0.0 )
 					{
-						if( this.Recipe == null || !(from is PlayerMobile) || ((PlayerMobile)from).HasRecipe( this.Recipe ) )
+						if ( this.Recipe == null || !(from is PlayerMobile) || ((PlayerMobile)from).HasRecipe( this.Recipe ) )
 						{
 							int badCraft = craftSystem.CanCraft( from, tool, m_Type );
 
-							if( badCraft <= 0 )
+							if ( badCraft <= 0 )
 							{
 								int resHue = 0;
 								int maxAmount = 0;
 								object message = null;
 
-								if( ConsumeRes( from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message ) )
+								if ( ConsumeRes( from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message ) )
 								{
 									message = null;
 
-									if( ConsumeAttributes( from, ref message, false ) )
+									if ( ConsumeAttributes( from, ref message, false ) )
 									{
 										CraftContext context = craftSystem.GetContext( from );
 
-										if( context != null )
+										if ( context != null )
 											context.OnMade( this );
 
 										int iMin = craftSystem.MinCraftEffect;
@@ -1080,25 +1064,15 @@ namespace Server.Engines.Craft
 			object checkMessage = null;
 
 			// Not enough resource to craft it
-			if ( !ConsumeRes( from, typeRes, craftSystem, ref checkResHue, ref checkMaxAmount, ConsumeType.None, ref checkMessage ) )
+			if ( !(ConsumeRes( from, typeRes, craftSystem, ref checkResHue, ref checkMaxAmount, ConsumeType.None, ref checkMessage )
+				&& ConsumeAttributes( from, ref checkMessage, false )))
 			{
 				if ( tool != null && !tool.Deleted && tool.UsesRemaining > 0 )
 					from.SendGump( new CraftGump( from, craftSystem, tool, checkMessage ) );
-				else if ( checkMessage is int && (int)checkMessage > 0 )
-					from.SendLocalizedMessage( (int)checkMessage );
-				else if ( checkMessage is string )
-					from.SendMessage( (string)checkMessage );
-
-				return;
-			}
-			else if ( !ConsumeAttributes( from, ref checkMessage, false ) )
-			{
-				if ( tool != null && !tool.Deleted && tool.UsesRemaining > 0 )
-					from.SendGump( new CraftGump( from, craftSystem, tool, checkMessage ) );
-				else if ( checkMessage is int && (int)checkMessage > 0 )
-					from.SendLocalizedMessage( (int)checkMessage );
-				else if ( checkMessage is string )
-					from.SendMessage( (string)checkMessage );
+				else if ( checkMessage is int messageInt && messageInt > 0 )
+					from.SendLocalizedMessage( messageInt );
+				else
+					from.SendMessage( checkMessage.ToString() );
 
 				return;
 			}
@@ -1119,25 +1093,15 @@ namespace Server.Engines.Craft
 				object message = null;
 
 				// Not enough resource to craft it
-				if ( !ConsumeRes( from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref message ) )
+				if ( !(ConsumeRes( from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref message )
+					&& ConsumeAttributes( from, ref message, true )))
 				{
 					if ( tool != null && !tool.Deleted && tool.UsesRemaining > 0 )
 						from.SendGump( new CraftGump( from, craftSystem, tool, message ) );
-					else if ( message is int && (int)message > 0 )
-						from.SendLocalizedMessage( (int)message );
-					else if ( message is string )
-						from.SendMessage( (string)message );
-
-					return;
-				}
-				else if ( !ConsumeAttributes( from, ref message, true ) )
-				{
-					if ( tool != null && !tool.Deleted && tool.UsesRemaining > 0 )
-						from.SendGump( new CraftGump( from, craftSystem, tool, message ) );
-					else if ( message is int && (int)message > 0 )
-						from.SendLocalizedMessage( (int)message );
-					else if ( message is string )
-						from.SendMessage( (string)message );
+					else if ( message is int messageIn && messageIn > 0 )
+						from.SendLocalizedMessage( messageIn );
+					else
+						from.SendMessage( message.ToString() );
 
 					return;
 				}
@@ -1146,8 +1110,7 @@ namespace Server.Engines.Craft
 
 				if ( craftSystem is DefBlacksmithy )
 				{
-					AncientSmithyHammer hammer = from.FindItemOnLayer( Layer.OneHanded ) as AncientSmithyHammer;
-					if ( hammer != null && hammer != tool )
+					if ( from.FindItemOnLayer( Layer.OneHanded ) is AncientSmithyHammer hammer && hammer != tool )
 					{
 						hammer.UsesRemaining--;
 						if ( hammer.UsesRemaining < 1 )
@@ -1180,22 +1143,22 @@ namespace Server.Engines.Craft
 
 				if ( item != null )
 				{
-					if( item is ICraftable )
-						endquality = ((ICraftable)item).OnCraft( quality, makersMark, from, craftSystem, typeRes, tool, this, resHue );
+					if ( item is ICraftable craftable )
+						endquality = craftable.OnCraft( quality, makersMark, from, craftSystem, typeRes, tool, this, resHue );
 					else if ( item.Hue == 0 )
 						item.Hue = resHue;
 
 					if ( maxAmount > 0 )
 					{
-						if ( !item.Stackable && item is IUsesRemaining )
-							((IUsesRemaining)item).UsesRemaining *= maxAmount;
+						if ( !item.Stackable && item is IUsesRemaining remaining )
+							remaining.UsesRemaining *= maxAmount;
 						else
 							item.Amount = maxAmount;
 					}
 
 					from.AddToBackpack( item );
 
-					if( from.AccessLevel > AccessLevel.Player )
+					if ( from.AccessLevel > AccessLevel.Player )
 						CommandLogging.WriteLine( from, "Crafting {0} with craft system {1}", CommandLogging.Format( item ), craftSystem.GetType().Name );
 
 					//from.PlaySound( 0x57 );
@@ -1266,10 +1229,10 @@ namespace Server.Engines.Craft
 				{
 					if ( tool != null && !tool.Deleted && tool.UsesRemaining > 0 )
 						from.SendGump( new CraftGump( from, craftSystem, tool, message ) );
-					else if ( message is int && (int)message > 0 )
-						from.SendLocalizedMessage( (int)message );
-					else if ( message is string )
-						from.SendMessage( (string)message );
+					else if ( message is int messageInt && messageInt > 0 )
+						from.SendLocalizedMessage( messageInt );
+					else
+						from.SendMessage( message.ToString() );
 
 					return;
 				}
