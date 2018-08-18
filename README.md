@@ -1,17 +1,19 @@
 ModernUO
 =====
 
-### Requirements to Build/Run
+### Requirements
 - .NET Framework 4.7 or Mono 5.10+
 - zlib (Linux only)
+- [DotNetCompilerPlatform](https://www.nuget.org/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform) v2.0+ (Windows Only)
 
-### Requirements to Dev
-- Visual Studio 2017 or Visual Studio for Mac 2017
+### Building using Visual Studio (Recommended)
+- Build `Server` project
+  - Building with Visual Studio for Windows will install `DotNetCompilerPlatform` automatically.
 
-### Building for Windows
+### Building for Windows (Without Visual Studio)
 `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc /optimize /unsafe /t:exe /out:RunUO.exe /win32icon:Server\runuo.ico /d:NEWTIMERS /d:NEWPARENT /recurse:Server\\*.cs`
 
-### Building for Mac/Linux (MONO)
+### Building for Mac/Linux (Without Visual Studio)
 `mcs -optimize+ -unsafe -t:exe -out:RunUO.exe -win32icon:Server/runuo.ico -nowarn:219,414 -d:NEWTIMERS -d:NEWPARENT -d:MONO -reference:System.Drawing -recurse:Server/*.cs`
 
 ### Running on Mac/Linux (MONO)

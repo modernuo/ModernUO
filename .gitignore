@@ -21,3 +21,5 @@ RunUO.vshost.exe.config
 /roslyn
 Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+
+.DS_Store
