@@ -22,21 +22,15 @@ namespace Server.Engines.Quests.Collector
 
 		public override bool CanDrop( PlayerMobile player )
 		{
-			CollectorQuest qs = player.Quest as CollectorQuest;
-
-			if ( qs == null )
-				return true;
+			return !(player.Quest is CollectorQuest);
 
 			/*return !( qs.IsObjectiveInProgress( typeof( CaptureImagesObjective ) )
 				|| qs.IsObjectiveInProgress( typeof( ReturnImagesObjective ) ) );*/
-			return false;
 		}
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 
@@ -70,22 +64,17 @@ namespace Server.Engines.Quests.Collector
 				if ( m_Paints.Deleted || !m_Paints.IsChildOf( from.Backpack ) )
 					return;
 
-				PlayerMobile player = from as PlayerMobile;
-
-				if ( player != null )
+				if ( from is PlayerMobile player )
 				{
 					QuestSystem qs = player.Quest;
 
 					if ( qs is CollectorQuest )
 					{
-						CaptureImagesObjective obj = qs.FindObjective( typeof( CaptureImagesObjective ) ) as CaptureImagesObjective;
-
-						if ( obj != null && !obj.Completed )
+						if ( qs.FindObjective( typeof( CaptureImagesObjective ) ) is CaptureImagesObjective obj && !obj.Completed )
 						{
 							if ( targeted is Mobile )
 							{
-								ImageType image;
-								CaptureResponse response = obj.CaptureImage(( targeted.GetType().Name=="GreaterMongbat" ? new Mongbat().GetType() : targeted.GetType() ), out image );
+								CaptureResponse response = obj.CaptureImage(( targeted.GetType().Name=="GreaterMongbat" ? new Mongbat().GetType() : targeted.GetType() ), out ImageType image );
 
 								switch ( response )
 								{

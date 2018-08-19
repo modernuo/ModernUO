@@ -133,8 +133,8 @@ namespace Server.Menus.Questions
 			m_Mobile = beheld;
 			m_MarkUse = markUse;
 
-			Closable = false; 
-			Dragable = false; 
+			Closable = false;
+			Dragable = false;
 			Disposable = false;
 
 			AddBackground( 0, 0, 270, 320, 2600 );
@@ -198,14 +198,14 @@ namespace Server.Menus.Questions
 
 		private void Teleport( StuckMenuEntry entry )
 		{
-			if ( m_MarkUse ) 
+			if ( m_MarkUse )
 			{
 				m_Mobile.SendLocalizedMessage( 1010589 ); // You will be teleported within the next two minutes.
 
 				new TeleportTimer( m_Mobile, entry, TimeSpan.FromSeconds( 10.0 + (Utility.RandomDouble() * 110.0) ) ).Start();
 
-				if (m_Mobile is PlayerMobile)
-					((PlayerMobile)m_Mobile).UsedStuckMenu();
+				if (m_Mobile is PlayerMobile mobile)
+					mobile.UsedStuckMenu();
 			}
 			else
 			{
@@ -237,8 +237,8 @@ namespace Server.Menus.Questions
 				{
 					m_Mobile.Frozen = true;
 				}
-			} 
-		} 
+			}
+		}
 
 		private class TeleportTimer : Timer
 		{

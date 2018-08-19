@@ -130,9 +130,7 @@ namespace Server.Engines.Quests.Necro
 
 		public static bool HasLostCallingScroll( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -141,9 +139,7 @@ namespace Server.Engines.Quests.Necro
 			{
 				if ( qs.IsObjectiveInProgress( typeof( FindMardothAboutKronusObjective ) ) || qs.IsObjectiveInProgress( typeof( FindWellOfTearsObjective ) ) || qs.IsObjectiveInProgress( typeof( UseCallingScrollObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( KronusScroll ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( KronusScroll ) ) == null );
 				}
 			}
 

@@ -74,9 +74,8 @@ namespace Server.Engines.Quests.Necro
 		{
 			base.OnMovement( m, oldLocation );
 
-			if ( InRange( m.Location, 2 ) && !InRange( oldLocation, 2 ) && m is PlayerMobile )
+			if ( InRange( m.Location, 2 ) && !InRange( oldLocation, 2 ) && m is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)m;
 				QuestSystem qs = pm.Quest;
 
 				if ( qs is DarkTidesQuest )
@@ -121,9 +120,7 @@ namespace Server.Engines.Quests.Necro
 
 			if ( from.Alive )
 			{
-				PlayerMobile pm = from as PlayerMobile;
-
-				if ( pm != null )
+				if ( from is PlayerMobile pm )
 				{
 					QuestSystem qs = pm.Quest;
 

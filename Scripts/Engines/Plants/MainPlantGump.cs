@@ -228,7 +228,7 @@ namespace Server.Engines.Plants
 
 			if ( info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant )
 				return;
-			
+
 			if ( ( ( info.ButtonID >= 6 && info.ButtonID <= 10 ) || info.ButtonID == 12 ) && !from.InRange( m_Plant.GetWorldLocation(), 3 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3E9, 500446 ); // That is too far away.
@@ -293,15 +293,15 @@ namespace Server.Engines.Plants
 				case 6: // Water
 				{
 					Item[] item = from.Backpack.FindItemsByType( typeof( BaseBeverage ) );
-					
+
 					bool foundUsableWater = false;
-					
+
 					if ( item != null && item.Length > 0 )
 					{
 						for ( int i = 0; i < item.Length; ++i )
 						{
 							BaseBeverage beverage = (BaseBeverage)item[i];
-							
+
 							if ( !beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water )
 							{
 								foundUsableWater = true;
@@ -310,7 +310,7 @@ namespace Server.Engines.Plants
 							}
 						}
 					}
-					
+
 					if ( !foundUsableWater )
 					{
 						from.Target = new PlantPourTarget( m_Plant );
@@ -400,10 +400,8 @@ namespace Server.Engines.Plants
 
 			foreach ( Item item in items )
 			{
-				if ( item is BasePotion )
+				if ( item is BasePotion potion )
 				{
-					BasePotion potion = (BasePotion)item;
-
 					if ( Array.IndexOf( effects, potion.PotionEffect ) >= 0 )
 						return potion;
 				}

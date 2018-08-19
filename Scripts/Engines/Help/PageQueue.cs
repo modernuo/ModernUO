@@ -149,8 +149,7 @@ namespace Server.Engines.Help
 			m_PageLocation = sender.Location;
 			m_PageMap = sender.Map;
 
-			PlayerMobile pm = sender as PlayerMobile;
-			if ( pm != null && pm.SpeechLog != null && Array.IndexOf( SpeechLogAttachment, type ) >= 0 )
+			if ( sender is PlayerMobile pm && pm.SpeechLog != null && Array.IndexOf( SpeechLogAttachment, type ) >= 0 )
 				m_SpeechLog = new List<SpeechLogEntry>( pm.SpeechLog );
 
 			m_Timer = new InternalTimer( this );
@@ -183,7 +182,7 @@ namespace Server.Engines.Help
 
 				if ( m_Entry.Sender.NetState != null && index != -1 )
 				{
-					m_Entry.Sender.SendLocalizedMessage( 1008077, true, (index + 1).ToString() ); // Thank you for paging. Queue status : 
+					m_Entry.Sender.SendLocalizedMessage( 1008077, true, (index + 1).ToString() ); // Thank you for paging. Queue status :
 					m_Entry.Sender.SendLocalizedMessage( 1008084 ); // You can reference our website at www.uo.com or contact us at support@uo.com. To cancel your page, please select the help button again and select cancel.
 
 					if ( m_Entry.Handler != null && m_Entry.Handler.NetState == null ) {
@@ -214,9 +213,7 @@ namespace Server.Engines.Help
 
 		public static bool CheckAllowedToPage( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return true;
 
 			if ( pm.DesignContext != null )
@@ -224,7 +221,7 @@ namespace Server.Engines.Help
 				from.SendLocalizedMessage( 500182 ); // You cannot request help while customizing a house or transferring a character.
 				return false;
 			}
-			else if ( pm.PagingSquelched )
+			if ( pm.PagingSquelched )
 			{
 				from.SendMessage( "You cannot request help, sorry." );
 				return false;

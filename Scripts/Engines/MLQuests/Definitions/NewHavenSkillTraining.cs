@@ -620,9 +620,7 @@ namespace Server.Engines.MLQuests.Definitions
 			{
 				Item item = base.CreateItem();
 
-				Spellbook book = item as Spellbook;
-
-				if ( book != null )
+				if ( item is Spellbook book )
 					book.Content = ( 1ul << book.BookCount ) - 1;
 
 				return item;

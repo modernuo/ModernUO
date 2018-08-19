@@ -27,12 +27,10 @@ namespace Server.Engines.MLQuests.Items
 				return;
 			}
 
-			MLQuestContext context;
-
-			if ( from is PlayerMobile && ( context = MLQuestSystem.GetContext( (PlayerMobile)from ) ) != null && context.BedlamAccess )
+			if ( from is PlayerMobile mobile && MLQuestSystem.GetContext( mobile )?.BedlamAccess == true )
 			{
-				BaseCreature.TeleportPets( from, PointDest, MapDest );
-				from.MoveToWorld( PointDest, MapDest );
+				BaseCreature.TeleportPets( mobile, PointDest, MapDest );
+				mobile.MoveToWorld( PointDest, MapDest );
 			}
 			else
 			{

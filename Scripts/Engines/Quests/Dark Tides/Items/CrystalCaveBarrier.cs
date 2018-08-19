@@ -25,9 +25,7 @@ namespace Server.Engines.Quests.Necro
 			if ( m is BaseCreature )
 				m = ((BaseCreature)m).ControlMaster;
 
-			PlayerMobile pm = m as PlayerMobile;
-
-			if ( pm != null )
+			if ( m is PlayerMobile pm )
 			{
 				QuestSystem qs = pm.Quest;
 

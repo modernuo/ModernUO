@@ -36,9 +36,7 @@ namespace Server.Engines.MyRunUO
 		[Description( "Enables showing extended character stats and skills in MyRunUO." )]
 		public static void PublicChar_OnCommand( CommandEventArgs e )
 		{
-			PlayerMobile pm = e.Mobile as PlayerMobile;
-
-			if ( pm != null )
+			if ( e.Mobile is PlayerMobile pm )
 			{
 				if ( pm.PublicMyRunUO )
 				{
@@ -56,9 +54,7 @@ namespace Server.Engines.MyRunUO
 		[Description( "Disables showing extended character stats and skills in MyRunUO." )]
 		public static void PrivateChar_OnCommand( CommandEventArgs e )
 		{
-			PlayerMobile pm = e.Mobile as PlayerMobile;
-
-			if ( pm != null )
+			if ( e.Mobile is PlayerMobile pm )
 			{
 				if ( !pm.PublicMyRunUO )
 				{
@@ -91,7 +87,7 @@ namespace Server.Engines.MyRunUO
 		{
 			if ( m_Command != null && !m_Command.HasCompleted )
 				return;
-			DateTime start = DateTime.Now;
+			// DateTime start = DateTime.Now;
 			Console.WriteLine( "MyRunUO: Creating tables" );
 			try
 			{
@@ -108,8 +104,8 @@ namespace Server.Engines.MyRunUO
 				Console.WriteLine( "MyRunUO: Error creating tables." );
 				Console.WriteLine( e );
 			}
-			if ( m_Command != null )
-				m_Command.Enqueue( null );
+
+			m_Command?.Enqueue( null );
 		}
 
 		[Usage( "UpdateMyRunUO" )]
@@ -334,7 +330,7 @@ namespace Server.Engines.MyRunUO
 
 			sb.Append( ent );
 		}
- 
+
 		private string SafeString( string input )
 		{
 			if ( input == null )
@@ -364,8 +360,7 @@ namespace Server.Engines.MyRunUO
 						case '\\':	AppendCharEntity( input, i, ref sb, c ); break;
 						default:
 						{
-							if ( sb != null )
-								sb.Append( c );
+							sb?.Append( c );
 
 							break;
 						}
@@ -394,8 +389,8 @@ namespace Server.Engines.MyRunUO
 
 			string notoTitle = SafeString( Titles.ComputeTitle( null, mob ) );
 			string female = ( mob.Female ? "1" : "0" );
-			
-			bool pubBool = ( mob is PlayerMobile ) && ( ((PlayerMobile)mob).PublicMyRunUO );
+
+			bool pubBool = mob is PlayerMobile mobile && mobile.PublicMyRunUO;
 
 			string pubString = ( pubBool ? "1" : "0" );
 
@@ -571,8 +566,8 @@ namespace Server.Engines.MyRunUO
 			{
 				Mobile mob = (Mobile)m_List[i];
 
-				if ( mob is PlayerMobile )
-					((PlayerMobile)mob).ChangedMyRunUO = false;
+				if ( mob is PlayerMobile mobile )
+					mobile.ChangedMyRunUO = false;
 
 				if ( !mob.Deleted && mob.AccessLevel < Config.HiddenAccessLevel )
 				{

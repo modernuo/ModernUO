@@ -13,9 +13,8 @@ namespace Server.Engines.PartySystem
 
 		protected override void OnTarget( Mobile from, object o )
 		{
-			if ( o is Mobile )
+			if ( o is Mobile m )
 			{
-				Mobile m = (Mobile)o;
 				Party p = Party.Get( from );
 				Party mp = Party.Get( m );
 

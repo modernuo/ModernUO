@@ -90,18 +90,15 @@ namespace Server.Engines.Quests
 					return false;
 				}
 			}
-			else
-			{
-				return ret;
-			}
+			return ret;
 		}
 
 		public override DeathMoveResult OnParentDeath( Mobile parent )
 		{
-			if ( parent is PlayerMobile && !CanDrop( (PlayerMobile)parent ) )
+			if ( parent is PlayerMobile mobile && !CanDrop( mobile ) )
 				return DeathMoveResult.MoveToBackpack;
-			else
-				return base.OnParentDeath( parent );
+
+			return base.OnParentDeath( parent );
 		}
 
 		public override void Serialize( GenericWriter writer )

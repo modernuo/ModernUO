@@ -228,7 +228,7 @@ namespace Server.Engines.Harvest
 			if ( type == typeof( TreasureMap ) )
 			{
 				int level;
-				if ( @from is PlayerMobile mobile && mobile.Young && mobile.Map == Map.Trammel && TreasureMap.IsInHavenIsland( from ) )
+				if ( from is PlayerMobile mobile && mobile.Young && mobile.Map == Map.Trammel && TreasureMap.IsInHavenIsland( from ) )
 					level = 0;
 				else
 					level = 1;

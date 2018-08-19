@@ -36,32 +36,23 @@ namespace Server.Engines.Quests
 			if ( m.AccessLevel > AccessLevel.Player )
 				return true;
 
-			if ( m is BaseCreature )
-			{
-				BaseCreature bc = m as BaseCreature;
-
-				if ( !bc.Controlled && !bc.Summoned )
-					return true;
-			}
+			if ( m is BaseCreature bc && !bc.Controlled && !bc.Summoned )
+				return true;
 
 			if ( m_Quest == null )
 				return true;
 
-			PlayerMobile player = m as PlayerMobile;
-
-			if ( player != null && player.Quest != null && player.Quest.GetType() == m_Quest
+			if ( m is PlayerMobile player && player.Quest != null && player.Quest.GetType() == m_Quest
 				&& ( m_MinObjective == null || player.Quest.FindObjective( m_MinObjective ) != null )
 				&& ( m_MaxObjective == null || player.Quest.FindObjective( m_MaxObjective ) == null ) )
 			{
 				return true;
 			}
-			else
-			{
-				if ( m_Message != 0 )
-					m.SendLocalizedMessage( m_Message );
 
-				return false;
-			}
+			if ( m_Message != 0 )
+				m.SendLocalizedMessage( m_Message );
+
+			return false;
 		}
 	}
 }

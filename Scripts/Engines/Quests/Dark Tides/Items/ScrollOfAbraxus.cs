@@ -20,22 +20,16 @@ namespace Server.Engines.Quests.Necro
 
 		public override bool CanDrop( PlayerMobile player )
 		{
-			DarkTidesQuest qs = player.Quest as DarkTidesQuest;
-
-			if ( qs == null )
-				return true;
+			return !(player.Quest is DarkTidesQuest);
 
 			//return !( qs.IsObjectiveInProgress( typeof( RetrieveAbraxusScrollObjective ) ) || qs.IsObjectiveInProgress( typeof( ReadAbraxusScrollObjective ) ) );
-			return false;
 		}
 
 		public override void OnAdded(IEntity parent)
 		{
 			base.OnAdded( parent );
 
-			PlayerMobile pm = RootParent as PlayerMobile;
-
-			if ( pm != null )
+			if ( RootParent is PlayerMobile pm )
 			{
 				QuestSystem qs = pm.Quest;
 
@@ -55,9 +49,7 @@ namespace Server.Engines.Quests.Necro
 			{
 				from.SendGump( new ScrollOfAbraxusGump() );
 
-				PlayerMobile pm = from as PlayerMobile;
-
-				if ( pm != null )
+				if ( from is PlayerMobile pm )
 				{
 					QuestSystem qs = pm.Quest;
 

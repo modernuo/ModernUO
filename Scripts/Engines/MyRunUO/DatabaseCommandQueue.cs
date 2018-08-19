@@ -162,9 +162,9 @@ namespace Server.Engines.MyRunUO
 								}
 							}
 						}
-						else if ( obj is string )
+						else if ( obj is string s )
 						{
-							command.CommandText = (string)obj;
+							command.CommandText = s;
 							command.ExecuteNonQuery();
 						}
 						else

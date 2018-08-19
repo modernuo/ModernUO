@@ -403,9 +403,7 @@ namespace Server.Engines.Quests
 		{
 			inRestartPeriod = false;
 
-			PlayerMobile pm = check as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(check is PlayerMobile pm) )
 				return false;
 
 			if ( pm.HasGump( typeof( QuestOfferGump ) ) )
@@ -656,27 +654,15 @@ namespace Server.Engines.Quests
 
 		public static ArrayList BuildList( object obj )
 		{
-			ArrayList list = new ArrayList();
-
-			list.Add( obj );
-
-			return list;
+			return new ArrayList { obj };
 		}
 
 		public void AddHtmlObject( int x, int y, int width, int height, object message, int color, bool back, bool scroll )
 		{
-			if ( message is string )
-			{
-				string html = (string)message;
-
-				AddHtml( x, y, width, height, Color( html, C16232( color ) ), back, scroll );
-			}
-			else if ( message is int )
-			{
-				int html = (int)message;
-
+			if ( message is int html )
 				AddHtmlLocalized( x, y, width, height, html, C16216( color ), back, scroll );
-			}
+			else
+				AddHtml( x, y, width, height, Color( message.ToString(), C16232( color ) ), back, scroll );
 		}
 
 		public BaseQuestGump( int x, int y ) : base( x, y )

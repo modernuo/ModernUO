@@ -24,16 +24,12 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null || pm.Backpack == null )
+			if ( !(from is PlayerMobile pm) || pm.Backpack == null )
 				return;
 
 			if ( pm.InRange( GetWorldLocation(), 2 ) )
 			{
-				MLQuestContext context = MLQuestSystem.GetContext( pm );
-
-				if ( context != null && context.IsDoingQuest( typeof( UnfadingMemoriesPartOne ) ) && pm.Backpack.FindItemByType( typeof( PrismaticAmber ), false ) == null )
+				if ( MLQuestSystem.GetContext( pm )?.IsDoingQuest( typeof( UnfadingMemoriesPartOne ) ) == true && pm.Backpack.FindItemByType( typeof( PrismaticAmber ), false ) == null )
 				{
 					Item amber = new PrismaticAmber();
 

@@ -51,23 +51,19 @@ namespace Server.Engines.MLQuests.Items
 			if (!base.CanTeleport(m))
 				return false;
 
-			if (m_QuestType != null)
-			{
-				PlayerMobile pm = m as PlayerMobile;
+			if (m_QuestType == null)
+				return true;
+			if (!(m is PlayerMobile pm))
+				return false;
 
-				if (pm == null)
-					return false;
+			MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-				MLQuestContext context = MLQuestSystem.GetContext(pm);
+			if (context?.IsDoingQuest(m_QuestType) == true || context?.HasDoneQuest(m_QuestType) == true)
+				return true;
 
-				if (context == null || (!context.IsDoingQuest(m_QuestType) && !context.HasDoneQuest(m_QuestType)))
-				{
-					TextDefinition.SendMessageTo(m, m_Message);
-					return false;
-				}
-			}
+			TextDefinition.SendMessageTo(m, m_Message);
+			return false;
 
-			return true;
 		}
 
 		public override void GetProperties(ObjectPropertyList list)
@@ -169,7 +165,7 @@ namespace Server.Engines.MLQuests.Items
 				{
 					foreach (Item item in m.Items) // Check paperdoll
 					{
-						if (m_TicketType.IsAssignableFrom(item.GetType()))
+						if (m_TicketType.IsInstanceOfType(item))
 						{
 							ticket = item;
 							break;
@@ -183,8 +179,7 @@ namespace Server.Engines.MLQuests.Items
 					return false;
 				}
 
-				if (ticket is ITicket)
-					((ITicket)ticket).OnTicketUsed(m);
+				(ticket as ITicket)?.OnTicketUsed(m);
 			}
 
 			return true;

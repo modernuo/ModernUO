@@ -78,9 +78,7 @@ namespace Server.Items
 					return;
 				}
 
-				LandTarget land = targeted as LandTarget;
-
-				if ( land == null )
+				if ( !(targeted is LandTarget land) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061912 ); // * You cannot plant a green thorn there! *
 				}

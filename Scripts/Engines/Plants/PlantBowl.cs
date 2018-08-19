@@ -52,11 +52,9 @@ namespace Server.Engines.Plants
 					return;
 				}
 
-				if ( targeted is FertileDirt )
+				if ( targeted is FertileDirt dirt )
 				{
 					int _dirtNeeded = Core.ML ? 20 : 40;
-
-					FertileDirt dirt = (FertileDirt)targeted;
 
 					if ( !dirt.IsChildOf( from.Backpack ) )
 					{
@@ -132,12 +130,12 @@ namespace Server.Engines.Plants
 		{
 			int tileID;
 
-			if ( obj is Static && !((Static)obj).Movable )
-				tileID = (((Static)obj).ItemID & 0x3FFF) | 0x4000;
-			else if ( obj is StaticTarget )
-				tileID = (((StaticTarget)obj).ItemID & 0x3FFF) | 0x4000;
-			else if ( obj is LandTarget )
-				tileID = ((LandTarget)obj).TileID;
+			if ( obj is Static staticObj && !staticObj.Movable )
+				tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+			else if ( obj is StaticTarget staticTarget )
+				tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
+			else if ( obj is LandTarget landTarget )
+				tileID = landTarget.TileID;
 			else
 				return false;
 

@@ -151,8 +151,7 @@ namespace Server.Engines.Plants
 					return true;
 
 
-				Mobile owner = RootParent as Mobile;
-				if ( owner == null )
+				if ( !(RootParent is Mobile owner) )
 					return false;
 
 				if ( owner.Backpack != null && IsChildOf( owner.Backpack ) )
@@ -318,8 +317,7 @@ namespace Server.Engines.Plants
 
 		public bool IsUsableBy( Mobile from )
 		{
-			Item root = RootParent as Item;
-			return IsChildOf( from.Backpack ) || IsChildOf( from.FindBankNoCreate() ) || IsLockedDown && IsAccessibleTo( from ) || root != null && root.IsSecure && root.IsAccessibleTo( from );
+			return IsChildOf( from.Backpack ) || IsChildOf( from.FindBankNoCreate() ) || IsLockedDown && IsAccessibleTo( from ) || RootParent is Item root && root.IsSecure && root.IsAccessibleTo( from );
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -408,10 +406,8 @@ namespace Server.Engines.Plants
 				return;
 			}
 
-			if ( item is BaseBeverage )
+			if ( item is BaseBeverage beverage )
 			{
-				BaseBeverage beverage = (BaseBeverage)item;
-
 				if ( beverage.IsEmpty || !beverage.Pourable || beverage.Content != BeverageType.Water )
 				{
 					LabelTo( from, 1053069 ); // You can't use that on a plant!
@@ -427,12 +423,9 @@ namespace Server.Engines.Plants
 				from.PlaySound( 0x4E );
 				LabelTo( from, 1061858 ); // You soften the dirt with water.
 			}
-			else if ( item is BasePotion )
+			else if ( item is BasePotion potion )
 			{
-				BasePotion potion = (BasePotion)item;
-
-				int message;
-				if ( ApplyPotion( potion.PotionEffect, false, out message ) )
+				if ( ApplyPotion( potion.PotionEffect, false, out int message ) )
 				{
 					potion.Consume();
 					from.PlaySound( 0x240 );
@@ -440,18 +433,15 @@ namespace Server.Engines.Plants
 				}
 				LabelTo( from, message );
 			}
-			else if ( item is PotionKeg )
+			else if ( item is PotionKeg keg )
 			{
-				PotionKeg keg = (PotionKeg)item;
-
 				if ( keg.Held <= 0 )
 				{
 					LabelTo( from, 1053069 ); // You can't use that on a plant!
 					return;
 				}
 
-				int message;
-				if ( ApplyPotion( keg.Type, false, out message ) )
+				if ( ApplyPotion( keg.Type, false, out int message ) )
 				{
 					keg.Held--;
 					from.PlaySound( 0x240 );

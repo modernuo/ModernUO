@@ -76,9 +76,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 			for ( int i = 0; i < m_Amount; ++i )
 			{
-				Item item = Activator.CreateInstance( m_Delivery ) as Item;
-
-				if ( item == null )
+				if ( !(Activator.CreateInstance( m_Delivery ) is Item item) )
 					continue;
 
 				delivery.Add( item );

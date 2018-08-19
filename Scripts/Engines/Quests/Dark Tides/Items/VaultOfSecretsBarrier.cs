@@ -21,9 +21,7 @@ namespace Server.Engines.Quests.Necro
 			if ( m.AccessLevel > AccessLevel.Player )
 				return true;
 
-			PlayerMobile pm = m as PlayerMobile;
-
-			if ( pm != null && pm.Profession == 4 )
+			if ( m is PlayerMobile pm && pm.Profession == 4 )
 			{
 				m.SendLocalizedMessage( 1060188, "", 0x24 ); // The wicked may not enter!
 				return false;

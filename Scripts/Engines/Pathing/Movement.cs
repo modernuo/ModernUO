@@ -315,7 +315,7 @@ namespace Server.Movement
 			List<Mobile> mobsLeft = m_MobPools[1];
 			List<Mobile> mobsRight = m_MobPools[2];
 
-			bool checkMobs = ( m is BaseCreature && !((BaseCreature)m).Controlled && ( xForward != m_Goal.X || yForward != m_Goal.Y ) );
+			bool checkMobs = ( m is BaseCreature creature && !creature.Controlled && ( xForward != m_Goal.X || yForward != m_Goal.Y ) );
 
 			if ( checkDiagonals )
 			{

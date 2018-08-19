@@ -21,8 +21,8 @@ namespace Server.Engines.Quests
 		{
 			Mobile from = Owner.From;
 
-			if ( from.CheckAlive() && from is PlayerMobile && m_Quester.CanTalkTo( (PlayerMobile)from ) )
-				m_Quester.OnTalk( (PlayerMobile)from, true );
+			if ( from.CheckAlive() && from is PlayerMobile mobile && m_Quester.CanTalkTo( mobile ) )
+				m_Quester.OnTalk( mobile, true );
 		}
 	}
 
@@ -82,19 +82,17 @@ namespace Server.Engines.Quests
 		{
 			base.AddCustomContextEntries( from, list );
 
-			if ( from.Alive && from is PlayerMobile && TalkNumber > 0 && CanTalkTo( (PlayerMobile)from ) )
+			if ( from.Alive && from is PlayerMobile mobile && TalkNumber > 0 && CanTalkTo( mobile ) )
 				list.Add( new TalkEntry( this ) );
 		}
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if ( m.Alive && m is PlayerMobile )
+			if ( m.Alive && m is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)m;
-
 				int range = GetAutoTalkRange( pm );
 
-				if ( m.Alive && range >= 0 && InRange( m, range ) && !InRange( oldLocation, range ) && CanTalkTo( pm ) )
+				if ( pm.Alive && range >= 0 && InRange( m, range ) && !InRange( oldLocation, range ) && CanTalkTo( pm ) )
 					OnTalk( pm, false );
 			}
 		}

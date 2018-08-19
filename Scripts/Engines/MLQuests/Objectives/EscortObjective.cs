@@ -31,7 +31,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
 		{
-			if ( ( quester is BaseCreature && ( (BaseCreature)quester ).Controlled ) || ( quester is BaseEscortable && ( (BaseEscortable)quester ).IsBeingDeleted ) )
+			if ( ( quester is BaseCreature creature && creature.Controlled ) || ( quester is BaseEscortable escortable && escortable.IsBeingDeleted ) )
 				return false;
 
 			MLQuestContext context = MLQuestSystem.GetContext( pm );
@@ -145,7 +145,7 @@ namespace Server.Engines.MLQuests.Objectives
 				if ( pm.Young || m_Escort.Region.IsPartOf( "Haven Island" ) )
 					Titles.AwardFame( pm, 10, true );
 				else
-					VirtueHelper.AwardVirtue( pm, VirtueName.Compassion, ( m_Escort is BaseEscortable && ( (BaseEscortable)m_Escort ).IsPrisoner ) ? 400 : 200 );
+					VirtueHelper.AwardVirtue( pm, VirtueName.Compassion, ( m_Escort is BaseEscortable escortable && escortable.IsPrisoner ) ? 400 : 200 );
 
 				EndFollow( m_Escort );
 				StopTimer();
@@ -203,8 +203,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 			quester.SetControlMaster( null );
 
-			if ( quester is BaseEscortable )
-				( (BaseEscortable)quester ).BeginDelete();
+			(quester as BaseEscortable)?.BeginDelete();
 		}
 
 		public override void OnQuestAccepted()

@@ -185,8 +185,8 @@ namespace Server.Engines.MLQuests.Objectives
 				{
 					bool completed = reader.ReadBool();
 
-					if ( objInstance is EscortObjectiveInstance )
-						( (EscortObjectiveInstance)objInstance ).HasCompleted = completed;
+					if ( objInstance is EscortObjectiveInstance instance )
+						instance.HasCompleted = completed;
 
 					break;
 				}
@@ -194,8 +194,8 @@ namespace Server.Engines.MLQuests.Objectives
 				{
 					int slain = reader.ReadInt();
 
-					if ( objInstance is KillObjectiveInstance )
-						( (KillObjectiveInstance)objInstance ).Slain = slain;
+					if ( objInstance is KillObjectiveInstance instance )
+						instance.Slain = slain;
 
 					break;
 				}
@@ -203,8 +203,8 @@ namespace Server.Engines.MLQuests.Objectives
 				{
 					bool completed = reader.ReadBool();
 
-					if ( objInstance is DeliverObjectiveInstance )
-						( (DeliverObjectiveInstance)objInstance ).HasCompleted = completed;
+					if ( objInstance is DeliverObjectiveInstance instance )
+						instance.HasCompleted = completed;
 
 					break;
 				}

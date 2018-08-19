@@ -65,9 +65,7 @@ namespace Server
 
 		public static void Path_OnTarget( Mobile from, object obj )
 		{
-			IPoint3D p = obj as IPoint3D;
-
-			if ( p == null )
+			if ( !(obj is IPoint3D p) )
 				return;
 
 			Spells.SpellHelper.GetSurfaceTop( ref p );

@@ -203,9 +203,8 @@ namespace Server.Engines.MLQuests
 			public override void Execute( CommandEventArgs e, object obj )
 			{
 				Mobile from = e.Mobile;
-				PlayerMobile pm = obj as PlayerMobile;
 
-				if ( pm == null )
+				if ( !(obj is PlayerMobile pm) )
 				{
 					LogFailure( "That is not a player." );
 					return;
@@ -230,9 +229,7 @@ namespace Server.Engines.MLQuests
 
 			public override void Execute( CommandEventArgs e, object obj )
 			{
-				PlayerMobile pm = obj as PlayerMobile;
-
-				if ( pm == null )
+				if ( !(obj is PlayerMobile pm) )
 					LogFailure( "They have no ML quest context." );
 				else
 					e.Mobile.SendGump( new PropertiesGump( e.Mobile, GetOrCreateContext( pm ) ) );
@@ -303,13 +300,9 @@ namespace Server.Engines.MLQuests
 			{
 				if ( item.QuestItem )
 				{
-					Backpack pack = item.Parent as Backpack;
-
-					if ( pack != null )
+					if ( item.Parent is Backpack pack )
 					{
-						PlayerMobile player = pack.Parent as PlayerMobile;
-
-						if ( player != null && player.Backpack == pack )
+						if ( pack.Parent is PlayerMobile player && player.Backpack == pack )
 							continue;
 					}
 
@@ -487,9 +480,9 @@ namespace Server.Engines.MLQuests
 
 				foreach ( BaseObjectiveInstance objective in instance.Objectives )
 				{
-					if ( !objective.Expired && objective is GainSkillObjectiveInstance && ( (GainSkillObjectiveInstance)objective ).Handles( skill ) )
+					if ( !objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance && objectiveInstance.Handles( skill ) )
 					{
-						objective.CheckComplete();
+						objectiveInstance.CheckComplete();
 						break;
 					}
 				}
@@ -520,10 +513,8 @@ namespace Server.Engines.MLQuests
 				 */
 				foreach ( BaseObjectiveInstance objective in instance.Objectives )
 				{
-					if ( !objective.Expired && objective is KillObjectiveInstance )
+					if ( !objective.Expired && objective is KillObjectiveInstance kill )
 					{
-						KillObjectiveInstance kill = (KillObjectiveInstance)objective;
-
 						if ( type == null )
 							type = mob.GetType();
 
@@ -558,26 +549,21 @@ namespace Server.Engines.MLQuests
 				foreach ( BaseObjectiveInstance objective in instance.Objectives )
 				{
 					// Note: On OSI, expired deliveries can still be completed. Bug?
-					if ( !objective.Expired && objective is DeliverObjectiveInstance )
+					if ( !objective.Expired && objective is DeliverObjectiveInstance deliver && deliver.IsDestination( quester, questerType ) )
 					{
-						DeliverObjectiveInstance deliver = (DeliverObjectiveInstance)objective;
-
-						if ( deliver.IsDestination( quester, questerType ) )
+						if ( !deliver.HasCompleted ) // objective completes only once
 						{
-							if ( !deliver.HasCompleted ) // objective completes only once
-							{
-								deliver.HasCompleted = true;
-								deliver.CheckComplete();
+							deliver.HasCompleted = true;
+							deliver.CheckComplete();
 
-								// The quest is continued with this NPC (important for chains)
-								instance.Quester = quester;
-							}
-
-							if ( deliverInstance == null )
-								deliverInstance = instance;
-
-							break; // don't return, we may have to complete more deliveries
+							// The quest is continued with this NPC (important for chains)
+							instance.Quester = quester;
 						}
+
+						if ( deliverInstance == null )
+							deliverInstance = instance;
+
+						break; // don't return, we may have to complete more deliveries
 					}
 				}
 			}
@@ -637,9 +623,7 @@ namespace Server.Engines.MLQuests
 
 		public static void EventSink_QuestGumpRequest( QuestGumpRequestArgs args )
 		{
-			PlayerMobile pm = args.Mobile as PlayerMobile;
-
-			if ( !Enabled || pm == null )
+			if ( !Enabled || !(args.Mobile is PlayerMobile pm) )
 				return;
 
 			pm.SendGump( new QuestLogGump( pm ) );
@@ -681,21 +665,18 @@ namespace Server.Engines.MLQuests
 
 		public static void TurnToFace( IQuestGiver quester, Mobile mob )
 		{
-			if ( quester is Mobile )
-			{
-				Mobile m = (Mobile)quester;
+			if ( quester is Mobile m )
 				m.Direction = m.GetDirectionTo( mob );
-			}
 		}
 
 		public static void Tell( IQuestGiver quester, PlayerMobile pm, int cliloc )
 		{
 			TurnToFace( quester, pm );
 
-			if ( quester is Mobile )
-				((Mobile)quester).PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, pm.NetState );
-			else if ( quester is Item )
-				MessageHelper.SendLocalizedMessageTo( (Item)quester, pm, cliloc, SpeechColor );
+			if ( quester is Mobile mobile )
+				mobile.PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, pm.NetState );
+			else if ( quester is Item item )
+				MessageHelper.SendLocalizedMessageTo( item, pm, cliloc, SpeechColor );
 			else
 				pm.SendLocalizedMessage( cliloc, "", SpeechColor );
 		}
@@ -704,10 +685,10 @@ namespace Server.Engines.MLQuests
 		{
 			TurnToFace( quester, pm );
 
-			if ( quester is Mobile )
-				((Mobile)quester).PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, args, pm.NetState );
-			else if ( quester is Item )
-				MessageHelper.SendLocalizedMessageTo( (Item)quester, pm, cliloc, args, SpeechColor );
+			if ( quester is Mobile mobile )
+				mobile.PrivateOverheadMessage( MessageType.Regular, SpeechColor, cliloc, args, pm.NetState );
+			else if ( quester is Item item )
+				MessageHelper.SendLocalizedMessageTo( item, pm, cliloc, args, SpeechColor );
 			else
 				pm.SendLocalizedMessage( cliloc, args, SpeechColor );
 		}
@@ -716,10 +697,10 @@ namespace Server.Engines.MLQuests
 		{
 			TurnToFace( quester, pm );
 
-			if ( quester is Mobile )
-				((Mobile)quester).PrivateOverheadMessage( MessageType.Regular, SpeechColor, false, message, pm.NetState );
-			else if ( quester is Item )
-				MessageHelper.SendMessageTo( (Item)quester, pm, message, SpeechColor );
+			if ( quester is Mobile mobile )
+				mobile.PrivateOverheadMessage( MessageType.Regular, SpeechColor, false, message, pm.NetState );
+			else if ( quester is Item item )
+				MessageHelper.SendMessageTo( item, pm, message, SpeechColor );
 			else
 				pm.SendMessage( SpeechColor, message );
 		}

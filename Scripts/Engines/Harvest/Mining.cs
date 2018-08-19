@@ -194,8 +194,7 @@ namespace Server.Engines.Harvest
 		{
 			if ( def == m_OreAndStone )
 			{
-				PlayerMobile pm = from as PlayerMobile;
-				if ( pm != null && pm.StoneMining && pm.ToggleMiningStone && from.Skills[SkillName.Mining].Base >= 100.0 && 0.1 > Utility.RandomDouble() )
+				if ( from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone && from.Skills[SkillName.Mining].Base >= 100.0 && 0.1 > Utility.RandomDouble() )
 					return resource.Types[1];
 
 				return resource.Types[0];
@@ -236,17 +235,17 @@ namespace Server.Engines.Harvest
 			if ( !base.CheckHarvest( from, tool, def, toHarvest ) )
 				return false;
 
-			if ( def == m_Sand && !(from is PlayerMobile && from.Skills[SkillName.Mining].Base >= 100.0 && ((PlayerMobile)from).SandMining) )
+			if ( def == m_Sand && !(from is PlayerMobile mobile && mobile.Skills[SkillName.Mining].Base >= 100.0 && mobile.SandMining) )
 			{
 				OnBadHarvestTarget( from, tool, toHarvest );
 				return false;
 			}
-			else if ( from.Mounted )
+			if ( from.Mounted )
 			{
 				from.SendLocalizedMessage( 501864 ); // You can't mine while riding.
 				return false;
 			}
-			else if ( from.IsBodyMod && !from.Body.IsHuman )
+			if ( from.IsBodyMod && !from.Body.IsHuman )
 			{
 				from.SendLocalizedMessage( 501865 ); // You can't mine while polymorphed.
 				return false;
@@ -295,9 +294,7 @@ namespace Server.Engines.Harvest
 						if ( map == null )
 							return;
 
-						BaseCreature spawned = Activator.CreateInstance( res.Types[2], new object[]{ 25 } ) as BaseCreature;
-
-						if ( spawned != null )
+						if ( Activator.CreateInstance( res.Types[2], new object[]{ 25 } ) is BaseCreature spawned )
 						{
 							int offset = Utility.Random( 8 ) * 2;
 
@@ -313,17 +310,15 @@ namespace Server.Engines.Harvest
 									spawned.Combatant = from;
 									return;
 								}
-								else
-								{
-									int z = map.GetAverageZ( x, y );
 
-									if ( Math.Abs( z - from.Z ) < 10 && map.CanSpawnMobile( x, y, z ) )
-									{
-										spawned.OnBeforeSpawn( new Point3D( x, y, z ), map );
-										spawned.MoveToWorld( new Point3D( x, y, z ), map );
-										spawned.Combatant = from;
-										return;
-									}
+								int z = map.GetAverageZ( x, y );
+
+								if ( Math.Abs( z - from.Z ) < 10 && map.CanSpawnMobile( x, y, z ) )
+								{
+									spawned.OnBeforeSpawn( new Point3D( x, y, z ), map );
+									spawned.MoveToWorld( new Point3D( x, y, z ), map );
+									spawned.Combatant = from;
+									return;
 								}
 							}
 

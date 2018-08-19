@@ -162,10 +162,10 @@ namespace Server.Engines.Harvest
 
 		public override void OnBadHarvestTarget( Mobile from, Item tool, object toHarvest )
 		{
-			if ( toHarvest is Mobile )
-				( (Mobile)toHarvest ).PrivateOverheadMessage( MessageType.Regular, 0x3B2, 500450, from.NetState ); // You can only skin dead creatures.
-			else if ( toHarvest is Item )
-				( (Item)toHarvest ).LabelTo( from, 500464 ); // Use this on corpses to carve away meat and hide
+			if ( toHarvest is Mobile mobile )
+				mobile.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 500450, from.NetState ); // You can only skin dead creatures.
+			else if ( toHarvest is Item item )
+				item.LabelTo( from, 500464 ); // Use this on corpses to carve away meat and hide
 			else if ( toHarvest is Targeting.StaticTarget || toHarvest is Targeting.LandTarget )
 				from.SendLocalizedMessage( 500489 ); // You can't use an axe on that.
 			else

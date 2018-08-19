@@ -52,8 +52,8 @@ namespace Server.Engines.MLQuests.Items
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else if ( !IsChildOf( from.Backpack ) )
 				from.SendLocalizedMessage( 1042593 ); // That is not in your backpack.
-			else if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile )
-				MLQuestSystem.OnDoubleClick( this, (PlayerMobile)from );
+			else if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile )
+				MLQuestSystem.OnDoubleClick( this, mobile );
 		}
 
 		public override void OnAfterDelete()
@@ -133,8 +133,8 @@ namespace Server.Engines.MLQuests.Items
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else if ( !IsChildOf( from.Backpack ) )
 				from.SendLocalizedMessage( 1042593 ); // That is not in your backpack.
-			else if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile )
-				MLQuestSystem.OnDoubleClick( this, (PlayerMobile)from );
+			else if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile )
+				MLQuestSystem.OnDoubleClick( this, mobile );
 		}
 
 		public override void OnAfterDelete()

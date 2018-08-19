@@ -107,8 +107,8 @@ namespace Server.Engines.Quests.Necro
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D SpawnLocation
 		{
-			get { return Addon is MaabusCoffin ? ((MaabusCoffin)Addon).SpawnLocation : Point3D.Zero; }
-			set { if ( Addon is MaabusCoffin ) ((MaabusCoffin)Addon).SpawnLocation = value; }
+			get { return Addon is MaabusCoffin coffin ? coffin.SpawnLocation : Point3D.Zero; }
+			set { if ( Addon is MaabusCoffin coffin ) coffin.SpawnLocation = value; }
 		}
 
 		public MaabusCoffinComponent( int itemID ) : this( itemID, itemID )

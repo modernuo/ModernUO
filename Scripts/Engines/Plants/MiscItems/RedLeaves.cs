@@ -62,9 +62,7 @@ namespace Server.Items
 					return;
 				}
 
-				Item item = targeted as Item;
-
-				if ( item == null || !item.IsChildOf( from.Backpack ) )
+				if ( !(targeted is Item item) || !item.IsChildOf( from.Backpack ) )
 				{
 					from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 				}

@@ -28,9 +28,7 @@ namespace Server.Engines.Quests
 
 			if ( m_Quest != null && m_Objective != null )
 			{
-				PlayerMobile player = m as PlayerMobile;
-
-				if ( player != null && player.Quest != null && player.Quest.GetType() == m_Quest )
+				if ( m is PlayerMobile player && player.Quest != null && player.Quest.GetType() == m_Quest )
 				{
 					QuestObjective obj = player.Quest.FindObjective( m_Objective );
 

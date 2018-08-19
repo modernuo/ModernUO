@@ -27,9 +27,7 @@ namespace Server.Engines.Quests.Necro
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm != null && pm.InRange( GetWorldLocation(), 2 ) )
+			if ( from is PlayerMobile pm && pm.InRange( GetWorldLocation(), 2 ) )
 			{
 				QuestSystem qs = pm.Quest;
 

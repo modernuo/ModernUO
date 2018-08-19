@@ -23,16 +23,12 @@ namespace Server.Engines.Quests.Necro
 
 		public override bool CanDrop( PlayerMobile player )
 		{
-			DarkTidesQuest qs = player.Quest as DarkTidesQuest;
-
-			if ( qs == null )
-				return true;
+			return !(player.Quest is DarkTidesQuest);
 
 			/*return !( qs.IsObjectiveInProgress( typeof( FindCallingScrollObjective ) )
 				|| qs.IsObjectiveInProgress( typeof( FindMardothAboutKronusObjective ) )
 				|| qs.IsObjectiveInProgress( typeof( FindWellOfTearsObjective ) )
 				|| qs.IsObjectiveInProgress( typeof( UseCallingScrollObjective ) ) );*/
-			return false;
 		}
 
 		private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D( 2080, 1346, 10, 10 );
@@ -43,9 +39,7 @@ namespace Server.Engines.Quests.Necro
 			if ( !IsChildOf( from ) )
 				return;
 
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm != null )
+			if ( from is PlayerMobile pm )
 			{
 				QuestSystem qs = pm.Quest;
 

@@ -34,9 +34,7 @@ namespace Server.Engines.Quests.Ambitious
 		{
 			this.Direction = GetDirectionTo( player );
 
-			AmbitiousQueenQuest qs = player.Quest as AmbitiousQueenQuest;
-
-			if ( qs != null && qs.RedSolen == this.RedSolen )
+			if ( player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == this.RedSolen )
 			{
 				if ( qs.IsObjectiveInProgress( typeof( KillQueensObjective ) ) )
 				{
@@ -56,9 +54,7 @@ namespace Server.Engines.Quests.Ambitious
 					}
 					else
 					{
-						GetRewardObjective lastObj = qs.FindObjective( typeof( GetRewardObjective ) ) as GetRewardObjective;
-
-						if ( lastObj != null && !lastObj.Completed )
+						if ( qs.FindObjective( typeof( GetRewardObjective ) ) is GetRewardObjective lastObj && !lastObj.Completed )
 						{
 							bool bagOfSending = lastObj.BagOfSending;
 							bool powderOfTranslocation = lastObj.PowderOfTranslocation;
@@ -101,22 +97,16 @@ namespace Server.Engines.Quests.Ambitious
 		{
 			this.Direction = GetDirectionTo( from );
 
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
-				AmbitiousQueenQuest qs = player.Quest as AmbitiousQueenQuest;
-
-				if ( qs != null && qs.RedSolen == this.RedSolen )
+				if ( player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == this.RedSolen )
 				{
 					QuestObjective obj = qs.FindObjective( typeof( GatherFungiObjective ) );
 
 					if ( obj != null && !obj.Completed )
 					{
-						if ( dropped is ZoogiFungus )
+						if ( dropped is ZoogiFungus fungi )
 						{
-							ZoogiFungus fungi = (ZoogiFungus)dropped;
-
 							if ( fungi.Amount >= 50 )
 							{
 								obj.Complete();
@@ -128,16 +118,12 @@ namespace Server.Engines.Quests.Ambitious
 									fungi.Delete();
 									return true;
 								}
-								else
-								{
-									return false;
-								}
-							}
-							else
-							{
-								SayTo( player, 1054072 ); // Our arrangement was for 50 of the zoogi fungus. Please return to me when you have that amount.
+
 								return false;
 							}
+
+							SayTo( player, 1054072 ); // Our arrangement was for 50 of the zoogi fungus. Please return to me when you have that amount.
+							return false;
 						}
 					}
 				}

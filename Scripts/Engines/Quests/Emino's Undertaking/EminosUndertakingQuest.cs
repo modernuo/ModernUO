@@ -114,9 +114,7 @@ namespace Server.Engines.Quests.Ninja
 
 		public static bool HasLostNoteForZoel( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -125,9 +123,7 @@ namespace Server.Engines.Quests.Ninja
 			{
 				if ( qs.IsObjectiveInProgress( typeof( GiveZoelNoteObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( NoteForZoel ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( NoteForZoel ) ) == null );
 				}
 			}
 
@@ -136,9 +132,7 @@ namespace Server.Engines.Quests.Ninja
 
 		public static bool HasLostEminosKatana( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -147,9 +141,7 @@ namespace Server.Engines.Quests.Ninja
 			{
 				if ( qs.IsObjectiveInProgress( typeof( GiveEminoSwordObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( EminosKatana ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( EminosKatana ) ) == null );
 				}
 			}
 

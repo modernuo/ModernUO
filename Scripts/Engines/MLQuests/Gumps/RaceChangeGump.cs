@@ -193,9 +193,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 			CloseCurrent( state );
 
-			PlayerMobile pm = state.Mobile as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(state.Mobile is PlayerMobile pm) )
 				return;
 
 			IRaceChanger owner = raceChangeState.m_Owner;
@@ -203,8 +201,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 			if ( pvSrc.Size == 5 )
 			{
-				if ( owner != null )
-					owner.OnCancel( pm );
+				owner?.OnCancel( pm );
 
 				return;
 			}
@@ -248,8 +245,7 @@ namespace Server.Engines.MLQuests.Gumps
 			else
 				pm.SendMessage( "You have fully changed your race to {0}.", targetRace.Name );
 
-			if ( owner != null )
-				owner.ConsumeNeeded( pm );
+			owner?.ConsumeNeeded( pm );
 		}
 	}
 
@@ -319,9 +315,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			if ( CheckComplete( pm ) )

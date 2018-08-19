@@ -225,9 +225,7 @@ namespace Server.Engines.Quests.Necro
 		{
 			if ( System.From.Map == Map.Malas && System.From.InRange( new Point3D( 1076, 450, -84 ), 5 ) )
 			{
-				HordeMinionFamiliar hmf = Spells.Necromancy.SummonFamiliarSpell.Table[System.From] as HordeMinionFamiliar;
-
-				if ( hmf != null && hmf.InRange( System.From, 5 ) && hmf.TargetLocation == null )
+				if ( Spells.Necromancy.SummonFamiliarSpell.Table[System.From] is HordeMinionFamiliar hmf && hmf.InRange( System.From, 5 ) && hmf.TargetLocation == null )
 				{
 					System.From.SendLocalizedMessage( 1060113 ); // You instinctively will your familiar to fetch the scroll for you.
 					hmf.TargetLocation = new Point2D( 1076, 450 );

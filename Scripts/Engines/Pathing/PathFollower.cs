@@ -45,8 +45,8 @@ namespace Server
 
 		public Point3D GetGoalLocation()
 		{
-			if ( m_Goal is Item )
-				return ((Item)m_Goal).GetWorldLocation();
+			if ( m_Goal is Item item )
+				return item.GetWorldLocation();
 
 			return new Point3D( m_Goal );
 		}
