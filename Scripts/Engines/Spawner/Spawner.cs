@@ -41,9 +41,8 @@ namespace Server.Mobiles
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			if ( newItem is Spawner )
+			if ( newItem is Spawner newSpawner )
 			{
-				Spawner newSpawner = newItem as Spawner;
 				for ( int i = 0; i < m_Entries.Count; i++ )
 					newSpawner.AddEntry( m_Entries[i].SpawnedName, m_Entries[i].SpawnedProbability, m_Entries[i].SpawnedMaxCount, false );
 			}
@@ -479,8 +478,8 @@ namespace Server.Mobiles
 											{
 												flags = EntryFlags.InvalidProps;
 
-												if ( o is ISpawnable )
-													((ISpawnable)o).Delete();
+												if ( o is ISpawnable spawnable )
+													spawnable.Delete();
 
 												return false;
 											}
@@ -492,10 +491,8 @@ namespace Server.Mobiles
 						}
 					}
 
-					if ( o is Mobile )
+					if ( o is Mobile m )
 					{
-						Mobile m = (Mobile)o;
-
 						m_Spawned.Add( m, entry );
 						entry.Spawned.Add( m );
 
@@ -506,10 +503,8 @@ namespace Server.Mobiles
 
 						m.MoveToWorld( loc, map );
 
-						if ( m is BaseCreature )
+						if ( m is BaseCreature c )
 						{
-							BaseCreature c = (BaseCreature)m;
-
 							int walkrange = GetWalkingRange();
 
 							if ( walkrange >= 0 )
@@ -529,10 +524,8 @@ namespace Server.Mobiles
 						m.Spawner = this;
 						m.OnAfterSpawn();
 					}
-					else if ( o is Item )
+					else if ( o is Item item )
 					{
-						Item item = (Item)o;
-
 						m_Spawned.Add( item, entry );
 						entry.Spawned.Add( item );
 
@@ -583,10 +576,8 @@ namespace Server.Mobiles
 
 			bool waterMob, waterOnlyMob;
 
-			if ( spawned is Mobile )
+			if ( spawned is Mobile mob )
 			{
-				Mobile mob = (Mobile)spawned;
-
 				waterMob = mob.CanSwim;
 				waterOnlyMob = ( mob.CanSwim && mob.CantWalk );
 			}
@@ -958,12 +949,10 @@ namespace Server.Mobiles
 
 						for ( int i = 0; i < count; ++i )
 						{
-							ISpawnable e = reader.ReadEntity() as ISpawnable;
-
-							if ( e != null )
+							if ( reader.ReadEntity() is ISpawnable e )
 							{
-								if ( e is BaseCreature )
-									((BaseCreature)e).RemoveIfUntamed = true;
+								if ( e is BaseCreature creature )
+									creature.RemoveIfUntamed = true;
 
 								e.Spawner = this;
 
@@ -1145,10 +1134,10 @@ namespace Server.Mobiles
 			{
 				object o = m_Spawned[i];
 
-				if ( o is Item )
-					writer.Write( (Item)o );
-				else if ( o is Mobile )
-					writer.Write( (Mobile)o );
+				if ( o is Item item )
+					writer.Write( item );
+				else if ( o is Mobile mobile )
+					writer.Write( mobile );
 				else
 					writer.Write( Serial.MinusOne );
 			}
@@ -1172,14 +1161,13 @@ namespace Server.Mobiles
 			for ( int i = 0; i < count; ++i )
 			{
 				//IEntity e = World.FindEntity( reader.ReadInt() );
-				ISpawnable e = reader.ReadEntity() as ISpawnable;
 
-				if ( e != null )
+				if ( reader.ReadEntity() is ISpawnable e )
 				{
 					e.Spawner = parent;
 
-					if ( e is BaseCreature )
-						((BaseCreature)e).RemoveIfUntamed = true;
+					if ( e is BaseCreature creature )
+						creature.RemoveIfUntamed = true;
 
 					m_Spawned.Add( e );
 
@@ -1196,23 +1184,17 @@ namespace Server.Mobiles
 				ISpawnable e = m_Spawned[i];
 				bool remove = false;
 
-				if ( e is Item )
+				if ( e is Item item )
 				{
-					Item item = (Item)e;
-
 					if ( item.Deleted || item.RootParent is Mobile || item.IsLockedDown || item.IsSecure || item.Spawner == null )
 						remove = true;
 				}
-				else if ( e is Mobile )
+				else if ( e is Mobile m )
 				{
-					Mobile m = (Mobile)e;
-
 					if ( m.Deleted )
 						remove = true;
-					else if ( m is BaseCreature )
+					else if ( m is BaseCreature c )
 					{
-						BaseCreature c = (BaseCreature)m;
-
 						if ( c.Controlled || c.IsStabled )
 							remove = true;
 /*

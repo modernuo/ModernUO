@@ -73,9 +73,7 @@ namespace Server.Engines.VeteranRewards
 				return false;
 			}
 
-			Account acct = mob.Account as Account;
-
-			if ( acct == null )
+			if ( !(mob.Account is Account acct) )
 			{
 				ts = TimeSpan.Zero;
 				return false;
@@ -93,9 +91,7 @@ namespace Server.Engines.VeteranRewards
 
 		public static int GetRewardLevel( Mobile mob )
 		{
-			Account acct = mob.Account as Account;
-
-			if ( acct == null )
+			if ( !(mob.Account is Account acct) )
 				return 0;
 
 			return GetRewardLevel( acct );
@@ -115,9 +111,7 @@ namespace Server.Engines.VeteranRewards
 
 		public static bool HasHalfLevel( Mobile mob )
 		{
-			Account acct = mob.Account as Account;
-
-			if ( acct == null )
+			if ( !(mob.Account is Account acct) )
 				return false;
 
 			return HasHalfLevel( acct );
@@ -134,16 +128,12 @@ namespace Server.Engines.VeteranRewards
 
 		public static bool ConsumeRewardPoint( Mobile mob )
 		{
-			int cur, max;
-
-			ComputeRewardInfo( mob, out cur, out max );
+			ComputeRewardInfo( mob, out var cur, out var max );
 
 			if ( cur >= max )
 				return false;
 
-			Account acct = mob.Account as Account;
-
-			if ( acct == null )
+			if ( !(mob.Account is Account acct) )
 				return false;
 
 			//if ( mob.AccessLevel < AccessLevel.GameMaster )
@@ -154,16 +144,12 @@ namespace Server.Engines.VeteranRewards
 
 		public static void ComputeRewardInfo( Mobile mob, out int cur, out int max )
 		{
-			int level;
-
-			ComputeRewardInfo( mob, out cur, out max, out level );
+			ComputeRewardInfo( mob, out cur, out max, out _ );
 		}
 
 		public static void ComputeRewardInfo( Mobile mob, out int cur, out int max, out int level )
 		{
-			Account acct = mob.Account as Account;
-
-			if ( acct == null )
+			if ( !(mob.Account is Account acct) )
 			{
 				cur = max = level = 0;
 				return;
@@ -213,7 +199,7 @@ namespace Server.Engines.VeteranRewards
 						{
 							if ( (!isRelaxedRules || i > 0) && !HasAccess( from, list, out ts ) )
 							{
-								from.SendLocalizedMessage( 1008126, true, Math.Ceiling( ts.TotalDays / 30.0 ).ToString() ); // Your account is not old enough to use this item. Months until you can use this item : 
+								from.SendLocalizedMessage( 1008126, true, Math.Ceiling( ts.TotalDays / 30.0 ).ToString() ); // Your account is not old enough to use this item. Months until you can use this item :
 								return false;
 							}
 
@@ -231,7 +217,7 @@ namespace Server.Engines.VeteranRewards
 							{
 								if ( (!isRelaxedRules || i > 0) && !HasAccess( from, list, out ts ) )
 								{
-									from.SendLocalizedMessage( 1008126, true, Math.Ceiling( ts.TotalDays / 30.0 ).ToString() ); // Your account is not old enough to use this item. Months until you can use this item : 
+									from.SendLocalizedMessage( 1008126, true, Math.Ceiling( ts.TotalDays / 30.0 ).ToString() ); // Your account is not old enough to use this item. Months until you can use this item :
 									return false;
 								}
 
@@ -427,17 +413,17 @@ namespace Server.Engines.VeteranRewards
 						new RewardEntry( etherealSteeds, 1049748, typeof( EtherealBeetle ) ),
 						new RewardEntry( houseAddOns,    1049739, typeof( StoneAnkhDeed ) ),
 						new RewardEntry( houseAddOns,    1080384, typeof( BloodyPentagramDeed ), Expansion.ML )
-					} ),					
+					} ),
 					new RewardList( RewardInterval, 6, new RewardEntry[]
 					{
 						new RewardEntry( houseAddOns,	1076188, typeof( CharacterStatueMaker ), Expansion.ML, StatueType.Jade ),
 						new RewardEntry( houseAddOns,	1076189, typeof( CharacterStatueMaker ), Expansion.ML, StatueType.Marble ),
-						new RewardEntry( houseAddOns,	1076190, typeof( CharacterStatueMaker ), Expansion.ML, StatueType.Bronze ),						
+						new RewardEntry( houseAddOns,	1076190, typeof( CharacterStatueMaker ), Expansion.ML, StatueType.Bronze ),
 						new RewardEntry( houseAddOns,	1080527, typeof( RewardBrazierDeed ), Expansion.ML )
-					} ),		
+					} ),
 					new RewardList( RewardInterval, 7, new RewardEntry[]
 					{
-						new RewardEntry( houseAddOns,	1076157, typeof( CannonDeed ), Expansion.ML ),					
+						new RewardEntry( houseAddOns,	1076157, typeof( CannonDeed ), Expansion.ML ),
 						new RewardEntry( houseAddOns,	1080550, typeof( TreeStumpDeed ), Expansion.ML )
 					} ),
 					new RewardList( RewardInterval, 8, new RewardEntry[]
@@ -450,17 +436,17 @@ namespace Server.Engines.VeteranRewards
 						new RewardEntry( houseAddOns,		1080549, typeof( WallBannerDeed ), Expansion.ML )
 					} ),
 					new RewardList( RewardInterval, 10, new RewardEntry[]
-					{												
+					{
 						new RewardEntry( monsterStatues,	1080520, typeof( MonsterStatuette ), Expansion.ML, MonsterStatuetteType.Harrower ),
 						new RewardEntry( monsterStatues,	1080521, typeof( MonsterStatuette ), Expansion.ML, MonsterStatuetteType.Efreet ),
 
 						new RewardEntry( cloaksAndRobes,	1080382, typeof( RewardCloak ), Expansion.ML, Pink, 1080382 ),
-						new RewardEntry( cloaksAndRobes,	1080380, typeof( RewardRobe ), Expansion.ML, Pink, 1080380 ),						
+						new RewardEntry( cloaksAndRobes,	1080380, typeof( RewardRobe ), Expansion.ML, Pink, 1080380 ),
 						new RewardEntry( cloaksAndRobes,	1080378, typeof( RewardDress ), Expansion.ML, Pink, 1080378 ),
 						new RewardEntry( cloaksAndRobes,	1080383, typeof( RewardCloak ), Expansion.ML, Crimson, 1080383 ),
-						new RewardEntry( cloaksAndRobes,	1080381, typeof( RewardRobe ), Expansion.ML, Crimson, 1080381 ),						
+						new RewardEntry( cloaksAndRobes,	1080381, typeof( RewardRobe ), Expansion.ML, Crimson, 1080381 ),
 						new RewardEntry( cloaksAndRobes,	1080379, typeof( RewardDress ), Expansion.ML, Crimson, 1080379 ),
-						
+
 						new RewardEntry( etherealSteeds,	1080386, typeof( EtherealCuSidhe ), Expansion.ML ),
 
 						new RewardEntry( houseAddOns,		1080548, typeof( MiningCartDeed ), Expansion.ML ),
@@ -506,10 +492,10 @@ namespace Server.Engines.VeteranRewards
 					e.Mobile.SkillsCap = 7000;
 			}
 
-			if ( Core.ML && e.Mobile is PlayerMobile && !((PlayerMobile)e.Mobile).HasStatReward && HasHalfLevel( e.Mobile ) )
+			if ( Core.ML && e.Mobile is PlayerMobile mobile && !mobile.HasStatReward && HasHalfLevel( mobile ) )
 			{
-				((PlayerMobile)e.Mobile).HasStatReward = true;
-				e.Mobile.StatCap += 5;
+				mobile.HasStatReward = true;
+				mobile.StatCap += 5;
 			}
 
 			if ( cur < max )

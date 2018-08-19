@@ -22,13 +22,9 @@ namespace Server.Engines.Quests.Ninja
 
 		public override bool CanDrop( PlayerMobile player )
 		{
-			EminosUndertakingQuest qs = player.Quest as EminosUndertakingQuest;
-
-			if ( qs == null )
-				return true;
+			return !(player.Quest is EminosUndertakingQuest);
 
 			//return !qs.IsObjectiveInProgress( typeof( GiveZoelNoteObjective ) );
-			return false;
 		}
 
 		public override void Serialize( GenericWriter writer )

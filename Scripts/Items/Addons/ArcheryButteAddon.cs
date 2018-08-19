@@ -134,9 +134,7 @@ namespace Server.Items
 
 		public void Fire( Mobile from )
 		{
-			BaseRanged bow = from.Weapon as BaseRanged;
-
-			if ( bow == null )
+			if ( !(from.Weapon is BaseRanged bow) )
 			{
 				SendLocalizedMessageTo( from, 500593 ); // You must practice with ranged weapons on this.
 				return;

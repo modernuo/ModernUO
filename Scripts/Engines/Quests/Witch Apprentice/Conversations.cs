@@ -427,9 +427,7 @@ namespace Server.Engines.Quests.Hag
 
 		public override void OnRead()
 		{
-			FindIngredientObjective obj = System.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
-
-			if ( obj != null )
+			if ( System.FindObjective( typeof( FindIngredientObjective ) ) is FindIngredientObjective obj )
 				System.AddObjective( new FindIngredientObjective( obj.Ingredients, true ) );
 		}
 	}
@@ -627,9 +625,7 @@ namespace Server.Engines.Quests.Hag
 
 		public override void OnRead()
 		{
-			FindIngredientObjective obj = System.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
-
-			if ( obj != null )
+			if ( System.FindObjective( typeof( FindIngredientObjective ) ) is FindIngredientObjective obj )
 				obj.NextStep();
 		}
 

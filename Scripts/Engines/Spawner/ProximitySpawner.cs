@@ -94,13 +94,8 @@ namespace Server.Mobiles
 
 		public virtual bool ValidTrigger( Mobile m )
 		{
-			if ( m is BaseCreature )
-			{
-				BaseCreature bc = m as BaseCreature;
-
-				if ( bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned) )
-					return false;
-			}
+			if (m is BaseCreature bc && (bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned)))
+				return false;
 
 			return m.AccessLevel == AccessLevel.Player && ( m.Player || ( m.Alive && !m.Hidden && m.CanBeDamaged() ) );
 		}
@@ -120,8 +115,8 @@ namespace Server.Mobiles
 				if ( m_InstantFlag )
 				{
 					foreach ( ISpawnable spawned in Spawned.Keys )
-						if ( spawned is Mobile )
-							((Mobile)spawned).Combatant = m;
+						if ( spawned is Mobile mobile )
+							mobile.Combatant = m;
 				}
 			}
 		}

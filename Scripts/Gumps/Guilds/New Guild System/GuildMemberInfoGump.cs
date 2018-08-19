@@ -62,9 +62,7 @@ namespace Server.Guilds
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
-			PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-			if ( pm == null || !IsMember( pm, guild ) || !IsMember( m_Member, guild ) )
+			if ( !(sender.Mobile is PlayerMobile pm) || !IsMember( pm, guild ) || !IsMember( m_Member, guild ) )
 				return;
 
 			RankDefinition playerRank = pm.GuildRank;
@@ -192,15 +190,10 @@ namespace Server.Guilds
 
 		public void SetTitle_Callback( Mobile from, string text )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-			PlayerMobile targ = m_Member;
-
-			if ( pm == null || targ == null )
+			if (!(from is PlayerMobile pm) || m_Member == null )
 				return;
 
-			Guild g = targ.Guild as Guild;
-
-			if ( g == null || !IsMember( pm, g ) || !(pm.GuildRank.GetFlag( RankFlags.CanSetGuildTitle ) && (pm.GuildRank.Rank > targ.GuildRank.Rank || pm == targ)) )
+			if ( !(m_Member.Guild is Guild g) || !IsMember( pm, g ) || !(pm.GuildRank.GetFlag( RankFlags.CanSetGuildTitle ) && (pm.GuildRank.Rank > m_Member.GuildRank.Rank || pm == m_Member)) )
 			{
 				if ( m_Member.GuildTitle == null || m_Member.GuildTitle.Length <= 0 )
 					pm.SendLocalizedMessage( 1070746 ); // You don't have the permission to set that member's guild title.
@@ -220,11 +213,11 @@ namespace Server.Guilds
 			else
 			{
 				if ( Insensitive.Equals( title, "none" ) )
-					targ.GuildTitle = null;
+					m_Member.GuildTitle = null;
 				else
-					targ.GuildTitle = title;
+					m_Member.GuildTitle = title;
 
-				pm.SendLocalizedMessage( 1063156, targ.Name ); // The guild information for ~1_val~ has been updated.
+				pm.SendLocalizedMessage( 1063156, m_Member.Name ); // The guild information for ~1_val~ has been updated.
 			}
 		}
 	}

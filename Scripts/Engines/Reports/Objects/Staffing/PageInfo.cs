@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Server;
+using Server.Accounting;
 using Server.Engines;
 using Server.Engines.Help;
 
@@ -192,15 +193,7 @@ namespace Server.Engines.Reports
 
 		public static string GetAccount( Mobile mob )
 		{
-			if ( mob == null )
-				return null;
-
-			Accounting.Account acct = mob.Account as Accounting.Account;
-
-			if ( acct == null )
-				return null;
-
-			return acct.Username;
+			return mob?.Account is Account acct ? acct.Username : null;
 		}
 
 		public PageInfo()

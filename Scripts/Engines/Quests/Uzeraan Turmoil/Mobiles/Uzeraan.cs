@@ -198,20 +198,16 @@ namespace Server.Engines.Quests.Haven
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 
 				if ( qs is UzeraanTurmoilQuest )
 				{
-					if ( dropped is UzeraanTurmoilHorn )
+					if ( dropped is UzeraanTurmoilHorn horn )
 					{
 						if ( player.Young )
 						{
-							UzeraanTurmoilHorn horn = (UzeraanTurmoilHorn)dropped;
-
 							if ( horn.Charges < 10 )
 							{
 								SayTo( from, 1049384 ); // I have recharged the item for you.
@@ -248,12 +244,10 @@ namespace Server.Engines.Quests.Haven
 								player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
 								return false;
 							}
-							else
-							{
-								dropped.Delete();
-								obj.Complete();
-								return true;
-							}
+
+							dropped.Delete();
+							obj.Complete();
+							return true;
 						}
 					}
 					else if ( dropped is QuestFertileDirt )
@@ -293,12 +287,10 @@ namespace Server.Engines.Quests.Haven
 								player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
 								return false;
 							}
-							else
-							{
-								dropped.Delete();
-								obj.Complete();
-								return true;
-							}
+
+							dropped.Delete();
+							obj.Complete();
+							return true;
 						}
 					}
 					else if ( dropped is QuestDaemonBlood )
@@ -353,12 +345,10 @@ namespace Server.Engines.Quests.Haven
 								player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
 								return false;
 							}
-							else
-							{
-								dropped.Delete();
-								obj.Complete();
-								return true;
-							}
+
+							dropped.Delete();
+							obj.Complete();
+							return true;
 						}
 					}
 					else if ( dropped is QuestDaemonBone )
@@ -377,12 +367,10 @@ namespace Server.Engines.Quests.Haven
 								player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
 								return false;
 							}
-							else
-							{
-								dropped.Delete();
-								obj.Complete();
-								return true;
-							}
+
+							dropped.Delete();
+							obj.Complete();
+							return true;
 						}
 					}
 				}

@@ -38,13 +38,9 @@ namespace Server.Engines.Quests.Naturalist
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )
 		{
-			StudyOfSolenQuest qs = player.Quest as StudyOfSolenQuest;
-
-			if ( qs != null && qs.Naturalist == this )
+			if ( player.Quest is StudyOfSolenQuest qs && qs.Naturalist == this )
 			{
-				StudyNestsObjective study = qs.FindObjective( typeof( StudyNestsObjective ) ) as StudyNestsObjective;
-
-				if ( study != null )
+				if ( qs.FindObjective( typeof( StudyNestsObjective ) ) is StudyNestsObjective study )
 				{
 					if ( !study.Completed )
 					{

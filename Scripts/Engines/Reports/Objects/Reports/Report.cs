@@ -64,10 +64,10 @@ namespace Server.Engines.Reports
 			{
 				PersistableObject child = ip.GetChild();
 
-				if ( child is ReportColumn )
-					m_Columns.Add( (ReportColumn) child );
-				else if ( child is ReportItem )
-					m_Items.Add( (ReportItem) child );
+				if ( child is ReportColumn column )
+					m_Columns.Add( column );
+				else if ( child is ReportItem item )
+					m_Items.Add( item );
 			}
 		}
 	}

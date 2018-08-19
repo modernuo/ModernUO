@@ -543,9 +543,7 @@ namespace Server.Gumps
 
 					for ( int i = 0, index = (listPage * 12); i < 12 && index >= 0 && index < m_List.Count; ++i, ++index )
 					{
-						NetState ns = m_List[index] as NetState;
-
-						if ( ns == null )
+						if ( !(m_List[index] is NetState ns) )
 							continue;
 
 						Mobile m = ns.Mobile;
@@ -575,9 +573,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.ClientInfo:
 				{
-					Mobile m = state as Mobile;
-
-					if ( m == null )
+					if ( !(state is Mobile m) )
 						break;
 
 					AddClientHeader();
@@ -764,17 +760,12 @@ namespace Server.Gumps
 
 					for ( int i = 0, index = (listPage * 12); i < 12 && index >= 0 && index < m_List.Count; ++i, ++index )
 					{
-						Account a = m_List[index] as Account;
-
-						if ( a == null )
+						if ( !(m_List[index] is Account a) )
 							continue;
 
 						int offset = 140 + (i * 20);
 
-						AccessLevel accessLevel;
-						bool online;
-
-						GetAccountInfo( a, out accessLevel, out online );
+						GetAccountInfo( a, out var accessLevel, out var online );
 
 						if ( rads == null )
 						{
@@ -811,9 +802,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_ChangePassword:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					AddHtml( 10, 125, 400, 20, Color( Center( "Change Password" ), LabelColor32 ), false, false );
@@ -833,9 +822,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_ChangeAccess:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					AddHtml( 10, 125, 400, 20, Color( Center( "Change Access Level" ), LabelColor32 ), false, false );
@@ -868,9 +855,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Information:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					int charCount = 0;
@@ -892,10 +877,7 @@ namespace Server.Gumps
 					AddLabel(  20, 190, LabelHue, "Status:" );
 					AddLabel( 200, 190, a.Banned ? RedHue : GreenHue, a.Banned ? "Banned" : "Active" );
 
-					DateTime banTime;
-					TimeSpan banDuration;
-
-					if ( a.Banned && a.GetBanTags( out banTime, out banDuration ) )
+					if ( a.Banned && a.GetBanTags( out var banTime, out var banDuration ) )
 					{
 						if ( banDuration == TimeSpan.MaxValue )
 						{
@@ -956,9 +938,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Access:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					AddHtml( 10, 125, 400, 20, Color( Center( "Access" ), LabelColor32 ), false, false );
@@ -970,9 +950,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Access_ClientIPs:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					if ( m_List == null )
@@ -1017,9 +995,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Access_Restrictions:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					if ( m_List == null )
@@ -1061,9 +1037,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Characters:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					AddHtml( 10, 125, 400, 20, Color( Center( "Characters" ), LabelColor32 ), false, false );
@@ -1103,9 +1077,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Comments:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					AddHtml( 10, 125, 400, 20, Color( Center( "Comments" ), LabelColor32 ), false, false );
@@ -1133,9 +1105,7 @@ namespace Server.Gumps
 				}
 				case AdminGumpPage.AccountDetails_Tags:
 				{
-					Account a = state as Account;
-
-					if ( a == null )
+					if ( !(state is Account a) )
 						break;
 
 					AddHtml( 10, 125, 400, 20, Color( Center( "Tags" ), LabelColor32 ), false, false );
@@ -1215,8 +1185,11 @@ namespace Server.Gumps
 					{
 						m_List = new ArrayList();
 
-						foreach ( Account acct in Accounts.GetAccounts() )
+						foreach ( IAccount ia in Accounts.GetAccounts() )
 						{
+							if (!(ia is Account acct))
+								continue;
+
 							IPAddress[] loginList = acct.LoginIPs;
 
 							bool contains = false;
@@ -1256,10 +1229,7 @@ namespace Server.Gumps
 
 						int offset = 200 + (i * 20);
 
-						AccessLevel accessLevel;
-						bool online;
-
-						GetAccountInfo( a, out accessLevel, out online );
+						GetAccountInfo( a, out var accessLevel, out var online );
 
 						AddLabelCropped(  12, offset, 120, 20, LabelHue, a.Username );
 						AddLabelCropped( 132, offset, 120, 20, LabelHue, FormatAccessLevel( accessLevel ) );
@@ -1671,9 +1641,8 @@ namespace Server.Gumps
 			if ( m_PageType == AdminGumpPage.Accounts )
 			{
 				ArrayList list = m_List;
-				ArrayList rads = m_State as ArrayList;
 
-				if ( list != null && rads != null )
+				if ( list != null && m_State is ArrayList rads )
 				{
 					for ( int i = 0, v = m_ListPage*12; i < 12 && v < list.Count; ++i, ++v )
 					{
@@ -1780,10 +1749,9 @@ namespace Server.Gumps
 						case 210:
 						case 211:
 						{
-							TextRelay relay = info.GetTextEntry( 0 );
-							string text = ( relay == null ? null : relay.Text.Trim() );
+							string text = info.GetTextEntry( 0 )?.Text.Trim();
 
-							if ( text == null || text.Length == 0 )
+							if ( string.IsNullOrEmpty(text) )
 							{
 								notice = "You must enter text to broadcast it.";
 							}
@@ -1956,11 +1924,10 @@ namespace Server.Gumps
 
 							ArrayList results = new ArrayList();
 
-							TextRelay matchEntry = info.GetTextEntry( 0 );
-							string match = ( matchEntry == null ? null : matchEntry.Text.Trim().ToLower() );
+							string match = info.GetTextEntry( 0 )?.Text.Trim().ToLower();
 							string notice = null;
 
-							if ( match == null || match.Length == 0 )
+							if ( string.IsNullOrEmpty(match) )
 							{
 								notice = String.Format( "You must enter {0} to search.", forName ? "a name" : "an ip address" );
 							}
@@ -2022,9 +1989,7 @@ namespace Server.Gumps
 
 							if ( m_List != null && index >= 0 && index < m_List.Count )
 							{
-								NetState ns = m_List[index] as NetState;
-
-								if ( ns == null )
+								if ( !(m_List[index] is NetState ns) )
 									break;
 
 								Mobile m = ns.Mobile;
@@ -2057,20 +2022,17 @@ namespace Server.Gumps
 						case 5: from.Prompt = new AddTagNamePrompt( m_State as Account ); from.SendMessage( "Enter the new tag name." ); break;
 						case 6:
 						{
-							TextRelay unEntry = info.GetTextEntry( 0 );
-							TextRelay pwEntry = info.GetTextEntry( 1 );
-
-							string un = ( unEntry == null ? null : unEntry.Text.Trim() );
-							string pw = ( pwEntry == null ? null : pwEntry.Text.Trim() );
+							string un = info.GetTextEntry( 0 )?.Text.Trim();
+							string pw = info.GetTextEntry( 1 )?.Text.Trim();
 
 							Account dispAccount = null;
 							string notice;
 
-							if ( un == null || un.Length == 0 )
+							if ( string.IsNullOrEmpty(un) )
 							{
 								notice = "You must enter a username to add an account.";
 							}
-							else if ( pw == null || pw.Length == 0 )
+							else if ( string.IsNullOrEmpty(pw) )
 							{
 								notice = "You must enter a password to add an account.";
 							}
@@ -2098,10 +2060,10 @@ namespace Server.Gumps
 							ArrayList results;
 
 							TextRelay matchEntry = info.GetTextEntry( 0 );
-							string match = ( matchEntry == null ? null : matchEntry.Text.Trim().ToLower() );
+							string match = matchEntry?.Text.Trim().ToLower();
 							string notice = null;
 
-							if ( match == null || match.Length == 0 )
+							if ( string.IsNullOrEmpty(match) )
 							{
 								results = new ArrayList( (ICollection)Accounts.GetAccounts() );
 								results.Sort( AccountComparer.Instance );
@@ -2110,10 +2072,10 @@ namespace Server.Gumps
 							else
 							{
 								results = new ArrayList();
-								foreach ( Account check in Accounts.GetAccounts() )
+								foreach ( IAccount acct in Accounts.GetAccounts() )
 								{
-									if ( check.Username.ToLower().IndexOf( match ) >= 0 )
-										results.Add( check );
+									if ( acct.Username.ToLower().IndexOf( match ) >= 0 )
+										results.Add( acct );
 								}
 
 								results.Sort( AccountComparer.Instance );
@@ -2130,9 +2092,7 @@ namespace Server.Gumps
 						case 9: from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_ChangeAccess, 0, null, null, m_State ) ); break;
 						case 10: case 11:
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							a.SetUnspecifiedBan( from );
@@ -2147,21 +2107,19 @@ namespace Server.Gumps
 						}
 						case 12:
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							TextRelay passwordEntry = info.GetTextEntry( 0 );
 							TextRelay confirmEntry = info.GetTextEntry( 1 );
 
-							string password = ( passwordEntry == null ? null : passwordEntry.Text.Trim() );
-							string confirm = ( confirmEntry == null ? null : confirmEntry.Text.Trim() );
+							string password = passwordEntry?.Text.Trim();
+							string confirm = confirmEntry?.Text.Trim();
 
 							string notice;
 							AdminGumpPage page = AdminGumpPage.AccountDetails_ChangePassword;
 
-							if ( password == null || password.Length == 0 )
+							if ( string.IsNullOrEmpty(password) )
 							{
 								notice = "You must enter the password.";
 							}
@@ -2183,9 +2141,7 @@ namespace Server.Gumps
 						}
 						case 16: // view shared
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							ArrayList list = GetSharedAccounts( a.LoginIPs );
@@ -2207,9 +2163,7 @@ namespace Server.Gumps
 						}
 						case 17: // ban shared
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							ArrayList list = GetSharedAccounts( a.LoginIPs );
@@ -2238,9 +2192,7 @@ namespace Server.Gumps
 						}
 						case 18: // firewall all
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							if ( a.LoginIPs.Length > 0 )
@@ -2256,17 +2208,15 @@ namespace Server.Gumps
 						}
 						case 19: // add
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							TextRelay entry = info.GetTextEntry( 0 );
-							string ip = ( entry == null ? null : entry.Text.Trim() );
+							string ip = entry?.Text.Trim();
 
 							string notice;
 
-							if ( ip == null || ip.Length == 0 )
+							if ( string.IsNullOrEmpty(ip) )
 							{
 								notice = "You must enter an address to add.";
 							}
@@ -2307,9 +2257,7 @@ namespace Server.Gumps
 						case 23:
 						case 24:
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							AccessLevel newLevel;
@@ -2338,9 +2286,7 @@ namespace Server.Gumps
 						}
 						case 25:
 						{
-							Account a = m_State as Account;
-
-							if ( a == null )
+							if ( !(m_State is Account a) )
 								break;
 
 							from.SendGump( new WarningGump( 1060635, 30720, String.Format( "<center>Account of {0}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items. Any houses tied to the account will be demolished.<br><br>Do you wish to continue?", a.Username ), 0xFFC000, 420, 280, new WarningGumpCallback( AccountDelete_Callback ), m_State ) );
@@ -2354,9 +2300,8 @@ namespace Server.Gumps
 						case 27: // Ban marked
 						{
 							ArrayList list = m_List;
-							ArrayList rads = m_State as ArrayList;
 
-							if ( list == null || rads == null )
+							if ( list == null || !(m_State is ArrayList rads) )
 								break;
 
 							if ( rads.Count > 0 )
@@ -2369,9 +2314,8 @@ namespace Server.Gumps
 						case 28: // Delete marked
 						{
 							ArrayList list = m_List;
-							ArrayList rads = m_State as ArrayList;
 
-							if ( list == null || rads == null )
+							if ( list == null || !(m_State is ArrayList rads) )
 								break;
 
 							if ( rads.Count > 0 )
@@ -2384,9 +2328,8 @@ namespace Server.Gumps
 						case 29: // Mark all
 						{
 							ArrayList list = m_List;
-							ArrayList rads = m_State as ArrayList;
 
-							if ( list == null || rads == null )
+							if ( list == null || !(m_State is ArrayList rads) )
 								break;
 
 							from.SendGump( new AdminGump( from, AdminGumpPage.Accounts, m_ListPage, m_List, null, new ArrayList( list ) ) );
@@ -2397,7 +2340,7 @@ namespace Server.Gumps
 						{
 							ArrayList results = new ArrayList();
 
-							foreach ( Account acct in Accounts.GetAccounts() )
+							foreach ( IAccount acct in Accounts.GetAccounts() )
 							{
 								bool empty = true;
 
@@ -2419,9 +2362,9 @@ namespace Server.Gumps
 						{
 							ArrayList results = new ArrayList();
 
-							foreach ( Account acct in Accounts.GetAccounts() )
+							foreach ( IAccount acct in Accounts.GetAccounts() )
 							{
-								if ( acct.Inactive )
+								if ((acct as Account)?.Inactive == true )
 									results.Add( acct );
 							}
 
@@ -2436,9 +2379,9 @@ namespace Server.Gumps
 						{
 							ArrayList results = new ArrayList();
 
-							foreach ( Account acct in Accounts.GetAccounts() )
+							foreach ( IAccount acct in Accounts.GetAccounts() )
 							{
-								if ( acct.Banned )
+								if ((acct as Account)?.Banned == true )
 									results.Add( acct );
 							}
 
@@ -2500,9 +2443,7 @@ namespace Server.Gumps
 						{
 							index -= 50;
 
-							Account a = m_State as Account;
-
-							if ( a != null && index >= 0 && index < a.Length )
+							if ( m_State is Account a && index >= 0 && index < a.Length )
 							{
 								Mobile m = a[index];
 
@@ -2535,12 +2476,12 @@ namespace Server.Gumps
 						case 0:
 						{
 							TextRelay matchEntry = info.GetTextEntry( 0 );
-							string match = ( matchEntry == null ? null : matchEntry.Text.Trim() );
+							string match = matchEntry?.Text.Trim();
 
 							string notice = null;
 							ArrayList results = new ArrayList();
 
-							if ( match == null || match.Length == 0 )
+							if ( string.IsNullOrEmpty(match) )
 							{
 								notice = "You must enter a username to search.";
 							}
@@ -2676,17 +2617,14 @@ namespace Server.Gumps
 						}
 						case 3:
 						{
-							Account a = m.Account as Account;
-
-							if ( a != null )
+							if ( m.Account is Account a )
 							{
 								CommandLogging.WriteLine( from, "{0} {1} {2} {3}", from.AccessLevel, CommandLogging.Format( from ), "banning", CommandLogging.Format( m ) );
 								a.Banned = true;
 
 								NetState ns = m.NetState;
 
-								if ( ns != null )
-									ns.Dispose();
+								ns?.Dispose();
 
 								notice = "They have been banned.";
 							}
@@ -2758,9 +2696,7 @@ namespace Server.Gumps
 					{
 						case 3:
 						{
-							Account a = m.Account as Account;
-
-							if ( a != null )
+							if ( m.Account is Account a )
 								from.SendGump( new BanDurationGump( a ) );
 
 							break;
@@ -2976,15 +2912,12 @@ namespace Server.Gumps
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
-				NetState a = x as NetState;
-				NetState b = y as NetState;
-
-				if ( a == null || b == null )
+				if ( !(x is NetState a) || !(y is NetState b) )
 					throw new ArgumentException();
 
 				Mobile aMob = a.Mobile;
@@ -2992,17 +2925,16 @@ namespace Server.Gumps
 
 				if ( aMob == null && bMob == null )
 					return 0;
-				else if ( aMob == null )
+				if ( aMob == null )
 					return 1;
-				else if ( bMob == null )
+				if ( bMob == null )
 					return -1;
 
 				if ( aMob.AccessLevel > bMob.AccessLevel )
 					return -1;
-				else if ( aMob.AccessLevel < bMob.AccessLevel )
+				if ( aMob.AccessLevel < bMob.AccessLevel )
 					return 1;
-				else
-					return Insensitive.Compare( aMob.Name, bMob.Name );
+				return Insensitive.Compare( aMob.Name, bMob.Name );
 			}
 		}
 
@@ -3018,33 +2950,26 @@ namespace Server.Gumps
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
-				Account a = x as Account;
-				Account b = y as Account;
-
-				if ( a == null || b == null )
+				if ( !(x is Account a) || !(y is Account b) )
 					throw new ArgumentException();
 
-				AccessLevel aLevel, bLevel;
-				bool aOnline, bOnline;
-
-				GetAccountInfo( a, out aLevel, out aOnline );
-				GetAccountInfo( b, out bLevel, out bOnline );
+				GetAccountInfo( a, out var aLevel, out var aOnline );
+				GetAccountInfo( b, out var bLevel, out var bOnline );
 
 				if ( aOnline && !bOnline )
 					return -1;
-				else if ( bOnline && !aOnline )
+				if ( bOnline && !aOnline )
 					return 1;
-				else if ( aLevel > bLevel )
+				if ( aLevel > bLevel )
 					return -1;
-				else if ( aLevel < bLevel )
+				if ( aLevel < bLevel )
 					return 1;
-				else
-					return Insensitive.Compare( a.Username, b.Username );
+				return Insensitive.Compare( a.Username, b.Username );
 			}
 		}
 	}

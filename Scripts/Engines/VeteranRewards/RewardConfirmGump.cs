@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Gumps;
+using Server.Items;
 using Server.Network;
 
 namespace Server.Engines.VeteranRewards
@@ -51,9 +52,9 @@ namespace Server.Engines.VeteranRewards
 
 				if ( item != null )
 				{
-					if ( item is Server.Items.RedSoulstone )
-						((Server.Items.RedSoulstone) item).Account = m_From.Account.Username;	
-					
+					if ( item is RedSoulstone soulstone )
+						soulstone.Account = m_From.Account.Username;
+
 					if ( RewardSystem.ConsumeRewardPoint( m_From ) )
 						m_From.AddToBackpack( item );
 					else

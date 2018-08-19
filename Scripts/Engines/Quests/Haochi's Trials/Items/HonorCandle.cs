@@ -31,14 +31,12 @@ namespace Server.Engines.Quests.Samurai
 
 			if ( !wasBurning && Burning )
 			{
-				PlayerMobile player = from as PlayerMobile;
-
-				if ( player == null )
+				if ( !(from is PlayerMobile player) )
 					return;
 
 				QuestSystem qs = player.Quest;
 
-				if ( qs != null && qs is HaochisTrialsQuest )
+				if ( qs is HaochisTrialsQuest )
 				{
 					QuestObjective obj = qs.FindObjective( typeof( SixthTrialIntroObjective ) );
 

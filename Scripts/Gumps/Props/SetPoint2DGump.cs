@@ -148,9 +148,7 @@ namespace Server.Gumps
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				IPoint3D p = targeted as IPoint3D;
-
-				if ( p != null )
+				if ( targeted is IPoint3D p )
 				{
 					try
 					{

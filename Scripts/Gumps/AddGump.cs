@@ -180,14 +180,12 @@ namespace Server.Gumps
 
 			protected override void OnTarget( Mobile from, object o )
 			{
-				IPoint3D p = o as IPoint3D;
-
-				if ( p != null )
+				if ( o is IPoint3D p )
 				{
-					if ( p is Item )
-						p = ((Item)p).GetWorldTop();
-					else if ( p is Mobile )
-						p = ((Mobile)p).Location;
+					if ( p is Item item )
+						p = item.GetWorldTop();
+					else if ( p is Mobile m )
+						p = m.Location;
 
 					Server.Commands.Add.Invoke( from, new Point3D( p ), new Point3D( p ), new string[]{ m_Type.Name } );
 

@@ -5,11 +5,11 @@ using Server.Multis;
 using Server.Network;
 
 namespace Server.Gumps
-{		
+{
 	public class RewardDemolitionGump : Gump
 	{
 		private IAddon m_Addon;
-		
+
 		private enum Buttons
 		{
 			Cancel,
@@ -27,9 +27,9 @@ namespace Server.Gumps
 
 			AddBackground( 0, 0, 220, 170, 0x13BE );
 			AddBackground( 10, 10, 200, 150, 0xBB8 );
-			
+
 			AddHtmlLocalized( 20, 30, 180, 60, question, false, false ); // Do you wish to re-deed this decoration?
-			
+
 			AddHtmlLocalized( 55, 100, 150, 25, 1011011, false, false ); // CONTINUE
 			AddButton( 20, 100, 0xFA5, 0xFA7, (int) Buttons.Confirm, GumpButtonType.Reply, 0 );
 
@@ -39,27 +39,25 @@ namespace Server.Gumps
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
-			Item item = m_Addon as Item;
-			
-			if ( item == null || item.Deleted )
-				return;                
+			if ( !(m_Addon is Item item) || item.Deleted )
+				return;
 
 			if ( info.ButtonID == (int) Buttons.Confirm )
 			{
 				Mobile m = sender.Mobile;
-				BaseHouse house = BaseHouse.FindHouseAt( m );  
-				
-				if ( house != null && house.IsOwner( m ) )
+				BaseHouse house = BaseHouse.FindHouseAt( m );
+
+				if ( house?.IsOwner( m ) == true )
 				{
 					if ( m.InRange( item.Location, 2 ) )
 					{
 						Item deed = m_Addon.Deed;
-						
+
 						if ( deed != null )
 						{
-							m.AddToBackpack( deed );           	
+							m.AddToBackpack( deed );
 							house.Addons.Remove( item );
-							item.Delete();      
+							item.Delete();
 						}
 					}
 					else

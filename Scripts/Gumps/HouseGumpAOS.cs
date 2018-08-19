@@ -127,10 +127,8 @@ namespace Server.Gumps
 				string name;
 				int labelHue = LabelHue;
 
-				if ( m is PlayerVendor )
+				if ( m is PlayerVendor vendor )
 				{
-					PlayerVendor vendor = (PlayerVendor) m;
-
 					name = vendor.ShopName;
 
 					if ( vendor.IsOwner( from ) )
@@ -763,10 +761,10 @@ namespace Server.Gumps
 
 						foreach ( Mobile mobile in newHouse.InternalizedVendors )
 						{
-							if ( mobile is PlayerVendor )
-								((PlayerVendor)mobile).House = newHouse;
-							else if ( mobile is PlayerBarkeeper )
-								((PlayerBarkeeper)mobile).House = newHouse;
+							if ( mobile is PlayerVendor vendor )
+								vendor.House = newHouse;
+							else if ( mobile is PlayerBarkeeper barkeeper )
+								barkeeper.House = newHouse;
 						}
 
 						if ( house.MovingCrate != null )

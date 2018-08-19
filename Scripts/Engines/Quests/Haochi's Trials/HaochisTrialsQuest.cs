@@ -128,9 +128,7 @@ namespace Server.Engines.Quests.Samurai
 
 		public static bool HasLostHaochisKatana( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -139,9 +137,7 @@ namespace Server.Engines.Quests.Samurai
 			{
 				if ( qs.IsObjectiveInProgress( typeof( FifthTrialReturnObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( HaochisKatana ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( HaochisKatana ) ) == null );
 				}
 			}
 

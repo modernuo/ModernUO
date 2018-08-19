@@ -17,9 +17,7 @@ namespace Server.Engines.Quests.Samurai
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			PlayerMobile player = m as PlayerMobile;
-
-			if ( player != null )
+			if ( m is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 

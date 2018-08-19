@@ -33,9 +33,7 @@ namespace Server
 
 		public static void CheckAtrophy( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			try
@@ -61,9 +59,7 @@ namespace Server
 			if ( from.Alive )
 				return;
 
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			if ( from.Criminal )
@@ -94,14 +90,10 @@ namespace Server
 			if ( !from.CheckAlive() )
 				return;
 
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
-			Mobile targ = targeted as Mobile;
-
-			if ( targ == null )
+			if ( !(targeted is Mobile targ) )
 				return;
 
 			if ( !ValidateCreature( targ ) )
@@ -173,7 +165,7 @@ namespace Server
 
 		public static bool ValidateCreature( Mobile m )
 		{
-			if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned) )
+			if ( m is BaseCreature creature && (creature.Controlled || creature.Summoned) )
 				return false;
 
 			return ( m is Lich || m is Succubus || m is Daemon || m is EvilMage || m is EnslavedGargoyle || m is GargoyleEnforcer );

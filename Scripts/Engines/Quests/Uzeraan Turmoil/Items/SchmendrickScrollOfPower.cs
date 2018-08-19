@@ -21,12 +21,8 @@ namespace Server.Engines.Quests.Haven
 
 		public override bool CanDrop( PlayerMobile player )
 		{
-			UzeraanTurmoilQuest qs = player.Quest as UzeraanTurmoilQuest;
-
-			if ( qs == null )
-				return true;
-
-			return !qs.IsObjectiveInProgress( typeof( ReturnScrollOfPowerObjective ) );
+			return !(player.Quest is UzeraanTurmoilQuest qs &&
+			         qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)));
 		}
 
 		public override void Serialize( GenericWriter writer )

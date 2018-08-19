@@ -30,9 +30,7 @@ namespace Server
 
 		public static void CheckAtrophy( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			try
@@ -52,9 +50,7 @@ namespace Server
 
 		public static void Valor( Mobile from, object targ )
 		{
-			IdolOfTheChampion idol = targ as IdolOfTheChampion;
-
-			if ( idol == null || idol.Deleted || idol.Spawn == null || idol.Spawn.Deleted )
+			if ( !(targ is IdolOfTheChampion idol) || idol.Deleted || idol.Spawn == null || idol.Spawn.Deleted )
 				from.SendLocalizedMessage( 1054035 ); // You must target a Champion Idol to challenge the Champion's spawn!
 			else if ( from.Hidden )
 				from.SendLocalizedMessage( 1052015 ); // You cannot do that while hidden.

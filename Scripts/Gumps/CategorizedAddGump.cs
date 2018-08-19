@@ -315,9 +315,8 @@ namespace Server.Gumps
 
 				AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 4, GumpButtonType.Reply, 0 );
 
-				if ( node is CAGObject )
+				if ( node is CAGObject obj )
 				{
-					CAGObject obj = (CAGObject)node;
 					int itemID = obj.ItemID;
 
 					Rectangle2D bounds = ItemBounds.Table[itemID];

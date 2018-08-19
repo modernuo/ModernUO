@@ -119,8 +119,8 @@ namespace Server.Gumps
 
 							if ( box.TryDropItem( m_Mobile, toGive, false ) )
 							{
-								if ( toGive is BankCheck )
-									m_Mobile.SendLocalizedMessage( 1060397, ( (BankCheck)toGive ).Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+								if ( toGive is BankCheck check )
+									m_Mobile.SendLocalizedMessage( 1060397, check.Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
 
 								m_House.RemoveKeys( m_Mobile );
 								new TempNoHousingRegion( m_House, m_Mobile );

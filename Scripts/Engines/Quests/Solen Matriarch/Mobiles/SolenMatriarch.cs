@@ -37,18 +37,14 @@ namespace Server.Engines.Quests.Matriarch
 			if ( SolenMatriarchQuest.IsFriend( to, this.RedSolen ) )
 				return true;
 
-			SolenMatriarchQuest qs = to.Quest as SolenMatriarchQuest;
-
-			return qs != null && qs.RedSolen == this.RedSolen;
+			return to.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen;
 		}
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )
 		{
 			this.Direction = GetDirectionTo( player );
 
-			SolenMatriarchQuest qs = player.Quest as SolenMatriarchQuest;
-
-			if ( qs != null && qs.RedSolen == this.RedSolen )
+			if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
 			{
 				if ( qs.IsObjectiveInProgress( typeof( KillInfiltratorsObjective ) ) )
 				{
@@ -114,15 +110,11 @@ namespace Server.Engines.Quests.Matriarch
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
 				if ( dropped is Seed )
 				{
-					SolenMatriarchQuest qs = player.Quest as SolenMatriarchQuest;
-
-					if ( qs != null && qs.RedSolen == this.RedSolen )
+					if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
 					{
 						SayTo( player, 1054080 ); // Thank you for that plant seed. Those have such wonderful flavor.
 					}
@@ -143,11 +135,11 @@ namespace Server.Engines.Quests.Matriarch
 					dropped.Delete();
 					return true;
 				}
-				else if ( dropped is ZoogiFungus )
+				if ( dropped is ZoogiFungus fungus )
 				{
-					OnGivenFungi( player, (ZoogiFungus)dropped );
+					OnGivenFungi( player, fungus );
 
-					return dropped.Deleted;
+					return fungus.Deleted;
 				}
 			}
 
@@ -160,13 +152,9 @@ namespace Server.Engines.Quests.Matriarch
 
 			if ( from.Alive )
 			{
-				PlayerMobile pm = from as PlayerMobile;
-
-				if ( pm != null )
+				if ( from is PlayerMobile pm )
 				{
-					SolenMatriarchQuest qs = pm.Quest as SolenMatriarchQuest;
-
-					if ( qs != null && qs.RedSolen == this.RedSolen )
+					if ( pm.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
 					{
 						if ( qs.IsObjectiveInProgress( typeof( ProcessFungiObjective ) ) )
 						{
@@ -213,12 +201,10 @@ namespace Server.Engines.Quests.Matriarch
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is ZoogiFungus )
+				if ( targeted is ZoogiFungus fungus )
 				{
-					ZoogiFungus fungus = (ZoogiFungus)targeted;
-
 					if ( fungus.IsChildOf( m_From.Backpack ) )
-						m_Matriarch.OnGivenFungi( m_From, (ZoogiFungus)targeted );
+						m_Matriarch.OnGivenFungi( m_From, fungus );
 					else
 						m_From.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 				}
@@ -229,9 +215,7 @@ namespace Server.Engines.Quests.Matriarch
 		{
 			this.Direction = GetDirectionTo( player );
 
-			SolenMatriarchQuest qs = player.Quest as SolenMatriarchQuest;
-
-			if ( qs != null && qs.RedSolen == this.RedSolen )
+			if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
 			{
 				QuestObjective obj = qs.FindObjective( typeof( ProcessFungiObjective ) );
 

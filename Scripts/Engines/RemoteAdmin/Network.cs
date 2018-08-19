@@ -159,8 +159,7 @@ namespace Server.RemoteAdmin
 			string user = pvSrc.ReadString( 30 );
 			string pw = pvSrc.ReadString( 30 );
 
-			Account a = Accounts.GetAccount( user ) as Account;
-			if ( a == null )
+			if ( !(Accounts.GetAccount( user ) is Account a) )
 			{
 				state.Send( new Login( LoginResponse.NoUser ) );
 				Console.WriteLine( "ADMIN: Invalid username '{0}' from {1}", user, state );

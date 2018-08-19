@@ -10,9 +10,7 @@ namespace Server.Engines.Quests.Haven
 	{
 		public override bool ValidateUse( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			return ( pm != null && pm.Quest is UzeraanTurmoilQuest );
+			return ( from is PlayerMobile pm && pm.Quest is UzeraanTurmoilQuest );
 		}
 
 		[Constructible]

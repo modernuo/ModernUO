@@ -124,9 +124,7 @@ namespace Server.Items
 			if ( pigment.Deleted || pigment.UsesRemaining <= 0 || !from.InRange( pigment.GetWorldLocation(), 3 ) || !pigment.IsAccessibleTo( from ))
 				return;
 
-			Item i = targeted as Item;
-
-			if ( i == null )
+			if ( !(targeted is Item i) )
 				from.SendLocalizedMessage( 1070931 ); // You can only dye artifacts and enhanced magic items with this tub.
 			else if ( !from.InRange( i.GetWorldLocation(), 3 ) || !IsAccessibleTo( from ) )
 				from.SendLocalizedMessage( 502436 ); // That is not accessible.
@@ -165,12 +163,12 @@ namespace Server.Items
 
 			CraftResource resource = CraftResource.None;
 
-			if ( i is BaseWeapon )
-				resource = ((BaseWeapon)i).Resource;
-			else if ( i is BaseArmor )
-				resource = ((BaseArmor)i).Resource;
-			else if (i is BaseClothing)
-				resource = ((BaseClothing)i).Resource;
+			if ( i is BaseWeapon weapon )
+				resource = weapon.Resource;
+			else if ( i is BaseArmor armor )
+				resource = armor.Resource;
+			else if (i is BaseClothing clothing)
+				resource = clothing.Resource;
 
 			if ( !CraftResources.IsStandard( resource ) )
 				return true;

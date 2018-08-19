@@ -51,12 +51,10 @@ namespace Server.Engines.Reports
 		{
 			lock ( RenderLock )
 			{
-				if ( account == null || account.Length == 0 )
+				if ( string.IsNullOrEmpty(account) )
 					return null;
 
-				StaffInfo info = m_StaffInfo[account] as StaffInfo;
-
-				if ( info == null )
+				if ( !(m_StaffInfo[account] is StaffInfo info) )
 					m_StaffInfo[account] = info = new StaffInfo( account );
 
 				return info;
@@ -65,12 +63,10 @@ namespace Server.Engines.Reports
 
 		public UserInfo GetUserInfo( string account )
 		{
-			if ( account == null || account.Length == 0 )
+			if ( string.IsNullOrEmpty(account) )
 				return null;
 
-			UserInfo info = m_UserInfo[account] as UserInfo;
-
-			if ( info == null )
+			if ( !(m_UserInfo[account] is UserInfo info) )
 				m_UserInfo[account] = info = new UserInfo( account );
 
 			return info;
@@ -123,10 +119,8 @@ namespace Server.Engines.Reports
 			{
 				PersistableObject obj = ip.GetChild();
 
-				if ( obj is PageInfo )
+				if ( obj is PageInfo pageInfo )
 				{
-					PageInfo pageInfo = obj as PageInfo;
-
 					pageInfo.UpdateResolver();
 
 					if ( pageInfo.TimeSent >= min || pageInfo.TimeResolved >= min )
@@ -140,10 +134,8 @@ namespace Server.Engines.Reports
 						pageInfo.Resolver = null;
 					}
 				}
-				else if ( obj is QueueStatus )
+				else if ( obj is QueueStatus queueStatus )
 				{
-					QueueStatus queueStatus = obj as QueueStatus;
-
 					if ( queueStatus.TimeStamp >= min )
 						m_QueueStats.Add( queueStatus );
 				}

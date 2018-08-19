@@ -84,10 +84,8 @@ namespace Server.Items
 			if ( IsSigned || !IsChildOf( from.Backpack ) )
 				return;
 
-			if ( targeted is Mobile )
+			if ( targeted is Mobile m )
 			{
-				Mobile m = (Mobile)targeted;
-
 				if ( !m.Alive )
 				{
 					from.SendLocalizedMessage( 1152269 ); // That target is dead and even Cupid's arrow won't make them love you.

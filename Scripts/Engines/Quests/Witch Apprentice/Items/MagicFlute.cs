@@ -25,17 +25,13 @@ namespace Server.Engines.Quests.Hag
 
 			from.PlaySound( 0x3D );
 
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 
 				if ( qs is WitchApprenticeQuest )
 				{
-					FindZeefzorpulObjective obj = qs.FindObjective( typeof( FindZeefzorpulObjective ) ) as FindZeefzorpulObjective;
-
-					if ( obj != null && !obj.Completed )
+					if ( qs.FindObjective( typeof( FindZeefzorpulObjective ) ) is FindZeefzorpulObjective obj && !obj.Completed )
 					{
 						if ( ( player.Map != Map.Trammel && player.Map != Map.Felucca ) || !player.InRange( obj.ImpLocation, 8 ) )
 						{

@@ -22,15 +22,13 @@ namespace Server.Gumps
 			if ( GuildGump.BadMember( m_Mobile, m_Guild ) )
 				return;
 
-			if ( targeted is Mobile )
+			if ( targeted is Mobile m )
 			{
-				Mobile m = (Mobile)targeted;
-
 				PlayerState guildState = PlayerState.Find( m_Guild.Leader );
 				PlayerState targetState = PlayerState.Find( m );
 
-				Faction guildFaction = ( guildState == null ? null : guildState.Faction );
-				Faction targetFaction = ( targetState == null ? null : targetState.Faction );
+				Faction guildFaction = guildState?.Faction;
+				Faction targetFaction = targetState?.Faction;
 
 				if ( !m.Player )
 				{

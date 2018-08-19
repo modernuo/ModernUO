@@ -66,8 +66,7 @@ namespace Server.Engines.Quests.Samurai
 		{
 			base.AggressiveAction( aggressor, criminal );
 
-			PlayerMobile player = aggressor as PlayerMobile;
-			if ( player != null )
+			if ( aggressor is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 				if ( qs is HaochisTrialsQuest )

@@ -815,10 +815,8 @@ namespace Server.Items
 				int min = 20;
 				int max = 80;
 
-				if ( item is BaseWeapon )
+				if ( item is BaseWeapon weapon )
 				{
-					BaseWeapon weapon = (BaseWeapon)item;
-
 					if ( Core.AOS )
 						BaseRunicTool.ApplyAttributesTo( weapon, attributeCount, min, max );
 					else
@@ -828,10 +826,8 @@ namespace Server.Items
 						weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random( 6 );
 					}
 				}
-				else if ( item is BaseArmor )
+				else if ( item is BaseArmor armor )
 				{
-					BaseArmor armor = (BaseArmor)item;
-
 					if ( Core.AOS )
 						BaseRunicTool.ApplyAttributesTo( armor, attributeCount, min, max );
 					else
@@ -840,10 +836,13 @@ namespace Server.Items
 						armor.Durability = (ArmorDurabilityLevel)Utility.Random( 6 );
 					}
 				}
-				else if ( item is BaseHat && Core.AOS )
-					BaseRunicTool.ApplyAttributesTo( (BaseHat)item, attributeCount, min, max );
-				else if ( item is BaseJewel && Core.AOS )
-					BaseRunicTool.ApplyAttributesTo( (BaseJewel)item, attributeCount, min, max );
+				else if (Core.AOS)
+				{
+					if ( item is BaseHat hat )
+						BaseRunicTool.ApplyAttributesTo( hat, attributeCount, min, max );
+					else if ( item is BaseJewel jewel )
+						BaseRunicTool.ApplyAttributesTo( jewel, attributeCount, min, max );
+				}
 
 				DropItem( item );
 			}

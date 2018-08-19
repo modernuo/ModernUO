@@ -69,18 +69,8 @@ namespace Server.Engines.Events
 
 		public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
 		{
-			if ( e.Mobile != null && !e.Mobile.Deleted ) /* not sure .. better safe than sorry? */
-			{
-				if ( e.Mobile is PlayerMobile )
-				{
-					PlayerMobile player = e.Mobile as PlayerMobile;
-
-					if ( m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
-					{
-						m_DeathQueue.Add( player );
-					}
-				}
-			}
+			if ( e.Mobile is PlayerMobile player && !player.Deleted && m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
+				m_DeathQueue.Add( player );
 		}
 
 		private static void Clear_Callback()

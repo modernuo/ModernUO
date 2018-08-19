@@ -124,10 +124,7 @@ namespace Server.Misc
 
 		public static void HandleKill( Mobile victim, Mobile killer )
 		{
-			PlayerMobile pm = killer as PlayerMobile;
-			BaseCreature bc = victim as BaseCreature;
-
-			if ( DropEra == TreasuresOfTokunoEra.None || pm == null || bc == null || !CheckLocation( bc ) || !CheckLocation( pm )|| !killer.InRange( victim, 18 ))
+			if ( DropEra == TreasuresOfTokunoEra.None || !(killer is PlayerMobile pm) || !(victim is BaseCreature bc) || !CheckLocation( bc ) || !CheckLocation( pm )|| !killer.InRange( victim, 18 ))
 				return;
 
 			if ( bc.Controlled || bc.Owners.Count > 0 || bc.Fame <= 0 )
@@ -246,13 +243,11 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if ( m.Alive && m is PlayerMobile )
+			if ( m.Alive && m is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)m;
-
 				int range = 3;
 
-				if ( m.Alive && Math.Abs( Z - m.Z ) < 16 && InRange( m, range ) && !InRange( oldLocation, range ) )
+				if ( pm.Alive && Math.Abs( Z - pm.Z ) < 16 && InRange( m, range ) && !InRange( oldLocation, range ) )
 				{
 					if ( pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward )
 					{
@@ -323,13 +318,13 @@ namespace Server.Gumps
 			for( int i = 0; i < items.Count; i++ )
 			{
 				Item item = (Item)items[i];
-				if ( item is ChestOfHeirlooms && !((ChestOfHeirlooms)item).Locked )
+				if ( item is ChestOfHeirlooms heirlooms && !heirlooms.Locked )
 					continue;
 
-				if ( item is ChestOfHeirlooms && ((ChestOfHeirlooms)item).TrapLevel != 10 )
+				if ( item is ChestOfHeirlooms ofHeirlooms && ofHeirlooms.TrapLevel != 10 )
 					continue;
 
-				if ( item is PigmentsOfTokuno && ((PigmentsOfTokuno)item).Type != PigmentType.None )
+				if ( item is PigmentsOfTokuno tokuno && tokuno.Type != PigmentType.None )
 					continue;
 
 				buttons.Add( new ItemTileButtonInfo( item ) );
@@ -385,9 +380,7 @@ namespace Server.Gumps
 
 		public override void HandleCancel( NetState sender )
 		{
-			PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-			if ( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
+			if ( !(sender.Mobile is PlayerMobile pm) || !pm.InRange( m_Collector.Location, 7 ) )
 				return;
 
 			if ( pm.ToTItemsTurnedIn == 0 )
@@ -555,9 +548,7 @@ namespace Server.Gumps
 
 		public override void HandleButtonResponse( NetState sender, int adjustedButton, ImageTileButtonInfo buttonInfo )
 		{
-			PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-			if ( pm == null || !pm.InRange( m_Collector.Location, 7 ) || !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward) )
+			if ( !(sender.Mobile is PlayerMobile pm) || !pm.InRange( m_Collector.Location, 7 ) || !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward) )
 				return;
 
 			bool pigments = (buttonInfo is PigmentsTileButtonInfo);
@@ -566,7 +557,7 @@ namespace Server.Gumps
 
 			if ( pigments )
 			{
-				PigmentsTileButtonInfo p = buttonInfo as PigmentsTileButtonInfo;
+				PigmentsTileButtonInfo p = (PigmentsTileButtonInfo) buttonInfo;
 
 				item = new PigmentsOfTokuno( p.Pigment );
 			}
@@ -610,9 +601,7 @@ namespace Server.Gumps
 
 		public override void HandleCancel( NetState sender )
 		{
-			PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-			if ( pm == null || !pm.InRange( m_Collector.Location, 7 ) )
+			if ( !(sender.Mobile is PlayerMobile pm) || !pm.InRange( m_Collector.Location, 7 ) )
 				return;
 
 			if ( pm.ToTItemsTurnedIn == 0 )

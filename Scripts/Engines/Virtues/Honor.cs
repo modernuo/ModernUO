@@ -35,16 +35,15 @@ namespace Server
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				PlayerMobile pm = from as PlayerMobile;
-				if ( pm == null )
+				if ( !(from is PlayerMobile pm) )
 					return;
 
 				if ( targeted == pm )
 				{
 					EmbraceHonor( pm );
 				}
-				else if ( targeted is Mobile )
-					Honor( pm, (Mobile) targeted );
+				else if ( targeted is Mobile mobile )
+					Honor( pm, mobile );
 			}
 
 			protected override void OnTargetOutOfRange( Mobile from, object targeted )
@@ -145,8 +144,7 @@ namespace Server
 				return;
 			}
 
-			BaseCreature cret = target as BaseCreature;
-			if ( target.Body.IsHuman && (cret == null || (!cret.AlwaysAttackable && !cret.AlwaysMurderer)) )
+			if ( target.Body.IsHuman && (!(target is BaseCreature cret) || (!cret.AlwaysAttackable && !cret.AlwaysMurderer)) )
 			{
 
 				if ( reg == null || reg.IsDisabled() )
@@ -170,8 +168,7 @@ namespace Server
 				return;
 			}
 
-			if ( source.SentHonorContext != null )
-				source.SentHonorContext.Cancel();
+			source.SentHonorContext?.Cancel();
 
 			new HonorContext( source, target );
 
@@ -283,7 +280,7 @@ namespace Server
 					m_HonorDamage += amount * 0.8;
 				}
 			}
-			else if ( from is BaseCreature && ((BaseCreature)from).GetMaster() == m_Source )
+			else if ( from is BaseCreature creature && creature.GetMaster() == m_Source )
 			{
 				m_HonorDamage += amount * 0.8;
 			}

@@ -80,8 +80,8 @@ namespace Server.Gumps
 
 			if ( Guild.NewGuildSystem )
 			{
-				if ( m_Mobile is PlayerMobile )
-					m_Mobile.SendGump( new GuildInfoGump( (PlayerMobile)m_Mobile, m_Guild ) );
+				if ( m_Mobile is PlayerMobile mobile )
+					mobile.SendGump( new GuildInfoGump( mobile, m_Guild ) );
 
 				return;
 			}

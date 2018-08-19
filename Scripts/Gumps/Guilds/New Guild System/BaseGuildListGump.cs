@@ -139,9 +139,7 @@ namespace Server.Guilds
 		{
 			base.OnResponse( sender, info );
 
-			PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-			if ( pm == null || !IsMember( pm, guild ) )
+			if ( !(sender.Mobile is PlayerMobile pm) || !IsMember( pm, guild ) )
 				return;
 
 			int id = info.ButtonID;

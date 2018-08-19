@@ -47,9 +47,7 @@ namespace Server
 			if ( !from.CheckAlive() )
 				return;
 
-			PlayerMobile protector = from as PlayerMobile;
-
-			if ( protector == null )
+			if ( !(from is PlayerMobile protector) )
 				return;
 
 			if ( !VirtueHelper.IsSeeker( protector, VirtueName.Justice ) )
@@ -159,17 +157,13 @@ namespace Server
 
 		public static void RejectDelay_Callback( object state )
 		{
-			Mobile m = state as Mobile;
-
-			if ( m != null )
+			if ( state is Mobile m )
 				m.EndAction( typeof( JusticeVirtue ) );
 		}
 
 		public static void CheckAtrophy( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			try
@@ -207,7 +201,7 @@ namespace Server
 			AddImageTiled( 15, 15, 365, 190, 2624 );
 			AddAlphaRegion( 15, 15, 365, 190 );
 
-			AddHtmlLocalized( 30, 20, 360, 25, 1049365, 0x7FFF, false, false ); // Another player is offering you their <a href="?ForceTopic88">protection</a>: 
+			AddHtmlLocalized( 30, 20, 360, 25, 1049365, 0x7FFF, false, false ); // Another player is offering you their <a href="?ForceTopic88">protection</a>:
 			AddLabel( 90, 55, 1153, protector.Name );
 
 			AddImage( 50, 45, 9005 );

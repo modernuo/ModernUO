@@ -54,9 +54,7 @@ namespace Server.Engines.Quests.Haven
 
 		public override bool CanTalkTo( PlayerMobile to )
 		{
-			UzeraanTurmoilQuest qs = to.Quest as UzeraanTurmoilQuest;
-
-			return ( qs != null && qs.FindObjective( typeof( FindSchmendrickObjective ) ) != null );
+			return ( to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective( typeof( FindSchmendrickObjective ) ) != null );
 		}
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )

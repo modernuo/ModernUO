@@ -148,8 +148,7 @@ namespace Server.Engines.Quests.Ninja
 										{
 											bool stolenTreasure = false;
 
-											HallwayWalkObjective walk = qs.FindObjective( typeof( HallwayWalkObjective ) ) as HallwayWalkObjective;
-											if ( walk != null )
+											if ( qs.FindObjective( typeof( HallwayWalkObjective ) ) is HallwayWalkObjective walk )
 												stolenTreasure = walk.StolenTreasure;
 
 											Kama kama = new Kama();

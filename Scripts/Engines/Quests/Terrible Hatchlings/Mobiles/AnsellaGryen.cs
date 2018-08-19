@@ -72,9 +72,7 @@ namespace Server.Engines.Quests.Zento
 
 						if ( Utility.RandomBool() )
 						{
-							BaseWeapon weapon = Loot.Construct( Loot.SEWeaponTypes ) as BaseWeapon;
-
-							if ( weapon != null )
+							if ( Loot.Construct( Loot.SEWeaponTypes ) is BaseWeapon weapon )
 							{
 								BaseRunicTool.ApplyAttributesTo( weapon, 3, 10, 30 );
 								cont.DropItem( weapon );
@@ -82,9 +80,7 @@ namespace Server.Engines.Quests.Zento
 						}
 						else
 						{
-							BaseArmor armor = Loot.Construct( Loot.SEArmorTypes ) as BaseArmor;
-
-							if ( armor != null )
+							if ( Loot.Construct( Loot.SEArmorTypes ) is BaseArmor armor )
 							{
 								BaseRunicTool.ApplyAttributesTo( armor, 1, 10, 20 );
 								cont.DropItem( armor );

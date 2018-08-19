@@ -128,9 +128,7 @@ namespace Server.Engines.Quests.Haven
 			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
 				return;
 
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( from is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 

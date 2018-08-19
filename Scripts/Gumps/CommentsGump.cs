@@ -27,8 +27,7 @@ namespace Server.Gumps
 
 		private static void OnTarget( Mobile from, object target )
 		{
-			Mobile m = target as Mobile;
-			if ( m == null || !m.Player )
+			if ( !(target is Mobile m) || !m.Player )
 			{
 				from.SendMessage( "You must target a player." );
 				return;
@@ -53,7 +52,7 @@ namespace Server.Gumps
 			int x = 205 - ((title.Length / 2) * 7);
 			if ( x < 120 )
 				x = 120;
-			AddLabel( x, 12, 2100, title ); 
+			AddLabel( x, 12, 2100, title );
 
 			AddPage( 1 );
 			AddButton( 12, 12, 0xFA8, 0xFAA, 0x7F, GumpButtonType.Reply, 0 );
@@ -97,7 +96,7 @@ namespace Server.Gumps
 		public class CommentPrompt : Prompt
 		{
 			private Account m_Acct;
-			public CommentPrompt( Account acct ) 
+			public CommentPrompt( Account acct )
 			{
 				m_Acct = acct;
 			}

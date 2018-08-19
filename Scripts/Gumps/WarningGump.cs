@@ -35,8 +35,8 @@ namespace Server.Gumps
 			AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
 			AddAlphaRegion( 10, 40, width - 20, height - 80 );
 
-			if ( content is int )
-				AddHtmlLocalized( 10, 40, width - 20, height - 80, (int)content, contentColor, false, true );
+			if ( content is int i )
+				AddHtmlLocalized( 10, 40, width - 20, height - 80, i, contentColor, false, true );
 			else if ( content is string )
 				AddHtml( 10, 40, width - 20, height - 80, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", contentColor, content ), false, true );
 
@@ -55,10 +55,13 @@ namespace Server.Gumps
 
 		public override void OnResponse( Server.Network.NetState sender, RelayInfo info )
 		{
-			if ( info.ButtonID == 1 && m_Callback != null )
+			if (m_Callback == null)
+				return;
+
+			if ( info.ButtonID == 1)
 				m_Callback( sender.Mobile, true, m_State );
-			else if ( m_Callback != null )
-				m_Callback( sender.Mobile, false, m_State );
+			else
+				m_Callback.Invoke( sender.Mobile, false, m_State );
 		}
 	}
 }

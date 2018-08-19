@@ -143,9 +143,7 @@ namespace Server.Engines.Quests.Haven
 
 		public static bool HasLostScrollOfPower( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -154,9 +152,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( qs.IsObjectiveInProgress( typeof( ReturnScrollOfPowerObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( SchmendrickScrollOfPower ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( SchmendrickScrollOfPower ) ) == null );
 				}
 			}
 
@@ -165,9 +161,7 @@ namespace Server.Engines.Quests.Haven
 
 		public static bool HasLostFertileDirt( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -176,9 +170,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( qs.IsObjectiveInProgress( typeof( ReturnFertileDirtObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( QuestFertileDirt ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( QuestFertileDirt ) ) == null );
 				}
 			}
 
@@ -187,9 +179,7 @@ namespace Server.Engines.Quests.Haven
 
 		public static bool HasLostDaemonBlood( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -198,9 +188,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( qs.IsObjectiveInProgress( typeof( ReturnDaemonBloodObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( QuestDaemonBlood ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( QuestDaemonBlood ) ) == null );
 				}
 			}
 
@@ -209,9 +197,7 @@ namespace Server.Engines.Quests.Haven
 
 		public static bool HasLostDaemonBone( Mobile from )
 		{
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			QuestSystem qs = pm.Quest;
@@ -220,9 +206,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( qs.IsObjectiveInProgress( typeof( ReturnDaemonBoneObjective ) ) )
 				{
-					Container pack = from.Backpack;
-
-					return ( pack == null || pack.FindItemByType( typeof( QuestDaemonBone ) ) == null );
+					return ( from.Backpack?.FindItemByType( typeof( QuestDaemonBone ) ) == null );
 				}
 			}
 

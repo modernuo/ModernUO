@@ -11,7 +11,7 @@ namespace Server.Engines.Quests.Ninja
 		public GuardianBarrier() : base( 0x3967 )
 		{
 			Movable = false;
-			Visible = false; 
+			Visible = false;
 		}
 
 		public override bool OnMoveOver( Mobile m )
@@ -23,28 +23,19 @@ namespace Server.Engines.Quests.Ninja
 			if ( this.Y >= m.Y )
 				return true;
 
-			if ( m is BaseCreature )
+			if ( m is BaseCreature creature )
 			{
-				Mobile master = ((BaseCreature)m).GetMaster();
+				Mobile master = creature.GetMaster();
 
 				// Allow creatures to cross from the south to the north only if their master is near to the north
-				if ( master != null && this.Y >= master.Y && master.InRange( this, 4 ) )
-					return true;
-				else
-					return false;
+				return master != null && this.Y >= master.Y && master.InRange(this, 4);
 			}
 
-			PlayerMobile pm = m as PlayerMobile;
-
-			if ( pm != null )
+			if ( m is PlayerMobile pm )
 			{
-				EminosUndertakingQuest qs = pm.Quest as EminosUndertakingQuest;
-
-				if ( qs != null )
+				if ( pm.Quest is EminosUndertakingQuest qs )
 				{
-					SneakPastGuardiansObjective obj = qs.FindObjective( typeof( SneakPastGuardiansObjective ) ) as SneakPastGuardiansObjective;
-
-					if ( obj != null )
+					if ( qs.FindObjective( typeof( SneakPastGuardiansObjective ) ) is SneakPastGuardiansObjective obj )
 					{
 						if ( m.Hidden )
 							return true; // Hidden ninjas can pass

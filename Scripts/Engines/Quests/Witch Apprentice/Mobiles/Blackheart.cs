@@ -58,9 +58,7 @@ namespace Server.Engines.Quests.Hag
 
 			if ( qs is WitchApprenticeQuest )
 			{
-				FindIngredientObjective obj = qs.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
-
-				if ( obj != null && !obj.Completed && obj.Ingredient == Ingredient.Whiskey )
+				if ( qs.FindObjective( typeof( FindIngredientObjective ) ) is FindIngredientObjective obj && !obj.Completed && obj.Ingredient == Ingredient.Whiskey )
 				{
 					PlaySound( Utility.RandomBool() ? 0x42E : 0x43F );
 
@@ -71,10 +69,7 @@ namespace Server.Engines.Quests.Hag
 					{
 						obj.Complete();
 
-						if ( obj.BlackheartMet )
-							qs.AddConversation( new BlackheartPirateConversation( false ) );
-						else
-							qs.AddConversation( new BlackheartPirateConversation( true ) );
+						qs.AddConversation( new BlackheartPirateConversation(  !obj.BlackheartMet ) );
 					}
 					else if ( !obj.BlackheartMet )
 					{

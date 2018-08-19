@@ -66,7 +66,7 @@ namespace Server.Gumps
 				Titles.AwardKarma( g, karmaAward, true );
 			}
 
-			if ( m is PlayerMobile && ((PlayerMobile)m).NpcGuild == NpcGuild.ThievesGuild )
+			if ( m is PlayerMobile mobile && mobile.NpcGuild == NpcGuild.ThievesGuild )
 				return;
 
 			if ( killers.Count > 0 )
@@ -164,9 +164,8 @@ namespace Server.Gumps
 							Timer.DelayCall(TimeSpan.FromMinutes(10), new TimerStateCallback(ReportedListExpiry_Callback), new object[] { from, killer });
 						}
 
-						if (killer is PlayerMobile)
+						if (killer is PlayerMobile pk)
 						{
-							PlayerMobile pk = (PlayerMobile)killer;
 							pk.ResetKillTime();
 							pk.SendLocalizedMessage(1049067);//You have been reported for murder!
 

@@ -218,10 +218,10 @@ namespace Server.Engines.Reports
 
 		private string FindNameFrom( PersistableObject obj )
 		{
-			if ( obj is Report )
-				return (obj as Report).Name;
-			else if ( obj is Chart )
-				return (obj as Chart).Name;
+			if ( obj is Report report )
+				return report.Name;
+			if ( obj is Chart chart )
+				return chart.Name;
 
 			return "Invalid";
 		}
@@ -266,12 +266,12 @@ namespace Server.Engines.Reports
 
 		public void RenderDirect( PersistableObject obj, HtmlTextWriter html )
 		{
-			if ( obj is Report )
-				RenderReport( obj as Report, html );
-			else if ( obj is BarGraph )
-				RenderBarGraph( obj as BarGraph, html );
-			else if ( obj is PieChart )
-				RenderPieChart( obj as PieChart, html );
+			if ( obj is Report report )
+				RenderReport( report, html );
+			else if ( obj is BarGraph graph )
+				RenderBarGraph( graph, html );
+			else if ( obj is PieChart chart )
+				RenderPieChart( chart, html );
 		}
 
 		private void RenderPieChart( PieChart chart, HtmlTextWriter html )

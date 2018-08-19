@@ -115,13 +115,15 @@ namespace Server.Gumps
 								toGive = new BankCheck( m_House.Price );
 						}
 
-						if (AccountGold.Enabled && toGive is BankCheck)
+						BankCheck check = toGive as BankCheck;
+
+						if (AccountGold.Enabled && check != null)
 						{
-							var worth = ((BankCheck)toGive).Worth;
+							var worth = check.Worth;
 
 							if (m_Mobile.Account != null && m_Mobile.Account.DepositGold(worth))
 							{
-								toGive.Delete();
+								check.Delete();
 
 								m_Mobile.SendLocalizedMessage(1060397, worth.ToString("#,0"));
 								// ~1_AMOUNT~ gold has been deposited into your bank box.
@@ -138,8 +140,8 @@ namespace Server.Gumps
 
 							if ( box.TryDropItem( m_Mobile, toGive, false ) )
 							{
-								if ( toGive is BankCheck )
-									m_Mobile.SendLocalizedMessage( 1060397, ( (BankCheck)toGive ).Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+								if ( check != null )
+									m_Mobile.SendLocalizedMessage( 1060397, check.Worth.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
 
 								m_House.RemoveKeys( m_Mobile );
 								m_House.Delete();

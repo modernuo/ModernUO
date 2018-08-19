@@ -20,9 +20,7 @@ namespace Server.Engines.Quests.Haven
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null && player.InRange( GetWorldLocation(), 2 ) )
+			if ( from is PlayerMobile player && player.InRange( GetWorldLocation(), 2 ) )
 			{
 				QuestSystem qs = player.Quest;
 

@@ -498,9 +498,7 @@ namespace Server.Mobiles
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			Account acct = from.Account as Account;
-
-			if ( acct != null && from.AccessLevel == AccessLevel.Player )
+			if ( from.Account is Account acct && from.AccessLevel == AccessLevel.Player )
 			{
 				TimeSpan time = TimeSpan.FromDays( RewardSystem.RewardInterval.TotalDays * 6 ) - ( DateTime.UtcNow - acct.Created );
 
@@ -585,12 +583,12 @@ namespace Server.Mobiles
 				BaseHouse house = null;
 				Point3D loc = new Point3D( p );
 
-				if ( targeted is Item && !((Item) targeted).IsLockedDown && !((Item) targeted).IsSecure && !(targeted is AddonComponent) )
+				if ( targeted is Item item && !item.IsLockedDown && !item.IsSecure && !(item is AddonComponent) )
 				{
 					from.SendLocalizedMessage( 1076191 ); // Statues can only be placed in houses.
 					return;
 				}
-				else if ( from.IsBodyMod )
+				if ( from.IsBodyMod )
 				{
 					from.SendLocalizedMessage( 1073648 ); // You may only proceed while in your original state...
 					return;
@@ -605,8 +603,8 @@ namespace Server.Mobiles
 
 					house.Addons.Add( plinth );
 
-					if ( m_Maker is IRewardItem )
-						statue.IsRewardItem = ( (IRewardItem) m_Maker).IsRewardItem;
+					if ( m_Maker is IRewardItem rewardItem )
+						statue.IsRewardItem = rewardItem.IsRewardItem;
 
 					statue.Plinth = plinth;
 					plinth.MoveToWorld( loc, map );
@@ -638,10 +636,10 @@ namespace Server.Mobiles
 		{
 			if ( !map.CanFit( p.X, p.Y, p.Z, 20, true, true, true ) )
 				return AddonFitResult.Blocked;
-			else if ( !BaseAddon.CheckHouse( from, p, map, 20, ref house ) )
+			if ( !BaseAddon.CheckHouse( from, p, map, 20, ref house ) )
 				return AddonFitResult.NotInHouse;
-			else
-				return CheckDoors( p, 20, house );
+
+			return CheckDoors( p, 20, house );
 		}
 
 		public static AddonFitResult CheckDoors( Point3D p, int height, BaseHouse house )

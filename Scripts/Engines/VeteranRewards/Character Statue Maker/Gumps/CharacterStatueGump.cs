@@ -133,9 +133,9 @@ namespace Server.Gumps
 
 			if ( info.ButtonID == (int) Buttons.Sculpt )
 			{
-				if ( m_Maker is CharacterStatueDeed )
+				if ( m_Maker is CharacterStatueDeed deed )
 				{
-					CharacterStatue backup = ( (CharacterStatueDeed) m_Maker ).Statue;
+					CharacterStatue backup = deed.Statue;
 
 					if ( backup != null )
 						backup.Delete();
@@ -180,9 +180,9 @@ namespace Server.Gumps
 			}
 			else if ( info.ButtonID == (int) Buttons.Restore )
 			{
-				if ( m_Maker is CharacterStatueDeed )
+				if ( m_Maker is CharacterStatueDeed deed )
 				{
-					CharacterStatue backup = ( (CharacterStatueDeed) m_Maker ).Statue;
+					CharacterStatue backup = deed.Statue;
 
 					if ( backup != null )
 						m_Statue.Restore( backup );

@@ -59,11 +59,11 @@ namespace Server.Gumps
 
 			/* As a 'Young' player, you are currently under a system of protection that prevents
 			 * you from being attacked by other players and certain monsters.<br><br>
-			 * 
+			 *
 			 * If you choose to renounce your status as a 'Young' player, you will lose this protection.
 			 * You will become vulnerable to other players, and many monsters that had only glared
 			 * at you menacingly before will now attack you on sight!<br><br>
-			 * 
+			 *
 			 * Select OKAY now if you wish to renounce your status as a 'Young' player, otherwise
 			 * press CANCEL.
 			 */
@@ -82,9 +82,7 @@ namespace Server.Gumps
 
 			if ( info.ButtonID == 1 )
 			{
-				Account acc = from.Account as Account;
-
-				if ( acc != null )
+				if ( from.Account is Account acc )
 				{
 					acc.RemoveYoungStatus( 502085 ); // You have chosen to renounce your `Young' player status.
 				}

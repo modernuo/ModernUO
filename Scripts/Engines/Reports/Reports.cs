@@ -485,16 +485,14 @@ namespace Server.Engines.Reports
 
 				string controller = "Unknown";
 
-				Mobile mob = sigil.RootParent as Mobile;
-
-				if ( mob != null )
+				if ( sigil.RootParent is Mobile mob )
 				{
 					Faction faction = Faction.Find( mob );
 
 					if ( faction != null )
 						controller = faction.Definition.FriendlyName;
 				}
-				else if ( sigil.LastMonolith != null && sigil.LastMonolith.Faction != null )
+				else if ( sigil.LastMonolith?.Faction != null )
 				{
 					controller = sigil.LastMonolith.Faction.Definition.FriendlyName;
 				}

@@ -152,8 +152,8 @@ namespace Server.Engines.Quests.Haven
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MilitiaCanoneer Canoneer
 		{
-			get { return Addon is Cannon ? ((Cannon)Addon).Canoneer : null; }
-			set { if ( Addon is Cannon ) ((Cannon)Addon).Canoneer = value; }
+			get { return Addon is Cannon cannon ? cannon.Canoneer : null; }
+			set { if ( Addon is Cannon cannon ) cannon.Canoneer = value; }
 		}
 
 		public CannonComponent( int itemID ) : base( itemID )

@@ -53,13 +53,9 @@ namespace Server.Engines.Quests.Samurai
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null && player.Quest is HaochisTrialsQuest )
+			if ( from is PlayerMobile player && player.Quest is HaochisTrialsQuest )
 			{
-				FifthTrialIntroObjective obj = player.Quest.FindObjective( typeof( FifthTrialIntroObjective ) ) as FifthTrialIntroObjective;
-
-				if ( obj != null )
+				if ( player.Quest.FindObjective( typeof( FifthTrialIntroObjective ) ) is FifthTrialIntroObjective obj )
 				{
 					if ( obj.StolenTreasure )
 						from.SendLocalizedMessage( 1063247 ); // The guard is watching you carefully!  It would be unwise to remove another item from here.
@@ -73,13 +69,9 @@ namespace Server.Engines.Quests.Samurai
 
 		public override void OnItemLifted( Mobile from, Item item )
 		{
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null && player.Quest is HaochisTrialsQuest )
+			if ( from is PlayerMobile player && player.Quest is HaochisTrialsQuest )
 			{
-				FifthTrialIntroObjective obj = player.Quest.FindObjective( typeof( FifthTrialIntroObjective ) ) as FifthTrialIntroObjective;
-
-				if ( obj != null )
+				if ( player.Quest.FindObjective( typeof( FifthTrialIntroObjective ) ) is FifthTrialIntroObjective obj )
 					obj.StolenTreasure = true;
 			}
 

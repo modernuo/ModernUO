@@ -26,8 +26,8 @@ namespace Server.Gumps
 
 		public static void ViewHouses_OnTarget( Mobile from, object targeted )
 		{
-			if ( targeted is Mobile )
-				from.SendGump( new ViewHousesGump( from, GetHouses( (Mobile)targeted ), null ) );
+			if ( targeted is Mobile mobile )
+				from.SendGump( new ViewHousesGump( from, GetHouses( mobile ), null ) );
 		}
 
 		private class HouseComparer : IComparer<BaseHouse>
@@ -44,9 +44,7 @@ namespace Server.Gumps
 		{
 			List<BaseHouse> list = new List<BaseHouse>();
 
-			Account acct = owner.Account as Account;
-
-			if ( acct == null )
+			if ( !(owner.Account is Account acct) )
 			{
 				list.AddRange( BaseHouse.GetHouses( owner ) );
 			}
@@ -114,21 +112,21 @@ namespace Server.Gumps
 
 					AddHtml( 15, 40 + ((i % 15) * 20),  20, 20, Color( String.Format( "{0}.", i+1 ), White ), false, false );
 
-					if ( name is int )
-						AddHtmlLocalized( 35, 40 + ((i % 15) * 20), 160, 20, (int)name, White16, false, false );
-					else if ( name is string )
-						AddHtml( 35, 40 + ((i % 15) * 20), 160, 20, Color( (string)name, White ), false, false );
+					if ( name is int nameInt )
+						AddHtmlLocalized( 35, 40 + ((i % 15) * 20), 160, 20, nameInt, White16, false, false );
+					else
+						AddHtml( 35, 40 + ((i % 15) * 20), 160, 20, Color( name.ToString(), White ), false, false );
 
 					AddButton( 198, 39 + ((i % 15) * 20), 4005, 4007, i+1, GumpButtonType.Reply, 0 );
 				}
 			}
 			else
 			{
-				string houseName, owner, location;
+				string location;
 				Map map = sel.Map;
 
-				houseName = (sel.Sign == null) ? "An Unnamed House" : sel.Sign.GetName();
-				owner = (sel.Owner == null) ? "nobody" : sel.Owner.Name;
+				var houseName = (sel.Sign == null) ? "An Unnamed House" : sel.Sign.GetName();
+				var owner = (sel.Owner == null) ? "nobody" : sel.Owner.Name;
 
 				int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
 				bool xEast = false, ySouth = false;
@@ -136,7 +134,7 @@ namespace Server.Gumps
 				bool valid = Sextant.Format( sel.Location, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth );
 
 				if ( valid )
-					location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+					location = String.Format( "{0}Â° {1}'{2}, {3}Â° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 				else
 					location = "unknown";
 
