@@ -100,23 +100,20 @@ namespace Server.Items
 						HeldBy.PublicOverheadMessage( MessageType.Regular, 957, false, m_Ticks.ToString() );
 					else if ( RootParent == null )
 						PublicOverheadMessage( MessageType.Regular, 957, false, m_Ticks.ToString() );
-					else if ( RootParent is Mobile )
-						((Mobile)RootParent).PublicOverheadMessage( MessageType.Regular, 957, false, m_Ticks.ToString() );
+					else if ( RootParent is Mobile mobile )
+						mobile.PublicOverheadMessage( MessageType.Regular, 957, false, m_Ticks.ToString() );
 
 					break;
 				}
 				default:
 				{
-					if ( HeldBy != null )
-						HeldBy.DropHolding();
+					HeldBy?.DropHolding();
 
 					if ( m_Users != null )
 					{
 						foreach ( Mobile m in m_Users )
 						{
-							ThrowTarget targ = m.Target as ThrowTarget;
-
-							if ( targ != null && targ.Bomb == this )
+							if ( m.Target is ThrowTarget targ && targ.Bomb == this )
 								Target.Cancel( m );
 						}
 
@@ -124,9 +121,8 @@ namespace Server.Items
 						m_Users = null;
 					}
 
-					if ( RootParent is Mobile )
+					if ( RootParent is Mobile parent )
 					{
-						Mobile parent = (Mobile)RootParent;
 						parent.SendLocalizedMessage( 1060583 ); // The firebomb explodes in your hand!
 						AOS.Damage( parent, Utility.Random( 3 ) + 4, 0, 100, 0, 0, 0 );
 					}
@@ -140,15 +136,13 @@ namespace Server.Items
 
 						eable.Free();
 
-						Mobile victim;
 						for ( int i = 0; i < toDamage.Count; ++i )
 						{
-							victim = toDamage[i];
+							Mobile victim = toDamage[i];
 
 							if ( m_LitBy == null || (SpellHelper.ValidIndirectTarget( m_LitBy, victim ) && m_LitBy.CanBeHarmful( victim, false )) )
 							{
-								if ( m_LitBy != null )
-									m_LitBy.DoHarmful( victim );
+								m_LitBy?.DoHarmful( victim );
 
 								AOS.Damage( victim, m_LitBy, Utility.Random( 3 ) + 4, 0, 100, 0, 0, 0 );
 							}
@@ -168,21 +162,14 @@ namespace Server.Items
 			if ( Deleted || Map == Map.Internal || !IsChildOf( from.Backpack ) )
 				return;
 
-			IPoint3D p = obj as IPoint3D;
-
-			if ( p == null )
+			if ( !(obj is IPoint3D p) )
 				return;
 
 			SpellHelper.GetSurfaceTop( ref p );
 
 			from.RevealingAction();
 
-			IEntity to;
-
-			if ( p is Mobile )
-				to = (Mobile)p;
-			else
-				to = new Entity( Serial.Zero, new Point3D( p ), Map );
+			IEntity to = p as IEntity ?? new Entity( Serial.Zero, new Point3D( p ), Map );
 
 			Effects.SendMovingEffect( from, to, ItemID, 7, 0, false, false, Hue, 0 );
 
@@ -257,8 +244,7 @@ namespace Server.Items
 		{
 			if ( ItemID == 0x398C && m_LitBy == null || (SpellHelper.ValidIndirectTarget( m_LitBy, m ) && m_LitBy.CanBeHarmful( m, false )) )
 			{
-				if ( m_LitBy != null )
-					m_LitBy.DoHarmful( m );
+				m_LitBy?.DoHarmful( m );
 
 				AOS.Damage( m, m_LitBy, 2, 0, 100, 0, 0, 0 );
 				m.PlaySound( 0x208 );
@@ -284,15 +270,13 @@ namespace Server.Items
 				return;
 			}
 
-			Mobile victim;
 			for ( int i = 0; i < m_Burning.Count; )
 			{
-				victim = m_Burning[i];
+				Mobile victim = m_Burning[i];
 
 				if ( victim.Location == Location && victim.Map == Map && (m_LitBy == null || ( SpellHelper.ValidIndirectTarget( m_LitBy, victim ) && m_LitBy.CanBeHarmful( victim, false ) )) )
 				{
-					if ( m_LitBy != null )
-						m_LitBy.DoHarmful( victim );
+					m_LitBy?.DoHarmful( victim );
 
 					AOS.Damage( victim, m_LitBy, Utility.Random( 3 ) + 4, 0, 100, 0, 0, 0 );
 					++i;

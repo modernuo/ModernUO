@@ -715,10 +715,8 @@ namespace Server.Items
 			if ( !IsEmpty || !Fillable || !ValidateUse( from, false ) )
 				return;
 
-			if ( targ is BaseBeverage )
+			if ( targ is BaseBeverage bev )
 			{
-				BaseBeverage bev = (BaseBeverage)targ;
-
 				if ( bev.IsEmpty || !bev.ValidateUse( from, true ) )
 					return;
 
@@ -737,10 +735,8 @@ namespace Server.Items
 					bev.Quantity = 0;
 				}
 			}
-			else if ( targ is BaseWaterContainer )
+			else if ( targ is BaseWaterContainer bwc )
 			{
-				BaseWaterContainer bwc = targ as BaseWaterContainer;
-
 				if ( Quantity == 0 || ( Content == BeverageType.Water && !IsFull ) )
 				{
 					int iNeed = Math.Min( ( MaxQuantity - Quantity ), bwc.Quantity );
@@ -755,15 +751,12 @@ namespace Server.Items
 					}
 				}
 			}
-			else if ( targ is Item )
+			else if ( targ is Item item )
 			{
-				Item item = (Item)targ;
-				IWaterSource src;
+				IWaterSource src = ( item as IWaterSource );
 
-				src = ( item as IWaterSource );
-
-				if ( src == null && item is AddonComponent )
-					src = ( ( (AddonComponent)item ).Addon as IWaterSource );
+				if ( src == null && item is AddonComponent component )
+					src = ( component.Addon as IWaterSource );
 
 				if ( src == null || src.Quantity <= 0 )
 					return;
@@ -791,10 +784,8 @@ namespace Server.Items
 
 				from.SendLocalizedMessage( 1010089 ); // You fill the container with water.
 			}
-			else if ( targ is Cow )
+			else if ( targ is Cow cow )
 			{
-				Cow cow = (Cow)targ;
-
 				if ( cow.TryMilk( from ) )
 				{
 					Content = BeverageType.Milk;
@@ -802,21 +793,17 @@ namespace Server.Items
 					from.SendLocalizedMessage( 1080197 ); // You fill the container with milk.
 				}
 			}
-			else if ( targ is LandTarget )
+			else if ( targ is LandTarget target )
 			{
-				int tileID = ( (LandTarget)targ ).TileID;
+				int tileID = target.TileID;
 
-				PlayerMobile player = from as PlayerMobile;
-
-				if ( player != null )
+				if ( from is PlayerMobile player )
 				{
 					QuestSystem qs = player.Quest;
 
 					if ( qs is WitchApprenticeQuest )
 					{
-						FindIngredientObjective obj = qs.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
-
-						if ( obj != null && !obj.Completed && obj.Ingredient == Ingredient.SwampWater )
+						if ( qs.FindObjective( typeof( FindIngredientObjective ) ) is FindIngredientObjective obj && !obj.Completed && obj.Ingredient == Ingredient.SwampWater )
 						{
 							bool contains = false;
 
@@ -956,10 +943,8 @@ namespace Server.Items
 			if ( IsEmpty || !Pourable || !ValidateUse( from, false ) )
 				return;
 
-			if ( targ is BaseBeverage )
+			if ( targ is BaseBeverage bev )
 			{
-				BaseBeverage bev = (BaseBeverage)targ;
-
 				if ( !bev.ValidateUse( from, true ) )
 					return;
 
@@ -1023,10 +1008,8 @@ namespace Server.Items
 
 				--Quantity;
 			}
-			else if ( targ is BaseWaterContainer )
+			else if ( targ is BaseWaterContainer bwc )
 			{
-				BaseWaterContainer bwc = targ as BaseWaterContainer;
-
 				if ( Content != BeverageType.Water )
 				{
 					from.SendLocalizedMessage( 500842 ); // Can't pour that in there.
@@ -1048,27 +1031,23 @@ namespace Server.Items
 					}
 				}
 			}
-			else if ( targ is PlantItem )
+			else if ( targ is PlantItem item )
 			{
-				( (PlantItem)targ ).Pour( from, this );
+				item.Pour( from, this );
 			}
-			else if ( targ is AddonComponent &&
-				( ( (AddonComponent)targ ).Addon is WaterVatEast || ( (AddonComponent)targ ).Addon is WaterVatSouth ) &&
+			else if ( targ is AddonComponent component &&
+				( component.Addon is WaterVatEast || component.Addon is WaterVatSouth ) &&
 				this.Content == BeverageType.Water )
 			{
-				PlayerMobile player = from as PlayerMobile;
-
-				if ( player != null )
+				if ( from is PlayerMobile player )
 				{
-					SolenMatriarchQuest qs = player.Quest as SolenMatriarchQuest;
-
-					if ( qs != null )
+					if ( player.Quest is SolenMatriarchQuest qs )
 					{
 						QuestObjective obj = qs.FindObjective( typeof( GatherWaterObjective ) );
 
 						if ( obj != null && !obj.Completed )
 						{
-							BaseAddon vat = ( (AddonComponent)targ ).Addon;
+							BaseAddon vat = component.Addon;
 
 							if ( vat.X > 5784 && vat.X < 5814 && vat.Y > 1903 && vat.Y < 1934 &&
 								( ( qs.RedSolen && vat.Map == Map.Trammel ) || ( !qs.RedSolen && vat.Map == Map.Felucca ) ) )
@@ -1127,9 +1106,7 @@ namespace Server.Items
 
 			for( int i = 0; i < items.Length; ++i )
 			{
-				BaseBeverage bev = items[ i ] as BaseBeverage;
-
-				if ( bev != null && bev.Content == content && !bev.IsEmpty )
+				if ( items[i] is BaseBeverage bev && bev.Content == content && !bev.IsEmpty )
 					total += bev.Quantity;
 			}
 
@@ -1141,9 +1118,7 @@ namespace Server.Items
 
 				for( int i = 0; i < items.Length; ++i )
 				{
-					BaseBeverage bev = items[ i ] as BaseBeverage;
-
-					if ( bev == null || bev.Content != content || bev.IsEmpty )
+					if ( !(items[i] is BaseBeverage bev) || bev.Content != content || bev.IsEmpty )
 						continue;
 
 					int theirQuantity = bev.Quantity;

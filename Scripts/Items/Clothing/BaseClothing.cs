@@ -292,10 +292,8 @@ namespace Server.Items
 
 				Item item = m.Items[i];
 
-				if ( item is BaseClothing )
+				if ( item is BaseClothing clothing )
 				{
-					BaseClothing clothing = (BaseClothing)item;
-
 					if ( clothing.RequiredRace != null && m.Race != clothing.RequiredRace )
 					{
 						if ( clothing.RequiredRace == Race.Elf )
@@ -337,9 +335,7 @@ namespace Server.Items
 
 		public override void OnAdded(IEntity parent)
 		{
-			Mobile mob = parent as Mobile;
-
-			if ( mob != null )
+			if ( parent is Mobile mob )
 			{
 				if ( Core.AOS )
 					m_AosSkillBonuses.AddTo( mob );
@@ -353,9 +349,7 @@ namespace Server.Items
 
 		public override void OnRemoved(IEntity parent)
 		{
-			Mobile mob = parent as Mobile;
-
-			if ( mob != null )
+			if ( parent is Mobile mob )
 			{
 				if ( Core.AOS )
 					m_AosSkillBonuses.Remove();
@@ -415,8 +409,7 @@ namespace Server.Items
 							{
 								MaxHitPoints -= wear;
 
-								if ( Parent is Mobile )
-									((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
+								(Parent as Mobile)?.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
 							}
 							else
 							{
@@ -452,9 +445,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			BaseClothing clothing = newItem as BaseClothing;
-
-			if ( clothing == null )
+			if ( !(newItem is BaseClothing clothing) )
 				return;
 
 			clothing.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
@@ -911,9 +902,7 @@ namespace Server.Items
 			if ( m_MaxHitPoints == 0 && m_HitPoints == 0 )
 				m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax( InitMinHits, InitMaxHits );
 
-			Mobile parent = Parent as Mobile;
-
-			if ( parent != null )
+			if ( Parent is Mobile parent )
 			{
 				if ( Core.AOS )
 					m_AosSkillBonuses.AddTo( parent );

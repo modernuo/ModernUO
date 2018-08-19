@@ -101,9 +101,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			BaseArmor armor = newItem as BaseArmor;
-
-			if ( armor == null )
+			if ( !(newItem is BaseArmor armor) )
 				return;
 
 			armor.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
@@ -125,8 +123,7 @@ namespace Server.Items
 			{
 				if ( m_ArmorBase == -1 )
 					return ArmorBase;
-				else
-					return m_ArmorBase;
+				return m_ArmorBase;
 			}
 			set
 			{
@@ -258,8 +255,7 @@ namespace Server.Items
 					Invalidate();
 					InvalidateProperties();
 
-					if ( Parent is Mobile )
-						((Mobile)Parent).UpdateResistances();
+					(Parent as Mobile)?.UpdateResistances();
 
 					ScaleDurability();
 				}
@@ -353,8 +349,7 @@ namespace Server.Items
 					Invalidate();
 					InvalidateProperties();
 
-					if ( Parent is Mobile )
-						((Mobile)Parent).UpdateResistances();
+					(Parent as Mobile)?.UpdateResistances();
 				}
 			}
 		}
@@ -609,10 +604,8 @@ namespace Server.Items
 
 				Item item = m.Items[i];
 
-				if ( item is BaseArmor )
+				if ( item is BaseArmor armor )
 				{
-					BaseArmor armor = (BaseArmor)item;
-
 					if ( armor.RequiredRace != null && m.Race != armor.RequiredRace )
 					{
 						if ( armor.RequiredRace == Race.Elf )
@@ -669,10 +662,8 @@ namespace Server.Items
 
 		public override void OnAdded(IEntity parent)
 		{
-			if ( parent is Mobile )
+			if ( parent is Mobile from )
 			{
-				Mobile from = (Mobile)parent;
-
 				if ( Core.AOS )
 					m_AosSkillBonuses.AddTo( from );
 
@@ -692,8 +683,7 @@ namespace Server.Items
 
 		protected void Invalidate()
 		{
-			if ( Parent is Mobile )
-				((Mobile)Parent).Delta( MobileDelta.Armor ); // Tell them armor rating has changed
+			(Parent as Mobile)?.Delta( MobileDelta.Armor ); // Tell them armor rating has changed
 		}
 
 		public BaseArmor( Serial serial ) :  base( serial )
@@ -1105,17 +1095,17 @@ namespace Server.Items
 			if ( m_AosSkillBonuses == null )
 				m_AosSkillBonuses = new AosSkillBonuses( this );
 
-			if ( Core.AOS && Parent is Mobile )
-				m_AosSkillBonuses.AddTo( (Mobile)Parent );
+			Mobile m = Parent as Mobile;
+
+			if ( Core.AOS && m != null )
+				m_AosSkillBonuses.AddTo( m );
 
 			int strBonus = ComputeStatBonus( StatType.Str );
 			int dexBonus = ComputeStatBonus( StatType.Dex );
 			int intBonus = ComputeStatBonus( StatType.Int );
 
-			if ( Parent is Mobile && (strBonus != 0 || dexBonus != 0 || intBonus != 0) )
+			if ( m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0) )
 			{
-				Mobile m = (Mobile)Parent;
-
 				string modName = Serial.ToString();
 
 				if ( strBonus != 0 )
@@ -1128,8 +1118,7 @@ namespace Server.Items
 					m.AddStatMod( new StatMod( StatType.Int, modName + "Int", intBonus, TimeSpan.Zero ) );
 			}
 
-			if ( Parent is Mobile )
-				((Mobile)Parent).CheckStatTimers();
+			m?.CheckStatTimers();
 
 			if ( version < 7 )
 				m_PlayerConstructed = true; // we don't know, so, assume it's crafted
@@ -1267,9 +1256,8 @@ namespace Server.Items
 
 		public override void OnRemoved(IEntity parent)
 		{
-			if ( parent is Mobile )
+			if ( parent is Mobile m )
 			{
-				Mobile m = (Mobile)parent;
 				string modName = this.Serial.ToString();
 
 				m.RemoveStatMod( modName + "Str" );
@@ -1279,7 +1267,7 @@ namespace Server.Items
 				if ( Core.AOS )
 					m_AosSkillBonuses.Remove();
 
-				((Mobile)parent).Delta( MobileDelta.Armor ); // Tell them armor rating has changed
+				m.Delta( MobileDelta.Armor ); // Tell them armor rating has changed
 				m.CheckStatTimers();
 			}
 
@@ -1288,15 +1276,15 @@ namespace Server.Items
 
 		public virtual int OnHit( BaseWeapon weapon, int damageTaken )
 		{
-			double HalfAr = ArmorRating / 2.0;
-			int Absorbed = (int)(HalfAr + HalfAr*Utility.RandomDouble());
+			double halfar = ArmorRating / 2.0;
+			int absorbed = (int)(halfar + halfar*Utility.RandomDouble());
 
-			damageTaken -= Absorbed;
+			damageTaken -= absorbed;
 			if ( damageTaken < 0 )
 				damageTaken = 0;
 
-			if ( Absorbed < 2 )
-				Absorbed = 2;
+			if ( absorbed < 2 )
+				absorbed = 2;
 
 			if ( 25 > Utility.Random( 100 ) ) // 25% chance to lower durability
 			{
@@ -1309,7 +1297,7 @@ namespace Server.Items
 					int wear;
 
 					if ( weapon.Type == WeaponType.Bashing )
-						wear = Absorbed / 2;
+						wear = absorbed / 2;
 					else
 						wear = Utility.Random( 2 );
 
@@ -1332,8 +1320,8 @@ namespace Server.Items
 							{
 								MaxHitPoints -= wear;
 
-								if ( Parent is Mobile )
-									((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
+								if ( Parent is Mobile mobile )
+									mobile.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
 							}
 							else
 							{
@@ -1644,8 +1632,8 @@ namespace Server.Items
 				}
 			}
 
-			if ( Core.AOS && tool is BaseRunicTool )
-				((BaseRunicTool)tool).ApplyAttributesTo( this );
+			if ( Core.AOS )
+				(tool as BaseRunicTool)?.ApplyAttributesTo( this );
 
 			return quality;
 		}

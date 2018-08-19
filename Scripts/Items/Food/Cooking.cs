@@ -71,8 +71,8 @@ namespace Server.Items
 			{
 				if ( m_Item.Deleted ) return;
 
-				Item targetItem = targeted as Item;
-				if ( targetItem == null || targetItem.Deleted ) return;
+				if ( !(targeted is Item targetItem) || targetItem.Deleted )
+					return;
 
 				m_Item.Consume();
 
@@ -171,16 +171,16 @@ namespace Server.Items
 
 				m_Item.Consume();
 
-				if ( targeted is BowlFlour )
+				if ( targeted is BowlFlour flour )
 				{
-					((BowlFlour)targeted).Delete();
+					flour.Delete();
 
 					from.AddToBackpack( new CakeMix() );
 				}
-				else if ( targeted is Campfire )
+				else if ( targeted is Campfire campfire )
 				{
 					from.PlaySound( 0x225 );
-					InternalTimer t = new InternalTimer( from, (Campfire)targeted );
+					InternalTimer t = new InternalTimer( from, campfire );
 					t.Start();
 				}
 			}
@@ -270,16 +270,16 @@ namespace Server.Items
 
 				m_Item.Consume();
 
-				if ( targeted is Dough )
+				if ( targeted is Dough dough )
 				{
-					((Dough)targeted).Consume();
+					dough.Consume();
 
 					from.AddToBackpack( new SweetDough() );
 				}
 
-				if (targeted is BowlFlour)
+				if (targeted is BowlFlour flour)
 				{
-					((BowlFlour)targeted).Delete();
+					flour.Delete();
 
 					from.AddToBackpack( new CookieMix() );
 				}
@@ -618,12 +618,10 @@ namespace Server.Items
 
 		public virtual void OnTarget( Mobile from, object obj )
 		{
-			if ( obj is AddonComponent )
-				obj = (obj as AddonComponent).Addon;
+			if ( obj is AddonComponent addon )
+				obj = addon.Addon;
 
-			IFlourMill mill = obj as IFlourMill;
-
-			if ( mill != null )
+			if ( obj is IFlourMill mill )
 			{
 				int needs = mill.MaxFlour - mill.CurFlour;
 

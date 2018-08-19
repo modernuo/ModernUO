@@ -86,15 +86,13 @@ namespace Server.Items
 
 		public void Placement_OnTarget( Mobile from, object targeted, object state )
 		{
-			IPoint3D p = targeted as IPoint3D;
-
-			if ( p == null )
+			if ( !(targeted is IPoint3D p) )
 				return;
 
 			Point3D loc = new Point3D( p );
 
-			if ( p is StaticTarget )
-				loc.Z -= TileData.ItemTable[((StaticTarget)p).ItemID].CalcHeight;	/* NOTE: OSI does not properly normalize Z positioning here.
+			if ( p is StaticTarget target )
+				loc.Z -= TileData.ItemTable[target.ItemID].CalcHeight;	/* NOTE: OSI does not properly normalize Z positioning here.
 													* A side affect is that you can only place on floors (due to the CanFit call).
 													* That functionality may be desired. And so, it's included in this script.
 													*/
@@ -107,9 +105,7 @@ namespace Server.Items
 		{
 			this.Delete();
 			HolidayTree tree = new HolidayTree( from, type, loc );
-			BaseHouse house = BaseHouse.FindHouseAt( tree );
-			if ( house != null )
-				house.Addons.Add( tree );
+			BaseHouse.FindHouseAt( tree )?.Addons.Add( tree );
 		}
 
 		public override void OnDoubleClick( Mobile from )

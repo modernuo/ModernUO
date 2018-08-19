@@ -50,10 +50,8 @@ namespace Server.Items
 
 			foreach ( Item item in items )
 			{
-				if ( item is Key )
+				if ( item is Key key )
 				{
-					Key key = (Key) item;
-
 					if ( key.KeyValue == keyValue )
 						key.Delete();
 				}
@@ -75,10 +73,8 @@ namespace Server.Items
 
 			foreach ( Item item in items )
 			{
-				if ( item is Key )
+				if ( item is Key key )
 				{
-					Key key = (Key) item;
-
 					if ( key.KeyValue == keyValue )
 						return true;
 				}
@@ -293,52 +289,37 @@ namespace Server.Items
 		{
 			if ( o.KeyValue == this.KeyValue )
 			{
-				if ( o is BaseDoor && !((BaseDoor)o).UseLocks() )
-				{
+				if ( o is BaseDoor door && !door.UseLocks() )
 					return false;
-				}
-				else
+
+				o.Locked = !o.Locked;
+
+				if ( o is LockableContainer cont1 )
 				{
-					o.Locked = !o.Locked;
-
-					if ( o is LockableContainer )
-					{
-						LockableContainer cont = (LockableContainer)o;
-
-						if ( cont.LockLevel == -255 )
-							cont.LockLevel = cont.RequiredSkill - 10;
-					}
-
-					if ( o is Item )
-					{
-						Item item = (Item) o;
-
-						if ( o.Locked )
-							item.SendLocalizedMessageTo( from, 1048000 ); // You lock it.
-						else
-							item.SendLocalizedMessageTo( from, 1048001 ); // You unlock it.
-
-						if ( item is LockableContainer )
-						{
-							LockableContainer cont = (LockableContainer) item;
-
-							if ( cont.TrapType != TrapType.None && cont.TrapOnLockpick )
-							{
-								if ( o.Locked )
-									item.SendLocalizedMessageTo( from, 501673 ); // You re-enable the trap.
-								else
-									item.SendLocalizedMessageTo( from, 501672 ); // You disable the trap temporarily.  Lock it again to re-enable it.
-							}
-						}
-					}
-
-					return true;
+					if ( cont1.LockLevel == -255 )
+						cont1.LockLevel = cont1.RequiredSkill - 10;
 				}
+
+				if ( o is Item item )
+				{
+					if ( o.Locked )
+						item.SendLocalizedMessageTo( from, 1048000 ); // You lock it.
+					else
+						item.SendLocalizedMessageTo( from, 1048001 ); // You unlock it.
+
+					if ( item is LockableContainer cont && cont.TrapType != TrapType.None && cont.TrapOnLockpick )
+					{
+						if ( o.Locked )
+							cont.SendLocalizedMessageTo( from, 501673 ); // You re-enable the trap.
+						else
+							cont.SendLocalizedMessageTo( from, 501672 ); // You disable the trap temporarily.  Lock it again to re-enable it.
+					}
+				}
+
+				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		private class RenamePrompt : Prompt
@@ -388,9 +369,9 @@ namespace Server.Items
 
 					from.Prompt = new RenamePrompt( m_Key );
 				}
-				else if ( targeted is ILockable )
+				else if ( targeted is ILockable lockable )
 				{
-					if ( m_Key.UseOn( from, (ILockable) targeted ) )
+					if ( m_Key.UseOn( from, lockable ) )
 						number = -1;
 					else
 						number = 501668; // This key doesn't seem to unlock that.
@@ -426,10 +407,8 @@ namespace Server.Items
 
 				int number;
 
-				if ( targeted is Key )
+				if ( targeted is Key k )
 				{
-					Key k = (Key)targeted;
-
 					if ( k.m_KeyVal == 0 )
 					{
 						number = 501675; // This key is also blank.

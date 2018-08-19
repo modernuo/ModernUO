@@ -80,23 +80,23 @@ namespace Server.Items
 			if ( mt != null && !( to is ChaosDragoon || to is ChaosDragoonElite ) )
 				mt.Rider = null;
 
-			if (to is PlayerMobile)
+			if (to is PlayerMobile mobile)
 			{
-				if (Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(to))
+				if (Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(mobile))
 				{
-					to.SendLocalizedMessage(1114066, from.Name); // ~1_NAME~ knocked you out of animal form!
+					mobile.SendLocalizedMessage(1114066, from.Name); // ~1_NAME~ knocked you out of animal form!
 				}
-				else if (to.Mounted)
+				else if (mobile.Mounted)
 				{
-					to.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+					mobile.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
 				}
 
-				(to as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true);
+				mobile.SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true);
 			}
 
-			if (Core.AOS && from is PlayerMobile) /* only failsafe, attacker should already be dismounted */
+			if (Core.AOS) /* only failsafe, attacker should already be dismounted */
 			{
-				(from as PlayerMobile).SetMountBlock( BlockMountType.BolaRecovery, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true );
+				(from as PlayerMobile)?.SetMountBlock( BlockMountType.BolaRecovery, TimeSpan.FromSeconds( Core.ML ? 10 : 3 ), true );
 			}
 
 			to.Damage(1);
@@ -160,10 +160,8 @@ namespace Server.Items
 				if ( m_Bola.Deleted )
 					return;
 
-				if ( obj is Mobile )
+				if ( obj is Mobile to )
 				{
-					Mobile to = (Mobile)obj;
-
 					if ( !m_Bola.IsChildOf( from.Backpack ) )
 					{
 						from.SendLocalizedMessage( 1040019 ); // The bola must be in your pack to use it.

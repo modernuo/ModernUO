@@ -413,9 +413,7 @@ namespace Server.Items
 
 		public void Placement_OnTarget( Mobile from, object targeted, object state )
 		{
-			IPoint3D p = targeted as IPoint3D;
-
-			if ( p == null || Deleted )
+			if ( !(targeted is IPoint3D p) || Deleted )
 				return;
 
 			Point3D loc = new Point3D( p );

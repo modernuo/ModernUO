@@ -210,10 +210,8 @@ namespace Server.Items
 						}
 					}
 				}
-				else if ( targeted is ReceiverCrystal )
+				else if ( targeted is ReceiverCrystal receiver )
 				{
-					ReceiverCrystal receiver = (ReceiverCrystal) targeted;
-
 					if ( m_Crystal.Receivers.Count >= 10 )
 					{
 						from.SendLocalizedMessage( 1010042 ); // This broadcast crystal is already linked to 10 receivers.
@@ -234,18 +232,16 @@ namespace Server.Items
 				}
 				else if ( targeted == from )
 				{
-					foreach( ReceiverCrystal receiver in new List<ReceiverCrystal>( m_Crystal.Receivers ) )
+					foreach( ReceiverCrystal rc in new List<ReceiverCrystal>( m_Crystal.Receivers ) )
 					{
-						receiver.Sender = null;
+						rc.Sender = null;
 					}
 
 					from.SendLocalizedMessage( 1010046 ); // You unlink the broadcast crystal from all of its receivers.
 				}
 				else
 				{
-					Item targItem = targeted as Item;
-
-					if ( targItem != null && targItem.VerifyMove( from ) )
+					if ( targeted is Item targItem && targItem.VerifyMove( from ) )
 					{
 						CrystalRechargeInfo info = CrystalRechargeInfo.Get( targItem.GetType() );
 
@@ -373,13 +369,13 @@ namespace Server.Items
 
 			string text = String.Format( "{0} says {1}", from.Name, message );
 
-			if ( this.RootParent is Mobile )
+			if ( this.RootParent is Mobile mobile )
 			{
-				((Mobile)this.RootParent).SendMessage( 0x2B2, "Crystal: " + text );
+				mobile.SendMessage( 0x2B2, "Crystal: " + text );
 			}
-			else if ( this.RootParent is Item )
+			else if ( this.RootParent is Item item )
 			{
-				((Item)this.RootParent).PublicOverheadMessage( MessageType.Regular, 0x2B2, false, "Crystal: " + text );
+				item.PublicOverheadMessage( MessageType.Regular, 0x2B2, false, "Crystal: " + text );
 			}
 			else
 			{
@@ -445,9 +441,7 @@ namespace Server.Items
 				}
 				else
 				{
-					Item targItem = targeted as Item;
-
-					if ( targItem != null && targItem.VerifyMove( from ) )
+					if ( targeted is Item targItem && targItem.VerifyMove( from ) )
 					{
 						CrystalRechargeInfo info = CrystalRechargeInfo.Get( targItem.GetType() );
 

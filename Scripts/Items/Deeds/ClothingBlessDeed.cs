@@ -20,18 +20,12 @@ namespace Server.Items
 			if ( m_Deed.Deleted || m_Deed.RootParent != from )
 				return;
 
-			if ( target is BaseClothing )
+			if ( target is BaseClothing item )
 			{
-				BaseClothing item = (BaseClothing)target;
-
-				if ( item is IArcaneEquip )
+				if ( (item as IArcaneEquip)?.IsArcane == true )
 				{
-					IArcaneEquip eq = (IArcaneEquip)item;
-					if ( eq.IsArcane )
-					{
-						from.SendLocalizedMessage( 1005019 ); // This bless deed is for Clothes only.
-						return;
-					}
+					from.SendLocalizedMessage( 1005019 ); // This bless deed is for Clothes only.
+					return;
 				}
 
 				if ( item.LootType == LootType.Blessed || item.BlessedFor == from || (Mobile.InsuranceEnabled && item.Insured) ) // Check if its already newbied (blessed)

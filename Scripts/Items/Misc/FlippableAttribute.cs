@@ -29,14 +29,12 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Item )
+				if ( targeted is Item item )
 				{
-					Item item = (Item)targeted;
-
 					if ( item.Movable == false && from.AccessLevel == AccessLevel.Player )
 						return;
 
-					Type type = targeted.GetType();
+					Type type = item.GetType();
 
 					FlippableAttribute[] AttributeArray = (FlippableAttribute[])type.GetCustomAttributes( typeof( FlippableAttribute ), false );
 
@@ -47,7 +45,7 @@ namespace Server.Items
 
 					FlippableAttribute fa = AttributeArray[0];
 
-					fa.Flip( (Item)targeted );
+					fa.Flip( item );
 				}
 			}
 		}

@@ -95,9 +95,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			BaseQuiver quiver = newItem as BaseQuiver;
-
-			if ( quiver == null )
+			if ( !(newItem is BaseQuiver quiver) )
 				return;
 
 			quiver.m_Attributes = new AosAttributes( newItem, m_Attributes );
@@ -194,20 +192,16 @@ namespace Server.Items
 
 		public override void OnAdded(IEntity parent)
 		{
-			if ( parent is Mobile )
+			if ( parent is Mobile mob )
 			{
-				Mobile mob = (Mobile) parent;
-
 				m_Attributes.AddStatBonuses( mob );
 			}
 		}
 
 		public override void OnRemoved(IEntity parent)
 		{
-			if ( parent is Mobile )
+			if ( parent is Mobile mob )
 			{
-				Mobile mob = (Mobile) parent;
-
 				m_Attributes.RemoveStatBonuses( mob );
 			}
 		}
@@ -447,10 +441,8 @@ namespace Server.Items
 
 		public void InvalidateWeight()
 		{
-			if ( RootParent is Mobile )
+			if ( RootParent is Mobile m )
 			{
-				Mobile m = (Mobile) RootParent;
-
 				m.UpdateTotals();
 			}
 		}

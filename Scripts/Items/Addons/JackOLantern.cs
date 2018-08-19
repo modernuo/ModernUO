@@ -76,9 +76,7 @@ namespace Server.Items
 				{
 					for ( int i = 0; i < Components.Count; ++i )
 					{
-						AddonComponent ac = Components[i] as AddonComponent;
-
-						if ( ac != null && ac.Hue == 2118 )
+						if ( Components[i] is AddonComponent ac && ac.Hue == 2118 )
 							ac.Hue = 1161;
 					}
 				} );
@@ -90,9 +88,7 @@ namespace Server.Items
 				{
 					for ( int i = 0; i < Components.Count; ++i )
 					{
-						AddonComponent ac = Components[i] as AddonComponent;
-
-						if ( ac != null )
+						if ( Components[i] is AddonComponent ac )
 							ac.Name = "jack-o-lantern";
 					}
 				} );

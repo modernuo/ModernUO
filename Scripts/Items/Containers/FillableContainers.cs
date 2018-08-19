@@ -616,8 +616,8 @@ namespace Server.Items
 		{
 			Item item = Loot.Construct( m_Types );
 
-			if ( item is Key )
-				( (Key)item ).ItemID = Utility.RandomList( (int)KeyType.Copper, (int)KeyType.Gold, (int)KeyType.Iron, (int)KeyType.Rusty );
+			if ( item is Key key )
+				key.ItemID = Utility.RandomList( (int)KeyType.Copper, (int)KeyType.Gold, (int)KeyType.Iron, (int)KeyType.Rusty );
 			else if ( item is Arrow || item is Bolt )
 				item.Amount = Utility.RandomMinMax( 2, 6 );
 			else if ( item is Bandage || item is Lockpick )
@@ -662,10 +662,8 @@ namespace Server.Items
 			{
 				item = base.Construct();
 
-				if ( item is BaseBeverage )
+				if ( item is BaseBeverage bev )
 				{
-					BaseBeverage bev = (BaseBeverage)item;
-
 					bev.Content = m_Content;
 					bev.Quantity = bev.MaxQuantity;
 				}
@@ -1514,9 +1512,7 @@ namespace Server.Items
 				if ( nearest != null && mob.GetDistanceToSqrt( loc ) > nearest.GetDistanceToSqrt( loc ) && !( nearest is Cobbler && mob is Provisioner ) )
 					continue;
 
-				FillableContent check = m_AcquireTable[ mob.GetType() ] as FillableContent;
-
-				if ( check != null )
+				if ( m_AcquireTable[ mob.GetType() ] is FillableContent check )
 				{
 					nearest = mob;
 					content = check;

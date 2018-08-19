@@ -79,16 +79,12 @@ namespace Server.Items
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			BasePiece piece = dropped as BasePiece;
-
-			return ( piece != null && piece.Board == this && base.OnDragDrop( from, dropped ) );
+			return ( dropped is BasePiece piece && piece.Board == this && base.OnDragDrop( from, dropped ) );
 		}
 
 		public override bool OnDragDropInto( Mobile from, Item dropped, Point3D point )
 		{
-			BasePiece piece = dropped as BasePiece;
-
-			if ( piece != null && piece.Board == this && base.OnDragDropInto( from, dropped, point ) )
+			if ( dropped is BasePiece piece && piece.Board == this && base.OnDragDropInto( from, dropped, point ) )
 			{
 				Packet p = new PlaySound( 0x127, GetWorldLocation() );
 
@@ -108,10 +104,8 @@ namespace Server.Items
 
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )

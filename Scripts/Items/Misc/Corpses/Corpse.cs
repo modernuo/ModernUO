@@ -436,13 +436,7 @@ namespace Server.Items
 
 		public static string GetCorpseName( Mobile m )
 		{
-			if ( m is BaseCreature )
-			{
-				BaseCreature bc = (BaseCreature)m;
-				return bc.CorpseNameOverride ?? bc.CorpseName;
-			}
-
-			return null;
+			return m is BaseCreature bc ? bc.CorpseNameOverride ?? bc.CorpseName : null;
 		}
 
 		public static void Initialize()
@@ -484,13 +478,8 @@ namespace Server.Items
 				{
 					c.AssignInstancedLoot();
 				}
-				else if ( Core.AOS )
-				{
-					PlayerMobile pm = owner as PlayerMobile;
-
-					if ( pm != null )
-						c.RestoreEquip = pm.EquipSnapshot;
-				}
+				else if ( Core.AOS && owner is PlayerMobile pm )
+					c.RestoreEquip = pm.EquipSnapshot;
 			}
 			else
 			{
@@ -945,9 +934,7 @@ namespace Server.Items
 
 			public override void OnClick()
 			{
-				Corpse corpse = Owner.Target as Corpse;
-
-				if ( corpse != null && Owner.From.CheckAlive() )
+				if ( Owner.Target is Corpse corpse && Owner.From.CheckAlive() )
 					corpse.Open( Owner.From, false );
 			}
 		}
@@ -1034,9 +1021,7 @@ namespace Server.Items
 				#region Self Looting
 				if ( checkSelfLoot && from == m_Owner && !GetFlag( CorpseFlag.SelfLooted ) && this.Items.Count != 0 )
 				{
-					DeathRobe robe = from.FindItemOnLayer( Layer.OuterTorso ) as DeathRobe;
-
-					if ( robe != null )
+					if ( @from.FindItemOnLayer( Layer.OuterTorso ) is DeathRobe robe )
 					{
 						Map map = from.Map;
 
@@ -1118,17 +1103,14 @@ namespace Server.Items
 					return;
 
 				#region Quests
-				PlayerMobile player = from as PlayerMobile;
 
-				if ( player != null )
+				if ( @from is PlayerMobile player )
 				{
 					QuestSystem qs = player.Quest;
 
 					if ( qs is UzeraanTurmoilQuest )
 					{
-						GetDaemonBoneObjective obj = qs.FindObjective( typeof( GetDaemonBoneObjective ) ) as GetDaemonBoneObjective;
-
-						if ( obj != null && obj.CorpseWithBone == this && ( !obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone( player ) ) )
+						if ( qs.FindObjective( typeof( GetDaemonBoneObjective ) ) is GetDaemonBoneObjective obj && obj.CorpseWithBone == this && ( !obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone( player ) ) )
 						{
 							Item bone = new QuestDaemonBone();
 
@@ -1151,9 +1133,7 @@ namespace Server.Items
 					}
 					else if ( qs is TheSummoningQuest )
 					{
-						VanquishDaemonObjective obj = qs.FindObjective( typeof( VanquishDaemonObjective ) ) as VanquishDaemonObjective;
-
-						if ( obj != null && obj.Completed && obj.CorpseWithSkull == this )
+						if ( qs.FindObjective( typeof( VanquishDaemonObjective ) ) is VanquishDaemonObjective obj && obj.Completed && obj.CorpseWithSkull == this )
 						{
 							GoldenSkull sk = new GoldenSkull();
 
@@ -1276,9 +1256,9 @@ namespace Server.Items
 				if ( IsCriminalAction( from ) )
 					from.CriminalAction( true );
 			}
-			else if ( dead is BaseCreature )
+			else if ( dead is BaseCreature creature )
 			{
-				((BaseCreature)dead).OnCarve( from, this, item );
+				creature.OnCarve( from, this, item );
 			}
 			else
 			{

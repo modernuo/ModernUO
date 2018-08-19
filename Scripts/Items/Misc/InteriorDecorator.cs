@@ -150,10 +150,9 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Item && InteriorDecorator.CheckUse( m_Decorator, from ) )
+				if ( targeted is Item item && InteriorDecorator.CheckUse( m_Decorator, from ) )
 				{
 					BaseHouse house = BaseHouse.FindHouseAt( from );
-					Item item = (Item)targeted;
 
 					bool isDecorableComponent = false;
 
@@ -162,23 +161,20 @@ namespace Server.Items
 						object addon = null;
 						int count = 0;
 
-						if ( item is AddonComponent )
+						switch (item)
 						{
-							AddonComponent component = (AddonComponent) item;
-							count = component.Addon.Components.Count;
-							addon = component.Addon;
-						}
-						else if ( item is AddonContainerComponent )
-						{
-							AddonContainerComponent component = (AddonContainerComponent) item;
-							count = component.Addon.Components.Count;
-							addon = component.Addon;
-						}
-						else if ( item is BaseAddonContainer )
-						{
-							BaseAddonContainer container = (BaseAddonContainer) item;
-							count = container.Components.Count;
-							addon = container;
+							case AddonComponent component:
+								count = component.Addon.Components.Count;
+								addon = component.Addon;
+								break;
+							case AddonContainerComponent containerComponent:
+								count = containerComponent.Addon.Components.Count;
+								addon = containerComponent.Addon;
+								break;
+							case BaseAddonContainer container:
+								count = container.Components.Count;
+								addon = container;
+								break;
 						}
 
 						if ( count == 1 && Core.SE )
@@ -244,12 +240,18 @@ namespace Server.Items
 				{
 					object addon = null;
 
-					if ( item is AddonComponent )
-						addon = ((AddonComponent) item).Addon;
-					else if ( item is AddonContainerComponent )
-						addon = ((AddonContainerComponent) item).Addon;
-					else if ( item is BaseAddonContainer )
-						addon = (BaseAddonContainer) item;
+					switch (item)
+					{
+						case AddonComponent component:
+							addon = component.Addon;
+							break;
+						case AddonContainerComponent containerComponent:
+							addon = containerComponent.Addon;
+							break;
+						case BaseAddonContainer container:
+							addon = container;
+							break;
+					}
 
 					FlippableAddonAttribute[] aAttributes = (FlippableAddonAttribute[]) addon.GetType().GetCustomAttributes( typeof( FlippableAddonAttribute ), false );
 

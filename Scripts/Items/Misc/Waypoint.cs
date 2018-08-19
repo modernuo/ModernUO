@@ -115,9 +115,9 @@ namespace Server.Items
 
 		protected override void OnTarget( Mobile from, object target )
 		{
-			if ( target is WayPoint && m_Point != null )
+			if ( target is WayPoint point && m_Point != null )
 			{
-				m_Point.NextPoint = (WayPoint)target;
+				m_Point.NextPoint = point;
 			}
 			else
 			{
@@ -137,14 +137,14 @@ namespace Server.Items
 
 		protected override void OnTarget( Mobile from, object targeted )
 		{
-			if ( targeted is WayPoint )
+			if ( targeted is WayPoint wayPoint )
 			{
 				if ( m_Last != null )
-					m_Last.NextPoint = (WayPoint)targeted;
+					m_Last.NextPoint = wayPoint;
 			}
-			else if ( targeted is IPoint3D )
+			else if ( targeted is IPoint3D d )
 			{
-				Point3D p = new Point3D( (IPoint3D)targeted );
+				Point3D p = new Point3D( d );
 
 				WayPoint point = new WayPoint( m_Last );
 				point.MoveToWorld( p, from.Map );

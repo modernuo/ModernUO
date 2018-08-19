@@ -342,11 +342,7 @@ namespace Server.Items
 				{
 					IPoint3D p = targeted as IPoint3D;
 
-					Point3D targ3D;
-					if ( p is Item )
-						targ3D = ((Item)p).GetWorldLocation();
-					else
-						targ3D = new Point3D( p );
+					Point3D targ3D = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
 
 					int maxRange;
 					double skillValue = from.Skills[SkillName.Mining].Value;
@@ -621,7 +617,7 @@ namespace Server.Items
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			if ( from is PlayerMobile && ((PlayerMobile)from).Young )
+			if ( @from is PlayerMobile mobile && mobile.Young )
 				return true;
 
 			if ( from == this.Decoder )

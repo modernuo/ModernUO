@@ -54,9 +54,7 @@ namespace Server.Items
 
 		public void Throw( Mobile from )
 		{
-			BaseKnife knife = from.Weapon as BaseKnife;
-
-			if ( knife == null )
+			if ( !(from.Weapon is BaseKnife knife) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500751 ); // Try holding a knife...
 				return;

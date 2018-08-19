@@ -53,9 +53,7 @@ namespace Server.Items
 
 		private static void Link_OnFirstTarget( Mobile from, object targeted )
 		{
-			BaseDoor door = targeted as BaseDoor;
-
-			if ( door == null )
+			if ( !(targeted is BaseDoor door) )
 			{
 				from.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( Link_OnFirstTarget ) );
 				from.SendMessage( "That is not a door. Try again." );
@@ -70,9 +68,8 @@ namespace Server.Items
 		private static void Link_OnSecondTarget( Mobile from, object targeted, object state )
 		{
 			BaseDoor first = (BaseDoor)state;
-			BaseDoor second = targeted as BaseDoor;
 
-			if ( second == null )
+			if ( !(targeted is BaseDoor second) )
 			{
 				from.BeginTarget( -1, false, TargetFlags.None, new TargetStateCallback( Link_OnSecondTarget ), first );
 				from.SendMessage( "That is not a door. Try again." );
@@ -95,9 +92,7 @@ namespace Server.Items
 
 		private static void ChainLink_OnTarget( Mobile from, object targeted, object state )
 		{
-			BaseDoor door = targeted as BaseDoor;
-
-			if ( door == null )
+			if ( !(targeted is BaseDoor door) )
 			{
 				from.BeginTarget( -1, false, TargetFlags.None, new TargetStateCallback( ChainLink_OnTarget ), state );
 				from.SendMessage( "That is not a door. Try again." );

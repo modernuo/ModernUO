@@ -25,10 +25,7 @@ namespace Server.Items
 				if ( Empty )
 					return null;
 
-				if ( Items[ 0 ] is BaseFish )
-					return (BaseFish) Items[ 0 ];
-
-				return null;
+				return Items[0] as BaseFish;
 			}
 		}
 

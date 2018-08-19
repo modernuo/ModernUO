@@ -74,26 +74,26 @@ namespace Server.Items
 		{
 			int itemID;
 
-			if ( targeted is Item )
-				itemID = ((Item)targeted).ItemID;
-			else if ( targeted is StaticTarget )
-				itemID = ((StaticTarget)targeted).ItemID;
+			if ( targeted is Item item )
+				itemID = item.ItemID;
+			else if ( targeted is StaticTarget target )
+				itemID = target.ItemID;
 			else
 				return false;
 
 			if ( itemID >= 0xDE3 && itemID <= 0xDE9 )
 				return true; // Campfire
-			else if ( itemID >= 0x461 && itemID <= 0x48E )
+			if ( itemID >= 0x461 && itemID <= 0x48E )
 				return true; // Sandstone oven/fireplace
-			else if ( itemID >= 0x92B && itemID <= 0x96C )
+			if ( itemID >= 0x92B && itemID <= 0x96C )
 				return true; // Stone oven/fireplace
-			else if ( itemID == 0xFAC )
+			if ( itemID == 0xFAC )
 				return true; // Firepit
-			else if ( itemID >= 0x184A && itemID <= 0x184C )
+			if ( itemID >= 0x184A && itemID <= 0x184C )
 				return true; // Heating stand (left)
-			else if ( itemID >= 0x184E && itemID <= 0x1850 )
+			if ( itemID >= 0x184E && itemID <= 0x1850 )
 				return true; // Heating stand (right)
-			else if ( itemID >= 0x398C && itemID <= 0x399F )
+			if ( itemID >= 0x398C && itemID <= 0x399F )
 				return true; // Fire field
 
 			return false;

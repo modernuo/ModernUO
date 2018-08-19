@@ -60,10 +60,10 @@ namespace Server.Items
 
 						addon.Map = Map.Internal;
 
-						if ( addon is BaseAddon )
-							result = ( (BaseAddon) addon ).CouldFit( addon.Location, from.Map, from, ref house );
-						else if ( addon is BaseAddonContainer )
-							result = ( (BaseAddonContainer) addon ).CouldFit( addon.Location, from.Map, from, ref house );
+						if ( addon is BaseAddon baseAddon )
+							result = baseAddon.CouldFit( baseAddon.Location, from.Map, from, ref house );
+						else if ( addon is BaseAddonContainer container )
+							result = container.CouldFit( container.Location, from.Map, from, ref house );
 
 						addon.Map = from.Map;
 
@@ -101,10 +101,8 @@ namespace Server.Items
 
 		private void ClearComponents( Item item )
 		{
-			if ( item is BaseAddon )
+			if ( item is BaseAddon addon )
 			{
-				BaseAddon addon = (BaseAddon) item;
-
 				foreach ( AddonComponent c in addon.Components )
 				{
 					c.Addon = null;
@@ -113,17 +111,15 @@ namespace Server.Items
 
 				addon.Components.Clear();
 			}
-			else if ( item is BaseAddonContainer )
+			else if ( item is BaseAddonContainer addonContainer )
 			{
-				BaseAddonContainer addon = (BaseAddonContainer) item;
-
-				foreach ( AddonContainerComponent c in addon.Components )
+				foreach ( AddonContainerComponent c in addonContainer.Components )
 				{
 					c.Addon = null;
 					c.Delete();
 				}
 
-				addon.Components.Clear();
+				addonContainer.Components.Clear();
 			}
 		}
 	}

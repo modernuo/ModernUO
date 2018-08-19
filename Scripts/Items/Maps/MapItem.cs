@@ -263,7 +263,7 @@ namespace Server.Items
 			writer.Write( m_Height );
 
 			writer.Write( m_Protected );
-			
+
 			writer.Write( m_Pins.Count );
 			for ( int i = 0; i < m_Pins.Count; ++i )
 				writer.Write( m_Pins[i] );
@@ -303,9 +303,8 @@ namespace Server.Items
 		private static void OnMapCommand( NetState state, PacketReader pvSrc )
 		{
 			Mobile from = state.Mobile;
-			MapItem map = World.FindItem( pvSrc.ReadInt32() ) as MapItem;
 
-			if ( map == null )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is MapItem map) )
 				return;
 
 			int command = pvSrc.ReadByte();
@@ -366,7 +365,7 @@ namespace Server.Items
 				m_Stream.Write( (byte) command );
 				m_Stream.Write( (byte) number );
 				m_Stream.Write( (short) x );
-				m_Stream.Write( (short) y ); 
+				m_Stream.Write( (short) y );
 			}
 		}
 

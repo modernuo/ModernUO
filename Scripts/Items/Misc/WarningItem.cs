@@ -111,8 +111,8 @@ namespace Server.Items
 
 				foreach ( Item item in GetItemsInRange( NeighborRange ) )
 				{
-					if ( item != this && item is WarningItem )
-						list.Add( (WarningItem)item );
+					if ( item != this && item is WarningItem warningItem )
+						list.Add( warningItem );
 				}
 
 				for ( int i = 0; i < list.Count; i++ )

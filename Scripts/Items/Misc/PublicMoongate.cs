@@ -323,8 +323,8 @@ namespace Server.Items
 				}
 				else
 				{
-					ClientFlags flags = mobile.NetState == null ? ClientFlags.None : mobile.NetState.Flags;
-					bool young = mobile is PlayerMobile ? ((PlayerMobile)mobile).Young : false;
+					ClientFlags flags = mobile.NetState?.Flags ?? ClientFlags.None;
+					bool young = mobile is PlayerMobile playerMobile && playerMobile.Young;
 
 					if ( Core.SE && (flags & ClientFlags.Tokuno) != 0 )
 						checkLists = young ? PMList.SEListsYoung : PMList.SELists;

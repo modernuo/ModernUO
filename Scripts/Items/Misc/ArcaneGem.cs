@@ -59,31 +59,35 @@ namespace Server.Items
 				return;
 			}
 
-			if ( obj is IArcaneEquip && obj is Item )
+			if ( obj is IArcaneEquip eq && eq is Item item )
 			{
-				Item item = (Item)obj;
 				CraftResource resource = CraftResource.None;
 
-				if ( item is BaseClothing )
-					resource = ((BaseClothing)item).Resource;
-				else if ( item is BaseArmor )
-					resource = ((BaseArmor)item).Resource;
-				else if ( item is BaseWeapon ) // Sanity, weapons cannot receive gems...
-					resource = ((BaseWeapon)item).Resource;
-
-				IArcaneEquip eq = (IArcaneEquip)obj;
+				switch (item)
+				{
+					case BaseClothing clothing:
+						resource = clothing.Resource;
+						break;
+					case BaseArmor armor:
+						resource = armor.Resource;
+						break;
+					// Sanity, weapons cannot receive gems...
+					case BaseWeapon weapon:
+						resource = weapon.Resource;
+						break;
+				}
 
 				if ( !item.IsChildOf( from.Backpack ) )
 				{
 					from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 					return;
 				}
-				else if ( item.LootType == LootType.Blessed )
+				if ( item.LootType == LootType.Blessed )
 				{
 					from.SendMessage( "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves." );
 					return;
 				}
-				else if ( resource != CraftResource.None && resource != CraftResource.RegularLeather )
+				if ( resource != CraftResource.None && resource != CraftResource.RegularLeather )
 				{
 					from.SendLocalizedMessage( 1049690 ); // Arcane gems can not be used on that type of leather.
 					return;
@@ -117,30 +121,37 @@ namespace Server.Items
 				{
 					bool isExceptional = false;
 
-					if ( item is BaseClothing )
-						isExceptional = ( ((BaseClothing)item).Quality == ClothingQuality.Exceptional );
-					else if ( item is BaseArmor )
-						isExceptional = ( ((BaseArmor)item).Quality == ArmorQuality.Exceptional );
-					else if ( item is BaseWeapon )
-						isExceptional = ( ((BaseWeapon)item).Quality == WeaponQuality.Exceptional );
+					switch (item)
+					{
+						case BaseClothing clothing:
+							isExceptional = clothing.Quality == ClothingQuality.Exceptional;
+							break;
+						case BaseArmor armor:
+							isExceptional = armor.Quality == ArmorQuality.Exceptional;
+							break;
+						case BaseWeapon weapon:
+							isExceptional = weapon.Quality == WeaponQuality.Exceptional;
+							break;
+					}
 
 					if ( isExceptional )
 					{
-						if ( item is BaseClothing )
+						switch (item)
 						{
-							((BaseClothing)item).Quality = ClothingQuality.Regular;
-							((BaseClothing)item).Crafter = from;
-						}
-						else if ( item is BaseArmor )
-						{
-							((BaseArmor)item).Quality = ArmorQuality.Regular;
-							((BaseArmor)item).Crafter = from;
-							((BaseArmor)item).PhysicalBonus = ((BaseArmor)item).FireBonus = ((BaseArmor)item).ColdBonus = ((BaseArmor)item).PoisonBonus = ((BaseArmor)item).EnergyBonus = 0; // Is there a method to remove bonuses?
-						}
-						else if ( item is BaseWeapon ) // Sanity, weapons cannot receive gems...
-						{
-							((BaseWeapon)item).Quality = WeaponQuality.Regular;
-							((BaseWeapon)item).Crafter = from;
+							case BaseClothing clothing:
+								clothing.Quality = ClothingQuality.Regular;
+								clothing.Crafter = @from;
+								break;
+							case BaseArmor armor:
+								armor.Quality = ArmorQuality.Regular;
+								armor.Crafter = @from;
+								armor.PhysicalBonus = armor.FireBonus = armor.ColdBonus = armor.PoisonBonus = armor.EnergyBonus = 0; // Is there a method to remove bonuses?
+								break;
+							// Sanity, weapons cannot receive gems...
+							case BaseWeapon weapon:
+								weapon.Quality = WeaponQuality.Regular;
+								weapon.Crafter = @from;
+								break;
 						}
 
 						eq.CurArcaneCharges = eq.MaxArcaneCharges = charges;
@@ -177,13 +188,8 @@ namespace Server.Items
 			{
 				Item obj = items[i];
 
-				if ( obj is IArcaneEquip )
-				{
-					IArcaneEquip eq = (IArcaneEquip)obj;
-
-					if ( eq.IsArcane )
-						avail += eq.CurArcaneCharges;
-				}
+				if ( obj is IArcaneEquip eq && eq.IsArcane )
+					avail += eq.CurArcaneCharges;
 			}
 
 			if ( avail < amount )
@@ -193,23 +199,16 @@ namespace Server.Items
 			{
 				Item obj = items[i];
 
-				if ( obj is IArcaneEquip )
+				if ( obj is IArcaneEquip eq && eq.IsArcane )
 				{
-					IArcaneEquip eq = (IArcaneEquip)obj;
-
-					if ( eq.IsArcane )
+					if ( eq.CurArcaneCharges > amount )
 					{
-						if ( eq.CurArcaneCharges > amount )
-						{
-							eq.CurArcaneCharges -= amount;
-							break;
-						}
-						else
-						{
-							amount -= eq.CurArcaneCharges;
-							eq.CurArcaneCharges = 0;
-						}
+						eq.CurArcaneCharges -= amount;
+						break;
 					}
+
+					amount -= eq.CurArcaneCharges;
+					eq.CurArcaneCharges = 0;
 				}
 			}
 

@@ -245,8 +245,7 @@ namespace Server.Items
 				if ( !m_Contract.IsUsableBy( from, false, true, true, true ) )
 					return;
 
-				IPoint3D location = targeted as IPoint3D;
-				if ( location == null )
+				if ( !(targeted is IPoint3D location) )
 					return;
 
 				Point3D pLocation = new Point3D( location );
@@ -284,8 +283,7 @@ namespace Server.Items
 				}
 				else
 				{
-					bool vendor, contract;
-					BaseHouse.IsThereVendor( pLocation, map, out vendor, out contract );
+					BaseHouse.IsThereVendor( pLocation, map, out var vendor, out var contract );
 
 					if ( vendor )
 					{

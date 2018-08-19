@@ -62,21 +62,21 @@ namespace Server.Items
 		private BookPageInfo[] m_Pages;
 		private bool m_Writable;
 		private SecureLevel m_SecureLevel;
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Title
 		{
 			get { return m_Title; }
 			set { m_Title = value; InvalidateProperties(); }
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Author
 		{
 			get { return m_Author; }
 			set { m_Author = value; InvalidateProperties(); }
 		}
-		
+
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Writable
 		{
@@ -147,7 +147,7 @@ namespace Server.Items
 		}
 
 		public virtual BookContent DefaultContent{ get{ return null; } }
-	
+
 		public BaseBook( Serial serial ) : base( serial )
 		{
 		}
@@ -313,13 +313,13 @@ namespace Server.Items
 			if ( m_Pages != null && m_Pages.Length > 0 )
 				list.Add( 1060660, "Pages\t{0}", m_Pages.Length ); // ~1_val~: ~2_val~
 		}*/
-		
+
 		public override void OnSingleClick ( Mobile from )
 		{
 			LabelTo( from, "{0} by {1}", m_Title, m_Author );
 			LabelTo( from, "[{0} pages]", m_Pages.Length );
 		}
-		
+
 		public override void OnDoubleClick ( Mobile from )
 		{
 			if ( m_Title == null && m_Author == null && m_Writable == true )
@@ -375,9 +375,8 @@ namespace Server.Items
 		public static void OldHeaderChange( NetState state, PacketReader pvSrc )
 		{
 			Mobile from = state.Mobile;
-			BaseBook book = World.FindItem( pvSrc.ReadInt32() ) as BaseBook;
 
-			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BaseBook book) || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
 				return;
 
 			pvSrc.Seek( 4, SeekOrigin.Current ); // Skip flags and page count
@@ -392,9 +391,8 @@ namespace Server.Items
 		public static void HeaderChange( NetState state, PacketReader pvSrc )
 		{
 			Mobile from = state.Mobile;
-			BaseBook book = World.FindItem( pvSrc.ReadInt32() ) as BaseBook;
 
-			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BaseBook book) || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
 				return;
 
 			pvSrc.Seek( 4, SeekOrigin.Current ); // Skip flags and page count
@@ -420,9 +418,8 @@ namespace Server.Items
 		public static void ContentChange( NetState state, PacketReader pvSrc )
 		{
 			Mobile from = state.Mobile;
-			BaseBook book = World.FindItem( pvSrc.ReadInt32() ) as BaseBook;
 
-			if ( book == null || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BaseBook book) || !book.Writable || !from.InRange( book.GetWorldLocation(), 1 ) || !book.IsAccessibleTo( from ) )
 				return;
 
 			int pageCount = pvSrc.ReadUInt16();

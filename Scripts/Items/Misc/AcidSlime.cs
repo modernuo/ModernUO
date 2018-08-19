@@ -60,8 +60,7 @@ namespace Server.Items
 
 				foreach( Mobile m in GetMobilesInRange( 0 ) )
 				{
-					BaseCreature bc = m as BaseCreature;
-					if ( m.Alive && !m.IsDeadBondedPet && (bc == null || bc.Controlled || bc.Summoned) )
+					if ( m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned) )
 					{
 						toDamage.Add( m );
 					}

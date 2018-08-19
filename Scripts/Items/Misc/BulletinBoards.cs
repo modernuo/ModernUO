@@ -88,9 +88,7 @@ namespace Server.Items
 				if ( i >= items.Count )
 					continue;
 
-				BulletinMessage msg = items[i] as BulletinMessage;
-
-				if ( msg == null )
+				if ( !(items[i] is BulletinMessage msg) )
 					continue;
 
 				if ( msg.Thread == null && CheckTime( msg.LastPostTime, ThreadDeletionTime ) )
@@ -111,9 +109,7 @@ namespace Server.Items
 				if ( i >= items.Count )
 					continue;
 
-				BulletinMessage check = items[i] as BulletinMessage;
-
-				if ( check == null )
+				if ( !(items[i] is BulletinMessage check) )
 					continue;
 
 				if ( check.Thread == msg )
@@ -134,9 +130,7 @@ namespace Server.Items
 
 			for ( int i = 0; i < items.Count; ++i )
 			{
-				BulletinMessage msg = items[i] as BulletinMessage;
-
-				if ( msg == null || msg.Poster != poster )
+				if ( !(items[i] is BulletinMessage msg) || msg.Poster != poster )
 					continue;
 
 				if ( onlyCheckRoot && msg.Thread != null )
@@ -227,9 +221,8 @@ namespace Server.Items
 			Mobile from = state.Mobile;
 
 			int packetID = pvSrc.ReadByte();
-			BaseBulletinBoard board = World.FindItem( pvSrc.ReadInt32() ) as BaseBulletinBoard;
 
-			if ( board == null || !board.CheckRange( from ) )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BaseBulletinBoard board) || !board.CheckRange( from ) )
 				return;
 
 			switch ( packetID )
@@ -243,9 +236,7 @@ namespace Server.Items
 
 		public static void BBRequestContent( Mobile from, BaseBulletinBoard board, PacketReader pvSrc )
 		{
-			BulletinMessage msg = World.FindItem( pvSrc.ReadInt32() ) as BulletinMessage;
-
-			if ( msg == null || msg.Parent != board )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BulletinMessage msg) || msg.Parent != board )
 				return;
 
 			from.Send( new BBMessageContent( board, msg ) );
@@ -253,9 +244,7 @@ namespace Server.Items
 
 		public static void BBRequestHeader( Mobile from, BaseBulletinBoard board, PacketReader pvSrc )
 		{
-			BulletinMessage msg = World.FindItem( pvSrc.ReadInt32() ) as BulletinMessage;
-
-			if ( msg == null || msg.Parent != board )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BulletinMessage msg) || msg.Parent != board )
 				return;
 
 			from.Send( new BBMessageHeader( board, msg ) );
@@ -270,7 +259,7 @@ namespace Server.Items
 
 			int breakout = 0;
 
-			while ( thread != null && thread.Thread != null && breakout++ < 10 )
+			while ( thread?.Thread != null && breakout++ < 10 )
 				thread = thread.Thread;
 
 			DateTime lastPostTime = DateTime.MinValue;
@@ -306,9 +295,7 @@ namespace Server.Items
 
 		public static void BBRemoveMessage( Mobile from, BaseBulletinBoard board, PacketReader pvSrc )
 		{
-			BulletinMessage msg = World.FindItem( pvSrc.ReadInt32() ) as BulletinMessage;
-
-			if ( msg == null || msg.Parent != board )
+			if ( !(World.FindItem( pvSrc.ReadInt32() ) is BulletinMessage msg) || msg.Parent != board )
 				return;
 
 			if ( from.AccessLevel < AccessLevel.GameMaster && msg.Poster != from )
@@ -476,7 +463,7 @@ namespace Server.Items
 
 		public void Validate()
 		{
-			if ( !( Parent is BulletinBoard && ((BulletinBoard)Parent).Items.Contains( this ) ) )
+			if ( (Parent as BulletinBoard)?.Items.Contains( this ) == false )
 				Delete();
 		}
 	}

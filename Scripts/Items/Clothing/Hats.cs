@@ -732,8 +732,8 @@ namespace Server.Items
 		{
 			base.OnAdded( parent );
 
-			if ( parent is Mobile )
-				Misc.Titles.AwardKarma( (Mobile)parent, -20, true );
+			if ( parent is Mobile mobile )
+				Misc.Titles.AwardKarma( mobile, -20, true );
 		}
 
 		public OrcishKinMask( Serial serial ) : base( serial )

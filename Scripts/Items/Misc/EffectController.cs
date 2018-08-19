@@ -183,13 +183,13 @@ namespace Server.Items
 			writer.Write( m_TriggerDelay );
 			writer.Write( m_SoundDelay );
 
-			if ( m_Source is Item )
-				writer.Write( m_Source as Item );
+			if ( m_Source is Item srcItem )
+				writer.Write( srcItem );
 			else
 				writer.Write( m_Source as Mobile );
 
-			if ( m_Target is Item )
-				writer.Write( m_Target as Item );
+			if ( m_Target is Item targItem )
+				writer.Write( targItem );
 			else
 				writer.Write( m_Target as Mobile );
 
@@ -269,12 +269,12 @@ namespace Server.Items
 			IEntity ent = null;
 
 			if (m_PlaySoundAtTrigger)
-				ent = trigger as IEntity;
+				ent = trigger;
 
 			if (ent == null)
 				ent = this;
 
-			Effects.PlaySound((ent is Item) ? ((Item)ent).GetWorldLocation() : ent.Location, ent.Map, m_SoundID);
+			Effects.PlaySound((ent as Item)?.GetWorldLocation() ?? ent.Location, ent.Map, m_SoundID);
 		}
 
 		public void DoEffect(IEntity trigger)
@@ -282,7 +282,7 @@ namespace Server.Items
 			if (Deleted || m_TriggerType == EffectTriggerType.None)
 				return;
 
-			if (trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).AccessLevel > AccessLevel.Player)
+			if (trigger is Mobile mobile && mobile.Hidden && mobile.AccessLevel > AccessLevel.Player)
 				return;
 
 			if (m_SoundID > 0)

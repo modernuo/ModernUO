@@ -17,9 +17,7 @@ namespace Server.Items
 			{
 				m_Active = value;
 
-				SHTeleporter sourceAddon = Addon as SHTeleporter;
-
-				if ( sourceAddon != null )
+				if ( Addon is SHTeleporter sourceAddon )
 					sourceAddon.ChangeActive( value );
 			}
 		}
@@ -46,9 +44,7 @@ namespace Server.Items
 			{
 				m_TeleDest = value;
 
-				SHTeleporter sourceAddon = Addon as SHTeleporter;
-
-				if ( sourceAddon != null )
+				if ( Addon is SHTeleporter sourceAddon )
 					sourceAddon.ChangeDest( value );
 			}
 		}

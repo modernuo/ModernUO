@@ -61,9 +61,9 @@ namespace Server.Items
 
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house != null && house.IsLockedDown( this ) )
+			if ( house?.IsLockedDown( this ) == true )
 			{
-				if ( dropped is VendorRentalContract || ( dropped is Container && ((Container)dropped).FindItemByType( typeof( VendorRentalContract ) ) != null ) )
+				if ( dropped is VendorRentalContract || ( dropped is Container container && container.FindItemByType( typeof( VendorRentalContract ) ) != null ) )
 				{
 					from.SendLocalizedMessage( 1062492 ); // You cannot place a rental contract in a locked down container.
 					return false;
@@ -95,9 +95,9 @@ namespace Server.Items
 
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house != null && house.IsLockedDown( this ) )
+			if ( house?.IsLockedDown( this ) == true )
 			{
-				if ( item is VendorRentalContract || ( item is Container && ((Container)item).FindItemByType( typeof( VendorRentalContract ) ) != null ) )
+				if ( item is VendorRentalContract || ( item is Container container && container.FindItemByType( typeof( VendorRentalContract ) ) != null ) )
 				{
 					from.SendLocalizedMessage( 1062492 ); // You cannot place a rental contract in a locked down container.
 					return false;
@@ -119,8 +119,8 @@ namespace Server.Items
 		{
 			base.UpdateTotal( sender, type, delta );
 
-			if ( type == TotalType.Weight && RootParent is Mobile )
-				((Mobile) RootParent).InvalidateProperties();
+			if ( type == TotalType.Weight )
+				(RootParent as Mobile)?.InvalidateProperties();
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -238,12 +238,7 @@ namespace Server.Items
 
 		public override bool CheckContentDisplay( Mobile from )
 		{
-			object root = this.RootParent;
-
-			if ( root is BaseCreature && ((BaseCreature)root).Controlled && ((BaseCreature)root).ControlMaster == from )
-				return true;
-
-			return base.CheckContentDisplay( from );
+			return RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from || base.CheckContentDisplay( from );
 		}
 
 		public StrongBackpack( Serial serial ) : base( serial )
@@ -279,16 +274,10 @@ namespace Server.Items
 
 		public override int DefaultMaxWeight {
 			get {
-				if ( Core.ML ) {
-					Mobile m = Parent as Mobile;
-					if ( m != null && m.Player && m.Backpack == this ) {
-						return 550;
-					} else {
-						return base.DefaultMaxWeight;
-					}
-				} else {
-					return base.DefaultMaxWeight;
-				}
+				if ( Core.ML && Parent is Mobile m && m.Player && m.Backpack == this )
+					return 550;
+
+				return base.DefaultMaxWeight;
 			}
 		}
 

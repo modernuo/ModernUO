@@ -53,9 +53,8 @@ namespace Server.Items
 				{
 					message = "It cannot weight itself.";
 				}
-				else if ( targeted is Item )
+				else if ( targeted is Item item )
 				{
-					Item item = (Item)targeted;
 					object root = item.RootParent;
 
 					if ( (root != null && root != from) || item.Parent == from )

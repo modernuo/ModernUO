@@ -98,17 +98,15 @@ namespace Server.Items
 
 			Container root = parent as Container;
 
-			while (root != null && root.Parent is Container)
+			while (root?.Parent is Container)
 			{
 				root = (Container)root.Parent;
 			}
 
 			parent = root ?? parent;
 
-			if (parent is SecureTradeContainer && AccountGold.ConvertOnTrade)
+			if (parent is SecureTradeContainer trade && AccountGold.ConvertOnTrade)
 			{
-				var trade = (SecureTradeContainer)parent;
-
 				if (trade.Trade.From.Container == trade)
 				{
 					tradeInfo = trade.Trade.From;
@@ -120,12 +118,12 @@ namespace Server.Items
 					owner = tradeInfo.Mobile;
 				}
 			}
-			else if (parent is BankBox && AccountGold.ConvertOnBank)
+			else if (parent is BankBox box && AccountGold.ConvertOnBank)
 			{
-				owner = ((BankBox)parent).Owner;
+				owner = box.Owner;
 			}
 
-			if (owner == null || owner.Account == null || !owner.Account.DepositGold(Worth))
+			if (owner?.Account == null || !owner.Account.DepositGold(Worth))
 			{
 				return;
 			}
@@ -134,17 +132,13 @@ namespace Server.Items
 			{
 				if (owner.NetState != null && !owner.NetState.NewSecureTrading)
 				{
-					int gold;
-					int plat = Math.DivRem(Worth, AccountGold.CurrencyThreshold, out gold);
+					int plat = Math.DivRem(Worth, AccountGold.CurrencyThreshold, out var gold);
 
 					tradeInfo.Plat += plat;
 					tradeInfo.Gold += gold;
 				}
 
-				if (tradeInfo.VirtualCheck != null)
-				{
-					tradeInfo.VirtualCheck.UpdateTrade(tradeInfo.Mobile);
-				}
+				tradeInfo.VirtualCheck?.UpdateTrade(tradeInfo.Mobile);
 			}
 
 			owner.SendLocalizedMessage(1042763, Worth.ToString("#,0"));
@@ -239,9 +233,7 @@ namespace Server.Items
 			// Gold was deposited in your account:
 			from.SendLocalizedMessage(1042672, true, deposited.ToString("#,0"));
 
-			var pm = from as PlayerMobile;
-
-			if (pm != null)
+			if (@from is PlayerMobile pm)
 			{
 				var qs = pm.Quest;
 

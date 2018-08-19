@@ -116,9 +116,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			BaseJewel jewel = newItem as BaseJewel;
-
-			if ( jewel == null )
+			if ( !(newItem is BaseJewel jewel) )
 				return;
 
 			jewel.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
@@ -143,10 +141,8 @@ namespace Server.Items
 
 		public override void OnAdded(IEntity parent)
 		{
-			if ( Core.AOS && parent is Mobile )
+			if ( Core.AOS && parent is Mobile from )
 			{
-				Mobile from = (Mobile)parent;
-
 				m_AosSkillBonuses.AddTo( from );
 
 				int strBonus = m_AosAttributes.BonusStr;
@@ -173,19 +169,17 @@ namespace Server.Items
 
 		public override void OnRemoved(IEntity parent)
 		{
-			if ( Core.AOS && parent is Mobile )
+			if ( Core.AOS && parent is Mobile @from )
 			{
-				Mobile from = (Mobile)parent;
-
 				m_AosSkillBonuses.Remove();
 
 				string modName = this.Serial.ToString();
 
-				from.RemoveStatMod( modName + "Str" );
-				from.RemoveStatMod( modName + "Dex" );
-				from.RemoveStatMod( modName + "Int" );
+				@from.RemoveStatMod( modName + "Str" );
+				@from.RemoveStatMod( modName + "Dex" );
+				@from.RemoveStatMod( modName + "Int" );
 
-				from.CheckStatTimers();
+				@from.CheckStatTimers();
 			}
 		}
 
@@ -327,17 +321,17 @@ namespace Server.Items
 					m_AosResistances = new AosElementAttributes( this, reader );
 					m_AosSkillBonuses = new AosSkillBonuses( this, reader );
 
-					if ( Core.AOS && Parent is Mobile )
-						m_AosSkillBonuses.AddTo( (Mobile)Parent );
+					Mobile m = Parent as Mobile;
+
+					if ( Core.AOS && m != null )
+						m_AosSkillBonuses.AddTo( m );
 
 					int strBonus = m_AosAttributes.BonusStr;
 					int dexBonus = m_AosAttributes.BonusDex;
 					int intBonus = m_AosAttributes.BonusInt;
 
-					if ( Parent is Mobile && (strBonus != 0 || dexBonus != 0 || intBonus != 0) )
+					if ( m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0) )
 					{
-						Mobile m = (Mobile)Parent;
-
 						string modName = Serial.ToString();
 
 						if ( strBonus != 0 )
@@ -350,8 +344,7 @@ namespace Server.Items
 							m.AddStatMod( new StatMod( StatType.Int, modName + "Int", intBonus, TimeSpan.Zero ) );
 					}
 
-					if ( Parent is Mobile )
-						((Mobile)Parent).CheckStatTimers();
+					m?.CheckStatTimers();
 
 					break;
 				}

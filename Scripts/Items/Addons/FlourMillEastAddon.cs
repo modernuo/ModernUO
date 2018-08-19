@@ -74,9 +74,7 @@ namespace Server.Items
 				m_Timer = null;
 			}
 
-			Mobile from = state as Mobile;
-
-			if ( from != null && !from.Deleted && !this.Deleted && IsFull )
+			if ( state is Mobile from && !from.Deleted && !this.Deleted && IsFull )
 			{
 				SackFlour flour = new SackFlour();
 
@@ -137,9 +135,7 @@ namespace Server.Items
 
 			for ( int i = 0; i < components.Count; ++i )
 			{
-				AddonComponent component = components[i] as AddonComponent;
-
-				if ( component == null )
+				if ( !(components[i] is AddonComponent component) )
 					continue;
 
 				int[] itemTable = FindItemTable( component.ItemID );

@@ -45,19 +45,14 @@ namespace Server.Items
 		{
 			foreach( Item i in Items )
 			{
-				if ( i != null && !i.Deleted )
+				if (i?.Deleted != false)
+					continue;
+
+				switch (i)
 				{
-					if ( i is BaseWeapon )
-					{
-						if ( CraftResources.GetType( ( (BaseWeapon)i ).Resource ) == CraftResourceType.Metal )
-						return true;
-					}
-					if ( i is BaseArmor )
-					{
-						if ( CraftResources.GetType( ( (BaseArmor)i ).Resource ) == CraftResourceType.Metal )
-						return true;
-					}
-					if ( i is DragonBardingDeed )
+					case BaseWeapon weapon when CraftResources.GetType( weapon.Resource ) == CraftResourceType.Metal:
+					case BaseArmor armor when CraftResources.GetType( armor.Resource ) == CraftResourceType.Metal:
+					case DragonBardingDeed _:
 						return true;
 				}
 			}
@@ -68,20 +63,18 @@ namespace Server.Items
 		{
 			foreach( Item i in Items )
 			{
-				if ( i != null && !i.Deleted )
+				if (!(i is IScissorable && !i.Deleted))
+					continue;
+
+				switch (i)
 				{
-					if ( i is IScissorable )
-					{
-						if ( i is BaseClothing )
-							return true;
-						if ( i is BaseArmor )
-						{
-							if ( CraftResources.GetType( ( (BaseArmor)i ).Resource ) == CraftResourceType.Leather )
-							return true;
-						}
-						if ( ( i is Cloth ) || ( i is BoltOfCloth ) || ( i is Hides ) || ( i is BonePile ) )
-							return true;
-					}
+					case BaseClothing _:
+					case BaseArmor armor when CraftResources.GetType( armor.Resource ) == CraftResourceType.Leather:
+					case Cloth _:
+					case BoltOfCloth _:
+					case Hides _:
+					case BonePile _:
+						return true;
 				}
 			}
 			return false;
@@ -128,7 +121,7 @@ namespace Server.Items
                 Type resourceType = info.ResourceTypes[ 0 ];
                 Item ingot = (Item)Activator.CreateInstance( resourceType );
 
-                if ( item is DragonBardingDeed || ( item is BaseArmor && ( (BaseArmor)item ).PlayerConstructed ) || ( item is BaseWeapon && ( (BaseWeapon)item ).PlayerConstructed ) || ( item is BaseClothing && ( (BaseClothing)item ).PlayerConstructed ) )
+                if ( item is DragonBardingDeed || ( item is BaseArmor armor && armor.PlayerConstructed ) || ( item is BaseWeapon weapon && weapon.PlayerConstructed ) || ( item is BaseClothing clothing && clothing.PlayerConstructed ) )
 					{
 						double mining = from.Skills[ SkillName.Mining ].Value;
 						if ( mining > 100.0 )
@@ -176,7 +169,7 @@ namespace Server.Items
             bool ToolFound = false;
             foreach( Item tool in tools )
             {
-                if ( tool is BaseTool && ( (BaseTool)tool ).CraftSystem == DefBlacksmithy.CraftSystem )
+                if ( tool is BaseTool baseTool && baseTool.CraftSystem == DefBlacksmithy.CraftSystem )
                     ToolFound = true;
             }
 
@@ -186,8 +179,7 @@ namespace Server.Items
                 return;
             }
 
-            bool anvil, forge;
-            DefBlacksmithy.CheckAnvilAndForge( from, 2, out anvil, out forge );
+	        DefBlacksmithy.CheckAnvilAndForge( from, 2, out _, out var forge );
 
             if ( !forge )
             {
@@ -204,31 +196,28 @@ namespace Server.Items
 
             for(int i = Smeltables.Count - 1; i >= 0; i--)
             {
-                Item item = Smeltables[ i ];
-
-				if ( item is BaseArmor )
-				{
-					if ( Resmelt( from, item, ( (BaseArmor)item ).Resource ) )
-						salvaged++;
-					else
-						notSalvaged++;
-				}
-				else if ( item is BaseWeapon )
-				{
-					if ( Resmelt( from, item, ( (BaseWeapon)item ).Resource ) )
-						salvaged++;
-					else
-						notSalvaged++;
-				}
-				else if ( item is DragonBardingDeed )
-				{
-					if ( Resmelt( from, item, ( (DragonBardingDeed)item ).Resource ) )
-						salvaged++;
-
-					else
-						notSalvaged++;
-				}
-			}
+	            switch (Smeltables[i])
+	            {
+		            case BaseArmor armor when Resmelt( from, armor, armor.Resource ):
+			            salvaged++;
+			            break;
+		            case BaseArmor _:
+			            notSalvaged++;
+			            break;
+		            case BaseWeapon weapon when Resmelt( from, weapon, weapon.Resource ):
+			            salvaged++;
+			            break;
+		            case BaseWeapon _:
+			            notSalvaged++;
+			            break;
+		            case DragonBardingDeed deed when Resmelt( from, deed, deed.Resource ):
+			            salvaged++;
+			            break;
+		            case DragonBardingDeed _:
+			            notSalvaged++;
+			            break;
+	            }
+            }
 			if ( m_Failure )
 			{
 				from.SendLocalizedMessage( 1079975 ); // You failed to smelt some metal for lack of skill.
@@ -240,8 +229,7 @@ namespace Server.Items
 
         private void SalvageCloth( Mobile from )
         {
-            Scissors scissors = from.Backpack.FindItemByType( typeof( Scissors ) ) as Scissors;
-            if ( scissors == null )
+	        if ( !(from.Backpack.FindItemByType( typeof( Scissors ) ) is Scissors scissors) )
             {
                 from.SendLocalizedMessage( 1079823 ); // You need scissors in order to salvage cloth.
                 return;
@@ -258,22 +246,18 @@ namespace Server.Items
 			{
 				Item item = scissorables[i];
 
-				if ( item is IScissorable )
-				{
-					IScissorable scissorable = (IScissorable)item;
+				if (!(item is IScissorable scissorable))
+					continue;
 
-					if ( Scissors.CanScissor( from, scissorable ) && scissorable.Scissor( from, scissors ) )
-						++salvaged;
-					else
-						++notSalvaged;
-				}
+				if ( Scissors.CanScissor( from, scissorable ) && scissorable.Scissor( from, scissors ) )
+					++salvaged;
+				else
+					++notSalvaged;
 			}
 
             from.SendLocalizedMessage( 1079974, String.Format( "{0}\t{1}", salvaged, salvaged + notSalvaged ) ); // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
 
-			Container pack = from.Backpack;
-
-			foreach (Item i in ((Container)this).FindItemsByType(typeof(Item), true))
+			foreach (Item i in this.FindItemsByType(typeof(Item), true))
 			{
 				if ( ( i is Leather ) || ( i is Cloth ) || ( i is SpinedLeather ) || ( i is HornedLeather ) || ( i is BarbedLeather ) || ( i is Bandage ) || ( i is Bone ) )
 				{

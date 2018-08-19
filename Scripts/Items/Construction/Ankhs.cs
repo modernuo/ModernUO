@@ -16,8 +16,8 @@ namespace Server.Items
 
 		public static void GetContextMenuEntries( Mobile from, Item item, List<ContextMenuEntry> list )
 		{
-			if ( from is PlayerMobile )
-				list.Add( new LockKarmaEntry( (PlayerMobile)from ) );
+			if ( from is PlayerMobile mobile )
+				list.Add( new LockKarmaEntry( mobile ) );
 
 			list.Add( new ResurrectEntry( from, item ) );
 

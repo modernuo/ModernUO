@@ -54,9 +54,7 @@ namespace Server.Items
 			if ( Deleted )
 				return;
 
-			SwampDragon pet = obj as SwampDragon;
-
-			if ( pet == null || pet.HasBarding )
+			if ( !(obj is SwampDragon pet) || pet.HasBarding )
 			{
 				from.SendLocalizedMessage( 1053025 ); // That is not an unarmored swamp dragon.
 			}

@@ -192,16 +192,16 @@ namespace Server.Items
 		{
 			base.OnAdded( parent );
 
-			if ( parent is Mobile )
-				((Mobile)parent).VirtualArmorMod += 2;
+			if ( parent is Mobile mobile )
+				mobile.VirtualArmorMod += 2;
 		}
 
 		public override void OnRemoved(IEntity parent)
 		{
 			base.OnRemoved( parent );
 
-			if ( parent is Mobile )
-				((Mobile)parent).VirtualArmorMod -= 2;
+			if ( parent is Mobile mobile )
+				mobile.VirtualArmorMod -= 2;
 		}
 
 		public override bool Dye( Mobile from, DyeTub sender )
@@ -275,8 +275,8 @@ namespace Server.Items
 				}
 			}
 
-			if ( Parent is Mobile )
-				((Mobile)Parent).VirtualArmorMod += 2;
+			if ( Parent is Mobile mobile )
+				mobile.VirtualArmorMod += 2;
 		}
 	}
 

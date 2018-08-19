@@ -28,16 +28,16 @@ namespace Server.Items
 		{
 			base.OnAdded( parent );
 
-			if ( parent is Mobile && Burning )
-				Mobiles.MeerMage.StopEffect( (Mobile)parent, true );
+			if ( parent is Mobile mobile && Burning )
+				Mobiles.MeerMage.StopEffect( mobile, true );
 		}
 
 		public override void Ignite()
 		{
 			base.Ignite();
 
-			if ( Parent is Mobile && Burning )
-				Mobiles.MeerMage.StopEffect( (Mobile)Parent, true );
+			if ( Parent is Mobile mobile && Burning )
+				Mobiles.MeerMage.StopEffect( mobile, true );
 		}
 
 		public Torch( Serial serial ) : base( serial )
