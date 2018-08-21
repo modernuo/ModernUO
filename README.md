@@ -1,6 +1,9 @@
 ModernUO
 =====
 
+### Goals
+- See [Goals](./GOALS.md)
+
 ### Requirements
 - .NET Framework 4.7 or Mono 5.10+
 - zlib (Linux only)
@@ -18,3 +21,5 @@ ModernUO
 
 ### Running on Mac/Linux (MONO)
 `mono RunUO.exe`
+
+### Contribution
