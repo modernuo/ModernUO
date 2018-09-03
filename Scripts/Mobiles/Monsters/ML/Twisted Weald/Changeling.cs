@@ -195,7 +195,7 @@ namespace Server.Mobiles
 			Body = 264;
 			Hue = ( IsParagon && DefaultHue == 0 ) ? Paragon.Hue : DefaultHue;
 			Female = false;
-			Name = DefaultName;
+			Name = null;
 			NameHue = -1;
 			Title = null;
 			Kills = 0;

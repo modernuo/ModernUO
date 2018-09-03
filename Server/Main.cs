@@ -519,7 +519,7 @@ namespace Server
 
 			try
 			{
-				long now, last = TickCount;
+				long last = TickCount;
 
 				const int sampleInterval = 100;
 				const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -530,24 +530,25 @@ namespace Server
 				{
 					m_Signal.WaitOne();
 
-					Mobile.ProcessDeltaQueue();
-					Item.ProcessDeltaQueue();
+					Task.WaitAll(
+						Task.Run(() => Mobile.ProcessDeltaQueue()),
+						Task.Run(() => Item.ProcessDeltaQueue()),
+						Task.Run(() => Timer.Slice()),
+						Task.Run(() => messagePump.Slice())
+					);
 
-					Timer.Slice();
-					messagePump.Slice();
 
 					NetState.FlushAll();
 					NetState.ProcessDisposedQueue();
 
-					if ( Slice != null )
-						Slice();
+					Slice?.Invoke();
 
 					if (sample++ % sampleInterval != 0)
 					{
 						continue;
 					}
 
-					now = TickCount;
+					long now = TickCount;
 					m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
 					last = now;
 				}

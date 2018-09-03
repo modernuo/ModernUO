@@ -256,7 +256,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if (NameMod == null && Name == null)
+				if (NameMod == null && base.Name == null)
 					return DefaultName;
 
 				return base.Name;
