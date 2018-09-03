@@ -39,7 +39,7 @@ namespace Server {
 		{
 			this.PermitBackgroundWrite = permitBackgroundWrite;
 
-			Thread saveThread = new Thread( delegate {
+			Thread saveThread = new Thread( delegate() {
 				SaveItems(metrics);
 			} );
 

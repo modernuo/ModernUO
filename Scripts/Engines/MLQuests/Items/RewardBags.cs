@@ -43,17 +43,20 @@ namespace Server.Engines.MLQuests.Items
 
 		public static void Enhance( Item loot )
 		{
-			switch (loot)
+			if (loot is BaseWeapon weapon)
 			{
-				case BaseWeapon weapon:
-					BaseRunicTool.ApplyAttributesTo( weapon, Utility.RandomMinMax( 1, 5 ), 10, 80 );
-					break;
-				case BaseArmor armor:
-					BaseRunicTool.ApplyAttributesTo( armor, Utility.RandomMinMax( 1, 5 ), 10, 80 );
-					break;
-				default:
-					BaseRunicTool.ApplyAttributesTo((BaseJewel)loot, Utility.RandomMinMax( 1, 5 ), 10, 80 );
-					break;
+				BaseRunicTool.ApplyAttributesTo( weapon, Utility.RandomMinMax( 1, 5 ), 10, 80 );
+				return;
+			}
+
+			if (loot is BaseArmor armor)
+			{
+				BaseRunicTool.ApplyAttributesTo( armor, Utility.RandomMinMax( 1, 5 ), 10, 80 );
+			}
+
+			if (loot is BaseJewel jewel)
+			{
+				BaseRunicTool.ApplyAttributesTo(jewel, Utility.RandomMinMax( 1, 5 ), 10, 80 );
 			}
 		}
 	}

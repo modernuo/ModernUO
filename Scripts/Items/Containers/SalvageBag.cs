@@ -43,19 +43,14 @@ namespace Server.Items
 		#region Checks
 		private bool Resmeltables() //Where context menu checks for metal items and dragon barding deeds
 		{
-			foreach( Item i in Items )
+			foreach (Item i in Items)
 			{
-				if (i?.Deleted != false)
-					continue;
-
-				switch (i)
-				{
-					case BaseWeapon weapon when CraftResources.GetType( weapon.Resource ) == CraftResourceType.Metal:
-					case BaseArmor armor when CraftResources.GetType( armor.Resource ) == CraftResourceType.Metal:
-					case DragonBardingDeed _:
-						return true;
-				}
+				return i?.Deleted == false && (
+					   i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal ||
+				       i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal ||
+				       i is DragonBardingDeed);
 			}
+
 			return false;
 		}
 
@@ -63,20 +58,14 @@ namespace Server.Items
 		{
 			foreach( Item i in Items )
 			{
-				if (!(i is IScissorable && !i.Deleted))
+				if (!(i is IScissorable) || i.Deleted)
 					continue;
 
-				switch (i)
-				{
-					case BaseClothing _:
-					case BaseArmor armor when CraftResources.GetType( armor.Resource ) == CraftResourceType.Leather:
-					case Cloth _:
-					case BoltOfCloth _:
-					case Hides _:
-					case BonePile _:
-						return true;
-				}
+				if (i is BaseClothing || i is Cloth || i is BoltOfCloth || i is Hides || i is BonePile ||
+				    i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
+					return true;
 			}
+
 			return false;
 		}
 		#endregion
@@ -192,32 +181,25 @@ namespace Server.Items
 
 			Container sBag = this;
 
-			List<Item> Smeltables = sBag.FindItemsByType<Item>();
+			List<Item> smeltables = sBag.FindItemsByType<Item>();
 
-            for(int i = Smeltables.Count - 1; i >= 0; i--)
-            {
-	            switch (Smeltables[i])
-	            {
-		            case BaseArmor armor when Resmelt( from, armor, armor.Resource ):
-			            salvaged++;
-			            break;
-		            case BaseArmor _:
-			            notSalvaged++;
-			            break;
-		            case BaseWeapon weapon when Resmelt( from, weapon, weapon.Resource ):
-			            salvaged++;
-			            break;
-		            case BaseWeapon _:
-			            notSalvaged++;
-			            break;
-		            case DragonBardingDeed deed when Resmelt( from, deed, deed.Resource ):
-			            salvaged++;
-			            break;
-		            case DragonBardingDeed _:
-			            notSalvaged++;
-			            break;
-	            }
-            }
+	        foreach (Item item in smeltables)
+	        {
+		        if (item?.Deleted != false)
+			        continue;
+
+		        if (item is BaseArmor armor && Resmelt(from, armor, armor.Resource) ||
+		            item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource) ||
+		            item is DragonBardingDeed)
+		        {
+			        salvaged++;
+		        }
+		        else
+		        {
+			        notSalvaged++;
+		        }
+	        }
+
 			if ( m_Failure )
 			{
 				from.SendLocalizedMessage( 1079975 ); // You failed to smelt some metal for lack of skill.

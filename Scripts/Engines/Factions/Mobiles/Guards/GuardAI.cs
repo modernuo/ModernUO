@@ -573,10 +573,10 @@ namespace Server.Factions
 					StartBandage();
 			}
 
-			if ( m_Mobile.Spell == null && Core.TickCount - m_Mobile.NextSpellTime >= 0 )
-			{
-				Spell spell = null;
+			Spell spell = m_Mobile.Spell as Spell;
 
+			if ( spell == null && Core.TickCount - m_Mobile.NextSpellTime >= 0 )
+			{
 				DateTime toRelease = DateTime.MinValue;
 
 				if ( IsPoisoned )
@@ -678,7 +678,7 @@ namespace Server.Factions
 							if ( types.Count > 1 )
 								spell = new BlessSpell( m_Guard, null );
 							else if ( types.Count == 1 )
-								spell = (Spell) Activator.CreateInstance( types[0], new object[]{ m_Guard, null } );
+								spell = Activator.CreateInstance( types[0], new object[]{ m_Guard, null } ) as Spell;
 						}
 						else if ( types.Count > 0 )
 						{
@@ -757,7 +757,7 @@ namespace Server.Factions
 				if ( spell == null || !spell.Cast() )
 					EquipWeapon();
 			}
-			else if ( m_Mobile.Spell is Spell spell && spell.State == SpellState.Sequencing )
+			else if ( spell?.State == SpellState.Sequencing )
 			{
 				EquipWeapon();
 			}

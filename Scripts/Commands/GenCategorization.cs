@@ -247,13 +247,13 @@ namespace Server.Commands
 
 			if ( x is CategoryEntry entry )
 				a = entry.Title;
-			else if ( x is CategoryTypeEntry typeEntry )
-				a = typeEntry.Type.Name;
+			else if ( x is CategoryTypeEntry xTypeEntry )
+				a = xTypeEntry.Type.Name;
 
 			if ( y is CategoryEntry categoryEntry )
 				b = categoryEntry.Title;
-			else if ( y is CategoryTypeEntry typeEntry )
-				b = typeEntry.Type.Name;
+			else if ( y is CategoryTypeEntry yTypeEntry )
+				b = yTypeEntry.Type.Name;
 
 			if ( a == null && b == null )
 				return 0;

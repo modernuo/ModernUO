@@ -61,21 +61,11 @@ namespace Server.Items
 
 			if ( obj is IArcaneEquip eq && eq is Item item )
 			{
-				CraftResource resource = CraftResource.None;
+				BaseClothing clothing = item as BaseClothing;
+				BaseArmor armor = item as BaseArmor;
+				BaseWeapon weapon = item as BaseWeapon;
 
-				switch (item)
-				{
-					case BaseClothing clothing:
-						resource = clothing.Resource;
-						break;
-					case BaseArmor armor:
-						resource = armor.Resource;
-						break;
-					// Sanity, weapons cannot receive gems...
-					case BaseWeapon weapon:
-						resource = weapon.Resource;
-						break;
-				}
+				CraftResource resource = clothing?.Resource ?? armor?.Resource ?? weapon?.Resource ?? CraftResource.None;
 
 				if ( !item.IsChildOf( from.Backpack ) )
 				{
@@ -119,39 +109,27 @@ namespace Server.Items
 				}
 				else if ( from.Skills[SkillName.Tailoring].Value >= 80.0 )
 				{
-					bool isExceptional = false;
-
-					switch (item)
-					{
-						case BaseClothing clothing:
-							isExceptional = clothing.Quality == ClothingQuality.Exceptional;
-							break;
-						case BaseArmor armor:
-							isExceptional = armor.Quality == ArmorQuality.Exceptional;
-							break;
-						case BaseWeapon weapon:
-							isExceptional = weapon.Quality == WeaponQuality.Exceptional;
-							break;
-					}
+					bool isExceptional = clothing?.Quality == ClothingQuality.Exceptional ||
+					                     armor?.Quality == ArmorQuality.Exceptional ||
+					                     weapon?.Quality == WeaponQuality.Exceptional;
 
 					if ( isExceptional )
 					{
-						switch (item)
+						if (clothing != null)
 						{
-							case BaseClothing clothing:
-								clothing.Quality = ClothingQuality.Regular;
-								clothing.Crafter = @from;
-								break;
-							case BaseArmor armor:
-								armor.Quality = ArmorQuality.Regular;
-								armor.Crafter = @from;
-								armor.PhysicalBonus = armor.FireBonus = armor.ColdBonus = armor.PoisonBonus = armor.EnergyBonus = 0; // Is there a method to remove bonuses?
-								break;
-							// Sanity, weapons cannot receive gems...
-							case BaseWeapon weapon:
-								weapon.Quality = WeaponQuality.Regular;
-								weapon.Crafter = @from;
-								break;
+							clothing.Quality = ClothingQuality.Regular;
+							clothing.Crafter = from;
+						}
+						else if (armor != null)
+						{
+							armor.Quality = ArmorQuality.Regular;
+							armor.Crafter = from;
+							armor.PhysicalBonus = armor.FireBonus = armor.ColdBonus = armor.PoisonBonus = armor.EnergyBonus = 0; // Is there a method to remove bonuses?
+						}
+						else if (weapon != null)
+						{
+							weapon.Quality = WeaponQuality.Regular;
+							weapon.Crafter = from;
 						}
 
 						eq.CurArcaneCharges = eq.MaxArcaneCharges = charges;
