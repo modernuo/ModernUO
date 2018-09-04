@@ -3316,7 +3316,7 @@ namespace Server
 			}
 		}
 
-		private static bool _processing = false;
+		private static bool _processing;
 
 		public static void ProcessDeltaQueue()
 		{
