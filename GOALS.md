@@ -24,13 +24,21 @@
 ### Optimizations for large shards
 - [ ] Eject inactive players and their items after they are serialized to cold storage
 - [ ] Create hydration techniques for non-persisted systems (e.g. spawners, decorations, static, champions, etc)
-- [ ] Simplify resource items such as Reagents, and crafting supplies by eliminating all of their individual types and using an enum and generic type.
-  * `new MandrakeRoot()` -> `new Reagent(ReagentType.MandrakeRoot)`
+- [ ] Simplify certain items by eliminating all of their individual types and using an enum to reference their individual type
+  * Items subject to change: reagents, logs, ore, ingots, potions, and containers
+  * Syntax change: `new MandrakeRoot()` -> `new Reagent(ReagentType.MandrakeRoot)`
 - [ ] Create object pools for high availability items such as gold and reagents
   * For example, `new MandrakeRoot()` -> `ObjectPool.Get<Reagent>(ReagentType.MandrakeRoot)`.
+  * Pools should be elastic and adjust according to nominal usage. For example, if thousands of gold objects are created and destroyed in a small period of time, the pool should be expanded and replenished properly so it is never empty, or full.
 - [ ] Replace timer system with a [wheel](https://github.com/runuo/runuo/pull/42) implementation
-- [X] Create `DefaultName` for mobiles and use it for all items
+- [X] Create `DefaultName` for mobiles
 - [ ] Improve asynchronous socket handling
+
+### Code Architecture Fixes
+- [ ] Create a LayeredItem child and move related code to that class. All layered items should inherit that.
+  * Items that are placed on the paperdoll will need to inherit this.
+- [ ] Create a StackedItem child and move related code to that class.
+  * Items that have an amount will need to inherit this.
 
 ### Bugs & Misc
 - [ ] Naked corpses (container display issue)
