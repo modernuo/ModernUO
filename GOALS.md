@@ -24,7 +24,9 @@
 ### Optimizations for large shards
 - [ ] Eject inactive players and their items after they are serialized to cold storage
 - [ ] Create hydration techniques for non-persisted systems (e.g. spawners, decorations, static, champions, etc)
+- [ ] Simplify resource items such as Reagents, and crafting supplies by eliminating all of their individual types and using an enum and generic type. `new MandrakeRoot()` -> `new Reagent(ReagentType.MandrakeRoot)`
 - [ ] Create object pools for high availability items such as gold and reagents
+  * For example, `new MandrakeRoot()` -> `ObjectPool.Get<Reagent>(ReagentType.MandrakeRoot)`.
 - [ ] Replace timer system with a [wheel](https://github.com/runuo/runuo/pull/42) implementation
 - [X] Create `DefaultName` for mobiles and use it for all items
 - [ ] Improve asynchronous socket handling
