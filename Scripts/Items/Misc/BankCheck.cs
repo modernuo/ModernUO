@@ -233,7 +233,7 @@ namespace Server.Items
 			// Gold was deposited in your account:
 			from.SendLocalizedMessage(1042672, true, deposited.ToString("#,0"));
 
-			if (@from is PlayerMobile pm)
+			if (from is PlayerMobile pm)
 			{
 				var qs = pm.Quest;
 

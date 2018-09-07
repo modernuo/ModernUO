@@ -81,13 +81,9 @@ namespace Server.Items
 
 			if ( handTwo is BaseWeapon )
 				handOne = handTwo;
-			if ( handTwo is BaseRanged )
-			{
-				BaseRanged ranged = (BaseRanged) handTwo;
 
-				if ( ranged.Balanced )
-					return true;
-			}
+			if ( handTwo is BaseRanged ranged && ranged.Balanced )
+				return true;
 
 			return ( handOne == null || handTwo == null );
 		}
@@ -223,10 +219,8 @@ namespace Server.Items
 
 		public override bool StackWith( Mobile from, Item dropped, bool playSound )
 		{
-			if ( dropped is BasePotion && ((BasePotion)dropped).m_PotionEffect == m_PotionEffect )
-				return base.StackWith( from, dropped, playSound );
-
-			return false;
+			return dropped is BasePotion potion && potion.m_PotionEffect == m_PotionEffect &&
+			       base.StackWith(from, potion, playSound);
 		}
 
 		#region ICraftable Members

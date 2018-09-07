@@ -123,9 +123,7 @@ namespace Server.Items
 			if ( !item.IsChildOf( from.Backpack ) && item.Parent != from )
 				return;
 
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			ContextMenuEntry miningEntry = new ContextMenuEntry( pm.ToggleMiningStone ? 6179 : 6178 );

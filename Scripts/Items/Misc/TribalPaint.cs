@@ -54,7 +54,7 @@ namespace Server.Items
 					from.BodyMod = ( from.Female ? 184 : 183 );
 					from.HueMod = 0;
 
-					if ( @from is PlayerMobile mobile )
+					if ( from is PlayerMobile mobile )
 						mobile.SavagePaintExpiration = TimeSpan.FromDays( 7.0 );
 
 					from.SendLocalizedMessage( 1042537 ); // You now bear the markings of the savage tribe.  Your body paint will last about a week or you can remove it with an oil cloth.

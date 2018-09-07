@@ -100,8 +100,8 @@ namespace Server.Items
 							{
 								MaxHitPoints -= wear;
 
-								if ( Parent is Mobile )
-									((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
+								if ( Parent is Mobile mobile )
+									mobile.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
 							}
 							else
 							{
@@ -113,73 +113,69 @@ namespace Server.Items
 
 				return 0;
 			}
-			else
+
+			if ( !(Parent is Mobile owner) )
+				return damage;
+
+			double ar = this.ArmorRating;
+			double chance = (owner.Skills[SkillName.Parry].Value - (ar * 2.0)) / 100.0;
+
+			if ( chance < 0.01 )
+				chance = 0.01;
+			/*
+			FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) � 200) + 1
+
+			FORMULA: % Chance of Blocking = parry skill - (shieldAR * 2)
+
+			FORMULA: Melee Damage Absorbed = (AR of Shield) / 2 | Archery Damage Absorbed = AR of Shield
+			*/
+			if ( owner.CheckSkill( SkillName.Parry, chance ) )
 			{
-				Mobile owner = this.Parent as Mobile;
-				if ( owner == null )
-					return damage;
+				if ( weapon.Skill == SkillName.Archery )
+					damage -= (int)ar;
+				else
+					damage -= (int)(ar / 2.0);
 
-				double ar = this.ArmorRating;
-				double chance = (owner.Skills[SkillName.Parry].Value - (ar * 2.0)) / 100.0;
+				if ( damage < 0 )
+					damage = 0;
 
-				if ( chance < 0.01 )
-					chance = 0.01;
-				/*
-				FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) � 200) + 1
+				owner.FixedEffect( 0x37B9, 10, 16 );
 
-				FORMULA: % Chance of Blocking = parry skill - (shieldAR * 2)
-
-				FORMULA: Melee Damage Absorbed = (AR of Shield) / 2 | Archery Damage Absorbed = AR of Shield
-				*/
-				if ( owner.CheckSkill( SkillName.Parry, chance ) )
+				if ( 25 > Utility.Random( 100 ) ) // 25% chance to lower durability
 				{
-					if ( weapon.Skill == SkillName.Archery )
-						damage -= (int)ar;
-					else
-						damage -= (int)(ar / 2.0);
+					int wear = Utility.Random( 2 );
 
-					if ( damage < 0 )
-						damage = 0;
-
-					owner.FixedEffect( 0x37B9, 10, 16 );
-
-					if ( 25 > Utility.Random( 100 ) ) // 25% chance to lower durability
+					if ( wear > 0 && MaxHitPoints > 0 )
 					{
-						int wear = Utility.Random( 2 );
-
-						if ( wear > 0 && MaxHitPoints > 0 )
+						if ( HitPoints >= wear )
 						{
-							if ( HitPoints >= wear )
+							HitPoints -= wear;
+							wear = 0;
+						}
+						else
+						{
+							wear -= HitPoints;
+							HitPoints = 0;
+						}
+
+						if ( wear > 0 )
+						{
+							if ( MaxHitPoints > wear )
 							{
-								HitPoints -= wear;
-								wear = 0;
+								MaxHitPoints -= wear;
+
+								((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
 							}
 							else
 							{
-								wear -= HitPoints;
-								HitPoints = 0;
-							}
-
-							if ( wear > 0 )
-							{
-								if ( MaxHitPoints > wear )
-								{
-									MaxHitPoints -= wear;
-
-									if ( Parent is Mobile )
-										((Mobile)Parent).LocalOverheadMessage( MessageType.Regular, 0x3B2, 1061121 ); // Your equipment is severely damaged.
-								}
-								else
-								{
-									Delete();
-								}
+								Delete();
 							}
 						}
 					}
 				}
-
-				return damage;
 			}
+
+			return damage;
 		}
 	}
 }

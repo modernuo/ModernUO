@@ -59,7 +59,7 @@ namespace Server.Items
 			}
 		}
 
-		public static void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
+		public virtual void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
 		{
 			Item item = new DarkYarn( 3 );
 			item.Hue = hue;
@@ -84,13 +84,11 @@ namespace Server.Items
 
 				ISpinningWheel wheel = targeted as ISpinningWheel;
 
-				if ( wheel == null && targeted is AddonComponent )
-					wheel = ((AddonComponent)targeted).Addon as ISpinningWheel;
+				if ( wheel == null && targeted is AddonComponent component )
+					wheel = component.Addon as ISpinningWheel;
 
 				if ( wheel is Item )
 				{
-					Item item = (Item)wheel;
-
 					if ( !m_Wool.IsChildOf( from.Backpack ) )
 					{
 						from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
@@ -102,8 +100,7 @@ namespace Server.Items
 					else
 					{
 						m_Wool.Consume();
-						if ( m_Wool is TaintedWool )	wheel.BeginSpin( new SpinCallback( TaintedWool.OnSpun ), from, m_Wool.Hue );
-						else wheel.BeginSpin( new SpinCallback( Wool.OnSpun ), from, m_Wool.Hue );
+						wheel.BeginSpin( m_Wool.OnSpun, from, m_Wool.Hue );
 					}
 				}
 				else
@@ -119,7 +116,7 @@ namespace Server.Items
 		public TaintedWool() : this( 1 )
 		{
 		}
-		
+
 		[Constructible]
 		public TaintedWool( int amount ) : base( 0x101F )
 		{
@@ -145,8 +142,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 		}
-		
-		new public static void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
+
+		public override void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
 		{
 			Item item = new DarkYarn( 1 );
 			item.Hue = hue;

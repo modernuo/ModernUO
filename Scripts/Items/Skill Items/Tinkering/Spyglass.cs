@@ -26,20 +26,15 @@ namespace Server.Items
 			from.Send( new MessageLocalizedAffix( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 1008146 + (int)Clock.GetMoonPhase( Map.Trammel, from.X, from.Y ), "", AffixType.Prepend, "Trammel : ", "" ) );
 			from.Send( new MessageLocalizedAffix( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 1008146 + (int)Clock.GetMoonPhase( Map.Felucca, from.X, from.Y ), "", AffixType.Prepend, "Felucca : ", "" ) );
 
-			PlayerMobile player = from as PlayerMobile;
-
-			if ( player != null )
+			if ( @from is PlayerMobile player )
 			{
 				QuestSystem qs = player.Quest;
 
 				if ( qs is WitchApprenticeQuest )
 				{
-					FindIngredientObjective obj = qs.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
-
-					if ( obj != null && !obj.Completed && obj.Ingredient == Ingredient.StarChart )
+					if ( qs.FindObjective( typeof( FindIngredientObjective ) ) is FindIngredientObjective obj && !obj.Completed && obj.Ingredient == Ingredient.StarChart )
 					{
-						int hours, minutes;
-						Clock.GetTime( from.Map, from.X, from.Y, out hours, out minutes );
+						Clock.GetTime( from.Map, from.X, from.Y, out int hours, out int _ );
 
 						if ( hours < 5 || hours > 17 )
 						{

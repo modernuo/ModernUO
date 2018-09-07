@@ -64,10 +64,8 @@ namespace Server.Items
 
 		private static void AllSpells_OnTarget( Mobile from, object obj )
 		{
-			if ( obj is Spellbook )
+			if ( obj is Spellbook book )
 			{
-				Spellbook book = (Spellbook)obj;
-
 				if ( book.BookCount == 64 )
 					book.Content = ulong.MaxValue;
 				else
@@ -268,8 +266,8 @@ namespace Server.Items
 
 			Item item = from.FindItemOnLayer( Layer.OneHanded );
 
-			if ( item is Spellbook )
-				list.Add( (Spellbook)item );
+			if ( item is Spellbook spellbook )
+				list.Add( spellbook );
 
 			Container pack = from.Backpack;
 
@@ -280,8 +278,8 @@ namespace Server.Items
 			{
 				item = pack.Items[i];
 
-				if ( item is Spellbook )
-					list.Add( (Spellbook)item );
+				if ( item is Spellbook spellbook1 )
+					list.Add( spellbook1 );
 			}
 
 			return list;
@@ -352,45 +350,38 @@ namespace Server.Items
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( dropped is SpellScroll && dropped.Amount == 1 )
+			if ( dropped is SpellScroll scroll && scroll.Amount == 1 )
 			{
-				SpellScroll scroll = (SpellScroll)dropped;
-
 				SpellbookType type = GetTypeForSpell( scroll.SpellID );
 
 				if ( type != this.SpellbookType )
 				{
 					return false;
 				}
-				else if ( HasSpell( scroll.SpellID ) )
+
+				if ( HasSpell( scroll.SpellID ) )
 				{
 					from.SendLocalizedMessage( 500179 ); // That spell is already present in that spellbook.
 					return false;
 				}
-				else
+
+				int val = scroll.SpellID - BookOffset;
+
+				if ( val >= 0 && val < BookCount )
 				{
-					int val = scroll.SpellID - BookOffset;
+					m_Content |= (ulong)1 << val;
+					++m_Count;
 
-					if ( val >= 0 && val < BookCount )
-					{
-						m_Content |= (ulong)1 << val;
-						++m_Count;
+					InvalidateProperties();
 
-						InvalidateProperties();
+					scroll.Delete();
 
-						scroll.Delete();
-
-						from.Send( new PlaySound( 0x249, GetWorldLocation() ) );
-						return true;
-					}
-
-					return false;
+					from.Send( new PlaySound( 0x249, GetWorldLocation() ) );
+					return true;
 				}
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -452,9 +443,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			Spellbook book = newItem as Spellbook;
-
-			if ( book == null )
+			if ( !(newItem is Spellbook book) )
 				return;
 
 			book.m_AosAttributes = new AosAttributes( newItem, m_AosAttributes );
@@ -463,10 +452,8 @@ namespace Server.Items
 
 		public override void OnAdded(IEntity parent)
 		{
-			if ( Core.AOS && parent is Mobile )
+			if ( Core.AOS && parent is Mobile from )
 			{
-				Mobile from = (Mobile)parent;
-
 				m_AosSkillBonuses.AddTo( from );
 
 				int strBonus = m_AosAttributes.BonusStr;
@@ -493,10 +480,8 @@ namespace Server.Items
 
 		public override void OnRemoved(IEntity parent)
 		{
-			if ( Core.AOS && parent is Mobile )
+			if ( Core.AOS && parent is Mobile from )
 			{
-				Mobile from = (Mobile)parent;
-
 				m_AosSkillBonuses.Remove();
 
 				string modName = this.Serial.ToString();
@@ -802,31 +787,31 @@ namespace Server.Items
 			if ( m_AosSkillBonuses == null )
 				m_AosSkillBonuses = new AosSkillBonuses( this );
 
-			if ( Core.AOS && Parent is Mobile )
-				m_AosSkillBonuses.AddTo( (Mobile) Parent );
+			if ( Core.AOS && Parent is Mobile mobile )
+				m_AosSkillBonuses.AddTo( mobile );
 
 			int strBonus = m_AosAttributes.BonusStr;
 			int dexBonus = m_AosAttributes.BonusDex;
 			int intBonus = m_AosAttributes.BonusInt;
 
-			if ( Parent is Mobile && (strBonus != 0 || dexBonus != 0 || intBonus != 0) )
+			if ( Parent is Mobile m )
 			{
-				Mobile m = (Mobile)Parent;
+				if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
+				{
+					string modName = Serial.ToString();
 
-				string modName = Serial.ToString();
+					if ( strBonus != 0 )
+						m.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
 
-				if ( strBonus != 0 )
-					m.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
+					if ( dexBonus != 0 )
+						m.AddStatMod( new StatMod( StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero ) );
 
-				if ( dexBonus != 0 )
-					m.AddStatMod( new StatMod( StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero ) );
+					if ( intBonus != 0 )
+						m.AddStatMod( new StatMod( StatType.Int, modName + "Int", intBonus, TimeSpan.Zero ) );
+				}
 
-				if ( intBonus != 0 )
-					m.AddStatMod( new StatMod( StatType.Int, modName + "Int", intBonus, TimeSpan.Zero ) );
+				m.CheckStatTimers();
 			}
-
-			if ( Parent is Mobile )
-				((Mobile)Parent).CheckStatTimers();
 		}
 
 		private static int[] m_LegendPropertyCounts = new int[]

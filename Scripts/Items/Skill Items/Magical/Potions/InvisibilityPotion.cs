@@ -39,8 +39,8 @@ namespace Server.Items
 
 		private static void Hide_Callback( object obj )
 		{
-			if ( obj is Mobile )
-				Hide( (Mobile) obj );
+			if ( obj is Mobile mobile )
+				Hide( mobile );
 		}
 
 		public static void Hide( Mobile m )
@@ -60,8 +60,8 @@ namespace Server.Items
 
 		private static void EndHide_Callback( object obj )
 		{
-			if ( obj is Mobile )
-				EndHide( (Mobile) obj );
+			if ( obj is Mobile mobile )
+				EndHide( mobile );
 		}
 
 		public static void EndHide( Mobile m )

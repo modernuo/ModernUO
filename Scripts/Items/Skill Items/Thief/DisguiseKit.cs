@@ -212,10 +212,8 @@ namespace Server.Items
 
 				m_From.NameMod = NameList.RandomName( m_From.Female ? "female" : "male" );
 
-				if ( m_From is PlayerMobile )
+				if ( m_From is PlayerMobile pm )
 				{
-					PlayerMobile pm = (PlayerMobile)m_From;
-
 					if ( hair )
 						pm.SetHairMods( entry.m_ItemID, -2 );
 					else
@@ -297,10 +295,10 @@ namespace Server.Items
 			{
 				m_Player.NameMod = null;
 
-				if ( m_Player is PlayerMobile )
-					((PlayerMobile)m_Player).SetHairMods( -1, -1 );
+				if ( m_Player is PlayerMobile mobile )
+					mobile.SetHairMods( -1, -1 );
 
-				DisguiseTimers.RemoveTimer( m_Player );
+				RemoveTimer( m_Player );
 			}
 		}
 

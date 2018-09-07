@@ -81,9 +81,7 @@ namespace Server.Items
 
 		private static void EventSink_BandageTargetRequest(BandageTargetRequestEventArgs e)
 		{
-			Bandage b = e.Bandage as Bandage;
-
-			if (b == null || b.Deleted)
+			if (!(e.Bandage is Bandage b) || b.Deleted)
 				return;
 
 			Mobile from = e.Mobile;
@@ -124,11 +122,11 @@ namespace Server.Items
 				if ( m_Bandage.Deleted )
 					return;
 
-				if ( targeted is Mobile )
+				if ( targeted is Mobile mobile )
 				{
 					if ( from.InRange( m_Bandage.GetWorldLocation(), Bandage.Range ) )
 					{
-						if ( BandageContext.BeginHeal( from, (Mobile)targeted ) != null )
+						if ( BandageContext.BeginHeal( from, mobile ) != null )
 						{
 							if ( !Engines.ConPVP.DuelContext.IsFreeConsume( from ) )
 								m_Bandage.Consume();
@@ -139,9 +137,9 @@ namespace Server.Items
 						from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
 					}
 				}
-				else if ( targeted is PlagueBeastInnard )
+				else if ( targeted is PlagueBeastInnard innard )
 				{
-					if ( ((PlagueBeastInnard) targeted).OnBandage( from ) )
+					if ( innard.OnBandage( from ) )
 						m_Bandage.Consume();
 				}
 				else
@@ -152,9 +150,9 @@ namespace Server.Items
 
 			protected override void OnNonlocalTarget( Mobile from, object targeted )
 			{
-				if ( targeted is PlagueBeastInnard )
+				if ( targeted is PlagueBeastInnard innard )
 				{
-					if ( ((PlagueBeastInnard) targeted).OnBandage( from ) )
+					if ( innard.OnBandage( from ) )
 						m_Bandage.Consume();
 				}
 				else
@@ -469,17 +467,17 @@ namespace Server.Items
 
 		public static BandageContext BeginHeal( Mobile healer, Mobile patient )
 		{
-			bool isDeadPet = ( patient is BaseCreature && ((BaseCreature)patient).IsDeadPet );
+			BaseCreature creature = patient as BaseCreature;
 
 			if ( patient is Golem )
 			{
 				healer.SendLocalizedMessage( 500970 ); // Bandages cannot be used on that.
 			}
-			else if ( patient is BaseCreature && ((BaseCreature)patient).IsAnimatedDead )
+			else if ( creature?.IsAnimatedDead == true )
 			{
 				healer.SendLocalizedMessage( 500951 ); // You cannot heal that.
 			}
-			else if ( !patient.Poisoned && patient.Hits == patient.HitsMax && !BleedAttack.IsBleeding( patient ) && !isDeadPet )
+			else if ( !patient.Poisoned && patient.Hits == patient.HitsMax && !BleedAttack.IsBleeding( patient ) && creature?.IsDeadPet != true )
 			{
 				healer.SendLocalizedMessage( 500955 ); // That being is not damaged!
 			}
@@ -534,8 +532,7 @@ namespace Server.Items
 
 				BandageContext context = GetContext( healer );
 
-				if ( context != null )
-					context.StopHeal();
+				context?.StopHeal();
 				seconds *= 1000;
 
 				context = new BandageContext( healer, patient, TimeSpan.FromMilliseconds( seconds ) );

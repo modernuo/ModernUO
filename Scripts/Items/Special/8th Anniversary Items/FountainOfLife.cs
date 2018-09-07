@@ -198,9 +198,7 @@ namespace Server.Items
 				if ( Items[i] is EnhancedBandage )
 					continue;
 
-				Bandage bandage = Items[i] as Bandage;
-
-				if ( bandage != null )
+				if ( Items[i] is Bandage bandage )
 				{
 					Item enhanced;
 

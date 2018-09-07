@@ -62,9 +62,7 @@ namespace Server.Items
 			if ( m == null || !m.Player || m.AccessLevel != AccessLevel.Player || Core.AOS )
 				return true;
 
-			Guild g = m.Guild as Guild;
-
-			if ( g == null || g.Type != GuildType.Chaos )
+			if ( !(m.Guild is Guild g) || g.Type != GuildType.Chaos )
 			{
 				m.FixedEffect( 0x3728, 10, 13 );
 				Delete();

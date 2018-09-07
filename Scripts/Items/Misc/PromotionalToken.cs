@@ -122,7 +122,7 @@ namespace Server.Items
 
 		public override Item CreateItemFor( Mobile from )
 		{
-			if ( @from?.Account != null )
+			if ( from?.Account != null )
 				return new SoulstoneFragment( from.Account.ToString() );
 
 			return null;

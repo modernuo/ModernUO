@@ -270,13 +270,14 @@ namespace Server.Items
 		{
 			NetState ns = toCheck.NetState;
 
-			if ( ns != null ) {
-				foreach ( Gump gump in ns.Gumps ) {
-					RunebookGump bookGump = gump as RunebookGump;
+			if (ns == null)
+				return false;
 
-					if ( bookGump != null && bookGump.Book == this ) {
-						return true;
-					}
+			foreach ( Gump gump in ns.Gumps )
+			{
+				if ( gump is RunebookGump bookGump && bookGump.Book == this )
+				{
+					return true;
 				}
 			}
 
@@ -295,7 +296,7 @@ namespace Server.Items
 			if ( m_Crafter != null )
 				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
-			if ( m_Description != null && m_Description.Length > 0 )
+			if ( !string.IsNullOrEmpty(m_Description) )
 				list.Add( m_Description );
 		}
 
@@ -358,9 +359,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			Runebook book = newItem as Runebook;
-
-			if ( book == null )
+			if ( !(newItem is Runebook book) )
 				return;
 
 			book.m_Entries = new List<RunebookEntry>();
@@ -388,7 +387,7 @@ namespace Server.Items
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( dropped is RecallRune )
+			if ( dropped is RecallRune rune )
 			{
 				if ( IsLockedDown && from.AccessLevel < AccessLevel.GameMaster )
 				{
@@ -400,13 +399,11 @@ namespace Server.Items
 				}
 				else if ( m_Entries.Count < 16 )
 				{
-					RecallRune rune = (RecallRune)dropped;
-
 					if ( rune.Marked && rune.TargetMap != null )
 					{
 						m_Entries.Add( new RunebookEntry( rune.Target, rune.TargetMap, rune.Description, rune.House ) );
 
-						dropped.Delete();
+						rune.Delete();
 
 						from.Send( new PlaySound( 0x42, GetWorldLocation() ) );
 
@@ -419,10 +416,8 @@ namespace Server.Items
 
 						return true;
 					}
-					else
-					{
-						from.SendLocalizedMessage( 502409 ); // This rune does not have a marked location.
-					}
+
+					from.SendLocalizedMessage( 502409 ); // This rune does not have a marked location.
 				}
 				else
 				{

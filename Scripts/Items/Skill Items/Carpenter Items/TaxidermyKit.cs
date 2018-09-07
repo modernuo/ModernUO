@@ -103,7 +103,7 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1042600 ); // That is not a corpse!
 				}
-				else if ( targeted is Corpse && ((Corpse)targeted).VisitedByTaxidermist )
+				else if ( targeted is Corpse corpse && corpse.VisitedByTaxidermist )
 				{
 					from.SendLocalizedMessage( 1042596 ); // That corpse seems to have been visited by a taxidermist already.
 				}
@@ -138,11 +138,9 @@ namespace Server.Items
                                     Mobile hunter = null;
                                     int weight = 0;
 
-                                    if ( targeted is BigFish )
+                                    if ( targeted is BigFish fish )
                                     {
-                                        BigFish fish = targeted as BigFish;
-
-                                        hunter = fish.Fisher;
+	                                    hunter = fish.Fisher;
                                         weight = (int)fish.Weight;
 
                                         fish.Consume();
@@ -151,17 +149,15 @@ namespace Server.Items
 
                                     from.AddToBackpack( new TrophyDeed( m_Table[i], hunter, weight ) );
 
-                                    if ( targeted is Corpse )
-                                        ((Corpse)targeted).VisitedByTaxidermist = true;
+                                    if ( targeted is Corpse corpse1 )
+                                        corpse1.VisitedByTaxidermist = true;
 
                                     m_Kit.Delete();
                                     return;
                                 }
-                                else
-                                {
-                                    from.SendLocalizedMessage( 1042598 ); // You do not have enough boards.
-                                    return;
-                                }
+
+	                            from.SendLocalizedMessage( 1042598 ); // You do not have enough boards.
+	                            return;
                             }
                         }
                     }
@@ -303,9 +299,9 @@ namespace Server.Items
 			{
 				Item deed = this.Deed;
 
-				if ( this.Parent is Item )
+				if ( this.Parent is Item item )
 				{
-					((Item)this.Parent).AddItem( deed );
+					item.AddItem( deed );
 					deed.Location = this.Location;
 				}
 				else

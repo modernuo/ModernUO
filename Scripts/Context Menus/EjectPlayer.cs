@@ -9,7 +9,7 @@ namespace Server.ContextMenus
 		private Mobile m_From;
 		private Mobile m_Target;
 		private BaseHouse m_TargetHouse;
-		
+
 		public EjectPlayerEntry( Mobile from, Mobile target ) : base( 6206, 12 )
 		{
 			m_From = from;
@@ -18,14 +18,12 @@ namespace Server.ContextMenus
 		}
 
 		public override void OnClick()
-		{			
+		{
 			if ( !m_From.Alive || m_TargetHouse.Deleted || !m_TargetHouse.IsFriend( m_From ) )
 				return;
 
-			if ( m_Target is Mobile )
-			{
-				m_TargetHouse.Kick( m_From, (Mobile)m_Target );
-			}
+			if ( m_Target is Mobile mobile )
+				m_TargetHouse.Kick( m_From, mobile );
 		}
 	}
 }

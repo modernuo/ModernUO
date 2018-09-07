@@ -173,21 +173,19 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Item )
+				if ( targeted is Item item )
 				{
-					Item item = (Item)targeted;
-
 					if ( item.QuestItem )
 					{
 						from.SendLocalizedMessage( 1151836 ); // You may not dye toggled quest items.
 					}
-					else if ( item is IDyable && m_Tub.AllowDyables )
+					else if ( item is IDyable dyable && m_Tub.AllowDyables )
 					{
 						if ( !from.InRange( m_Tub.GetWorldLocation(), 1 ) || !from.InRange( item.GetWorldLocation(), 1 ) )
 							from.SendLocalizedMessage( 500446 ); // That is too far away.
 						else if ( item.Parent is Mobile )
 							from.SendLocalizedMessage( 500861 ); // Can't Dye clothing that is being worn.
-						else if ( ((IDyable)item).Dye( from, m_Tub ) )
+						else if ( dyable.Dye( from, m_Tub ) )
 							from.PlaySound( 0x23E );
 					}
 					else if ( (FurnitureAttribute.Check( item ) || (item is PotionKeg)) && m_Tub.AllowFurniture )
@@ -258,7 +256,7 @@ namespace Server.Items
 							from.PlaySound( 0x23E );
 						}
 					}
-					else if ( (item is BaseArmor && (((BaseArmor)item).MaterialType == ArmorMaterialType.Leather || ((BaseArmor)item).MaterialType == ArmorMaterialType.Studded) || item is ElvenBoots || item is WoodlandBelt) && m_Tub.AllowLeather )
+					else if ( (item is BaseArmor armor && (armor.MaterialType == ArmorMaterialType.Leather || armor.MaterialType == ArmorMaterialType.Studded) || item is ElvenBoots || item is WoodlandBelt) && m_Tub.AllowLeather )
 					{
 						if ( !from.InRange( m_Tub.GetWorldLocation(), 1 ) || !from.InRange( item.GetWorldLocation(), 1 ) )
 						{

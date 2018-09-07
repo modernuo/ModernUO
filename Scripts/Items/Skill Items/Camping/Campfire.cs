@@ -132,9 +132,7 @@ namespace Server.Items
 
 			foreach ( NetState state in eable )
 			{
-				PlayerMobile pm = state.Mobile as PlayerMobile;
-
-				if ( pm != null && GetEntry( pm ) == null )
+				if ( state.Mobile is PlayerMobile pm && GetEntry( pm ) == null )
 				{
 					CampfireEntry entry = new CampfireEntry( pm, this );
 

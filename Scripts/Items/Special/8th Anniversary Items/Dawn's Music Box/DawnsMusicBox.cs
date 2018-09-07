@@ -60,9 +60,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped( Item newItem )
 		{
-			DawnsMusicBox box = newItem as DawnsMusicBox;
-
-			if ( box == null )
+			if ( !(newItem is DawnsMusicBox box) )
 				return;
 
 			box.m_Tracks = new List<MusicName>();

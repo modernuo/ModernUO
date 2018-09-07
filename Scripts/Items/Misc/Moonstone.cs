@@ -75,7 +75,7 @@ namespace Server.Items
 			{
 				from.SendLocalizedMessage( 1005401 ); // You cannot bury the stone here.
 			}
-			else if ( @from is PlayerMobile mobile && mobile.Young )
+			else if ( from is PlayerMobile mobile && mobile.Young )
 			{
 				mobile.SendLocalizedMessage( 1049543 ); // You decide against traveling to Felucca while you are still young.
 			}

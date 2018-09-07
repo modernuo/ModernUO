@@ -199,8 +199,8 @@ namespace Server.Items
 					return;
 
 				IPoint3D loc;
-				if ( targeted is Item )
-					loc = ((Item)targeted).GetWorldLocation();
+				if ( targeted is Item item )
+					loc = item.GetWorldLocation();
 				else
 					loc = targeted as IPoint3D;
 

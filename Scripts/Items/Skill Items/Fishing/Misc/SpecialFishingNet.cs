@@ -114,16 +114,14 @@ namespace Server.Items
 			}
 		}
 
-		public virtual bool RequireDeepWater{ get{ return true; } }
+		public virtual bool RequireDeepWater => true;
 
 		public void OnTarget( Mobile from, object obj )
 		{
 			if ( Deleted || m_InUse )
 				return;
 
-			IPoint3D p3D = obj as IPoint3D;
-
-			if ( p3D == null )
+			if ( !(obj is IPoint3D p3D) )
 				return;
 
 			Map map = from.Map;

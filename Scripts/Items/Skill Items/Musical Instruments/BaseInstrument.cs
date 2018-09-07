@@ -165,9 +165,7 @@ namespace Server.Items
 
 		public static BaseInstrument GetInstrument( Mobile from )
 		{
-			BaseInstrument item = m_Instruments[from] as BaseInstrument;
-
-			if ( item == null )
+			if ( !(m_Instruments[@from] is BaseInstrument item) )
 				return null;
 
 			if ( !item.IsChildOf( from.Backpack ) )
@@ -202,9 +200,7 @@ namespace Server.Items
 
 		public static void OnPickedInstrument( Mobile from, object targeted, object state )
 		{
-			BaseInstrument instrument = targeted as BaseInstrument;
-
-			if ( instrument == null )
+			if ( !(targeted is BaseInstrument instrument) )
 			{
 				from.SendLocalizedMessage( 500619 ); // That is not a musical instrument.
 			}
@@ -214,8 +210,7 @@ namespace Server.Items
 
 				InstrumentPickedCallback callback = state as InstrumentPickedCallback;
 
-				if ( callback != null )
-					callback( from, instrument );
+				callback?.Invoke( @from, instrument );
 			}
 		}
 

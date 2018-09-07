@@ -1021,7 +1021,7 @@ namespace Server.Items
 				#region Self Looting
 				if ( checkSelfLoot && from == m_Owner && !GetFlag( CorpseFlag.SelfLooted ) && this.Items.Count != 0 )
 				{
-					if ( @from.FindItemOnLayer( Layer.OuterTorso ) is DeathRobe robe )
+					if ( from.FindItemOnLayer( Layer.OuterTorso ) is DeathRobe robe )
 					{
 						Map map = from.Map;
 
@@ -1104,7 +1104,7 @@ namespace Server.Items
 
 				#region Quests
 
-				if ( @from is PlayerMobile player )
+				if ( from is PlayerMobile player )
 				{
 					QuestSystem qs = player.Quest;
 

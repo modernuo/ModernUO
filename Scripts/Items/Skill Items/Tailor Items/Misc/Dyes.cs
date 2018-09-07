@@ -77,10 +77,8 @@ namespace Server.Items
 
 			public virtual void SetTubHue( Mobile from, object state,  int hue )
 			{
-				if ( state is DyeTub )
+				if ( state is DyeTub tub )
 				{
-					DyeTub tub = state as DyeTub;
-
 					tub.DyedHue = hue;
 
 					/* dyes.m_UsesRemaining--; let this change ride till the overhaul */
@@ -89,10 +87,8 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is DyeTub )
+				if ( targeted is DyeTub tub )
 				{
-					DyeTub tub = (DyeTub) targeted;
-
 					if ( tub.Redyable )
 					{
 						if ( tub.MetallicHues )   /* OSI has three metallic tubs now */

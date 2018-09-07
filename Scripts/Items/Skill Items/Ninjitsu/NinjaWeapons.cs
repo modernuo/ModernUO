@@ -316,9 +316,9 @@ namespace Server.Items
 
 			if (WeaponIsValid(weapon, from))
 			{
-				if (targeted is Mobile)
+				if (targeted is Mobile mobile)
 				{
-					Shoot(player, (Mobile)targeted, weapon);
+					Shoot(player, mobile, weapon);
 				}
 				else if (targeted.GetType() == weapon.AmmoType)
 				{

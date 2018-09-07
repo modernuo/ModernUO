@@ -166,7 +166,7 @@ namespace Server.Items
 
 			private bool IsForge( object obj )
 			{
-				if ( Core.ML && obj is Mobile && ((Mobile)obj).IsDeadBondedPet )
+				if ( Core.ML && obj is Mobile mobile && mobile.IsDeadBondedPet )
 					return false;
 
 				if ( obj.GetType().IsDefined( typeof( ForgeAttribute ), false ) )
@@ -174,10 +174,10 @@ namespace Server.Items
 
 				int itemID = 0;
 
-				if ( obj is Item )
-					itemID = ((Item)obj).ItemID;
-				else if ( obj is StaticTarget )
-					itemID = ((StaticTarget)obj).ItemID;
+				if ( obj is Item item )
+					itemID = item.ItemID;
+				else if ( obj is StaticTarget target )
+					itemID = target.ItemID;
 
 				return ( itemID == 4017 || (itemID >= 6522 && itemID <= 6569) );
 			}
@@ -194,21 +194,19 @@ namespace Server.Items
 				}
 
 				#region Combine Ore
-				if ( targeted is BaseOre )
+				if ( targeted is BaseOre ore )
 				{
-					BaseOre ore = (BaseOre)targeted;
-
 					if ( !ore.Movable )
 					{
 						return;
 					}
-					else if ( m_Ore == ore )
+					if ( m_Ore == ore )
 					{
 						from.SendLocalizedMessage( 501972 ); // Select another pile or ore with which to combine this.
 						from.Target = new InternalTarget( ore );
 						return;
 					}
-					else if ( ore.Resource != m_Ore.Resource )
+					if ( ore.Resource != m_Ore.Resource )
 					{
 						from.SendLocalizedMessage( 501979 ); // You cannot combine ores of different metals.
 						return;
@@ -259,7 +257,7 @@ namespace Server.Items
 						from.SendLocalizedMessage( 1062844 ); // There is too much ore to combine.
 						return;
 					}
-					else if ( ore.RootParent is Mobile && ( plusWeight + ((Mobile)ore.RootParent).Backpack.TotalWeight ) > ((Mobile)ore.RootParent).Backpack.MaxWeight )
+					if ( ore.RootParent is Mobile mobile && ( plusWeight + mobile.Backpack.TotalWeight ) > mobile.Backpack.MaxWeight )
 					{
 						from.SendLocalizedMessage( 501978 ); // The weight is too great to combine in a container.
 						return;

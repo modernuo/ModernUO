@@ -71,20 +71,16 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1063305 ); // Didn't your parents ever tell you not to run with scissors in your hand?!
 				}
-				else if ( targeted is Item && !((Item)targeted).Movable )
+				else if ( targeted is Item item && !item.Movable )
 				{
-					if ( targeted is IScissorable && ( targeted is PlagueBeastInnard || targeted is PlagueBeastMutationCore ) )
+					if ( item is IScissorable obj && ( obj is PlagueBeastInnard || obj is PlagueBeastMutationCore ) )
 					{
-						IScissorable obj = (IScissorable) targeted;
-
 						if ( CanScissor( from, obj ) && obj.Scissor( from, m_Item ) )
 							from.PlaySound( 0x248 );
 					}
 				}
-				else if ( targeted is IScissorable )
+				else if ( targeted is IScissorable obj )
 				{
-					IScissorable obj = (IScissorable)targeted;
-
 					if ( CanScissor( from, obj ) && obj.Scissor( from, m_Item ) )
 						from.PlaySound( 0x248 );
 				}
@@ -96,10 +92,8 @@ namespace Server.Items
 
 			protected override void OnNonlocalTarget( Mobile from, object targeted )
 			{
-				if ( targeted is IScissorable && ( targeted is PlagueBeastInnard || targeted is PlagueBeastMutationCore ) )
+				if ( targeted is IScissorable obj && ( obj is PlagueBeastInnard || obj is PlagueBeastMutationCore ) )
 				{
-					IScissorable obj = (IScissorable) targeted;
-
 					if ( CanScissor( from, obj ) && obj.Scissor( from, m_Item ) )
 						from.PlaySound( 0x248 );
 				}
@@ -110,7 +104,7 @@ namespace Server.Items
 
 		public static bool CanScissor( Mobile from, IScissorable obj )
 		{
-			if ( obj is Item && ( (Item)obj ).Nontransferable )
+			if ( obj is Item item && item.Nontransferable )
 			{
 				from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
 				return false;

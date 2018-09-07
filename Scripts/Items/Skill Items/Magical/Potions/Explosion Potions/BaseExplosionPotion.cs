@@ -117,17 +117,13 @@ namespace Server.Items
 				Point3D loc;
 				Map map;
 
-				if ( parent is Item )
+				if ( parent is Item item )
 				{
-					Item item = (Item)parent;
-
 					loc = item.GetWorldLocation();
 					map = item.Map;
 				}
-				else if ( parent is Mobile )
+				else if ( parent is Mobile m )
 				{
-					Mobile m = (Mobile)parent;
-
 					loc = m.Location;
 					map = m.Map;
 				}
@@ -141,10 +137,10 @@ namespace Server.Items
 			}
 			else
 			{
-				if ( parent is Item )
-					((Item)parent).PublicOverheadMessage( MessageType.Regular, 0x22, false, timer.ToString() );
-				else if ( parent is Mobile )
-					((Mobile)parent).PublicOverheadMessage( MessageType.Regular, 0x22, false, timer.ToString() );
+				if ( parent is Item item )
+					item.PublicOverheadMessage( MessageType.Regular, 0x22, false, timer.ToString() );
+				else if ( parent is Mobile mobile )
+					mobile.PublicOverheadMessage( MessageType.Regular, 0x22, false, timer.ToString() );
 
 				states[1] = timer - 1;
 			}
@@ -187,9 +183,7 @@ namespace Server.Items
 				if ( m_Potion.Deleted || m_Potion.Map == Map.Internal )
 					return;
 
-				IPoint3D p = targeted as IPoint3D;
-
-				if ( p == null )
+				if ( !(targeted is IPoint3D p) )
 					return;
 
 				Map map = from.Map;
@@ -201,16 +195,14 @@ namespace Server.Items
 
 				from.RevealingAction();
 
-				IEntity to;
+				IEntity to = new Entity( Serial.Zero, new Point3D( p ), map );
 
-				to = new Entity( Serial.Zero, new Point3D( p ), map );
-
-				if ( p is Mobile )
+				if ( p is Mobile m )
 				{
 					if ( !RelativeLocation ) // explosion location = current mob location.
-						p = ((Mobile)p).Location;
+						p = m.Location;
 					else
-						to = (Mobile)p;
+						to = m;
 				}
 
 				Effects.SendMovingEffect( from, to, m_Potion.ItemID, 7, 0, false, false, m_Potion.Hue, 0 );
@@ -235,9 +227,8 @@ namespace Server.Items
 			for ( int i = 0; m_Users != null && i < m_Users.Count; ++i )
 			{
 				Mobile m = m_Users[i];
-				ThrowTarget targ = m.Target as ThrowTarget;
 
-				if ( targ != null && targ.Potion == this )
+				if ( m.Target is ThrowTarget targ && targ.Potion == this )
 					Target.Cancel( m );
 			}
 
@@ -259,9 +250,9 @@ namespace Server.Items
 
 			foreach ( IEntity o in eable )
 			{
-				if ( o is Mobile && (from == null || (SpellHelper.ValidIndirectTarget( from, (Mobile)o ) && from.CanBeHarmful( (Mobile)o, false ))))
+				if ( o is Mobile mobile && (from == null || (SpellHelper.ValidIndirectTarget( from, mobile ) && from.CanBeHarmful( mobile, false ))))
 				{
-					toExplode.Add( o );
+					toExplode.Add( mobile );
 					++toDamage;
 				}
 				else if ( o is BaseExplosionPotion && o != this )
@@ -279,12 +270,9 @@ namespace Server.Items
 			{
 				object o = toExplode[i];
 
-				if ( o is Mobile )
+				if ( o is Mobile m )
 				{
-					Mobile m = (Mobile)o;
-
-					if ( from != null )
-						from.DoHarmful( m );
+					from?.DoHarmful( m );
 
 					int damage = Utility.RandomMinMax( min, max );
 
@@ -297,10 +285,8 @@ namespace Server.Items
 
 					AOS.Damage( m, from, damage, 0, 100, 0, 0, 0 );
 				}
-				else if ( o is BaseExplosionPotion )
+				else if ( o is BaseExplosionPotion pot )
 				{
-					BaseExplosionPotion pot = (BaseExplosionPotion)o;
-
 					pot.Explode( from, false, pot.GetWorldLocation(), pot.Map );
 				}
 			}

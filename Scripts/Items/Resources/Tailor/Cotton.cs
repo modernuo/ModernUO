@@ -59,7 +59,7 @@ namespace Server.Items
 			}
 		}
 
-		public static void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
+		public virtual void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
 		{
 			Item item = new SpoolOfThread( 6 );
 			item.Hue = hue;
@@ -84,13 +84,11 @@ namespace Server.Items
 
 				ISpinningWheel wheel = targeted as ISpinningWheel;
 
-				if ( wheel == null && targeted is AddonComponent )
-					wheel = ((AddonComponent)targeted).Addon as ISpinningWheel;
+				if ( wheel == null && targeted is AddonComponent component )
+					wheel = component.Addon as ISpinningWheel;
 
 				if ( wheel is Item )
 				{
-					Item item = (Item)wheel;
-
 					if ( !m_Cotton.IsChildOf( from.Backpack ) )
 					{
 						from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
@@ -102,7 +100,7 @@ namespace Server.Items
 					else
 					{
 						m_Cotton.Consume();
-						wheel.BeginSpin( new SpinCallback( Cotton.OnSpun ), from, m_Cotton.Hue );
+						wheel.BeginSpin( m_Cotton.OnSpun, from, m_Cotton.Hue );
 					}
 				}
 				else

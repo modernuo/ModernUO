@@ -73,16 +73,16 @@ namespace Server.Items
 				if ( m_Item.Deleted )
 					return;
 
-				if ( targeted is ILockpickable )
+				if ( targeted is ILockpickable lockpickable )
 				{
-					Item item = (Item)targeted;
+					Item item = lockpickable as Item;
 					from.Direction = from.GetDirectionTo( item );
 
-					if ( ((ILockpickable)targeted).Locked )
+					if ( lockpickable.Locked )
 					{
 						from.PlaySound( 0x241 );
 
-						new InternalTimer( from, (ILockpickable)targeted, m_Item ).Start();
+						new InternalTimer( from, lockpickable, m_Item ).Start();
 					}
 					else
 					{
@@ -101,7 +101,7 @@ namespace Server.Items
 				private Mobile m_From;
 				private ILockpickable m_Item;
 				private Lockpick m_Lockpick;
-			
+
 				public InternalTimer( Mobile from, ILockpickable item, Lockpick lockpick ) : base( TimeSpan.FromSeconds( 3.0 ) )
 				{
 					m_From = from;
@@ -124,7 +124,7 @@ namespace Server.Items
 						m_Lockpick.Consume();
 					}
 				}
-				
+
 				protected override void OnTick()
 				{
 					Item item = (Item)m_Item;

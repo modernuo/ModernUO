@@ -24,15 +24,14 @@ namespace Server.Items
 
 				if ( m_Bonus == 0 )
 				{
-					if ( m_SkillMod != null )
-						m_SkillMod.Remove();
+					m_SkillMod?.Remove();
 
 					m_SkillMod = null;
 				}
-				else if ( m_SkillMod == null && Parent is Mobile )
+				else if ( m_SkillMod == null && Parent is Mobile mobile )
 				{
 					m_SkillMod = new DefaultSkillMod( SkillName.Blacksmith, true, m_Bonus );
-					((Mobile)Parent).AddSkillMod( m_SkillMod );
+					mobile.AddSkillMod( m_SkillMod );
 				}
 				else if ( m_SkillMod != null )
 				{
@@ -45,13 +44,12 @@ namespace Server.Items
 		{
 			base.OnAdded( parent );
 
-			if ( m_Bonus != 0 && parent is Mobile )
+			if ( m_Bonus != 0 && parent is Mobile mobile )
 			{
-				if ( m_SkillMod != null )
-					m_SkillMod.Remove();
+				m_SkillMod?.Remove();
 
 				m_SkillMod = new DefaultSkillMod( SkillName.Blacksmith, true, m_Bonus );
-				((Mobile)parent).AddSkillMod( m_SkillMod );
+				mobile.AddSkillMod( m_SkillMod );
 			}
 		}
 
@@ -59,8 +57,7 @@ namespace Server.Items
 		{
 			base.OnRemoved( parent );
 
-			if ( m_SkillMod != null )
-				m_SkillMod.Remove();
+			m_SkillMod?.Remove();
 
 			m_SkillMod = null;
 		}
@@ -118,13 +115,12 @@ namespace Server.Items
 				}
 			}
 
-			if ( m_Bonus != 0 && Parent is Mobile )
+			if ( m_Bonus != 0 && Parent is Mobile mobile )
 			{
-				if ( m_SkillMod != null )
-					m_SkillMod.Remove();
+				m_SkillMod?.Remove();
 
 				m_SkillMod = new DefaultSkillMod( SkillName.Blacksmith, true, m_Bonus );
-				((Mobile)Parent).AddSkillMod( m_SkillMod );
+				mobile.AddSkillMod( m_SkillMod );
 			}
 
 			if ( Hue == 0 )

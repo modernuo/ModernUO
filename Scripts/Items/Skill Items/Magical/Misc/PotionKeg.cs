@@ -217,82 +217,75 @@ namespace Server.Items
 
 		public override bool OnDragDrop( Mobile from, Item item )
 		{
-			if ( item is BasePotion )
-			{
-				BasePotion pot = (BasePotion)item;
-                int toHold = Math.Min( 100 - m_Held, pot.Amount );
-
-				if ( toHold <= 0 )
-				{
-					from.SendLocalizedMessage( 502233 ); // The keg will not hold any more!
-					return false;
-				}
-				else if ( m_Held == 0 )
-				{
-					#region Mondain's Legacy
-					if ( (int) pot.PotionEffect >= (int) PotionEffect.Invisibility )
-					{
-						from.SendLocalizedMessage( 502232 ); // The keg is not designed to hold that type of object.
-						return false;
-					}
-					#endregion
-
-					if ( GiveBottle( from, toHold ) )
-					{
-						m_Type = pot.PotionEffect;
-						Held = toHold;
-
-						from.PlaySound( 0x240 );
-
-						from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
-
-                        item.Consume( toHold );
-
-						if ( !item.Deleted )
-							item.Bounce( from );
-
-						return true;
-					}
-					else
-					{
-						from.SendLocalizedMessage( 502238 ); // You don't have room for the empty bottle in your backpack.
-						return false;
-					}
-				}
-				else if ( pot.PotionEffect != m_Type )
-				{
-					from.SendLocalizedMessage( 502236 ); // You decide that it would be a bad idea to mix different types of potions.
-					return false;
-				}
-				else
-				{
-					if ( GiveBottle( from, toHold ) )
-					{
-						Held += toHold;
-
-						from.PlaySound( 0x240 );
-
-						from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
-
-						item.Consume( toHold );
-
-						if ( !item.Deleted )
-							item.Bounce( from );
-
-						return true;
-					}
-					else
-					{
-						from.SendLocalizedMessage( 502238 ); // You don't have room for the empty bottle in your backpack.
-						return false;
-					}
-				}
-			}
-			else
+			if (!(item is BasePotion pot))
 			{
 				from.SendLocalizedMessage( 502232 ); // The keg is not designed to hold that type of object.
 				return false;
 			}
+
+			int toHold = Math.Min( 100 - m_Held, pot.Amount );
+
+			if ( toHold <= 0 )
+			{
+				from.SendLocalizedMessage( 502233 ); // The keg will not hold any more!
+				return false;
+			}
+
+			if ( m_Held == 0 )
+			{
+				#region Mondain's Legacy
+				if ( (int) pot.PotionEffect >= (int) PotionEffect.Invisibility )
+				{
+					from.SendLocalizedMessage( 502232 ); // The keg is not designed to hold that type of object.
+					return false;
+				}
+				#endregion
+
+				if ( GiveBottle( from, toHold ) )
+				{
+					m_Type = pot.PotionEffect;
+					Held = toHold;
+
+					from.PlaySound( 0x240 );
+
+					from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
+
+					pot.Consume( toHold );
+
+					if ( !pot.Deleted )
+						pot.Bounce( from );
+
+					return true;
+				}
+
+				from.SendLocalizedMessage( 502238 ); // You don't have room for the empty bottle in your backpack.
+				return false;
+			}
+
+			if ( pot.PotionEffect != m_Type )
+			{
+				from.SendLocalizedMessage( 502236 ); // You decide that it would be a bad idea to mix different types of potions.
+				return false;
+			}
+
+			if ( GiveBottle( from, toHold ) )
+			{
+				Held += toHold;
+
+				from.PlaySound( 0x240 );
+
+				from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
+
+				pot.Consume( toHold );
+
+				if ( !pot.Deleted )
+					pot.Bounce( from );
+
+				return true;
+			}
+
+			from.SendLocalizedMessage( 502238 ); // You don't have room for the empty bottle in your backpack.
+			return false;
 		}
 
 		public bool GiveBottle( Mobile m, int amount )

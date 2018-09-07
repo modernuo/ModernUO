@@ -617,7 +617,7 @@ namespace Server.Items
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			if ( @from is PlayerMobile mobile && mobile.Young )
+			if ( from is PlayerMobile mobile && mobile.Young )
 				return true;
 
 			if ( from == this.Decoder )

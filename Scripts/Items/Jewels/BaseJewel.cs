@@ -169,17 +169,17 @@ namespace Server.Items
 
 		public override void OnRemoved(IEntity parent)
 		{
-			if ( Core.AOS && parent is Mobile @from )
+			if ( Core.AOS && parent is Mobile from )
 			{
 				m_AosSkillBonuses.Remove();
 
 				string modName = this.Serial.ToString();
 
-				@from.RemoveStatMod( modName + "Str" );
-				@from.RemoveStatMod( modName + "Dex" );
-				@from.RemoveStatMod( modName + "Int" );
+				from.RemoveStatMod( modName + "Str" );
+				from.RemoveStatMod( modName + "Dex" );
+				from.RemoveStatMod( modName + "Int" );
 
-				@from.CheckStatTimers();
+				from.CheckStatTimers();
 			}
 		}
 

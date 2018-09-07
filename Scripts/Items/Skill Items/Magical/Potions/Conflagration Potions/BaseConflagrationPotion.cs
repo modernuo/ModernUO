@@ -40,9 +40,7 @@ namespace Server.Items
 				return;
 			}
 
-			ThrowTarget targ = from.Target as ThrowTarget;
-
-			if ( targ != null && targ.Potion == this )
+			if ( from.Target is ThrowTarget targ && targ.Potion == this )
 				return;
 
 			from.RevealingAction();
@@ -86,9 +84,7 @@ namespace Server.Items
 			// Check if any other players are using this potion
 			for ( int i = 0; i < m_Users.Count; i ++ )
 			{
-				ThrowTarget targ = m_Users[ i ].Target as ThrowTarget;
-
-				if ( targ != null && targ.Potion == this )
+				if ( m_Users[ i ].Target is ThrowTarget targ && targ.Potion == this )
 					Target.Cancel( from );
 			}
 
@@ -112,9 +108,7 @@ namespace Server.Items
 
 		public static void AddDelay( Mobile m )
 		{
-			Timer timer = m_Delay[ m ] as Timer;
-
-			if ( timer != null )
+			if ( m_Delay[ m ] is Timer timer )
 				timer.Stop();
 
 			m_Delay[ m ] = Timer.DelayCall( TimeSpan.FromSeconds( 30 ), new TimerStateCallback( EndDelay_Callback ), m );
@@ -122,9 +116,7 @@ namespace Server.Items
 
 		public static int GetDelay( Mobile m )
 		{
-			Timer timer = m_Delay[ m ] as Timer;
-
-			if ( timer != null && timer.Next > DateTime.UtcNow )
+			if ( m_Delay[ m ] is Timer timer && timer.Next > DateTime.UtcNow )
 				return (int) (timer.Next - DateTime.UtcNow).TotalSeconds;
 
 			return 0;
@@ -132,15 +124,13 @@ namespace Server.Items
 
 		private static void EndDelay_Callback( object obj )
 		{
-			if ( obj is Mobile )
-				EndDelay( (Mobile) obj );
+			if ( obj is Mobile mobile )
+				EndDelay( mobile );
 		}
 
 		public static void EndDelay( Mobile m )
 		{
-			Timer timer = m_Delay[ m ] as Timer;
-
-			if ( timer != null )
+			if ( m_Delay[ m ] is Timer timer )
 			{
 				timer.Stop();
 				m_Delay.Remove( m );
@@ -167,13 +157,11 @@ namespace Server.Items
 				if ( m_Potion.Deleted || m_Potion.Map == Map.Internal )
 					return;
 
-				IPoint3D p = targeted as IPoint3D;
-
-				if ( p == null || from.Map == null )
+				if ( !(targeted is IPoint3D p) || from.Map == null )
 					return;
 
 				// Add delay
-				BaseConflagrationPotion.AddDelay( from );
+				AddDelay( from );
 
 				SpellHelper.GetSurfaceTop( ref p );
 
@@ -181,8 +169,8 @@ namespace Server.Items
 
 				IEntity to;
 
-				if ( p is Mobile )
-					to = (Mobile)p;
+				if ( p is Mobile mobile )
+					to = mobile;
 				else
 					to = new Entity( Serial.Zero, new Point3D( p ), from.Map );
 

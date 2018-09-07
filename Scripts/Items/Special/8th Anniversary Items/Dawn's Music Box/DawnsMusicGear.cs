@@ -76,7 +76,7 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.WriteEncodedInt( (int) 1 ); // version
-			
+
 			writer.Write( (int) m_Music );
 		}
 
@@ -85,7 +85,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 
 			int version = reader.ReadEncodedInt();
-			
+
 			switch ( version )
 			{
 				case 1:
@@ -94,19 +94,19 @@ namespace Server.Items
 					break;
 				}
 			}
-			
+
 			if ( version == 0 ) // Music wasn't serialized in version 0, pick a new track of random rarity
 			{
 				DawnsMusicRarity rarity;
 				double rand = Utility.RandomDouble();
-				
+
 				if ( rand < 0.025 )
 					rarity = DawnsMusicRarity.Rare;
 				else if ( rand < 0.225 )
 					rarity = DawnsMusicRarity.Uncommon;
 				else
 					rarity = DawnsMusicRarity.Common;
-				
+
 				m_Music = DawnsMusicBox.RandomTrack( rarity );
 			}
 		}
@@ -125,9 +125,7 @@ namespace Server.Items
 				if ( m_Gear == null || m_Gear.Deleted )
 					return;
 
-				DawnsMusicBox box = targeted as DawnsMusicBox;
-
-				if ( box != null )
+				if ( targeted is DawnsMusicBox box )
 				{
 					if ( !box.Tracks.Contains( m_Gear.Music ) )
 					{
