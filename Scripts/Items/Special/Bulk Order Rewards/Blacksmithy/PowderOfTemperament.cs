@@ -106,11 +106,8 @@ namespace Server.Items
 					return;
 				}
 
-				if ( targeted is IDurability && targeted is Item  )
+				if ( targeted  is Item item && item is IDurability wearable )
 				{
-					IDurability wearable = (IDurability) targeted;
-					Item item = (Item) targeted;
-
 					if ( !wearable.CanFortify )
 					{
 						from.SendLocalizedMessage( 1049083 ); // You cannot use the powder on that item.

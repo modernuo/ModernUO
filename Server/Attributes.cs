@@ -102,15 +102,10 @@ namespace Server
 		{
 			object[] objs = mi.GetCustomAttributes( typeof( CallPriorityAttribute ), true );
 
-			if ( objs == null )
-				return 0;
-
 			if ( objs.Length == 0 )
 				return 0;
 
-			CallPriorityAttribute attr = objs[0] as CallPriorityAttribute;
-
-			if ( attr == null )
+			if ( !(objs[0] is CallPriorityAttribute attr) )
 				return 0;
 
 			return attr.Priority;

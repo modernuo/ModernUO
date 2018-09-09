@@ -124,17 +124,15 @@ namespace Server.Items
 			{
 				Item item = Loot.RandomArmorOrShieldOrWeapon();
 
-				if ( item is BaseWeapon )
+				if ( item is BaseWeapon weapon )
 				{
-					BaseWeapon weapon = ( BaseWeapon )item;
 					weapon.DamageLevel = ( WeaponDamageLevel )Utility.Random( m_Level );
 					weapon.AccuracyLevel = ( WeaponAccuracyLevel )Utility.Random( m_Level );
 					weapon.DurabilityLevel = ( WeaponDurabilityLevel )Utility.Random( m_Level );
 					weapon.Quality = WeaponQuality.Regular;
 				}
-				else if ( item is BaseArmor )
+				else if ( item is BaseArmor armor )
 				{
-					BaseArmor armor = ( BaseArmor )item;
 					armor.ProtectionLevel = ( ArmorProtectionLevel )Utility.Random( m_Level );
 					armor.Durability = ( ArmorDurabilityLevel )Utility.Random( m_Level );
 					armor.Quality = ArmorQuality.Regular;

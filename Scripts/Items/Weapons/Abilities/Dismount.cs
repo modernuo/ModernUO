@@ -72,36 +72,32 @@ namespace Server.Items
 			defender.PlaySound( 0x140 );
 			defender.FixedParticles( 0x3728, 10, 15, 9955, EffectLayer.Waist );
 
-			if (defender is PlayerMobile)
+			if (defender is PlayerMobile mobile)
 			{
-				if (Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(defender))
+				if (Server.Spells.Ninjitsu.AnimalForm.UnderTransformation(mobile))
 				{
-					defender.SendLocalizedMessage(1114066, attacker.Name); // ~1_NAME~ knocked you out of animal form!
+					mobile.SendLocalizedMessage(1114066, attacker.Name); // ~1_NAME~ knocked you out of animal form!
 				}
-				else if (defender.Mounted)
+				else if (mobile.Mounted)
 				{
-					defender.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+					mobile.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
 				}
 
-				(defender as PlayerMobile).SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(10), true);
+				mobile.SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(10), true);
 			}
 			else
 			{
 				defender.Mount.Rider = null;
 			}
 
-			if ( attacker is PlayerMobile )
+			if ( attacker is PlayerMobile playerMobile )
 			{
-				(attacker as PlayerMobile).SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, true );
+				playerMobile.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, true );
 			}
-			else if ( Core.ML && attacker is BaseCreature )
+			else if ( Core.ML && attacker is BaseCreature bc )
 			{
-				BaseCreature bc = attacker as BaseCreature;
-
-				if ( bc.ControlMaster is PlayerMobile )
+				if ( bc.ControlMaster is PlayerMobile pm )
 				{
-					PlayerMobile pm = bc.ControlMaster as PlayerMobile;
-
 					pm.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, false );
 				}
 			}

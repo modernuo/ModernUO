@@ -40,9 +40,7 @@ namespace Server.Items
 
 		public override bool RequiresTactics( Mobile from )
 		{
-			BaseWeapon weapon = from.Weapon as BaseWeapon;
-
-			if ( weapon == null )
+			if ( !(from.Weapon is BaseWeapon weapon) )
 				return true;
 
 			return weapon.Skill != SkillName.Wrestling;

@@ -37,7 +37,7 @@ namespace Server.Items
 
 			from.Direction = dir;
 
-			bool canThrow = true;
+			bool canThrow;
 
 			if ( !from.InRange( this, 4 ) || !from.InLOS( this ) )
 				canThrow = false;

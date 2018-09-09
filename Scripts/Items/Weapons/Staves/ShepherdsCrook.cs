@@ -68,10 +68,8 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targ )
 			{
-				if ( targ is BaseCreature )
+				if ( targ is BaseCreature bc )
 				{
-					BaseCreature bc = (BaseCreature)targ;
-
 					if ( IsHerdable( bc ) )
 					{
 						if ( bc.Controlled )
@@ -114,9 +112,7 @@ namespace Server.Items
 
 				Map map = bc.Map;
 
-				ChampionSpawnRegion region = Region.Find( bc.Home, map ) as ChampionSpawnRegion;
-
-				if ( region != null )
+				if ( Region.Find( bc.Home, map ) is ChampionSpawnRegion region )
 				{
 					ChampionSpawn spawn = region.ChampionSpawn;
 
@@ -144,7 +140,7 @@ namespace Server.Items
 
 				protected override void OnTarget( Mobile from, object targ )
 				{
-					if ( targ is IPoint2D )
+					if ( targ is IPoint2D p )
 					{
 						double min = m_Creature.MinTameSkill - 30;
 						double max = m_Creature.MinTameSkill + 30 + Utility.Random( 10 );
@@ -154,9 +150,7 @@ namespace Server.Items
 
 						if ( from.CheckTargetSkill( SkillName.Herding, m_Creature, min, max ) )
 						{
-							IPoint2D p = (IPoint2D) targ;
-
-							if ( targ != from )
+							if ( p != from )
 								p = new Point2D( p.X, p.Y );
 
 							m_Creature.TargetLocation = p;

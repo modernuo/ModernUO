@@ -791,10 +791,8 @@ namespace Server.Items
 						from.SendLocalizedMessage( 1074514 ); // You have no place to put it.
 						return false;
 					}
-					else
-					{
-						from.SendLocalizedMessage( 1074512 ); // You put the gasping creature into your pack.
-					}
+
+					from.SendLocalizedMessage( 1074512 ); // You put the gasping creature into your pack.
 				}
 
 				if ( !fish.Dead )
@@ -871,24 +869,21 @@ namespace Server.Items
 
 			if ( IsFull )
 			{
-				if ( from != null )
-					from.SendLocalizedMessage( 1073636 ); // The decoration will not fit in the aquarium.
+				from?.SendLocalizedMessage( 1073636 ); // The decoration will not fit in the aquarium.
 
 				return false;
 			}
 
 			if ( !Accepts( item ) )
 			{
-				if ( from != null )
-					from.SendLocalizedMessage( 1073822 ); // The aquarium can not hold that item.
+				from?.SendLocalizedMessage( 1073822 ); // The aquarium can not hold that item.
 
 				return false;
 			}
 
 			AddItem( item );
 
-			if ( from != null )
-				from.SendLocalizedMessage( 1073635, ( item.LabelNumber != 0 ) ? String.Format( "#{0}", item.LabelNumber ) : item.Name ); // You add the following decoration to your aquarium: ~1_NAME~
+			from?.SendLocalizedMessage( 1073635, ( item.LabelNumber != 0 ) ? String.Format( "#{0}", item.LabelNumber ) : item.Name ); // You add the following decoration to your aquarium: ~1_NAME~
 
 			InvalidateProperties();
 			return true;

@@ -136,8 +136,8 @@ namespace Server.Items
 		{
 			if ( m_Organ != null && m_Organ.OnDropped( from, dropped, this ) )
 			{
-				if ( dropped is PlagueBeastComponent )
-					m_Organ.Components.Add( (PlagueBeastComponent) dropped );
+				if ( dropped is PlagueBeastComponent component )
+					m_Organ.Components.Add( component );
 			}
 
  			return true;

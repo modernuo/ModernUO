@@ -86,8 +86,7 @@ namespace Server.Multis
 
 		public override void OnAfterDelete()
 		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = null;
 

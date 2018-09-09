@@ -39,9 +39,7 @@ namespace Server.Items
 
 			int modifier = (int)(30.0 * ((Math.Max( attacker.Skills[SkillName.Bushido].Value, attacker.Skills[SkillName.Ninjitsu].Value ) - 50.0) / 70.0));
 
-			DefenseMasteryInfo info = m_Table[attacker] as DefenseMasteryInfo;
-
-			if ( info != null )
+			if ( m_Table[attacker] is DefenseMasteryInfo info )
 				EndDefense( (object)info );
 
 			ResistanceMod mod = new ResistanceMod( ResistanceType.Physical, 50 + modifier );
@@ -74,9 +72,7 @@ namespace Server.Items
 
 		public static bool GetMalus( Mobile targ, ref int damageMalus )
 		{
-			DefenseMasteryInfo info = m_Table[targ] as DefenseMasteryInfo;
-
-			if ( info == null )
+			if ( !(m_Table[targ] is DefenseMasteryInfo info) )
 				return false;
 
 			damageMalus = info.m_DamageMalus;
@@ -90,8 +86,7 @@ namespace Server.Items
 			if ( info.m_Mod != null )
 				info.m_From.RemoveResistanceMod( info.m_Mod );
 
-			if ( info.m_Timer != null )
-				info.m_Timer.Stop();
+			info.m_Timer?.Stop();
 
 			// No message is sent to the player.
 

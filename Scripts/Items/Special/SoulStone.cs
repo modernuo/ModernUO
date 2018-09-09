@@ -642,10 +642,8 @@ namespace Server.Items
 
 				Effects.SendTargetParticles( from, 0x375A, 35, 90, 0x00, 0x00, 9502, (EffectLayer)255, 0x100 );
 
-				if ( m_Stone is SoulstoneFragment )
+				if ( m_Stone is SoulstoneFragment frag )
 				{
-					SoulstoneFragment frag = m_Stone as SoulstoneFragment;
-
 					if ( --frag.UsesRemaining <= 0 )
 						from.SendLocalizedMessage( 1070974 ); // You have used up your soulstone fragment.
 				}

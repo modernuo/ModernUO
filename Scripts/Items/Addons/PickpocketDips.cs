@@ -46,8 +46,7 @@ namespace Server.Items
 
 		public void BeginSwing()
 		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = new InternalTimer( this );
 			m_Timer.Start();
@@ -57,8 +56,7 @@ namespace Server.Items
 
 		public void EndSwing()
 		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = null;
 

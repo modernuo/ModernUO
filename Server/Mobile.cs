@@ -2620,7 +2620,7 @@ namespace Server
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				m_Callback?.Invoke( @from, targeted );
+				m_Callback?.Invoke( from, targeted );
 			}
 		}
 
@@ -2647,7 +2647,7 @@ namespace Server
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				m_Callback?.Invoke( @from, targeted, m_State );
+				m_Callback?.Invoke( from, targeted, m_State );
 			}
 		}
 
@@ -2674,7 +2674,7 @@ namespace Server
 
 			protected override void OnTarget(Mobile from, object targeted)
 			{
-				m_Callback?.Invoke(@from, targeted, m_State);
+				m_Callback?.Invoke(from, targeted, m_State);
 			}
 		}
 		public Target BeginTarget<T>(int range, bool allowGround, TargetFlags flags, TargetStateCallback<T> callback, T state)
@@ -4359,6 +4359,7 @@ namespace Server
 				Console.WriteLine( "Warning: 0x{0:X}: Item must have a zero paramater constructor to be separated from a stack. '{1}'.", oldItem.Serial.Value, oldItem.GetType().Name );
 				return null;
 			}
+
 			item.Visible = oldItem.Visible;
 			item.Movable = oldItem.Movable;
 			item.LootType = oldItem.LootType;
@@ -4376,13 +4377,13 @@ namespace Server
 			oldItem.Amount = amount;
 			oldItem.OnAfterDuped( item );
 
-			if ( oldItem.Parent is Mobile )
+			if ( oldItem.Parent is Mobile parentMobile )
 			{
-				((Mobile)oldItem.Parent).AddItem( item );
+				parentMobile.AddItem( item );
 			}
-			else if ( oldItem.Parent is Item )
+			else if ( oldItem.Parent is Item parentItem )
 			{
-				((Item)oldItem.Parent).AddItem( item );
+				parentItem.AddItem( item );
 			}
 
 			item.Delta( ItemDelta.Update );
@@ -4581,8 +4582,8 @@ namespace Server
 				if (item.HandlesOnSpeech)
 					list.Add( item );
 
-				if (item is Container)
-					AddSpeechItemsFrom(list, (Container)item);
+				if (item is Container container)
+					AddSpeechItemsFrom(list, container);
 			}
 		}
 
@@ -6543,14 +6544,10 @@ namespace Server
 				IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange( m_Location, Core.GlobalMaxUpdateRange );
 
 				foreach ( IEntity o in eable ) {
-					if ( o is Mobile ) {
-						Mobile m = (Mobile)o;
-
+					if ( o is Mobile m ) {
 						if ( m != this && Utility.InUpdateRange( m_Location, m.m_Location ) )
 							ns.Send( m.RemovePacket );
-					} else if ( o is Item ) {
-						Item item = (Item)o;
-
+					} else if ( o is Item item ) {
 						if ( InRange( item.Location, item.GetUpdateRange( this ) ) )
 							ns.Send( item.RemovePacket );
 					}
@@ -6583,14 +6580,17 @@ namespace Server
 		}
 
 		public bool SendHuePicker( HuePicker p, bool throwOnOffline ) {
-			if ( m_NetState != null ) {
-				p.SendTo( m_NetState );
+			if (m_NetState != null)
+			{
+				p.SendTo(m_NetState);
 				return true;
-			} else if ( throwOnOffline ) {
-				throw new MobileNotConnectedException( this, "Hue picker could not be sent." );
-			} else {
-				return false;
 			}
+
+			if ( throwOnOffline ) {
+				throw new MobileNotConnectedException( this, "Hue picker could not be sent." );
+			}
+
+			return false;
 		}
 
 		public Gump FindGump( Type type ) {
@@ -6598,7 +6598,7 @@ namespace Server
 
 			if ( ns != null ) {
 				foreach ( Gump gump in ns.Gumps ) {
-					if ( type.IsAssignableFrom( gump.GetType() ) ) {
+					if ( type.IsInstanceOfType( gump ) ) {
 						return gump;
 					}
 				}
@@ -10108,9 +10108,7 @@ namespace Server
 
 				if ( sendStam || sendMana )
 				{
-					IParty ip = m_Party as IParty;
-
-					if (ip != null)
+					if (m_Party is IParty ip)
 					{
 						if ( sendStam )
 							ip.OnStamChanged( this );

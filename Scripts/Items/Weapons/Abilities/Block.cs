@@ -60,9 +60,7 @@ namespace Server.Items
 
 		public static bool GetBonus( Mobile targ, ref int bonus )
 		{
-			BlockInfo info = m_Table[targ] as BlockInfo;
-
-			if ( info == null )
+			if ( !(m_Table[targ] is BlockInfo info) )
 				return false;
 
 			bonus = info.m_Bonus;
@@ -81,12 +79,9 @@ namespace Server.Items
 
 		public static void EndBlock( Mobile m )
 		{
-			BlockInfo info = m_Table[m] as BlockInfo;
-
-			if ( info != null )
+			if ( m_Table[m] is BlockInfo info )
 			{
-				if ( info.m_Timer != null )
-					info.m_Timer.Stop();
+				info.m_Timer?.Stop();
 
 				m_Table.Remove( m );
 			}

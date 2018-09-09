@@ -31,7 +31,7 @@ namespace Server.Items
 			TransformContext context = TransformationSpellHelper.GetContext( defender );
 
 			if ( (context != null && ( context.Type == typeof( LichFormSpell ) || context.Type == typeof( WraithFormSpell ))) ||
-				(defender is BaseCreature && ((BaseCreature)defender).BleedImmune) )
+				(defender is BaseCreature creature && creature.BleedImmune) )
 			{
 				attacker.SendLocalizedMessage( 1062052 ); // Your target is not affected by the bleed attack!
 				return;
@@ -63,8 +63,7 @@ namespace Server.Items
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			t = new InternalTimer( from, m );
 			m_Table[m] = t;

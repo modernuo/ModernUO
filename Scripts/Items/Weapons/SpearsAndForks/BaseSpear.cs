@@ -35,7 +35,7 @@ namespace Server.Items
 			int version = reader.ReadInt();
 		}
 
-		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
+		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus = 1 )
 		{
 			base.OnHit( attacker, defender, damageBonus );
 

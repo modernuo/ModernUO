@@ -56,9 +56,7 @@ namespace Server.Items
 			if ( Owner != null )
 				Owner.PlaySound( 0x199 );
 
-			PlagueBeastRubbleOrgan organ = Organ as PlagueBeastRubbleOrgan;
-
-			if ( organ != null )
+			if ( Organ is PlagueBeastRubbleOrgan organ )
 				organ.OnVeinCut( from, this );
 		}
 

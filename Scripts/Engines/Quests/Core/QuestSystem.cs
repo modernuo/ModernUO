@@ -73,8 +73,7 @@ namespace Server.Engines.Quests
 
 		public virtual void StopTimer()
 		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = null;
 		}

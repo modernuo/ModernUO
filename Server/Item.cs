@@ -1544,11 +1544,8 @@ namespace Server
 
 		public virtual bool OnDragDrop( Mobile from, Item dropped )
 		{
-			bool success = false;
-			if ( Parent is Container )
-				success = ((Container)Parent).OnStackAttempt( from, this, dropped );
-			else
-				success = StackWith( from, dropped );
+			bool success = Parent is Container container && container.OnStackAttempt( from, this, dropped ) ||
+			               StackWith( from, dropped );
 
 			if ( success && Spawner != null )
 			{

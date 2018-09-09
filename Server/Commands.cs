@@ -171,12 +171,10 @@ namespace Server.Commands
 		{
 			if ( obj == this )
 				return 0;
-			else if ( obj == null )
+			if ( obj == null )
 				return 1;
 
-			CommandEntry e = obj as CommandEntry;
-
-			if ( e == null )
+			if ( !(obj is CommandEntry e) )
 				throw new ArgumentException();
 
 			return m_Command.CompareTo( e.m_Command );
@@ -204,7 +202,7 @@ namespace Server.Commands
 			char[] array = value.ToCharArray();
 			List<string> list = new List<string>();
 
-			int start = 0, end = 0;
+			int start = 0;
 
 			while ( start < array.Length )
 			{
@@ -213,7 +211,7 @@ namespace Server.Commands
 				if ( c == '"' )
 				{
 					++start;
-					end = start;
+					int end = start;
 
 					while ( end < array.Length )
 					{
@@ -229,7 +227,7 @@ namespace Server.Commands
 				}
 				else if ( c != ' ' )
 				{
-					end = start;
+					int end = start;
 
 					while ( end < array.Length )
 					{
@@ -308,8 +306,7 @@ namespace Server.Commands
 					args = new string[0];
 				}
 
-				CommandEntry entry = null;
-				m_Entries.TryGetValue( command, out entry );
+				m_Entries.TryGetValue( command, out CommandEntry entry );
 
 				if ( entry != null )
 				{

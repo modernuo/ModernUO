@@ -26,12 +26,12 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if ( Addon is CannonAddon )
+			if ( Addon is CannonAddon addon )
 			{
-				if ( ((CannonAddon) Addon).IsRewardItem )
+				if ( addon.IsRewardItem )
 					list.Add( 1076223 ); // 7th Year Veteran Reward
 
-				list.Add( 1076207, ((CannonAddon) Addon).Charges.ToString() ); // Remaining Charges: ~1_val~
+				list.Add( 1076207, addon.Charges.ToString() ); // Remaining Charges: ~1_val~
 			}
 		}
 
@@ -260,9 +260,7 @@ namespace Server.Items
 				if ( m_Cannon == null || m_Cannon.Deleted )
 					return;
 
-				IPoint3D p = targeted as IPoint3D;
-
-				if ( p == null )
+				if ( !(targeted is IPoint3D p) )
 					return;
 
 				if ( from.InLOS( new Point3D( p ) ) )

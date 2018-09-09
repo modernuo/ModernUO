@@ -39,7 +39,7 @@ namespace Server.Items
 				{
 					m_Resource = value;
 					Hue = CraftResources.GetHue( m_Resource );
-					
+
 					InvalidateProperties();
 				}
 			}
@@ -143,7 +143,7 @@ namespace Server.Items
 
 				if ( !map.CanFit( p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, ( c.Z == 0 ) ) )
 					return AddonFitResult.Blocked;
-				else if ( !CheckHouse( from, p3D, map, c.ItemData.Height, ref house ) )
+				if ( !CheckHouse( from, p3D, map, c.ItemData.Height, ref house ) )
 					return AddonFitResult.NotInHouse;
 
 				if ( c.NeedsWall )
@@ -168,7 +168,7 @@ namespace Server.Items
 				{
 					Point3D addonLoc = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
 					int addonHeight = c.ItemData.CalcHeight;
-						
+
 					if ( Utility.InRange( doorLoc, addonLoc, 1 ) && (addonLoc.Z == doorLoc.Z || ((addonLoc.Z + addonHeight) > doorLoc.Z && (doorLoc.Z + doorHeight) > addonLoc.Z)) )
 						return AddonFitResult.DoorTooClose;
 				}

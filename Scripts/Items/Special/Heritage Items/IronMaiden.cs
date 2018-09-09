@@ -54,8 +54,8 @@ namespace Server.Items
 		{
 			object[] param = (object[]) obj;
 
-			if ( param[ 0 ] is AddonComponent && param[ 1 ] is Mobile )
-				Activate( (AddonComponent) param[ 0 ], (Mobile) param[ 1 ] );
+			if ( param[ 0 ] is AddonComponent component && param[ 1 ] is Mobile mobile )
+				Activate( component, mobile );
 		}
 
 		public virtual void Activate( AddonComponent c, Mobile from )
@@ -99,8 +99,8 @@ namespace Server.Items
 
 		private void Deactivate( object obj )
 		{
-			if ( obj is AddonComponent )
-				( (AddonComponent) obj ).ItemID = 0x1249;
+			if ( obj is AddonComponent component )
+				component.ItemID = 0x1249;
 		}
 	}
 

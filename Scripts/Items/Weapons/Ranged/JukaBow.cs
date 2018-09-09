@@ -47,9 +47,7 @@ namespace Server.Items
 
 		public void OnTargetGears( Mobile from, object targ )
 		{
-			Gears g = targ as Gears;
-
-			if ( g == null || !g.IsChildOf( from.Backpack ) )
+			if ( !(targ is Gears g) || !g.IsChildOf( from.Backpack ) )
 			{
 				from.SendMessage( "Those are not gears." ); // Apparently gears that aren't in your backpack aren't really gears at all. :-(
 			}

@@ -122,8 +122,7 @@ namespace Server.Engines.Help
 
 		public void Stop()
 		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = null;
 		}

@@ -663,8 +663,7 @@ namespace Server.Mobiles
 
 			m_End = DateTime.UtcNow + delay;
 
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = new InternalTimer( this, delay );
 			if ( !IsFull )

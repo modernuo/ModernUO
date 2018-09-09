@@ -40,7 +40,7 @@ namespace Server.Items
 			from.Target = new BladedItemTarget( this );
 		}
 
-		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
+		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus = 1 )
 		{
 			base.OnHit( attacker, defender, damageBonus );
 

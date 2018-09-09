@@ -62,9 +62,7 @@ namespace Server.Items
 					{
 						for ( int i = 0; i < pack.Items.Count; i++ )
 						{
-							PlagueBeastMainOrgan main = pack.Items[ i ] as PlagueBeastMainOrgan;
-
-							if ( main != null && main.Complete )
+							if ( pack.Items[ i ] is PlagueBeastMainOrgan main && main.Complete )
 								main.FinishOpening( from );
 						}
 					}
@@ -104,7 +102,7 @@ namespace Server.Items
 
 				ItemID--;
 			}
-		}		
+		}
 
 		public PlagueBeastBlood( Serial serial ) : base( serial )
 		{

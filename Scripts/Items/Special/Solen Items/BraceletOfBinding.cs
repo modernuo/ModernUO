@@ -204,9 +204,7 @@ namespace Server.Items
 
 				if ( m_Bracelet.CheckUse( m_From, false ) )
 				{
-					Mobile boundRoot = m_Bracelet.Bound.RootParent as Mobile;
-
-					if ( boundRoot != null )
+					if ( m_Bracelet.Bound.RootParent is Mobile boundRoot )
 					{
 						m_Bracelet.Charges--;
 
@@ -279,9 +277,9 @@ namespace Server.Items
 			{
 				return false;
 			}
-			else if ( boundRoot.Map == Map.Felucca && from is PlayerMobile && ((PlayerMobile)from).Young )
+			else if ( boundRoot.Map == Map.Felucca && from is PlayerMobile mobile && mobile.Young )
 			{
-				from.SendLocalizedMessage( 1049543 ); // You decide against traveling to Felucca while you are still young.
+				mobile.SendLocalizedMessage( 1049543 ); // You decide against traveling to Felucca while you are still young.
 				return false;
 			}
 			else if ( from.Kills >= 5 && boundRoot.Map != Map.Felucca )
@@ -357,10 +355,8 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 				}
-				else if ( targeted is BraceletOfBinding )
+				else if ( targeted is BraceletOfBinding bindBracelet )
 				{
-					BraceletOfBinding bindBracelet = (BraceletOfBinding)targeted;
-
 					if ( bindBracelet == m_Bracelet )
 					{
 						from.SendLocalizedMessage( 1054012 ); // You cannot bind a bracelet of binding to itself!

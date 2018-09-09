@@ -30,7 +30,7 @@ namespace Server.Items
 				DisplayPage( i, edit );
 		}
 
-		public virtual void DisplayPage( int page, bool edit )
+		public void DisplayPage( int page, bool edit )
 		{
 			AddPage( page );
 

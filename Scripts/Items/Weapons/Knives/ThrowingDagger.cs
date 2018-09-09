@@ -65,14 +65,13 @@ namespace Server.Items
 				{
 					return;
 				}
-				else if ( !from.Items.Contains( m_Dagger ) )
+
+				if ( !from.Items.Contains( m_Dagger ) )
 				{
 					from.SendMessage( "You must be holding that weapon to use it." );
 				}
-				else if ( targeted is Mobile )
+				else if ( targeted is Mobile m )
 				{
-					Mobile m = (Mobile)targeted;
-
 					if ( m != from && from.HarmfulCheck( m ) )
 					{
 						Direction to = from.GetDirectionTo( m );

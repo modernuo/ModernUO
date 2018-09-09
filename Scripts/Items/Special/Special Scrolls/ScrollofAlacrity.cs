@@ -66,9 +66,7 @@ namespace Server.Items
 			if ( !base.CanUse( from ) )
 				return false;
 
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return false;
 
 			#region Mondain's Legacy
@@ -109,9 +107,7 @@ namespace Server.Items
 			if ( !CanUse( from ) )
 				return;
 
-			PlayerMobile pm = from as PlayerMobile;
-
-			if ( pm == null )
+			if ( !(from is PlayerMobile pm) )
 				return;
 
 			double tskill = from.Skills[Skill].Base;
@@ -130,9 +126,6 @@ namespace Server.Items
 			Effects.SendTargetParticles( from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100 );
 
 			pm.AcceleratedStart = DateTime.UtcNow + TimeSpan.FromMinutes(15);
-
-			Timer t = (Timer)m_Table[from];
-
 			m_Table[from] = Timer.DelayCall( TimeSpan.FromMinutes( 15 ), new TimerStateCallback( Expire_Callback ), from );
 
 			pm.AcceleratedSkill = Skill;

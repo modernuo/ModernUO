@@ -67,7 +67,7 @@ namespace Server.Items
 
 			Recipe r = this.Recipe;
 
-			if ( r != null && @from is PlayerMobile pm )
+			if ( r != null && from is PlayerMobile pm )
 			{
 				if ( !pm.HasRecipe( r ) )
 				{

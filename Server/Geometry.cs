@@ -98,9 +98,9 @@ namespace Server
 
 		public int CompareTo( object other )
 		{
-			if ( other is Point2D )
-				return this.CompareTo( (Point2D) other );
-			else if ( other == null )
+			if ( other is Point2D d )
+				return this.CompareTo( d );
+			if ( other == null )
 				return -1;
 
 			throw new ArgumentException();
@@ -108,7 +108,7 @@ namespace Server
 
 		public override bool Equals( object o )
 		{
-			if ( o == null || !(o is IPoint2D) ) return false;
+			if ( !(o is IPoint2D) ) return false;
 
 			IPoint2D p = (IPoint2D)o;
 
@@ -291,7 +291,7 @@ namespace Server
 
 		public override bool Equals( object o )
 		{
-			if ( o == null || !( o is IPoint3D ) )
+			if ( !(o is IPoint3D) )
 				return false;
 
 			IPoint3D p = (IPoint3D) o;
@@ -367,9 +367,9 @@ namespace Server
 
 		public int CompareTo( object other )
 		{
-			if ( other is Point3D )
-				return this.CompareTo( (Point3D) other );
-			else if ( other == null )
+			if ( other is Point3D d )
+				return this.CompareTo( d );
+			if ( other == null )
 				return -1;
 
 			throw new ArgumentException();

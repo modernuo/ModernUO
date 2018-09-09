@@ -130,9 +130,7 @@ namespace Server.Items
 
 				for ( int i = Items.Count - 1; i >= 0; i-- )
 				{
-					PlagueBeastComponent innard = Items[ i ] as PlagueBeastComponent;
-
-					if ( innard != null )
+					if ( Items[ i ] is PlagueBeastComponent innard )
 					{
 						Rectangle2D r = ItemBounds.Table[ innard.ItemID ];
 

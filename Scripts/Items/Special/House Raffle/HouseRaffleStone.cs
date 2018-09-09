@@ -322,9 +322,7 @@ namespace Server.Items
 
 		private bool HasEntered( Mobile from )
 		{
-			Account acc = from.Account as Account;
-
-			if ( acc == null )
+			if ( !(from.Account is Account acc) )
 				return false;
 
 			foreach ( RaffleEntry entry in m_Entries )
@@ -370,7 +368,7 @@ namespace Server.Items
 			bool xEast = false, ySouth = false;
 
 			if ( Sextant.Format( loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
-				result.AppendFormat( "{0}°{1}'{2},{3}°{4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+				result.AppendFormat( "{0}Â°{1}'{2},{3}Â°{4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 			else
 				result.AppendFormat( "{0},{1}", loc.X, loc.Y );
 
@@ -492,9 +490,7 @@ namespace Server.Items
 			if ( Deleted || m_State != HouseRaffleState.Active || !from.CheckAlive() || HasEntered( from ) || IsAtIPLimit( from ) )
 				return;
 
-			Account acc = from.Account as Account;
-
-			if ( acc == null )
+			if ( !(from.Account is Account) )
 				return;
 
 			if ( okay )
@@ -619,7 +615,7 @@ namespace Server.Items
 				}
 				case 0:
 				{
-					bool oldActive = ( version < 3 ) ? reader.ReadBool() : false;
+					bool oldActive = ( version < 3 ) && reader.ReadBool();
 
 					m_Bounds = reader.ReadRect2D();
 					m_Facet = reader.ReadMap();

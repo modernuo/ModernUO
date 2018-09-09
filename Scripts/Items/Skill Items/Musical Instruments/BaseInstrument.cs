@@ -165,7 +165,7 @@ namespace Server.Items
 
 		public static BaseInstrument GetInstrument( Mobile from )
 		{
-			if ( !(m_Instruments[@from] is BaseInstrument item) )
+			if ( !(m_Instruments[from] is BaseInstrument item) )
 				return null;
 
 			if ( !item.IsChildOf( from.Backpack ) )
@@ -210,7 +210,7 @@ namespace Server.Items
 
 				InstrumentPickedCallback callback = state as InstrumentPickedCallback;
 
-				callback?.Invoke( @from, instrument );
+				callback?.Invoke( from, instrument );
 			}
 		}
 

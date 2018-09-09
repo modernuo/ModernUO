@@ -49,7 +49,7 @@ namespace Server.Items
 
 		public override TimeSpan OnSwing( Mobile attacker, Mobile defender )
 		{
-			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
+			// WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 
 			// Make sure we've been standing still for .25/.5/1 second depending on Era
 			if (Core.TickCount - attacker.LastMoveTime >= (Core.SE ? 250 : Core.AOS ? 500 : 1000) || (Core.AOS && WeaponAbility.GetCurrentAbility(attacker) is MovingShot))
@@ -62,17 +62,13 @@ namespace Server.Items
 
 					if ( canSwing )
 					{
-						Spell sp = attacker.Spell as Spell;
-
-						canSwing = ( sp == null || !sp.IsCasting || !sp.BlocksMovement );
+						canSwing = ( !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement );
 					}
 				}
 
 				#region Dueling
-				if ( attacker is PlayerMobile )
+				if ( attacker is PlayerMobile pm )
 				{
-					PlayerMobile pm = (PlayerMobile)attacker;
-
 					if ( pm.DuelContext != null && !pm.DuelContext.CheckItemEquip( attacker, this ) )
 						canSwing = false;
 				}
@@ -104,7 +100,7 @@ namespace Server.Items
 			}
 		}
 
-		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
+		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus = 1)
 		{
 			if ( attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) && 0.4 >= Utility.RandomDouble() )
 				defender.AddToBackpack( Ammo );
@@ -134,21 +130,19 @@ namespace Server.Items
 			{
 				if ( Core.SE )
 				{
-					PlayerMobile p = attacker as PlayerMobile;
-
-					if ( p != null )
+					if ( attacker is PlayerMobile pm )
 					{
 						Type ammo = AmmoType;
 
-						if ( p.RecoverableAmmo.ContainsKey( ammo ) )
-							p.RecoverableAmmo[ ammo ]++;
+						if ( pm.RecoverableAmmo.ContainsKey( ammo ) )
+							pm.RecoverableAmmo[ ammo ]++;
 						else
-							p.RecoverableAmmo.Add( ammo, 1 );
+							pm.RecoverableAmmo.Add( ammo, 1 );
 
-						if ( !p.Warmode )
+						if ( !pm.Warmode )
 						{
 							if ( m_RecoveryTimer == null )
-								m_RecoveryTimer = Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( p.RecoverAmmo ) );
+								m_RecoveryTimer = Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( pm.RecoverAmmo ) );
 
 							if ( !m_RecoveryTimer.Running )
 								m_RecoveryTimer.Start();

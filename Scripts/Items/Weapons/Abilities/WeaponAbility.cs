@@ -85,9 +85,7 @@ namespace Server.Items
 
 		public virtual bool CheckWeaponSkill( Mobile from )
 		{
-			BaseWeapon weapon = from.Weapon as BaseWeapon;
-
-			if ( weapon == null )
+			if ( !(from.Weapon is BaseWeapon weapon) )
 				return false;
 
 			Skill skill = from.Skills[weapon.Skill];
@@ -141,7 +139,7 @@ namespace Server.Items
 
 			if ( from.Mana < mana )
 			{
-				if ( ( from is BaseCreature ) && ( from as BaseCreature ).HasManaOveride )
+				if ( from is BaseCreature creature && creature.HasManaOveride )
 				{
 					return true;
 				}
@@ -336,9 +334,7 @@ namespace Server.Items
 			if ( !m.Player )
 				return true;
 
-			BaseWeapon weapon = m.Weapon as BaseWeapon;
-
-			return ( weapon != null && (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a) );
+			return ( m.Weapon is BaseWeapon weapon && (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a) );
 		}
 
 		public virtual bool ValidatesDuringHit => true;

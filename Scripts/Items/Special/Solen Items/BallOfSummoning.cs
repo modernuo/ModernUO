@@ -199,10 +199,8 @@ namespace Server.Items
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1042001 ); // That must be in your pack for you to use it.
 				}
-				else if ( targeted is BaseCreature )
+				else if ( targeted is BaseCreature creature )
 				{
-					BaseCreature creature = (BaseCreature)targeted;
-
 					if ( !creature.Controlled || creature.ControlMaster != from )
 					{
 						MessageHelper.SendLocalizedMessageTo( m_Ball, from, 1054117, 0x59 ); // You may only link your own pets to a Crystal Ball of Pet Summoning.
@@ -240,7 +238,7 @@ namespace Server.Items
 			{
 				SendLocalizedMessageTo( from, 1054122 ); // The Crystal Ball darkens. It must be charged before it can be used again.
 			}
-			else if ( pet is BaseMount && ((BaseMount)pet).Rider == from )
+			else if ( pet is BaseMount mount && mount.Rider == from )
 			{
 				MessageHelper.SendLocalizedMessageTo( this, from, 1054124, 0x36 ); // The Crystal Ball fills with a yellow mist. Why would you summon your pet while riding it?
 			}
@@ -260,9 +258,9 @@ namespace Server.Items
 			{
 				from.Send( new AsciiMessage( this.Serial, this.ItemID, MessageType.Regular, 0x22, 3, "", "You cannot summon your pet to this location." ) );
 			}
-			else if ( Core.ML && from is PlayerMobile && DateTime.UtcNow < ((PlayerMobile)from).LastPetBallTime.AddSeconds( 15.0 ) )
+			else if ( Core.ML && from is PlayerMobile mobile && DateTime.UtcNow < mobile.LastPetBallTime.AddSeconds( 15.0 ) )
 			{
-				MessageHelper.SendLocalizedMessageTo( this, from, 1080072, 0x22 ); // You must wait a few seconds before you can summon your pet.
+				MessageHelper.SendLocalizedMessageTo( this, mobile, 1080072, 0x22 ); // You must wait a few seconds before you can summon your pet.
 			}
 			else
 			{
@@ -298,17 +296,17 @@ namespace Server.Items
 				pet.StabledBy = null;
 				from.Stabled.Remove( pet );
 
-				if ( from is PlayerMobile )
-					((PlayerMobile)from).AutoStabled.Remove( pet );
+				if ( from is PlayerMobile mobile )
+					mobile.AutoStabled.Remove( pet );
 			}
 
 			pet.MoveToWorld( from.Location, from.Map );
 
 			MessageHelper.SendLocalizedMessageTo( this, from, 1054128, 0x43 ); // The Crystal Ball fills with a green mist. Your pet has been summoned.
 
-			if ( from is PlayerMobile )
+			if ( from is PlayerMobile playerMobile )
 			{
-				((PlayerMobile)from).LastPetBallTime = DateTime.UtcNow;
+				playerMobile.LastPetBallTime = DateTime.UtcNow;
 			}
 		}
 

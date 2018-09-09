@@ -152,8 +152,7 @@ namespace Server.Items
 
 		public override void OnDelete()
 		{
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			base.OnDelete();
 		}

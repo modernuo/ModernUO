@@ -211,9 +211,7 @@ namespace Server.Items
 
 		public override void OnAfterDuped(Item newItem)
 		{
-			BaseTalisman talisman = newItem as BaseTalisman;
-
-			if (talisman == null)
+			if (!(newItem is BaseTalisman talisman))
 				return;
 
 			talisman.m_Summoner = new TalismanAttribute(m_Summoner);
@@ -236,10 +234,8 @@ namespace Server.Items
 
 		public override void OnAdded(IEntity parent)
 		{
-			if (parent is Mobile)
+			if (parent is Mobile from)
 			{
-				Mobile from = (Mobile)parent;
-
 				m_AosSkillBonuses.AddTo(from);
 				m_AosAttributes.AddStatBonuses(from);
 
@@ -261,10 +257,8 @@ namespace Server.Items
 
 		public override void OnRemoved(IEntity parent)
 		{
-			if (parent is Mobile)
+			if (parent is Mobile from)
 			{
-				Mobile from = (Mobile)parent;
-
 				m_AosSkillBonuses.Remove();
 				m_AosAttributes.RemoveStatBonuses(from);
 
@@ -304,9 +298,8 @@ namespace Server.Items
 					try { obj = Activator.CreateInstance(type); }
 					catch { obj = null; }
 
-					if (obj is Item)
+					if (obj is Item item)
 					{
-						Item item = (Item)obj;
 						int count = 1;
 
 						if (m_Summoner != null && m_Summoner.Amount > 1)
@@ -340,13 +333,11 @@ namespace Server.Items
 							from.SendLocalizedMessage(1075001); // You have been given some ingots.
 						else if (item is Bandage)
 							from.SendLocalizedMessage(1075002); // You have been given some clean bandages.
-						else if (m_Summoner != null && m_Summoner.Name != null)
+						else if (m_Summoner?.Name != null)
 							from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
 					}
-					else if (obj is BaseCreature)
+					else if (obj is BaseCreature mob)
 					{
-						BaseCreature mob = (BaseCreature)obj;
-
 						if ((m_Creature != null && !m_Creature.Deleted) || from.Followers + mob.ControlSlots > from.FollowersMax)
 						{
 							from.SendLocalizedMessage(1074270); // You have too many followers to summon another one.
@@ -682,10 +673,8 @@ namespace Server.Items
 					}
 			}
 
-			if (Parent is Mobile)
+			if (Parent is Mobile m)
 			{
-				Mobile m = (Mobile)Parent;
-
 				m_AosAttributes.AddStatBonuses(m);
 				m_AosSkillBonuses.AddTo(m);
 

@@ -191,8 +191,7 @@ namespace Server.Engines.ConPVP
 		{
 			base.OnAfterDelete ();
 
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 		}
 
 		public override void OnDoubleClick( Mobile m )

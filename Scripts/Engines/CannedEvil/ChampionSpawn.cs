@@ -328,8 +328,7 @@ namespace Server.Engines.CannedEvil
 			m_Active = true;
 			m_HasBeenAdvanced = false;
 
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = new SliceTimer( this );
 			m_Timer.Start();
@@ -359,8 +358,7 @@ namespace Server.Engines.CannedEvil
 			m_Active = false;
 			m_HasBeenAdvanced = false;
 
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 
 			m_Timer = null;
 

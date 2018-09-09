@@ -76,7 +76,7 @@ namespace Server.Items
 
 			int newValue = (int)Value;
 
-			if ( from is PlayerMobile && ((PlayerMobile)from).HasStatReward )
+			if ( from is PlayerMobile mobile && mobile.HasStatReward )
 				newValue += 5;
 
 			if ( from.StatCap >= newValue )
@@ -95,8 +95,8 @@ namespace Server.Items
 
 			from.SendLocalizedMessage( 1049512 ); // You feel a surge of magic as the scroll enhances your powers!
 
-			if ( from is PlayerMobile && ((PlayerMobile)from).HasStatReward )
-				from.StatCap = (int)Value + 5;
+			if ( from is PlayerMobile mobile && mobile.HasStatReward )
+				mobile.StatCap = (int)Value + 5;
 			else
 				from.StatCap = (int)Value;
 

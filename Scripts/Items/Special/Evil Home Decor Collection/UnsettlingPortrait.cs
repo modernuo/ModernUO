@@ -32,8 +32,7 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if ( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 		}
 
 		public override void Serialize( GenericWriter writer )

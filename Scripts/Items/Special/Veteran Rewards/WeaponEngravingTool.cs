@@ -189,10 +189,8 @@ namespace Server.Items
 				if ( m_Tool == null || m_Tool.Deleted )
 					return;
 
-				if ( targeted is BaseWeapon )
+				if ( targeted is BaseWeapon item )
 				{
-					BaseWeapon item = (BaseWeapon) targeted;
-
 					from.CloseGump( typeof( InternalGump ) );
 					from.SendGump( new InternalGump( m_Tool, item ) );
 				}
