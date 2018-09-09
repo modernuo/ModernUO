@@ -490,10 +490,8 @@ namespace Server
 			if ( obj == null )
 				return 1;
 
-			Region reg = obj as Region;
-
-			if ( reg == null )
-				throw new ArgumentException( "obj is not a Region", "obj" );
+			if ( !(obj is Region reg) )
+				throw new ArgumentException( "obj is not a Region", nameof(obj) );
 
 			// Dynamic regions go first
 			if ( this.Dynamic )

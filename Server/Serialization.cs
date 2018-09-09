@@ -1252,17 +1252,14 @@ namespace Server
 				List<T> list = new List<T>( count );
 
 				for ( int i = 0; i < count; ++i ) {
-					T item = ReadItem() as T;
-
-					if ( item != null ) {
+					if ( ReadItem() is T item ) {
 						list.Add( item );
 					}
 				}
 
 				return list;
-			} else {
-				return new List<T>();
 			}
+			return new List<T>();
 		}
 
 		public override HashSet<Item> ReadItemSet()
@@ -1280,9 +1277,7 @@ namespace Server
 
 				for( int i = 0; i < count; ++i )
 				{
-					T item = ReadItem() as T;
-
-					if ( item != null )
+					if ( ReadItem() is T item )
 					{
 						set.Add( item );
 					}
@@ -1290,10 +1285,8 @@ namespace Server
 
 				return set;
 			}
-			else
-			{
-				return new HashSet<T>();
-			}
+
+			return new HashSet<T>();
 		}
 
 		public override List<Mobile> ReadStrongMobileList()
@@ -1309,17 +1302,15 @@ namespace Server
 				List<T> list = new List<T>( count );
 
 				for ( int i = 0; i < count; ++i ) {
-					T m = ReadMobile() as T;
-
-					if ( m != null ) {
+					if ( ReadMobile() is T m ) {
 						list.Add( m );
 					}
 				}
 
 				return list;
-			} else {
-				return new List<T>();
 			}
+
+			return new List<T>();
 		}
 
 		public override HashSet<Mobile> ReadMobileSet()
@@ -1337,9 +1328,7 @@ namespace Server
 
 				for( int i = 0; i < count; ++i )
 				{
-					T item = ReadMobile() as T;
-
-					if ( item != null )
+					if ( ReadMobile() is T item )
 					{
 						set.Add( item );
 					}
@@ -1347,10 +1336,8 @@ namespace Server
 
 				return set;
 			}
-			else
-			{
-				return new HashSet<T>();
-			}
+
+			return new HashSet<T>();
 		}
 
 		public override List<BaseGuild> ReadStrongGuildList()
@@ -1366,17 +1353,15 @@ namespace Server
 				List<T> list = new List<T>( count );
 
 				for ( int i = 0; i < count; ++i ) {
-					T g = ReadGuild() as T;
-
-					if ( g != null ) {
+					if ( ReadGuild() is T g ) {
 						list.Add( g );
 					}
 				}
 
 				return list;
-			} else {
-				return new List<T>();
 			}
+
+			return new List<T>();
 		}
 
 		public override HashSet<BaseGuild> ReadGuildSet()
@@ -1394,9 +1379,7 @@ namespace Server
 
 				for( int i = 0; i < count; ++i )
 				{
-					T item = ReadGuild() as T;
-
-					if ( item != null )
+					if ( ReadGuild() is T item )
 					{
 						set.Add( item );
 					}
@@ -1404,10 +1387,8 @@ namespace Server
 
 				return set;
 			}
-			else
-			{
-				return new HashSet<T>();
-			}
+
+			return new HashSet<T>();
 		}
 
 		public override Race ReadRace()

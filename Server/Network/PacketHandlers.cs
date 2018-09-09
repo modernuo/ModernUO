@@ -343,9 +343,7 @@ namespace Server.Network
 				{
 					Serial serial = pvSrc.ReadInt32();
 
-					SecureTradeContainer cont = World.FindItem( serial ) as SecureTradeContainer;
-
-					if ( cont != null && cont.Trade != null && (cont.Trade.From.Mobile == state.Mobile || cont.Trade.To.Mobile == state.Mobile) )
+					if ( World.FindItem( serial ) is SecureTradeContainer cont && cont.Trade != null && (cont.Trade.From.Mobile == state.Mobile || cont.Trade.To.Mobile == state.Mobile) )
 						cont.Trade.Cancel();
 
 					break;
@@ -354,9 +352,7 @@ namespace Server.Network
 				{
 					Serial serial = pvSrc.ReadInt32();
 
-					SecureTradeContainer cont = World.FindItem( serial ) as SecureTradeContainer;
-
-					if ( cont != null )
+					if ( World.FindItem( serial ) is SecureTradeContainer cont )
 					{
 						SecureTrade trade = cont.Trade;
 
@@ -380,9 +376,7 @@ namespace Server.Network
 				{
 					Serial serial = pvSrc.ReadInt32();
 
-					SecureTradeContainer cont = World.FindItem(serial) as SecureTradeContainer;
-
-					if (cont != null)
+					if (World.FindItem(serial) is SecureTradeContainer cont)
 					{
 						int gold = pvSrc.ReadInt32();
 						int plat = pvSrc.ReadInt32();
@@ -445,13 +439,8 @@ namespace Server.Network
 					buyList.Add( new BuyItemResponse( serial, amount ) );
 				}
 
-				if ( buyList.Count > 0 )
-				{
-					IVendor v = vendor as IVendor;
-
-					if ( v != null && v.OnBuyItems( state.Mobile, buyList ) )
-						state.Send( new EndVendorBuy( vendor ) );
-				}
+				if ( buyList.Count > 0 && vendor is IVendor v && v.OnBuyItems( state.Mobile, buyList ) )
+					state.Send( new EndVendorBuy( vendor ) );
 			}
 			else
 			{
@@ -488,13 +477,8 @@ namespace Server.Network
 						sellList.Add(  new SellItemResponse( item, Amount ) );
 				}
 
-				if ( sellList.Count > 0 )
-				{
-					IVendor v = vendor as IVendor;
-
-					if ( v != null && v.OnSellItems( state.Mobile, sellList ) )
-						state.Send( new EndVendorSell( vendor ) );
-				}
+				if ( sellList.Count > 0 && vendor is IVendor v && v.OnSellItems( state.Mobile, sellList ) )
+					state.Send( new EndVendorSell( vendor ) );
 			}
 		}
 
@@ -1052,10 +1036,10 @@ namespace Server.Network
 			{
 				Item item = World.FindItem( dest );
 
-				if ( item is BaseMulti && ((BaseMulti)item).AllowsRelativeDrop )
+				if ( item is BaseMulti multi && multi.AllowsRelativeDrop )
 				{
-					loc.m_X += item.X;
-					loc.m_Y += item.Y;
+					loc.m_X += multi.X;
+					loc.m_Y += multi.Y;
 					from.Drop( loc );
 				}
 				else
@@ -1090,10 +1074,10 @@ namespace Server.Network
 			{
 				Item item = World.FindItem( dest );
 
-				if ( item is BaseMulti && ((BaseMulti)item).AllowsRelativeDrop )
+				if ( item is BaseMulti multi && multi.AllowsRelativeDrop )
 				{
-					loc.m_X += item.X;
-					loc.m_Y += item.Y;
+					loc.m_X += multi.X;
+					loc.m_Y += multi.Y;
 					from.Drop( loc );
 				}
 				else
@@ -1251,13 +1235,13 @@ namespace Server.Network
 					{
 						foreach (var e in gump.Entries)
 						{
-							if (e is GumpButton && ((GumpButton)e).ButtonID == buttonID)
+							if (e is GumpButton button && button.ButtonID == buttonID)
 							{
 								buttonExists = true;
 								break;
 							}
 
-							if (e is GumpImageTileButton && ((GumpImageTileButton)e).ButtonID == buttonID)
+							if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonID)
 							{
 								buttonExists = true;
 								break;
@@ -1546,8 +1530,8 @@ namespace Server.Network
 					}
 					else if ( from.Region.OnSingleClick( from, item ) )
 					{
-						if ( item.Parent is Item )
-							((Item)item.Parent).OnSingleClickContained( from, item );
+						if ( item.Parent is Item item1 )
+							item1.OnSingleClickContained( from, item );
 
 						item.OnSingleClick( from );
 					}
@@ -1888,8 +1872,8 @@ namespace Server.Network
 
 						if ( entity is Mobile )
 							p = entity.Location;
-						else if ( entity is Item )
-							p = ((Item)entity).GetWorldLocation();
+						else if ( entity is Item item )
+							p = item.GetWorldLocation();
 						else
 							return;
 
@@ -1921,7 +1905,10 @@ namespace Server.Network
 			{
 				if ( target is Mobile && !Utility.InUpdateRange( from.Location, target.Location ) )
 					return;
-				else if ( target is Item && !Utility.InUpdateRange( from.Location, ((Item)target).GetWorldLocation() ) )
+
+				Item item = target as Item;
+
+				if ( item != null && !Utility.InUpdateRange( from.Location, item.GetWorldLocation() ) )
 					return;
 
 				if ( !from.CheckContextMenuDisplay( target ) )
@@ -1931,17 +1918,12 @@ namespace Server.Network
 
 				if ( c.Entries.Length > 0 )
 				{
-					if ( target is Item )
+					if ( item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel )
 					{
-						object root = ((Item)target).RootParent;
-
-						if ( root is Mobile && root != from && ((Mobile)root).AccessLevel >= from.AccessLevel )
+						for ( int i = 0; i < c.Entries.Length; ++i )
 						{
-							for ( int i = 0; i < c.Entries.Length; ++i )
-							{
-								if ( !c.Entries[i].NonLocalUse )
-									c.Entries[i].Enabled = false;
-							}
+							if ( !c.Entries[i].NonLocalUse )
+								c.Entries[i].Enabled = false;
 						}
 					}
 

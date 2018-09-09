@@ -104,9 +104,10 @@ namespace Server
 
 		public int CompareTo( object other )
 		{
-			if ( other is Serial )
-				return this.CompareTo( (Serial) other );
-			else if ( other == null )
+			if ( other is Serial serial )
+				return this.CompareTo( serial );
+
+			if ( other == null )
 				return -1;
 
 			throw new ArgumentException();
@@ -114,9 +115,10 @@ namespace Server
 
 		public override bool Equals( object o )
 		{
-			if ( o == null || !(o is Serial) ) return false;
+			if ( !(o is Serial serial) )
+				return false;
 
-			return ((Serial)o).m_Serial == m_Serial;
+			return serial.m_Serial == m_Serial;
 		}
 
 		public static bool operator == ( Serial l, Serial r )

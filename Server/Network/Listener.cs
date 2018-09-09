@@ -94,11 +94,9 @@ namespace Server.Network
 			}
 			catch ( Exception e )
 			{
-				if ( e is SocketException ) {
-					SocketException se = (SocketException)e;
-
+				if ( e is SocketException se ) {
 					if ( se.ErrorCode == 10048 ) { // WSAEADDRINUSE
-						Console.WriteLine( "Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port ); 
+						Console.WriteLine( "Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port );
 					}
 					else if ( se.ErrorCode == 10049 ) { // WSAEADDRNOTAVAIL
 						Console.WriteLine( "Listener Failed: {0}:{1} (Unavailable)", ipep.Address, ipep.Port );
@@ -115,16 +113,14 @@ namespace Server.Network
 
 		private void DisplayListener()
 		{
-			IPEndPoint ipep = m_Listener.LocalEndPoint as IPEndPoint;
-
-			if ( ipep == null )
+			if ( !(m_Listener.LocalEndPoint is IPEndPoint ipep) )
 				return;
 
 			if ( ipep.Address.Equals( IPAddress.Any ) || ipep.Address.Equals( IPAddress.IPv6Any ) ) {
 				NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 				foreach ( NetworkInterface adapter in adapters ) {
 					IPInterfaceProperties properties = adapter.GetIPProperties();
-					foreach ( IPAddressInformation unicast in properties.UnicastAddresses ) {
+					foreach ( UnicastIPAddressInformation unicast in properties.UnicastAddresses ) {
 						if ( ipep.AddressFamily == unicast.Address.AddressFamily )
 							Console.WriteLine( "Listening: {0}:{1}", unicast.Address, ipep.Port );
 					}

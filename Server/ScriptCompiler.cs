@@ -771,9 +771,7 @@ namespace Server
 
 					if ( attrs != null && attrs.Length > 0 )
 					{
-						TypeAliasAttribute attr = attrs[0] as TypeAliasAttribute;
-
-						if ( attr != null )
+						if ( attrs[0] is TypeAliasAttribute attr )
 						{
 							for( int j = 0; j < attr.Aliases.Length; ++j )
 								m_FullNames.Add( attr.Aliases[j], type );

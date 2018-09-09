@@ -108,14 +108,12 @@ namespace Server.Items
 		{
 			get
 			{
-				if ( Parent is Container && ((Container)Parent).MaxWeight == 0 )
+				if ( Parent is Container container && container.MaxWeight == 0 )
 				{
 					return 0;
 				}
-				else
-				{
-					return DefaultMaxWeight;
-				}
+
+				return DefaultMaxWeight;
 			}
 		}
 
@@ -225,12 +223,13 @@ namespace Server.Items
 
 			while ( parent != null )
 			{
-				if ( parent is Container )
-					return ((Container)parent).CheckHold( m, item, message, checkItems, plusItems, plusWeight );
-				else if ( parent is Item )
-					parent = ((Item)parent).Parent;
-				else
+				if ( parent is Container container )
+					return container.CheckHold( m, item, message, checkItems, plusItems, plusWeight );
+
+				if ( !(parent is Item parentItem) )
 					break;
+
+				parent = parentItem.Parent;
 			}
 
 			return true;

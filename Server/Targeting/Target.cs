@@ -205,47 +205,50 @@ namespace Server.Targeting
 			Point3D loc;
 			Map map;
 
-			if ( targeted is LandTarget )
+			Item item = targeted as Item;
+			Mobile mobile = targeted as Mobile;
+
+			if ( targeted is LandTarget target )
 			{
-				loc = ((LandTarget)targeted).Location;
+				loc = target.Location;
 				map = from.Map;
 			}
-			else if ( targeted is StaticTarget )
+			else if ( targeted is StaticTarget staticTarget )
 			{
-				loc = ((StaticTarget)targeted).Location;
+				loc = staticTarget.Location;
 				map = from.Map;
 			}
-			else if ( targeted is Mobile )
+			else if ( mobile != null )
 			{
-				if ( ((Mobile)targeted).Deleted )
+				if ( mobile.Deleted )
 				{
-					OnTargetDeleted( from, targeted );
-					OnTargetFinish( from );
-					return;
-				}
-				else if ( !((Mobile)targeted).CanTarget )
-				{
-					OnTargetUntargetable( from, targeted );
+					OnTargetDeleted( from, mobile );
 					OnTargetFinish( from );
 					return;
 				}
 
-				loc = ((Mobile)targeted).Location;
-				map = ((Mobile)targeted).Map;
-			}
-			else if ( targeted is Item )
-			{
-				Item item = (Item)targeted;
+				if ( !mobile.CanTarget )
+				{
+					OnTargetUntargetable( from, mobile );
+					OnTargetFinish( from );
+					return;
+				}
 
+				loc = mobile.Location;
+				map = mobile.Map;
+			}
+			else if ( item != null )
+			{
 				if ( item.Deleted )
 				{
-					OnTargetDeleted( from, targeted );
+					OnTargetDeleted( from, item );
 					OnTargetFinish( from );
 					return;
 				}
-				else if ( !item.CanTarget )
+
+				if ( !item.CanTarget )
 				{
-					OnTargetUntargetable( from, targeted );
+					OnTargetUntargetable( from, item );
 					OnTargetFinish( from );
 					return;
 				}
@@ -254,7 +257,7 @@ namespace Server.Targeting
 
 				if ( !m_AllowNonlocal && root is Mobile && root != from && from.AccessLevel == AccessLevel.Player )
 				{
-					OnNonlocalTarget( from, targeted );
+					OnNonlocalTarget( from, item );
 					OnTargetFinish( from );
 					return;
 				}
@@ -279,14 +282,14 @@ namespace Server.Targeting
 					OnCantSeeTarget( from, targeted );
 				else if ( m_CheckLOS && !from.InLOS( targeted ) )
 					OnTargetOutOfLOS( from, targeted );
-				else if ( targeted is Item && ((Item)targeted).InSecureTrade )
+				else if ( item?.InSecureTrade == true )
 					OnTargetInSecureTrade( from, targeted );
-				else if ( targeted is Item && !((Item)targeted).IsAccessibleTo( from ) )
+				else if ( item?.IsAccessibleTo( from ) == true )
 					OnTargetNotAccessible( from, targeted );
-				else if ( targeted is Item && !((Item)targeted).CheckTarget( from, this, targeted ) )
+				else if ( item?.CheckTarget( from, this, targeted ) == true )
 					OnTargetUntargetable( from, targeted );
-				else if ( targeted is Mobile && !((Mobile)targeted).CheckTarget( from, this, targeted ) )
-					OnTargetUntargetable( from, targeted );
+				else if ( mobile?.CheckTarget( from, this, mobile ) != true )
+					OnTargetUntargetable( from, mobile );
 				else if ( from.Region.OnTarget( from, this, targeted ) )
 					OnTarget( from, targeted );
 			}

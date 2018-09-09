@@ -661,33 +661,19 @@ namespace Server {
 			while ( _addQueue.Count > 0 ) {
 				IEntity entity = _addQueue.Dequeue();
 
-				Item item = entity as Item;
-
-				if ( item != null ) {
+				if ( entity is Item item )
 					AddItem( item );
-				} else {
-					Mobile mob = entity as Mobile;
-
-					if ( mob != null ) {
-						AddMobile( mob );
-					}
-				}
+				else if ( entity is Mobile mob )
+					AddMobile( mob );
 			}
 
 			while ( _deleteQueue.Count > 0 ) {
 				IEntity entity = _deleteQueue.Dequeue();
 
-				Item item = entity as Item;
-
-				if ( item != null ) {
+				if ( entity is Item item )
 					item.Delete();
-				} else {
-					Mobile mob = entity as Mobile;
-
-					if ( mob != null ) {
-						mob.Delete();
-					}
-				}
+				else if ( entity is Mobile mob )
+					mob.Delete();
 			}
 		}
 

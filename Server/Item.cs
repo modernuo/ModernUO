@@ -509,10 +509,8 @@ namespace Server
 
 				return new BounceInfo( map, loc, worldLoc, parent );
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public static void Serialize( BounceInfo info, GenericWriter writer )
@@ -529,10 +527,10 @@ namespace Server
 				writer.Write( info.m_Location );
 				writer.Write( info.m_WorldLoc );
 
-				if ( info.m_Parent is Mobile )
-					writer.Write( (Mobile) info.m_Parent );
-				else if ( info.m_Parent is Item )
-					writer.Write( (Item) info.m_Parent );
+				if ( info.m_Parent is Mobile mobile )
+					writer.Write( mobile );
+				else if ( info.m_Parent is Item item )
+					writer.Write( item );
 				else
 					writer.Write( (Serial) 0 );
 			}
@@ -797,23 +795,18 @@ namespace Server
 
 		public List<Item> LookupItems()
 		{
-			if ( this is Container )
-				return ( this as Container ).m_Items;
+			if ( this is Container container )
+				return container.m_Items;
 
 			CompactInfo info = LookupCompactInfo();
 
-			if ( info != null )
-				return info.m_Items;
-
-			return null;
+			return info?.m_Items;
 		}
 
 		public List<Item> AcquireItems()
 		{
-			if ( this is Container )
+			if ( this is Container cont )
 			{
-				Container cont = this as Container;
-
 				if ( cont.m_Items == null )
 					cont.m_Items = new List<Item>();
 
@@ -845,10 +838,7 @@ namespace Server
 		{
 			CompactInfo info = LookupCompactInfo();
 
-			if ( info != null )
-				return info.m_Bounce;
-
-			return null;
+			return info?.m_Bounce;
 		}
 
 		public void RecordBounce()
@@ -862,31 +852,24 @@ namespace Server
 		{
 			CompactInfo info = LookupCompactInfo();
 
-			if ( info != null )
+			BounceInfo bounce = info?.m_Bounce;
+
+			if ( bounce != null )
 			{
-				BounceInfo bounce = info.m_Bounce;
+				info.m_Bounce = null;
 
-				if ( bounce != null )
+				if ( bounce.m_Parent is Item parentItem )
 				{
-					info.m_Bounce = null;
-
-					if ( bounce.m_Parent is Item )
-					{
-						Item parent = (Item) bounce.m_Parent;
-
-						if ( !parent.Deleted )
-							parent.OnItemBounceCleared( this );
-					}
-					else if ( bounce.m_Parent is Mobile )
-					{
-						Mobile parent = (Mobile) bounce.m_Parent;
-
-						if ( !parent.Deleted )
-							parent.OnItemBounceCleared( this );
-					}
-
-					VerifyCompactInfo();
+					if ( !parentItem.Deleted )
+						parentItem.OnItemBounceCleared( this );
 				}
+				else if ( bounce.m_Parent is Mobile parentMobile )
+				{
+					if ( !parentMobile.Deleted )
+						parentMobile.OnItemBounceCleared( this );
+				}
+
+				VerifyCompactInfo();
 			}
 		}
 
@@ -1114,10 +1097,10 @@ namespace Server
 		/// </summary>
 		public virtual void GetChildProperties( ObjectPropertyList list, Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).GetChildProperties( list, item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).GetChildProperties( list, item );
+			if ( m_Parent is Item parentItem )
+				parentItem.GetChildProperties( list, item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.GetChildProperties( list, item );
 		}
 
 		/// <summary>
@@ -1125,10 +1108,10 @@ namespace Server
 		/// </summary>
 		public virtual void GetChildNameProperties( ObjectPropertyList list, Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).GetChildNameProperties( list, item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).GetChildNameProperties( list, item );
+			if ( m_Parent is Item parentItem )
+				parentItem.GetChildNameProperties( list, item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.GetChildNameProperties( list, item );
 		}
 
 		public virtual bool IsChildVisibleTo( Mobile m, Item child )
@@ -1138,10 +1121,10 @@ namespace Server
 
 		public void Bounce( Mobile from )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).RemoveItem( this );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).RemoveItem( this );
+			if ( m_Parent is Item item )
+				item.RemoveItem( this );
+			else if ( m_Parent is Mobile mobile )
+				mobile.RemoveItem( this );
 
 			m_Parent = null;
 
@@ -1155,11 +1138,11 @@ namespace Server
 				{
 					MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
 				}
-				else if ( parent is Item )
+				else if ( parent is Item p )
 				{
-					Item p = (Item)parent;
 					IEntity root = p.RootParent;
-					if ( p.IsAccessibleTo( from ) && ( !(root is Mobile) || ((Mobile)root).CheckNonlocalDrop( from, this, p ) ) )
+
+					if ( p.IsAccessibleTo( from ) && ( !(root is Mobile mobileRoot) || mobileRoot.CheckNonlocalDrop( from, this, p ) ) )
 					{
 						Location = bounce.m_Location;
 						p.AddItem( this );
@@ -1169,9 +1152,9 @@ namespace Server
 						MoveToWorld( from.Location, from.Map );
 					}
 				}
-				else if ( parent is Mobile )
+				else if ( parent is Mobile parentMobile )
 				{
-					if ( !((Mobile)parent).EquipItem( this ) )
+					if (!parentMobile.EquipItem( this ))
 						MoveToWorld( bounce.m_WorldLoc, bounce.m_Map );
 				}
 				else
@@ -1220,18 +1203,18 @@ namespace Server
 
 		public virtual void GetChildContextMenuEntries( Mobile from, List<ContextMenuEntry> list, Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).GetChildContextMenuEntries( from, list, item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).GetChildContextMenuEntries( from, list, item );
+			if ( m_Parent is Item parentItem )
+				parentItem.GetChildContextMenuEntries( from, list, item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.GetChildContextMenuEntries( from, list, item );
 		}
 
 		public virtual void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).GetChildContextMenuEntries( from, list, this );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).GetChildContextMenuEntries( from, list, this );
+			if ( m_Parent is Item item )
+				item.GetChildContextMenuEntries( from, list, this );
+			else if ( m_Parent is Mobile mobile )
+				mobile.GetChildContextMenuEntries( from, list, this );
 		}
 
 		public virtual bool VerifyMove( Mobile from )
@@ -1243,32 +1226,32 @@ namespace Server
 		{
 			if ( !Movable )
 				return DeathMoveResult.RemainEquipped;
-			else if ( parent.KeepsItemsOnDeath )
+			if ( parent.KeepsItemsOnDeath )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( CheckBlessed( parent ) )
+			if ( CheckBlessed( parent ) )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( CheckNewbied() && parent.Kills < 5 )
+			if ( CheckNewbied() && parent.Kills < 5 )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( parent.Player && Nontransferable )
+			if ( parent.Player && Nontransferable )
 				return DeathMoveResult.MoveToBackpack;
-			else
-				return DeathMoveResult.MoveToCorpse;
+
+			return DeathMoveResult.MoveToCorpse;
 		}
 
 		public virtual DeathMoveResult OnInventoryDeath( Mobile parent )
 		{
 			if ( !Movable )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( parent.KeepsItemsOnDeath )
+			if ( parent.KeepsItemsOnDeath )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( CheckBlessed( parent ) )
+			if ( CheckBlessed( parent ) )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( CheckNewbied() && parent.Kills < 5 )
+			if ( CheckNewbied() && parent.Kills < 5 )
 				return DeathMoveResult.MoveToBackpack;
-			else if ( parent.Player && Nontransferable )
+			if ( parent.Player && Nontransferable )
 				return DeathMoveResult.MoveToBackpack;
-			else
-				return DeathMoveResult.MoveToCorpse;
+
+			return DeathMoveResult.MoveToCorpse;
 		}
 
 		/// <summary>
@@ -1340,10 +1323,10 @@ namespace Server
 
 			SetLastMoved();
 
-			if ( Parent is Mobile )
-				((Mobile)Parent).RemoveItem( this );
-			else if ( Parent is Item )
-				((Item)Parent).RemoveItem( this );
+			if ( Parent is Mobile mobile )
+				mobile.RemoveItem( this );
+			else if ( Parent is Item item )
+				item.RemoveItem( this );
 
 			if ( m_Map != map )
 			{
@@ -1383,9 +1366,7 @@ namespace Server
 				}
 
 				m_Map = map;
-
-				if ( m_Map != null )
-					m_Map.OnEnter( this );
+				m_Map?.OnEnter( this );
 
 				OnMapChange();
 
@@ -1690,18 +1671,18 @@ namespace Server
 
 		public virtual void AppendChildProperties( ObjectPropertyList list )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).GetChildProperties( list, this );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).GetChildProperties( list, this );
+			if ( m_Parent is Item item )
+				item.GetChildProperties( list, this );
+			else if ( m_Parent is Mobile mobile )
+				mobile.GetChildProperties( list, this );
 		}
 
 		public virtual void AppendChildNameProperties( ObjectPropertyList list )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).GetChildNameProperties( list, this );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).GetChildNameProperties( list, this );
+			if ( m_Parent is Item item )
+				item.GetChildNameProperties( list, this );
+			else if ( m_Parent is Mobile mobile )
+				mobile.GetChildNameProperties( list, this );
 		}
 
 		public void ClearProperties()
@@ -2052,7 +2033,7 @@ namespace Server
 
 			if ( m_Direction != Direction.North )
 				flags |= SaveFlag.Direction;
-			if ( info != null && info.m_Bounce != null )
+			if ( info?.m_Bounce != null )
 				flags |= SaveFlag.Bounce;
 			if ( m_LootType != LootType.Regular )
 				flags |= SaveFlag.LootType;
@@ -2064,7 +2045,7 @@ namespace Server
 				flags |= SaveFlag.Amount;
 			if ( m_Layer != Layer.Invalid )
 				flags |= SaveFlag.Layer;
-			if ( info != null && info.m_Name != null )
+			if ( info?.m_Name != null )
 				flags |= SaveFlag.Name;
 			if ( m_Parent != null )
 				flags |= SaveFlag.Parent;
@@ -2074,12 +2055,16 @@ namespace Server
 				flags |= SaveFlag.Map;
 			//if ( m_InsuredFor != null && !m_InsuredFor.Deleted )
 				//flags |= SaveFlag.InsuredFor;
-			if ( info != null && info.m_BlessedFor != null && !info.m_BlessedFor.Deleted )
-				flags |= SaveFlag.BlessedFor;
-			if ( info != null && info.m_HeldBy != null && !info.m_HeldBy.Deleted )
-				flags |= SaveFlag.HeldBy;
-			if ( info != null && info.m_SavedFlags != 0 )
-				flags |= SaveFlag.SavedFlags;
+
+			if (info != null)
+			{
+				if ( info.m_BlessedFor != null && !info.m_BlessedFor.Deleted )
+					flags |= SaveFlag.BlessedFor;
+				if ( info.m_HeldBy != null && !info.m_HeldBy.Deleted )
+					flags |= SaveFlag.HeldBy;
+				if ( info.m_SavedFlags != 0 )
+					flags |= SaveFlag.SavedFlags;
+			}
 
 			if ( info == null || info.m_Weight == -1 )
 			{
@@ -2761,12 +2746,14 @@ namespace Server
 		{
 			if ( !IsVirtualItem )
 			{
-				if ( m_Parent is Item )
-					( m_Parent as Item ).UpdateTotal( sender, type, delta );
-				else if ( m_Parent is Mobile )
-					( m_Parent as Mobile ).UpdateTotal( sender, type, delta );
-				else if ( this.HeldBy != null )
-					( this.HeldBy as Mobile ).UpdateTotal( sender, type, delta );
+				if ( m_Parent is Item item )
+					item.UpdateTotal( sender, type, delta );
+				else if ( m_Parent is Mobile mobile )
+					mobile.UpdateTotal( sender, type, delta );
+				else
+				{
+					HeldBy?.UpdateTotal( sender, type, delta );
+				}
 			}
 		}
 
@@ -2780,8 +2767,8 @@ namespace Server
 			{
 				if ( m_ItemID < 0x4000 )
 					return 1020000 + m_ItemID;
-				else
-					return 1078872 + m_ItemID;
+
+				return 1078872 + m_ItemID;
 			}
 		}
 
@@ -2974,10 +2961,8 @@ namespace Server
 				{
 					break;
 				}
-				else
-				{
-					p = item.m_Parent;
-				}
+
+				p = item.m_Parent;
 			}
 
 			return false;
@@ -2989,25 +2974,28 @@ namespace Server
 			{
 				return;
 			}
-			else if ( item == this )
+
+			if ( item == this )
 			{
 				Console.WriteLine( "Warning: Adding item to itself: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )", this.Serial.Value, this.GetType().Name, item.Serial.Value, item.GetType().Name );
 				Console.WriteLine( new System.Diagnostics.StackTrace() );
 				return;
 			}
-			else if ( IsChildOf( item ) )
+
+			if ( IsChildOf( item ) )
 			{
 				Console.WriteLine( "Warning: Adding parent item to child: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )", this.Serial.Value, this.GetType().Name, item.Serial.Value, item.GetType().Name );
 				Console.WriteLine( new System.Diagnostics.StackTrace() );
 				return;
 			}
-			else if ( item.m_Parent is Mobile )
+
+			if ( item.m_Parent is Mobile parentMobile )
 			{
-				((Mobile)item.m_Parent).RemoveItem( item );
+				parentMobile.RemoveItem( item );
 			}
-			else if ( item.m_Parent is Item )
+			else if ( item.m_Parent is Item parentItem )
 			{
-				((Item)item.m_Parent).RemoveItem( item );
+				parentItem.RemoveItem( item );
 			}
 			else
 			{
@@ -3106,9 +3094,7 @@ namespace Server
 			{
 				bool sendOPLUpdate = ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0;
 
-				Container contParent = m_Parent as Container;
-
-				if ( contParent != null && !contParent.IsPublicContainer )
+				if ( m_Parent is Container contParent && !contParent.IsPublicContainer )
 				{
 					if ( (flags & ItemDelta.Update) != 0 )
 					{
@@ -3138,39 +3124,33 @@ namespace Server
 
 						SecureTradeContainer stc = this.GetSecureTradeCont();
 
-						if ( stc != null )
+						SecureTrade st = stc?.Trade;
+
+						if ( st != null )
 						{
-							SecureTrade st = stc.Trade;
+							Mobile test = st.From.Mobile;
 
-							if ( st != null )
+							if ( test != null && test != rootParent )
+								tradeRecip = test;
+
+							test = st.To.Mobile;
+
+							if ( test != null && test != rootParent )
+								tradeRecip = test;
+
+							NetState ns = tradeRecip?.NetState;
+
+							if ( ns != null )
 							{
-								Mobile test = st.From.Mobile;
-
-								if ( test != null && test != rootParent )
-									tradeRecip = test;
-
-								test = st.To.Mobile;
-
-								if ( test != null && test != rootParent )
-									tradeRecip = test;
-
-								if ( tradeRecip != null )
+								if ( tradeRecip.CanSee( this ) && tradeRecip.InRange( worldLoc, GetUpdateRange( tradeRecip ) ) )
 								{
-									NetState ns = tradeRecip.NetState;
+									if ( ns.ContainerGridLines )
+										ns.Send( new ContainerContentUpdate6017( this ) );
+									else
+										ns.Send( new ContainerContentUpdate( this ) );
 
-									if ( ns != null )
-									{
-										if ( tradeRecip.CanSee( this ) && tradeRecip.InRange( worldLoc, GetUpdateRange( tradeRecip ) ) )
-										{
-											if ( ns.ContainerGridLines )
-												ns.Send( new ContainerContentUpdate6017( this ) );
-											else
-												ns.Send( new ContainerContentUpdate( this ) );
-
-											if ( ObjectPropertyList.Enabled )
-												ns.Send( OPLPacket );
-										}
-									}
+									if ( ObjectPropertyList.Enabled )
+										ns.Send( OPLPacket );
 								}
 							}
 						}
@@ -3359,7 +3339,8 @@ namespace Server
 		{
 			if ( Deleted )
 				return;
-			else if ( !World.OnDelete( this ) )
+
+			if ( !World.OnDelete( this ) )
 				return;
 
 			OnDelete();
@@ -3379,10 +3360,10 @@ namespace Server
 
 			SetFlag( ImplFlag.Deleted, true );
 
-			if ( Parent is Mobile )
-				((Mobile)Parent).RemoveItem( this );
-			else if ( Parent is Item )
-				((Item)Parent).RemoveItem( this );
+			if ( Parent is Mobile mobile )
+				mobile.RemoveItem( this );
+			else if ( Parent is Item item )
+				item.RemoveItem( this );
 
 			ClearBounce();
 
@@ -3516,11 +3497,7 @@ namespace Server
 			{
 				CompactInfo info = LookupCompactInfo();
 
-				if (info != null)
-					return info.m_Spawner;
-
-				return null;
-
+				return info?.m_Spawner;
 			}
 			set
 			{
@@ -3702,7 +3679,7 @@ namespace Server
 			{
 				CompactInfo info = LookupCompactInfo();
 
-				if ( info != null && info.m_Name != null )
+				if ( info?.m_Name != null )
 					return info.m_Name;
 
 				return this.DefaultName;
@@ -3847,18 +3824,18 @@ namespace Server
 		{
 			if ( Deleted || from.Deleted || target.Deleted || from.Map != target.Map || from.Map == null || target.Map == null )
 				return false;
-			else if ( from.AccessLevel < AccessLevel.GameMaster && !from.InRange( target.Location, 2 ) )
+			if ( from.AccessLevel < AccessLevel.GameMaster && !from.InRange( target.Location, 2 ) )
 				return false;
-			else if ( !from.CanSee( target ) || !from.InLOS( target ) )
+			if ( !from.CanSee( target ) || !from.InLOS( target ) )
 				return false;
-			else if ( !from.OnDroppedItemToMobile( this, target ) )
+			if ( !from.OnDroppedItemToMobile( this, target ) )
 				return false;
-			else if ( !OnDroppedToMobile( from, target ) )
+			if ( !OnDroppedToMobile( from, target ) )
 				return false;
-			else if ( !target.OnDragDrop( from, this ) )
+			if ( !target.OnDragDrop( from, this ) )
 				return false;
-			else
-				return true;
+
+			return true;
 		}
 
 		public virtual bool OnDroppedInto( Mobile from, Container target, Point3D p )
@@ -3867,7 +3844,8 @@ namespace Server
 			{
 				return false;
 			}
-			else if ( Nontransferable && from.Player && target != from.Backpack )
+
+			if ( Nontransferable && from.Player && target != from.Backpack )
 			{
 				HandleInvalidTransfer( from );
 				return false;
@@ -3880,21 +3858,21 @@ namespace Server
 		{
 			if ( Deleted || from.Deleted || target.Deleted || from.Map != target.Map || from.Map == null || target.Map == null )
 				return false;
-			else if ( from.AccessLevel < AccessLevel.GameMaster && !from.InRange( target.GetWorldLocation(), 2 ) )
+			if ( from.AccessLevel < AccessLevel.GameMaster && !from.InRange( target.GetWorldLocation(), 2 ) )
 				return false;
-			else if ( !from.CanSee( target ) || !from.InLOS( target ) )
+			if ( !from.CanSee( target ) || !from.InLOS( target ) )
 				return false;
-			else if ( !target.IsAccessibleTo( from ) )
+			if ( !target.IsAccessibleTo( from ) )
 				return false;
-			else if ( !from.OnDroppedItemOnto( this, target ) )
+			if ( !from.OnDroppedItemOnto( this, target ) )
 				return false;
-			else if ( Nontransferable && from.Player && target != from.Backpack )
+			if ( Nontransferable && from.Player && target != from.Backpack )
 			{
 				HandleInvalidTransfer( from );
 				return false;
 			}
-			else
-				return target.OnDragDrop( from, this );
+
+			return target.OnDragDrop( from, this );
 		}
 
 		public virtual bool DropToItem( Mobile from, Item target, Point3D p )
@@ -3906,18 +3884,18 @@ namespace Server
 
 			if ( from.AccessLevel < AccessLevel.GameMaster && !from.InRange( target.GetWorldLocation(), 2 ) )
 				return false;
-			else if ( !from.CanSee( target ) || !from.InLOS( target ) )
+			if ( !from.CanSee( target ) || !from.InLOS( target ) )
 				return false;
-			else if ( !target.IsAccessibleTo( from ) )
+			if ( !target.IsAccessibleTo( from ) )
 				return false;
-			else if ( root is Mobile && !((Mobile)root).CheckNonlocalDrop( from, this, target ) )
+			if ( root is Mobile mobile && !mobile.CheckNonlocalDrop( from, this, target ) )
 				return false;
-			else if ( !from.OnDroppedItemToItem( this, target, p ) )
+			if ( !from.OnDroppedItemToItem( this, target, p ) )
 				return false;
-			else if ( target is Container && p.m_X != -1 && p.m_Y != -1 )
-				return OnDroppedInto( from, (Container)target, p );
-			else
-				return OnDroppedOnto( from, target );
+			if ( target is Container container && p.m_X != -1 && p.m_Y != -1 )
+				return OnDroppedInto( from, container, p );
+
+			return OnDroppedOnto( from, target );
 		}
 
 		public virtual bool OnDroppedToWorld( Mobile from, Point3D p )
@@ -3942,7 +3920,8 @@ namespace Server
 		{
 			if ( Deleted || from.Deleted || from.Map == null )
 				return false;
-			else if ( !from.InRange( p, 2 ) )
+
+			if ( !from.InRange( p, 2 ) )
 				return false;
 
 			Map map = from.Map;
@@ -4112,7 +4091,8 @@ namespace Server
 
 			if ( landAvg > z && (z + height) > landZ )
 				return false;
-			else if ( (landFlags & TileFlag.Impassable) != 0 && landAvg > surfaceZ && (z + height) > landZ )
+
+			if ( (landFlags & TileFlag.Impassable) != 0 && landAvg > surfaceZ && (z + height) > landZ )
 				return false;
 
 			for ( int i = 0; i < tiles.Length; ++i )
@@ -4125,7 +4105,8 @@ namespace Server
 
 				if ( checkTop > z && (z + height) > checkZ )
 					return false;
-				else if ( (id.Surface || id.Impassable) && checkTop > surfaceZ && (z + height) > checkZ )
+
+				if ( (id.Surface || id.Impassable) && checkTop > surfaceZ && (z + height) > checkZ )
 					return false;
 			}
 
@@ -4145,9 +4126,9 @@ namespace Server
 
 			if ( !from.InLOS( new Point3D( x, y, z + 1 ) ) )
 				return false;
-			else if ( !from.OnDroppedItemToWorld( this, p ) )
+			if ( !from.OnDroppedItemToWorld( this, p ) )
 				return false;
-			else if ( !OnDroppedToWorld( from, p ) )
+			if ( !OnDroppedToWorld( from, p ) )
 				return false;
 
 			int soundID = GetDropSound();
@@ -4204,8 +4185,8 @@ namespace Server
 
 			if ( root == null )
 				return new Point3D( m_Location.m_X, m_Location.m_Y, m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0) );
-			else
-				return root.Location;
+
+			return root.Location;
 		}
 
 		public Point3D GetWorldTop()
@@ -4214,8 +4195,8 @@ namespace Server
 
 			if ( root == null )
 				return new Point3D( m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight );
-			else
-				return root.Location;
+
+			return root.Location;
 		}
 
 		public void SendLocalizedMessageTo( Mobile to, int number )
@@ -4290,8 +4271,8 @@ namespace Server
 
 			while ( p is Item )
 			{
-				if ( p is SecureTradeContainer )
-					return (SecureTradeContainer)p;
+				if ( p is SecureTradeContainer container )
+					return container;
 
 				p = ((Item)p).m_Parent;
 			}
@@ -4301,66 +4282,66 @@ namespace Server
 
 		public virtual void OnItemAdded( Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSubItemAdded( item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnSubItemAdded( item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnSubItemAdded( item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnSubItemAdded( item );
 		}
 
 		public virtual void OnItemRemoved( Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSubItemRemoved( item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnSubItemRemoved( item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnSubItemRemoved( item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnSubItemRemoved( item );
 		}
 
 		public virtual void OnSubItemAdded( Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSubItemAdded( item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnSubItemAdded( item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnSubItemAdded( item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnSubItemAdded( item );
 		}
 
 		public virtual void OnSubItemRemoved( Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSubItemRemoved( item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnSubItemRemoved( item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnSubItemRemoved( item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnSubItemRemoved( item );
 		}
 
 		public virtual void OnItemBounceCleared( Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSubItemBounceCleared( item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnSubItemBounceCleared( item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnSubItemBounceCleared( item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnSubItemBounceCleared( item );
 		}
 
 		public virtual void OnSubItemBounceCleared( Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSubItemBounceCleared( item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnSubItemBounceCleared( item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnSubItemBounceCleared( item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnSubItemBounceCleared( item );
 		}
 
 		public virtual bool CheckTarget( Mobile from, Server.Targeting.Target targ, object targeted )
 		{
-			if ( m_Parent is Item )
-				return ((Item)m_Parent).CheckTarget( from, targ, targeted );
-			else if ( m_Parent is Mobile )
-				return ((Mobile)m_Parent).CheckTarget( from, targ, targeted );
+			if ( m_Parent is Item item )
+				return item.CheckTarget( from, targ, targeted );
+			if ( m_Parent is Mobile mobile )
+				return mobile.CheckTarget( from, targ, targeted );
 
 			return true;
 		}
 
 		public virtual bool IsAccessibleTo( Mobile check )
 		{
-			if ( m_Parent is Item )
-				return ((Item)m_Parent).IsAccessibleTo( check );
+			if ( m_Parent is Item item )
+				return item.IsAccessibleTo( check );
 
 			Region reg = Region.Find( GetWorldLocation(), m_Map );
 
@@ -4394,16 +4375,12 @@ namespace Server
 				Item item = (Item)p;
 
 				if ( item.m_Parent == null )
-				{
 					break;
-				}
-				else
-				{
-					p = item.m_Parent;
 
-					if ( p == o )
-						return true;
-				}
+				p = item.m_Parent;
+
+				if ( p == o )
+					return true;
 			}
 
 			return false;
@@ -4419,10 +4396,10 @@ namespace Server
 
 		public virtual void OnItemUsed( Mobile from, Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnItemUsed( from, item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnItemUsed( from, item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnItemUsed( from, item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnItemUsed( from, item );
 		}
 
 		public bool CheckItemUse( Mobile from )
@@ -4432,20 +4409,19 @@ namespace Server
 
 		public virtual bool CheckItemUse( Mobile from, Item item )
 		{
-			if ( m_Parent is Item )
-				return ((Item)m_Parent).CheckItemUse( from, item );
-			else if ( m_Parent is Mobile )
-				return ((Mobile)m_Parent).CheckItemUse( from, item );
-			else
-				return true;
+			if ( m_Parent is Item parentItem )
+				return parentItem.CheckItemUse( from, item );
+			if ( m_Parent is Mobile parentMobile )
+				return parentMobile.CheckItemUse( from, item );
+			return true;
 		}
 
 		public virtual void OnItemLifted( Mobile from, Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnItemLifted( from, item );
-			else if ( m_Parent is Mobile )
-				((Mobile)m_Parent).OnItemLifted( from, item );
+			if ( m_Parent is Item parentItem )
+				parentItem.OnItemLifted( from, item );
+			else if ( m_Parent is Mobile parentMobile )
+				parentMobile.OnItemLifted( from, item );
 		}
 
 		public bool CheckLift( Mobile from )
@@ -4457,12 +4433,13 @@ namespace Server
 
 		public virtual bool CheckLift( Mobile from, Item item, ref LRReason reject )
 		{
-			if ( m_Parent is Item )
-				return ((Item)m_Parent).CheckLift( from, item, ref reject );
-			else if ( m_Parent is Mobile )
-				return ((Mobile)m_Parent).CheckLift( from, item, ref reject );
-			else
-				return true;
+			if ( m_Parent is Item parentItem )
+				return parentItem.CheckLift( from, item, ref reject );
+
+			if ( m_Parent is Mobile parentMobile )
+				return parentMobile.CheckLift( from, item, ref reject );
+
+			return true;
 		}
 
 		public virtual bool CanTarget{ get{ return true; } }
@@ -4470,8 +4447,8 @@ namespace Server
 
 		public virtual void OnSingleClickContained( Mobile from, Item item )
 		{
-			if ( m_Parent is Item )
-				((Item)m_Parent).OnSingleClickContained( from, item );
+			if ( m_Parent is Item item1 )
+				item1.OnSingleClickContained( from, item );
 		}
 
 		public virtual void OnAosSingleClick( Mobile from )
@@ -4566,9 +4543,9 @@ namespace Server
 
 		public virtual void ReplaceWith( Item newItem )
 		{
-			if ( m_Parent is Container )
+			if ( m_Parent is Container container )
 			{
-				((Container)m_Parent).AddItem( newItem );
+				container.AddItem( newItem );
 				newItem.Location = m_Location;
 			}
 			else

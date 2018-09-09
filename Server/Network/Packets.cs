@@ -371,8 +371,7 @@ namespace Server.Network
 		{
 			this.EnsureCapacity( 256 );
 
-			Container BuyPack = vendor.FindItemOnLayer( Layer.ShopBuy ) as Container;
-			m_Stream.Write( (int)(BuyPack == null ? Serial.MinusOne : BuyPack.Serial) );
+			m_Stream.Write( (int)(!(vendor.FindItemOnLayer( Layer.ShopBuy ) is Container BuyPack) ? Serial.MinusOne : BuyPack.Serial) );
 
 			m_Stream.Write( (byte)list.Count );
 
@@ -949,8 +948,8 @@ namespace Server.Network
 
 			if ( target is Mobile )
 				p = target.Location;
-			else if ( target is Item )
-				p = ((Item)target).GetWorldLocation();
+			else if ( target is Item item )
+				p = item.GetWorldLocation();
 			else
 				p = Point3D.Zero;
 
@@ -998,8 +997,8 @@ namespace Server.Network
 
 			if ( target is Mobile )
 				p = target.Location;
-			else if ( target is Item )
-				p = ((Item)target).GetWorldLocation();
+			else if ( target is Item item )
+				p = item.GetWorldLocation();
 			else
 				p = Point3D.Zero;
 
@@ -1072,9 +1071,11 @@ namespace Server.Network
 		{
 			Serial parentSerial;
 
-			if ( item.Parent is Mobile )
+			Mobile parent = item.Parent as Mobile;
+
+			if ( parent != null )
 			{
-				parentSerial = ((Mobile)item.Parent).Serial;
+				parentSerial = parent.Serial;
 			}
 			else
 			{
@@ -1084,12 +1085,10 @@ namespace Server.Network
 
 			int hue = item.Hue;
 
-			if ( item.Parent is Mobile )
+			if ( parent != null )
 			{
-				Mobile mob = (Mobile)item.Parent;
-
-				if ( mob.SolidHueOverride >= 0 )
-					hue = mob.SolidHueOverride;
+				if ( parent.SolidHueOverride >= 0 )
+					hue = parent.SolidHueOverride;
 			}
 
 			m_Stream.Write( (int) item.Serial );
@@ -1890,9 +1889,9 @@ namespace Server.Network
 		{
 			Serial parentSerial;
 
-			if ( item.Parent is Item )
+			if ( item.Parent is Item parentItem )
 			{
-				parentSerial = ((Item)item.Parent).Serial;
+				parentSerial = parentItem.Serial;
 			}
 			else
 			{
@@ -1917,9 +1916,9 @@ namespace Server.Network
 		{
 			Serial parentSerial;
 
-			if ( item.Parent is Item )
+			if ( item.Parent is Item parentItem )
 			{
-				parentSerial = ((Item)item.Parent).Serial;
+				parentSerial = parentItem.Serial;
 			}
 			else
 			{
@@ -2845,9 +2844,7 @@ namespace Server.Network
 
 			flags |= m_AdditionalFlags;
 
-			IAccount acct = ns.Account as IAccount;
-
-			if ( acct != null && acct.Limit >= 6 )
+			if ( ns.Account is IAccount acct && acct.Limit >= 6 )
 			{
 				flags |= FeatureFlags.LiveAccount;
 				flags &= ~FeatureFlags.UOTD;

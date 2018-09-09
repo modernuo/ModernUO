@@ -999,13 +999,12 @@ namespace Server
 
 			GetSector( item ).OnEnter( item );
 
-			if ( item is BaseMulti )
+			if ( item is BaseMulti m )
 			{
-				BaseMulti m = (BaseMulti)item;
 				MultiComponentList mcl = m.Components;
 
-				Sector start = GetMultiMinSector( item.Location, mcl );
-				Sector end = GetMultiMaxSector( item.Location, mcl );
+				Sector start = GetMultiMinSector( m.Location, mcl );
+				Sector end = GetMultiMaxSector( m.Location, mcl );
 
 				AddMulti( m, start, end );
 			}
@@ -1024,13 +1023,12 @@ namespace Server
 
 			GetSector( item ).OnLeave( item );
 
-			if ( item is BaseMulti )
+			if ( item is BaseMulti m )
 			{
-				BaseMulti m = (BaseMulti)item;
 				MultiComponentList mcl = m.Components;
 
-				Sector start = GetMultiMinSector( item.Location, mcl );
-				Sector end = GetMultiMaxSector( item.Location, mcl );
+				Sector start = GetMultiMinSector( m.Location, mcl );
+				Sector end = GetMultiMaxSector( m.Location, mcl );
 
 				RemoveMulti( m, start, end );
 			}
@@ -1095,13 +1093,12 @@ namespace Server
 				newSector.OnEnter( item );
 			}
 
-			if ( item is BaseMulti )
+			if ( item is BaseMulti m )
 			{
-				BaseMulti m = (BaseMulti)item;
 				MultiComponentList mcl = m.Components;
 
-				Sector start = GetMultiMinSector( item.Location, mcl );
-				Sector end = GetMultiMaxSector( item.Location, mcl );
+				Sector start = GetMultiMinSector( m.Location, mcl );
+				Sector end = GetMultiMaxSector( m.Location, mcl );
 
 				Sector oldStart = GetMultiMinSector( oldLocation, mcl );
 				Sector oldEnd = GetMultiMaxSector( oldLocation, mcl );
@@ -1310,39 +1307,38 @@ namespace Server
 		{
 			Point3D p;
 
-			if ( o is Mobile )
+			if ( o is Mobile mobile )
 			{
-				p = ((Mobile)o).Location;
+				p = mobile.Location;
 				p.Z += 14; //eye ? 15 : 10;
 			}
-			else if ( o is Item )
+			else if ( o is Item item )
 			{
-				p = ((Item)o).GetWorldLocation();
-				p.Z += (((Item)o).ItemData.Height / 2) + 1;
+				p = item.GetWorldLocation();
+				p.Z += (item.ItemData.Height / 2) + 1;
 			}
-			else if ( o is Point3D )
+			else if ( o is Point3D point3D )
 			{
-				p = (Point3D)o;
+				p = point3D;
 			}
-			else if ( o is LandTarget )
+			else if ( o is LandTarget target )
 			{
-				p = ((LandTarget)o).Location;
+				p = target.Location;
 
 				int low = 0, avg = 0, top = 0;
 				GetAverageZ( p.X, p.Y, ref low, ref avg, ref top );
 
 				p.Z = top + 1;
 			}
-			else if ( o is StaticTarget )
+			else if ( o is StaticTarget st )
 			{
-				StaticTarget st = (StaticTarget)o;
 				ItemData id = TileData.ItemTable[st.ItemID & TileData.MaxItemValue];
 
 				p = new Point3D( st.X, st.Y, st.Z - id.CalcHeight + id.Height / 2 + 1 );
 			}
-			else if ( o is IPoint3D )
+			else if ( o is IPoint3D d )
 			{
-				p = new Point3D( (IPoint3D)o );
+				p = new Point3D( d );
 			}
 			else
 			{

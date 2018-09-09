@@ -170,23 +170,12 @@ namespace Server {
 			ISerializable value = entry.value;
 			BinaryMemoryWriter writer = entry.writer;
 
-			Item item = value as Item;
-
-			if ( item != null ) {
+			if ( value is Item item )
 				Save( item, writer );
-			} else {
-				Mobile mob = value as Mobile;
-
-				if ( mob != null ) {
+			else if ( value is Mobile mob )
 					Save( mob, writer );
-				} else {
-					BaseGuild guild = value as BaseGuild;
-
-					if ( guild != null ) {
-						Save( guild, writer );
-					}
-				}
-			}
+			else if ( value is BaseGuild guild )
+				Save( guild, writer );
 		}
 
 		private void Save( Item item, BinaryMemoryWriter writer ) {

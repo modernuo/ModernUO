@@ -76,13 +76,13 @@ namespace Server.ContextMenus
 
 			List<ContextMenuEntry> list = new List<ContextMenuEntry>();
 
-			if ( target is Mobile )
+			if ( target is Mobile mobile )
 			{
-				((Mobile)target).GetContextMenuEntries( from, list );
+				mobile.GetContextMenuEntries( from, list );
 			}
-			else if ( target is Item )
+			else if ( target is Item item )
 			{
-				((Item)target).GetContextMenuEntries( from, list );
+				item.GetContextMenuEntries( from, list );
 			}
 
 			//m_Entries = (ContextMenuEntry[])list.ToArray( typeof( ContextMenuEntry ) );
