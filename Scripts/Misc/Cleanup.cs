@@ -29,23 +29,19 @@ namespace Server.Misc
 					items.Add( item );
 					continue;
 				}
-				else if ( item is CommodityDeed )
+				if ( item is CommodityDeed deed )
 				{
-					CommodityDeed deed = (CommodityDeed)item;
-
 					if ( deed.Commodity != null )
 						validItems.Add( deed.Commodity );
 
 					continue;
 				}
-				else if ( item is BaseHouse )
+				if ( item is BaseHouse house )
 				{
-					BaseHouse house = (BaseHouse)item;
-
 					foreach ( RelocatedEntity relEntity in house.RelocatedEntities )
 					{
-						if ( relEntity.Entity is Item )
-							validItems.Add( (Item)relEntity.Entity );
+						if ( relEntity.Entity is Item item1 )
+							validItems.Add( item1 );
 					}
 
 					foreach ( VendorInventory inventory in house.VendorInventories )
@@ -54,9 +50,8 @@ namespace Server.Misc
 							validItems.Add( subItem );
 					}
 				}
-				else if ( item is BankBox )
+				else if ( item is BankBox box )
 				{
-					BankBox box = (BankBox)item;
 					Mobile owner = box.Owner;
 
 					if ( owner == null )
@@ -76,15 +71,14 @@ namespace Server.Misc
 				{
 					object rootParent = item.RootParent;
 
-					if ( rootParent is Mobile )
+					if ( rootParent is Mobile rootMobile )
 					{
-						Mobile rootMobile = (Mobile)rootParent;
 						if ( item.Parent != rootMobile && rootMobile.AccessLevel == AccessLevel.Player )
 						{
 							items.Add( item );
 							continue;
 						}
-						else if ( item.Parent == rootMobile )
+						if ( item.Parent == rootMobile )
 						{
 							hairCleanup.Add( rootMobile );
 							continue;

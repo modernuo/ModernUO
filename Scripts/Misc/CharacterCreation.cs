@@ -405,9 +405,7 @@ namespace Server.Misc
 
 				for( int i = 0; i < cont.Items.Count; i++ )
 				{
-					BaseRanged bow = cont.Items[i] as BaseRanged;
-
-					if ( bow != null )
+					if ( cont.Items[i] is BaseRanged bow )
 					{
 						bow.Attributes.WeaponSpeed = 35;
 						bow.Attributes.WeaponDamage = 35;
@@ -648,10 +646,8 @@ namespace Server.Misc
 
 			bool young = false;
 
-			if ( newChar is PlayerMobile )
+			if ( newChar is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile) newChar;
-
 				pm.Profession = args.Profession;
 
 				if ( pm.AccessLevel == AccessLevel.Player && ((Account)pm.Account).Young )
@@ -711,14 +707,14 @@ namespace Server.Misc
 		{
 			if ( profession < 0 )
 				return false;
-			else if ( profession < 4 )
+			if ( profession < 4 )
 				return true;
-			else if ( Core.AOS && profession < 6 )
+			if ( Core.AOS && profession < 6 )
 				return true;
-			else if ( Core.SE && profession < 8 )
+			if ( Core.SE && profession < 8 )
 				return true;
-			else
-				return false;
+
+			return false;
 		}
 
 		private class BadStartMessage : Timer
@@ -752,7 +748,7 @@ namespace Server.Misc
 
 			bool useHaven = isYoung;
 
-			ClientFlags flags = args.State == null ? ClientFlags.None : args.State.Flags;
+			ClientFlags flags = args.State?.Flags ?? ClientFlags.None;
 			Mobile m = args.Mobile;
 
 			switch ( args.Profession )
@@ -763,19 +759,17 @@ namespace Server.Misc
 					{
 						return new CityInfo( "Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas );
 					}
-					else
-					{
-						useHaven = true;
 
-						new BadStartMessage( m, 1062205 );
-						/*
-						 * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
-						 * installation and cannot be transported to Malas.
-						 * You will not be able to take your new player quest in Malas
-						 * without an AOS client.  You are now being taken to the city of
-						 * Haven on the Trammel facet.
-						 * */
-					}
+					useHaven = true;
+
+					new BadStartMessage( m, 1062205 );
+					/*
+					 * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
+					 * installation and cannot be transported to Malas.
+					 * You will not be able to take your new player quest in Malas
+					 * without an AOS client.  You are now being taken to the city of
+					 * Haven on the Trammel facet.
+					 * */
 
 					break;
 				}
@@ -789,19 +783,17 @@ namespace Server.Misc
 					{
 						return new CityInfo( "Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas );
 					}
-					else
-					{
-						useHaven = true;
 
-						new BadStartMessage( m, 1063487 );
-						/*
-						 * Unfortunately you are playing on a *NON-Samurai-Empire* game
-						 * installation and cannot be transported to Tokuno.
-						 * You will not be able to take your new player quest in Tokuno
-						 * without an SE client. You are now being taken to the city of
-						 * Haven on the Trammel facet.
-						 * */
-					}
+					useHaven = true;
+
+					new BadStartMessage( m, 1063487 );
+					/*
+					 * Unfortunately you are playing on a *NON-Samurai-Empire* game
+					 * installation and cannot be transported to Tokuno.
+					 * You will not be able to take your new player quest in Tokuno
+					 * without an SE client. You are now being taken to the city of
+					 * Haven on the Trammel facet.
+					 * */
 
 					break;
 				}
@@ -811,19 +803,17 @@ namespace Server.Misc
 					{
 						return new CityInfo( "Ninja DE", "Enimo's Residence", 414,	823, -1, Map.Malas );
 					}
-					else
-					{
-						useHaven = true;
 
-						new BadStartMessage( m, 1063487 );
-						/*
-						 * Unfortunately you are playing on a *NON-Samurai-Empire* game
-						 * installation and cannot be transported to Tokuno.
-						 * You will not be able to take your new player quest in Tokuno
-						 * without an SE client. You are now being taken to the city of
-						 * Haven on the Trammel facet.
-						 * */
-					}
+					useHaven = true;
+
+					new BadStartMessage( m, 1063487 );
+					/*
+					 * Unfortunately you are playing on a *NON-Samurai-Empire* game
+					 * installation and cannot be transported to Tokuno.
+					 * You will not be able to take your new player quest in Tokuno
+					 * without an SE client. You are now being taken to the city of
+					 * Haven on the Trammel facet.
+					 * */
 
 					break;
 				}
@@ -831,8 +821,8 @@ namespace Server.Misc
 
 			if ( useHaven )
 				return m_NewHavenInfo;
-			else
-				return args.City;
+
+			return args.City;
 		}
 
 		private static void FixStats( ref int str, ref int dex, ref int intel, int max )
@@ -1193,12 +1183,7 @@ namespace Server.Misc
 			}
 		}
 
-		private static void EquipItem( Item item )
-		{
-			EquipItem( item, false );
-		}
-
-		private static void EquipItem( Item item, bool mustEquip )
+		private static void EquipItem( Item item, bool mustEquip = false)
 		{
 			if ( !Core.AOS )
 				item.LootType = LootType.Newbied;
@@ -1671,13 +1656,9 @@ namespace Server.Misc
 				}
 				case SkillName.Tracking:
 				{
-					if ( m_Mobile != null )
-					{
-						Item shoes = m_Mobile.FindItemOnLayer( Layer.Shoes );
+					Item shoes = m_Mobile?.FindItemOnLayer( Layer.Shoes );
 
-						if ( shoes != null )
-							shoes.Delete();
-					}
+					shoes?.Delete();
 
 					int hue = Utility.RandomYellowHue();
 

@@ -130,8 +130,7 @@ namespace Server.Misc
 				Mobile m = state.Mobile;
 				if (m_Dictionary.TryGetValue( m, out Timer t ))
 				{
-					if (t != null)
-						t.Stop();
+					t?.Stop();
 
 					m_Dictionary.Remove(m);
 				}
@@ -139,24 +138,23 @@ namespace Server.Misc
 
 			private static void OnHandshakeTimeout(object state)
 			{
-				Timer t = null;
-				Mobile m = state as Mobile;
-
-				if (m == null)
+				if (!(state is Mobile m))
 					return;
 
 				m_Dictionary.Remove(m);
 
-				if (!Settings.KickOnFailure)
-				{
-					Console.WriteLine("Player '{0}' failed to negotiate features.", m);
-				}
-				else if (m.NetState != null && m.NetState.Running)
+//				if (!Settings.KickOnFailure)
+//				{
+//					Console.WriteLine("Player '{0}' failed to negotiate features.", m);
+//				}
+
+				if (m.NetState != null && m.NetState.Running)
 				{
 					m.SendGump(new Gumps.WarningGump(1060635, 30720, Settings.WarningMessage, 0xFFC000, 420, 250, null, null));
 
 					if (m.AccessLevel <= AccessLevel.Player)
 					{
+						Timer t;
 						m_Dictionary[m] = t = Timer.DelayCall(Settings.DisconnectDelay, OnForceDisconnect_Callback, m);
 						t.Start();
 					}
@@ -165,10 +163,8 @@ namespace Server.Misc
 
 			private static void OnForceDisconnect(object state)
 			{
-				if (state is Mobile)
+				if (state is Mobile m)
 				{
-					Mobile m = (Mobile)state;
-
 					if (m.NetState != null && m.NetState.Running)
 						m.NetState.Dispose();
 
