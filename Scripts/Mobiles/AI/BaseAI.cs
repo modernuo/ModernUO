@@ -225,10 +225,8 @@ namespace Server.Mobiles
 
 				from.Target = new AIControlMobileTarget(this, order);
 			}
-			else if (from.Target is AIControlMobileTarget)
+			else if (@from.Target is AIControlMobileTarget t)
 			{
-				AIControlMobileTarget t = (AIControlMobileTarget)from.Target;
-
 				if (t.Order == order)
 					t.AddAI(this);
 			}
@@ -384,10 +382,7 @@ namespace Server.Mobiles
 					}
 					else
 					{
-						int generalNumber;
-						string exactTime;
-
-						Clock.GetTime(m_Mobile, out generalNumber, out exactTime);
+						Clock.GetTime(m_Mobile, out int generalNumber, out _);
 
 						m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
 					}
@@ -1232,9 +1227,7 @@ namespace Server.Mobiles
 			{
 				if (distance < 1 && target.X == 1076 && target.Y == 450 && (m_Mobile is HordeMinionFamiliar))
 				{
-					PlayerMobile pm = m_Mobile.ControlMaster as PlayerMobile;
-
-					if (pm != null)
+					if (m_Mobile.ControlMaster is PlayerMobile pm)
 					{
 						QuestSystem qs = pm.Quest;
 
@@ -1328,8 +1321,8 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				bool youngFrom = from is PlayerMobile ? ((PlayerMobile)from).Young : false;
-				bool youngTo = to is PlayerMobile ? ((PlayerMobile)to).Young : false;
+				bool youngFrom = @from is PlayerMobile mobile && mobile.Young;
+				bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 
 				if (youngFrom && !youngTo)
 				{
@@ -1560,8 +1553,7 @@ namespace Server.Mobiles
 			m_Mobile.OwnerAbandonTime = DateTime.MinValue;
 			m_Mobile.IsBonded = false;
 
-			SpawnEntry se = m_Mobile.Spawner as SpawnEntry;
-			if (se != null && se.HomeLocation != Point3D.Zero)
+			if (m_Mobile.Spawner is SpawnEntry se && se.HomeLocation != Point3D.Zero)
 			{
 				m_Mobile.Home = se.HomeLocation;
 				m_Mobile.RangeHome = se.HomeRange;
@@ -1683,8 +1675,8 @@ namespace Server.Mobiles
 				if (from.Map != m_Creature.Map || !from.InRange(m_Creature, 14))
 					return false;
 
-				bool youngFrom = from is PlayerMobile ? ((PlayerMobile)from).Young : false;
-				bool youngTo = to is PlayerMobile ? ((PlayerMobile)to).Young : false;
+				bool youngFrom = @from is PlayerMobile mobile && mobile.Young;
+				bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 
 				if (accepted && youngFrom && !youngTo)
 				{
@@ -1777,8 +1769,8 @@ namespace Server.Mobiles
 			{
 				m_Mobile.DebugSay("Begin transfer with {0}", to.Name);
 
-				bool youngFrom = from is PlayerMobile ? ((PlayerMobile)from).Young : false;
-				bool youngTo = to is PlayerMobile ? ((PlayerMobile)to).Young : false;
+				bool youngFrom = @from is PlayerMobile mobile && mobile.Young;
+				bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 
 				if (youngFrom && !youngTo)
 				{
@@ -2032,7 +2024,7 @@ namespace Server.Mobiles
 		{
 			if (m_Mobile.Deleted || m_Mobile.Frozen || m_Mobile.Paralyzed || (m_Mobile.Spell != null && m_Mobile.Spell.IsCasting) || m_Mobile.DisallowAllMoves)
 				return MoveResult.BadState;
-			else if (!CheckMove())
+			if (!CheckMove())
 				return MoveResult.BadState;
 
 			// This makes them always move one step, never any direction changes
@@ -2056,7 +2048,7 @@ namespace Server.Mobiles
 				MoveImpl.IgnoreMovableImpassables = false;
 				return (v ? MoveResult.Success : MoveResult.Blocked);
 			}
-			else if (!m_Mobile.Move(d))
+			if (!m_Mobile.Move(d))
 			{
 				bool wasPushing = m_Mobile.Pushing;
 
@@ -2082,12 +2074,10 @@ namespace Server.Mobiles
 
 						foreach (Item item in eable)
 						{
-							if (canOpenDoors && item is BaseDoor && (item.Z + item.ItemData.Height) > m_Mobile.Z && (m_Mobile.Z + 16) > item.Z)
+							if (canOpenDoors && item is BaseDoor door && (door.Z + door.ItemData.Height) > m_Mobile.Z && (m_Mobile.Z + 16) > door.Z)
 							{
-								if (item.X != x || item.Y != y)
+								if (door.X != x || door.Y != y)
 									continue;
-
-								BaseDoor door = (BaseDoor)item;
 
 								if (!door.Locked || !door.UseLocks())
 									m_Obstacles.Enqueue(door);
@@ -2117,26 +2107,24 @@ namespace Server.Mobiles
 						{
 							Item item = m_Obstacles.Dequeue();
 
-							if (item is BaseDoor)
+							if (item is BaseDoor door)
 							{
 								m_Mobile.DebugSay("Little do they expect, I've learned how to open doors. Didn't they read the script??");
 								m_Mobile.DebugSay("*twist*");
 
-								((BaseDoor)item).Use(m_Mobile);
+								door.Use(m_Mobile);
 							}
 							else
 							{
 								m_Mobile.DebugSay("Ugabooga. I'm so big and tough I can destroy it: {0}", item.GetType().Name);
 
-								if (item is Container)
+								if (item is Container cont)
 								{
-									Container cont = (Container)item;
-
 									for (int i = 0; i < cont.Items.Count; ++i)
 									{
 										Item check = cont.Items[i];
 
-										if (check.Movable && check.ItemData.Impassable && (item.Z + check.ItemData.Height) > m_Mobile.Z)
+										if (check.Movable && check.ItemData.Impassable && (cont.Z + check.ItemData.Height) > m_Mobile.Z)
 											m_Obstacles.Enqueue(check);
 									}
 
@@ -2172,11 +2160,9 @@ namespace Server.Mobiles
 					MoveImpl.IgnoreMovableImpassables = false;
 					return (wasPushing ? MoveResult.BadState : MoveResult.Blocked);
 				}
-				else
-				{
-					MoveImpl.IgnoreMovableImpassables = false;
-					return MoveResult.Success;
-				}
+
+				MoveImpl.IgnoreMovableImpassables = false;
+				return MoveResult.Success;
 			}
 
 			MoveImpl.IgnoreMovableImpassables = false;
@@ -2190,9 +2176,9 @@ namespace Server.Mobiles
 
 			if (m_Mobile.Home == Point3D.Zero)
 			{
-				if (m_Mobile.Spawner is SpawnEntry)
+				if (m_Mobile.Spawner is SpawnEntry entry)
 				{
-					Region region = ((SpawnEntry)m_Mobile.Spawner).Region;
+					Region region = entry.Region;
 
 					if (m_Mobile.Region.AcceptsSpawnsFrom(region))
 					{
@@ -2334,89 +2320,87 @@ namespace Server.Mobiles
 
 		/*
 		 *  Walk at range distance from mobile
-		 * 
+		 *
 		 *	iSteps : Number of steps
 		 *	bRun   : Do we run
 		 *	iWantDistMin : The minimum distance we want to be
 		 *  iWantDistMax : The maximum distance we want to be
-		 * 
+		 *
 		 */
 		public virtual bool WalkMobileRange(Mobile m, int iSteps, bool bRun, int iWantDistMin, int iWantDistMax)
 		{
 			if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
 				return false;
 
-			if (m != null)
+			if (m == null)
+				return false;
+
+			for (int i = 0; i < iSteps; i++)
 			{
-				for (int i = 0; i < iSteps; i++)
+				// Get the current distance
+				int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m);
+
+				if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
 				{
-					// Get the current distance
-					int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m);
+					bool needCloser = (iCurrDist > iWantDistMax);
+					bool needFurther = !needCloser;
 
-					if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
+					if (needCloser && m_Path != null && m_Path.Goal == m)
 					{
-						bool needCloser = (iCurrDist > iWantDistMax);
-						bool needFurther = !needCloser;
+						if (m_Path.Follow(bRun, 1))
+							m_Path = null;
+					}
+					else
+					{
+						Direction dirTo;
 
-						if (needCloser && m_Path != null && m_Path.Goal == m)
+						if (iCurrDist > iWantDistMax)
+							dirTo = m_Mobile.GetDirectionTo(m);
+						else
+							dirTo = m.GetDirectionTo(m_Mobile);
+
+						// Add the run flag
+						if (bRun)
+							dirTo = dirTo | Direction.Running;
+
+						if (!DoMove(dirTo, true) && needCloser)
 						{
+							m_Path = new PathFollower(m_Mobile, m);
+							m_Path.Mover = new MoveMethod(DoMoveImpl);
+
 							if (m_Path.Follow(bRun, 1))
 								m_Path = null;
 						}
 						else
 						{
-							Direction dirTo;
-
-							if (iCurrDist > iWantDistMax)
-								dirTo = m_Mobile.GetDirectionTo(m);
-							else
-								dirTo = m.GetDirectionTo(m_Mobile);
-
-							// Add the run flag
-							if (bRun)
-								dirTo = dirTo | Direction.Running;
-
-							if (!DoMove(dirTo, true) && needCloser)
-							{
-								m_Path = new PathFollower(m_Mobile, m);
-								m_Path.Mover = new MoveMethod(DoMoveImpl);
-
-								if (m_Path.Follow(bRun, 1))
-									m_Path = null;
-							}
-							else
-							{
-								m_Path = null;
-							}
+							m_Path = null;
 						}
 					}
-					else
-					{
-						return true;
-					}
 				}
-
-				// Get the current distance
-				int iNewDist = (int)m_Mobile.GetDistanceToSqrt(m);
-
-				if (iNewDist >= iWantDistMin && iNewDist <= iWantDistMax)
-					return true;
 				else
-					return false;
+				{
+					return true;
+				}
 			}
+
+			// Get the current distance
+			int iNewDist = (int)m_Mobile.GetDistanceToSqrt(m);
+
+			if (iNewDist >= iWantDistMin && iNewDist <= iWantDistMax)
+				return true;
 
 			return false;
 		}
 
 		/*
 		 * Here we check to acquire a target from our surrounding
-		 * 
+		 *
 		 *  iRange : The range
 		 *  acqType : A type of acquire we want (closest, strongest, etc)
 		 *  bPlayerOnly : Don't bother with other creatures or NPCs, want a player
 		 *  bFacFriend : Check people in my faction
 		 *  bFacFoe : Check people in other factions
-		 * 
+		 *
 		 */
 		public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
 		{
@@ -2430,11 +2414,9 @@ namespace Server.Mobiles
 					m_Mobile.FocusMob = null;
 					return false;
 				}
-				else
-				{
-					m_Mobile.FocusMob = m_Mobile.BardTarget;
-					return (m_Mobile.FocusMob != null);
-				}
+
+				m_Mobile.FocusMob = m_Mobile.BardTarget;
+				return (m_Mobile.FocusMob != null);
 			}
 			else if (m_Mobile.Controlled)
 			{
@@ -2446,11 +2428,9 @@ namespace Server.Mobiles
 					m_Mobile.FocusMob = null;
 					return false;
 				}
-				else
-				{
-					m_Mobile.FocusMob = m_Mobile.ControlTarget;
-					return (m_Mobile.FocusMob != null);
-				}
+
+				m_Mobile.FocusMob = m_Mobile.ControlTarget;
+				return (m_Mobile.FocusMob != null);
 			}
 
 			if (m_Mobile.ConstantFocus != null)
@@ -2488,7 +2468,6 @@ namespace Server.Mobiles
 			{
 				Mobile newFocusMob = null;
 				double val = double.MinValue;
-				double theirVal;
 
 				IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(m_Mobile.Location, iRange);
 
@@ -2517,7 +2496,10 @@ namespace Server.Mobiles
 					if (!m_Mobile.CanSee(m))
 						continue;
 
-					if (Core.AOS && m is BaseCreature && (m as BaseCreature).Summoned && !(m as BaseCreature).Controlled)
+					BaseCreature bc = m as BaseCreature;
+					PlayerMobile pm = m as PlayerMobile;
+
+					if (Core.AOS && bc?.Summoned == true && bc?.Controlled != true)
 						continue;
 
 					if (m_Mobile.Summoned && m_Mobile.SummonMaster != null)
@@ -2531,7 +2513,7 @@ namespace Server.Mobiles
 							continue;
 
 						// Animated creatures cannot attack players directly.
-						if (m is PlayerMobile && m_Mobile.IsAnimatedDead)
+						if (pm != null && m_Mobile.IsAnimatedDead)
 							continue;
 					}
 
@@ -2544,7 +2526,7 @@ namespace Server.Mobiles
 						continue;
 
 					// Ignore players with activated honor
-					if (m is PlayerMobile && ((PlayerMobile)m).HonorActive && !(m_Mobile.Combatant == m))
+					if (pm?.HonorActive == true && m_Mobile.Combatant != m)
 						continue;
 
 					if (acqType == FightMode.Aggressor || acqType == FightMode.Evil)
@@ -2556,8 +2538,8 @@ namespace Server.Mobiles
 
 						if (acqType == FightMode.Evil && !bValid)
 						{
-							if (m is BaseCreature && ((BaseCreature)m).Controlled && ((BaseCreature)m).ControlMaster != null)
-								bValid = (((BaseCreature)m).ControlMaster.Karma < 0);
+							if (bc?.Controlled == true && bc?.ControlMaster != null)
+								bValid = bc.ControlMaster.Karma < 0;
 							else
 								bValid = (m.Karma < 0);
 						}
@@ -2576,7 +2558,7 @@ namespace Server.Mobiles
 							continue;
 					}
 
-					theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
+					var theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
 
 					if (theirVal > val && m_Mobile.InLOS(m))
 					{
@@ -2667,9 +2649,7 @@ namespace Server.Mobiles
 			{
 				m_Timer.Stop();
 
-				SpawnEntry se = m_Mobile.Spawner as SpawnEntry;
-
-				if (se != null && se.ReturnOnDeactivate && !m_Mobile.Controlled)
+				if (m_Mobile.Spawner is SpawnEntry se && se.ReturnOnDeactivate && !m_Mobile.Controlled)
 				{
 					if (se.HomeLocation == Point3D.Zero)
 					{
@@ -2688,9 +2668,7 @@ namespace Server.Mobiles
 
 		private void ReturnToHome()
 		{
-			SpawnEntry se = m_Mobile.Spawner as SpawnEntry;
-
-			if (se != null)
+			if (m_Mobile.Spawner is SpawnEntry se)
 			{
 				Point3D loc = se.RandomSpawnLocation(16, !m_Mobile.CantWalk, m_Mobile.CanSwim);
 
@@ -2750,12 +2728,12 @@ namespace Server.Mobiles
 					Stop();
 					return;
 				}
-				else if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal)
+				if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal)
 				{
 					m_Owner.Deactivate();
 					return;
 				}
-				else if (m_Owner.m_Mobile.PlayerRangeSensitive)//have to check this in the timer....
+				if (m_Owner.m_Mobile.PlayerRangeSensitive)//have to check this in the timer....
 				{
 					Sector sect = m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile);
 					if (!sect.Active)
@@ -2772,7 +2750,7 @@ namespace Server.Mobiles
 					Stop();
 					return;
 				}
-				else if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal)
+				if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal)
 				{
 					m_Owner.Deactivate();
 					return;

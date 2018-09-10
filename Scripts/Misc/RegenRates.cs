@@ -54,10 +54,12 @@ namespace Server.Misc
 		{
 			int points = AosAttributes.GetValue( from, AosAttribute.RegenHits );
 
-			if ( from is BaseCreature && !((BaseCreature)from).IsAnimatedDead )
+			BaseCreature bc = from as BaseCreature;
+
+			if ( bc != null && !bc.IsAnimatedDead )
 				points += 4;
 
-			if ( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
+			if ( bc?.IsParagon == true || from is Leviathan )
 				points += 40;
 
 			if ( Core.ML && from.Race == Race.Human )	//Is this affected by the cap?
@@ -87,7 +89,7 @@ namespace Server.Misc
 
 			int points =(int)(from.Skills[SkillName.Focus].Value * 0.1);
 
-			if ( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
+			if ( (@from is BaseCreature creature && creature.IsParagon) || from is Leviathan )
 				points += 40;
 
 			int cappedPoints = AosAttributes.GetValue( from, AosAttribute.RegenStam );
@@ -135,7 +137,7 @@ namespace Server.Misc
 
 				double totalPoints = focusPoints + medPoints + (from.Meditating ? (medPoints > 13.0 ? 13.0 : medPoints) : 0.0);
 
-				if ( (from is BaseCreature && ((BaseCreature)from).IsParagon) || from is Leviathan )
+				if ( (@from is BaseCreature creature && creature.IsParagon) || from is Leviathan )
 					totalPoints += 40;
 
 				int cappedPoints = AosAttributes.GetValue( from, AosAttribute.RegenMana );

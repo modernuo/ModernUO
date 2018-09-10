@@ -33,8 +33,8 @@ namespace Server.Targets
 
 		protected override void OnTarget( Mobile from, object o )
 		{
-			if ( o is Mobile ) {
-				Mobile m = (Mobile)o;
+			if ( o is Mobile m )
+			{
 				for ( int i = 0; i < m_List.Count; ++i )
 					m_List[i].EndPickTarget( from, m, m_Order );
 			}

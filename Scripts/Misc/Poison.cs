@@ -36,7 +36,7 @@ namespace Server
 		{
 			Poison newPoison = ( oldPoison == null ? null : GetPoison( oldPoison.Level + 1 ) );
 
-			return ( newPoison == null ? oldPoison : newPoison );
+			return newPoison ?? oldPoison;
 		}
 
 		// Info
@@ -131,12 +131,10 @@ namespace Server
 					m_LastDamage = damage;
 				}
 
-				if ( m_From != null )
-					m_From.DoHarmful( m_Mobile, true );
+				m_From?.DoHarmful( m_Mobile, true );
 
-				IHonorTarget honorTarget = m_Mobile as IHonorTarget;
-				if ( honorTarget != null && honorTarget.ReceivedHonorContext != null )
-					honorTarget.ReceivedHonorContext.OnTargetPoisoned();
+				if ( m_Mobile is IHonorTarget honorTarget )
+					honorTarget.ReceivedHonorContext?.OnTargetPoisoned();
 
 				AOS.Damage( m_Mobile, m_From, damage, 0, 0, 0, 100, 0 );
 

@@ -29,9 +29,7 @@ namespace Server
 
 		public static void GiveArtifactTo( Mobile m )
 		{
-			Item item = Activator.CreateInstance( m_Artifacts[Utility.Random( m_Artifacts.Length )] ) as Item;
-
-			if ( item == null )
+			if ( !(Activator.CreateInstance( m_Artifacts[Utility.Random( m_Artifacts.Length )] ) is Item item) )
 				return;
 
 			if ( m.AddToBackpack( item ) )
@@ -51,14 +49,9 @@ namespace Server
 			}
 		}
 
-		public static bool CheckML( Mobile from )
+		public static bool CheckML( Mobile from, bool message = true)
 		{
-			return CheckML( from, true );
-		}
-
-		public static bool CheckML( Mobile from, bool message )
-		{
-			if ( from == null || from.NetState == null )
+			if ( @from?.NetState == null )
 				return false;
 
 			if ( from.NetState.SupportsExpansion( Expansion.ML ) )

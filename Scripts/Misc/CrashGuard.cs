@@ -216,9 +216,7 @@ namespace Server.Misc
 
 							op.Write( "+ {0}:", state );
 
-							Account a = state.Account as Account;
-
-							if ( a != null )
+							if ( state.Account is Account a )
 								op.Write( " (account = {0})", a.Username );
 
 							Mobile m = state.Mobile;

@@ -62,9 +62,9 @@ namespace Server.Items
 			{
 				Item deed = this.Deed;
 
-				if ( this.Parent is Item )
+				if ( this.Parent is Item item )
 				{
-					((Item)this.Parent).AddItem( deed );
+					item.AddItem( deed );
 					deed.Location = this.Location;
 				}
 				else
@@ -241,9 +241,7 @@ namespace Server.Items
 
 		public void Placement_OnTarget( Mobile from, object targeted, object state )
 		{
-			IPoint3D p = targeted as IPoint3D;
-
-			if ( p == null )
+			if ( !(targeted is IPoint3D p) )
 				return;
 
 			Point3D loc = new Point3D( p );

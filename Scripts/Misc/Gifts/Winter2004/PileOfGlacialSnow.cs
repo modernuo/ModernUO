@@ -107,9 +107,8 @@ namespace Server.Items
 				{
 					from.SendLocalizedMessage( 1005576 ); // You can't throw this at yourself.
 				}
-				else if ( target is Mobile )
+				else if ( target is Mobile targ )
 				{
-					Mobile targ = (Mobile) target;
 					Container pack = targ.Backpack;
 
 					if ( from.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) || targ.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )

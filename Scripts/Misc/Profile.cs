@@ -59,9 +59,7 @@ namespace Server.Misc
 
 		private static string GetAccountDuration( Mobile m )
 		{
-			Account a = m.Account as Account;
-
-			if ( a == null )
+			if ( !(m.Account is Account a) )
 				return "";
 
 			TimeSpan ts = DateTime.UtcNow - a.Created;

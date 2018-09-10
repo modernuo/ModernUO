@@ -96,13 +96,12 @@ namespace Server.Misc
 				return;
 			}
 
-			if ( from is PlayerMobile )
+			if ( @from is PlayerMobile pm )
 			{
-				int amt = ( from.Mounted ? 48 : 16 );
-				PlayerMobile pm = (PlayerMobile)from;
+				int amt = ( pm.Mounted ? 48 : 16 );
 
 				if ( (++pm.StepsTaken % amt) == 0 )
-					--from.Stam;
+					--pm.Stam;
 			}
 
 			Spells.Ninjitsu.DeathStrike.AddStep( from );

@@ -42,9 +42,8 @@ namespace Server.Misc
 		private static void OnGuildTrack( NetState state, PacketReader pvSrc )
 		{
 			Mobile from = state.Mobile;
-			Guild guild = from.Guild as Guild;
 
-			if ( guild != null )
+			if ( @from.Guild is Guild guild )
 			{
 				bool locations = pvSrc.ReadByte() != 0;
 
@@ -78,7 +77,7 @@ namespace Server.Misc
 						m_Stream.Write( (int) mob.Serial );
 						m_Stream.Write( (short) mob.X );
 						m_Stream.Write( (short) mob.Y );
-						m_Stream.Write( (byte) ( mob.Map == null ? 0 : mob.Map.MapID ) );
+						m_Stream.Write( (byte) (mob.Map?.MapID ?? 0) );
 					}
 
 					m_Stream.Write( (int) 0 );
@@ -113,7 +112,7 @@ namespace Server.Misc
 						{
 							m_Stream.Write( (short) mob.X );
 							m_Stream.Write( (short) mob.Y );
-							m_Stream.Write( (byte) ( mob.Map == null ? 0 : mob.Map.MapID ) );
+							m_Stream.Write( (byte) (mob.Map?.MapID ?? 0) );
 
 							if ( Settings.GuildHitsPercent && mob.Alive )
 								m_Stream.Write( (byte) ( mob.Hits / Math.Max( mob.HitsMax, 1.0 ) * 100 ) );

@@ -67,9 +67,11 @@ namespace Server.Misc
 
 		public static void AwardKarma( Mobile m, int offset, bool message )
 		{
+			PlayerMobile pm = m as PlayerMobile;
+
 			if ( offset > 0 )
 			{
-				if ( m is PlayerMobile && ((PlayerMobile)m).KarmaLocked )
+				if ( pm?.KarmaLocked == true )
 					return;
 
 				if ( m.Karma >= MaxKarma )
@@ -120,9 +122,9 @@ namespace Server.Misc
 					m.SendLocalizedMessage( 1019063 ); // You have lost a little karma.
 			}
 
-			if ( !Core.AOS && wasPositiveKarma && m.Karma < 0 && m is PlayerMobile && !((PlayerMobile)m).KarmaLocked )
+			if ( !Core.AOS && wasPositiveKarma && m.Karma < 0 && pm != null && !pm.KarmaLocked )
 			{
-				((PlayerMobile)m).KarmaLocked = true;
+				pm.KarmaLocked = true;
 				m.SendLocalizedMessage( 1042511, "", 0x22 ); // Karma is locked.  A mantra spoken at a shrine will unlock it again.
 			}
 		}
@@ -172,9 +174,9 @@ namespace Server.Misc
 				title.Append( beheld.Name );
 			}
 
-			if ( beheld is PlayerMobile && ((PlayerMobile)beheld).DisplayChampionTitle )
+			if ( beheld is PlayerMobile mobile && mobile.DisplayChampionTitle )
 			{
-				PlayerMobile.ChampionTitleInfo info = ((PlayerMobile)beheld).ChampionTitles;
+				PlayerMobile.ChampionTitleInfo info = mobile.ChampionTitles;
 
 				if ( info.Harrower > 0 )
 					title.AppendFormat( ": {0} of Evil", HarrowerTitles[Math.Min( HarrowerTitles.Length, info.Harrower )-1] );

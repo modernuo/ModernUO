@@ -21,9 +21,9 @@ namespace Server.Items
 
 			public override void Execute( CommandEventArgs e, object obj )
 			{
-				if ( obj is ToggleItem )
+				if ( obj is ToggleItem item )
 				{
-					((ToggleItem)obj).Toggle();
+					item.Toggle();
 					AddResponse( "The item has been toggled." );
 				}
 				else
@@ -64,13 +64,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public ToggleItem( int inactiveItemID, int activeItemID )
-			: this( inactiveItemID, activeItemID, false )
-		{
-		}
-
-		[Constructible]
-		public ToggleItem( int inactiveItemID, int activeItemID, bool playersCanToggle )
+		public ToggleItem( int inactiveItemID, int activeItemID, bool playersCanToggle = false)
 			: base( inactiveItemID )
 		{
 			Movable = false;

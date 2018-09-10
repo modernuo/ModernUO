@@ -16,8 +16,7 @@ namespace Server
 
 			int luck = killer.Luck;
 
-			PlayerMobile pmKiller = killer as PlayerMobile;
-			if ( pmKiller != null && pmKiller.SentHonorContext != null && pmKiller.SentHonorContext.Target == victim )
+			if ( killer is PlayerMobile pmKiller && pmKiller.SentHonorContext != null && pmKiller.SentHonorContext.Target == victim )
 				luck += pmKiller.SentHonorContext.PerfectionLuckBonus;
 
 			if ( luck < 0 )
@@ -661,21 +660,19 @@ namespace Server
 						if ( props > m_MaxProps )
 							props = m_MaxProps;
 
-						if ( item is BaseWeapon )
-							BaseRunicTool.ApplyAttributesTo( (BaseWeapon)item, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
-						else if ( item is BaseArmor )
-							BaseRunicTool.ApplyAttributesTo( (BaseArmor)item, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
-						else if ( item is BaseJewel )
-							BaseRunicTool.ApplyAttributesTo( (BaseJewel)item, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
-						else if ( item is BaseHat )
+						if ( item is BaseWeapon weapon )
+							BaseRunicTool.ApplyAttributesTo( weapon, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+						else if ( item is BaseArmor armor )
+							BaseRunicTool.ApplyAttributesTo( armor, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+						else if ( item is BaseJewel jewel )
+							BaseRunicTool.ApplyAttributesTo( jewel, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+						else
 							BaseRunicTool.ApplyAttributesTo( (BaseHat)item, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
 					}
 					else // not aos
 					{
-						if ( item is BaseWeapon )
+						if ( item is BaseWeapon weapon )
 						{
-							BaseWeapon weapon = (BaseWeapon)item;
-
 							if ( 80 > Utility.Random( 100 ) )
 								weapon.AccuracyLevel = (WeaponAccuracyLevel)GetRandomOldBonus();
 
@@ -691,10 +688,8 @@ namespace Server
 							if ( from != null && weapon.AccuracyLevel == 0 && weapon.DamageLevel == 0 && weapon.DurabilityLevel == 0 && weapon.Slayer == SlayerName.None && 5 > Utility.Random( 100 ) )
 								weapon.Slayer = SlayerGroup.GetLootSlayerType( from.GetType() );
 						}
-						else if ( item is BaseArmor )
+						else if ( item is BaseArmor armor )
 						{
-							BaseArmor armor = (BaseArmor)item;
-
 							if ( 80 > Utility.Random( 100 ) )
 								armor.ProtectionLevel = (ArmorProtectionLevel)GetRandomOldBonus();
 
@@ -703,7 +698,7 @@ namespace Server
 						}
 					}
 				}
-				else if ( item is BaseInstrument )
+				else if ( item is BaseInstrument instr )
 				{
 					SlayerName slayer = SlayerName.None;
 
@@ -714,11 +709,9 @@ namespace Server
 
 					if ( slayer == SlayerName.None )
 					{
-						item.Delete();
+						instr.Delete();
 						return null;
 					}
-
-					BaseInstrument instr = (BaseInstrument)item;
 
 					instr.Quality = InstrumentQuality.Regular;
 					instr.Slayer = slayer;
@@ -777,28 +770,23 @@ namespace Server
 
 			if ( rnd < p5 )
 				return 5;
-			else
-				rnd -= p5;
+
+			rnd -= p5;
 
 			if ( rnd < p4 )
 				return 4;
-			else
-				rnd -= p4;
+
+			rnd -= p4;
 
 			if ( rnd < p3 )
 				return 3;
-			else
-				rnd -= p3;
+
+			rnd -= p3;
 
 			if ( rnd < p2 )
 				return 2;
-			else
-				rnd -= p2;
 
-			if ( rnd < p1 )
-				return 1;
-
-			return 0;
+			return rnd - p2 < p1 ? 1 : 0;
 		}
 	}
 
@@ -861,13 +849,11 @@ namespace Server
 
 			if ( index == 0 && rnd < m_BlankTypes.Length )
 				return Loot.Construct( m_BlankTypes );
-			else if ( index == 0 )
+			if ( index == 0 )
 				rnd -= m_BlankTypes.Length;
 
 			if ( Core.AOS && rnd < m_NecroTypes.Length )
 				return Loot.Construct( m_NecroTypes[index] );
-			else if ( Core.AOS )
-				rnd -= m_NecroTypes[index].Length;
 
 			return Loot.RandomScroll( minCircle * 8, (maxCircle * 8) + 7, SpellbookType.Regular );
 		}
@@ -959,12 +945,12 @@ namespace Server
 
 			m_Count = Utility.ToInt32( str.Substring( start, index-start ) );
 
-			bool negative;
-
 			start = index + 1;
 			index = str.IndexOf( '+', start );
 
-			if ( negative = (index < start) )
+			bool negative = index < start;
+
+			if ( negative )
 				index = str.IndexOf( '-', start );
 
 			if ( index < start )
