@@ -345,8 +345,7 @@ namespace Server.Mobiles
 
 		public static void StopMounting( Mobile mob )
 		{
-			if ( mob.Spell is EtherealSpell )
-				( (EtherealSpell)mob.Spell ).Stop();
+			(mob.Spell as EtherealSpell)?.Stop();
 		}
 
 		public void OnRiderDamaged( int amount, Mobile from, bool willKill )

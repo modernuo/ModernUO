@@ -3597,6 +3597,7 @@ namespace Server
 		{
 			if ( m_Deleted )
 				return;
+
 			if ( !World.OnDelete( this ) )
 				return;
 
@@ -3630,11 +3631,8 @@ namespace Server
 
 			m_Deleted = true;
 
-			if ( m_Map != null )
-			{
-				m_Map.OnLeave( this );
-				m_Map = null;
-			}
+			m_Map?.OnLeave( this );
+			m_Map = null;
 
 			m_Hair = null;
 			m_FacialHair = null;
@@ -3652,11 +3650,8 @@ namespace Server
 		/// </summary>
 		public virtual void OnDelete()
 		{
-			if ( m_Spawner != null )
-			{
-				m_Spawner.Remove( this );
-				m_Spawner = null;
-			}
+			m_Spawner?.Remove( this );
+			m_Spawner = null;
 		}
 
 		/// <summary>

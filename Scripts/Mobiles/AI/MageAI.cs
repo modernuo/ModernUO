@@ -920,7 +920,7 @@ namespace Server.Mobiles
 
 		public bool CanDispel( Mobile m )
 		{
-			return ( m is BaseCreature && ( (BaseCreature)m ).Summoned && m_Mobile.CanBeHarmful( m, false ) && !( (BaseCreature)m ).IsAnimatedDead );
+			return ( m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful( creature, false ) && !creature.IsAnimatedDead );
 		}
 
 		private static int[] m_Offsets = new int[]

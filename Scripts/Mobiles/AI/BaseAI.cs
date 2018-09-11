@@ -250,12 +250,12 @@ namespace Server.Mobiles
 
 			if (!isOwner && !isFriend)
 				return;
-			else if (isFriend && order != OrderType.Follow && order != OrderType.Stay && order != OrderType.Stop)
+			if (isFriend && order != OrderType.Follow && order != OrderType.Stay && order != OrderType.Stop)
 				return;
 
 			if (order == OrderType.Attack)
 			{
-				if (target is BaseCreature && ((BaseCreature)target).IsScaryToPets && m_Mobile.IsScaredOfScaryThings)
+				if (target is BaseCreature creature && creature.IsScaryToPets && m_Mobile.IsScaredOfScaryThings)
 				{
 					m_Mobile.SayTo(from, "Your pet refuses to attack this creature!");
 					return;

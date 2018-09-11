@@ -59,9 +59,7 @@ namespace Server.Mobiles
 
 		public override void OnAfterDelete()
 		{
-			if ( m_InternalItem != null )
-				m_InternalItem.Delete();
-
+			m_InternalItem?.Delete();
 			m_InternalItem = null;
 
 			base.OnAfterDelete();
@@ -196,10 +194,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( m_InternalItem != null )
-					return m_InternalItem.ItemID;
-				else
-					return 0;
+				return m_InternalItem?.ItemID ?? 0;
 			}
 			set
 			{
@@ -242,8 +237,7 @@ namespace Server.Mobiles
 						Location = loc;
 						Map = map;
 
-						if ( m_InternalItem != null )
-							m_InternalItem.Internalize();
+						m_InternalItem?.Internalize();
 					}
 					else
 					{
@@ -280,10 +274,9 @@ namespace Server.Mobiles
 		{
 			bool result = true;
 
-			if ((mob is PlayerMobile) && (mob as PlayerMobile).MountBlockReason != BlockMountType.None)
+			if ((mob is PlayerMobile mobile) && mobile.MountBlockReason != BlockMountType.None)
 			{
-				mob.SendLocalizedMessage((int)(mob as PlayerMobile).MountBlockReason);
-
+				mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
 				result = false;
 			}
 
@@ -333,9 +326,7 @@ namespace Server.Mobiles
 
 		public override void OnAfterDelete()
 		{
-			if ( m_Mount != null )
-				m_Mount.Delete();
-
+			m_Mount?.Delete();
 			m_Mount = null;
 
 			base.OnAfterDelete();

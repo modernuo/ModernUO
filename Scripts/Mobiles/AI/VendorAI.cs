@@ -61,7 +61,7 @@ namespace Server.Mobiles
 				m_Mobile.Say( Utility.RandomList( 1005305, 501603 ) );
 
 				Action = ActionType.Flee;
-				
+
 				return true;
 			}
 
@@ -88,7 +88,7 @@ namespace Server.Mobiles
 
 					m_Mobile.FocusMob = null;
 
-					Action = ActionType.Wander;	
+					Action = ActionType.Wander;
 				}
 			}
 
@@ -109,28 +109,28 @@ namespace Server.Mobiles
 			return base.HandlesOnSpeech( from );
 		}
 
-		// Temporary 
+		// Temporary
 		public override void OnSpeech( SpeechEventArgs e )
 		{
 			base.OnSpeech( e );
- 
+
 			Mobile from = e.Mobile;
- 
-			if ( m_Mobile is BaseVendor && from.InRange( m_Mobile, Core.AOS ? 1 : 4 ) && !e.Handled )
+
+			if ( m_Mobile is BaseVendor vendor && from.InRange( m_Mobile, Core.AOS ? 1 : 4 ) && !e.Handled )
 			{
 				if ( e.HasKeyword( 0x14D ) ) // *vendor sell*
 				{
 					e.Handled = true;
 
-					((BaseVendor)m_Mobile).VendorSell( from );
-					m_Mobile.FocusMob = from;
+					vendor.VendorSell( from );
+					vendor.FocusMob = from;
 				}
 				else if ( e.HasKeyword( 0x3C ) ) // *vendor buy*
 				{
 					e.Handled = true;
 
-					((BaseVendor)m_Mobile).VendorBuy( from );
-					m_Mobile.FocusMob = from;
+					vendor.VendorBuy( from );
+					vendor.FocusMob = from;
 				}
 				else if ( WasNamed( e.Speech ) )
 				{
@@ -138,16 +138,16 @@ namespace Server.Mobiles
 					{
 						e.Handled = true;
 
-						((BaseVendor)m_Mobile).VendorSell( from );
+						vendor.VendorSell( from );
 					}
 					else if ( e.HasKeyword( 0x171 ) ) // *buy*
 					{
 						e.Handled = true;
 
-						((BaseVendor)m_Mobile).VendorBuy( from );
+						vendor.VendorBuy( from );
 					}
 
-					m_Mobile.FocusMob = from;
+					vendor.FocusMob = from;
 				}
 			}
 		}
