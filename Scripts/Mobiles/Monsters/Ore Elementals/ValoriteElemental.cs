@@ -66,10 +66,8 @@ namespace Server.Mobiles
 
 		public override void AlterMeleeDamageFrom( Mobile from, ref int damage )
 		{
-			if ( from is BaseCreature )
+			if ( @from is BaseCreature bc )
 			{
-				BaseCreature bc = (BaseCreature)from;
-
 				if ( bc.Controlled || bc.BardTarget == this )
 					damage = 0; // Immune to pets and provoked creatures
 			}

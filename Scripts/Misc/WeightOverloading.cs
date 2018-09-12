@@ -96,7 +96,7 @@ namespace Server.Misc
 				return;
 			}
 
-			if ( @from is PlayerMobile pm )
+			if ( from is PlayerMobile pm )
 			{
 				int amt = ( pm.Mounted ? 48 : 16 );
 

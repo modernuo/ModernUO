@@ -249,7 +249,7 @@ namespace Server.Mobiles
 
 				Mobile target = m_Owner.Focus;
 
-				if ( target != null && (target.Deleted || !target.Alive || !m_Owner.CanBeHarmful( target )) )	
+				if ( target != null && (target.Deleted || !target.Alive || !m_Owner.CanBeHarmful( target )) )
 				{
 					m_Owner.Focus = null;
 					Stop();
@@ -274,8 +274,8 @@ namespace Server.Mobiles
 					TeleportTo( target );
 					target.BoltEffect( 0 );
 
-					if ( target is BaseCreature )
-						((BaseCreature)target).NoKillAwards = true;
+					if ( target is BaseCreature creature )
+						creature.NoKillAwards = true;
 
 					target.Damage( target.HitsMax, m_Owner );
 					target.Kill(); // just in case, maybe Damage is overridden on some shard

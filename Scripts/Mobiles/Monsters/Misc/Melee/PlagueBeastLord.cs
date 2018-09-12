@@ -29,9 +29,7 @@ namespace Server.Mobiles
 				{
 					for ( int i = 0; i < pack.Items.Count; i++ )
 					{
-						PlagueBeastBlood blood = pack.Items[ i ] as PlagueBeastBlood;
-
-						if ( blood != null && !blood.Patched )
+						if ( pack.Items[ i ] is PlagueBeastBlood blood && !blood.Patched )
 							return true;
 					}
 				}
@@ -107,7 +105,7 @@ namespace Server.Mobiles
 
 		public override void OnDelete()
 		{
-			if ( m_OpenedBy != null && m_OpenedBy.Holding is PlagueBeastInnard )
+			if ( m_OpenedBy?.Holding is PlagueBeastInnard )
 				m_OpenedBy.Holding.Delete();
 
 			if ( Backpack != null )

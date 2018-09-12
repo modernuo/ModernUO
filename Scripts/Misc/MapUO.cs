@@ -43,7 +43,7 @@ namespace Server.Misc
 		{
 			Mobile from = state.Mobile;
 
-			if ( @from.Guild is Guild guild )
+			if ( from.Guild is Guild guild )
 			{
 				bool locations = pvSrc.ReadByte() != 0;
 

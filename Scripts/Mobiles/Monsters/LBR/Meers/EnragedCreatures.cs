@@ -239,12 +239,7 @@ namespace Server.Mobiles
 
 			else if ( !Combat( SummonMaster ))
 			{
-				BaseCreature bc = null;
-				if ( Combatant is BaseCreature )
-				{
-					bc = (BaseCreature)Combatant;
-				}
-				if ( Combatant.Player || ( bc != null && ( bc.Controlled || bc.SummonMaster != null )))
+				if ( Combatant.Player || ( Combatant is BaseCreature bc && ( bc.Controlled || bc.SummonMaster != null )))
 				{
 					SummonMaster.Combatant = Combatant;
 				}
@@ -258,14 +253,9 @@ namespace Server.Mobiles
 		private bool Combat( Mobile mobile )
 		{
 			Mobile combatant = mobile.Combatant;
-			if ( combatant == null || combatant.Deleted )
-			{
+			if ( combatant == null || combatant.Deleted || combatant.IsDeadBondedPet || !combatant.Alive )
 				return false;
-			}
-			else if ( combatant.IsDeadBondedPet || !combatant.Alive )
-			{
-				return false;
-			}
+
 			return true;
 		}
 

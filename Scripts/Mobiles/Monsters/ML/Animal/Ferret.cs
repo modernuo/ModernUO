@@ -50,8 +50,8 @@ namespace Server.Mobiles
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if ( m is Ferret && m.InRange( this, 3 ) && m.Alive )
-				Talk( (Ferret) m );
+			if ( m is Ferret ferret && ferret.InRange( this, 3 ) && ferret.Alive )
+				Talk( ferret );
 		}
 
 		private static string[] m_Vocabulary = new string[]

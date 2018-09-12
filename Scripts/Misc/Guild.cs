@@ -651,7 +651,7 @@ namespace Server.Guilds
 
 				from.SendGump( new PropertiesGump( from, g ) );
 
-				if ( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && @from is PlayerMobile pm )
+				if ( NewGuildSystem && from.AccessLevel >= AccessLevel.GameMaster && from is PlayerMobile pm )
 					pm.SendGump( new GuildInfoGump( pm, g ) );
 			}
 		}

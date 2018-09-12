@@ -87,9 +87,7 @@ namespace Server.Mobiles
 
 		public override bool IsEnemy( Mobile m )
 		{
-			PlayerMobile player = m as PlayerMobile;
-
-			if ( player != null && Map == Map.Trammel && X >= 5199 && X <= 5271 && Y >= 1812 && Y <= 1865 ) // Schmendrick's cave
+			if ( m is PlayerMobile player && Map == Map.Trammel && X >= 5199 && X <= 5271 && Y >= 1812 && Y <= 1865 ) // Schmendrick's cave
 			{
 				QuestSystem qs = player.Quest;
 

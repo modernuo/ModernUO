@@ -225,7 +225,7 @@ namespace Server.Mobiles
 
 				from.Target = new AIControlMobileTarget(this, order);
 			}
-			else if (@from.Target is AIControlMobileTarget t)
+			else if (from.Target is AIControlMobileTarget t)
 			{
 				if (t.Order == order)
 					t.AddAI(this);
@@ -1321,7 +1321,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				bool youngFrom = @from is PlayerMobile mobile && mobile.Young;
+				bool youngFrom = from is PlayerMobile mobile && mobile.Young;
 				bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 
 				if (youngFrom && !youngTo)
@@ -1675,7 +1675,7 @@ namespace Server.Mobiles
 				if (from.Map != m_Creature.Map || !from.InRange(m_Creature, 14))
 					return false;
 
-				bool youngFrom = @from is PlayerMobile mobile && mobile.Young;
+				bool youngFrom = from is PlayerMobile mobile && mobile.Young;
 				bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 
 				if (accepted && youngFrom && !youngTo)
@@ -1769,7 +1769,7 @@ namespace Server.Mobiles
 			{
 				m_Mobile.DebugSay("Begin transfer with {0}", to.Name);
 
-				bool youngFrom = @from is PlayerMobile mobile && mobile.Young;
+				bool youngFrom = from is PlayerMobile mobile && mobile.Young;
 				bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 
 				if (youngFrom && !youngTo)

@@ -176,7 +176,7 @@ namespace Server
 
 				if ( reflectPhys != 0 )
 				{
-					if ( @from is ExodusMinion minion && minion.FieldActive || @from is ExodusOverseer overseer && overseer.FieldActive )
+					if ( from is ExodusMinion minion && minion.FieldActive || from is ExodusOverseer overseer && overseer.FieldActive )
 					{
 						from.FixedParticles( 0x376A, 20, 10, 0x2530, EffectLayer.Waist );
 						from.PlaySound( 0x2F4 );

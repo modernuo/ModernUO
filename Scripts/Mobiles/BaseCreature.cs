@@ -1471,7 +1471,7 @@ namespace Server.Mobiles
 			if ( speechType != null && !willKill )
 				speechType.OnDamage( this, amount );
 
-			m_ReceivedHonorContext?.OnTargetDamaged( @from, amount );
+			m_ReceivedHonorContext?.OnTargetDamaged( from, amount );
 
 			if ( !willKill )
 			{
@@ -1480,7 +1480,7 @@ namespace Server.Mobiles
 					CheckDistracted( from );
 				}
 			}
-			else if ( @from is PlayerMobile mobile )
+			else if ( from is PlayerMobile mobile )
 			{
 				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( mobile.RecoverAmmo ) );
 			}
@@ -2367,7 +2367,7 @@ namespace Server.Mobiles
 
 			// Note: Yes, this happens for all questers (regardless of type, e.g. escorts),
 			// even if they can't offer you anything at the moment
-			if ( MLQuestSystem.Enabled && CanGiveMLQuest && @from is PlayerMobile mobile )
+			if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile )
 			{
 				MLQuestSystem.Tell( this, mobile, 1074893 ); // You need to mark your quest items so I don't take the wrong object.  Then speak to me.
 				return false;
@@ -4370,7 +4370,7 @@ namespace Server.Mobiles
 			{
 				Container pack = this.Backpack;
 
-				pack?.DisplayTo( @from );
+				pack?.DisplayTo( from );
 			}
 
 			if ( this.DeathAdderCharmable && from.CanBeHarmful( this, false ) )
@@ -4382,7 +4382,7 @@ namespace Server.Mobiles
 				}
 			}
 
-			if ( MLQuestSystem.Enabled && CanGiveMLQuest && @from is PlayerMobile mobile )
+			if ( MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile )
 				MLQuestSystem.OnDoubleClick( this, mobile );
 
 			base.OnDoubleClick( from );
@@ -4402,7 +4402,7 @@ namespace Server.Mobiles
 				if ( !m_Charmed.DeathAdderCharmable || m_Charmed.Combatant != null || !from.CanBeHarmful( m_Charmed, false ) )
 					return;
 
-				if ( !(SummonFamiliarSpell.Table[@from] is DeathAdder da) || da.Deleted )
+				if ( !(SummonFamiliarSpell.Table[from] is DeathAdder da) || da.Deleted )
 					return;
 
 				if ( !(targeted is Mobile targ) || !from.CanBeHarmful( targ, false ) )

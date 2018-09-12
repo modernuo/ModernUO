@@ -70,7 +70,7 @@ namespace Server.Misc
 			PlayerMobile pmFrom = from as PlayerMobile;
 			PlayerMobile pmTarg = target as PlayerMobile;
 
-			if ( pmFrom == null && @from is BaseCreature bcFrom )
+			if ( pmFrom == null && from is BaseCreature bcFrom )
 			{
 				if ( bcFrom.Summoned )
 					pmFrom = bcFrom.SummonMaster as PlayerMobile;
@@ -103,7 +103,7 @@ namespace Server.Misc
 			if ( (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started) || (pmTarg?.DuelContext != null && pmTarg.DuelContext.Started) )
 				return false;
 
-			if ( @from.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
+			if ( from.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
 				return false;
 
 			sz = target.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) as Engines.ConPVP.SafeZone;
@@ -137,7 +137,7 @@ namespace Server.Misc
 			if ( pmFrom?.Young == true || pmTarg?.Young == true )
 				return false; // Young players cannot perform beneficial actions towards older players
 
-			if ( @from.Guild is Guild fromGuild && target.Guild is Guild targetGuild && (targetGuild == fromGuild || fromGuild.IsAlly( targetGuild )) )
+			if ( from.Guild is Guild fromGuild && target.Guild is Guild targetGuild && (targetGuild == fromGuild || fromGuild.IsAlly( targetGuild )) )
 				return true; // Guild members can be beneficial
 
 			return CheckBeneficialStatus( GetGuildStatus( from ), GetGuildStatus( target ) );
@@ -153,7 +153,7 @@ namespace Server.Misc
 			PlayerMobile pmTarg = target as PlayerMobile;
 			BaseCreature bcTarg = target as BaseCreature;
 
-			if ( pmFrom == null && @from is BaseCreature bcFrom && bcFrom.Summoned )
+			if ( pmFrom == null && from is BaseCreature bcFrom && bcFrom.Summoned )
 				pmFrom = bcFrom.SummonMaster as PlayerMobile;
 
 			if ( pmTarg == null && bcTarg?.Summoned == true )
@@ -177,7 +177,7 @@ namespace Server.Misc
 			if ( (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started) || (pmTarg?.DuelContext != null && pmTarg.DuelContext.Started) )
 				return false;
 
-			if ( @from.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
+			if ( from.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
 				return false;
 
 			sz = target.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) as Engines.ConPVP.SafeZone;
@@ -191,7 +191,7 @@ namespace Server.Misc
 			if ( map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0 )
 				return true; // In felucca, anything goes
 
-			if ( !from.Player && !(@from is BaseCreature bc && bc.GetMaster() != null && bc.GetMaster().AccessLevel == AccessLevel.Player ) )
+			if ( !from.Player && !(from is BaseCreature bc && bc.GetMaster() != null && bc.GetMaster().AccessLevel == AccessLevel.Player ) )
 			{
 				if ( !CheckAggressor( from.Aggressors, target ) && !CheckAggressed( from.Aggressed, target ) && pmTarg?.CheckYoungProtection( from ) == true )
 					return false;

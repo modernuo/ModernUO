@@ -140,11 +140,9 @@ namespace Server.Mobiles
 				if (!Flying)
 				{
 					// No message?
-					if (Spell is FlySpell)
-					{
-						FlySpell spell = (FlySpell)Spell;
+					if (Spell is FlySpell spell)
 						spell.Stop();
-					}
+
 					new FlySpell(this).Cast();
 				}
 				else
@@ -629,11 +627,9 @@ namespace Server.Mobiles
 				{
 					object[] objs = type.GetCustomAttributes( typeof( FlippableAttribute ), true );
 
-					if ( objs != null && objs.Length > 0 )
+					if ( objs.Length > 0 )
 					{
-						FlippableAttribute fp = objs[0] as FlippableAttribute;
-
-						if ( fp != null )
+						if ( objs[0] is FlippableAttribute fp )
 						{
 							int[] itemIDs = fp.ItemIDs;
 
@@ -732,11 +728,9 @@ namespace Server.Mobiles
 		{
 			foreach( Mobile m in World.Mobiles.Values )
 			{
-				if ( m is PlayerMobile )
+				if ( m is PlayerMobile pm )
 				{
-					PlayerMobile pm = (PlayerMobile)m;
-
-					if ((( !pm.Mounted || ( pm.Mount != null && pm.Mount is EtherealMount )) && ( pm.AllFollowers.Count > pm.AutoStabled.Count )) ||
+					if ((( !pm.Mounted || ( pm.Mount is EtherealMount )) && ( pm.AllFollowers.Count > pm.AutoStabled.Count )) ||
 						( pm.Mounted && ( pm.AllFollowers.Count  > ( pm.AutoStabled.Count +1 ))))
 					{
 						pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
@@ -915,9 +909,7 @@ namespace Server.Mobiles
 			{
 				string notice;
 
-				Accounting.Account acct = from.Account as Accounting.Account;
-
-				if ( acct == null || !acct.HasAccess( from.NetState ) )
+				if ( !(@from.Account is Account acct) || !acct.HasAccess( from.NetState ) )
 				{
 					if ( from.AccessLevel == AccessLevel.Player )
 						notice = "The server is currently under lockdown. No players are allowed to log in at this time.";
@@ -939,8 +931,8 @@ namespace Server.Mobiles
 				return;
 			}
 
-			if ( from is PlayerMobile )
-				((PlayerMobile)from).ClaimAutoStabledPets();
+			if ( @from is PlayerMobile mobile )
+				mobile.ClaimAutoStabledPets();
 		}
 
 		private bool m_NoDeltaRecursion;
@@ -1021,10 +1013,8 @@ namespace Server.Mobiles
 					}
 					#endregion
 
-					if ( item is BaseWeapon )
+					if ( item is BaseWeapon weapon )
 					{
-						BaseWeapon weapon = (BaseWeapon)item;
-
 						bool drop = false;
 
 						if ( dex < weapon.DexRequirement )
@@ -1048,10 +1038,8 @@ namespace Server.Mobiles
 							moved = true;
 						}
 					}
-					else if ( item is BaseArmor )
+					else if ( item is BaseArmor armor )
 					{
-						BaseArmor armor = (BaseArmor)item;
-
 						bool drop = false;
 
 						if ( !armor.AllowMaleWearer && !from.Female && from.AccessLevel < AccessLevel.GameMaster )
@@ -1096,10 +1084,8 @@ namespace Server.Mobiles
 							moved = true;
 						}
 					}
-					else if ( item is BaseClothing )
+					else if ( item is BaseClothing clothing )
 					{
-						BaseClothing clothing = (BaseClothing)item;
-
 						bool drop = false;
 
 						if ( !clothing.AllowMaleWearer && !from.Female && from.AccessLevel < AccessLevel.GameMaster )

@@ -89,10 +89,8 @@ namespace Server.Mobiles
 				{
 					m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 30 ) );
 
-					if ( combatant is BaseCreature )
+					if ( combatant is BaseCreature bc )
 					{
-						BaseCreature bc = (BaseCreature)combatant;
-
 						if ( bc.Controlled && bc.ControlMaster != null && !bc.ControlMaster.Deleted && bc.ControlMaster.Alive )
 						{
 							if ( bc.ControlMaster.Map == this.Map && bc.ControlMaster.InRange( this, 12 ) && !UnderEffect( bc.ControlMaster ) )
@@ -109,8 +107,6 @@ namespace Server.Mobiles
 							new int[]{-4,-6}, new int[]{4,-6}, new int[]{0,-8}, new int[]{-5,5}, new int[]{5,5}
 						};
 
-						BaseCreature rabid;
-
 						for( int i=0; i<5; i++ )
 						{
 							int x = combatant.X + coord[i][0];
@@ -121,6 +117,7 @@ namespace Server.Mobiles
 							if ( !combatant.Map.CanSpawnMobile( loc ) )
 								continue;
 
+							BaseCreature rabid;
 							switch ( i )
 							{
 								case 0: rabid = new EnragedRabbit( this ); break;
@@ -155,9 +152,7 @@ namespace Server.Mobiles
 
 		public static void StopEffect( Mobile m, bool message )
 		{
-			Timer t = (Timer)m_Table[m];
-
-			if ( t != null )
+			if ( m_Table[m] is Timer t )
 			{
 				if ( message )
 					m.PublicOverheadMessage( Network.MessageType.Emote, m.SpeechHue, true, "* The open flame begins to scatter the swarm of insects *" );
@@ -180,9 +175,7 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				Torch torch = m.FindItemOnLayer( Layer.TwoHanded ) as Torch;
-
-				if ( torch != null && torch.Burning )
+				if ( m.FindItemOnLayer( Layer.TwoHanded ) is Torch torch && torch.Burning )
 				{
 					StopEffect( m, true );
 				}

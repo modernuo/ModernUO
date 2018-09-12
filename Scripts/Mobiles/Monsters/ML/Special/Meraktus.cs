@@ -178,7 +178,7 @@ namespace Server.Mobiles
 			{
 				if (m == this || !CanBeHarmful(m))
 					continue;
-				if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != this.Team))
+				if (m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != this.Team))
 					targets.Add(m);
 				else if (m.Player)
 					targets.Add(m);
@@ -187,15 +187,14 @@ namespace Server.Mobiles
 			for (int i = 0; i < targets.Count; ++i)
 			{
 				Mobile m = (Mobile)targets[i];
-				if ( m != null && !m.Deleted && m is PlayerMobile )
+				if ( m != null && !m.Deleted && m is PlayerMobile pm )
 				{
-					PlayerMobile pm = m as PlayerMobile;
-					if (pm != null && pm.Mounted)
+					if (pm.Mounted)
 					{
-						pm.Mount.Rider=null;
+						pm.Mount.Rider = null;
 					}
 				}
-				double damage = m.Hits * 0.6;//was .6
+				double damage = m.Hits * 0.6; //was .6
 				if (damage < 10.0)
 					damage = 10.0;
 				else if (damage > 75.0)

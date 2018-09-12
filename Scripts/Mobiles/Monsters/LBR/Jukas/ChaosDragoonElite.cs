@@ -172,8 +172,8 @@ namespace Server.Mobiles
 
 			if ( mount != null )
 			{
-				if ( mount is SwampDragon )
-					((SwampDragon)mount).HasBarding = false;
+				if ( mount is SwampDragon dragon )
+					dragon.HasBarding = false;
 
 				mount.Rider = null;
 			}

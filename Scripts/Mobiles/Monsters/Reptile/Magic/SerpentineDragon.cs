@@ -99,16 +99,11 @@ namespace Server.Mobiles
 		{
 			base.OnGotMeleeAttack( attacker );
 
-			if ( !Core.SE && 0.2 > Utility.RandomDouble() && attacker is BaseCreature )
+			if ( !Core.SE && 0.2 > Utility.RandomDouble() && attacker is BaseCreature c && c.Controlled && c.ControlMaster != null )
 			{
-				BaseCreature c = (BaseCreature)attacker;
-
-				if ( c.Controlled && c.ControlMaster != null )
-				{
-					c.ControlTarget = c.ControlMaster;
-					c.ControlOrder = OrderType.Attack;
-					c.Combatant = c.ControlMaster;
-				}
+				c.ControlTarget = c.ControlMaster;
+				c.ControlOrder = OrderType.Attack;
+				c.Combatant = c.ControlMaster;
 			}
 		}
 

@@ -289,8 +289,8 @@ namespace Server.Mobiles
 					TeleportTo( target );
 					target.BoltEffect( 0 );
 
-					if ( target is BaseCreature )
-						((BaseCreature)target).NoKillAwards = true;
+					if ( target is BaseCreature creature )
+						creature.NoKillAwards = true;
 
 					target.Damage( target.HitsMax, m_Owner );
 					target.Kill(); // just in case, maybe Damage is overridden on some shard

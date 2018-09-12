@@ -70,9 +70,7 @@ namespace Server.Mobiles
 			if ( target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
 				return;
 
-			PlayerMobile p = target as PlayerMobile;
-
-			if ( p != null && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful( p ) )
+			if ( target is PlayerMobile p && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful( p ) )
 			{
 				p.PeacedUntil = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
 				p.SendLocalizedMessage( 500616 ); // You hear lovely music, and forget to continue battling!
@@ -121,12 +119,10 @@ namespace Server.Mobiles
 
 		public static void SuppressRemove( Mobile target )
 		{
-			if ( target != null && m_Suppressed.ContainsKey( target ) )
+			if ( target != null && m_Suppressed[target] is Timer t )
 			{
-				Timer timer = m_Suppressed[ target ];
-
-				if ( timer != null || timer.Running )
-					timer.Stop();
+				if ( t.Running )
+					t.Stop();
 
 				m_Suppressed.Remove( target );
 			}
@@ -196,10 +192,8 @@ namespace Server.Mobiles
 
 			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
 			{
-				if ( m is BaseCreature )
+				if ( m is BaseCreature c )
 				{
-					BaseCreature c = (BaseCreature) m;
-
 					if ( c == this || c == target || c.Unprovokable || c.IsParagon ||  c.BardProvoked || c.AccessLevel != AccessLevel.Player || !c.CanBeHarmful( target ) )
 						continue;
 

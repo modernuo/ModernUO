@@ -114,8 +114,7 @@ namespace Server.Mobiles
 				this.PlaySound( 0xEE );
 				defender.LocalOverheadMessage( MessageType.Regular, 0x3B2, false, "You have been stunned by a colossal blow!" );
 
-				BaseWeapon weapon = this.Weapon as BaseWeapon;
-				if ( weapon != null )
+				if ( this.Weapon is BaseWeapon weapon )
 					weapon.OnHit( this, defender );
 
 				if ( defender.Alive )
@@ -128,9 +127,7 @@ namespace Server.Mobiles
 
 		private void Recover_Callback( object state )
 		{
-			Mobile defender = state as Mobile;
-
-			if ( defender != null )
+			if ( state is Mobile defender )
 			{
 				defender.Frozen = false;
 				defender.Combatant = null;
