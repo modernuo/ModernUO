@@ -49,7 +49,7 @@ namespace Server.Engines.Chat
 				{
 					newValue = value.Trim();
 
-					if ( String.IsNullOrEmpty( newValue ) )
+					if ( string.IsNullOrEmpty( newValue ) )
 						newValue = null;
 				}
 

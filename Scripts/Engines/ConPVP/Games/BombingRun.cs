@@ -1581,7 +1581,7 @@ namespace Server.Engines.ConPVP
 
 		public void Alert( string format, params object[] args )
 		{
-			Alert( String.Format( format, args ) );
+			Alert( string.Format( format, args ) );
 		}
 
 		public BRGame( BRController controller, DuelContext context ) : base( context )

@@ -95,13 +95,13 @@ namespace Server.Engines.Doom
 
 	public class LeverPuzzleLever : Item
 	{
-		private UInt16 m_Code;
+		private ushort m_Code;
 		private LeverPuzzleController m_Controller;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public UInt16 Code => m_Code;
+		public ushort Code => m_Code;
 
-		public LeverPuzzleLever( UInt16 code, LeverPuzzleController controller ) : base( 0x108E )
+		public LeverPuzzleLever( ushort code, LeverPuzzleController controller ) : base( 0x108E )
 		{
 			m_Controller=controller;
 			m_Code = code;

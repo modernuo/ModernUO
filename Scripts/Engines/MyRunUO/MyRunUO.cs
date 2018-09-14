@@ -293,7 +293,7 @@ namespace Server.Engines.MyRunUO
 
 		public void ExecuteNonQuery( string format, params string[] args )
 		{
-			ExecuteNonQuery( String.Format( format, args ) );
+			ExecuteNonQuery( string.Format( format, args ) );
 		}
 
 		public void ExecuteNonQueryIfNull( string select, string insert )
@@ -638,7 +638,7 @@ namespace Server.Engines.MyRunUO
 				string theirId = them.Id.ToString();
 
 				ExecuteNonQueryIfNull(
-					String.Format( "SELECT guild_1 FROM myrunuo_guilds_wars WHERE (guild_1={0} AND guild_2={1}) OR (guild_1={1} AND guild_2={0})", ourId, theirId ),
+					string.Format( "SELECT guild_1 FROM myrunuo_guilds_wars WHERE (guild_1={0} AND guild_2={1}) OR (guild_1={1} AND guild_2={0})", ourId, theirId ),
 					$"INSERT INTO myrunuo_guilds_wars (guild_1, guild_2) VALUES ({ourId}, {theirId})");
 			}
 		}

@@ -100,12 +100,12 @@ namespace Server.Factions
 
 		public void Broadcast( string format, params object[] args )
 		{
-			Broadcast( String.Format( format, args ) );
+			Broadcast( string.Format( format, args ) );
 		}
 
 		public void Broadcast( int hue, string format, params object[] args )
 		{
-			Broadcast( hue, String.Format( format, args ) );
+			Broadcast( hue, string.Format( format, args ) );
 		}
 
 		public void BeginBroadcast( Mobile from )

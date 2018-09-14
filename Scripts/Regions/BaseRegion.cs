@@ -224,7 +224,7 @@ namespace Server.Regions
 			}
 		}
 
-		private static List<Int32> m_SpawnBuffer1 = new List<Int32>();
+		private static List<int> m_SpawnBuffer1 = new List<int>();
 		private static List<Item>  m_SpawnBuffer2 = new List<Item>();
 
 		public Point3D RandomSpawnLocation( int spawnHeight, bool land, bool water, Point3D home, int range )

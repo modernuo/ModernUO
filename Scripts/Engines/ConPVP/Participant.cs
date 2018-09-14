@@ -51,7 +51,7 @@ namespace Server.Engines.ConPVP
 						m_Players[i].Mobile.SendMessage( hue, message );
 
 					if ( nonLocalOverhead != null )
-						m_Players[i].Mobile.NonlocalOverheadMessage( Network.MessageType.Regular, hue, false, String.Format( nonLocalOverhead, m_Players[i].Mobile.Name, m_Players[i].Mobile.Female ? "her" : "his" ) );
+						m_Players[i].Mobile.NonlocalOverheadMessage( Network.MessageType.Regular, hue, false, string.Format( nonLocalOverhead, m_Players[i].Mobile.Name, m_Players[i].Mobile.Female ? "her" : "his" ) );
 
 					if ( localOverhead != null )
 						m_Players[i].Mobile.LocalOverheadMessage( Network.MessageType.Regular, hue, false, localOverhead );

@@ -83,7 +83,7 @@ namespace Server.Engines.Reports
 				- GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow );
 
 			if ( v == 0 )
-				v = String.Compare( Display, cmp.Display );
+				v = string.Compare( Display, cmp.Display );
 
 			return v;
 		}

@@ -153,7 +153,7 @@ namespace Server.Mobiles
 			from.SendMessage( "Duration set to: {0}", ts );
 			from.SendMessage( "Enter the first line to shout:" );
 
-			from.Prompt = new TownCrierLinesPrompt( m_Owner, null, new List<String>(), ts );
+			from.Prompt = new TownCrierLinesPrompt( m_Owner, null, new List<string>(), ts );
 		}
 
 		public override void OnCancel( Mobile from )
@@ -167,10 +167,10 @@ namespace Server.Mobiles
 	{
 		private ITownCrierEntryList m_Owner;
 		private TownCrierEntry m_Entry;
-		private List<String> m_Lines;
+		private List<string> m_Lines;
 		private TimeSpan m_Duration;
 
-		public TownCrierLinesPrompt( ITownCrierEntryList owner, TownCrierEntry entry, List<String> lines, TimeSpan duration )
+		public TownCrierLinesPrompt( ITownCrierEntryList owner, TownCrierEntry entry, List<string> lines, TimeSpan duration )
 		{
 			m_Owner = owner;
 			m_Entry = entry;
@@ -235,7 +235,7 @@ namespace Server.Mobiles
 
 					m_From.SendMessage( "Editing entry #{0}.", index + 1 );
 					m_From.SendMessage( "Enter the first line to shout:" );
-					m_From.Prompt = new TownCrierLinesPrompt( m_Owner, tce, new List<String>(), ts );
+					m_From.Prompt = new TownCrierLinesPrompt( m_Owner, tce, new List<string>(), ts );
 				}
 			}
 		}

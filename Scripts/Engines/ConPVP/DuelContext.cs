@@ -1180,7 +1180,7 @@ namespace Server.Engines.ConPVP
 				string text =
 					$"{{0}} are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
 
-				pm.PrivateOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, from==pm?"You":"They" ), from.NetState );
+				pm.PrivateOverheadMessage( MessageType.Regular, pm.SpeechHue, true, string.Format( text, from==pm?"You":"They" ), from.NetState );
 			}
 			else if ( obj is Mobile mob )
 			{
@@ -1272,8 +1272,8 @@ namespace Server.Engines.ConPVP
 						string text =
 							$"{{0}} {{1}} ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
 
-						pm.LocalOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, "You", "are" ) );
-						pm.NonlocalOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, pm.Name, "is" ) );
+						pm.LocalOverheadMessage( MessageType.Regular, pm.SpeechHue, true, string.Format( text, "You", "are" ) );
+						pm.NonlocalOverheadMessage( MessageType.Regular, pm.SpeechHue, true, string.Format( text, pm.Name, "is" ) );
 
 						//pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );
 						//pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );

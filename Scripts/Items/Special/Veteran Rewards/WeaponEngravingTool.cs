@@ -248,7 +248,7 @@ namespace Server.Items
 
 					if ( relay != null )
 					{
-						if ( String.IsNullOrEmpty( relay.Text ) )
+						if ( string.IsNullOrEmpty( relay.Text ) )
 						{
 							m_Target.EngravedText = null;
 							state.Mobile.SendLocalizedMessage( 1072362 ); // You remove the engraving from the object.

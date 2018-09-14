@@ -387,7 +387,7 @@ namespace Server.Commands
 
 			for ( index = 0; index < input.Length; ++index )
 			{
-				if ( Char.IsLetter( input, index ) )
+				if ( char.IsLetter( input, index ) )
 					break;
 			}
 

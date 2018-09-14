@@ -3081,7 +3081,7 @@ namespace Server.Mobiles
 
 		private static void SendToStaffMessage( Mobile from, string format, params object[] args )
 		{
-			SendToStaffMessage( from, String.Format( format, args ) );
+			SendToStaffMessage( from, string.Format( format, args ) );
 		}
 
 		public override void Damage( int amount, Mobile from )
@@ -3839,19 +3839,19 @@ namespace Server.Mobiles
 					Faction faction = pl.Faction;
 
 					if ( faction.Commander == this )
-						text = String.Concat( Female ? "(Commanding Lady of the " : "(Commanding Lord of the ", faction.Definition.FriendlyName, ")" );
+						text = string.Concat( Female ? "(Commanding Lady of the " : "(Commanding Lord of the ", faction.Definition.FriendlyName, ")" );
 					else if ( pl.Sheriff != null )
-						text = String.Concat( "(The Sheriff of ", pl.Sheriff.Definition.FriendlyName, ", ", faction.Definition.FriendlyName, ")" );
+						text = string.Concat( "(The Sheriff of ", pl.Sheriff.Definition.FriendlyName, ", ", faction.Definition.FriendlyName, ")" );
 					else if ( pl.Finance != null )
-						text = String.Concat( "(The Finance Minister of ", pl.Finance.Definition.FriendlyName, ", ", faction.Definition.FriendlyName, ")" );
+						text = string.Concat( "(The Finance Minister of ", pl.Finance.Definition.FriendlyName, ", ", faction.Definition.FriendlyName, ")" );
 					else
 					{
 						ascii = true;
 
 						if ( pl.MerchantTitle != MerchantTitle.None )
-							text = String.Concat( "(", MerchantTitles.GetInfo( pl.MerchantTitle ).Title.String, ", ", faction.Definition.FriendlyName, ")" );
+							text = string.Concat( "(", MerchantTitles.GetInfo( pl.MerchantTitle ).Title.String, ", ", faction.Definition.FriendlyName, ")" );
 						else
-							text = String.Concat( "(", pl.Rank.Title.String, ", ", faction.Definition.FriendlyName, ")" );
+							text = string.Concat( "(", pl.Rank.Title.String, ", ", faction.Definition.FriendlyName, ")" );
 					}
 
 					int hue = ( Faction.Find( from ) == faction ? 98 : 38 );
@@ -4341,7 +4341,7 @@ namespace Server.Mobiles
 				if ( suffix.Length == 0 )
 					suffix = "(Young)";
 				else
-					suffix = String.Concat( suffix, " (Young)" );
+					suffix = string.Concat( suffix, " (Young)" );
 			}
 
 			#region Ethics
@@ -4350,7 +4350,7 @@ namespace Server.Mobiles
 				if ( suffix.Length == 0 )
 					suffix = m_EthicPlayer.Ethic.Definition.Adjunct.String;
 				else
-					suffix = String.Concat( suffix, " ", m_EthicPlayer.Ethic.Definition.Adjunct.String );
+					suffix = string.Concat( suffix, " ", m_EthicPlayer.Ethic.Definition.Adjunct.String );
 			}
 			#endregion
 
@@ -4364,7 +4364,7 @@ namespace Server.Mobiles
 					if ( suffix.Length == 0 )
 						suffix = adjunct;
 					else
-						suffix = String.Concat( suffix, " ", adjunct );
+						suffix = string.Concat( suffix, " ", adjunct );
 				}
 			}
 

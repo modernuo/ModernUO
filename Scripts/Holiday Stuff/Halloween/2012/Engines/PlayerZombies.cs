@@ -140,7 +140,7 @@ namespace Server.Engines.Events
 	public class PlayerBones : BaseContainer
 	{
 		[Constructible]
-		public PlayerBones( String name )
+		public PlayerBones( string name )
 			: base( Utility.RandomMinMax( 0x0ECA, 0x0ED2 ) )
 		{
 			Name = $"{name}'s bones";

@@ -193,7 +193,7 @@ namespace Server.Spells
 
 		public static void ClearAllMoves( Mobile m )
 		{
-			foreach ( KeyValuePair<Int32, SpecialMove> kvp in SpellRegistry.SpecialMoves )
+			foreach ( KeyValuePair<int, SpecialMove> kvp in SpellRegistry.SpecialMoves )
 			{
 				int moveID = kvp.Key;
 

@@ -309,9 +309,9 @@ namespace Server.Commands
 			if ( value == null )
 				toString = "null";
 			else if ( IsNumeric( type ) )
-				toString = String.Format( "{0} (0x{0:X})", value );
+				toString = string.Format( "{0} (0x{0:X})", value );
 			else if ( IsChar( type ) )
-				toString = String.Format( "'{0}' ({1} [0x{1:X}])", value, (int) value );
+				toString = string.Format( "'{0}' ({1} [0x{1:X}])", value, (int) value );
 			else if ( IsString( type ) )
 				toString = ( (string) value == "null" ? @"@""null""" : $"\"{value}\"");
 			else if ( IsText( type ) )
@@ -332,7 +332,7 @@ namespace Server.Commands
 
 			concat[concat.Length-1] = toString;
 
-			return String.Concat( concat );
+			return string.Concat( concat );
 		}
 
 		public static string SetValue( Mobile from, object o, string name, string value )
@@ -362,14 +362,14 @@ namespace Server.Commands
 			return ( t == typeofType );
 		}
 
-		private static Type typeofChar = typeof( Char );
+		private static Type typeofChar = typeof( char );
 
 		private static bool IsChar( Type t )
 		{
 			return ( t == typeofChar );
 		}
 
-		private static Type typeofString = typeof( String );
+		private static Type typeofString = typeof( string );
 
 		private static bool IsString( Type t )
 		{
@@ -409,10 +409,10 @@ namespace Server.Commands
 		}
 
 		private static Type[] m_NumericTypes = {
-				typeof( Byte ), typeof( SByte ),
-				typeof( Int16 ), typeof( UInt16 ),
-				typeof( Int32 ), typeof( UInt32 ),
-				typeof( Int64 ), typeof( UInt64 )
+				typeof( byte ), typeof( sbyte ),
+				typeof( short ), typeof( ushort ),
+				typeof( int ), typeof( uint ),
+				typeof( long ), typeof( ulong )
 			};
 
 		private static bool IsNumeric( Type t )
@@ -495,7 +495,7 @@ namespace Server.Commands
 			}
 
 			if ( isSerial ) // mutate back
-				toSet = (Serial)((Int32)toSet);
+				toSet = (Serial)((int)toSet);
 
 			constructed = toSet;
 			return null;
@@ -598,7 +598,7 @@ namespace Server
 	public sealed class NotYetBoundException : BindingException
 	{
 		public NotYetBoundException( Property property )
-			: base( property, String.Format( "Property has not yet been bound." ) )
+			: base( property, string.Format( "Property has not yet been bound." ) )
 		{
 		}
 	}
@@ -606,7 +606,7 @@ namespace Server
 	public sealed class AlreadyBoundException : BindingException
 	{
 		public AlreadyBoundException( Property property )
-			: base( property, String.Format( "Property has already been bound." ) )
+			: base( property, string.Format( "Property has already been bound." ) )
 		{
 		}
 	}

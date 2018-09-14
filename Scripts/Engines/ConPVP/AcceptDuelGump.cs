@@ -65,11 +65,11 @@ namespace Server.Engines.ConPVP
 			else
 				fmt = "You have been challenged to a duel from {0}. Do you accept?";
 
-			AddHtml( 22-1, 50, 294, 40, Color( String.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
-			AddHtml( 22+1, 50, 294, 40, Color( String.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
-			AddHtml( 22, 50-1, 294, 40, Color( String.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
-			AddHtml( 22, 50+1, 294, 40, Color( String.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
-			AddHtml( 22, 50, 294, 40, Color( String.Format( fmt, challenger.Name ), 0xB0C868 ), false, false );
+			AddHtml( 22-1, 50, 294, 40, Color( string.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
+			AddHtml( 22+1, 50, 294, 40, Color( string.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
+			AddHtml( 22, 50-1, 294, 40, Color( string.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
+			AddHtml( 22, 50+1, 294, 40, Color( string.Format( fmt, challenger.Name ), BlackColor32 ), false, false );
+			AddHtml( 22, 50, 294, 40, Color( string.Format( fmt, challenger.Name ), 0xB0C868 ), false, false );
 
 			AddImageTiled( 32, 88, 264, 1, 9107 );
 			AddImageTiled( 42, 90, 264, 1, 9157 );

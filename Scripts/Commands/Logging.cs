@@ -64,7 +64,7 @@ namespace Server.Commands
 			if ( !m_Enabled )
 				return;
 
-			WriteLine( from, String.Format( format, args ) );
+			WriteLine( from, string.Format( format, args ) );
 		}
 
 		public static void WriteLine( Mobile from, string text )

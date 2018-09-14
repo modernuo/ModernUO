@@ -2323,7 +2323,7 @@ namespace Server.Gumps
 								break;
 
 							if ( rads.Count > 0 )
-								from.SendGump( new WarningGump( 1060635, 30720, String.Format( "You are about to <em><basefont color=red>permanently delete</basefont></em> {0} marked account{1}. Likewise, all characters on the account{1} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{1} will be demolished.<br><br>Do you wish to continue?", rads.Count, rads.Count == 1 ? "" : "s" ), 0xFFC000, 420, 280, new WarningGumpCallback( Marked_Callback ), new object[]{ false, list, rads, m_ListPage } ) );
+								from.SendGump( new WarningGump( 1060635, 30720, string.Format( "You are about to <em><basefont color=red>permanently delete</basefont></em> {0} marked account{1}. Likewise, all characters on the account{1} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{1} will be demolished.<br><br>Do you wish to continue?", rads.Count, rads.Count == 1 ? "" : "s" ), 0xFFC000, 420, 280, new WarningGumpCallback( Marked_Callback ), new object[]{ false, list, rads, m_ListPage } ) );
 							else
 								from.SendGump( new NoticeGump( 1060637, 30720, "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.", 0xFFC000, 420, 280, new NoticeGumpCallback( ResendGump_Callback ), new object[]{ list, rads, m_ListPage } ) );
 

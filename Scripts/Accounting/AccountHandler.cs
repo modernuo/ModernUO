@@ -223,15 +223,15 @@ namespace Server.Misc
 			return ( IPTable[ip] < MaxAccountsPerIP );
 		}
 
-		private static Dictionary<IPAddress, Int32> m_IPTable;
+		private static Dictionary<IPAddress, int> m_IPTable;
 
-		public static Dictionary<IPAddress, Int32> IPTable
+		public static Dictionary<IPAddress, int> IPTable
 		{
 			get
 			{
 				if ( m_IPTable == null )
 				{
-					m_IPTable = new Dictionary<IPAddress, Int32>();
+					m_IPTable = new Dictionary<IPAddress, int>();
 
 					foreach ( Account a in Accounts.GetAccounts() )
 						if ( a.LoginIPs.Length > 0 )

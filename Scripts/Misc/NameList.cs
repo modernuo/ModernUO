@@ -88,7 +88,7 @@ namespace Server
 			{
 				string type = element.GetAttribute( "type" );
 
-				if ( String.IsNullOrEmpty( type ) )
+				if ( string.IsNullOrEmpty( type ) )
 					continue;
 
 				try

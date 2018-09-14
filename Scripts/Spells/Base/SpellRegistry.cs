@@ -35,10 +35,10 @@ namespace Server.Spells
 			}
 		}
 
-		private static Dictionary<Type, Int32> m_IDsFromTypes = new Dictionary<Type, Int32>( m_Types.Length );
+		private static Dictionary<Type, int> m_IDsFromTypes = new Dictionary<Type, int>( m_Types.Length );
 
-		private static Dictionary<Int32, SpecialMove> m_SpecialMoves = new Dictionary<Int32, SpecialMove>();
-		public static Dictionary<Int32, SpecialMove> SpecialMoves  => m_SpecialMoves;
+		private static Dictionary<int, SpecialMove> m_SpecialMoves = new Dictionary<int, SpecialMove>();
+		public static Dictionary<int, SpecialMove> SpecialMoves  => m_SpecialMoves;
 
 		public static int GetRegistryNumber( ISpell s )
 		{

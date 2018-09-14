@@ -372,10 +372,10 @@ namespace Server.Engines.MLQuests
 
 				foreach ( Item rewardItem in rewards )
 				{
-					string rewardName = ( rewardItem.Name != null ) ? rewardItem.Name : String.Concat( "#", rewardItem.LabelNumber );
+					string rewardName = ( rewardItem.Name != null ) ? rewardItem.Name : string.Concat( "#", rewardItem.LabelNumber );
 
 					if ( rewardItem.Stackable )
-						m_Player.SendLocalizedMessage( 1115917, String.Concat( rewardItem.Amount, "\t", rewardName ) ); // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
+						m_Player.SendLocalizedMessage( 1115917, string.Concat( rewardItem.Amount, "\t", rewardName ) ); // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
 					else
 						m_Player.SendLocalizedMessage( 1074360, rewardName ); // You receive a reward: ~1_REWARD~
 				}

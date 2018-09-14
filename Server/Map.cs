@@ -338,7 +338,7 @@ namespace Server
 
 		public static Map Parse(string value)
 		{
-			if (String.IsNullOrWhiteSpace(value))
+			if (string.IsNullOrWhiteSpace(value))
 			{
 				return null;
 			}
@@ -348,7 +348,7 @@ namespace Server
 				return Internal;
 			}
 
-			if (!Int32.TryParse(value, out int index))
+			if (!int.TryParse(value, out int index))
 			{
 				return m_Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
 			}

@@ -663,7 +663,7 @@ namespace Server.Engines.Craft
 
 							if ( res.MessageNumber > 0 )
 								message = res.MessageNumber;
-							else if ( !String.IsNullOrEmpty( res.MessageString ) )
+							else if ( !string.IsNullOrEmpty( res.MessageString ) )
 								message = res.MessageString;
 							else
 								message = 502925; // You don't have the resources required to make that item.
@@ -791,7 +791,7 @@ namespace Server.Engines.Craft
 
 				if ( res.MessageNumber > 0 )
 					message = res.MessageNumber;
-				else if ( res.MessageString != null && res.MessageString != String.Empty )
+				else if ( res.MessageString != null && res.MessageString != string.Empty )
 					message = res.MessageString;
 				else
 					message = 502925; // You don't have the resources required to make that item.

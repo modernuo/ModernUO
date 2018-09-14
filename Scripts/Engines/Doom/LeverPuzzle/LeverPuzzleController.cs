@@ -17,8 +17,8 @@ namespace Server.Engines.Doom
 		private bool m_Enabled;
 		private static bool installed;
 
-		private UInt16 m_MyKey;
-		private UInt16 m_TheirKey;
+		private ushort m_MyKey;
+		private ushort m_TheirKey;
 
 		private List<Item> m_Levers;
 		private List<Item> m_Teles;
@@ -58,12 +58,12 @@ namespace Server.Engines.Doom
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public UInt16 MyKey { get => m_MyKey;
+		public ushort MyKey { get => m_MyKey;
 			set => m_MyKey = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public UInt16 TheirKey { get => m_TheirKey;
+		public ushort TheirKey { get => m_TheirKey;
 			set => m_TheirKey = value;
 		}
 
@@ -262,7 +262,7 @@ namespace Server.Engines.Doom
 			m_Successful=null;
 		}
 
-		public virtual void LeverPulled( UInt16 code )
+		public virtual void LeverPulled( ushort code )
 		{
 			int Correct=0;
 			Mobile m_Player;
@@ -326,7 +326,7 @@ namespace Server.Engines.Doom
 
 		public virtual void GenKey() /* Shuffle & build key */
 		{
-			UInt16 tmp; int n, i; ushort[] CA = { 1,2,4,8 };
+			ushort tmp; int n, i; ushort[] CA = { 1,2,4,8 };
 			for (i=0; i<4; i++)
 			{
 				n=(((n = Utility.Random(0,3))==i) ? n&~i : n ); /* if (i==n) { return pointless; } */

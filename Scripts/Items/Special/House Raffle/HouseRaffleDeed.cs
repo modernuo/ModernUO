@@ -176,7 +176,7 @@ namespace Server.Items
 			private static string FormatDescription( HouseRaffleDeed deed )
 			{
 				if ( deed == null )
-					return String.Empty;
+					return string.Empty;
 
 				if ( deed.IsExpired )
 				{

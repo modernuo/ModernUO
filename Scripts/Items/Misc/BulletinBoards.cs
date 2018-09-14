@@ -539,7 +539,7 @@ namespace Server.Items
 		public string SafeString( string v )
 		{
 			if ( v == null )
-				return String.Empty;
+				return string.Empty;
 
 			return v;
 		}
@@ -618,7 +618,7 @@ namespace Server.Items
 		public string SafeString( string v )
 		{
 			if ( v == null )
-				return String.Empty;
+				return string.Empty;
 
 			return v;
 		}

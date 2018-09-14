@@ -157,7 +157,7 @@ namespace Server.Items
 					1041361,
 					"",
 					AffixType.Append,
-					String.Concat(" ", m_Worth.ToString()),
+					string.Concat(" ", m_Worth.ToString()),
 					"")); // A bank check:
 		}
 

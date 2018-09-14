@@ -1277,7 +1277,7 @@ namespace Server
 
 		public void LabelTo( Mobile to, string format, params object[] args )
 		{
-			LabelTo( to, String.Format( format, args ) );
+			LabelTo( to, string.Format( format, args ) );
 		}
 
 		public void LabelToAffix( Mobile to, int number, AffixType type, string affix )

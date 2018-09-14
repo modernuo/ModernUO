@@ -686,10 +686,10 @@ namespace Server.Commands
 		}
 
 		private static Type[] m_SignedNumerics = {
-				typeof( Int64 ),
-				typeof( Int32 ),
-				typeof( Int16 ),
-				typeof( SByte )
+				typeof( long ),
+				typeof( int ),
+				typeof( short ),
+				typeof( sbyte )
 			};
 
 		public static bool IsSignedNumeric( Type type )
@@ -702,10 +702,10 @@ namespace Server.Commands
 		}
 
 		private static Type[] m_UnsignedNumerics = {
-				typeof( UInt64 ),
-				typeof( UInt32 ),
-				typeof( UInt16 ),
-				typeof( Byte )
+				typeof( ulong ),
+				typeof( uint ),
+				typeof( ushort ),
+				typeof( byte )
 			};
 
 		public static bool IsUnsignedNumeric( Type type )

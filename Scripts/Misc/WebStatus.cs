@@ -17,7 +17,7 @@ namespace Server.Misc
 
 		private static HttpListener _Listener;
 
-		private static string _StatusPage = String.Empty;
+		private static string _StatusPage = string.Empty;
 		private static byte[] _StatusBuffer = new byte[0];
 
 		private static readonly object _StatusLock = new object();
@@ -144,7 +144,7 @@ namespace Server.Misc
 
 						var title = m.GuildTitle;
 
-						title = title != null ? title.Trim() : String.Empty;
+						title = title != null ? title.Trim() : string.Empty;
 
 						if (title.Length > 0)
 						{

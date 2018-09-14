@@ -35,7 +35,7 @@ namespace Server.RemoteAdmin
 
 			try
 			{
-				m_Output = new StreamWriter( Path.Combine( directory, String.Format( LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString( "yyyyMMdd" ) ) ), true );
+				m_Output = new StreamWriter( Path.Combine( directory, string.Format( LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString( "yyyyMMdd" ) ) ), true );
 
 				m_Output.AutoFlush = true;
 
@@ -66,7 +66,7 @@ namespace Server.RemoteAdmin
 			for ( int i = 0; i < args.Length; i++ )
 				args[i] = Commands.CommandLogging.Format( args[i] );
 
-			WriteLine( state, String.Format( format, args ) );
+			WriteLine( state, string.Format( format, args ) );
 		}
 
 		public static void WriteLine( NetState state, string text )

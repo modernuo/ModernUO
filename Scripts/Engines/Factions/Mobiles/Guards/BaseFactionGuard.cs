@@ -252,7 +252,7 @@ namespace Server.Factions
 		{
 			if ( m_Faction != null && Map == Faction.Facet )
 			{
-				string text = String.Concat( "(Guard, ", m_Faction.Definition.FriendlyName, ")" );
+				string text = string.Concat( "(Guard, ", m_Faction.Definition.FriendlyName, ")" );
 
 				int hue = ( Faction.Find( from ) == m_Faction ? 98 : 38 );
 

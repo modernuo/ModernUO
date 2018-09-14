@@ -97,7 +97,7 @@ namespace Server.Items
 			}
 
 			if ( m_Dipper != null )
-				m_Dipper = String.Intern( m_Dipper );
+				m_Dipper = string.Intern( m_Dipper );
 		}
 	}
 }

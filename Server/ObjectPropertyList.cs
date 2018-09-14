@@ -127,22 +127,22 @@ namespace Server
 
 		public void Add( int number, string format, object arg0 )
 		{
-			Add( number, String.Format( format, arg0 ) );
+			Add( number, string.Format( format, arg0 ) );
 		}
 
 		public void Add( int number, string format, object arg0, object arg1 )
 		{
-			Add( number, String.Format( format, arg0, arg1 ) );
+			Add( number, string.Format( format, arg0, arg1 ) );
 		}
 
 		public void Add( int number, string format, object arg0, object arg1, object arg2 )
 		{
-			Add( number, String.Format( format, arg0, arg1, arg2 ) );
+			Add( number, string.Format( format, arg0, arg1, arg2 ) );
 		}
 
 		public void Add( int number, string format, params object[] args )
 		{
-			Add( number, String.Format( format, args ) );
+			Add( number, string.Format( format, args ) );
 		}
 
 		// Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
@@ -163,22 +163,22 @@ namespace Server
 
 		public void Add( string format, string arg0 )
 		{
-			Add( GetStringNumber(), String.Format( format, arg0 ) );
+			Add( GetStringNumber(), string.Format( format, arg0 ) );
 		}
 
 		public void Add( string format, string arg0, string arg1 )
 		{
-			Add( GetStringNumber(), String.Format( format, arg0, arg1 ) );
+			Add( GetStringNumber(), string.Format( format, arg0, arg1 ) );
 		}
 
 		public void Add( string format, string arg0, string arg1, string arg2 )
 		{
-			Add( GetStringNumber(), String.Format( format, arg0, arg1, arg2 ) );
+			Add( GetStringNumber(), string.Format( format, arg0, arg1, arg2 ) );
 		}
 
 		public void Add( string format, params object[] args )
 		{
-			Add( GetStringNumber(), String.Format( format, args ) );
+			Add( GetStringNumber(), string.Format( format, args ) );
 		}
 	}
 

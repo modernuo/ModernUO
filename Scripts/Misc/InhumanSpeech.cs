@@ -339,7 +339,7 @@ namespace Server.Misc
 			for ( int i = 0; i < syllableCount; ++i )
 				syllables[i] = GetRandomSyllable();
 
-			return String.Concat( syllables );
+			return string.Concat( syllables );
 		}
 
 		public string ConstructSentance( int wordCount )
@@ -381,7 +381,7 @@ namespace Server.Misc
 				sentance.Append( word );
 
 				if ( needUpperCase )
-					sentance.Replace( word[0], Char.ToUpper( word[0] ), sentance.Length - word.Length, 1 );
+					sentance.Replace( word[0], char.ToUpper( word[0] ), sentance.Length - word.Length, 1 );
 
 				needUpperCase = false;
 			}
@@ -462,33 +462,33 @@ namespace Server.Misc
 					case 1:
 					{
 						response.Append( responseWord ).Append( " thee!" );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
 						break;
 					}
 					case 2:
 					{
 						response.Append( responseWord ).Append( '?' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
 						break;
 					}
 					case 3:
 					{
 						response.Append( responseWord ).Append( "! " ).Append( secondResponseWord ).Append( '.' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
-						response.Replace( secondResponseWord[0], Char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
 						break;
 					}
 					case 4:
 					{
 						response.Append( responseWord ).Append( '.' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
 						break;
 					}
 					case 5:
 					{
 						response.Append( responseWord ).Append( "? " ).Append( secondResponseWord ).Append( '.' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
-						response.Replace( secondResponseWord[0], Char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
 						break;
 					}
 				}

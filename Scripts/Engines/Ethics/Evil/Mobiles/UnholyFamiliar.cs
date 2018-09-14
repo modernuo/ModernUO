@@ -62,7 +62,7 @@ namespace Server.Mobiles
 			if ( suffix.Length == 0 )
 				suffix = Ethic.Evil.Definition.Adjunct.String;
 			else
-				suffix = String.Concat( suffix, " ", Ethic.Evil.Definition.Adjunct.String );
+				suffix = string.Concat( suffix, " ", Ethic.Evil.Definition.Adjunct.String );
 
 			return base.ApplyNameSuffix( suffix );
 		}

@@ -1022,7 +1022,7 @@ namespace Server.Mobiles
 				if ( suffix.Length == 0 )
 					suffix = "(Paragon)";
 				else
-					suffix = String.Concat( suffix, " (Paragon)" );
+					suffix = string.Concat( suffix, " (Paragon)" );
 			}
 
 			return base.ApplyNameSuffix( suffix );
@@ -2796,7 +2796,7 @@ namespace Server.Mobiles
 		public void DebugSay( string format, params object[] args )
 		{
 			if ( m_DebugAI )
-				PublicOverheadMessage( MessageType.Regular, 41, false, String.Format( format, args ) );
+				PublicOverheadMessage( MessageType.Regular, 41, false, string.Format( format, args ) );
 		}
 
 		/*

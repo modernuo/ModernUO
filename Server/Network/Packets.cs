@@ -2435,7 +2435,7 @@ namespace Server.Network
 				string v = strings[i];
 
 				if ( v == null )
-					v = String.Empty;
+					v = string.Empty;
 
 				m_Strings.Write( (ushort) v.Length );
 				m_Strings.WriteBigUniFixed( v, v.Length );
@@ -2593,7 +2593,7 @@ namespace Server.Network
 				string v = text[i];
 
 				if ( v == null )
-					v = String.Empty;
+					v = string.Empty;
 
 				int length = (ushort) v.Length;
 

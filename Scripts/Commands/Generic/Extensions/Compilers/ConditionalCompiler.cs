@@ -268,7 +268,7 @@ namespace Server.Commands.Generic
 
 			if ( m_IgnoreCase || methodName == "Equals" )
 			{
-				Type type = ( m_IgnoreCase ? typeof( Insensitive ) : typeof( String ) );
+				Type type = ( m_IgnoreCase ? typeof( Insensitive ) : typeof( string ) );
 
 				emitter.BeginCall(
 					type.GetMethod(

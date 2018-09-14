@@ -430,12 +430,12 @@ namespace Server.Mobiles
 					continue;
 
 				if ( split[i].Length > 1 )
-					split[i] = Char.ToUpper( split[i][0] ) + split[i].Substring( 1 );
+					split[i] = char.ToUpper( split[i][0] ) + split[i].Substring( 1 );
 				else if ( split[i].Length > 0 )
-					split[i] = Char.ToUpper( split[i][0] ).ToString();
+					split[i] = char.ToUpper( split[i][0] ).ToString();
 			}
 
-			Title = String.Join( " ", split );
+			Title = string.Join( " ", split );
 		}
 
 		public virtual int GetHairHue()

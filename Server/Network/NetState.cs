@@ -333,7 +333,7 @@ namespace Server.Network {
 		}
 
 		public void WriteConsole( string format, params object[] args ) {
-			WriteConsole( String.Format( format, args ) );
+			WriteConsole( string.Format( format, args ) );
 		}
 
 		public void AddMenu( IMenu menu ) {

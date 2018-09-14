@@ -164,7 +164,7 @@ namespace Server
 				int br2 = fmt.IndexOf( '.', br1 + 1 );
 
 				int br3 = br2 + 1;
-				while ( br3 < fmt.Length && Char.IsDigit( fmt, br3 ) )
+				while ( br3 < fmt.Length && char.IsDigit( fmt, br3 ) )
 					br3++;
 
 				m_Major = Utility.ToInt32( fmt.Substring( 0, br1 ) );
@@ -175,7 +175,7 @@ namespace Server
 				{
 					if ( m_Major <= 5 && m_Minor <= 0 && m_Revision <= 6 )	//Anything before 5.0.7
 					{
-						if ( !Char.IsWhiteSpace( fmt, br3 ) )
+						if ( !char.IsWhiteSpace( fmt, br3 ) )
 							m_Patch = (fmt[br3] - 'a') + 1;
 					}
 					else

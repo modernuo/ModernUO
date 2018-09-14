@@ -716,7 +716,7 @@ namespace Server.Engines.ConPVP
 								timeUntil = $"in {minutesUntil} minute{(minutesUntil == 1 ? "" : "s")}";
 
 							m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-								0x35, false, String.Format( fmt, from.Female ? "Lady" : "Lord", timeUntil ), from.NetState );
+								0x35, false, string.Format( fmt, from.Female ? "Lady" : "Lord", timeUntil ), from.NetState );
 						}
 
 						TournyParticipant part = new TournyParticipant( from );
@@ -2687,7 +2687,7 @@ namespace Server.Engines.ConPVP
 
 		public void AddLog( string format, params object[] args )
 		{
-			AddLog( String.Format( format, args ) );
+			AddLog( string.Format( format, args ) );
 		}
 
 		public void WonMatch( TournyMatch match )

@@ -2425,7 +2425,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.SkillBonuses,		!m_AosSkillBonuses.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.Slayer2,			m_Slayer2 != SlayerName.None );
 			SetSaveFlag( ref flags, SaveFlag.ElementalDamages,	!m_AosElementDamages.IsEmpty );
-			SetSaveFlag( ref flags, SaveFlag.EngravedText,		!String.IsNullOrEmpty( m_EngravedText ) );
+			SetSaveFlag( ref flags, SaveFlag.EngravedText,		!string.IsNullOrEmpty( m_EngravedText ) );
 
 			writer.Write( (int) flags );
 
@@ -3007,7 +3007,7 @@ namespace Server.Items
 			 * method and engraving tool, to make it perm cleaned up.
 			 */
 
-			if ( !String.IsNullOrEmpty( m_EngravedText ) )
+			if ( !string.IsNullOrEmpty( m_EngravedText ) )
 				list.Add( 1062613, m_EngravedText );
 
 				/* list.Add( 1062613, Utility.FixHtml( m_EngravedText ) ); */

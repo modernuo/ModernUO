@@ -406,8 +406,8 @@ namespace Server.Gumps
 		private static Type typeofTimeSpan = typeof( TimeSpan );
 		private static Type typeofCustomEnum = typeof( CustomEnumAttribute );
 		private static Type typeofEnum = typeof( Enum );
-		private static Type typeofBool = typeof( Boolean );
-		private static Type typeofString = typeof( String );
+		private static Type typeofBool = typeof( bool );
+		private static Type typeofString = typeof( string );
 		private static Type typeofText = typeof( TextDefinition );
 		private static Type typeofPoison = typeof( Poison );
 		private static Type typeofMap = typeof( Map );
@@ -416,19 +416,19 @@ namespace Server.Gumps
 		private static Type typeofNoSort = typeof( NoSortAttribute );
 
 		private static Type[] typeofReal = {
-				typeof( Single ),
-				typeof( Double )
+				typeof( float ),
+				typeof( double )
 			};
 
 		private static Type[] typeofNumeric = {
-				typeof( Byte ),
-				typeof( Int16 ),
-				typeof( Int32 ),
-				typeof( Int64 ),
-				typeof( SByte ),
-				typeof( UInt16 ),
-				typeof( UInt32 ),
-				typeof( UInt64 )
+				typeof( byte ),
+				typeof( short ),
+				typeof( int ),
+				typeof( long ),
+				typeof( sbyte ),
+				typeof( ushort ),
+				typeof( uint ),
+				typeof( ulong )
 			};
 
 		private string ValueToString( PropertyInfo prop )
@@ -484,7 +484,7 @@ namespace Server.Gumps
 			}
 			if ( o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong )
 			{
-				return String.Format( "{0} (0x{0:X})", o );
+				return string.Format( "{0} (0x{0:X})", o );
 			}
 			if ( o is Mobile mobile )
 			{
@@ -668,7 +668,7 @@ namespace Server.Gumps
 			}
 			if ( o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong )
 			{
-				return String.Format( "{0} (0x{0:X})", o );
+				return string.Format( "{0} (0x{0:X})", o );
 			}
 			if ( o is Mobile mobile )
 			{
@@ -722,7 +722,7 @@ namespace Server.Gumps
 				m_Start = start;
 			}
 
-			private static Type typeofObject = typeof( Object );
+			private static Type typeofObject = typeof( object );
 
 			private int GetDistance( Type type )
 			{

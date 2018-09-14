@@ -328,12 +328,12 @@ namespace Server
 						var platText = info.GetTextEntry(0).Text;
 						var goldText = info.GetTextEntry(1).Text;
 
-						if (!Int32.TryParse(platText, out _Plat))
+						if (!int.TryParse(platText, out _Plat))
 						{
 							User.SendMessage("That is not a valid amount of platinum.");
 							refresh = true;
 						}
-						else if (!Int32.TryParse(goldText, out _Gold))
+						else if (!int.TryParse(goldText, out _Gold))
 						{
 							User.SendMessage("That is not a valid amount of gold.");
 							refresh = true;

@@ -283,7 +283,7 @@ namespace Server.Guilds
 		#region Alliance[Text]Message(...)
 		public void AllianceMessage( int num, bool append, string format, params object[] args )
 		{
-			AllianceMessage( num, append, String.Format( format, args) );
+			AllianceMessage( num, append, string.Format( format, args) );
 		}
 		public void AllianceMessage( int number )
 		{
@@ -319,7 +319,7 @@ namespace Server.Guilds
 		}
 		public void AllianceTextMessage( string format, params object[] args )
 		{
-			AllianceTextMessage( 0x3B2, String.Format( format, args ) );
+			AllianceTextMessage( 0x3B2, string.Format( format, args ) );
 		}
 		public void AllianceTextMessage( int hue, string text )
 		{
@@ -328,7 +328,7 @@ namespace Server.Guilds
 		}
 		public void AllianceTextMessage( int hue, string format, params object[] args )
 		{
-			AllianceTextMessage( hue, String.Format( format, args ) );
+			AllianceTextMessage( hue, string.Format( format, args ) );
 		}
 
 		public void AllianceChat( Mobile from, int hue, string text )
@@ -1400,7 +1400,7 @@ namespace Server.Guilds
 		#region Guild[Text]Message(...)
 		public void GuildMessage( int num, bool append, string format, params object[] args )
 		{
-			GuildMessage( num, append, String.Format( format, args) );
+			GuildMessage( num, append, string.Format( format, args) );
 		}
 		public void GuildMessage( int number )
 		{
@@ -1426,7 +1426,7 @@ namespace Server.Guilds
 		}
 		public void GuildTextMessage( string format, params object[] args )
 		{
-			GuildTextMessage( 0x3B2, String.Format( format, args ) );
+			GuildTextMessage( 0x3B2, string.Format( format, args ) );
 		}
 		public void GuildTextMessage( int hue, string text )
 		{
@@ -1435,7 +1435,7 @@ namespace Server.Guilds
 		}
 		public void GuildTextMessage( int hue, string format, params object[] args )
 		{
-			GuildTextMessage( hue, String.Format( format, args ) );
+			GuildTextMessage( hue, string.Format( format, args ) );
 		}
 
 		public void GuildChat( Mobile from, int hue, string text )

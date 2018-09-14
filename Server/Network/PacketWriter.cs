@@ -203,7 +203,7 @@ namespace Server.Network
 			if ( value == null )
 			{
 				Console.WriteLine( "Network: Attempted to WriteAsciiFixed() with null value" );
-				value = String.Empty;
+				value = string.Empty;
 			}
 
 			int length = value.Length;
@@ -239,7 +239,7 @@ namespace Server.Network
 			if ( value == null )
 			{
 				Console.WriteLine( "Network: Attempted to WriteAsciiNull() with null value" );
-				value = String.Empty;
+				value = string.Empty;
 			}
 
 			int length = value.Length;
@@ -263,7 +263,7 @@ namespace Server.Network
 			if ( value == null )
 			{
 				Console.WriteLine( "Network: Attempted to WriteLittleUniNull() with null value" );
-				value = String.Empty;
+				value = string.Empty;
 			}
 
 			int length = value.Length;
@@ -290,7 +290,7 @@ namespace Server.Network
 			if ( value == null )
 			{
 				Console.WriteLine( "Network: Attempted to WriteLittleUniFixed() with null value" );
-				value = String.Empty;
+				value = string.Empty;
 			}
 
 			size *= 2;
@@ -330,7 +330,7 @@ namespace Server.Network
 			if ( value == null )
 			{
 				Console.WriteLine( "Network: Attempted to WriteBigUniNull() with null value" );
-				value = String.Empty;
+				value = string.Empty;
 			}
 
 			int length = value.Length;
@@ -357,7 +357,7 @@ namespace Server.Network
 			if ( value == null )
 			{
 				Console.WriteLine( "Network: Attempted to WriteBigUniFixed() with null value" );
-				value = String.Empty;
+				value = string.Empty;
 			}
 
 			size *= 2;

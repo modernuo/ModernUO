@@ -909,7 +909,7 @@ namespace Server.Multis
 			int start = -1;
 			for ( int i = 0; i < navPoint.Length; i++ )
 			{
-				if ( Char.IsDigit( navPoint[i] ) )
+				if ( char.IsDigit( navPoint[i] ) )
 				{
 					start = i;
 					break;

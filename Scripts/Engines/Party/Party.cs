@@ -379,7 +379,7 @@ namespace Server.Engines.PartySystem
 		}
 		private void SendToStaffMessage( Mobile from, string format, params object[] args )
 		{
-			SendToStaffMessage( from, String.Format( format, args ) );
+			SendToStaffMessage( from, string.Format( format, args ) );
 		}
 
 		public void SendToAll( Packet p )

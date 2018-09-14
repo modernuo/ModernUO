@@ -384,7 +384,7 @@ namespace Server
 
 		public override void Write( decimal value )
 		{
-			int[] bits = Decimal.GetBits( value );
+			int[] bits = decimal.GetBits( value );
 
 			for( int i = 0; i < bits.Length; ++i )
 				Write( bits[i] );

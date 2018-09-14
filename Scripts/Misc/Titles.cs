@@ -236,7 +236,7 @@ namespace Server.Misc
 				if ( mob.Female && skillTitle.EndsWith( "man" ) )
 					skillTitle = skillTitle.Substring( 0, skillTitle.Length - 3 ) + "woman";
 
-				return String.Concat( skillLevel, " ", skillTitle );
+				return string.Concat( skillLevel, " ", skillTitle );
 			}
 
 			return null;

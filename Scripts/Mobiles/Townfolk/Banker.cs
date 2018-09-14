@@ -33,7 +33,7 @@ namespace Server.Mobiles
 			if (AccountGold.Enabled && m.Account != null)
 			{
 				balance = m.Account.GetTotalGold();
-				if (balance >= Int32.MaxValue) { return Int32.MaxValue; }
+				if (balance >= int.MaxValue) { return int.MaxValue; }
 			}
 
 			Container bank = m.FindBankNoCreate();
@@ -44,11 +44,11 @@ namespace Server.Mobiles
 				var checks = bank.FindItemsByType<BankCheck>();
 
 				balance += gold.Aggregate(0L, (c, t) => c + t.Amount);
-				if (balance >= Int32.MaxValue) { return Int32.MaxValue; }
+				if (balance >= int.MaxValue) { return int.MaxValue; }
 				balance += checks.Aggregate(0L, (c, t) => c + t.Worth);
 			}
 
-			return Math.Max(0, (int)Math.Min(Int32.MaxValue, balance));
+			return Math.Max(0, (int)Math.Min(int.MaxValue, balance));
 		}
 
 		public static int GetBalance(Mobile m, out Item[] gold, out Item[] checks)
@@ -59,10 +59,10 @@ namespace Server.Mobiles
 			{
 				balance = m.Account.GetTotalGold();
 
-				if (balance > Int32.MaxValue)
+				if (balance > int.MaxValue)
 				{
 					gold = checks = new Item[0];
-					return Int32.MaxValue;
+					return int.MaxValue;
 				}
 			}
 
@@ -74,7 +74,7 @@ namespace Server.Mobiles
 				checks = bank.FindItemsByType(typeof(BankCheck));
 
 				balance += gold.OfType<Gold>().Aggregate(0L, (c, t) => c + t.Amount);
-				if (balance >= Int32.MaxValue) { return Int32.MaxValue; }
+				if (balance >= int.MaxValue) { return int.MaxValue; }
 				balance += checks.OfType<BankCheck>().Aggregate(0L, (c, t) => c + t.Worth);
 			}
 			else
@@ -82,7 +82,7 @@ namespace Server.Mobiles
 				gold = checks = new Item[0];
 			}
 
-			return Math.Max(0, (int)Math.Min(Int32.MaxValue, balance));
+			return Math.Max(0, (int)Math.Min(int.MaxValue, balance));
 		}
 
 		public static bool Withdraw(Mobile from, int amount)

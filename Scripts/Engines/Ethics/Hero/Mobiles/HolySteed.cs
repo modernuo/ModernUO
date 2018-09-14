@@ -59,7 +59,7 @@ namespace Server.Mobiles
 			if ( suffix.Length == 0 )
 				suffix = Ethic.Hero.Definition.Adjunct.String;
 			else
-				suffix = String.Concat( suffix, " ", Ethic.Hero.Definition.Adjunct.String );
+				suffix = string.Concat( suffix, " ", Ethic.Hero.Definition.Adjunct.String );
 
 			return base.ApplyNameSuffix( suffix );
 		}

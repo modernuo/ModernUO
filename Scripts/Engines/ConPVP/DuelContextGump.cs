@@ -65,7 +65,7 @@ namespace Server.Engines.ConPVP
 			{
 				Participant p = (Participant)context.Participants[i];
 
-				AddGoldenButtonLabeled( x, y, 4 + i, String.Format( p.Count == 1 ? "Player {0}: {3}" : "Team {0}: {1}/{2}: {3}", 1 + i, p.FilledSlots, p.Count, p.NameList ) ); y += 22;
+				AddGoldenButtonLabeled( x, y, 4 + i, string.Format( p.Count == 1 ? "Player {0}: {3}" : "Team {0}: {1}/{2}: {3}", 1 + i, p.FilledSlots, p.Count, p.NameList ) ); y += 22;
 			}
 		}
 

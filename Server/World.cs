@@ -110,7 +110,7 @@ namespace Server {
 		}
 
 		public static void Broadcast( int hue, bool ascii, string format, params object[] args ) {
-			Broadcast( hue, ascii, String.Format( format, args ) );
+			Broadcast( hue, ascii, string.Format( format, args ) );
 		}
 
 		private interface IEntityEntry {
@@ -607,7 +607,7 @@ namespace Server {
 		}
 
 		private static void AppendSafetyLog( string action, IEntity entity ) {
-			string message = String.Format( "Warning: Attempted to {1} {2} during world save." +
+			string message = string.Format( "Warning: Attempted to {1} {2} during world save." +
 				"{0}This action could cause inconsistent state." +
 				"{0}It is strongly advised that the offending scripts be corrected.",
 				Environment.NewLine,

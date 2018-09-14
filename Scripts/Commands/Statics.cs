@@ -49,7 +49,7 @@ namespace Server
 
 		public static void SendWarning( Mobile m, string header, string baseWarning, Map map, Point3D start, Point3D end, WarningGumpCallback callback )
 		{
-			m.SendGump( new WarningGump( 1060635, 30720, String.Format( baseWarning, String.Format( header, map ) ), 0xFFC000, 420, 400, callback, new StateInfo( map, start, end ) ) );
+			m.SendGump( new WarningGump( 1060635, 30720, string.Format( baseWarning, string.Format( header, map ) ), 0xFFC000, 420, 400, callback, new StateInfo( map, start, end ) ) );
 		}
 
 		private const string BaseFreezeWarning =	"{0}  " +

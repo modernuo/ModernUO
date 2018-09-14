@@ -69,9 +69,9 @@ namespace Server
 			if ( str == null )
 				return null;
 			else if ( str.Length == 0 )
-				return String.Empty;
+				return string.Empty;
 
-			return String.Intern( str );
+			return string.Intern( str );
 		}
 
 		public static void Intern( ref string str )

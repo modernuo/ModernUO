@@ -119,7 +119,7 @@ namespace Server.Items
 				{
 					string line = box.Topic[i];
 
-					if ( !String.IsNullOrEmpty( line ) )
+					if ( !string.IsNullOrEmpty( line ) )
 						AddLabelCropped( 30, 90 + i * 20, 340, 20, 0x3E3, line );
 				}
 

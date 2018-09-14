@@ -436,7 +436,7 @@ namespace Server.Mobiles
 					string[] paramargs;
 					string[] propargs;
 
-					if ( String.IsNullOrEmpty( entry.Properties ) )
+					if ( string.IsNullOrEmpty( entry.Properties ) )
 						propargs = new string[0];
 					else
 						propargs = CommandSystem.Split( entry.Properties.Trim() );
@@ -451,7 +451,7 @@ namespace Server.Mobiles
 						return false;
 					}
 
-					if ( String.IsNullOrEmpty( entry.Parameters ) )
+					if ( string.IsNullOrEmpty( entry.Parameters ) )
 						paramargs = new string[0];
 					else
 						paramargs = entry.Parameters.Trim().Split( ' ' );
@@ -872,7 +872,7 @@ namespace Server.Mobiles
 
 					for ( int i = 0; i < size; ++i )
 						if ( addentries )
-							m_Entries.Add( new SpawnerEntry( String.Empty, 100, reader.ReadInt() ) );
+							m_Entries.Add( new SpawnerEntry( string.Empty, 100, reader.ReadInt() ) );
 						else
 							m_Entries[i].SpawnedMaxCount = reader.ReadInt();
 
@@ -886,7 +886,7 @@ namespace Server.Mobiles
 
 					for ( int i = 0; i < size; ++i )
 						if ( addentries )
-							m_Entries.Add( new SpawnerEntry( String.Empty, reader.ReadInt(), 1 ) );
+							m_Entries.Add( new SpawnerEntry( string.Empty, reader.ReadInt(), 1 ) );
 						else
 							m_Entries[i].SpawnedProbability = reader.ReadInt();
 
