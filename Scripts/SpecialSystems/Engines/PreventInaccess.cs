@@ -65,7 +65,7 @@ namespace Server.Misc
 
 		private static bool HasDisconnected( Mobile m )
 		{
-			return ( m.NetState == null || m.NetState.Socket == null );
+			return ( m.NetState?.Socket == null );
 		}
 
 		private static LocationInfo GetRandomDestination()

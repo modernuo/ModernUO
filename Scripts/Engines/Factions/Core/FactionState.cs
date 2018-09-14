@@ -118,10 +118,10 @@ namespace Server.Factions
 
 					PlayerState pl = PlayerState.Find( m_Commander );
 
-					if ( pl != null && pl.Finance != null )
+					if ( pl?.Finance != null )
 						pl.Finance.Finance = null;
 
-					if ( pl != null && pl.Sheriff != null )
+					if ( pl?.Sheriff != null )
 						pl.Sheriff.Sheriff = null;
 				}
 			}

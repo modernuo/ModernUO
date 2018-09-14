@@ -104,7 +104,7 @@ namespace Server.Factions
 
 					BaseMonolith monolith = town.Monolith;
 
-					AddImage( 20, 60 + (i * 30), ( monolith != null && monolith.Sigil != null && monolith.Sigil.IsPurifying ) ? 0x938 : 0x939 );
+					AddImage( 20, 60 + (i * 30), ( monolith?.Sigil != null && monolith.Sigil.IsPurifying ) ? 0x938 : 0x939 );
 				}
 			}
 

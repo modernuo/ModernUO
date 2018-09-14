@@ -747,7 +747,7 @@ namespace Server.Spells
 				{
 					PlayerMobile pm = m_TravelCaster as PlayerMobile;
 
-					if ( pm != null && pm.DuelPlayer != null && !pm.DuelPlayer.Eliminated )
+					if ( pm?.DuelPlayer != null && !pm.DuelPlayer.Eliminated )
 						return true;
 				}
 
@@ -880,7 +880,7 @@ namespace Server.Spells
 			{
 				PlayerMobile pm = (PlayerMobile) caster;
 
-				if ( pm == null || pm.DuelContext == null || !pm.DuelContext.Started || pm.DuelPlayer == null || pm.DuelPlayer.Eliminated )
+				if ( pm?.DuelContext == null || !pm.DuelContext.Started || pm.DuelPlayer == null || pm.DuelPlayer.Eliminated )
 					return true;
 			}
 			#endregion

@@ -170,7 +170,7 @@ namespace Server.Items
 					else if ( pack == null || !pack.ConsumeTotal( AmmoType, 1 ) )
 						return false;
 				}
-				else if ( quiver.FindItemByType( AmmoType ) == null && ( pack == null || pack.FindItemByType( AmmoType ) == null ) )
+				else if ( quiver.FindItemByType( AmmoType ) == null && ( pack?.FindItemByType( AmmoType ) == null ) )
 				{
 					// lower ammo cost should not work when we have no ammo at all
 					return false;

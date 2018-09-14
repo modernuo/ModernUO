@@ -54,7 +54,7 @@ namespace Server.Regions
 
 		public override bool OnTarget( Mobile m, Target t, object o )
 		{
-			if ( m.Spell != null && m.Spell is MarkSpell && m.AccessLevel == AccessLevel.Player )
+			if ( m.Spell is MarkSpell && m.AccessLevel == AccessLevel.Player )
 			{
 				m.SendLocalizedMessage( 501800 ); // You cannot mark an object at that location.
 				return false;

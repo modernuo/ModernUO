@@ -138,7 +138,7 @@ namespace Server.Factions
 
 				if ( def != null && def.Number > 0 )
 					Say( def.Number );
-				else if ( def != null && def.String != null )
+				else if ( def?.String != null )
 					Say( def.String );
 			}
 

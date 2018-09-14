@@ -830,7 +830,7 @@ namespace Server.Factions
 					sigil.GraceStart = DateTime.MinValue;
 				}
 
-				if ( sigil.LastMonolith == null || sigil.LastMonolith.Sigil == null )
+				if ( sigil.LastMonolith?.Sigil == null )
 				{
 					if ( (sigil.LastStolen + Sigil.ReturnPeriod) < DateTime.UtcNow )
 						sigil.ReturnHome();

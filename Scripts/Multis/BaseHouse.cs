@@ -3266,7 +3266,7 @@ namespace Server.Multis
 
 		public bool IsGuildMember( Mobile m )
 		{
-			if ( m == null || Owner == null || Owner.Guild == null )
+			if ( m == null || Owner?.Guild == null )
 				return false;
 
 			return ( m.Guild == Owner.Guild );

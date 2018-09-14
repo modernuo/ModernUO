@@ -161,7 +161,7 @@ namespace Server.Engines.Doom
 		public override bool HandlesOnMovement => true;
 		public override bool OnMoveOver( Mobile m )
 		{
-			if ( m != null && m is PlayerMobile )
+			if ( m is PlayerMobile )
 			{
 				if ( SpellHelper.CheckCombat( m ) )
 				{

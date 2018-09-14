@@ -218,7 +218,7 @@ namespace Server.Engines.Events
 
 		public static bool CheckMobile( Mobile mobile )
 		{
-			return ( mobile != null && mobile.Map != null && !mobile.Deleted && mobile.Alive && mobile.Map != Map.Internal );
+			return ( mobile?.Map != null && !mobile.Deleted && mobile.Alive && mobile.Map != Map.Internal );
 		}
 	}
 

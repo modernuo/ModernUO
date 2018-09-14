@@ -24,7 +24,7 @@ namespace Server.Engines.ConPVP
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_TeamInfo != null && m_TeamInfo.Game != null )
+			if ( m_TeamInfo?.Game != null )
 			{
 				from.CloseGump( typeof( CTFBoardGump ) );
 				from.SendGump( new CTFBoardGump( from, m_TeamInfo.Game ) );
@@ -105,7 +105,7 @@ namespace Server.Engines.ConPVP
 				{
 					CTFTeamInfo teamInfo = game.Controller.TeamInfo[i % 8];
 
-					if ( teamInfo == null || teamInfo.Flag == null )
+					if ( teamInfo?.Flag == null )
 						continue;
 
 					entries.Add( teamInfo );
@@ -250,7 +250,7 @@ namespace Server.Engines.ConPVP
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_TeamInfo != null && m_TeamInfo.Game != null )
+			if ( m_TeamInfo?.Game != null )
 			{
 				CTFTeamInfo ourTeam = m_TeamInfo;
 				CTFTeamInfo useTeam = m_TeamInfo.Game.GetTeamInfo( from );
@@ -380,7 +380,7 @@ namespace Server.Engines.ConPVP
 
 					SendHome();
 
-					if ( m_TeamInfo != null && m_TeamInfo.Game != null )
+					if ( m_TeamInfo?.Game != null )
 						m_TeamInfo.Game.Alert( "The {0} cookies have been returned.", m_TeamInfo.Name );
 
 					return;
@@ -1125,7 +1125,7 @@ namespace Server.Engines.ConPVP
 			{
 				CTFTeamInfo teamInfo = m_Controller.TeamInfo[i % 8];
 
-				if ( teamInfo == null || teamInfo.Flag == null )
+				if ( teamInfo?.Flag == null )
 					continue;
 
 				teams.Add( teamInfo );
@@ -1262,7 +1262,7 @@ namespace Server.Engines.ConPVP
 				{
 					DuelPlayer dp = p.Players[j];
 
-					if ( dp != null && dp.Mobile != null )
+					if ( dp?.Mobile != null )
 					{
 						dp.Mobile.CloseGump( typeof( CTFBoardGump ) );
 						dp.Mobile.SendGump( new CTFBoardGump( dp.Mobile, this ) );

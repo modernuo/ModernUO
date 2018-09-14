@@ -51,7 +51,7 @@ namespace Server.Spells.Third
 				else if ( !item.CheckItemUse( Caster, item ) )
 				{
 				}
-				else if ( root != null && root is Mobile && root != Caster )
+				else if ( root is Mobile && root != Caster )
 				{
 					item.OnSnoop( Caster );
 				}

@@ -82,7 +82,7 @@ namespace Server.Engines.CannedEvil
 
 		public bool Validate( ChampionSkullBrazier brazier )
 		{
-			return ( brazier != null && brazier.Skull != null && !brazier.Skull.Deleted );
+			return ( brazier?.Skull != null && !brazier.Skull.Deleted );
 		}
 
 		public ChampionSkullPlatform( Serial serial ) : base( serial )

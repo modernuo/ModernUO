@@ -876,7 +876,7 @@ namespace Server.Items
 		#region Static members
 		public static FishBowl GetEmptyBowl( Mobile from )
 		{
-			if ( from == null || from.Backpack == null )
+			if ( @from?.Backpack == null )
 				return null;
 
 			Item[] items = from.Backpack.FindItemsByType( typeof( FishBowl ) );

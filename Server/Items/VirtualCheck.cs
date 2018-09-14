@@ -87,7 +87,7 @@ namespace Server
 		{
 			if (UseEditGump && IsAccessibleTo(from))
 			{
-				if (Editor == null || Editor.Check == null || Editor.Check.Deleted)
+				if (Editor?.Check == null || Editor.Check.Deleted)
 				{
 					Editor = new EditGump(from, this);
 					Editor.Send();
@@ -125,7 +125,7 @@ namespace Server
 		{
 			var c = GetSecureTradeCont();
 
-			if (c == null || c.Trade == null)
+			if (c?.Trade == null)
 			{
 				return;
 			}

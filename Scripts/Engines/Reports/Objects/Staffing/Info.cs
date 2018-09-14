@@ -45,7 +45,7 @@ namespace Server.Engines.Reports
 								mob = check;
 						}
 
-						if ( mob != null && mob.Name != null && mob.Name.Length > 0 )
+						if ( mob?.Name != null && mob.Name.Length > 0 )
 							return ( m_Display = mob.Name );
 					}
 				}

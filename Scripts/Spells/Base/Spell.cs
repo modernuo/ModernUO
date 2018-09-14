@@ -145,7 +145,7 @@ namespace Server.Spells
 
 			TransformContext context = TransformationSpellHelper.GetContext( Caster );
 
-			if ( context != null && context.Spell is ReaperFormSpell )
+			if ( context?.Spell is ReaperFormSpell )
 				damageBonus += ((ReaperFormSpell)context.Spell).SpellDamageBonus;
 
 			damage = AOS.Scale( damage, 100 + damageBonus );
@@ -173,7 +173,7 @@ namespace Server.Spells
 				object o = ProtectionSpell.Registry[m_Caster];
 				bool disturb = true;
 
-				if ( o != null && o is double )
+				if ( o is double )
 				{
 					if ( ((double)o) > Utility.RandomDouble()*100.0 )
 						disturb = false;
@@ -513,7 +513,7 @@ namespace Server.Spells
 				m_Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
 			}
 			#region Dueling
-			else if ( m_Caster is PlayerMobile && ((PlayerMobile)m_Caster).DuelContext != null && !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast( m_Caster, this ) )
+			else if ( (m_Caster as PlayerMobile)?.DuelContext != null && !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast( m_Caster, this ) )
 			{
 			}
 			#endregion
@@ -899,7 +899,7 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_Spell == null || m_Spell.m_Caster == null )
+				if ( m_Spell?.m_Caster == null )
 				{
 					return;
 				}

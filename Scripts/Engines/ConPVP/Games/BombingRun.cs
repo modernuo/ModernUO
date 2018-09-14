@@ -59,7 +59,7 @@ namespace Server.Engines.ConPVP
 
 			protected override void OnTick()
 			{
-				if ( m_Bomb.Parent == null && m_Bomb.m_Game != null && m_Bomb.m_Game.Controller != null )
+				if ( m_Bomb.Parent == null && m_Bomb.m_Game?.Controller != null )
 				{
 					if ( !m_Bomb.m_Flying && m_Bomb.Map != Map.Internal )
 						Effects.SendLocationEffect( m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue, 0 );
@@ -483,7 +483,7 @@ namespace Server.Engines.ConPVP
 			int height;
 			bool found = false;
 
-			if ( m_PathIdx < m_Path.Count && Map != null && Map.Tiles != null && Map != Map.Internal )
+			if ( m_PathIdx < m_Path.Count && Map?.Tiles != null && Map != Map.Internal )
 			{
 				int pathCheckEnd = m_PathIdx + 5;
 
@@ -927,7 +927,7 @@ namespace Server.Engines.ConPVP
 			if ( !Visible )
 				return true;
 
-			if ( m == null || !m.Player || !m.Alive || m.Backpack == null || m_Team == null || m_Team.Game == null )
+			if ( m == null || !m.Player || !m.Alive || m.Backpack == null || m_Team?.Game == null )
 				return true;
 
 			if ( !base.OnMoveOver( m ) )
@@ -960,7 +960,7 @@ namespace Server.Engines.ConPVP
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_TeamInfo != null && m_TeamInfo.Game != null )
+			if ( m_TeamInfo?.Game != null )
 			{
 				from.CloseGump( typeof( BRBoardGump ) );
 				from.SendGump( new BRBoardGump( from, m_TeamInfo.Game ) );
@@ -1522,7 +1522,7 @@ namespace Server.Engines.ConPVP
 	{
 		public override bool CantDoAnything( Mobile mob )
 		{
-			if ( mob == null || mob.Backpack == null || GetTeamInfo( mob ) == null )
+			if ( mob?.Backpack == null || GetTeamInfo( mob ) == null )
 				return false;
 
 			Item bomb = mob.Backpack.FindItemByType( typeof( BRBomb ), true );
@@ -1880,7 +1880,7 @@ namespace Server.Engines.ConPVP
 				{
 					DuelPlayer dp = p.Players[j];
 
-					if ( dp != null && dp.Mobile != null )
+					if ( dp?.Mobile != null )
 					{
 						dp.Mobile.CloseGump( typeof( BRBoardGump ) );
 						dp.Mobile.SendGump( new BRBoardGump( dp.Mobile, this ) );

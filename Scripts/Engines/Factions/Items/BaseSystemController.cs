@@ -25,7 +25,7 @@ namespace Server.Factions
 				m_LabelNumber = name.Number;
 				Name = null;
 			}
-			else if ( name != null && name.String != null )
+			else if ( name?.String != null )
 			{
 				m_LabelNumber = 0;
 				Name = name.String;

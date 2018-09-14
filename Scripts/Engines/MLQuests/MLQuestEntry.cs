@@ -63,7 +63,7 @@ namespace Server.Engines.MLQuests
 
 		private void Register()
 		{
-			if ( m_Quest != null && m_Quest.Instances != null )
+			if ( m_Quest?.Instances != null )
 				m_Quest.Instances.Add( this );
 
 			if ( m_Player != null )
@@ -72,7 +72,7 @@ namespace Server.Engines.MLQuests
 
 		private void Unregister()
 		{
-			if ( m_Quest != null && m_Quest.Instances != null )
+			if ( m_Quest?.Instances != null )
 				m_Quest.Instances.Remove( this );
 
 			if ( m_Player != null )

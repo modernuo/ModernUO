@@ -19,7 +19,7 @@ namespace Server.Factions
 
 				m_Sigil = value;
 
-				if ( m_Sigil != null && m_Sigil.LastMonolith != null && m_Sigil.LastMonolith != this && m_Sigil.LastMonolith.Sigil == m_Sigil )
+				if ( m_Sigil?.LastMonolith != null && m_Sigil.LastMonolith != this && m_Sigil.LastMonolith.Sigil == m_Sigil )
 					m_Sigil.LastMonolith.Sigil = null;
 
 				if ( m_Sigil != null )

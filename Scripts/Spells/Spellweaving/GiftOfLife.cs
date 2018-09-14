@@ -107,7 +107,7 @@ namespace Server.Spells.Spellweaving
 					BaseCreature pet = (BaseCreature)m;
 					Mobile master = pet.GetMaster();
 
-					if ( master != null && master.NetState != null && Utility.InUpdateRange( pet, master ) )
+					if ( master?.NetState != null && Utility.InUpdateRange( pet, master ) )
 					{
 						master.CloseGump( typeof( PetResurrectGump ) );
 						master.SendGump( new PetResurrectGump( master, pet, hitsScalar ) );

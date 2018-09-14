@@ -37,7 +37,7 @@ namespace Server.Factions
 		{
 			if ( text != null && text.Number > 0 )
 				AddHtmlLocalized( x, y, width, height, text.Number, back, scroll );
-			else if ( text != null && text.String != null )
+			else if ( text?.String != null )
 				AddHtml( x, y, width, height, text.String, back, scroll );
 		}
 

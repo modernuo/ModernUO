@@ -36,7 +36,7 @@ namespace Server.Spells.Spellweaving
 
 		public static ArcaneFocus FindArcaneFocus( Mobile from )
 		{
-			if ( from == null || from.Backpack == null )
+			if ( @from?.Backpack == null )
 				return null;
 
 			if ( from.Holding is ArcaneFocus )

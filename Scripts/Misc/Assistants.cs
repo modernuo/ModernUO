@@ -103,7 +103,7 @@ namespace Server.Misc
 			{
 				Mobile m = e.Mobile;
 
-				if (m != null && m.NetState != null && m.NetState.Running)
+				if (m?.NetState != null && m.NetState.Running)
 				{
 					m.Send(new BeginHandshake());
 
@@ -122,7 +122,7 @@ namespace Server.Misc
 			{
 				pvSrc.Trace(state);
 
-				if (state == null || state.Mobile == null || !state.Running)
+				if (state?.Mobile == null || !state.Running)
 					return;
 
 				Mobile m = state.Mobile;

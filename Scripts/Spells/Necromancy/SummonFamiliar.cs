@@ -156,7 +156,7 @@ namespace Server.Spells.Necromancy
 				BaseCreature check = (BaseCreature)SummonFamiliarSpell.Table[m_From];
 
 				#region Dueling
-				if ( m_From is PlayerMobile && ( (PlayerMobile)m_From ).DuelContext != null && !( (PlayerMobile)m_From ).DuelContext.AllowSpellCast( m_From, m_Spell ) )
+				if ( (m_From as PlayerMobile)?.DuelContext != null && !( (PlayerMobile)m_From ).DuelContext.AllowSpellCast( m_From, m_Spell ) )
 				{
 				}
 				#endregion

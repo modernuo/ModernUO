@@ -64,7 +64,7 @@ namespace Server.Items
 
 			Container root = parent as Container;
 
-			while (root != null && root.Parent is Container)
+			while (root?.Parent is Container)
 			{
 				root = (Container)root.Parent;
 			}

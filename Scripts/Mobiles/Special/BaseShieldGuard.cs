@@ -105,7 +105,7 @@ namespace Server.Mobiles
 					BaseShield shield = Shield;
 					Item twoHanded = from.FindItemOnLayer( Layer.TwoHanded );
 
-					if ( (pack != null && pack.FindItemByType( shield.GetType() ) != null) || ( twoHanded != null && shield.GetType().IsAssignableFrom( twoHanded.GetType() ) ) )
+					if ( (pack?.FindItemByType( shield.GetType() ) != null) || ( twoHanded != null && shield.GetType().IsAssignableFrom( twoHanded.GetType() ) ) )
 					{
 						Say( 1007110 ); // Why dost thou ask about virtue guards when thou art one?
 						shield.Delete();

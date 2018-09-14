@@ -124,7 +124,7 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				if ( m_Mobile == null || m_Mobile.Map == null || m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Map == Map.Internal )
+				if ( m_Mobile?.Map == null || m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Map == Map.Internal )
 				{
 					Stop();
 				}

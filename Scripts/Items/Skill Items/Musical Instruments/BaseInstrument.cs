@@ -228,7 +228,7 @@ namespace Server.Items
 
 		public static bool IsPoisonImmune( BaseCreature bc )
 		{
-			return ( bc != null && bc.PoisonImmune != null );
+			return ( bc?.PoisonImmune != null );
 		}
 
 		public static int GetPoisonLevel( BaseCreature bc )

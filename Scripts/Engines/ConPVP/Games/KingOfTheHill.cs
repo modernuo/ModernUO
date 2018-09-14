@@ -551,7 +551,7 @@ namespace Server.Engines.ConPVP
         {
             get
             {
-                if (m_Player == null || m_Player.Name == null)
+                if (m_Player?.Name == null)
                     return "";
                 return m_Player.Name;
             }
@@ -960,7 +960,7 @@ namespace Server.Engines.ConPVP
         {
             get
             {
-                if (m_Context != null && m_Context.Arena != null)
+                if (m_Context?.Arena != null)
                     return m_Context.Arena.Facet;
 
                 return m_Controller.Map;

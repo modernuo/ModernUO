@@ -22,7 +22,7 @@ namespace Server.Engines.ConPVP
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_TeamInfo != null && m_TeamInfo.Game != null )
+			if ( m_TeamInfo?.Game != null )
 			{
 				from.CloseGump( typeof( DDBoardGump ) );
 				from.SendGump( new DDBoardGump( from, m_TeamInfo.Game ) );
@@ -971,9 +971,9 @@ namespace Server.Engines.ConPVP
 		{
 			DDTeamInfo team = null;
 
-			if ( m_Controller.PointA != null && m_Controller.PointA.TeamOwner != null )
+			if ( m_Controller.PointA?.TeamOwner != null )
 				team = m_Controller.PointA.TeamOwner;
-			else if ( m_Controller.PointB != null && m_Controller.PointB.TeamOwner != null )
+			else if ( m_Controller.PointB?.TeamOwner != null )
 				team = m_Controller.PointB.TeamOwner;
 
 			if ( team == null )

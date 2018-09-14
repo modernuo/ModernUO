@@ -479,7 +479,7 @@ namespace Server.Spells.Ninjitsu
 				else if (BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
 				{
 					#region Dueling
-					if ( m_Caster is PlayerMobile && ((PlayerMobile)m_Caster).DuelContext != null && !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast( m_Caster, m_Spell ) )
+					if ( (m_Caster as PlayerMobile)?.DuelContext != null && !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast( m_Caster, m_Spell ) )
 					{
 					}
 					#endregion

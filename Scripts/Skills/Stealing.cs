@@ -152,7 +152,7 @@ namespace Server.SkillHandlers
 
 								m_Thief.SendLocalizedMessage( 1010586 ); // YOU STOLE THE SIGIL!!!   (woah, calm down now)
 
-								if ( sig.LastMonolith != null && sig.LastMonolith.Sigil != null ) {
+								if ( sig.LastMonolith?.Sigil != null ) {
 									sig.LastMonolith.Sigil = null;
 									sig.LastStolen = DateTime.UtcNow;
 								}

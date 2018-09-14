@@ -47,7 +47,7 @@ namespace Server.Items
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{
-			if ( m_Boat != null && m_Boat.ShipName != null )
+			if ( m_Boat?.ShipName != null )
 				list.Add( 1042884, m_Boat.ShipName ); // the tiller man of the ~1_SHIP_NAME~
 			else
 				base.AddNameProperty( list );
@@ -55,7 +55,7 @@ namespace Server.Items
 
 		public override void OnSingleClick( Mobile from )
 		{
-			if ( m_Boat != null && m_Boat.ShipName != null )
+			if ( m_Boat?.ShipName != null )
 				LabelTo( from, 1042884, m_Boat.ShipName ); // the tiller man of the ~1_SHIP_NAME~
 			else
 				base.OnSingleClick( from );

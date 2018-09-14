@@ -343,7 +343,7 @@ namespace Server.Regions
 
 			BaseRegion br = reg as BaseRegion;
 
-			if ( br == null || br.Spawns == null )
+			if ( br?.Spawns == null )
 			{
 				from.SendMessage( "There are no spawners in region '{0}'.", reg );
 				return null;

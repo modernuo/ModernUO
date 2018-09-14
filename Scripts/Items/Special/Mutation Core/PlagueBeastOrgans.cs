@@ -536,7 +536,7 @@ namespace Server.Items
 			AddComponent( new PlagueBeastComponent( 0x1363, 0x1 ), 0, 22 );
 			AddComponent( new PlagueBeastComponent( 0x1D04, 0xD ), 0, 22 );
 
-			if ( Owner != null && Owner.Backpack != null )
+			if ( Owner?.Backpack != null )
 			{
 				PlagueBeastMutationCore core = new PlagueBeastMutationCore();
 				Owner.Backpack.AddItem( core );

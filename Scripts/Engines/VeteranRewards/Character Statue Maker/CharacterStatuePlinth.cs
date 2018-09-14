@@ -66,7 +66,7 @@ namespace Server.Items
 
 			m_Statue = reader.ReadMobile() as CharacterStatue;
 
-			if ( m_Statue == null || m_Statue.SculptedBy == null || Map == Map.Internal )
+			if ( m_Statue?.SculptedBy == null || Map == Map.Internal )
 			{
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
 			}

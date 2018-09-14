@@ -79,7 +79,7 @@ namespace Server.Regions
 			{
 				BaseRegion br = region as BaseRegion;
 
-				if ( br != null && br.m_RuneName != null )
+				if ( br?.m_RuneName != null )
 					return br.m_RuneName;
 
 				region = region.Parent;

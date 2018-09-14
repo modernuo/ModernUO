@@ -148,7 +148,7 @@ namespace Server.Items
 
 		public override int GetTotal(TotalType type)
 		{
-			if (AccountGold.Enabled && Owner != null && Owner.Account != null && type == TotalType.Gold)
+			if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold)
 			{
 				return Owner.Account.TotalGold;
 			}

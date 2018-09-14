@@ -204,7 +204,7 @@ namespace Server.Guilds
 
 			if ( m_LowerText != null && m_LowerText.Number > 0 )
 				AddHtmlLocalized( 66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF, false, false );
-			else if ( m_LowerText != null && m_LowerText.String != null )
+			else if ( m_LowerText?.String != null )
 				AddHtml( 66, 153 + itemNumber * 28, 280, 26, Color( m_LowerText.String, 0x99 ), false, false );
 
 			if ( AllowAdvancedSearch )

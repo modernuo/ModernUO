@@ -146,7 +146,7 @@ namespace Server.Mobiles
 
 		public override void OnDamage( int amount, Mobile from, bool willKill )
 		{
-			if ( from != null && from.Map != null )
+			if ( @from?.Map != null )
 			{
 				int amt=0;
 				Mobile target = this;

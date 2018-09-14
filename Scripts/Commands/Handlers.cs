@@ -629,7 +629,7 @@ namespace Server.Commands
 
 						Mobile owner = item.RootParent as Mobile;
 
-						if ( owner != null && (owner.Map != null && owner.Map != Map.Internal) && !BaseCommand.IsAccessible( from, owner ) /* !from.CanSee( owner )*/ )
+						if ( owner?.Map != null && owner.Map != Map.Internal && !BaseCommand.IsAccessible( @from, owner ) /* !from.CanSee( owner )*/ )
 						{
 							from.SendMessage( "You can not go to what you can not see." );
 							return;

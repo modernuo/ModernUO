@@ -70,7 +70,7 @@ namespace Server
 
 		public static IEnumerable<NetState> SelectClients(Sector s, Rectangle2D bounds)
 		{
-			return s.Clients.Where(o => o != null && o.Mobile != null && !o.Mobile.Deleted && bounds.Contains(o.Mobile));
+			return s.Clients.Where(o => o?.Mobile != null && !o.Mobile.Deleted && bounds.Contains(o.Mobile));
 		}
 
 		public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds)

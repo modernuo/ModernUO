@@ -370,7 +370,7 @@ namespace Server.Items
 
 			m_Changing = true;
 
-			if ( dest == null || !(dest.Addon is SHTeleporter) )
+			if ( !(dest?.Addon is SHTeleporter) )
 			{
 				m_UpTele.TeleDest = dest;
 				m_RightTele.TeleDest = dest;

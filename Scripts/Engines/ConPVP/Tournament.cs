@@ -2227,7 +2227,7 @@ namespace Server.Engines.ConPVP
 
 		public void Alert( Arena arena, params string[] alerts )
 		{
-			if ( arena != null && arena.Announcer != null )
+			if ( arena?.Announcer != null )
 			{
 				for ( int j = 0; j < alerts.Length; ++j )
 					Timer.DelayCall( TimeSpan.FromSeconds( Math.Max( j-0.5, 0.0 ) ), new TimerStateCallback( Alert_Callback ), new object[]{ arena.Announcer, alerts[j] } );

@@ -220,7 +220,7 @@ namespace Server.Mobiles
 
 			VendorItem vi = pv.GetVendorItem( item );
 
-			if ( vi != null && vi.Description != null && vi.Description.Length > 0 )
+			if ( vi?.Description != null && vi.Description.Length > 0 )
 				list.Add( 1043305, vi.Description ); // <br>Seller's Description:<br>"~1_DESC~"
 		}
 

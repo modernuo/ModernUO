@@ -183,7 +183,7 @@ namespace Server
 
 		public override bool Equals( object o )
 		{
-			if ( o == null || !(o is Body) ) return false;
+			if ( !(o is Body) ) return false;
 
 			return ((Body)o).m_BodyID == m_BodyID;
 		}

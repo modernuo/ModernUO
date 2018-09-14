@@ -252,7 +252,7 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1054004 ); // You must equip the bracelet in order to use its power.
 				return false;
 			}
-			else if ( boundRoot == null || boundRoot.NetState == null || boundRoot.FindItemOnLayer( Layer.Bracelet ) != bound )
+			else if ( boundRoot?.NetState == null || boundRoot.FindItemOnLayer( Layer.Bracelet ) != bound )
 			{
 				from.SendLocalizedMessage( 1054006 ); // The bracelet emits a red glow. The bracelet's twin is not available for transport.
 				return false;

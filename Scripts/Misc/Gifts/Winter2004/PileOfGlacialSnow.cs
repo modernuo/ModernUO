@@ -113,7 +113,7 @@ namespace Server.Items
 					{
 						from.SendMessage( "You may not throw snow here." );
 					}
-					else if ( pack != null && pack.FindItemByType( new[]{ typeof( SnowPile ), typeof( PileOfGlacialSnow ) } ) != null )
+					else if ( pack?.FindItemByType( new[]{ typeof( SnowPile ), typeof( PileOfGlacialSnow ) } ) != null )
 					{
 						if ( from.BeginAction( typeof( SnowPile ) ) )
 						{

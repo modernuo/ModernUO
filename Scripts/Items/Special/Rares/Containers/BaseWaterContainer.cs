@@ -32,7 +32,7 @@
 					{
 						IEntity rootParent = RootParent;
 
-						if ( rootParent != null && rootParent.Map != null && rootParent.Map != Map.Internal )
+						if ( rootParent?.Map != null && rootParent.Map != Map.Internal )
 							MoveToWorld( rootParent.Location, rootParent.Map );
 					}
 

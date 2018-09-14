@@ -1610,7 +1610,7 @@ namespace Server.Network
 			bool rightClick = pvSrc.ReadBoolean();
 			Mobile from = state.Mobile;
 
-			if ( from != null && from.QuestArrow != null )
+			if ( @from?.QuestArrow != null )
 				from.QuestArrow.OnClick( rightClick );
 		}
 

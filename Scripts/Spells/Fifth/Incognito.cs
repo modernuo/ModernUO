@@ -77,7 +77,7 @@ namespace Server.Spells.Fifth
 
 					PlayerMobile pm = Caster as PlayerMobile;
 
-					if ( pm != null && pm.Race != null )
+					if ( pm?.Race != null )
 					{
 						pm.SetHairMods( pm.Race.RandomHair( pm.Female ), pm.Race.RandomFacialHair( pm.Female ) );
 						pm.HairHue = pm.Race.RandomHairHue();
