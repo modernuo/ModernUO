@@ -90,7 +90,6 @@ namespace Server.Items
 		public override void OnChop( Mobile from )
 		{
 			from.SendLocalizedMessage( 500489 ); // You can't use an axe on that.
-			return;
 		}
 
 			public override void GetProperties( ObjectPropertyList list )

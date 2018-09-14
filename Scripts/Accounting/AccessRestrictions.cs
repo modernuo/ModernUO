@@ -33,7 +33,6 @@ namespace Server
 						op.WriteLine( "{0}\tPast IP limit threshold\t{1}", ip, DateTime.UtcNow );
 	
 					e.AllowConnection = false;
-					return;
 				}
 			}
 			catch

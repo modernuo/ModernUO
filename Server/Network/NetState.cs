@@ -891,7 +891,6 @@ namespace Server.Network {
 			Console.WriteLine( "Client: {0}: Disconnecting due to inactivity...", this );
 
 			Dispose();
-			return;
 		}
 
 		public static void TraceException( Exception ex ) {

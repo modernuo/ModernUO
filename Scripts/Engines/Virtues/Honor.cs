@@ -335,7 +335,6 @@ namespace Server
 
 		public void OnSourceKilled()
 		{
-			return;
 		}
 
 		public void OnTargetKilled()

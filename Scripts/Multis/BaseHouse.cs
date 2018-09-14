@@ -3519,7 +3519,6 @@ namespace Server.Multis
 			}
 			else if ( targeted is StaticTarget )
 			{
-				return;
 			}
 			else
 			{

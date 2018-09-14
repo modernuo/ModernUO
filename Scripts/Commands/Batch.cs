@@ -41,10 +41,7 @@ namespace Server.Commands
 				{
 					BatchCommand bc = (BatchCommand)BatchCommands[i];
 
-					string commandString, argString;
-					string[] args;
-
-					bc.GetDetails( out commandString, out argString, out args );
+					bc.GetDetails( out string commandString, out string argString, out string[] args );
 
 					BaseCommand command = Scope.Commands[commandString];
 
@@ -174,9 +171,7 @@ namespace Server.Commands
 		[Description( "Allows multiple commands to be run at the same time." )]
 		public static void Batch_OnCommand( CommandEventArgs e )
 		{
-			Batch batch = new Batch();
-
-			e.Mobile.SendGump( new BatchGump( e.Mobile, batch ) );
+			e.Mobile.SendGump( new BatchGump( e.Mobile, new Batch() ) );
 		}
 	}
 
@@ -305,9 +300,7 @@ namespace Server.Commands
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
-			int type, index;
-
-			if ( !SplitButtonID( info.ButtonID, 1, out type, out index ) )
+			if ( !SplitButtonID( info.ButtonID, 1, out int type, out int index ) )
 				return;
 
 			TextRelay entry = info.GetTextEntry( 0 );
@@ -405,9 +398,7 @@ namespace Server.Commands
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
-			int type, index;
-
-			if ( SplitButtonID( info.ButtonID, 1, out type, out index ) )
+			if ( SplitButtonID( info.ButtonID, 1, out int type, out int index ) )
 			{
 				switch ( type )
 				{

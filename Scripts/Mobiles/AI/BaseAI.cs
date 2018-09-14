@@ -2659,7 +2659,6 @@ namespace Server.Mobiles
 				if (loc != Point3D.Zero)
 				{
 					m_Mobile.MoveToWorld(loc, se.Region.Map);
-					return;
 				}
 			}
 		}

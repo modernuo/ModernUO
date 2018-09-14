@@ -25,7 +25,6 @@ honor points on yourself?", true, false);
 			}
 			else
 			{
-				return;
 			}
 		}
 	}

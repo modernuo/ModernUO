@@ -325,7 +325,6 @@ namespace Server.Items
 				else if ( m_Map.m_Decoder != from && !m_Map.HasRequiredSkill( from ) )
 				{
 					from.SendLocalizedMessage( 503031 ); // You did not decode this map and have no clue where to look for the treasure.
-					return;
 				}
 				else if ( !from.CanBeginAction( typeof( TreasureMap ) ) )
 				{

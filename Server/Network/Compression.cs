@@ -180,7 +180,6 @@ namespace Server.Network {
 						}
 
 						length = (int)(pOutput - pOutputBuffer);
-						return;
 					}
 				}
 			}

@@ -166,7 +166,6 @@ namespace Server.Guilds
 			{
 				guild.Charter = charter;
 				from.SendLocalizedMessage( 1070775 ); // You submit a new guild charter.
-				return;
 			}
 		}
 
@@ -183,7 +182,6 @@ namespace Server.Guilds
 			{
 				guild.Website = site;
 				from.SendLocalizedMessage( 1070778 ); // You submit a new guild website.
-				return;
 			}
 		}
 	}

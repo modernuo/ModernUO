@@ -205,8 +205,8 @@ namespace Server.Network
 		{
 			if ( packetID >= 0 && packetID < 0x100 )
 				return m_ExtendedHandlersLow[packetID];
-			PacketHandler handler;
-			m_ExtendedHandlersHigh.TryGetValue( packetID, out handler );
+
+			m_ExtendedHandlersHigh.TryGetValue( packetID, out PacketHandler handler );
 			return handler;
 		}
 
@@ -230,8 +230,8 @@ namespace Server.Network
 		{
 			if ( packetID >= 0 && packetID < 0x100 )
 				return m_EncodedHandlersLow[packetID];
-			EncodedPacketHandler handler;
-			m_EncodedHandlersHigh.TryGetValue( packetID, out handler );
+
+			m_EncodedHandlersHigh.TryGetValue( packetID, out EncodedPacketHandler handler );
 			return handler;
 		}
 
@@ -418,13 +418,14 @@ namespace Server.Network
 					return;
 
 				List<BuyItemResponse> buyList = new List<BuyItemResponse>( msgSize / 7 );
-				for ( ;msgSize>0;msgSize-=7)
+				while ( msgSize > 0 )
 				{
 					byte layer = pvSrc.ReadByte();
 					Serial serial = pvSrc.ReadInt32();
 					int amount = pvSrc.ReadInt16();
 
 					buyList.Add( new BuyItemResponse( serial, amount ) );
+					msgSize -= 7;
 				}
 
 				if ( buyList.Count > 0 && vendor is IVendor v && v.OnBuyItems( state.Mobile, buyList ) )
@@ -768,9 +769,7 @@ namespace Server.Network
 				}
 				case 0x24: // Use skill
 				{
-					int skillIndex;
-
-					if ( !int.TryParse( command.Split( ' ' )[0], out skillIndex ) )
+					if ( !int.TryParse( command.Split( ' ' )[0], out int skillIndex ) )
 						break;
 
 					Skills.UseSkill( m, skillIndex );
@@ -779,9 +778,7 @@ namespace Server.Network
 				}
 				case 0x43: // Open spellbook
 				{
-					int booktype;
-
-					if ( !int.TryParse( command, out booktype ) )
+					if ( !int.TryParse( command, out int booktype ) )
 						booktype = 1;
 
 					EventSink.InvokeOpenSpellbookRequest( new OpenSpellbookRequestEventArgs( m, booktype ) );
@@ -1115,93 +1112,91 @@ namespace Server.Network
 
 			Target t = from.Target;
 
-			if ( t != null )
-			{
-				TargetProfile prof = TargetProfile.Acquire( t.GetType() );
+			if (t == null)
+				return;
 
-				prof?.Start();
+			TargetProfile prof = TargetProfile.Acquire( t.GetType() );
+			prof?.Start();
 
-				try {
-					if ( x == -1 && y == -1 && !serial.IsValid )
-					{
-						// User pressed escape
-						t.Cancel( from, TargetCancelType.Canceled );
-					}
-					else if ( Target.TargetIDValidation && t.TargetID != targetID )
-					{
-						// Sanity, prevent fake target
-						return;
-					}
-					else
-					{
-						object toTarget;
+			try {
+				if ( x == -1 && y == -1 && !serial.IsValid )
+				{
+					// User pressed escape
+					t.Cancel( from, TargetCancelType.Canceled );
+				}
+				else if ( Target.TargetIDValidation && t.TargetID != targetID )
+				{
+					// Sanity, prevent fake target
+				}
+				else
+				{
+					object toTarget;
 
-						if ( type == 1 )
+					if ( type == 1 )
+					{
+						if ( graphic == 0 )
 						{
-							if ( graphic == 0 )
+							toTarget = new LandTarget( new Point3D( x, y, z ), from.Map );
+						}
+						else
+						{
+							Map map = from.Map;
+
+							if ( map == null || map == Map.Internal )
 							{
-								toTarget = new LandTarget( new Point3D( x, y, z ), from.Map );
+								t.Cancel( from, TargetCancelType.Canceled );
+								return;
 							}
 							else
 							{
-								Map map = from.Map;
+								StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y, !t.DisallowMultis );
 
-								if ( map == null || map == Map.Internal )
+								bool valid = false;
+
+								if ( state.HighSeas ) {
+									ItemData id = TileData.ItemTable[graphic&TileData.MaxItemValue];
+									if ( id.Surface ) {
+										z -= id.Height;
+									}
+								}
+
+								for ( int i = 0; !valid && i < tiles.Length; ++i )
+								{
+									if ( tiles[i].Z == z && tiles[i].ID == graphic )
+										valid = true;
+								}
+
+								if ( !valid )
 								{
 									t.Cancel( from, TargetCancelType.Canceled );
 									return;
 								}
 								else
 								{
-									StaticTile[] tiles = map.Tiles.GetStaticTiles( x, y, !t.DisallowMultis );
-
-									bool valid = false;
-
-									if ( state.HighSeas ) {
-										ItemData id = TileData.ItemTable[graphic&TileData.MaxItemValue];
-										if ( id.Surface ) {
-											z -= id.Height;
-										}
-									}
-
-									for ( int i = 0; !valid && i < tiles.Length; ++i )
-									{
-										if ( tiles[i].Z == z && tiles[i].ID == graphic )
-											valid = true;
-									}
-
-									if ( !valid )
-									{
-										t.Cancel( from, TargetCancelType.Canceled );
-										return;
-									}
-									else
-									{
-										toTarget = new StaticTarget( new Point3D( x, y, z ), graphic );
-									}
+									toTarget = new StaticTarget( new Point3D( x, y, z ), graphic );
 								}
 							}
 						}
-						else if ( serial.IsMobile )
-						{
-							toTarget = World.FindMobile( serial );
-						}
-						else if ( serial.IsItem )
-						{
-							toTarget = World.FindItem( serial );
-						}
-						else
-						{
-							t.Cancel( from, TargetCancelType.Canceled );
-							return;
-						}
-
-						t.Invoke( from, toTarget );
 					}
-				} finally
-				{
-					prof?.Finish();
+					else if ( serial.IsMobile )
+					{
+						toTarget = World.FindMobile( serial );
+					}
+					else if ( serial.IsItem )
+					{
+						toTarget = World.FindItem( serial );
+					}
+					else
+					{
+						t.Cancel( from, TargetCancelType.Canceled );
+						return;
+					}
+
+					t.Invoke( from, toTarget );
 				}
+			} finally
+			{
+				prof?.Finish();
 			}
 		}
 

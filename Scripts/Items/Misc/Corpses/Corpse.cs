@@ -1099,7 +1099,6 @@ namespace Server.Items
 			else
 			{
 				from.SendLocalizedMessage( 500446 ); // That is too far away.
-				return;
 			}
 		}
 

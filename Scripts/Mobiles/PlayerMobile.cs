@@ -130,7 +130,6 @@ namespace Server.Mobiles
 						SendLocalizedMessage(1112456);
 						break; // You cannot fly while recovering from a dismount maneuver.
 				}
-				return;
 			}
 			else if (Hits < 25) // TODO confirm
 			{

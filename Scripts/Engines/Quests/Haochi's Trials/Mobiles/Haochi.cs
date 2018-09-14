@@ -151,7 +151,6 @@ namespace Server.Engines.Quests.Samurai
 					player.AddToBackpack( armor );
 
 					obj.Complete();
-					return;
 				}
 			}
 		}
