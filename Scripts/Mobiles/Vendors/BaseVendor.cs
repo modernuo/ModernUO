@@ -131,10 +131,10 @@ namespace Server.Mobiles
 						{
 							Item bulkOrder = m_Vendor.CreateBulkOrder( m_From, true );
 
-							if ( bulkOrder is LargeBOD )
-								m_From.SendGump( new LargeBODAcceptGump( m_From, (LargeBOD)bulkOrder ) );
-							else if ( bulkOrder is SmallBOD )
-								m_From.SendGump( new SmallBODAcceptGump( m_From, (SmallBOD)bulkOrder ) );
+							if ( bulkOrder is LargeBOD bod )
+								m_From.SendGump( new LargeBODAcceptGump( m_From, bod ) );
+							else if ( bulkOrder is SmallBOD smallBod )
+								m_From.SendGump( new SmallBODAcceptGump( m_From, smallBod ) );
 						}
 					}
 					else
@@ -208,13 +208,9 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				Container pack = FindItemOnLayer( Layer.ShopBuy ) as Container;
-
-				if ( pack == null )
+				if ( !(FindItemOnLayer( Layer.ShopBuy ) is Container pack) )
 				{
-					pack = new Backpack();
-					pack.Layer = Layer.ShopBuy;
-					pack.Visible = false;
+					pack = new Backpack { Layer = Layer.ShopBuy, Visible = false };
 					AddItem( pack );
 				}
 
@@ -232,9 +228,7 @@ namespace Server.Mobiles
 
 			for ( int i = 0; i < m_ArmorBuyInfo.Count; ++i )
 			{
-				GenericBuyInfo buy = m_ArmorBuyInfo[i] as GenericBuyInfo;
-
-				if ( buy != null )
+				if ( m_ArmorBuyInfo[i] is GenericBuyInfo buy )
 					buy.DeleteDisplayEntity();
 			}
 
@@ -560,17 +554,17 @@ namespace Server.Mobiles
 				GenericBuyInfo gbi = (GenericBuyInfo)buyItem;
 				IEntity disp = gbi.GetDisplayEntity();
 
-				list.Add( new BuyItemState( buyItem.Name, cont.Serial, disp == null ? (Serial)0x7FC0FFEE : disp.Serial, buyItem.Price, buyItem.Amount, buyItem.ItemID, buyItem.Hue ) );
+				list.Add( new BuyItemState( buyItem.Name, cont.Serial, disp?.Serial ?? (Serial)0x7FC0FFEE, buyItem.Price, buyItem.Amount, buyItem.ItemID, buyItem.Hue ) );
 				count++;
 
 				if ( opls == null ) {
 					opls = new List<ObjectPropertyList>();
 				}
 
-				if ( disp is Item ) {
-					opls.Add( ( ( Item ) disp ).PropertyList );
-				} else if ( disp is Mobile ) {
-					opls.Add( ( ( Mobile ) disp ).PropertyList );
+				if ( disp is Item item ) {
+					opls.Add( item.PropertyList );
+				} else if ( disp is Mobile mobile ) {
+					opls.Add( mobile.PropertyList );
 				}
 			}
 
@@ -718,7 +712,7 @@ namespace Server.Mobiles
 
 					foreach ( Item item in items )
 					{
-						if ( item is Container && ( (Container)item ).Items.Count != 0 )
+						if ( item is Container container && container.Items.Count != 0 )
 							continue;
 
 						if ( item.IsStandardLoot() && item.Movable && ssi.IsSellable( item ) )
@@ -743,58 +737,59 @@ namespace Server.Mobiles
 		{
 			/* TODO: Thou art giving me? and fame/karma for gold gifts */
 
-			if ( dropped is SmallBOD || dropped is LargeBOD )
+			SmallBOD smallBod = dropped as SmallBOD;
+			LargeBOD largeBod = dropped as LargeBOD;
+
+			if ( !(smallBod != null || largeBod != null) )
+				return base.OnDragDrop( from, dropped );
+
+			PlayerMobile pm = from as PlayerMobile;
+
+			if ( Core.ML && pm?.NextBODTurnInTime > DateTime.UtcNow )
 			{
-				PlayerMobile pm = from as PlayerMobile;
-
-				if ( Core.ML && pm != null && pm.NextBODTurnInTime > DateTime.UtcNow )
-				{
-					SayTo( from, 1079976 ); // You'll have to wait a few seconds while I inspect the last order.
-					return false;
-				}
-				else if ( !IsValidBulkOrder( dropped ) )
-				{
-					SayTo( from, 1045130 ); // That order is for some other shopkeeper.
-					return false;
-				}
-				else if ( ( dropped is SmallBOD && !( (SmallBOD)dropped ).Complete ) || ( dropped is LargeBOD && !( (LargeBOD)dropped ).Complete ) )
-				{
-					SayTo( from, 1045131 ); // You have not completed the order yet.
-					return false;
-				}
-
-				Item reward;
-				int gold, fame;
-
-				if ( dropped is SmallBOD )
-					( (SmallBOD)dropped ).GetRewards( out reward, out gold, out fame );
-				else
-					( (LargeBOD)dropped ).GetRewards( out reward, out gold, out fame );
-
-				from.SendSound( 0x3D );
-
-				SayTo( from, 1045132 ); // Thank you so much!  Here is a reward for your effort.
-
-				if ( reward != null )
-					from.AddToBackpack( reward );
-
-				if ( gold > 1000 )
-					from.AddToBackpack( new BankCheck( gold ) );
-				else if ( gold > 0 )
-					from.AddToBackpack( new Gold( gold ) );
-
-				Titles.AwardFame( from, fame, true );
-
-				OnSuccessfulBulkOrderReceive( from );
-
-				if ( Core.ML && pm != null )
-					pm.NextBODTurnInTime = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
-
-				dropped.Delete();
-				return true;
+				SayTo( from, 1079976 ); // You'll have to wait a few seconds while I inspect the last order.
+				return false;
+			}
+			if ( !IsValidBulkOrder( dropped ) )
+			{
+				SayTo( from, 1045130 ); // That order is for some other shopkeeper.
+				return false;
+			}
+			if ( smallBod?.Complete == false || largeBod?.Complete == false )
+			{
+				SayTo( from, 1045131 ); // You have not completed the order yet.
+				return false;
 			}
 
-			return base.OnDragDrop( from, dropped );
+			Item reward;
+			int gold, fame;
+
+			if ( smallBod != null )
+				smallBod.GetRewards( out reward, out gold, out fame );
+			else
+				largeBod.GetRewards( out reward, out gold, out fame );
+
+			from.SendSound( 0x3D );
+
+			SayTo( from, 1045132 ); // Thank you so much!  Here is a reward for your effort.
+
+			if ( reward != null )
+				from.AddToBackpack( reward );
+
+			if ( gold > 1000 )
+				from.AddToBackpack( new BankCheck( gold ) );
+			else if ( gold > 0 )
+				from.AddToBackpack( new Gold( gold ) );
+
+			Titles.AwardFame( from, fame, true );
+
+			OnSuccessfulBulkOrderReceive( from );
+
+			if ( Core.ML && pm != null )
+				pm.NextBODTurnInTime = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
+
+			dropped.Delete();
+			return true;
 		}
 
 		private GenericBuyInfo LookupDisplayObject( object obj )
@@ -849,10 +844,8 @@ namespace Server.Mobiles
 
 			IEntity o = bii.GetEntity();
 
-			if ( o is Item )
+			if ( o is Item item )
 			{
-				Item item = (Item)o;
-
 				if ( item.Stackable )
 				{
 					item.Amount = amount;
@@ -881,18 +874,16 @@ namespace Server.Mobiles
 					}
 				}
 			}
-			else if ( o is Mobile )
+			else if ( o is Mobile m )
 			{
-				Mobile m = (Mobile)o;
-
 				m.Direction = (Direction)Utility.Random( 8 );
 				m.MoveToWorld( buyer.Location, buyer.Map );
 				m.PlaySound( m.GetIdleSound() );
 
-                if (m is BaseCreature)
+				if (m is BaseCreature bc)
                 {
-                    ((BaseCreature)m).SetControlMaster(buyer);
-                    ((BaseCreature)m).ControlOrder = OrderType.Stop;
+	                bc.SetControlMaster(buyer);
+	                bc.ControlOrder = OrderType.Stop;
                 }
 
 				for ( int i = 1; i < amount; ++i )
@@ -904,10 +895,12 @@ namespace Server.Mobiles
 						m.Direction = (Direction)Utility.Random( 8 );
 						m.MoveToWorld( buyer.Location, buyer.Map );
 
-                        if (m is BaseCreature)
+						bc = m as BaseCreature;
+
+                        if (bc != null)
                         {
-                            ((BaseCreature)m).SetControlMaster(buyer);
-                            ((BaseCreature)m).ControlOrder = OrderType.Stop;
+	                        bc.SetControlMaster(buyer);
+	                        bc.ControlOrder = OrderType.Stop;
                         }
 					}
 				}
@@ -930,7 +923,7 @@ namespace Server.Mobiles
 
 			UpdateBuyInfo();
 
-			IBuyItemInfo[] buyInfo = this.GetBuyInfo();
+			// IBuyItemInfo[] buyInfo = this.GetBuyInfo();
 			IShopSellInfo[] info = GetSellInfo();
 			int totalCost = 0;
 			List<BuyItemResponse> validBuy = new List<BuyItemResponse>( list.Count );
@@ -1029,8 +1022,8 @@ namespace Server.Mobiles
 
 			if ( !bought )
 				return false;
-			else
-				buyer.PlaySound( 0x32 );
+
+			buyer.PlaySound( 0x32 );
 
 			cont = buyer.Backpack;
 			if ( cont == null )
@@ -1168,7 +1161,7 @@ namespace Server.Mobiles
 
 			foreach ( SellItemResponse resp in list )
 			{
-				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || ( resp.Item is Container && ( (Container)resp.Item ).Items.Count != 0 ) )
+				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || ( resp.Item is Container container && container.Items.Count != 0 ) )
 					continue;
 
 				foreach ( IShopSellInfo ssi in info )
@@ -1186,14 +1179,14 @@ namespace Server.Mobiles
 				SayTo( seller, true, "You may only sell {0} items at a time!", MaxSell );
 				return false;
 			}
-			else if ( Sold == 0 )
+			if ( Sold == 0 )
 			{
 				return true;
 			}
 
 			foreach ( SellItemResponse resp in list )
 			{
-				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || ( resp.Item is Container && ( (Container)resp.Item ).Items.Count != 0 ) )
+				if ( resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() || !resp.Item.Movable || ( resp.Item is Container container && container.Items.Count != 0 ) )
 					continue;
 
 				foreach ( IShopSellInfo ssi in info )
@@ -1276,10 +1269,10 @@ namespace Server.Mobiles
 				{
 					Item bulkOrder = CreateBulkOrder( seller, false );
 
-					if ( bulkOrder is LargeBOD )
-						seller.SendGump( new LargeBODAcceptGump( seller, (LargeBOD)bulkOrder ) );
-					else if ( bulkOrder is SmallBOD )
-						seller.SendGump( new SmallBODAcceptGump( seller, (SmallBOD)bulkOrder ) );
+					if ( bulkOrder is LargeBOD largeBod )
+						seller.SendGump( new LargeBODAcceptGump( seller, largeBod ) );
+					else if ( bulkOrder is SmallBOD smallBod )
+						seller.SendGump( new SmallBODAcceptGump( seller, smallBod ) );
 				}
 			}
 			//no cliloc for this?
@@ -1303,7 +1296,7 @@ namespace Server.Mobiles
 
 				for ( int j = 0; buyInfo != null && j < buyInfo.Count; ++j )
 				{
-					GenericBuyInfo gbi = (GenericBuyInfo)buyInfo[j];
+					GenericBuyInfo gbi = buyInfo[j];
 
 					int maxAmount = gbi.MaxAmount;
 					int doubled = 0;
@@ -1362,7 +1355,7 @@ namespace Server.Mobiles
 
 									if ( buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count )
 									{
-										GenericBuyInfo gbi = (GenericBuyInfo)buyInfo[buyInfoIndex];
+										GenericBuyInfo gbi = buyInfo[buyInfoIndex];
 
 										int amount = 20;
 

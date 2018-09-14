@@ -7468,8 +7468,7 @@ namespace Server
 				{
 					value = HitsMax;
 
-					if ( m_HitsTimer != null )
-						m_HitsTimer.Stop();
+					m_HitsTimer?.Stop();
 
 					for( int i = 0; i < m_Aggressors.Count; i++ ) //reset reports on full HP
 						m_Aggressors[i].CanReportMurder = false;
@@ -7487,9 +7486,9 @@ namespace Server
 
 						m_HitsTimer.Start();
 					}
-					else if ( m_HitsTimer != null )
+					else
 					{
-						m_HitsTimer.Stop();
+						m_HitsTimer?.Stop();
 					}
 				}
 
@@ -7538,8 +7537,7 @@ namespace Server
 				{
 					value = StamMax;
 
-					if ( m_StamTimer != null )
-						m_StamTimer.Stop();
+					m_StamTimer?.Stop();
 				}
 
 				if ( value < StamMax )
@@ -7551,9 +7549,9 @@ namespace Server
 
 						m_StamTimer.Start();
 					}
-					else if ( m_StamTimer != null )
+					else
 					{
-						m_StamTimer.Stop();
+						m_StamTimer?.Stop();
 					}
 				}
 
@@ -7602,8 +7600,7 @@ namespace Server
 				{
 					value = ManaMax;
 
-					if ( m_ManaTimer != null )
-						m_ManaTimer.Stop();
+					m_ManaTimer?.Stop();
 
 					if ( Meditating )
 					{
@@ -7621,9 +7618,9 @@ namespace Server
 
 						m_ManaTimer.Start();
 					}
-					else if ( m_ManaTimer != null )
+					else
 					{
-						m_ManaTimer.Stop();
+						m_ManaTimer?.Stop();
 					}
 				}
 
