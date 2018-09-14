@@ -548,8 +548,11 @@ namespace Server
 				surface = id.Surface;
 				impassable = id.Impassable;
 
-				return !((surface || impassable) && staticTiles[i].Z + id.CalcHeight > z && z + height > staticTiles[i].Z)
-				       || surface && !impassable && z == staticTiles[i].Z + id.CalcHeight;
+				if ( ( surface || impassable ) && ( staticTiles[i].Z + id.CalcHeight ) > z && ( z + height ) > staticTiles[i].Z )
+					return false;
+
+				if ( surface && !impassable && z == ( staticTiles[i].Z + id.CalcHeight ) )
+					hasSurface = true;
 			}
 
 			Sector sector = GetSector( x, y );
@@ -566,8 +569,11 @@ namespace Server
 					surface = id.Surface;
 					impassable = id.Impassable;
 
-					return !((surface || impassable || checkBlocksFit && item.BlocksFit) && item.Z + id.CalcHeight > z && z + height > item.Z)
-					       || surface && !impassable && !item.Movable && z == item.Z + id.CalcHeight;
+					if ( ( surface || impassable || ( checkBlocksFit && item.BlocksFit ) ) && ( item.Z + id.CalcHeight ) > z && ( z + height ) > item.Z )
+						return false;
+
+					if ( surface && !impassable && !item.Movable && z == ( item.Z + id.CalcHeight ) )
+						hasSurface = true;
 				}
 			}
 
