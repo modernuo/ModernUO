@@ -927,9 +927,9 @@ namespace Server.Engines.ConPVP
 		}
 
 		private bool m_Capturable = true;
-		private Timer m_CaptureTimer = null;
-		private Timer m_UncaptureTimer = null;
-		private int m_CapStage = 0;
+		private Timer m_CaptureTimer;
+		private Timer m_UncaptureTimer;
+		private int m_CapStage;
 
 		public void Dominate( DDWayPoint point, Mobile from, DDTeamInfo team )
 		{

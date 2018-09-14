@@ -5,7 +5,7 @@ namespace Server.Misc
 {
 	public class AutoRestart : Timer
 	{
-		public static bool Enabled = false; // is the script enabled?
+		public static bool Enabled; // is the script enabled?
 
 		private static TimeSpan RestartTime = TimeSpan.FromHours( 2.0 ); // time of day at which to restart
 		private static TimeSpan RestartDelay = TimeSpan.Zero; // how long the server should remain active before restart (period of 'server wars')

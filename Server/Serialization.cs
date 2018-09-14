@@ -1385,7 +1385,7 @@ namespace Server
 
 	public sealed class AsyncWriter : GenericWriter
 	{
-		private static int m_ThreadCount = 0;
+		private static int m_ThreadCount;
 		public static int ThreadCount => m_ThreadCount;
 
 		private int BufferSize;

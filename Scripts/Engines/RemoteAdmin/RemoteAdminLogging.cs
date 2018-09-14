@@ -19,7 +19,7 @@ namespace Server.RemoteAdmin
 
 		public static StreamWriter Output  => m_Output;
 
-		private static bool Initialized = false;
+		private static bool Initialized;
 		public static void LazyInitialize()
 		{
 			if ( Initialized || !m_Enabled ) return;

@@ -123,8 +123,8 @@ namespace Server.Items
 		}
 
 		private Timer m_Timer;
-		private int m_ItemID = 0;
-		private int m_Count = 0;
+		private int m_ItemID;
+		private int m_Count;
 
 		public void PlayMusic( Mobile m, MusicName music )
 		{

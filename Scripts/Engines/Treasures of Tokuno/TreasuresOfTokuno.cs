@@ -77,7 +77,7 @@ namespace Server.Misc
 
 		public static Type[] LesserArtifacts => m_LesserArtifacts[(int)RewardEra-1];
 
-		private static Type[][] m_GreaterArtifacts = null;
+		private static Type[][] m_GreaterArtifacts;
 
 		public static Type[] GreaterArtifacts
 		{

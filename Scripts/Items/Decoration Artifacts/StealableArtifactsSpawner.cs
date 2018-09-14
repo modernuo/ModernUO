@@ -159,7 +159,7 @@ namespace Server.Items
 
 		public static StealableEntry[] Entries => m_Entries;
 
-		private static Type[] m_TypesOfEntries = null;
+		private static Type[] m_TypesOfEntries;
 		public static Type[] TypesOfEntires
 		{
 			get

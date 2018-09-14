@@ -95,7 +95,7 @@ namespace Server.Network {
 		private AsyncState m_AsyncState;
 		private object m_AsyncLock = new object();
 
-		private IPacketEncoder m_Encoder = null;
+		private IPacketEncoder m_Encoder;
 
 		public IPacketEncoder PacketEncoder {
 			get => m_Encoder;

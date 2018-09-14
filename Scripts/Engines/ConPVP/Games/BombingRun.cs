@@ -356,7 +356,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		private Point3DList m_Path = new Point3DList();
-		private int m_PathIdx = 0;
+		private int m_PathIdx;
 
 		private void BeginFlight( Point3D dest )
 		{
@@ -785,7 +785,7 @@ namespace Server.Engines.ConPVP
 
 	public class BRGoal : BaseAddon
 	{
-		private bool m_North = false;
+		private bool m_North;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool North { get => m_North;
@@ -1531,7 +1531,7 @@ namespace Server.Engines.ConPVP
 
 		private BRBomb m_Bomb;
 
-		private TimerCallback m_UnhideCallback = null;
+		private TimerCallback m_UnhideCallback;
 
 		public void ReturnBomb()
 		{

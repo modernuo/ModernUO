@@ -150,7 +150,7 @@ namespace Server
 			set => _PostHSFormat = value;
 		}
 
-		private static bool _PostHSFormat = false;
+		private static bool _PostHSFormat;
 
 		private Point2D m_Min, m_Max, m_Center;
 		private int m_Width, m_Height;

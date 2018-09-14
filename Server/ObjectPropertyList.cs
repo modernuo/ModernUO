@@ -42,7 +42,7 @@ namespace Server
 			set => m_HeaderArgs = value;
 		}
 
-		private static bool m_Enabled = false;
+		private static bool m_Enabled;
 
 		public static bool Enabled{ get => m_Enabled;
 			set => m_Enabled = value;

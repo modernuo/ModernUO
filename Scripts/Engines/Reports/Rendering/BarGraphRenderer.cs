@@ -55,7 +55,7 @@ namespace Server.Engines.Reports
 		private Color	_fontColor;
 		private float	_graphHeight;
 		private float	_graphWidth;
-		private float	_maxValue = 0.0f;	// = final tick value * tick count
+		private float	_maxValue;	// = final tick value * tick count
 		private float	_scaleFactor;		// = _maxValue / _graphHeight
 		private float	_spaceBtwBars;	// For now same as _barWidth
 		private float	_topBuffer;		// Space from top to the top of y axis
@@ -69,7 +69,7 @@ namespace Server.Engines.Reports
 		private bool	_displayLegend;
 		private float	_legendWidth;
 		private string	_longestLabel = string.Empty;	// Used to calculate legend width
-		private float	_maxLabelWidth = 0.0f;
+		private float	_maxLabelWidth;
 
 		public string FontFamily
 		{

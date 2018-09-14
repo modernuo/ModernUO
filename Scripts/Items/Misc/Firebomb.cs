@@ -9,7 +9,7 @@ namespace Server.Items
 	public class Firebomb : Item
 	{
 		private Timer m_Timer;
-		private int m_Ticks = 0;
+		private int m_Ticks;
 		private Mobile m_LitBy;
 		private List<Mobile> m_Users;
 

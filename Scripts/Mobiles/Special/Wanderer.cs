@@ -47,7 +47,7 @@ namespace Server.Mobiles
 		private class InternalTimer : Timer
 		{
 			private Wanderer m_Owner;
-			private int m_Count = 0;
+			private int m_Count;
 
 			public InternalTimer( Wanderer owner ) : base( TimeSpan.FromSeconds( 0.1 ), TimeSpan.FromSeconds( 0.1 ) )
 			{

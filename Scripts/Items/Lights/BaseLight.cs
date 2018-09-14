@@ -6,9 +6,9 @@ namespace Server.Items
 	{
 		private Timer m_Timer;
 		private DateTime m_End;
-		private bool m_BurntOut = false;
-		private bool m_Burning = false;
-		private bool m_Protected = false;
+		private bool m_BurntOut;
+		private bool m_Burning;
+		private bool m_Protected;
 		private TimeSpan m_Duration = TimeSpan.Zero;
 
 		public abstract int LitItemID{ get; }

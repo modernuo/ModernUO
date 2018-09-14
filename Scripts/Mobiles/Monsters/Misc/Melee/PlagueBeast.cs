@@ -9,7 +9,7 @@ namespace Server.Mobiles
 		public override string CorpseName => "a plague beast corpse";
 		private int m_DevourTotal;
 		private int m_DevourGoal;
-		private bool m_HasMetalChest = false;
+		private bool m_HasMetalChest;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int TotalDevoured

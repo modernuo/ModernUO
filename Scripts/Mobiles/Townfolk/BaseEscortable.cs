@@ -94,7 +94,7 @@ namespace Server.Mobiles
 		private DateTime m_DeleteTime;
 		private Timer m_DeleteTimer;
 
-		private bool m_DeleteCorpse = false;
+		private bool m_DeleteCorpse;
 
 		public bool IsBeingDeleted => ( m_DeleteTimer != null );
 

@@ -107,7 +107,7 @@ namespace Server {
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
 
-		private int _Index = 0;
+		private int _Index;
 
 		private object _sync = new object();
 
@@ -226,7 +226,7 @@ namespace Server {
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
 
-		private int _Index = 0;
+		private int _Index;
 
 		private object _sync = new object();
 
@@ -364,7 +364,7 @@ namespace Server {
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
 
-		private int _Index = 0;
+		private int _Index;
 
 		private object _sync = new object();
 
@@ -483,7 +483,7 @@ namespace Server {
 		private byte[] _Working = new byte[BUFFER_SIZE];
 		private byte[] _Buffer = new byte[BUFFER_SIZE];
 
-		private int _Index = 0;
+		private int _Index;
 
 		private object _sync = new object();
 

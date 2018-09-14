@@ -202,17 +202,17 @@ namespace Server.Mobiles
 		private double		m_MinTameSkill;
 		private bool		m_bTamable;
 
-		private bool		m_bSummoned = false;
+		private bool		m_bSummoned;
 		private DateTime	m_SummonEnd;
 		private int			m_iControlSlots = 1;
 
-		private bool		m_bBardProvoked = false;
-		private bool		m_bBardPacified = false;
-		private Mobile		m_bBardMaster = null;
-		private Mobile		m_bBardTarget = null;
+		private bool		m_bBardProvoked;
+		private bool		m_bBardPacified;
+		private Mobile		m_bBardMaster;
+		private Mobile		m_bBardTarget;
 		private DateTime	m_timeBardEnd;
-		private WayPoint	m_CurrentWayPoint = null;
-		private IPoint2D	m_TargetLocation = null;
+		private WayPoint	m_CurrentWayPoint;
+		private IPoint2D	m_TargetLocation;
 
 		private Mobile		m_SummonMaster;
 
@@ -4889,7 +4889,7 @@ namespace Server.Mobiles
 
 		private long m_NextHealTime = Core.TickCount;
 		private long m_NextHealOwnerTime = Core.TickCount;
-		private Timer m_HealTimer = null;
+		private Timer m_HealTimer;
 
 		public bool IsHealing => ( m_HealTimer != null );
 
