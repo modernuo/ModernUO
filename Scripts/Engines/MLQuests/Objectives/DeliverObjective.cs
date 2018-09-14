@@ -8,41 +8,15 @@ namespace Server.Engines.MLQuests.Objectives
 {
 	public class DeliverObjective : BaseObjective
 	{
-		private Type m_Delivery;
-		private int m_Amount;
-		private TextDefinition m_Name;
-		private Type m_Destination;
-		private bool m_SpawnsDelivery;
+		public Type Delivery { get; set; }
 
-		public Type Delivery
-		{
-			get => m_Delivery;
-			set => m_Delivery = value;
-		}
+		public int Amount { get; set; }
 
-		public int Amount
-		{
-			get => m_Amount;
-			set => m_Amount = value;
-		}
+		public TextDefinition Name { get; set; }
 
-		public TextDefinition Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public Type Destination { get; set; }
 
-		public Type Destination
-		{
-			get => m_Destination;
-			set => m_Destination = value;
-		}
-
-		public bool SpawnsDelivery
-		{
-			get => m_SpawnsDelivery;
-			set => m_SpawnsDelivery = value;
-		}
+		public bool SpawnsDelivery { get; set; }
 
 		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination )
 			: this( delivery, amount, name, destination, true )
@@ -51,11 +25,11 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery )
 		{
-			m_Delivery = delivery;
-			m_Amount = amount;
-			m_Name = name;
-			m_Destination = destination;
-			m_SpawnsDelivery = spawnsDelivery;
+			Delivery = delivery;
+			Amount = amount;
+			Name = name;
+			Destination = destination;
+			SpawnsDelivery = spawnsDelivery;
 
 			if ( MLQuestSystem.Debug && name.Number > 0 )
 			{
@@ -68,21 +42,21 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public virtual void SpawnDelivery( Container pack )
 		{
-			if ( !m_SpawnsDelivery || pack == null )
+			if ( !SpawnsDelivery || pack == null )
 				return;
 
 			List<Item> delivery = new List<Item>();
 
-			for ( int i = 0; i < m_Amount; ++i )
+			for ( int i = 0; i < Amount; ++i )
 			{
-				if ( !(Activator.CreateInstance( m_Delivery ) is Item item) )
+				if ( !(Activator.CreateInstance( Delivery ) is Item item) )
 					continue;
 
 				delivery.Add( item );
 
-				if ( item.Stackable && m_Amount > 1 )
+				if ( item.Stackable && Amount > 1 )
 				{
-					item.Amount = m_Amount;
+					item.Amount = Amount;
 					break;
 				}
 			}
@@ -93,25 +67,25 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override void WriteToGump( Gump g, ref int y )
 		{
-			string amount = m_Amount.ToString();
+			string amount = Amount.ToString();
 
 			g.AddHtmlLocalized( 98, y, 312, 16, 1072207, 0x15F90, false, false ); // Deliver
 			g.AddLabel( 143, y, 0x481, amount );
 
-			if ( m_Name.Number > 0 )
+			if ( Name.Number > 0 )
 			{
-				g.AddHtmlLocalized( 143 + amount.Length * 15, y, 190, 18, m_Name.Number, 0x77BF, false, false );
-				g.AddItem( 350, y, CollectObjective.LabelToItemID( m_Name.Number ) );
+				g.AddHtmlLocalized( 143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false );
+				g.AddItem( 350, y, CollectObjective.LabelToItemID( Name.Number ) );
 			}
-			else if ( m_Name.String != null )
+			else if ( Name.String != null )
 			{
-				g.AddLabel( 143 + amount.Length * 15, y, 0x481, m_Name.String );
+				g.AddLabel( 143 + amount.Length * 15, y, 0x481, Name.String );
 			}
 
 			y += 32;
 
 			g.AddHtmlLocalized( 103, y, 120, 16, 1072379, 0x15F90, false, false ); // Deliver to
-			g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( m_Destination ) );
+			g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( Destination ) );
 
 			y += 16;
 		}
@@ -126,10 +100,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 	public class TimedDeliverObjective : DeliverObjective
 	{
-		private TimeSpan m_Duration;
-
 		public override bool IsTimed => true;
-		public override TimeSpan Duration => m_Duration;
+		public override TimeSpan Duration { get; }
 
 		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination )
 			: this( duration, delivery, amount, name, destination, true )
@@ -139,7 +111,7 @@ namespace Server.Engines.MLQuests.Objectives
 		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery )
 			: base( delivery, amount, name, destination, spawnsDelivery )
 		{
-			m_Duration = duration;
+			Duration = duration;
 		}
 	}
 
@@ -147,42 +119,31 @@ namespace Server.Engines.MLQuests.Objectives
 
 	public class DeliverObjectiveInstance : BaseObjectiveInstance
 	{
-		private DeliverObjective m_Objective;
-		private bool m_HasCompleted;
+		public DeliverObjective Objective { get; set; }
 
-		public DeliverObjective Objective
-		{
-			get => m_Objective;
-			set => m_Objective = value;
-		}
-
-		public bool HasCompleted
-		{
-			get => m_HasCompleted;
-			set => m_HasCompleted = value;
-		}
+		public bool HasCompleted { get; set; }
 
 		public DeliverObjectiveInstance( DeliverObjective objective, MLQuestInstance instance )
 			: base( instance, objective )
 		{
-			m_Objective = objective;
+			Objective = objective;
 		}
 
 		public virtual bool IsDestination( IQuestGiver quester, Type type )
 		{
-			Type destType = m_Objective.Destination;
+			Type destType = Objective.Destination;
 
 			return ( destType != null && destType.IsAssignableFrom( type ) );
 		}
 
 		public override bool IsCompleted()
 		{
-			return m_HasCompleted;
+			return HasCompleted;
 		}
 
 		public override void OnQuestAccepted()
 		{
-			m_Objective.SpawnDelivery( Instance.Player.Backpack );
+			Objective.SpawnDelivery( Instance.Player.Backpack );
 		}
 
 		// This is VERY similar to CollectObjective.GetCurrentTotal
@@ -193,7 +154,7 @@ namespace Server.Engines.MLQuests.Objectives
 			if ( pack == null )
 				return 0;
 
-			Item[] items = pack.FindItemsByType( m_Objective.Delivery, false ); // Note: subclasses are included
+			Item[] items = pack.FindItemsByType( Objective.Delivery, false ); // Note: subclasses are included
 			int total = 0;
 
 			foreach ( Item item in items )
@@ -207,7 +168,7 @@ namespace Server.Engines.MLQuests.Objectives
 			PlayerMobile pm = Instance.Player;
 
 			int total = GetCurrentTotal();
-			int desired = m_Objective.Amount;
+			int desired = Objective.Amount;
 
 			if ( total < desired )
 			{
@@ -227,8 +188,8 @@ namespace Server.Engines.MLQuests.Objectives
 			if ( pack == null )
 				return;
 
-			Item[] items = pack.FindItemsByType( m_Objective.Delivery, false );
-			int left = m_Objective.Amount;
+			Item[] items = pack.FindItemsByType( Objective.Delivery, false );
+			int left = Objective.Amount;
 
 			foreach ( Item item in items )
 			{
@@ -262,7 +223,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override void WriteToGump( Gump g, ref int y )
 		{
-			m_Objective.WriteToGump( g, ref y );
+			Objective.WriteToGump( g, ref y );
 
 			base.WriteToGump( g, ref y );
 
@@ -275,7 +236,7 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			base.Serialize( writer );
 
-			writer.Write( m_HasCompleted );
+			writer.Write( HasCompleted );
 		}
 	}
 }

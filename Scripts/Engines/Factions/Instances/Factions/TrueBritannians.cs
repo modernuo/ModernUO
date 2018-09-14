@@ -2,13 +2,11 @@ namespace Server.Factions
 {
 	public class TrueBritannians : Faction
 	{
-		private static Faction m_Instance;
-
-		public static Faction Instance => m_Instance;
+		public static Faction Instance { get; private set; }
 
 		public TrueBritannians()
 		{
-			m_Instance = this;
+			Instance = this;
 
 			Definition =
 				new FactionDefinition(

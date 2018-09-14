@@ -30,10 +30,6 @@ namespace Server.Mobiles
 		private ArrayList m_ArmorBuyInfo = new ArrayList();
 		private ArrayList m_ArmorSellInfo = new ArrayList();
 
-		private DateTime m_LastRestock;
-
-		private DateTime m_NextTrickOrTreat;
-
 		public override bool CanTeach => true;
 
 		public override bool BardImmune => true;
@@ -48,9 +44,7 @@ namespace Server.Mobiles
 
 		public override bool IsInvulnerable => true;
 
-		public virtual DateTime NextTrickOrTreat { get => m_NextTrickOrTreat;
-			set => m_NextTrickOrTreat = value;
-		}
+		public virtual DateTime NextTrickOrTreat { get; set; }
 
 		public override bool ShowFameTitle => false;
 
@@ -178,7 +172,7 @@ namespace Server.Mobiles
 			pack.Visible = false;
 			AddItem( pack );
 
-			m_LastRestock = DateTime.UtcNow;
+			LastRestock = DateTime.UtcNow;
 		}
 
 		public BaseVendor( Serial serial )
@@ -186,11 +180,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public DateTime LastRestock
-		{
-			get => m_LastRestock;
-			set => m_LastRestock = value;
-		}
+		public DateTime LastRestock { get; set; }
 
 		public virtual TimeSpan RestockDelay => TimeSpan.FromHours( 1 );
 
@@ -214,7 +204,7 @@ namespace Server.Mobiles
 
 		protected void LoadSBInfo()
 		{
-			m_LastRestock = DateTime.UtcNow;
+			LastRestock = DateTime.UtcNow;
 
 			for ( int i = 0; i < m_ArmorBuyInfo.Count; ++i )
 			{
@@ -491,7 +481,7 @@ namespace Server.Mobiles
 
 		public virtual void Restock()
 		{
-			m_LastRestock = DateTime.UtcNow;
+			LastRestock = DateTime.UtcNow;
 
 			IBuyItemInfo[] buyInfo = GetBuyInfo();
 
@@ -515,7 +505,7 @@ namespace Server.Mobiles
 				return;
 			}
 
-			if ( DateTime.UtcNow - m_LastRestock > RestockDelay )
+			if ( DateTime.UtcNow - LastRestock > RestockDelay )
 				Restock();
 
 			UpdateBuyInfo();

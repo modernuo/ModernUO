@@ -9,8 +9,7 @@ namespace Server.Items
 	/// </summary>
 	public class DualWield : WeaponAbility
 	{
-		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry  => m_Registry;
+		public static Hashtable Registry { get; } = new Hashtable();
 
 		public DualWield()
 		{
@@ -56,15 +55,14 @@ namespace Server.Items
 		public class DualWieldTimer : Timer
 		{
 			private Mobile m_Owner;
-			private int m_BonusSwingSpeed;
 
-			public int BonusSwingSpeed  => m_BonusSwingSpeed;
+			public int BonusSwingSpeed { get; }
 
 			public DualWieldTimer( Mobile owner, int bonusSwingSpeed )
 				: base( TimeSpan.FromSeconds( 6.0 ) )
 			{
 				m_Owner = owner;
-				m_BonusSwingSpeed = bonusSwingSpeed;
+				BonusSwingSpeed = bonusSwingSpeed;
 				Priority = TimerPriority.FiftyMS;
 			}
 

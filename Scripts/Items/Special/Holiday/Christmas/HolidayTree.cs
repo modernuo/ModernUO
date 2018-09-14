@@ -13,14 +13,9 @@ namespace Server.Items
 	public class HolidayTree : Item, IAddon
 	{
 		private ArrayList m_Components;
-		private Mobile m_Placer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Placer
-		{
-			get => m_Placer;
-			set => m_Placer = value;
-		}
+		public Mobile Placer { get; set; }
 
 		private class Ornament : Item
 		{
@@ -111,7 +106,7 @@ namespace Server.Items
 			Movable = false;
 			MoveToWorld( loc, from.Map );
 
-			m_Placer = from;
+			Placer = from;
 			m_Components = new ArrayList();
 
 			switch ( type )
@@ -220,7 +215,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( m_Placer );
+			writer.Write( Placer );
 
 			writer.Write( (int) m_Components.Count );
 
@@ -238,7 +233,7 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_Placer = reader.ReadMobile();
+					Placer = reader.ReadMobile();
 
 					goto case 0;
 				}
@@ -280,7 +275,7 @@ namespace Server.Items
 		{
 			if ( from.InRange( GetWorldLocation(), 1 ) )
 			{
-				if ( m_Placer == null || from == m_Placer || from.AccessLevel >= AccessLevel.GameMaster )
+				if ( Placer == null || from == Placer || from.AccessLevel >= AccessLevel.GameMaster )
 				{
 					from.AddToBackpack( new HolidayTreeDeed() );
 

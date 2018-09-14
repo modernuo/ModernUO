@@ -40,52 +40,48 @@ namespace Server.Commands.Generic
 
 	public sealed class PropertyValue
 	{
-		private Type m_Type;
-		private object m_Value;
-		private FieldInfo m_Field;
+		public Type Type { get; }
 
-		public Type Type => m_Type;
+		public object Value { get; private set; }
 
-		public object Value => m_Value;
+		public FieldInfo Field { get; private set; }
 
-		public FieldInfo Field => m_Field;
-
-		public bool HasField => ( m_Field != null );
+		public bool HasField => ( Field != null );
 
 		public PropertyValue( Type type, object value )
 		{
-			m_Type = type;
-			m_Value = value;
+			Type = type;
+			Value = value;
 		}
 
 		public void Load( MethodEmitter method )
 		{
-			if ( m_Field != null )
+			if ( Field != null )
 			{
 				method.LoadArgument( 0 );
-				method.LoadField( m_Field );
+				method.LoadField( Field );
 			}
-			else if ( m_Value == null )
+			else if ( Value == null )
 			{
-				method.LoadNull( m_Type );
+				method.LoadNull( Type );
 			}
 			else
 			{
-				if ( m_Value is int i )
+				if ( Value is int i )
 					method.Load( i );
-				else if ( m_Value is long l )
+				else if ( Value is long l )
 					method.Load( l );
-				else if ( m_Value is float f )
+				else if ( Value is float f )
 					method.Load( f );
-				else if ( m_Value is double d )
+				else if ( Value is double d )
 					method.Load( d );
-				else if ( m_Value is char c )
+				else if ( Value is char c )
 					method.Load( c );
-				else if ( m_Value is bool b )
+				else if ( Value is bool b )
 					method.Load( b );
-				else if ( m_Value is string s )
+				else if ( Value is string s )
 					method.Load( s );
-				else if ( m_Value is Enum e )
+				else if ( Value is Enum e )
 					method.Load( e );
 				else
 					throw new InvalidOperationException( "Unrecognized comparison value." );
@@ -94,29 +90,29 @@ namespace Server.Commands.Generic
 
 		public void Acquire( TypeBuilder typeBuilder, ILGenerator il, string fieldName )
 		{
-			if ( m_Value is string toParse )
+			if ( Value is string toParse )
 			{
-				if ( !m_Type.IsValueType && toParse == "null" )
+				if ( !Type.IsValueType && toParse == "null" )
 				{
-					m_Value = null;
+					Value = null;
 				}
-				else if ( m_Type == typeof( string ) )
+				else if ( Type == typeof( string ) )
 				{
 					if ( toParse == @"@""null""" )
 						toParse = "null";
 
-					m_Value = toParse;
+					Value = toParse;
 				}
-				else if ( m_Type.IsEnum )
+				else if ( Type.IsEnum )
 				{
-					m_Value = Enum.Parse( m_Type, toParse, true );
+					Value = Enum.Parse( Type, toParse, true );
 				}
 				else
 				{
 					MethodInfo parseMethod = null;
 					object[] parseArgs = null;
 
-					MethodInfo parseNumber = m_Type.GetMethod(
+					MethodInfo parseNumber = Type.GetMethod(
 						"Parse",
 						BindingFlags.Public | BindingFlags.Static,
 						null,
@@ -139,7 +135,7 @@ namespace Server.Commands.Generic
 					}
 					else
 					{
-						MethodInfo parseGeneral = m_Type.GetMethod(
+						MethodInfo parseGeneral = Type.GetMethod(
 							"Parse",
 							BindingFlags.Public | BindingFlags.Static,
 							null,
@@ -153,13 +149,13 @@ namespace Server.Commands.Generic
 
 					if ( parseMethod != null )
 					{
-						m_Value = parseMethod.Invoke( null, parseArgs );
+						Value = parseMethod.Invoke( null, parseArgs );
 
-						if ( !m_Type.IsPrimitive )
+						if ( !Type.IsPrimitive )
 						{
-							m_Field = typeBuilder.DefineField(
+							Field = typeBuilder.DefineField(
 								fieldName,
-								m_Type,
+								Type,
 								FieldAttributes.Private | FieldAttributes.InitOnly
 							);
 
@@ -171,13 +167,13 @@ namespace Server.Commands.Generic
 								il.Emit( OpCodes.Ldc_I4, (int) parseArgs[1] );
 
 							il.Emit( OpCodes.Call, parseMethod );
-							il.Emit( OpCodes.Stfld, m_Field );
+							il.Emit( OpCodes.Stfld, Field );
 						}
 					}
 					else
 					{
 						throw new InvalidOperationException(
-							$"Unable to convert string \"{m_Value}\" into type '{m_Type}'."
+							$"Unable to convert string \"{Value}\" into type '{Type}'."
 						);
 					}
 				}

@@ -22,44 +22,21 @@ namespace Server.Factions
 		// Once it's been returned the corrupting faction owns the town for this period of time
 		public static readonly TimeSpan PurificationPeriod = TimeSpan.FromDays( 3.0 );
 
-		private BaseMonolith m_LastMonolith;
-
 		private Town m_Town;
 		private Faction m_Corrupted;
 		private Faction m_Corrupting;
 
-		private DateTime m_LastStolen;
-		private DateTime m_GraceStart;
-		private DateTime m_CorruptionStart;
-		private DateTime m_PurificationStart;
+		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
+		public DateTime LastStolen { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public DateTime LastStolen
-		{
-			get => m_LastStolen;
-			set => m_LastStolen = value;
-		}
+		public DateTime GraceStart { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public DateTime GraceStart
-		{
-			get => m_GraceStart;
-			set => m_GraceStart = value;
-		}
+		public DateTime CorruptionStart { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public DateTime CorruptionStart
-		{
-			get => m_CorruptionStart;
-			set => m_CorruptionStart = value;
-		}
-
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public DateTime PurificationStart
-		{
-			get => m_PurificationStart;
-			set => m_PurificationStart = value;
-		}
+		public DateTime PurificationStart { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Town Town
@@ -83,20 +60,16 @@ namespace Server.Factions
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public BaseMonolith LastMonolith
-		{
-			get => m_LastMonolith;
-			set => m_LastMonolith = value;
-		}
+		public BaseMonolith LastMonolith { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public bool IsBeingCorrupted => ( m_LastMonolith is StrongholdMonolith && m_LastMonolith.Faction == m_Corrupting && m_Corrupting != null );
+		public bool IsBeingCorrupted => ( LastMonolith is StrongholdMonolith && LastMonolith.Faction == m_Corrupting && m_Corrupting != null );
 
 		[CommandProperty( AccessLevel.Counselor )]
 		public bool IsCorrupted => ( m_Corrupted != null );
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public bool IsPurifying => ( m_PurificationStart != DateTime.MinValue );
+		public bool IsPurifying => ( PurificationStart != DateTime.MinValue );
 
 		[CommandProperty( AccessLevel.Counselor )]
 		public bool IsCorrupting => ( m_Corrupting != null && m_Corrupting != m_Corrupted );
@@ -198,7 +171,7 @@ namespace Server.Factions
 			Movable = false;
 			Town = town;
 
-			m_Sigils.Add( this );
+			Sigils.Add( this );
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -220,13 +193,13 @@ namespace Server.Factions
 		private void BeginCorrupting( Faction faction )
 		{
 			m_Corrupting = faction;
-			m_CorruptionStart = DateTime.UtcNow;
+			CorruptionStart = DateTime.UtcNow;
 		}
 
 		private void ClearCorrupting()
 		{
 			m_Corrupting = null;
-			m_CorruptionStart = DateTime.MinValue;
+			CorruptionStart = DateTime.MinValue;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -237,7 +210,7 @@ namespace Server.Factions
 				if ( !IsBeingCorrupted )
 					return TimeSpan.Zero;
 
-				TimeSpan ts = ( m_CorruptionStart + CorruptionPeriod ) - DateTime.UtcNow;
+				TimeSpan ts = ( CorruptionStart + CorruptionPeriod ) - DateTime.UtcNow;
 
 				if ( ts < TimeSpan.Zero )
 					ts = TimeSpan.Zero;
@@ -301,25 +274,25 @@ namespace Server.Factions
 							if ( m_Corrupted != newController )
 								BeginCorrupting( newController );
 						}
-						else if ( m_GraceStart > DateTime.MinValue && (m_GraceStart + CorruptionGrace) < DateTime.UtcNow )
+						else if ( GraceStart > DateTime.MinValue && (GraceStart + CorruptionGrace) < DateTime.UtcNow )
 						{
 							if ( m_Corrupted != newController )
 								BeginCorrupting( newController ); // grace time over, reset period
 							else
 								ClearCorrupting();
 
-							m_GraceStart = DateTime.MinValue;
+							GraceStart = DateTime.MinValue;
 						}
 						else if ( newController == oldController )
 						{
-							m_GraceStart = DateTime.MinValue; // returned within grace period
+							GraceStart = DateTime.MinValue; // returned within grace period
 						}
-						else if ( m_GraceStart == DateTime.MinValue )
+						else if ( GraceStart == DateTime.MinValue )
 						{
-							m_GraceStart = DateTime.UtcNow;
+							GraceStart = DateTime.UtcNow;
 						}
 
-						m_PurificationStart = DateTime.MinValue;
+						PurificationStart = DateTime.MinValue;
 					}
 				}
 				#endregion
@@ -336,8 +309,8 @@ namespace Server.Factions
 						tm.Sigil = this;
 
 						m_Corrupting = null;
-						m_PurificationStart = DateTime.UtcNow;
-						m_CorruptionStart = DateTime.MinValue;
+						PurificationStart = DateTime.UtcNow;
+						CorruptionStart = DateTime.MinValue;
 
 						m_Town.Capture( m_Corrupted );
 						m_Corrupted = null;
@@ -355,7 +328,7 @@ namespace Server.Factions
 
 		public Sigil( Serial serial ) : base( serial )
 		{
-			m_Sigils.Add( this );
+			Sigils.Add( this );
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -368,12 +341,12 @@ namespace Server.Factions
 			Faction.WriteReference( writer, m_Corrupted );
 			Faction.WriteReference( writer, m_Corrupting );
 
-			writer.Write( (Item) m_LastMonolith );
+			writer.Write( (Item) LastMonolith );
 
-			writer.Write( m_LastStolen );
-			writer.Write( m_GraceStart );
-			writer.Write( m_CorruptionStart );
-			writer.Write( m_PurificationStart );
+			writer.Write( LastStolen );
+			writer.Write( GraceStart );
+			writer.Write( CorruptionStart );
+			writer.Write( PurificationStart );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -390,12 +363,12 @@ namespace Server.Factions
 					m_Corrupted = Faction.ReadReference( reader );
 					m_Corrupting = Faction.ReadReference( reader );
 
-					m_LastMonolith = reader.ReadItem() as BaseMonolith;
+					LastMonolith = reader.ReadItem() as BaseMonolith;
 
-					m_LastStolen = reader.ReadDateTime();
-					m_GraceStart = reader.ReadDateTime();
-					m_CorruptionStart = reader.ReadDateTime();
-					m_PurificationStart = reader.ReadDateTime();
+					LastStolen = reader.ReadDateTime();
+					GraceStart = reader.ReadDateTime();
+					CorruptionStart = reader.ReadDateTime();
+					PurificationStart = reader.ReadDateTime();
 
 					Update();
 
@@ -409,7 +382,7 @@ namespace Server.Factions
 
 		public bool ReturnHome()
 		{
-			BaseMonolith monolith = m_LastMonolith;
+			BaseMonolith monolith = LastMonolith;
 
 			if ( monolith == null && m_Town != null )
 				monolith = m_Town.Monolith;
@@ -431,7 +404,7 @@ namespace Server.Factions
 		{
 			base.OnAfterDelete();
 
-			m_Sigils.Remove( this );
+			Sigils.Remove( this );
 		}
 
 		public override void Delete()
@@ -442,8 +415,6 @@ namespace Server.Factions
 			base.Delete();
 		}
 
-		private static List<Sigil> m_Sigils = new List<Sigil>();
-
-		public static List<Sigil> Sigils => m_Sigils;
+		public static List<Sigil> Sigils { get; } = new List<Sigil>();
 	}
 }

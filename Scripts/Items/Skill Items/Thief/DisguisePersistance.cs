@@ -5,9 +5,7 @@ namespace Server.Items
 {
 	public class DisguisePersistance : Item
 	{
-		private static DisguisePersistance m_Instance;
-
-		public static DisguisePersistance Instance => m_Instance;
+		public static DisguisePersistance Instance { get; private set; }
 
 		public override string DefaultName => "Disguise Persistance - Internal";
 
@@ -15,15 +13,15 @@ namespace Server.Items
 		{
 			Movable = false;
 			
-			if ( m_Instance == null || m_Instance.Deleted )
-				m_Instance = this;
+			if ( Instance == null || Instance.Deleted )
+				Instance = this;
 			else
 				base.Delete();
 		}
 
 		public DisguisePersistance( Serial serial ) : base( serial )
 		{
-			m_Instance = this;
+			Instance = this;
 		}
 
 		public override void Serialize( GenericWriter writer )

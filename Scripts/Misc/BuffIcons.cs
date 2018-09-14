@@ -21,29 +21,22 @@ namespace Server
 		}
 
 		#region Properties
-		private BuffIcon m_ID;
-		public BuffIcon ID  => m_ID;
 
-		private int m_TitleCliloc;
-		public int TitleCliloc  => m_TitleCliloc;
+		public BuffIcon ID { get; }
 
-		private int m_SecondaryCliloc;
-		public int SecondaryCliloc  => m_SecondaryCliloc;
+		public int TitleCliloc { get; }
 
-		private TimeSpan m_TimeLength;
-		public TimeSpan TimeLength  => m_TimeLength;
+		public int SecondaryCliloc { get; }
 
-		private DateTime m_TimeStart;
-		public DateTime TimeStart  => m_TimeStart;
+		public TimeSpan TimeLength { get; }
 
-		private Timer m_Timer;
-		public Timer Timer  => m_Timer;
+		public DateTime TimeStart { get; }
 
-		private bool m_RetainThroughDeath;
-		public bool RetainThroughDeath  => m_RetainThroughDeath;
+		public Timer Timer { get; }
 
-		private TextDefinition m_Args;
-		public TextDefinition Args  => m_Args;
+		public bool RetainThroughDeath { get; }
+
+		public TextDefinition Args { get; }
 
 		#endregion
 
@@ -55,9 +48,9 @@ namespace Server
 
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc )
 		{
-			m_ID = iconID;
-			m_TitleCliloc = titleCliloc;
-			m_SecondaryCliloc = secondaryCliloc;
+			ID = iconID;
+			TitleCliloc = titleCliloc;
+			SecondaryCliloc = secondaryCliloc;
 		}
 
 		public BuffInfo( BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m )
@@ -69,10 +62,10 @@ namespace Server
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m )
 			: this( iconID, titleCliloc, secondaryCliloc )
 		{
-			m_TimeLength = length;
-			m_TimeStart = DateTime.UtcNow;
+			TimeLength = length;
+			TimeStart = DateTime.UtcNow;
 
-			m_Timer = Timer.DelayCall( length, delegate
+			Timer = Timer.DelayCall( length, delegate
 			{
 				if ( !(m is PlayerMobile pm) )
 					return;
@@ -90,7 +83,7 @@ namespace Server
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args )
 			: this( iconID, titleCliloc, secondaryCliloc )
 		{
-			m_Args = args;
+			Args = args;
 		}
 
 		public BuffInfo( BuffIcon iconID, int titleCliloc, bool retainThroughDeath )
@@ -101,7 +94,7 @@ namespace Server
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, bool retainThroughDeath )
 			: this( iconID, titleCliloc, secondaryCliloc )
 		{
-			m_RetainThroughDeath = retainThroughDeath;
+			RetainThroughDeath = retainThroughDeath;
 		}
 
 		public BuffInfo( BuffIcon iconID, int titleCliloc, TextDefinition args, bool retainThroughDeath )
@@ -112,7 +105,7 @@ namespace Server
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, bool retainThroughDeath )
 			: this( iconID, titleCliloc, secondaryCliloc, args )
 		{
-			m_RetainThroughDeath = retainThroughDeath;
+			RetainThroughDeath = retainThroughDeath;
 		}
 
 		public BuffInfo( BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args )
@@ -123,7 +116,7 @@ namespace Server
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m, TextDefinition args )
 			: this( iconID, titleCliloc, secondaryCliloc, length, m )
 		{
-			m_Args = args;
+			Args = args;
 		}
 
 		public BuffInfo( BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args, bool retainThroughDeath )
@@ -134,8 +127,8 @@ namespace Server
 		public BuffInfo( BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m, TextDefinition args, bool retainThroughDeath )
 			: this( iconID, titleCliloc, secondaryCliloc, length, m )
 		{
-			m_Args = args;
-			m_RetainThroughDeath = retainThroughDeath;
+			Args = args;
+			RetainThroughDeath = retainThroughDeath;
 		}
 
 		#endregion

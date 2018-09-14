@@ -5,123 +5,67 @@ namespace Server.Engines.Harvest
 {
 	public class HarvestDefinition
 	{
-		private int m_BankWidth, m_BankHeight;
-		private int m_MinTotal, m_MaxTotal;
-		private int[] m_Tiles;
-		private bool m_RangedTiles;
-		private TimeSpan m_MinRespawn, m_MaxRespawn;
-		private int m_MaxRange;
-		private int m_ConsumedPerHarvest, m_ConsumedPerFeluccaHarvest;
-		private bool m_PlaceAtFeetIfFull;
-		private SkillName m_Skill;
-		private int[] m_EffectActions;
-		private int[] m_EffectCounts;
-		private int[] m_EffectSounds;
-		private TimeSpan m_EffectSoundDelay;
-		private TimeSpan m_EffectDelay;
-		private object m_NoResourcesMessage, m_OutOfRangeMessage, m_TimedOutOfRangeMessage, m_DoubleHarvestMessage, m_FailMessage, m_PackFullMessage, m_ToolBrokeMessage;
-		private HarvestResource[] m_Resources;
-		private HarvestVein[] m_Veins;
-		private BonusHarvestResource[] m_BonusResources;
-		private bool m_RaceBonus;
-		private bool m_RandomizeVeins;
+		public int BankWidth { get; set; }
 
-		public int BankWidth{ get => m_BankWidth;
-			set => m_BankWidth = value;
-		}
-		public int BankHeight{ get => m_BankHeight;
-			set => m_BankHeight = value;
-		}
-		public int MinTotal{ get => m_MinTotal;
-			set => m_MinTotal = value;
-		}
-		public int MaxTotal{ get => m_MaxTotal;
-			set => m_MaxTotal = value;
-		}
-		public int[] Tiles{ get => m_Tiles;
-			set => m_Tiles = value;
-		}
-		public bool RangedTiles{ get => m_RangedTiles;
-			set => m_RangedTiles = value;
-		}
-		public TimeSpan MinRespawn{ get => m_MinRespawn;
-			set => m_MinRespawn = value;
-		}
-		public TimeSpan MaxRespawn{ get => m_MaxRespawn;
-			set => m_MaxRespawn = value;
-		}
-		public int MaxRange{ get => m_MaxRange;
-			set => m_MaxRange = value;
-		}
-		public int ConsumedPerHarvest{ get => m_ConsumedPerHarvest;
-			set => m_ConsumedPerHarvest = value;
-		}
-		public int ConsumedPerFeluccaHarvest{ get => m_ConsumedPerFeluccaHarvest;
-			set => m_ConsumedPerFeluccaHarvest = value;
-		}
-		public bool PlaceAtFeetIfFull{ get => m_PlaceAtFeetIfFull;
-			set => m_PlaceAtFeetIfFull = value;
-		}
-		public SkillName Skill{ get => m_Skill;
-			set => m_Skill = value;
-		}
-		public int[] EffectActions{ get => m_EffectActions;
-			set => m_EffectActions = value;
-		}
-		public int[] EffectCounts{ get => m_EffectCounts;
-			set => m_EffectCounts = value;
-		}
-		public int[] EffectSounds{ get => m_EffectSounds;
-			set => m_EffectSounds = value;
-		}
-		public TimeSpan EffectSoundDelay{ get => m_EffectSoundDelay;
-			set => m_EffectSoundDelay = value;
-		}
-		public TimeSpan EffectDelay{ get => m_EffectDelay;
-			set => m_EffectDelay = value;
-		}
-		public object NoResourcesMessage{ get => m_NoResourcesMessage;
-			set => m_NoResourcesMessage = value;
-		}
-		public object OutOfRangeMessage{ get => m_OutOfRangeMessage;
-			set => m_OutOfRangeMessage = value;
-		}
-		public object TimedOutOfRangeMessage{ get => m_TimedOutOfRangeMessage;
-			set => m_TimedOutOfRangeMessage = value;
-		}
-		public object DoubleHarvestMessage{ get => m_DoubleHarvestMessage;
-			set => m_DoubleHarvestMessage = value;
-		}
-		public object FailMessage{ get => m_FailMessage;
-			set => m_FailMessage = value;
-		}
-		public object PackFullMessage{ get => m_PackFullMessage;
-			set => m_PackFullMessage = value;
-		}
-		public object ToolBrokeMessage{ get => m_ToolBrokeMessage;
-			set => m_ToolBrokeMessage = value;
-		}
-		public HarvestResource[] Resources{ get => m_Resources;
-			set => m_Resources = value;
-		}
-		public HarvestVein[] Veins{ get => m_Veins;
-			set => m_Veins = value;
-		}
-		public BonusHarvestResource[] BonusResources{ get => m_BonusResources;
-			set => m_BonusResources = value;
-		}
-		public bool RaceBonus { get => m_RaceBonus;
-			set => m_RaceBonus = value;
-		}
-		public bool RandomizeVeins { get => m_RandomizeVeins;
-			set => m_RandomizeVeins = value;
-		}
+		public int BankHeight { get; set; }
 
-		private Dictionary<Map, Dictionary<Point2D, HarvestBank>> m_BanksByMap;
+		public int MinTotal { get; set; }
 
-		public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get => m_BanksByMap;
-			set => m_BanksByMap = value;
-		}
+		public int MaxTotal { get; set; }
+
+		public int[] Tiles { get; set; }
+
+		public bool RangedTiles { get; set; }
+
+		public TimeSpan MinRespawn { get; set; }
+
+		public TimeSpan MaxRespawn { get; set; }
+
+		public int MaxRange { get; set; }
+
+		public int ConsumedPerHarvest { get; set; }
+
+		public int ConsumedPerFeluccaHarvest { get; set; }
+
+		public bool PlaceAtFeetIfFull { get; set; }
+
+		public SkillName Skill { get; set; }
+
+		public int[] EffectActions { get; set; }
+
+		public int[] EffectCounts { get; set; }
+
+		public int[] EffectSounds { get; set; }
+
+		public TimeSpan EffectSoundDelay { get; set; }
+
+		public TimeSpan EffectDelay { get; set; }
+
+		public object NoResourcesMessage { get; set; }
+
+		public object OutOfRangeMessage { get; set; }
+
+		public object TimedOutOfRangeMessage { get; set; }
+
+		public object DoubleHarvestMessage { get; set; }
+
+		public object FailMessage { get; set; }
+
+		public object PackFullMessage { get; set; }
+
+		public object ToolBrokeMessage { get; set; }
+
+		public HarvestResource[] Resources { get; set; }
+
+		public HarvestVein[] Veins { get; set; }
+
+		public BonusHarvestResource[] BonusResources { get; set; }
+
+		public bool RaceBonus { get; set; }
+
+		public bool RandomizeVeins { get; set; }
+
+		public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; set; }
 
 		public void SendMessageTo( Mobile from, object message )
 		{
@@ -136,13 +80,13 @@ namespace Server.Engines.Harvest
 			if ( map == null || map == Map.Internal )
 				return null;
 
-			x /= m_BankWidth;
-			y /= m_BankHeight;
+			x /= BankWidth;
+			y /= BankHeight;
 
-			 m_BanksByMap.TryGetValue( map, out Dictionary<Point2D, HarvestBank> banks );
+			 Banks.TryGetValue( map, out Dictionary<Point2D, HarvestBank> banks );
 
 			if ( banks == null )
-				m_BanksByMap[map] = banks = new Dictionary<Point2D, HarvestBank>();
+				Banks[map] = banks = new Dictionary<Point2D, HarvestBank>();
 
 			Point2D key = new Point2D( x, y );
 			banks.TryGetValue( key, out HarvestBank bank );
@@ -155,12 +99,12 @@ namespace Server.Engines.Harvest
 
 		public HarvestVein GetVeinAt( Map map, int x, int y )
 		{
-			if ( m_Veins.Length == 1 )
-				return m_Veins[0];
+			if ( Veins.Length == 1 )
+				return Veins[0];
 
 			double randomValue;
 
-			if ( m_RandomizeVeins )
+			if ( RandomizeVeins )
 			{
 				randomValue = Utility.RandomDouble();
 			}
@@ -175,17 +119,17 @@ namespace Server.Engines.Harvest
 
 		public HarvestVein GetVeinFrom( double randomValue )
 		{
-			if ( m_Veins.Length == 1 )
-				return m_Veins[0];
+			if ( Veins.Length == 1 )
+				return Veins[0];
 
 			randomValue *= 100;
 
-			for ( int i = 0; i < m_Veins.Length; ++i )
+			for ( int i = 0; i < Veins.Length; ++i )
 			{
-				if ( randomValue <= m_Veins[i].VeinChance )
-					return m_Veins[i];
+				if ( randomValue <= Veins[i].VeinChance )
+					return Veins[i];
 
-				randomValue -= m_Veins[i].VeinChance;
+				randomValue -= Veins[i].VeinChance;
 			}
 
 			return null;
@@ -193,17 +137,17 @@ namespace Server.Engines.Harvest
 
 		public BonusHarvestResource GetBonusResource()
 		{
-			if ( m_BonusResources == null )
+			if ( BonusResources == null )
 				return null;
 
 			double randomValue = Utility.RandomDouble() * 100;
 
-			for ( int i = 0; i < m_BonusResources.Length; ++i )
+			for ( int i = 0; i < BonusResources.Length; ++i )
 			{
-				if ( randomValue <= m_BonusResources[i].Chance )
-					return m_BonusResources[i];
+				if ( randomValue <= BonusResources[i].Chance )
+					return BonusResources[i];
 
-				randomValue -= m_BonusResources[i].Chance;
+				randomValue -= BonusResources[i].Chance;
 			}
 
 			return null;
@@ -211,25 +155,25 @@ namespace Server.Engines.Harvest
 
 		public HarvestDefinition()
 		{
-			m_BanksByMap = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
+			Banks = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
 		}
 
 		public bool Validate( int tileID )
 		{
-			if ( m_RangedTiles )
+			if ( RangedTiles )
 			{
 				bool contains = false;
 
-				for ( int i = 0; !contains && i < m_Tiles.Length; i += 2 )
-					contains = ( tileID >= m_Tiles[i] && tileID <= m_Tiles[i + 1] );
+				for ( int i = 0; !contains && i < Tiles.Length; i += 2 )
+					contains = ( tileID >= Tiles[i] && tileID <= Tiles[i + 1] );
 
 				return contains;
 			}
 
 			int dist = -1;
 
-			for ( int i = 0; dist < 0 && i < m_Tiles.Length; ++i )
-				dist = ( m_Tiles[i] - tileID );
+			for ( int i = 0; dist < 0 && i < Tiles.Length; ++i )
+				dist = ( Tiles[i] - tileID );
 
 			return ( dist == 0 );
 		}

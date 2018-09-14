@@ -27,13 +27,11 @@ namespace Server.Engines.Quests.Naturalist
 
 		public override int Picture => 0x15C7;
 
-		private Naturalist m_Naturalist;
-
-		public Naturalist Naturalist => m_Naturalist;
+		public Naturalist Naturalist { get; private set; }
 
 		public StudyOfSolenQuest( PlayerMobile from, Naturalist naturalist ) : base( from )
 		{
-			m_Naturalist = naturalist;
+			Naturalist = naturalist;
 		}
 
 		// Serialization
@@ -45,21 +43,21 @@ namespace Server.Engines.Quests.Naturalist
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_Naturalist = (Naturalist) reader.ReadMobile();
+			Naturalist = (Naturalist) reader.ReadMobile();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( (Mobile) m_Naturalist );
+			writer.Write( (Mobile) Naturalist );
 		}
 
 		public override void Accept()
 		{
 			base.Accept();
 
-			m_Naturalist?.PlaySound( 0x431 );
+			Naturalist?.PlaySound( 0x431 );
 
 			AddConversation( new AcceptConversation() );
 		}

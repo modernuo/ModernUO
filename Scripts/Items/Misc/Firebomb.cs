@@ -191,19 +191,17 @@ namespace Server.Items
 
 		private class ThrowTarget : Target
 		{
-			private Firebomb m_Bomb;
-
-			public Firebomb Bomb => m_Bomb;
+			public Firebomb Bomb { get; }
 
 			public ThrowTarget( Firebomb bomb )
 				: base( 12, true, TargetFlags.None )
 			{
-				m_Bomb = bomb;
+				Bomb = bomb;
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				m_Bomb.OnFirebombTarget( from, targeted );
+				Bomb.OnFirebombTarget( from, targeted );
 			}
 		}
 	}

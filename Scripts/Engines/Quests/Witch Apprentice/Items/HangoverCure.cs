@@ -2,16 +2,10 @@ namespace Server.Engines.Quests.Hag
 {
 	public class HangoverCure : Item
 	{
-		private int m_Uses;
-
 		public override int LabelNumber => 1055060; // Grizelda's Extra Strength Hangover Cure
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Uses
-		{
-			get => m_Uses;
-			set => m_Uses = value;
-		}
+		public int Uses { get; set; }
 
 		[Constructible]
 		public HangoverCure() : base( 0xE2B )
@@ -19,7 +13,7 @@ namespace Server.Engines.Quests.Hag
 			Weight = 1.0;
 			Hue = 0x2D;
 
-			m_Uses = 20;
+			Uses = 20;
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -30,7 +24,7 @@ namespace Server.Engines.Quests.Hag
 				return;
 			}
 
-			if ( m_Uses > 0 )
+			if ( Uses > 0 )
 			{
 				from.PlaySound( 0x2D6 );
 				from.SendLocalizedMessage( 501206 ); // An awful taste fills your mouth.
@@ -41,7 +35,7 @@ namespace Server.Engines.Quests.Hag
 					from.SendLocalizedMessage( 501204 ); // You are now sober!
 				}
 
-				m_Uses--;
+				Uses--;
 			}
 			else
 			{
@@ -60,7 +54,7 @@ namespace Server.Engines.Quests.Hag
 
 			writer.Write( (int) 1 ); // version
 
-			writer.WriteEncodedInt( m_Uses );
+			writer.WriteEncodedInt( Uses );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -73,12 +67,12 @@ namespace Server.Engines.Quests.Hag
 			{
 				case 1:
 				{
-					m_Uses = reader.ReadEncodedInt();
+					Uses = reader.ReadEncodedInt();
 					break;
 				}
 				case 0:
 				{
-					m_Uses = 20;
+					Uses = 20;
 					break;
 				}
 			}

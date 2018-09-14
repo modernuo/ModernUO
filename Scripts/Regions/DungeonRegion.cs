@@ -7,14 +7,11 @@ namespace Server.Regions
 		public override bool YoungProtected => false;
 
 		private Point3D m_EntranceLocation;
-		private Map m_EntranceMap;
 
 		public Point3D EntranceLocation{ get => m_EntranceLocation;
 			set => m_EntranceLocation = value;
 		}
-		public Map EntranceMap{ get => m_EntranceMap;
-			set => m_EntranceMap = value;
-		}
+		public Map EntranceMap { get; set; }
 
 		public DungeonRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{
@@ -24,7 +21,7 @@ namespace Server.Regions
 			ReadMap( entrEl, "map", ref entrMap, false );
 
 			if ( ReadPoint3D( entrEl, entrMap, ref m_EntranceLocation, false ) )
-				m_EntranceMap = entrMap;
+				EntranceMap = entrMap;
 		}
 
 		public override bool AllowHousing( Mobile from, Point3D p )

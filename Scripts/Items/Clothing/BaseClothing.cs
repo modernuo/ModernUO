@@ -46,7 +46,6 @@ namespace Server.Items
 		private int m_HitPoints;
 		private Mobile m_Crafter;
 		private ClothingQuality m_Quality;
-		private bool m_PlayerConstructed;
 		protected CraftResource m_Resource;
 		private int m_StrReq = -1;
 
@@ -104,11 +103,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool PlayerConstructed
-		{
-			get => m_PlayerConstructed;
-			set => m_PlayerConstructed = value;
-		}
+		public bool PlayerConstructed { get; set; }
 
 		public virtual CraftResource DefaultResource => CraftResource.None;
 
@@ -744,7 +739,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.Resistances,		!m_AosResistances.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.MaxHitPoints,		m_MaxHitPoints != 0 );
 			SetSaveFlag( ref flags, SaveFlag.HitPoints,			m_HitPoints != 0 );
-			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	m_PlayerConstructed != false );
+			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	PlayerConstructed != false );
 			SetSaveFlag( ref flags, SaveFlag.Crafter,			m_Crafter != null );
 			SetSaveFlag( ref flags, SaveFlag.Quality,			m_Quality != ClothingQuality.Regular );
 			SetSaveFlag( ref flags, SaveFlag.StrReq,			m_StrReq != -1 );
@@ -839,7 +834,7 @@ namespace Server.Items
 						m_StrReq = -1;
 
 					if ( GetSaveFlag( flags, SaveFlag.PlayerConstructed ) )
-						m_PlayerConstructed = true;
+						PlayerConstructed = true;
 
 					break;
 				}
@@ -860,7 +855,7 @@ namespace Server.Items
 				}
 				case 2:
 				{
-					m_PlayerConstructed = reader.ReadBool();
+					PlayerConstructed = reader.ReadBool();
 					goto case 1;
 				}
 				case 1:
@@ -878,7 +873,7 @@ namespace Server.Items
 			}
 
 			if ( version < 2 )
-				m_PlayerConstructed = true; // we don't know, so, assume it's crafted
+				PlayerConstructed = true; // we don't know, so, assume it's crafted
 
 			if ( version < 3 )
 			{
@@ -951,7 +946,7 @@ namespace Server.Items
 
 					Item res = (Item)Activator.CreateInstance( resourceType );
 
-					ScissorHelper( from, res, m_PlayerConstructed ? (item.Resources.GetAt( 0 ).Amount / 2) : 1 );
+					ScissorHelper( from, res, PlayerConstructed ? (item.Resources.GetAt( 0 ).Amount / 2) : 1 );
 
 					res.LootType = LootType.Regular;
 

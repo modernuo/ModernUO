@@ -8,229 +8,215 @@ namespace Server
 		#region List definitions
 
 		#region Mondain's Legacy
-		private static Type[] m_MLWeaponTypes = {
-				typeof( AssassinSpike ),		typeof( DiamondMace ),			typeof( ElvenMachete ),
-				typeof( ElvenSpellblade ),		typeof( Leafblade ),			typeof( OrnateAxe ),
-				typeof( RadiantScimitar ),		typeof( RuneBlade ),			typeof( WarCleaver ),
-				typeof( WildStaff )
-			};
 
-		public static Type[] MLWeaponTypes => m_MLWeaponTypes;
+		public static Type[] MLWeaponTypes { get; } =
+		{
+			typeof( AssassinSpike ),		typeof( DiamondMace ),			typeof( ElvenMachete ),
+			typeof( ElvenSpellblade ),		typeof( Leafblade ),			typeof( OrnateAxe ),
+			typeof( RadiantScimitar ),		typeof( RuneBlade ),			typeof( WarCleaver ),
+			typeof( WildStaff )
+		};
 
-		private static Type[] m_MLRangedWeaponTypes = {
-				typeof( ElvenCompositeLongbow ),	typeof( MagicalShortbow )
-			};
+		public static Type[] MLRangedWeaponTypes { get; } =
+		{
+			typeof( ElvenCompositeLongbow ),	typeof( MagicalShortbow )
+		};
 
-		public static Type[] MLRangedWeaponTypes => m_MLRangedWeaponTypes;
+		public static Type[] MLArmorTypes { get; } =
+		{
+			typeof( Circlet ),				typeof( GemmedCirclet ),		typeof( LeafTonlet ),
+			typeof( RavenHelm ),			typeof( RoyalCirclet ),			typeof( VultureHelm ),
+			typeof( WingedHelm ),			typeof( LeafArms ),				typeof( LeafChest ),
+			typeof( LeafGloves ),			typeof( LeafGorget ),			typeof( LeafLegs ),
+			typeof( WoodlandArms ),			typeof( WoodlandChest ),		typeof( WoodlandGloves ),
+			typeof( WoodlandGorget ),		typeof( WoodlandLegs ),			typeof( HideChest ),
+			typeof( HideGloves ),			typeof( HideGorget ),			typeof( HidePants ),
+			typeof( HidePauldrons )
+		};
 
-		private static Type[] m_MLArmorTypes = {
-				typeof( Circlet ),				typeof( GemmedCirclet ),		typeof( LeafTonlet ),
-				typeof( RavenHelm ),			typeof( RoyalCirclet ),			typeof( VultureHelm ),
-				typeof( WingedHelm ),			typeof( LeafArms ),				typeof( LeafChest ),
-				typeof( LeafGloves ),			typeof( LeafGorget ),			typeof( LeafLegs ),
-				typeof( WoodlandArms ),			typeof( WoodlandChest ),		typeof( WoodlandGloves ),
-				typeof( WoodlandGorget ),		typeof( WoodlandLegs ),			typeof( HideChest ),
-				typeof( HideGloves ),			typeof( HideGorget ),			typeof( HidePants ),
-				typeof( HidePauldrons )
-			};
-
-		public static Type[] MLArmorTypes => m_MLArmorTypes;
-
-		private static Type[] m_MLClothingTypes = {
-				typeof( MaleElvenRobe ),		typeof( FemaleElvenRobe ),		typeof( ElvenPants ),
-				typeof( ElvenShirt ),			typeof( ElvenDarkShirt ),		typeof( ElvenBoots ),
-				typeof( VultureHelm ),			typeof( WoodlandBelt )
-			};
-
-		public static Type[] MLClothingTypes => m_MLClothingTypes;
+		public static Type[] MLClothingTypes { get; } =
+		{
+			typeof( MaleElvenRobe ),		typeof( FemaleElvenRobe ),		typeof( ElvenPants ),
+			typeof( ElvenShirt ),			typeof( ElvenDarkShirt ),		typeof( ElvenBoots ),
+			typeof( VultureHelm ),			typeof( WoodlandBelt )
+		};
 
 		#endregion
 
-		private static Type[] m_SEWeaponTypes = {
-				typeof( Bokuto ),				typeof( Daisho ),				typeof( Kama ),
-				typeof( Lajatang ),				typeof( NoDachi ),				typeof( Nunchaku ),
-				typeof( Sai ),					typeof( Tekagi ),				typeof( Tessen ),
-				typeof( Tetsubo ),				typeof( Wakizashi )
-			};
+		public static Type[] SEWeaponTypes { get; } =
+		{
+			typeof( Bokuto ),				typeof( Daisho ),				typeof( Kama ),
+			typeof( Lajatang ),				typeof( NoDachi ),				typeof( Nunchaku ),
+			typeof( Sai ),					typeof( Tekagi ),				typeof( Tessen ),
+			typeof( Tetsubo ),				typeof( Wakizashi )
+		};
 
-		public static Type[] SEWeaponTypes => m_SEWeaponTypes;
+		public static Type[] AosWeaponTypes { get; } =
+		{
+			typeof( Scythe ),				typeof( BoneHarvester ),		typeof( Scepter ),
+			typeof( BladedStaff ),			typeof( Pike ),					typeof( DoubleBladedStaff ),
+			typeof( Lance ),				typeof( CrescentBlade )
+		};
 
-		private static Type[] m_AosWeaponTypes = {
-				typeof( Scythe ),				typeof( BoneHarvester ),		typeof( Scepter ),
-				typeof( BladedStaff ),			typeof( Pike ),					typeof( DoubleBladedStaff ),
-				typeof( Lance ),				typeof( CrescentBlade )
-			};
+		public static Type[] WeaponTypes { get; } =
+		{
+			typeof( Axe ),					typeof( BattleAxe ),			typeof( DoubleAxe ),
+			typeof( ExecutionersAxe ),		typeof( Hatchet ),				typeof( LargeBattleAxe ),
+			typeof( TwoHandedAxe ),			typeof( WarAxe ),				typeof( Club ),
+			typeof( Mace ),					typeof( Maul ),					typeof( WarHammer ),
+			typeof( WarMace ),				typeof( Bardiche ),				typeof( Halberd ),
+			typeof( Spear ),				typeof( ShortSpear ),			typeof( Pitchfork ),
+			typeof( WarFork ),				typeof( BlackStaff ),			typeof( GnarledStaff ),
+			typeof( QuarterStaff ),			typeof( Broadsword ),			typeof( Cutlass ),
+			typeof( Katana ),				typeof( Kryss ),				typeof( Longsword ),
+			typeof( Scimitar ),				typeof( VikingSword ),			typeof( Pickaxe ),
+			typeof( HammerPick ),			typeof( ButcherKnife ),			typeof( Cleaver ),
+			typeof( Dagger ),				typeof( SkinningKnife ),		typeof( ShepherdsCrook )
+		};
 
-		public static Type[] AosWeaponTypes => m_AosWeaponTypes;
+		public static Type[] SERangedWeaponTypes { get; } =
+		{
+			typeof( Yumi )
+		};
 
-		private static Type[] m_WeaponTypes = {
-				typeof( Axe ),					typeof( BattleAxe ),			typeof( DoubleAxe ),
-				typeof( ExecutionersAxe ),		typeof( Hatchet ),				typeof( LargeBattleAxe ),
-				typeof( TwoHandedAxe ),			typeof( WarAxe ),				typeof( Club ),
-				typeof( Mace ),					typeof( Maul ),					typeof( WarHammer ),
-				typeof( WarMace ),				typeof( Bardiche ),				typeof( Halberd ),
-				typeof( Spear ),				typeof( ShortSpear ),			typeof( Pitchfork ),
-				typeof( WarFork ),				typeof( BlackStaff ),			typeof( GnarledStaff ),
-				typeof( QuarterStaff ),			typeof( Broadsword ),			typeof( Cutlass ),
-				typeof( Katana ),				typeof( Kryss ),				typeof( Longsword ),
-				typeof( Scimitar ),				typeof( VikingSword ),			typeof( Pickaxe ),
-				typeof( HammerPick ),			typeof( ButcherKnife ),			typeof( Cleaver ),
-				typeof( Dagger ),				typeof( SkinningKnife ),		typeof( ShepherdsCrook )
-			};
+		public static Type[] AosRangedWeaponTypes { get; } =
+		{
+			typeof( CompositeBow ),			typeof( RepeatingCrossbow )
+		};
 
-		public static Type[] WeaponTypes => m_WeaponTypes;
+		public static Type[] RangedWeaponTypes { get; } =
+		{
+			typeof( Bow ),					typeof( Crossbow ),				typeof( HeavyCrossbow )
+		};
 
-		private static Type[] m_SERangedWeaponTypes = {
-				typeof( Yumi )
-			};
+		public static Type[] SEArmorTypes { get; } =
+		{
+			typeof( ChainHatsuburi ),		typeof( LeatherDo ),			typeof( LeatherHaidate ),
+			typeof( LeatherHiroSode ),		typeof( LeatherJingasa ),		typeof( LeatherMempo ),
+			typeof( LeatherNinjaHood ),		typeof( LeatherNinjaJacket ),	typeof( LeatherNinjaMitts ),
+			typeof( LeatherNinjaPants ),	typeof( LeatherSuneate ),		typeof( DecorativePlateKabuto ),
+			typeof( HeavyPlateJingasa ),	typeof( LightPlateJingasa ),	typeof( PlateBattleKabuto ),
+			typeof( PlateDo ),				typeof( PlateHaidate ),			typeof( PlateHatsuburi ),
+			typeof( PlateHiroSode ),		typeof( PlateMempo ),			typeof( PlateSuneate ),
+			typeof( SmallPlateJingasa ),	typeof( StandardPlateKabuto ),	typeof( StuddedDo ),
+			typeof( StuddedHaidate ),		typeof( StuddedHiroSode ),		typeof( StuddedMempo ),
+			typeof( StuddedSuneate )
+		};
 
-		public static Type[] SERangedWeaponTypes => m_SERangedWeaponTypes;
+		public static Type[] ArmorTypes { get; } =
+		{
+			typeof( BoneArms ),				typeof( BoneChest ),			typeof( BoneGloves ),
+			typeof( BoneLegs ),				typeof( BoneHelm ),				typeof( ChainChest ),
+			typeof( ChainLegs ),			typeof( ChainCoif ),			typeof( Bascinet ),
+			typeof( CloseHelm ),			typeof( Helmet ),				typeof( NorseHelm ),
+			typeof( OrcHelm ),				typeof( FemaleLeatherChest ),	typeof( LeatherArms ),
+			typeof( LeatherBustierArms ),	typeof( LeatherChest ),			typeof( LeatherGloves ),
+			typeof( LeatherGorget ),		typeof( LeatherLegs ),			typeof( LeatherShorts ),
+			typeof( LeatherSkirt ),			typeof( LeatherCap ),			typeof( FemalePlateChest ),
+			typeof( PlateArms ),			typeof( PlateChest ),			typeof( PlateGloves ),
+			typeof( PlateGorget ),			typeof( PlateHelm ),			typeof( PlateLegs ),
+			typeof( RingmailArms ),			typeof( RingmailChest ),		typeof( RingmailGloves ),
+			typeof( RingmailLegs ),			typeof( FemaleStuddedChest ),	typeof( StuddedArms ),
+			typeof( StuddedBustierArms ),	typeof( StuddedChest ),			typeof( StuddedGloves ),
+			typeof( StuddedGorget ),		typeof( StuddedLegs )
+		};
 
-		private static Type[] m_AosRangedWeaponTypes = {
-				typeof( CompositeBow ),			typeof( RepeatingCrossbow )
-			};
+		public static Type[] AosShieldTypes { get; } =
+		{
+			typeof( ChaosShield ),			typeof( OrderShield )
+		};
 
-		public static Type[] AosRangedWeaponTypes => m_AosRangedWeaponTypes;
+		public static Type[] ShieldTypes { get; } =
+		{
+			typeof( BronzeShield ),			typeof( Buckler ),				typeof( HeaterShield ),
+			typeof( MetalShield ),			typeof( MetalKiteShield ),		typeof( WoodenKiteShield ),
+			typeof( WoodenShield )
+		};
 
-		private static Type[] m_RangedWeaponTypes = {
-				typeof( Bow ),					typeof( Crossbow ),				typeof( HeavyCrossbow )
-			};
+		public static Type[] GemTypes { get; } =
+		{
+			typeof( Amber ),				typeof( Amethyst ),				typeof( Citrine ),
+			typeof( Diamond ),				typeof( Emerald ),				typeof( Ruby ),
+			typeof( Sapphire ),				typeof( StarSapphire ),			typeof( Tourmaline )
+		};
 
-		public static Type[] RangedWeaponTypes => m_RangedWeaponTypes;
+		public static Type[] JewelryTypes { get; } =
+		{
+			typeof( GoldRing ),				typeof( GoldBracelet ),
+			typeof( SilverRing ),			typeof( SilverBracelet )
+		};
 
-		private static Type[] m_SEArmorTypes = {
-				typeof( ChainHatsuburi ),		typeof( LeatherDo ),			typeof( LeatherHaidate ),
-				typeof( LeatherHiroSode ),		typeof( LeatherJingasa ),		typeof( LeatherMempo ),
-				typeof( LeatherNinjaHood ),		typeof( LeatherNinjaJacket ),	typeof( LeatherNinjaMitts ),
-				typeof( LeatherNinjaPants ),	typeof( LeatherSuneate ),		typeof( DecorativePlateKabuto ),
-				typeof( HeavyPlateJingasa ),	typeof( LightPlateJingasa ),	typeof( PlateBattleKabuto ),
-				typeof( PlateDo ),				typeof( PlateHaidate ),			typeof( PlateHatsuburi ),
-				typeof( PlateHiroSode ),		typeof( PlateMempo ),			typeof( PlateSuneate ),
-				typeof( SmallPlateJingasa ),	typeof( StandardPlateKabuto ),	typeof( StuddedDo ),
-				typeof( StuddedHaidate ),		typeof( StuddedHiroSode ),		typeof( StuddedMempo ),
-				typeof( StuddedSuneate )
-			};
+		public static Type[] RegTypes { get; } =
+		{
+			typeof( BlackPearl ),			typeof( Bloodmoss ),			typeof( Garlic ),
+			typeof( Ginseng ),				typeof( MandrakeRoot ),			typeof( Nightshade ),
+			typeof( SulfurousAsh ),			typeof( SpidersSilk )
+		};
 
-		public static Type[] SEArmorTypes => m_SEArmorTypes;
+		public static Type[] NecroRegTypes { get; } =
+		{
+			typeof( BatWing ),				typeof( GraveDust ),			typeof( DaemonBlood ),
+			typeof( NoxCrystal ),			typeof( PigIron )
+		};
 
-		private static Type[] m_ArmorTypes = {
-				typeof( BoneArms ),				typeof( BoneChest ),			typeof( BoneGloves ),
-				typeof( BoneLegs ),				typeof( BoneHelm ),				typeof( ChainChest ),
-				typeof( ChainLegs ),			typeof( ChainCoif ),			typeof( Bascinet ),
-				typeof( CloseHelm ),			typeof( Helmet ),				typeof( NorseHelm ),
-				typeof( OrcHelm ),				typeof( FemaleLeatherChest ),	typeof( LeatherArms ),
-				typeof( LeatherBustierArms ),	typeof( LeatherChest ),			typeof( LeatherGloves ),
-				typeof( LeatherGorget ),		typeof( LeatherLegs ),			typeof( LeatherShorts ),
-				typeof( LeatherSkirt ),			typeof( LeatherCap ),			typeof( FemalePlateChest ),
-				typeof( PlateArms ),			typeof( PlateChest ),			typeof( PlateGloves ),
-				typeof( PlateGorget ),			typeof( PlateHelm ),			typeof( PlateLegs ),
-				typeof( RingmailArms ),			typeof( RingmailChest ),		typeof( RingmailGloves ),
-				typeof( RingmailLegs ),			typeof( FemaleStuddedChest ),	typeof( StuddedArms ),
-				typeof( StuddedBustierArms ),	typeof( StuddedChest ),			typeof( StuddedGloves ),
-				typeof( StuddedGorget ),		typeof( StuddedLegs )
-			};
+		public static Type[] PotionTypes { get; } =
+		{
+			typeof( AgilityPotion ),		typeof( StrengthPotion ),		typeof( RefreshPotion ),
+			typeof( LesserCurePotion ),		typeof( LesserHealPotion ),		typeof( LesserPoisonPotion )
+		};
 
-		public static Type[] ArmorTypes => m_ArmorTypes;
+		public static Type[] SEInstrumentTypes { get; } =
+		{
+			typeof( BambooFlute )
+		};
 
-		private static Type[] m_AosShieldTypes = {
-				typeof( ChaosShield ),			typeof( OrderShield )
-			};
+		public static Type[] InstrumentTypes { get; } =
+		{
+			typeof( Drums ),				typeof( Harp ),					typeof( LapHarp ),
+			typeof( Lute ),					typeof( Tambourine ),			typeof( TambourineTassel )
+		};
 
-		public static Type[] AosShieldTypes => m_AosShieldTypes;
-
-		private static Type[] m_ShieldTypes = {
-				typeof( BronzeShield ),			typeof( Buckler ),				typeof( HeaterShield ),
-				typeof( MetalShield ),			typeof( MetalKiteShield ),		typeof( WoodenKiteShield ),
-				typeof( WoodenShield )
-			};
-
-		public static Type[] ShieldTypes => m_ShieldTypes;
-
-		private static Type[] m_GemTypes = {
-				typeof( Amber ),				typeof( Amethyst ),				typeof( Citrine ),
-				typeof( Diamond ),				typeof( Emerald ),				typeof( Ruby ),
-				typeof( Sapphire ),				typeof( StarSapphire ),			typeof( Tourmaline )
-			};
-
-		public static Type[] GemTypes => m_GemTypes;
-
-		private static Type[] m_JewelryTypes = {
-				typeof( GoldRing ),				typeof( GoldBracelet ),
-				typeof( SilverRing ),			typeof( SilverBracelet )
-			};
-
-		public static Type[] JewelryTypes => m_JewelryTypes;
-
-		private static Type[] m_RegTypes = {
-				typeof( BlackPearl ),			typeof( Bloodmoss ),			typeof( Garlic ),
-				typeof( Ginseng ),				typeof( MandrakeRoot ),			typeof( Nightshade ),
-				typeof( SulfurousAsh ),			typeof( SpidersSilk )
-			};
-
-		public static Type[] RegTypes => m_RegTypes;
-
-		private static Type[] m_NecroRegTypes = {
-				typeof( BatWing ),				typeof( GraveDust ),			typeof( DaemonBlood ),
-				typeof( NoxCrystal ),			typeof( PigIron )
-			};
-
-		public static Type[] NecroRegTypes => m_NecroRegTypes;
-
-		private static Type[] m_PotionTypes = {
-				typeof( AgilityPotion ),		typeof( StrengthPotion ),		typeof( RefreshPotion ),
-				typeof( LesserCurePotion ),		typeof( LesserHealPotion ),		typeof( LesserPoisonPotion )
-			};
-
-		public static Type[] PotionTypes => m_PotionTypes;
-
-		private static Type[] m_SEInstrumentTypes = {
-				typeof( BambooFlute )
-			};
-
-		public static Type[] SEInstrumentTypes => m_SEInstrumentTypes;
-
-		private static Type[] m_InstrumentTypes = {
-				typeof( Drums ),				typeof( Harp ),					typeof( LapHarp ),
-				typeof( Lute ),					typeof( Tambourine ),			typeof( TambourineTassel )
-			};
-
-		public static Type[] InstrumentTypes => m_InstrumentTypes;
-
-		private static Type[] m_StatueTypes = {
+		public static Type[] StatueTypes { get; } =
+		{
 			typeof( StatueSouth ),			typeof( StatueSouth2 ),			typeof( StatueNorth ),
 			typeof( StatueWest ),			typeof( StatueEast ),			typeof( StatueEast2 ),
 			typeof( StatueSouthEast ),		typeof( BustSouth ),			typeof( BustEast )
 		};
 
-		public static Type[] StatueTypes => m_StatueTypes;
+		#region Mondain's Legacy
 
-		private static Type[] m_RegularScrollTypes = {
-				typeof( ReactiveArmorScroll ),	typeof( ClumsyScroll ),			typeof( CreateFoodScroll ),		typeof( FeeblemindScroll ),
-				typeof( HealScroll ),			typeof( MagicArrowScroll ),		typeof( NightSightScroll ),		typeof( WeakenScroll ),
-				typeof( AgilityScroll ),		typeof( CunningScroll ),		typeof( CureScroll ),			typeof( HarmScroll ),
-				typeof( MagicTrapScroll ),		typeof( MagicUnTrapScroll ),	typeof( ProtectionScroll ),		typeof( StrengthScroll ),
-				typeof( BlessScroll ),			typeof( FireballScroll ),		typeof( MagicLockScroll ),		typeof( PoisonScroll ),
-				typeof( TelekinisisScroll ),	typeof( TeleportScroll ),		typeof( UnlockScroll ),			typeof( WallOfStoneScroll ),
-				typeof( ArchCureScroll ),		typeof( ArchProtectionScroll ),	typeof( CurseScroll ),			typeof( FireFieldScroll ),
-				typeof( GreaterHealScroll ),	typeof( LightningScroll ),		typeof( ManaDrainScroll ),		typeof( RecallScroll ),
-				typeof( BladeSpiritsScroll ),	typeof( DispelFieldScroll ),	typeof( IncognitoScroll ),		typeof( MagicReflectScroll ),
-				typeof( MindBlastScroll ),		typeof( ParalyzeScroll ),		typeof( PoisonFieldScroll ),	typeof( SummonCreatureScroll ),
-				typeof( DispelScroll ),			typeof( EnergyBoltScroll ),		typeof( ExplosionScroll ),		typeof( InvisibilityScroll ),
-				typeof( MarkScroll ),			typeof( MassCurseScroll ),		typeof( ParalyzeFieldScroll ),	typeof( RevealScroll ),
-				typeof( ChainLightningScroll ), typeof( EnergyFieldScroll ),	typeof( FlamestrikeScroll ),	typeof( GateTravelScroll ),
-				typeof( ManaVampireScroll ),	typeof( MassDispelScroll ),		typeof( MeteorSwarmScroll ),	typeof( PolymorphScroll ),
-				typeof( EarthquakeScroll ),		typeof( EnergyVortexScroll ),	typeof( ResurrectionScroll ),	typeof( SummonAirElementalScroll ),
-				typeof( SummonDaemonScroll ),	typeof( SummonEarthElementalScroll ),	typeof( SummonFireElementalScroll ),	typeof( SummonWaterElementalScroll )
-			};
+		#endregion
 
-		private static Type[] m_NecromancyScrollTypes = {
-				typeof( AnimateDeadScroll ),		typeof( BloodOathScroll ),		typeof( CorpseSkinScroll ),	typeof( CurseWeaponScroll ),
-				typeof( EvilOmenScroll ),			typeof( HorrificBeastScroll ),	typeof( LichFormScroll ),	typeof( MindRotScroll ),
-				typeof( PainSpikeScroll ),			typeof( PoisonStrikeScroll ),	typeof( StrangleScroll ),	typeof( SummonFamiliarScroll ),
-				typeof( VampiricEmbraceScroll ),	typeof( VengefulSpiritScroll ),	typeof( WitherScroll ),		typeof( WraithFormScroll )
-			};
-			
-		private static Type[] m_SENecromancyScrollTypes = {
+		public static Type[] RegularScrollTypes { get; } =
+		{
+			typeof( ReactiveArmorScroll ),	typeof( ClumsyScroll ),			typeof( CreateFoodScroll ),		typeof( FeeblemindScroll ),
+			typeof( HealScroll ),			typeof( MagicArrowScroll ),		typeof( NightSightScroll ),		typeof( WeakenScroll ),
+			typeof( AgilityScroll ),		typeof( CunningScroll ),		typeof( CureScroll ),			typeof( HarmScroll ),
+			typeof( MagicTrapScroll ),		typeof( MagicUnTrapScroll ),	typeof( ProtectionScroll ),		typeof( StrengthScroll ),
+			typeof( BlessScroll ),			typeof( FireballScroll ),		typeof( MagicLockScroll ),		typeof( PoisonScroll ),
+			typeof( TelekinisisScroll ),	typeof( TeleportScroll ),		typeof( UnlockScroll ),			typeof( WallOfStoneScroll ),
+			typeof( ArchCureScroll ),		typeof( ArchProtectionScroll ),	typeof( CurseScroll ),			typeof( FireFieldScroll ),
+			typeof( GreaterHealScroll ),	typeof( LightningScroll ),		typeof( ManaDrainScroll ),		typeof( RecallScroll ),
+			typeof( BladeSpiritsScroll ),	typeof( DispelFieldScroll ),	typeof( IncognitoScroll ),		typeof( MagicReflectScroll ),
+			typeof( MindBlastScroll ),		typeof( ParalyzeScroll ),		typeof( PoisonFieldScroll ),	typeof( SummonCreatureScroll ),
+			typeof( DispelScroll ),			typeof( EnergyBoltScroll ),		typeof( ExplosionScroll ),		typeof( InvisibilityScroll ),
+			typeof( MarkScroll ),			typeof( MassCurseScroll ),		typeof( ParalyzeFieldScroll ),	typeof( RevealScroll ),
+			typeof( ChainLightningScroll ), typeof( EnergyFieldScroll ),	typeof( FlamestrikeScroll ),	typeof( GateTravelScroll ),
+			typeof( ManaVampireScroll ),	typeof( MassDispelScroll ),		typeof( MeteorSwarmScroll ),	typeof( PolymorphScroll ),
+			typeof( EarthquakeScroll ),		typeof( EnergyVortexScroll ),	typeof( ResurrectionScroll ),	typeof( SummonAirElementalScroll ),
+			typeof( SummonDaemonScroll ),	typeof( SummonEarthElementalScroll ),	typeof( SummonFireElementalScroll ),	typeof( SummonWaterElementalScroll )
+		};
+
+		public static Type[] NecromancyScrollTypes { get; } =
+		{
+			typeof( AnimateDeadScroll ),		typeof( BloodOathScroll ),		typeof( CorpseSkinScroll ),	typeof( CurseWeaponScroll ),
+			typeof( EvilOmenScroll ),			typeof( HorrificBeastScroll ),	typeof( LichFormScroll ),	typeof( MindRotScroll ),
+			typeof( PainSpikeScroll ),			typeof( PoisonStrikeScroll ),	typeof( StrangleScroll ),	typeof( SummonFamiliarScroll ),
+			typeof( VampiricEmbraceScroll ),	typeof( VengefulSpiritScroll ),	typeof( WitherScroll ),		typeof( WraithFormScroll )
+		};
+
+		public static Type[] SENecromancyScrollTypes { get; } =
+		{
 			typeof( AnimateDeadScroll ),		typeof( BloodOathScroll ),		typeof( CorpseSkinScroll ),	typeof( CurseWeaponScroll ),
 			typeof( EvilOmenScroll ),			typeof( HorrificBeastScroll ),	typeof( LichFormScroll ),	typeof( MindRotScroll ),
 			typeof( PainSpikeScroll ),			typeof( PoisonStrikeScroll ),	typeof( StrangleScroll ),	typeof( SummonFamiliarScroll ),
@@ -238,43 +224,34 @@ namespace Server
 			typeof( ExorcismScroll )
 		};
 
-		private static Type[] m_PaladinScrollTypes = new Type[0];
+		public static Type[] PaladinScrollTypes { get; } = new Type[0];
 
 		#region Mondain's Legacy
-		private static Type[] m_ArcanistScrollTypes = {
+		public static Type[] ArcanistScrollTypes { get; } =
+		{
 			typeof( ArcaneCircleScroll ),	typeof( GiftOfRenewalScroll ),	typeof( ImmolatingWeaponScroll ),	typeof( AttuneWeaponScroll ),
 			typeof( ThunderstormScroll ),	typeof( NatureFuryScroll ),		/*typeof( SummonFeyScroll ),			typeof( SummonFiendScroll ),*/
 			typeof( ReaperFormScroll ),		typeof( WildfireScroll ),		typeof( EssenceOfWindScroll ),		typeof( DryadAllureScroll ),
 			typeof( EtherealVoyageScroll ),	typeof( WordOfDeathScroll ),	typeof( GiftOfLifeScroll ),			typeof( ArcaneEmpowermentScroll )
 		};
-		#endregion
-
-		public static Type[] RegularScrollTypes => m_RegularScrollTypes;
-		public static Type[] NecromancyScrollTypes => m_NecromancyScrollTypes;
-		public static Type[] SENecromancyScrollTypes => m_SENecromancyScrollTypes;
-		public static Type[] PaladinScrollTypes => m_PaladinScrollTypes;
-
-		#region Mondain's Legacy
-		public static Type[] ArcanistScrollTypes => m_ArcanistScrollTypes;
 
 		#endregion
 
-		private static Type[] m_GrimmochJournalTypes = {
+		public static Type[] GrimmochJournalTypes { get; } =
+		{
 			typeof( GrimmochJournal1 ),		typeof( GrimmochJournal2 ),		typeof( GrimmochJournal3 ),
 			typeof( GrimmochJournal6 ),		typeof( GrimmochJournal7 ),		typeof( GrimmochJournal11 ),
 			typeof( GrimmochJournal14 ),	typeof( GrimmochJournal17 ),	typeof( GrimmochJournal23 )
 		};
 
-		public static Type[] GrimmochJournalTypes => m_GrimmochJournalTypes;
-
-		private static Type[] m_LysanderNotebookTypes = {
+		public static Type[] LysanderNotebookTypes { get; } =
+		{
 			typeof( LysanderNotebook1 ),		typeof( LysanderNotebook2 ),		typeof( LysanderNotebook3 ),
 			typeof( LysanderNotebook7 ),		typeof( LysanderNotebook8 ),		typeof( LysanderNotebook11 )
 		};
 
-		public static Type[] LysanderNotebookTypes => m_LysanderNotebookTypes;
-
-		private static Type[] m_TavarasJournalTypes = {
+		public static Type[] TavarasJournalTypes { get; } =
+		{
 			typeof( TavarasJournal1 ),		typeof( TavarasJournal2 ),		typeof( TavarasJournal3 ),
 			typeof( TavarasJournal6 ),		typeof( TavarasJournal7 ),		typeof( TavarasJournal8 ),
 			typeof( TavarasJournal9 ),		typeof( TavarasJournal11 ),		typeof( TavarasJournal14 ),
@@ -282,93 +259,85 @@ namespace Server
 			typeof( TavarasJournal19 )
 		};
 
-		public static Type[] TavarasJournalTypes => m_TavarasJournalTypes;
 
-
-		private static Type[] m_NewWandTypes = {
-				typeof( FireballWand ),		typeof( LightningWand ),		typeof( MagicArrowWand ),
-				typeof( GreaterHealWand ),	typeof( HarmWand ),				typeof( HealWand )
-			};
-		public static Type[] NewWandTypes => m_NewWandTypes;
-
-		private static Type[] m_WandTypes = {
-				typeof( ClumsyWand ),		typeof( FeebleWand ),
-				typeof( ManaDrainWand ),	typeof( WeaknessWand )
-			};
-		public static Type[] WandTypes => m_WandTypes;
-
-		private static Type[] m_OldWandTypes = {
-				typeof( IDWand )
-			};
-		public static Type[] OldWandTypes => m_OldWandTypes;
-
-		private static Type[] m_SEClothingTypes = {
-				typeof( ClothNinjaJacket ),		typeof( FemaleKimono ),			typeof( Hakama ),
-				typeof( HakamaShita ),			typeof( JinBaori ),				typeof( Kamishimo ),
-				typeof( MaleKimono ),			typeof( NinjaTabi ),			typeof( Obi ),
-				typeof( SamuraiTabi ),			typeof( TattsukeHakama ),		typeof( Waraji )
-			};
-
-		public static Type[] SEClothingTypes => m_SEClothingTypes;
-
-		private static Type[] m_AosClothingTypes = {
-				typeof( FurSarong ),			typeof( FurCape ),				typeof( FlowerGarland ),
-				typeof( GildedDress ),			typeof( FurBoots ),				typeof( FormalShirt ),
+		public static Type[] NewWandTypes { get; } =
+		{
+			typeof( FireballWand ),		typeof( LightningWand ),		typeof( MagicArrowWand ),
+			typeof( GreaterHealWand ),	typeof( HarmWand ),				typeof( HealWand )
 		};
 
-		public static Type[] AosClothingTypes => m_AosClothingTypes;
+		public static Type[] WandTypes { get; } =
+		{
+			typeof( ClumsyWand ),		typeof( FeebleWand ),
+			typeof( ManaDrainWand ),	typeof( WeaknessWand )
+		};
 
-		private static Type[] m_ClothingTypes = {
-				typeof( Cloak ),				
-				typeof( Bonnet ),               typeof( Cap ),		            typeof( FeatheredHat ),
-				typeof( FloppyHat ),            typeof( JesterHat ),			typeof( Surcoat ),
-				typeof( SkullCap ),             typeof( StrawHat ),	            typeof( TallStrawHat ),
-				typeof( TricorneHat ),			typeof( WideBrimHat ),          typeof( WizardsHat ),
-				typeof( BodySash ),             typeof( Doublet ),              typeof( Boots ),
-				typeof( FullApron ),            typeof( JesterSuit ),           typeof( Sandals ),
-				typeof( Tunic ),				typeof( Shoes ),				typeof( Shirt ),
-				typeof( Kilt ),                 typeof( Skirt ),				typeof( FancyShirt ),
-				typeof( FancyDress ),			typeof( ThighBoots ),			typeof( LongPants ),
-				typeof( PlainDress ),           typeof( Robe ),					typeof( ShortPants ),
-				typeof( HalfApron )
-			};
-		public static Type[] ClothingTypes => m_ClothingTypes;
+		public static Type[] OldWandTypes { get; } =
+		{
+			typeof( IDWand )
+		};
 
-		private static Type[] m_SEHatTypes = {
-				typeof( ClothNinjaHood ),		typeof( Kasa )
-			};
+		public static Type[] SEClothingTypes { get; } =
+		{
+			typeof( ClothNinjaJacket ),		typeof( FemaleKimono ),			typeof( Hakama ),
+			typeof( HakamaShita ),			typeof( JinBaori ),				typeof( Kamishimo ),
+			typeof( MaleKimono ),			typeof( NinjaTabi ),			typeof( Obi ),
+			typeof( SamuraiTabi ),			typeof( TattsukeHakama ),		typeof( Waraji )
+		};
 
-		public static Type[] SEHatTypes => m_SEHatTypes;
+		public static Type[] AosClothingTypes { get; } =
+		{
+			typeof( FurSarong ),			typeof( FurCape ),				typeof( FlowerGarland ),
+			typeof( GildedDress ),			typeof( FurBoots ),				typeof( FormalShirt ),
+		};
 
-		private static Type[] m_AosHatTypes = {
-				typeof( FlowerGarland ),	typeof( BearMask ),		typeof( DeerMask )	//Are Bear& Deer mask inside the Pre-AoS loottables too?
-			};
+		public static Type[] ClothingTypes { get; } =
+		{
+			typeof( Cloak ),				
+			typeof( Bonnet ),               typeof( Cap ),		            typeof( FeatheredHat ),
+			typeof( FloppyHat ),            typeof( JesterHat ),			typeof( Surcoat ),
+			typeof( SkullCap ),             typeof( StrawHat ),	            typeof( TallStrawHat ),
+			typeof( TricorneHat ),			typeof( WideBrimHat ),          typeof( WizardsHat ),
+			typeof( BodySash ),             typeof( Doublet ),              typeof( Boots ),
+			typeof( FullApron ),            typeof( JesterSuit ),           typeof( Sandals ),
+			typeof( Tunic ),				typeof( Shoes ),				typeof( Shirt ),
+			typeof( Kilt ),                 typeof( Skirt ),				typeof( FancyShirt ),
+			typeof( FancyDress ),			typeof( ThighBoots ),			typeof( LongPants ),
+			typeof( PlainDress ),           typeof( Robe ),					typeof( ShortPants ),
+			typeof( HalfApron )
+		};
 
-		public static Type[] AosHatTypes => m_AosHatTypes;
+		public static Type[] SEHatTypes { get; } =
+		{
+			typeof( ClothNinjaHood ),		typeof( Kasa )
+		};
 
-		private static Type[] m_HatTypes = {
-				typeof( SkullCap ),			typeof( Bandana ),		typeof( FloppyHat ),
-				typeof( Cap ),				typeof( WideBrimHat ),	typeof( StrawHat ),
-				typeof( TallStrawHat ),		typeof( WizardsHat ),	typeof( Bonnet ),
-				typeof( FeatheredHat ),		typeof( TricorneHat ),	typeof( JesterHat )
-			};
+		public static Type[] AosHatTypes { get; } =
+		{
+			typeof( FlowerGarland ),	typeof( BearMask ),		typeof( DeerMask )	//Are Bear& Deer mask inside the Pre-AoS loottables too?
+		};
 
-		public static Type[] HatTypes => m_HatTypes;
+		public static Type[] HatTypes { get; } =
+		{
+			typeof( SkullCap ),			typeof( Bandana ),		typeof( FloppyHat ),
+			typeof( Cap ),				typeof( WideBrimHat ),	typeof( StrawHat ),
+			typeof( TallStrawHat ),		typeof( WizardsHat ),	typeof( Bonnet ),
+			typeof( FeatheredHat ),		typeof( TricorneHat ),	typeof( JesterHat )
+		};
 
-		private static Type[] m_LibraryBookTypes = {
-				typeof( GrammarOfOrcish ),		typeof( CallToAnarchy ),				typeof( ArmsAndWeaponsPrimer ),
-				typeof( SongOfSamlethe ),		typeof( TaleOfThreeTribes ),			typeof( GuideToGuilds ),
-				typeof( BirdsOfBritannia ),		typeof( BritannianFlora ),				typeof( ChildrenTalesVol2 ),
-				typeof( TalesOfVesperVol1 ),	typeof( DeceitDungeonOfHorror ),		typeof( DimensionalTravel ),
-				typeof( EthicalHedonism ),		typeof( MyStory ),						typeof( DiversityOfOurLand ),
-				typeof( QuestOfVirtues ),		typeof( RegardingLlamas ),				typeof( TalkingToWisps ),
-				typeof( TamingDragons ),		typeof( BoldStranger ),					typeof( BurningOfTrinsic ),
-				typeof( TheFight ),				typeof( LifeOfATravellingMinstrel ),	typeof( MajorTradeAssociation ),
-				typeof( RankingsOfTrades ),		typeof( WildGirlOfTheForest ),			typeof( TreatiseOnAlchemy ),
-				typeof( VirtueBook )
-			};
-
-		public static Type[] LibraryBookTypes => m_LibraryBookTypes;
+		public static Type[] LibraryBookTypes { get; } =
+		{
+			typeof( GrammarOfOrcish ),		typeof( CallToAnarchy ),				typeof( ArmsAndWeaponsPrimer ),
+			typeof( SongOfSamlethe ),		typeof( TaleOfThreeTribes ),			typeof( GuideToGuilds ),
+			typeof( BirdsOfBritannia ),		typeof( BritannianFlora ),				typeof( ChildrenTalesVol2 ),
+			typeof( TalesOfVesperVol1 ),	typeof( DeceitDungeonOfHorror ),		typeof( DimensionalTravel ),
+			typeof( EthicalHedonism ),		typeof( MyStory ),						typeof( DiversityOfOurLand ),
+			typeof( QuestOfVirtues ),		typeof( RegardingLlamas ),				typeof( TalkingToWisps ),
+			typeof( TamingDragons ),		typeof( BoldStranger ),					typeof( BurningOfTrinsic ),
+			typeof( TheFight ),				typeof( LifeOfATravellingMinstrel ),	typeof( MajorTradeAssociation ),
+			typeof( RankingsOfTrades ),		typeof( WildGirlOfTheForest ),			typeof( TreatiseOnAlchemy ),
+			typeof( VirtueBook )
+		};
 
 		#endregion
 
@@ -377,10 +346,10 @@ namespace Server
 		public static BaseWand RandomWand()
 		{
 			if ( Core.ML )
-				return Construct( m_NewWandTypes ) as BaseWand;
+				return Construct( NewWandTypes ) as BaseWand;
 			if ( Core.AOS )
-				return Construct( m_WandTypes, m_NewWandTypes ) as BaseWand;
-			return Construct( m_OldWandTypes, m_WandTypes, m_NewWandTypes ) as BaseWand;
+				return Construct( WandTypes, NewWandTypes ) as BaseWand;
+			return Construct( OldWandTypes, WandTypes, NewWandTypes ) as BaseWand;
 		}
 
 		public static BaseClothing RandomClothing()
@@ -392,16 +361,16 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLClothingTypes, m_AosClothingTypes, m_ClothingTypes ) as BaseClothing;
+				return Construct( MLClothingTypes, AosClothingTypes, ClothingTypes ) as BaseClothing;
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEClothingTypes, m_AosClothingTypes, m_ClothingTypes ) as BaseClothing;
+				return Construct( SEClothingTypes, AosClothingTypes, ClothingTypes ) as BaseClothing;
 
 			if ( Core.AOS )
-				return Construct( m_AosClothingTypes, m_ClothingTypes ) as BaseClothing;
+				return Construct( AosClothingTypes, ClothingTypes ) as BaseClothing;
 
-			return Construct( m_ClothingTypes ) as BaseClothing;
+			return Construct( ClothingTypes ) as BaseClothing;
 		}
 
 		public static BaseWeapon RandomRangedWeapon()
@@ -413,16 +382,16 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLRangedWeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes ) as BaseWeapon;
+				return Construct( MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes ) as BaseWeapon;
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SERangedWeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes ) as BaseWeapon;
+				return Construct( SERangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes ) as BaseWeapon;
 
 			if ( Core.AOS )
-				return Construct( m_AosRangedWeaponTypes, m_RangedWeaponTypes ) as BaseWeapon;
+				return Construct( AosRangedWeaponTypes, RangedWeaponTypes ) as BaseWeapon;
 
-			return Construct( m_RangedWeaponTypes ) as BaseWeapon;
+			return Construct( RangedWeaponTypes ) as BaseWeapon;
 		}
 
 		public static BaseWeapon RandomWeapon()
@@ -434,16 +403,16 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLWeaponTypes, m_AosWeaponTypes, m_WeaponTypes ) as BaseWeapon;
+				return Construct( MLWeaponTypes, AosWeaponTypes, WeaponTypes ) as BaseWeapon;
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEWeaponTypes, m_AosWeaponTypes, m_WeaponTypes ) as BaseWeapon;
+				return Construct( SEWeaponTypes, AosWeaponTypes, WeaponTypes ) as BaseWeapon;
 
 			if ( Core.AOS )
-				return Construct( m_AosWeaponTypes, m_WeaponTypes ) as BaseWeapon;
+				return Construct( AosWeaponTypes, WeaponTypes ) as BaseWeapon;
 
-			return Construct( m_WeaponTypes ) as BaseWeapon;
+			return Construct( WeaponTypes ) as BaseWeapon;
 		}
 
 		public static Item RandomWeaponOrJewelry()
@@ -455,21 +424,21 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLWeaponTypes, m_AosWeaponTypes, m_WeaponTypes, m_JewelryTypes );
+				return Construct( MLWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes );
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEWeaponTypes, m_AosWeaponTypes, m_WeaponTypes, m_JewelryTypes );
+				return Construct( SEWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes );
 
 			if ( Core.AOS )
-				return Construct( m_AosWeaponTypes, m_WeaponTypes, m_JewelryTypes );
+				return Construct( AosWeaponTypes, WeaponTypes, JewelryTypes );
 
-			return Construct( m_WeaponTypes, m_JewelryTypes );
+			return Construct( WeaponTypes, JewelryTypes );
 		}
 
 		public static BaseJewel RandomJewelry()
 		{
-			return Construct( m_JewelryTypes ) as BaseJewel;
+			return Construct( JewelryTypes ) as BaseJewel;
 		}
 
 		public static BaseArmor RandomArmor()
@@ -481,13 +450,13 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLArmorTypes, m_ArmorTypes ) as BaseArmor;
+				return Construct( MLArmorTypes, ArmorTypes ) as BaseArmor;
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEArmorTypes, m_ArmorTypes ) as BaseArmor;
+				return Construct( SEArmorTypes, ArmorTypes ) as BaseArmor;
 
-			return Construct( m_ArmorTypes ) as BaseArmor;
+			return Construct( ArmorTypes ) as BaseArmor;
 		}
 
 		public static BaseHat RandomHat()
@@ -498,12 +467,12 @@ namespace Server
 		public static BaseHat RandomHat( bool inTokuno )
 		{
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEHatTypes, m_AosHatTypes, m_HatTypes ) as BaseHat;
+				return Construct( SEHatTypes, AosHatTypes, HatTypes ) as BaseHat;
 
 			if ( Core.AOS )
-				return Construct( m_AosHatTypes, m_HatTypes ) as BaseHat;
+				return Construct( AosHatTypes, HatTypes ) as BaseHat;
 
-			return Construct( m_HatTypes ) as BaseHat;
+			return Construct( HatTypes ) as BaseHat;
 		}
 
 		public static Item RandomArmorOrHat()
@@ -515,24 +484,24 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLArmorTypes, m_ArmorTypes, m_AosHatTypes, m_HatTypes );
+				return Construct( MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes );
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEArmorTypes, m_ArmorTypes, m_SEHatTypes, m_AosHatTypes, m_HatTypes );
+				return Construct( SEArmorTypes, ArmorTypes, SEHatTypes, AosHatTypes, HatTypes );
 
 			if ( Core.AOS )
-				return Construct( m_ArmorTypes, m_AosHatTypes, m_HatTypes );
+				return Construct( ArmorTypes, AosHatTypes, HatTypes );
 
-			return Construct( m_ArmorTypes, m_HatTypes );
+			return Construct( ArmorTypes, HatTypes );
 		}
 
 		public static BaseShield RandomShield()
 		{
 			if ( Core.AOS )
-				return Construct( m_AosShieldTypes, m_ShieldTypes ) as BaseShield;
+				return Construct( AosShieldTypes, ShieldTypes ) as BaseShield;
 
-			return Construct( m_ShieldTypes ) as BaseShield;
+			return Construct( ShieldTypes ) as BaseShield;
 		}
 
 		public static BaseArmor RandomArmorOrShield()
@@ -544,16 +513,16 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLArmorTypes, m_ArmorTypes, m_AosShieldTypes, m_ShieldTypes ) as BaseArmor;
+				return Construct( MLArmorTypes, ArmorTypes, AosShieldTypes, ShieldTypes ) as BaseArmor;
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEArmorTypes, m_ArmorTypes, m_AosShieldTypes, m_ShieldTypes ) as BaseArmor;
+				return Construct( SEArmorTypes, ArmorTypes, AosShieldTypes, ShieldTypes ) as BaseArmor;
 
 			if ( Core.AOS )
-				return Construct( m_ArmorTypes, m_AosShieldTypes, m_ShieldTypes ) as BaseArmor;
+				return Construct( ArmorTypes, AosShieldTypes, ShieldTypes ) as BaseArmor;
 
-			return Construct( m_ArmorTypes, m_ShieldTypes ) as BaseArmor;
+			return Construct( ArmorTypes, ShieldTypes ) as BaseArmor;
 		}
 
 		public static Item RandomArmorOrShieldOrJewelry()
@@ -565,16 +534,16 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLArmorTypes, m_ArmorTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes, m_JewelryTypes );
+				return Construct( MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes );
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEArmorTypes, m_ArmorTypes, m_SEHatTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes, m_JewelryTypes );
+				return Construct( SEArmorTypes, ArmorTypes, SEHatTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes );
 
 			if ( Core.AOS )
-				return Construct( m_ArmorTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes, m_JewelryTypes );
+				return Construct( ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes );
 
-			return Construct( m_ArmorTypes, m_HatTypes, m_ShieldTypes, m_JewelryTypes );
+			return Construct( ArmorTypes, HatTypes, ShieldTypes, JewelryTypes );
 		}
 
 		public static Item RandomArmorOrShieldOrWeapon()
@@ -586,16 +555,16 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLWeaponTypes, m_AosWeaponTypes, m_WeaponTypes, m_MLRangedWeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes, m_MLArmorTypes, m_ArmorTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes );
+				return Construct( MLWeaponTypes, AosWeaponTypes, WeaponTypes, MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes, MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes );
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEWeaponTypes, m_AosWeaponTypes, m_WeaponTypes, m_SERangedWeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes, m_SEArmorTypes, m_ArmorTypes, m_SEHatTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes );
+				return Construct( SEWeaponTypes, AosWeaponTypes, WeaponTypes, SERangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes, SEArmorTypes, ArmorTypes, SEHatTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes );
 
 			if ( Core.AOS )
-				return Construct( m_AosWeaponTypes, m_WeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes, m_ArmorTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes );
+				return Construct( AosWeaponTypes, WeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes );
 
-			return Construct( m_WeaponTypes, m_RangedWeaponTypes, m_ArmorTypes, m_HatTypes, m_ShieldTypes );
+			return Construct( WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes );
 		}
 
 		public static Item RandomArmorOrShieldOrWeaponOrJewelry()
@@ -607,64 +576,64 @@ namespace Server
 		{
 			#region Mondain's Legacy
 			if ( Core.ML && isMondain )
-				return Construct( m_MLWeaponTypes, m_AosWeaponTypes, m_WeaponTypes, m_MLRangedWeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes, m_MLArmorTypes, m_ArmorTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes, m_JewelryTypes );
+				return Construct( MLWeaponTypes, AosWeaponTypes, WeaponTypes, MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes, MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes );
 			#endregion
 
 			if ( Core.SE && inTokuno )
-				return Construct( m_SEWeaponTypes, m_AosWeaponTypes, m_WeaponTypes, m_SERangedWeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes, m_SEArmorTypes, m_ArmorTypes, m_SEHatTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes, m_JewelryTypes );
+				return Construct( SEWeaponTypes, AosWeaponTypes, WeaponTypes, SERangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes, SEArmorTypes, ArmorTypes, SEHatTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes );
 
 			if ( Core.AOS )
-				return Construct( m_AosWeaponTypes, m_WeaponTypes, m_AosRangedWeaponTypes, m_RangedWeaponTypes, m_ArmorTypes, m_AosHatTypes, m_HatTypes, m_AosShieldTypes, m_ShieldTypes, m_JewelryTypes );
+				return Construct( AosWeaponTypes, WeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes );
 
-			return Construct( m_WeaponTypes, m_RangedWeaponTypes, m_ArmorTypes, m_HatTypes, m_ShieldTypes, m_JewelryTypes );
+			return Construct( WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes, JewelryTypes );
 		}
 		
 		#region Chest of Heirlooms
 		public static Item ChestOfHeirloomsContains()
 		{
-			return Construct( m_SEArmorTypes, m_SEHatTypes, m_SEWeaponTypes, m_SERangedWeaponTypes, m_JewelryTypes );
+			return Construct( SEArmorTypes, SEHatTypes, SEWeaponTypes, SERangedWeaponTypes, JewelryTypes );
 		}
 		#endregion
 
 		public static Item RandomGem()
 		{
-			return Construct( m_GemTypes );
+			return Construct( GemTypes );
 		}
 
 		public static Item RandomReagent()
 		{
-			return Construct( m_RegTypes );
+			return Construct( RegTypes );
 		}
 
 		public static Item RandomNecromancyReagent()
 		{
-			return Construct( m_NecroRegTypes );
+			return Construct( NecroRegTypes );
 		}
 
 		public static Item RandomPossibleReagent()
 		{
 			if ( Core.AOS )
-				return Construct( m_RegTypes, m_NecroRegTypes );
+				return Construct( RegTypes, NecroRegTypes );
 
-			return Construct( m_RegTypes );
+			return Construct( RegTypes );
 		}
 
 		public static Item RandomPotion()
 		{
-			return Construct( m_PotionTypes );
+			return Construct( PotionTypes );
 		}
 
 		public static BaseInstrument RandomInstrument()
 		{
 			if ( Core.SE )
-				return Construct( m_InstrumentTypes, m_SEInstrumentTypes ) as BaseInstrument;
+				return Construct( InstrumentTypes, SEInstrumentTypes ) as BaseInstrument;
 
-			return Construct( m_InstrumentTypes ) as BaseInstrument;
+			return Construct( InstrumentTypes ) as BaseInstrument;
 		}
 
 		public static Item RandomStatue()
 		{
-			return Construct( m_StatueTypes );
+			return Construct( StatueTypes );
 		}
 
 		public static SpellScroll RandomScroll( int minIndex, int maxIndex, SpellbookType type )
@@ -674,10 +643,10 @@ namespace Server
 			switch ( type )
 			{
 				default:
-				case SpellbookType.Regular: types = m_RegularScrollTypes; break;
-				case SpellbookType.Necromancer: types = (Core.SE ? m_SENecromancyScrollTypes : m_NecromancyScrollTypes ); break;
-				case SpellbookType.Paladin: types = m_PaladinScrollTypes; break;
-				case SpellbookType.Arcanist: types = m_ArcanistScrollTypes; break;
+				case SpellbookType.Regular: types = RegularScrollTypes; break;
+				case SpellbookType.Necromancer: types = (Core.SE ? SENecromancyScrollTypes : NecromancyScrollTypes ); break;
+				case SpellbookType.Paladin: types = PaladinScrollTypes; break;
+				case SpellbookType.Arcanist: types = ArcanistScrollTypes; break;
 			}
 
 			return Construct( types, Utility.RandomMinMax( minIndex, maxIndex ) ) as SpellScroll;
@@ -685,22 +654,22 @@ namespace Server
 
 		public static BaseBook RandomGrimmochJournal()
 		{
-			return Construct( m_GrimmochJournalTypes ) as BaseBook;
+			return Construct( GrimmochJournalTypes ) as BaseBook;
 		}
 
 		public static BaseBook RandomLysanderNotebook()
 		{
-			return Construct( m_LysanderNotebookTypes ) as BaseBook;
+			return Construct( LysanderNotebookTypes ) as BaseBook;
 		}
 
 		public static BaseBook RandomTavarasJournal()
 		{
-			return Construct( m_TavarasJournalTypes ) as BaseBook;
+			return Construct( TavarasJournalTypes ) as BaseBook;
 		}
 
 		public static BaseBook RandomLibraryBook()
 		{
-			return Construct( m_LibraryBookTypes ) as BaseBook;
+			return Construct( LibraryBookTypes ) as BaseBook;
 		}
 
 		public static BaseTalisman RandomTalisman()

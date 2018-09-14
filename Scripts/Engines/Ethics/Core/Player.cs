@@ -41,39 +41,23 @@ namespace Server.Ethics
 			return pl;
 		}
 
-		private Ethic m_Ethic;
-		private Mobile m_Mobile;
-
-		private int m_Power;
-		private int m_History;
-
-		private Mobile m_Steed;
-		private Mobile m_Familiar;
-
 		private DateTime m_Shield;
 
-		public Ethic Ethic  => m_Ethic;
-		public Mobile Mobile  => m_Mobile;
+		public Ethic Ethic { get; }
+
+		public Mobile Mobile { get; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public int Power { get => m_Power;
-			set => m_Power = value;
-		}
+		public int Power { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public int History { get => m_History;
-			set => m_History = value;
-		}
+		public int History { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public Mobile Steed { get => m_Steed;
-			set => m_Steed = value;
-		}
+		public Mobile Steed { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public Mobile Familiar { get => m_Familiar;
-			set => m_Familiar = value;
-		}
+		public Mobile Familiar { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsShielded
@@ -103,38 +87,38 @@ namespace Server.Ethics
 
 		public Player( Ethic ethic, Mobile mobile )
 		{
-			m_Ethic = ethic;
-			m_Mobile = mobile;
+			Ethic = ethic;
+			Mobile = mobile;
 
-			m_Power = 5;
-			m_History = 5;
+			Power = 5;
+			History = 5;
 		}
 
 		public void CheckAttach()
 		{
-			if ( m_Ethic.IsEligible( m_Mobile ) )
+			if ( Ethic.IsEligible( Mobile ) )
 				Attach();
 		}
 
 		public void Attach()
 		{
-			if ( m_Mobile is PlayerMobile mobile )
+			if ( Mobile is PlayerMobile mobile )
 				mobile.EthicPlayer = this;
 
-			m_Ethic.Players.Add( this );
+			Ethic.Players.Add( this );
 		}
 
 		public void Detach()
 		{
-			if ( m_Mobile is PlayerMobile mobile )
+			if ( Mobile is PlayerMobile mobile )
 				mobile.EthicPlayer = null;
 
-			m_Ethic.Players.Remove( this );
+			Ethic.Players.Remove( this );
 		}
 
 		public Player( Ethic ethic, GenericReader reader )
 		{
-			m_Ethic = ethic;
+			Ethic = ethic;
 
 			int version = reader.ReadEncodedInt();
 
@@ -142,13 +126,13 @@ namespace Server.Ethics
 			{
 				case 0:
 				{
-					m_Mobile = reader.ReadMobile();
+					Mobile = reader.ReadMobile();
 
-					m_Power = reader.ReadEncodedInt();
-					m_History = reader.ReadEncodedInt();
+					Power = reader.ReadEncodedInt();
+					History = reader.ReadEncodedInt();
 
-					m_Steed = reader.ReadMobile();
-					m_Familiar = reader.ReadMobile();
+					Steed = reader.ReadMobile();
+					Familiar = reader.ReadMobile();
 
 					m_Shield = reader.ReadDeltaTime();
 
@@ -161,13 +145,13 @@ namespace Server.Ethics
 		{
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_Mobile );
+			writer.Write( Mobile );
 
-			writer.WriteEncodedInt( m_Power );
-			writer.WriteEncodedInt( m_History );
+			writer.WriteEncodedInt( Power );
+			writer.WriteEncodedInt( History );
 
-			writer.Write( m_Steed );
-			writer.Write( m_Familiar );
+			writer.Write( Steed );
+			writer.Write( Familiar );
 
 			writer.WriteDeltaTime( m_Shield );
 		}

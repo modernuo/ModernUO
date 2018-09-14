@@ -2,43 +2,41 @@ namespace Server.Engines.Mahjong
 {
 	public struct MahjongPieceDim
 	{
-		private Point2D m_Position;
-		private int m_Width;
-		private int m_Height;
+		public Point2D Position { get; }
 
-		public Point2D Position  => m_Position;
-		public int Width  => m_Width;
-		public int Height  => m_Height;
+		public int Width { get; }
+
+		public int Height { get; }
 
 		public MahjongPieceDim( Point2D position, int width, int height )
 		{
-			m_Position = position;
-			m_Width = width;
-			m_Height = height;
+			Position = position;
+			Width = width;
+			Height = height;
 		}
 
 		public bool IsValid()
 		{
-			return m_Position.X >= 0 && m_Position.Y >= 0 && m_Position.X + m_Width <= 670 && m_Position.Y + m_Height <= 670;
+			return Position.X >= 0 && Position.Y >= 0 && Position.X + Width <= 670 && Position.Y + Height <= 670;
 		}
 
 		public bool IsOverlapping( MahjongPieceDim dim )
 		{
-			return m_Position.X < dim.m_Position.X + dim.m_Width && m_Position.Y < dim.m_Position.Y + dim.m_Height && m_Position.X + m_Width > dim.m_Position.X && m_Position.Y + m_Height > dim.m_Position.Y;
+			return Position.X < dim.Position.X + dim.Width && Position.Y < dim.Position.Y + dim.Height && Position.X + Width > dim.Position.X && Position.Y + Height > dim.Position.Y;
 		}
 
 		public int GetHandArea()
 		{
-			if ( m_Position.X + m_Width > 150 && m_Position.X < 520 && m_Position.Y < 35 )
+			if ( Position.X + Width > 150 && Position.X < 520 && Position.Y < 35 )
 				return 0;
 
-			if ( m_Position.X + m_Width > 635 && m_Position.Y + m_Height > 150 && m_Position.Y < 520 )
+			if ( Position.X + Width > 635 && Position.Y + Height > 150 && Position.Y < 520 )
 				return 1;
 
-			if ( m_Position.X + m_Width > 150 && m_Position.X < 520 && m_Position.Y + m_Height > 635 )
+			if ( Position.X + Width > 150 && Position.X < 520 && Position.Y + Height > 635 )
 				return 2;
 
-			if ( m_Position.X < 35 && m_Position.Y + m_Height > 150 && m_Position.Y < 520 )
+			if ( Position.X < 35 && Position.Y + Height > 150 && Position.Y < 520 )
 				return 3;
 
 			return -1;

@@ -60,9 +60,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		public List<Mobile> Users  => m_Users;
-
-		private List<Mobile> m_Users;
+		public List<Mobile> Users { get; private set; }
 
 		public override void Drink( Mobile from )
 		{
@@ -80,11 +78,11 @@ namespace Server.Items
 
 			from.RevealingAction();
 
-			if ( m_Users == null )
-				m_Users = new List<Mobile>();
+			if ( Users == null )
+				Users = new List<Mobile>();
 
-			if ( !m_Users.Contains( from ) )
-				m_Users.Add( from );
+			if ( !Users.Contains( from ) )
+				Users.Add( from );
 
 			from.Target = new ThrowTarget( this );
 
@@ -164,18 +162,16 @@ namespace Server.Items
 
 		private class ThrowTarget : Target
 		{
-			private BaseExplosionPotion m_Potion;
-
-			public BaseExplosionPotion Potion => m_Potion;
+			public BaseExplosionPotion Potion { get; }
 
 			public ThrowTarget( BaseExplosionPotion potion ) : base( 12, true, TargetFlags.None )
 			{
-				m_Potion = potion;
+				Potion = potion;
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( m_Potion.Deleted || m_Potion.Map == Map.Internal )
+				if ( Potion.Deleted || Potion.Map == Map.Internal )
 					return;
 
 				if ( !(targeted is IPoint3D p) )
@@ -200,15 +196,15 @@ namespace Server.Items
 						to = m;
 				}
 
-				Effects.SendMovingEffect( from, to, m_Potion.ItemID, 7, 0, false, false, m_Potion.Hue, 0 );
+				Effects.SendMovingEffect( from, to, Potion.ItemID, 7, 0, false, false, Potion.Hue, 0 );
 
-				if ( m_Potion.Amount > 1 )
+				if ( Potion.Amount > 1 )
 				{
-					Mobile.LiftItemDupe( m_Potion, 1 );
+					Mobile.LiftItemDupe( Potion, 1 );
 				}
 
-				m_Potion.Internalize();
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( m_Potion.Reposition_OnTick ), new object[]{ from, p, map } );
+				Potion.Internalize();
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( Potion.Reposition_OnTick ), new object[]{ from, p, map } );
 			}
 		}
 
@@ -219,9 +215,9 @@ namespace Server.Items
 
 			Consume();
 
-			for ( int i = 0; m_Users != null && i < m_Users.Count; ++i )
+			for ( int i = 0; Users != null && i < Users.Count; ++i )
 			{
-				Mobile m = m_Users[i];
+				Mobile m = Users[i];
 
 				if ( m.Target is ThrowTarget targ && targ.Potion == this )
 					Target.Cancel( m );

@@ -36,30 +36,14 @@ namespace Server.Items
 			TargetCommands.Register( new ToggleCommand() );
 		}
 
-		private int m_InactiveItemID;
-		private int m_ActiveItemID;
-		private bool m_PlayersCanToggle;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int InactiveItemID { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int InactiveItemID
-		{
-			get => m_InactiveItemID;
-			set => m_InactiveItemID = value;
-		}
+		public int ActiveItemID { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int ActiveItemID
-		{
-			get => m_ActiveItemID;
-			set => m_ActiveItemID = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool PlayersCanToggle
-		{
-			get => m_PlayersCanToggle;
-			set => m_PlayersCanToggle = value;
-		}
+		public bool PlayersCanToggle { get; set; }
 
 		[Constructible]
 		public ToggleItem( int inactiveItemID, int activeItemID, bool playersCanToggle = false)
@@ -67,9 +51,9 @@ namespace Server.Items
 		{
 			Movable = false;
 
-			m_InactiveItemID = inactiveItemID;
-			m_ActiveItemID = activeItemID;
-			m_PlayersCanToggle = playersCanToggle;
+			InactiveItemID = inactiveItemID;
+			ActiveItemID = activeItemID;
+			PlayersCanToggle = playersCanToggle;
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -78,7 +62,7 @@ namespace Server.Items
 			{
 				Toggle();
 			}
-			else if ( m_PlayersCanToggle )
+			else if ( PlayersCanToggle )
 			{
 				if ( from.InRange( GetWorldLocation(), 1 ) )
 					Toggle();
@@ -89,7 +73,7 @@ namespace Server.Items
 
 		public void Toggle()
 		{
-			ItemID = ( ItemID == m_ActiveItemID ) ? m_InactiveItemID : m_ActiveItemID;
+			ItemID = ( ItemID == ActiveItemID ) ? InactiveItemID : ActiveItemID;
 			Visible = ( ItemID != 0x1 );
 		}
 
@@ -104,9 +88,9 @@ namespace Server.Items
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( m_InactiveItemID );
-			writer.Write( m_ActiveItemID );
-			writer.Write( m_PlayersCanToggle );
+			writer.Write( InactiveItemID );
+			writer.Write( ActiveItemID );
+			writer.Write( PlayersCanToggle );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -115,9 +99,9 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			m_InactiveItemID = reader.ReadInt();
-			m_ActiveItemID = reader.ReadInt();
-			m_PlayersCanToggle = reader.ReadBool();
+			InactiveItemID = reader.ReadInt();
+			ActiveItemID = reader.ReadInt();
+			PlayersCanToggle = reader.ReadBool();
 		}
 	}
 }

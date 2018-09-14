@@ -8,40 +8,31 @@ namespace Server.Commands.Generic
 
 	public sealed class ExtensionInfo
 	{
-		private static Dictionary<string, ExtensionInfo> m_Table = new Dictionary<string, ExtensionInfo>( StringComparer.InvariantCultureIgnoreCase );
-
-		public static Dictionary<string, ExtensionInfo> Table => m_Table;
+		public static Dictionary<string, ExtensionInfo> Table { get; } = new Dictionary<string, ExtensionInfo>( StringComparer.InvariantCultureIgnoreCase );
 
 		public static void Register( ExtensionInfo ext )
 		{
-			m_Table[ext.m_Name] = ext;
+			Table[ext.Name] = ext;
 		}
 
-		private int m_Order;
+		public int Order { get; }
 
-		private string m_Name;
-		private int m_Size;
+		public string Name { get; }
 
-		private ExtensionConstructor m_Constructor;
+		public int Size { get; }
 
-		public int Order => m_Order;
+		public bool IsFixedSize => ( Size >= 0 );
 
-		public string Name => m_Name;
-
-		public int Size => m_Size;
-
-		public bool IsFixedSize => ( m_Size >= 0 );
-
-		public ExtensionConstructor Constructor => m_Constructor;
+		public ExtensionConstructor Constructor { get; }
 
 		public ExtensionInfo( int order, string name, int size, ExtensionConstructor constructor )
 		{
-			m_Name = name;
-			m_Size = size;
+			Name = name;
+			Size = size;
 
-			m_Order = order;
+			Order = order;
 
-			m_Constructor = constructor;
+			Constructor = constructor;
 		}
 	}
 

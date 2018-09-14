@@ -26,23 +26,15 @@ namespace Server
 	[Parsable]
 	public abstract class Race
 	{
-		public static Race DefaultRace => m_Races[0];
+		public static Race DefaultRace => Races[0];
 
-		private static Race[] m_Races = new Race[0x100];
+		public static Race[] Races { get; } = new Race[0x100];
 
-		public static Race[] Races => m_Races;
+		public static Race Human => Races[0];
+		public static Race Elf => Races[1];
+		public static Race Gargoyle => Races[2];
 
-		public static Race Human => m_Races[0];
-		public static Race Elf => m_Races[1];
-		public static Race Gargoyle => m_Races[2];
-
-		private static List<Race> m_AllRaces = new List<Race>();
-
-		public static List<Race> AllRaces => m_AllRaces;
-
-		private int m_RaceID, m_RaceIndex;
-
-		private string m_Name, m_PluralName;
+		public static List<Race> AllRaces { get; } = new List<Race>();
 
 		private static string[] m_RaceNames;
 		private static Race[] m_RaceValues;
@@ -72,8 +64,8 @@ namespace Server
 			int index;
 			if ( int.TryParse( value, out index ) )
 			{
-				if ( index >= 0 && index < m_Races.Length && m_Races[index] != null )
-					return m_Races[index];
+				if ( index >= 0 && index < Races.Length && Races[index] != null )
+					return Races[index];
 			}
 
 			throw new ArgumentException( "Invalid race name" );
@@ -81,15 +73,15 @@ namespace Server
 
 		private static void CheckNamesAndValues()
 		{
-			if ( m_RaceNames != null && m_RaceNames.Length == m_AllRaces.Count )
+			if ( m_RaceNames != null && m_RaceNames.Length == AllRaces.Count )
 				return;
 
-			m_RaceNames = new string[m_AllRaces.Count];
-			m_RaceValues = new Race[m_AllRaces.Count];
+			m_RaceNames = new string[AllRaces.Count];
+			m_RaceValues = new Race[AllRaces.Count];
 
-			for( int i = 0; i < m_AllRaces.Count; ++i )
+			for( int i = 0; i < AllRaces.Count; ++i )
 			{
-				Race race = m_AllRaces[i];
+				Race race = AllRaces[i];
 
 				m_RaceNames[i] = race.Name;
 				m_RaceValues[i] = race;
@@ -98,35 +90,33 @@ namespace Server
 
 		public override string ToString()
 		{
-			return m_Name;
+			return Name;
 		}
 
-		private int m_MaleBody, m_FemaleBody, m_MaleGhostBody, m_FemaleGhostBody;
+		public Expansion RequiredExpansion { get; }
 
-		private Expansion m_RequiredExpansion;
+		public int MaleBody { get; }
 
-		public Expansion RequiredExpansion => m_RequiredExpansion;
+		public int MaleGhostBody { get; }
 
-		public int MaleBody => m_MaleBody;
-		public int MaleGhostBody => m_MaleGhostBody;
+		public int FemaleBody { get; }
 
-		public int FemaleBody => m_FemaleBody;
-		public int FemaleGhostBody => m_FemaleGhostBody;
+		public int FemaleGhostBody { get; }
 
 		protected Race( int raceID, int raceIndex, string name, string pluralName, int maleBody, int femaleBody, int maleGhostBody, int femaleGhostBody, Expansion requiredExpansion )
 		{
-			m_RaceID = raceID;
-			m_RaceIndex = raceIndex;
+			RaceID = raceID;
+			RaceIndex = raceIndex;
 
-			m_Name = name;
+			Name = name;
 
-			m_MaleBody = maleBody;
-			m_FemaleBody = femaleBody;
-			m_MaleGhostBody = maleGhostBody;
-			m_FemaleGhostBody = femaleGhostBody;
+			MaleBody = maleBody;
+			FemaleBody = femaleBody;
+			MaleGhostBody = maleGhostBody;
+			FemaleGhostBody = femaleGhostBody;
 
-			m_RequiredExpansion = requiredExpansion;
-			m_PluralName = pluralName;
+			RequiredExpansion = requiredExpansion;
+			PluralName = pluralName;
 		}
 
 		public virtual bool ValidateHair( Mobile m, int itemID ) { return ValidateHair( m.Female, itemID ); }
@@ -158,29 +148,21 @@ namespace Server
 		public virtual int AliveBody( Mobile m ) { return AliveBody( m.Female ); }
 		public virtual int AliveBody( bool female )
 		{
-			return (female ? m_FemaleBody : m_MaleBody);
+			return (female ? FemaleBody : MaleBody);
 		}
 
 		public virtual int GhostBody( Mobile m ) { return GhostBody( m.Female ); }
 		public virtual int GhostBody( bool female )
 		{
-			return (female ? m_FemaleGhostBody : m_MaleGhostBody);
+			return (female ? FemaleGhostBody : MaleGhostBody);
 		}
 
-		public int RaceID => m_RaceID;
+		public int RaceID { get; }
 
-		public int RaceIndex => m_RaceIndex;
+		public int RaceIndex { get; }
 
-		public string Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public string Name { get; set; }
 
-		public string PluralName
-		{
-			get => m_PluralName;
-			set => m_PluralName = value;
-		}
+		public string PluralName { get; set; }
 	}
 }

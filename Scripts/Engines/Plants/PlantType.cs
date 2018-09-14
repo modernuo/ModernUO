@@ -256,7 +256,7 @@ namespace Server.Engines.Plants
 			if ( m_PlantLabelPlant != -1 )
 				return m_PlantLabelPlant;
 
-			if ( m_ContainsPlant )
+			if ( ContainsPlant )
 				return hueInfo.IsBright() ? 1060832 : 1060831; // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
 			return hueInfo.IsBright() ? 1061887 : 1061888; // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~ ~6_val~
 		}
@@ -266,7 +266,7 @@ namespace Server.Engines.Plants
 			if ( m_PlantLabelFullGrown != -1 )
 				return m_PlantLabelFullGrown;
 
-			if ( m_ContainsPlant )
+			if ( ContainsPlant )
 				return hueInfo.IsBright() ? 1061891 : 1061889; // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~
 			return hueInfo.IsBright() ? 1061892 : 1061890; // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
 		}
@@ -295,16 +295,6 @@ namespace Server.Engines.Plants
 			return hueInfo.IsBright() ? 1113493 : 1113492; // ~1_amount~ [bright] ~2_color~ ~3_type~ seeds
 		}
 
-		private int m_ItemID;
-		private int m_OffsetX;
-		private int m_OffsetY;
-		private PlantType m_PlantType;
-		private bool m_ContainsPlant;
-		private bool m_Flowery;
-		private bool m_Crossable;
-		private bool m_Reproduces;
-		private PlantCategory m_PlantCategory;
-
 		// Cliloc overrides
 		private int m_PlantLabelSeed;
 		private int m_PlantLabelPlant;
@@ -313,17 +303,25 @@ namespace Server.Engines.Plants
 		private int m_SeedLabel;
 		private int m_SeedLabelPlural;
 
-		public int ItemID  => m_ItemID;
-		public int OffsetX  => m_OffsetX;
-		public int OffsetY  => m_OffsetY;
-		public PlantType PlantType  => m_PlantType;
-		public PlantCategory PlantCategory  => m_PlantCategory;
-		public int Name => ( m_ItemID < 0x4000 ) ? 1020000 + m_ItemID : 1078872 + m_ItemID;
+		public int ItemID { get; }
 
-		public bool ContainsPlant  => m_ContainsPlant;
-		public bool Flowery  => m_Flowery;
-		public bool Crossable  => m_Crossable;
-		public bool Reproduces  => m_Reproduces;
+		public int OffsetX { get; }
+
+		public int OffsetY { get; }
+
+		public PlantType PlantType { get; }
+
+		public PlantCategory PlantCategory { get; }
+
+		public int Name => ( ItemID < 0x4000 ) ? 1020000 + ItemID : 1078872 + ItemID;
+
+		public bool ContainsPlant { get; }
+
+		public bool Flowery { get; }
+
+		public bool Crossable { get; }
+
+		public bool Reproduces { get; }
 
 		private PlantTypeInfo( int itemID, int offsetX, int offsetY, PlantType plantType, bool containsPlant, bool flowery, bool crossable, bool reproduces, PlantCategory plantCategory )
 			: this( itemID, offsetX, offsetY, plantType, containsPlant, flowery, crossable, reproduces, plantCategory, -1, -1, -1, -1, -1, -1 )
@@ -332,15 +330,15 @@ namespace Server.Engines.Plants
 
 		private PlantTypeInfo( int itemID, int offsetX, int offsetY, PlantType plantType, bool containsPlant, bool flowery, bool crossable, bool reproduces, PlantCategory plantCategory, int plantLabelSeed, int plantLabelPlant, int plantLabelFullGrown, int plantLabelDecorative, int seedLabel, int seedLabelPlural )
 		{
-			m_ItemID = itemID;
-			m_OffsetX = offsetX;
-			m_OffsetY = offsetY;
-			m_PlantType = plantType;
-			m_ContainsPlant = containsPlant;
-			m_Flowery = flowery;
-			m_Crossable = crossable;
-			m_Reproduces = reproduces;
-			m_PlantCategory = plantCategory;
+			ItemID = itemID;
+			OffsetX = offsetX;
+			OffsetY = offsetY;
+			PlantType = plantType;
+			ContainsPlant = containsPlant;
+			Flowery = flowery;
+			Crossable = crossable;
+			Reproduces = reproduces;
+			PlantCategory = plantCategory;
 			m_PlantLabelSeed = plantLabelSeed;
 			m_PlantLabelPlant = plantLabelPlant;
 			m_PlantLabelFullGrown = plantLabelFullGrown;

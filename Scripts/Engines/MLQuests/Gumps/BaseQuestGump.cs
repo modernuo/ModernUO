@@ -30,19 +30,17 @@ namespace Server.Engines.MLQuests.Gumps
 	{
 		private struct ButtonInfo
 		{
-			private ButtonPosition m_Position;
-			private ButtonGraphic m_Graphic;
-			private int m_ButtonID;
+			public ButtonPosition Position { get; }
 
-			public ButtonPosition Position  => m_Position;
-			public ButtonGraphic Graphic  => m_Graphic;
-			public int ButtonID  => m_ButtonID;
+			public ButtonGraphic Graphic { get; }
+
+			public int ButtonID { get; }
 
 			public ButtonInfo( ButtonPosition position, ButtonGraphic graphic, int buttonID )
 			{
-				m_Position = position;
-				m_Graphic = graphic;
-				m_ButtonID = buttonID;
+				Position = position;
+				Graphic = graphic;
+				ButtonID = buttonID;
 			}
 		}
 

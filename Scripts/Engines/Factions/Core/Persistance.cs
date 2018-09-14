@@ -4,9 +4,7 @@ namespace Server.Factions
 {
 	public class FactionPersistance : Item
 	{
-		private static FactionPersistance m_Instance;
-
-		public static FactionPersistance Instance => m_Instance;
+		public static FactionPersistance Instance { get; private set; }
 
 		public override string DefaultName => "Faction Persistance - Internal";
 
@@ -14,8 +12,8 @@ namespace Server.Factions
 		{
 			Movable = false;
 
-			if ( m_Instance == null || m_Instance.Deleted )
-				m_Instance = this;
+			if ( Instance == null || Instance.Deleted )
+				Instance = this;
 			else
 				base.Delete();
 		}
@@ -29,7 +27,7 @@ namespace Server.Factions
 
 		public FactionPersistance( Serial serial ) : base( serial )
 		{
-			m_Instance = this;
+			Instance = this;
 		}
 
 		public override void Serialize( GenericWriter writer )

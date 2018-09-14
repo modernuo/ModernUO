@@ -77,10 +77,9 @@ namespace Server.Regions
 
 	public abstract class SpawnType : SpawnDefinition
 	{
-		private Type m_Type;
 		private bool m_Init;
 
-		public Type Type => m_Type;
+		public Type Type { get; }
 
 		public abstract int Height{ get; }
 		public abstract bool Land{ get; }
@@ -88,7 +87,7 @@ namespace Server.Regions
 
 		protected SpawnType( Type type )
 		{
-			m_Type = type;
+			Type = type;
 			m_Init = false;
 		}
 
@@ -124,7 +123,7 @@ namespace Server.Regions
 		{
 			for ( int i = 0; i < types.Length; i++ )
 			{
-				if ( types[i] == m_Type )
+				if ( types[i] == Type )
 					return true;
 			}
 
@@ -254,56 +253,50 @@ namespace Server.Regions
 
 	public class SpawnTreasureChest : SpawnItem
 	{
-		private int m_ItemID;
-		private BaseTreasureChest.TreasureLevel m_Level;
+		public int ItemID { get; }
 
-		public int ItemID => m_ItemID;
-		public BaseTreasureChest.TreasureLevel Level => m_Level;
+		public BaseTreasureChest.TreasureLevel Level { get; }
 
 		public SpawnTreasureChest( int itemID, BaseTreasureChest.TreasureLevel level ) : base( typeof( BaseTreasureChest ) )
 		{
-			m_ItemID = itemID;
-			m_Level = level;
+			ItemID = itemID;
+			Level = level;
 		}
 
 		protected override void Init()
 		{
-			m_Height = TileData.ItemTable[m_ItemID & TileData.MaxItemValue].Height;
+			m_Height = TileData.ItemTable[ItemID & TileData.MaxItemValue].Height;
 		}
 
 		protected override Item CreateItem()
 		{
-			return new BaseTreasureChest( m_ItemID, m_Level );
+			return new BaseTreasureChest( ItemID, Level );
 		}
 	}
 
 	public class SpawnGroupElement
 	{
-		private SpawnDefinition m_SpawnDefinition;
-		private int m_Weight;
+		public SpawnDefinition SpawnDefinition { get; }
 
-		public SpawnDefinition SpawnDefinition => m_SpawnDefinition;
-		public int Weight => m_Weight;
+		public int Weight { get; }
 
 		public SpawnGroupElement( SpawnDefinition spawnDefinition, int weight )
 		{
-			m_SpawnDefinition = spawnDefinition;
-			m_Weight = weight;
+			SpawnDefinition = spawnDefinition;
+			Weight = weight;
 		}
 	}
 
 	public class SpawnGroup : SpawnDefinition
 	{
-		private static Hashtable m_Table = new Hashtable();
-
-		public static Hashtable Table => m_Table;
+		public static Hashtable Table { get; } = new Hashtable();
 
 		public static void Register( SpawnGroup group )
 		{
-			if ( m_Table.Contains( group.Name ) )
+			if ( Table.Contains( group.Name ) )
 				Console.WriteLine( "Warning: Double SpawnGroup name '{0}'", group.Name );
 			else
-				m_Table[group.Name] = group;
+				Table[group.Name] = group;
 		}
 
 		static SpawnGroup()
@@ -357,17 +350,16 @@ namespace Server.Regions
 			}
 		}
 
-		private string m_Name;
-		private SpawnGroupElement[] m_Elements;
 		private int m_TotalWeight;
 
-		public string Name => m_Name;
-		public SpawnGroupElement[] Elements => m_Elements;
+		public string Name { get; }
+
+		public SpawnGroupElement[] Elements { get; }
 
 		public SpawnGroup( string name, SpawnGroupElement[] elements )
 		{
-			m_Name = name;
-			m_Elements = elements;
+			Name = name;
+			Elements = elements;
 
 			m_TotalWeight = 0;
 			for ( int i = 0; i < elements.Length; i++ )
@@ -378,9 +370,9 @@ namespace Server.Regions
 		{
 			int index = Utility.Random( m_TotalWeight );
 
-			for ( int i = 0; i < m_Elements.Length; i++ )
+			for ( int i = 0; i < Elements.Length; i++ )
 			{
-				SpawnGroupElement element = m_Elements[i];
+				SpawnGroupElement element = Elements[i];
 
 				if ( index < element.Weight )
 					return element.SpawnDefinition.Spawn( entry );
@@ -393,9 +385,9 @@ namespace Server.Regions
 
 		public override bool CanSpawn( params Type[] types )
 		{
-			for ( int i = 0; i < m_Elements.Length; i++ )
+			for ( int i = 0; i < Elements.Length; i++ )
 			{
-				if ( m_Elements[i].SpawnDefinition.CanSpawn( types ) )
+				if ( Elements[i].SpawnDefinition.CanSpawn( types ) )
 					return true;
 			}
 

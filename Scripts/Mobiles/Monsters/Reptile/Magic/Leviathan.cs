@@ -6,13 +6,8 @@ namespace Server.Mobiles
 	public class Leviathan : BaseCreature
 	{
 		public override string CorpseName => "a leviathan corpse";
-		private Mobile m_Fisher;
 
-		public Mobile Fisher
-		{
-			get => m_Fisher;
-			set => m_Fisher = value;
-		}
+		public Mobile Fisher { get; set; }
 
 		public override string DefaultName => "a leviathan";
 
@@ -24,7 +19,7 @@ namespace Server.Mobiles
 		[Constructible]
 		public Leviathan( Mobile fisher ) : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			m_Fisher = fisher;
+			Fisher = fisher;
 
 			// May not be OSI accurate; mostly copied from krakens
 			Body = 77;
@@ -110,9 +105,8 @@ namespace Server.Mobiles
 			int version = reader.ReadInt();
 		}
 
-		public static Type[] Artifacts  => m_Artifacts;
-
-		private static Type[] m_Artifacts = {
+		public static Type[] Artifacts { get; } =
+		{
 			// Decorations
 			typeof( CandelabraOfSouls ),
 			typeof( GhostShipAnchor ),
@@ -142,7 +136,7 @@ namespace Server.Mobiles
 
 		public static void GiveArtifactTo( Mobile m )
 		{
-			Item item = Loot.Construct( m_Artifacts );
+			Item item = Loot.Construct( Artifacts );
 
 			if ( item == null )
 				return;
@@ -162,8 +156,8 @@ namespace Server.Mobiles
 			{
 				GiveArtifactTo( mob );
 
-				if ( mob == m_Fisher )
-					m_Fisher = null;
+				if ( mob == Fisher )
+					Fisher = null;
 			}
 		}
 
@@ -171,10 +165,10 @@ namespace Server.Mobiles
 		{
 			base.OnDeath( c );
 
-			if ( m_Fisher != null && 25 > Utility.Random( 100 ) )
-				GiveArtifactTo( m_Fisher );
+			if ( Fisher != null && 25 > Utility.Random( 100 ) )
+				GiveArtifactTo( Fisher );
 
-			m_Fisher = null;
+			Fisher = null;
 		}
 	}
 }

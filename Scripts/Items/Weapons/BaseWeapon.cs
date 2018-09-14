@@ -80,10 +80,6 @@ namespace Server.Items
 		private SlayerName m_Slayer2;
 		private SkillMod m_SkillMod, m_MageMod;
 		private CraftResource m_Resource;
-		private bool m_PlayerConstructed;
-
-		private bool m_Cursed; // Is this weapon cursed via Curse Weapon necromancer spell? Temporary; not serialized.
-		private bool m_Consecrated; // Is this weapon blessed via Consecrate Weapon paladin ability? Temporary; not serialized.
 
 		private AosAttributes m_AosAttributes;
 		private AosWeaponAttributes m_AosWeaponAttributes;
@@ -183,18 +179,10 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Cursed
-		{
-			get => m_Cursed;
-			set => m_Cursed = value;
-		}
+		public bool Cursed { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Consecrated
-		{
-			get => m_Consecrated;
-			set => m_Consecrated = value;
-		}
+		public bool Consecrated { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Identified
@@ -292,11 +280,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool PlayerConstructed
-		{
-			get => m_PlayerConstructed;
-			set => m_PlayerConstructed = value;
-		}
+		public bool PlayerConstructed { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxRange
@@ -1304,13 +1288,7 @@ namespace Server.Items
 			return 0;
 		}
 
-		private static bool m_InDoubleStrike;
-
-		public static bool InDoubleStrike
-		{
-			get => m_InDoubleStrike;
-			set => m_InDoubleStrike = value;
-		}
+		public static bool InDoubleStrike { get; set; }
 
 		public virtual void OnHit( Mobile attacker, Mobile defender, double damageBonus = 1.0)
 		{
@@ -1413,7 +1391,7 @@ namespace Server.Items
 				percentageBonus += packInstinctBonus;
 			}
 
-			if ( m_InDoubleStrike )
+			if ( InDoubleStrike )
 			{
 				percentageBonus -= 10;
 			}
@@ -1480,7 +1458,7 @@ namespace Server.Items
 					quiver.AlterBowDamage( ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct );
 			}
 
-			if ( m_Consecrated )
+			if ( Consecrated )
 			{
 				phys = defender.PhysicalResistance;
 				fire = defender.FireResistance;
@@ -1544,7 +1522,7 @@ namespace Server.Items
 				if ( (int)(AosWeaponAttributes.GetValue( attacker, AosWeaponAttribute.HitLeechMana ) * propertyBonus) > Utility.Random( 100 ) )
 					manaLeech += 40; // HitLeechMana% chance to leech 40% of damage as mana
 
-				if ( m_Cursed )
+				if ( Cursed )
 					lifeLeech += 50; // Additional 50% life leech for cursed weapons (necro spell)
 
 				context = TransformationSpellHelper.GetContext( attacker );
@@ -2423,7 +2401,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.Resource,			m_Resource != CraftResource.Iron );
 			SetSaveFlag( ref flags, SaveFlag.xAttributes,		!m_AosAttributes.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.xWeaponAttributes,	!m_AosWeaponAttributes.IsEmpty );
-			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	m_PlayerConstructed );
+			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	PlayerConstructed );
 			SetSaveFlag( ref flags, SaveFlag.SkillBonuses,		!m_AosSkillBonuses.IsEmpty );
 			SetSaveFlag( ref flags, SaveFlag.Slayer2,			m_Slayer2 != SlayerName.None );
 			SetSaveFlag( ref flags, SaveFlag.ElementalDamages,	!m_AosElementDamages.IsEmpty );
@@ -2720,7 +2698,7 @@ namespace Server.Items
 					}
 
 					if ( GetSaveFlag( flags, SaveFlag.PlayerConstructed ) )
-						m_PlayerConstructed = true;
+						PlayerConstructed = true;
 
 					if ( GetSaveFlag( flags, SaveFlag.SkillBonuses ) )
 						m_AosSkillBonuses = new AosSkillBonuses( this, reader );
@@ -2876,7 +2854,7 @@ namespace Server.Items
 			}
 
 			if ( version < 6 )
-				m_PlayerConstructed = true; // we don't know, so, assume it's crafted
+				PlayerConstructed = true; // we don't know, so, assume it's crafted
 		}
 		#endregion
 
@@ -3354,13 +3332,7 @@ namespace Server.Items
 			from.Send( new DisplayEquipmentInfo( this, eqInfo ) );
 		}
 
-		private static BaseWeapon m_Fists; // This value holds the default--fist--weapon
-
-		public static BaseWeapon Fists
-		{
-			get => m_Fists;
-			set => m_Fists = value;
-		}
+		public static BaseWeapon Fists { get; set; }
 
 		#region ICraftable Members
 

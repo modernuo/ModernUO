@@ -6,24 +6,18 @@ namespace Server.Engines.MLQuests.Rewards
 {
 	public abstract class BaseReward
 	{
-		private TextDefinition m_Name;
-
-		public TextDefinition Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public TextDefinition Name { get; set; }
 
 		public BaseReward( TextDefinition name )
 		{
-			m_Name = name;
+			Name = name;
 		}
 
 		protected virtual int LabelHeight => 16;
 
 		public void WriteToGump( Gump g, int x, ref int y )
 		{
-			TextDefinition.AddHtmlText( g, x, y, 280, LabelHeight, m_Name, false, false, 0x15F90, 0xBDE784 );
+			TextDefinition.AddHtmlText( g, x, y, 280, LabelHeight, Name, false, false, 0x15F90, 0xBDE784 );
 		}
 
 		public abstract void AddRewardItems( PlayerMobile pm, List<Item> rewards );

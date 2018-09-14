@@ -481,62 +481,51 @@ namespace Server
 	[PropertyObject]
 	public struct Rectangle3D
 	{
-		private Point3D m_Start;
-		private Point3D m_End;
-
 		public Rectangle3D( Point3D start, Point3D end )
 		{
-			m_Start = start;
-			m_End = end;
+			Start = start;
+			End = end;
 		}
 
 		public Rectangle3D( int x, int y, int z, int width, int height, int depth )
 		{
-			m_Start = new Point3D( x, y, z );
-			m_End = new Point3D( x + width, y + height, z + depth );
+			Start = new Point3D( x, y, z );
+			End = new Point3D( x + width, y + height, z + depth );
 		}
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public Point3D Start
-		{
-			get => m_Start;
-			set => m_Start = value;
-		}
+		public Point3D Start { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public Point3D End
-		{
-			get => m_End;
-			set => m_End = value;
-		}
+		public Point3D End { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public int Width => m_End.X - m_Start.X;
+		public int Width => End.X - Start.X;
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public int Height => m_End.Y - m_Start.Y;
+		public int Height => End.Y - Start.Y;
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public int Depth => m_End.Z - m_Start.Z;
+		public int Depth => End.Z - Start.Z;
 
 		public bool Contains( Point3D p )
 		{
-			return ( p.m_X >= m_Start.m_X )
-				&& ( p.m_X <  m_End.m_X )
-				&& ( p.m_Y >= m_Start.m_Y )
-				&& ( p.m_Y <  m_End.m_Y )
-				&& ( p.m_Z >= m_Start.m_Z )
-				&& ( p.m_Z <  m_End.m_Z );
+			return ( p.m_X >= Start.m_X )
+				&& ( p.m_X <  End.m_X )
+				&& ( p.m_Y >= Start.m_Y )
+				&& ( p.m_Y <  End.m_Y )
+				&& ( p.m_Z >= Start.m_Z )
+				&& ( p.m_Z <  End.m_Z );
 		}
 
 		public bool Contains( IPoint3D p )
 		{
-			return ( p.X >= m_Start.m_X )
-				&& ( p.X <  m_End.m_X )
-				&& ( p.Y >= m_Start.m_Y )
-				&& ( p.Y <  m_End.m_Y )
-				&& ( p.Z >= m_Start.m_Z )
-				&& ( p.Z <  m_End.m_Z );
+			return ( p.X >= Start.m_X )
+				&& ( p.X <  End.m_X )
+				&& ( p.Y >= Start.m_Y )
+				&& ( p.Y <  End.m_Y )
+				&& ( p.Z >= Start.m_Z )
+				&& ( p.Z <  End.m_Z );
 		}
 	}
 }

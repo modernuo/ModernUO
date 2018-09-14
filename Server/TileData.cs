@@ -26,32 +26,19 @@ namespace Server
 {
 	public struct LandData
 	{
-		private string m_Name;
-		private TileFlag m_Flags;
-
 		public LandData( string name, TileFlag flags )
 		{
-			m_Name = name;
-			m_Flags = flags;
+			Name = name;
+			Flags = flags;
 		}
 
-		public string Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public string Name { get; set; }
 
-		public TileFlag Flags
-		{
-			get => m_Flags;
-			set => m_Flags = value;
-		}
+		public TileFlag Flags { get; set; }
 	}
 
 	public struct ItemData
 	{
-		private string m_Name;
-		private TileFlag m_Flags;
 		private byte m_Weight;
 		private byte m_Quality;
 		private byte m_Quantity;
@@ -60,8 +47,8 @@ namespace Server
 
 		public ItemData( string name, TileFlag flags, int weight, int quality, int quantity, int value, int height )
 		{
-			m_Name = name;
-			m_Flags = flags;
+			Name = name;
+			Flags = flags;
 			m_Weight = (byte)weight;
 			m_Quality = (byte)quality;
 			m_Quantity = (byte)quantity;
@@ -69,51 +56,43 @@ namespace Server
 			m_Height = (byte)height;
 		}
 
-		public string Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public string Name { get; set; }
 
-		public TileFlag Flags
-		{
-			get => m_Flags;
-			set => m_Flags = value;
-		}
+		public TileFlag Flags { get; set; }
 
 		public bool Bridge
 		{
-			get => (m_Flags & TileFlag.Bridge) != 0;
+			get => (Flags & TileFlag.Bridge) != 0;
 			set
 			{
 				if ( value )
-					m_Flags |= TileFlag.Bridge;
+					Flags |= TileFlag.Bridge;
 				else
-					m_Flags &= ~TileFlag.Bridge;
+					Flags &= ~TileFlag.Bridge;
 			}
 		}
 
 		public bool Impassable
 		{
-			get => (m_Flags & TileFlag.Impassable) != 0;
+			get => (Flags & TileFlag.Impassable) != 0;
 			set
 			{
 				if ( value )
-					m_Flags |= TileFlag.Impassable;
+					Flags |= TileFlag.Impassable;
 				else
-					m_Flags &= ~TileFlag.Impassable;
+					Flags &= ~TileFlag.Impassable;
 			}
 		}
 
 		public bool Surface
 		{
-			get => (m_Flags & TileFlag.Surface) != 0;
+			get => (Flags & TileFlag.Surface) != 0;
 			set
 			{
 				if ( value )
-					m_Flags |= TileFlag.Surface;
+					Flags |= TileFlag.Surface;
 				else
-					m_Flags &= ~TileFlag.Surface;
+					Flags &= ~TileFlag.Surface;
 			}
 		}
 
@@ -151,7 +130,7 @@ namespace Server
 		{
 			get
 			{
-				if ( (m_Flags & TileFlag.Bridge) != 0 )
+				if ( (Flags & TileFlag.Bridge) != 0 )
 					return m_Height / 2;
 				return m_Height;
 			}
@@ -198,19 +177,13 @@ namespace Server
 
 	public static class TileData
 	{
-		private static LandData[] m_LandData;
-		private static ItemData[] m_ItemData;
+		public static LandData[] LandTable { get; }
 
-		public static LandData[] LandTable => m_LandData;
+		public static ItemData[] ItemTable { get; }
 
-		public static ItemData[] ItemTable => m_ItemData;
+		public static int MaxLandValue { get; }
 
-		private static int m_MaxLandValue;
-		private static int m_MaxItemValue;
-
-		public static int MaxLandValue  => m_MaxLandValue;
-
-		public static int MaxItemValue  => m_MaxItemValue;
+		public static int MaxItemValue { get; }
 
 		private static byte[] m_StringBuffer = new byte[20];
 
@@ -236,7 +209,7 @@ namespace Server
 					BinaryReader bin = new BinaryReader( fs );
 
 					if ( fs.Length == 3188736 ) { // 7.0.9.0
-						m_LandData = new LandData[0x4000];
+						LandTable = new LandData[0x4000];
 
 						for ( int i = 0; i < 0x4000; ++i )
 						{
@@ -248,10 +221,10 @@ namespace Server
 							TileFlag flags = (TileFlag)bin.ReadInt64();
 							bin.ReadInt16(); // skip 2 bytes -- textureID
 
-							m_LandData[i] = new LandData( ReadNameString( bin ), flags );
+							LandTable[i] = new LandData( ReadNameString( bin ), flags );
 						}
 
-						m_ItemData = new ItemData[0x10000];
+						ItemTable = new ItemData[0x10000];
 
 						for ( int i = 0; i < 0x10000; ++i )
 						{
@@ -271,10 +244,10 @@ namespace Server
 							int value = bin.ReadByte();
 							int height = bin.ReadByte();
 
-							m_ItemData[i] = new ItemData( ReadNameString( bin ), flags, weight, quality, quantity, value, height );
+							ItemTable[i] = new ItemData( ReadNameString( bin ), flags, weight, quality, quantity, value, height );
 						}
 					} else {
-						m_LandData = new LandData[0x4000];
+						LandTable = new LandData[0x4000];
 
 						for ( int i = 0; i < 0x4000; ++i )
 						{
@@ -286,11 +259,11 @@ namespace Server
 							TileFlag flags = (TileFlag)bin.ReadInt32();
 							bin.ReadInt16(); // skip 2 bytes -- textureID
 
-							m_LandData[i] = new LandData( ReadNameString( bin ), flags );
+							LandTable[i] = new LandData( ReadNameString( bin ), flags );
 						}
 
 						if ( fs.Length == 1644544 ) { // 7.0.0.0
-							m_ItemData = new ItemData[0x8000];
+							ItemTable = new ItemData[0x8000];
 
 							for ( int i = 0; i < 0x8000; ++i )
 							{
@@ -310,10 +283,10 @@ namespace Server
 								int value = bin.ReadByte();
 								int height = bin.ReadByte();
 
-								m_ItemData[i] = new ItemData( ReadNameString( bin ), flags, weight, quality, quantity, value, height );
+								ItemTable[i] = new ItemData( ReadNameString( bin ), flags, weight, quality, quantity, value, height );
 							}
 						} else {
-							m_ItemData = new ItemData[0x4000];
+							ItemTable = new ItemData[0x4000];
 
 							for ( int i = 0; i < 0x4000; ++i )
 							{
@@ -333,14 +306,14 @@ namespace Server
 								int value = bin.ReadByte();
 								int height = bin.ReadByte();
 
-								m_ItemData[i] = new ItemData( ReadNameString( bin ), flags, weight, quality, quantity, value, height );
+								ItemTable[i] = new ItemData( ReadNameString( bin ), flags, weight, quality, quantity, value, height );
 							}
 						}
 					}
 				}
 
-				m_MaxLandValue = m_LandData.Length - 1;
-				m_MaxItemValue = m_ItemData.Length - 1;
+				MaxLandValue = LandTable.Length - 1;
+				MaxItemValue = ItemTable.Length - 1;
 			}
 			else
 			{

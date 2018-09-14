@@ -567,7 +567,7 @@ namespace Server
 			if ( other == null )
 				return -1;
 
-			return m_Serial.CompareTo( other.Serial );
+			return Serial.CompareTo( other.Serial );
 		}
 
 		public int CompareTo( Item other )
@@ -584,7 +584,7 @@ namespace Server
 		}
 
 		#region Standard fields
-		private Serial m_Serial;
+
 		private Point3D m_Location;
 		private int m_ItemID;
 		private int m_Hue;
@@ -593,7 +593,6 @@ namespace Server
 		private IEntity m_Parent; // Mobile, Item, or null=World
 		private Map m_Map;
 		private LootType m_LootType;
-		private DateTime m_LastMovedTime;
 		private Direction m_Direction;
 		#endregion
 
@@ -1259,17 +1258,17 @@ namespace Server
 
 		public void LabelTo( Mobile to, int number )
 		{
-			to.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", "" ) );
+			to.Send( new MessageLocalized( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", "" ) );
 		}
 
 		public void LabelTo( Mobile to, int number, string args )
 		{
-			to.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args ) );
+			to.Send( new MessageLocalized( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args ) );
 		}
 
 		public void LabelTo( Mobile to, string text )
 		{
-			to.Send( new UnicodeMessage( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text ) );
+			to.Send( new UnicodeMessage( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text ) );
 		}
 
 		public void LabelTo( Mobile to, string format, params object[] args )
@@ -1279,12 +1278,12 @@ namespace Server
 
 		public void LabelToAffix( Mobile to, int number, AffixType type, string affix )
 		{
-			to.Send( new MessageLocalizedAffix( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, "" ) );
+			to.Send( new MessageLocalizedAffix( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, "" ) );
 		}
 
 		public void LabelToAffix( Mobile to, int number, AffixType type, string affix, string args )
 		{
-			to.Send( new MessageLocalizedAffix( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args ) );
+			to.Send( new MessageLocalizedAffix( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args ) );
 		}
 
 		public virtual void LabelLootTypeTo( Mobile to )
@@ -1453,14 +1452,10 @@ namespace Server
 			}
 		}
 
-		private static TimeSpan m_DDT = TimeSpan.FromHours( 1.0 );
-
-		public static TimeSpan DefaultDecayTime{ get => m_DDT;
-			set => m_DDT = value;
-		}
+		public static TimeSpan DefaultDecayTime { get; set; } = TimeSpan.FromHours( 1.0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual TimeSpan DecayTime => m_DDT;
+		public virtual TimeSpan DecayTime => DefaultDecayTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual bool Decays => (Movable && Visible/* && Spawner == null*/);
@@ -1472,14 +1467,10 @@ namespace Server
 
 		public void SetLastMoved()
 		{
-			m_LastMovedTime = DateTime.UtcNow;
+			LastMoved = DateTime.UtcNow;
 		}
 
-		public DateTime LastMoved
-		{
-			get => m_LastMovedTime;
-			set => m_LastMovedTime = value;
-		}
+		public DateTime LastMoved { get; set; }
 
 		public virtual bool CanStackWith( Item dropped )
 		{
@@ -1962,7 +1953,7 @@ namespace Server
 
 		int ISerializable.TypeReference => m_TypeRef;
 
-		int ISerializable.SerialIdentity => m_Serial;
+		int ISerializable.SerialIdentity => Serial;
 
 		public virtual void Serialize( GenericWriter writer )
 		{
@@ -2058,7 +2049,7 @@ namespace Server
 			writer.Write( (int) flags );
 
 			/* begin last moved time optimization */
-			long ticks = m_LastMovedTime.Ticks;
+			long ticks = LastMoved.Ticks;
 			long now = DateTime.UtcNow.Ticks;
 
 			TimeSpan d;
@@ -2210,31 +2201,20 @@ namespace Server
 			return map.GetClientsInRange( GetWorldLocation(), range );
 		}
 
-		private static int m_LockedDownFlag;
-		private static int m_SecureFlag;
+		public static int LockedDownFlag { get; set; }
 
-		public static int LockedDownFlag
-		{
-			get => m_LockedDownFlag;
-			set => m_LockedDownFlag = value;
-		}
-
-		public static int SecureFlag
-		{
-			get => m_SecureFlag;
-			set => m_SecureFlag = value;
-		}
+		public static int SecureFlag { get; set; }
 
 		public bool IsLockedDown
 		{
-			get => GetTempFlag( m_LockedDownFlag );
-			set{ SetTempFlag( m_LockedDownFlag, value ); InvalidateProperties(); }
+			get => GetTempFlag( LockedDownFlag );
+			set{ SetTempFlag( LockedDownFlag, value ); InvalidateProperties(); }
 		}
 
 		public bool IsSecure
 		{
-			get => GetTempFlag( m_SecureFlag );
-			set{ SetTempFlag( m_SecureFlag, value ); InvalidateProperties(); }
+			get => GetTempFlag( SecureFlag );
+			set{ SetTempFlag( SecureFlag, value ); InvalidateProperties(); }
 		}
 
 		public bool GetTempFlag( int flag )
@@ -3005,13 +2985,7 @@ namespace Server
 			}
 		}
 
-		private bool m_NoMoveHS;
-
-		public bool NoMoveHS
-		{
-			get => m_NoMoveHS;
-			set => m_NoMoveHS = value;
-		}
+		public bool NoMoveHS { get; set; }
 
 		public void ProcessDelta()
 		{
@@ -3331,9 +3305,9 @@ namespace Server
 						if ( p == null )
 						{
 							if ( ascii )
-								p = new AsciiMessage( m_Serial, m_ItemID, type, hue, 3, Name, text );
+								p = new AsciiMessage( Serial, m_ItemID, type, hue, 3, Name, text );
 							else
-								p = new UnicodeMessage( m_Serial, m_ItemID, type, hue, 3, "ENU", Name, text );
+								p = new UnicodeMessage( Serial, m_ItemID, type, hue, 3, "ENU", Name, text );
 
 							p.Acquire();
 						}
@@ -3369,7 +3343,7 @@ namespace Server
 					if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
 					{
 						if ( p == null )
-							p = Packet.Acquire( new MessageLocalized( m_Serial, m_ItemID, type, hue, 3, number, Name, args ) );
+							p = Packet.Acquire( new MessageLocalized( Serial, m_ItemID, type, hue, 3, number, Name, args ) );
 
 						state.Send( p );
 					}
@@ -3457,7 +3431,7 @@ namespace Server
 		public virtual int EnergyResistance => 0;
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public Serial Serial => m_Serial;
+		public Serial Serial { get; }
 
 		#region Location Location Location!
 
@@ -3507,7 +3481,7 @@ namespace Server
 							foreach (NetState state in eable) {
 								Mobile m = state.Mobile;
 
-								if ( m.CanSee( this ) && m.InRange( m_Location, GetUpdateRange( m ) ) && ( !state.HighSeas || !m_NoMoveHS || ( m_DeltaFlags & ItemDelta.Update ) != 0 || !m.InRange( oldLoc, GetUpdateRange( m ) ) ) )
+								if ( m.CanSee( this ) && m.InRange( m_Location, GetUpdateRange( m ) ) && ( !state.HighSeas || !NoMoveHS || ( m_DeltaFlags & ItemDelta.Update ) != 0 || !m.InRange( oldLoc, GetUpdateRange( m ) ) ) )
 									SendInfoTo( state );
 							}
 
@@ -3699,7 +3673,7 @@ namespace Server
 						InvalidateProperties();
 
 					if ( !Stackable && m_Amount > 1 )
-						Console.WriteLine( "Warning: 0x{0:X}: Amount changed for non-stackable item '{2}'. ({1})", m_Serial.Value, m_Amount, GetType().Name );
+						Console.WriteLine( "Warning: 0x{0:X}: Amount changed for non-stackable item '{2}'. ({1})", Serial.Value, m_Amount, GetType().Name );
 				}
 			}
 		}
@@ -4348,7 +4322,7 @@ namespace Server
 			ObjectPropertyList opl = PropertyList;
 
 			if ( opl.Header > 0 )
-				from.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name, opl.HeaderArgs ) );
+				from.Send( new MessageLocalized( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name, opl.HeaderArgs ) );
 		}
 
 		public virtual void OnSingleClick( Mobile from )
@@ -4366,25 +4340,19 @@ namespace Server
 				if ( Name == null )
 				{
 					if ( m_Amount <= 1 )
-						ns.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", "" ) );
+						ns.Send( new MessageLocalized( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", "" ) );
 					else
-						ns.Send( new MessageLocalizedAffix( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", AffixType.Append,
+						ns.Send( new MessageLocalizedAffix( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", AffixType.Append,
 							$" : {m_Amount}", "" ) );
 				}
 				else
 				{
-					ns.Send( new UnicodeMessage( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", Name + ( m_Amount > 1 ? " : " + m_Amount : "" ) ) );
+					ns.Send( new UnicodeMessage( Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", Name + ( m_Amount > 1 ? " : " + m_Amount : "" ) ) );
 				}
 			}
 		}
 
-		private static bool m_ScissorCopyLootType;
-
-		public static bool ScissorCopyLootType
-		{
-			get => m_ScissorCopyLootType;
-			set => m_ScissorCopyLootType = value;
-		}
+		public static bool ScissorCopyLootType { get; set; }
 
 		public virtual void ScissorHelper( Mobile from, Item newItem, int amountPerOldItem )
 		{
@@ -4414,7 +4382,7 @@ namespace Server
 			if ( carryHue )
 				newItem.Hue = ourHue;
 
-			if ( m_ScissorCopyLootType )
+			if ( ScissorCopyLootType )
 				newItem.LootType = type;
 
 			if ( !(thisParent is Container) || !((Container)thisParent).TryDropItem( from, newItem, false ) )
@@ -4529,14 +4497,14 @@ namespace Server
 
 		public override string ToString()
 		{
-			return $"0x{m_Serial.Value:X} \"{GetType().Name}\"";
+			return $"0x{Serial.Value:X} \"{GetType().Name}\"";
 		}
 
 		internal int m_TypeRef;
 
 		public Item()
 		{
-			m_Serial = Serial.NewItem;
+			Serial = Serial.NewItem;
 
 			//m_Items = new ArrayList( 1 );
 			Visible = true;
@@ -4566,7 +4534,7 @@ namespace Server
 
 		public Item( Serial serial )
 		{
-			m_Serial = serial;
+			Serial = serial;
 
 			Type ourType = GetType();
 			m_TypeRef = World.m_ItemTypes.IndexOf( ourType );

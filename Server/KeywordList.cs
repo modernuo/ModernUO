@@ -23,21 +23,20 @@ namespace Server
 	public class KeywordList
 	{
 		private int[] m_Keywords;
-		private int m_Count;
 
 		public KeywordList()
 		{
 			m_Keywords = new int[8];
-			m_Count = 0;
+			Count = 0;
 		}
 
-		public int Count => m_Count;
+		public int Count { get; private set; }
 
 		public bool Contains( int keyword )
 		{
 			bool contains = false;
 
-			for ( int i = 0; !contains && i < m_Count; ++i )
+			for ( int i = 0; !contains && i < Count; ++i )
 				contains = ( keyword == m_Keywords[i] );
 
 			return contains;
@@ -45,7 +44,7 @@ namespace Server
 
 		public void Add( int keyword )
 		{
-			if ( (m_Count + 1) > m_Keywords.Length )
+			if ( (Count + 1) > m_Keywords.Length )
 			{
 				int[] old = m_Keywords;
 				m_Keywords = new int[old.Length * 2];
@@ -54,22 +53,22 @@ namespace Server
 					m_Keywords[i] = old[i];
 			}
 
-			m_Keywords[m_Count++] = keyword;
+			m_Keywords[Count++] = keyword;
 		}
 
 		private static int[] m_EmptyInts = new int[0];
 
 		public int[] ToArray()
 		{
-			if ( m_Count == 0 )
+			if ( Count == 0 )
 				return m_EmptyInts;
 
-			int[] keywords = new int[m_Count];
+			int[] keywords = new int[Count];
 
-			for ( int i = 0; i < m_Count; ++i )
+			for ( int i = 0; i < Count; ++i )
 				keywords[i] = m_Keywords[i];
 
-			m_Count = 0;
+			Count = 0;
 
 			return keywords;
 		}

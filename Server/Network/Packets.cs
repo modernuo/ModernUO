@@ -477,12 +477,9 @@ namespace Server.Network
 
 	public class EquipInfoAttribute
 	{
-		private int m_Number;
-		private int m_Charges;
+		public int Number { get; }
 
-		public int Number => m_Number;
-
-		public int Charges => m_Charges;
+		public int Charges { get; }
 
 		public EquipInfoAttribute( int number ) : this( number, -1 )
 		{
@@ -490,32 +487,27 @@ namespace Server.Network
 
 		public EquipInfoAttribute( int number, int charges )
 		{
-			m_Number = number;
-			m_Charges = charges;
+			Number = number;
+			Charges = charges;
 		}
 	}
 
 	public class EquipmentInfo
 	{
-		private int m_Number;
-		private Mobile m_Crafter;
-		private bool m_Unidentified;
-		private EquipInfoAttribute[] m_Attributes;
+		public int Number { get; }
 
-		public int Number => m_Number;
+		public Mobile Crafter { get; }
 
-		public Mobile Crafter => m_Crafter;
+		public bool Unidentified { get; }
 
-		public bool Unidentified => m_Unidentified;
-
-		public EquipInfoAttribute[] Attributes => m_Attributes;
+		public EquipInfoAttribute[] Attributes { get; }
 
 		public EquipmentInfo( int number, Mobile crafter, bool unidentified, EquipInfoAttribute[] attributes )
 		{
-			m_Number = number;
-			m_Crafter = crafter;
-			m_Unidentified = unidentified;
-			m_Attributes = attributes;
+			Number = number;
+			Crafter = crafter;
+			Unidentified = unidentified;
+			Attributes = attributes;
 		}
 	}
 
@@ -2353,14 +2345,9 @@ namespace Server.Network
 
 	public sealed class DisplayGumpPacked : Packet, IGumpWriter
 	{
-		private int m_TextEntries, m_Switches;
+		public int TextEntries { get; set; }
 
-		public int TextEntries { get => m_TextEntries;
-			set => m_TextEntries = value;
-		}
-		public int Switches { get => m_Switches;
-			set => m_Switches = value;
-		}
+		public int Switches { get; set; }
 
 		private Gump m_Gump;
 
@@ -2507,16 +2494,11 @@ namespace Server.Network
 
 	public sealed class DisplayGumpFast : Packet, IGumpWriter
 	{
-		private int m_TextEntries, m_Switches;
-
 		private int m_LayoutLength;
 
-		public int TextEntries{ get => m_TextEntries;
-			set => m_TextEntries = value;
-		}
-		public int Switches{ get => m_Switches;
-			set => m_Switches = value;
-		}
+		public int TextEntries { get; set; }
+
+		public int Switches { get; set; }
 
 		public DisplayGumpFast( Gump g ) : base( 0xB0 )
 		{
@@ -2799,11 +2781,7 @@ namespace Server.Network
 
 	public sealed class SupportedFeatures : Packet
 	{
-		private static FeatureFlags m_AdditionalFlags;
-
-		public static FeatureFlags Value{ get => m_AdditionalFlags;
-			set => m_AdditionalFlags = value;
-		}
+		public static FeatureFlags Value { get; set; }
 
 		public static SupportedFeatures Instantiate( NetState ns )
 		{
@@ -2814,7 +2792,7 @@ namespace Server.Network
 		{
 			FeatureFlags flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
 
-			flags |= m_AdditionalFlags;
+			flags |= Value;
 
 			if ( ns.Account is IAccount acct && acct.Limit >= 6 )
 			{
@@ -2837,27 +2815,16 @@ namespace Server.Network
 
 	public static class AttributeNormalizer
 	{
-		private static int m_Maximum = 25;
-		private static bool m_Enabled = true;
+		public static int Maximum { get; set; } = 25;
 
-		public static int Maximum
-		{
-			get => m_Maximum;
-			set => m_Maximum = value;
-		}
-
-		public static bool Enabled
-		{
-			get => m_Enabled;
-			set => m_Enabled = value;
-		}
+		public static bool Enabled { get; set; } = true;
 
 		public static void Write( PacketWriter stream, int cur, int max )
 		{
-			if ( m_Enabled && max != 0 )
+			if ( Enabled && max != 0 )
 			{
-				stream.Write( (short) m_Maximum );
-				stream.Write( (short) ((cur * m_Maximum) / max) );
+				stream.Write( (short) Maximum );
+				stream.Write( (short) ((cur * Maximum) / max) );
 			}
 			else
 			{
@@ -2868,10 +2835,10 @@ namespace Server.Network
 
 		public static void WriteReverse( PacketWriter stream, int cur, int max )
 		{
-			if ( m_Enabled && max != 0 )
+			if ( Enabled && max != 0 )
 			{
-				stream.Write( (short) ((cur * m_Maximum) / max) );
-				stream.Write( (short) m_Maximum );
+				stream.Write( (short) ((cur * Maximum) / max) );
+				stream.Write( (short) Maximum );
 			}
 			else
 			{
@@ -3857,19 +3824,15 @@ namespace Server.Network
 
 	public sealed class CityInfo
 	{
-		private string m_City;
-		private string m_Building;
-		private int m_Description;
 		private Point3D m_Location;
-		private Map m_Map;
 
 		public CityInfo( string city, string building, int description, int x, int y, int z, Map m )
 		{
-			m_City = city;
-			m_Building = building;
-			m_Description = description;
+			City = city;
+			Building = building;
+			Description = description;
 			m_Location = new Point3D( x, y, z );
-			m_Map = m;
+			Map = m;
 		}
 
 		public CityInfo( string city, string building, int x, int y, int z, Map m ) : this( city, building, 0, x, y, z, m )
@@ -3884,23 +3847,11 @@ namespace Server.Network
 		{
 		}
 
-		public string City
-		{
-			get => m_City;
-			set => m_City = value;
-		}
+		public string City { get; set; }
 
-		public string Building
-		{
-			get => m_Building;
-			set => m_Building = value;
-		}
+		public string Building { get; set; }
 
-		public int Description
-		{
-			get => m_Description;
-			set => m_Description = value;
-		}
+		public int Description { get; set; }
 
 		public int X
 		{
@@ -3926,11 +3877,7 @@ namespace Server.Network
 			set => m_Location = value;
 		}
 
-		public Map Map
-		{
-			get => m_Map;
-			set => m_Map = value;
-		}
+		public Map Map { get; set; }
 	}
 
 	public sealed class CharacterListUpdate : Packet
@@ -4011,9 +3958,7 @@ namespace Server.Network
 
 	public static class FeatureProtection
 	{
-		private static ThirdPartyFeature m_Disabled = 0;
-
-		public static ThirdPartyFeature DisabledFeatures => m_Disabled;
+		public static ThirdPartyFeature DisabledFeatures { get; private set; } = 0;
 
 		public static void Disable( ThirdPartyFeature feature )
 		{
@@ -4028,9 +3973,9 @@ namespace Server.Network
 		public static void SetDisabled( ThirdPartyFeature feature, bool value )
 		{
 			if ( value )
-				m_Disabled |= feature;
+				DisabledFeatures |= feature;
 			else
-				m_Disabled &= ~feature;
+				DisabledFeatures &= ~feature;
 		}
 	}
 
@@ -4091,7 +4036,7 @@ namespace Server.Network
 			else if ( a.Limit == 1 )
 				flags |= (CharacterListFlags.SlotLimit & CharacterListFlags.OneCharacterSlot); // Limit Characters & One Character
 
-			m_Stream.Write( (int)(flags | m_AdditionalFlags) ); // Additional Flags
+			m_Stream.Write( (int)(flags | AdditionalFlags) ); // Additional Flags
 
 			m_Stream.Write( (short) -1 );
 
@@ -4126,13 +4071,7 @@ namespace Server.Network
 
 		private static System.Security.Cryptography.MD5CryptoServiceProvider m_MD5Provider;
 
-		private static CharacterListFlags m_AdditionalFlags;
-
-		public static CharacterListFlags AdditionalFlags
-		{
-			get => m_AdditionalFlags;
-			set => m_AdditionalFlags = value;
-		}
+		public static CharacterListFlags AdditionalFlags { get; set; }
 	}
 
 	public sealed class CharacterListOld : Packet
@@ -4285,41 +4224,20 @@ namespace Server.Network
 
 	public sealed class ServerInfo
 	{
-		private string m_Name;
-		private int m_FullPercent;
-		private int m_TimeZone;
-		private IPEndPoint m_Address;
+		public string Name { get; set; }
 
-		public string Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public int FullPercent { get; set; }
 
-		public int FullPercent
-		{
-			get => m_FullPercent;
-			set => m_FullPercent = value;
-		}
+		public int TimeZone { get; set; }
 
-		public int TimeZone
-		{
-			get => m_TimeZone;
-			set => m_TimeZone = value;
-		}
-
-		public IPEndPoint Address
-		{
-			get => m_Address;
-			set => m_Address = value;
-		}
+		public IPEndPoint Address { get; set; }
 
 		public ServerInfo( string name, int fullPercent, TimeZone tz, IPEndPoint address )
 		{
-			m_Name = name;
-			m_FullPercent = fullPercent;
-			m_TimeZone = tz.GetUtcOffset( DateTime.Now ).Hours;
-			m_Address = address;
+			Name = name;
+			FullPercent = fullPercent;
+			TimeZone = tz.GetUtcOffset( DateTime.Now ).Hours;
+			Address = address;
 		}
 	}
 
@@ -4413,15 +4331,14 @@ namespace Server.Network
 		}
 
 		protected PacketWriter m_Stream;
-		private int m_PacketID;
 		private int m_Length;
 		private State m_State;
 
-		public int PacketID => m_PacketID;
+		public int PacketID { get; }
 
 		protected Packet( int packetID )
 		{
-			m_PacketID = packetID;
+			PacketID = packetID;
 
 			if (Core.Profiling) {
 				PacketSendProfile prof = PacketSendProfile.Acquire( GetType() );
@@ -4432,13 +4349,13 @@ namespace Server.Network
 		public void EnsureCapacity( int length )
 		{
 			m_Stream = PacketWriter.CreateInstance( length );// new PacketWriter( length );
-			m_Stream.Write( (byte) m_PacketID );
+			m_Stream.Write( (byte) PacketID );
 			m_Stream.Write( (short) 0 );
 		}
 
 		protected Packet( int packetID, int length )
 		{
-			m_PacketID = packetID;
+			PacketID = packetID;
 			m_Length = length;
 
 			m_Stream = PacketWriter.CreateInstance( length );// new PacketWriter( length );
@@ -4609,7 +4526,7 @@ namespace Server.Network
 			{
 				int diff = (int)m_Stream.Length - m_Length;
 
-				Console.WriteLine( "Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", m_PacketID, diff >= 0 ? "+" : "", diff );
+				Console.WriteLine( "Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", PacketID, diff >= 0 ? "+" : "", diff );
 			}
 
 			MemoryStream ms = m_Stream.UnderlyingStream;
@@ -4625,10 +4542,10 @@ namespace Server.Network
 				Compression.Compress(m_CompiledBuffer, 0, length, buffer, ref length);
 
 				if (length <= 0) {
-					Console.WriteLine("Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})", m_PacketID, GetType().Name, length);
+					Console.WriteLine("Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})", PacketID, GetType().Name, length);
 					using (StreamWriter op = new StreamWriter("compression_overflow.log", true))
 					{
-						op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})", DateTime.UtcNow, m_PacketID, GetType().Name, length);
+						op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})", DateTime.UtcNow, PacketID, GetType().Name, length);
 						op.WriteLine(new System.Diagnostics.StackTrace());
 					}
 				} else {

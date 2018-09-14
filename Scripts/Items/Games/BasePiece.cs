@@ -2,19 +2,13 @@ namespace Server.Items
 {
 	public class BasePiece : Item
 	{
-		private BaseBoard m_Board;
-
-		public BaseBoard Board
-		{
-			get => m_Board;
-			set => m_Board = value;
-		}
+		public BaseBoard Board { get; set; }
 
 		public override bool IsVirtualItem => true;
 
 		public BasePiece( int itemID, BaseBoard board ) : base( itemID )
 		{
-			m_Board = board;
+			Board = board;
 		}
 
 		public BasePiece( Serial serial ) : base( serial )
@@ -26,7 +20,7 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.Write( (int) 0 );
-			writer.Write( m_Board );
+			writer.Write( Board );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -39,9 +33,9 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_Board = (BaseBoard)reader.ReadItem();
+					Board = (BaseBoard)reader.ReadItem();
 
-					if ( m_Board == null || Parent == null )
+					if ( Board == null || Parent == null )
 						Delete();
 
 					break;
@@ -51,25 +45,25 @@ namespace Server.Items
 
 		public override void OnSingleClick( Mobile from )
 		{
-			if ( m_Board == null || m_Board.Deleted )
+			if ( Board == null || Board.Deleted )
 				Delete();
-			else if ( !IsChildOf( m_Board ) )
-				m_Board.DropItem( this );
+			else if ( !IsChildOf( Board ) )
+				Board.DropItem( this );
 			else
 				base.OnSingleClick( from );
 		}
 
 		public override bool OnDragLift( Mobile from )
 		{
-			if ( m_Board == null || m_Board.Deleted )
+			if ( Board == null || Board.Deleted )
 			{
 				Delete();
 				return false;
 			}
 
-			if ( !IsChildOf( m_Board ) )
+			if ( !IsChildOf( Board ) )
 			{
-				m_Board.DropItem( this );
+				Board.DropItem( this );
 				return false;
 			}
 			return true;
@@ -84,7 +78,7 @@ namespace Server.Items
 
 		public override bool DropToItem( Mobile from, Item target, Point3D p )
 		{
-			return ( target == m_Board && p.X != -1 && p.Y != -1 && base.DropToItem( from, target, p ) );
+			return ( target == Board && p.X != -1 && p.Y != -1 && base.DropToItem( from, target, p ) );
 		}
 
 		public override bool DropToWorld( Mobile from, Point3D p )

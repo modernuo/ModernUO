@@ -11,40 +11,34 @@ namespace Server.Items
 {
 	public class BookPageInfo
 	{
-		private string[] m_Lines;
-
-		public string[] Lines
-		{
-			get => m_Lines;
-			set => m_Lines = value;
-		}
+		public string[] Lines { get; set; }
 
 		public BookPageInfo()
 		{
-			m_Lines = new string[0];
+			Lines = new string[0];
 		}
 
 		public BookPageInfo( params string[] lines )
 		{
-			m_Lines = lines;
+			Lines = lines;
 		}
 
 		public BookPageInfo( GenericReader reader )
 		{
 			int length = reader.ReadInt();
 
-			m_Lines = new string[length];
+			Lines = new string[length];
 
-			for ( int i = 0; i < m_Lines.Length; ++i )
-				m_Lines[i] = Utility.Intern( reader.ReadString() );
+			for ( int i = 0; i < Lines.Length; ++i )
+				Lines[i] = Utility.Intern( reader.ReadString() );
 		}
 
 		public void Serialize( GenericWriter writer )
 		{
-			writer.Write( m_Lines.Length );
+			writer.Write( Lines.Length );
 
-			for ( int i = 0; i < m_Lines.Length; ++i )
-				writer.Write( m_Lines[i] );
+			for ( int i = 0; i < Lines.Length; ++i )
+				writer.Write( Lines[i] );
 		}
 	}
 
@@ -52,9 +46,6 @@ namespace Server.Items
 	{
 		private string m_Title;
 		private string m_Author;
-		private BookPageInfo[] m_Pages;
-		private bool m_Writable;
-		private SecureLevel m_SecureLevel;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Title
@@ -71,16 +62,12 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Writable
-		{
-			get => m_Writable;
-			set => m_Writable = value;
-		}
+		public bool Writable { get; set; }
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public int PagesCount => m_Pages.Length;
+		public int PagesCount => Pages.Length;
 
-		public BookPageInfo[] Pages => m_Pages;
+		public BookPageInfo[] Pages { get; private set; }
 
 		[Constructible]
 		public BaseBook( int itemID ) : this( itemID, 20, true )
@@ -97,39 +84,39 @@ namespace Server.Items
 		{
 			m_Title = title;
 			m_Author = author;
-			m_Writable = writable;
+			Writable = writable;
 
 			BookContent content = DefaultContent;
 
 			if ( content == null )
 			{
-				m_Pages = new BookPageInfo[pageCount];
+				Pages = new BookPageInfo[pageCount];
 
-				for ( int i = 0; i < m_Pages.Length; ++i )
-					m_Pages[i] = new BookPageInfo();
+				for ( int i = 0; i < Pages.Length; ++i )
+					Pages[i] = new BookPageInfo();
 			}
 			else
 			{
-				m_Pages = content.Copy();
+				Pages = content.Copy();
 			}
 		}
 
 		// Intended for defined books only
 		public BaseBook( int itemID, bool writable ) : base( itemID )
 		{
-			m_Writable = writable;
+			Writable = writable;
 
 			BookContent content = DefaultContent;
 
 			if ( content == null )
 			{
-				m_Pages = new BookPageInfo[0];
+				Pages = new BookPageInfo[0];
 			}
 			else
 			{
 				m_Title = content.Title;
 				m_Author = content.Author;
-				m_Pages = content.Copy();
+				Pages = content.Copy();
 			}
 		}
 
@@ -169,17 +156,17 @@ namespace Server.Items
 			if ( m_Author != content?.Author )
 				flags |= SaveFlags.Author;
 
-			if ( m_Writable )
+			if ( Writable )
 				flags |= SaveFlags.Writable;
 
-			if ( content == null || !content.IsMatch( m_Pages ) )
+			if ( content == null || !content.IsMatch( Pages ) )
 				flags |= SaveFlags.Content;
 
 
 
 			writer.Write( (int) 4 ); // version
 
-			writer.Write( (int)m_SecureLevel );
+			writer.Write( (int)Level );
 
 			writer.Write( (byte) flags );
 
@@ -191,10 +178,10 @@ namespace Server.Items
 
 			if ( (flags & SaveFlags.Content) != 0 )
 			{
-				writer.WriteEncodedInt( m_Pages.Length );
+				writer.WriteEncodedInt( Pages.Length );
 
-				for ( int i = 0; i < m_Pages.Length; ++i )
-					m_Pages[i].Serialize( writer );
+				for ( int i = 0; i < Pages.Length; ++i )
+					Pages[i].Serialize( writer );
 			}
 		}
 
@@ -208,7 +195,7 @@ namespace Server.Items
 			{
 				case 4:
 				{
-					m_SecureLevel = (SecureLevel)reader.ReadInt();
+					Level = (SecureLevel)reader.ReadInt();
 					goto case 3;
 				}
 				case 3:
@@ -228,21 +215,21 @@ namespace Server.Items
 					else if ( content != null )
 						m_Author = content.Author;
 
-					m_Writable = ( flags & SaveFlags.Writable ) != 0;
+					Writable = ( flags & SaveFlags.Writable ) != 0;
 
 					if ( (flags & SaveFlags.Content) != 0 )
 					{
-						m_Pages = new BookPageInfo[reader.ReadEncodedInt()];
+						Pages = new BookPageInfo[reader.ReadEncodedInt()];
 
-						for ( int i = 0; i < m_Pages.Length; ++i )
-							m_Pages[i] = new BookPageInfo( reader );
+						for ( int i = 0; i < Pages.Length; ++i )
+							Pages[i] = new BookPageInfo( reader );
 					}
 					else
 					{
 						if ( content != null )
-							m_Pages = content.Copy();
+							Pages = content.Copy();
 						else
-							m_Pages = new BookPageInfo[0];
+							Pages = new BookPageInfo[0];
 					}
 
 					break;
@@ -252,23 +239,23 @@ namespace Server.Items
 				{
 					m_Title = reader.ReadString();
 					m_Author = reader.ReadString();
-					m_Writable = reader.ReadBool();
+					Writable = reader.ReadBool();
 
 					if ( version == 0 || reader.ReadBool() )
 					{
-						m_Pages = new BookPageInfo[reader.ReadInt()];
+						Pages = new BookPageInfo[reader.ReadInt()];
 
-						for ( int i = 0; i < m_Pages.Length; ++i )
-							m_Pages[i] = new BookPageInfo( reader );
+						for ( int i = 0; i < Pages.Length; ++i )
+							Pages[i] = new BookPageInfo( reader );
 					}
 					else
 					{
 						BookContent content = DefaultContent;
 
 						if ( content != null )
-							m_Pages = content.Copy();
+							Pages = content.Copy();
 						else
-							m_Pages = new BookPageInfo[0];
+							Pages = new BookPageInfo[0];
 					}
 
 					break;
@@ -304,12 +291,12 @@ namespace Server.Items
 		public override void OnSingleClick ( Mobile from )
 		{
 			LabelTo( from, "{0} by {1}", m_Title, m_Author );
-			LabelTo( from, "[{0} pages]", m_Pages.Length );
+			LabelTo( from, "[{0} pages]", Pages.Length );
 		}
 
 		public override void OnDoubleClick ( Mobile from )
 		{
-			if ( m_Title == null && m_Author == null && m_Writable == true )
+			if ( m_Title == null && m_Author == null && Writable == true )
 			{
 				Title = "a book";
 				Author = from.Name;
@@ -325,7 +312,7 @@ namespace Server.Items
 			{
 				StringBuilder sb = new StringBuilder();
 
-				foreach( BookPageInfo bpi in m_Pages )
+				foreach( BookPageInfo bpi in Pages )
 				{
 					foreach( string line in bpi.Lines )
 					{
@@ -343,7 +330,7 @@ namespace Server.Items
 			{
 				List<string> lines = new List<string>();
 
-				foreach( BookPageInfo bpi in m_Pages )
+				foreach( BookPageInfo bpi in Pages )
 				{
 					lines.AddRange( bpi.Lines );
 				}
@@ -449,11 +436,7 @@ namespace Server.Items
 		#region ISecurable Members
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_SecureLevel;
-			set => m_SecureLevel = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		#endregion
 	}

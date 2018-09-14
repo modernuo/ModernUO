@@ -42,29 +42,13 @@ namespace Server
 		private static string m_BaseDirectory;
 		private static string m_ExePath;
 
-		private static readonly List<string> m_DataDirectories = new List<string>();
-
-		private static Assembly m_Assembly;
-		private static Process m_Process;
-		private static Thread m_Thread;
-		private static bool m_Service;
-		private static bool m_Debug;
 		private static bool m_Cache = true;
-		private static bool m_HaltOnWarning;
-		private static bool m_VBdotNET;
-		private static MultiTextWriter m_MultiConOut;
 
 		private static bool m_Profiling;
 		private static DateTime m_ProfileStart;
 		private static TimeSpan m_ProfileTime;
 
-		private static MessagePump m_MessagePump;
-
-		public static MessagePump MessagePump
-		{
-			get => m_MessagePump;
-			set => m_MessagePump = value;
-		}
+		public static MessagePump MessagePump { get; set; }
 
 		public static Slice Slice;
 
@@ -96,18 +80,24 @@ namespace Server
 			}
 		}
 
-		public static bool Service => m_Service;
-		public static bool Debug => m_Debug;
-		internal static bool HaltOnWarning => m_HaltOnWarning;
-		internal static bool VBdotNet => m_VBdotNET;
-		public static List<string> DataDirectories => m_DataDirectories;
-		public static Assembly Assembly { get => m_Assembly;
-			set => m_Assembly = value;
-		}
-		public static Version Version => m_Assembly.GetName().Version;
-		public static Process Process => m_Process;
-		public static Thread Thread => m_Thread;
-		public static MultiTextWriter MultiConsoleOut => m_MultiConOut;
+		public static bool Service { get; private set; }
+
+		public static bool Debug { get; private set; }
+
+		internal static bool HaltOnWarning { get; private set; }
+
+		internal static bool VBdotNet { get; private set; }
+
+		public static List<string> DataDirectories { get; } = new List<string>();
+
+		public static Assembly Assembly { get; set; }
+
+		public static Version Version => Assembly.GetName().Version;
+		public static Process Process { get; private set; }
+
+		public static Thread Thread { get; private set; }
+
+		public static MultiTextWriter MultiConsoleOut { get; private set; }
 
 		/*
 		 * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
@@ -146,24 +136,20 @@ namespace Server
 
 		public static readonly bool Is64Bit = Environment.Is64BitProcess;
 
-		private static bool m_MultiProcessor;
-		private static int m_ProcessorCount;
+		public static bool MultiProcessor { get; private set; }
 
-		public static bool MultiProcessor => m_MultiProcessor;
-		public static int ProcessorCount => m_ProcessorCount;
+		public static int ProcessorCount { get; private set; }
 
-		private static bool m_Unix;
-
-		public static bool Unix => m_Unix;
+		public static bool Unix { get; private set; }
 
 		public static string FindDataFile( string path )
 		{
-			if ( m_DataDirectories.Count == 0 )
+			if ( DataDirectories.Count == 0 )
 				throw new InvalidOperationException( "Attempted to FindDataFile before DataDirectories list has been filled." );
 
 			string fullPath = null;
 
-			foreach (string p in m_DataDirectories)
+			foreach (string p in DataDirectories)
 			{
 				fullPath = Path.Combine( p, path );
 
@@ -183,32 +169,27 @@ namespace Server
 
 		#region Expansions
 
-		private static Expansion m_Expansion;
-		public static Expansion Expansion
-		{
-			get => m_Expansion;
-			set => m_Expansion = value;
-		}
+		public static Expansion Expansion { get; set; }
 
-		public static bool T2A => m_Expansion >= Expansion.T2A;
+		public static bool T2A => Expansion >= Expansion.T2A;
 
-		public static bool UOR => m_Expansion >= Expansion.UOR;
+		public static bool UOR => Expansion >= Expansion.UOR;
 
-		public static bool UOTD => m_Expansion >= Expansion.UOTD;
+		public static bool UOTD => Expansion >= Expansion.UOTD;
 
-		public static bool LBR => m_Expansion >= Expansion.LBR;
+		public static bool LBR => Expansion >= Expansion.LBR;
 
-		public static bool AOS => m_Expansion >= Expansion.AOS;
+		public static bool AOS => Expansion >= Expansion.AOS;
 
-		public static bool SE => m_Expansion >= Expansion.SE;
+		public static bool SE => Expansion >= Expansion.SE;
 
-		public static bool ML => m_Expansion >= Expansion.ML;
+		public static bool ML => Expansion >= Expansion.ML;
 
-		public static bool SA => m_Expansion >= Expansion.SA;
+		public static bool SA => Expansion >= Expansion.SA;
 
-		public static bool HS => m_Expansion >= Expansion.HS;
+		public static bool HS => Expansion >= Expansion.HS;
 
-		public static bool TOL => m_Expansion >= Expansion.TOL;
+		public static bool TOL => Expansion >= Expansion.TOL;
 
 		#endregion
 
@@ -260,11 +241,11 @@ namespace Server
 				{
 				}
 
-				if ( !close && !m_Service )
+				if ( !close && !Service )
 				{
 					try
 					{
-						foreach (Listener l in m_MessagePump.Listeners)
+						foreach (Listener l in MessagePump.Listeners)
 						{
 							l.Dispose();
 						}
@@ -300,7 +281,7 @@ namespace Server
 
 		private static bool OnConsoleEvent( ConsoleEventType type )
 		{
-			if ( World.Saving || ( m_Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
+			if ( World.Saving || ( Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT ) )
 				return true;
 
 			Kill();	//Kill -> HandleClosed will handle waiting for the completion of flushing to disk
@@ -313,8 +294,7 @@ namespace Server
 			HandleClosed();
 		}
 
-		private static bool m_Closing;
-		public static bool Closing => m_Closing;
+		public static bool Closing { get; private set; }
 
 		private static int m_CycleIndex = 1;
 		private static readonly float[] m_CyclesPerSecond = new float[100];
@@ -335,15 +315,15 @@ namespace Server
 			if ( restart )
 				Process.Start( ExePath, Arguments );
 
-			m_Process.Kill();
+			Process.Kill();
 		}
 
 		private static void HandleClosed()
 		{
-			if ( m_Closing )
+			if ( Closing )
 				return;
 
-			m_Closing = true;
+			Closing = true;
 
 			Console.Write( "Exiting..." );
 
@@ -369,45 +349,45 @@ namespace Server
 			foreach (string a in args)
 			{
 				if ( Insensitive.Equals( a, "-debug" ) )
-					m_Debug = true;
+					Debug = true;
 				else if ( Insensitive.Equals( a, "-service" ) )
-					m_Service = true;
+					Service = true;
 				else if ( Insensitive.Equals( a, "-profile" ) )
 					Profiling = true;
 				else if ( Insensitive.Equals( a, "-nocache" ) )
 					m_Cache = false;
 				else if ( Insensitive.Equals( a, "-haltonwarning" ) )
-					m_HaltOnWarning = true;
+					HaltOnWarning = true;
 				else if ( Insensitive.Equals( a, "-vb" ) )
-					m_VBdotNET = true;
+					VBdotNet = true;
 				else if ( Insensitive.Equals( a, "-usehrt" ) )
 					_UseHRT = true;
 			}
 
 			try
 			{
-				if ( m_Service )
+				if ( Service )
 				{
 					if ( !Directory.Exists( "Logs" ) )
 						Directory.CreateDirectory( "Logs" );
 
-					Console.SetOut( m_MultiConOut = new MultiTextWriter( new FileLogger( "Logs/Console.log" ) ) );
+					Console.SetOut( MultiConsoleOut = new MultiTextWriter( new FileLogger( "Logs/Console.log" ) ) );
 				}
 				else
 				{
-					Console.SetOut( m_MultiConOut = new MultiTextWriter( Console.Out ) );
+					Console.SetOut( MultiConsoleOut = new MultiTextWriter( Console.Out ) );
 				}
 			}
 			catch
 			{
 			}
 
-			m_Thread = Thread.CurrentThread;
-			m_Process = Process.GetCurrentProcess();
-			m_Assembly = Assembly.GetEntryAssembly();
+			Thread = Thread.CurrentThread;
+			Process = Process.GetCurrentProcess();
+			Assembly = Assembly.GetEntryAssembly();
 
-			if ( m_Thread != null )
-				m_Thread.Name = "Core Thread";
+			if ( Thread != null )
+				Thread.Name = "Core Thread";
 
 			if ( BaseDirectory.Length > 0 )
 				Directory.SetCurrentDirectory( BaseDirectory );
@@ -418,7 +398,7 @@ namespace Server
 				Name = "Timer Thread"
 			};
 
-			Version ver = m_Assembly.GetName().Version;
+			Version ver = Assembly.GetName().Version;
 
 			// Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
 			Console.WriteLine("RunUO - [https://github.com/runuo/] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
@@ -429,17 +409,17 @@ namespace Server
 			if ( s.Length > 0 )
 				Console.WriteLine( "Core: Running with arguments: {0}", s );
 
-			m_ProcessorCount = Environment.ProcessorCount;
+			ProcessorCount = Environment.ProcessorCount;
 
-			if ( m_ProcessorCount > 1 )
-				m_MultiProcessor = true;
+			if ( ProcessorCount > 1 )
+				MultiProcessor = true;
 
-			if ( m_MultiProcessor || Is64Bit )
-				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", m_ProcessorCount, m_ProcessorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
+			if ( MultiProcessor || Is64Bit )
+				Console.WriteLine( "Core: Optimizing for {0} {2}processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s", Is64Bit ? "64-bit " : "" );
 
 			int platform = (int)Environment.OSVersion.Platform;
 			if ( platform == 4 || platform == 128 ) { // MS 4, MONO 128
-				m_Unix = true;
+				Unix = true;
 				Console.WriteLine( "Core: Unix environment detected" );
 			}
 			else {
@@ -455,11 +435,11 @@ namespace Server
 
 			Console.WriteLine("RandomImpl: {0} ({1})", RandomImpl.Type.Name, RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
-			while( !ScriptCompiler.Compile( m_Debug, m_Cache ) )
+			while( !ScriptCompiler.Compile( Debug, m_Cache ) )
 			{
 				Console.WriteLine( "Scripts: One or more scripts failed to compile or no script files were found." );
 
-				if ( m_Service )
+				if ( Service )
 					return;
 
 				Console.WriteLine( " - Press return to exit, or R to try again." );
@@ -475,7 +455,7 @@ namespace Server
 
 			ScriptCompiler.Invoke( "Initialize" );
 
-			MessagePump messagePump = m_MessagePump = new MessagePump();
+			MessagePump messagePump = MessagePump = new MessagePump();
 
 			timerThread.Start();
 
@@ -495,7 +475,7 @@ namespace Server
 
 				long sample = 0;
 
-				while( !m_Closing )
+				while( !Closing )
 				{
 					m_Signal.WaitOne();
 
@@ -534,10 +514,10 @@ namespace Server
 			{
 				StringBuilder sb = new StringBuilder();
 
-				if ( m_Debug )
+				if ( Debug )
 					Utility.Separate( sb, "-debug", " " );
 
-				if ( m_Service )
+				if ( Service )
 					Utility.Separate( sb, "-service", " " );
 
 				if ( m_Profiling )
@@ -546,10 +526,10 @@ namespace Server
 				if ( !m_Cache )
 					Utility.Separate( sb, "-nocache", " " );
 
-				if ( m_HaltOnWarning )
+				if ( HaltOnWarning )
 					Utility.Separate( sb, "-haltonwarning", " " );
 
-				if ( m_VBdotNET )
+				if ( VBdotNet )
 					Utility.Separate( sb, "-vb", " " );
 
 				if ( _UseHRT )
@@ -559,21 +539,9 @@ namespace Server
 			}
 		}
 
-		private static int m_GlobalUpdateRange = 18;
+		public static int GlobalUpdateRange { get; set; } = 18;
 
-		public static int GlobalUpdateRange
-		{
-			get => m_GlobalUpdateRange;
-			set => m_GlobalUpdateRange = value;
-		}
-
-		private static int m_GlobalMaxUpdateRange = 24;
-
-		public static int GlobalMaxUpdateRange
-		{
-			get => m_GlobalMaxUpdateRange;
-			set => m_GlobalMaxUpdateRange = value;
-		}
+		public static int GlobalMaxUpdateRange { get; set; } = 24;
 
 		private static int m_ItemCount, m_MobileCount;
 

@@ -10,33 +10,17 @@ namespace Server
 		// Should we use the new method of speeds?
 		private static bool Enabled = true;
 
-		private double m_ActiveSpeed;
-		private double m_PassiveSpeed;
-		private Type[] m_Types;
+		public double ActiveSpeed { get; set; }
 
-		public double ActiveSpeed
-		{
-			get => m_ActiveSpeed;
-			set => m_ActiveSpeed = value;
-		}
+		public double PassiveSpeed { get; set; }
 
-		public double PassiveSpeed
-		{
-			get => m_PassiveSpeed;
-			set => m_PassiveSpeed = value;
-		}
-
-		public Type[] Types
-		{
-			get => m_Types;
-			set => m_Types = value;
-		}
+		public Type[] Types { get; set; }
 
 		public SpeedInfo( double activeSpeed, double passiveSpeed, Type[] types )
 		{
-			m_ActiveSpeed = activeSpeed;
-			m_PassiveSpeed = passiveSpeed;
-			m_Types = types;
+			ActiveSpeed = activeSpeed;
+			PassiveSpeed = passiveSpeed;
+			Types = types;
 		}
 
 		public static bool Contains( object obj )

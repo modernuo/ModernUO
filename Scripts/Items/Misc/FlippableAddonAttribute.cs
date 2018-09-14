@@ -13,18 +13,16 @@ namespace Server.Items
 			typeof( Mobile ), typeof( Direction )
 		};
 
-		private Direction[] m_Directions;
-
-		public Direction[] Directions => m_Directions;
+		public Direction[] Directions { get; }
 
 		public FlippableAddonAttribute( params Direction[] directions )
 		{
-			m_Directions = directions;
+			Directions = directions;
 		}
 
 		public virtual void Flip( Mobile from, Item addon )
 		{
-			if ( m_Directions != null && m_Directions.Length > 1 )
+			if ( Directions != null && Directions.Length > 1 )
 			{
 				try
 				{
@@ -34,21 +32,21 @@ namespace Server.Items
 					{
 						int index = 0;
 
-						for ( int i = 0; i < m_Directions.Length; i++ )
+						for ( int i = 0; i < Directions.Length; i++ )
 						{
-							if ( addon.Direction == m_Directions[ i ] )
+							if ( addon.Direction == Directions[ i ] )
 							{
 								index = i + 1;
 								break;
 							}
 						}
 
-						if ( index >= m_Directions.Length )
+						if ( index >= Directions.Length )
 							index = 0;
 
 						ClearComponents( addon );
 
-						flipMethod.Invoke( addon, new object[ 2 ] { from, m_Directions[ index ] } );
+						flipMethod.Invoke( addon, new object[ 2 ] { from, Directions[ index ] } );
 
 						BaseHouse house = null;
 						AddonFitResult result = AddonFitResult.Valid;
@@ -65,13 +63,13 @@ namespace Server.Items
 						if ( result != AddonFitResult.Valid )
 						{
 							if ( index == 0 )
-								index = m_Directions.Length - 1;
+								index = Directions.Length - 1;
 							else
 								index -= 1;
 
 							ClearComponents( addon );
 
-							flipMethod.Invoke( addon, new object[ 2 ] { from, m_Directions[ index ] } );
+							flipMethod.Invoke( addon, new object[ 2 ] { from, Directions[ index ] } );
 
 							if ( result == AddonFitResult.Blocked )
 								from.SendLocalizedMessage( 500269 ); // You cannot build that there.
@@ -85,7 +83,7 @@ namespace Server.Items
 								from.SendLocalizedMessage( 500268 ); // This object needs to be mounted on something.
 						}
 
-						addon.Direction = m_Directions[ index ];
+						addon.Direction = Directions[ index ];
 					}
 				}
 				catch

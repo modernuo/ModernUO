@@ -11,9 +11,7 @@ namespace Server.Gumps
 {
 	public class RunebookGump : Gump
 	{
-		private Runebook m_Book;
-
-		public Runebook Book => m_Book;
+		public Runebook Book { get; }
 
 		public int GetMapHue( Map map )
 		{
@@ -70,11 +68,11 @@ namespace Server.Gumps
 
 			// Charges
 			AddHtmlLocalized( 140, 40,  80, 18, 1011296, false, false ); // Charges:
-			AddHtml( 220, 40, 30, 18, m_Book.CurCharges.ToString(), false, false );
+			AddHtml( 220, 40, 30, 18, Book.CurCharges.ToString(), false, false );
 
 			// Max charges
 			AddHtmlLocalized( 300, 40, 100, 18, 1011297, false, false ); // Max Charges:
-			AddHtml( 400, 40, 30, 18, m_Book.MaxCharges.ToString(), false, false );
+			AddHtml( 400, 40, 30, 18, Book.MaxCharges.ToString(), false, false );
 		}
 
 		private void AddIndex()
@@ -87,7 +85,7 @@ namespace Server.Gumps
 			AddHtmlLocalized( 158, 22, 100, 18, 1011299, false, false ); // Rename book
 
 			// List of entries
-			List<RunebookEntry> entries = m_Book.Entries;
+			List<RunebookEntry> entries = Book.Entries;
 
 			for ( int i = 0; i < 16; ++i )
 			{
@@ -124,9 +122,9 @@ namespace Server.Gumps
 			string desc;
 			int hue;
 
-			if ( index < m_Book.Entries.Count )
+			if ( index < Book.Entries.Count )
 			{
-				RunebookEntry e = (RunebookEntry)m_Book.Entries[index];
+				RunebookEntry e = (RunebookEntry)Book.Entries[index];
 
 				desc = GetName( e.Description );
 				hue = GetMapHue( e.Map );
@@ -147,7 +145,7 @@ namespace Server.Gumps
 				AddHtmlLocalized( 150 + (half * 160), 115, 100, 18, 1011298, false, false ); // Drop rune
 
 				// Set as default button
-				int defButtonID = e != m_Book.Default ? 2361 : 2360;
+				int defButtonID = e != Book.Default ? 2361 : 2360;
 				
 				AddButton( 160 + (half * 140), 20, defButtonID, defButtonID, 2 + (index * 6) + 2, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 175 + (half * 140), 15, 100, 18, 1011300, false, false ); // Set default
@@ -184,7 +182,7 @@ namespace Server.Gumps
 
 		public RunebookGump( Mobile from, Runebook book ) : base( 150, 200 )
 		{
-			m_Book = book;
+			Book = book;
 
 			AddBackground();
 			AddIndex();
@@ -257,9 +255,9 @@ namespace Server.Gumps
 		{
 			Mobile from = state.Mobile;
 
-			if ( m_Book.Deleted || !from.InRange( m_Book.GetWorldLocation(), (Core.ML ? 3 : 1) ) || !Multis.DesignContext.Check( from ) )
+			if ( Book.Deleted || !from.InRange( Book.GetWorldLocation(), (Core.ML ? 3 : 1) ) || !Multis.DesignContext.Check( from ) )
 			{
-				m_Book.Openers.Remove( from );
+				Book.Openers.Remove( from );
 				return;
 			}
 
@@ -267,14 +265,14 @@ namespace Server.Gumps
 
 			if ( buttonID == 1 ) // Rename book
 			{
-				if ( !m_Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster )
+				if ( !Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster )
 				{
 					from.SendLocalizedMessage( 502414 ); // Please enter a title for the runebook:
-					from.Prompt = new InternalPrompt( m_Book );
+					from.Prompt = new InternalPrompt( Book );
 				}
 				else
 				{
-					m_Book.Openers.Remove( from );
+					Book.Openers.Remove( from );
 					
 					from.SendLocalizedMessage( 502413, null, 0x35 ); // That cannot be done while the book is locked down.
 				}
@@ -286,18 +284,18 @@ namespace Server.Gumps
 				int index = buttonID / 6;
 				int type = buttonID % 6;
 
-				if ( index >= 0 && index < m_Book.Entries.Count )
+				if ( index >= 0 && index < Book.Entries.Count )
 				{
-					RunebookEntry e = (RunebookEntry)m_Book.Entries[index];
+					RunebookEntry e = (RunebookEntry)Book.Entries[index];
 
 					switch ( type )
 					{
 						case 0: // Use charges
 						{
-							if ( m_Book.CurCharges <= 0 )
+							if ( Book.CurCharges <= 0 )
 							{
 								from.CloseGump( typeof( RunebookGump ) );
-								from.SendGump( new RunebookGump( from, m_Book ) );
+								from.SendGump( new RunebookGump( from, Book ) );
 
 								from.SendLocalizedMessage( 502412 ); // There are no charges left on that item.
 							}
@@ -314,27 +312,27 @@ namespace Server.Gumps
 									from.SendMessage( location );
 								}
 
-								m_Book.OnTravel();
-								new RecallSpell( from, m_Book, e, m_Book ).Cast();
+								Book.OnTravel();
+								new RecallSpell( from, Book, e, Book ).Cast();
 								
-								m_Book.Openers.Remove( from );
+								Book.Openers.Remove( from );
 							}
 
 							break;
 						}
 						case 1: // Drop rune
 						{
-							if ( !m_Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster )
+							if ( !Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster )
 							{
-								m_Book.DropRune( from, e, index );
+								Book.DropRune( from, e, index );
 
 								from.CloseGump( typeof( RunebookGump ) );
 								if ( !Core.ML )
-									from.SendGump( new RunebookGump( from, m_Book ) );
+									from.SendGump( new RunebookGump( from, Book ) );
 							}
 							else
 							{
-								m_Book.Openers.Remove( from );
+								Book.Openers.Remove( from );
 								
 								from.SendLocalizedMessage( 502413, null, 0x35 ); // That cannot be done while the book is locked down.
 							}
@@ -343,12 +341,12 @@ namespace Server.Gumps
 						}
 						case 2: // Set default
 						{
-							if ( m_Book.CheckAccess( from ) )
+							if ( Book.CheckAccess( from ) )
 							{
-								m_Book.Default = e;
+								Book.Default = e;
 
 								from.CloseGump( typeof( RunebookGump ) );
-								from.SendGump( new RunebookGump( from, m_Book ) );
+								from.SendGump( new RunebookGump( from, Book ) );
 
 								from.SendLocalizedMessage( 502417 ); // New default location set.
 							}
@@ -370,7 +368,7 @@ namespace Server.Gumps
 									from.SendMessage( location );
 								}
 
-								m_Book.OnTravel();
+								Book.OnTravel();
 								new RecallSpell( from, null, e, null ).Cast();
 							}
 							else
@@ -378,7 +376,7 @@ namespace Server.Gumps
 								from.SendLocalizedMessage( 500015 ); // You do not have that spell!
 							}
 							
-							m_Book.Openers.Remove( from );
+							Book.Openers.Remove( from );
 
 							break;
 						}
@@ -397,7 +395,7 @@ namespace Server.Gumps
 									from.SendMessage( location );
 								}
 
-								m_Book.OnTravel();
+								Book.OnTravel();
 								new GateTravelSpell( from, null, e ).Cast();
 							}
 							else
@@ -405,7 +403,7 @@ namespace Server.Gumps
 								from.SendLocalizedMessage( 500015 ); // You do not have that spell!
 							}
 							
-							m_Book.Openers.Remove( from );
+							Book.Openers.Remove( from );
 
 							break;
 						}
@@ -426,7 +424,7 @@ namespace Server.Gumps
 										from.SendMessage( location );
 									}
 
-									m_Book.OnTravel();
+									Book.OnTravel();
 									new SacredJourneySpell( from, null, e, null ).Cast();
 								}
 								else
@@ -435,14 +433,14 @@ namespace Server.Gumps
 								}
 							}
 							
-							m_Book.Openers.Remove( from );
+							Book.Openers.Remove( from );
 
 							break;
 						}
 					}
 				}
 				else
-					m_Book.Openers.Remove( from );
+					Book.Openers.Remove( from );
 			}
 		}
 	}

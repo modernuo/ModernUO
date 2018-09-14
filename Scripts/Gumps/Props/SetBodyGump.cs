@@ -228,15 +228,13 @@ namespace Server.Gumps
 
 		private class InternalEntry : IComparable
 		{
-			private int m_Body;
-			private int m_ItemID;
-			private string m_Name;
-			private string m_DisplayName;
+			public int Body { get; }
 
-			public int Body  => m_Body;
-			public int ItemID  => m_ItemID;
-			public string Name  => m_Name;
-			public string DisplayName  => m_DisplayName;
+			public int ItemID { get; }
+
+			public string Name { get; }
+
+			public string DisplayName { get; }
 
 			private static string[] m_GroupNames = {
 					"ogres_", "ettins_", "walking_dead_", "gargoyles_",
@@ -258,32 +256,32 @@ namespace Server.Gumps
 
 			public InternalEntry( int body, int itemID, string name )
 			{
-				m_Body = body;
-				m_ItemID = itemID;
-				m_Name = name;
+				Body = body;
+				ItemID = itemID;
+				Name = name;
 
-				m_DisplayName = name.ToLower();
+				DisplayName = name.ToLower();
 
 				for( int i = 0; i < m_GroupNames.Length; ++i )
 				{
-					if ( m_DisplayName.StartsWith( m_GroupNames[i] ) )
+					if ( DisplayName.StartsWith( m_GroupNames[i] ) )
 					{
-						m_DisplayName = m_DisplayName.Substring( m_GroupNames[i].Length );
+						DisplayName = DisplayName.Substring( m_GroupNames[i].Length );
 						break;
 					}
 				}
 
-				m_DisplayName = m_DisplayName.Replace( '_', ' ' );
+				DisplayName = DisplayName.Replace( '_', ' ' );
 			}
 
 			public int CompareTo( object obj )
 			{
 				InternalEntry comp = (InternalEntry)obj;
 
-				int v = m_Name.CompareTo( comp.m_Name );
+				int v = Name.CompareTo( comp.Name );
 
 				if ( v == 0 )
-					m_Body.CompareTo( comp.m_Body );
+					Body.CompareTo( comp.Body );
 
 				return v;
 			}

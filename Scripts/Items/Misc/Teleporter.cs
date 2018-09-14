@@ -565,46 +565,20 @@ namespace Server.Items
 			m_Table.Remove(from);
 		}
 
-		private int m_StartNumber;
-		private string m_StartMessage;
-		private int m_ProgressNumber;
-		private string m_ProgressMessage;
-		private bool m_ShowTimeRemaining;
+		[CommandProperty(AccessLevel.GameMaster)]
+		public int StartNumber { get; set; }
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public int StartNumber
-		{
-			get => m_StartNumber;
-			set => m_StartNumber = value;
-		}
+		public string StartMessage { get; set; }
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public string StartMessage
-		{
-			get => m_StartMessage;
-			set => m_StartMessage = value;
-		}
+		public int ProgressNumber { get; set; }
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public int ProgressNumber
-		{
-			get => m_ProgressNumber;
-			set => m_ProgressNumber = value;
-		}
+		public string ProgressMessage { get; set; }
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public string ProgressMessage
-		{
-			get => m_ProgressMessage;
-			set => m_ProgressMessage = value;
-		}
-
-		[CommandProperty(AccessLevel.GameMaster)]
-		public bool ShowTimeRemaining
-		{
-			get => m_ShowTimeRemaining;
-			set => m_ShowTimeRemaining = value;
-		}
+		public bool ShowTimeRemaining { get; set; }
 
 		[Constructible]
 		public WaitTeleporter()
@@ -642,12 +616,12 @@ namespace Server.Items
 				{
 					if (m.BeginAction(this))
 					{
-						if (m_ProgressMessage != null)
-							m.SendMessage(m_ProgressMessage);
-						else if (m_ProgressNumber != 0)
-							m.SendLocalizedMessage(m_ProgressNumber);
+						if (ProgressMessage != null)
+							m.SendMessage(ProgressMessage);
+						else if (ProgressNumber != 0)
+							m.SendLocalizedMessage(ProgressNumber);
 
-						if (m_ShowTimeRemaining)
+						if (ShowTimeRemaining)
 							m.SendMessage("Time remaining: {0}", FormatTime(m_Table[m].Timer.Next - DateTime.UtcNow));
 
 						Timer.DelayCall<Mobile>(TimeSpan.FromSeconds(5), EndLock, m);
@@ -659,10 +633,10 @@ namespace Server.Items
 				info.Timer.Stop();
 			}
 
-			if (m_StartMessage != null)
-				m.SendMessage(m_StartMessage);
-			else if (m_StartNumber != 0)
-				m.SendLocalizedMessage(m_StartNumber);
+			if (StartMessage != null)
+				m.SendMessage(StartMessage);
+			else if (StartNumber != 0)
+				m.SendLocalizedMessage(StartNumber);
 
 			if (Delay == TimeSpan.Zero)
 				DoTeleport(m);
@@ -688,11 +662,11 @@ namespace Server.Items
 
 			writer.Write((int)0); // version
 
-			writer.Write(m_StartNumber);
-			writer.Write(m_StartMessage);
-			writer.Write(m_ProgressNumber);
-			writer.Write(m_ProgressMessage);
-			writer.Write(m_ShowTimeRemaining);
+			writer.Write(StartNumber);
+			writer.Write(StartMessage);
+			writer.Write(ProgressNumber);
+			writer.Write(ProgressMessage);
+			writer.Write(ShowTimeRemaining);
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -701,40 +675,33 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			m_StartNumber = reader.ReadInt();
-			m_StartMessage = reader.ReadString();
-			m_ProgressNumber = reader.ReadInt();
-			m_ProgressMessage = reader.ReadString();
-			m_ShowTimeRemaining = reader.ReadBool();
+			StartNumber = reader.ReadInt();
+			StartMessage = reader.ReadString();
+			ProgressNumber = reader.ReadInt();
+			ProgressMessage = reader.ReadString();
+			ShowTimeRemaining = reader.ReadBool();
 		}
 
 		private class TeleportingInfo
 		{
-			private WaitTeleporter m_Teleporter;
-			private Timer m_Timer;
+			public WaitTeleporter Teleporter { get; }
 
-			public WaitTeleporter Teleporter  => m_Teleporter;
-			public Timer Timer  => m_Timer;
+			public Timer Timer { get; }
 
 			public TeleportingInfo(WaitTeleporter tele, Timer t)
 			{
-				m_Teleporter = tele;
-				m_Timer = t;
+				Teleporter = tele;
+				Timer = t;
 			}
 		}
 	}
 
 	public class TimeoutTeleporter : Teleporter
 	{
-		private TimeSpan m_TimeoutDelay;
 		private Dictionary<Mobile, Timer> m_Teleporting;
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public TimeSpan TimeoutDelay
-		{
-			get => m_TimeoutDelay;
-			set => m_TimeoutDelay = value;
-		}
+		public TimeSpan TimeoutDelay { get; set; }
 
 		[Constructible]
 		public TimeoutTeleporter()
@@ -757,7 +724,7 @@ namespace Server.Items
 
 		public void StartTimer(Mobile m)
 		{
-			StartTimer(m, m_TimeoutDelay);
+			StartTimer(m, TimeoutDelay);
 		}
 
 		private void StartTimer(Mobile m, TimeSpan delay)
@@ -808,7 +775,7 @@ namespace Server.Items
 
 			writer.Write((int)0); // version
 
-			writer.Write(m_TimeoutDelay);
+			writer.Write(TimeoutDelay);
 			writer.Write(m_Teleporting.Count);
 
 			foreach (KeyValuePair<Mobile, Timer> kvp in m_Teleporting)
@@ -824,7 +791,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			m_TimeoutDelay = reader.ReadTimeSpan();
+			TimeoutDelay = reader.ReadTimeSpan();
 			m_Teleporting = new Dictionary<Mobile, Timer>();
 
 			int count = reader.ReadInt();
@@ -841,14 +808,8 @@ namespace Server.Items
 
 	public class TimeoutGoal : Item
 	{
-		private TimeoutTeleporter m_Teleporter;
-
 		[CommandProperty(AccessLevel.GameMaster)]
-		public TimeoutTeleporter Teleporter
-		{
-			get => m_Teleporter;
-			set => m_Teleporter = value;
-		}
+		public TimeoutTeleporter Teleporter { get; set; }
 
 		[Constructible]
 		public TimeoutGoal()
@@ -862,7 +823,7 @@ namespace Server.Items
 
 		public override bool OnMoveOver(Mobile m)
 		{
-			m_Teleporter?.StopTimer(m);
+			Teleporter?.StopTimer(m);
 
 			return true;
 		}
@@ -880,7 +841,7 @@ namespace Server.Items
 
 			writer.Write((int)0); // version
 
-			writer.WriteItem<TimeoutTeleporter>(m_Teleporter);
+			writer.WriteItem<TimeoutTeleporter>(Teleporter);
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -889,7 +850,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			m_Teleporter = reader.ReadItem<TimeoutTeleporter>();
+			Teleporter = reader.ReadItem<TimeoutTeleporter>();
 		}
 	}
 

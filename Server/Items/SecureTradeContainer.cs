@@ -25,13 +25,11 @@ namespace Server.Items
 {
 	public class SecureTradeContainer : Container
 	{
-		private SecureTrade m_Trade;
-
-		public SecureTrade Trade => m_Trade;
+		public SecureTrade Trade { get; }
 
 		public SecureTradeContainer( SecureTrade trade ) : base( 0x1E5E )
 		{
-			m_Trade = trade;
+			Trade = trade;
 
 			Movable = false;
 		}
@@ -65,7 +63,7 @@ namespace Server.Items
 
 		public override bool IsAccessibleTo( Mobile check )
 		{
-			if ( !IsChildOf( check ) || m_Trade == null || !m_Trade.Valid )
+			if ( !IsChildOf( check ) || Trade == null || !Trade.Valid )
 				return false;
 
 			return base.IsAccessibleTo( check );
@@ -105,19 +103,19 @@ namespace Server.Items
 
 		public void ClearChecks( )
 		{
-			if ( m_Trade != null )
+			if ( Trade != null )
 			{
-				if ( m_Trade.From != null && !m_Trade.From.IsDisposed )
+				if ( Trade.From != null && !Trade.From.IsDisposed )
 				{
-					m_Trade.From.Accepted = false;
+					Trade.From.Accepted = false;
 				}
 
-				if ( m_Trade.To != null && !m_Trade.To.IsDisposed )
+				if ( Trade.To != null && !Trade.To.IsDisposed )
 				{
-					m_Trade.To.Accepted = false;
+					Trade.To.Accepted = false;
 				}
 
-				m_Trade.Update();
+				Trade.Update();
 			}
 		}
 

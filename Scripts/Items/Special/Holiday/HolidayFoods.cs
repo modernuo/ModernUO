@@ -5,51 +5,41 @@ namespace Server.Items
 {
 	public class CandyCane : Food
 	{
-		private static Dictionary<Mobile, CandyCaneTimer> m_ToothAches;
-
-		public static Dictionary<Mobile, CandyCaneTimer> ToothAches
-		{
-			get => m_ToothAches;
-			set => m_ToothAches = value;
-		}
+		public static Dictionary<Mobile, CandyCaneTimer> ToothAches { get; set; }
 
 		public static void Initialize()
 		{
-			m_ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
+			ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
 		}
 
 		public class CandyCaneTimer : Timer
 		{
-			private int m_Eaten;
-			private Mobile m_Eater;
+			public Mobile Eater { get; }
 
-			public Mobile Eater  => m_Eater;
-			public int Eaten { get => m_Eaten;
-				set => m_Eaten = value;
-			}
+			public int Eaten { get; set; }
 
 			public CandyCaneTimer( Mobile eater )
 				: base( TimeSpan.FromSeconds( 30 ), TimeSpan.FromSeconds( 30 ) )
 			{
-				m_Eater = eater;
+				Eater = eater;
 				Priority = TimerPriority.FiveSeconds;
 				Start();
 			}
 
 			protected override void OnTick()
 			{
-				--m_Eaten;
+				--Eaten;
 
-				if ( m_Eater == null || m_Eater.Deleted || m_Eaten <= 0 )
+				if ( Eater == null || Eater.Deleted || Eaten <= 0 )
 				{
 					Stop();
-					m_ToothAches.Remove( m_Eater );
+					ToothAches.Remove( Eater );
 				}
-				else if ( m_Eater.Map != Map.Internal && m_Eater.Alive )
+				else if ( Eater.Map != Map.Internal && Eater.Alive )
 				{
-					if ( m_Eaten > 60 )
+					if ( Eaten > 60 )
 					{
-						m_Eater.Say( 1077388  + Utility.Random( 5 ) );
+						Eater.Say( 1077388  + Utility.Random( 5 ) );
 
 						/* ARRGH! My tooth hurts sooo much!
 						 * You just can't find a good Britannian dentist these days...
@@ -58,12 +48,12 @@ namespace Server.Items
 						 * AAAH! It feels like someone kicked me in the teeth!
 						 */
 
-						if ( Utility.RandomBool() && m_Eater.Body.IsHuman && !m_Eater.Mounted )
-							m_Eater.Animate( 32, 5, 1, true, false, 0 );
+						if ( Utility.RandomBool() && Eater.Body.IsHuman && !Eater.Mounted )
+							Eater.Animate( 32, 5, 1, true, false, 0 );
 					}
-					else if ( m_Eaten == 60 )
+					else if ( Eaten == 60 )
 					{
-						m_Eater.SendLocalizedMessage( 1077393 ); // The extreme pain in your teeth subsides.
+						Eater.SendLocalizedMessage( 1077393 ); // The extreme pain in your teeth subsides.
 					}
 				}
 			}
@@ -71,15 +61,15 @@ namespace Server.Items
 
 		private static CandyCaneTimer EnsureTimer( Mobile from )
 		{
-			if (!m_ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
-				m_ToothAches[from] = timer = new CandyCaneTimer( from );
+			if (!ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
+				ToothAches[from] = timer = new CandyCaneTimer( from );
 
 			return timer;
 		}
 
 		public static int GetToothAche( Mobile from )
 		{
-			if (m_ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
+			if (ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
 				return timer.Eaten;
 
 			return 0;

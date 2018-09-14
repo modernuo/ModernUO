@@ -4,14 +4,6 @@ namespace Server.Spells
 {
 	public class SpellInfo
 	{
-		private string m_Name;
-		private string m_Mantra;
-		private Type[] m_Reagents;
-		private int[] m_Amounts;
-		private int m_Action;
-		private bool m_AllowTown;
-		private int m_LeftHandEffect, m_RightHandEffect;
-
 		public SpellInfo( string name, string mantra, params Type[] regs ) : this( name, mantra, 16, 0, 0, true, regs )
 		{
 		}
@@ -38,44 +30,35 @@ namespace Server.Spells
 
 		public SpellInfo( string name, string mantra, int action, int leftHandEffect, int rightHandEffect, bool allowTown, params Type[] regs )
 		{
-			m_Name = name;
-			m_Mantra = mantra;
-			m_Action = action;
-			m_Reagents = regs;
-			m_AllowTown = allowTown;
+			Name = name;
+			Mantra = mantra;
+			Action = action;
+			Reagents = regs;
+			AllowTown = allowTown;
 
-			m_LeftHandEffect = leftHandEffect;
-			m_RightHandEffect = rightHandEffect;
+			LeftHandEffect = leftHandEffect;
+			RightHandEffect = rightHandEffect;
 
-			m_Amounts = new int[regs.Length];
+			Amounts = new int[regs.Length];
 
 			for ( int i = 0; i < regs.Length; ++i )
-				m_Amounts[i] = 1;
+				Amounts[i] = 1;
 		}
 
-		public int Action{ get => m_Action;
-			set => m_Action = value;
-		}
-		public bool AllowTown{ get => m_AllowTown;
-			set => m_AllowTown = value;
-		}
-		public int[] Amounts{ get => m_Amounts;
-			set => m_Amounts = value;
-		}
-		public string Mantra{ get => m_Mantra;
-			set => m_Mantra = value;
-		}
-		public string Name{ get => m_Name;
-			set => m_Name = value;
-		}
-		public Type[] Reagents{ get => m_Reagents;
-			set => m_Reagents = value;
-		}
-		public int LeftHandEffect{ get => m_LeftHandEffect;
-			set => m_LeftHandEffect = value;
-		}
-		public int RightHandEffect{ get => m_RightHandEffect;
-			set => m_RightHandEffect = value;
-		}
+		public int Action { get; set; }
+
+		public bool AllowTown { get; set; }
+
+		public int[] Amounts { get; set; }
+
+		public string Mantra { get; set; }
+
+		public string Name { get; set; }
+
+		public Type[] Reagents { get; set; }
+
+		public int LeftHandEffect { get; set; }
+
+		public int RightHandEffect { get; set; }
 	}
 }

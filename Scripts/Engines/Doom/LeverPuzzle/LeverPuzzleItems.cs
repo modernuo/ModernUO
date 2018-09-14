@@ -95,16 +95,15 @@ namespace Server.Engines.Doom
 
 	public class LeverPuzzleLever : Item
 	{
-		private ushort m_Code;
 		private LeverPuzzleController m_Controller;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public ushort Code => m_Code;
+		public ushort Code { get; private set; }
 
 		public LeverPuzzleLever( ushort code, LeverPuzzleController controller ) : base( 0x108E )
 		{
 			m_Controller=controller;
-			m_Code = code;
+			Code = code;
 			Hue = 0x66D;
 			Movable = false;
 		}
@@ -115,7 +114,7 @@ namespace Server.Engines.Doom
 			{
 				ItemID^=2;
 				Effects.PlaySound( Location, Map, 0x3E8 );
-				m_Controller.LeverPulled( m_Code );
+				m_Controller.LeverPulled( Code );
 			}
 			else
 			{
@@ -136,14 +135,14 @@ namespace Server.Engines.Doom
 		{
 			base.Serialize( writer );
 			writer.Write( (int) 0 ); // version
-			writer.Write( (ushort) m_Code );
+			writer.Write( (ushort) Code );
 			writer.Write( m_Controller );
 		}
 		public override void Deserialize( GenericReader reader )
 		{
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
-			m_Code = reader.ReadUShort();
+			Code = reader.ReadUShort();
 			m_Controller = reader.ReadItem() as LeverPuzzleController;
 		}
 	}

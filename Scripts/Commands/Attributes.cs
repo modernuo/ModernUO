@@ -4,37 +4,31 @@ namespace Server
 {
 	public class UsageAttribute : Attribute
 	{
-		private string m_Usage;
-
-		public string Usage => m_Usage;
+		public string Usage { get; }
 
 		public UsageAttribute( string usage )
 		{
-			m_Usage = usage;
+			Usage = usage;
 		}
 	}
 
 	public class DescriptionAttribute : Attribute
 	{
-		private string m_Description;
-
-		public string Description => m_Description;
+		public string Description { get; }
 
 		public DescriptionAttribute( string description )
 		{
-			m_Description = description;
+			Description = description;
 		}
 	}
 
 	public class AliasesAttribute : Attribute
 	{
-		private string[] m_Aliases;
-
-		public string[] Aliases => m_Aliases;
+		public string[] Aliases { get; }
 
 		public AliasesAttribute( params string[] aliases )
 		{
-			m_Aliases = aliases;
+			Aliases = aliases;
 		}
 	}
 }

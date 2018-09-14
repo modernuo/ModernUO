@@ -7,16 +7,10 @@ namespace Server.Mobiles
 	public class PlagueBeast : BaseCreature, IDevourer
 	{
 		public override string CorpseName => "a plague beast corpse";
-		private int m_DevourTotal;
 		private int m_DevourGoal;
-		private bool m_HasMetalChest;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int TotalDevoured
-		{
-			get => m_DevourTotal;
-			set => m_DevourTotal = value;
-		}
+		public int TotalDevoured { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int DevourGoal
@@ -26,7 +20,7 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool HasMetalChest => m_HasMetalChest;
+		public bool HasMetalChest { get; private set; }
 
 		public override string DefaultName => "a plague beast";
 
@@ -67,7 +61,7 @@ namespace Server.Mobiles
 			if ( Core.ML && Utility.RandomDouble() < 0.33 )
 				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(4) );
 
-			m_DevourTotal = 0;
+			TotalDevoured = 0;
 			m_DevourGoal = Utility.RandomMinMax( 15, 25 ); // How many corpses must be devoured before a metal chest is awarded
 		}
 
@@ -151,8 +145,8 @@ namespace Server.Mobiles
 			base.Serialize( writer );
 			writer.Write( (int) 1 );
 
-			writer.Write( m_HasMetalChest );
-			writer.Write( m_DevourTotal );
+			writer.Write( HasMetalChest );
+			writer.Write( TotalDevoured );
 			writer.Write( m_DevourGoal );
 		}
 
@@ -165,8 +159,8 @@ namespace Server.Mobiles
 			{
 				case 1:
 					{
-						m_HasMetalChest = reader.ReadBool();
-						m_DevourTotal = reader.ReadInt();
+						HasMetalChest = reader.ReadBool();
+						TotalDevoured = reader.ReadInt();
 						m_DevourGoal = reader.ReadInt();
 						break;
 					}
@@ -203,14 +197,14 @@ namespace Server.Mobiles
 				corpse.TurnToBones(); // Not bones yet, and we are a human body therefore we turn to bones.
 
 			IncreaseHits( (int)Math.Ceiling( (double)corpse.Owner.HitsMax * 0.75 ) );
-			m_DevourTotal++;
+			TotalDevoured++;
 
 			PublicOverheadMessage( MessageType.Emote, 0x3B2, 1053033 ); // * The plague beast absorbs the fleshy remains of the corpse *
 
-			if ( !m_HasMetalChest && m_DevourTotal >= DevourGoal )
+			if ( !HasMetalChest && TotalDevoured >= DevourGoal )
 			{
 				PackItem( new MetalChest() );
-				m_HasMetalChest = true;
+				HasMetalChest = true;
 			}
 
 			return true;

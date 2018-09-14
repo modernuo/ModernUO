@@ -5,18 +5,12 @@ namespace Server.Items
 {
 	public abstract class CookableFood : Item
 	{
-		private int m_CookingLevel;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int CookingLevel
-		{
-			get => m_CookingLevel;
-			set => m_CookingLevel = value;
-		}
+		public int CookingLevel { get; set; }
 
 		public CookableFood( int itemID, int cookingLevel ) : base( itemID )
 		{
-			m_CookingLevel = cookingLevel;
+			CookingLevel = cookingLevel;
 		}
 
 		public CookableFood( Serial serial ) : base( serial )
@@ -31,7 +25,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 			// Version 1
-			writer.Write( (int) m_CookingLevel );
+			writer.Write( (int) CookingLevel );
 
 		}
 
@@ -45,7 +39,7 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_CookingLevel = reader.ReadInt();
+					CookingLevel = reader.ReadInt();
 
 					break;
 				}

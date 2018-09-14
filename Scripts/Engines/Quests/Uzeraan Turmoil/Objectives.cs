@@ -74,15 +74,13 @@ namespace Server.Engines.Quests.Haven
 
 	public class KillHordeMinionsObjective : QuestObjective
 	{
-		private KillHordeMinionsStep m_Step;
-
-		public KillHordeMinionsStep Step  => m_Step;
+		public KillHordeMinionsStep Step { get; private set; }
 
 		public override object Message
 		{
 			get
 			{
-				switch ( m_Step )
+				switch ( Step )
 				{
 					case KillHordeMinionsStep.First:
 						/* Find the mountain pass beyond the house which lies at the
@@ -112,7 +110,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( System.From.Profession == 5 ) // paladin
 				{
-					switch ( m_Step )
+					switch ( Step )
 					{
 						case KillHordeMinionsStep.First: return 1;
 						case KillHordeMinionsStep.LearnKarma: return 2;
@@ -128,7 +126,7 @@ namespace Server.Engines.Quests.Haven
 		{
 			get
 			{
-				if ( m_Step == KillHordeMinionsStep.LearnKarma && HasBeenRead )
+				if ( Step == KillHordeMinionsStep.LearnKarma && HasBeenRead )
 					return true;
 				return base.Completed;
 			}
@@ -140,7 +138,7 @@ namespace Server.Engines.Quests.Haven
 
 		public KillHordeMinionsObjective( KillHordeMinionsStep step )
 		{
-			m_Step = step;
+			Step = step;
 		}
 
 		public override void RenderProgress( BaseQuestGump gump )
@@ -185,7 +183,7 @@ namespace Server.Engines.Quests.Haven
 		{
 			if ( System.From.Profession == 5 )
 			{
-				switch ( m_Step )
+				switch ( Step )
 				{
 					case KillHordeMinionsStep.First:
 					{
@@ -218,14 +216,14 @@ namespace Server.Engines.Quests.Haven
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_Step = (KillHordeMinionsStep) reader.ReadEncodedInt();
+			Step = (KillHordeMinionsStep) reader.ReadEncodedInt();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.WriteEncodedInt( (int) m_Step );
+			writer.WriteEncodedInt( (int) Step );
 		}
 	}
 
@@ -391,13 +389,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class GetDaemonBoneObjective : QuestObjective
 	{
-		private Container m_CorpseWithBone;
-
-		public Container CorpseWithBone
-		{
-			get => m_CorpseWithBone;
-			set => m_CorpseWithBone = value;
-		}
+		public Container CorpseWithBone { get; set; }
 
 		public override object Message
 		{
@@ -451,7 +443,7 @@ namespace Server.Engines.Quests.Haven
 			if ( ( creature is Zombie || creature is Skeleton ) && corpse.Map == Map.Trammel && corpse.X >= 3391 && corpse.X <= 3424 && corpse.Y >= 2639 && corpse.Y <= 2664 ) // Haven graveyard
 			{
 				if ( Utility.RandomDouble() < 0.25 )
-					m_CorpseWithBone = corpse;
+					CorpseWithBone = corpse;
 			}
 		}
 
@@ -459,17 +451,17 @@ namespace Server.Engines.Quests.Haven
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_CorpseWithBone = (Container) reader.ReadItem();
+			CorpseWithBone = (Container) reader.ReadItem();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
-			if ( m_CorpseWithBone != null && m_CorpseWithBone.Deleted )
-				m_CorpseWithBone = null;
+			if ( CorpseWithBone != null && CorpseWithBone.Deleted )
+				CorpseWithBone = null;
 
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( (Item) m_CorpseWithBone );
+			writer.Write( (Item) CorpseWithBone );
 		}
 	}
 

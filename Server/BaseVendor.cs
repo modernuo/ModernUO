@@ -36,89 +36,71 @@ namespace Server.Mobiles
 
 	public class BuyItemResponse
 	{
-		private Serial m_Serial;
-		private int m_Amount;
-
 		public BuyItemResponse( Serial serial, int amount )
 		{
-			m_Serial = serial;
-			m_Amount = amount;
+			Serial = serial;
+			Amount = amount;
 		}
 
-		public Serial Serial => m_Serial;
+		public Serial Serial { get; }
 
-		public int Amount => m_Amount;
+		public int Amount { get; }
 	}
 
 	public class SellItemResponse
 	{
-		private Item m_Item;
-		private int m_Amount;
-
 		public SellItemResponse( Item i, int amount )
 		{
-			m_Item = i;
-			m_Amount = amount;
+			Item = i;
+			Amount = amount;
 		}
 
-		public Item Item => m_Item;
+		public Item Item { get; }
 
-		public int Amount => m_Amount;
+		public int Amount { get; }
 	}
 
 	public class SellItemState
 	{
-		private Item m_Item;
-		private int m_Price;
-		private string m_Name;
-
 		public SellItemState( Item item, int price, string name )
 		{
-			m_Item = item;
-			m_Price = price;
-			m_Name = name;
+			Item = item;
+			Price = price;
+			Name = name;
 		}
 
-		public Item Item => m_Item;
+		public Item Item { get; }
 
-		public int Price => m_Price;
+		public int Price { get; }
 
-		public string Name => m_Name;
+		public string Name { get; }
 	}
 
 	public class BuyItemState
 	{
-		private Serial m_ContSer;
-		private Serial m_MySer;
-		private int m_ItemID;
-		private int m_Amount;
-		private int m_Hue;
-		private int m_Price;
-		private string m_Desc;
-
 		public BuyItemState( string name, Serial cont, Serial serial, int price, int amount, int itemID, int hue )
 		{
-			m_Desc = name;
-			m_ContSer = cont;
-			m_MySer = serial;
-			m_Price = price;
-			m_Amount = amount;
-			m_ItemID = itemID;
-			m_Hue = hue;
+			Description = name;
+			ContainerSerial = cont;
+			MySerial = serial;
+			Price = price;
+			Amount = amount;
+			ItemID = itemID;
+			Hue = hue;
 		}
 
-		public int Price => m_Price;
+		public int Price { get; }
 
-		public Serial MySerial => m_MySer;
+		public Serial MySerial { get; }
 
-		public Serial ContainerSerial => m_ContSer;
+		public Serial ContainerSerial { get; }
 
-		public int ItemID => m_ItemID;
+		public int ItemID { get; }
 
-		public int Amount => m_Amount;
+		public int Amount { get; }
 
-		public int Hue => m_Hue;
+		public int Hue { get; }
 
-		public string Description => m_Desc;
+		public string Description { get; }
 	}
 }

@@ -355,11 +355,8 @@ namespace Server
 		}
 
 		private static Queue<Timer> m_Queue = new Queue<Timer>();
-		private static int m_BreakCount = 20000;
 
-		public static int BreakCount{ get => m_BreakCount;
-			set => m_BreakCount = value;
-		}
+		public static int BreakCount { get; set; } = 20000;
 
 		private static int m_QueueCountAtSlice;
 
@@ -373,7 +370,7 @@ namespace Server
 
 				int index = 0;
 
-				while ( index < m_BreakCount && m_Queue.Count != 0 )
+				while ( index < BreakCount && m_Queue.Count != 0 )
 				{
 					Timer t = m_Queue.Dequeue();
 					TimerProfile prof = t.GetProfile();
@@ -550,41 +547,38 @@ namespace Server
 		#region DelayCall Timers
 		private class DelayCallTimer : Timer
 		{
-			private TimerCallback m_Callback;
-
-			public TimerCallback Callback => m_Callback;
+			public TimerCallback Callback { get; }
 
 			public override bool DefRegCreation => false;
 
 			public DelayCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerCallback callback ) : base( delay, interval, count )
 			{
-				m_Callback = callback;
+				Callback = callback;
 				RegCreation();
 			}
 
 			protected override void OnTick()
 			{
-				m_Callback?.Invoke();
+				Callback?.Invoke();
 			}
 
 			public override string ToString()
 			{
-				return $"DelayCallTimer[{FormatDelegate(m_Callback)}]";
+				return $"DelayCallTimer[{FormatDelegate(Callback)}]";
 			}
 		}
 
 		private class DelayStateCallTimer : Timer
 		{
-			private TimerStateCallback m_Callback;
 			private object m_State;
 
-			public TimerStateCallback Callback => m_Callback;
+			public TimerStateCallback Callback { get; }
 
 			public override bool DefRegCreation => false;
 
 			public DelayStateCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerStateCallback callback, object state ) : base( delay, interval, count )
 			{
-				m_Callback = callback;
+				Callback = callback;
 				m_State = state;
 
 				RegCreation();
@@ -592,28 +586,27 @@ namespace Server
 
 			protected override void OnTick()
 			{
-				m_Callback?.Invoke( m_State );
+				Callback?.Invoke( m_State );
 			}
 
 			public override string ToString()
 			{
-				return $"DelayStateCall[{FormatDelegate(m_Callback)}]";
+				return $"DelayStateCall[{FormatDelegate(Callback)}]";
 			}
 		}
 
 		private class DelayStateCallTimer<T> : Timer
 		{
-			private TimerStateCallback<T> m_Callback;
 			private T m_State;
 
-			public TimerStateCallback<T> Callback => m_Callback;
+			public TimerStateCallback<T> Callback { get; }
 
 			public override bool DefRegCreation => false;
 
 			public DelayStateCallTimer( TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state )
 				: base( delay, interval, count )
 			{
-				m_Callback = callback;
+				Callback = callback;
 				m_State = state;
 
 				RegCreation();
@@ -621,12 +614,12 @@ namespace Server
 
 			protected override void OnTick()
 			{
-				m_Callback?.Invoke( m_State );
+				Callback?.Invoke( m_State );
 			}
 
 			public override string ToString()
 			{
-				return $"DelayStateCall[{FormatDelegate(m_Callback)}]";
+				return $"DelayStateCall[{FormatDelegate(Callback)}]";
 			}
 		}
 		#endregion

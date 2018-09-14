@@ -26,33 +26,24 @@ namespace Server
 {
 	public sealed class ObjectPropertyList : Packet
 	{
-		private IEntity m_Entity;
 		private int m_Hash;
-		private int m_Header;
 		private int m_Strings;
-		private string m_HeaderArgs;
 
-		public IEntity Entity => m_Entity;
+		public IEntity Entity { get; }
+
 		public int Hash => 0x40000000 + m_Hash;
 
-		public int Header{ get => m_Header;
-			set => m_Header = value;
-		}
-		public string HeaderArgs{ get => m_HeaderArgs;
-			set => m_HeaderArgs = value;
-		}
+		public int Header { get; set; }
 
-		private static bool m_Enabled;
+		public string HeaderArgs { get; set; }
 
-		public static bool Enabled{ get => m_Enabled;
-			set => m_Enabled = value;
-		}
+		public static bool Enabled { get; set; }
 
 		public ObjectPropertyList( IEntity e ) : base( 0xD6 )
 		{
 			EnsureCapacity( 128 );
 
-			m_Entity = e;
+			Entity = e;
 
 			m_Stream.Write( (short) 1 );
 			m_Stream.Write( (int) e.Serial );
@@ -68,10 +59,10 @@ namespace Server
 
 			AddHash( number );
 
-			if ( m_Header == 0 )
+			if ( Header == 0 )
 			{
-				m_Header = number;
-				m_HeaderArgs = "";
+				Header = number;
+				HeaderArgs = "";
 			}
 
 			m_Stream.Write( number );
@@ -103,10 +94,10 @@ namespace Server
 			if ( arguments == null )
 				arguments = "";
 
-			if ( m_Header == 0 )
+			if ( Header == 0 )
 			{
-				m_Header = number;
-				m_HeaderArgs = arguments;
+				Header = number;
+				HeaderArgs = arguments;
 			}
 
 			AddHash( number );

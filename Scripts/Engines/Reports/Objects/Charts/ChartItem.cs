@@ -13,15 +13,9 @@ namespace Server.Engines.Reports
 		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
-		private string m_Name;
-		private int m_Value;
+		public string Name { get; set; }
 
-		public string Name{ get => m_Name;
-			set => m_Name = value;
-		}
-		public int Value{ get => m_Value;
-			set => m_Value = value;
-		}
+		public int Value { get; set; }
 
 		private ChartItem()
 		{
@@ -29,20 +23,20 @@ namespace Server.Engines.Reports
 
 		public ChartItem( string name, int value )
 		{
-			m_Name = name;
-			m_Value = value;
+			Name = name;
+			Value = value;
 		}
 
 		public override void SerializeAttributes( PersistanceWriter op )
 		{
-			op.SetString( "n", m_Name );
-			op.SetInt32( "v", m_Value );
+			op.SetString( "n", Name );
+			op.SetInt32( "v", Value );
 		}
 
 		public override void DeserializeAttributes( PersistanceReader ip )
 		{
-			m_Name = Utility.Intern( ip.GetString( "n" ) );
-			m_Value = ip.GetInt32( "v" );
+			Name = Utility.Intern( ip.GetString( "n" ) );
+			Value = ip.GetInt32( "v" );
 		}
 	}
 }

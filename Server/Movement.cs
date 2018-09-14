@@ -22,18 +22,12 @@ namespace Server.Movement
 {
 	public static class Movement
 	{
-		private static IMovementImpl m_Impl;
-
-		public static IMovementImpl Impl
-		{
-			get => m_Impl;
-			set => m_Impl = value;
-		}
+		public static IMovementImpl Impl { get; set; }
 
 		public static bool CheckMovement( Mobile m, Direction d, out int newZ )
 		{
-			if ( m_Impl != null )
-				return m_Impl.CheckMovement( m, d, out newZ );
+			if ( Impl != null )
+				return Impl.CheckMovement( m, d, out newZ );
 
 			newZ = m.Z;
 			return false;
@@ -41,8 +35,8 @@ namespace Server.Movement
 
 		public static bool CheckMovement( Mobile m, Map map, Point3D loc, Direction d, out int newZ )
 		{
-			if ( m_Impl != null )
-				return m_Impl.CheckMovement( m, map, loc, d, out newZ );
+			if ( Impl != null )
+				return Impl.CheckMovement( m, map, loc, d, out newZ );
 
 			newZ = m.Z;
 			return false;

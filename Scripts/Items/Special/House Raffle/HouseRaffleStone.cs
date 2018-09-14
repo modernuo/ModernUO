@@ -12,33 +12,29 @@ namespace Server.Items
 {
 	public class RaffleEntry
 	{
-		private Mobile m_From;
-		private IPAddress m_Address;
-		private DateTime m_Date;
+		public Mobile From { get; }
 
-		public Mobile From => m_From;
+		public IPAddress Address { get; }
 
-		public IPAddress Address => m_Address;
-
-		public DateTime Date => m_Date;
+		public DateTime Date { get; }
 
 		public RaffleEntry( Mobile from )
 		{
-			m_From = from;
+			From = from;
 
-			if ( m_From.NetState != null )
-				m_Address = m_From.NetState.Address;
+			if ( From.NetState != null )
+				Address = From.NetState.Address;
 			else
-				m_Address = IPAddress.None;
+				Address = IPAddress.None;
 
-			m_Date = DateTime.UtcNow;
+			Date = DateTime.UtcNow;
 		}
 
 		public void Serialize( GenericWriter writer )
 		{
-			writer.Write( m_From );
-			writer.Write( m_Address );
-			writer.Write( m_Date );
+			writer.Write( From );
+			writer.Write( Address );
+			writer.Write( Date );
 		}
 
 		public RaffleEntry( GenericReader reader, int version )
@@ -50,9 +46,9 @@ namespace Server.Items
 				case 1:
 				case 0:
 				{
-					m_From = reader.ReadMobile();
-					m_Address = Utility.Intern( reader.ReadIPAddress() );
-					m_Date = reader.ReadDateTime();
+					From = reader.ReadMobile();
+					Address = Utility.Intern( reader.ReadIPAddress() );
+					Date = reader.ReadDateTime();
 
 					break;
 				}
@@ -89,15 +85,11 @@ namespace Server.Items
 		private Map m_Facet;
 
 		private Mobile m_Winner;
-		private HouseRaffleDeed m_Deed;
 
 		private HouseRaffleState m_State;
 		private DateTime m_Started;
 		private TimeSpan m_Duration;
-		private HouseRaffleExpireAction m_ExpireAction;
 		private int m_TicketPrice;
-
-		private List<RaffleEntry> m_Entries;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
 		public HouseRaffleState CurrentState
@@ -109,9 +101,9 @@ namespace Server.Items
 				{
 					if ( value == HouseRaffleState.Active )
 					{
-						m_Entries.Clear();
+						Entries.Clear();
 						m_Winner = null;
-						m_Deed = null;
+						Deed = null;
 						m_Started = DateTime.UtcNow;
 					}
 
@@ -155,11 +147,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
-		public HouseRaffleDeed Deed
-		{
-			get => m_Deed;
-			set => m_Deed = value;
-		}
+		public HouseRaffleDeed Deed { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
 		public DateTime Started
@@ -188,11 +176,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
-		public HouseRaffleExpireAction ExpireAction
-		{
-			get => m_ExpireAction;
-			set => m_ExpireAction = value;
-		}
+		public HouseRaffleExpireAction ExpireAction { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Seer )]
 		public int TicketPrice
@@ -205,7 +189,7 @@ namespace Server.Items
 			}
 		}
 
-		public List<RaffleEntry> Entries => m_Entries;
+		public List<RaffleEntry> Entries { get; private set; }
 
 		public override string DefaultName => "a house raffle stone";
 
@@ -260,15 +244,15 @@ namespace Server.Items
 			m_Facet = null;
 
 			m_Winner = null;
-			m_Deed = null;
+			Deed = null;
 
 			m_State = HouseRaffleState.Inactive;
 			m_Started = DateTime.MinValue;
 			m_Duration = DefaultDuration;
-			m_ExpireAction = HouseRaffleExpireAction.None;
+			ExpireAction = HouseRaffleExpireAction.None;
 			m_TicketPrice = DefaultTicketPrice;
 
-			m_Entries = new List<RaffleEntry>();
+			Entries = new List<RaffleEntry>();
 
 			Movable = false;
 
@@ -305,7 +289,7 @@ namespace Server.Items
 			if ( !(from.Account is Account acc) )
 				return false;
 
-			foreach ( RaffleEntry entry in m_Entries )
+			foreach ( RaffleEntry entry in Entries )
 			{
 				if ( entry.From != null )
 				{
@@ -327,7 +311,7 @@ namespace Server.Items
 			IPAddress address = from.NetState.Address;
 			int tickets = 0;
 
-			foreach ( RaffleEntry entry in m_Entries )
+			foreach ( RaffleEntry entry in Entries )
 			{
 				if ( Utility.IPMatchClassC( entry.Address, address ) )
 				{
@@ -479,7 +463,7 @@ namespace Server.Items
 
 				if ( m_TicketPrice == 0 || ( from.Backpack != null && from.Backpack.ConsumeTotal( typeof( Gold ), m_TicketPrice ) ) || ( bank != null && bank.ConsumeTotal( typeof( Gold ), m_TicketPrice ) ) )
 				{
-					m_Entries.Add( new RaffleEntry( from ) );
+					Entries.Add( new RaffleEntry( from ) );
 
 					from.SendMessage( MessageHue, "You have successfully entered the plot's raffle." );
 				}
@@ -501,25 +485,25 @@ namespace Server.Items
 
 			m_State = HouseRaffleState.Completed;
 
-			if ( m_Region != null && m_Entries.Count != 0 )
+			if ( m_Region != null && Entries.Count != 0 )
 			{
-				int winner = Utility.Random( m_Entries.Count );
+				int winner = Utility.Random( Entries.Count );
 
-				m_Winner = m_Entries[winner].From;
+				m_Winner = Entries[winner].From;
 
 				if ( m_Winner != null )
 				{
-					m_Deed = new HouseRaffleDeed( this, m_Winner );
+					Deed = new HouseRaffleDeed( this, m_Winner );
 
 					m_Winner.SendMessage( MessageHue, "Congratulations, {0}!  You have won the raffle for the plot located at {1}.", m_Winner.Name, FormatLocation() );
 
-					if ( m_Winner.AddToBackpack( m_Deed ) )
+					if ( m_Winner.AddToBackpack( Deed ) )
 					{
 						m_Winner.SendMessage( MessageHue, "The writ of lease has been placed in your backpack." );
 					}
 					else
 					{
-						m_Winner.BankBox.DropItem( m_Deed );
+						m_Winner.BankBox.DropItem( Deed );
 						m_Winner.SendMessage( MessageHue, "As your backpack is full, the writ of lease has been placed in your bank box." );
 					}
 				}
@@ -548,9 +532,9 @@ namespace Server.Items
 			writer.Write( (int) 3 ); // version
 
 			writer.WriteEncodedInt( (int) m_State );
-			writer.WriteEncodedInt( (int) m_ExpireAction );
+			writer.WriteEncodedInt( (int) ExpireAction );
 
-			writer.Write( m_Deed );
+			writer.Write( Deed );
 
 			writer.Write( m_Bounds );
 			writer.Write( m_Facet );
@@ -561,9 +545,9 @@ namespace Server.Items
 			writer.Write( m_Started );
 			writer.Write( m_Duration );
 
-			writer.Write( m_Entries.Count );
+			writer.Write( Entries.Count );
 
-			foreach ( RaffleEntry entry in m_Entries )
+			foreach ( RaffleEntry entry in Entries )
 				entry.Serialize( writer );
 		}
 
@@ -583,13 +567,13 @@ namespace Server.Items
 				}
 				case 2:
 				{
-					m_ExpireAction = (HouseRaffleExpireAction) reader.ReadEncodedInt();
+					ExpireAction = (HouseRaffleExpireAction) reader.ReadEncodedInt();
 
 					goto case 1;
 				}
 				case 1:
 				{
-					m_Deed = reader.ReadItem<HouseRaffleDeed>();
+					Deed = reader.ReadItem<HouseRaffleDeed>();
 
 					goto case 0;
 				}
@@ -607,7 +591,7 @@ namespace Server.Items
 					m_Duration = reader.ReadTimeSpan();
 
 					int entryCount = reader.ReadInt();
-					m_Entries = new List<RaffleEntry>( entryCount );
+					Entries = new List<RaffleEntry>( entryCount );
 
 					for ( int i = 0; i < entryCount; i++ )
 					{
@@ -616,7 +600,7 @@ namespace Server.Items
 						if ( entry.From == null )
 							continue; // Character was deleted
 
-						m_Entries.Add( entry );
+						Entries.Add( entry );
 					}
 
 					InvalidateRegion();

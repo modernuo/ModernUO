@@ -5,30 +5,14 @@ namespace Server.Items
 {
 	public abstract class Food : Item
 	{
-		private Mobile m_Poisoner;
-		private Poison m_Poison;
-		private int m_FillFactor;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Mobile Poisoner { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Poisoner
-		{
-			get => m_Poisoner;
-			set => m_Poisoner = value;
-		}
+		public Poison Poison { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Poison Poison
-		{
-			get => m_Poison;
-			set => m_Poison = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int FillFactor
-		{
-			get => m_FillFactor;
-			set => m_FillFactor = value;
-		}
+		public int FillFactor { get; set; }
 
 		public Food( int itemID ) : this( 1, itemID )
 		{
@@ -38,7 +22,7 @@ namespace Server.Items
 		{
 			Stackable = true;
 			Amount = amount;
-			m_FillFactor = 1;
+			FillFactor = 1;
 		}
 
 		public Food( Serial serial ) : base( serial )
@@ -75,8 +59,8 @@ namespace Server.Items
 				if ( from.Body.IsHuman && !from.Mounted )
 					from.Animate( 34, 5, 1, true, false, 0 );
 
-				if ( m_Poison != null )
-					from.ApplyPoison( m_Poisoner, m_Poison );
+				if ( Poison != null )
+					from.ApplyPoison( Poisoner, Poison );
 
 				Consume();
 
@@ -88,7 +72,7 @@ namespace Server.Items
 
 		public virtual bool CheckHunger( Mobile from )
 		{
-			return FillHunger( from, m_FillFactor );
+			return FillHunger( from, FillFactor );
 		}
 
 		public static bool FillHunger( Mobile from, int fillFactor )
@@ -132,10 +116,10 @@ namespace Server.Items
 
 			writer.Write( (int) 4 ); // version
 
-			writer.Write( m_Poisoner );
+			writer.Write( Poisoner );
 
-			Poison.Serialize( m_Poison, writer );
-			writer.Write( m_FillFactor );
+			Poison.Serialize( Poison, writer );
+			writer.Write( FillFactor );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -150,29 +134,29 @@ namespace Server.Items
 				{
 					switch ( reader.ReadInt() )
 					{
-						case 0: m_Poison = null; break;
-						case 1: m_Poison = Poison.Lesser; break;
-						case 2: m_Poison = Poison.Regular; break;
-						case 3: m_Poison = Poison.Greater; break;
-						case 4: m_Poison = Poison.Deadly; break;
+						case 0: Poison = null; break;
+						case 1: Poison = Poison.Lesser; break;
+						case 2: Poison = Poison.Regular; break;
+						case 3: Poison = Poison.Greater; break;
+						case 4: Poison = Poison.Deadly; break;
 					}
 
 					break;
 				}
 				case 2:
 				{
-					m_Poison = Poison.Deserialize( reader );
+					Poison = Poison.Deserialize( reader );
 					break;
 				}
 				case 3:
 				{
-					m_Poison = Poison.Deserialize( reader );
-					m_FillFactor = reader.ReadInt();
+					Poison = Poison.Deserialize( reader );
+					FillFactor = reader.ReadInt();
 					break;
 				}
 				case 4:
 				{
-					m_Poisoner = reader.ReadMobile();
+					Poisoner = reader.ReadMobile();
 					goto case 3;
 				}
 			}

@@ -5,28 +5,25 @@ namespace Server.Items
 {
 	public class SlayerGroup
 	{
-		private static SlayerEntry[] m_TotalEntries;
-		private static SlayerGroup[] m_Groups;
+		public static SlayerEntry[] TotalEntries { get; }
 
-		public static SlayerEntry[] TotalEntries => m_TotalEntries;
-
-		public static SlayerGroup[] Groups => m_Groups;
+		public static SlayerGroup[] Groups { get; }
 
 		public static SlayerEntry GetEntryByName( SlayerName name )
 		{
 			int v = (int)name;
 
-			if ( v >= 0 && v < m_TotalEntries.Length )
-				return m_TotalEntries[v];
+			if ( v >= 0 && v < TotalEntries.Length )
+				return TotalEntries[v];
 
 			return null;
 		}
 
 		public static SlayerName GetLootSlayerType( Type type )
 		{
-			for ( int i = 0; i < m_Groups.Length; ++i )
+			for ( int i = 0; i < Groups.Length; ++i )
 			{
-				SlayerGroup group = m_Groups[i];
+				SlayerGroup group = Groups[i];
 				Type[] foundOn = group.FoundOn;
 
 				bool inGroup = false;
@@ -39,7 +36,7 @@ namespace Server.Items
 					int index = Utility.Random( 1 + group.Entries.Length );
 
 					if ( index == 0 )
-						return group.m_Super.Name;
+						return group.Super.Name;
 
 					return group.Entries[index - 1].Name;
 				}
@@ -136,7 +133,7 @@ namespace Server.Items
 					new SlayerEntry( SlayerName.SnakesBane, typeof( DeepSeaSerpent ), typeof( GiantIceWorm ), typeof( GiantSerpent ), typeof( IceSerpent ), typeof( IceSnake ), typeof( LavaSerpent ), typeof( LavaSnake ), typeof( SeaSerpent ), typeof( Serado ), typeof( SilverSerpent ), typeof( Snake ), typeof( Yamandon ) )
 				};
 
-			m_Groups = new[]
+			Groups = new[]
 				{
 					humanoid,
 					undead,
@@ -147,7 +144,7 @@ namespace Server.Items
 					fey
 				};
 
-			m_TotalEntries = CompileEntries( m_Groups );
+			TotalEntries = CompileEntries( Groups );
 		}
 
 		private static SlayerEntry[] CompileEntries( SlayerGroup[] groups )
@@ -172,23 +169,13 @@ namespace Server.Items
 			return entries;
 		}
 
-		private SlayerGroup[] m_Opposition;
-		private SlayerEntry m_Super;
-		private SlayerEntry[] m_Entries;
-		private Type[] m_FoundOn;
+		public SlayerGroup[] Opposition { get; set; }
 
-		public SlayerGroup[] Opposition{ get => m_Opposition;
-			set => m_Opposition = value;
-		}
-		public SlayerEntry Super{ get => m_Super;
-			set => m_Super = value;
-		}
-		public SlayerEntry[] Entries{ get => m_Entries;
-			set => m_Entries = value;
-		}
-		public Type[] FoundOn{ get => m_FoundOn;
-			set => m_FoundOn = value;
-		}
+		public SlayerEntry Super { get; set; }
+
+		public SlayerEntry[] Entries { get; set; }
+
+		public Type[] FoundOn { get; set; }
 
 		public bool OppositionSuperSlays( Mobile m )
 		{

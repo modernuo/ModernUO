@@ -5,32 +5,21 @@ namespace Server.Items
 	[Flippable( 0x1EC0, 0x1EC3 )]
 	public class PickpocketDip : AddonComponent
 	{
-		private double m_MinSkill;
-		private double m_MaxSkill;
-
 		private Timer m_Timer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double MinSkill
-		{
-			get => m_MinSkill;
-			set => m_MinSkill = value;
-		}
+		public double MinSkill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double MaxSkill
-		{
-			get => m_MaxSkill;
-			set => m_MaxSkill = value;
-		}
+		public double MaxSkill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Swinging => ( m_Timer != null );
 
 		public PickpocketDip( int itemID ) : base( itemID )
 		{
-			m_MinSkill = -25.0;
-			m_MaxSkill = +25.0;
+			MinSkill = -25.0;
+			MaxSkill = +25.0;
 		}
 
 		public void UpdateItemID()
@@ -65,7 +54,7 @@ namespace Server.Items
 
 			Effects.PlaySound( GetWorldLocation(), Map, 0x4F );
 
-			if ( from.CheckSkill( SkillName.Stealing, m_MinSkill, m_MaxSkill ) )
+			if ( from.CheckSkill( SkillName.Stealing, MinSkill, MaxSkill ) )
 			{
 				SendLocalizedMessageTo( from, 501834 ); // You successfully avoid disturbing the dip while searching it.
 			}
@@ -85,7 +74,7 @@ namespace Server.Items
 				SendLocalizedMessageTo( from, 501816 ); // You are too far away to do that.
 			else if ( Swinging )
 				SendLocalizedMessageTo( from, 501815 ); // You have to wait until it stops swinging.
-			else if ( from.Skills[SkillName.Stealing].Base >= m_MaxSkill )
+			else if ( from.Skills[SkillName.Stealing].Base >= MaxSkill )
 				SendLocalizedMessageTo( from, 501830 ); // Your ability to steal cannot improve any further by simply practicing on a dummy.
 			else if ( from.Mounted )
 				SendLocalizedMessageTo( from, 501829 ); // You can't practice on this while on a mount.
@@ -103,8 +92,8 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 
-			writer.Write( m_MinSkill );
-			writer.Write( m_MaxSkill );
+			writer.Write( MinSkill );
+			writer.Write( MaxSkill );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -117,13 +106,13 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_MinSkill = reader.ReadDouble();
-					m_MaxSkill = reader.ReadDouble();
+					MinSkill = reader.ReadDouble();
+					MaxSkill = reader.ReadDouble();
 
-					if ( m_MinSkill == 0.0 && m_MaxSkill == 30.0 )
+					if ( MinSkill == 0.0 && MaxSkill == 30.0 )
 					{
-						m_MinSkill = -25.0;
-						m_MaxSkill = +25.0;
+						MinSkill = -25.0;
+						MaxSkill = +25.0;
 					}
 
 					break;

@@ -31,20 +31,11 @@ namespace Server.Engines.Help
 				PageType.VerbalHarassment
 			};
 
-		private Mobile m_Sender;
 		private Mobile m_Handler;
-		private DateTime m_Sent;
-		private string m_Message;
-		private PageType m_Type;
-		private Point3D m_PageLocation;
-		private Map m_PageMap;
-		private List<SpeechLogEntry> m_SpeechLog;
 
-		private PageInfo m_PageInfo;
+		public PageInfo PageInfo { get; }
 
-		public PageInfo PageInfo => m_PageInfo;
-
-		public Mobile Sender => m_Sender;
+		public Mobile Sender { get; }
 
 		public Mobile Handler
 		{
@@ -56,17 +47,17 @@ namespace Server.Engines.Help
 			}
 		}
 
-		public DateTime Sent => m_Sent;
+		public DateTime Sent { get; }
 
-		public string Message => m_Message;
+		public string Message { get; }
 
-		public PageType Type => m_Type;
+		public PageType Type { get; }
 
-		public Point3D PageLocation => m_PageLocation;
+		public Point3D PageLocation { get; }
 
-		public Map PageMap => m_PageMap;
+		public Map PageMap { get; }
 
-		public List<SpeechLogEntry> SpeechLog => m_SpeechLog;
+		public List<SpeechLogEntry> SpeechLog { get; }
 
 		private Timer m_Timer;
 
@@ -79,27 +70,27 @@ namespace Server.Engines.Help
 
 		public void AddResponse( Mobile mob, string text )
 		{
-			if ( m_PageInfo != null )
+			if ( PageInfo != null )
 			{
-				lock ( m_PageInfo )
-					m_PageInfo.Responses.Add( PageInfo.GetAccount( mob ), text );
+				lock ( PageInfo )
+					PageInfo.Responses.Add( PageInfo.GetAccount( mob ), text );
 
 				if ( PageInfo.ResFromResp( text ) != PageResolution.None )
-					m_PageInfo.UpdateResolver();
+					PageInfo.UpdateResolver();
 			}
 		}
 
 		public PageEntry( Mobile sender, string message, PageType type )
 		{
-			m_Sender = sender;
-			m_Sent = DateTime.UtcNow;
-			m_Message = Utility.FixHtml( message );
-			m_Type = type;
-			m_PageLocation = sender.Location;
-			m_PageMap = sender.Map;
+			Sender = sender;
+			Sent = DateTime.UtcNow;
+			Message = Utility.FixHtml( message );
+			Type = type;
+			PageLocation = sender.Location;
+			PageMap = sender.Map;
 
 			if ( sender is PlayerMobile pm && pm.SpeechLog != null && Array.IndexOf( SpeechLogAttachment, type ) >= 0 )
-				m_SpeechLog = new List<SpeechLogEntry>( pm.SpeechLog );
+				SpeechLog = new List<SpeechLogEntry>( pm.SpeechLog );
 
 			m_Timer = new InternalTimer( this );
 			m_Timer.Start();
@@ -108,9 +99,9 @@ namespace Server.Engines.Help
 
 			if ( history != null )
 			{
-				m_PageInfo = new PageInfo( this );
+				PageInfo = new PageInfo( this );
 
-				history.AddPage( m_PageInfo );
+				history.AddPage( PageInfo );
 			}
 		}
 
@@ -151,7 +142,6 @@ namespace Server.Engines.Help
 
 	public class PageQueue
 	{
-		private static ArrayList m_List = new ArrayList();
 		private static Hashtable m_KeyedByHandler = new Hashtable();
 		private static Hashtable m_KeyedBySender = new Hashtable();
 
@@ -207,7 +197,7 @@ namespace Server.Engines.Help
 			{
 				e.Mobile.SendGump( new PageEntryGump( e.Mobile, entry ) );
 			}
-			else if ( m_List.Count > 0 )
+			else if ( List.Count > 0 )
 			{
 				e.Mobile.SendGump( new PageQueueGump() );
 			}
@@ -229,7 +219,7 @@ namespace Server.Engines.Help
 
 		public static int IndexOf( PageEntry e )
 		{
-			return m_List.IndexOf( e );
+			return List.IndexOf( e );
 		}
 
 		public static void Cancel( Mobile sender )
@@ -244,7 +234,7 @@ namespace Server.Engines.Help
 
 			e.Stop();
 
-			m_List.Remove( e );
+			List.Remove( e );
 			m_KeyedBySender.Remove( e.Sender );
 
 			if ( e.Handler != null )
@@ -261,11 +251,11 @@ namespace Server.Engines.Help
 			Remove( GetEntry( sender ) );
 		}
 
-		public static ArrayList List => m_List;
+		public static ArrayList List { get; } = new ArrayList();
 
 		public static void Enqueue( PageEntry entry )
 		{
-			m_List.Add( entry );
+			List.Add( entry );
 			m_KeyedBySender[entry.Sender] = entry;
 
 			bool isStaffOnline = false;

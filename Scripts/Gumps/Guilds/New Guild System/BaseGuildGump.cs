@@ -8,11 +8,9 @@ namespace Server.Guilds
 {
 	public abstract class BaseGuildGump : Gump
 	{
-		private Guild m_Guild;
-		private PlayerMobile m_Player;
+		protected Guild guild { get; }
 
-		protected Guild guild => m_Guild;
-		protected PlayerMobile player => m_Player;
+		protected PlayerMobile player { get; }
 
 		public BaseGuildGump( PlayerMobile pm, Guild g ) : this( pm, g, 10, 10 )
 		{
@@ -20,8 +18,8 @@ namespace Server.Guilds
 
 		public BaseGuildGump( PlayerMobile pm, Guild g, int x, int y ) : base( x, y )
 		{
-			m_Guild = g;
-			m_Player = pm;
+			guild = g;
+			player = pm;
 
 			pm.CloseGump( typeof( BaseGuildGump ) );
 		}

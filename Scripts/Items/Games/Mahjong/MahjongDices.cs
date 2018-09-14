@@ -2,48 +2,46 @@ namespace Server.Engines.Mahjong
 {
 	public class MahjongDices
 	{
-		private MahjongGame m_Game;
-		private int m_First;
-		private int m_Second;
+		public MahjongGame Game { get; }
 
-		public MahjongGame Game  => m_Game;
-		public int First  => m_First;
-		public int Second  => m_Second;
+		public int First { get; private set; }
+
+		public int Second { get; private set; }
 
 		public MahjongDices( MahjongGame game )
 		{
-			m_Game = game;
-			m_First = Utility.Random( 1, 6 );
-			m_Second = Utility.Random( 1, 6 );
+			Game = game;
+			First = Utility.Random( 1, 6 );
+			Second = Utility.Random( 1, 6 );
 		}
 
 		public void RollDices( Mobile from )
 		{
-			m_First = Utility.Random( 1, 6 );
-			m_Second = Utility.Random( 1, 6 );
+			First = Utility.Random( 1, 6 );
+			Second = Utility.Random( 1, 6 );
 
-			m_Game.Players.SendGeneralPacket( true, true );
+			Game.Players.SendGeneralPacket( true, true );
 
 			if ( from != null )
-				m_Game.Players.SendLocalizedMessage( 1062695, $"{from.Name}\t{m_First}\t{m_Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
+				Game.Players.SendLocalizedMessage( 1062695, $"{from.Name}\t{First}\t{Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
 		}
 
 		public void Save( GenericWriter writer )
 		{
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( m_First );
-			writer.Write( m_Second );
+			writer.Write( First );
+			writer.Write( Second );
 		}
 
 		public MahjongDices( MahjongGame game, GenericReader reader )
 		{
-			m_Game = game;
+			Game = game;
 
 			int version = reader.ReadInt();
 
-			m_First = reader.ReadInt();
-			m_Second = reader.ReadInt();
+			First = reader.ReadInt();
+			Second = reader.ReadInt();
 		}
 	}
 }

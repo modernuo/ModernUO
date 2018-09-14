@@ -126,20 +126,14 @@ namespace Server.Engines.Help
 
 	public class PredefinedResponse
 	{
-		private string m_Title;
-		private string m_Message;
+		public string Title { get; set; }
 
-		public string Title{ get => m_Title;
-			set => m_Title = value;
-		}
-		public string Message{ get => m_Message;
-			set => m_Message = value;
-		}
+		public string Message { get; set; }
 
 		public PredefinedResponse( string title, string message )
 		{
-			m_Title = title;
-			m_Message = message;
+			Title = title;
+			Message = message;
 		}
 
 		private static ArrayList m_List;

@@ -188,18 +188,17 @@ namespace Server.Guilds
 	}
 	public struct InfoField<T>
 	{
-		private TextDefinition m_Name;
-		private int m_Width;
-		private IComparer<T> m_Comparer;
+		public TextDefinition Name { get; }
 
-		public TextDefinition Name => m_Name;
-		public int Width => m_Width;
-		public IComparer<T> Comparer  => m_Comparer;
+		public int Width { get; }
+
+		public IComparer<T> Comparer { get; }
+
 		public InfoField( TextDefinition name, int width, IComparer<T> comparer )
 		{
-			m_Name = name;
-			m_Width = width;
-			m_Comparer = comparer;
+			Name = name;
+			Width = width;
+			Comparer = comparer;
 		}
 	}
 }

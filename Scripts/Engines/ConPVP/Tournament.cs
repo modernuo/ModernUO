@@ -38,12 +38,8 @@ namespace Server.Engines.ConPVP
 
 	public class TournamentRegistrar : Banker
 	{
-		private TournamentController m_Tournament;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentController Tournament{ get => m_Tournament;
-			set => m_Tournament = value;
-		}
+		public TournamentController Tournament { get; set; }
 
 		[Constructible]
 		public TournamentRegistrar()
@@ -55,8 +51,8 @@ namespace Server.Engines.ConPVP
 		{
 			Tournament tourny = null;
 
-			if ( m_Tournament != null )
-				tourny = m_Tournament.Tournament;
+			if ( Tournament != null )
+				tourny = Tournament.Tournament;
 
 			if ( tourny != null && tourny.Stage == TournamentStage.Signup )
 				PublicOverheadMessage( MessageType.Regular, 0x35, false, "Come one, come all! Do you aspire to be a fighter of great renown? Join this tournament and show the world your abilities." );
@@ -68,8 +64,8 @@ namespace Server.Engines.ConPVP
 
 			Tournament tourny = null;
 
-			if ( m_Tournament != null )
-				tourny = m_Tournament.Tournament;
+			if ( Tournament != null )
+				tourny = Tournament.Tournament;
 
 			if ( InRange( m, 4 ) && !InRange( oldLocation, 4 ) && tourny != null && tourny.Stage == TournamentStage.Signup && m.CanBeginAction( this ) )
 			{
@@ -110,7 +106,7 @@ namespace Server.Engines.ConPVP
 
 			writer.Write( (int) 0 );
 
-			writer.Write( (Item) m_Tournament );
+			writer.Write( (Item) Tournament );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -123,7 +119,7 @@ namespace Server.Engines.ConPVP
 			{
 				case 0:
 				{
-					m_Tournament = reader.ReadItem() as TournamentController;
+					Tournament = reader.ReadItem() as TournamentController;
 					break;
 				}
 			}
@@ -134,18 +130,11 @@ namespace Server.Engines.ConPVP
 
 	public class TournamentSignupItem : Item
 	{
-		private TournamentController m_Tournament;
-		private Mobile m_Registrar;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TournamentController Tournament { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentController Tournament{ get => m_Tournament;
-			set => m_Tournament = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Registrar{ get => m_Registrar;
-			set => m_Registrar = value;
-		}
+		public Mobile Registrar { get; set; }
 
 		public override string DefaultName => "tournament signup book";
 
@@ -163,27 +152,27 @@ namespace Server.Engines.ConPVP
 			}
 			else
 			{
-				Tournament tourny = m_Tournament?.Tournament;
+				Tournament tourny = Tournament?.Tournament;
 
 				if ( tourny != null )
 				{
-					if ( m_Registrar != null )
-						m_Registrar.Direction = m_Registrar.GetDirectionTo( this );
+					if ( Registrar != null )
+						Registrar.Direction = Registrar.GetDirectionTo( this );
 
 					switch ( tourny.Stage )
 					{
 						case TournamentStage.Fighting:
 						{
-							if ( m_Registrar != null )
+							if ( Registrar != null )
 							{
 								if ( tourny.HasParticipant( from ) )
 								{
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
+									Registrar.PrivateOverheadMessage( MessageType.Regular,
 										0x35, false, "Excuse me? You are already signed up.", from.NetState );
 								}
 								else
 								{
-									m_Registrar.PrivateOverheadMessage( MessageType.Regular,
+									Registrar.PrivateOverheadMessage( MessageType.Regular,
 										0x22, false, "The tournament has already begun. You are too late to signup now.", from.NetState );
 								}
 							}
@@ -192,7 +181,7 @@ namespace Server.Engines.ConPVP
 						}
 						case TournamentStage.Inactive:
 						{
-							m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+							Registrar?.PrivateOverheadMessage( MessageType.Regular,
 								0x35, false, "The tournament is closed.", from.NetState );
 
 							break;
@@ -204,7 +193,7 @@ namespace Server.Engines.ConPVP
 
 							if ( entry != null && Ladder.GetLevel( entry.Experience ) < tourny.LevelRequirement )
 							{
-								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x35, false, "You have not yet proven yourself a worthy dueler.", from.NetState );
 
 								break;
@@ -212,7 +201,7 @@ namespace Server.Engines.ConPVP
 
 							if ( tourny.IsFactionRestricted && Faction.Find( from ) == null )
 							{
-								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x35, false, "Only those who have declared their faction allegiance may participate.", from.NetState );
 
 								break;
@@ -220,17 +209,17 @@ namespace Server.Engines.ConPVP
 
 							if ( from.HasGump( typeof( AcceptTeamGump ) ) )
 							{
-								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x22, false, "You must first respond to the offer I've given you.", from.NetState );
 							}
 							else if ( from.HasGump( typeof( AcceptDuelGump ) ) )
 							{
-								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x22, false, "You must first cancel your duel offer.", from.NetState );
 							}
 							else if ( from is PlayerMobile mobile && mobile.DuelContext != null )
 							{
-								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x22, false, "You are already participating in a duel.", mobile.NetState );
 							}
 							else if ( !tourny.HasParticipant( from ) )
@@ -238,11 +227,11 @@ namespace Server.Engines.ConPVP
 								ArrayList players = new ArrayList();
 								players.Add(from);
 								from.CloseGump( typeof( ConfirmSignupGump ) );
-								from.SendGump( new ConfirmSignupGump( from, m_Registrar, tourny, players ) );
+								from.SendGump( new ConfirmSignupGump( from, Registrar, tourny, players ) );
 							}
 							else
 							{
-								m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								Registrar?.PrivateOverheadMessage( MessageType.Regular,
 									0x35, false, "You have already entered this tournament.", from.NetState );
 							}
 
@@ -263,8 +252,8 @@ namespace Server.Engines.ConPVP
 
 			writer.Write( (int) 0 );
 
-			writer.Write( (Item) m_Tournament );
-			writer.Write( (Mobile) m_Registrar );
+			writer.Write( (Item) Tournament );
+			writer.Write( (Mobile) Registrar );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -277,8 +266,8 @@ namespace Server.Engines.ConPVP
 			{
 				case 0:
 				{
-					m_Tournament = reader.ReadItem() as TournamentController;
-					m_Registrar = reader.ReadMobile();
+					Tournament = reader.ReadItem() as TournamentController;
+					Registrar = reader.ReadMobile();
 					break;
 				}
 			}
@@ -1331,81 +1320,28 @@ namespace Server.Engines.ConPVP
 	{
 		private int m_ParticipantsPerMatch;
 		private int m_PlayersPerParticipant;
-		private int m_LevelRequirement;
 
-		private bool m_FactionRestricted;
-
-		private TournyPyramid m_Pyramid;
-		private Ruleset m_Ruleset;
-
-		private ArrayList m_Arenas;
-		private ArrayList m_Participants;
-		private ArrayList m_Undefeated;
-
-		private TimeSpan m_SignupPeriod;
-		private DateTime m_SignupStart;
-
-		private TournamentStage m_Stage;
-
-		private GroupingType m_GroupType;
-		private TieType m_TieType;
-		private TimeSpan m_SuddenDeath;
-
-		private TournyType m_TournyType;
-
-		private int m_SuddenDeathRounds;
-
-		private EventController m_EventController;
-
-		public bool IsNotoRestricted => ( m_TournyType != TournyType.Standard );
+		public bool IsNotoRestricted => ( TournyType != TournyType.Standard );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public EventController EventController
-		{
-			get => m_EventController;
-			set => m_EventController = value;
-		}
+		public EventController EventController { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int SuddenDeathRounds
-		{
-			get => m_SuddenDeathRounds;
-			set => m_SuddenDeathRounds = value;
-		}
+		public int SuddenDeathRounds { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournyType TournyType
-		{
-			get => m_TournyType;
-			set => m_TournyType = value;
-		}
+		public TournyType TournyType { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public GroupingType GroupType
-		{
-			get => m_GroupType;
-			set => m_GroupType = value;
-		}
+		public GroupingType GroupType { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TieType TieType
-		{
-			get => m_TieType;
-			set => m_TieType = value;
-		}
+		public TieType TieType { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan SuddenDeath
-		{
-			get => m_SuddenDeath;
-			set => m_SuddenDeath = value;
-		}
+		public TimeSpan SuddenDeath { get; set; }
 
-		public Ruleset Ruleset
-		{
-			get => m_Ruleset;
-			set => m_Ruleset = value;
-		}
+		public Ruleset Ruleset { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ParticipantsPerMatch
@@ -1422,73 +1358,41 @@ namespace Server.Engines.ConPVP
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int LevelRequirement
-		{
-			get => m_LevelRequirement;
-			set => m_LevelRequirement = value;
-		}
+		public int LevelRequirement { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool FactionRestricted
-		{
-			get => m_FactionRestricted;
-			set => m_FactionRestricted = value;
-		}
+		public bool FactionRestricted { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan SignupPeriod
-		{
-			get => m_SignupPeriod;
-			set => m_SignupPeriod = value;
-		}
+		public TimeSpan SignupPeriod { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime SignupStart
-		{
-			get => m_SignupStart;
-			set => m_SignupStart = value;
-		}
+		public DateTime SignupStart { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentStage CurrentStage => m_Stage;
+		public TournamentStage CurrentStage { get; private set; }
 
 		public TournamentStage Stage
 		{
-			get => m_Stage;
-			set => m_Stage = value;
+			get => CurrentStage;
+			set => CurrentStage = value;
 		}
 
-		public TournyPyramid Pyramid
-		{
-			get => m_Pyramid;
-			set => m_Pyramid = value;
-		}
+		public TournyPyramid Pyramid { get; set; }
 
-		public ArrayList Arenas
-		{
-			get => m_Arenas;
-			set => m_Arenas = value;
-		}
+		public ArrayList Arenas { get; set; }
 
-		public ArrayList Participants
-		{
-			get => m_Participants;
-			set => m_Participants = value;
-		}
+		public ArrayList Participants { get; set; }
 
-		public ArrayList Undefeated
-		{
-			get => m_Undefeated;
-			set => m_Undefeated = value;
-		}
+		public ArrayList Undefeated { get; set; }
 
-		public bool IsFactionRestricted => ( m_FactionRestricted || m_TournyType == TournyType.Faction );
+		public bool IsFactionRestricted => ( FactionRestricted || TournyType == TournyType.Faction );
 
 		public bool HasParticipant( Mobile mob )
 		{
-			for ( int i = 0; i < m_Participants.Count; ++i )
+			for ( int i = 0; i < Participants.Count; ++i )
 			{
-				TournyParticipant part = (TournyParticipant)m_Participants[i];
+				TournyParticipant part = (TournyParticipant)Participants[i];
 
 				if ( part.Players.Contains( mob ) )
 					return true;
@@ -1501,21 +1405,21 @@ namespace Server.Engines.ConPVP
 		{
 			writer.WriteEncodedInt( (int) 5 ); // version
 
-			writer.Write( (bool) m_FactionRestricted );
+			writer.Write( (bool) FactionRestricted );
 
-			writer.Write( (Item) m_EventController );
+			writer.Write( (Item) EventController );
 
-			writer.WriteEncodedInt( (int) m_SuddenDeathRounds );
+			writer.WriteEncodedInt( (int) SuddenDeathRounds );
 
-			writer.WriteEncodedInt( (int) m_TournyType );
+			writer.WriteEncodedInt( (int) TournyType );
 
-			writer.WriteEncodedInt( (int) m_GroupType );
-			writer.WriteEncodedInt( (int) m_TieType );
-			writer.Write( (TimeSpan) m_SuddenDeath );
+			writer.WriteEncodedInt( (int) GroupType );
+			writer.WriteEncodedInt( (int) TieType );
+			writer.Write( (TimeSpan) SuddenDeath );
 
 			writer.WriteEncodedInt( (int) m_ParticipantsPerMatch );
 			writer.WriteEncodedInt( (int) m_PlayersPerParticipant );
-			writer.Write( (TimeSpan) m_SignupPeriod );
+			writer.Write( (TimeSpan) SignupPeriod );
 		}
 
 		public Tournament( GenericReader reader )
@@ -1525,51 +1429,51 @@ namespace Server.Engines.ConPVP
 			switch ( version )
 			{
 				case 5: {
-					m_FactionRestricted = reader.ReadBool();
+					FactionRestricted = reader.ReadBool();
 
 					goto case 4;
 				}
 				case 4:
 				{
-					m_EventController = reader.ReadItem() as EventController;
+					EventController = reader.ReadItem() as EventController;
 
 					goto case 3;
 				}
 				case 3:
 				{
-					m_SuddenDeathRounds = reader.ReadEncodedInt();
+					SuddenDeathRounds = reader.ReadEncodedInt();
 
 					goto case 2;
 				}
 				case 2:
 				{
-					m_TournyType = (TournyType)reader.ReadEncodedInt();
+					TournyType = (TournyType)reader.ReadEncodedInt();
 
 					goto case 1;
 				}
 				case 1:
 				{
-					m_GroupType = (GroupingType)reader.ReadEncodedInt();
-					m_TieType = (TieType)reader.ReadEncodedInt();
-					m_SignupPeriod = reader.ReadTimeSpan();
+					GroupType = (GroupingType)reader.ReadEncodedInt();
+					TieType = (TieType)reader.ReadEncodedInt();
+					SignupPeriod = reader.ReadTimeSpan();
 
 					goto case 0;
 				}
 				case 0:
 				{
 					if ( version < 3 )
-						m_SuddenDeathRounds = 3;
+						SuddenDeathRounds = 3;
 
 					m_ParticipantsPerMatch = reader.ReadEncodedInt();
 					m_PlayersPerParticipant = reader.ReadEncodedInt();
-					m_SignupPeriod = reader.ReadTimeSpan();
-					m_Stage = TournamentStage.Inactive;
-					m_Pyramid = new TournyPyramid();
-					m_Ruleset = new Ruleset( RulesetLayout.Root );
-					m_Ruleset.ApplyDefault( m_Ruleset.Layout.Defaults[0] );
-					m_Participants = new ArrayList();
-					m_Undefeated = new ArrayList();
-					m_Arenas = new ArrayList();
+					SignupPeriod = reader.ReadTimeSpan();
+					CurrentStage = TournamentStage.Inactive;
+					Pyramid = new TournyPyramid();
+					Ruleset = new Ruleset( RulesetLayout.Root );
+					Ruleset.ApplyDefault( Ruleset.Layout.Defaults[0] );
+					Participants = new ArrayList();
+					Undefeated = new ArrayList();
+					Arenas = new ArrayList();
 
 					break;
 				}
@@ -1582,13 +1486,13 @@ namespace Server.Engines.ConPVP
 		{
 			m_ParticipantsPerMatch = 2;
 			m_PlayersPerParticipant = 1;
-			m_Pyramid = new TournyPyramid();
-			m_Ruleset = new Ruleset( RulesetLayout.Root );
-			m_Ruleset.ApplyDefault( m_Ruleset.Layout.Defaults[0] );
-			m_Participants = new ArrayList();
-			m_Undefeated = new ArrayList();
-			m_Arenas = new ArrayList();
-			m_SignupPeriod = TimeSpan.FromMinutes( 10.0 );
+			Pyramid = new TournyPyramid();
+			Ruleset = new Ruleset( RulesetLayout.Root );
+			Ruleset.ApplyDefault( Ruleset.Layout.Defaults[0] );
+			Participants = new ArrayList();
+			Undefeated = new ArrayList();
+			Arenas = new ArrayList();
+			SignupPeriod = TimeSpan.FromMinutes( 10.0 );
 
 			Timer.DelayCall( SliceInterval, SliceInterval, Slice );
 		}
@@ -1633,7 +1537,7 @@ namespace Server.Engines.ConPVP
 				}
 				else
 				{
-					m_Undefeated.Remove( part );
+					Undefeated.Remove( part );
 				}
 			}
 
@@ -1641,12 +1545,12 @@ namespace Server.Engines.ConPVP
 
 			string whole = ( remaining.Count == 2 ? "both" : "all" );
 
-			TieType tieType = m_TieType;
+			TieType tieType = TieType;
 
-			if ( tieType == TieType.FullElimination && remaining.Count >= m_Undefeated.Count )
+			if ( tieType == TieType.FullElimination && remaining.Count >= Undefeated.Count )
 				tieType = TieType.FullAdvancement;
 
-			switch ( m_TieType )
+			switch ( TieType )
 			{
 				case TieType.FullAdvancement:
 				{
@@ -1656,7 +1560,7 @@ namespace Server.Engines.ConPVP
 				case TieType.FullElimination:
 				{
 					for ( int j = 0; j < remaining.Count; ++j )
-						m_Undefeated.Remove( remaining[j] );
+						Undefeated.Remove( remaining[j] );
 
 					sb.AppendFormat( "In accordance with the rules, {0} parties are eliminated.", whole );
 					break;
@@ -1668,7 +1572,7 @@ namespace Server.Engines.ConPVP
 					for ( int i = 0; i < remaining.Count; ++i )
 					{
 						if ( remaining[i] != advanced )
-							m_Undefeated.Remove( remaining[i] );
+							Undefeated.Remove( remaining[i] );
 					}
 
 					if ( advanced != null )
@@ -1691,7 +1595,7 @@ namespace Server.Engines.ConPVP
 					for ( int i = 0; i < remaining.Count; ++i )
 					{
 						if ( remaining[i] != advanced )
-							m_Undefeated.Remove( remaining[i] );
+							Undefeated.Remove( remaining[i] );
 					}
 
 					if ( advanced != null )
@@ -1714,7 +1618,7 @@ namespace Server.Engines.ConPVP
 					for ( int i = 0; i < remaining.Count; ++i )
 					{
 						if ( remaining[i] != advanced )
-							m_Undefeated.Remove( remaining[i] );
+							Undefeated.Remove( remaining[i] );
 					}
 
 					if ( advanced != null )
@@ -1734,7 +1638,7 @@ namespace Server.Engines.ConPVP
 			if ( !part.Eliminated )
 				return;
 
-			if ( m_TournyType == TournyType.FreeForAll )
+			if ( TournyType == TournyType.FreeForAll )
 			{
 				int rem = 0;
 
@@ -1782,7 +1686,7 @@ namespace Server.Engines.ConPVP
 				if ( part == winner )
 					continue;
 
-				m_Undefeated.Remove( part );
+				Undefeated.Remove( part );
 
 				if ( hasAppended )
 					sb.Append( ", " );
@@ -1793,7 +1697,7 @@ namespace Server.Engines.ConPVP
 
 			sb.Append( "." );
 
-			if ( m_TournyType == TournyType.Standard )
+			if ( TournyType == TournyType.Standard )
 				Alert( arena, sb.ToString() );
 		}
 
@@ -1801,19 +1705,19 @@ namespace Server.Engines.ConPVP
 
 		private int ComputeCashAward()
 		{
-			return m_Participants.Count * m_PlayersPerParticipant * 2500;
+			return Participants.Count * m_PlayersPerParticipant * 2500;
 		}
 
 		private void GiveAwards()
 		{
-			switch ( m_TournyType )
+			switch ( TournyType )
 			{
 				case TournyType.FreeForAll:
 				{
-					if ( m_Pyramid.Levels.Count < 1 )
+					if ( Pyramid.Levels.Count < 1 )
 						break;
 
-					PyramidLevel top = m_Pyramid.Levels[m_Pyramid.Levels.Count - 1] as PyramidLevel;
+					PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1] as PyramidLevel;
 
 					if ( top.FreeAdvance != null || top.Matches.Count != 1 )
 						break;
@@ -1828,10 +1732,10 @@ namespace Server.Engines.ConPVP
 				}
 				case TournyType.Standard:
 				{
-					if ( m_Pyramid.Levels.Count < 2 )
+					if ( Pyramid.Levels.Count < 2 )
 						break;
 
-					PyramidLevel top = m_Pyramid.Levels[m_Pyramid.Levels.Count - 1] as PyramidLevel;
+					PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1] as PyramidLevel;
 
 					if ( top.FreeAdvance != null || top.Matches.Count != 1 )
 						break;
@@ -1851,7 +1755,7 @@ namespace Server.Engines.ConPVP
 							GiveAwards( part.Players, TrophyRank.Silver, cash / 2 );
 					}
 
-					PyramidLevel next = m_Pyramid.Levels[m_Pyramid.Levels.Count - 2] as PyramidLevel;
+					PyramidLevel next = Pyramid.Levels[Pyramid.Levels.Count - 2] as PyramidLevel;
 
 					if ( next.Matches.Count > 2 )
 						break;
@@ -1889,22 +1793,22 @@ namespace Server.Engines.ConPVP
 
 			StringBuilder sb = new StringBuilder();
 
-			if ( m_TournyType == TournyType.FreeForAll )
+			if ( TournyType == TournyType.FreeForAll )
 			{
-				sb.Append( m_Participants.Count * m_PlayersPerParticipant );
+				sb.Append( Participants.Count * m_PlayersPerParticipant );
 				sb.Append( "-man FFA" );
 			}
-			else if ( m_TournyType == TournyType.RandomTeam )
+			else if ( TournyType == TournyType.RandomTeam )
 			{
 				sb.Append( m_ParticipantsPerMatch );
 				sb.Append( "-Team" );
 			}
-			else if ( m_TournyType == TournyType.Faction )
+			else if ( TournyType == TournyType.Faction )
 			{
 				sb.Append( m_ParticipantsPerMatch );
 				sb.Append( "-Team Faction" );
 			}
-			else if ( m_TournyType == TournyType.RedVsBlue )
+			else if ( TournyType == TournyType.RedVsBlue )
 			{
 				sb.Append( "Red v Blue" );
 			}
@@ -1919,8 +1823,8 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			if ( m_EventController != null )
-				sb.Append( ' ' ).Append( m_EventController.Title );
+			if ( EventController != null )
+				sb.Append( ' ' ).Append( EventController.Title );
 
 			sb.Append( " Champion" );
 
@@ -1956,15 +1860,15 @@ namespace Server.Engines.ConPVP
 
 		public void Slice()
 		{
-			if ( m_Stage == TournamentStage.Signup )
+			if ( CurrentStage == TournamentStage.Signup )
 			{
-				TimeSpan until = ( m_SignupStart + m_SignupPeriod ) - DateTime.UtcNow;
+				TimeSpan until = ( SignupStart + SignupPeriod ) - DateTime.UtcNow;
 
 				if ( until <= TimeSpan.Zero )
 				{
-					for ( int i = m_Participants.Count - 1; i >= 0; --i )
+					for ( int i = Participants.Count - 1; i >= 0; --i )
 					{
-						TournyParticipant part = (TournyParticipant)m_Participants[i];
+						TournyParticipant part = (TournyParticipant)Participants[i];
 						bool bad = false;
 
 						for ( int j = 0; j < part.Players.Count; ++j )
@@ -1983,29 +1887,29 @@ namespace Server.Engines.ConPVP
 							for ( int j = 0; j < part.Players.Count; ++j )
 								((Mobile)part.Players[j]).SendMessage( "You have been disqualified from the tournament." );
 
-							m_Participants.RemoveAt( i );
+							Participants.RemoveAt( i );
 						}
 					}
 
-					if ( m_Participants.Count >= 2 )
+					if ( Participants.Count >= 2 )
 					{
-						m_Stage = TournamentStage.Fighting;
+						CurrentStage = TournamentStage.Fighting;
 
-						m_Undefeated.Clear();
+						Undefeated.Clear();
 
-						m_Pyramid.Levels.Clear();
-						m_Pyramid.AddLevel( m_ParticipantsPerMatch, m_Participants, m_GroupType, m_TournyType );
+						Pyramid.Levels.Clear();
+						Pyramid.AddLevel( m_ParticipantsPerMatch, Participants, GroupType, TournyType );
 
-						PyramidLevel level = (PyramidLevel)m_Pyramid.Levels[0];
+						PyramidLevel level = (PyramidLevel)Pyramid.Levels[0];
 
 						if ( level.FreeAdvance != null )
-							m_Undefeated.Add( level.FreeAdvance );
+							Undefeated.Add( level.FreeAdvance );
 
 						for ( int i = 0; i < level.Matches.Count; ++i )
 						{
 							TournyMatch match = (TournyMatch)level.Matches[i];
 
-							m_Undefeated.AddRange( match.Participants );
+							Undefeated.AddRange( match.Participants );
 						}
 
 						Alert( "Hear ye! Hear ye!", "The tournament will begin shortly." );
@@ -2016,7 +1920,7 @@ namespace Server.Engines.ConPVP
 						m_SignupStart = DateTime.UtcNow;*/
 
 						Alert("Is this all?", "Pitiful. Tournament cancelled.");
-						m_Stage = TournamentStage.Inactive;
+						CurrentStage = TournamentStage.Inactive;
 					}
 				}
 				else if ( Math.Abs( until.TotalSeconds - TimeSpan.FromMinutes( 1.0 ).TotalSeconds ) < (SliceInterval.TotalSeconds/2) )
@@ -2028,26 +1932,26 @@ namespace Server.Engines.ConPVP
 					Alert( "The tournament will begin in 5 minutes.", "Sign up now before it's too late." );
 				}
 			}
-			else if ( m_Stage == TournamentStage.Fighting )
+			else if ( CurrentStage == TournamentStage.Fighting )
 			{
-				if ( m_Undefeated.Count == 1 )
+				if ( Undefeated.Count == 1 )
 				{
-					TournyParticipant winner = (TournyParticipant)m_Undefeated[0];
+					TournyParticipant winner = (TournyParticipant)Undefeated[0];
 
 					try
 					{
-						if ( m_EventController != null )
+						if ( EventController != null )
 							Alert( "The tournament has completed!",
-								$"Team {m_EventController.GetTeamName(((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner))} has won!");
-						else if ( m_TournyType == TournyType.RandomTeam )
+								$"Team {EventController.GetTeamName(((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner))} has won!");
+						else if ( TournyType == TournyType.RandomTeam )
 							Alert( "The tournament has completed!",
-								$"Team {((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
-						else if ( m_TournyType == TournyType.Faction ) {
+								$"Team {((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
+						else if ( TournyType == TournyType.Faction ) {
 							if ( m_ParticipantsPerMatch == 4 )
 							{
 								string name = "(null)";
 
-								switch ( ((TournyMatch)((PyramidLevel)m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf( winner ) )
+								switch ( ((TournyMatch)((PyramidLevel)Pyramid.Levels[0]).Matches[0]).Participants.IndexOf( winner ) )
 								{
 									case 0: {
 										name = "Minax";
@@ -2072,17 +1976,17 @@ namespace Server.Engines.ConPVP
 							else if ( m_ParticipantsPerMatch == 2 )
 							{
 								Alert( "The tournament has completed!",
-									$"The {(((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Evil" : "Hero")} team has won!");
+									$"The {(((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Evil" : "Hero")} team has won!");
 							}
 							else
 							{
 								Alert( "The tournament has completed!",
-									$"Team {((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
+									$"Team {((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
 							}
 						}
-						else if ( m_TournyType == TournyType.RedVsBlue )
+						else if ( TournyType == TournyType.RedVsBlue )
 							Alert( "The tournament has completed!",
-								$"Team {(((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Red" : "Blue")} has won!");
+								$"Team {(((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Red" : "Blue")} has won!");
 						else
 							Alert( "The tournament has completed!",
 								$"{winner.NameList} {(winner.Players.Count > 1 ? "are" : "is")} the champion{(winner.Players.Count == 1 ? "" : "s")}.");
@@ -2093,12 +1997,12 @@ namespace Server.Engines.ConPVP
 
 					GiveAwards();
 
-					m_Stage = TournamentStage.Inactive;
-					m_Undefeated.Clear();
+					CurrentStage = TournamentStage.Inactive;
+					Undefeated.Clear();
 				}
-				else if ( m_Pyramid.Levels.Count > 0 )
+				else if ( Pyramid.Levels.Count > 0 )
 				{
-					PyramidLevel activeLevel = (PyramidLevel)m_Pyramid.Levels[m_Pyramid.Levels.Count - 1];
+					PyramidLevel activeLevel = (PyramidLevel)Pyramid.Levels[Pyramid.Levels.Count - 1];
 					bool stillGoing = false;
 
 					for ( int i = 0; i < activeLevel.Matches.Count; ++i )
@@ -2111,9 +2015,9 @@ namespace Server.Engines.ConPVP
 
 							if ( !match.InProgress )
 							{
-								for ( int j = 0; j < m_Arenas.Count; ++j )
+								for ( int j = 0; j < Arenas.Count; ++j )
 								{
-									Arena arena = (Arena)m_Arenas[j];
+									Arena arena = (Arena)Arenas[j];
 
 									if ( !arena.IsOccupied )
 									{
@@ -2127,9 +2031,9 @@ namespace Server.Engines.ConPVP
 
 					if ( !stillGoing )
 					{
-						for ( int i = m_Undefeated.Count - 1; i >= 0; --i )
+						for ( int i = Undefeated.Count - 1; i >= 0; --i )
 						{
-							TournyParticipant part = (TournyParticipant)m_Undefeated[i];
+							TournyParticipant part = (TournyParticipant)Undefeated[i];
 							bool bad = false;
 
 							for ( int j = 0; j < part.Players.Count; ++j )
@@ -2148,26 +2052,26 @@ namespace Server.Engines.ConPVP
 								for ( int j = 0; j < part.Players.Count; ++j )
 									((Mobile)part.Players[j]).SendMessage( "You have been disqualified from the tournament." );
 
-								m_Undefeated.RemoveAt( i );
+								Undefeated.RemoveAt( i );
 
-								if ( m_Undefeated.Count == 1 )
+								if ( Undefeated.Count == 1 )
 								{
-									TournyParticipant winner = (TournyParticipant)m_Undefeated[0];
+									TournyParticipant winner = (TournyParticipant)Undefeated[0];
 
 									try
 									{
-										if ( m_EventController != null )
+										if ( EventController != null )
 											Alert( "The tournament has completed!",
-												$"Team {m_EventController.GetTeamName(((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner))} has won");
-										else if ( m_TournyType == TournyType.RandomTeam )
+												$"Team {EventController.GetTeamName(((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner))} has won");
+										else if ( TournyType == TournyType.RandomTeam )
 											Alert( "The tournament has completed!",
-												$"Team {((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
-										else if ( m_TournyType == TournyType.Faction ) {
+												$"Team {((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
+										else if ( TournyType == TournyType.Faction ) {
 											if ( m_ParticipantsPerMatch == 4 )
 											{
 												string name = "(null)";
 
-												switch ( ((TournyMatch)((PyramidLevel)m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf( winner ) )
+												switch ( ((TournyMatch)((PyramidLevel)Pyramid.Levels[0]).Matches[0]).Participants.IndexOf( winner ) )
 												{
 													case 0: {
 														name = "Minax";
@@ -2192,17 +2096,17 @@ namespace Server.Engines.ConPVP
 											else if ( m_ParticipantsPerMatch == 2 )
 											{
 												Alert( "The tournament has completed!",
-													$"The {(((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Evil" : "Hero")} team has won!");
+													$"The {(((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Evil" : "Hero")} team has won!");
 											}
 											else
 											{
 												Alert( "The tournament has completed!",
-													$"Team {((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
+													$"Team {((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) + 1} has won!");
 											}
 										}
-										else if ( m_TournyType == TournyType.RedVsBlue )
+										else if ( TournyType == TournyType.RedVsBlue )
 											Alert( "The tournament has completed!",
-												$"Team {(((TournyMatch) ((PyramidLevel) m_Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Red" : "Blue")} has won!");
+												$"Team {(((TournyMatch) ((PyramidLevel) Pyramid.Levels[0]).Matches[0]).Participants.IndexOf(winner) == 0 ? "Red" : "Blue")} has won!");
 										else
 											Alert( "The tournament has completed!",
 												$"{winner.NameList} {(winner.Players.Count > 1 ? "are" : "is")} the champion{(winner.Players.Count == 1 ? "" : "s")}.");
@@ -2213,15 +2117,15 @@ namespace Server.Engines.ConPVP
 
 									GiveAwards();
 
-									m_Stage = TournamentStage.Inactive;
-									m_Undefeated.Clear();
+									CurrentStage = TournamentStage.Inactive;
+									Undefeated.Clear();
 									break;
 								}
 							}
 						}
 
-						if ( m_Undefeated.Count > 1 )
-							m_Pyramid.AddLevel( m_ParticipantsPerMatch, m_Undefeated, m_GroupType, m_TournyType );
+						if ( Undefeated.Count > 1 )
+							Pyramid.AddLevel( m_ParticipantsPerMatch, Undefeated, GroupType, TournyType );
 					}
 				}
 			}
@@ -2229,8 +2133,8 @@ namespace Server.Engines.ConPVP
 
 		public void Alert( params string[] alerts )
 		{
-			for ( int i = 0; i < m_Arenas.Count; ++i )
-				Alert( (Arena) m_Arenas[i], alerts );
+			for ( int i = 0; i < Arenas.Count; ++i )
+				Alert( (Arena) Arenas[i], alerts );
 		}
 
 		public void Alert( Arena arena, params string[] alerts )
@@ -2252,17 +2156,11 @@ namespace Server.Engines.ConPVP
 
 	public class TournyPyramid
 	{
-		private ArrayList m_Levels;
-
-		public ArrayList Levels
-		{
-			get => m_Levels;
-			set => m_Levels = value;
-		}
+		public ArrayList Levels { get; set; }
 
 		public TournyPyramid()
 		{
-			m_Levels = new ArrayList();
+			Levels = new ArrayList();
 		}
 
 		public void AddLevel( int partsPerMatch, ArrayList participants, GroupingType groupType, TournyType tournyType )
@@ -2433,70 +2331,43 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			m_Levels.Add( level );
+			Levels.Add( level );
 		}
 	}
 
 	public class PyramidLevel
 	{
-		private ArrayList m_Matches;
-		private TournyParticipant m_FreeAdvance;
+		public ArrayList Matches { get; set; }
 
-		public ArrayList Matches
-		{
-			get => m_Matches;
-			set => m_Matches = value;
-		}
-
-		public TournyParticipant FreeAdvance
-		{
-			get => m_FreeAdvance;
-			set => m_FreeAdvance = value;
-		}
+		public TournyParticipant FreeAdvance { get; set; }
 
 		public PyramidLevel()
 		{
-			m_Matches = new ArrayList();
+			Matches = new ArrayList();
 		}
 	}
 
 	public class TournyMatch
 	{
-		private ArrayList m_Participants;
-		private TournyParticipant m_Winner;
-		private DuelContext m_Context;
+		public ArrayList Participants { get; set; }
 
-		public ArrayList Participants
-		{
-			get => m_Participants;
-			set => m_Participants = value;
-		}
+		public TournyParticipant Winner { get; set; }
 
-		public TournyParticipant Winner
-		{
-			get => m_Winner;
-			set => m_Winner = value;
-		}
+		public DuelContext Context { get; set; }
 
-		public DuelContext Context
-		{
-			get => m_Context;
-			set => m_Context = value;
-		}
-
-		public bool InProgress => ( m_Context != null && m_Context.Registered );
+		public bool InProgress => ( Context != null && Context.Registered );
 
 		public void Start( Arena arena, Tournament tourny )
 		{
-			TournyParticipant first = (TournyParticipant)m_Participants[0];
+			TournyParticipant first = (TournyParticipant)Participants[0];
 
 			DuelContext dc = new DuelContext( (Mobile)first.Players[0], tourny.Ruleset.Layout, false );
 			dc.Ruleset.Options.SetAll(false);
 			dc.Ruleset.Options.Or(tourny.Ruleset.Options);
 
-			for ( int i = 0; i < m_Participants.Count; ++i )
+			for ( int i = 0; i < Participants.Count; ++i )
 			{
-				TournyParticipant tournyPart = (TournyParticipant)m_Participants[i];
+				TournyParticipant tournyPart = (TournyParticipant)Participants[i];
 				Participant duelPart = new Participant( dc, tournyPart.Players.Count );
 
 				duelPart.TournyPart = tournyPart;
@@ -2528,11 +2399,11 @@ namespace Server.Engines.ConPVP
 
 			if ( dc.StartedBeginCountdown )
 			{
-				m_Context = dc;
+				Context = dc;
 
-				for ( int i = 0; i < m_Participants.Count; ++i )
+				for ( int i = 0; i < Participants.Count; ++i )
 				{
-					TournyParticipant p = (TournyParticipant)m_Participants[i];
+					TournyParticipant p = (TournyParticipant)Participants[i];
 
 					for ( int j = 0; j < p.Players.Count; ++j )
 					{
@@ -2557,7 +2428,7 @@ namespace Server.Engines.ConPVP
 
 		public TournyMatch( ArrayList participants )
 		{
-			m_Participants = participants;
+			Participants = participants;
 
 			for ( int i = 0; i < participants.Count; ++i )
 			{
@@ -2593,27 +2464,11 @@ namespace Server.Engines.ConPVP
 
 	public class TournyParticipant : IComparable
 	{
-		private ArrayList m_Players;
-		private ArrayList m_Log;
-		private int m_FreeAdvances;
+		public ArrayList Players { get; set; }
 
-		public ArrayList Players
-		{
-			get => m_Players;
-			set => m_Players = value;
-		}
+		public ArrayList Log { get; set; }
 
-		public ArrayList Log
-		{
-			get => m_Log;
-			set => m_Log = value;
-		}
-
-		public int FreeAdvances
-		{
-			get => m_FreeAdvances;
-			set => m_FreeAdvances = value;
-		}
+		public int FreeAdvances { get; set; }
 
 		public int TotalLadderXP
 		{
@@ -2626,9 +2481,9 @@ namespace Server.Engines.ConPVP
 
 				int total = 0;
 
-				for ( int i = 0; i < m_Players.Count; ++i )
+				for ( int i = 0; i < Players.Count; ++i )
 				{
-					Mobile mob = (Mobile)m_Players[i];
+					Mobile mob = (Mobile)Players[i];
 					LadderEntry entry = ladder.Find( mob );
 
 					if ( entry != null )
@@ -2645,18 +2500,18 @@ namespace Server.Engines.ConPVP
 			{
 				StringBuilder sb = new StringBuilder();
 
-				for ( int i = 0; i < m_Players.Count; ++i )
+				for ( int i = 0; i < Players.Count; ++i )
 				{
-					if ( m_Players[i] == null )
+					if ( Players[i] == null )
 						continue;
 
-					Mobile mob = (Mobile) m_Players[i];
+					Mobile mob = (Mobile) Players[i];
 
 					if ( sb.Length > 0 )
 					{
-						if ( m_Players.Count == 2 )
+						if ( Players.Count == 2 )
 							sb.Append( " and " );
-						else if ( (i+1) < m_Players.Count )
+						else if ( (i+1) < Players.Count )
 							sb.Append( ", " );
 						else
 							sb.Append( ", and " );
@@ -2674,7 +2529,7 @@ namespace Server.Engines.ConPVP
 
 		public void AddLog( string text )
 		{
-			m_Log.Add( text );
+			Log.Add( text );
 		}
 
 		public void AddLog( string format, params object[] args )
@@ -2694,15 +2549,15 @@ namespace Server.Engines.ConPVP
 
 		public TournyParticipant( Mobile owner )
 		{
-			m_Log = new ArrayList();
-			m_Players = new ArrayList();
-			m_Players.Add( owner );
+			Log = new ArrayList();
+			Players = new ArrayList();
+			Players.Add( owner );
 		}
 
 		public TournyParticipant( ArrayList players )
 		{
-			m_Log = new ArrayList();
-			m_Players = players;
+			Log = new ArrayList();
+			Players = players;
 		}
 
 		public int CompareTo( object obj )
@@ -3526,12 +3381,8 @@ namespace Server.Engines.ConPVP
 
 	public class TournamentBracketItem : Item
 	{
-		private TournamentController m_Tournament;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentController Tournament{ get => m_Tournament;
-			set => m_Tournament = value;
-		}
+		public TournamentController Tournament { get; set; }
 
 		public override string DefaultName => "tournament bracket";
 
@@ -3549,7 +3400,7 @@ namespace Server.Engines.ConPVP
 			}
 			else
 			{
-				Tournament tourny = m_Tournament?.Tournament;
+				Tournament tourny = Tournament?.Tournament;
 
 				if ( tourny != null )
 				{
@@ -3574,7 +3425,7 @@ namespace Server.Engines.ConPVP
 
 			writer.Write( (int) 0 );
 
-			writer.Write( (Item) m_Tournament );
+			writer.Write( (Item) Tournament );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -3587,7 +3438,7 @@ namespace Server.Engines.ConPVP
 			{
 				case 0:
 				{
-					m_Tournament = reader.ReadItem() as TournamentController;
+					Tournament = reader.ReadItem() as TournamentController;
 					break;
 				}
 			}

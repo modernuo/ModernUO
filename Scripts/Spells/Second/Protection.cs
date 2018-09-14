@@ -5,8 +5,7 @@ namespace Server.Spells.Second
 {
 	public class ProtectionSpell : MagerySpell
 	{
-		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry  => m_Registry;
+		public static Hashtable Registry { get; } = new Hashtable();
 
 		private static SpellInfo m_Info = new SpellInfo(
 				"Protection", "Uus Sanct",
@@ -28,7 +27,7 @@ namespace Server.Spells.Second
 			if ( Core.AOS )
 				return true;
 
-			if ( m_Registry.ContainsKey( Caster ) )
+			if ( Registry.ContainsKey( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				return false;
@@ -122,7 +121,7 @@ namespace Server.Spells.Second
 			}
 			else
 			{
-				if ( m_Registry.ContainsKey( Caster ) )
+				if ( Registry.ContainsKey( Caster ) )
 				{
 					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				}

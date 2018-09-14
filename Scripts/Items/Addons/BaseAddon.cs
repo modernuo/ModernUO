@@ -42,14 +42,13 @@ namespace Server.Items
 			}
 		}
 		#endregion
-		private List<AddonComponent> m_Components;
 
 		public void AddComponent( AddonComponent c, int x, int y, int z )
 		{
 			if ( Deleted )
 				return;
 
-			m_Components.Add( c );
+			Components.Add( c );
 
 			c.Addon = this;
 			c.Offset = new Point3D( x, y, z );
@@ -61,7 +60,7 @@ namespace Server.Items
 			Movable = false;
 			Visible = false;
 
-			m_Components = new List<AddonComponent>();
+			Components = new List<AddonComponent>();
 		}
 
 		public virtual bool RetainDeedHue => false;
@@ -79,9 +78,9 @@ namespace Server.Items
 
 				if ( RetainDeedHue )
 				{
-					for ( int i = 0; hue == 0 && i < m_Components.Count; ++i )
+					for ( int i = 0; hue == 0 && i < Components.Count; ++i )
 					{
-						AddonComponent c = m_Components[i];
+						AddonComponent c = Components[i];
 
 						if ( c.Hue != 0 )
 							hue = c.Hue;
@@ -108,7 +107,7 @@ namespace Server.Items
 
 		Item IAddon.Deed => Deed;
 
-		public List<AddonComponent> Components => m_Components;
+		public List<AddonComponent> Components { get; private set; }
 
 		public BaseAddon( Serial serial ) : base( serial )
 		{
@@ -125,7 +124,7 @@ namespace Server.Items
 			if ( Deleted )
 				return AddonFitResult.Blocked;
 
-			foreach ( AddonComponent c in m_Components )
+			foreach ( AddonComponent c in Components )
 			{
 				Point3D p3D = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
 
@@ -152,7 +151,7 @@ namespace Server.Items
 				Point3D doorLoc = door.GetWorldLocation();
 				int doorHeight = door.ItemData.CalcHeight;
 
-				foreach ( AddonComponent c in m_Components )
+				foreach ( AddonComponent c in Components )
 				{
 					Point3D addonLoc = new Point3D( p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z );
 					int addonHeight = c.ItemData.CalcHeight;
@@ -207,7 +206,7 @@ namespace Server.Items
 			if ( Deleted )
 				return;
 
-			foreach ( AddonComponent c in m_Components )
+			foreach ( AddonComponent c in Components )
 				c.Location = new Point3D( X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z );
 		}
 
@@ -216,7 +215,7 @@ namespace Server.Items
 			if ( Deleted )
 				return;
 
-			foreach ( AddonComponent c in m_Components )
+			foreach ( AddonComponent c in Components )
 				c.Map = Map;
 		}
 
@@ -224,7 +223,7 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			foreach ( AddonComponent c in m_Components )
+			foreach ( AddonComponent c in Components )
 				c.Delete();
 		}
 
@@ -240,9 +239,9 @@ namespace Server.Items
 				{
 					base.Hue = value;
 
-					if ( !Deleted && ShareHue && m_Components != null )
+					if ( !Deleted && ShareHue && Components != null )
 					{
-						foreach ( AddonComponent c in m_Components )
+						foreach ( AddonComponent c in Components )
 							c.Hue = value;
 					}
 				}
@@ -255,7 +254,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.WriteItemList<AddonComponent>( m_Components );
+			writer.WriteItemList<AddonComponent>( Components );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -269,7 +268,7 @@ namespace Server.Items
 				case 1:
 				case 0:
 				{
-					m_Components = reader.ReadStrongItemList<AddonComponent>();
+					Components = reader.ReadStrongItemList<AddonComponent>();
 					break;
 				}
 			}

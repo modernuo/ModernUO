@@ -5,13 +5,11 @@ namespace Server
 	[AttributeUsage( AttributeTargets.Class )]
 	public class CorpseNameAttribute : Attribute
 	{
-		private string m_Name;
-
-		public string Name => m_Name;
+		public string Name { get; }
 
 		public CorpseNameAttribute( string name )
 		{
-			m_Name = name;
+			Name = name;
 		}
 	}
 }

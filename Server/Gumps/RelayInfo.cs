@@ -22,44 +22,37 @@ namespace Server.Gumps
 {
 	public class TextRelay
 	{
-		private int m_EntryID;
-		private string m_Text;
-
 		public TextRelay( int entryID, string text )
 		{
-			m_EntryID = entryID;
-			m_Text = text;
+			EntryID = entryID;
+			Text = text;
 		}
 
-		public int EntryID => m_EntryID;
+		public int EntryID { get; }
 
-		public string Text => m_Text;
+		public string Text { get; }
 	}
 
 	public class RelayInfo
 	{
-		private int m_ButtonID;
-		private int[] m_Switches;
-		private TextRelay[] m_TextEntries;
-
 		public RelayInfo( int buttonID, int[] switches, TextRelay[] textEntries )
 		{
-			m_ButtonID = buttonID;
-			m_Switches = switches;
-			m_TextEntries = textEntries;
+			ButtonID = buttonID;
+			Switches = switches;
+			TextEntries = textEntries;
 		}
 
-		public int ButtonID => m_ButtonID;
+		public int ButtonID { get; }
 
-		public int[] Switches => m_Switches;
+		public int[] Switches { get; }
 
-		public TextRelay[] TextEntries => m_TextEntries;
+		public TextRelay[] TextEntries { get; }
 
 		public bool IsSwitched( int switchID )
 		{
-			for ( int i = 0; i < m_Switches.Length; ++i )
+			for ( int i = 0; i < Switches.Length; ++i )
 			{
-				if ( m_Switches[i] == switchID )
+				if ( Switches[i] == switchID )
 				{
 					return true;
 				}
@@ -70,11 +63,11 @@ namespace Server.Gumps
 
 		public TextRelay GetTextEntry( int entryID )
 		{
-			for ( int i = 0; i < m_TextEntries.Length; ++i )
+			for ( int i = 0; i < TextEntries.Length; ++i )
 			{
-				if ( m_TextEntries[i].EntryID == entryID )
+				if ( TextEntries[i].EntryID == entryID )
 				{
-					return m_TextEntries[i];
+					return TextEntries[i];
 				}
 			}
 

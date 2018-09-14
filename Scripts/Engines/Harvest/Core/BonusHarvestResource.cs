@@ -4,34 +4,26 @@ namespace Server.Engines.Harvest
 {
 	public class BonusHarvestResource
 	{
-		private Type m_Type;
-		private double m_ReqSkill, m_Chance;
-		private TextDefinition m_SuccessMessage;
+		public Type Type { get; set; }
 
-		public Type Type { get => m_Type;
-			set => m_Type = value;
-		}
-		public double ReqSkill { get => m_ReqSkill;
-			set => m_ReqSkill = value;
-		}
-		public double Chance { get => m_Chance;
-			set => m_Chance = value;
-		}
+		public double ReqSkill { get; set; }
 
-		public TextDefinition SuccessMessage  => m_SuccessMessage;
+		public double Chance { get; set; }
+
+		public TextDefinition SuccessMessage { get; }
 
 		public void SendSuccessTo( Mobile m )
 		{
-			TextDefinition.SendMessageTo( m, m_SuccessMessage );
+			TextDefinition.SendMessageTo( m, SuccessMessage );
 		}
 
 		public BonusHarvestResource( double reqSkill, double chance, TextDefinition message, Type type )
 		{
-			m_ReqSkill = reqSkill;
+			ReqSkill = reqSkill;
 
-			m_Chance = chance;
-			m_Type = type;
-			m_SuccessMessage = message;
+			Chance = chance;
+			Type = type;
+			SuccessMessage = message;
 		}
 	}
 }

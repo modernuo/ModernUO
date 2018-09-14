@@ -19,61 +19,21 @@ namespace Server.Engines.Craft
 
 	public class CraftItem
 	{
-		private CraftResCol m_arCraftRes;
-		private CraftSkillCol m_arCraftSkill;
-		private Type m_Type;
+		public bool ForceNonExceptional { get; set; }
 
-		private string m_GroupNameString;
-		private int m_GroupNameNumber;
+		public Expansion RequiredExpansion { get; set; }
 
-		private string m_NameString;
-		private int m_NameNumber;
-
-		private int m_ItemHue;
-
-		private int m_Mana;
-		private int m_Hits;
-		private int m_Stam;
-
-		private BeverageType m_RequiredBeverage;
-
-		private bool m_UseAllRes;
-
-		private bool m_NeedHeat;
-		private bool m_NeedOven;
-		private bool m_NeedMill;
-
-		private bool m_UseSubRes2;
-
-		private bool m_ForceNonExceptional;
-
-		public bool ForceNonExceptional
-		{
-			get => m_ForceNonExceptional;
-			set => m_ForceNonExceptional = value;
-		}
-
-		private Expansion m_RequiredExpansion;
-
-		public Expansion RequiredExpansion
-		{
-			get => m_RequiredExpansion;
-			set => m_RequiredExpansion = value;
-		}
-
-		private Recipe m_Recipe;
-
-		public Recipe Recipe => m_Recipe;
+		public Recipe Recipe { get; private set; }
 
 		public void AddRecipe( int id, CraftSystem system )
 		{
-			if ( m_Recipe != null )
+			if ( Recipe != null )
 			{
-				Console.WriteLine( "Warning: Attempted add of recipe #{0} to the crafting of {1} in CraftSystem {2}.", id, m_Type.Name, system );
+				Console.WriteLine( "Warning: Attempted add of recipe #{0} to the crafting of {1} in CraftSystem {2}.", id, ItemType.Name, system );
 				return;
 			}
 
-			m_Recipe = new Recipe( id, system, this );
+			Recipe = new Recipe( id, system, this );
 		}
 
 		public static int LabelNumber( Type type ) {
@@ -129,25 +89,21 @@ namespace Server.Engines.Craft
 
 		public CraftItem( Type type, TextDefinition groupName, TextDefinition name )
 		{
-			m_arCraftRes = new CraftResCol();
-			m_arCraftSkill = new CraftSkillCol();
+			Resources = new CraftResCol();
+			Skills = new CraftSkillCol();
 
-			m_Type = type;
+			ItemType = type;
 
-			m_GroupNameString = groupName;
-			m_NameString = name;
+			GroupNameString = groupName;
+			NameString = name;
 
-			m_GroupNameNumber = groupName;
-			m_NameNumber = name;
+			GroupNameNumber = groupName;
+			NameNumber = name;
 
-			m_RequiredBeverage = BeverageType.Water;
+			RequiredBeverage = BeverageType.Water;
 		}
 
-		public BeverageType RequiredBeverage
-		{
-			get => m_RequiredBeverage;
-			set => m_RequiredBeverage = value;
-		}
+		public BeverageType RequiredBeverage { get; set; }
 
 		public void AddRes( Type type, TextDefinition name, int amount )
 		{
@@ -157,83 +113,47 @@ namespace Server.Engines.Craft
 		public void AddRes( Type type, TextDefinition name, int amount, TextDefinition message )
 		{
 			CraftRes craftRes = new CraftRes( type, name, amount, message );
-			m_arCraftRes.Add( craftRes );
+			Resources.Add( craftRes );
 		}
 
 
 		public void AddSkill( SkillName skillToMake, double minSkill, double maxSkill )
 		{
 			CraftSkill craftSkill = new CraftSkill( skillToMake, minSkill, maxSkill );
-			m_arCraftSkill.Add( craftSkill );
+			Skills.Add( craftSkill );
 		}
 
-		public int Mana
-		{
-			get => m_Mana;
-			set => m_Mana = value;
-		}
+		public int Mana { get; set; }
 
-		public int Hits
-		{
-			get => m_Hits;
-			set => m_Hits = value;
-		}
+		public int Hits { get; set; }
 
-		public int Stam
-		{
-			get => m_Stam;
-			set => m_Stam = value;
-		}
+		public int Stam { get; set; }
 
-		public bool UseSubRes2
-		{
-			get => m_UseSubRes2;
-			set => m_UseSubRes2 = value;
-		}
+		public bool UseSubRes2 { get; set; }
 
-		public bool UseAllRes
-		{
-			get => m_UseAllRes;
-			set => m_UseAllRes = value;
-		}
+		public bool UseAllRes { get; set; }
 
-		public bool NeedHeat
-		{
-			get => m_NeedHeat;
-			set => m_NeedHeat = value;
-		}
+		public bool NeedHeat { get; set; }
 
-		public bool NeedOven
-		{
-			get => m_NeedOven;
-			set => m_NeedOven = value;
-		}
+		public bool NeedOven { get; set; }
 
-		public bool NeedMill
-		{
-			get => m_NeedMill;
-			set => m_NeedMill = value;
-		}
+		public bool NeedMill { get; set; }
 
-		public Type ItemType => m_Type;
+		public Type ItemType { get; }
 
-		public int ItemHue
-		{
-			get => m_ItemHue;
-			set => m_ItemHue = value;
-		}
+		public int ItemHue { get; set; }
 
-		public string GroupNameString => m_GroupNameString;
+		public string GroupNameString { get; }
 
-		public int GroupNameNumber => m_GroupNameNumber;
+		public int GroupNameNumber { get; }
 
-		public string NameString => m_NameString;
+		public string NameString { get; }
 
-		public int NameNumber => m_NameNumber;
+		public int NameNumber { get; }
 
-		public CraftResCol Resources => m_arCraftRes;
+		public CraftResCol Resources { get; }
 
-		public CraftSkillCol Skills => m_arCraftSkill;
+		public CraftSkillCol Skills { get; }
 
 		public bool ConsumeAttributes( Mobile from, ref object message, bool consume )
 		{
@@ -355,7 +275,7 @@ namespace Server.Engines.Craft
 
 		public bool IsMarkable( Type type )
 		{
-			if ( m_ForceNonExceptional )	//Don't even display the stuff for marking if it can't ever be exceptional.
+			if ( ForceNonExceptional )	//Don't even display the stuff for marking if it can't ever be exceptional.
 				return false;
 
 			for ( int i = 0; i < m_MarkableTable.Length; ++i )
@@ -390,7 +310,7 @@ namespace Server.Engines.Craft
 			if ( system.RetainsColorFrom( this, type ) )
 				return true;
 
-			bool inItemTable = RetainsColor( m_Type );
+			bool inItemTable = RetainsColor( ItemType );
 
 			if ( !inItemTable )
 				return false;
@@ -492,7 +412,7 @@ namespace Server.Engines.Craft
 					}
 					else
 					{
-						if ( hq is BaseBeverage beverage && beverage.Content != m_RequiredBeverage )
+						if ( hq is BaseBeverage beverage && beverage.Content != RequiredBeverage )
 							continue;
 
 						totals[i] += hq.Quantity;
@@ -528,7 +448,7 @@ namespace Server.Engines.Craft
 					}
 					else
 					{
-						if ( hq is BaseBeverage beverage && beverage.Content != m_RequiredBeverage )
+						if ( hq is BaseBeverage beverage && beverage.Content != RequiredBeverage )
 							continue;
 
 						int theirAmount = hq.Quantity;
@@ -564,7 +484,7 @@ namespace Server.Engines.Craft
 				}
 				else
 				{
-					if ( hq is BaseBeverage beverage && beverage.Content != m_RequiredBeverage )
+					if ( hq is BaseBeverage beverage && beverage.Content != RequiredBeverage )
 						continue;
 
 					amount += hq.Quantity;
@@ -586,34 +506,34 @@ namespace Server.Engines.Craft
 			if ( ourPack == null )
 				return false;
 
-			if ( m_NeedHeat && !Find( from, m_HeatSources ) )
+			if ( NeedHeat && !Find( from, m_HeatSources ) )
 			{
 				message = 1044487; // You must be near a fire source to cook.
 				return false;
 			}
 
-			if ( m_NeedOven && !Find( from, m_Ovens ) )
+			if ( NeedOven && !Find( from, m_Ovens ) )
 			{
 				message = 1044493; // You must be near an oven to bake that.
 				return false;
 			}
 
-			if ( m_NeedMill && !Find( from, m_Mills ) )
+			if ( NeedMill && !Find( from, m_Mills ) )
 			{
 				message = 1044491; // You must be near a flour mill to do that.
 				return false;
 			}
 
-			Type[][] types = new Type[m_arCraftRes.Count][];
-			int[] amounts = new int[m_arCraftRes.Count];
+			Type[][] types = new Type[Resources.Count][];
+			int[] amounts = new int[Resources.Count];
 
 			maxAmount = int.MaxValue;
 
-			CraftSubResCol resCol = ( m_UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes );
+			CraftSubResCol resCol = ( UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes );
 
 			for ( int i = 0; i < types.Length; ++i )
 			{
-				CraftRes craftRes = m_arCraftRes.GetAt( i );
+				CraftRes craftRes = Resources.GetAt( i );
 				Type baseType = craftRes.ItemType;
 
 				// Resource Mutation
@@ -653,7 +573,7 @@ namespace Server.Engines.Craft
 
 						if ( maxAmount == 0 )
 						{
-							CraftRes res = m_arCraftRes.GetAt( i );
+							CraftRes res = Resources.GetAt( i );
 
 							if ( res.MessageNumber > 0 )
 								message = res.MessageNumber;
@@ -683,7 +603,7 @@ namespace Server.Engines.Craft
 
 			Item consumeExtra = null;
 
-			if ( m_NameNumber == 1041267 )
+			if ( NameNumber == 1041267 )
 			{
 				// Runebooks are a special case, they need a blank recall rune
 
@@ -782,7 +702,7 @@ namespace Server.Engines.Craft
 			}
 
 			{
-				CraftRes res = m_arCraftRes.GetAt( index );
+				CraftRes res = Resources.GetAt( index );
 
 				if ( res.MessageNumber > 0 )
 					message = res.MessageNumber;
@@ -818,7 +738,7 @@ namespace Server.Engines.Craft
 
 		public double GetExceptionalChance( CraftSystem system, double chance, Mobile from )
 		{
-			if ( m_ForceNonExceptional )
+			if ( ForceNonExceptional )
 				return 0.0;
 
 			double bonus = 0.0;
@@ -876,9 +796,9 @@ namespace Server.Engines.Craft
 
 			allRequiredSkills = true;
 
-			for ( int i = 0; i < m_arCraftSkill.Count; i++)
+			for ( int i = 0; i < Skills.Count; i++)
 			{
-				CraftSkill craftSkill = m_arCraftSkill.GetAt(i);
+				CraftSkill craftSkill = Skills.GetAt(i);
 
 				double minSkill = craftSkill.MinSkill;
 				double maxSkill = craftSkill.MaxSkill;
@@ -927,7 +847,7 @@ namespace Server.Engines.Craft
 					{
 						if ( Recipe == null || !(from is PlayerMobile) || ((PlayerMobile)from).HasRecipe( Recipe ) )
 						{
-							int badCraft = craftSystem.CanCraft( from, tool, m_Type );
+							int badCraft = craftSystem.CanCraft( from, tool, ItemType );
 
 							if ( badCraft <= 0 )
 							{
@@ -1009,7 +929,7 @@ namespace Server.Engines.Craft
 
 		public void CompleteCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CustomCraft customCraft )
 		{
-			int badCraft = craftSystem.CanCraft( from, tool, m_Type );
+			int badCraft = craftSystem.CanCraft( from, tool, ItemType );
 
 			if ( badCraft > 0 )
 			{
@@ -1251,7 +1171,7 @@ namespace Server.Engines.Craft
 				{
 					m_From.EndAction( typeof( CraftSystem ) );
 
-					int badCraft = m_CraftSystem.CanCraft( m_From, m_Tool, m_CraftItem.m_Type );
+					int badCraft = m_CraftSystem.CanCraft( m_From, m_Tool, m_CraftItem.ItemType );
 
 					if ( badCraft > 0 )
 					{

@@ -21,30 +21,18 @@ namespace Server.Misc
 	{
 		public const int ItemsPerReward = 10;
 
-		private static Type[] m_LesserArtifactsTotal = {
-				typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
- 				typeof( DaimyosHelm ), typeof( DemonForks ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ),
- 				typeof( HanzosBow ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
-				typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( PigmentsOfTokuno ), typeof( FluteOfRenewal ),
-				typeof( LeurociansMempoOfFortune ), typeof( LesserPigmentsOfTokuno ), typeof( MetalPigmentsOfTokuno ), typeof( ChestOfHeirlooms )
- 			};
-
-		public static Type[] LesserArtifactsTotal  => m_LesserArtifactsTotal;
-
-		private static TreasuresOfTokunoEra _DropEra = TreasuresOfTokunoEra.None;
-		private static TreasuresOfTokunoEra _RewardEra = TreasuresOfTokunoEra.ToTOne;
-
-		public static TreasuresOfTokunoEra DropEra
+		public static Type[] LesserArtifactsTotal { get; } =
 		{
-			get => _DropEra;
-			set => _DropEra = value;
-		}
+			typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
+			typeof( DaimyosHelm ), typeof( DemonForks ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ),
+			typeof( HanzosBow ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
+			typeof( TomeOfEnlightenment ), typeof( AncientUrn ), typeof( HonorableSwords ), typeof( PigmentsOfTokuno ), typeof( FluteOfRenewal ),
+			typeof( LeurociansMempoOfFortune ), typeof( LesserPigmentsOfTokuno ), typeof( MetalPigmentsOfTokuno ), typeof( ChestOfHeirlooms )
+		};
 
-		public static TreasuresOfTokunoEra RewardEra
-		{
-			get => _RewardEra;
-			set => _RewardEra = value;
-		}
+		public static TreasuresOfTokunoEra DropEra { get; set; } = TreasuresOfTokunoEra.None;
+
+		public static TreasuresOfTokunoEra RewardEra { get; set; } = TreasuresOfTokunoEra.ToTOne;
 
 		private static Type[][] m_LesserArtifacts = {
 			// ToT One Rewards
@@ -284,17 +272,11 @@ namespace Server.Gumps
 {
 	public class ItemTileButtonInfo : ImageTileButtonInfo
 	{
-		private Item m_Item;
-
-		public Item Item
-		{
-			get => m_Item;
-			set => m_Item = value;
-		}
+		public Item Item { get; set; }
 
 		public ItemTileButtonInfo( Item i ) : base( i.ItemID, i.Hue, ((i.Name == null || i.Name.Length <= 0)? (TextDefinition)i.LabelNumber : (TextDefinition)i.Name ) )
 		{
-			m_Item = i;
+			Item = i;
 		}
 	}
 
@@ -394,13 +376,11 @@ namespace Server.Gumps
 	{
 		public class TypeTileButtonInfo : ImageTileButtonInfo
 		{
-			private Type m_Type;
-
-			public Type Type  => m_Type;
+			public Type Type { get; }
 
 			public TypeTileButtonInfo( Type type, int itemID, int hue, TextDefinition label, int localizedToolTip ) : base( itemID, hue, label, localizedToolTip )
 			{
-				m_Type = type;
+				Type = type;
 			}
 
 			public TypeTileButtonInfo( Type type, int itemID, TextDefinition label ) : this( type, itemID, 0, label, -1 )
@@ -414,23 +394,20 @@ namespace Server.Gumps
 
 		public class PigmentsTileButtonInfo : ImageTileButtonInfo
 		{
-			private PigmentType m_Pigment;
-
-			public PigmentType Pigment
-			{
-				get => m_Pigment;
-
-				set => m_Pigment = value;
-			}
+			public PigmentType Pigment { get; set; }
 
 			public PigmentsTileButtonInfo( PigmentType p ) : base( 0xEFF, PigmentsOfTokuno.GetInfo( p )[0], PigmentsOfTokuno.GetInfo( p )[1] )
 			{
-				m_Pigment = p;
+				Pigment = p;
 			}
 		}
 
 		#region ToT Normal Rewards Table
-		private static TypeTileButtonInfo[][] m_NormalRewards = {
+
+		#endregion
+
+		public static TypeTileButtonInfo[][] NormalRewards { get; } =
+		{
 			// ToT One Rewards
 			new[] {
 				new TypeTileButtonInfo( typeof( SwordsOfProsperity ),	 0x27A9, 1070963, 1071002 ),
@@ -470,12 +447,13 @@ namespace Server.Gumps
 				new TypeTileButtonInfo( typeof( TomeOfLostKnowledge ),	 0x0EFA, 0x530, 1070971, 1071009 )
 			}
 		};
-		#endregion
-
-		public static TypeTileButtonInfo[][] NormalRewards => m_NormalRewards;
 
 		#region ToT Pigment Rewards Table
-		private static PigmentsTileButtonInfo[][] m_PigmentRewards = {
+
+		#endregion
+
+		public static PigmentsTileButtonInfo[][] PigmentRewards { get; } =
+		{
 			// ToT One Pigment Rewards
 			new[] {
 				new PigmentsTileButtonInfo( PigmentType.ParagonGold ),
@@ -515,13 +493,10 @@ namespace Server.Gumps
 				new PigmentsTileButtonInfo( PigmentType.FireOrange )
 			}
 		};
-		#endregion
-
-		public static PigmentsTileButtonInfo[][] PigmentRewards => m_PigmentRewards;
 
 		private Mobile m_Collector;
 
-		public ToTRedeemGump( Mobile collector, bool pigments ) : base( pigments ? 1070986 : 1070985, pigments ? (ImageTileButtonInfo[])m_PigmentRewards[(int)TreasuresOfTokuno.RewardEra-1] : (ImageTileButtonInfo[])m_NormalRewards[(int)TreasuresOfTokuno.RewardEra-1] )
+		public ToTRedeemGump( Mobile collector, bool pigments ) : base( pigments ? 1070986 : 1070985, pigments ? (ImageTileButtonInfo[])PigmentRewards[(int)TreasuresOfTokuno.RewardEra-1] : (ImageTileButtonInfo[])NormalRewards[(int)TreasuresOfTokuno.RewardEra-1] )
 		{
 			m_Collector = collector;
 		}

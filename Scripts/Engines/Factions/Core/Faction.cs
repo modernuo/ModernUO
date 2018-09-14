@@ -18,14 +18,8 @@ namespace Server.Factions
 		public int ZeroRankOffset;
 
 		private FactionDefinition m_Definition;
-		private FactionState m_State;
-		private StrongholdRegion m_StrongholdRegion;
 
-		public StrongholdRegion StrongholdRegion
-		{
-			get => m_StrongholdRegion;
-			set => m_StrongholdRegion = value;
-		}
+		public StrongholdRegion StrongholdRegion { get; set; }
 
 		public FactionDefinition Definition
 		{
@@ -33,49 +27,45 @@ namespace Server.Factions
 			set
 			{
 				m_Definition = value;
-				m_StrongholdRegion = new StrongholdRegion( this );
+				StrongholdRegion = new StrongholdRegion( this );
 			}
 		}
 
-		public FactionState State
-		{
-			get => m_State;
-			set => m_State = value;
-		}
+		public FactionState State { get; set; }
 
 		public Election Election
 		{
-			get => m_State.Election;
-			set => m_State.Election = value;
+			get => State.Election;
+			set => State.Election = value;
 		}
 
 		public Mobile Commander
 		{
-			get => m_State.Commander;
-			set => m_State.Commander = value;
+			get => State.Commander;
+			set => State.Commander = value;
 		}
 
 		public int Tithe
 		{
-			get => m_State.Tithe;
-			set => m_State.Tithe = value;
+			get => State.Tithe;
+			set => State.Tithe = value;
 		}
 
 		public int Silver
 		{
-			get => m_State.Silver;
-			set => m_State.Silver = value;
+			get => State.Silver;
+			set => State.Silver = value;
 		}
 
 		public List<PlayerState> Members
 		{
-			get => m_State.Members;
-			set => m_State.Members = value;
+			get => State.Members;
+			set => State.Members = value;
 		}
 
 		public static readonly TimeSpan LeavePeriod = TimeSpan.FromDays( 3.0 );
 
-		public bool FactionMessageReady => m_State.FactionMessageReady;
+		public bool FactionMessageReady => State.FactionMessageReady;
 
 		public void Broadcast( string text )
 		{
@@ -117,7 +107,7 @@ namespace Server.Factions
 		public void EndBroadcast( Mobile from, string text )
 		{
 			if ( from.AccessLevel == AccessLevel.Player )
-				m_State.RegisterBroadcast();
+				State.RegisterBroadcast();
 
 			Broadcast( Definition.HueBroadcast, "{0} [Commander] {1} : {2}", from.Name, Definition.FriendlyName, text );
 		}
@@ -514,7 +504,7 @@ namespace Server.Factions
 
 		public Faction()
 		{
-			m_State = new FactionState( this );
+			State = new FactionState( this );
 		}
 
 		public override string ToString()
@@ -949,8 +939,8 @@ namespace Server.Factions
 
 		public List<BaseFactionTrap> Traps
 		{
-			get => m_State.Traps;
-			set => m_State.Traps = value;
+			get => State.Traps;
+			set => State.Traps = value;
 		}
 
 		public const int StabilityFactor = 300; // 300% greater (3 times) than smallest faction

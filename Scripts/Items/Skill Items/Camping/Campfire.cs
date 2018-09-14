@@ -30,7 +30,6 @@ namespace Server.Items
 		}
 
 		private Timer m_Timer;
-		private DateTime m_Created;
 
 		private ArrayList m_Entries;
 
@@ -41,7 +40,7 @@ namespace Server.Items
 
 			m_Entries = new ArrayList();
 
-			m_Created = DateTime.UtcNow;
+			Created = DateTime.UtcNow;
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), OnTick );
 		}
 
@@ -50,7 +49,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime Created => m_Created;
+		public DateTime Created { get; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CampfireStatus Status
@@ -178,14 +177,13 @@ namespace Server.Items
 
 	public class CampfireEntry
 	{
-		private PlayerMobile m_Player;
-		private Campfire m_Fire;
-		private DateTime m_Start;
 		private bool m_Safe;
 
-		public PlayerMobile Player => m_Player;
-		public Campfire Fire => m_Fire;
-		public DateTime Start => m_Start;
+		public PlayerMobile Player { get; }
+
+		public Campfire Fire { get; }
+
+		public DateTime Start { get; }
 
 		public bool Valid => !Fire.Deleted && Fire.Status != CampfireStatus.Off && Player.Map == Fire.Map && Player.InRange( Fire, Campfire.SecureRange );
 
@@ -197,9 +195,9 @@ namespace Server.Items
 
 		public CampfireEntry( PlayerMobile player, Campfire fire )
 		{
-			m_Player = player;
-			m_Fire = fire;
-			m_Start = DateTime.UtcNow;
+			Player = player;
+			Fire = fire;
+			Start = DateTime.UtcNow;
 			m_Safe = false;
 		}
 	}

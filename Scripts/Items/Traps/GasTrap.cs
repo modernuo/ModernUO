@@ -12,14 +12,8 @@ namespace Server.Items
 
 	public class GasTrap : BaseTrap
 	{
-		private Poison m_Poison;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Poison Poison
-		{
-			get => m_Poison;
-			set => m_Poison = value;
-		}
+		public Poison Poison { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public GasTrapType Type
@@ -68,7 +62,7 @@ namespace Server.Items
 		[Constructible]
 		public GasTrap( GasTrapType type, Poison poison ) : base( GetBaseID( type ) )
 		{
-			m_Poison = poison;
+			Poison = poison;
 		}
 
 		public override bool PassivelyTriggered => false;
@@ -78,13 +72,13 @@ namespace Server.Items
 
 		public override void OnTrigger( Mobile from )
 		{
-			if ( m_Poison == null || !from.Player || !from.Alive || from.AccessLevel > AccessLevel.Player )
+			if ( Poison == null || !from.Player || !from.Alive || from.AccessLevel > AccessLevel.Player )
 				return;
 
 			Effects.SendLocationEffect( Location, Map, GetBaseID( Type ) - 2, 16, 3, GetEffectHue(), 0 );
 			Effects.PlaySound( Location, Map, 0x231 );
 
-			from.ApplyPoison( from, m_Poison );
+			from.ApplyPoison( from, Poison );
 
 			from.LocalOverheadMessage( MessageType.Regular, 0x22, 500855 ); // You are enveloped by a noxious gas cloud!
 		}
@@ -99,7 +93,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 ); // version
 
-			Poison.Serialize( m_Poison, writer );
+			Poison.Serialize( Poison, writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -112,7 +106,7 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_Poison = Poison.Deserialize( reader );
+					Poison = Poison.Deserialize( reader );
 					break;
 				}
 			}

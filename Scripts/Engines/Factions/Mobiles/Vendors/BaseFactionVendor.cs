@@ -41,8 +41,7 @@ namespace Server.Factions
 			m_Town?.UnregisterVendor( this );
 		}
 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+		protected override List<SBInfo> SBInfos { get; } = new List<SBInfo>();
 
 		public override void InitSBInfo()
 		{

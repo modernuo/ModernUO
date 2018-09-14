@@ -41,7 +41,7 @@ namespace Server
 			if ( other == null )
 				return -1;
 
-			return m_Serial.CompareTo( other.Serial );
+			return Serial.CompareTo( other.Serial );
 		}
 
 		public int CompareTo( Entity other )
@@ -57,38 +57,33 @@ namespace Server
 			throw new ArgumentException();
 		}
 
-		private Serial m_Serial;
-		private Point3D m_Location;
-		private Map m_Map;
-		private bool m_Deleted;
-
 		public Entity( Serial serial, Point3D loc, Map map )
 		{
-			m_Serial = serial;
-			m_Location = loc;
-			m_Map = map;
-			m_Deleted = false;
+			Serial = serial;
+			Location = loc;
+			Map = map;
+			Deleted = false;
 		}
 
-		public Serial Serial => m_Serial;
+		public Serial Serial { get; }
 
-		public Point3D Location => m_Location;
+		public Point3D Location { get; private set; }
 
-		public int X => m_Location.X;
+		public int X => Location.X;
 
-		public int Y => m_Location.Y;
+		public int Y => Location.Y;
 
-		public int Z => m_Location.Z;
+		public int Z => Location.Z;
 
-		public Map Map => m_Map;
+		public Map Map { get; private set; }
 
 		public virtual void MoveToWorld(Point3D newLocation, Map map)
 		{
-			m_Location = newLocation;
-			m_Map = map;
+			Location = newLocation;
+			Map = map;
 		}
 
-		public bool Deleted => m_Deleted;
+		public bool Deleted { get; }
 
 		public void Delete()
 		{

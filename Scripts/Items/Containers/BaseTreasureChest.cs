@@ -4,31 +4,16 @@ namespace Server.Items
 {
 	public class BaseTreasureChest : LockableContainer
 	{
-		private TreasureLevel m_TreasureLevel;
-		private short m_MaxSpawnTime = 60;
-		private short m_MinSpawnTime = 10;
 		private TreasureResetTimer m_ResetTimer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TreasureLevel Level
-		{
-			get => m_TreasureLevel;
-			set => m_TreasureLevel = value;
-		}
+		public TreasureLevel Level { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public short MaxSpawnTime
-		{
-			get => m_MaxSpawnTime;
-			set => m_MaxSpawnTime = value;
-		}
+		public short MaxSpawnTime { get; set; } = 60;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public short MinSpawnTime
-		{
-			get => m_MinSpawnTime;
-			set => m_MinSpawnTime = value;
-		}
+		public short MinSpawnTime { get; set; } = 10;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public override bool Locked {
@@ -51,7 +36,7 @@ namespace Server.Items
 
 		public BaseTreasureChest( int itemID, TreasureLevel level ) : base( itemID )
 		{
-			m_TreasureLevel = level;
+			Level = level;
 			Locked = true;
 			Movable = false;
 
@@ -79,9 +64,9 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.Write( (int) 0 );
-			writer.Write( (byte) m_TreasureLevel );
-			writer.Write( m_MinSpawnTime );
-			writer.Write( m_MaxSpawnTime );
+			writer.Write( (byte) Level );
+			writer.Write( MinSpawnTime );
+			writer.Write( MaxSpawnTime );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -90,9 +75,9 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			m_TreasureLevel = (TreasureLevel)reader.ReadByte();
-			m_MinSpawnTime = reader.ReadShort();
-			m_MaxSpawnTime = reader.ReadShort();
+			Level = (TreasureLevel)reader.ReadByte();
+			MinSpawnTime = reader.ReadShort();
+			MaxSpawnTime = reader.ReadShort();
 
 			if ( !Locked )
 				StartResetTimer();
@@ -100,7 +85,7 @@ namespace Server.Items
 
 		protected virtual void SetLockLevel()
 		{
-			switch( m_TreasureLevel )
+			switch( Level )
 			{
 				case TreasureLevel.Level1:
 					RequiredSkill = LockLevel = 5;
@@ -133,7 +118,7 @@ namespace Server.Items
 			if ( m_ResetTimer == null )
 				m_ResetTimer = new TreasureResetTimer( this );
 			else
-				m_ResetTimer.Delay = TimeSpan.FromMinutes( Utility.Random( m_MinSpawnTime, m_MaxSpawnTime ));
+				m_ResetTimer.Delay = TimeSpan.FromMinutes( Utility.Random( MinSpawnTime, MaxSpawnTime ));
 
 			m_ResetTimer.Start();
 		}
@@ -143,7 +128,7 @@ namespace Server.Items
 			int MinGold = 1;
 			int MaxGold = 2;
 
-			switch( m_TreasureLevel )
+			switch( Level )
 			{
 				case TreasureLevel.Level1:
 					MinGold = 100;

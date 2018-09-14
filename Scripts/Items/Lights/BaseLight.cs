@@ -6,9 +6,7 @@ namespace Server.Items
 	{
 		private Timer m_Timer;
 		private DateTime m_End;
-		private bool m_BurntOut;
 		private bool m_Burning;
-		private bool m_Protected;
 		private TimeSpan m_Duration = TimeSpan.Zero;
 
 		public abstract int LitItemID{ get; }
@@ -37,18 +35,10 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool BurntOut
-		{
-			get => m_BurntOut;
-			set => m_BurntOut = value;
-		}
+		public bool BurntOut { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Protected
-		{
-			get => m_Protected;
-			set => m_Protected = value;
-		}
+		public bool Protected { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan Duration
@@ -88,7 +78,7 @@ namespace Server.Items
 		{
 			int sound = UnlitSound;
 
-			if ( m_BurntOut && BurntOutSound != 0 )
+			if ( BurntOut && BurntOutSound != 0 )
 				sound = BurntOutSound;
 
 
@@ -101,7 +91,7 @@ namespace Server.Items
 
 		public virtual void Ignite()
 		{
-			if ( !m_BurntOut )
+			if ( !BurntOut )
 			{
 				PlayLitSound();
 
@@ -115,12 +105,12 @@ namespace Server.Items
 		{
 			m_Burning = false;
 
-			if ( m_BurntOut && BurntOutItemID != 0 )
+			if ( BurntOut && BurntOutItemID != 0 )
 				ItemID = BurntOutItemID;
 			else
 				ItemID = UnlitItemID;
 
-			if ( m_BurntOut )
+			if ( BurntOut )
 				m_Duration = TimeSpan.Zero;
 			else if ( m_Duration != TimeSpan.Zero )
 				m_Duration = m_End - DateTime.UtcNow;
@@ -132,7 +122,7 @@ namespace Server.Items
 
 		public virtual void Burn()
 		{
-			m_BurntOut = true;
+			BurntOut = true;
 			Douse();
 		}
 
@@ -153,10 +143,10 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_BurntOut )
+			if ( BurntOut )
 				return;
 
-			if ( m_Protected && from.AccessLevel == AccessLevel.Player )
+			if ( Protected && from.AccessLevel == AccessLevel.Player )
 				return;
 
 			if ( !from.InRange( GetWorldLocation(), 2 ) )
@@ -178,10 +168,10 @@ namespace Server.Items
 			base.Serialize( writer );
 
 			writer.Write( (int) 0 );
-			writer.Write( m_BurntOut );
+			writer.Write( BurntOut );
 			writer.Write( m_Burning );
 			writer.Write( m_Duration );
-			writer.Write( m_Protected );
+			writer.Write( Protected );
 
 			if ( m_Burning && m_Duration != TimeSpan.Zero )
 				writer.WriteDeltaTime( m_End );
@@ -197,10 +187,10 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_BurntOut = reader.ReadBool();
+					BurntOut = reader.ReadBool();
 					m_Burning = reader.ReadBool();
 					m_Duration = reader.ReadTimeSpan();
-					m_Protected = reader.ReadBool();
+					Protected = reader.ReadBool();
 
 					if ( m_Burning && m_Duration != TimeSpan.Zero )
 						DoTimer( reader.ReadDeltaTime() - DateTime.UtcNow );

@@ -15,7 +15,6 @@ namespace Server.Items
 		private Mobile m_CompletedBy;
 		private Mobile m_Decoder;
 		private Map m_Map;
-		private Point2D m_Location;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Level{ get => m_Level;
@@ -38,9 +37,7 @@ namespace Server.Items
 			set{ m_Map = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point2D ChestLocation{ get => m_Location;
-			set => m_Location = value;
-		}
+		public Point2D ChestLocation { get; set; }
 
 		private static Point2D[] m_Locations;
 		private static Point2D[] m_HavenLocations;
@@ -207,9 +204,9 @@ namespace Server.Items
 			m_Map = map;
 
 			if ( level == 0 )
-				m_Location = GetRandomHavenLocation();
+				ChestLocation = GetRandomHavenLocation();
 			else
-				m_Location = GetRandomLocation();
+				ChestLocation = GetRandomLocation();
 
 			Width = 300;
 			Height = 300;
@@ -217,8 +214,8 @@ namespace Server.Items
 			int width = 600;
 			int height = 600;
 
-			int x1 = m_Location.X - Utility.RandomMinMax( width / 4, (width / 4) * 3 );
-			int y1 = m_Location.Y - Utility.RandomMinMax( height / 4, (height / 4) * 3 );
+			int x1 = ChestLocation.X - Utility.RandomMinMax( width / 4, (width / 4) * 3 );
+			int y1 = ChestLocation.Y - Utility.RandomMinMax( height / 4, (height / 4) * 3 );
 
 			if ( x1 < 0 )
 				x1 = 0;
@@ -241,7 +238,7 @@ namespace Server.Items
 			Bounds = new Rectangle2D( x1, y1, width, height );
 			Protected = true;
 
-			AddWorldPin( m_Location.X, m_Location.Y );
+			AddWorldPin( ChestLocation.X, ChestLocation.Y );
 		}
 
 		public TreasureMap( Serial serial ) : base( serial )
@@ -360,7 +357,7 @@ namespace Server.Items
 					else
 						maxRange = 1;
 
-					Point2D loc = m_Map.m_Location;
+					Point2D loc = m_Map.ChestLocation;
 					int x = loc.X, y = loc.Y;
 
 					Point3D chest3D0 = new Point3D( loc, 0 );
@@ -858,7 +855,7 @@ namespace Server.Items
 			writer.Write( m_Completed );
 			writer.Write( m_Decoder );
 			writer.Write( m_Map );
-			writer.Write( m_Location );
+			writer.Write( ChestLocation );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -881,7 +878,7 @@ namespace Server.Items
 					m_Completed = reader.ReadBool();
 					m_Decoder = reader.ReadMobile();
 					m_Map = reader.ReadMap();
-					m_Location = reader.ReadPoint2D();
+					ChestLocation = reader.ReadPoint2D();
 
 					if ( version == 0 && m_Completed )
 						m_CompletedBy = m_Decoder;

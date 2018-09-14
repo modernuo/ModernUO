@@ -18,9 +18,6 @@ namespace Server.Items
 		}
 
 		private int m_Level;
-		private Map m_TargetMap;
-		private Point3D m_TargetLocation;
-		private int m_MessageIndex;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsAncient => ( m_Level >= 4 );
@@ -38,25 +35,13 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Map TargetMap
-		{
-			get => m_TargetMap;
-			set => m_TargetMap = value;
-		}
+		public Map TargetMap { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D TargetLocation
-		{
-			get => m_TargetLocation;
-			set => m_TargetLocation = value;
-		}
+		public Point3D TargetLocation { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MessageIndex
-		{
-			get => m_MessageIndex;
-			set => m_MessageIndex = value;
-		}
+		public int MessageIndex { get; set; }
 
 		public void UpdateHue()
 		{
@@ -82,9 +67,9 @@ namespace Server.Items
 			Weight = 1.0;
 
 			m_Level = level;
-			m_MessageIndex = Utility.Random( MessageEntry.Entries.Length );
-			m_TargetMap = map;
-			m_TargetLocation = FindLocation( m_TargetMap );
+			MessageIndex = Utility.Random( MessageEntry.Entries.Length );
+			TargetMap = map;
+			TargetLocation = FindLocation( TargetMap );
 
 			UpdateHue();
 		}
@@ -101,9 +86,9 @@ namespace Server.Items
 
 			writer.Write( m_Level );
 
-			writer.Write( m_TargetMap );
-			writer.Write( m_TargetLocation );
-			writer.Write( m_MessageIndex );
+			writer.Write( TargetMap );
+			writer.Write( TargetLocation );
+			writer.Write( MessageIndex );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -123,21 +108,21 @@ namespace Server.Items
 				}
 				case 1:
 				{
-					m_TargetMap = reader.ReadMap();
-					m_TargetLocation = reader.ReadPoint3D();
-					m_MessageIndex = reader.ReadInt();
+					TargetMap = reader.ReadMap();
+					TargetLocation = reader.ReadPoint3D();
+					MessageIndex = reader.ReadInt();
 
 					break;
 				}
 				case 0:
 				{
-					m_TargetMap = Map;
+					TargetMap = Map;
 
-					if ( m_TargetMap == null || m_TargetMap == Map.Internal )
-						m_TargetMap = Map.Trammel;
+					if ( TargetMap == null || TargetMap == Map.Internal )
+						TargetMap = Map.Trammel;
 
-					m_TargetLocation = FindLocation( m_TargetMap );
-					m_MessageIndex = Utility.Random( MessageEntry.Entries.Length );
+					TargetLocation = FindLocation( TargetMap );
+					MessageIndex = Utility.Random( MessageEntry.Entries.Length );
 
 					break;
 				}
@@ -149,8 +134,8 @@ namespace Server.Items
 			if ( version < 3 )
 				UpdateHue();
 
-			if ( version < 4 && m_TargetMap == Map.Tokuno )
-				m_TargetMap = Map.Trammel;
+			if ( version < 4 && TargetMap == Map.Tokuno )
+				TargetMap = Map.Trammel;
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -159,13 +144,13 @@ namespace Server.Items
 			{
 				MessageEntry entry;
 
-				if ( m_MessageIndex >= 0 && m_MessageIndex < MessageEntry.Entries.Length )
-					entry = MessageEntry.Entries[m_MessageIndex];
+				if ( MessageIndex >= 0 && MessageIndex < MessageEntry.Entries.Length )
+					entry = MessageEntry.Entries[MessageIndex];
 				else
-					entry = MessageEntry.Entries[m_MessageIndex = Utility.Random( MessageEntry.Entries.Length )];
+					entry = MessageEntry.Entries[MessageIndex = Utility.Random( MessageEntry.Entries.Length )];
 
 				//from.CloseGump( typeof( MessageGump ) );
-				from.SendGump( new MessageGump( entry, m_TargetMap, m_TargetLocation ) );
+				from.SendGump( new MessageGump( entry, TargetMap, TargetLocation ) );
 			}
 			else
 			{
@@ -297,36 +282,34 @@ namespace Server.Items
 
 		private class MessageEntry
 		{
-			private int m_Width, m_Height;
-			private string m_Message;
+			public int Width { get; }
 
-			public int Width => m_Width;
-			public int Height => m_Height;
-			public string Message => m_Message;
+			public int Height { get; }
+
+			public string Message { get; }
 
 			public MessageEntry( int width, int height, string message )
 			{
-				m_Width = width;
-				m_Height = height;
-				m_Message = message;
+				Width = width;
+				Height = height;
+				Message = message;
 			}
 
-			private static MessageEntry[] m_Entries = {
-					new MessageEntry( 280, 180, "...Ar! {0} and a fair wind! No chance... storms, though--ar! Is that a sea serp...<br><br>uh oh." ),
-					new MessageEntry( 280, 215, "...been inside this whale for three days now. I've run out of food I can pick out of his teeth. I took a sextant reading through the blowhole: {0}. I'll never see my treasure again..." ),
-					new MessageEntry( 280, 285, "...grand adventure! Captain Quacklebush had me swab down the decks daily...<br>  ...pirates came, I was in the rigging practicing with my sextant. {0} if I am not mistaken...<br>  ....scuttled the ship, and our precious cargo went with her and the screaming pirates, down to the bottom of the sea..." ),
-					new MessageEntry( 280, 180, "Help! Ship going dow...n heavy storms...precious cargo...st reach dest...current coordinates {0}...ve any survivors... ease!" ),
-					new MessageEntry( 280, 215, "...know that the wreck is near {0} but have not found it. Could the message passed down in my family for generations be wrong? No... I swear on the soul of my grandfather, I will find..." ),
-					new MessageEntry( 280, 195, "...never expected an iceberg...silly woman on bow crushed instantly...send help to {0}...ey'll never forget the tragedy of the sinking of the Miniscule..." ),
-					new MessageEntry( 280, 265, "...nobody knew I was a girl. They just assumed I was another sailor...then we met the undine. {0}. It was demanded sacrifice...I was youngset, they figured...<br>  ...grabbed the captain's treasure, screamed, 'It'll go down with me!'<br>  ...they took me up on it." ),
-					new MessageEntry( 280, 230, "...so I threw the treasure overboard, before the curse could get me too. But I was too late. Now I am doomed to wander these seas, a ghost forever. Join me: seek ye at {0} if thou wishest my company..." ),
-					new MessageEntry( 280, 285, "...then the ship exploded. A dragon swooped by. The slime swallowed Bertie whole--he screamed, it was amazing. The sky glowed orange. A sextant reading put us at {0}. Norma was chattering about sailing over the edge of the world. I looked at my hands and saw through them..." ),
-					new MessageEntry( 280, 285, "...trapped on a deserted island, with a magic fountain supplying wood, fresh water springs, gorgeous scenery, and my lovely young wife. I know the ship with all our life's earnings sank at {0} but I don't know what our coordinates are... someone has GOT to rescue me before Sunday's finals game or I'll go mad..." ),
-					new MessageEntry( 280, 160, "WANTED: divers exp...d in shipwre...overy. Must have own vess...pply at {0}<br>...good benefits, flexible hours..." ),
-					new MessageEntry( 280, 250, "...was a cad and a boor, no matter what momma s...rew him overboard! Oh, Anna, 'twas so exciting!<br>  Unfort...y he grabbe...est, and all his riches went with him!<br>  ...sked the captain, and he says we're at {0}<br>...so maybe..." )
-				};
-
-			public static MessageEntry[] Entries => m_Entries;
+			public static MessageEntry[] Entries { get; } =
+			{
+				new MessageEntry( 280, 180, "...Ar! {0} and a fair wind! No chance... storms, though--ar! Is that a sea serp...<br><br>uh oh." ),
+				new MessageEntry( 280, 215, "...been inside this whale for three days now. I've run out of food I can pick out of his teeth. I took a sextant reading through the blowhole: {0}. I'll never see my treasure again..." ),
+				new MessageEntry( 280, 285, "...grand adventure! Captain Quacklebush had me swab down the decks daily...<br>  ...pirates came, I was in the rigging practicing with my sextant. {0} if I am not mistaken...<br>  ....scuttled the ship, and our precious cargo went with her and the screaming pirates, down to the bottom of the sea..." ),
+				new MessageEntry( 280, 180, "Help! Ship going dow...n heavy storms...precious cargo...st reach dest...current coordinates {0}...ve any survivors... ease!" ),
+				new MessageEntry( 280, 215, "...know that the wreck is near {0} but have not found it. Could the message passed down in my family for generations be wrong? No... I swear on the soul of my grandfather, I will find..." ),
+				new MessageEntry( 280, 195, "...never expected an iceberg...silly woman on bow crushed instantly...send help to {0}...ey'll never forget the tragedy of the sinking of the Miniscule..." ),
+				new MessageEntry( 280, 265, "...nobody knew I was a girl. They just assumed I was another sailor...then we met the undine. {0}. It was demanded sacrifice...I was youngset, they figured...<br>  ...grabbed the captain's treasure, screamed, 'It'll go down with me!'<br>  ...they took me up on it." ),
+				new MessageEntry( 280, 230, "...so I threw the treasure overboard, before the curse could get me too. But I was too late. Now I am doomed to wander these seas, a ghost forever. Join me: seek ye at {0} if thou wishest my company..." ),
+				new MessageEntry( 280, 285, "...then the ship exploded. A dragon swooped by. The slime swallowed Bertie whole--he screamed, it was amazing. The sky glowed orange. A sextant reading put us at {0}. Norma was chattering about sailing over the edge of the world. I looked at my hands and saw through them..." ),
+				new MessageEntry( 280, 285, "...trapped on a deserted island, with a magic fountain supplying wood, fresh water springs, gorgeous scenery, and my lovely young wife. I know the ship with all our life's earnings sank at {0} but I don't know what our coordinates are... someone has GOT to rescue me before Sunday's finals game or I'll go mad..." ),
+				new MessageEntry( 280, 160, "WANTED: divers exp...d in shipwre...overy. Must have own vess...pply at {0}<br>...good benefits, flexible hours..." ),
+				new MessageEntry( 280, 250, "...was a cad and a boor, no matter what momma s...rew him overboard! Oh, Anna, 'twas so exciting!<br>  Unfort...y he grabbe...est, and all his riches went with him!<br>  ...sked the captain, and he says we're at {0}<br>...so maybe..." )
+			};
 		}
 	}
 }

@@ -43,12 +43,7 @@ namespace Server.Network
 
 		private static Socket[] m_EmptySockets = new Socket[0];
 
-		private static IPEndPoint[] m_EndPoints;
-
-		public static IPEndPoint[] EndPoints {
-			get => m_EndPoints;
-			set => m_EndPoints = value;
-		}
+		public static IPEndPoint[] EndPoints { get; set; }
 
 		public Listener( IPEndPoint ipep )
 		{

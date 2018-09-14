@@ -5,9 +5,6 @@ namespace Server.Items
 	public class RaisableItem : Item
 	{
 		private int m_MaxElevation;
-		private int m_MoveSound;
-		private int m_StopSound;
-		private TimeSpan m_CloseDelay;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxElevation
@@ -25,19 +22,13 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MoveSound{ get => m_MoveSound;
-			set => m_MoveSound = value;
-		}
+		public int MoveSound { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int StopSound{ get => m_StopSound;
-			set => m_StopSound = value;
-		}
+		public int StopSound { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan CloseDelay{ get => m_CloseDelay;
-			set => m_CloseDelay = value;
-		}
+		public TimeSpan CloseDelay { get; set; }
 
 		[Constructible]
 		public RaisableItem( int itemID ) : this( itemID, 20, -1, -1, TimeSpan.FromMinutes( 1.0 ) )
@@ -55,9 +46,9 @@ namespace Server.Items
 			Movable = false;
 
 			m_MaxElevation = maxElevation;
-			m_MoveSound = moveSound;
-			m_StopSound = stopSound;
-			m_CloseDelay = closeDelay;
+			MoveSound = moveSound;
+			StopSound = stopSound;
+			CloseDelay = closeDelay;
 		}
 
 		private int m_Elevation;
@@ -154,9 +145,9 @@ namespace Server.Items
 			writer.WriteEncodedInt( (int) 0 ); // version
 
 			writer.WriteEncodedInt( (int) m_MaxElevation );
-			writer.WriteEncodedInt( (int) m_MoveSound );
-			writer.WriteEncodedInt( (int) m_StopSound );
-			writer.Write( (TimeSpan) m_CloseDelay );
+			writer.WriteEncodedInt( (int) MoveSound );
+			writer.WriteEncodedInt( (int) StopSound );
+			writer.Write( (TimeSpan) CloseDelay );
 
 			writer.WriteEncodedInt( (int) m_Elevation );
 		}
@@ -168,9 +159,9 @@ namespace Server.Items
 			int version = reader.ReadEncodedInt();
 
 			m_MaxElevation = reader.ReadEncodedInt();
-			m_MoveSound = reader.ReadEncodedInt();
-			m_StopSound = reader.ReadEncodedInt();
-			m_CloseDelay = reader.ReadTimeSpan();
+			MoveSound = reader.ReadEncodedInt();
+			StopSound = reader.ReadEncodedInt();
+			CloseDelay = reader.ReadTimeSpan();
 
 			int elevation = reader.ReadEncodedInt();
 			Z -= elevation;

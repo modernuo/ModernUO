@@ -7,14 +7,9 @@ namespace Server.Commands.Generic
 {
 	public sealed class OrderInfo
 	{
-		private Property m_Property;
 		private int m_Order;
 
-		public Property Property
-		{
-			get => m_Property;
-			set => m_Property = value;
-		}
+		public Property Property { get; set; }
 
 		public bool IsAscending
 		{
@@ -42,7 +37,7 @@ namespace Server.Commands.Generic
 
 		public OrderInfo( Property property, bool isAscending )
 		{
-			m_Property = property;
+			Property = property;
 
 			IsAscending = isAscending;
 		}

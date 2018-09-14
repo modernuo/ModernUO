@@ -12,10 +12,9 @@ namespace Server.Misc
 
 		private static TimeSpan WarningDelay = TimeSpan.FromMinutes( 1.0 ); // at what interval should the shutdown message be displayed?
 
-		private static bool m_Restarting;
 		private static DateTime m_RestartTime;
 
-		public static bool Restarting => m_Restarting;
+		public static bool Restarting { get; private set; }
 
 		public static void Initialize()
 		{
@@ -25,7 +24,7 @@ namespace Server.Misc
 
 		public static void Restart_OnCommand( CommandEventArgs e )
 		{
-			if ( m_Restarting )
+			if ( Restarting )
 			{
 				e.Mobile.SendMessage( "The server is already restarting." );
 			}
@@ -59,7 +58,7 @@ namespace Server.Misc
 
 		protected override void OnTick()
 		{
-			if ( m_Restarting || !Enabled )
+			if ( Restarting || !Enabled )
 				return;
 
 			if ( DateTime.UtcNow < m_RestartTime )
@@ -73,7 +72,7 @@ namespace Server.Misc
 
 			AutoSave.Save();
 
-			m_Restarting = true;
+			Restarting = true;
 
 			DelayCall( RestartDelay, Restart_Callback );
 		}

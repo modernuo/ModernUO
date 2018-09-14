@@ -8,18 +8,12 @@ namespace Server.Items
 		public override int LabelNumber => 1076280; // Curtains
 		public override bool DisplayWeight => false;
 
-		private int m_ClosedID;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int ClosedID
-		{
-			get => m_ClosedID;
-			set => m_ClosedID = value;
-		}
+		public int ClosedID { get; set; }
 
 		public CurtainsComponent( int itemID, int closedID ) : base( itemID )
 		{
-			m_ClosedID = closedID;
+			ClosedID = closedID;
 		}
 
 		public CurtainsComponent( Serial serial ) : base( serial )
@@ -55,7 +49,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( (int) m_ClosedID );
+			writer.Write( (int) ClosedID );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -64,7 +58,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_ClosedID = reader.ReadInt();
+			ClosedID = reader.ReadInt();
 		}
 
 		#region IDyable

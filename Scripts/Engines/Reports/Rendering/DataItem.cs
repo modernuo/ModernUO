@@ -15,60 +15,29 @@ namespace Server.Engines.Reports
 
 	public class DataItem 
 	{
-		private string _label;
-		private string _description;
-		private float _value;
-		private Color _color;
-		private float _startPos;
-		private float _sweepSize;
-
 		private DataItem()	{}
 		
 		public DataItem(string label, string desc, float data, float start, float sweep, Color clr)
 		{
-			_label = label;
-			_description = desc;
-			_value = data;
-			_startPos = start;
-			_sweepSize = sweep;
-			_color = clr;
+			Label = label;
+			Description = desc;
+			Value = data;
+			StartPos = start;
+			SweepSize = sweep;
+			ItemColor = clr;
 		}
 
-		public string Label 
-		{
-			get => _label;
-			set => _label = value;
-		}
+		public string Label { get; set; }
 
-		public string Description 
-		{
-			get => _description;
-			set => _description = value;
-		} 
+		public string Description { get; set; }
 
-		public float Value 
-		{
-			get => _value;
-			set => _value = value;
-		}
+		public float Value { get; set; }
 
-		public Color ItemColor 
-		{
-			get => _color;
-			set => _color = value;
-		}
+		public Color ItemColor { get; set; }
 
-		public float StartPos
-		{
-			get => _startPos;
-			set => _startPos = value;
-		}
+		public float StartPos { get; set; }
 
-		public float SweepSize
-		{
-			get => _sweepSize;
-			set => _sweepSize = value;
-		}
+		public float SweepSize { get; set; }
 	}
 
 	//*********************************************************************

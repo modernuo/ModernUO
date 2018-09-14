@@ -12,12 +12,9 @@ namespace Server.Commands
 {
 	public class HelpInfo
 	{
+		public static Dictionary<string, CommandInfo> HelpInfos { get; } = new Dictionary<string, CommandInfo>();
 
-		private static Dictionary<string, CommandInfo> m_HelpInfos = new Dictionary<string, CommandInfo>();
-		private static List<CommandInfo> m_SortedHelpInfo = new List<CommandInfo>();	//No need for SortedList cause it's only sorted once at creation...
-
-		public static Dictionary<string, CommandInfo> HelpInfos => m_HelpInfos;
-		public static List<CommandInfo> SortedHelpInfo  => m_SortedHelpInfo;
+		public static List<CommandInfo> SortedHelpInfo { get; private set; } = new List<CommandInfo>();
 
 		[CallPriority( 100 )]
 		public static void Initialize()
@@ -34,7 +31,7 @@ namespace Server.Commands
 			if ( e.Length > 0 )
 			{
 				string arg = e.GetString( 0 ).ToLower();
-				if (m_HelpInfos.TryGetValue( arg, out CommandInfo c ))
+				if (HelpInfos.TryGetValue( arg, out CommandInfo c ))
 				{
 					Mobile m = e.Mobile;
 
@@ -213,12 +210,12 @@ namespace Server.Commands
 
 			list.Sort( new CommandInfoSorter() );
 
-			m_SortedHelpInfo = list;
+			SortedHelpInfo = list;
 
-			foreach( CommandInfo c in m_SortedHelpInfo )
+			foreach( CommandInfo c in SortedHelpInfo )
 			{
-				if ( !m_HelpInfos.ContainsKey( c.Name.ToLower() ) )
-					m_HelpInfos.Add( c.Name.ToLower(), c );
+				if ( !HelpInfos.ContainsKey( c.Name.ToLower() ) )
+					HelpInfos.Add( c.Name.ToLower(), c );
 			}
 		}
 
@@ -238,7 +235,7 @@ namespace Server.Commands
 				{
 					m_List = new List<CommandInfo>();
 
-					foreach( CommandInfo c in m_SortedHelpInfo )
+					foreach( CommandInfo c in SortedHelpInfo )
 					{
 						if ( from.AccessLevel >= c.AccessLevel )
 							m_List.Add( c );
@@ -311,7 +308,7 @@ namespace Server.Commands
 						}
 					case 2:
 						{
-							if ( (m_Page + 1) * EntriesPerPage < m_SortedHelpInfo.Count )
+							if ( (m_Page + 1) * EntriesPerPage < SortedHelpInfo.Count )
 								m.SendGump( new CommandListGump( m_Page + 1, m, m_List ) );
 
 							break;

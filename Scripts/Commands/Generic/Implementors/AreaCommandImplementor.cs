@@ -5,9 +5,7 @@ namespace Server.Commands.Generic
 {
 	public class AreaCommandImplementor : BaseCommandImplementor
 	{
-		private static AreaCommandImplementor m_Instance;
-
-		public static AreaCommandImplementor Instance => m_Instance;
+		public static AreaCommandImplementor Instance { get; private set; }
 
 		public AreaCommandImplementor()
 		{
@@ -18,7 +16,7 @@ namespace Server.Commands.Generic
 			Usage = "Area <command> [condition]";
 			Description = "Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects.";
 
-			m_Instance = this;
+			Instance = this;
 		}
 
 		public override void Process( Mobile from, BaseCommand command, string[] args )

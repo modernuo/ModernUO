@@ -6,8 +6,7 @@ namespace Server.Mobiles
 	public class BlackSolenWarrior : BaseCreature
 	{
 		public override string CorpseName => "a solen warrior corpse";
-		private bool m_BurstSac;
-		public bool BurstSac => m_BurstSac;
+		public bool BurstSac { get; private set; }
 
 		public override string DefaultName => "a black solen warrior";
 
@@ -101,7 +100,7 @@ namespace Server.Mobiles
 					if ( Hits < 50 )
 					{
 						PublicOverheadMessage( MessageType.Regular, 0x3B2, true, "* The solen's acid sac is burst open! *" );
-						m_BurstSac = true;
+						BurstSac = true;
 					}
 				}
 				else if ( from != null && from != this && InRange( from, 1 ) )
@@ -128,7 +127,7 @@ namespace Server.Mobiles
 		{
 			base.Serialize( writer );
 			writer.Write( (int) 1 );
-			writer.Write( m_BurstSac );
+			writer.Write( BurstSac );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -140,7 +139,7 @@ namespace Server.Mobiles
 			{
 				case 1:
 				{
-					m_BurstSac = reader.ReadBool();
+					BurstSac = reader.ReadBool();
 					break;
 				}
 			}

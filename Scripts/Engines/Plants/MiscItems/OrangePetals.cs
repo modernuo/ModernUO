@@ -117,13 +117,11 @@ namespace Server.Items
 
 		private class OrangePetalsContext
 		{
-			private Timer m_Timer;
-
-			public Timer Timer => m_Timer;
+			public Timer Timer { get; }
 
 			public OrangePetalsContext( Timer timer )
 			{
-				m_Timer = timer;
+				Timer = timer;
 			}
 		}
 

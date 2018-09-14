@@ -7,7 +7,6 @@ namespace Server.Engines.MLQuests.Items
 	public class MLQuestTeleporter : Teleporter
 	{
 		private Type m_QuestType;
-		private TextDefinition m_Message;
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public Type QuestType
@@ -17,11 +16,7 @@ namespace Server.Engines.MLQuests.Items
 		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public TextDefinition Message
-		{
-			get => m_Message;
-			set => m_Message = value;
-		}
+		public TextDefinition Message { get; set; }
 
 		[Constructible]
 		public MLQuestTeleporter()
@@ -40,7 +35,7 @@ namespace Server.Engines.MLQuests.Items
 			: base(pointDest, mapDest)
 		{
 			m_QuestType = questType;
-			m_Message = message;
+			Message = message;
 		}
 
 		public override bool CanTeleport(Mobile m)
@@ -58,7 +53,7 @@ namespace Server.Engines.MLQuests.Items
 			if (context?.IsDoingQuest(m_QuestType) == true || context?.HasDoneQuest(m_QuestType) == true)
 				return true;
 
-			TextDefinition.SendMessageTo(m, m_Message);
+			TextDefinition.SendMessageTo(m, Message);
 			return false;
 
 		}
@@ -83,7 +78,7 @@ namespace Server.Engines.MLQuests.Items
 			writer.Write((int)0); // version
 
 			writer.Write((m_QuestType != null) ? m_QuestType.FullName : null);
-			TextDefinition.Serialize(writer, m_Message);
+			TextDefinition.Serialize(writer, Message);
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -97,7 +92,7 @@ namespace Server.Engines.MLQuests.Items
 			if (typeName != null)
 				m_QuestType = ScriptCompiler.FindTypeByFullName(typeName, false);
 
-			m_Message = TextDefinition.Deserialize(reader);
+			Message = TextDefinition.Deserialize(reader);
 		}
 	}
 
@@ -109,7 +104,6 @@ namespace Server.Engines.MLQuests.Items
 	public class TicketTeleporter : Teleporter
 	{
 		private Type m_TicketType;
-		private TextDefinition m_Message;
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public Type TicketType
@@ -119,11 +113,7 @@ namespace Server.Engines.MLQuests.Items
 		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
-		public TextDefinition Message
-		{
-			get => m_Message;
-			set => m_Message = value;
-		}
+		public TextDefinition Message { get; set; }
 
 		[Constructible]
 		public TicketTeleporter()
@@ -142,7 +132,7 @@ namespace Server.Engines.MLQuests.Items
 			: base(pointDest, mapDest)
 		{
 			m_TicketType = ticketType;
-			m_Message = message;
+			Message = message;
 		}
 
 		public override bool CanTeleport(Mobile m)
@@ -172,7 +162,7 @@ namespace Server.Engines.MLQuests.Items
 
 				if (ticket == null)
 				{
-					TextDefinition.SendMessageTo(m, m_Message);
+					TextDefinition.SendMessageTo(m, Message);
 					return false;
 				}
 
@@ -202,7 +192,7 @@ namespace Server.Engines.MLQuests.Items
 			writer.Write((int)0); // version
 
 			writer.Write((m_TicketType != null) ? m_TicketType.FullName : null);
-			TextDefinition.Serialize(writer, m_Message);
+			TextDefinition.Serialize(writer, Message);
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -216,7 +206,7 @@ namespace Server.Engines.MLQuests.Items
 			if (typeName != null)
 				m_TicketType = ScriptCompiler.FindTypeByFullName(typeName, false);
 
-			m_Message = TextDefinition.Deserialize(reader);
+			Message = TextDefinition.Deserialize(reader);
 		}
 	}
 }

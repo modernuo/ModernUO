@@ -31,13 +31,7 @@ namespace Server
 {
 	public static class ScriptCompiler
 	{
-		private static Assembly[] m_Assemblies;
-
-		public static Assembly[] Assemblies
-		{
-			get => m_Assemblies;
-			set => m_Assemblies = value;
-		}
+		public static Assembly[] Assemblies { get; set; }
 
 		private static List<string> m_AdditionalReferences = new List<string>();
 
@@ -595,7 +589,7 @@ namespace Server
 				return false;
 			}
 
-			m_Assemblies = assemblies.ToArray();
+			Assemblies = assemblies.ToArray();
 
 			Console.Write( "Scripts: Verifying..." );
 
@@ -614,9 +608,9 @@ namespace Server
 		{
 			List<MethodInfo> invoke = new List<MethodInfo>();
 
-			for( int a = 0; a < m_Assemblies.Length; ++a )
+			for( int a = 0; a < Assemblies.Length; ++a )
 			{
-				Type[] types = m_Assemblies[a].GetTypes();
+				Type[] types = Assemblies[a].GetTypes();
 
 				for( int i = 0; i < types.Length; ++i )
 				{
@@ -664,8 +658,8 @@ namespace Server
 		{
 			Type type = null;
 
-			for( int i = 0; type == null && i < m_Assemblies.Length; ++i )
-				type = GetTypeCache( m_Assemblies[i] ).GetTypeByFullName( fullName, ignoreCase );
+			for( int i = 0; type == null && i < Assemblies.Length; ++i )
+				type = GetTypeCache( Assemblies[i] ).GetTypeByFullName( fullName, ignoreCase );
 
 			if ( type == null )
 				type = GetTypeCache( Core.Assembly ).GetTypeByFullName( fullName, ignoreCase );
@@ -682,8 +676,8 @@ namespace Server
 		{
 			Type type = null;
 
-			for( int i = 0; type == null && i < m_Assemblies.Length; ++i )
-				type = GetTypeCache( m_Assemblies[i] ).GetTypeByName( name, ignoreCase );
+			for( int i = 0; type == null && i < Assemblies.Length; ++i )
+				type = GetTypeCache( Assemblies[i] ).GetTypeByName( name, ignoreCase );
 
 			if ( type == null )
 				type = GetTypeCache( Core.Assembly ).GetTypeByName( name, ignoreCase );
@@ -719,41 +713,40 @@ namespace Server
 
 	public class TypeCache
 	{
-		private Type[] m_Types;
-		private TypeTable m_Names, m_FullNames;
+		public Type[] Types { get; }
 
-		public Type[] Types => m_Types;
-		public TypeTable Names => m_Names;
-		public TypeTable FullNames => m_FullNames;
+		public TypeTable Names { get; }
+
+		public TypeTable FullNames { get; }
 
 		public Type GetTypeByName( string name, bool ignoreCase )
 		{
-			return m_Names.Get( name, ignoreCase );
+			return Names.Get( name, ignoreCase );
 		}
 
 		public Type GetTypeByFullName( string fullName, bool ignoreCase )
 		{
-			return m_FullNames.Get( fullName, ignoreCase );
+			return FullNames.Get( fullName, ignoreCase );
 		}
 
 		public TypeCache( Assembly asm )
 		{
 			if ( asm == null )
-				m_Types = Type.EmptyTypes;
+				Types = Type.EmptyTypes;
 			else
-				m_Types = asm.GetTypes();
+				Types = asm.GetTypes();
 
-			m_Names = new TypeTable( m_Types.Length );
-			m_FullNames = new TypeTable( m_Types.Length );
+			Names = new TypeTable( Types.Length );
+			FullNames = new TypeTable( Types.Length );
 
 			Type typeofTypeAliasAttribute = typeof( TypeAliasAttribute );
 
-			for( int i = 0; i < m_Types.Length; ++i )
+			for( int i = 0; i < Types.Length; ++i )
 			{
-				Type type = m_Types[i];
+				Type type = Types[i];
 
-				m_Names.Add( type.Name, type );
-				m_FullNames.Add( type.FullName, type );
+				Names.Add( type.Name, type );
+				FullNames.Add( type.FullName, type );
 
 				if ( type.IsDefined( typeofTypeAliasAttribute, false ) )
 				{
@@ -764,7 +757,7 @@ namespace Server
 						if ( attrs[0] is TypeAliasAttribute attr )
 						{
 							for( int j = 0; j < attr.Aliases.Length; ++j )
-								m_FullNames.Add( attr.Aliases[j], type );
+								FullNames.Add( attr.Aliases[j], type );
 						}
 					}
 				}

@@ -1982,17 +1982,11 @@ namespace Server.Mobiles
 			return delay;
 		}
 
-		private long m_NextMove;
-
-		public long NextMove
-		{
-			get => m_NextMove;
-			set => m_NextMove = value;
-		}
+		public long NextMove { get; set; }
 
 		public virtual bool CheckMove()
 		{
-			return (Core.TickCount - m_NextMove >= 0);
+			return (Core.TickCount - NextMove >= 0);
 		}
 
 		public virtual bool DoMove(Direction d)
@@ -2021,10 +2015,10 @@ namespace Server.Mobiles
 
 			int delay = (int)(TransformMoveDelay(m_Mobile.CurrentSpeed) * 1000);
 
-			m_NextMove += delay;
+			NextMove += delay;
 
-			if (Core.TickCount - m_NextMove > 0)
-				m_NextMove = Core.TickCount;
+			if (Core.TickCount - NextMove > 0)
+				NextMove = Core.TickCount;
 
 			m_Mobile.Pushing = false;
 

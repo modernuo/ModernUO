@@ -2,14 +2,8 @@ namespace Server.Factions
 {
 	public class FactionTrapRemovalKit : Item
 	{
-		private int m_Charges;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Charges
-		{
-			get => m_Charges;
-			set => m_Charges = value;
-		}
+		public int Charges { get; set; }
 
 		public override int LabelNumber => 1041508; // a faction trap removal kit
 
@@ -17,14 +11,14 @@ namespace Server.Factions
 		public FactionTrapRemovalKit() : base( 7867 )
 		{
 			LootType = LootType.Blessed;
-			m_Charges = 25;
+			Charges = 25;
 		}
 
 		public void ConsumeCharge( Mobile consumer )
 		{
-			--m_Charges;
+			--Charges;
 
-			if ( m_Charges <= 0 )
+			if ( Charges <= 0 )
 			{
 				Delete();
 
@@ -37,7 +31,7 @@ namespace Server.Factions
 			base.GetProperties( list );
 
 			// NOTE: OSI does not list uses remaining; intentional difference
-			list.Add( 1060584, m_Charges.ToString() ); // uses remaining: ~1_val~
+			list.Add( 1060584, Charges.ToString() ); // uses remaining: ~1_val~
 		}
 
 		public FactionTrapRemovalKit( Serial serial ) : base( serial )
@@ -50,7 +44,7 @@ namespace Server.Factions
 
 			writer.Write( (int) 1 ); // version
 
-			writer.WriteEncodedInt( (int) m_Charges );
+			writer.WriteEncodedInt( (int) Charges );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -63,12 +57,12 @@ namespace Server.Factions
 			{
 				case 1:
 				{
-					m_Charges = reader.ReadEncodedInt();
+					Charges = reader.ReadEncodedInt();
 					break;
 				}
 				case 0:
 				{
-					m_Charges = 25;
+					Charges = 25;
 					break;
 				}
 			}

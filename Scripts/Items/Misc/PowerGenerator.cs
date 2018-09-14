@@ -59,25 +59,18 @@ namespace Server.Items
 
 		public struct Node
 		{
-			private int m_X;
-			private int m_Y;
+			public int X { get; set; }
 
-			public int X{ get => m_X;
-				set => m_X = value;
-			}
-			public int Y{ get => m_Y;
-				set => m_Y = value;
-			}
+			public int Y { get; set; }
 
 			public Node( int x, int y )
 			{
-				m_X = x;
-				m_Y = y;
+				X = x;
+				Y = y;
 			}
 		}
 
 		private int m_SideLength;
-		private Node[] m_Path;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SideLength
@@ -98,7 +91,7 @@ namespace Server.Items
 			}
 		}
 
-		public Node[] Path => m_Path;
+		public Node[] Path { get; private set; }
 
 		public override string DefaultName => "a control panel";
 
@@ -180,11 +173,11 @@ namespace Server.Items
 				}
 			}
 
-			m_Path = new Node[stackSize];
+			Path = new Node[stackSize];
 
 			for ( int i = 0; i < stackSize; i++ )
 			{
-				m_Path[i] = stack[i];
+				Path[i] = stack[i];
 			}
 
 			if ( m_User != null )
@@ -544,10 +537,10 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( (int) m_SideLength );
 
-			writer.WriteEncodedInt( (int) m_Path.Length );
-			for ( int i = 0; i < m_Path.Length; i++ )
+			writer.WriteEncodedInt( (int) Path.Length );
+			for ( int i = 0; i < Path.Length; i++ )
 			{
-				Node cur = m_Path[i];
+				Node cur = Path[i];
 
 				writer.WriteEncodedInt( cur.X );
 				writer.WriteEncodedInt( cur.Y );
@@ -562,10 +555,10 @@ namespace Server.Items
 
 			m_SideLength = reader.ReadEncodedInt();
 
-			m_Path = new Node[reader.ReadEncodedInt()];
-			for ( int i = 0; i < m_Path.Length; i++ )
+			Path = new Node[reader.ReadEncodedInt()];
+			for ( int i = 0; i < Path.Length; i++ )
 			{
-				m_Path[i] = new Node( reader.ReadEncodedInt(), reader.ReadEncodedInt() );
+				Path[i] = new Node( reader.ReadEncodedInt(), reader.ReadEncodedInt() );
 			}
 		}
 	}

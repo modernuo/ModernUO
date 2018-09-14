@@ -21,24 +21,20 @@ namespace Server.Mobiles
 
 	public class VendorItem
 	{
-		private Item m_Item;
-		private int m_Price;
 		private string m_Description;
-		private DateTime m_Created;
 
-		private bool m_Valid;
+		public Item Item { get; }
 
-		public Item Item => m_Item;
-		public int Price => m_Price;
+		public int Price { get; }
 
 		public string FormattedPrice
 		{
 			get
 			{
 				if ( Core.ML )
-					return m_Price.ToString( "N0", CultureInfo.GetCultureInfo( "en-US" ) );
+					return Price.ToString( "N0", CultureInfo.GetCultureInfo( "en-US" ) );
 
-				return m_Price.ToString();
+				return Price.ToString();
 			}
 		}
 
@@ -57,31 +53,31 @@ namespace Server.Mobiles
 			}
 		}
 
-		public DateTime Created => m_Created;
+		public DateTime Created { get; }
 
 		public bool IsForSale => Price >= 0;
 		public bool IsForFree => Price == 0;
 
-		public bool Valid => m_Valid;
+		public bool Valid { get; private set; }
 
 		public VendorItem( Item item, int price, string description, DateTime created )
 		{
-			m_Item = item;
-			m_Price = price;
+			Item = item;
+			Price = price;
 
 			if ( description != null )
 				m_Description = description;
 			else
 				m_Description = "";
 
-			m_Created = created;
+			Created = created;
 
-			m_Valid = true;
+			Valid = true;
 		}
 
 		public void Invalidate()
 		{
-			m_Valid = false;
+			Valid = false;
 		}
 	}
 
@@ -269,18 +265,11 @@ namespace Server.Mobiles
 	{
 		private Dictionary<Item, VendorItem> m_SellItems;
 
-		private Mobile m_Owner;
 		private BaseHouse m_House;
-
-		private int m_BankAccount;
-		private int m_HoldGold;
 
 		private string m_ShopName;
 
 		private Timer m_PayTimer;
-		private DateTime m_NextPayTime;
-
-		private PlayerVendorPlaceholder m_Placeholder;
 
 		public PlayerVendor( Mobile owner, BaseHouse house )
 		{
@@ -289,13 +278,13 @@ namespace Server.Mobiles
 
 			if ( BaseHouse.NewVendorSystem )
 			{
-				m_BankAccount = 0;
-				m_HoldGold = 4;
+				BankAccount = 0;
+				HoldGold = 4;
 			}
 			else
 			{
-				m_BankAccount = 1000;
-				m_HoldGold = 0;
+				BankAccount = 1000;
+				HoldGold = 0;
 			}
 
 			ShopName = "Shop Not Yet Named";
@@ -316,7 +305,7 @@ namespace Server.Mobiles
 			m_PayTimer = new PayTimer( this, delay );
 			m_PayTimer.Start();
 
-			m_NextPayTime = DateTime.UtcNow + delay;
+			NextPayTime = DateTime.UtcNow + delay;
 		}
 
 		public PlayerVendor( Serial serial ) : base( serial )
@@ -331,12 +320,12 @@ namespace Server.Mobiles
 
 			writer.Write( (bool) BaseHouse.NewVendorSystem );
 			writer.Write( (string) m_ShopName );
-			writer.WriteDeltaTime( (DateTime) m_NextPayTime );
+			writer.WriteDeltaTime( (DateTime) NextPayTime );
 			writer.Write( (Item) House );
 
-			writer.Write( (Mobile) m_Owner );
-			writer.Write( (int) m_BankAccount );
-			writer.Write( (int) m_HoldGold );
+			writer.Write( (Mobile) Owner );
+			writer.Write( (int) BankAccount );
+			writer.Write( (int) HoldGold );
 
 			writer.Write( (int) m_SellItems.Count );
 			foreach ( VendorItem vi in m_SellItems.Values )
@@ -364,16 +353,16 @@ namespace Server.Mobiles
 				{
 					newVendorSystem = reader.ReadBool();
 					m_ShopName = reader.ReadString();
-					m_NextPayTime = reader.ReadDeltaTime();
+					NextPayTime = reader.ReadDeltaTime();
 					House = (BaseHouse) reader.ReadItem();
 
 					goto case 0;
 				}
 				case 0:
 				{
-					m_Owner = reader.ReadMobile();
-					m_BankAccount = reader.ReadInt();
-					m_HoldGold = reader.ReadInt();
+					Owner = reader.ReadMobile();
+					BankAccount = reader.ReadInt();
+					HoldGold = reader.ReadInt();
 
 					int count = reader.ReadInt();
 
@@ -415,19 +404,19 @@ namespace Server.Mobiles
 					Timer.DelayCall( TimeSpan.Zero, FixDresswear );
 				}
 
-				m_NextPayTime = DateTime.UtcNow + PayTimer.GetInterval();
+				NextPayTime = DateTime.UtcNow + PayTimer.GetInterval();
 
 				if ( newVendorSystemActivated )
 				{
-					m_HoldGold += m_BankAccount;
-					m_BankAccount = 0;
+					HoldGold += BankAccount;
+					BankAccount = 0;
 				}
 			}
 
 			if ( version < 2 && RawStr == 75 && RawDex == 75 && RawInt == 75 )
 				InitStats( 100, 100, 25 );
 
-			TimeSpan delay = m_NextPayTime - DateTime.UtcNow;
+			TimeSpan delay = NextPayTime - DateTime.UtcNow;
 
 			m_PayTimer = new PayTimer( this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero );
 			m_PayTimer.Start();
@@ -503,25 +492,13 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner
-		{
-			get => m_Owner;
-			set => m_Owner = value;
-		}
+		public Mobile Owner { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int BankAccount
-		{
-			get => m_BankAccount;
-			set => m_BankAccount = value;
-		}
+		public int BankAccount { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int HoldGold
-		{
-			get => m_HoldGold;
-			set => m_HoldGold = value;
-		}
+		public int HoldGold { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string ShopName
@@ -539,13 +516,9 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime NextPayTime => m_NextPayTime;
+		public DateTime NextPayTime { get; private set; }
 
-		public PlayerVendorPlaceholder Placeholder
-		{
-			get => m_Placeholder;
-			set => m_Placeholder = value;
-		}
+		public PlayerVendorPlaceholder Placeholder { get; set; }
 
 		public BaseHouse House
 		{
@@ -1354,7 +1327,7 @@ namespace Server.Mobiles
 
 			protected override void OnTick()
 			{
-				m_Vendor.m_NextPayTime = DateTime.UtcNow + Interval;
+				m_Vendor.NextPayTime = DateTime.UtcNow + Interval;
 
 				int pay;
 				int totalGold;
@@ -1624,18 +1597,17 @@ namespace Server.Mobiles
 
 	public class PlayerVendorPlaceholder : Item
 	{
-		private PlayerVendor m_Vendor;
 		private ExpireTimer m_Timer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public PlayerVendor Vendor => m_Vendor;
+		public PlayerVendor Vendor { get; private set; }
 
 		public PlayerVendorPlaceholder( PlayerVendor vendor ) : base( 0x1F28 )
 		{
 			Hue = 0x672;
 			Movable = false;
 
-			m_Vendor = vendor;
+			Vendor = vendor;
 
 			m_Timer = new ExpireTimer( this );
 			m_Timer.Start();
@@ -1649,8 +1621,8 @@ namespace Server.Mobiles
 		{
 			base.GetProperties( list );
 
-			if ( m_Vendor != null )
-				list.Add( 1062498, m_Vendor.Name ); // reserved for vendor ~1_NAME~
+			if ( Vendor != null )
+				list.Add( 1062498, Vendor.Name ); // reserved for vendor ~1_NAME~
 		}
 
 		public void RestartTimer()
@@ -1678,10 +1650,10 @@ namespace Server.Mobiles
 
 		public override void OnDelete()
 		{
-			if ( m_Vendor != null && !m_Vendor.Deleted )
+			if ( Vendor != null && !Vendor.Deleted )
 			{
-				m_Vendor.MoveToWorld( Location, Map );
-				m_Vendor.Placeholder = null;
+				Vendor.MoveToWorld( Location, Map );
+				Vendor.Placeholder = null;
 			}
 		}
 
@@ -1691,7 +1663,7 @@ namespace Server.Mobiles
 
 			writer.WriteEncodedInt( (int) 0 );
 
-			writer.Write( (Mobile) m_Vendor );
+			writer.Write( (Mobile) Vendor );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -1700,7 +1672,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadEncodedInt();
 
-			m_Vendor = (PlayerVendor) reader.ReadMobile();
+			Vendor = (PlayerVendor) reader.ReadMobile();
 
 			Timer.DelayCall( TimeSpan.Zero, Delete );
 		}

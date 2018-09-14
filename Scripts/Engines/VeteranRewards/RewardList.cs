@@ -4,16 +4,14 @@ namespace Server.Engines.VeteranRewards
 {
 	public class RewardList
 	{
-		private TimeSpan m_Age;
-		private RewardEntry[] m_Entries;
+		public TimeSpan Age { get; }
 
-		public TimeSpan Age => m_Age;
-		public RewardEntry[] Entries => m_Entries;
+		public RewardEntry[] Entries { get; }
 
 		public RewardList( TimeSpan interval, int index, RewardEntry[] entries )
 		{
-			m_Age = TimeSpan.FromDays( interval.TotalDays * index );
-			m_Entries = entries;
+			Age = TimeSpan.FromDays( interval.TotalDays * index );
+			Entries = entries;
 
 			for ( int i = 0; i < entries.Length; ++i )
 				entries[i].List = this;

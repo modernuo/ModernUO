@@ -4,25 +4,15 @@ namespace Server.Accounting
 {
 	public class AccountTag
 	{
-		private string m_Name, m_Value;
-
 		/// <summary>
 		/// Gets or sets the name of this tag.
 		/// </summary>
-		public string Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public string Name { get; set; }
 
 		/// <summary>
 		/// Gets or sets the value of this tag.
 		/// </summary>
-		public string Value
-		{
-			get => m_Value;
-			set => m_Value = value;
-		}
+		public string Value { get; set; }
 
 		/// <summary>
 		/// Constructs a new AccountTag instance with a specific name and value.
@@ -31,8 +21,8 @@ namespace Server.Accounting
 		/// <param name="value">Initial value.</param>
 		public AccountTag( string name, string value )
 		{
-			m_Name = name;
-			m_Value = value;
+			Name = name;
+			Value = value;
 		}
 
 		/// <summary>
@@ -41,8 +31,8 @@ namespace Server.Accounting
 		/// <param name="node">The XmlElement instance from which to deserialize.</param>
 		public AccountTag( XmlElement node )
 		{
-			m_Name = Utility.GetAttribute( node, "name", "empty" );
-			m_Value = Utility.GetText( node, "" );
+			Name = Utility.GetAttribute( node, "name", "empty" );
+			Value = Utility.GetText( node, "" );
 		}
 
 		/// <summary>
@@ -52,8 +42,8 @@ namespace Server.Accounting
 		public void Save( XmlTextWriter xml )
 		{
 			xml.WriteStartElement( "tag" );
-			xml.WriteAttributeString( "name", m_Name );
-			xml.WriteString( m_Value );
+			xml.WriteAttributeString( "name", Name );
+			xml.WriteString( Value );
 			xml.WriteEndElement();
 		}
 	}

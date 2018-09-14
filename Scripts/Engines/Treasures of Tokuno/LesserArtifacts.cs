@@ -625,45 +625,44 @@ namespace Server.Items
 
 	public class AncientUrn : Item
 	{
-		private static string[] m_Names = {
-				"Akira",
-				"Avaniaga",
-				"Aya",
-				"Chie",
-				"Emiko",
-				"Fumiyo",
-				"Gennai",
-				"Gennosuke",
-				"Genjo",
-				"Hamato",
-				"Harumi",
-				"Ikuyo",
-				"Juri",
-				"Kaori",
-				"Kaoru",
-				"Kiyomori",
-				"Mayako",
-				"Motoki",
-				"Musashi",
-				"Nami",
-				"Nobukazu",
-				"Roku",
-				"Romi",
-				"Ryo",
-				"Sanzo",
-				"Sakamae",
-				"Satoshi",
-				"Takamori",
-				"Takuro",
-				"Teruyo",
-				"Toshiro",
-				"Yago",
-				"Yeijiro",
-				"Yoshi",
-				"Zeshin"
-			};
-
-		public static string[] Names  => m_Names;
+		public static string[] Names { get; } =
+		{
+			"Akira",
+			"Avaniaga",
+			"Aya",
+			"Chie",
+			"Emiko",
+			"Fumiyo",
+			"Gennai",
+			"Gennosuke",
+			"Genjo",
+			"Hamato",
+			"Harumi",
+			"Ikuyo",
+			"Juri",
+			"Kaori",
+			"Kaoru",
+			"Kiyomori",
+			"Mayako",
+			"Motoki",
+			"Musashi",
+			"Nami",
+			"Nobukazu",
+			"Roku",
+			"Romi",
+			"Ryo",
+			"Sanzo",
+			"Sakamae",
+			"Satoshi",
+			"Takamori",
+			"Takuro",
+			"Teruyo",
+			"Toshiro",
+			"Yago",
+			"Yeijiro",
+			"Yoshi",
+			"Zeshin"
+		};
 
 		private string m_UrnName;
 
@@ -684,7 +683,7 @@ namespace Server.Items
 		}
 
 		[Constructible]
-		public AncientUrn() : this( m_Names[Utility.Random( m_Names.Length )] )
+		public AncientUrn() : this( Names[Utility.Random( Names.Length )] )
 		{
 		}
 

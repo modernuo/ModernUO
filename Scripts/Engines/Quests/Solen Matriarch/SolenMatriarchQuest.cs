@@ -87,13 +87,11 @@ namespace Server.Engines.Quests.Matriarch
 
 		public override int Picture => 0x15C9;
 
-		private bool m_RedSolen;
-
-		public bool RedSolen => m_RedSolen;
+		public bool RedSolen { get; private set; }
 
 		public SolenMatriarchQuest( PlayerMobile from, bool redSolen ) : base( from )
 		{
-			m_RedSolen = redSolen;
+			RedSolen = redSolen;
 		}
 
 		// Serialization
@@ -105,14 +103,14 @@ namespace Server.Engines.Quests.Matriarch
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_RedSolen = reader.ReadBool();
+			RedSolen = reader.ReadBool();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( (bool) m_RedSolen );
+			writer.Write( (bool) RedSolen );
 		}
 
 		public override void Accept()

@@ -2,12 +2,8 @@ namespace Server.Items
 {
 	public abstract class BaseSuit : Item
 	{
-		private AccessLevel m_AccessLevel;
-
 		[CommandProperty( AccessLevel.Administrator )]
-		public AccessLevel AccessLevel{ get => m_AccessLevel;
-			set => m_AccessLevel = value;
-		}
+		public AccessLevel AccessLevel { get; set; }
 
 		public BaseSuit( AccessLevel level, int hue, int itemID ) : base( itemID )
 		{
@@ -17,7 +13,7 @@ namespace Server.Items
 			LootType = LootType.Newbied;
 			Layer = Layer.OuterTorso;
 
-			m_AccessLevel = level;
+			AccessLevel = level;
 		}
 
 		public BaseSuit( Serial serial ) : base( serial )
@@ -30,7 +26,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( (int) m_AccessLevel );
+			writer.Write( (int) AccessLevel );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -43,7 +39,7 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_AccessLevel = (AccessLevel)reader.ReadInt();
+					AccessLevel = (AccessLevel)reader.ReadInt();
 					break;
 				}
 			}
@@ -53,7 +49,7 @@ namespace Server.Items
 		{
 			object root = RootParent;
 
-			if ( root is Mobile mobile && mobile.AccessLevel < m_AccessLevel )
+			if ( root is Mobile mobile && mobile.AccessLevel < AccessLevel )
 			{
 				Delete();
 				return false;
@@ -76,15 +72,15 @@ namespace Server.Items
 
 		public override bool VerifyMove( Mobile from )
 		{
-			return ( from.AccessLevel >= m_AccessLevel );
+			return ( from.AccessLevel >= AccessLevel );
 		}
 
 		public override bool OnEquip( Mobile from )
 		{
-			if ( from.AccessLevel < m_AccessLevel )
+			if ( from.AccessLevel < AccessLevel )
 				from.SendMessage( "You may not wear this." );
 
-			return ( from.AccessLevel >= m_AccessLevel );
+			return ( from.AccessLevel >= AccessLevel );
 		}
 	}
 }

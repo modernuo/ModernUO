@@ -117,9 +117,8 @@ namespace Server.Multis
 		}
 
 		private ColumnInfo[] m_Columns;
-		private DataRecord[] m_Records;
 
-		public DataRecord[] Records  => m_Records;
+		public DataRecord[] Records { get; }
 
 		public int GetColumnID( string name )
 		{
@@ -174,7 +173,7 @@ namespace Server.Multis
 					records.Add( new DataRecord( this, data ) );
 				}
 
-				m_Records = records.ToArray();
+				Records = records.ToArray();
 			}
 		}
 
@@ -196,16 +195,14 @@ namespace Server.Multis
 
 	public class DataRecord
 	{
-		private Spreadsheet m_Spreadsheet;
-		private object[] m_Data;
+		public Spreadsheet Spreadsheet { get; }
 
-		public Spreadsheet Spreadsheet  => m_Spreadsheet;
-		public object[] Data  => m_Data;
+		public object[] Data { get; }
 
 		public DataRecord( Spreadsheet ss, object[] data )
 		{
-			m_Spreadsheet = ss;
-			m_Data = data;
+			Spreadsheet = ss;
+			Data = data;
 		}
 
 		public int GetInt32( string name )
@@ -231,7 +228,7 @@ namespace Server.Multis
 			return this[name] as string;
 		}
 
-		public object this[string name] => this[m_Spreadsheet.GetColumnID( name )];
+		public object this[string name] => this[Spreadsheet.GetColumnID( name )];
 
 		public object this[int id]
 		{
@@ -240,7 +237,7 @@ namespace Server.Multis
 				if ( id < 0 )
 					return null;
 
-				return m_Data[id];
+				return Data[id];
 			}
 		}
 	}

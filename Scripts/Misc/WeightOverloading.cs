@@ -16,19 +16,13 @@ namespace Server.Misc
 			EventSink.Movement += EventSink_Movement;
 		}
 
-		private static DFAlgorithm m_DFA;
-
-		public static DFAlgorithm DFA
-		{
-			get => m_DFA;
-			set => m_DFA = value;
-		}
+		public static DFAlgorithm DFA { get; set; }
 
 		public static void FatigueOnDamage( Mobile m, int damage )
 		{
 			double fatigue = 0.0;
 
-			switch ( m_DFA )
+			switch ( DFA )
 			{
 				case DFAlgorithm.Standard:
 				{

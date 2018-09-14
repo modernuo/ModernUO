@@ -4,14 +4,8 @@ namespace Server.Mobiles
 {
 	public class PricedHealer : BaseHealer
 	{
-		private int m_Price;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Price
-		{
-			get => m_Price;
-			set => m_Price = value;
-		}
+		public int Price { get; set; }
 
 		[Constructible]
 		public PricedHealer() : this( 5000 )
@@ -21,7 +15,7 @@ namespace Server.Mobiles
 		[Constructible]
 		public PricedHealer( int price )
 		{
-			m_Price = price;
+			Price = price;
 
 			if ( !Core.AOS )
 				NameHue = 0x35;
@@ -43,7 +37,7 @@ namespace Server.Mobiles
 			m.FixedEffect( 0x376A, 10, 16 );
 
 			m.CloseGump( typeof( ResurrectGump ) );
-			m.SendGump( new ResurrectGump( m, this, m_Price ) );
+			m.SendGump( new ResurrectGump( m, this, Price ) );
 		}
 
 		public override bool CheckResurrect( Mobile m )
@@ -61,7 +55,7 @@ namespace Server.Mobiles
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( (int) m_Price );
+			writer.Write( (int) Price );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -74,7 +68,7 @@ namespace Server.Mobiles
 			{
 				case 0:
 				{
-					m_Price = reader.ReadInt();
+					Price = reader.ReadInt();
 					break;
 				}
 			}

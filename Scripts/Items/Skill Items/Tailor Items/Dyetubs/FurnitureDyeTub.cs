@@ -8,14 +8,8 @@ namespace Server.Items
 		public override int FailMessage => 501021; // That is not a piece of furniture.
 		public override int LabelNumber => 1041246; // Furniture Dye Tub
 
-		private bool m_IsRewardItem;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get => m_IsRewardItem;
-			set => m_IsRewardItem = value;
-		}
+		public bool IsRewardItem { get; set; }
 
 		[Constructible]
 		public FurnitureDyeTub()
@@ -25,7 +19,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_IsRewardItem && !Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( from, this, null ) )
+			if ( IsRewardItem && !Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( from, this, null ) )
 				return;
 
 			base.OnDoubleClick( from );
@@ -39,7 +33,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			if ( Core.ML && m_IsRewardItem )
+			if ( Core.ML && IsRewardItem )
 				list.Add( 1076217 ); // 1st Year Veteran Reward
 		}
 
@@ -49,7 +43,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( (bool) m_IsRewardItem );
+			writer.Write( (bool) IsRewardItem );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -62,7 +56,7 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_IsRewardItem = reader.ReadBool();
+					IsRewardItem = reader.ReadBool();
 					break;
 				}
 			}

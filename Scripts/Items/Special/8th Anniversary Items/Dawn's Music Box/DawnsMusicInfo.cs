@@ -9,18 +9,14 @@
 
 	public class DawnsMusicInfo
 	{
-		private int m_Name;
+		public int Name { get; }
 
-		public int Name => m_Name;
-
-		private DawnsMusicRarity m_Rarity;
-
-		public DawnsMusicRarity Rarity => m_Rarity;
+		public DawnsMusicRarity Rarity { get; }
 
 		public DawnsMusicInfo( int name, DawnsMusicRarity rarity )
 		{
-			m_Name = name;
-			m_Rarity = rarity;
+			Name = name;
+			Rarity = rarity;
 		}
 	}
 }

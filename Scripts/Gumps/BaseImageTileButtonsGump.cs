@@ -47,9 +47,7 @@ namespace Server.Gumps
 
 	public class BaseImageTileButtonsGump : Gump
 	{
-		private ImageTileButtonInfo[] m_Buttons;
-
-		protected ImageTileButtonInfo[] Buttons => m_Buttons;
+		protected ImageTileButtonInfo[] Buttons { get; }
 
 		protected virtual int XItems => 2;
 		protected virtual int YItems => 5;
@@ -59,7 +57,7 @@ namespace Server.Gumps
 		}
 		public BaseImageTileButtonsGump( TextDefinition header, ImageTileButtonInfo[] buttons ) : base( 10, 10 )	//Coords are 0, o on OSI, intentional difference
 		{
-			m_Buttons = buttons;
+			Buttons = buttons;
 			AddPage( 0 );
 
 			int x = XItems * 250;

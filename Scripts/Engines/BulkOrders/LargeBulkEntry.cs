@@ -5,18 +5,15 @@ namespace Server.Engines.BulkOrders
 {
 	public class LargeBulkEntry
 	{
-		private LargeBOD m_Owner;
 		private int m_Amount;
-		private SmallBulkEntry m_Details;
 
-		public LargeBOD Owner{ get => m_Owner;
-			set => m_Owner = value;
-		}
+		public LargeBOD Owner { get; set; }
+
 		public int Amount{ get => m_Amount;
 			set{ m_Amount = value;
-				m_Owner?.InvalidateProperties();
+				Owner?.InvalidateProperties();
 			} }
-		public SmallBulkEntry Details => m_Details;
+		public SmallBulkEntry Details { get; }
 
 		public static SmallBulkEntry[] LargeRing => GetEntries( "Blacksmith", "largering" );
 
@@ -92,13 +89,13 @@ namespace Server.Engines.BulkOrders
 
 		public LargeBulkEntry( LargeBOD owner, SmallBulkEntry details )
 		{
-			m_Owner = owner;
-			m_Details = details;
+			Owner = owner;
+			Details = details;
 		}
 
 		public LargeBulkEntry( LargeBOD owner, GenericReader reader )
 		{
-			m_Owner = owner;
+			Owner = owner;
 			m_Amount = reader.ReadInt();
 
 			Type realType = null;
@@ -108,15 +105,15 @@ namespace Server.Engines.BulkOrders
 			if ( type != null )
 				realType = ScriptCompiler.FindTypeByFullName( type );
 
-			m_Details = new SmallBulkEntry( realType, reader.ReadInt(), reader.ReadInt() );
+			Details = new SmallBulkEntry( realType, reader.ReadInt(), reader.ReadInt() );
 		}
 
 		public void Serialize( GenericWriter writer )
 		{
 			writer.Write( m_Amount );
-			writer.Write( m_Details.Type == null ? null : m_Details.Type.FullName );
-			writer.Write( m_Details.Number );
-			writer.Write( m_Details.Graphic );
+			writer.Write( Details.Type == null ? null : Details.Type.FullName );
+			writer.Write( Details.Number );
+			writer.Write( Details.Graphic );
 		}
 	}
 }

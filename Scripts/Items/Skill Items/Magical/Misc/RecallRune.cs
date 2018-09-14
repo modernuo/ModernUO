@@ -10,7 +10,6 @@ namespace Server.Items
 	{
 		private string m_Description;
 		private bool m_Marked;
-		private Point3D m_Target;
 		private Map m_TargetMap;
 		private BaseHouse m_House;
 
@@ -31,7 +30,7 @@ namespace Server.Items
 
 			writer.Write( (string) m_Description );
 			writer.Write( (bool) m_Marked );
-			writer.Write( (Point3D) m_Target );
+			writer.Write( (Point3D) Target );
 			writer.Write( (Map) m_TargetMap );
 		}
 
@@ -52,7 +51,7 @@ namespace Server.Items
 				{
 					m_Description = reader.ReadString();
 					m_Marked = reader.ReadBool();
-					m_Target = reader.ReadPoint3D();
+					Target = reader.ReadPoint3D();
 					m_TargetMap = reader.ReadMap();
 
 					CalculateHue();
@@ -102,11 +101,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public Point3D Target
-		{
-			get => m_Target;
-			set => m_Target = value;
-		}
+		public Point3D Target { get; set; }
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
 		public Map TargetMap
@@ -150,7 +145,7 @@ namespace Server.Items
 
 				if ( m_House == null )
 				{
-					m_Target = m.Location;
+					Target = m.Location;
 					m_TargetMap = m.Map;
 				}
 				else
@@ -176,19 +171,19 @@ namespace Server.Items
 					if ( map != null && !map.CanFit( x, y, z, 16, false, false ) )
 						z = map.GetAverageZ( x, y );
 
-					m_Target = new Point3D( x, y, z );
+					Target = new Point3D( x, y, z );
 					m_TargetMap = map;
 				}
 			}
 			else
 			{
 				m_House = null;
-				m_Target = m.Location;
+				Target = m.Location;
 				m_TargetMap = m.Map;
 			}
 
 			if ( !setDesc )
-				m_Description = BaseRegion.GetRuneNameFor( Region.Find( m_Target, m_TargetMap ) );
+				m_Description = BaseRegion.GetRuneNameFor( Region.Find( Target, m_TargetMap ) );
 
 			CalculateHue();
 			InvalidateProperties();

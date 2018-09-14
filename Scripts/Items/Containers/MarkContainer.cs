@@ -61,9 +61,6 @@ namespace Server.Items
 
 		private bool m_AutoLock;
 		private InternalTimer m_RelockTimer;
-		private Map m_TargetMap;
-		private Point3D m_Target;
-		private string m_Description;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool AutoLock
@@ -81,14 +78,10 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Map TargetMap { get => m_TargetMap;
-			set => m_TargetMap = value;
-		}
+		public Map TargetMap { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Target { get => m_Target;
-			set => m_Target = value;
-		}
+		public Point3D Target { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Bone
@@ -102,9 +95,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Description { get => m_Description;
-			set => m_Description = value;
-		}
+		public string Description { get; set; }
 
 		public override bool IsDecoContainer => false;
 
@@ -164,11 +155,9 @@ namespace Server.Items
 
 		private class InternalTimer : Timer
 		{
-			private MarkContainer m_Container;
-			private DateTime m_RelockTime;
+			public MarkContainer Container { get; }
 
-			public MarkContainer Container  => m_Container;
-			public DateTime RelockTime  => m_RelockTime;
+			public DateTime RelockTime { get; }
 
 			public InternalTimer( MarkContainer container ) : this( container, TimeSpan.FromMinutes( 5.0 ) )
 			{
@@ -176,16 +165,16 @@ namespace Server.Items
 
 			public InternalTimer( MarkContainer container, TimeSpan delay ) : base( delay )
 			{
-				m_Container = container;
-				m_RelockTime = DateTime.UtcNow + delay;
+				Container = container;
+				RelockTime = DateTime.UtcNow + delay;
 
 				Start();
 			}
 
 			protected override void OnTick()
 			{
-				m_Container.Locked = true;
-				m_Container.LockLevel = -255;
+				Container.Locked = true;
+				Container.LockLevel = -255;
 			}
 		}
 
@@ -194,9 +183,9 @@ namespace Server.Items
 			if ( TargetMap != null )
 			{
 				rune.Marked = true;
-				rune.TargetMap = m_TargetMap;
-				rune.Target = m_Target;
-				rune.Description = m_Description;
+				rune.TargetMap = TargetMap;
+				rune.Target = Target;
+				rune.Description = Description;
 				rune.House = null;
 			}
 		}
@@ -234,9 +223,9 @@ namespace Server.Items
 			if ( !Locked && m_AutoLock )
 				writer.WriteDeltaTime( m_RelockTimer.RelockTime );
 
-			writer.Write( m_TargetMap );
-			writer.Write( m_Target );
-			writer.Write( m_Description );
+			writer.Write( TargetMap );
+			writer.Write( Target );
+			writer.Write( Description );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -250,9 +239,9 @@ namespace Server.Items
 			if ( !Locked && m_AutoLock )
 				m_RelockTimer = new InternalTimer( this, reader.ReadDeltaTime() - DateTime.UtcNow );
 
-			m_TargetMap = reader.ReadMap();
-			m_Target = reader.ReadPoint3D();
-			m_Description = reader.ReadString();
+			TargetMap = reader.ReadMap();
+			Target = reader.ReadPoint3D();
+			Description = reader.ReadString();
 		}
 	}
 }

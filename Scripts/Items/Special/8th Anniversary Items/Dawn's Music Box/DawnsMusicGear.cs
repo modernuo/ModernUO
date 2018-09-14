@@ -11,14 +11,8 @@ namespace Server.Items
 
 		public static DawnsMusicGear RandomRare => new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Rare ) );
 
-		private MusicName m_Music;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public MusicName Music
-		{
-			get => m_Music;
-			set => m_Music = value;
-		}
+		public MusicName Music { get; set; }
 
 		[Constructible]
 		public DawnsMusicGear() : this( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Common ) )
@@ -28,7 +22,7 @@ namespace Server.Items
 		[Constructible]
 		public DawnsMusicGear( MusicName music ) : base( 0x1053 )
 		{
-			m_Music = music;
+			Music = music;
 
 			Weight = 1.0;
 		}
@@ -39,7 +33,7 @@ namespace Server.Items
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{
-			DawnsMusicInfo info = DawnsMusicBox.GetInfo( m_Music );
+			DawnsMusicInfo info = DawnsMusicBox.GetInfo( Music );
 
 			if ( info != null )
 			{
@@ -67,7 +61,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( (int) 1 ); // version
 
-			writer.Write( (int) m_Music );
+			writer.Write( (int) Music );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -80,7 +74,7 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_Music = (MusicName) reader.ReadInt();
+					Music = (MusicName) reader.ReadInt();
 					break;
 				}
 			}
@@ -97,7 +91,7 @@ namespace Server.Items
 				else
 					rarity = DawnsMusicRarity.Common;
 
-				m_Music = DawnsMusicBox.RandomTrack( rarity );
+				Music = DawnsMusicBox.RandomTrack( rarity );
 			}
 		}
 

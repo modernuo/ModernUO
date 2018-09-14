@@ -37,8 +37,6 @@ namespace Server.Gumps
 		private int m_Width;
 		private int m_Height;
 
-		private int m_LocalizedTooltip;
-
 		public GumpImageTileButton( int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param, int itemID, int hue, int width, int height ) : this(x, y, normalID, pressedID, buttonID, type, param, itemID, hue, width, height, -1 )
 		{
 		}
@@ -57,7 +55,7 @@ namespace Server.Gumps
 			m_Width = width;
 			m_Height = height;
 
-			m_LocalizedTooltip = localizedTooltip;
+			LocalizedTooltip = localizedTooltip;
 		}
 
 		public int X
@@ -136,17 +134,13 @@ namespace Server.Gumps
 			set => Delta( ref m_Height, value );
 		}
 
-		public int LocalizedTooltip
-		{
-			get => m_LocalizedTooltip;
-			set => m_LocalizedTooltip = value;
-		}
+		public int LocalizedTooltip { get; set; }
 
 		public override string Compile( NetState ns )
 		{
-			if ( m_LocalizedTooltip > 0 )
+			if ( LocalizedTooltip > 0 )
 				return
-					$"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{{ tooltip {m_LocalizedTooltip} }}";
+					$"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{{ tooltip {LocalizedTooltip} }}";
 			return
 				$"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}";
 		}
@@ -170,10 +164,10 @@ namespace Server.Gumps
 			disp.AppendLayout( m_Width );
 			disp.AppendLayout( m_Height );
 
-			if ( m_LocalizedTooltip > 0 )
+			if ( LocalizedTooltip > 0 )
 			{
 				disp.AppendLayout( m_LayoutTooltip );
-				disp.AppendLayout( m_LocalizedTooltip );
+				disp.AppendLayout( LocalizedTooltip );
 			}
 		}
 	}

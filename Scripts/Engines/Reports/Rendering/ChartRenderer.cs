@@ -29,16 +29,11 @@ namespace Server.Engines.Reports
 			};
 
 		// Represent collection of all data points for the chart
-		private ChartItemsCollection _dataPoints = new ChartItemsCollection();  
 
 		// The implementation of this method is provided by derived classes
 		public abstract Bitmap Draw();	
 
-		public ChartItemsCollection DataPoints
-		{
-			get => _dataPoints;
-			set => _dataPoints = value;
-		}
+		public ChartItemsCollection DataPoints { get; set; } = new ChartItemsCollection();
 
 		public void SetColor(int index, Color NewColor)
 		{

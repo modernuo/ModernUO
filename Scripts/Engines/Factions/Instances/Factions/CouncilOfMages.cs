@@ -2,13 +2,11 @@ namespace Server.Factions
 {
 	public class CouncilOfMages : Faction
 	{
-		private static Faction m_Instance;
-
-		public static Faction Instance => m_Instance;
+		public static Faction Instance { get; private set; }
 
 		public CouncilOfMages()
 		{
-			m_Instance = this;
+			Instance = this;
 
 			Definition =
 				new FactionDefinition(

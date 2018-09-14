@@ -38,11 +38,8 @@ namespace Server.Engines.Reports
 
 		public BarRegion[] _regions;
 
-		private BarGraphRenderMode _renderMode;
-
 		// Overall related members
 		private Color	_backColor;
-		private string	_fontFamily;
 		private string	_longestTickValue = string.Empty;	// Used to calculate max value width
 		private float	_maxTickValueWidth;					// Used to calculate left offset of bar graph
 		private float	_totalHeight;
@@ -51,7 +48,6 @@ namespace Server.Engines.Reports
 		// Graph related members
 		private float	_barWidth;
 		private float	_bottomBuffer;	// Space from bottom to x axis
-		private bool	_displayBarData;
 		private Color	_fontColor;
 		private float	_graphHeight;
 		private float	_graphWidth;
@@ -61,27 +57,16 @@ namespace Server.Engines.Reports
 		private float	_topBuffer;		// Space from top to the top of y axis
 		private float	_xOrigin;			// x position where graph starts drawing
 		private float	_yOrigin;			// y position where graph starts drawing
-		private string	_yLabel;
-		private int		_yTickCount;
 		private float	_yTickValue;		// Value for each tick = _maxValue/_yTickCount
 
 		// Legend related members
-		private bool	_displayLegend;
 		private float	_legendWidth;
 		private string	_longestLabel = string.Empty;	// Used to calculate legend width
 		private float	_maxLabelWidth;
 
-		public string FontFamily
-		{
-			get => _fontFamily;
-			set => _fontFamily = value;
-		}
+		public string FontFamily { get; set; }
 
-		public BarGraphRenderMode RenderMode
-		{
-			get => _renderMode;
-			set => _renderMode = value;
-		}
+		public BarGraphRenderMode RenderMode { get; set; }
 
 		public Color BackgroundColor
 		{
@@ -110,33 +95,18 @@ namespace Server.Engines.Reports
 			set => _totalWidth = Convert.ToSingle(value);
 		}
 
-		public bool ShowLegend
-		{
-			get => _displayLegend;
-			set => _displayLegend = value;
-		}
+		public bool ShowLegend { get; set; }
 
-		public bool ShowData
-		{
-			get => _displayBarData;
-			set => _displayBarData = value;
-		}
+		public bool ShowData { get; set; }
+
 		public int TopBuffer
 		{
 			set => _topBuffer = Convert.ToSingle(value);
 		}
 
-		public string VerticalLabel
-		{
-			get => _yLabel;
-			set => _yLabel = value;
-		}
+		public string VerticalLabel { get; set; }
 
-		public int VerticalTickCount
-		{
-			get => _yTickCount;
-			set => _yTickCount = value;
-		}
+		public int VerticalTickCount { get; set; }
 
 		private string _xTitle, _yTitle;
 
@@ -182,7 +152,7 @@ namespace Server.Engines.Reports
 					if (_maxValue < temp) _maxValue = temp;
 
 					// Find the longest description
-					if (_displayLegend)
+					if (ShowLegend)
 					{
 						string currentLbl = labels[i] + " (" + shortLbl + ")";
 						float currentWidth = CalculateImgFontWidth(currentLbl, _legendFontSize, FontFamily);
@@ -225,7 +195,7 @@ namespace Server.Engines.Reports
 				textFormat.Alignment = StringAlignment.Center;
 				textFormat.LineAlignment = StringAlignment.Center;
 
-				using ( Font font = new Font( _fontFamily, _labelFontSize ) )
+				using ( Font font = new Font( FontFamily, _labelFontSize ) )
 				{
 					using ( Brush textBrush = new SolidBrush( _fontColor ) )
 					{
@@ -288,7 +258,7 @@ namespace Server.Engines.Reports
 				DrawBars(graph);
 				DrawXLabelArea(graph);
 
-				if (_displayLegend)
+				if (ShowLegend)
 					DrawLegend(graph);
 			}
 
@@ -312,14 +282,14 @@ namespace Server.Engines.Reports
 			try
 			{
 				brsFont = new SolidBrush(_fontColor);
-				valFont = new Font(_fontFamily, _labelFontSize);
+				valFont = new Font(FontFamily, _labelFontSize);
 				sfFormat = new StringFormat();
 				sfFormat.Alignment = StringAlignment.Center;
 				int i = 0;
 
 				PointF[] linePoints = null;
 
-				if ( _renderMode == BarGraphRenderMode.Lines )
+				if ( RenderMode == BarGraphRenderMode.Lines )
 					linePoints = new PointF[DataPoints.Count];
 
 				int pointIndex = 0;
@@ -335,11 +305,11 @@ namespace Server.Engines.Reports
 							{
 								float itemY = _yOrigin + _graphHeight - item.SweepSize;
 
-								if ( _renderMode == BarGraphRenderMode.Lines )
+								if ( RenderMode == BarGraphRenderMode.Lines )
 								{
 									linePoints[pointIndex++] = new PointF( _xOrigin + item.StartPos + (_barWidth / 2), itemY );
 								}
-								else if ( _renderMode == BarGraphRenderMode.Bars )
+								else if ( RenderMode == BarGraphRenderMode.Bars )
 								{
 									float ox = _xOrigin + item.StartPos;
 									float oy = itemY;
@@ -376,7 +346,7 @@ namespace Server.Engines.Reports
 									graph.DrawLine( pen, pts[3], pts[6] );
 
 									// Draw data value
-									if (_displayBarData&&(i%_interval)==0)
+									if (ShowData&&(i%_interval)==0)
 									{
 										float sectionWidth = ( _barWidth + _spaceBtwBars );
 										float startX = _xOrigin + (i * sectionWidth) + (sectionWidth / 2);  // This draws the value on center of the bar
@@ -408,7 +378,7 @@ namespace Server.Engines.Reports
 							}
 						}
 
-						if ( _renderMode == BarGraphRenderMode.Lines )
+						if ( RenderMode == BarGraphRenderMode.Lines )
 						{
 							if ( linePoints.Length >= 2 )
 							{
@@ -426,7 +396,7 @@ namespace Server.Engines.Reports
 									float itemY = _yOrigin + _graphHeight - item.SweepSize;
 
 									// Draw data value
-									if (_displayBarData&&(j%_interval)==0)
+									if (ShowData&&(j%_interval)==0)
 									{
 										graph.FillEllipse( brsFont, new RectangleF( linePoints[j].X-2.0f, linePoints[j].Y-2.0f, 4.0f, 4.0f ) );
 
@@ -495,7 +465,7 @@ namespace Server.Engines.Reports
 					sfVLabel.LineAlignment = StringAlignment.Center;
 					sfVLabel.FormatFlags=StringFormatFlags.DirectionVertical;
 
-					lblFont = new Font(_fontFamily, _labelFontSize+4.0f);
+					lblFont = new Font(FontFamily, _labelFontSize+4.0f);
 					graph.DrawString(_yTitle,lblFont,brs,new RectangleF( 0.0f, _yOrigin, 20.0f, _graphHeight ), sfVLabel );
 					lblFont.Dispose();
 				}
@@ -505,19 +475,19 @@ namespace Server.Engines.Reports
 				lblFormat.FormatFlags|=StringFormatFlags.NoClip;
 
 				// Draw vertical label at the top of y-axis and place it in the middle top of y-axis
-				lblFont = new Font(_fontFamily, _labelFontSize+2.0f,FontStyle.Bold);
+				lblFont = new Font(FontFamily, _labelFontSize+2.0f,FontStyle.Bold);
 				RectangleF recVLabel = new RectangleF(0, _yOrigin-2*_spacer-lblFont.Height, _xOrigin*2, lblFont.Height);
 				sfVLabel.Alignment = StringAlignment.Center;
 				sfVLabel.FormatFlags|=StringFormatFlags.NoClip;
 				//graph.DrawRectangle(Pens.Black,Rectangle.Truncate(recVLabel));
-				graph.DrawString(_yLabel, lblFont, brs, recVLabel, sfVLabel);
+				graph.DrawString(VerticalLabel, lblFont, brs, recVLabel, sfVLabel);
 				lblFont.Dispose();
 
-				lblFont = new Font(_fontFamily, _labelFontSize);
+				lblFont = new Font(FontFamily, _labelFontSize);
 				// Draw all tick values and tick marks
 				using ( Pen smallPen = new Pen(Color.FromArgb(96,_fontColor),0.8f) )
 				{
-					for (int i=0; i<_yTickCount; i++)
+					for (int i=0; i<VerticalTickCount; i++)
 					{
 						float currentY = _topBuffer + (i * _yTickValue/_scaleFactor);	// Position for tick mark
 						float labelY = currentY-lblFont.Height/2;						// Place label in the middle of tick
@@ -559,7 +529,7 @@ namespace Server.Engines.Reports
 
 			try
 			{
-				lblFont = new Font(_fontFamily, _labelFontSize);
+				lblFont = new Font(FontFamily, _labelFontSize);
 				brs = new SolidBrush(_fontColor);
 				lblFormat = new StringFormat();
 				pen = new Pen(_fontColor);
@@ -597,11 +567,11 @@ namespace Server.Engines.Reports
 					lblFormat.LineAlignment = StringAlignment.Center;
 					//					sfVLabel.FormatFlags=StringFormatFlags.DirectionVertical;
 
-					lblFont = new Font(_fontFamily, _labelFontSize+2.0f, FontStyle.Bold);
-					graph.DrawString(_xTitle,lblFont,brs,new RectangleF( _xOrigin, _yOrigin+_graphHeight+14.0f+(_renderMode==BarGraphRenderMode.Bars?10.0f:0.0f)+((DataPoints.Count/_interval)>24?16.0f:0.0f), _graphWidth, 20.0f ), lblFormat );
+					lblFont = new Font(FontFamily, _labelFontSize+2.0f, FontStyle.Bold);
+					graph.DrawString(_xTitle,lblFont,brs,new RectangleF( _xOrigin, _yOrigin+_graphHeight+14.0f+(RenderMode==BarGraphRenderMode.Bars?10.0f:0.0f)+((DataPoints.Count/_interval)>24?16.0f:0.0f), _graphWidth, 20.0f ), lblFormat );
 				}
 
-				lblFont = new Font(_fontFamily, _labelFontSize);
+				lblFont = new Font(FontFamily, _labelFontSize);
 				lblFormat = new StringFormat();
 				lblFormat.Alignment = StringAlignment.Center;
 				lblFormat.FormatFlags |= StringFormatFlags.NoClip;
@@ -610,7 +580,7 @@ namespace Server.Engines.Reports
 
 				float of = 0.0f;
 
-				if ( _renderMode == BarGraphRenderMode.Bars )
+				if ( RenderMode == BarGraphRenderMode.Bars )
 				{
 					of = 10.0f;
 
@@ -633,7 +603,7 @@ namespace Server.Engines.Reports
 					{
 						currentX = _xOrigin + (i * labelWidth)+of+(labelWidth/2);
 						RectangleF recLbl = new RectangleF(currentX-((labelWidth*_interval)/2), currentY+of, labelWidth*_interval, lblFont.Height*2);
-						string lblString = _displayLegend ? item.Label : item.Description;	// Decide what to show: short or long
+						string lblString = ShowLegend ? item.Label : item.Description;	// Decide what to show: short or long
 
 						graph.DrawString(lblString, lblFont, brs, recLbl, lblFormat);
 					}
@@ -665,7 +635,7 @@ namespace Server.Engines.Reports
 
 			try
 			{
-				lblFont = new Font(_fontFamily, _legendFontSize);
+				lblFont = new Font(FontFamily, _legendFontSize);
 				brs = new SolidBrush(_fontColor);
 				lblFormat = new StringFormat();
 				pen = new Pen(_fontColor);
@@ -723,7 +693,7 @@ namespace Server.Engines.Reports
 
 			float currentTick;
 			string tickString;
-			for (int i=0; i<_yTickCount; i++)
+			for (int i=0; i<VerticalTickCount; i++)
 			{
 				currentTick = _maxValue - i*_yTickValue;
 				tickString = currentTick.ToString("#,###.##");
@@ -737,7 +707,7 @@ namespace Server.Engines.Reports
 			float leftOffset = _spacer + _maxTickValueWidth + (_yTitle == null ? 0.0f : 20.0f);
 			float rtOffset = 0.0f;
 
-			if (_displayLegend)
+			if (ShowLegend)
 			{
 				_legendWidth = _spacer + _legendRectangleSize + _spacer + _maxLabelWidth + _spacer;
 				rtOffset = _graphLegendSpacer + _legendWidth + _spacer;
@@ -745,7 +715,7 @@ namespace Server.Engines.Reports
 			else
 				rtOffset = _spacer;		// Make graph in the middle
 
-			if ( _renderMode == BarGraphRenderMode.Bars )
+			if ( RenderMode == BarGraphRenderMode.Bars )
 				rtOffset += 10.0f;
 
 			rtOffset+=10.0f;
@@ -770,7 +740,7 @@ namespace Server.Engines.Reports
 		{
 			float currentTick;
 			string tickString;
-			for (int i=0; i<_yTickCount; i++)
+			for (int i=0; i<VerticalTickCount; i++)
 			{
 				currentTick = _maxValue - i*_yTickValue;
 				tickString = currentTick.ToString("#,###.##");
@@ -852,12 +822,12 @@ namespace Server.Engines.Reports
 				tempMax = 1.0f;
 
 			// Once max value is calculated, tick value can be determined; tick value should be a whole number
-			_yTickValue = tempMax / _yTickCount;
+			_yTickValue = tempMax / VerticalTickCount;
 			double expTick = Convert.ToDouble(Math.Floor(Math.Log10(_yTickValue)));
 			_yTickValue = Convert.ToSingle(Math.Ceiling(_yTickValue / Math.Pow(10, expTick)) * Math.Pow(10, expTick));
 
 			// Re-calculate the max value with the new tick value
-			_maxValue = _yTickValue * _yTickCount;
+			_maxValue = _yTickValue * VerticalTickCount;
 		}
 
 		//*********************************************************************
@@ -908,14 +878,14 @@ namespace Server.Engines.Reports
 			// default values
 			_totalWidth = 680f;
 			_totalHeight = 450f;
-			_fontFamily = "Verdana";
+			FontFamily = "Verdana";
 			_backColor = Color.White;
 			_fontColor = Color.Black;
 			_topBuffer = 30f;
 			_bottomBuffer = 30f;
-			_yTickCount = 2;
-			_displayLegend = false;
-			_displayBarData = false;
+			VerticalTickCount = 2;
+			ShowLegend = false;
+			ShowData = false;
 		}
 	}
 }

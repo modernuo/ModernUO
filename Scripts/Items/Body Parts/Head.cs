@@ -11,40 +11,29 @@ namespace Server.Items
 
 	public class Head : Item
 	{
-		private string m_PlayerName;
-		private HeadType m_HeadType;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string PlayerName { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string PlayerName
-		{
-			get => m_PlayerName;
-			set => m_PlayerName = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public HeadType HeadType
-		{
-			get => m_HeadType;
-			set => m_HeadType = value;
-		}
+		public HeadType HeadType { get; set; }
 
 		public override string DefaultName
 		{
 			get
 			{
-				if ( m_PlayerName == null )
+				if ( PlayerName == null )
 					return base.DefaultName;
 
-				switch ( m_HeadType )
+				switch ( HeadType )
 				{
 					default:
-						return $"the head of {m_PlayerName}";
+						return $"the head of {PlayerName}";
 
 					case HeadType.Duel:
-						return $"the head of {m_PlayerName}, taken in a duel";
+						return $"the head of {PlayerName}, taken in a duel";
 
 					case HeadType.Tournament:
-						return $"the head of {m_PlayerName}, taken in a tournament";
+						return $"the head of {PlayerName}, taken in a tournament";
 				}
 			}
 		}
@@ -65,8 +54,8 @@ namespace Server.Items
 		public Head( HeadType headType, string playerName )
 			: base( 0x1DA0 )
 		{
-			m_HeadType = headType;
-			m_PlayerName = playerName;
+			HeadType = headType;
+			PlayerName = playerName;
 		}
 
 		public Head( Serial serial )
@@ -80,8 +69,8 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( (string) m_PlayerName );
-			writer.WriteEncodedInt( (int) m_HeadType );
+			writer.Write( (string) PlayerName );
+			writer.WriteEncodedInt( (int) HeadType );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -93,8 +82,8 @@ namespace Server.Items
 			switch ( version )
 			{
 				case 1:
-					m_PlayerName = reader.ReadString();
-					m_HeadType = (HeadType) reader.ReadEncodedInt();
+					PlayerName = reader.ReadString();
+					HeadType = (HeadType) reader.ReadEncodedInt();
 					break;
 
 				case 0:
@@ -108,16 +97,16 @@ namespace Server.Items
 						if ( format.EndsWith( ", taken in a duel" ) )
 						{
 							format = format.Substring( 0, format.Length - ", taken in a duel".Length );
-							m_HeadType = HeadType.Duel;
+							HeadType = HeadType.Duel;
 						}
 						else if ( format.EndsWith( ", taken in a tournament" ) )
 						{
 							format = format.Substring( 0, format.Length - ", taken in a tournament".Length );
-							m_HeadType = HeadType.Tournament;
+							HeadType = HeadType.Tournament;
 						}
 					}
 
-					m_PlayerName = format;
+					PlayerName = format;
 					Name = null;
 
 					break;

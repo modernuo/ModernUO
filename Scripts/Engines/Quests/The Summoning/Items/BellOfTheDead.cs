@@ -16,30 +16,14 @@ namespace Server.Engines.Quests.Doom
 			Movable = false;
 		}
 
-		private Chyloth m_Chyloth;
-		private SkeletalDragon m_Dragon;
-		private bool m_Summoning;
+		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
+		public Chyloth Chyloth { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public Chyloth Chyloth
-		{
-			get => m_Chyloth;
-			set => m_Chyloth = value;
-		}
+		public SkeletalDragon Dragon { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public SkeletalDragon Dragon
-		{
-			get => m_Dragon;
-			set => m_Dragon = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public bool Summoning
-		{
-			get => m_Summoning;
-			set => m_Summoning = value;
-		}
+		public bool Summoning { get; set; }
 
 		public override void OnDoubleClick( Mobile from )
 		{
@@ -51,17 +35,17 @@ namespace Server.Engines.Quests.Doom
 
 		public virtual void BeginSummon( Mobile from )
 		{
-			if ( m_Chyloth != null && !m_Chyloth.Deleted )
+			if ( Chyloth != null && !Chyloth.Deleted )
 			{
 				from.SendLocalizedMessage( 1050010 ); // The ferry man has already been summoned.  There is no need to ring for him again.
 			}
-			else if ( m_Dragon != null && !m_Dragon.Deleted )
+			else if ( Dragon != null && !Dragon.Deleted )
 			{
 				from.SendLocalizedMessage( 1050017 ); // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
 			}
-			else if ( !m_Summoning )
+			else if ( !Summoning )
 			{
-				m_Summoning = true;
+				Summoning = true;
 
 				Effects.PlaySound( GetWorldLocation(), Map, 0x100 );
 
@@ -73,17 +57,17 @@ namespace Server.Engines.Quests.Doom
 		{
 			Mobile from = (Mobile)state;
 
-			if ( m_Chyloth != null && !m_Chyloth.Deleted )
+			if ( Chyloth != null && !Chyloth.Deleted )
 			{
 				from.SendLocalizedMessage( 1050010 ); // The ferry man has already been summoned.  There is no need to ring for him again.
 			}
-			else if ( m_Dragon != null && !m_Dragon.Deleted )
+			else if ( Dragon != null && !Dragon.Deleted )
 			{
 				from.SendLocalizedMessage( 1050017 ); // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
 			}
-			else if ( m_Summoning )
+			else if ( Summoning )
 			{
-				m_Summoning = false;
+				Summoning = false;
 
 				Point3D loc = GetWorldLocation();
 
@@ -92,15 +76,15 @@ namespace Server.Engines.Quests.Doom
 				Effects.SendLocationParticles( EffectItem.Create( loc, Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 0, 0, 2023, 0 );
 				Effects.PlaySound( loc, Map, 0x1FE );
 
-				m_Chyloth = new Chyloth();
+				Chyloth = new Chyloth();
 
-				m_Chyloth.Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo( loc )));
-				m_Chyloth.MoveToWorld( loc, Map );
+				Chyloth.Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo( loc )));
+				Chyloth.MoveToWorld( loc, Map );
 
-				m_Chyloth.Bell = this;
-				m_Chyloth.AngryAt = from;
-				m_Chyloth.BeginGiveWarning();
-				m_Chyloth.BeginRemove( TimeSpan.FromSeconds( 40.0 ) );
+				Chyloth.Bell = this;
+				Chyloth.AngryAt = from;
+				Chyloth.BeginGiveWarning();
+				Chyloth.BeginRemove( TimeSpan.FromSeconds( 40.0 ) );
 			}
 		}
 
@@ -114,8 +98,8 @@ namespace Server.Engines.Quests.Doom
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( (Mobile) m_Chyloth );
-			writer.Write( (Mobile) m_Dragon );
+			writer.Write( (Mobile) Chyloth );
+			writer.Write( (Mobile) Dragon );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -124,10 +108,10 @@ namespace Server.Engines.Quests.Doom
 
 			int version = reader.ReadInt();
 
-			m_Chyloth = reader.ReadMobile() as Chyloth;
-			m_Dragon = reader.ReadMobile() as SkeletalDragon;
+			Chyloth = reader.ReadMobile() as Chyloth;
+			Dragon = reader.ReadMobile() as SkeletalDragon;
 
-			m_Chyloth?.Delete();
+			Chyloth?.Delete();
 		}
 	}
 }

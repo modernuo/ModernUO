@@ -9,25 +9,23 @@ namespace Server.Engines.Mahjong
 			return new MahjongPieceDim( position, 20, 40 );
 		}
 
-		private MahjongGame m_Game;
-		private Point2D m_Position;
-		private MahjongPieceDirection m_Direction;
-		private MahjongWind m_Wind;
+		public MahjongGame Game { get; }
 
-		public MahjongGame Game  => m_Game;
-		public Point2D Position  => m_Position;
-		public MahjongPieceDirection Direction  => m_Direction;
-		public MahjongWind Wind  => m_Wind;
+		public Point2D Position { get; private set; }
+
+		public MahjongPieceDirection Direction { get; private set; }
+
+		public MahjongWind Wind { get; private set; }
 
 		public MahjongDealerIndicator( MahjongGame game, Point2D position, MahjongPieceDirection direction, MahjongWind wind )
 		{
-			m_Game = game;
-			m_Position = position;
-			m_Direction = direction;
-			m_Wind = wind;
+			Game = game;
+			Position = position;
+			Direction = direction;
+			Wind = wind;
 		}
 
-		public MahjongPieceDim Dimensions => GetDimensions( m_Position, m_Direction );
+		public MahjongPieceDim Dimensions => GetDimensions( Position, Direction );
 
 		public void Move( Point2D position, MahjongPieceDirection direction, MahjongWind wind )
 		{
@@ -36,31 +34,31 @@ namespace Server.Engines.Mahjong
 			if ( !dim.IsValid() )
 				return;
 
-			m_Position = position;
-			m_Direction = direction;
-			m_Wind = wind;
+			Position = position;
+			Direction = direction;
+			Wind = wind;
 
-			m_Game.Players.SendGeneralPacket( true, true );
+			Game.Players.SendGeneralPacket( true, true );
 		}
 
 		public void Save( GenericWriter writer )
 		{
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( m_Position );
-			writer.Write( (int) m_Direction );
-			writer.Write( (int) m_Wind );
+			writer.Write( Position );
+			writer.Write( (int) Direction );
+			writer.Write( (int) Wind );
 		}
 
 		public MahjongDealerIndicator( MahjongGame game, GenericReader reader )
 		{
-			m_Game = game;
+			Game = game;
 
 			int version = reader.ReadInt();
 
-			m_Position = reader.ReadPoint2D();
-			m_Direction = (MahjongPieceDirection) reader.ReadInt();
-			m_Wind = (MahjongWind) reader.ReadInt();
+			Position = reader.ReadPoint2D();
+			Direction = (MahjongPieceDirection) reader.ReadInt();
+			Wind = (MahjongWind) reader.ReadInt();
 		}
 	}
 }

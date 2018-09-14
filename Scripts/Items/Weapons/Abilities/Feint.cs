@@ -9,8 +9,7 @@ namespace Server.Items
 	/// </summary>
 	public class Feint : WeaponAbility
 	{
-		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry  => m_Registry;
+		public static Hashtable Registry { get; } = new Hashtable();
 
 		public Feint()
 		{
@@ -57,15 +56,14 @@ namespace Server.Items
 		public class FeintTimer : Timer
 		{
 			private Mobile m_Defender;
-			private int m_SwingSpeedReduction;
 
-			public int SwingSpeedReduction  => m_SwingSpeedReduction;
+			public int SwingSpeedReduction { get; }
 
 			public FeintTimer( Mobile defender, int swingSpeedReduction )
 				: base( TimeSpan.FromSeconds( 6.0 ) )
 			{
 				m_Defender = defender;
-				m_SwingSpeedReduction = swingSpeedReduction;
+				SwingSpeedReduction = swingSpeedReduction;
 				Priority = TimerPriority.FiftyMS;
 			}
 

@@ -13,8 +13,6 @@ namespace Server.Items
 		public override int LabelNumber => 1062332; // a vendor rental contract
 
 		private VendorRentalDuration m_Duration;
-		private int m_Price;
-		private bool m_LandlordRenew;
 
 		private Mobile m_Offeree;
 		private Timer m_OfferExpireTimer;
@@ -30,18 +28,10 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Price
-		{
-			get => m_Price;
-			set => m_Price = value;
-		}
+		public int Price { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool LandlordRenew
-		{
-			get => m_LandlordRenew;
-			set => m_LandlordRenew = value;
-		}
+		public bool LandlordRenew { get; set; }
 
 		public Mobile Offeree
 		{
@@ -73,7 +63,7 @@ namespace Server.Items
 			Hue = 0x672;
 
 			m_Duration = VendorRentalDuration.Instances[0];
-			m_Price = 1500;
+			Price = 1500;
 		}
 
 		public VendorRentalContract( Serial serial ) : base( serial )
@@ -338,8 +328,8 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( m_Duration.ID );
 
-			writer.Write( (int) m_Price );
-			writer.Write( (bool) m_LandlordRenew );
+			writer.Write( (int) Price );
+			writer.Write( (bool) LandlordRenew );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -354,8 +344,8 @@ namespace Server.Items
 			else
 				m_Duration = VendorRentalDuration.Instances[0];
 
-			m_Price = reader.ReadInt();
-			m_LandlordRenew = reader.ReadBool();
+			Price = reader.ReadInt();
+			LandlordRenew = reader.ReadBool();
 		}
 	}
 }

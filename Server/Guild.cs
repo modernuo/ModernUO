@@ -32,28 +32,26 @@ namespace Server.Guilds
 
 	public abstract class BaseGuild : ISerializable
 	{
-		private int m_Id;
-
 		protected BaseGuild( int Id )//serialization ctor
 		{
-			m_Id = Id;
-			m_GuildList.Add( m_Id, this );
-			if ( m_Id+1 > m_NextID )
-				m_NextID = m_Id + 1;
+			this.Id = Id;
+			List.Add( this.Id, this );
+			if ( this.Id+1 > m_NextID )
+				m_NextID = this.Id + 1;
 		}
 
 		protected BaseGuild()
 		{
-			m_Id = m_NextID++;
-			m_GuildList.Add( m_Id, this );
+			Id = m_NextID++;
+			List.Add( Id, this );
 		}
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public int Id => m_Id;
+		public int Id { get; }
 
 		int ISerializable.TypeReference => 0;
 
-		int ISerializable.SerialIdentity => m_Id;
+		int ISerializable.SerialIdentity => Id;
 
 		public abstract void Deserialize( GenericReader reader );
 		public abstract void Serialize( GenericWriter writer );
@@ -64,23 +62,22 @@ namespace Server.Guilds
 		public abstract bool Disbanded{ get; }
 		public abstract void OnDelete( Mobile mob );
 
-		private static Dictionary<int, BaseGuild> m_GuildList = new Dictionary<int, BaseGuild>();
 		private static int m_NextID = 1;
 
-		public static Dictionary<int, BaseGuild> List => m_GuildList;
+		public static Dictionary<int, BaseGuild> List { get; } = new Dictionary<int, BaseGuild>();
 
 		public static BaseGuild Find( int id )
 		{
 			BaseGuild g;
 
-			m_GuildList.TryGetValue( id, out g );
+			List.TryGetValue( id, out g );
 
 			return g;
 		}
 
 		public static BaseGuild FindByName( string name )
 		{
-			foreach ( BaseGuild g in m_GuildList.Values )
+			foreach ( BaseGuild g in List.Values )
 			{
 				if ( g.Name == name )
 					return g;
@@ -91,7 +88,7 @@ namespace Server.Guilds
 
 		public static BaseGuild FindByAbbrev( string abbr )
 		{
-			foreach ( BaseGuild g in m_GuildList.Values )
+			foreach ( BaseGuild g in List.Values )
 			{
 				if ( g.Abbreviation == abbr )
 					return g;
@@ -105,7 +102,7 @@ namespace Server.Guilds
 			string[] words = find.ToLower().Split( ' ' );
 			List<BaseGuild> results = new List<BaseGuild>();
 
-			foreach ( BaseGuild g in m_GuildList.Values )
+			foreach ( BaseGuild g in List.Values )
 			{
 				bool match = true;
 				string name = g.Name.ToLower();
@@ -127,7 +124,7 @@ namespace Server.Guilds
 
 		public override string ToString()
 		{
-			return $"0x{m_Id:X} \"{Name} [{Abbreviation}]\"";
+			return $"0x{Id:X} \"{Name} [{Abbreviation}]\"";
 		}
 }
 }

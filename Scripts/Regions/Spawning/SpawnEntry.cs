@@ -11,9 +11,7 @@ namespace Server.Regions
 		public static readonly TimeSpan DefaultMinSpawnTime = TimeSpan.FromMinutes( 2.0 );
 		public static readonly TimeSpan DefaultMaxSpawnTime = TimeSpan.FromMinutes( 5.0 );
 
-		private static Hashtable m_Table = new Hashtable();
-
-		public static Hashtable Table => m_Table;
+		public static Hashtable Table { get; } = new Hashtable();
 
 
 		// When a creature's AI is deactivated (PlayerRangeSensitive optimization) does it return home?
@@ -28,83 +26,81 @@ namespace Server.Regions
 
 		public static readonly Direction InvalidDirection = Direction.Running;
 
-		private int m_ID;
-		private BaseRegion m_Region;
-		private Point3D m_Home;
-		private int m_Range;
-		private Direction m_Direction;
-		private SpawnDefinition m_Definition;
-		private List<ISpawnable> m_SpawnedObjects;
-		private int m_Max;
-		private TimeSpan m_MinSpawnTime;
-		private TimeSpan m_MaxSpawnTime;
-		private bool m_Running;
-
 		private DateTime m_NextSpawn;
 		private Timer m_SpawnTimer;
 
-		public int ID => m_ID;
-		public BaseRegion Region => m_Region;
-		Region ISpawner.Region => m_Region;
-		public Point3D HomeLocation => m_Home;
-		public int HomeRange => m_Range;
-		public Direction Direction => m_Direction;
-		public SpawnDefinition Definition => m_Definition;
-		public List<ISpawnable> SpawnedObjects => m_SpawnedObjects;
-		public int Max => m_Max;
-		public TimeSpan MinSpawnTime => m_MinSpawnTime;
-		public TimeSpan MaxSpawnTime => m_MaxSpawnTime;
-		public bool Running => m_Running;
+		public int ID { get; }
 
-		public bool Complete => m_SpawnedObjects.Count >= m_Max;
-		public bool Spawning => m_Running && !Complete;
+		public BaseRegion Region { get; }
+
+		Region ISpawner.Region => Region;
+		public Point3D HomeLocation { get; }
+
+		public int HomeRange { get; }
+
+		public Direction Direction { get; }
+
+		public SpawnDefinition Definition { get; }
+
+		public List<ISpawnable> SpawnedObjects { get; }
+
+		public int Max { get; private set; }
+
+		public TimeSpan MinSpawnTime { get; }
+
+		public TimeSpan MaxSpawnTime { get; }
+
+		public bool Running { get; private set; }
+
+		public bool Complete => SpawnedObjects.Count >= Max;
+		public bool Spawning => Running && !Complete;
 
 		public SpawnEntry( int id, BaseRegion region, Point3D home, int range, Direction direction, SpawnDefinition definition, int max, TimeSpan minSpawnTime, TimeSpan maxSpawnTime )
 		{
-			m_ID = id;
-			m_Region = region;
-			m_Home = home;
-			m_Range = range;
-			m_Direction = direction;
-			m_Definition = definition;
-			m_SpawnedObjects = new List<ISpawnable>();
-			m_Max = max;
-			m_MinSpawnTime = minSpawnTime;
-			m_MaxSpawnTime = maxSpawnTime;
-			m_Running = false;
+			ID = id;
+			Region = region;
+			HomeLocation = home;
+			HomeRange = range;
+			Direction = direction;
+			Definition = definition;
+			SpawnedObjects = new List<ISpawnable>();
+			Max = max;
+			MinSpawnTime = minSpawnTime;
+			MaxSpawnTime = maxSpawnTime;
+			Running = false;
 
-			if ( m_Table.Contains( id ) )
+			if ( Table.Contains( id ) )
 				Console.WriteLine( "Warning: double SpawnEntry ID '{0}'", id );
 			else
-				m_Table[id] = this;
+				Table[id] = this;
 		}
 
 		public Point3D RandomSpawnLocation( int spawnHeight, bool land, bool water )
 		{
-			return m_Region.RandomSpawnLocation( spawnHeight, land, water, m_Home, m_Range );
+			return Region.RandomSpawnLocation( spawnHeight, land, water, HomeLocation, HomeRange );
 		}
 
 		public void Start()
 		{
-			if ( m_Running )
+			if ( Running )
 				return;
 
-			m_Running = true;
+			Running = true;
 			CheckTimer();
 		}
 
 		public void Stop()
 		{
-			if ( !m_Running )
+			if ( !Running )
 				return;
 
-			m_Running = false;
+			Running = false;
 			CheckTimer();
 		}
 
 		private void Spawn()
 		{
-			ISpawnable spawn = m_Definition.Spawn(this);
+			ISpawnable spawn = Definition.Spawn(this);
 
 			if ( spawn != null )
 				Add( spawn );
@@ -112,7 +108,7 @@ namespace Server.Regions
 
 		private void Add( ISpawnable spawn )
 		{
-			m_SpawnedObjects.Add( spawn );
+			SpawnedObjects.Add( spawn );
 
 			spawn.Spawner = this;
 
@@ -122,15 +118,15 @@ namespace Server.Regions
 
 		void ISpawner.Remove( ISpawnable spawn )
 		{
-			m_SpawnedObjects.Remove( spawn );
+			SpawnedObjects.Remove( spawn );
 
 			CheckTimer();
 		}
 
 		private TimeSpan RandomTime()
 		{
-			int min = (int) m_MinSpawnTime.TotalSeconds;
-			int max = (int) m_MaxSpawnTime.TotalSeconds;
+			int min = (int) MinSpawnTime.TotalSeconds;
+			int max = (int) MaxSpawnTime.TotalSeconds;
 
 			int rand = Utility.RandomMinMax( min, max );
 			return TimeSpan.FromSeconds( rand );
@@ -156,7 +152,7 @@ namespace Server.Regions
 
 		private void TimerCallback()
 		{
-			int amount = Math.Max( (m_Max - m_SpawnedObjects.Count) / 3, 1 );
+			int amount = Math.Max( (Max - SpawnedObjects.Count) / 3, 1 );
 
 			for ( int i = 0; i < amount; i++ )
 				Spawn();
@@ -169,13 +165,13 @@ namespace Server.Regions
 		{
 			InternalDeleteSpawnedObjects();
 
-			m_Running = false;
+			Running = false;
 			CheckTimer();
 		}
 
 		private void InternalDeleteSpawnedObjects()
 		{
-			foreach ( ISpawnable spawnable in m_SpawnedObjects )
+			foreach ( ISpawnable spawnable in SpawnedObjects )
 			{
 				spawnable.Spawner = null;
 
@@ -185,23 +181,23 @@ namespace Server.Regions
 					spawnable.Delete();
 			}
 
-			m_SpawnedObjects.Clear();
+			SpawnedObjects.Clear();
 		}
 
 		public void Respawn()
 		{
 			InternalDeleteSpawnedObjects();
 
-			for ( int i = 0; !Complete && i < m_Max; i++ )
+			for ( int i = 0; !Complete && i < Max; i++ )
 				Spawn();
 
-			m_Running = true;
+			Running = true;
 			CheckTimer();
 		}
 
 		public void Delete()
 		{
-			m_Max = 0;
+			Max = 0;
 			InternalDeleteSpawnedObjects();
 
 			if ( m_SpawnTimer != null )
@@ -210,24 +206,24 @@ namespace Server.Regions
 				m_SpawnTimer = null;
 			}
 
-			if ( m_Table[m_ID] == this )
-				m_Table.Remove( m_ID );
+			if ( Table[ID] == this )
+				Table.Remove( ID );
 		}
 
 		public void Serialize( GenericWriter writer )
 		{
-			writer.Write( (int) m_SpawnedObjects.Count );
+			writer.Write( (int) SpawnedObjects.Count );
 
-			for ( int i = 0; i < m_SpawnedObjects.Count; i++ )
+			for ( int i = 0; i < SpawnedObjects.Count; i++ )
 			{
-				ISpawnable spawn = m_SpawnedObjects[i];
+				ISpawnable spawn = SpawnedObjects[i];
 
 				int serial = spawn.Serial;
 
 				writer.Write( (int) serial );
 			}
 
-			writer.Write( (bool) m_Running );
+			writer.Write( (bool) Running );
 
 			if ( m_SpawnTimer != null )
 			{
@@ -253,7 +249,7 @@ namespace Server.Regions
 					Add(spawnableEntity);
 			}
 
-			m_Running = reader.ReadBool();
+			Running = reader.ReadBool();
 
 			if ( reader.ReadBool() )
 			{
@@ -355,7 +351,7 @@ namespace Server.Regions
 		[Description( "Respawns all regions and sets the spawners as running." )]
 		private static void RespawnAllRegions_OnCommand( CommandEventArgs args )
 		{
-			foreach ( SpawnEntry entry in m_Table.Values )
+			foreach ( SpawnEntry entry in Table.Values )
 			{
 				entry.Respawn();
 			}
@@ -382,7 +378,7 @@ namespace Server.Regions
 		[Description( "Deletes all spawned objects of every regions and sets the spawners as not running." )]
 		private static void DelAllRegionSpawns_OnCommand( CommandEventArgs args )
 		{
-			foreach ( SpawnEntry entry in m_Table.Values )
+			foreach ( SpawnEntry entry in Table.Values )
 			{
 				entry.DeleteSpawnedObjects();
 			}
@@ -409,7 +405,7 @@ namespace Server.Regions
 		[Description( "Sets the region spawners of all regions as running." )]
 		private static void StartAllRegionSpawns_OnCommand( CommandEventArgs args )
 		{
-			foreach ( SpawnEntry entry in m_Table.Values )
+			foreach ( SpawnEntry entry in Table.Values )
 			{
 				entry.Start();
 			}
@@ -436,7 +432,7 @@ namespace Server.Regions
 		[Description( "Sets the region spawners of all regions as not running." )]
 		private static void StopAllRegionSpawns_OnCommand( CommandEventArgs args )
 		{
-			foreach ( SpawnEntry entry in m_Table.Values )
+			foreach ( SpawnEntry entry in Table.Values )
 			{
 				entry.Stop();
 			}

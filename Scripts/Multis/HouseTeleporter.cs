@@ -8,22 +8,11 @@ namespace Server.Items
 {
 	public class HouseTeleporter : Item, ISecurable
 	{
-		private Item m_Target;
-		private SecureLevel m_Level;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Item Target { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Item Target
-		{
-			get => m_Target;
-			set => m_Target = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_Level;
-			set => m_Level = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		[Constructible]
 		public HouseTeleporter( int itemID ) : this( itemID, null )
@@ -34,9 +23,9 @@ namespace Server.Items
 		{
 			Movable = false;
 
-			m_Level = SecureLevel.Anyone;
+			Level = SecureLevel.Anyone;
 
-			m_Target = target;
+			Target = target;
 		}
 
 		public bool CheckAccess( Mobile m )
@@ -46,12 +35,12 @@ namespace Server.Items
 			if ( house != null && (house.Public ? house.IsBanned( m ) : !house.HasAccess( m )) )
 				return false;
 
-			return ( house != null && house.HasSecureAccess( m, m_Level ) );
+			return ( house != null && house.HasSecureAccess( m, Level ) );
 		}
 
 		public override bool OnMoveOver( Mobile m )
 		{
-			if ( m_Target != null && !m_Target.Deleted )
+			if ( Target != null && !Target.Deleted )
 			{
 				if ( CheckAccess( m ) )
 				{
@@ -85,9 +74,9 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( (int) m_Level );
+			writer.Write( (int) Level );
 
-			writer.Write( (Item) m_Target );
+			writer.Write( (Item) Target );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -100,15 +89,15 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_Level = (SecureLevel)reader.ReadInt();
+					Level = (SecureLevel)reader.ReadInt();
 					goto case 0;
 				}
 				case 0:
 				{
-					m_Target = reader.ReadItem();
+					Target = reader.ReadItem();
 
 					if ( version < 0 )
-						m_Level = SecureLevel.Anyone;
+						Level = SecureLevel.Anyone;
 
 					break;
 				}
@@ -152,7 +141,7 @@ namespace Server.Items
 
 			protected override void OnTick()
 			{
-				Item target = m_Teleporter.m_Target;
+				Item target = m_Teleporter.Target;
 
 				if ( target != null && !target.Deleted )
 				{

@@ -58,13 +58,11 @@ namespace Server.Commands.Generic
 			Register( new TraceLockdownCommand() );
 		}
 
-		private static List<BaseCommand> m_AllCommands = new List<BaseCommand>();
-
-		public static List<BaseCommand> AllCommands => m_AllCommands;
+		public static List<BaseCommand> AllCommands { get; } = new List<BaseCommand>();
 
 		public static void Register( BaseCommand command )
 		{
-			m_AllCommands.Add( command );
+			AllCommands.Add( command );
 
 			List<BaseCommandImplementor> impls = BaseCommandImplementor.Implementors;
 

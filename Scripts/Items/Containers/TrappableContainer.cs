@@ -13,30 +13,14 @@ namespace Server.Items
 
 	public abstract class TrappableContainer : BaseContainer, ITelekinesisable
 	{
-		private TrapType m_TrapType;
-		private int m_TrapPower;
-		private int m_TrapLevel;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TrapType TrapType { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TrapType TrapType
-		{
-			get => m_TrapType;
-			set => m_TrapType = value;
-		}
+		public int TrapPower { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int TrapPower
-		{
-			get => m_TrapPower;
-			set => m_TrapPower = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int TrapLevel
-		{
-			get => m_TrapLevel;
-			set => m_TrapLevel = value;
-		}
+		public int TrapLevel { get; set; }
 
 		public virtual bool TrapOnOpen => true;
 
@@ -66,7 +50,7 @@ namespace Server.Items
 
 		public virtual bool ExecuteTrap( Mobile from )
 		{
-			if ( m_TrapType != TrapType.None )
+			if ( TrapType != TrapType.None )
 			{
 				Point3D loc = GetWorldLocation();
 				Map facet = Map;
@@ -77,7 +61,7 @@ namespace Server.Items
 					return false;
 				}
 
-				switch ( m_TrapType )
+				switch ( TrapType )
 				{
 					case TrapType.ExplosionTrap:
 					{
@@ -87,10 +71,10 @@ namespace Server.Items
 						{
 							int damage;
 
-							if ( m_TrapLevel > 0 )
-								damage = Utility.RandomMinMax( 10, 30 ) * m_TrapLevel;
+							if ( TrapLevel > 0 )
+								damage = Utility.RandomMinMax( 10, 30 ) * TrapLevel;
 							else
-								damage = m_TrapPower;
+								damage = TrapPower;
 
 							AOS.Damage( from, damage, 0, 100, 0, 0, 0 );
 
@@ -106,7 +90,7 @@ namespace Server.Items
 					case TrapType.MagicTrap:
 					{
 						if ( from.InRange( loc, 1 ) )
-							from.Damage( m_TrapPower );
+							from.Damage( TrapPower );
 							//AOS.Damage( from, m_TrapPower, 0, 100, 0, 0, 0 );
 
 						Effects.PlaySound( loc, Map, 0x307 );
@@ -129,10 +113,10 @@ namespace Server.Items
 						{
 							int damage;
 
-							if ( m_TrapLevel > 0 )
-								damage = Utility.RandomMinMax( 5, 15 ) * m_TrapLevel;
+							if ( TrapLevel > 0 )
+								damage = Utility.RandomMinMax( 5, 15 ) * TrapLevel;
 							else
-								damage = m_TrapPower;
+								damage = TrapPower;
 
 							AOS.Damage( from, damage, 100, 0, 0, 0, 0 );
 
@@ -152,13 +136,13 @@ namespace Server.Items
 						{
 							Poison poison;
 
-							if ( m_TrapLevel > 0 )
+							if ( TrapLevel > 0 )
 							{
-								poison = Poison.GetPoison( Math.Max( 0, Math.Min( 4, m_TrapLevel - 1 ) ) );
+								poison = Poison.GetPoison( Math.Max( 0, Math.Min( 4, TrapLevel - 1 ) ) );
 							}
 							else
 							{
-								AOS.Damage( from, m_TrapPower, 0, 0, 0, 100, 0 );
+								AOS.Damage( from, TrapPower, 0, 0, 0, 100, 0 );
 								poison = Poison.Greater;
 							}
 
@@ -175,9 +159,9 @@ namespace Server.Items
 					}
 				}
 
-				m_TrapType = TrapType.None;
-				m_TrapPower = 0;
-				m_TrapLevel = 0;
+				TrapType = TrapType.None;
+				TrapPower = 0;
+				TrapLevel = 0;
 				return true;
 			}
 
@@ -207,10 +191,10 @@ namespace Server.Items
 
 			writer.Write( (int) 2 ); // version
 
-			writer.Write( (int) m_TrapLevel );
+			writer.Write( (int) TrapLevel );
 
-			writer.Write( (int) m_TrapPower );
-			writer.Write( (int) m_TrapType );
+			writer.Write( (int) TrapPower );
+			writer.Write( (int) TrapType );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -223,17 +207,17 @@ namespace Server.Items
 			{
 				case 2:
 				{
-					m_TrapLevel = reader.ReadInt();
+					TrapLevel = reader.ReadInt();
 					goto case 1;
 				}
 				case 1:
 				{
-					m_TrapPower = reader.ReadInt();
+					TrapPower = reader.ReadInt();
 					goto case 0;
 				}
 				case 0:
 				{
-					m_TrapType = (TrapType)reader.ReadInt();
+					TrapType = (TrapType)reader.ReadInt();
 					break;
 				}
 			}

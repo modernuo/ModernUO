@@ -26,22 +26,24 @@ namespace Server.Gumps
 		public static readonly PolymorphEntry Daemon =		new PolymorphEntry( 8403, 0x09, 1015253, 25, 8 );
 
 
-		private int m_Art, m_Body, m_Num, m_X, m_Y;
-
 		private PolymorphEntry( int Art, int Body, int LocNum, int X, int Y )
 		{
-			m_Art = Art;
-			m_Body = Body;
-			m_Num = LocNum;
-			m_X = X;
-			m_Y = Y;
+			ArtID = Art;
+			BodyID = Body;
+			LocNumber = LocNum;
+			this.X = X;
+			this.Y = Y;
 		}
 
-		public int ArtID  => m_Art;
-		public int BodyID  => m_Body;
-		public int LocNumber => m_Num;
-		public int X => m_X;
-		public int Y => m_Y;
+		public int ArtID { get; }
+
+		public int BodyID { get; }
+
+		public int LocNumber { get; }
+
+		public int X { get; }
+
+		public int Y { get; }
 	}
 
 
@@ -49,17 +51,15 @@ namespace Server.Gumps
 	{
 		private class PolymorphCategory
 		{
-			private int m_Num;
-			private PolymorphEntry[] m_Entries;
-
 			public PolymorphCategory( int num, params PolymorphEntry[] entries )
 			{
-				m_Num = num;
-				m_Entries = entries;
+				LocNumber = num;
+				Entries = entries;
 			}
 
-			public PolymorphEntry[] Entries => m_Entries;
-			public int LocNumber => m_Num;
+			public PolymorphEntry[] Entries { get; }
+
+			public int LocNumber { get; }
 		}
 
 		private static PolymorphCategory[] Categories = {

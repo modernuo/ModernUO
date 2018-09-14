@@ -13,17 +13,13 @@ namespace Server.Engines.Reports
 		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
-		private bool m_ShowPercents;
-
-		public bool ShowPercents{ get => m_ShowPercents;
-			set => m_ShowPercents = value;
-		}
+		public bool ShowPercents { get; set; }
 
 		public PieChart( string name, string fileName, bool showPercents )
 		{
 			m_Name = name;
 			m_FileName = fileName;
-			m_ShowPercents = showPercents;
+			ShowPercents = showPercents;
 		}
 
 		private PieChart()
@@ -34,14 +30,14 @@ namespace Server.Engines.Reports
 		{
 			base.SerializeAttributes( op );
 
-			op.SetBoolean( "p", m_ShowPercents );
+			op.SetBoolean( "p", ShowPercents );
 		}
 
 		public override void DeserializeAttributes( PersistanceReader ip )
 		{
 			base.DeserializeAttributes( ip );
 
-			m_ShowPercents = ip.GetBoolean( "p" );
+			ShowPercents = ip.GetBoolean( "p" );
 		}
 	}
 }

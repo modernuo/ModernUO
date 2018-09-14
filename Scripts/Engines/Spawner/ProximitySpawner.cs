@@ -4,30 +4,14 @@ namespace Server.Mobiles
 {
 	public class ProximitySpawner : Spawner
 	{
-		private int m_TriggerRange;
-		private TextDefinition m_SpawnMessage;
-		private bool m_InstantFlag;
+		[CommandProperty( AccessLevel.Developer )]
+		public int TriggerRange { get; set; }
 
 		[CommandProperty( AccessLevel.Developer )]
-		public int TriggerRange
-		{
-			get => m_TriggerRange;
-			set => m_TriggerRange = value;
-		}
+		public TextDefinition SpawnMessage { get; set; }
 
 		[CommandProperty( AccessLevel.Developer )]
-		public TextDefinition SpawnMessage
-		{
-			get => m_SpawnMessage;
-			set => m_SpawnMessage = value;
-		}
-
-		[CommandProperty( AccessLevel.Developer )]
-		public bool InstantFlag
-		{
-			get => m_InstantFlag;
-			set => m_InstantFlag = value;
-		}
+		public bool InstantFlag { get; set; }
 
 		[Constructible]
 		public ProximitySpawner()
@@ -50,9 +34,9 @@ namespace Server.Mobiles
 		public ProximitySpawner( int amount, int minDelay, int maxDelay, int team, int homeRange, int triggerRange, string spawnMessage, bool instantFlag, string spawnName )
 			: base( amount, minDelay, maxDelay, team, homeRange, spawnName )
 		{
-			m_TriggerRange = triggerRange;
-			m_SpawnMessage = TextDefinition.Parse( spawnMessage );
-			m_InstantFlag = instantFlag;
+			TriggerRange = triggerRange;
+			SpawnMessage = TextDefinition.Parse( spawnMessage );
+			InstantFlag = instantFlag;
 		}
 
 		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, params string[] spawnedNames )
@@ -63,9 +47,9 @@ namespace Server.Mobiles
 		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, int triggerRange, TextDefinition spawnMessage, bool instantFlag, params string[] spawnedNames )
 			: base( amount, minDelay, maxDelay, team, homeRange, spawnedNames )
 		{
-			m_TriggerRange = triggerRange;
-			m_SpawnMessage = spawnMessage;
-			m_InstantFlag = instantFlag;
+			TriggerRange = triggerRange;
+			SpawnMessage = spawnMessage;
+			InstantFlag = instantFlag;
 		}
 
 		public override string DefaultName => "Proximity Spawner";
@@ -100,14 +84,14 @@ namespace Server.Mobiles
 			if ( !Running )
 				return;
 
-			if ( IsEmpty && End <= DateTime.UtcNow && m.InRange( GetWorldLocation(), m_TriggerRange ) && m.Location != oldLocation && ValidTrigger( m ) )
+			if ( IsEmpty && End <= DateTime.UtcNow && m.InRange( GetWorldLocation(), TriggerRange ) && m.Location != oldLocation && ValidTrigger( m ) )
 			{
-				TextDefinition.SendMessageTo( m, m_SpawnMessage );
+				TextDefinition.SendMessageTo( m, SpawnMessage );
 
 				DoTimer();
 				Spawn();
 
-				if ( m_InstantFlag )
+				if ( InstantFlag )
 				{
 					foreach ( ISpawnable spawned in Spawned.Keys )
 						if ( spawned is Mobile mobile )
@@ -127,9 +111,9 @@ namespace Server.Mobiles
 
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( m_TriggerRange );
-			TextDefinition.Serialize( writer, m_SpawnMessage );
-			writer.Write( m_InstantFlag );
+			writer.Write( TriggerRange );
+			TextDefinition.Serialize( writer, SpawnMessage );
+			writer.Write( InstantFlag );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -138,9 +122,9 @@ namespace Server.Mobiles
 
 			int version = reader.ReadEncodedInt();
 
-			m_TriggerRange = reader.ReadInt();
-			m_SpawnMessage = TextDefinition.Deserialize( reader );
-			m_InstantFlag = reader.ReadBool();
+			TriggerRange = reader.ReadInt();
+			SpawnMessage = TextDefinition.Deserialize( reader );
+			InstantFlag = reader.ReadBool();
 		}
 	}
 }

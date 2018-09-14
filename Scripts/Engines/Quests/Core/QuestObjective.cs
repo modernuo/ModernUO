@@ -8,27 +8,16 @@ namespace Server.Engines.Quests
 {
 	public abstract class QuestObjective
 	{
-		private QuestSystem m_System;
-		private bool m_HasBeenRead;
 		private int m_CurProgress;
-		private bool m_HasCompleted;
 
 		public abstract object Message{ get; }
 
 		public virtual int MaxProgress => 1;
 		public virtual QuestItemInfo[] Info => null;
 
-		public QuestSystem System
-		{
-			get => m_System;
-			set => m_System = value;
-		}
+		public QuestSystem System { get; set; }
 
-		public bool HasBeenRead
-		{
-			get => m_HasBeenRead;
-			set => m_HasBeenRead = value;
-		}
+		public bool HasBeenRead { get; set; }
 
 		public int CurProgress
 		{
@@ -36,11 +25,7 @@ namespace Server.Engines.Quests
 			set{ m_CurProgress = value; CheckCompletionStatus(); }
 		}
 
-		public bool HasCompleted
-		{
-			get => m_HasCompleted;
-			set => m_HasCompleted = value;
-		}
+		public bool HasCompleted { get; set; }
 
 		public virtual bool Completed => m_CurProgress >= MaxProgress;
 
@@ -58,13 +43,13 @@ namespace Server.Engines.Quests
 			{
 				case 1:
 				{
-					m_HasBeenRead = reader.ReadBool();
+					HasBeenRead = reader.ReadBool();
 					goto case 0;
 				}
 				case 0:
 				{
 					m_CurProgress = reader.ReadEncodedInt();
-					m_HasCompleted = reader.ReadBool();
+					HasCompleted = reader.ReadBool();
 
 					break;
 				}
@@ -82,9 +67,9 @@ namespace Server.Engines.Quests
 		{
 			writer.WriteEncodedInt( (int) 1 ); // version
 
-			writer.Write( (bool) m_HasBeenRead );
+			writer.Write( (bool) HasBeenRead );
 			writer.WriteEncodedInt( (int) m_CurProgress );
-			writer.Write( (bool) m_HasCompleted );
+			writer.Write( (bool) HasCompleted );
 
 			ChildSerialize( writer );
 		}

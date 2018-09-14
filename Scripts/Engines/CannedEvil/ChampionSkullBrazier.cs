@@ -6,12 +6,11 @@ namespace Server.Engines.CannedEvil
 {
 	public class ChampionSkullBrazier : AddonComponent
 	{
-		private ChampionSkullPlatform m_Platform;
 		private ChampionSkullType m_Type;
 		private Item m_Skull;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public ChampionSkullPlatform Platform => m_Platform;
+		public ChampionSkullPlatform Platform { get; private set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ChampionSkullType Type{ get => m_Type;
@@ -20,7 +19,7 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Item Skull{ get => m_Skull;
 			set{ m_Skull = value;
-				m_Platform?.Validate();
+				Platform?.Validate();
 			} }
 
 		public override int LabelNumber => 1049489 + (int)m_Type;
@@ -30,7 +29,7 @@ namespace Server.Engines.CannedEvil
 			Hue = 0x455;
 			Light = LightType.Circle300;
 
-			m_Platform = platform;
+			Platform = platform;
 			m_Type = type;
 		}
 
@@ -40,7 +39,7 @@ namespace Server.Engines.CannedEvil
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			m_Platform?.Validate();
+			Platform?.Validate();
 
 			BeginSacrifice( from );
 		}
@@ -138,7 +137,7 @@ namespace Server.Engines.CannedEvil
 			writer.Write( (int) 0 ); // version
 
 			writer.Write( (int) m_Type );
-			writer.Write( m_Platform );
+			writer.Write( Platform );
 			writer.Write( m_Skull );
 		}
 
@@ -153,10 +152,10 @@ namespace Server.Engines.CannedEvil
 				case 0:
 				{
 					m_Type = (ChampionSkullType)reader.ReadInt();
-					m_Platform = reader.ReadItem() as ChampionSkullPlatform;
+					Platform = reader.ReadItem() as ChampionSkullPlatform;
 					m_Skull = reader.ReadItem();
 
-					if ( m_Platform == null )
+					if ( Platform == null )
 						Delete();
 
 					break;

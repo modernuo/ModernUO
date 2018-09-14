@@ -22,32 +22,24 @@ namespace Server.Items
 	{
 		public override int LabelNumber => 1075198; // Dawn�s Music Box
 
-		private List<MusicName> m_Tracks;
-
-		public List<MusicName> Tracks => m_Tracks;
-
-		private SecureLevel m_Level;
+		public List<MusicName> Tracks { get; private set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_Level;
-			set => m_Level = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		[Constructible]
 		public DawnsMusicBox() : base( 0x2AF9 )
 		{
 			Weight = 1.0;
 
-			m_Tracks = new List<MusicName>();
+			Tracks = new List<MusicName>();
 
-			while ( m_Tracks.Count < 4 )
+			while ( Tracks.Count < 4 )
 			{
 				MusicName name = RandomTrack( DawnsMusicRarity.Common );
 
-				if ( !m_Tracks.Contains( name ) )
-					m_Tracks.Add( name );
+				if ( !Tracks.Contains( name ) )
+					Tracks.Add( name );
 			}
 		}
 
@@ -60,8 +52,8 @@ namespace Server.Items
 			if ( !(newItem is DawnsMusicBox box) )
 				return;
 
-			box.m_Tracks = new List<MusicName>();
-			box.m_Tracks.AddRange( m_Tracks );
+			box.Tracks = new List<MusicName>();
+			box.Tracks.AddRange( Tracks );
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -72,9 +64,9 @@ namespace Server.Items
 			int uncommonSongs = 0;
 			int rareSongs = 0;
 
-			for ( int i = 0; i < m_Tracks.Count; i++ )
+			for ( int i = 0; i < Tracks.Count; i++ )
 			{
-				DawnsMusicInfo info = GetInfo( m_Tracks[ i ] );
+				DawnsMusicInfo info = GetInfo( Tracks[ i ] );
 
 				switch ( info.Rarity )
 				{
@@ -169,12 +161,12 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( (int) m_Tracks.Count );
+			writer.Write( (int) Tracks.Count );
 
-			for ( int i = 0; i < m_Tracks.Count; i++ )
-				writer.Write( (int) m_Tracks[ i ] );
+			for ( int i = 0; i < Tracks.Count; i++ )
+				writer.Write( (int) Tracks[ i ] );
 
-			writer.Write( (int) m_Level );
+			writer.Write( (int) Level );
 			writer.Write( (int) m_ItemID );
 		}
 
@@ -185,12 +177,12 @@ namespace Server.Items
 			int version = reader.ReadEncodedInt();
 
 			int count = reader.ReadInt();
-			m_Tracks = new List<MusicName>();
+			Tracks = new List<MusicName>();
 
 			for ( int i = 0; i < count; i++ )
-				m_Tracks.Add( (MusicName) reader.ReadInt() );
+				Tracks.Add( (MusicName) reader.ReadInt() );
 
-			m_Level = (SecureLevel) reader.ReadInt();
+			Level = (SecureLevel) reader.ReadInt();
 			m_ItemID = reader.ReadInt();
 		}
 

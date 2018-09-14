@@ -23,9 +23,7 @@ namespace Server.Engines.Harvest
 			}
 		}
 
-		private HarvestDefinition m_Definition;
-
-		public HarvestDefinition Definition => m_Definition;
+		public HarvestDefinition Definition { get; }
 
 		private Fishing()
 		{
@@ -97,7 +95,7 @@ namespace Server.Engines.Harvest
 				};
 			}
 
-			m_Definition = fish;
+			Definition = fish;
 			Definitions.Add( fish );
 			#endregion
 		}

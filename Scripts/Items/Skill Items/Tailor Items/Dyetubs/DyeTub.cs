@@ -15,7 +15,6 @@ namespace Server.Items
 	{
 		private bool m_Redyable;
 		private int m_DyedHue;
-		private SecureLevel m_SecureLevel;
 
 		public virtual CustomHuePicker CustomHuePicker => null;
 
@@ -35,7 +34,7 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( (int)m_SecureLevel );
+			writer.Write( (int)Level );
 			writer.Write( (bool) m_Redyable );
 			writer.Write( (int) m_DyedHue );
 		}
@@ -50,7 +49,7 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_SecureLevel = (SecureLevel)reader.ReadInt();
+					Level = (SecureLevel)reader.ReadInt();
 					goto case 0;
 				}
 				case 0:
@@ -85,11 +84,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_SecureLevel;
-			set => m_SecureLevel = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		[Constructible]
 		public DyeTub() : base( 0xFAB )

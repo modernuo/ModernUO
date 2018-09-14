@@ -157,15 +157,13 @@ namespace Server.Spells.Spellweaving
 		{
 			private Mobile m_Mobile;
 
-			private GiftOfLifeSpell m_Spell;
-
-			public GiftOfLifeSpell Spell  => m_Spell;
+			public GiftOfLifeSpell Spell { get; }
 
 			public ExpireTimer( Mobile m, TimeSpan delay, GiftOfLifeSpell spell )
 				: base( delay )
 			{
 				m_Mobile = m;
-				m_Spell = spell;
+				Spell = spell;
 			}
 
 			protected override void OnTick()

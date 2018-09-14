@@ -15,14 +15,8 @@ namespace Server.Items
 		private int m_ActiveItemID;
 		private int m_InactiveItemID;
 
-		private SecureLevel m_Level;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_Level;
-			set => m_Level = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int ActiveItemID
@@ -50,18 +44,14 @@ namespace Server.Items
 			}
 		}
 
-		private string m_Account, m_LastUserName;
+		private string m_LastUserName;
 		private DateTime m_NextUse; // TODO: unused, it's here not to break serialize/deserialize
 
 		private SkillName m_Skill;
 		private double m_SkillValue;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Account
-		{
-			get => m_Account;
-			set => m_Account = value;
-		}
+		public string Account { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string LastUserName
@@ -121,7 +111,7 @@ namespace Server.Items
 			m_InactiveItemID = inactiveItemID;
 			m_ActiveItemID = activeItemID;
 
-			m_Account = account;
+			Account = account;
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -751,12 +741,12 @@ namespace Server.Items
 			writer.Write( (string) m_LastUserName );
 
 			//version 2
-			writer.Write( (int)m_Level );
+			writer.Write( (int)Level );
 
 			writer.Write( m_ActiveItemID );
 			writer.Write( m_InactiveItemID );
 
-			writer.Write( (string) m_Account );
+			writer.Write( (string) Account );
 			writer.Write( (DateTime) m_NextUse ); //TODO: delete it in a harmless way
 
 			writer.WriteEncodedInt( (int) m_Skill );
@@ -778,7 +768,7 @@ namespace Server.Items
 					}
 				case 2:
 					{
-						m_Level = (SecureLevel)reader.ReadInt();
+						Level = (SecureLevel)reader.ReadInt();
 						goto case 1;
 					}
 				case 1:
@@ -790,7 +780,7 @@ namespace Server.Items
 					}
 				case 0:
 					{
-						m_Account = reader.ReadString();
+						Account = reader.ReadString();
 						m_NextUse = reader.ReadDateTime(); //TODO: delete it in a harmless way
 
 						m_Skill = (SkillName)reader.ReadEncodedInt();

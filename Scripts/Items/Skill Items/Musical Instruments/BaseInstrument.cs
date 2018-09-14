@@ -18,25 +18,16 @@ namespace Server.Items
 
 	public abstract class BaseInstrument : Item, ICraftable, ISlayer
 	{
-		private int m_WellSound, m_BadlySound;
 		private SlayerName m_Slayer, m_Slayer2;
 		private InstrumentQuality m_Quality;
 		private Mobile m_Crafter;
 		private int m_UsesRemaining;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int SuccessSound
-		{
-			get => m_WellSound;
-			set => m_WellSound = value;
-		}
+		public int SuccessSound { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int FailureSound
-		{
-			get => m_BadlySound;
-			set => m_BadlySound = value;
-		}
+		public int FailureSound { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SlayerName Slayer
@@ -323,8 +314,8 @@ namespace Server.Items
 
 		public BaseInstrument( int itemID, int wellSound, int badlySound ) : base( itemID )
 		{
-			m_WellSound = wellSound;
-			m_BadlySound = badlySound;
+			SuccessSound = wellSound;
+			FailureSound = badlySound;
 			UsesRemaining = Utility.RandomMinMax( InitMinUses, InitMaxUses );
 		}
 
@@ -440,8 +431,8 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( (int)UsesRemaining );
 
-			writer.WriteEncodedInt( (int) m_WellSound );
-			writer.WriteEncodedInt( (int) m_BadlySound );
+			writer.WriteEncodedInt( (int) SuccessSound );
+			writer.WriteEncodedInt( (int) FailureSound );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -471,8 +462,8 @@ namespace Server.Items
 
 					UsesRemaining = reader.ReadEncodedInt();
 
-					m_WellSound = reader.ReadEncodedInt();
-					m_BadlySound = reader.ReadEncodedInt();
+					SuccessSound = reader.ReadEncodedInt();
+					FailureSound = reader.ReadEncodedInt();
 
 					break;
 				}
@@ -485,15 +476,15 @@ namespace Server.Items
 
 					UsesRemaining = reader.ReadEncodedInt();
 
-					m_WellSound = reader.ReadEncodedInt();
-					m_BadlySound = reader.ReadEncodedInt();
+					SuccessSound = reader.ReadEncodedInt();
+					FailureSound = reader.ReadEncodedInt();
 
 					break;
 				}
 				case 0:
 				{
-					m_WellSound = reader.ReadInt();
-					m_BadlySound = reader.ReadInt();
+					SuccessSound = reader.ReadInt();
+					FailureSound = reader.ReadInt();
 					UsesRemaining = Utility.RandomMinMax( InitMinUses, InitMaxUses );
 
 					break;
@@ -536,12 +527,12 @@ namespace Server.Items
 
 		public void PlayInstrumentWell( Mobile from )
 		{
-			from.PlaySound( m_WellSound );
+			from.PlaySound( SuccessSound );
 		}
 
 		public void PlayInstrumentBadly( Mobile from )
 		{
-			from.PlaySound( m_BadlySound );
+			from.PlaySound( FailureSound );
 		}
 
 		private class InternalTimer : Timer

@@ -12,25 +12,11 @@ namespace Server.Misc
 	{
 		private string m_Title;
 
-		private ShardPollOption[] m_Options;
-		private IPAddress[] m_Addresses;
-
-		private TimeSpan m_Duration;
-		private DateTime m_StartTime;
-
 		private bool m_Active;
 
-		public ShardPollOption[] Options
-		{
-			get => m_Options;
-			set => m_Options = value;
-		}
+		public ShardPollOption[] Options { get; set; }
 
-		public IPAddress[] Addresses
-		{
-			get => m_Addresses;
-			set => m_Addresses = value;
-		}
+		public IPAddress[] Addresses { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public string Title
@@ -40,30 +26,22 @@ namespace Server.Misc
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public TimeSpan Duration
-		{
-			get => m_Duration;
-			set => m_Duration = value;
-		}
+		public TimeSpan Duration { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public DateTime StartTime
-		{
-			get => m_StartTime;
-			set => m_StartTime = value;
-		}
+		public DateTime StartTime { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public TimeSpan TimeRemaining
 		{
 			get
 			{
-				if ( m_StartTime == DateTime.MinValue || !m_Active )
+				if ( StartTime == DateTime.MinValue || !m_Active )
 					return TimeSpan.Zero;
 
 				try
 				{
-					TimeSpan ts = (m_StartTime + m_Duration) - DateTime.UtcNow;
+					TimeSpan ts = (StartTime + Duration) - DateTime.UtcNow;
 
 					if ( ts < TimeSpan.Zero )
 						return TimeSpan.Zero;
@@ -90,7 +68,7 @@ namespace Server.Misc
 
 				if ( m_Active )
 				{
-					m_StartTime = DateTime.UtcNow;
+					StartTime = DateTime.UtcNow;
 					m_ActivePollers.Add( this );
 				}
 				else
@@ -102,9 +80,9 @@ namespace Server.Misc
 
 		public bool HasAlreadyVoted( NetState ns )
 		{
-			for ( int i = 0; i < m_Options.Length; ++i )
+			for ( int i = 0; i < Options.Length; ++i )
 			{
-				if ( m_Options[i].HasAlreadyVoted( ns ) )
+				if ( Options[i].HasAlreadyVoted( ns ) )
 					return true;
 			}
 
@@ -118,30 +96,30 @@ namespace Server.Misc
 
 		public void RemoveOption( ShardPollOption option )
 		{
-			int index = Array.IndexOf( m_Options, option );
+			int index = Array.IndexOf( Options, option );
 
 			if ( index < 0 )
 				return;
 
-			ShardPollOption[] old = m_Options;
-			m_Options = new ShardPollOption[old.Length - 1];
+			ShardPollOption[] old = Options;
+			Options = new ShardPollOption[old.Length - 1];
 
 			for ( int i = 0; i < index; ++i )
-				m_Options[i] = old[i];
+				Options[i] = old[i];
 
-			for ( int i = index; i < m_Options.Length; ++i )
-				m_Options[i] = old[i + 1];
+			for ( int i = index; i < Options.Length; ++i )
+				Options[i] = old[i + 1];
 		}
 
 		public void AddOption( ShardPollOption option )
 		{
-			ShardPollOption[] old = m_Options;
-			m_Options = new ShardPollOption[old.Length + 1];
+			ShardPollOption[] old = Options;
+			Options = new ShardPollOption[old.Length + 1];
 
 			for ( int i = 0; i < old.Length; ++i )
-				m_Options[i] = old[i];
+				Options[i] = old[i];
 
-			m_Options[old.Length] = option;
+			Options[old.Length] = option;
 		}
 
 		public override string DefaultName => "shard poller";
@@ -149,9 +127,9 @@ namespace Server.Misc
 		[Constructible( AccessLevel.Administrator )]
 		public ShardPoller() : base( 0x1047 )
 		{
-			m_Duration = TimeSpan.FromHours( 24.0 );
-			m_Options = new ShardPollOption[0];
-			m_Addresses = new IPAddress[0];
+			Duration = TimeSpan.FromHours( 24.0 );
+			Options = new ShardPollOption[0];
+			Addresses = new IPAddress[0];
 
 			Movable = false;
 		}
@@ -236,14 +214,14 @@ namespace Server.Misc
 			writer.Write( (int) 0 ); // version
 
 			writer.Write( m_Title );
-			writer.Write( m_Duration );
-			writer.Write( m_StartTime );
+			writer.Write( Duration );
+			writer.Write( StartTime );
 			writer.Write( m_Active );
 
-			writer.Write( m_Options.Length );
+			writer.Write( Options.Length );
 
-			for ( int i = 0; i < m_Options.Length; ++i )
-				m_Options[i].Serialize( writer );
+			for ( int i = 0; i < Options.Length; ++i )
+				Options[i].Serialize( writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -257,14 +235,14 @@ namespace Server.Misc
 				case 0:
 				{
 					m_Title = reader.ReadString();
-					m_Duration = reader.ReadTimeSpan();
-					m_StartTime = reader.ReadDateTime();
+					Duration = reader.ReadTimeSpan();
+					StartTime = reader.ReadDateTime();
 					m_Active = reader.ReadBool();
 
-					m_Options = new ShardPollOption[reader.ReadInt()];
+					Options = new ShardPollOption[reader.ReadInt()];
 
-					for ( int i = 0; i < m_Options.Length; ++i )
-						m_Options[i] = new ShardPollOption( reader );
+					for ( int i = 0; i < Options.Length; ++i )
+						Options[i] = new ShardPollOption( reader );
 
 					if ( m_Active )
 						m_ActivePollers.Add( this );
@@ -285,23 +263,19 @@ namespace Server.Misc
 	public class ShardPollOption
 	{
 		private string m_Title;
-		private int m_LineBreaks;
-		private IPAddress[] m_Voters;
 
 		public string Title{ get => m_Title;
-			set{ m_Title = value; m_LineBreaks = GetBreaks( m_Title ); } }
-		public int LineBreaks => m_LineBreaks;
+			set{ m_Title = value; LineBreaks = GetBreaks( m_Title ); } }
+		public int LineBreaks { get; private set; }
 
-		public int Votes => m_Voters.Length;
-		public IPAddress[] Voters{ get => m_Voters;
-			set => m_Voters = value;
-		}
+		public int Votes => Voters.Length;
+		public IPAddress[] Voters { get; set; }
 
 		public ShardPollOption( string title )
 		{
 			m_Title = title;
-			m_LineBreaks = GetBreaks( m_Title );
-			m_Voters = new IPAddress[0];
+			LineBreaks = GetBreaks( m_Title );
+			Voters = new IPAddress[0];
 		}
 
 		public bool HasAlreadyVoted( NetState ns )
@@ -311,9 +285,9 @@ namespace Server.Misc
 
 			IPAddress ipAddress = ns.Address;
 
-			for ( int i = 0; i < m_Voters.Length; ++i )
+			for ( int i = 0; i < Voters.Length; ++i )
 			{
-				if ( Utility.IPMatchClassC( m_Voters[i], ipAddress ) )
+				if ( Utility.IPMatchClassC( Voters[i], ipAddress ) )
 					return true;
 			}
 
@@ -325,18 +299,18 @@ namespace Server.Misc
 			if ( ns == null )
 				return;
 
-			IPAddress[] old = m_Voters;
-			m_Voters = new IPAddress[old.Length + 1];
+			IPAddress[] old = Voters;
+			Voters = new IPAddress[old.Length + 1];
 
 			for ( int i = 0; i < old.Length; ++i )
-				m_Voters[i] = old[i];
+				Voters[i] = old[i];
 
-			m_Voters[old.Length] = ns.Address;
+			Voters[old.Length] = ns.Address;
 		}
 
 		public int ComputeHeight()
 		{
-			int height = m_LineBreaks * 18;
+			int height = LineBreaks * 18;
 
 			if ( height > 30 )
 				return height;
@@ -370,12 +344,12 @@ namespace Server.Misc
 				case 0:
 				{
 					m_Title = reader.ReadString();
-					m_LineBreaks = GetBreaks( m_Title );
+					LineBreaks = GetBreaks( m_Title );
 
-					m_Voters = new IPAddress[reader.ReadInt()];
+					Voters = new IPAddress[reader.ReadInt()];
 
-					for ( int i = 0; i < m_Voters.Length; ++i )
-						m_Voters[i] = Utility.Intern( reader.ReadIPAddress() );
+					for ( int i = 0; i < Voters.Length; ++i )
+						Voters[i] = Utility.Intern( reader.ReadIPAddress() );
 
 					break;
 				}
@@ -388,10 +362,10 @@ namespace Server.Misc
 
 			writer.Write( m_Title );
 
-			writer.Write( m_Voters.Length );
+			writer.Write( Voters.Length );
 
-			for ( int i = 0; i < m_Voters.Length; ++i )
-				writer.Write( m_Voters[i] );
+			for ( int i = 0; i < Voters.Length; ++i )
+				writer.Write( Voters[i] );
 		}
 	}
 
@@ -399,10 +373,9 @@ namespace Server.Misc
 	{
 		private Mobile m_From;
 		private ShardPoller m_Poller;
-		private bool m_Editing;
 		private Queue<ShardPoller> m_Polls;
 
-		public bool Editing => m_Editing;
+		public bool Editing { get; }
 
 		public void QueuePoll( ShardPoller poller )
 		{
@@ -428,7 +401,7 @@ namespace Server.Misc
 		{
 			m_From = from;
 			m_Poller = poller;
-			m_Editing = editing;
+			Editing = editing;
 			m_Polls = polls;
 
 			Closable = false;
@@ -539,10 +512,10 @@ namespace Server.Misc
 				if ( switched >= 0 && switched < m_Poller.Options.Length )
 					opt = m_Poller.Options[switched];
 
-				if ( opt == null && !m_Editing )
+				if ( opt == null && !Editing )
 					return;
 
-				if ( m_Editing )
+				if ( Editing )
 				{
 					if ( !m_Poller.Active )
 					{
@@ -552,7 +525,7 @@ namespace Server.Misc
 					else
 					{
 						m_From.SendMessage( "You may not edit an active poll. Deactivate it first." );
-						m_From.SendGump( new ShardPollGump( m_From, m_Poller, m_Editing, m_Polls ) );
+						m_From.SendGump( new ShardPollGump( m_From, m_Poller, Editing, m_Polls ) );
 					}
 				}
 				else
@@ -565,9 +538,9 @@ namespace Server.Misc
 						m_Poller.AddVote( sender, opt );
 				}
 			}
-			else if ( info.ButtonID == 2 && m_Editing )
+			else if ( info.ButtonID == 2 && Editing )
 			{
-				m_From.SendGump( new ShardPollGump( m_From, m_Poller, m_Editing, m_Polls ) );
+				m_From.SendGump( new ShardPollGump( m_From, m_Poller, Editing, m_Polls ) );
 				m_From.SendGump( new PropertiesGump( m_From, m_Poller ) );
 			}
 		}

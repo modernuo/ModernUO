@@ -18,18 +18,14 @@ namespace Server.Factions.AI
 
 	public class Reaction
 	{
-		private Faction m_Faction;
-		private ReactionType m_Type;
+		public Faction Faction { get; }
 
-		public Faction Faction => m_Faction;
-		public ReactionType Type{ get => m_Type;
-			set => m_Type = value;
-		}
+		public ReactionType Type { get; set; }
 
 		public Reaction( Faction faction, ReactionType type )
 		{
-			m_Faction = faction;
-			m_Type = type;
+			Faction = faction;
+			Type = type;
 		}
 
 		public Reaction( GenericReader reader )
@@ -40,8 +36,8 @@ namespace Server.Factions.AI
 			{
 				case 0:
 				{
-					m_Faction = Faction.ReadReference( reader );
-					m_Type = (ReactionType) reader.ReadEncodedInt();
+					Faction = Faction.ReadReference( reader );
+					Type = (ReactionType) reader.ReadEncodedInt();
 
 					break;
 				}
@@ -52,27 +48,20 @@ namespace Server.Factions.AI
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			Faction.WriteReference( writer, m_Faction );
-			writer.WriteEncodedInt( (int) m_Type );
+			Faction.WriteReference( writer, Faction );
+			writer.WriteEncodedInt( (int) Type );
 		}
 	}
 
 	public class Orders
 	{
-		private BaseFactionGuard m_Guard;
-
 		private List<Reaction> m_Reactions;
-		private MovementType m_Movement;
-		private Mobile m_Follow;
 
-		public BaseFactionGuard Guard => m_Guard;
+		public BaseFactionGuard Guard { get; }
 
-		public MovementType Movement{ get => m_Movement;
-			set => m_Movement = value;
-		}
-		public Mobile Follow{ get => m_Follow;
-			set => m_Follow = value;
-		}
+		public MovementType Movement { get; set; }
+
+		public Mobile Follow { get; set; }
 
 		public Reaction GetReaction( Faction faction )
 		{
@@ -86,7 +75,7 @@ namespace Server.Factions.AI
 					return reaction;
 			}
 
-			reaction = new Reaction( faction, ( faction == null || faction == m_Guard.Faction ) ? ReactionType.Ignore : ReactionType.Attack );
+			reaction = new Reaction( faction, ( faction == null || faction == Guard.Faction ) ? ReactionType.Ignore : ReactionType.Attack );
 			m_Reactions.Add( reaction );
 
 			return reaction;
@@ -101,14 +90,14 @@ namespace Server.Factions.AI
 
 		public Orders( BaseFactionGuard guard )
 		{
-			m_Guard = guard;
+			Guard = guard;
 			m_Reactions = new List<Reaction>();
-			m_Movement = MovementType.Patrol;
+			Movement = MovementType.Patrol;
 		}
 
 		public Orders( BaseFactionGuard guard, GenericReader reader )
 		{
-			m_Guard = guard;
+			Guard = guard;
 
 			int version = reader.ReadEncodedInt();
 
@@ -116,7 +105,7 @@ namespace Server.Factions.AI
 			{
 				case 1:
 				{
-					m_Follow = reader.ReadMobile();
+					Follow = reader.ReadMobile();
 					goto case 0;
 				}
 				case 0:
@@ -127,7 +116,7 @@ namespace Server.Factions.AI
 					for ( int i = 0; i < count; ++i )
 						m_Reactions.Add( new Reaction( reader ) );
 
-					m_Movement = (MovementType)reader.ReadEncodedInt();
+					Movement = (MovementType)reader.ReadEncodedInt();
 
 					break;
 				}
@@ -138,14 +127,14 @@ namespace Server.Factions.AI
 		{
 			writer.WriteEncodedInt( (int) 1 ); // version
 
-			writer.Write( (Mobile) m_Follow );
+			writer.Write( (Mobile) Follow );
 
 			writer.WriteEncodedInt( (int) m_Reactions.Count );
 
 			for ( int i = 0; i < m_Reactions.Count; ++i )
 				m_Reactions[i].Serialize( writer );
 
-			writer.WriteEncodedInt( (int) m_Movement );
+			writer.WriteEncodedInt( (int) Movement );
 		}
 	}
 }

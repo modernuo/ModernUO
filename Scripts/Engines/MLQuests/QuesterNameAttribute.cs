@@ -6,13 +6,11 @@ namespace Server.Engines.MLQuests
 	[AttributeUsage( AttributeTargets.Class )]
 	public class QuesterNameAttribute : Attribute
 	{
-		private string m_QuesterName;
-
-		public string QuesterName  => m_QuesterName;
+		public string QuesterName { get; }
 
 		public QuesterNameAttribute( string questerName )
 		{
-			m_QuesterName = questerName;
+			QuesterName = questerName;
 		}
 
 		private static readonly Type m_Type = typeof( QuesterNameAttribute );

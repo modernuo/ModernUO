@@ -80,18 +80,18 @@ namespace Server.Factions
 			Movable = false;
 			Town = town;
 			Faction = faction;
-			m_Monoliths.Add( this );
+			Monoliths.Add( this );
 		}
 
 		public BaseMonolith( Serial serial ) : base( serial )
 		{
-			m_Monoliths.Add( this );
+			Monoliths.Add( this );
 		}
 
 		public override void OnAfterDelete()
 		{
 			base.OnAfterDelete();
-			m_Monoliths.Remove( this );
+			Monoliths.Remove( this );
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -124,12 +124,6 @@ namespace Server.Factions
 			}
 		}
 
-		private static List<BaseMonolith> m_Monoliths = new List<BaseMonolith>();
-
-		public static List<BaseMonolith> Monoliths
-		{
-			get => m_Monoliths;
-			set => m_Monoliths = value;
-		}
+		public static List<BaseMonolith> Monoliths { get; set; } = new List<BaseMonolith>();
 	}
 }

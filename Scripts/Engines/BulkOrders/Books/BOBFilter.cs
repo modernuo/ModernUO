@@ -2,44 +2,23 @@ namespace Server.Engines.BulkOrders
 {
 	public class BOBFilter
 	{
-		private int m_Type;
-		private int m_Quality;
-		private int m_Material;
-		private int m_Quantity;
-
-		public bool IsDefault => ( m_Type == 0 && m_Quality == 0 && m_Material == 0 && m_Quantity == 0 );
+		public bool IsDefault => ( Type == 0 && Quality == 0 && Material == 0 && Quantity == 0 );
 
 		public void Clear()
 		{
-			m_Type = 0;
-			m_Quality = 0;
-			m_Material = 0;
-			m_Quantity = 0;
+			Type = 0;
+			Quality = 0;
+			Material = 0;
+			Quantity = 0;
 		}
 
-		public int Type
-		{
-			get => m_Type;
-			set => m_Type = value;
-		}
+		public int Type { get; set; }
 
-		public int Quality
-		{
-			get => m_Quality;
-			set => m_Quality = value;
-		}
+		public int Quality { get; set; }
 
-		public int Material
-		{
-			get => m_Material;
-			set => m_Material = value;
-		}
+		public int Material { get; set; }
 
-		public int Quantity
-		{
-			get => m_Quantity;
-			set => m_Quantity = value;
-		}
+		public int Quantity { get; set; }
 
 		public BOBFilter()
 		{
@@ -53,10 +32,10 @@ namespace Server.Engines.BulkOrders
 			{
 				case 1:
 				{
-					m_Type = reader.ReadEncodedInt();
-					m_Quality = reader.ReadEncodedInt();
-					m_Material = reader.ReadEncodedInt();
-					m_Quantity = reader.ReadEncodedInt();
+					Type = reader.ReadEncodedInt();
+					Quality = reader.ReadEncodedInt();
+					Material = reader.ReadEncodedInt();
+					Quantity = reader.ReadEncodedInt();
 
 					break;
 				}
@@ -73,10 +52,10 @@ namespace Server.Engines.BulkOrders
 			{
 				writer.WriteEncodedInt( 1 ); // version
 
-				writer.WriteEncodedInt( m_Type );
-				writer.WriteEncodedInt( m_Quality );
-				writer.WriteEncodedInt( m_Material );
-				writer.WriteEncodedInt( m_Quantity );
+				writer.WriteEncodedInt( Type );
+				writer.WriteEncodedInt( Quality );
+				writer.WriteEncodedInt( Material );
+				writer.WriteEncodedInt( Quantity );
 			}
 		}
 	}

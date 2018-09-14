@@ -8,69 +8,40 @@ namespace Server.Mobiles
 	{
 		public static readonly TimeSpan GracePeriod = TimeSpan.FromDays( 7.0 );
 
-		private BaseHouse m_House;
-		private string m_VendorName;
-		private string m_ShopName;
-		private Mobile m_Owner;
-
-		private List<Item> m_Items;
-		private int m_Gold;
-
-		private DateTime m_ExpireTime;
 		private Timer m_ExpireTimer;
 
 		public VendorInventory( BaseHouse house, Mobile owner, string vendorName, string shopName )
 		{
-			m_House = house;
-			m_Owner = owner;
-			m_VendorName = vendorName;
-			m_ShopName = shopName;
+			House = house;
+			Owner = owner;
+			VendorName = vendorName;
+			ShopName = shopName;
 
-			m_Items = new List<Item>();
+			Items = new List<Item>();
 
-			m_ExpireTime = DateTime.UtcNow + GracePeriod;
+			ExpireTime = DateTime.UtcNow + GracePeriod;
 			m_ExpireTimer = new ExpireTimer( this, GracePeriod );
 			m_ExpireTimer.Start();
 		}
 
-		public BaseHouse House
-		{
-			get => m_House;
-			set => m_House = value;
-		}
+		public BaseHouse House { get; set; }
 
-		public string VendorName
-		{
-			get => m_VendorName;
-			set => m_VendorName = value;
-		}
+		public string VendorName { get; set; }
 
-		public string ShopName
-		{
-			get => m_ShopName;
-			set => m_ShopName = value;
-		}
+		public string ShopName { get; set; }
 
-		public Mobile Owner
-		{
-			get => m_Owner;
-			set => m_Owner = value;
-		}
+		public Mobile Owner { get; set; }
 
-		public List<Item> Items => m_Items;
+		public List<Item> Items { get; }
 
-		public int Gold
-		{
-			get => m_Gold;
-			set => m_Gold = value;
-		}
+		public int Gold { get; set; }
 
-		public DateTime ExpireTime => m_ExpireTime;
+		public DateTime ExpireTime { get; }
 
 		public void AddItem( Item item )
 		{
 			item.Internalize();
-			m_Items.Add( item );
+			Items.Add( item );
 		}
 
 		public void Delete()
@@ -92,38 +63,38 @@ namespace Server.Mobiles
 		{
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( (Mobile) m_Owner );
-			writer.Write( (string) m_VendorName );
-			writer.Write( (string) m_ShopName );
+			writer.Write( (Mobile) Owner );
+			writer.Write( (string) VendorName );
+			writer.Write( (string) ShopName );
 
-			writer.Write( m_Items, true );
-			writer.Write( (int) m_Gold );
+			writer.Write( Items, true );
+			writer.Write( (int) Gold );
 
-			writer.WriteDeltaTime( m_ExpireTime );
+			writer.WriteDeltaTime( ExpireTime );
 		}
 
 		public VendorInventory( BaseHouse house, GenericReader reader )
 		{
-			m_House = house;
+			House = house;
 
 			int version = reader.ReadEncodedInt();
 
-			m_Owner = reader.ReadMobile();
-			m_VendorName = reader.ReadString();
-			m_ShopName = reader.ReadString();
+			Owner = reader.ReadMobile();
+			VendorName = reader.ReadString();
+			ShopName = reader.ReadString();
 
-			m_Items = reader.ReadStrongItemList();
-			m_Gold = reader.ReadInt();
+			Items = reader.ReadStrongItemList();
+			Gold = reader.ReadInt();
 
-			m_ExpireTime = reader.ReadDeltaTime();
+			ExpireTime = reader.ReadDeltaTime();
 
-			if ( m_Items.Count == 0 && m_Gold == 0 )
+			if ( Items.Count == 0 && Gold == 0 )
 			{
 				Timer.DelayCall( TimeSpan.Zero, Delete );
 			}
 			else
 			{
-				TimeSpan delay = m_ExpireTime - DateTime.UtcNow;
+				TimeSpan delay = ExpireTime - DateTime.UtcNow;
 				m_ExpireTimer = new ExpireTimer( this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero );
 				m_ExpireTimer.Start();
 			}

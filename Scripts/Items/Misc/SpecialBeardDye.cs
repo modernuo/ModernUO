@@ -52,21 +52,17 @@ namespace Server.Items
 
 		private class SpecialBeardDyeEntry
 		{
-			private string m_Name;
-			private int m_HueStart;
-			private int m_HueCount;
+			public string Name { get; }
 
-			public string Name => m_Name;
+			public int HueStart { get; }
 
-			public int HueStart => m_HueStart;
-
-			public int HueCount => m_HueCount;
+			public int HueCount { get; }
 
 			public SpecialBeardDyeEntry( string name, int hueStart, int hueCount )
 			{
-				m_Name = name;
-				m_HueStart = hueStart;
-				m_HueCount = hueCount;
+				Name = name;
+				HueStart = hueStart;
+				HueCount = hueCount;
 			}
 		}
 

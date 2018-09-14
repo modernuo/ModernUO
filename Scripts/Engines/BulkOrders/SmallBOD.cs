@@ -9,9 +9,7 @@ namespace Server.Engines.BulkOrders
 	public abstract class SmallBOD : Item
 	{
 		private int m_AmountCur, m_AmountMax;
-		private Type m_Type;
 		private int m_Number;
-		private int m_Graphic;
 		private bool m_RequireExceptional;
 		private BulkMaterialType m_Material;
 
@@ -24,18 +22,14 @@ namespace Server.Engines.BulkOrders
 			set{ m_AmountMax = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Type Type{ get => m_Type;
-			set => m_Type = value;
-		}
+		public Type Type { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Number{ get => m_Number;
 			set{ m_Number = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Graphic{ get => m_Graphic;
-			set => m_Graphic = value;
-		}
+		public int Graphic { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool RequireExceptional{ get => m_RequireExceptional;
@@ -58,9 +52,9 @@ namespace Server.Engines.BulkOrders
 			LootType = LootType.Blessed;
 
 			m_AmountMax = amountMax;
-			m_Type = type;
+			Type = type;
 			m_Number = number;
-			m_Graphic = graphic;
+			Graphic = graphic;
 			m_RequireExceptional = requireExeptional;
 			m_Material = material;
 		}
@@ -182,7 +176,7 @@ namespace Server.Engines.BulkOrders
 				{
 					from.SendLocalizedMessage( 1045166 ); // The maximum amount of requested items have already been combined to this deed.
 				}
-				else if ( m_Type == null || (objectType != m_Type && !objectType.IsSubclassOf( m_Type )) || (!(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing)) )
+				else if ( Type == null || (objectType != Type && !objectType.IsSubclassOf( Type )) || (!(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing)) )
 				{
 					from.SendLocalizedMessage( 1045169 ); // The item is not in the request.
 				}
@@ -249,9 +243,9 @@ namespace Server.Engines.BulkOrders
 
 			writer.Write( m_AmountCur );
 			writer.Write( m_AmountMax );
-			writer.Write( m_Type == null ? null : m_Type.FullName );
+			writer.Write( Type == null ? null : Type.FullName );
 			writer.Write( m_Number );
-			writer.Write( m_Graphic );
+			writer.Write( Graphic );
 			writer.Write( m_RequireExceptional );
 			writer.Write( (int) m_Material );
 		}
@@ -272,10 +266,10 @@ namespace Server.Engines.BulkOrders
 					string type = reader.ReadString();
 
 					if ( type != null )
-						m_Type = ScriptCompiler.FindTypeByFullName( type );
+						Type = ScriptCompiler.FindTypeByFullName( type );
 
 					m_Number = reader.ReadInt();
-					m_Graphic = reader.ReadInt();
+					Graphic = reader.ReadInt();
 					m_RequireExceptional = reader.ReadBool();
 					m_Material = (BulkMaterialType)reader.ReadInt();
 

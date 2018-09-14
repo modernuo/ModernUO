@@ -101,13 +101,8 @@ namespace Server.Mobiles
 			}
 		}
 
-		private Type m_Type;
-		private string m_Name;
 		private int m_Price;
-		private int m_MaxAmount, m_Amount;
-		private int m_ItemID;
-		private int m_Hue;
-		private object[] m_Args;
+		private int m_Amount;
 		private IEntity m_DisplayEntity;
 
 		public virtual int ControlSlots => 0;
@@ -137,49 +132,39 @@ namespace Server.Mobiles
 			bool canCache = CanCacheDisplay;
 
 			if ( canCache )
-				m_DisplayEntity = DisplayCache.Cache.Lookup( m_Type );
+				m_DisplayEntity = DisplayCache.Cache.Lookup( Type );
 
 			if ( m_DisplayEntity == null || IsDeleted( m_DisplayEntity ) )
 				m_DisplayEntity = GetEntity();
 
-			DisplayCache.Cache.Store( m_Type, m_DisplayEntity, canCache );
+			DisplayCache.Cache.Store( Type, m_DisplayEntity, canCache );
 
 			return m_DisplayEntity;
 		}
 
-		public Type Type
-		{
-			get => m_Type;
-			set => m_Type = value;
-		}
+		public Type Type { get; set; }
 
-		public string Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public string Name { get; set; }
 
-		public int DefaultPrice => m_PriceScalar;
-
-		private int m_PriceScalar;
+		public int DefaultPrice { get; private set; }
 
 		public int PriceScalar
 		{
-			get => m_PriceScalar;
-			set => m_PriceScalar = value;
+			get => DefaultPrice;
+			set => DefaultPrice = value;
 		}
 
 		public int Price
 		{
 			get
 			{
-				if ( m_PriceScalar != 0 )
+				if ( DefaultPrice != 0 )
 				{
 					if ( m_Price > 5000000 )
 					{
 						long price = m_Price;
 
-						price *= m_PriceScalar;
+						price *= DefaultPrice;
 						price += 50;
 						price /= 100;
 
@@ -189,7 +174,7 @@ namespace Server.Mobiles
 						return (int)price;
 					}
 
-					return ( ((m_Price * m_PriceScalar) + 50) / 100 );
+					return ( ((m_Price * DefaultPrice) + 50) / 100 );
 				}
 
 				return m_Price;
@@ -197,17 +182,9 @@ namespace Server.Mobiles
 			set => m_Price = value;
 		}
 
-		public int ItemID
-		{
-			get => m_ItemID;
-			set => m_ItemID = value;
-		}
+		public int ItemID { get; set; }
 
-		public int Hue
-		{
-			get => m_Hue;
-			set => m_Hue = value;
-		}
+		public int Hue { get; set; }
 
 		public int Amount
 		{
@@ -215,17 +192,9 @@ namespace Server.Mobiles
 			set{ if ( value < 0 ) value = 0; m_Amount = value; }
 		}
 
-		public int MaxAmount
-		{
-			get => m_MaxAmount;
-			set => m_MaxAmount = value;
-		}
+		public int MaxAmount { get; set; }
 
-		public object[] Args
-		{
-			get => m_Args;
-			set => m_Args = value;
-		}
+		public object[] Args { get; set; }
 
 		public GenericBuyInfo( Type type, int price, int amount, int itemID, int hue ) : this( null, type, price, amount, itemID, hue, null )
 		{
@@ -241,26 +210,26 @@ namespace Server.Mobiles
 
 		public GenericBuyInfo( string name, Type type, int price, int amount, int itemID, int hue, object[] args )
 		{
-			m_Type = type;
+			Type = type;
 			m_Price = price;
-			m_MaxAmount = m_Amount = amount;
-			m_ItemID = itemID;
-			m_Hue = hue;
-			m_Args = args;
+			MaxAmount = m_Amount = amount;
+			ItemID = itemID;
+			Hue = hue;
+			Args = args;
 
 			if ( name == null )
-				m_Name = itemID < 0x4000 ? (1020000 + itemID).ToString() : (1078872 + itemID).ToString();
+				Name = itemID < 0x4000 ? (1020000 + itemID).ToString() : (1078872 + itemID).ToString();
 			else
-				m_Name = name;
+				Name = name;
 		}
 
 		//get a new instance of an object (we just bought it)
 		public virtual IEntity GetEntity()
 		{
-			if ( m_Args == null || m_Args.Length == 0 )
-				return (IEntity)Activator.CreateInstance( m_Type );
+			if ( Args == null || Args.Length == 0 )
+				return (IEntity)Activator.CreateInstance( Type );
 
-			return (IEntity)Activator.CreateInstance( m_Type, m_Args );
+			return (IEntity)Activator.CreateInstance( Type, Args );
 			//return (Item)Activator.CreateInstance( m_Type );
 		}
 
@@ -311,11 +280,11 @@ namespace Server.Mobiles
 
 				if ( Core.ML && Obj_Disp is Item && !( Obj_Disp as Item ).Stackable )
 				{
-					m_MaxAmount = Math.Min( 20, m_MaxAmount );
+					MaxAmount = Math.Min( 20, MaxAmount );
 				}
 				else
 				{
-					m_MaxAmount = Math.Min( 999, m_MaxAmount * 2 );
+					MaxAmount = Math.Min( 999, MaxAmount * 2 );
 				}
 			}
 			else
@@ -326,7 +295,7 @@ namespace Server.Mobiles
 				 * there's clearly a demand and we should not cut down on the stock.
 				 */
 
-				int halfQuantity = m_MaxAmount;
+				int halfQuantity = MaxAmount;
 
 				if ( halfQuantity >= 999 )
 					halfQuantity = 640;
@@ -334,10 +303,10 @@ namespace Server.Mobiles
 					halfQuantity /= 2;
 
 				if ( m_Amount >= halfQuantity )
-					m_MaxAmount = halfQuantity;
+					MaxAmount = halfQuantity;
 			}
 
-			m_Amount = m_MaxAmount;
+			m_Amount = MaxAmount;
 		}
 	}
 }

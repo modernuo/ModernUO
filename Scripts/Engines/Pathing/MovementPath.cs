@@ -9,16 +9,15 @@ namespace Server
 {
 	public sealed class MovementPath
 	{
-		private Map m_Map;
-		private Point3D m_Start;
-		private Point3D m_Goal;
-		private Direction[] m_Directions;
+		public Map Map { get; }
 
-		public Map Map => m_Map;
-		public Point3D Start => m_Start;
-		public Point3D Goal => m_Goal;
-		public Direction[] Directions => m_Directions;
-		public bool Success => ( m_Directions != null && m_Directions.Length > 0 );
+		public Point3D Start { get; }
+
+		public Point3D Goal { get; }
+
+		public Direction[] Directions { get; }
+
+		public bool Success => ( Directions != null && Directions.Length > 0 );
 
 		public static void Initialize()
 		{
@@ -33,7 +32,7 @@ namespace Server
 
 		private static void Path( Mobile from, IPoint3D p, PathAlgorithm alg, string name, int zOffset )
 		{
-			m_OverrideAlgorithm = alg;
+			OverrideAlgorithm = alg;
 
 			long start = DateTime.UtcNow.Ticks;
 			MovementPath path = new MovementPath( from, new Point3D( p ) );
@@ -70,7 +69,7 @@ namespace Server
 
 			Path( from, p, FastAStarAlgorithm.Instance, "Fast", 0 );
 			Path( from, p, SlowAStarAlgorithm.Instance, "Slow", 2 );
-			m_OverrideAlgorithm = null;
+			OverrideAlgorithm = null;
 
 			/*MovementPath path = new MovementPath( from, new Point3D( p ) );
 
@@ -114,22 +113,16 @@ namespace Server
 			}
 		}
 
-		private static PathAlgorithm m_OverrideAlgorithm;
-
-		public static PathAlgorithm OverrideAlgorithm
-		{
-			get => m_OverrideAlgorithm;
-			set => m_OverrideAlgorithm = value;
-		}
+		public static PathAlgorithm OverrideAlgorithm { get; set; }
 
 		public MovementPath( Mobile m, Point3D goal )
 		{
 			Point3D start = m.Location;
 			Map map = m.Map;
 
-			m_Map = map;
-			m_Start = start;
-			m_Goal = goal;
+			Map = map;
+			Start = start;
+			Goal = goal;
 
 			if ( map == null || map == Map.Internal )
 				return;
@@ -139,7 +132,7 @@ namespace Server
 
 			try
 			{
-				PathAlgorithm alg = m_OverrideAlgorithm;
+				PathAlgorithm alg = OverrideAlgorithm;
 
 				if ( alg == null )
 				{
@@ -150,7 +143,7 @@ namespace Server
 				}
 
 				if ( alg != null && alg.CheckCondition( m, map, start, goal ) )
-					m_Directions = alg.Find( m, map, start, goal );
+					Directions = alg.Find( m, map, start, goal );
 			}
 			catch ( Exception e )
 			{

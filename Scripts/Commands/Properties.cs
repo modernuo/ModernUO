@@ -686,16 +686,13 @@ namespace Server
 
 	public sealed class Property
 	{
-		private string m_Binding;
-
 		private PropertyInfo[] m_Chain;
-		private PropertyAccess m_Access;
 
-		public string Binding => m_Binding;
+		public string Binding { get; }
 
 		public bool IsBound => ( m_Chain != null );
 
-		public PropertyAccess Access => m_Access;
+		public PropertyAccess Access { get; private set; }
 
 		public PropertyInfo[] Chain
 		{
@@ -730,7 +727,7 @@ namespace Server
 
 				bool isFinal = ( i == ( m_Chain.Length - 1 ) );
 
-				PropertyAccess access = m_Access;
+				PropertyAccess access = Access;
 
 				if ( !isFinal )
 					access |= PropertyAccess.Read;
@@ -755,7 +752,7 @@ namespace Server
 			if ( IsBound )
 				throw new AlreadyBoundException( this );
 
-			string[] split = m_Binding.Split( '.' );
+			string[] split = Binding.Split( '.' );
 
 			PropertyInfo[] chain = new PropertyInfo[split.Length];
 
@@ -782,13 +779,13 @@ namespace Server
 					throw new ReadOnlyException( this );
 			}
 
-			m_Access = desiredAccess;
+			Access = desiredAccess;
 			m_Chain = chain;
 		}
 
 		public Property( string binding )
 		{
-			m_Binding = binding;
+			Binding = binding;
 		}
 
 		public Property( PropertyInfo[] chain )
@@ -799,7 +796,7 @@ namespace Server
 		public override string ToString()
 		{
 			if ( !IsBound )
-				return m_Binding;
+				return Binding;
 
 			string[] toJoin = new string[m_Chain.Length];
 

@@ -6,9 +6,7 @@ namespace Server.Items
 {
 	public class SpellScroll : Item, ICommodity
 	{
-		private int m_SpellID;
-
-		public int SpellID => m_SpellID;
+		public int SpellID { get; private set; }
 
 		int ICommodity.DescriptionNumber => LabelNumber;
 		bool ICommodity.IsDeedable => (Core.ML);
@@ -29,7 +27,7 @@ namespace Server.Items
 			Weight = 1.0;
 			Amount = amount;
 
-			m_SpellID = spellID;
+			SpellID = spellID;
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -38,7 +36,7 @@ namespace Server.Items
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( (int) m_SpellID );
+			writer.Write( (int) SpellID );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -51,7 +49,7 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_SpellID = reader.ReadInt();
+					SpellID = reader.ReadInt();
 
 					break;
 				}
@@ -77,7 +75,7 @@ namespace Server.Items
 				return;
 			}
 
-			Spell spell = SpellRegistry.NewSpell( m_SpellID, from, this );
+			Spell spell = SpellRegistry.NewSpell( SpellID, from, this );
 
 			if ( spell != null )
 				spell.Cast();

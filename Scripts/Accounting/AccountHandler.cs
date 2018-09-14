@@ -26,13 +26,7 @@ namespace Server.Misc
 
 		public static PasswordProtection ProtectPasswords = PasswordProtection.NewCrypt;
 
-		private static AccessLevel m_LockdownLevel;
-
-		public static AccessLevel LockdownLevel
-		{
-			get => m_LockdownLevel;
-			set => m_LockdownLevel = value;
-		}
+		public static AccessLevel LockdownLevel { get; set; }
 
 		private static CityInfo[] StartingCities = {
 				new CityInfo( "New Haven",	"New Haven Bank",	1150168, 3667,	2625,	0  ),
@@ -330,7 +324,7 @@ namespace Server.Misc
 			else if ( !acct.HasAccess( e.State ) )
 			{
 				Console.WriteLine( "Login: {0}: Access denied for '{1}'", e.State, un );
-				e.RejectReason = ( m_LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass );
+				e.RejectReason = ( LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass );
 			}
 			else if ( !acct.CheckPassword( pw ) )
 			{

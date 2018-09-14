@@ -549,8 +549,6 @@ namespace Server.Items
 	{
 		private BeverageType m_Content;
 		private int m_Quantity;
-		private Mobile m_Poisoner;
-		private Poison m_Poison;
 
 		public override int LabelNumber
 		{
@@ -586,18 +584,10 @@ namespace Server.Items
 		public bool IsFull => ( m_Quantity >= MaxQuantity );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Poison Poison
-		{
-			get => m_Poison;
-			set => m_Poison = value;
-		}
+		public Poison Poison { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Poisoner
-		{
-			get => m_Poisoner;
-			set => m_Poisoner = value;
-		}
+		public Mobile Poisoner { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BeverageType Content
@@ -992,8 +982,8 @@ namespace Server.Items
 
 				from.PlaySound( Utility.RandomList( 0x30, 0x2D6 ) );
 
-				if ( m_Poison != null )
-					from.ApplyPoison( m_Poisoner, m_Poison );
+				if ( Poison != null )
+					from.ApplyPoison( Poisoner, Poison );
 
 				--Quantity;
 			}
@@ -1151,9 +1141,9 @@ namespace Server.Items
 
 			writer.Write( (int)1 ); // version
 
-			writer.Write( (Mobile)m_Poisoner );
+			writer.Write( (Mobile)Poisoner );
 
-			Poison.Serialize( m_Poison, writer );
+			Poison.Serialize( Poison, writer );
 			writer.Write( (int)m_Content );
 			writer.Write( (int)m_Quantity );
 		}
@@ -1181,12 +1171,12 @@ namespace Server.Items
 			{
 				case 1:
 					{
-						m_Poisoner = reader.ReadMobile();
+						Poisoner = reader.ReadMobile();
 						goto case 0;
 					}
 				case 0:
 					{
-						m_Poison = Poison.Deserialize( reader );
+						Poison = Poison.Deserialize( reader );
 						m_Content = (BeverageType)reader.ReadInt();
 						m_Quantity = reader.ReadInt();
 						break;

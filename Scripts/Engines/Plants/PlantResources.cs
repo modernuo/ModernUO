@@ -28,24 +28,22 @@ namespace Server.Engines.Plants
 			return null;
 		}
 
-		private PlantType m_PlantType;
-		private PlantHue m_PlantHue;
-		private Type m_ResourceType;
+		public PlantType PlantType { get; }
 
-		public PlantType PlantType  => m_PlantType;
-		public PlantHue PlantHue  => m_PlantHue;
-		public Type ResourceType  => m_ResourceType;
+		public PlantHue PlantHue { get; }
+
+		public Type ResourceType { get; }
 
 		private PlantResourceInfo( PlantType plantType, PlantHue plantHue, Type resourceType )
 		{
-			m_PlantType = plantType;
-			m_PlantHue = plantHue;
-			m_ResourceType = resourceType;
+			PlantType = plantType;
+			PlantHue = plantHue;
+			ResourceType = resourceType;
 		}
 
 		public Item CreateResource()
 		{
-			return (Item)Activator.CreateInstance( m_ResourceType );
+			return (Item)Activator.CreateInstance( ResourceType );
 		}
 	}
 }

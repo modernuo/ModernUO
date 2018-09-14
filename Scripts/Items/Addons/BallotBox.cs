@@ -13,22 +13,18 @@ namespace Server.Items
 
 		public override int LabelNumber => 1041006; // a ballot box
 
-		private string[] m_Topic;
-		private List<Mobile> m_Yes;
-		private List<Mobile> m_No;
+		public string[] Topic { get; private set; }
 
-		public string[] Topic => m_Topic;
+		public List<Mobile> Yes { get; private set; }
 
-		public List<Mobile> Yes => m_Yes;
-
-		public List<Mobile> No => m_No;
+		public List<Mobile> No { get; private set; }
 
 		[Constructible]
 		public BallotBox() : base( 0x9A8 )
 		{
-			m_Topic = new string[0];
-			m_Yes = new List<Mobile>();
-			m_No = new List<Mobile>();
+			Topic = new string[0];
+			Yes = new List<Mobile>();
+			No = new List<Mobile>();
 		}
 
 		public BallotBox( Serial serial ) : base( serial )
@@ -37,21 +33,21 @@ namespace Server.Items
 
 		public void ClearTopic()
 		{
-			m_Topic = new string[0];
+			Topic = new string[0];
 
 			ClearVotes();
 		}
 
 		public void AddLineToTopic( string line )
 		{
-			if ( m_Topic.Length >= MaxTopicLines )
+			if ( Topic.Length >= MaxTopicLines )
 				return;
 
-			string[] newTopic = new string[m_Topic.Length + 1];
-			m_Topic.CopyTo( newTopic, 0 );
-			newTopic[m_Topic.Length] = line;
+			string[] newTopic = new string[Topic.Length + 1];
+			Topic.CopyTo( newTopic, 0 );
+			newTopic[Topic.Length] = line;
 
-			m_Topic = newTopic;
+			Topic = newTopic;
 
 			ClearVotes();
 		}
@@ -296,13 +292,13 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.WriteEncodedInt( m_Topic.Length );
+			writer.WriteEncodedInt( Topic.Length );
 
-			for ( int i = 0; i < m_Topic.Length; i++ )
-				writer.Write( (string) m_Topic[i] );
+			for ( int i = 0; i < Topic.Length; i++ )
+				writer.Write( (string) Topic[i] );
 
-			writer.Write( m_Yes, true );
-			writer.Write( m_No, true );
+			writer.Write( Yes, true );
+			writer.Write( No, true );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -311,13 +307,13 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Topic = new string[reader.ReadEncodedInt()];
+			Topic = new string[reader.ReadEncodedInt()];
 
-			for ( int i = 0; i < m_Topic.Length; i++ )
-				m_Topic[i] = reader.ReadString();
+			for ( int i = 0; i < Topic.Length; i++ )
+				Topic[i] = reader.ReadString();
 
-			m_Yes = reader.ReadStrongMobileList();
-			m_No = reader.ReadStrongMobileList();
+			Yes = reader.ReadStrongMobileList();
+			No = reader.ReadStrongMobileList();
 		}
 	}
 

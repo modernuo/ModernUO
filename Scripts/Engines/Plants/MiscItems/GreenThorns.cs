@@ -145,16 +145,14 @@ namespace Server.Items
 	{
 		private class TilesAndEffect
 		{
-			private int[] m_Tiles;
-			private Type m_Effect;
+			public int[] Tiles { get; }
 
-			public int[] Tiles  => m_Tiles;
-			public Type Effect  => m_Effect;
+			public Type Effect { get; }
 
 			public TilesAndEffect( int[] tiles, Type effect )
 			{
-				m_Tiles = tiles;
-				m_Effect = effect;
+				Tiles = tiles;
+				Effect = effect;
 			}
 		}
 
@@ -285,19 +283,17 @@ namespace Server.Items
 			return null;
 		}
 
-		private Point3D m_Location;
-		private Map m_Map;
-		private Mobile m_From;
+		public Point3D Location { get; }
 
-		public Point3D Location  => m_Location;
-		public Map Map  => m_Map;
-		public Mobile From  => m_From;
+		public Map Map { get; }
+
+		public Mobile From { get; }
 
 		public GreenThornsEffect( Point3D location, Map map, Mobile from ) : base( TimeSpan.FromSeconds( 2.5 ) )
 		{
-			m_Location = location;
-			m_Map = map;
-			m_From = from;
+			Location = location;
+			Map = map;
+			From = from;
 
 			Priority = TimerPriority.TwoFiftyMS;
 		}

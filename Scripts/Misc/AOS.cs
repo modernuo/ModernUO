@@ -1146,24 +1146,23 @@ namespace Server
 	[PropertyObject]
 	public abstract class BaseAttributes
 	{
-		private Item m_Owner;
 		private uint m_Names;
 		private int[] m_Values;
 
 		private static int[] m_Empty = new int[0];
 
 		public bool IsEmpty => (m_Names == 0);
-		public Item Owner  => m_Owner;
+		public Item Owner { get; }
 
 		public BaseAttributes( Item owner )
 		{
-			m_Owner = owner;
+			Owner = owner;
 			m_Values = m_Empty;
 		}
 
 		public BaseAttributes( Item owner, BaseAttributes other )
 		{
-			m_Owner = owner;
+			Owner = owner;
 			m_Values = new int[other.m_Values.Length];
 			other.m_Values.CopyTo( m_Values, 0 );
 			m_Names = other.m_Names;
@@ -1171,7 +1170,7 @@ namespace Server
 
 		public BaseAttributes( Item owner, GenericReader reader )
 		{
-			m_Owner = owner;
+			Owner = owner;
 
 			int version = reader.ReadByte();
 
@@ -1233,14 +1232,14 @@ namespace Server
 		{
 			if ( (bitmask == (int)AosWeaponAttribute.DurabilityBonus) && (this is AosWeaponAttributes) )
 			{
-				if ( m_Owner is BaseWeapon weapon )
+				if ( Owner is BaseWeapon weapon )
 					weapon.UnscaleDurability();
 			}
 			else if ( (bitmask == (int)AosArmorAttribute.DurabilityBonus) && (this is AosArmorAttributes) )
 			{
-				if ( m_Owner is BaseArmor armor )
+				if ( Owner is BaseArmor armor )
 					armor.UnscaleDurability();
-				else if ( m_Owner is BaseClothing clothing )
+				else if ( Owner is BaseClothing clothing )
 					clothing.UnscaleDurability();
 			}
 
@@ -1304,18 +1303,18 @@ namespace Server
 
 			if ( (bitmask == (int)AosWeaponAttribute.DurabilityBonus) && (this is AosWeaponAttributes) )
 			{
-				if ( m_Owner is BaseWeapon weapon )
+				if ( Owner is BaseWeapon weapon )
 					weapon.ScaleDurability();
 			}
 			else if ( (bitmask == (int)AosArmorAttribute.DurabilityBonus) && (this is AosArmorAttributes) )
 			{
-				if ( m_Owner is BaseArmor armor )
+				if ( Owner is BaseArmor armor )
 					armor.ScaleDurability();
-				else if ( m_Owner is BaseClothing clothing )
+				else if ( Owner is BaseClothing clothing )
 					clothing.ScaleDurability();
 			}
 
-			if ( m_Owner.Parent is Mobile m )
+			if ( Owner.Parent is Mobile m )
 			{
 				m.CheckStatTimers();
 				m.UpdateResistances();
@@ -1328,7 +1327,7 @@ namespace Server
 				}
 			}
 
-			m_Owner.InvalidateProperties();
+			Owner.InvalidateProperties();
 		}
 
 		private int GetIndex( uint mask )

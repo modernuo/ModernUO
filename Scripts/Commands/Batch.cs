@@ -9,31 +9,19 @@ namespace Server.Commands
 {
 	public class Batch : BaseCommand
 	{
-		private BaseCommandImplementor m_Scope;
-		private string m_Condition;
-		private ArrayList m_BatchCommands;
+		public BaseCommandImplementor Scope { get; set; }
 
-		public BaseCommandImplementor Scope
-		{
-			get => m_Scope;
-			set => m_Scope = value;
-		}
+		public string Condition { get; set; }
 
-		public string Condition
-		{
-			get => m_Condition;
-			set => m_Condition = value;
-		}
-
-		public ArrayList BatchCommands => m_BatchCommands;
+		public ArrayList BatchCommands { get; }
 
 		public Batch()
 		{
 			Commands = new[]{ "Batch" };
 			ListOptimized = true;
 
-			m_BatchCommands = new ArrayList();
-			m_Condition = "";
+			BatchCommands = new ArrayList();
+			Condition = "";
 		}
 
 		public override void ExecuteList( CommandEventArgs e, ArrayList list )
@@ -46,19 +34,19 @@ namespace Server.Commands
 
 			try
 			{
-				BaseCommand[] commands = new BaseCommand[m_BatchCommands.Count];
-				CommandEventArgs[] eventArgs = new CommandEventArgs[m_BatchCommands.Count];
+				BaseCommand[] commands = new BaseCommand[BatchCommands.Count];
+				CommandEventArgs[] eventArgs = new CommandEventArgs[BatchCommands.Count];
 
-				for ( int i = 0; i < m_BatchCommands.Count; ++i )
+				for ( int i = 0; i < BatchCommands.Count; ++i )
 				{
-					BatchCommand bc = (BatchCommand)m_BatchCommands[i];
+					BatchCommand bc = (BatchCommand)BatchCommands[i];
 
 					string commandString, argString;
 					string[] args;
 
 					bc.GetDetails( out commandString, out argString, out args );
 
-					BaseCommand command = m_Scope.Commands[commandString];
+					BaseCommand command = Scope.Commands[commandString];
 
 					commands[i] = command;
 					eventArgs[i] = new CommandEventArgs( e.Mobile, commandString, argString, args );
@@ -74,7 +62,7 @@ namespace Server.Commands
 						e.Mobile.SendMessage( "You do not have access to that command: {0}.", commandString );
 						return;
 					}
-					if ( !command.ValidateArgs( m_Scope, eventArgs[i] ) )
+					if ( !command.ValidateArgs( Scope, eventArgs[i] ) )
 					{
 						return;
 					}
@@ -83,7 +71,7 @@ namespace Server.Commands
 				for ( int i = 0; i < commands.Length; ++i )
 				{
 					BaseCommand command = commands[i];
-					BatchCommand bc = (BatchCommand)m_BatchCommands[i];
+					BatchCommand bc = (BatchCommand)BatchCommands[i];
 
 					if ( list.Count > 20 )
 						CommandLogging.Enabled = false;
@@ -153,26 +141,26 @@ namespace Server.Commands
 
 		public bool Run( Mobile from )
 		{
-			if ( m_Scope == null )
+			if ( Scope == null )
 			{
 				from.SendMessage( "You must select the batch command scope." );
 				return false;
 			}
 
-			if ( m_Condition.Length > 0 && !m_Scope.SupportsConditionals )
+			if ( Condition.Length > 0 && !Scope.SupportsConditionals )
 			{
 				from.SendMessage( "This command scope does not support conditionals." );
 				return false;
 			}
-			if ( m_Condition.Length > 0 && !Utility.InsensitiveStartsWith( m_Condition, "where" ) )
+			if ( Condition.Length > 0 && !Utility.InsensitiveStartsWith( Condition, "where" ) )
 			{
 				from.SendMessage( "The condition field must start with \"where\"." );
 				return false;
 			}
 
-			string[] args = CommandSystem.Split( m_Condition );
+			string[] args = CommandSystem.Split( Condition );
 
-			m_Scope.Process( from, this, args );
+			Scope.Process( from, this, args );
 
 			return true;
 		}
@@ -194,44 +182,33 @@ namespace Server.Commands
 
 	public class BatchCommand
 	{
-		private string m_Command;
-		private string m_Object;
+		public string Command { get; set; }
 
-		public string Command
-		{
-			get => m_Command;
-			set => m_Command = value;
-		}
-
-		public string Object
-		{
-			get => m_Object;
-			set => m_Object = value;
-		}
+		public string Object { get; set; }
 
 		public void GetDetails( out string command, out string argString, out string[] args )
 		{
-			int indexOf = m_Command.IndexOf( ' ' );
+			int indexOf = Command.IndexOf( ' ' );
 
 			if ( indexOf >= 0 )
 			{
-				argString = m_Command.Substring( indexOf + 1 );
+				argString = Command.Substring( indexOf + 1 );
 
-				command = m_Command.Substring( 0, indexOf );
+				command = Command.Substring( 0, indexOf );
 				args = CommandSystem.Split( argString );
 			}
 			else
 			{
 				argString = "";
-				command = m_Command.ToLower();
+				command = Command.ToLower();
 				args = new string[0];
 			}
 		}
 
 		public BatchCommand( string command, string obj )
 		{
-			m_Command = command;
-			m_Object = obj;
+			Command = command;
+			Object = obj;
 		}
 	}
 

@@ -22,17 +22,16 @@ namespace Server.Prompts
 {
 	public abstract class Prompt
 	{
-		private int m_Serial;
 		private static int m_Serials;
 
-		public int Serial => m_Serial;
+		public int Serial { get; }
 
 		protected Prompt()
 		{
 			do
 			{
-				m_Serial = ++m_Serials;
-			} while ( m_Serial == 0 );
+				Serial = ++m_Serials;
+			} while ( Serial == 0 );
 		}
 
 		public virtual void OnCancel( Mobile from )

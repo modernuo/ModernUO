@@ -249,81 +249,77 @@ namespace Server.Items
 			return CheckSkills( from ) && CheckMana( from, false );
 		}
 
-		private static WeaponAbility[] m_Abilities = new WeaponAbility[31]
-			{
-				null,
-				new ArmorIgnore(),
-				new BleedAttack(),
-				new ConcussionBlow(),
-				new CrushingBlow(),
-				new Disarm(),
-				new Dismount(),
-				new DoubleStrike(),
-				new InfectiousStrike(),
-				new MortalStrike(),
-				new MovingShot(),
-				new ParalyzingBlow(),
-				new ShadowStrike(),
-				new WhirlwindAttack(),
+		public static WeaponAbility[] Abilities { get; } = new WeaponAbility[31]
+		{
+			null,
+			new ArmorIgnore(),
+			new BleedAttack(),
+			new ConcussionBlow(),
+			new CrushingBlow(),
+			new Disarm(),
+			new Dismount(),
+			new DoubleStrike(),
+			new InfectiousStrike(),
+			new MortalStrike(),
+			new MovingShot(),
+			new ParalyzingBlow(),
+			new ShadowStrike(),
+			new WhirlwindAttack(),
 
-				new RidingSwipe(),
-				new FrenziedWhirlwind(),
-				new Block(),
-				new DefenseMastery(),
-				new NerveStrike(),
-				new TalonStrike(),
-				new Feint(),
-				new DualWield(),
-				new DoubleShot(),
-				new ArmorPierce(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				new Disrobe()
-			};
+			new RidingSwipe(),
+			new FrenziedWhirlwind(),
+			new Block(),
+			new DefenseMastery(),
+			new NerveStrike(),
+			new TalonStrike(),
+			new Feint(),
+			new DualWield(),
+			new DoubleShot(),
+			new ArmorPierce(),
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			new Disrobe()
+		};
 
-		public static WeaponAbility[] Abilities => m_Abilities;
+		public static Hashtable Table { get; } = new Hashtable();
 
-		private static Hashtable m_Table = new Hashtable();
+		public static readonly WeaponAbility ArmorIgnore		= Abilities[ 1];
+		public static readonly WeaponAbility BleedAttack		= Abilities[ 2];
+		public static readonly WeaponAbility ConcussionBlow		= Abilities[ 3];
+		public static readonly WeaponAbility CrushingBlow		= Abilities[ 4];
+		public static readonly WeaponAbility Disarm				= Abilities[ 5];
+		public static readonly WeaponAbility Dismount			= Abilities[ 6];
+		public static readonly WeaponAbility DoubleStrike		= Abilities[ 7];
+		public static readonly WeaponAbility InfectiousStrike	= Abilities[ 8];
+		public static readonly WeaponAbility MortalStrike		= Abilities[ 9];
+		public static readonly WeaponAbility MovingShot			= Abilities[10];
+		public static readonly WeaponAbility ParalyzingBlow		= Abilities[11];
+		public static readonly WeaponAbility ShadowStrike		= Abilities[12];
+		public static readonly WeaponAbility WhirlwindAttack	= Abilities[13];
 
-		public static Hashtable Table => m_Table;
+		public static readonly WeaponAbility RidingSwipe		= Abilities[14];
+		public static readonly WeaponAbility FrenziedWhirlwind  = Abilities[15];
+		public static readonly WeaponAbility Block				= Abilities[16];
+		public static readonly WeaponAbility DefenseMastery		= Abilities[17];
+		public static readonly WeaponAbility NerveStrike		= Abilities[18];
+		public static readonly WeaponAbility TalonStrike		= Abilities[19];
+		public static readonly WeaponAbility Feint				= Abilities[20];
+		public static readonly WeaponAbility DualWield			= Abilities[21];
+		public static readonly WeaponAbility DoubleShot			= Abilities[22];
+		public static readonly WeaponAbility ArmorPierce		= Abilities[23];
 
-		public static readonly WeaponAbility ArmorIgnore		= m_Abilities[ 1];
-		public static readonly WeaponAbility BleedAttack		= m_Abilities[ 2];
-		public static readonly WeaponAbility ConcussionBlow		= m_Abilities[ 3];
-		public static readonly WeaponAbility CrushingBlow		= m_Abilities[ 4];
-		public static readonly WeaponAbility Disarm				= m_Abilities[ 5];
-		public static readonly WeaponAbility Dismount			= m_Abilities[ 6];
-		public static readonly WeaponAbility DoubleStrike		= m_Abilities[ 7];
-		public static readonly WeaponAbility InfectiousStrike	= m_Abilities[ 8];
-		public static readonly WeaponAbility MortalStrike		= m_Abilities[ 9];
-		public static readonly WeaponAbility MovingShot			= m_Abilities[10];
-		public static readonly WeaponAbility ParalyzingBlow		= m_Abilities[11];
-		public static readonly WeaponAbility ShadowStrike		= m_Abilities[12];
-		public static readonly WeaponAbility WhirlwindAttack	= m_Abilities[13];
+		public static readonly WeaponAbility Bladeweave			= Abilities[24];
+		public static readonly WeaponAbility ForceArrow			= Abilities[25];
+		public static readonly WeaponAbility LightningArrow		= Abilities[26];
+		public static readonly WeaponAbility PsychicAttack		= Abilities[27];
+		public static readonly WeaponAbility SerpentArrow		= Abilities[28];
+		public static readonly WeaponAbility ForceOfNature		= Abilities[29];
 
-		public static readonly WeaponAbility RidingSwipe		= m_Abilities[14];
-		public static readonly WeaponAbility FrenziedWhirlwind  = m_Abilities[15];
-		public static readonly WeaponAbility Block				= m_Abilities[16];
-		public static readonly WeaponAbility DefenseMastery		= m_Abilities[17];
-		public static readonly WeaponAbility NerveStrike		= m_Abilities[18];
-		public static readonly WeaponAbility TalonStrike		= m_Abilities[19];
-		public static readonly WeaponAbility Feint				= m_Abilities[20];
-		public static readonly WeaponAbility DualWield			= m_Abilities[21];
-		public static readonly WeaponAbility DoubleShot			= m_Abilities[22];
-		public static readonly WeaponAbility ArmorPierce		= m_Abilities[23];
-
-		public static readonly WeaponAbility Bladeweave			= m_Abilities[24];
-		public static readonly WeaponAbility ForceArrow			= m_Abilities[25];
-		public static readonly WeaponAbility LightningArrow		= m_Abilities[26];
-		public static readonly WeaponAbility PsychicAttack		= m_Abilities[27];
-		public static readonly WeaponAbility SerpentArrow		= m_Abilities[28];
-		public static readonly WeaponAbility ForceOfNature		= m_Abilities[29];
-
-		public static readonly WeaponAbility Disrobe            = m_Abilities[30];
+		public static readonly WeaponAbility Disrobe            = Abilities[30];
 
 		public static bool IsWeaponAbility( Mobile m, WeaponAbility a )
 		{
@@ -346,7 +342,7 @@ namespace Server.Items
 				return null;
 			}
 
-			WeaponAbility a = (WeaponAbility)m_Table[m];
+			WeaponAbility a = (WeaponAbility)Table[m];
 
 			if ( !IsWeaponAbility( m, a ) )
 			{
@@ -385,13 +381,13 @@ namespace Server.Items
 
 			if ( a == null )
 			{
-				m_Table.Remove( m );
+				Table.Remove( m );
 			}
 			else
 			{
 				SpecialMove.ClearCurrentMove( m );
 
-				m_Table[m] = a;
+				Table[m] = a;
 			}
 
 			return true;
@@ -399,7 +395,7 @@ namespace Server.Items
 
 		public static void ClearCurrentAbility( Mobile m )
 		{
-			m_Table.Remove( m );
+			Table.Remove( m );
 
 			if ( Core.AOS && m.NetState != null )
 				m.Send( ClearWeaponAbility.Instance );
@@ -420,8 +416,8 @@ namespace Server.Items
 
 			if ( index == 0 )
 				ClearCurrentAbility( e.Mobile );
-			else if ( index >= 1 && index < m_Abilities.Length )
-				SetCurrentAbility( e.Mobile, m_Abilities[index] );
+			else if ( index >= 1 && index < Abilities.Length )
+				SetCurrentAbility( e.Mobile, Abilities[index] );
 		}
 
 
@@ -471,13 +467,11 @@ namespace Server.Items
 
 		private class WeaponAbilityContext
 		{
-			private Timer m_Timer;
-
-			public Timer Timer => m_Timer;
+			public Timer Timer { get; }
 
 			public WeaponAbilityContext( Timer timer )
 			{
-				m_Timer = timer;
+				Timer = timer;
 			}
 		}
 	}

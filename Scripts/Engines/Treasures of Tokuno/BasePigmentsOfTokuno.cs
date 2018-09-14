@@ -68,9 +68,8 @@ namespace Server.Items
 
 		#region Old Item Serialization Vars
 		/* DO NOT USE! Only used in serialization of pigments that originally derived from Item */
-		private bool m_InheritsItem;
 
-		protected bool InheritsItem => m_InheritsItem;
+		protected bool InheritsItem { get; private set; }
 
 		#endregion
 
@@ -220,7 +219,7 @@ namespace Server.Items
 				}
 				case 0: // Old pigments that inherited from item
 				{
-					m_InheritsItem = true;
+					InheritsItem = true;
 
 					if ( this is LesserPigmentsOfTokuno )
 						((LesserPigmentsOfTokuno)this).Type = (LesserPigmentType)reader.ReadEncodedInt();

@@ -27,7 +27,6 @@ namespace Server.Gumps
 {
 	public class Gump
 	{
-		private List<GumpEntry> m_Entries;
 		private List<string> m_Strings;
 
 		internal int m_TextEntries, m_Switches;
@@ -35,7 +34,6 @@ namespace Server.Gumps
 		private static int m_NextSerial = 1;
 
 		private int m_Serial;
-		private int m_TypeID;
 		private int m_X, m_Y;
 
 		private bool m_Dragable = true;
@@ -58,9 +56,9 @@ namespace Server.Gumps
 			m_X = x;
 			m_Y = y;
 
-			m_TypeID = GetTypeID( GetType() );
+			TypeID = GetTypeID( GetType() );
 
-			m_Entries = new List<GumpEntry>();
+			Entries = new List<GumpEntry>();
 			m_Strings = new List<string>();
 		}
 
@@ -70,9 +68,9 @@ namespace Server.Gumps
 			//	m_Strings.Clear();
 		}
 
-		public int TypeID => m_TypeID;
+		public int TypeID { get; }
 
-		public List<GumpEntry> Entries => m_Entries;
+		public List<GumpEntry> Entries { get; }
 
 		public int Serial
 		{
@@ -289,20 +287,20 @@ namespace Server.Gumps
 			{
 				g.Parent = this;
 			}
-			else if ( !m_Entries.Contains( g ) )
+			else if ( !Entries.Contains( g ) )
 			{
 				Invalidate();
-				m_Entries.Add( g );
+				Entries.Add( g );
 			}
 		}
 
 		public void Remove( GumpEntry g )
 		{
-			if (g == null || !m_Entries.Contains(g))
+			if (g == null || !Entries.Contains(g))
 				return;
 
 			Invalidate();
-			m_Entries.Remove( g );
+			Entries.Remove( g );
 			g.Parent = null;
 		}
 
@@ -365,12 +363,12 @@ namespace Server.Gumps
 			if ( !m_Resizable )
 				disp.AppendLayout( m_NoResize );
 
-			int count = m_Entries.Count;
+			int count = Entries.Count;
 			GumpEntry e;
 
 			for ( int i = 0; i < count; ++i )
 			{
-				e = m_Entries[i];
+				e = Entries[i];
 
 				disp.AppendLayout( m_BeginLayout );
 				e.AppendTo( ns, disp );

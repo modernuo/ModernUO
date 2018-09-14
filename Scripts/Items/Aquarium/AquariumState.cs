@@ -22,9 +22,6 @@ namespace Server.Items
 	public class AquariumState
 	{
 		private int m_State;
-		private int m_Maintain;
-		private int m_Improve;
-		private int m_Added;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int State
@@ -43,25 +40,13 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Maintain
-		{
-			get => m_Maintain;
-			set => m_Maintain = value;
-		}
+		public int Maintain { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Improve
-		{
-			get => m_Improve;
-			set => m_Improve = value;
-		}
+		public int Improve { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Added
-		{
-			get => m_Added;
-			set => m_Added = value;
-		}
+		public int Added { get; set; }
 
 		public AquariumState()
 		{
@@ -77,9 +62,9 @@ namespace Server.Items
 			writer.Write( 0 ); // version
 
 			writer.Write( m_State );
-			writer.Write( m_Maintain );
-			writer.Write( m_Improve );
-			writer.Write( m_Added );
+			writer.Write( Maintain );
+			writer.Write( Improve );
+			writer.Write( Added );
 		}
 
 		public virtual void Deserialize( GenericReader reader )
@@ -87,9 +72,9 @@ namespace Server.Items
 			int version = reader.ReadInt();
 
 			m_State = reader.ReadInt();
-			m_Maintain = reader.ReadInt();
-			m_Improve = reader.ReadInt();
-			m_Added = reader.ReadInt();
+			Maintain = reader.ReadInt();
+			Improve = reader.ReadInt();
+			Added = reader.ReadInt();
 		}
 	}
 }

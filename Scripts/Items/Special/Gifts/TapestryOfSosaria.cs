@@ -9,16 +9,10 @@ namespace Server.Items
 	[FlippableAttribute( 0x234E, 0x234F )]
 	public class TapestryOfSosaria : Item, ISecurable
 	{
-		private SecureLevel m_Level;
-
 		public override int LabelNumber => 1062917; // The Tapestry of Sosaria
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_Level;
-			set => m_Level = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		[Constructible]
 		public TapestryOfSosaria() : base( 0x234E )
@@ -65,7 +59,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.WriteEncodedInt( (int) m_Level );
+			writer.WriteEncodedInt( (int) Level );
 		}
 
 		public override void Deserialize(GenericReader reader)
@@ -74,7 +68,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Level = (SecureLevel) reader.ReadEncodedInt();
+			Level = (SecureLevel) reader.ReadEncodedInt();
 		}
 	}
 }

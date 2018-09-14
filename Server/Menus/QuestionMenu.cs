@@ -24,28 +24,21 @@ namespace Server.Menus.Questions
 {
 	public class QuestionMenu : IMenu
 	{
-		private string m_Question;
-		private string[] m_Answers;
-
 		private int m_Serial;
 		private static int m_NextSerial;
 
 		int IMenu.Serial => m_Serial;
 
-		int IMenu.EntryLength => m_Answers.Length;
+		int IMenu.EntryLength => Answers.Length;
 
-		public string Question
-		{
-			get => m_Question;
-			set => m_Question = value;
-		}
+		public string Question { get; set; }
 
-		public string[] Answers => m_Answers;
+		public string[] Answers { get; }
 
 		public QuestionMenu( string question, string[] answers )
 		{
-			m_Question = question;
-			m_Answers = answers;
+			Question = question;
+			Answers = answers;
 
 			do
 			{

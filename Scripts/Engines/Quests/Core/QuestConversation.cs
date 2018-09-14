@@ -6,25 +6,14 @@ namespace Server.Engines.Quests
 {
 	public abstract class QuestConversation
 	{
-		private QuestSystem m_System;
-		private bool m_HasBeenRead;
-
 		public abstract object Message{ get; }
 
 		public virtual QuestItemInfo[] Info => null;
 		public virtual bool Logged => true;
 
-		public QuestSystem System
-		{
-			get => m_System;
-			set => m_System = value;
-		}
+		public QuestSystem System { get; set; }
 
-		public bool HasBeenRead
-		{
-			get => m_HasBeenRead;
-			set => m_HasBeenRead = value;
-		}
+		public bool HasBeenRead { get; set; }
 
 		public QuestConversation()
 		{
@@ -38,7 +27,7 @@ namespace Server.Engines.Quests
 			{
 				case 0:
 				{
-					m_HasBeenRead = reader.ReadBool();
+					HasBeenRead = reader.ReadBool();
 
 					break;
 				}
@@ -56,7 +45,7 @@ namespace Server.Engines.Quests
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( (bool) m_HasBeenRead );
+			writer.Write( (bool) HasBeenRead );
 
 			ChildSerialize( writer );
 		}

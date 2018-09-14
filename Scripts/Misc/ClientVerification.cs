@@ -21,43 +21,18 @@ namespace Server.Misc
 		private static bool m_DetectClientRequirement = true;
 		private static OldClientResponse m_OldClientResponse = OldClientResponse.LenientKick;
 
-		private static ClientVersion m_Required;
-		private static bool m_AllowRegular = true, m_AllowUOTD = true, m_AllowGod = true;
-
 		private static TimeSpan m_AgeLeniency = TimeSpan.FromDays( 10 );
 		private static TimeSpan m_GameTimeLeniency = TimeSpan.FromHours( 25 );
 
-		private static TimeSpan m_KickDelay = TimeSpan.FromSeconds( 20.0 );
+		public static ClientVersion Required { get; set; }
 
-		public static ClientVersion Required
-		{
-			get => m_Required;
-			set => m_Required = value;
-		}
+		public static bool AllowRegular { get; set; } = true;
 
-		public static bool AllowRegular
-		{
-			get => m_AllowRegular;
-			set => m_AllowRegular = value;
-		}
+		public static bool AllowUOTD { get; set; } = true;
 
-		public static bool AllowUOTD
-		{
-			get => m_AllowUOTD;
-			set => m_AllowUOTD = value;
-		}
+		public static bool AllowGod { get; set; } = true;
 
-		public static bool AllowGod
-		{
-			get => m_AllowGod;
-			set => m_AllowGod = value;
-		}
-
-		public static TimeSpan KickDelay
-		{
-			get => m_KickDelay;
-			set => m_KickDelay = value;
-		}
+		public static TimeSpan KickDelay { get; set; } = TimeSpan.FromSeconds( 20.0 );
 
 		public static void Initialize()
 		{

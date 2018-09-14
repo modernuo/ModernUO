@@ -35,25 +35,11 @@ namespace Server.Multis
 			return null;
 		}
 
-		private Hold m_Hold;
-		private TillerMan m_TillerMan;
-		private Mobile m_Owner;
-
 		private Direction m_Facing;
 
-		private Direction m_Moving;
-		private int m_Speed;
 		private int m_ClientSpeed;
 
-		private bool m_Anchored;
 		private string m_ShipName;
-
-		private BoatOrder m_Order;
-
-		private MapItem m_MapItem;
-		private int m_NextNavPoint;
-
-		private Plank m_PPlank, m_SPlank;
 
 		private DateTime m_DecayTime;
 
@@ -61,29 +47,19 @@ namespace Server.Multis
 		private Timer m_MoveTimer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Hold Hold{ get => m_Hold;
-			set => m_Hold = value;
-		}
+		public Hold Hold { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TillerMan TillerMan{ get => m_TillerMan;
-			set => m_TillerMan = value;
-		}
+		public TillerMan TillerMan { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Plank PPlank{ get => m_PPlank;
-			set => m_PPlank = value;
-		}
+		public Plank PPlank { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Plank SPlank{ get => m_SPlank;
-			set => m_SPlank = value;
-		}
+		public Plank SPlank { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner{ get => m_Owner;
-			set => m_Owner = value;
-		}
+		public Mobile Owner { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Direction Facing{ get => m_Facing;
@@ -91,48 +67,36 @@ namespace Server.Multis
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Direction Moving{ get => m_Moving;
-			set => m_Moving = value;
-		}
+		public Direction Moving { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsMoving => ( m_MoveTimer != null );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Speed{ get => m_Speed;
-			set => m_Speed = value;
-		}
+		public int Speed { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Anchored{ get => m_Anchored;
-			set => m_Anchored = value;
-		}
+		public bool Anchored { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string ShipName{ get => m_ShipName;
 			set{ m_ShipName = value;
-				m_TillerMan?.InvalidateProperties();
+				TillerMan?.InvalidateProperties();
 			} }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BoatOrder Order{ get => m_Order;
-			set => m_Order = value;
-		}
+		public BoatOrder Order { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public MapItem MapItem{ get => m_MapItem;
-			set => m_MapItem = value;
-		}
+		public MapItem MapItem { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int NextNavPoint{ get => m_NextNavPoint;
-			set => m_NextNavPoint = value;
-		}
+		public int NextNavPoint { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime TimeOfDecay{ get => m_DecayTime;
 			set{ m_DecayTime = value;
-				m_TillerMan?.InvalidateProperties();
+				TillerMan?.InvalidateProperties();
 			} }
 
 		public int Status
@@ -173,30 +137,28 @@ namespace Server.Multis
 
 		public virtual BaseDockedBoat DockedBoat => null;
 
-		private static List<BaseBoat> m_Instances = new List<BaseBoat>();
-
-		public static List<BaseBoat> Boats => m_Instances;
+		public static List<BaseBoat> Boats { get; } = new List<BaseBoat>();
 
 		public BaseBoat() : base( 0x0 )
 		{
 			m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
 
-			m_TillerMan = new TillerMan( this );
-			m_Hold = new Hold( this );
+			TillerMan = new TillerMan( this );
+			Hold = new Hold( this );
 
-			m_PPlank = new Plank( this, PlankSide.Port, 0 );
-			m_SPlank = new Plank( this, PlankSide.Starboard, 0 );
+			PPlank = new Plank( this, PlankSide.Port, 0 );
+			SPlank = new Plank( this, PlankSide.Starboard, 0 );
 
-			m_PPlank.MoveToWorld( new Point3D( X + PortOffset.X, Y + PortOffset.Y, Z ), Map );
-			m_SPlank.MoveToWorld( new Point3D( X + StarboardOffset.X, Y + StarboardOffset.Y, Z ), Map );
+			PPlank.MoveToWorld( new Point3D( X + PortOffset.X, Y + PortOffset.Y, Z ), Map );
+			SPlank.MoveToWorld( new Point3D( X + StarboardOffset.X, Y + StarboardOffset.Y, Z ), Map );
 
 			Facing = Direction.North;
 
-			m_NextNavPoint = -1;
+			NextNavPoint = -1;
 
 			Movable = false;
 
-			m_Instances.Add( this );
+			Boats.Add( this );
 		}
 
 		public BaseBoat( Serial serial ) : base( serial )
@@ -212,32 +174,32 @@ namespace Server.Multis
 
 		public void UpdateComponents()
 		{
-			if ( m_PPlank != null )
+			if ( PPlank != null )
 			{
-				m_PPlank.MoveToWorld( GetRotatedLocation( PortOffset.X, PortOffset.Y ), Map );
-				m_PPlank.SetFacing( m_Facing );
+				PPlank.MoveToWorld( GetRotatedLocation( PortOffset.X, PortOffset.Y ), Map );
+				PPlank.SetFacing( m_Facing );
 			}
 
-			if ( m_SPlank != null )
+			if ( SPlank != null )
 			{
-				m_SPlank.MoveToWorld( GetRotatedLocation( StarboardOffset.X, StarboardOffset.Y ), Map );
-				m_SPlank.SetFacing( m_Facing );
+				SPlank.MoveToWorld( GetRotatedLocation( StarboardOffset.X, StarboardOffset.Y ), Map );
+				SPlank.SetFacing( m_Facing );
 			}
 
 			int xOffset = 0, yOffset = 0;
 			Movement.Movement.Offset( m_Facing, ref xOffset, ref yOffset );
 
-			if ( m_TillerMan != null )
+			if ( TillerMan != null )
 			{
-				m_TillerMan.Location = new Point3D( X + (xOffset * TillerManDistance) + (m_Facing == Direction.North ? 1 : 0), Y + (yOffset * TillerManDistance), m_TillerMan.Z );
-				m_TillerMan.SetFacing( m_Facing );
-				m_TillerMan.InvalidateProperties();
+				TillerMan.Location = new Point3D( X + (xOffset * TillerManDistance) + (m_Facing == Direction.North ? 1 : 0), Y + (yOffset * TillerManDistance), TillerMan.Z );
+				TillerMan.SetFacing( m_Facing );
+				TillerMan.InvalidateProperties();
 			}
 
-			if ( m_Hold != null )
+			if ( Hold != null )
 			{
-				m_Hold.Location = new Point3D( X + (xOffset * HoldDistance), Y + (yOffset * HoldDistance), m_Hold.Z );
-				m_Hold.SetFacing( m_Facing );
+				Hold.Location = new Point3D( X + (xOffset * HoldDistance), Y + (yOffset * HoldDistance), Hold.Z );
+				Hold.SetFacing( m_Facing );
 			}
 		}
 
@@ -247,19 +209,19 @@ namespace Server.Multis
 
 			writer.Write( (int) 3 );
 
-			writer.Write( (Item) m_MapItem );
-			writer.Write( (int) m_NextNavPoint );
+			writer.Write( (Item) MapItem );
+			writer.Write( (int) NextNavPoint );
 
 			writer.Write( (int) m_Facing );
 
 			writer.WriteDeltaTime( m_DecayTime );
 
-			writer.Write( m_Owner );
-			writer.Write( m_PPlank );
-			writer.Write( m_SPlank );
-			writer.Write( m_TillerMan );
-			writer.Write( m_Hold );
-			writer.Write( m_Anchored );
+			writer.Write( Owner );
+			writer.Write( PPlank );
+			writer.Write( SPlank );
+			writer.Write( TillerMan );
+			writer.Write( Hold );
+			writer.Write( Anchored );
 			writer.Write( m_ShipName );
 
 			CheckDecay();
@@ -275,8 +237,8 @@ namespace Server.Multis
 			{
 				case 3:
 				{
-					m_MapItem = (MapItem) reader.ReadItem();
-					m_NextNavPoint = reader.ReadInt();
+					MapItem = (MapItem) reader.ReadItem();
+					NextNavPoint = reader.ReadInt();
 
 					goto case 2;
 				}
@@ -295,7 +257,7 @@ namespace Server.Multis
 				case 0:
 				{
 					if ( version < 3 )
-						m_NextNavPoint = -1;
+						NextNavPoint = -1;
 
 					if ( version < 2 )
 					{
@@ -309,12 +271,12 @@ namespace Server.Multis
 							m_Facing = Direction.West;
 					}
 
-					m_Owner = reader.ReadMobile();
-					m_PPlank = reader.ReadItem() as Plank;
-					m_SPlank = reader.ReadItem() as Plank;
-					m_TillerMan = reader.ReadItem() as TillerMan;
-					m_Hold = reader.ReadItem() as Hold;
-					m_Anchored = reader.ReadBool();
+					Owner = reader.ReadMobile();
+					PPlank = reader.ReadItem() as Plank;
+					SPlank = reader.ReadItem() as Plank;
+					TillerMan = reader.ReadItem() as TillerMan;
+					Hold = reader.ReadItem() as Hold;
+					Anchored = reader.ReadBool();
 					m_ShipName = reader.ReadString();
 
 					if ( version < 1)
@@ -324,18 +286,18 @@ namespace Server.Multis
 				}
 			}
 
-			m_Instances.Add( this );
+			Boats.Add( this );
 		}
 
 		public void RemoveKeys( Mobile m )
 		{
 			uint keyValue = 0;
 
-			if ( m_PPlank != null )
-				keyValue = m_PPlank.KeyValue;
+			if ( PPlank != null )
+				keyValue = PPlank.KeyValue;
 
-			if ( keyValue == 0 && m_SPlank != null )
-				keyValue = m_SPlank.KeyValue;
+			if ( keyValue == 0 && SPlank != null )
+				keyValue = SPlank.KeyValue;
 
 			Key.RemoveKeys( m, keyValue );
 		}
@@ -370,49 +332,49 @@ namespace Server.Multis
 
 		public override void OnAfterDelete()
 		{
-			m_TillerMan?.Delete();
+			TillerMan?.Delete();
 
-			m_Hold?.Delete();
+			Hold?.Delete();
 
-			m_PPlank?.Delete();
+			PPlank?.Delete();
 
-			m_SPlank?.Delete();
+			SPlank?.Delete();
 
 			m_TurnTimer?.Stop();
 
 			m_MoveTimer?.Stop();
 
-			m_Instances.Remove( this );
+			Boats.Remove( this );
 		}
 
 		public override void OnLocationChange( Point3D old )
 		{
-			if ( m_TillerMan != null )
-				m_TillerMan.Location = new Point3D( X + (m_TillerMan.X - old.X), Y + (m_TillerMan.Y - old.Y), Z + (m_TillerMan.Z - old.Z ) );
+			if ( TillerMan != null )
+				TillerMan.Location = new Point3D( X + (TillerMan.X - old.X), Y + (TillerMan.Y - old.Y), Z + (TillerMan.Z - old.Z ) );
 
-			if ( m_Hold != null )
-				m_Hold.Location = new Point3D( X + (m_Hold.X - old.X), Y + (m_Hold.Y - old.Y), Z + (m_Hold.Z - old.Z ) );
+			if ( Hold != null )
+				Hold.Location = new Point3D( X + (Hold.X - old.X), Y + (Hold.Y - old.Y), Z + (Hold.Z - old.Z ) );
 
-			if ( m_PPlank != null )
-				m_PPlank.Location = new Point3D( X + (m_PPlank.X - old.X), Y + (m_PPlank.Y - old.Y), Z + (m_PPlank.Z - old.Z ) );
+			if ( PPlank != null )
+				PPlank.Location = new Point3D( X + (PPlank.X - old.X), Y + (PPlank.Y - old.Y), Z + (PPlank.Z - old.Z ) );
 
-			if ( m_SPlank != null )
-				m_SPlank.Location = new Point3D( X + (m_SPlank.X - old.X), Y + (m_SPlank.Y - old.Y), Z + (m_SPlank.Z - old.Z ) );
+			if ( SPlank != null )
+				SPlank.Location = new Point3D( X + (SPlank.X - old.X), Y + (SPlank.Y - old.Y), Z + (SPlank.Z - old.Z ) );
 		}
 
 		public override void OnMapChange()
 		{
-			if ( m_TillerMan != null )
-				m_TillerMan.Map = Map;
+			if ( TillerMan != null )
+				TillerMan.Map = Map;
 
-			if ( m_Hold != null )
-				m_Hold.Map = Map;
+			if ( Hold != null )
+				Hold.Map = Map;
 
-			if ( m_PPlank != null )
-				m_PPlank.Map = Map;
+			if ( PPlank != null )
+				PPlank.Map = Map;
 
-			if ( m_SPlank != null )
-				m_SPlank.Map = Map;
+			if ( SPlank != null )
+				SPlank.Map = Map;
 		}
 
 		public bool CanCommand( Mobile m )
@@ -429,10 +391,10 @@ namespace Server.Multis
 
 		public bool CheckKey( uint keyValue )
 		{
-			if ( m_SPlank != null && m_SPlank.KeyValue == keyValue )
+			if ( SPlank != null && SPlank.KeyValue == keyValue )
 				return true;
 
-			if ( m_PPlank != null && m_PPlank.KeyValue == keyValue )
+			if ( PPlank != null && PPlank.KeyValue == keyValue )
 				return true;
 
 			return false;
@@ -488,7 +450,7 @@ namespace Server.Multis
 		{
 			m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
 
-			m_TillerMan?.InvalidateProperties();
+			TillerMan?.InvalidateProperties();
 		}
 
 		private class DecayTimer : Timer
@@ -543,20 +505,20 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return false;
 
-			if ( m_Anchored )
+			if ( Anchored )
 			{
 				if ( message )
-					m_TillerMan?.Say( 501445 ); // Ar, the anchor was already dropped sir.
+					TillerMan?.Say( 501445 ); // Ar, the anchor was already dropped sir.
 
 				return false;
 			}
 
 			StopMove( false );
 
-			m_Anchored = true;
+			Anchored = true;
 
 			if ( message )
-				m_TillerMan?.Say( 501444 ); // Ar, anchor dropped sir.
+				TillerMan?.Say( 501444 ); // Ar, anchor dropped sir.
 
 			return true;
 		}
@@ -566,18 +528,18 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return false;
 
-			if ( !m_Anchored )
+			if ( !Anchored )
 			{
 				if ( message )
-					m_TillerMan?.Say( 501447 ); // Ar, the anchor has not been dropped sir.
+					TillerMan?.Say( 501447 ); // Ar, the anchor has not been dropped sir.
 
 				return false;
 			}
 
-			m_Anchored = false;
+			Anchored = false;
 
 			if ( message )
-				m_TillerMan?.Say( 501446 ); // Ar, anchor raised sir.
+				TillerMan?.Say( 501446 ); // Ar, anchor raised sir.
 
 			return true;
 		}
@@ -594,7 +556,7 @@ namespace Server.Multis
 
 			if ( StartMove( dir, speed, clientSpeed, interval, false, true ) )
 			{
-				m_TillerMan?.Say( 501429 ); // Aye aye sir.
+				TillerMan?.Say( 501429 ); // Aye aye sir.
 
 				return true;
 			}
@@ -613,7 +575,7 @@ namespace Server.Multis
 
 			if ( StartMove( dir, speed, 0x1, interval, true, true ) )
 			{
-				m_TillerMan?.Say( 501429 ); // Aye aye sir.
+				TillerMan?.Say( 501429 ); // Aye aye sir.
 
 				return true;
 			}
@@ -626,14 +588,14 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return;
 
-			if ( from.AccessLevel < AccessLevel.GameMaster && from != m_Owner )
+			if ( from.AccessLevel < AccessLevel.GameMaster && from != Owner )
 			{
-				m_TillerMan?.Say( Utility.Random( 1042876, 4 ) ); // Arr, don't do that! | Arr, leave me alone! | Arr, watch what thour'rt doing, matey! | Arr! Do that again and I’ll throw ye overhead!
+				TillerMan?.Say( Utility.Random( 1042876, 4 ) ); // Arr, don't do that! | Arr, leave me alone! | Arr, watch what thour'rt doing, matey! | Arr! Do that again and I’ll throw ye overhead!
 
 				return;
 			}
 
-			m_TillerMan?.Say( 502580 ); // What dost thou wish to name thy ship?
+			TillerMan?.Say( 502580 ); // What dost thou wish to name thy ship?
 
 			from.Prompt = new RenameBoatPrompt( this );
 		}
@@ -643,16 +605,16 @@ namespace Server.Multis
 			if ( Deleted || CheckDecay() )
 				return;
 
-			if ( from.AccessLevel < AccessLevel.GameMaster && from != m_Owner )
+			if ( from.AccessLevel < AccessLevel.GameMaster && from != Owner )
 			{
-				m_TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
+				TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
 
 				return;
 			}
 
 			if ( !from.Alive )
 			{
-				m_TillerMan?.Say( 502582 ); // You appear to be dead.
+				TillerMan?.Say( 502582 ); // You appear to be dead.
 
 				return;
 			}
@@ -676,13 +638,13 @@ namespace Server.Multis
 				return DryDockResult.Dead;
 
 			Container pack = from.Backpack;
-			if ( (m_SPlank == null || !Key.ContainsKey( pack, m_SPlank.KeyValue )) && (m_PPlank == null || !Key.ContainsKey( pack, m_PPlank.KeyValue )) )
+			if ( (SPlank == null || !Key.ContainsKey( pack, SPlank.KeyValue )) && (PPlank == null || !Key.ContainsKey( pack, PPlank.KeyValue )) )
 				return DryDockResult.NoKey;
 
-			if ( !m_Anchored )
+			if ( !Anchored )
 				return DryDockResult.NotAnchored;
 
-			if ( m_Hold != null && m_Hold.Items.Count > 0 )
+			if ( Hold != null && Hold.Items.Count > 0 )
 				return DryDockResult.Hold;
 
 			Map map = Map;
@@ -760,16 +722,16 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return;
 
-			if ( e.Mobile.AccessLevel < AccessLevel.GameMaster && e.Mobile != m_Owner )
+			if ( e.Mobile.AccessLevel < AccessLevel.GameMaster && e.Mobile != Owner )
 			{
-				m_TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
+				TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
 
 				return;
 			}
 
 			if ( !e.Mobile.Alive )
 			{
-				m_TillerMan?.Say( 502582 ); // You appear to be dead.
+				TillerMan?.Say( 502582 ); // You appear to be dead.
 
 				return;
 			}
@@ -795,18 +757,18 @@ namespace Server.Multis
 
 			if ( m_ShipName == newName )
 			{
-				m_TillerMan?.Say( 502531 ); // Yes, sir.
+				TillerMan?.Say( 502531 ); // Yes, sir.
 
 				return;
 			}
 
 			ShipName = newName;
 
-			if ( m_TillerMan != null && m_ShipName != null )
-				m_TillerMan.Say( 1042885, m_ShipName ); // This ship is now called the ~1_NEW_SHIP_NAME~.
+			if ( TillerMan != null && m_ShipName != null )
+				TillerMan.Say( 1042885, m_ShipName ); // This ship is now called the ~1_NEW_SHIP_NAME~.
 			else
 			{
-				m_TillerMan?.Say( 502534 ); // This ship now has no name.
+				TillerMan?.Say( 502534 ); // This ship now has no name.
 			}
 		}
 
@@ -815,41 +777,41 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return;
 
-			if ( m.AccessLevel < AccessLevel.GameMaster && m != m_Owner )
+			if ( m.AccessLevel < AccessLevel.GameMaster && m != Owner )
 			{
-				m_TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
+				TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
 
 				return;
 			}
 
 			if ( !m.Alive )
 			{
-				m_TillerMan?.Say( 502582 ); // You appear to be dead.
+				TillerMan?.Say( 502582 ); // You appear to be dead.
 
 				return;
 			}
 
 			if ( m_ShipName == null )
 			{
-				m_TillerMan?.Say( 502526 ); // Ar, this ship has no name.
+				TillerMan?.Say( 502526 ); // Ar, this ship has no name.
 
 				return;
 			}
 
 			ShipName = null;
 
-			m_TillerMan?.Say( 502534 ); // This ship now has no name.
+			TillerMan?.Say( 502534 ); // This ship now has no name.
 		}
 
 		public void GiveName( Mobile m )
 		{
-			if ( m_TillerMan == null || CheckDecay() )
+			if ( TillerMan == null || CheckDecay() )
 				return;
 
 			if ( m_ShipName == null )
-				m_TillerMan.Say( 502526 ); // Ar, this ship has no name.
+				TillerMan.Say( 502526 ); // Ar, this ship has no name.
 			else
-				m_TillerMan.Say( 1042881, m_ShipName ); // This is the ~1_BOAT_NAME~.
+				TillerMan.Say( 1042881, m_ShipName ); // This is the ~1_BOAT_NAME~.
 		}
 
 		public void GiveNavPoint()
@@ -1052,10 +1014,10 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return false;
 
-			if ( m_Anchored )
+			if ( Anchored )
 			{
 				if ( message )
-					m_TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
+					TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
@@ -1088,10 +1050,10 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return false;
 
-			if ( m_Anchored )
+			if ( Anchored )
 			{
 				if ( message )
-					m_TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
+					TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
@@ -1101,7 +1063,7 @@ namespace Server.Multis
 				return true;
 			}
 			if ( message )
-				m_TillerMan.Say( 501423 ); // Ar, can't turn sir.
+				TillerMan.Say( 501423 ); // Ar, can't turn sir.
 
 			return false;
 		}
@@ -1131,18 +1093,18 @@ namespace Server.Multis
 			if ( CheckDecay() )
 				return false;
 
-			if ( m_Anchored )
+			if ( Anchored )
 			{
 				if ( message )
-					m_TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
+					TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
 
-			m_Moving = dir;
-			m_Speed = speed;
+			Moving = dir;
+			Speed = speed;
 			m_ClientSpeed = clientSpeed;
-			m_Order = BoatOrder.Move;
+			Order = BoatOrder.Move;
 
 			m_MoveTimer?.Stop();
 
@@ -1160,19 +1122,19 @@ namespace Server.Multis
 			if ( m_MoveTimer == null )
 			{
 				if ( message )
-					m_TillerMan?.Say( 501443 ); // Er, the ship is not moving sir.
+					TillerMan?.Say( 501443 ); // Er, the ship is not moving sir.
 
 				return false;
 			}
 
-			m_Moving = Direction.North;
-			m_Speed = 0;
+			Moving = Direction.North;
+			Speed = 0;
 			m_ClientSpeed = 0;
 			m_MoveTimer.Stop();
 			m_MoveTimer = null;
 
 			if ( message )
-				m_TillerMan?.Say( 501429 ); // Aye aye sir.
+				TillerMan?.Say( 501429 ); // Aye aye sir.
 
 			return true;
 		}
@@ -1271,16 +1233,16 @@ namespace Server.Multis
 			if ( base.Contains( x, y ) )
 				return true;
 
-			if ( m_TillerMan != null && x == m_TillerMan.X && y == m_TillerMan.Y )
+			if ( TillerMan != null && x == TillerMan.X && y == TillerMan.Y )
 				return true;
 
-			if ( m_Hold != null && x == m_Hold.X && y == m_Hold.Y )
+			if ( Hold != null && x == Hold.X && y == Hold.Y )
 				return true;
 
-			if ( m_PPlank != null && x == m_PPlank.X && y == m_PPlank.Y )
+			if ( PPlank != null && x == PPlank.X && y == PPlank.Y )
 				return true;
 
-			if ( m_SPlank != null && x == m_SPlank.X && y == m_SPlank.Y )
+			if ( SPlank != null && x == SPlank.X && y == SPlank.Y )
 				return true;
 
 			return false;
@@ -1335,8 +1297,8 @@ namespace Server.Multis
 
 			if ( Order == BoatOrder.Move )
 			{
-				dir = m_Moving;
-				speed = m_Speed;
+				dir = Moving;
+				speed = Speed;
 				clientSpeed = m_ClientSpeed;
 			}
 			else if ( MapItem == null || MapItem.Deleted )
@@ -1417,10 +1379,10 @@ namespace Server.Multis
 			if ( map == null || Deleted || CheckDecay() )
 				return false;
 
-			if ( m_Anchored )
+			if ( Anchored )
 			{
 				if ( message )
-					m_TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
+					TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
@@ -1436,7 +1398,7 @@ namespace Server.Multis
 					if ( i == 1 )
 					{
 						if ( message )
-							m_TillerMan?.Say( 501424 ); // Ar, we've stopped sir.
+							TillerMan?.Say( 501424 ); // Ar, we've stopped sir.
 
 						return false;
 					}
@@ -1475,7 +1437,7 @@ namespace Server.Multis
 						if ( !CanFit( new Point3D( newX + (j * rx), newY + (j * ry), Z ), Map, ItemID ) )
 						{
 							if ( message )
-								m_TillerMan?.Say( 501424 ); // Ar, we've stopped sir.
+								TillerMan?.Say( 501424 ); // Ar, we've stopped sir.
 
 							return false;
 						}
@@ -1494,10 +1456,10 @@ namespace Server.Multis
 			{
 				List<IEntity> toMove = GetMovingEntities();
 
-				SafeAdd( m_TillerMan, toMove );
-				SafeAdd( m_Hold, toMove );
-				SafeAdd( m_PPlank, toMove );
-				SafeAdd( m_SPlank, toMove );
+				SafeAdd( TillerMan, toMove );
+				SafeAdd( Hold, toMove );
+				SafeAdd( PPlank, toMove );
+				SafeAdd( SPlank, toMove );
 
 				// Packet must be sent before actual locations are changed
 				foreach ( NetState ns in Map.GetClientsInRange( Location, GetMaxUpdateRange() ) )
@@ -1634,27 +1596,27 @@ namespace Server.Multis
 
 			m_Facing = facing;
 
-			m_TillerMan?.SetFacing( facing );
+			TillerMan?.SetFacing( facing );
 
-			m_Hold?.SetFacing( facing );
+			Hold?.SetFacing( facing );
 
-			m_PPlank?.SetFacing( facing );
+			PPlank?.SetFacing( facing );
 
-			m_SPlank?.SetFacing( facing );
+			SPlank?.SetFacing( facing );
 
 			List<IEntity> toMove = GetMovingEntities();
 
-			toMove.Add( m_PPlank );
-			toMove.Add( m_SPlank );
+			toMove.Add( PPlank );
+			toMove.Add( SPlank );
 
 			int xOffset = 0, yOffset = 0;
 			Movement.Movement.Offset( facing, ref xOffset, ref yOffset );
 
-			if ( m_TillerMan != null )
-				m_TillerMan.Location = new Point3D( X + (xOffset * TillerManDistance) + (facing == Direction.North ? 1 : 0), Y + (yOffset * TillerManDistance), m_TillerMan.Z );
+			if ( TillerMan != null )
+				TillerMan.Location = new Point3D( X + (xOffset * TillerManDistance) + (facing == Direction.North ? 1 : 0), Y + (yOffset * TillerManDistance), TillerMan.Z );
 
-			if ( m_Hold != null )
-				m_Hold.Location = new Point3D( X + (xOffset * HoldDistance), Y + (yOffset * HoldDistance), m_Hold.Z );
+			if ( Hold != null )
+				Hold.Location = new Point3D( X + (xOffset * HoldDistance), Y + (yOffset * HoldDistance), Hold.Z );
 
 			int count = (int)(m_Facing - old) & 0x7;
 			count /= 2;
@@ -1708,8 +1670,8 @@ namespace Server.Multis
 
 		public static void UpdateAllComponents()
 		{
-			for ( int i = m_Instances.Count - 1; i >= 0; --i )
-				m_Instances[i].UpdateComponents();
+			for ( int i = Boats.Count - 1; i >= 0; --i )
+				Boats[i].UpdateComponents();
 		}
 
 		public static void Initialize()

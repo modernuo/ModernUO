@@ -5,17 +5,11 @@ namespace Server.Factions
 {
 	public class StrongholdRegion : BaseRegion
 	{
-		private Faction m_Faction;
-
-		public Faction Faction
-		{
-			get => m_Faction;
-			set => m_Faction = value;
-		}
+		public Faction Faction { get; set; }
 
 		public StrongholdRegion( Faction faction ) : base( faction.Definition.FriendlyName, Faction.Facet, DefaultPriority, faction.Definition.Stronghold.Area )
 		{
-			m_Faction = faction;
+			Faction = faction;
 
 			Register();
 		}

@@ -6,16 +6,14 @@ namespace Server.Factions
 {
 	public class FactionItemDefinition
 	{
-		private int m_SilverCost;
-		private Type m_VendorType;
+		public int SilverCost { get; }
 
-		public int SilverCost => m_SilverCost;
-		public Type VendorType => m_VendorType;
+		public Type VendorType { get; }
 
 		public FactionItemDefinition( int silverCost, Type vendorType )
 		{
-			m_SilverCost = silverCost;
-			m_VendorType = vendorType;
+			SilverCost = silverCost;
+			VendorType = vendorType;
 		}
 
 		private static FactionItemDefinition m_MetalArmor	= new FactionItemDefinition( 1000, typeof( Blacksmith ) );

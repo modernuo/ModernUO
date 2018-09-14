@@ -13,19 +13,11 @@ namespace Server.Engines.Reports
 		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
-		private string m_Width;
-		private string m_Align;
-		private string m_Name;
+		public string Width { get; set; }
 
-		public string Width{ get => m_Width;
-			set => m_Width = value;
-		}
-		public string Align{ get => m_Align;
-			set => m_Align = value;
-		}
-		public string Name{ get => m_Name;
-			set => m_Name = value;
-		}
+		public string Align { get; set; }
+
+		public string Name { get; set; }
 
 		private ReportColumn()
 		{
@@ -37,23 +29,23 @@ namespace Server.Engines.Reports
 
 		public ReportColumn( string width, string align, string name )
 		{
-			m_Width = width;
-			m_Align = align;
-			m_Name = name;
+			Width = width;
+			Align = align;
+			Name = name;
 		}
 
 		public override void SerializeAttributes( PersistanceWriter op )
 		{
-			op.SetString( "w", m_Width );
-			op.SetString( "a", m_Align );
-			op.SetString( "n", m_Name );
+			op.SetString( "w", Width );
+			op.SetString( "a", Align );
+			op.SetString( "n", Name );
 		}
 
 		public override void DeserializeAttributes( PersistanceReader ip )
 		{
-			m_Width = Utility.Intern( ip.GetString( "w" ) );
-			m_Align = Utility.Intern( ip.GetString( "a" ) );
-			m_Name = Utility.Intern( ip.GetString( "n" ) );
+			Width = Utility.Intern( ip.GetString( "w" ) );
+			Align = Utility.Intern( ip.GetString( "a" ) );
+			Name = Utility.Intern( ip.GetString( "n" ) );
 		}
 	}
 }

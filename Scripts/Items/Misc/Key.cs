@@ -23,8 +23,6 @@ namespace Server.Items
 	{
 		private string m_Description;
 		private uint m_KeyVal;
-		private Item m_Link;
-		private int m_MaxRange;
 
 		public static uint RandomValue()
 		{
@@ -101,12 +99,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MaxRange
-		{
-			get => m_MaxRange;
-
-			set => m_MaxRange = value;
-		}
+		public int MaxRange { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public uint KeyValue
@@ -121,12 +114,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Item Link
-		{
-			get => m_Link;
-
-			set => m_Link = value;
-		}
+		public Item Link { get; set; }
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -134,9 +122,9 @@ namespace Server.Items
 
 			writer.Write( (int) 2 ); // version
 
-			writer.Write( (int) m_MaxRange );
+			writer.Write( (int) MaxRange );
 
-			writer.Write( (Item) m_Link );
+			writer.Write( (Item) Link );
 
 			writer.Write( (string) m_Description );
 			writer.Write( (uint) m_KeyVal );
@@ -152,20 +140,20 @@ namespace Server.Items
 			{
 				case 2:
 				{
-					m_MaxRange = reader.ReadInt();
+					MaxRange = reader.ReadInt();
 
 					goto case 1;
 				}
 				case 1:
 				{
-					m_Link = reader.ReadItem();
+					Link = reader.ReadItem();
 
 					goto case 0;
 				}
 				case 0:
 				{
-					if ( version < 2 || m_MaxRange == 0 )
-						m_MaxRange = 3;
+					if ( version < 2 || MaxRange == 0 )
+						MaxRange = 3;
 
 					m_Description = reader.ReadString();
 
@@ -201,9 +189,9 @@ namespace Server.Items
 		{
 			Weight = 1.0;
 
-			m_MaxRange = 3;
+			MaxRange = 3;
 			m_KeyVal = LockVal;
-			m_Link = link;
+			Link = link;
 		}
 
 		public Key( Serial serial ) : base( serial )

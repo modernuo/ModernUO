@@ -7,13 +7,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
 	public class EscortObjective : BaseObjective
 	{
-		private QuestArea m_Destination;
-
-		public QuestArea Destination
-		{
-			get => m_Destination;
-			set => m_Destination = value;
-		}
+		public QuestArea Destination { get; set; }
 
 		public EscortObjective()
 			: this( null )
@@ -22,7 +16,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public EscortObjective( QuestArea destination )
 		{
-			m_Destination = destination;
+			Destination = destination;
 		}
 
 		public override bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
@@ -70,17 +64,17 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			g.AddHtmlLocalized( 98, y, 312, 16, 1072206, 0x15F90, false, false ); // Escort to
 
-			if ( m_Destination.Name.Number > 0 )
-				g.AddHtmlLocalized( 173, y, 312, 20, m_Destination.Name.Number, 0xFFFFFF, false, false );
-			else if ( m_Destination.Name.String != null )
-				g.AddLabel( 173, y, 0x481, m_Destination.Name.String );
+			if ( Destination.Name.Number > 0 )
+				g.AddHtmlLocalized( 173, y, 312, 20, Destination.Name.Number, 0xFFFFFF, false, false );
+			else if ( Destination.Name.String != null )
+				g.AddLabel( 173, y, 0x481, Destination.Name.String );
 
 			y += 16;
 		}
 
 		public override BaseObjectiveInstance CreateInstance( MLQuestInstance instance )
 		{
-			if ( instance == null || m_Destination == null )
+			if ( instance == null || Destination == null )
 				return null;
 
 			return new EscortObjectiveInstance( this, instance );
@@ -90,22 +84,17 @@ namespace Server.Engines.MLQuests.Objectives
 	public class EscortObjectiveInstance : BaseObjectiveInstance
 	{
 		private EscortObjective m_Objective;
-		private bool m_HasCompleted;
 		private Timer m_Timer;
 		private DateTime m_LastSeenEscorter;
 		private BaseCreature m_Escort;
 
-		public bool HasCompleted
-		{
-			get => m_HasCompleted;
-			set => m_HasCompleted = value;
-		}
+		public bool HasCompleted { get; set; }
 
 		public EscortObjectiveInstance( EscortObjective objective, MLQuestInstance instance )
 			: base( instance, objective )
 		{
 			m_Objective = objective;
-			m_HasCompleted = false;
+			HasCompleted = false;
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), CheckDestination );
 			m_LastSeenEscorter = DateTime.UtcNow;
 			m_Escort = instance.Quester as BaseCreature;
@@ -116,12 +105,12 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override bool IsCompleted()
 		{
-			return m_HasCompleted;
+			return HasCompleted;
 		}
 
 		private void CheckDestination()
 		{
-			if ( m_Escort == null || m_HasCompleted ) // Completed by deserialization
+			if ( m_Escort == null || HasCompleted ) // Completed by deserialization
 			{
 				StopTimer();
 				return;
@@ -146,7 +135,7 @@ namespace Server.Engines.MLQuests.Objectives
 				EndFollow( m_Escort );
 				StopTimer();
 
-				m_HasCompleted = true;
+				HasCompleted = true;
 				CheckComplete();
 
 				// Auto claim reward
@@ -275,7 +264,7 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			base.Serialize( writer );
 
-			writer.Write( m_HasCompleted );
+			writer.Write( HasCompleted );
 		}
 	}
 }

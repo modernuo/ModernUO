@@ -4,54 +4,51 @@ namespace Server.Engines.BulkOrders
 {
 	public class BOBSmallEntry
 	{
-		private Type m_ItemType;
-		private bool m_RequireExceptional;
-		private BODType m_DeedType;
-		private BulkMaterialType m_Material;
-		private int m_AmountCur, m_AmountMax;
-		private int m_Number;
-		private int m_Graphic;
-		private int m_Price;
+		public Type ItemType { get; }
 
-		public Type ItemType => m_ItemType;
-		public bool RequireExceptional => m_RequireExceptional;
-		public BODType DeedType => m_DeedType;
-		public BulkMaterialType Material => m_Material;
-		public int AmountCur => m_AmountCur;
-		public int AmountMax => m_AmountMax;
-		public int Number => m_Number;
-		public int Graphic => m_Graphic;
-		public int Price{ get => m_Price;
-			set => m_Price = value;
-		}
+		public bool RequireExceptional { get; }
+
+		public BODType DeedType { get; }
+
+		public BulkMaterialType Material { get; }
+
+		public int AmountCur { get; }
+
+		public int AmountMax { get; }
+
+		public int Number { get; }
+
+		public int Graphic { get; }
+
+		public int Price { get; set; }
 
 		public Item Reconstruct()
 		{
 			SmallBOD bod = null;
 
-			if ( m_DeedType == BODType.Smith )
-				bod = new SmallSmithBOD( m_AmountCur, m_AmountMax, m_ItemType, m_Number, m_Graphic, m_RequireExceptional, m_Material );
-			else if ( m_DeedType == BODType.Tailor )
-				bod = new SmallTailorBOD( m_AmountCur, m_AmountMax, m_ItemType, m_Number, m_Graphic, m_RequireExceptional, m_Material );
+			if ( DeedType == BODType.Smith )
+				bod = new SmallSmithBOD( AmountCur, AmountMax, ItemType, Number, Graphic, RequireExceptional, Material );
+			else if ( DeedType == BODType.Tailor )
+				bod = new SmallTailorBOD( AmountCur, AmountMax, ItemType, Number, Graphic, RequireExceptional, Material );
 
 			return bod;
 		}
 
 		public BOBSmallEntry( SmallBOD bod )
 		{
-			m_ItemType = bod.Type;
-			m_RequireExceptional = bod.RequireExceptional;
+			ItemType = bod.Type;
+			RequireExceptional = bod.RequireExceptional;
 
 			if ( bod is SmallTailorBOD )
-				m_DeedType = BODType.Tailor;
+				DeedType = BODType.Tailor;
 			else if ( bod is SmallSmithBOD )
-				m_DeedType = BODType.Smith;
+				DeedType = BODType.Smith;
 
-			m_Material = bod.Material;
-			m_AmountCur = bod.AmountCur;
-			m_AmountMax = bod.AmountMax;
-			m_Number = bod.Number;
-			m_Graphic = bod.Graphic;
+			Material = bod.Material;
+			AmountCur = bod.AmountCur;
+			AmountMax = bod.AmountMax;
+			Number = bod.Number;
+			Graphic = bod.Graphic;
 		}
 
 		public BOBSmallEntry( GenericReader reader )
@@ -65,18 +62,18 @@ namespace Server.Engines.BulkOrders
 					string type = reader.ReadString();
 
 					if ( type != null )
-						m_ItemType = ScriptCompiler.FindTypeByFullName( type );
+						ItemType = ScriptCompiler.FindTypeByFullName( type );
 
-					m_RequireExceptional = reader.ReadBool();
+					RequireExceptional = reader.ReadBool();
 
-					m_DeedType = (BODType)reader.ReadEncodedInt();
+					DeedType = (BODType)reader.ReadEncodedInt();
 
-					m_Material = (BulkMaterialType)reader.ReadEncodedInt();
-					m_AmountCur = reader.ReadEncodedInt();
-					m_AmountMax = reader.ReadEncodedInt();
-					m_Number = reader.ReadEncodedInt();
-					m_Graphic = reader.ReadEncodedInt();
-					m_Price = reader.ReadEncodedInt();
+					Material = (BulkMaterialType)reader.ReadEncodedInt();
+					AmountCur = reader.ReadEncodedInt();
+					AmountMax = reader.ReadEncodedInt();
+					Number = reader.ReadEncodedInt();
+					Graphic = reader.ReadEncodedInt();
+					Price = reader.ReadEncodedInt();
 
 					break;
 				}
@@ -87,17 +84,17 @@ namespace Server.Engines.BulkOrders
 		{
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_ItemType == null ? null : m_ItemType.FullName );
+			writer.Write( ItemType == null ? null : ItemType.FullName );
 
-			writer.Write( (bool) m_RequireExceptional );
+			writer.Write( (bool) RequireExceptional );
 
-			writer.WriteEncodedInt( (int) m_DeedType );
-			writer.WriteEncodedInt( (int) m_Material );
-			writer.WriteEncodedInt( (int) m_AmountCur );
-			writer.WriteEncodedInt( (int) m_AmountMax );
-			writer.WriteEncodedInt( (int) m_Number );
-			writer.WriteEncodedInt( (int) m_Graphic );
-			writer.WriteEncodedInt( (int) m_Price );
+			writer.WriteEncodedInt( (int) DeedType );
+			writer.WriteEncodedInt( (int) Material );
+			writer.WriteEncodedInt( (int) AmountCur );
+			writer.WriteEncodedInt( (int) AmountMax );
+			writer.WriteEncodedInt( (int) Number );
+			writer.WriteEncodedInt( (int) Graphic );
+			writer.WriteEncodedInt( (int) Price );
 		}
 	}
 }

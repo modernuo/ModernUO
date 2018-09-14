@@ -23,23 +23,21 @@ namespace Server
 	[PropertyObject]
 	public class VirtueInfo
 	{
-		private int[] m_Values;
-
-		public int[] Values => m_Values;
+		public int[] Values { get; private set; }
 
 		public int GetValue( int index )
 		{
-			if ( m_Values == null )
+			if ( Values == null )
 				return 0;
-			return m_Values[index];
+			return Values[index];
 		}
 
 		public void SetValue( int index, int value )
 		{
-			if ( m_Values == null )
-				m_Values = new int[8];
+			if ( Values == null )
+				Values = new int[8];
 
-			m_Values[index] = value;
+			Values[index] = value;
 		}
 
 		public override string ToString()
@@ -104,11 +102,11 @@ namespace Server
 
 					if ( mask != 0 )
 					{
-						m_Values = new int[8];
+						Values = new int[8];
 
 						for ( int i = 0; i < 8; ++i )
 							if ( (mask & (1 << i)) != 0 )
-								m_Values[i] = reader.ReadInt();
+								Values[i] = reader.ReadInt();
 					}
 
 					break;
@@ -131,7 +129,7 @@ namespace Server
 		{
 			writer.Write( (byte) 1 ); // version
 
-			if ( info.m_Values == null )
+			if ( info.Values == null )
 			{
 				writer.Write( (byte) 0 );
 			}
@@ -140,14 +138,14 @@ namespace Server
 				int mask = 0;
 
 				for ( int i = 0; i < 8; ++i )
-					if ( info.m_Values[i] != 0 )
+					if ( info.Values[i] != 0 )
 						mask |= 1 << i;
 
 				writer.Write( (byte) mask );
 
 				for ( int i = 0; i < 8; ++i )
-					if ( info.m_Values[i] != 0 )
-						writer.Write( (int) info.m_Values[i] );
+					if ( info.Values[i] != 0 )
+						writer.Write( (int) info.Values[i] );
 			}
 		}
 	}

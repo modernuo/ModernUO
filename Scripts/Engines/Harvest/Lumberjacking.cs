@@ -19,9 +19,7 @@ namespace Server.Engines.Harvest
 			}
 		}
 
-		private HarvestDefinition m_Definition;
-
-		public HarvestDefinition Definition => m_Definition;
+		public HarvestDefinition Definition { get; }
 
 		private Lumberjacking()
 		{
@@ -123,7 +121,7 @@ namespace Server.Engines.Harvest
 			lumber.RaceBonus = Core.ML;
 			lumber.RandomizeVeins = Core.ML;
 
-			m_Definition = lumber;
+			Definition = lumber;
 			Definitions.Add( lumber );
 			#endregion
 		}

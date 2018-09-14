@@ -425,18 +425,16 @@ namespace Server.Gumps
 
 	public class SkillsGumpGroup
 	{
-		private string m_Name;
-		private SkillName[] m_Skills;
+		public string Name { get; }
 
-		public string Name => m_Name;
-		public SkillName[] Skills => m_Skills;
+		public SkillName[] Skills { get; }
 
 		public SkillsGumpGroup( string name, SkillName[] skills )
 		{
-			m_Name = name;
-			m_Skills = skills;
+			Name = name;
+			Skills = skills;
 
-			Array.Sort( m_Skills, new SkillNameComparer() );
+			Array.Sort( Skills, new SkillNameComparer() );
 		}
 
 		private class SkillNameComparer : IComparer
@@ -457,88 +455,87 @@ namespace Server.Gumps
 			}
 		}
 
-		private static SkillsGumpGroup[] m_Groups = {
-				new SkillsGumpGroup( "Crafting", new[]
-				{
-					SkillName.Alchemy,
-					SkillName.Blacksmith,
-					SkillName.Cartography,
-					SkillName.Carpentry,
-					SkillName.Cooking,
-					SkillName.Fletching,
-					SkillName.Inscribe,
-					SkillName.Tailoring,
-					SkillName.Tinkering,
-					SkillName.Imbuing
-				} ),
-				new SkillsGumpGroup( "Bardic", new[]
-				{
-					SkillName.Discordance,
-					SkillName.Musicianship,
-					SkillName.Peacemaking,
-					SkillName.Provocation
-				} ),
-				new SkillsGumpGroup( "Magical", new[]
-				{
-					SkillName.Chivalry,
-					SkillName.EvalInt,
-					SkillName.Magery,
-					SkillName.MagicResist,
-					SkillName.Meditation,
-					SkillName.Necromancy,
-					SkillName.SpiritSpeak,
-					SkillName.Ninjitsu,
-					SkillName.Bushido,
-					SkillName.Spellweaving,
-					SkillName.Mysticism
-				} ),
-				new SkillsGumpGroup( "Miscellaneous", new[]
-				{
-					SkillName.Camping,
-					SkillName.Fishing,
-					SkillName.Focus,
-					SkillName.Healing,
-					SkillName.Herding,
-					SkillName.Lockpicking,
-					SkillName.Lumberjacking,
-					SkillName.Mining,
-					SkillName.Snooping,
-					SkillName.Veterinary
-				} ),
-				new SkillsGumpGroup( "Combat Ratings", new[]
-				{
-					SkillName.Archery,
-					SkillName.Fencing,
-					SkillName.Macing,
-					SkillName.Parry,
-					SkillName.Swords,
-					SkillName.Tactics,
-					SkillName.Wrestling,
-					SkillName.Throwing
-				} ),
-				new SkillsGumpGroup( "Actions", new[]
-				{
-					SkillName.AnimalTaming,
-					SkillName.Begging,
-					SkillName.DetectHidden,
-					SkillName.Hiding,
-					SkillName.RemoveTrap,
-					SkillName.Poisoning,
-					SkillName.Stealing,
-					SkillName.Stealth,
-					SkillName.Tracking
-				} ),
-				new SkillsGumpGroup( "Lore & Knowledge", new[]
-				{
-					SkillName.Anatomy,
-					SkillName.AnimalLore,
-					SkillName.ArmsLore,
-					SkillName.Forensics,
-					SkillName.ItemID,
-					SkillName.TasteID
-				} )
-			};
-
-		public static SkillsGumpGroup[] Groups => m_Groups;
+		public static SkillsGumpGroup[] Groups { get; } =
+		{
+			new SkillsGumpGroup( "Crafting", new[]
+			{
+				SkillName.Alchemy,
+				SkillName.Blacksmith,
+				SkillName.Cartography,
+				SkillName.Carpentry,
+				SkillName.Cooking,
+				SkillName.Fletching,
+				SkillName.Inscribe,
+				SkillName.Tailoring,
+				SkillName.Tinkering,
+				SkillName.Imbuing
+			} ),
+			new SkillsGumpGroup( "Bardic", new[]
+			{
+				SkillName.Discordance,
+				SkillName.Musicianship,
+				SkillName.Peacemaking,
+				SkillName.Provocation
+			} ),
+			new SkillsGumpGroup( "Magical", new[]
+			{
+				SkillName.Chivalry,
+				SkillName.EvalInt,
+				SkillName.Magery,
+				SkillName.MagicResist,
+				SkillName.Meditation,
+				SkillName.Necromancy,
+				SkillName.SpiritSpeak,
+				SkillName.Ninjitsu,
+				SkillName.Bushido,
+				SkillName.Spellweaving,
+				SkillName.Mysticism
+			} ),
+			new SkillsGumpGroup( "Miscellaneous", new[]
+			{
+				SkillName.Camping,
+				SkillName.Fishing,
+				SkillName.Focus,
+				SkillName.Healing,
+				SkillName.Herding,
+				SkillName.Lockpicking,
+				SkillName.Lumberjacking,
+				SkillName.Mining,
+				SkillName.Snooping,
+				SkillName.Veterinary
+			} ),
+			new SkillsGumpGroup( "Combat Ratings", new[]
+			{
+				SkillName.Archery,
+				SkillName.Fencing,
+				SkillName.Macing,
+				SkillName.Parry,
+				SkillName.Swords,
+				SkillName.Tactics,
+				SkillName.Wrestling,
+				SkillName.Throwing
+			} ),
+			new SkillsGumpGroup( "Actions", new[]
+			{
+				SkillName.AnimalTaming,
+				SkillName.Begging,
+				SkillName.DetectHidden,
+				SkillName.Hiding,
+				SkillName.RemoveTrap,
+				SkillName.Poisoning,
+				SkillName.Stealing,
+				SkillName.Stealth,
+				SkillName.Tracking
+			} ),
+			new SkillsGumpGroup( "Lore & Knowledge", new[]
+			{
+				SkillName.Anatomy,
+				SkillName.AnimalLore,
+				SkillName.ArmsLore,
+				SkillName.Forensics,
+				SkillName.ItemID,
+				SkillName.TasteID
+			} )
+		};
 	}
 }

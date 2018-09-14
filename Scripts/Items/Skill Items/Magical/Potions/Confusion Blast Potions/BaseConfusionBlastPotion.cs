@@ -158,18 +158,16 @@ namespace Server.Items
 
 		private class ThrowTarget : Target
 		{
-			private BaseConfusionBlastPotion m_Potion;
-
-			public BaseConfusionBlastPotion Potion => m_Potion;
+			public BaseConfusionBlastPotion Potion { get; }
 
 			public ThrowTarget( BaseConfusionBlastPotion potion ) : base( 12, true, TargetFlags.None )
 			{
-				m_Potion = potion;
+				Potion = potion;
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( m_Potion.Deleted || m_Potion.Map == Map.Internal )
+				if ( Potion.Deleted || Potion.Map == Map.Internal )
 					return;
 
 				if ( !(targeted is IPoint3D p) || from.Map == null )
@@ -189,8 +187,8 @@ namespace Server.Items
 				else
 					to = new Entity( Serial.Zero, new Point3D( p ), from.Map );
 
-				Effects.SendMovingEffect( from, to, 0xF0D, 7, 0, false, false, m_Potion.Hue, 0 );
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( m_Potion.Explode_Callback ), new object[] { from, new Point3D( p ), from.Map } );
+				Effects.SendMovingEffect( from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0 );
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( Potion.Explode_Callback ), new object[] { from, new Point3D( p ), from.Map } );
 			}
 		}
 	}

@@ -24,15 +24,11 @@ namespace Server.Menus.ItemLists
 {
 	public class ItemListEntry
 	{
-		private string m_Name;
-		private int m_ItemID;
-		private int m_Hue;
+		public string Name { get; }
 
-		public string Name => m_Name;
+		public int ItemID { get; }
 
-		public int ItemID => m_ItemID;
-
-		public int Hue => m_Hue;
+		public int Hue { get; }
 
 		public ItemListEntry( string name, int itemID ) : this( name, itemID, 0 )
 		{
@@ -40,36 +36,29 @@ namespace Server.Menus.ItemLists
 
 		public ItemListEntry( string name, int itemID, int hue )
 		{
-			m_Name = name;
-			m_ItemID = itemID;
-			m_Hue = hue;
+			Name = name;
+			ItemID = itemID;
+			Hue = hue;
 		}
 	}
 
 	public class ItemListMenu : IMenu
 	{
-		private string m_Question;
-		private ItemListEntry[] m_Entries;
-
 		private int m_Serial;
 		private static int m_NextSerial;
 
 		int IMenu.Serial => m_Serial;
 
-		int IMenu.EntryLength => m_Entries.Length;
+		int IMenu.EntryLength => Entries.Length;
 
-		public string Question => m_Question;
+		public string Question { get; }
 
-		public ItemListEntry[] Entries
-		{
-			get => m_Entries;
-			set => m_Entries = value;
-		}
+		public ItemListEntry[] Entries { get; set; }
 
 		public ItemListMenu( string question, ItemListEntry[] entries )
 		{
-			m_Question = question;
-			m_Entries = entries;
+			Question = question;
+			Entries = entries;
 
 			do
 			{

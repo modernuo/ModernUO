@@ -95,25 +95,17 @@ namespace Server.Engines.Quests.Ambitious
 	{
 		public override object Message => 1054148;
 
-		private bool m_BagOfSending;
-		private bool m_PowderOfTranslocation;
-		private bool m_Gold;
+		public bool BagOfSending { get; set; }
 
-		public bool BagOfSending{ get => m_BagOfSending;
-			set => m_BagOfSending = value;
-		}
-		public bool PowderOfTranslocation{ get => m_PowderOfTranslocation;
-			set => m_PowderOfTranslocation = value;
-		}
-		public bool Gold{ get => m_Gold;
-			set => m_Gold = value;
-		}
+		public bool PowderOfTranslocation { get; set; }
+
+		public bool Gold { get; set; }
 
 		public GetRewardObjective( bool bagOfSending, bool powderOfTranslocation, bool gold)
 		{
-			m_BagOfSending = bagOfSending;
-			m_PowderOfTranslocation = powderOfTranslocation;
-			m_Gold = gold;
+			BagOfSending = bagOfSending;
+			PowderOfTranslocation = powderOfTranslocation;
+			Gold = gold;
 		}
 
 		public GetRewardObjective()
@@ -129,18 +121,18 @@ namespace Server.Engines.Quests.Ambitious
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_BagOfSending = reader.ReadBool();
-			m_PowderOfTranslocation = reader.ReadBool();
-			m_Gold = reader.ReadBool();
+			BagOfSending = reader.ReadBool();
+			PowderOfTranslocation = reader.ReadBool();
+			Gold = reader.ReadBool();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( (bool) m_BagOfSending );
-			writer.Write( (bool) m_PowderOfTranslocation );
-			writer.Write( (bool) m_Gold );
+			writer.Write( (bool) BagOfSending );
+			writer.Write( (bool) PowderOfTranslocation );
+			writer.Write( (bool) Gold );
 		}
 	}
 }

@@ -26,13 +26,11 @@ namespace Server.Spells.Necromancy
 		{
 		}
 
-		private static Hashtable m_Table = new Hashtable();
-
-		public static Hashtable Table => m_Table;
+		public static Hashtable Table { get; } = new Hashtable();
 
 		public override bool CheckCast()
 		{
-			BaseCreature check = (BaseCreature)m_Table[Caster];
+			BaseCreature check = (BaseCreature)Table[Caster];
 
 			if ( check != null && !check.Deleted )
 			{
@@ -48,41 +46,38 @@ namespace Server.Spells.Necromancy
 			if ( CheckSequence() )
 			{
 				Caster.CloseGump( typeof( SummonFamiliarGump ) );
-				Caster.SendGump( new SummonFamiliarGump( Caster, m_Entries, this ) );
+				Caster.SendGump( new SummonFamiliarGump( Caster, Entries, this ) );
 			}
 
 			FinishSequence();
 		}
 
-		private static SummonFamiliarEntry[] m_Entries = {
-				new SummonFamiliarEntry( typeof( HordeMinionFamiliar ), 1060146,  30.0,  30.0 ), // Horde Minion
-				new SummonFamiliarEntry( typeof( ShadowWispFamiliar ), 1060142,  50.0,  50.0 ), // Shadow Wisp
-				new SummonFamiliarEntry( typeof( DarkWolfFamiliar ), 1060143,  60.0,  60.0 ), // Dark Wolf
-				new SummonFamiliarEntry( typeof( DeathAdder ), 1060145,  80.0,  80.0 ), // Death Adder
-				new SummonFamiliarEntry( typeof( VampireBatFamiliar ), 1060144, 100.0, 100.0 )  // Vampire Bat
-			};
-
-		public static SummonFamiliarEntry[] Entries => m_Entries;
+		public static SummonFamiliarEntry[] Entries { get; } =
+		{
+			new SummonFamiliarEntry( typeof( HordeMinionFamiliar ), 1060146,  30.0,  30.0 ), // Horde Minion
+			new SummonFamiliarEntry( typeof( ShadowWispFamiliar ), 1060142,  50.0,  50.0 ), // Shadow Wisp
+			new SummonFamiliarEntry( typeof( DarkWolfFamiliar ), 1060143,  60.0,  60.0 ), // Dark Wolf
+			new SummonFamiliarEntry( typeof( DeathAdder ), 1060145,  80.0,  80.0 ), // Death Adder
+			new SummonFamiliarEntry( typeof( VampireBatFamiliar ), 1060144, 100.0, 100.0 )  // Vampire Bat
+		};
 	}
 
 	public class SummonFamiliarEntry
 	{
-		private Type m_Type;
-		private object m_Name;
-		private double m_ReqNecromancy;
-		private double m_ReqSpiritSpeak;
+		public Type Type { get; }
 
-		public Type Type => m_Type;
-		public object Name => m_Name;
-		public double ReqNecromancy => m_ReqNecromancy;
-		public double ReqSpiritSpeak => m_ReqSpiritSpeak;
+		public object Name { get; }
+
+		public double ReqNecromancy { get; }
+
+		public double ReqSpiritSpeak { get; }
 
 		public SummonFamiliarEntry( Type type, object name, double reqNecromancy, double reqSpiritSpeak )
 		{
-			m_Type = type;
-			m_Name = name;
-			m_ReqNecromancy = reqNecromancy;
-			m_ReqSpiritSpeak = reqSpiritSpeak;
+			Type = type;
+			Name = name;
+			ReqNecromancy = reqNecromancy;
+			ReqSpiritSpeak = reqSpiritSpeak;
 		}
 	}
 

@@ -10,15 +10,12 @@ namespace Server.Regions
 	{
 		private static object[] m_GuardParams = new object[1];
 		private Type m_GuardType;
-		private bool m_Disabled;
 
-		public bool Disabled{ get => m_Disabled;
-			set => m_Disabled = value;
-		}
+		public bool Disabled { get; set; }
 
 		public virtual bool IsDisabled()
 		{
-			return m_Disabled;
+			return Disabled;
 		}
 
 		public static void Initialize()

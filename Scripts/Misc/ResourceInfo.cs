@@ -48,103 +48,51 @@ namespace Server.Items
 
 	public class CraftAttributeInfo
 	{
-		private int m_WeaponFireDamage;
-		private int m_WeaponColdDamage;
-		private int m_WeaponPoisonDamage;
-		private int m_WeaponEnergyDamage;
-		private int m_WeaponChaosDamage;
-		private int m_WeaponDirectDamage;
-		private int m_WeaponDurability;
-		private int m_WeaponLuck;
-		private int m_WeaponGoldIncrease;
-		private int m_WeaponLowerRequirements;
+		public int WeaponFireDamage { get; set; }
 
-		private int m_ArmorPhysicalResist;
-		private int m_ArmorFireResist;
-		private int m_ArmorColdResist;
-		private int m_ArmorPoisonResist;
-		private int m_ArmorEnergyResist;
-		private int m_ArmorDurability;
-		private int m_ArmorLuck;
-		private int m_ArmorGoldIncrease;
-		private int m_ArmorLowerRequirements;
+		public int WeaponColdDamage { get; set; }
 
-		private int m_RunicMinAttributes;
-		private int m_RunicMaxAttributes;
-		private int m_RunicMinIntensity;
-		private int m_RunicMaxIntensity;
+		public int WeaponPoisonDamage { get; set; }
 
-		public int WeaponFireDamage{ get => m_WeaponFireDamage;
-			set => m_WeaponFireDamage = value;
-		}
-		public int WeaponColdDamage{ get => m_WeaponColdDamage;
-			set => m_WeaponColdDamage = value;
-		}
-		public int WeaponPoisonDamage{ get => m_WeaponPoisonDamage;
-			set => m_WeaponPoisonDamage = value;
-		}
-		public int WeaponEnergyDamage{ get => m_WeaponEnergyDamage;
-			set => m_WeaponEnergyDamage = value;
-		}
-		public int WeaponChaosDamage{ get => m_WeaponChaosDamage;
-			set => m_WeaponChaosDamage = value;
-		}
-		public int WeaponDirectDamage{ get => m_WeaponDirectDamage;
-			set => m_WeaponDirectDamage = value;
-		}
-		public int WeaponDurability{ get => m_WeaponDurability;
-			set => m_WeaponDurability = value;
-		}
-		public int WeaponLuck{ get => m_WeaponLuck;
-			set => m_WeaponLuck = value;
-		}
-		public int WeaponGoldIncrease{ get => m_WeaponGoldIncrease;
-			set => m_WeaponGoldIncrease = value;
-		}
-		public int WeaponLowerRequirements{ get => m_WeaponLowerRequirements;
-			set => m_WeaponLowerRequirements = value;
-		}
+		public int WeaponEnergyDamage { get; set; }
 
-		public int ArmorPhysicalResist{ get => m_ArmorPhysicalResist;
-			set => m_ArmorPhysicalResist = value;
-		}
-		public int ArmorFireResist{ get => m_ArmorFireResist;
-			set => m_ArmorFireResist = value;
-		}
-		public int ArmorColdResist{ get => m_ArmorColdResist;
-			set => m_ArmorColdResist = value;
-		}
-		public int ArmorPoisonResist{ get => m_ArmorPoisonResist;
-			set => m_ArmorPoisonResist = value;
-		}
-		public int ArmorEnergyResist{ get => m_ArmorEnergyResist;
-			set => m_ArmorEnergyResist = value;
-		}
-		public int ArmorDurability{ get => m_ArmorDurability;
-			set => m_ArmorDurability = value;
-		}
-		public int ArmorLuck{ get => m_ArmorLuck;
-			set => m_ArmorLuck = value;
-		}
-		public int ArmorGoldIncrease{ get => m_ArmorGoldIncrease;
-			set => m_ArmorGoldIncrease = value;
-		}
-		public int ArmorLowerRequirements{ get => m_ArmorLowerRequirements;
-			set => m_ArmorLowerRequirements = value;
-		}
+		public int WeaponChaosDamage { get; set; }
 
-		public int RunicMinAttributes{ get => m_RunicMinAttributes;
-			set => m_RunicMinAttributes = value;
-		}
-		public int RunicMaxAttributes{ get => m_RunicMaxAttributes;
-			set => m_RunicMaxAttributes = value;
-		}
-		public int RunicMinIntensity{ get => m_RunicMinIntensity;
-			set => m_RunicMinIntensity = value;
-		}
-		public int RunicMaxIntensity{ get => m_RunicMaxIntensity;
-			set => m_RunicMaxIntensity = value;
-		}
+		public int WeaponDirectDamage { get; set; }
+
+		public int WeaponDurability { get; set; }
+
+		public int WeaponLuck { get; set; }
+
+		public int WeaponGoldIncrease { get; set; }
+
+		public int WeaponLowerRequirements { get; set; }
+
+		public int ArmorPhysicalResist { get; set; }
+
+		public int ArmorFireResist { get; set; }
+
+		public int ArmorColdResist { get; set; }
+
+		public int ArmorPoisonResist { get; set; }
+
+		public int ArmorEnergyResist { get; set; }
+
+		public int ArmorDurability { get; set; }
+
+		public int ArmorLuck { get; set; }
+
+		public int ArmorGoldIncrease { get; set; }
+
+		public int ArmorLowerRequirements { get; set; }
+
+		public int RunicMinAttributes { get; set; }
+
+		public int RunicMaxAttributes { get; set; }
+
+		public int RunicMinIntensity { get; set; }
+
+		public int RunicMaxIntensity { get; set; }
 
 		public CraftAttributeInfo()
 		{
@@ -438,28 +386,26 @@ namespace Server.Items
 
 	public class CraftResourceInfo
 	{
-		private int m_Hue;
-		private int m_Number;
-		private string m_Name;
-		private CraftAttributeInfo m_AttributeInfo;
-		private CraftResource m_Resource;
-		private Type[] m_ResourceTypes;
+		public int Hue { get; }
 
-		public int Hue => m_Hue;
-		public int Number => m_Number;
-		public string Name => m_Name;
-		public CraftAttributeInfo AttributeInfo => m_AttributeInfo;
-		public CraftResource Resource => m_Resource;
-		public Type[] ResourceTypes => m_ResourceTypes;
+		public int Number { get; }
+
+		public string Name { get; }
+
+		public CraftAttributeInfo AttributeInfo { get; }
+
+		public CraftResource Resource { get; }
+
+		public Type[] ResourceTypes { get; }
 
 		public CraftResourceInfo( int hue, int number, string name, CraftAttributeInfo attributeInfo, CraftResource resource, params Type[] resourceTypes )
 		{
-			m_Hue = hue;
-			m_Number = number;
-			m_Name = name;
-			m_AttributeInfo = attributeInfo;
-			m_Resource = resource;
-			m_ResourceTypes = resourceTypes;
+			Hue = hue;
+			Number = number;
+			Name = name;
+			AttributeInfo = attributeInfo;
+			Resource = resource;
+			ResourceTypes = resourceTypes;
 
 			for ( int i = 0; i < resourceTypes.Length; ++i )
 				CraftResources.RegisterType( resourceTypes[i], resource );
@@ -727,21 +673,17 @@ namespace Server.Items
 		public static readonly OreInfo Verite		= new OreInfo( 7, 0x89F, "Verite" );
 		public static readonly OreInfo Valorite		= new OreInfo( 8, 0x8AB, "Valorite" );
 
-		private int m_Level;
-		private int m_Hue;
-		private string m_Name;
-
 		public OreInfo( int level, int hue, string name )
 		{
-			m_Level = level;
-			m_Hue = hue;
-			m_Name = name;
+			Level = level;
+			Hue = hue;
+			Name = name;
 		}
 
-		public int Level => m_Level;
+		public int Level { get; }
 
-		public int Hue => m_Hue;
+		public int Hue { get; }
 
-		public string Name => m_Name;
+		public string Name { get; }
 	}
 }

@@ -25,14 +25,14 @@ using Server.Network;
 
 namespace Server {
 	public class RegionRect : IComparable {
-		private Region m_Region;
 		private Rectangle3D m_Rect;
 
-		public Region Region => m_Region;
+		public Region Region { get; }
+
 		public Rectangle3D Rect => m_Rect;
 
 		public RegionRect( Region region, Rectangle3D rect ) {
-			m_Region = region;
+			Region = region;
 			m_Rect = rect;
 		}
 
@@ -47,14 +47,12 @@ namespace Server {
 			if ( !(obj is RegionRect regRect) )
 				throw new ArgumentException( "obj is not a RegionRect", nameof(obj) );
 
-			return ( ( IComparable ) m_Region ).CompareTo( regRect.m_Region );
+			return ( ( IComparable ) Region ).CompareTo( regRect.Region );
 		}
 	}
 
 
 	public class Sector {
-		private int m_X, m_Y;
-		private Map m_Owner;
 		private List<Mobile> m_Mobiles;
 		private List<Mobile> m_Players;
 		private List<Item> m_Items;
@@ -71,9 +69,9 @@ namespace Server {
 		private static List<RegionRect> m_DefaultRectList = new List<RegionRect>();
 
 		public Sector( int x, int y, Map owner ) {
-			m_X = x;
-			m_Y = y;
-			m_Owner = owner;
+			X = x;
+			Y = y;
+			Owner = owner;
 			m_Active = false;
 		}
 
@@ -132,7 +130,7 @@ namespace Server {
 
 			if ( mob.Player ) {
 				if ( m_Players == null ) {
-					m_Owner.ActivateSectors( m_X, m_Y );
+					Owner.ActivateSectors( X, Y );
 				}
 
 				Add( ref m_Players, mob );
@@ -150,7 +148,7 @@ namespace Server {
 				Remove( ref m_Players, mob );
 
 				if ( m_Players == null ) {
-					m_Owner.DeactivateSectors( m_X, m_Y );
+					Owner.DeactivateSectors( X, Y );
 				}
 			}
 		}
@@ -200,7 +198,7 @@ namespace Server {
 		}
 
 		public void Activate() {
-			if ( !Active && m_Owner != Map.Internal ) {
+			if ( !Active && Owner != Map.Internal ) {
 				if ( m_Items != null ) {
 					foreach ( Item item in m_Items ) {
 						item.OnSectorActivate();
@@ -289,12 +287,12 @@ namespace Server {
 			}
 		}
 
-		public bool Active => ( m_Active && m_Owner != Map.Internal );
+		public bool Active => ( m_Active && Owner != Map.Internal );
 
-		public Map Owner => m_Owner;
+		public Map Owner { get; }
 
-		public int X => m_X;
+		public int X { get; }
 
-		public int Y => m_Y;
+		public int Y { get; }
 	}
 }

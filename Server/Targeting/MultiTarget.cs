@@ -24,20 +24,9 @@ namespace Server.Targeting
 {
 	public abstract class MultiTarget : Target
 	{
-		private int m_MultiID;
-		private Point3D m_Offset;
+		public int MultiID { get; set; }
 
-		public int MultiID
-		{
-			get => m_MultiID;
-			set => m_MultiID = value;
-		}
-
-		public Point3D Offset
-		{
-			get => m_Offset;
-			set => m_Offset = value;
-		}
+		public Point3D Offset { get; set; }
 
 		protected MultiTarget( int multiID, Point3D offset )
 			: this( multiID, offset, 10, true, TargetFlags.None )
@@ -47,8 +36,8 @@ namespace Server.Targeting
 		protected MultiTarget( int multiID, Point3D offset, int range, bool allowGround, TargetFlags flags )
 			: base( range, allowGround, flags )
 		{
-			m_MultiID = multiID;
-			m_Offset = offset;
+			MultiID = multiID;
+			Offset = offset;
 		}
 
 		public override Packet GetPacketFor( NetState ns )

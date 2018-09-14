@@ -14,22 +14,18 @@ namespace Server.Spells
 {
 	public abstract class Spell : ISpell
 	{
-		private Mobile m_Caster;
-		private Item m_Scroll;
-		private SpellInfo m_Info;
-		private SpellState m_State;
-		private long m_StartCastTime;
+		public SpellState State { get; set; }
 
-		public SpellState State{ get => m_State;
-			set => m_State = value;
-		}
-		public Mobile Caster => m_Caster;
-		public SpellInfo Info => m_Info;
-		public string Name => m_Info.Name;
-		public string Mantra => m_Info.Mantra;
-		public Type[] Reagents => m_Info.Reagents;
-		public Item Scroll => m_Scroll;
-		public long StartCastTime  => m_StartCastTime;
+		public Mobile Caster { get; }
+
+		public SpellInfo Info { get; }
+
+		public string Name => Info.Name;
+		public string Mantra => Info.Mantra;
+		public Type[] Reagents => Info.Reagents;
+		public Item Scroll { get; }
+
+		public long StartCastTime { get; private set; }
 
 		private static TimeSpan NextSpellDelay = TimeSpan.FromSeconds( 0.75 );
 		private static TimeSpan AnimateDelay = TimeSpan.FromSeconds( 1.5 );
@@ -96,14 +92,14 @@ namespace Server.Spells
 
 		public void HarmfulSpell( Mobile m )
 		{
-			(m as BaseCreature)?.OnHarmfulSpell( m_Caster );
+			(m as BaseCreature)?.OnHarmfulSpell( Caster );
 		}
 
 		public Spell( Mobile caster, Item scroll, SpellInfo info )
 		{
-			m_Caster = caster;
-			m_Scroll = scroll;
-			m_Info = info;
+			Caster = caster;
+			Scroll = scroll;
+			Info = info;
 		}
 
 		public virtual int GetNewAosDamage( int bonus, int dice, int sides, Mobile singleTarget )
@@ -126,14 +122,14 @@ namespace Server.Spells
 			int damage = Utility.Dice( dice, sides, bonus ) * 100;
 			int damageBonus = 0;
 
-			int inscribeSkill = GetInscribeFixed( m_Caster );
+			int inscribeSkill = GetInscribeFixed( Caster );
 			int inscribeBonus = (inscribeSkill + (1000 * (inscribeSkill / 1000))) / 200;
 			damageBonus += inscribeBonus;
 
 			int intBonus = Caster.Int / 10;
 			damageBonus += intBonus;
 
-			int sdiBonus = AosAttributes.GetValue( m_Caster, AosAttribute.SpellDamage );
+			int sdiBonus = AosAttributes.GetValue( Caster, AosAttribute.SpellDamage );
 			// PvP spell damage increase cap of 15% from an item�s magic property
 			if ( playerVsPlayer && sdiBonus > 15 )
 				sdiBonus = 15;
@@ -147,7 +143,7 @@ namespace Server.Spells
 
 			damage = AOS.Scale( damage, 100 + damageBonus );
 
-			int evalSkill = GetDamageFixed( m_Caster );
+			int evalSkill = GetDamageFixed( Caster );
 			int evalScale = 30 + ((9 * evalSkill) / 100);
 
 			damage = AOS.Scale( damage, evalScale );
@@ -157,7 +153,7 @@ namespace Server.Spells
 			return damage / 100;
 		}
 
-		public virtual bool IsCasting => m_State == SpellState.Casting;
+		public virtual bool IsCasting => State == SpellState.Casting;
 
 		public virtual void OnCasterHurt()
 		{
@@ -167,7 +163,7 @@ namespace Server.Spells
 
 			if ( IsCasting )
 			{
-				object o = ProtectionSpell.Registry[m_Caster];
+				object o = ProtectionSpell.Registry[Caster];
 				bool disturb = true;
 
 				if ( o is double )
@@ -195,7 +191,7 @@ namespace Server.Spells
 		{
 			if ( IsCasting && BlocksMovement )
 			{
-				m_Caster.SendLocalizedMessage( 500111 ); // You are frozen and can not move.
+				Caster.SendLocalizedMessage( 500111 ); // You are frozen and can not move.
 				return false;
 			}
 
@@ -212,7 +208,7 @@ namespace Server.Spells
 
 		public virtual bool OnCasterUsingObject( object o )
 		{
-			if ( m_State == SpellState.Sequencing )
+			if ( State == SpellState.Sequencing )
 				Disturb( DisturbType.UseRequest );
 
 			return true;
@@ -220,26 +216,26 @@ namespace Server.Spells
 
 		public virtual bool OnCastInTown( Region r )
 		{
-			return m_Info.AllowTown;
+			return Info.AllowTown;
 		}
 
 		public virtual bool ConsumeReagents()
 		{
-			if ( m_Scroll != null || !m_Caster.Player )
+			if ( Scroll != null || !Caster.Player )
 				return true;
 
-			if ( AosAttributes.GetValue( m_Caster, AosAttribute.LowerRegCost ) > Utility.Random( 100 ) )
+			if ( AosAttributes.GetValue( Caster, AosAttribute.LowerRegCost ) > Utility.Random( 100 ) )
 				return true;
 
-			if ( Engines.ConPVP.DuelContext.IsFreeConsume( m_Caster ) )
+			if ( Engines.ConPVP.DuelContext.IsFreeConsume( Caster ) )
 				return true;
 
-			Container pack = m_Caster.Backpack;
+			Container pack = Caster.Backpack;
 
 			if ( pack == null )
 				return false;
 
-			if ( pack.ConsumeTotal( m_Info.Reagents, m_Info.Amounts ) == -1 )
+			if ( pack.ConsumeTotal( Info.Reagents, Info.Amounts ) == -1 )
 				return true;
 
 			return false;
@@ -286,7 +282,7 @@ namespace Server.Spells
 
 			if ( !Core.AOS )	//EvalInt stuff for AoS is handled elsewhere
 			{
-				double casterEI = m_Caster.Skills[DamageSkill].Value;
+				double casterEI = Caster.Skills[DamageSkill].Value;
 				double targetRS = target.Skills[SkillName.MagicResist].Value;
 
 				/*
@@ -302,20 +298,20 @@ namespace Server.Spells
 					scalar = (1.0 + ((casterEI - targetRS) / 200.0));
 
 				// magery damage bonus, -25% at 0 skill, +0% at 100 skill, +5% at 120 skill
-				scalar += (m_Caster.Skills[CastSkill].Value - 100.0) / 400.0;
+				scalar += (Caster.Skills[CastSkill].Value - 100.0) / 400.0;
 
 				if ( !target.Player && !target.Body.IsHuman /*&& !Core.AOS*/ )
 					scalar *= 2.0; // Double magery damage to monsters/animals if not AOS
 			}
 
-			(target as BaseCreature)?.AlterDamageScalarFrom( m_Caster, ref scalar );
+			(target as BaseCreature)?.AlterDamageScalarFrom( Caster, ref scalar );
 
-			(m_Caster as BaseCreature)?.AlterDamageScalarTo( target, ref scalar );
+			(Caster as BaseCreature)?.AlterDamageScalarTo( target, ref scalar );
 
 			if ( Core.SE )
 				scalar *= GetSlayerDamageScalar( target );
 
-			target.Region.SpellDamageScalar( m_Caster, target, ref scalar );
+			target.Region.SpellDamageScalar( Caster, target, ref scalar );
 
 			if ( Evasion.CheckSpellEvasion( target ) )	//Only single target spells an be evaded
 				scalar = 0;
@@ -325,7 +321,7 @@ namespace Server.Spells
 
 		public virtual double GetSlayerDamageScalar( Mobile defender )
 		{
-			Spellbook atkBook = Spellbook.FindEquippedSpellbook( m_Caster );
+			Spellbook atkBook = Spellbook.FindEquippedSpellbook( Caster );
 
 			double scalar = 1.0;
 			if ( atkBook != null )
@@ -359,7 +355,7 @@ namespace Server.Spells
 				SlayerEntry defSlayer = SlayerGroup.GetEntryByName( defISlayer.Slayer );
 				SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName( defISlayer.Slayer2 );
 
-				if ( defSlayer != null && defSlayer.Group.OppositionSuperSlays( m_Caster ) || defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays( m_Caster ) )
+				if ( defSlayer != null && defSlayer.Group.OppositionSuperSlays( Caster ) || defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays( Caster ) )
 					scalar = 2.0;
 			}
 
@@ -368,16 +364,16 @@ namespace Server.Spells
 
 		public virtual void DoFizzle()
 		{
-			m_Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502632 ); // The spell fizzles.
+			Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502632 ); // The spell fizzles.
 
-			if ( m_Caster.Player )
+			if ( Caster.Player )
 			{
 				if ( Core.AOS )
-					m_Caster.FixedParticles( 0x3735, 1, 30, 9503, EffectLayer.Waist );
+					Caster.FixedParticles( 0x3735, 1, 30, 9503, EffectLayer.Waist );
 				else
-					m_Caster.FixedEffect( 0x3735, 6, 30 );
+					Caster.FixedEffect( 0x3735, 6, 30 );
 
-				m_Caster.PlaySound( 0x5C );
+				Caster.PlaySound( 0x5C );
 			}
 		}
 
@@ -391,7 +387,7 @@ namespace Server.Spells
 
 		public virtual bool CheckDisturb( DisturbType type, bool firstCircle, bool resistable )
 		{
-			if ( resistable && m_Scroll is BaseWand )
+			if ( resistable && Scroll is BaseWand )
 				return false;
 
 			return true;
@@ -402,13 +398,13 @@ namespace Server.Spells
 			if ( !CheckDisturb( type, firstCircle, resistable ) )
 				return;
 
-			if ( m_State == SpellState.Casting )
+			if ( State == SpellState.Casting )
 			{
 				if ( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
-				m_State = SpellState.None;
-				m_Caster.Spell = null;
+				State = SpellState.None;
+				Caster.Spell = null;
 
 				OnDisturb( type, true );
 
@@ -416,38 +412,38 @@ namespace Server.Spells
 
 				m_AnimTimer?.Stop();
 
-				if ( Core.AOS && m_Caster.Player && type == DisturbType.Hurt )
+				if ( Core.AOS && Caster.Player && type == DisturbType.Hurt )
 					DoHurtFizzle();
 
-				m_Caster.NextSpellTime = Core.TickCount + (int)GetDisturbRecovery().TotalMilliseconds;
+				Caster.NextSpellTime = Core.TickCount + (int)GetDisturbRecovery().TotalMilliseconds;
 			}
-			else if ( m_State == SpellState.Sequencing )
+			else if ( State == SpellState.Sequencing )
 			{
 				if ( !firstCircle && !Core.AOS && this is MagerySpell && ((MagerySpell)this).Circle == SpellCircle.First )
 					return;
 
-				m_State = SpellState.None;
-				m_Caster.Spell = null;
+				State = SpellState.None;
+				Caster.Spell = null;
 
 				OnDisturb( type, false );
 
-				Target.Cancel( m_Caster );
+				Target.Cancel( Caster );
 
-				if ( Core.AOS && m_Caster.Player && type == DisturbType.Hurt )
+				if ( Core.AOS && Caster.Player && type == DisturbType.Hurt )
 					DoHurtFizzle();
 			}
 		}
 
 		public virtual void DoHurtFizzle()
 		{
-			m_Caster.FixedEffect( 0x3735, 6, 30 );
-			m_Caster.PlaySound( 0x5C );
+			Caster.FixedEffect( 0x3735, 6, 30 );
+			Caster.PlaySound( 0x5C );
 		}
 
 		public virtual void OnDisturb( DisturbType type, bool message )
 		{
 			if ( message )
-				m_Caster.SendLocalizedMessage( 500641 ); // Your concentration is disturbed, thus ruining thy spell.
+				Caster.SendLocalizedMessage( 500641 ); // Your concentration is disturbed, thus ruining thy spell.
 		}
 
 		public virtual bool CheckCast()
@@ -457,75 +453,75 @@ namespace Server.Spells
 
 		public virtual void SayMantra()
 		{
-			if ( m_Scroll is BaseWand )
+			if ( Scroll is BaseWand )
 				return;
 
-			if ( m_Info.Mantra != null && m_Info.Mantra.Length > 0 && m_Caster.Player )
-				m_Caster.PublicOverheadMessage( MessageType.Spell, m_Caster.SpeechHue, true, m_Info.Mantra, false );
+			if ( Info.Mantra != null && Info.Mantra.Length > 0 && Caster.Player )
+				Caster.PublicOverheadMessage( MessageType.Spell, Caster.SpeechHue, true, Info.Mantra, false );
 		}
 
 		public virtual bool BlockedByHorrificBeast => true;
 		public virtual bool BlockedByAnimalForm => true;
 		public virtual bool BlocksMovement => true;
 
-		public virtual bool CheckNextSpellTime => !(m_Scroll is BaseWand);
+		public virtual bool CheckNextSpellTime => !(Scroll is BaseWand);
 
 		public bool Cast()
 		{
-			m_StartCastTime = Core.TickCount;
+			StartCastTime = Core.TickCount;
 
-			if ( Core.AOS && m_Caster.Spell is Spell && ((Spell)m_Caster.Spell).State == SpellState.Sequencing )
-				((Spell)m_Caster.Spell).Disturb( DisturbType.NewCast );
+			if ( Core.AOS && Caster.Spell is Spell && ((Spell)Caster.Spell).State == SpellState.Sequencing )
+				((Spell)Caster.Spell).Disturb( DisturbType.NewCast );
 
-			if ( !m_Caster.CheckAlive() )
+			if ( !Caster.CheckAlive() )
 			{
 				return false;
 			}
 
-			if ( m_Scroll is BaseWand && m_Caster.Spell != null && m_Caster.Spell.IsCasting )
+			if ( Scroll is BaseWand && Caster.Spell != null && Caster.Spell.IsCasting )
 			{
-				m_Caster.SendLocalizedMessage( 502643 ); // You can not cast a spell while frozen.
+				Caster.SendLocalizedMessage( 502643 ); // You can not cast a spell while frozen.
 			}
-			else if ( m_Caster.Spell != null && m_Caster.Spell.IsCasting )
+			else if ( Caster.Spell != null && Caster.Spell.IsCasting )
 			{
-				m_Caster.SendLocalizedMessage( 502642 ); // You are already casting a spell.
+				Caster.SendLocalizedMessage( 502642 ); // You are already casting a spell.
 			}
-			else if ( BlockedByHorrificBeast && TransformationSpellHelper.UnderTransformation( m_Caster, typeof( HorrificBeastSpell ) ) || ( BlockedByAnimalForm && AnimalForm.UnderTransformation( m_Caster ) ))
+			else if ( BlockedByHorrificBeast && TransformationSpellHelper.UnderTransformation( Caster, typeof( HorrificBeastSpell ) ) || ( BlockedByAnimalForm && AnimalForm.UnderTransformation( Caster ) ))
 			{
-				m_Caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
+				Caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
 			}
-			else if ( !(m_Scroll is BaseWand) && (m_Caster.Paralyzed || m_Caster.Frozen) )
+			else if ( !(Scroll is BaseWand) && (Caster.Paralyzed || Caster.Frozen) )
 			{
-				m_Caster.SendLocalizedMessage( 502643 ); // You can not cast a spell while frozen.
+				Caster.SendLocalizedMessage( 502643 ); // You can not cast a spell while frozen.
 			}
-			else if (CheckNextSpellTime && Core.TickCount - m_Caster.NextSpellTime < 0)
+			else if (CheckNextSpellTime && Core.TickCount - Caster.NextSpellTime < 0)
 			{
-				m_Caster.SendLocalizedMessage( 502644 ); // You have not yet recovered from casting a spell.
+				Caster.SendLocalizedMessage( 502644 ); // You have not yet recovered from casting a spell.
 			}
-			else if ( m_Caster is PlayerMobile && ( (PlayerMobile) m_Caster ).PeacedUntil > DateTime.UtcNow )
+			else if ( Caster is PlayerMobile && ( (PlayerMobile) Caster ).PeacedUntil > DateTime.UtcNow )
 			{
-				m_Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
+				Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
 			}
 			#region Dueling
-			else if ( (m_Caster as PlayerMobile)?.DuelContext != null && !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast( m_Caster, this ) )
+			else if ( (Caster as PlayerMobile)?.DuelContext != null && !((PlayerMobile)Caster).DuelContext.AllowSpellCast( Caster, this ) )
 			{
 			}
 			#endregion
-			else if ( m_Caster.Mana >= ScaleMana( GetMana() ) )
+			else if ( Caster.Mana >= ScaleMana( GetMana() ) )
 			{
-				if ( m_Caster.Spell == null && m_Caster.CheckSpellCast( this ) && CheckCast() && m_Caster.Region.OnBeginSpellCast( m_Caster, this ) )
+				if ( Caster.Spell == null && Caster.CheckSpellCast( this ) && CheckCast() && Caster.Region.OnBeginSpellCast( Caster, this ) )
 				{
-					m_State = SpellState.Casting;
-					m_Caster.Spell = this;
+					State = SpellState.Casting;
+					Caster.Spell = this;
 
-					if ( !( m_Scroll is BaseWand ) && RevealOnCast )
-						m_Caster.RevealingAction();
+					if ( !( Scroll is BaseWand ) && RevealOnCast )
+						Caster.RevealingAction();
 
 					SayMantra();
 
 					TimeSpan castDelay = GetCastDelay();
 
-					if ( ShowHandMovement && ( m_Caster.Body.IsHuman || ( m_Caster.Player && m_Caster.Body.IsMonster ) ) )
+					if ( ShowHandMovement && ( Caster.Body.IsHuman || ( Caster.Player && Caster.Body.IsMonster ) ) )
 					{
 						int count = (int)Math.Ceiling( castDelay.TotalSeconds / AnimateDelay.TotalSeconds );
 
@@ -535,18 +531,18 @@ namespace Server.Spells
 							m_AnimTimer.Start();
 						}
 
-						if ( m_Info.LeftHandEffect > 0 )
-							Caster.FixedParticles( 0, 10, 5, m_Info.LeftHandEffect, EffectLayer.LeftHand );
+						if ( Info.LeftHandEffect > 0 )
+							Caster.FixedParticles( 0, 10, 5, Info.LeftHandEffect, EffectLayer.LeftHand );
 
-						if ( m_Info.RightHandEffect > 0 )
-							Caster.FixedParticles( 0, 10, 5, m_Info.RightHandEffect, EffectLayer.RightHand );
+						if ( Info.RightHandEffect > 0 )
+							Caster.FixedParticles( 0, 10, 5, Info.RightHandEffect, EffectLayer.RightHand );
 					}
 
 					if ( ClearHandsOnCast )
-						m_Caster.ClearHands();
+						Caster.ClearHands();
 
 					if ( Core.ML )
-						WeaponAbility.ClearCurrentAbility( m_Caster );
+						WeaponAbility.ClearCurrentAbility( Caster );
 
 					m_CastTimer = new CastTimer( this, castDelay );
 					//m_CastTimer.Start();
@@ -566,7 +562,7 @@ namespace Server.Spells
 			}
 			else
 			{
-				m_Caster.LocalOverheadMessage( MessageType.Regular, 0x22, 502625 ); // Insufficient mana
+				Caster.LocalOverheadMessage( MessageType.Regular, 0x22, 502625 ); // Insufficient mana
 			}
 
 			return false;
@@ -585,7 +581,7 @@ namespace Server.Spells
 
 		public virtual bool CheckFizzle()
 		{
-			if ( m_Scroll is BaseWand )
+			if ( Scroll is BaseWand )
 				return true;
 
 			double minSkill, maxSkill;
@@ -608,7 +604,7 @@ namespace Server.Spells
 				scalar = 1.0;
 
 			// Lower Mana Cost = 40%
-			int lmc = AosAttributes.GetValue( m_Caster, AosAttribute.LowerManaCost );
+			int lmc = AosAttributes.GetValue( Caster, AosAttribute.LowerManaCost );
 			if ( lmc > 40 )
 				lmc = 40;
 
@@ -622,7 +618,7 @@ namespace Server.Spells
 			if ( Core.AOS )
 				return TimeSpan.Zero;
 
-			double delay = 1.0 - Math.Sqrt((Core.TickCount - m_StartCastTime) / 1000.0 / GetCastDelay().TotalSeconds);
+			double delay = 1.0 - Math.Sqrt((Core.TickCount - StartCastTime) / 1000.0 / GetCastDelay().TotalSeconds);
 
 			if ( delay < 0.2 )
 				delay = 0.2;
@@ -640,9 +636,9 @@ namespace Server.Spells
 			if ( !Core.AOS )
 				return NextSpellDelay;
 
-			int fcr = AosAttributes.GetValue( m_Caster, AosAttribute.CastRecovery );
+			int fcr = AosAttributes.GetValue( Caster, AosAttribute.CastRecovery );
 
-			fcr -= ThunderstormSpell.GetCastRecoveryMalus( m_Caster );
+			fcr -= ThunderstormSpell.GetCastRecoveryMalus( Caster );
 
 			int fcrDelay = -(CastRecoveryFastScalar * fcr);
 
@@ -667,7 +663,7 @@ namespace Server.Spells
 
 		public virtual TimeSpan GetCastDelay()
 		{
-			if ( m_Scroll is BaseWand )
+			if ( Scroll is BaseWand )
 				return Core.ML ? CastDelayBase : TimeSpan.Zero; // TODO: Should FC apply to wands?
 
 			// Faster casting cap of 2 (if not using the protection spell)
@@ -676,19 +672,19 @@ namespace Server.Spells
 			// Paladins with magery of 70.0 or above are subject to a faster casting cap of 2
 			int fcMax = 4;
 
-			if ( CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy || ( CastSkill == SkillName.Chivalry && m_Caster.Skills[SkillName.Magery].Value >= 70.0 ) )
+			if ( CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy || ( CastSkill == SkillName.Chivalry && Caster.Skills[SkillName.Magery].Value >= 70.0 ) )
 				fcMax = 2;
 
-			int fc = AosAttributes.GetValue( m_Caster, AosAttribute.CastSpeed );
+			int fc = AosAttributes.GetValue( Caster, AosAttribute.CastSpeed );
 
 			if ( fc > fcMax )
 				fc = fcMax;
 
-			if ( ProtectionSpell.Registry.Contains( m_Caster ) )
+			if ( ProtectionSpell.Registry.Contains( Caster ) )
 				fc -= 2;
 
-			if ( EssenceOfWindSpell.IsDebuffed( m_Caster ) )
-				fc -= EssenceOfWindSpell.GetFCMalus( m_Caster );
+			if ( EssenceOfWindSpell.IsDebuffed( Caster ) )
+				fc -= EssenceOfWindSpell.GetFCMalus( Caster );
 
 			TimeSpan baseDelay = CastDelayBase;
 
@@ -706,10 +702,10 @@ namespace Server.Spells
 
 		public virtual void FinishSequence()
 		{
-			m_State = SpellState.None;
+			State = SpellState.None;
 
-			if ( m_Caster.Spell == this )
-				m_Caster.Spell = null;
+			if ( Caster.Spell == this )
+				Caster.Spell = null;
 		}
 
 		public virtual int ComputeKarmaAward()
@@ -721,59 +717,59 @@ namespace Server.Spells
 		{
 			int mana = ScaleMana( GetMana() );
 
-			if ( m_Caster.Deleted || !m_Caster.Alive || m_Caster.Spell != this || m_State != SpellState.Sequencing )
+			if ( Caster.Deleted || !Caster.Alive || Caster.Spell != this || State != SpellState.Sequencing )
 			{
 				DoFizzle();
 			}
-			else if ( m_Scroll != null && !(m_Scroll is Runebook) && (m_Scroll.Amount <= 0 || m_Scroll.Deleted || m_Scroll.RootParent != m_Caster || (m_Scroll is BaseWand && (((BaseWand)m_Scroll).Charges <= 0 || m_Scroll.Parent != m_Caster))) )
+			else if ( Scroll != null && !(Scroll is Runebook) && (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || (Scroll is BaseWand && (((BaseWand)Scroll).Charges <= 0 || Scroll.Parent != Caster))) )
 			{
 				DoFizzle();
 			}
 			else if ( !ConsumeReagents() )
 			{
-				m_Caster.LocalOverheadMessage( MessageType.Regular, 0x22, 502630 ); // More reagents are needed for this spell.
+				Caster.LocalOverheadMessage( MessageType.Regular, 0x22, 502630 ); // More reagents are needed for this spell.
 			}
-			else if ( m_Caster.Mana < mana )
+			else if ( Caster.Mana < mana )
 			{
-				m_Caster.LocalOverheadMessage( MessageType.Regular, 0x22, 502625 ); // Insufficient mana for this spell.
+				Caster.LocalOverheadMessage( MessageType.Regular, 0x22, 502625 ); // Insufficient mana for this spell.
 			}
-			else if ( Core.AOS && (m_Caster.Frozen || m_Caster.Paralyzed) )
+			else if ( Core.AOS && (Caster.Frozen || Caster.Paralyzed) )
 			{
-				m_Caster.SendLocalizedMessage( 502646 ); // You cannot cast a spell while frozen.
+				Caster.SendLocalizedMessage( 502646 ); // You cannot cast a spell while frozen.
 				DoFizzle();
 			}
-			else if ( m_Caster is PlayerMobile && ((PlayerMobile) m_Caster).PeacedUntil > DateTime.UtcNow )
+			else if ( Caster is PlayerMobile && ((PlayerMobile) Caster).PeacedUntil > DateTime.UtcNow )
 			{
-				m_Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
+				Caster.SendLocalizedMessage( 1072060 ); // You cannot cast a spell while calmed.
 				DoFizzle();
 			}
 			else if ( CheckFizzle() )
 			{
-				m_Caster.Mana -= mana;
+				Caster.Mana -= mana;
 
-				if ( m_Scroll is SpellScroll )
-					m_Scroll.Consume();
-				else if ( m_Scroll is BaseWand )
+				if ( Scroll is SpellScroll )
+					Scroll.Consume();
+				else if ( Scroll is BaseWand )
 				{
-					((BaseWand)m_Scroll).ConsumeCharge( m_Caster );
-					m_Caster.RevealingAction();
+					((BaseWand)Scroll).ConsumeCharge( Caster );
+					Caster.RevealingAction();
 				}
 
-				if ( m_Scroll is BaseWand )
+				if ( Scroll is BaseWand )
 				{
-					bool m = m_Scroll.Movable;
+					bool m = Scroll.Movable;
 
-					m_Scroll.Movable = false;
+					Scroll.Movable = false;
 
 					if ( ClearHandsOnCast )
-						m_Caster.ClearHands();
+						Caster.ClearHands();
 
-					m_Scroll.Movable = m;
+					Scroll.Movable = m;
 				}
 				else
 				{
 					if ( ClearHandsOnCast )
-						m_Caster.ClearHands();
+						Caster.ClearHands();
 				}
 
 				int karma = ComputeKarmaAward();
@@ -781,17 +777,17 @@ namespace Server.Spells
 				if ( karma != 0 )
 					Misc.Titles.AwardKarma( Caster, karma, true );
 
-				if ( TransformationSpellHelper.UnderTransformation( m_Caster, typeof( VampiricEmbraceSpell ) ) )
+				if ( TransformationSpellHelper.UnderTransformation( Caster, typeof( VampiricEmbraceSpell ) ) )
 				{
 					bool garlic = false;
 
-					for ( int i = 0; !garlic && i < m_Info.Reagents.Length; ++i )
-						garlic = ( m_Info.Reagents[i] == Reagent.Garlic );
+					for ( int i = 0; !garlic && i < Info.Reagents.Length; ++i )
+						garlic = ( Info.Reagents[i] == Reagent.Garlic );
 
 					if ( garlic )
 					{
-						m_Caster.SendLocalizedMessage( 1061651 ); // The garlic burns you!
-						AOS.Damage( m_Caster, Utility.RandomMinMax( 17, 23 ), 100, 0, 0, 0, 0 );
+						Caster.SendLocalizedMessage( 1061651 ); // The garlic burns you!
+						AOS.Damage( Caster, Utility.RandomMinMax( 17, 23 ), 100, 0, 0, 0, 0 );
 					}
 				}
 
@@ -814,7 +810,7 @@ namespace Server.Spells
 		{
 			if ( !target.Alive && !allowDead )
 			{
-				m_Caster.SendLocalizedMessage( 501857 ); // This spell won't work on that!
+				Caster.SendLocalizedMessage( 501857 ); // This spell won't work on that!
 				return false;
 			}
 
@@ -830,7 +826,7 @@ namespace Server.Spells
 		{
 			if ( !target.Alive )
 			{
-				m_Caster.SendLocalizedMessage( 501857 ); // This spell won't work on that!
+				Caster.SendLocalizedMessage( 501857 ); // This spell won't work on that!
 				return false;
 			}
 
@@ -855,16 +851,16 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_Spell.State != SpellState.Casting || m_Spell.m_Caster.Spell != m_Spell )
+				if ( m_Spell.State != SpellState.Casting || m_Spell.Caster.Spell != m_Spell )
 				{
 					Stop();
 					return;
 				}
 
-				if ( !m_Spell.Caster.Mounted && m_Spell.m_Info.Action >= 0 )
+				if ( !m_Spell.Caster.Mounted && m_Spell.Info.Action >= 0 )
 				{
 					if ( m_Spell.Caster.Body.IsHuman )
-						m_Spell.Caster.Animate( m_Spell.m_Info.Action, 7, 1, true, false, 0 );
+						m_Spell.Caster.Animate( m_Spell.Info.Action, 7, 1, true, false, 0 );
 					else if ( m_Spell.Caster.Player && m_Spell.Caster.Body.IsMonster )
 						m_Spell.Caster.Animate( 12, 7, 1, true, false, 0 );
 				}
@@ -887,25 +883,25 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_Spell?.m_Caster == null )
+				if ( m_Spell?.Caster == null )
 				{
 					return;
 				}
 
-				if ( m_Spell.m_State == SpellState.Casting && m_Spell.m_Caster.Spell == m_Spell )
+				if ( m_Spell.State == SpellState.Casting && m_Spell.Caster.Spell == m_Spell )
 				{
-					m_Spell.m_State = SpellState.Sequencing;
+					m_Spell.State = SpellState.Sequencing;
 					m_Spell.m_CastTimer = null;
-					m_Spell.m_Caster.OnSpellCast( m_Spell );
-					m_Spell.m_Caster.Region?.OnSpellCast( m_Spell.m_Caster, m_Spell );
-					m_Spell.m_Caster.NextSpellTime = Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
+					m_Spell.Caster.OnSpellCast( m_Spell );
+					m_Spell.Caster.Region?.OnSpellCast( m_Spell.Caster, m_Spell );
+					m_Spell.Caster.NextSpellTime = Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
 
-					Target originalTarget = m_Spell.m_Caster.Target;
+					Target originalTarget = m_Spell.Caster.Target;
 
 					m_Spell.OnCast();
 
-					if ( m_Spell.m_Caster.Player && m_Spell.m_Caster.Target != originalTarget && m_Spell.Caster.Target != null )
-						m_Spell.m_Caster.Target.BeginTimeout( m_Spell.m_Caster, TimeSpan.FromSeconds( 30.0 ) );
+					if ( m_Spell.Caster.Player && m_Spell.Caster.Target != originalTarget && m_Spell.Caster.Target != null )
+						m_Spell.Caster.Target.BeginTimeout( m_Spell.Caster, TimeSpan.FromSeconds( 30.0 ) );
 
 					m_Spell.m_CastTimer = null;
 				}

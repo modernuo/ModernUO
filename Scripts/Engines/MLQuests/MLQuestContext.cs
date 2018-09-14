@@ -46,20 +46,17 @@ namespace Server.Engines.MLQuests
 			}
 		}
 
-		private PlayerMobile m_Owner;
-		private List<MLQuestInstance> m_QuestInstances;
 		private List<MLDoneQuestInfo> m_DoneQuests;
-		private List<MLQuest> m_ChainOffers;
 		private MLQuestFlag m_Flags;
 
-		public PlayerMobile Owner => m_Owner;
+		public PlayerMobile Owner { get; }
 
-		public List<MLQuestInstance> QuestInstances => m_QuestInstances;
+		public List<MLQuestInstance> QuestInstances { get; }
 
-		public List<MLQuest> ChainOffers => m_ChainOffers;
+		public List<MLQuest> ChainOffers { get; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsFull => m_QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests;
+		public bool IsFull => QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Spellweaving
@@ -91,10 +88,10 @@ namespace Server.Engines.MLQuests
 
 		public MLQuestContext( PlayerMobile owner )
 		{
-			m_Owner = owner;
-			m_QuestInstances = new List<MLQuestInstance>();
+			Owner = owner;
+			QuestInstances = new List<MLQuestInstance>();
 			m_DoneQuests = new List<MLDoneQuestInfo>();
-			m_ChainOffers = new List<MLQuest>();
+			ChainOffers = new List<MLQuest>();
 			m_Flags = MLQuestFlag.None;
 		}
 
@@ -164,14 +161,14 @@ namespace Server.Engines.MLQuests
 
 		public void HandleDeath()
 		{
-			for ( int i = m_QuestInstances.Count - 1; i >= 0; --i )
-				m_QuestInstances[i].OnPlayerDeath();
+			for ( int i = QuestInstances.Count - 1; i >= 0; --i )
+				QuestInstances[i].OnPlayerDeath();
 		}
 
 		public void HandleDeletion()
 		{
-			for ( int i = m_QuestInstances.Count - 1; i >= 0; --i )
-				m_QuestInstances[i].Remove();
+			for ( int i = QuestInstances.Count - 1; i >= 0; --i )
+				QuestInstances[i].Remove();
 		}
 
 		public MLQuestInstance FindInstance( Type questType )
@@ -186,7 +183,7 @@ namespace Server.Engines.MLQuests
 
 		public MLQuestInstance FindInstance( MLQuest quest )
 		{
-			foreach ( MLQuestInstance instance in m_QuestInstances )
+			foreach ( MLQuestInstance instance in QuestInstances )
 			{
 				if ( instance.Quest == quest )
 					return instance;
@@ -211,10 +208,10 @@ namespace Server.Engines.MLQuests
 		{
 			// Version info is written in MLQuestPersistence.Serialize
 
-			writer.WriteMobile<PlayerMobile>( m_Owner );
-			writer.Write( m_QuestInstances.Count );
+			writer.WriteMobile<PlayerMobile>( Owner );
+			writer.Write( QuestInstances.Count );
 
-			foreach ( MLQuestInstance instance in m_QuestInstances )
+			foreach ( MLQuestInstance instance in QuestInstances )
 				instance.Serialize( writer );
 
 			writer.Write( m_DoneQuests.Count );
@@ -222,9 +219,9 @@ namespace Server.Engines.MLQuests
 			foreach ( MLDoneQuestInfo info in m_DoneQuests )
 				info.Serialize( writer );
 
-			writer.Write( m_ChainOffers.Count );
+			writer.Write( ChainOffers.Count );
 
-			foreach ( MLQuest quest in m_ChainOffers )
+			foreach ( MLQuest quest in ChainOffers )
 				MLQuestSystem.WriteQuestRef( writer, quest );
 
 			writer.WriteEncodedInt( (int)m_Flags );
@@ -232,19 +229,19 @@ namespace Server.Engines.MLQuests
 
 		public MLQuestContext( GenericReader reader, int version )
 		{
-			m_Owner = reader.ReadMobile<PlayerMobile>();
-			m_QuestInstances = new List<MLQuestInstance>();
+			Owner = reader.ReadMobile<PlayerMobile>();
+			QuestInstances = new List<MLQuestInstance>();
 			m_DoneQuests = new List<MLDoneQuestInfo>();
-			m_ChainOffers = new List<MLQuest>();
+			ChainOffers = new List<MLQuest>();
 
 			int instances = reader.ReadInt();
 
 			for ( int i = 0; i < instances; ++i )
 			{
-				MLQuestInstance instance = MLQuestInstance.Deserialize( reader, version, m_Owner );
+				MLQuestInstance instance = MLQuestInstance.Deserialize( reader, version, Owner );
 
 				if ( instance != null )
-					m_QuestInstances.Add( instance );
+					QuestInstances.Add( instance );
 			}
 
 			int doneQuests = reader.ReadInt();
@@ -264,7 +261,7 @@ namespace Server.Engines.MLQuests
 				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
 
 				if ( quest != null && quest.IsChainTriggered )
-					m_ChainOffers.Add( quest );
+					ChainOffers.Add( quest );
 			}
 
 			m_Flags = (MLQuestFlag)reader.ReadEncodedInt();

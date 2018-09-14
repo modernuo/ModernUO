@@ -4,22 +4,20 @@ namespace Server.Engines.BulkOrders
 {
 	public class BOBLargeSubEntry
 	{
-		private Type m_ItemType;
-		private int m_AmountCur;
-		private int m_Number;
-		private int m_Graphic;
+		public Type ItemType { get; }
 
-		public Type ItemType => m_ItemType;
-		public int AmountCur => m_AmountCur;
-		public int Number => m_Number;
-		public int Graphic => m_Graphic;
+		public int AmountCur { get; }
+
+		public int Number { get; }
+
+		public int Graphic { get; }
 
 		public BOBLargeSubEntry( LargeBulkEntry lbe )
 		{
-			m_ItemType = lbe.Details.Type;
-			m_AmountCur = lbe.Amount;
-			m_Number = lbe.Details.Number;
-			m_Graphic = lbe.Details.Graphic;
+			ItemType = lbe.Details.Type;
+			AmountCur = lbe.Amount;
+			Number = lbe.Details.Number;
+			Graphic = lbe.Details.Graphic;
 		}
 
 		public BOBLargeSubEntry( GenericReader reader )
@@ -33,11 +31,11 @@ namespace Server.Engines.BulkOrders
 					string type = reader.ReadString();
 
 					if ( type != null )
-						m_ItemType = ScriptCompiler.FindTypeByFullName( type );
+						ItemType = ScriptCompiler.FindTypeByFullName( type );
 
-					m_AmountCur = reader.ReadEncodedInt();
-					m_Number = reader.ReadEncodedInt();
-					m_Graphic = reader.ReadEncodedInt();
+					AmountCur = reader.ReadEncodedInt();
+					Number = reader.ReadEncodedInt();
+					Graphic = reader.ReadEncodedInt();
 
 					break;
 				}
@@ -48,11 +46,11 @@ namespace Server.Engines.BulkOrders
 		{
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_ItemType == null ? null : m_ItemType.FullName );
+			writer.Write( ItemType == null ? null : ItemType.FullName );
 
-			writer.WriteEncodedInt( (int) m_AmountCur );
-			writer.WriteEncodedInt( (int) m_Number );
-			writer.WriteEncodedInt( (int) m_Graphic );
+			writer.WriteEncodedInt( (int) AmountCur );
+			writer.WriteEncodedInt( (int) Number );
+			writer.WriteEncodedInt( (int) Graphic );
 		}
 	}
 }

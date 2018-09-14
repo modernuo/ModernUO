@@ -152,40 +152,33 @@ namespace Server.Items
 
 	public class PMEntry
 	{
-		private Point3D m_Location;
-		private int m_Number;
+		public Point3D Location { get; }
 
-		public Point3D Location => m_Location;
-
-		public int Number => m_Number;
+		public int Number { get; }
 
 		public PMEntry( Point3D loc, int number )
 		{
-			m_Location = loc;
-			m_Number = number;
+			Location = loc;
+			Number = number;
 		}
 	}
 
 	public class PMList
 	{
-		private int m_Number, m_SelNumber;
-		private Map m_Map;
-		private PMEntry[] m_Entries;
+		public int Number { get; }
 
-		public int Number => m_Number;
+		public int SelNumber { get; }
 
-		public int SelNumber => m_SelNumber;
+		public Map Map { get; }
 
-		public Map Map => m_Map;
-
-		public PMEntry[] Entries => m_Entries;
+		public PMEntry[] Entries { get; }
 
 		public PMList( int number, int selNumber, Map map, PMEntry[] entries )
 		{
-			m_Number = number;
-			m_SelNumber = selNumber;
-			m_Map = map;
-			m_Entries = entries;
+			Number = number;
+			SelNumber = selNumber;
+			Map = map;
+			Entries = entries;
 		}
 
 		public static readonly PMList Trammel =

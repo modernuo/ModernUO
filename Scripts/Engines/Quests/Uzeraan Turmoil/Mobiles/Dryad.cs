@@ -149,15 +149,13 @@ namespace Server.Engines.Quests.Haven
 
 	public class SBDryad : SBInfo
 	{
-		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
-		private IShopSellInfo m_SellInfo = new InternalSellInfo();
-
 		public SBDryad()
 		{
 		}
 
-		public override IShopSellInfo SellInfo => m_SellInfo;
-		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
+		public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
+
+		public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
 		public class InternalBuyInfo : List<GenericBuyInfo>
 		{

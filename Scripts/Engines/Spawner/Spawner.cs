@@ -17,34 +17,28 @@ namespace Server.Mobiles
 		private TimeSpan m_MinDelay;
 		private TimeSpan m_MaxDelay;
 
-		private List<SpawnerEntry> m_Entries;
-		private Dictionary<ISpawnable, SpawnerEntry> m_Spawned;
-
-		private DateTime m_End;
 		private InternalTimer m_Timer;
 		private bool m_Running;
 		private bool m_Group;
-		private WayPoint m_WayPoint;
 
 		public override string DefaultName => "Spawner";
-		public bool IsFull => ( m_Spawned != null && m_Spawned.Count >= m_Count );
-		public bool IsEmpty => ( m_Spawned != null && m_Spawned.Count == 0 );
+		public bool IsFull => ( Spawned != null && Spawned.Count >= m_Count );
+		public bool IsEmpty => ( Spawned != null && Spawned.Count == 0 );
 
 		public Point3D HomeLocation => Location;
 		public bool UnlinkOnTaming => true;
-		public DateTime End{ get => m_End;
-			set => m_End = value;
-		}
+		public DateTime End { get; set; }
 
-		public List<SpawnerEntry> Entries => m_Entries;
-		public Dictionary<ISpawnable, SpawnerEntry> Spawned => m_Spawned;
+		public List<SpawnerEntry> Entries { get; private set; }
+
+		public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
 
 		public override void OnAfterDuped( Item newItem )
 		{
 			if ( newItem is Spawner newSpawner )
 			{
-				for ( int i = 0; i < m_Entries.Count; i++ )
-					newSpawner.AddEntry( m_Entries[i].SpawnedName, m_Entries[i].SpawnedProbability, m_Entries[i].SpawnedMaxCount, false );
+				for ( int i = 0; i < Entries.Count; i++ )
+					newSpawner.AddEntry( Entries[i].SpawnedName, Entries[i].SpawnedProbability, Entries[i].SpawnedMaxCount, false );
 			}
 		}
 
@@ -67,9 +61,7 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.Developer )]
-		public WayPoint WayPoint{ get => m_WayPoint;
-			set => m_WayPoint = value;
-		}
+		public WayPoint WayPoint { get; set; }
 
 		[CommandProperty( AccessLevel.Developer )]
 		public bool Running
@@ -112,7 +104,7 @@ namespace Server.Mobiles
 			get
 			{
 				if ( m_Running && m_Timer != null && m_Timer.Running )
-					return m_End - DateTime.UtcNow;
+					return End - DateTime.UtcNow;
 				return TimeSpan.FromSeconds( 0 );
 			}
 			set
@@ -166,7 +158,7 @@ namespace Server.Mobiles
 		public SpawnerEntry AddEntry( string creaturename, int probability, int amount, bool dotimer )
 		{
 			SpawnerEntry entry = new SpawnerEntry( creaturename, probability, amount );
-			m_Entries.Add( entry );
+			Entries.Add( entry );
 			if ( dotimer )
 				DoTimer( TimeSpan.FromSeconds( 1 ) );
 
@@ -184,8 +176,8 @@ namespace Server.Mobiles
 			m_Count = amount;
 			m_Team = team;
 			m_HomeRange = homeRange;
-			m_Entries = new List<SpawnerEntry>();
-			m_Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+			Entries = new List<SpawnerEntry>();
+			Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
 			DoTimer( TimeSpan.FromSeconds( 1 ) );
 		}
@@ -216,8 +208,8 @@ namespace Server.Mobiles
 				list.Add( 1060659, "team\t{0}", m_Team ); // ~1_val~: ~2_val~
 				list.Add( 1060660, "speed\t{0} to {1}", m_MinDelay, m_MaxDelay ); // ~1_val~: ~2_val~
 
-				for ( int i = 0; i < 3 && i < m_Entries.Count; ++i )
-					list.Add( 1060661 + i, "{0}\t{1}", m_Entries[i].SpawnedName, CountSpawns( m_Entries[i] ) );
+				for ( int i = 0; i < 3 && i < Entries.Count; ++i )
+					list.Add( 1060661 + i, "{0}\t{1}", Entries[i].SpawnedName, CountSpawns( Entries[i] ) );
 			}
 			else
 				list.Add( 1060743 ); // inactive
@@ -237,7 +229,7 @@ namespace Server.Mobiles
 		{
 			if ( !m_Running )
 			{
-				if ( m_Entries.Count > 0 )
+				if ( Entries.Count > 0 )
 				{
 					m_Running = true;
 					DoTimer();
@@ -256,11 +248,11 @@ namespace Server.Mobiles
 
 		public void Defrag()
 		{
-			if ( m_Entries == null )
-				m_Entries = new List<SpawnerEntry>();
+			if ( Entries == null )
+				Entries = new List<SpawnerEntry>();
 
-			for ( int i = 0; i < m_Entries.Count; ++i )
-				m_Entries[i].Defrag( this );
+			for ( int i = 0; i < Entries.Count; ++i )
+				Entries[i].Defrag( this );
 		}
 
 		public void OnTick()
@@ -271,7 +263,7 @@ namespace Server.Mobiles
 			{
 				Defrag();
 
-				if ( m_Spawned.Count > 0 )
+				if ( Spawned.Count > 0 )
 					return;
 
 				Respawn();
@@ -304,21 +296,21 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			if ( m_Entries.Count > 0 && !IsFull )
+			if ( Entries.Count > 0 && !IsFull )
 			{
 				int probsum = 0;
 
-				for ( int i = 0; i < m_Entries.Count; i++ )
-					if ( !m_Entries[i].IsFull )
-						probsum += m_Entries[i].SpawnedProbability;
+				for ( int i = 0; i < Entries.Count; i++ )
+					if ( !Entries[i].IsFull )
+						probsum += Entries[i].SpawnedProbability;
 
 				if ( probsum > 0 )
 				{
 					int rand = Utility.RandomMinMax( 1, probsum );
 
-					for ( int i = 0; i < m_Entries.Count; i++ )
+					for ( int i = 0; i < Entries.Count; i++ )
 					{
-						SpawnerEntry entry = m_Entries[i];
+						SpawnerEntry entry = Entries[i];
 						if ( !entry.IsFull )
 						{
 							bool success = true;
@@ -400,8 +392,8 @@ namespace Server.Mobiles
 
 		public bool Spawn( int index, out EntryFlags flags )
 		{
-			if ( index >= 0 && index < m_Entries.Count )
-				return Spawn( m_Entries[index], out flags );
+			if ( index >= 0 && index < Entries.Count )
+				return Spawn( Entries[index], out flags );
 			flags = EntryFlags.InvalidEntry;
 			return false;
 		}
@@ -491,7 +483,7 @@ namespace Server.Mobiles
 
 					if ( o is Mobile m )
 					{
-						m_Spawned.Add( m, entry );
+						Spawned.Add( m, entry );
 						entry.Spawned.Add( m );
 
 						Point3D loc = ( m is BaseVendor ? Location : GetSpawnPosition( m, map ) );
@@ -524,7 +516,7 @@ namespace Server.Mobiles
 					}
 					else if ( o is Item item )
 					{
-						m_Spawned.Add( item, entry );
+						Spawned.Add( item, entry );
 						entry.Spawned.Add( item );
 
 						Point3D loc = GetSpawnPosition( item, map );
@@ -564,7 +556,7 @@ namespace Server.Mobiles
 
 		public virtual WayPoint GetWayPoint()
 		{
-			return m_WayPoint;
+			return WayPoint;
 		}
 
 		public virtual Point3D GetSpawnPosition( ISpawnable spawned, Map map )
@@ -659,7 +651,7 @@ namespace Server.Mobiles
 			if ( !m_Running )
 				return;
 
-			m_End = DateTime.UtcNow + delay;
+			End = DateTime.UtcNow + delay;
 
 			m_Timer?.Stop();
 
@@ -708,7 +700,7 @@ namespace Server.Mobiles
 				e?.Delete();
 			}
 
-			m_Entries.Remove( entry );
+			Entries.Remove( entry );
 
 			if ( m_Running && !IsFull && m_Timer != null && !m_Timer.Running )
 				DoTimer();
@@ -722,11 +714,11 @@ namespace Server.Mobiles
 
 			if ( spawn != null )
 			{
-				m_Spawned.TryGetValue( spawn, out SpawnerEntry entry );
+				Spawned.TryGetValue( spawn, out SpawnerEntry entry );
 
 				entry?.Spawned.Remove( spawn );
 
-				m_Spawned.Remove( spawn );
+				Spawned.Remove( spawn );
 			}
 
 			if ( m_Running && !IsFull && m_Timer != null && !m_Timer.Running )
@@ -735,8 +727,8 @@ namespace Server.Mobiles
 
 		public void RemoveSpawn( int index ) //Entry
 		{
-			if ( index >= 0 && index < m_Entries.Count )
-				RemoveSpawn( m_Entries[index] );
+			if ( index >= 0 && index < Entries.Count )
+				RemoveSpawn( Entries[index] );
 		}
 
 		public void RemoveSpawn( SpawnerEntry entry )
@@ -748,7 +740,7 @@ namespace Server.Mobiles
 				if ( e != null )
 				{
 					entry.Spawned.RemoveAt( i );
-					m_Spawned.Remove( e );
+					Spawned.Remove( e );
 
 					e.Delete();
 				}
@@ -759,9 +751,9 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			for ( int i = 0;i < m_Entries.Count; i++ )
+			for ( int i = 0;i < Entries.Count; i++ )
 			{
-				SpawnerEntry entry = m_Entries[i];
+				SpawnerEntry entry = Entries[i];
 
 				for ( int j = entry.Spawned.Count - 1; j >= 0; j-- )
 				{
@@ -769,7 +761,7 @@ namespace Server.Mobiles
 
 					if ( e != null )
 					{
-						m_Spawned.Remove( e );
+						Spawned.Remove( e );
 						entry.Spawned.RemoveAt( j );
 						e.Delete();
 					}
@@ -786,7 +778,7 @@ namespace Server.Mobiles
 		{
 			Defrag();
 
-			foreach( ISpawnable e in m_Spawned.Keys )
+			foreach( ISpawnable e in Spawned.Keys )
 			{
 				e?.MoveToWorld( Location, Map );
 			}
@@ -806,14 +798,14 @@ namespace Server.Mobiles
 
 			writer.Write( (int) 7 ); // version
 
-			writer.Write( m_Entries.Count );
+			writer.Write( Entries.Count );
 
-			for ( int i = 0; i < m_Entries.Count; ++i )
-				m_Entries[i].Serialize( writer );
+			for ( int i = 0; i < Entries.Count; ++i )
+				Entries[i].Serialize( writer );
 
 			writer.Write( m_WalkingRange );
 
-			writer.Write( m_WayPoint );
+			writer.Write( WayPoint );
 
 			writer.Write( m_Group );
 
@@ -825,7 +817,7 @@ namespace Server.Mobiles
 			writer.Write( m_Running );
 
 			if ( m_Running )
-				writer.WriteDeltaTime( m_End );
+				writer.WriteDeltaTime( End );
 		}
 
 		private static WarnTimer m_WarnTimer;
@@ -836,10 +828,10 @@ namespace Server.Mobiles
 
 			int version = reader.ReadInt();
 
-			m_Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+			Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
 			if ( version < 7 )
-				m_Entries = new List<SpawnerEntry>();
+				Entries = new List<SpawnerEntry>();
 
 			switch ( version )
 			{
@@ -847,10 +839,10 @@ namespace Server.Mobiles
 				{
 					int size = reader.ReadInt();
 
-					m_Entries = new List<SpawnerEntry>( size );
+					Entries = new List<SpawnerEntry>( size );
 
 					for ( int i = 0; i < size; ++i )
-						m_Entries.Add( new SpawnerEntry( this, reader ) );
+						Entries.Add( new SpawnerEntry( this, reader ) );
 
 					goto case 4; //Skip the other crap
 				}
@@ -858,13 +850,13 @@ namespace Server.Mobiles
 				{
 					int size = reader.ReadInt();
 
-					bool addentries = m_Entries.Count == 0;
+					bool addentries = Entries.Count == 0;
 
 					for ( int i = 0; i < size; ++i )
 						if ( addentries )
-							m_Entries.Add( new SpawnerEntry( string.Empty, 100, reader.ReadInt() ) );
+							Entries.Add( new SpawnerEntry( string.Empty, 100, reader.ReadInt() ) );
 						else
-							m_Entries[i].SpawnedMaxCount = reader.ReadInt();
+							Entries[i].SpawnedMaxCount = reader.ReadInt();
 
 					goto case 5;
 				}
@@ -872,13 +864,13 @@ namespace Server.Mobiles
 				{
 					int size = reader.ReadInt();
 
-					bool addentries = m_Entries.Count == 0;
+					bool addentries = Entries.Count == 0;
 
 					for ( int i = 0; i < size; ++i )
 						if ( addentries )
-							m_Entries.Add( new SpawnerEntry( string.Empty, reader.ReadInt(), 1 ) );
+							Entries.Add( new SpawnerEntry( string.Empty, reader.ReadInt(), 1 ) );
 						else
-							m_Entries[i].SpawnedProbability = reader.ReadInt();
+							Entries[i].SpawnedProbability = reader.ReadInt();
 
 					goto case 4;
 				}
@@ -891,7 +883,7 @@ namespace Server.Mobiles
 				case 3:
 				case 2:
 				{
-					m_WayPoint = reader.ReadItem() as WayPoint;
+					WayPoint = reader.ReadItem() as WayPoint;
 
 					goto case 1;
 				}
@@ -921,16 +913,16 @@ namespace Server.Mobiles
 					{
 						int size = reader.ReadInt();
 
-						bool addentries = m_Entries.Count == 0;
+						bool addentries = Entries.Count == 0;
 
 						for ( int i = 0; i < size; ++i )
 						{
 							string typeName = reader.ReadString();
 
 							if ( addentries )
-								m_Entries.Add( new SpawnerEntry( typeName, 100, 1 ) );
+								Entries.Add( new SpawnerEntry( typeName, 100, 1 ) );
 							else
-								m_Entries[i].SpawnedName = typeName;
+								Entries[i].SpawnedName = typeName;
 
 							if ( SpawnerType.GetType( typeName ) == null )
 							{
@@ -952,12 +944,12 @@ namespace Server.Mobiles
 
 								e.Spawner = this;
 
-								for ( int j = 0;j < m_Entries.Count; j++ )
+								for ( int j = 0;j < Entries.Count; j++ )
 								{
-									if ( SpawnerType.GetType( m_Entries[j].SpawnedName ) == e.GetType() )
+									if ( SpawnerType.GetType( Entries[j].SpawnedName ) == e.GetType() )
 									{
-										m_Entries[j].Spawned.Add( e );
-										m_Spawned.Add( e, m_Entries[j] );
+										Entries[j].Spawned.Add( e );
+										Spawned.Add( e, Entries[j] );
 										break;
 									}
 								}
@@ -1062,75 +1054,46 @@ namespace Server.Mobiles
 
 	public class SpawnerEntry
 	{
-		private string m_SpawnedName;
-		private int m_SpawnedProbability;
-		private List<ISpawnable> m_Spawned;
-		private int m_SpawnedMaxCount;
-		private string m_Properties;
-		private string m_Parameters;
-		private EntryFlags m_Valid;
+		public int SpawnedProbability { get; set; }
 
-		public int SpawnedProbability
-		{
-			get => m_SpawnedProbability;
-			set => m_SpawnedProbability = value;
-		}
+		public int SpawnedMaxCount { get; set; }
 
-		public int SpawnedMaxCount
-		{
-			get => m_SpawnedMaxCount;
-			set => m_SpawnedMaxCount = value;
-		}
+		public string SpawnedName { get; set; }
 
-		public string SpawnedName
-		{
-			get => m_SpawnedName;
-			set => m_SpawnedName = value;
-		}
+		public string Properties { get; set; }
 
-		public string Properties
-		{
-			get => m_Properties;
-			set => m_Properties = value;
-		}
+		public string Parameters { get; set; }
 
-		public string Parameters
-		{
-			get => m_Parameters;
-			set => m_Parameters = value;
-		}
+		public EntryFlags Valid { get; set; }
 
-		public EntryFlags Valid{ get => m_Valid;
-			set => m_Valid = value;
-		}
+		public List<ISpawnable> Spawned { get; }
 
-		public List<ISpawnable> Spawned => m_Spawned;
-		public bool IsFull => m_Spawned.Count >= m_SpawnedMaxCount;
+		public bool IsFull => Spawned.Count >= SpawnedMaxCount;
 
 		public SpawnerEntry( string name, int probability, int maxcount )
 		{
-			m_SpawnedName = name;
-			m_SpawnedProbability = probability;
-			m_SpawnedMaxCount = maxcount;
-			m_Spawned = new List<ISpawnable>();
+			SpawnedName = name;
+			SpawnedProbability = probability;
+			SpawnedMaxCount = maxcount;
+			Spawned = new List<ISpawnable>();
 		}
 
 		public void Serialize( GenericWriter writer )
 		{
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( m_SpawnedName );
-			writer.Write( m_SpawnedProbability );
-			writer.Write( m_SpawnedMaxCount );
+			writer.Write( SpawnedName );
+			writer.Write( SpawnedProbability );
+			writer.Write( SpawnedMaxCount );
 
-			writer.Write( m_Properties );
-			writer.Write( m_Parameters );
+			writer.Write( Properties );
+			writer.Write( Parameters );
 
-			writer.Write( m_Spawned.Count );
+			writer.Write( Spawned.Count );
 
-			for ( int i = 0; i < m_Spawned.Count; ++i )
+			for ( int i = 0; i < Spawned.Count; ++i )
 			{
-				object o = m_Spawned[i];
+				object o = Spawned[i];
 
 				if ( o is Item item )
 					writer.Write( item );
@@ -1145,16 +1108,16 @@ namespace Server.Mobiles
 		{
 			int version = reader.ReadInt();
 
-			m_SpawnedName = reader.ReadString();
-			m_SpawnedProbability = reader.ReadInt();
-			m_SpawnedMaxCount = reader.ReadInt();
+			SpawnedName = reader.ReadString();
+			SpawnedProbability = reader.ReadInt();
+			SpawnedMaxCount = reader.ReadInt();
 
-			m_Properties = reader.ReadString();
-			m_Parameters = reader.ReadString();
+			Properties = reader.ReadString();
+			Parameters = reader.ReadString();
 
 			int count = reader.ReadInt();
 
-			m_Spawned = new List<ISpawnable>( count );
+			Spawned = new List<ISpawnable>( count );
 
 			for ( int i = 0; i < count; ++i )
 			{
@@ -1167,7 +1130,7 @@ namespace Server.Mobiles
 					if ( e is BaseCreature creature )
 						creature.RemoveIfUntamed = true;
 
-					m_Spawned.Add( e );
+					Spawned.Add( e );
 
 					if ( !parent.Spawned.ContainsKey( e ) )
 						parent.Spawned.Add( e, this );
@@ -1177,9 +1140,9 @@ namespace Server.Mobiles
 
 		public void Defrag( Spawner parent )
 		{
-			for ( int i = 0; i < m_Spawned.Count; ++i )
+			for ( int i = 0; i < Spawned.Count; ++i )
 			{
-				ISpawnable e = m_Spawned[i];
+				ISpawnable e = Spawned[i];
 				bool remove = false;
 
 				if ( e is Item item )
@@ -1214,7 +1177,7 @@ namespace Server.Mobiles
 
 				if ( remove )
 				{
-					m_Spawned.RemoveAt( i-- );
+					Spawned.RemoveAt( i-- );
 					if ( parent.Spawned.ContainsKey( e ) )
 						parent.Spawned.Remove( e );
 				}

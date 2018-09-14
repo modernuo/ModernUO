@@ -47,55 +47,23 @@ namespace Server.Commands.Generic
 			Register( new FacetCommandImplementor() );
 		}
 
-		private string[] m_Accessors;
-		private AccessLevel m_AccessLevel;
-		private CommandSupport m_SupportRequirement;
-		private Dictionary<string, BaseCommand> m_Commands;
-		private string m_Usage;
-		private string m_Description;
-		private bool m_SupportsConditionals;
+		public bool SupportsConditionals { get; set; }
 
-		public bool SupportsConditionals
-		{
-			get => m_SupportsConditionals;
-			set => m_SupportsConditionals = value;
-		}
+		public string[] Accessors { get; set; }
 
-		public string[] Accessors
-		{
-			get => m_Accessors;
-			set => m_Accessors = value;
-		}
+		public string Usage { get; set; }
 
-		public string Usage
-		{
-			get => m_Usage;
-			set => m_Usage = value;
-		}
+		public string Description { get; set; }
 
-		public string Description
-		{
-			get => m_Description;
-			set => m_Description = value;
-		}
+		public AccessLevel AccessLevel { get; set; }
 
-		public AccessLevel AccessLevel
-		{
-			get => m_AccessLevel;
-			set => m_AccessLevel = value;
-		}
+		public CommandSupport SupportRequirement { get; set; }
 
-		public CommandSupport SupportRequirement
-		{
-			get => m_SupportRequirement;
-			set => m_SupportRequirement = value;
-		}
-
-		public Dictionary<string, BaseCommand> Commands => m_Commands;
+		public Dictionary<string, BaseCommand> Commands { get; }
 
 		public BaseCommandImplementor()
 		{
-			m_Commands = new Dictionary<string, BaseCommand>( StringComparer.OrdinalIgnoreCase );
+			Commands = new Dictionary<string, BaseCommand>( StringComparer.OrdinalIgnoreCase );
 		}
 
 		public virtual void Compile( Mobile from, BaseCommand command, ref string[] args, ref object obj )
@@ -106,7 +74,7 @@ namespace Server.Commands.Generic
 		public virtual void Register( BaseCommand command )
 		{
 			for ( int i = 0; i < command.Commands.Length; ++i )
-				m_Commands[command.Commands[i]] = command;
+				Commands[command.Commands[i]] = command;
 		}
 
 		public bool CheckObjectTypes( Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles )
@@ -274,7 +242,7 @@ namespace Server.Commands.Generic
 		{
 			if ( e.Length >= 1 )
 			{
-				m_Commands.TryGetValue( e.GetString( 0 ), out BaseCommand command );
+				Commands.TryGetValue( e.GetString( 0 ), out BaseCommand command );
 
 				if ( command == null )
 				{
@@ -303,11 +271,11 @@ namespace Server.Commands.Generic
 
 		public void Register()
 		{
-			if ( m_Accessors == null )
+			if ( Accessors == null )
 				return;
 
-			for ( int i = 0; i < m_Accessors.Length; ++i )
-				CommandSystem.Register( m_Accessors[i], m_AccessLevel, Execute );
+			for ( int i = 0; i < Accessors.Length; ++i )
+				CommandSystem.Register( Accessors[i], AccessLevel, Execute );
 		}
 
 		public static void Register( BaseCommandImplementor impl )

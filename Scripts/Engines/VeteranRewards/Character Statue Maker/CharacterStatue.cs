@@ -66,7 +66,6 @@ namespace Server.Mobiles
 		}
 
 		private Mobile m_SculptedBy;
-		private DateTime m_SculptedOn;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile SculptedBy
@@ -76,28 +75,12 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime SculptedOn
-		{
-			get => m_SculptedOn;
-			set => m_SculptedOn = value;
-		}
+		public DateTime SculptedOn { get; set; }
 
-		private CharacterStatuePlinth m_Plinth;
-
-		public CharacterStatuePlinth Plinth
-		{
-			get => m_Plinth;
-			set => m_Plinth = value;
-		}
-
-		private bool m_IsRewardItem;
+		public CharacterStatuePlinth Plinth { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get => m_IsRewardItem;
-			set => m_IsRewardItem = value;
-		}
+		public bool IsRewardItem { get; set; }
 
 		public CharacterStatue( Mobile from, StatueType type )
 		{
@@ -155,24 +138,24 @@ namespace Server.Mobiles
 		{
 			base.OnAfterDelete();
 
-			if ( m_Plinth != null && !m_Plinth.Deleted )
-				m_Plinth.Delete();
+			if ( Plinth != null && !Plinth.Deleted )
+				Plinth.Delete();
 		}
 
 		protected override void OnMapChange( Map oldMap )
 		{
 			InvalidatePose();
 
-			if ( m_Plinth != null )
-				m_Plinth.Map = Map;
+			if ( Plinth != null )
+				Plinth.Map = Map;
 		}
 
 		protected override void OnLocationChange( Point3D oldLocation )
 		{
 			InvalidatePose();
 
-			if ( m_Plinth != null )
-				m_Plinth.Location = new Point3D( X, Y, Z - 5 );
+			if ( Plinth != null )
+				Plinth.Location = new Point3D( X, Y, Z - 5 );
 		}
 
 		public override bool CanBeRenamedBy( Mobile from )
@@ -205,10 +188,10 @@ namespace Server.Mobiles
 			writer.Write( (int) m_Material );
 
 			writer.Write( (Mobile) m_SculptedBy );
-			writer.Write( (DateTime) m_SculptedOn );
+			writer.Write( (DateTime) SculptedOn );
 
-			writer.Write( (Item) m_Plinth );
-			writer.Write( (bool) m_IsRewardItem );
+			writer.Write( (Item) Plinth );
+			writer.Write( (bool) IsRewardItem );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -222,10 +205,10 @@ namespace Server.Mobiles
 			m_Material = (StatueMaterial) reader.ReadInt();
 
 			m_SculptedBy = reader.ReadMobile();
-			m_SculptedOn = reader.ReadDateTime();
+			SculptedOn = reader.ReadDateTime();
 
-			m_Plinth = reader.ReadItem() as CharacterStatuePlinth;
-			m_IsRewardItem = reader.ReadBool();
+			Plinth = reader.ReadItem() as CharacterStatuePlinth;
+			IsRewardItem = reader.ReadBool();
 
 			InvalidatePose();
 
@@ -240,7 +223,7 @@ namespace Server.Mobiles
 		public void Sculpt( Mobile by )
 		{
 			m_SculptedBy = by;
-			m_SculptedOn = DateTime.UtcNow;
+			SculptedOn = DateTime.UtcNow;
 
 			InvalidateProperties();
 		}
@@ -255,9 +238,9 @@ namespace Server.Mobiles
 
 				deed.Statue = this;
 				deed.StatueType = m_Type;
-				deed.IsRewardItem = m_IsRewardItem;
+				deed.IsRewardItem = IsRewardItem;
 
-				m_Plinth?.Delete();
+				Plinth?.Delete();
 
 				return true;
 			}
@@ -329,7 +312,7 @@ namespace Server.Mobiles
 			for ( int i = Items.Count - 1; i >= 0; i -- )
 				Items[ i ].Hue = Hue;
 
-			m_Plinth?.InvalidateHue();
+			Plinth?.InvalidateHue();
 		}
 
 		private int m_Animation;
@@ -416,9 +399,9 @@ namespace Server.Mobiles
 			{
 				StatueType t = m_Type;
 
-				if ( m_Statue != null )
+				if ( Statue != null )
 				{
-					t = m_Statue.StatueType;
+					t = Statue.StatueType;
 				}
 
 				switch ( t )
@@ -431,24 +414,19 @@ namespace Server.Mobiles
 			}
 		}
 
-		private CharacterStatue m_Statue;
 		private StatueType m_Type;
 		private bool m_IsRewardItem;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CharacterStatue Statue
-		{
-			get => m_Statue;
-			set => m_Statue = value;
-		}
+		public CharacterStatue Statue { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public StatueType StatueType
 		{
 			get
 			{
-				if ( m_Statue != null )
-					return m_Statue.StatueType;
+				if ( Statue != null )
+					return Statue.StatueType;
 
 				return m_Type;
 			}
@@ -464,7 +442,7 @@ namespace Server.Mobiles
 
 		public CharacterStatueDeed( CharacterStatue statue ) : base( 0x14F0 )
 		{
-			m_Statue = statue;
+			Statue = statue;
 
 			if ( statue != null )
 			{
@@ -487,8 +465,8 @@ namespace Server.Mobiles
 			if ( m_IsRewardItem )
 				list.Add( 1076222 ); // 6th Year Veteran Reward
 
-			if ( m_Statue != null )
-				list.Add( 1076231, m_Statue.Name ); // Statue of ~1_Name~
+			if ( Statue != null )
+				list.Add( 1076231, Statue.Name ); // Statue of ~1_Name~
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -522,7 +500,7 @@ namespace Server.Mobiles
 		{
 			base.OnDelete();
 
-			m_Statue?.Delete();
+			Statue?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -533,7 +511,7 @@ namespace Server.Mobiles
 
 			writer.Write( (int) m_Type );
 
-			writer.Write( (Mobile) m_Statue );
+			writer.Write( (Mobile) Statue );
 			writer.Write( (bool) m_IsRewardItem );
 		}
 
@@ -547,7 +525,7 @@ namespace Server.Mobiles
 				m_Type = (StatueType) reader.ReadInt();
 			}
 
-			m_Statue = reader.ReadMobile() as CharacterStatue;
+			Statue = reader.ReadMobile() as CharacterStatue;
 			m_IsRewardItem = reader.ReadBool();
 		}
 	}

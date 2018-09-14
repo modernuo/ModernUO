@@ -629,9 +629,7 @@ namespace Server.Items
 
 	public class FillableBvrge : FillableEntry
 	{
-		private BeverageType m_Content;
-
-		public BeverageType Content  => m_Content;
+		public BeverageType Content { get; }
 
 		public FillableBvrge( Type type, BeverageType content )
 			: this( 1, type, content )
@@ -641,7 +639,7 @@ namespace Server.Items
 		public FillableBvrge( int weight, Type type, BeverageType content )
 			: base( weight, type )
 		{
-			m_Content = content;
+			Content = content;
 		}
 
 		public override Item Construct()
@@ -652,11 +650,11 @@ namespace Server.Items
 
 			if ( m_Types[ index ] == typeof( BeverageBottle ) )
 			{
-				item = new BeverageBottle( m_Content );
+				item = new BeverageBottle( Content );
 			}
 			else if ( m_Types[ index ] == typeof( Jug ) )
 			{
-				item = new Jug( m_Content );
+				item = new Jug( Content );
 			}
 			else
 			{
@@ -664,7 +662,7 @@ namespace Server.Items
 
 				if ( item is BaseBeverage bev )
 				{
-					bev.Content = m_Content;
+					bev.Content = Content;
 					bev.Quantity = bev.MaxQuantity;
 				}
 			}
@@ -692,21 +690,19 @@ namespace Server.Items
 
 	public class FillableContent
 	{
-		private int m_Level;
-		private Type[] m_Vendors;
-
 		private FillableEntry[] m_Entries;
 		private int m_Weight;
 
-		public int Level  => m_Level;
-		public Type[] Vendors  => m_Vendors;
+		public int Level { get; }
+
+		public Type[] Vendors { get; }
 
 		public FillableContentType TypeID => Lookup( this );
 
 		public FillableContent( int level, Type[] vendors, FillableEntry[] entries )
 		{
-			m_Level = level;
-			m_Vendors = vendors;
+			Level = level;
+			Vendors = vendors;
 			m_Entries = entries;
 
 			for( int i = 0; i < entries.Length; ++i )
@@ -1498,8 +1494,8 @@ namespace Server.Items
 				{
 					FillableContent fill = m_ContentTypes[ i ];
 
-					for( int j = 0; j < fill.m_Vendors.Length; ++j )
-						m_AcquireTable[ fill.m_Vendors[ j ] ] = fill;
+					for( int j = 0; j < fill.Vendors.Length; ++j )
+						m_AcquireTable[ fill.Vendors[ j ] ] = fill;
 				}
 			}
 

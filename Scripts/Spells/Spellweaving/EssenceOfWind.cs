@@ -65,24 +65,22 @@ namespace Server.Spells.Spellweaving
 
 		private class EssenceOfWindInfo
 		{
-			private Mobile m_Defender;
-			private int m_FCMalus;
-			private int m_SSIMalus;
-			private ExpireTimer m_Timer;
+			public Mobile Defender { get; }
 
-			public Mobile Defender  => m_Defender;
-			public int FCMalus  => m_FCMalus;
-			public int SSIMalus  => m_SSIMalus;
-			public ExpireTimer Timer  => m_Timer;
+			public int FCMalus { get; }
+
+			public int SSIMalus { get; }
+
+			public ExpireTimer Timer { get; }
 
 			public EssenceOfWindInfo( Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration )
 			{
-				m_Defender = defender;
-				m_FCMalus = fcMalus;
-				m_SSIMalus = ssiMalus;
+				Defender = defender;
+				FCMalus = fcMalus;
+				SSIMalus = ssiMalus;
 
-				m_Timer = new ExpireTimer( m_Defender, duration );
-				m_Timer.Start();
+				Timer = new ExpireTimer( Defender, duration );
+				Timer.Start();
 			}
 		}
 

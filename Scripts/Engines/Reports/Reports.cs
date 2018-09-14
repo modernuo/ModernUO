@@ -22,8 +22,8 @@ namespace Server.Engines.Reports
 			m_StatsHistory = new SnapshotHistory();
 			m_StatsHistory.Load();
 
-			m_StaffHistory = new StaffHistory();
-			m_StaffHistory.Load();
+			StaffHistory = new StaffHistory();
+			StaffHistory.Load();
 
 			DateTime now = DateTime.UtcNow;
 
@@ -47,9 +47,8 @@ namespace Server.Engines.Reports
 		}
 
 		private static SnapshotHistory m_StatsHistory;
-		private static StaffHistory m_StaffHistory;
 
-		public static StaffHistory StaffHistory => m_StaffHistory;
+		public static StaffHistory StaffHistory { get; private set; }
 
 		public static void Generate()
 		{
@@ -60,7 +59,7 @@ namespace Server.Engines.Reports
 			FillSnapshot( ss );
 
 			m_StatsHistory.Snapshots.Add( ss );
-			m_StaffHistory.QueueStats.Add( new QueueStatus( Help.PageQueue.List.Count ) );
+			StaffHistory.QueueStats.Add( new QueueStatus( Help.PageQueue.List.Count ) );
 
 			ThreadPool.QueueUserWorkItem( UpdateOutput, ss );
 		}
@@ -68,13 +67,13 @@ namespace Server.Engines.Reports
 		private static void UpdateOutput( object state )
 		{
 			m_StatsHistory.Save();
-			m_StaffHistory.Save();
+			StaffHistory.Save();
 
 			HtmlRenderer renderer = new HtmlRenderer( "stats", (Snapshot) state, m_StatsHistory );
 			renderer.Render();
 			renderer.Upload();
 
-			renderer = new HtmlRenderer( "staff", m_StaffHistory );
+			renderer = new HtmlRenderer( "staff", StaffHistory );
 			renderer.Render();
 			renderer.Upload();
 		}

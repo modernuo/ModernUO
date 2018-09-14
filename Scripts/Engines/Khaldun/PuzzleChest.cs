@@ -22,24 +22,22 @@ namespace Server.Items
 	{
 		public const int Length = 5;
 
-		private PuzzleChestCylinder[] m_Cylinders = new PuzzleChestCylinder[Length];
+		public PuzzleChestCylinder[] Cylinders { get; } = new PuzzleChestCylinder[Length];
 
-		public PuzzleChestCylinder[] Cylinders => m_Cylinders;
-
-		public PuzzleChestCylinder First{ get => m_Cylinders[0];
-			set => m_Cylinders[0] = value;
+		public PuzzleChestCylinder First{ get => Cylinders[0];
+			set => Cylinders[0] = value;
 		}
-		public PuzzleChestCylinder Second{ get => m_Cylinders[1];
-			set => m_Cylinders[1] = value;
+		public PuzzleChestCylinder Second{ get => Cylinders[1];
+			set => Cylinders[1] = value;
 		}
-		public PuzzleChestCylinder Third{ get => m_Cylinders[2];
-			set => m_Cylinders[2] = value;
+		public PuzzleChestCylinder Third{ get => Cylinders[2];
+			set => Cylinders[2] = value;
 		}
-		public PuzzleChestCylinder Fourth{ get => m_Cylinders[3];
-			set => m_Cylinders[3] = value;
+		public PuzzleChestCylinder Fourth{ get => Cylinders[3];
+			set => Cylinders[3] = value;
 		}
-		public PuzzleChestCylinder Fifth{ get => m_Cylinders[4];
-			set => m_Cylinders[4] = value;
+		public PuzzleChestCylinder Fifth{ get => Cylinders[4];
+			set => Cylinders[4] = value;
 		}
 
 		public static PuzzleChestCylinder RandomCylinder()
@@ -59,8 +57,8 @@ namespace Server.Items
 
 		public PuzzleChestSolution()
 		{
-			for ( int i = 0; i < m_Cylinders.Length; i++ ) {
-				m_Cylinders[i] = RandomCylinder();
+			for ( int i = 0; i < Cylinders.Length; i++ ) {
+				Cylinders[i] = RandomCylinder();
 			}
 		}
 
@@ -75,8 +73,8 @@ namespace Server.Items
 
 		public PuzzleChestSolution( PuzzleChestSolution solution )
 		{
-			for ( int i = 0; i < m_Cylinders.Length; i++ ) {
-				m_Cylinders[i] = solution.m_Cylinders[i];
+			for ( int i = 0; i < Cylinders.Length; i++ ) {
+				Cylinders[i] = solution.Cylinders[i];
 			}
 		}
 
@@ -85,12 +83,12 @@ namespace Server.Items
 			cylinders = 0;
 			colors = 0;
 
-			bool[] matchesSrc = new bool[solution.m_Cylinders.Length];
-			bool[] matchesDst = new bool[solution.m_Cylinders.Length];
+			bool[] matchesSrc = new bool[solution.Cylinders.Length];
+			bool[] matchesDst = new bool[solution.Cylinders.Length];
 
-			for ( int i = 0; i < m_Cylinders.Length; i++ )
+			for ( int i = 0; i < Cylinders.Length; i++ )
 			{
-				if ( m_Cylinders[i] == solution.m_Cylinders[i] )
+				if ( Cylinders[i] == solution.Cylinders[i] )
 				{
 					cylinders++;
 
@@ -99,13 +97,13 @@ namespace Server.Items
 				}
 			}
 
-			for ( int i = 0; i < m_Cylinders.Length; i++ )
+			for ( int i = 0; i < Cylinders.Length; i++ )
 			{
 				if ( !matchesSrc[i] )
 				{
-					for ( int j = 0; j < solution.m_Cylinders.Length; j++ )
+					for ( int j = 0; j < solution.Cylinders.Length; j++ )
 					{
-						if ( m_Cylinders[i] == solution.m_Cylinders[j] && !matchesDst[j] )
+						if ( Cylinders[i] == solution.Cylinders[j] && !matchesDst[j] )
 						{
 							colors++;
 
@@ -115,17 +113,17 @@ namespace Server.Items
 				}
 			}
 
-			return cylinders == m_Cylinders.Length;
+			return cylinders == Cylinders.Length;
 		}
 
 		public virtual void Serialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.WriteEncodedInt( (int) m_Cylinders.Length );
-			for ( int i = 0; i < m_Cylinders.Length; i++ )
+			writer.WriteEncodedInt( (int) Cylinders.Length );
+			for ( int i = 0; i < Cylinders.Length; i++ )
 			{
-				writer.Write( (int) m_Cylinders[i] );
+				writer.Write( (int) Cylinders[i] );
 			}
 		}
 
@@ -140,12 +138,12 @@ namespace Server.Items
 				{
 					PuzzleChestCylinder cylinder = (PuzzleChestCylinder) reader.ReadInt();
 
-					if ( i < m_Cylinders.Length )
-						m_Cylinders[i] = cylinder;
+					if ( i < Cylinders.Length )
+						Cylinders[i] = cylinder;
 				}
-				else if ( i < m_Cylinders.Length )
+				else if ( i < Cylinders.Length )
 				{
-					m_Cylinders[i] = RandomCylinder();
+					Cylinders[i] = RandomCylinder();
 				}
 				else
 				{
@@ -157,13 +155,11 @@ namespace Server.Items
 
 	public class PuzzleChestSolutionAndTime : PuzzleChestSolution
 	{
-		private DateTime m_When;
-
-		public DateTime When => m_When;
+		public DateTime When { get; }
 
 		public PuzzleChestSolutionAndTime( DateTime when, PuzzleChestSolution solution ) : base( solution )
 		{
-			m_When = when;
+			When = when;
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -172,14 +168,14 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.WriteDeltaTime( m_When );
+			writer.WriteDeltaTime( When );
 		}
 
 		public PuzzleChestSolutionAndTime( GenericReader reader ) : base( reader )
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_When = reader.ReadDeltaTime();
+			When = reader.ReadDeltaTime();
 		}
 	}
 
@@ -189,7 +185,6 @@ namespace Server.Items
 		public readonly TimeSpan CleanupTime = TimeSpan.FromHours( 1.0 );
 
 		private PuzzleChestSolution m_Solution;
-		private PuzzleChestCylinder[] m_Hints = new PuzzleChestCylinder[HintsCount];
 		private Dictionary<Mobile, PuzzleChestSolutionAndTime> m_Guesses = new Dictionary<Mobile, PuzzleChestSolutionAndTime>();
 
 		public PuzzleChestSolution Solution
@@ -202,16 +197,16 @@ namespace Server.Items
 			}
 		}
 
-		public PuzzleChestCylinder[] Hints => m_Hints;
+		public PuzzleChestCylinder[] Hints { get; private set; } = new PuzzleChestCylinder[HintsCount];
 
-		public PuzzleChestCylinder FirstHint{ get => m_Hints[0];
-			set => m_Hints[0] = value;
+		public PuzzleChestCylinder FirstHint{ get => Hints[0];
+			set => Hints[0] = value;
 		}
-		public PuzzleChestCylinder SecondHint{ get => m_Hints[1];
-			set => m_Hints[1] = value;
+		public PuzzleChestCylinder SecondHint{ get => Hints[1];
+			set => Hints[1] = value;
 		}
-		public PuzzleChestCylinder ThirdHint{ get => m_Hints[2];
-			set => m_Hints[2] = value;
+		public PuzzleChestCylinder ThirdHint{ get => Hints[2];
+			set => Hints[2] = value;
 		}
 
 		public override string DefaultName => null;
@@ -226,11 +221,11 @@ namespace Server.Items
 			for ( int i = 1; i < Solution.Cylinders.Length; i++ )
 				list.Add( Solution.Cylinders[i] );
 
-			m_Hints = new PuzzleChestCylinder[HintsCount];
+			Hints = new PuzzleChestCylinder[HintsCount];
 
-			for ( int i = 0; i < m_Hints.Length; i++ ) {
+			for ( int i = 0; i < Hints.Length; i++ ) {
 				int pos = Utility.Random( list.Count );
-				m_Hints[i] = list[pos];
+				Hints[i] = list[pos];
 				list.RemoveAt( pos );
 			}
 		}
@@ -685,10 +680,10 @@ namespace Server.Items
 
 			m_Solution.Serialize( writer );
 
-			writer.WriteEncodedInt( (int) m_Hints.Length );
-			for ( int i = 0; i < m_Hints.Length; i++ )
+			writer.WriteEncodedInt( (int) Hints.Length );
+			for ( int i = 0; i < Hints.Length; i++ )
 			{
-				writer.Write( (int) m_Hints[i] );
+				writer.Write( (int) Hints[i] );
 			}
 
 			writer.WriteEncodedInt( (int) m_Guesses.Count );
@@ -711,10 +706,10 @@ namespace Server.Items
 			{
 				PuzzleChestCylinder cylinder = (PuzzleChestCylinder) reader.ReadInt();
 
-				if ( length == m_Hints.Length )
-					m_Hints[i] = cylinder;
+				if ( length == Hints.Length )
+					Hints[i] = cylinder;
 			}
-			if ( length != m_Hints.Length )
+			if ( length != Hints.Length )
 				InitHints();
 
 			int guesses = reader.ReadEncodedInt();

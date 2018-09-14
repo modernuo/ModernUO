@@ -54,7 +54,7 @@ namespace Server.Items
 		private ArmorDurabilityLevel m_Durability;
 		private ArmorProtectionLevel m_Protection;
 		private CraftResource m_Resource;
-		private bool m_Identified, m_PlayerConstructed;
+		private bool m_Identified;
 		private int m_PhysicalBonus, m_FireBonus, m_ColdBonus, m_PoisonBonus, m_EnergyBonus;
 
 		private AosAttributes m_AosAttributes;
@@ -213,11 +213,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool PlayerConstructed
-		{
-			get => m_PlayerConstructed;
-			set => m_PlayerConstructed = value;
-		}
+		public bool PlayerConstructed { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CraftResource Resource
@@ -252,8 +248,8 @@ namespace Server.Items
 			{
 				int pos = (int)BodyPosition;
 
-				if ( pos >= 0 && pos < m_ArmorScalars.Length )
-					return m_ArmorScalars[pos];
+				if ( pos >= 0 && pos < ArmorScalars.Length )
+					return ArmorScalars[pos];
 
 				return 1.0;
 			}
@@ -548,7 +544,7 @@ namespace Server.Items
 				{
 					Item res = (Item)Activator.CreateInstance( CraftResources.GetInfo( m_Resource ).ResourceTypes[0] );
 
-					ScissorHelper( from, res, m_PlayerConstructed ? (item.Resources.GetAt( 0 ).Amount / 2) : 1 );
+					ScissorHelper( from, res, PlayerConstructed ? (item.Resources.GetAt( 0 ).Amount / 2) : 1 );
 					return true;
 				}
 				catch
@@ -560,13 +556,7 @@ namespace Server.Items
 			return false;
 		}
 
-		private static double[] m_ArmorScalars = { 0.07, 0.07, 0.14, 0.15, 0.22, 0.35 };
-
-		public static double[] ArmorScalars
-		{
-			get => m_ArmorScalars;
-			set => m_ArmorScalars = value;
-		}
+		public static double[] ArmorScalars { get; set; } = { 0.07, 0.07, 0.14, 0.15, 0.22, 0.35 };
 
 		public static void ValidateMobile( Mobile m )
 		{
@@ -734,7 +724,7 @@ namespace Server.Items
 			SetSaveFlag( ref flags, SaveFlag.IntReq,			m_IntReq != -1 );
 			SetSaveFlag( ref flags, SaveFlag.MedAllowance,		m_Meditate != (AMA)(-1) );
 			SetSaveFlag( ref flags, SaveFlag.SkillBonuses,		!m_AosSkillBonuses.IsEmpty );
-			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	m_PlayerConstructed != false );
+			SetSaveFlag( ref flags, SaveFlag.PlayerConstructed,	PlayerConstructed != false );
 
 			writer.WriteEncodedInt( (int) flags );
 
@@ -935,7 +925,7 @@ namespace Server.Items
 						m_AosSkillBonuses = new AosSkillBonuses( this, reader );
 
 					if ( GetSaveFlag( flags, SaveFlag.PlayerConstructed ) )
-						m_PlayerConstructed = true;
+						PlayerConstructed = true;
 
 					break;
 				}
@@ -1091,7 +1081,7 @@ namespace Server.Items
 			m?.CheckStatTimers();
 
 			if ( version < 7 )
-				m_PlayerConstructed = true; // we don't know, so, assume it's crafted
+				PlayerConstructed = true; // we don't know, so, assume it's crafted
 		}
 
 		public virtual CraftResource DefaultResource => CraftResource.Iron;

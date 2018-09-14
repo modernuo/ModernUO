@@ -11,12 +11,10 @@ namespace Server.Engines.MyRunUO
 		private ManualResetEvent m_Sync;
 		private Thread m_Thread;
 
-		private bool m_HasCompleted;
-
 		private string m_CompletionString;
 		private string m_ConnectionString;
 
-		public bool HasCompleted => m_HasCompleted;
+		public bool HasCompleted { get; private set; }
 
 		public void Enqueue( object obj )
 		{
@@ -115,7 +113,7 @@ namespace Server.Engines.MyRunUO
 								catch{}
 
 								Console.WriteLine( m_CompletionString, (DateTime.UtcNow - start).TotalSeconds );
-								m_HasCompleted = true;
+								HasCompleted = true;
 
 								return;
 							}
@@ -164,7 +162,7 @@ namespace Server.Engines.MyRunUO
 
 								Console.WriteLine( "MyRunUO: Unable to connect to the database" );
 								Console.WriteLine( e );
-								m_HasCompleted = true;
+								HasCompleted = true;
 								return;
 							}
 						}

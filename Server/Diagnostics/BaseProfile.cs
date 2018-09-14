@@ -38,27 +38,20 @@ namespace Server.Diagnostics {
 			}
 		}
 
-		private string _name;
-
-		private long _count;
-
-		private TimeSpan _totalTime;
-		private TimeSpan _peakTime;
-
 		private Stopwatch _stopwatch;
 
-		public string Name => _name;
+		public string Name { get; }
 
-		public long Count => _count;
+		public long Count { get; private set; }
 
-		public TimeSpan AverageTime => TimeSpan.FromTicks( _totalTime.Ticks / Math.Max( 1, _count ) );
+		public TimeSpan AverageTime => TimeSpan.FromTicks( TotalTime.Ticks / Math.Max( 1, Count ) );
 
-		public TimeSpan PeakTime => _peakTime;
+		public TimeSpan PeakTime { get; private set; }
 
-		public TimeSpan TotalTime => _totalTime;
+		public TimeSpan TotalTime { get; private set; }
 
 		protected BaseProfile( string name ) {
-			_name = name;
+			Name = name;
 
 			_stopwatch = new Stopwatch();
 		}
@@ -74,13 +67,13 @@ namespace Server.Diagnostics {
 		public virtual void Finish() {
 			TimeSpan elapsed = _stopwatch.Elapsed;
 
-			_totalTime += elapsed;
+			TotalTime += elapsed;
 
-			if ( elapsed > _peakTime ) {
-				_peakTime = elapsed;
+			if ( elapsed > PeakTime ) {
+				PeakTime = elapsed;
 			}
 
-			_count++;
+			Count++;
 
 			_stopwatch.Reset();
 		}

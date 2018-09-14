@@ -6,14 +6,9 @@ namespace Server.Commands
 {
 	public class CommandLogging
 	{
-		private static StreamWriter m_Output;
-		private static bool m_Enabled = true;
+		public static bool Enabled { get; set; } = true;
 
-		public static bool Enabled{ get => m_Enabled;
-			set => m_Enabled = value;
-		}
-
-		public static StreamWriter Output => m_Output;
+		public static StreamWriter Output { get; private set; }
 
 		public static void Initialize()
 		{
@@ -29,13 +24,13 @@ namespace Server.Commands
 
 			try
 			{
-				m_Output = new StreamWriter( Path.Combine( directory, $"{DateTime.UtcNow.ToLongDateString()}.log"), true );
+				Output = new StreamWriter( Path.Combine( directory, $"{DateTime.UtcNow.ToLongDateString()}.log"), true );
 
-				m_Output.AutoFlush = true;
+				Output.AutoFlush = true;
 
-				m_Output.WriteLine( "##############################" );
-				m_Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
-				m_Output.WriteLine();
+				Output.WriteLine( "##############################" );
+				Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
+				Output.WriteLine();
 			}
 			catch
 			{
@@ -61,7 +56,7 @@ namespace Server.Commands
 
 		public static void WriteLine( Mobile from, string format, params object[] args )
 		{
-			if ( !m_Enabled )
+			if ( !Enabled )
 				return;
 
 			WriteLine( from, string.Format( format, args ) );
@@ -69,12 +64,12 @@ namespace Server.Commands
 
 		public static void WriteLine( Mobile from, string text )
 		{
-			if ( !m_Enabled )
+			if ( !Enabled )
 				return;
 
 			try
 			{
-				m_Output.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text );
+				Output.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text );
 
 				string path = Core.BaseDirectory;
 

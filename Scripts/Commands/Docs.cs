@@ -1402,16 +1402,14 @@ namespace Server.Commands
 
 		private class SpeechEntry
 		{
-			private int m_Index;
-			private List<string> m_Strings;
+			public int Index { get; }
 
-			public int Index  => m_Index;
-			public List<string> Strings  => m_Strings;
+			public List<string> Strings { get; }
 
 			public SpeechEntry( int index )
 			{
-				m_Index = index;
-				m_Strings = new List<string>();
+				Index = index;
+				Strings = new List<string>();
 			}
 		}
 
@@ -1475,25 +1473,23 @@ namespace Server.Commands
 
 		public class DocCommandEntry
 		{
-			private AccessLevel m_AccessLevel;
-			private string m_Name;
-			private string[] m_Aliases;
-			private string m_Usage;
-			private string m_Description;
+			public AccessLevel AccessLevel { get; }
 
-			public AccessLevel AccessLevel  => m_AccessLevel;
-			public string Name  => m_Name;
-			public string[] Aliases  => m_Aliases;
-			public string Usage  => m_Usage;
-			public string Description  => m_Description;
+			public string Name { get; }
+
+			public string[] Aliases { get; }
+
+			public string Usage { get; }
+
+			public string Description { get; }
 
 			public DocCommandEntry( AccessLevel accessLevel, string name, string[] aliases, string usage, string description )
 			{
-				m_AccessLevel = accessLevel;
-				m_Name = name;
-				m_Aliases = aliases;
-				m_Usage = usage;
-				m_Description = description;
+				AccessLevel = accessLevel;
+				Name = name;
+				Aliases = aliases;
+				Usage = usage;
+				Description = description;
 			}
 		}
 
@@ -2530,31 +2526,29 @@ namespace Server.Commands
 
 	public class BodyEntry
 	{
-		private Body m_Body;
-		private ModelBodyType m_BodyType;
-		private string m_Name;
+		public Body Body { get; }
 
-		public Body Body  => m_Body;
-		public ModelBodyType BodyType  => m_BodyType;
-		public string Name  => m_Name;
+		public ModelBodyType BodyType { get; }
+
+		public string Name { get; }
 
 		public BodyEntry( Body body, ModelBodyType bodyType, string name )
 		{
-			m_Body = body;
-			m_BodyType = bodyType;
-			m_Name = name;
+			Body = body;
+			BodyType = bodyType;
+			Name = name;
 		}
 
 		public override bool Equals( object obj )
 		{
 			BodyEntry e = (BodyEntry)obj;
 
-			return (m_Body == e.m_Body && m_BodyType == e.m_BodyType && m_Name == e.m_Name);
+			return (Body == e.Body && BodyType == e.BodyType && Name == e.Name);
 		}
 
 		public override int GetHashCode()
 		{
-			return m_Body.BodyID ^ (int)m_BodyType ^ m_Name.GetHashCode();
+			return Body.BodyID ^ (int)BodyType ^ Name.GetHashCode();
 		}
 	}
 

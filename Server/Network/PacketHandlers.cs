@@ -55,7 +55,6 @@ namespace Server.Network
 
 	public static class PacketHandlers
 	{
-		private static PacketHandler[] m_Handlers;
 		private static PacketHandler[] m_6017Handlers;
 
 		private static PacketHandler[] m_ExtendedHandlersLow;
@@ -64,11 +63,11 @@ namespace Server.Network
 		private static EncodedPacketHandler[] m_EncodedHandlersLow;
 		private static Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh;
 
-		public static PacketHandler[] Handlers => m_Handlers;
+		public static PacketHandler[] Handlers { get; }
 
 		static PacketHandlers()
 		{
-			m_Handlers = new PacketHandler[0x100];
+			Handlers = new PacketHandler[0x100];
 			m_6017Handlers = new PacketHandler[0x100];
 
 			m_ExtendedHandlersLow = new PacketHandler[0x100];
@@ -173,7 +172,7 @@ namespace Server.Network
 
 		public static void Register( int packetID, int length, bool ingame, OnPacketReceive onReceive )
 		{
-			m_Handlers[packetID] = new PacketHandler( packetID, length, ingame, onReceive );
+			Handlers[packetID] = new PacketHandler( packetID, length, ingame, onReceive );
 
 			if ( m_6017Handlers[packetID] == null )
 				m_6017Handlers[packetID] = new PacketHandler( packetID, length, ingame, onReceive );
@@ -181,7 +180,7 @@ namespace Server.Network
 
 		public static PacketHandler GetHandler( int packetID )
 		{
-			return m_Handlers[packetID];
+			return Handlers[packetID];
 		}
 
 		public static void Register6017( int packetID, int length, bool ingame, OnPacketReceive onReceive )
@@ -1467,13 +1466,7 @@ namespace Server.Network
 			}
 		}
 
-		private static bool m_SingleClickProps;
-
-		public static bool SingleClickProps
-		{
-			get => m_SingleClickProps;
-			set => m_SingleClickProps = value;
-		}
+		public static bool SingleClickProps { get; set; }
 
 		public static void LookReq( NetState state, PacketReader pvSrc )
 		{
@@ -1487,7 +1480,7 @@ namespace Server.Network
 
 				if ( m != null && from.CanSee( m ) && Utility.InUpdateRange( from, m ) )
 				{
-					if ( m_SingleClickProps )
+					if ( SingleClickProps )
 					{
 						m.OnAosSingleClick( from );
 					}
@@ -1504,7 +1497,7 @@ namespace Server.Network
 
 				if ( item != null && !item.Deleted && from.CanSee( item ) && Utility.InUpdateRange( from.Location, item.GetWorldLocation() ) )
 				{
-					if ( m_SingleClickProps )
+					if ( SingleClickProps )
 					{
 						item.OnAosSingleClick( from );
 					}
@@ -2457,13 +2450,7 @@ namespace Server.Network
 			}
 		}
 
-		private static bool m_ClientVerification = true;
-
-		public static bool ClientVerification
-		{
-			get => m_ClientVerification;
-			set => m_ClientVerification = value;
-		}
+		public static bool ClientVerification { get; set; } = true;
 
 		internal struct AuthIDPersistence {
 			public DateTime Age;
@@ -2525,7 +2512,7 @@ namespace Server.Network
 				m_AuthIDWindow.Remove( authID );
 
 				state.Version = ap.Version;
-			} else if ( m_ClientVerification ) {
+			} else if ( ClientVerification ) {
 				Console.WriteLine( "Login: {0}: Invalid client detected, disconnecting", state );
 				state.Dispose();
 				return;

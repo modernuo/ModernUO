@@ -401,25 +401,23 @@ namespace Server.SkillHandlers
 	{
 		public static readonly TimeSpan StealTime = TimeSpan.FromMinutes( 2.0 );
 
-		private Item m_Stolen;
-		private Mobile m_Thief;
-		private Mobile m_Victim;
-		private DateTime m_Expires;
+		public Item Stolen { get; }
 
-		public Item Stolen => m_Stolen;
-		public Mobile Thief => m_Thief;
-		public Mobile Victim => m_Victim;
-		public DateTime Expires => m_Expires;
+		public Mobile Thief { get; }
 
-		public bool IsExpired => ( DateTime.UtcNow >= m_Expires );
+		public Mobile Victim { get; }
+
+		public DateTime Expires { get; private set; }
+
+		public bool IsExpired => ( DateTime.UtcNow >= Expires );
 
 		public StolenItem( Item stolen, Mobile thief, Mobile victim )
 		{
-			m_Stolen = stolen;
-			m_Thief = thief;
-			m_Victim = victim;
+			Stolen = stolen;
+			Thief = thief;
+			Victim = victim;
 
-			m_Expires = DateTime.UtcNow + StealTime;
+			Expires = DateTime.UtcNow + StealTime;
 		}
 
 		private static Queue<StolenItem> m_Queue = new Queue<StolenItem>();
@@ -444,9 +442,9 @@ namespace Server.SkillHandlers
 
 			foreach ( StolenItem si in m_Queue )
 			{
-				if ( si.m_Stolen == item && !si.IsExpired )
+				if ( si.Stolen == item && !si.IsExpired )
 				{
-					victim = si.m_Victim;
+					victim = si.Victim;
 					return true;
 				}
 			}
@@ -460,14 +458,14 @@ namespace Server.SkillHandlers
 
 			foreach ( StolenItem si in m_Queue )
 			{
-				if ( si.m_Stolen.RootParent == corpse && si.m_Victim != null && !si.IsExpired )
+				if ( si.Stolen.RootParent == corpse && si.Victim != null && !si.IsExpired )
 				{
-					if ( si.m_Victim.AddToBackpack( si.m_Stolen ) )
-						si.m_Victim.SendLocalizedMessage( 1010464 ); // the item that was stolen is returned to you.
+					if ( si.Victim.AddToBackpack( si.Stolen ) )
+						si.Victim.SendLocalizedMessage( 1010464 ); // the item that was stolen is returned to you.
 					else
-						si.m_Victim.SendLocalizedMessage( 1010463 ); // the item that was stolen from you falls to the ground.
+						si.Victim.SendLocalizedMessage( 1010463 ); // the item that was stolen from you falls to the ground.
 
-					si.m_Expires = DateTime.UtcNow; // such a hack
+					si.Expires = DateTime.UtcNow; // such a hack
 				}
 			}
 		}

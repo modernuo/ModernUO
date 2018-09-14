@@ -9,10 +9,7 @@ namespace Server.Engines.PartySystem
 {
 	public class Party : IParty
 	{
-		private Mobile m_Leader;
-		private List<PartyMemberInfo> m_Members;
-		private List<Mobile> m_Candidates;
-        private List<Mobile> m_Listeners; // staff listening
+		private List<Mobile> m_Listeners; // staff listening
 
 		public const int Capacity = 10;
 
@@ -141,13 +138,13 @@ namespace Server.Engines.PartySystem
 
 		public Party( Mobile leader )
 		{
-			m_Leader = leader;
+			Leader = leader;
 
-			m_Members = new List<PartyMemberInfo>();
-			m_Candidates = new List<Mobile>();
+			Members = new List<PartyMemberInfo>();
+			Candidates = new List<Mobile>();
             m_Listeners = new List<Mobile>();
 
-			m_Members.Add( new PartyMemberInfo( leader ) );
+			Members.Add( new PartyMemberInfo( leader ) );
 		}
 
 		public void Add( Mobile m )
@@ -156,15 +153,15 @@ namespace Server.Engines.PartySystem
 
 			if ( mi == null )
 			{
-				m_Members.Add( new PartyMemberInfo( m ) );
+				Members.Add( new PartyMemberInfo( m ) );
 				m.Party = this;
 
 				Packet memberList = Packet.Acquire( new PartyMemberList( this ) );
 				Packet attrs = Packet.Acquire( new MobileAttributesN( m ) );
 
-				for ( int i = 0; i < m_Members.Count; ++i )
+				for ( int i = 0; i < Members.Count; ++i )
 				{
-					Mobile f = ((PartyMemberInfo)m_Members[i]).Mobile;
+					Mobile f = ((PartyMemberInfo)Members[i]).Mobile;
 
 					f.Send( memberList );
 
@@ -189,7 +186,7 @@ namespace Server.Engines.PartySystem
 
 		public void OnAccept( Mobile from, bool force )
 		{
-			Faction ourFaction = Faction.Find( m_Leader );
+			Faction ourFaction = Faction.Find( Leader );
 			Faction theirFaction = Faction.Find( from );
 
 			if ( !force && ourFaction != null && theirFaction != null && ourFaction != theirFaction )
@@ -200,7 +197,7 @@ namespace Server.Engines.PartySystem
 
 			from.SendLocalizedMessage( 1005445 ); // You have been added to the party.
 
-			m_Candidates.Remove( from );
+			Candidates.Remove( from );
 			Add( from );
 		}
 
@@ -211,34 +208,34 @@ namespace Server.Engines.PartySystem
 
 			from.SendLocalizedMessage( 1008092 ); // You notify them that you do not wish to join the party.
 
-			m_Candidates.Remove( from );
+			Candidates.Remove( from );
 			from.Send( new PartyEmptyList( from ) );
 
-			if ( m_Candidates.Count == 0 && m_Members.Count <= 1 )
+			if ( Candidates.Count == 0 && Members.Count <= 1 )
 			{
-				for ( int i = 0; i < m_Members.Count; ++i )
+				for ( int i = 0; i < Members.Count; ++i )
 				{
 					this[i].Mobile.Send( new PartyEmptyList( this[i].Mobile ) );
 					this[i].Mobile.Party = null;
 				}
 
-				m_Members.Clear();
+				Members.Clear();
 			}
 		}
 
 		public void Remove( Mobile m )
 		{
-			if ( m == m_Leader )
+			if ( m == Leader )
 			{
 				Disband();
 			}
 			else
 			{
-				for ( int i = 0; i < m_Members.Count; ++i )
+				for ( int i = 0; i < Members.Count; ++i )
 				{
-					if ( ((PartyMemberInfo)m_Members[i]).Mobile == m )
+					if ( ((PartyMemberInfo)Members[i]).Mobile == m )
 					{
-						m_Members.RemoveAt( i );
+						Members.RemoveAt( i );
 
 						m.Party = null;
 						m.Send( new PartyEmptyList( m ) );
@@ -252,7 +249,7 @@ namespace Server.Engines.PartySystem
 					}
 				}
 
-				if ( m_Members.Count == 1 )
+				if ( Members.Count == 1 )
 				{
 					SendToAll( 1005450 ); // The last person has left the party...
 					Disband();
@@ -269,13 +266,13 @@ namespace Server.Engines.PartySystem
 		{
 			SendToAll( 1005449 ); // Your party has disbanded.
 
-			for ( int i = 0; i < m_Members.Count; ++i )
+			for ( int i = 0; i < Members.Count; ++i )
 			{
 				this[i].Mobile.Send( new PartyEmptyList( this[i].Mobile ) );
 				this[i].Mobile.Party = null;
 			}
 
-			m_Members.Clear();
+			Members.Clear();
 		}
 
 		public static void Invite( Mobile from, Mobile target )
@@ -382,8 +379,8 @@ namespace Server.Engines.PartySystem
 		{
 			p.Acquire();
 
-			for ( int i = 0; i < m_Members.Count; ++i )
-				m_Members[i].Mobile.Send( p );
+			for ( int i = 0; i < Members.Count; ++i )
+				Members[i].Mobile.Send( p );
 
 			if ( p is MessageLocalized || p is MessageLocalizedAffix || p is UnicodeMessage || p is AsciiMessage )
 			{
@@ -403,9 +400,9 @@ namespace Server.Engines.PartySystem
 		{
 			Packet p = null;
 
-			for ( int i = 0; i < m_Members.Count; ++i )
+			for ( int i = 0; i < Members.Count; ++i )
 			{
-				Mobile c = m_Members[i].Mobile;
+				Mobile c = Members[i].Mobile;
 
 				if ( c != m && m.Map == c.Map && Utility.InUpdateRange( c, m ) && c.CanSee( m ) )
 				{
@@ -423,9 +420,9 @@ namespace Server.Engines.PartySystem
 		{
 			Packet p = null;
 
-			for ( int i = 0; i < m_Members.Count; ++i )
+			for ( int i = 0; i < Members.Count; ++i )
 			{
-				Mobile c = m_Members[i].Mobile;
+				Mobile c = Members[i].Mobile;
 
 				if ( c != m && m.Map == c.Map && Utility.InUpdateRange( c, m ) && c.CanSee( m ) )
 				{
@@ -450,21 +447,23 @@ namespace Server.Engines.PartySystem
 			}
 		}
 
-		public int Count => m_Members.Count;
-		public bool Active => m_Members.Count > 1;
-		public Mobile Leader => m_Leader;
-		public List<PartyMemberInfo> Members => m_Members;
-		public List<Mobile> Candidates  => m_Candidates;
+		public int Count => Members.Count;
+		public bool Active => Members.Count > 1;
+		public Mobile Leader { get; }
 
-		public PartyMemberInfo this[int index] => m_Members[index];
+		public List<PartyMemberInfo> Members { get; }
+
+		public List<Mobile> Candidates { get; }
+
+		public PartyMemberInfo this[int index] => Members[index];
 
 		public PartyMemberInfo this[Mobile m]
 		{
 			get
 			{
-				for ( int i = 0; i < m_Members.Count; ++i )
-					if ( m_Members[i].Mobile == m )
-						return m_Members[i];
+				for ( int i = 0; i < Members.Count; ++i )
+					if ( Members[i].Mobile == m )
+						return Members[i];
 
 				return null;
 			}

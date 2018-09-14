@@ -23,34 +23,33 @@ namespace Server
 	public class TileList
 	{
 		private StaticTile[] m_Tiles;
-		private int m_Count;
 
 		public TileList()
 		{
 			m_Tiles = new StaticTile[8];
-			m_Count = 0;
+			Count = 0;
 		}
 
-		public int Count => m_Count;
+		public int Count { get; private set; }
 
 		public void AddRange( StaticTile[] tiles )
 		{
-			if ( (m_Count + tiles.Length) > m_Tiles.Length )
+			if ( (Count + tiles.Length) > m_Tiles.Length )
 			{
 				StaticTile[] old = m_Tiles;
-				m_Tiles = new StaticTile[(m_Count + tiles.Length) * 2];
+				m_Tiles = new StaticTile[(Count + tiles.Length) * 2];
 
 				for ( int i = 0; i < old.Length; ++i )
 					m_Tiles[i] = old[i];
 			}
 
 			for ( int i = 0; i < tiles.Length; ++i )
-				m_Tiles[m_Count++] = tiles[i];
+				m_Tiles[Count++] = tiles[i];
 		}
 
 		public void Add( ushort id, sbyte z )
 		{
-			if ( (m_Count + 1) > m_Tiles.Length )
+			if ( (Count + 1) > m_Tiles.Length )
 			{
 				StaticTile[] old = m_Tiles;
 				m_Tiles = new StaticTile[old.Length * 2];
@@ -59,24 +58,24 @@ namespace Server
 					m_Tiles[i] = old[i];
 			}
 
-			m_Tiles[m_Count].m_ID = id;
-			m_Tiles[m_Count].m_Z = z;
-			++m_Count;
+			m_Tiles[Count].m_ID = id;
+			m_Tiles[Count].m_Z = z;
+			++Count;
 		}
 
 		private static StaticTile[] m_EmptyTiles = new StaticTile[0];
 
 		public StaticTile[] ToArray()
 		{
-			if ( m_Count == 0 )
+			if ( Count == 0 )
 				return m_EmptyTiles;
 
-			StaticTile[] tiles = new StaticTile[m_Count];
+			StaticTile[] tiles = new StaticTile[Count];
 
-			for ( int i = 0; i < m_Count; ++i )
+			for ( int i = 0; i < Count; ++i )
 				tiles[i] = m_Tiles[i];
 
-			m_Count = 0;
+			Count = 0;
 
 			return tiles;
 		}

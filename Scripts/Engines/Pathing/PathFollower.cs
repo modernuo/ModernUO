@@ -9,41 +9,35 @@ namespace Server
 		private static bool Enabled = true;
 
 		private Mobile m_From;
-		private IPoint3D m_Goal;
 		private MovementPath m_Path;
 		private int m_Index;
 		private Point3D m_Next, m_LastGoalLoc;
 		private DateTime m_LastPathTime;
-		private MoveMethod m_Mover;
 
-		public MoveMethod Mover
-		{
-			get => m_Mover;
-			set => m_Mover = value;
-		}
+		public MoveMethod Mover { get; set; }
 
-		public IPoint3D Goal => m_Goal;
+		public IPoint3D Goal { get; }
 
 		public PathFollower( Mobile from, IPoint3D goal )
 		{
 			m_From = from;
-			m_Goal = goal;
+			Goal = goal;
 		}
 
 		public MoveResult Move( Direction d )
 		{
-			if ( m_Mover == null )
+			if ( Mover == null )
 				return ( m_From.Move( d ) ? MoveResult.Success : MoveResult.Blocked );
 
-			return m_Mover( d );
+			return Mover( d );
 		}
 
 		public Point3D GetGoalLocation()
 		{
-			if ( m_Goal is Item item )
+			if ( Goal is Item item )
 				return item.GetWorldLocation();
 
-			return new Point3D( m_Goal );
+			return new Point3D( Goal );
 		}
 
 		private static TimeSpan RepathDelay = TimeSpan.FromSeconds( 2.0 );

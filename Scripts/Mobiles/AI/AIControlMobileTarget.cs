@@ -7,14 +7,13 @@ namespace Server.Targets
 	public class AIControlMobileTarget : Target
 	{
 		private List<BaseAI> m_List;
-		private OrderType m_Order;
 
-		public OrderType Order => m_Order;
+		public OrderType Order { get; }
 
 		public AIControlMobileTarget( BaseAI ai, OrderType order ) : base( -1, false, ( order == OrderType.Attack ? TargetFlags.Harmful : TargetFlags.None ) )
 		{
 			m_List = new List<BaseAI>();
-			m_Order = order;
+			Order = order;
 
 			AddAI( ai );
 		}
@@ -30,7 +29,7 @@ namespace Server.Targets
 			if ( o is Mobile m )
 			{
 				for ( int i = 0; i < m_List.Count; ++i )
-					m_List[i].EndPickTarget( from, m, m_Order );
+					m_List[i].EndPickTarget( from, m, Order );
 			}
 		}
 	}

@@ -13,9 +13,7 @@ namespace Server.Commands.Generic
 
 		public override ExtensionInfo Info => ExtInfo;
 
-		private ObjectConditional m_Conditional;
-
-		public ObjectConditional Conditional => m_Conditional;
+		public ObjectConditional Conditional { get; private set; }
 
 		public WhereExtension()
 		{
@@ -26,7 +24,7 @@ namespace Server.Commands.Generic
 			if ( baseType == null )
 				throw new InvalidOperationException( "Insanity." );
 
-			m_Conditional.Compile( ref assembly );
+			Conditional.Compile( ref assembly );
 		}
 
 		public override void Parse( Mobile from, string[] arguments, int offset, int size )
@@ -34,12 +32,12 @@ namespace Server.Commands.Generic
 			if ( size < 1 )
 				throw new Exception( "Invalid condition syntax." );
 
-			m_Conditional = ObjectConditional.ParseDirect( from, arguments, offset, size );
+			Conditional = ObjectConditional.ParseDirect( from, arguments, offset, size );
 		}
 
 		public override bool IsValid( object obj )
 		{
-			return m_Conditional.CheckCondition( obj );
+			return Conditional.CheckCondition( obj );
 		}
 	}
 }

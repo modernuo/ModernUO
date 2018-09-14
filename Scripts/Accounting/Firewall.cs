@@ -145,11 +145,9 @@ namespace Server
 		}
 		#endregion
 
-		private static List<IFirewallEntry> m_Blocked;
-
 		static Firewall()
 		{
-			m_Blocked = new List<IFirewallEntry>();
+			List = new List<IFirewallEntry>();
 
 			string path = "firewall.cfg";
 
@@ -166,7 +164,7 @@ namespace Server
 						if ( line.Length == 0 )
 							continue;
 
-						m_Blocked.Add( ToFirewallEntry( line ) );
+						List.Add( ToFirewallEntry( line ) );
 
 						/*
 						object toAdd;
@@ -184,7 +182,7 @@ namespace Server
 			}
 		}
 
-		public static List<IFirewallEntry> List => m_Blocked;
+		public static List<IFirewallEntry> List { get; }
 
 		public static IFirewallEntry ToFirewallEntry( object entry )
 		{
@@ -220,7 +218,7 @@ namespace Server
 
 		public static void RemoveAt( int index )
 		{
-			m_Blocked.RemoveAt( index );
+			List.RemoveAt( index );
 			Save();
 		}
 
@@ -230,7 +228,7 @@ namespace Server
 
 			if ( entry != null )
 			{
-				m_Blocked.Remove( entry );
+				List.Remove( entry );
 				Save();
 			}
 		}
@@ -247,8 +245,8 @@ namespace Server
 
 		public static void Add( IFirewallEntry entry )
 		{
-			if ( !m_Blocked.Contains( entry ) )
-				m_Blocked.Add( entry );
+			if ( !List.Contains( entry ) )
+				List.Add( entry );
 
 			Save();
 		}
@@ -257,8 +255,8 @@ namespace Server
 		{
 			IFirewallEntry entry = ToFirewallEntry( pattern );
 
-			if ( !m_Blocked.Contains( entry ) )
-				m_Blocked.Add( entry );
+			if ( !List.Contains( entry ) )
+				List.Add( entry );
 
 			Save();
 		}
@@ -267,8 +265,8 @@ namespace Server
 		{
 			IFirewallEntry entry = new IPFirewallEntry( ip );
 
-			if ( !m_Blocked.Contains( entry ) )
-				m_Blocked.Add( entry );
+			if ( !List.Contains( entry ) )
+				List.Add( entry );
 
 			Save();
 		}
@@ -279,16 +277,16 @@ namespace Server
 
 			using ( StreamWriter op = new StreamWriter( path ) )
 			{
-				for ( int i = 0; i < m_Blocked.Count; ++i )
-					op.WriteLine( m_Blocked[i] );
+				for ( int i = 0; i < List.Count; ++i )
+					op.WriteLine( List[i] );
 			}
 		}
 
 		public static bool IsBlocked( IPAddress ip )
 		{
-			for( int i = 0; i < m_Blocked.Count; i++ )
+			for( int i = 0; i < List.Count; i++ )
 			{
-				if ( m_Blocked[i].IsBlocked( ip ) )
+				if ( List[i].IsBlocked( ip ) )
 					return true;
 			}
 

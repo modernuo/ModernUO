@@ -13,21 +13,11 @@ namespace Server.Engines.MLQuests.Objectives
 
 	public class GainSkillObjective : BaseObjective
 	{
-		private SkillName m_Skill;
-		private int m_ThresholdFixed;
 		private GainSkillObjectiveFlags m_Flags;
 
-		public SkillName Skill
-		{
-			get => m_Skill;
-			set => m_Skill = value;
-		}
+		public SkillName Skill { get; set; }
 
-		public int ThresholdFixed
-		{
-			get => m_ThresholdFixed;
-			set => m_ThresholdFixed = value;
-		}
+		public int ThresholdFixed { get; set; }
 
 		public bool UseReal
 		{
@@ -53,8 +43,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public GainSkillObjective( SkillName skill, int thresholdFixed, bool useReal, bool accelerate )
 		{
-			m_Skill = skill;
-			m_ThresholdFixed = thresholdFixed;
+			Skill = skill;
+			ThresholdFixed = thresholdFixed;
 			m_Flags = GainSkillObjectiveFlags.None;
 
 			if ( useReal )
@@ -66,9 +56,9 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
 		{
-			Skill skill = pm.Skills[m_Skill];
+			Skill skill = pm.Skills[Skill];
 
-			if ( ( UseReal ? skill.Fixed : skill.BaseFixedPoint ) >= m_ThresholdFixed )
+			if ( ( UseReal ? skill.Fixed : skill.BaseFixedPoint ) >= ThresholdFixed )
 			{
 				if ( message )
 					MLQuestSystem.Tell( quester, pm, 1077772 ); // I cannot teach you, for you know all I can teach!
@@ -81,13 +71,13 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override void WriteToGump( Gump g, ref int y )
 		{
-			int skillLabel = AosSkillBonuses.GetLabel( m_Skill );
+			int skillLabel = AosSkillBonuses.GetLabel( Skill );
 			string args;
 
-			if ( m_ThresholdFixed % 10 == 0 )
-				args = $"#{skillLabel}\t{m_ThresholdFixed / 10}"; // as seen on OSI
+			if ( ThresholdFixed % 10 == 0 )
+				args = $"#{skillLabel}\t{ThresholdFixed / 10}"; // as seen on OSI
 			else
-				args = $"#{skillLabel}\t{(double) m_ThresholdFixed / 10:0.0}"; // for non-integer skill levels
+				args = $"#{skillLabel}\t{(double) ThresholdFixed / 10:0.0}"; // for non-integer skill levels
 
 			g.AddHtmlLocalized( 98, y, 312, 16, 1077485, args, 0x15F90, false, false ); // Increase ~1_SKILL~ to ~2_VALUE~
 			y += 16;
@@ -115,50 +105,44 @@ namespace Server.Engines.MLQuests.Objectives
 	// On OSI, once this is complete, it will *stay* complete, even if you lower your skill again
 	public class GainSkillObjectiveInstance : BaseObjectiveInstance
 	{
-		private GainSkillObjective m_Objective;
-
-		public GainSkillObjective Objective
-		{
-			get => m_Objective;
-			set => m_Objective = value;
-		}
+		public GainSkillObjective Objective { get; set; }
 
 		public GainSkillObjectiveInstance( GainSkillObjective objective, MLQuestInstance instance )
 			: base( instance, objective )
 		{
-			m_Objective = objective;
+			Objective = objective;
 		}
 
 		public bool Handles( SkillName skill )
 		{
-			return ( m_Objective.Skill == skill );
+			return ( Objective.Skill == skill );
 		}
 
 		public override bool IsCompleted()
 		{
 			PlayerMobile pm = Instance.Player;
 
-			int valueFixed = m_Objective.UseReal ? pm.Skills[m_Objective.Skill].Fixed : pm.Skills[m_Objective.Skill].BaseFixedPoint;
+			int valueFixed = Objective.UseReal ? pm.Skills[Objective.Skill].Fixed : pm.Skills[Objective.Skill].BaseFixedPoint;
 
-			return ( valueFixed >= m_Objective.ThresholdFixed );
+			return ( valueFixed >= Objective.ThresholdFixed );
 		}
 
 		// TODO: This may interfere with scrolls, or even quests among each other
 		// How does OSI deal with this?
 		public override void OnQuestAccepted()
 		{
-			if ( !m_Objective.Accelerate )
+			if ( !Objective.Accelerate )
 				return;
 
 			PlayerMobile pm = Instance.Player;
 
-			pm.AcceleratedSkill = m_Objective.Skill;
+			pm.AcceleratedSkill = Objective.Skill;
 			pm.AcceleratedStart = DateTime.UtcNow + TimeSpan.FromMinutes( 15 ); // TODO: Is there a max duration?
 		}
 
 		public override void OnQuestCancelled()
 		{
-			if ( !m_Objective.Accelerate )
+			if ( !Objective.Accelerate )
 				return;
 
 			PlayerMobile pm = Instance.Player;
@@ -174,7 +158,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override void WriteToGump( Gump g, ref int y )
 		{
-			m_Objective.WriteToGump( g, ref y );
+			Objective.WriteToGump( g, ref y );
 
 			base.WriteToGump( g, ref y );
 

@@ -54,66 +54,64 @@ namespace Server.Misc
 			if ( from.AccessLevel > AccessLevel.Player )
 				return;
 
-			if ( !NameVerification.Validate( e.Speech, 0, int.MaxValue, true, true, false, int.MaxValue, m_Exceptions, m_Disallowed, m_StartDisallowed ) )
+			if ( !NameVerification.Validate( e.Speech, 0, int.MaxValue, true, true, false, int.MaxValue, Exceptions, Disallowed, StartDisallowed ) )
 				e.Blocked = !OnProfanityDetected( from, e.Speech );
 		}
 
-		public static char[]	Exceptions => m_Exceptions;
-		public static string[]	StartDisallowed => m_StartDisallowed;
-		public static string[]	Disallowed => m_Disallowed;
+		public static char[]	Exceptions { get; } =
+		{
+			' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']', '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
+		};
 
-		private static char[] m_Exceptions = {
-				' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']', '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
-			};
+		public static string[]	StartDisallowed { get; } = {};
 
-		private static string[] m_StartDisallowed = {};
-
-		private static string[] m_Disallowed = {
-				"jigaboo",
-				"chigaboo",
-				"wop",
-				"kyke",
-				"kike",
-				"tit",
-				"spic",
-				"prick",
-				"piss",
-				"lezbo",
-				"lesbo",
-				"felatio",
-				"dyke",
-				"dildo",
-				"chinc",
-				"chink",
-				"cunnilingus",
-				"cum",
-				"cocksucker",
-				"cock",
-				"clitoris",
-				"clit",
-				"ass",
-				"hitler",
-				"penis",
-				"nigga",
-				"nigger",
-				"klit",
-				"kunt",
-				"jiz",
-				"jism",
-				"jerkoff",
-				"jackoff",
-				"goddamn",
-				"fag",
-				"blowjob",
-				"bitch",
-				"asshole",
-				"dick",
-				"pussy",
-				"snatch",
-				"cunt",
-				"twat",
-				"shit",
-				"fuck"
-			};
+		public static string[]	Disallowed { get; } =
+		{
+			"jigaboo",
+			"chigaboo",
+			"wop",
+			"kyke",
+			"kike",
+			"tit",
+			"spic",
+			"prick",
+			"piss",
+			"lezbo",
+			"lesbo",
+			"felatio",
+			"dyke",
+			"dildo",
+			"chinc",
+			"chink",
+			"cunnilingus",
+			"cum",
+			"cocksucker",
+			"cock",
+			"clitoris",
+			"clit",
+			"ass",
+			"hitler",
+			"penis",
+			"nigga",
+			"nigger",
+			"klit",
+			"kunt",
+			"jiz",
+			"jism",
+			"jerkoff",
+			"jackoff",
+			"goddamn",
+			"fag",
+			"blowjob",
+			"bitch",
+			"asshole",
+			"dick",
+			"pussy",
+			"snatch",
+			"cunt",
+			"twat",
+			"shit",
+			"fuck"
+		};
 	}
 }

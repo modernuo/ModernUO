@@ -4,30 +4,14 @@ namespace Server.Items
 {
 	public class SerpentPillar : Item
 	{
-		private bool m_Active;
-		private string m_Word;
-		private Rectangle2D m_Destination;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool Active { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Active
-		{
-			get => m_Active;
-			set => m_Active = value;
-		}
+		public string Word { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Word
-		{
-			get => m_Word;
-			set => m_Word = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Rectangle2D Destination
-		{
-			get => m_Destination;
-			set => m_Destination = value;
-		}
+		public Rectangle2D Destination { get; set; }
 
 		[Constructible]
 		public SerpentPillar() : this( null, new Rectangle2D(), false )
@@ -42,9 +26,9 @@ namespace Server.Items
 		{
 			Movable = false;
 
-			m_Active = active;
-			m_Word = word;
-			m_Destination = destination;
+			Active = active;
+			Word = word;
+			Destination = destination;
 		}
 
 		public override bool HandlesOnSpeech => true;
@@ -103,9 +87,9 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( (bool) m_Active );
-			writer.Write( (string) m_Word );
-			writer.Write( (Rectangle2D) m_Destination );
+			writer.Write( (bool) Active );
+			writer.Write( (string) Word );
+			writer.Write( (Rectangle2D) Destination );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -114,9 +98,9 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Active = reader.ReadBool();
-			m_Word = reader.ReadString();
-			m_Destination = reader.ReadRect2D();
+			Active = reader.ReadBool();
+			Word = reader.ReadString();
+			Destination = reader.ReadRect2D();
 		}
 	}
 }

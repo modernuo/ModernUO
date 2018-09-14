@@ -274,22 +274,11 @@ namespace Server.Misc
 			}
 		}
 
-		private string[] m_Syllables;
 		private string[] m_Keywords;
-		private string[] m_Responses;
 
 		private Dictionary<string, string> m_KeywordHash;
 
-		private int m_Hue;
-		private int m_Sound;
-
-		private IHSFlags m_Flags;
-
-		public string[] Syllables
-		{
-			get => m_Syllables;
-			set => m_Syllables = value;
-		}
+		public string[] Syllables { get; set; }
 
 		public string[] Keywords
 		{
@@ -303,33 +292,17 @@ namespace Server.Misc
 			}
 		}
 
-		public string[] Responses
-		{
-			get => m_Responses;
-			set => m_Responses = value;
-		}
+		public string[] Responses { get; set; }
 
-		public int Hue
-		{
-			get => m_Hue;
-			set => m_Hue = value;
-		}
+		public int Hue { get; set; }
 
-		public int Sound
-		{
-			get => m_Sound;
-			set => m_Sound = value;
-		}
+		public int Sound { get; set; }
 
-		public IHSFlags Flags
-		{
-			get => m_Flags;
-			set => m_Flags = value;
-		}
+		public IHSFlags Flags { get; set; }
 
 		public string GetRandomSyllable()
 		{
-			return m_Syllables[Utility.Random( m_Syllables.Length )];
+			return Syllables[Utility.Random( Syllables.Length )];
 		}
 
 		public string ConstructWord( int syllableCount )
@@ -402,17 +375,17 @@ namespace Server.Misc
 
 		private string GetRandomResponseWord( List<string> keywordsFound )
 		{
-			int random = Utility.Random( keywordsFound.Count + m_Responses.Length );
+			int random = Utility.Random( keywordsFound.Count + Responses.Length );
 
 			if ( random < keywordsFound.Count )
 				return keywordsFound[random];
 
-			return m_Responses[random - keywordsFound.Count];
+			return Responses[random - keywordsFound.Count];
 		}
 
 		public bool OnSpeech( Mobile mob, Mobile speaker, string text )
 		{
-			if ( (m_Flags & IHSFlags.OnSpeech) == 0 || m_Keywords == null || m_Responses == null || m_KeywordHash == null )
+			if ( (Flags & IHSFlags.OnSpeech) == 0 || m_Keywords == null || Responses == null || m_KeywordHash == null )
 				return false; // not enabled
 
 			if ( !speaker.Alive )
@@ -511,7 +484,7 @@ namespace Server.Misc
 
 		public void OnDeath( Mobile mob )
 		{
-			if ( (m_Flags & IHSFlags.OnDeath) == 0 )
+			if ( (Flags & IHSFlags.OnDeath) == 0 )
 				return; // not enabled
 
 			if ( 90 > Utility.Random( 100 ) )
@@ -530,7 +503,7 @@ namespace Server.Misc
 
 		public void OnMovement( Mobile mob, Mobile mover, Point3D oldLocation )
 		{
-			if ( (m_Flags & IHSFlags.OnMovement) == 0 )
+			if ( (Flags & IHSFlags.OnMovement) == 0 )
 				return; // not enabled
 
 			if ( !mover.Player || (mover.Hidden && mover.AccessLevel > AccessLevel.Player) )
@@ -547,7 +520,7 @@ namespace Server.Misc
 
 		public void OnDamage( Mobile mob, int amount )
 		{
-			if ( (m_Flags & IHSFlags.OnDamaged) == 0 )
+			if ( (Flags & IHSFlags.OnDamaged) == 0 )
 				return; // not enabled
 
 			if ( 90 > Utility.Random( 100 ) )
@@ -577,13 +550,13 @@ namespace Server.Misc
 
 		public void OnConstruct( Mobile mob )
 		{
-			mob.SpeechHue = m_Hue;
+			mob.SpeechHue = Hue;
 		}
 
 		public void SaySentance( Mobile mob, int wordCount )
 		{
 			mob.Say( ConstructSentance( wordCount ) );
-			mob.PlaySound( m_Sound );
+			mob.PlaySound( Sound );
 		}
 
 		public InhumanSpeech()

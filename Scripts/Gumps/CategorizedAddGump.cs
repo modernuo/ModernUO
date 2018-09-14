@@ -15,58 +15,54 @@ namespace Server.Gumps
 
 	public class CAGObject : CAGNode
 	{
-		private Type m_Type;
-		private int m_ItemID;
-		private int m_Hue;
-		private CAGCategory m_Parent;
+		public Type Type { get; }
 
-		public Type Type => m_Type;
-		public int ItemID => m_ItemID;
-		public int Hue => m_Hue;
-		public CAGCategory Parent => m_Parent;
+		public int ItemID { get; }
 
-		public override string Caption => ( m_Type == null ? "bad type" : m_Type.Name );
+		public int Hue { get; }
+
+		public CAGCategory Parent { get; }
+
+		public override string Caption => ( Type == null ? "bad type" : Type.Name );
 
 		public override void OnClick( Mobile from, int page )
 		{
-			if ( m_Type == null )
+			if ( Type == null )
 			{
 				from.SendMessage( "That is an invalid type name." );
 			}
 			else
 			{
-				CommandSystem.Handle( from, $"{CommandSystem.Prefix}Add {m_Type.Name}");
+				CommandSystem.Handle( from, $"{CommandSystem.Prefix}Add {Type.Name}");
 
-				from.SendGump( new CategorizedAddGump( from, m_Parent, page ) );
+				from.SendGump( new CategorizedAddGump( from, Parent, page ) );
 			}
 		}
 
 		public CAGObject( CAGCategory parent, XmlTextReader xml )
 		{
-			m_Parent = parent;
+			Parent = parent;
 
 			if ( xml.MoveToAttribute( "type" ) )
-				m_Type = ScriptCompiler.FindTypeByFullName( xml.Value, false );
+				Type = ScriptCompiler.FindTypeByFullName( xml.Value, false );
 
 			if ( xml.MoveToAttribute( "gfx" ) )
-				m_ItemID = XmlConvert.ToInt32( xml.Value );
+				ItemID = XmlConvert.ToInt32( xml.Value );
 
 			if ( xml.MoveToAttribute( "hue" ) )
-				m_Hue = XmlConvert.ToInt32( xml.Value );
+				Hue = XmlConvert.ToInt32( xml.Value );
 		}
 	}
 
 	public class CAGCategory : CAGNode
 	{
-		private string m_Title;
-		private CAGNode[] m_Nodes;
-		private CAGCategory m_Parent;
+		public string Title { get; }
 
-		public string Title => m_Title;
-		public CAGNode[] Nodes => m_Nodes;
-		public CAGCategory Parent => m_Parent;
+		public CAGNode[] Nodes { get; }
 
-		public override string Caption => m_Title;
+		public CAGCategory Parent { get; }
+
+		public override string Caption => Title;
 
 		public override void OnClick( Mobile from, int page )
 		{
@@ -75,25 +71,25 @@ namespace Server.Gumps
 
 		private CAGCategory()
 		{
-			m_Title = "no data";
-			m_Nodes = new CAGNode[0];
+			Title = "no data";
+			Nodes = new CAGNode[0];
 		}
 
 		public CAGCategory( CAGCategory parent, XmlTextReader xml )
 		{
-			m_Parent = parent;
+			Parent = parent;
 
 			if ( xml.MoveToAttribute( "title" ) )
-				m_Title = xml.Value;
+				Title = xml.Value;
 			else
-				m_Title = "empty";
+				Title = "empty";
 
-			if ( m_Title == "Docked" )
-				m_Title = "Docked 2";
+			if ( Title == "Docked" )
+				Title = "Docked 2";
 
 			if ( xml.IsEmptyElement )
 			{
-				m_Nodes = new CAGNode[0];
+				Nodes = new CAGNode[0];
 			}
 			else
 			{
@@ -112,7 +108,7 @@ namespace Server.Gumps
 						xml.Skip();
 				}
 
-				m_Nodes = (CAGNode[])nodes.ToArray( typeof( CAGNode ) );
+				Nodes = (CAGNode[])nodes.ToArray( typeof( CAGNode ) );
 			}
 		}
 

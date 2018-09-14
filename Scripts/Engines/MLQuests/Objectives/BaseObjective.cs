@@ -28,38 +28,26 @@ namespace Server.Engines.MLQuests.Objectives
 
 	public abstract class BaseObjectiveInstance
 	{
-		private MLQuestInstance m_Instance;
-		private DateTime m_EndTime;
-		private bool m_Expired;
+		public MLQuestInstance Instance { get; }
 
-		public MLQuestInstance Instance => m_Instance;
+		public bool IsTimed => ( EndTime != DateTime.MinValue );
 
-		public bool IsTimed => ( m_EndTime != DateTime.MinValue );
+		public DateTime EndTime { get; set; }
 
-		public DateTime EndTime
-		{
-			get => m_EndTime;
-			set => m_EndTime = value;
-		}
-
-		public bool Expired
-		{
-			get => m_Expired;
-			set => m_Expired = value;
-		}
+		public bool Expired { get; set; }
 
 		public BaseObjectiveInstance( MLQuestInstance instance, BaseObjective obj )
 		{
-			m_Instance = instance;
+			Instance = instance;
 
 			if ( obj.IsTimed )
-				m_EndTime = DateTime.UtcNow + obj.Duration;
+				EndTime = DateTime.UtcNow + obj.Duration;
 		}
 
 		public virtual void WriteToGump( Gump g, ref int y )
 		{
 			if ( IsTimed )
-				WriteTimeRemaining( g, ref y, ( m_EndTime > DateTime.UtcNow ) ? ( m_EndTime - DateTime.UtcNow ) : TimeSpan.Zero );
+				WriteTimeRemaining( g, ref y, ( EndTime > DateTime.UtcNow ) ? ( EndTime - DateTime.UtcNow ) : TimeSpan.Zero );
 		}
 
 		public static void WriteTimeRemaining( Gump g, ref int y, TimeSpan timeRemaining )
@@ -83,8 +71,8 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			if ( IsCompleted() )
 			{
-				m_Instance.Player.PlaySound( 0x5B6 ); // public sound
-				m_Instance.CheckComplete();
+				Instance.Player.PlaySound( 0x5B6 ); // public sound
+				Instance.CheckComplete();
 			}
 		}
 
@@ -146,7 +134,7 @@ namespace Server.Engines.MLQuests.Objectives
 			if ( IsTimed )
 			{
 				writer.Write( true );
-				writer.WriteDeltaTime( m_EndTime );
+				writer.WriteDeltaTime( EndTime );
 			}
 			else
 			{

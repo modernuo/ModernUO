@@ -35,21 +35,19 @@ namespace Server.Engines.MyRunUO
 			Layer.Talisman
 		};
 
-		private static int[] m_TranslationTable;
-
-		public static int[] TranslationTable => m_TranslationTable;
+		public static int[] TranslationTable { get; }
 
 		static LayerComparer()
 		{
-			m_TranslationTable = new int[256];
+			TranslationTable = new int[256];
 
 			for ( int i = 0; i < m_DesiredLayerOrder.Length; ++i )
-				m_TranslationTable[(int)m_DesiredLayerOrder[i]] = m_DesiredLayerOrder.Length - i;
+				TranslationTable[(int)m_DesiredLayerOrder[i]] = m_DesiredLayerOrder.Length - i;
 		}
 
 		public static bool IsValid( Item item )
 		{
-			return ( m_TranslationTable[(int)item.Layer] > 0 );
+			return ( TranslationTable[(int)item.Layer] > 0 );
 		}
 
 		public static readonly IComparer Instance = new LayerComparer();
@@ -86,7 +84,7 @@ namespace Server.Engines.MyRunUO
 			aLayer = Fix( a.ItemID, aLayer );
 			bLayer = Fix( b.ItemID, bLayer );
 
-			return m_TranslationTable[(int)bLayer] - m_TranslationTable[(int)aLayer];
+			return TranslationTable[(int)bLayer] - TranslationTable[(int)aLayer];
 		}
 	}
 }

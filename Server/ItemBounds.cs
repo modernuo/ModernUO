@@ -25,13 +25,11 @@ namespace Server
 {
 	public static class ItemBounds
 	{
-		private static Rectangle2D[] m_Bounds;
-
-		public static Rectangle2D[] Table => m_Bounds;
+		public static Rectangle2D[] Table { get; }
 
 		static ItemBounds()
 		{
-			m_Bounds = new Rectangle2D[TileData.ItemTable.Length];
+			Table = new Rectangle2D[TileData.ItemTable.Length];
 
 			if ( File.Exists( "Data/Binary/Bounds.bin" ) )
 			{
@@ -39,7 +37,7 @@ namespace Server
 				{
 					BinaryReader bin = new BinaryReader( fs );
 
-					int count = Math.Min( m_Bounds.Length, (int)( fs.Length / 8 ) );
+					int count = Math.Min( Table.Length, (int)( fs.Length / 8 ) );
 
 					for ( int i = 0; i < count; ++i )
 					{
@@ -48,7 +46,7 @@ namespace Server
 						int xMax = bin.ReadInt16();
 						int yMax = bin.ReadInt16();
 
-						m_Bounds[i].Set( xMin, yMin, (xMax - xMin) + 1, (yMax - yMin) + 1 );
+						Table[i].Set( xMin, yMin, (xMax - xMin) + 1, (yMax - yMin) + 1 );
 					}
 
 					bin.Close();

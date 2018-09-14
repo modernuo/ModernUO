@@ -5,22 +5,20 @@ namespace Server.Factions
 {
 	public class VendorList
 	{
-		private VendorDefinition m_Definition;
-		private List<BaseFactionVendor> m_Vendors;
+		public VendorDefinition Definition { get; }
 
-		public VendorDefinition Definition => m_Definition;
-		public List<BaseFactionVendor> Vendors  => m_Vendors;
+		public List<BaseFactionVendor> Vendors { get; }
 
 		public BaseFactionVendor Construct( Town town, Faction faction )
 		{
-			try{ return Activator.CreateInstance( m_Definition.Type, new object[]{ town, faction } ) as BaseFactionVendor; }
+			try{ return Activator.CreateInstance( Definition.Type, new object[]{ town, faction } ) as BaseFactionVendor; }
 			catch{ return null; }
 		}
 
 		public VendorList( VendorDefinition definition )
 		{
-			m_Definition = definition;
-			m_Vendors = new List<BaseFactionVendor>();
+			Definition = definition;
+			Vendors = new List<BaseFactionVendor>();
 		}
 	}
 }

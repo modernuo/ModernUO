@@ -10,19 +10,14 @@ namespace Server.RemoteAdmin
 		const string LogBaseDirectory = "Logs";
 		const string LogSubDirectory = "RemoteAdmin";
 
-		private static StreamWriter m_Output;
-		private static bool m_Enabled = true;
+		public static bool Enabled { get; set; } = true;
 
-		public static bool Enabled { get => m_Enabled;
-			set => m_Enabled = value;
-		}
-
-		public static StreamWriter Output  => m_Output;
+		public static StreamWriter Output { get; private set; }
 
 		private static bool Initialized;
 		public static void LazyInitialize()
 		{
-			if ( Initialized || !m_Enabled ) return;
+			if ( Initialized || !Enabled ) return;
 			Initialized = true;
 
 			if ( !Directory.Exists( LogBaseDirectory ) )
@@ -35,20 +30,20 @@ namespace Server.RemoteAdmin
 
 			try
 			{
-				m_Output = new StreamWriter( Path.Combine( directory, string.Format( LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString( "yyyyMMdd" ) ) ), true );
+				Output = new StreamWriter( Path.Combine( directory, string.Format( LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString( "yyyyMMdd" ) ) ), true );
 
-				m_Output.AutoFlush = true;
+				Output.AutoFlush = true;
 
-				m_Output.WriteLine( "##############################" );
-				m_Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
-				m_Output.WriteLine();
+				Output.WriteLine( "##############################" );
+				Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
+				Output.WriteLine();
 			}
 			catch
 			{
 				Utility.PushColor( ConsoleColor.Red );
 				Console.WriteLine( "RemoteAdminLogging: Failed to initialize LogWriter." );
 				Utility.PopColor();
-				m_Enabled = false;
+				Enabled = false;
 			}
 		}
 
@@ -73,7 +68,7 @@ namespace Server.RemoteAdmin
 		{
 			LazyInitialize();
 
-			if ( !m_Enabled ) return;
+			if ( !Enabled ) return;
 
 			try
 			{
@@ -82,7 +77,7 @@ namespace Server.RemoteAdmin
 				string accesslevel = acct == null ? "NoAccount" : acct.AccessLevel.ToString();
 				string statestr = state == null ? "NULLSTATE" : state.ToString();
 
-				m_Output.WriteLine( "{0}: {1}: {2}: {3}", DateTime.UtcNow, statestr, name, text );
+				Output.WriteLine( "{0}: {1}: {2}: {3}", DateTime.UtcNow, statestr, name, text );
 
 				string path = Core.BaseDirectory;
 

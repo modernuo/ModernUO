@@ -6,9 +6,8 @@ namespace Server
 {
 	public static class MondainsLegacy
 	{
-		public static Type[] Artifacts  => m_Artifacts;
-
-		private static Type[] m_Artifacts = {
+		public static Type[] Artifacts { get; } =
+		{
 			typeof( AegisOfGrace ), typeof( BladeDance ), typeof( BloodwoodSpirit ), typeof( Bonesmasher ),
 			typeof( Boomstick ), typeof( BrightsightLenses ), typeof( FeyLeggings ), typeof( FleshRipper ),
 			typeof( HelmOfSwiftness ), typeof( PadsOfTheCuSidhe ), typeof( QuiverOfRage ), typeof( QuiverOfElements ),
@@ -27,7 +26,7 @@ namespace Server
 
 		public static void GiveArtifactTo( Mobile m )
 		{
-			if ( !(Activator.CreateInstance( m_Artifacts[Utility.Random( m_Artifacts.Length )] ) is Item item) )
+			if ( !(Activator.CreateInstance( Artifacts[Utility.Random( Artifacts.Length )] ) is Item item) )
 				return;
 
 			if ( m.AddToBackpack( item ) )

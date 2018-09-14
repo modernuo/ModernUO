@@ -59,17 +59,11 @@ namespace Server
 	[AttributeUsage( AttributeTargets.Method )]
 	public class CallPriorityAttribute : Attribute
 	{
-		private int m_Priority;
-
-		public int Priority
-		{
-			get => m_Priority;
-			set => m_Priority = value;
-		}
+		public int Priority { get; set; }
 
 		public CallPriorityAttribute( int priority )
 		{
-			m_Priority = priority;
+			Priority = priority;
 		}
 	}
 
@@ -115,13 +109,11 @@ namespace Server
 	[AttributeUsage( AttributeTargets.Class )]
 	public class TypeAliasAttribute : Attribute
 	{
-		private string[] m_Aliases;
-
-		public string[] Aliases => m_Aliases;
+		public string[] Aliases { get; }
 
 		public TypeAliasAttribute( params string[] aliases )
 		{
-			m_Aliases = aliases;
+			Aliases = aliases;
 		}
 	}
 
@@ -136,26 +128,18 @@ namespace Server
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum )]
 	public class CustomEnumAttribute : Attribute
 	{
-		private string[] m_Names;
-
-		public string[] Names => m_Names;
+		public string[] Names { get; }
 
 		public CustomEnumAttribute( string[] names )
 		{
-			m_Names = names;
+			Names = names;
 		}
 	}
 
 	[AttributeUsage( AttributeTargets.Constructor )]
 	public class ConstructibleAttribute : Attribute
 	{
-		private AccessLevel m_AccessLevel;
-
-		public AccessLevel AccessLevel
-		{
-			get => m_AccessLevel;
-			set => m_AccessLevel = value;
-		}
+		public AccessLevel AccessLevel { get; set; }
 
 		public ConstructibleAttribute() : this( AccessLevel.Player )	//Lowest accesslevel for current functionality (Level determined by access to [add)
 		{
@@ -163,26 +147,23 @@ namespace Server
 
 		public ConstructibleAttribute( AccessLevel accessLevel )
 		{
-			m_AccessLevel = accessLevel;
+			AccessLevel = accessLevel;
 		}
 	}
 
 	[AttributeUsage( AttributeTargets.Property )]
 	public class CommandPropertyAttribute : Attribute
 	{
-		private AccessLevel m_ReadLevel, m_WriteLevel;
-		private bool m_ReadOnly;
+		public AccessLevel ReadLevel { get; }
 
-		public AccessLevel ReadLevel => m_ReadLevel;
+		public AccessLevel WriteLevel { get; }
 
-		public AccessLevel WriteLevel => m_WriteLevel;
-
-		public bool ReadOnly => m_ReadOnly;
+		public bool ReadOnly { get; }
 
 		public CommandPropertyAttribute( AccessLevel level, bool readOnly )
 		{
-			m_ReadLevel = level;
-			m_ReadOnly = readOnly;
+			ReadLevel = level;
+			ReadOnly = readOnly;
 		}
 
 		public CommandPropertyAttribute( AccessLevel level ) : this( level, level )
@@ -191,8 +172,8 @@ namespace Server
 
 		public CommandPropertyAttribute( AccessLevel readLevel, AccessLevel writeLevel )
 		{
-			m_ReadLevel = readLevel;
-			m_WriteLevel = writeLevel;
+			ReadLevel = readLevel;
+			WriteLevel = writeLevel;
 		}
 	}
 }

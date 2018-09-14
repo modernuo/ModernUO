@@ -20,23 +20,21 @@ namespace Server.Gumps
 
 	public class RewardGump : Gump
 	{
-		private TextDefinition m_Title;
-		private IRewardEntry[] m_Rewards;
-		private int m_Points;
-		private RewardPickedHandler m_OnPicked;
+		public TextDefinition Title { get; }
 
-		public TextDefinition Title  => m_Title;
-		public IRewardEntry[] Rewards  => m_Rewards;
-		public int Points  => m_Points;
-		public RewardPickedHandler OnPicked  => m_OnPicked;
+		public IRewardEntry[] Rewards { get; }
+
+		public int Points { get; }
+
+		public RewardPickedHandler OnPicked { get; }
 
 		public RewardGump( TextDefinition title, IRewardEntry[] rewards, int points, RewardPickedHandler onPicked )
 			: base( 250, 50 )
 		{
-			m_Title = title;
-			m_Rewards = rewards;
-			m_Points = points;
-			m_OnPicked = onPicked;
+			Title = title;
+			Rewards = rewards;
+			Points = points;
+			OnPicked = onPicked;
 
 			AddPage( 0 );
 
@@ -49,13 +47,13 @@ namespace Server.Gumps
 			AddImage( 32, 33, 0x2635 );
 			AddImageTiled( 70, 55, 230, 2, 0x23C5 );
 
-			if ( m_Title.String != null )
-				AddHtml( 70, 35, 270, 20, m_Title.String, false, false );
-			else if ( m_Title.Number != 0 )
-				AddHtmlLocalized( 70, 35, 270, 20, m_Title.Number, 1, false, false );
+			if ( Title.String != null )
+				AddHtml( 70, 35, 270, 20, Title.String, false, false );
+			else if ( Title.Number != 0 )
+				AddHtmlLocalized( 70, 35, 270, 20, Title.Number, 1, false, false );
 
 			AddHtmlLocalized( 50, 65, 150, 20, 1072843, 1, false, false ); // Your Reward Points:
-			AddLabel( 230, 65, 0x64, m_Points.ToString() );
+			AddLabel( 230, 65, 0x64, Points.ToString() );
 			AddImageTiled( 35, 85, 270, 2, 0x23C5 );
 			AddHtmlLocalized( 35, 90, 270, 20, 1072844, 1, false, false ); // Please Choose a Reward:
 
@@ -64,9 +62,9 @@ namespace Server.Gumps
 			int offset = 110;
 			int page = 1;
 
-			for ( int i = 0; i < m_Rewards.Length; ++i )
+			for ( int i = 0; i < Rewards.Length; ++i )
 			{
-				IRewardEntry entry = m_Rewards[i];
+				IRewardEntry entry = Rewards[i];
 
 				Rectangle2D bounds = ItemBounds.Table[entry.ItemID];
 				int height = Math.Max( 36, bounds.Height );
@@ -84,7 +82,7 @@ namespace Server.Gumps
 					offset = 110;
 				}
 
-				bool available = ( entry.Price <= m_Points );
+				bool available = ( entry.Price <= Points );
 				int half = offset + ( height / 2 );
 
 				if ( available )
@@ -118,11 +116,11 @@ namespace Server.Gumps
 
 			choice -= 100;
 
-			if ( choice >= 0 && choice < m_Rewards.Length )
+			if ( choice >= 0 && choice < Rewards.Length )
 			{
-				IRewardEntry entry = m_Rewards[choice];
+				IRewardEntry entry = Rewards[choice];
 
-				if ( entry.Price <= m_Points )
+				if ( entry.Price <= Points )
 					sender.Mobile.SendGump( new RewardConfirmGump( this, choice, entry ) );
 			}
 		}

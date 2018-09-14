@@ -49,10 +49,9 @@ namespace Server.Engines.Quests.Naturalist
 			return null;
 		}
 
-		private bool m_Special;
 		private Rectangle2D[] m_Rects;
 
-		public bool Special => m_Special;
+		public bool Special { get; }
 
 		public int ID
 		{
@@ -69,7 +68,7 @@ namespace Server.Engines.Quests.Naturalist
 
 		private NestArea( bool special, params Rectangle2D[] rects )
 		{
-			m_Special = special;
+			Special = special;
 			m_Rects = rects;
 		}
 

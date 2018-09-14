@@ -39,8 +39,6 @@ namespace Server
 		}
 
 		// Info
-		private string m_Name;
-		private int m_Level;
 
 		// Damage
 		private int m_Minimum, m_Maximum;
@@ -53,8 +51,8 @@ namespace Server
 
 		public PoisonImpl( string name, int level, int min, int max, double percent, double delay, double interval, int count, int messageInterval )
 		{
-			m_Name = name;
-			m_Level = level;
+			Name = name;
+			Level = level;
 			m_Minimum = min;
 			m_Maximum = max;
 			m_Scalar = percent * 0.01;
@@ -64,24 +62,22 @@ namespace Server
 			m_MessageInterval = messageInterval;
 		}
 
-		public override string Name => m_Name;
-		public override int Level => m_Level;
+		public override string Name { get; }
+
+		public override int Level { get; }
 
 		public class PoisonTimer : Timer
 		{
 			private PoisonImpl m_Poison;
 			private Mobile m_Mobile;
-			private Mobile m_From;
 			private int m_LastDamage;
 			private int m_Index;
 
-			public Mobile From{ get => m_From;
-				set => m_From = value;
-			}
+			public Mobile From { get; set; }
 
 			public PoisonTimer( Mobile m, PoisonImpl p ) : base( p.m_Delay, p.m_Interval )
 			{
-				m_From = m;
+				From = m;
 				m_Mobile = m;
 				m_Poison = p;
 			}
@@ -132,18 +128,18 @@ namespace Server
 					m_LastDamage = damage;
 				}
 
-				m_From?.DoHarmful( m_Mobile, true );
+				From?.DoHarmful( m_Mobile, true );
 
 				if ( m_Mobile is IHonorTarget honorTarget )
 					honorTarget.ReceivedHonorContext?.OnTargetPoisoned();
 
-				AOS.Damage( m_Mobile, m_From, damage, 0, 0, 0, 100, 0 );
+				AOS.Damage( m_Mobile, From, damage, 0, 0, 0, 100, 0 );
 
 				if ( 0.60 <= Utility.RandomDouble() ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
 						m_Mobile.RevealingAction();
 
 				if ( (m_Index % m_Poison.m_MessageInterval) == 0 )
-					m_Mobile.OnPoisoned( m_From, m_Poison, m_Poison );
+					m_Mobile.OnPoisoned( From, m_Poison, m_Poison );
 			}
 		}
 

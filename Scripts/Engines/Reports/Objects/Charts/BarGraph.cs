@@ -22,50 +22,28 @@ namespace Server.Engines.Reports
 		public override PersistableType TypeID => ThisTypeID;
 		#endregion
 
-		private int m_Ticks;
-		private BarGraphRenderMode m_RenderMode;
+		public int Ticks { get; set; }
 
-		private string m_xTitle;
-		private string m_yTitle;
+		public BarGraphRenderMode RenderMode { get; set; }
 
-		private int m_FontSize = 7;
-		private int m_Interval = 1;
+		public string xTitle { get; set; }
 
-		private BarRegion[] m_Regions;
+		public string yTitle { get; set; }
 
-		public int Ticks{ get => m_Ticks;
-			set => m_Ticks = value;
-		}
-		public BarGraphRenderMode RenderMode{ get => m_RenderMode;
-			set => m_RenderMode = value;
-		}
+		public int FontSize { get; set; } = 7;
 
-		public string xTitle{ get => m_xTitle;
-			set => m_xTitle = value;
-		}
-		public string yTitle{ get => m_yTitle;
-			set => m_yTitle = value;
-		}
+		public int Interval { get; set; } = 1;
 
-		public int FontSize{ get => m_FontSize;
-			set => m_FontSize = value;
-		}
-		public int Interval{ get => m_Interval;
-			set => m_Interval = value;
-		}
-
-		public BarRegion[] Regions{ get => m_Regions;
-			set => m_Regions = value;
-		}
+		public BarRegion[] Regions { get; set; }
 
 		public BarGraph( string name, string fileName, int ticks, string xTitle, string yTitle, BarGraphRenderMode rm )
 		{
 			m_Name = name;
 			m_FileName = fileName;
-			m_Ticks = ticks;
-			m_xTitle = xTitle;
-			m_yTitle = yTitle;
-			m_RenderMode = rm;
+			Ticks = ticks;
+			this.xTitle = xTitle;
+			this.yTitle = yTitle;
+			RenderMode = rm;
 		}
 
 		private BarGraph()
@@ -76,28 +54,28 @@ namespace Server.Engines.Reports
 		{
 			base.SerializeAttributes( op );
 
-			op.SetInt32( "t", m_Ticks );
-			op.SetInt32( "r", (int) m_RenderMode );
+			op.SetInt32( "t", Ticks );
+			op.SetInt32( "r", (int) RenderMode );
 
-			op.SetString( "x", m_xTitle );
-			op.SetString( "y", m_yTitle );
+			op.SetString( "x", xTitle );
+			op.SetString( "y", yTitle );
 
-			op.SetInt32( "s", m_FontSize );
-			op.SetInt32( "i", m_Interval );
+			op.SetInt32( "s", FontSize );
+			op.SetInt32( "i", Interval );
 		}
 
 		public override void DeserializeAttributes( PersistanceReader ip )
 		{
 			base.DeserializeAttributes( ip );
 
-			m_Ticks = ip.GetInt32( "t" );
-			m_RenderMode = (BarGraphRenderMode) ip.GetInt32( "r" );
+			Ticks = ip.GetInt32( "t" );
+			RenderMode = (BarGraphRenderMode) ip.GetInt32( "r" );
 
-			m_xTitle = Utility.Intern( ip.GetString( "x" ) );
-			m_yTitle = Utility.Intern( ip.GetString( "y" ) );
+			xTitle = Utility.Intern( ip.GetString( "x" ) );
+			yTitle = Utility.Intern( ip.GetString( "y" ) );
 
-			m_FontSize = ip.GetInt32( "s" );
-			m_Interval = ip.GetInt32( "i" );
+			FontSize = ip.GetInt32( "s" );
+			Interval = ip.GetInt32( "i" );
 		}
 
 		public static int LookupReportValue( Snapshot ss, string reportName, string valueName )
@@ -148,7 +126,7 @@ namespace Server.Engines.Reports
 
 			BarGraph barGraph = new BarGraph( "Hourly average " + valueName, "graphs_" + valueName.ToLower() + "_avg", 10, "Time", valueName, BarGraphRenderMode.Lines );
 
-			barGraph.m_FontSize = 6;
+			barGraph.FontSize = 6;
 
 			for ( int i = 7; i <= totals.Length+7; ++i )
 			{

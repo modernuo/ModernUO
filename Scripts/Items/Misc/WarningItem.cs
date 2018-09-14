@@ -6,24 +6,13 @@ namespace Server.Items
 {
 	public class WarningItem : Item
 	{
-		private string m_WarningString;
-		private int m_WarningNumber;
 		private int m_Range;
-		private TimeSpan m_ResetDelay;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string WarningString
-		{
-			get => m_WarningString;
-			set => m_WarningString = value;
-		}
+		public string WarningString { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int WarningNumber
-		{
-			get => m_WarningNumber;
-			set => m_WarningNumber = value;
-		}
+		public int WarningNumber { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Range
@@ -33,11 +22,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan ResetDelay
-		{
-			get => m_ResetDelay;
-			set => m_ResetDelay = value;
-		}
+		public TimeSpan ResetDelay { get; set; }
 
 		[Constructible]
 		public WarningItem( int itemID, int range, int warning ) : base( itemID )
@@ -47,7 +32,7 @@ namespace Server.Items
 
 			Movable = false;
 
-			m_WarningNumber = warning;
+			WarningNumber = warning;
 			m_Range = range;
 		}
 
@@ -59,7 +44,7 @@ namespace Server.Items
 
 			Movable = false;
 
-			m_WarningString = warning;
+			WarningString = warning;
 			m_Range = range;
 		}
 
@@ -94,14 +79,14 @@ namespace Server.Items
 
 		public virtual void Broadcast( Mobile triggerer )
 		{
-			if ( m_Broadcasting || (DateTime.UtcNow < (m_LastBroadcast + m_ResetDelay)) )
+			if ( m_Broadcasting || (DateTime.UtcNow < (m_LastBroadcast + ResetDelay)) )
 				return;
 
 			m_LastBroadcast = DateTime.UtcNow;
 
 			m_Broadcasting = true;
 
-			SendMessage( triggerer, OnlyToTriggerer, m_WarningString, m_WarningNumber );
+			SendMessage( triggerer, OnlyToTriggerer, WarningString, WarningNumber );
 
 			if ( NeighborRange >= 0 )
 			{
@@ -139,11 +124,11 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 
-			writer.Write( (string) m_WarningString );
-			writer.Write( (int) m_WarningNumber );
+			writer.Write( (string) WarningString );
+			writer.Write( (int) WarningNumber );
 			writer.Write( (int) m_Range );
 
-			writer.Write( (TimeSpan) m_ResetDelay );
+			writer.Write( (TimeSpan) ResetDelay );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -156,10 +141,10 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_WarningString = reader.ReadString();
-					m_WarningNumber = reader.ReadInt();
+					WarningString = reader.ReadString();
+					WarningNumber = reader.ReadInt();
 					m_Range = reader.ReadInt();
-					m_ResetDelay = reader.ReadTimeSpan();
+					ResetDelay = reader.ReadTimeSpan();
 
 					break;
 				}
@@ -169,35 +154,24 @@ namespace Server.Items
 
 	public class HintItem : WarningItem
 	{
-		private string m_HintString;
-		private int m_HintNumber;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public string HintString { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string HintString
-		{
-			get => m_HintString;
-			set => m_HintString = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int HintNumber
-		{
-			get => m_HintNumber;
-			set => m_HintNumber = value;
-		}
+		public int HintNumber { get; set; }
 
 		public override bool OnlyToTriggerer => true;
 
 		[Constructible]
 		public HintItem( int itemID, int range, int warning, int hint ) : base( itemID, range, warning )
 		{
-			m_HintNumber = hint;
+			HintNumber = hint;
 		}
 
 		[Constructible]
 		public HintItem( int itemID, int range, string warning, string hint ) : base( itemID, range, warning )
 		{
-			m_HintString = hint;
+			HintString = hint;
 		}
 
 		public HintItem( Serial serial ) : base( serial )
@@ -206,7 +180,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			SendMessage( from, true, m_HintString, m_HintNumber );
+			SendMessage( from, true, HintString, HintNumber );
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -215,8 +189,8 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 
-			writer.Write( (string) m_HintString );
-			writer.Write( (int) m_HintNumber );
+			writer.Write( (string) HintString );
+			writer.Write( (int) HintNumber );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -229,8 +203,8 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_HintString = reader.ReadString();
-					m_HintNumber = reader.ReadInt();
+					HintString = reader.ReadString();
+					HintNumber = reader.ReadInt();
 
 					break;
 				}

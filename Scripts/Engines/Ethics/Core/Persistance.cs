@@ -2,9 +2,7 @@ namespace Server.Ethics
 {
 	public class EthicsPersistance : Item
 	{
-		private static EthicsPersistance m_Instance;
-
-		public static EthicsPersistance Instance  => m_Instance;
+		public static EthicsPersistance Instance { get; private set; }
 
 		public override string DefaultName => "Ethics Persistance - Internal";
 
@@ -14,8 +12,8 @@ namespace Server.Ethics
 		{
 			Movable = false;
 
-			if ( m_Instance == null || m_Instance.Deleted )
-				m_Instance = this;
+			if ( Instance == null || Instance.Deleted )
+				Instance = this;
 			else
 				base.Delete();
 		}
@@ -23,7 +21,7 @@ namespace Server.Ethics
 		public EthicsPersistance( Serial serial )
 			: base( serial )
 		{
-			m_Instance = this;
+			Instance = this;
 		}
 
 		public override void Serialize( GenericWriter writer )

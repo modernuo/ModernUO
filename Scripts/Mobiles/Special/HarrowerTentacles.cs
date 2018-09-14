@@ -6,16 +6,11 @@ namespace Server.Mobiles
 	public class HarrowerTentacles : BaseCreature
 	{
 		public override string CorpseName => "a tentacles corpse";
-		private Mobile m_Harrower;
 
 		private DrainTimer m_Timer;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Harrower
-		{
-			get => m_Harrower;
-			set => m_Harrower = value;
-		}
+		public Mobile Harrower { get; set; }
 
 		public override string DefaultName => "tentacles of the harrower";
 
@@ -26,7 +21,7 @@ namespace Server.Mobiles
 
 		public HarrowerTentacles( Mobile harrower ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			m_Harrower = harrower;
+			Harrower = harrower;
 			Body = 129;
 
 			SetStr( 901, 1000 );
@@ -119,7 +114,7 @@ namespace Server.Mobiles
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( m_Harrower );
+			writer.Write( Harrower );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -132,7 +127,7 @@ namespace Server.Mobiles
 			{
 				case 0:
 				{
-					m_Harrower = reader.ReadMobile();
+					Harrower = reader.ReadMobile();
 
 					m_Timer = new DrainTimer( this );
 					m_Timer.Start();

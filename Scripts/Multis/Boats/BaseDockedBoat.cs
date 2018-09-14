@@ -6,19 +6,13 @@ namespace Server.Multis
 {
 	public abstract class BaseDockedBoat : Item
 	{
-		private int m_MultiID;
-		private Point3D m_Offset;
 		private string m_ShipName;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MultiID{ get => m_MultiID;
-			set => m_MultiID = value;
-		}
+		public int MultiID { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Offset{ get => m_Offset;
-			set => m_Offset = value;
-		}
+		public Point3D Offset { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string ShipName{ get => m_ShipName;
@@ -29,8 +23,8 @@ namespace Server.Multis
 			Weight = 1.0;
 			LootType = LootType.Blessed;
 
-			m_MultiID = id;
-			m_Offset = offset;
+			MultiID = id;
+			Offset = offset;
 
 			m_ShipName = boat.ShipName;
 		}
@@ -45,8 +39,8 @@ namespace Server.Multis
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( m_MultiID );
-			writer.Write( m_Offset );
+			writer.Write( MultiID );
+			writer.Write( Offset );
 			writer.Write( m_ShipName );
 		}
 
@@ -61,8 +55,8 @@ namespace Server.Multis
 				case 1:
 				case 0:
 				{
-					m_MultiID = reader.ReadInt();
-					m_Offset = reader.ReadPoint3D();
+					MultiID = reader.ReadInt();
+					Offset = reader.ReadPoint3D();
 					m_ShipName = reader.ReadString();
 
 					if ( version == 0 )
@@ -134,7 +128,7 @@ namespace Server.Multis
 				if ( boat == null )
 					return;
 
-				p = new Point3D( p.X - m_Offset.X, p.Y - m_Offset.Y, p.Z - m_Offset.Z );
+				p = new Point3D( p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z );
 
 				if ( BaseBoat.IsValidLocation( p, map ) && boat.CanFit( p, map, boat.ItemID ) && map != Map.Ilshenar && map != Map.Malas )
 				{

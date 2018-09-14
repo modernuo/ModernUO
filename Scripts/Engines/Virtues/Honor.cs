@@ -186,13 +186,8 @@ namespace Server
 
 	public class HonorContext
 	{
-		private PlayerMobile m_Source;
-		private Mobile m_Target;
-
 		private double m_HonorDamage;
 		private int m_TotalDamage;
-
-		private int m_Perfection;
 
 		private enum FirstHit
 		{
@@ -208,13 +203,14 @@ namespace Server
 
 		private InternalTimer m_Timer;
 
-		public PlayerMobile Source => m_Source;
-		public Mobile Target => m_Target;
+		public PlayerMobile Source { get; }
+
+		public Mobile Target { get; }
 
 		public HonorContext( PlayerMobile source, Mobile target )
 		{
-			m_Source = source;
-			m_Target = target;
+			Source = source;
+			Target = target;
 
 			m_FirstHit = FirstHit.NotDelivered;
 			m_Poisoned = false;
@@ -240,7 +236,7 @@ namespace Server
 
 		public void OnSourceDamaged( Mobile from, int amount )
 		{
-			if ( from != m_Target )
+			if ( from != Target )
 				return;
 
 			if ( m_FirstHit == FirstHit.NotDelivered )
@@ -267,10 +263,10 @@ namespace Server
 
 			m_TotalDamage += amount;
 
-			if ( from == m_Source )
+			if ( from == Source )
 			{
-				if ( m_Target.CanSee( m_Source ) && m_Target.InLOS( m_Source ) && ( m_Source.InRange( m_Target, 1 )
-					|| ( m_Source.Location == m_InitialLocation && m_Source.Map == m_InitialMap ) ) )
+				if ( Target.CanSee( Source ) && Target.InLOS( Source ) && ( Source.InRange( Target, 1 )
+					|| ( Source.Location == m_InitialLocation && Source.Map == m_InitialMap ) ) )
 				{
 					m_HonorDamage += amount;
 				}
@@ -279,7 +275,7 @@ namespace Server
 					m_HonorDamage += amount * 0.8;
 				}
 			}
-			else if ( from is BaseCreature creature && creature.GetMaster() == m_Source )
+			else if ( from is BaseCreature creature && creature.GetMaster() == Source )
 			{
 				m_HonorDamage += amount * 0.8;
 			}
@@ -287,53 +283,53 @@ namespace Server
 
 		public void OnTargetHit( Mobile from )
 		{
-			if ( from != m_Source || m_Perfection == 100 )
+			if ( from != Source || PerfectionDamageBonus == 100 )
 				return;
 
 			int bushido = (int) from.Skills.Bushido.Value;
 			if ( bushido < 50 )
 				return;
 
-			m_Perfection += bushido / 10;
+			PerfectionDamageBonus += bushido / 10;
 
-			if ( m_Perfection >= 100 )
+			if ( PerfectionDamageBonus >= 100 )
 			{
-				m_Perfection = 100;
-				m_Source.SendLocalizedMessage( 1063254 ); // You have Achieved Perfection in inflicting damage to this opponent!
+				PerfectionDamageBonus = 100;
+				Source.SendLocalizedMessage( 1063254 ); // You have Achieved Perfection in inflicting damage to this opponent!
 			}
 			else
 			{
-				m_Source.SendLocalizedMessage( 1063255 ); // You gain in Perfection as you precisely strike your opponent.
+				Source.SendLocalizedMessage( 1063255 ); // You gain in Perfection as you precisely strike your opponent.
 			}
 		}
 
 		public void OnTargetMissed( Mobile from )
 		{
-			if ( from != m_Source || m_Perfection == 0 )
+			if ( from != Source || PerfectionDamageBonus == 0 )
 				return;
 
-			m_Perfection -= 25;
+			PerfectionDamageBonus -= 25;
 
-			if ( m_Perfection <= 0 )
+			if ( PerfectionDamageBonus <= 0 )
 			{
-				m_Perfection = 0;
-				m_Source.SendLocalizedMessage( 1063256 ); // You have lost all Perfection in fighting this opponent.
+				PerfectionDamageBonus = 0;
+				Source.SendLocalizedMessage( 1063256 ); // You have lost all Perfection in fighting this opponent.
 			}
 			else
 			{
-				m_Source.SendLocalizedMessage( 1063257 ); // You have lost some Perfection in fighting this opponent.
+				Source.SendLocalizedMessage( 1063257 ); // You have lost some Perfection in fighting this opponent.
 			}
 		}
 
 		public void OnSourceBeneficialAction( Mobile to )
 		{
-			if ( to != m_Target )
+			if ( to != Target )
 				return;
 
-			if ( m_Perfection >= 0 )
+			if ( PerfectionDamageBonus >= 0 )
 			{
-				m_Perfection = 0;
-				m_Source.SendLocalizedMessage( 1063256 ); // You have lost all Perfection in fighting this opponent.
+				PerfectionDamageBonus = 0;
+				Source.SendLocalizedMessage( 1063256 ); // You have lost all Perfection in fighting this opponent.
 			}
 		}
 
@@ -346,18 +342,18 @@ namespace Server
 		{
 			Cancel();
 
-			int targetFame = m_Target.Fame;
+			int targetFame = Target.Fame;
 
-			if ( m_Perfection > 0 )
+			if ( PerfectionDamageBonus > 0 )
 			{
-				int restore = Math.Min( m_Perfection * ( targetFame + 5000 ) / 25000, 10 );
+				int restore = Math.Min( PerfectionDamageBonus * ( targetFame + 5000 ) / 25000, 10 );
 
-				m_Source.Hits += restore;
-				m_Source.Stam += restore;
-				m_Source.Mana += restore;
+				Source.Hits += restore;
+				Source.Stam += restore;
+				Source.Mana += restore;
 			}
 
-			if ( m_Source.Virtues.Honor > targetFame )
+			if ( Source.Virtues.Honor > targetFame )
 				return;
 
 			double dGain = ( targetFame / 100 ) * (m_HonorDamage / m_TotalDamage );	//Initial honor gain is 100th of the monsters honor
@@ -372,25 +368,25 @@ namespace Server
 			if ( gain < 1 )
 				gain=1;		//Minimum gain of 1 honor when the honor is under the monsters fame
 
-			if ( VirtueHelper.IsHighestPath( m_Source, VirtueName.Honor ) )
+			if ( VirtueHelper.IsHighestPath( Source, VirtueName.Honor ) )
 			{
-				m_Source.SendLocalizedMessage( 1063228 ); // You cannot gain more Honor.
+				Source.SendLocalizedMessage( 1063228 ); // You cannot gain more Honor.
 				return;
 			}
 
 			bool gainedPath = false;
-			if ( VirtueHelper.Award( m_Source, VirtueName.Honor, (int) gain, ref gainedPath ) )
+			if ( VirtueHelper.Award( Source, VirtueName.Honor, (int) gain, ref gainedPath ) )
 			{
 				if ( gainedPath )
-					m_Source.SendLocalizedMessage( 1063226 ); // You have gained a path in Honor!
+					Source.SendLocalizedMessage( 1063226 ); // You have gained a path in Honor!
 				else
-					m_Source.SendLocalizedMessage( 1063225 ); // You have gained in Honor.
+					Source.SendLocalizedMessage( 1063225 ); // You have gained in Honor.
 			}
 		}
 
-		public int PerfectionDamageBonus => m_Perfection;
+		public int PerfectionDamageBonus { get; private set; }
 
-		public int PerfectionLuckBonus => (m_Perfection * m_Perfection) / 10;
+		public int PerfectionLuckBonus => (PerfectionDamageBonus * PerfectionDamageBonus) / 10;
 
 		public bool CheckDistance()
 		{
@@ -399,8 +395,8 @@ namespace Server
 
 		public void Cancel()
 		{
-			m_Source.SentHonorContext = null;
-			((IHonorTarget)m_Target).ReceivedHonorContext = null;
+			Source.SentHonorContext = null;
+			((IHonorTarget)Target).ReceivedHonorContext = null;
 
 			m_Timer.Stop();
 		}

@@ -4,29 +4,12 @@ namespace Server.Factions
 {
 	public class TownState
 	{
-		private Town m_Town;
-		private Faction m_Owner;
-
 		private Mobile m_Sheriff;
 		private Mobile m_Finance;
 
-		private int m_Silver;
-		private int m_Tax;
+		public Town Town { get; set; }
 
-		private DateTime m_LastTaxChange;
-		private DateTime m_LastIncome;
-
-		public Town Town
-		{
-			get => m_Town;
-			set => m_Town = value;
-		}
-
-		public Faction Owner
-		{
-			get => m_Owner;
-			set => m_Owner = value;
-		}
+		public Faction Owner { get; set; }
 
 		public Mobile Sheriff
 		{
@@ -48,7 +31,7 @@ namespace Server.Factions
 					PlayerState pl = PlayerState.Find( m_Sheriff );
 
 					if ( pl != null )
-						pl.Sheriff = m_Town;
+						pl.Sheriff = Town;
 				}
 			}
 		}
@@ -73,38 +56,22 @@ namespace Server.Factions
 					PlayerState pl = PlayerState.Find( m_Finance );
 
 					if ( pl != null )
-						pl.Finance = m_Town;
+						pl.Finance = Town;
 				}
 			}
 		}
 
-		public int Silver
-		{
-			get => m_Silver;
-			set => m_Silver = value;
-		}
+		public int Silver { get; set; }
 
-		public int Tax
-		{
-			get => m_Tax;
-			set => m_Tax = value;
-		}
+		public int Tax { get; set; }
 
-		public DateTime LastTaxChange
-		{
-			get => m_LastTaxChange;
-			set => m_LastTaxChange = value;
-		}
+		public DateTime LastTaxChange { get; set; }
 
-		public DateTime LastIncome
-		{
-			get => m_LastIncome;
-			set => m_LastIncome = value;
-		}
+		public DateTime LastIncome { get; set; }
 
 		public TownState( Town town )
 		{
-			m_Town = town;
+			Town = town;
 		}
 
 		public TownState( GenericReader reader )
@@ -115,32 +82,32 @@ namespace Server.Factions
 			{
 				case 3:
 				{
-					m_LastIncome = reader.ReadDateTime();
+					LastIncome = reader.ReadDateTime();
 
 					goto case 2;
 				}
 				case 2:
 				{
-					m_Tax = reader.ReadEncodedInt();
-					m_LastTaxChange = reader.ReadDateTime();
+					Tax = reader.ReadEncodedInt();
+					LastTaxChange = reader.ReadDateTime();
 
 					goto case 1;
 				}
 				case 1:
 				{
-					m_Silver = reader.ReadEncodedInt();
+					Silver = reader.ReadEncodedInt();
 
 					goto case 0;
 				}
 				case 0:
 				{
-					m_Town = Town.ReadReference( reader );
-					m_Owner = Faction.ReadReference( reader );
+					Town = Town.ReadReference( reader );
+					Owner = Faction.ReadReference( reader );
 
 					m_Sheriff = reader.ReadMobile();
 					m_Finance = reader.ReadMobile();
 
-					m_Town.State = this;
+					Town.State = this;
 
 					break;
 				}
@@ -151,15 +118,15 @@ namespace Server.Factions
 		{
 			writer.WriteEncodedInt( (int) 3 ); // version
 
-			writer.Write( (DateTime) m_LastIncome );
+			writer.Write( (DateTime) LastIncome );
 
-			writer.WriteEncodedInt( (int) m_Tax );
-			writer.Write( (DateTime) m_LastTaxChange );
+			writer.WriteEncodedInt( (int) Tax );
+			writer.Write( (DateTime) LastTaxChange );
 
-			writer.WriteEncodedInt( (int) m_Silver );
+			writer.WriteEncodedInt( (int) Silver );
 
-			Town.WriteReference( writer, m_Town );
-			Faction.WriteReference( writer, m_Owner );
+			Town.WriteReference( writer, Town );
+			Faction.WriteReference( writer, Owner );
 
 			writer.Write( (Mobile) m_Sheriff );
 			writer.Write( (Mobile) m_Finance );

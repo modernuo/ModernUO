@@ -21,8 +21,6 @@ namespace Server.Items
 		private string m_Line2;
 		private string m_Line3;
 
-		private DateTime m_EditLimit;
-
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Owner
 		{
@@ -52,15 +50,11 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime EditLimit
-		{
-			get => m_EditLimit;
-			set => m_EditLimit = value;
-		}
+		public DateTime EditLimit { get; set; }
 
 		public bool IsSigned => ( m_Line1 != null || m_Line2 != null || m_Line3 != null );
 
-		public bool CanSign => ( !IsSigned || DateTime.UtcNow <= m_EditLimit );
+		public bool CanSign => ( !IsSigned || DateTime.UtcNow <= EditLimit );
 
 		public StValentinesBear( int itemid, string name )
 			: base( itemid )

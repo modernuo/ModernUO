@@ -1385,8 +1385,7 @@ namespace Server
 
 	public sealed class AsyncWriter : GenericWriter
 	{
-		private static int m_ThreadCount;
-		public static int ThreadCount => m_ThreadCount;
+		public static int ThreadCount { get; private set; }
 
 		private int BufferSize;
 
@@ -1442,7 +1441,7 @@ namespace Server
 
 			public void Worker()
 			{
-				m_ThreadCount++;
+				ThreadCount++;
 
 				int lastCount = 0;
 
@@ -1461,9 +1460,9 @@ namespace Server
 				if ( m_Owner.m_Closed )
 					m_Owner.m_File.Close();
 
-				m_ThreadCount--;
+				ThreadCount--;
 
-				if (m_ThreadCount <= 0)
+				if (ThreadCount <= 0)
 					World.NotifyDiskWriteComplete();
 			}
 		}

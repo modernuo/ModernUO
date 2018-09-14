@@ -302,12 +302,6 @@ namespace Server.Gumps
 
 		private class CustomItem
 		{
-			private Type m_Type;
-			private int m_ItemID;
-			private int m_LocNum;
-			private int m_ArtNum;
-			private bool m_LongText;
-
 			public CustomItem( int itemID, int loc ) : this( null, itemID, loc, 0, false )
 			{
 			}
@@ -326,23 +320,23 @@ namespace Server.Gumps
 
 			public CustomItem( Type type, int itemID, int loc, int art, bool longText )
 			{
-				m_Type = type;
-				m_ItemID = itemID;
-				m_LocNum = loc;
-				m_ArtNum = art;
-				m_LongText = longText;
+				Type = type;
+				ItemID = itemID;
+				LocNumber = loc;
+				ArtNumber = art;
+				LongText = longText;
 			}
 
 			public Item Create()
 			{
-				if ( m_Type == null )
+				if ( Type == null )
 					return null;
 
 				Item i = null;
 
 				try
 				{
-					ConstructorInfo ctor = m_Type.GetConstructor( new Type[0] );
+					ConstructorInfo ctor = Type.GetConstructor( new Type[0] );
 					if ( ctor != null )
 						i = ctor.Invoke( null ) as Item;
 				}
@@ -353,32 +347,34 @@ namespace Server.Gumps
 				return i;
 			}
 
-			public Type Type => m_Type;
-			public int ItemID => m_ItemID;
-			public int LocNumber => m_LocNum;
-			public int ArtNumber => m_ArtNum;
-			public bool LongText => m_LongText;
+			public Type Type { get; }
+
+			public int ItemID { get; }
+
+			public int LocNumber { get; }
+
+			public int ArtNumber { get; }
+
+			public bool LongText { get; }
 		}
 
 		private class CustomCategory
 		{
-			private CustomItem[] m_Entries;
-			private Layer m_Layer;
-			private bool m_CanDye;
-			private int m_LocNum;
-
 			public CustomCategory( Layer layer, int loc, bool canDye, CustomItem[] items )
 			{
-				m_Entries = items;
-				m_CanDye = canDye;
-				m_Layer = layer;
-				m_LocNum = loc;
+				Entries = items;
+				CanDye = canDye;
+				Layer = layer;
+				LocNumber = loc;
 			}
 
-			public bool CanDye => m_CanDye;
-			public CustomItem[] Entries => m_Entries;
-			public Layer Layer => m_Layer;
-			public int LocNumber => m_LocNum;
+			public bool CanDye { get; }
+
+			public CustomItem[] Entries { get; }
+
+			public Layer Layer { get; }
+
+			public int LocNumber { get; }
 		}
 
 		private static CustomCategory[] Categories = {
@@ -783,16 +779,14 @@ namespace Server.Gumps
 
 		private class HairOrBeard
 		{
-			private int m_ItemID;
-			private int m_Name;
+			public int ItemID { get; }
 
-			public int ItemID => m_ItemID;
-			public int Name => m_Name;
+			public int Name { get; }
 
 			public HairOrBeard( int itemID, int name )
 			{
-				m_ItemID = itemID;
-				m_Name = name;
+				ItemID = itemID;
+				Name = name;
 			}
 		}
 

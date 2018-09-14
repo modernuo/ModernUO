@@ -14,14 +14,11 @@ namespace Server.Engines.Reports
 		#endregion
 
 		private string m_Value;
-		private string m_Format;
 
 		public string Value{ get => m_Value;
 			set => m_Value = value;
 		}
-		public string Format{ get => m_Format;
-			set => m_Format = value;
-		}
+		public string Format { get; set; }
 
 		private ItemValue()
 		{
@@ -34,21 +31,21 @@ namespace Server.Engines.Reports
 		public ItemValue( string value, string format )
 		{
 			m_Value = value;
-			m_Format = format;
+			Format = format;
 		}
 
 		public override void SerializeAttributes( PersistanceWriter op )
 		{
 			op.SetString( "v", m_Value );
-			op.SetString( "f", m_Format );
+			op.SetString( "f", Format );
 		}
 
 		public override void DeserializeAttributes( PersistanceReader ip )
 		{
 			m_Value = ip.GetString( "v" );
-			m_Format = Utility.Intern( ip.GetString( "f" ) );
+			Format = Utility.Intern( ip.GetString( "f" ) );
 
-			if ( m_Format == null )
+			if ( Format == null )
 				Utility.Intern( ref m_Value );
 		}
 	}

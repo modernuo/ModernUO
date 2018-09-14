@@ -7,14 +7,8 @@ namespace Server.Engines.ConPVP
 {
 	public class LadderItem : Item
 	{
-		private LadderController m_Ladder;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public LadderController Ladder
-		{
-			get => m_Ladder;
-			set => m_Ladder = value;
-		}
+		public LadderController Ladder { get; set; }
 
 		public override string DefaultName => "1v1 leaderboard";
 
@@ -34,7 +28,7 @@ namespace Server.Engines.ConPVP
 
 			writer.Write( (int) 1 );
 
-			writer.Write( (Item) m_Ladder );
+			writer.Write( (Item) Ladder );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -47,7 +41,7 @@ namespace Server.Engines.ConPVP
 			{
 				case 1:
 				{
-					m_Ladder = reader.ReadItem() as LadderController;
+					Ladder = reader.ReadItem() as LadderController;
 					break;
 				}
 			}
@@ -59,8 +53,8 @@ namespace Server.Engines.ConPVP
 			{
 				Ladder ladder = Server.Engines.ConPVP.Ladder.Instance;
 
-				if ( m_Ladder != null )
-					ladder = m_Ladder.Ladder;
+				if ( Ladder != null )
+					ladder = Ladder.Ladder;
 
 				if ( ladder != null )
 				{

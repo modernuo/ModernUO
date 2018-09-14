@@ -500,50 +500,19 @@ namespace Server
 
 	public class LootPackEntry
 	{
-		private int m_Chance;
-		private LootPackDice m_Quantity;
-
-		private int m_MaxProps, m_MinIntensity, m_MaxIntensity;
-
 		private bool m_AtSpawnTime;
 
-		private LootPackItem[] m_Items;
+		public int Chance { get; set; }
 
-		public int Chance
-		{
-			get => m_Chance;
-			set => m_Chance = value;
-		}
+		public LootPackDice Quantity { get; set; }
 
-		public LootPackDice Quantity
-		{
-			get => m_Quantity;
-			set => m_Quantity = value;
-		}
+		public int MaxProps { get; set; }
 
-		public int MaxProps
-		{
-			get => m_MaxProps;
-			set => m_MaxProps = value;
-		}
+		public int MinIntensity { get; set; }
 
-		public int MinIntensity
-		{
-			get => m_MinIntensity;
-			set => m_MinIntensity = value;
-		}
+		public int MaxIntensity { get; set; }
 
-		public int MaxIntensity
-		{
-			get => m_MaxIntensity;
-			set => m_MaxIntensity = value;
-		}
-
-		public LootPackItem[] Items
-		{
-			get => m_Items;
-			set => m_Items = value;
-		}
+		public LootPackItem[] Items { get; set; }
 
 		private static bool IsInTokuno( Mobile m )
 		{
@@ -570,14 +539,14 @@ namespace Server
 
 			int totalChance = 0;
 
-			for ( int i = 0; i < m_Items.Length; ++i )
-				totalChance += m_Items[i].Chance;
+			for ( int i = 0; i < Items.Length; ++i )
+				totalChance += Items[i].Chance;
 
 			int rnd = Utility.Random( totalChance );
 
-			for ( int i = 0; i < m_Items.Length; ++i )
+			for ( int i = 0; i < Items.Length; ++i )
 			{
-				LootPackItem item = m_Items[i];
+				LootPackItem item = Items[i];
 
 				if ( rnd < item.Chance )
 					return Mutate( from, luckChance, item.Construct( IsInTokuno( from ), IsMondain( from ) ) );
@@ -590,7 +559,7 @@ namespace Server
 
 		private int GetRandomOldBonus()
 		{
-			int rnd = Utility.RandomMinMax( m_MinIntensity, m_MaxIntensity );
+			int rnd = Utility.RandomMinMax( MinIntensity, MaxIntensity );
 
 			if ( 50 > rnd )
 				return 1;
@@ -626,26 +595,26 @@ namespace Server
 					if ( Core.AOS )
 					{
 						int bonusProps = GetBonusProperties();
-						int min = m_MinIntensity;
-						int max = m_MaxIntensity;
+						int min = MinIntensity;
+						int max = MaxIntensity;
 
-						if ( bonusProps < m_MaxProps && LootPack.CheckLuck( luckChance ) )
+						if ( bonusProps < MaxProps && LootPack.CheckLuck( luckChance ) )
 							++bonusProps;
 
 						int props = 1 + bonusProps;
 
 						// Make sure we're not spawning items with 6 properties.
-						if ( props > m_MaxProps )
-							props = m_MaxProps;
+						if ( props > MaxProps )
+							props = MaxProps;
 
 						if ( item is BaseWeapon weapon )
-							BaseRunicTool.ApplyAttributesTo( weapon, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+							BaseRunicTool.ApplyAttributesTo( weapon, false, luckChance, props, MinIntensity, MaxIntensity );
 						else if ( item is BaseArmor armor )
-							BaseRunicTool.ApplyAttributesTo( armor, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+							BaseRunicTool.ApplyAttributesTo( armor, false, luckChance, props, MinIntensity, MaxIntensity );
 						else if ( item is BaseJewel jewel )
-							BaseRunicTool.ApplyAttributesTo( jewel, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+							BaseRunicTool.ApplyAttributesTo( jewel, false, luckChance, props, MinIntensity, MaxIntensity );
 						else
-							BaseRunicTool.ApplyAttributesTo( (BaseHat)item, false, luckChance, props, m_MinIntensity, m_MaxIntensity );
+							BaseRunicTool.ApplyAttributesTo( (BaseHat)item, false, luckChance, props, MinIntensity, MaxIntensity );
 					}
 					else // not aos
 					{
@@ -696,7 +665,7 @@ namespace Server
 				}
 
 				if ( item.Stackable )
-					item.Amount = m_Quantity.Roll();
+					item.Amount = Quantity.Roll();
 			}
 
 			return item;
@@ -721,19 +690,19 @@ namespace Server
 		public LootPackEntry( bool atSpawnTime, LootPackItem[] items, double chance, LootPackDice quantity, int maxProps, int minIntensity, int maxIntensity )
 		{
 			m_AtSpawnTime = atSpawnTime;
-			m_Items = items;
-			m_Chance = (int)(100 * chance);
-			m_Quantity = quantity;
-			m_MaxProps = maxProps;
-			m_MinIntensity = minIntensity;
-			m_MaxIntensity = maxIntensity;
+			Items = items;
+			Chance = (int)(100 * chance);
+			Quantity = quantity;
+			MaxProps = maxProps;
+			MinIntensity = minIntensity;
+			MaxIntensity = maxIntensity;
 		}
 
 		public int GetBonusProperties()
 		{
 			int p0=0, p1=0, p2=0, p3=0, p4=0, p5=0;
 
-			switch ( m_MaxProps )
+			switch ( MaxProps )
 			{
 				case 1: p0= 3; p1= 1; break;
 				case 2: p0= 6; p1= 3; p2= 1; break;
@@ -770,20 +739,9 @@ namespace Server
 
 	public class LootPackItem
 	{
-		private Type m_Type;
-		private int m_Chance;
+		public Type Type { get; set; }
 
-		public Type Type
-		{
-			get => m_Type;
-			set => m_Type = value;
-		}
-
-		public int Chance
-		{
-			get => m_Chance;
-			set => m_Chance = value;
-		}
+		public int Chance { get; set; }
 
 		private static Type[]   m_BlankTypes = { typeof( BlankScroll ) };
 		private static Type[][] m_NecroTypes = {
@@ -841,28 +799,28 @@ namespace Server
 			{
 				Item item;
 
-				if ( m_Type == typeof( BaseRanged ) )
+				if ( Type == typeof( BaseRanged ) )
 					item = Loot.RandomRangedWeapon( inTokuno, isMondain );
-				else if ( m_Type == typeof( BaseWeapon ) )
+				else if ( Type == typeof( BaseWeapon ) )
 					item = Loot.RandomWeapon( inTokuno, isMondain );
-				else if ( m_Type == typeof( BaseArmor ) )
+				else if ( Type == typeof( BaseArmor ) )
 					item = Loot.RandomArmorOrHat( inTokuno, isMondain );
-				else if ( m_Type == typeof( BaseShield ) )
+				else if ( Type == typeof( BaseShield ) )
 					item = Loot.RandomShield();
-				else if ( m_Type == typeof( BaseJewel ) )
+				else if ( Type == typeof( BaseJewel ) )
 					item = Core.AOS ? Loot.RandomJewelry() : Loot.RandomArmorOrShieldOrWeapon();
-				else if ( m_Type == typeof( BaseInstrument ) )
+				else if ( Type == typeof( BaseInstrument ) )
 					item = Loot.RandomInstrument();
-				else if ( m_Type == typeof( Amber ) ) // gem
+				else if ( Type == typeof( Amber ) ) // gem
 					item = Loot.RandomGem();
-				else if ( m_Type == typeof( ClumsyScroll ) ) // low scroll
+				else if ( Type == typeof( ClumsyScroll ) ) // low scroll
 					item = RandomScroll( 0, 1, 3 );
-				else if ( m_Type == typeof( ArchCureScroll ) ) // med scroll
+				else if ( Type == typeof( ArchCureScroll ) ) // med scroll
 					item = RandomScroll( 1, 4, 7 );
-				else if ( m_Type == typeof( SummonAirElementalScroll ) ) // high scroll
+				else if ( Type == typeof( SummonAirElementalScroll ) ) // high scroll
 					item = RandomScroll( 2, 8, 8 );
 				else
-					item = Activator.CreateInstance( m_Type ) as Item;
+					item = Activator.CreateInstance( Type ) as Item;
 
 				return item;
 			}
@@ -875,39 +833,25 @@ namespace Server
 
 		public LootPackItem( Type type, int chance )
 		{
-			m_Type = type;
-			m_Chance = chance;
+			Type = type;
+			Chance = chance;
 		}
 	}
 
 	public class LootPackDice
 	{
-		private int m_Count, m_Sides, m_Bonus;
+		public int Count { get; set; }
 
-		public int Count
-		{
-			get => m_Count;
-			set => m_Count = value;
-		}
+		public int Sides { get; set; }
 
-		public int Sides
-		{
-			get => m_Sides;
-			set => m_Sides = value;
-		}
-
-		public int Bonus
-		{
-			get => m_Bonus;
-			set => m_Bonus = value;
-		}
+		public int Bonus { get; set; }
 
 		public int Roll()
 		{
-			int v = m_Bonus;
+			int v = Bonus;
 
-			for ( int i = 0; i < m_Count; ++i )
-				v += Utility.Random( 1, m_Sides );
+			for ( int i = 0; i < Count; ++i )
+				v += Utility.Random( 1, Sides );
 
 			return v;
 		}
@@ -920,7 +864,7 @@ namespace Server
 			if ( index < start )
 				return;
 
-			m_Count = Utility.ToInt32( str.Substring( start, index-start ) );
+			Count = Utility.ToInt32( str.Substring( start, index-start ) );
 
 			start = index + 1;
 			index = str.IndexOf( '+', start );
@@ -933,7 +877,7 @@ namespace Server
 			if ( index < start )
 				index = str.Length;
 
-			m_Sides = Utility.ToInt32( str.Substring( start, index-start ) );
+			Sides = Utility.ToInt32( str.Substring( start, index-start ) );
 
 			if ( index == str.Length )
 				return;
@@ -941,17 +885,17 @@ namespace Server
 			start = index + 1;
 			index = str.Length;
 
-			m_Bonus = Utility.ToInt32( str.Substring( start, index-start ) );
+			Bonus = Utility.ToInt32( str.Substring( start, index-start ) );
 
 			if ( negative )
-				m_Bonus *= -1;
+				Bonus *= -1;
 		}
 
 		public LootPackDice( int count, int sides, int bonus )
 		{
-			m_Count = count;
-			m_Sides = sides;
-			m_Bonus = bonus;
+			Count = count;
+			Sides = sides;
+			Bonus = bonus;
 		}
 	}
 }

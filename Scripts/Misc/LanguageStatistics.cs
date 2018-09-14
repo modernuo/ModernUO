@@ -26,18 +26,17 @@ namespace Server.Misc
 	{
 		struct InternationalCode
 		{
-			string m_Code;
-			string m_Language;
-			string m_Country;
-			string m_Language_LocalName;
-			string m_Country_LocalName;
 			bool m_HasLocalInfo;
 
-			public string Code => m_Code;
-			public string Language => m_Language;
-			public string Country => m_Country;
-			public string Language_LocalName => m_Language_LocalName;
-			public string Country_LocalName => m_Country_LocalName;
+			public string Code { get; }
+
+			public string Language { get; }
+
+			public string Country { get; }
+
+			public string Language_LocalName { get; }
+
+			public string Country_LocalName { get; }
 
 			public InternationalCode( string code, string language, string country ) : this( code, language, country, null, null )
 			{
@@ -46,11 +45,11 @@ namespace Server.Misc
 
 			public InternationalCode( string code, string language, string country, string language_localname, string country_localname )
 			{
-				m_Code = code;
-				m_Language = language;
-				m_Country = country;
-				m_Language_LocalName = language_localname;
-				m_Country_LocalName = country_localname;
+				Code = code;
+				Language = language;
+				Country = country;
+				Language_LocalName = language_localname;
+				Country_LocalName = country_localname;
 				m_HasLocalInfo = true;
 			}
 
@@ -61,15 +60,15 @@ namespace Server.Misc
 				if ( m_HasLocalInfo )
 				{
 					s =
-						$"{(DefaultLocalNames ? m_Language_LocalName : m_Language)}‎ - {(DefaultLocalNames ? m_Country_LocalName : m_Country)}";
+						$"{(DefaultLocalNames ? Language_LocalName : Language)}‎ - {(DefaultLocalNames ? Country_LocalName : Country)}";
 
 					if ( ShowAlternatives )
 						s +=
-							$"‎ 【{(DefaultLocalNames ? m_Language : m_Language_LocalName)}‎ - {(DefaultLocalNames ? m_Country : m_Country_LocalName)}‎】";
+							$"‎ 【{(DefaultLocalNames ? Language : Language_LocalName)}‎ - {(DefaultLocalNames ? Country : Country_LocalName)}‎】";
 				}
 				else
 				{
-					s = $"{m_Language}‎ - {m_Country}";
+					s = $"{Language}‎ - {Country}";
 				}
 
 				return s;
@@ -313,21 +312,19 @@ namespace Server.Misc
 
 		private class InternationalCodeCounter
 		{
-			private string m_Code;
-			private int m_Count;
+			public string Code { get; }
 
-			public string Code => m_Code;
-			public int Count => m_Count;
+			public int Count { get; private set; }
 
 			public InternationalCodeCounter( string code )
 			{
-				m_Code = code;
-				m_Count = 1;
+				Code = code;
+				Count = 1;
 			}
 
 			public void Increase()
 			{
-				m_Count++;
+				Count++;
 			}
 		}
 

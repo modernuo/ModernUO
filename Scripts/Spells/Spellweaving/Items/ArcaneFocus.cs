@@ -6,14 +6,8 @@ namespace Server.Items
 	{
 		public override int LabelNumber => 1032629; // Arcane Focus
 
-		private int m_StrengthBonus;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int StrengthBonus
-		{
-			get => m_StrengthBonus;
-			set => m_StrengthBonus = value;
-		}
+		public int StrengthBonus { get; set; }
 
 		[Constructible]
 		public ArcaneFocus()
@@ -30,7 +24,7 @@ namespace Server.Items
 		public ArcaneFocus( TimeSpan lifeSpan, int strengthBonus ) : base( 0x3155, lifeSpan )
 		{
 			LootType = LootType.Blessed;
-			m_StrengthBonus = strengthBonus;
+			StrengthBonus = strengthBonus;
 		}
 
 		public ArcaneFocus( Serial serial ) : base( serial )
@@ -41,7 +35,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			list.Add( 1060485, m_StrengthBonus.ToString() ); // strength bonus ~1_val~
+			list.Add( 1060485, StrengthBonus.ToString() ); // strength bonus ~1_val~
 		}
 
 		public override TextDefinition InvalidTransferMessage => 1073480; // Your arcane focus disappears.
@@ -52,7 +46,7 @@ namespace Server.Items
 			base.Serialize( writer );
 			writer.Write( (int)0 );
 
-			writer.Write( m_StrengthBonus );
+			writer.Write( StrengthBonus );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -60,7 +54,7 @@ namespace Server.Items
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			m_StrengthBonus = reader.ReadInt();
+			StrengthBonus = reader.ReadInt();
 		}
 	}
 }

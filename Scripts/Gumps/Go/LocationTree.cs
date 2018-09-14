@@ -6,14 +6,10 @@ namespace Server.Gumps
 {
 	public class LocationTree
 	{
-		private Map m_Map;
-		private ParentNode m_Root;
-		private Dictionary<Mobile, ParentNode> m_LastBranch;
-
 		public LocationTree( string fileName, Map map )
 		{
-			m_LastBranch = new Dictionary<Mobile, ParentNode>();
-			m_Map = map;
+			LastBranch = new Dictionary<Mobile, ParentNode>();
+			Map = map;
 
 			string path = Path.Combine( "Data/Locations/", fileName );
 
@@ -23,17 +19,17 @@ namespace Server.Gumps
 
 				xml.WhitespaceHandling = WhitespaceHandling.None;
 
-				m_Root = Parse( xml );
+				Root = Parse( xml );
 
 				xml.Close();
 			}
 		}
 
-		public Dictionary<Mobile, ParentNode> LastBranch => m_LastBranch;
+		public Dictionary<Mobile, ParentNode> LastBranch { get; }
 
-		public Map Map => m_Map;
+		public Map Map { get; }
 
-		public ParentNode Root => m_Root;
+		public ParentNode Root { get; }
 
 		private ParentNode Parse( XmlTextReader xml )
 		{

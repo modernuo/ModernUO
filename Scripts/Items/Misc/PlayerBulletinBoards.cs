@@ -69,37 +69,20 @@ namespace Server.Items
 
 	public abstract class BasePlayerBB : Item, ISecurable
 	{
-		private PlayerBBMessage m_Greeting;
-		private List<PlayerBBMessage> m_Messages;
-		private string m_Title;
-		private SecureLevel m_Level;
+		public List<PlayerBBMessage> Messages { get; private set; }
 
-		public List<PlayerBBMessage> Messages => m_Messages;
-
-		public PlayerBBMessage Greeting
-		{
-			get => m_Greeting;
-			set => m_Greeting = value;
-		}
+		public PlayerBBMessage Greeting { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Title
-		{
-			get => m_Title;
-			set => m_Title = value;
-		}
+		public string Title { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get => m_Level;
-			set => m_Level = value;
-		}
+		public SecureLevel Level { get; set; }
 
 		public BasePlayerBB( int itemID ) : base( itemID )
 		{
-			m_Messages = new List<PlayerBBMessage>();
-			m_Level = SecureLevel.Anyone;
+			Messages = new List<PlayerBBMessage>();
+			Level = SecureLevel.Anyone;
 		}
 
 		public BasePlayerBB( Serial serial ) : base( serial )
@@ -118,24 +101,24 @@ namespace Server.Items
 
 			writer.Write( (int) 1 );
 
-			writer.Write( (int) m_Level );
+			writer.Write( (int) Level );
 
-			writer.Write( m_Title );
+			writer.Write( Title );
 
-			if ( m_Greeting != null )
+			if ( Greeting != null )
 			{
 				writer.Write( true );
-				m_Greeting.Serialize( writer );
+				Greeting.Serialize( writer );
 			}
 			else
 			{
 				writer.Write( false );
 			}
 
-			writer.WriteEncodedInt( m_Messages.Count );
+			writer.WriteEncodedInt( Messages.Count );
 
-			for ( int i = 0; i < m_Messages.Count; ++i )
-				m_Messages[i].Serialize( writer );
+			for ( int i = 0; i < Messages.Count; ++i )
+				Messages[i].Serialize( writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -148,25 +131,25 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_Level = (SecureLevel)reader.ReadInt();
+					Level = (SecureLevel)reader.ReadInt();
 					goto case 0;
 				}
 				case 0:
 				{
 					if ( version < 1 )
-						m_Level = SecureLevel.Anyone;
+						Level = SecureLevel.Anyone;
 
-					m_Title = reader.ReadString();
+					Title = reader.ReadString();
 
 					if ( reader.ReadBool() )
-						m_Greeting = new PlayerBBMessage( reader );
+						Greeting = new PlayerBBMessage( reader );
 
 					int count = reader.ReadEncodedInt();
 
-					m_Messages = new List<PlayerBBMessage>( count );
+					Messages = new List<PlayerBBMessage>( count );
 
 					for ( int i = 0; i < count; ++i )
-						m_Messages.Add( new PlayerBBMessage( reader ) );
+						Messages.Add( new PlayerBBMessage( reader ) );
 
 					break;
 				}
@@ -327,36 +310,20 @@ namespace Server.Items
 
 	public class PlayerBBMessage
 	{
-		private DateTime m_Time;
-		private Mobile m_Poster;
-		private string m_Message;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime Time { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime Time
-		{
-			get => m_Time;
-			set => m_Time = value;
-		}
+		public Mobile Poster { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Poster
-		{
-			get => m_Poster;
-			set => m_Poster = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public string Message
-		{
-			get => m_Message;
-			set => m_Message = value;
-		}
+		public string Message { get; set; }
 
 		public PlayerBBMessage( DateTime time, Mobile poster, string message )
 		{
-			m_Time = time;
-			m_Poster = poster;
-			m_Message = message;
+			Time = time;
+			Poster = poster;
+			Message = message;
 		}
 
 		public PlayerBBMessage( GenericReader reader )
@@ -367,9 +334,9 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_Time = reader.ReadDateTime();
-					m_Poster = reader.ReadMobile();
-					m_Message = reader.ReadString();
+					Time = reader.ReadDateTime();
+					Poster = reader.ReadMobile();
+					Message = reader.ReadString();
 					break;
 				}
 			}
@@ -379,9 +346,9 @@ namespace Server.Items
 		{
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_Time );
-			writer.Write( m_Poster );
-			writer.Write( m_Message );
+			writer.Write( Time );
+			writer.Write( Poster );
+			writer.Write( Message );
 		}
 	}
 

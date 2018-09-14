@@ -9,17 +9,15 @@ namespace Server.Commands.Generic
 		private static readonly Type typeofItem = typeof( Item );
 		private static readonly Type typeofMobile = typeof( Mobile );
 
-		private Type m_ObjectType;
-
 		private ICondition[][] m_Conditions;
 
 		private IConditional[] m_Conditionals;
 
-		public Type Type => m_ObjectType;
+		public Type Type { get; }
 
-		public bool IsItem => ( m_ObjectType == null || m_ObjectType == typeofItem || m_ObjectType.IsSubclassOf( typeofItem ) );
+		public bool IsItem => ( Type == null || Type == typeofItem || Type.IsSubclassOf( typeofItem ) );
 
-		public bool IsMobile => ( m_ObjectType == null || m_ObjectType == typeofMobile || m_ObjectType.IsSubclassOf( typeofMobile ) );
+		public bool IsMobile => ( Type == null || Type == typeofMobile || Type.IsSubclassOf( typeofMobile ) );
 
 		public static readonly ObjectConditional Empty = new ObjectConditional( null, null );
 
@@ -33,12 +31,12 @@ namespace Server.Commands.Generic
 			m_Conditionals = new IConditional[m_Conditions.Length];
 
 			for ( int i = 0; i < m_Conditionals.Length; ++i )
-				m_Conditionals[i] = ConditionalCompiler.Compile( emitter, m_ObjectType, m_Conditions[i], i );
+				m_Conditionals[i] = ConditionalCompiler.Compile( emitter, Type, m_Conditions[i], i );
 		}
 
 		public bool CheckCondition( object obj )
 		{
-			if ( m_ObjectType == null )
+			if ( Type == null )
 				return true; // null type means no condition
 
 			if ( !HasCompiled )
@@ -243,7 +241,7 @@ namespace Server.Commands.Generic
 
 		public ObjectConditional( Type objectType, ICondition[][] conditions )
 		{
-			m_ObjectType = objectType;
+			Type = objectType;
 			m_Conditions = conditions;
 		}
 	}

@@ -7,16 +7,14 @@ namespace Server.Menus.Questions
 {
 	public class StuckMenuEntry
 	{
-		private int m_Name;
-		private Point3D[] m_Locations;
+		public int Name { get; }
 
-		public int Name => m_Name;
-		public Point3D[] Locations => m_Locations;
+		public Point3D[] Locations { get; }
 
 		public StuckMenuEntry( int name, Point3D[] locations )
 		{
-			m_Name = name;
-			m_Locations = locations;
+			Name = name;
+			Locations = locations;
 		}
 	}
 

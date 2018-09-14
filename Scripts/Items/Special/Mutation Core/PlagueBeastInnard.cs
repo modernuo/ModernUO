@@ -75,13 +75,7 @@ namespace Server.Items
 
 	public class PlagueBeastComponent : PlagueBeastInnard
 	{
-		private PlagueBeastOrgan m_Organ;
-
-		public PlagueBeastOrgan Organ
-		{
-			get => m_Organ;
-			set => m_Organ = value;
-		}
+		public PlagueBeastOrgan Organ { get; set; }
 
 		public bool IsBrain => ItemID == 0x1CF0;
 
@@ -123,10 +117,10 @@ namespace Server.Items
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( m_Organ != null && m_Organ.OnDropped( from, dropped, this ) )
+			if ( Organ != null && Organ.OnDropped( from, dropped, this ) )
 			{
 				if ( dropped is PlagueBeastComponent component )
-					m_Organ.Components.Add( component );
+					Organ.Components.Add( component );
 			}
 
  			return true;
@@ -136,14 +130,14 @@ namespace Server.Items
 		{
 			if ( IsAccessibleTo( from ) )
 			{
-				if ( m_Organ != null && m_Organ.OnLifted( from, this ) )
+				if ( Organ != null && Organ.OnLifted( from, this ) )
 				{
 					from.SendLocalizedMessage( IsGland ? 1071895 : 1071914, null, 0x3B2 ); // * You rip the organ out of the plague beast's flesh *
 
-					if ( m_Organ.Components.Contains( this ) )
-						m_Organ.Components.Remove( this );
+					if ( Organ.Components.Contains( this ) )
+						Organ.Components.Remove( this );
 
-					m_Organ = null;
+					Organ = null;
 					from.PlaySound( 0x1CA );
 				}
 
@@ -163,7 +157,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.WriteItem<PlagueBeastOrgan>( m_Organ );
+			writer.WriteItem<PlagueBeastOrgan>( Organ );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -172,7 +166,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Organ = reader.ReadItem<PlagueBeastOrgan>();
+			Organ = reader.ReadItem<PlagueBeastOrgan>();
 		}
 	}
 }

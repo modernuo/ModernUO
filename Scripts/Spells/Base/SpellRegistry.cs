@@ -37,8 +37,7 @@ namespace Server.Spells
 
 		private static Dictionary<Type, int> m_IDsFromTypes = new Dictionary<Type, int>( m_Types.Length );
 
-		private static Dictionary<int, SpecialMove> m_SpecialMoves = new Dictionary<int, SpecialMove>();
-		public static Dictionary<int, SpecialMove> SpecialMoves  => m_SpecialMoves;
+		public static Dictionary<int, SpecialMove> SpecialMoves { get; } = new Dictionary<int, SpecialMove>();
 
 		public static int GetRegistryNumber( ISpell s )
 		{
@@ -84,7 +83,7 @@ namespace Server.Spells
 				}
 
 				if ( spm != null )
-					m_SpecialMoves.Add( spellID, spm );
+					SpecialMoves.Add( spellID, spm );
 			}
 		}
 
@@ -95,10 +94,10 @@ namespace Server.Spells
 
 			Type t = m_Types[spellID];
 
-			if ( t == null || !t.IsSubclassOf( typeof( SpecialMove ) ) || !m_SpecialMoves.ContainsKey( spellID ) )
+			if ( t == null || !t.IsSubclassOf( typeof( SpecialMove ) ) || !SpecialMoves.ContainsKey( spellID ) )
 				return null;
 
-			return m_SpecialMoves[spellID];
+			return SpecialMoves[spellID];
 		}
 
 		private static object[] m_Params = new object[2];

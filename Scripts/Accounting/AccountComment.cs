@@ -5,14 +5,12 @@ namespace Server.Accounting
 {
 	public class AccountComment
 	{
-		private string m_AddedBy;
 		private string m_Content;
-		private DateTime m_LastModified;
 
 		/// <summary>
 		/// A string representing who added this comment.
 		/// </summary>
-		public string AddedBy => m_AddedBy;
+		public string AddedBy { get; }
 
 		/// <summary>
 		/// Gets or sets the body of this comment. Setting this value will reset LastModified.
@@ -20,13 +18,13 @@ namespace Server.Accounting
 		public string Content
 		{
 			get => m_Content;
-			set{ m_Content = value; m_LastModified = DateTime.UtcNow; }
+			set{ m_Content = value; LastModified = DateTime.UtcNow; }
 		}
 
 		/// <summary>
 		/// The date and time when this account was last modified -or- the comment creation time, if never modified.
 		/// </summary>
-		public DateTime LastModified => m_LastModified;
+		public DateTime LastModified { get; private set; }
 
 		/// <summary>
 		/// Constructs a new AccountComment instance.
@@ -35,9 +33,9 @@ namespace Server.Accounting
 		/// <param name="content">Initial Content value.</param>
 		public AccountComment( string addedBy, string content )
 		{
-			m_AddedBy = addedBy;
+			AddedBy = addedBy;
 			m_Content = content;
-			m_LastModified = DateTime.UtcNow;
+			LastModified = DateTime.UtcNow;
 		}
 
 		/// <summary>
@@ -46,8 +44,8 @@ namespace Server.Accounting
 		/// <param name="node">The XmlElement instance from which to deserialize.</param>
 		public AccountComment( XmlElement node )
 		{
-			m_AddedBy = Utility.GetAttribute( node, "addedBy", "empty" );
-			m_LastModified = Utility.GetXMLDateTime( Utility.GetAttribute( node, "lastModified" ), DateTime.UtcNow );
+			AddedBy = Utility.GetAttribute( node, "addedBy", "empty" );
+			LastModified = Utility.GetXMLDateTime( Utility.GetAttribute( node, "lastModified" ), DateTime.UtcNow );
 			m_Content = Utility.GetText( node, "" );
 		}
 
@@ -59,9 +57,9 @@ namespace Server.Accounting
 		{
 			xml.WriteStartElement( "comment" );
 
-			xml.WriteAttributeString( "addedBy", m_AddedBy );
+			xml.WriteAttributeString( "addedBy", AddedBy );
 
-			xml.WriteAttributeString( "lastModified", XmlConvert.ToString( m_LastModified, XmlDateTimeSerializationMode.Utc ) );
+			xml.WriteAttributeString( "lastModified", XmlConvert.ToString( LastModified, XmlDateTimeSerializationMode.Utc ) );
 
 			xml.WriteString( m_Content );
 

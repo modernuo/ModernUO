@@ -2,27 +2,22 @@ namespace Server.Engines.Craft
 {
 	public class CraftGroup
 	{
-		private CraftItemCol m_arCraftItem;
-
-		private string m_NameString;
-		private int m_NameNumber;
-
 		public CraftGroup( TextDefinition groupName )
 		{
-			m_NameNumber = groupName;
-			m_NameString = groupName;
-			m_arCraftItem = new CraftItemCol();
+			NameNumber = groupName;
+			NameString = groupName;
+			CraftItems = new CraftItemCol();
 		}
 
 		public void AddCraftItem( CraftItem craftItem )
 		{
-			m_arCraftItem.Add( craftItem );
+			CraftItems.Add( craftItem );
 		}
 
-		public CraftItemCol CraftItems => m_arCraftItem;
+		public CraftItemCol CraftItems { get; }
 
-		public string NameString => m_NameString;
+		public string NameString { get; }
 
-		public int NameNumber => m_NameNumber;
+		public int NameNumber { get; }
 	}
 }

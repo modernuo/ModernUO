@@ -8,25 +8,11 @@ namespace Server.Items
 	{
 		public virtual bool IsCuttable  => false;
 
-		private List<PlagueBeastComponent> m_Components;
+		public List<PlagueBeastComponent> Components { get; private set; }
 
-		public List<PlagueBeastComponent> Components => m_Components;
+		public int BrainHue { get; set; }
 
-		private int m_BrainHue;
-
-		public int BrainHue
-		{
-			get => m_BrainHue;
-			set => m_BrainHue = value;
-		}
-
-		private bool m_Opened;
-
-		public bool Opened
-		{
-			get => m_Opened;
-			set => m_Opened = value;
-		}
+		public bool Opened { get; set; }
 
 		private Timer m_Timer;
 
@@ -37,8 +23,8 @@ namespace Server.Items
 
 		public PlagueBeastOrgan( int itemID, int hue ) : base( itemID, hue )
 		{
-			m_Components = new List<PlagueBeastComponent>();
-			m_Opened = false;
+			Components = new List<PlagueBeastComponent>();
+			Opened = false;
 
 			Movable = false;
 
@@ -58,14 +44,14 @@ namespace Server.Items
 			c.Location = new Point3D( X + x, Y + y, Z );
 			c.Map = Map;
 
-			m_Components.Add( c );
+			Components.Add( c );
 		}
 
 		public override bool Scissor( Mobile from, Scissors scissors )
 		{
 			if ( IsCuttable && IsAccessibleTo( from ) )
 			{
-				if ( !m_Opened && m_Timer == null )
+				if ( !Opened && m_Timer == null )
 				{
 					m_Timer = Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( 3 ), FinishOpening, from );
 					scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071897 ); // You carefully cut into the organ.
@@ -96,7 +82,7 @@ namespace Server.Items
 
 		public virtual void FinishOpening( Mobile from )
 		{
-			m_Opened = true;
+			Opened = true;
 
 			Owner?.PlaySound( 0x50 );
 		}
@@ -111,9 +97,9 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.WriteItemList<PlagueBeastComponent>( m_Components );
-			writer.Write( (int) m_BrainHue );
-			writer.Write( (bool) m_Opened );
+			writer.WriteItemList<PlagueBeastComponent>( Components );
+			writer.Write( (int) BrainHue );
+			writer.Write( (bool) Opened );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -122,9 +108,9 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Components = reader.ReadStrongItemList<PlagueBeastComponent>();
-			m_BrainHue = reader.ReadInt();
-			m_Opened = reader.ReadBool();
+			Components = reader.ReadStrongItemList<PlagueBeastComponent>();
+			BrainHue = reader.ReadInt();
+			Opened = reader.ReadBool();
 		}
 	}
 

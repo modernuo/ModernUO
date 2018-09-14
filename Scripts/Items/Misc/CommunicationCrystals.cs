@@ -29,16 +29,14 @@ namespace Server.Items
 			return null;
 		}
 
-		private Type m_Type;
-		private int m_Amount;
+		public Type Type { get; }
 
-		public Type Type => m_Type;
-		public int Amount => m_Amount;
+		public int Amount { get; }
 
 		private CrystalRechargeInfo( Type type, int amount )
 		{
-			m_Type = type;
-			m_Amount = amount;
+			Type = type;
+			Amount = amount;
 		}
 	}
 
@@ -49,7 +47,6 @@ namespace Server.Items
 		public override int LabelNumber => 1060740; // communication crystal
 
 		private int m_Charges;
-		private List<ReceiverCrystal> m_Receivers;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
@@ -73,7 +70,7 @@ namespace Server.Items
 			}
 		}
 
-		public List<ReceiverCrystal> Receivers => m_Receivers;
+		public List<ReceiverCrystal> Receivers { get; private set; }
 
 		[Constructible]
 		public BroadcastCrystal() : this( 2000 )
@@ -87,7 +84,7 @@ namespace Server.Items
 
 			m_Charges = charges;
 
-			m_Receivers = new List<ReceiverCrystal>();
+			Receivers = new List<ReceiverCrystal>();
 		}
 
 		public BroadcastCrystal( Serial serial ) : base( serial )
@@ -274,7 +271,7 @@ namespace Server.Items
 			writer.WriteEncodedInt( 0 ); // version
 
 			writer.WriteEncodedInt( m_Charges );
-			writer.WriteItemList<ReceiverCrystal>( m_Receivers );
+			writer.WriteItemList<ReceiverCrystal>( Receivers );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -284,7 +281,7 @@ namespace Server.Items
 			int version = reader.ReadEncodedInt();
 
 			m_Charges = reader.ReadEncodedInt();
-			m_Receivers = reader.ReadStrongItemList<ReceiverCrystal>();
+			Receivers = reader.ReadStrongItemList<ReceiverCrystal>();
 		}
 	}
 

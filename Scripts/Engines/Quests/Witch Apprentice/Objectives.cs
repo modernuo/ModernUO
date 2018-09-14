@@ -21,12 +21,11 @@ namespace Server.Engines.Quests.Hag
 			return m_CorpseLocations[index];
 		}
 
-		private Corpse m_Corpse;
 		private Point3D m_CorpseLocation;
 
 		public override object Message => 1055014;
 
-		public Corpse Corpse => m_Corpse;
+		public Corpse Corpse { get; private set; }
 
 		public FindApprenticeObjective( bool init )
 		{
@@ -43,10 +42,10 @@ namespace Server.Engines.Quests.Hag
 			PlayerMobile player = System.From;
 			Map map = player.Map;
 
-			if ( ( m_Corpse == null || m_Corpse.Deleted ) && ( map == Map.Trammel || map == Map.Felucca ) && player.InRange( m_CorpseLocation, 8 ) )
+			if ( ( Corpse == null || Corpse.Deleted ) && ( map == Map.Trammel || map == Map.Felucca ) && player.InRange( m_CorpseLocation, 8 ) )
 			{
-				m_Corpse = new HagApprenticeCorpse();
-				m_Corpse.MoveToWorld( m_CorpseLocation, map );
+				Corpse = new HagApprenticeCorpse();
+				Corpse.MoveToWorld( m_CorpseLocation, map );
 
 				Effects.SendLocationEffect( m_CorpseLocation, map, 0x3728, 10, 10 );
 				Effects.PlaySound( m_CorpseLocation, map, 0x1FE );
@@ -55,7 +54,7 @@ namespace Server.Engines.Quests.Hag
 				imp.MoveToWorld( m_CorpseLocation, map );
 
 				// * You see a strange imp stealing a scrap of paper from the bloodied corpse *
-				m_Corpse.SendLocalizedMessageTo( player, 1055049 );
+				Corpse.SendLocalizedMessageTo( player, 1055049 );
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 3.0 ), new TimerStateCallback( DeleteImp ), imp );
 			}
@@ -90,7 +89,7 @@ namespace Server.Engines.Quests.Hag
 				}
 				case 0:
 				{
-					m_Corpse = (Corpse) reader.ReadItem();
+					Corpse = (Corpse) reader.ReadItem();
 					break;
 				}
 			}
@@ -101,13 +100,13 @@ namespace Server.Engines.Quests.Hag
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
-			if ( m_Corpse != null && m_Corpse.Deleted )
-				m_Corpse = null;
+			if ( Corpse != null && Corpse.Deleted )
+				Corpse = null;
 
 			writer.WriteEncodedInt( (int) 1 ); // version
 
 			writer.Write( (Point3D) m_CorpseLocation );
-			writer.Write( (Item) m_Corpse );
+			writer.Write( (Item) Corpse );
 		}
 	}
 
@@ -192,15 +191,13 @@ namespace Server.Engines.Quests.Hag
 
 	public class FindZeefzorpulObjective : QuestObjective
 	{
-		private Point3D m_ImpLocation;
-
 		public override object Message => 1055017;
 
-		public Point3D ImpLocation => m_ImpLocation;
+		public Point3D ImpLocation { get; private set; }
 
 		public FindZeefzorpulObjective( Point3D impLocation )
 		{
-			m_ImpLocation = impLocation;
+			ImpLocation = impLocation;
 		}
 
 		public FindZeefzorpulObjective()
@@ -212,11 +209,11 @@ namespace Server.Engines.Quests.Hag
 			Mobile from = System.From;
 			Map map = from.Map;
 
-			Effects.SendLocationEffect( m_ImpLocation, map, 0x3728, 10, 10 );
-			Effects.PlaySound( m_ImpLocation, map, 0x1FE );
+			Effects.SendLocationEffect( ImpLocation, map, 0x3728, 10, 10 );
+			Effects.PlaySound( ImpLocation, map, 0x1FE );
 
 			Mobile imp = new Zeefzorpul();
-			imp.MoveToWorld( m_ImpLocation, map );
+			imp.MoveToWorld( ImpLocation, map );
 
 			imp.Direction = imp.GetDirectionTo( from );
 
@@ -242,14 +239,14 @@ namespace Server.Engines.Quests.Hag
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_ImpLocation = reader.ReadPoint3D();
+			ImpLocation = reader.ReadPoint3D();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.Write( (Point3D) m_ImpLocation );
+			writer.Write( (Point3D) ImpLocation );
 		}
 	}
 
@@ -269,14 +266,11 @@ namespace Server.Engines.Quests.Hag
 
 	public class FindIngredientObjective : QuestObjective
 	{
-		private Ingredient[] m_Ingredients;
-		private bool m_BlackheartMet;
-
 		public override object Message
 		{
 			get
 			{
-				if ( !m_BlackheartMet )
+				if ( !BlackheartMet )
 				{
 					switch ( Step )
 					{
@@ -317,10 +311,11 @@ namespace Server.Engines.Quests.Hag
 			}
 		}
 
-		public Ingredient[] Ingredients => m_Ingredients;
-		public Ingredient Ingredient => m_Ingredients[m_Ingredients.Length - 1];
-		public int Step => m_Ingredients.Length;
-		public bool BlackheartMet => m_BlackheartMet;
+		public Ingredient[] Ingredients { get; private set; }
+
+		public Ingredient Ingredient => Ingredients[Ingredients.Length - 1];
+		public int Step => Ingredients.Length;
+		public bool BlackheartMet { get; private set; }
 
 		public FindIngredientObjective( Ingredient[] oldIngredients ) : this( oldIngredients, false )
 		{
@@ -330,22 +325,22 @@ namespace Server.Engines.Quests.Hag
 		{
 			if ( !blackheartMet )
 			{
-				m_Ingredients = new Ingredient[oldIngredients.Length + 1];
+				Ingredients = new Ingredient[oldIngredients.Length + 1];
 
 				for ( int i = 0; i < oldIngredients.Length; i++ )
-					m_Ingredients[i] = oldIngredients[i];
+					Ingredients[i] = oldIngredients[i];
 
-				m_Ingredients[m_Ingredients.Length - 1] = IngredientInfo.RandomIngredient( oldIngredients );
+				Ingredients[Ingredients.Length - 1] = IngredientInfo.RandomIngredient( oldIngredients );
 			}
 			else
 			{
-				m_Ingredients = new Ingredient[oldIngredients.Length];
+				Ingredients = new Ingredient[oldIngredients.Length];
 
 				for ( int i = 0; i < oldIngredients.Length; i++ )
-					m_Ingredients[i] = oldIngredients[i];
+					Ingredients[i] = oldIngredients[i];
 			}
 
-			m_BlackheartMet = blackheartMet;
+			BlackheartMet = blackheartMet;
 		}
 
 		public FindIngredientObjective()
@@ -418,7 +413,7 @@ namespace Server.Engines.Quests.Hag
 			System.From.SendLocalizedMessage( 1055046 ); // You have completed your current task on the Hag's Magic Brew Recipe list.
 
 			if ( Step < 3 )
-				System.AddObjective( new FindIngredientObjective( m_Ingredients ) );
+				System.AddObjective( new FindIngredientObjective( Ingredients ) );
 			else
 				System.AddObjective( new ReturnIngredientsObjective() );
 		}
@@ -427,22 +422,22 @@ namespace Server.Engines.Quests.Hag
 		{
 			int version = reader.ReadEncodedInt();
 
-			m_Ingredients = new Ingredient[reader.ReadEncodedInt()];
-			for ( int i = 0; i < m_Ingredients.Length; i++ )
-				m_Ingredients[i] = (Ingredient) reader.ReadEncodedInt();
+			Ingredients = new Ingredient[reader.ReadEncodedInt()];
+			for ( int i = 0; i < Ingredients.Length; i++ )
+				Ingredients[i] = (Ingredient) reader.ReadEncodedInt();
 
-			m_BlackheartMet = reader.ReadBool();
+			BlackheartMet = reader.ReadBool();
 		}
 
 		public override void ChildSerialize( GenericWriter writer )
 		{
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.WriteEncodedInt( (int) m_Ingredients.Length );
-			for ( int i = 0; i < m_Ingredients.Length; i++ )
-				writer.WriteEncodedInt( (int) m_Ingredients[i] );
+			writer.WriteEncodedInt( (int) Ingredients.Length );
+			for ( int i = 0; i < Ingredients.Length; i++ )
+				writer.WriteEncodedInt( (int) Ingredients[i] );
 
-			writer.Write( (bool) m_BlackheartMet );
+			writer.Write( (bool) BlackheartMet );
 		}
 	}
 

@@ -4,25 +4,14 @@ namespace Server.Engines.Quests
 {
 	public class QuestItemInfo
 	{
-		private object m_Name;
-		private int m_ItemID;
+		public object Name { get; set; }
 
-		public object Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
-
-		public int ItemID
-		{
-			get => m_ItemID;
-			set => m_ItemID = value;
-		}
+		public int ItemID { get; set; }
 
 		public QuestItemInfo( object name, int itemID )
 		{
-			m_Name = name;
-			m_ItemID = itemID;
+			Name = name;
+			ItemID = itemID;
 		}
 	}
 

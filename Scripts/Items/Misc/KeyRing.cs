@@ -7,16 +7,14 @@ namespace Server.Items
 	{
 		public static readonly int MaxKeys = 20;
 
-		private List<Key> m_Keys;
-
-		public List<Key> Keys  => m_Keys;
+		public List<Key> Keys { get; private set; }
 
 		[Constructible]
 		public KeyRing() : base( 0x1011 )
 		{
 			Weight = 1.0; // They seem to have no weight on OSI ?!
 
-			m_Keys = new List<Key>();
+			Keys = new List<Key>();
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
@@ -98,18 +96,18 @@ namespace Server.Items
 		{
 			base.OnDelete();
 
-			foreach ( Key key in m_Keys )
+			foreach ( Key key in Keys )
 			{
 				key.Delete();
 			}
 
-			m_Keys.Clear();
+			Keys.Clear();
 		}
 
 		public void Add( Key key )
 		{
 			key.Internalize();
-			m_Keys.Add( key );
+			Keys.Add( key );
 
 			UpdateItemID();
 		}
@@ -119,14 +117,14 @@ namespace Server.Items
 			if ( !(Parent is Container cont) )
 				return;
 
-			for ( int i = m_Keys.Count - 1; i >= 0; i-- )
+			for ( int i = Keys.Count - 1; i >= 0; i-- )
 			{
-				Key key = m_Keys[i];
+				Key key = Keys[i];
 
 				if ( !key.Deleted && !cont.TryDropItem( from, key, true ) )
 					break;
 
-				m_Keys.RemoveAt( i );
+				Keys.RemoveAt( i );
 			}
 
 			UpdateItemID();
@@ -134,14 +132,14 @@ namespace Server.Items
 
 		public void RemoveKeys( uint keyValue )
 		{
-			for ( int i = m_Keys.Count - 1; i >= 0; i-- )
+			for ( int i = Keys.Count - 1; i >= 0; i-- )
 			{
-				Key key = m_Keys[i];
+				Key key = Keys[i];
 
 				if ( key.KeyValue == keyValue )
 				{
 					key.Delete();
-					m_Keys.RemoveAt( i );
+					Keys.RemoveAt( i );
 				}
 			}
 
@@ -150,7 +148,7 @@ namespace Server.Items
 
 		public bool ContainsKey( uint keyValue )
 		{
-			foreach ( Key key in m_Keys )
+			foreach ( Key key in Keys )
 			{
 				if ( key.KeyValue == keyValue )
 					return true;
@@ -181,7 +179,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.WriteItemList<Key>( m_Keys );
+			writer.WriteItemList<Key>( Keys );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -190,7 +188,7 @@ namespace Server.Items
 
 			int version = reader.ReadEncodedInt();
 
-			m_Keys = reader.ReadStrongItemList<Key>();
+			Keys = reader.ReadStrongItemList<Key>();
 		}
 	}
 }

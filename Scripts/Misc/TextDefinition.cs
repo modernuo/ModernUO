@@ -8,13 +8,11 @@ namespace Server
 	[Parsable]
 	public class TextDefinition
 	{
-		private int m_Number;
-		private string m_String;
+		public int Number { get; }
 
-		public int Number  => m_Number;
-		public string String  => m_String;
+		public string String { get; }
 
-		public bool IsEmpty => ( m_Number <= 0 && m_String == null );
+		public bool IsEmpty => ( Number <= 0 && String == null );
 
 		public TextDefinition() : this( 0, null )
 		{
@@ -30,36 +28,36 @@ namespace Server
 
 		public TextDefinition( int number, string text )
 		{
-			m_Number = number;
-			m_String = text;
+			Number = number;
+			String = text;
 		}
 
 		public override string ToString()
 		{
-			if ( m_Number > 0 )
-				return string.Concat( "#", m_Number.ToString() );
-			if ( m_String != null )
-				return m_String;
+			if ( Number > 0 )
+				return string.Concat( "#", Number.ToString() );
+			if ( String != null )
+				return String;
 
 			return "";
 		}
 
 		public string Format( bool propsGump )
 		{
-			if ( m_Number > 0 )
-				return string.Format( "{0} (0x{0:X})", m_Number );
-			if ( m_String != null )
-				return $"\"{m_String}\"";
+			if ( Number > 0 )
+				return string.Format( "{0} (0x{0:X})", Number );
+			if ( String != null )
+				return $"\"{String}\"";
 
 			return propsGump ? "-empty-" : "empty";
 		}
 
 		public string GetValue()
 		{
-			if ( m_Number > 0 )
-				return m_Number.ToString();
-			if ( m_String != null )
-				return m_String;
+			if ( Number > 0 )
+				return Number.ToString();
+			if ( String != null )
+				return String;
 
 			return "";
 		}
@@ -70,15 +68,15 @@ namespace Server
 			{
 				writer.WriteEncodedInt( 3 );
 			}
-			else if ( def.m_Number > 0 )
+			else if ( def.Number > 0 )
 			{
 				writer.WriteEncodedInt( 1 );
-				writer.WriteEncodedInt( def.m_Number );
+				writer.WriteEncodedInt( def.Number );
 			}
-			else if ( def.m_String != null )
+			else if ( def.String != null )
 			{
 				writer.WriteEncodedInt( 2 );
-				writer.Write( def.m_String );
+				writer.Write( def.String );
 			}
 			else
 			{
@@ -105,10 +103,10 @@ namespace Server
 			if ( def == null )
 				return;
 
-			if ( def.m_Number > 0 )
-				list.Add( def.m_Number );
-			else if ( def.m_String != null )
-				list.Add( def.m_String );
+			if ( def.Number > 0 )
+				list.Add( def.Number );
+			else if ( def.String != null )
+				list.Add( def.String );
 		}
 
 		public static implicit operator TextDefinition( int v )
@@ -126,12 +124,12 @@ namespace Server
 			if ( m == null )
 				return 0;
 
-			return m.m_Number;
+			return m.Number;
 		}
 
 		public static implicit operator string( TextDefinition m )
 		{
-			return m?.m_String;
+			return m?.String;
 		}
 
 		public static void AddHtmlText( Gump g, int x, int y, int width, int height, TextDefinition def, bool back, bool scroll, int numberColor, int stringColor )
@@ -139,19 +137,19 @@ namespace Server
 			if ( def == null )
 				return;
 
-			if ( def.m_Number > 0 )
+			if ( def.Number > 0 )
 			{
 				if ( numberColor >= 0 ) // 5 bits per RGB component (15 bit RGB)
-					g.AddHtmlLocalized( x, y, width, height, def.m_Number, numberColor, back, scroll );
+					g.AddHtmlLocalized( x, y, width, height, def.Number, numberColor, back, scroll );
 				else
-					g.AddHtmlLocalized( x, y, width, height, def.m_Number, back, scroll );
+					g.AddHtmlLocalized( x, y, width, height, def.Number, back, scroll );
 			}
-			else if ( def.m_String != null )
+			else if ( def.String != null )
 			{
 				if ( stringColor >= 0 ) // 8 bits per RGB component (24 bit RGB)
-					g.AddHtml( x, y, width, height, $"<BASEFONT COLOR=#{stringColor:X6}>{def.m_String}</BASEFONT>", back, scroll );
+					g.AddHtml( x, y, width, height, $"<BASEFONT COLOR=#{stringColor:X6}>{def.String}</BASEFONT>", back, scroll );
 				else
-					g.AddHtml( x, y, width, height, def.m_String, back, scroll );
+					g.AddHtml( x, y, width, height, def.String, back, scroll );
 			}
 		}
 
@@ -165,10 +163,10 @@ namespace Server
 			if ( def == null )
 				return;
 
-			if ( def.m_Number > 0 )
-				m.SendLocalizedMessage( def.m_Number );
-			else if ( def.m_String != null )
-				m.SendMessage( def.m_String );
+			if ( def.Number > 0 )
+				m.SendLocalizedMessage( def.Number );
+			else if ( def.String != null )
+				m.SendMessage( def.String );
 		}
 
 		public static void SendMessageTo( Mobile m, TextDefinition def, int hue )
@@ -176,10 +174,10 @@ namespace Server
 			if ( def == null )
 				return;
 
-			if ( def.m_Number > 0 )
-				m.SendLocalizedMessage( def.m_Number, "", hue );
-			else if ( def.m_String != null )
-				m.SendMessage( hue, def.m_String );
+			if ( def.Number > 0 )
+				m.SendLocalizedMessage( def.Number, "", hue );
+			else if ( def.String != null )
+				m.SendMessage( hue, def.String );
 		}
 
 		public static void PublicOverheadMessage( Mobile m, MessageType messageType, int hue, TextDefinition def )
@@ -187,10 +185,10 @@ namespace Server
 			if ( def == null )
 				return;
 
-			if ( def.m_Number > 0 )
-				m.PublicOverheadMessage( messageType, hue, def.m_Number );
-			else if ( def.m_String != null )
-				m.PublicOverheadMessage( messageType, hue, false, def.m_String );
+			if ( def.Number > 0 )
+				m.PublicOverheadMessage( messageType, hue, def.Number );
+			else if ( def.String != null )
+				m.PublicOverheadMessage( messageType, hue, false, def.String );
 		}
 
 		public static TextDefinition Parse( string value )

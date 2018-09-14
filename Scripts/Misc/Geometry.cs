@@ -25,19 +25,17 @@ namespace Server.Misc
 				
 		public class CirclePoint
 		{
-			private Point2D point;
-			private int angle;
-			private int quadrant;
-			
-			public Point2D Point => point;
-			public int Angle => angle;
-			public int Quadrant => quadrant;
+			public Point2D Point { get; }
+
+			public int Angle { get; }
+
+			public int Quadrant { get; }
 
 			public CirclePoint( Point2D point, int angle, int quadrant )
 			{
-				this.point = point;
-				this.angle = angle;
-				this.quadrant = quadrant;
+				this.Point = point;
+				this.Angle = angle;
+				this.Quadrant = quadrant;
 			}
 		}
 

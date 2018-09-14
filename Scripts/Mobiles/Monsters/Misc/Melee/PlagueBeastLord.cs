@@ -9,14 +9,8 @@ namespace Server.Mobiles
 		public override string CorpseName => "a plague beast lord corpse";
 		public override Poison PoisonImmune => Poison.Lethal;
 
-		private Mobile m_OpenedBy;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile OpenedBy
-		{
-			get => m_OpenedBy;
-			set => m_OpenedBy = value;
-		}
+		public Mobile OpenedBy { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsBleeding
@@ -80,7 +74,7 @@ namespace Server.Mobiles
 		{
 			if ( IsAccessibleTo( from ) )
 			{
-				if ( m_OpenedBy != null && Backpack != null )
+				if ( OpenedBy != null && Backpack != null )
 					Backpack.DisplayTo( from );
 				else
 					PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1071917, from.NetState ); // * You attempt to tear open the amorphous flesh, but it resists *
@@ -105,8 +99,8 @@ namespace Server.Mobiles
 
 		public override void OnDelete()
 		{
-			if ( m_OpenedBy?.Holding is PlagueBeastInnard )
-				m_OpenedBy.Holding.Delete();
+			if ( OpenedBy?.Holding is PlagueBeastInnard )
+				OpenedBy.Holding.Delete();
 
 			if ( Backpack != null )
 			{
@@ -190,7 +184,7 @@ namespace Server.Mobiles
 
 			if ( !InRange( check, 2 ) )
 				PrivateOverheadMessage( MessageType.Label, 0x3B2, 500446, check.NetState ); // That is too far away.
-			else if ( m_OpenedBy != null && m_OpenedBy != check )
+			else if ( OpenedBy != null && OpenedBy != check )
 				PrivateOverheadMessage( MessageType.Label, 0x3B2, 500365, check.NetState ); // That is being used by someone else
 			else if ( Frozen )
 				return true;
@@ -200,9 +194,9 @@ namespace Server.Mobiles
 
 		public virtual void Carve( Mobile from, Item item )
 		{
-			if ( m_OpenedBy == null && IsAccessibleTo( from ) )
+			if ( OpenedBy == null && IsAccessibleTo( from ) )
 			{
-				m_OpenedBy = from;
+				OpenedBy = from;
 
 				if ( m_Timer == null )
 					m_Timer = new DecayTimer( this );
@@ -243,7 +237,7 @@ namespace Server.Mobiles
 			Frozen = false;
 			Blessed = false;
 
-			if ( m_OpenedBy == null )
+			if ( OpenedBy == null )
 				Hue = 0;
 		}
 
@@ -257,7 +251,7 @@ namespace Server.Mobiles
 
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_OpenedBy );
+			writer.Write( OpenedBy );
 
 			if ( m_Timer != null )
 			{
@@ -275,7 +269,7 @@ namespace Server.Mobiles
 
 			int version = reader.ReadEncodedInt();
 
-			m_OpenedBy = reader.ReadMobile();
+			OpenedBy = reader.ReadMobile();
 
 			if ( reader.ReadBool() )
 			{
@@ -293,12 +287,10 @@ namespace Server.Mobiles
 		private class DecayTimer : Timer
 		{
 			private PlagueBeastLord m_Lord;
-			private int m_Count;
-			private int m_Deadline;
 
-			public int Count => m_Count;
+			public int Count { get; private set; }
 
-			public int Deadline => m_Deadline;
+			public int Deadline { get; private set; }
 
 			public DecayTimer( PlagueBeastLord lord ) : this( lord, 0, 120 )
 			{
@@ -307,8 +299,8 @@ namespace Server.Mobiles
 			public DecayTimer( PlagueBeastLord lord, int count, int deadline ) : base( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ) )
 			{
 				m_Lord = lord;
-				m_Count = count;
-				m_Deadline = deadline;
+				Count = count;
+				Deadline = deadline;
 			}
 
 			protected override void OnTick()
@@ -319,22 +311,22 @@ namespace Server.Mobiles
 					return;
 				}
 
-				if ( m_Count + 15 == m_Deadline )
+				if ( Count + 15 == Deadline )
 				{
 					if ( m_Lord.OpenedBy != null )
 						m_Lord.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071921 ); // * The plague beast begins to bubble and dissolve! *
 
 					m_Lord.PlaySound( 0x103 );
 				}
-				else if ( m_Count + 10 == m_Deadline )
+				else if ( Count + 10 == Deadline )
 				{
 					m_Lord.PlaySound( 0x21 );
 				}
-				else if ( m_Count + 5 == m_Deadline )
+				else if ( Count + 5 == Deadline )
 				{
 					m_Lord.PlaySound( 0x1C2 );
 				}
-				else if ( m_Count == m_Deadline )
+				else if ( Count == Deadline )
 				{
 					m_Lord.Unfreeze();
 
@@ -343,15 +335,15 @@ namespace Server.Mobiles
 
 					Stop();
 				}
-				else if ( m_Count % 15 == 0 )
+				else if ( Count % 15 == 0 )
 					m_Lord.PlaySound( 0x1BF );
 
-				m_Count++;
+				Count++;
 			}
 
 			public void StartDissolving()
 			{
-				m_Deadline = Math.Min( m_Count + 60, m_Deadline );
+				Deadline = Math.Min( Count + 60, Deadline );
 			}
 		}
 	}

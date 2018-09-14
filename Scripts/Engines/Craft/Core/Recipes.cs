@@ -24,7 +24,7 @@ namespace Server.Engines.Craft
 			{
 				if ( targeted is PlayerMobile mobile )
 				{
-					foreach( KeyValuePair<int, Recipe> kvp in m_Recipes )
+					foreach( KeyValuePair<int, Recipe> kvp in Recipes )
 						mobile.AcquireRecipe( kvp.Key );
 
 					m.SendMessage( "You teach them all of the recipies." );
@@ -59,32 +59,15 @@ namespace Server.Engines.Craft
 		}
 
 
-		private static Dictionary<int, Recipe> m_Recipes = new Dictionary<int, Recipe>();
+		public static Dictionary<int, Recipe> Recipes { get; } = new Dictionary<int, Recipe>();
 
-		public static Dictionary<int, Recipe> Recipes  => m_Recipes;
+		public  static int LargestRecipeID { get; private set; }
 
-		private static int m_LargestRecipeID;
-		public  static int LargestRecipeID => m_LargestRecipeID;
+		public CraftSystem CraftSystem { get; set; }
 
-		private CraftSystem m_System;
+		public CraftItem CraftItem { get; set; }
 
-		public CraftSystem CraftSystem
-		{
-			get => m_System;
-			set => m_System = value;
-		}
-
-		private CraftItem m_CraftItem;
-
-		public CraftItem CraftItem
-		{
-			get => m_CraftItem;
-			set => m_CraftItem = value;
-		}
-
-		private int m_ID;
-
-		public int ID => m_ID;
+		public int ID { get; }
 
 		private TextDefinition m_TD;
 		public TextDefinition TextDefinition
@@ -92,7 +75,7 @@ namespace Server.Engines.Craft
 			get
 			{
 				if ( m_TD == null )
-					m_TD = new TextDefinition( m_CraftItem.NameNumber, m_CraftItem.NameString );
+					m_TD = new TextDefinition( CraftItem.NameNumber, CraftItem.NameString );
 
 				return m_TD;
 			}
@@ -100,15 +83,15 @@ namespace Server.Engines.Craft
 
 		public Recipe( int id, CraftSystem system, CraftItem item )
 		{
-			m_ID = id;
-			m_System = system;
-			m_CraftItem = item;
+			ID = id;
+			CraftSystem = system;
+			CraftItem = item;
 
-			if ( m_Recipes.ContainsKey( id ) )
+			if ( Recipes.ContainsKey( id ) )
 				throw new Exception( "Attempting to create recipe with preexisting ID." );
 
-			m_Recipes.Add( id, this );
-			m_LargestRecipeID = Math.Max( id, m_LargestRecipeID );
+			Recipes.Add( id, this );
+			LargestRecipeID = Math.Max( id, LargestRecipeID );
 		}
 	}
 }

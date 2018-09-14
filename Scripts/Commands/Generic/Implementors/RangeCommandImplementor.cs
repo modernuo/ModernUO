@@ -2,9 +2,7 @@ namespace Server.Commands.Generic
 {
 	public class RangeCommandImplementor : BaseCommandImplementor
 	{
-		private static RangeCommandImplementor m_Instance;
-
-		public static RangeCommandImplementor Instance => m_Instance;
+		public static RangeCommandImplementor Instance { get; private set; }
 
 		public RangeCommandImplementor()
 		{
@@ -15,7 +13,7 @@ namespace Server.Commands.Generic
 			Usage = "Range <range> <command> [condition]";
 			Description = "Invokes the command on all appropriate objects within a specified range of you. Optional condition arguments can further restrict the set of objects.";
 
-			m_Instance = this;
+			Instance = this;
 		}
 
 		public override void Execute( CommandEventArgs e )

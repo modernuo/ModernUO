@@ -26,8 +26,7 @@ namespace Server.Items
 
 		public override int BaseMana => 30;
 
-		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry  => m_Registry;
+		public static Hashtable Registry { get; } = new Hashtable();
 
 		public override void OnHit( Mobile attacker, Mobile defender, int damage )
 		{

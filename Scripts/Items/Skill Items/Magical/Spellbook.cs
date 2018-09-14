@@ -317,7 +317,6 @@ namespace Server.Items
 		public virtual int BookCount => 64;
 
 		private ulong m_Content;
-		private int m_Count;
 
 		public override bool AllowSecureTrade( Mobile from, Mobile to, Mobile newOwner, bool accepted )
 		{
@@ -369,7 +368,7 @@ namespace Server.Items
 				if ( val >= 0 && val < BookCount )
 				{
 					m_Content |= (ulong)1 << val;
-					++m_Count;
+					++SpellCount;
 
 					InvalidateProperties();
 
@@ -393,11 +392,11 @@ namespace Server.Items
 				{
 					m_Content = value;
 
-					m_Count = 0;
+					SpellCount = 0;
 
 					while ( value > 0 )
 					{
-						m_Count += (int)(value & 0x1);
+						SpellCount += (int)(value & 0x1);
 						value >>= 1;
 					}
 
@@ -407,7 +406,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int SpellCount => m_Count;
+		public int SpellCount { get; private set; }
 
 		[Constructible]
 		public Spellbook() : this( (ulong)0 )
@@ -532,16 +531,16 @@ namespace Server.Items
 					to.Send( new NewSpellbookContent( this, ItemID, BookOffset + 1, m_Content ) );
 				} else {
 					if (ns.ContainerGridLines) {
-						to.Send(new SpellbookContent6017(m_Count, BookOffset + 1, m_Content, this));
+						to.Send(new SpellbookContent6017(SpellCount, BookOffset + 1, m_Content, this));
 					} else {
-						to.Send(new SpellbookContent(m_Count, BookOffset + 1, m_Content, this));
+						to.Send(new SpellbookContent(SpellCount, BookOffset + 1, m_Content, this));
 					}
 				}
 			} else {
 				if ( ns.ContainerGridLines ) {
-					to.Send( new SpellbookContent6017( m_Count, BookOffset + 1, m_Content, this ) );
+					to.Send( new SpellbookContent6017( SpellCount, BookOffset + 1, m_Content, this ) );
 				} else {
-					to.Send( new SpellbookContent( m_Count, BookOffset + 1, m_Content, this ) );
+					to.Send( new SpellbookContent( SpellCount, BookOffset + 1, m_Content, this ) );
 				}
 			}
 		}
@@ -660,7 +659,7 @@ namespace Server.Items
 			if ( Core.ML && (prop = m_AosAttributes.IncreasedKarmaLoss) != 0 )
 				list.Add( 1075210, prop.ToString() ); // Increased Karma Loss ~1val~%
 
-			list.Add( 1042886, m_Count.ToString() ); // ~1_NUMBERS_OF_SPELLS~ Spells
+			list.Add( 1042886, SpellCount.ToString() ); // ~1_NUMBERS_OF_SPELLS~ Spells
 		}
 
 		public override void OnSingleClick( Mobile from )
@@ -670,7 +669,7 @@ namespace Server.Items
 			if ( m_Crafter != null )
 				LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
-			LabelTo( from, 1042886, m_Count.ToString() );
+			LabelTo( from, 1042886, SpellCount.ToString() );
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -721,7 +720,7 @@ namespace Server.Items
 			m_AosSkillBonuses.Serialize( writer );
 
 			writer.Write( m_Content );
-			writer.Write( m_Count );
+			writer.Write( SpellCount );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -765,7 +764,7 @@ namespace Server.Items
 				case 0:
 				{
 					m_Content = reader.ReadULong();
-					m_Count = reader.ReadInt();
+					SpellCount = reader.ReadInt();
 
 					break;
 				}

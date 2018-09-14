@@ -46,13 +46,11 @@ namespace Server.Mobiles
 				new SpawnEntry( new Point3D( 5579, 1858, 0 ), new Point3D( 2499, 919, 0 ) )		// Covetous
 			};
 
-		private static ArrayList m_Instances = new ArrayList();
-
-		public static ArrayList Instances => m_Instances;
+		public static ArrayList Instances { get; } = new ArrayList();
 
 		public static Harrower Spawn( Point3D platLoc, Map platMap )
 		{
-			if ( m_Instances.Count > 0 )
+			if ( Instances.Count > 0 )
 				return null;
 
 			SpawnEntry entry = m_Entries[Utility.Random( m_Entries.Length )];
@@ -66,14 +64,14 @@ namespace Server.Mobiles
 			return harrower;
 		}
 
-		public static bool CanSpawn => ( m_Instances.Count == 0 );
+		public static bool CanSpawn => ( Instances.Count == 0 );
 
 		public override string DefaultName => "the harrower";
 
 		[Constructible]
 		public Harrower() : base( AIType.AI_Mage, FightMode.Closest, 18, 1, 0.2, 0.4 )
 		{
-			m_Instances.Add( this );
+			Instances.Add( this );
 			BodyValue = 146;
 
 			SetStr( 900, 1000 );
@@ -200,12 +198,12 @@ namespace Server.Mobiles
 
 		public Harrower( Serial serial ) : base( serial )
 		{
-			m_Instances.Add( this );
+			Instances.Add( this );
 		}
 
 		public override void OnAfterDelete()
 		{
-			m_Instances.Remove( this );
+			Instances.Remove( this );
 
 			base.OnAfterDelete();
 		}

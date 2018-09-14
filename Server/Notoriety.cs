@@ -32,42 +32,31 @@ namespace Server
 		public const int Murderer = 6;
 		public const int Invulnerable = 7;
 
-		private static NotorietyHandler m_Handler;
+		public static NotorietyHandler Handler { get; set; }
 
-		public static NotorietyHandler Handler
+		public static int[] Hues { get; set; } =
 		{
-			get => m_Handler;
-			set => m_Handler = value;
-		}
-
-		private static int[] m_Hues = {
-				0x000,
-				0x059,
-				0x03F,
-				0x3B2,
-				0x3B2,
-				0x090,
-				0x022,
-				0x035
-			};
-
-		public static int[] Hues
-		{
-			get => m_Hues;
-			set => m_Hues = value;
-		}
+			0x000,
+			0x059,
+			0x03F,
+			0x3B2,
+			0x3B2,
+			0x090,
+			0x022,
+			0x035
+		};
 
 		public static int GetHue( int noto )
 		{
-			if ( noto < 0 || noto >= m_Hues.Length )
+			if ( noto < 0 || noto >= Hues.Length )
 				return 0;
 
-			return m_Hues[noto];
+			return Hues[noto];
 		}
 
 		public static int Compute( Mobile source, Mobile target )
 		{
-			return m_Handler?.Invoke( source, target ) ?? CanBeAttacked;
+			return Handler?.Invoke( source, target ) ?? CanBeAttacked;
 		}
 	}
 }

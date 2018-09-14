@@ -6,14 +6,10 @@ namespace Server.Items
 {
 	public abstract class SpecialScroll : Item
 	{
-		private SkillName m_Skill;
-		private double m_Value;
-
 		#region Old Item Serialization Vars
 		/* DO NOT USE! Only used in serialization of special scrolls that originally derived from Item */
-		private bool m_InheritsItem;
 
-		protected bool InheritsItem => m_InheritsItem;
+		protected bool InheritsItem { get; private set; }
 
 		#endregion
 
@@ -26,8 +22,8 @@ namespace Server.Items
 			LootType = LootType.Cursed;
 			Weight = 1.0;
 
-			m_Skill = skill;
-			m_Value = value;
+			Skill = skill;
+			Value = value;
 		}
 
 		public SpecialScroll( Serial serial ) : base( serial )
@@ -35,27 +31,19 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SkillName Skill
-		{
-			get => m_Skill;
-			set => m_Skill = value;
-		}
+		public SkillName Skill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double Value
-		{
-			get => m_Value;
-			set => m_Value = value;
-		}
+		public double Value { get; set; }
 
 		public virtual string GetNameLocalized()
 		{
-			return string.Concat( "#", AosSkillBonuses.GetLabel( m_Skill ).ToString() );
+			return string.Concat( "#", AosSkillBonuses.GetLabel( Skill ).ToString() );
 		}
 
 		public virtual string GetName()
 		{
-			int index = (int)m_Skill;
+			int index = (int)Skill;
 			SkillInfo[] table = SkillInfo.Table;
 
 			if ( index >= 0 && index < table.Length )
@@ -96,8 +84,8 @@ namespace Server.Items
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( (int) m_Skill );
-			writer.Write( (double) m_Value );
+			writer.Write( (int) Skill );
+			writer.Write( (double) Value );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -110,25 +98,25 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_Skill = (SkillName)reader.ReadInt();
-					m_Value = reader.ReadDouble();
+					Skill = (SkillName)reader.ReadInt();
+					Value = reader.ReadDouble();
 					break;
 				}
 				case 0:
 				{
-					m_InheritsItem = true;
+					InheritsItem = true;
 
 					if ( !(this is StatCapScroll) )
-						m_Skill = (SkillName)reader.ReadInt();
+						Skill = (SkillName)reader.ReadInt();
 					else
-						m_Skill = SkillName.Alchemy;
+						Skill = SkillName.Alchemy;
 
 					if ( this is ScrollofAlacrity )
-						m_Value = 0.0;
+						Value = 0.0;
 					else if ( this is StatCapScroll )
-						m_Value = (double)reader.ReadInt();
+						Value = (double)reader.ReadInt();
 					else
-						m_Value = reader.ReadDouble();
+						Value = reader.ReadDouble();
 
 					break;
 				}

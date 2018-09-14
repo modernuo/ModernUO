@@ -29,7 +29,6 @@ namespace Server.Network
 {
 	public class MessagePump
 	{
-		private Listener[] m_Listeners;
 		private Queue<NetState> m_Queue;
 		private Queue<NetState> m_WorkingQueue;
 		private Queue<NetState> m_Throttled;
@@ -38,7 +37,7 @@ namespace Server.Network
 		{
 			IPEndPoint[] ipep = Listener.EndPoints;
 
-			m_Listeners = new Listener[ipep.Length];
+			Listeners = new Listener[ipep.Length];
 
 			bool success = false;
 
@@ -47,7 +46,7 @@ namespace Server.Network
 					Listener l = new Listener( ipep[i] );
 					if ( !success && l != null )
 						success = true;
-					m_Listeners[i] = l;
+					Listeners[i] = l;
 				}
 
 				if ( !success ) {
@@ -61,29 +60,25 @@ namespace Server.Network
 			m_Throttled = new Queue<NetState>();
 		}
 
-		public Listener[] Listeners
-		{
-			get => m_Listeners;
-			set => m_Listeners = value;
-		}
+		public Listener[] Listeners { get; set; }
 
 		public void AddListener( Listener l )
 		{
-			Listener[] old = m_Listeners;
+			Listener[] old = Listeners;
 
-			m_Listeners = new Listener[old.Length + 1];
+			Listeners = new Listener[old.Length + 1];
 
 			for ( int i = 0; i < old.Length; ++i )
-				m_Listeners[i] = old[i];
+				Listeners[i] = old[i];
 
-			m_Listeners[old.Length] = l;
+			Listeners[old.Length] = l;
 		}
 
 		private void CheckListener()
 		{
-			for ( int j = 0; j < m_Listeners.Length; ++j )
+			for ( int j = 0; j < Listeners.Length; ++j )
 			{
-				Socket[] accepted = m_Listeners[j].Slice();
+				Socket[] accepted = Listeners[j].Slice();
 
 				for ( int i = 0; i < accepted.Length; ++i )
 				{

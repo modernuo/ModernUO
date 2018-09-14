@@ -269,63 +269,59 @@ namespace Server.Commands
 
 	public class CategoryTypeEntry
 	{
-		private Type m_Type;
-		private object m_Object;
+		public Type Type { get; }
 
-		public Type Type => m_Type;
-		public object Object => m_Object;
+		public object Object { get; }
 
 		public CategoryTypeEntry( Type type )
 		{
-			m_Type = type;
-			m_Object = Activator.CreateInstance( type );
+			Type = type;
+			Object = Activator.CreateInstance( type );
 		}
 	}
 
 	public class CategoryEntry
 	{
-		private string m_Title;
-		private Type[] m_Matches;
-		private CategoryEntry[] m_SubCategories;
-		private CategoryEntry m_Parent;
-		private ArrayList m_Matched;
+		public string Title { get; }
 
-		public string Title => m_Title;
-		public Type[] Matches => m_Matches;
-		public CategoryEntry Parent => m_Parent;
-		public CategoryEntry[] SubCategories => m_SubCategories;
-		public ArrayList Matched => m_Matched;
+		public Type[] Matches { get; }
+
+		public CategoryEntry Parent { get; }
+
+		public CategoryEntry[] SubCategories { get; }
+
+		public ArrayList Matched { get; }
 
 		public CategoryEntry()
 		{
-			m_Title = "(empty)";
-			m_Matches = new Type[0];
-			m_SubCategories = new CategoryEntry[0];
-			m_Matched = new ArrayList();
+			Title = "(empty)";
+			Matches = new Type[0];
+			SubCategories = new CategoryEntry[0];
+			Matched = new ArrayList();
 		}
 
 		public CategoryEntry( CategoryEntry parent, string title, CategoryEntry[] subCats )
 		{
-			m_Parent = parent;
-			m_Title = title;
-			m_SubCategories = subCats;
-			m_Matches = new Type[0];
-			m_Matched = new ArrayList();
+			Parent = parent;
+			Title = title;
+			SubCategories = subCats;
+			Matches = new Type[0];
+			Matched = new ArrayList();
 		}
 
 		public bool IsMatch( Type type )
 		{
 			bool isMatch = false;
 
-			for ( int i = 0; !isMatch && i < m_Matches.Length; ++i )
-				isMatch = ( type == m_Matches[i] || type.IsSubclassOf( m_Matches[i] ) );
+			for ( int i = 0; !isMatch && i < Matches.Length; ++i )
+				isMatch = ( type == Matches[i] || type.IsSubclassOf( Matches[i] ) );
 
 			return isMatch;
 		}
 
 		public CategoryEntry( CategoryEntry parent, CategoryLine[] lines, ref int index )
 		{
-			m_Parent = parent;
+			Parent = parent;
 
 			string text = lines[index].Text;
 
@@ -334,7 +330,7 @@ namespace Server.Commands
 			if ( start < 0 )
 				throw new FormatException($"Input string not correctly formatted ('{text}')");
 
-			m_Title = text.Substring( 0, start ).Trim();
+			Title = text.Substring( 0, start ).Trim();
 
 			int end = text.IndexOf( ')', ++start );
 
@@ -356,7 +352,7 @@ namespace Server.Commands
 					list.Add( type );
 			}
 
-			m_Matches = (Type[])list.ToArray( typeof( Type ) );
+			Matches = (Type[])list.ToArray( typeof( Type ) );
 			list.Clear();
 
 			int ourIndentation = lines[index].Indentation;
@@ -366,20 +362,18 @@ namespace Server.Commands
 			while ( index < lines.Length && lines[index].Indentation > ourIndentation )
 				list.Add( new CategoryEntry( this, lines, ref index ) );
 
-			m_SubCategories = (CategoryEntry[])list.ToArray( typeof( CategoryEntry ) );
+			SubCategories = (CategoryEntry[])list.ToArray( typeof( CategoryEntry ) );
 			list.Clear();
 
-			m_Matched = list;
+			Matched = list;
 		}
 	}
 
 	public class CategoryLine
 	{
-		private int m_Indentation;
-		private string m_Text;
+		public int Indentation { get; }
 
-		public int Indentation => m_Indentation;
-		public string Text => m_Text;
+		public string Text { get; }
 
 		public CategoryLine( string input )
 		{
@@ -394,8 +388,8 @@ namespace Server.Commands
 			if ( index >= input.Length )
 				throw new FormatException($"Input string not correctly formatted ('{input}')");
 
-			m_Indentation = index;
-			m_Text = input.Substring( index );
+			Indentation = index;
+			Text = input.Substring( index );
 		}
 
 		public static CategoryLine[] Load( string path )

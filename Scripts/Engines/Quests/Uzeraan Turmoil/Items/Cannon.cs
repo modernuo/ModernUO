@@ -12,21 +12,16 @@ namespace Server.Engines.Quests.Haven
 
 	public class Cannon : BaseAddon
 	{
-		private CannonDirection m_CannonDirection;
-		private MilitiaCanoneer m_Canoneer;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public CannonDirection CannonDirection { get; private set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CannonDirection CannonDirection  => m_CannonDirection;
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public MilitiaCanoneer Canoneer { get => m_Canoneer;
-			set => m_Canoneer = value;
-		}
+		public MilitiaCanoneer Canoneer { get; set; }
 
 		[Constructible]
 		public Cannon( CannonDirection direction )
 		{
-			m_CannonDirection = direction;
+			CannonDirection = direction;
 
 			switch ( direction )
 			{
@@ -72,7 +67,7 @@ namespace Server.Engines.Quests.Haven
 		public void DoFireEffect( IPoint3D target )
 		{
 			Point3D from;
-			switch ( m_CannonDirection )
+			switch ( CannonDirection )
 			{
 				case CannonDirection.North:	from = new Point3D( X, Y - 1, Z ); break;
 				case CannonDirection.East:	from = new Point3D( X + 1, Y, Z ); break;
@@ -94,15 +89,15 @@ namespace Server.Engines.Quests.Haven
 			target.Damage( 9999, from );
 		}
 
-		public override bool HandlesOnMovement => m_Canoneer != null && !m_Canoneer.Deleted && m_Canoneer.Active;
+		public override bool HandlesOnMovement => Canoneer != null && !Canoneer.Deleted && Canoneer.Active;
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if ( m_Canoneer == null || m_Canoneer.Deleted || !m_Canoneer.Active )
+			if ( Canoneer == null || Canoneer.Deleted || !Canoneer.Active )
 				return;
 
 			bool canFire;
-			switch ( m_CannonDirection )
+			switch ( CannonDirection )
 			{
 				case CannonDirection.North:
 					canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7;
@@ -118,21 +113,21 @@ namespace Server.Engines.Quests.Haven
 					break;
 			}
 
-			if ( canFire && m_Canoneer.WillFire( this, m ) )
-				Fire( m_Canoneer, m );
+			if ( canFire && Canoneer.WillFire( this, m ) )
+				Fire( Canoneer, m );
 		}
 
 		public override void Serialize( GenericWriter writer )
 		{
-			if ( m_Canoneer != null && m_Canoneer.Deleted )
-				m_Canoneer = null;
+			if ( Canoneer != null && Canoneer.Deleted )
+				Canoneer = null;
 
 			base.Serialize( writer );
 
 			writer.Write( (int) 0 ); // version
 
-			writer.WriteEncodedInt( (int) m_CannonDirection );
-			writer.Write( (Mobile) m_Canoneer );
+			writer.WriteEncodedInt( (int) CannonDirection );
+			writer.Write( (Mobile) Canoneer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -141,8 +136,8 @@ namespace Server.Engines.Quests.Haven
 
 			int version = reader.ReadInt();
 
-			m_CannonDirection = (CannonDirection) reader.ReadEncodedInt();
-			m_Canoneer = (MilitiaCanoneer) reader.ReadMobile();
+			CannonDirection = (CannonDirection) reader.ReadEncodedInt();
+			Canoneer = (MilitiaCanoneer) reader.ReadMobile();
 		}
 	}
 

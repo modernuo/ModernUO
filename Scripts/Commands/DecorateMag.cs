@@ -1102,11 +1102,9 @@ namespace Server.Commands
 
 	public class DecorationEntryMag
 	{
-		private Point3D m_Location;
-		private string m_Extra;
+		public Point3D Location { get; }
 
-		public Point3D Location => m_Location;
-		public string Extra => m_Extra;
+		public string Extra { get; }
 
 		public DecorationEntryMag( string line )
 		{
@@ -1116,8 +1114,8 @@ namespace Server.Commands
 			Pop( out y, ref line );
 			Pop( out z, ref line );
 
-			m_Location = new Point3D( Utility.ToInt32( x ), Utility.ToInt32( y ), Utility.ToInt32( z ) );
-			m_Extra = line;
+			Location = new Point3D( Utility.ToInt32( x ), Utility.ToInt32( y ), Utility.ToInt32( z ) );
+			Extra = line;
 		}
 
 		public void Pop( out string v, ref string line )

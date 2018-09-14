@@ -2,15 +2,13 @@ namespace Server.Misc
 {
 	public class TreasuresOfTokunoPersistance : Item
 	{
-		private static TreasuresOfTokunoPersistance m_Instance;
-
-		public static TreasuresOfTokunoPersistance Instance => m_Instance;
+		public static TreasuresOfTokunoPersistance Instance { get; private set; }
 
 		public override string DefaultName => "TreasuresOfTokuno Persistance - Internal";
 
 		public static void Initialize()
 		{
-			if ( m_Instance == null )
+			if ( Instance == null )
 				new TreasuresOfTokunoPersistance();
 		}
 
@@ -18,15 +16,15 @@ namespace Server.Misc
 		{
 			Movable = false;
 
-			if ( m_Instance == null || m_Instance.Deleted )
-				m_Instance = this;
+			if ( Instance == null || Instance.Deleted )
+				Instance = this;
 			else
 				base.Delete();
 		}
 
 		public TreasuresOfTokunoPersistance( Serial serial ) : base( serial )
 		{
-			m_Instance = this;
+			Instance = this;
 		}
 
 		public override void Serialize( GenericWriter writer )

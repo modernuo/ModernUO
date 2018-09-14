@@ -4,23 +4,11 @@ namespace Server.Items
 {
 	public class TransientItem : Item
 	{
-		private TimeSpan m_LifeSpan;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan LifeSpan { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan LifeSpan
-		{
-			get => m_LifeSpan;
-			set => m_LifeSpan = value;
-		}
-
-		private DateTime m_CreationTime;
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime CreationTime
-		{
-			get => m_CreationTime;
-			set => m_CreationTime = value;
-		}
+		public DateTime CreationTime { get; set; }
 
 		private Timer m_Timer;
 
@@ -48,7 +36,7 @@ namespace Server.Items
 		public virtual void SendTimeRemainingMessage( Mobile to )
 		{
 			to.SendLocalizedMessage( 1072516,
-				$"{Name ?? $"#{LabelNumber}"}\t{(int) m_LifeSpan.TotalSeconds}"); // ~1_name~ will expire in ~2_val~ seconds!
+				$"{Name ?? $"#{LabelNumber}"}\t{(int) LifeSpan.TotalSeconds}"); // ~1_name~ will expire in ~2_val~ seconds!
 		}
 
 		public override void OnDelete()
@@ -60,7 +48,7 @@ namespace Server.Items
 
 		public virtual void CheckExpiry()
 		{
-			if ( (m_CreationTime + m_LifeSpan) < DateTime.UtcNow )
+			if ( (CreationTime + LifeSpan) < DateTime.UtcNow )
 				Expire( RootParent as Mobile );
 			else
 				InvalidateProperties();
@@ -70,8 +58,8 @@ namespace Server.Items
 		public TransientItem( int itemID, TimeSpan lifeSpan )
 			: base( itemID )
 		{
-			m_CreationTime = DateTime.UtcNow;
-			m_LifeSpan = lifeSpan;
+			CreationTime = DateTime.UtcNow;
+			LifeSpan = lifeSpan;
 
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), CheckExpiry );
 		}
@@ -85,7 +73,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			TimeSpan remaining = ((m_CreationTime + m_LifeSpan) - DateTime.UtcNow);
+			TimeSpan remaining = ((CreationTime + LifeSpan) - DateTime.UtcNow);
 
 			list.Add( 1072517, ((int)remaining.TotalSeconds).ToString() ); // Lifespan: ~1_val~ seconds
 		}
@@ -95,8 +83,8 @@ namespace Server.Items
 			base.Serialize( writer );
 			writer.Write( (int)0 );
 
-			writer.Write( m_LifeSpan );
-			writer.Write( m_CreationTime );
+			writer.Write( LifeSpan );
+			writer.Write( CreationTime );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -104,8 +92,8 @@ namespace Server.Items
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			m_LifeSpan = reader.ReadTimeSpan();
-			m_CreationTime = reader.ReadDateTime();
+			LifeSpan = reader.ReadTimeSpan();
+			CreationTime = reader.ReadDateTime();
 
 			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), CheckExpiry );
 		}

@@ -6,19 +6,17 @@ namespace Server.Engines.BulkOrders
 {
 	public class SmallBulkEntry
 	{
-		private Type m_Type;
-		private int m_Number;
-		private int m_Graphic;
+		public Type Type { get; }
 
-		public Type Type => m_Type;
-		public int Number => m_Number;
-		public int Graphic => m_Graphic;
+		public int Number { get; }
+
+		public int Graphic { get; }
 
 		public SmallBulkEntry( Type type, int number, int graphic )
 		{
-			m_Type = type;
-			m_Number = number;
-			m_Graphic = graphic;
+			Type = type;
+			Number = number;
+			Graphic = graphic;
 		}
 
 		public static SmallBulkEntry[] BlacksmithWeapons => GetEntries( "Blacksmith", "weapons" );

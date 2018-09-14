@@ -5,22 +5,13 @@ namespace Server.Engines.Reports
 {
 	public abstract class BaseInfo : IComparable
 	{
-		private static TimeSpan m_SortRange;
+		public static TimeSpan SortRange { get; set; }
 
-		public static TimeSpan SortRange{ get => m_SortRange;
-			set => m_SortRange = value;
-		}
-
-		private string m_Account;
 		private string m_Display;
-		private PageInfoCollection m_Pages;
 
-		public string Account{ get => m_Account;
-			set => m_Account = value;
-		}
-		public PageInfoCollection Pages{ get => m_Pages;
-			set => m_Pages = value;
-		}
+		public string Account { get; set; }
+
+		public PageInfoCollection Pages { get; set; }
 
 		public string Display
 		{
@@ -29,9 +20,9 @@ namespace Server.Engines.Reports
 				if ( m_Display != null )
 					return m_Display;
 
-				if ( m_Account != null )
+				if ( Account != null )
 				{
-					IAccount acct = Accounts.GetAccount( m_Account );
+					IAccount acct = Accounts.GetAccount( Account );
 
 					if ( acct != null )
 					{
@@ -50,37 +41,37 @@ namespace Server.Engines.Reports
 					}
 				}
 
-				return ( m_Display = m_Account );
+				return ( m_Display = Account );
 			}
 		}
 
 		public int GetPageCount( PageResolution res, DateTime min, DateTime max )
 		{
-			return StaffHistory.GetPageCount( m_Pages, res, min, max );
+			return StaffHistory.GetPageCount( Pages, res, min, max );
 		}
 
 		public BaseInfo( string account )
 		{
-			m_Account = account;
-			m_Pages = new PageInfoCollection();
+			Account = account;
+			Pages = new PageInfoCollection();
 		}
 
 		public void Register( PageInfo page )
 		{
-			m_Pages.Add( page );
+			Pages.Add( page );
 		}
 
 		public void Unregister( PageInfo page )
 		{
-			m_Pages.Remove( page );
+			Pages.Remove( page );
 		}
 
 		public int CompareTo( object obj )
 		{
 			BaseInfo cmp = obj as BaseInfo;
 
-			int v = cmp.GetPageCount( cmp is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow )
-				- GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow );
+			int v = cmp.GetPageCount( cmp is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - SortRange, DateTime.UtcNow )
+				- GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - SortRange, DateTime.UtcNow );
 
 			if ( v == 0 )
 				v = string.Compare( Display, cmp.Display );

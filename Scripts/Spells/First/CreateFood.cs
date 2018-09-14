@@ -58,20 +58,14 @@ namespace Server.Spells.First
 
 	public class FoodInfo
 	{
-		private Type m_Type;
-		private string m_Name;
+		public Type Type { get; set; }
 
-		public Type Type{ get => m_Type;
-			set => m_Type = value;
-		}
-		public string Name{ get => m_Name;
-			set => m_Name = value;
-		}
+		public string Name { get; set; }
 
 		public FoodInfo( Type type, string name )
 		{
-			m_Type = type;
-			m_Name = name;
+			Type = type;
+			Name = name;
 		}
 
 		public Item Create()
@@ -80,7 +74,7 @@ namespace Server.Spells.First
 
 			try
 			{
-				item = (Item)Activator.CreateInstance( m_Type );
+				item = (Item)Activator.CreateInstance( Type );
 			}
 			catch
 			{

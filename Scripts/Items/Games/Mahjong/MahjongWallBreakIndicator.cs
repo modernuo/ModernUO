@@ -7,19 +7,17 @@ namespace Server.Engines.Mahjong
 			return new MahjongPieceDim( position, 20, 20 );
 		}
 
-		private MahjongGame m_Game;
-		private Point2D m_Position;
+		public MahjongGame Game { get; }
 
-		public MahjongGame Game  => m_Game;
-		public Point2D Position  => m_Position;
+		public Point2D Position { get; private set; }
 
 		public MahjongWallBreakIndicator( MahjongGame game, Point2D position )
 		{
-			m_Game = game;
-			m_Position = position;
+			Game = game;
+			Position = position;
 		}
 
-		public MahjongPieceDim Dimensions => GetDimensions( m_Position );
+		public MahjongPieceDim Dimensions => GetDimensions( Position );
 
 		public void Move( Point2D position )
 		{
@@ -28,25 +26,25 @@ namespace Server.Engines.Mahjong
 			if ( !dim.IsValid() )
 				return;
 
-			m_Position = position;
+			Position = position;
 
-			m_Game.Players.SendGeneralPacket( true, true );
+			Game.Players.SendGeneralPacket( true, true );
 		}
 
 		public void Save( GenericWriter writer )
 		{
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( m_Position );
+			writer.Write( Position );
 		}
 
 		public MahjongWallBreakIndicator( MahjongGame game, GenericReader reader )
 		{
-			m_Game = game;
+			Game = game;
 
 			int version = reader.ReadInt();
 
-			m_Position = reader.ReadPoint2D();
+			Position = reader.ReadPoint2D();
 		}
 	}
 }

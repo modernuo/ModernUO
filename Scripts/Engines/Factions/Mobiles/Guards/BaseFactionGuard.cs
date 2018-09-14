@@ -11,7 +11,6 @@ namespace Server.Factions
 	{
 		private Faction m_Faction;
 		private Town m_Town;
-		private Orders m_Orders;
 
 		public override bool BardImmune => true;
 
@@ -22,7 +21,7 @@ namespace Server.Factions
 			set{ Unregister(); m_Faction = value; Register(); }
 		}
 
-		public Orders Orders => m_Orders;
+		public Orders Orders { get; private set; }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public Town Town
@@ -79,7 +78,7 @@ namespace Server.Factions
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if ( m.Player && m.Alive && InRange( m, 10 ) && !InRange( oldLocation, 10 ) && InLOS( m ) && m_Orders.GetReaction( Faction.Find( m ) ).Type == ReactionType.Warn )
+			if ( m.Player && m.Alive && InRange( m, 10 ) && !InRange( oldLocation, 10 ) && InLOS( m ) && Orders.GetReaction( Faction.Find( m ) ).Type == ReactionType.Warn )
 			{
 				Direction = GetDirectionTo( m );
 
@@ -141,7 +140,7 @@ namespace Server.Factions
 					Say( def.String );
 			}
 
-			m_Orders.SetReaction( faction, type );
+			Orders.SetReaction( faction, type );
 		}
 
 		private bool WasNamed( string speech )
@@ -217,7 +216,7 @@ namespace Server.Factions
 							Home = Location;
 							RangeHome = 6;
 							Combatant = null;
-							m_Orders.Movement = MovementType.Patrol;
+							Orders.Movement = MovementType.Patrol;
 							Say( 1005146 ); // This spot looks like it needs protection!  I shall guard it with my life.
 							understood = true;
 						}
@@ -226,8 +225,8 @@ namespace Server.Factions
 							Home = Location;
 							RangeHome = 6;
 							Combatant = null;
-							m_Orders.Follow = from;
-							m_Orders.Movement = MovementType.Follow;
+							Orders.Follow = from;
+							Orders.Movement = MovementType.Follow;
 							Say( 1005144 ); // Yes, Sire.
 							understood = true;
 						}
@@ -391,7 +390,7 @@ namespace Server.Factions
 
 		public BaseFactionGuard( string title ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
-			m_Orders = new Orders( this );
+			Orders = new Orders( this );
 			Title = title;
 
 			RangeHome = 6;
@@ -410,7 +409,7 @@ namespace Server.Factions
 			Faction.WriteReference( writer, m_Faction );
 			Town.WriteReference( writer, m_Town );
 
-			m_Orders.Serialize( writer );
+			Orders.Serialize( writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -421,7 +420,7 @@ namespace Server.Factions
 
 			m_Faction = Faction.ReadReference( reader );
 			m_Town = Town.ReadReference( reader );
-			m_Orders = new Orders( this, reader );
+			Orders = new Orders( this, reader );
 
 			Timer.DelayCall( TimeSpan.Zero, Register );
 		}
@@ -449,16 +448,15 @@ namespace Server.Factions
 
 	public class VirtualMountItem : Item, IMountItem
 	{
-		private Mobile m_Rider;
 		private VirtualMount m_Mount;
 
-		public Mobile Rider => m_Rider;
+		public Mobile Rider { get; private set; }
 
 		public VirtualMountItem( Mobile mob ) : base( 0x3EA0 )
 		{
 			Layer = Layer.Mount;
 
-			m_Rider = mob;
+			Rider = mob;
 			m_Mount = new VirtualMount( this );
 		}
 
@@ -475,7 +473,7 @@ namespace Server.Factions
 
 			writer.Write( (int) 0 ); // version
 
-			writer.Write( (Mobile) m_Rider );
+			writer.Write( (Mobile) Rider );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -484,9 +482,9 @@ namespace Server.Factions
 
 			int version = reader.ReadInt();
 
-			m_Rider = reader.ReadMobile();
+			Rider = reader.ReadMobile();
 
-			if ( m_Rider == null )
+			if ( Rider == null )
 				Delete();
 		}
 	}

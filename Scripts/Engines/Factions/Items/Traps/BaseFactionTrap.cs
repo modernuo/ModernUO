@@ -15,32 +15,16 @@ namespace Server.Factions
 
 	public abstract class BaseFactionTrap : BaseTrap
 	{
-		private Faction m_Faction;
-		private Mobile m_Placer;
-		private DateTime m_TimeOfPlacement;
-
 		private Timer m_Concealing;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Faction Faction
-		{
-			get => m_Faction;
-			set => m_Faction = value;
-		}
+		public Faction Faction { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Placer
-		{
-			get => m_Placer;
-			set => m_Placer = value;
-		}
+		public Mobile Placer { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime TimeOfPlacement
-		{
-			get => m_TimeOfPlacement;
-			set => m_TimeOfPlacement = value;
-		}
+		public DateTime TimeOfPlacement { get; set; }
 
 		public virtual int EffectSound => 0;
 
@@ -79,24 +63,24 @@ namespace Server.Factions
 
 			int silverToAward = ( from.Alive ? 20 : 40 );
 
-			if ( silverToAward > 0 && m_Placer != null && m_Faction != null )
+			if ( silverToAward > 0 && Placer != null && Faction != null )
 			{
 				PlayerState victimState = PlayerState.Find( from );
 
-				if ( victimState != null && victimState.CanGiveSilverTo( m_Placer ) && victimState.KillPoints > 0 )
+				if ( victimState != null && victimState.CanGiveSilverTo( Placer ) && victimState.KillPoints > 0 )
 				{
-					int silverGiven = m_Faction.AwardSilver( m_Placer, silverToAward );
+					int silverGiven = Faction.AwardSilver( Placer, silverToAward );
 
 					if ( silverGiven > 0 )
 					{
 						// TODO: Get real message
 						if ( from.Alive )
-							m_Placer.SendMessage( "You have earned {0} silver pieces because {1} fell for your trap.", silverGiven, from.Name );
+							Placer.SendMessage( "You have earned {0} silver pieces because {1} fell for your trap.", silverGiven, from.Name );
 						else
-							m_Placer.SendLocalizedMessage( 1042736, $"{silverGiven} silver\t{from.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+							Placer.SendLocalizedMessage( 1042736, $"{silverGiven} silver\t{from.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
 					}
 
-					victimState.OnGivenSilverTo( m_Placer );
+					victimState.OnGivenSilverTo( Placer );
 				}
 			}
 
@@ -131,7 +115,7 @@ namespace Server.Factions
 				{
 					StrongholdRegion region = (StrongholdRegion) Region.Find( p, m ).GetRegion( typeof( StrongholdRegion ) );
 
-					if ( region != null && region.Faction == m_Faction )
+					if ( region != null && region.Faction == Faction )
 						return 0;
 
 					return 1010355; // This trap can only be placed in your stronghold
@@ -149,7 +133,7 @@ namespace Server.Factions
 				{
 					Town town = Town.FromRegion( Region.Find( p, m ) );
 
-					if ( town != null && town.Owner == m_Faction )
+					if ( town != null && town.Owner == Faction )
 						return 0;
 
 					return 1010357; // This trap can only be placed in a town your faction controls
@@ -181,9 +165,9 @@ namespace Server.Factions
 		{
 			Visible = false;
 
-			m_Faction = f;
-			m_TimeOfPlacement = DateTime.UtcNow;
-			m_Placer = m;
+			Faction = f;
+			TimeOfPlacement = DateTime.UtcNow;
+			Placer = m;
 		}
 
 		public BaseFactionTrap( Serial serial ) : base( serial )
@@ -197,7 +181,7 @@ namespace Server.Factions
 			if ( decayPeriod == TimeSpan.MaxValue )
 				return false;
 
-			if ( (m_TimeOfPlacement + decayPeriod) < DateTime.UtcNow )
+			if ( (TimeOfPlacement + decayPeriod) < DateTime.UtcNow )
 			{
 				Timer.DelayCall( TimeSpan.Zero, Delete );
 				return true;
@@ -229,9 +213,9 @@ namespace Server.Factions
 
 			writer.Write( (int) 0 ); // version
 
-			Faction.WriteReference( writer, m_Faction );
-			writer.Write( (Mobile) m_Placer );
-			writer.Write( (DateTime) m_TimeOfPlacement );
+			Faction.WriteReference( writer, Faction );
+			writer.Write( (Mobile) Placer );
+			writer.Write( (DateTime) TimeOfPlacement );
 
 			if ( Visible )
 				BeginConceal();
@@ -243,9 +227,9 @@ namespace Server.Factions
 
 			int version = reader.ReadInt();
 
-			m_Faction = Faction.ReadReference( reader );
-			m_Placer = reader.ReadMobile();
-			m_TimeOfPlacement = reader.ReadDateTime();
+			Faction = Faction.ReadReference( reader );
+			Placer = reader.ReadMobile();
+			TimeOfPlacement = reader.ReadDateTime();
 
 			if ( Visible )
 				BeginConceal();
@@ -255,8 +239,8 @@ namespace Server.Factions
 
 		public override void OnDelete()
 		{
-			if ( m_Faction != null && m_Faction.Traps.Contains( this ) )
-				m_Faction.Traps.Remove( this );
+			if ( Faction != null && Faction.Traps.Contains( this ) )
+				Faction.Traps.Remove( this );
 
 			base.OnDelete();
 		}
@@ -277,7 +261,7 @@ namespace Server.Factions
 			if ( faction == null )
 				return false;
 
-			return ( faction != m_Faction );
+			return ( faction != Faction );
 		}
 	}
 }

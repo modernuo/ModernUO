@@ -7,27 +7,11 @@ namespace Server.Engines.MLQuests.Objectives
 {
 	public class CollectObjective : BaseObjective
 	{
-		private int m_DesiredAmount;
-		private Type m_AcceptedType;
-		private TextDefinition m_Name;
+		public int DesiredAmount { get; set; }
 
-		public int DesiredAmount
-		{
-			get => m_DesiredAmount;
-			set => m_DesiredAmount = value;
-		}
+		public Type AcceptedType { get; set; }
 
-		public Type AcceptedType
-		{
-			get => m_AcceptedType;
-			set => m_AcceptedType = value;
-		}
-
-		public TextDefinition Name
-		{
-			get => m_Name;
-			set => m_Name = value;
-		}
+		public TextDefinition Name { get; set; }
 
 		public virtual bool ShowDetailed => true;
 
@@ -38,9 +22,9 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public CollectObjective( int amount, Type type, TextDefinition name )
 		{
-			m_DesiredAmount = amount;
-			m_AcceptedType = type;
-			m_Name = name;
+			DesiredAmount = amount;
+			AcceptedType = type;
+			Name = name;
 
 			if ( MLQuestSystem.Debug && ShowDetailed && name.Number > 0 )
 			{
@@ -53,7 +37,7 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public bool CheckType( Type type )
 		{
-			return ( m_AcceptedType != null && m_AcceptedType.IsAssignableFrom( type ) );
+			return ( AcceptedType != null && AcceptedType.IsAssignableFrom( type ) );
 		}
 
 		public virtual bool CheckItem( Item item )
@@ -72,27 +56,27 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			if ( ShowDetailed )
 			{
-				string amount = m_DesiredAmount.ToString();
+				string amount = DesiredAmount.ToString();
 
 				g.AddHtmlLocalized( 98, y, 350, 16, 1072205, 0x15F90, false, false ); // Obtain
 				g.AddLabel( 143, y, 0x481, amount );
 
-				if ( m_Name.Number > 0 )
+				if ( Name.Number > 0 )
 				{
-					g.AddHtmlLocalized( 143 + amount.Length * 15, y, 190, 18, m_Name.Number, 0x77BF, false, false );
-					g.AddItem( 350, y, LabelToItemID( m_Name.Number ) );
+					g.AddHtmlLocalized( 143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false );
+					g.AddItem( 350, y, LabelToItemID( Name.Number ) );
 				}
-				else if ( m_Name.String != null )
+				else if ( Name.String != null )
 				{
-					g.AddLabel( 143 + amount.Length * 15, y, 0x481, m_Name.String );
+					g.AddLabel( 143 + amount.Length * 15, y, 0x481, Name.String );
 				}
 			}
 			else
 			{
-				if ( m_Name.Number > 0 )
-					g.AddHtmlLocalized( 98, y, 312, 32, m_Name.Number, 0x15F90, false, false );
-				else if ( m_Name.String != null )
-					g.AddLabel( 98, y, 0x481, m_Name.String );
+				if ( Name.Number > 0 )
+					g.AddHtmlLocalized( 98, y, 312, 32, Name.Number, 0x15F90, false, false );
+				else if ( Name.String != null )
+					g.AddLabel( 98, y, 0x481, Name.String );
 			}
 
 			y += 32;
@@ -108,15 +92,13 @@ namespace Server.Engines.MLQuests.Objectives
 
 	public class TimedCollectObjective : CollectObjective
 	{
-		private TimeSpan m_Duration;
-
 		public override bool IsTimed => true;
-		public override TimeSpan Duration => m_Duration;
+		public override TimeSpan Duration { get; }
 
 		public TimedCollectObjective( TimeSpan duration, int amount, Type type, TextDefinition name )
 			: base( amount, type, name )
 		{
-			m_Duration = duration;
+			Duration = duration;
 		}
 	}
 
@@ -124,18 +106,12 @@ namespace Server.Engines.MLQuests.Objectives
 
 	public class CollectObjectiveInstance : BaseObjectiveInstance
 	{
-		private CollectObjective m_Objective;
-
-		public CollectObjective Objective
-		{
-			get => m_Objective;
-			set => m_Objective = value;
-		}
+		public CollectObjective Objective { get; set; }
 
 		public CollectObjectiveInstance( CollectObjective objective, MLQuestInstance instance )
 			: base( instance, objective )
 		{
-			m_Objective = objective;
+			Objective = objective;
 		}
 
 		private int GetCurrentTotal()
@@ -145,12 +121,12 @@ namespace Server.Engines.MLQuests.Objectives
 			if ( pack == null )
 				return 0;
 
-			Item[] items = pack.FindItemsByType( m_Objective.AcceptedType, false ); // Note: subclasses are included
+			Item[] items = pack.FindItemsByType( Objective.AcceptedType, false ); // Note: subclasses are included
 			int total = 0;
 
 			foreach ( Item item in items )
 			{
-				if ( item.QuestItem && m_Objective.CheckItem( item ) )
+				if ( item.QuestItem && Objective.CheckItem( item ) )
 					total += item.Amount;
 			}
 
@@ -159,12 +135,12 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override bool AllowsQuestItem( Item item, Type type )
 		{
-			return ( m_Objective.CheckType( type ) && m_Objective.CheckItem( item ) );
+			return ( Objective.CheckType( type ) && Objective.CheckItem( item ) );
 		}
 
 		public override bool IsCompleted()
 		{
-			return ( GetCurrentTotal() >= m_Objective.DesiredAmount );
+			return ( GetCurrentTotal() >= Objective.DesiredAmount );
 		}
 
 		public override void OnQuestCancelled()
@@ -175,7 +151,7 @@ namespace Server.Engines.MLQuests.Objectives
 			if ( pack == null )
 				return;
 
-			Type checkType = m_Objective.AcceptedType;
+			Type checkType = Objective.AcceptedType;
 			Item[] items = pack.FindItemsByType( checkType, false );
 
 			foreach ( Item item in items )
@@ -195,12 +171,12 @@ namespace Server.Engines.MLQuests.Objectives
 
 			// TODO: OSI also counts the item in the cursor?
 
-			Item[] items = pack.FindItemsByType( m_Objective.AcceptedType, false );
-			int left = m_Objective.DesiredAmount;
+			Item[] items = pack.FindItemsByType( Objective.AcceptedType, false );
+			int left = Objective.DesiredAmount;
 
 			foreach ( Item item in items )
 			{
-				if ( item.QuestItem && m_Objective.CheckItem( item ) )
+				if ( item.QuestItem && Objective.CheckItem( item ) )
 				{
 					if ( left == 0 )
 						return;
@@ -233,10 +209,10 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public override void WriteToGump( Gump g, ref int y )
 		{
-			m_Objective.WriteToGump( g, ref y );
+			Objective.WriteToGump( g, ref y );
 			y -= 16;
 
-			if ( m_Objective.ShowDetailed )
+			if ( Objective.ShowDetailed )
 			{
 				base.WriteToGump( g, ref y );
 

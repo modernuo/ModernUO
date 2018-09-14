@@ -29,29 +29,20 @@ namespace Server.Multis
 		private DesignState m_Current; // State which is currently visible.
 		private DesignState m_Design;  // State of current design.
 		private DesignState m_Backup;  // State at last user backup.
-		private Item m_SignHanger;     // Item hanging the sign.
-		private Item m_Signpost;       // Item supporting the hanger.
-		private int m_SignpostGraphic; // ItemID number of the chosen signpost.
-		private int m_LastRevision;    // Latest revision number.
-		private List<Item> m_Fixtures; // List of fixtures (teleporters and doors) associated with this house.
-		private FoundationType m_Type; // Graphic type of this foundation.
-		private Mobile m_Customizer;   // Who is currently customizing this -or- null if not customizing.
 
-		public FoundationType Type { get => m_Type;
-			set => m_Type = value;
-		}
-		public int LastRevision { get => m_LastRevision;
-			set => m_LastRevision = value;
-		}
-		public List<Item> Fixtures  => m_Fixtures;
-		public Item SignHanger  => m_SignHanger;
-		public Item Signpost  => m_Signpost;
-		public int SignpostGraphic { get => m_SignpostGraphic;
-			set => m_SignpostGraphic = value;
-		}
-		public Mobile Customizer { get => m_Customizer;
-			set => m_Customizer = value;
-		}
+		public FoundationType Type { get; set; }
+
+		public int LastRevision { get; set; }
+
+		public List<Item> Fixtures { get; private set; }
+
+		public Item SignHanger { get; private set; }
+
+		public Item Signpost { get; private set; }
+
+		public int SignpostGraphic { get; set; }
+
+		public Mobile Customizer { get; set; }
 
 		public override bool IsAosRules => true;
 
@@ -61,7 +52,7 @@ namespace Server.Multis
 
 		public bool IsFixture( Item item )
 		{
-			return (m_Fixtures != null && m_Fixtures.Contains( item ));
+			return (Fixtures != null && Fixtures.Contains( item ));
 		}
 
 		public override MultiComponentList Components
@@ -124,21 +115,21 @@ namespace Server.Multis
 		{
 			base.OnAfterDelete();
 
-			m_SignHanger?.Delete();
+			SignHanger?.Delete();
 
-			m_Signpost?.Delete();
+			Signpost?.Delete();
 
-			if ( m_Fixtures == null )
+			if ( Fixtures == null )
 				return;
 
-			for( int i = 0; i < m_Fixtures.Count; ++i )
+			for( int i = 0; i < Fixtures.Count; ++i )
 			{
-				Item item = m_Fixtures[i];
+				Item item = Fixtures[i];
 
 				item?.Delete();
 			}
 
-			m_Fixtures.Clear();
+			Fixtures.Clear();
 		}
 
 		public override void OnLocationChange( Point3D oldLocation )
@@ -149,16 +140,16 @@ namespace Server.Multis
 			int y = Location.Y - oldLocation.Y;
 			int z = Location.Z - oldLocation.Z;
 
-			m_SignHanger?.MoveToWorld( new Point3D( m_SignHanger.X + x, m_SignHanger.Y + y, m_SignHanger.Z + z ), Map );
+			SignHanger?.MoveToWorld( new Point3D( SignHanger.X + x, SignHanger.Y + y, SignHanger.Z + z ), Map );
 
-			m_Signpost?.MoveToWorld( new Point3D( m_Signpost.X + x, m_Signpost.Y + y, m_Signpost.Z + z ), Map );
+			Signpost?.MoveToWorld( new Point3D( Signpost.X + x, Signpost.Y + y, Signpost.Z + z ), Map );
 
-			if ( m_Fixtures == null )
+			if ( Fixtures == null )
 				return;
 
-			for( int i = 0; i < m_Fixtures.Count; ++i )
+			for( int i = 0; i < Fixtures.Count; ++i )
 			{
-				Item item = m_Fixtures[i];
+				Item item = Fixtures[i];
 
 				if ( Doors.Contains( item ) )
 					continue;
@@ -171,39 +162,39 @@ namespace Server.Multis
 		{
 			base.OnMapChange();
 
-			if ( m_SignHanger != null )
-				m_SignHanger.Map = Map;
+			if ( SignHanger != null )
+				SignHanger.Map = Map;
 
-			if ( m_Signpost != null )
-				m_Signpost.Map = Map;
+			if ( Signpost != null )
+				Signpost.Map = Map;
 
-			if ( m_Fixtures == null )
+			if ( Fixtures == null )
 				return;
 
-			for( int i = 0; i < m_Fixtures.Count; ++i )
-				m_Fixtures[i].Map = Map;
+			for( int i = 0; i < Fixtures.Count; ++i )
+				Fixtures[i].Map = Map;
 		}
 
 		public void ClearFixtures( Mobile from )
 		{
-			if ( m_Fixtures == null )
+			if ( Fixtures == null )
 				return;
 
 			RemoveKeys( from );
 
-			for( int i = 0; i < m_Fixtures.Count; ++i )
+			for( int i = 0; i < Fixtures.Count; ++i )
 			{
-				m_Fixtures[i].Delete();
-				Doors.Remove( m_Fixtures[i] );
+				Fixtures[i].Delete();
+				Doors.Remove( Fixtures[i] );
 			}
 
-			m_Fixtures.Clear();
+			Fixtures.Clear();
 		}
 
 		public void AddFixtures( Mobile from, MultiTileEntry[] list )
 		{
-			if ( m_Fixtures == null )
-				m_Fixtures = new List<Item>();
+			if ( Fixtures == null )
+				Fixtures = new List<Item>();
 
 			uint keyValue = 0;
 
@@ -401,22 +392,22 @@ namespace Server.Multis
 						door.KeyValue = keyValue;
 
 						AddDoor( door, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ );
-						m_Fixtures.Add( door );
+						Fixtures.Add( door );
 					}
 				}
 			}
 
-			for( int i = 0; i < m_Fixtures.Count; ++i )
+			for( int i = 0; i < Fixtures.Count; ++i )
 			{
-				Item fixture = m_Fixtures[i];
+				Item fixture = Fixtures[i];
 
 				if ( fixture is HouseTeleporter )
 				{
 					HouseTeleporter tp = (HouseTeleporter)fixture;
 
-					for( int j = 1; j <= m_Fixtures.Count; ++j )
+					for( int j = 1; j <= Fixtures.Count; ++j )
 					{
-						HouseTeleporter check = m_Fixtures[(i + j) % m_Fixtures.Count] as HouseTeleporter;
+						HouseTeleporter check = Fixtures[(i + j) % Fixtures.Count] as HouseTeleporter;
 
 						if ( check != null && check.ItemID == tp.ItemID )
 						{
@@ -452,9 +443,9 @@ namespace Server.Multis
 						case DoorFacing.WestSS: linkFacing = DoorFacing.WestSN; xOffset = 0; yOffset = -1; break;
 					}
 
-					for( int j = i + 1; j < m_Fixtures.Count; ++j )
+					for( int j = i + 1; j < Fixtures.Count; ++j )
 					{
-						BaseHouseDoor check = m_Fixtures[j] as BaseHouseDoor;
+						BaseHouseDoor check = Fixtures[j] as BaseHouseDoor;
 
 						if ( check != null && check.Link == null && check.Facing == linkFacing && (check.X - door.X) == xOffset && (check.Y - door.Y) == yOffset && (check.Z == door.Z) )
 						{
@@ -477,7 +468,7 @@ namespace Server.Multis
 
 		public void AddFixture( Item item, MultiTileEntry mte )
 		{
-			m_Fixtures.Add( item );
+			Fixtures.Add( item );
 			item.MoveToWorld( new Point3D( X + mte.m_OffsetX, Y + mte.m_OffsetY, Z + mte.m_OffsetZ ), Map );
 		}
 
@@ -555,7 +546,7 @@ namespace Server.Multis
 			int yCenter = mcl.Center.Y;
 			int y = mcl.Height - 1;
 
-			ApplyFoundation( m_Type, mcl );
+			ApplyFoundation( Type, mcl );
 
 			for( int x = 1; x < mcl.Width; ++x )
 				mcl.Add( 0x751, x - xCenter, y - yCenter, 0 );
@@ -584,19 +575,19 @@ namespace Server.Multis
 
 			if ( CheckWall( mcl, x, y ) )
 			{
-				m_Signpost?.Delete();
+				Signpost?.Delete();
 
-				m_Signpost = null;
+				Signpost = null;
 			}
-			else if ( m_Signpost == null )
+			else if ( Signpost == null )
 			{
-				m_Signpost = new Static( m_SignpostGraphic );
-				m_Signpost.MoveToWorld( new Point3D( X + x, Y + y, Z + 7 ), Map );
+				Signpost = new Static( SignpostGraphic );
+				Signpost.MoveToWorld( new Point3D( X + x, Y + y, Z + 7 ), Map );
 			}
 			else
 			{
-				m_Signpost.ItemID = m_SignpostGraphic;
-				m_Signpost.MoveToWorld( new Point3D( X + x, Y + y, Z + 7 ), Map );
+				Signpost.ItemID = SignpostGraphic;
+				Signpost.MoveToWorld( new Point3D( X + x, Y + y, Z + 7 ), Map );
 			}
 		}
 
@@ -624,15 +615,15 @@ namespace Server.Multis
 		public HouseFoundation( Mobile owner, int multiID, int maxLockdowns, int maxSecures )
 			: base( multiID, owner, maxLockdowns, maxSecures )
 		{
-			m_SignpostGraphic = 9;
+			SignpostGraphic = 9;
 
-			m_Fixtures = new List<Item>();
+			Fixtures = new List<Item>();
 
 			int x = Components.Min.X;
 			int y = Components.Height - 1 - Components.Center.Y;
 
-			m_SignHanger = new Static( 0xB98 );
-			m_SignHanger.MoveToWorld( new Point3D( X + x, Y + y, Z + 7 ), Map );
+			SignHanger = new Static( 0xB98 );
+			SignHanger.MoveToWorld( new Point3D( X + x, Y + y, Z + 7 ), Map );
 
 			CheckSignpost();
 
@@ -697,15 +688,15 @@ namespace Server.Multis
 		{
 			writer.Write( (int)5 ); // version
 
-			writer.Write( m_Signpost );
-			writer.Write( (int)m_SignpostGraphic );
+			writer.Write( Signpost );
+			writer.Write( (int)SignpostGraphic );
 
-			writer.Write( (int)m_Type );
+			writer.Write( (int)Type );
 
-			writer.Write( m_SignHanger );
+			writer.Write( SignHanger );
 
-			writer.Write( (int)m_LastRevision );
-			writer.Write( m_Fixtures, true );
+			writer.Write( (int)LastRevision );
+			writer.Write( Fixtures, true );
 
 			CurrentState.Serialize( writer );
 			DesignState.Serialize( writer );
@@ -727,20 +718,20 @@ namespace Server.Multis
 				case 5:
 				case 4:
 				{
-					m_Signpost = reader.ReadItem();
-					m_SignpostGraphic = reader.ReadInt();
+					Signpost = reader.ReadItem();
+					SignpostGraphic = reader.ReadInt();
 
 					goto case 3;
 				}
 				case 3:
 				{
-					m_Type = (FoundationType)reader.ReadInt();
+					Type = (FoundationType)reader.ReadInt();
 
 					goto case 2;
 				}
 				case 2:
 				{
-					m_SignHanger = reader.ReadItem();
+					SignHanger = reader.ReadItem();
 
 					goto case 1;
 				}
@@ -754,13 +745,13 @@ namespace Server.Multis
 				case 0:
 				{
 					if ( version < 3 )
-						m_Type = FoundationType.Stone;
+						Type = FoundationType.Stone;
 
 					if ( version < 4 )
-						m_SignpostGraphic = 9;
+						SignpostGraphic = 9;
 
-					m_LastRevision = reader.ReadInt();
-					m_Fixtures = reader.ReadStrongItemList();
+					LastRevision = reader.ReadInt();
+					Fixtures = reader.ReadStrongItemList();
 
 					m_Current = new DesignState( this, reader );
 					m_Design = new DesignState( this, reader );
@@ -775,7 +766,7 @@ namespace Server.Multis
 
 		public bool IsHiddenToCustomizer( Item item )
 		{
-			return ( item == m_Signpost || item == m_SignHanger || item == Sign || IsFixture( item ) );
+			return ( item == Signpost || item == SignHanger || item == Sign || IsFixture( item ) );
 		}
 
 		public static void Initialize()
@@ -1677,10 +1668,6 @@ namespace Server.Multis
 
 	public class DesignState
 	{
-		private HouseFoundation m_Foundation;
-		private MultiComponentList m_Components;
-		private MultiTileEntry[] m_Fixtures;
-		private int m_Revision;
 		private Packet m_PacketCache;
 
 		public Packet PacketCache
@@ -1697,34 +1684,35 @@ namespace Server.Multis
 			}
 		}
 
-		public HouseFoundation Foundation  => m_Foundation;
-		public MultiComponentList Components  => m_Components;
-		public MultiTileEntry[] Fixtures  => m_Fixtures;
-		public int Revision { get => m_Revision;
-			set => m_Revision = value;
-		}
+		public HouseFoundation Foundation { get; }
+
+		public MultiComponentList Components { get; }
+
+		public MultiTileEntry[] Fixtures { get; private set; }
+
+		public int Revision { get; set; }
 
 		public DesignState( HouseFoundation foundation, MultiComponentList components )
 		{
-			m_Foundation = foundation;
-			m_Components = components;
-			m_Fixtures = new MultiTileEntry[0];
+			Foundation = foundation;
+			Components = components;
+			Fixtures = new MultiTileEntry[0];
 		}
 
 		public DesignState( DesignState toCopy )
 		{
-			m_Foundation = toCopy.m_Foundation;
-			m_Components = new MultiComponentList( toCopy.m_Components );
-			m_Revision = toCopy.m_Revision;
-			m_Fixtures = new MultiTileEntry[toCopy.m_Fixtures.Length];
+			Foundation = toCopy.Foundation;
+			Components = new MultiComponentList( toCopy.Components );
+			Revision = toCopy.Revision;
+			Fixtures = new MultiTileEntry[toCopy.Fixtures.Length];
 
-			for( int i = 0; i < m_Fixtures.Length; ++i )
-				m_Fixtures[i] = toCopy.m_Fixtures[i];
+			for( int i = 0; i < Fixtures.Length; ++i )
+				Fixtures[i] = toCopy.Fixtures[i];
 		}
 
 		public DesignState( HouseFoundation foundation, GenericReader reader )
 		{
-			m_Foundation = foundation;
+			Foundation = foundation;
 
 			int version = reader.ReadInt();
 
@@ -1732,22 +1720,22 @@ namespace Server.Multis
 			{
 				case 0:
 				{
-					m_Components = new MultiComponentList( reader );
+					Components = new MultiComponentList( reader );
 
 					int length = reader.ReadInt();
 
-					m_Fixtures = new MultiTileEntry[length];
+					Fixtures = new MultiTileEntry[length];
 
 					for( int i = 0; i < length; ++i )
 					{
-						m_Fixtures[i].m_ItemID = reader.ReadUShort();
-						m_Fixtures[i].m_OffsetX = reader.ReadShort();
-						m_Fixtures[i].m_OffsetY = reader.ReadShort();
-						m_Fixtures[i].m_OffsetZ = reader.ReadShort();
-						m_Fixtures[i].m_Flags = reader.ReadInt();
+						Fixtures[i].m_ItemID = reader.ReadUShort();
+						Fixtures[i].m_OffsetX = reader.ReadShort();
+						Fixtures[i].m_OffsetY = reader.ReadShort();
+						Fixtures[i].m_OffsetZ = reader.ReadShort();
+						Fixtures[i].m_Flags = reader.ReadInt();
 					}
 
-					m_Revision = reader.ReadInt();
+					Revision = reader.ReadInt();
 
 					break;
 				}
@@ -1758,13 +1746,13 @@ namespace Server.Multis
 		{
 			writer.Write( (int)0 ); // version
 
-			m_Components.Serialize( writer );
+			Components.Serialize( writer );
 
-			writer.Write( (int)m_Fixtures.Length );
+			writer.Write( (int)Fixtures.Length );
 
-			for( int i = 0; i < m_Fixtures.Length; ++i )
+			for( int i = 0; i < Fixtures.Length; ++i )
 			{
-				MultiTileEntry ent = m_Fixtures[i];
+				MultiTileEntry ent = Fixtures[i];
 
 				writer.Write( (ushort)ent.m_ItemID );
 				writer.Write( (short)ent.m_OffsetX );
@@ -1773,14 +1761,14 @@ namespace Server.Multis
 				writer.Write( (int)ent.m_Flags );
 			}
 
-			writer.Write( (int)m_Revision );
+			writer.Write( (int)Revision );
 		}
 
 		public void OnRevised()
 		{
 			lock( this )
 			{
-				m_Revision = ++m_Foundation.LastRevision;
+				Revision = ++Foundation.LastRevision;
 
 				m_PacketCache?.Release();
 
@@ -1790,7 +1778,7 @@ namespace Server.Multis
 
 		public void SendGeneralInfoTo( NetState state )
 		{
-			state?.Send( new DesignStateGeneral( m_Foundation, this ) );
+			state?.Send( new DesignStateGeneral( Foundation, this ) );
 		}
 
 		public void SendDetailedInfoTo( NetState state )
@@ -1800,7 +1788,7 @@ namespace Server.Multis
 				lock( this )
 				{
 					if ( m_PacketCache == null )
-						DesignStateDetailed.SendDetails( state, m_Foundation, this );
+						DesignStateDetailed.SendDetails( state, Foundation, this );
 					else
 						state.Send( m_PacketCache );
 				}
@@ -1811,21 +1799,21 @@ namespace Server.Multis
 		{
 			OnRevised();
 
-			for( int i = 0; i < m_Fixtures.Length; ++i )
+			for( int i = 0; i < Fixtures.Length; ++i )
 			{
-				MultiTileEntry mte = m_Fixtures[i];
+				MultiTileEntry mte = Fixtures[i];
 
-				m_Components.Add( mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ );
+				Components.Add( mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ );
 			}
 
-			m_Fixtures = new MultiTileEntry[0];
+			Fixtures = new MultiTileEntry[0];
 		}
 
 		public void MeltFixtures()
 		{
 			OnRevised();
 
-			MultiTileEntry[] list = m_Components.List;
+			MultiTileEntry[] list = Components.List;
 			int length = 0;
 
 			for( int i = list.Length - 1; i >= 0; --i )
@@ -1836,7 +1824,7 @@ namespace Server.Multis
 					++length;
 			}
 
-			m_Fixtures = new MultiTileEntry[length];
+			Fixtures = new MultiTileEntry[length];
 
 			for( int i = list.Length - 1; i >= 0; --i )
 			{
@@ -1844,8 +1832,8 @@ namespace Server.Multis
 
 				if ( IsFixture( mte.m_ItemID ) )
 				{
-					m_Fixtures[--length] = mte;
-					m_Components.Remove( mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ );
+					Fixtures[--length] = mte;
+					Components.Remove( mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ );
 				}
 			}
 		}
@@ -1975,31 +1963,26 @@ namespace Server.Multis
 
 	public class DesignContext
 	{
-		private HouseFoundation m_Foundation;
-		private int m_Level;
+		public HouseFoundation Foundation { get; }
 
-		public HouseFoundation Foundation  => m_Foundation;
-		public int Level { get => m_Level;
-			set => m_Level = value;
-		}
-		public int MaxLevels  => m_Foundation.MaxLevels;
+		public int Level { get; set; }
+
+		public int MaxLevels  => Foundation.MaxLevels;
 
 		public DesignContext( HouseFoundation foundation )
 		{
-			m_Foundation = foundation;
-			m_Level = 1;
+			Foundation = foundation;
+			Level = 1;
 		}
 
-		private static Dictionary<Mobile, DesignContext> m_Table = new Dictionary<Mobile, DesignContext>();
-
-		public static Dictionary<Mobile, DesignContext> Table  => m_Table;
+		public static Dictionary<Mobile, DesignContext> Table { get; } = new Dictionary<Mobile, DesignContext>();
 
 		public static DesignContext Find( Mobile from )
 		{
 			if ( from == null )
 				return null;
 
-			m_Table.TryGetValue( from, out DesignContext d );
+			Table.TryGetValue( from, out DesignContext d );
 
 			return d;
 		}
@@ -2022,7 +2005,7 @@ namespace Server.Multis
 
 			DesignContext c = new DesignContext( foundation );
 
-			m_Table[from] = c;
+			Table[from] = c;
 
 			if ( from is PlayerMobile )
 				((PlayerMobile)from).DesignContext = c;
@@ -2063,7 +2046,7 @@ namespace Server.Multis
 			if ( context == null )
 				return;
 
-			m_Table.Remove( from );
+			Table.Remove( from );
 
 			if ( from is PlayerMobile )
 				((PlayerMobile)from).DesignContext = null;

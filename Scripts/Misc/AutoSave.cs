@@ -16,13 +16,7 @@ namespace Server.Misc
 			CommandSystem.Register( "SetSaves", AccessLevel.Administrator, SetSaves_OnCommand );
 		}
 
-		private static bool m_SavesEnabled = true;
-
-		public static bool SavesEnabled
-		{
-			get => m_SavesEnabled;
-			set => m_SavesEnabled = value;
-		}
+		public static bool SavesEnabled { get; set; } = true;
 
 		[Usage( "SetSaves <true | false>" )]
 		[Description( "Enables or disables automatic shard saving." )]
@@ -30,8 +24,8 @@ namespace Server.Misc
 		{
 			if ( e.Length == 1 )
 			{
-				m_SavesEnabled = e.GetBoolean( 0 );
-				e.Mobile.SendMessage( "Saves have been {0}.", m_SavesEnabled ? "enabled" : "disabled" );
+				SavesEnabled = e.GetBoolean( 0 );
+				e.Mobile.SendMessage( "Saves have been {0}.", SavesEnabled ? "enabled" : "disabled" );
 			}
 			else
 			{
@@ -46,7 +40,7 @@ namespace Server.Misc
 
 		protected override void OnTick()
 		{
-			if ( !m_SavesEnabled || AutoRestart.Restarting )
+			if ( !SavesEnabled || AutoRestart.Restarting )
 				return;
 
 			if ( m_Warning == TimeSpan.Zero )

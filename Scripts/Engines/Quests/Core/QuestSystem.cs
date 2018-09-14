@@ -37,27 +37,11 @@ namespace Server.Engines.Quests
 
 		public abstract Type[] TypeReferenceTable{ get; }
 
-		private PlayerMobile m_From;
-		private ArrayList m_Objectives;
-		private ArrayList m_Conversations;
+		public PlayerMobile From { get; set; }
 
-		public PlayerMobile From
-		{
-			get => m_From;
-			set => m_From = value;
-		}
+		public ArrayList Objectives { get; set; }
 
-		public ArrayList Objectives
-		{
-			get => m_Objectives;
-			set => m_Objectives = value;
-		}
-
-		public ArrayList Conversations
-		{
-			get => m_Conversations;
-			set => m_Conversations = value;
-		}
+		public ArrayList Conversations { get; set; }
 
 		private Timer m_Timer;
 
@@ -78,9 +62,9 @@ namespace Server.Engines.Quests
 
 		public virtual void Slice()
 		{
-			for ( int i = m_Objectives.Count - 1; i >= 0; --i )
+			for ( int i = Objectives.Count - 1; i >= 0; --i )
 			{
-				QuestObjective obj = (QuestObjective)m_Objectives[i];
+				QuestObjective obj = (QuestObjective)Objectives[i];
 
 				if ( obj.GetTimerEvent() )
 					obj.CheckProgress();
@@ -89,9 +73,9 @@ namespace Server.Engines.Quests
 
 		public virtual void OnKill( BaseCreature creature, Container corpse )
 		{
-			for ( int i = m_Objectives.Count - 1; i >= 0; --i )
+			for ( int i = Objectives.Count - 1; i >= 0; --i )
 			{
-				QuestObjective obj = (QuestObjective)m_Objectives[i];
+				QuestObjective obj = (QuestObjective)Objectives[i];
 
 				if ( obj.GetKillEvent( creature, corpse ) )
 					obj.OnKill( creature, corpse );
@@ -100,9 +84,9 @@ namespace Server.Engines.Quests
 
 		public virtual bool IgnoreYoungProtection( Mobile from )
 		{
-			for ( int i = m_Objectives.Count - 1; i >= 0; --i )
+			for ( int i = Objectives.Count - 1; i >= 0; --i )
 			{
-				QuestObjective obj = (QuestObjective)m_Objectives[i];
+				QuestObjective obj = (QuestObjective)Objectives[i];
 
 				if ( obj.IgnoreYoungProtection( from ) )
 					return true;
@@ -113,9 +97,9 @@ namespace Server.Engines.Quests
 
 		public QuestSystem( PlayerMobile from )
 		{
-			m_From = from;
-			m_Objectives = new ArrayList();
-			m_Conversations = new ArrayList();
+			From = from;
+			Objectives = new ArrayList();
+			Conversations = new ArrayList();
 		}
 
 		public QuestSystem()
@@ -134,7 +118,7 @@ namespace Server.Engines.Quests
 				{
 					int count = reader.ReadEncodedInt();
 
-					m_Objectives = new ArrayList( count );
+					Objectives = new ArrayList( count );
 
 					for ( int i = 0; i < count; ++i )
 					{
@@ -143,13 +127,13 @@ namespace Server.Engines.Quests
 						if ( obj != null )
 						{
 							obj.System = this;
-							m_Objectives.Add( obj );
+							Objectives.Add( obj );
 						}
 					}
 
 					count = reader.ReadEncodedInt();
 
-					m_Conversations = new ArrayList( count );
+					Conversations = new ArrayList( count );
 
 					for ( int i = 0; i < count; ++i )
 					{
@@ -158,7 +142,7 @@ namespace Server.Engines.Quests
 						if ( conv != null )
 						{
 							conv.System = this;
-							m_Conversations.Add( conv );
+							Conversations.Add( conv );
 						}
 					}
 
@@ -180,15 +164,15 @@ namespace Server.Engines.Quests
 
 			writer.WriteEncodedInt( (int) 0 ); // version
 
-			writer.WriteEncodedInt( (int) m_Objectives.Count );
+			writer.WriteEncodedInt( (int) Objectives.Count );
 
-			for ( int i = 0; i < m_Objectives.Count; ++i )
-				QuestSerializer.Serialize( referenceTable, (QuestObjective) m_Objectives[i], writer );
+			for ( int i = 0; i < Objectives.Count; ++i )
+				QuestSerializer.Serialize( referenceTable, (QuestObjective) Objectives[i], writer );
 
-			writer.WriteEncodedInt( (int) m_Conversations.Count );
+			writer.WriteEncodedInt( (int) Conversations.Count );
 
-			for ( int i = 0; i < m_Conversations.Count; ++i )
-				QuestSerializer.Serialize( referenceTable, (QuestConversation) m_Conversations[i], writer );
+			for ( int i = 0; i < Conversations.Count; ++i )
+				QuestSerializer.Serialize( referenceTable, (QuestConversation) Conversations[i], writer );
 
 			ChildSerialize( writer );
 		}
@@ -207,9 +191,9 @@ namespace Server.Engines.Quests
 
 		public QuestObjective FindObjective( Type type )
 		{
-			for ( int i = m_Objectives.Count - 1; i >= 0; --i )
+			for ( int i = Objectives.Count - 1; i >= 0; --i )
 			{
-				QuestObjective obj = (QuestObjective)m_Objectives[i];
+				QuestObjective obj = (QuestObjective)Objectives[i];
 
 				if ( obj.GetType() == type )
 					return obj;
@@ -220,15 +204,15 @@ namespace Server.Engines.Quests
 
 		public virtual void SendOffer()
 		{
-			m_From.SendGump( new QuestOfferGump( this ) );
+			From.SendGump( new QuestOfferGump( this ) );
 		}
 
 		public virtual void GetContextMenuEntries( List<ContextMenuEntry> list )
 		{
-			if ( m_Objectives.Count > 0 )
+			if ( Objectives.Count > 0 )
 				list.Add( new QuestCallbackEntry( 6154, ShowQuestLog ) ); // View Quest Log
 
-			if ( m_Conversations.Count > 0 )
+			if ( Conversations.Count > 0 )
 				list.Add( new QuestCallbackEntry( 6156, ShowQuestConversation ) ); // Quest Conversation
 
 			list.Add( new QuestCallbackEntry( 6155, BeginCancelQuest ) ); // Cancel Quest
@@ -236,63 +220,63 @@ namespace Server.Engines.Quests
 
 		public virtual void ShowQuestLogUpdated()
 		{
-			m_From.CloseGump( typeof( QuestLogUpdatedGump ) );
-			m_From.SendGump( new QuestLogUpdatedGump( this ) );
+			From.CloseGump( typeof( QuestLogUpdatedGump ) );
+			From.SendGump( new QuestLogUpdatedGump( this ) );
 		}
 
 		public virtual void ShowQuestLog()
 		{
-			if ( m_Objectives.Count > 0 )
+			if ( Objectives.Count > 0 )
 			{
-				m_From.CloseGump( typeof( QuestItemInfoGump ) );
-				m_From.CloseGump( typeof( QuestLogUpdatedGump ) );
-				m_From.CloseGump( typeof( QuestObjectivesGump ) );
-				m_From.CloseGump( typeof( QuestConversationsGump ) );
+				From.CloseGump( typeof( QuestItemInfoGump ) );
+				From.CloseGump( typeof( QuestLogUpdatedGump ) );
+				From.CloseGump( typeof( QuestObjectivesGump ) );
+				From.CloseGump( typeof( QuestConversationsGump ) );
 
-				m_From.SendGump( new QuestObjectivesGump( m_Objectives ) );
+				From.SendGump( new QuestObjectivesGump( Objectives ) );
 
-				QuestObjective last = (QuestObjective)m_Objectives[m_Objectives.Count - 1];
+				QuestObjective last = (QuestObjective)Objectives[Objectives.Count - 1];
 
 				if ( last.Info != null )
-					m_From.SendGump( new QuestItemInfoGump( last.Info ) );
+					From.SendGump( new QuestItemInfoGump( last.Info ) );
 			}
 		}
 
 		public virtual void ShowQuestConversation()
 		{
-			if ( m_Conversations.Count > 0 )
+			if ( Conversations.Count > 0 )
 			{
-				m_From.CloseGump( typeof( QuestItemInfoGump ) );
-				m_From.CloseGump( typeof( QuestObjectivesGump ) );
-				m_From.CloseGump( typeof( QuestConversationsGump ) );
+				From.CloseGump( typeof( QuestItemInfoGump ) );
+				From.CloseGump( typeof( QuestObjectivesGump ) );
+				From.CloseGump( typeof( QuestConversationsGump ) );
 
-				m_From.SendGump( new QuestConversationsGump( m_Conversations ) );
+				From.SendGump( new QuestConversationsGump( Conversations ) );
 
-				QuestConversation last = (QuestConversation)m_Conversations[m_Conversations.Count - 1];
+				QuestConversation last = (QuestConversation)Conversations[Conversations.Count - 1];
 
 				if ( last.Info != null )
-					m_From.SendGump( new QuestItemInfoGump( last.Info ) );
+					From.SendGump( new QuestItemInfoGump( last.Info ) );
 			}
 		}
 
 		public virtual void BeginCancelQuest()
 		{
-			m_From.SendGump( new QuestCancelGump( this ) );
+			From.SendGump( new QuestCancelGump( this ) );
 		}
 
 		public virtual void EndCancelQuest( bool shouldCancel )
 		{
-			if ( m_From.Quest != this )
+			if ( From.Quest != this )
 				return;
 
 			if ( shouldCancel )
 			{
-				m_From.SendLocalizedMessage( 1049015 ); // You have canceled your quest.
+				From.SendLocalizedMessage( 1049015 ); // You have canceled your quest.
 				Cancel();
 			}
 			else
 			{
-				m_From.SendLocalizedMessage( 1049014 ); // You have chosen not to cancel your quest.
+				From.SendLocalizedMessage( 1049014 ); // You have chosen not to cancel your quest.
 			}
 		}
 
@@ -310,18 +294,18 @@ namespace Server.Engines.Quests
 		{
 			StopTimer();
 
-			if ( m_From.Quest == this )
+			if ( From.Quest == this )
 			{
-				m_From.Quest = null;
+				From.Quest = null;
 
 				TimeSpan restartDelay = RestartDelay;
 
 				if ( ( completed && restartDelay > TimeSpan.Zero ) || ( !completed && restartDelay == TimeSpan.MaxValue ) )
 				{
-					List<QuestRestartInfo> doneQuests = m_From.DoneQuests;
+					List<QuestRestartInfo> doneQuests = From.DoneQuests;
 
 					if ( doneQuests == null )
-						m_From.DoneQuests = doneQuests = new List<QuestRestartInfo>();
+						From.DoneQuests = doneQuests = new List<QuestRestartInfo>();
 
 					bool found = false;
 
@@ -350,43 +334,43 @@ namespace Server.Engines.Quests
 			conv.System = this;
 
 			if ( conv.Logged )
-				m_Conversations.Add( conv );
+				Conversations.Add( conv );
 
-			m_From.CloseGump( typeof( QuestItemInfoGump ) );
-			m_From.CloseGump( typeof( QuestObjectivesGump ) );
-			m_From.CloseGump( typeof( QuestConversationsGump ) );
+			From.CloseGump( typeof( QuestItemInfoGump ) );
+			From.CloseGump( typeof( QuestObjectivesGump ) );
+			From.CloseGump( typeof( QuestConversationsGump ) );
 
 			if ( conv.Logged )
-				m_From.SendGump( new QuestConversationsGump( m_Conversations ) );
+				From.SendGump( new QuestConversationsGump( Conversations ) );
 			else
-				m_From.SendGump( new QuestConversationsGump( conv ) );
+				From.SendGump( new QuestConversationsGump( conv ) );
 
 			if ( conv.Info != null )
-				m_From.SendGump( new QuestItemInfoGump( conv.Info ) );
+				From.SendGump( new QuestItemInfoGump( conv.Info ) );
 		}
 
 		public virtual void AddObjective( QuestObjective obj )
 		{
 			obj.System = this;
-			m_Objectives.Add( obj );
+			Objectives.Add( obj );
 
 			ShowQuestLogUpdated();
 		}
 
 		public virtual void Accept()
 		{
-			if ( m_From.Quest != null )
+			if ( From.Quest != null )
 				return;
 
-			m_From.Quest = this;
-			m_From.SendLocalizedMessage( 1049019 ); // You have accepted the Quest.
+			From.Quest = this;
+			From.SendLocalizedMessage( 1049019 ); // You have accepted the Quest.
 
 			StartTimer();
 		}
 
 		public virtual void Decline()
 		{
-			m_From.SendLocalizedMessage( 1049018 ); // You have declined the Quest.
+			From.SendLocalizedMessage( 1049018 ); // You have declined the Quest.
 		}
 
 		public static bool CanOfferQuest( Mobile check, Type questType )

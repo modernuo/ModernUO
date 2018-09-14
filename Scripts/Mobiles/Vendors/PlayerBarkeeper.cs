@@ -84,20 +84,14 @@ namespace Server.Mobiles
 
 	public class BarkeeperRumor
 	{
-		private string m_Message;
-		private string m_Keyword;
+		public string Message { get; set; }
 
-		public string Message{ get => m_Message;
-			set => m_Message = value;
-		}
-		public string Keyword{ get => m_Keyword;
-			set => m_Keyword = value;
-		}
+		public string Keyword { get; set; }
 
 		public BarkeeperRumor( string message, string keyword )
 		{
-			m_Message = message;
-			m_Keyword = keyword;
+			Message = message;
+			Keyword = keyword;
 		}
 
 		public static BarkeeperRumor Deserialize( GenericReader reader )
@@ -117,8 +111,8 @@ namespace Server.Mobiles
 			else
 			{
 				writer.Write( true );
-				writer.Write( rumor.m_Message );
-				writer.Write( rumor.m_Keyword );
+				writer.Write( rumor.Message );
+				writer.Write( rumor.Keyword );
 			}
 		}
 	}
@@ -142,18 +136,10 @@ namespace Server.Mobiles
 
 	public class PlayerBarkeeper : BaseVendor
 	{
-		private Mobile m_Owner;
 		private BaseHouse m_House;
-		private string m_TipMessage;
-
-		private BarkeeperRumor[] m_Rumors;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner
-		{
-			get => m_Owner;
-			set => m_Owner = value;
-		}
+		public Mobile Owner { get; set; }
 
 		public BaseHouse House
 		{
@@ -169,11 +155,7 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string TipMessage
-		{
-			get => m_TipMessage;
-			set => m_TipMessage = value;
-		}
+		public string TipMessage { get; set; }
 
 		public override bool IsActiveBuyer => false;
 		public override bool IsActiveSeller => ( m_SBInfos.Count > 0 );
@@ -181,7 +163,7 @@ namespace Server.Mobiles
 		public override bool DisallowAllMoves => true;
 		public override bool NoHouseRestrictions => true;
 
-		public BarkeeperRumor[] Rumors => m_Rumors;
+		public BarkeeperRumor[] Rumors { get; private set; }
 
 		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
 
@@ -217,9 +199,9 @@ namespace Server.Mobiles
 
 		public PlayerBarkeeper( Mobile owner, BaseHouse house ) : base( "the barkeeper" )
 		{
-			m_Owner = owner;
+			Owner = owner;
 			House = house;
-			m_Rumors = new BarkeeperRumor[3];
+			Rumors = new BarkeeperRumor[3];
 
 			LoadSBInfo();
 		}
@@ -295,9 +277,9 @@ namespace Server.Mobiles
 					}
 				}
 
-				for ( int i = 0; i < m_Rumors.Length; ++i )
+				for ( int i = 0; i < Rumors.Length; ++i )
 				{
-					BarkeeperRumor rumor = m_Rumors[i];
+					BarkeeperRumor rumor = Rumors[i];
 
 					string keyword = rumor?.Keyword;
 
@@ -329,7 +311,7 @@ namespace Server.Mobiles
 				}
 				else
 				{
-					string tip = m_TipMessage;
+					string tip = TipMessage;
 
 					if ( tip == null || (tip = tip.Trim()).Length == 0 )
 					{
@@ -357,7 +339,7 @@ namespace Server.Mobiles
 			if ( from.AccessLevel > AccessLevel.GameMaster )
 				return true;
 
-			return ( m_Owner == from );
+			return ( Owner == from );
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
@@ -383,7 +365,7 @@ namespace Server.Mobiles
 
 		public void BeginChangeRumor( Mobile from, int index )
 		{
-			if ( index < 0 || index >= m_Rumors.Length )
+			if ( index < 0 || index >= Rumors.Length )
 				return;
 
 			from.Prompt = new ChangeRumorMessagePrompt( this, index );
@@ -392,13 +374,13 @@ namespace Server.Mobiles
 
 		public void EndChangeRumor( Mobile from, int index, string text )
 		{
-			if ( index < 0 || index >= m_Rumors.Length )
+			if ( index < 0 || index >= Rumors.Length )
 				return;
 
-			if ( m_Rumors[index] == null )
-				m_Rumors[index] = new BarkeeperRumor( text, null );
+			if ( Rumors[index] == null )
+				Rumors[index] = new BarkeeperRumor( text, null );
 			else
-				m_Rumors[index].Message = text;
+				Rumors[index].Message = text;
 
 			from.Prompt = new ChangeRumorKeywordPrompt( this, index );
 			PrivateOverheadMessage( MessageType.Regular, 0x3B2, false, "What keyword should a guest say to me to get this news?", from.NetState );
@@ -406,23 +388,23 @@ namespace Server.Mobiles
 
 		public void EndChangeKeyword( Mobile from, int index, string text )
 		{
-			if ( index < 0 || index >= m_Rumors.Length )
+			if ( index < 0 || index >= Rumors.Length )
 				return;
 
-			if ( m_Rumors[index] == null )
-				m_Rumors[index] = new BarkeeperRumor( null, text );
+			if ( Rumors[index] == null )
+				Rumors[index] = new BarkeeperRumor( null, text );
 			else
-				m_Rumors[index].Keyword = text;
+				Rumors[index].Keyword = text;
 
 			PrivateOverheadMessage( MessageType.Regular, 0x3B2, false, "I'll pass on the message.", from.NetState );
 		}
 
 		public void RemoveRumor( Mobile from, int index )
 		{
-			if ( index < 0 || index >= m_Rumors.Length )
+			if ( index < 0 || index >= Rumors.Length )
 				return;
 
-			m_Rumors[index] = null;
+			Rumors[index] = null;
 		}
 
 		public void BeginChangeTip( Mobile from )
@@ -433,13 +415,13 @@ namespace Server.Mobiles
 
 		public void EndChangeTip( Mobile from, string text )
 		{
-			m_TipMessage = text;
+			TipMessage = text;
 			PrivateOverheadMessage( MessageType.Regular, 0x3B2, false, "I'll say that to anyone who gives me a good tip.", from.NetState );
 		}
 
 		public void RemoveTip( Mobile from )
 		{
-			m_TipMessage = null;
+			TipMessage = null;
 		}
 
 		public void BeginChangeTitle( Mobile from )
@@ -511,14 +493,14 @@ namespace Server.Mobiles
 
 			writer.Write( (Item) m_House );
 
-			writer.Write( (Mobile) m_Owner );
+			writer.Write( (Mobile) Owner );
 
-			writer.WriteEncodedInt( (int) m_Rumors.Length );
+			writer.WriteEncodedInt( (int) Rumors.Length );
 
-			for ( int i = 0; i < m_Rumors.Length; ++i )
-				BarkeeperRumor.Serialize( writer, m_Rumors[i] );
+			for ( int i = 0; i < Rumors.Length; ++i )
+				BarkeeperRumor.Serialize( writer, Rumors[i] );
 
-			writer.Write( (string) m_TipMessage );
+			writer.Write( (string) TipMessage );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -537,14 +519,14 @@ namespace Server.Mobiles
 				}
 				case 0:
 				{
-					m_Owner = reader.ReadMobile();
+					Owner = reader.ReadMobile();
 
-					m_Rumors = new BarkeeperRumor[reader.ReadEncodedInt()];
+					Rumors = new BarkeeperRumor[reader.ReadEncodedInt()];
 
-					for ( int i = 0; i < m_Rumors.Length; ++i )
-						m_Rumors[i] = BarkeeperRumor.Deserialize( reader );
+					for ( int i = 0; i < Rumors.Length; ++i )
+						Rumors[i] = BarkeeperRumor.Deserialize( reader );
 
-					m_TipMessage = reader.ReadString();
+					TipMessage = reader.ReadString();
 
 					break;
 				}

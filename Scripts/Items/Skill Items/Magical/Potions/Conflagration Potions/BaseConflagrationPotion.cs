@@ -138,18 +138,16 @@ namespace Server.Items
 
 		private class ThrowTarget : Target
 		{
-			private BaseConflagrationPotion m_Potion;
-
-			public BaseConflagrationPotion Potion => m_Potion;
+			public BaseConflagrationPotion Potion { get; }
 
 			public ThrowTarget( BaseConflagrationPotion potion ) : base( 12, true, TargetFlags.None )
 			{
-				m_Potion = potion;
+				Potion = potion;
 			}
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( m_Potion.Deleted || m_Potion.Map == Map.Internal )
+				if ( Potion.Deleted || Potion.Map == Map.Internal )
 					return;
 
 				if ( !(targeted is IPoint3D p) || from.Map == null )
@@ -169,20 +167,19 @@ namespace Server.Items
 				else
 					to = new Entity( Serial.Zero, new Point3D( p ), from.Map );
 
-				Effects.SendMovingEffect( from, to, 0xF0D, 7, 0, false, false, m_Potion.Hue, 0 );
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), new TimerStateCallback( m_Potion.Explode_Callback ), new object[] { from, new Point3D( p ), from.Map } );
+				Effects.SendMovingEffect( from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0 );
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), new TimerStateCallback( Potion.Explode_Callback ), new object[] { from, new Point3D( p ), from.Map } );
 			}
 		}
 
 		public class InternalItem : Item
 		{
-			private Mobile m_From;
 			private int m_MinDamage;
 			private int m_MaxDamage;
 			private DateTime m_End;
 			private Timer m_Timer;
 
-			public Mobile From => m_From;
+			public Mobile From { get; private set; }
 
 			public override bool BlocksFit => true;
 
@@ -193,7 +190,7 @@ namespace Server.Items
 
 				MoveToWorld( loc, map );
 
-				m_From = from;
+				From = from;
 				m_End = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
 
 				SetDamage( min, max );
@@ -224,14 +221,14 @@ namespace Server.Items
 				m_MinDamage = min;
 				m_MaxDamage = max;
 
-				if ( m_From == null )
+				if ( From == null )
 					return;
 
-				int alchemySkill = m_From.Skills.Alchemy.Fixed;
+				int alchemySkill = From.Skills.Alchemy.Fixed;
 				int alchemyBonus = alchemySkill / 125 + alchemySkill / 250 ;
 
-				m_MinDamage = Scale( m_From, m_MinDamage + alchemyBonus );
-				m_MaxDamage = Scale( m_From, m_MaxDamage + alchemyBonus );
+				m_MinDamage = Scale( From, m_MinDamage + alchemyBonus );
+				m_MaxDamage = Scale( From, m_MaxDamage + alchemyBonus );
 			}
 
 			public override void Serialize( GenericWriter writer )
@@ -240,7 +237,7 @@ namespace Server.Items
 
 				writer.Write( (int) 0 ); // version
 
-				writer.Write( (Mobile) m_From );
+				writer.Write( (Mobile) From );
 				writer.Write( (DateTime) m_End );
 				writer.Write( (int) m_MinDamage );
 				writer.Write( (int) m_MaxDamage );
@@ -252,7 +249,7 @@ namespace Server.Items
 
 				int version = reader.ReadInt();
 
-				m_From = reader.ReadMobile();
+				From = reader.ReadMobile();
 				m_End = reader.ReadDateTime();
 				m_MinDamage = reader.ReadInt();
 				m_MaxDamage = reader.ReadInt();
@@ -263,11 +260,11 @@ namespace Server.Items
 
 			public override bool OnMoveOver( Mobile m )
 			{
-				if ( Visible && m_From != null && (!Core.AOS || m != m_From) && SpellHelper.ValidIndirectTarget( m_From, m ) && m_From.CanBeHarmful( m, false ) )
+				if ( Visible && From != null && (!Core.AOS || m != From) && SpellHelper.ValidIndirectTarget( From, m ) && From.CanBeHarmful( m, false ) )
 				{
-					m_From.DoHarmful( m );
+					From.DoHarmful( m );
 
-					AOS.Damage( m, m_From, GetDamage(), 0, 100, 0, 0, 0 );
+					AOS.Damage( m, From, GetDamage(), 0, 100, 0, 0, 0 );
 					m.PlaySound( 0x208 );
 				}
 

@@ -4,106 +4,98 @@ namespace Server.Engines.ConPVP
 {
 	public class Ruleset
 	{
-		private RulesetLayout m_Layout;
-		private BitArray m_Options;
-		private string m_Title;
+		public RulesetLayout Layout { get; }
 
-		private Ruleset m_Base;
-		private ArrayList m_Flavors = new ArrayList();
-		private bool m_Changed;
+		public BitArray Options { get; private set; }
 
-		public RulesetLayout Layout => m_Layout;
-		public BitArray Options => m_Options;
-		public string Title{ get => m_Title;
-			set => m_Title = value;
-		}
+		public string Title { get; set; }
 
-		public Ruleset Base => m_Base;
-		public ArrayList Flavors => m_Flavors;
-		public bool Changed{ get => m_Changed;
-			set => m_Changed = value;
-		}
+		public Ruleset Base { get; private set; }
+
+		public ArrayList Flavors { get; } = new ArrayList();
+
+		public bool Changed { get; set; }
 
 		public void ApplyDefault( Ruleset newDefault )
 		{
-			m_Base = newDefault;
-			m_Changed = false;
+			Base = newDefault;
+			Changed = false;
 
-			m_Options = new BitArray( newDefault.m_Options );
+			Options = new BitArray( newDefault.Options );
 
 			ApplyFlavorsTo( this );
 		}
 
 		public void ApplyFlavorsTo( Ruleset ruleset )
 		{
-			for ( int i = 0; i < m_Flavors.Count; ++i )
+			for ( int i = 0; i < Flavors.Count; ++i )
 			{
-				Ruleset flavor = (Ruleset)m_Flavors[i];
+				Ruleset flavor = (Ruleset)Flavors[i];
 
-				m_Options.Or( flavor.m_Options );
+				Options.Or( flavor.Options );
 			}
 		}
 
 		public void AddFlavor( Ruleset flavor )
 		{
-			if ( m_Flavors.Contains( flavor ) )
+			if ( Flavors.Contains( flavor ) )
 				return;
 
-			m_Flavors.Add( flavor );
-			m_Options.Or( flavor.m_Options );
+			Flavors.Add( flavor );
+			Options.Or( flavor.Options );
 		}
 
 		public void RemoveFlavor( Ruleset flavor )
 		{
-			if ( !m_Flavors.Contains( flavor ) )
+			if ( !Flavors.Contains( flavor ) )
 				return;
 
-			m_Flavors.Remove( flavor );
-			m_Options.And( flavor.m_Options.Not() );
-			flavor.m_Options.Not();
+			Flavors.Remove( flavor );
+			Options.And( flavor.Options.Not() );
+			flavor.Options.Not();
 		}
 
 		public void SetOptionRange( string title, bool value )
 		{
-			RulesetLayout layout = m_Layout.FindByTitle( title );
+			RulesetLayout layout = Layout.FindByTitle( title );
 
 			if ( layout == null )
 				return;
 
 			for ( int i = 0; i < layout.TotalLength; ++i )
-				m_Options[i + layout.Offset] = value;
+				Options[i + layout.Offset] = value;
 
-			m_Changed = true;
+			Changed = true;
 		}
 
 		public bool GetOption( string title, string option )
 		{
 			int index = 0;
-			RulesetLayout layout = m_Layout.FindByOption( title, option, ref index );
+			RulesetLayout layout = Layout.FindByOption( title, option, ref index );
 
 			if ( layout == null )
 				return true;
 
-			return m_Options[layout.Offset + index];
+			return Options[layout.Offset + index];
 		}
 
 		public void SetOption( string title, string option, bool value )
 		{
 			int index = 0;
-			RulesetLayout layout = m_Layout.FindByOption( title, option, ref index );
+			RulesetLayout layout = Layout.FindByOption( title, option, ref index );
 
 			if ( layout == null )
 				return;
 
-			m_Options[layout.Offset + index] = value;
+			Options[layout.Offset + index] = value;
 
-			m_Changed = true;
+			Changed = true;
 		}
 
 		public Ruleset( RulesetLayout layout )
 		{
-			m_Layout = layout;
-			m_Options = new BitArray( layout.TotalLength );
+			Layout = layout;
+			Options = new BitArray( layout.TotalLength );
 		}
 	}
 }

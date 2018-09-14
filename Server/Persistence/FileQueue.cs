@@ -31,23 +31,21 @@ namespace Server {
 			private FileQueue owner;
 			private int slot;
 
-			private byte[] buffer;
 			private int offset;
-			private int size;
 
-			public byte[] Buffer => buffer;
+			public byte[] Buffer { get; }
 
 			public int Offset => 0;
 
-			public int Size => size;
+			public int Size { get; }
 
 			public Chunk( FileQueue owner, int slot, byte[] buffer, int offset, int size ) {
 				this.owner = owner;
 				this.slot = slot;
 
-				this.buffer = buffer;
+				this.Buffer = buffer;
 				this.offset = offset;
-				this.size = size;
+				this.Size = size;
 			}
 
 			public void Commit() {
@@ -80,9 +78,7 @@ namespace Server {
 
 		private ManualResetEvent idle;
 
-		private long position;
-
-		public long Position => position;
+		public long Position { get; private set; }
 
 		public FileQueue( int concurrentWrites, FileCommitCallback callback ) {
 			if ( concurrentWrites < 1 ) {
@@ -209,7 +205,7 @@ namespace Server {
 				throw new ArgumentException();
 			}
 
-			position += size;
+			Position += size;
 
 			while ( size > 0 ) {
 				if ( buffered.buffer == null ) { // nothing yet buffered

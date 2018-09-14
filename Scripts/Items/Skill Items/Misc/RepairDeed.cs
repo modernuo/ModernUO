@@ -9,23 +9,21 @@ namespace Server.Items
 	{
 		private class RepairSkillInfo
 		{
-			private CraftSystem m_System;
-			private Type[] m_NearbyTypes;
-			private TextDefinition m_NotNearbyMessage, m_Name;
+			public TextDefinition NotNearbyMessage { get; }
 
-			public TextDefinition NotNearbyMessage => m_NotNearbyMessage;
-			public TextDefinition Name  => m_Name;
+			public TextDefinition Name { get; }
 
 
-			public CraftSystem System  => m_System;
-			public Type[] NearbyTypes  => m_NearbyTypes;
+			public CraftSystem System { get; }
+
+			public Type[] NearbyTypes { get; }
 
 			public RepairSkillInfo( CraftSystem system, Type[] nearbyTypes, TextDefinition notNearbyMessage, TextDefinition name )
 			{
-				m_System = system;
-				m_NearbyTypes = nearbyTypes;
-				m_NotNearbyMessage = notNearbyMessage;
-				m_Name = name;
+				System = system;
+				NearbyTypes = nearbyTypes;
+				NotNearbyMessage = notNearbyMessage;
+				Name = name;
 			}
 
 			public RepairSkillInfo( CraftSystem system, Type nearbyType, TextDefinition notNearbyMessage, TextDefinition name )
@@ -33,23 +31,23 @@ namespace Server.Items
 			{
 			}
 
-			public static RepairSkillInfo[] Table  => m_Table;
-			private static RepairSkillInfo[] m_Table = {
-					new RepairSkillInfo( DefBlacksmithy.CraftSystem, typeof( Blacksmith ), 1047013, 1023015 ),
-					new RepairSkillInfo( DefTailoring.CraftSystem, typeof( Tailor ), 1061132, 1022981 ),
-					new RepairSkillInfo( DefTinkering.CraftSystem, typeof( Tinker ), 1061166, 1022983 ),
-					new RepairSkillInfo( DefCarpentry.CraftSystem, typeof( Carpenter ), 1061135, 1060774 ),
-					new RepairSkillInfo( DefBowFletching.CraftSystem, typeof( Bowyer ), 1061134, 1023005 )
-				};
+			public static RepairSkillInfo[] Table { get; } =
+			{
+				new RepairSkillInfo( DefBlacksmithy.CraftSystem, typeof( Blacksmith ), 1047013, 1023015 ),
+				new RepairSkillInfo( DefTailoring.CraftSystem, typeof( Tailor ), 1061132, 1022981 ),
+				new RepairSkillInfo( DefTinkering.CraftSystem, typeof( Tinker ), 1061166, 1022983 ),
+				new RepairSkillInfo( DefCarpentry.CraftSystem, typeof( Carpenter ), 1061135, 1060774 ),
+				new RepairSkillInfo( DefBowFletching.CraftSystem, typeof( Bowyer ), 1061134, 1023005 )
+			};
 
 			public static RepairSkillInfo GetInfo( RepairSkillType type )
 			{
 				int v = (int)type;
 
-				if ( v < 0 || v >= m_Table.Length )
+				if ( v < 0 || v >= Table.Length )
 					v = 0;
 
-				return m_Table[v];
+				return Table[v];
 			}
 		}
 		public enum RepairSkillType

@@ -42,30 +42,19 @@ namespace Server.Multis.Deeds
 
 	public abstract class HouseDeed : Item
 	{
-		private int m_MultiID;
-		private Point3D m_Offset;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int MultiID { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MultiID
-		{
-			get => m_MultiID;
-			set => m_MultiID = value;
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Offset
-		{
-			get => m_Offset;
-			set => m_Offset = value;
-		}
+		public Point3D Offset { get; set; }
 
 		public HouseDeed( int id, Point3D offset ) : base( 0x14F0 )
 		{
 			Weight = 1.0;
 			LootType = LootType.Newbied;
 
-			m_MultiID = id;
-			m_Offset = offset;
+			MultiID = id;
+			Offset = offset;
 		}
 
 		public HouseDeed( Serial serial ) : base( serial )
@@ -78,9 +67,9 @@ namespace Server.Multis.Deeds
 
 			writer.Write( (int) 1 ); // version
 
-			writer.Write( m_Offset );
+			writer.Write( Offset );
 
-			writer.Write( m_MultiID );
+			writer.Write( MultiID );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -93,13 +82,13 @@ namespace Server.Multis.Deeds
 			{
 				case 1:
 				{
-					m_Offset = reader.ReadPoint3D();
+					Offset = reader.ReadPoint3D();
 
 					goto case 0;
 				}
 				case 0:
 				{
-					m_MultiID = reader.ReadInt();
+					MultiID = reader.ReadInt();
 
 					break;
 				}
@@ -148,8 +137,8 @@ namespace Server.Multis.Deeds
 			else
 			{
 				ArrayList toMove;
-				Point3D center = new Point3D( p.X - m_Offset.X, p.Y - m_Offset.Y, p.Z - m_Offset.Z );
-				HousePlacementResult res = HousePlacement.Check( from, m_MultiID, center, out toMove );
+				Point3D center = new Point3D( p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z );
+				HousePlacementResult res = HousePlacement.Check( from, MultiID, center, out toMove );
 
 				switch ( res )
 				{

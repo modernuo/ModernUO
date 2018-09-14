@@ -25,7 +25,7 @@ namespace Server.Items
 			base.Serialize( writer );
 			writer.Write( (int) 1 );
 
-			writer.Write( m_IsShipwreckedItem );
+			writer.Write( IsShipwreckedItem );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -37,7 +37,7 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_IsShipwreckedItem = reader.ReadBool();
+					IsShipwreckedItem = reader.ReadBool();
 					break;
 				}
 			}
@@ -47,7 +47,7 @@ namespace Server.Items
 		{
 			base.AddNameProperties( list );
 
-			if ( m_IsShipwreckedItem )
+			if ( IsShipwreckedItem )
 				list.Add( 1041645 ); // recovered from a shipwreck
 		}
 
@@ -55,20 +55,15 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			if ( m_IsShipwreckedItem )
+			if ( IsShipwreckedItem )
 				LabelTo( from, 1041645 );	//recovered from a shipwreck
 		}
 
 		#region IShipwreckedItem Members
 
-		private bool m_IsShipwreckedItem;
-
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsShipwreckedItem
-		{
-			get => m_IsShipwreckedItem;
-			set => m_IsShipwreckedItem = value;
-		}
+		public bool IsShipwreckedItem { get; set; }
+
 		#endregion
 	}
 }

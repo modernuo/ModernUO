@@ -17,13 +17,11 @@ namespace Server.Items
 	[Flippable( 0x104B, 0x104C )]
 	public class Clock : Item
 	{
-		private static DateTime m_ServerStart;
-
-		public static DateTime ServerStart => m_ServerStart;
+		public static DateTime ServerStart { get; private set; }
 
 		public static void Initialize()
 		{
-			m_ServerStart = DateTime.UtcNow;
+			ServerStart = DateTime.UtcNow;
 		}
 
 		[Constructible]

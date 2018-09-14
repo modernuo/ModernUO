@@ -39,21 +39,19 @@ namespace Server
         }
 
 
-        private static List<Poison> m_Poisons = new List<Poison>();
-
-        public static void Register( Poison reg )
+	    public static void Register( Poison reg )
         {
             string regName = reg.Name.ToLower();
 
-            for ( int i = 0; i < m_Poisons.Count; i++ )
+            for ( int i = 0; i < Poisons.Count; i++ )
             {
-	            if ( reg.Level == m_Poisons[i].Level )
+	            if ( reg.Level == Poisons[i].Level )
                     throw new Exception( "A poison with that level already exists." );
-	            if ( regName == m_Poisons[i].Name.ToLower() )
+	            if ( regName == Poisons[i].Name.ToLower() )
 		            throw new Exception( "A poison with that name already exists." );
             }
 
-            m_Poisons.Add( reg );
+            Poisons.Add( reg );
         }
 
         public static Poison Lesser => GetPoison( "Lesser" );
@@ -62,7 +60,7 @@ namespace Server
 	    public static Poison Deadly => GetPoison( "Deadly" );
 	    public static Poison Lethal => GetPoison( "Lethal" );
 
-	    public static List<Poison> Poisons => m_Poisons;
+	    public static List<Poison> Poisons { get; } = new List<Poison>();
 
 	    public static Poison Parse( string value )
         {
@@ -81,9 +79,9 @@ namespace Server
 
         public static Poison GetPoison( int level )
         {
-            for ( int i = 0; i < m_Poisons.Count; ++i )
+            for ( int i = 0; i < Poisons.Count; ++i )
             {
-                Poison p = m_Poisons[i];
+                Poison p = Poisons[i];
 
                 if ( p.Level == level )
                     return p;
@@ -94,9 +92,9 @@ namespace Server
 
         public static Poison GetPoison( string name )
         {
-            for ( int i = 0; i < m_Poisons.Count; ++i )
+            for ( int i = 0; i < Poisons.Count; ++i )
             {
-                Poison p = m_Poisons[i];
+                Poison p = Poisons[i];
 
                 if ( Utility.InsensitiveCompare( p.Name, name ) == 0 )
                     return p;

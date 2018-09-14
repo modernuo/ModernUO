@@ -175,26 +175,24 @@ namespace Server.Items
 
 	public class MiniHouseInfo
 	{
-		private int[] m_Graphics;
-		private int m_LabelNumber;
+		public int[] Graphics { get; }
 
-		public int[] Graphics => m_Graphics;
-		public int LabelNumber => m_LabelNumber;
+		public int LabelNumber { get; }
 
 		public MiniHouseInfo( int start, int count, int labelNumber )
 		{
-			m_Graphics = new int[count];
+			Graphics = new int[count];
 
 			for ( int i = 0; i < count; ++i )
-				m_Graphics[i] = start + i;
+				Graphics[i] = start + i;
 
-			m_LabelNumber = labelNumber;
+			LabelNumber = labelNumber;
 		}
 
 		public MiniHouseInfo( int labelNumber, params int[] graphics )
 		{
-			m_LabelNumber = labelNumber;
-			m_Graphics = graphics;
+			LabelNumber = labelNumber;
+			Graphics = graphics;
 		}
 
 		private static MiniHouseInfo[] m_Info = {

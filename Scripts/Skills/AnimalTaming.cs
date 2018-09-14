@@ -18,13 +18,7 @@ namespace Server.SkillHandlers
 			SkillInfo.Table[(int)SkillName.AnimalTaming].Callback = OnUse;
 		}
 
-		private static bool m_DisableMessage;
-
-		public static bool DisableMessage
-		{
-			get => m_DisableMessage;
-			set => m_DisableMessage = value;
-		}
+		public static bool DisableMessage { get; set; }
 
 		public static TimeSpan OnUse( Mobile m )
 		{
@@ -33,7 +27,7 @@ namespace Server.SkillHandlers
 			m.Target = new InternalTarget();
 			m.RevealingAction();
 
-			if ( !m_DisableMessage )
+			if ( !DisableMessage )
 				m.SendLocalizedMessage( 502789 ); // Tame which animal?
 
 			return TimeSpan.FromHours( 6.0 );
