@@ -50,7 +50,7 @@ namespace Server.Items
 			}
 		}
 
-		private static StealableEntry[] m_Entries = new StealableEntry[]
+		private static StealableEntry[] m_Entries = new[]
 			{
 				// Doom - Artifact rarity 1
 				new StealableEntry( Map.Malas, new Point3D( 317,  56, -1 ), 72, 108, typeof( RockArtifact ) ),

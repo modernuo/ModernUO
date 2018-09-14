@@ -22,7 +22,7 @@ namespace Server.Spells.Fifth
 
 		// NOTE: Creature list based on 1hr of summon/release on OSI.
 
-		private static Type[] m_Types = new Type[]
+		private static Type[] m_Types = new[]
 			{
 				typeof( PolarBear ),
 				typeof( GrizzlyBear ),

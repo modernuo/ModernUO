@@ -19,7 +19,7 @@ namespace Server.Items
 		{
 		}
 
-		private static int[] m_Sounds = new int[] { 0x505, 0x506, 0x507 };
+		private static int[] m_Sounds = new[] { 0x505, 0x506, 0x507 };
 
 		public static int[] Sounds => m_Sounds;
 

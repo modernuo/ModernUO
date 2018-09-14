@@ -4,7 +4,7 @@ namespace Server.Mobiles
 	public class Horse : BaseMount
 	{
 		public override string CorpseName => "a horse corpse";
-		private static int[] m_IDs = new int[]
+		private static int[] m_IDs = new[]
 			{
 				0xC8, 0x3E9F,
 				0xE2, 0x3EA0,

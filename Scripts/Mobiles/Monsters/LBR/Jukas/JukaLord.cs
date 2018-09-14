@@ -68,7 +68,7 @@ namespace Server.Mobiles
 		{
 			if ( from != null && !willKill && amount > 5 && from.Player && 5 > Utility.Random( 100 ) )
 			{
-				string[] toSay = new string[]
+				string[] toSay = new[]
 					{
 						"{0}!!  You will have to do better than that!",
 						"{0}!!  Prepare to meet your doom!",

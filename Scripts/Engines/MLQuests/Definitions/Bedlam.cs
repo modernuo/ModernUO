@@ -69,7 +69,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074858; // You had better get going.  Master Theophilus isn't likely to kill himself just to save me this embarrassment.
 			CompletionMessage = 1074859; // You look a bit worse for wear!  He put up a good fight did he?  Hah!  That's the spirit … a Master of Bedlam is a match for most.
 
-			Objectives.Add( new KillObjective( 1, new Type[] { typeof( MasterTheophilus ) }, "Master Theophilus" ) );
+			Objectives.Add( new KillObjective( 1, new[] { typeof( MasterTheophilus ) }, "Master Theophilus" ) );
 
 			Rewards.Add( ItemReward.LargeBagOfTreasure );
 		}

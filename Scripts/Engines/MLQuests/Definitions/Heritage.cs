@@ -176,7 +176,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072830; // Then begone. I have no time to waste on you, human.
 			InProgressMessage = 1072831; // The timber wolves are easily tracked, human.
 
-			Objectives.Add( new KillObjective( 15, new Type[] { typeof( TimberWolf ) }, "timber wolves", new QuestArea( 1074833, "Huntsman's Forest" ) ) ); // Huntsman's Forest
+			Objectives.Add( new KillObjective( 15, new[] { typeof( TimberWolf ) }, "timber wolves", new QuestArea( 1074833, "Huntsman's Forest" ) ) ); // Huntsman's Forest
 
 			Rewards.Add( new DummyReward( 1072807 ) ); // The boon of the Huntsman.
 		}
@@ -619,8 +619,8 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1074529; // You're not making much progress in the honing-mind-and-body department, are you?
 			CompletionNotice = CompletionNoticeShortReturn;
 
-			Objectives.Add( new KillObjective( 5, new Type[] { typeof( Efreet ) }, "efreets", new QuestArea( 1074808, "Fire" ) ) ); // Fire
-			Objectives.Add( new KillObjective( 5, new Type[] { typeof( IceFiend ) }, "ice fiends", new QuestArea( 1074809, "Ice" ) ) ); // Ice
+			Objectives.Add( new KillObjective( 5, new[] { typeof( Efreet ) }, "efreets", new QuestArea( 1074808, "Fire" ) ) ); // Fire
+			Objectives.Add( new KillObjective( 5, new[] { typeof( IceFiend ) }, "ice fiends", new QuestArea( 1074809, "Ice" ) ) ); // Ice
 
 			Rewards.Add( new DummyReward( 1074875 ) ); // Another step closer to becoming human.
 		}

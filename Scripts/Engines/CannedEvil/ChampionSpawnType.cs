@@ -38,73 +38,73 @@ namespace Server.Engines.CannedEvil
 
 		public static ChampionSpawnInfo[] Table => m_Table;
 
-		private static readonly ChampionSpawnInfo[] m_Table = new ChampionSpawnInfo[]
+		private static readonly ChampionSpawnInfo[] m_Table = new[]
 			{
-				new ChampionSpawnInfo( "Abyss", typeof( Semidar ), new string[]{ "Foe", "Assassin", "Conqueror" }, new Type[][]	// Abyss
+				new ChampionSpawnInfo( "Abyss", typeof( Semidar ), new[]{ "Foe", "Assassin", "Conqueror" }, new[] // Abyss
 				{																											// Abyss
-					new Type[]{ typeof( GreaterMongbat ), typeof( Imp ) },													// Level 1
-					new Type[]{ typeof( Gargoyle ), typeof( Harpy ) },														// Level 2
-					new Type[]{ typeof( FireGargoyle ), typeof( StoneGargoyle ) },											// Level 3
-					new Type[]{ typeof( Daemon ), typeof( Succubus ) }														// Level 4
+					new[]{ typeof( GreaterMongbat ), typeof( Imp ) },													// Level 1
+					new[]{ typeof( Gargoyle ), typeof( Harpy ) },														// Level 2
+					new[]{ typeof( FireGargoyle ), typeof( StoneGargoyle ) },											// Level 3
+					new[]{ typeof( Daemon ), typeof( Succubus ) }														// Level 4
 				} ),
-				new ChampionSpawnInfo( "Arachnid", typeof( Mephitis ), new string[]{ "Bane", "Killer", "Vanquisher" }, new Type[][]	// Arachnid
+				new ChampionSpawnInfo( "Arachnid", typeof( Mephitis ), new[]{ "Bane", "Killer", "Vanquisher" }, new[] // Arachnid
 				{																											// Arachnid
-					new Type[]{ typeof( Scorpion ), typeof( GiantSpider ) },												// Level 1
-					new Type[]{ typeof( TerathanDrone ), typeof( TerathanWarrior ) },										// Level 2
-					new Type[]{ typeof( DreadSpider ), typeof( TerathanMatriarch ) },										// Level 3
-					new Type[]{ typeof( PoisonElemental ), typeof( TerathanAvenger ) }										// Level 4
+					new[]{ typeof( Scorpion ), typeof( GiantSpider ) },												// Level 1
+					new[]{ typeof( TerathanDrone ), typeof( TerathanWarrior ) },										// Level 2
+					new[]{ typeof( DreadSpider ), typeof( TerathanMatriarch ) },										// Level 3
+					new[]{ typeof( PoisonElemental ), typeof( TerathanAvenger ) }										// Level 4
 				} ),
-				new ChampionSpawnInfo( "Cold Blood", typeof( Rikktor ), new string[]{ "Blight", "Slayer", "Destroyer" }, new Type[][]	// Cold Blood
+				new ChampionSpawnInfo( "Cold Blood", typeof( Rikktor ), new[]{ "Blight", "Slayer", "Destroyer" }, new[] // Cold Blood
 				{																											// Cold Blood
-					new Type[]{ typeof( Lizardman ), typeof( Snake ) },														// Level 1
-					new Type[]{ typeof( LavaLizard ), typeof( OphidianWarrior ) },											// Level 2
-					new Type[]{ typeof( Drake ), typeof( OphidianArchmage ) },												// Level 3
-					new Type[]{ typeof( Dragon ), typeof( OphidianKnight ) }												// Level 4
+					new[]{ typeof( Lizardman ), typeof( Snake ) },														// Level 1
+					new[]{ typeof( LavaLizard ), typeof( OphidianWarrior ) },											// Level 2
+					new[]{ typeof( Drake ), typeof( OphidianArchmage ) },												// Level 3
+					new[]{ typeof( Dragon ), typeof( OphidianKnight ) }												// Level 4
 				} ),
-				new ChampionSpawnInfo( "Forest Lord", typeof( LordOaks ), new string[]{ "Enemy", "Curse", "Slaughterer" }, new Type[][]	// Forest Lord
+				new ChampionSpawnInfo( "Forest Lord", typeof( LordOaks ), new[]{ "Enemy", "Curse", "Slaughterer" }, new[] // Forest Lord
 				{																											// Forest Lord
-					new Type[]{ typeof( Pixie ), typeof( ShadowWisp ) },													// Level 1
-					new Type[]{ typeof( Kirin ), typeof( Wisp ) },															// Level 2
-					new Type[]{ typeof( Centaur ), typeof( Unicorn ) },														// Level 3
-					new Type[]{ typeof( EtherealWarrior ), typeof( SerpentineDragon ) }										// Level 4
+					new[]{ typeof( Pixie ), typeof( ShadowWisp ) },													// Level 1
+					new[]{ typeof( Kirin ), typeof( Wisp ) },															// Level 2
+					new[]{ typeof( Centaur ), typeof( Unicorn ) },														// Level 3
+					new[]{ typeof( EtherealWarrior ), typeof( SerpentineDragon ) }										// Level 4
 				} ),
-				new ChampionSpawnInfo( "Vermin Horde", typeof( Barracoon ), new string[]{ "Adversary", "Subjugator", "Eradicator" }, new Type[][]	// Vermin Horde
+				new ChampionSpawnInfo( "Vermin Horde", typeof( Barracoon ), new[]{ "Adversary", "Subjugator", "Eradicator" }, new[] // Vermin Horde
 				{																											// Vermin Horde
-					new Type[]{ typeof( GiantRat ), typeof( Slime ) },														// Level 1
-					new Type[]{ typeof( DireWolf ), typeof( Ratman ) },														// Level 2
-					new Type[]{ typeof( HellHound ), typeof( RatmanMage ) },												// Level 3
-					new Type[]{ typeof( RatmanArcher ), typeof( SilverSerpent ) }											// Level 4
+					new[]{ typeof( GiantRat ), typeof( Slime ) },														// Level 1
+					new[]{ typeof( DireWolf ), typeof( Ratman ) },														// Level 2
+					new[]{ typeof( HellHound ), typeof( RatmanMage ) },												// Level 3
+					new[]{ typeof( RatmanArcher ), typeof( SilverSerpent ) }											// Level 4
 				} ),
-				new ChampionSpawnInfo( "Unholy Terror", typeof( Neira ), new string[]{ "Scourge", "Punisher", "Nemesis" }, new Type[][]	// Unholy Terror
+				new ChampionSpawnInfo( "Unholy Terror", typeof( Neira ), new[]{ "Scourge", "Punisher", "Nemesis" }, new[] // Unholy Terror
 				{																											// Unholy Terror
 					(Core.AOS ?
-					new Type[]{ typeof( Bogle ), typeof( Ghoul ), typeof( Shade ), typeof( Spectre ), typeof( Wraith ) }	// Level 1 (Pre-AoS)
-					: new Type[]{ typeof( Ghoul ), typeof( Shade ), typeof( Spectre ), typeof( Wraith ) } ),				// Level 1
+					new[]{ typeof( Bogle ), typeof( Ghoul ), typeof( Shade ), typeof( Spectre ), typeof( Wraith ) }	// Level 1 (Pre-AoS)
+					: new[]{ typeof( Ghoul ), typeof( Shade ), typeof( Spectre ), typeof( Wraith ) } ),				// Level 1
 
-					new Type[]{ typeof( BoneMagi ), typeof( Mummy ), typeof( SkeletalMage ) },								// Level 2
-					new Type[]{ typeof( BoneKnight ), typeof( Lich ), typeof( SkeletalKnight ) },							// Level 3
-					new Type[]{ typeof( LichLord ), typeof( RottingCorpse ) }												// Level 4
+					new[]{ typeof( BoneMagi ), typeof( Mummy ), typeof( SkeletalMage ) },								// Level 2
+					new[]{ typeof( BoneKnight ), typeof( Lich ), typeof( SkeletalKnight ) },							// Level 3
+					new[]{ typeof( LichLord ), typeof( RottingCorpse ) }												// Level 4
 				} ),
-				new ChampionSpawnInfo( "Sleeping Dragon", typeof( Serado ), new string[]{ "Rival", "Challenger", "Antagonist" } , new Type[][]
+				new ChampionSpawnInfo( "Sleeping Dragon", typeof( Serado ), new[]{ "Rival", "Challenger", "Antagonist" } , new[]
 				{																											// Unholy Terror
-					new Type[]{ typeof( DeathwatchBeetleHatchling ), typeof( Lizardman ) },
-					new Type[]{ typeof( DeathwatchBeetle ), typeof( Kappa ) },
-					new Type[]{ typeof( LesserHiryu ), typeof( RevenantLion ) },
-					new Type[]{ typeof( Hiryu ), typeof( Oni ) }
+					new[]{ typeof( DeathwatchBeetleHatchling ), typeof( Lizardman ) },
+					new[]{ typeof( DeathwatchBeetle ), typeof( Kappa ) },
+					new[]{ typeof( LesserHiryu ), typeof( RevenantLion ) },
+					new[]{ typeof( Hiryu ), typeof( Oni ) }
 				} ),
-				new ChampionSpawnInfo( "Glade", typeof( Twaulo ), new string[]{ "Banisher", "Enforcer", "Eradicator" } , new Type[][]
+				new ChampionSpawnInfo( "Glade", typeof( Twaulo ), new[]{ "Banisher", "Enforcer", "Eradicator" } , new[]
 				{																											// Glade
-					new Type[]{ typeof( Pixie ), typeof( ShadowWisp ) },
-					new Type[]{ typeof( Centaur ), typeof( MLDryad ) },
-					new Type[]{ typeof( Satyr ), typeof( CuSidhe ) },
-					new Type[]{ typeof( FeralTreefellow ), typeof( RagingGrizzlyBear ) }
+					new[]{ typeof( Pixie ), typeof( ShadowWisp ) },
+					new[]{ typeof( Centaur ), typeof( MLDryad ) },
+					new[]{ typeof( Satyr ), typeof( CuSidhe ) },
+					new[]{ typeof( FeralTreefellow ), typeof( RagingGrizzlyBear ) }
 				} ),
-				new ChampionSpawnInfo( "The Corrupt", typeof( Ilhenir ), new string[]{ "Cleanser", "Expunger", "Depurator" } , new Type[][]
+				new ChampionSpawnInfo( "The Corrupt", typeof( Ilhenir ), new[]{ "Cleanser", "Expunger", "Depurator" } , new[]
 				{																											// Unholy Terror
-					new Type[]{ typeof( PlagueSpawn ), typeof( Bogling ) },
-					new Type[]{ typeof( PlagueBeast ), typeof( BogThing ) },
-					new Type[]{ typeof( PlagueBeastLord ), typeof( InterredGrizzle ) },
-					new Type[]{ typeof( FetidEssence ), typeof( PestilentBandage ) }
+					new[]{ typeof( PlagueSpawn ), typeof( Bogling ) },
+					new[]{ typeof( PlagueBeast ), typeof( BogThing ) },
+					new[]{ typeof( PlagueBeastLord ), typeof( InterredGrizzle ) },
+					new[]{ typeof( FetidEssence ), typeof( PestilentBandage ) }
 				} )
 			};
 

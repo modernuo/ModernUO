@@ -27,7 +27,7 @@ namespace Server.Items
 			base.OnDelete();
 		}
 
-		private static int[] m_Art = new int[]
+		private static int[] m_Art = new[]
 		{
 			0x19AA, 0x19BB
 		};

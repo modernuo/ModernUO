@@ -4,7 +4,7 @@ namespace Server.Items
 {
 	public class HolidayBell : Item
 	{
-		private static string[] m_StaffNames = new string[]
+		private static string[] m_StaffNames = new[]
 		{
 			"Adrick",
 			"Alai",
@@ -29,7 +29,7 @@ namespace Server.Items
 			"Tyrant",
 			"Vex"
 		};
-		private static int[] m_Hues = new int[]
+		private static int[] m_Hues = new[]
 		{
 			0xA, 0x24, 0x42, 0x56, 0x1A, 0x4C, 0x3C, 0x60, 0x2E, 0x55, 0x23, 0x38, 0x482, 0x6, 0x10
 		};

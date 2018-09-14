@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class UzeraanTurmoilQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new Type[]
+		private static Type[] m_TypeReferenceTable = new[]
 			{
 				typeof( Haven.AcceptConversation ),
 				typeof( Haven.UzeraanTitheConversation ),

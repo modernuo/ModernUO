@@ -62,7 +62,7 @@ namespace Server.Gumps
 			public int LocNumber => m_Num;
 		}
 
-		private static PolymorphCategory[] Categories = new PolymorphCategory[]
+		private static PolymorphCategory[] Categories = new[]
 			{
 				new PolymorphCategory( 1015235, // Animals
 					PolymorphEntry.Chicken,
@@ -155,7 +155,7 @@ namespace Server.Gumps
 
 	public class NewPolymorphGump : Gump
 	{
-		private static readonly PolymorphEntry[] m_Entries = new PolymorphEntry[]
+		private static readonly PolymorphEntry[] m_Entries = new[]
 			{
 				PolymorphEntry.Chicken,
 				PolymorphEntry.Dog,

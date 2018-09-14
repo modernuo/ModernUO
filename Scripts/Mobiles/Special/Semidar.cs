@@ -9,9 +9,9 @@ namespace Server.Mobiles
 	{
 		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-		public override Type[] UniqueList => new Type[] { typeof( GladiatorsCollar ) };
-		public override Type[] SharedList => new Type[] { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) };
-		public override Type[] DecorativeList => new Type[] { typeof( LavaTile ), typeof( DemonSkull ) };
+		public override Type[] UniqueList => new[] { typeof( GladiatorsCollar ) };
+		public override Type[] SharedList => new[] { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) };
+		public override Type[] DecorativeList => new[] { typeof( LavaTile ), typeof( DemonSkull ) };
 
 		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 

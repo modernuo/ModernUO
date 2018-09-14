@@ -457,9 +457,9 @@ namespace Server.Gumps
 			}
 		}
 
-		private static SkillsGumpGroup[] m_Groups = new SkillsGumpGroup[]
+		private static SkillsGumpGroup[] m_Groups = new[]
 			{
-				new SkillsGumpGroup( "Crafting", new SkillName[]
+				new SkillsGumpGroup( "Crafting", new[]
 				{
 					SkillName.Alchemy,
 					SkillName.Blacksmith,
@@ -472,14 +472,14 @@ namespace Server.Gumps
 					SkillName.Tinkering,
 					SkillName.Imbuing
 				} ),
-				new SkillsGumpGroup( "Bardic", new SkillName[]
+				new SkillsGumpGroup( "Bardic", new[]
 				{
 					SkillName.Discordance,
 					SkillName.Musicianship,
 					SkillName.Peacemaking,
 					SkillName.Provocation
 				} ),
-				new SkillsGumpGroup( "Magical", new SkillName[]
+				new SkillsGumpGroup( "Magical", new[]
 				{
 					SkillName.Chivalry,
 					SkillName.EvalInt,
@@ -493,7 +493,7 @@ namespace Server.Gumps
 					SkillName.Spellweaving,
 					SkillName.Mysticism
 				} ),
-				new SkillsGumpGroup( "Miscellaneous", new SkillName[]
+				new SkillsGumpGroup( "Miscellaneous", new[]
 				{
 					SkillName.Camping,
 					SkillName.Fishing,
@@ -506,7 +506,7 @@ namespace Server.Gumps
 					SkillName.Snooping,
 					SkillName.Veterinary
 				} ),
-				new SkillsGumpGroup( "Combat Ratings", new SkillName[]
+				new SkillsGumpGroup( "Combat Ratings", new[]
 				{
 					SkillName.Archery,
 					SkillName.Fencing,
@@ -517,7 +517,7 @@ namespace Server.Gumps
 					SkillName.Wrestling,
 					SkillName.Throwing
 				} ),
-				new SkillsGumpGroup( "Actions", new SkillName[]
+				new SkillsGumpGroup( "Actions", new[]
 				{
 					SkillName.AnimalTaming,
 					SkillName.Begging,
@@ -529,7 +529,7 @@ namespace Server.Gumps
 					SkillName.Stealth,
 					SkillName.Tracking
 				} ),
-				new SkillsGumpGroup( "Lore & Knowledge", new SkillName[]
+				new SkillsGumpGroup( "Lore & Knowledge", new[]
 				{
 					SkillName.Anatomy,
 					SkillName.AnimalLore,

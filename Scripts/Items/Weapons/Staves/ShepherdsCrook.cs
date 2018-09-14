@@ -92,7 +92,7 @@ namespace Server.Items
 				}
 			}
 
-			private static Type[] m_ChampTamables = new Type[]
+			private static Type[] m_ChampTamables = new[]
 			{
 				typeof( StrongMongbat ), typeof( Imp ), typeof( Scorpion ), typeof( GiantSpider ),
 				typeof( Snake ), typeof( LavaLizard ), typeof( Drake ), typeof( Dragon ),

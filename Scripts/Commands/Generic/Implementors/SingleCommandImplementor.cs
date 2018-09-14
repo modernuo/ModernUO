@@ -6,7 +6,7 @@ namespace Server.Commands.Generic
 	{
 		public SingleCommandImplementor()
 		{
-			Accessors = new string[]{ "Single" };
+			Accessors = new[]{ "Single" };
 			SupportRequirement = CommandSupport.Single;
 			AccessLevel = AccessLevel.Counselor;
 			Usage = "Single <command>";

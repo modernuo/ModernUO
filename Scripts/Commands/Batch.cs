@@ -29,7 +29,7 @@ namespace Server.Commands
 
 		public Batch()
 		{
-			Commands = new string[]{ "Batch" };
+			Commands = new[]{ "Batch" };
 			ListOptimized = true;
 
 			m_BatchCommands = new ArrayList();

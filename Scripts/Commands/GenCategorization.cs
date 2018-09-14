@@ -42,7 +42,7 @@ namespace Server.Commands
 		[Description( "Rebuilds the categorization data file used by the Add command." )]
 		public static void RebuildCategorization_OnCommand( CommandEventArgs e )
 		{
-			CategoryEntry root = new CategoryEntry( null, "Add Menu", new CategoryEntry[]{ Items, Mobiles } );
+			CategoryEntry root = new CategoryEntry( null, "Add Menu", new[]{ Items, Mobiles } );
 
 			Export( root, "Data/objects.xml", "Objects" );
 

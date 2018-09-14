@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Ninja
 {
 	public class HiddenFigure : BaseQuester
 	{
-		public static int[] Messages = new int[]
+		public static int[] Messages = new[]
 			{
 				1063191, // They won�t find me here.
 				1063192  // Ah, a quiet hideout.

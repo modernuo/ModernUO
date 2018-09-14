@@ -400,7 +400,7 @@ namespace Server.Engines.ConPVP
 		}
 
 		#region Offsets & Rotation
-		private static Point2D[] m_EdgeOffsets = new Point2D[]
+		private static Point2D[] m_EdgeOffsets = new[]
 			{
 				/*
 				 *        /\
@@ -423,7 +423,7 @@ namespace Server.Engines.ConPVP
 			};
 
 		// nw corner
-		private static Point2D[] m_CornerOffsets = new Point2D[]
+		private static Point2D[] m_CornerOffsets = new[]
 			{
 				/*
 				 *         /\
@@ -444,16 +444,16 @@ namespace Server.Engines.ConPVP
 				new Point2D( 3, 0 )
 			};
 
-		private static int[][,] m_Rotate = new int[][,]
-			{
-				new int[,]{ { +1, 0 }, { 0, +1 } }, // west
-				new int[,]{ { -1, 0 }, { 0, -1 } }, // east
-				new int[,]{ { 0, +1 }, { +1, 0 } }, // north
-				new int[,]{ { 0, -1 }, { -1, 0 } }, // south
-				new int[,]{ { +1, 0 }, { 0, +1 } }, // nw
-				new int[,]{ { -1, 0 }, { 0, -1 } }, // se
-				new int[,]{ { 0, +1 }, { +1, 0 } }, // sw
-				new int[,]{ { 0, -1 }, { -1, 0 } }, // ne
+		private static int[][,] m_Rotate = new[]
+		{
+				new[,]{ { +1, 0 }, { 0, +1 } }, // west
+				new[,]{ { -1, 0 }, { 0, -1 } }, // east
+				new[,]{ { 0, +1 }, { +1, 0 } }, // north
+				new[,]{ { 0, -1 }, { -1, 0 } }, // south
+				new[,]{ { +1, 0 }, { 0, +1 } }, // nw
+				new[,]{ { -1, 0 }, { 0, -1 } }, // se
+				new[,]{ { 0, +1 }, { +1, 0 } }, // sw
+				new[,]{ { 0, -1 }, { -1, 0 } }, // ne
 			};
 		#endregion
 

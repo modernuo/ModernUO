@@ -749,7 +749,7 @@ namespace Server.Items
 		#endregion
 
 		#region Randomize
-		private static int[] m_ItemIDs = new int[]
+		private static int[] m_ItemIDs = new[]
 		{
 			0x2F58, 0x2F59, 0x2F5A, 0x2F5B
 		};
@@ -759,7 +759,7 @@ namespace Server.Items
 			return Utility.RandomList(m_ItemIDs);
 		}
 
-		private static Type[] m_Summons = new Type[]
+		private static Type[] m_Summons = new[]
 		{
 			typeof( SummonedAntLion ),
 			typeof( SummonedCow ),
@@ -784,7 +784,7 @@ namespace Server.Items
 			typeof( Bandage ),
 		};
 
-		private static int[] m_SummonLabels = new int[]
+		private static int[] m_SummonLabels = new[]
 		{
 			1075211, // Ant Lion
 			1072494, // Cow
@@ -837,7 +837,7 @@ namespace Server.Items
 			return TalismanRemoval.None;
 		}
 
-		private static Type[] m_Killers = new Type[]
+		private static Type[] m_Killers = new[]
 		{
 			typeof( OrcBomber ), 	typeof( OrcBrute ), 				typeof( SewerRat ), 		typeof( Rat ), 				typeof( GiantRat ),
 			typeof( Ratman ), 		typeof( RatmanArcher ), 			typeof( GiantSpider ), 		typeof( FrostSpider ), 		typeof( GiantBlackWidow ),
@@ -855,7 +855,7 @@ namespace Server.Items
 			// TODO Meraktus, Tormented Minotaur, Minotaur
 		};
 
-		private static int[] m_KillerLabels = new int[]
+		private static int[] m_KillerLabels = new[]
 		{
 			1072413, 1072414, 1072418, 1072419, 1072420,
 			1072421, 1072423, 1072424, 1072425, 1072426,
@@ -902,7 +902,7 @@ namespace Server.Items
 			return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(5, 60));
 		}
 
-		private static SkillName[] m_Skills = new SkillName[]
+		private static SkillName[] m_Skills = new[]
 		{
 			SkillName.Alchemy,
 			SkillName.Blacksmith,

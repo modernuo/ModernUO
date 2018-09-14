@@ -13,7 +13,7 @@ namespace Server.Mobiles
 		public override Type[] UniqueList => new [] { typeof( Subdue ) };
 		public override Type[] SharedList => new Type[] { };
 
-		public override Type[] DecorativeList => new Type[]
+		public override Type[] DecorativeList => new[]
 		{
 			typeof(ArtifactLargeVase),
 			typeof(ArtifactVase),

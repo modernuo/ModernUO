@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Zento
 {
 	public class TerribleHatchlingsQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new Type[]
+		private static Type[] m_TypeReferenceTable = new[]
 			{
 				typeof( AcceptConversation ),
 				typeof( DirectionConversation ),

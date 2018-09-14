@@ -26,7 +26,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override object Message => 1060099;
 
-		private static QuestItemInfo[] m_Info = new QuestItemInfo[]
+		private static QuestItemInfo[] m_Info = new[]
 			{
 				new QuestItemInfo( 1026153, 6178 ), // teleporter
 				new QuestItemInfo( 1049117, 4036 ), // Horn of Retreat
@@ -49,7 +49,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override object Message => 1060103;
 
-		private static QuestItemInfo[] m_Info = new QuestItemInfo[]
+		private static QuestItemInfo[] m_Info = new[]
 			{
 				new QuestItemInfo( 1026153, 6178 ) // teleporter
 			};
@@ -98,7 +98,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override object Message => 1060110;
 
-		private static QuestItemInfo[] m_Info = new QuestItemInfo[]
+		private static QuestItemInfo[] m_Info = new[]
 			{
 				new QuestItemInfo( 1023643, 8787 ) // spellbook
 			};

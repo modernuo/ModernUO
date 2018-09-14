@@ -917,7 +917,7 @@ namespace Server.Mobiles
 			return ( m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful( creature, false ) && !creature.IsAnimatedDead );
 		}
 
-		private static int[] m_Offsets = new int[]
+		private static int[] m_Offsets = new[]
 			{
 				-1, -1,
 				-1,  0,

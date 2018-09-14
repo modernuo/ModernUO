@@ -743,7 +743,7 @@ namespace Server.Engines.ConPVP
 
 			StopSDTimers();
 
-			Type[] types = new Type[]{ typeof( BeginGump ), typeof( DuelContextGump ), typeof( ParticipantGump ), typeof( PickRulesetGump ), typeof( ReadyGump ), typeof( ReadyUpGump ), typeof( RulesetGump ) };
+			Type[] types = new[]{ typeof( BeginGump ), typeof( DuelContextGump ), typeof( ParticipantGump ), typeof( PickRulesetGump ), typeof( ReadyGump ), typeof( ReadyUpGump ), typeof( RulesetGump ) };
 
 			for ( int i = 0; i < m_Participants.Count; ++i )
 			{
@@ -1528,8 +1528,8 @@ namespace Server.Engines.ConPVP
 
 		public void CloseAllGumps()
 		{
-			Type[] types = new Type[]{ typeof( DuelContextGump ), typeof( ParticipantGump ), typeof( RulesetGump ) };
-			int[] defs = new int[]{ -1, -1, -1 };
+			Type[] types = new[]{ typeof( DuelContextGump ), typeof( ParticipantGump ), typeof( RulesetGump ) };
+			int[] defs = new[]{ -1, -1, -1 };
 
 			for ( int i = 0; i < m_Participants.Count; ++i )
 			{
@@ -1556,8 +1556,8 @@ namespace Server.Engines.ConPVP
 			if ( m_StartedReadyCountdown )
 				return; // sanity
 
-			Type[] types = new Type[]{ typeof( DuelContextGump ), typeof( ReadyUpGump ), typeof( ReadyGump ) };
-			int[] defs = new int[]{ -1, -1, -1 };
+			Type[] types = new[]{ typeof( DuelContextGump ), typeof( ReadyUpGump ), typeof( ReadyGump ) };
+			int[] defs = new[]{ -1, -1, -1 };
 
 			for ( int i = 0; i < m_Participants.Count; ++i )
 			{
@@ -1962,7 +1962,7 @@ namespace Server.Engines.ConPVP
 				BeginAutoTie();
 			}
 
-			Type[] types = new Type[]{ typeof( ReadyGump ), typeof( ReadyUpGump ), typeof( BeginGump ) };
+			Type[] types = new[]{ typeof( ReadyGump ), typeof( ReadyUpGump ), typeof( BeginGump ) };
 
 			for ( int i = 0; i < m_Participants.Count; ++i )
 			{
@@ -2284,7 +2284,7 @@ namespace Server.Engines.ConPVP
 			m_ReadyWait = true;
 			m_ReadyCount = -1;
 
-			Type[] types = new Type[]{ typeof( ReadyUpGump ) };
+			Type[] types = new[]{ typeof( ReadyUpGump ) };
 
 			for ( int i = 0; i < m_Participants.Count; ++i )
 			{
@@ -2520,7 +2520,7 @@ namespace Server.Engines.ConPVP
 
 			bool isAllReady = true;
 
-			Type[] types = new Type[]{ typeof( ReadyGump ) };
+			Type[] types = new[]{ typeof( ReadyGump ) };
 
 			for ( int i = 0; i < m_Participants.Count; ++i )
 			{

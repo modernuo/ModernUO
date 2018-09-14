@@ -6,7 +6,7 @@ namespace Server.Items
 		public static string GetRandomTitle()
 		{
 			// All hail OSI staff
-			string[] titles = new string[]
+			string[] titles = new[]
 				{
 					/*  1 */ "Backflash",
 					/*  2 */ "Carbon",

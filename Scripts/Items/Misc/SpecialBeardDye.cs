@@ -70,7 +70,7 @@ namespace Server.Items
 			}
 		}
 
-		private static SpecialBeardDyeEntry[] m_Entries = new SpecialBeardDyeEntry[]
+		private static SpecialBeardDyeEntry[] m_Entries = new[]
 			{
 				new SpecialBeardDyeEntry( "*****", 12, 10 ),
 				new SpecialBeardDyeEntry( "*****", 32, 5 ),

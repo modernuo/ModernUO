@@ -9,7 +9,7 @@ namespace Server.Commands.Generic
 	{
 		public ContainedCommandImplementor()
 		{
-			Accessors = new string[]{ "Contained" };
+			Accessors = new[]{ "Contained" };
 			SupportRequirement = CommandSupport.Contained;
 			AccessLevel = AccessLevel.GameMaster;
 			Usage = "Contained <command> [condition]";

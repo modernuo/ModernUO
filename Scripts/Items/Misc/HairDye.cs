@@ -69,7 +69,7 @@ namespace Server.Items
 			}
 		}
 
-		private static HairDyeEntry[] m_Entries = new HairDyeEntry[]
+		private static HairDyeEntry[] m_Entries = new[]
 			{
 				new HairDyeEntry( "*****", 1602, 26 ),
 				new HairDyeEntry( "*****", 1628, 27 ),

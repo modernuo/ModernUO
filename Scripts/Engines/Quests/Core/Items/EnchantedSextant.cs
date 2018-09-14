@@ -5,7 +5,7 @@ namespace Server.Items
 	public class EnchantedSextant : Item
 	{
 		//TODO: Trammel/Haven
-		private static readonly Point2D[] m_TrammelBanks = new Point2D[]
+		private static readonly Point2D[] m_TrammelBanks = new[]
 			{
 				new Point2D( 652, 820 ),
 				new Point2D( 1813, 2825 ),
@@ -27,7 +27,7 @@ namespace Server.Items
 				new Point2D( 5669, 3131 )
 			};
 
-		private static readonly Point2D[] m_FeluccaBanks = new Point2D[]
+		private static readonly Point2D[] m_FeluccaBanks = new[]
 			{
 				new Point2D( 652, 820 ),
 				new Point2D( 1813, 2825 ),
@@ -49,7 +49,7 @@ namespace Server.Items
 				new Point2D( 5669, 3131 )
 			};
 
-		private static readonly Point2D[] m_IlshenarBanks = new Point2D[]
+		private static readonly Point2D[] m_IlshenarBanks = new[]
 			{
 				new Point2D( 854, 680 ),
 				new Point2D( 855, 603 ),
@@ -57,7 +57,7 @@ namespace Server.Items
 				new Point2D( 1610, 556 )
 			};
 
-		private static readonly Point2D[] m_MalasBanks = new Point2D[]
+		private static readonly Point2D[] m_MalasBanks = new[]
 			{
 				new Point2D( 996, 519 ),
 				new Point2D( 2048, 1345 )

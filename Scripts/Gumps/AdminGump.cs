@@ -160,7 +160,7 @@ namespace Server.Gumps
 			}
 		}
 
-		private static string[] m_AccessLevelStrings = new string[]
+		private static string[] m_AccessLevelStrings = new[]
 			{
 				"Player",
 				"Counselor",
@@ -2724,7 +2724,7 @@ namespace Server.Gumps
 
 						if ( m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs )
 						{
-							from.SendGump( new WarningGump( 1060635, 30720, String.Format( "You are about to firewall {0}. All connection attempts from a matching IP will be refused. Are you sure?", m_List[index] ), 0xFFC000, 420, 280, new WarningGumpCallback( Firewall_Callback ), new object[]{ a, m_List[index] } ) );
+							from.SendGump( new WarningGump( 1060635, 30720, String.Format( "You are about to firewall {0}. All connection attempts from a matching IP will be refused. Are you sure?", m_List[index] ), 0xFFC000, 420, 280, new WarningGumpCallback( Firewall_Callback ), new[]{ a, m_List[index] } ) );
 						}
 						else if ( m_PageType == AdminGumpPage.AccountDetails_Access_Restrictions )
 						{

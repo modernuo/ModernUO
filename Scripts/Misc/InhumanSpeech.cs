@@ -32,7 +32,7 @@ namespace Server.Misc
 
 					m_RatmanSpeech.Flags = IHSFlags.All;
 
-					m_RatmanSpeech.Keywords = new string[]
+					m_RatmanSpeech.Keywords = new[]
 						{
 							"meat", "gold", "kill", "killing", "slay",
 							"sword", "axe", "spell", "magic", "spells",
@@ -47,7 +47,7 @@ namespace Server.Misc
 							"jerk", "fool", "foolish", "ugly", "insult", "scum"
 						};
 
-					m_RatmanSpeech.Responses = new string[]
+					m_RatmanSpeech.Responses = new[]
 						{
 							"meat", "kill", "pound", "crush", "yum yum",
 							"crunch", "destroy", "murder", "eat", "munch",
@@ -61,7 +61,7 @@ namespace Server.Misc
 							"loser", "lose", "scum"
 						};
 
-					m_RatmanSpeech.Syllables = new string[]
+					m_RatmanSpeech.Syllables = new[]
 						{
 							"skrit",
 
@@ -108,7 +108,7 @@ namespace Server.Misc
 
 					m_OrcSpeech.Flags = IHSFlags.All;
 
-					m_OrcSpeech.Keywords = new string[]
+					m_OrcSpeech.Keywords = new[]
 						{
 							"meat", "gold", "kill", "killing", "slay",
 							"sword", "axe", "spell", "magic", "spells",
@@ -123,7 +123,7 @@ namespace Server.Misc
 							"jerk", "fool", "foolish", "ugly", "insult", "scum"
 						};
 
-					m_OrcSpeech.Responses = new string[]
+					m_OrcSpeech.Responses = new[]
 						{
 							"meat", "kill", "pound", "crush", "yum yum",
 							"crunch", "destroy", "murder", "eat", "munch",
@@ -137,7 +137,7 @@ namespace Server.Misc
 							"loser", "lose", "scum"
 						};
 
-					m_OrcSpeech.Syllables = new string[]
+					m_OrcSpeech.Syllables = new[]
 						{
 							"bu", "du", "fu", "ju", "gu",
 							"ulg", "gug", "gub", "gur", "oog",
@@ -195,7 +195,7 @@ namespace Server.Misc
 
 					m_LizardmanSpeech.Flags = IHSFlags.All;
 
-					m_LizardmanSpeech.Keywords = new string[]
+					m_LizardmanSpeech.Keywords = new[]
 						{
 							"meat", "gold", "kill", "killing", "slay",
 							"sword", "axe", "spell", "magic", "spells",
@@ -210,7 +210,7 @@ namespace Server.Misc
 							"jerk", "fool", "foolish", "ugly", "insult", "scum"
 						};
 
-					m_LizardmanSpeech.Responses = new string[]
+					m_LizardmanSpeech.Responses = new[]
 						{
 							"meat", "kill", "pound", "crush", "yum yum",
 							"crunch", "destroy", "murder", "eat", "munch",
@@ -224,7 +224,7 @@ namespace Server.Misc
 							"loser", "lose", "scum"
 						};
 
-					m_LizardmanSpeech.Syllables = new string[]
+					m_LizardmanSpeech.Syllables = new[]
 						{
 							"ss", "sth", "iss", "is", "ith", "kth",
 							"sith", "this", "its", "sit", "tis", "tsi",
@@ -259,7 +259,7 @@ namespace Server.Misc
 
 					m_WispSpeech.Flags = IHSFlags.OnMovement;
 
-					m_WispSpeech.Syllables = new string[]
+					m_WispSpeech.Syllables = new[]
 						{
 							"b", "c", "d", "f", "g", "h", "i",
 							"j", "k", "l", "m", "n", "p", "r",

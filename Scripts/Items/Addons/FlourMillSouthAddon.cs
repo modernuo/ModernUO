@@ -66,11 +66,11 @@ namespace Server.Items
 			UpdateStage();
 		}
 
-		private static int[][] m_StageTable = new int[][]
-			{
-				new int[]{ 0x192C, 0x192D, 0x1931 },
-				new int[]{ 0x192E, 0x192F, 0x1932 },
-				new int[]{ 0x1930, 0x1930, 0x1934 }
+		private static int[][] m_StageTable = new[]
+		{
+				new[]{ 0x192C, 0x192D, 0x1931 },
+				new[]{ 0x192E, 0x192F, 0x1932 },
+				new[]{ 0x1930, 0x1930, 0x1934 }
 			};
 
 		private int[] FindItemTable( int itemID )

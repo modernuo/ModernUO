@@ -173,15 +173,15 @@ namespace Server.Items
 			}
 		}
 
-		private static int[] m_WaterTiles = new int[]
+		private static int[] m_WaterTiles = new[]
 			{
 				0x00A8, 0x00AB,
 				0x0136, 0x0137
 			};
 
-		private static Rectangle2D[] m_BritRegions = new Rectangle2D[]{ new Rectangle2D( 0, 0, 5120, 4096 ) };
-		private static Rectangle2D[] m_IlshRegions = new Rectangle2D[]{ new Rectangle2D( 1472, 272, 304, 240 ), new Rectangle2D( 1240, 1000, 312, 160 ) };
-		private static Rectangle2D[] m_MalasRegions = new Rectangle2D[]{ new Rectangle2D( 1376, 1520, 464, 280 ) };
+		private static Rectangle2D[] m_BritRegions = new[]{ new Rectangle2D( 0, 0, 5120, 4096 ) };
+		private static Rectangle2D[] m_IlshRegions = new[]{ new Rectangle2D( 1472, 272, 304, 240 ), new Rectangle2D( 1240, 1000, 312, 160 ) };
+		private static Rectangle2D[] m_MalasRegions = new[]{ new Rectangle2D( 1376, 1520, 464, 280 ) };
 
 		public static Point3D FindLocation( Map map )
 		{
@@ -197,7 +197,7 @@ namespace Server.Items
 			else if ( map == Map.Malas )
 				regions = m_MalasRegions;
 			else
-				regions = new Rectangle2D[]{ new Rectangle2D( 0, 0, map.Width, map.Height ) };
+				regions = new[]{ new Rectangle2D( 0, 0, map.Width, map.Height ) };
 
 			if ( regions.Length == 0 )
 				return Point3D.Zero;
@@ -312,7 +312,7 @@ namespace Server.Items
 				m_Message = message;
 			}
 
-			private static MessageEntry[] m_Entries = new MessageEntry[]
+			private static MessageEntry[] m_Entries = new[]
 				{
 					new MessageEntry( 280, 180, "...Ar! {0} and a fair wind! No chance... storms, though--ar! Is that a sea serp...<br><br>uh oh." ),
 					new MessageEntry( 280, 215, "...been inside this whale for three days now. I've run out of food I can pick out of his teeth. I took a sextant reading through the blowhole: {0}. I'll never see my treasure again..." ),

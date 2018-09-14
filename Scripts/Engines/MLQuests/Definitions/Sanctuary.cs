@@ -242,7 +242,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
 			InProgressMessage = 1073741; // There's too much cuteness in the world -- kill those pixies!
 
-			Objectives.Add( new KillObjective( 10, new Type[] { typeof( Pixie ) }, "pixies" ) );
+			Objectives.Add( new KillObjective( 10, new[] { typeof( Pixie ) }, "pixies" ) );
 
 			Rewards.Add( ItemReward.LargeBagOfTreasure );
 		}
@@ -347,9 +347,9 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072667; // Hrmph.  Well maybe another time then.
 			InProgressMessage = 1072668; // Shouldn't you be slaying orcs?
 
-			Objectives.Add( new KillObjective( 10, new Type[] { typeof( Orc ) }, "orcs", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
-			Objectives.Add( new KillObjective( 5, new Type[] { typeof( OrcBomber ) }, "orc bombers", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
-			Objectives.Add( new KillObjective( 3, new Type[] { typeof( OrcBrute ) }, "orc brutes", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 10, new[] { typeof( Orc ) }, "orcs", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 5, new[] { typeof( OrcBomber ) }, "orc bombers", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 3, new[] { typeof( OrcBrute ) }, "orc brutes", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -365,7 +365,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
 			InProgressMessage = 1073595; // I don't see 10 tails from Ratman Archers on your belt -- and until I do, no reward for you.
 
-			Objectives.Add( new KillObjective( 10, new Type[] { typeof( RatmanArcher ) }, "ratman archers" ) );
+			Objectives.Add( new KillObjective( 10, new[] { typeof( RatmanArcher ) }, "ratman archers" ) );
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -381,7 +381,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
 			InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-			Objectives.Add( new KillObjective( 12, new Type[] { typeof( Ratman ) }, "ratmen" ) );
+			Objectives.Add( new KillObjective( 12, new[] { typeof( Ratman ) }, "ratmen" ) );
 
 			Rewards.Add( ItemReward.BagOfTrinkets );
 		}
@@ -400,7 +400,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1072572; // Small words.  Kill Moug-Guur.  Go.  Now!
 			CompletionMessage = 1072573; // You're better than I thought you'd be.  Not particularly bad, but not entirely inept.
 
-			Objectives.Add( new KillObjective( 1, new Type[] { typeof( MougGuur ) }, "Moug-Guur", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 1, new[] { typeof( MougGuur ) }, "Moug-Guur", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -420,7 +420,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1072576; // How difficult is this?  The rats live in the tunnels.  Go into the tunnels and find the biggest, meanest rat and execute him.  Loitering around here won't get the task done.
 			CompletionMessage = 1072577; // It's about time!  Could you have taken longer?
 
-			Objectives.Add( new KillObjective( 1, new Type[] { typeof( Chiikkaha ) }, "Chiikkaha", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 1, new[] { typeof( Chiikkaha ) }, "Chiikkaha", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -439,7 +439,7 @@ namespace Server.Engines.MLQuests.Definitions
 			InProgressMessage = 1072581; // Hahahaha!  I can see the fear in your eyes.  Pathetic.  Szavetra is waiting for you.
 			CompletionMessage = 1072582; // Amazing!  Simply astonishing ... you survived.  Well, I supposed I should indulge your avarice with a reward.
 
-			Objectives.Add( new KillObjective( 1, new Type[] { typeof( Szavetra ) }, "Szavetra", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 1, new[] { typeof( Szavetra ) }, "Szavetra", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.Strongbox );
 		}
@@ -528,7 +528,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072687; // I quite understand your reluctance.  If you reconsider, I'll be here.
 			InProgressMessage = 1072688; // You can't miss those ogres, they're huge and just outside the gates here.
 
-			Objectives.Add( new KillObjective( 10, new Type[] { typeof( Ogre ) }, "ogres", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 10, new[] { typeof( Ogre ) }, "ogres", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}
@@ -547,7 +547,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072708; // Reluctance doesn't become a hero like you.  But, as you wish.
 			InProgressMessage = 1072709; // Ogre Lords are pretty easy to recognize.  They're the ones ordering the other ogres about in a lordly manner.  Striking down their leadership will throw the ogres into confusion and dismay!
 
-			Objectives.Add( new KillObjective( 10, new Type[] { typeof( OgreLord ) }, "ogre lords", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 10, new[] { typeof( OgreLord ) }, "ogre lords", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.LargeBagOfTreasure );
 		}
@@ -566,7 +566,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072711; // Oh, I see.  *sigh*  Perhaps I overestimated your abilities.
 			InProgressMessage = 1072712; // Make sure you fully assess all of the cyclopian tactical abilities!
 
-			Objectives.Add( new KillObjective( 6, new Type[] { typeof( Cyclops ) }, "cyclops", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 6, new[] { typeof( Cyclops ) }, "cyclops", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.LargeBagOfTreasure );
 		}
@@ -584,7 +584,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072714; // Certainly.  You've done enough to merit a breather.  When you're ready for more, report back to me.
 			InProgressMessage = 1072715; // Those titans don't skulk very well.  You should be able to track them easily ... their footsteps are easily the largest around.
 
-			Objectives.Add( new KillObjective( 3, new Type[] { typeof( Titan ) }, "titans", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 3, new[] { typeof( Titan ) }, "titans", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.LargeBagOfTreasure );
 		}
@@ -600,7 +600,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1072594; // Don't tell me you're a gargoyle sympathizer? *spits*
 			InProgressMessage = 1072595; // Those blasted gargoyles hang around the old tower.  That's the best place to hunt them down.
 
-			Objectives.Add( new KillObjective( 12, new Type[] { typeof( Gargoyle ) }, "gargoyles", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
+			Objectives.Add( new KillObjective( 12, new[] { typeof( Gargoyle ) }, "gargoyles", new QuestArea( 1074807, "Sanctuary" ) ) ); // Sanctuary
 
 			Rewards.Add( ItemReward.BagOfTrinkets );
 		}
@@ -635,7 +635,7 @@ namespace Server.Engines.MLQuests.Definitions
 			RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
 			InProgressMessage = 1073592; // The Brigands still plague us. Have you killed 20 of their number?<br>
 
-			Objectives.Add( new KillObjective( 20, new Type[] { typeof( Brigand ) }, 1074894 ) ); // Common brigands
+			Objectives.Add( new KillObjective( 20, new[] { typeof( Brigand ) }, 1074894 ) ); // Common brigands
 
 			Rewards.Add( ItemReward.BagOfTreasure );
 		}

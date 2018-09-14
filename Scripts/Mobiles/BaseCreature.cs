@@ -1107,7 +1107,7 @@ namespace Server.Mobiles
 			return ( (double)chance / 1000 );
 		}
 
-		private static Type[] m_AnimateDeadTypes = new Type[]
+		private static Type[] m_AnimateDeadTypes = new[]
 			{
 				typeof( MoundOfMaggots ), typeof( HellSteed ), typeof( SkeletalMount ),
 				typeof( WailingBanshee ), typeof( Wraith ), typeof( SkeletalDragon ),
@@ -1810,12 +1810,12 @@ namespace Server.Mobiles
 			writer.Write( m_HomeMap );
 		}
 
-		private static double[] m_StandardActiveSpeeds = new double[]
+		private static double[] m_StandardActiveSpeeds = new[]
 			{
 				0.175, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8
 			};
 
-		private static double[] m_StandardPassiveSpeeds = new double[]
+		private static double[] m_StandardPassiveSpeeds = new[]
 			{
 				0.350, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0
 			};
@@ -2100,22 +2100,22 @@ namespace Server.Mobiles
 		public override bool ShouldCheckStatTimers => false;
 
 		#region Food
-		private static Type[] m_Eggs = new Type[]
+		private static Type[] m_Eggs = new[]
 			{
 				typeof( FriedEggs ), typeof( Eggs )
 			};
 
-		private static Type[] m_Fish = new Type[]
+		private static Type[] m_Fish = new[]
 			{
 				typeof( FishSteak ), typeof( RawFishSteak )
 			};
 
-		private static Type[] m_GrainsAndHay = new Type[]
+		private static Type[] m_GrainsAndHay = new[]
 			{
 				typeof( BreadLoaf ), typeof( FrenchBread ), typeof( SheafOfHay )
 			};
 
-		private static Type[] m_Meat = new Type[]
+		private static Type[] m_Meat = new[]
 			{
 				/* Cooked */
 				typeof( Bacon ), typeof( CookedBird ), typeof( Sausage ),
@@ -2131,7 +2131,7 @@ namespace Server.Mobiles
 				typeof( Torso ), typeof( RightArm ), typeof( RightLeg )
 			};
 
-		private static Type[] m_FruitsAndVegies = new Type[]
+		private static Type[] m_FruitsAndVegies = new[]
 			{
 				typeof( HoneydewMelon ), typeof( YellowGourd ), typeof( GreenGourd ),
 				typeof( Banana ), typeof( Bananas ), typeof( Lemon ), typeof( Lime ),
@@ -2141,7 +2141,7 @@ namespace Server.Mobiles
 				typeof( Onion ), typeof( Lettuce ), typeof( Pumpkin )
 			};
 
-		private static Type[] m_Gold = new Type[]
+		private static Type[] m_Gold = new[]
 			{
 				// white wyrms eat gold..
 				typeof( Gold )

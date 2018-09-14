@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	{
 		public static double ChestChance = .10;                // Chance that a paragon will carry a paragon chest
 		public static double ChocolateIngredientChance = .20;  // Chance that a paragon will drop a chocolatiering ingredient
-		public static Map[] Maps = new Map[]                   // Maps that paragons will spawn on
+		public static Map[] Maps = new[]                   // Maps that paragons will spawn on
 		{
 			Map.Ilshenar
 		};
@@ -42,7 +42,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		public static Type[] Artifacts = new Type[]
+		public static Type[] Artifacts = new[]
 		{
 			typeof( GoldBricks ), typeof( PhillipsWoodenSteed ),
 			typeof( AlchemistsBauble ), typeof( ArcticDeathDealer ),

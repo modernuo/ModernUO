@@ -123,7 +123,7 @@ namespace Server.Misc
 
 		private class Elf : Race
 		{
-			private static int[] m_SkinHues = new int[]
+			private static int[] m_SkinHues = new[]
 				{
 					0x0BF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374,
 					0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389,
@@ -131,7 +131,7 @@ namespace Server.Misc
 					0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903
 				};
 
-			private static int[] m_HairHues = new int[]
+			private static int[] m_HairHues = new[]
 				{
 					0x034, 0x035, 0x036, 0x037, 0x038, 0x039, 0x058, 0x08E,
 					0x08F, 0x090, 0x091, 0x092, 0x101, 0x159, 0x15A, 0x15B,
@@ -288,7 +288,7 @@ namespace Server.Misc
             }
 
             // Todo Finish body hues
-            private static readonly int[] m_BodyHues = new int[]
+            private static readonly int[] m_BodyHues = new[]
             {
                 0x86DB, 0x86DC, 0x86DD, 0x86DE,
                 0x86DF, 0x86E0, 0x86E1, 0x86E2,
@@ -308,7 +308,7 @@ namespace Server.Misc
                 return m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
             }
 
-            private static readonly int[] m_HornHues = new int[]
+            private static readonly int[] m_HornHues = new[]
             {
                 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763,
                 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF,

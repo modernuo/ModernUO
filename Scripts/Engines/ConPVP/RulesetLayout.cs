@@ -15,58 +15,58 @@ namespace Server.Engines.ConPVP
 				{
 					ArrayList entries = new ArrayList();
 
-					entries.Add( new RulesetLayout( "Spells", new RulesetLayout[]
+					entries.Add( new RulesetLayout( "Spells", new[]
 						{
-							new RulesetLayout( "1st Circle", "Spells", new string[]
+							new RulesetLayout( "1st Circle", "Spells", new[]
 							{
 								"Reactive Armor", "Clumsy",
 								"Create Food", "Feeblemind",
 								"Heal", "Magic Arrow",
 								"Night Sight", "Weaken"
 							} ),
-							new RulesetLayout( "2nd Circle", "Spells", new string[]
+							new RulesetLayout( "2nd Circle", "Spells", new[]
 							{
 								"Agility", "Cunning",
 								"Cure", "Harm",
 								"Magic Trap", "Untrap",
 								"Protection", "Strength"
 							} ),
-							new RulesetLayout( "3rd Circle", "Spells", new string[]
+							new RulesetLayout( "3rd Circle", "Spells", new[]
 							{
 								"Bless", "Fireball",
 								"Magic Lock", "Poison",
 								"Telekinesis", "Teleport",
 								"Unlock Spell", "Wall of Stone"
 							} ),
-							new RulesetLayout( "4th Circle", "Spells", new string[]
+							new RulesetLayout( "4th Circle", "Spells", new[]
 							{
 								"Arch Cure", "Arch Protection",
 								"Curse", "Fire Field",
 								"Greater Heal", "Lightning",
 								"Mana Drain", "Recall"
 							} ),
-							new RulesetLayout( "5th Circle", "Spells", new string[]
+							new RulesetLayout( "5th Circle", "Spells", new[]
 							{
 								"Blade Spirits", "Dispel Field",
 								"Incognito", "Magic Reflection",
 								"Mind Blast", "Paralyze",
 								"Poison Field", "Summon Creature"
 							} ),
-							new RulesetLayout( "6th Circle", "Spells", new string[]
+							new RulesetLayout( "6th Circle", "Spells", new[]
 							{
 								"Dispel", "Energy Bolt",
 								"Explosion", "Invisibility",
 								"Mark", "Mass Curse",
 								"Paralyze Field", "Reveal"
 							} ),
-							new RulesetLayout( "7th Circle", "Spells", new string[]
+							new RulesetLayout( "7th Circle", "Spells", new[]
 							{
 								"Chain Lightning", "Energy Field",
 								"Flame Strike", "Gate Travel",
 								"Mana Vampire", "Mass Dispel",
 								"Meteor Swarm", "Polymorph"
 							} ),
-							new RulesetLayout( "8th Circle", "Spells", new string[]
+							new RulesetLayout( "8th Circle", "Spells", new[]
 							{
 								"Earthquake", "Energy Vortex",
 								"Resurrection", "Air Elemental",
@@ -77,7 +77,7 @@ namespace Server.Engines.ConPVP
 
 					if ( Core.AOS )
 					{
-						entries.Add( new RulesetLayout( "Chivalry", new string[]
+						entries.Add( new RulesetLayout( "Chivalry", new[]
 							{
 								"Cleanse by Fire",
 								"Close Wounds",
@@ -91,7 +91,7 @@ namespace Server.Engines.ConPVP
 								"Sacred Journey"
 							} ) );
 
-						entries.Add( new RulesetLayout( "Necromancy", new string[]
+						entries.Add( new RulesetLayout( "Necromancy", new[]
 							{
 								"Animate Dead",
 								"Blood Oath",
@@ -113,7 +113,7 @@ namespace Server.Engines.ConPVP
 
 						if ( Core.SE )
 						{
-							entries.Add( new RulesetLayout( "Bushido", new string[]
+							entries.Add( new RulesetLayout( "Bushido", new[]
 							{
 								"Confidence",
 								"Counter Attack",
@@ -123,7 +123,7 @@ namespace Server.Engines.ConPVP
 								"Momentum Strike"
 							} ) );
 
-							entries.Add( new RulesetLayout( "Ninjitsu", new string[]
+							entries.Add( new RulesetLayout( "Ninjitsu", new[]
 							{
 								"Animal Form",
 								"Backstab",
@@ -137,7 +137,7 @@ namespace Server.Engines.ConPVP
 
 							if ( Core.ML )
 							{
-								entries.Add( new RulesetLayout( "Spellweaving", new string[]
+								entries.Add( new RulesetLayout( "Spellweaving", new[]
 									{
 										"Arcane Circle",
 										"Arcane Empowerment",
@@ -164,7 +164,7 @@ namespace Server.Engines.ConPVP
 					{
 						if ( Core.SE )
 						{
-							entries.Add( new RulesetLayout( "Combat Abilities", new string[]
+							entries.Add( new RulesetLayout( "Combat Abilities", new[]
 							{
 								"Stun",
 								"Disarm",
@@ -197,7 +197,7 @@ namespace Server.Engines.ConPVP
 						}
 						else
 						{
-							entries.Add( new RulesetLayout( "Combat Abilities", new string[]
+							entries.Add( new RulesetLayout( "Combat Abilities", new[]
 							{
 								"Stun",
 								"Disarm",
@@ -219,7 +219,7 @@ namespace Server.Engines.ConPVP
 					}
 					else
 					{
-						entries.Add( new RulesetLayout( "Combat Abilities", new string[]
+						entries.Add( new RulesetLayout( "Combat Abilities", new[]
 							{
 								"Stun",
 								"Disarm",
@@ -229,7 +229,7 @@ namespace Server.Engines.ConPVP
 							} ) );
 					}
 
-					entries.Add( new RulesetLayout( "Skills", new string[]
+					entries.Add( new RulesetLayout( "Skills", new[]
 						{
 							"Anatomy",
 							"Detect Hidden",
@@ -244,7 +244,7 @@ namespace Server.Engines.ConPVP
 
 					if ( Core.AOS )
 					{
-						entries.Add( new RulesetLayout( "Weapons", new string[]
+						entries.Add( new RulesetLayout( "Weapons", new[]
 						{
 							"Magical",
 							"Melee",
@@ -253,7 +253,7 @@ namespace Server.Engines.ConPVP
 							"Wrestling"
 						} ) );
 
-						entries.Add( new RulesetLayout( "Armor", new string[]
+						entries.Add( new RulesetLayout( "Armor", new[]
 							{
 								"Magical",
 								"Shields"
@@ -261,7 +261,7 @@ namespace Server.Engines.ConPVP
 					}
 					else
 					{
-						entries.Add( new RulesetLayout( "Weapons", new string[]
+						entries.Add( new RulesetLayout( "Weapons", new[]
 						{
 							"Magical",
 							"Melee",
@@ -271,7 +271,7 @@ namespace Server.Engines.ConPVP
 							"Runics"
 						} ) );
 
-						entries.Add( new RulesetLayout( "Armor", new string[]
+						entries.Add( new RulesetLayout( "Armor", new[]
 							{
 								"Magical",
 								"Shields",
@@ -281,9 +281,9 @@ namespace Server.Engines.ConPVP
 
 					if ( Core.SE )
 					{
-						entries.Add( new RulesetLayout( "Items", new RulesetLayout[]
+						entries.Add( new RulesetLayout( "Items", new[]
 						{
-							new RulesetLayout( "Potions", new string[]
+							new RulesetLayout( "Potions", new[]
 							{
 								"Agility",
 								"Cure",
@@ -295,7 +295,7 @@ namespace Server.Engines.ConPVP
 								"Strength"
 							} )
 						},
-						new string[]
+						new[]
 						{
 							"Bandages",
 							"Wands",
@@ -310,9 +310,9 @@ namespace Server.Engines.ConPVP
 					}
 					else
 					{
-						entries.Add( new RulesetLayout( "Items", new RulesetLayout[]
+						entries.Add( new RulesetLayout( "Items", new[]
 						{
-							new RulesetLayout( "Potions", new string[]
+							new RulesetLayout( "Potions", new[]
 							{
 								"Agility",
 								"Cure",
@@ -324,7 +324,7 @@ namespace Server.Engines.ConPVP
 								"Strength"
 							} )
 						},
-							new string[]
+							new[]
 						{
 							"Bandages",
 							"Wands",
@@ -497,7 +497,7 @@ namespace Server.Engines.ConPVP
 						s7x.SetOption( "Items", "Trapped Containers", true );
 						#endregion
 
-						m_Root.Defaults = new Ruleset[] { m5x, m7x, s7x };
+						m_Root.Defaults = new[] { m5x, m7x, s7x };
 					}
 					else
 					{
@@ -586,7 +586,7 @@ namespace Server.Engines.ConPVP
 						all.SetOption( "Items", "Bandages", true );
 						all.SetOption( "Items", "Trapped Containers", true );
 
-						m_Root.Defaults = new Ruleset[] { all };
+						m_Root.Defaults = new[] { all };
 						#endregion
 					}
 
@@ -642,7 +642,7 @@ namespace Server.Engines.ConPVP
 					summons.SetOption( "Spellweaving", "Summon Fiend", true );
 					summons.SetOption( "Spellweaving", "Nature's Fury", true );
 
-					m_Root.Flavors = new Ruleset[]{ pots, para, fields, area, summons };
+					m_Root.Flavors = new[]{ pots, para, fields, area, summons };
 				}
 
 				return m_Root;

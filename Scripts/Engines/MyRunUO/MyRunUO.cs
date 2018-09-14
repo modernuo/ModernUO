@@ -298,7 +298,7 @@ namespace Server.Engines.MyRunUO
 
 		public void ExecuteNonQueryIfNull( string select, string insert )
 		{
-			m_Command.Enqueue( new string[]{ select, insert } );
+			m_Command.Enqueue( new[]{ select, insert } );
 		}
 
 		private void AppendCharEntity( string input, int charIndex, ref StringBuilder sb, char c )

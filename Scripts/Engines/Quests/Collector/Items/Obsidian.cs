@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Collector
 {
 	public class Obsidian : Item
 	{
-		private static readonly string[] m_Names = new string[]
+		private static readonly string[] m_Names = new[]
 			{
 				null,
 				"an aggressive cavalier",

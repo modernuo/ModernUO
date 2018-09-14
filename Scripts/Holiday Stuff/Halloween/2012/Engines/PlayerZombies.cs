@@ -24,7 +24,7 @@ namespace Server.Engines.Events
 
 		private static List<PlayerMobile> m_DeathQueue;
 
-		private static Rectangle2D[] m_Cemetaries = new Rectangle2D[]
+		private static Rectangle2D[] m_Cemetaries = new[]
 		{
 			new Rectangle2D(1272,3712,30,20), // Jhelom
 			new Rectangle2D(1337,1444,48,52), // Britain

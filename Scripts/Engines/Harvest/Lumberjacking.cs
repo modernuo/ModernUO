@@ -57,9 +57,9 @@ namespace Server.Engines.Harvest
 			lumber.ConsumedPerFeluccaHarvest = 20;
 
 			// The chopping effect
-			lumber.EffectActions = new int[]{ 13 };
-			lumber.EffectSounds = new int[]{ 0x13E };
-			lumber.EffectCounts = (Core.AOS ? new int[]{ 1 } : new int[]{ 1, 2, 2, 2, 3 });
+			lumber.EffectActions = new[]{ 13 };
+			lumber.EffectSounds = new[]{ 0x13E };
+			lumber.EffectCounts = (Core.AOS ? new[]{ 1 } : new[]{ 1, 2, 2, 2, 3 });
 			lumber.EffectDelay = TimeSpan.FromSeconds( 1.6 );
 			lumber.EffectSoundDelay = TimeSpan.FromSeconds( 0.9 );
 
@@ -71,7 +71,7 @@ namespace Server.Engines.Harvest
 
 			if ( Core.ML )
 			{
-				res = new HarvestResource[]
+				res = new[]
 				{
 					new HarvestResource(  00.0, 00.0, 100.0, 1072540, typeof( Log ) ),
 					new HarvestResource(  65.0, 25.0, 105.0, 1072541, typeof( OakLog ) ),
@@ -83,7 +83,7 @@ namespace Server.Engines.Harvest
 				};
 
 
-				veins = new HarvestVein[]
+				veins = new[]
 				{
 					new HarvestVein( 49.0, 0.0, res[0], null ),	// Ordinary Logs
 					new HarvestVein( 30.0, 0.5, res[1], res[0] ), // Oak
@@ -94,7 +94,7 @@ namespace Server.Engines.Harvest
 					new HarvestVein( 01.0, 0.5, res[6], res[0] ), // Frostwood
 				};
 
-				lumber.BonusResources = new BonusHarvestResource[]
+				lumber.BonusResources = new[]
 				{
 					new BonusHarvestResource( 0, 83.9, null, null ),	//Nothing
 					new BonusHarvestResource( 100, 10.0, 1072548, typeof( BarkFragment ) ),
@@ -106,12 +106,12 @@ namespace Server.Engines.Harvest
 			}
 			else
 			{
-				res = new HarvestResource[]
+				res = new[]
 				{
 					new HarvestResource( 00.0, 00.0, 100.0, 500498, typeof( Log ) )
 				};
 
-				veins = new HarvestVein[]
+				veins = new[]
 				{
 					new HarvestVein( 100.0, 0.0, res[0], null )
 				};
@@ -182,7 +182,7 @@ namespace Server.Engines.Harvest
 		}
 
 		#region Tile lists
-		private static int[] m_TreeTiles = new int[]
+		private static int[] m_TreeTiles = new[]
 			{
 				0x4CCA, 0x4CCB, 0x4CCC, 0x4CCD, 0x4CD0, 0x4CD3, 0x4CD6, 0x4CD8,
 				0x4CDA, 0x4CDD, 0x4CE0, 0x4CE3, 0x4CE6, 0x4CF8, 0x4CFB, 0x4CFE,

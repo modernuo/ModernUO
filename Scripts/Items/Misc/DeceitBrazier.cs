@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public class DeceitBrazier : Item
 	{
-		private static Type[] m_Creatures = new Type[]
+		private static Type[] m_Creatures = new[]
 			{
 				#region Animals
 				typeof( FireSteed ), //Set the tents up people!

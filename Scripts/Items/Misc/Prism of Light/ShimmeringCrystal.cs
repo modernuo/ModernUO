@@ -5,7 +5,7 @@ namespace Server.Items
 		public override int LabelNumber => 1075095; // Shimmering Crystals
 		public override bool ForceShowProperties => true;
 
-		private static readonly int[] m_ItemIDs = new int[]
+		private static readonly int[] m_ItemIDs = new[]
 		{
 			0x2206, 0x2207, 0x2208, 0x2209, 0x220A, 0x220B, 0x220C, 0x220D, 0x220E,
 			0x2210, 0x2211, 0x2212, 0x2213, 0x2214, 0x2215, 0x2216, 0x2217, 0x2218,

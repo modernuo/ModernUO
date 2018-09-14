@@ -24,7 +24,7 @@ namespace Server.Gumps
 			{
 				try
 				{
-					MethodInfo info = m_Property.PropertyType.GetMethod( "Parse", new Type[]{ typeof( string ) } );
+					MethodInfo info = m_Property.PropertyType.GetMethod( "Parse", new[]{ typeof( string ) } );
 
 					string result = "";
 

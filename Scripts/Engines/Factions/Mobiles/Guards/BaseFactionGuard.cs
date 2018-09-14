@@ -268,7 +268,7 @@ namespace Server.Factions
 			Utility.AssignRandomFacialHair( this, HairHue );
 		}
 
-		private static Type[] m_StrongPotions = new Type[]
+		private static Type[] m_StrongPotions = new[]
 		{
 			typeof( GreaterHealPotion ), typeof( GreaterHealPotion ), typeof( GreaterHealPotion ),
 			typeof( GreaterCurePotion ), typeof( GreaterCurePotion ), typeof( GreaterCurePotion ),
@@ -278,7 +278,7 @@ namespace Server.Factions
 			typeof( GreaterExplosionPotion )
 		};
 
-		private static Type[] m_WeakPotions = new Type[]
+		private static Type[] m_WeakPotions = new[]
 		{
 			typeof( HealPotion ), typeof( HealPotion ), typeof( HealPotion ),
 			typeof( CurePotion ), typeof( CurePotion ), typeof( CurePotion ),

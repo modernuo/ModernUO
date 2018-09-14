@@ -37,7 +37,7 @@ namespace Server.Factions
 					new TextDefinition( 1005182, "Followers of Lord British will now be warned of their impending doom." ),
 					new TextDefinition( 1005183, "Followers of Lord British will now be attacked on sight." ),
 					new StrongholdDefinition(
-						new Rectangle2D[]
+						new[]
 						{
 							new Rectangle2D( 1292, 1556, 25, 25 ),
 							new Rectangle2D( 1292, 1676, 120, 25 ),
@@ -49,7 +49,7 @@ namespace Server.Factions
 						},
 						new Point3D( 1419, 1622, 20 ),
 						new Point3D( 1330, 1621, 50 ),
-						new Point3D[]
+						new[]
 						{
 							new Point3D( 1328, 1627, 50 ),
 							new Point3D( 1328, 1621, 50 ),
@@ -60,7 +60,7 @@ namespace Server.Factions
 							new Point3D( 1345, 1621, 50 ),
 							new Point3D( 1345, 1627, 50 )
 						} ),
-					new RankDefinition[]
+					new[]
 					{
 						new RankDefinition( 10, 991, 8, new TextDefinition( 1060794, "Knight of the Codex" ) ),
 						new RankDefinition(  9, 950, 7, new TextDefinition( 1060793, "Knight of Virtue" ) ),
@@ -73,7 +73,7 @@ namespace Server.Factions
 						new RankDefinition(  2, 200, 4, new TextDefinition( 1060790, "Defender" ) ),
 						new RankDefinition(  1,   0, 4, new TextDefinition( 1060790, "Defender" ) )
 					},
-					new GuardDefinition[]
+					new[]
 					{
 						new GuardDefinition( typeof( FactionHenchman ),		0x1403, 5000, 1000, 10,		new TextDefinition( 1011526, "HENCHMAN" ),		new TextDefinition( 1011510, "Hire Henchman" ) ),
 						new GuardDefinition( typeof( FactionMercenary ),	0x0F62, 6000, 2000, 10,		new TextDefinition( 1011527, "MERCENARY" ),		new TextDefinition( 1011511, "Hire Mercenary" ) ),

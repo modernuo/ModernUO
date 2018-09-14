@@ -80,11 +80,11 @@ namespace Server.Items
 			UpdateStage();
 		}
 
-		private static int[][] m_StageTable = new int[][]
-			{
-				new int[]{ 0x1920, 0x1921, 0x1925 },
-				new int[]{ 0x1922, 0x1923, 0x1926 },
-				new int[]{ 0x1924, 0x1924, 0x1928 }
+		private static int[][] m_StageTable = new[]
+		{
+				new[]{ 0x1920, 0x1921, 0x1925 },
+				new[]{ 0x1922, 0x1923, 0x1926 },
+				new[]{ 0x1924, 0x1924, 0x1928 }
 			};
 
 		private int[] FindItemTable( int itemID )

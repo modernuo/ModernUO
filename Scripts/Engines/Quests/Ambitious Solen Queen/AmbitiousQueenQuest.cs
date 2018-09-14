@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Ambitious
 {
 	public class AmbitiousQueenQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new Type[]
+		private static Type[] m_TypeReferenceTable = new[]
 			{
 				typeof( Ambitious.DontOfferConversation ),
 				typeof( Ambitious.AcceptConversation ),

@@ -10,15 +10,15 @@ namespace Server.Mobiles
 	{
 		public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
-		public override Type[] UniqueList => new Type[] { typeof( FangOfRactus ) };
-		public override Type[] SharedList => new Type[] { 	typeof( EmbroideredOakLeafCloak ),
+		public override Type[] UniqueList => new[] { typeof( FangOfRactus ) };
+		public override Type[] SharedList => new[] { 	typeof( EmbroideredOakLeafCloak ),
 			typeof( DjinnisRing ),
 			typeof( DetectiveBoots ),
 			typeof( GuantletsOfAnger ) };
 
-		public override Type[] DecorativeList => new Type[] { typeof( SwampTile ), typeof( MonsterStatuette ) };
+		public override Type[] DecorativeList => new[] { typeof( SwampTile ), typeof( MonsterStatuette ) };
 
-		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { MonsterStatuetteType.Slime };
+		public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Slime };
 
 		public override string DefaultName => "Barracoon";
 

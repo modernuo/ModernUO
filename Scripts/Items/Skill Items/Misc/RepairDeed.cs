@@ -29,12 +29,12 @@ namespace Server.Items
 			}
 
 			public RepairSkillInfo( CraftSystem system, Type nearbyType, TextDefinition notNearbyMessage, TextDefinition name )
-				: this( system, new Type[] { nearbyType }, notNearbyMessage, name )
+				: this( system, new[] { nearbyType }, notNearbyMessage, name )
 			{
 			}
 
 			public static RepairSkillInfo[] Table  => m_Table;
-			private static RepairSkillInfo[] m_Table = new RepairSkillInfo[]
+			private static RepairSkillInfo[] m_Table = new[]
 				{
 					new RepairSkillInfo( DefBlacksmithy.CraftSystem, typeof( Blacksmith ), 1047013, 1023015 ),
 					new RepairSkillInfo( DefTailoring.CraftSystem, typeof( Tailor ), 1061132, 1022981 ),

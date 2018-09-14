@@ -84,7 +84,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.Simple | CommandSupport.Complex | CommandSupport.Self;
-			Commands = new string[]{ "Condition" };
+			Commands = new[]{ "Condition" };
 			ObjectTypes = ObjectTypes.All;
 			Usage = "Condition <condition>";
 			Description = "Checks that the given condition matches a targeted object.";
@@ -119,7 +119,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllItems;
-			Commands = new string[]{ "BringToPack" };
+			Commands = new[]{ "BringToPack" };
 			ObjectTypes = ObjectTypes.Items;
 			Usage = "BringToPack";
 			Description = "Brings a targeted item to your backpack.";
@@ -143,7 +143,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.Simple;
-			Commands = new string[]{ "RefreshHouse" };
+			Commands = new[]{ "RefreshHouse" };
 			ObjectTypes = ObjectTypes.Items;
 			Usage = "RefreshHouse";
 			Description = "Refreshes a targeted house sign.";
@@ -178,7 +178,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.Complex;
-			Commands = new string[]{ "Count" };
+			Commands = new[]{ "Count" };
 			ObjectTypes = ObjectTypes.All;
 			Usage = "Count";
 			Description = "Counts the number of objects that a command modifier would use. Generally used with condition arguments.";
@@ -200,7 +200,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ "OpenBrowser", "OB" };
+			Commands = new[]{ "OpenBrowser", "OB" };
 			ObjectTypes = ObjectTypes.Mobiles;
 			Usage = "OpenBrowser <url>";
 			Description = "Opens the web browser of a targeted player to a specified url.";
@@ -287,7 +287,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.All;
-			Commands = new string[]{ "Increase", "Inc" };
+			Commands = new[]{ "Increase", "Inc" };
 			ObjectTypes = ObjectTypes.Both;
 			Usage = "Increase {<propertyName> <offset> ...}";
 			Description = "Increases the value of a specified property by the specified offset.";
@@ -321,7 +321,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ "PrivSound" };
+			Commands = new[]{ "PrivSound" };
 			ObjectTypes = ObjectTypes.Mobiles;
 			Usage = "PrivSound <index>";
 			Description = "Plays a sound to a given target.";
@@ -360,13 +360,13 @@ namespace Server.Commands.Generic
 
 			if ( inGump )
 			{
-				Commands = new string[]{ "Message", "Msg" };
+				Commands = new[]{ "Message", "Msg" };
 				Usage = "Message \"text\"";
 				Description = "Sends a message to a targeted player.";
 			}
 			else
 			{
-				Commands = new string[]{ "Tell" };
+				Commands = new[]{ "Tell" };
 				Usage = "Tell \"text\"";
 				Description = "Sends a system message to a targeted player.";
 			}
@@ -392,7 +392,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.All;
-			Commands = new string[]{ "AddToPack", "AddToCont" };
+			Commands = new[]{ "AddToPack", "AddToCont" };
 			ObjectTypes = ObjectTypes.Both;
 			ListOptimized = true;
 			Usage = "AddToPack <name> [params] [set {<propertyName> <value> ...}]";
@@ -432,7 +432,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.Simple | CommandSupport.Self;
-			Commands = new string[]{ "Add" };
+			Commands = new[]{ "Add" };
 			ObjectTypes = ObjectTypes.All;
 			Usage = "Add [<name> [params] [set {<propertyName> <value> ...}]]";
 			Description = "Adds an item or npc by name to a targeted location. Optional constructor parameters. Optional set property list. If no arguments are specified, this brings up a categorized add menu.";
@@ -493,7 +493,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.Simple;
-			Commands = new string[]{ "Teleport", "Tele" };
+			Commands = new[]{ "Teleport", "Tele" };
 			ObjectTypes = ObjectTypes.All;
 			Usage = "Teleport";
 			Description = "Teleports your character to a targeted location.";
@@ -532,7 +532,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ "Dismount" };
+			Commands = new[]{ "Dismount" };
 			ObjectTypes = ObjectTypes.Mobiles;
 			Usage = "Dismount";
 			Description = "Forcefully dismounts a given target.";
@@ -591,7 +591,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllNPCs;
-			Commands = new string[]{ "Restock" };
+			Commands = new[]{ "Restock" };
 			ObjectTypes = ObjectTypes.Mobiles;
 			Usage = "Restock";
 			Description = "Manually restocks a targeted vendor, refreshing the quantity of every item the vendor sells to the maximum. This also invokes the maximum quantity adjustment algorithms.";
@@ -619,7 +619,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.All;
-			Commands = new string[]{ "GetType" };
+			Commands = new[]{ "GetType" };
 			ObjectTypes = ObjectTypes.All;
 			Usage = "GetType";
 			Description = "Gets the type name of a targeted object.";
@@ -649,7 +649,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.All;
-			Commands = new string[]{ "Get" };
+			Commands = new[]{ "Get" };
 			ObjectTypes = ObjectTypes.All;
 			Usage = "Get <propertyName>";
 			Description = "Gets one or more property values by name of a targeted object.";
@@ -695,7 +695,7 @@ namespace Server.Commands.Generic
 			else
 				Supports = CommandSupport.All;
 
-			Commands = new string[]{ command };
+			Commands = new[]{ command };
 			ObjectTypes = objects;
 			Usage = command;
 			Description = String.Format( "Sets the {0} property to {1}.", name, value );
@@ -718,7 +718,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.All;
-			Commands = new string[]{ "Set" };
+			Commands = new[]{ "Set" };
 			ObjectTypes = ObjectTypes.Both;
 			Usage = "Set <propertyName> <value> [...]";
 			Description = "Sets one or more property values by name of a targeted object.";
@@ -751,7 +751,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllNPCs | CommandSupport.AllItems;
-			Commands = new string[]{ "Delete", "Remove" };
+			Commands = new[]{ "Delete", "Remove" };
 			ObjectTypes = ObjectTypes.Both;
 			Usage = "Delete";
 			Description = "Deletes a targeted item or mobile. Does not delete players.";
@@ -836,7 +836,7 @@ namespace Server.Commands.Generic
 
 			AccessLevel = AccessLevel.GameMaster;
 			Supports = CommandSupport.AllMobiles;
-			Commands = value ? new string[]{ "Kill" } : new string[]{ "Resurrect", "Res" };
+			Commands = value ? new[]{ "Kill" } : new[]{ "Resurrect", "Res" };
 			ObjectTypes = ObjectTypes.Mobiles;
 
 			if ( value )
@@ -919,7 +919,7 @@ namespace Server.Commands.Generic
 
 			AccessLevel = AccessLevel.Counselor;
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ value ? "Hide" : "Unhide" };
+			Commands = new[]{ value ? "Hide" : "Unhide" };
 			ObjectTypes = ObjectTypes.Mobiles;
 
 			if ( value )
@@ -968,7 +968,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Administrator;
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ "Firewall" };
+			Commands = new[]{ "Firewall" };
 			ObjectTypes = ObjectTypes.Mobiles;
 			Usage = "Firewall";
 			Description = "Adds a targeted player to the firewall (list of blocked IP addresses). This command does not ban or kick.";
@@ -1011,7 +1011,7 @@ namespace Server.Commands.Generic
 
 			AccessLevel = ( ban ? AccessLevel.Administrator : AccessLevel.GameMaster );
 			Supports = CommandSupport.AllMobiles;
-			Commands = new string[]{ ban ? "Ban" : "Kick" };
+			Commands = new[]{ ban ? "Ban" : "Kick" };
 			ObjectTypes = ObjectTypes.Mobiles;
 
 			if ( ban )
@@ -1073,7 +1073,7 @@ namespace Server.Commands.Generic
 		{
 			AccessLevel = AccessLevel.Administrator;
 			Supports = CommandSupport.Simple;
-			Commands = new string[] { "TraceLockdown" };
+			Commands = new[] { "TraceLockdown" };
 			ObjectTypes = ObjectTypes.Items;
 			Usage = "TraceLockdown";
 			Description = "Finds the BaseHouse for which a targeted item is locked down or secured.";

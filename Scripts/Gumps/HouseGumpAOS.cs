@@ -163,22 +163,22 @@ namespace Server.Gumps
 			return 1 + (index * 15) + type;
 		}
 
-		private static int[] m_HangerNumbers = new int[]
+		private static int[] m_HangerNumbers = new[]
 			{
 				2968, 2970, 2972,
 				2974, 2976, 2978
 			};
 
-		private static int[] m_FoundationNumbers = (Core.ML ? new int[]
+		private static int[] m_FoundationNumbers = (Core.ML ? new[]
 			{
 				20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676
 			}:
-			new int[]
+			new[]
 			{
 				20, 189, 765, 65, 101
 			});
 
-		private static int[] m_PostNumbers = new int[]
+		private static int[] m_PostNumbers = new[]
 			{
 				9, 29, 54, 90, 147, 169,
 				177, 204, 251, 257, 263,

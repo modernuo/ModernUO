@@ -38,14 +38,14 @@ namespace Server.Factions
 					new TextDefinition( 1005189, "Members of the Council of Mages will now be beaten with a stick." ),
 					// Moonglow
 					new StrongholdDefinition(
-						new Rectangle2D[]
+						new[]
 						{
 							new Rectangle2D( 4463, 1487, 15, 35 ),
 							new Rectangle2D( 4450, 1522, 35, 48 ),
 						},
 						new Point3D( 4469, 1486, 0 ),
 						new Point3D( 4457, 1544, 0 ),
-						new Point3D[]
+						new[]
 						{
 							new Point3D( 4464, 1534, 21 ),
 							new Point3D( 4470, 1536, 21 ),
@@ -78,7 +78,7 @@ namespace Server.Factions
 							new Point3D( 3797, 2249, 20 ),
 							new Point3D( 3797, 2246, 20 )
 						} ), */
-					new RankDefinition[]
+					new[]
 					{
 						new RankDefinition( 10, 991, 8, new TextDefinition( 1060789, "Inquisitor of the Council" ) ),
 						new RankDefinition(  9, 950, 7, new TextDefinition( 1060788, "Archon of Principle" ) ),
@@ -91,7 +91,7 @@ namespace Server.Factions
 						new RankDefinition(  2, 200, 4, new TextDefinition( 1060785, "Mystic" ) ),
 						new RankDefinition(  1,   0, 4, new TextDefinition( 1060785, "Mystic" ) )
 					},
-					new GuardDefinition[]
+					new[]
 					{
 						new GuardDefinition( typeof( FactionHenchman ),		0x1403, 5000, 1000, 10,		new TextDefinition( 1011526, "HENCHMAN" ),		new TextDefinition( 1011510, "Hire Henchman" ) ),
 						new GuardDefinition( typeof( FactionMercenary ),	0x0F62, 6000, 2000, 10,		new TextDefinition( 1011527, "MERCENARY" ),		new TextDefinition( 1011511, "Hire Mercenary" ) ),

@@ -12,7 +12,7 @@ namespace Server.Misc
 
 		public static void Initialize()
 		{
-			m_Facets = new Map[]{ Map.Felucca, Map.Trammel };
+			m_Facets = new[]{ Map.Felucca, Map.Trammel };
 
 			/* Static weather:
 			 *
@@ -74,7 +74,7 @@ namespace Server.Misc
 				if ( !isValid )
 					continue;
 
-				Weather w = new Weather( m_Facets[i], new Rectangle2D[]{ area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds( 30.0 ) );
+				Weather w = new Weather( m_Facets[i], new[]{ area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds( 30.0 ) );
 
 				w.m_Bounds = bounds;
 				w.m_MoveSpeed = moveSpeed;

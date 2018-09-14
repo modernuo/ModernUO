@@ -37,14 +37,14 @@ namespace Server.Factions
 					new TextDefinition( 1005185, "Minions of the Shadowlords will now be warned of their impending deaths." ),
 					new TextDefinition( 1005186, "Minions of the Shadowlords will now be attacked at will." ),
 					new StrongholdDefinition(
-						new Rectangle2D[]
+						new[]
 						{
 							new Rectangle2D( 960, 688, 8, 9 ),
 							new Rectangle2D( 944, 697, 24, 23 )
 						},
 						new Point3D( 969, 768, 0 ),
 						new Point3D( 947, 713, 0 ),
-						new Point3D[]
+						new[]
 						{
 							new Point3D( 953, 713, 20 ),
 							new Point3D( 953, 709, 20 ),
@@ -55,7 +55,7 @@ namespace Server.Factions
 							new Point3D( 957, 705, 20 ),
 							new Point3D( 957, 701, 20 )
 						} ),
-					new RankDefinition[]
+					new[]
 					{
 						new RankDefinition( 10, 991, 8, new TextDefinition( 1060799, "Purveyor of Darkness" ) ),
 						new RankDefinition(  9, 950, 7, new TextDefinition( 1060798, "Agent of Evil" ) ),
@@ -68,7 +68,7 @@ namespace Server.Factions
 						new RankDefinition(  2, 200, 4, new TextDefinition( 1060795, "Servant" ) ),
 						new RankDefinition(  1,   0, 4, new TextDefinition( 1060795, "Servant" ) )
 					},
-					new GuardDefinition[]
+					new[]
 					{
 						new GuardDefinition( typeof( FactionHenchman ),		0x1403, 5000, 1000, 10,		new TextDefinition( 1011526, "HENCHMAN" ),		new TextDefinition( 1011510, "Hire Henchman" ) ),
 						new GuardDefinition( typeof( FactionMercenary ),	0x0F62, 6000, 2000, 10,		new TextDefinition( 1011527, "MERCENARY" ),		new TextDefinition( 1011511, "Hire Mercenary" ) ),

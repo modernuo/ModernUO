@@ -51,7 +51,7 @@ namespace Server.Items
 			}
 		}
 
-        private static TrophyInfo[] m_Table = new TrophyInfo[]
+        private static TrophyInfo[] m_Table = new[]
         {
             new TrophyInfo( typeof( BrownBear ),	0x1E60,		1041093, 1041107 ),
 			new TrophyInfo( typeof( GreatHart ),	0x1E61,		1041095, 1041109 ),

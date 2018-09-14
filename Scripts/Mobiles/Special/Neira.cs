@@ -8,12 +8,12 @@ namespace Server.Mobiles
 	{
 		public override ChampionSkullType SkullType => ChampionSkullType.Death;
 
-		public override Type[] UniqueList => new Type[] { typeof( ShroudOfDeciet ) };
-		public override Type[] SharedList => new Type[] { 	typeof( ANecromancerShroud ),
+		public override Type[] UniqueList => new[] { typeof( ShroudOfDeciet ) };
+		public override Type[] SharedList => new[] { 	typeof( ANecromancerShroud ),
 
 			typeof( CaptainJohnsHat ) };
 
-		public override Type[] DecorativeList => new Type[] { typeof( WallBlood ), typeof( TatteredAncientMummyWrapping ) };
+		public override Type[] DecorativeList => new[] { typeof( WallBlood ), typeof( TatteredAncientMummyWrapping ) };
 
 		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 

@@ -58,14 +58,14 @@ namespace Server.Items
 				return;
 
 			int res = pack.ConsumeTotal(
-				new Type[]
+				new[]
 				{
 					typeof( PowerCrystal ),
 					typeof( IronIngot ),
 					typeof( BronzeIngot ),
 					typeof( Gears )
 				},
-				new int[]
+				new[]
 				{
 					1,
 					50,

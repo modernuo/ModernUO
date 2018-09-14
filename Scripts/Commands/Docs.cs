@@ -248,7 +248,7 @@ namespace Server.Commands
 
 		#region GetPair
 
-		private static string[,] m_Aliases = new string[,]
+		private static string[,] m_Aliases = new[,]
 			{
 				{ "System.Object",	"<font color=\"blue\">object</font>" },
 				{ "System.String",	"<font color=\"blue\">string</font>" },

@@ -38,13 +38,13 @@ namespace Server.Factions
 					new TextDefinition( 1005191, "Followers of Minax will now be told to go away." ),
 					new TextDefinition( 1005192, "Followers of Minax will now be hanged by their toes." ),
 					new StrongholdDefinition(
-						new Rectangle2D[]
+						new[]
 						{
 							new Rectangle2D( 1097, 2570, 70, 50 )
 						},
 						new Point3D( 1172, 2593, 0 ),
 						new Point3D( 1117, 2587, 18 ),
-						new Point3D[]
+						new[]
 						{
 							new Point3D( 1113, 2601, 18 ),
 							new Point3D( 1113, 2598, 18 ),
@@ -55,7 +55,7 @@ namespace Server.Factions
 							new Point3D( 1116, 2595, 18 ),
 							new Point3D( 1116, 2592, 18 )
 						} ),
-					new RankDefinition[]
+					new[]
 					{
 						new RankDefinition( 10, 991, 8, new TextDefinition( 1060784, "Avenger of Mondain" ) ),
 						new RankDefinition(  9, 950, 7, new TextDefinition( 1060783, "Dread Knight" ) ),
@@ -68,7 +68,7 @@ namespace Server.Factions
 						new RankDefinition(  2, 200, 4, new TextDefinition( 1060780, "Defiler" ) ),
 						new RankDefinition(  1,   0, 4, new TextDefinition( 1060780, "Defiler" ) )
 					},
-					new GuardDefinition[]
+					new[]
 					{
 						new GuardDefinition( typeof( FactionHenchman ),		0x1403, 5000, 1000, 10,		new TextDefinition( 1011526, "HENCHMAN" ),		new TextDefinition( 1011510, "Hire Henchman" ) ),
 						new GuardDefinition( typeof( FactionMercenary ),	0x0F62, 6000, 2000, 10,		new TextDefinition( 1011527, "MERCENARY" ),		new TextDefinition( 1011511, "Hire Mercenary" ) ),

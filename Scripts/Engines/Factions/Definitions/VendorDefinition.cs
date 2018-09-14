@@ -38,7 +38,7 @@ namespace Server.Factions
 			m_Label = label;
 		}
 
-		private static VendorDefinition[] m_Definitions = new VendorDefinition[]
+		private static VendorDefinition[] m_Definitions = new[]
 			{
 				new VendorDefinition( typeof( FactionBottleVendor ), 0xF0E,
 					5000,

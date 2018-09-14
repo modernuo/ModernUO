@@ -295,7 +295,7 @@ namespace Server.Mobiles
 			return (from.Alive && from.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown());
 		}
 
-		private static SkillName[] m_KeywordTable = new SkillName[]
+		private static SkillName[] m_KeywordTable = new[]
 			{
 				SkillName.Parry,
 				SkillName.Healing,

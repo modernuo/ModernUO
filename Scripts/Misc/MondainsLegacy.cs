@@ -8,7 +8,7 @@ namespace Server
 	{
 		public static Type[] Artifacts  => m_Artifacts;
 
-		private static Type[] m_Artifacts = new Type[]
+		private static Type[] m_Artifacts = new[]
 		{
 			typeof( AegisOfGrace ), typeof( BladeDance ), typeof( BloodwoodSpirit ), typeof( Bonesmasher ),
 			typeof( Boomstick ), typeof( BrightsightLenses ), typeof( FeyLeggings ), typeof( FleshRipper ),

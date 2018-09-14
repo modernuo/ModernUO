@@ -9,13 +9,13 @@ namespace Server.Mobiles
 	{
 		public override ChampionSkullType SkullType => ChampionSkullType.Power;
 
-		public override Type[] UniqueList => new Type[] { typeof( Pacify ) };
-		public override Type[] SharedList => new Type[] { 	typeof( BraveKnightOfTheBritannia ),
+		public override Type[] UniqueList => new[] { typeof( Pacify ) };
+		public override Type[] SharedList => new[] { 	typeof( BraveKnightOfTheBritannia ),
 			typeof( DetectiveBoots ),
 			typeof( EmbroideredOakLeafCloak ),
 			typeof( LieutenantOfTheBritannianRoyalGuard ) };
 
-		public override Type[] DecorativeList => new Type[] { typeof( Futon ), typeof( SwampTile ) };
+		public override Type[] DecorativeList => new[] { typeof( Futon ), typeof( SwampTile ) };
 
 		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 

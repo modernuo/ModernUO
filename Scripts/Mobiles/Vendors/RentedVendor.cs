@@ -10,7 +10,7 @@ namespace Server.Mobiles
 {
 	public class VendorRentalDuration
 	{
-		public static readonly VendorRentalDuration[] Instances = new VendorRentalDuration[]
+		public static readonly VendorRentalDuration[] Instances = new[]
 			{
 				new VendorRentalDuration( TimeSpan.FromDays(  7.0 ), 1062361 ),	// 1 Week
 				new VendorRentalDuration( TimeSpan.FromDays( 14.0 ), 1062362 ),	// 2 Weeks

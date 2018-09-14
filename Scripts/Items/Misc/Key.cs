@@ -45,7 +45,7 @@ namespace Server.Items
 			if ( cont == null || keyValue == 0 )
 				return;
 
-			Item[] items = cont.FindItemsByType( new Type[] { typeof( Key ), typeof( KeyRing ) } );
+			Item[] items = cont.FindItemsByType( new[] { typeof( Key ), typeof( KeyRing ) } );
 
 			foreach ( Item item in items )
 			{
@@ -68,7 +68,7 @@ namespace Server.Items
 			if ( cont == null )
 				return false;
 
-			Item[] items = cont.FindItemsByType( new Type[] { typeof( Key ), typeof( KeyRing ) } );
+			Item[] items = cont.FindItemsByType( new[] { typeof( Key ), typeof( KeyRing ) } );
 
 			foreach ( Item item in items )
 			{

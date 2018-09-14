@@ -595,7 +595,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		private static Entry[] m_Entries = new Entry[]
+		private static Entry[] m_Entries = new[]
 			{
 				new Entry( "Alchemist" ),
 				new Entry( "Animal Tamer" ),

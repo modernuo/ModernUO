@@ -396,7 +396,7 @@ namespace Server.Commands
 			return ( t == typeofTimeSpan || t.IsDefined( typeofParsable, false ) );
 		}
 
-		private static Type[] m_ParseTypes = new Type[]{ typeof( string ) };
+		private static Type[] m_ParseTypes = new[]{ typeof( string ) };
 		private static object[] m_ParseParams = new object[1];
 
 		private static object Parse( object o, Type t, string value )
@@ -408,7 +408,7 @@ namespace Server.Commands
 			return method.Invoke( o, m_ParseParams );
 		}
 
-		private static Type[] m_NumericTypes = new Type[]
+		private static Type[] m_NumericTypes = new[]
 			{
 				typeof( Byte ), typeof( SByte ),
 				typeof( Int16 ), typeof( UInt16 ),

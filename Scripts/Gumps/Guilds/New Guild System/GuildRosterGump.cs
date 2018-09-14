@@ -106,7 +106,7 @@ namespace Server.Guilds
 		#endregion
 
 		private static InfoField<PlayerMobile>[] m_Fields =
-			new InfoField<PlayerMobile>[]
+			new[]
 			{
 				new InfoField<PlayerMobile>( 1062955, 130, GuildRosterGump.NameComparer.Instance	),	//Name
 				new InfoField<PlayerMobile>( 1062956, 80,	 GuildRosterGump.RankComparer.Instance	),	//Rank

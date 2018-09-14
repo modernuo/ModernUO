@@ -191,7 +191,7 @@ namespace Server.Items
 		}
 
 		public static readonly PMList Trammel =
-			new PMList( 1012000, 1012012, Map.Trammel, new PMEntry[]
+			new PMList( 1012000, 1012012, Map.Trammel, new[]
 				{
 					new PMEntry( new Point3D( 4467, 1283, 5 ), 1012003 ), // Moonglow
 					new PMEntry( new Point3D( 1336, 1997, 5 ), 1012004 ), // Britain
@@ -206,7 +206,7 @@ namespace Server.Items
 				} );
 
 		public static readonly PMList Felucca =
-			new PMList( 1012001, 1012013, Map.Felucca, new PMEntry[]
+			new PMList( 1012001, 1012013, Map.Felucca, new[]
 				{
 					new PMEntry( new Point3D( 4467, 1283, 5 ), 1012003 ), // Moonglow
 					new PMEntry( new Point3D( 1336, 1997, 5 ), 1012004 ), // Britain
@@ -221,7 +221,7 @@ namespace Server.Items
 				} );
 
 		public static readonly PMList Ilshenar =
-			new PMList( 1012002, 1012014, Map.Ilshenar, new PMEntry[]
+			new PMList( 1012002, 1012014, Map.Ilshenar, new[]
 				{
 					new PMEntry( new Point3D( 1215,  467, -13 ), 1012015 ), // Compassion
 					new PMEntry( new Point3D(  722, 1366, -60 ), 1012016 ), // Honesty
@@ -235,30 +235,30 @@ namespace Server.Items
 				} );
 
 		public static readonly PMList Malas =
-			new PMList( 1060643, 1062039, Map.Malas, new PMEntry[]
+			new PMList( 1060643, 1062039, Map.Malas, new[]
 				{
 					new PMEntry( new Point3D( 1015,  527, -65 ), 1060641 ), // Luna
 					new PMEntry( new Point3D( 1997, 1386, -85 ), 1060642 )  // Umbra
 				} );
 
 		public static readonly PMList Tokuno =
-			new PMList( 1063258, 1063415, Map.Tokuno, new PMEntry[]
+			new PMList( 1063258, 1063415, Map.Tokuno, new[]
 				{
 					new PMEntry( new Point3D( 1169,  998, 41 ), 1063412 ), // Isamu-Jima
 					new PMEntry( new Point3D(  802, 1204, 25 ), 1063413 ), // Makoto-Jima
 					new PMEntry( new Point3D(  270,  628, 15 ), 1063414 )  // Homare-Jima
 				} );
 
-		public static readonly PMList[] UORLists		= new PMList[] { Trammel, Felucca };
-		public static readonly PMList[] UORListsYoung	= new PMList[] { Trammel };
-		public static readonly PMList[] LBRLists		= new PMList[] { Trammel, Felucca, Ilshenar };
-		public static readonly PMList[] LBRListsYoung	= new PMList[] { Trammel, Ilshenar };
-		public static readonly PMList[] AOSLists		= new PMList[] { Trammel, Felucca, Ilshenar, Malas };
-		public static readonly PMList[] AOSListsYoung	= new PMList[] { Trammel, Ilshenar, Malas };
-		public static readonly PMList[] SELists			= new PMList[] { Trammel, Felucca, Ilshenar, Malas, Tokuno };
-		public static readonly PMList[] SEListsYoung	= new PMList[] { Trammel, Ilshenar, Malas, Tokuno };
-		public static readonly PMList[] RedLists		= new PMList[] { Felucca };
-		public static readonly PMList[] SigilLists		= new PMList[] { Felucca };
+		public static readonly PMList[] UORLists		= new[] { Trammel, Felucca };
+		public static readonly PMList[] UORListsYoung	= new[] { Trammel };
+		public static readonly PMList[] LBRLists		= new[] { Trammel, Felucca, Ilshenar };
+		public static readonly PMList[] LBRListsYoung	= new[] { Trammel, Ilshenar };
+		public static readonly PMList[] AOSLists		= new[] { Trammel, Felucca, Ilshenar, Malas };
+		public static readonly PMList[] AOSListsYoung	= new[] { Trammel, Ilshenar, Malas };
+		public static readonly PMList[] SELists			= new[] { Trammel, Felucca, Ilshenar, Malas, Tokuno };
+		public static readonly PMList[] SEListsYoung	= new[] { Trammel, Ilshenar, Malas, Tokuno };
+		public static readonly PMList[] RedLists		= new[] { Felucca };
+		public static readonly PMList[] SigilLists		= new[] { Felucca };
 	}
 
 	public class MoongateGump : Gump

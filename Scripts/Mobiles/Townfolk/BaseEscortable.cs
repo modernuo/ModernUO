@@ -111,7 +111,7 @@ namespace Server.Mobiles
 
 		// Classic list
 		// Used when: !MLQuestSystem.Enabled && !Core.ML
-		private static string[] m_TownNames = new string[]
+		private static string[] m_TownNames = new[]
 		{
 			"Cove", "Britain", "Jhelom",
 			"Minoc", "Ocllo", "Trinsic",
@@ -121,7 +121,7 @@ namespace Server.Mobiles
 
 		// ML list, pre-ML quest system
 		// Used when: !MLQuestSystem.Enabled && Core.ML
-		private static string[] m_MLTownNames = new string[]
+		private static string[] m_MLTownNames = new[]
 		{
 			"Cove", "Serpent's Hold", "Jhelom",
 			"Nujel'm"

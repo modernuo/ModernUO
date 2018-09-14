@@ -9,7 +9,7 @@ namespace Server
 		private const bool NagleEnabled = false; // Should the Nagle algorithm be enabled? This may reduce performance
 		private const int CoalesceBufferSize = 512; // MSS that the core will use when buffering packets
 
-		private static IPEndPoint[] m_ListenerEndPoints = new IPEndPoint[] {
+		private static IPEndPoint[] m_ListenerEndPoints = new[] {
 			new IPEndPoint( IPAddress.Any, 2593 ), // Default: Listen on port 2593 on all IP addresses
 			
 			// Examples:

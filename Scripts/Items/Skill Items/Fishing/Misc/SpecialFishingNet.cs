@@ -30,7 +30,7 @@ namespace Server.Items
 				Hue = 0x8A0;
 		}
 
-		private static int[] m_Hues = new int[]
+		private static int[] m_Hues = new[]
 			{
 				0x09B,
 				0x0CD,
@@ -312,7 +312,7 @@ namespace Server.Items
 			return valid;
 		}
 
-		private static int[] m_WaterTiles = new int[]
+		private static int[] m_WaterTiles = new[]
 			{
 				0x00A8, 0x00AB,
 				0x0136, 0x0137
@@ -329,7 +329,7 @@ namespace Server.Items
 			return water;
 		}
 
-		private static int[] m_UndeepWaterTiles = new int[]
+		private static int[] m_UndeepWaterTiles = new[]
 			{
 				0x1797, 0x179C
 			};

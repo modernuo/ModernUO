@@ -90,7 +90,7 @@ namespace Server.Commands.Generic
 					/*  name  */ "Compare",
 					/*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
 					/* return */ typeof( int ),
-					/* params */ new Type[] { typeof( object ), typeof( object ) } );
+					/* params */ new[] { typeof( object ), typeof( object ) } );
 
 				LocalBuilder a = emitter.CreateLocal( objectType );
 				LocalBuilder b = emitter.CreateLocal( objectType );
@@ -148,7 +148,7 @@ namespace Server.Commands.Generic
 						emitter.Method,
 						typeof( IComparer ).GetMethod(
 							"Compare",
-							new Type[]
+							new[]
 								{
 									typeof( object ),
 									typeof( object )

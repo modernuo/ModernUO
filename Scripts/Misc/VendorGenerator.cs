@@ -13,7 +13,7 @@ namespace Server
 			CommandSystem.Register( "VendorGen", AccessLevel.Administrator, new CommandEventHandler( VendorGenerator.VendorGen_OnCommand ) );
 		}
 
-		private static Rectangle2D[] m_BritRegions = new Rectangle2D[]
+		private static Rectangle2D[] m_BritRegions = new[]
 			{
 				new Rectangle2D( new Point2D( 250, 750 ), new Point2D( 775, 1330 ) ),
 				new Rectangle2D( new Point2D( 525, 2095 ), new Point2D( 925, 2430 ) ),
@@ -33,7 +33,7 @@ namespace Server
 				new Rectangle2D( new Point2D( 5120, 2300 ), new Point2D( 6143, 4095 ) )
 			};
 
-		private static Rectangle2D[] m_IlshRegions = new Rectangle2D[]
+		private static Rectangle2D[] m_IlshRegions = new[]
 			{
 				new Rectangle2D( new Point2D( 0, 0 ), new Point2D( 288*8, 200*8 ) )
 			};

@@ -31,7 +31,7 @@ namespace Server.Guilds
 
 	public class RankDefinition
 	{
-		public static RankDefinition[] Ranks = new RankDefinition[]
+		public static RankDefinition[] Ranks = new[]
 			{
 				new RankDefinition( 1062963, 0, RankFlags.None ),	//Ronin
 				new RankDefinition( 1062962, 1, RankFlags.Member ),	//Member

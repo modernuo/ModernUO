@@ -8,7 +8,7 @@ namespace Server.Commands.Generic
 
 		public RangeCommandImplementor()
 		{
-			Accessors = new string[]{ "Range" };
+			Accessors = new[]{ "Range" };
 			SupportRequirement = CommandSupport.Area;
 			SupportsConditionals = true;
 			AccessLevel = AccessLevel.GameMaster;

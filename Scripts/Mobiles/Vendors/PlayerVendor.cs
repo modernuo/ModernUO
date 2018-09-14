@@ -1459,7 +1459,7 @@ namespace Server.Mobiles
 
 				string firstWord;
 
-				int sep = text.IndexOfAny( new char[] { ' ', ',' } );
+				int sep = text.IndexOfAny( new[] { ' ', ',' } );
 				if ( sep >= 0 )
 					firstWord = text.Substring( 0, sep );
 				else

@@ -11,7 +11,7 @@ namespace Server.Items
 			{
 				AccessLevel = AccessLevel.GameMaster;
 				Supports = CommandSupport.AllItems;
-				Commands = new string[]{ "Toggle" };
+				Commands = new[]{ "Toggle" };
 				ObjectTypes = ObjectTypes.Items;
 				Usage = "Toggle";
 				Description = "Toggles a targeted ToggleItem.";

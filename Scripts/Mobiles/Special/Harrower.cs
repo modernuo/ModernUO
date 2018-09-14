@@ -7,9 +7,9 @@ namespace Server.Mobiles
 {
 	public class Harrower : BaseCreature
 	{
-		public Type[] UniqueList => new Type[] { typeof( AcidProofRobe ) };
-		public Type[] SharedList => new Type[] { typeof( TheRobeOfBritanniaAri ) };
-		public Type[] DecorativeList => new Type[] { typeof( EvilIdolSkull ), typeof( SkullPole ) };
+		public Type[] UniqueList => new[] { typeof( AcidProofRobe ) };
+		public Type[] SharedList => new[] { typeof( TheRobeOfBritanniaAri ) };
+		public Type[] DecorativeList => new[] { typeof( EvilIdolSkull ), typeof( SkullPole ) };
 
 		private bool m_TrueForm;
 		private Item m_GateItem;
@@ -28,7 +28,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		private static SpawnEntry[] m_Entries = new SpawnEntry[]
+		private static SpawnEntry[] m_Entries = new[]
 			{
 				new SpawnEntry( new Point3D( 5242, 945, -40 ), new Point3D( 1176, 2638, 0 ) ),	// Destard
 				new SpawnEntry( new Point3D( 5225, 798, 0 ), new Point3D( 1176, 2638, 0 ) ),	// Destard
@@ -118,7 +118,7 @@ namespace Server.Mobiles
 		public override bool Unprovokable => true;
 		public override Poison PoisonImmune => Poison.Lethal;
 
-		private static readonly double[] m_Offsets = new double[]
+		private static readonly double[] m_Offsets = new[]
 			{
 				Math.Cos( 000.0 / 180.0 * Math.PI ), Math.Sin( 000.0 / 180.0 * Math.PI ),
 				Math.Cos( 040.0 / 180.0 * Math.PI ), Math.Sin( 040.0 / 180.0 * Math.PI ),
@@ -502,7 +502,7 @@ namespace Server.Mobiles
 		{
 			private Mobile m_Owner;
 
-			private static int[] m_Offsets = new int[]
+			private static int[] m_Offsets = new[]
 			{
 				-1, -1,
 				-1,  0,

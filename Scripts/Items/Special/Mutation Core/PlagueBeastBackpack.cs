@@ -9,14 +9,14 @@ namespace Server.Items
 		public override int DefaultGumpID => 0x2A63;
 		public override int DefaultDropSound => 0x23F;
 
-		private static int[,,] m_Positions = new int[,,]
+		private static int[,,] m_Positions = new[,,]
 		{
 			{ { 275, 85 }, { 360, 111 }, { 375, 184 }, { 332, 228 }, { 141, 105 }, { 189, 75 } },
 			{ { 274, 34 }, { 327, 89 }, { 354, 168 }, { 304, 225 }, { 113, 86 }, { 189, 75 } },
 			{ { 276, 79 }, { 369, 117 }, { 372, 192 }, { 336, 230 }, { 141, 116 }, { 189, 75 } },
 		};
 
-		private static int[] m_BrainHues = new int[]
+		private static int[] m_BrainHues = new[]
 		{
 			0x2B, 0x42, 0x54, 0x60
 		};

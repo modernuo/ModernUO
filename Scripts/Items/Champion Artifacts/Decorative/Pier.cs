@@ -16,7 +16,7 @@ namespace Server.Items
 		 * 
 		 */
 
-		private static int[] m_itemids = new int[]
+		private static int[] m_itemids = new[]
 		{
 			0x3486, 0x348b, 0x3ae
 		};

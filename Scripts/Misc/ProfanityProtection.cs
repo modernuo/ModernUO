@@ -63,14 +63,14 @@ namespace Server.Misc
 		public static string[]	StartDisallowed => m_StartDisallowed;
 		public static string[]	Disallowed => m_Disallowed;
 
-		private static char[] m_Exceptions = new char[]
+		private static char[] m_Exceptions = new[]
 			{
 				' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']', '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
 			};
 
 		private static string[] m_StartDisallowed = new string[]{};
 
-		private static string[] m_Disallowed = new string[]
+		private static string[] m_Disallowed = new[]
 			{
 				"jigaboo",
 				"chigaboo",

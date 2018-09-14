@@ -87,10 +87,10 @@ namespace Server
 
 		private static Dictionary<Type, SpeedInfo> m_Table;
 
-		private static SpeedInfo[] m_Speeds = new SpeedInfo[]
+		private static SpeedInfo[] m_Speeds = new[]
 			{
 				/* Slow */
-				new SpeedInfo( 0.3, 0.6, new Type[]
+				new SpeedInfo( 0.3, 0.6, new[]
 				{
 					typeof( AntLion ),			typeof( ArcticOgreLord ),	typeof( BogThing ),
 					typeof( Bogle ),			typeof( BoneKnight ),		typeof( EarthElemental ),
@@ -105,7 +105,7 @@ namespace Server
 					typeof( Juggernaut ),		typeof( Yamandon ),			typeof( Serado )
 				} ),
 				/* Fast */
-				new SpeedInfo( 0.2, 0.4, new Type[]
+				new SpeedInfo( 0.2, 0.4, new[]
 				{
 					typeof( LordOaks ),			typeof( Silvani ),			typeof( AirElemental ),
 					typeof( AncientWyrm ),		typeof( Balron ),			typeof( BladeSpirits ),
@@ -131,7 +131,7 @@ namespace Server
 					#endregion
 				} ),
 				/* Very Fast */
-				new SpeedInfo( 0.175, 0.350, new Type[]
+				new SpeedInfo( 0.175, 0.350, new[]
 				{
 					typeof( Barracoon ),		typeof( Mephitis ),			typeof( Neira ),
 					typeof( Rikktor ),			typeof( Semidar ),			typeof( EnergyVortex ),
@@ -144,7 +144,7 @@ namespace Server
 					typeof( FanDancer ),		typeof( FactionDeathKnight )
 				} ),
 				/* Medium */
-				new SpeedInfo( 0.25, 0.5, new Type[]
+				new SpeedInfo( 0.25, 0.5, new[]
 				{
 					typeof( AcidElemental ),	typeof( AgapiteElemental ),	typeof( Alligator ),
 					typeof( AncientLich ),		typeof( Betrayer ),			typeof( Bird ),

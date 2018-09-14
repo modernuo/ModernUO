@@ -895,7 +895,7 @@ namespace Server.Items
 			return null;
 		}
 
-		private static Type[] m_Decorations = new Type[]
+		private static Type[] m_Decorations = new[]
 		{
 			typeof( FishBones ),
 			typeof( WaterloggedBoots ),
@@ -924,7 +924,7 @@ namespace Server.Items
 			return false;
 		}
 
-		private static int[] m_FishHues = new int[]
+		private static int[] m_FishHues = new[]
 		{
 			0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
 		};

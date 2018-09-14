@@ -230,10 +230,10 @@ namespace Server.Gumps
 			}
 		}
 
-		public static string[] m_BoolNames = new string[]{ "True", "False" };
+		public static string[] m_BoolNames = new[]{ "True", "False" };
 		public static object[] m_BoolValues = new object[]{ true, false };
 
-		public static string[] m_PoisonNames = new string[]{ "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
+		public static string[] m_PoisonNames = new[]{ "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
 		public static object[] m_PoisonValues = new object[]{ null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
 		public override void OnResponse( NetState state, RelayInfo info )
@@ -414,13 +414,13 @@ namespace Server.Gumps
 		private static Type typeofPropertyObject = typeof( PropertyObjectAttribute );
 		private static Type typeofNoSort = typeof( NoSortAttribute );
 
-		private static Type[] typeofReal = new Type[]
+		private static Type[] typeofReal = new[]
 			{
 				typeof( Single ),
 				typeof( Double )
 			};
 
-		private static Type[] typeofNumeric = new Type[]
+		private static Type[] typeofNumeric = new[]
 			{
 				typeof( Byte ),
 				typeof( Int16 ),
@@ -625,7 +625,7 @@ namespace Server.Gumps
 			}
 			else if ( t.IsDefined( typeof( ParsableAttribute ), false ) )
 			{
-				MethodInfo parseMethod = t.GetMethod( "Parse", new Type[]{ typeof( string ) } );
+				MethodInfo parseMethod = t.GetMethod( "Parse", new[]{ typeof( string ) } );
 
 				return parseMethod.Invoke( null, new object[]{ s } );
 			}

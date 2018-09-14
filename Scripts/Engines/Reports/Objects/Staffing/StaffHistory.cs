@@ -399,7 +399,7 @@ namespace Server.Engines.Reports
 			resChart.Items.Add( "Logged Out", countLogged );
 			resChart.Items.Add( "Unresolved", countUnres );
 
-			return new PieChart[]{ staffChart, resChart };
+			return new[]{ staffChart, resChart };
 		}
 	}
 }

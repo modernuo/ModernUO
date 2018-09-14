@@ -145,7 +145,7 @@ namespace Server.Engines.Plants
 			return contains;
 		}
 
-		private static int[] m_DirtPatchTiles = new int[]
+		private static int[] m_DirtPatchTiles = new[]
 			{
 				0x9, 0x15,
 				0x71, 0x7C,

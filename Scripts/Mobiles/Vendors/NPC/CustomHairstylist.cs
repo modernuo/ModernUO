@@ -24,23 +24,23 @@ namespace Server.Mobiles
 		public static readonly object Vendor = new object();
 		public static readonly object Price = new object();
 
-		private static HairstylistBuyInfo[] m_SellList = new HairstylistBuyInfo[]
+		private static HairstylistBuyInfo[] m_SellList = new[]
 			{
-				new HairstylistBuyInfo( 1018357, 50000, false, typeof( ChangeHairstyleGump ), new object[]
+				new HairstylistBuyInfo( 1018357, 50000, false, typeof( ChangeHairstyleGump ), new[]
 					{ From, Vendor, Price, false, ChangeHairstyleEntry.HairEntries } ),
-				new HairstylistBuyInfo( 1018358, 50000, true, typeof( ChangeHairstyleGump ), new object[]
+				new HairstylistBuyInfo( 1018358, 50000, true, typeof( ChangeHairstyleGump ), new[]
 					{ From, Vendor, Price, true, ChangeHairstyleEntry.BeardEntries } ),
-				new HairstylistBuyInfo( 1018359, 50, false, typeof( ChangeHairHueGump ), new object[]
+				new HairstylistBuyInfo( 1018359, 50, false, typeof( ChangeHairHueGump ), new[]
 					{ From, Vendor, Price, true, true, ChangeHairHueEntry.RegularEntries } ),
-				new HairstylistBuyInfo( 1018360, 500000, false, typeof( ChangeHairHueGump ), new object[]
+				new HairstylistBuyInfo( 1018360, 500000, false, typeof( ChangeHairHueGump ), new[]
 					{ From, Vendor, Price, true, true, ChangeHairHueEntry.BrightEntries } ),
-				new HairstylistBuyInfo( 1018361, 30000, false, typeof( ChangeHairHueGump ), new object[]
+				new HairstylistBuyInfo( 1018361, 30000, false, typeof( ChangeHairHueGump ), new[]
 					{ From, Vendor, Price, true, false, ChangeHairHueEntry.RegularEntries } ),
-				new HairstylistBuyInfo( 1018362, 30000, true, typeof( ChangeHairHueGump ), new object[]
+				new HairstylistBuyInfo( 1018362, 30000, true, typeof( ChangeHairHueGump ), new[]
 					{ From, Vendor, Price, false, true, ChangeHairHueEntry.RegularEntries } ),
-				new HairstylistBuyInfo( 1018363, 500000, false, typeof( ChangeHairHueGump ), new object[]
+				new HairstylistBuyInfo( 1018363, 500000, false, typeof( ChangeHairHueGump ), new[]
 					{ From, Vendor, Price, true, false, ChangeHairHueEntry.BrightEntries } ),
-				new HairstylistBuyInfo( 1018364, 500000, true, typeof( ChangeHairHueGump ), new object[]
+				new HairstylistBuyInfo( 1018364, 500000, true, typeof( ChangeHairHueGump ), new[]
 					{ From, Vendor, Price, false, true, ChangeHairHueEntry.BrightEntries } )
 			};
 
@@ -252,7 +252,7 @@ namespace Server.Mobiles
 				m_Hues[i] = start + i;
 		}
 
-		public static readonly ChangeHairHueEntry[] BrightEntries = new ChangeHairHueEntry[]
+		public static readonly ChangeHairHueEntry[] BrightEntries = new[]
 			{
 				new ChangeHairHueEntry( "*****", 12, 10 ),
 				new ChangeHairHueEntry( "*****", 32, 5 ),
@@ -264,7 +264,7 @@ namespace Server.Mobiles
 				new ChangeHairHueEntry( "*****", 1153, 2 )
 			};
 
-		public static readonly ChangeHairHueEntry[] RegularEntries = new ChangeHairHueEntry[]
+		public static readonly ChangeHairHueEntry[] RegularEntries = new[]
 			{
 				new ChangeHairHueEntry( "*****", 1602, 26 ),
 				new ChangeHairHueEntry( "*****", 1628, 27 ),
@@ -406,7 +406,7 @@ namespace Server.Mobiles
 			m_ItemID = itemID;
 		}
 
-		public static readonly ChangeHairstyleEntry[] HairEntries = new ChangeHairstyleEntry[]
+		public static readonly ChangeHairstyleEntry[] HairEntries = new[]
 			{
 				new ChangeHairstyleEntry( 50700,  70 - 137,  20 -  60, 0x203B ),
 				new ChangeHairstyleEntry( 60710, 193 - 260,  18 -  60, 0x2045 ),
@@ -420,7 +420,7 @@ namespace Server.Mobiles
 				new ChangeHairstyleEntry( 0, 0, 0, 0 )
 			};
 
-		public static readonly ChangeHairstyleEntry[] BeardEntries = new ChangeHairstyleEntry[]
+		public static readonly ChangeHairstyleEntry[] BeardEntries = new[]
 			{
 				new ChangeHairstyleEntry( 50800, 120 - 187,  30 -  80, 0x2040 ),
 				new ChangeHairstyleEntry( 50904, 243 - 310,  33 -  80, 0x204B ),

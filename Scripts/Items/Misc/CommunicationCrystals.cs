@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class CrystalRechargeInfo
 	{
-		public static readonly CrystalRechargeInfo[] Table = new CrystalRechargeInfo[]
+		public static readonly CrystalRechargeInfo[] Table = new[]
 			{
 				new CrystalRechargeInfo( typeof( Citrine ), 500 ),
 				new CrystalRechargeInfo( typeof( Amber ), 500 ),

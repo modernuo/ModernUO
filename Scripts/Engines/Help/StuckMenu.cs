@@ -22,10 +22,10 @@ namespace Server.Menus.Questions
 
 	public class StuckMenu : Gump
 	{
-		private static StuckMenuEntry[] m_Entries = new StuckMenuEntry[]
+		private static StuckMenuEntry[] m_Entries = new[]
 			{
 				// Britain
-				new StuckMenuEntry( 1011028, new Point3D[]
+				new StuckMenuEntry( 1011028, new[]
 					{
 						new Point3D( 1522, 1757, 28 ),
 						new Point3D( 1519, 1619, 10 ),
@@ -35,7 +35,7 @@ namespace Server.Menus.Questions
 					} ),
 
 				// Trinsic
-				new StuckMenuEntry( 1011029, new Point3D[]
+				new StuckMenuEntry( 1011029, new[]
 					{
 						new Point3D( 2005, 2754, 30 ),
 						new Point3D( 1993, 2827,  0 ),
@@ -45,7 +45,7 @@ namespace Server.Menus.Questions
 					} ),
 
 				// Vesper
-				new StuckMenuEntry( 1011030, new Point3D[]
+				new StuckMenuEntry( 1011030, new[]
 					{
 						new Point3D( 2973, 891, 0 ),
 						new Point3D( 3003, 776, 0 ),
@@ -55,7 +55,7 @@ namespace Server.Menus.Questions
 					} ),
 
 				// Minoc
-				new StuckMenuEntry( 1011031, new Point3D[]
+				new StuckMenuEntry( 1011031, new[]
 					{
 						new Point3D( 2498, 392,  0 ),
 						new Point3D( 2433, 541,  0 ),
@@ -65,7 +65,7 @@ namespace Server.Menus.Questions
 					} ),
 
 				// Yew
-				new StuckMenuEntry( 1011032, new Point3D[]
+				new StuckMenuEntry( 1011032, new[]
 					{
 						new Point3D( 490, 1166, 0 ),
 						new Point3D( 652, 1098, 0 ),
@@ -75,7 +75,7 @@ namespace Server.Menus.Questions
 					} ),
 
 				// Cove
-				new StuckMenuEntry( 1011033, new Point3D[]
+				new StuckMenuEntry( 1011033, new[]
 					{
 						new Point3D( 2230, 1159, 0 ),
 						new Point3D( 2218, 1203, 0 ),
@@ -85,10 +85,10 @@ namespace Server.Menus.Questions
 					} )
 			};
 
-		private static StuckMenuEntry[] m_T2AEntries = new StuckMenuEntry[]
+		private static StuckMenuEntry[] m_T2AEntries = new[]
 			{
 				// Papua
-				new StuckMenuEntry( 1011057, new Point3D[]
+				new StuckMenuEntry( 1011057, new[]
 					{
 						new Point3D( 5720, 3109, -1 ),
 						new Point3D( 5677, 3176, -3 ),
@@ -98,7 +98,7 @@ namespace Server.Menus.Questions
 					} ),
 
 				// Delucia
-				new StuckMenuEntry( 1011058, new Point3D[]
+				new StuckMenuEntry( 1011058, new[]
 					{
 						new Point3D( 5216, 4033, 37 ),
 						new Point3D( 5262, 4049, 37 ),

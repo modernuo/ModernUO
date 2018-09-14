@@ -101,7 +101,7 @@ namespace Server.Mobiles
 					{
 						int[][] coord =
 						{
-							new int[]{-4,-6}, new int[]{4,-6}, new int[]{0,-8}, new int[]{-5,5}, new int[]{5,5}
+							new[]{-4,-6}, new[]{4,-6}, new[]{0,-8}, new[]{-5,5}, new[]{5,5}
 						};
 
 						for( int i=0; i<5; i++ )

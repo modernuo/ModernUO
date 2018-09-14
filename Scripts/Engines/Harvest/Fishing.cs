@@ -62,9 +62,9 @@ namespace Server.Engines.Harvest
 			fish.ConsumedPerFeluccaHarvest = 1;
 
 			// The fishing
-			fish.EffectActions = new int[]{ 12 };
+			fish.EffectActions = new[]{ 12 };
 			fish.EffectSounds = new int[0];
-			fish.EffectCounts = new int[]{ 1 };
+			fish.EffectCounts = new[]{ 1 };
 			fish.EffectDelay = TimeSpan.Zero;
 			fish.EffectSoundDelay = TimeSpan.FromSeconds( 8.0 );
 
@@ -75,12 +75,12 @@ namespace Server.Engines.Harvest
 			fish.PackFullMessage = 503176; // You do not have room in your backpack for a fish.
 			fish.ToolBrokeMessage = 503174; // You broke your fishing pole.
 
-			res = new HarvestResource[]
+			res = new[]
 				{
 					new HarvestResource( 00.0, 00.0, 100.0, 1043297, typeof( Fish ) )
 				};
 
-			veins = new HarvestVein[]
+			veins = new[]
 				{
 					new HarvestVein( 100.0, 0.0, res[0], null )
 				};
@@ -90,7 +90,7 @@ namespace Server.Engines.Harvest
 
 			if ( Core.ML )
 			{
-				fish.BonusResources = new BonusHarvestResource[]
+				fish.BonusResources = new[]
 				{
 					new BonusHarvestResource( 0, 99.4, null, null ), //set to same chance as mining ml gems
 					new BonusHarvestResource( 80.0, .6, 1072597, typeof( WhitePearl ) )
@@ -123,7 +123,7 @@ namespace Server.Engines.Harvest
 			}
 		}
 
-		private static MutateEntry[] m_MutateTable = new MutateEntry[]
+		private static MutateEntry[] m_MutateTable = new[]
 			{
 				new MutateEntry(  80.0,  80.0,  4080.0,  true, typeof( SpecialFishingNet ) ),
 				new MutateEntry(  80.0,  80.0,  4080.0,  true, typeof( BigFish ) ),
@@ -254,7 +254,7 @@ namespace Server.Engines.Harvest
 						{
 							case 0: // Body parts
 							{
-								int[] list = new int[]
+								int[] list = new[]
 									{
 										0x1CDD, 0x1CE5, // arm
 										0x1CE0, 0x1CE8, // torso
@@ -267,7 +267,7 @@ namespace Server.Engines.Harvest
 							}
 							case 1: // Bone parts
 							{
-								int[] list = new int[]
+								int[] list = new[]
 									{
 										0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4, // skulls
 										0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
@@ -303,7 +303,7 @@ namespace Server.Engines.Harvest
 							}
 							case 6: // Misc
 							{
-								int[] list = new int[]
+								int[] list = new[]
 									{
 										0x1EB5, // unfinished barrel
 										0xA2A, // stool
@@ -550,7 +550,7 @@ namespace Server.Engines.Harvest
 			return true;
 		}
 
-		private static int[] m_WaterTiles = new int[]
+		private static int[] m_WaterTiles = new[]
 			{
 				0x00A8, 0x00AB,
 				0x0136, 0x0137,

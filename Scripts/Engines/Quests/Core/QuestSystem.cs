@@ -13,7 +13,7 @@ namespace Server.Engines.Quests
 
 	public abstract class QuestSystem
 	{
-		public static readonly Type[] QuestTypes = new Type[]
+		public static readonly Type[] QuestTypes = new[]
 			{
 				typeof( Doom.TheSummoningQuest ),
 				typeof( Necro.DarkTidesQuest ),

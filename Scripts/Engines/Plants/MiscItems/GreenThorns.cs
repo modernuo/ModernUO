@@ -158,9 +158,9 @@ namespace Server.Items
 			}
 		}
 
-		private static TilesAndEffect[] m_Table = new TilesAndEffect[]
+		private static TilesAndEffect[] m_Table = new[]
 			{
-				new TilesAndEffect( new int[]
+				new TilesAndEffect( new[]
 					{
 						0x71, 0x7C,
 						0x82, 0xA7,
@@ -197,14 +197,14 @@ namespace Server.Items
 					},
 				typeof( DirtGreenThornsEffect ) ),
 
-				new TilesAndEffect( new int[]
+				new TilesAndEffect( new[]
 					{
 						0x9, 0x15,
 						0x150, 0x15C
 					},
 				typeof( FurrowsGreenThornsEffect ) ),
 
-				new TilesAndEffect( new int[]
+				new TilesAndEffect( new[]
 					{
 						0x9C4, 0x9EB,
 						0x3D65, 0x3D65,
@@ -216,7 +216,7 @@ namespace Server.Items
 					},
 				typeof( SwampGreenThornsEffect ) ),
 
-				new TilesAndEffect( new int[]
+				new TilesAndEffect( new[]
 					{
 						0x10C, 0x10F,
 						0x114, 0x117,
@@ -235,7 +235,7 @@ namespace Server.Items
 					},
 				typeof( SnowGreenThornsEffect ) ),
 
-				new TilesAndEffect( new int[]
+				new TilesAndEffect( new[]
 					{
 						0x16, 0x3A,
 						0x44, 0x4B,

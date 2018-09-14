@@ -43,16 +43,16 @@ namespace Server
 			return -1;
 		}
 
-		private static OppositionGroup m_TerathansAndOphidians = new OppositionGroup( new Type[][]
-			{
-				new Type[]
+		private static OppositionGroup m_TerathansAndOphidians = new OppositionGroup( new[]
+		{
+				new[]
 				{
 					typeof( TerathanAvenger ),
 					typeof( TerathanDrone ),
 					typeof( TerathanMatriarch ),
 					typeof( TerathanWarrior )
 				},
-				new Type[]
+				new[]
 				{
 					typeof( OphidianArchmage ),
 					typeof( OphidianKnight ),
@@ -64,9 +64,9 @@ namespace Server
 
 		public static OppositionGroup TerathansAndOphidians => m_TerathansAndOphidians;
 
-		private static OppositionGroup m_SavagesAndOrcs = new OppositionGroup( new Type[][]
-			{
-				new Type[]
+		private static OppositionGroup m_SavagesAndOrcs = new OppositionGroup( new[]
+		{
+				new[]
 				{
 					typeof( Orc ),
 					typeof( OrcBomber ),
@@ -76,7 +76,7 @@ namespace Server
 					typeof( OrcishMage ),
 					typeof( SpawnedOrcishLord )
 				},
-				new Type[]
+				new[]
 				{
 					typeof( Savage ),
 					typeof( SavageRider ),
@@ -87,9 +87,9 @@ namespace Server
 
 		public static OppositionGroup SavagesAndOrcs => m_SavagesAndOrcs;
 
-		private static OppositionGroup m_FeyAndUndead = new OppositionGroup( new Type[][]
-			{
-				new Type[]
+		private static OppositionGroup m_FeyAndUndead = new OppositionGroup( new[]
+		{
+				new[]
 				{
 					typeof( Centaur ),
 					typeof( EtherealWarrior ),
@@ -103,7 +103,7 @@ namespace Server
 					typeof( MLDryad ),
 					typeof( Satyr )
 				},
-				new Type[]
+				new[]
 				{
 					typeof( AncientLich ),
 					typeof( Bogle ),

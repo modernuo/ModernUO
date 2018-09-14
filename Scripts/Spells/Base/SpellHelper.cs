@@ -437,7 +437,7 @@ namespace Server.Spells
 			return (noto != Notoriety.Innocent || from.Kills >= 5);
 		}
 
-		private static int[] m_Offsets = new int[]
+		private static int[] m_Offsets = new[]
 			{
 				-1, -1,
 				-1,  0,
@@ -563,7 +563,7 @@ namespace Server.Spells
 
 		private delegate bool TravelValidator( Map map, Point3D loc );
 
-		private static TravelValidator[] m_Validators = new TravelValidator[]
+		private static TravelValidator[] m_Validators = new[]
 			{
 				new TravelValidator( IsFeluccaT2A ),
 				new TravelValidator( IsKhaldun ),
@@ -586,7 +586,7 @@ namespace Server.Spells
 				new TravelValidator( IsMLDungeon )
 			};
 
-		private static bool[,] m_Rules = new bool[,]
+		private static bool[,] m_Rules = new[,]
 			{
 					/*T2A(Fel),	Khaldun,	Ilshenar,	Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel),	CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	SafeZone,	Stronghold,	ChampionSpawn,	Dungeons(Tokuno[Malas]),	LampRoom(Doom),	GuardianRoom(Doom),	Heartwood,	MLDungeons */
 /* Recall From */	{ false,	false,		true,		true,		false,		false,			true,			false,		false,				false,				false,				true,		true,		false,			true,						false,			false,				false,		false },

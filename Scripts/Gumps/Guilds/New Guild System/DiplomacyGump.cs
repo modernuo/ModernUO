@@ -126,7 +126,7 @@ namespace Server.Guilds
 
 		public GuildDiplomacyGump( PlayerMobile pm, Guild g, IComparer<Guild> currentComparer, bool ascending, string filter, int startNumber, GuildDisplayType display, List<Guild> list, TextDefinition lowerText )
 			: base( pm, g, list, currentComparer, ascending, filter, startNumber,
-			new InfoField<Guild>[]
+			new[]
 			{
 				new InfoField<Guild>( 1062954, 280, GuildDiplomacyGump.NameComparer.Instance	),	//Guild Name
 				new InfoField<Guild>( 1062957, 50,	GuildDiplomacyGump.AbbrevComparer.Instance	),	//Abbrev

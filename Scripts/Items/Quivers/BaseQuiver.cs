@@ -114,7 +114,7 @@ namespace Server.Items
 			return total;
 		}
 
-		private static Type[] m_Ammo = new Type[]
+		private static Type[] m_Ammo = new[]
 		{
 			typeof( Arrow ), typeof( Bolt )
 		};

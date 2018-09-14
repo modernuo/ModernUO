@@ -146,7 +146,7 @@ namespace Server
 		}
 
 		// Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
-		private static int[] m_StringNumbers = new int[]
+		private static int[] m_StringNumbers = new[]
 			{
 				1042971,
 				1070722

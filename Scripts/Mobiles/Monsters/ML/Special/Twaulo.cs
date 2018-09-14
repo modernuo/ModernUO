@@ -9,11 +9,11 @@ namespace Server.Mobiles
 		public override string CorpseName => "a corpse of Twaulo";
 		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-		public override Type[] UniqueList => new Type[] { typeof( Quell ) };
-		public override Type[] SharedList => new Type[] { typeof( TheMostKnowledgePerson ), typeof( OblivionsNeedle ) };
-		public override Type[] DecorativeList => new Type[] { typeof( Pier ), typeof( MonsterStatuette ) };
+		public override Type[] UniqueList => new[] { typeof( Quell ) };
+		public override Type[] SharedList => new[] { typeof( TheMostKnowledgePerson ), typeof( OblivionsNeedle ) };
+		public override Type[] DecorativeList => new[] { typeof( Pier ), typeof( MonsterStatuette ) };
 
-		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { MonsterStatuetteType.DreadHorn };
+		public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.DreadHorn };
 
 		public override string DefaultName => "Twaulo";
 

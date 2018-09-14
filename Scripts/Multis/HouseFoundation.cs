@@ -574,7 +574,7 @@ namespace Server.Multis
 			{
 				MultiComponentList mcl = Components;
 
-				return new Rectangle2D[] { new Rectangle2D( mcl.Min.X, mcl.Min.Y, mcl.Width, mcl.Height ) };
+				return new[] { new Rectangle2D( mcl.Min.X, mcl.Min.Y, mcl.Width, mcl.Height ) };
 			}
 		}
 
@@ -1138,7 +1138,7 @@ namespace Server.Multis
 		/* Stair block IDs
 		 * (sorted ascending)
 		 */
-		private static int[] m_BlockIDs = new int[]
+		private static int[] m_BlockIDs = new[]
 			{
 				0x3EE, 0x709, 0x71E, 0x721,
 				0x738, 0x750, 0x76C, 0x788,
@@ -1150,7 +1150,7 @@ namespace Server.Multis
 		 * (sorted ascending)
 		 * Use this for stairs in the proper N,W,S,E sequence
 		 */
-		private static int[] m_StairSeqs = new int[]
+		private static int[] m_StairSeqs = new[]
 			{
 				0x3EF, 0x70A, 0x722, 0x739,
 				0x751, 0x76D, 0x789, 0x7A4
@@ -1160,7 +1160,7 @@ namespace Server.Multis
 		 * Listed in order: north, west, south, east
 		 * Use this for stairs not in the proper sequence
 		 */
-		private static int[] m_StairIDs = new int[]
+		private static int[] m_StairIDs = new[]
 			{
 				0x71F, 0x736, 0x737, 0x749,
 				0x35D4, 0x35D3, 0x35D6, 0x35D5,

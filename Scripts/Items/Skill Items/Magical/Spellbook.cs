@@ -804,7 +804,7 @@ namespace Server.Items
 			}
 		}
 
-		private static int[] m_LegendPropertyCounts = new int[]
+		private static int[] m_LegendPropertyCounts = new[]
 			{
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// 0 properties : 21/52 : 40%
 				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,					// 1 property   : 15/52 : 29%
@@ -813,7 +813,7 @@ namespace Server.Items
 
 			};
 
-		private static int[] m_ElderPropertyCounts = new int[]
+		private static int[] m_ElderPropertyCounts = new[]
 			{
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,// 0 properties : 15/34 : 44%
 				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 				// 1 property   : 10/34 : 29%
@@ -821,7 +821,7 @@ namespace Server.Items
 				3, 3, 3										// 3 properties :  3/34 :  9%
 			};
 
-		private static int[] m_GrandPropertyCounts = new int[]
+		private static int[] m_GrandPropertyCounts = new[]
 			{
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	// 0 properties : 10/20 : 50%
 				1, 1, 1, 1, 1, 1,				// 1 property   :  6/20 : 30%
@@ -829,14 +829,14 @@ namespace Server.Items
 				3								// 3 properties :  1/20 :  5%
 			};
 
-		private static int[] m_MasterPropertyCounts = new int[]
+		private static int[] m_MasterPropertyCounts = new[]
 			{
 				0, 0, 0, 0, 0, 0,				// 0 properties : 6/10 : 60%
 				1, 1, 1,						// 1 property   : 3/10 : 30%
 				2								// 2 properties : 1/10 : 10%
 			};
 
-		private static int[] m_AdeptPropertyCounts = new int[]
+		private static int[] m_AdeptPropertyCounts = new[]
 			{
 				0, 0, 0,						// 0 properties : 3/4 : 75%
 				1								// 1 property   : 1/4 : 25%

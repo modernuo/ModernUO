@@ -613,34 +613,34 @@ namespace Server.Engines.Doom
 
 		public static int[][] MsgParams =
 		{
-			new int[]{ 0x66d, 3 },
-			new int[]{ 0x66d, 3 },
-			new int[]{ 0x34, 3 }
+			new[]{ 0x66d, 3 },
+			new[]{ 0x66d, 3 },
+			new[]{ 0x34, 3 }
 		};
 			/* World data for items */
 
 		public static int[][] TA =
 		{
 
-			new int[]{316, 64, 5},					/* 3D Coords for levers */
-			new int[]{323, 58, 5},
-			new int[]{332, 63, 5},
-			new int[]{323, 71, 5},
+			new[]{316, 64, 5},					/* 3D Coords for levers */
+			new[]{323, 58, 5},
+			new[]{332, 63, 5},
+			new[]{323, 71, 5},
 
-			new int[]{324, 64},					/* 2D Coords for standing regions */
-			new int[]{316, 65},
-			new int[]{324, 58},
-			new int[]{332, 64},
-			new int[]{323, 72},
+			new[]{324, 64},					/* 2D Coords for standing regions */
+			new[]{316, 65},
+			new[]{324, 58},
+			new[]{332, 64},
+			new[]{323, 72},
 
-			new int[]{468, 92, -1}, new int[]{0x181D, 0x482}, 	/* 3D coord, itemid+hue for L.R. teles */
-			new int[]{469, 92, -1}, new int[]{0x1821, 0x3fd},
-			new int[]{470, 92, -1}, new int[]{0x1825, 0x66d},
+			new[]{468, 92, -1}, new[]{0x181D, 0x482}, 	/* 3D coord, itemid+hue for L.R. teles */
+			new[]{469, 92, -1}, new[]{0x1821, 0x3fd},
+			new[]{470, 92, -1}, new[]{0x1825, 0x66d},
 
-			new int[]{319, 70, 18}, new int[]{0x12d8}, 		/* 3D coord, itemid for statues */
-			new int[]{329, 60, 18}, new int[]{0x12d9},
+			new[]{319, 70, 18}, new[]{0x12d8}, 		/* 3D coord, itemid for statues */
+			new[]{329, 60, 18}, new[]{0x12d9},
 
-			new int[]{469, 96, 6}					/* 3D Coords for Fake Box */
+			new[]{469, 96, 6}					/* 3D Coords for Fake Box */
 		};
 
 			/* CLILOC data for statue "correct souls" messages */
@@ -664,12 +664,12 @@ namespace Server.Engines.Doom
 
 		public static int[][] PA =
 		{
-			new int[]{ 0, 0, 0xA6 },
-			new int[]{ 1050001, 0x485, 0xAA },
-			new int[]{ 1050003, 0x485, 0xAC },
-			new int[]{ 1050056, 0x485, 0xA8 },
-			new int[]{ 1050057, 0x485, 0xA4 },
-			new int[]{ 1062091, 0x23F3, 0xAC }
+			new[]{ 0, 0, 0xA6 },
+			new[]{ 1050001, 0x485, 0xAA },
+			new[]{ 1050003, 0x485, 0xAC },
+			new[]{ 1050056, 0x485, 0xA8 },
+			new[]{ 1050057, 0x485, 0xA4 },
+			new[]{ 1062091, 0x23F3, 0xAC }
 		};
 		public static Poison[] PA2 =
 		{

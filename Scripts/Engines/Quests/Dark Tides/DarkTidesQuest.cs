@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Necro
 {
 	public class DarkTidesQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new Type[]
+		private static Type[] m_TypeReferenceTable = new[]
 			{
 				typeof( Necro.AcceptConversation ),
 				typeof( Necro.AnimateMaabusCorpseObjective ),

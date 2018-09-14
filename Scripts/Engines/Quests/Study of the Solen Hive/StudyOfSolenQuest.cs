@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Naturalist
 {
 	public class StudyOfSolenQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new Type[]
+		private static Type[] m_TypeReferenceTable = new[]
 			{
 				typeof( StudyNestsObjective ),
 				typeof( ReturnToNaturalistObjective ),

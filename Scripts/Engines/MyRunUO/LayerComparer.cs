@@ -8,7 +8,7 @@ namespace Server.Engines.MyRunUO
 		private static Layer ChainTunic = (Layer)254;
 		private static Layer LeatherShorts = (Layer)253;
 
-		private static Layer[] m_DesiredLayerOrder = new Layer[]
+		private static Layer[] m_DesiredLayerOrder = new[]
 		{
 			Layer.Cloak,
 			Layer.Bracelet,

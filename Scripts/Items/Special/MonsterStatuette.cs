@@ -63,7 +63,7 @@ namespace Server.Items
 		{
 			m_LabelNumber = labelNumber;
 			m_ItemID = itemID;
-			m_Sounds = new int[]{ baseSoundID, baseSoundID + 1, baseSoundID + 2, baseSoundID + 3, baseSoundID + 4 };
+			m_Sounds = new[]{ baseSoundID, baseSoundID + 1, baseSoundID + 2, baseSoundID + 3, baseSoundID + 4 };
 		}
 
 		public MonsterStatuetteInfo( int labelNumber, int itemID, int[] sounds )
@@ -73,7 +73,7 @@ namespace Server.Items
 			m_Sounds = sounds;
 		}
 
-		private static MonsterStatuetteInfo[] m_Table = new MonsterStatuetteInfo[]
+		private static MonsterStatuetteInfo[] m_Table = new[]
 			{
 				/* Crocodile */			new MonsterStatuetteInfo( 1041249, 0x20DA, 660 ),
 				/* Daemon */			new MonsterStatuetteInfo( 1041250, 0x20D3, 357 ),
@@ -100,7 +100,7 @@ namespace Server.Items
 				/* Wolf */			new MonsterStatuetteInfo( 1049770, 0x2122, 229 ),
 				/* Phillip's Steed */		new MonsterStatuetteInfo( 1063488, 0x3FFE, 168 ),
 				/* Seahorse */			new MonsterStatuetteInfo( 1070819, 0x25BA, 138 ),
-				/* Harrower */			new MonsterStatuetteInfo( 1080520, 0x25BB, new int[] { 0x289, 0x28A, 0x28B } ),
+				/* Harrower */			new MonsterStatuetteInfo( 1080520, 0x25BB, new[] { 0x289, 0x28A, 0x28B } ),
 				/* Efreet */			new MonsterStatuetteInfo( 1080521, 0x2590, 0x300 ),
 				/* Slime */			new MonsterStatuetteInfo( 1015246, 0x20E8, 456 ),
 				/* PlagueBeast */		new MonsterStatuetteInfo( 1029747, 0x2613, 0x1BF ),

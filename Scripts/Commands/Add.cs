@@ -673,7 +673,7 @@ namespace Server.Commands
 			return type.IsDefined( m_ParsableType, false );
 		}
 
-		private static Type[] m_ParseTypes = new Type[]{ typeof( string ) };
+		private static Type[] m_ParseTypes = new[]{ typeof( string ) };
 		private static object[] m_ParseArgs = new object[1];
 
 		public static object ParseParsable( Type type, string value )
@@ -685,7 +685,7 @@ namespace Server.Commands
 			return method.Invoke( null, m_ParseArgs );
 		}
 
-		private static Type[] m_SignedNumerics = new Type[]
+		private static Type[] m_SignedNumerics = new[]
 			{
 				typeof( Int64 ),
 				typeof( Int32 ),
@@ -702,7 +702,7 @@ namespace Server.Commands
 			return false;
 		}
 
-		private static Type[] m_UnsignedNumerics = new Type[]
+		private static Type[] m_UnsignedNumerics = new[]
 			{
 				typeof( UInt64 ),
 				typeof( UInt32 ),

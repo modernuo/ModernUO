@@ -60,9 +60,9 @@ namespace Server.Engines.Harvest
 			oreAndStone.ConsumedPerFeluccaHarvest = 2;
 
 			// The digging effect
-			oreAndStone.EffectActions = new int[]{ 11 };
-			oreAndStone.EffectSounds = new int[]{ 0x125, 0x126 };
-			oreAndStone.EffectCounts = new int[]{ 1 };
+			oreAndStone.EffectActions = new[]{ 11 };
+			oreAndStone.EffectSounds = new[]{ 0x125, 0x126 };
+			oreAndStone.EffectCounts = new[]{ 1 };
 			oreAndStone.EffectDelay = TimeSpan.FromSeconds( 1.6 );
 			oreAndStone.EffectSoundDelay = TimeSpan.FromSeconds( 0.9 );
 
@@ -74,7 +74,7 @@ namespace Server.Engines.Harvest
 			oreAndStone.PackFullMessage = 1010481; // Your backpack is full, so the ore you mined is lost.
 			oreAndStone.ToolBrokeMessage = 1044038; // You have worn out your tool!
 
-			res = new HarvestResource[]
+			res = new[]
 				{
 					new HarvestResource( 00.0, 00.0, 100.0, 1007072, typeof( IronOre ),			typeof( Granite ) ),
 					new HarvestResource( 65.0, 25.0, 105.0, 1007073, typeof( DullCopperOre ),	typeof( DullCopperGranite ),	typeof( DullCopperElemental ) ),
@@ -87,7 +87,7 @@ namespace Server.Engines.Harvest
 					new HarvestResource( 99.0, 59.0, 139.0, 1007080, typeof( ValoriteOre ),		typeof( ValoriteGranite ),		typeof( ValoriteElemental ) )
 				};
 
-			veins = new HarvestVein[]
+			veins = new[]
 				{
 					new HarvestVein( 49.6, 0.0, res[0], null   ), // Iron
 					new HarvestVein( 11.2, 0.5, res[1], res[0] ), // Dull Copper
@@ -105,7 +105,7 @@ namespace Server.Engines.Harvest
 
 			if ( Core.ML )
 			{
-				oreAndStone.BonusResources = new BonusHarvestResource[]
+				oreAndStone.BonusResources = new[]
 				{
 					new BonusHarvestResource( 0, 99.4, null, null ),	//Nothing
 					new BonusHarvestResource( 100, .1, 1072562, typeof( BlueDiamond ) ),
@@ -152,9 +152,9 @@ namespace Server.Engines.Harvest
 			sand.ConsumedPerFeluccaHarvest = 1;
 
 			// The digging effect
-			sand.EffectActions = new int[]{ 11 };
-			sand.EffectSounds = new int[]{ 0x125, 0x126 };
-			sand.EffectCounts = new int[]{ 6 };
+			sand.EffectActions = new[]{ 11 };
+			sand.EffectSounds = new[]{ 0x125, 0x126 };
+			sand.EffectCounts = new[]{ 6 };
 			sand.EffectDelay = TimeSpan.FromSeconds( 1.6 );
 			sand.EffectSoundDelay = TimeSpan.FromSeconds( 0.9 );
 
@@ -166,12 +166,12 @@ namespace Server.Engines.Harvest
 			sand.PackFullMessage = 1044632; // Your backpack can't hold the sand, and it is lost!
 			sand.ToolBrokeMessage = 1044038; // You have worn out your tool!
 
-			res = new HarvestResource[]
+			res = new[]
 				{
 					new HarvestResource( 100.0, 70.0, 400.0, 1044631, typeof( Sand ) )
 				};
 
-			veins = new HarvestVein[]
+			veins = new[]
 				{
 					new HarvestVein( 100.0, 0.0, res[0], null )
 				};
@@ -260,7 +260,7 @@ namespace Server.Engines.Harvest
 			return base.MutateVein( from, tool, def, bank, toHarvest, vein );
 		}
 
-		private static int[] m_Offsets = new int[]
+		private static int[] m_Offsets = new[]
 			{
 				-1, -1,
 				-1,  0,
@@ -353,7 +353,7 @@ namespace Server.Engines.Harvest
 		}
 
 		#region Tile lists
-		private static int[] m_MountainAndCaveTiles = new int[]
+		private static int[] m_MountainAndCaveTiles = new[]
 			{
 				220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
 				230, 231, 236, 237, 238, 239, 240, 241, 242, 243,
@@ -392,7 +392,7 @@ namespace Server.Engines.Harvest
 				0x4549, 0x454A, 0x454B, 0x454C, 0x454D, 0x454E,	0x454F
 			};
 
-		private static int[] m_SandTiles = new int[]
+		private static int[] m_SandTiles = new[]
 			{
 				22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 				32, 33, 34, 35, 36, 37, 38, 39, 40, 41,

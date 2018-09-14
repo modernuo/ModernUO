@@ -60,7 +60,7 @@ namespace Server
 						if ( split.Length < 3 )
 							continue;
 
-						split = new string[]{ type, split[0], split[1], split[2] };
+						split = new[]{ type, split[0], split[1], split[2] };
 
 						switch(split[0].ToLower()) 
 						{

@@ -20,7 +20,7 @@ namespace Server.Items
 			WeaponAttributes.ResistPoisonBonus = 15;
 		}
 
-		private static SkillName[] m_PossibleBonusSkills = new SkillName[]
+		private static SkillName[] m_PossibleBonusSkills = new[]
 			{
 				SkillName.Archery,
 				SkillName.Healing,

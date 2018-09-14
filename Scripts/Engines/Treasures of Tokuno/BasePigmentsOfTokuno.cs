@@ -6,7 +6,7 @@ namespace Server.Items
 {
 	public abstract class BasePigmentsOfTokuno : Item, IUsesRemaining
 	{
-		private static Type[] m_Glasses = new Type[]
+		private static Type[] m_Glasses = new[]
 		{
 			typeof( MaritimeGlasses ),
 			typeof( WizardsGlasses ),
@@ -22,7 +22,7 @@ namespace Server.Items
 			typeof( AnthropomorphistGlasses )
 		};
 
-		private static Type[] m_Replicas = new Type[]
+		private static Type[] m_Replicas = new[]
 		{
 			typeof( ANecromancerShroud ),
 			typeof( BraveKnightOfTheBritannia ),
@@ -49,7 +49,7 @@ namespace Server.Items
 			typeof( Subdue )
 		};
 
-		private static Type[] m_DyableHeritageItems = new Type[]
+		private static Type[] m_DyableHeritageItems = new[]
 		{
 			typeof( ChargerOfTheFallen ),
 			typeof( SamuraiHelm ),

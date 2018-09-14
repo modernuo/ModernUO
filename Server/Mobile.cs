@@ -345,7 +345,7 @@ namespace Server
 		Locked
 	}
 
-	[CustomEnum( new string[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" } )]
+	[CustomEnum( new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" } )]
 	[Flags]
 	public enum Direction : byte
 	{
@@ -5705,7 +5705,7 @@ namespace Server
 			}
 		}
 
-		private static string[] m_AccessLevelNames = new string[]
+		private static string[] m_AccessLevelNames = new[]
 			{
 				"a player",
 				"a counselor",
@@ -8210,7 +8210,7 @@ namespace Server
 			}
 		}
 
-		private static int[] m_InvalidBodies = new int[]
+		private static int[] m_InvalidBodies = new[]
 			{
 				32,
 				95,
@@ -10418,7 +10418,7 @@ namespace Server
 			}
 		}
 
-		private static string[] m_GuildTypes = new string[]
+		private static string[] m_GuildTypes = new[]
 			{
 				"",
 				" (Chaos)",

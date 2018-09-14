@@ -12,7 +12,7 @@ using Server.Commands.Generic;
 
 namespace Server.Factions
 {
-	[CustomEnum( new string[]{ "Minax", "Council of Mages", "True Britannians", "Shadowlords" } )]
+	[CustomEnum( new[]{ "Minax", "Council of Mages", "True Britannians", "Shadowlords" } )]
 	public abstract class Faction : IComparable
 	{
 		public int ZeroRankOffset;
@@ -1299,21 +1299,21 @@ namespace Server.Factions
 			{
 				case FactionKickType.Kick:
 				{
-					Commands = new string[]{ "FactionKick" };
+					Commands = new[]{ "FactionKick" };
 					Usage = "FactionKick";
 					Description = "Kicks the targeted player out of his current faction. This does not prevent them from rejoining.";
 					break;
 				}
 				case FactionKickType.Ban:
 				{
-					Commands = new string[]{ "FactionBan" };
+					Commands = new[]{ "FactionBan" };
 					Usage = "FactionBan";
 					Description = "Bans the account of a targeted player from joining factions. All players on the account are removed from their current faction, if any.";
 					break;
 				}
 				case FactionKickType.Unban:
 				{
-					Commands = new string[]{ "FactionUnban" };
+					Commands = new[]{ "FactionUnban" };
 					Usage = "FactionUnban";
 					Description = "Unbans the account of a targeted player from joining factions.";
 					break;

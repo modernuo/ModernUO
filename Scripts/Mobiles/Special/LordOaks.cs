@@ -11,15 +11,15 @@ namespace Server.Mobiles
 
 		public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
 
-		public override Type[] UniqueList => new Type[] { typeof( OrcChieftainHelm ) };
-		public override Type[] SharedList => new Type[] { 	typeof( RoyalGuardSurvivalKnife ),
+		public override Type[] UniqueList => new[] { typeof( OrcChieftainHelm ) };
+		public override Type[] SharedList => new[] { 	typeof( RoyalGuardSurvivalKnife ),
 			typeof( DjinnisRing ),
 			typeof( LieutenantOfTheBritannianRoyalGuard ),
 			typeof( SamaritanRobe ),
 			typeof( DetectiveBoots ),
 			typeof( TheMostKnowledgePerson ) };
 
-		public override Type[] DecorativeList => new Type[] { typeof( WaterTile ),
+		public override Type[] DecorativeList => new[] { typeof( WaterTile ),
 			typeof( WindSpirit ),
 			typeof( Pier ),
 			typeof( DirtPatch )};

@@ -238,7 +238,7 @@ namespace Server.Gumps
 			public string Name  => m_Name;
 			public string DisplayName  => m_DisplayName;
 
-			private static string[] m_GroupNames = new string[]
+			private static string[] m_GroupNames = new[]
 				{
 					"ogres_", "ettins_", "walking_dead_", "gargoyles_",
 					"orcs_", "flails_", "daemons_", "arachnids_",

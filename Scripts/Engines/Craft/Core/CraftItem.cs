@@ -284,7 +284,7 @@ namespace Server.Engines.Craft
 		}
 
 		#region Tables
-		private static int[] m_HeatSources = new int[]
+		private static int[] m_HeatSources = new[]
 			{
 				0x461, 0x48E, // Sandstone oven/fireplace
 				0x92B, 0x96C, // Stone oven/fireplace
@@ -300,46 +300,46 @@ namespace Server.Engines.Craft
 				0x2DD8, 0x2DD8 // Elven Forge
 			};
 
-		private static int[] m_Ovens = new int[]
+		private static int[] m_Ovens = new[]
 			{
 				0x461, 0x46F, // Sandstone oven
 				0x92B, 0x93F,  // Stone oven
 				0x2DDB, 0x2DDC	//Elven stove
 			};
 
-		private static int[] m_Mills = new int[]
+		private static int[] m_Mills = new[]
 			{
 				0x1920, 0x1921, 0x1922, 0x1923, 0x1924, 0x1295, 0x1926, 0x1928,
 				0x192C, 0x192D, 0x192E, 0x129F, 0x1930, 0x1931, 0x1932, 0x1934
 			};
 
-		private static Type[][] m_TypesTable = new Type[][]
-			{
-				new Type[]{ typeof( Log ), typeof( Board ) },
-				new Type[]{ typeof( HeartwoodLog ), typeof( HeartwoodBoard ) },
-				new Type[]{ typeof( BloodwoodLog ), typeof( BloodwoodBoard ) },
-				new Type[]{ typeof( FrostwoodLog ), typeof( FrostwoodBoard ) },
-				new Type[]{ typeof( OakLog ), typeof( OakBoard ) },
-				new Type[]{ typeof( AshLog ), typeof( AshBoard ) },
-				new Type[]{ typeof( YewLog ), typeof( YewBoard ) },
-				new Type[]{ typeof( Leather ), typeof( Hides ) },
-				new Type[]{ typeof( SpinedLeather ), typeof( SpinedHides ) },
-				new Type[]{ typeof( HornedLeather ), typeof( HornedHides ) },
-				new Type[]{ typeof( BarbedLeather ), typeof( BarbedHides ) },
-				new Type[]{ typeof( BlankMap ), typeof( BlankScroll ) },
-				new Type[]{ typeof( Cloth ), typeof( UncutCloth ) },
-				new Type[]{ typeof( CheeseWheel ), typeof( CheeseWedge ) },
-				new Type[]{ typeof( Pumpkin ), typeof( SmallPumpkin ) },
-				new Type[]{ typeof( WoodenBowlOfPeas ), typeof( PewterBowlOfPeas ) }
+		private static Type[][] m_TypesTable = new[]
+		{
+				new[]{ typeof( Log ), typeof( Board ) },
+				new[]{ typeof( HeartwoodLog ), typeof( HeartwoodBoard ) },
+				new[]{ typeof( BloodwoodLog ), typeof( BloodwoodBoard ) },
+				new[]{ typeof( FrostwoodLog ), typeof( FrostwoodBoard ) },
+				new[]{ typeof( OakLog ), typeof( OakBoard ) },
+				new[]{ typeof( AshLog ), typeof( AshBoard ) },
+				new[]{ typeof( YewLog ), typeof( YewBoard ) },
+				new[]{ typeof( Leather ), typeof( Hides ) },
+				new[]{ typeof( SpinedLeather ), typeof( SpinedHides ) },
+				new[]{ typeof( HornedLeather ), typeof( HornedHides ) },
+				new[]{ typeof( BarbedLeather ), typeof( BarbedHides ) },
+				new[]{ typeof( BlankMap ), typeof( BlankScroll ) },
+				new[]{ typeof( Cloth ), typeof( UncutCloth ) },
+				new[]{ typeof( CheeseWheel ), typeof( CheeseWedge ) },
+				new[]{ typeof( Pumpkin ), typeof( SmallPumpkin ) },
+				new[]{ typeof( WoodenBowlOfPeas ), typeof( PewterBowlOfPeas ) }
 			};
 
-		private static Type[] m_ColoredItemTable = new Type[]
+		private static Type[] m_ColoredItemTable = new[]
 			{
 				typeof( BaseWeapon ), typeof( BaseArmor ), typeof( BaseClothing ),
 				typeof( BaseJewel ), typeof( DragonBardingDeed )
 			};
 
-		private static Type[] m_ColoredResourceTable = new Type[]
+		private static Type[] m_ColoredResourceTable = new[]
 			{
 				typeof( BaseIngot ), typeof( BaseOre ),
 				typeof( BaseLeather ), typeof( BaseHides ),
@@ -347,7 +347,7 @@ namespace Server.Engines.Craft
 				typeof( BaseGranite ), typeof( BaseScales )
 			};
 
-		private static Type[] m_MarkableTable = new Type[]
+		private static Type[] m_MarkableTable = new[]
 				{
 					typeof( BaseArmor ),
 					typeof( BaseWeapon ),
@@ -361,7 +361,7 @@ namespace Server.Engines.Craft
 					typeof( BaseQuiver )
 				};
 
-		private static Type[] m_NeverColorTable = new Type[]
+		private static Type[] m_NeverColorTable = new[]
 				{
 					typeof( OrcHelm )
 				};
@@ -652,7 +652,7 @@ namespace Server.Engines.Craft
 				}
 
 				if ( types[i] == null )
-					types[i] = new Type[]{ baseType };
+					types[i] = new[]{ baseType };
 
 				amounts[i] = craftRes.Amount;
 

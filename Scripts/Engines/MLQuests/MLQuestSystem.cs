@@ -182,7 +182,7 @@ namespace Server.Engines.MLQuests
 			{
 				AccessLevel = AccessLevel.GameMaster;
 				Supports = CommandSupport.Simple;
-				Commands = new string[] { "ViewQuests" };
+				Commands = new[] { "ViewQuests" };
 				ObjectTypes = ObjectTypes.Mobiles;
 				Usage = "ViewQuests";
 				Description = "Displays a targeted mobile's quest overview.";
@@ -209,7 +209,7 @@ namespace Server.Engines.MLQuests
 			{
 				AccessLevel = AccessLevel.GameMaster;
 				Supports = CommandSupport.Simple;
-				Commands = new string[] { "ViewMLContext" };
+				Commands = new[] { "ViewMLContext" };
 				ObjectTypes = ObjectTypes.Mobiles;
 				Usage = "ViewMLContext";
 				Description = "Opens the ML quest context for a targeted mobile.";
@@ -301,7 +301,7 @@ namespace Server.Engines.MLQuests
 			if ( found.Count == 0 )
 				m.SendMessage( "No matching objects found." );
 			else
-				m.SendGump( new InterfaceGump( m, new string[] { "Object" }, found, 0, null ) );
+				m.SendGump( new InterfaceGump( m, new[] { "Object" }, found, 0, null ) );
 		}
 
 		private static bool FindQuest( IQuestGiver quester, PlayerMobile pm, MLQuestContext context, out MLQuest quest, out MLQuestInstance entry )

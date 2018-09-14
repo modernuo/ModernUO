@@ -377,7 +377,7 @@ namespace Server.Commands
 					private Mobile m_Mobile;
 					private Item m_Item;
 
-					public EquipDetailsMenu( Mobile m, Item item ) : base( String.Format( "{0}: {1}", item.Layer, item.GetType().Name ), new string[]{"Move","Delete","Props"})
+					public EquipDetailsMenu( Mobile m, Item item ) : base( String.Format( "{0}: {1}", item.Layer, item.GetType().Name ), new[]{"Move","Delete","Props"})
 					{
 						m_Mobile = m;
 						m_Item = item;

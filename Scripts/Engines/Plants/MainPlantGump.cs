@@ -395,7 +395,7 @@ namespace Server.Engines.Plants
 			if ( from.Backpack == null )
 				return null;
 
-			Item[] items = from.Backpack.FindItemsByType( new Type[] { typeof( BasePotion ), typeof( PotionKeg ) } );
+			Item[] items = from.Backpack.FindItemsByType( new[] { typeof( BasePotion ), typeof( PotionKeg ) } );
 
 			foreach ( Item item in items )
 			{

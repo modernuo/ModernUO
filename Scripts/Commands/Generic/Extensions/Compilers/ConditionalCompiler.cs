@@ -120,7 +120,7 @@ namespace Server.Commands.Generic
 						"Parse",
 						BindingFlags.Public | BindingFlags.Static,
 						null,
-						new Type[] { typeof( string ), typeof( NumberStyles ) },
+						new[] { typeof( string ), typeof( NumberStyles ) },
 						null
 					);
 
@@ -143,7 +143,7 @@ namespace Server.Commands.Generic
 							"Parse",
 							BindingFlags.Public | BindingFlags.Static,
 							null,
-							new Type[] { typeof( string ) },
+							new[] { typeof( string ) },
 							null
 						);
 
@@ -279,7 +279,7 @@ namespace Server.Commands.Generic
 						methodName,
 						BindingFlags.Public | BindingFlags.Static,
 						null,
-						new Type[]
+						new[]
 						{
 							typeof( string ),
 							typeof( string )
@@ -319,7 +319,7 @@ namespace Server.Commands.Generic
 						methodName,
 						BindingFlags.Public | BindingFlags.Instance,
 						null,
-						new Type[]
+						new[]
 						{
 							typeof( string )
 						},
@@ -494,7 +494,7 @@ namespace Server.Commands.Generic
 					/*  name  */ "Verify",
 					/*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
 					/* return */ typeof( bool ),
-					/* params */ new Type[] { typeof( object ) } );
+					/* params */ new[] { typeof( object ) } );
 
 				LocalBuilder obj = emitter.CreateLocal( objectType );
 				LocalBuilder eq = emitter.CreateLocal( typeof( bool ) );
@@ -531,7 +531,7 @@ namespace Server.Commands.Generic
 						emitter.Method,
 						typeof( IConditional ).GetMethod(
 							"Verify",
-							new Type[]
+							new[]
 								{
 									typeof( object )
 								}

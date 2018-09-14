@@ -11,7 +11,7 @@ namespace Server.Misc
 		private int m_State, m_Count;
 
 		private static string[] m_Messages = ( TestCenter.Enabled ?
-			new string[]
+			new[]
 				{
 					"Welcome to this test shard.  You are able to customize your character's stats and skills at anytime to anything you wish.  To see the commands to do this just say 'help'.",
 					"You will find a bank check worth 1,000,000 gold in your bank!",
@@ -24,7 +24,7 @@ namespace Server.Misc
 					"You will find 9000 gold pieces deposited into your bank box.  Spend it as you see fit and enjoy yourself!",
 					"A bag of PowerScrolls has been placed in your bank box."
 				} :
-			new string[]
+			new[]
 				{	//Yes, this message is a pathetic message, It's suggested that you change it.
 					"Welcome to this shard.",
 					"Please enjoy your stay."

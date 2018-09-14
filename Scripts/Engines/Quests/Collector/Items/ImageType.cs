@@ -31,7 +31,7 @@ namespace Server.Engines.Quests.Collector
 
 	public class ImageTypeInfo
 	{
-		private static readonly ImageTypeInfo[] m_Table = new ImageTypeInfo[]
+		private static readonly ImageTypeInfo[] m_Table = new[]
 			{
 				new ImageTypeInfo( 9734, typeof( Betrayer ), 75, 45 ),
 				new ImageTypeInfo( 9735, typeof( Bogling ), 75, 45 ),

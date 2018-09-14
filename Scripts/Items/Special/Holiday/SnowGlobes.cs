@@ -137,7 +137,7 @@ namespace Server.Items
 	public class SnowGlobeTwo : SnowGlobe
 	{
 		/* Oddly, these are not localized. */
-		private static readonly string[] m_PlaceNames = new string[]
+		private static readonly string[] m_PlaceNames = new[]
 		{
 			/* AncientCitadel */ 		"Ancient Citadel",
 			/* BlackthornesCastle */ 	"Blackthorne's Castle",

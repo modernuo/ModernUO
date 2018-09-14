@@ -60,12 +60,12 @@ namespace Server.Commands
 					}
 				}
 
-				Map[] brit = new Map[]{ Map.Felucca, Map.Trammel };
-				Map[] fel = new Map[]{ Map.Felucca };
-				Map[] tram = new Map[]{ Map.Trammel };
-				Map[] ilsh = new Map[]{ Map.Ilshenar };
-				Map[] malas = new Map[]{ Map.Malas };
-				Map[] tokuno = new Map[]{ Map.Tokuno };
+				Map[] brit = new[]{ Map.Felucca, Map.Trammel };
+				Map[] fel = new[]{ Map.Felucca };
+				Map[] tram = new[]{ Map.Trammel };
+				Map[] ilsh = new[]{ Map.Ilshenar };
+				Map[] malas = new[]{ Map.Malas };
+				Map[] tokuno = new[]{ Map.Tokuno };
 
 				for ( int i = 0; i < list.Count; ++i )
 				{

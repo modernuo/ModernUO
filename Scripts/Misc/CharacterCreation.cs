@@ -926,7 +926,7 @@ namespace Server.Misc
 			{
 				case 1: // Warrior
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.Anatomy, 30 ),
 							new SkillNameValue( SkillName.Healing, 45 ),
@@ -938,7 +938,7 @@ namespace Server.Misc
 				}
 				case 2: // Magician
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.EvalInt, 30 ),
 							new SkillNameValue( SkillName.Wrestling, 30 ),
@@ -950,7 +950,7 @@ namespace Server.Misc
 				}
 				case 3: // Blacksmith
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.Mining, 30 ),
 							new SkillNameValue( SkillName.ArmsLore, 30 ),
@@ -962,7 +962,7 @@ namespace Server.Misc
 				}
 				case 4: // Necromancer
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.Necromancy, 50 ),
 							new SkillNameValue( SkillName.Focus, 30 ),
@@ -975,7 +975,7 @@ namespace Server.Misc
 				}
 				case 5: // Paladin
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.Chivalry, 51 ),
 							new SkillNameValue( SkillName.Swords, 49 ),
@@ -987,7 +987,7 @@ namespace Server.Misc
 				}
 				case 6:	//Samurai
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.Bushido, 50 ),
 							new SkillNameValue( SkillName.Swords, 50 ),
@@ -998,7 +998,7 @@ namespace Server.Misc
 				}
 				case 7:	//Ninja
 				{
-					skills = new SkillNameValue[]
+					skills = new[]
 						{
 							new SkillNameValue( SkillName.Ninjitsu, 50 ),
 							new SkillNameValue( SkillName.Hiding, 50 ),
@@ -1141,7 +1141,7 @@ namespace Server.Misc
 					addSkillItems = false;
 					EquipItem( new Kasa() );
 
-					int[] hues = new int[] { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89	};
+					int[] hues = new[] { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89	};
 					//TODO: Verify that's ALL the hues for that above.
 
 					EquipItem( new TattsukeHakama( hues[Utility.Random(hues.Length)] ) );

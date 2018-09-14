@@ -1572,7 +1572,7 @@ namespace Server.Network
 			}
 		}
 
-		public static int[] m_ValidAnimations = new int[]
+		public static int[] m_ValidAnimations = new[]
 			{
 				6, 21, 32, 33,
 				100, 101, 102,

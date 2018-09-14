@@ -380,8 +380,8 @@ namespace Server.Gumps
 			public int LocNumber => m_LocNum;
 		}
 
-		private static CustomCategory[] Categories = new CustomCategory[]{
-			new CustomCategory( Layer.InnerTorso, 1011357, true, new CustomItem[]{// Upper Torso
+		private static CustomCategory[] Categories = new[]{
+			new CustomCategory( Layer.InnerTorso, 1011357, true, new[]{// Upper Torso
 				new CustomItem( typeof( Shirt ), 		1011359, 5399 ),
 				new CustomItem( typeof( FancyShirt ),	1011360, 7933 ),
 				new CustomItem( typeof( PlainDress ),	1011363, 7937 ),
@@ -389,7 +389,7 @@ namespace Server.Gumps
 				new CustomItem( typeof( Robe ),			1011365, 7939 )
 			} ),
 
-			new CustomCategory( Layer.MiddleTorso, 1011371, true, new CustomItem[]{//Over chest
+			new CustomCategory( Layer.MiddleTorso, 1011371, true, new[]{//Over chest
 				new CustomItem( typeof( Doublet ), 		1011358, 8059 ),
 				new CustomItem( typeof( Tunic ),		1011361, 8097 ),
 				new CustomItem( typeof( JesterSuit ), 	1011366, 8095 ),
@@ -399,14 +399,14 @@ namespace Server.Gumps
 				new CustomItem( typeof( FullApron ),	1011374, 5437 ),
 			} ),
 
-			new CustomCategory( Layer.Shoes, 1011388, true, new CustomItem[]{//Footwear
+			new CustomCategory( Layer.Shoes, 1011388, true, new[]{//Footwear
 				new CustomItem( typeof( Sandals ),		1011389, 5901 ),
 				new CustomItem( typeof( Shoes ),		1011390, 5904 ),
 				new CustomItem( typeof( Boots ),		1011391, 5899 ),
 				new CustomItem( typeof( ThighBoots ),	1011392, 5906 ),
 			} ),
 
-			new CustomCategory( Layer.Helm, 1011375, true, new CustomItem[]{//Hats
+			new CustomCategory( Layer.Helm, 1011375, true, new[]{//Hats
 				new CustomItem( typeof( SkullCap ),		1011376, 5444 ),
 				new CustomItem( typeof( Bandana ), 		1011377, 5440 ),
 				new CustomItem( typeof( FloppyHat ),	1011378, 5907 ),
@@ -415,7 +415,7 @@ namespace Server.Gumps
 				new CustomItem( typeof( TallStrawHat ),	1011382, 5910 )
 			} ),
 
-			new CustomCategory( Layer.Helm, 1015319, true, new CustomItem[]{//More Hats
+			new CustomCategory( Layer.Helm, 1015319, true, new[]{//More Hats
 			    new CustomItem( typeof( StrawHat ),		1011382, 5911 ),
 				new CustomItem( typeof( WizardsHat ), 	1011383, 5912 ),
 				new CustomItem( typeof( Bonnet ),		1011384, 5913 ),
@@ -424,17 +424,17 @@ namespace Server.Gumps
 				new CustomItem( typeof( JesterHat ),	1011387, 5916 )
 			} ),
 
-			new CustomCategory( Layer.Pants, 1011367, true, new CustomItem[]{ //Lower Torso
+			new CustomCategory( Layer.Pants, 1011367, true, new[]{ //Lower Torso
 				new CustomItem( typeof( LongPants ),	1011368, 5433 ),
 				new CustomItem( typeof( Kilt ), 		1011369, 5431 ),
 				new CustomItem( typeof( Skirt ),		1011370, 5398 ),
 			} ),
 
-			new CustomCategory( Layer.Cloak, 1011393, true, new CustomItem[]{ // Back
+			new CustomCategory( Layer.Cloak, 1011393, true, new[]{ // Back
 				new CustomItem( typeof( Cloak ),		1011394, 5397 )
 			} ),
 
-			new CustomCategory( Layer.Hair, 1011395, true, new CustomItem[]{ // Hair
+			new CustomCategory( Layer.Hair, 1011395, true, new[]{ // Hair
 				new CustomItem( 0x203B,		1011052 ),
 				new CustomItem( 0x203C,		1011053 ),
 				new CustomItem( 0x203D,		1011054 ),
@@ -446,7 +446,7 @@ namespace Server.Gumps
 				new CustomItem( 0x2049,		1011049 ),
 			} ),
 
-			new CustomCategory( Layer.FacialHair, 1015320, true, new CustomItem[]{//Facial Hair
+			new CustomCategory( Layer.FacialHair, 1015320, true, new[]{//Facial Hair
 				new CustomItem( 0x2041,		1011062 ),
 				new CustomItem( 0x203F,		1011060 ),
 				new CustomItem( 0x204B,		1015321, true ),
@@ -456,7 +456,7 @@ namespace Server.Gumps
 				new CustomItem( 0x204D,		1011401 ),
 			} ),
 
-			new CustomCategory( Layer.FirstValid, 1011397, false, new CustomItem[]{//Held items
+			new CustomCategory( Layer.FirstValid, 1011397, false, new[]{//Held items
 				new CustomItem( typeof( FishingPole ), 	1011406, 3520 ),
 				new CustomItem( typeof( Pickaxe ),		1011407, 3717 ),
 				new CustomItem( typeof( Pitchfork ),	1011408, 3720 ),
@@ -468,7 +468,7 @@ namespace Server.Gumps
 				new CustomItem( typeof( GnarledStaff ), 1011413, 5113 )
 			} ),
 
-			new CustomCategory( Layer.FirstValid, 1015325, false, new CustomItem[]{//More held items
+			new CustomCategory( Layer.FirstValid, 1015325, false, new[]{//More held items
 				new CustomItem( typeof( Crossbow ),		1011414, 3920 ),
 				new CustomItem( typeof( WarMace ),		1011415, 5126 ),
 				new CustomItem( typeof( TwoHandedAxe ),	1011416, 5186 ),
@@ -798,7 +798,7 @@ namespace Server.Gumps
 			}
 		}
 
-		private static HairOrBeard[] m_HairStyles = new HairOrBeard[]
+		private static HairOrBeard[] m_HairStyles = new[]
 			{
 				new HairOrBeard( 0x203B,	1011052 ),	// Short
 				new HairOrBeard( 0x203C,	1011053 ),	// Long
@@ -811,7 +811,7 @@ namespace Server.Gumps
 				new HairOrBeard( 0x2049,	1011049 )	// 2-tails
 			};
 
-		private static HairOrBeard[] m_BeardStyles = new HairOrBeard[]
+		private static HairOrBeard[] m_BeardStyles = new[]
 			{
 				new HairOrBeard( 0x2041,	1011062 ),	// Mustache
 				new HairOrBeard( 0x203F,	1011060 ),	// Short beard
