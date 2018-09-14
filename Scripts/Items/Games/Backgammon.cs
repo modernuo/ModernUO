@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 namespace Server.Items
 {
 	[Flippable( 0xE1C, 0xFAD )]

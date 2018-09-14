@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Items;
 using Server.Multis;
-using Server.Targeting;
 
 namespace Server.Commands
 {

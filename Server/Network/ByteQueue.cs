@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.IO;
 
 namespace Server.Network
 {

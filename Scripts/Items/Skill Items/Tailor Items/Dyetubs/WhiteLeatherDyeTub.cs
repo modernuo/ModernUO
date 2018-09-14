@@ -1,6 +1,3 @@
-using Server;
-using System;
-
 namespace Server.Items
 {
 	public class WhiteLeatherDyeTub : LeatherDyeTub /* OSI UO 13th anniv gift, from redeemable gift tickets */

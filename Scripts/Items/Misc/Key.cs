@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Server.Network;
 using Server.Targeting;
 using Server.Prompts;

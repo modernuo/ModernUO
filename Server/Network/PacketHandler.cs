@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server.Network
 {
 	public delegate void OnPacketReceive( NetState state, PacketReader pvSrc );

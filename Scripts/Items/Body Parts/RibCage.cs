@@ -1,7 +1,3 @@
-using System;
-using Server.Items;
-using Server.Network;
-
 namespace Server.Items
 {
 	[FlippableAttribute( 0x1B17, 0x1B18 )]

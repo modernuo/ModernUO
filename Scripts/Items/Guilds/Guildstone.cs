@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Server.Gumps;
 using Server.Guilds;
 using Server.Network;

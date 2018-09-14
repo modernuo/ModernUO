@@ -1,9 +1,5 @@
 using System;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
-using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands.Generic

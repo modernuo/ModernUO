@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Factions
 {
 	public class TrueBritannians : Faction

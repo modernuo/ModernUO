@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
 	public class EarringBoxSet : RedVelvetGiftBox
 	{

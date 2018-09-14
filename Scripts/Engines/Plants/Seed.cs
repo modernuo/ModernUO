@@ -1,6 +1,4 @@
 using System;
-using System.Text;
-using Server;
 using Server.Targeting;
 
 namespace Server.Engines.Plants

@@ -1,7 +1,5 @@
 using System;
-using Server;
 using Server.Ethics;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {

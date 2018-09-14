@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Factions
 {
 	public abstract class BaseSystemController : Item

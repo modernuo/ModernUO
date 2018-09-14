@@ -18,9 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-using Server.Network;
-
 namespace Server.Prompts
 {
 	public abstract class Prompt

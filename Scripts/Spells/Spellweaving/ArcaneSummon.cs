@@ -1,5 +1,4 @@
 using System;
-using Server.Targeting;
 using Server.Mobiles;
 
 namespace Server.Spells.Spellweaving

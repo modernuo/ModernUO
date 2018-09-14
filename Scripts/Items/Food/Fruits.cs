@@ -1,6 +1,3 @@
-using System;
-using Server.Network;
-
 namespace Server.Items
 {
 	public class FruitBasket : Food

@@ -1,7 +1,3 @@
-using System;
-using Server;
-using Server.Network;
-
 namespace Server.Engines.PartySystem
 {
 	public class PartyCommandHandlers : PartyCommands

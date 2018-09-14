@@ -1,7 +1,4 @@
 using System;
-using System.Text;
-using Server;
-using Server.Items;
 
 namespace Server.Items
 {

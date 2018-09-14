@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Server;
 using Server.Gumps;
 using Server.Network;
-using Server.Targeting;
 using Server.Mobiles;
 
 namespace Server.Engines.ConPVP

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Commands;
-using Server.Engines.MLQuests.Definitions;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.MLQuests.Objectives;
 using Server.Gumps;
@@ -11,7 +9,6 @@ using Server.Network;
 using System.Collections;
 using Server.Commands.Generic;
 using Server.Items;
-using Server.Targeting;
 using System.IO;
 
 namespace Server.Engines.MLQuests

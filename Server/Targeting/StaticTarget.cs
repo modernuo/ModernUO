@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server.Targeting
 {
 	public class StaticTarget : IPoint3D

@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Misc
 {
 	public static class ItemFixes

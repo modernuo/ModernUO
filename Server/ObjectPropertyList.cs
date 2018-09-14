@@ -20,7 +20,6 @@
 
 using System;
 using System.Text;
-using Server;
 using Server.Network;
 
 namespace Server

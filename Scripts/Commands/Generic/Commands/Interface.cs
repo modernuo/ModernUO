@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Server;
 using Server.Gumps;
 using Server.Network;
-using Server.Targeting;
 using Server.Targets;
 
 namespace Server.Commands.Generic

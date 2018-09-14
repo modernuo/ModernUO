@@ -1,5 +1,3 @@
-using System;
-using Server;
 using Server.Targeting;
 using Server.Network;
 using Server.Mobiles;

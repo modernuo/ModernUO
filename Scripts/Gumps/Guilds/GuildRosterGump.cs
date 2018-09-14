@@ -1,5 +1,4 @@
 using System;
-using Server;
 using Server.Guilds;
 using Server.Network;
 

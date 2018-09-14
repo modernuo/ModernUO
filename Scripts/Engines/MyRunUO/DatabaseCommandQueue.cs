@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Collections;
-using System.Data;
 using System.Data.Odbc;
 
 namespace Server.Engines.MyRunUO

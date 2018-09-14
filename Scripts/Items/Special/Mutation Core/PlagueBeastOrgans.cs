@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Network;
 
 namespace Server.Items

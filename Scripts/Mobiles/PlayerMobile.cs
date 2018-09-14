@@ -6,7 +6,6 @@ using Server.Items;
 using Server.Gumps;
 using Server.Multis;
 using Server.Engines.Help;
-using Server.Engines.ConPVP;
 using Server.ContextMenus;
 using Server.Network;
 using Server.Spells;

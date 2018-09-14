@@ -1,6 +1,3 @@
-using System;
-using Server.Mobiles;
-
 namespace Server.Mobiles
 {
 	[TypeAlias( "Server.Mobiles.Giantrat" )]

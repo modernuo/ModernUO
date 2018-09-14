@@ -20,8 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Server.Network;
 
 namespace Server
 {

@@ -1,8 +1,3 @@
-using System;
-using Server;
-using Server.Gumps;
-using Server.Network;
-
 namespace Server.Engines.MLQuests.Gumps
 {
 	public class InfoNPCGump : BaseQuestGump

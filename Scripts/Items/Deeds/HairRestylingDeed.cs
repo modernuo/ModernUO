@@ -1,9 +1,5 @@
-using System;
 using Server.Mobiles;
 using Server.Network;
-using Server.Prompts;
-using Server.Items;
-using Server.Targeting;
 using Server.Gumps;
 
 namespace Server.Items

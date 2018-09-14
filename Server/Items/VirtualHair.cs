@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-using Server;
 using Server.Network;
 
 namespace Server

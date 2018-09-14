@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Ethics
 {
 	public class EthicsPersistance : Item

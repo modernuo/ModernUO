@@ -1,7 +1,3 @@
-using System;
-using Server.Items;
-using Server.Mobiles;
-
 namespace Server.Mobiles
 {
 	public class Eagle : BaseCreature

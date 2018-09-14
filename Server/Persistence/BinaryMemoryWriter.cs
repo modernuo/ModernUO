@@ -18,10 +18,7 @@
  *
  ***************************************************************************/
 
-using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Server {
 	public sealed class BinaryMemoryWriter : BinaryFileWriter {

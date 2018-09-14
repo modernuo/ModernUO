@@ -1,6 +1,5 @@
 using System;
 using Server.Network;
-using Server;
 
 namespace Server.Misc
 {

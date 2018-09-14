@@ -1,10 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Server;
-using Server.Spells.Fifth;
-using Server.Spells.Seventh;
-
 namespace Server.Spells.Necromancy
 {
 	public abstract class TransformationSpell : NecromancerSpell, ITransformationSpell

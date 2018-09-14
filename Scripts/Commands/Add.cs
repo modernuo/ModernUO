@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using Server;
 using Server.Items;
-using Server.Network;
 using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 

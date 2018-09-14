@@ -1,8 +1,4 @@
-﻿using System;
-using Server;
-using Server.Misc;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
 	public class RuinedTapestry : Item
 	{

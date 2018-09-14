@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Collections;
-using Server;
 using Server.Items;
 using Server.Gumps;
 using Server.Network;
@@ -11,8 +10,6 @@ using Server.Targeting;
 using System.Collections.Generic;
 using Server.Factions;
 using Server.Ethics;
-using Server.Ethics.Evil;
-using Server.Ethics.Hero;
 
 namespace Server.Engines.ConPVP
 {

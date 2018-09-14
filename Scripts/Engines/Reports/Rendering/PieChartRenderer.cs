@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 
 namespace Server.Engines.Reports

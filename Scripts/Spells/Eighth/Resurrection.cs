@@ -1,6 +1,4 @@
-using System;
 using Server.Targeting;
-using Server.Network;
 using Server.Gumps;
 
 namespace Server.Spells.Eighth

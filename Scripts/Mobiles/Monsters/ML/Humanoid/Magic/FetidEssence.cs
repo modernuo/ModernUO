@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using Server;
-using Server.Items;
-
 namespace Server.Mobiles
 {
 	public class  FetidEssence  : BaseCreature

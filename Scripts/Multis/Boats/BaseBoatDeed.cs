@@ -1,5 +1,3 @@
-using System;
-using Server;
 using Server.Regions;
 using Server.Targeting;
 using Server.Engines.CannedEvil;

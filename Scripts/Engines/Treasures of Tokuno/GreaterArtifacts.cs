@@ -1,8 +1,3 @@
-using Server;
-using System;
-using Server.Misc;
-using Server.Mobiles;
-
 namespace Server.Items
 {
 	public class DarkenedSky : Kama

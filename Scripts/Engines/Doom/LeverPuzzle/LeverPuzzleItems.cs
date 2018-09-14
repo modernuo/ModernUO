@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using Server;
 using Server.Spells;
 using Server.Mobiles;
 using Server.Network;

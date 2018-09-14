@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.IO;
-using Server;
 using Server.Items;
 
 namespace Server.Commands

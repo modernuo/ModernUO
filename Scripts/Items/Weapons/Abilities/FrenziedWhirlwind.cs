@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using Server;
 using Server.Spells;
-using Server.Engines.PartySystem;
 
 namespace Server.Items
 {

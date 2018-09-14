@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using Server;
-
 namespace Server.Misc
 {
 	public class Strandedness

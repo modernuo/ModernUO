@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Items
 {
 	[Flippable( 0x9F4, 0x9F5, 0x9A3, 0x9A4 )]

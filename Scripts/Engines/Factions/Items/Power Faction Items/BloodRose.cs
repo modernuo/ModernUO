@@ -1,10 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Server;
-using Server.Mobiles;
-using Server.Factions;
 
 namespace Server {
 	public sealed class BloodRose : PowerFactionItem {

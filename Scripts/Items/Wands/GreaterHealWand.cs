@@ -1,7 +1,4 @@
-using System;
-using Server;
 using Server.Spells.Fourth;
-using Server.Targeting;
 
 namespace Server.Items
 {

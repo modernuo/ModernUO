@@ -1,8 +1,4 @@
-﻿using System;
-using Server;
-using Server.Mobiles;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
 	/*
 	first seen halloween 2009.  subsequently in 2010,

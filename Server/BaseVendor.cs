@@ -18,12 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-using System.Collections;
-using Server.Items;
-using Server.Network;
-using Server.ContextMenus;
-using Server.Mobiles;
 using System.Collections.Generic;
 
 namespace Server.Mobiles

@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 

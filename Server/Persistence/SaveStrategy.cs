@@ -18,9 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-using Server;
-
 namespace Server
 {
 	public abstract class SaveStrategy

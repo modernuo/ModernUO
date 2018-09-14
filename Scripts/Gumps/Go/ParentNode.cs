@@ -1,7 +1,5 @@
-using System;
 using System.Xml;
 using System.Collections;
-using Server;
 
 namespace Server.Gumps
 {

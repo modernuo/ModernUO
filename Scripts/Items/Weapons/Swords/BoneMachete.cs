@@ -1,5 +1,3 @@
-using System;
-using Server.Items;
 using Server.Engines.MLQuests.Items;
 
 namespace Server.Items

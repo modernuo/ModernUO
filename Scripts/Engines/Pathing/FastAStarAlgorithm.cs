@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
-using Server;
 using Server.Mobiles;
-using Server.PathAlgorithms;
 using CalcMoves = Server.Movement.Movement;
 using MoveImpl = Server.Movement.MovementImpl;
 

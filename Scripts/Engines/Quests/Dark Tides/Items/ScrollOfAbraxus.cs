@@ -1,10 +1,5 @@
-using System;
-using Server;
-using Server.Items;
 using Server.Gumps;
 using Server.Mobiles;
-using Server.Engines.Quests;
-using Server.Engines.Quests.Necro;
 
 namespace Server.Engines.Quests.Necro
 {

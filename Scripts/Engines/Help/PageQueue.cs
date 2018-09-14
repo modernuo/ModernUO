@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Net.Mail;
 using System.IO;
-using Server;
 using Server.Mobiles;
 using Server.Network;
 using Server.Misc;

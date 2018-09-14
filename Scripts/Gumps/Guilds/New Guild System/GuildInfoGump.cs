@@ -1,10 +1,8 @@
 using System;
-using Server;
 using Server.Mobiles;
 using Server.Gumps;
 using Server.Network;
 using Server.Factions;
-using Server.Prompts;
 
 namespace Server.Guilds
 {

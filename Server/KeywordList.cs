@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server
 {
 	public class KeywordList

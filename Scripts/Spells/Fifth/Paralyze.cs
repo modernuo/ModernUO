@@ -1,7 +1,6 @@
 using System;
 using Server.Mobiles;
 using Server.Targeting;
-using Server.Network;
 using Server.Spells.Chivalry;
 
 namespace Server.Spells.Fifth

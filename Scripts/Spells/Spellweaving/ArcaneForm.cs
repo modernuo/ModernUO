@@ -1,13 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Server.Mobiles;
-using Server.Network;
-using Server.Spells.Fifth;
-using Server.Spells.Seventh;
-using Server.Spells.Necromancy;
-using Server.Spells.Ninjitsu;
-
 namespace Server.Spells.Spellweaving
 {
 	public abstract class ArcaneForm : ArcanistSpell, ITransformationSpell

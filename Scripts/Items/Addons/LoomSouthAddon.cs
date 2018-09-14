@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
 	public class LoomSouthAddon : BaseAddon, ILoom

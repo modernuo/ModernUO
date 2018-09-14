@@ -1,6 +1,5 @@
 using System;
 using Server.Network;
-using Server.Items;
 using Server.Engines.Craft;
 
 namespace Server.Items

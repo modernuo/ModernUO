@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 namespace Server.Items
 {
 	public class Chessboard : BaseBoard

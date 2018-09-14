@@ -1,7 +1,5 @@
 using System;
-using Server;
 using Server.Mobiles;
-using Server.Spells;
 
 namespace Server.Items
 {

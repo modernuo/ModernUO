@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using Server;
 using Server.Network;
 
 namespace Server.Misc

@@ -1,6 +1,3 @@
-using System;
-using Server.Mobiles;
-
 namespace Server.Mobiles
 {
 	public class Panther : BaseCreature

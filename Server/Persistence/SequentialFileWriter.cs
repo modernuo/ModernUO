@@ -20,9 +20,6 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 
 namespace Server {
 	public sealed class SequentialFileWriter : Stream {

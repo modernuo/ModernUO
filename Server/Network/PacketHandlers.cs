@@ -19,17 +19,14 @@
  ***************************************************************************/
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using Server.Accounting;
 using Server.Gumps;
 using Server.Targeting;
 using Server.Items;
 using Server.Menus;
 using Server.Mobiles;
-using Server.Movement;
 using Server.Prompts;
 using Server.HuePickers;
 using Server.ContextMenus;

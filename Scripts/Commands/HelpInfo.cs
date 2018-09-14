@@ -1,12 +1,9 @@
 using System;
-using Server;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using Server.Gumps;
 using Server.Network;
-using Server.Commands;
 using Server.Commands.Generic;
 using CommandInfo=Server.Commands.Docs.DocCommandEntry;
 using CommandInfoSorter=Server.Commands.Docs.CommandEntrySorter;

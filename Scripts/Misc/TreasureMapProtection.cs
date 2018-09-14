@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Collections;
-using Server;
 using Server.Regions;
 
 namespace Server

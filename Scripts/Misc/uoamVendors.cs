@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Mobiles;
-using Server.Items;
 using Server.Commands;
 
 // Version 0.8

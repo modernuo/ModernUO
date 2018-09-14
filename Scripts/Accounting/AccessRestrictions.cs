@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using Server;
 using Server.Misc;
 
 namespace Server

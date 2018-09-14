@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using Server;
-
 namespace Server.Mobiles
 {
 	public class BardGuildmaster : BaseGuildmaster

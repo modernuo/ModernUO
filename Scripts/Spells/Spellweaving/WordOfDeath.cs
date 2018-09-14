@@ -1,6 +1,5 @@
 using System;
 using Server.Targeting;
-using Server.Network;
 
 namespace Server.Spells.Spellweaving
 {

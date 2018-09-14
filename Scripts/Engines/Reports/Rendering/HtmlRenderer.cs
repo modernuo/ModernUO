@@ -1,11 +1,8 @@
 using System;
 using System.IO;
-using System.Web;
 using System.Web.UI;
-using System.Net;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Collections;
 using System.Diagnostics;
 using HtmlTag = System.Web.UI.HtmlTextWriterTag;
 using HtmlAttr = System.Web.UI.HtmlTextWriterAttribute;

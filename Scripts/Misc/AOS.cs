@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Items;
-using Server.Misc;
 using Server.Mobiles;
-using Server.Network;
 using Server.Spells;
 using Server.Spells.Fifth;
 using Server.Spells.Seventh;

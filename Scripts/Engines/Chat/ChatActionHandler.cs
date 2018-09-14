@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Engines.Chat
 {
 	public delegate void OnChatAction( ChatUser from, Channel channel, string param );

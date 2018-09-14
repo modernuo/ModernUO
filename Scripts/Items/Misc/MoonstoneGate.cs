@@ -1,6 +1,4 @@
 using System;
-using Server;
-using Server.Network;
 using Server.Engines.PartySystem;
 
 namespace Server.Items

@@ -1,7 +1,3 @@
-using System;
-using Server;
-using Server.Mobiles;
-
 namespace Server.Mobiles
 {
 	public class Squirrel : BaseCreature

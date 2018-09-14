@@ -1,6 +1,4 @@
 using System;
-using Server.Targeting;
-using Server.Items;
 using Server.Network;
 using Server.Multis;
 

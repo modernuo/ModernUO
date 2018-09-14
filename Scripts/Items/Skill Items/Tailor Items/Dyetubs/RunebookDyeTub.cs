@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Items
 {
 	public class RunebookDyeTub : DyeTub, Engines.VeteranRewards.IRewardItem

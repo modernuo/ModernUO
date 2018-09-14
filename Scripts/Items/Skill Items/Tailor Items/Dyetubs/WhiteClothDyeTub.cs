@@ -1,6 +1,3 @@
-using Server;
-using System;
-
 namespace Server.Items /* High seas, loot from merchant ship's hold, also a "uncommon" loot item */
 {
 	public class WhiteClothDyeTub : DyeTub

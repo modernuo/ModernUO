@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Mobiles
 {
 	public class Healer : BaseHealer

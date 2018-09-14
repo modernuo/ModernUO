@@ -1,8 +1,6 @@
-using System;
 using Server.Items;
 using Server.Targeting;
 using Server.Network;
-using Server.Regions;
 
 namespace Server.Spells.Sixth
 {

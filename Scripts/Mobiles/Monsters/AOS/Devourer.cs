@@ -1,7 +1,3 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Mobiles
 {
 	public class Devourer : BaseCreature

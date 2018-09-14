@@ -1,7 +1,5 @@
 using System;
 using System.Text;
-using Server;
-using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Engines.ConPVP

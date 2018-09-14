@@ -1,10 +1,3 @@
-using System;
-using System.Text;
-using System.Net;
-using Server;
-using Server.Items;
-using Server.Mobiles;
-
 namespace Server.Items
 {
 	public class PyramidAddon : BaseAddon

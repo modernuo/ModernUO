@@ -1,5 +1,3 @@
-using System;
-using Server;
 using Server.Spells.Spellweaving;
 
 namespace Server.Items

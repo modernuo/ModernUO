@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Engines.Quests.Collector
 {
 	public class DontOfferConversation : QuestConversation

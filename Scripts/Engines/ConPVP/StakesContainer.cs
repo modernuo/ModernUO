@@ -1,9 +1,3 @@
-using System;
-using System.Text;
-using System.Collections;
-using Server;
-using Server.Items;
-
 namespace Server.Engines.ConPVP
 {
 #if false

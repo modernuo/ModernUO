@@ -1,5 +1,3 @@
-using System;
-using Server;
 using Server.Engines.CannedEvil;
 
 namespace Server.Items

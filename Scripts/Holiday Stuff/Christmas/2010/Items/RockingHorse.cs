@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Server.Items.Holiday
+﻿namespace Server.Items.Holiday
 {
 	[TypeAlias( "Server.Items.RockingHorse" )]
 	[Flippable( 0x4214, 0x4215 )]

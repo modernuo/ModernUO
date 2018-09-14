@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server.Targeting
 {
 	public enum TargetCancelType

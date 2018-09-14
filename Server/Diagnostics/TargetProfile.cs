@@ -20,7 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Server.Diagnostics {
 	public class TargetProfile : BaseProfile {

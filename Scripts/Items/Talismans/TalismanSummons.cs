@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using Server.ContextMenus;
-using Server.Regions;
 using Server.Items;
 
 using BunnyHole = Server.Mobiles.VorpalBunny.BunnyHole;

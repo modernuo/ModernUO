@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server.Misc;
 using Server.Targeting;
-using Server.Network;
 
 namespace Server.Spells.Sixth
 {

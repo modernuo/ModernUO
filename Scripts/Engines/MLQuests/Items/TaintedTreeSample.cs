@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
 	public class TaintedTreeSample : Item // On OSI the base class is Kindling, and it's ignitable...

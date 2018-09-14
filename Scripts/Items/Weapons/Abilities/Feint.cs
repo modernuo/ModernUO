@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections;
-using Server.Items;
 
 namespace Server.Items
 {

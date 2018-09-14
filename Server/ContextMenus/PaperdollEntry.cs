@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server.ContextMenus
 {
 	public class PaperdollEntry : ContextMenuEntry

@@ -2,7 +2,6 @@ using System;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Server;
 
 namespace Server.Misc
 {

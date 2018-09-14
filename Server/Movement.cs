@@ -18,9 +18,6 @@
  *
  ***************************************************************************/
 
-using System;
-using System.Collections;
-
 namespace Server.Movement
 {
 	public static class Movement

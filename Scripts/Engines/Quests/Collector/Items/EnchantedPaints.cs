@@ -1,8 +1,5 @@
-using System;
-using Server;
 using Server.Mobiles;
 using Server.Targeting;
-using Server.Engines.Quests;
 
 namespace Server.Engines.Quests.Collector
 {

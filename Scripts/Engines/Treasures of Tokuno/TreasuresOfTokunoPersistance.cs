@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Server.Misc
 {
 	public class TreasuresOfTokunoPersistance : Item

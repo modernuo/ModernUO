@@ -1,7 +1,3 @@
-using System;
-using Server;
-using Server.Misc;
-
 namespace Server.Mobiles
 {
 	public class Bird : BaseCreature

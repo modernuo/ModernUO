@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Network
 {
 	public class UpdateStatueAnimation : Packet

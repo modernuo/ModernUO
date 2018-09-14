@@ -1,7 +1,3 @@
-using System;
-using Server.Network;
-using Server.Spells;
-
 namespace Server.Items
 {
 	public class BookOfChivalry : Spellbook

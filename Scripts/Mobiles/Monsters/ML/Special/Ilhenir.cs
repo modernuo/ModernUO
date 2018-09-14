@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using Server;
 using Server.Items;
-using Server.Spells;
 using Server.Network;
 using System.Collections.Generic;
 using Server.Engines.CannedEvil;

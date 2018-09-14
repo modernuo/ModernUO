@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Items;
 using Server.Network;
-using Server.Spells;
 using Server.Spells.Fourth;
 using Server.Spells.Seventh;
 using Server.Spells.Chivalry;
@@ -141,8 +138,8 @@ namespace Server.Gumps
 
 				if ( Sextant.Format( e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
 				{
-					AddLabel( 135 + (half * 160), 80, 0, String.Format( "{0}° {1}'{2}", yLat, yMins, ySouth ? "S" : "N" ) );
-					AddLabel( 135 + (half * 160), 95, 0, String.Format( "{0}° {1}'{2}", xLong, xMins, xEast ? "E" : "W" ) );
+					AddLabel( 135 + (half * 160), 80, 0, String.Format( "{0}ï¿½ {1}'{2}", yLat, yMins, ySouth ? "S" : "N" ) );
+					AddLabel( 135 + (half * 160), 95, 0, String.Format( "{0}ï¿½ {1}'{2}", xLong, xMins, xEast ? "E" : "W" ) );
 				}
 
 				// Drop rune button
@@ -312,7 +309,7 @@ namespace Server.Gumps
 
 								if ( Sextant.Format( e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
 								{
-									string location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+									string location = String.Format( "{0}ï¿½ {1}'{2}, {3}ï¿½ {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 									from.SendMessage( location );
 								}
 
@@ -367,7 +364,7 @@ namespace Server.Gumps
 
 								if ( Sextant.Format( e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
 								{
-									string location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+									string location = String.Format( "{0}ï¿½ {1}'{2}, {3}ï¿½ {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 									from.SendMessage( location );
 								}
 
@@ -393,7 +390,7 @@ namespace Server.Gumps
 
 								if ( Sextant.Format( e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
 								{
-									string location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+									string location = String.Format( "{0}ï¿½ {1}'{2}, {3}ï¿½ {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 									from.SendMessage( location );
 								}
 
@@ -421,7 +418,7 @@ namespace Server.Gumps
 
 									if ( Sextant.Format( e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
 									{
-										string location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+										string location = String.Format( "{0}ï¿½ {1}'{2}, {3}ï¿½ {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 										from.SendMessage( location );
 									}
 

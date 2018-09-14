@@ -1,8 +1,5 @@
 using System;
-using System.Text;
-using System.Collections;
 using Server.Network;
-using Server.Targeting;
 using Server.Mobiles;
 using Server.Spells;
 using Server.Spells.Necromancy;

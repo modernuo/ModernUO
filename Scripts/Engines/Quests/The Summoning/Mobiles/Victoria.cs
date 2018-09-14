@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
-using Server;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
-using Server.ContextMenus;
-using Server.Engines.Quests;
-using Server.Engines.Quests.Necro;
 
 namespace Server.Engines.Quests.Doom
 {

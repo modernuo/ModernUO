@@ -1,8 +1,5 @@
-using System;
-using Server.Misc;
 using Server.Items;
 using Server.Targeting;
-using Server.Network;
 using Server.Mobiles;
 
 namespace Server.Spells.Sixth

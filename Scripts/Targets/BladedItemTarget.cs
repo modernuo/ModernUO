@@ -1,5 +1,3 @@
-using System;
-using Server;
 using Server.Targeting;
 using Server.Items;
 using Server.Engines.Harvest;

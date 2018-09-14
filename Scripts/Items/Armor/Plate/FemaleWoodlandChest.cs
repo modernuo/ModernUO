@@ -1,6 +1,3 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
 	//Is this a filler-type item? the clilocs don't match up and at a glacnce I can't find direct reference of it

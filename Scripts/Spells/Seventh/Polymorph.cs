@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
-using Server;
 using Server.Items;
 using Server.Gumps;
-using Server.Spells;
 using Server.Spells.Fifth;
 
 namespace Server.Spells.Seventh

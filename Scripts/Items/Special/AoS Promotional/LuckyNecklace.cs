@@ -1,7 +1,4 @@
-﻿using System;
-using Server.Mobiles;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
 	public class LuckyNecklace : BaseJewel
 	{

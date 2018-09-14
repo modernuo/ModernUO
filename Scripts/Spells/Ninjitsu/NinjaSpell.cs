@@ -1,8 +1,4 @@
 using System;
-using Server;
-using Server.Spells;
-using Server.Network;
-using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Spells.Ninjitsu

@@ -18,15 +18,7 @@
  *
  ***************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Threading;
-using System.Diagnostics;
-
-using Server;
-using Server.Guilds;
 
 namespace Server {
 	public sealed class DualSaveStrategy : StandardSaveStrategy {

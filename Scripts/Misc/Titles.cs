@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using Server;
 using Server.Mobiles;
 using Server.Engines.CannedEvil;
 

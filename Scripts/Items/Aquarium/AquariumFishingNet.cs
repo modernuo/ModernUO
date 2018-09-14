@@ -1,9 +1,3 @@
-using System;
-using Server;
-using Server.Mobiles;
-using Server.Items;
-using Server.Targeting;
-
 namespace Server.Items
 {
 	public class AquariumFishNet : SpecialFishingNet

@@ -1,7 +1,4 @@
-using System;
-using Server;
 using Server.Targeting;
-using Server.Engines.Craft;
 using Server.Network;
 
 namespace Server.Items

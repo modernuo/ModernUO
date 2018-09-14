@@ -1,6 +1,3 @@
-using System;
-using Server;
-
 namespace Server.Gumps
 {
 	public class PropsConfig

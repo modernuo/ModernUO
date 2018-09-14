@@ -1,6 +1,3 @@
-using System;
-using Server.Mobiles;
-
 namespace Server.Mobiles
 {
 	[TypeAlias( "Server.Mobiles.BrownHorse", "Server.Mobiles.DirtyHorse", "Server.Mobiles.GrayHorse", "Server.Mobiles.TanHorse" )]

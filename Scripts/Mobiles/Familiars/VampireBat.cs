@@ -1,10 +1,3 @@
-using System;
-using System.Collections;
-using Server;
-using Server.Items;
-using Server.Gumps;
-using Server.Network;
-
 namespace Server.Mobiles
 {
 	public class VampireBatFamiliar : BaseFamiliar
