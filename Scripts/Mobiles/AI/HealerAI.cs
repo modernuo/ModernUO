@@ -10,10 +10,10 @@ namespace Server.Mobiles
 		private static NeedDelegate m_Cure = new NeedDelegate( NeedCure );
 		private static NeedDelegate m_GHeal = new NeedDelegate( NeedGHeal );
 		private static NeedDelegate m_LHeal = new NeedDelegate( NeedLHeal );
-		private static NeedDelegate[] m_ACure = new[] { m_Cure };
-		private static NeedDelegate[] m_AGHeal = new[] { m_GHeal };
-		private static NeedDelegate[] m_ALHeal = new[] { m_LHeal };
-		private static NeedDelegate[] m_All = new[] { m_Cure, m_GHeal, m_LHeal };
+		private static NeedDelegate[] m_ACure = { m_Cure };
+		private static NeedDelegate[] m_AGHeal = { m_GHeal };
+		private static NeedDelegate[] m_ALHeal = { m_LHeal };
+		private static NeedDelegate[] m_All = { m_Cure, m_GHeal, m_LHeal };
 
 		public HealerAI( BaseCreature m ) : base( m )
 		{

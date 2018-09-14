@@ -5,8 +5,7 @@ namespace Server.Engines.Quests.Collector
 {
 	public class CollectorQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new[]
-			{
+		private static Type[] m_TypeReferenceTable = {
 				typeof( DontOfferConversation ),
 				typeof( DeclineConversation ),
 				typeof( AcceptConversation ),

@@ -158,8 +158,7 @@ namespace Server.Items
 			}
 		}
 
-		private static TilesAndEffect[] m_Table = new[]
-			{
+		private static TilesAndEffect[] m_Table = {
 				new TilesAndEffect( new[]
 					{
 						0x71, 0x7C,

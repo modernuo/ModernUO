@@ -3,13 +3,11 @@ namespace Server.Items
 	[Flippable]
 	public class ParagonChest : LockableContainer
 	{
-		private static int[] m_ItemIDs = new[]
-		{
+		private static int[] m_ItemIDs = {
 			0x9AB, 0xE40, 0xE41, 0xE7C
 		};
 
-		private static int[] m_Hues = new[]
-		{
+		private static int[] m_Hues = {
 			0x0, 0x455, 0x47E, 0x89F, 0x8A5, 0x8AB,
 			0x966, 0x96D, 0x972, 0x973, 0x979
 		};

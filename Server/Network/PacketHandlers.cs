@@ -1572,8 +1572,7 @@ namespace Server.Network
 			}
 		}
 
-		public static int[] m_ValidAnimations = new[]
-			{
+		public static int[] m_ValidAnimations = {
 				6, 21, 32, 33,
 				100, 101, 102,
 				103, 104, 105,
@@ -2006,8 +2005,7 @@ namespace Server.Network
 
 		public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
 
-		private static byte[] m_ThirdPartyAuthKey = new byte[]
-			{
+		private static byte[] m_ThirdPartyAuthKey = {
 				0x9, 0x11, 0x83, (byte)'+', 0x4, 0x17, 0x83,
 				0x5, 0x24, 0x85,
 				0x7, 0x17, 0x87,

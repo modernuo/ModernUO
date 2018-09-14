@@ -93,7 +93,7 @@ namespace Server.Commands
 			}
 		}
 
-		private static char[] m_NotSafe = new[]{ '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+		private static char[] m_NotSafe = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
 
 		public static void AppendPath( ref string path, string toAppend )
 		{

@@ -20,8 +20,7 @@ namespace Server.Spells.First
 		{
 		}
 
-		private static FoodInfo[] m_Food = new[]
-			{
+		private static FoodInfo[] m_Food = {
 				new FoodInfo( typeof( Grapes ), "a grape bunch" ),
 				new FoodInfo( typeof( Ham ), "a ham" ),
 				new FoodInfo( typeof( CheeseWedge ), "a wedge of cheese" ),

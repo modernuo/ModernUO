@@ -11,8 +11,7 @@ namespace Server.Misc
 		public static TimeSpan AntiMacroExpire = TimeSpan.FromMinutes( 5.0 ); //How long do we remember targets/locations?
 		public const int Allowance = 3;	//How many times may we use the same location/target for gain
 		private const int LocationSize = 5; //The size of eeach location, make this smaller so players dont have to move as far
-		private static bool[] UseAntiMacro = new[]
-		{
+		private static bool[] UseAntiMacro = {
 			// true if this skill uses the anti-macro code, false if it does not
 			false,// Alchemy = 0,
 			true,// Anatomy = 1,

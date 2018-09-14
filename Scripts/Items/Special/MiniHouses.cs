@@ -197,8 +197,7 @@ namespace Server.Items
 			m_Graphics = graphics;
 		}
 
-		private static MiniHouseInfo[] m_Info = new[]
-			{
+		private static MiniHouseInfo[] m_Info = {
 				/* Stone and plaster house           */ new MiniHouseInfo( 0x22C4, 1, 1011303 ),
 				/* Field stone house                 */ new MiniHouseInfo( 0x22DE, 1, 1011304 ),
 				/* Small brick house                 */ new MiniHouseInfo( 0x22DF, 1, 1011305 ),

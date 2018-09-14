@@ -257,8 +257,7 @@ namespace Server.Items
 			m_Info.Add( MusicName.ValoriaShips, new DawnsMusicInfo( 1075140, DawnsMusicRarity.Rare ) );
 		}
 
-		public static MusicName[] m_CommonTracks = new[]
-		{
+		public static MusicName[] m_CommonTracks = {
 			MusicName.Samlethe,	MusicName.Sailing,	MusicName.Britain2,			MusicName.Britain1,
 			MusicName.Bucsden,	MusicName.Forest_a,	MusicName.Cove,				MusicName.Death,
 			MusicName.Dungeon9,	MusicName.Dungeon2,	MusicName.Cave01,			MusicName.Combat3,
@@ -271,16 +270,14 @@ namespace Server.Items
 			MusicName.Mountn_a,	MusicName.Wind,		MusicName.Yew,				MusicName.Zento
 		};
 
-		public static MusicName[] m_UncommonTracks = new[]
-		{
+		public static MusicName[] m_UncommonTracks = {
 			MusicName.GwennoConversation,	MusicName.DreadHornArea,	MusicName.ElfCity,
 			MusicName.GoodEndGame,			MusicName.GoodVsEvil,		MusicName.GreatEarthSerpents,
 			MusicName.GrizzleDungeon,		MusicName.Humanoids_U9,		MusicName.MelisandesLair,
 			MusicName.MinocNegative,		MusicName.ParoxysmusLair,	MusicName.Paws
 		};
 
-		public static MusicName[] m_RareTracks = new[]
-		{
+		public static MusicName[] m_RareTracks = {
 			MusicName.SelimsBar,		MusicName.SerpentIsleCombat_U7,	MusicName.ValoriaShips
 		};
 

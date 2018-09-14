@@ -814,8 +814,7 @@ namespace Server.Items
 			}
 		}
 
-		private static int[] m_SwampTiles = new[]
-			{
+		private static int[] m_SwampTiles = {
 				0x9C4, 0x9EB,
 				0x3D65, 0x3D65,
 				0x3DC0, 0x3DD9,

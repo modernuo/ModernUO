@@ -469,8 +469,7 @@ namespace Server.Engines.Help
 		private PageEntry m_Entry;
 		private Mobile m_Mobile;
 
-		private static int[] m_AccessLevelHues = new[]
-			{
+		private static int[] m_AccessLevelHues = {
 				2100,
 				2122,
 				2117,

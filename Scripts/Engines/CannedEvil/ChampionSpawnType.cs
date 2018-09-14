@@ -38,8 +38,7 @@ namespace Server.Engines.CannedEvil
 
 		public static ChampionSpawnInfo[] Table => m_Table;
 
-		private static readonly ChampionSpawnInfo[] m_Table = new[]
-			{
+		private static readonly ChampionSpawnInfo[] m_Table = {
 				new ChampionSpawnInfo( "Abyss", typeof( Semidar ), new[]{ "Foe", "Assassin", "Conqueror" }, new[] // Abyss
 				{																											// Abyss
 					new[]{ typeof( GreaterMongbat ), typeof( Imp ) },													// Level 1

@@ -5,7 +5,7 @@ namespace Server.Multis
 {
 	public class SmallOldHouse : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D(-3,-3,7,7 ), new Rectangle2D( -1, 4, 3, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D(-3,-3,7,7 ), new Rectangle2D( -1, 4, 3, 1 ) };
 
 		public override Rectangle2D[] Area => AreaArray;
 		public override Point3D BaseBanLocation => new Point3D( 2, 4, 0 );
@@ -56,7 +56,7 @@ namespace Server.Multis
 
 	public class GuildHouse : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -7, -7, 14, 14 ), new Rectangle2D( -2, 7, 4, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -7, -7, 14, 14 ), new Rectangle2D( -2, 7, 4, 1 ) };
 
 		public override int DefaultPrice => 144500;
 
@@ -100,7 +100,7 @@ namespace Server.Multis
 
 	public class TwoStoryHouse : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -7, 0, 14, 7 ), new Rectangle2D( -7, -7, 9, 7 ), new Rectangle2D( -4, 7, 4, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -7, 0, 14, 7 ), new Rectangle2D( -7, -7, 9, 7 ), new Rectangle2D( -4, 7, 4, 1 ) };
 
 		public override Rectangle2D[] Area => AreaArray;
 		public override Point3D BaseBanLocation => new Point3D( 2, 8, 0 );
@@ -148,7 +148,7 @@ namespace Server.Multis
 
 	public class Tower : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -7, -7, 16, 14 ), new Rectangle2D( -1, 7, 4, 2 ), new Rectangle2D( -11, 0, 4, 7 ), new Rectangle2D( 9, 0, 4, 7 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -7, -7, 16, 14 ), new Rectangle2D( -1, 7, 4, 2 ), new Rectangle2D( -11, 0, 4, 7 ), new Rectangle2D( 9, 0, 4, 7 ) };
 
 		public override int DefaultPrice => 433200;
 
@@ -192,7 +192,7 @@ namespace Server.Multis
 
 	public class Keep : BaseHouse//warning: ODD shape!
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -11, -11, 7, 8 ), new Rectangle2D( -11, 5, 7, 8 ), new Rectangle2D( 6, -11, 7, 8 ), new Rectangle2D( 6, 5, 7, 8 ), new Rectangle2D( -9, -3, 5, 8 ), new Rectangle2D( 6, -3, 5, 8 ), new Rectangle2D( -4, -9, 10, 20 ), new Rectangle2D( -1, 11, 4, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -11, -11, 7, 8 ), new Rectangle2D( -11, 5, 7, 8 ), new Rectangle2D( 6, -11, 7, 8 ), new Rectangle2D( 6, 5, 7, 8 ), new Rectangle2D( -9, -3, 5, 8 ), new Rectangle2D( 6, -3, 5, 8 ), new Rectangle2D( -4, -9, 10, 20 ), new Rectangle2D( -1, 11, 4, 1 ) };
 
 		public override int DefaultPrice => 665200;
 
@@ -229,7 +229,7 @@ namespace Server.Multis
 
 	public class Castle : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{  new Rectangle2D( -15, -15, 31, 31 ), new Rectangle2D( -1, 16, 4, 1 ) };
+		public static Rectangle2D[] AreaArray = {  new Rectangle2D( -15, -15, 31, 31 ), new Rectangle2D( -1, 16, 4, 1 ) };
 
 		public override int DefaultPrice => 1022800;
 
@@ -270,7 +270,7 @@ namespace Server.Multis
 
 	public class LargePatioHouse : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -7, -7, 15, 14 ), new Rectangle2D( -5, 7, 4, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -7, -7, 15, 14 ), new Rectangle2D( -5, 7, 4, 1 ) };
 
 		public override int DefaultPrice => 152800;
 
@@ -314,7 +314,7 @@ namespace Server.Multis
 
 	public class LargeMarbleHouse : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -7, -7, 15, 14 ), new Rectangle2D( -6, 7, 6, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -7, -7, 15, 14 ), new Rectangle2D( -6, 7, 6, 1 ) };
 
 		public override int DefaultPrice => 192000;
 
@@ -354,7 +354,7 @@ namespace Server.Multis
 
 	public class SmallTower : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -3, -3, 8, 7 ), new Rectangle2D( 2, 4, 3, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -3, -3, 8, 7 ), new Rectangle2D( 2, 4, 3, 1 ) };
 
 		public override int DefaultPrice => 88500;
 
@@ -393,7 +393,7 @@ namespace Server.Multis
 
 	public class LogCabin : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -3, -6, 8, 13 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -3, -6, 8, 13 ) };
 
 		public override int DefaultPrice => 97800;
 
@@ -434,7 +434,7 @@ namespace Server.Multis
 
 	public class SandStonePatio : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -5, -4, 12, 8 ), new Rectangle2D( -2, 4, 3, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -5, -4, 12, 8 ), new Rectangle2D( -2, 4, 3, 1 ) };
 
 		public override int DefaultPrice => 90900;
 
@@ -474,7 +474,7 @@ namespace Server.Multis
 
 	public class TwoStoryVilla : BaseHouse
 	{
-		public static Rectangle2D[] AreaArray = new[]{ new Rectangle2D( -5, -5, 11, 11 ), new Rectangle2D( 2, 6, 4, 1 ) };
+		public static Rectangle2D[] AreaArray = { new Rectangle2D( -5, -5, 11, 11 ), new Rectangle2D( 2, 6, 4, 1 ) };
 
 		public override int DefaultPrice => 136500;
 
@@ -523,8 +523,8 @@ namespace Server.Multis
 
 		public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[0];
 
-		public static Rectangle2D[] AreaArray1 = new[]{ new Rectangle2D(-3,-3,7,7), new Rectangle2D( -1, 4, 4, 1 ) };
-		public static Rectangle2D[] AreaArray2 = new[]{ new Rectangle2D(-3,-3,7,7), new Rectangle2D( -2, 4, 3, 1 ) };
+		public static Rectangle2D[] AreaArray1 = { new Rectangle2D(-3,-3,7,7), new Rectangle2D( -1, 4, 4, 1 ) };
+		public static Rectangle2D[] AreaArray2 = { new Rectangle2D(-3,-3,7,7), new Rectangle2D( -2, 4, 3, 1 ) };
 
 		public SmallShop( Mobile owner, int id ) : base( id, owner, 425, 3 )
 		{

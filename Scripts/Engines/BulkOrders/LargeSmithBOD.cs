@@ -6,8 +6,7 @@ namespace Server.Engines.BulkOrders
 	[TypeAlias( "Scripts.Engines.BulkOrders.LargeSmithBOD" )]
 	public class LargeSmithBOD : LargeBOD
 	{
-		public static double[] m_BlacksmithMaterialChances = new[]
-			{
+		public static double[] m_BlacksmithMaterialChances = {
 				0.501953125, // None
 				0.250000000, // Dull Copper
 				0.125000000, // Shadow Iron

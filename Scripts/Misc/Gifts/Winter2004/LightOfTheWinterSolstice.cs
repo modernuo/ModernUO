@@ -5,8 +5,7 @@ namespace Server.Items
 	[FlippableAttribute( 0x236E, 0x2371 )]
 	public class LightOfTheWinterSolstice  : Item
 	{
-		private static string[] m_StaffNames = new[]
-			{
+		private static string[] m_StaffNames = {
 				"Aenima",
 				"Alkiser",
 				"ASayre",

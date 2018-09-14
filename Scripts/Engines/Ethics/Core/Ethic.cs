@@ -236,8 +236,7 @@ namespace Server.Ethics
 		public static readonly Ethic Hero = new Hero.HeroEthic();
 		public static readonly Ethic Evil = new Evil.EvilEthic();
 
-		public static readonly Ethic[] Ethics = new[]
-			{
+		public static readonly Ethic[] Ethics = {
 				Hero,
 				Evil
 			};

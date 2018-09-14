@@ -126,7 +126,7 @@ namespace Server.Mobiles
 
 						DoBeneficial( toBuff );
 
-						object[] state = new object[]{ toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex };
+						object[] state = { toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex };
 
 						SpellHelper.Turn( this, toBuff );
 

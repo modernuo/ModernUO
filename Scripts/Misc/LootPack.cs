@@ -92,39 +92,32 @@ namespace Server
 			}
 		}
 
-		public static readonly LootPackItem[] Gold = new[]
-			{
+		public static readonly LootPackItem[] Gold = {
 				new LootPackItem( typeof( Gold ), 1 )
 			};
 
-		public static readonly LootPackItem[] Instruments = new[]
-			{
+		public static readonly LootPackItem[] Instruments = {
 				new LootPackItem( typeof( BaseInstrument ), 1 )
 			};
 
 
-		public static readonly LootPackItem[] LowScrollItems = new[]
-			{
+		public static readonly LootPackItem[] LowScrollItems = {
 				new LootPackItem( typeof( ClumsyScroll ), 1 )
 			};
 
-		public static readonly LootPackItem[] MedScrollItems = new[]
-			{
+		public static readonly LootPackItem[] MedScrollItems = {
 				new LootPackItem( typeof( ArchCureScroll ), 1 )
 			};
 
-		public static readonly LootPackItem[] HighScrollItems = new[]
-			{
+		public static readonly LootPackItem[] HighScrollItems = {
 				new LootPackItem( typeof( SummonAirElementalScroll ), 1 )
 			};
 
-		public static readonly LootPackItem[] GemItems = new[]
-			{
+		public static readonly LootPackItem[] GemItems = {
 				new LootPackItem( typeof( Amber ), 1 )
 			};
 
-		public static readonly LootPackItem[] PotionItems = new[]
-			{
+		public static readonly LootPackItem[] PotionItems = {
 				new LootPackItem( typeof( AgilityPotion ), 1 ),
 				new LootPackItem( typeof( StrengthPotion ), 1 ),
 				new LootPackItem( typeof( RefreshPotion ), 1 ),
@@ -134,8 +127,7 @@ namespace Server
 			};
 
 		#region Old Magic Items
-		public static readonly LootPackItem[] OldMagicItems = new[]
-			{
+		public static readonly LootPackItem[] OldMagicItems = {
 				new LootPackItem( typeof( BaseJewel ), 1 ),
 				new LootPackItem( typeof( BaseArmor ), 4 ),
 				new LootPackItem( typeof( BaseWeapon ), 3 ),
@@ -145,8 +137,7 @@ namespace Server
 		#endregion
 
 		#region AOS Magic Items
-		public static readonly LootPackItem[] AosMagicItemsPoor = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsPoor = {
 				new LootPackItem( typeof( BaseWeapon ), 3 ),
 				new LootPackItem( typeof( BaseRanged ), 1 ),
 				new LootPackItem( typeof( BaseArmor ), 4 ),
@@ -154,8 +145,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 2 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsMeagerType1 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsMeagerType1 = {
 				new LootPackItem( typeof( BaseWeapon ), 56 ),
 				new LootPackItem( typeof( BaseRanged ), 14 ),
 				new LootPackItem( typeof( BaseArmor ), 81 ),
@@ -163,8 +153,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 42 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsMeagerType2 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsMeagerType2 = {
 				new LootPackItem( typeof( BaseWeapon ), 28 ),
 				new LootPackItem( typeof( BaseRanged ), 7 ),
 				new LootPackItem( typeof( BaseArmor ), 40 ),
@@ -172,8 +161,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 21 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsAverageType1 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsAverageType1 = {
 				new LootPackItem( typeof( BaseWeapon ), 90 ),
 				new LootPackItem( typeof( BaseRanged ), 23 ),
 				new LootPackItem( typeof( BaseArmor ), 130 ),
@@ -181,8 +169,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 68 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsAverageType2 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsAverageType2 = {
 				new LootPackItem( typeof( BaseWeapon ), 54 ),
 				new LootPackItem( typeof( BaseRanged ), 13 ),
 				new LootPackItem( typeof( BaseArmor ), 77 ),
@@ -190,8 +177,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 40 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsRichType1 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsRichType1 = {
 				new LootPackItem( typeof( BaseWeapon ), 211 ),
 				new LootPackItem( typeof( BaseRanged ), 53 ),
 				new LootPackItem( typeof( BaseArmor ), 303 ),
@@ -199,8 +185,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 158 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsRichType2 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsRichType2 = {
 				new LootPackItem( typeof( BaseWeapon ), 170 ),
 				new LootPackItem( typeof( BaseRanged ), 43 ),
 				new LootPackItem( typeof( BaseArmor ), 245 ),
@@ -208,8 +193,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 128 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsFilthyRichType1 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsFilthyRichType1 = {
 				new LootPackItem( typeof( BaseWeapon ), 219 ),
 				new LootPackItem( typeof( BaseRanged ), 55 ),
 				new LootPackItem( typeof( BaseArmor ), 315 ),
@@ -217,8 +201,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 164 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsFilthyRichType2 = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsFilthyRichType2 = {
 				new LootPackItem( typeof( BaseWeapon ), 239 ),
 				new LootPackItem( typeof( BaseRanged ), 60 ),
 				new LootPackItem( typeof( BaseArmor ), 343 ),
@@ -226,8 +209,7 @@ namespace Server
 				new LootPackItem( typeof( BaseJewel ), 45 )
 			};
 
-		public static readonly LootPackItem[] AosMagicItemsUltraRich = new[]
-			{
+		public static readonly LootPackItem[] AosMagicItemsUltraRich = {
 				new LootPackItem( typeof( BaseWeapon ), 276 ),
 				new LootPackItem( typeof( BaseRanged ), 69 ),
 				new LootPackItem( typeof( BaseArmor ), 397 ),
@@ -806,9 +788,8 @@ namespace Server
 			set => m_Chance = value;
 		}
 
-		private static Type[]   m_BlankTypes = new[]{ typeof( BlankScroll ) };
-		private static Type[][] m_NecroTypes = new[]
-		{
+		private static Type[]   m_BlankTypes = { typeof( BlankScroll ) };
+		private static Type[][] m_NecroTypes = {
 				new[] // low
 				{
 					typeof( AnimateDeadScroll ),		typeof( BloodOathScroll ),		typeof( CorpseSkinScroll ),	typeof( CurseWeaponScroll ),

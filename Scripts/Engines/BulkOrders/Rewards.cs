@@ -261,8 +261,7 @@ namespace Server.Engines.BulkOrders
 
 		public static readonly SmithRewardCalculator Instance = new SmithRewardCalculator();
 
-		private RewardType[] m_Types = new[]
-			{
+		private RewardType[] m_Types = {
 				// Armors
 				new RewardType( 200, typeof( RingmailGloves ), typeof( RingmailChest ), typeof( RingmailArms ), typeof( RingmailLegs ) ),
 				new RewardType( 300, typeof( ChainCoif ), typeof( ChainLegs ), typeof( ChainChest ) ),
@@ -299,8 +298,7 @@ namespace Server.Engines.BulkOrders
 			return points;
 		}
 
-		private static int[][][] m_GoldTable = new[]
-		{
+		private static int[][][] m_GoldTable = {
 				new[] // 1-part (regular)
 				{
 					new[]{ 150, 250, 250, 400,  400,  750,  750, 1200, 1200 },
@@ -471,8 +469,7 @@ namespace Server.Engines.BulkOrders
 		private static readonly ConstructCallback BearRug = new ConstructCallback( CreateBearRug );
 		private static readonly ConstructCallback ClothingBlessDeed = new ConstructCallback( CreateCBD );
 
-		private static int[][] m_ClothHues = new[]
-		{
+		private static int[][] m_ClothHues = {
 				new[]{ 0x483, 0x48C, 0x488, 0x48A },
 				new[]{ 0x495, 0x48B, 0x486, 0x485 },
 				new[]{ 0x48D, 0x490, 0x48E, 0x491 },
@@ -492,8 +489,7 @@ namespace Server.Engines.BulkOrders
 			throw new InvalidOperationException();
 		}
 
-		private static int[] m_SandalHues = new[]
-			{
+		private static int[] m_SandalHues = {
 				0x489, 0x47F, 0x482,
 				0x47E, 0x48F, 0x494,
 				0x484, 0x497
@@ -595,8 +591,7 @@ namespace Server.Engines.BulkOrders
 			return points;
 		}
 
-		private static int[][][] m_AosGoldTable = new[]
-		{
+		private static int[][][] m_AosGoldTable = {
 				new[] // 1-part (regular)
 				{
 					new[]{ 150, 150, 300, 300 },
@@ -647,8 +642,7 @@ namespace Server.Engines.BulkOrders
 				}
 			};
 
-		private static int[][][] m_OldGoldTable = new[]
-		{
+		private static int[][][] m_OldGoldTable = {
 				new[] // 1-part (regular)
 				{
 					new[]{ 150, 150, 300, 300 },

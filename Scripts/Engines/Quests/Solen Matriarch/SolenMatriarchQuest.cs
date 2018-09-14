@@ -6,8 +6,7 @@ namespace Server.Engines.Quests.Matriarch
 {
 	public class SolenMatriarchQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new[]
-			{
+		private static Type[] m_TypeReferenceTable = {
 				typeof( DontOfferConversation ),
 				typeof( AcceptConversation ),
 				typeof( DuringKillInfiltratorsConversation ),

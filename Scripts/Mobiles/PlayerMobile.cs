@@ -1501,8 +1501,7 @@ namespace Server.Mobiles
 
 		public SkillName[] AnimalFormRestrictedSkills => m_AnimalFormRestrictedSkills;
 
-		private SkillName[] m_AnimalFormRestrictedSkills = new[]
-		{
+		private SkillName[] m_AnimalFormRestrictedSkills = {
 			SkillName.ArmsLore,	SkillName.Begging, SkillName.Discordance, SkillName.Forensics,
 			SkillName.Inscribe, SkillName.ItemID, SkillName.Meditation, SkillName.Peacemaking,
 			SkillName.Provocation, SkillName.RemoveTrap, SkillName.SpiritSpeak, SkillName.Stealing,
@@ -4418,8 +4417,7 @@ namespace Server.Mobiles
 			return false;
 		}
 
-		private static Point3D[] m_TrammelDeathDestinations = new[]
-			{
+		private static Point3D[] m_TrammelDeathDestinations = {
 				new Point3D( 1481, 1612, 20 ),
 				new Point3D( 2708, 2153,  0 ),
 				new Point3D( 2249, 1230,  0 ),
@@ -4437,8 +4435,7 @@ namespace Server.Mobiles
 				new Point3D( 3665, 2587,  0 )
 			};
 
-		private static Point3D[] m_IlshenarDeathDestinations = new[]
-			{
+		private static Point3D[] m_IlshenarDeathDestinations = {
 				new Point3D( 1216,  468, -13 ),
 				new Point3D(  723, 1367, -60 ),
 				new Point3D(  745,  725, -28 ),
@@ -4450,14 +4447,12 @@ namespace Server.Mobiles
 				new Point3D( 1722,  219,  96 )
 			};
 
-		private static Point3D[] m_MalasDeathDestinations = new[]
-			{
+		private static Point3D[] m_MalasDeathDestinations = {
 				new Point3D( 2079, 1376, -70 ),
 				new Point3D(  944,  519, -71 )
 			};
 
-		private static Point3D[] m_TokunoDeathDestinations = new[]
-			{
+		private static Point3D[] m_TokunoDeathDestinations = {
 				new Point3D( 1166,  801, 27 ),
 				new Point3D(  782, 1228, 25 ),
 				new Point3D(  268,  624, 15 )

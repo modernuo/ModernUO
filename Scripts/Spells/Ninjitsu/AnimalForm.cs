@@ -366,8 +366,7 @@ namespace Server.Spells.Ninjitsu
 			}
 		}
 
-		private static AnimalFormEntry[] m_Entries = new[]
-			{
+		private static AnimalFormEntry[] m_Entries = {
 				new AnimalFormEntry( typeof( Kirin ),        1029632,  9632,    0, 1070811, 100.0,  0x84,     0,     0, false,  true, false ),
 				new AnimalFormEntry( typeof( Unicorn ),      1018214,  9678,    0, 1070812, 100.0,  0x7A,     0,     0, false,  true, false ),
 				new AnimalFormEntry( typeof( BakeKitsune ),  1030083, 10083,    0, 1070810,  82.5,  0xF6,     0,     0, false,  true, false ),

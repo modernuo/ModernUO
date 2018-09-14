@@ -19,8 +19,7 @@ namespace Server.Misc
 	{
 		public static readonly bool Enabled = true;
 
-		private static readonly LocationInfo[] m_Destinations = new[]
-			{
+		private static readonly LocationInfo[] m_Destinations = {
 				new LocationInfo( new Point3D( 5275, 1163, 0 ), Map.Felucca ), // Jail
 				new LocationInfo( new Point3D( 5275, 1163, 0 ), Map.Trammel ),
 				new LocationInfo( new Point3D( 5445, 1153, 0 ), Map.Felucca ), // Green acres

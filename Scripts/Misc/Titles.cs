@@ -128,7 +128,7 @@ namespace Server.Misc
 			}
 		}
 
-		public static string[] HarrowerTitles = new[] { "Spite", "Opponent", "Hunter", "Venom", "Executioner", "Annihilator", "Champion", "Assailant", "Purifier", "Nullifier" };
+		public static string[] HarrowerTitles = { "Spite", "Opponent", "Hunter", "Venom", "Executioner", "Annihilator", "Champion", "Assailant", "Purifier", "Nullifier" };
 
 		public static string ComputeTitle( Mobile beholder, Mobile beheld )
 		{
@@ -264,8 +264,7 @@ namespace Server.Misc
 			return highest;
 		}
 
-		private static string[,] m_Levels = new[,]
-			{
+		private static string[,] m_Levels = {
 				{ "Neophyte",		"Neophyte",		"Neophyte"		},
 				{ "Novice",			"Novice",		"Novice"		},
 				{ "Apprentice",		"Apprentice",	"Apprentice"	},
@@ -300,8 +299,7 @@ namespace Server.Misc
 			return (fp - 300) / 100;
 		}
 
-		private static FameEntry[] m_FameEntries = new[]
-			{
+		private static FameEntry[] m_FameEntries = {
 				new FameEntry( 1249, new[]
 				{
 					new KarmaEntry( -10000, "The Outcast {0}" ),

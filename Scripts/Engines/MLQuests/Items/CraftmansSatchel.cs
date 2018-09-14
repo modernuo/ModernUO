@@ -6,7 +6,7 @@ namespace Server.Engines.MLQuests.Items
 {
 	public abstract class BaseCraftmansSatchel : Backpack
 	{
-		protected static readonly Type[] m_TalismanType = new[] { typeof( RandomTalisman ) };
+		protected static readonly Type[] m_TalismanType = { typeof( RandomTalisman ) };
 
 		public BaseCraftmansSatchel()
 		{

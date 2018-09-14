@@ -127,8 +127,7 @@ namespace Server.Spells
 			return null;
 		}
 
-		private static string[] m_CircleNames = new[]
-			{
+		private static string[] m_CircleNames = {
 				"First",
 				"Second",
 				"Third",

@@ -9,8 +9,7 @@ namespace Server.Items
 	{
 		private static string m_MethodName = "Flip";
 
-		private static Type[] m_Params = new[]
-		{
+		private static Type[] m_Params = {
 			typeof( Mobile ), typeof( Direction )
 		};
 

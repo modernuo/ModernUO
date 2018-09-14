@@ -66,8 +66,7 @@ namespace Server.Items
 			UpdateStage();
 		}
 
-		private static int[][] m_StageTable = new[]
-		{
+		private static int[][] m_StageTable = {
 				new[]{ 0x192C, 0x192D, 0x1931 },
 				new[]{ 0x192E, 0x192F, 0x1932 },
 				new[]{ 0x1930, 0x1930, 0x1934 }

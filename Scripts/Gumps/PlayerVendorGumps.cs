@@ -381,7 +381,7 @@ namespace Server.Gumps
 			public int LocNumber => m_LocNum;
 		}
 
-		private static CustomCategory[] Categories = new[]{
+		private static CustomCategory[] Categories = {
 			new CustomCategory( Layer.InnerTorso, 1011357, true, new[]{// Upper Torso
 				new CustomItem( typeof( Shirt ), 		1011359, 5399 ),
 				new CustomItem( typeof( FancyShirt ),	1011360, 7933 ),
@@ -799,8 +799,7 @@ namespace Server.Gumps
 			}
 		}
 
-		private static HairOrBeard[] m_HairStyles = new[]
-			{
+		private static HairOrBeard[] m_HairStyles = {
 				new HairOrBeard( 0x203B,	1011052 ),	// Short
 				new HairOrBeard( 0x203C,	1011053 ),	// Long
 				new HairOrBeard( 0x203D,	1011054 ),	// Ponytail
@@ -812,8 +811,7 @@ namespace Server.Gumps
 				new HairOrBeard( 0x2049,	1011049 )	// 2-tails
 			};
 
-		private static HairOrBeard[] m_BeardStyles = new[]
-			{
+		private static HairOrBeard[] m_BeardStyles = {
 				new HairOrBeard( 0x2041,	1011062 ),	// Mustache
 				new HairOrBeard( 0x203F,	1011060 ),	// Short beard
 				new HairOrBeard( 0x204B,	1015321 ),	// Short Beard & Moustache

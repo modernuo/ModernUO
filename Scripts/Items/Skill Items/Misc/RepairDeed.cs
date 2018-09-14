@@ -34,8 +34,7 @@ namespace Server.Items
 			}
 
 			public static RepairSkillInfo[] Table  => m_Table;
-			private static RepairSkillInfo[] m_Table = new[]
-				{
+			private static RepairSkillInfo[] m_Table = {
 					new RepairSkillInfo( DefBlacksmithy.CraftSystem, typeof( Blacksmith ), 1047013, 1023015 ),
 					new RepairSkillInfo( DefTailoring.CraftSystem, typeof( Tailor ), 1061132, 1022981 ),
 					new RepairSkillInfo( DefTinkering.CraftSystem, typeof( Tinker ), 1061166, 1022983 ),

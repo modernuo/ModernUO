@@ -1141,7 +1141,7 @@ namespace Server.Misc
 					addSkillItems = false;
 					EquipItem( new Kasa() );
 
-					int[] hues = new[] { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89	};
+					int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89	};
 					//TODO: Verify that's ALL the hues for that above.
 
 					EquipItem( new TattsukeHakama( hues[Utility.Random(hues.Length)] ) );

@@ -79,8 +79,7 @@ namespace Server.Items
 			m_Bounds = new Rectangle2D( xLeft, yTop, xRight - xLeft, yBottom - yTop );
 		}
 
-		private static PresetMapEntry[] m_Table = new[]
-			{
+		private static PresetMapEntry[] m_Table = {
 				new PresetMapEntry( 1041189, 200, 200, 1092, 1396, 1736, 1924 ), // map of Britain
 				new PresetMapEntry( 1041203, 200, 200, 0256, 1792, 1736, 2560 ), // map of Britain to Skara Brae
 				new PresetMapEntry( 1041192, 200, 200, 1024, 1280, 2304, 3072 ), // map of Britain to Trinsic

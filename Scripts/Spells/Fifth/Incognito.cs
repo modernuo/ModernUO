@@ -135,16 +135,14 @@ namespace Server.Spells.Fifth
 			return ( t != null );
 		}
 
-		private static int[] m_HairIDs = new[]
-			{
+		private static int[] m_HairIDs = {
 				0x2044, 0x2045, 0x2046,
 				0x203C, 0x203B, 0x203D,
 				0x2047, 0x2048, 0x2049,
 				0x204A, 0x0000
 			};
 
-		private static int[] m_BeardIDs = new[]
-			{
+		private static int[] m_BeardIDs = {
 				0x203E, 0x203F, 0x2040,
 				0x2041, 0x204B, 0x204C,
 				0x204D, 0x0000

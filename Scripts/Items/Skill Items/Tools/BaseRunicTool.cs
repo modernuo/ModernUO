@@ -139,8 +139,7 @@ namespace Server.Items
 			attrs[attr] = Scale( min, max, low / scale, high / scale ) * scale;
 		}
 
-		private static SkillName[] m_PossibleBonusSkills = new[]
-			{
+		private static SkillName[] m_PossibleBonusSkills = {
 				SkillName.Swords,
 				SkillName.Fencing,
 				SkillName.Macing,
@@ -171,8 +170,7 @@ namespace Server.Items
 				SkillName.Ninjitsu
 			};
 
-		private static SkillName[] m_PossibleSpellbookSkills = new[]
-			{
+		private static SkillName[] m_PossibleSpellbookSkills = {
 				SkillName.Magery,
 				SkillName.Meditation,
 				SkillName.EvalInt,
@@ -357,8 +355,7 @@ namespace Server.Items
 
 			int totalDamage = phys;
 
-			AosElementAttribute[] attrs = new[]
-			{
+			AosElementAttribute[] attrs = {
 				AosElementAttribute.Cold,
 				AosElementAttribute.Energy,
 				AosElementAttribute.Fire,

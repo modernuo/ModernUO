@@ -37,7 +37,7 @@ namespace Server.Items
 		[Constructible]
 		public BadCard() : base( 0x14ef )
 		{
-			int[] m_CardHues=new[]{ 0x45, 0x27, 0x3d0 };
+			int[] m_CardHues={ 0x45, 0x27, 0x3d0 };
 			Hue = m_CardHues[Utility.Random(m_CardHues.Length)];
 			Stackable = false;
 			LootType=LootType.Blessed;

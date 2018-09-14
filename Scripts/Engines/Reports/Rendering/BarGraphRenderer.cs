@@ -347,8 +347,7 @@ namespace Server.Engines.Reports
 									float oh = item.SweepSize;
 									float of = 9.5f;
 
-									PointF[] pts = new[]
-									{
+									PointF[] pts = {
 										new PointF( ox, oy ),
 										new PointF( ox + ow, oy ),
 										new PointF( ox + of, oy + of ),

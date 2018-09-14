@@ -1470,8 +1470,7 @@ namespace Server.Items
 
 		private static Hashtable m_AcquireTable;
 
-		private static FillableContent[] m_ContentTypes = new[]
-			{
+		private static FillableContent[] m_ContentTypes = {
 				Weaponsmith,	Provisioner,	Mage,
 				Alchemist,		Armorer,		ArtisanGuild,
 				Baker,			Bard,			Blacksmith,

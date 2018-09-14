@@ -88,8 +88,7 @@ namespace Server.Misc
 			World.Save( true, permitBackgroundWrite );
 		}
 
-		private static string[] m_Backups = new[]
-			{
+		private static string[] m_Backups = {
 				"Third Backup",
 				"Second Backup",
 				"Most Recent"

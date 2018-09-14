@@ -43,8 +43,7 @@ namespace Server.Engines.Craft
 			return 0;
 		}
 
-		private static Type[] m_TailorColorables = new[]
-			{
+		private static Type[] m_TailorColorables = {
 				typeof( GozaMatEastDeed ), typeof( GozaMatSouthDeed ),
 				typeof( SquareGozaMatEastDeed ), typeof( SquareGozaMatSouthDeed ),
 				typeof( BrocadeGozaMatEastDeed ), typeof( BrocadeGozaMatSouthDeed ),

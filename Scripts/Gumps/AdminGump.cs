@@ -160,8 +160,7 @@ namespace Server.Gumps
 			}
 		}
 
-		private static string[] m_AccessLevelStrings = new[]
-			{
+		private static string[] m_AccessLevelStrings = {
 				"Player",
 				"Counselor",
 				"Game Master",

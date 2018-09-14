@@ -53,8 +53,7 @@ namespace Server.Mobiles
 				Talk( ferret );
 		}
 
-		private static string[] m_Vocabulary = new[]
-		{
+		private static string[] m_Vocabulary = {
 			"dook",
 			"dook dook",
 			"dook dook dook!"

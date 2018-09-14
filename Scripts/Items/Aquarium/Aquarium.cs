@@ -895,8 +895,7 @@ namespace Server.Items
 			return null;
 		}
 
-		private static Type[] m_Decorations = new[]
-		{
+		private static Type[] m_Decorations = {
 			typeof( FishBones ),
 			typeof( WaterloggedBoots ),
 			typeof( CaptainBlackheartsFishingPole ),
@@ -924,8 +923,7 @@ namespace Server.Items
 			return false;
 		}
 
-		private static int[] m_FishHues = new[]
-		{
+		private static int[] m_FishHues = {
 			0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
 		};
 

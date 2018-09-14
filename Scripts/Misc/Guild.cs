@@ -31,8 +31,7 @@ namespace Server.Guilds
 
 	public class RankDefinition
 	{
-		public static RankDefinition[] Ranks = new[]
-			{
+		public static RankDefinition[] Ranks = {
 				new RankDefinition( 1062963, 0, RankFlags.None ),	//Ronin
 				new RankDefinition( 1062962, 1, RankFlags.Member ),	//Member
 				new RankDefinition( 1062961, 2, RankFlags.Member | RankFlags.RemovePlayers | RankFlags.CanInvitePlayer | RankFlags.CanSetGuildTitle | RankFlags.CanPromoteDemote ),	//Emmissary

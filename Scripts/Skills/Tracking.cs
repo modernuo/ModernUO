@@ -124,8 +124,7 @@ namespace Server.SkillHandlers
 		private Mobile m_From;
 		private int m_Range;
 
-		private static TrackTypeDelegate[] m_Delegates = new[]
-			{
+		private static TrackTypeDelegate[] m_Delegates = {
 				new TrackTypeDelegate( IsAnimal ),
 				new TrackTypeDelegate( IsMonster ),
 				new TrackTypeDelegate( IsHumanNPC ),

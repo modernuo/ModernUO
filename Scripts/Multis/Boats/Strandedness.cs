@@ -2,8 +2,7 @@ namespace Server.Misc
 {
 	public class Strandedness
 	{
-		private static Point2D[] m_Felucca = new[]
-			{
+		private static Point2D[] m_Felucca = {
 				new Point2D( 2528, 3568 ), new Point2D( 2376, 3400 ), new Point2D( 2528, 3896 ),
 				new Point2D( 2168, 3904 ), new Point2D( 1136, 3416 ), new Point2D( 1432, 3648 ),
 				new Point2D( 1416, 4000 ), new Point2D( 4512, 3936 ), new Point2D( 4440, 3120 ),
@@ -39,8 +38,7 @@ namespace Server.Misc
 
 		private static Point2D[] m_Trammel = m_Felucca;
 
-		private static Point2D[] m_Ilshenar = new[]
-			{
+		private static Point2D[] m_Ilshenar = {
 				new Point2D( 1252, 1180 ), new Point2D( 1562, 1090 ), new Point2D( 1444, 1016 ),
 				new Point2D( 1324, 968 ), new Point2D( 1418, 806 ), new Point2D( 1722, 874 ),
 				new Point2D( 1456, 684 ), new Point2D( 1036, 866 ), new Point2D( 612, 476 ),
@@ -49,8 +47,7 @@ namespace Server.Misc
 				new Point2D( 1358, 866 ), new Point2D( 510, 302 ), new Point2D( 510, 392 )
 			};
 
-		private static Point2D[] m_Tokuno = new[]
-			{
+		private static Point2D[] m_Tokuno = {
 				//Makoto-Jima
 				new Point2D( 837, 1351 ), new Point2D( 941, 1241 ), new Point2D( 959, 1185 ),
 				new Point2D( 923, 1091 ), new Point2D( 904, 983 ), new Point2D( 845, 944 ),

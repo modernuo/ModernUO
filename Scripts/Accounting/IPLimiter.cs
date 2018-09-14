@@ -11,8 +11,7 @@ namespace Server.Misc
 
 		public static int MaxAddresses = 10;
 		
-		public static IPAddress[] Exemptions = new IPAddress[]	//For hosting services where there are cases where IPs can be proxied
-		{
+		public static IPAddress[] Exemptions = {
 			//IPAddress.Parse( "127.0.0.1" ),
 		};
 

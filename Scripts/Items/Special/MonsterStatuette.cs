@@ -73,8 +73,7 @@ namespace Server.Items
 			m_Sounds = sounds;
 		}
 
-		private static MonsterStatuetteInfo[] m_Table = new[]
-			{
+		private static MonsterStatuetteInfo[] m_Table = {
 				/* Crocodile */			new MonsterStatuetteInfo( 1041249, 0x20DA, 660 ),
 				/* Daemon */			new MonsterStatuetteInfo( 1041250, 0x20D3, 357 ),
 				/* Dragon */			new MonsterStatuetteInfo( 1041251, 0x20D6, 362 ),

@@ -231,11 +231,11 @@ namespace Server.Gumps
 			}
 		}
 
-		public static string[] m_BoolNames = new[]{ "True", "False" };
-		public static object[] m_BoolValues = new object[]{ true, false };
+		public static string[] m_BoolNames = { "True", "False" };
+		public static object[] m_BoolValues = { true, false };
 
-		public static string[] m_PoisonNames = new[]{ "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
-		public static object[] m_PoisonValues = new object[]{ null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
+		public static string[] m_PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
+		public static object[] m_PoisonValues = { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
 
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
@@ -415,14 +415,12 @@ namespace Server.Gumps
 		private static Type typeofPropertyObject = typeof( PropertyObjectAttribute );
 		private static Type typeofNoSort = typeof( NoSortAttribute );
 
-		private static Type[] typeofReal = new[]
-			{
+		private static Type[] typeofReal = {
 				typeof( Single ),
 				typeof( Double )
 			};
 
-		private static Type[] typeofNumeric = new[]
-			{
+		private static Type[] typeofNumeric = {
 				typeof( Byte ),
 				typeof( Int16 ),
 				typeof( Int32 ),

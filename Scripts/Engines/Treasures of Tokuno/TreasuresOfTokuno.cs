@@ -21,8 +21,7 @@ namespace Server.Misc
 	{
 		public const int ItemsPerReward = 10;
 
-		private static Type[] m_LesserArtifactsTotal = new[]
-			{
+		private static Type[] m_LesserArtifactsTotal = {
 				typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
  				typeof( DaimyosHelm ), typeof( DemonForks ), typeof( DragonNunchaku ), typeof( Exiler ), typeof( GlovesOfTheSun ),
  				typeof( HanzosBow ), typeof( LegsOfStability ), typeof( PeasantsBokuto ), typeof( PilferedDancerFans ), typeof( TheDestroyer ),
@@ -47,8 +46,7 @@ namespace Server.Misc
 			set => _RewardEra = value;
 		}
 
-		private static Type[][] m_LesserArtifacts = new[]
-		{
+		private static Type[][] m_LesserArtifacts = {
 			// ToT One Rewards
 			new[] {
 				typeof( AncientFarmersKasa ), typeof( AncientSamuraiDo ), typeof( ArmsOfTacticalExcellence ), typeof( BlackLotusHood ),
@@ -432,8 +430,7 @@ namespace Server.Gumps
 		}
 
 		#region ToT Normal Rewards Table
-		private static TypeTileButtonInfo[][] m_NormalRewards = new[]
-		{
+		private static TypeTileButtonInfo[][] m_NormalRewards = {
 			// ToT One Rewards
 			new[] {
 				new TypeTileButtonInfo( typeof( SwordsOfProsperity ),	 0x27A9, 1070963, 1071002 ),
@@ -478,8 +475,7 @@ namespace Server.Gumps
 		public static TypeTileButtonInfo[][] NormalRewards => m_NormalRewards;
 
 		#region ToT Pigment Rewards Table
-		private static PigmentsTileButtonInfo[][] m_PigmentRewards = new[]
-		{
+		private static PigmentsTileButtonInfo[][] m_PigmentRewards = {
 			// ToT One Pigment Rewards
 			new[] {
 				new PigmentsTileButtonInfo( PigmentType.ParagonGold ),

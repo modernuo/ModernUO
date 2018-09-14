@@ -123,8 +123,7 @@ namespace Server.Engines.Harvest
 			}
 		}
 
-		private static MutateEntry[] m_MutateTable = new[]
-			{
+		private static MutateEntry[] m_MutateTable = {
 				new MutateEntry(  80.0,  80.0,  4080.0,  true, typeof( SpecialFishingNet ) ),
 				new MutateEntry(  80.0,  80.0,  4080.0,  true, typeof( BigFish ) ),
 				new MutateEntry(  90.0,  80.0,  4080.0,  true, typeof( TreasureMap ) ),
@@ -254,8 +253,7 @@ namespace Server.Engines.Harvest
 						{
 							case 0: // Body parts
 							{
-								int[] list = new[]
-									{
+								int[] list = {
 										0x1CDD, 0x1CE5, // arm
 										0x1CE0, 0x1CE8, // torso
 										0x1CE1, 0x1CE9, // head
@@ -267,8 +265,7 @@ namespace Server.Engines.Harvest
 							}
 							case 1: // Bone parts
 							{
-								int[] list = new[]
-									{
+								int[] list = {
 										0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4, // skulls
 										0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
 										0x1B15, 0x1B16 // pelvis bones
@@ -303,8 +300,7 @@ namespace Server.Engines.Harvest
 							}
 							case 6: // Misc
 							{
-								int[] list = new[]
-									{
+								int[] list = {
 										0x1EB5, // unfinished barrel
 										0xA2A, // stool
 										0xC1F, // broken clock
@@ -550,8 +546,7 @@ namespace Server.Engines.Harvest
 			return true;
 		}
 
-		private static int[] m_WaterTiles = new[]
-			{
+		private static int[] m_WaterTiles = {
 				0x00A8, 0x00AB,
 				0x0136, 0x0137,
 				0x5797, 0x579C,

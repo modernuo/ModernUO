@@ -248,8 +248,7 @@ namespace Server.Commands
 
 		#region GetPair
 
-		private static string[,] m_Aliases = new[,]
-			{
+		private static string[,] m_Aliases = {
 				{ "System.Object",	"<font color=\"blue\">object</font>" },
 				{ "System.String",	"<font color=\"blue\">string</font>" },
 				{ "System.Boolean",	"<font color=\"blue\">bool</font>" },
@@ -1947,8 +1946,7 @@ namespace Server.Commands
 
 		private const string HtmlNewLine = "&#13;";
 
-		private static object[,] m_Tooltips = new object[,]
-		{
+		private static object[,] m_Tooltips = {
 			{ typeof( Byte ), "Numeric value in the range from 0 to 255, inclusive." },
 			{ typeof( SByte ), "Numeric value in the range from negative 128 to positive 127, inclusive." },
 			{ typeof( UInt16 ), "Numeric value in the range from 0 to 65,535, inclusive." },

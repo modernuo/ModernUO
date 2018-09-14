@@ -457,8 +457,7 @@ namespace Server.Gumps
 			}
 		}
 
-		private static SkillsGumpGroup[] m_Groups = new[]
-			{
+		private static SkillsGumpGroup[] m_Groups = {
 				new SkillsGumpGroup( "Crafting", new[]
 				{
 					SkillName.Alchemy,

@@ -48,8 +48,7 @@ namespace Server.Engines.Craft
 			return 0;
 		}
 
-		private static Type[] m_TinkerColorables = new[]
-			{
+		private static Type[] m_TinkerColorables = {
 				typeof( ForkLeft ), typeof( ForkRight ),
 				typeof( SpoonLeft ), typeof( SpoonRight ),
 				typeof( KnifeLeft ), typeof( KnifeRight ),

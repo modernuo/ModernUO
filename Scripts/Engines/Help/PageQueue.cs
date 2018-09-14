@@ -27,8 +27,7 @@ namespace Server.Engines.Help
 	public class PageEntry
 	{
 		// What page types should have a speech log as attachment?
-		public static readonly PageType[] SpeechLogAttachment = new[]
-			{
+		public static readonly PageType[] SpeechLogAttachment = {
 				PageType.VerbalHarassment
 			};
 

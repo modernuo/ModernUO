@@ -14,8 +14,7 @@ namespace Server.SkillHandlers
 		public static double HidingRequirement => ( Core.ML ? 30.0 : ( Core.SE ? 50.0 : 80.0 ) );
 
 		public static int[,] ArmorTable  => m_ArmorTable;
-		private static int[,] m_ArmorTable = new[,]
-			{
+		private static int[,] m_ArmorTable = {
 							//	Gorget	Gloves	Helmet	Arms	Legs	Chest	Shield
 				/* Cloth	*/	{ 0,	0,		0,		0,		0,		0,		0 },
 				/* Leather	*/	{ 0,	0,		0,		0,		0,		0,		0 },

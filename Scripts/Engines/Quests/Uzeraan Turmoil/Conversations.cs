@@ -125,8 +125,7 @@ namespace Server.Engines.Quests.Haven
 			}
 		}
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1023676, 0xE68 ) // glowing rune
 			};
 
@@ -214,8 +213,7 @@ namespace Server.Engines.Quests.Haven
 			}
 		}
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1026153, 0x1822 ), // teleporter
 				new QuestItemInfo( 1048032, 0xE76 ) // a bag
 			};
@@ -291,8 +289,7 @@ namespace Server.Engines.Quests.Haven
 			}
 		}
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1023637, 0xE34 ) // scroll
 			};
 
@@ -312,8 +309,7 @@ namespace Server.Engines.Quests.Haven
 	{
 		public override object Message => 1049325;
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1048030, 0x14EB ), // a Treasure Map
 				new QuestItemInfo( 1023969, 0xF81 ), // Fertile Dirt
 				new QuestItemInfo( 1049117, 0xFC4 ) // Horn of Retreat
@@ -401,8 +397,7 @@ namespace Server.Engines.Quests.Haven
 			}
 		}
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1023965, 0xF7D ), // Daemon Blood
 				new QuestItemInfo( 1022581, 0xA22 ), // lantern
 			};
@@ -469,13 +464,11 @@ namespace Server.Engines.Quests.Haven
 			}
 		}
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1017412, 0xF80 ), // Daemon Bone
 			};
 
-		private static QuestItemInfo[] m_InfoPaladin = new[]
-			{
+		private static QuestItemInfo[] m_InfoPaladin = {
 				new QuestItemInfo( 1017412, 0xF80 ), // Daemon Bone
 				new QuestItemInfo( 1060577, 0x1F14 ), // Recall Rune
 			};

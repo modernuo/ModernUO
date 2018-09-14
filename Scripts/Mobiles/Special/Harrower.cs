@@ -28,8 +28,7 @@ namespace Server.Mobiles
 			}
 		}
 
-		private static SpawnEntry[] m_Entries = new[]
-			{
+		private static SpawnEntry[] m_Entries = {
 				new SpawnEntry( new Point3D( 5242, 945, -40 ), new Point3D( 1176, 2638, 0 ) ),	// Destard
 				new SpawnEntry( new Point3D( 5225, 798, 0 ), new Point3D( 1176, 2638, 0 ) ),	// Destard
 				new SpawnEntry( new Point3D( 5556, 886, 30 ), new Point3D( 1298, 1080, 0 ) ),	// Despise
@@ -118,8 +117,7 @@ namespace Server.Mobiles
 		public override bool Unprovokable => true;
 		public override Poison PoisonImmune => Poison.Lethal;
 
-		private static readonly double[] m_Offsets = new[]
-			{
+		private static readonly double[] m_Offsets = {
 				Math.Cos( 000.0 / 180.0 * Math.PI ), Math.Sin( 000.0 / 180.0 * Math.PI ),
 				Math.Cos( 040.0 / 180.0 * Math.PI ), Math.Sin( 040.0 / 180.0 * Math.PI ),
 				Math.Cos( 080.0 / 180.0 * Math.PI ), Math.Sin( 080.0 / 180.0 * Math.PI ),
@@ -502,8 +500,7 @@ namespace Server.Mobiles
 		{
 			private Mobile m_Owner;
 
-			private static int[] m_Offsets = new[]
-			{
+			private static int[] m_Offsets = {
 				-1, -1,
 				-1,  0,
 				-1,  1,

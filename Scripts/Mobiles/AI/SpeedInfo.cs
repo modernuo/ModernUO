@@ -87,8 +87,7 @@ namespace Server
 
 		private static Dictionary<Type, SpeedInfo> m_Table;
 
-		private static SpeedInfo[] m_Speeds = new[]
-			{
+		private static SpeedInfo[] m_Speeds = {
 				/* Slow */
 				new SpeedInfo( 0.3, 0.6, new[]
 				{

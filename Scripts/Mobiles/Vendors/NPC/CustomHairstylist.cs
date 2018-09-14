@@ -24,8 +24,7 @@ namespace Server.Mobiles
 		public static readonly object Vendor = new object();
 		public static readonly object Price = new object();
 
-		private static HairstylistBuyInfo[] m_SellList = new[]
-			{
+		private static HairstylistBuyInfo[] m_SellList = {
 				new HairstylistBuyInfo( 1018357, 50000, false, typeof( ChangeHairstyleGump ), new[]
 					{ From, Vendor, Price, false, ChangeHairstyleEntry.HairEntries } ),
 				new HairstylistBuyInfo( 1018358, 50000, true, typeof( ChangeHairstyleGump ), new[]
@@ -252,8 +251,7 @@ namespace Server.Mobiles
 				m_Hues[i] = start + i;
 		}
 
-		public static readonly ChangeHairHueEntry[] BrightEntries = new[]
-			{
+		public static readonly ChangeHairHueEntry[] BrightEntries = {
 				new ChangeHairHueEntry( "*****", 12, 10 ),
 				new ChangeHairHueEntry( "*****", 32, 5 ),
 				new ChangeHairHueEntry( "*****", 38, 8 ),
@@ -264,8 +262,7 @@ namespace Server.Mobiles
 				new ChangeHairHueEntry( "*****", 1153, 2 )
 			};
 
-		public static readonly ChangeHairHueEntry[] RegularEntries = new[]
-			{
+		public static readonly ChangeHairHueEntry[] RegularEntries = {
 				new ChangeHairHueEntry( "*****", 1602, 26 ),
 				new ChangeHairHueEntry( "*****", 1628, 27 ),
 				new ChangeHairHueEntry( "*****", 1502, 32 ),
@@ -406,8 +403,7 @@ namespace Server.Mobiles
 			m_ItemID = itemID;
 		}
 
-		public static readonly ChangeHairstyleEntry[] HairEntries = new[]
-			{
+		public static readonly ChangeHairstyleEntry[] HairEntries = {
 				new ChangeHairstyleEntry( 50700,  70 - 137,  20 -  60, 0x203B ),
 				new ChangeHairstyleEntry( 60710, 193 - 260,  18 -  60, 0x2045 ),
 				new ChangeHairstyleEntry( 50703, 316 - 383,  25 -  60, 0x2044 ),
@@ -420,8 +416,7 @@ namespace Server.Mobiles
 				new ChangeHairstyleEntry( 0, 0, 0, 0 )
 			};
 
-		public static readonly ChangeHairstyleEntry[] BeardEntries = new[]
-			{
+		public static readonly ChangeHairstyleEntry[] BeardEntries = {
 				new ChangeHairstyleEntry( 50800, 120 - 187,  30 -  80, 0x2040 ),
 				new ChangeHairstyleEntry( 50904, 243 - 310,  33 -  80, 0x204B ),
 				new ChangeHairstyleEntry( 50906, 120 - 187, 100 - 150, 0x204D ),

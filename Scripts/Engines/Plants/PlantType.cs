@@ -61,8 +61,7 @@ namespace Server.Engines.Plants
 
 	public class PlantTypeInfo
 	{
-		private static PlantTypeInfo[] m_Table = new[]
-		{
+		private static PlantTypeInfo[] m_Table = {
 			new PlantTypeInfo( 0xC83, 0, 0,			PlantType.CampionFlowers,		false, true, true, true,		PlantCategory.Default ),
 			new PlantTypeInfo( 0xC86, 0, 0,			PlantType.Poppies,				false, true, true, true,		PlantCategory.Default ),
 			new PlantTypeInfo( 0xC88, 0, 10,		PlantType.Snowdrops,			false, true, true, true,		PlantCategory.Default ),

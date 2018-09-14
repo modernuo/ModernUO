@@ -22,8 +22,7 @@ namespace Server.Menus.Questions
 
 	public class StuckMenu : Gump
 	{
-		private static StuckMenuEntry[] m_Entries = new[]
-			{
+		private static StuckMenuEntry[] m_Entries = {
 				// Britain
 				new StuckMenuEntry( 1011028, new[]
 					{
@@ -85,8 +84,7 @@ namespace Server.Menus.Questions
 					} )
 			};
 
-		private static StuckMenuEntry[] m_T2AEntries = new[]
-			{
+		private static StuckMenuEntry[] m_T2AEntries = {
 				// Papua
 				new StuckMenuEntry( 1011057, new[]
 					{

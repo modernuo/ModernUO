@@ -6,8 +6,7 @@ namespace Server.Engines.BulkOrders
 {
 	public class SmallTailorBOD : SmallBOD
 	{
-		public static double[] m_TailoringMaterialChances = new[]
-			{
+		public static double[] m_TailoringMaterialChances = {
 				0.857421875, // None
 				0.125000000, // Spined
 				0.015625000, // Horned

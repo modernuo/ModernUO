@@ -112,8 +112,7 @@ namespace Server.Mobiles
 
 		public static Type[] Artifacts  => m_Artifacts;
 
-		private static Type[] m_Artifacts = new[]
-		{
+		private static Type[] m_Artifacts = {
 			// Decorations
 			typeof( CandelabraOfSouls ),
 			typeof( GhostShipAnchor ),

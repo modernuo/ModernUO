@@ -14,8 +14,7 @@ namespace Server.Items
 		public SlayerName Name => m_Name;
 		public Type[] Types => m_Types;
 
-		private static int[] m_AosTitles = new[]
-			{
+		private static int[] m_AosTitles = {
 				1060479, // undead slayer
 				1060470, // orc slayer
 				1060480, // troll slayer
@@ -45,8 +44,7 @@ namespace Server.Items
 				1070855  // fey slayer
 			};
 
-		private static int[] m_OldTitles = new[]
-			{
+		private static int[] m_OldTitles = {
 				1017384, // Silver
 				1017385, // Orc Slaying
 				1017386, // Troll Slaughter

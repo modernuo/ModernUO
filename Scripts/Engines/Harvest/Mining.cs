@@ -260,8 +260,7 @@ namespace Server.Engines.Harvest
 			return base.MutateVein( from, tool, def, bank, toHarvest, vein );
 		}
 
-		private static int[] m_Offsets = new[]
-			{
+		private static int[] m_Offsets = {
 				-1, -1,
 				-1,  0,
 				-1,  1,
@@ -353,8 +352,7 @@ namespace Server.Engines.Harvest
 		}
 
 		#region Tile lists
-		private static int[] m_MountainAndCaveTiles = new[]
-			{
+		private static int[] m_MountainAndCaveTiles = {
 				220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
 				230, 231, 236, 237, 238, 239, 240, 241, 242, 243,
 				244, 245, 246, 247, 252, 253, 254, 255, 256, 257,
@@ -392,8 +390,7 @@ namespace Server.Engines.Harvest
 				0x4549, 0x454A, 0x454B, 0x454C, 0x454D, 0x454E,	0x454F
 			};
 
-		private static int[] m_SandTiles = new[]
-			{
+		private static int[] m_SandTiles = {
 				22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 				32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
 				42, 43, 44, 45, 46, 47, 48, 49, 50, 51,

@@ -284,8 +284,7 @@ namespace Server.Items
 			Opened = true;
 		}
 
-		private static int[] m_Hues = new[]
-		{
+		private static int[] m_Hues = {
 			0xD, 0x17, 0x2B, 0x42, 0x54, 0x5D
 		};
 

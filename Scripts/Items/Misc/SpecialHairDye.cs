@@ -71,8 +71,7 @@ namespace Server.Items
 			}
 		}
 
-		private static SpecialHairDyeEntry[] m_Entries = new[]
-			{
+		private static SpecialHairDyeEntry[] m_Entries = {
 				new SpecialHairDyeEntry( "*****", 12, 10 ),
 				new SpecialHairDyeEntry( "*****", 32, 5 ),
 				new SpecialHairDyeEntry( "*****", 38, 8 ),

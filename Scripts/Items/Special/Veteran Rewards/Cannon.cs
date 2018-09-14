@@ -194,8 +194,7 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1076198 ); // You do not have a full keg of explosion potions needed to recharge the cannon.
 		}
 
-		private static int[] m_Effects = new[]
-		{
+		private static int[] m_Effects = {
 			0x36B0, 0x3728, 0x3709, 0x36FE
 		};
 

@@ -72,8 +72,7 @@ namespace Server.Engines.ConPVP
 
 	public class Ladder
 	{
-		private static int[] m_ShortLevels = new[]
-			{
+		private static int[] m_ShortLevels = {
 				1,
 				2,
 				3, 3,
@@ -97,8 +96,7 @@ namespace Server.Engines.ConPVP
 			return m_ShortLevels[xp / 100];
 		}
 
-		private static int[] m_BaseXP = new[]
-			{
+		private static int[] m_BaseXP = {
 				0, 100, 200, 400, 600, 900, 1200, 1600, 2000, 2500
 			};
 
@@ -116,8 +114,7 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
-		private static int[] m_LossFactors = new[]
-			{
+		private static int[] m_LossFactors = {
 				10,
 				11, 11,
 				25, 25,
@@ -133,8 +130,7 @@ namespace Server.Engines.ConPVP
 			return m_LossFactors[level - 1];
 		}
 
-		private static int[,] m_OffsetScalar = new[,]
-			{
+		private static int[,] m_OffsetScalar = {
 					  /* { win, los } */
 				/* -6 */ { 175,  25 },
 				/* -5 */ { 165,  35 },

@@ -1029,8 +1029,7 @@ namespace Server
 
 		#endregion
 
-		private static SkillName[] m_AllSkills = new[]
-			{
+		private static SkillName[] m_AllSkills = {
 				SkillName.Alchemy,
 				SkillName.Anatomy,
 				SkillName.AnimalLore,
@@ -1088,8 +1087,7 @@ namespace Server
 				SkillName.Spellweaving
 			};
 
-		private static SkillName[] m_CombatSkills = new[]
-			{
+		private static SkillName[] m_CombatSkills = {
 				SkillName.Archery,
 				SkillName.Swords,
 				SkillName.Macing,
@@ -1097,8 +1095,7 @@ namespace Server
 				SkillName.Wrestling
 			};
 
-		private static SkillName[] m_CraftSkills = new[]
-			{
+		private static SkillName[] m_CraftSkills = {
 				SkillName.Alchemy,
 				SkillName.Blacksmith,
 				SkillName.Fletching,

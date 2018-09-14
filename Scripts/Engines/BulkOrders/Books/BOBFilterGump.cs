@@ -10,8 +10,7 @@ namespace Server.Engines.BulkOrders
 
 		private const int LabelColor = 0x7FFF;
 
-		private static int[,] m_MaterialFilters = new[,]
-			{
+		private static int[,] m_MaterialFilters = {
 				{ 1044067,  1 }, // Blacksmithy
 				{ 1062226,  3 }, // Iron
 				{ 1018332,  4 }, // Dull Copper
@@ -34,43 +33,39 @@ namespace Server.Engines.BulkOrders
 				{ 1062238, 16 }  // Barbed
 			};
 
-		private static int[,] m_TypeFilters = new[,]
-			{
+		private static int[,] m_TypeFilters = {
 				{ 1062229, 0 }, // All
 				{ 1062224, 1 }, // Small
 				{ 1062225, 2 }  // Large
 			};
 
-		private static int[,] m_QualityFilters = new[,]
-			{
+		private static int[,] m_QualityFilters = {
 				{ 1062229, 0 }, // All
 				{ 1011542, 1 }, // Normal
 				{ 1060636, 2 }  // Exceptional
 			};
 
-		private static int[,] m_AmountFilters = new[,]
-			{
+		private static int[,] m_AmountFilters = {
 				{ 1062229, 0 }, // All
 				{ 1049706, 1 }, // 10
 				{ 1016007, 2 }, // 15
 				{ 1062239, 3 }  // 20
 			};
 
-		private static int[][,] m_Filters = new[]
-		{
+		private static int[][,] m_Filters = {
 				m_TypeFilters,
 				m_QualityFilters,
 				m_MaterialFilters,
 				m_AmountFilters
 			};
 
-		private static int[] m_XOffsets_Type = new[]{ 0, 75, 170 };
-		private static int[] m_XOffsets_Quality = new[]{ 0, 75, 170 };
-		private static int[] m_XOffsets_Amount = new[]{ 0, 75, 180, 275 };
-		private static int[] m_XOffsets_Material = new[]{ 0, 105, 210, 305, 390, 485 };
+		private static int[] m_XOffsets_Type = { 0, 75, 170 };
+		private static int[] m_XOffsets_Quality = { 0, 75, 170 };
+		private static int[] m_XOffsets_Amount = { 0, 75, 180, 275 };
+		private static int[] m_XOffsets_Material = { 0, 105, 210, 305, 390, 485 };
 
-		private static int[] m_XWidths_Small = new[]{ 50, 50, 70, 50 };
-		private static int[] m_XWidths_Large = new[]{ 80, 50, 50, 50, 50, 50 };
+		private static int[] m_XWidths_Small = { 50, 50, 70, 50 };
+		private static int[] m_XWidths_Large = { 80, 50, 50, 50, 50, 50 };
 
 		private void AddFilterList( int x, int y, int[] xOffsets, int yOffset, int[,] filters, int[] xWidths, int filterValue, int filterIndex )
 		{

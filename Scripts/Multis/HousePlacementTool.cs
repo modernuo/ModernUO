@@ -642,8 +642,7 @@ namespace Server.Items
 			}
 		}
 
-		private static HousePlacementEntry[] m_ClassicHouses = new[]
-			{
+		private static HousePlacementEntry[] m_ClassicHouses = {
 				new HousePlacementEntry( typeof( SmallOldHouse ),		1011303,	425,	212,	489,	244,	10,	37000,		0,	4,	0,	0x0064	),
 				new HousePlacementEntry( typeof( SmallOldHouse ),		1011304,	425,	212,	489,	244,	10,	37000,		0,	4,	0,	0x0066	),
 				new HousePlacementEntry( typeof( SmallOldHouse ),		1011305,	425,	212,	489,	244,	10,	36750,		0,	4,	0,	0x0068	),
@@ -669,8 +668,7 @@ namespace Server.Items
 		public static HousePlacementEntry[] ClassicHouses => m_ClassicHouses;
 
 
-		private static HousePlacementEntry[] m_TwoStoryFoundations = new[]
-			{
+		private static HousePlacementEntry[] m_TwoStoryFoundations = {
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060241,	425,	212,	489,	244,	10,	30500,		0,	4,	0,	0x13EC	), // 7x7 2-Story Customizable House
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060242,	580,	290,	667,	333,	14,	34500,		0,	5,	0,	0x13ED	), // 7x8 2-Story Customizable House
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060243,	650,	325,	748,	374,	16,	38500,		0,	5,	0,	0x13EE	), // 7x9 2-Story Customizable House
@@ -723,8 +721,7 @@ namespace Server.Items
 		public static HousePlacementEntry[] TwoStoryFoundations => m_TwoStoryFoundations;
 
 
-		private static HousePlacementEntry[] m_ThreeStoryFoundations = new[]
-			{
+		private static HousePlacementEntry[] m_ThreeStoryFoundations = {
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060272,	1150,	575,	1323,	661,	24,	73500,		0,	8,	0,	0x140B	), // 9x14 3-Story Customizable House
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060284,	1200,	600,	1380,	690,	26,	81000,		0,	8,	0,	0x1417	), // 10x14 3-Story Customizable House
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060285,	1250,	625,	1438,	719,	26,	86500,		0,	8,	0,	0x1418	), // 10x15 3-Story Customizable House

@@ -6,8 +6,7 @@ namespace Server.Engines.Quests.Doom
 {
 	public class TheSummoningQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new[]
-			{
+		private static Type[] m_TypeReferenceTable = {
 				typeof( AcceptConversation ),
 				typeof( CollectBonesObjective ),
 				typeof( VanquishDaemonConversation ),

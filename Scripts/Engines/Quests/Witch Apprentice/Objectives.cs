@@ -6,8 +6,7 @@ namespace Server.Engines.Quests.Hag
 {
 	public class FindApprenticeObjective : QuestObjective
 	{
-		private static Point3D[] m_CorpseLocations = new[]
-			{
+		private static Point3D[] m_CorpseLocations = {
 				new Point3D( 778, 1158, 0 ),
 				new Point3D( 698, 1443, 0 ),
 				new Point3D( 785, 1548, 0 ),

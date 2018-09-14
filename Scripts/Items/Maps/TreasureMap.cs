@@ -45,8 +45,7 @@ namespace Server.Items
 		private static Point2D[] m_Locations;
 		private static Point2D[] m_HavenLocations;
 
-		private static Type[][] m_SpawnTypes = new[]
-		{
+		private static Type[][] m_SpawnTypes = {
 			new[]{ typeof( HeadlessOne ), typeof( Skeleton ) },
 			new[]{ typeof( Mongbat ), typeof( Ratman ), typeof( HeadlessOne ), typeof( Skeleton ), typeof( Zombie ) },
 			new[]{ typeof( OrcishMage ), typeof( Gargoyle ), typeof( Gazer ), typeof( HellHound ), typeof( EarthElemental ) },

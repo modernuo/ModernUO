@@ -34,8 +34,7 @@ namespace Server.Misc
 			set => m_LockdownLevel = value;
 		}
 
-		private static CityInfo[] StartingCities = new[]
-			{
+		private static CityInfo[] StartingCities = {
 				new CityInfo( "New Haven",	"New Haven Bank",	1150168, 3667,	2625,	0  ),
 				new CityInfo( "Yew",		"The Empath Abbey",	1075072, 633,	858,	0  ),
 				new CityInfo( "Minoc",		"The Barnacle",		1075073, 2476,	413,	15 ),
@@ -250,8 +249,7 @@ namespace Server.Misc
 			}
 		}
 
-		private static readonly char[] m_ForbiddenChars = new[]
-		{
+		private static readonly char[] m_ForbiddenChars = {
 			'<', '>', ':', '"', '/', '\\', '|', '?', '*'
 		};
 

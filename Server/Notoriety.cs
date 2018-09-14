@@ -40,8 +40,7 @@ namespace Server
 			set => m_Handler = value;
 		}
 
-		private static int[] m_Hues = new[]
-			{
+		private static int[] m_Hues = {
 				0x000,
 				0x059,
 				0x03F,

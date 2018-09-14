@@ -5,8 +5,7 @@ namespace Server.Engines.Quests.Hag
 {
 	public class WitchApprenticeQuest : QuestSystem
 	{
-		private static Type[] m_TypeReferenceTable = new[]
-			{
+		private static Type[] m_TypeReferenceTable = {
 				typeof( FindApprenticeObjective ),
 				typeof( FindGrizeldaAboutMurderObjective ),
 				typeof( KillImpsObjective ),
@@ -58,8 +57,7 @@ namespace Server.Engines.Quests.Hag
 			AddConversation( new AcceptConversation() );
 		}
 
-		private static Point3D[] m_ZeefzorpulLocations = new[]
-			{
+		private static Point3D[] m_ZeefzorpulLocations = {
 				new Point3D( 1226, 1573, 0 ),
 				new Point3D( 1929, 1148, 0 ),
 				new Point3D( 1366, 2723, 0 ),

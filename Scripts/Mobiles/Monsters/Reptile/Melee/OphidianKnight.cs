@@ -6,8 +6,7 @@ namespace Server.Mobiles
 	public class OphidianKnight : BaseCreature
 	{
 		public override string CorpseName => "an ophidian corpse";
-		private static string[] m_Names = new[]
-			{
+		private static string[] m_Names = {
 				"an ophidian knight-errant",
 				"an ophidian avenger"
 			};

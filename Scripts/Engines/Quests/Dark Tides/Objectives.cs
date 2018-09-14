@@ -7,8 +7,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override object Message => 1060102;
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1023643, 8787 ) // spellbook
 			};
 
@@ -116,8 +115,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override object Message => 1060109;
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1023676, 3679 ) // glowing rune
 			};
 
@@ -197,8 +195,7 @@ namespace Server.Engines.Quests.Necro
 	{
 		public override object Message => 1060115;
 
-		private static QuestItemInfo[] m_Info = new[]
-			{
+		private static QuestItemInfo[] m_Info = {
 				new QuestItemInfo( 1026153, 6178 ) // teleporter
 			};
 

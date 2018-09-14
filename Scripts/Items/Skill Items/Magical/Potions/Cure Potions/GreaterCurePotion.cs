@@ -2,8 +2,7 @@ namespace Server.Items
 {
 	public class GreaterCurePotion : BaseCurePotion
 	{
-		private static CureLevelInfo[] m_OldLevelInfo = new[]
-			{
+		private static CureLevelInfo[] m_OldLevelInfo = {
 				new CureLevelInfo( Poison.Lesser,  1.00 ), // 100% chance to cure lesser poison
 				new CureLevelInfo( Poison.Regular, 1.00 ), // 100% chance to cure regular poison
 				new CureLevelInfo( Poison.Greater, 1.00 ), // 100% chance to cure greater poison
@@ -11,8 +10,7 @@ namespace Server.Items
 				new CureLevelInfo( Poison.Lethal,  0.25 )  //  25% chance to cure lethal poison
 			};
 
-		private static CureLevelInfo[] m_AosLevelInfo = new[]
-			{
+		private static CureLevelInfo[] m_AosLevelInfo = {
 				new CureLevelInfo( Poison.Lesser,  1.00 ),
 				new CureLevelInfo( Poison.Regular, 1.00 ),
 				new CureLevelInfo( Poison.Greater, 1.00 ),

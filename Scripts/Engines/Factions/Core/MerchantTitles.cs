@@ -36,8 +36,7 @@ namespace Server.Factions
 
 	public class MerchantTitles
 	{
-		private static MerchantTitleInfo[] m_Info = new[]
-			{
+		private static MerchantTitleInfo[] m_Info = {
 				new MerchantTitleInfo( SkillName.Inscribe,		90.0,	new TextDefinition( 1060773, "Scribe" ),		new TextDefinition( 1011468, "SCRIBE" ),		new TextDefinition( 1010121, "You now have the faction title of scribe" ) ),
 				new MerchantTitleInfo( SkillName.Carpentry,		90.0,	new TextDefinition( 1060774, "Carpenter" ),		new TextDefinition( 1011469, "CARPENTER" ),		new TextDefinition( 1010122, "You now have the faction title of carpenter" ) ),
 				new MerchantTitleInfo( SkillName.Tinkering,		90.0,	new TextDefinition( 1022984, "Tinker" ),		new TextDefinition( 1011470, "TINKER" ),		new TextDefinition( 1010123, "You now have the faction title of tinker" ) ),

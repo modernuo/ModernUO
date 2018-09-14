@@ -227,8 +227,7 @@ namespace Server.Items
 			}
 		}
 
-		private static DisguiseEntry[] m_HairEntries = new[]
-			{
+		private static DisguiseEntry[] m_HairEntries = {
 				new DisguiseEntry( 8251, 50700, 0,  5, 1011052 ), // Short
 				new DisguiseEntry( 8261, 60710, 0,  3, 1011047 ), // Pageboy
 				new DisguiseEntry( 8252, 60708, 0,- 5, 1011053 ), // Long
@@ -241,8 +240,7 @@ namespace Server.Items
 				new DisguiseEntry( 0, 0, 0, 0, 1011051 ) // None
 			};
 
-		private static DisguiseEntry[] m_BeardEntries = new[]
-			{
+		private static DisguiseEntry[] m_BeardEntries = {
 				new DisguiseEntry( 8269, 50906, 0,  0, 1011401 ), // Vandyke
 				new DisguiseEntry( 8257, 50808, 0,- 2, 1011062 ), // Mustache
 				new DisguiseEntry( 8255, 50802, 0,  0, 1011060 ), // Short beard

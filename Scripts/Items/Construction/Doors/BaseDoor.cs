@@ -17,8 +17,7 @@ namespace Server.Items
 
 		private Timer m_Timer;
 
-		private static Point3D[] m_Offsets = new[]
-			{
+		private static Point3D[] m_Offsets = {
 				new Point3D(-1, 1, 0 ),
 				new Point3D( 1, 1, 0 ),
 				new Point3D(-1, 0, 0 ),

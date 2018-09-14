@@ -27,8 +27,7 @@ namespace Server.Items
 
 		public override string DefaultTitle => $"<basefont color=#FFFFFF>Power Scroll ({Value} Skill):</basefont>";
 
-		private static SkillName[] m_Skills = new[]
-			{
+		private static SkillName[] m_Skills = {
 				SkillName.Blacksmith,
 				SkillName.Tailoring,
 				SkillName.Swords,
@@ -53,8 +52,7 @@ namespace Server.Items
 				SkillName.Peacemaking
 			};
 
-		private static SkillName[] m_AOSSkills = new[]
-			{
+		private static SkillName[] m_AOSSkills = {
 				SkillName.Chivalry,
 				SkillName.Focus,
 				SkillName.Necromancy,
@@ -63,14 +61,12 @@ namespace Server.Items
 				SkillName.SpiritSpeak
 			};
 
-		private static SkillName[] m_SESkills = new[]
-			{
+		private static SkillName[] m_SESkills = {
 				SkillName.Ninjitsu,
 				SkillName.Bushido
 			};
 
-		private static SkillName[] m_MLSkills = new[]
-			{
+		private static SkillName[] m_MLSkills = {
 				SkillName.Spellweaving
 			};
 

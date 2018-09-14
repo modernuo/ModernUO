@@ -5,8 +5,7 @@ namespace Server
 {
 	public class DoorGenerator
 	{
-		private static Rectangle2D[] m_BritRegions = new[]
-			{
+		private static Rectangle2D[] m_BritRegions = {
 				new Rectangle2D( new Point2D( 250, 750 ), new Point2D( 775, 1330 ) ),
 				new Rectangle2D( new Point2D( 525, 2095 ), new Point2D( 925, 2430 ) ),
 				new Rectangle2D( new Point2D( 1025, 2155 ), new Point2D( 1265, 2310 ) ),
@@ -25,18 +24,15 @@ namespace Server
 				new Rectangle2D( new Point2D( 5120, 2300 ), new Point2D( 6143, 4095 ) )
 			};
 
-		private static Rectangle2D[] m_IlshRegions = new[]
-			{
+		private static Rectangle2D[] m_IlshRegions = {
 				new Rectangle2D( new Point2D( 0, 0 ), new Point2D( 288*8, 200*8 ) )
 			};
 
-		private static Rectangle2D[] m_MalasRegions = new[]
-			{
+		private static Rectangle2D[] m_MalasRegions = {
 				new Rectangle2D( new Point2D( 0, 0 ), new Point2D( 320*8, 256*8 ) )
 			};
 
-		private static int[] m_SouthFrames = new[]
-			{
+		private static int[] m_SouthFrames = {
 				0x0006,
 				0x0008,
 				0x000B,
@@ -109,8 +105,7 @@ namespace Server
 				0x020A
 			};
 
-		private static int[] m_NorthFrames = new[]
-			{
+		private static int[] m_NorthFrames = {
 				0x0006,
 				0x0008,
 				0x000D,
@@ -182,8 +177,7 @@ namespace Server
 				0x020A
 			};
 
-		private static int[] m_EastFrames = new[]
-			{
+		private static int[] m_EastFrames = {
 				0x0007,
 				0x000A,
 				0x001A,
@@ -256,8 +250,7 @@ namespace Server
 				0x0209
 			};
 
-		private static int[] m_WestFrames = new[]
-			{
+		private static int[] m_WestFrames = {
 				0x0007,
 				0x000C,
 				0x001A,

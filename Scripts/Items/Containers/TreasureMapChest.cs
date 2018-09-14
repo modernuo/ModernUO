@@ -13,8 +13,7 @@ namespace Server.Items
 
 		public static Type[] Artifacts  => m_Artifacts;
 
-		private static Type[] m_Artifacts = new[]
-		{
+		private static Type[] m_Artifacts = {
 			typeof( CandelabraOfSouls ), typeof( GoldBricks ), typeof( PhillipsWoodenSteed ),
 			typeof( ArcticDeathDealer ), typeof( BlazeOfDeath ), typeof( BurglarsBandana ),
 			typeof( CavortingClub ), typeof( DreadPirateHat ),

@@ -95,8 +95,7 @@ namespace Server.Engines.Quests.Doom
 			Delete();
 		}
 
-		private static int[] m_Offsets = new[]
-			{
+		private static int[] m_Offsets = {
 				-1, -1,
 				-1,  0,
 				-1,  1,

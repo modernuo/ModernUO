@@ -625,8 +625,7 @@ namespace Server.Items
 
 	public class AncientUrn : Item
 	{
-		private static string[] m_Names = new[]
-			{
+		private static string[] m_Names = {
 				"Akira",
 				"Avaniaga",
 				"Aya",
@@ -917,8 +916,7 @@ namespace Server.Items
 	public class LesserPigmentsOfTokuno : BasePigmentsOfTokuno
 	{
 
-		private static int[][] m_Table = new[]
-		{
+		private static int[][] m_Table = {
 			// Hue, Label
 			new[]{ /*PigmentType.None,*/ 0, -1 },
 			new[]{ /*PigmentType.PaleOrange,*/ 0x02E, 1071458 },

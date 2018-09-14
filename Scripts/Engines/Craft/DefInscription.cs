@@ -120,8 +120,7 @@ namespace Server.Engines.Craft
 			SpidersSilk
 		}
 
-		private Type[] m_RegTypes = new[]
-		{
+		private Type[] m_RegTypes = {
 			typeof( BlackPearl ),
 			typeof( Bloodmoss ),
 			typeof( Garlic ),

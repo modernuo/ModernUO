@@ -101,8 +101,7 @@ namespace Server.Gumps
 			e.Mobile.SendGump( new AddDoorGump() );
 		}
 
-		public static DoorInfo[] m_Types = new[]
-			{
+		public static DoorInfo[] m_Types = {
 				new DoorInfo( typeof( MetalDoor ), 0x675 ),
 				new DoorInfo( typeof( RattanDoor ), 0x695 ),
 				new DoorInfo( typeof( DarkWoodDoor ), 0x6A5 ),

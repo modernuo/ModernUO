@@ -173,15 +173,14 @@ namespace Server.Items
 			}
 		}
 
-		private static int[] m_WaterTiles = new[]
-			{
+		private static int[] m_WaterTiles = {
 				0x00A8, 0x00AB,
 				0x0136, 0x0137
 			};
 
-		private static Rectangle2D[] m_BritRegions = new[]{ new Rectangle2D( 0, 0, 5120, 4096 ) };
-		private static Rectangle2D[] m_IlshRegions = new[]{ new Rectangle2D( 1472, 272, 304, 240 ), new Rectangle2D( 1240, 1000, 312, 160 ) };
-		private static Rectangle2D[] m_MalasRegions = new[]{ new Rectangle2D( 1376, 1520, 464, 280 ) };
+		private static Rectangle2D[] m_BritRegions = { new Rectangle2D( 0, 0, 5120, 4096 ) };
+		private static Rectangle2D[] m_IlshRegions = { new Rectangle2D( 1472, 272, 304, 240 ), new Rectangle2D( 1240, 1000, 312, 160 ) };
+		private static Rectangle2D[] m_MalasRegions = { new Rectangle2D( 1376, 1520, 464, 280 ) };
 
 		public static Point3D FindLocation( Map map )
 		{
@@ -312,8 +311,7 @@ namespace Server.Items
 				m_Message = message;
 			}
 
-			private static MessageEntry[] m_Entries = new[]
-				{
+			private static MessageEntry[] m_Entries = {
 					new MessageEntry( 280, 180, "...Ar! {0} and a fair wind! No chance... storms, though--ar! Is that a sea serp...<br><br>uh oh." ),
 					new MessageEntry( 280, 215, "...been inside this whale for three days now. I've run out of food I can pick out of his teeth. I took a sextant reading through the blowhole: {0}. I'll never see my treasure again..." ),
 					new MessageEntry( 280, 285, "...grand adventure! Captain Quacklebush had me swab down the decks daily...<br>  ...pirates came, I was in the rigging practicing with my sextant. {0} if I am not mistaken...<br>  ....scuttled the ship, and our precious cargo went with her and the screaming pirates, down to the bottom of the sea..." ),

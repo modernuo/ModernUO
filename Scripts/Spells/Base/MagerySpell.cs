@@ -38,7 +38,7 @@ namespace Server.Spells
 			max = avg + ChanceOffset;
 		}
 
-		private static int[] m_ManaTable = new[] { 4, 6, 9, 11, 14, 20, 40, 50 };
+		private static int[] m_ManaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
 		public override int GetMana()
 		{

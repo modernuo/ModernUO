@@ -240,8 +240,7 @@ namespace Server.Commands
 			{
 				using ( StreamWriter op = new StreamWriter( "expandedItems.log", true ) )
 				{
-					string[] names = new[]
-					{
+					string[] names = {
 						"Name",
 						"Items",
 						"Bounce",

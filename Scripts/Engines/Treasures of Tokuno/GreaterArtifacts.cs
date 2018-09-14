@@ -393,8 +393,7 @@ namespace Server.Items
 
 	public class PigmentsOfTokuno : BasePigmentsOfTokuno
 	{
-		private static int[][] m_Table = new[]
-		{
+		private static int[][] m_Table = {
 			// Hue, Label
 			new[]{ /*PigmentType.None,*/ 0, -1 },
 			new[]{ /*PigmentType.ParagonGold,*/ 0x501, 1070987 },

@@ -163,8 +163,7 @@ namespace Server.Gumps
 			return 1 + (index * 15) + type;
 		}
 
-		private static int[] m_HangerNumbers = new[]
-			{
+		private static int[] m_HangerNumbers = {
 				2968, 2970, 2972,
 				2974, 2976, 2978
 			};
@@ -178,8 +177,7 @@ namespace Server.Gumps
 				20, 189, 765, 65, 101
 			});
 
-		private static int[] m_PostNumbers = new[]
-			{
+		private static int[] m_PostNumbers = {
 				9, 29, 54, 90, 147, 169,
 				177, 204, 251, 257, 263,
 				298, 347, 424, 441, 466,
