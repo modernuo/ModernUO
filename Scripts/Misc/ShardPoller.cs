@@ -414,12 +414,12 @@ namespace Server.Misc
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public string Color( string text, int color )
 		{
-			return String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text );
+			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 		}
 
 		private const int LabelColor32 = 0xFFFFFF;
@@ -468,7 +468,7 @@ namespace Server.Misc
 
 			if ( editing )
 			{
-				AddHtml( 22, 22, 294, 20, Color( String.Format( "{0} total", totalVotes ), LabelColor32 ), false, false );
+				AddHtml( 22, 22, 294, 20, Color($"{totalVotes} total", LabelColor32 ), false, false );
 				AddButton( 287, 23, 0x2622, 0x2623, 2, GumpButtonType.Reply, 0 );
 			}
 
@@ -596,7 +596,7 @@ namespace Server.Misc
 			if ( m.Groups[1].Success )
 			{
 				if ( m.Groups[2].Success )
-					return String.Format( "<a href=\"{0}\">{1}</a>", m.Groups[1].Value, m.Groups[2].Value );
+					return $"<a href=\"{m.Groups[1].Value}\">{m.Groups[2].Value}</a>";
 			}
 			else if ( m.Groups[2].Success )
 			{

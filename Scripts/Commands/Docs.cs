@@ -982,7 +982,7 @@ namespace Server.Commands
 							break;
 					}
 
-					html.WriteLine( "            <td width=\"{0}\"{1} class=\"entry\">&nbsp;</td>", count*25, count==1?"":String.Format( " colspan=\"{0}\"", count ) );
+					html.WriteLine( "            <td width=\"{0}\"{1} class=\"entry\">&nbsp;</td>", count*25, count==1?"": $" colspan=\"{count}\"");
 				}
 			}
 
@@ -998,7 +998,7 @@ namespace Server.Commands
 
 			lbod.Entries = LargeBulkEntry.ConvertEntries( lbod, entries );
 
-			WriteSmithBODHeader( html, String.Format( "(Large) {0}: Normal", name ) );
+			WriteSmithBODHeader( html, $"(Large) {name}: Normal");
 
 			lbod.RequireExceptional = false;
 			for( BulkMaterialType mat = BulkMaterialType.None; mat <= BulkMaterialType.Valorite; ++mat )
@@ -1012,7 +1012,7 @@ namespace Server.Commands
 
 			html.WriteLine( "      <br><br>" );
 
-			WriteSmithBODHeader( html, String.Format( "(Large) {0}: Exceptional", name ) );
+			WriteSmithBODHeader( html, $"(Large) {name}: Exceptional");
 
 			lbod.RequireExceptional = true;
 			for( BulkMaterialType mat = BulkMaterialType.None; mat <= BulkMaterialType.Valorite; ++mat )
@@ -1205,7 +1205,7 @@ namespace Server.Commands
 							break;
 					}
 
-					html.WriteLine( "            <td width=\"{0}\"{1} class=\"entry\">&nbsp;</td>", count*25, count==1?"":String.Format( " colspan=\"{0}\"", count ) );
+					html.WriteLine( "            <td width=\"{0}\"{1} class=\"entry\">&nbsp;</td>", count*25, count==1?"": $" colspan=\"{count}\"");
 				}
 			}
 

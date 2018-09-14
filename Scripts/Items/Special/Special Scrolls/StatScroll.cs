@@ -26,7 +26,8 @@ namespace Server.Items
 			}
 		}
 
-		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Power Scroll ({0}{1} Maximum Stats):</basefont>", ( (int)Value - 225 ) >= 0 ? "+" : "", (int)Value - 225 );
+		public override string DefaultTitle =>
+			$"<basefont color=#FFFFFF>Power Scroll ({(((int) Value - 225) >= 0 ? "+" : "")}{(int) Value - 225} Maximum Stats):</basefont>";
 
 		public StatCapScroll() : this( 105 )
 		{

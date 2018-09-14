@@ -47,7 +47,7 @@ namespace Server.Engines.BulkOrders
 
 		public static SmallBulkEntry[] LoadEntries( string type, string name )
 		{
-			return LoadEntries( String.Format( "Data/Bulk Orders/{0}/{1}.cfg", type, name ) );
+			return LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
 		}
 
 		public static SmallBulkEntry[] LoadEntries( string path )

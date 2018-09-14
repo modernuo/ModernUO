@@ -51,7 +51,7 @@ namespace Server.Spells.Ninjitsu
 
 			if ( Caster.Skills[CastSkill].Value < RequiredSkill )
 			{
-				string args = String.Format( "{0}\t{1}\t ", RequiredSkill.ToString( "F1" ), CastSkill.ToString() );
+				string args = $"{RequiredSkill.ToString("F1")}\t{CastSkill.ToString()}\t ";
 				Caster.SendLocalizedMessage( 1063013, args ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
 				return false;
 			}

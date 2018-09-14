@@ -62,7 +62,7 @@ namespace Server.Gumps
 
 		public override string Compile( NetState ns )
 		{
-			return String.Format( "{{ checkertrans {0} {1} {2} {3} }}", m_X, m_Y, m_Width, m_Height );
+			return $"{{ checkertrans {m_X} {m_Y} {m_Width} {m_Height} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "checkertrans" );

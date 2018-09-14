@@ -272,7 +272,8 @@ namespace Server
 			if ( totalFrozen == 0 && badDataFile )
 				from.SendGump( new NoticeGump( 1060637, 30720, "Output data files could not be opened and the freeze operation has been aborted.<br><br>This probably means your server and client are using the same data files.  Instructions on how to resolve this can be found in the first warning window.", 0xFFC000, 320, 240, null, null ) );
 			else
-				from.SendGump( new NoticeGump( 1060637, 30720, String.Format( "Freeze operation completed successfully.<br><br>{0} item{1} frozen.<br><br>You must restart your client and update it's data files to see the changes.", totalFrozen, totalFrozen != 1 ? "s were" : " was" ), 0xFFC000, 320, 240, null, null ) );
+				from.SendGump( new NoticeGump( 1060637, 30720,
+					$"Freeze operation completed successfully.<br><br>{totalFrozen} item{(totalFrozen != 1 ? "s were" : " was")} frozen.<br><br>You must restart your client and update it's data files to see the changes.", 0xFFC000, 320, 240, null, null ) );
 		}
 
 		private const string BaseUnfreezeWarning =	"{0}  " +
@@ -470,7 +471,8 @@ namespace Server
 			if ( totalUnfrozen == 0 && badDataFile )
 				from.SendGump( new NoticeGump( 1060637, 30720, "Output data files could not be opened and the unfreeze operation has been aborted.<br><br>This probably means your server and client are using the same data files.  Instructions on how to resolve this can be found in the first warning window.", 0xFFC000, 320, 240, null, null ) );
 			else
-				from.SendGump( new NoticeGump( 1060637, 30720, String.Format( "Unfreeze operation completed successfully.<br><br>{0} item{1} unfrozen.<br><br>You must restart your client and update it's data files to see the changes.", totalUnfrozen, totalUnfrozen != 1 ? "s were" : " was" ), 0xFFC000, 320, 240, null, null ) );
+				from.SendGump( new NoticeGump( 1060637, 30720,
+					$"Unfreeze operation completed successfully.<br><br>{totalUnfrozen} item{(totalUnfrozen != 1 ? "s were" : " was")} unfrozen.<br><br>You must restart your client and update it's data files to see the changes.", 0xFFC000, 320, 240, null, null ) );
 		}
 
 		private static FileStream OpenWrite( FileStream orig )

@@ -148,7 +148,7 @@ namespace Server.Spells
 		{
 			for ( int i = 0; i < m_CircleNames.Length; ++i )
 			{
-				Type t = ScriptCompiler.FindTypeByFullName( String.Format( "Server.Spells.{0}.{1}", m_CircleNames[i], name ) );
+				Type t = ScriptCompiler.FindTypeByFullName($"Server.Spells.{m_CircleNames[i]}.{name}");
 
 				if ( t != null && !t.IsSubclassOf( typeof( SpecialMove ) ) )
 				{

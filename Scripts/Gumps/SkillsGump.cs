@@ -68,7 +68,7 @@ namespace Server.Gumps
 						if ( text != null )
 						{
 							m_Skill.Base = Convert.ToDouble( text.Text );
-							CommandLogging.LogChangeProperty( m_From, m_Target, String.Format( "{0}.Base", m_Skill ), m_Skill.Base.ToString() );
+							CommandLogging.LogChangeProperty( m_From, m_Target, $"{m_Skill}.Base", m_Skill.Base.ToString() );
 						}
 					}
 					else

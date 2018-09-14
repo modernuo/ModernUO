@@ -35,7 +35,7 @@ namespace Server.Misc
 							}
 						}
 
-						from.SendLocalizedMessage( 1072623, String.Format( "{0}\t{1}", targ.Name, name ) ); // Pet ~1_OLDPETNAME~ renamed to ~2_NEWPETNAME~.
+						from.SendLocalizedMessage( 1072623, $"{targ.Name}\t{name}"); // Pet ~1_OLDPETNAME~ renamed to ~2_NEWPETNAME~.
 					}
 
 					targ.Name = name;

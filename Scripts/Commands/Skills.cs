@@ -128,7 +128,7 @@ namespace Server.Commands
 					if ( m_Set )
 					{
 						skill.Base = m_Value;
-						CommandLogging.LogChangeProperty( from, targ, String.Format( "{0}.Base", m_Skill ), m_Value.ToString() );
+						CommandLogging.LogChangeProperty( from, targ, $"{m_Skill}.Base", m_Value.ToString() );
 					}
 
 					from.SendMessage( "{0} : {1} (Base: {2})", m_Skill, skill.Value, skill.Base );

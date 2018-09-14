@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public override void OnSingleClick( Mobile from )
 		{
-			LabelTo( from, 1050039, String.Format( "#{0}\t#1041645", LabelNumber ) );
+			LabelTo( from, 1050039, $"#{LabelNumber}\t#1041645");
 		}
 
 		public override void AddNameProperties( ObjectPropertyList list )

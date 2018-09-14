@@ -380,7 +380,7 @@ namespace Server.Items
 			if ( m_TicketPrice == 0 )
 				return "FREE";
 			else
-				return String.Format( "{0} gold", m_TicketPrice );
+				return $"{m_TicketPrice} gold";
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -414,12 +414,12 @@ namespace Server.Items
 			{
 				case HouseRaffleState.Active:
 				{
-					LabelTo( from, 1060658, String.Format( "Ends\t{0}", m_Started + m_Duration ) ); // ~1_val~: ~2_val~
+					LabelTo( from, 1060658, $"Ends\t{m_Started + m_Duration}"); // ~1_val~: ~2_val~
 					break;
 				}
 				case HouseRaffleState.Completed:
 				{
-					LabelTo( from, 1060658, String.Format( "Winner\t{0}", ( m_Winner == null ) ? "Unknown" : m_Winner.Name ) ); // ~1_val~: ~2_val~
+					LabelTo( from, 1060658, $"Winner\t{((m_Winner == null) ? "Unknown" : m_Winner.Name)}"); // ~1_val~: ~2_val~
 					break;
 				}
 			}
@@ -461,7 +461,8 @@ namespace Server.Items
 			}
 			else
 			{
-				from.SendGump( new WarningGump( 1150470, 0x7F00, String.Format( "You are about to purchase a raffle ticket for the house plot located at {0}.  The ticket price is {1}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?", FormatLocation(), FormatPrice() ), 0xFFFFFF, 420, 280, new WarningGumpCallback( Purchase_Callback ), null ) ); // CONFIRM TICKET PURCHASE
+				from.SendGump( new WarningGump( 1150470, 0x7F00,
+					$"You are about to purchase a raffle ticket for the house plot located at {FormatLocation()}.  The ticket price is {FormatPrice()}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?", 0xFFFFFF, 420, 280, new WarningGumpCallback( Purchase_Callback ), null ) ); // CONFIRM TICKET PURCHASE
 			}
 		}
 

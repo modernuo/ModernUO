@@ -459,7 +459,8 @@ namespace Server.Engines.ConPVP
 			pl.Eliminated = true;
 
 			mob.LocalOverheadMessage( MessageType.Regular, 0x22, false, "You have forfeited your position in the duel." );
-			mob.NonlocalOverheadMessage( MessageType.Regular, 0x22, false, String.Format( "{0} has forfeited by leaving the dueling arena.", mob.Name ) );
+			mob.NonlocalOverheadMessage( MessageType.Regular, 0x22, false,
+				$"{mob.Name} has forfeited by leaving the dueling arena.");
 
 			Participant winner = CheckCompletion();
 
@@ -498,7 +499,7 @@ namespace Server.Engines.ConPVP
 				else if ( !m_Yielding )
 				{
 					mob.LocalOverheadMessage( MessageType.Regular, 0x22, false, "You have been defeated." );
-					mob.NonlocalOverheadMessage( MessageType.Regular, 0x22, false, String.Format( "{0} has been defeated.", mob.Name ) );
+					mob.NonlocalOverheadMessage( MessageType.Regular, 0x22, false, $"{mob.Name} has been defeated.");
 				}
 			}
 		}
@@ -1176,7 +1177,8 @@ namespace Server.Engines.ConPVP
 				if ( entry == null )
 					return; // sanity
 
-				string text = String.Format( "{{0}} are ranked {0} at level {1}.", LadderGump.Rank( entry.Index + 1 ), Ladder.GetLevel( entry.Experience ) );
+				string text =
+					$"{{0}} are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
 
 				pm.PrivateOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, from==pm?"You":"They" ), from.NetState );
 			}
@@ -1267,7 +1269,8 @@ namespace Server.Engines.ConPVP
 						if ( entry == null )
 							return; // sanity
 
-						string text = String.Format( "{{0}} {{1}} ranked {0} at level {1}.", LadderGump.Rank( entry.Index + 1 ), Ladder.GetLevel( entry.Experience ) );
+						string text =
+							$"{{0}} {{1}} ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
 
 						pm.LocalOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, "You", "are" ) );
 						pm.NonlocalOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( text, pm.Name, "is" ) );
@@ -1474,7 +1477,7 @@ namespace Server.Engines.ConPVP
 						else
 						{
 							pm.LocalOverheadMessage( MessageType.Regular, 0x22, false, "You have yielded." );
-							pm.NonlocalOverheadMessage( MessageType.Regular, 0x22, false, String.Format( "{0} has yielded.", pm.Name ) );
+							pm.NonlocalOverheadMessage( MessageType.Regular, 0x22, false, $"{pm.Name} has yielded.");
 
 							pm.DuelContext.m_Yielding=true;
 							pm.Kill();
@@ -2325,21 +2328,21 @@ namespace Server.Engines.ConPVP
 						return "a slot is empty";
 
 					if ( dp.Mobile.Region.IsPartOf( typeof( Regions.Jail ) ) )
-						return String.Format( "{0} is in jail", dp.Mobile.Name );
+						return $"{dp.Mobile.Name} is in jail";
 
 					if ( Sigil.ExistsOn( dp.Mobile ) )
-						return String.Format( "{0} is holding a sigil", dp.Mobile.Name );
+						return $"{dp.Mobile.Name} is holding a sigil";
 
 					if ( !dp.Mobile.Alive )
 					{
 						if ( m_Tournament == null )
-							return String.Format( "{0} is dead", dp.Mobile.Name );
+							return $"{dp.Mobile.Name} is dead";
 						else
 							dp.Mobile.Resurrect();
 					}
 
 					if ( m_Tournament == null && CheckCombat( dp.Mobile ) )
-						return String.Format( "{0} is in combat", dp.Mobile.Name );
+						return $"{dp.Mobile.Name} is in combat";
 
 					if ( dp.Mobile.Mounted )
 					{
@@ -2348,7 +2351,7 @@ namespace Server.Engines.ConPVP
 						if ( m_Tournament != null && mount != null )
 							mount.Rider = null;
 						else
-							return String.Format( "{0} is mounted", dp.Mobile.Name );
+							return $"{dp.Mobile.Name} is mounted";
 					}
 				}
 			}

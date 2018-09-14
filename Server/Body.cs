@@ -173,7 +173,7 @@ namespace Server
 
 		public override string ToString()
 		{
-			return string.Format( "0x{0:X}", m_BodyID );
+			return $"0x{m_BodyID:X}";
 		}
 
 		public override int GetHashCode()

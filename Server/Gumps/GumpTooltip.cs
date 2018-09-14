@@ -40,7 +40,7 @@ namespace Server.Gumps
 
 		public override string Compile( NetState ns )
 		{
-			return String.Format( "{{ tooltip {0} }}", m_Number );
+			return $"{{ tooltip {m_Number} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "tooltip" );

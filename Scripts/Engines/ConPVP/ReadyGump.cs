@@ -13,7 +13,7 @@ namespace Server.Engines.ConPVP
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public ReadyGump( Mobile from, DuelContext context, int count ) : base( 50, 50 )
@@ -72,7 +72,7 @@ namespace Server.Engines.ConPVP
 
 				if ( p.Players.Length > 1 )
 				{
-					AddHtml( 35 + 14, y, 176, 20, String.Format( "Participant #{0}", i + 1 ), false, false );
+					AddHtml( 35 + 14, y, 176, 20, $"Participant #{i + 1}", false, false );
 					y += 22;
 					offset = 10;
 				}

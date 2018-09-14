@@ -209,7 +209,8 @@ namespace Server.Gumps
 			{
 				rentedVendor.ComputeRentalExpireDelay( out var days, out var hours );
 
-				AddLabel( 38, 132, 0x480, String.Format( "Location rental will expire in {0} day{1} and {2} hour{3}.", days, days != 1 ? "s" : "", hours, hours != 1 ? "s" : "" ) );
+				AddLabel( 38, 132, 0x480,
+					$"Location rental will expire in {days} day{(days != 1 ? "s" : "")} and {hours} hour{(hours != 1 ? "s" : "")}.");
 			}
 
 			AddButton( 390, 24, 0x15E1, 0x15E5, 1, GumpButtonType.Reply, 0 );

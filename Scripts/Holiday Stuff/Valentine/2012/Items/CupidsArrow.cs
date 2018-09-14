@@ -40,7 +40,7 @@ namespace Server.Items
 			base.AddNameProperty( list );
 
 			if ( IsSigned )
-				list.Add( 1152273, String.Format( "{0}\t{1}", m_From, m_To ) ); // ~1_val~ is madly in love with ~2_val~
+				list.Add( 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
 		}
 
 		public static bool CheckSeason( Mobile from )
@@ -57,7 +57,7 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			if ( IsSigned )
-				LabelTo( from, 1152273, String.Format( "{0}\t{1}", m_From, m_To ) ); // ~1_val~ is madly in love with ~2_val~
+				LabelTo( from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
 		}
 
 		public override void OnDoubleClick( Mobile from )

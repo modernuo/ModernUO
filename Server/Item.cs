@@ -4375,7 +4375,8 @@ namespace Server
 					if ( m_Amount <= 1 )
 						ns.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", "" ) );
 					else
-						ns.Send( new MessageLocalizedAffix( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", AffixType.Append, String.Format( " : {0}", m_Amount ), "" ) );
+						ns.Send( new MessageLocalizedAffix( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", AffixType.Append,
+							$" : {m_Amount}", "" ) );
 				}
 				else
 				{
@@ -4538,7 +4539,7 @@ namespace Server
 
 		public override string ToString()
 		{
-			return String.Format( "0x{0:X} \"{1}\"", m_Serial.Value, GetType().Name );
+			return $"0x{m_Serial.Value:X} \"{GetType().Name}\"";
 		}
 
 		internal int m_TypeRef;

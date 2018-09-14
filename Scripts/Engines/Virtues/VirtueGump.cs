@@ -160,7 +160,7 @@ namespace Server
 
 			public override string Compile( NetState ns )
 			{
-				return String.Format( "{{ gumppic {0} {1} {2} hue={3} class=VirtueGumpItem }}", X, Y, GumpID, Hue );
+				return $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
 			}
 
 			private static byte[] m_Class = StringToBuffer( " class=VirtueGumpItem" );

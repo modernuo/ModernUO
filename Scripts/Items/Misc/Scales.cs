@@ -72,7 +72,7 @@ namespace Server.Items
 						if ( weight <= 0.0 )
 							message += "It is lighter than a feather.";
 						else
-							message += String.Format( "It weighs {0} stones.", weight );
+							message += $"It weighs {weight} stones.";
 					}
 					else
 					{

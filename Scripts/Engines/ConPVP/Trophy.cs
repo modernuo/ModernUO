@@ -100,7 +100,7 @@ namespace Server.Items
 
 		public void UpdateStyle()
 		{
-			Name = String.Format( "{0} trophy", m_Rank.ToString().ToLower() );
+			Name = $"{m_Rank.ToString().ToLower()} trophy";
 
 			switch ( m_Rank )
 			{

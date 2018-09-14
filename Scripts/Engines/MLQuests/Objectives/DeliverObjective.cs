@@ -212,7 +212,7 @@ namespace Server.Engines.MLQuests.Objectives
 			if ( total < desired )
 			{
 				pm.SendLocalizedMessage( 1074861 ); // You do not have everything you need!
-				pm.SendLocalizedMessage( 1074885, String.Format( "{0}\t{1}", total, desired ) ); // You have ~1_val~ item(s) but require ~2_val~
+				pm.SendLocalizedMessage( 1074885, $"{total}\t{desired}"); // You have ~1_val~ item(s) but require ~2_val~
 				return false;
 			}
 

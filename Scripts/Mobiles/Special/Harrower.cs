@@ -417,7 +417,7 @@ namespace Server.Mobiles
 			else
 				m_DamageEntries.Add( from, amount );
 
-			from.SendMessage(String.Format("Total Damage: {0}", m_DamageEntries[from]) );
+			from.SendMessage($"Total Damage: {m_DamageEntries[@from]}");
 		}
 
 		public void AwardArtifact( Item artifact )

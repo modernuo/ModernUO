@@ -38,13 +38,13 @@ namespace Server.Items
 				switch ( m_HeadType )
 				{
 					default:
-						return String.Format( "the head of {0}", m_PlayerName );
+						return $"the head of {m_PlayerName}";
 
 					case HeadType.Duel:
-						return String.Format( "the head of {0}, taken in a duel", m_PlayerName );
+						return $"the head of {m_PlayerName}, taken in a duel";
 
 					case HeadType.Tournament:
-						return String.Format( "the head of {0}, taken in a tournament", m_PlayerName );
+						return $"the head of {m_PlayerName}, taken in a tournament";
 				}
 			}
 		}

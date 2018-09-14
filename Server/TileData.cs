@@ -349,7 +349,7 @@ namespace Server
 				Console.WriteLine( "Make sure your Scripts/Misc/DataPath.cs is properly configured" );
 				Console.WriteLine( "After pressing return an exception will be thrown and the server will terminate" );
 
-				throw new Exception( String.Format( "TileData: {0} not found", filePath ) );
+				throw new Exception($"TileData: {filePath} not found");
 			}
 		}
 	}

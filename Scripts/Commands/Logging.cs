@@ -29,7 +29,7 @@ namespace Server.Commands
 
 			try
 			{
-				m_Output = new StreamWriter( Path.Combine( directory, String.Format( "{0}.log", DateTime.UtcNow.ToLongDateString() ) ), true );
+				m_Output = new StreamWriter( Path.Combine( directory, $"{DateTime.UtcNow.ToLongDateString()}.log"), true );
 
 				m_Output.AutoFlush = true;
 
@@ -47,13 +47,13 @@ namespace Server.Commands
 			if ( o is Mobile m )
 			{
 				if ( m.Account == null )
-					return String.Format( "{0} (no account)", m );
+					return $"{m} (no account)";
 
-				return String.Format( "{0} ('{1}')", m, m.Account.Username );
+				return $"{m} ('{m.Account.Username}')";
 			}
 			if ( o is Item item )
 			{
-				return String.Format( "0x{0:X} ({1})", item.Serial.Value, item.GetType().Name );
+				return $"0x{item.Serial.Value:X} ({item.GetType().Name})";
 			}
 
 			return o;
@@ -83,7 +83,7 @@ namespace Server.Commands
 				AppendPath( ref path, "Logs" );
 				AppendPath( ref path, "Commands" );
 				AppendPath( ref path, from.AccessLevel.ToString() );
-				path = Path.Combine( path, String.Format( "{0}.log", name ) );
+				path = Path.Combine( path, $"{name}.log");
 
 				using ( StreamWriter sw = new StreamWriter( path, true ) )
 					sw.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text );

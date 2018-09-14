@@ -127,7 +127,7 @@ namespace Server.Guilds
 
 		public override string ToString()
 		{
-			return String.Format( "0x{0:X} \"{1} [{2}]\"", m_Id, Name, Abbreviation );
+			return $"0x{m_Id:X} \"{Name} [{Abbreviation}]\"";
 		}
 }
 }

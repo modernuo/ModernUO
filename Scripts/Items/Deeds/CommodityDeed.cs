@@ -100,9 +100,10 @@ namespace Server.Items
 				string args;
 
 				if ( m_Commodity.Name == null )
-					args = String.Format( "#{0}\t{1}", ( m_Commodity is ICommodity commodity ) ? commodity.DescriptionNumber : m_Commodity.LabelNumber, m_Commodity.Amount );
+					args =
+						$"#{((m_Commodity is ICommodity commodity) ? commodity.DescriptionNumber : m_Commodity.LabelNumber)}\t{m_Commodity.Amount}";
 				else
-					args = String.Format( "{0}\t{1}", m_Commodity.Name, m_Commodity.Amount );
+					args = $"{m_Commodity.Name}\t{m_Commodity.Amount}";
 
 				list.Add( 1060658, args ); // ~1_val~: ~2_val~
 			}
@@ -121,9 +122,10 @@ namespace Server.Items
 				string args;
 
 				if ( m_Commodity.Name == null )
-					args = String.Format( "#{0}\t{1}", ( m_Commodity is ICommodity commodity ) ? commodity.DescriptionNumber : m_Commodity.LabelNumber, m_Commodity.Amount );
+					args =
+						$"#{((m_Commodity is ICommodity commodity) ? commodity.DescriptionNumber : m_Commodity.LabelNumber)}\t{m_Commodity.Amount}";
 				else
-					args = String.Format( "{0}\t{1}", m_Commodity.Name, m_Commodity.Amount );
+					args = $"{m_Commodity.Name}\t{m_Commodity.Amount}";
 
 				LabelTo( from, 1060658, args ); // ~1_val~: ~2_val~
 			}

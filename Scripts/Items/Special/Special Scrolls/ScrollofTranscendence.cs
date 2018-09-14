@@ -11,7 +11,8 @@ namespace Server.Items
 																*level in that skill by the amount of points displayed on the scroll.
 																*As you may not gain skills beyond your maximum skill cap, any excess points will be lost.*/
 
-		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Scroll of Transcendence ({0} Skill):</basefont>", Value );
+		public override string DefaultTitle =>
+			$"<basefont color=#FFFFFF>Scroll of Transcendence ({Value} Skill):</basefont>";
 
 		public static ScrollofTranscendence CreateRandom( int min, int max )
 		{

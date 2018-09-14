@@ -74,7 +74,7 @@ namespace Server.Spells.Necromancy
                 spiritlevel = 4;
             int d_MinDamage = 4;
             int d_MaxDamage = ((int)spiritlevel + 1) * 3;
-            string args = String.Format("{0}\t{1}", d_MinDamage, d_MaxDamage);
+            string args = $"{d_MinDamage}\t{d_MaxDamage}";
 
             int i_Count = (int)spiritlevel;
             int i_MaxCount = i_Count;

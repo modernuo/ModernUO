@@ -86,7 +86,7 @@ namespace Server.SkillHandlers
 			if ( skill.Base < 10.0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0:F1}</div>", skill.Value );
+			return $"<div align=right>{skill.Value:F1}</div>";
 		}
 
 		private static string FormatAttributes( int cur, int max )
@@ -94,7 +94,7 @@ namespace Server.SkillHandlers
 			if ( max == 0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0}/{1}</div>", cur, max );
+			return $"<div align=right>{cur}/{max}</div>";
 		}
 
 		private static string FormatStat( int val )
@@ -102,7 +102,7 @@ namespace Server.SkillHandlers
 			if ( val == 0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0}</div>", val );
+			return $"<div align=right>{val}</div>";
 		}
 
 		private static string FormatDouble( double val )
@@ -110,7 +110,7 @@ namespace Server.SkillHandlers
 			if ( val == 0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0:F1}</div>", val );
+			return $"<div align=right>{val:F1}</div>";
 		}
 
 		private static string FormatElement( int val )
@@ -118,7 +118,7 @@ namespace Server.SkillHandlers
 			if ( val <= 0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0}%</div>", val );
+			return $"<div align=right>{val}%</div>";
 		}
 
 		#region Mondain's Legacy
@@ -127,7 +127,7 @@ namespace Server.SkillHandlers
 			if ( min <= 0 || max <= 0 )
 				return "<div align=right>---</div>";
 
-			return String.Format( "<div align=right>{0}-{1}</div>", min, max );
+			return $"<div align=right>{min}-{max}</div>";
 		}
 		#endregion
 
@@ -143,7 +143,7 @@ namespace Server.SkillHandlers
 			AddImage( 118, 277, 2081 );
 			AddImage( 118, 347, 2083 );
 
-			AddHtml( 147, 108, 210, 18, String.Format( "<center><i>{0}</i></center>", c.Name ), false, false );
+			AddHtml( 147, 108, 210, 18, $"<center><i>{c.Name}</i></center>", false, false );
 
 			AddButton( 240, 77, 2093, 2093, 2, GumpButtonType.Reply, 0 );
 

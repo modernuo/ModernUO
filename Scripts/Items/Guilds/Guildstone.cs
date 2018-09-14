@@ -142,11 +142,11 @@ namespace Server.Items
 					abbr = "";
 
 				//list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
-				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( name ), Utility.FixHtml( abbr ) ) );
+				list.Add( 1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
 			}
 			else if ( m_GuildName != null && m_GuildAbbrev != null )
 			{
-				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( m_GuildName ), Utility.FixHtml( m_GuildAbbrev ) ) );
+				list.Add( 1060802, $"{Utility.FixHtml(m_GuildName)} [{Utility.FixHtml(m_GuildAbbrev)}]");
 			}
 		}
 
@@ -365,11 +365,11 @@ namespace Server.Items
 					abbr = "";
 
 				//list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
-				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( name ), Utility.FixHtml( abbr ) ) );
+				list.Add( 1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
 			}
 			else if ( m_GuildName != null && m_GuildAbbrev != null )
 			{
-				list.Add( 1060802, String.Format( "{0} [{1}]", Utility.FixHtml( m_GuildName ), Utility.FixHtml( m_GuildAbbrev ) ) );
+				list.Add( 1060802, $"{Utility.FixHtml(m_GuildName)} [{Utility.FixHtml(m_GuildAbbrev)}]");
 			}
 		}
 

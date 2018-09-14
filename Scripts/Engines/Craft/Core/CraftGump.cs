@@ -106,7 +106,7 @@ namespace Server.Engines.Craft
 			if ( notice is int noticeInt && noticeInt > 0 )
 				AddHtmlLocalized( 170, 295, 350, 40, noticeInt, LabelColor, false, false );
 			else if ( notice is string )
-				AddHtml( 170, 295, 350, 40, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", FontColor, notice ), false, false );
+				AddHtml( 170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice}</BASEFONT>", false, false );
 
 			// If the system has more than one resource
 			if ( craftSystem.CraftSubRes.Init )
@@ -142,7 +142,7 @@ namespace Server.Engines.Craft
 				if ( nameNumber > 0 )
 					AddHtmlLocalized( 50, 365, 250, 18, nameNumber, resourceCount.ToString(), LabelColor, false, false );
 				else
-                    AddLabel( 50, 362, LabelHue, String.Format( "{0} ({1} Available)", nameString, resourceCount ) );
+                    AddLabel( 50, 362, LabelHue, $"{nameString} ({resourceCount} Available)");
 			}
 			// ****************************************
 
@@ -180,7 +180,7 @@ namespace Server.Engines.Craft
 				if ( nameNumber > 0 )
                     AddHtmlLocalized( 50, 385, 250, 18, nameNumber, resourceCount.ToString(), LabelColor, false, false );
 				else
-                    AddLabel( 50, 385, LabelHue, String.Format( "{0} ({1} Available)", nameString, resourceCount ) );
+                    AddLabel( 50, 385, LabelHue, $"{nameString} ({resourceCount} Available)");
 			}
 			// ****************************************
 
@@ -235,7 +235,7 @@ namespace Server.Engines.Craft
 				if ( subResource.NameNumber > 0 )
 					AddHtmlLocalized( 255, 63 + (index * 20), 250, 18, subResource.NameNumber, resourceCount.ToString(), LabelColor, false, false );
 				else
-					AddLabel( 255, 60 + ( index * 20 ), LabelHue, String.Format( "{0} ({1})", subResource.NameString, resourceCount ) );
+					AddLabel( 255, 60 + ( index * 20 ), LabelHue, $"{subResource.NameString} ({resourceCount})");
 			}
 		}
 

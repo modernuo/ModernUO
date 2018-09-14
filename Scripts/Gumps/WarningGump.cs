@@ -37,7 +37,7 @@ namespace Server.Gumps
 			if ( content is int i )
 				AddHtmlLocalized( 10, 40, width - 20, height - 80, i, contentColor, false, true );
 			else if ( content is string )
-				AddHtml( 10, 40, width - 20, height - 80, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", contentColor, content ), false, true );
+				AddHtml( 10, 40, width - 20, height - 80, $"<BASEFONT COLOR=#{contentColor:X6}>{content}</BASEFONT>", false, true );
 
 			AddImageTiled( 10, height - 30, width - 20, 20, 2624 );
 			AddAlphaRegion( 10, height - 30, width - 20, 20 );

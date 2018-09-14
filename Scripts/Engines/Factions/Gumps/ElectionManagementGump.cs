@@ -8,22 +8,22 @@ namespace Server.Factions
 	{
 		public string Right( string text )
 		{
-			return String.Format( "<DIV ALIGN=RIGHT>{0}</DIV>", text );
+			return $"<DIV ALIGN=RIGHT>{text}</DIV>";
 		}
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public string Color( string text, int color )
 		{
-			return String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text );
+			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 		}
 
 		public static string FormatTimeSpan( TimeSpan ts )
 		{
-			return String.Format( "{0:D2}:{1:D2}:{2:D2}:{3:D2}", ts.Days, ts.Hours % 24, ts.Minutes % 60, ts.Seconds % 60 );
+			return $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
 		}
 
 		public const int LabelColor = 0xFFFFFF;

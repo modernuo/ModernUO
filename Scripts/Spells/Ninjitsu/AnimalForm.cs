@@ -185,7 +185,7 @@ namespace Server.Spells.Ninjitsu
 
 			if (m.Skills.Ninjitsu.Value < entry.ReqSkill)
 			{
-				string args = String.Format("{0}\t{1}\t ", entry.ReqSkill.ToString("F1"), SkillName.Ninjitsu);
+				string args = $"{entry.ReqSkill.ToString("F1")}\t{SkillName.Ninjitsu}\t ";
 				m.SendLocalizedMessage(1063013, args); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
 				return MorphResult.NoSkill;
 			}

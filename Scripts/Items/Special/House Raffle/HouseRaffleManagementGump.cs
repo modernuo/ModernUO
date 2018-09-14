@@ -18,17 +18,17 @@ namespace Server.Gumps
 
 		public string Right( string text )
 		{
-			return String.Format( "<DIV ALIGN=RIGHT>{0}</DIV>", text );
+			return $"<DIV ALIGN=RIGHT>{text}</DIV>";
 		}
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public string Color( string text, int color )
 		{
-			return String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text );
+			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 		}
 
 		public const int LabelColor = 0xFFFFFF;
@@ -203,7 +203,7 @@ namespace Server.Gumps
 				if ( entry.From != null )
 				{
 					if ( entry.From.Account is Account acc )
-						name = String.Format( "{0} ({1})", entry.From.Name, acc );
+						name = $"{entry.From.Name} ({acc})";
 					else
 						name = entry.From.Name;
 				}

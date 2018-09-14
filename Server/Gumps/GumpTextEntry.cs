@@ -86,7 +86,8 @@ namespace Server.Gumps
 
 		public override string Compile( NetState ns )
 		{
-			return String.Format( "{{ textentry {0} {1} {2} {3} {4} {5} {6} }}", m_X, m_Y, m_Width, m_Height, m_Hue, m_EntryID, Parent.Intern( m_InitialText ) );
+			return
+				$"{{ textentry {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "textentry" );

@@ -134,7 +134,7 @@ namespace Server.Items
 			string name = LastUserName;
 
 			if ( name == null )
-				name = String.Format( "#{0}", 1074235 ); // Unknown
+				name = $"#{1074235}"; // Unknown
 
 			list.Add( 1041602, "{0}", name ); // Owner: ~1_val~
 		}

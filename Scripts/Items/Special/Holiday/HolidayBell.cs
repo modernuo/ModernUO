@@ -46,7 +46,7 @@ namespace Server.Items
 			set => m_Maker = value;
 		}
 
-		public override string DefaultName => String.Format("A Holiday Bell From {0}", Giver);
+		public override string DefaultName => $"A Holiday Bell From {Giver}";
 
 		private string m_Maker;
 		private int m_SoundID;

@@ -14,7 +14,7 @@ namespace Server.Engines.ConPVP
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public PickRulesetGump( Mobile from, DuelContext context, Ruleset ruleset ) : base( 50, 50 )

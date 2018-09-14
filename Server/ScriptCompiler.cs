@@ -225,7 +225,7 @@ namespace Server
 
 				if (Core.Unix)
 				{
-					parms.CompilerOptions = String.Format("{0} /nowarn:169,219,414 /recurse:Scripts/*.cs", parms.CompilerOptions);
+					parms.CompilerOptions = $"{parms.CompilerOptions} /nowarn:169,219,414 /recurse:Scripts/*.cs";
 					files = new string[0];
 				}
 
@@ -366,7 +366,7 @@ namespace Server
 
 				if (Core.Unix)
 				{
-					parms.CompilerOptions = String.Format("{0} /nowarn:169,219,414 /recurse:Scripts/*.vb", parms.CompilerOptions);
+					parms.CompilerOptions = $"{parms.CompilerOptions} /nowarn:169,219,414 /recurse:Scripts/*.vb";
 					files = new string[0];
 				}
 
@@ -510,10 +510,10 @@ namespace Server
 
 		public static string GetUnusedPath( string name )
 		{
-			string path = Path.Combine( Core.BaseDirectory, String.Format( "Scripts/Output/{0}.dll", name ) );
+			string path = Path.Combine( Core.BaseDirectory, $"Scripts/Output/{name}.dll");
 
 			for( int i = 2; File.Exists( path ) && i <= 1000; ++i )
-				path = Path.Combine( Core.BaseDirectory, String.Format( "Scripts/Output/{0}.{1}.dll", name, i ) );
+				path = Path.Combine( Core.BaseDirectory, $"Scripts/Output/{name}.{i}.dll");
 
 			return path;
 		}

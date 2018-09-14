@@ -39,7 +39,7 @@ namespace Server.Items
 
 		private void AssignRandomName()
 		{
-			Name = String.Format( "{0}'s Jack-O-Lantern", m_Staff[ Utility.Random( m_Staff.Length ) ] );
+			Name = $"{m_Staff[Utility.Random(m_Staff.Length)]}'s Jack-O-Lantern";
 		}
 
 		public override bool OnDragLift( Mobile from )

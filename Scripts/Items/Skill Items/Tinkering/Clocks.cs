@@ -128,7 +128,7 @@ namespace Server.Items
 			if ( hours == 0 )
 				hours = 12;
 
-			exactTime = String.Format( "{0}:{1:D2}", hours, minutes );
+			exactTime = $"{hours}:{minutes:D2}";
 		}
 
 		public override void OnDoubleClick( Mobile from )

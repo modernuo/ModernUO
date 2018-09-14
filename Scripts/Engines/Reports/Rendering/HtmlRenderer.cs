@@ -105,7 +105,7 @@ namespace Server.Engines.Reports
 			ProcessStartInfo psi = new ProcessStartInfo();
 
 			psi.FileName = "ftp";
-			psi.Arguments = String.Format( "-i -s:\"{0}\"", filePath );
+			psi.Arguments = $"-i -s:\"{filePath}\"";
 
 			psi.CreateNoWindow = true;
 			psi.WindowStyle = ProcessWindowStyle.Hidden;
@@ -298,7 +298,8 @@ namespace Server.Engines.Reports
 			html.Write( "<!-- " );
 
 			html.AddAttribute( HtmlAttr.Href, "#" );
-			html.AddAttribute( HtmlAttr.Onclick, String.Format( "javascript:window.open('{0}.html','ChildWindow','width={1},height={2},resizable=no,status=no,toolbar=no')", SafeFileName( FindNameFrom( chart ) ), bmp.Width+30,bmp.Height+80 ) );
+			html.AddAttribute( HtmlAttr.Onclick,
+				$"javascript:window.open('{SafeFileName(FindNameFrom(chart))}.html','ChildWindow','width={bmp.Width + 30},height={bmp.Height + 80},resizable=no,status=no,toolbar=no')");
 			html.RenderBeginTag( HtmlTag.A );
 			html.Write( chart.Name );
 			html.RenderEndTag();
@@ -393,7 +394,8 @@ namespace Server.Engines.Reports
 			html.Write( "<!-- " );
 
 			html.AddAttribute( HtmlAttr.Href, "#" );
-			html.AddAttribute( HtmlAttr.Onclick, String.Format( "javascript:window.open('{0}.html','ChildWindow','width={1},height={2},resizable=no,status=no,toolbar=no')", SafeFileName( FindNameFrom( graph ) ), bmp.Width+30,bmp.Height+80 ) );
+			html.AddAttribute( HtmlAttr.Onclick,
+				$"javascript:window.open('{SafeFileName(FindNameFrom(graph))}.html','ChildWindow','width={bmp.Width + 30},height={bmp.Height + 80},resizable=no,status=no,toolbar=no')");
 			html.RenderBeginTag( HtmlTag.A );
 			html.Write( graph.Name );
 			html.RenderEndTag();

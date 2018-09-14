@@ -493,13 +493,13 @@ namespace Server.Mobiles
 							}
 
 							if ( name != null && ammo.Amount > 1 )
-								name = String.Format( "{0}s", name );
+								name = $"{name}s";
 
 							if ( name == null )
-								name = String.Format( "#{0}", ammo.LabelNumber );
+								name = $"#{ammo.LabelNumber}";
 
 							PlaceInBackpack( ammo );
-							SendLocalizedMessage( 1073504, String.Format( "{0}\t{1}", ammo.Amount, name ) ); // You recover ~1_NUM~ ~2_AMMO~.
+							SendLocalizedMessage( 1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
 						}
 					}
 				}
@@ -1002,7 +1002,7 @@ namespace Server.Mobiles
 							string name = weapon.Name;
 
 							if ( name == null )
-								name = String.Format( "#{0}", weapon.LabelNumber );
+								name = $"#{weapon.LabelNumber}";
 
 							from.SendLocalizedMessage( 1062001, name ); // You can no longer wield your ~1_WEAPON~
 							from.AddToBackpack( weapon );
@@ -1044,7 +1044,7 @@ namespace Server.Mobiles
 							string name = armor.Name;
 
 							if ( name == null )
-								name = String.Format( "#{0}", armor.LabelNumber );
+								name = $"#{armor.LabelNumber}";
 
 							if ( armor is BaseShield )
 								from.SendLocalizedMessage( 1062003, name ); // You can no longer equip your ~1_SHIELD~
@@ -1085,7 +1085,7 @@ namespace Server.Mobiles
 							string name = clothing.Name;
 
 							if ( name == null )
-								name = String.Format( "#{0}", clothing.LabelNumber );
+								name = $"#{clothing.LabelNumber}";
 
 							from.SendLocalizedMessage( 1062002, name ); // You can no longer wear your ~1_ARMOR~
 
@@ -1253,7 +1253,7 @@ namespace Server.Mobiles
 				int curWeight = BodyWeight + TotalWeight;
 
 				if ( curWeight > maxWeight )
-					SendLocalizedMessage( 1019035, true, String.Format( " : {0} / {1}", curWeight, maxWeight ) );
+					SendLocalizedMessage( 1019035, true, $" : {curWeight} / {maxWeight}");
 			}
 
 			base.OnSubItemAdded(item);
@@ -1670,7 +1670,7 @@ namespace Server.Mobiles
 			{
 				Mobile prot = m_JusticeProtectors[i];
 
-				string args = String.Format( "{0}\t{1}", Name, prot.Name );
+				string args = $"{Name}\t{prot.Name}";
 
 				prot.SendLocalizedMessage( 1049371, args ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
 				SendLocalizedMessage( 1049371, args ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
@@ -4361,7 +4361,7 @@ namespace Server.Mobiles
 
 				if ( faction != null )
 				{
-					string adjunct = String.Format( "[{0}]", faction.Definition.Abbreviation );
+					string adjunct = $"[{faction.Definition.Abbreviation}]";
 					if ( suffix.Length == 0 )
 						suffix = adjunct;
 					else

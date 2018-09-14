@@ -155,7 +155,8 @@ namespace Server.Misc
 																	    * Please check your Journal for messages every few minutes.
 																	    */
 
-						PageQueue.Enqueue( new PageEntry( from, String.Format( "[Automated: Change Password]<br>Desired password: {0}<br>Current IP address: {1}<br>Account IP address: {2}", pass, ipAddress, accessList[0] ), PageType.Account ) );
+						PageQueue.Enqueue( new PageEntry( from,
+							$"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}", PageType.Account ) );
 					}
 
 				}
@@ -207,7 +208,7 @@ namespace Server.Misc
 				{
 					Console.WriteLine( "Client: {0}: Deleting character {1} (0x{2:X})", state, index, m.Serial.Value );
 
-					acct.Comments.Add( new AccountComment( "System", String.Format( "Character #{0} {1} deleted by {2}", index + 1, m, state ) ) );
+					acct.Comments.Add( new AccountComment( "System", $"Character #{index + 1} {m} deleted by {state}") );
 
 					m.Delete();
 					state.Send( new CharacterListUpdate( acct ) );

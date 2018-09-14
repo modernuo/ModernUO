@@ -32,7 +32,8 @@ namespace Server.Items
 
 		public void Roll( Mobile from )
 		{
-			PublicOverheadMessage( MessageType.Regular, 0, false, string.Format( "*{0} rolls {1}, {2}*", from.Name, Utility.Random( 1, 6 ), Utility.Random( 1, 6 ) ) );
+			PublicOverheadMessage( MessageType.Regular, 0, false,
+				$"*{@from.Name} rolls {Utility.Random(1, 6)}, {Utility.Random(1, 6)}*");
 		}
 
 		public override void Serialize( GenericWriter writer )

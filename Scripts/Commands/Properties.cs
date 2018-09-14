@@ -110,31 +110,31 @@ namespace Server.Commands
 
 						if ( attr == null )
 						{
-							failReason = String.Format( "Property '{0}' not found.", propertyName );
+							failReason = $"Property '{propertyName}' not found.";
 							return null;
 						}
 						else if ( (access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel )
 						{
-							failReason = String.Format( "You must be at least {0} to get the property '{1}'.",
-								Mobile.GetAccessLevelName( attr.ReadLevel ), propertyName );
+							failReason =
+								$"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{propertyName}'.";
 
 							return null;
 						}
 						else if ( (access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel )
 						{
-							failReason = String.Format( "You must be at least {0} to set the property '{1}'.",
-								Mobile.GetAccessLevelName( attr.WriteLevel ), propertyName );
+							failReason =
+								$"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{propertyName}'.";
 
 							return null;
 						}
 						else if ( (access & PropertyAccess.Read) != 0 && !p.CanRead )
 						{
-							failReason = String.Format( "Property '{0}' is write only.", propertyName );
+							failReason = $"Property '{propertyName}' is write only.";
 							return null;
 						}
 						else if ( (access & PropertyAccess.Write) != 0 && (!p.CanWrite || attr.ReadOnly) && isFinal )
 						{
-							failReason = String.Format( "Property '{0}' is read only.", propertyName );
+							failReason = $"Property '{propertyName}' is read only.";
 							return null;
 						}
 
@@ -146,7 +146,7 @@ namespace Server.Commands
 
 				if ( info[i] == null )
 				{
-					failReason = String.Format( "Property '{0}' not found.", propertyName );
+					failReason = $"Property '{propertyName}' not found.";
 					return null;
 				}
 			}
@@ -181,7 +181,7 @@ namespace Server.Commands
 
 				if ( obj == null )
 				{
-					failReason = String.Format( "Property '{0}' is null.", chain[i] );
+					failReason = $"Property '{chain[i]}' is null.";
 					return null;
 				}
 			}
@@ -313,14 +313,14 @@ namespace Server.Commands
 			else if ( IsChar( type ) )
 				toString = String.Format( "'{0}' ({1} [0x{1:X}])", value, (int) value );
 			else if ( IsString( type ) )
-				toString = ( (string) value == "null" ? @"@""null""" : String.Format( "\"{0}\"", value ) );
+				toString = ( (string) value == "null" ? @"@""null""" : $"\"{value}\"");
 			else if ( IsText( type ) )
 				toString = ( (TextDefinition) value ).Format( false );
 			else
 				toString = value.ToString();
 
 			if ( chain == null )
-				return String.Format( "{0} = {1}", p.Name, toString );
+				return $"{p.Name} = {toString}";
 
 			string[] concat = new string[chain.Length*2+1];
 
@@ -615,7 +615,7 @@ namespace Server
 	public sealed class UnknownPropertyException : BindingException
 	{
 		public UnknownPropertyException( Property property, string current )
-			: base( property, String.Format( "Property '{0}' not found.", current ) )
+			: base( property, $"Property '{current}' not found.")
 		{
 		}
 	}
@@ -662,11 +662,8 @@ namespace Server
 		public AccessLevel NeededAccess => m_NeededAccess;
 
 		public ClearanceException( Property property, AccessLevel playerAccess, AccessLevel neededAccess, string accessType )
-			: base( property, string.Format(
-				"You must be at least {0} to {1} this property.",
-				Mobile.GetAccessLevelName( neededAccess ),
-				accessType
-			) )
+			: base( property,
+				$"You must be at least {Mobile.GetAccessLevelName(neededAccess)} to {accessType} this property.")
 		{
 		}
 	}

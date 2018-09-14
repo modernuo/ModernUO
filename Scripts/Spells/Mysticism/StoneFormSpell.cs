@@ -118,7 +118,7 @@ namespace Server.Spells.Mysticism
 					Caster.Delta( MobileDelta.Resistances );
 
 					BuffInfo.AddBuff( Caster, new BuffInfo( BuffIcon.StoneForm, 1080145, 1080146,
-						string.Format( "-10\t-2\t{0}\t{1}\t{2}", offset, GetResistCapBonus( Caster ), GetDIBonus( Caster ) ), false ) );
+						$"-10\t-2\t{offset}\t{GetResistCapBonus(Caster)}\t{GetDIBonus(Caster)}", false ) );
 				}
 			}
 

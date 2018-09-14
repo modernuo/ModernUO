@@ -60,14 +60,16 @@ namespace Server.Misc
 
 				if ( m_HasLocalInfo )
 				{
-					s = String.Format( "{0}‎ - {1}", DefaultLocalNames ? m_Language_LocalName : m_Language, DefaultLocalNames ? m_Country_LocalName : m_Country );
+					s =
+						$"{(DefaultLocalNames ? m_Language_LocalName : m_Language)}‎ - {(DefaultLocalNames ? m_Country_LocalName : m_Country)}";
 
 					if ( ShowAlternatives )
-						s += String.Format( "‎ 【{0}‎ - {1}‎】", DefaultLocalNames ? m_Language : m_Language_LocalName, DefaultLocalNames ? m_Country : m_Country_LocalName );
+						s +=
+							$"‎ 【{(DefaultLocalNames ? m_Language : m_Language_LocalName)}‎ - {(DefaultLocalNames ? m_Country : m_Country_LocalName)}‎】";
 				}
 				else
 				{
-					s = String.Format( "{0}‎ - {1}", m_Language, m_Country );
+					s = $"{m_Language}‎ - {m_Country}";
 				}
 
 				return s;
@@ -216,17 +218,17 @@ namespace Server.Misc
 		private static string GetFormattedInfo( string code )
 		{
 			if ( code == null || code.Length != 3 )
-				return String.Format( "Unknown code {0}", code );
+				return $"Unknown code {code}";
 
 			for ( int i = 0; i < InternationalCodes.Length; i++ )
 			{
 				if ( code == InternationalCodes[i].Code )
 				{
-					return String.Format( "{0}", InternationalCodes[i].GetName() );
+					return $"{InternationalCodes[i].GetName()}";
 				}
 			}
 
-			return String.Format( "Unknown code {0}", code );
+			return $"Unknown code {code}";
 		}
 
 		private static bool DefaultLocalNames = false;
@@ -296,7 +298,8 @@ namespace Server.Misc
 					}
 				}
 
-				writer.WriteLine( String.Format( "Language statistics. Numbers show how many {0} use the specified language.", CountAccounts ? "accounts" : "playermobile" ) );
+				writer.WriteLine(
+					$"Language statistics. Numbers show how many {(CountAccounts ? "accounts" : "playermobile")} use the specified language.");
 				writer.WriteLine( "====================================================================================================" );
 				writer.WriteLine();
 
@@ -305,7 +308,7 @@ namespace Server.Misc
 				list.Sort( InternationalCodeComparer.Instance );
 
 				foreach ( InternationalCodeCounter c in list )
-					writer.WriteLine( String.Format( "{0}‎ : {1}", GetFormattedInfo( c.Code ), c.Count ) );
+					writer.WriteLine($"{GetFormattedInfo(c.Code)}‎ : {c.Count}");
 
 				e.Mobile.SendMessage( "Languages list generated." );
 			}

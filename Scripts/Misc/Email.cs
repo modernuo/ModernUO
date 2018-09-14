@@ -63,7 +63,7 @@ namespace Server.Misc
 				// .NET relies on the MTA to generate Message-ID header. Not all MTAs will add this header.
 
 				DateTime now = DateTime.UtcNow;
-				string messageID = String.Format("<{0}.{1}@{2}>", now.ToString("yyyyMMdd"), now.ToString("HHmmssff"), EmailServer );
+				string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EmailServer}>";
 				message.Headers.Add("Message-ID", messageID );
 
 				message.Headers.Add("X-Mailer", "RunUO");

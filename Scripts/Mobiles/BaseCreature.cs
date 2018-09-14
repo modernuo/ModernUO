@@ -3083,7 +3083,7 @@ namespace Server.Mobiles
 					else
 					{
 						// I will teach thee all I know, if paid the amount in full.  The price is:
-						Say( 1019077, AffixType.Append, String.Format( " {0}", pointsToLearn ), "" );
+						Say( 1019077, AffixType.Append, $" {pointsToLearn}", "" );
 						Say( 1043108 ); // For less I shall teach thee less.
 
 						m_Teaching = skill;

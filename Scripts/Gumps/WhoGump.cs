@@ -167,7 +167,8 @@ namespace Server.Gumps
 			if ( !OldStyle )
 				AddImageTiled( x - (OldStyle ? OffsetSize : 0), y, emptyWidth + (OldStyle ? OffsetSize * 2 : 0), EntryHeight, EntryGumpID );
 
-			AddLabel( x + TextOffsetX, y, TextHue, String.Format( "Page {0} of {1} ({2})", page+1, (m_Mobiles.Count + EntryCount - 1) / EntryCount, m_Mobiles.Count ) );
+			AddLabel( x + TextOffsetX, y, TextHue,
+				$"Page {page + 1} of {(m_Mobiles.Count + EntryCount - 1) / EntryCount} ({m_Mobiles.Count})");
 
 			x += emptyWidth + OffsetSize;
 

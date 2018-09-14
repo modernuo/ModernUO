@@ -655,7 +655,7 @@ namespace Server.Engines.BulkOrders
 						else
 							AddLabel( 316, y, 1152, name.ToString() );
 
-						AddLabel( 421, y, 1152, String.Format( "{0} / {1}", sub.AmountCur, entry.AmountMax ) );
+						AddLabel( 421, y, 1152, $"{sub.AmountCur} / {entry.AmountMax}");
 
 						++tableIndex;
 						y += 32;
@@ -692,7 +692,7 @@ namespace Server.Engines.BulkOrders
 					else
 						AddLabel( 316, y, 1152, name.ToString() );
 
-					AddLabel( 421, y, 1152, String.Format( "{0} / {1}", smallEntry.AmountCur, smallEntry.AmountMax ) );
+					AddLabel( 421, y, 1152, $"{smallEntry.AmountCur} / {smallEntry.AmountMax}");
 				}
 			}
 		}

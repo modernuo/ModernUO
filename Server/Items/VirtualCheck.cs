@@ -118,7 +118,7 @@ namespace Server
 		{
 			base.GetProperties(list);
 
-			list.Add(1060738, String.Format("{0:#,0} platinum, {1:#,0} gold", Plat, Gold)); // value: ~1_val~
+			list.Add(1060738, $"{Plat:#,0} platinum, {Gold:#,0} gold"); // value: ~1_val~
 		}
 
 		public void UpdateTrade(Mobile user)
@@ -268,10 +268,8 @@ namespace Server
 				AddImage(10, 8, 113);
 				AddImage(360, 8, 113);
 
-				var title = String.Format(
-					"<BASEFONT COLOR=#{0:X}><CENTER>BANK OF {1}</CENTER>",
-					Color.DarkSlateGray.ToArgb(),
-					User.RawName.ToUpper());
+				var title =
+					$"<BASEFONT COLOR=#{Color.DarkSlateGray.ToArgb():X}><CENTER>BANK OF {User.RawName.ToUpper()}</CENTER>";
 
 				AddHtml(40, 15, 320, 20, title, false, false);
 

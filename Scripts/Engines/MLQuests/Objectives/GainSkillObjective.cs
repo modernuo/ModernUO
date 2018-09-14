@@ -85,9 +85,9 @@ namespace Server.Engines.MLQuests.Objectives
 			string args;
 
 			if ( m_ThresholdFixed % 10 == 0 )
-				args = String.Format( "#{0}\t{1}", skillLabel, m_ThresholdFixed / 10 ); // as seen on OSI
+				args = $"#{skillLabel}\t{m_ThresholdFixed / 10}"; // as seen on OSI
 			else
-				args = String.Format( "#{0}\t{1:0.0}", skillLabel, (double)m_ThresholdFixed / 10 ); // for non-integer skill levels
+				args = $"#{skillLabel}\t{(double) m_ThresholdFixed / 10:0.0}"; // for non-integer skill levels
 
 			g.AddHtmlLocalized( 98, y, 312, 16, 1077485, args, 0x15F90, false, false ); // Increase ~1_SKILL~ to ~2_VALUE~
 			y += 16;

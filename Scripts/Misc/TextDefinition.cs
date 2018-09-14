@@ -49,7 +49,7 @@ namespace Server
 			if ( m_Number > 0 )
 				return String.Format( "{0} (0x{0:X})", m_Number );
 			else if ( m_String != null )
-				return String.Format( "\"{0}\"", m_String );
+				return $"\"{m_String}\"";
 
 			return propsGump ? "-empty-" : "empty";
 		}
@@ -152,7 +152,7 @@ namespace Server
 			else if ( def.m_String != null )
 			{
 				if ( stringColor >= 0 ) // 8 bits per RGB component (24 bit RGB)
-					g.AddHtml( x, y, width, height, String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", stringColor, def.m_String ), back, scroll );
+					g.AddHtml( x, y, width, height, $"<BASEFONT COLOR=#{stringColor:X6}>{def.m_String}</BASEFONT>", back, scroll );
 				else
 					g.AddHtml( x, y, width, height, def.m_String, back, scroll );
 			}

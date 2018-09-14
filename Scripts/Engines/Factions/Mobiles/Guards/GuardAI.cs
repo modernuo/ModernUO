@@ -215,7 +215,7 @@ namespace Server.Factions
 
 		public int GetStatMod( Mobile mob, StatType type )
 		{
-			StatMod mod = mob.GetStatMod( String.Format( "[Magic] {0} Offset", type ) );
+			StatMod mod = mob.GetStatMod($"[Magic] {type} Offset");
 
 			if ( mod == null )
 				return 0;

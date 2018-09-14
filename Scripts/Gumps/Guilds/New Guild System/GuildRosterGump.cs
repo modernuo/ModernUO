@@ -142,7 +142,7 @@ namespace Server.Guilds
 		{
 			TextDefinition[] defs = new TextDefinition[aryLength];
 
-			string name = String.Format( "{0}{1}", pm.Name, ( player.GuildFealty == pm && player.GuildFealty != guild.Leader ) ? " *" : "" );
+			string name = $"{pm.Name}{((player.GuildFealty == pm && player.GuildFealty != guild.Leader) ? " *" : "")}";
 
 			if ( pm == player )
 				name = Color( name, 0x006600 );

@@ -264,7 +264,7 @@ namespace Server.Mobiles
 			//return (Item)Activator.CreateInstance( m_Type );
 		}
 
-		//Attempt to restock with item, (return true if restock sucessful)
+		//Attempt to restock with item, (return true if restock successful)
 		public bool Restock( Item item, int amount )
 		{
 			return false;

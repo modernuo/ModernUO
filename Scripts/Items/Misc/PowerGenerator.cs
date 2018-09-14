@@ -441,7 +441,7 @@ namespace Server.Items
 			to.Send( new UnicodeMessage( Serial, ItemID, MessageType.Regular, 0x3B2, 3, "", "", "The generator shoots an arc of electricity at you!" ) );
 			to.BoltEffect( 0 );
 			to.LocalOverheadMessage( MessageType.Regular, 0xC9, true, "* Your body convulses from electric shock *" );
-			to.NonlocalOverheadMessage( MessageType.Regular, 0xC9, true, string.Format( "* {0} spasms from electric shock *", to.Name ) );
+			to.NonlocalOverheadMessage( MessageType.Regular, 0xC9, true, $"* {to.Name} spasms from electric shock *");
 
 			AOS.Damage( to, to, 60, 0, 0, 0, 0, 100 );
 
@@ -485,7 +485,8 @@ namespace Server.Items
 				m_To.PlaySound( 0x28 );
 
 				m_To.LocalOverheadMessage( MessageType.Regular, 0xC9, true, "* Your body convulses from electric shock *" );
-				m_To.NonlocalOverheadMessage( MessageType.Regular, 0xC9, true, string.Format( "* {0} spasms from electric shock *", m_To.Name ) );
+				m_To.NonlocalOverheadMessage( MessageType.Regular, 0xC9, true,
+					$"* {m_To.Name} spasms from electric shock *");
 
 				AOS.Damage( m_To, m_To, 20, 0, 0, 0, 0, 100 );
 

@@ -108,7 +108,7 @@ namespace Server.Gumps
 
 					object name = FindHouseName( list[i] );
 
-					AddHtml( 15, 40 + ((i % 15) * 20),  20, 20, Color( String.Format( "{0}.", i+1 ), White ), false, false );
+					AddHtml( 15, 40 + ((i % 15) * 20),  20, 20, Color($"{i + 1}.", White ), false, false );
 
 					if ( name is int nameInt )
 						AddHtmlLocalized( 35, 40 + ((i % 15) * 20), 160, 20, nameInt, White16, false, false );
@@ -132,7 +132,7 @@ namespace Server.Gumps
 				bool valid = Sextant.Format( sel.Location, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth );
 
 				if ( valid )
-					location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+					location = $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}";
 				else
 					location = "unknown";
 
@@ -277,17 +277,17 @@ namespace Server.Gumps
 
 		public string Right( string text )
 		{
-			return String.Format( "<div align=right>{0}</div>", text );
+			return $"<div align=right>{text}</div>";
 		}
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public string Color( string text, int color )
 		{
-			return String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text );
+			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 		}
 
 		public void AddBlackAlpha( int x, int y, int width, int height )

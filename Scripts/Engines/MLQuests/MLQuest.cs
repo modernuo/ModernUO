@@ -159,7 +159,7 @@ namespace Server.Engines.MLQuests
 
 		public void PutSpawner( Spawner s, Point3D loc, Map map )
 		{
-			string name = String.Format( "MLQS-{0}", GetType().Name );
+			string name = $"MLQS-{GetType().Name}";
 
 			// Auto cleanup on regeneration
 			List<Item> toDelete = new List<Item>();

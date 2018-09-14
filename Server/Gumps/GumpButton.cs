@@ -105,7 +105,7 @@ namespace Server.Gumps
 
 		public override string Compile( NetState ns )
 		{
-			return String.Format( "{{ button {0} {1} {2} {3} {4} {5} {6} }}", m_X, m_Y, m_ID1, m_ID2, (int)m_Type, m_Param, m_ButtonID );
+			return $"{{ button {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "button" );

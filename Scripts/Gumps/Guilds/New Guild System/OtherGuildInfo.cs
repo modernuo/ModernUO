@@ -77,7 +77,7 @@ namespace Server.Guilds
 
 			if ( ActiveWar )
 			{
-				kills = String.Format( "{0}/{1}", activeWar.Kills, activeWar.MaxKills );
+				kills = $"{activeWar.Kills}/{activeWar.MaxKills}";
 
 				TimeSpan timeRemaining = TimeSpan.Zero;
 
@@ -85,21 +85,21 @@ namespace Server.Guilds
 					timeRemaining = (activeWar.WarBeginning + activeWar.WarLength) - DateTime.UtcNow;
 
 				//time = String.Format( "{0:D2}:{1:D2}", timeRemaining.Hours.ToString(), timeRemaining.Subtract( TimeSpan.FromHours( timeRemaining.Hours ) ).Minutes );	//Is there a formatter for htis? it's 2AM and I'm tired and can't find it
-				time = String.Format( "{0:D2}:{1:mm}", timeRemaining.Hours, DateTime.MinValue + timeRemaining );
+				time = $"{timeRemaining.Hours:D2}:{DateTime.MinValue + timeRemaining:mm}";
 
 				otherWar = m_Other.FindActiveWar( guild );
 				if ( otherWar != null )
-					otherKills = String.Format( "{0}/{1}", otherWar.Kills, otherWar.MaxKills );
+					otherKills = $"{otherWar.Kills}/{otherWar.MaxKills}";
 			}
 			else if ( PendingWar )
 			{
-				kills = Color( String.Format( "{0}/{1}", war.Kills, war.MaxKills ), 0x990000 );
+				kills = Color($"{war.Kills}/{war.MaxKills}", 0x990000 );
 				//time = Color( String.Format( "{0}:{1}", war.WarLength.Hours, ((TimeSpan)(war.WarLength - TimeSpan.FromHours( war.WarLength.Hours ))).Minutes ), 0xFF0000 );
-				time = Color( String.Format( "{0:D2}:{1:mm}", war.WarLength.Hours, DateTime.MinValue + war.WarLength ), 0x990000 );
+				time = Color($"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}", 0x990000 );
 
 				otherWar = m_Other.FindPendingWar( guild );
 				if ( otherWar != null )
-					otherKills = Color( String.Format( "{0}/{1}", otherWar.Kills, otherWar.MaxKills ), 0x990000 );
+					otherKills = Color($"{otherWar.Kills}/{otherWar.MaxKills}", 0x990000 );
 			}
 
 			AddHtmlLocalized( 280, 110, 120, 26, 1062966, 0x0, true, false ); // <i>Your Kills</i>
@@ -225,7 +225,7 @@ namespace Server.Guilds
 						}
 						else if ( alliance != null && alliance.Leader != guild )
 						{
-							pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+							pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 							pm.SendLocalizedMessage( 1070707, alliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 						}
 						else
@@ -276,7 +276,7 @@ namespace Server.Guilds
 						}
 						else if ( alliance != null && alliance.Leader != guild )
 						{
-							pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+							pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 							pm.SendLocalizedMessage( 1070707, alliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 						}
 						else
@@ -296,7 +296,7 @@ namespace Server.Guilds
 						}
 						else if ( alliance != null && alliance.Leader != guild )
 						{
-							pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+							pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 							pm.SendLocalizedMessage( 1070707, alliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 						}
 						else
@@ -318,7 +318,7 @@ namespace Server.Guilds
 					}
 					else if ( alliance != null && alliance.Leader != guild )
 					{
-						pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+						pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 						pm.SendLocalizedMessage( 1070707, alliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 					}
 					else
@@ -364,12 +364,12 @@ namespace Server.Guilds
 						}
 						else if ( alliance != null && alliance.Leader != guild )
 						{
-							pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+							pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 							pm.SendLocalizedMessage( 1070707, alliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 						}
 						else if ( otherAlliance != null && otherAlliance.Leader != m_Other )
 						{
-							pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", m_Other.Name, otherAlliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+							pm.SendLocalizedMessage( 1063239, $"{m_Other.Name}\t{otherAlliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 							pm.SendLocalizedMessage( 1070707, otherAlliance.Leader.Name ); // You need to negotiate via ~1_val~ instead.
 						}
 						else
@@ -424,7 +424,7 @@ namespace Server.Guilds
 						}
 						else if ( alliance.Leader != guild )
 						{
-							pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+							pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 						}
 						else if ( otherAlliance != null )
 						{
@@ -494,7 +494,7 @@ namespace Server.Guilds
 					}
 					else if ( alliance != null && alliance.Leader != guild )
 					{
-						pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+						pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 					}
 					else if ( alliance != null && alliance.IsMember( guild ) && alliance.IsMember( m_Other ) )
 					{
@@ -514,11 +514,11 @@ namespace Server.Guilds
 					}
 					else if ( alliance != null && alliance.Leader != guild )
 					{
-						pm.SendLocalizedMessage( 1063239, String.Format( "{0}\t{1}", guild.Name, alliance.Name ) ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+						pm.SendLocalizedMessage( 1063239, $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
 					}
 					else if ( alliance != null && alliance.IsMember( guild ) && alliance.IsMember( m_Other ) )
 					{
-						pm.SendLocalizedMessage( 1063434, String.Format( "{0}\t{1}", m_Other.Name, alliance.Name ) ); // ~1_val~ is now the leader of ~2_val~.
+						pm.SendLocalizedMessage( 1063434, $"{m_Other.Name}\t{alliance.Name}"); // ~1_val~ is now the leader of ~2_val~.
 
 						alliance.Leader = m_Other;
 					}

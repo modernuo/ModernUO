@@ -64,7 +64,7 @@ namespace Server.SkillHandlers
 
 					if ( map != null )
 					{
-						string message = String.Format( "You notice {0} attempting to peek into {1}'s belongings.", from.Name, root.Name );
+						string message = $"You notice {@from.Name} attempting to peek into {root.Name}'s belongings.";
 
 						IPooledEnumerable<NetState> eable = map.GetClientsInRange( from.Location, 8 );
 

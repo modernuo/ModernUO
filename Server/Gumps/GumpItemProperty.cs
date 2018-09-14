@@ -40,7 +40,7 @@ namespace Server.Gumps
 
 		public override string Compile( NetState ns )
 		{
-			return String.Format( "{{ itemproperty {0} }}", m_Serial );
+			return $"{{ itemproperty {m_Serial} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "itemproperty" );

@@ -209,7 +209,7 @@ namespace Server.Items
 				if ( se.Count == 1 )
 					PublicOverheadMessage( MessageType.Regular, 0x3B2, 1062719, se.Total.ToString() );
 				else
-					PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, String.Format( "{0}\t{1}", se.Total, se.Count ) );
+					PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
 
 				return;
 			}
@@ -249,7 +249,8 @@ namespace Server.Items
 
 			if ( split )
 			{
-				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area, String.Format( "{0}\t{1}", from.Name, isArrow ? "arrow" : "bolt" ) );
+				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area,
+					$"{@from.Name}\t{(isArrow ? "arrow" : "bolt")}");
 			}
 			else
 			{
@@ -266,7 +267,7 @@ namespace Server.Items
 			if ( se.Count == 1 )
 				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1062719, se.Total.ToString() );
 			else
-				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, String.Format( "{0}\t{1}", se.Total, se.Count ) );
+				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
 		}
 
 		public override void Serialize( GenericWriter writer )

@@ -98,7 +98,7 @@ namespace Server
 							"* You feel yourself resisting the effects of the poison *" );
 
 						m_Mobile.NonlocalOverheadMessage( MessageType.Emote, 0x3F, true,
-							String.Format( "* {0} seems resistant to the poison *", m_Mobile.Name ) );
+							$"* {m_Mobile.Name} seems resistant to the poison *");
 
 						Stop();
 						return;

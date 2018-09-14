@@ -1314,7 +1314,7 @@ namespace Server.Items
 			string name = Name;
 
 			if ( name == null )
-				name = String.Format( "#{0}", LabelNumber );
+				name = $"#{LabelNumber}";
 
 			return name;
 		}

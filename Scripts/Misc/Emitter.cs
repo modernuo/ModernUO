@@ -28,7 +28,7 @@ namespace Server
 			{
 				m_ModuleBuilder = m_AssemblyBuilder.DefineDynamicModule(
 					assemblyName,
-					String.Format( "{0}.dll", assemblyName.ToLower() ),
+					$"{assemblyName.ToLower()}.dll",
 					false
 				);
 			}
@@ -49,7 +49,7 @@ namespace Server
 		public void Save()
 		{
 			m_AssemblyBuilder.Save(
-				String.Format( "{0}.dll", m_AssemblyName.ToLower() )
+				$"{m_AssemblyName.ToLower()}.dll"
 			);
 		}
 	}

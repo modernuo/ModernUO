@@ -532,7 +532,7 @@ namespace Server.Engines.MyRunUO
 
 		public StreamWriter GetUniqueWriter( string type, out string filePath )
 		{
-			filePath = Path.Combine( Core.BaseDirectory, String.Format( "myrunuodb_{0}.txt", type ) ).Replace( Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar );
+			filePath = Path.Combine( Core.BaseDirectory, $"myrunuodb_{type}.txt").Replace( Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar );
 
 			try
 			{
@@ -544,7 +544,7 @@ namespace Server.Engines.MyRunUO
 				{
 					try
 					{
-						filePath = Path.Combine( Core.BaseDirectory, String.Format( "myrunuodb_{0}_{1}.txt", type, i ) ).Replace( Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar );
+						filePath = Path.Combine( Core.BaseDirectory, $"myrunuodb_{type}_{i}.txt").Replace( Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar );
 						return new StreamWriter( filePath );
 					}
 					catch
@@ -639,7 +639,7 @@ namespace Server.Engines.MyRunUO
 
 				ExecuteNonQueryIfNull(
 					String.Format( "SELECT guild_1 FROM myrunuo_guilds_wars WHERE (guild_1={0} AND guild_2={1}) OR (guild_1={1} AND guild_2={0})", ourId, theirId ),
-					String.Format( "INSERT INTO myrunuo_guilds_wars (guild_1, guild_2) VALUES ({0}, {1})", ourId, theirId ) );
+					$"INSERT INTO myrunuo_guilds_wars (guild_1, guild_2) VALUES ({ourId}, {theirId})");
 			}
 		}
 

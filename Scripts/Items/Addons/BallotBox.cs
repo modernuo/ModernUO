@@ -132,12 +132,12 @@ namespace Server.Items
 				if ( !isOwner )
 					AddButton( 20, 240, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 55, 242, 25, 35, 1011004, false, false ); // aye:
-				AddLabel( 78, 242, 0x0, String.Format( "[{0}]", yesCount ) );
+				AddLabel( 78, 242, 0x0, $"[{yesCount}]");
 
 				if ( !isOwner )
 					AddButton( 20, 275, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0 );
 				AddHtmlLocalized( 55, 277, 25, 35, 1011005, false, false ); // nay:
-				AddLabel( 78, 277, 0x0, String.Format( "[{0}]", noCount ) );
+				AddLabel( 78, 277, 0x0, $"[{noCount}]");
 
 				if ( totalVotes > 0 )
 				{

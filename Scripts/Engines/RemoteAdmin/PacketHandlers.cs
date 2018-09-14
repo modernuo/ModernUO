@@ -225,7 +225,8 @@ namespace Server.RemoteAdmin
 				{
 					string changes = string.Empty;
 					if ( UpdatedPass ) changes += " Password Changed.";
-					if ( oldAcessLevel != a.AccessLevel ) changes = string.Format( "{0} Access level changed from {1} to {2}.", changes, oldAcessLevel, a.AccessLevel );
+					if ( oldAcessLevel != a.AccessLevel ) changes =
+						$"{changes} Access level changed from {oldAcessLevel} to {a.AccessLevel}.";
 					if ( oldbanned != a.Banned ) changes += a.Banned ? " Banned." : " Unbanned.";
 					RemoteAdminLogging.WriteLine( state, "Updated account {0}:{1}", a.Username, changes );
 				}

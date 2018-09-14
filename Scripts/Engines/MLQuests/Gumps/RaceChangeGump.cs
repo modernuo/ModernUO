@@ -42,7 +42,7 @@ namespace Server.Engines.MLQuests.Gumps
 			else if ( targetRace == Race.Elf )
 				AddHtmlLocalized( 15, 15, 210, 75, 1073642, 0, false, false ); // Are you sure you want to follow the elven ways?
 			else
-				AddHtml( 15, 15, 210, 75, String.Format( "Are you sure you want to change your race to {0}?", targetRace.Name ), false, false );
+				AddHtml( 15, 15, 210, 75, $"Are you sure you want to change your race to {targetRace.Name}?", false, false );
 
 			AddButton( 160, 95, 0xF7, 0xF8, 1, GumpButtonType.Reply, 0 );
 			AddButton( 90, 95, 0xF2, 0xF1, 0, GumpButtonType.Reply, 0 );

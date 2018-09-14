@@ -55,7 +55,8 @@ namespace Server.Gumps
 					if ( m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0 )
 						continue;
 
-					AddLabel( 55, 55 + ((i % 16) * 20), 0, accountOf && m.Player && m.Account != null ? String.Format( "Account of {0}", name ) : name );
+					AddLabel( 55, 55 + ((i % 16) * 20), 0, accountOf && m.Player && m.Account != null ? $"Account of {name}"
+						: name );
 				}
 			}
 		}
@@ -132,7 +133,8 @@ namespace Server.Gumps
 						continue;
 
 					AddCheck( 34, 52 + ((i % 15) * 20), 0xD2, 0xD3, false, i );
-					AddLabel( 55, 52 + ((i % 15) * 20), 0, accountOf && m.Player && m.Account != null ? String.Format( "Account of {0}", name ) : name );
+					AddLabel( 55, 52 + ((i % 15) * 20), 0, accountOf && m.Player && m.Account != null ? $"Account of {name}"
+						: name );
 				}
 			}
 		}

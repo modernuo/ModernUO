@@ -70,7 +70,7 @@ namespace Server.Gumps
 
 		public override string Compile( NetState ns )
 		{
-			return String.Format( "{{ resizepic {0} {1} {2} {3} {4} }}", m_X, m_Y, m_GumpID, m_Width, m_Height );
+			return $"{{ resizepic {m_X} {m_Y} {m_GumpID} {m_Width} {m_Height} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "resizepic" );

@@ -238,7 +238,7 @@ namespace Server {
 						Console.WriteLine("Error: Type '{0}' was not found.", typeName);
 					}
 
-					throw new Exception(String.Format("Bad type '{0}'", typeName));
+					throw new Exception($"Bad type '{typeName}'");
 				}
 
 				ConstructorInfo ctor = t.GetConstructor(m_SerialTypeArray);
@@ -249,7 +249,7 @@ namespace Server {
 				}
 				else
 				{
-					throw new Exception(String.Format("Type '{0}' does not have a serialization constructor", t));
+					throw new Exception($"Type '{t}' does not have a serialization constructor");
 				}
 			}
 
@@ -424,7 +424,7 @@ namespace Server {
 								m.Deserialize( reader );
 
 								if ( reader.Position != ( entry.Position + entry.Length ) )
-									throw new Exception( String.Format( "***** Bad serialize on {0} *****", m.GetType() ) );
+									throw new Exception($"***** Bad serialize on {m.GetType()} *****");
 							} catch ( Exception e ) {
 								mobiles.RemoveAt( i );
 
@@ -459,7 +459,7 @@ namespace Server {
 								item.Deserialize( reader );
 
 								if ( reader.Position != ( entry.Position + entry.Length ) )
-									throw new Exception( String.Format( "***** Bad serialize on {0} *****", item.GetType() ) );
+									throw new Exception($"***** Bad serialize on {item.GetType()} *****");
 							} catch ( Exception e ) {
 								items.RemoveAt( i );
 
@@ -495,7 +495,7 @@ namespace Server {
 								g.Deserialize( reader );
 
 								if ( reader.Position != ( entry.Position + entry.Length ) )
-									throw new Exception( String.Format( "***** Bad serialize on Guild {0} *****", g.Id ) );
+									throw new Exception($"***** Bad serialize on Guild {g.Id} *****");
 							} catch ( Exception e ) {
 								guilds.RemoveAt( i );
 
@@ -557,7 +557,8 @@ namespace Server {
 					Console.WriteLine( "An exception will be thrown and the server will terminate." );
 				}
 
-				throw new Exception( String.Format( "Load failed (items={0}, mobiles={1}, guilds={2}, type={3}, serial={4})", failedItems, failedMobiles, failedGuilds, failedType, failedSerial ), failed );
+				throw new Exception(
+					$"Load failed (items={failedItems}, mobiles={failedMobiles}, guilds={failedGuilds}, type={failedType}, serial={failedSerial})", failed );
 			}
 
 			EventSink.InvokeWorldLoad();

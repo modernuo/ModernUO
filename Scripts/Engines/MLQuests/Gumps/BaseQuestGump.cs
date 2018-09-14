@@ -164,7 +164,7 @@ namespace Server.Engines.MLQuests.Gumps
 		public void SetTitle( TextDefinition def )
 		{
 			if ( def.Number > 0 )
-				m_Title = String.Format( "#{0}", def.Number ); // OSI does "@@#{0}" instead, why? KR client related?
+				m_Title = $"#{def.Number}"; // OSI does "@@#{0}" instead, why? KR client related?
 			else
 				m_Title = def.String;
 		}

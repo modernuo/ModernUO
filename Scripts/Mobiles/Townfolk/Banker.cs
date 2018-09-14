@@ -348,7 +348,7 @@ namespace Server.Mobiles
 
 							if ( AccountGold.Enabled && e.Mobile.Account != null )
 							{
-								Say( 1155855, String.Format("{0:#,0}\t{1:#,0}", e.Mobile.Account.TotalPlat, e.Mobile.Account.TotalGold) ); // Thy current bank balance is ~1_AMOUNT~ platinum and ~2_AMOUNT~ gold.
+								Say( 1155855, $"{e.Mobile.Account.TotalPlat:#,0}\t{e.Mobile.Account.TotalGold:#,0}"); // Thy current bank balance is ~1_AMOUNT~ platinum and ~2_AMOUNT~ gold.
 							}
 							else
 							{

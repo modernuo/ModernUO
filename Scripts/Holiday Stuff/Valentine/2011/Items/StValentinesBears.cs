@@ -11,7 +11,7 @@ namespace Server.Items
 			get
 			{
 				if ( m_Owner != null )
-					return String.Format( "{0}'s St. Valentine Bear", m_Owner );
+					return $"{m_Owner}'s St. Valentine Bear";
 				else
 					return "St. Valentine Bear";
 			}

@@ -18,7 +18,7 @@ namespace Server.Engines.ConPVP
 
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public void AddGoldenButton( int x, int y, int bid )
@@ -64,7 +64,7 @@ namespace Server.Engines.ConPVP
 			int x = 35;
 			int y = 47;
 
-			AddHtml( x, y, 200, 20, String.Format( "Team Size: {0}", p.Players.Length ), false, false ); y += 22;
+			AddHtml( x, y, 200, 20, $"Team Size: {p.Players.Length}", false, false ); y += 22;
 
 			AddGoldenButtonLabeled( x + 20, y, 1, "Increase" ); y += 22;
 			AddGoldenButtonLabeled( x + 20, y, 2, "Decrease" ); y += 30;
@@ -75,7 +75,7 @@ namespace Server.Engines.ConPVP
 			{
 				DuelPlayer pl = p.Players[i];
 
-				AddGoldenButtonLabeled( x, y, 5 + i, String.Format( "{0}: {1}", 1 + i, pl == null ? "Empty" : pl.Mobile.Name ) ); y += 22;
+				AddGoldenButtonLabeled( x, y, 5 + i, $"{1 + i}: {(pl == null ? "Empty" : pl.Mobile.Name)}"); y += 22;
 			}
 		}
 

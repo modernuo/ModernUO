@@ -53,12 +53,12 @@ namespace Server.Engines.ConPVP
 	{
 		public string Center( string text )
 		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
+			return $"<CENTER>{text}</CENTER>";
 		}
 
 		public string Color( string text, int color )
 		{
-			return String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text );
+			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 		}
 
 		private void AddBorderedText( int x, int y, int width, int height, string text, int color, int borderColor )
@@ -195,7 +195,7 @@ namespace Server.Engines.ConPVP
 							break;
 					}
 
-					AddBorderedText( 60, 65 + ( i * 75 ), 250, 20, String.Format( "{0}: {1}", LadderGump.Rank( 1 + i ), teamInfo.Name ), nameColor, borderColor );
+					AddBorderedText( 60, 65 + ( i * 75 ), 250, 20, $"{LadderGump.Rank(1 + i)}: {teamInfo.Name}", nameColor, borderColor );
 
 					AddBorderedText( 50 + 10, 85 + ( i * 75 ), 100, 20, "Score:", 0xFFC000, BlackColor32 );
 					AddBorderedText( 50 + 15, 105 + ( i * 75 ), 100, 20, teamInfo.Score.ToString( "N0" ), 0xFFC000, BlackColor32 );
@@ -297,7 +297,7 @@ namespace Server.Engines.ConPVP
 
 		private Dictionary<Mobile, DDPlayerInfo> m_Players;
 
-		public string Name => String.Format( "{0} Team", m_Name );
+		public string Name => $"{m_Name} Team";
 
 		public DDGame Game { get => m_Game;
 			set => m_Game = value;
@@ -840,7 +840,7 @@ namespace Server.Engines.ConPVP
 					if ( pl == leader )
 						item.ItemID = 4810;
 
-					item.Name = String.Format( "{0}, {1} team", item.Name, ((DDTeamInfo)teams[i]).Name.ToLower() );
+					item.Name = $"{item.Name}, {((DDTeamInfo) teams[i]).Name.ToLower()} team";
 
 					if ( !mob.PlaceInBackpack( item ) )
 						mob.BankBox.DropItem( item );

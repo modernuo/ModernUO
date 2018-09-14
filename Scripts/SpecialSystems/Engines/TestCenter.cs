@@ -134,7 +134,7 @@ namespace Server.Misc
 			{
 				if ( value < 0 || value > skill.Cap )
 				{
-					from.SendMessage( String.Format( "Your skill in {0} is capped at {1:F1}.", skill.Info.Name, skill.Cap ) );
+					from.SendMessage($"Your skill in {skill.Info.Name} is capped at {skill.Cap:F1}.");
 				}
 				else
 				{

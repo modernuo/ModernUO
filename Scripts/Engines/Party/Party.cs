@@ -68,7 +68,7 @@ namespace Server.Engines.PartySystem
 				else if ( m == null )
 					p.SendPublicMessage( from, "I was killed !!" );
 				else
-					p.SendPublicMessage( from, String.Format( "I was killed by {0} !!", m.Name ) );
+					p.SendPublicMessage( from, $"I was killed by {m.Name} !!");
 			}
 		}
 

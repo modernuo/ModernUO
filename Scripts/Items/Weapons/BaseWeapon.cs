@@ -2915,7 +2915,7 @@ namespace Server.Items
 			string name = Name;
 
 			if ( name == null )
-				name = String.Format( "#{0}", LabelNumber );
+				name = $"#{LabelNumber}";
 
 			return name;
 		}
@@ -3249,7 +3249,7 @@ namespace Server.Items
 			list.Add( 1061168, "{0}\t{1}", MinDamage.ToString(), MaxDamage.ToString() ); // weapon damage ~1_val~ - ~2_val~
 
 			if ( Core.ML )
-				list.Add( 1061167, String.Format( "{0}s", Speed ) ); // weapon speed ~1_val~
+				list.Add( 1061167, $"{Speed}s"); // weapon speed ~1_val~
 			else
 				list.Add( 1061167, Speed.ToString() );
 

@@ -69,11 +69,11 @@ namespace Server.Items
 			int minutes = totalSeconds / 60;
 
 			if ( minutes != 0 && seconds != 0 )
-				return String.Format( "{0} minute{1} and {2} second{3}", minutes, minutes==1?"":"s", seconds, seconds==1?"":"s" );
+				return $"{minutes} minute{(minutes == 1 ? "" : "s")} and {seconds} second{(seconds == 1 ? "" : "s")}";
 			else if ( minutes != 0 )
-				return String.Format( "{0} minute{1}", minutes, minutes==1?"":"s" );
+				return $"{minutes} minute{(minutes == 1 ? "" : "s")}";
 			else
-				return String.Format( "{0} second{1}", seconds, seconds==1?"":"s" );
+				return $"{seconds} second{(seconds == 1 ? "" : "s")}";
 		}
 
 		public virtual void Cleanup()

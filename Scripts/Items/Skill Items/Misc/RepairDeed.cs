@@ -92,7 +92,7 @@ namespace Server.Items
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{
-			list.Add( 1061133, String.Format( "{0}\t{1}", GetSkillTitle( m_SkillLevel ).ToString(), RepairSkillInfo.GetInfo( m_Skill ).Name ) ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
+			list.Add( 1061133, $"{GetSkillTitle(m_SkillLevel).ToString()}\t{RepairSkillInfo.GetInfo(m_Skill).Name}"); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
 		}
 
 		public override void GetProperties( ObjectPropertyList list )
@@ -110,7 +110,8 @@ namespace Server.Items
 			if ( Deleted || !from.CanSee( this ) )
 				return;
 
-			LabelTo( from, 1061133, String.Format( "{0}\t{1}", GetSkillTitle( m_SkillLevel ).ToString(), RepairSkillInfo.GetInfo( m_Skill ).Name ) ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
+			LabelTo( from, 1061133,
+				$"{GetSkillTitle(m_SkillLevel).ToString()}\t{RepairSkillInfo.GetInfo(m_Skill).Name}"); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
 
 			if ( m_Crafter != null )
 				LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~

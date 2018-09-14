@@ -56,7 +56,8 @@ namespace Server.Engines.MyRunUO
 					Mobile mob = ns.Mobile;
 
 					if ( mob != null )
-						m_Command.Enqueue( String.Format( "INSERT INTO myrunuo_status (char_id) VALUES ({0})", mob.Serial.Value.ToString() ) );
+						m_Command.Enqueue(
+							$"INSERT INTO myrunuo_status (char_id) VALUES ({mob.Serial.Value.ToString()})");
 				}
 			}
 			catch ( Exception e )

@@ -1016,7 +1016,8 @@ namespace Server.Engines.Craft
 				case Expansion.ML:
 					return 1072650; // The "Mondain's Legacy" expansion is required to attempt this item.
 				default:
-					return String.Format( "The \"{0}\" expansion is required to attempt this item.", ExpansionInfo.GetInfo( expansion ).Name );
+					return
+						$"The \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion is required to attempt this item.";
 			}
 		}
 

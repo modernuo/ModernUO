@@ -112,7 +112,7 @@ namespace Server.Engines.Craft
 				case Expansion.ML:
 					return 1072651; // * Requires the "Mondain's Legacy" expansion
 				default:
-					return String.Format( "* Requires the \"{0}\" expansion", ExpansionInfo.GetInfo( expansion ).Name );
+					return $"* Requires the \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion";
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace Server.Engines.Craft
 					minSkill = 0;
 
 				AddHtmlLocalized( 170, 132 + (i * 20), 200, 18, AosSkillBonuses.GetLabel( skill.SkillToMake ), LabelColor, false, false );
-				AddLabel( 430, 132 + (i * 20), LabelHue, String.Format( "{0:F1}", minSkill ) );
+				AddLabel( 430, 132 + (i * 20), LabelHue, $"{minSkill:F1}");
 			}
 
 			CraftSubResCol res = ( m_CraftItem.UseSubRes2 ? m_CraftSystem.CraftSubRes2 : m_CraftSystem.CraftSubRes );
@@ -163,7 +163,7 @@ namespace Server.Engines.Craft
 				chance = 1.0;
 
 			AddHtmlLocalized( 170, 80, 250, 18, 1044057, LabelColor, false, false ); // Success Chance:
-			AddLabel( 430, 80, LabelHue, String.Format( "{0:F1}%", chance * 100 ) );
+			AddLabel( 430, 80, LabelHue, $"{chance * 100:F1}%");
 
 			if ( m_ShowExceptionalChance )
 			{
@@ -173,7 +173,7 @@ namespace Server.Engines.Craft
 					excepChance = 1.0;
 
 				AddHtmlLocalized( 170, 100, 250, 18, 1044058, 32767, false, false ); // Exceptional Chance:
-				AddLabel( 430, 100, LabelHue, String.Format( "{0:F1}%", excepChance * 100 ) );
+				AddLabel( 430, 100, LabelHue, $"{excepChance * 100:F1}%");
 			}
 		}
 

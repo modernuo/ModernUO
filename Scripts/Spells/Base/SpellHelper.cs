@@ -224,7 +224,7 @@ namespace Server.Spells
 		public static bool AddStatBonus( Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration )
 		{
 			int offset = bonus;
-			string name = String.Format( "[Magic] {0} Offset", type );
+			string name = $"[Magic] {type} Offset";
 
 			StatMod mod = target.GetStatMod( name );
 
@@ -250,7 +250,7 @@ namespace Server.Spells
 		public static bool AddStatCurse( Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration )
 		{
 			int offset = -curse;
-			string name = String.Format( "[Magic] {0} Offset", type );
+			string name = $"[Magic] {type} Offset";
 
 			StatMod mod = target.GetStatMod( name );
 

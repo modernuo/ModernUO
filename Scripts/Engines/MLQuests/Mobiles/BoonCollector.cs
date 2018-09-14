@@ -218,7 +218,7 @@ namespace Server.Engines.MLQuests.Mobiles
 					if ( m_Index == 0 )
 					{
 						if ( m_Target.ShowFameTitle && m_Target.Fame >= 10000 )
-							m_Owner.Say( true, String.Format( "{0} {1}", m_Target.Female ? "Lady" : "Lord", m_Target.Name ) );
+							m_Owner.Say( true, $"{(m_Target.Female ? "Lady" : "Lord")} {m_Target.Name}");
 						else
 							m_Owner.Say( true, m_Target.Name );
 					}

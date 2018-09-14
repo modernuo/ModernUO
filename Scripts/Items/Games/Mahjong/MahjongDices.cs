@@ -25,7 +25,7 @@ namespace Server.Engines.Mahjong
 			m_Game.Players.SendGeneralPacket( true, true );
 
 			if ( from != null )
-				m_Game.Players.SendLocalizedMessage( 1062695, string.Format( "{0}\t{1}\t{2}", from.Name, m_First, m_Second ) ); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
+				m_Game.Players.SendLocalizedMessage( 1062695, $"{@from.Name}\t{m_First}\t{m_Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
 		}
 
 		public void Save( GenericWriter writer )

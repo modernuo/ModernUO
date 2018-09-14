@@ -68,9 +68,9 @@ namespace Server.Gumps
 		public override string Compile( NetState ns )
 		{
 			if ( m_Hue == 0 )
-				return String.Format( "{{ tilepic {0} {1} {2} }}", m_X, m_Y, m_ItemID );
+				return $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}";
 			else
-				return String.Format( "{{ tilepichue {0} {1} {2} {3} }}", m_X, m_Y, m_ItemID, m_Hue );
+				return $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "tilepic" );

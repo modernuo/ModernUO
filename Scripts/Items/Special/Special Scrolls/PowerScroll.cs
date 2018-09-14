@@ -25,7 +25,7 @@ namespace Server.Items
 			}
 		}
 
-		public override string DefaultTitle => String.Format( "<basefont color=#FFFFFF>Power Scroll ({0} Skill):</basefont>", Value );
+		public override string DefaultTitle => $"<basefont color=#FFFFFF>Power Scroll ({Value} Skill):</basefont>";
 
 		private static SkillName[] m_Skills = new[]
 			{

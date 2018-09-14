@@ -300,7 +300,7 @@ namespace Server.Items
 			if ( m_RewardAvailable )
 				LabelTo( from, 1074362 ); // A reward is available!
 
-			LabelTo( from, 1074247, String.Format("{0}\t{1}", m_LiveCreatures, MaxLiveCreatures) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
+			LabelTo( from, 1074247, $"{m_LiveCreatures}\t{MaxLiveCreatures}"); // Live Creatures: ~1_NUM~ / ~2_MAX~
 
 			if ( DeadCreatures > 0 )
 				LabelTo( from, 1074248, DeadCreatures.ToString() ); // Dead Creatures: ~1_NUM~
@@ -314,18 +314,18 @@ namespace Server.Items
 			LabelTo( from, 1074251, "#" + WaterNumber() ); // Water state: ~1_STATE~
 
 			if ( m_Food.State == (int) FoodState.Dead )
-				LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Improve) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
 			else if ( m_Food.State == (int) FoodState.Overfed )
-				LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Maintain) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074577, $"{m_Food.Added}\t{m_Food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
 			else
-				LabelTo( from, 1074253, String.Format("{0}\t{1}\t{2}", m_Food.Added, m_Food.Maintain, m_Food.Improve) ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+				LabelTo( from, 1074253, $"{m_Food.Added}\t{m_Food.Maintain}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
 
 			if ( m_Water.State == (int) WaterState.Dead )
-				LabelTo( from, 1074578, String.Format("{0}\t{1}", m_Water.Added, m_Water.Improve) ); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074578, $"{m_Water.Added}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
 			else if ( m_Water.State == (int) WaterState.Strong )
-				LabelTo( from, 1074578, String.Format("{0}\t{1}", m_Water.Added, m_Water.Maintain) ); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074578, $"{m_Water.Added}\t{m_Water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
 			else
-				LabelTo( from, 1074254, String.Format("{0}\t{1}\t{2}", m_Water.Added, m_Water.Maintain, m_Water.Improve) ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
+				LabelTo( from, 1074254, $"{m_Water.Added}\t{m_Water.Maintain}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
 		}
 
 		public override void AddNameProperties( ObjectPropertyList list )
@@ -702,7 +702,7 @@ namespace Server.Items
 				return;
 			}
 
-			to.SendLocalizedMessage( 1074360, String.Format( "#{0}", item.LabelNumber ) ); // You receive a reward: ~1_REWARD~
+			to.SendLocalizedMessage( 1074360, $"#{item.LabelNumber}"); // You receive a reward: ~1_REWARD~
 			to.PlaySound( 0x5A3 );
 
 			m_RewardAvailable = false;
@@ -834,7 +834,7 @@ namespace Server.Items
 			m_LiveCreatures += 1;
 
 			if ( from != null )
-				from.SendLocalizedMessage( 1073632, String.Format( "#{0}", fish.LabelNumber ) ); // You add the following creature to your aquarium: ~1_FISH~
+				from.SendLocalizedMessage( 1073632, $"#{fish.LabelNumber}"); // You add the following creature to your aquarium: ~1_FISH~
 
 			InvalidateProperties();
 			return true;
@@ -866,7 +866,7 @@ namespace Server.Items
 
 			AddItem( item );
 
-			from?.SendLocalizedMessage( 1073635, ( item.LabelNumber != 0 ) ? String.Format( "#{0}", item.LabelNumber ) : item.Name ); // You add the following decoration to your aquarium: ~1_NAME~
+			from?.SendLocalizedMessage( 1073635, ( item.LabelNumber != 0 ) ? $"#{item.LabelNumber}" : item.Name ); // You add the following decoration to your aquarium: ~1_NAME~
 
 			InvalidateProperties();
 			return true;

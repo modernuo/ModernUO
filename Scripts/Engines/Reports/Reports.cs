@@ -404,9 +404,9 @@ namespace Server.Engines.Reports
 				if ( pl.Faction.Commander == pl.Mobile )
 					office = "Commanding Lord";
 				else if ( pl.Finance != null )
-					office = String.Format( "{0} Finance Minister", pl.Finance.Definition.FriendlyName );
+					office = $"{pl.Finance.Definition.FriendlyName} Finance Minister";
 				else if ( pl.Sheriff != null )
-					office = String.Format( "{0} Sheriff", pl.Sheriff.Definition.FriendlyName );
+					office = $"{pl.Sheriff.Definition.FriendlyName} Sheriff";
 				else
 					office = "";
 

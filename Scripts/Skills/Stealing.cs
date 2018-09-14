@@ -340,7 +340,7 @@ namespace Server.SkillHandlers
 						if ( !IsInGuild( mobRoot ) && IsInnocentTo( m_Thief, mobRoot ) )
 							m_Thief.CriminalAction( false );
 
-						string message = String.Format( "You notice {0} trying to steal from {1}.", m_Thief.Name, mobRoot.Name );
+						string message = $"You notice {m_Thief.Name} trying to steal from {mobRoot.Name}.";
 
 						foreach ( NetState ns in m_Thief.GetClientsInRange( 8 ) )
 						{

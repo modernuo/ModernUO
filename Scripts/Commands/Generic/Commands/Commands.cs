@@ -190,7 +190,7 @@ namespace Server.Commands.Generic
 			if ( list.Count == 1 )
 				AddResponse( "There is one matching object." );
 			else
-				AddResponse( String.Format( "There are {0} matching objects.", list.Count ) );
+				AddResponse($"There are {list.Count} matching objects.");
 		}
 	}
 
@@ -255,7 +255,8 @@ namespace Server.Commands.Generic
 						else
 							AddResponse( "Open web browser request sent." );
 
-						mob.SendGump( new WarningGump( 1060637, 30720, String.Format( "A game master is requesting to open your web browser to the following URL:<br>{0}", url ), 0xFFC000, 320, 240, new WarningGumpCallback( OpenBrowser_Callback ), new object[]{ from, url, echo } ) );
+						mob.SendGump( new WarningGump( 1060637, 30720,
+							$"A game master is requesting to open your web browser to the following URL:<br>{url}", 0xFFC000, 320, 240, new WarningGumpCallback( OpenBrowser_Callback ), new object[]{ from, url, echo } ) );
 					}
 				}
 				else
@@ -636,9 +637,9 @@ namespace Server.Commands.Generic
 				Type type = obj.GetType();
 
 				if ( type.DeclaringType == null )
-					AddResponse( String.Format( "The type of that object is {0}.", type.Name ) );
+					AddResponse($"The type of that object is {type.Name}.");
 				else
-					AddResponse( String.Format( "The type of that object is {0}.", type.FullName ) );
+					AddResponse($"The type of that object is {type.FullName}.");
 			}
 		}
 	}
@@ -698,7 +699,7 @@ namespace Server.Commands.Generic
 			Commands = new[]{ command };
 			ObjectTypes = objects;
 			Usage = command;
-			Description = String.Format( "Sets the {0} property to {1}.", name, value );
+			Description = $"Sets the {name} property to {value}.";
 		}
 
 		public override void Execute( CommandEventArgs e, object obj )
@@ -796,7 +797,8 @@ namespace Server.Commands.Generic
 		{
 			if ( list.Count > 1 )
 			{
-				e.Mobile.SendGump( new WarningGump( 1060637, 30720, String.Format( "You are about to delete {0} objects. This cannot be undone without a full server revert.<br><br>Continue?", list.Count ), 0xFFC000, 420, 280, new WarningGumpCallback( OnConfirmCallback ), new object[]{ e, list } ) );
+				e.Mobile.SendGump( new WarningGump( 1060637, 30720,
+					$"You are about to delete {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?", 0xFFC000, 420, 280, new WarningGumpCallback( OnConfirmCallback ), new object[]{ e, list } ) );
 				AddResponse( "Awaiting confirmation..." );
 			}
 			else
@@ -1043,7 +1045,7 @@ namespace Server.Commands.Generic
 
 						targ.Say( "I've been {0}!", m_Ban ? "banned" : "kicked" );
 
-						AddResponse( String.Format( "They have been {0}.", m_Ban ? "banned" : "kicked" ) );
+						AddResponse($"They have been {(m_Ban ? "banned" : "kicked")}.");
 
 						targState.Dispose();
 
