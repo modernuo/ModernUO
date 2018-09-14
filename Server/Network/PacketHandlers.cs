@@ -1830,7 +1830,7 @@ namespace Server.Network
 
 				from.ContextMenu = null;
 
-				if ( menu != null && from != null && from == menu.From )
+				if ( menu != null && from == menu.From )
 				{
 					IEntity entity = World.FindEntity( pvSrc.ReadInt32() );
 
@@ -2026,11 +2026,11 @@ namespace Server.Network
 
 				if ( razorFeatures == (ulong)FeatureProtection.DisabledFeatures )
 				{
-					bool match = true;
-					for ( int i=0; match && i < m_ThirdPartyAuthKey.Length; i++ )
-						match = match && pvSrc.ReadByte() == m_ThirdPartyAuthKey[i];
+					bool doesNotMatch;
+					for ( int i = 0; !doesNotMatch && i < m_ThirdPartyAuthKey.Length; i++ )
+						doesNotMatch = pvSrc.ReadByte() != m_ThirdPartyAuthKey[i];
 
-					if ( match )
+					if ( !doesNotMatch )
 						authOK = true;
 				}
 				else
@@ -2248,7 +2248,7 @@ namespace Server.Network
 
 			bool female = ((genderRace % 2) != 0);
 
-			Race race = null;
+			Race race;
 
 			if ( state.StygianAbyss ) {
 				byte raceID = (byte)(genderRace < 4 ? 0 : ((genderRace / 2) - 1));
