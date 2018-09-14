@@ -115,7 +115,7 @@ namespace Server {
 
 		public CSPRandom() {
 			_CSP.GetBytes(_Working);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		private void CheckSwap(int c) {
@@ -131,7 +131,7 @@ namespace Server {
 
 			_filled.Reset();
 
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		private void Fill(object o) {
@@ -235,7 +235,7 @@ namespace Server {
 		public RDRandUnix()
 		{
 			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		public bool IsSupported()
@@ -258,7 +258,7 @@ namespace Server {
 
 			_filled.Reset();
 
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		private void Fill(object o)
@@ -372,7 +372,7 @@ namespace Server {
 
 		public RDRand32() {
 			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		public bool IsSupported() {
@@ -393,7 +393,7 @@ namespace Server {
 
 			_filled.Reset();
 
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		private void Fill(object o) {
@@ -491,7 +491,7 @@ namespace Server {
 
 		public RDRand64() {
 			SafeNativeMethods.rdrand_get_bytes(BUFFER_SIZE, _Working);
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		public bool IsSupported() {
@@ -512,7 +512,7 @@ namespace Server {
 
 			_filled.Reset();
 
-			ThreadPool.QueueUserWorkItem(new WaitCallback(Fill));
+			ThreadPool.QueueUserWorkItem(Fill);
 		}
 
 		private void Fill(object o) {

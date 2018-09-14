@@ -7,9 +7,9 @@ namespace Server.Mobiles
 {
 	public class HealerAI : BaseAI
 	{
-		private static NeedDelegate m_Cure = new NeedDelegate( NeedCure );
-		private static NeedDelegate m_GHeal = new NeedDelegate( NeedGHeal );
-		private static NeedDelegate m_LHeal = new NeedDelegate( NeedLHeal );
+		private static NeedDelegate m_Cure = NeedCure;
+		private static NeedDelegate m_GHeal = NeedGHeal;
+		private static NeedDelegate m_LHeal = NeedLHeal;
 		private static NeedDelegate[] m_ACure = { m_Cure };
 		private static NeedDelegate[] m_AGHeal = { m_GHeal };
 		private static NeedDelegate[] m_ALHeal = { m_LHeal };

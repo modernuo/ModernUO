@@ -9,14 +9,14 @@ namespace Server.SkillHandlers
 	{
 		public static void Initialize()
 		{
-			SkillInfo.Table[(int)SkillName.Provocation].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[(int)SkillName.Provocation].Callback = OnUse;
 		}
 
 		public static TimeSpan OnUse( Mobile m )
 		{
 			m.RevealingAction();
 
-			BaseInstrument.PickInstrument( m, new InstrumentPickedCallback( OnPickedInstrument ) );
+			BaseInstrument.PickInstrument( m, OnPickedInstrument );
 
 			return TimeSpan.FromSeconds( 1.0 ); // Cannot use another skill for 1 second
 		}

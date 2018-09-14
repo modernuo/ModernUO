@@ -260,7 +260,7 @@ namespace Server.Engines.ConPVP
 
 				if ( IsChildOf( from.Backpack ) )
 				{
-					from.BeginTarget( 1, false, TargetFlags.None, new TargetCallback( Flag_OnTarget ) );
+					from.BeginTarget( 1, false, TargetFlags.None, Flag_OnTarget );
 				}
 				else if ( !from.InRange( this, 1 ) || !from.InLOS( this ) )
 				{
@@ -343,7 +343,7 @@ namespace Server.Engines.ConPVP
 		{
 			StopCountdown();
 
-			m_ReturnTimer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), new TimerCallback( Countdown_OnTick ) );
+			m_ReturnTimer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), Countdown_OnTick );
 			m_ReturnCount = returnCount;
 		}
 
@@ -1110,7 +1110,7 @@ namespace Server.Engines.ConPVP
 
 			m_FinishTimer?.Stop();
 
-			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, new TimerCallback( Finish_Callback ) );
+			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, Finish_Callback );
 		}
 
 		private void Finish_Callback()

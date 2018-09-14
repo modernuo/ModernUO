@@ -723,7 +723,7 @@ namespace Server.Engines.Craft
 				if ( IsQuantityType( types ) )
 					index = ConsumeQuantity( ourPack, types, amounts );
 				else
-					index = ourPack.ConsumeTotalGrouped( types, amounts, true, new OnItemConsumed( OnResourceConsumed ), new CheckItemGroup( CheckHueGrouping ) );
+					index = ourPack.ConsumeTotalGrouped( types, amounts, true, OnResourceConsumed, CheckHueGrouping );
 
 				resHue = m_ResHue;
 			}
@@ -744,7 +744,7 @@ namespace Server.Engines.Craft
 				if ( IsQuantityType( types ) )
 					index = ConsumeQuantity( ourPack, types, amounts );
 				else
-					index = ourPack.ConsumeTotalGrouped( types, amounts, true, new OnItemConsumed( OnResourceConsumed ), new CheckItemGroup( CheckHueGrouping ) );
+					index = ourPack.ConsumeTotalGrouped( types, amounts, true, OnResourceConsumed, CheckHueGrouping );
 
 				resHue = m_ResHue;
 			}
@@ -768,7 +768,7 @@ namespace Server.Engines.Craft
 				{
 					for ( int i = 0; i < types.Length; i++ )
 					{
-						if ( ourPack.GetBestGroupAmount( types[i], true, new CheckItemGroup( CheckHueGrouping ) ) < amounts[i] )
+						if ( ourPack.GetBestGroupAmount( types[i], true, CheckHueGrouping ) < amounts[i] )
 						{
 							index = i;
 							break;

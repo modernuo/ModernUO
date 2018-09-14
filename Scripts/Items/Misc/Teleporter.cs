@@ -550,7 +550,7 @@ namespace Server.Items
 		{
 			m_Table = new Dictionary<Mobile, TeleportingInfo>();
 
-			EventSink.Logout += new LogoutEventHandler(EventSink_Logout);
+			EventSink.Logout += EventSink_Logout;
 		}
 
 		public static void EventSink_Logout(LogoutEventArgs e)

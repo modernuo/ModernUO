@@ -1337,7 +1337,7 @@ namespace Server
 
 		public static List<TOutput> CastConvertList<TInput, TOutput>( List<TInput> list ) where TOutput : TInput
 		{
-			return list.ConvertAll<TOutput>( new Converter<TInput, TOutput>( delegate( TInput value ) { return (TOutput)value; } ) );
+			return list.ConvertAll<TOutput>( delegate( TInput value ) { return (TOutput)value; } );
 		}
 
 		public static List<TOutput> SafeConvertList<TInput, TOutput>( List<TInput> list ) where TOutput : class

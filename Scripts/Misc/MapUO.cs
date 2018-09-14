@@ -17,10 +17,10 @@ namespace Server.Misc
 		public static void Initialize()
 		{
 			if ( Settings.PartyTrack )
-				ProtocolExtensions.Register( 0x00, true, new OnPacketReceive( OnPartyTrack ) );
+				ProtocolExtensions.Register( 0x00, true, OnPartyTrack );
 
 			if ( Settings.GuildTrack )
-				ProtocolExtensions.Register( 0x01, true, new OnPacketReceive( OnGuildTrack ) );
+				ProtocolExtensions.Register( 0x01, true, OnGuildTrack );
 		}
 
 		private static void OnPartyTrack( NetState state, PacketReader pvSrc )

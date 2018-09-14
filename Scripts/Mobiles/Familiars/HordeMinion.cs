@@ -114,7 +114,7 @@ namespace Server.Mobiles
 			Container pack = Backpack;
 
 			if ( pack != null && pack.Items.Count > 0 )
-				from.SendGump( new WarningGump( 1060635, 30720, 1061672, 32512, 420, 280, new WarningGumpCallback( ConfirmRelease_Callback ), null ) );
+				from.SendGump( new WarningGump( 1060635, 30720, 1061672, 32512, 420, 280, ConfirmRelease_Callback, null ) );
 			else
 				EndRelease( from );
 		}

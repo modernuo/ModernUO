@@ -97,7 +97,7 @@ namespace Server.Engines.ConPVP
 
 			AddButton( 314, 173, 247, 248, 1, GumpButtonType.Reply, 0 );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 15.0 ), new TimerCallback( AutoReject ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 15.0 ), AutoReject );
 		}
 
 		public void AutoReject()

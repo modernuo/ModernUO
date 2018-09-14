@@ -12,7 +12,7 @@ namespace Server
 
 		public static void Initialize()
 		{
-			VirtueGump.Register( 109, new OnVirtueUsed( OnVirtueUsed ) );
+			VirtueGump.Register( 109, OnVirtueUsed );
 		}
 
 		public static bool CheckMapRegion( Mobile first, Mobile second )
@@ -65,7 +65,7 @@ namespace Server
 			}
 			else
 			{
-				protector.BeginTarget( 14, false, TargetFlags.None, new TargetCallback( OnVirtueTargeted ) );
+				protector.BeginTarget( 14, false, TargetFlags.None, OnVirtueTargeted );
 				protector.SendLocalizedMessage( 1049366 ); // Choose the player you wish to protect.
 			}
 		}

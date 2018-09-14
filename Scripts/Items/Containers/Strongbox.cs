@@ -65,7 +65,7 @@ namespace Server.Items
 				}
 			}
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerCallback( Validate ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), Validate );
 		}
 
 		private void Validate()

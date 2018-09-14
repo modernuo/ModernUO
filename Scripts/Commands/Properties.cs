@@ -19,7 +19,7 @@ namespace Server.Commands
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Props", AccessLevel.Counselor, new CommandEventHandler( Props_OnCommand ) );
+			CommandSystem.Register( "Props", AccessLevel.Counselor, Props_OnCommand );
 		}
 
 		private class PropsTarget : Target

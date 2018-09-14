@@ -409,7 +409,7 @@ namespace Server.Items
 
 		public static void Initialize()
 		{
-			Mobile.CreateCorpseHandler += new CreateCorpseHandler( Mobile_CreateCorpseHandler );
+			Mobile.CreateCorpseHandler += Mobile_CreateCorpseHandler;
 		}
 
 		public static Container Mobile_CreateCorpseHandler( Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> initialContent, List<Item> equipItems )

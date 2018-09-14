@@ -7,7 +7,7 @@ namespace Server.Items
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "SecretLocGen", AccessLevel.Administrator, new CommandEventHandler( SecretLocGen_OnCommand ) );
+			CommandSystem.Register( "SecretLocGen", AccessLevel.Administrator, SecretLocGen_OnCommand );
 		}
 
 		[Usage( "SecretLocGen" )]

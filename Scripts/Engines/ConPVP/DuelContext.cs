@@ -673,7 +673,7 @@ namespace Server.Engines.ConPVP
 
 			m_EventGame?.OnStop();
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 9.0 ), new TimerCallback( UnregisterRematch ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 9.0 ), UnregisterRematch );
 		}
 
 		public void Award( Mobile us, Mobile them, bool won )
@@ -918,11 +918,11 @@ namespace Server.Engines.ConPVP
 		{
 			m_SDWarnTimer?.Stop();
 
-			m_SDWarnTimer = Timer.DelayCall( TimeSpan.FromMinutes( timeUntilActive.TotalMinutes * 0.9 ), new TimerCallback( WarnSuddenDeath ) );
+			m_SDWarnTimer = Timer.DelayCall( TimeSpan.FromMinutes( timeUntilActive.TotalMinutes * 0.9 ), WarnSuddenDeath );
 
 			m_SDActivateTimer?.Stop();
 
-			m_SDActivateTimer = Timer.DelayCall( timeUntilActive, new TimerCallback( ActivateSuddenDeath ) );
+			m_SDActivateTimer = Timer.DelayCall( timeUntilActive, ActivateSuddenDeath );
 		}
 
 		public void WarnSuddenDeath()
@@ -992,7 +992,7 @@ namespace Server.Engines.ConPVP
 				? AutoTieDelay
 				: TimeSpan.FromMinutes( 90.0 );
 
-			m_AutoTieTimer = Timer.DelayCall( ts, new TimerCallback( InvokeAutoTie ) );
+			m_AutoTieTimer = Timer.DelayCall( ts, InvokeAutoTie );
 		}
 
 		public void EndAutoTie()
@@ -1054,7 +1054,7 @@ namespace Server.Engines.ConPVP
 
 			m_Tournament?.HandleTie( m_Arena, m_Match, remaining );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), new TimerCallback( Unregister ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), Unregister );
 		}
 
 		public bool IsOneVsOne
@@ -1076,15 +1076,15 @@ namespace Server.Engines.ConPVP
 
 		public static void Initialize()
 		{
-			EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
-			EventSink.Login += new LoginEventHandler( EventSink_Login );
+			EventSink.Speech += EventSink_Speech;
+			EventSink.Login += EventSink_Login;
 
-			CommandSystem.Register( "vli", AccessLevel.GameMaster, new CommandEventHandler( vli_oc ) );
+			CommandSystem.Register( "vli", AccessLevel.GameMaster, vli_oc );
 		}
 
 		private static void vli_oc( CommandEventArgs e )
 		{
-			e.Mobile.BeginTarget( -1, false, Targeting.TargetFlags.None, new TargetCallback( vli_ot ) );
+			e.Mobile.BeginTarget( -1, false, Targeting.TargetFlags.None, vli_ot );
 		}
 
 		private static void vli_ot( Mobile from, object obj )
@@ -2186,7 +2186,7 @@ namespace Server.Engines.ConPVP
 				TitleColor = 0x7800;
 				TitleNumber = 1062051; // Gate Warning
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), new TimerCallback( Delete ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), Delete );
 			}
 
 			public override void CheckGate(Mobile m, int range)
@@ -2376,7 +2376,7 @@ namespace Server.Engines.ConPVP
 						}
 					}
 
-					StartCountdown( 10, new CountdownCallback( SendReadyGump ) );
+					StartCountdown( 10, SendReadyGump );
 
 					return;
 				}
@@ -2417,7 +2417,7 @@ namespace Server.Engines.ConPVP
 						}
 					}
 
-					StartCountdown( 10, new CountdownCallback( SendReadyGump ) );
+					StartCountdown( 10, SendReadyGump );
 					return;
 				}
 
@@ -2473,7 +2473,7 @@ namespace Server.Engines.ConPVP
 
 					m_EventGame?.OnStart();
 
-					StartCountdown( 10, new CountdownCallback( SendBeginGump ) );
+					StartCountdown( 10, SendBeginGump );
 
 					mg.Appear( m_GatePoint, m_GateFacet );
 				}
@@ -2491,7 +2491,7 @@ namespace Server.Engines.ConPVP
 						}
 					}
 
-					StartCountdown( 10, new CountdownCallback( SendReadyGump ) );
+					StartCountdown( 10, SendReadyGump );
 				}
 
 				return;
@@ -2529,7 +2529,7 @@ namespace Server.Engines.ConPVP
 			}
 
 			if ( count == -1 && isAllReady )
-				StartCountdown( 3, new CountdownCallback( SendReadyGump ) );
+				StartCountdown( 3, SendReadyGump );
 		}
 
 		public static void CloseAndSendGump( Mobile mob, Gump g, params Type[] types )

@@ -423,7 +423,7 @@ namespace Server.Factions
 			m_Town = Town.ReadReference( reader );
 			m_Orders = new Orders( this, reader );
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Register ) );
+			Timer.DelayCall( TimeSpan.Zero, Register );
 		}
 	}
 

@@ -47,17 +47,17 @@ namespace Server.Items
 
 		public static void Initialize()
 		{
-			EventSink.OpenSpellbookRequest += new OpenSpellbookRequestEventHandler( EventSink_OpenSpellbookRequest );
-			EventSink.CastSpellRequest += new CastSpellRequestEventHandler( EventSink_CastSpellRequest );
+			EventSink.OpenSpellbookRequest += EventSink_OpenSpellbookRequest;
+			EventSink.CastSpellRequest += EventSink_CastSpellRequest;
 
-			CommandSystem.Register( "AllSpells", AccessLevel.GameMaster, new CommandEventHandler( AllSpells_OnCommand ) );
+			CommandSystem.Register( "AllSpells", AccessLevel.GameMaster, AllSpells_OnCommand );
 		}
 
 		[Usage( "AllSpells" )]
 		[Description( "Completely fills a targeted spellbook with scrolls." )]
 		private static void AllSpells_OnCommand( CommandEventArgs e )
 		{
-			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( AllSpells_OnTarget ) );
+			e.Mobile.BeginTarget( -1, false, TargetFlags.None, AllSpells_OnTarget );
 			e.Mobile.SendMessage( "Target the spellbook to fill." );
 		}
 
@@ -76,7 +76,7 @@ namespace Server.Items
 			}
 			else
 			{
-				from.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( AllSpells_OnTarget ) );
+				from.BeginTarget( -1, false, TargetFlags.None, AllSpells_OnTarget );
 				from.SendMessage( "That is not a spellbook. Try again." );
 			}
 		}

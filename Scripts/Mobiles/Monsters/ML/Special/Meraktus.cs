@@ -70,7 +70,7 @@ namespace Server.Mobiles
 				PackTalismans(5);
 			}
 
-			Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerCallback(SpawnTormented));
+			Timer.DelayCall(TimeSpan.FromSeconds(1), SpawnTormented);
 		}
 
 		public virtual void PackResources(int amount)

@@ -4,7 +4,7 @@ namespace Server.Chat
 	{
 		public static void Initialize()
 		{
-			EventSink.ChatRequest += new ChatRequestEventHandler( EventSink_ChatRequest );
+			EventSink.ChatRequest += EventSink_ChatRequest;
 		}
 
 		private static void EventSink_ChatRequest( ChatRequestEventArgs e )

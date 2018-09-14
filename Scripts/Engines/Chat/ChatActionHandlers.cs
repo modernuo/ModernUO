@@ -8,36 +8,36 @@ namespace Server.Engines.Chat
 		{
 			m_Handlers = new ChatActionHandler[0x100];
 
-			Register( 0x41,  true,  true, new OnChatAction( ChangeChannelPassword ) );
+			Register( 0x41,  true,  true, ChangeChannelPassword );
 
-			Register( 0x58, false, false, new OnChatAction( LeaveChat ) );
+			Register( 0x58, false, false, LeaveChat );
 
-			Register( 0x61, false,  true, new OnChatAction( ChannelMessage ) );
-			Register( 0x62, false, false, new OnChatAction( JoinChannel ) );
-			Register( 0x63, false, false, new OnChatAction( JoinNewChannel ) );
-			Register( 0x64,  true,  true, new OnChatAction( RenameChannel ) );
-			Register( 0x65, false, false, new OnChatAction( PrivateMessage ) );
-			Register( 0x66, false, false, new OnChatAction( AddIgnore ) );
-			Register( 0x67, false, false, new OnChatAction( RemoveIgnore ) );
-			Register( 0x68, false, false, new OnChatAction( ToggleIgnore ) );
-			Register( 0x69,  true,  true, new OnChatAction( AddVoice ) );
-			Register( 0x6A,  true,  true, new OnChatAction( RemoveVoice ) );
-			Register( 0x6B,  true,  true, new OnChatAction( ToggleVoice ) );
-			Register( 0x6C,  true,  true, new OnChatAction( AddModerator ) );
-			Register( 0x6D,  true,  true, new OnChatAction( RemoveModerator ) );
-			Register( 0x6E,  true,  true, new OnChatAction( ToggleModerator ) );
-			Register( 0x6F, false, false, new OnChatAction( AllowPrivateMessages ) );
-			Register( 0x70, false, false, new OnChatAction( DisallowPrivateMessages ) );
-			Register( 0x71, false, false, new OnChatAction( TogglePrivateMessages ) );
-			Register( 0x72, false, false, new OnChatAction( ShowCharacterName ) );
-			Register( 0x73, false, false, new OnChatAction( HideCharacterName ) );
-			Register( 0x74, false, false, new OnChatAction( ToggleCharacterName ) );
-			Register( 0x75, false, false, new OnChatAction( QueryWhoIs ) );
-			Register( 0x76,  true,  true, new OnChatAction( Kick ) );
-			Register( 0x77,  true,  true, new OnChatAction( EnableDefaultVoice ) );
-			Register( 0x78,  true,  true, new OnChatAction( DisableDefaultVoice ) );
-			Register( 0x79,  true,  true, new OnChatAction( ToggleDefaultVoice ) );
-			Register( 0x7A, false,  true, new OnChatAction( EmoteMessage ) );
+			Register( 0x61, false,  true, ChannelMessage );
+			Register( 0x62, false, false, JoinChannel );
+			Register( 0x63, false, false, JoinNewChannel );
+			Register( 0x64,  true,  true, RenameChannel );
+			Register( 0x65, false, false, PrivateMessage );
+			Register( 0x66, false, false, AddIgnore );
+			Register( 0x67, false, false, RemoveIgnore );
+			Register( 0x68, false, false, ToggleIgnore );
+			Register( 0x69,  true,  true, AddVoice );
+			Register( 0x6A,  true,  true, RemoveVoice );
+			Register( 0x6B,  true,  true, ToggleVoice );
+			Register( 0x6C,  true,  true, AddModerator );
+			Register( 0x6D,  true,  true, RemoveModerator );
+			Register( 0x6E,  true,  true, ToggleModerator );
+			Register( 0x6F, false, false, AllowPrivateMessages );
+			Register( 0x70, false, false, DisallowPrivateMessages );
+			Register( 0x71, false, false, TogglePrivateMessages );
+			Register( 0x72, false, false, ShowCharacterName );
+			Register( 0x73, false, false, HideCharacterName );
+			Register( 0x74, false, false, ToggleCharacterName );
+			Register( 0x75, false, false, QueryWhoIs );
+			Register( 0x76,  true,  true, Kick );
+			Register( 0x77,  true,  true, EnableDefaultVoice );
+			Register( 0x78,  true,  true, DisableDefaultVoice );
+			Register( 0x79,  true,  true, ToggleDefaultVoice );
+			Register( 0x7A, false,  true, EmoteMessage );
 		}
 
 		public static void Register( int actionID, bool requireModerator, bool requireConference, OnChatAction callback )

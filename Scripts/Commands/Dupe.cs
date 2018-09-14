@@ -9,8 +9,8 @@ namespace Server.Commands
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Dupe", AccessLevel.GameMaster, new CommandEventHandler( Dupe_OnCommand ) );
-			CommandSystem.Register( "DupeInBag", AccessLevel.GameMaster, new CommandEventHandler( DupeInBag_OnCommand ) );
+			CommandSystem.Register( "Dupe", AccessLevel.GameMaster, Dupe_OnCommand );
+			CommandSystem.Register( "DupeInBag", AccessLevel.GameMaster, DupeInBag_OnCommand );
 		}
 
 		[Usage( "Dupe [amount]" )]

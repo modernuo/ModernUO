@@ -11,7 +11,7 @@ namespace Server.Misc
 		public static void Initialize()
 		{
 			// Register our event handler
-			EventSink.CharacterCreated += new CharacterCreatedEventHandler( EventSink_CharacterCreated );
+			EventSink.CharacterCreated += EventSink_CharacterCreated;
 		}
 
 		private static void AddBackpack( Mobile m )

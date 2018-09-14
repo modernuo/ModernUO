@@ -20,13 +20,13 @@ namespace Server.Engines.MyRunUO
 		{
 			if ( Config.Enabled )
 			{
-				DelayCall( TimeSpan.FromSeconds( 10.0 ), Config.CharacterUpdateInterval, new TimerCallback( Begin ) );
+				DelayCall( TimeSpan.FromSeconds( 10.0 ), Config.CharacterUpdateInterval, Begin );
 
-				CommandSystem.Register( "InitMyRunUO", AccessLevel.Administrator, new CommandEventHandler( InitMyRunUO_OnCommand ) );
-				CommandSystem.Register( "UpdateMyRunUO", AccessLevel.Administrator, new CommandEventHandler( UpdateMyRunUO_OnCommand ) );
+				CommandSystem.Register( "InitMyRunUO", AccessLevel.Administrator, InitMyRunUO_OnCommand );
+				CommandSystem.Register( "UpdateMyRunUO", AccessLevel.Administrator, UpdateMyRunUO_OnCommand );
 
-				CommandSystem.Register( "PublicChar", AccessLevel.Player, new CommandEventHandler( PublicChar_OnCommand ) );
-				CommandSystem.Register( "PrivateChar", AccessLevel.Player, new CommandEventHandler( PrivateChar_OnCommand ) );
+				CommandSystem.Register( "PublicChar", AccessLevel.Player, PublicChar_OnCommand );
+				CommandSystem.Register( "PrivateChar", AccessLevel.Player, PrivateChar_OnCommand );
 			}
 		}
 

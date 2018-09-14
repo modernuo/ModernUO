@@ -127,7 +127,7 @@ namespace Server.Items
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "SHTelGen", AccessLevel.Administrator, new CommandEventHandler( SHTelGen_OnCommand ) );
+			CommandSystem.Register( "SHTelGen", AccessLevel.Administrator, SHTelGen_OnCommand );
 		}
 
 		[Usage( "SHTelGen" )]

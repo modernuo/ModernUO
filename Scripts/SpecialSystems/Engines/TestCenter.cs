@@ -15,7 +15,7 @@ namespace Server.Misc
 		{
 			// Register our speech handler
 			if ( Enabled )
-				EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
+				EventSink.Speech += EventSink_Speech;
 		}
 
 		private static void EventSink_Speech( SpeechEventArgs args )

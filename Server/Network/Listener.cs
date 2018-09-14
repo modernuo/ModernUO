@@ -64,7 +64,7 @@ namespace Server.Network
 
 #if NewAsyncSockets
 			m_EventArgs = new SocketAsyncEventArgs();
-			m_EventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Accept_Completion );
+			m_EventArgs.Completed += Accept_Completion;
 			Accept_Start();
 #else
 			m_OnAccept = new AsyncCallback( OnAccept );

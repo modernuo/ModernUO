@@ -138,15 +138,15 @@ namespace Server.Engines.MLQuests
 
 			MLQuestPersistence.EnsureExistence();
 
-			CommandSystem.Register( "MLQuestsInfo", AccessLevel.Administrator, new CommandEventHandler( MLQuestsInfo_OnCommand ) );
-			CommandSystem.Register( "SaveQuest", AccessLevel.Administrator, new CommandEventHandler( SaveQuest_OnCommand ) );
-			CommandSystem.Register( "SaveAllQuests", AccessLevel.Administrator, new CommandEventHandler( SaveAllQuests_OnCommand ) );
-			CommandSystem.Register( "InvalidQuestItems", AccessLevel.Administrator, new CommandEventHandler( InvalidQuestItems_OnCommand ) );
+			CommandSystem.Register( "MLQuestsInfo", AccessLevel.Administrator, MLQuestsInfo_OnCommand );
+			CommandSystem.Register( "SaveQuest", AccessLevel.Administrator, SaveQuest_OnCommand );
+			CommandSystem.Register( "SaveAllQuests", AccessLevel.Administrator, SaveAllQuests_OnCommand );
+			CommandSystem.Register( "InvalidQuestItems", AccessLevel.Administrator, InvalidQuestItems_OnCommand );
 
 			TargetCommands.Register( new ViewQuestsCommand() );
 			TargetCommands.Register( new ViewContextCommand() );
 
-			EventSink.QuestGumpRequest += new QuestGumpRequestHandler( EventSink_QuestGumpRequest );
+			EventSink.QuestGumpRequest += EventSink_QuestGumpRequest;
 		}
 
 		[Usage( "MLQuestsInfo" )]

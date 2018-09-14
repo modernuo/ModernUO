@@ -80,7 +80,7 @@ namespace Server.Engines.CannedEvil
 
 			m_DamageEntries = new Dictionary<Mobile, int>();
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( SetInitialSpawnArea ) );
+			Timer.DelayCall( TimeSpan.Zero, SetInitialSpawnArea );
 		}
 
 		public void SetInitialSpawnArea()
@@ -1179,7 +1179,7 @@ namespace Server.Engines.CannedEvil
 				}
 			}
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( UpdateRegion ) );
+			Timer.DelayCall( TimeSpan.Zero, UpdateRegion );
 		}
 	}
 

@@ -200,7 +200,7 @@ namespace Server.Misc
 
 			list?.Add( this );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( (0.2+(Utility.RandomDouble()*0.8)) * interval.TotalSeconds ), interval, new TimerCallback( OnTick ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( (0.2+(Utility.RandomDouble()*0.8)) * interval.TotalSeconds ), interval, OnTick );
 		}
 
 		public virtual void Reposition()

@@ -115,7 +115,7 @@ namespace Server.Items
 							m_Step = 0;
 
 							TimeSpan delay = m_CloseTime - DateTime.UtcNow;
-							DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( Start ) );
+							DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Start );
 
 							return;
 						}

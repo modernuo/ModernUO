@@ -256,7 +256,7 @@ namespace Server.Commands.Generic
 							AddResponse( "Open web browser request sent." );
 
 						mob.SendGump( new WarningGump( 1060637, 30720,
-							$"A game master is requesting to open your web browser to the following URL:<br>{url}", 0xFFC000, 320, 240, new WarningGumpCallback( OpenBrowser_Callback ), new object[]{ from, url, echo } ) );
+							$"A game master is requesting to open your web browser to the following URL:<br>{url}", 0xFFC000, 320, 240, OpenBrowser_Callback, new object[]{ from, url, echo } ) );
 					}
 				}
 				else
@@ -798,7 +798,7 @@ namespace Server.Commands.Generic
 			if ( list.Count > 1 )
 			{
 				e.Mobile.SendGump( new WarningGump( 1060637, 30720,
-					$"You are about to delete {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?", 0xFFC000, 420, 280, new WarningGumpCallback( OnConfirmCallback ), new object[]{ e, list } ) );
+					$"You are about to delete {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?", 0xFFC000, 420, 280, OnConfirmCallback, new object[]{ e, list } ) );
 				AddResponse( "Awaiting confirmation..." );
 			}
 			else

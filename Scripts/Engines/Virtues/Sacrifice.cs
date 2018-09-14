@@ -14,7 +14,7 @@ namespace Server
 
 		public static void Initialize()
 		{
-			VirtueGump.Register( 110, new OnVirtueUsed( OnVirtueUsed ) );
+			VirtueGump.Register( 110, OnVirtueUsed );
 		}
 
 		public static void OnVirtueUsed( Mobile from )
@@ -137,7 +137,7 @@ namespace Server
 
 				from.SendLocalizedMessage( 1052010 ); // You have set the creature free.
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerCallback( targ.Delete ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), targ.Delete );
 
 				pm.LastSacrificeGain = DateTime.UtcNow;
 

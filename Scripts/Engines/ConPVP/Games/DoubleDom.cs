@@ -727,7 +727,7 @@ namespace Server.Engines.ConPVP
 				ApplyHues( m_Context.Participants[i] as Participant, m_Controller.TeamInfo[i % m_Controller.TeamInfo.Length].Color );
 
 			m_FinishTimer?.Stop();
-			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, new TimerCallback( Finish_Callback ) );
+			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, Finish_Callback );
 		}
 
 		private void Finish_Callback()
@@ -961,7 +961,7 @@ namespace Server.Engines.ConPVP
 			if ( !wasDom && isDom )
 			{
 				m_CapStage = 0;
-				m_CaptureTimer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1.0 ), new TimerCallback( CaptureTick ) );
+				m_CaptureTimer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1.0 ), CaptureTick );
 				m_CaptureTimer.Start();
 			}
 		}
@@ -1014,7 +1014,7 @@ namespace Server.Engines.ConPVP
 					m_Controller.PointB.SetUncapturableHue();
 				}
 
-				m_UncaptureTimer = Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), new TimerCallback( UncaptureTick ) );
+				m_UncaptureTimer = Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), UncaptureTick );
 				m_UncaptureTimer.Start();
 			}
 		}

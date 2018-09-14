@@ -48,7 +48,7 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( FixMovingCrate ) );
+			Timer.DelayCall( TimeSpan.Zero, FixMovingCrate );
 		}
 
 		private void FixMovingCrate()
@@ -221,7 +221,7 @@ namespace Server.Items
 				if ( house != null && house.IsCoOwner( from ) )
 				{
 					from.SendLocalizedMessage( 1062838 ); // Where would you like to place this decoration?
-					from.BeginTarget( -1, true, TargetFlags.None, new TargetStateCallback( Placement_OnTarget ), null );
+					from.BeginTarget( -1, true, TargetFlags.None, Placement_OnTarget, null );
 				}
 				else
 				{

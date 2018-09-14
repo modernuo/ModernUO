@@ -157,7 +157,7 @@ namespace Server.Engines.Help
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Pages", AccessLevel.Counselor, new CommandEventHandler( Pages_OnCommand ) );
+			CommandSystem.Register( "Pages", AccessLevel.Counselor, Pages_OnCommand );
 		}
 
 		public static bool CheckAllowedToPage( Mobile from )

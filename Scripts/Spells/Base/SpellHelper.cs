@@ -563,25 +563,25 @@ namespace Server.Spells
 		private delegate bool TravelValidator( Map map, Point3D loc );
 
 		private static TravelValidator[] m_Validators = {
-				new TravelValidator( IsFeluccaT2A ),
-				new TravelValidator( IsKhaldun ),
-				new TravelValidator( IsIlshenar ),
-				new TravelValidator( IsTrammelWind ),
-				new TravelValidator( IsFeluccaWind ),
-				new TravelValidator( IsFeluccaDungeon ),
-				new TravelValidator( IsTrammelSolenHive ),
-				new TravelValidator( IsFeluccaSolenHive ),
-				new TravelValidator( IsCrystalCave ),
-				new TravelValidator( IsDoomGauntlet ),
-				new TravelValidator( IsDoomFerry ),
-				new TravelValidator( IsSafeZone ),
-				new TravelValidator( IsFactionStronghold ),
-				new TravelValidator( IsChampionSpawn ),
-				new TravelValidator( IsTokunoDungeon ),
-				new TravelValidator( IsLampRoom ),
-				new TravelValidator( IsGuardianRoom ),
-				new TravelValidator( IsHeartwood ),
-				new TravelValidator( IsMLDungeon )
+				IsFeluccaT2A,
+				IsKhaldun,
+				IsIlshenar,
+				IsTrammelWind,
+				IsFeluccaWind,
+				IsFeluccaDungeon,
+				IsTrammelSolenHive,
+				IsFeluccaSolenHive,
+				IsCrystalCave,
+				IsDoomGauntlet,
+				IsDoomFerry,
+				IsSafeZone,
+				IsFactionStronghold,
+				IsChampionSpawn,
+				IsTokunoDungeon,
+				IsLampRoom,
+				IsGuardianRoom,
+				IsHeartwood,
+				IsMLDungeon
 			};
 
 		private static bool[,] m_Rules = {

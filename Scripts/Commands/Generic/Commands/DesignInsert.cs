@@ -96,7 +96,7 @@ namespace Server.Commands.Generic
 		public override void ExecuteList( CommandEventArgs e, ArrayList list )
 		{
 			e.Mobile.SendGump( new WarningGump( 1060637, 30720,
-				$"You are about to insert {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?", 0xFFC000, 420, 280, new WarningGumpCallback( OnConfirmCallback ), new object[] { e, list, ( e.Length < 1 || !e.GetBoolean( 0 ) ) } ) );
+				$"You are about to insert {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?", 0xFFC000, 420, 280, OnConfirmCallback, new object[] { e, list, ( e.Length < 1 || !e.GetBoolean( 0 ) ) } ) );
 			AddResponse( "Awaiting confirmation..." );
 		}
 

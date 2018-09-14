@@ -152,7 +152,7 @@ namespace Server.Factions
 				type = "guard";
 
 			from.SendMessage( "Target the {0} you wish to dismiss.", type );
-			from.BeginTarget( 12, false, TargetFlags.None, new TargetCallback( EndOrderFiring ) );
+			from.BeginTarget( 12, false, TargetFlags.None, EndOrderFiring );
 		}
 
 		public void EndOrderFiring( Mobile from, object obj )
@@ -184,7 +184,7 @@ namespace Server.Factions
 		{
 			m_IncomeTimer?.Stop();
 
-			m_IncomeTimer = Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( CheckIncome ) );
+			m_IncomeTimer = Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), CheckIncome );
 		}
 
 		public void StopIncomeTimer()
@@ -381,7 +381,7 @@ namespace Server.Factions
 				towns[i].Finance = towns[i].Finance;
 			}
 
-			CommandSystem.Register( "GrantTownSilver", AccessLevel.Administrator, new CommandEventHandler( GrantTownSilver_OnCommand ) );
+			CommandSystem.Register( "GrantTownSilver", AccessLevel.Administrator, GrantTownSilver_OnCommand );
 		}
 
 		public Town()

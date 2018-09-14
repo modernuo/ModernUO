@@ -82,7 +82,7 @@ namespace Server.Misc
 
 		public static void AsyncSend( MailMessage message )
 		{
-			ThreadPool.QueueUserWorkItem( new WaitCallback( SendCallback ), message );
+			ThreadPool.QueueUserWorkItem( SendCallback, message );
 		}
 
 		private static void SendCallback( object state )

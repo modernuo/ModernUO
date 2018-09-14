@@ -24,7 +24,7 @@ namespace Server.Commands
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "SignGen", AccessLevel.Administrator, new CommandEventHandler( SignGen_OnCommand ) );
+			CommandSystem.Register( "SignGen", AccessLevel.Administrator, SignGen_OnCommand );
 		}
 
 		[Usage( "SignGen" )]

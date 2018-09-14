@@ -1369,7 +1369,7 @@ namespace Server.Mobiles
 			if ( IsParagon )
 				IsParagon = false;
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckMorph ) );
+			Timer.DelayCall( TimeSpan.Zero, CheckMorph );
 		}
 
 		public override void AddCustomContextEntries( Mobile from, List<ContextMenuEntry> list )

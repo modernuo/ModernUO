@@ -411,7 +411,7 @@ namespace Server.Guilds
 						else
 						{
 							pm.SendLocalizedMessage( 1063439 ); // Enter a name for the new alliance:
-							pm.BeginPrompt( new PromptCallback( CreateAlliance_Callback ) );
+							pm.BeginPrompt( CreateAlliance_Callback );
 						}
 					}
 					#endregion

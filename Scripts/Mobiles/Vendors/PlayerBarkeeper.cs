@@ -551,7 +551,7 @@ namespace Server.Mobiles
 			}
 
 			if ( version < 1 )
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( UpgradeFromVersion0 ) );
+				Timer.DelayCall( TimeSpan.Zero, UpgradeFromVersion0 );
 		}
 
 		private void UpgradeFromVersion0()

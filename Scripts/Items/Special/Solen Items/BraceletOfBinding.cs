@@ -110,10 +110,10 @@ namespace Server.Items
 			{
 				BraceletOfBinding bound = Bound;
 
-				list.Add( new BraceletEntry( new BraceletCallback( Activate ), 6170, bound != null ) );
-				list.Add( new BraceletEntry( new BraceletCallback( Search ), 6171, bound != null ) );
-				list.Add( new BraceletEntry( new BraceletCallback( Bind ), bound == null ? 6173 : 6174, true ) );
-				list.Add( new BraceletEntry( new BraceletCallback( Inscribe ), 6175, true ) );
+				list.Add( new BraceletEntry( Activate, 6170, bound != null ) );
+				list.Add( new BraceletEntry( Search, 6171, bound != null ) );
+				list.Add( new BraceletEntry( Bind, bound == null ? 6173 : 6174, true ) );
+				list.Add( new BraceletEntry( Inscribe, 6175, true ) );
 			}
 		}
 

@@ -12,11 +12,11 @@ namespace Server
 		{
 			if ( Enabled )
 			{
-				EventSink.ClientVersionReceived += new ClientVersionReceivedHandler( delegate( ClientVersionReceivedArgs args )
+				EventSink.ClientVersionReceived += delegate( ClientVersionReceivedArgs args )
 				{
 					if ( args.State.Mobile is PlayerMobile pm )
 						Timer.DelayCall( TimeSpan.Zero, pm.ResendBuffs );
-				} );
+				};
 			}
 		}
 
@@ -72,14 +72,13 @@ namespace Server
 			m_TimeLength = length;
 			m_TimeStart = DateTime.UtcNow;
 
-			m_Timer = Timer.DelayCall( length, new TimerCallback(
-				delegate
-				{
-					if ( !(m is PlayerMobile pm) )
-						return;
+			m_Timer = Timer.DelayCall( length, delegate
+			{
+				if ( !(m is PlayerMobile pm) )
+					return;
 
-					pm.RemoveBuff( this );
-				} ) );
+				pm.RemoveBuff( this );
+			} );
 		}
 
 

@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Doom
 			if ( Deleted || m_AngryAt == null )
 				return;
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 4.0 ), new TimerCallback( EndGiveWarning ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 4.0 ), EndGiveWarning );
 		}
 
 		public virtual void EndGiveWarning()
@@ -73,12 +73,12 @@ namespace Server.Engines.Quests.Doom
 			if ( Deleted || m_AngryAt == null )
 				return;
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), new TimerCallback( EndSummonDragon ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), EndSummonDragon );
 		}
 
 		public virtual void BeginRemove( TimeSpan delay )
 		{
-			Timer.DelayCall( delay, new TimerCallback( EndRemove ) );
+			Timer.DelayCall( delay, EndRemove );
 		}
 
 		public virtual void EndRemove()

@@ -266,7 +266,7 @@ namespace Server.Spells.Necromancy
 			list.Add( summoned );
 
 			if ( list.Count > 3 )
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( list[0].Kill ) );
+				Timer.DelayCall( TimeSpan.Zero, list[0].Kill );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), TimeSpan.FromSeconds( 2.0 ), new TimerStateCallback( Summoned_Damage ), summoned );
 		}

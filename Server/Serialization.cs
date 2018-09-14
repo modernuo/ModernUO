@@ -1423,7 +1423,7 @@ namespace Server
 
 			if ( m_WorkerThread == null || !m_WorkerThread.IsAlive )
 			{
-				m_WorkerThread = new Thread( new ThreadStart( new WorkerThread( this ).Worker ) );
+				m_WorkerThread = new Thread( new WorkerThread( this ).Worker );
 				m_WorkerThread.Priority = ThreadPriority.BelowNormal;
 				m_WorkerThread.Start();
 			}

@@ -575,10 +575,10 @@ namespace Server.Engines.ConPVP
 				m_Region = new SafeZone( m_Zone, m_Outside, m_Facet, m_IsGuarded );
 
 			if ( IsOccupied )
-				Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), new TimerCallback( Evict ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 2.0 ), Evict );
 
 			if ( m_Tournament != null )
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( AttachToTournament_Sandbox ) );
+				Timer.DelayCall( TimeSpan.Zero, AttachToTournament_Sandbox );
 		}
 
 		private void AttachToTournament_Sandbox()

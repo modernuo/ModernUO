@@ -73,7 +73,7 @@ namespace Server.Factions
 
 		public void StartTimer()
 		{
-			m_Timer = Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( Slice ) );
+			m_Timer = Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), Slice );
 		}
 
 		public Election( Faction faction )

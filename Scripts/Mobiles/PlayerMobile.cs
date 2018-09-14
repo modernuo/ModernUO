@@ -688,16 +688,16 @@ namespace Server.Mobiles
 		public static void Initialize()
 		{
 			if ( FastwalkPrevention )
-				PacketHandlers.RegisterThrottler( 0x02, new ThrottlePacketCallback( MovementThrottle_Callback ) );
+				PacketHandlers.RegisterThrottler( 0x02, MovementThrottle_Callback );
 
-			EventSink.Login += new LoginEventHandler( OnLogin );
-			EventSink.Logout += new LogoutEventHandler( OnLogout );
-			EventSink.Connected += new ConnectedEventHandler( EventSink_Connected );
-			EventSink.Disconnected += new DisconnectedEventHandler( EventSink_Disconnected );
+			EventSink.Login += OnLogin;
+			EventSink.Logout += OnLogout;
+			EventSink.Connected += EventSink_Connected;
+			EventSink.Disconnected += EventSink_Disconnected;
 
 			if ( Core.SE )
 			{
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckPets ) );
+				Timer.DelayCall( TimeSpan.Zero, CheckPets );
 			}
 		}
 
@@ -734,7 +734,7 @@ namespace Server.Mobiles
 			{
 				m_Type = type;
 
-				m_Timer = Timer.DelayCall( duration, new TimerStateCallback<Mobile>( RemoveBlock ), mobile );
+				m_Timer = Timer.DelayCall( duration, RemoveBlock, mobile );
 			}
 
 			private void RemoveBlock( Mobile mobile )
@@ -917,7 +917,7 @@ namespace Server.Mobiles
 				return;
 
 			m_NoDeltaRecursion = true;
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ValidateEquipment_Sandbox ) );
+			Timer.DelayCall( TimeSpan.Zero, ValidateEquipment_Sandbox );
 		}
 
 		private void ValidateEquipment_Sandbox()
@@ -1588,21 +1588,21 @@ namespace Server.Mobiles
 					if ( InsuranceEnabled )
 					{
 						if ( Core.SA )
-							list.Add( new CallbackEntry( 1114299, new ContextCallback( OpenItemInsuranceMenu ) ) ); // Open Item Insurance Menu
+							list.Add( new CallbackEntry( 1114299, OpenItemInsuranceMenu ) ); // Open Item Insurance Menu
 
-						list.Add( new CallbackEntry( 6201, new ContextCallback( ToggleItemInsurance ) ) ); // Toggle Item Insurance
+						list.Add( new CallbackEntry( 6201, ToggleItemInsurance ) ); // Toggle Item Insurance
 
 						if ( !Core.SA )
 						{
 							if ( AutoRenewInsurance )
-								list.Add( new CallbackEntry( 6202, new ContextCallback( CancelRenewInventoryInsurance ) ) ); // Cancel Renewing Inventory Insurance
+								list.Add( new CallbackEntry( 6202, CancelRenewInventoryInsurance ) ); // Cancel Renewing Inventory Insurance
 							else
-								list.Add( new CallbackEntry( 6200, new ContextCallback( AutoRenewInventoryInsurance ) ) ); // Auto Renew Inventory Insurance
+								list.Add( new CallbackEntry( 6200, AutoRenewInventoryInsurance ) ); // Auto Renew Inventory Insurance
 						}
 					}
 
 					if ( MLQuestSystem.Enabled )
-						list.Add( new CallbackEntry( 6169, new ContextCallback( ToggleQuestItem ) ) ); // Toggle Quest Item
+						list.Add( new CallbackEntry( 6169, ToggleQuestItem ) ); // Toggle Quest Item
 				}
 
 				BaseHouse house = BaseHouse.FindHouseAt( this );
@@ -1610,24 +1610,24 @@ namespace Server.Mobiles
 				if ( house != null )
 				{
 					if ( Alive && house.InternalizedVendors.Count > 0 && house.IsOwner( this ) )
-						list.Add( new CallbackEntry( 6204, new ContextCallback( GetVendor ) ) );
+						list.Add( new CallbackEntry( 6204, GetVendor ) );
 
 					if ( house.IsAosRules && !Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) ) // Dueling
-						list.Add( new CallbackEntry( 6207, new ContextCallback( LeaveHouse ) ) );
+						list.Add( new CallbackEntry( 6207, LeaveHouse ) );
 				}
 
 				if ( m_JusticeProtectors.Count > 0 )
-					list.Add( new CallbackEntry( 6157, new ContextCallback( CancelProtection ) ) );
+					list.Add( new CallbackEntry( 6157, CancelProtection ) );
 
 				if ( Alive )
-					list.Add( new CallbackEntry( 6210, new ContextCallback( ToggleChampionTitleDisplay ) ) );
+					list.Add( new CallbackEntry( 6210, ToggleChampionTitleDisplay ) );
 
 				if ( Core.HS )
 				{
 					NetState ns = from.NetState;
 
 					if ( ns != null && ns.ExtendedStatus )
-						list.Add( new CallbackEntry( RefuseTrades ? 1154112 : 1154113, new ContextCallback( ToggleTrades ) ) ); // Allow Trades / Refuse Trades
+						list.Add( new CallbackEntry( RefuseTrades ? 1154112 : 1154113, ToggleTrades ) ); // Allow Trades / Refuse Trades
 				}
 			}
 			else
@@ -1690,7 +1690,7 @@ namespace Server.Mobiles
 			if ( !CheckAlive() )
 				return;
 
-			BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+			BeginTarget( -1, false, TargetFlags.None, ToggleItemInsurance_Callback );
 			SendLocalizedMessage( 1060868 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
 		}
 
@@ -1733,7 +1733,7 @@ namespace Server.Mobiles
 			if ( item == null || !item.IsChildOf( this ) )
 			{
 				if ( target )
-					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+					BeginTarget( -1, false, TargetFlags.None, ToggleItemInsurance_Callback );
 
 				SendLocalizedMessage( 1060871, "", 0x23 ); // You can only insure items that you have equipped or that are in your backpack
 			}
@@ -1745,14 +1745,14 @@ namespace Server.Mobiles
 
 				if ( target )
 				{
-					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+					BeginTarget( -1, false, TargetFlags.None, ToggleItemInsurance_Callback );
 					SendLocalizedMessage( 1060868, "", 0x23 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
 				}
 			}
 			else if ( !CanInsure( item ) )
 			{
 				if ( target )
-					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+					BeginTarget( -1, false, TargetFlags.None, ToggleItemInsurance_Callback );
 
 				SendLocalizedMessage( 1060869, "", 0x23 ); // You cannot insure that
 			}
@@ -1780,7 +1780,7 @@ namespace Server.Mobiles
 
 				if ( target )
 				{
-					BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleItemInsurance_Callback ) );
+					BeginTarget( -1, false, TargetFlags.None, ToggleItemInsurance_Callback );
 					SendLocalizedMessage( 1060868, "", 0x23 ); // Target the item you wish to toggle insurance status on <ESC> to cancel
 				}
 			}
@@ -2133,7 +2133,7 @@ namespace Server.Mobiles
 			//CloseGump( typeof( UnknownGump802 ) );
 			//CloseGump( typeof( UnknownGump804 ) );
 
-			BeginTarget( -1, false, TargetFlags.None, new TargetCallback( ToggleQuestItem_Callback ) );
+			BeginTarget( -1, false, TargetFlags.None, ToggleQuestItem_Callback );
 			SendLocalizedMessage( 1072352 ); // Target the item you wish to toggle Quest Item status on <ESC> to cancel
 		}
 
@@ -2530,7 +2530,7 @@ namespace Server.Mobiles
 			m_SentHonorContext?.OnSourceDamaged( @from, amount );
 
 			if ( willKill && @from is PlayerMobile mobile )
-				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( mobile.RecoverAmmo ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), mobile.RecoverAmmo );
 
 			base.OnDamage( amount, from, willKill );
 		}
@@ -2564,7 +2564,7 @@ namespace Server.Mobiles
 		public override void OnWarmodeChanged()
 		{
 			if ( !Warmode )
-				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( RecoverAmmo ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), RecoverAmmo );
 		}
 
 		private Mobile m_InsuranceAward;
@@ -2815,7 +2815,7 @@ namespace Server.Mobiles
 			if ( Young && m_DuelContext == null )
 			{
 				if ( YoungDeathTeleport() )
-					Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), new TimerCallback( SendYoungDeathNotice ) );
+					Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), SendYoungDeathNotice );
 			}
 
 			if ( m_DuelContext == null || !m_DuelContext.Registered || !m_DuelContext.Started || m_DuelPlayer == null || m_DuelPlayer.Eliminated )
@@ -4993,7 +4993,7 @@ namespace Server.Mobiles
 						if (pet.Map != Map)
 						{
 							pet.PlaySound( pet.GetAngerSound() );
-							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( pet.Delete ) );
+							Timer.DelayCall( TimeSpan.Zero, pet.Delete );
 						}
 						continue;
 					}

@@ -32,7 +32,7 @@ namespace Server.Multis
 			m_DecayDelay = TimeSpan.FromMinutes( 30.0 );
 			RefreshDecay( true );
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( CheckAddComponents ) );
+			Timer.DelayCall( TimeSpan.Zero, CheckAddComponents );
 		}
 
 		public void CheckAddComponents()
@@ -57,7 +57,7 @@ namespace Server.Multis
 			if ( setDecayTime )
 				m_DecayTime = DateTime.UtcNow + DecayDelay;
 
-			m_DecayTimer = Timer.DelayCall( DecayDelay, new TimerCallback( Delete ) );
+			m_DecayTimer = Timer.DelayCall( DecayDelay, Delete );
 		}
 
 		public virtual void AddItem( Item item, int xOffset, int yOffset, int zOffset )

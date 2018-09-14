@@ -25,7 +25,7 @@ namespace Server.Items
 
 		public BaseFruitTreeAddon()
 		{
-			Timer.DelayCall( TimeSpan.FromMinutes( 5 ), new TimerCallback( Respawn ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 5 ), Respawn );
 		}
 
 		public BaseFruitTreeAddon( Serial serial ) : base( serial )
@@ -51,7 +51,7 @@ namespace Server.Items
 					else
 					{
 						if ( --m_Fruits == 0 )
-							Timer.DelayCall( TimeSpan.FromMinutes( 30 ), new TimerCallback( Respawn ) );
+							Timer.DelayCall( TimeSpan.FromMinutes( 30 ), Respawn );
 
 						from.SendLocalizedMessage( 501016 ); // You pick some fruit and put it in your backpack.
 					}

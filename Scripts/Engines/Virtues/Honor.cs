@@ -13,7 +13,7 @@ namespace Server
 
 		public static void Initialize()
 		{
-			VirtueGump.Register( 107, new OnVirtueUsed( OnVirtueUsed ) );
+			VirtueGump.Register( 107, OnVirtueUsed );
 		}
 
 		private static void OnVirtueUsed( Mobile from )

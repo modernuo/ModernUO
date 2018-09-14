@@ -143,7 +143,7 @@ namespace Server.Engines.Doom
 					CreateRegion();
 					FullSpawn();
 
-					m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), new TimerCallback( Slice ) );
+					m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), Slice );
 				}
 				else
 				{
@@ -459,7 +459,7 @@ namespace Server.Engines.Doom
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "GenGauntlet", AccessLevel.Administrator, new CommandEventHandler( GenGauntlet_OnCommand ) );
+			CommandSystem.Register( "GenGauntlet", AccessLevel.Administrator, GenGauntlet_OnCommand );
 		}
 
 		public static void CreateTeleporter( int xFrom, int yFrom, int xTo, int yTo )

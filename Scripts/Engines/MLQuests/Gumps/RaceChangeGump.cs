@@ -71,7 +71,7 @@ namespace Server.Engines.MLQuests.Gumps
 		private class RaceChangeState
 		{
 			private static readonly TimeSpan m_TimeoutDelay = TimeSpan.FromMinutes( 1 );
-			private static readonly TimerStateCallback<NetState> m_TimeoutCallback = new TimerStateCallback<NetState>( Timeout );
+			private static readonly TimerStateCallback<NetState> m_TimeoutCallback = Timeout;
 
 			public IRaceChanger m_Owner;
 			public Race m_TargetRace;
@@ -91,7 +91,7 @@ namespace Server.Engines.MLQuests.Gumps
 		{
 			m_Pending = new Dictionary<NetState, RaceChangeState>();
 
-			PacketHandlers.RegisterExtended( 0x2A, true, new OnPacketReceive( RaceChangeReply ) );
+			PacketHandlers.RegisterExtended( 0x2A, true, RaceChangeReply );
 		}
 
 		public static bool IsPending( NetState state )

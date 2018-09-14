@@ -87,15 +87,15 @@ namespace Server.Misc
 		{
 			private static Dictionary<Mobile, Timer> m_Dictionary = new Dictionary<Mobile, Timer>();
 
-			private static TimerStateCallback OnHandshakeTimeout_Callback = new TimerStateCallback(OnHandshakeTimeout);
-			private static TimerStateCallback OnForceDisconnect_Callback = new TimerStateCallback(OnForceDisconnect);
+			private static TimerStateCallback OnHandshakeTimeout_Callback = OnHandshakeTimeout;
+			private static TimerStateCallback OnForceDisconnect_Callback = OnForceDisconnect;
 
 			public static void Initialize()
 			{
 				if (Settings.Enabled)
 				{
-					EventSink.Login += new LoginEventHandler(EventSink_Login);
-					ProtocolExtensions.Register(0xFF, true, new OnPacketReceive(OnHandshakeResponse));
+					EventSink.Login += EventSink_Login;
+					ProtocolExtensions.Register(0xFF, true, OnHandshakeResponse);
 				}
 			}
 

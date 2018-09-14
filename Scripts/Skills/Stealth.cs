@@ -8,7 +8,7 @@ namespace Server.SkillHandlers
 	{
 		public static void Initialize()
 		{
-			SkillInfo.Table[(int)SkillName.Stealth].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[(int)SkillName.Stealth].Callback = OnUse;
 		}
 
 		public static double HidingRequirement => ( Core.ML ? 30.0 : ( Core.SE ? 50.0 : 80.0 ) );

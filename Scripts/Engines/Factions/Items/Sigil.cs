@@ -205,7 +205,7 @@ namespace Server.Factions
 		{
 			if ( IsChildOf( from.Backpack ) )
 			{
-				from.BeginTarget( 1, false, Targeting.TargetFlags.None, new TargetCallback( Sigil_OnTarget ) );
+				from.BeginTarget( 1, false, Targeting.TargetFlags.None, Sigil_OnTarget );
 				from.SendLocalizedMessage( 1042251 ); // Click on a sigil monolith or player
 			}
 		}

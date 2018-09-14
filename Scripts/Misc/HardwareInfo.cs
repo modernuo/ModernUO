@@ -101,16 +101,16 @@ namespace Server
 
 		public static void Initialize()
 		{
-			PacketHandlers.Register( 0xD9, 0x10C, false, new OnPacketReceive( OnReceive ) );
+			PacketHandlers.Register( 0xD9, 0x10C, false, OnReceive );
 
-			CommandSystem.Register( "HWInfo", AccessLevel.GameMaster, new CommandEventHandler( HWInfo_OnCommand ) );
+			CommandSystem.Register( "HWInfo", AccessLevel.GameMaster, HWInfo_OnCommand );
 		}
 
 		[Usage( "HWInfo" )]
 		[Description( "Displays information about a targeted player's hardware." )]
 		public static void HWInfo_OnCommand( CommandEventArgs e )
 		{
-			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( HWInfo_OnTarget ) );
+			e.Mobile.BeginTarget( -1, false, TargetFlags.None, HWInfo_OnTarget );
 			e.Mobile.SendMessage( "Target a player to view their hardware information." );
 		}
 
@@ -137,7 +137,7 @@ namespace Server
 			}
 			else
 			{
-				from.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( HWInfo_OnTarget ) );
+				from.BeginTarget( -1, false, TargetFlags.None, HWInfo_OnTarget );
 				from.SendMessage( "That is not a player. Try again." );
 			}
 		}

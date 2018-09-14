@@ -158,7 +158,7 @@ namespace Server.Misc
 
 		public static void Initialize()
 		{
-			EventSink.Login += new LoginEventHandler( EventSink_Login );
+			EventSink.Login += EventSink_Login;
 		}
 
 		private static List<ShardPoller> m_ActivePollers = new List<ShardPoller>();
@@ -611,7 +611,7 @@ namespace Server.Misc
 			if ( text == null )
 				return null;
 
-			return m_UrlRegex.Replace( text, new MatchEvaluator( UrlRegex_Match ) );
+			return m_UrlRegex.Replace( text, UrlRegex_Match );
 		}
 
 		public override void OnResponse( Mobile from, string text )

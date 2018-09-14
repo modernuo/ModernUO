@@ -32,7 +32,7 @@ namespace Server.Engines.Reports
 
 			m_GenerateTime = date + TimeSpan.FromHours( Math.Ceiling( timeOfDay.TotalHours ) );
 
-			Timer.DelayCall( TimeSpan.FromMinutes( 0.5 ), TimeSpan.FromMinutes( 0.5 ), new TimerCallback( CheckRegenerate ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 0.5 ), TimeSpan.FromMinutes( 0.5 ), CheckRegenerate );
 		}
 
 		private static DateTime m_GenerateTime;
@@ -62,7 +62,7 @@ namespace Server.Engines.Reports
 			m_StatsHistory.Snapshots.Add( ss );
 			m_StaffHistory.QueueStats.Add( new QueueStatus( Help.PageQueue.List.Count ) );
 
-			ThreadPool.QueueUserWorkItem( new WaitCallback( UpdateOutput ), ss );
+			ThreadPool.QueueUserWorkItem( UpdateOutput, ss );
 		}
 
 		private static void UpdateOutput( object state )

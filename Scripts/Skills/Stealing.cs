@@ -16,7 +16,7 @@ namespace Server.SkillHandlers
 	{
 		public static void Initialize()
 		{
-			SkillInfo.Table[33].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[33].Callback = OnUse;
 		}
 
 		public static readonly bool ClassicMode = false;

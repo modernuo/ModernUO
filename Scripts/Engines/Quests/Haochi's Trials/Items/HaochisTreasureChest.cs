@@ -74,7 +74,7 @@ namespace Server.Engines.Quests.Samurai
 					obj.StolenTreasure = true;
 			}
 
-			Timer.DelayCall( TimeSpan.FromMinutes( 2.0 ), new TimerCallback( GenerateTreasure ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 2.0 ), GenerateTreasure );
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -90,7 +90,7 @@ namespace Server.Engines.Quests.Samurai
 
 			int version = reader.ReadEncodedInt();
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( GenerateTreasure ) );
+			Timer.DelayCall( TimeSpan.Zero, GenerateTreasure );
 		}
 	}
 }

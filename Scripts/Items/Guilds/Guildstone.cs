@@ -109,7 +109,7 @@ namespace Server.Items
 				m_BeforeChangeover = true;
 
 			if ( Guild.NewGuildSystem && m_BeforeChangeover )
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( AddToHouse ) );
+				Timer.DelayCall( TimeSpan.Zero, AddToHouse );
 
 			if ( !Guild.NewGuildSystem && m_Guild == null )
 				Delete();
@@ -382,7 +382,7 @@ namespace Server.Items
 				if ( house != null && house.IsOwner( from ) )
 				{
 					from.SendLocalizedMessage( 1062838 ); // Where would you like to place this decoration?
-					from.BeginTarget( -1, true, Targeting.TargetFlags.None, new TargetStateCallback( Placement_OnTarget ), null );
+					from.BeginTarget( -1, true, Targeting.TargetFlags.None, Placement_OnTarget, null );
 				}
 				else
 				{

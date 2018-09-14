@@ -44,7 +44,7 @@ namespace Server.Items
 		{
 			if (CanUseWeapon(from, weapon))
 			{
-				from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, new TargetStateCallback<INinjaWeapon>(OnTarget), weapon);
+				from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
 			}
 		}
 
@@ -66,10 +66,10 @@ namespace Server.Items
 
 					if (CombatCheck(from, target))
 					{
-						Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback<object[]>(OnHit), new object[] { from, target, weapon });
+						Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, new object[] { from, target, weapon });
 					}
 
-					Timer.DelayCall(TimeSpan.FromSeconds(2.5), new TimerStateCallback<PlayerMobile>(ResetUsing), from);
+					Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
 				}
 				else
 				{
@@ -356,7 +356,7 @@ namespace Server.Items
 			{
 				if (WeaponIsValid(weapon, Owner.From))
 				{
-					Owner.From.BeginTarget(10, false, TargetFlags.Harmful, new TargetStateCallback<INinjaWeapon>(OnTarget), weapon);
+					Owner.From.BeginTarget(10, false, TargetFlags.Harmful, OnTarget, weapon);
 				}
 			}
 		}

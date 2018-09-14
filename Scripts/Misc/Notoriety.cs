@@ -22,10 +22,10 @@ namespace Server.Misc
 			Notoriety.Hues[Notoriety.Murderer]		= 0x22;
 			Notoriety.Hues[Notoriety.Invulnerable]	= 0x35;
 
-			Notoriety.Handler = new NotorietyHandler( MobileNotoriety );
+			Notoriety.Handler = MobileNotoriety;
 
-			Mobile.AllowBeneficialHandler = new AllowBeneficialHandler( Mobile_AllowBeneficial );
-			Mobile.AllowHarmfulHandler = new AllowHarmfulHandler( Mobile_AllowHarmful );
+			Mobile.AllowBeneficialHandler = Mobile_AllowBeneficial;
+			Mobile.AllowHarmfulHandler = Mobile_AllowHarmful;
 		}
 
 		private enum GuildStatus { None, Peaceful, Waring }

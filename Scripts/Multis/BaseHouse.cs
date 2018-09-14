@@ -244,7 +244,7 @@ namespace Server.Multis
 		{
 			if ( !Deleted && DecayLevel == DecayLevel.Collapsed )
 			{
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Decay_Sandbox ) );
+				Timer.DelayCall( TimeSpan.Zero, Decay_Sandbox );
 				return true;
 			}
 
@@ -940,7 +940,7 @@ namespace Server.Multis
 			LockedDownFlag = 1;
 			SecureFlag = 2;
 
-			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( Decay_OnTick ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), Decay_OnTick );
 		}
 
 		public virtual int GetAosCurLockdowns()
@@ -1816,7 +1816,7 @@ namespace Server.Multis
 						 * When you accept this house, you also accept landlordship for every
 						 * contract vendor in the house.
 						 */
-						to.SendGump( new WarningGump( 1060635, 30720, 1062487, 32512, 420, 280, new WarningGumpCallback( ConfirmTransfer_Callback ), from ) );
+						to.SendGump( new WarningGump( 1060635, 30720, 1062487, 32512, 420, 280, ConfirmTransfer_Callback, from ) );
 					}
 					else
 					{
@@ -2487,7 +2487,7 @@ namespace Server.Multis
 						Item child = children[j];
 
 						if ( child.Decays && !child.IsLockedDown && !child.IsSecure && (child.LastMoved + child.DecayTime) <= DateTime.UtcNow )
-							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( child.Delete ) );
+							Timer.DelayCall( TimeSpan.Zero, child.Delete );
 					}
 				}
 			}
@@ -2703,7 +2703,7 @@ namespace Server.Multis
 				 * having a chance to fix it themselves.
 				 */
 
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( FixLockdowns_Sandbox ) );
+				Timer.DelayCall( TimeSpan.Zero, FixLockdowns_Sandbox );
 			}
 
 			if ( version < 11 )
@@ -2722,10 +2722,10 @@ namespace Server.Multis
 			if ( !CheckDecay() )
 			{
 				if ( RelocatedEntities.Count > 0 )
-					Timer.DelayCall( TimeSpan.Zero, new TimerCallback( RestoreRelocatedEntities ) );
+					Timer.DelayCall( TimeSpan.Zero, RestoreRelocatedEntities );
 
 				if ( m_Owner == null && m_Friends.Count == 0 && m_CoOwners.Count == 0 )
-					Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), new TimerCallback( Delete ) );
+					Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), Delete );
 			}
 		}
 
@@ -2783,7 +2783,7 @@ namespace Server.Multis
 				}*/
 
 				if ( trans == null && !canClaim )
-					Timer.DelayCall( TimeSpan.Zero, new TimerCallback( house.Delete ) );
+					Timer.DelayCall( TimeSpan.Zero, house.Delete );
 				else
 					house.Owner = trans;
 			}

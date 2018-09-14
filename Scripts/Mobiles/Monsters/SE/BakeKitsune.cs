@@ -67,7 +67,7 @@ namespace Server.Mobiles
 		public override void OnCombatantChange()
 		{
 			if ( Combatant == null && !IsBodyMod && !Controlled && m_DisguiseTimer == null && Utility.RandomBool() )
-				m_DisguiseTimer = Timer.DelayCall( TimeSpan.FromSeconds( Utility.RandomMinMax( 15, 30 ) ), new TimerCallback( Disguise ) );
+				m_DisguiseTimer = Timer.DelayCall( TimeSpan.FromSeconds( Utility.RandomMinMax( 15, 30 ) ), Disguise );
 		}
 
 		public override bool OnBeforeDeath()
@@ -119,7 +119,7 @@ namespace Server.Mobiles
 			AddItem( new Robe( Utility.RandomNondyedHue() ) );
 
 			m_DisguiseTimer = null;
-			m_DisguiseTimer = Timer.DelayCall( TimeSpan.FromSeconds( 75 ), new TimerCallback( RemoveDisguise ) );
+			m_DisguiseTimer = Timer.DelayCall( TimeSpan.FromSeconds( 75 ), RemoveDisguise );
 		}
 
 		public void RemoveDisguise()
@@ -270,7 +270,7 @@ namespace Server.Mobiles
 				SetResistance( ResistanceType.Energy, 40, 60 );
 			}
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( RemoveDisguise ) );
+			Timer.DelayCall( TimeSpan.Zero, RemoveDisguise );
 		}
 	}
 }

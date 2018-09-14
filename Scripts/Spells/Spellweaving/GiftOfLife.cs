@@ -25,10 +25,10 @@ namespace Server.Spells.Spellweaving
 
 		public static void Initialize()
 		{
-			EventSink.PlayerDeath += new PlayerDeathEventHandler( delegate( PlayerDeathEventArgs e )
+			EventSink.PlayerDeath += delegate( PlayerDeathEventArgs e )
 			{
 				HandleDeath( e.Mobile );
-			} );
+			};
 		}
 
 		public override void OnCast()
@@ -93,7 +93,7 @@ namespace Server.Spells.Spellweaving
 		public static void HandleDeath( Mobile m )
 		{
 			if ( m_Table.ContainsKey( m ) )
-				Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( Utility.RandomMinMax( 2, 4 ) ), new TimerStateCallback<Mobile>( HandleDeath_OnCallback ), m );
+				Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( Utility.RandomMinMax( 2, 4 ) ), HandleDeath_OnCallback, m );
 		}
 
 		private static void HandleDeath_OnCallback( Mobile m )

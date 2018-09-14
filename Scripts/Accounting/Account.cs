@@ -493,9 +493,9 @@ namespace Server.Accounting
 
 		public static void Initialize()
 		{
-			EventSink.Connected += new ConnectedEventHandler( EventSink_Connected );
-			EventSink.Disconnected += new DisconnectedEventHandler( EventSink_Disconnected );
-			EventSink.Login += new LoginEventHandler( EventSink_Login );
+			EventSink.Connected += EventSink_Connected;
+			EventSink.Disconnected += EventSink_Disconnected;
+			EventSink.Login += EventSink_Login;
 		}
 
 		private static void EventSink_Connected( ConnectedEventArgs e )

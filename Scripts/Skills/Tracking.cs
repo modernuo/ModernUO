@@ -11,7 +11,7 @@ namespace Server.SkillHandlers
 	{
 		public static void Initialize()
 		{
-			SkillInfo.Table[(int)SkillName.Tracking].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[(int)SkillName.Tracking].Callback = OnUse;
 		}
 
 		public static TimeSpan OnUse( Mobile m )
@@ -125,10 +125,10 @@ namespace Server.SkillHandlers
 		private int m_Range;
 
 		private static TrackTypeDelegate[] m_Delegates = {
-				new TrackTypeDelegate( IsAnimal ),
-				new TrackTypeDelegate( IsMonster ),
-				new TrackTypeDelegate( IsHumanNPC ),
-				new TrackTypeDelegate( IsPlayer )
+				IsAnimal,
+				IsMonster,
+				IsHumanNPC,
+				IsPlayer
 			};
 
 		private class InternalSorter : IComparer<Mobile>

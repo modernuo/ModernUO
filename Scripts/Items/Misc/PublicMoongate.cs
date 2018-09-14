@@ -99,7 +99,7 @@ namespace Server.Items
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "MoonGen", AccessLevel.Administrator, new CommandEventHandler( MoonGen_OnCommand ) );
+			CommandSystem.Register( "MoonGen", AccessLevel.Administrator, MoonGen_OnCommand );
 		}
 
 		[Usage( "MoonGen" )]

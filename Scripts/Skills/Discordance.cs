@@ -10,14 +10,14 @@ namespace Server.SkillHandlers
 	{
 		public static void Initialize()
 		{
-			SkillInfo.Table[(int)SkillName.Discordance].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[(int)SkillName.Discordance].Callback = OnUse;
 		}
 
 		public static TimeSpan OnUse( Mobile m )
 		{
 			m.RevealingAction();
 
-			BaseInstrument.PickInstrument( m, new InstrumentPickedCallback( OnPickedInstrument ) );
+			BaseInstrument.PickInstrument( m, OnPickedInstrument );
 
 			return TimeSpan.FromSeconds( 1.0 ); // Cannot use another skill for 1 second
 		}
@@ -236,7 +236,7 @@ namespace Server.SkillHandlers
 							}
 
 							DiscordanceInfo info = new DiscordanceInfo( from, targ, Math.Abs( effect ), mods );
-							info.m_Timer = Timer.DelayCall<DiscordanceInfo>( TimeSpan.Zero, TimeSpan.FromSeconds( 1.25 ), new TimerStateCallback<DiscordanceInfo>( ProcessDiscordance ), info );
+							info.m_Timer = Timer.DelayCall<DiscordanceInfo>( TimeSpan.Zero, TimeSpan.FromSeconds( 1.25 ), ProcessDiscordance, info );
 
 							m_Table[targ] = info;
 						}

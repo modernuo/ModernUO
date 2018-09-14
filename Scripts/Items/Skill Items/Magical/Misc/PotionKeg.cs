@@ -79,7 +79,7 @@ namespace Server.Items
 			}
 
 			if ( version < 1 )
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( UpdateWeight ) );
+				Timer.DelayCall( TimeSpan.Zero, UpdateWeight );
 		}
 
 		public override int LabelNumber

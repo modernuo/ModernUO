@@ -13,7 +13,7 @@ namespace Server.Misc
 		public static void Initialize()
 		{
 			new AutoSave().Start();
-			CommandSystem.Register( "SetSaves", AccessLevel.Administrator, new CommandEventHandler( SetSaves_OnCommand ) );
+			CommandSystem.Register( "SetSaves", AccessLevel.Administrator, SetSaves_OnCommand );
 		}
 
 		private static bool m_SavesEnabled = true;
@@ -66,7 +66,7 @@ namespace Server.Misc
 				else
 					World.Broadcast( 0x35, true, "The world will save in {0} second{1}.", s, s != 1 ? "s" : "" );
 
-				DelayCall( m_Warning, new TimerCallback( Save ) );
+				DelayCall( m_Warning, Save );
 			}
 		}
 

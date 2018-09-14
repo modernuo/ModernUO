@@ -11,7 +11,7 @@ namespace Server.Commands
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "TelGen", AccessLevel.Administrator, new CommandEventHandler( GenTeleporter_OnCommand ) );
+			CommandSystem.Register( "TelGen", AccessLevel.Administrator, GenTeleporter_OnCommand );
 		}
 
 		[Usage( "TelGen" )]

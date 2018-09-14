@@ -117,7 +117,7 @@ namespace Server.Items
 					list[i].Broadcast( triggerer );
 			}
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( InternalCallback ) );
+			Timer.DelayCall( TimeSpan.Zero, InternalCallback );
 		}
 
 		private void InternalCallback()

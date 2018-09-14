@@ -559,11 +559,11 @@ namespace Server.Network {
 #if NewAsyncSockets
 		public void Start() {
 			m_ReceiveEventArgs = new SocketAsyncEventArgs();
-			m_ReceiveEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Receive_Completion );
+			m_ReceiveEventArgs.Completed += Receive_Completion;
 			m_ReceiveEventArgs.SetBuffer( m_RecvBuffer, 0, m_RecvBuffer.Length );
 
 			m_SendEventArgs = new SocketAsyncEventArgs();
-			m_SendEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>( Send_Completion );
+			m_SendEventArgs.Completed += Send_Completion;
 
 			m_Running = true;
 
@@ -1049,7 +1049,7 @@ namespace Server.Network {
 		}
 
 		public static void Initialize() {
-			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.5 ), new TimerCallback( CheckAllAlive ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.5 ), CheckAllAlive );
 		}
 
 		public static void CheckAllAlive() {

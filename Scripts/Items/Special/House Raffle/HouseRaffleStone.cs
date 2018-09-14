@@ -248,7 +248,7 @@ namespace Server.Items
 				}
 			}
 
-			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( CheckEnd_OnTick ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), CheckEnd_OnTick );
 		}
 
 		[Constructible]
@@ -462,7 +462,7 @@ namespace Server.Items
 			else
 			{
 				from.SendGump( new WarningGump( 1150470, 0x7F00,
-					$"You are about to purchase a raffle ticket for the house plot located at {FormatLocation()}.  The ticket price is {FormatPrice()}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?", 0xFFFFFF, 420, 280, new WarningGumpCallback( Purchase_Callback ), null ) ); // CONFIRM TICKET PURCHASE
+					$"You are about to purchase a raffle ticket for the house plot located at {FormatLocation()}.  The ticket price is {FormatPrice()}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?", 0xFFFFFF, 420, 280, Purchase_Callback, null ) ); // CONFIRM TICKET PURCHASE
 			}
 		}
 

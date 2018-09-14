@@ -22,7 +22,7 @@ namespace Server
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "UOAMVendors", AccessLevel.Administrator, new CommandEventHandler( Generate_OnCommand ) );
+			CommandSystem.Register( "UOAMVendors", AccessLevel.Administrator, Generate_OnCommand );
 		}
 
 		[Usage( "UOAMVendors" )]

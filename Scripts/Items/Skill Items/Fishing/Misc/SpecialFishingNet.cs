@@ -104,7 +104,7 @@ namespace Server.Items
 			else if ( IsChildOf( from.Backpack ) )
 			{
 				from.SendLocalizedMessage( 1010484 ); // Where do you wish to use the net?
-				from.BeginTarget( -1, true, TargetFlags.None, new TargetCallback( OnTarget ) );
+				from.BeginTarget( -1, true, TargetFlags.None, OnTarget );
 			}
 			else
 			{

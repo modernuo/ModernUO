@@ -21,7 +21,7 @@ namespace Server.Engines.Help
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "SpeechLog", AccessLevel.Counselor, new CommandEventHandler( SpeechLog_OnCommand ) );
+			CommandSystem.Register( "SpeechLog", AccessLevel.Counselor, SpeechLog_OnCommand );
 		}
 
 		[Usage( "SpeechLog" )]

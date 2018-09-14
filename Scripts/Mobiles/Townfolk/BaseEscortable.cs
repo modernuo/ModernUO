@@ -388,7 +388,7 @@ namespace Server.Mobiles
 					SetControlMaster(null);
 					m_EscortTable.Remove(master);
 
-					Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerCallback(Delete));
+					Timer.DelayCall(TimeSpan.FromSeconds(5.0), Delete);
 					return null;
 				}
 				else

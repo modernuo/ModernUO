@@ -32,7 +32,7 @@ namespace Server.Items
 			m_Created = DateTime.UtcNow;
 			m_Duration = duration;
 
-			m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), new TimerCallback( OnTick ) );
+			m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), OnTick );
 		}
 
 		public override void OnAfterDelete()

@@ -59,7 +59,7 @@ namespace Server.Factions
 					else
 					{
 						m_From.SendLocalizedMessage( 1010347 ); // Who shall be your new sheriff
-						m_From.BeginTarget( 12, false, TargetFlags.None, new TargetCallback( HireSheriff_OnTarget ) );
+						m_From.BeginTarget( 12, false, TargetFlags.None, HireSheriff_OnTarget );
 					}
 
 					break;
@@ -73,7 +73,7 @@ namespace Server.Factions
 					else
 					{
 						m_From.SendLocalizedMessage( 1010348 ); // Who shall be your new Minister of Finances?
-						m_From.BeginTarget( 12, false, TargetFlags.None, new TargetCallback( HireFinanceMinister_OnTarget ) );
+						m_From.BeginTarget( 12, false, TargetFlags.None, HireFinanceMinister_OnTarget );
 					}
 
 					break;

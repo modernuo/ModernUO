@@ -199,7 +199,7 @@ namespace Server.Factions
 
 			if ( (m_TimeOfPlacement + decayPeriod) < DateTime.UtcNow )
 			{
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
+				Timer.DelayCall( TimeSpan.Zero, Delete );
 				return true;
 			}
 
@@ -210,7 +210,7 @@ namespace Server.Factions
 		{
 			m_Concealing?.Stop();
 
-			m_Concealing = Timer.DelayCall( ConcealPeriod, new TimerCallback( Conceal ) );
+			m_Concealing = Timer.DelayCall( ConcealPeriod, Conceal );
 		}
 
 		public virtual void Conceal()

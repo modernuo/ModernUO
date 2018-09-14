@@ -565,10 +565,10 @@ namespace Server.Guilds
 	{
 		public static void Configure()
 		{
-			EventSink.CreateGuild += new CreateGuildHandler( EventSink_CreateGuild );
-			EventSink.GuildGumpRequest += new GuildGumpRequestHandler( EventSink_GuildGumpRequest );
+			EventSink.CreateGuild += EventSink_CreateGuild;
+			EventSink.GuildGumpRequest += EventSink_GuildGumpRequest;
 
-			CommandSystem.Register( "GuildProps", AccessLevel.Counselor, new CommandEventHandler( GuildProps_OnCommand ) );
+			CommandSystem.Register( "GuildProps", AccessLevel.Counselor, GuildProps_OnCommand );
 		}
 
 		#region GuildProps
@@ -1272,7 +1272,7 @@ namespace Server.Guilds
 				Disband();
 			*/
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( VerifyGuild_Callback ) );
+			Timer.DelayCall( TimeSpan.Zero, VerifyGuild_Callback );
 		}
 
 		private void VerifyGuild_Callback()

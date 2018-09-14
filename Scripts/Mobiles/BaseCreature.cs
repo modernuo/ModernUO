@@ -1427,7 +1427,7 @@ namespace Server.Mobiles
 			}
 			else if ( from is PlayerMobile mobile )
 			{
-				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( mobile.RecoverAmmo ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), mobile.RecoverAmmo );
 			}
 
 			base.OnDamage( amount, from, willKill );
@@ -3460,10 +3460,10 @@ namespace Server.Mobiles
 					Say( 1013037 + Utility.Random( 16 ) );
 					guardedRegion.CallGuards( Location );
 
-					Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerCallback( ReleaseGuardLock ) );
+					Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), ReleaseGuardLock );
 
 					m_NoDupeGuards = m;
-					Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ReleaseGuardDupeLock ) );
+					Timer.DelayCall( TimeSpan.Zero, ReleaseGuardDupeLock );
 				}
 			}
 		}
@@ -5359,7 +5359,7 @@ namespace Server.Mobiles
 		{
 			if ( !Deleted && ReturnsToHome && IsSpawnerBound() && !InRange( Home, ( RangeHome + 5 ) ) )
 			{
-				Timer.DelayCall( TimeSpan.FromSeconds( ( Utility.Random( 45 ) + 15 ) ), new TimerCallback( GoHome_Callback ) );
+				Timer.DelayCall( TimeSpan.FromSeconds( ( Utility.Random( 45 ) + 15 ) ), GoHome_Callback );
 
 				m_ReturnQueued = true;
 			}

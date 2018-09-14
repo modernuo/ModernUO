@@ -12,7 +12,7 @@ namespace Server.Gumps
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Comments", AccessLevel.Counselor, new CommandEventHandler( Comments_OnCommand ) );
+			CommandSystem.Register( "Comments", AccessLevel.Counselor, Comments_OnCommand );
 		}
 
 		[Usage( "Comments" )]
@@ -20,7 +20,7 @@ namespace Server.Gumps
 		private static void Comments_OnCommand( CommandEventArgs args )
 		{
 			args.Mobile.SendMessage( "Select the player to view account comments." );
-			args.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( OnTarget ) );
+			args.Mobile.BeginTarget( -1, false, TargetFlags.None, OnTarget );
 		}
 
 		private static void OnTarget( Mobile from, object target )

@@ -33,7 +33,7 @@ namespace Server.Engines.Doom
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "GenLeverPuzzle", AccessLevel.Administrator, new CommandEventHandler( GenLampPuzzle_OnCommand ) );
+			CommandSystem.Register( "GenLeverPuzzle", AccessLevel.Administrator, GenLampPuzzle_OnCommand );
 		}
 
 		[Usage( "GenLeverPuzzle" )]
@@ -267,7 +267,7 @@ namespace Server.Engines.Doom
 
 			if ( (TheirKey=(ushort)(code|(TheirKey<<=4))) < 0x0FFF )
 			{
-				l_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), new TimerCallback( ResetPuzzle ));
+				l_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), ResetPuzzle);
 				return;
 			}
 

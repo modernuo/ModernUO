@@ -12,13 +12,13 @@ namespace Server
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Freeze", AccessLevel.Administrator, new CommandEventHandler( Freeze_OnCommand ) );
-			CommandSystem.Register( "FreezeMap", AccessLevel.Administrator, new CommandEventHandler( FreezeMap_OnCommand ) );
-			CommandSystem.Register( "FreezeWorld", AccessLevel.Administrator, new CommandEventHandler( FreezeWorld_OnCommand ) );
+			CommandSystem.Register( "Freeze", AccessLevel.Administrator, Freeze_OnCommand );
+			CommandSystem.Register( "FreezeMap", AccessLevel.Administrator, FreezeMap_OnCommand );
+			CommandSystem.Register( "FreezeWorld", AccessLevel.Administrator, FreezeWorld_OnCommand );
 
-			CommandSystem.Register( "Unfreeze", AccessLevel.Administrator, new CommandEventHandler( Unfreeze_OnCommand ) );
-			CommandSystem.Register( "UnfreezeMap", AccessLevel.Administrator, new CommandEventHandler( UnfreezeMap_OnCommand ) );
-			CommandSystem.Register( "UnfreezeWorld", AccessLevel.Administrator, new CommandEventHandler( UnfreezeWorld_OnCommand ) );
+			CommandSystem.Register( "Unfreeze", AccessLevel.Administrator, Unfreeze_OnCommand );
+			CommandSystem.Register( "UnfreezeMap", AccessLevel.Administrator, UnfreezeMap_OnCommand );
+			CommandSystem.Register( "UnfreezeWorld", AccessLevel.Administrator, UnfreezeWorld_OnCommand );
 		}
 
 		private static Point3D NullP3D = new Point3D( int.MinValue, int.MinValue, int.MinValue );
@@ -27,7 +27,7 @@ namespace Server
 		[Description( "Makes a targeted area of dynamic items static." )]
 		public static void Freeze_OnCommand( CommandEventArgs e )
 		{
-			BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( FreezeBox_Callback ), null );
+			BoundingBoxPicker.Begin( e.Mobile, FreezeBox_Callback, null );
 		}
 
 		[Usage( "FreezeMap" )]
@@ -37,14 +37,14 @@ namespace Server
 			Map map = e.Mobile.Map;
 
 			if ( map != null && map != Map.Internal )
-				SendWarning( e.Mobile, "You are about to freeze <u>all items in {0}</u>.", BaseFreezeWarning, map, NullP3D, NullP3D, new WarningGumpCallback( FreezeWarning_Callback ) );
+				SendWarning( e.Mobile, "You are about to freeze <u>all items in {0}</u>.", BaseFreezeWarning, map, NullP3D, NullP3D, FreezeWarning_Callback );
 		}
 
 		[Usage( "FreezeWorld" )]
 		[Description( "Makes every dynamic item on all maps static." )]
 		public static void FreezeWorld_OnCommand( CommandEventArgs e )
 		{
-			SendWarning( e.Mobile, "You are about to freeze <u>every item on every map</u>.", BaseFreezeWarning, null, NullP3D, NullP3D, new WarningGumpCallback( FreezeWarning_Callback ) );
+			SendWarning( e.Mobile, "You are about to freeze <u>every item on every map</u>.", BaseFreezeWarning, null, NullP3D, NullP3D, FreezeWarning_Callback );
 		}
 
 		public static void SendWarning( Mobile m, string header, string baseWarning, Map map, Point3D start, Point3D end, WarningGumpCallback callback )
@@ -64,7 +64,7 @@ namespace Server
 
 		private static void FreezeBox_Callback( Mobile from, Map map, Point3D start, Point3D end, object state )
 		{
-			SendWarning( from, "You are about to freeze a section of items.", BaseFreezeWarning, map, start, end, new WarningGumpCallback( FreezeWarning_Callback ) );
+			SendWarning( from, "You are about to freeze a section of items.", BaseFreezeWarning, map, start, end, FreezeWarning_Callback );
 		}
 
 		private static void FreezeWarning_Callback( Mobile from, bool okay, object state )
@@ -290,7 +290,7 @@ namespace Server
 		[Description( "Makes a targeted area of static items dynamic." )]
 		public static void Unfreeze_OnCommand( CommandEventArgs e )
 		{
-			BoundingBoxPicker.Begin( e.Mobile, new BoundingBoxCallback( UnfreezeBox_Callback ), null );
+			BoundingBoxPicker.Begin( e.Mobile, UnfreezeBox_Callback, null );
 		}
 
 		[Usage( "UnfreezeMap" )]
@@ -300,19 +300,19 @@ namespace Server
 			Map map = e.Mobile.Map;
 
 			if ( map != null && map != Map.Internal )
-				SendWarning( e.Mobile, "You are about to unfreeze <u>all items in {0}</u>.", BaseUnfreezeWarning, map, NullP3D, NullP3D, new WarningGumpCallback( UnfreezeWarning_Callback ) );
+				SendWarning( e.Mobile, "You are about to unfreeze <u>all items in {0}</u>.", BaseUnfreezeWarning, map, NullP3D, NullP3D, UnfreezeWarning_Callback );
 		}
 
 		[Usage( "UnfreezeWorld" )]
 		[Description( "Makes every static item on all maps dynamic." )]
 		public static void UnfreezeWorld_OnCommand( CommandEventArgs e )
 		{
-			SendWarning( e.Mobile, "You are about to unfreeze <u>every item on every map</u>.", BaseUnfreezeWarning, null, NullP3D, NullP3D, new WarningGumpCallback( UnfreezeWarning_Callback ) );
+			SendWarning( e.Mobile, "You are about to unfreeze <u>every item on every map</u>.", BaseUnfreezeWarning, null, NullP3D, NullP3D, UnfreezeWarning_Callback );
 		}
 
 		private static void UnfreezeBox_Callback( Mobile from, Map map, Point3D start, Point3D end, object state )
 		{
-			SendWarning( from, "You are about to unfreeze a section of items.", BaseUnfreezeWarning, map, start, end, new WarningGumpCallback( UnfreezeWarning_Callback ) );
+			SendWarning( from, "You are about to unfreeze a section of items.", BaseUnfreezeWarning, map, start, end, UnfreezeWarning_Callback );
 		}
 
 		private static void UnfreezeWarning_Callback( Mobile from, bool okay, object state )

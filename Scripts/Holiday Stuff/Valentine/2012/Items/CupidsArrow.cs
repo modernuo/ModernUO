@@ -71,7 +71,7 @@ namespace Server.Items
 				return;
 			}
 
-			from.BeginTarget( 10, false, TargetFlags.None, new TargetCallback( OnTarget ) );
+			from.BeginTarget( 10, false, TargetFlags.None, OnTarget );
 			from.SendMessage( "Who do you wish to use this on?" );
 		}
 

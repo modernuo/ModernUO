@@ -14,7 +14,7 @@ namespace Server.Commands
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "DocGen", AccessLevel.Administrator, new CommandEventHandler( DocGen_OnCommand ) );
+			CommandSystem.Register( "DocGen", AccessLevel.Administrator, DocGen_OnCommand );
 		}
 
 		[Usage( "DocGen" )]

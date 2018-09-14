@@ -1029,7 +1029,7 @@ namespace Server.Engines.ConPVP
             mob.Frozen = false;
 
             if (corpse != null && !corpse.Deleted)
-                Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerCallback(corpse.Delete));
+                Timer.DelayCall(TimeSpan.FromSeconds(30), corpse.Delete);
         }
 
         public override bool OnDeath(Mobile mob, Container corpse)
@@ -1106,7 +1106,7 @@ namespace Server.Engines.ConPVP
                     board.m_Game = this;
             }
 
-            m_FinishTimer = Timer.DelayCall(m_Controller.Duration, new TimerCallback(Finish_Callback));
+            m_FinishTimer = Timer.DelayCall(m_Controller.Duration, Finish_Callback);
         }
 
         private void Finish_Callback()

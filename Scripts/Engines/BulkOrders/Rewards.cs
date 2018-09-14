@@ -178,16 +178,16 @@ namespace Server.Engines.BulkOrders
 	public sealed class SmithRewardCalculator : RewardCalculator
 	{
 		#region Constructors
-		private static readonly ConstructCallback SturdyShovel = new ConstructCallback( CreateSturdyShovel );
-		private static readonly ConstructCallback SturdyPickaxe = new ConstructCallback( CreateSturdyPickaxe );
-		private static readonly ConstructCallback MiningGloves = new ConstructCallback( CreateMiningGloves );
-		private static readonly ConstructCallback GargoylesPickaxe = new ConstructCallback( CreateGargoylesPickaxe );
-		private static readonly ConstructCallback ProspectorsTool = new ConstructCallback( CreateProspectorsTool );
-		private static readonly ConstructCallback PowderOfTemperament = new ConstructCallback( CreatePowderOfTemperament );
-		private static readonly ConstructCallback RunicHammer = new ConstructCallback( CreateRunicHammer );
-		private static readonly ConstructCallback PowerScroll = new ConstructCallback( CreatePowerScroll );
-		private static readonly ConstructCallback ColoredAnvil = new ConstructCallback( CreateColoredAnvil );
-		private static readonly ConstructCallback AncientHammer = new ConstructCallback( CreateAncientHammer );
+		private static readonly ConstructCallback SturdyShovel = CreateSturdyShovel;
+		private static readonly ConstructCallback SturdyPickaxe = CreateSturdyPickaxe;
+		private static readonly ConstructCallback MiningGloves = CreateMiningGloves;
+		private static readonly ConstructCallback GargoylesPickaxe = CreateGargoylesPickaxe;
+		private static readonly ConstructCallback ProspectorsTool = CreateProspectorsTool;
+		private static readonly ConstructCallback PowderOfTemperament = CreatePowderOfTemperament;
+		private static readonly ConstructCallback RunicHammer = CreateRunicHammer;
+		private static readonly ConstructCallback PowerScroll = CreatePowerScroll;
+		private static readonly ConstructCallback ColoredAnvil = CreateColoredAnvil;
+		private static readonly ConstructCallback AncientHammer = CreateAncientHammer;
 
 		private static Item CreateSturdyShovel( int type )
 		{
@@ -460,14 +460,14 @@ namespace Server.Engines.BulkOrders
 	public sealed class TailorRewardCalculator : RewardCalculator
 	{
 		#region Constructors
-		private static readonly ConstructCallback Cloth = new ConstructCallback( CreateCloth );
-		private static readonly ConstructCallback Sandals = new ConstructCallback( CreateSandals );
-		private static readonly ConstructCallback StretchedHide = new ConstructCallback( CreateStretchedHide );
-		private static readonly ConstructCallback RunicKit = new ConstructCallback( CreateRunicKit );
-		private static readonly ConstructCallback Tapestry = new ConstructCallback( CreateTapestry );
-		private static readonly ConstructCallback PowerScroll = new ConstructCallback( CreatePowerScroll );
-		private static readonly ConstructCallback BearRug = new ConstructCallback( CreateBearRug );
-		private static readonly ConstructCallback ClothingBlessDeed = new ConstructCallback( CreateCBD );
+		private static readonly ConstructCallback Cloth = CreateCloth;
+		private static readonly ConstructCallback Sandals = CreateSandals;
+		private static readonly ConstructCallback StretchedHide = CreateStretchedHide;
+		private static readonly ConstructCallback RunicKit = CreateRunicKit;
+		private static readonly ConstructCallback Tapestry = CreateTapestry;
+		private static readonly ConstructCallback PowerScroll = CreatePowerScroll;
+		private static readonly ConstructCallback BearRug = CreateBearRug;
+		private static readonly ConstructCallback ClothingBlessDeed = CreateCBD;
 
 		private static int[][] m_ClothHues = {
 				new[]{ 0x483, 0x48C, 0x488, 0x48A },

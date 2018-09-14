@@ -26,7 +26,7 @@ namespace Server.Items
 			}
 			else
 			{
-				from.BeginTarget( 2, false, TargetFlags.None, new TargetCallback( OnTarget ) );
+				from.BeginTarget( 2, false, TargetFlags.None, OnTarget );
 				from.SendMessage( "What do you wish to use the gem on?" );
 			}
 		}

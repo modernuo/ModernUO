@@ -45,7 +45,7 @@ namespace Server.Items
 		{
 			AddComponent( new AddonComponent( itemID ), 0, 0, 0 );
 
-			m_Timer = Timer.DelayCall( TimeSpan.FromDays( 1 ), TimeSpan.FromDays( 1 ), new TimerCallback( GiveLogs ) );
+			m_Timer = Timer.DelayCall( TimeSpan.FromDays( 1 ), TimeSpan.FromDays( 1 ), GiveLogs );
 		}
 
 		public TreeStump( Serial serial ) : base( serial )
@@ -151,7 +151,7 @@ namespace Server.Items
 			if ( next < DateTime.UtcNow )
 				next = DateTime.UtcNow;
 
-			m_Timer = Timer.DelayCall( next - DateTime.UtcNow, TimeSpan.FromDays( 1 ), new TimerCallback( GiveLogs ) );
+			m_Timer = Timer.DelayCall( next - DateTime.UtcNow, TimeSpan.FromDays( 1 ), GiveLogs );
 		}
 	}
 

@@ -83,7 +83,7 @@ namespace Server.Ethics
 		public static void Initialize()
 		{
 			if ( Enabled )
-				EventSink.Speech += new SpeechEventHandler( EventSink_Speech );
+				EventSink.Speech += EventSink_Speech;
 		}
 
 		public static void EventSink_Speech( SpeechEventArgs e )
@@ -215,7 +215,7 @@ namespace Server.Ethics
 						Player pl = new Player( this, reader );
 
 						if ( pl.Mobile != null )
-							Timer.DelayCall( TimeSpan.Zero, new TimerCallback( pl.CheckAttach ) );
+							Timer.DelayCall( TimeSpan.Zero, pl.CheckAttach );
 					}
 
 					break;

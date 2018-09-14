@@ -307,7 +307,7 @@ namespace Server.Commands.Generic
 				return;
 
 			for ( int i = 0; i < m_Accessors.Length; ++i )
-				CommandSystem.Register( m_Accessors[i], m_AccessLevel, new CommandEventHandler( Execute ) );
+				CommandSystem.Register( m_Accessors[i], m_AccessLevel, Execute );
 		}
 
 		public static void Register( BaseCommandImplementor impl )

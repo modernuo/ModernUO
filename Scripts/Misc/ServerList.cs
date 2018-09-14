@@ -52,7 +52,7 @@ namespace Server.Misc
 				Resolve( Address, out m_PublicAddress );
 			}
 
-			EventSink.ServerList += new ServerListEventHandler( EventSink_ServerList );
+			EventSink.ServerList += EventSink_ServerList;
 		}
 
 		private static IPAddress m_PublicAddress;

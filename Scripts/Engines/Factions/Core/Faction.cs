@@ -189,7 +189,7 @@ namespace Server.Factions
 		public void BeginHonorLeadership( Mobile from )
 		{
 			from.SendLocalizedMessage( 502090 ); // Click on the player whom you wish to honor.
-			from.BeginTarget( 12, false, TargetFlags.None, new TargetCallback( HonorLeadership_OnTarget ) );
+			from.BeginTarget( 12, false, TargetFlags.None, HonorLeadership_OnTarget );
 		}
 
 		public void HonorLeadership_OnTarget( Mobile from, object obj )
@@ -546,18 +546,18 @@ namespace Server.Factions
 
 		public static void Initialize()
 		{
-			EventSink.Login += new LoginEventHandler( EventSink_Login );
-			EventSink.Logout += new LogoutEventHandler( EventSink_Logout );
+			EventSink.Login += EventSink_Login;
+			EventSink.Logout += EventSink_Logout;
 
-			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 10.0 ), new TimerCallback( HandleAtrophy ) );
+			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 10.0 ), HandleAtrophy );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), new TimerCallback( ProcessTick ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), ProcessTick );
 
-			CommandSystem.Register( "FactionElection", AccessLevel.GameMaster, new CommandEventHandler( FactionElection_OnCommand ) );
-			CommandSystem.Register( "FactionCommander", AccessLevel.Administrator, new CommandEventHandler( FactionCommander_OnCommand ) );
-			CommandSystem.Register( "FactionItemReset", AccessLevel.Administrator, new CommandEventHandler( FactionItemReset_OnCommand ) );
-			CommandSystem.Register( "FactionReset", AccessLevel.Administrator, new CommandEventHandler( FactionReset_OnCommand ) );
-			CommandSystem.Register( "FactionTownReset", AccessLevel.Administrator, new CommandEventHandler( FactionTownReset_OnCommand ) );
+			CommandSystem.Register( "FactionElection", AccessLevel.GameMaster, FactionElection_OnCommand );
+			CommandSystem.Register( "FactionCommander", AccessLevel.Administrator, FactionCommander_OnCommand );
+			CommandSystem.Register( "FactionItemReset", AccessLevel.Administrator, FactionItemReset_OnCommand );
+			CommandSystem.Register( "FactionReset", AccessLevel.Administrator, FactionReset_OnCommand );
+			CommandSystem.Register( "FactionTownReset", AccessLevel.Administrator, FactionTownReset_OnCommand );
 		}
 
 		public static void FactionTownReset_OnCommand( CommandEventArgs e )
@@ -726,7 +726,7 @@ namespace Server.Factions
 		public static void FactionCommander_OnCommand( CommandEventArgs e )
 		{
 			e.Mobile.SendMessage( "Target a player to make them the faction commander." );
-			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( FactionCommander_OnTarget ) );
+			e.Mobile.BeginTarget( -1, false, TargetFlags.None, FactionCommander_OnTarget );
 		}
 
 		public static void FactionCommander_OnTarget( Mobile from, object obj )
@@ -755,7 +755,7 @@ namespace Server.Factions
 		public static void FactionElection_OnCommand( CommandEventArgs e )
 		{
 			e.Mobile.SendMessage( "Target a faction stone to open its election properties." );
-			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( FactionElection_OnTarget ) );
+			e.Mobile.BeginTarget( -1, false, TargetFlags.None, FactionElection_OnTarget );
 		}
 
 		public static void FactionElection_OnTarget( Mobile from, object obj )
@@ -779,7 +779,7 @@ namespace Server.Factions
 		public static void FactionKick_OnCommand( CommandEventArgs e )
 		{
 			e.Mobile.SendMessage( "Target a player to remove them from their faction." );
-			e.Mobile.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( FactionKick_OnTarget ) );
+			e.Mobile.BeginTarget( -1, false, TargetFlags.None, FactionKick_OnTarget );
 		}
 
 		public static void FactionKick_OnTarget( Mobile from, object obj )

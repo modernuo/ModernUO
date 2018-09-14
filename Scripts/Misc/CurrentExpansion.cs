@@ -32,7 +32,7 @@ namespace Server
 					PacketHandlers.SingleClickProps = true; // single click for everything is overridden to check object property list
 
 				Mobile.ActionDelay = 1000;
-				Mobile.AOSStatusHandler = new AOSStatusHandler( AOS.GetStatus );
+				Mobile.AOSStatusHandler = AOS.GetStatus;
 			}
 		}
 	}

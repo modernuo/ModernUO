@@ -23,9 +23,9 @@ namespace Server.Regions
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "CheckGuarded", AccessLevel.GameMaster, new CommandEventHandler( CheckGuarded_OnCommand ) );
-			CommandSystem.Register( "SetGuarded", AccessLevel.Administrator, new CommandEventHandler( SetGuarded_OnCommand ) );
-			CommandSystem.Register( "ToggleGuarded", AccessLevel.Administrator, new CommandEventHandler( ToggleGuarded_OnCommand ) );
+			CommandSystem.Register( "CheckGuarded", AccessLevel.GameMaster, CheckGuarded_OnCommand );
+			CommandSystem.Register( "SetGuarded", AccessLevel.Administrator, SetGuarded_OnCommand );
+			CommandSystem.Register( "ToggleGuarded", AccessLevel.Administrator, ToggleGuarded_OnCommand );
 		}
 
 		[Usage( "CheckGuarded" )]

@@ -177,7 +177,7 @@ namespace Server.Commands
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Batch", AccessLevel.Counselor, new CommandEventHandler( Batch_OnCommand ) );
+			CommandSystem.Register( "Batch", AccessLevel.Counselor, Batch_OnCommand );
 		}
 
 		[Usage( "Batch" )]

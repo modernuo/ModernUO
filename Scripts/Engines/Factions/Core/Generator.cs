@@ -8,7 +8,7 @@ namespace Server.Factions
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "GenerateFactions", AccessLevel.Administrator, new CommandEventHandler( GenerateFactions_OnCommand ) );
+			CommandSystem.Register( "GenerateFactions", AccessLevel.Administrator, GenerateFactions_OnCommand );
 		}
 
 		public static void GenerateFactions_OnCommand( CommandEventArgs e )

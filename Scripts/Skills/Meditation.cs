@@ -7,7 +7,7 @@ namespace Server.SkillHandlers
 	{
 		public static void Initialize()
 		{
-			SkillInfo.Table[46].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[46].Callback = OnUse;
 		}
 
 		public static bool CheckOkayHolding( Item item )

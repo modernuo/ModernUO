@@ -15,7 +15,7 @@ namespace Server.SkillHandlers
 
 		public static void Initialize()
 		{
-			SkillInfo.Table[(int)SkillName.AnimalTaming].Callback = new SkillUseCallback( OnUse );
+			SkillInfo.Table[(int)SkillName.AnimalTaming].Callback = OnUse;
 		}
 
 		private static bool m_DisableMessage;

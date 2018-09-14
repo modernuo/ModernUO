@@ -19,7 +19,7 @@ namespace Server.Misc
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Restart", AccessLevel.Administrator, new CommandEventHandler( Restart_OnCommand ) );
+			CommandSystem.Register( "Restart", AccessLevel.Administrator, Restart_OnCommand );
 			new AutoRestart().Start();
 		}
 
@@ -68,14 +68,14 @@ namespace Server.Misc
 			if ( WarningDelay > TimeSpan.Zero )
 			{
 				Warning_Callback();
-				DelayCall( WarningDelay, WarningDelay, new TimerCallback( Warning_Callback ) );
+				DelayCall( WarningDelay, WarningDelay, Warning_Callback );
 			}
 
 			AutoSave.Save();
 
 			m_Restarting = true;
 
-			DelayCall( RestartDelay, new TimerCallback( Restart_Callback ) );
+			DelayCall( RestartDelay, Restart_Callback );
 		}
 	}
 }

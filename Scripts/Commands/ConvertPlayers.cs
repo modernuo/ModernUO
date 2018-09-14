@@ -10,7 +10,7 @@ namespace Server.Commands
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "ConvertPlayers", AccessLevel.Administrator, new CommandEventHandler( Convert_OnCommand ) );
+			CommandSystem.Register( "ConvertPlayers", AccessLevel.Administrator, Convert_OnCommand );
 		}
 		
 		public static void Convert_OnCommand( CommandEventArgs e )

@@ -49,7 +49,7 @@ namespace Server.Engines.MyRunUO
 
 			m_Sync = new ManualResetEvent( true );
 
-			m_Thread = new Thread( new ThreadStart( Thread_Start ) );
+			m_Thread = new Thread( Thread_Start );
 			m_Thread.Name = threadName;//"MyRunUO Database Command Queue";
 			m_Thread.Priority = Config.DatabaseThreadPriority;
 			m_Thread.Start();

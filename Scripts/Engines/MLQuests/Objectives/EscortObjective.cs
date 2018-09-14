@@ -106,7 +106,7 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			m_Objective = objective;
 			m_HasCompleted = false;
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), new TimerCallback( CheckDestination ) );
+			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), CheckDestination );
 			m_LastSeenEscorter = DateTime.UtcNow;
 			m_Escort = instance.Quester as BaseCreature;
 

@@ -4,7 +4,7 @@ namespace Server.Commands
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "DragEffects", AccessLevel.Developer, new CommandEventHandler( DragEffects_OnCommand ) );
+			CommandSystem.Register( "DragEffects", AccessLevel.Developer, DragEffects_OnCommand );
 		}
 
 		[Usage( "DragEffects [enable=false]" )]

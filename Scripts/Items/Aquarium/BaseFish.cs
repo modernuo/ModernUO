@@ -25,7 +25,7 @@ namespace Server.Items
 		{
 			m_Timer?.Stop();
 
-			m_Timer = Timer.DelayCall( DeathDelay, new TimerCallback( Kill ) );
+			m_Timer = Timer.DelayCall( DeathDelay, Kill );
 
 			InvalidateProperties();
 		}

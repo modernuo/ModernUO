@@ -509,7 +509,7 @@ namespace Server.Items
 						 * If you are absolutely certain you wish to proceed, click the button next to OKAY below.
 						 * If you do not wish to trade for this house, click CANCEL.
 						 */
-						from.SendGump( new WarningGump( 1060635, 30720, 1049583, 32512, 420, 280, new WarningGumpCallback( PlacementWarning_Callback ), prev ) );
+						from.SendGump( new WarningGump( 1060635, 30720, 1049583, 32512, 420, 280, PlacementWarning_Callback, prev ) );
 
 						return true;
 					}

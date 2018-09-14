@@ -105,7 +105,7 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) ).Start(); // delete this after the world loads
+			Timer.DelayCall( TimeSpan.Zero, Delete ).Start(); // delete this after the world loads
 		}
 
 		public override void Serialize(GenericWriter writer)
@@ -249,7 +249,7 @@ namespace Server.Engines.ConPVP
 
 				// has to be delayed in case some other target canceled us...
 				if ( m_Resend )
-					Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ResendBombTarget ) ).Start();
+					Timer.DelayCall( TimeSpan.Zero, ResendBombTarget ).Start();
 			}
 
 			private void ResendBombTarget()
@@ -302,7 +302,7 @@ namespace Server.Engines.ConPVP
 			m_Path.Clear();
 			m_PathIdx = 0;
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 0.05 ), new TimerCallback( ContinueFlight ) ).Start();
+			Timer.DelayCall( TimeSpan.FromSeconds( 0.05 ), ContinueFlight ).Start();
 		}
 
 		private bool CheckCatch( Mobile m, Point3D myLoc )
@@ -661,7 +661,7 @@ namespace Server.Engines.ConPVP
 				if ( m_PathIdx > 0 && m_PathIdx - 1 < m_Path.Count )
 					DoAnim( GetWorldLocation(), m_Path[m_PathIdx - 1], Map );
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 0.1 ), new TimerCallback( ContinueFlight ) ).Start();
+				Timer.DelayCall( TimeSpan.FromSeconds( 0.1 ), ContinueFlight ).Start();
 			}
 			else
 			{
@@ -1544,7 +1544,7 @@ namespace Server.Engines.ConPVP
 			if ( m_Bomb != null && m_Controller != null )
 			{
 				if ( m_UnhideCallback == null )
-					m_UnhideCallback = new TimerCallback( UnhideBomb );
+					m_UnhideCallback = UnhideBomb;
 				m_Bomb.Visible = false;
 				m_Bomb.MoveToWorld( m_Controller.BombHome, m_Controller.Map );
 				Timer.DelayCall( TimeSpan.FromSeconds( Utility.RandomMinMax( 5, 15 ) ), m_UnhideCallback );
@@ -1740,7 +1740,7 @@ namespace Server.Engines.ConPVP
 			m_Bomb = new BRBomb( this );
 			ReturnBomb();
 
-			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, new TimerCallback( Finish_Callback ) );
+			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, Finish_Callback );
 		}
 
 		private void Finish_Callback()

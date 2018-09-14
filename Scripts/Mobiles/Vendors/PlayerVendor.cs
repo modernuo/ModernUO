@@ -412,7 +412,7 @@ namespace Server.Mobiles
 				}
 				else
 				{
-					Timer.DelayCall( TimeSpan.Zero, new TimerCallback( FixDresswear ) );
+					Timer.DelayCall( TimeSpan.Zero, FixDresswear );
 				}
 
 				m_NextPayTime = DateTime.UtcNow + PayTimer.GetInterval();
@@ -1722,7 +1722,7 @@ namespace Server.Mobiles
 
 			m_Vendor = (PlayerVendor) reader.ReadMobile();
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
+			Timer.DelayCall( TimeSpan.Zero, Delete );
 		}
 	}
 }

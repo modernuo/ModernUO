@@ -48,7 +48,7 @@ namespace Server.Engines.ConPVP
 		[Constructible]
 		public TournamentRegistrar()
 		{
-			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), new TimerCallback( Announce_Callback ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), Announce_Callback );
 		}
 
 		private void Announce_Callback()
@@ -128,7 +128,7 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), new TimerCallback( Announce_Callback ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 30.0 ), TimeSpan.FromSeconds( 30.0 ), Announce_Callback );
 		}
 	}
 
@@ -733,7 +733,7 @@ namespace Server.Engines.ConPVP
 				}
 				else if ( m_Players.Count < m_Tournament.PlayersPerParticipant )
 				{
-					m_From.BeginTarget( 12, false, TargetFlags.None, new TargetCallback( AddPlayer_OnTarget ) );
+					m_From.BeginTarget( 12, false, TargetFlags.None, AddPlayer_OnTarget );
 					m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 				}
 			}
@@ -1072,7 +1072,7 @@ namespace Server.Engines.ConPVP
 			y -= 3;
 			AddButton( 314, y, 247, 248, 1, GumpButtonType.Reply, 0 );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 15.0 ), new TimerCallback( AutoReject ) );
+			Timer.DelayCall( TimeSpan.FromSeconds( 15.0 ), AutoReject );
 		}
 
 		public void AutoReject()
@@ -1575,7 +1575,7 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			Timer.DelayCall( SliceInterval, SliceInterval, new TimerCallback( Slice ) );
+			Timer.DelayCall( SliceInterval, SliceInterval, Slice );
 		}
 
 		public Tournament()
@@ -1590,7 +1590,7 @@ namespace Server.Engines.ConPVP
 			m_Arenas = new ArrayList();
 			m_SignupPeriod = TimeSpan.FromMinutes( 10.0 );
 
-			Timer.DelayCall( SliceInterval, SliceInterval, new TimerCallback( Slice ) );
+			Timer.DelayCall( SliceInterval, SliceInterval, Slice );
 		}
 
 		public void HandleTie( Arena arena, TournyMatch match, ArrayList remaining )

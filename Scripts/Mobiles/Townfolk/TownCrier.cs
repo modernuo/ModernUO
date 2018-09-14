@@ -23,7 +23,7 @@ namespace Server.Mobiles
 
 		public static void Initialize()
 		{
-			CommandSystem.Register( "TownCriers", AccessLevel.GameMaster, new CommandEventHandler( TownCriers_OnCommand ) );
+			CommandSystem.Register( "TownCriers", AccessLevel.GameMaster, TownCriers_OnCommand );
 		}
 
 		[Usage( "TownCriers" )]
@@ -354,7 +354,7 @@ namespace Server.Mobiles
 		public void ForceBeginAutoShout()
 		{
 			if ( m_AutoShoutTimer == null )
-				m_AutoShoutTimer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( AutoShout_Callback ) );
+				m_AutoShoutTimer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromMinutes( 1.0 ), AutoShout_Callback );
 		}
 
 		public TownCrierEntry AddEntry( string[] lines, TimeSpan duration )
@@ -367,7 +367,7 @@ namespace Server.Mobiles
 			m_Entries.Add( tce );
 
 			if ( m_AutoShoutTimer == null )
-				m_AutoShoutTimer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( AutoShout_Callback ) );
+				m_AutoShoutTimer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromMinutes( 1.0 ), AutoShout_Callback );
 
 			return tce;
 		}
