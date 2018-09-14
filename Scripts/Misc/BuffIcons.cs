@@ -231,7 +231,7 @@ namespace Server
 		{
 			bool hasArgs = (args != null);
 
-			this.EnsureCapacity( (hasArgs ? (48 + args.ToString().Length * 2): 44) );
+			EnsureCapacity( (hasArgs ? (48 + args.ToString().Length * 2): 44) );
 			m_Stream.Write( (int)mob.Serial );
 
 
@@ -284,7 +284,7 @@ namespace Server
 		public RemoveBuffPacket( Mobile mob, BuffIcon iconID )
 			: base( 0xDF )
 		{
-			this.EnsureCapacity( 13 );
+			EnsureCapacity( 13 );
 			m_Stream.Write( (int)mob.Serial );
 
 			m_Stream.Write( (short)iconID );	//ID

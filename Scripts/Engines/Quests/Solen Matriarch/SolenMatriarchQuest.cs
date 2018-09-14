@@ -8,21 +8,21 @@ namespace Server.Engines.Quests.Matriarch
 	{
 		private static Type[] m_TypeReferenceTable = new[]
 			{
-				typeof( Matriarch.DontOfferConversation ),
-				typeof( Matriarch.AcceptConversation ),
-				typeof( Matriarch.DuringKillInfiltratorsConversation ),
-				typeof( Matriarch.GatherWaterConversation ),
-				typeof( Matriarch.DuringWaterGatheringConversation ),
-				typeof( Matriarch.ProcessFungiConversation ),
-				typeof( Matriarch.DuringFungiProcessConversation ),
-				typeof( Matriarch.FullBackpackConversation ),
-				typeof( Matriarch.EndConversation ),
-				typeof( Matriarch.KillInfiltratorsObjective ),
-				typeof( Matriarch.ReturnAfterKillsObjective ),
-				typeof( Matriarch.GatherWaterObjective ),
-				typeof( Matriarch.ReturnAfterWaterObjective ),
-				typeof( Matriarch.ProcessFungiObjective ),
-				typeof( Matriarch.GetRewardObjective )
+				typeof( DontOfferConversation ),
+				typeof( AcceptConversation ),
+				typeof( DuringKillInfiltratorsConversation ),
+				typeof( GatherWaterConversation ),
+				typeof( DuringWaterGatheringConversation ),
+				typeof( ProcessFungiConversation ),
+				typeof( DuringFungiProcessConversation ),
+				typeof( FullBackpackConversation ),
+				typeof( EndConversation ),
+				typeof( KillInfiltratorsObjective ),
+				typeof( ReturnAfterKillsObjective ),
+				typeof( GatherWaterObjective ),
+				typeof( ReturnAfterWaterObjective ),
+				typeof( ProcessFungiObjective ),
+				typeof( GetRewardObjective )
 			};
 
 		public override Type[] TypeReferenceTable => m_TypeReferenceTable;

@@ -32,8 +32,8 @@ namespace Server.Ethics
 
 			writer.Write( (int) 0 ); // version
 
-			for ( int i = 0; i < Ethics.Ethic.Ethics.Length; ++i )
-				Ethics.Ethic.Ethics[i].Serialize( writer );
+			for ( int i = 0; i < Ethic.Ethics.Length; ++i )
+				Ethic.Ethics[i].Serialize( writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -46,8 +46,8 @@ namespace Server.Ethics
 			{
 				case 0:
 				{
-					for ( int i = 0; i < Ethics.Ethic.Ethics.Length; ++i )
-						Ethics.Ethic.Ethics[i].Deserialize( reader );
+					for ( int i = 0; i < Ethic.Ethics.Length; ++i )
+						Ethic.Ethics[i].Deserialize( reader );
 
 					break;
 				}

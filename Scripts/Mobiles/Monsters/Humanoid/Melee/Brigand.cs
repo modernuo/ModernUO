@@ -13,7 +13,7 @@ namespace Server.Mobiles
 			Title = "the brigand";
 			Hue = Utility.RandomSkinHue();
 
-			if ( this.Female = Utility.RandomBool() )
+			if ( Female = Utility.RandomBool() )
 			{
 				Body = 0x191;
 				Name = NameList.RandomName( "female" );

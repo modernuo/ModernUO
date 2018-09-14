@@ -19,7 +19,7 @@ namespace Server.Engines.Doom
 
 		public override void OnDoubleClick( Mobile m )
 		{
-			if ( !m.InRange( this.GetWorldLocation(), 3 ) )
+			if ( !m.InRange( GetWorldLocation(), 3 ) )
 				return;
 			if ( m_Controller.Enabled )
 				return;
@@ -169,7 +169,7 @@ namespace Server.Engines.Doom
 				}
 				else
 				{
-					Server.Mobiles.BaseCreature.TeleportPets( m, LeverPuzzleController.lr_Exit, Map.Malas );
+					BaseCreature.TeleportPets( m, LeverPuzzleController.lr_Exit, Map.Malas );
 					m.MoveToWorld( LeverPuzzleController.lr_Exit, Map.Malas );
 					return false;
 				}

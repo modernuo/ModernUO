@@ -98,10 +98,10 @@ namespace Server.Misc
 			if ( (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started) || (pmTarg?.DuelContext != null && pmTarg.DuelContext.Started) )
 				return false;
 
-			if ( from.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
+			if ( from.Region.GetRegion( typeof( SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
 				return false;
 
-			sz = target.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) as Engines.ConPVP.SafeZone;
+			sz = target.Region.GetRegion( typeof( SafeZone ) ) as SafeZone;
 
 			if ( sz != null /*&& sz.IsDisabled()*/ )
 				return false;
@@ -172,10 +172,10 @@ namespace Server.Misc
 			if ( (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started) || (pmTarg?.DuelContext != null && pmTarg.DuelContext.Started) )
 				return false;
 
-			if ( from.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
+			if ( from.Region.GetRegion( typeof( SafeZone ) ) is SafeZone sz /*&& sz.IsDisabled()*/ )
 				return false;
 
-			sz = target.Region.GetRegion( typeof( Engines.ConPVP.SafeZone ) ) as Engines.ConPVP.SafeZone;
+			sz = target.Region.GetRegion( typeof( SafeZone ) ) as SafeZone;
 
 			if ( sz != null /*&& sz.IsDisabled()*/ )
 				return false;
@@ -388,7 +388,7 @@ namespace Server.Misc
 
 			if ( bcTarg?.InitialInnocent != true )
 			{
-				if ( !target.Body.IsHuman && !target.Body.IsGhost && !IsPet( bcTarg ) && pmTarg == null || !Core.ML && !target.CanBeginAction( typeof( Server.Spells.Seventh.PolymorphSpell ) ) )
+				if ( !target.Body.IsHuman && !target.Body.IsGhost && !IsPet( bcTarg ) && pmTarg == null || !Core.ML && !target.CanBeginAction( typeof( Spells.Seventh.PolymorphSpell ) ) )
 					return Notoriety.CanBeAttacked;
 			}
 

@@ -44,7 +44,7 @@ namespace Server.Engines.VeteranRewards
 			for ( int j = 0; j < entries.Count; ++j )
 			{
 				//RewardEntry entry = entries[j];
-				if ( RewardSystem.HasAccess( mob, entries[j] ) )
+				if ( HasAccess( mob, entries[j] ) )
 				{
 					return true;
 				}

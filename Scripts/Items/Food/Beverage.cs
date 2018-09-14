@@ -489,9 +489,9 @@ namespace Server.Items
 		public override void Deserialize( GenericReader reader )
 		{
 			if ( CheckType( "PitcherWater" ) || CheckType( "GlassPitcher" ) )
-				base.InternalDeserialize( reader, false );
+				InternalDeserialize( reader, false );
 			else
-				base.InternalDeserialize( reader, true );
+				InternalDeserialize( reader, true );
 
 			int version = reader.ReadInt();
 
@@ -711,18 +711,18 @@ namespace Server.Items
 				if ( bev.IsEmpty || !bev.ValidateUse( from, true ) )
 					return;
 
-				this.Content = bev.Content;
-				this.Poison = bev.Poison;
-				this.Poisoner = bev.Poisoner;
+				Content = bev.Content;
+				Poison = bev.Poison;
+				Poisoner = bev.Poisoner;
 
-				if ( bev.Quantity > this.MaxQuantity )
+				if ( bev.Quantity > MaxQuantity )
 				{
-					this.Quantity = this.MaxQuantity;
-					bev.Quantity -= this.MaxQuantity;
+					Quantity = MaxQuantity;
+					bev.Quantity -= MaxQuantity;
 				}
 				else
 				{
-					this.Quantity += bev.Quantity;
+					Quantity += bev.Quantity;
 					bev.Quantity = 0;
 				}
 			}
@@ -758,18 +758,18 @@ namespace Server.Items
 					return;
 				}
 
-				this.Content = BeverageType.Water;
-				this.Poison = null;
-				this.Poisoner = null;
+				Content = BeverageType.Water;
+				Poison = null;
+				Poisoner = null;
 
-				if ( src.Quantity > this.MaxQuantity )
+				if ( src.Quantity > MaxQuantity )
 				{
-					this.Quantity = this.MaxQuantity;
-					src.Quantity -= this.MaxQuantity;
+					Quantity = MaxQuantity;
+					src.Quantity -= MaxQuantity;
 				}
 				else
 				{
-					this.Quantity += src.Quantity;
+					Quantity += src.Quantity;
 					src.Quantity = 0;
 				}
 
@@ -913,7 +913,7 @@ namespace Server.Items
 						}
 
 						// *hic*
-						m_Drunk.PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 500849 );
+						m_Drunk.PublicOverheadMessage( MessageType.Regular, 0x3B2, 500849 );
 					}
 
 					if ( m_Drunk.BAC <= 0 )
@@ -939,7 +939,7 @@ namespace Server.Items
 				if ( !bev.ValidateUse( from, true ) )
 					return;
 
-				if ( bev.IsFull && bev.Content == this.Content )
+				if ( bev.IsFull && bev.Content == Content )
 				{
 					from.SendLocalizedMessage( 500848 ); // Couldn't pour it there.  It was already full.
 				}
@@ -949,19 +949,19 @@ namespace Server.Items
 				}
 				else
 				{
-					bev.Content = this.Content;
-					bev.Poison = this.Poison;
-					bev.Poisoner = this.Poisoner;
+					bev.Content = Content;
+					bev.Poison = Poison;
+					bev.Poisoner = Poisoner;
 
-					if ( this.Quantity > bev.MaxQuantity )
+					if ( Quantity > bev.MaxQuantity )
 					{
 						bev.Quantity = bev.MaxQuantity;
-						this.Quantity -= bev.MaxQuantity;
+						Quantity -= bev.MaxQuantity;
 					}
 					else
 					{
-						bev.Quantity += this.Quantity;
-						this.Quantity = 0;
+						bev.Quantity += Quantity;
+						Quantity = 0;
 					}
 
 					from.PlaySound( 0x4E );
@@ -976,7 +976,7 @@ namespace Server.Items
 				{
 					int bac = 0;
 
-					switch( this.Content )
+					switch( Content )
 					{
 						case BeverageType.Ale: bac = 1; break;
 						case BeverageType.Wine: bac = 2; break;
@@ -1028,7 +1028,7 @@ namespace Server.Items
 			}
 			else if ( targ is AddonComponent component &&
 				( component.Addon is WaterVatEast || component.Addon is WaterVatSouth ) &&
-				this.Content == BeverageType.Water )
+				Content == BeverageType.Water )
 			{
 				if ( from is PlayerMobile player )
 				{

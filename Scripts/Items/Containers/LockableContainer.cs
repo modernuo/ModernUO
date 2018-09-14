@@ -288,9 +288,9 @@ namespace Server.Items
 			Locked = false;
 			Picker = from;
 
-			if ( this.TrapOnLockpick && ExecuteTrap( from ) )
+			if ( TrapOnLockpick && ExecuteTrap( from ) )
 			{
-				this.TrapOnLockpick = false;
+				TrapOnLockpick = false;
 			}
 		}
 

@@ -137,14 +137,14 @@ namespace Server.Mobiles
 
 		public void SpawnRatmen( Mobile target )
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null )
 				return;
 
 			int rats = 0;
 
-			foreach ( Mobile m in this.GetMobilesInRange( 10 ) )
+			foreach ( Mobile m in GetMobilesInRange( 10 ) )
 			{
 				if ( m is Ratman || m is RatmanArcher || m is RatmanMage )
 					++rats;
@@ -168,10 +168,10 @@ namespace Server.Mobiles
 						case 4:			rat = new RatmanMage(); break;
 					}
 
-					rat.Team = this.Team;
+					rat.Team = Team;
 
 					bool validLocation = false;
-					Point3D loc = this.Location;
+					Point3D loc = Location;
 
 					for ( int j = 0; !validLocation && j < 10; ++j )
 					{
@@ -179,7 +179,7 @@ namespace Server.Mobiles
 						int y = Y + Utility.Random( 3 ) - 1;
 						int z = map.GetAverageZ( x, y );
 
-						if ( validLocation = map.CanFit( x, y, this.Z, 16, false, false ) )
+						if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
 							loc = new Point3D( x, y, Z );
 						else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
 							loc = new Point3D( x, y, z );

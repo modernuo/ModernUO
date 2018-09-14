@@ -29,7 +29,7 @@ namespace Server {
 
 		public override void Save( SaveMetrics metrics, bool permitBackgroundWrite )
 		{
-			this.PermitBackgroundWrite = permitBackgroundWrite;
+			PermitBackgroundWrite = permitBackgroundWrite;
 
 			Thread saveThread = new Thread( delegate() {
 				SaveItems(metrics);

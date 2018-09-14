@@ -20,7 +20,7 @@ namespace Server.Engines.Craft
 			Mobile m = e.Mobile;
 			m.SendMessage( "Target a player to teach them all of the recipies." );
 
-			m.BeginTarget( -1, false, Server.Targeting.TargetFlags.None, new TargetCallback(
+			m.BeginTarget( -1, false, Targeting.TargetFlags.None, new TargetCallback(
 				delegate( Mobile from, object targeted )
 				{
 					if ( targeted is PlayerMobile mobile )
@@ -45,7 +45,7 @@ namespace Server.Engines.Craft
 			Mobile m = e.Mobile;
 			m.SendMessage( "Target a player to have them forget all of the recipies they've learned." );
 
-			m.BeginTarget( -1, false, Server.Targeting.TargetFlags.None, new TargetCallback(
+			m.BeginTarget( -1, false, Targeting.TargetFlags.None, new TargetCallback(
 				delegate( Mobile from, object targeted )
 				{
 					if ( targeted is PlayerMobile mobile )

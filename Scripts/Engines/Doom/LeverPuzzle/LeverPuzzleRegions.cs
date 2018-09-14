@@ -8,7 +8,7 @@ namespace Server.Engines.Doom
 		private LeverPuzzleController Controller;
 
 		public LampRoomRegion ( LeverPuzzleController controller )
-			: base( null, Map.Malas, Region.Find( LeverPuzzleController.lr_Enter, Map.Malas ), LeverPuzzleController.lr_Rect )
+			: base( null, Map.Malas, Find( LeverPuzzleController.lr_Enter, Map.Malas ), LeverPuzzleController.lr_Rect )
 		{
 			Controller = controller;
 			Register();
@@ -97,7 +97,7 @@ namespace Server.Engines.Doom
 		}
 
 		public LeverPuzzleRegion ( LeverPuzzleController controller, int[] loc )
-			: base( null, Map.Malas, Region.Find( LeverPuzzleController.lr_Enter, Map.Malas ), new Rectangle2D(loc[0],loc[1],1,1) )
+			: base( null, Map.Malas, Find( LeverPuzzleController.lr_Enter, Map.Malas ), new Rectangle2D(loc[0],loc[1],1,1) )
 		{
 			Controller = controller;
 			Register();

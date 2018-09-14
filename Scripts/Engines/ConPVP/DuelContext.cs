@@ -122,7 +122,7 @@ namespace Server.Engines.ConPVP
 			if ( CantDoAnything( from ) )
 				return false;
 
-			if ( spell is Server.Spells.Fourth.RecallSpell )
+			if ( spell is Spells.Fourth.RecallSpell )
 				from.SendMessage( "You may not cast this spell." );
 
 			string title = null, option = null;
@@ -2203,7 +2203,7 @@ namespace Server.Engines.ConPVP
 
 			public override void CheckGate(Mobile m, int range)
 			{
-				if ( DuelContext.CheckCombat( m ) )
+				if ( CheckCombat( m ) )
 				{
 					m.SendMessage( 0x22, "You have recently been in combat with another player and cannot use this moongate." );
 				}
@@ -2215,7 +2215,7 @@ namespace Server.Engines.ConPVP
 
 			public override void UseGate( Mobile m )
 			{
-				if ( DuelContext.CheckCombat( m ) )
+				if ( CheckCombat( m ) )
 				{
 					m.SendMessage( 0x22, "You have recently been in combat with another player and cannot use this moongate." );
 				}

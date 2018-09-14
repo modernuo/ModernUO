@@ -120,7 +120,7 @@ namespace Server.Engines.Events
 
 		public static void Bleeding( Mobile m_From )
 		{
-			if ( TrickOrTreat.CheckMobile( m_From ) )
+			if ( CheckMobile( m_From ) )
 			{
 				if ( m_From.Location != Point3D.Zero )
 				{
@@ -201,7 +201,7 @@ namespace Server.Engines.Events
 
 		public static void DeleteTwin( Mobile m_Twin )
 		{
-			if ( TrickOrTreat.CheckMobile( m_Twin ) )
+			if ( CheckMobile( m_Twin ) )
 			{
 				m_Twin.Delete();
 			}

@@ -43,7 +43,7 @@ namespace Server.Items
 		{
 			public GMItemPacket( Item item ) : base( 0x1A )
 			{
-				this.EnsureCapacity( 20 );
+				EnsureCapacity( 20 );
 
 				// 14 base length
 				// +2 - Amount

@@ -28,7 +28,7 @@ namespace Server {
 
 		public BinaryMemoryWriter()
 		 : base( new MemoryStream( 512 ), true ) {
-			this.stream = this.UnderlyingStream as MemoryStream;
+			stream = UnderlyingStream as MemoryStream;
 		}
 
 		private static byte[] indexBuffer;

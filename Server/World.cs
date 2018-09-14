@@ -668,7 +668,7 @@ namespace Server {
 			NetState.FlushAll();
 			NetState.Pause();
 
-			World.WaitForWriteCompletion();//Blocks Save until current disk flush is done.
+			WaitForWriteCompletion();//Blocks Save until current disk flush is done.
 
 			m_Saving = true;
 
@@ -707,7 +707,7 @@ namespace Server {
 			m_Saving = false;
 
 			if (!permitBackgroundWrite)
-				World.NotifyDiskWriteComplete();	//Sets the DiskWriteHandle.  If we allow background writes, we leave this upto the individual save strategies.
+				NotifyDiskWriteComplete();	//Sets the DiskWriteHandle.  If we allow background writes, we leave this upto the individual save strategies.
 
 			ProcessSafetyQueues();
 

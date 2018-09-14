@@ -39,7 +39,7 @@ namespace Server.Regions
 
 		public override bool CanUseStuckMenu( Mobile m )
 		{
-			if ( this.Map == Map.Felucca )
+			if ( Map == Map.Felucca )
 				return false;
 
 			return base.CanUseStuckMenu( m );

@@ -23,7 +23,7 @@ namespace Server {
 						_screamed = true;
 
 						_mobile.PlaySound( _mobile.Female ? 814 : 1088 );
-						_mobile.PublicOverheadMessage( Server.Network.MessageType.Regular, 2118, false, "Aaaaah!" );
+						_mobile.PublicOverheadMessage( Network.MessageType.Regular, 2118, false, "Aaaaah!" );
 					}
 
 					_mobile.Damage( Utility.Dice( 2, 6, 0 ) );
@@ -82,7 +82,7 @@ namespace Server {
 
 									killer.SendSound( 1470 );
 									killer.LocalOverheadMessage(
-										Server.Network.MessageType.Regular, 2119, false,
+										Network.MessageType.Regular, 2119, false,
 										"You notice a strange item on the corpse, and decide to pick it up."
 									);
 
@@ -110,14 +110,14 @@ namespace Server {
 			} else if ( from is PlayerMobile mobile && mobile.DuelContext != null ) {
 				mobile.SendMessage( "You can't use that." );
 			} else if ( Faction.Find( from ) == null ) {
-				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2119, false, "The object vanishes from your hands as you touch it." );
+				from.LocalOverheadMessage( Network.MessageType.Regular, 2119, false, "The object vanishes from your hands as you touch it." );
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), delegate {
-					from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2118, false, "You feel a strange tingling sensation throughout your body." );
+					from.LocalOverheadMessage( Network.MessageType.Regular, 2118, false, "You feel a strange tingling sensation throughout your body." );
 				} );
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 4.0 ), delegate {
-					from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2118, false, "Your skin begins to burn." );
+					from.LocalOverheadMessage( Network.MessageType.Regular, 2118, false, "Your skin begins to burn." );
 				} );
 
 				new DestructionTimer( from ).Start();

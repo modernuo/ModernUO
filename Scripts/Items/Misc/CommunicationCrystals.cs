@@ -55,10 +55,10 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get => this.ItemID == 0x1ECD;
+			get => ItemID == 0x1ECD;
 			set
 			{
-				this.ItemID = value ? 0x1ECD : 0x1ED0;
+				ItemID = value ? 0x1ECD : 0x1ED0;
 				InvalidateProperties();
 			}
 		}
@@ -99,9 +99,9 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			list.Add( this.Active ? 1060742 : 1060743 ); // active / inactive
+			list.Add( Active ? 1060742 : 1060743 ); // active / inactive
 			list.Add( 1060745 ); // broadcast
-			list.Add( 1060741, this.Charges.ToString() ); // charges: ~1_val~
+			list.Add( 1060741, Charges.ToString() ); // charges: ~1_val~
 
 			if ( Receivers.Count > 0 )
 				list.Add( 1060746, Receivers.Count.ToString() ); // links: ~1_val~
@@ -111,9 +111,9 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			LabelTo( from, this.Active ? 1060742 : 1060743 ); // active / inactive
+			LabelTo( from, Active ? 1060742 : 1060743 ); // active / inactive
 			LabelTo( from, 1060745 ); // broadcast
-			LabelTo( from, 1060741, this.Charges.ToString() ); // charges: ~1_val~
+			LabelTo( from, 1060741, Charges.ToString() ); // charges: ~1_val~
 
 			if ( Receivers.Count > 0 )
 				LabelTo( from, 1060746, Receivers.Count.ToString() ); // links: ~1_val~
@@ -145,7 +145,7 @@ namespace Server.Items
 				}
 				else
 				{
-					this.Active = false;
+					Active = false;
 					break;
 				}
 			}
@@ -298,10 +298,10 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get => this.ItemID == 0x1ED1;
+			get => ItemID == 0x1ED1;
 			set
 			{
-				this.ItemID = value ? 0x1ED1 : 0x1ED0;
+				ItemID = value ? 0x1ED1 : 0x1ED0;
 				InvalidateProperties();
 			}
 		}
@@ -342,7 +342,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			list.Add( this.Active ? 1060742 : 1060743 ); // active / inactive
+			list.Add( Active ? 1060742 : 1060743 ); // active / inactive
 			list.Add( 1060744 ); // receiver
 		}
 
@@ -350,22 +350,22 @@ namespace Server.Items
 		{
 			base.OnSingleClick( from );
 
-			LabelTo( from, this.Active ? 1060742 : 1060743 ); // active / inactive
+			LabelTo( from, Active ? 1060742 : 1060743 ); // active / inactive
 			LabelTo( from, 1060744 ); // receiver
 		}
 
 		public void TransmitMessage( Mobile from, string message )
 		{
-			if ( !this.Active )
+			if ( !Active )
 				return;
 
 			string text = String.Format( "{0} says {1}", from.Name, message );
 
-			if ( this.RootParent is Mobile mobile )
+			if ( RootParent is Mobile mobile )
 			{
 				mobile.SendMessage( 0x2B2, "Crystal: " + text );
 			}
-			else if ( this.RootParent is Item item )
+			else if ( RootParent is Item item )
 			{
 				item.PublicOverheadMessage( MessageType.Regular, 0x2B2, false, "Crystal: " + text );
 			}

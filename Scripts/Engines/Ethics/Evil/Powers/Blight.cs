@@ -62,7 +62,7 @@ namespace Server.Ethics.Evil
 
 				Effects.PlaySound( p, from.Mobile.Map, 0x1FB );
 
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You curse the area." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You curse the area." );
 
 				FinishInvoke( from );
 			}

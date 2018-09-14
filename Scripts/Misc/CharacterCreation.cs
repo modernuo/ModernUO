@@ -724,7 +724,7 @@ namespace Server.Misc
 			{
 				m_Mobile = m;
 				m_Message = message;
-				this.Start();
+				Start();
 			}
 
 			protected override void OnTick()

@@ -58,7 +58,7 @@ namespace Server.Gumps
 			m_X = x;
 			m_Y = y;
 
-			m_TypeID = GetTypeID( this.GetType() );
+			m_TypeID = GetTypeID( GetType() );
 
 			m_Entries = new List<GumpEntry>();
 			m_Strings = new List<string>();

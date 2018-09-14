@@ -35,7 +35,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( this.RootParent == from )
+			if ( RootParent == from )
 			{
 				from.CloseGump( typeof( NameChangeDeedGump ) );
 				from.SendGump( new NameChangeDeedGump( this ) );

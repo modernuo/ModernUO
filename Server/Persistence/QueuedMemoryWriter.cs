@@ -40,7 +40,7 @@ namespace Server
 		public QueuedMemoryWriter()
 			: base(new MemoryStream(1024 * 1024), true)
 		{
-			this._memStream = this.UnderlyingStream as MemoryStream;
+			_memStream = UnderlyingStream as MemoryStream;
 		}
 
 		public void QueueForIndex(ISerializable serializable, int size)
@@ -57,7 +57,7 @@ namespace Server
 
 		public void CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile)
 		{
-			this.Flush();
+			Flush();
 
 			int memLength = (int)_memStream.Position;
 
@@ -115,7 +115,7 @@ namespace Server
 				}
 			}
 
-			this.Close();	//We're done with this writer.
+			Close();	//We're done with this writer.
 		}
 	}
 }

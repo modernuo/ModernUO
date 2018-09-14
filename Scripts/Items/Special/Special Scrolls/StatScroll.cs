@@ -61,9 +61,9 @@ namespace Server.Items
 			int level = ( (int)Value - 230 ) / 5;
 
 			if ( level >= 0 && level <= 4 && (int)Value % 5 == 0 )
-				base.LabelTo( from, 1049463 + level, "#1049476" );
+				LabelTo( from, 1049463 + level, "#1049476" );
 			else
-				base.LabelTo( from, "a scroll of power ({0}{1} Maximum Stats)", (Value - 225) >= 0 ? "+" : "", Value - 225 );
+				LabelTo( from, "a scroll of power ({0}{1} Maximum Stats)", (Value - 225) >= 0 ? "+" : "", Value - 225 );
 		}
 
 		public override bool CanUse( Mobile from )

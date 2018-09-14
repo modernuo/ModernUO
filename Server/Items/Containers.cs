@@ -84,8 +84,8 @@ namespace Server.Items
 				}
 			}
 
-			if ( this.ItemID == 0xE41 )
-				this.ItemID = 0xE7C;
+			if ( ItemID == 0xE41 )
+				ItemID = 0xE7C;
 		}
 
 		private static bool m_SendRemovePacket;
@@ -99,7 +99,7 @@ namespace Server.Items
 			m_Open = false;
 
 			if ( m_Owner != null && m_SendRemovePacket )
-				m_Owner.Send( this.RemovePacket );
+				m_Owner.Send( RemovePacket );
 		}
 
 		public override void OnSingleClick( Mobile from )

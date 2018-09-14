@@ -34,7 +34,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.InRange( this.GetWorldLocation(), 1 ) )
+			if ( from.InRange( GetWorldLocation(), 1 ) )
 			{
 				from.CloseGump( typeof( SpecialBeardDyeGump ) );
 				from.SendGump( new SpecialBeardDyeGump( this ) );

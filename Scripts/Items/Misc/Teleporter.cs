@@ -194,7 +194,7 @@ namespace Server.Items
 			if (p == Point3D.Zero)
 				p = m.Location;
 
-			Server.Mobiles.BaseCreature.TeleportPets(m, p, map);
+			BaseCreature.TeleportPets(m, p, map);
 
 			bool sendEffect = (!m.Hidden || m.AccessLevel == AccessLevel.Player);
 

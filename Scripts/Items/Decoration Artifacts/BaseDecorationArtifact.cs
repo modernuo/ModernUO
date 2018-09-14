@@ -15,7 +15,7 @@ namespace Server.Items
 		{
 			base.GetProperties( list );
 
-			list.Add( 1061078, this.ArtifactRarity.ToString() ); // artifact rarity ~1_val~
+			list.Add( 1061078, ArtifactRarity.ToString() ); // artifact rarity ~1_val~
 		}
 
 		public BaseDecorationArtifact( Serial serial ) : base( serial )
@@ -52,7 +52,7 @@ namespace Server.Items
 		{
 			base.AddNameProperties( list );
 
-			list.Add( 1061078, this.ArtifactRarity.ToString() ); // artifact rarity ~1_val~
+			list.Add( 1061078, ArtifactRarity.ToString() ); // artifact rarity ~1_val~
 		}
 
 		public BaseDecorationContainerArtifact( Serial serial ) : base( serial )

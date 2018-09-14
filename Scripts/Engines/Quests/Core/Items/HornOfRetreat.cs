@@ -97,7 +97,7 @@ namespace Server.Engines.Quests
 
 			m_PlayTimer = null;
 
-			HornOfRetreatMoongate gate = new HornOfRetreatMoongate( this.DestLoc, this.DestMap, from, this.Hue );
+			HornOfRetreatMoongate gate = new HornOfRetreatMoongate( DestLoc, DestMap, from, Hue );
 
 			gate.MoveToWorld( from.Location, from.Map );
 

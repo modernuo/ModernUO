@@ -114,7 +114,7 @@ namespace Server.Regions
 			Region region = entry.Region;
 			Map map = region.Map;
 
-			Point3D loc = entry.RandomSpawnLocation( this.Height, this.Land, this.Water );
+			Point3D loc = entry.RandomSpawnLocation( Height, Land, Water );
 
 			if ( loc == Point3D.Zero )
 				return null;

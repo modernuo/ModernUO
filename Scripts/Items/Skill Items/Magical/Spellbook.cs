@@ -102,7 +102,7 @@ namespace Server.Items
 				case 7: type = SpellbookType.Mystic; break;
 			}
 
-			Spellbook book = Spellbook.Find( from, -1, type );
+			Spellbook book = Find( from, -1, type );
 
 			if ( book != null )
 				book.DisplayTo( from );
@@ -353,7 +353,7 @@ namespace Server.Items
 			{
 				SpellbookType type = GetTypeForSpell( scroll.SpellID );
 
-				if ( type != this.SpellbookType )
+				if ( type != SpellbookType )
 				{
 					return false;
 				}
@@ -452,7 +452,7 @@ namespace Server.Items
 
 				if ( strBonus != 0 || dexBonus != 0 || intBonus != 0 )
 				{
-					string modName = this.Serial.ToString();
+					string modName = Serial.ToString();
 
 					if ( strBonus != 0 )
 						from.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
@@ -474,7 +474,7 @@ namespace Server.Items
 			{
 				m_AosSkillBonuses.Remove();
 
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				from.RemoveStatMod( modName + "Str" );
 				from.RemoveStatMod( modName + "Dex" );
@@ -506,7 +506,7 @@ namespace Server.Items
 
 			if ( Parent == null )
 			{
-				to.Send( this.WorldPacket );
+				to.Send( WorldPacket );
 			}
 			else if ( Parent is Item )
 			{
@@ -668,9 +668,9 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			if ( m_Crafter != null )
-				this.LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+				LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
-			this.LabelTo( from, 1042886, m_Count.ToString() );
+			LabelTo( from, 1042886, m_Count.ToString() );
 		}
 
 		public override void OnDoubleClick( Mobile from )

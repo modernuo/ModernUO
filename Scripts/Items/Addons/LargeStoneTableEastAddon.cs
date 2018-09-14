@@ -41,7 +41,7 @@ namespace Server.Items
 
 	public class LargeStoneTableEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new LargeStoneTableEastAddon( this.Hue );
+		public override BaseAddon Addon => new LargeStoneTableEastAddon( Hue );
 		public override int LabelNumber => 1044511; // large stone table (east)
 
 		[Constructible]

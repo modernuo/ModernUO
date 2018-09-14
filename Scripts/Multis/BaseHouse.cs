@@ -150,7 +150,7 @@ namespace Server.Multis
 		{
 			get
 			{
-				DecayType type = this.DecayType;
+				DecayType type = DecayType;
 
 				return ( type == DecayType.Condemned || type == DecayType.ManualRefresh );
 			}
@@ -228,7 +228,7 @@ namespace Server.Multis
 			if ( DecayType == DecayType.Condemned )
 				return false;
 
-			DecayLevel oldLevel = this.DecayLevel;
+			DecayLevel oldLevel = DecayLevel;
 
 			m_LastRefreshed = DateTime.UtcNow;
 
@@ -243,7 +243,7 @@ namespace Server.Multis
 
 		public virtual bool CheckDecay()
 		{
-			if ( !Deleted && this.DecayLevel == DecayLevel.Collapsed )
+			if ( !Deleted && DecayLevel == DecayLevel.Collapsed )
 			{
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Decay_Sandbox ) );
 				return true;
@@ -729,7 +729,7 @@ namespace Server.Multis
 		{
 			foreach ( IEntity entity in GetHouseEntities() )
 			{
-				Point3D relLoc = new Point3D( entity.X - this.X, entity.Y - this.Y, entity.Z - this.Z );
+				Point3D relLoc = new Point3D( entity.X - X, entity.Y - Y, entity.Z - Z );
 				RelocatedEntity relocEntity = new RelocatedEntity( entity, relLoc );
 
 				RelocatedEntities.Add( relocEntity );
@@ -746,7 +746,7 @@ namespace Server.Multis
 			foreach ( RelocatedEntity relocEntity in RelocatedEntities )
 			{
 				Point3D relLoc = relocEntity.RelativeLocation;
-				Point3D location = new Point3D( relLoc.X + this.X, relLoc.Y + this.Y, relLoc.Z + this.Z );
+				Point3D location = new Point3D( relLoc.X + X, relLoc.Y + Y, relLoc.Z + Z );
 
 				IEntity entity = relocEntity.Entity;
 				if ( entity is Item )
@@ -757,9 +757,9 @@ namespace Server.Multis
 					{
 						if ( item is IAddon )
 						{
-							if ( ((IAddon)item).CouldFit( location, this.Map ) )
+							if ( ((IAddon)item).CouldFit( location, Map ) )
 							{
-								item.MoveToWorld( location, this.Map );
+								item.MoveToWorld( location, Map );
 								continue;
 							}
 						}
@@ -778,9 +778,9 @@ namespace Server.Multis
 								requireSurface = false;
 							}
 
-							if ( this.Map.CanFit( location.X, location.Y, location.Z, height, false, false, requireSurface ) )
+							if ( Map.CanFit( location.X, location.Y, location.Z, height, false, false, requireSurface ) )
 							{
-								item.MoveToWorld( location, this.Map );
+								item.MoveToWorld( location, Map );
 								continue;
 							}
 						}
@@ -867,9 +867,9 @@ namespace Server.Multis
 
 					if ( !mobile.Deleted )
 					{
-						if ( this.Map.CanFit( location, 16, false, false ) )
+						if ( Map.CanFit( location, 16, false, false ) )
 						{
-							mobile.MoveToWorld( location, this.Map );
+							mobile.MoveToWorld( location, Map );
 						}
 						else
 						{
@@ -892,16 +892,16 @@ namespace Server.Multis
 
 		public List<Item> GetItems()
 		{
-			if ( this.Map == null || this.Map == Map.Internal )
+			if ( Map == null || Map == Map.Internal )
 				return new List<Item>();
 
-			Point2D start = new Point2D( this.X + Components.Min.X, this.Y + Components.Min.Y );
-			Point2D end = new Point2D( this.X + Components.Max.X + 1, this.Y + Components.Max.Y + 1 );
+			Point2D start = new Point2D( X + Components.Min.X, Y + Components.Min.Y );
+			Point2D end = new Point2D( X + Components.Max.X + 1, Y + Components.Max.Y + 1 );
 			Rectangle2D rect = new Rectangle2D( start, end );
 
 			List<Item> list = new List<Item>();
 
-			IPooledEnumerable<Item> eable = this.Map.GetItemsInBounds( rect );
+			IPooledEnumerable<Item> eable = Map.GetItemsInBounds( rect );
 
 			foreach ( Item item in eable )
 				if ( item.Movable && IsInside( item ) )
@@ -914,7 +914,7 @@ namespace Server.Multis
 
 		public List<Mobile> GetMobiles()
 		{
-			if ( this.Map == null || this.Map == Map.Internal )
+			if ( Map == null || Map == Map.Internal )
 				return new List<Mobile>();
 
 			List<Mobile> list = new List<Mobile>();
@@ -940,8 +940,8 @@ namespace Server.Multis
 
 		public static void Configure()
 		{
-			Item.LockedDownFlag = 1;
-			Item.SecureFlag = 2;
+			LockedDownFlag = 1;
+			SecureFlag = 2;
 
 			Timer.DelayCall( TimeSpan.FromMinutes( 1.0 ), TimeSpan.FromMinutes( 1.0 ), new TimerCallback( Decay_OnTick ) );
 		}
@@ -1084,7 +1084,7 @@ namespace Server.Multis
 
 		public bool IsInside( Mobile m )
 		{
-			if ( m == null || m.Deleted || m.Map != this.Map )
+			if ( m == null || m.Deleted || m.Map != Map )
 				return false;
 
 			return IsInside( m.Location, 16 );
@@ -1092,7 +1092,7 @@ namespace Server.Multis
 
 		public bool IsInside( Item item )
 		{
-			if ( item == null || item.Deleted || item.Map != this.Map )
+			if ( item == null || item.Deleted || item.Map != Map )
 				return false;
 
 			return IsInside( item.Location, item.ItemData.Height );
@@ -1160,7 +1160,7 @@ namespace Server.Multis
 			if ( x < 0 || x >= mcl.Width || y < 0 || y >= mcl.Height )
 				return false;
 
-			if ( this is HouseFoundation && y < (mcl.Height-1) && p.Z >= this.Z )
+			if ( this is HouseFoundation && y < (mcl.Height-1) && p.Z >= Z )
 				return true;
 
 			StaticTile[] tiles = mcl.Tiles[x][y];
@@ -1179,7 +1179,7 @@ namespace Server.Multis
 				if ( (id >= 0xB95 && id <= 0xC0E) || (id >= 0xC43 && id <= 0xC44) )
 					continue;
 
-				int tileZ = tile.Z + this.Z;
+				int tileZ = tile.Z + Z;
 
 				if ( p.Z == tileZ || (p.Z + height) > tileZ )
 					return true;
@@ -1235,7 +1235,7 @@ namespace Server.Multis
 			m_MaxLockDowns = MaxLockDown;
 			m_MaxSecures = MaxSecure;
 
-			m_RelativeBanLocation = this.BaseBanLocation;
+			m_RelativeBanLocation = BaseBanLocation;
 
 			UpdateRegion();
 
@@ -1265,20 +1265,20 @@ namespace Server.Multis
 			UpdateRegion();
 
 			if ( m_Sign != null && !m_Sign.Deleted )
-				m_Sign.Map = this.Map;
+				m_Sign.Map = Map;
 
 			if ( m_Doors != null )
 			{
 				foreach ( Item item in m_Doors )
-					item.Map = this.Map;
+					item.Map = Map;
 			}
 
 			foreach ( IEntity entity in GetHouseEntities() )
 			{
 				if ( entity is Item )
-					((Item)entity).Map = this.Map;
+					((Item)entity).Map = Map;
 				else
-					((Mobile)entity).Map = this.Map;
+					((Mobile)entity).Map = Map;
 			}
 		}
 
@@ -1296,7 +1296,7 @@ namespace Server.Multis
 			if ( m_Region != null )
 				m_Region.Unregister();
 
-			if ( this.Map != null )
+			if ( Map != null )
 			{
 				m_Region = new HouseRegion( this );
 				m_Region.Register();
@@ -1483,7 +1483,7 @@ namespace Server.Multis
 
 		public void AddDoor( BaseDoor door, int xoff, int yoff, int zoff )
 		{
-			door.MoveToWorld( new Point3D( xoff+this.X, yoff+this.Y, zoff+this.Z ), this.Map );
+			door.MoveToWorld( new Point3D( xoff+X, yoff+Y, zoff+Z ), Map );
 			m_Doors.Add( door );
 		}
 
@@ -1530,7 +1530,7 @@ namespace Server.Multis
 		public void SetSign( int xoff, int yoff, int zoff )
 		{
 			m_Sign = new HouseSign( this );
-			m_Sign.MoveToWorld( new Point3D( this.X + xoff, this.Y + yoff, this.Z + zoff ), this.Map );
+			m_Sign.MoveToWorld( new Point3D( X + xoff, Y + yoff, Z + zoff ), Map );
 		}
 
 		private void SetLockdown( Item i, bool locked )
@@ -1618,7 +1618,7 @@ namespace Server.Multis
 				{
 					m.SendLocalizedMessage( 501736 ); // You must lockdown the container first!
 				}
-				else if ( !(item is VendorRentalContract) && ( IsAosRules ? (!CheckAosLockdowns( amt ) || !CheckAosStorage( amt )) : (this.LockDownCount + amt) > m_MaxLockDowns ) )
+				else if ( !(item is VendorRentalContract) && ( IsAosRules ? (!CheckAosLockdowns( amt ) || !CheckAosStorage( amt )) : (LockDownCount + amt) > m_MaxLockDowns ) )
 				{
 					m.SendLocalizedMessage( 1005379 );//That would exceed the maximum lock down limit for this house
 				}
@@ -1719,7 +1719,7 @@ namespace Server.Multis
 				if ( Deleted || m_House == null || m_House.Deleted || !m_House.IsOwner( from ) || !from.CheckAlive() || !to.CheckAlive() )
 					return false;
 
-				if ( BaseHouse.HasAccountHouse( to ) )
+				if ( HasAccountHouse( to ) )
 				{
 					from.SendLocalizedMessage( 501388 ); // You cannot transfer ownership to another house owner or co-owner!
 					return false;
@@ -1804,7 +1804,7 @@ namespace Server.Multis
 			}
 			else if ( to.Player )
 			{
-				if ( BaseHouse.HasAccountHouse( to ) )
+				if ( HasAccountHouse( to ) )
 				{
 					from.SendLocalizedMessage( 501388 ); // You cannot transfer ownership to another house owner or co-owner!
 				}
@@ -1824,8 +1824,8 @@ namespace Server.Multis
 					}
 					else
 					{
-						to.CloseGump( typeof( Gumps.HouseTransferGump ) );
-						to.SendGump( new Gumps.HouseTransferGump( from, to, this ) );
+						to.CloseGump( typeof( HouseTransferGump ) );
+						to.SendGump( new HouseTransferGump( from, to, this ) );
 					}
 				}
 			}
@@ -1844,8 +1844,8 @@ namespace Server.Multis
 
 			if ( CheckTransferPosition( from, to ) )
 			{
-				to.CloseGump( typeof( Gumps.HouseTransferGump ) );
-				to.SendGump( new Gumps.HouseTransferGump( from, to, this ) );
+				to.CloseGump( typeof( HouseTransferGump ) );
+				to.SendGump( new HouseTransferGump( from, to, this ) );
 			}
 		}
 
@@ -1868,7 +1868,7 @@ namespace Server.Multis
 			}
 			else if ( to.Player )
 			{
-				if ( BaseHouse.HasAccountHouse( to ) )
+				if ( HasAccountHouse( to ) )
 				{
 					from.SendLocalizedMessage( 501388 ); // You cannot transfer ownership to another house owner or co-owner!
 				}
@@ -1913,7 +1913,7 @@ namespace Server.Multis
 
 			if ( IsLockedDown( item ) )
 			{
-				item.PublicOverheadMessage( Server.Network.MessageType.Label, 0x3B2, 501657 );//[no longer locked down]
+				item.PublicOverheadMessage( MessageType.Label, 0x3B2, 501657 );//[no longer locked down]
 				SetLockdown( item, false );
 				//TidyItemList( m_LockDowns );
 
@@ -1958,7 +1958,7 @@ namespace Server.Multis
 				if ( info != null )
 				{
 					m.CloseGump( typeof ( SetSecureLevelGump ) );
-					m.SendGump( new Gumps.SetSecureLevelGump( m_Owner, info, this ) );
+					m.SendGump( new SetSecureLevelGump( m_Owner, info, this ) );
 				}
 				else if ( item.Parent != null )
 				{
@@ -1994,7 +1994,7 @@ namespace Server.Multis
 					item.Movable = false;
 
 					m.CloseGump( typeof ( SetSecureLevelGump ) );
-					m.SendGump( new Gumps.SetSecureLevelGump( m_Owner, info, this ) );
+					m.SendGump( new SetSecureLevelGump( m_Owner, info, this ) );
 				}
 			}
 		}
@@ -2060,7 +2060,7 @@ namespace Server.Multis
 
 					item.Movable = true;
 					item.SetLastMoved();
-					item.PublicOverheadMessage( Server.Network.MessageType.Label, 0x3B2, 501656 );//[no longer secure]
+					item.PublicOverheadMessage( MessageType.Label, 0x3B2, 501656 );//[no longer secure]
 					m_Secures.RemoveAt( i );
 					return;
 				}
@@ -2617,7 +2617,7 @@ namespace Server.Multis
 				case 0:
 				{
 					if ( version < 14 )
-						m_RelativeBanLocation = this.BaseBanLocation;
+						m_RelativeBanLocation = BaseBanLocation;
 
 					if ( version < 12 )
 					{
@@ -2871,9 +2871,9 @@ namespace Server.Multis
 					return m_Region.GoLocation;
 
 				Point3D rel = m_RelativeBanLocation;
-				return new Point3D( this.X + rel.X, this.Y + rel.Y, this.Z + rel.Z );
+				return new Point3D( X + rel.X, Y + rel.Y, Z + rel.Z );
 			}
-			set => this.RelativeBanLocation = new Point3D( value.X - this.X, value.Y - this.Y, value.Z - this.Z );
+			set => RelativeBanLocation = new Point3D( value.X - X, value.Y - Y, value.Z - Z );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -2885,7 +2885,7 @@ namespace Server.Multis
 				m_RelativeBanLocation = value;
 
 				if ( m_Region != null )
-					m_Region.GoLocation = new Point3D( this.X + value.X, this.Y + value.Y, this.Z + value.Z );
+					m_Region.GoLocation = new Point3D( X + value.X, Y + value.Y, Z + value.Z );
 			}
 		}
 
@@ -3433,7 +3433,7 @@ namespace Server.Multis
 
 		public virtual Guildstone FindGuildstone()
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null )
 				return null;
@@ -3932,7 +3932,7 @@ namespace Server.Multis
 		private Mobile m_RegionOwner;
 
 		public TempNoHousingRegion( BaseHouse house, Mobile regionowner )
-			: base( null, house.Map, Region.DefaultPriority, house.Region.Area )
+			: base( null, house.Map, DefaultPriority, house.Region.Area )
 		{
 			Register();
 

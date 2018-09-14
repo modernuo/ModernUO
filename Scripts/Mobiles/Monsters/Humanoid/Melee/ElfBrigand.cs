@@ -15,7 +15,7 @@ namespace Server.Mobiles
 			Race = Race.Elf;
 			Hue = Race.RandomSkinHue();
 
-			if ( this.Female = Utility.RandomBool() )
+			if ( Female = Utility.RandomBool() )
 			{
 				Body = 0x25E;
 				Name = NameList.RandomName( "female elf brigand" );

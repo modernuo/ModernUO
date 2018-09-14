@@ -226,12 +226,12 @@ namespace Server.Mobiles
 			}
 		}
 
-		public Server.Guilds.RankDefinition GuildRank
+		public Guilds.RankDefinition GuildRank
 		{
 			get
 			{
-				if ( this.AccessLevel >= AccessLevel.GameMaster )
-					return Server.Guilds.RankDefinition.Leader;
+				if ( AccessLevel >= AccessLevel.GameMaster )
+					return Guilds.RankDefinition.Leader;
 				else
 					return m_GuildRank;
 			}
@@ -747,9 +747,9 @@ namespace Server.Mobiles
 		{
 			if ( dismount )
 			{
-				if ( this.Mount != null )
+				if ( Mount != null )
 				{
-					this.Mount.Rider = null;
+					Mount.Rider = null;
 				}
 				else if ( AnimalForm.UnderTransformation( this ) )
 				{
@@ -779,7 +779,7 @@ namespace Server.Mobiles
 			if ( type != ResistanceType.Physical && 60 < max && Spells.Fourth.CurseSpell.UnderEffect( this ) )
 				max = 60;
 
-			if ( Core.ML && this.Race == Race.Elf && type == ResistanceType.Energy )
+			if ( Core.ML && Race == Race.Elf && type == ResistanceType.Energy )
 				max += 5; //Intended to go after the 60 max from curse
 
 			return max;
@@ -791,7 +791,7 @@ namespace Server.Mobiles
 			UpdateResistances();
 		}
 
-		public override int MaxWeight => (((Core.ML && this.Race == Race.Human) ? 100 : 40) + (int)(3.5 * this.Str));
+		public override int MaxWeight => (((Core.ML && Race == Race.Human) ? 100 : 40) + (int)(3.5 * Str));
 
 		private int m_LastGlobalLight = -1, m_LastPersonalLight = -1;
 
@@ -805,17 +805,17 @@ namespace Server.Mobiles
 		{
 			global = LightCycle.ComputeLevelFor( this );
 
-			bool racialNightSight = (Core.ML && this.Race == Race.Elf);
+			bool racialNightSight = (Core.ML && Race == Race.Elf);
 
-			if ( this.LightLevel < 21 && ( AosAttributes.GetValue( this, AosAttribute.NightSight ) > 0 || racialNightSight ))
+			if ( LightLevel < 21 && ( AosAttributes.GetValue( this, AosAttribute.NightSight ) > 0 || racialNightSight ))
 				personal = 21;
 			else
-				personal = this.LightLevel;
+				personal = LightLevel;
 		}
 
 		public override void CheckLightLevels( bool forceResend )
 		{
-			NetState ns = this.NetState;
+			NetState ns = NetState;
 
 			if ( ns == null )
 				return;
@@ -865,7 +865,7 @@ namespace Server.Mobiles
 			{
 				if (Mana < m_ExecutesLightningStrike)
 				{
-					LightningStrike.ClearCurrentMove(this);
+					SpecialMove.ClearCurrentMove(this);
 				}
 			}
 		}
@@ -913,7 +913,7 @@ namespace Server.Mobiles
 			if ( m_NoDeltaRecursion || Map == null || Map == Map.Internal )
 				return;
 
-			if ( this.Items == null )
+			if ( Items == null )
 				return;
 
 			m_NoDeltaRecursion = true;
@@ -927,16 +927,16 @@ namespace Server.Mobiles
 				if ( Map == null || Map == Map.Internal )
 					return;
 
-				List<Item> items = this.Items;
+				List<Item> items = Items;
 
 				if ( items == null )
 					return;
 
 				bool moved = false;
 
-				int str = this.Str;
-				int dex = this.Dex;
-				int intel = this.Int;
+				int str = Str;
+				int dex = Dex;
+				int intel = Int;
 
 				#region Factions
 				int factionItemCount = 0;
@@ -994,7 +994,7 @@ namespace Server.Mobiles
 							drop = true;
 						else if ( intel < weapon.IntRequirement )
 							drop = true;
-						else if ( weapon.RequiredRace != null && weapon.RequiredRace != this.Race )
+						else if ( weapon.RequiredRace != null && weapon.RequiredRace != Race )
 							drop = true;
 
 						if ( drop )
@@ -1021,7 +1021,7 @@ namespace Server.Mobiles
 						{
 							drop = true;
 						}
-						else if ( armor.RequiredRace != null && armor.RequiredRace != this.Race )
+						else if ( armor.RequiredRace != null && armor.RequiredRace != Race )
 						{
 							drop = true;
 						}
@@ -1067,7 +1067,7 @@ namespace Server.Mobiles
 						{
 							drop = true;
 						}
-						else if ( clothing.RequiredRace != null && clothing.RequiredRace != this.Race )
+						else if ( clothing.RequiredRace != null && clothing.RequiredRace != Race )
 						{
 							drop = true;
 						}
@@ -1247,13 +1247,13 @@ namespace Server.Mobiles
 
 		public override void OnSubItemAdded( Item item )
 		{
-			if ( AccessLevel < AccessLevel.GameMaster && item.IsChildOf( this.Backpack ) )
+			if ( AccessLevel < AccessLevel.GameMaster && item.IsChildOf( Backpack ) )
 			{
 				int maxWeight = WeightOverloading.GetMaxWeight( this );
-				int curWeight = Mobile.BodyWeight + this.TotalWeight;
+				int curWeight = BodyWeight + TotalWeight;
 
 				if ( curWeight > maxWeight )
-					this.SendLocalizedMessage( 1019035, true, String.Format( " : {0} / {1}", curWeight, maxWeight ) );
+					SendLocalizedMessage( 1019035, true, String.Format( " : {0} / {1}", curWeight, maxWeight ) );
 			}
 
 			base.OnSubItemAdded(item);
@@ -1304,7 +1304,7 @@ namespace Server.Mobiles
 				Mana = Mana;
 			}
 
-			if ( this.NetState != null )
+			if ( NetState != null )
 				CheckLightLevels( false );
 
 			InvalidateMyRunUO();
@@ -1321,7 +1321,7 @@ namespace Server.Mobiles
 				Mana = Mana;
 			}
 
-			if ( this.NetState != null )
+			if ( NetState != null )
 				CheckLightLevels( false );
 
 			InvalidateMyRunUO();
@@ -1363,7 +1363,7 @@ namespace Server.Mobiles
 
 				if ( Core.AOS )
 				{
-					strBase = this.Str;	//this.Str already includes GetStatOffset/str
+					strBase = Str;	//this.Str already includes GetStatOffset/str
 					strOffs = AosAttributes.GetValue( this, AosAttribute.BonusHits );
 
 					if ( Core.ML && strOffs > 25 && AccessLevel <= AccessLevel.Player )
@@ -1374,7 +1374,7 @@ namespace Server.Mobiles
 				}
 				else
 				{
-					strBase = this.RawStr;
+					strBase = RawStr;
 				}
 
 				return (strBase / 2) + 50 + strOffs;
@@ -1396,7 +1396,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if ( Core.ML && AccessLevel == AccessLevel.Player )
 					return Math.Min( base.Str, 150 );
 
 				return base.Str;
@@ -1409,7 +1409,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if ( Core.ML && AccessLevel == AccessLevel.Player )
 					return Math.Min( base.Int, 150 );
 
 				return base.Int;
@@ -1422,7 +1422,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( Core.ML && this.AccessLevel == AccessLevel.Player )
+				if ( Core.ML && AccessLevel == AccessLevel.Player )
 					return Math.Min( base.Dex, 150 );
 
 				return base.Dex;
@@ -1434,7 +1434,7 @@ namespace Server.Mobiles
 
 		public override bool Move( Direction d )
 		{
-			NetState ns = this.NetState;
+			NetState ns = NetState;
 
 			if ( ns != null )
 			{
@@ -1453,11 +1453,11 @@ namespace Server.Mobiles
 			bool res;
 
 			if ( !Alive )
-				Server.Movement.MovementImpl.IgnoreMovableImpassables = true;
+				Movement.MovementImpl.IgnoreMovableImpassables = true;
 
 			res = base.Move( d );
 
-			Server.Movement.MovementImpl.IgnoreMovableImpassables = false;
+			Movement.MovementImpl.IgnoreMovableImpassables = false;
 
 			if ( !res )
 				return false;
@@ -1478,7 +1478,7 @@ namespace Server.Mobiles
 
 			newZ = foundation.Z + HouseFoundation.GetLevelZ( context.Level, context.Foundation );
 
-			int newX = this.X, newY = this.Y;
+			int newX = X, newY = Y;
 			Movement.Movement.Offset( d, ref newX, ref newY );
 
 			int startX = foundation.X + foundation.Components.Min.X + 1;
@@ -1538,7 +1538,7 @@ namespace Server.Mobiles
 		{
 			m_NextProtectionCheck = 10;
 
-			Regions.GuardedRegion reg = (Regions.GuardedRegion) this.Region.GetRegion( typeof( Regions.GuardedRegion ) );
+			GuardedRegion reg = (GuardedRegion) Region.GetRegion( typeof( GuardedRegion ) );
 			bool isProtected = ( reg != null && !reg.IsDisabled() );
 
 			if ( isProtected != m_LastProtectedMessage )
@@ -1564,7 +1564,7 @@ namespace Server.Mobiles
 			if ( !isTeleport && AccessLevel == AccessLevel.Player )
 			{
 				// moving, not teleporting
-				int zDrop = ( this.Location.Z - loc.Z );
+				int zDrop = ( Location.Z - loc.Z );
 
 				if ( zDrop > 20 ) // we fell more than one story
 					Hits -= ((zDrop / 20) * 10) - 5; // deal some damage; does not kill, disrupt, etc
@@ -1641,7 +1641,7 @@ namespace Server.Mobiles
 				if ( Alive && Core.Expansion >= Expansion.AOS )
 				{
 					Party theirParty = from.Party as Party;
-					Party ourParty = this.Party as Party;
+					Party ourParty = Party as Party;
 
 					if ( theirParty == null && ourParty == null ) {
 						list.Add( new AddToPartyEntry( from, this ) );
@@ -1670,10 +1670,10 @@ namespace Server.Mobiles
 			{
 				Mobile prot = m_JusticeProtectors[i];
 
-				string args = String.Format( "{0}\t{1}", this.Name, prot.Name );
+				string args = String.Format( "{0}\t{1}", Name, prot.Name );
 
 				prot.SendLocalizedMessage( 1049371, args ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
-				this.SendLocalizedMessage( 1049371, args ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
+				SendLocalizedMessage( 1049371, args ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
 			}
 
 			m_JusticeProtectors.Clear();
@@ -2127,7 +2127,7 @@ namespace Server.Mobiles
 
 		private void ToggleQuestItemTarget()
 		{
-			Server.Engines.MLQuests.Gumps.BaseQuestGump.CloseOtherGumps( this );
+			Engines.MLQuests.Gumps.BaseQuestGump.CloseOtherGumps( this );
 			CloseGump( typeof( Server.Engines.MLQuests.Gumps.QuestLogDetailedGump ) );
 			CloseGump( typeof( Server.Engines.MLQuests.Gumps.QuestLogGump ) );
 			CloseGump( typeof( Server.Engines.MLQuests.Gumps.QuestOfferGump ) );
@@ -2190,7 +2190,7 @@ namespace Server.Mobiles
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
 			if ( house != null )
-				this.Location = house.BanLocation;
+				Location = house.BanLocation;
 		}
 
 		private delegate void ContextCallback();
@@ -2292,7 +2292,7 @@ namespace Server.Mobiles
 			}
 			#endregion
 
-			if ( this.AccessLevel < AccessLevel.GameMaster && item.Layer != Layer.Mount && this.HasTrade )
+			if ( AccessLevel < AccessLevel.GameMaster && item.Layer != Layer.Mount && HasTrade )
 			{
 				BounceInfo bounce = item.GetBounce();
 
@@ -2300,7 +2300,7 @@ namespace Server.Mobiles
 				{
 					if ( bounce.m_Parent is Item parent )
 					{
-						if ( parent == this.Backpack || parent.IsChildOf( this.Backpack ) )
+						if ( parent == Backpack || parent.IsChildOf( Backpack ) )
 							return true;
 					}
 					else if ( bounce.m_Parent == this )
@@ -2324,7 +2324,7 @@ namespace Server.Mobiles
 			{
 				if ( to.Holding != null )
 					msgNum = 1062727; // You cannot trade with someone who is dragging something.
-				else if ( this.HasTrade )
+				else if ( HasTrade )
 					msgNum = 1062781; // You are already trading with someone else!
 				else if ( to.HasTrade )
 					msgNum = 1062779; // That person is already involved in a trade
@@ -2340,7 +2340,7 @@ namespace Server.Mobiles
 					plusWeight += cont.TotalWeight;
 				}
 
-				if ( this.Backpack == null || !this.Backpack.CheckHold( this, item, false, checkItems, plusItems, plusWeight ) )
+				if ( Backpack == null || !Backpack.CheckHold( this, item, false, checkItems, plusItems, plusWeight ) )
 					msgNum = 1004040; // You would not be able to hold this if the trade failed.
 				else if ( to.Backpack == null || !to.Backpack.CheckHold( to, item, false, checkItems, plusItems, plusWeight ) )
 					msgNum = 1004039; // The recipient of this trade would not be able to carry this.
@@ -2394,8 +2394,8 @@ namespace Server.Mobiles
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			Container pack = this.Backpack;
-			if ( from == this && this.HasTrade && ( target == pack || target.IsChildOf( pack ) ) )
+			Container pack = Backpack;
+			if ( from == this && HasTrade && ( target == pack || target.IsChildOf( pack ) ) )
 			{
 				BounceInfo bounce = item.GetBounce();
 
@@ -2426,7 +2426,7 @@ namespace Server.Mobiles
 
 			HouseFoundation foundation = context.Foundation;
 
-			int newX = this.X, newY = this.Y;
+			int newX = X, newY = Y;
 			int newZ = foundation.Z + HouseFoundation.GetLevelZ( context.Level, context.Foundation );
 
 			int startX = foundation.X + foundation.Components.Min.X + 1;
@@ -2539,11 +2539,11 @@ namespace Server.Mobiles
 
 		public override void Resurrect()
 		{
-			bool wasAlive = this.Alive;
+			bool wasAlive = Alive;
 
 			base.Resurrect();
 
-			if ( this.Alive && !wasAlive )
+			if ( Alive && !wasAlive )
 			{
 				Item deathRobe = new DeathRobe();
 
@@ -2556,7 +2556,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( Core.ML && this.Race == Race.Human )
+				if ( Core.ML && Race == Race.Human )
 					return 20.0;
 
 				return 0;
@@ -2581,7 +2581,7 @@ namespace Server.Mobiles
 		{
 			if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured))
 			{
-				if (this.Backpack != item.Parent)
+				if (Backpack != item.Parent)
 				{
 					return true;
 				}
@@ -2607,11 +2607,11 @@ namespace Server.Mobiles
 				}
 			}
 
-			m_EquipSnapshot = new List<Item>( this.Items );
+			m_EquipSnapshot = new List<Item>( Items );
 
 			m_NonAutoreinsuredItems = 0;
 			m_InsuranceCost = 0;
-			m_InsuranceAward = base.FindMostRecentDamager( false );
+			m_InsuranceAward = FindMostRecentDamager( false );
 
 			if ( m_InsuranceAward is BaseCreature creature )
 			{
@@ -2697,7 +2697,7 @@ namespace Server.Mobiles
 
 			DeathMoveResult res = base.GetParentMoveResultFor( item );
 
-			if ( res == DeathMoveResult.MoveToCorpse && item.Movable && this.Young )
+			if ( res == DeathMoveResult.MoveToCorpse && item.Movable && Young )
 				res = DeathMoveResult.MoveToBackpack;
 
 			return res;
@@ -2714,7 +2714,7 @@ namespace Server.Mobiles
 
 			DeathMoveResult res = base.GetInventoryMoveResultFor( item );
 
-			if ( res == DeathMoveResult.MoveToCorpse && item.Movable && this.Young )
+			if ( res == DeathMoveResult.MoveToCorpse && item.Movable && Young )
 				res = DeathMoveResult.MoveToBackpack;
 
 			return res;
@@ -2767,7 +2767,7 @@ namespace Server.Mobiles
 					Criminal = true;
 			}
 
-			if ( this.Kills >= 5 && DateTime.UtcNow >= m_NextJustAward )
+			if ( Kills >= 5 && DateTime.UtcNow >= m_NextJustAward )
 			{
 				Mobile m = FindMostRecentDamager( false );
 
@@ -2780,9 +2780,9 @@ namespace Server.Mobiles
 
 					int pointsToGain = 0;
 
-					pointsToGain += (int) Math.Sqrt( this.GameTime.TotalSeconds * 4 );
+					pointsToGain += (int) Math.Sqrt( GameTime.TotalSeconds * 4 );
 					pointsToGain *= 5;
-					pointsToGain += (int) Math.Pow( this.Skills.Total / 250, 2 );
+					pointsToGain += (int) Math.Pow( Skills.Total / 250, 2 );
 
 					if ( VirtueHelper.Award( m, VirtueName.Justice, pointsToGain, ref gainedPath ) )
 					{
@@ -2805,7 +2805,7 @@ namespace Server.Mobiles
 					pm.SendLocalizedMessage( 1060397, pm.m_InsuranceBonus.ToString() ); // ~1_AMOUNT~ gold has been deposited into your bank box.
 			}
 
-			Mobile killer = this.FindMostRecentDamager( true );
+			Mobile killer = FindMostRecentDamager( true );
 
 			if ( killer is BaseCreature bcKiller )
 			{
@@ -2814,7 +2814,7 @@ namespace Server.Mobiles
 					killer = master;
 			}
 
-			if ( this.Young && m_DuelContext == null )
+			if ( Young && m_DuelContext == null )
 			{
 				if ( YoungDeathTeleport() )
 					Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), new TimerCallback( SendYoungDeathNotice ) );
@@ -3027,7 +3027,7 @@ namespace Server.Mobiles
 		{
 			if ( Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance) )
 			{
-				if ( !(this.Guild is Guild g) )
+				if ( !(Guild is Guild g) )
 				{
 					SendLocalizedMessage( 1063142 ); // You are not in a guild!
 				}
@@ -3087,10 +3087,10 @@ namespace Server.Mobiles
 
 		public override void Damage( int amount, Mobile from )
 		{
-			if ( Spells.Necromancy.EvilOmenSpell.TryEndEffect( this ) )
+			if ( EvilOmenSpell.TryEndEffect( this ) )
 				amount = (int)(amount * 1.25);
 
-			Mobile oath = Spells.Necromancy.BloodOathSpell.GetBloodOath( from );
+			Mobile oath = BloodOathSpell.GetBloodOath( from );
 
 				/* Per EA's UO Herald Pub48 (ML):
 				 * ((resist spellsx10)/20 + 10=percentage of damage resisted)
@@ -3136,7 +3136,7 @@ namespace Server.Mobiles
 			if ( !Alive )
 				return ApplyPoisonResult.Immune;
 
-			if ( Spells.Necromancy.EvilOmenSpell.TryEndEffect( this ) )
+			if ( EvilOmenSpell.TryEndEffect( this ) )
 				poison = PoisonImpl.IncreaseLevel( poison );
 
 			ApplyPoisonResult result = base.ApplyPoison( from, poison );
@@ -3149,7 +3149,7 @@ namespace Server.Mobiles
 
 		public override bool CheckPoisonImmunity( Mobile from, Poison poison )
 		{
-			if ( this.Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished) )
+			if ( Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished) )
 				return true;
 
 			return base.CheckPoisonImmunity( from, poison );
@@ -3157,7 +3157,7 @@ namespace Server.Mobiles
 
 		public override void OnPoisonImmunity( Mobile from, Poison poison )
 		{
-			if ( this.Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished) )
+			if ( Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished) )
 				SendLocalizedMessage( 502808 ); // You would have been poisoned, were you not new to the land of Britannia. Be careful in the future.
 			else
 				base.OnPoisonImmunity( from, poison );
@@ -3201,7 +3201,7 @@ namespace Server.Mobiles
 
 		public bool AntiMacroCheck( Skill skill, object obj )
 		{
-			if ( obj == null || m_AntiMacroTable == null || this.AccessLevel != AccessLevel.Player )
+			if ( obj == null || m_AntiMacroTable == null || AccessLevel != AccessLevel.Player )
 				return true;
 
 			Hashtable tbl = (Hashtable)m_AntiMacroTable[skill];
@@ -3514,7 +3514,7 @@ namespace Server.Mobiles
 			if ( AccessLevel > AccessLevel.Player )
 				m_IgnoreMobiles = true;
 
-			List<Mobile> list = this.Stabled;
+			List<Mobile> list = Stabled;
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
@@ -3671,7 +3671,7 @@ namespace Server.Mobiles
 
 			writer.Write( m_LongTermElapse );
 			writer.Write( m_ShortTermElapse );
-			writer.Write( this.GameTime );
+			writer.Write( GameTime );
 		}
 
 		public static void CheckAtrophies( Mobile m )
@@ -3687,14 +3687,14 @@ namespace Server.Mobiles
 
 		public void CheckKillDecay()
 		{
-			if ( m_ShortTermElapse < this.GameTime )
+			if ( m_ShortTermElapse < GameTime )
 			{
 				m_ShortTermElapse += TimeSpan.FromHours( 8 );
 				if ( ShortTermMurders > 0 )
 					--ShortTermMurders;
 			}
 
-			if ( m_LongTermElapse < this.GameTime )
+			if ( m_LongTermElapse < GameTime )
 			{
 				m_LongTermElapse += TimeSpan.FromHours( 40 );
 				if ( Kills > 0 )
@@ -3704,8 +3704,8 @@ namespace Server.Mobiles
 
 		public void ResetKillTime()
 		{
-			m_ShortTermElapse = this.GameTime + TimeSpan.FromHours( 8 );
-			m_LongTermElapse = this.GameTime + TimeSpan.FromHours( 40 );
+			m_ShortTermElapse = GameTime + TimeSpan.FromHours( 8 );
+			m_LongTermElapse = GameTime + TimeSpan.FromHours( 40 );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -3840,7 +3840,7 @@ namespace Server.Mobiles
 					Faction faction = pl.Faction;
 
 					if ( faction.Commander == this )
-						text = String.Concat( this.Female ? "(Commanding Lady of the " : "(Commanding Lord of the ", faction.Definition.FriendlyName, ")" );
+						text = String.Concat( Female ? "(Commanding Lady of the " : "(Commanding Lord of the ", faction.Definition.FriendlyName, ")" );
 					else if ( pl.Sheriff != null )
 						text = String.Concat( "(The Sheriff of ", pl.Sheriff.Definition.FriendlyName, ", ", faction.Definition.FriendlyName, ")" );
 					else if ( pl.Finance != null )
@@ -3885,7 +3885,7 @@ namespace Server.Mobiles
 					}
 					else if ( AllowedStealthSteps-- <= 0 )
 					{
-						Server.SkillHandlers.Stealth.OnUse( this );
+						SkillHandlers.Stealth.OnUse( this );
 					}
 				}
 				else
@@ -4014,7 +4014,7 @@ namespace Server.Mobiles
 
 		public override void OnKillsChange( int oldValue )
 		{
-			if ( this.Young && this.Kills > oldValue )
+			if ( Young && Kills > oldValue )
 			{
 				((Account)Account)?.RemoveYoungStatus( 0 );
 			}
@@ -4027,7 +4027,7 @@ namespace Server.Mobiles
 			InvalidateMyRunUO();
 		}
 
-		public override void OnGuildChange( Server.Guilds.BaseGuild oldGuild )
+		public override void OnGuildChange( BaseGuild oldGuild )
 		{
 			InvalidateMyRunUO();
 		}
@@ -4049,7 +4049,7 @@ namespace Server.Mobiles
 
 		public override void OnSkillChange( SkillName skill, double oldBase )
 		{
-			if ( this.Young && this.SkillsTotal >= 4500 )
+			if ( Young && SkillsTotal >= 4500 )
 			{
 				((Account)Account)?.RemoveYoungStatus( 1019036 ); // You have successfully obtained a respectable skill level, and have outgrown your status as a young player!
 			}
@@ -4096,24 +4096,24 @@ namespace Server.Mobiles
 
 		public override int ComputeMovementSpeed( Direction dir, bool checkTurning )
 		{
-			if ( checkTurning && (dir & Direction.Mask) != (this.Direction & Direction.Mask) )
-				return Mobile.RunMount;	// We are NOT actually moving (just a direction change)
+			if ( checkTurning && (dir & Direction.Mask) != (Direction & Direction.Mask) )
+				return RunMount;	// We are NOT actually moving (just a direction change)
 
 			TransformContext context = TransformationSpellHelper.GetContext( this );
 
 			if ( context != null && context.Type == typeof( ReaperFormSpell ) )
-				return Mobile.WalkFoot;
+				return WalkFoot;
 
 			bool running = ( (dir & Direction.Running) != 0 );
 
-			bool onHorse = ( this.Mount != null );
+			bool onHorse = ( Mount != null );
 
 			AnimalFormContext animalContext = AnimalForm.GetContext( this );
 
 			if ( onHorse || (animalContext != null && animalContext.SpeedBoost) )
-				return ( running ? Mobile.RunMount : Mobile.WalkMount );
+				return ( running ? RunMount : WalkMount );
 
-			return ( running ? Mobile.RunFoot : Mobile.WalkFoot );
+			return ( running ? RunFoot : WalkFoot );
 		}
 
 		public static bool MovementThrottle_Callback( NetState ns )
@@ -4172,12 +4172,12 @@ namespace Server.Mobiles
 
 		private void DeltaEnemies( Type oldType, Type newType )
 		{
-			foreach ( Mobile m in this.GetMobilesInRange( 18 ) )
+			foreach ( Mobile m in GetMobilesInRange( 18 ) )
 			{
 				Type t = m.GetType();
 
 				if ( t == oldType || t == newType ) {
-					NetState ns = this.NetState;
+					NetState ns = NetState;
 
 					if ( ns != null ) {
 						if ( ns.StygianAbyss ) {
@@ -4355,7 +4355,7 @@ namespace Server.Mobiles
 			}
 			#endregion
 
-			if ( Core.ML && this.Map == Faction.Facet )
+			if ( Core.ML && Map == Faction.Facet )
 			{
 				Faction faction = Faction.Find( this );
 
@@ -4384,7 +4384,7 @@ namespace Server.Mobiles
 
 		public bool CheckYoungProtection( Mobile from )
 		{
-			if ( !this.Young )
+			if ( !Young )
 				return false;
 
 			if ( Region is BaseRegion region && !region.YoungProtected )
@@ -4393,7 +4393,7 @@ namespace Server.Mobiles
 			if ( @from is BaseCreature creature && creature.IgnoreYoungProtection )
 				return false;
 
-			if ( this.Quest != null && this.Quest.IgnoreYoungProtection( from ) )
+			if ( Quest != null && Quest.IgnoreYoungProtection( from ) )
 				return false;
 
 			if ( DateTime.UtcNow - m_LastYoungMessage > TimeSpan.FromMinutes( 1.0 ) )
@@ -4465,16 +4465,16 @@ namespace Server.Mobiles
 
 		public bool YoungDeathTeleport()
 		{
-			if ( this.Region.IsPartOf( typeof( Jail ) )
-				|| this.Region.IsPartOf( "Samurai start location" )
-				|| this.Region.IsPartOf( "Ninja start location" )
-				|| this.Region.IsPartOf( "Ninja cave" ) )
+			if ( Region.IsPartOf( typeof( Jail ) )
+				|| Region.IsPartOf( "Samurai start location" )
+				|| Region.IsPartOf( "Ninja start location" )
+				|| Region.IsPartOf( "Ninja cave" ) )
 				return false;
 
 			Point3D loc;
 			Map map;
 
-			DungeonRegion dungeon = (DungeonRegion) this.Region.GetRegion( typeof( DungeonRegion ) );
+			DungeonRegion dungeon = (DungeonRegion) Region.GetRegion( typeof( DungeonRegion ) );
 			if ( dungeon != null && dungeon.EntranceLocation != Point3D.Zero )
 			{
 				loc = dungeon.EntranceLocation;
@@ -4482,8 +4482,8 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				loc = this.Location;
-				map = this.Map;
+				loc = Location;
+				map = Map;
 			}
 
 			Point3D[] list;
@@ -4517,13 +4517,13 @@ namespace Server.Mobiles
 				}
 			}
 
-			this.MoveToWorld( dest, map );
+			MoveToWorld( dest, map );
 			return true;
 		}
 
 		private void SendYoungDeathNotice()
 		{
-			this.SendGump( new YoungDeathNotice() );
+			SendGump( new YoungDeathNotice() );
 		}
 
 		#endregion
@@ -4535,7 +4535,7 @@ namespace Server.Mobiles
 
 		public override void OnSpeech( SpeechEventArgs e )
 		{
-			if ( SpeechLog.Enabled && this.NetState != null )
+			if ( SpeechLog.Enabled && NetState != null )
 			{
 				if ( m_SpeechLog == null )
 					m_SpeechLog = new SpeechLog();
@@ -4919,7 +4919,7 @@ namespace Server.Mobiles
 			if ( !BuffInfo.Enabled || m_BuffTable == null )
 				return;
 
-			NetState state = this.NetState;
+			NetState state = NetState;
 
 			if ( state != null && state.BuffIcon )
 			{
@@ -4944,7 +4944,7 @@ namespace Server.Mobiles
 
 			m_BuffTable.Add( b.ID, b );
 
-			NetState state = this.NetState;
+			NetState state = NetState;
 
 			if ( state != null && state.BuffIcon )
 			{
@@ -4972,7 +4972,7 @@ namespace Server.Mobiles
 
 			m_BuffTable.Remove( b );
 
-			NetState state = this.NetState;
+			NetState state = NetState;
 
 			if ( state != null && state.BuffIcon )
 			{

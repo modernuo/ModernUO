@@ -91,8 +91,8 @@ namespace Server.Items
 		{
 //			Dupe( Amount );
 
-			parent.HairItemID = this.ItemID;
-			parent.HairHue = this.Hue;
+			parent.HairItemID = ItemID;
+			parent.HairHue = Hue;
 
 			return DeathMoveResult.MoveToCorpse;
 		}

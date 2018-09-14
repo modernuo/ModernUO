@@ -94,7 +94,7 @@ namespace Server.Engines.CannedEvil
 			if ( m_Region != null )
 				m_Region.Unregister();
 
-			if ( !Deleted && this.Map != Map.Internal )
+			if ( !Deleted && Map != Map.Internal )
 			{
 				m_Region = new ChampionSpawnRegion( this );
 				m_Region.Register();
@@ -626,7 +626,7 @@ namespace Server.Engines.CannedEvil
 
 					if ( !m_ConfinedRoaming )
 					{
-						bc.Home = this.Location;
+						bc.Home = Location;
 						bc.RangeHome = (int)(Math.Sqrt( m_SpawnArea.Width * m_SpawnArea.Width + m_SpawnArea.Height * m_SpawnArea.Height )/2);
 					}
 					else
@@ -684,7 +684,7 @@ namespace Server.Engines.CannedEvil
 
 		public int GetSubLevel()
 		{
-			int level = this.Level;
+			int level = Level;
 
 			if ( level <= Level1 )
 				return 0;
@@ -1199,7 +1199,7 @@ namespace Server.Engines.CannedEvil
 
 		public ChampionSpawn ChampionSpawn => m_Spawn;
 
-		public ChampionSpawnRegion( ChampionSpawn spawn ) : base( null, spawn.Map, Region.Find( spawn.Location, spawn.Map ), spawn.SpawnArea )
+		public ChampionSpawnRegion( ChampionSpawn spawn ) : base( null, spawn.Map, Find( spawn.Location, spawn.Map ), spawn.SpawnArea )
 		{
 			m_Spawn = spawn;
 		}

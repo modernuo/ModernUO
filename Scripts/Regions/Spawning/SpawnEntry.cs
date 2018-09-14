@@ -57,7 +57,7 @@ namespace Server.Regions
 		public bool Running => m_Running;
 
 		public bool Complete => m_SpawnedObjects.Count >= m_Max;
-		public bool Spawning => m_Running && !this.Complete;
+		public bool Spawning => m_Running && !Complete;
 
 		public SpawnEntry( int id, BaseRegion region, Point3D home, int range, Direction direction, SpawnDefinition definition, int max, TimeSpan minSpawnTime, TimeSpan maxSpawnTime )
 		{
@@ -117,7 +117,7 @@ namespace Server.Regions
 			spawn.Spawner = this;
 
 			if ( spawn is BaseCreature )
-				((BaseCreature)spawn).RemoveIfUntamed = this.RemoveIfUntamed;
+				((BaseCreature)spawn).RemoveIfUntamed = RemoveIfUntamed;
 		}
 
 		void ISpawner.Remove( ISpawnable spawn )
@@ -138,7 +138,7 @@ namespace Server.Regions
 
 		private void CheckTimer()
 		{
-			if ( this.Spawning )
+			if ( Spawning )
 			{
 				if ( m_SpawnTimer == null )
 				{
@@ -192,7 +192,7 @@ namespace Server.Regions
 		{
 			InternalDeleteSpawnedObjects();
 
-			for ( int i = 0; !this.Complete && i < m_Max; i++ )
+			for ( int i = 0; !Complete && i < m_Max; i++ )
 				Spawn();
 
 			m_Running = true;
@@ -259,7 +259,7 @@ namespace Server.Regions
 			{
 				m_NextSpawn = reader.ReadDeltaTime();
 
-				if ( this.Spawning )
+				if ( Spawning )
 				{
 					if ( m_SpawnTimer != null )
 						m_SpawnTimer.Stop();

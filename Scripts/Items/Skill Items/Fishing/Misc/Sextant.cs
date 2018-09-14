@@ -35,9 +35,9 @@ namespace Server.Items
 			int xMins = 0, yMins = 0;
 			bool xEast = false, ySouth = false;
 
-			if ( Sextant.Format( from.Location, from.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
+			if ( Format( from.Location, from.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth ) )
 			{
-				string location = String.Format( "{0}° {1}'{2}, {3}° {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
+				string location = String.Format( "{0}ï¿½ {1}'{2}, {3}ï¿½ {4}'{5}", yLat, yMins, ySouth ? "S" : "N", xLong, xMins, xEast ? "E" : "W" );
 				from.LocalOverheadMessage( MessageType.Regular, from.SpeechHue, false, location );
 			}
 		}

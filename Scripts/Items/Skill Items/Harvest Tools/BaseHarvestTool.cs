@@ -148,7 +148,7 @@ namespace Server.Items
 				bool stoneMining = ( mobile.StoneMining && mobile.Skills[SkillName.Mining].Base >= 100.0 );
 
 				if ( mobile.ToggleMiningStone == value || ( value && !stoneMining ) )
-					this.Flags |= CMEFlags.Disabled;
+					Flags |= CMEFlags.Disabled;
 			}
 
 			public override void OnClick()

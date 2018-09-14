@@ -115,7 +115,7 @@ namespace Server.Regions
 		{
 			get
 			{
-				if ( this.Map == Map.Ilshenar || this.Map == Map.Malas )
+				if ( Map == Map.Ilshenar || Map == Map.Malas )
 					return typeof( ArcherGuard );
 				else
 					return typeof( WarriorGuard );
@@ -152,7 +152,7 @@ namespace Server.Regions
 
 			bool disabled = false;
 			if ( ReadBoolean( el, "disabled", ref disabled, false ) )
-				this.Disabled = disabled;
+				Disabled = disabled;
 		}
 
 		public override bool OnBeginSpellCast( Mobile m, ISpell s )

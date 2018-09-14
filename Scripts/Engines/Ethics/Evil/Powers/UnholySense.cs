@@ -85,7 +85,7 @@ namespace Server.Ethics.Evil
 				sb.Append( '.' );
 			}
 
-			from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x59, false, sb.ToString() );
+			from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x59, false, sb.ToString() );
 
 			FinishInvoke( from );
 		}

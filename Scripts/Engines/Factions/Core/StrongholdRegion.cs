@@ -13,7 +13,7 @@ namespace Server.Factions
 			set => m_Faction = value;
 		}
 
-		public StrongholdRegion( Faction faction ) : base( faction.Definition.FriendlyName, Faction.Facet, Region.DefaultPriority, faction.Definition.Stronghold.Area )
+		public StrongholdRegion( Faction faction ) : base( faction.Definition.FriendlyName, Faction.Facet, DefaultPriority, faction.Definition.Stronghold.Area )
 		{
 			m_Faction = faction;
 

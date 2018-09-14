@@ -31,7 +31,7 @@ namespace Server.Items
 		}
 	}
 
-	[Server.Engines.Craft.Forge]
+	[Engines.Craft.Forge]
 	public class ShrineOfWisdomComponent : AddonComponent
 	{
 		public override int LabelNumber => 1062046; // Shrine of Wisdom

@@ -30,17 +30,17 @@ namespace Server.Engines.Quests.Matriarch
 
 		public override bool CanTalkTo( PlayerMobile to )
 		{
-			if ( SolenMatriarchQuest.IsFriend( to, this.RedSolen ) )
+			if ( SolenMatriarchQuest.IsFriend( to, RedSolen ) )
 				return true;
 
-			return to.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen;
+			return to.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen;
 		}
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )
 		{
-			this.Direction = GetDirectionTo( player );
+			Direction = GetDirectionTo( player );
 
-			if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
+			if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen )
 			{
 				if ( qs.IsObjectiveInProgress( typeof( KillInfiltratorsObjective ) ) )
 				{
@@ -89,9 +89,9 @@ namespace Server.Engines.Quests.Matriarch
 					}
 				}
 			}
-			else if ( SolenMatriarchQuest.IsFriend( player, this.RedSolen ) )
+			else if ( SolenMatriarchQuest.IsFriend( player, RedSolen ) )
 			{
-				QuestSystem newQuest = new SolenMatriarchQuest( player, this.RedSolen );
+				QuestSystem newQuest = new SolenMatriarchQuest( player, RedSolen );
 
 				if ( player.Quest == null && QuestSystem.CanOfferQuest( player, typeof( SolenMatriarchQuest ) ) )
 				{
@@ -110,13 +110,13 @@ namespace Server.Engines.Quests.Matriarch
 			{
 				if ( dropped is Seed )
 				{
-					if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
+					if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen )
 					{
 						SayTo( player, 1054080 ); // Thank you for that plant seed. Those have such wonderful flavor.
 					}
 					else
 					{
-						QuestSystem newQuest = new SolenMatriarchQuest( player, this.RedSolen );
+						QuestSystem newQuest = new SolenMatriarchQuest( player, RedSolen );
 
 						if ( player.Quest == null && QuestSystem.CanOfferQuest( player, typeof( SolenMatriarchQuest ) ) )
 						{
@@ -124,7 +124,7 @@ namespace Server.Engines.Quests.Matriarch
 						}
 						else
 						{
-							newQuest.AddConversation( new DontOfferConversation( SolenMatriarchQuest.IsFriend( player, this.RedSolen ) ) );
+							newQuest.AddConversation( new DontOfferConversation( SolenMatriarchQuest.IsFriend( player, RedSolen ) ) );
 						}
 					}
 
@@ -150,7 +150,7 @@ namespace Server.Engines.Quests.Matriarch
 			{
 				if ( from is PlayerMobile pm )
 				{
-					if ( pm.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
+					if ( pm.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen )
 					{
 						if ( qs.IsObjectiveInProgress( typeof( ProcessFungiObjective ) ) )
 						{
@@ -209,9 +209,9 @@ namespace Server.Engines.Quests.Matriarch
 
 		public void OnGivenFungi( PlayerMobile player, ZoogiFungus fungi )
 		{
-			this.Direction = GetDirectionTo( player );
+			Direction = GetDirectionTo( player );
 
-			if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == this.RedSolen )
+			if ( player.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen )
 			{
 				QuestObjective obj = qs.FindObjective( typeof( ProcessFungiObjective ) );
 

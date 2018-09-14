@@ -16,7 +16,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( !from.InRange( GetWorldLocation(), 2 ) )
 				return;
 
 			Roll( from );
@@ -32,7 +32,7 @@ namespace Server.Items
 
 		public void Roll( Mobile from )
 		{
-			this.PublicOverheadMessage( MessageType.Regular, 0, false, string.Format( "*{0} rolls {1}, {2}*", from.Name, Utility.Random( 1, 6 ), Utility.Random( 1, 6 ) ) );
+			PublicOverheadMessage( MessageType.Regular, 0, false, string.Format( "*{0} rolls {1}, {2}*", from.Name, Utility.Random( 1, 6 ), Utility.Random( 1, 6 ) ) );
 		}
 
 		public override void Serialize( GenericWriter writer )

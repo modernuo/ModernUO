@@ -172,7 +172,7 @@ namespace Server.Misc
 		private static IPAddress FindPublicAddress()
 		{
 			try {
-				WebRequest req = HttpWebRequest.Create( "https://api.ipify.org" );
+				WebRequest req = WebRequest.Create( "https://api.ipify.org" );
 
 				req.Timeout = 15000;
 

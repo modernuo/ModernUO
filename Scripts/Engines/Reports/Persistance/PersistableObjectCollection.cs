@@ -16,7 +16,7 @@ namespace Server.Engines.Reports
     /// <summary>
     /// Strongly typed collection of Server.Engines.Reports.PersistableObject.
     /// </summary>
-    public class ObjectCollection : System.Collections.CollectionBase
+    public class ObjectCollection : CollectionBase
     {
         
         /// <summary>
@@ -30,10 +30,10 @@ namespace Server.Engines.Reports
         /// <summary>
         /// Gets or sets the value of the Server.Engines.Reports.PersistableObject at a specific position in the ObjectCollection.
         /// </summary>
-        public Server.Engines.Reports.PersistableObject this[int index]
+        public PersistableObject this[int index]
         {
-            get => ((Server.Engines.Reports.PersistableObject)(this.List[index]));
-	        set => this.List[index] = value;
+            get => ((PersistableObject)(List[index]));
+	        set => List[index] = value;
         }
         
         /// <summary>
@@ -41,14 +41,14 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.PersistableObject instance.</param>
         /// <returns>The position into which the new element was inserted.</returns>
-        public int Add(Server.Engines.Reports.PersistableObject value)
+        public int Add(PersistableObject value)
         {
-            return this.List.Add(value);
+            return List.Add(value);
         }
 
 		public void AddRange( PersistableObject[] col )
 		{
-			this.InnerList.AddRange( col );
+			InnerList.AddRange( col );
 		}
         
         /// <summary>
@@ -56,9 +56,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.PersistableObject instance to search for.</param>
         /// <returns>True if the Server.Engines.Reports.PersistableObject instance is in the collection; otherwise false.</returns>
-        public bool Contains(Server.Engines.Reports.PersistableObject value)
+        public bool Contains(PersistableObject value)
         {
-            return this.List.Contains(value);
+            return List.Contains(value);
         }
         
         /// <summary>
@@ -66,18 +66,18 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.PersistableObject instance to find.</param>
         /// <returns>The zero-based index of the specified Server.Engines.Reports.PersistableObject instance. If the object is not found, the return value is -1.</returns>
-        public int IndexOf(Server.Engines.Reports.PersistableObject value)
+        public int IndexOf(PersistableObject value)
         {
-            return this.List.IndexOf(value);
+            return List.IndexOf(value);
         }
         
         /// <summary>
         /// Removes a specified Server.Engines.Reports.PersistableObject instance from this collection.
         /// </summary>
         /// <param name="value">The Server.Engines.Reports.PersistableObject instance to remove.</param>
-        public void Remove(Server.Engines.Reports.PersistableObject value)
+        public void Remove(PersistableObject value)
         {
-            this.List.Remove(value);
+            List.Remove(value);
         }
         
         /// <summary>
@@ -94,15 +94,15 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="index">Zero-based index.</param>
         /// <param name="value">The Server.Engines.Reports.PersistableObject instance to insert.</param>
-        public void Insert(int index, Server.Engines.Reports.PersistableObject value)
+        public void Insert(int index, PersistableObject value)
         {
-            this.List.Insert(index, value);
+            List.Insert(index, value);
         }
         
         /// <summary>
         /// Strongly typed enumerator of Server.Engines.Reports.PersistableObject.
         /// </summary>
-        public class ObjectCollectionEnumerator : System.Collections.IEnumerator
+        public class ObjectCollectionEnumerator : IEnumerator
         {
             
             /// <summary>
@@ -113,7 +113,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Current element pointed to.
             /// </summary>
-            private Server.Engines.Reports.PersistableObject _currentElement;
+            private PersistableObject _currentElement;
             
             /// <summary>
             /// Collection to enumerate.
@@ -133,7 +133,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Gets the Server.Engines.Reports.PersistableObject object in the enumerated ObjectCollection currently indexed by this instance.
             /// </summary>
-            public Server.Engines.Reports.PersistableObject Current
+            public PersistableObject Current
             {
                 get
                 {
@@ -187,7 +187,7 @@ namespace Server.Engines.Reports
                             < (_collection.Count - 1)))
                 {
                     _index = (_index + 1);
-                    _currentElement = this._collection[_index];
+                    _currentElement = _collection[_index];
                     return true;
                 }
                 _index = _collection.Count;

@@ -52,7 +52,7 @@ namespace Server.Spells.Fourth
 			{
 				SpellHelper.Turn( Caster, m );
 
-				SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );
+				SpellHelper.CheckReflect( (int)Circle, Caster, ref m );
 
 				SpellHelper.AddStatCurse( Caster, m, StatType.Str ); SpellHelper.DisableSkillCheck = true;
 				SpellHelper.AddStatCurse( Caster, m, StatType.Dex );

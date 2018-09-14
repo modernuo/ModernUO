@@ -23,10 +23,10 @@ namespace Server.Items
 
 		private bool CheckUse( Mobile from )
 		{
-			if ( !this.IsAccessibleTo( from ) )
+			if ( !IsAccessibleTo( from ) )
 				return false;
 
-			if ( from.Map != this.Map || !from.InRange( GetWorldLocation(), 2 ) )
+			if ( from.Map != Map || !from.InRange( GetWorldLocation(), 2 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return false;
@@ -171,7 +171,7 @@ namespace Server.Items
 			if ( Utility.RandomDouble() < breakChance )
 			{
 				from.SendLocalizedMessage( 1049619 ); // The fire horn crumbles in your hands.
-				this.Delete();
+				Delete();
 			}
 		}
 

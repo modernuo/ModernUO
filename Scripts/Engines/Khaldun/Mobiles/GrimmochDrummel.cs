@@ -96,7 +96,7 @@ namespace Server.Mobiles
 			Gold gold = new Gold( Utility.RandomMinMax( 190, 230 ) );
 			gold.MoveToWorld( Location, Map );
 
-			Container pack = this.Backpack;
+			Container pack = Backpack;
 			if ( pack != null )
 			{
 				pack.Movable = true;

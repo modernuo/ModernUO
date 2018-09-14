@@ -46,14 +46,14 @@ namespace Server.Items
 			int version = reader.ReadInt();
 
 			if ( version < 1 && ItemID == 0x2199 )
-				this.ItemID = 0x21A2;
+				ItemID = 0x21A2;
 		}
 
 		public sealed class GMItemPacket : Packet
 		{
 			public GMItemPacket( Item item ) : base( 0x1A )
 			{
-				this.EnsureCapacity( 20 );
+				EnsureCapacity( 20 );
 
 				// 14 base length
 				// +2 - Amount

@@ -103,11 +103,11 @@ namespace Server.Engines.Quests.Necro
 
 				if ( m_Step == 4 )
 				{
-					int baseX = KronusScroll.m_WellOfTearsArea.X;
-					int baseY = KronusScroll.m_WellOfTearsArea.Y;
-					int width = KronusScroll.m_WellOfTearsArea.Width;
-					int height = KronusScroll.m_WellOfTearsArea.Height;
-					Map map = KronusScroll.m_WellOfTearsMap;
+					int baseX = m_WellOfTearsArea.X;
+					int baseY = m_WellOfTearsArea.Y;
+					int width = m_WellOfTearsArea.Width;
+					int height = m_WellOfTearsArea.Height;
+					Map map = m_WellOfTearsMap;
 
 					Effects.SendLocationParticles( EffectItem.Create( m_Player.Location, m_Player.Map, TimeSpan.FromSeconds( 1.0 ) ), 0, 0, 0, 0x13C4 );
 					Effects.PlaySound( m_Player.Location, m_Player.Map, 0x243 );

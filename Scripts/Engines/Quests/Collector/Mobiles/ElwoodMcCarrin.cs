@@ -179,9 +179,9 @@ namespace Server.Engines.Quests.Collector
 				}
 				else
 				{
-					weapon.DamageLevel = (WeaponDamageLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
-					weapon.AccuracyLevel = (WeaponAccuracyLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
-					weapon.DurabilityLevel = (WeaponDurabilityLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
+					weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled( 2, 3 );
+					weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled( 2, 3 );
+					weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled( 2, 3 );
 				}
 
 				bag.DropItem( weapon );
@@ -204,8 +204,8 @@ namespace Server.Engines.Quests.Collector
 					BaseArmor armor = Loot.RandomArmorOrShield();
 					item = armor;
 
-					armor.ProtectionLevel = (ArmorProtectionLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
-					armor.Durability = (ArmorDurabilityLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
+					armor.ProtectionLevel = (ArmorProtectionLevel)RandomMinMaxScaled( 2, 3 );
+					armor.Durability = (ArmorDurabilityLevel)RandomMinMaxScaled( 2, 3 );
 				}
 
 				bag.DropItem( item );

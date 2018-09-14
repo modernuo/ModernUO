@@ -37,7 +37,7 @@ namespace Server {
 
 			this.metrics = metrics;
 
-			this.fileStream = FileOperations.OpenSequentialStream( path, FileMode.Create, FileAccess.Write, FileShare.None );
+			fileStream = FileOperations.OpenSequentialStream( path, FileMode.Create, FileAccess.Write, FileShare.None );
 
 			fileQueue = new FileQueue(
 				Math.Max( 1, FileOperations.Concurrency ),
@@ -61,7 +61,7 @@ namespace Server {
 				chunk.Commit();
 			} else {
 				if ( writeCallback == null ) {
-					writeCallback = this.OnWrite;
+					writeCallback = OnWrite;
 				}
 
 				fileStream.BeginWrite( chunk.Buffer, chunk.Offset, chunk.Size, writeCallback, chunk );
@@ -109,7 +109,7 @@ namespace Server {
 
 		public override bool CanWrite  => true;
 
-		public override long Length  => this.Position;
+		public override long Length  => Position;
 
 		public override int Read( byte[] buffer, int offset, int count ) {
 			throw new InvalidOperationException();

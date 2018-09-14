@@ -61,7 +61,7 @@ namespace Server.Items
 			if ( !CheckUse( this, from ) )
 				return;
 
-			if ( from.FindGump( typeof( InteriorDecorator.InternalGump ) ) == null )
+			if ( from.FindGump( typeof( InternalGump ) ) == null )
 				from.SendGump( new InternalGump( this ) );
 
 			if ( m_Command != DecorateCommand.None )
@@ -148,7 +148,7 @@ namespace Server.Items
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( targeted is Item item && InteriorDecorator.CheckUse( m_Decorator, from ) )
+				if ( targeted is Item item && CheckUse( m_Decorator, from ) )
 				{
 					BaseHouse house = BaseHouse.FindHouseAt( from );
 
@@ -226,7 +226,7 @@ namespace Server.Items
 			protected override void OnTargetCancel( Mobile from, TargetCancelType cancelType )
 			{
 				if ( cancelType == TargetCancelType.Canceled )
-					from.CloseGump( typeof( InteriorDecorator.InternalGump ) );
+					from.CloseGump( typeof( InternalGump ) );
 			}
 
 			private static void Turn( Item item, Mobile from )

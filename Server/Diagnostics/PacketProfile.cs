@@ -30,7 +30,7 @@ namespace Server.Diagnostics {
 
 		public long TotalLength => _totalLength;
 
-		public double AverageLength => ( double ) _totalLength / Math.Max( 1, this.Count );
+		public double AverageLength => ( double ) _totalLength / Math.Max( 1, Count );
 
 		protected BasePacketProfile(string name)
 			: base( name ) {

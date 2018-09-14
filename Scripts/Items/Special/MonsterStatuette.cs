@@ -198,12 +198,12 @@ namespace Server.Items
 
 		public override void OnMovement( Mobile m, Point3D oldLocation )
 		{
-			if ( m_TurnedOn && IsLockedDown && (!m.Hidden || m.AccessLevel == AccessLevel.Player) && Utility.InRange( m.Location, this.Location, 2 ) && !Utility.InRange( oldLocation, this.Location, 2 ) )
+			if ( m_TurnedOn && IsLockedDown && (!m.Hidden || m.AccessLevel == AccessLevel.Player) && Utility.InRange( m.Location, Location, 2 ) && !Utility.InRange( oldLocation, Location, 2 ) )
 			{
 				int[] sounds = MonsterStatuetteInfo.GetInfo( m_Type ).Sounds;
 
 				if ( sounds.Length > 0 )
-					Effects.PlaySound( this.Location, this.Map, sounds[Utility.Random( sounds.Length )] );
+					Effects.PlaySound( Location, Map, sounds[Utility.Random( sounds.Length )] );
 			}
 
 			base.OnMovement( m, oldLocation );

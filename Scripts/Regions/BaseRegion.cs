@@ -25,7 +25,7 @@ namespace Server.Regions
 
 		public static void Configure()
 		{
-			Region.DefaultRegionType = typeof( BaseRegion );
+			DefaultRegionType = typeof( BaseRegion );
 		}
 
 		private string m_RuneName;
@@ -70,7 +70,7 @@ namespace Server.Regions
 		{
 			base.OnUnregister();
 
-			this.Spawns = null;
+			Spawns = null;
 		}
 
 		public static string GetRuneNameFor( Region region )
@@ -106,9 +106,7 @@ namespace Server.Regions
 				if ( !region.AllowSpawn() )
 					return false;
 
-				BaseRegion br = region as BaseRegion;
-
-				if ( br != null )
+				if ( region is BaseRegion br )
 				{
 					if ( br.Spawns != null )
 					{
@@ -133,11 +131,11 @@ namespace Server.Regions
 
 		public override void OnEnter(Mobile m)
 		{
-			if (m is PlayerMobile && ((PlayerMobile)m).Young)
+			if (m is PlayerMobile mobile && mobile.Young)
 			{
-				if (!this.YoungProtected)
+				if (!YoungProtected)
 				{
-					m.SendGump(new YoungDungeonWarning());
+					mobile.SendGump(new YoungDungeonWarning());
 				}
 			}
 		}
@@ -163,9 +161,9 @@ namespace Server.Regions
 				return;
 
 			// Test if area rectangles are overlapping, and in that case break them into smaller non overlapping rectangles
-			for ( int i = 0; i < this.Area.Length; i++ )
+			for ( int i = 0; i < Area.Length; i++ )
 			{
-				m_RectBuffer2.Add( this.Area[i] );
+				m_RectBuffer2.Add( Area[i] );
 
 				for ( int j = 0; j < m_RectBuffer1.Count && m_RectBuffer2.Count > 0; j++ )
 				{
@@ -231,7 +229,7 @@ namespace Server.Regions
 
 		public Point3D RandomSpawnLocation( int spawnHeight, bool land, bool water, Point3D home, int range )
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == Map.Internal )
 				return Point3D.Zero;
@@ -277,9 +275,9 @@ namespace Server.Regions
 					y = Utility.RandomMinMax( home.Y - range, home.Y + range );
 
 					minZ = int.MaxValue; maxZ = int.MinValue;
-					for ( int j = 0; j < this.Area.Length; j++ )
+					for ( int j = 0; j < Area.Length; j++ )
 					{
-						Rectangle3D rect = this.Area[j];
+						Rectangle3D rect = Area[j];
 
 						if ( x >= rect.Start.X && x < rect.End.X && y >= rect.Start.Y && y < rect.End.Y )
 						{
@@ -407,7 +405,7 @@ namespace Server.Regions
 				m_SpawnBuffer1.Clear();
 
 
-				if ( !Region.Find( new Point3D( x, y, z ), map ).AcceptsSpawnsFrom( this ) )
+				if ( !Find( new Point3D( x, y, z ), map ).AcceptsSpawnsFrom( this ) )
 				{
 					m_SpawnBuffer2.Clear();
 					continue;
@@ -472,12 +470,12 @@ namespace Server.Regions
 
 		public override string ToString()
 		{
-			if ( this.Name != null )
-				return this.Name;
-			else if ( this.RuneName != null )
-				return this.RuneName;
+			if ( Name != null )
+				return Name;
+			else if ( RuneName != null )
+				return RuneName;
 			else
-				return this.GetType().Name;
+				return GetType().Name;
 		}
 
 		public BaseRegion( string name, Map map, int priority, params Rectangle2D[] area ) : base( name, map, priority, area )

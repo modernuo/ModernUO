@@ -93,7 +93,7 @@ namespace Server.Items
 				}
 				else
 				{
-					foreach ( NetState state in this.GetClientsInRange( 2 ) )
+					foreach ( NetState state in GetClientsInRange( 2 ) )
 						state.Send( p );
 				}
 
@@ -152,7 +152,7 @@ namespace Server.Items
 
 			public override void OnClick()
 			{
-				if ( BaseBoard.ValidateDefault( m_From, m_Board ) )
+				if ( ValidateDefault( m_From, m_Board ) )
 					m_Board.Reset();
 			}
 		}

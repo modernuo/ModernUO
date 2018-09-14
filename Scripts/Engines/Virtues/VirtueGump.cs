@@ -163,7 +163,7 @@ namespace Server
 				return String.Format( "{{ gumppic {0} {1} {2} hue={3} class=VirtueGumpItem }}", X, Y, GumpID, Hue );
 			}
 
-			private static byte[] m_Class = Gump.StringToBuffer( " class=VirtueGumpItem" );
+			private static byte[] m_Class = StringToBuffer( " class=VirtueGumpItem" );
 
 			public override void AppendTo( NetState ns, IGumpWriter disp )
 			{

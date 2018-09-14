@@ -13,7 +13,7 @@ namespace Server.Multis
 		{
 			m_Components = new List<Item>();
 
-			MultiComponentList mcl = this.Components;
+			MultiComponentList mcl = Components;
 
 			for ( int i = 1; i < mcl.List.Length; ++i )
 			{
@@ -48,7 +48,7 @@ namespace Server.Multis
 			{
 				Item item = m_Components[i];
 
-				item.MoveToWorld( new Point3D( item.X + xOffset, item.Y + yOffset, item.Z + zOffset ), this.Map );
+				item.MoveToWorld( new Point3D( item.X + xOffset, item.Y + yOffset, item.Z + zOffset ), Map );
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace Server.Multis
 			{
 				Item item = m_Components[i];
 
-				item.Map = this.Map;
+				item.Map = Map;
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace Server.Multis
 				}
 			}
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( this.Delete ) );
+			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
 		}
 
 		private class DecayTimer : Timer

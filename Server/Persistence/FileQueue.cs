@@ -51,7 +51,7 @@ namespace Server {
 			}
 
 			public void Commit() {
-				owner.Commit( this, this.slot );
+				owner.Commit( this, slot );
 			}
 		}
 
@@ -93,14 +93,14 @@ namespace Server {
 				throw new ArgumentNullException( "callback" );
 			}
 
-			this.syncRoot = new object();
+			syncRoot = new object();
 
-			this.active = new Chunk[concurrentWrites];
-			this.pending = new Queue<Page>();
+			active = new Chunk[concurrentWrites];
+			pending = new Queue<Page>();
 
 			this.callback = callback;
 
-			this.idle = new ManualResetEvent( true );
+			idle = new ManualResetEvent( true );
 		}
 
 		private void Append( Page page ) {

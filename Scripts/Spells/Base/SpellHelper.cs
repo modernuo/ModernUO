@@ -475,7 +475,7 @@ namespace Server.Spells
 
 			Point3D p = new Point3D( caster );
 
-			if ( SpellHelper.FindValidSpawnLocation( map, ref p, true ) )
+			if ( FindValidSpawnLocation( map, ref p, true ) )
 			{
 				BaseCreature.Summon( creature, caster, p, sound, duration );
 				return;
@@ -631,7 +631,7 @@ namespace Server.Spells
 				return false;
 			}
 
-			if ( caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf( typeof( Regions.Jail ) ) )
+			if ( caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf( typeof( Jail ) ) )
 			{
 				caster.SendLocalizedMessage( 1114345 ); // You'll need a better jailbreak plan than that!
 				return false;
@@ -1351,7 +1351,7 @@ namespace Server.Spells
 
 					if ( !((Body)transformSpell.Body).IsHuman )
 					{
-						Mobiles.IMount mt = caster.Mount;
+						IMount mt = caster.Mount;
 
 						if ( mt != null )
 							mt.Rider = null;

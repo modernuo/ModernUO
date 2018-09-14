@@ -110,12 +110,12 @@ namespace Server.Mobiles
 
 		public void BeginSavageDance()
 		{
-			if ( this.Map == null )
+			if ( Map == null )
 				return;
 
 			ArrayList list = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 8 ) )
+			foreach ( Mobile m in GetMobilesInRange( 8 ) )
 			{
 				if ( m != this && m is SavageShaman )
 					list.Add( m );
@@ -149,7 +149,7 @@ namespace Server.Mobiles
 
 			ArrayList list = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 8 ) )
+			foreach ( Mobile m in GetMobilesInRange( 8 ) )
 				list.Add( m );
 
 			if ( list.Count > 0 )

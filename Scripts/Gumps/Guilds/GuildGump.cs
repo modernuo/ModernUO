@@ -179,7 +179,7 @@ namespace Server.Gumps
 				}
 				case 5: // Membership candidates
 				{
-					GuildGump.EnsureClosed( m_Mobile );
+					EnsureClosed( m_Mobile );
 					m_Mobile.SendGump( new GuildCandidatesGump( m_Mobile, m_Guild ) );
 
 					break;

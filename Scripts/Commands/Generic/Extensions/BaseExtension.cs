@@ -53,7 +53,7 @@ namespace Server.Commands.Generic
 
 		public bool IsValid( object obj )
 		{
-			for ( int i = 0; i < this.Count; ++i )
+			for ( int i = 0; i < Count; ++i )
 			{
 				if ( !this[i].IsValid( obj ) )
 					return false;
@@ -64,7 +64,7 @@ namespace Server.Commands.Generic
 
 		public void Filter( ArrayList list )
 		{
-			for ( int i = 0; i < this.Count; ++i )
+			for ( int i = 0; i < Count; ++i )
 				this[i].Filter( list );
 		}
 

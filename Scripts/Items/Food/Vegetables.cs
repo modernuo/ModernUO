@@ -11,8 +11,8 @@ namespace Server.Items
 		[Constructible]
 		public Carrot( int amount ) : base( amount, 0xc78 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Carrot( Serial serial ) : base( serial )
@@ -44,8 +44,8 @@ namespace Server.Items
 		[Constructible]
 		public Cabbage( int amount ) : base( amount, 0xc7b )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Cabbage( Serial serial ) : base( serial )
@@ -77,8 +77,8 @@ namespace Server.Items
 		[Constructible]
 		public Onion( int amount ) : base( amount, 0xc6d )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Onion( Serial serial ) : base( serial )
@@ -110,8 +110,8 @@ namespace Server.Items
 		[Constructible]
 		public Lettuce( int amount ) : base( amount, 0xc70 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Lettuce( Serial serial ) : base( serial )
@@ -143,8 +143,8 @@ namespace Server.Items
 		[Constructible]
 		public Pumpkin( int amount ) : base( amount, 0xC6A )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 8;
+			Weight = 1.0;
+			FillFactor = 8;
 		}
 
 		public Pumpkin( Serial serial ) : base( serial )
@@ -184,8 +184,8 @@ namespace Server.Items
 		[Constructible]
 		public SmallPumpkin( int amount ) : base( amount, 0xC6C )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 8;
+			Weight = 1.0;
+			FillFactor = 8;
 		}
 
 		public SmallPumpkin( Serial serial ) : base( serial )

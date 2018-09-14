@@ -55,7 +55,7 @@ namespace Server.Gumps
 			AddButton( 265, 220, 0xF7, 0xF8, (int) Buttons.Confirm, GumpButtonType.Reply, 0 );
 		}
 		
-		public override void OnResponse( Server.Network.NetState state, RelayInfo info )
+		public override void OnResponse( Network.NetState state, RelayInfo info )
 		{		
 			if ( info.ButtonID == (int) Buttons.Confirm )
 			{

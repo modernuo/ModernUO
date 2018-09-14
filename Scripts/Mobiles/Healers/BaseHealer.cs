@@ -24,7 +24,7 @@ namespace Server.Mobiles
 				AI = AIType.AI_Mage;
 				ActiveSpeed = 0.2;
 				PassiveSpeed = 0.8;
-				RangePerception = BaseCreature.DefaultRangePerception;
+				RangePerception = DefaultRangePerception;
 				FightMode = FightMode.Aggressor;
 			}
 
@@ -130,7 +130,7 @@ namespace Server.Mobiles
 						OfferResurrection( m );
 					}
 				}
-				else if ( this.HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile mobile && mobile.Young )
+				else if ( HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile mobile && mobile.Young )
 				{
 					OfferHeal( mobile );
 				}
@@ -155,7 +155,7 @@ namespace Server.Mobiles
 				AI = AIType.AI_Mage;
 				ActiveSpeed = 0.2;
 				PassiveSpeed = 0.8;
-				RangePerception = BaseCreature.DefaultRangePerception;
+				RangePerception = DefaultRangePerception;
 				FightMode = FightMode.Aggressor;
 			}
 		}

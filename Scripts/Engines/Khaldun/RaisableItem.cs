@@ -115,7 +115,7 @@ namespace Server.Items
 							m_Step = 0;
 
 							TimeSpan delay = m_CloseTime - DateTime.UtcNow;
-							Timer.DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( Start ) );
+							DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( Start ) );
 
 							return;
 						}
@@ -173,7 +173,7 @@ namespace Server.Items
 			m_CloseDelay = reader.ReadTimeSpan();
 
 			int elevation = reader.ReadEncodedInt();
-			this.Z -= elevation;
+			Z -= elevation;
 		}
 	}
 }

@@ -20,16 +20,16 @@ namespace Server.Mobiles
 			Blessed = true;
 
 
-			if ( this.Female = Utility.RandomBool() )
+			if ( Female = Utility.RandomBool() )
 			{
-				this.Body = 0x191;
-				this.Name = NameList.RandomName( "female" );
+				Body = 0x191;
+				Name = NameList.RandomName( "female" );
 				Title = "the Harbor Mistress";
 			}
 			else
 			{
-				this.Body = 0x190;
-				this.Name = NameList.RandomName( "male" );
+				Body = 0x190;
+				Name = NameList.RandomName( "male" );
 				Title = "the Harbor Master";
 			}
 			AddItem( new Shirt( Utility.RandomDyedHue() ) );

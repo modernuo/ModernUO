@@ -233,7 +233,7 @@ namespace Server
 
 		public static bool IsNull( object x )
 		{
-			return Object.ReferenceEquals( x, null );
+			return ReferenceEquals( x, null );
 		}
 
 		public int Compare( object x, object y )

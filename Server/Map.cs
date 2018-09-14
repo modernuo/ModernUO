@@ -1150,7 +1150,7 @@ namespace Server
 			if ( regName != null )
 			{
 				if ( m_Regions.ContainsKey( regName ) )
-					Console.WriteLine( "Warning: Duplicate region name '{0}' for map '{1}'", regName, this.Name );
+					Console.WriteLine( "Warning: Duplicate region name '{0}' for map '{1}'", regName, Name );
 				else
 					m_Regions[regName] = reg;
 			}

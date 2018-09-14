@@ -280,7 +280,7 @@ namespace Server.Network
 	{
 		public ObjectHelpResponse( IEntity e, string text ) : base( 0xB7 )
 		{
-			this.EnsureCapacity( 9 + (text.Length * 2) );
+			EnsureCapacity( 9 + (text.Length * 2) );
 
 			m_Stream.Write( (int) e.Serial );
 			m_Stream.WriteBigUniNull( text );
@@ -292,7 +292,7 @@ namespace Server.Network
 		public VendorBuyContent( List<BuyItemState> list )
 			: base( 0x3c )
 		{
-			this.EnsureCapacity( list.Count*19 + 5 );
+			EnsureCapacity( list.Count*19 + 5 );
 
 			m_Stream.Write( (short)list.Count );
 
@@ -320,7 +320,7 @@ namespace Server.Network
 	{
 		public VendorBuyContent6017( List<BuyItemState> list ) : base( 0x3c )
 		{
-			this.EnsureCapacity( list.Count*20 + 5 );
+			EnsureCapacity( list.Count*20 + 5 );
 
 			m_Stream.Write( (short)list.Count );
 
@@ -369,7 +369,7 @@ namespace Server.Network
 		public VendorBuyList( Mobile vendor, List<BuyItemState> list )
 			: base( 0x74 )
 		{
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			m_Stream.Write( (int)(!(vendor.FindItemOnLayer( Layer.ShopBuy ) is Container BuyPack) ? Serial.MinusOne : BuyPack.Serial) );
 
@@ -396,7 +396,7 @@ namespace Server.Network
 	{
 		public VendorSellList( Mobile shopkeeper, ICollection<SellItemState> sis ) : base( 0x9E )
 		{
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			m_Stream.Write( (int) shopkeeper.Serial );
 
@@ -458,7 +458,7 @@ namespace Server.Network
 	{
 		public StatLockInfo( Mobile m ) : base( 0xBF )
 		{
-			this.EnsureCapacity( 12 );
+			EnsureCapacity( 12 );
 
 			m_Stream.Write( (short) 0x19 );
 			m_Stream.Write( (byte) 2 );
@@ -525,7 +525,7 @@ namespace Server.Network
 		{
 			EquipInfoAttribute[] attrs = info.Attributes;
 
-			this.EnsureCapacity( 17 + (info.Crafter == null ? 0 : 6 + info.Crafter.Name == null ? 0 : info.Crafter.Name.Length) + (info.Unidentified ? 4 : 0) + (attrs.Length * 6) );
+			EnsureCapacity( 17 + (info.Crafter == null ? 0 : 6 + info.Crafter.Name == null ? 0 : info.Crafter.Name.Length) + (info.Unidentified ? 4 : 0) + (attrs.Length * 6) );
 
 			m_Stream.Write( (short) 0x10 );
 			m_Stream.Write( (int) item.Serial );
@@ -627,7 +627,7 @@ namespace Server.Network
 	{
 		public UnicodePrompt( Prompt prompt ) : base( 0xC2 )
 		{
-			this.EnsureCapacity( 21 );
+			EnsureCapacity( 21 );
 
 			m_Stream.Write( (int) prompt.Serial );
 			m_Stream.Write( (int) prompt.Serial );
@@ -641,7 +641,7 @@ namespace Server.Network
 	{
 		public ChangeCharacter( IAccount a ) : base( 0x81 )
 		{
-			this.EnsureCapacity( 305 );
+			EnsureCapacity( 305 );
 
 			int count = 0;
 
@@ -678,8 +678,8 @@ namespace Server.Network
 
 	public sealed class DeathStatus : Packet
 	{
-		public static readonly Packet Dead = Packet.SetStatic( new DeathStatus( true ) );
-		public static readonly Packet Alive = Packet.SetStatic( new DeathStatus( false ) );
+		public static readonly Packet Dead = SetStatic( new DeathStatus( true ) );
+		public static readonly Packet Alive = SetStatic( new DeathStatus( false ) );
 
 		public static Packet Instantiate( bool dead )
 		{
@@ -694,9 +694,9 @@ namespace Server.Network
 
 	public sealed class SpeedControl : Packet
 	{
-		public static readonly Packet WalkSpeed = Packet.SetStatic( new SpeedControl( 2 ) );
-		public static readonly Packet MountSpeed = Packet.SetStatic( new SpeedControl( 1 ) );
-		public static readonly Packet Disable = Packet.SetStatic( new SpeedControl( 0 ) );
+		public static readonly Packet WalkSpeed = SetStatic( new SpeedControl( 2 ) );
+		public static readonly Packet MountSpeed = SetStatic( new SpeedControl( 1 ) );
+		public static readonly Packet Disable = SetStatic( new SpeedControl( 0 ) );
 
 		public SpeedControl( int speedControl )
 			: base( 0xBF )
@@ -719,7 +719,7 @@ namespace Server.Network
 	{
 		public BondedStatus( int val1, Serial serial, int val2 ) : base( 0xBF )
 		{
-			this.EnsureCapacity( 11 );
+			EnsureCapacity( 11 );
 
 			m_Stream.Write( (short) 0x19 );
 			m_Stream.Write( (byte) val1 );
@@ -746,7 +746,7 @@ namespace Server.Network
 	{
 		public DisplayItemListMenu( ItemListMenu menu ) : base( 0x7C )
 		{
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			m_Stream.Write( (int) ((IMenu)menu).Serial );
 			m_Stream.Write( (short) 0 );
@@ -793,7 +793,7 @@ namespace Server.Network
 	{
 		public DisplayQuestionMenu( QuestionMenu menu ) : base( 0x7C )
 		{
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			m_Stream.Write( (int) ((IMenu)menu).Serial );
 			m_Stream.Write( (short) 0 );
@@ -897,7 +897,7 @@ namespace Server.Network
 
 			int length = (byte) entries.Length;
 
-			this.EnsureCapacity( 12 + (length * 8) );
+			EnsureCapacity( 12 + (length * 8) );
 
 			m_Stream.Write( (short) 0x14 );
 			m_Stream.Write( (short) 0x02 );
@@ -946,7 +946,7 @@ namespace Server.Network
 
 			int length = (byte) entries.Length;
 
-			this.EnsureCapacity( 12 + (length * 8) );
+			EnsureCapacity( 12 + (length * 8) );
 
 			m_Stream.Write( (short) 0x14 );
 			m_Stream.Write( (short) 0x01 );
@@ -1021,7 +1021,7 @@ namespace Server.Network
 	{
 		public CloseGump( int typeID, int buttonID ) : base( 0xBF )
 		{
-			this.EnsureCapacity( 13 );
+			EnsureCapacity( 13 );
 
 			m_Stream.Write( (short) 0x04 );
 			m_Stream.Write( (int) typeID );
@@ -1068,7 +1068,7 @@ namespace Server.Network
 	{
 		public WorldItem( Item item ) : base( 0x1A )
 		{
-			this.EnsureCapacity( 20 );
+			EnsureCapacity( 20 );
 
 			// 14 base length
 			// +2 - Amount
@@ -1284,7 +1284,7 @@ namespace Server.Network
 	{
 		public UnkD3( Mobile beholder, Mobile beheld ) : base( 0xD3 )
 		{
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			//int
 			//short
@@ -1327,7 +1327,7 @@ namespace Server.Network
 	{
 		public GQRequest() : base( 0xC3 )
 		{
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			m_Stream.Write( (int) 1 );
 			m_Stream.Write( (int) 2 ); // ID
@@ -1386,7 +1386,7 @@ namespace Server.Network
 	{
 		public ClientVersionReq() : base( 0xBD )
 		{
-			this.EnsureCapacity( 3 );
+			EnsureCapacity( 3 );
 		}
 	}
 
@@ -1397,7 +1397,7 @@ namespace Server.Network
 	{
 		public AssistVersionReq( int unk ) : base( 0xBE )
 		{
-			this.EnsureCapacity( 7 );
+			EnsureCapacity( 7 );
 
 			m_Stream.Write( (int) unk );
 		}
@@ -1582,7 +1582,7 @@ namespace Server.Network
 
 	public sealed class ScreenFadeOut : ScreenEffect
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new ScreenFadeOut() );
+		public static readonly Packet Instance = SetStatic( new ScreenFadeOut() );
 
 		public ScreenFadeOut()
 			: base( ScreenEffectType.FadeOut )
@@ -1592,7 +1592,7 @@ namespace Server.Network
 
 	public sealed class ScreenFadeIn : ScreenEffect
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new ScreenFadeIn() );
+		public static readonly Packet Instance = SetStatic( new ScreenFadeIn() );
 
 		public ScreenFadeIn()
 			: base( ScreenEffectType.FadeIn )
@@ -1602,7 +1602,7 @@ namespace Server.Network
 
 	public sealed class ScreenFadeInOut : ScreenEffect
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new ScreenFadeInOut() );
+		public static readonly Packet Instance = SetStatic( new ScreenFadeInOut() );
 
 		public ScreenFadeInOut()
 			: base( ScreenEffectType.FadeInOut )
@@ -1612,7 +1612,7 @@ namespace Server.Network
 
 	public sealed class ScreenLightFlash : ScreenEffect
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new ScreenLightFlash() );
+		public static readonly Packet Instance = SetStatic( new ScreenLightFlash() );
 
 		public ScreenLightFlash()
 			: base( ScreenEffectType.LightFlash )
@@ -1622,7 +1622,7 @@ namespace Server.Network
 
 	public sealed class ScreenDarkFlash : ScreenEffect
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new ScreenDarkFlash() );
+		public static readonly Packet Instance = SetStatic( new ScreenDarkFlash() );
 
 		public ScreenDarkFlash()
 			: base( ScreenEffectType.DarkFlash )
@@ -1763,7 +1763,7 @@ namespace Server.Network
 	{
 		public SpellbookContent( int count, int offset, ulong content, Item item ) : base( 0x3C )
 		{
-			this.EnsureCapacity( 5 + (count * 19) );
+			EnsureCapacity( 5 + (count * 19) );
 
 			int written = 0;
 
@@ -1797,7 +1797,7 @@ namespace Server.Network
 	{
 		public SpellbookContent6017( int count, int offset, ulong content, Item item ) : base( 0x3C )
 		{
-			this.EnsureCapacity( 5 + (count * 20) );
+			EnsureCapacity( 5 + (count * 20) );
 
 			int written = 0;
 
@@ -1909,7 +1909,7 @@ namespace Server.Network
 			List<Item> items = beheld.Items;
 			int count = items.Count;
 
-			this.EnsureCapacity( 5 + (count * 19) );
+			EnsureCapacity( 5 + (count * 19) );
 
 			long pos = m_Stream.Position;
 
@@ -1950,7 +1950,7 @@ namespace Server.Network
 			List<Item> items = beheld.Items;
 			int count = items.Count;
 
-			this.EnsureCapacity( 5 + (count * 20) );
+			EnsureCapacity( 5 + (count * 20) );
 
 			long pos = m_Stream.Position;
 
@@ -1987,8 +1987,8 @@ namespace Server.Network
 
 	public sealed class SetWarMode : Packet
 	{
-		public static readonly Packet InWarMode = Packet.SetStatic( new SetWarMode( true ) );
-		public static readonly Packet InPeaceMode = Packet.SetStatic( new SetWarMode( false ) );
+		public static readonly Packet InWarMode = SetStatic( new SetWarMode( true ) );
+		public static readonly Packet InPeaceMode = SetStatic( new SetWarMode( false ) );
 
 		public static Packet Instantiate( bool mode )
 		{
@@ -2065,7 +2065,7 @@ namespace Server.Network
 	{
 		public SkillUpdate( Skills skills ) : base( 0x3A )
 		{
-			this.EnsureCapacity( 6 + (skills.Length * 9) );
+			EnsureCapacity( 6 + (skills.Length * 9) );
 
 			m_Stream.Write( (byte) 0x02 ); // type: absolute, capped
 
@@ -2104,7 +2104,7 @@ namespace Server.Network
 	{
 		public SkillChange( Skill skill ) : base( 0x3A )
 		{
-			this.EnsureCapacity( 13 );
+			EnsureCapacity( 13 );
 
 			double v = skill.NonRacialValue;
 			int uv = (int)(v * 10);
@@ -2135,7 +2135,7 @@ namespace Server.Network
 		{
 			if ( url == null ) url = "";
 
-			this.EnsureCapacity( 4 + url.Length );
+			EnsureCapacity( 4 + url.Length );
 
 			m_Stream.WriteAsciiNull( url );
 		}
@@ -2196,7 +2196,7 @@ namespace Server.Network
 			if ( hue == 0 )
 				hue = 0x3B2;
 
-			this.EnsureCapacity( 50 + (args.Length * 2) );
+			EnsureCapacity( 50 + (args.Length * 2) );
 
 			m_Stream.Write( (int) serial );
 			m_Stream.Write( (short) graphic );
@@ -2296,7 +2296,7 @@ namespace Server.Network
 
 	public sealed class CancelTarget : Packet
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new CancelTarget() );
+		public static readonly Packet Instance = SetStatic( new CancelTarget() );
 
 		public CancelTarget() : base( 0x6C, 19 )
 		{
@@ -2613,7 +2613,7 @@ namespace Server.Network
 		{
 			if ( layout == null ) layout = "";
 
-			this.EnsureCapacity( 256 );
+			EnsureCapacity( 256 );
 
 			m_Stream.Write( (int) g.Serial );
 			m_Stream.Write( (int) g.TypeID );
@@ -2679,7 +2679,7 @@ namespace Server.Network
 
 	public sealed class PlayMusic : Packet
 	{
-		public static readonly Packet InvalidInstance = Packet.SetStatic( new PlayMusic( MusicName.Invalid ) );
+		public static readonly Packet InvalidInstance = SetStatic( new PlayMusic( MusicName.Invalid ) );
 
 		private static Packet[] m_Instances = new Packet[60];
 
@@ -2696,7 +2696,7 @@ namespace Server.Network
 				p = m_Instances[v];
 
 				if ( p == null )
-					m_Instances[v] = p = Packet.SetStatic( new PlayMusic( name ) );
+					m_Instances[v] = p = SetStatic( new PlayMusic( name ) );
 			}
 			else
 			{
@@ -2718,7 +2718,7 @@ namespace Server.Network
 		{
 			if ( text == null ) text = "";
 
-			this.EnsureCapacity( 10 + text.Length );
+			EnsureCapacity( 10 + text.Length );
 
 			m_Stream.Write( (byte) type );
 			m_Stream.Write( (int) tip );
@@ -2743,7 +2743,7 @@ namespace Server.Network
 	{
 		public MapChange( Mobile m ) : base( 0xBF )
 		{
-			this.EnsureCapacity( 6 );
+			EnsureCapacity( 6 );
 
 			m_Stream.Write( (short) 0x08 );
 			m_Stream.Write( (byte) (m.Map == null ? 0 : m.Map.MapID) );
@@ -2988,7 +2988,7 @@ namespace Server.Network
 
 			if ( name == null ) name = "";
 
-			this.EnsureCapacity( 37 );
+			EnsureCapacity( 37 );
 
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.WriteAsciiFixed( name, 30 );
@@ -3027,7 +3027,7 @@ namespace Server.Network
 			string name = m.Name;
 			if ( name == null ) name = "";
 
-			this.EnsureCapacity( 43 );
+			EnsureCapacity( 43 );
 
 			m_Stream.Write( (int) m.Serial );
 			m_Stream.WriteAsciiFixed( name, 30 );
@@ -3366,7 +3366,7 @@ namespace Server.Network
 			if (beheld.FacialHairItemID > 0)
 				count++;
 
-			this.EnsureCapacity(23 + (count * 9));
+			EnsureCapacity(23 + (count * 9));
 
 			int hue = beheld.Hue;
 
@@ -3474,7 +3474,7 @@ namespace Server.Network
 			if ( beheld.FacialHairItemID > 0 )
 				count++;
 
-			this.EnsureCapacity( 23 + (count * 9) );
+			EnsureCapacity( 23 + (count * 9) );
 
 			int hue = beheld.Hue;
 
@@ -3600,7 +3600,7 @@ namespace Server.Network
 			if ( beheld.FacialHairItemID > 0 )
 				count++;
 
-			this.EnsureCapacity( 23 + (count * 9) );
+			EnsureCapacity( 23 + (count * 9) );
 
 			int hue = beheld.Hue;
 
@@ -3716,7 +3716,7 @@ namespace Server.Network
 			if ( hue == 0 )
 				hue = 0x3B2;
 
-			this.EnsureCapacity( 45 + text.Length );
+			EnsureCapacity( 45 + text.Length );
 
 			m_Stream.Write( (int) serial );
 			m_Stream.Write( (short) graphic );
@@ -3739,7 +3739,7 @@ namespace Server.Network
 			if ( hue == 0 )
 				hue = 0x3B2;
 
-			this.EnsureCapacity( 50 + (text.Length * 2) );
+			EnsureCapacity( 50 + (text.Length * 2) );
 
 			m_Stream.Write( (int) serial );
 			m_Stream.Write( (short) graphic );
@@ -3853,7 +3853,7 @@ namespace Server.Network
 
 	public sealed class LoginComplete : Packet
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new LoginComplete() );
+		public static readonly Packet Instance = SetStatic( new LoginComplete() );
 
 		public LoginComplete() : base( 0x55, 1 )
 		{
@@ -3942,7 +3942,7 @@ namespace Server.Network
 	{
 		public CharacterListUpdate( IAccount a ) : base( 0x86 )
 		{
-			this.EnsureCapacity( 4 + (a.Length * 60) );
+			EnsureCapacity( 4 + (a.Length * 60) );
 
 			int highSlot = -1;
 
@@ -4043,7 +4043,7 @@ namespace Server.Network
 	{
 		public CharacterList( IAccount a, CityInfo[] info ) : base( 0xA9 )
 		{
-			this.EnsureCapacity( 11 + (a.Length * 60) + (info.Length * 89) );
+			EnsureCapacity( 11 + (a.Length * 60) + (info.Length * 89) );
 
 			int highSlot = -1;
 
@@ -4144,7 +4144,7 @@ namespace Server.Network
 	{
 		public CharacterListOld( IAccount a, CityInfo[] info ) : base( 0xA9 )
 		{
-			this.EnsureCapacity( 9 + (a.Length * 60) + (info.Length * 63) );
+			EnsureCapacity( 9 + (a.Length * 60) + (info.Length * 63) );
 
 			int highSlot = -1;
 
@@ -4227,7 +4227,7 @@ namespace Server.Network
 
 	public sealed class ClearWeaponAbility : Packet
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new ClearWeaponAbility() );
+		public static readonly Packet Instance = SetStatic( new ClearWeaponAbility() );
 
 		public ClearWeaponAbility() : base( 0xBF )
 		{
@@ -4273,7 +4273,7 @@ namespace Server.Network
 			if ( hue == 0 )
 				hue = 0x3B2;
 
-			this.EnsureCapacity( 52 + affix.Length + (args.Length * 2) );
+			EnsureCapacity( 52 + affix.Length + (args.Length * 2) );
 
 			m_Stream.Write( (int) serial );
 			m_Stream.Write( (short) graphic );
@@ -4341,7 +4341,7 @@ namespace Server.Network
 	{
 		public AccountLoginAck( ServerInfo[] info ) : base( 0xA8 )
 		{
-			this.EnsureCapacity( 6 + (info.Length * 40) );
+			EnsureCapacity( 6 + (info.Length * 40) );
 
 			m_Stream.Write( (byte) 0x5D ); // Unknown
 
@@ -4367,7 +4367,7 @@ namespace Server.Network
 			if ( unknown == null ) unknown = "";
 			if ( caption == null ) caption = "";
 
-			this.EnsureCapacity( 16 + unknown.Length + caption.Length );
+			EnsureCapacity( 16 + unknown.Length + caption.Length );
 
 			m_Stream.Write( (int) serial );
 			m_Stream.Write( (short) gumpID );
@@ -4583,7 +4583,7 @@ namespace Server.Network
 							{
 								using (StreamWriter op = new StreamWriter("net_opt.log", true))
 								{
-									op.WriteLine("Redundant compile for packet {0}, use Acquire() and Release()", this.GetType());
+									op.WriteLine("Redundant compile for packet {0}, use Acquire() and Release()", GetType());
 									op.WriteLine(new System.Diagnostics.StackTrace());
 								}
 							}

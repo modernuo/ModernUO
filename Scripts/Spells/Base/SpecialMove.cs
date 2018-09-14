@@ -87,7 +87,7 @@ namespace Server.Spells
 		{
 			double scalar = 1.0;
 
-			if ( !Server.Spells.Necromancy.MindRotSpell.GetMindRotScalar( m, ref scalar ) )
+			if ( !Necromancy.MindRotSpell.GetMindRotScalar( m, ref scalar ) )
 				scalar = 1.0;
 
 			// Lower Mana Cost = 40%
@@ -133,7 +133,7 @@ namespace Server.Spells
 					Timer timer = new SpecialMoveTimer( from );
 					timer.Start();
 
-					AddContext( from, new SpecialMoveContext( timer, this.GetType() ) );
+					AddContext( from, new SpecialMoveContext( timer, GetType() ) );
 				}
 			}
 		}
@@ -143,13 +143,13 @@ namespace Server.Spells
 			if ( !from.Player )
 				return true;
 
-			if ( Bushido.HonorableExecution.IsUnderPenalty( from ) )
+			if ( HonorableExecution.IsUnderPenalty( from ) )
 			{
 				from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
 				return false;
 			}
 
-			if ( Ninjitsu.AnimalForm.UnderTransformation( from ) )
+			if ( AnimalForm.UnderTransformation( from ) )
 			{
 				from.SendLocalizedMessage( 1063024 ); // You cannot perform this special move right now.
 				return false;

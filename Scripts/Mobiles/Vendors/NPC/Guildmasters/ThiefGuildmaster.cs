@@ -28,9 +28,9 @@ namespace Server.Mobiles
 			base.InitOutfit();
 
 			if ( Utility.RandomBool() )
-				AddItem( new Server.Items.Kryss() );
+				AddItem( new Kryss() );
 			else
-				AddItem( new Server.Items.Dagger() );
+				AddItem( new Dagger() );
 		}
 
 		public override bool CheckCustomReqs( PlayerMobile pm )
@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
 		public override bool HandlesOnSpeech( Mobile from )
 		{
-			if ( from.InRange( this.Location, 2 ) )
+			if ( from.InRange( Location, 2 ) )
 				return true;
 
 			return base.HandlesOnSpeech( from );
@@ -71,7 +71,7 @@ namespace Server.Mobiles
 		{
 			Mobile from = e.Mobile;
 
-			if ( !e.Handled && from is PlayerMobile && from.InRange( this.Location, 2 ) && e.HasKeyword( 0x1F ) ) // *disguise*
+			if ( !e.Handled && from is PlayerMobile && from.InRange( Location, 2 ) && e.HasKeyword( 0x1F ) ) // *disguise*
 			{
 				PlayerMobile pm = (PlayerMobile)from;
 

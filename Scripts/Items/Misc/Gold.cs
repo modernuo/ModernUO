@@ -41,7 +41,7 @@ namespace Server.Items
 
 		protected override void OnAmountChange( int oldValue )
 		{
-			int newValue = this.Amount;
+			int newValue = Amount;
 
 			UpdateTotal( this, TotalType.Gold, newValue - oldValue );
 		}
@@ -119,7 +119,7 @@ namespace Server.Items
 			int baseTotal = base.GetTotal( type );
 
 			if ( type == TotalType.Gold )
-				baseTotal += this.Amount;
+				baseTotal += Amount;
 
 			return baseTotal;
 		}

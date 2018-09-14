@@ -18,7 +18,7 @@ namespace Server.Spells.Ninjitsu
 
 		public static void OnLogin(LoginEventArgs e)
 		{
-			AnimalFormContext context = AnimalForm.GetContext(e.Mobile);
+			AnimalFormContext context = GetContext(e.Mobile);
 
 			if (context != null && context.SpeedBoost)
 				e.Mobile.Send(SpeedControl.MountSpeed);
@@ -483,7 +483,7 @@ namespace Server.Spells.Ninjitsu
 					{
 					}
 					#endregion
-					else if (AnimalForm.Morph(m_Caster, entryID) == MorphResult.Fail)
+					else if (Morph(m_Caster, entryID) == MorphResult.Fail)
 					{
 						m_Caster.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502632 ); // The spell fizzles.
 						m_Caster.FixedParticles( 0x3735, 1, 30, 9503, EffectLayer.Waist );
@@ -585,7 +585,7 @@ namespace Server.Spells.Ninjitsu
 							m_Mobile.Freeze(TimeSpan.FromSeconds(1));
 							m_Mobile.PlaySound(0x16A);
 
-							Timer.DelayCall<Mobile>(TimeSpan.FromSeconds(1.3), new TimerStateCallback<Mobile>(BreathEffect_Callback), m_LastTarget);
+							DelayCall<Mobile>(TimeSpan.FromSeconds(1.3), new TimerStateCallback<Mobile>(BreathEffect_Callback), m_LastTarget);
 						}
 
 						m_Counter = Math.Min((int)m_Mobile.GetDistanceToSqrt(m_LastTarget), 10);
@@ -602,7 +602,7 @@ namespace Server.Spells.Ninjitsu
 				m_Mobile.PlaySound(0x227);
 				Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0, false, false, 0, 0);
 
-				Timer.DelayCall<Mobile>(TimeSpan.FromSeconds(1), new TimerStateCallback<Mobile>(BreathDamage_Callback), target);
+				DelayCall<Mobile>(TimeSpan.FromSeconds(1), new TimerStateCallback<Mobile>(BreathDamage_Callback), target);
 			}
 		}
 

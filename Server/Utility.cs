@@ -455,7 +455,7 @@ namespace Server
 					}
 				}
 
-				int b = (byte)(Utility.GetAddressValue( ip ) >> (i * 8));
+				int b = (byte)(GetAddressValue( ip ) >> (i * 8));
 
 				if ( b < lowPart || b > highPart )
 					return false;
@@ -466,7 +466,7 @@ namespace Server
 
 		public static bool IPMatchClassC( IPAddress ip1, IPAddress ip2 )
 		{
-			return ( (Utility.GetAddressValue( ip1 ) & 0xFFFFFF) == (Utility.GetAddressValue( ip2 ) & 0xFFFFFF) );
+			return ( (GetAddressValue( ip1 ) & 0xFFFFFF) == (GetAddressValue( ip2 ) & 0xFFFFFF) );
 		}
 
 		public static int InsensitiveCompare( string first, string second )
@@ -987,10 +987,10 @@ namespace Server
 		/// </summary>
 		public static int RandomBrightHue()
 		{
-			if ( Utility.RandomDouble() < 0.1  )
-				return Utility.RandomList( 0x62, 0x71 );
+			if ( RandomDouble() < 0.1  )
+				return RandomList( 0x62, 0x71 );
 
-			return Utility.RandomList( 0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59 );
+			return RandomList( 0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59 );
 		}
 
 		//[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
@@ -1112,17 +1112,17 @@ namespace Server
 
 		public static SkillName RandomSkill()
 		{
-			return m_AllSkills[Utility.Random(m_AllSkills.Length - ( Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6 ) )];
+			return m_AllSkills[Random(m_AllSkills.Length - ( Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6 ) )];
 		}
 
 		public static SkillName RandomCombatSkill()
 		{
-			return m_CombatSkills[Utility.Random(m_CombatSkills.Length)];
+			return m_CombatSkills[Random(m_CombatSkills.Length)];
 		}
 
 		public static SkillName RandomCraftSkill()
 		{
-			return m_CraftSkills[Utility.Random(m_CraftSkills.Length)];
+			return m_CraftSkills[Random(m_CraftSkills.Length)];
 		}
 
 		public static void FixPoints( ref Point3D top, ref Point3D bottom )

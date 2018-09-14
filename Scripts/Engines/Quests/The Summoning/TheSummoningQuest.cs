@@ -8,10 +8,10 @@ namespace Server.Engines.Quests.Doom
 	{
 		private static Type[] m_TypeReferenceTable = new[]
 			{
-				typeof( Doom.AcceptConversation ),
-				typeof( Doom.CollectBonesObjective ),
-				typeof( Doom.VanquishDaemonConversation ),
-				typeof( Doom.VanquishDaemonObjective )
+				typeof( AcceptConversation ),
+				typeof( CollectBonesObjective ),
+				typeof( VanquishDaemonConversation ),
+				typeof( VanquishDaemonObjective )
 			};
 
 		public override Type[] TypeReferenceTable => m_TypeReferenceTable;

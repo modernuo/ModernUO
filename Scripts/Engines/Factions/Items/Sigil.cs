@@ -263,7 +263,7 @@ namespace Server.Factions
 						from.SendLocalizedMessage( 1005223 ); // You cannot give the sigil to someone not in a faction
 					else if ( fromFaction != toFaction )
 						from.SendLocalizedMessage( 1005222 ); // You cannot give the sigil to someone not in your faction
-					else if ( Sigil.ExistsOn( targ ) )
+					else if ( ExistsOn( targ ) )
 						from.SendLocalizedMessage( 1005220 ); // You cannot give this sigil to someone who already has a sigil
 					else if ( !targ.Alive )
 						from.SendLocalizedMessage( 1042248 ); // You cannot give a sigil to a dead person.

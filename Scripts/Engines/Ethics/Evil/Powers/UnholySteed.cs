@@ -21,7 +21,7 @@ namespace Server.Ethics.Evil
 
 			if ( from.Steed != null )
 			{
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You already have an unholy steed." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You already have an unholy steed." );
 				return;
 			}
 

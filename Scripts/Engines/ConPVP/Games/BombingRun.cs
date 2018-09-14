@@ -146,9 +146,9 @@ namespace Server.Engines.ConPVP
 		public void DropTo( Mobile mob, Mobile killer )
 		{
 			if ( mob != null && !mob.Deleted )
-				this.MoveToWorld( mob.Location, mob.Map );
+				MoveToWorld( mob.Location, mob.Map );
 			else if ( killer != null && !killer.Deleted )
-				this.MoveToWorld( killer.Location, killer.Map );
+				MoveToWorld( killer.Location, killer.Map );
 			else if ( m_Game != null )
 				m_Game.ReturnBomb();
 		}
@@ -169,10 +169,10 @@ namespace Server.Engines.ConPVP
 		{
 			base.OnLocationChange(oldLocation);
 
-			if ( m_Flying || !Visible || m_Game == null || this.Parent != null )
+			if ( m_Flying || !Visible || m_Game == null || Parent != null )
 				return;
 
-			IPooledEnumerable<NetState> eable = this.GetClientsInRange( 0 );
+			IPooledEnumerable<NetState> eable = GetClientsInRange( 0 );
 			foreach ( NetState ns in eable )
 			{
 				Mobile m = ns.Mobile;
@@ -202,9 +202,9 @@ namespace Server.Engines.ConPVP
 			{
 				m.Target = new BombTarget( this, m );
 			}
-			else if ( this.Parent == null )
+			else if ( Parent == null )
 			{
-				if ( m.InRange( this.Location, 1 ) && m.Location.Z != this.Z )
+				if ( m.InRange( Location, 1 ) && m.Location.Z != Z )
 				{
 					BRTeamInfo useTeam = m_Game.GetTeamInfo( m );
 					if ( useTeam == null )
@@ -284,9 +284,9 @@ namespace Server.Engines.ConPVP
 				pt.Z += item.ItemData.CalcHeight + 1;
 
 			m_Flying = true;
-			this.Visible = false;
+			Visible = false;
 			m_Thrower = from;
-			this.MoveToWorld( this.GetWorldLocation(), from.Map );
+			MoveToWorld( GetWorldLocation(), from.Map );
 
 			BeginFlight( pt );
 			return true;
@@ -294,8 +294,8 @@ namespace Server.Engines.ConPVP
 
 		private void HitObject( Point3D ballLoc, int objZ, int objHeight )
 		{
-			DoAnim( this.GetWorldLocation(), ballLoc, this.Map );
-			this.MoveToWorld( ballLoc );
+			DoAnim( GetWorldLocation(), ballLoc, Map );
+			MoveToWorld( ballLoc );
 
 			m_Path.Clear();
 			m_PathIdx = 0;
@@ -326,13 +326,13 @@ namespace Server.Engines.ConPVP
 		private void DoAnim( Point3D start, Point3D end, Map map )
 		{
 			Effects.SendMovingEffect( new Entity( Serial.Zero, start, map ), new Entity( Serial.Zero, end, map ),
-				this.ItemID, 15, 0, false, false, this.Hue, 0 );
+				ItemID, 15, 0, false, false, Hue, 0 );
 		}
 
 		private void DoCatch( Mobile m )
 		{
 			m_Flying = false;
-			this.Visible = true;
+			Visible = true;
 
 			if ( m == null || !m.Alive || !m.Player || m_Game == null )
 				return;
@@ -342,7 +342,7 @@ namespace Server.Engines.ConPVP
 			if ( useTeam == null )
 				return;
 
-			DoAnim( this.GetWorldLocation(), m.Location, m.Map );
+			DoAnim( GetWorldLocation(), m.Location, m.Map );
 
 			string verb = "caught";
 
@@ -350,7 +350,7 @@ namespace Server.Engines.ConPVP
 				verb = "intercepted";
 
 			if ( !TakeBomb( m, useTeam, verb ) )
-				this.MoveToWorld( m.Location, m.Map );
+				MoveToWorld( m.Location, m.Map );
 		}
 
 		private Point3DList m_Path = new Point3DList();
@@ -358,7 +358,7 @@ namespace Server.Engines.ConPVP
 
 		private void BeginFlight( Point3D dest )
 		{
-			Point3D org = this.GetWorldLocation();
+			Point3D org = GetWorldLocation();
 
 			org.Z += 10; // always add 10 at the start cause we're coming from a mobile's eye level
 
@@ -483,28 +483,28 @@ namespace Server.Engines.ConPVP
 			int height;
 			bool found = false;
 
-			if ( m_PathIdx < m_Path.Count && this.Map != null && this.Map.Tiles != null && this.Map != Map.Internal )
+			if ( m_PathIdx < m_Path.Count && Map != null && Map.Tiles != null && Map != Map.Internal )
 			{
 				int pathCheckEnd = m_PathIdx + 5;
 
 				if ( m_Path.Count < pathCheckEnd )
 					pathCheckEnd = m_Path.Count;
 
-				this.Visible = false;
+				Visible = false;
 
 				if ( m_PathIdx > 0 ) // move to the next location
-					this.MoveToWorld( m_Path[m_PathIdx - 1] );
+					MoveToWorld( m_Path[m_PathIdx - 1] );
 
-				Point3D pTop = new Point3D( this.GetWorldLocation() ), pBottom = new Point3D( m_Path[pathCheckEnd-1] );
+				Point3D pTop = new Point3D( GetWorldLocation() ), pBottom = new Point3D( m_Path[pathCheckEnd-1] );
 				Utility.FixPoints( ref pTop, ref pBottom );
 
 				for ( int i = m_PathIdx; i < pathCheckEnd; i++ )
 				{
 					Point3D point = m_Path[i];
 
-					LandTile landTile = this.Map.Tiles.GetLandTile( point.X, point.Y );
+					LandTile landTile = Map.Tiles.GetLandTile( point.X, point.Y );
 					int landZ = 0, landAvg = 0, landTop = 0;
-					this.Map.GetAverageZ( point.X, point.Y, ref landZ, ref landAvg, ref landTop );
+					Map.GetAverageZ( point.X, point.Y, ref landZ, ref landAvg, ref landTop );
 
 					if ( landZ <= point.Z && landTop >= point.Z && !landTile.Ignored )
 					{
@@ -512,12 +512,12 @@ namespace Server.Engines.ConPVP
 						return;
 					}
 
-					StaticTile[] statics = this.Map.Tiles.GetStaticTiles( point.X, point.Y, true );
+					StaticTile[] statics = Map.Tiles.GetStaticTiles( point.X, point.Y, true );
 
 					if ( landTile.ID == 0x244 && statics.Length == 0 ) // 0x244 = invalid land tile
 					{
 						bool empty = true;
-						IPooledEnumerable<Item> eable = this.Map.GetItemsInRange( point, 0 );
+						IPooledEnumerable<Item> eable = Map.GetItemsInRange( point, 0 );
 
 						foreach ( Item item in eable )
 						{
@@ -549,7 +549,7 @@ namespace Server.Engines.ConPVP
 							if ( i > m_PathIdx )
 								point = m_Path[i-1];
 							else
-								point = this.GetWorldLocation();
+								point = GetWorldLocation();
 							HitObject( point, t.Z, height );
 							return;
 						}
@@ -558,7 +558,7 @@ namespace Server.Engines.ConPVP
 
 				Rectangle2D rect = new Rectangle2D( pTop.X, pTop.Y, ( pBottom.X - pTop.X ) + 1, ( pBottom.Y - pTop.Y ) + 1 );
 
-				IPooledEnumerable<Item> area = this.Map.GetItemsInBounds( rect );
+				IPooledEnumerable<Item> area = Map.GetItemsInBounds( rect );
 				foreach ( Item i in area )
 				{
 					if ( i == this || i.ItemID >= 0x4000 )
@@ -593,7 +593,7 @@ namespace Server.Engines.ConPVP
 							if ( j > m_PathIdx )
 								point = m_Path[j-1];
 							else
-								point = this.GetWorldLocation();
+								point = GetWorldLocation();
 							break;
 						}
 					}
@@ -604,9 +604,9 @@ namespace Server.Engines.ConPVP
 					area.Free();
 					if ( i is BRGoal goal )
 					{
-						Point3D oldLoc = new Point3D( this.GetWorldLocation() );
+						Point3D oldLoc = new Point3D( GetWorldLocation() );
 						if ( CheckScore( goal, m_Thrower, 3 ) )
-							DoAnim( oldLoc, point, this.Map );
+							DoAnim( oldLoc, point, Map );
 						else
 							HitObject( point, loc.Z, height );
 					}
@@ -619,7 +619,7 @@ namespace Server.Engines.ConPVP
 
 				area.Free();
 
-				IPooledEnumerable<NetState> clients = this.Map.GetClientsInBounds( rect );
+				IPooledEnumerable<NetState> clients = Map.GetClientsInBounds( rect );
 				foreach ( NetState ns in clients)
 				{
 					Mobile m = ns.Mobile;
@@ -657,20 +657,20 @@ namespace Server.Engines.ConPVP
 				m_PathIdx = pathCheckEnd;
 
 				if ( m_PathIdx > 0 && m_PathIdx - 1 < m_Path.Count )
-					DoAnim( this.GetWorldLocation(), m_Path[m_PathIdx - 1], this.Map );
+					DoAnim( GetWorldLocation(), m_Path[m_PathIdx - 1], Map );
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 0.1 ), new TimerCallback( ContinueFlight ) ).Start();
 			}
 			else
 			{
 				if ( m_PathIdx > 0 && m_PathIdx - 1 < m_Path.Count )
-					this.MoveToWorld( m_Path[m_PathIdx - 1] );
+					MoveToWorld( m_Path[m_PathIdx - 1] );
 				else if ( m_Path.Count > 0 )
-					this.MoveToWorld( m_Path.Last );
+					MoveToWorld( m_Path.Last );
 
-				int myZ = this.Map.GetAverageZ( this.X, this.Y );
+				int myZ = Map.GetAverageZ( X, Y );
 
-				StaticTile[] statics = this.Map.Tiles.GetStaticTiles( this.X, this.Y, true );
+				StaticTile[] statics = Map.Tiles.GetStaticTiles( X, Y, true );
 				for ( int j = 0; j < statics.Length; j++ )
 				{
 					StaticTile t = statics[j];
@@ -678,25 +678,25 @@ namespace Server.Engines.ConPVP
 					ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 					height = id.CalcHeight;
 
-					if ( t.Z + height > myZ && t.Z + height <= this.Z )
+					if ( t.Z + height > myZ && t.Z + height <= Z )
 						myZ = t.Z + height;
 				}
 
-				IPooledEnumerable<Item> eable = this.GetItemsInRange( 0 );
+				IPooledEnumerable<Item> eable = GetItemsInRange( 0 );
 				foreach ( Item item in eable )
 				{
 					if ( item.Visible && item != this )
 					{
 						height = item.ItemData.CalcHeight;
-						if ( item.Z + height > myZ && item.Z + height <= this.Z )
+						if ( item.Z + height > myZ && item.Z + height <= Z )
 							myZ = item.Z + height;
 					}
 				}
 				eable.Free();
 
-				this.Z = myZ;
+				Z = myZ;
 				m_Flying = false;
-				this.Visible = true;
+				Visible = true;
 
 				m_Path.Clear();
 				m_PathIdx = 0;
@@ -738,7 +738,7 @@ namespace Server.Engines.ConPVP
 			m_Game.ReturnBomb();
 
 			m_Flying = false;
-			this.Visible = true;
+			Visible = true;
 			m_Path.Clear();
 			m_PathIdx = 0;
 
@@ -799,62 +799,62 @@ namespace Server.Engines.ConPVP
 
 		private void Remake()
 		{
-			foreach ( AddonComponent ac in this.Components )
+			foreach ( AddonComponent ac in Components )
 			{
 				ac.Addon = null;
 				ac.Delete();
 			}
 
-			this.Components.Clear();
+			Components.Clear();
 
 			// stairs
-			this.AddComponent( new AddonComponent( 0x74D ), -1, +1, -5 );
-			this.AddComponent( new AddonComponent( 0x71F ),  0, +1, -5 );
-			this.AddComponent( new AddonComponent( 0x74B ), +1, +1, -5 );
-			this.AddComponent( new AddonComponent( 0x736 ), +1,  0, -5 );
-			this.AddComponent( new AddonComponent( 0x74C ), +1, -1, -5 );
-			this.AddComponent( new AddonComponent( 0x737 ),  0, -1, -5 );
-			this.AddComponent( new AddonComponent( 0x74A ), -1, -1, -5 );
-			this.AddComponent( new AddonComponent( 0x749 ), -1,  0, -5 );
+			AddComponent( new AddonComponent( 0x74D ), -1, +1, -5 );
+			AddComponent( new AddonComponent( 0x71F ),  0, +1, -5 );
+			AddComponent( new AddonComponent( 0x74B ), +1, +1, -5 );
+			AddComponent( new AddonComponent( 0x736 ), +1,  0, -5 );
+			AddComponent( new AddonComponent( 0x74C ), +1, -1, -5 );
+			AddComponent( new AddonComponent( 0x737 ),  0, -1, -5 );
+			AddComponent( new AddonComponent( 0x74A ), -1, -1, -5 );
+			AddComponent( new AddonComponent( 0x749 ), -1,  0, -5 );
 
 			// Center Sparkle
-			this.AddComponent( new AddonComponent( 0x375A ),  0,  0, -1 );
+			AddComponent( new AddonComponent( 0x375A ),  0,  0, -1 );
 
 			if ( !m_North )
 			{
 				// Pillars
-				this.AddComponent( new AddonComponent( 0x0CE ),  0, +1, -2 );
-				this.AddComponent( new AddonComponent( 0x0CC ),  0, -1, -2 );
-				this.AddComponent( new AddonComponent( 0x0D0 ),  0,  0, -2 );
+				AddComponent( new AddonComponent( 0x0CE ),  0, +1, -2 );
+				AddComponent( new AddonComponent( 0x0CC ),  0, -1, -2 );
+				AddComponent( new AddonComponent( 0x0D0 ),  0,  0, -2 );
 
 				// Yellow parts
-				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0, +1, 7 );
-				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0,  0, 16 );
-				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0, -1, 7 );
+				AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0, +1, 7 );
+				AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0,  0, 16 );
+				AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0, -1, 7 );
 
 				// Blue Sparkles
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, +1, 12 );
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, +1, -1 );
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, -1, 12 );
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, -1, -1 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, +1, 12 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, +1, -1 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, -1, 12 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  0, -1, -1 );
 			}
 			else
 			{
 				// Pillars
-				this.AddComponent( new AddonComponent( 0x0CF ), +1,  0, -2 );
-				this.AddComponent( new AddonComponent( 0x0CC ), -1,  0, -2 );
-				this.AddComponent( new AddonComponent( 0x0D1 ),  0,  0, -2 );
+				AddComponent( new AddonComponent( 0x0CF ), +1,  0, -2 );
+				AddComponent( new AddonComponent( 0x0CC ), -1,  0, -2 );
+				AddComponent( new AddonComponent( 0x0D1 ),  0,  0, -2 );
 
 				// Yellow parts
-				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ), +1,  0, 7 );
-				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0,  0, 16 );
-				this.AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ), -1,  0, 7 );
+				AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ), +1,  0, 7 );
+				AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ),  0,  0, 16 );
+				AddComponent( SetHue( new AddonComponent( 0x0DF ), 0x499 ), -1,  0, 7 );
 
 				// Blue Sparkles
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  +1,  0, 12 );
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  +1,  0, -1 );
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  -1,  0, 12 );
-				this.AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  -1,  0, -1 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  +1,  0, 12 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  +1,  0, -1 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  -1,  0, 12 );
+				AddComponent( SetHue( new AddonComponent( 0x377A ), 0x84C ),  -1,  0, -1 );
 			}
 		}
 
@@ -863,9 +863,9 @@ namespace Server.Engines.ConPVP
 		[Constructible]
 		public BRGoal()
 		{
-			this.ItemID = 0x51D;
-			this.Hue = 0x84C;
-			this.Visible = true;
+			ItemID = 0x51D;
+			Hue = 0x84C;
+			Visible = true;
 
 			Remake();
 		}
@@ -902,7 +902,7 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			this.Hue = 0x84C;
+			Hue = 0x84C;
 		}
 
 		public override bool ShareHue => false;
@@ -914,9 +914,9 @@ namespace Server.Engines.ConPVP
 			{
 				m_Team = value;
 				if ( m_Team != null && m_Team.Color != 0 )
-					this.Hue = m_Team.Color;
+					Hue = m_Team.Color;
 				else
-					this.Hue = 0x84C;
+					Hue = 0x84C;
 			}
 		}
 
@@ -934,9 +934,9 @@ namespace Server.Engines.ConPVP
 				return false;
 
 			if ( m_Team != null && m_Team.Color != 0 )
-				this.Hue = m_Team.Color;
+				Hue = m_Team.Color;
 			else
-				this.Hue = 0x84C;
+				Hue = 0x84C;
 
 			if ( m.Backpack.FindItemByType( typeof( BRBomb ), true ) is BRBomb b )
 				b.CheckScore( this, m, 7 );
@@ -1180,13 +1180,13 @@ namespace Server.Engines.ConPVP
 		public int CompareTo( object obj )
 		{
 			BRPlayerInfo pi = (BRPlayerInfo)obj;
-			int res = pi.Captures.CompareTo( this.Captures );
+			int res = pi.Captures.CompareTo( Captures );
 			if ( res == 0 )
 			{
-				res = pi.Score.CompareTo( this.Score );
+				res = pi.Score.CompareTo( Score );
 
 				if ( res == 0 )
-					res = pi.Kills.CompareTo( this.Kills );
+					res = pi.Kills.CompareTo( Kills );
 			}
 			return res;
 		}
@@ -1255,13 +1255,13 @@ namespace Server.Engines.ConPVP
 		public int CompareTo( object obj )
 		{
 			BRTeamInfo ti = (BRTeamInfo)obj;
-			int res = ti.Captures.CompareTo( this.Captures );
+			int res = ti.Captures.CompareTo( Captures );
 			if ( res == 0 )
 			{
-				res = ti.Score.CompareTo( this.Score );
+				res = ti.Score.CompareTo( Score );
 
 				if ( res == 0 )
-					res = ti.Kills.CompareTo( this.Kills );
+					res = ti.Kills.CompareTo( Kills );
 			}
 			return res;
 		}
@@ -1399,7 +1399,7 @@ namespace Server.Engines.ConPVP
 		public override string ToString()
 		{
 			if ( m_Name != null )
-				return String.Format( "({0}) ...", this.Name );
+				return String.Format( "({0}) ...", Name );
 			else
 				return "...";
 		}

@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( !from.InRange( GetWorldLocation(), 2 ) )
 				return;
 
 			bool douse = false;

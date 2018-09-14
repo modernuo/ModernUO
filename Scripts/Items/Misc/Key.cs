@@ -212,7 +212,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !this.IsChildOf( from.Backpack ) )
+			if ( !IsChildOf( from.Backpack ) )
 			{
 				from.SendLocalizedMessage( 501661 ); // That key is unreachable.
 				return;
@@ -268,7 +268,7 @@ namespace Server.Items
 
 		public bool UseOn( Mobile from, ILockable o )
 		{
-			if ( o.KeyValue == this.KeyValue )
+			if ( o.KeyValue == KeyValue )
 			{
 				if ( o is BaseDoor door && !door.UseLocks() )
 					return false;

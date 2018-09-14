@@ -77,17 +77,17 @@ namespace Server.Mobiles
 
 		public void DrainLife()
 		{
-			if ( this.Map == null )
+			if ( Map == null )
 				return;
 
 			ArrayList list = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 2 ) )
+			foreach ( Mobile m in GetMobilesInRange( 2 ) )
 			{
 				if ( m == this || !CanBeHarmful( m ) )
 					continue;
 
-				if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != this.Team) )
+				if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != Team) )
 					list.Add( m );
 				else if ( m.Player )
 					list.Add( m );

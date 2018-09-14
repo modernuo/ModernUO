@@ -177,16 +177,16 @@ namespace Server.Multis
 			base.OnMapChange();
 
 			if ( m_SignHanger != null )
-				m_SignHanger.Map = this.Map;
+				m_SignHanger.Map = Map;
 
 			if ( m_Signpost != null )
-				m_Signpost.Map = this.Map;
+				m_Signpost.Map = Map;
 
 			if ( m_Fixtures == null )
 				return;
 
 			for( int i = 0; i < m_Fixtures.Count; ++i )
-				m_Fixtures[i].Map = this.Map;
+				m_Fixtures[i].Map = Map;
 		}
 
 		public void ClearFixtures( Mobile from )
@@ -582,7 +582,7 @@ namespace Server.Multis
 
 		public void CheckSignpost()
 		{
-			MultiComponentList mcl = this.Components;
+			MultiComponentList mcl = Components;
 
 			int x = mcl.Min.X;
 			int y = mcl.Height - 2 - mcl.Center.Y;
@@ -956,7 +956,7 @@ namespace Server.Multis
 			int newPrice = oldPrice + CustomizationCost + ((DesignState.Components.List.Length - ( CurrentState.Components.List.Length + CurrentState.Fixtures.Length )) * 500);
 			int cost = newPrice - oldPrice;
 
-			if ( !this.Deleted ) { // Temporary Fix. We should be booting a client out of customization mode in the delete handler.
+			if ( !Deleted ) { // Temporary Fix. We should be booting a client out of customization mode in the delete handler.
 				if ( from.AccessLevel >= AccessLevel.GameMaster && cost != 0 )
 				{
 					from.SendMessage( "{0} gold would have been {1} your bank if you were not a GM.", cost.ToString(), ((cost > 0 )? "withdrawn from" : "deposited into" ) );
@@ -1065,7 +1065,7 @@ namespace Server.Multis
 		{
 			get
 			{
-				MultiComponentList mcl = this.Components;
+				MultiComponentList mcl = Components;
 
 				if ( mcl.Width >= 14 || mcl.Height >= 14 )
 					return 4;
@@ -2411,7 +2411,7 @@ namespace Server.Multis
 			lock (m_DeflatedBufferPool)
 				m_DeflatedBufferPool.ReleaseBuffer(m_DeflatedBuffer);
 
-			m_Stream.Seek( 15, System.IO.SeekOrigin.Begin );
+			m_Stream.Seek( 15, SeekOrigin.Begin );
 
 			Write( (short)totalLength ); // Buffer length
 			Write( (byte)planeCount ); // Plane count

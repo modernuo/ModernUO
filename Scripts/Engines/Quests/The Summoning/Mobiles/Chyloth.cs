@@ -86,8 +86,8 @@ namespace Server.Engines.Quests.Doom
 			if ( Deleted )
 				return;
 
-			Point3D loc = this.Location;
-			Map map = this.Map;
+			Point3D loc = Location;
+			Map map = Map;
 
 			Effects.SendLocationParticles( EffectItem.Create( loc, map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 0, 0, 2023, 0 );
 			Effects.PlaySound( loc, map, 0x1FE );
@@ -170,7 +170,7 @@ namespace Server.Engines.Quests.Doom
 			Effects.SendLocationParticles( EffectItem.Create( loc, map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 0, 0, 2023, 0 );
 			Effects.PlaySound( loc, map, 0x1FE );
 
-			BaseCreature.TeleportPets( from, loc, map );
+			TeleportPets( from, loc, map );
 
 			from.MoveToWorld( loc, map );
 		}

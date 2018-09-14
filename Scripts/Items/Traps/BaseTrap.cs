@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public virtual int GetEffectHue()
 		{
-			int hue = this.Hue & 0x3FFF;
+			int hue = Hue & 0x3FFF;
 
 			if ( hue < 2 )
 				return 0;
@@ -34,7 +34,7 @@ namespace Server.Items
 
 		public bool CheckRange( Point3D loc, int range )
 		{
-			return ( (this.Z + 8) >= loc.Z && (loc.Z + 16) > this.Z )
+			return ( (Z + 8) >= loc.Z && (loc.Z + 16) > Z )
 				&& Utility.InRange( GetWorldLocation(), loc, range );
 		}
 

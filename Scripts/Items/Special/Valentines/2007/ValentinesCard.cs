@@ -60,7 +60,7 @@ namespace Server.Items
 		{
 			if (m_To == null)
 			{
-				if (this.IsChildOf(from))
+				if (IsChildOf(from))
 				{
 					from.BeginTarget(10, false, TargetFlags.None, new TargetCallback(OnTarget));
 

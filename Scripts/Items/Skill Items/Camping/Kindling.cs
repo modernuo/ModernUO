@@ -41,10 +41,10 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !this.VerifyMove( from ) )
+			if ( !VerifyMove( from ) )
 				return;
 
-			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( !from.InRange( GetWorldLocation(), 2 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return;
@@ -64,7 +64,7 @@ namespace Server.Items
 			{
 				Consume();
 
-				if ( !this.Deleted && this.Parent == null )
+				if ( !Deleted && Parent == null )
 					from.PlaceInBackpack( this );
 
 				new Campfire().MoveToWorld( fireLocation, from.Map );
@@ -76,8 +76,8 @@ namespace Server.Items
 			if ( from.Region.IsPartOf( typeof( DungeonRegion ) ) )
 				return Point3D.Zero;
 
-			if ( this.Parent == null )
-				return this.Location;
+			if ( Parent == null )
+				return Location;
 
 			ArrayList list = new ArrayList( 4 );
 

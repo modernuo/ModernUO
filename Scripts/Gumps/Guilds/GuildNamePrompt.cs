@@ -35,7 +35,7 @@ namespace Server.Gumps
 
 			if ( text.Length > 0 )
 			{
-				if ( Guild.FindByName( text ) != null )
+				if ( BaseGuild.FindByName( text ) != null )
 				{
 					m_Mobile.SendMessage( "{0} conflicts with the name of an existing guild.", text );
 				}

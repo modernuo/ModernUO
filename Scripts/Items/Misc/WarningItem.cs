@@ -101,7 +101,7 @@ namespace Server.Items
 
 			m_Broadcasting = true;
 
-			SendMessage( triggerer, this.OnlyToTriggerer, m_WarningString, m_WarningNumber );
+			SendMessage( triggerer, OnlyToTriggerer, m_WarningString, m_WarningNumber );
 
 			if ( NeighborRange >= 0 )
 			{

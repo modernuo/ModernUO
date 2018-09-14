@@ -77,7 +77,7 @@ namespace Server.Mobiles
 
 		private void DoCounter( Mobile attacker )
 		{
-			if ( this.Map == null )
+			if ( Map == null )
 				return;
 
 			if ( attacker is BaseCreature creature && creature.BardProvoked )
@@ -105,7 +105,7 @@ namespace Server.Mobiles
 				if ( target == null || !target.InRange( this, 18 ) )
 					target = attacker;
 
-				this.Animate( 10, 4, 1, true, false, 0 );
+				Animate( 10, 4, 1, true, false, 0 );
 
 				ArrayList targets = new ArrayList();
 
@@ -114,7 +114,7 @@ namespace Server.Mobiles
 					if ( m == this || !CanBeHarmful( m ) )
 						continue;
 
-					if ( m is BaseCreature bc && (bc.Controlled || bc.Summoned || bc.Team != this.Team))
+					if ( m is BaseCreature bc && (bc.Controlled || bc.Summoned || bc.Team != Team))
 						targets.Add( m );
 					else if ( m.Player && m.Alive )
 						targets.Add( m );

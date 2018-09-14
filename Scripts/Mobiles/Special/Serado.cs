@@ -110,7 +110,7 @@ namespace Server.Mobiles
 
 		private void DoCounter( Mobile attacker )
 		{
-			if ( this.Map == null || ( attacker is BaseCreature && ((BaseCreature)attacker).BardProvoked ) )
+			if ( Map == null || ( attacker is BaseCreature && ((BaseCreature)attacker).BardProvoked ) )
 				return;
 
 			if ( 0.2 > Utility.RandomDouble() )
@@ -135,7 +135,7 @@ namespace Server.Mobiles
 				if ( target == null || !target.InRange( this, 25 ) )
 					target = attacker;
 
-				this.Animate( 10, 4, 1, true, false, 0 );
+				Animate( 10, 4, 1, true, false, 0 );
 
 				ArrayList targets = new ArrayList();
 
@@ -144,7 +144,7 @@ namespace Server.Mobiles
 					if ( m == this || !CanBeHarmful( m ) )
 						continue;
 
-					if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != this.Team) )
+					if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != Team) )
 						targets.Add( m );
 					else if ( m.Player )
 						targets.Add( m );

@@ -405,7 +405,7 @@ namespace Server.Items
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502502 ); // That is locked, but you open it with your godly powers.
 					//from.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, 502502, "", "" ) ); // That is locked, but you open it with your godly powers.
 				}
-				else if ( Key.ContainsKey( from.Backpack, this.KeyValue ) )
+				else if ( Key.ContainsKey( from.Backpack, KeyValue ) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 501282 ); // You quickly unlock, open, and relock the door
 				}
@@ -416,7 +416,7 @@ namespace Server.Items
 				else
 				{
 					if ( Hue == 0x44E && Map == Map.Malas ) // doom door into healer room in doom
-						this.SendLocalizedMessageTo( from, 1060014 ); // Only the dead may pass.
+						SendLocalizedMessageTo( from, 1060014 ); // Only the dead may pass.
 					else
 						from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 502503 ); // That is locked.
 
@@ -445,7 +445,7 @@ namespace Server.Items
 			{
 				Open = !m_Open;
 
-				BaseDoor link = this.Link;
+				BaseDoor link = Link;
 
 				if ( m_Open && link != null && !link.Open )
 					link.Open = true;

@@ -16,13 +16,13 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !from.InRange( this.GetWorldLocation(), 2 ) || !from.InLOS( this ) )
+			if ( !from.InRange( GetWorldLocation(), 2 ) || !from.InLOS( this ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that
 			}
 			else if ( Visible && ( ItemID == 4656 || ItemID == 4702 ) && DateTime.UtcNow >= m_NextUse )
 			{
-				Point3D p = this.GetWorldLocation();
+				Point3D p = GetWorldLocation();
 
 				if ( 1 > Utility.Random( Math.Max( Math.Abs( from.X - p.X ), Math.Abs( from.Y - p.Y ) ) ) )
 				{
@@ -31,7 +31,7 @@ namespace Server.Items
 					Spells.SpellHelper.Damage( TimeSpan.FromSeconds( 0.5 ), from, Utility.Dice( 2, 10, 5 ) );
 				}
 
-				Effects.PlaySound( this.GetWorldLocation(), this.Map, 0x387 );
+				Effects.PlaySound( GetWorldLocation(), Map, 0x387 );
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 0.25 ), new TimerCallback( Down1 ) );
 				Timer.DelayCall( TimeSpan.FromSeconds( 0.50 ), new TimerCallback( Down2 ) );
@@ -51,8 +51,8 @@ namespace Server.Items
 		{
 			ItemID = ( ItemID == 4678 ? 4679 : 4713 );
 
-			Point3D p = this.GetWorldLocation();
-			Map f = this.Map;
+			Point3D p = GetWorldLocation();
+			Map f = Map;
 
 			if ( f == null )
 				return;

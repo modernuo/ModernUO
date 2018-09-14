@@ -60,7 +60,7 @@ namespace Server.Engines.Reports
 			FillSnapshot( ss );
 
 			m_StatsHistory.Snapshots.Add( ss );
-			m_StaffHistory.QueueStats.Add( new QueueStatus( Engines.Help.PageQueue.List.Count ) );
+			m_StaffHistory.QueueStats.Add( new QueueStatus( Help.PageQueue.List.Count ) );
 
 			ThreadPool.QueueUserWorkItem( new WaitCallback( UpdateOutput ), ss );
 		}

@@ -141,9 +141,9 @@ namespace Server.Engines.Quests.Necro
 								}
 								else
 								{
-									weapon.DamageLevel = (WeaponDamageLevel)BaseCreature.RandomMinMaxScaled( 2, 4 );
-									weapon.AccuracyLevel = (WeaponAccuracyLevel)BaseCreature.RandomMinMaxScaled( 2, 4 );
-									weapon.DurabilityLevel = (WeaponDurabilityLevel)BaseCreature.RandomMinMaxScaled( 2, 4 );
+									weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled( 2, 4 );
+									weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled( 2, 4 );
+									weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled( 2, 4 );
 								}
 
 								cont.DropItem( weapon );

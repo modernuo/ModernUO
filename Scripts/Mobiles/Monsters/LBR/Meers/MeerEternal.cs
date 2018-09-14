@@ -80,8 +80,8 @@ namespace Server.Mobiles
 		{
 			m_NextAbilityTime += TimeSpan.FromSeconds( 2.5 );
 
-			this.Say( true, "Beware, mortals!  You have provoked my wrath!" );
-			this.FixedParticles( 0x376A, 10, 10, 9537, 33, 0, EffectLayer.Waist );
+			Say( true, "Beware, mortals!  You have provoked my wrath!" );
+			FixedParticles( 0x376A, 10, 10, 9537, 33, 0, EffectLayer.Waist );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerCallback( DoAreaLeech_Finish ) );
 		}
@@ -90,15 +90,15 @@ namespace Server.Mobiles
 		{
 			ArrayList list = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 6 ) )
+			foreach ( Mobile m in GetMobilesInRange( 6 ) )
 			{
-				if ( this.CanBeHarmful( m ) && this.IsEnemy( m ) )
+				if ( CanBeHarmful( m ) && IsEnemy( m ) )
 					list.Add( m );
 			}
 
 			if ( list.Count == 0 )
 			{
-				this.Say( true, "Bah! You have escaped my grasp this time, mortal!" );
+				Say( true, "Bah! You have escaped my grasp this time, mortal!" );
 			}
 			else
 			{
@@ -125,17 +125,17 @@ namespace Server.Mobiles
 					m.MovingParticles( this, 0x36F4, 1, 0, false, false, 32, 0, 9535,    1, 0, (EffectLayer)255, 0x100 );
 					m.MovingParticles( this, 0x0001, 1, 0, false,  true, 32, 0, 9535, 9536, 0, (EffectLayer)255, 0 );
 
-					this.DoHarmful( m );
-					this.Hits += AOS.Damage( m, this, damage, 100, 0, 0, 0, 0 );
+					DoHarmful( m );
+					Hits += AOS.Damage( m, this, damage, 100, 0, 0, 0, 0 );
 				}
 
-				this.Say( true, "If I cannot cleanse thy soul, I will destroy it!" );
+				Say( true, "If I cannot cleanse thy soul, I will destroy it!" );
 			}
 		}
 
 		private void DoFocusedLeech( Mobile combatant, string message )
 		{
-			this.Say( true, message );
+			Say( true, message );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), new TimerStateCallback( DoFocusedLeech_Stage1 ), combatant );
 		}
@@ -144,11 +144,11 @@ namespace Server.Mobiles
 		{
 			Mobile combatant = (Mobile)state;
 
-			if ( this.CanBeHarmful( combatant ) )
+			if ( CanBeHarmful( combatant ) )
 			{
-				this.MovingParticles( combatant, 0x36FA, 1, 0, false, false, 1108, 0, 9533, 1,    0, (EffectLayer)255, 0x100 );
-				this.MovingParticles( combatant, 0x0001, 1, 0, false,  true, 1108, 0, 9533, 9534, 0, (EffectLayer)255, 0 );
-				this.PlaySound( 0x1FB );
+				MovingParticles( combatant, 0x36FA, 1, 0, false, false, 1108, 0, 9533, 1,    0, (EffectLayer)255, 0x100 );
+				MovingParticles( combatant, 0x0001, 1, 0, false,  true, 1108, 0, 9533, 9534, 0, (EffectLayer)255, 0 );
+				PlaySound( 0x1FB );
 
 				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( DoFocusedLeech_Stage2 ), combatant );
 			}
@@ -158,14 +158,14 @@ namespace Server.Mobiles
 		{
 			Mobile combatant = (Mobile)state;
 
-			if ( this.CanBeHarmful( combatant ) )
+			if ( CanBeHarmful( combatant ) )
 			{
 				combatant.MovingParticles( this, 0x36F4, 1, 0, false, false, 32, 0, 9535, 1,    0, (EffectLayer)255, 0x100 );
 				combatant.MovingParticles( this, 0x0001, 1, 0, false,  true, 32, 0, 9535, 9536, 0, (EffectLayer)255, 0 );
 
-				this.PlaySound( 0x209 );
-				this.DoHarmful( combatant );
-				this.Hits += AOS.Damage( combatant, this, Utility.RandomMinMax( 30, 40 ) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0 );
+				PlaySound( 0x209 );
+				DoHarmful( combatant );
+				Hits += AOS.Damage( combatant, this, Utility.RandomMinMax( 30, 40 ) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0 );
 			}
 		}
 
@@ -173,9 +173,9 @@ namespace Server.Mobiles
 		{
 			if ( DateTime.UtcNow >= m_NextAbilityTime )
 			{
-				Mobile combatant = this.Combatant;
+				Mobile combatant = Combatant;
 
-				if ( combatant != null && combatant.Map == this.Map && combatant.InRange( this, 12 ) )
+				if ( combatant != null && combatant.Map == Map && combatant.InRange( this, 12 ) )
 				{
 					m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds( Utility.RandomMinMax( 10, 15 ) );
 

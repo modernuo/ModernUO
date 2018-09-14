@@ -61,7 +61,7 @@ namespace Server.Spells.Fifth
 
 					SpellHelper.Turn( from, target );
 
-					SpellHelper.CheckReflect( (int)this.Circle, ref from, ref target );
+					SpellHelper.CheckReflect( (int)Circle, ref from, ref target );
 
 					int damage = (int)((Caster.Skills[SkillName.Magery].Value + Caster.Int) / 5);
 
@@ -79,7 +79,7 @@ namespace Server.Spells.Fifth
 
 				SpellHelper.Turn( from, target );
 
-				SpellHelper.CheckReflect( (int)this.Circle, ref from, ref target );
+				SpellHelper.CheckReflect( (int)Circle, ref from, ref target );
 
 				// Algorithm: (highestStat - lowestStat) / 2 [- 50% if resisted]
 

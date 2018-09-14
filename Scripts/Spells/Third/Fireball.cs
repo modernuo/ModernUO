@@ -36,7 +36,7 @@ namespace Server.Spells.Third
 
 				SpellHelper.Turn( source, m );
 
-				SpellHelper.CheckReflect( (int)this.Circle, ref source, ref m );
+				SpellHelper.CheckReflect( (int)Circle, ref source, ref m );
 
 				double damage;
 

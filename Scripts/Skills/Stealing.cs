@@ -387,7 +387,7 @@ namespace Server.SkillHandlers
 			}
 			else
 			{
-				m.Target = new Stealing.StealingTarget( m );
+				m.Target = new StealingTarget( m );
 				m.RevealingAction();
 
 				m.SendLocalizedMessage( 502698 ); // Which item do you want to steal?

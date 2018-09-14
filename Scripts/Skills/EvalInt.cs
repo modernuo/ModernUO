@@ -14,7 +14,7 @@ namespace Server.SkillHandlers
 
 		public static TimeSpan OnUse( Mobile m )
 		{
-			m.Target = new EvalInt.InternalTarget();
+			m.Target = new InternalTarget();
 
 			m.SendLocalizedMessage( 500906 ); // What do you wish to evaluate?
 

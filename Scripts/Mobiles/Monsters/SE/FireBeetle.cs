@@ -2,7 +2,7 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	[Server.Engines.Craft.Forge]
+	[Engines.Craft.Forge]
 	public class FireBeetle : BaseMount
 	{
 		public override string CorpseName => "a fire beetle corpse";

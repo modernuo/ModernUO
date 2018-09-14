@@ -18,7 +18,7 @@ namespace Server.Items
 				{
 					base.Hue = value;
 
-					if ( !Deleted && this.ShareHue && m_Components != null )
+					if ( !Deleted && ShareHue && m_Components != null )
 					{
 						Hue = value;
 
@@ -47,7 +47,7 @@ namespace Server.Items
 			}
 		}
 
-		Item IAddon.Deed => this.Deed;
+		Item IAddon.Deed => Deed;
 
 		public virtual bool RetainDeedHue  => false;
 		public virtual bool NeedsWall  => false;

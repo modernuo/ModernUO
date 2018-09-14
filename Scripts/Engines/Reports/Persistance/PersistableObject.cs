@@ -14,7 +14,7 @@ namespace Server.Engines.Reports
 
 		public void Serialize( PersistanceWriter op )
 		{
-			op.BeginObject( this.TypeID );
+			op.BeginObject( TypeID );
 			SerializeAttributes( op );
 			op.BeginChildren();
 			SerializeChildren( op );

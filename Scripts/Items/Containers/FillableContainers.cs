@@ -73,7 +73,7 @@ namespace Server.Items
 			if ( m_Content != null )
 				return;
 
-			m_Content = FillableContent.Acquire( this.GetWorldLocation(), this.Map );
+			m_Content = FillableContent.Acquire( GetWorldLocation(), Map );
 
 			if ( m_Content != null )
 				Respawn();
@@ -99,7 +99,7 @@ namespace Server.Items
 		{
 			int count = 0;
 
-			foreach( Item item in this.Items )
+			foreach( Item item in Items )
 			{
 				count += item.Amount;
 			}
@@ -115,7 +115,7 @@ namespace Server.Items
 			{
 				if ( m_RespawnTimer == null )
 				{
-					int mins = Utility.RandomMinMax( this.MinRespawnMinutes, this.MaxRespawnMinutes );
+					int mins = Utility.RandomMinMax( MinRespawnMinutes, MaxRespawnMinutes );
 					TimeSpan delay = TimeSpan.FromMinutes( mins );
 
 					m_NextRespawnTime = DateTime.UtcNow + delay;
@@ -198,7 +198,7 @@ namespace Server.Items
 
 				if ( item != null )
 				{
-					List<Item> list = this.Items;
+					List<Item> list = Items;
 
 					for( int j = 0; j < list.Count; ++j )
 					{
@@ -734,7 +734,7 @@ namespace Server.Items
 			1,
 			new[]
 			{
-				typeof( Mobiles.Alchemist )
+				typeof( Alchemist )
 			},
 			new[]
 			{

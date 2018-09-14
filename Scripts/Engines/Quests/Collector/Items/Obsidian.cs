@@ -168,7 +168,7 @@ namespace Server.Engines.Quests.Collector
 			public override void OnClick()
 			{
 				Mobile from = Owner.From;
-				if ( !m_Obsidian.Deleted && m_Obsidian.Quantity >= Obsidian.m_Partial && m_Obsidian.Quantity < Obsidian.m_Completed && m_Obsidian.IsChildOf( from.Backpack ) && from.CheckAlive() )
+				if ( !m_Obsidian.Deleted && m_Obsidian.Quantity >= m_Partial && m_Obsidian.Quantity < m_Completed && m_Obsidian.IsChildOf( from.Backpack ) && from.CheckAlive() )
 				{
 					for ( int i = 0; i < m_Obsidian.Quantity - 1; i++ )
 						from.AddToBackpack( new Obsidian() );
@@ -200,27 +200,27 @@ namespace Server.Engines.Quests.Collector
 
 			protected override void OnTarget( Mobile from, object targeted )
 			{
-				if ( m_Obsidian.Deleted || m_Obsidian.Quantity >= Obsidian.m_Completed || !(targeted is Item targ) )
+				if ( m_Obsidian.Deleted || m_Obsidian.Quantity >= m_Completed || !(targeted is Item targ) )
 					return;
 
 				if ( m_Obsidian.IsChildOf( from.Backpack ) && targ.IsChildOf( from.Backpack ) && targ is Obsidian targObsidian && targ != m_Obsidian )
 				{
-					if ( targObsidian.Quantity < Obsidian.m_Completed )
+					if ( targObsidian.Quantity < m_Completed )
 					{
-						if ( targObsidian.Quantity + m_Obsidian.Quantity <= Obsidian.m_Completed )
+						if ( targObsidian.Quantity + m_Obsidian.Quantity <= m_Completed )
 						{
 							targObsidian.Quantity += m_Obsidian.Quantity;
 							m_Obsidian.Delete();
 						}
 						else
 						{
-							int delta = Obsidian.m_Completed - targObsidian.Quantity;
+							int delta = m_Completed - targObsidian.Quantity;
 							targObsidian.Quantity += delta;
 							m_Obsidian.Quantity -= delta;
 						}
 
-						if ( targObsidian.Quantity >= Obsidian.m_Completed )
-							targObsidian.StatueName = Obsidian.RandomName( from );
+						if ( targObsidian.Quantity >= m_Completed )
+							targObsidian.StatueName = RandomName( from );
 
 						from.Send( new AsciiMessage( targObsidian.Serial, targObsidian.ItemID, MessageType.Regular, 0x59, 3, m_Obsidian.Name, "Something Happened." ) );
 

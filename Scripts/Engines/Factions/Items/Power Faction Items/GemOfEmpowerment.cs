@@ -15,7 +15,7 @@ namespace Server {
 
 		public override bool Use( Mobile from ) {
 			if ( Faction.ClearSkillLoss( from ) ) {
-				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2219, false, "The gem shatters as you invoke its power." );
+				from.LocalOverheadMessage( Network.MessageType.Regular, 2219, false, "The gem shatters as you invoke its power." );
 				from.PlaySound( 909 );
 
 				from.FixedEffect( 0x373A, 10, 30 );

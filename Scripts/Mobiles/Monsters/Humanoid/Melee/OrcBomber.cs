@@ -114,7 +114,7 @@ namespace Server.Mobiles
 		{
 			DoHarmful( m );
 
-			this.MovingParticles( m, 0x1C19, 1, 0, false, true, 0, 0, 9502, 6014, 0x11D, EffectLayer.Waist, 0 );
+			MovingParticles( m, 0x1C19, 1, 0, false, true, 0, 0, 9502, 6014, 0x11D, EffectLayer.Waist, 0 );
 
 			new InternalTimer( m, this ).Start();
 		}

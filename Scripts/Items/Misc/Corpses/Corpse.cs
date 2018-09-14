@@ -159,7 +159,7 @@ namespace Server.Items
 
 		private void AssignInstancedLoot()
 		{
-			if ( m_Aggressors.Count == 0 || this.Items.Count == 0 )
+			if ( m_Aggressors.Count == 0 || Items.Count == 0 )
 				return;
 
 			if ( m_InstancedItems == null )
@@ -168,9 +168,9 @@ namespace Server.Items
 			List<Item> m_Stackables = new List<Item>();
 			List<Item> m_Unstackables = new List<Item>();
 
-			for ( int i = 0; i < this.Items.Count; i++ )
+			for ( int i = 0; i < Items.Count; i++ )
 			{
-				Item item = this.Items[i];
+				Item item = Items[i];
 
 				if ( item.LootType != LootType.Cursed ) //Don't have curesd items take up someone's item spot.. (?)
 				{
@@ -240,9 +240,9 @@ namespace Server.Items
 
 		public void AddCarvedItem( Item carved, Mobile carver )
 		{
-			this.DropItem( carved );
+			DropItem( carved );
 
-			if ( this.InstancedCorpse )
+			if ( InstancedCorpse )
 			{
 				if ( m_InstancedItems == null )
 					m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
@@ -954,7 +954,7 @@ namespace Server.Items
 			if ( !IsCriminalAction( from ) )
 				return true;
 
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null || (map.Rules & MapRules.HarmfulRestrictions) != 0 )
 				return false;
@@ -986,10 +986,10 @@ namespace Server.Items
 
 		public virtual void Open( Mobile from, bool checkSelfLoot )
 		{
-			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( from.AccessLevel > AccessLevel.Player || from.InRange( GetWorldLocation(), 2 ) )
 			{
 				#region Self Looting
-				if ( checkSelfLoot && from == m_Owner && !GetFlag( CorpseFlag.SelfLooted ) && this.Items.Count != 0 )
+				if ( checkSelfLoot && from == m_Owner && !GetFlag( CorpseFlag.SelfLooted ) && Items.Count != 0 )
 				{
 					if ( from.FindItemOnLayer( Layer.OuterTorso ) is DeathRobe robe )
 					{
@@ -1017,7 +1017,7 @@ namespace Server.Items
 						}
 					}
 
-					List<Item> items = new List<Item>( this.Items );
+					List<Item> items = new List<Item>( Items );
 
 					bool didntFit = false;
 
@@ -1045,7 +1045,7 @@ namespace Server.Items
 
 					from.PlaySound( 0x3E3 );
 
-					if ( this.Items.Count != 0 )
+					if ( Items.Count != 0 )
 					{
 						from.SendLocalizedMessage( 1062472 ); // You gather some of your belongings. The rest remain on the corpse.
 					}
@@ -1152,18 +1152,18 @@ namespace Server.Items
 				if ( m_CorpseName != null )
 					list.Add( m_CorpseName );
 				else
-					list.Add( 1046414, this.Name ); // the remains of ~1_NAME~
+					list.Add( 1046414, Name ); // the remains of ~1_NAME~
 			}
 			else // Bone form
 			{
-				list.Add( 1046414, this.Name ); // the remains of ~1_NAME~
+				list.Add( 1046414, Name ); // the remains of ~1_NAME~
 			}
 		}
 
 		public override void OnAosSingleClick( Mobile from )
 		{
 			int hue = Notoriety.GetHue( NotorietyHandlers.CorpseNotoriety( from, this ) );
-			ObjectPropertyList opl = this.PropertyList;
+			ObjectPropertyList opl = PropertyList;
 
 			if ( opl.Header > 0 )
 				from.Send( new MessageLocalized( Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs ) );
@@ -1188,7 +1188,7 @@ namespace Server.Items
 
 		public void Carve( Mobile from, Item item )
 		{
-			if ( IsCriminalAction( from ) && this.Map != null && (this.Map.Rules & MapRules.HarmfulRestrictions) != 0 )
+			if ( IsCriminalAction( from ) && Map != null && (Map.Rules & MapRules.HarmfulRestrictions) != 0 )
 			{
 				if ( m_Owner == null || !m_Owner.Player )
 					from.SendLocalizedMessage( 1005035 ); // You did not earn the right to loot this creature!

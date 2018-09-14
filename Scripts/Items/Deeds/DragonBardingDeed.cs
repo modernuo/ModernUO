@@ -70,14 +70,14 @@ namespace Server.Items
 			}
 			else
 			{
-				pet.BardingExceptional = this.Exceptional;
-				pet.BardingCrafter = this.Crafter;
+				pet.BardingExceptional = Exceptional;
+				pet.BardingCrafter = Crafter;
 				pet.BardingHP = pet.BardingMaxHP;
-				pet.BardingResource = this.Resource;
+				pet.BardingResource = Resource;
 				pet.HasBarding = true;
-				pet.Hue = this.Hue;
+				pet.Hue = Hue;
 
-				this.Delete();
+				Delete();
 
 				from.SendLocalizedMessage( 1053027 ); // You place the barding on your swamp dragon.  Use a bladed item on your dragon to remove the armor.
 			}

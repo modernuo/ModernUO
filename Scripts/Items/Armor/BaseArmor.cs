@@ -231,7 +231,7 @@ namespace Server.Items
 
 					m_Resource = value;
 
-					if ( CraftItem.RetainsColor( this.GetType() ) )
+					if ( CraftItem.RetainsColor( GetType() ) )
 					{
 						Hue = CraftResources.GetHue(m_Resource);
 					}
@@ -414,7 +414,7 @@ namespace Server.Items
 		{
 			get
 			{
-				switch ( this.Layer )
+				switch ( Layer )
 				{
 					default:
 					case Layer.Neck:		return ArmorBodyType.Gorget;
@@ -1111,7 +1111,7 @@ namespace Server.Items
 
 			m_HitPoints = m_MaxHitPoints = Utility.RandomMinMax( InitMinHits, InitMaxHits );
 
-			this.Layer = (Layer)ItemData.Quality;
+			Layer = (Layer)ItemData.Quality;
 
 			m_AosAttributes = new AosAttributes( this );
 			m_AosArmorAttributes = new AosArmorAttributes( this );
@@ -1213,7 +1213,7 @@ namespace Server.Items
 
 			if ( strBonus != 0 || dexBonus != 0 || intBonus != 0 )
 			{
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				if ( strBonus != 0 )
 					from.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
@@ -1232,7 +1232,7 @@ namespace Server.Items
 		{
 			if ( parent is Mobile m )
 			{
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				m.RemoveStatMod( modName + "Str" );
 				m.RemoveStatMod( modName + "Dex" );
@@ -1311,7 +1311,7 @@ namespace Server.Items
 
 		private string GetNameString()
 		{
-			string name = this.Name;
+			string name = Name;
 
 			if ( name == null )
 				name = String.Format( "#{0}", LabelNumber );
@@ -1547,7 +1547,7 @@ namespace Server.Items
 			}
 			else
 			{
-				this.LabelTo( from, Name );
+				LabelTo( from, Name );
 				number = 1041000;
 			}
 

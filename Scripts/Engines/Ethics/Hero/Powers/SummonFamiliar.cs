@@ -22,7 +22,7 @@ namespace Server.Ethics.Hero
 
 			if ( from.Familiar != null )
 			{
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You already have a holy familiar." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You already have a holy familiar." );
 				return;
 			}
 
@@ -34,7 +34,7 @@ namespace Server.Ethics.Hero
 
 			HolyFamiliar familiar = new HolyFamiliar();
 
-			if ( Mobiles.BaseCreature.Summon( familiar, from.Mobile, from.Mobile.Location, 0x217, TimeSpan.FromHours( 1.0 ) ) )
+			if ( BaseCreature.Summon( familiar, from.Mobile, from.Mobile.Location, 0x217, TimeSpan.FromHours( 1.0 ) ) )
 			{
 				from.Familiar = familiar;
 

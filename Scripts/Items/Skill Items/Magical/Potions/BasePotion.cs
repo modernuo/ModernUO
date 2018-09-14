@@ -89,13 +89,13 @@ namespace Server.Items
 			if ( !Movable )
 				return;
 
-			if ( from.InRange( this.GetWorldLocation(), 1 ) )
+			if ( from.InRange( GetWorldLocation(), 1 ) )
 			{
 				if (!RequireFreeHand || HasFreeHand(from))
 				{
 					if (this is BaseExplosionPotion && Amount > 1)
 					{
-						BasePotion pot = (BasePotion)Activator.CreateInstance(this.GetType());
+						BasePotion pot = (BasePotion)Activator.CreateInstance(GetType());
 
 						if (pot != null)
 						{
@@ -114,7 +114,7 @@ namespace Server.Items
 					}
 					else
 					{
-						this.Drink( from );
+						Drink( from );
 					}
 				}
 				else

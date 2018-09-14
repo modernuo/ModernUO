@@ -20,7 +20,7 @@ namespace Server.Engines.MyRunUO
 		{
 			if ( Config.Enabled )
 			{
-				Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), Config.CharacterUpdateInterval, new TimerCallback( Begin ) );
+				DelayCall( TimeSpan.FromSeconds( 10.0 ), Config.CharacterUpdateInterval, new TimerCallback( Begin ) );
 
 				CommandSystem.Register( "InitMyRunUO", AccessLevel.Administrator, new CommandEventHandler( InitMyRunUO_OnCommand ) );
 				CommandSystem.Register( "UpdateMyRunUO", AccessLevel.Administrator, new CommandEventHandler( UpdateMyRunUO_OnCommand ) );
@@ -608,7 +608,7 @@ namespace Server.Engines.MyRunUO
 
 		public void CollectGuilds( DateTime endTime )
 		{
-			m_List.AddRange( Guild.List.Values );
+			m_List.AddRange( BaseGuild.List.Values );
 			m_Stage = Stage.DumpingGuilds;
 			m_Index = 0;
 		}

@@ -21,11 +21,11 @@ namespace Server.Mobiles
 		[Constructible]
 		public Dummy(AIType iAI, FightMode iFightMode, int iRangePerception, int iRangeFight, double dActiveSpeed, double dPassiveSpeed) : base(iAI, iFightMode, iRangePerception, iRangeFight, dActiveSpeed, dPassiveSpeed)
 		{
-			this.Body = 400 + Utility.Random(2);
-			this.Hue = Utility.RandomSkinHue();
+			Body = 400 + Utility.Random(2);
+			Hue = Utility.RandomSkinHue();
 
-			this.Skills[SkillName.DetectHidden].Base = 100;
-			this.Skills[SkillName.MagicResist].Base = 120;
+			Skills[SkillName.DetectHidden].Base = 100;
+			Skills[SkillName.MagicResist].Base = 120;
 
 			Team = Utility.Random(3);
 

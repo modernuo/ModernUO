@@ -106,7 +106,7 @@ namespace Server.Mobiles
 
 			int orcs = 0;
 
-			foreach ( Mobile m in this.GetMobilesInRange( 10 ) )
+			foreach ( Mobile m in GetMobilesInRange( 10 ) )
 			{
 				if ( m is OrcishLord )
 					++orcs;
@@ -116,7 +116,7 @@ namespace Server.Mobiles
 			{
 				BaseCreature orc = new SpawnedOrcishLord();
 
-				orc.Team = this.Team;
+				orc.Team = Team;
 
 				Point3D loc = target.Location;
 				bool validLocation = false;
@@ -127,7 +127,7 @@ namespace Server.Mobiles
 					int y = target.Y + Utility.Random( 3 ) - 1;
 					int z = map.GetAverageZ( x, y );
 
-					if ( validLocation = map.CanFit( x, y, this.Z, 16, false, false ) )
+					if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
 						loc = new Point3D( x, y, Z );
 					else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
 						loc = new Point3D( x, y, z );

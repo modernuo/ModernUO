@@ -159,7 +159,7 @@ namespace Server.Items
 			if ( m_Protected && from.AccessLevel == AccessLevel.Player )
 				return;
 
-			if ( !from.InRange( this.GetWorldLocation(), 2 ) )
+			if ( !from.InRange( GetWorldLocation(), 2 ) )
 				return;
 
 			if ( m_Burning )

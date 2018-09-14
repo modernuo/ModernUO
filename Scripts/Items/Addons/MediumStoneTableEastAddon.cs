@@ -40,7 +40,7 @@ namespace Server.Items
 
 	public class MediumStoneTableEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new MediumStoneTableEastAddon( this.Hue );
+		public override BaseAddon Addon => new MediumStoneTableEastAddon( Hue );
 		public override int LabelNumber => 1044508; // stone table (east)
 
 		[Constructible]

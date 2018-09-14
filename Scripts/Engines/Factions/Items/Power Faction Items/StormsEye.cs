@@ -17,9 +17,9 @@ namespace Server {
 		}
 
 		public override bool Use( Mobile user ) {
-			if ( this.Movable ) {
-				user.BeginTarget( 12, true, Server.Targeting.TargetFlags.None, delegate( Mobile from, object obj ) {
-					if ( this.Movable && !this.Deleted ) {
+			if ( Movable ) {
+				user.BeginTarget( 12, true, Targeting.TargetFlags.None, delegate( Mobile from, object obj ) {
+					if ( Movable && !Deleted ) {
 						if ( obj is IPoint3D pt ) {
 							SpellHelper.GetSurfaceTop( ref pt );
 
@@ -27,15 +27,15 @@ namespace Server {
 							Map facet = from.Map;
 
 							if ( facet != null && facet.CanFit( pt.X, pt.Y, pt.Z, 16, false, false, true ) ) {
-								this.Movable = false;
+								Movable = false;
 
 								Effects.SendMovingEffect(
 									from, new Entity( Serial.Zero, origin, facet ),
-									this.ItemID & 0x3FFF, 7, 0, false, false, this.Hue - 1, 0
+									ItemID & 0x3FFF, 7, 0, false, false, Hue - 1, 0
 								);
 
 								Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), delegate {
-									this.Delete();
+									Delete();
 
 									Effects.PlaySound( origin, facet, 530 );
 									Effects.PlaySound( origin, facet, 263 );

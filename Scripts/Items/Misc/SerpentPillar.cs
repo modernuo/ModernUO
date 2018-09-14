@@ -53,14 +53,14 @@ namespace Server.Items
 		{
 			Mobile from = e.Mobile;
 
-			if ( !e.Handled && from.InRange( this, 10 ) && e.Speech.ToLower() == this.Word )
+			if ( !e.Handled && from.InRange( this, 10 ) && e.Speech.ToLower() == Word )
 			{
 				BaseBoat boat = BaseBoat.FindBoatAt( from, from.Map );
 
 				if ( boat == null )
 					return;
 
-				if ( !this.Active )
+				if ( !Active )
 				{
 					if ( boat.TillerMan != null )
 						boat.TillerMan.Say( 502507 ); // Ar, Legend has it that these pillars are inactive! No man knows how it might be undone!

@@ -184,7 +184,7 @@ namespace Server.Engines.Doom
 			if ( m_Region != null )
 				return;
 
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null || map == Map.Internal )
 				return;
@@ -217,7 +217,7 @@ namespace Server.Engines.Doom
 
 		public virtual void SpawnTrap()
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null )
 				return;
@@ -248,7 +248,7 @@ namespace Server.Engines.Doom
 			{
 				int x = Utility.Random( m_RegionBounds.X, m_RegionBounds.Width );
 				int y = Utility.Random( m_RegionBounds.Y, m_RegionBounds.Height );
-				int z = this.Z;
+				int z = Z;
 
 				if ( !map.CanFit( x, y, z, 16, false, false ) )
 					z = map.GetAverageZ( x, y );
@@ -269,7 +269,7 @@ namespace Server.Engines.Doom
 		{
 			int playerCount = 0;
 
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map != null )
 			{
@@ -335,7 +335,7 @@ namespace Server.Engines.Doom
 					item.Delete();
 				else if ( obj is Mobile mob )
 				{
-					mob.MoveToWorld( GetWorldLocation(), this.Map );
+					mob.MoveToWorld( GetWorldLocation(), Map );
 
 					m_Creatures.Add( mob );
 				}
@@ -669,7 +669,7 @@ namespace Server.Engines.Doom
 		private GauntletSpawner m_Spawner;
 
 		public GauntletRegion( GauntletSpawner spawner, Map map )
-			: base( null, map, Region.Find( spawner.Location, spawner.Map ), spawner.RegionBounds )
+			: base( null, map, Find( spawner.Location, spawner.Map ), spawner.RegionBounds )
 		{
 			m_Spawner = spawner;
 

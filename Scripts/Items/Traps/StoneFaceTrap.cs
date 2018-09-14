@@ -27,7 +27,7 @@ namespace Server.Items
 			}
 			set
 			{
-				bool breathing = this.Breathing;
+				bool breathing = Breathing;
 
 				ItemID = ( breathing ? GetFireID( value ) : GetBaseID( value ) );
 			}
@@ -35,13 +35,13 @@ namespace Server.Items
 
 		public bool Breathing
 		{
-			get => ( ItemID == GetFireID( this.Type ) );
+			get => ( ItemID == GetFireID( Type ) );
 			set
 			{
 				if ( value )
-					ItemID = GetFireID( this.Type );
+					ItemID = GetFireID( Type );
 				else
-					ItemID = GetBaseID( this.Type );
+					ItemID = GetBaseID( Type );
 			}
 		}
 

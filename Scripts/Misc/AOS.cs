@@ -60,7 +60,7 @@ namespace Server
 				return 0;
 
 			if ( phys == 0 && fire == 100 && cold == 0 && pois == 0 && nrgy == 0 )
-				Mobiles.MeerMage.StopEffect( m, true );
+				MeerMage.StopEffect( m, true );
 
 			if ( !Core.AOS )
 			{

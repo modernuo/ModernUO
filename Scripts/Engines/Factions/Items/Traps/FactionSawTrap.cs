@@ -15,7 +15,7 @@ namespace Server.Factions
 
 		public override void DoVisibleEffect()
 		{
-			Effects.SendLocationEffect( this.Location, this.Map, 0x11AD, 25, 10 );
+			Effects.SendLocationEffect( Location, Map, 0x11AD, 25, 10 );
 		}
 
 		public override void DoAttackEffect( Mobile m )

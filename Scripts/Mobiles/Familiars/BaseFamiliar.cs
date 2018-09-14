@@ -122,8 +122,8 @@ namespace Server.Mobiles
 
 		public virtual void DropPackContents()
 		{
-			Map map = this.Map;
-			Container pack = this.Backpack;
+			Map map = Map;
+			Container pack = Backpack;
 
 			if ( map != null && map != Map.Internal && pack != null )
 			{

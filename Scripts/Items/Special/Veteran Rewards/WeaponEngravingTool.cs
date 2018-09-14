@@ -237,7 +237,7 @@ namespace Server.Items
 				AddTextEntry( 75, 245, 350, 40, 0x0, (int) Buttons.Text, "" );
 			}
 
-			public override void OnResponse( Server.Network.NetState state, RelayInfo info )
+			public override void OnResponse( Network.NetState state, RelayInfo info )
 			{
 				if ( m_Tool == null || m_Tool.Deleted || m_Target == null || m_Target.Deleted )
 					return;
@@ -314,7 +314,7 @@ namespace Server.Items
 				AddHtmlLocalized( 40, 109, 100, 20, 1060051, 0x7FFF, false, false ); // CANCEL
 			}
 
-			public override void OnResponse( Server.Network.NetState state, RelayInfo info )
+			public override void OnResponse( Network.NetState state, RelayInfo info )
 			{
 				if ( m_Engraver == null || m_Engraver.Deleted )
 					return;

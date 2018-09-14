@@ -592,7 +592,7 @@ namespace Server.Factions
 				sigils[i].ReturnHome();
 			}
 
-			List<Faction> factions = Faction.Factions;
+			List<Faction> factions = Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
@@ -644,7 +644,7 @@ namespace Server.Factions
 				sigils[i].ReturnHome();
 			}
 
-			List<Faction> factions = Faction.Factions;
+			List<Faction> factions = Factions;
 
 			for ( int i = 0; i < factions.Count; ++i )
 			{
@@ -997,7 +997,7 @@ namespace Server.Factions
 			if ( smallest == null )
 				return true; // sanity
 
-			if ( StabilityFactor > 0 && (((this.Members.Count + influx) * 100) / StabilityFactor) > smallest.Members.Count )
+			if ( StabilityFactor > 0 && (((Members.Count + influx) * 100) / StabilityFactor) > smallest.Members.Count )
 				return false;
 
 			return true;
@@ -1052,7 +1052,7 @@ namespace Server.Factions
 			{
 				Faction victimFaction = bc.FactionAllegiance;
 
-				if ( bc.Map == Faction.Facet && victimFaction != null && killerState.Faction != victimFaction )
+				if ( bc.Map == Facet && victimFaction != null && killerState.Faction != victimFaction )
 				{
 					int silver = killerState.Faction.AwardSilver( killer, bc.FactionSilverWorth );
 
@@ -1061,7 +1061,7 @@ namespace Server.Factions
 				}
 
 				#region Ethics
-				if ( bc.Map == Faction.Facet && bc.GetEthicAllegiance( killer ) == BaseCreature.Allegiance.Enemy )
+				if ( bc.Map == Facet && bc.GetEthicAllegiance( killer ) == BaseCreature.Allegiance.Enemy )
 				{
 					Ethics.Player killerEPL = Ethics.Player.Find( killer );
 

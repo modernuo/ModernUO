@@ -147,7 +147,7 @@ namespace Server.Factions
 
 		private bool WasNamed( string speech )
 		{
-			string name = this.Name;
+			string name = Name;
 
 			return ( name != null && Insensitive.StartsWith( speech, name ) );
 		}
@@ -164,17 +164,17 @@ namespace Server.Factions
 				{
 					if ( m_Town == null || !m_Town.IsSheriff( from ) )
 					{
-						this.Say( 1042189 ); // I don't work for you!
+						Say( 1042189 ); // I don't work for you!
 					}
-					else if ( Town.FromRegion( this.Region ) == m_Town )
+					else if ( Town.FromRegion( Region ) == m_Town )
 					{
-						this.Say( 1042180 ); // Your orders, sire?
+						Say( 1042180 ); // Your orders, sire?
 						m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
 					}
 				}
 				else if ( DateTime.UtcNow < m_OrdersEnd )
 				{
-					if ( m_Town != null && m_Town.IsSheriff( from ) && Town.FromRegion( this.Region ) == m_Town )
+					if ( m_Town != null && m_Town.IsSheriff( from ) && Town.FromRegion( Region ) == m_Town )
 					{
 						m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 );
 

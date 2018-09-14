@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-	[Server.Engines.Craft.Anvil]
+	[Engines.Craft.Anvil]
 	public class AnvilComponent : AddonComponent
 	{
 		[Constructible]
@@ -27,7 +27,7 @@ namespace Server.Items
 		}
 	}
 
-	[Server.Engines.Craft.Forge]
+	[Engines.Craft.Forge]
 	public class ForgeComponent : AddonComponent
 	{
 		[Constructible]

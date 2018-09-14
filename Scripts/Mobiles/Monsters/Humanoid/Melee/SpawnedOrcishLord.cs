@@ -8,7 +8,7 @@ namespace Server.Mobiles
 		[Constructible]
 		public SpawnedOrcishLord()
 		{
-			Container pack = this.Backpack;
+			Container pack = Backpack;
 
 			if ( pack != null )
 				pack.Delete();

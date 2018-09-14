@@ -210,7 +210,7 @@ namespace Server.Multis
 
 			public override void OnClick()
 			{
-				Mobile from = this.Owner.From;
+				Mobile from = Owner.From;
 
 				if ( !from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner == null || !m_Sign.Owner.AreThereAvailableVendorsFor( from ) )
 					return;
@@ -237,7 +237,7 @@ namespace Server.Multis
 
 			public override void OnClick()
 			{
-				Mobile from = this.Owner.From;
+				Mobile from = Owner.From;
 
 				if ( m_Sign.Deleted || m_Sign.Owner == null || m_Sign.Owner.VendorInventories.Count == 0 || !from.CheckAlive() )
 					return;
@@ -281,8 +281,8 @@ namespace Server.Multis
 				}
 			}
 
-			if ( this.Name == "a house sign" )
-				this.Name = null;
+			if ( Name == "a house sign" )
+				Name = null;
 		}
 	}
 }

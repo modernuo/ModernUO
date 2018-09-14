@@ -105,7 +105,7 @@ namespace Server.Items
 
 		public void Empty( int message )
 		{
-			List<Item> items = this.Items;
+			List<Item> items = Items;
 
 			if ( items.Count > 0 )
 			{

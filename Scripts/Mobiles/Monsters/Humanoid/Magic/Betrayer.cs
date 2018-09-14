@@ -109,10 +109,10 @@ namespace Server.Mobiles
 				m_Stunning = true;
 
 				defender.Animate( 21, 6, 1, true, false, 0 );
-				this.PlaySound( 0xEE );
+				PlaySound( 0xEE );
 				defender.LocalOverheadMessage( MessageType.Regular, 0x3B2, false, "You have been stunned by a colossal blow!" );
 
-				if ( this.Weapon is BaseWeapon weapon )
+				if ( Weapon is BaseWeapon weapon )
 					weapon.OnHit( this, defender );
 
 				if ( defender.Alive )
@@ -148,10 +148,10 @@ namespace Server.Mobiles
 
 			if ( Utility.RandomBool() )
 			{
-				this.FixedParticles( 0x376A, 9, 32, 0x2539, EffectLayer.LeftHand );
-				this.PlaySound( 0x1DE );
+				FixedParticles( 0x376A, 9, 32, 0x2539, EffectLayer.LeftHand );
+				PlaySound( 0x1DE );
 
-				foreach ( Mobile m in this.GetMobilesInRange( 2 ) )
+				foreach ( Mobile m in GetMobilesInRange( 2 ) )
 				{
 					if ( m != this && IsEnemy( m ) )
 					{

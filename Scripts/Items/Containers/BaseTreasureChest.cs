@@ -67,7 +67,7 @@ namespace Server.Items
 		{
 			get
 			{
-				if ( this.Locked )
+				if ( Locked )
 					return "a locked treasure chest";
 
 				return "a treasure chest";
@@ -103,27 +103,27 @@ namespace Server.Items
 			switch( m_TreasureLevel )
 			{
 				case TreasureLevel.Level1:
-					this.RequiredSkill = this.LockLevel = 5;
+					RequiredSkill = LockLevel = 5;
 					break;
 
 				case TreasureLevel.Level2:
-					this.RequiredSkill = this.LockLevel = 20;
+					RequiredSkill = LockLevel = 20;
 					break;
 
 				case TreasureLevel.Level3:
-					this.RequiredSkill = this.LockLevel = 50;
+					RequiredSkill = LockLevel = 50;
 					break;
 
 				case TreasureLevel.Level4:
-					this.RequiredSkill = this.LockLevel = 70;
+					RequiredSkill = LockLevel = 70;
 					break;
 
 				case TreasureLevel.Level5:
-					this.RequiredSkill = this.LockLevel = 90;
+					RequiredSkill = LockLevel = 90;
 					break;
 
 				case TreasureLevel.Level6:
-					this.RequiredSkill = this.LockLevel = 100;
+					RequiredSkill = LockLevel = 100;
 					break;
 			}
 		}

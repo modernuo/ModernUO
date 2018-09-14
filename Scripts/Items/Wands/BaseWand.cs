@@ -210,7 +210,7 @@ namespace Server.Items
 			}
 			else
 			{
-				this.LabelTo( from, Name );
+				LabelTo( from, Name );
 				number = 1041000;
 			}
 

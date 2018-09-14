@@ -9,7 +9,7 @@ namespace Server.Items
 	public class MetalHouseDoor : BaseHouseDoor
 	{
 		[Constructible]
-		public MetalHouseDoor( DoorFacing facing ) : base( facing, 0x675 + (2 * (int)facing), 0x676 + (2 * (int)facing), 0xEC, 0xF3, BaseDoor.GetOffset( facing ) )
+		public MetalHouseDoor( DoorFacing facing ) : base( facing, 0x675 + (2 * (int)facing), 0x676 + (2 * (int)facing), 0xEC, 0xF3, GetOffset( facing ) )
 		{
 		}
 
@@ -35,7 +35,7 @@ namespace Server.Items
 	public class DarkWoodHouseDoor : BaseHouseDoor
 	{
 		[Constructible]
-		public DarkWoodHouseDoor( DoorFacing facing ) : base( facing, 0x6A5 + (2 * (int)facing), 0x6A6 + (2 * (int)facing), 0xEA, 0xF1, BaseDoor.GetOffset( facing ) )
+		public DarkWoodHouseDoor( DoorFacing facing ) : base( facing, 0x6A5 + (2 * (int)facing), 0x6A6 + (2 * (int)facing), 0xEA, 0xF1, GetOffset( facing ) )
 		{
 		}
 
@@ -67,7 +67,7 @@ namespace Server.Items
 
 		[Constructible]
 		public GenericHouseDoor( DoorFacing facing, int baseItemID, int openedSound, int closedSound, bool autoAdjust )
-			: base( facing, baseItemID + (autoAdjust ? (2 * (int)facing) : 0), baseItemID + 1 + (autoAdjust ? (2 * (int)facing) : 0), openedSound, closedSound, BaseDoor.GetOffset( facing ) )
+			: base( facing, baseItemID + (autoAdjust ? (2 * (int)facing) : 0), baseItemID + 1 + (autoAdjust ? (2 * (int)facing) : 0), openedSound, closedSound, GetOffset( facing ) )
 		{
 		}
 
@@ -128,7 +128,7 @@ namespace Server.Items
 			if ( Open )
 				loc = new Point3D( X - Offset.X, Y - Offset.Y, Z - Offset.Z );
 			else
-				loc = this.Location;
+				loc = Location;
 
 			return BaseHouse.FindHouseAt( loc, Map, 20 );
 		}

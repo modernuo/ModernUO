@@ -200,7 +200,7 @@ namespace Server.Guilds
 			if ( g.Alliance != this || !m_PendingMembers.Contains( g ) || m_Members.Contains( g ) )
 				return;
 
-			g.GuildMessage( 1070760, this.Name ); // Your Guild has joined the ~1_ALLIANCENAME~ Alliance.
+			g.GuildMessage( 1070760, Name ); // Your Guild has joined the ~1_ALLIANCENAME~ Alliance.
 			AllianceMessage( 1070761, g.Name ); // A new Guild has joined your Alliance: ~1_GUILDNAME~
 
 			m_PendingMembers.Remove( g );
@@ -220,7 +220,7 @@ namespace Server.Guilds
 				m_Members.Remove( g );
 				g.InvalidateMemberProperties();
 
-				g.GuildMessage( 1070763, this.Name ); // Your Guild has been removed from the ~1_ALLIANCENAME~ Alliance.
+				g.GuildMessage( 1070763, Name ); // Your Guild has been removed from the ~1_ALLIANCENAME~ Alliance.
 				AllianceMessage( 1070764, g.Name ); // A Guild has left your Alliance: ~1_GUILDNAME~
 			}
 
@@ -555,7 +555,7 @@ namespace Server.Guilds
 
 		protected override void OnTick()
 		{
-			foreach( Guild g in Guild.List.Values )
+			foreach( Guild g in BaseGuild.List.Values )
 				g.CheckExpiredWars();
 		}
 	}
@@ -685,7 +685,7 @@ namespace Server.Guilds
 			}
 			set
 			{
-				AllianceInfo current = this.Alliance;
+				AllianceInfo current = Alliance;
 
 				if ( value == current )
 					return;
@@ -778,7 +778,7 @@ namespace Server.Guilds
 
 				if ( status != WarStatus.InProgress )
 				{
-					AllianceInfo myAlliance = this.Alliance;
+					AllianceInfo myAlliance = Alliance;
 					bool inAlliance = myAlliance?.IsMember( this ) == true;
 
 					AllianceInfo otherAlliance = g?.Alliance;
@@ -795,7 +795,7 @@ namespace Server.Guilds
 						InvalidateMemberProperties();
 					}
 
-					this.AcceptedWars.Remove( w );
+					AcceptedWars.Remove( w );
 
 					if ( g != null )
 					{
@@ -804,12 +804,12 @@ namespace Server.Guilds
 
 						if ( otherInAlliance )
 						{
-							otherAlliance.AllianceMessage( 1070739 + (int)status, ( inAlliance ? this.Alliance.Name : this.Name ) );
+							otherAlliance.AllianceMessage( 1070739 + (int)status, ( inAlliance ? Alliance.Name : Name ) );
 							otherAlliance.InvalidateMemberProperties();
 						}
 						else
 						{
-							g.GuildMessage( 1070739 + (int)status, (inAlliance ? this.Alliance.Name : this.Name) );
+							g.GuildMessage( 1070739 + (int)status, (inAlliance ? Alliance.Name : Name) );
 							g.InvalidateMemberProperties();
 						}
 
@@ -826,7 +826,7 @@ namespace Server.Guilds
 				if ( w.Status != WarStatus.Pending )
 				{
 					//All sanity in here
-					this.PendingWars.Remove( w );
+					PendingWars.Remove( w );
 
 					g?.PendingWars.Remove( g.FindPendingWar( this ) );
 				}
@@ -995,7 +995,7 @@ namespace Server.Guilds
 			set
 			{
 				if ( value != null )
-					this.AddMember( value ); //Also removes from old guild.
+					AddMember( value ); //Also removes from old guild.
 
 				if ( m_Leader is PlayerMobile leader &&  leader?.Guild == this )
 					leader.GuildRank = RankDefinition.Member;
@@ -1020,7 +1020,7 @@ namespace Server.Guilds
 		{
 			m_Leader = null;
 
-			BaseGuild.List.Remove( this.Id );
+			List.Remove( Id );
 
 			foreach ( Mobile m in m_Members )
 			{
@@ -1099,8 +1099,8 @@ namespace Server.Guilds
 		#region Serialization
 		public override void Serialize( GenericWriter writer )
 		{
-			if ( this.LastFealty+TimeSpan.FromDays( 1.0 ) < DateTime.UtcNow )
-				this.CalculateGuildmaster();
+			if ( LastFealty+TimeSpan.FromDays( 1.0 ) < DateTime.UtcNow )
+				CalculateGuildmaster();
 
 			CheckExpiredWars();
 
@@ -1283,14 +1283,14 @@ namespace Server.Guilds
 
 			CheckExpiredWars();
 
-			AllianceInfo alliance = this.Alliance;
+			AllianceInfo alliance = Alliance;
 
 			alliance?.CheckLeader();
 
-			alliance = this.Alliance;	//CheckLeader could possibly change the value of this.Alliance
+			alliance = Alliance;	//CheckLeader could possibly change the value of this.Alliance
 
 			if ( alliance != null && !alliance.IsMember( this ) && !alliance.IsPendingMember( this ) )	//This block is there to fix a bug in the code in an older version.
-				this.Alliance = null;	//Will call Alliance.RemoveGuild which will set it null & perform all the pertient checks as far as alliacne disbanding
+				Alliance = null;	//Will call Alliance.RemoveGuild which will set it null & perform all the pertient checks as far as alliacne disbanding
 
 		}
 

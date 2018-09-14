@@ -673,7 +673,7 @@ namespace Server.Items
 				: base( from, stone, 5113 ) // Start
 			{
 				if ( !stone.ValidLocation() )
-					Flags |= Network.CMEFlags.Disabled;
+					Flags |= CMEFlags.Disabled;
 			}
 
 			public override void OnClick()

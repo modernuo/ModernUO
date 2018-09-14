@@ -24,8 +24,8 @@ namespace Server.Items
 		[Constructible]
 		public WayPoint() : base( 0x1f14 )
 		{
-			this.Hue = 0x498;
-			this.Visible = false;
+			Hue = 0x498;
+			Visible = false;
 			//this.Movable = false;
 		}
 

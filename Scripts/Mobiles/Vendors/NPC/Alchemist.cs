@@ -27,7 +27,7 @@ namespace Server.Mobiles
 		{
 			base.InitOutfit();
 
-			AddItem( new Server.Items.Robe( Utility.RandomPinkHue() ) );
+			AddItem( new Items.Robe( Utility.RandomPinkHue() ) );
 		}
 
 		public Alchemist( Serial serial ) : base( serial )

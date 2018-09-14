@@ -272,7 +272,7 @@ namespace Server.Items
 		{
 			int correctCylinders, correctColors;
 
-			if ( solution.Matches( this.Solution, out correctCylinders, out correctColors ) )
+			if ( solution.Matches( Solution, out correctCylinders, out correctColors ) )
 			{
 				LockPick( m );
 

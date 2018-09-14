@@ -470,13 +470,13 @@ namespace Server.Engines.Craft
 
 		public override Item CompleteCraft( out int message )
 		{
-			message = Verify( this.Container );
+			message = Verify( Container );
 
 			if ( message == 0 )
 			{
 				int trapLevel = (int)(From.Skills.Tinkering.Value / 10);
 
-				Container.TrapType = this.TrapType;
+				Container.TrapType = TrapType;
 				Container.TrapPower = trapLevel * 9;
 				Container.TrapLevel = trapLevel;
 				Container.TrapOnLockpick = true;

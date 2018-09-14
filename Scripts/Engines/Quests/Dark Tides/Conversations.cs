@@ -12,7 +12,7 @@ namespace Server.Engines.Quests.Necro
 
 		public override void OnRead()
 		{
-			Container bag = Mardoth.GetNewContainer();
+			Container bag = BaseQuester.GetNewContainer();
 
 			bag.DropItem( new DarkTidesHorn() );
 

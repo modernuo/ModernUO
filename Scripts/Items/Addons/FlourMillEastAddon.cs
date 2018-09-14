@@ -60,7 +60,7 @@ namespace Server.Items
 				m_Timer = null;
 			}
 
-			if ( state is Mobile from && !from.Deleted && !this.Deleted && IsFull )
+			if ( state is Mobile from && !from.Deleted && !Deleted && IsFull )
 			{
 				SackFlour flour = new SackFlour();
 
@@ -115,7 +115,7 @@ namespace Server.Items
 
 		public void UpdateStage( FlourMillStage stage )
 		{
-			List<AddonComponent> components = this.Components;
+			List<AddonComponent> components = Components;
 
 			int[][] stageTable = m_StageTable;
 

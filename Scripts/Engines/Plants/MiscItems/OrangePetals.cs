@@ -32,7 +32,7 @@ namespace Server.Items
 			if ( item != this )
 				return base.CheckItemUse( from, item );
 
-			if ( from != this.RootParent )
+			if ( from != RootParent )
 			{
 				from.SendLocalizedMessage( 1042038 ); // You must have the object in your backpack to use it.
 				return false;
@@ -59,7 +59,7 @@ namespace Server.Items
 
 			AddContext( from, new OrangePetalsContext( timer ) );
 
-			this.Consume();
+			Consume();
 		}
 
 		private static Hashtable m_Table = new Hashtable();

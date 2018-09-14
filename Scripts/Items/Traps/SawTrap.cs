@@ -64,7 +64,7 @@ namespace Server.Items
 			if ( !from.Alive || from.AccessLevel > AccessLevel.Player )
 				return;
 
-			Effects.SendLocationEffect( Location, Map, GetBaseID( this.Type ) + 1, 6, 3, GetEffectHue(), 0 );
+			Effects.SendLocationEffect( Location, Map, GetBaseID( Type ) + 1, 6, 3, GetEffectHue(), 0 );
 			Effects.PlaySound( Location, Map, 0x21C );
 
 			Spells.SpellHelper.Damage( TimeSpan.FromTicks( 1 ), from, from, Utility.RandomMinMax( 5, 15 ) );

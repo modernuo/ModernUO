@@ -37,7 +37,7 @@ namespace Server {
 			}
 
 			if ( used ) {
-				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2219, false, "The urn shatters as you invoke its power." );
+				from.LocalOverheadMessage( Network.MessageType.Regular, 2219, false, "The urn shatters as you invoke its power." );
 				from.PlaySound( 64 );
 
 				Effects.PlaySound( from.Location, from.Map, 1481 );

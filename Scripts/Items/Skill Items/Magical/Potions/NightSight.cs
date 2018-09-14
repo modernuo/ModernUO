@@ -35,10 +35,10 @@ namespace Server.Items
 				from.FixedParticles( 0x376A, 9, 32, 5007, EffectLayer.Waist );
 				from.PlaySound( 0x1E3 );
 
-				BasePotion.PlayDrinkEffect( from );
+				PlayDrinkEffect( from );
 
 				if ( !Engines.ConPVP.DuelContext.IsFreeConsume( from ) )
-					this.Consume();
+					Consume();
 			}
 			else
 			{

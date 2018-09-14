@@ -17,7 +17,7 @@
 
 		[Constructible]
 		public Tub( bool filled )
-			: base( ( filled ) ? Tub.fItemID : Tub.vItemID, filled )
+			: base( ( filled ) ? fItemID : vItemID, filled )
 		{
 		}
 

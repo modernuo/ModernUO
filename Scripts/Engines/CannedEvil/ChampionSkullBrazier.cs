@@ -52,7 +52,7 @@ namespace Server.Engines.CannedEvil
 			if ( m_Skull != null && m_Skull.Deleted )
 				Skull = null;
 
-			if ( from.Map != this.Map || !from.InRange( GetWorldLocation(), 3 ) )
+			if ( from.Map != Map || !from.InRange( GetWorldLocation(), 3 ) )
 			{
 				from.SendLocalizedMessage( 500446 ); // That is too far away.
 			}
@@ -79,7 +79,7 @@ namespace Server.Engines.CannedEvil
 			if ( m_Skull != null && m_Skull.Deleted )
 				Skull = null;
 
-			if ( from.Map != this.Map || !from.InRange( GetWorldLocation(), 3 ) )
+			if ( from.Map != Map || !from.InRange( GetWorldLocation(), 3 ) )
 			{
 				from.SendLocalizedMessage( 500446 ); // That is too far away.
 			}
@@ -101,12 +101,12 @@ namespace Server.Engines.CannedEvil
 			}
 			else
 			{
-				if ( skull.Type == this.Type )
+				if ( skull.Type == Type )
 				{
 					skull.Movable = false;
-					skull.MoveToWorld( GetWorldTop(), this.Map );
+					skull.MoveToWorld( GetWorldTop(), Map );
 
-					this.Skull = skull;
+					Skull = skull;
 				}
 				else
 				{

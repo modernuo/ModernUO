@@ -282,7 +282,7 @@ namespace Server.Mobiles
 			if ( MLQuestSystem.Enabled )
 				return false;
 
-			if (from.InRange(this.Location, 3))
+			if (from.InRange(Location, 3))
 				return true;
 
 			return base.HandlesOnSpeech(from);
@@ -294,7 +294,7 @@ namespace Server.Mobiles
 
 			EDI dest = GetDestination();
 
-			if (dest != null && !e.Handled && e.Mobile.InRange(this.Location, 3))
+			if (dest != null && !e.Handled && e.Mobile.InRange(Location, 3))
 			{
 				if (e.HasKeyword(0x1D)) // *destination*
 					e.Handled = SayDestinationTo(e.Mobile);
@@ -377,7 +377,7 @@ namespace Server.Mobiles
 			if ( MLQuestSystem.Enabled || master == null )
 				return master;
 
-			if (master.Deleted || master.Map != this.Map || !master.InRange(Location, 30) || !master.Alive)
+			if (master.Deleted || master.Map != Map || !master.InRange(Location, 30) || !master.Alive)
 			{
 				StopFollow();
 
@@ -475,7 +475,7 @@ namespace Server.Mobiles
 					{
 						pm.SendLocalizedMessage(1053004); // You must wait about a day before you can gain in compassion again.
 					}
-					else if (VirtueHelper.Award(pm, VirtueName.Compassion, this.IsPrisoner ? 400 : 200, ref gainedPath))
+					else if (VirtueHelper.Award(pm, VirtueName.Compassion, IsPrisoner ? 400 : 200, ref gainedPath))
 					{
 						if (gainedPath)
 							pm.SendLocalizedMessage(1053005); // You have achieved a path in compassion!

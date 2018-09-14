@@ -301,7 +301,7 @@ namespace Server.Engines.Help
 
 			using ( StringWriter writer = new StringWriter() )
 			{
-				writer.WriteLine( "RunUO Speech Log Page - {0}", PageQueue.GetPageTypeName( entry.Type ) );
+				writer.WriteLine( "RunUO Speech Log Page - {0}", GetPageTypeName( entry.Type ) );
 				writer.WriteLine();
 
 				writer.WriteLine( "From: '{0}', Account: '{1}'", sender.RawName, sender.Account is Account ? sender.Account.Username : "???" );

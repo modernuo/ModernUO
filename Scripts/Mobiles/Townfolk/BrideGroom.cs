@@ -52,7 +52,7 @@ namespace Server.Mobiles
 			else
 				HairItemID = 0x203C;
 
-			HairHue = this.Race.RandomHairHue();
+			HairHue = Race.RandomHairHue();
 
 			PackGold( 200, 250 );
 		}

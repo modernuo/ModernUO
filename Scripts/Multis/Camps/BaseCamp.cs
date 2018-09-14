@@ -86,7 +86,7 @@ namespace Server.Multis
 			if ( m is BaseVendor || m is Banker )
 				m.Direction = Direction.South;
 
-			m.MoveToWorld( loc, this.Map );
+			m.MoveToWorld( loc, Map );
 		}
 
 		public virtual void OnEnter( Mobile m )

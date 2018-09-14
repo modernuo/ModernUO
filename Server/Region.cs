@@ -216,7 +216,7 @@ namespace Server
 			m_Parent = parent;
 			m_Area = area;
 			m_Dynamic = true;
-			m_Music = this.DefaultMusic;
+			m_Music = DefaultMusic;
 
 			if ( m_Parent == null )
 			{
@@ -503,7 +503,7 @@ namespace Server
 				throw new ArgumentException( "obj is not a Region", nameof(obj) );
 
 			// Dynamic regions go first
-			if ( this.Dynamic )
+			if ( Dynamic )
 			{
 				if ( !reg.Dynamic )
 					return -1;
@@ -513,13 +513,13 @@ namespace Server
 				return 1;
 			}
 
-			int thisPriority = this.Priority;
+			int thisPriority = Priority;
 			int regPriority = reg.Priority;
 
 			if ( thisPriority != regPriority )
 				return ( regPriority - thisPriority );
 
-			return ( reg.ChildLevel - this.ChildLevel );
+			return ( reg.ChildLevel - ChildLevel );
 		}
 
 		public override string ToString()
@@ -988,7 +988,7 @@ namespace Server
 			}
 
 
-			MusicName music = this.DefaultMusic;
+			MusicName music = DefaultMusic;
 
 			ReadEnum( xml["music"], "name", ref music, false );
 

@@ -148,7 +148,7 @@ namespace Server.Items
 
 				if ( strBonus != 0 || dexBonus != 0 || intBonus != 0 )
 				{
-					string modName = this.Serial.ToString();
+					string modName = Serial.ToString();
 
 					if ( strBonus != 0 )
 						from.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
@@ -170,7 +170,7 @@ namespace Server.Items
 			{
 				m_AosSkillBonuses.Remove();
 
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				from.RemoveStatMod( modName + "Str" );
 				from.RemoveStatMod( modName + "Dex" );

@@ -36,7 +36,7 @@ namespace Server.Accounting
 		/// </summary>
 		public void Delete()
 		{
-			for ( int i = 0; i < this.Length; ++i )
+			for ( int i = 0; i < Length; ++i )
 			{
 				Mobile m = this[i];
 
@@ -235,12 +235,12 @@ namespace Server.Accounting
 		{
 			get
 			{
-				if ( this.AccessLevel != AccessLevel.Player )
+				if ( AccessLevel != AccessLevel.Player )
 					return false;
 
 				TimeSpan inactiveLength = DateTime.UtcNow - m_LastLogin;
 
-				return (inactiveLength > ((this.Count == 0) ? EmptyInactiveDuration : InactiveDuration));
+				return (inactiveLength > ((Count == 0) ? EmptyInactiveDuration : InactiveDuration));
 			}
 		}
 
@@ -546,7 +546,7 @@ namespace Server.Accounting
 
 		public void RemoveYoungStatus( int message )
 		{
-			this.Young = false;
+			Young = false;
 
 			for ( int i = 0; i < m_Mobiles.Length; i++ )
 			{
@@ -690,7 +690,7 @@ namespace Server.Accounting
 			}
 			m_TotalGameTime = totalGameTime;
 
-			if ( this.Young )
+			if ( Young )
 				CheckYoung();
 
 			Accounts.Add( this );
@@ -871,7 +871,7 @@ namespace Server.Accounting
 		}
 
 		public bool HasAccess( IPAddress ipAddress ) {
-			AccessLevel level = Misc.AccountHandler.LockdownLevel;
+			AccessLevel level = AccountHandler.LockdownLevel;
 
 			if ( level > AccessLevel.Player )
 			{
@@ -883,7 +883,7 @@ namespace Server.Accounting
 				}
 				else
 				{
-					for ( int i = 0; !hasAccess && i < this.Length; ++i )
+					for ( int i = 0; !hasAccess && i < Length; ++i )
 					{
 						Mobile m = this[i];
 
@@ -954,7 +954,7 @@ namespace Server.Accounting
 		}
 
 		public bool CheckAccess( IPAddress ipAddress ) {
-			bool hasAccess = this.HasAccess( ipAddress );
+			bool hasAccess = HasAccess( ipAddress );
 
 			if ( hasAccess ) {
 				LogAccess( ipAddress );
@@ -1111,7 +1111,7 @@ namespace Server.Accounting
 			{
 				int count = 0;
 
-				for ( int i = 0; i < this.Length; ++i )
+				for ( int i = 0; i < Length; ++i )
 				{
 					if ( this[i] != null )
 						++count;
@@ -1192,7 +1192,7 @@ namespace Server.Accounting
 		public int CompareTo( object obj )
 		{
 			if ( obj is Account account )
-				return this.CompareTo( account );
+				return CompareTo( account );
 
 			throw new ArgumentException();
 		}

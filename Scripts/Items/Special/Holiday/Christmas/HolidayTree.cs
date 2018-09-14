@@ -198,7 +198,7 @@ namespace Server.Items
 
 		private void AddItem( int x, int y, int z, Item item )
 		{
-			item.MoveToWorld( new Point3D( this.Location.X + x, this.Location.Y + y, this.Location.Z + z ), this.Map );
+			item.MoveToWorld( new Point3D( Location.X + x, Location.Y + y, Location.Z + z ), Map );
 
 			m_Components.Add( item );
 		}
@@ -278,13 +278,13 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.InRange( this.GetWorldLocation(), 1 ) )
+			if ( from.InRange( GetWorldLocation(), 1 ) )
 			{
 				if ( m_Placer == null || from == m_Placer || from.AccessLevel >= AccessLevel.GameMaster )
 				{
 					from.AddToBackpack( new HolidayTreeDeed() );
 
-					this.Delete();
+					Delete();
 
 					BaseHouse house = BaseHouse.FindHouseAt( this );
 

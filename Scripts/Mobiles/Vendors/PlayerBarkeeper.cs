@@ -198,7 +198,7 @@ namespace Server.Mobiles
 
 			AddItem( new HalfApron( Utility.RandomBrightHue() ) );
 
-			Container pack = this.Backpack;
+			Container pack = Backpack;
 
 			if ( pack != null )
 				pack.Delete();
@@ -213,7 +213,7 @@ namespace Server.Mobiles
 			else
 				Hue = 0x83F4; // hue is not random
 
-			Container pack = this.Backpack;
+			Container pack = Backpack;
 
 			if ( pack != null )
 				pack.Delete();
@@ -270,7 +270,7 @@ namespace Server.Mobiles
 			if ( !base.OnBeforeDeath() )
 				return false;
 
-			Item shoes = this.FindItemOnLayer( Layer.Shoes );
+			Item shoes = FindItemOnLayer( Layer.Shoes );
 
 			if ( shoes is Sandals )
 				shoes.Hue = 0;
@@ -359,7 +359,7 @@ namespace Server.Mobiles
 
 		public bool IsOwner( Mobile from )
 		{
-			if ( from == null || from.Deleted || this.Deleted )
+			if ( from == null || from.Deleted || Deleted )
 				return false;
 
 			if ( from.AccessLevel > AccessLevel.GameMaster )
@@ -457,7 +457,7 @@ namespace Server.Mobiles
 
 		public void EndChangeTitle( Mobile from, string title, bool vendor )
 		{
-			this.Title = title;
+			Title = title;
 
 			LoadSBInfo();
 		}

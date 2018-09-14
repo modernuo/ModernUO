@@ -5,7 +5,7 @@ namespace Server.Mobiles
 		[Constructible]
 		public CapturedHordeMinion()
 		{
-			this.FightMode = FightMode.None;
+			FightMode = FightMode.None;
 		}
 
 		public override bool InitialInnocent => true;

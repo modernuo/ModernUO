@@ -9,7 +9,7 @@ namespace Server.Items
 {
 	public sealed class StopMusic : Packet
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new StopMusic() );
+		public static readonly Packet Instance = SetStatic( new StopMusic() );
 
 		public StopMusic() : base( 0x6D, 3 )
 		{

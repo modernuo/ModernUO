@@ -23,8 +23,8 @@ namespace Server.Engines.Quests.Ninja
 
 		private void GenerateTreasure()
 		{
-			for ( int i = this.Items.Count - 1; i >= 0; i-- )
-				this.Items[i].Delete();
+			for ( int i = Items.Count - 1; i >= 0; i-- )
+				Items[i].Delete();
 
 			for ( int i = 0; i < 75; i++ )
 			{

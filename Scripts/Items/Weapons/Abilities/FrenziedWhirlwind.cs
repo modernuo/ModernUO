@@ -133,7 +133,7 @@ namespace Server.Items
 				if ( !m_Defender.Alive || m_DamageRemaining <= 0 )
 				{
 					Stop();
-					Server.Items.FrenziedWhirlwind.Registry.Remove( m_Defender );
+					Registry.Remove( m_Defender );
 					return;
 				}
 
@@ -154,7 +154,7 @@ namespace Server.Items
 				if ( !m_Defender.Alive || m_DamageRemaining <= 0 )
 				{
 					Stop();
-					Server.Items.FrenziedWhirlwind.Registry.Remove( m_Defender );
+					Registry.Remove( m_Defender );
 				}
 			}
 		}

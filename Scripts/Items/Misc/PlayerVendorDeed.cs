@@ -49,7 +49,7 @@ namespace Server.Items
 
 				v.SayTo( from, 503246 ); // Ah! it feels good to be working again.
 
-				this.Delete();
+				Delete();
 			}
 			else
 			{
@@ -93,7 +93,7 @@ namespace Server.Items
 
 						v.SayTo( from, 503246 ); // Ah! it feels good to be working again.
 
-						this.Delete();
+						Delete();
 					}
 				}
 			}

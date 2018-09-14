@@ -107,7 +107,7 @@ namespace Server.Engines.Quests.Hag
 
 								cont.DropItem( new Cauldron() );
 								cont.DropItem( new MoonfireBrew() );
-								cont.DropItem( new TreasureMap( Utility.RandomMinMax( 1, 4 ), this.Map ) );
+								cont.DropItem( new TreasureMap( Utility.RandomMinMax( 1, 4 ), Map ) );
 								cont.DropItem( new Gold( 2000, 2200 ) );
 
 								if ( Utility.RandomBool() )
@@ -120,9 +120,9 @@ namespace Server.Engines.Quests.Hag
 									}
 									else
 									{
-										weapon.DamageLevel = (WeaponDamageLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
-										weapon.AccuracyLevel = (WeaponAccuracyLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
-										weapon.DurabilityLevel = (WeaponDurabilityLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
+										weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled( 2, 3 );
+										weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled( 2, 3 );
+										weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled( 2, 3 );
 									}
 
 									cont.DropItem( weapon );
@@ -145,8 +145,8 @@ namespace Server.Engines.Quests.Hag
 										BaseArmor armor = Loot.RandomArmorOrShield();
 										item = armor;
 
-										armor.ProtectionLevel = (ArmorProtectionLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
-										armor.Durability = (ArmorDurabilityLevel)BaseCreature.RandomMinMaxScaled( 2, 3 );
+										armor.ProtectionLevel = (ArmorProtectionLevel)RandomMinMaxScaled( 2, 3 );
+										armor.Durability = (ArmorDurabilityLevel)RandomMinMaxScaled( 2, 3 );
 									}
 
 									cont.DropItem( item );

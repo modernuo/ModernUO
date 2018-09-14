@@ -49,8 +49,8 @@ namespace Server.Items
 		[Constructible]
 		public Banana( int amount ) : base( amount, 0x171f )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Banana( Serial serial ) : base( serial )
@@ -82,8 +82,8 @@ namespace Server.Items
 		[Constructible]
 		public Bananas( int amount ) : base( amount, 0x1721 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Bananas( Serial serial ) : base( serial )
@@ -114,8 +114,8 @@ namespace Server.Items
 		[Constructible]
 		public SplitCoconut( int amount ) : base( amount, 0x1725 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public SplitCoconut( Serial serial ) : base( serial )
@@ -146,8 +146,8 @@ namespace Server.Items
 		[Constructible]
 		public Lemon( int amount ) : base( amount, 0x1728 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Lemon( Serial serial ) : base( serial )
@@ -178,8 +178,8 @@ namespace Server.Items
 		[Constructible]
 		public Lemons( int amount ) : base( amount, 0x1729 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Lemons( Serial serial ) : base( serial )
@@ -210,8 +210,8 @@ namespace Server.Items
 		[Constructible]
 		public Lime( int amount ) : base( amount, 0x172a )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Lime( Serial serial ) : base( serial )
@@ -242,8 +242,8 @@ namespace Server.Items
 		[Constructible]
 		public Limes( int amount ) : base( amount, 0x172B )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Limes( Serial serial ) : base( serial )
@@ -274,8 +274,8 @@ namespace Server.Items
 		[Constructible]
 		public Coconut( int amount ) : base( amount, 0x1726 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Coconut( Serial serial ) : base( serial )
@@ -306,8 +306,8 @@ namespace Server.Items
 		[Constructible]
 		public OpenCoconut( int amount ) : base( amount, 0x1723 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public OpenCoconut( Serial serial ) : base( serial )
@@ -338,8 +338,8 @@ namespace Server.Items
 		[Constructible]
 		public Dates( int amount ) : base( amount, 0x1727 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Dates( Serial serial ) : base( serial )
@@ -370,8 +370,8 @@ namespace Server.Items
 		[Constructible]
 		public Grapes( int amount ) : base( amount, 0x9D1 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Grapes( Serial serial ) : base( serial )
@@ -402,8 +402,8 @@ namespace Server.Items
 		[Constructible]
 		public Peach( int amount ) : base( amount, 0x9D2 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Peach( Serial serial ) : base( serial )
@@ -434,8 +434,8 @@ namespace Server.Items
 		[Constructible]
 		public Pear( int amount ) : base( amount, 0x994 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Pear( Serial serial ) : base( serial )
@@ -466,8 +466,8 @@ namespace Server.Items
 		[Constructible]
 		public Apple( int amount ) : base( amount, 0x9D0 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Apple( Serial serial ) : base( serial )
@@ -498,8 +498,8 @@ namespace Server.Items
 		[Constructible]
 		public Watermelon( int amount ) : base( amount, 0xC5C )
 		{
-			this.Weight = 5.0;
-			this.FillFactor = 5;
+			Weight = 5.0;
+			FillFactor = 5;
 		}
 
 		public Watermelon( Serial serial ) : base( serial )
@@ -539,8 +539,8 @@ namespace Server.Items
 		[Constructible]
 		public SmallWatermelon( int amount ) : base( amount, 0xC5D )
 		{
-			this.Weight = 5.0;
-			this.FillFactor = 5;
+			Weight = 5.0;
+			FillFactor = 5;
 		}
 
 		public SmallWatermelon( Serial serial ) : base( serial )
@@ -572,8 +572,8 @@ namespace Server.Items
 		[Constructible]
 		public Squash( int amount ) : base( amount, 0xc72 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Squash( Serial serial ) : base( serial )
@@ -605,8 +605,8 @@ namespace Server.Items
 		[Constructible]
 		public Cantaloupe( int amount ) : base( amount, 0xc79 )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 1;
+			Weight = 1.0;
+			FillFactor = 1;
 		}
 
 		public Cantaloupe( Serial serial ) : base( serial )

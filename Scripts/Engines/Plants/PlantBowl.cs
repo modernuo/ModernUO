@@ -81,7 +81,7 @@ namespace Server.Engines.Plants
 						}
 					}
 				}
-				else if ( PlantBowl.IsDirtPatch( targeted ) )
+				else if ( IsDirtPatch( targeted ) )
 				{
 					PlantItem fullBowl = new PlantItem( false );
 

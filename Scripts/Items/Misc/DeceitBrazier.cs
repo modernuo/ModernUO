@@ -162,13 +162,13 @@ namespace Server.Items
 				int y = Location.Y + (Utility.Random( (m_SpawnRange * 2) + 1 ) - m_SpawnRange);
 				int z = Map.GetAverageZ( x, y );
 
-				if ( Map.CanSpawnMobile( new Point2D( x, y ), this.Z ) )
-					return new Point3D( x, y, this.Z );
+				if ( Map.CanSpawnMobile( new Point2D( x, y ), Z ) )
+					return new Point3D( x, y, Z );
 				else if ( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
 					return new Point3D( x, y, z );
 			}
 
-			return this.Location;
+			return Location;
 		}
 
 		public virtual void DoEffect( Point3D loc, Map map )
@@ -185,7 +185,7 @@ namespace Server.Items
 				{
 					if ( m_NextSpawn < DateTime.UtcNow )
 					{
-						Map map = this.Map;
+						Map map = Map;
 						BaseCreature bc = (BaseCreature)Activator.CreateInstance( m_Creatures[Utility.Random( m_Creatures.Length )] );
 
 						if ( bc != null )

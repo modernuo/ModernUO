@@ -49,25 +49,25 @@ namespace Server.Mobiles
 
 			m_NextFlare = DateTime.UtcNow + TimeSpan.FromSeconds( 5.0 + (25.0 * Utility.RandomDouble()) );
 
-			this.FixedEffect( 0x37C4, 1, 12, 1109, 6 );
-			this.PlaySound( 0x1D3 );
+			FixedEffect( 0x37C4, 1, 12, 1109, 6 );
+			PlaySound( 0x1D3 );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), new TimerCallback( Flare ) );
 		}
 
 		private void Flare()
 		{
-			Mobile caster = this.ControlMaster;
+			Mobile caster = ControlMaster;
 
 			if ( caster == null )
-				caster = this.SummonMaster;
+				caster = SummonMaster;
 
 			if ( caster == null )
 				return;
 
 			ArrayList list = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 5 ) )
+			foreach ( Mobile m in GetMobilesInRange( 5 ) )
 			{
 				if ( m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor )
 					list.Add( m );

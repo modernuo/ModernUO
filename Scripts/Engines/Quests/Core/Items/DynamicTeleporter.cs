@@ -38,7 +38,7 @@ namespace Server.Engines.Quests
 					return false;
 				}
 
-				pm.SendLocalizedMessage( this.NotWorkingMessage );
+				pm.SendLocalizedMessage( NotWorkingMessage );
 			}
 
 			return base.OnMoveOver( m );

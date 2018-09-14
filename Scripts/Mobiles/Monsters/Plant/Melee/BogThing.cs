@@ -76,17 +76,17 @@ namespace Server.Mobiles
 
 		public void SpawnBogling( Mobile m )
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null )
 				return;
 
 			Bogling spawned = new Bogling();
 
-			spawned.Team = this.Team;
+			spawned.Team = Team;
 
 			bool validLocation = false;
-			Point3D loc = this.Location;
+			Point3D loc = Location;
 
 			for ( int j = 0; !validLocation && j < 10; ++j )
 			{
@@ -94,7 +94,7 @@ namespace Server.Mobiles
 				int y = Y + Utility.Random( 3 ) - 1;
 				int z = map.GetAverageZ( x, y );
 
-				if ( validLocation = map.CanFit( x, y, this.Z, 16, false, false ) )
+				if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
 					loc = new Point3D( x, y, Z );
 				else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
 					loc = new Point3D( x, y, z );
@@ -108,7 +108,7 @@ namespace Server.Mobiles
 		{
 			ArrayList toEat = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 2 ) )
+			foreach ( Mobile m in GetMobilesInRange( 2 ) )
 			{
 				if ( m is Bogling )
 					toEat.Add( m );
@@ -130,7 +130,7 @@ namespace Server.Mobiles
 		{
 			base.OnGotMeleeAttack( attacker );
 
-			if ( this.Hits > (this.HitsMax / 4) )
+			if ( Hits > (HitsMax / 4) )
 			{
 				if ( 0.25 >= Utility.RandomDouble() )
 					SpawnBogling( attacker );

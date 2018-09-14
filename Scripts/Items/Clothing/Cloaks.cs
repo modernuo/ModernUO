@@ -220,7 +220,7 @@ namespace Server.Items
 			if ( !base.CanEquip( m ) )
 				return false;
 
-			return !m_IsRewardItem || Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( m, this, new object[]{ Hue, m_LabelNumber } );
+			return !m_IsRewardItem || RewardSystem.CheckIsUsableBy( m, this, new object[]{ Hue, m_LabelNumber } );
 		}
 
 		[Constructible]

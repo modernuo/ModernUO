@@ -99,7 +99,7 @@ namespace Server.Items
 			m_Author = author;
 			m_Writable = writable;
 
-			BookContent content = this.DefaultContent;
+			BookContent content = DefaultContent;
 
 			if ( content == null )
 			{
@@ -119,7 +119,7 @@ namespace Server.Items
 		{
 			m_Writable = writable;
 
-			BookContent content = this.DefaultContent;
+			BookContent content = DefaultContent;
 
 			if ( content == null )
 			{
@@ -159,7 +159,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			BookContent content = this.DefaultContent;
+			BookContent content = DefaultContent;
 
 			SaveFlags flags = SaveFlags.None;
 
@@ -214,7 +214,7 @@ namespace Server.Items
 				case 3:
 				case 2:
 				{
-					BookContent content = this.DefaultContent;
+					BookContent content = DefaultContent;
 
 					SaveFlags flags = (SaveFlags) reader.ReadByte();
 
@@ -263,7 +263,7 @@ namespace Server.Items
 					}
 					else
 					{
-						BookContent content = this.DefaultContent;
+						BookContent content = DefaultContent;
 
 						if ( content != null )
 							m_Pages = content.Copy();
@@ -325,7 +325,7 @@ namespace Server.Items
 			{
 				StringBuilder sb = new StringBuilder();
 
-				foreach( BookPageInfo bpi in this.m_Pages )
+				foreach( BookPageInfo bpi in m_Pages )
 				{
 					foreach( string line in bpi.Lines )
 					{
@@ -343,7 +343,7 @@ namespace Server.Items
 			{
 				List<string> lines = new List<string>();
 
-				foreach( BookPageInfo bpi in this.m_Pages )
+				foreach( BookPageInfo bpi in m_Pages )
 				{
 					lines.AddRange( bpi.Lines );
 				}

@@ -32,10 +32,10 @@ namespace Server.Items
 			{
 				from.Stam += Scale( from, (int)(Refresh * from.StamMax) );
 
-				BasePotion.PlayDrinkEffect( from );
+				PlayDrinkEffect( from );
 
 				if ( !Engines.ConPVP.DuelContext.IsFreeConsume( from ) )
-					this.Consume();
+					Consume();
 			}
 			else
 			{

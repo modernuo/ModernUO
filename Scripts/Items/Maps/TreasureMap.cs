@@ -289,7 +289,7 @@ namespace Server.Items
 			{
 				from.SendLocalizedMessage( 503020 ); // You are already digging treasure.
 			}
-			else if ( from.Map != this.m_Map )
+			else if ( from.Map != m_Map )
 			{
 				from.SendLocalizedMessage( 1010479 ); // You seem to be in the right place, but may be on the wrong facet!
 			}
@@ -625,9 +625,9 @@ namespace Server.Items
 			if ( from is PlayerMobile mobile && mobile.Young )
 				return true;
 
-			if ( from == this.Decoder )
+			if ( from == Decoder )
 			{
-				this.Level = 1;
+				Level = 1;
 				from.SendLocalizedMessage( 1046446 ); // This is now a level one treasure map.
 				return true;
 			}
@@ -779,7 +779,7 @@ namespace Server.Items
 				m_Map = map;
 
 				if ( !enabled )
-					this.Flags |= CMEFlags.Disabled;
+					Flags |= CMEFlags.Disabled;
 			}
 
 			public override void OnClick()
@@ -912,12 +912,12 @@ namespace Server.Items
 
 		public void Turn1()
 		{
-			this.ItemID = 0x913;
+			ItemID = 0x913;
 		}
 
 		public void Turn2()
 		{
-			this.ItemID = 0x914;
+			ItemID = 0x914;
 		}
 
 		public override void Serialize( GenericWriter writer )

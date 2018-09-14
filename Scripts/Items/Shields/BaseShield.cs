@@ -45,7 +45,7 @@ namespace Server.Items
 		{
 			get
 			{
-				Mobile m = this.Parent as Mobile;
+				Mobile m = Parent as Mobile;
 				double ar = base.ArmorRating;
 
 				if ( m != null )
@@ -114,7 +114,7 @@ namespace Server.Items
 			if ( !(Parent is Mobile owner) )
 				return damage;
 
-			double ar = this.ArmorRating;
+			double ar = ArmorRating;
 			double chance = (owner.Skills[SkillName.Parry].Value - (ar * 2.0)) / 100.0;
 
 			if ( chance < 0.01 )

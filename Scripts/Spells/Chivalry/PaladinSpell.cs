@@ -46,7 +46,7 @@ namespace Server.Spells.Chivalry
 
 		public override bool CheckFizzle()
 		{
-			int requiredTithing = this.RequiredTithing;
+			int requiredTithing = RequiredTithing;
 
 			if ( AosAttributes.GetValue( Caster, AosAttribute.LowerRegCost ) > Utility.Random( 100 ) )
 				requiredTithing = 0;

@@ -33,7 +33,7 @@ namespace Server.Items
 				m_ActiveItemID = value;
 
 				if ( !IsEmpty )
-					this.ItemID = m_ActiveItemID;
+					ItemID = m_ActiveItemID;
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace Server.Items
 				m_InactiveItemID = value;
 
 				if ( IsEmpty )
-					this.ItemID = m_InactiveItemID;
+					ItemID = m_InactiveItemID;
 			}
 		}
 
@@ -86,9 +86,9 @@ namespace Server.Items
 				m_SkillValue = value;
 
 				if ( !IsEmpty )
-					this.ItemID = m_ActiveItemID;
+					ItemID = m_ActiveItemID;
 				else
-					this.ItemID = m_InactiveItemID;
+					ItemID = m_InactiveItemID;
 
 				InvalidateProperties();
 			}
@@ -131,7 +131,7 @@ namespace Server.Items
 			if ( !IsEmpty )
 				list.Add( 1070721, "#{0}\t{1:0.0}", AosSkillBonuses.GetLabel( Skill ), SkillValue ); // Skill stored: ~1_skillname~ ~2_skillamount~
 
-			string name = this.LastUserName;
+			string name = LastUserName;
 
 			if ( name == null )
 				name = String.Format( "#{0}", 1074235 ); // Unknown
@@ -158,16 +158,16 @@ namespace Server.Items
 
 			PlayerMobile pm = from as PlayerMobile;
 
-			if ( this.Deleted || !this.IsAccessibleTo( from ) )
+			if ( Deleted || !IsAccessibleTo( from ) )
 			{
 				return false;
 			}
-			else if ( from.Map != this.Map || !from.InRange( GetWorldLocation(), 2 ) )
+			else if ( from.Map != Map || !from.InRange( GetWorldLocation(), 2 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return false;
 			}
-			else if ( this.Account != null && ( !(from.Account is Account) || from.Account.Username != this.Account ) )
+			else if ( Account != null && ( !(from.Account is Account) || from.Account.Username != Account ) )
 			{
 				from.SendLocalizedMessage( 1070714 ); // This is an Account Bound Soulstone, and your character is not bound to it.  You cannot use this Soulstone.
 				return false;
@@ -238,7 +238,7 @@ namespace Server.Items
 			from.CloseGump( typeof( ConfirmRemovalGump ) );
 			from.CloseGump( typeof( ErrorGump ) );
 
-			if ( this.IsEmpty )
+			if ( IsEmpty )
 				from.SendGump( new SelectSkillGump( this, from ) );
 			else
 				from.SendGump( new ConfirmTransferGump( this, from ) );

@@ -49,10 +49,10 @@ namespace Server.Items
 
 			Mobile to;
 
-			if ( this.Trade.From.Container != this )
-				to = this.Trade.From.Mobile;
+			if ( Trade.From.Container != this )
+				to = Trade.From.Mobile;
 			else
-				to = this.Trade.To.Mobile;
+				to = Trade.To.Mobile;
 
 			return m.CheckTrade( to, item, this, message, checkItems, plusItems, plusWeight );
 		}

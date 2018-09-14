@@ -572,13 +572,13 @@ namespace Server
 
 		public int CompareTo( Item other )
 		{
-			return this.CompareTo( (IEntity) other );
+			return CompareTo( (IEntity) other );
 		}
 
 		public int CompareTo( object other )
 		{
 			if ( other == null || other is IEntity )
-				return this.CompareTo( (IEntity) other );
+				return CompareTo( (IEntity) other );
 
 			throw new ArgumentException();
 		}
@@ -927,7 +927,7 @@ namespace Server
 		/// </summary>
 		public virtual void AddNameProperty( ObjectPropertyList list )
 		{
-			string name = this.Name;
+			string name = Name;
 
 			if ( name == null )
 			{
@@ -1011,7 +1011,7 @@ namespace Server
 		/// </summary>
 		public virtual void AddWeightProperty( ObjectPropertyList list )
 		{
-			int weight = this.PileWeight + this.TotalWeight;
+			int weight = PileWeight + TotalWeight;
 
 			if ( weight == 1 ) {
 				list.Add( 1072788, weight.ToString() ); //Weight: ~1_WEIGHT~ stone
@@ -1032,7 +1032,7 @@ namespace Server
 			else if ( IsLockedDown )
 				AddLockedDownProperty( list );
 
-			Mobile blessedFor = this.BlessedFor;
+			Mobile blessedFor = BlessedFor;
 
 			if ( blessedFor != null && !blessedFor.Deleted )
 				AddBlessedForProperty( list, blessedFor );
@@ -1126,7 +1126,7 @@ namespace Server
 
 			m_Parent = null;
 
-			BounceInfo bounce = this.GetBounce();
+			BounceInfo bounce = GetBounce();
 
 			if ( bounce != null )
 			{
@@ -1342,7 +1342,7 @@ namespace Server
 							Mobile m = state.Mobile;
 
 							if ( m.InRange( oldLocation, GetUpdateRange( m ) ) ) {
-								state.Send( this.RemovePacket );
+								state.Send( RemovePacket );
 							}
 						}
 
@@ -1351,7 +1351,7 @@ namespace Server
 				}
 
 				m_Location = location;
-				this.OnLocationChange( oldRealLocation );
+				OnLocationChange( oldRealLocation );
 
 				ReleaseWorldPackets();
 
@@ -1399,7 +1399,7 @@ namespace Server
 						Mobile m = state.Mobile;
 
 						if ( !m.InRange( location, GetUpdateRange( m ) ) ) {
-							state.Send( this.RemovePacket );
+							state.Send( RemovePacket );
 						}
 					}
 
@@ -1409,7 +1409,7 @@ namespace Server
 				Point3D oldInternalLocation = m_Location;
 
 				m_Location = location;
-				this.OnLocationChange( oldRealLocation );
+				OnLocationChange( oldRealLocation );
 
 				ReleaseWorldPackets();
 
@@ -1805,7 +1805,7 @@ namespace Server
 							Mobile m = state.Mobile;
 
 							if ( !m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
-								state.Send( this.RemovePacket );
+								state.Send( RemovePacket );
 							}
 						}
 
@@ -1911,7 +1911,7 @@ namespace Server
 
 					Delta( ItemDelta.Update );
 
-					this.OnMapChange();
+					OnMapChange();
 
 					if ( old == null || old == Map.Internal )
 						InvalidateProperties();
@@ -2166,7 +2166,7 @@ namespace Server
 			Map map = m_Map;
 
 			if ( map == null )
-				return Server.Map.NullEnumerable<IEntity>.Instance;
+				return Map.NullEnumerable<IEntity>.Instance;
 
 			if ( m_Parent == null )
 				return map.GetObjectsInRange( m_Location, range );
@@ -2179,7 +2179,7 @@ namespace Server
 			Map map = m_Map;
 
 			if ( map == null )
-				return Server.Map.NullEnumerable<Item>.Instance;
+				return Map.NullEnumerable<Item>.Instance;
 
 			if ( m_Parent == null )
 				return map.GetItemsInRange( m_Location, range );
@@ -2192,7 +2192,7 @@ namespace Server
 			Map map = m_Map;
 
 			if ( map == null )
-				return Server.Map.NullEnumerable<Mobile>.Instance;
+				return Map.NullEnumerable<Mobile>.Instance;
 
 			if ( m_Parent == null )
 				return map.GetMobilesInRange( m_Location, range );
@@ -2205,7 +2205,7 @@ namespace Server
 			Map map = m_Map;
 
 			if ( map == null )
-				return Server.Map.NullEnumerable<NetState>.Instance;
+				return Map.NullEnumerable<NetState>.Instance;
 
 			if ( m_Parent == null )
 				return map.GetClientsInRange( m_Location, range );
@@ -2367,7 +2367,7 @@ namespace Server
 					{
 						string name = reader.ReadString();
 
-						if ( name != this.DefaultName )
+						if ( name != DefaultName )
 							AcquireCompactInfo().m_Name = name;
 					}
 
@@ -2487,7 +2487,7 @@ namespace Server
 					{
 						string name = reader.ReadString();
 
-						if ( name != this.DefaultName )
+						if ( name != DefaultName )
 							AcquireCompactInfo().m_Name = name;
 					}
 
@@ -2583,7 +2583,7 @@ namespace Server
 
 					string name = reader.ReadString();
 
-					if ( name != this.DefaultName )
+					if ( name != DefaultName )
 						AcquireCompactInfo().m_Name = name;
 
 					Serial parent = reader.ReadInt();
@@ -2646,7 +2646,7 @@ namespace Server
 				}
 			}
 
-			if ( this.HeldBy != null )
+			if ( HeldBy != null )
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( FixHolding_Sandbox ) );
 
 			//if ( version < 9 )
@@ -2655,11 +2655,11 @@ namespace Server
 
 		private void FixHolding_Sandbox()
 		{
-			Mobile heldBy = this.HeldBy;
+			Mobile heldBy = HeldBy;
 
 			if ( heldBy != null )
 			{
-				if ( this.GetBounce() != null )
+				if ( GetBounce() != null )
 				{
 					Bounce( heldBy );
 				}
@@ -2696,11 +2696,11 @@ namespace Server
 
 		protected virtual Packet GetWorldPacketFor( NetState state ) {
 			if ( state.HighSeas )
-				return this.WorldPacketHS;
+				return WorldPacketHS;
 			else if ( state.StygianAbyss )
-				return this.WorldPacketSA;
+				return WorldPacketSA;
 			else
-				return this.WorldPacket;
+				return WorldPacket;
 		}
 
 		public virtual bool IsVirtualItem => false;
@@ -2775,22 +2775,22 @@ namespace Server
 				if ( info != null && info.m_Weight != -1 )
 					return info.m_Weight;
 
-				return this.DefaultWeight;
+				return DefaultWeight;
 			}
 			set
 			{
-				if ( this.Weight != value )
+				if ( Weight != value )
 				{
 					CompactInfo info = AcquireCompactInfo();
 
-					int oldPileWeight = this.PileWeight;
+					int oldPileWeight = PileWeight;
 
 					info.m_Weight = value;
 
 					if ( info.m_Weight == -1 )
 						VerifyCompactInfo();
 
-					int newPileWeight = this.PileWeight;
+					int newPileWeight = PileWeight;
 
 					UpdateTotal( this, TotalType.Weight, newPileWeight - oldPileWeight );
 
@@ -2800,7 +2800,7 @@ namespace Server
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int PileWeight => (int)Math.Ceiling( this.Weight * this.Amount );
+		public int PileWeight => (int)Math.Ceiling( Weight * Amount );
 
 		public virtual int HuedItemID => m_ItemID;
 
@@ -2915,14 +2915,14 @@ namespace Server
 
 			if ( item == this )
 			{
-				Console.WriteLine( "Warning: Adding item to itself: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )", this.Serial.Value, this.GetType().Name, item.Serial.Value, item.GetType().Name );
+				Console.WriteLine( "Warning: Adding item to itself: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )", Serial.Value, GetType().Name, item.Serial.Value, item.GetType().Name );
 				Console.WriteLine( new System.Diagnostics.StackTrace() );
 				return;
 			}
 
 			if ( IsChildOf( item ) )
 			{
-				Console.WriteLine( "Warning: Adding parent item to child: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )", this.Serial.Value, this.GetType().Name, item.Serial.Value, item.GetType().Name );
+				Console.WriteLine( "Warning: Adding parent item to child: [0x{0:X} {1}].AddItem( [0x{2:X} {3}] )", Serial.Value, GetType().Name, item.Serial.Value, item.GetType().Name );
 				Console.WriteLine( new System.Diagnostics.StackTrace() );
 				return;
 			}
@@ -3060,7 +3060,7 @@ namespace Server
 							}
 						}
 
-						SecureTradeContainer stc = this.GetSecureTradeCont();
+						SecureTradeContainer stc = GetSecureTradeCont();
 
 						SecureTrade st = stc?.Trade;
 
@@ -3253,16 +3253,16 @@ namespace Server
 
 		public virtual void OnDelete()
 		{
-			if (this.Spawner != null)
+			if (Spawner != null)
 			{
-				this.Spawner.Remove(this);
-				this.Spawner = null;
+				Spawner.Remove(this);
+				Spawner = null;
 			}
 		}
 
 		public virtual void OnParentDeleted( IEntity parent )
 		{
-			this.Delete();
+			Delete();
 		}
 
 		public virtual void FreeCache()
@@ -3337,9 +3337,9 @@ namespace Server
 						if ( p == null )
 						{
 							if ( ascii )
-								p = new AsciiMessage( m_Serial, m_ItemID, type, hue, 3, this.Name, text );
+								p = new AsciiMessage( m_Serial, m_ItemID, type, hue, 3, Name, text );
 							else
-								p = new UnicodeMessage( m_Serial, m_ItemID, type, hue, 3, "ENU", this.Name, text );
+								p = new UnicodeMessage( m_Serial, m_ItemID, type, hue, 3, "ENU", Name, text );
 
 							p.Acquire();
 						}
@@ -3375,7 +3375,7 @@ namespace Server
 					if ( m.CanSee( this ) && m.InRange( worldLoc, GetUpdateRange( m ) ) )
 					{
 						if ( p == null )
-							p = Packet.Acquire( new MessageLocalized( m_Serial, m_ItemID, type, hue, 3, number, this.Name, args ) );
+							p = Packet.Acquire( new MessageLocalized( m_Serial, m_ItemID, type, hue, 3, number, Name, args ) );
 
 						state.Send( p );
 					}
@@ -3495,7 +3495,7 @@ namespace Server
 									Mobile m = state.Mobile;
 
 									if ( !m.InRange( value, GetUpdateRange( m ) ) ) {
-										state.Send( this.RemovePacket );
+										state.Send( RemovePacket );
 									}
 								}
 
@@ -3543,7 +3543,7 @@ namespace Server
 						ReleaseWorldPackets();
 					}
 
-					this.OnLocationChange( oldLocation );
+					OnLocationChange( oldLocation );
 				}
 			}
 		}
@@ -3578,12 +3578,12 @@ namespace Server
 			{
 				if ( m_ItemID != value )
 				{
-					int oldPileWeight = this.PileWeight;
+					int oldPileWeight = PileWeight;
 
 					m_ItemID = value;
 					ReleaseWorldPackets();
 
-					int newPileWeight = this.PileWeight;
+					int newPileWeight = PileWeight;
 
 					UpdateTotal( this, TotalType.Weight, newPileWeight - oldPileWeight );
 
@@ -3605,7 +3605,7 @@ namespace Server
 				if ( info?.m_Name != null )
 					return info.m_Name;
 
-				return this.DefaultName;
+				return DefaultName;
 			}
 			set
 			{
@@ -3688,12 +3688,12 @@ namespace Server
 
 				if ( oldValue != value )
 				{
-					int oldPileWeight = this.PileWeight;
+					int oldPileWeight = PileWeight;
 
 					m_Amount = value;
 					ReleaseWorldPackets();
 
-					int newPileWeight = this.PileWeight;
+					int newPileWeight = PileWeight;
 
 					UpdateTotal( this, TotalType.Weight, newPileWeight - oldPileWeight );
 
@@ -4063,7 +4063,7 @@ namespace Server
 					Mobile m = state.Mobile;
 
 					if ( m.InRange( worldLoc, GetUpdateRange( m ) ) ) {
-						state.Send( this.RemovePacket );
+						state.Send( RemovePacket );
 					}
 				}
 
@@ -4233,7 +4233,7 @@ namespace Server
 				parentMobile.OnSubItemBounceCleared( item );
 		}
 
-		public virtual bool CheckTarget( Mobile from, Server.Targeting.Target targ, object targeted )
+		public virtual bool CheckTarget( Mobile from, Targeting.Target targ, object targeted )
 		{
 			if ( m_Parent is Item item )
 				return item.CheckTarget( from, targ, targeted );
@@ -4352,10 +4352,10 @@ namespace Server
 
 		public virtual void OnAosSingleClick( Mobile from )
 		{
-			ObjectPropertyList opl = this.PropertyList;
+			ObjectPropertyList opl = PropertyList;
 
 			if ( opl.Header > 0 )
-				from.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, this.Name, opl.HeaderArgs ) );
+				from.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name, opl.HeaderArgs ) );
 		}
 
 		public virtual void OnSingleClick( Mobile from )
@@ -4370,7 +4370,7 @@ namespace Server
 
 			if ( ns != null )
 			{
-				if ( this.Name == null )
+				if ( Name == null )
 				{
 					if ( m_Amount <= 1 )
 						ns.Send( new MessageLocalized( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", "" ) );
@@ -4379,7 +4379,7 @@ namespace Server
 				}
 				else
 				{
-					ns.Send( new UnicodeMessage( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", this.Name + ( m_Amount > 1 ? " : " + m_Amount : "" ) ) );
+					ns.Send( new UnicodeMessage( m_Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", Name + ( m_Amount > 1 ? " : " + m_Amount : "" ) ) );
 				}
 			}
 		}
@@ -4407,10 +4407,10 @@ namespace Server
 			Amount -= amount;
 
 			int ourHue = Hue;
-			Map thisMap = this.Map;
-			IEntity thisParent = this.m_Parent;
-			Point3D worldLoc = this.GetWorldLocation();
-			LootType type = this.LootType;
+			Map thisMap = Map;
+			IEntity thisParent = m_Parent;
+			Point3D worldLoc = GetWorldLocation();
+			LootType type = LootType;
 
 			if ( Amount == 0 )
 				Delete();
@@ -4434,10 +4434,10 @@ namespace Server
 
 		public virtual void Consume( int amount )
 		{
-			this.Amount -= amount;
+			Amount -= amount;
 
-			if ( this.Amount <= 0 )
-				this.Delete();
+			if ( Amount <= 0 )
+				Delete();
 		}
 
 		public virtual void ReplaceWith( Item newItem )
@@ -4517,7 +4517,7 @@ namespace Server
 			if ( m_LootType == LootType.Blessed || (Mobile.InsuranceEnabled && Insured) )
 				return true;
 
-			return ( m != null && m == this.BlessedFor );
+			return ( m != null && m == BlessedFor );
 		}
 
 		public virtual bool CheckNewbied()
@@ -4530,7 +4530,7 @@ namespace Server
 			if ( Mobile.InsuranceEnabled && Insured )
 				return false;
 
-			if ( this.BlessedFor != null )
+			if ( BlessedFor != null )
 				return false;
 
 			return ( m_LootType == LootType.Regular );
@@ -4557,7 +4557,7 @@ namespace Server
 
 			World.AddItem( this );
 
-			Type ourType = this.GetType();
+			Type ourType = GetType();
 			m_TypeRef = World.m_ItemTypes.IndexOf( ourType );
 
 			if ( m_TypeRef == -1 )
@@ -4577,7 +4577,7 @@ namespace Server
 		{
 			m_Serial = serial;
 
-			Type ourType = this.GetType();
+			Type ourType = GetType();
 			m_TypeRef = World.m_ItemTypes.IndexOf( ourType );
 
 			if ( m_TypeRef == -1 )

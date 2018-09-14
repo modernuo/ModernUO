@@ -87,7 +87,7 @@ namespace Server
 		public int CompareTo( object other )
 		{
 			if ( other is Point2D d )
-				return this.CompareTo( d );
+				return CompareTo( d );
 			if ( other == null )
 				return -1;
 
@@ -120,7 +120,7 @@ namespace Server
 
 		public static bool operator == ( Point2D l, IPoint2D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X == r.X && l.m_Y == r.Y;
@@ -128,7 +128,7 @@ namespace Server
 
 		public static bool operator != ( Point2D l, IPoint2D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X !=r.X || l.m_Y != r.Y;
@@ -146,7 +146,7 @@ namespace Server
 
 		public static bool operator > ( Point2D l, IPoint2D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X > r.X && l.m_Y > r.Y;
@@ -164,7 +164,7 @@ namespace Server
 
 		public static bool operator < ( Point2D l, IPoint2D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X < r.X && l.m_Y < r.Y;
@@ -182,7 +182,7 @@ namespace Server
 
 		public static bool operator >= ( Point2D l, IPoint2D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X >= r.X && l.m_Y >= r.Y;
@@ -200,7 +200,7 @@ namespace Server
 
 		public static bool operator <= ( Point2D l, IPoint2D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X <= r.X && l.m_Y <= r.Y;
@@ -306,7 +306,7 @@ namespace Server
 
 		public static bool operator ==( Point3D l, IPoint3D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
@@ -314,7 +314,7 @@ namespace Server
 
 		public static bool operator !=( Point3D l, IPoint3D r )
 		{
-			if ( Object.ReferenceEquals( r, null ) )
+			if ( ReferenceEquals( r, null ) )
 				return false;
 
 			return l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z;
@@ -338,7 +338,7 @@ namespace Server
 		public int CompareTo( object other )
 		{
 			if ( other is Point3D d )
-				return this.CompareTo( d );
+				return CompareTo( d );
 			if ( other == null )
 				return -1;
 

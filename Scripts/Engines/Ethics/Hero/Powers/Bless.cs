@@ -63,7 +63,7 @@ namespace Server.Ethics.Hero
 
 				Effects.PlaySound( p, from.Mobile.Map, 0x299 );
 
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You consecrate the area." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You consecrate the area." );
 
 				FinishInvoke( from );
 			}

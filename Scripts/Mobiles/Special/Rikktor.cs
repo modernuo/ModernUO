@@ -76,19 +76,19 @@ namespace Server.Mobiles
 
 		public void Earthquake()
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null )
 				return;
 
 			ArrayList targets = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 8 ) )
+			foreach ( Mobile m in GetMobilesInRange( 8 ) )
 			{
 				if ( m == this || !CanBeHarmful( m ) )
 					continue;
 
-				if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != this.Team) )
+				if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != Team) )
 					targets.Add( m );
 				else if ( m.Player )
 					targets.Add( m );

@@ -292,40 +292,40 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			if ( m_VacationLeft > 0 )
-				this.LabelTo( from, 1074430, m_VacationLeft.ToString() ); // Vacation days left: ~1_DAYS
+				LabelTo( from, 1074430, m_VacationLeft.ToString() ); // Vacation days left: ~1_DAYS
 
 			if ( m_Events.Count > 0 )
-				this.LabelTo( from, 1074426, m_Events.Count.ToString() ); // ~1_NUM~ event(s) to view!
+				LabelTo( from, 1074426, m_Events.Count.ToString() ); // ~1_NUM~ event(s) to view!
 
 			if ( m_RewardAvailable )
-				this.LabelTo( from, 1074362 ); // A reward is available!
+				LabelTo( from, 1074362 ); // A reward is available!
 
-			this.LabelTo( from, 1074247, String.Format("{0}\t{1}", m_LiveCreatures, MaxLiveCreatures) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
+			LabelTo( from, 1074247, String.Format("{0}\t{1}", m_LiveCreatures, MaxLiveCreatures) ); // Live Creatures: ~1_NUM~ / ~2_MAX~
 
 			if ( DeadCreatures > 0 )
-				this.LabelTo( from, 1074248, DeadCreatures.ToString() ); // Dead Creatures: ~1_NUM~
+				LabelTo( from, 1074248, DeadCreatures.ToString() ); // Dead Creatures: ~1_NUM~
 
 			int decorations = Items.Count - m_LiveCreatures - DeadCreatures;
 
 			if ( decorations > 0 )
-				this.LabelTo( from, 1074249, (Items.Count - m_LiveCreatures - DeadCreatures).ToString() ); // Decorations: ~1_NUM~
+				LabelTo( from, 1074249, (Items.Count - m_LiveCreatures - DeadCreatures).ToString() ); // Decorations: ~1_NUM~
 
-			this.LabelTo( from, 1074250, "#" + FoodNumber() ); // Food state: ~1_STATE~
-			this.LabelTo( from, 1074251, "#" + WaterNumber() ); // Water state: ~1_STATE~
+			LabelTo( from, 1074250, "#" + FoodNumber() ); // Food state: ~1_STATE~
+			LabelTo( from, 1074251, "#" + WaterNumber() ); // Water state: ~1_STATE~
 
 			if ( m_Food.State == (int) FoodState.Dead )
-				this.LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Improve) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Improve) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
 			else if ( m_Food.State == (int) FoodState.Overfed )
-				this.LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Maintain) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074577, String.Format("{0}\t{1}", m_Food.Added, m_Food.Maintain) ); // Food Added: ~1_CUR~ Needed: ~2_NEED~
 			else
-				this.LabelTo( from, 1074253, String.Format("{0}\t{1}\t{2}", m_Food.Added, m_Food.Maintain, m_Food.Improve) ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+				LabelTo( from, 1074253, String.Format("{0}\t{1}\t{2}", m_Food.Added, m_Food.Maintain, m_Food.Improve) ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
 
 			if ( m_Water.State == (int) WaterState.Dead )
-				this.LabelTo( from, 1074578, String.Format("{0}\t{1}", m_Water.Added, m_Water.Improve) ); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074578, String.Format("{0}\t{1}", m_Water.Added, m_Water.Improve) ); // Water Added: ~1_CUR~ Needed: ~2_NEED~
 			else if ( m_Water.State == (int) WaterState.Strong )
-				this.LabelTo( from, 1074578, String.Format("{0}\t{1}", m_Water.Added, m_Water.Maintain) ); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+				LabelTo( from, 1074578, String.Format("{0}\t{1}", m_Water.Added, m_Water.Maintain) ); // Water Added: ~1_CUR~ Needed: ~2_NEED~
 			else
-				this.LabelTo( from, 1074254, String.Format("{0}\t{1}\t{2}", m_Water.Added, m_Water.Maintain, m_Water.Improve) ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
+				LabelTo( from, 1074254, String.Format("{0}\t{1}\t{2}", m_Water.Added, m_Water.Maintain, m_Water.Improve) ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
 		}
 
 		public override void AddNameProperties( ObjectPropertyList list )

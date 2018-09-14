@@ -8,8 +8,8 @@
 		public MrPlainsCookies( )
 			: base( 0x160C )
 		{
-			this.Weight = 1.0;
-			this.FillFactor = 4;
+			Weight = 1.0;
+			FillFactor = 4;
 			Hue = 0xF4;
 		}
 

@@ -438,7 +438,7 @@ namespace Server.Spells
 
 				OnDisturb( type, false );
 
-				Targeting.Target.Cancel( m_Caster );
+				Target.Cancel( m_Caster );
 
 				if ( Core.AOS && m_Caster.Player && type == DisturbType.Hurt )
 					DoHurtFizzle();
@@ -529,7 +529,7 @@ namespace Server.Spells
 
 					SayMantra();
 
-					TimeSpan castDelay = this.GetCastDelay();
+					TimeSpan castDelay = GetCastDelay();
 
 					if ( ShowHandMovement && ( m_Caster.Body.IsHuman || ( m_Caster.Player && m_Caster.Body.IsMonster ) ) )
 					{
@@ -612,7 +612,7 @@ namespace Server.Spells
 		{
 			double scalar = 1.0;
 
-			if ( !Necromancy.MindRotSpell.GetMindRotScalar( Caster, ref scalar ) )
+			if ( !MindRotSpell.GetMindRotScalar( Caster, ref scalar ) )
 				scalar = 1.0;
 
 			// Lower Mana Cost = 40%

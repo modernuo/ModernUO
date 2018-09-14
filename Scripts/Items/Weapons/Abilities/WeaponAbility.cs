@@ -66,7 +66,7 @@ namespace Server.Items
 				mana -= 5;
 
 			double scalar = 1.0;
-			if ( !Server.Spells.Necromancy.MindRotSpell.GetMindRotScalar( from, ref scalar ) )
+			if ( !Spells.Necromancy.MindRotSpell.GetMindRotScalar( from, ref scalar ) )
 				scalar = 1.0;
 
 			// Lower Mana Cost = 40%

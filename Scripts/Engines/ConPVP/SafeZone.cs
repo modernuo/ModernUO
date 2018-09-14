@@ -13,7 +13,7 @@ namespace Server.Engines.ConPVP
 		{
 			GoLocation = goloc;
 
-			this.Disabled = !isGuarded;
+			Disabled = !isGuarded;
 
 			Register();
 		}

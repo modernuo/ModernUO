@@ -436,7 +436,7 @@ namespace Server.Factions
 			Sheriff = null;
 			Finance = null;
 
-			TownMonolith monolith = this.Monolith;
+			TownMonolith monolith = Monolith;
 
 			if ( monolith != null )
 				monolith.Faction = f;

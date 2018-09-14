@@ -80,7 +80,7 @@ namespace Server
 				this.type = type;
 				this.method = method;
 
-				this.parms = method.GetParameters();
+				parms = method.GetParameters();
 			}
 		}
 
@@ -479,7 +479,7 @@ namespace Server
 
 		public bool CompareTo( int sign, Callback argGenerator )
 		{
-			Type active = this.Active;
+			Type active = Active;
 
 			MethodInfo compareTo = active.GetMethod( "CompareTo", new[] { active } );
 

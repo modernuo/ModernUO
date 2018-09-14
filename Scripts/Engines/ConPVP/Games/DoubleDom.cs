@@ -664,15 +664,15 @@ namespace Server.Engines.ConPVP
 						playerInfo.Score += 1; // base frag
 
 						// extra points for killing someone on the waypoint
-						if ( this.Controller.PointA != null )
+						if ( Controller.PointA != null )
 						{
-							if ( mob.InRange( this.Controller.PointA, 2 ) )
+							if ( mob.InRange( Controller.PointA, 2 ) )
 								playerInfo.Score += 1;
 						}
 
-						if ( this.Controller.PointB != null )
+						if ( Controller.PointB != null )
 						{
-							if ( mob.InRange( this.Controller.PointB, 2 ) )
+							if ( mob.InRange( Controller.PointB, 2 ) )
 								playerInfo.Score += 1;
 						}
 					}
@@ -1058,9 +1058,9 @@ namespace Server.Engines.ConPVP
 		[Constructible]
 		public DDWayPoint()
 		{
-			this.ItemID = 0x519;
-			this.Visible = true;
-			this.Name = "SET MY NAME";
+			ItemID = 0x519;
+			Visible = true;
+			Name = "SET MY NAME";
 
 			AddComponent( new DDStep( 0x7A8 ), -1, -1, -5 );
 			AddComponent( new DDStep( 0x7A6 ),  0, -1, -5 );
@@ -1130,7 +1130,7 @@ namespace Server.Engines.ConPVP
 		{
 			for (int i=0;i<Components.Count;i++)
 				((Item)Components[i]).Hue = UncapturableHue;
-			this.Hue = UncapturableHue;
+			Hue = UncapturableHue;
 		}
 
 		public void SetNonCaptureHue()
@@ -1139,9 +1139,9 @@ namespace Server.Engines.ConPVP
 				((Item)Components[i]).Hue = NonCapturedHue;
 
 			if ( m_TeamOwner != null )
-				this.Hue = m_TeamOwner.Color;
+				Hue = m_TeamOwner.Color;
 			else
-				this.Hue = NonCapturedHue;
+				Hue = NonCapturedHue;
 		}
 
 		public void SetCaptureHue( int stage )
@@ -1149,7 +1149,7 @@ namespace Server.Engines.ConPVP
 			if ( m_TeamOwner == null )
 				return;
 
-			this.Hue = m_TeamOwner.Color;
+			Hue = m_TeamOwner.Color;
 
 			for (int i=0;i<Components.Count;i++)
 			{
@@ -1181,7 +1181,7 @@ namespace Server.Engines.ConPVP
 		{
 			public DDStep( int itemID ) : base( itemID )
 			{
-				this.Visible = true;
+				Visible = true;
 			}
 
 			public DDStep( Serial serial ) : base( serial )

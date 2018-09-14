@@ -40,7 +40,7 @@ namespace Server.Items
 
 	public class GozaMatEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new GozaMatEastAddon( this.Hue );
+		public override BaseAddon Addon => new GozaMatEastAddon( Hue );
 		public override int LabelNumber => 1030404; // goza (east)
 
 		[Constructible]
@@ -107,7 +107,7 @@ namespace Server.Items
 
 	public class GozaMatSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new GozaMatSouthAddon( this.Hue );
+		public override BaseAddon Addon => new GozaMatSouthAddon( Hue );
 		public override int LabelNumber => 1030405; // goza (south)
 
 		[Constructible]
@@ -174,7 +174,7 @@ namespace Server.Items
 
 	public class SquareGozaMatEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new SquareGozaMatEastAddon( this.Hue );
+		public override BaseAddon Addon => new SquareGozaMatEastAddon( Hue );
 		public override int LabelNumber => 1030407; // square goza (east)
 
 		[Constructible]
@@ -240,7 +240,7 @@ namespace Server.Items
 
 	public class SquareGozaMatSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new SquareGozaMatSouthAddon( this.Hue );
+		public override BaseAddon Addon => new SquareGozaMatSouthAddon( Hue );
 		public override int LabelNumber => 1030406; // square goza (south)
 
 
@@ -308,7 +308,7 @@ namespace Server.Items
 
 	public class BrocadeGozaMatEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new BrocadeGozaMatEastAddon( this.Hue );
+		public override BaseAddon Addon => new BrocadeGozaMatEastAddon( Hue );
 		public override int LabelNumber => 1030408; // brocade goza (east)
 
 		[Constructible]
@@ -374,7 +374,7 @@ namespace Server.Items
 
 	public class BrocadeGozaMatSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new BrocadeGozaMatSouthAddon( this.Hue );
+		public override BaseAddon Addon => new BrocadeGozaMatSouthAddon( Hue );
 		public override int LabelNumber => 1030409; // brocade goza (south)
 
 		[Constructible]
@@ -439,7 +439,7 @@ namespace Server.Items
 
 	public class BrocadeSquareGozaMatEastDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new BrocadeSquareGozaMatEastAddon( this.Hue );
+		public override BaseAddon Addon => new BrocadeSquareGozaMatEastAddon( Hue );
 		public override int LabelNumber => 1030411; // brocade square goza (east)
 
 		[Constructible]
@@ -505,7 +505,7 @@ namespace Server.Items
 
 	public class BrocadeSquareGozaMatSouthDeed : BaseAddonDeed
 	{
-		public override BaseAddon Addon => new BrocadeSquareGozaMatSouthAddon( this.Hue );
+		public override BaseAddon Addon => new BrocadeSquareGozaMatSouthAddon( Hue );
 		public override int LabelNumber => 1030410; // brocade square goza (south)
 
 

@@ -314,7 +314,7 @@ namespace Server.Engines.Quests.Hag
 		{
 			get
 			{
-				IngredientInfo info = IngredientInfo.Get( this.Ingredient );
+				IngredientInfo info = IngredientInfo.Get( Ingredient );
 
 				return info.Quantity;
 			}
@@ -359,7 +359,7 @@ namespace Server.Engines.Quests.Hag
 		{
 			if ( !Completed )
 			{
-				IngredientInfo info = IngredientInfo.Get( this.Ingredient );
+				IngredientInfo info = IngredientInfo.Get( Ingredient );
 
 				gump.AddHtmlLocalized( 70, 260, 270, 100, info.Name, BaseQuestGump.Blue, false, false );
 				gump.AddLabel( 70, 280, 0x64, CurProgress.ToString() );
@@ -377,7 +377,7 @@ namespace Server.Engines.Quests.Hag
 			if ( Completed )
 				return false;
 
-			IngredientInfo info = IngredientInfo.Get( this.Ingredient );
+			IngredientInfo info = IngredientInfo.Get( Ingredient );
 			Type fromType = from.GetType();
 
 			for ( int i = 0; i < info.Creatures.Length; i++ )
@@ -391,7 +391,7 @@ namespace Server.Engines.Quests.Hag
 
 		public override void OnKill( BaseCreature creature, Container corpse )
 		{
-			IngredientInfo info = IngredientInfo.Get( this.Ingredient );
+			IngredientInfo info = IngredientInfo.Get( Ingredient );
 
 			for ( int i = 0; i < info.Creatures.Length; i++ )
 			{
@@ -410,7 +410,7 @@ namespace Server.Engines.Quests.Hag
 
 		public override void OnComplete()
 		{
-			if ( this.Ingredient != Ingredient.Whiskey )
+			if ( Ingredient != Ingredient.Whiskey )
 			{
 				NextStep();
 			}

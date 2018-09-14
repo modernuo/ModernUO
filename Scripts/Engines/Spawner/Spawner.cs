@@ -503,7 +503,7 @@ namespace Server.Mobiles
 						m_Spawned.Add( m, entry );
 						entry.Spawned.Add( m );
 
-						Point3D loc = ( m is BaseVendor ? this.Location : GetSpawnPosition( m, map ) );
+						Point3D loc = ( m is BaseVendor ? Location : GetSpawnPosition( m, map ) );
 
 						m.OnBeforeSpawn( loc, map );
 						InvalidateProperties();
@@ -524,8 +524,8 @@ namespace Server.Mobiles
 							if ( m_Team > 0 )
 								c.Team = m_Team;
 
-							c.Home = this.Location;
-							c.HomeMap = this.Map;
+							c.Home = Location;
+							c.HomeMap = Map;
 						}
 
 						m.Spawner = this;
@@ -605,22 +605,22 @@ namespace Server.Mobiles
 
 				if ( waterMob )
 				{
-					if ( IsValidWater( map, x, y, this.Z ) )
-						return new Point3D( x, y, this.Z );
+					if ( IsValidWater( map, x, y, Z ) )
+						return new Point3D( x, y, Z );
 					else if ( IsValidWater( map, x, y, mapZ ) )
 						return new Point3D( x, y, mapZ );
 				}
 
 				if ( !waterOnlyMob )
 				{
-					if ( map.CanSpawnMobile( x, y, this.Z ) )
-						return new Point3D( x, y, this.Z );
+					if ( map.CanSpawnMobile( x, y, Z ) )
+						return new Point3D( x, y, Z );
 					else if ( map.CanSpawnMobile( x, y, mapZ ) )
 						return new Point3D( x, y, mapZ );
 				}
 			}
 
-			return this.Location;
+			return Location;
 		}
 
 		public static bool IsValidWater( Map map, int x, int y, int z )

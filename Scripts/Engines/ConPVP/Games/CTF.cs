@@ -268,9 +268,9 @@ namespace Server.Engines.ConPVP
 				}
 				else if ( ourTeam == useTeam )
 				{
-					if ( this.Location == m_TeamInfo.Origin && this.Map == m_TeamInfo.Game.Facet )
+					if ( Location == m_TeamInfo.Origin && Map == m_TeamInfo.Game.Facet )
 					{
-						from.Send( new UnicodeMessage( this.Serial, this.ItemID, MessageType.Regular, 0x3B2, 3, "ENU", this.Name, "Touch me not for I am chaste." ) );
+						from.Send( new UnicodeMessage( Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", Name, "Touch me not for I am chaste." ) );
 					}
 					else
 					{
@@ -350,7 +350,7 @@ namespace Server.Engines.ConPVP
 
 		private void Countdown_OnTick()
 		{
-			Mobile owner = this.RootParent as Mobile;
+			Mobile owner = RootParent as Mobile;
 
 			switch ( m_ReturnCount )
 			{
@@ -1055,7 +1055,7 @@ namespace Server.Engines.ConPVP
 						if ( hadFlag )
 							playerInfo.Score += 4; // fragged flag carrier
 
-						if ( mob.InRange( teamInfo.Origin, 24 ) && mob.Map == this.Facet )
+						if ( mob.InRange( teamInfo.Origin, 24 ) && mob.Map == Facet )
 							playerInfo.Score += 1; // fragged in base -- guarding
 
 						for ( int i = 0; i < m_Controller.TeamInfo.Length; ++i )

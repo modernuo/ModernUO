@@ -107,8 +107,8 @@ namespace Server.Mobiles
 		public override bool OnBeforeDeath()
 		{
 			BoneKnight rm = new BoneKnight();
-			rm.Team = this.Team;
-			rm.Combatant = this.Combatant;
+			rm.Team = Team;
+			rm.Combatant = Combatant;
 			rm.NoKillAwards = true;
 
 			if ( rm.Backpack == null )

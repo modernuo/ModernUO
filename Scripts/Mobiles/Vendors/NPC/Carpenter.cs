@@ -30,7 +30,7 @@ namespace Server.Mobiles
 		{
 			base.InitOutfit();
 
-			AddItem( new Server.Items.HalfApron() );
+			AddItem( new Items.HalfApron() );
 		}
 
 		public Carpenter( Serial serial ) : base( serial )

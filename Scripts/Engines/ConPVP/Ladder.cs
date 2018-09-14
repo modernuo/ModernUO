@@ -45,7 +45,7 @@ namespace Server.Engines.ConPVP
 
 			m_Ladder.Serialize( writer );
 
-			writer.Write( (bool) ( Server.Engines.ConPVP.Ladder.Instance == m_Ladder ) );
+			writer.Write( (bool) ( Ladder.Instance == m_Ladder ) );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -62,7 +62,7 @@ namespace Server.Engines.ConPVP
 					m_Ladder = new Ladder( reader );
 
 					if ( version < 1 || reader.ReadBool() )
-						Server.Engines.ConPVP.Ladder.Instance = m_Ladder;
+						Ladder.Instance = m_Ladder;
 
 					break;
 				}

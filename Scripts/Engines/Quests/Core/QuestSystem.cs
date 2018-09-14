@@ -125,7 +125,7 @@ namespace Server.Engines.Quests
 
 		public virtual void BaseDeserialize( GenericReader reader )
 		{
-			Type[] referenceTable = this.TypeReferenceTable;
+			Type[] referenceTable = TypeReferenceTable;
 
 			int version = reader.ReadEncodedInt();
 
@@ -177,7 +177,7 @@ namespace Server.Engines.Quests
 
 		public virtual void BaseSerialize( GenericWriter writer )
 		{
-			Type[] referenceTable = this.TypeReferenceTable;
+			Type[] referenceTable = TypeReferenceTable;
 
 			writer.WriteEncodedInt( (int) 0 ); // version
 
@@ -315,7 +315,7 @@ namespace Server.Engines.Quests
 			{
 				m_From.Quest = null;
 
-				TimeSpan restartDelay = this.RestartDelay;
+				TimeSpan restartDelay = RestartDelay;
 
 				if ( ( completed && restartDelay > TimeSpan.Zero ) || ( !completed && restartDelay == TimeSpan.MaxValue ) )
 				{
@@ -326,7 +326,7 @@ namespace Server.Engines.Quests
 
 					bool found = false;
 
-					Type ourQuestType = this.GetType();
+					Type ourQuestType = GetType();
 
 					for ( int i = 0; i < doneQuests.Count; ++i )
 					{

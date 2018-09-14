@@ -55,7 +55,7 @@ namespace Server.Engines.CannedEvil
 		{
 			if ( Validate( m_Power ) && Validate( m_Enlightenment ) && Validate( m_Venom ) && Validate( m_Pain ) && Validate( m_Greed ) && Validate( m_Death ) )
 			{
-				Mobile harrower = Harrower.Spawn( new Point3D( X, Y, Z + 6 ), this.Map );
+				Mobile harrower = Harrower.Spawn( new Point3D( X, Y, Z + 6 ), Map );
 
 				if ( harrower == null )
 					return;

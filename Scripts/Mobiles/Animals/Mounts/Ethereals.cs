@@ -5,7 +5,7 @@ using Server.Engines.VeteranRewards;
 
 namespace Server.Mobiles
 {
-	public class EtherealMount : Item, IMount, IMountItem, Engines.VeteranRewards.IRewardItem
+	public class EtherealMount : Item, IMount, IMountItem, IRewardItem
 	{
 		private int m_MountedID;
 		private int m_RegularID;

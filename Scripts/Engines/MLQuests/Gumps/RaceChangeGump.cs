@@ -262,7 +262,7 @@ namespace Server.Engines.MLQuests.Gumps
 
 	public sealed class CloseRaceChanger : Packet
 	{
-		public static readonly Packet Instance = Packet.SetStatic( new CloseRaceChanger() );
+		public static readonly Packet Instance = SetStatic( new CloseRaceChanger() );
 
 		private CloseRaceChanger()
 			: base( 0xBF )

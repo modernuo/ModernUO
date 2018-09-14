@@ -536,13 +536,13 @@ namespace Server.Engines.ConPVP
         public int CompareTo(object obj)
         {
             KHPlayerInfo pi = (KHPlayerInfo)obj;
-            int res = pi.Score.CompareTo(this.Score);
+            int res = pi.Score.CompareTo(Score);
             if (res == 0)
             {
-                res = pi.Captures.CompareTo(this.Captures);
+                res = pi.Captures.CompareTo(Captures);
 
                 if (res == 0)
-                    res = pi.Kills.CompareTo(this.Kills);
+                    res = pi.Kills.CompareTo(Kills);
             }
             return res;
         }
@@ -610,13 +610,13 @@ namespace Server.Engines.ConPVP
         public int CompareTo(object obj)
         {
             KHTeamInfo ti = (KHTeamInfo)obj;
-            int res = ti.Score.CompareTo(this.Score);
+            int res = ti.Score.CompareTo(Score);
             if (res == 0)
             {
-                res = ti.Captures.CompareTo(this.Captures);
+                res = ti.Captures.CompareTo(Captures);
 
                 if (res == 0)
-                    res = ti.Kills.CompareTo(this.Kills);
+                    res = ti.Kills.CompareTo(Kills);
             }
             return res;
         }
@@ -730,7 +730,7 @@ namespace Server.Engines.ConPVP
         public override string ToString()
         {
             if (m_Name != null)
-                return String.Format("({0}) ...", this.Name);
+                return String.Format("({0}) ...", Name);
             else
                 return "...";
         }

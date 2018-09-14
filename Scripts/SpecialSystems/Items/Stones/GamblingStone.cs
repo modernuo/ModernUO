@@ -35,7 +35,7 @@ namespace Server.Items
 		public override void OnSingleClick( Mobile from )
 		{
 			base.OnSingleClick( from );
-			base.LabelTo( from, "Jackpot: {0}gp", m_GamblePot );
+			LabelTo( from, "Jackpot: {0}gp", m_GamblePot );
 		}
 
 		public override void OnDoubleClick( Mobile from )

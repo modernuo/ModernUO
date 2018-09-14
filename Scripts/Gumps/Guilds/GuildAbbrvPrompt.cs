@@ -35,7 +35,7 @@ namespace Server.Gumps
 
 			if ( text.Length > 0 )
 			{
-				if ( Guild.FindByAbbrev( text ) != null )
+				if ( BaseGuild.FindByAbbrev( text ) != null )
 				{
 					m_Mobile.SendMessage( "{0} conflicts with the abbreviation of an existing guild.", text );
 				}

@@ -215,7 +215,7 @@ namespace Server.Mobiles
 
 		public void EndClaimList( Mobile from, BaseCreature pet )
 		{
-			if ( pet == null || pet.Deleted || from.Map != this.Map || !from.Stabled.Contains( pet ) || !from.CheckAlive() )
+			if ( pet == null || pet.Deleted || from.Map != Map || !from.Stabled.Contains( pet ) || !from.CheckAlive() )
 				return;
 
 			if ( !from.InRange( this, 14 ) )
@@ -322,7 +322,7 @@ namespace Server.Mobiles
 					pet.StabledBy = from;
 
 					if ( Core.SE )
-						pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
+						pet.Loyalty = MaxLoyalty; // Wonderfully happy
 
 					from.Stabled.Add( pet );
 
@@ -416,7 +416,7 @@ namespace Server.Mobiles
 			pet.StabledBy = null;
 
 			if ( Core.SE )
-				pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
+				pet.Loyalty = MaxLoyalty; // Wonderfully Happy
 		}
 
 		public override bool HandlesOnSpeech( Mobile from )

@@ -20,7 +20,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( this.Parent != null || !this.VerifyMove( from ) )
+			if ( Parent != null || !VerifyMove( from ) )
 				return;
 
 			if ( !from.InRange( this, 2 ) )
@@ -29,18 +29,18 @@ namespace Server.Items
 				return;
 			}
 
-			if ( this.ItemID == 0xA57 ) // rolled
+			if ( ItemID == 0xA57 ) // rolled
 			{
-				Direction dir = PlayerMobile.GetDirection4( from.Location, this.Location );
+				Direction dir = PlayerMobile.GetDirection4( from.Location, Location );
 
 				if ( dir == Direction.North || dir == Direction.South )
-					this.ItemID = 0xA55;
+					ItemID = 0xA55;
 				else
-					this.ItemID = 0xA56;
+					ItemID = 0xA56;
 			}
 			else // unrolled
 			{
-				this.ItemID = 0xA57;
+				ItemID = 0xA57;
 
 				if ( !from.HasGump( typeof( LogoutGump ) ) )
 				{

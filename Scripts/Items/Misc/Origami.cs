@@ -21,7 +21,7 @@ namespace Server.Items
 			}
 			else
 			{
-				this.Delete();
+				Delete();
 
 				Item i = null;
 

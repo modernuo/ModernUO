@@ -237,7 +237,7 @@ namespace Server.Items
 
             from.SendLocalizedMessage( 1079974, String.Format( "{0}\t{1}", salvaged, salvaged + notSalvaged ) ); // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
 
-			foreach (Item i in this.FindItemsByType(typeof(Item), true))
+			foreach (Item i in FindItemsByType(typeof(Item), true))
 			{
 				if ( ( i is Leather ) || ( i is Cloth ) || ( i is SpinedLeather ) || ( i is HornedLeather ) || ( i is BarbedLeather ) || ( i is Bandage ) || ( i is Bone ) )
 				{

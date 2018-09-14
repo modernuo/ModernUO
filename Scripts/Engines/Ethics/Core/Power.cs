@@ -13,7 +13,7 @@ namespace Server.Ethics
 
 			if ( from.Power < m_Definition.Power )
 			{
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You lack the power to invoke this ability." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You lack the power to invoke this ability." );
 				return false;
 			}
 

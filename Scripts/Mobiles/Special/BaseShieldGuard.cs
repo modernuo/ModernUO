@@ -80,7 +80,7 @@ namespace Server.Mobiles
 
 		public override bool HandlesOnSpeech( Mobile from )
 		{
-			if ( from.InRange( this.Location, 2 ) )
+			if ( from.InRange( Location, 2 ) )
 				return true;
 
 			return base.HandlesOnSpeech( from );
@@ -88,7 +88,7 @@ namespace Server.Mobiles
 
 		public override void OnSpeech( SpeechEventArgs e )
 		{
-			if ( !e.Handled && e.HasKeyword( Keyword ) && e.Mobile.InRange( this.Location, 2 ) )
+			if ( !e.Handled && e.HasKeyword( Keyword ) && e.Mobile.InRange( Location, 2 ) )
 			{
 				e.Handled = true;
 

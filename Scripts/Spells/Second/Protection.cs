@@ -176,7 +176,7 @@ namespace Server.Spells.Second
 
 			protected override void OnTick()
 			{
-				ProtectionSpell.Registry.Remove( m_Caster );
+				Registry.Remove( m_Caster );
 				DefensiveSpell.Nullify( m_Caster );
 			}
 		}

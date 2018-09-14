@@ -90,7 +90,7 @@ namespace Server.Engines.Quests.Hag
 
 		private void Heave()
 		{
-			this.PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 500849 ); // *hic*
+			PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 500849 ); // *hic*
 
 			Timer.DelayCall( TimeSpan.FromSeconds( Utility.RandomMinMax( 60, 180 ) ), new TimerCallback( Heave ) );
 		}

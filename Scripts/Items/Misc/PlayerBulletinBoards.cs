@@ -187,7 +187,7 @@ namespace Server.Items
 
 			if ( house == null || !house.IsLockedDown( this ) )
 				from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
-			else if ( !from.InRange( this.GetWorldLocation(), 2 ) || !from.InLOS( this ) )
+			else if ( !from.InRange( GetWorldLocation(), 2 ) || !from.InLOS( this ) )
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else if ( CheckAccess( house, from ) )
 				from.SendGump( new PlayerBBGump( from, house, this, 0 ) );

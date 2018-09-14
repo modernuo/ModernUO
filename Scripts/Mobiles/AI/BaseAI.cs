@@ -1616,7 +1616,7 @@ namespace Server.Mobiles
 				{
 					Name = creature.Name;
 				}
-				else if (this.ItemID == ShrinkTable.DefaultItemID || creature.GetType().IsDefined(typeof(FriendlyNameAttribute), false) || creature is Reptalon)
+				else if (ItemID == ShrinkTable.DefaultItemID || creature.GetType().IsDefined(typeof(FriendlyNameAttribute), false) || creature is Reptalon)
 					Name = FriendlyNameAttribute.GetFriendlyNameFor(creature.GetType()).ToString();
 
 				//(As Per OSI)No name.  Normally, set by the ItemID of the Shrink Item unless we either explicitly set it with an Attribute, or, no lookup found
@@ -1976,7 +1976,7 @@ namespace Server.Mobiles
 			{
 				using (StreamWriter op = new StreamWriter("nan_transform.txt", true))
 				{
-					op.WriteLine(String.Format("NaN in TransformMoveDelay: {0}, {1}, {2}, {3}", DateTime.UtcNow, this.GetType().ToString(), m_Mobile == null ? "null" : m_Mobile.GetType().ToString(), m_Mobile.HitsMax));
+					op.WriteLine(String.Format("NaN in TransformMoveDelay: {0}, {1}, {2}, {3}", DateTime.UtcNow, GetType().ToString(), m_Mobile == null ? "null" : m_Mobile.GetType().ToString(), m_Mobile.HitsMax));
 				}
 
 				return 1.0;
@@ -2501,7 +2501,7 @@ namespace Server.Mobiles
 							continue;
 
 						// It also must abide by harmful spell rules.
-						if (!Server.Spells.SpellHelper.ValidIndirectTarget(m_Mobile.SummonMaster, m))
+						if (!SpellHelper.ValidIndirectTarget(m_Mobile.SummonMaster, m))
 							continue;
 
 						// Animated creatures cannot attack players directly.

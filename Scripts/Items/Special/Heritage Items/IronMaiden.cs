@@ -19,7 +19,7 @@ namespace Server.Items
 
 		public override void OnComponentUsed( AddonComponent c, Mobile from )
 		{
-			if ( from.InRange( this.GetWorldLocation(), 2 ) && from.InLOS( this.GetWorldLocation() ) )
+			if ( from.InRange( GetWorldLocation(), 2 ) && from.InLOS( GetWorldLocation() ) )
 			{
 				if ( Utility.RandomBool() )
 				{

@@ -150,7 +150,7 @@ namespace Server.Mobiles
 
 			Say( 1049499 ); // Behold my true form!
 
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map != null )
 			{
@@ -167,11 +167,11 @@ namespace Server.Mobiles
 					{
 						int rdist = 10 + dist;
 
-						x = this.X + (int)(rx * rdist);
-						y = this.Y + (int)(ry * rdist);
+						x = X + (int)(rx * rdist);
+						y = Y + (int)(ry * rdist);
 						z = map.GetAverageZ( x, y );
 
-						if ( !(ok = map.CanFit( x, y, this.Z, 16, false, false ) ) )
+						if ( !(ok = map.CanFit( x, y, Z, 16, false, false ) ) )
 							ok = map.CanFit( x, y, z, 16, false, false );
 
 						if ( dist >= 0 )
@@ -185,7 +185,7 @@ namespace Server.Mobiles
 
 					HarrowerTentacles spawn = new HarrowerTentacles( this );
 
-					spawn.Team = this.Team;
+					spawn.Team = Team;
 
 					spawn.MoveToWorld( new Point3D( x, y, z ), map );
 
@@ -250,7 +250,7 @@ namespace Server.Mobiles
 		public void GivePowerScrolls()
 		{
 			List<Mobile> toGive = new List<Mobile>();
-			List<DamageStore> rights = BaseCreature.GetLootingRights( this.DamageEntries, this.HitsMax );
+			List<DamageStore> rights = GetLootingRights( DamageEntries, HitsMax );
 
 			for ( int i = rights.Count - 1; i >= 0; --i )
 			{
@@ -327,7 +327,7 @@ namespace Server.Mobiles
 		{
 			if ( m_TrueForm )
 			{
-				List<DamageStore> rights = BaseCreature.GetLootingRights( this.DamageEntries, this.HitsMax );
+				List<DamageStore> rights = GetLootingRights( DamageEntries, HitsMax );
 
 				for ( int i = rights.Count - 1; i >= 0; --i )
 				{
@@ -341,7 +341,7 @@ namespace Server.Mobiles
 				{
 					GivePowerScrolls();
 
-					Map map = this.Map;
+					Map map = Map;
 
 					if ( map != null )
 					{
@@ -582,8 +582,8 @@ namespace Server.Mobiles
 
 					m.Location = to;
 
-					Server.Spells.SpellHelper.Turn( m_Owner, toTeleport );
-					Server.Spells.SpellHelper.Turn( toTeleport, m_Owner );
+					Spells.SpellHelper.Turn( m_Owner, toTeleport );
+					Spells.SpellHelper.Turn( toTeleport, m_Owner );
 
 					m.ProcessDelta();
 

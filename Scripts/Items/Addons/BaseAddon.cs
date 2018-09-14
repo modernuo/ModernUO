@@ -106,7 +106,7 @@ namespace Server.Items
 
 		public virtual BaseAddonDeed Deed => null;
 
-		Item IAddon.Deed => this.Deed;
+		Item IAddon.Deed => Deed;
 
 		public List<AddonComponent> Components => m_Components;
 
@@ -240,7 +240,7 @@ namespace Server.Items
 				{
 					base.Hue = value;
 
-					if ( !Deleted && this.ShareHue && m_Components != null )
+					if ( !Deleted && ShareHue && m_Components != null )
 					{
 						foreach ( AddonComponent c in m_Components )
 							c.Hue = value;

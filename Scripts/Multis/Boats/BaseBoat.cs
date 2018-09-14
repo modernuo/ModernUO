@@ -965,14 +965,14 @@ namespace Server.Multis
 
 				return false;
 			}
-			else if ( this.Map != MapItem.Map || !this.Contains( MapItem.GetWorldLocation() ) )
+			else if ( Map != MapItem.Map || !Contains( MapItem.GetWorldLocation() ) )
 			{
 				if ( message && TillerMan != null )
 					TillerMan.Say( 502514 ); // The map is too far away from me, sir.
 
 				return false;
 			}
-			else if ( ( this.Map != Map.Trammel && this.Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
+			else if ( ( Map != Map.Trammel && Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
 			{
 				if ( message && TillerMan != null )
 					TillerMan.Say( 1042551 ); // I don't see that navpoint, sir.
@@ -1076,7 +1076,7 @@ namespace Server.Multis
 			}
 			else
 			{
-				if ( m_MoveTimer != null && this.Order != BoatOrder.Move )
+				if ( m_MoveTimer != null && Order != BoatOrder.Move )
 				{
 					m_MoveTimer.Stop();
 					m_MoveTimer = null;
@@ -1332,8 +1332,8 @@ namespace Server.Multis
 
 		public Direction GetMovementFor( int x, int y, out int maxSpeed )
 		{
-			int dx = x - this.X;
-			int dy = y - this.Y;
+			int dx = x - X;
+			int dy = y - Y;
 
 			int adx = Math.Abs( dx );
 			int ady = Math.Abs( dy );
@@ -1355,7 +1355,7 @@ namespace Server.Multis
 			Direction dir;
 			int speed, clientSpeed;
 
-			if ( this.Order == BoatOrder.Move )
+			if ( Order == BoatOrder.Move )
 			{
 				dir = m_Moving;
 				speed = m_Speed;
@@ -1368,14 +1368,14 @@ namespace Server.Multis
 
 				return false;
 			}
-			else if ( this.Map != MapItem.Map || !this.Contains( MapItem.GetWorldLocation() ) )
+			else if ( Map != MapItem.Map || !Contains( MapItem.GetWorldLocation() ) )
 			{
 				if ( message && TillerMan != null )
 					TillerMan.Say( 502514 ); // The map is too far away from me, sir.
 
 				return false;
 			}
-			else if ( ( this.Map != Map.Trammel && this.Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
+			else if ( ( Map != Map.Trammel && Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
 			{
 				if ( message && TillerMan != null )
 					TillerMan.Say( 1042551 ); // I don't see that navpoint, sir.
@@ -1394,14 +1394,14 @@ namespace Server.Multis
 
 				if ( maxSpeed == 0 )
 				{
-					if ( message && this.Order == BoatOrder.Single && TillerMan != null )
+					if ( message && Order == BoatOrder.Single && TillerMan != null )
 						TillerMan.Say( 1042874, (NextNavPoint + 1).ToString() ); // We have arrived at nav point ~1_POINT_NUM~ , sir.
 
 					if ( NextNavPoint + 1 < MapItem.Pins.Count )
 					{
 						NextNavPoint++;
 
-						if ( this.Order == BoatOrder.Course )
+						if ( Order == BoatOrder.Course )
 						{
 							if ( message && TillerMan != null )
 								TillerMan.Say( 1042875, (NextNavPoint + 1).ToString() ); // Heading to nav point ~1_POINT_NUM~, sir.
@@ -1415,7 +1415,7 @@ namespace Server.Multis
 					{
 						NextNavPoint = -1;
 
-						if ( message && this.Order == BoatOrder.Course && TillerMan != null )
+						if ( message && Order == BoatOrder.Course && TillerMan != null )
 							TillerMan.Say( 502515 ); // The course is completed, sir.
 
 						return false;
@@ -1427,7 +1427,7 @@ namespace Server.Multis
 				else if ( dir == Right || dir == BackwardRight )
 					return Turn( 2, true );
 
-				speed = Math.Min( this.Speed, maxSpeed );
+				speed = Math.Min( Speed, maxSpeed );
 				clientSpeed = 0x4;
 			}
 
@@ -1637,7 +1637,7 @@ namespace Server.Multis
 
 		public bool SetFacing( Direction facing )
 		{
-			if ( Parent != null || this.Map == null )
+			if ( Parent != null || Map == null )
 				return false;
 
 			if ( CheckDecay() )

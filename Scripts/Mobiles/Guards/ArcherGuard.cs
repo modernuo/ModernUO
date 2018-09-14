@@ -71,8 +71,8 @@ namespace Server.Mobiles
 			Skills[SkillName.MagicResist].Base = 120.0;
 			Skills[SkillName.DetectHidden].Base = 100.0;
 
-			this.NextCombatTime = Core.TickCount + 500;
-			this.Focus = target;
+			NextCombatTime = Core.TickCount + 500;
+			Focus = target;
 		}
 
 		public ArcherGuard( Serial serial ) : base( serial )
@@ -103,7 +103,7 @@ namespace Server.Mobiles
 					m_Focus = value;
 
 					if ( value != null )
-						this.AggressiveAction( value );
+						AggressiveAction( value );
 
 					Combatant = value;
 
@@ -210,7 +210,7 @@ namespace Server.Mobiles
 
 			protected override void OnTick()
 			{
-				BaseGuard.Spawn( m_Focus, m_Focus, 1, true );
+				Spawn( m_Focus, m_Focus, 1, true );
 			}
 		}
 

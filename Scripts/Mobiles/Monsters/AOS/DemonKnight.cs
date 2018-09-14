@@ -77,7 +77,7 @@ namespace Server.Mobiles
 
 		public static Mobile FindRandomPlayer( BaseCreature creature )
 		{
-			List<DamageStore> rights = BaseCreature.GetLootingRights( creature.DamageEntries, creature.HitsMax );
+			List<DamageStore> rights = GetLootingRights( creature.DamageEntries, creature.HitsMax );
 
 			for ( int i = rights.Count - 1; i >= 0; --i )
 			{
@@ -157,8 +157,8 @@ namespace Server.Mobiles
 		{
 			base.OnDeath( c );
 
-			if ( !Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance( this ) )
-				DemonKnight.DistributeArtifact( this );
+			if ( !Summoned && !NoKillAwards && CheckArtifactChance( this ) )
+				DistributeArtifact( this );
 		}
 
 		[Constructible]

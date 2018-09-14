@@ -53,7 +53,7 @@ namespace Server
 
 		public override void Save(SaveMetrics metrics, bool permitBackgroundWrite)
 		{
-			this._metrics = metrics;
+			_metrics = metrics;
 
 			OpenFiles();
 

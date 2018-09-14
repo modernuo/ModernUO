@@ -68,7 +68,7 @@ namespace Server.Items
 
 		public override void OnSingleClick( Mobile from )
 		{
-			this.LabelTo( from, 1046414, Name ); // the remains of ~1_NAME~
+			LabelTo( from, 1046414, Name ); // the remains of ~1_NAME~
 		}
 
 		public DecayedCorpse( Serial serial ) : base( serial )

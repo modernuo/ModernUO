@@ -16,7 +16,7 @@ namespace Server.Engines.Reports
     /// <summary>
     /// Strongly typed collection of Server.Engines.Reports.QueueStatus.
     /// </summary>
-    public class QueueStatusCollection : System.Collections.CollectionBase
+    public class QueueStatusCollection : CollectionBase
     {
         
         /// <summary>
@@ -30,10 +30,10 @@ namespace Server.Engines.Reports
         /// <summary>
         /// Gets or sets the value of the Server.Engines.Reports.QueueStatus at a specific position in the QueueStatusCollection.
         /// </summary>
-        public Server.Engines.Reports.QueueStatus this[int index]
+        public QueueStatus this[int index]
         {
-            get => ((Server.Engines.Reports.QueueStatus)(this.List[index]));
-	        set => this.List[index] = value;
+            get => ((QueueStatus)(List[index]));
+	        set => List[index] = value;
         }
         
         /// <summary>
@@ -41,9 +41,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.QueueStatus instance.</param>
         /// <returns>The position into which the new element was inserted.</returns>
-        public int Add(Server.Engines.Reports.QueueStatus value)
+        public int Add(QueueStatus value)
         {
-            return this.List.Add(value);
+            return List.Add(value);
         }
         
         /// <summary>
@@ -51,9 +51,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.QueueStatus instance to search for.</param>
         /// <returns>True if the Server.Engines.Reports.QueueStatus instance is in the collection; otherwise false.</returns>
-        public bool Contains(Server.Engines.Reports.QueueStatus value)
+        public bool Contains(QueueStatus value)
         {
-            return this.List.Contains(value);
+            return List.Contains(value);
         }
         
         /// <summary>
@@ -61,18 +61,18 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.QueueStatus instance to find.</param>
         /// <returns>The zero-based index of the specified Server.Engines.Reports.QueueStatus instance. If the object is not found, the return value is -1.</returns>
-        public int IndexOf(Server.Engines.Reports.QueueStatus value)
+        public int IndexOf(QueueStatus value)
         {
-            return this.List.IndexOf(value);
+            return List.IndexOf(value);
         }
         
         /// <summary>
         /// Removes a specified Server.Engines.Reports.QueueStatus instance from this collection.
         /// </summary>
         /// <param name="value">The Server.Engines.Reports.QueueStatus instance to remove.</param>
-        public void Remove(Server.Engines.Reports.QueueStatus value)
+        public void Remove(QueueStatus value)
         {
-            this.List.Remove(value);
+            List.Remove(value);
         }
         
         /// <summary>
@@ -89,15 +89,15 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="index">Zero-based index.</param>
         /// <param name="value">The Server.Engines.Reports.QueueStatus instance to insert.</param>
-        public void Insert(int index, Server.Engines.Reports.QueueStatus value)
+        public void Insert(int index, QueueStatus value)
         {
-            this.List.Insert(index, value);
+            List.Insert(index, value);
         }
         
         /// <summary>
         /// Strongly typed enumerator of Server.Engines.Reports.QueueStatus.
         /// </summary>
-        public class QueueStatusCollectionEnumerator : System.Collections.IEnumerator
+        public class QueueStatusCollectionEnumerator : IEnumerator
         {
             
             /// <summary>
@@ -108,7 +108,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Current element pointed to.
             /// </summary>
-            private Server.Engines.Reports.QueueStatus _currentElement;
+            private QueueStatus _currentElement;
             
             /// <summary>
             /// Collection to enumerate.
@@ -128,7 +128,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Gets the Server.Engines.Reports.QueueStatus object in the enumerated QueueStatusCollection currently indexed by this instance.
             /// </summary>
-            public Server.Engines.Reports.QueueStatus Current
+            public QueueStatus Current
             {
                 get
                 {
@@ -182,7 +182,7 @@ namespace Server.Engines.Reports
                             < (_collection.Count - 1)))
                 {
                     _index = (_index + 1);
-                    _currentElement = this._collection[_index];
+                    _currentElement = _collection[_index];
                     return true;
                 }
                 _index = _collection.Count;

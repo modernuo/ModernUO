@@ -101,12 +101,12 @@ namespace Server.Engines.Quests
 
 		public virtual void RenderMessage( BaseQuestGump gump )
 		{
-			gump.AddHtmlObject( 70, 130, 300, 100, this.Message, BaseQuestGump.Blue, false, false );
+			gump.AddHtmlObject( 70, 130, 300, 100, Message, BaseQuestGump.Blue, false, false );
 		}
 
 		public virtual void RenderProgress( BaseQuestGump gump )
 		{
-			gump.AddHtmlObject( 70, 260, 270, 100, this.Completed ? 1049077 : 1049078, BaseQuestGump.Blue, false, false );
+			gump.AddHtmlObject( 70, 260, 270, 100, Completed ? 1049077 : 1049078, BaseQuestGump.Blue, false, false );
 		}
 
 		public virtual void CheckCompletionStatus()

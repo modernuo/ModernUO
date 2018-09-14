@@ -17,8 +17,8 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			Map map = this.Map;
-			Point3D loc = this.Location;
+			Map map = Map;
+			Point3D loc = Location;
 
 			if ( Parent != null || Movable || IsLockedDown || IsSecure || map == null || map == Map.Internal )
 				return;
@@ -47,12 +47,12 @@ namespace Server.Items
 
 		public void Unlink()
 		{
-			ISpawner se = this.Spawner;
+			ISpawner se = Spawner;
 
 			if ( se != null )
 			{
-				this.Spawner.Remove( this );
-				this.Spawner = null;
+				Spawner.Remove( this );
+				Spawner = null;
 			}
 
 		}

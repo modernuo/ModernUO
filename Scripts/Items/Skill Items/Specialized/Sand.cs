@@ -37,8 +37,8 @@ namespace Server.Items
 
 			int version = reader.ReadInt();
 
-			if ( version == 0 && this.Name == "sand" )
-				this.Name = null;
+			if ( version == 0 && Name == "sand" )
+				Name = null;
 		}
 	}
 }

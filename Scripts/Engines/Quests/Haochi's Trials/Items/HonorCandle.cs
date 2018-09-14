@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Samurai
 					if ( obj != null && !obj.Completed )
 						obj.Complete();
 
-					this.SendLocalizedMessageTo( from, 1063251 ); // You light a candle in honor.
+					SendLocalizedMessageTo( from, 1063251 ); // You light a candle in honor.
 				}
 			}
 		}

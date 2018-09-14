@@ -23,8 +23,8 @@ namespace Server.Items
 			get => m_Charges;
 			set
 			{
-				if ( value > this.MaxCharges )
-					m_Charges = this.MaxCharges;
+				if ( value > MaxCharges )
+					m_Charges = MaxCharges;
 				else if ( value < 0 )
 					m_Charges = 0;
 				else
@@ -40,8 +40,8 @@ namespace Server.Items
 			get => m_Recharges;
 			set
 			{
-				if ( value > this.MaxRecharges )
-					m_Recharges = this.MaxRecharges;
+				if ( value > MaxRecharges )
+					m_Recharges = MaxRecharges;
 				else if ( value < 0 )
 					m_Recharges = 0;
 				else
@@ -109,7 +109,7 @@ namespace Server.Items
 		{
 			base.GetContextMenuEntries( from, list );
 
-			if ( from.Alive && this.RootParent == from )
+			if ( from.Alive && RootParent == from )
 			{
 				if ( Pet == null )
 				{
@@ -144,7 +144,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( this.RootParent != from ) // TODO: Previous implementation allowed use on ground, without house protection checks. What is the correct behavior?
+			if ( RootParent != from ) // TODO: Previous implementation allowed use on ground, without house protection checks. What is the correct behavior?
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1042001 ); // That must be in your pack for you to use it.
 				return;
@@ -170,9 +170,9 @@ namespace Server.Items
 
 		public void LinkPet( Mobile from )
 		{
-			BaseCreature pet = this.Pet;
+			BaseCreature pet = Pet;
 
-			if ( Deleted || pet != null || this.RootParent != from )
+			if ( Deleted || pet != null || RootParent != from )
 				return;
 
 			from.SendLocalizedMessage( 1054114 ); // Target your pet that you wish to link to this Crystal Ball of Pet Summoning.
@@ -227,9 +227,9 @@ namespace Server.Items
 
 		public void CastSummonPet( Mobile from )
 		{
-			BaseCreature pet = this.Pet;
+			BaseCreature pet = Pet;
 
-			if ( Deleted || pet == null || this.RootParent != from )
+			if ( Deleted || pet == null || RootParent != from )
 				return;
 
 			if ( Charges == 0 )
@@ -252,9 +252,9 @@ namespace Server.Items
 			{
 				MessageHelper.SendLocalizedMessageTo( this, from, 1054127, 0x22 ); // The Crystal Ball fills with a red mist. You appear to have let your bond to your pet deteriorate.
 			}
-			else if ( from.Map == Map.Ilshenar || from.Region.IsPartOf( typeof( DungeonRegion ) ) || from.Region.IsPartOf( typeof( Jail ) ) || from.Region.IsPartOf( typeof( Server.Engines.ConPVP.SafeZone ) ) )
+			else if ( from.Map == Map.Ilshenar || from.Region.IsPartOf( typeof( DungeonRegion ) ) || from.Region.IsPartOf( typeof( Jail ) ) || from.Region.IsPartOf( typeof( Engines.ConPVP.SafeZone ) ) )
 			{
-				from.Send( new AsciiMessage( this.Serial, this.ItemID, MessageType.Regular, 0x22, 3, "", "You cannot summon your pet to this location." ) );
+				from.Send( new AsciiMessage( Serial, ItemID, MessageType.Regular, 0x22, 3, "", "You cannot summon your pet to this location." ) );
 			}
 			else if ( Core.ML && from is PlayerMobile mobile && DateTime.UtcNow < mobile.LastPetBallTime.AddSeconds( 15.0 ) )
 			{
@@ -273,7 +273,7 @@ namespace Server.Items
 
 		public void SummonPet( Mobile from )
 		{
-			BaseCreature pet = this.Pet;
+			BaseCreature pet = Pet;
 
 			if ( pet == null )
 				return;
@@ -310,7 +310,7 @@ namespace Server.Items
 
 		public void UnlinkPet( Mobile from )
 		{
-			if ( !Deleted && Pet != null && this.RootParent == from )
+			if ( !Deleted && Pet != null && RootParent == from )
 			{
 				Pet = null;
 
@@ -325,7 +325,7 @@ namespace Server.Items
 
 		private void InternalUpdatePetName()
 		{
-			BaseCreature pet = this.Pet;
+			BaseCreature pet = Pet;
 
 			if ( pet == null )
 				m_PetName = "";
@@ -348,7 +348,7 @@ namespace Server.Items
 			writer.WriteEncodedInt( (int) m_Recharges );
 
 			writer.WriteEncodedInt( (int) m_Charges );
-			writer.Write( (Mobile) this.Pet );
+			writer.Write( (Mobile) Pet );
 			writer.Write( (string) m_PetName );
 		}
 
@@ -368,7 +368,7 @@ namespace Server.Items
 				case 0:
 				{
 					m_Charges = Math.Min( reader.ReadEncodedInt(), MaxCharges );
-					this.Pet = (BaseCreature) reader.ReadMobile();
+					Pet = (BaseCreature) reader.ReadMobile();
 					m_PetName = reader.ReadString();
 					break;
 				}

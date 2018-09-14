@@ -535,12 +535,12 @@ namespace Server.Items
 			if ( base.CheckConflictingLayer( m, item, layer ) )
 				return true;
 
-			if ( this.Layer == Layer.TwoHanded && layer == Layer.OneHanded )
+			if ( Layer == Layer.TwoHanded && layer == Layer.OneHanded )
 			{
 				m.SendLocalizedMessage( 500214 ); // You already have something in both hands.
 				return true;
 			}
-			else if ( this.Layer == Layer.OneHanded && layer == Layer.TwoHanded && !(item is BaseShield) && !(item is BaseEquipableLight) )
+			else if ( Layer == Layer.OneHanded && layer == Layer.TwoHanded && !(item is BaseShield) && !(item is BaseEquipableLight) )
 			{
 				m.SendLocalizedMessage( 500215 ); // You can only wield one weapon at a time.
 				return true;
@@ -608,7 +608,7 @@ namespace Server.Items
 			{
 				Mobile m = from;
 
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				if ( strBonus != 0 )
 					m.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
@@ -661,7 +661,7 @@ namespace Server.Items
 			{
 				BaseWeapon weapon = m.Weapon as BaseWeapon;
 
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				m.RemoveStatMod( modName + "Str" );
 				m.RemoveStatMod( modName + "Dex" );
@@ -849,7 +849,7 @@ namespace Server.Items
 
 		public virtual TimeSpan GetDelay( Mobile m )
 		{
-			double speed = this.Speed;
+			double speed = Speed;
 
 			if ( speed == 0 )
 				return TimeSpan.FromHours( 1.0 );
@@ -1798,7 +1798,7 @@ namespace Server.Items
 
 			attacker.DoHarmful( defender );
 
-			Spells.MagerySpell sp = new Spells.Sixth.DispelSpell( attacker, null );
+			MagerySpell sp = new Spells.Sixth.DispelSpell( attacker, null );
 
 			if ( sp.CheckResisted( defender ) )
 			{
@@ -2168,7 +2168,7 @@ namespace Server.Items
 			int defenseMasteryMalus = 0;
 
 			// Defense Mastery gives a -50%/-80% malus to damage.
-			if ( Server.Items.DefenseMastery.GetMalus( attacker, ref defenseMasteryMalus ) )
+			if ( DefenseMastery.GetMalus( attacker, ref defenseMasteryMalus ) )
 				damageBonus -= defenseMasteryMalus;
 
 			int discordanceEffect = 0;
@@ -2854,7 +2854,7 @@ namespace Server.Items
 
 			if ( parentMobile != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0) )
 			{
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				if ( strBonus != 0 )
 					parentMobile.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
@@ -2912,7 +2912,7 @@ namespace Server.Items
 
 		private string GetNameString()
 		{
-			string name = this.Name;
+			string name = Name;
 
 			if ( name == null )
 				name = String.Format( "#{0}", LabelNumber );
@@ -3340,7 +3340,7 @@ namespace Server.Items
 			}
 			else
 			{
-				this.LabelTo( from, Name );
+				LabelTo( from, Name );
 				number = 1041000;
 			}
 

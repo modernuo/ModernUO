@@ -23,8 +23,8 @@ namespace Server.Items
 			get => m_Charges;
 			set
 			{
-				if ( value > this.MaxCharges )
-					m_Charges = this.MaxCharges;
+				if ( value > MaxCharges )
+					m_Charges = MaxCharges;
 				else if ( value < 0 )
 					m_Charges = 0;
 				else
@@ -40,8 +40,8 @@ namespace Server.Items
 			get => m_Recharges;
 			set
 			{
-				if ( value > this.MaxRecharges )
-					m_Recharges = this.MaxRecharges;
+				if ( value > MaxRecharges )
+					m_Recharges = MaxRecharges;
 				else if ( value < 0 )
 					m_Recharges = 0;
 				else
@@ -106,9 +106,9 @@ namespace Server.Items
 		{
 			base.GetContextMenuEntries( from, list );
 
-			if ( from.Alive && this.IsChildOf( from ) )
+			if ( from.Alive && IsChildOf( from ) )
 			{
-				BraceletOfBinding bound = this.Bound;
+				BraceletOfBinding bound = Bound;
 
 				list.Add( new BraceletEntry( new BraceletCallback( Activate ), 6170, bound != null ) );
 				list.Add( new BraceletEntry( new BraceletCallback( Search ), 6171, bound != null ) );
@@ -142,7 +142,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			BraceletOfBinding bound = this.Bound;
+			BraceletOfBinding bound = Bound;
 
 			if ( Bound == null )
 			{
@@ -156,12 +156,12 @@ namespace Server.Items
 
 		public void Activate( Mobile from )
 		{
-			BraceletOfBinding bound = this.Bound;
+			BraceletOfBinding bound = Bound;
 
 			if ( Deleted || bound == null )
 				return;
 
-			if ( !this.IsChildOf( from ) )
+			if ( !IsChildOf( from ) )
 			{
 				from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 			}
@@ -218,12 +218,12 @@ namespace Server.Items
 
 		public void Search( Mobile from )
 		{
-			BraceletOfBinding bound = this.Bound;
+			BraceletOfBinding bound = Bound;
 
 			if ( Deleted || bound == null )
 				return;
 
-			if ( !this.IsChildOf( from ) )
+			if ( !IsChildOf( from ) )
 			{
 				from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 			}
@@ -235,7 +235,7 @@ namespace Server.Items
 
 		private bool CheckUse( Mobile from, bool successMessage )
 		{
-			BraceletOfBinding bound = this.Bound;
+			BraceletOfBinding bound = Bound;
 
 			if ( bound == null )
 				return false;
@@ -295,17 +295,17 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
 				return false;
 			}
-			else if ( Server.Misc.WeightOverloading.IsOverloaded( from ) )
+			else if ( Misc.WeightOverloading.IsOverloaded( from ) )
 			{
 				from.SendLocalizedMessage( 502359, "", 0x22 ); // Thou art too encumbered to move.
 				return false;
 			}
-			else if ( from.Region.IsPartOf( typeof( Server.Regions.Jail ) ) )
+			else if ( from.Region.IsPartOf( typeof( Regions.Jail ) ) )
 			{
 				from.SendLocalizedMessage( 1114345, "", 0x35 ); // You'll need a better jailbreak plan than that!
 				return false;
 			}
-			else if ( boundRoot.Region.IsPartOf( typeof( Server.Regions.Jail ) ) )
+			else if ( boundRoot.Region.IsPartOf( typeof( Regions.Jail ) ) )
 			{
 				from.SendLocalizedMessage( 1019004 ); // You are not allowed to travel there.
 				return false;
@@ -324,7 +324,7 @@ namespace Server.Items
 			if ( Deleted )
 				return;
 
-			if ( !this.IsChildOf( from ) )
+			if ( !IsChildOf( from ) )
 			{
 				from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 			}
@@ -383,7 +383,7 @@ namespace Server.Items
 			if ( Deleted )
 				return;
 
-			if ( !this.IsChildOf( from ) )
+			if ( !IsChildOf( from ) )
 			{
 				from.SendLocalizedMessage( 1042664 ); // You must have the object in your backpack to use it.
 			}
@@ -439,7 +439,7 @@ namespace Server.Items
 
 			writer.WriteEncodedInt( (int) m_Charges );
 			writer.Write( (string) m_Inscription );
-			writer.Write( (Item) this.Bound );
+			writer.Write( (Item) Bound );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -459,7 +459,7 @@ namespace Server.Items
 				{
 					m_Charges = Math.Min( reader.ReadEncodedInt(), MaxCharges );
 					m_Inscription = reader.ReadString();
-					this.Bound = (BraceletOfBinding) reader.ReadItem();
+					Bound = (BraceletOfBinding) reader.ReadItem();
 					break;
 				}
 			}

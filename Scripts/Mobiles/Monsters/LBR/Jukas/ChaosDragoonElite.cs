@@ -165,7 +165,7 @@ namespace Server.Mobiles
 
 		public override bool OnBeforeDeath()
 		{
-			IMount mount = this.Mount;
+			IMount mount = Mount;
 
 			if ( mount != null )
 			{

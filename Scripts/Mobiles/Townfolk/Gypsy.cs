@@ -20,10 +20,10 @@ namespace Server.Mobiles
 
 			Hue = Utility.RandomSkinHue();
 
-			if ( this.Female = Utility.RandomBool() )
+			if ( Female = Utility.RandomBool() )
 			{
-				this.Body = 0x191;
-				this.Name = NameList.RandomName( "female" );
+				Body = 0x191;
+				Name = NameList.RandomName( "female" );
 				AddItem( new Kilt( Utility.RandomDyedHue() ) );
 				AddItem( new Shirt( Utility.RandomDyedHue() ) );
 				AddItem( new ThighBoots() );
@@ -31,8 +31,8 @@ namespace Server.Mobiles
 			}
 			else
 			{
-				this.Body = 0x190;
-				this.Name = NameList.RandomName( "male" );
+				Body = 0x190;
+				Name = NameList.RandomName( "male" );
 				AddItem( new ShortPants( Utility.RandomNeutralHue() ) );
 				AddItem( new Shirt( Utility.RandomDyedHue() ) );
 				AddItem( new Sandals() );

@@ -80,10 +80,10 @@ namespace Server.Engines.Reports
 			BaseInfo cmp = obj as BaseInfo;
 
 			int v = cmp.GetPageCount( cmp is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow )
-				- this.GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow );
+				- GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow );
 
 			if ( v == 0 )
-				v = String.Compare( this.Display, cmp.Display );
+				v = String.Compare( Display, cmp.Display );
 
 			return v;
 		}

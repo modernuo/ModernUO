@@ -48,7 +48,7 @@ namespace Server.Items
 				v.Direction = from.Direction & Direction.Mask;
 				v.MoveToWorld( from.Location, from.Map );
 
-				this.Delete();
+				Delete();
 			}
 			else
 			{
@@ -82,7 +82,7 @@ namespace Server.Items
 						v.Direction = from.Direction & Direction.Mask;
 						v.MoveToWorld( from.Location, from.Map );
 						
-						this.Delete();
+						Delete();
 					}
 				}
 			}

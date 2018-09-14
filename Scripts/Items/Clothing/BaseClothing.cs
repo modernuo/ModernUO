@@ -267,7 +267,7 @@ namespace Server.Items
 			if ( strBonus == 0 && dexBonus == 0 && intBonus == 0 )
 				return;
 
-			string modName = this.Serial.ToString();
+			string modName = Serial.ToString();
 
 			if ( strBonus != 0 )
 				parent.AddStatMod( new StatMod( StatType.Str, modName + "Str", strBonus, TimeSpan.Zero ) );
@@ -350,7 +350,7 @@ namespace Server.Items
 				if ( Core.AOS )
 					m_AosSkillBonuses.Remove();
 
-				string modName = this.Serial.ToString();
+				string modName = Serial.ToString();
 
 				mob.RemoveStatMod( modName + "Str" );
 				mob.RemoveStatMod( modName + "Dex" );
@@ -498,7 +498,7 @@ namespace Server.Items
 
 		private string GetNameString()
 		{
-			string name = this.Name;
+			string name = Name;
 
 			if ( name == null )
 				name = String.Format( "#{0}", LabelNumber );
@@ -673,7 +673,7 @@ namespace Server.Items
 			}
 			else
 			{
-				this.LabelTo( from, Name );
+				LabelTo( from, Name );
 				number = 1041000;
 			}
 

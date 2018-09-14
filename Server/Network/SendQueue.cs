@@ -58,7 +58,7 @@ namespace Server.Network {
 			}
 
 			public int Write( byte[] buffer, int offset, int length ) {
-				int write = Math.Min( length, this.Available );
+				int write = Math.Min( length, Available );
 
 				System.Buffer.BlockCopy( buffer, offset, _buffer, _length, write );
 

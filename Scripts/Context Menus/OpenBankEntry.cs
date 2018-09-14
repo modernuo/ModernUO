@@ -20,7 +20,7 @@ namespace Server.ContextMenus
 			}
 			else
 			{
-				this.Owner.From.BankBox.Open();
+				Owner.From.BankBox.Open();
 			}
 		}
 	}

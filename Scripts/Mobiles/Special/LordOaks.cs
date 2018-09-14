@@ -80,12 +80,12 @@ namespace Server.Mobiles
 
 		public void SpawnPixies( Mobile target )
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map == null )
 				return;
 
-			this.Say( 1042154 ); // You shall never defeat me as long as I have my queen!
+			Say( 1042154 ); // You shall never defeat me as long as I have my queen!
 
 			int newPixies = Utility.RandomMinMax( 3, 6 );
 
@@ -93,11 +93,11 @@ namespace Server.Mobiles
 			{
 				Pixie pixie = new Pixie();
 
-				pixie.Team = this.Team;
+				pixie.Team = Team;
 				pixie.FightMode = FightMode.Closest;
 
 				bool validLocation = false;
-				Point3D loc = this.Location;
+				Point3D loc = Location;
 
 				for ( int j = 0; !validLocation && j < 10; ++j )
 				{
@@ -105,7 +105,7 @@ namespace Server.Mobiles
 					int y = Y + Utility.Random( 3 ) - 1;
 					int z = map.GetAverageZ( x, y );
 
-					if ( validLocation = map.CanFit( x, y, this.Z, 16, false, false ) )
+					if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
 						loc = new Point3D( x, y, Z );
 					else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
 						loc = new Point3D( x, y, z );
@@ -143,18 +143,18 @@ namespace Server.Mobiles
 
 		public void CheckQueen()
 		{
-			if ( this.Map == null )
+			if ( Map == null )
 				return;
 
 			if ( !m_SpawnedQueen )
 			{
-				this.Say( 1042153 ); // Come forth my queen!
+				Say( 1042153 ); // Come forth my queen!
 
 				m_Queen = new Silvani();
 
-				((BaseCreature)m_Queen).Team = this.Team;
+				((BaseCreature)m_Queen).Team = Team;
 
-				m_Queen.MoveToWorld( this.Location, this.Map );
+				m_Queen.MoveToWorld( Location, Map );
 
 				m_SpawnedQueen = true;
 			}

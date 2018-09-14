@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Doom
 		{
 			get
 			{
-				if ( m_Altar == null || m_Altar.Deleted || m_Altar.Map != this.Map || !Utility.InRange( m_Altar.Location, this.Location, AltarRange ) )
+				if ( m_Altar == null || m_Altar.Deleted || m_Altar.Map != Map || !Utility.InRange( m_Altar.Location, Location, AltarRange ) )
 				{
 					foreach ( Item item in GetItemsInRange( AltarRange ) )
 					{

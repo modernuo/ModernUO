@@ -1,6 +1,6 @@
 namespace Server.Items
 {
-	[Server.Engines.Craft.Forge]
+	[Engines.Craft.Forge]
 	public class LargeForgeWest : Item
 	{
 		private InternalItem m_Item;
@@ -65,7 +65,7 @@ namespace Server.Items
 			m_Item2 = reader.ReadItem() as InternalItem2;
 		}
 
-		[Server.Engines.Craft.Forge]
+		[Engines.Craft.Forge]
 		private class InternalItem : Item
 		{
 			private LargeForgeWest m_Item;
@@ -120,7 +120,7 @@ namespace Server.Items
 			}
 		}
 
-		[Server.Engines.Craft.Forge]
+		[Engines.Craft.Forge]
 		private class InternalItem2 : Item
 		{
 			private LargeForgeWest m_Item;
@@ -176,7 +176,7 @@ namespace Server.Items
 		}
 	}
 
-	[Server.Engines.Craft.Forge]
+	[Engines.Craft.Forge]
 	public class LargeForgeEast : Item
 	{
 		private InternalItem m_Item;
@@ -241,7 +241,7 @@ namespace Server.Items
 			m_Item2 = reader.ReadItem() as InternalItem2;
 		}
 
-		[Server.Engines.Craft.Forge]
+		[Engines.Craft.Forge]
 		private class InternalItem : Item
 		{
 			private LargeForgeEast m_Item;
@@ -296,7 +296,7 @@ namespace Server.Items
 			}
 		}
 
-		[Server.Engines.Craft.Forge]
+		[Engines.Craft.Forge]
 		private class InternalItem2 : Item
 		{
 			private LargeForgeEast m_Item;

@@ -41,8 +41,8 @@ namespace Server.Spells
 
         public void Stop()
         {
-            this.m_Stop = true;
-            this.Disturb(DisturbType.Hurt, false, false);
+            m_Stop = true;
+            Disturb(DisturbType.Hurt, false, false);
         }
 
         public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
@@ -63,19 +63,19 @@ namespace Server.Spells
 
         public override void OnDisturb(DisturbType type, bool message)
         {
-            if (message && !this.m_Stop)
-                this.Caster.SendLocalizedMessage(1113192); // You have been disrupted while attempting to fly!
+            if (message && !m_Stop)
+                Caster.SendLocalizedMessage(1113192); // You have been disrupted while attempting to fly!
         }
 
         public override void OnCast()
         {
-            this.Caster.Flying = false;
-            BuffInfo.RemoveBuff(this.Caster, BuffIcon.Fly);
-            this.Caster.Animate(60, 10, 1, true, false, 0);
-            this.Caster.SendLocalizedMessage(1112567); // You are flying.
-            this.Caster.Flying = true;
-            BuffInfo.AddBuff(this.Caster, new BuffInfo(BuffIcon.Fly, 1112567));
-            this.FinishSequence();
+            Caster.Flying = false;
+            BuffInfo.RemoveBuff(Caster, BuffIcon.Fly);
+            Caster.Animate(60, 10, 1, true, false, 0);
+            Caster.SendLocalizedMessage(1112567); // You are flying.
+            Caster.Flying = true;
+            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Fly, 1112567));
+            FinishSequence();
         }
     }
 }

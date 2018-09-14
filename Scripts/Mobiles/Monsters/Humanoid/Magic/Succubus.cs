@@ -56,12 +56,12 @@ namespace Server.Mobiles
 		{
 			ArrayList list = new ArrayList();
 
-			foreach ( Mobile m in this.GetMobilesInRange( 2 ) )
+			foreach ( Mobile m in GetMobilesInRange( 2 ) )
 			{
 				if ( m == this || !CanBeHarmful( m ) )
 					continue;
 
-				if ( m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != this.Team) )
+				if ( m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team) )
 					list.Add( m );
 				else if ( m.Player )
 					list.Add( m );

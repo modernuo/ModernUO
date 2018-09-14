@@ -246,7 +246,7 @@ namespace Server.Items
 
 				if (qs is Haven.UzeraanTurmoilQuest)
 				{
-					var obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
+					var obj = qs.FindObjective(typeof(Haven.CashBankCheckObjective));
 
 					if (obj != null && !obj.Completed)
 					{

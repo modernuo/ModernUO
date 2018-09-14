@@ -89,12 +89,12 @@ namespace Server.Mobiles
 
 		public override void OnDamagedBySpell( Mobile caster )
 		{
-			if ( this.Map != null && caster != this && 0.25 > Utility.RandomDouble() )
+			if ( Map != null && caster != this && 0.25 > Utility.RandomDouble() )
 			{
 				BaseCreature spawn = new PlagueSpawn( this );
 
-				spawn.Team = this.Team;
-				spawn.MoveToWorld( this.Location, this.Map );
+				spawn.Team = Team;
+				spawn.MoveToWorld( Location, Map );
 				spawn.Combatant = caster;
 
 				Say( 1053034 ); // * The plague beast creates another beast from its flesh! *
@@ -108,12 +108,12 @@ namespace Server.Mobiles
 
 		public override void OnGotMeleeAttack( Mobile attacker )
 		{
-			if ( this.Map != null && attacker != this && 0.25 > Utility.RandomDouble() )
+			if ( Map != null && attacker != this && 0.25 > Utility.RandomDouble() )
 			{
 				BaseCreature spawn = new PlagueSpawn( this );
 
-				spawn.Team = this.Team;
-				spawn.MoveToWorld( this.Location, this.Map );
+				spawn.Team = Team;
+				spawn.MoveToWorld( Location, Map );
 				spawn.Combatant = attacker;
 
 				Say( 1053034 ); // * The plague beast creates another beast from its flesh! *
@@ -222,7 +222,7 @@ namespace Server.Mobiles
 		{
 			int maxhits = 2000;
 
-			if ( this.IsParagon )
+			if ( IsParagon )
 				maxhits = (int)(maxhits * Paragon.HitsBuff);
 
 			if ( hp < 1000 && !Core.AOS )
@@ -232,9 +232,9 @@ namespace Server.Mobiles
 			{
 				HitsMaxSeed = maxhits;
 
-				int newHits = this.Hits + hp + Utility.RandomMinMax( 10, 20 ); // increase the hp until it hits if it goes over it'll max at 2000
+				int newHits = Hits + hp + Utility.RandomMinMax( 10, 20 ); // increase the hp until it hits if it goes over it'll max at 2000
 
-				this.Hits = Math.Min( maxhits, newHits );
+				Hits = Math.Min( maxhits, newHits );
 				// Also provide heal for each devour on top of the hp increase
 			}
 			else

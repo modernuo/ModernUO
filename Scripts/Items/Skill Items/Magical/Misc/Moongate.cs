@@ -161,10 +161,10 @@ namespace Server.Items
 
 		public virtual bool ValidateUse( Mobile from, bool message )
 		{
-			if ( from.Deleted || this.Deleted )
+			if ( from.Deleted || Deleted )
 				return false;
 
-			if ( from.Map != this.Map || !from.InRange( this, 1 ) )
+			if ( from.Map != Map || !from.InRange( this, 1 ) )
 			{
 				if ( message )
 					from.SendLocalizedMessage( 500446 ); // That is too far away.

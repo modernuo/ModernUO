@@ -110,10 +110,10 @@ namespace Server.Items
 			if ( Deleted || !from.CanSee( this ) )
 				return;
 
-			this.LabelTo( from, 1061133, String.Format( "{0}\t{1}", GetSkillTitle( m_SkillLevel ).ToString(), RepairSkillInfo.GetInfo( m_Skill ).Name ) ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
+			LabelTo( from, 1061133, String.Format( "{0}\t{1}", GetSkillTitle( m_SkillLevel ).ToString(), RepairSkillInfo.GetInfo( m_Skill ).Name ) ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
 
 			if ( m_Crafter != null )
-				this.LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+				LabelTo( from, 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 		}
 
 		[Constructible]
@@ -208,7 +208,7 @@ namespace Server.Items
 			if ( !m.Region.IsPartOf( typeof( TownRegion ) ) )
 				return false;
 
-			return Server.Factions.Faction.IsNearType( m, RepairSkillInfo.GetInfo( m_Skill ).NearbyTypes, 6 );
+			return Factions.Faction.IsNearType( m, RepairSkillInfo.GetInfo( m_Skill ).NearbyTypes, 6 );
 		}
 
 		public override void Serialize( GenericWriter writer )

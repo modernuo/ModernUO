@@ -134,7 +134,7 @@ namespace Server.Mobiles
 			if ( m_DisplayEntity != null && !IsDeleted( m_DisplayEntity ) )
 				return m_DisplayEntity;
 
-			bool canCache = this.CanCacheDisplay;
+			bool canCache = CanCacheDisplay;
 
 			if ( canCache )
 				m_DisplayEntity = DisplayCache.Cache.Lookup( m_Type );

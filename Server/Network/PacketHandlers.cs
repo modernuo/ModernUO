@@ -2161,7 +2161,7 @@ namespace Server.Network
 				state.Send(new MobileIncoming(m, m));
 				//state.Send( new MobileAttributes( m ) );
 				state.Send(new MobileStatus(m, m));
-				state.Send(Server.Network.SetWarMode.Instantiate(m.Warmode));
+				state.Send(Network.SetWarMode.Instantiate(m.Warmode));
 
 				m.SendEverything();
 
@@ -2169,7 +2169,7 @@ namespace Server.Network
 				state.Send(new MobileUpdate(m));
 				//state.Send( new MobileAttributes( m ) );
 				state.Send(new MobileStatus(m, m));
-				state.Send(Server.Network.SetWarMode.Instantiate(m.Warmode));
+				state.Send(Network.SetWarMode.Instantiate(m.Warmode));
 				state.Send(new MobileIncoming(m, m));
 			} else if ( state.StygianAbyss ) {
 				state.Send( new MobileUpdate( m ) );
@@ -2182,7 +2182,7 @@ namespace Server.Network
 				state.Send( new MobileIncomingSA( m, m ) );
 				//state.Send( new MobileAttributes( m ) );
 				state.Send( new MobileStatus( m, m ) );
-				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( Network.SetWarMode.Instantiate( m.Warmode ) );
 
 				m.SendEverything();
 
@@ -2190,7 +2190,7 @@ namespace Server.Network
 				state.Send( new MobileUpdate( m ) );
 				//state.Send( new MobileAttributes( m ) );
 				state.Send( new MobileStatus( m, m ) );
-				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( Network.SetWarMode.Instantiate( m.Warmode ) );
 				state.Send( new MobileIncomingSA( m, m ) );
 			} else {
 				state.Send( new MobileUpdateOld( m ) );
@@ -2203,7 +2203,7 @@ namespace Server.Network
 				state.Send( new MobileIncomingOld( m, m ) );
 				//state.Send( new MobileAttributes( m ) );
 				state.Send( new MobileStatus( m, m ) );
-				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( Network.SetWarMode.Instantiate( m.Warmode ) );
 
 				m.SendEverything();
 
@@ -2211,7 +2211,7 @@ namespace Server.Network
 				state.Send( new MobileUpdateOld( m ) );
 				//state.Send( new MobileAttributes( m ) );
 				state.Send( new MobileStatus( m, m ) );
-				state.Send( Server.Network.SetWarMode.Instantiate( m.Warmode ) );
+				state.Send( Network.SetWarMode.Instantiate( m.Warmode ) );
 				state.Send( new MobileIncomingOld( m, m ) );
 			}
 

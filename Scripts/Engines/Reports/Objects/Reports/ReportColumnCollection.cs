@@ -16,7 +16,7 @@ namespace Server.Engines.Reports
     /// <summary>
     /// Strongly typed collection of Server.Engines.Reports.ReportColumn.
     /// </summary>
-    public class ReportColumnCollection : System.Collections.CollectionBase
+    public class ReportColumnCollection : CollectionBase
     {
         
         /// <summary>
@@ -30,10 +30,10 @@ namespace Server.Engines.Reports
         /// <summary>
         /// Gets or sets the value of the Server.Engines.Reports.ReportColumn at a specific position in the ReportColumnCollection.
         /// </summary>
-        public Server.Engines.Reports.ReportColumn this[int index]
+        public ReportColumn this[int index]
         {
-            get => ((Server.Engines.Reports.ReportColumn)(this.List[index]));
-	        set => this.List[index] = value;
+            get => ((ReportColumn)(List[index]));
+	        set => List[index] = value;
         }
 
 		public int Add( string width, string align )
@@ -51,9 +51,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.ReportColumn instance.</param>
         /// <returns>The position into which the new element was inserted.</returns>
-        public int Add(Server.Engines.Reports.ReportColumn value)
+        public int Add(ReportColumn value)
         {
-            return this.List.Add(value);
+            return List.Add(value);
         }
         
         /// <summary>
@@ -61,9 +61,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.ReportColumn instance to search for.</param>
         /// <returns>True if the Server.Engines.Reports.ReportColumn instance is in the collection; otherwise false.</returns>
-        public bool Contains(Server.Engines.Reports.ReportColumn value)
+        public bool Contains(ReportColumn value)
         {
-            return this.List.Contains(value);
+            return List.Contains(value);
         }
         
         /// <summary>
@@ -71,18 +71,18 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.ReportColumn instance to find.</param>
         /// <returns>The zero-based index of the specified Server.Engines.Reports.ReportColumn instance. If the object is not found, the return value is -1.</returns>
-        public int IndexOf(Server.Engines.Reports.ReportColumn value)
+        public int IndexOf(ReportColumn value)
         {
-            return this.List.IndexOf(value);
+            return List.IndexOf(value);
         }
         
         /// <summary>
         /// Removes a specified Server.Engines.Reports.ReportColumn instance from this collection.
         /// </summary>
         /// <param name="value">The Server.Engines.Reports.ReportColumn instance to remove.</param>
-        public void Remove(Server.Engines.Reports.ReportColumn value)
+        public void Remove(ReportColumn value)
         {
-            this.List.Remove(value);
+            List.Remove(value);
         }
         
         /// <summary>
@@ -99,15 +99,15 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="index">Zero-based index.</param>
         /// <param name="value">The Server.Engines.Reports.ReportColumn instance to insert.</param>
-        public void Insert(int index, Server.Engines.Reports.ReportColumn value)
+        public void Insert(int index, ReportColumn value)
         {
-            this.List.Insert(index, value);
+            List.Insert(index, value);
         }
         
         /// <summary>
         /// Strongly typed enumerator of Server.Engines.Reports.ReportColumn.
         /// </summary>
-        public class ReportColumnCollectionEnumerator : System.Collections.IEnumerator
+        public class ReportColumnCollectionEnumerator : IEnumerator
         {
             
             /// <summary>
@@ -118,7 +118,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Current element pointed to.
             /// </summary>
-            private Server.Engines.Reports.ReportColumn _currentElement;
+            private ReportColumn _currentElement;
             
             /// <summary>
             /// Collection to enumerate.
@@ -138,7 +138,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Gets the Server.Engines.Reports.ReportColumn object in the enumerated ReportColumnCollection currently indexed by this instance.
             /// </summary>
-            public Server.Engines.Reports.ReportColumn Current
+            public ReportColumn Current
             {
                 get
                 {
@@ -192,7 +192,7 @@ namespace Server.Engines.Reports
                             < (_collection.Count - 1)))
                 {
                     _index = (_index + 1);
-                    _currentElement = this._collection[_index];
+                    _currentElement = _collection[_index];
                     return true;
                 }
                 _index = _collection.Count;

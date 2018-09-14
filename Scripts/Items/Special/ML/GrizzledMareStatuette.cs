@@ -50,7 +50,7 @@ namespace Server.Mobiles
 
 		public virtual void OnAfterDeserialize_Callback()
 		{
-			HellSteed.SetStats( this );
+			SetStats( this );
 
 			Name = m_Myname;
 		}

@@ -112,7 +112,7 @@ namespace Server.Items
 				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( AddToHouse ) );
 
 			if ( !Guild.NewGuildSystem && m_Guild == null )
-				this.Delete();
+				Delete();
 		}
 
 		private void AddToHouse()
@@ -161,11 +161,11 @@ namespace Server.Items
 				if ( (name = m_Guild.Name) == null || (name = name.Trim()).Length <= 0 )
 					name = "(unnamed)";
 
-				this.LabelTo( from, name );
+				LabelTo( from, name );
 			}
 			else if ( m_GuildName != null )
 			{
-				this.LabelTo( from, m_GuildName );
+				LabelTo( from, m_GuildName );
 			}
 		}
 
@@ -226,7 +226,7 @@ namespace Server.Items
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
-			return map.CanFit( p.X, p.Y, p.Z, this.ItemData.Height );
+			return map.CanFit( p.X, p.Y, p.Z, ItemData.Height );
 		}
 
 		#endregion

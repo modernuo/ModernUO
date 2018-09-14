@@ -98,7 +98,7 @@ namespace Server.Items
 					break;
 
 				case 0:
-					string format = this.Name;
+					string format = Name;
 
 					if ( format != null )
 					{
@@ -118,7 +118,7 @@ namespace Server.Items
 					}
 
 					m_PlayerName = format;
-					this.Name = null;
+					Name = null;
 
 					break;
 			}

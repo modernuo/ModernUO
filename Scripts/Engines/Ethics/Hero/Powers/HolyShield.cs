@@ -16,13 +16,13 @@ namespace Server.Ethics.Hero
 		{
 			if ( from.IsShielded )
 			{
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You are already under the protection of a holy shield." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You are already under the protection of a holy shield." );
 				return;
 			}
 
 			from.BeginShield();
 
-			from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You are now under the protection of a holy shield." );
+			from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You are now under the protection of a holy shield." );
 
 			FinishInvoke( from );
 		}

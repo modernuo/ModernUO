@@ -62,8 +62,8 @@ namespace Server.Items
 		{
 			base.GetContextMenuEntries( from, list );
 
-			if ( from.Alive && this.Movable )
-				list.Add( new ContextMenus.AddToSpellbookEntry() );
+			if ( from.Alive && Movable )
+				list.Add( new AddToSpellbookEntry() );
 		}
 
 		public override void OnDoubleClick( Mobile from )

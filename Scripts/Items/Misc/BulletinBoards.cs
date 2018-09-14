@@ -78,7 +78,7 @@ namespace Server.Items
 
 		public virtual void Cleanup()
 		{
-			List<Item> items = this.Items;
+			List<Item> items = Items;
 
 			for ( int i = items.Count - 1; i >= 0; --i )
 			{
@@ -99,7 +99,7 @@ namespace Server.Items
 		private void RecurseDelete( BulletinMessage msg )
 		{
 			List<Item> found = new List<Item>();
-			List<Item> items = this.Items;
+			List<Item> items = Items;
 
 			for ( int i = items.Count - 1; i >= 0; --i )
 			{
@@ -122,7 +122,7 @@ namespace Server.Items
 
 		public virtual bool GetLastPostTime( Mobile poster, bool onlyCheckRoot, ref DateTime lastPostTime )
 		{
-			List<Item> items = this.Items;
+			List<Item> items = Items;
 			bool wasSet = false;
 
 			for ( int i = 0; i < items.Count; ++i )
@@ -168,7 +168,7 @@ namespace Server.Items
 			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
-			return ( from.Map == this.Map && from.InRange( GetWorldLocation(), 2 ) );
+			return ( from.Map == Map && from.InRange( GetWorldLocation(), 2 ) );
 		}
 
 		public void PostMessage( Mobile from, BulletinMessage thread, string subject, string[] lines )
@@ -331,7 +331,7 @@ namespace Server.Items
 			return m_Time.ToString( "MMM dd, yyyy" );
 		}
 
-		public override bool CheckTarget( Mobile from, Server.Targeting.Target targ, object targeted )
+		public override bool CheckTarget( Mobile from, Targeting.Target targ, object targeted )
 		{
 			return false;
 		}

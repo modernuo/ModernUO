@@ -21,7 +21,7 @@ namespace Server.Ethics.Hero
 
 			if ( from.Steed != null )
 			{
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You already have a holy steed." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You already have a holy steed." );
 				return;
 			}
 

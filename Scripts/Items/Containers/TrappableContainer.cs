@@ -68,8 +68,8 @@ namespace Server.Items
 		{
 			if ( m_TrapType != TrapType.None )
 			{
-				Point3D loc = this.GetWorldLocation();
-				Map facet = this.Map;
+				Point3D loc = GetWorldLocation();
+				Map facet = Map;
 
 				if ( from.AccessLevel >= AccessLevel.GameMaster )
 				{
@@ -189,7 +189,7 @@ namespace Server.Items
 			Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x376A, 9, 32, 5022 );
 			Effects.PlaySound( Location, Map, 0x1F5 );
 
-			if ( this.TrapOnOpen )
+			if ( TrapOnOpen )
 			{
 				ExecuteTrap( from );
 			}
@@ -197,7 +197,7 @@ namespace Server.Items
 
 		public override void Open( Mobile from )
 		{
-			if ( !this.TrapOnOpen || !ExecuteTrap( from ) )
+			if ( !TrapOnOpen || !ExecuteTrap( from ) )
 				base.Open( from );
 		}
 

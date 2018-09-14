@@ -7,7 +7,7 @@ namespace Server.Items
 	public class WallBannerComponent : AddonComponent, IDyable
 	{
 		public override bool NeedsWall => true;
-		public override Point3D WallPosition => this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 );
+		public override Point3D WallPosition => East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 );
 
 		public bool East => ((WallBanner)Addon).East;
 

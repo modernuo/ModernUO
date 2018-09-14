@@ -33,7 +33,7 @@ namespace Server.Items
 
 		public override bool CheckHold( Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight )
 		{
-			if ( this.IsSecure && !BaseHouse.CheckHold( m, this, item, message, checkItems, plusItems, plusWeight ) )
+			if ( IsSecure && !BaseHouse.CheckHold( m, this, item, message, checkItems, plusItems, plusWeight ) )
 				return false;
 
 			return base.CheckHold( m, item, message, checkItems, plusItems, plusWeight );
@@ -72,7 +72,7 @@ namespace Server.Items
 					return false;
 			}
 
-			List<Item> list = this.Items;
+			List<Item> list = Items;
 
 			for ( int i = 0; i < list.Count; ++i )
 			{
@@ -124,7 +124,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.AccessLevel > AccessLevel.Player || from.InRange( this.GetWorldLocation(), 2 ) || this.RootParent is PlayerVendor )
+			if ( from.AccessLevel > AccessLevel.Player || from.InRange( GetWorldLocation(), 2 ) || RootParent is PlayerVendor )
 				Open( from );
 			else
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
@@ -173,7 +173,7 @@ namespace Server.Items
 		public override void OnItemRemoved( Item item )
 		{
 			if ( Items.Count == 0 )
-				this.Delete();
+				Delete();
 
 			base.OnItemRemoved( item );
 		}

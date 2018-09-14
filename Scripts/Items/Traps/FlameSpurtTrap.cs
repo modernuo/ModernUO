@@ -28,7 +28,7 @@ namespace Server.Items
 
 		public virtual void CheckTimer()
 		{
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map != null && map.GetSector( GetWorldLocation() ).Active )
 				StartTimer();
@@ -84,7 +84,7 @@ namespace Server.Items
 				if ( !mob.Player || !mob.Alive || mob.AccessLevel > AccessLevel.Player )
 					continue;
 
-				if ( ( (this.Z + 8) >= mob.Z && (mob.Z + 16) > this.Z ) )
+				if ( ( (Z + 8) >= mob.Z && (mob.Z + 16) > Z ) )
 				{
 					foundPlayer = true;
 					break;
@@ -101,7 +101,7 @@ namespace Server.Items
 			else if ( m_Spurt == null || m_Spurt.Deleted )
 			{
 				m_Spurt = new Static( 0x3709 );
-				m_Spurt.MoveToWorld( this.Location, this.Map );
+				m_Spurt.MoveToWorld( Location, Map );
 
 				Effects.PlaySound( GetWorldLocation(), Map, 0x309 );
 			}

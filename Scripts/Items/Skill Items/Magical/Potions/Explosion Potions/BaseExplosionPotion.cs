@@ -42,12 +42,12 @@ namespace Server.Items
 
 		public virtual object FindParent( Mobile from )
 		{
-			Mobile m = this.HeldBy;
+			Mobile m = HeldBy;
 
 			if ( m != null && m.Holding == this )
 				return m;
 
-			object obj = this.RootParent;
+			object obj = RootParent;
 
 			if ( obj != null )
 				return obj;
@@ -73,7 +73,7 @@ namespace Server.Items
 			}
 
 			ThrowTarget targ = from.Target as ThrowTarget;
-			this.Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
+			Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
 
 			if ( targ != null && targ.Potion == this )
 				return;

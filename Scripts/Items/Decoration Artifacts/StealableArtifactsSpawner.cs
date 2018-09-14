@@ -44,7 +44,7 @@ namespace Server.Items
 					item.Hue = m_Hue;
 
 				item.Movable = false;
-				item.MoveToWorld( this.Location, this.Map );
+				item.MoveToWorld( Location, Map );
 
 				return item;
 			}
@@ -263,8 +263,8 @@ namespace Server.Items
 				{
 					if ( m_Item != null && value == null )
 					{
-						int delay = Utility.RandomMinMax( this.Entry.MinDelay, this.Entry.MaxDelay );
-						this.NextRespawn = DateTime.UtcNow + TimeSpan.FromMinutes( delay );
+						int delay = Utility.RandomMinMax( Entry.MinDelay, Entry.MaxDelay );
+						NextRespawn = DateTime.UtcNow + TimeSpan.FromMinutes( delay );
 					}
 
 					if ( Instance != null )
@@ -299,12 +299,12 @@ namespace Server.Items
 
 			public void CheckRespawn()
 			{
-				if ( this.Item != null && ( this.Item.Deleted || this.Item.Movable || this.Item.Parent != null ) )
-					this.Item = null;
+				if ( Item != null && ( Item.Deleted || Item.Movable || Item.Parent != null ) )
+					Item = null;
 
-				if ( this.Item == null && DateTime.UtcNow >= this.NextRespawn )
+				if ( Item == null && DateTime.UtcNow >= NextRespawn )
 				{
-					this.Item = this.Entry.CreateInstance();
+					Item = Entry.CreateInstance();
 				}
 			}
 		}

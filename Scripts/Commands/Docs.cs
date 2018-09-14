@@ -2095,7 +2095,7 @@ namespace Server.Commands
 			if ( info.m_Declaring == null )
 				nsHtml.WriteLine( "      <!-- DBG-ST -->"+info.LinkName( "../types/" ) + "<br>" );
 
-			using( StreamWriter typeHtml = Docs.GetWriter( info.FileName ) )
+			using( StreamWriter typeHtml = GetWriter( info.FileName ) )
 			{
 				typeHtml.WriteLine( "<html>" );
 				typeHtml.WriteLine( "   <head>" );
@@ -2399,7 +2399,7 @@ namespace Server.Commands
 					string rootType = type.Name.Substring( 0, index );
 
 					StringBuilder nameBuilder = new StringBuilder( rootType );
-					StringBuilder fnamBuilder = new StringBuilder( "docs/types/" + Docs.SanitizeType( rootType ) );
+					StringBuilder fnamBuilder = new StringBuilder( "docs/types/" + SanitizeType( rootType ) );
 					StringBuilder linkBuilder;
 					if ( DontLink( type ) )//if ( DontLink( rootType ) )
 						linkBuilder = new StringBuilder( "<font color=\"blue\">" + rootType + "</font>" );
@@ -2421,8 +2421,8 @@ namespace Server.Commands
 							linkBuilder.Append( ',' );
 						}
 
-						string sanitizedName = Docs.SanitizeType( typeArguments[i].Name );
-						string aliasedName   = Docs.AliasForName( sanitizedName );
+						string sanitizedName = SanitizeType( typeArguments[i].Name );
+						string aliasedName   = AliasForName( sanitizedName );
 
 						nameBuilder.Append( sanitizedName );
 						fnamBuilder.Append( "T" );
@@ -2444,15 +2444,15 @@ namespace Server.Commands
 			if ( name == null ) typeName = type.Name;
 			else typeName = name;
 
-			if ( fnam == null ) fileName = "docs/types/" + Docs.SanitizeType( type.Name ) + ".html";
+			if ( fnam == null ) fileName = "docs/types/" + SanitizeType( type.Name ) + ".html";
 			else fileName = fnam + ".html";
 
 			if ( link == null )
 			{
 				if ( DontLink( type ) ) //if ( DontLink( type.Name ) )
-					linkName =  "<font color=\"blue\">" + Docs.SanitizeType( type.Name ) + "</font>";
+					linkName =  "<font color=\"blue\">" + SanitizeType( type.Name ) + "</font>";
 				else
-					linkName =  "<a href=\"" + "@directory@" + Docs.SanitizeType( type.Name ) + ".html\">" + Docs.SanitizeType( type.Name ) + "</a>";
+					linkName =  "<a href=\"" + "@directory@" + SanitizeType( type.Name ) + ".html\">" + SanitizeType( type.Name ) + "</a>";
 			}
 			else linkName = link;
 

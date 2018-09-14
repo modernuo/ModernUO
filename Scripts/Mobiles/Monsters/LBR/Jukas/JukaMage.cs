@@ -106,7 +106,7 @@ namespace Server.Mobiles
 			{
 				JukaLord toBuff = null;
 
-				foreach ( Mobile m in this.GetMobilesInRange( 8 ) )
+				foreach ( Mobile m in GetMobilesInRange( 8 ) )
 				{
 					if ( m is JukaLord lord && IsFriend( lord ) && lord.Combatant != null && CanBeBeneficial( lord ) && lord.CanBeginAction( typeof( JukaMage ) ) && InLOS( lord ) )
 					{
@@ -122,7 +122,7 @@ namespace Server.Mobiles
 						m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds( Utility.RandomMinMax( 30, 60 ) );
 
 						toBuff.Say( true, "Give me the power to destroy my enemies!" );
-						this.Say( true, "Fight well my lord!" );
+						Say( true, "Fight well my lord!" );
 
 						DoBeneficial( toBuff );
 

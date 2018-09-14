@@ -510,7 +510,7 @@ namespace Server.Commands
 				for ( int i = 0; i < subArgs.Length; ++i )
 					subArgs[i] = e.Arguments[i + 5];
 
-				Add.Invoke( e.Mobile, p, p2, subArgs, null, outline, false );
+				Invoke( e.Mobile, p, p2, subArgs, null, outline, false );
 			}
 			else
 			{
@@ -530,7 +530,7 @@ namespace Server.Commands
 				for ( int i = 0; i < subArgs.Length; ++i )
 					subArgs[i] = e.Arguments[i + 5];
 
-				Add.Invoke( e.Mobile, p, p2, subArgs, null, outline, false );
+				Invoke( e.Mobile, p, p2, subArgs, null, outline, false );
 			}
 			else
 			{

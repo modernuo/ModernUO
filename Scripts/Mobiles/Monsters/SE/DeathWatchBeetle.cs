@@ -91,7 +91,7 @@ namespace Server.Mobiles
 
 		public override void AlterMeleeDamageTo( Mobile to, ref int damage )
 		{
-			if ( Utility.RandomBool() && (this.Mana > 14) && to != null )
+			if ( Utility.RandomBool() && (Mana > 14) && to != null )
 			{
 				damage = (damage + (damage / 2));
 				to.SendLocalizedMessage( 1060091 ); // You take extra damage from the crushing attack!
@@ -117,9 +117,9 @@ namespace Server.Mobiles
 		public void PoisonAttack( Mobile m )
 		{
 			DoHarmful( m );
-			this.MovingParticles( m, 0x36D4, 1, 0, false, false, 0x3F, 0, 0x1F73, 1, 0, (EffectLayer)255, 0x100 );
+			MovingParticles( m, 0x36D4, 1, 0, false, false, 0x3F, 0, 0x1F73, 1, 0, (EffectLayer)255, 0x100 );
 			m.ApplyPoison( this, Poison.Regular );
-			m.SendLocalizedMessage( 1070821, this.Name ); // %s spits a poisonous substance at you!
+			m.SendLocalizedMessage( 1070821, Name ); // %s spits a poisonous substance at you!
 		}
 
 		public override int Hides => 8;

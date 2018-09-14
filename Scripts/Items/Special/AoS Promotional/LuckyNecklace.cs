@@ -9,7 +9,7 @@
 		public LuckyNecklace( )
 			: base( 0x1088, Layer.Neck  )
 		{
-			base.Attributes.Luck = 200;
+			Attributes.Luck = 200;
 			LootType = LootType.Blessed;
 		}
 

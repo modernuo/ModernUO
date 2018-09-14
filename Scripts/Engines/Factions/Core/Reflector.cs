@@ -26,7 +26,7 @@ namespace Server.Factions
 			get
 			{
 				if ( m_Factions == null )
-					Reflector.ProcessTypes();
+					ProcessTypes();
 
 				return m_Factions;
 			}

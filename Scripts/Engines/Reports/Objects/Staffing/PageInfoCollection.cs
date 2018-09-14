@@ -16,7 +16,7 @@ namespace Server.Engines.Reports
     /// <summary>
     /// Strongly typed collection of Server.Engines.Reports.PageInfo.
     /// </summary>
-    public class PageInfoCollection : System.Collections.CollectionBase
+    public class PageInfoCollection : CollectionBase
     {
         
         /// <summary>
@@ -30,10 +30,10 @@ namespace Server.Engines.Reports
         /// <summary>
         /// Gets or sets the value of the Server.Engines.Reports.PageInfo at a specific position in the PageInfoCollection.
         /// </summary>
-        public Server.Engines.Reports.PageInfo this[int index]
+        public PageInfo this[int index]
         {
-            get => ((Server.Engines.Reports.PageInfo)(this.List[index]));
-	        set => this.List[index] = value;
+            get => ((PageInfo)(List[index]));
+	        set => List[index] = value;
         }
         
         /// <summary>
@@ -41,9 +41,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.PageInfo instance.</param>
         /// <returns>The position into which the new element was inserted.</returns>
-        public int Add(Server.Engines.Reports.PageInfo value)
+        public int Add(PageInfo value)
         {
-            return this.List.Add(value);
+            return List.Add(value);
         }
         
         /// <summary>
@@ -51,9 +51,9 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.PageInfo instance to search for.</param>
         /// <returns>True if the Server.Engines.Reports.PageInfo instance is in the collection; otherwise false.</returns>
-        public bool Contains(Server.Engines.Reports.PageInfo value)
+        public bool Contains(PageInfo value)
         {
-            return this.List.Contains(value);
+            return List.Contains(value);
         }
         
         /// <summary>
@@ -61,18 +61,18 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="value">Server.Engines.Reports.PageInfo instance to find.</param>
         /// <returns>The zero-based index of the specified Server.Engines.Reports.PageInfo instance. If the object is not found, the return value is -1.</returns>
-        public int IndexOf(Server.Engines.Reports.PageInfo value)
+        public int IndexOf(PageInfo value)
         {
-            return this.List.IndexOf(value);
+            return List.IndexOf(value);
         }
         
         /// <summary>
         /// Removes a specified Server.Engines.Reports.PageInfo instance from this collection.
         /// </summary>
         /// <param name="value">The Server.Engines.Reports.PageInfo instance to remove.</param>
-        public void Remove(Server.Engines.Reports.PageInfo value)
+        public void Remove(PageInfo value)
         {
-            this.List.Remove(value);
+            List.Remove(value);
         }
         
         /// <summary>
@@ -89,15 +89,15 @@ namespace Server.Engines.Reports
         /// </summary>
         /// <param name="index">Zero-based index.</param>
         /// <param name="value">The Server.Engines.Reports.PageInfo instance to insert.</param>
-        public void Insert(int index, Server.Engines.Reports.PageInfo value)
+        public void Insert(int index, PageInfo value)
         {
-            this.List.Insert(index, value);
+            List.Insert(index, value);
         }
         
         /// <summary>
         /// Strongly typed enumerator of Server.Engines.Reports.PageInfo.
         /// </summary>
-        public class PageInfoCollectionEnumerator : System.Collections.IEnumerator
+        public class PageInfoCollectionEnumerator : IEnumerator
         {
             
             /// <summary>
@@ -108,7 +108,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Current element pointed to.
             /// </summary>
-            private Server.Engines.Reports.PageInfo _currentElement;
+            private PageInfo _currentElement;
             
             /// <summary>
             /// Collection to enumerate.
@@ -128,7 +128,7 @@ namespace Server.Engines.Reports
             /// <summary>
             /// Gets the Server.Engines.Reports.PageInfo object in the enumerated PageInfoCollection currently indexed by this instance.
             /// </summary>
-            public Server.Engines.Reports.PageInfo Current
+            public PageInfo Current
             {
                 get
                 {
@@ -182,7 +182,7 @@ namespace Server.Engines.Reports
                             < (_collection.Count - 1)))
                 {
                     _index = (_index + 1);
-                    _currentElement = this._collection[_index];
+                    _currentElement = _collection[_index];
                     return true;
                 }
                 _index = _collection.Count;

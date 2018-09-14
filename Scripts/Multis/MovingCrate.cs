@@ -53,7 +53,7 @@ namespace Server.Multis
 		public override void DropItem( Item dropped )
 		{
 			// 1. Try to stack the item
-			foreach ( Item item in this.Items )
+			foreach ( Item item in Items )
 			{
 				if ( item is PackingBox )
 				{
@@ -70,7 +70,7 @@ namespace Server.Multis
 			}
 
 			// 2. Try to drop the item into an existing container
-			foreach ( Item item in this.Items )
+			foreach ( Item item in Items )
 			{
 				if ( item is PackingBox )
 				{
@@ -92,7 +92,7 @@ namespace Server.Multis
 			Point3D location = GetFreeLocation();
 			if ( location != Point3D.Zero )
 			{
-				this.AddItem( subContainer );
+				AddItem( subContainer );
 				subContainer.Location = location;
 			}
 			else
@@ -105,17 +105,17 @@ namespace Server.Multis
 		{
 			bool[,] positions = new bool[Rows, Columns];
 
-			foreach ( Item item in this.Items )
+			foreach ( Item item in Items )
 			{
 				if ( item is PackingBox )
 				{
-					int i = (item.Y - this.Bounds.Y) / VerticalSpacing;
+					int i = (item.Y - Bounds.Y) / VerticalSpacing;
 					if ( i < 0 )
 						i = 0;
 					else if ( i >= Rows )
 						i = Rows - 1;
 
-					int j = (item.X - this.Bounds.X) / HorizontalSpacing;
+					int j = (item.X - Bounds.X) / HorizontalSpacing;
 					if ( j < 0 )
 						j = 0;
 					else if ( j >= Columns )
@@ -131,8 +131,8 @@ namespace Server.Multis
 				{
 					if ( !positions[i, j] )
 					{
-						int x = this.Bounds.X + j * HorizontalSpacing;
-						int y = this.Bounds.Y + i * VerticalSpacing;
+						int x = Bounds.X + j * HorizontalSpacing;
+						int y = Bounds.Y + i * VerticalSpacing;
 
 						return new Point3D( x, y, 0 );
 					}
@@ -169,7 +169,7 @@ namespace Server.Multis
 		{
 			base.OnItemRemoved( item );
 
-			if ( this.TotalItems == 0 )
+			if ( TotalItems == 0 )
 				Delete();
 		}
 
@@ -196,14 +196,14 @@ namespace Server.Multis
 			}
 
 			List<Item> toRemove = new List<Item>();
-			foreach ( Item item in this.Items )
+			foreach ( Item item in Items )
 				if ( item is PackingBox && item.Items.Count == 0 )
 					toRemove.Add( item );
 
 			foreach ( Item item in toRemove )
 				item.Delete();
 
-			if ( this.TotalItems == 0 )
+			if ( TotalItems == 0 )
 				Delete();
 			else
 				Internalize();
@@ -244,7 +244,7 @@ namespace Server.Multis
 			}
 			else
 			{
-				Timer.DelayCall( TimeSpan.Zero, this.Delete );
+				Timer.DelayCall( TimeSpan.Zero, Delete );
 			}
 
 			if ( version == 0 )
@@ -299,7 +299,7 @@ namespace Server.Multis
 		{
 			base.OnItemRemoved( item );
 
-			if ( item.GetBounce() == null && this.TotalItems == 0 )
+			if ( item.GetBounce() == null && TotalItems == 0 )
 				Delete();
 		}
 
@@ -307,7 +307,7 @@ namespace Server.Multis
 		{
 			base.OnItemBounceCleared( item );
 
-			if ( this.TotalItems == 0 )
+			if ( TotalItems == 0 )
 				Delete();
 		}
 

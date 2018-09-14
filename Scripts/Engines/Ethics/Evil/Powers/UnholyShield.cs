@@ -16,13 +16,13 @@ namespace Server.Ethics.Evil
 		{
 			if ( from.IsShielded )
 			{
-				from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You are already under the protection of an unholy shield." );
+				from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You are already under the protection of an unholy shield." );
 				return;
 			}
 
 			from.BeginShield();
 
-			from.Mobile.LocalOverheadMessage( Server.Network.MessageType.Regular, 0x3B2, false, "You are now under the protection of an unholy shield." );
+			from.Mobile.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, false, "You are now under the protection of an unholy shield." );
 
 			FinishInvoke( from );
 		}

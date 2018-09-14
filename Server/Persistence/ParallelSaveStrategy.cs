@@ -282,13 +282,13 @@ namespace Server {
 			public Consumer( ParallelSaveStrategy owner, int bufferSize ) {
 				this.owner = owner;
 
-				this.buffer = new ConsumableEntry[bufferSize];
+				buffer = new ConsumableEntry[bufferSize];
 
-				for ( int i = 0; i < this.buffer.Length; ++i ) {
-					this.buffer[i].writer = new BinaryMemoryWriter();
+				for ( int i = 0; i < buffer.Length; ++i ) {
+					buffer[i].writer = new BinaryMemoryWriter();
 				}
 
-				this.completionEvent = new ManualResetEvent( false );
+				completionEvent = new ManualResetEvent( false );
 
 				thread = new Thread( Processor );
 

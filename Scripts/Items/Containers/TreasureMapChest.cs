@@ -284,12 +284,12 @@ namespace Server.Items
 
 		public override bool CheckLocked( Mobile from )
 		{
-			if ( !this.Locked )
+			if ( !Locked )
 				return false;
 
-			if ( this.Level == 0 && from.AccessLevel < AccessLevel.GameMaster )
+			if ( Level == 0 && from.AccessLevel < AccessLevel.GameMaster )
 			{
-				foreach ( Mobile m in this.Guardians )
+				foreach ( Mobile m in Guardians )
 				{
 					if ( m.Alive )
 					{
@@ -322,7 +322,7 @@ namespace Server.Items
 			if ( p != null && p.Contains( m ) )
 				return true;
 
-			Map map = this.Map;
+			Map map = Map;
 
 			if ( map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0 )
 			{
@@ -475,7 +475,7 @@ namespace Server.Items
 				return;
 
 			from.SendLocalizedMessage( 1048124, "", 0x8A5 ); // The old, rusted chest crumbles when you hit it.
-			this.Delete();
+			Delete();
 		}
 
 		private class RemoveGump : Gump

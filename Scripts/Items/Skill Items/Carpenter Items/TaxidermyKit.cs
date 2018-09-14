@@ -247,10 +247,10 @@ namespace Server.Items
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
-			if ( !map.CanFit( p.X, p.Y, p.Z, this.ItemData.Height ) )
+			if ( !map.CanFit( p.X, p.Y, p.Z, ItemData.Height ) )
 				return false;
 
-			if ( this.ItemID == m_NorthID )
+			if ( ItemID == m_NorthID )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // North wall
 			else
 				return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // West wall
@@ -300,21 +300,21 @@ namespace Server.Items
 
 		private void FixMovingCrate()
 		{
-			if ( this.Deleted )
+			if ( Deleted )
 				return;
 
-			if ( this.Movable || this.IsLockedDown )
+			if ( Movable || IsLockedDown )
 			{
-				Item deed = this.Deed;
+				Item deed = Deed;
 
-				if ( this.Parent is Item item )
+				if ( Parent is Item item )
 				{
 					item.AddItem( deed );
-					deed.Location = this.Location;
+					deed.Location = Location;
 				}
 				else
 				{
-					deed.MoveToWorld( this.Location, this.Map );
+					deed.MoveToWorld( Location, Map );
 				}
 
 				Delete();
@@ -331,7 +331,7 @@ namespace Server.Items
 			{
 				if ( from.InRange( GetWorldLocation(), 1 ) )
 				{
-					from.AddToBackpack( this.Deed );
+					from.AddToBackpack( Deed );
 					Delete();
 				}
 				else

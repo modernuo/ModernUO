@@ -44,7 +44,7 @@ namespace Server.Commands.Generic
 		{
 			m_Property = property;
 
-			this.IsAscending = isAscending;
+			IsAscending = isAscending;
 		}
 	}
 

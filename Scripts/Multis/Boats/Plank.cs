@@ -179,7 +179,7 @@ namespace Server.Items
 					{
 						z = from.Z + j;
 
-						if ( map.CanFit( x, y, z, 16, false, false ) && !Server.Spells.SpellHelper.CheckMulti( new Point3D( x, y, z ), map ) && !Region.Find( new Point3D( x, y, z ), map ).IsPartOf( typeof( Factions.StrongholdRegion ) ) )
+						if ( map.CanFit( x, y, z, 16, false, false ) && !Spells.SpellHelper.CheckMulti( new Point3D( x, y, z ), map ) && !Region.Find( new Point3D( x, y, z ), map ).IsPartOf( typeof( StrongholdRegion ) ) )
 						{
 							if ( i == 1 && j >= -2 && j <= 2 )
 								return true;
@@ -191,7 +191,7 @@ namespace Server.Items
 
 					z = map.GetAverageZ( x, y );
 
-					if ( map.CanFit( x, y, z, 16, false, false ) && !Server.Spells.SpellHelper.CheckMulti( new Point3D( x, y, z ), map ) && !Region.Find( new Point3D( x, y, z ), map ).IsPartOf( typeof( Factions.StrongholdRegion ) ) )
+					if ( map.CanFit( x, y, z, 16, false, false ) && !Spells.SpellHelper.CheckMulti( new Point3D( x, y, z ), map ) && !Region.Find( new Point3D( x, y, z ), map ).IsPartOf( typeof( StrongholdRegion ) ) )
 					{
 						if ( i == 1 )
 							return true;
@@ -216,7 +216,7 @@ namespace Server.Items
 			if ( map == null || Deleted )
 				return false;
 
-			foreach ( object o in this.GetObjectsInRange( 0 ) )
+			foreach ( object o in GetObjectsInRange( 0 ) )
 			{
 				if ( o != this )
 					return false;
@@ -286,12 +286,12 @@ namespace Server.Items
 					}
 					else if ( !Locked )
 					{
-						from.Location = new Point3D( this.X, this.Y, this.Z + 3 );
+						from.Location = new Point3D( X, Y, Z + 3 );
 					}
 					else if ( from.AccessLevel >= AccessLevel.GameMaster )
 					{
 						from.LocalOverheadMessage( Network.MessageType.Regular, 0x00, 502502 ); // That is locked but your godly powers allow access
-						from.Location = new Point3D( this.X, this.Y, this.Z + 3 );
+						from.Location = new Point3D( X, Y, Z + 3 );
 					}
 					else
 					{

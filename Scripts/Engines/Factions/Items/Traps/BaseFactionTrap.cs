@@ -74,7 +74,7 @@ namespace Server.Factions
 			Conceal();
 
 			DoVisibleEffect();
-			Effects.PlaySound( this.Location, this.Map, this.EffectSound );
+			Effects.PlaySound( Location, Map, EffectSound );
 			DoAttackEffect( from );
 
 			int silverToAward = ( from.Alive ? 20 : 40 );
@@ -120,7 +120,7 @@ namespace Server.Factions
 			{
 				foreach( Item item in m.GetItemsInRange( p, 0 ) )
 				{
-					if ( item is BaseFactionTrap trap && trap.Faction == this.Faction )
+					if ( item is BaseFactionTrap trap && trap.Faction == Faction )
 						return 1075263; // There is already a trap belonging to your faction at this location.;
 				}
 			}

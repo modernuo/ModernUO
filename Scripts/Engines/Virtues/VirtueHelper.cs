@@ -135,7 +135,7 @@ namespace Server
 			bool gainedPath = false;
 			string virtueName = Enum.GetName( typeof( VirtueName ), virtue );
 
-			if ( VirtueHelper.Award( pm, virtue, amount, ref gainedPath ) )
+			if ( Award( pm, virtue, amount, ref gainedPath ) )
 			{
 				// TODO: Localize?
 				if ( gainedPath )

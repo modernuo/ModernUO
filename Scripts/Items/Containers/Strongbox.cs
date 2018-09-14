@@ -151,7 +151,7 @@ namespace Server.Items
 				metalBox.AddItem( subItem );
 			}
 
-			this.Delete();
+			Delete();
 
 			return metalBox;
 		}

@@ -128,7 +128,7 @@ namespace Server.Items
 		{
 			if ( IsChildOf( from.Backpack ) || Parent == from )
 			{
-				CraftSystem system = this.CraftSystem;
+				CraftSystem system = CraftSystem;
 
 				int num = system.CanCraft( from, this, null );
 

@@ -49,7 +49,7 @@ namespace Server.Items
 		{
 			if ( m is PlayerMobile )
 			{
-				if ( !Utility.InRange( m.Location, this.Location, 1 ) && Utility.InRange( oldLocation, this.Location, 1 ) )
+				if ( !Utility.InRange( m.Location, Location, 1 ) && Utility.InRange( oldLocation, Location, 1 ) )
 					m.CloseGump( typeof( MoongateGump ) );
 			}
 		}

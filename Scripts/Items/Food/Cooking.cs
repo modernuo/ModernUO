@@ -623,8 +623,8 @@ namespace Server.Items
 			{
 				int needs = mill.MaxFlour - mill.CurFlour;
 
-				if ( needs > this.Amount )
-					needs = this.Amount;
+				if ( needs > Amount )
+					needs = Amount;
 
 				mill.CurFlour += needs;
 				Consume( needs );

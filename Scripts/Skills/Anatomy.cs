@@ -14,7 +14,7 @@ namespace Server.SkillHandlers
 
 		public static TimeSpan OnUse( Mobile m )
 		{
-			m.Target = new Anatomy.InternalTarget();
+			m.Target = new InternalTarget();
 
 			m.SendLocalizedMessage( 500321 ); // Whom shall I examine?
 

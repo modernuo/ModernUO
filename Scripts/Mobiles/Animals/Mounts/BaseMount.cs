@@ -162,7 +162,7 @@ namespace Server.Mobiles
 
 				if ( canAccess )
 				{
-					if ( this.Poisoned )
+					if ( Poisoned )
 						PrivateOverheadMessage( Network.MessageType.Regular, 0x3B2, 1049692, from.NetState ); // This mount is too ill to ride.
 					else
 						Rider = from;
@@ -240,7 +240,7 @@ namespace Server.Mobiles
 						if ( m_InternalItem != null )
 							value.AddItem( m_InternalItem );
 
-						value.Direction = this.Direction;
+						value.Direction = Direction;
 
 						Internalize();
 

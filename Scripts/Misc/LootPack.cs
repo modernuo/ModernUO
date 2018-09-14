@@ -75,7 +75,7 @@ namespace Server
 				{
 					checkLuck = false;
 
-					if ( LootPack.CheckLuck( luckChance ) )
+					if ( CheckLuck( luckChance ) )
 						shouldAdd = ( entry.Chance > Utility.Random( 10000 ) );
 				}
 

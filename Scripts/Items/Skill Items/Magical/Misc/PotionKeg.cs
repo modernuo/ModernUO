@@ -43,7 +43,7 @@ namespace Server.Items
 		{
 			int held = Math.Max( 0, Math.Min( m_Held, 100 ) );
 
-			this.Weight = 20 + ((held * 80) / 100);
+			Weight = 20 + ((held * 80) / 100);
 		}
 
 		public PotionKeg( Serial serial ) : base( serial )
@@ -160,7 +160,7 @@ namespace Server.Items
 			else
 				number = 502258; // The keg is completely full.
 
-			this.LabelTo( from, number );
+			LabelTo( from, number );
 		}
 
 		public override void OnDoubleClick( Mobile from )
