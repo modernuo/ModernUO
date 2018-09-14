@@ -27,47 +27,41 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Owner
 		{
-			get { return m_Owner; }
+			get => m_Owner;
 			set { m_Owner = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Line1
 		{
-			get { return m_Line1; }
+			get => m_Line1;
 			set { m_Line1 = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Line2
 		{
-			get { return m_Line2; }
+			get => m_Line2;
 			set { m_Line2 = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Line3
 		{
-			get { return m_Line3; }
+			get => m_Line3;
 			set { m_Line3 = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime EditLimit
 		{
-			get { return m_EditLimit; }
-			set { m_EditLimit = value; }
+			get => m_EditLimit;
+			set => m_EditLimit = value;
 		}
 
-		public bool IsSigned
-		{
-			get { return ( m_Line1 != null || m_Line2 != null || m_Line3 != null ); }
-		}
+		public bool IsSigned => ( m_Line1 != null || m_Line2 != null || m_Line3 != null );
 
-		public bool CanSign
-		{
-			get { return ( !IsSigned || DateTime.UtcNow <= m_EditLimit ); }
-		}
+		public bool CanSign => ( !IsSigned || DateTime.UtcNow <= m_EditLimit );
 
 		public StValentinesBear( int itemid, string name )
 			: base( itemid )

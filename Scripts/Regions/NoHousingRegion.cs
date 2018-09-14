@@ -9,7 +9,7 @@ namespace Server.Regions
 		 */
 		private bool m_SmartChecking;
 
-		public bool SmartChecking{ get{ return m_SmartChecking; } }
+		public bool SmartChecking => m_SmartChecking;
 
 		public NoHousingRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{

@@ -98,10 +98,7 @@ namespace Server.Mobiles
 				c.DropItem( new KirinBrains() );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override int Meat => 3;
 		public override int Hides => 10;

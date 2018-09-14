@@ -8,10 +8,7 @@ namespace Server.Mobiles
 		public override string CorpseName => "a dryad's corpse";
 		public override bool InitialInnocent => true;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get { return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override string DefaultName => "a dryad";
 

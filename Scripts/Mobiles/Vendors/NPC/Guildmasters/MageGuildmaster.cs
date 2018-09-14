@@ -16,10 +16,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.Macing, 36.0, 68.0 );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals; }
-		}
+		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
 
 		public override void InitOutfit()
 		{

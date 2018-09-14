@@ -13,7 +13,7 @@ namespace Server.Items
 			private Type[] m_NearbyTypes;
 			private TextDefinition m_NotNearbyMessage, m_Name;
 
-			public TextDefinition NotNearbyMessage{	get { return m_NotNearbyMessage; } }
+			public TextDefinition NotNearbyMessage => m_NotNearbyMessage;
 			public TextDefinition Name  => m_Name;
 
 
@@ -72,21 +72,21 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public RepairSkillType RepairSkill
 		{
-			get { return m_Skill; }
+			get => m_Skill;
 			set { m_Skill = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public double SkillLevel
 		{
-			get { return m_SkillLevel; }
+			get => m_SkillLevel;
 			set { m_SkillLevel = Math.Max( Math.Min( value, 120.0 ), 0 ) ; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Crafter
 		{
-			get { return m_Crafter; }
+			get => m_Crafter;
 			set { m_Crafter = value; InvalidateProperties(); }
 		}
 

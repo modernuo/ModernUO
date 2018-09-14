@@ -82,22 +82,19 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxArcaneCharges
 		{
-			get{ return m_MaxArcaneCharges; }
+			get => m_MaxArcaneCharges;
 			set{ m_MaxArcaneCharges = value; InvalidateProperties(); Update(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int CurArcaneCharges
 		{
-			get{ return m_CurArcaneCharges; }
+			get => m_CurArcaneCharges;
 			set{ m_CurArcaneCharges = value; InvalidateProperties(); Update(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsArcane
-		{
-			get{ return ( m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0 ); }
-		}
+		public bool IsArcane => ( m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0 );
 
 		public void Update()
 		{

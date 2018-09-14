@@ -21,7 +21,7 @@ namespace Server.Items
 
 		public VendorRentalDuration Duration
 		{
-			get{ return m_Duration; }
+			get => m_Duration;
 			set
 			{
 				if ( value != null )
@@ -32,20 +32,20 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Price
 		{
-			get{ return m_Price; }
-			set{ m_Price = value; }
+			get => m_Price;
+			set => m_Price = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool LandlordRenew
 		{
-			get{ return m_LandlordRenew; }
-			set{ m_LandlordRenew = value; }
+			get => m_LandlordRenew;
+			set => m_LandlordRenew = value;
 		}
 
 		public Mobile Offeree
 		{
-			get{ return m_Offeree; }
+			get => m_Offeree;
 			set
 			{
 				if ( m_OfferExpireTimer != null )

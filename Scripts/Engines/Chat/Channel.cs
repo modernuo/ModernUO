@@ -28,10 +28,7 @@ namespace Server.Engines.Chat
 
 		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
+			get => m_Name;
 			set
 			{
 				SendCommand( ChatCommand.RemoveChannel, m_Name );
@@ -43,10 +40,7 @@ namespace Server.Engines.Chat
 
 		public string Password
 		{
-			get
-			{
-				return m_Password;
-			}
+			get => m_Password;
 			set
 			{
 				string newValue = null;
@@ -238,10 +232,7 @@ namespace Server.Engines.Chat
 
 		public bool VoiceRestricted
 		{
-			get
-			{
-				return m_VoiceRestricted;
-			}
+			get => m_VoiceRestricted;
 			set
 			{
 				m_VoiceRestricted = value;
@@ -255,14 +246,8 @@ namespace Server.Engines.Chat
 
 		public bool AlwaysAvailable
 		{
-			get
-			{
-				return m_AlwaysAvailable;
-			}
-			set
-			{
-				m_AlwaysAvailable = value;
-			}
+			get => m_AlwaysAvailable;
+			set => m_AlwaysAvailable = value;
 		}
 
 		public void AddVoiced( ChatUser user )
@@ -461,13 +446,7 @@ namespace Server.Engines.Chat
 
 		private static List<Channel> m_Channels = new List<Channel>();
 
-		public static List<Channel> Channels
-		{
-			get
-			{
-				return m_Channels;
-			}
-		}
+		public static List<Channel> Channels => m_Channels;
 
 		public static void SendChannelsTo( ChatUser user )
 		{

@@ -48,27 +48,15 @@ namespace Server.Multis.Deeds
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MultiID
 		{
-			get
-			{
-				return m_MultiID;
-			}
-			set
-			{
-				m_MultiID = value;
-			}
+			get => m_MultiID;
+			set => m_MultiID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D Offset
 		{
-			get
-			{
-				return m_Offset;
-			}
-			set
-			{
-				m_Offset = value;
-			}
+			get => m_Offset;
+			set => m_Offset = value;
 		}
 
 		public HouseDeed( int id, Point3D offset ) : base( 0x14F0 )

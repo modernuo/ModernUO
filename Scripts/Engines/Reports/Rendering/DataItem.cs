@@ -36,38 +36,38 @@ namespace Server.Engines.Reports
 
 		public string Label 
 		{
-			get{ return _label; }
-			set{ _label = value; }
+			get => _label;
+			set => _label = value;
 		}
 
 		public string Description 
 		{
-			get{ return _description; }
-			set{ _description = value; }
+			get => _description;
+			set => _description = value;
 		} 
 
 		public float Value 
 		{
-			get{ return _value; }
-			set{ _value = value; }
+			get => _value;
+			set => _value = value;
 		}
 
 		public Color ItemColor 
 		{
-			get{ return _color; }
-			set{ _color = value; }
+			get => _color;
+			set => _color = value;
 		}
 
 		public float StartPos
 		{
-			get{ return _startPos; }
-			set{ _startPos = value; }
+			get => _startPos;
+			set => _startPos = value;
 		}
 
 		public float SweepSize
 		{
-			get{ return _sweepSize; }
-			set{ _sweepSize = value; }
+			get => _sweepSize;
+			set => _sweepSize = value;
 		}
 	}
 
@@ -81,8 +81,8 @@ namespace Server.Engines.Reports
 	{
 		public DataItem this[int index] 
 		{
-			get{ return (DataItem)(List[index]); }
-			set{ List[index] = value; }
+			get => (DataItem)(List[index]);
+			set => List[index] = value;
 		}
  
 		public int Add(DataItem value) 

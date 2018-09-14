@@ -95,137 +95,71 @@ namespace Server
 			}
 		}
 
-		public bool IsHuman
-		{
-			get
-			{
-				return m_BodyID >= 0
-					&& m_BodyID < m_Types.Length
-					&& m_Types[m_BodyID] == BodyType.Human
-					&& m_BodyID != 402
-					&& m_BodyID != 403
-					&& m_BodyID != 607
-					&& m_BodyID != 608
-					&& m_BodyID != 694
-					&& m_BodyID != 695
-					&& m_BodyID != 970;
-			}
-		}
+		public bool IsHuman => m_BodyID >= 0
+		                       && m_BodyID < m_Types.Length
+		                       && m_Types[m_BodyID] == BodyType.Human
+		                       && m_BodyID != 402
+		                       && m_BodyID != 403
+		                       && m_BodyID != 607
+		                       && m_BodyID != 608
+		                       && m_BodyID != 694
+		                       && m_BodyID != 695
+		                       && m_BodyID != 970;
 
-		public bool IsGargoyle
-		{
-			get
-			{
-				return m_BodyID == 666
-					|| m_BodyID == 667
-					|| m_BodyID == 694
-					|| m_BodyID == 695;
-			}
-		}
+		public bool IsGargoyle => m_BodyID == 666
+		                          || m_BodyID == 667
+		                          || m_BodyID == 694
+		                          || m_BodyID == 695;
 
-		public bool IsMale
-		{
-			get
-			{
-				return m_BodyID == 183
-					|| m_BodyID == 185
-					|| m_BodyID == 400
-					|| m_BodyID == 402
-					|| m_BodyID == 605
-					|| m_BodyID == 607
-					|| m_BodyID == 666
-					|| m_BodyID == 694
-					|| m_BodyID == 750;
-			}
-		}
+		public bool IsMale => m_BodyID == 183
+		                      || m_BodyID == 185
+		                      || m_BodyID == 400
+		                      || m_BodyID == 402
+		                      || m_BodyID == 605
+		                      || m_BodyID == 607
+		                      || m_BodyID == 666
+		                      || m_BodyID == 694
+		                      || m_BodyID == 750;
 
-		public bool IsFemale
-		{
-			get
-			{
-				return m_BodyID == 184
-					|| m_BodyID == 186
-					|| m_BodyID == 401
-					|| m_BodyID == 403
-					|| m_BodyID == 606
-					|| m_BodyID == 608
-					|| m_BodyID == 667
-					|| m_BodyID == 695
-					|| m_BodyID == 751;
-			}
-		}
+		public bool IsFemale => m_BodyID == 184
+		                        || m_BodyID == 186
+		                        || m_BodyID == 401
+		                        || m_BodyID == 403
+		                        || m_BodyID == 606
+		                        || m_BodyID == 608
+		                        || m_BodyID == 667
+		                        || m_BodyID == 695
+		                        || m_BodyID == 751;
 
-		public bool IsGhost
-		{
-			get
-			{
-				return m_BodyID == 402
-					|| m_BodyID == 403
-					|| m_BodyID == 607
-					|| m_BodyID == 608
-					|| m_BodyID == 694
-					|| m_BodyID == 695
-					|| m_BodyID == 970;
-			}
-		}
+		public bool IsGhost => m_BodyID == 402
+		                       || m_BodyID == 403
+		                       || m_BodyID == 607
+		                       || m_BodyID == 608
+		                       || m_BodyID == 694
+		                       || m_BodyID == 695
+		                       || m_BodyID == 970;
 
-		public bool IsMonster
-		{
-			get
-			{
-				return m_BodyID >= 0
-					&& m_BodyID < m_Types.Length
-					&& m_Types[m_BodyID] == BodyType.Monster;
-			}
-		}
+		public bool IsMonster => m_BodyID >= 0
+		                         && m_BodyID < m_Types.Length
+		                         && m_Types[m_BodyID] == BodyType.Monster;
 
-		public bool IsAnimal
-		{
-			get
-			{
-				return m_BodyID >= 0
-					&& m_BodyID < m_Types.Length
-					&& m_Types[m_BodyID] == BodyType.Animal;
-			}
-		}
+		public bool IsAnimal => m_BodyID >= 0
+		                        && m_BodyID < m_Types.Length
+		                        && m_Types[m_BodyID] == BodyType.Animal;
 
-		public bool IsEmpty
-		{
-			get
-			{
-				return m_BodyID >= 0
-					&& m_BodyID < m_Types.Length
-					&& m_Types[m_BodyID] == BodyType.Empty;
-			}
-		}
+		public bool IsEmpty => m_BodyID >= 0
+		                       && m_BodyID < m_Types.Length
+		                       && m_Types[m_BodyID] == BodyType.Empty;
 
-		public bool IsSea
-		{
-			get
-			{
-				return m_BodyID >= 0
-					&& m_BodyID < m_Types.Length
-					&& m_Types[m_BodyID] == BodyType.Sea;
-			}
-		}
+		public bool IsSea => m_BodyID >= 0
+		                     && m_BodyID < m_Types.Length
+		                     && m_Types[m_BodyID] == BodyType.Sea;
 
-		public bool IsEquipment
-		{
-			get
-			{
-				return m_BodyID >= 0
-					&& m_BodyID < m_Types.Length
-					&& m_Types[m_BodyID] == BodyType.Equipment;
-			}
-		}
+		public bool IsEquipment => m_BodyID >= 0
+		                           && m_BodyID < m_Types.Length
+		                           && m_Types[m_BodyID] == BodyType.Equipment;
 
-		public int BodyID
-		{
-			get
-			{
-				return m_BodyID;
-			}
-		}
+		public int BodyID => m_BodyID;
 
 		public static implicit operator int( Body a )
 		{

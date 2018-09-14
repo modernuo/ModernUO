@@ -71,10 +71,7 @@ namespace Server.Mobiles
 
 		public ActionType Action
 		{
-			get
-			{
-				return m_Action;
-			}
+			get => m_Action;
 			set
 			{
 				m_Action = value;
@@ -1992,8 +1989,8 @@ namespace Server.Mobiles
 
 		public long NextMove
 		{
-			get { return m_NextMove; }
-			set { m_NextMove = value; }
+			get => m_NextMove;
+			set => m_NextMove = value;
 		}
 
 		public virtual bool CheckMove()
@@ -2697,7 +2694,7 @@ namespace Server.Mobiles
 
 		private long m_NextDetectHidden;
 
-		public virtual bool CanDetectHidden { get { return m_Mobile.Skills[SkillName.DetectHidden].Value > 0; } }
+		public virtual bool CanDetectHidden => m_Mobile.Skills[SkillName.DetectHidden].Value > 0;
 
 		/*
 		 *  The Timer object

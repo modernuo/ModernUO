@@ -3,8 +3,8 @@ namespace Server.Items
 	[FlippableAttribute( 0x11EA, 0x11EB )]
 	public class Sand : Item, ICommodity
 	{
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return true; } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => true;
 
 		public override int LabelNumber => 1044626; // sand
 

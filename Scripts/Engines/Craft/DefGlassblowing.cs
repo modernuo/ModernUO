@@ -6,15 +6,9 @@ namespace Server.Engines.Craft
 {
 	public class DefGlassblowing : CraftSystem
 	{
-		public override SkillName MainSkill
-		{
-			get{ return SkillName.Alchemy; }
-		}
+		public override SkillName MainSkill => SkillName.Alchemy;
 
-		public override int GumpTitleNumber
-		{
-			get{ return 1044622; } // <CENTER>Glassblowing MENU</CENTER>
-		}
+		public override int GumpTitleNumber => 1044622;
 
 		private static CraftSystem m_CraftSystem;
 

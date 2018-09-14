@@ -57,10 +57,7 @@ namespace Server.Mobiles
 		public override bool AlwaysMurderer => true;
 		public override bool ShowFameTitle => false;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.SavagesAndOrcs; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
 
 		public override bool OnBeforeDeath()
 		{

@@ -10,7 +10,7 @@ namespace Server.Factions
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Faction Faction
 		{
-			get{ return m_Faction; }
+			get => m_Faction;
 			set
 			{
 				m_Faction = value;

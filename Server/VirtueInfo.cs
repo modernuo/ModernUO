@@ -25,13 +25,7 @@ namespace Server
 	{
 		private int[] m_Values;
 
-		public int[] Values
-		{
-			get
-			{
-				return m_Values;
-			}
-		}
+		public int[] Values => m_Values;
 
 		public int GetValue( int index )
 		{
@@ -55,28 +49,44 @@ namespace Server
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Humility{ get{ return GetValue( 0 ); } set{ SetValue( 0, value ); } }
+		public int Humility{ get => GetValue( 0 );
+			set => SetValue( 0, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Sacrifice{ get{ return GetValue( 1 ); } set{ SetValue( 1, value ); } }
+		public int Sacrifice{ get => GetValue( 1 );
+			set => SetValue( 1, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Compassion{ get{ return GetValue( 2 ); } set{ SetValue( 2, value ); } }
+		public int Compassion{ get => GetValue( 2 );
+			set => SetValue( 2, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Spirituality{ get{ return GetValue( 3 ); } set{ SetValue( 3, value ); } }
+		public int Spirituality{ get => GetValue( 3 );
+			set => SetValue( 3, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Valor{ get{ return GetValue( 4 ); } set{ SetValue( 4, value ); } }
+		public int Valor{ get => GetValue( 4 );
+			set => SetValue( 4, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Honor{ get{ return GetValue( 5 ); } set{ SetValue( 5, value ); } }
+		public int Honor{ get => GetValue( 5 );
+			set => SetValue( 5, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Justice{ get{ return GetValue( 6 ); } set{ SetValue( 6, value ); } }
+		public int Justice{ get => GetValue( 6 );
+			set => SetValue( 6, value );
+		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Honesty{ get{ return GetValue( 7 ); } set{ SetValue( 7, value ); } }
+		public int Honesty{ get => GetValue( 7 );
+			set => SetValue( 7, value );
+		}
 
 		public VirtueInfo()
 		{

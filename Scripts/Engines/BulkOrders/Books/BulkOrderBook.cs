@@ -21,31 +21,25 @@ namespace Server.Engines.BulkOrders
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string BookName
 		{
-			get{ return m_BookName; }
+			get => m_BookName;
 			set{ m_BookName = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
-		public ArrayList Entries
-		{
-			get{ return m_Entries; }
-		}
+		public ArrayList Entries => m_Entries;
 
-		public BOBFilter Filter
-		{
-			get{ return m_Filter; }
-		}
+		public BOBFilter Filter => m_Filter;
 
 		public int ItemCount
 		{
-			get{ return m_ItemCount; }
-			set{ m_ItemCount = value; }
+			get => m_ItemCount;
+			set => m_ItemCount = value;
 		}
 
 		[Constructible]

@@ -8,15 +8,9 @@ namespace Server.Items
 		private static SlayerEntry[] m_TotalEntries;
 		private static SlayerGroup[] m_Groups;
 
-		public static SlayerEntry[] TotalEntries
-		{
-			get{ return m_TotalEntries; }
-		}
+		public static SlayerEntry[] TotalEntries => m_TotalEntries;
 
-		public static SlayerGroup[] Groups
-		{
-			get{ return m_Groups; }
-		}
+		public static SlayerGroup[] Groups => m_Groups;
 
 		public static SlayerEntry GetEntryByName( SlayerName name )
 		{
@@ -183,10 +177,18 @@ namespace Server.Items
 		private SlayerEntry[] m_Entries;
 		private Type[] m_FoundOn;
 
-		public SlayerGroup[] Opposition{ get{ return m_Opposition; } set{ m_Opposition = value; } }
-		public SlayerEntry Super{ get{ return m_Super; } set{ m_Super = value; } }
-		public SlayerEntry[] Entries{ get{ return m_Entries; } set{ m_Entries = value; } }
-		public Type[] FoundOn{ get{ return m_FoundOn; } set{ m_FoundOn = value; } }
+		public SlayerGroup[] Opposition{ get => m_Opposition;
+			set => m_Opposition = value;
+		}
+		public SlayerEntry Super{ get => m_Super;
+			set => m_Super = value;
+		}
+		public SlayerEntry[] Entries{ get => m_Entries;
+			set => m_Entries = value;
+		}
+		public Type[] FoundOn{ get => m_FoundOn;
+			set => m_FoundOn = value;
+		}
 
 		public bool OppositionSuperSlays( Mobile m )
 		{

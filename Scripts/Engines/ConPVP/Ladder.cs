@@ -8,12 +8,10 @@ namespace Server.Engines.ConPVP
 		private Ladder m_Ladder;
 
 		//[CommandProperty( AccessLevel.GameMaster )]
-		public Ladder Ladder{ get{ return m_Ladder; } set{} }
+		public Ladder Ladder{ get => m_Ladder;
+			set{} }
 
-		public override string DefaultName
-		{
-			get { return "ladder controller"; }
-		}
+		public override string DefaultName => "ladder controller";
 
 		[Constructible]
 		public LadderController() : base( 0x1B7A )
@@ -251,7 +249,9 @@ namespace Server.Engines.ConPVP
 
 		private static Ladder m_Instance;
 
-		public static Ladder Instance{ get{ return m_Instance; } set{ m_Instance = value; } }
+		public static Ladder Instance{ get => m_Instance;
+			set => m_Instance = value;
+		}
 
 		public Ladder()
 		{
@@ -322,21 +322,28 @@ namespace Server.Engines.ConPVP
 		private int m_Index;
 		private Ladder m_Ladder;
 
-		public Mobile Mobile{ get{ return m_Mobile; } }
+		public Mobile Mobile => m_Mobile;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public int Experience{ get{ return m_Experience; } set{ m_Experience = value; m_Ladder.UpdateEntry(this); } }
+		public int Experience{ get => m_Experience;
+			set{ m_Experience = value; m_Ladder.UpdateEntry(this); } }
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public int Wins{ get{ return m_Wins; } set{ m_Wins = value; } }
+		public int Wins{ get => m_Wins;
+			set => m_Wins = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public int Losses{ get{ return m_Losses; } set{ m_Losses = value; } }
+		public int Losses{ get => m_Losses;
+			set => m_Losses = value;
+		}
 
-		public int Index{ get{ return m_Index; } set{ m_Index = value; } }
+		public int Index{ get => m_Index;
+			set => m_Index = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Rank{ get{ return m_Index; } }
+		public int Rank => m_Index;
 
 		public LadderEntry( Mobile mob, Ladder ladder )
 		{

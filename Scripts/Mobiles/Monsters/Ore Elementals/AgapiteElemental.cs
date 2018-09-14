@@ -5,7 +5,7 @@ namespace Server.Mobiles
 	public class AgapiteElemental : BaseCreature
 	{
 		public override string CorpseName => "an ore elemental corpse";
-		public override string DefaultName{ get { return "an agapite elemental";  } }
+		public override string DefaultName => "an agapite elemental";
 
 		[Constructible]
 		public AgapiteElemental() : this( 2 )

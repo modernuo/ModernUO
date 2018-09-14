@@ -16,10 +16,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MoonstoneType Type
 		{
-			get
-			{
-				return m_Type;
-			}
+			get => m_Type;
 			set
 			{
 				m_Type = value;

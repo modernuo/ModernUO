@@ -9,15 +9,15 @@ namespace Server.Spells
 {
 	public abstract class SpecialMove
 	{
-		public virtual int BaseMana{ get{ return 0; } }
+		public virtual int BaseMana => 0;
 
-		public virtual SkillName MoveSkill{ get{ return SkillName.Bushido; } }
-		public virtual double RequiredSkill{ get{ return 0.0; } }
+		public virtual SkillName MoveSkill => SkillName.Bushido;
+		public virtual double RequiredSkill => 0.0;
 
-		public virtual TextDefinition AbilityMessage{ get{ return 0; } }
+		public virtual TextDefinition AbilityMessage => 0;
 
-		public virtual bool BlockedByAnimalForm{ get{ return true; } }
-		public virtual bool DelayedContext{ get{ return false; } }
+		public virtual bool BlockedByAnimalForm => true;
+		public virtual bool DelayedContext => false;
 
 		public virtual int GetAccuracyBonus( Mobile attacker )
 		{
@@ -189,7 +189,7 @@ namespace Server.Spells
 
 		private static Dictionary<Mobile, SpecialMove> m_Table = new Dictionary<Mobile, SpecialMove>();
 
-		public static Dictionary<Mobile, SpecialMove> Table{ get{ return m_Table; } }
+		public static Dictionary<Mobile, SpecialMove> Table => m_Table;
 
 		public static void ClearAllMoves( Mobile m )
 		{
@@ -344,8 +344,8 @@ namespace Server.Spells
 			private Timer m_Timer;
 			private Type m_Type;
 
-			public Timer Timer{ get{ return m_Timer; } }
-			public Type Type{ get{ return m_Type; } }
+			public Timer Timer => m_Timer;
+			public Type Type => m_Type;
 
 			public SpecialMoveContext( Timer timer, Type type )
 			{

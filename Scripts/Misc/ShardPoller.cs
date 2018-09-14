@@ -22,35 +22,35 @@ namespace Server.Misc
 
 		public ShardPollOption[] Options
 		{
-			get{ return m_Options; }
-			set{ m_Options = value; }
+			get => m_Options;
+			set => m_Options = value;
 		}
 
 		public IPAddress[] Addresses
 		{
-			get{ return m_Addresses; }
-			set{ m_Addresses = value; }
+			get => m_Addresses;
+			set => m_Addresses = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public string Title
 		{
-			get{ return m_Title; }
-			set{ m_Title = ShardPollPrompt.UrlToHref( value ); }
+			get => m_Title;
+			set => m_Title = ShardPollPrompt.UrlToHref( value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public TimeSpan Duration
 		{
-			get{ return m_Duration; }
-			set{ m_Duration = value; }
+			get => m_Duration;
+			set => m_Duration = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public DateTime StartTime
 		{
-			get{ return m_StartTime; }
-			set{ m_StartTime = value; }
+			get => m_StartTime;
+			set => m_StartTime = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
@@ -80,7 +80,7 @@ namespace Server.Misc
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public bool Active
 		{
-			get{ return m_Active; }
+			get => m_Active;
 			set
 			{
 				if ( m_Active == value )
@@ -144,10 +144,7 @@ namespace Server.Misc
 			m_Options[old.Length] = option;
 		}
 
-		public override string DefaultName
-		{
-			get { return "shard poller"; }
-		}
+		public override string DefaultName => "shard poller";
 
 		[Constructible( AccessLevel.Administrator )]
 		public ShardPoller() : base( 0x1047 )
@@ -291,11 +288,14 @@ namespace Server.Misc
 		private int m_LineBreaks;
 		private IPAddress[] m_Voters;
 
-		public string Title{ get{ return m_Title; } set{ m_Title = value; m_LineBreaks = GetBreaks( m_Title ); } }
-		public int LineBreaks{ get{ return m_LineBreaks; } }
+		public string Title{ get => m_Title;
+			set{ m_Title = value; m_LineBreaks = GetBreaks( m_Title ); } }
+		public int LineBreaks => m_LineBreaks;
 
-		public int Votes{ get{ return m_Voters.Length; } }
-		public IPAddress[] Voters{ get{ return m_Voters; } set{ m_Voters = value; } }
+		public int Votes => m_Voters.Length;
+		public IPAddress[] Voters{ get => m_Voters;
+			set => m_Voters = value;
+		}
 
 		public ShardPollOption( string title )
 		{
@@ -402,7 +402,7 @@ namespace Server.Misc
 		private bool m_Editing;
 		private Queue<ShardPoller> m_Polls;
 
-		public bool Editing{ get{ return m_Editing; } }
+		public bool Editing => m_Editing;
 
 		public void QueuePoll( ShardPoller poller )
 		{

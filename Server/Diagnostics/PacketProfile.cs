@@ -28,17 +28,9 @@ namespace Server.Diagnostics {
 	public abstract class BasePacketProfile : BaseProfile {
 		private long _totalLength;
 
-		public long TotalLength {
-			get {
-				return _totalLength;
-			}
-		}
+		public long TotalLength => _totalLength;
 
-		public double AverageLength {
-			get {
-				return ( double ) _totalLength / Math.Max( 1, this.Count );
-			}
-		}
+		public double AverageLength => ( double ) _totalLength / Math.Max( 1, this.Count );
 
 		protected BasePacketProfile(string name)
 			: base( name ) {
@@ -60,11 +52,7 @@ namespace Server.Diagnostics {
 	public class PacketSendProfile : BasePacketProfile {
 		private static Dictionary<Type, PacketSendProfile> _profiles = new Dictionary<Type, PacketSendProfile>();
 
-		public static IEnumerable<PacketSendProfile> Profiles {
-			get {
-				return _profiles.Values;
-			}
-		}
+		public static IEnumerable<PacketSendProfile> Profiles => _profiles.Values;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static PacketSendProfile Acquire( Type type ) {
@@ -97,11 +85,7 @@ namespace Server.Diagnostics {
 	public class PacketReceiveProfile : BasePacketProfile {
 		private static Dictionary<int, PacketReceiveProfile> _profiles = new Dictionary<int, PacketReceiveProfile>();
 
-		public static IEnumerable<PacketReceiveProfile> Profiles {
-			get {
-				return _profiles.Values;
-			}
-		}
+		public static IEnumerable<PacketReceiveProfile> Profiles => _profiles.Values;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public static PacketReceiveProfile Acquire( int packetId ) {

@@ -20,7 +20,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get{ return m_Charges; }
+			get => m_Charges;
 			set
 			{
 				if ( value > this.MaxCharges )
@@ -37,7 +37,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Recharges
 		{
-			get{ return m_Recharges; }
+			get => m_Recharges;
 			set
 			{
 				if ( value > this.MaxRecharges )
@@ -52,17 +52,17 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MaxCharges{ get{ return 20; } }
+		public int MaxCharges => 20;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MaxRecharges{ get{ return 255; } }
+		public int MaxRecharges => 255;
 
-		public string TranslocationItemName{ get{ return "bracelet of binding"; } }
+		public string TranslocationItemName => "bracelet of binding";
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Inscription
 		{
-			get{ return m_Inscription; }
+			get => m_Inscription;
 			set
 			{
 				m_Inscription = value;
@@ -80,7 +80,7 @@ namespace Server.Items
 
 				return m_Bound;
 			}
-			set{ m_Bound = value; }
+			set => m_Bound = value;
 		}
 
 		[Constructible]

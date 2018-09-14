@@ -68,7 +68,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool AutoLock
 		{
-			get { return m_AutoLock; }
+			get => m_AutoLock;
 			set
 			{
 				m_AutoLock = value;
@@ -81,15 +81,19 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Map TargetMap { get { return m_TargetMap; } set { m_TargetMap = value; } }
+		public Map TargetMap { get => m_TargetMap;
+			set => m_TargetMap = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Target { get { return m_Target; } set { m_Target = value; } }
+		public Point3D Target { get => m_Target;
+			set => m_Target = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Bone
 		{
-			get { return ItemID == 0xECA; }
+			get => ItemID == 0xECA;
 			set
 			{
 				ItemID = value ? 0xECA : 0xE79;
@@ -98,12 +102,11 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Description { get { return m_Description; } set { m_Description = value; } }
-
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
+		public string Description { get => m_Description;
+			set => m_Description = value;
 		}
+
+		public override bool IsDecoContainer => false;
 
 		[Constructible]
 		public MarkContainer() : this( false )
@@ -137,7 +140,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public override bool Locked
 		{
-			get { return base.Locked; }
+			get => base.Locked;
 			set
 			{
 				base.Locked = value;

@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class RegStone : Item
 	{
-		public override string DefaultName
-		{
-			get { return "a reagent stone"; }
-		}
+		public override string DefaultName => "a reagent stone";
 
 		[Constructible]
 		public RegStone() : base( 0xED4 )

@@ -410,7 +410,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Quantity
 		{
-			get{ return m_Quantity; }
+			get => m_Quantity;
 			set
 			{
 				m_Quantity = Math.Min(20, Math.Max(0, value));

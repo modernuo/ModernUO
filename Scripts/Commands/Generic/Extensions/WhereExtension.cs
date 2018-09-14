@@ -11,17 +11,11 @@ namespace Server.Commands.Generic
 			ExtensionInfo.Register( ExtInfo );
 		}
 
-		public override ExtensionInfo Info
-		{
-			get { return ExtInfo; }
-		}
+		public override ExtensionInfo Info => ExtInfo;
 
 		private ObjectConditional m_Conditional;
 
-		public ObjectConditional Conditional
-		{
-			get { return m_Conditional; }
-		}
+		public ObjectConditional Conditional => m_Conditional;
 
 		public WhereExtension()
 		{

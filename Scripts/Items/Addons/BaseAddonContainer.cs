@@ -11,10 +11,7 @@ namespace Server.Items
 		[Hue, CommandProperty( AccessLevel.GameMaster )]
 		public override int Hue
 		{
-			get
-			{
-				return base.Hue;
-			}
+			get => base.Hue;
 			set
 			{
 				if ( base.Hue != value )
@@ -37,7 +34,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CraftResource Resource
 		{
-			get { return m_Resource; }
+			get => m_Resource;
 			set
 			{
 				if ( m_Resource != value )
@@ -50,10 +47,7 @@ namespace Server.Items
 			}
 		}
 
-		Item IAddon.Deed
-		{
-			get { return this.Deed; }
-		}
+		Item IAddon.Deed => this.Deed;
 
 		public virtual bool RetainDeedHue  => false;
 		public virtual bool NeedsWall  => false;
@@ -63,10 +57,7 @@ namespace Server.Items
 
 		private List<AddonContainerComponent> m_Components;
 
-		public List<AddonContainerComponent> Components
-		{
-			get { return m_Components; }
-		}
+		public List<AddonContainerComponent> Components => m_Components;
 
 		public BaseAddonContainer( int itemID ) : base( itemID )
 		{

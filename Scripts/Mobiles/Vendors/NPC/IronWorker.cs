@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	public class IronWorker : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		[Constructible]
 		public IronWorker() : base( "the iron worker" )
@@ -40,10 +40,7 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBLeatherArmor() );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return VendorShoeType.None; }
-		}
+		public override VendorShoeType ShoeType => VendorShoeType.None;
 
 		public override void InitOutfit()
 		{

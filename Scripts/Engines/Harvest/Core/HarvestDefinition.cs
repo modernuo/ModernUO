@@ -26,40 +26,102 @@ namespace Server.Engines.Harvest
 		private bool m_RaceBonus;
 		private bool m_RandomizeVeins;
 
-		public int BankWidth{ get{ return m_BankWidth; } set{ m_BankWidth = value; } }
-		public int BankHeight{ get{ return m_BankHeight; } set{ m_BankHeight = value; } }
-		public int MinTotal{ get{ return m_MinTotal; } set{ m_MinTotal = value; } }
-		public int MaxTotal{ get{ return m_MaxTotal; } set{ m_MaxTotal = value; } }
-		public int[] Tiles{ get{ return m_Tiles; } set{ m_Tiles = value; } }
-		public bool RangedTiles{ get{ return m_RangedTiles; } set{ m_RangedTiles = value; } }
-		public TimeSpan MinRespawn{ get{ return m_MinRespawn; } set{ m_MinRespawn = value; } }
-		public TimeSpan MaxRespawn{ get{ return m_MaxRespawn; } set{ m_MaxRespawn = value; } }
-		public int MaxRange{ get{ return m_MaxRange; } set{ m_MaxRange = value; } }
-		public int ConsumedPerHarvest{ get{ return m_ConsumedPerHarvest; } set{ m_ConsumedPerHarvest = value; } }
-		public int ConsumedPerFeluccaHarvest{ get{ return m_ConsumedPerFeluccaHarvest; } set{ m_ConsumedPerFeluccaHarvest = value; } }
-		public bool PlaceAtFeetIfFull{ get{ return m_PlaceAtFeetIfFull; } set{ m_PlaceAtFeetIfFull = value; } }
-		public SkillName Skill{ get{ return m_Skill; } set{ m_Skill = value; } }
-		public int[] EffectActions{ get{ return m_EffectActions; } set{ m_EffectActions = value; } }
-		public int[] EffectCounts{ get{ return m_EffectCounts; } set{ m_EffectCounts = value; } }
-		public int[] EffectSounds{ get{ return m_EffectSounds; } set{ m_EffectSounds = value; } }
-		public TimeSpan EffectSoundDelay{ get{ return m_EffectSoundDelay; } set{ m_EffectSoundDelay = value; } }
-		public TimeSpan EffectDelay{ get{ return m_EffectDelay; } set{ m_EffectDelay = value; } }
-		public object NoResourcesMessage{ get{ return m_NoResourcesMessage; } set{ m_NoResourcesMessage = value; } }
-		public object OutOfRangeMessage{ get{ return m_OutOfRangeMessage; } set{ m_OutOfRangeMessage = value; } }
-		public object TimedOutOfRangeMessage{ get{ return m_TimedOutOfRangeMessage; } set{ m_TimedOutOfRangeMessage = value; } }
-		public object DoubleHarvestMessage{ get{ return m_DoubleHarvestMessage; } set{ m_DoubleHarvestMessage = value; } }
-		public object FailMessage{ get{ return m_FailMessage; } set{ m_FailMessage = value; } }
-		public object PackFullMessage{ get{ return m_PackFullMessage; } set{ m_PackFullMessage = value; } }
-		public object ToolBrokeMessage{ get{ return m_ToolBrokeMessage; } set{ m_ToolBrokeMessage = value; } }
-		public HarvestResource[] Resources{ get{ return m_Resources; } set{ m_Resources = value; } }
-		public HarvestVein[] Veins{ get{ return m_Veins; } set{ m_Veins = value; } }
-		public BonusHarvestResource[] BonusResources{ get { return m_BonusResources; } set { m_BonusResources = value; } }
-		public bool RaceBonus { get { return m_RaceBonus; } set { m_RaceBonus = value; } }
-		public bool RandomizeVeins { get { return m_RandomizeVeins; } set { m_RandomizeVeins = value; } }
+		public int BankWidth{ get => m_BankWidth;
+			set => m_BankWidth = value;
+		}
+		public int BankHeight{ get => m_BankHeight;
+			set => m_BankHeight = value;
+		}
+		public int MinTotal{ get => m_MinTotal;
+			set => m_MinTotal = value;
+		}
+		public int MaxTotal{ get => m_MaxTotal;
+			set => m_MaxTotal = value;
+		}
+		public int[] Tiles{ get => m_Tiles;
+			set => m_Tiles = value;
+		}
+		public bool RangedTiles{ get => m_RangedTiles;
+			set => m_RangedTiles = value;
+		}
+		public TimeSpan MinRespawn{ get => m_MinRespawn;
+			set => m_MinRespawn = value;
+		}
+		public TimeSpan MaxRespawn{ get => m_MaxRespawn;
+			set => m_MaxRespawn = value;
+		}
+		public int MaxRange{ get => m_MaxRange;
+			set => m_MaxRange = value;
+		}
+		public int ConsumedPerHarvest{ get => m_ConsumedPerHarvest;
+			set => m_ConsumedPerHarvest = value;
+		}
+		public int ConsumedPerFeluccaHarvest{ get => m_ConsumedPerFeluccaHarvest;
+			set => m_ConsumedPerFeluccaHarvest = value;
+		}
+		public bool PlaceAtFeetIfFull{ get => m_PlaceAtFeetIfFull;
+			set => m_PlaceAtFeetIfFull = value;
+		}
+		public SkillName Skill{ get => m_Skill;
+			set => m_Skill = value;
+		}
+		public int[] EffectActions{ get => m_EffectActions;
+			set => m_EffectActions = value;
+		}
+		public int[] EffectCounts{ get => m_EffectCounts;
+			set => m_EffectCounts = value;
+		}
+		public int[] EffectSounds{ get => m_EffectSounds;
+			set => m_EffectSounds = value;
+		}
+		public TimeSpan EffectSoundDelay{ get => m_EffectSoundDelay;
+			set => m_EffectSoundDelay = value;
+		}
+		public TimeSpan EffectDelay{ get => m_EffectDelay;
+			set => m_EffectDelay = value;
+		}
+		public object NoResourcesMessage{ get => m_NoResourcesMessage;
+			set => m_NoResourcesMessage = value;
+		}
+		public object OutOfRangeMessage{ get => m_OutOfRangeMessage;
+			set => m_OutOfRangeMessage = value;
+		}
+		public object TimedOutOfRangeMessage{ get => m_TimedOutOfRangeMessage;
+			set => m_TimedOutOfRangeMessage = value;
+		}
+		public object DoubleHarvestMessage{ get => m_DoubleHarvestMessage;
+			set => m_DoubleHarvestMessage = value;
+		}
+		public object FailMessage{ get => m_FailMessage;
+			set => m_FailMessage = value;
+		}
+		public object PackFullMessage{ get => m_PackFullMessage;
+			set => m_PackFullMessage = value;
+		}
+		public object ToolBrokeMessage{ get => m_ToolBrokeMessage;
+			set => m_ToolBrokeMessage = value;
+		}
+		public HarvestResource[] Resources{ get => m_Resources;
+			set => m_Resources = value;
+		}
+		public HarvestVein[] Veins{ get => m_Veins;
+			set => m_Veins = value;
+		}
+		public BonusHarvestResource[] BonusResources{ get => m_BonusResources;
+			set => m_BonusResources = value;
+		}
+		public bool RaceBonus { get => m_RaceBonus;
+			set => m_RaceBonus = value;
+		}
+		public bool RandomizeVeins { get => m_RandomizeVeins;
+			set => m_RandomizeVeins = value;
+		}
 
 		private Dictionary<Map, Dictionary<Point2D, HarvestBank>> m_BanksByMap;
 
-		public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get{ return m_BanksByMap; } set{ m_BanksByMap = value; } }
+		public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get => m_BanksByMap;
+			set => m_BanksByMap = value;
+		}
 
 		public void SendMessageTo( Mobile from, object message )
 		{

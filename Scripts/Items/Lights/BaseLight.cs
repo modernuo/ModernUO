@@ -25,7 +25,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Burning
 		{
-			get { return m_Burning; }
+			get => m_Burning;
 			set
 			{
 				if ( m_Burning != value )
@@ -39,15 +39,15 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool BurntOut
 		{
-			get { return m_BurntOut; }
-			set { m_BurntOut = value; }
+			get => m_BurntOut;
+			set => m_BurntOut = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Protected
 		{
-			get { return m_Protected; }
-			set { m_Protected = value; }
+			get => m_Protected;
+			set => m_Protected = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -63,7 +63,7 @@ namespace Server.Items
 					return m_Duration;
 			}
 
-			set { m_Duration = value; }
+			set => m_Duration = value;
 		}
 
 		[Constructible]

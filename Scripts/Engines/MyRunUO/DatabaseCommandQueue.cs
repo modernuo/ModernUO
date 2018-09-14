@@ -16,10 +16,7 @@ namespace Server.Engines.MyRunUO
 		private string m_CompletionString;
 		private string m_ConnectionString;
 
-		public bool HasCompleted
-		{
-			get{ return m_HasCompleted; }
-		}
+		public bool HasCompleted => m_HasCompleted;
 
 		public void Enqueue( object obj )
 		{

@@ -84,7 +84,7 @@ namespace Server.Regions
 		private Type m_Type;
 		private bool m_Init;
 
-		public Type Type{ get{ return m_Type; } }
+		public Type Type => m_Type;
 
 		public abstract int Height{ get; }
 		public abstract bool Land{ get; }
@@ -261,8 +261,8 @@ namespace Server.Regions
 		private int m_ItemID;
 		private BaseTreasureChest.TreasureLevel m_Level;
 
-		public int ItemID{ get{ return m_ItemID; } }
-		public BaseTreasureChest.TreasureLevel Level{ get{ return m_Level; } }
+		public int ItemID => m_ItemID;
+		public BaseTreasureChest.TreasureLevel Level => m_Level;
 
 		public SpawnTreasureChest( int itemID, BaseTreasureChest.TreasureLevel level ) : base( typeof( BaseTreasureChest ) )
 		{
@@ -286,8 +286,8 @@ namespace Server.Regions
 		private SpawnDefinition m_SpawnDefinition;
 		private int m_Weight;
 
-		public SpawnDefinition SpawnDefinition{ get{ return m_SpawnDefinition; } }
-		public int Weight{ get{ return m_Weight; } }
+		public SpawnDefinition SpawnDefinition => m_SpawnDefinition;
+		public int Weight => m_Weight;
 
 		public SpawnGroupElement( SpawnDefinition spawnDefinition, int weight )
 		{
@@ -300,7 +300,7 @@ namespace Server.Regions
 	{
 		private static Hashtable m_Table = new Hashtable();
 
-		public static Hashtable Table{ get{ return m_Table; } }
+		public static Hashtable Table => m_Table;
 
 		public static void Register( SpawnGroup group )
 		{
@@ -365,8 +365,8 @@ namespace Server.Regions
 		private SpawnGroupElement[] m_Elements;
 		private int m_TotalWeight;
 
-		public string Name{ get{ return m_Name; } }
-		public SpawnGroupElement[] Elements{ get{ return m_Elements; } }
+		public string Name => m_Name;
+		public SpawnGroupElement[] Elements => m_Elements;
 
 		public SpawnGroup( string name, SpawnGroupElement[] elements )
 		{

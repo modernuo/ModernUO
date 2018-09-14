@@ -7,10 +7,10 @@ namespace Server.Factions
 		private int m_MaxWearables;
 		private TextDefinition m_Title;
 
-		public int Rank{ get{ return m_Rank; } }
-		public int Required{ get{ return m_Required; } }
-		public int MaxWearables{ get{ return m_MaxWearables; } }
-		public TextDefinition Title{ get{ return m_Title; } }
+		public int Rank => m_Rank;
+		public int Required => m_Required;
+		public int MaxWearables => m_MaxWearables;
+		public TextDefinition Title => m_Title;
 
 		public RankDefinition( int rank, int required, int maxWearables, TextDefinition title )
 		{

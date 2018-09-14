@@ -12,13 +12,15 @@ namespace Server.Engines.VeteranRewards
 		private string m_NameString;
 		private object[] m_Args;
 
-		public RewardList List{ get{ return m_List; } set{ m_List = value; } }
-		public RewardCategory Category{ get{ return m_Category; } }
-		public Type ItemType{ get{ return m_ItemType; } }
-		public Expansion RequiredExpansion{ get{ return m_RequiredExpansion; } }
-		public int Name{ get{ return m_Name; } }
-		public string NameString{ get{ return m_NameString; } }
-		public object[] Args{ get{ return m_Args; } }
+		public RewardList List{ get => m_List;
+			set => m_List = value;
+		}
+		public RewardCategory Category => m_Category;
+		public Type ItemType => m_ItemType;
+		public Expansion RequiredExpansion => m_RequiredExpansion;
+		public int Name => m_Name;
+		public string NameString => m_NameString;
+		public object[] Args => m_Args;
 
 		public Item Construct()
 		{

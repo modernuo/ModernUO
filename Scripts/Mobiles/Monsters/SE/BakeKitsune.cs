@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	public class BakeKitsune : BaseCreature
 	{
 		public override string CorpseName => "a bake kitsune corpse";
-		public override string DefaultName{ get { return "a bake kitsune";  } }
+		public override string DefaultName => "a bake kitsune";
 
 		[Constructible]
 		public BakeKitsune() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )

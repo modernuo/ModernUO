@@ -7,10 +7,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int GamblePot
 		{
-			get
-			{
-				return m_GamblePot;
-			}
+			get => m_GamblePot;
 			set
 			{
 				m_GamblePot = value;
@@ -18,10 +15,7 @@ namespace Server.Items
 			}
 		}
 
-		public override string DefaultName
-		{
-			get { return "a gambling stone"; }
-		}
+		public override string DefaultName => "a gambling stone";
 
 		[Constructible]
 		public GamblingStone()

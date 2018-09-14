@@ -6,10 +6,7 @@ namespace Server.Ethics
 
 		public static EthicsPersistance Instance  => m_Instance;
 
-		public override string DefaultName
-		{
-			get { return "Ethics Persistance - Internal"; }
-		}
+		public override string DefaultName => "Ethics Persistance - Internal";
 
 		[Constructible]
 		public EthicsPersistance()

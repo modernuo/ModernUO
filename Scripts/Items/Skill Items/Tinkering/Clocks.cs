@@ -19,10 +19,7 @@ namespace Server.Items
 	{
 		private static DateTime m_ServerStart;
 
-		public static DateTime ServerStart
-		{
-			get{ return m_ServerStart; }
-		}
+		public static DateTime ServerStart => m_ServerStart;
 
 		public static void Initialize()
 		{

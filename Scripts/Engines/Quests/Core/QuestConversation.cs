@@ -11,19 +11,19 @@ namespace Server.Engines.Quests
 
 		public abstract object Message{ get; }
 
-		public virtual QuestItemInfo[] Info{ get{ return null; } }
-		public virtual bool Logged{ get{ return true; } }
+		public virtual QuestItemInfo[] Info => null;
+		public virtual bool Logged => true;
 
 		public QuestSystem System
 		{
-			get{ return m_System; }
-			set{ m_System = value; }
+			get => m_System;
+			set => m_System = value;
 		}
 
 		public bool HasBeenRead
 		{
-			get{ return m_HasBeenRead; }
-			set{ m_HasBeenRead = value; }
+			get => m_HasBeenRead;
+			set => m_HasBeenRead = value;
 		}
 
 		public QuestConversation()

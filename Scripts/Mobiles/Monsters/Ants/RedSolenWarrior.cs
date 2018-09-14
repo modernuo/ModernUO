@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	{
 		public override string CorpseName => "a solen warrior corpse";
 		private bool m_BurstSac;
-		public bool BurstSac{ get{ return m_BurstSac; } }
+		public bool BurstSac => m_BurstSac;
 
 		public override string DefaultName => "a red solen warrior";
 

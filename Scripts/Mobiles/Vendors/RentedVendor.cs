@@ -21,8 +21,8 @@ namespace Server.Mobiles
 		private TimeSpan m_Duration;
 		private int m_Name;
 
-		public TimeSpan Duration{ get{ return m_Duration; } }
-		public int Name{ get{ return m_Name; } }
+		public TimeSpan Duration => m_Duration;
+		public int Name => m_Name;
 
 		public int ID
 		{
@@ -76,57 +76,48 @@ namespace Server.Mobiles
 		{
 		}
 
-		public VendorRentalDuration RentalDuration
-		{
-			get{ return m_RentalDuration; }
-		}
+		public VendorRentalDuration RentalDuration => m_RentalDuration;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int RentalPrice
 		{
-			get{ return m_RentalPrice; }
-			set{ m_RentalPrice = value; }
+			get => m_RentalPrice;
+			set => m_RentalPrice = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool LandlordRenew
 		{
-			get{ return m_LandlordRenew; }
-			set{ m_LandlordRenew = value; }
+			get => m_LandlordRenew;
+			set => m_LandlordRenew = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool RenterRenew
 		{
-			get{ return m_RenterRenew; }
-			set{ m_RenterRenew = value; }
+			get => m_RenterRenew;
+			set => m_RenterRenew = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Renew
-		{
-			get{ return LandlordRenew && RenterRenew && House != null && House.DecayType != DecayType.Condemned; }
-		}
+		public bool Renew => LandlordRenew && RenterRenew && House != null && House.DecayType != DecayType.Condemned;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int RenewalPrice
 		{
-			get{ return m_RenewalPrice; }
-			set{ m_RenewalPrice = value; }
+			get => m_RenewalPrice;
+			set => m_RenewalPrice = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int RentalGold
 		{
-			get{ return m_RentalGold; }
-			set{ m_RentalGold = value; }
+			get => m_RentalGold;
+			set => m_RentalGold = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime RentalExpireTime
-		{
-			get{ return m_RentalExpireTime; }
-		}
+		public DateTime RentalExpireTime => m_RentalExpireTime;
 
 		public override bool IsOwner( Mobile m )
 		{

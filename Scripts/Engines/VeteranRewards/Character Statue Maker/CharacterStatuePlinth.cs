@@ -7,7 +7,7 @@ namespace Server.Items
 {
 	public class CharacterStatuePlinth : Static, IAddon
 	{
-		public Item Deed{ get{ return new CharacterStatueDeed( m_Statue ); } }
+		public Item Deed => new CharacterStatueDeed( m_Statue );
 		public override int LabelNumber => 1076201; // Character Statue
 
 		private CharacterStatue m_Statue;

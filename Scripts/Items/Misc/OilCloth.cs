@@ -8,10 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber => 1041498; // oil cloth
 
-		public override double DefaultWeight
-		{
-			get { return 1.0; }
-		}
+		public override double DefaultWeight => 1.0;
 
 		[Constructible]
 		public OilCloth() : base( 0x175D )

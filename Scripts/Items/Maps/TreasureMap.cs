@@ -18,22 +18,29 @@ namespace Server.Items
 		private Point2D m_Location;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Level{ get{ return m_Level; } set{ m_Level = value; InvalidateProperties(); } }
+		public int Level{ get => m_Level;
+			set{ m_Level = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Completed{ get{ return m_Completed; } set{ m_Completed = value; InvalidateProperties(); } }
+		public bool Completed{ get => m_Completed;
+			set{ m_Completed = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile CompletedBy{ get{ return m_CompletedBy; } set{ m_CompletedBy = value; InvalidateProperties(); } }
+		public Mobile CompletedBy{ get => m_CompletedBy;
+			set{ m_CompletedBy = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Decoder{ get{ return m_Decoder; } set{ m_Decoder = value; InvalidateProperties(); } }
+		public Mobile Decoder{ get => m_Decoder;
+			set{ m_Decoder = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Map ChestMap{ get{ return m_Map; } set{ m_Map = value; InvalidateProperties(); } }
+		public Map ChestMap{ get => m_Map;
+			set{ m_Map = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point2D ChestLocation{ get{ return m_Location; } set{ m_Location = value; } }
+		public Point2D ChestLocation{ get => m_Location;
+			set => m_Location = value;
+		}
 
 		private static Point2D[] m_Locations;
 		private static Point2D[] m_HavenLocations;

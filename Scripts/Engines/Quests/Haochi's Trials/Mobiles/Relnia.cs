@@ -33,7 +33,7 @@ namespace Server.Engines.Quests.Samurai
 			AddItem( new Skirt( 0x544 ) );
 		}
 
-		public override int TalkNumber{ get	{ return -1; } }
+		public override int TalkNumber => -1;
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )
 		{

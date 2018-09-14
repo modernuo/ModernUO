@@ -16,19 +16,16 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get { return m_IsRewardItem; }
-			set { m_IsRewardItem = value; }
+			get => m_IsRewardItem;
+			set => m_IsRewardItem = value;
 		}
 
-		public override double DefaultWeight
-		{
-			get { return 1.0; }
-		}
+		public override double DefaultWeight => 1.0;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public bool IsDonationItem
 		{
-			get { return m_IsDonationItem; }
+			get => m_IsDonationItem;
 			set { m_IsDonationItem = value; InvalidateProperties(); }
 		}
 
@@ -61,10 +58,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MountedID
 		{
-			get
-			{
-				return m_MountedID;
-			}
+			get => m_MountedID;
 			set
 			{
 				if ( m_MountedID != value )
@@ -80,10 +74,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int RegularID
 		{
-			get
-			{
-				return m_RegularID;
-			}
+			get => m_RegularID;
 			set
 			{
 				if ( m_RegularID != value )
@@ -253,10 +244,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Rider
 		{
-			get
-			{
-				return m_Rider;
-			}
+			get => m_Rider;
 			set
 			{
 				if ( value != m_Rider )
@@ -334,13 +322,7 @@ namespace Server.Mobiles
 			ProcessDelta();
 		}
 
-		public IMount Mount
-		{
-			get
-			{
-				return this;
-			}
-		}
+		public IMount Mount => this;
 
 		public static void StopMounting( Mobile mob )
 		{
@@ -375,13 +357,7 @@ namespace Server.Mobiles
 
 			public override double CastDelayFastScalar => 0;
 
-			public override TimeSpan CastDelayBase
-			{
-				get
-				{
-					return TimeSpan.FromSeconds( ( ( m_Mount.IsDonationItem && RewardSystem.GetRewardLevel( m_Rider ) < 3 ) ? ( 7.5 + ( Core.AOS ? 3.0 : 2.0 ) ) : ( Core.AOS ? 3.0 : 2.0 ) ) );
-				}
-			}
+			public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( ( ( m_Mount.IsDonationItem && RewardSystem.GetRewardLevel( m_Rider ) < 3 ) ? ( 7.5 + ( Core.AOS ? 3.0 : 2.0 ) ) : ( Core.AOS ? 3.0 : 2.0 ) ) );
 
 			public override int GetMana()
 			{

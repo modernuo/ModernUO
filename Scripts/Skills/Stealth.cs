@@ -11,7 +11,7 @@ namespace Server.SkillHandlers
 			SkillInfo.Table[(int)SkillName.Stealth].Callback = new SkillUseCallback( OnUse );
 		}
 
-		public static double HidingRequirement { get { return ( Core.ML ? 30.0 : ( Core.SE ? 50.0 : 80.0 ) ); } }
+		public static double HidingRequirement => ( Core.ML ? 30.0 : ( Core.SE ? 50.0 : 80.0 ) );
 
 		public static int[,] ArmorTable  => m_ArmorTable;
 		private static int[,] m_ArmorTable = new int[,]

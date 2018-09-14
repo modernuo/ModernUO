@@ -34,14 +34,8 @@ namespace Server.Gumps
 
 		public int Page
 		{
-			get
-			{
-				return m_Page;
-			}
-			set
-			{
-				Delta( ref m_Page, value );
-			}
+			get => m_Page;
+			set => Delta( ref m_Page, value );
 		}
 
 		public override string Compile( NetState ns )

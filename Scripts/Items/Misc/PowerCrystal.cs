@@ -4,10 +4,7 @@ namespace Server.Items
 {
 	public class PowerCrystal : Item
 	{
-		public override string DefaultName
-		{
-			get { return "power crystal"; }
-		}
+		public override string DefaultName => "power crystal";
 
 		[Constructible]
 		public PowerCrystal() : base( 0x1F1C )

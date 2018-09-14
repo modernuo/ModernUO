@@ -12,15 +12,19 @@ namespace Server.Engines.BulkOrders
 		private LargeBulkEntry[] m_Entries;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AmountMax{ get{ return m_AmountMax; } set{ m_AmountMax = value; InvalidateProperties(); } }
+		public int AmountMax{ get => m_AmountMax;
+			set{ m_AmountMax = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool RequireExceptional{ get{ return m_RequireExceptional; } set{ m_RequireExceptional = value; InvalidateProperties(); } }
+		public bool RequireExceptional{ get => m_RequireExceptional;
+			set{ m_RequireExceptional = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BulkMaterialType Material{ get{ return m_Material; } set{ m_Material = value; InvalidateProperties(); } }
+		public BulkMaterialType Material{ get => m_Material;
+			set{ m_Material = value; InvalidateProperties(); } }
 
-		public LargeBulkEntry[] Entries{ get{ return m_Entries; } set{ m_Entries = value; InvalidateProperties(); } }
+		public LargeBulkEntry[] Entries{ get => m_Entries;
+			set{ m_Entries = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Complete

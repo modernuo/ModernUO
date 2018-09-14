@@ -34,14 +34,8 @@ namespace Server.Gumps
 
 		public int Serial
 		{
-			get
-			{
-				return m_Serial;
-			}
-			set
-			{
-				Delta( ref m_Serial, value );
-			}
+			get => m_Serial;
+			set => Delta( ref m_Serial, value );
 		}
 
 		public override string Compile( NetState ns )

@@ -55,10 +55,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.MedScrolls, 2 );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override bool CanRummageCorpses => true;
 		public override bool BleedImmune => true;

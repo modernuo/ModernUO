@@ -364,9 +364,6 @@ namespace Server.Items
 
 		private static Dictionary<Mobile, Timer> m_Timers = new Dictionary<Mobile, Timer>();
 
-		public static Dictionary<Mobile, Timer> Timers
-		{
-			get { return m_Timers; }
-		}
+		public static Dictionary<Mobile, Timer> Timers => m_Timers;
 	}
 }

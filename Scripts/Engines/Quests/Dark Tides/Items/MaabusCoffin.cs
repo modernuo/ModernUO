@@ -12,7 +12,9 @@ namespace Server.Engines.Quests.Necro
 		public Maabus Maabus  => m_Maabus;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D SpawnLocation { get { return m_SpawnLocation; } set { m_SpawnLocation = value; } }
+		public Point3D SpawnLocation { get => m_SpawnLocation;
+			set => m_SpawnLocation = value;
+		}
 
 		[Constructible]
 		public MaabusCoffin()
@@ -106,7 +108,7 @@ namespace Server.Engines.Quests.Necro
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D SpawnLocation
 		{
-			get { return Addon is MaabusCoffin coffin ? coffin.SpawnLocation : Point3D.Zero; }
+			get => Addon is MaabusCoffin coffin ? coffin.SpawnLocation : Point3D.Zero;
 			set { if ( Addon is MaabusCoffin coffin ) coffin.SpawnLocation = value; }
 		}
 

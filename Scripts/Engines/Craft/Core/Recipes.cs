@@ -68,30 +68,27 @@ namespace Server.Engines.Craft
 		public static Dictionary<int, Recipe> Recipes  => m_Recipes;
 
 		private static int m_LargestRecipeID;
-		public  static int LargestRecipeID{ get{ return m_LargestRecipeID; } }
+		public  static int LargestRecipeID => m_LargestRecipeID;
 
 		private CraftSystem m_System;
 
 		public CraftSystem CraftSystem
 		{
-			get { return m_System; }
-			set { m_System = value; }
+			get => m_System;
+			set => m_System = value;
 		}
 
 		private CraftItem m_CraftItem;
 
 		public CraftItem CraftItem
 		{
-			get { return m_CraftItem; }
-			set { m_CraftItem = value; }
+			get => m_CraftItem;
+			set => m_CraftItem = value;
 		}
 
 		private int m_ID;
 
-		public int ID
-		{
-			get { return m_ID; }
-		}
+		public int ID => m_ID;
 
 		private TextDefinition m_TD;
 		public TextDefinition TextDefinition

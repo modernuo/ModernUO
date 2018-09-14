@@ -27,14 +27,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Balanced
 		{
-			get{ return m_Balanced; }
+			get => m_Balanced;
 			set{ m_Balanced = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Velocity
 		{
-			get{ return m_Velocity; }
+			get => m_Velocity;
 			set{ m_Velocity = value; InvalidateProperties(); }
 		}
 

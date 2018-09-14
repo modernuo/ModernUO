@@ -33,11 +33,11 @@ namespace Server.Misc
 			string m_Country_LocalName;
 			bool m_HasLocalInfo;
 
-			public string Code{ get{ return m_Code; } }
-			public string Language{ get{ return m_Language; } }
-			public string Country{ get{ return m_Country; } }
-			public string Language_LocalName{ get{ return m_Language_LocalName; } }
-			public string Country_LocalName{ get{ return m_Country_LocalName; } }
+			public string Code => m_Code;
+			public string Language => m_Language;
+			public string Country => m_Country;
+			public string Language_LocalName => m_Language_LocalName;
+			public string Country_LocalName => m_Country_LocalName;
 
 			public InternationalCode( string code, string language, string country ) : this( code, language, country, null, null )
 			{
@@ -316,8 +316,8 @@ namespace Server.Misc
 			private string m_Code;
 			private int m_Count;
 
-			public string Code{ get{ return m_Code; } }
-			public int Count{ get{ return m_Count; } }
+			public string Code => m_Code;
+			public int Count => m_Count;
 
 			public InternationalCodeCounter( string code )
 			{

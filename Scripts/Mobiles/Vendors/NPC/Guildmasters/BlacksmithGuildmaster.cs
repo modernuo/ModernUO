@@ -21,10 +21,7 @@ namespace Server.Mobiles
 			SBInfos.Add( new SBBlacksmith() );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return VendorShoeType.ThighBoots; }
-		}
+		public override VendorShoeType ShoeType => VendorShoeType.ThighBoots;
 
 		public override void InitOutfit()
 		{

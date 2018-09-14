@@ -66,8 +66,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsShipwreckedItem
 		{
-			get { return m_IsShipwreckedItem; }
-			set { m_IsShipwreckedItem = value; }
+			get => m_IsShipwreckedItem;
+			set => m_IsShipwreckedItem = value;
 		}
 		#endregion
 	}

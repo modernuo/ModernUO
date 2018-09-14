@@ -22,8 +22,8 @@ namespace Server.SkillHandlers
 
 		public static bool DisableMessage
 		{
-			get{ return m_DisableMessage; }
-			set{ m_DisableMessage = value; }
+			get => m_DisableMessage;
+			set => m_DisableMessage = value;
 		}
 
 		public static TimeSpan OnUse( Mobile m )

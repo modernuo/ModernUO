@@ -15,10 +15,7 @@ namespace Server.Misc
 		private static bool m_Restarting;
 		private static DateTime m_RestartTime;
 
-		public static bool Restarting
-		{
-			get{ return m_Restarting; }
-		}
+		public static bool Restarting => m_Restarting;
 
 		public static void Initialize()
 		{

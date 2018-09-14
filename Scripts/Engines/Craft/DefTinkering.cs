@@ -7,15 +7,9 @@ namespace Server.Engines.Craft
 {
 	public class DefTinkering : CraftSystem
 	{
-		public override SkillName MainSkill
-		{
-			get	{ return SkillName.Tinkering; }
-		}
+		public override SkillName MainSkill => SkillName.Tinkering;
 
-		public override int GumpTitleNumber
-		{
-			get { return 1044007; } // <CENTER>TINKERING MENU</CENTER>
-		}
+		public override int GumpTitleNumber => 1044007;
 
 		private static CraftSystem m_CraftSystem;
 
@@ -388,7 +382,7 @@ namespace Server.Engines.Craft
 	{
 		private LockableContainer m_Container;
 
-		public LockableContainer Container{ get{ return m_Container; } }
+		public LockableContainer Container => m_Container;
 
 		public abstract TrapType TrapType{ get; }
 

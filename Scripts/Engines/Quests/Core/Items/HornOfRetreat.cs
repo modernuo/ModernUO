@@ -12,21 +12,21 @@ namespace Server.Engines.Quests
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D DestLoc
 		{
-			get{ return m_DestLoc; }
-			set{ m_DestLoc = value; }
+			get => m_DestLoc;
+			set => m_DestLoc = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Map DestMap
 		{
-			get{ return m_DestMap; }
-			set{ m_DestMap = value; }
+			get => m_DestMap;
+			set => m_DestMap = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get{ return m_Charges; }
+			get => m_Charges;
 			set{ m_Charges = value; InvalidateProperties(); }
 		}
 

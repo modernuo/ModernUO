@@ -180,22 +180,31 @@ namespace Server.Items
 		private int m_AnimalWeight;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int WestID{ get{ return m_WestID; } set{ m_WestID = value; } }
+		public int WestID{ get => m_WestID;
+			set => m_WestID = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int NorthID{ get{ return m_NorthID; } set{ m_NorthID = value; } }
+		public int NorthID{ get => m_NorthID;
+			set => m_NorthID = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int DeedNumber{ get{ return m_DeedNumber; } set{ m_DeedNumber = value; } }
+		public int DeedNumber{ get => m_DeedNumber;
+			set => m_DeedNumber = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AddonNumber{ get{ return m_AddonNumber; } set{ m_AddonNumber = value; InvalidateProperties(); } }
+		public int AddonNumber{ get => m_AddonNumber;
+			set{ m_AddonNumber = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Hunter{ get{ return m_Hunter; } set{ m_Hunter = value; InvalidateProperties(); } }
+		public Mobile Hunter{ get => m_Hunter;
+			set{ m_Hunter = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AnimalWeight{ get{ return m_AnimalWeight; } set{ m_AnimalWeight = value; InvalidateProperties(); } }
+		public int AnimalWeight{ get => m_AnimalWeight;
+			set{ m_AnimalWeight = value; InvalidateProperties(); } }
 
 		public override int LabelNumber => m_AddonNumber;
 
@@ -312,10 +321,7 @@ namespace Server.Items
 			}
 		}
 
-		public Item Deed
-		{
-			get{ return new TrophyDeed( m_WestID, m_NorthID, m_DeedNumber, m_AddonNumber, m_Hunter, m_AnimalWeight ); }
-		}
+		public Item Deed => new TrophyDeed( m_WestID, m_NorthID, m_DeedNumber, m_AddonNumber, m_Hunter, m_AnimalWeight );
 
 		public override void OnDoubleClick( Mobile from )
 		{
@@ -348,22 +354,31 @@ namespace Server.Items
 		private int m_AnimalWeight;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int WestID{ get{ return m_WestID; } set{ m_WestID = value; } }
+		public int WestID{ get => m_WestID;
+			set => m_WestID = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int NorthID{ get{ return m_NorthID; } set{ m_NorthID = value; } }
+		public int NorthID{ get => m_NorthID;
+			set => m_NorthID = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int DeedNumber{ get{ return m_DeedNumber; } set{ m_DeedNumber = value; InvalidateProperties(); } }
+		public int DeedNumber{ get => m_DeedNumber;
+			set{ m_DeedNumber = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AddonNumber{ get{ return m_AddonNumber; } set{ m_AddonNumber = value; } }
+		public int AddonNumber{ get => m_AddonNumber;
+			set => m_AddonNumber = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Hunter{ get{ return m_Hunter; } set{ m_Hunter = value; InvalidateProperties(); } }
+		public Mobile Hunter{ get => m_Hunter;
+			set{ m_Hunter = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AnimalWeight{ get{ return m_AnimalWeight; } set{ m_AnimalWeight = value; InvalidateProperties(); } }
+		public int AnimalWeight{ get => m_AnimalWeight;
+			set{ m_AnimalWeight = value; InvalidateProperties(); } }
 
 		public override int LabelNumber => m_DeedNumber;
 

@@ -49,10 +49,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Gems );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override int Meat => 1;
 		public override int Hides => 8;

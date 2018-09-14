@@ -33,8 +33,8 @@ namespace Server.Spells.Spellweaving
 		public override int PoisResistOffset => 5 + FocusLevel;
 		public override int NrgyResistOffset => 5 + FocusLevel;
 
-		public virtual int SwingSpeedBonus { get { return 10 + FocusLevel; } }
-		public virtual int SpellDamageBonus { get { return 10 + FocusLevel; } }
+		public virtual int SwingSpeedBonus => 10 + FocusLevel;
+		public virtual int SpellDamageBonus => 10 + FocusLevel;
 
 		public ReaperFormSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
 		{

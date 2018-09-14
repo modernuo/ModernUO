@@ -47,7 +47,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Number
 		{
-			get{ return m_LabelNumber; }
+			get => m_LabelNumber;
 			set{ m_LabelNumber = value; InvalidateProperties(); }
 		}
 

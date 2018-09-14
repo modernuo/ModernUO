@@ -10,10 +10,12 @@ namespace Server.Engines.ConPVP
 		private DuelPlayer[] m_Players;
 		private TournyParticipant m_TournyPart;
 
-		public int Count{ get{ return m_Players.Length; } }
-		public DuelPlayer[] Players{ get{ return m_Players; } }
-		public DuelContext Context{ get{ return m_Context; } }
-		public TournyParticipant TournyPart{ get{ return m_TournyPart; } set{ m_TournyPart = value; } }
+		public int Count => m_Players.Length;
+		public DuelPlayer[] Players => m_Players;
+		public DuelContext Context => m_Context;
+		public TournyParticipant TournyPart{ get => m_TournyPart;
+			set => m_TournyPart = value;
+		}
 
 		public DuelPlayer Find( Mobile mob )
 		{
@@ -215,10 +217,15 @@ namespace Server.Engines.ConPVP
 		private bool m_Ready;
 		private Participant m_Participant;
 
-		public Mobile Mobile{ get{ return m_Mobile; } }
-		public bool Ready{ get{ return m_Ready; } set{ m_Ready = value; } }
-		public bool Eliminated{ get{ return m_Eliminated; } set{ m_Eliminated = value; if ( m_Participant.Context.m_Tournament != null && m_Eliminated ){ m_Participant.Context.m_Tournament.OnEliminated( this ); m_Mobile.SendEverything(); } } }
-		public Participant Participant{ get{ return m_Participant; } set{ m_Participant = value; } }
+		public Mobile Mobile => m_Mobile;
+		public bool Ready{ get => m_Ready;
+			set => m_Ready = value;
+		}
+		public bool Eliminated{ get => m_Eliminated;
+			set{ m_Eliminated = value; if ( m_Participant.Context.m_Tournament != null && m_Eliminated ){ m_Participant.Context.m_Tournament.OnEliminated( this ); m_Mobile.SendEverything(); } } }
+		public Participant Participant{ get => m_Participant;
+			set => m_Participant = value;
+		}
 
 		public DuelPlayer( Mobile mob, Participant p )
 		{

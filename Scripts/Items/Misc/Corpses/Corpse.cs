@@ -114,7 +114,9 @@ namespace Server.Items
 			private Item m_Item;
 
 			private bool m_Perpetual;   //Needed for Rummaged stuff.  CONTRARY to the Patchlog, cause a later FoF contradicts it.  Verify on OSI.
-			public bool Perpetual { get { return m_Perpetual; } set { m_Perpetual = value; } }
+			public bool Perpetual { get => m_Perpetual;
+				set => m_Perpetual = value;
+			}
 
 			public InstancedItemInfo( Item i, Mobile m )
 			{
@@ -249,16 +251,13 @@ namespace Server.Items
 			}
 		}
 
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
-		}
+		public override bool IsDecoContainer => false;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime TimeOfDeath
 		{
-			get{ return m_TimeOfDeath; }
-			set{ m_TimeOfDeath = value; }
+			get => m_TimeOfDeath;
+			set => m_TimeOfDeath = value;
 		}
 
 		public override bool DisplayWeight => false;
@@ -267,109 +266,82 @@ namespace Server.Items
 		public FacialHairInfo FacialHair  => m_FacialHair;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsBones
-		{
-			get { return GetFlag( CorpseFlag.IsBones ); }
-		}
+		public bool IsBones => GetFlag( CorpseFlag.IsBones );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Devoured
-		{
-			get { return (m_Devourer != null); }
-		}
+		public bool Devoured => (m_Devourer != null);
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Carved
 		{
-			get{ return GetFlag( CorpseFlag.Carved ); }
-			set { SetFlag( CorpseFlag.Carved, value ); }
+			get => GetFlag( CorpseFlag.Carved );
+			set => SetFlag( CorpseFlag.Carved, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool VisitedByTaxidermist
 		{
-			get { return GetFlag( CorpseFlag.VisitedByTaxidermist ); }
-			set { SetFlag( CorpseFlag.VisitedByTaxidermist, value ); }
+			get => GetFlag( CorpseFlag.VisitedByTaxidermist );
+			set => SetFlag( CorpseFlag.VisitedByTaxidermist, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Channeled
 		{
-			get { return GetFlag( CorpseFlag.Channeled ); }
-			set { SetFlag( CorpseFlag.Channeled, value ); }
+			get => GetFlag( CorpseFlag.Channeled );
+			set => SetFlag( CorpseFlag.Channeled, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Animated
 		{
-			get { return GetFlag( CorpseFlag.Animated ); }
-			set { SetFlag( CorpseFlag.Animated, value ); }
+			get => GetFlag( CorpseFlag.Animated );
+			set => SetFlag( CorpseFlag.Animated, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool SelfLooted
 		{
-			get { return GetFlag( CorpseFlag.SelfLooted ); }
-			set { SetFlag( CorpseFlag.SelfLooted, value ); }
+			get => GetFlag( CorpseFlag.SelfLooted );
+			set => SetFlag( CorpseFlag.SelfLooted, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public AccessLevel AccessLevel
-		{
-			get{ return m_AccessLevel; }
-		}
+		public AccessLevel AccessLevel => m_AccessLevel;
 
-		public List<Mobile> Aggressors
-		{
-			get{ return m_Aggressors; }
-		}
+		public List<Mobile> Aggressors => m_Aggressors;
 
-		public List<Mobile> Looters
-		{
-			get{ return m_Looters; }
-		}
+		public List<Mobile> Looters => m_Looters;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Killer
-		{
-			get{ return m_Killer; }
-		}
+		public Mobile Killer => m_Killer;
 
-		public List<Item> EquipItems
-		{
-			get{ return m_EquipItems; }
-		}
+		public List<Item> EquipItems => m_EquipItems;
 
 		public List<Item> RestoreEquip
 		{
-			get { return m_RestoreEquip; }
-			set { m_RestoreEquip = value; }
+			get => m_RestoreEquip;
+			set => m_RestoreEquip = value;
 		}
 
-		public Guild Guild
-		{
-			get{ return m_Guild; }
-		}
+		public Guild Guild => m_Guild;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Kills
 		{
-			get{ return m_Kills; }
-			set{ m_Kills = value; }
+			get => m_Kills;
+			set => m_Kills = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Criminal
 		{
-			get { return GetFlag( CorpseFlag.Criminal ); }
-			set { SetFlag( CorpseFlag.Criminal, value ); }
+			get => GetFlag( CorpseFlag.Criminal );
+			set => SetFlag( CorpseFlag.Criminal, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner
-		{
-			get{ return m_Owner; }
-		}
+		public Mobile Owner => m_Owner;
 
 		public void TurnToBones()
 		{

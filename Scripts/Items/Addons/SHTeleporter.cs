@@ -12,7 +12,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get { return m_Active; }
+			get => m_Active;
 			set
 			{
 				m_Active = value;
@@ -25,21 +25,21 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D TeleOffset
 		{
-			get { return m_TeleOffset; }
-			set { m_TeleOffset = value; }
+			get => m_TeleOffset;
+			set => m_TeleOffset = value;
 		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public Point3D TelePoint
 		{
-			get   { return new Point3D( Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z ); }
-			set { m_TeleOffset = new Point3D( value.X - Location.X, value.Y - Location.Y, value.Z - Location.Z ); }
+			get => new Point3D( Location.X + TeleOffset.X, Location.Y + TeleOffset.Y, Location.Z + TeleOffset.Z );
+			set => m_TeleOffset = new Point3D( value.X - Location.X, value.Y - Location.Y, value.Z - Location.Z );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SHTeleComponent TeleDest
 		{
-			get { return m_TeleDest; }
+			get => m_TeleDest;
 			set
 			{
 				m_TeleDest = value;
@@ -49,10 +49,7 @@ namespace Server.Items
 			}
 		}
 
-		public override string DefaultName
-		{
-			get { return "a hole"; }
-		}
+		public override string DefaultName => "a hole";
 
 		[Constructible]
 		public SHTeleComponent() : this( 0x1775 )

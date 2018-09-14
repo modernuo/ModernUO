@@ -173,7 +173,7 @@ namespace Server.Mobiles
 			MirrorImage.AddClone( m_Caster );
 		}
 
-		protected override BaseAI ForcedAI { get { return new CloneAI( this ); } }
+		protected override BaseAI ForcedAI => new CloneAI( this );
 
 		public override bool IsHumanInTown() { return false; }
 

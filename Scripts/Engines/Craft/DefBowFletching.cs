@@ -5,15 +5,9 @@ namespace Server.Engines.Craft
 {
 	public class DefBowFletching : CraftSystem
 	{
-		public override SkillName MainSkill
-		{
-			get	{ return SkillName.Fletching; }
-		}
+		public override SkillName MainSkill => SkillName.Fletching;
 
-		public override int GumpTitleNumber
-		{
-			get { return 1044006; } // <CENTER>BOWCRAFT AND FLETCHING MENU</CENTER>
-		}
+		public override int GumpTitleNumber => 1044006;
 
 		private static CraftSystem m_CraftSystem;
 

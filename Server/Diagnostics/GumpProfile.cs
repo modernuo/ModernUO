@@ -25,11 +25,7 @@ namespace Server.Diagnostics {
 	public class GumpProfile : BaseProfile {
 		private static Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
 
-		public static IEnumerable<GumpProfile> Profiles {
-			get {
-				return _profiles.Values;
-			}
-		}
+		public static IEnumerable<GumpProfile> Profiles => _profiles.Values;
 
 		public static GumpProfile Acquire( Type type ) {
 			if ( !Core.Profiling ) {

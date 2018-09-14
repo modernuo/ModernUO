@@ -128,8 +128,12 @@ namespace Server.Engines.Help
 		private string m_Title;
 		private string m_Message;
 
-		public string Title{ get{ return m_Title; } set{ m_Title = value; } }
-		public string Message{ get{ return m_Message; } set{ m_Message = value; } }
+		public string Title{ get => m_Title;
+			set => m_Title = value;
+		}
+		public string Message{ get => m_Message;
+			set => m_Message = value;
+		}
 
 		public PredefinedResponse( string title, string message )
 		{

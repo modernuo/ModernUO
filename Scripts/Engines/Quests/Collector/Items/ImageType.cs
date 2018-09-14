@@ -91,7 +91,7 @@ namespace Server.Engines.Quests.Collector
 
 		public int Figurine  => m_Figurine;
 		public Type Type  => m_Type;
-		public int Name { get { return m_Figurine < 0x4000 ? 1020000 + m_Figurine : 1078872 + m_Figurine; } }
+		public int Name => m_Figurine < 0x4000 ? 1020000 + m_Figurine : 1078872 + m_Figurine;
 		public int X  => m_X;
 		public int Y  => m_Y;
 

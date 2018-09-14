@@ -671,8 +671,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string UrnName
 		{
-			get { return m_UrnName; }
-			set { m_UrnName = value; }
+			get => m_UrnName;
+			set => m_UrnName = value;
 		}
 
 		public override int LabelNumber => 1071014; // Ancient Urn
@@ -730,8 +730,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string SwordsName
 		{
-			get { return m_SwordsName; }
-			set { m_SwordsName = value; }
+			get => m_SwordsName;
+			set => m_SwordsName = value;
 		}
 
 		public override int LabelNumber => 1071015; // Honorable Swords
@@ -948,7 +948,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public LesserPigmentType Type
 		{
-			get { return m_Type; }
+			get => m_Type;
 			set
 			{
 				m_Type = value;

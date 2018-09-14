@@ -272,8 +272,8 @@ namespace Server.Commands
 		private Type m_Type;
 		private object m_Object;
 
-		public Type Type{ get{ return m_Type; } }
-		public object Object{ get{ return m_Object; } }
+		public Type Type => m_Type;
+		public object Object => m_Object;
 
 		public CategoryTypeEntry( Type type )
 		{
@@ -290,11 +290,11 @@ namespace Server.Commands
 		private CategoryEntry m_Parent;
 		private ArrayList m_Matched;
 
-		public string Title{ get{ return m_Title; } }
-		public Type[] Matches{ get{ return m_Matches; } }
-		public CategoryEntry Parent{ get{ return m_Parent; } }
-		public CategoryEntry[] SubCategories{ get{ return m_SubCategories; } }
-		public ArrayList Matched{ get{ return m_Matched; } }
+		public string Title => m_Title;
+		public Type[] Matches => m_Matches;
+		public CategoryEntry Parent => m_Parent;
+		public CategoryEntry[] SubCategories => m_SubCategories;
+		public ArrayList Matched => m_Matched;
 
 		public CategoryEntry()
 		{
@@ -378,8 +378,8 @@ namespace Server.Commands
 		private int m_Indentation;
 		private string m_Text;
 
-		public int Indentation{ get{ return m_Indentation; } }
-		public string Text{ get{ return m_Text; } }
+		public int Indentation => m_Indentation;
+		public string Text => m_Text;
 
 		public CategoryLine( string input )
 		{

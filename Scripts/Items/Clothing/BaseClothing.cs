@@ -27,7 +27,7 @@ namespace Server.Items
 
 		public FactionItem FactionItemState
 		{
-			get{ return m_FactionState; }
+			get => m_FactionState;
 			set
 			{
 				m_FactionState = value;
@@ -40,7 +40,7 @@ namespace Server.Items
 		}
 		#endregion
 
-		public virtual bool CanFortify{ get{ return true; } }
+		public virtual bool CanFortify => true;
 
 		private int m_MaxHitPoints;
 		private int m_HitPoints;
@@ -58,17 +58,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxHitPoints
 		{
-			get{ return m_MaxHitPoints; }
+			get => m_MaxHitPoints;
 			set{ m_MaxHitPoints = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int HitPoints
 		{
-			get
-			{
-				return m_HitPoints;
-			}
+			get => m_HitPoints;
 			set
 			{
 				if ( value != m_HitPoints && MaxHitPoints > 0 )
@@ -88,73 +85,73 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Crafter
 		{
-			get{ return m_Crafter; }
+			get => m_Crafter;
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int StrRequirement
 		{
-			get{ return ( m_StrReq == -1 ? (Core.AOS ? AosStrReq : OldStrReq) : m_StrReq ); }
+			get => ( m_StrReq == -1 ? (Core.AOS ? AosStrReq : OldStrReq) : m_StrReq );
 			set{ m_StrReq = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ClothingQuality Quality
 		{
-			get{ return m_Quality; }
+			get => m_Quality;
 			set{ m_Quality = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool PlayerConstructed
 		{
-			get{ return m_PlayerConstructed; }
-			set{ m_PlayerConstructed = value; }
+			get => m_PlayerConstructed;
+			set => m_PlayerConstructed = value;
 		}
 
-		public virtual CraftResource DefaultResource{ get{ return CraftResource.None; } }
+		public virtual CraftResource DefaultResource => CraftResource.None;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CraftResource Resource
 		{
-			get{ return m_Resource; }
+			get => m_Resource;
 			set{ m_Resource = value; Hue = CraftResources.GetHue( m_Resource ); InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosAttributes Attributes
 		{
-			get{ return m_AosAttributes; }
+			get => m_AosAttributes;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosArmorAttributes ClothingAttributes
 		{
-			get{ return m_AosClothingAttributes; }
+			get => m_AosClothingAttributes;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosSkillBonuses SkillBonuses
 		{
-			get{ return m_AosSkillBonuses; }
+			get => m_AosSkillBonuses;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosElementAttributes Resistances
 		{
-			get{ return m_AosResistances; }
+			get => m_AosResistances;
 			set{}
 		}
 
-		public virtual int BasePhysicalResistance{ get{ return 0; } }
-		public virtual int BaseFireResistance{ get{ return 0; } }
-		public virtual int BaseColdResistance{ get{ return 0; } }
-		public virtual int BasePoisonResistance{ get{ return 0; } }
-		public virtual int BaseEnergyResistance{ get{ return 0; } }
+		public virtual int BasePhysicalResistance => 0;
+		public virtual int BaseFireResistance => 0;
+		public virtual int BaseColdResistance => 0;
+		public virtual int BasePoisonResistance => 0;
+		public virtual int BaseEnergyResistance => 0;
 
 		public override int PhysicalResistance => BasePhysicalResistance + m_AosResistances.Physical;
 		public override int FireResistance => BaseFireResistance + m_AosResistances.Fire;
@@ -162,11 +159,11 @@ namespace Server.Items
 		public override int PoisonResistance => BasePoisonResistance + m_AosResistances.Poison;
 		public override int EnergyResistance => BaseEnergyResistance + m_AosResistances.Energy;
 
-		public virtual int ArtifactRarity{ get{ return 0; } }
+		public virtual int ArtifactRarity => 0;
 
-		public virtual int BaseStrBonus{ get{ return 0; } }
-		public virtual int BaseDexBonus{ get{ return 0; } }
-		public virtual int BaseIntBonus{ get{ return 0; } }
+		public virtual int BaseStrBonus => 0;
+		public virtual int BaseDexBonus => 0;
+		public virtual int BaseIntBonus => 0;
 
 		public override bool AllowSecureTrade( Mobile from, Mobile to, Mobile newOwner, bool accepted )
 		{
@@ -228,15 +225,15 @@ namespace Server.Items
 			return base.CanEquip( from );
 		}
 
-		public virtual int AosStrReq{ get{ return 10; } }
-		public virtual int OldStrReq{ get{ return 0; } }
+		public virtual int AosStrReq => 10;
+		public virtual int OldStrReq => 0;
 
-		public virtual int InitMinHits{ get{ return 0; } }
-		public virtual int InitMaxHits{ get{ return 0; } }
+		public virtual int InitMinHits => 0;
+		public virtual int InitMaxHits => 0;
 
-		public virtual bool AllowMaleWearer{ get{ return true; } }
-		public virtual bool AllowFemaleWearer{ get{ return true; } }
-		public virtual bool CanBeBlessed{ get{ return true; } }
+		public virtual bool AllowMaleWearer => true;
+		public virtual bool AllowFemaleWearer => true;
+		public virtual bool CanBeBlessed => true;
 
 		public int ComputeStatReq( StatType type )
 		{

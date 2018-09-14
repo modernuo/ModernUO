@@ -15,7 +15,7 @@ namespace Server.Engines.Reports
 
 		private ItemValueCollection m_Values;
 
-		public ItemValueCollection Values{ get{ return m_Values; } }
+		public ItemValueCollection Values => m_Values;
 
 		public ReportItem()
 		{

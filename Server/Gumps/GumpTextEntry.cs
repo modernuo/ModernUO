@@ -33,86 +33,44 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				Delta( ref m_X, value );
-			}
+			get => m_X;
+			set => Delta( ref m_X, value );
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				Delta( ref m_Y, value );
-			}
+			get => m_Y;
+			set => Delta( ref m_Y, value );
 		}
 
 		public int Width
 		{
-			get
-			{
-				return m_Width;
-			}
-			set
-			{
-				Delta( ref m_Width, value );
-			}
+			get => m_Width;
+			set => Delta( ref m_Width, value );
 		}
 
 		public int Height
 		{
-			get
-			{
-				return m_Height;
-			}
-			set
-			{
-				Delta( ref m_Height, value );
-			}
+			get => m_Height;
+			set => Delta( ref m_Height, value );
 		}
 
 		public int Hue
 		{
-			get
-			{
-				return m_Hue;
-			}
-			set
-			{
-				Delta( ref m_Hue, value );
-			}
+			get => m_Hue;
+			set => Delta( ref m_Hue, value );
 		}
 
 		public int EntryID
 		{
-			get
-			{
-				return m_EntryID;
-			}
-			set
-			{
-				Delta( ref m_EntryID, value );
-			}
+			get => m_EntryID;
+			set => Delta( ref m_EntryID, value );
 		}
 
 		public string InitialText
 		{
-			get
-			{
-				return m_InitialText;
-			}
-			set
-			{
-				Delta( ref m_InitialText, value );
-			}
+			get => m_InitialText;
+			set => Delta( ref m_InitialText, value );
 		}
 
 		public GumpTextEntry( int x, int y, int width, int height, int hue, int entryID, string initialText )

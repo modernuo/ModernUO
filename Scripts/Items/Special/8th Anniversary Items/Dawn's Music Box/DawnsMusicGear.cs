@@ -5,28 +5,19 @@ namespace Server.Items
 	[Flippable( 0x1053, 0x1054 )]
 	public class DawnsMusicGear : Item
 	{
-		public static DawnsMusicGear RandomCommon
-		{
-			get { return new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Common ) ); }
-		}
+		public static DawnsMusicGear RandomCommon => new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Common ) );
 
-		public static DawnsMusicGear RandomUncommon
-		{
-			get { return new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Uncommon ) ); }
-		}
+		public static DawnsMusicGear RandomUncommon => new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Uncommon ) );
 
-		public static DawnsMusicGear RandomRare
-		{
-			get { return new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Rare ) ); }
-		}
+		public static DawnsMusicGear RandomRare => new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Rare ) );
 
 		private MusicName m_Music;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MusicName Music
 		{
-			get { return m_Music; }
-			set { m_Music = value; }
+			get => m_Music;
+			set => m_Music = value;
 		}
 
 		[Constructible]

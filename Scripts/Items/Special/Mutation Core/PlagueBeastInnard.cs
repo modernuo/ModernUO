@@ -79,24 +79,15 @@ namespace Server.Items
 
 		public PlagueBeastOrgan Organ
 		{
-			get { return m_Organ; }
-			set { m_Organ = value; }
+			get => m_Organ;
+			set => m_Organ = value;
 		}
 
-		public bool IsBrain
-		{
-			get { return ItemID == 0x1CF0; }
-		}
+		public bool IsBrain => ItemID == 0x1CF0;
 
-		public bool IsGland
-		{
-			get { return ItemID == 0x1CEF; }
-		}
+		public bool IsGland => ItemID == 0x1CEF;
 
-		public bool IsReceptacle
-		{
-			get { return ItemID == 0x9DF; }
-		}
+		public bool IsReceptacle => ItemID == 0x9DF;
 
 		public PlagueBeastComponent( int itemID, int hue ) : this( itemID, hue, false )
 		{

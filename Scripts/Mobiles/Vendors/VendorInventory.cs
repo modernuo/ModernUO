@@ -35,43 +35,37 @@ namespace Server.Mobiles
 
 		public BaseHouse House
 		{
-			get{ return m_House; }
-			set{ m_House = value; }
+			get => m_House;
+			set => m_House = value;
 		}
 
 		public string VendorName
 		{
-			get{ return m_VendorName; }
-			set{ m_VendorName = value; }
+			get => m_VendorName;
+			set => m_VendorName = value;
 		}
 
 		public string ShopName
 		{
-			get{ return m_ShopName; }
-			set{ m_ShopName = value; }
+			get => m_ShopName;
+			set => m_ShopName = value;
 		}
 
 		public Mobile Owner
 		{
-			get{ return m_Owner; }
-			set{ m_Owner = value; }
+			get => m_Owner;
+			set => m_Owner = value;
 		}
 
-		public List<Item> Items
-		{
-			get{ return m_Items; }
-		}
+		public List<Item> Items => m_Items;
 
 		public int Gold
 		{
-			get{ return m_Gold; }
-			set{ m_Gold = value; }
+			get => m_Gold;
+			set => m_Gold = value;
 		}
 
-		public DateTime ExpireTime
-		{
-			get{ return m_ExpireTime; }
-		}
+		public DateTime ExpireTime => m_ExpireTime;
 
 		public void AddItem( Item item )
 		{

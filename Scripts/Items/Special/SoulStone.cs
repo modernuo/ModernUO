@@ -20,14 +20,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int ActiveItemID
 		{
-			get { return m_ActiveItemID; }
+			get => m_ActiveItemID;
 			set
 			{
 				m_ActiveItemID = value;
@@ -40,7 +40,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int InactiveItemID
 		{
-			get { return m_InactiveItemID; }
+			get => m_InactiveItemID;
 			set
 			{
 				m_InactiveItemID = value;
@@ -59,28 +59,28 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Account
 		{
-			get{ return m_Account; }
-			set{ m_Account = value; }
+			get => m_Account;
+			set => m_Account = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string LastUserName
 		{
-			get{ return m_LastUserName; }
+			get => m_LastUserName;
 			set{ m_LastUserName = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SkillName Skill
 		{
-			get{ return m_Skill; }
+			get => m_Skill;
 			set{ m_Skill = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public double SkillValue
 		{
-			get{ return m_SkillValue; }
+			get => m_SkillValue;
 			set
 			{
 				m_SkillValue = value;
@@ -95,10 +95,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsEmpty
-		{
-			get{ return m_SkillValue <= 0.0; }
-		}
+		public bool IsEmpty => m_SkillValue <= 0.0;
 
 		[Constructible]
 		public SoulStone() : this( null )
@@ -849,10 +846,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int UsesRemaining
 		{
-			get
-			{
-				return m_UsesRemaining;
-			}
+			get => m_UsesRemaining;
 			set
 			{
 				m_UsesRemaining = value; InvalidateProperties();
@@ -915,7 +909,8 @@ namespace Server.Items
 		}
 
 
-		public bool ShowUsesRemaining{ get{ return true; } set{} }
+		public bool ShowUsesRemaining{ get => true;
+			set{} }
 	}
 
 	[Flippable]
@@ -989,7 +984,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 

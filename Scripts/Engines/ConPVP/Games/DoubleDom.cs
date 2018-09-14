@@ -11,10 +11,7 @@ namespace Server.Engines.ConPVP
 	{
 		public DDTeamInfo m_TeamInfo;
 
-		public override string DefaultName
-		{
-			get { return "scoreboard"; }
-		}
+		public override string DefaultName => "scoreboard";
 
 		[Constructible]
 		public DDBoard()
@@ -238,17 +235,11 @@ namespace Server.Engines.ConPVP
 
 		public Mobile Player  => m_Player;
 
-		public string Name
-		{
-			get { return m_Player.Name; }
-		}
+		public string Name => m_Player.Name;
 
 		public int Kills
 		{
-			get
-			{
-				return m_Kills;
-			}
+			get => m_Kills;
 			set
 			{
 				m_TeamInfo.Kills += ( value - m_Kills );
@@ -258,10 +249,7 @@ namespace Server.Engines.ConPVP
 
 		public int Captures
 		{
-			get
-			{
-				return m_Captures;
-			}
+			get => m_Captures;
 			set
 			{
 				m_TeamInfo.Captures += ( value - m_Captures );
@@ -271,10 +259,7 @@ namespace Server.Engines.ConPVP
 
 		public int Score
 		{
-			get
-			{
-				return m_Score;
-			}
+			get => m_Score;
 			set
 			{
 				m_TeamInfo.Score += ( value - m_Score );
@@ -312,38 +297,40 @@ namespace Server.Engines.ConPVP
 
 		private Dictionary<Mobile, DDPlayerInfo> m_Players;
 
-		public string Name
-		{
-			get { return String.Format( "{0} Team", m_Name ); }
-		}
+		public string Name => String.Format( "{0} Team", m_Name );
 
-		public DDGame Game { get { return m_Game; } set { m_Game = value; } }
+		public DDGame Game { get => m_Game;
+			set => m_Game = value;
+		}
 		public int TeamID  => m_TeamID;
 
-		public int Kills { get { return m_Kills; } set { m_Kills = value; } }
-		public int Captures { get { return m_Captures; } set { m_Captures = value; } }
+		public int Kills { get => m_Kills;
+			set => m_Kills = value;
+		}
+		public int Captures { get => m_Captures;
+			set => m_Captures = value;
+		}
 
-		public int Score { get { return m_Score; } set { m_Score = value; } }
+		public int Score { get => m_Score;
+			set => m_Score = value;
+		}
 
 		private DDPlayerInfo m_Leader;
 
 		public DDPlayerInfo Leader
 		{
-			get { return m_Leader; }
-			set { m_Leader = value; }
+			get => m_Leader;
+			set => m_Leader = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DDBoard Board
 		{
-			get { return m_Board; }
-			set { m_Board = value; }
+			get => m_Board;
+			set => m_Board = value;
 		}
 
-		public Dictionary<Mobile, DDPlayerInfo> Players
-		{
-			get { return m_Players; }
-		}
+		public Dictionary<Mobile, DDPlayerInfo> Players => m_Players;
 
 		public DDPlayerInfo this[Mobile mob]
 		{
@@ -362,22 +349,22 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Color
 		{
-			get { return m_Color; }
-			set { m_Color = value; }
+			get => m_Color;
+			set => m_Color = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string TeamName
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D Origin
 		{
-			get { return m_Origin; }
-			set { m_Origin = value; }
+			get => m_Origin;
+			set => m_Origin = value;
 		}
 
 		public DDTeamInfo( int teamID )
@@ -446,30 +433,33 @@ namespace Server.Engines.ConPVP
 		public DDTeamInfo[] TeamInfo  => m_TeamInfo;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DDTeamInfo Team1 { get { return m_TeamInfo[0]; } set { } }
+		public DDTeamInfo Team1 { get => m_TeamInfo[0];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DDTeamInfo Team2 { get { return m_TeamInfo[1]; } set { } }
+		public DDTeamInfo Team2 { get => m_TeamInfo[1];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DDWayPoint PointA { get { return m_PointA; } set { m_PointA = value; } }
+		public DDWayPoint PointA { get => m_PointA;
+			set => m_PointA = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DDWayPoint PointB { get { return m_PointB; } set { m_PointB = value; } }
+		public DDWayPoint PointB { get => m_PointB;
+			set => m_PointB = value;
+		}
 
 		private DDWayPoint m_PointA, m_PointB;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan Duration
 		{
-			get { return m_Duration; }
-			set { m_Duration = value; }
+			get => m_Duration;
+			set => m_Duration = value;
 		}
 
-		public override string Title
-		{
-			get { return "DoubleDom"; }
-		}
+		public override string Title => "DoubleDom";
 
 		public override string GetTeamName( int teamID )
 		{
@@ -1109,7 +1099,7 @@ namespace Server.Engines.ConPVP
 
 		public DDGame Game
 		{
-			get{ return m_Game; }
+			get => m_Game;
 			set
 			{
 				m_Game = value;
@@ -1124,7 +1114,7 @@ namespace Server.Engines.ConPVP
 
 		public DDTeamInfo TeamOwner
 		{
-			get{ return m_TeamOwner; }
+			get => m_TeamOwner;
 			set
 			{
 				m_TeamOwner = value;

@@ -110,25 +110,22 @@ namespace Server.Accounting
 
 		public IPAddress Address
 		{
-			get{ return m_Address; }
-			set{ m_Address = value; }
+			get => m_Address;
+			set => m_Address = value;
 		}
 
 		public DateTime LastAccessTime
 		{
-			get{ return m_LastAccessTime; }
-			set{ m_LastAccessTime = value; }
+			get => m_LastAccessTime;
+			set => m_LastAccessTime = value;
 		}
 
-		public bool HasExpired
-		{
-			get{ return ( DateTime.UtcNow >= ( m_LastAccessTime + TimeSpan.FromHours( 1.0 ) ) ); }
-		}
+		public bool HasExpired => ( DateTime.UtcNow >= ( m_LastAccessTime + TimeSpan.FromHours( 1.0 ) ) );
 
 		public int Counts
 		{
-			get{ return m_Counts; }
-			set{ m_Counts = value; }
+			get => m_Counts;
+			set => m_Counts = value;
 		}
 
 		public void RefreshAccessTime()

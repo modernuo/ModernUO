@@ -6,7 +6,7 @@ namespace Server.Multis
 {
 	public class RatCamp : BaseCamp
 	{
-		public virtual Mobile Ratmen{ get{ return new Ratman(); } }
+		public virtual Mobile Ratmen => new Ratman();
 
 		private Mobile m_Prisoner;
 		

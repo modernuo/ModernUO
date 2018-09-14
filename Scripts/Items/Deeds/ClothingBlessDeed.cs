@@ -53,10 +53,7 @@ namespace Server.Items
 
 	public class ClothingBlessDeed : Item // Create the item class which is derived from the base item class
 	{
-		public override string DefaultName
-		{
-			get { return "a clothing bless deed"; }
-		}
+		public override string DefaultName => "a clothing bless deed";
 
 		[Constructible]
 		public ClothingBlessDeed() : base( 0x14F0 )

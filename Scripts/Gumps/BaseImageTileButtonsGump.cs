@@ -13,24 +13,24 @@ namespace Server.Gumps
 
 		public virtual int ItemID
 		{
-			get{ return m_ItemID; }
-			set{ m_ItemID = value; }
+			get => m_ItemID;
+			set => m_ItemID = value;
 		}
 		public virtual int Hue
 		{
-			get{ return m_Hue; }
-			set{ m_Hue = value; }
+			get => m_Hue;
+			set => m_Hue = value;
 		}
 		public virtual int LocalizedTooltip
 		{
-			get{ return m_LocalizedTooltip; }
-			set{ m_LocalizedTooltip = value; }
+			get => m_LocalizedTooltip;
+			set => m_LocalizedTooltip = value;
 		}
 
 		public virtual TextDefinition Label
 		{
-			get{ return m_Label; }
-			set{ m_Label = value; }
+			get => m_Label;
+			set => m_Label = value;
 		}
 
 		public ImageTileButtonInfo( int itemID, int hue, TextDefinition label, int localizedTooltip )
@@ -49,10 +49,10 @@ namespace Server.Gumps
 	{
 		private ImageTileButtonInfo[] m_Buttons;
 
-		protected ImageTileButtonInfo[] Buttons { get { return m_Buttons; } }
+		protected ImageTileButtonInfo[] Buttons => m_Buttons;
 
-		protected virtual int XItems{ get{ return 2; } }
-		protected virtual int YItems{ get { return 5; } }
+		protected virtual int XItems => 2;
+		protected virtual int YItems => 5;
 
 		public BaseImageTileButtonsGump( TextDefinition header, ArrayList buttons ) : this( header, (ImageTileButtonInfo[])buttons.ToArray( typeof( ImageTileButtonInfo ) ) )
 		{

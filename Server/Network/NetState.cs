@@ -73,26 +73,14 @@ namespace Server.Network {
 
 		private DateTime m_ConnectedOn;
 
-		public DateTime ConnectedOn {
-			get {
-				return m_ConnectedOn;
-			}
-		}
+		public DateTime ConnectedOn => m_ConnectedOn;
 
-		public TimeSpan ConnectedFor {
-			get {
-				return ( DateTime.UtcNow - m_ConnectedOn );
-			}
-		}
+		public TimeSpan ConnectedFor => ( DateTime.UtcNow - m_ConnectedOn );
 
 		internal int m_Seed;
 		internal int m_AuthID;
 
-		public IPAddress Address {
-			get {
-				return m_Address;
-			}
-		}
+		public IPAddress Address => m_Address;
 
 		private ClientFlags m_Flags;
 
@@ -110,56 +98,34 @@ namespace Server.Network {
 		private IPacketEncoder m_Encoder = null;
 
 		public IPacketEncoder PacketEncoder {
-			get {
-				return m_Encoder;
-			}
-			set {
-				m_Encoder = value;
-			}
+			get => m_Encoder;
+			set => m_Encoder = value;
 		}
 
 		private static NetStateCreatedCallback m_CreatedCallback;
 
 		public static NetStateCreatedCallback CreatedCallback {
-			get {
-				return m_CreatedCallback;
-			}
-			set {
-				m_CreatedCallback = value;
-			}
+			get => m_CreatedCallback;
+			set => m_CreatedCallback = value;
 		}
 
 		public bool SentFirstPacket {
-			get {
-				return m_SentFirstPacket;
-			}
-			set {
-				m_SentFirstPacket = value;
-			}
+			get => m_SentFirstPacket;
+			set => m_SentFirstPacket = value;
 		}
 
 		public bool BlockAllPackets {
-			get {
-				return m_BlockAllPackets;
-			}
-			set {
-				m_BlockAllPackets = value;
-			}
+			get => m_BlockAllPackets;
+			set => m_BlockAllPackets = value;
 		}
 
 		public ClientFlags Flags {
-			get {
-				return m_Flags;
-			}
-			set {
-				m_Flags = value;
-			}
+			get => m_Flags;
+			set => m_Flags = value;
 		}
 
 		public ClientVersion Version {
-			get {
-				return m_Version;
-			}
+			get => m_Version;
 			set {
 				m_Version = value;
 
@@ -244,38 +210,26 @@ namespace Server.Network {
 			Version704565	= Version70331 | NewSecureTrading
 		}
 
-		public bool NewSpellbook { get { return ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0); } }
-		public bool DamagePacket { get { return ((_ProtocolChanges & ProtocolChanges.DamagePacket) != 0); } }
-		public bool Unpack { get { return ((_ProtocolChanges & ProtocolChanges.Unpack) != 0); } }
-		public bool BuffIcon { get { return ((_ProtocolChanges & ProtocolChanges.BuffIcon) != 0); } }
-		public bool NewHaven { get { return ((_ProtocolChanges & ProtocolChanges.NewHaven) != 0); } }
-		public bool ContainerGridLines { get { return ((_ProtocolChanges & ProtocolChanges.ContainerGridLines) != 0); } }
-		public bool ExtendedSupportedFeatures { get { return ((_ProtocolChanges & ProtocolChanges.ExtendedSupportedFeatures) != 0); } }
-		public bool StygianAbyss { get { return ((_ProtocolChanges & ProtocolChanges.StygianAbyss) != 0); } }
-		public bool HighSeas { get { return ((_ProtocolChanges & ProtocolChanges.HighSeas) != 0); } }
-		public bool NewCharacterList { get { return ((_ProtocolChanges & ProtocolChanges.NewCharacterList) != 0); } }
-		public bool NewCharacterCreation { get { return ((_ProtocolChanges & ProtocolChanges.NewCharacterCreation) != 0); } }
-		public bool ExtendedStatus { get { return ((_ProtocolChanges & ProtocolChanges.ExtendedStatus) != 0); } }
-		public bool NewMobileIncoming { get { return ((_ProtocolChanges & ProtocolChanges.NewMobileIncoming) != 0); } }
-		public bool NewSecureTrading { get { return ((_ProtocolChanges & ProtocolChanges.NewSecureTrading) != 0); } }
+		public bool NewSpellbook => ((_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0);
+		public bool DamagePacket => ((_ProtocolChanges & ProtocolChanges.DamagePacket) != 0);
+		public bool Unpack => ((_ProtocolChanges & ProtocolChanges.Unpack) != 0);
+		public bool BuffIcon => ((_ProtocolChanges & ProtocolChanges.BuffIcon) != 0);
+		public bool NewHaven => ((_ProtocolChanges & ProtocolChanges.NewHaven) != 0);
+		public bool ContainerGridLines => ((_ProtocolChanges & ProtocolChanges.ContainerGridLines) != 0);
+		public bool ExtendedSupportedFeatures => ((_ProtocolChanges & ProtocolChanges.ExtendedSupportedFeatures) != 0);
+		public bool StygianAbyss => ((_ProtocolChanges & ProtocolChanges.StygianAbyss) != 0);
+		public bool HighSeas => ((_ProtocolChanges & ProtocolChanges.HighSeas) != 0);
+		public bool NewCharacterList => ((_ProtocolChanges & ProtocolChanges.NewCharacterList) != 0);
+		public bool NewCharacterCreation => ((_ProtocolChanges & ProtocolChanges.NewCharacterCreation) != 0);
+		public bool ExtendedStatus => ((_ProtocolChanges & ProtocolChanges.ExtendedStatus) != 0);
+		public bool NewMobileIncoming => ((_ProtocolChanges & ProtocolChanges.NewMobileIncoming) != 0);
+		public bool NewSecureTrading => ((_ProtocolChanges & ProtocolChanges.NewSecureTrading) != 0);
 
-		public bool IsUOTDClient {
-			get {
-				return ( (m_Flags & ClientFlags.UOTD) != 0 || ( m_Version != null && m_Version.Type == ClientType.UOTD ) );
-			}
-		}
+		public bool IsUOTDClient => ( (m_Flags & ClientFlags.UOTD) != 0 || ( m_Version != null && m_Version.Type == ClientType.UOTD ) );
 
-		public bool IsSAClient {
-			get {
-				return ( m_Version != null && m_Version.Type == ClientType.SA );
-			}
-		}
+		public bool IsSAClient => ( m_Version != null && m_Version.Type == ClientType.SA );
 
-		public List<SecureTrade> Trades {
-			get {
-				return m_Trades;
-			}
-		}
+		public List<SecureTrade> Trades => m_Trades;
 
 		public void ValidateAllTrades() {
 			for ( int i = m_Trades.Count - 1; i >= 0; --i ) {
@@ -342,68 +296,36 @@ namespace Server.Network {
 		}
 
 		public bool CompressionEnabled {
-			get {
-				return m_CompressionEnabled;
-			}
-			set {
-				m_CompressionEnabled = value;
-			}
+			get => m_CompressionEnabled;
+			set => m_CompressionEnabled = value;
 		}
 
 		public int Sequence {
-			get {
-				return m_Sequence;
-			}
-			set {
-				m_Sequence = value;
-			}
+			get => m_Sequence;
+			set => m_Sequence = value;
 		}
 
-		public List<Gump> Gumps {
-			get {
-				return m_Gumps;
-			}
-		}
+		public List<Gump> Gumps => m_Gumps;
 
-		public List<HuePicker> HuePickers {
-			get {
-				return m_HuePickers;
-			}
-		}
+		public List<HuePicker> HuePickers => m_HuePickers;
 
-		public List<IMenu> Menus {
-			get {
-				return m_Menus;
-			}
-		}
+		public List<IMenu> Menus => m_Menus;
 
 		private static int m_GumpCap = 512, m_HuePickerCap = 512, m_MenuCap = 512;
 
 		public static int GumpCap {
-			get {
-				return m_GumpCap;
-			}
-			set {
-				m_GumpCap = value;
-			}
+			get => m_GumpCap;
+			set => m_GumpCap = value;
 		}
 
 		public static int HuePickerCap {
-			get {
-				return m_HuePickerCap;
-			}
-			set {
-				m_HuePickerCap = value;
-			}
+			get => m_HuePickerCap;
+			set => m_HuePickerCap = value;
 		}
 
 		public static int MenuCap {
-			get {
-				return m_MenuCap;
-			}
-			set {
-				m_MenuCap = value;
-			}
+			get => m_MenuCap;
+			set => m_MenuCap = value;
 		}
 
 		public void WriteConsole( string text ) {
@@ -513,39 +435,23 @@ namespace Server.Network {
 		}
 
 		public CityInfo[] CityInfo {
-			get {
-				return m_CityInfo;
-			}
-			set {
-				m_CityInfo = value;
-			}
+			get => m_CityInfo;
+			set => m_CityInfo = value;
 		}
 
 		public Mobile Mobile {
-			get {
-				return m_Mobile;
-			}
-			set {
-				m_Mobile = value;
-			}
+			get => m_Mobile;
+			set => m_Mobile = value;
 		}
 
 		public ServerInfo[] ServerInfo {
-			get {
-				return m_ServerInfo;
-			}
-			set {
-				m_ServerInfo = value;
-			}
+			get => m_ServerInfo;
+			set => m_ServerInfo = value;
 		}
 
 		public IAccount Account {
-			get {
-				return m_Account;
-			}
-			set {
-				m_Account = value;
-			}
+			get => m_Account;
+			set => m_Account = value;
 		}
 
 		public override string ToString() {
@@ -554,11 +460,7 @@ namespace Server.Network {
 
 		private static List<NetState> m_Instances = new List<NetState>();
 
-		public static List<NetState> Instances {
-			get {
-				return m_Instances;
-			}
-		}
+		public static List<NetState> Instances => m_Instances;
 
 		private static BufferPool m_ReceiveBufferPool = new BufferPool( "Receive", 2048, 2048 );
 
@@ -1064,12 +966,8 @@ namespace Server.Network {
 		private static int m_CoalesceSleep = -1;
 
 		public static int CoalesceSleep {
-			get {
-				return m_CoalesceSleep;
-			}
-			set {
-				m_CoalesceSleep = value;
-			}
+			get => m_CoalesceSleep;
+			set => m_CoalesceSleep = value;
 		}
 
 		private long m_NextCheckActivity;
@@ -1112,7 +1010,7 @@ namespace Server.Network {
 
 		private bool m_Disposing;
 
-		public bool IsDisposing { get { return m_Disposing; } }
+		public bool IsDisposing => m_Disposing;
 
 		public void Dispose() {
 			Dispose( true );
@@ -1224,32 +1122,16 @@ namespace Server.Network {
 			}
 		}
 
-		public bool Running {
-			get {
-				return m_Running;
-			}
-		}
+		public bool Running => m_Running;
 
 		public bool Seeded {
-			get {
-				return m_Seeded;
-			}
-			set {
-				m_Seeded = value;
-			}
+			get => m_Seeded;
+			set => m_Seeded = value;
 		}
 
-		public Socket Socket {
-			get {
-				return m_Socket;
-			}
-		}
+		public Socket Socket => m_Socket;
 
-		public ByteQueue Buffer {
-			get {
-				return m_Buffer;
-			}
-		}
+		public ByteQueue Buffer => m_Buffer;
 
 		public ExpansionInfo ExpansionInfo {
 			get {
@@ -1265,11 +1147,7 @@ namespace Server.Network {
 			}
 		}
 
-		public Expansion Expansion {
-			get {
-				return ( Expansion ) this.ExpansionInfo.ID;
-			}
-		}
+		public Expansion Expansion => ( Expansion ) this.ExpansionInfo.ID;
 
 		public bool SupportsExpansion( ExpansionInfo info, bool checkCoreExpansion ) {
 			if ( info == null || ( checkCoreExpansion && ( int ) Core.Expansion < info.ID ) )

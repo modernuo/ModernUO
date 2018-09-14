@@ -102,7 +102,7 @@ namespace Server
 	{
 		private static List<Region> m_Regions = new List<Region>();
 
-		public static List<Region> Regions{ get{ return m_Regions; } }
+		public static List<Region> Regions => m_Regions;
 
 		public static Region Find( Point3D p, Map map )
 		{
@@ -124,13 +124,19 @@ namespace Server
 		}
 
 		private static Type m_DefaultRegionType = typeof( Region );
-		public static Type DefaultRegionType{ get{ return m_DefaultRegionType; } set{ m_DefaultRegionType = value; } }
+		public static Type DefaultRegionType{ get => m_DefaultRegionType;
+			set => m_DefaultRegionType = value;
+		}
 
 		private static TimeSpan m_StaffLogoutDelay = TimeSpan.Zero;
 		private static TimeSpan m_DefaultLogoutDelay = TimeSpan.FromMinutes( 5.0 );
 
-		public static TimeSpan StaffLogoutDelay{ get{ return m_StaffLogoutDelay; } set{ m_StaffLogoutDelay = value; } }
-		public static TimeSpan DefaultLogoutDelay{ get{ return m_DefaultLogoutDelay; } set{ m_DefaultLogoutDelay = value; } }
+		public static TimeSpan StaffLogoutDelay{ get => m_StaffLogoutDelay;
+			set => m_StaffLogoutDelay = value;
+		}
+		public static TimeSpan DefaultLogoutDelay{ get => m_DefaultLogoutDelay;
+			set => m_DefaultLogoutDelay = value;
+		}
 
 		public static readonly int DefaultPriority = 50;
 
@@ -169,22 +175,26 @@ namespace Server
 		private Point3D m_GoLocation;
 		private MusicName m_Music;
 
-		public string Name{ get{ return m_Name; } }
-		public Map Map{ get{ return m_Map; } }
-		public Region Parent{ get{ return m_Parent; } }
-		public List<Region> Children{ get{ return m_Children; } }
-		public Rectangle3D[] Area{ get{ return m_Area; } }
-		public Sector[] Sectors{ get{ return m_Sectors; } }
-		public bool Dynamic{ get{ return m_Dynamic; } }
-		public int Priority{ get{ return m_Priority; } }
-		public int ChildLevel{ get{ return m_ChildLevel; } }
-		public bool Registered{ get{ return m_Registered; } }
+		public string Name => m_Name;
+		public Map Map => m_Map;
+		public Region Parent => m_Parent;
+		public List<Region> Children => m_Children;
+		public Rectangle3D[] Area => m_Area;
+		public Sector[] Sectors => m_Sectors;
+		public bool Dynamic => m_Dynamic;
+		public int Priority => m_Priority;
+		public int ChildLevel => m_ChildLevel;
+		public bool Registered => m_Registered;
 
-		public Point3D GoLocation{ get{ return m_GoLocation; } set { m_GoLocation = value; } }
-		public MusicName Music{ get{ return m_Music; } set{ m_Music = value; } }
+		public Point3D GoLocation{ get => m_GoLocation;
+			set => m_GoLocation = value;
+		}
+		public MusicName Music{ get => m_Music;
+			set => m_Music = value;
+		}
 
-		public bool IsDefault{ get{ return m_Map.DefaultRegion == this; } }
-		public virtual MusicName DefaultMusic{ get{ return m_Parent != null ? m_Parent.Music : MusicName.Invalid; } }
+		public bool IsDefault => m_Map.DefaultRegion == this;
+		public virtual MusicName DefaultMusic => m_Parent != null ? m_Parent.Music : MusicName.Invalid;
 
 		public Region( string name, Map map, int priority, params Rectangle2D[] area ) : this( name, map, priority, ConvertTo3D( area ) )
 		{

@@ -45,10 +45,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 2 );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override bool CanFly => true;
 		public override bool Unprovokable => true;

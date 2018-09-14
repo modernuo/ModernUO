@@ -60,29 +60,11 @@ namespace Server
 			}
 		}*/
 
-		public TileMatrixPatch Patch
-		{
-			get
-			{
-				return m_Patch;
-			}
-		}
+		public TileMatrixPatch Patch => m_Patch;
 
-		public int BlockWidth
-		{
-			get
-			{
-				return m_BlockWidth;
-			}
-		}
+		public int BlockWidth => m_BlockWidth;
 
-		public int BlockHeight
-		{
-			get
-			{
-				return m_BlockHeight;
-			}
-		}
+		public int BlockHeight => m_BlockHeight;
 
 		/*public int Width
 		{
@@ -102,8 +84,8 @@ namespace Server
 
 		public FileStream MapStream
 		{
-			get{ return m_Map; }
-			set{ m_Map = value; }
+			get => m_Map;
+			set => m_Map = value;
 		}
 
 		/*public bool MapUOPPacked
@@ -113,26 +95,23 @@ namespace Server
 
 		public FileStream IndexStream
 		{
-			get{ return m_Index; }
-			set{ m_Index = value; }
+			get => m_Index;
+			set => m_Index = value;
 		}
 
 		public FileStream DataStream
 		{
-			get{ return m_Statics; }
-			set{ m_Statics = value; }
+			get => m_Statics;
+			set => m_Statics = value;
 		}
 
 		public BinaryReader IndexReader
 		{
-			get{ return m_IndexReader; }
-			set{ m_IndexReader = value; }
+			get => m_IndexReader;
+			set => m_IndexReader = value;
 		}
 
-		public bool Exists
-		{
-			get{ return ( m_Map != null && m_Index != null && m_Statics != null ); }
-		}
+		public bool Exists => ( m_Map != null && m_Index != null && m_Statics != null );
 
 		private static List<TileMatrix> m_Instances = new List<TileMatrix>();
 		private List<TileMatrix> m_FileShare = new List<TileMatrix>();
@@ -219,13 +198,7 @@ namespace Server
 			m_Patch = new TileMatrixPatch( this, mapID );
 		}
 
-		public StaticTile[][][] EmptyStaticBlock
-		{
-			get
-			{
-				return m_EmptyStaticBlock;
-			}
-		}
+		public StaticTile[][][] EmptyStaticBlock => m_EmptyStaticBlock;
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void SetStaticBlock( int x, int y, StaticTile[][][] value )
@@ -560,27 +533,17 @@ namespace Server
 		internal short m_ID;
 		internal sbyte m_Z;
 
-		public int ID
-		{
-			get { return m_ID; }
-		}
+		public int ID => m_ID;
 
 		public int Z
 		{
-			get { return m_Z; }
-			set { m_Z = (sbyte)value; }
+			get => m_Z;
+			set => m_Z = (sbyte)value;
 		}
 
-		public int Height
-		{
-			get { return 0; }
+		public int Height => 0;
 
-		}
-
-		public bool Ignored
-		{
-			get { return ( m_ID == 2 || m_ID == 0x1DB || ( m_ID >= 0x1AE && m_ID <= 0x1B5 ) ); }
-		}
+		public bool Ignored => ( m_ID == 2 || m_ID == 0x1DB || ( m_ID >= 0x1AE && m_ID <= 0x1B5 ) );
 
 		public LandTile( short id, sbyte z )
 		{
@@ -604,39 +567,33 @@ namespace Server
 		internal sbyte m_Z;
 		internal short m_Hue;
 
-		public int ID
-		{
-			get { return m_ID; }
-		}
+		public int ID => m_ID;
 
 		public int X
 		{
-			get { return m_X; }
-			set { m_X = (byte)value; }
+			get => m_X;
+			set => m_X = (byte)value;
 		}
 
 		public int Y
 		{
-			get { return m_Y; }
-			set { m_Y = (byte)value; }
+			get => m_Y;
+			set => m_Y = (byte)value;
 		}
 
 		public int Z
 		{
-			get { return m_Z; }
-			set { m_Z = (sbyte)value; }
+			get => m_Z;
+			set => m_Z = (sbyte)value;
 		}
 
 		public int Hue
 		{
-			get { return m_Hue; }
-			set { m_Hue = (short)value; }
+			get => m_Hue;
+			set => m_Hue = (short)value;
 		}
 
-		public int Height
-		{
-			get { return TileData.ItemTable[m_ID & TileData.MaxItemValue].Height; }
-		}
+		public int Height => TileData.ItemTable[m_ID & TileData.MaxItemValue].Height;
 
 		public StaticTile( ushort id, sbyte z )
 		{
@@ -713,10 +670,7 @@ namespace Server
 		private int m_Version;
 		private UOPEntry[] m_Entries;
 
-		public int Version
-		{
-			get { return m_Version; }
-		}
+		public int Version => m_Version;
 
 		public UOPIndex( FileStream stream )
 		{

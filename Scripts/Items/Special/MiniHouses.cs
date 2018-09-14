@@ -9,7 +9,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MiniHouseType Type
 		{
-			get{ return m_Type; }
+			get => m_Type;
 			set{ m_Type = value; Construct(); }
 		}
 
@@ -86,7 +86,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MiniHouseType Type
 		{
-			get{ return m_Type; }
+			get => m_Type;
 			set{ m_Type = value; InvalidateProperties(); }
 		}
 
@@ -178,8 +178,8 @@ namespace Server.Items
 		private int[] m_Graphics;
 		private int m_LabelNumber;
 
-		public int[] Graphics{ get{ return m_Graphics; } }
-		public int LabelNumber{ get{ return m_LabelNumber; } }
+		public int[] Graphics => m_Graphics;
+		public int LabelNumber => m_LabelNumber;
 
 		public MiniHouseInfo( int start, int count, int labelNumber )
 		{

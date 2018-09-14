@@ -59,9 +59,9 @@ namespace Server.Misc
 				e.Blocked = !OnProfanityDetected( from, e.Speech );
 		}
 
-		public static char[]	Exceptions{	get{ return m_Exceptions; } }
-		public static string[]	StartDisallowed{ get{ return m_StartDisallowed; } }
-		public static string[]	Disallowed{ get{ return m_Disallowed; } }
+		public static char[]	Exceptions => m_Exceptions;
+		public static string[]	StartDisallowed => m_StartDisallowed;
+		public static string[]	Disallowed => m_Disallowed;
 
 		private static char[] m_Exceptions = new char[]
 			{

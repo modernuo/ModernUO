@@ -141,7 +141,7 @@ namespace Server.Spells.Spellweaving
 
 		}
 
-		public double HitsScalar { get { return ((Caster.Skills.Spellweaving.Value/2.4) + FocusLevel)/100; } }
+		public double HitsScalar => ((Caster.Skills.Spellweaving.Value/2.4) + FocusLevel)/100;
 
 		public static void OnLogin( LoginEventArgs e )
 		{

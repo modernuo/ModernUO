@@ -25,13 +25,7 @@ namespace Server.Prompts
 		private int m_Serial;
 		private static int m_Serials;
 
-		public int Serial
-		{
-			get
-			{
-				return m_Serial;
-			}
-		}
+		public int Serial => m_Serial;
 
 		protected Prompt()
 		{

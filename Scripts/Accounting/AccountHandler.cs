@@ -30,8 +30,8 @@ namespace Server.Misc
 
 		public static AccessLevel LockdownLevel
 		{
-			get{ return m_LockdownLevel; }
-			set{ m_LockdownLevel = value; }
+			get => m_LockdownLevel;
+			set => m_LockdownLevel = value;
 		}
 
 		private static CityInfo[] StartingCities = new CityInfo[]

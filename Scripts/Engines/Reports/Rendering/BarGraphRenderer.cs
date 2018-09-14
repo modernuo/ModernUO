@@ -73,69 +73,69 @@ namespace Server.Engines.Reports
 
 		public string FontFamily
 		{
-			get{ return _fontFamily; }
-			set{ _fontFamily = value; }
+			get => _fontFamily;
+			set => _fontFamily = value;
 		}
 
 		public BarGraphRenderMode RenderMode
 		{
-			get{ return _renderMode; }
-			set{ _renderMode = value; }
+			get => _renderMode;
+			set => _renderMode = value;
 		}
 
 		public Color BackgroundColor
 		{
-			set{ _backColor = value; }
+			set => _backColor = value;
 		}
 
 		public int BottomBuffer
 		{
-			set { _bottomBuffer = Convert.ToSingle(value); }
+			set => _bottomBuffer = Convert.ToSingle(value);
 		}
 
 		public Color FontColor
 		{
-			set{ _fontColor = value; }
+			set => _fontColor = value;
 		}
 
 		public int Height
 		{
-			get{ return Convert.ToInt32(_totalHeight); }
-			set{ _totalHeight = Convert.ToSingle(value); }
+			get => Convert.ToInt32(_totalHeight);
+			set => _totalHeight = Convert.ToSingle(value);
 		}
 
 		public int Width
 		{
-			get{ return Convert.ToInt32(_totalWidth); }
-			set{ _totalWidth = Convert.ToSingle(value); }
+			get => Convert.ToInt32(_totalWidth);
+			set => _totalWidth = Convert.ToSingle(value);
 		}
 
 		public bool ShowLegend
 		{
-			get{ return _displayLegend; }
-			set{ _displayLegend = value; }
+			get => _displayLegend;
+			set => _displayLegend = value;
 		}
 
 		public bool ShowData
 		{
-			get{ return _displayBarData; }
-			set{ _displayBarData = value; }
+			get => _displayBarData;
+			set => _displayBarData = value;
 		}
 		public int TopBuffer
 		{
-			set { _topBuffer = Convert.ToSingle(value); }
+			set => _topBuffer = Convert.ToSingle(value);
 		}
 
 		public string VerticalLabel
 		{
-			get{ return _yLabel; }
-			set{ _yLabel = value; }
+			get => _yLabel;
+			set => _yLabel = value;
 		}
 
 		public int VerticalTickCount
 		{
-			get{ return _yTickCount; }
-			set{ _yTickCount = value; }
+			get => _yTickCount;
+			set => _yTickCount = value;
 		}
 
 		private string _xTitle, _yTitle;

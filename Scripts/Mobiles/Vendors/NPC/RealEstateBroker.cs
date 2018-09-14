@@ -10,7 +10,7 @@ namespace Server.Mobiles
 	public class RealEstateBroker : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		[Constructible]
 		public RealEstateBroker() : base( "the real estate broker" )

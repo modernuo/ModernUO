@@ -13,10 +13,7 @@ namespace Server.Engines.ConPVP
 	{
 		public CTFTeamInfo m_TeamInfo;
 
-		public override string DefaultName
-		{
-			get { return "scoreboard"; }
-		}
+		public override string DefaultName => "scoreboard";
 
 		[Constructible]
 		public CTFBoard()
@@ -233,10 +230,7 @@ namespace Server.Engines.ConPVP
 	{
 		public CTFTeamInfo m_TeamInfo;
 
-		public override string DefaultName
-		{
-			get { return "old people cookies"; }
-		}
+		public override string DefaultName => "old people cookies";
 
 		public Mobile m_Fragger;
 		public DateTime m_FragTime;
@@ -548,17 +542,11 @@ namespace Server.Engines.ConPVP
 
 		public Mobile Player  => m_Player;
 
-		string IRankedCTF.Name
-		{
-			get { return m_Player.Name; }
-		}
+		string IRankedCTF.Name => m_Player.Name;
 
 		public int Kills
 		{
-			get
-			{
-				return m_Kills;
-			}
+			get => m_Kills;
 			set
 			{
 				m_TeamInfo.Kills += ( value - m_Kills );
@@ -568,10 +556,7 @@ namespace Server.Engines.ConPVP
 
 		public int Captures
 		{
-			get
-			{
-				return m_Captures;
-			}
+			get => m_Captures;
 			set
 			{
 				m_TeamInfo.Captures += ( value - m_Captures );
@@ -581,10 +566,7 @@ namespace Server.Engines.ConPVP
 
 		public int Score
 		{
-			get
-			{
-				return m_Score;
-			}
+			get => m_Score;
 			set
 			{
 				m_TeamInfo.Score += ( value - m_Score );
@@ -623,38 +605,40 @@ namespace Server.Engines.ConPVP
 
 		private Dictionary<Mobile, CTFPlayerInfo> m_Players;
 
-		string IRankedCTF.Name
-		{
-			get { return String.Format( "{0} Team", m_Name ); }
-		}
+		string IRankedCTF.Name => String.Format( "{0} Team", m_Name );
 
-		public CTFGame Game { get { return m_Game; } set { m_Game = value; } }
+		public CTFGame Game { get => m_Game;
+			set => m_Game = value;
+		}
 		public int TeamID  => m_TeamID;
 
-		public int Kills { get { return m_Kills; } set { m_Kills = value; } }
-		public int Captures { get { return m_Captures; } set { m_Captures = value; } }
+		public int Kills { get => m_Kills;
+			set => m_Kills = value;
+		}
+		public int Captures { get => m_Captures;
+			set => m_Captures = value;
+		}
 
-		public int Score { get { return m_Score; } set { m_Score = value; } }
+		public int Score { get => m_Score;
+			set => m_Score = value;
+		}
 
 		private CTFPlayerInfo m_Leader;
 
 		public CTFPlayerInfo Leader
 		{
-			get { return m_Leader; }
-			set { m_Leader = value; }
+			get => m_Leader;
+			set => m_Leader = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CTFBoard Board
 		{
-			get { return m_Board; }
-			set { m_Board = value; }
+			get => m_Board;
+			set => m_Board = value;
 		}
 
-		public Dictionary<Mobile, CTFPlayerInfo> Players
-		{
-			get { return m_Players; }
-		}
+		public Dictionary<Mobile, CTFPlayerInfo> Players => m_Players;
 
 		public CTFPlayerInfo this[Mobile mob]
 		{
@@ -673,29 +657,29 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Color
 		{
-			get { return m_Color; }
-			set { m_Color = value; }
+			get => m_Color;
+			set => m_Color = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Name
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CTFFlag Flag
 		{
-			get { return m_Flag; }
-			set { m_Flag = value; }
+			get => m_Flag;
+			set => m_Flag = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D Origin
 		{
-			get { return m_Origin; }
-			set { m_Origin = value; }
+			get => m_Origin;
+			set => m_Origin = value;
 		}
 
 		public CTFTeamInfo( int teamID )
@@ -787,40 +771,45 @@ namespace Server.Engines.ConPVP
 		public CTFTeamInfo[] TeamInfo  => m_TeamInfo;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team1 { get { return m_TeamInfo[0]; } set { } }
+		public CTFTeamInfo Team1 { get => m_TeamInfo[0];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team2 { get { return m_TeamInfo[1]; } set { } }
+		public CTFTeamInfo Team2 { get => m_TeamInfo[1];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team3 { get { return m_TeamInfo[2]; } set { } }
+		public CTFTeamInfo Team3 { get => m_TeamInfo[2];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team4 { get { return m_TeamInfo[3]; } set { } }
+		public CTFTeamInfo Team4 { get => m_TeamInfo[3];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team5 { get { return m_TeamInfo[4]; } set { } }
+		public CTFTeamInfo Team5 { get => m_TeamInfo[4];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team6 { get { return m_TeamInfo[5]; } set { } }
+		public CTFTeamInfo Team6 { get => m_TeamInfo[5];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team7 { get { return m_TeamInfo[6]; } set { } }
+		public CTFTeamInfo Team7 { get => m_TeamInfo[6];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CTFTeamInfo Team8 { get { return m_TeamInfo[7]; } set { } }
+		public CTFTeamInfo Team8 { get => m_TeamInfo[7];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan Duration
 		{
-			get { return m_Duration; }
-			set { m_Duration = value; }
+			get => m_Duration;
+			set => m_Duration = value;
 		}
 
-		public override string Title
-		{
-			get { return "CTF"; }
-		}
+		public override string Title => "CTF";
 
 		public override string GetTeamName( int teamID )
 		{

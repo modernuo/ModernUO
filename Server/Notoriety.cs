@@ -36,8 +36,8 @@ namespace Server
 
 		public static NotorietyHandler Handler
 		{
-			get{ return m_Handler; }
-			set{ m_Handler = value; }
+			get => m_Handler;
+			set => m_Handler = value;
 		}
 
 		private static int[] m_Hues = new int[]
@@ -54,8 +54,8 @@ namespace Server
 
 		public static int[] Hues
 		{
-			get{ return m_Hues; }
-			set{ m_Hues = value; }
+			get => m_Hues;
+			set => m_Hues = value;
 		}
 
 		public static int GetHue( int noto )

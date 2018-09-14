@@ -105,10 +105,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public override Mobile Focus
 		{
-			get
-			{
-				return m_Focus;
-			}
+			get => m_Focus;
 			set
 			{
 				if ( Deleted )

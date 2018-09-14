@@ -22,10 +22,7 @@ namespace Server.Spells.Spellweaving
 		{
 		}
 
-		public virtual int FocusLevel
-		{
-			get { return m_CastTimeFocusLevel; }
-		}
+		public virtual int FocusLevel => m_CastTimeFocusLevel;
 
 		public static int GetFocusLevel( Mobile from )
 		{

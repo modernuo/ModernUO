@@ -2,11 +2,7 @@ using Server.Factions;
 
 namespace Server {
 	public sealed class GemOfEmpowerment : PowerFactionItem {
-		public override string DefaultName {
-			get {
-				return "gem of empowerment";
-			}
-		}
+		public override string DefaultName => "gem of empowerment";
 
 		public GemOfEmpowerment()
 			: base( 7955 ) {

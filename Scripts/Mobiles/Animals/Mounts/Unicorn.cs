@@ -107,10 +107,7 @@ namespace Server.Mobiles
 				c.DropItem( new UnicornRibs() );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override Poison PoisonImmune => Poison.Lethal;
 		public override int Meat => 3;

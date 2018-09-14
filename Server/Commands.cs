@@ -32,45 +32,15 @@ namespace Server.Commands
 		private string m_Command, m_ArgString;
 		private string[] m_Arguments;
 
-		public Mobile Mobile
-		{
-			get
-			{
-				return m_Mobile;
-			}
-		}
+		public Mobile Mobile => m_Mobile;
 
-		public string Command
-		{
-			get
-			{
-				return m_Command;
-			}
-		}
+		public string Command => m_Command;
 
-		public string ArgString
-		{
-			get
-			{
-				return m_ArgString;
-			}
-		}
+		public string ArgString => m_ArgString;
 
-		public string[] Arguments
-		{
-			get
-			{
-				return m_Arguments;
-			}
-		}
+		public string[] Arguments => m_Arguments;
 
-		public int Length
-		{
-			get
-			{
-				return m_Arguments.Length;
-			}
-		}
+		public int Length => m_Arguments.Length;
 
 		public string GetString( int index )
 		{
@@ -127,29 +97,11 @@ namespace Server.Commands
 		private CommandEventHandler m_Handler;
 		private AccessLevel m_AccessLevel;
 
-		public string Command
-		{
-			get
-			{
-				return m_Command;
-			}
-		}
+		public string Command => m_Command;
 
-		public CommandEventHandler Handler
-		{
-			get
-			{
-				return m_Handler;
-			}
-		}
+		public CommandEventHandler Handler => m_Handler;
 
-		public AccessLevel AccessLevel
-		{
-			get
-			{
-				return m_AccessLevel;
-			}
-		}
+		public AccessLevel AccessLevel => m_AccessLevel;
 
 		public CommandEntry( string command, CommandEventHandler handler, AccessLevel accessLevel )
 		{
@@ -178,14 +130,8 @@ namespace Server.Commands
 
 		public static string Prefix
 		{
-			get
-			{
-				return m_Prefix;
-			}
-			set
-			{
-				m_Prefix = value;
-			}
+			get => m_Prefix;
+			set => m_Prefix = value;
 		}
 
 		public static string[] Split( string value )
@@ -243,13 +189,7 @@ namespace Server.Commands
 
 		private static Dictionary<string, CommandEntry> m_Entries;
 
-		public static Dictionary<string, CommandEntry> Entries
-		{
-			get
-			{
-				return m_Entries;
-			}
-		}
+		public static Dictionary<string, CommandEntry> Entries => m_Entries;
 
 		static CommandSystem()
 		{
@@ -263,7 +203,9 @@ namespace Server.Commands
 
 		private static AccessLevel m_BadCommandIngoreLevel = AccessLevel.Player;
 
-		public static AccessLevel BadCommandIgnoreLevel{ get{ return m_BadCommandIngoreLevel; } set{ m_BadCommandIngoreLevel = value; } }
+		public static AccessLevel BadCommandIgnoreLevel{ get => m_BadCommandIngoreLevel;
+			set => m_BadCommandIngoreLevel = value;
+		}
 
 		public static bool Handle( Mobile from, string text )
 		{

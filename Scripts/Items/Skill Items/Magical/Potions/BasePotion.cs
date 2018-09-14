@@ -43,10 +43,7 @@ namespace Server.Items
 
 		public PotionEffect PotionEffect
 		{
-			get
-			{
-				return m_PotionEffect;
-			}
+			get => m_PotionEffect;
 			set
 			{
 				m_PotionEffect = value;
@@ -54,8 +51,8 @@ namespace Server.Items
 			}
 		}
 
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return (Core.ML); } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => (Core.ML);
 
 		public override int LabelNumber => 1041314 + (int)m_PotionEffect;
 
@@ -71,7 +68,7 @@ namespace Server.Items
 		{
 		}
 
-		public virtual bool RequireFreeHand{ get{ return true; } }
+		public virtual bool RequireFreeHand => true;
 
 		public static bool HasFreeHand( Mobile m )
 		{

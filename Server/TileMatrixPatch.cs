@@ -31,14 +31,8 @@ namespace Server
 
 		public static bool Enabled
 		{
-			get
-			{
-				return m_Enabled;
-			}
-			set
-			{
-				m_Enabled = value;
-			}
+			get => m_Enabled;
+			set => m_Enabled = value;
 		}
 
 		public int LandBlocks

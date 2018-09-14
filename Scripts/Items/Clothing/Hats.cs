@@ -12,8 +12,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsShipwreckedItem
 		{
-			get { return m_IsShipwreckedItem; }
-			set { m_IsShipwreckedItem = value; }
+			get => m_IsShipwreckedItem;
+			set => m_IsShipwreckedItem = value;
 		}
 
 		public BaseHat( int itemID ) : this( itemID, 0 )
@@ -698,10 +698,7 @@ namespace Server.Items
 			return false;
 		}
 
-		public override string DefaultName
-		{
-			get { return "a mask of orcish kin"; }
-		}
+		public override string DefaultName => "a mask of orcish kin";
 
 		[Constructible]
 		public OrcishKinMask() : this( 0x8A4 )

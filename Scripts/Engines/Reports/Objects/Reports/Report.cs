@@ -18,10 +18,14 @@ namespace Server.Engines.Reports
 		private ReportColumnCollection m_Columns;
 		private ReportItemCollection m_Items;
 
-		public string Name{ get{ return m_Name; } set{ m_Name = value; } }
-		public string Width{ get{ return m_Width; } set{ m_Width = value; } }
-		public ReportColumnCollection Columns{ get{ return m_Columns; } }
-		public ReportItemCollection Items{ get{ return m_Items; } }
+		public string Name{ get => m_Name;
+			set => m_Name = value;
+		}
+		public string Width{ get => m_Width;
+			set => m_Width = value;
+		}
+		public ReportColumnCollection Columns => m_Columns;
+		public ReportItemCollection Items => m_Items;
 
 		private Report() : this( null, null )
 		{

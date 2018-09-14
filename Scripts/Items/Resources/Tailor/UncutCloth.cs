@@ -5,13 +5,10 @@ namespace Server.Items
 	[FlippableAttribute( 0x1765, 0x1767 )]
 	public class UncutCloth : Item, IScissorable, IDyable, ICommodity
 	{
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return true; } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => true;
 
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public UncutCloth() : this( 1 )

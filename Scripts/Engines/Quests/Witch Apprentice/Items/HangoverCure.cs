@@ -9,8 +9,8 @@ namespace Server.Engines.Quests.Hag
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Uses
 		{
-			get{ return m_Uses; }
-			set{ m_Uses = value; }
+			get => m_Uses;
+			set => m_Uses = value;
 		}
 
 		[Constructible]

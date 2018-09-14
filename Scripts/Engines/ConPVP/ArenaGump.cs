@@ -9,10 +9,7 @@ namespace Server.Engines.ConPVP
 {
 	public class ArenasMoongate : Item
 	{
-		public override string DefaultName
-		{
-			get { return "arena moongate"; }
-		}
+		public override string DefaultName => "arena moongate";
 
 		[Constructible]
 		public ArenasMoongate() : base( 0x1FD4 )

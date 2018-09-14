@@ -14,7 +14,7 @@ namespace Server.Items
 		public override WeaponType DefType => WeaponType.Polearm;
 		public override WeaponAnimation DefAnimation => WeaponAnimation.Slash2H;
 
-		public virtual HarvestSystem HarvestSystem{ get{ return Lumberjacking.System; } }
+		public virtual HarvestSystem HarvestSystem => Lumberjacking.System;
 
 		private int m_UsesRemaining;
 		private bool m_ShowUsesRemaining;
@@ -22,14 +22,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int UsesRemaining
 		{
-			get { return m_UsesRemaining; }
+			get => m_UsesRemaining;
 			set { m_UsesRemaining = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool ShowUsesRemaining
 		{
-			get { return m_ShowUsesRemaining; }
+			get => m_ShowUsesRemaining;
 			set { m_ShowUsesRemaining = value; InvalidateProperties(); }
 		}
 

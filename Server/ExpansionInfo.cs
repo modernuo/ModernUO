@@ -153,7 +153,7 @@ namespace Server
 
 	public class ExpansionInfo
 	{
-		public static ExpansionInfo CoreExpansion { get { return GetInfo(Core.Expansion); } }
+		public static ExpansionInfo CoreExpansion => GetInfo(Core.Expansion);
 
 		public static ExpansionInfo[] Table { get; private set; }
 

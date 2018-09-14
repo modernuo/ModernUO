@@ -10,8 +10,8 @@ namespace Server.Engines.Quests.Haven
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get { return m_Active; }
-			set { m_Active = value; }
+			get => m_Active;
+			set => m_Active = value;
 		}
 
 		[Constructible]

@@ -24,18 +24,15 @@ namespace Server.Items
 
 		private List<MusicName> m_Tracks;
 
-		public List<MusicName> Tracks
-		{
-			get { return m_Tracks; }
-		}
+		public List<MusicName> Tracks => m_Tracks;
 
 		private SecureLevel m_Level;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get { return m_Level; }
-			set { m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
 		[Constructible]

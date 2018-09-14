@@ -20,15 +20,15 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Map TargetMap
 		{
-			get{ return m_TargetMap; }
-			set{ m_TargetMap = value; }
+			get => m_TargetMap;
+			set => m_TargetMap = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = Math.Max( 1, Math.Min( value, 4 ) ); }
+			get => m_Level;
+			set => m_Level = Math.Max( 1, Math.Min( value, 4 ) );
 		}
 
 		[Constructible]

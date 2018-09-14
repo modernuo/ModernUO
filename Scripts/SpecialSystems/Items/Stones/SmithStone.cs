@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class SmithStone : Item
 	{
-		public override string DefaultName
-		{
-			get { return "a Blacksmith Supply Stone"; }
-		}
+		public override string DefaultName => "a Blacksmith Supply Stone";
 
 		[Constructible]
 		public SmithStone() : base( 0xED4 )

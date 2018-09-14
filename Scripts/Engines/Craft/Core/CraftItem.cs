@@ -49,24 +49,21 @@ namespace Server.Engines.Craft
 
 		public bool ForceNonExceptional
 		{
-			get { return m_ForceNonExceptional; }
-			set { m_ForceNonExceptional = value; }
+			get => m_ForceNonExceptional;
+			set => m_ForceNonExceptional = value;
 		}
 
 		private Expansion m_RequiredExpansion;
 
 		public Expansion RequiredExpansion
 		{
-			get { return m_RequiredExpansion; }
-			set { m_RequiredExpansion = value; }
+			get => m_RequiredExpansion;
+			set => m_RequiredExpansion = value;
 		}
 
 		private Recipe m_Recipe;
 
-		public Recipe Recipe
-		{
-			get { return m_Recipe; }
-		}
+		public Recipe Recipe => m_Recipe;
 
 		public void AddRecipe( int id, CraftSystem system )
 		{
@@ -148,8 +145,8 @@ namespace Server.Engines.Craft
 
 		public BeverageType RequiredBeverage
 		{
-			get { return m_RequiredBeverage; }
-			set { m_RequiredBeverage = value; }
+			get => m_RequiredBeverage;
+			set => m_RequiredBeverage = value;
 		}
 
 		public void AddRes( Type type, TextDefinition name, int amount )
@@ -172,92 +169,71 @@ namespace Server.Engines.Craft
 
 		public int Mana
 		{
-			get { return m_Mana; }
-			set { m_Mana = value; }
+			get => m_Mana;
+			set => m_Mana = value;
 		}
 
 		public int Hits
 		{
-			get { return m_Hits; }
-			set { m_Hits = value; }
+			get => m_Hits;
+			set => m_Hits = value;
 		}
 
 		public int Stam
 		{
-			get { return m_Stam; }
-			set { m_Stam = value; }
+			get => m_Stam;
+			set => m_Stam = value;
 		}
 
 		public bool UseSubRes2
 		{
-			get { return m_UseSubRes2; }
-			set { m_UseSubRes2 = value; }
+			get => m_UseSubRes2;
+			set => m_UseSubRes2 = value;
 		}
 
 		public bool UseAllRes
 		{
-			get { return m_UseAllRes; }
-			set { m_UseAllRes = value; }
+			get => m_UseAllRes;
+			set => m_UseAllRes = value;
 		}
 
 		public bool NeedHeat
 		{
-			get { return m_NeedHeat; }
-			set { m_NeedHeat = value; }
+			get => m_NeedHeat;
+			set => m_NeedHeat = value;
 		}
 
 		public bool NeedOven
 		{
-			get { return m_NeedOven; }
-			set { m_NeedOven = value; }
+			get => m_NeedOven;
+			set => m_NeedOven = value;
 		}
 
 		public bool NeedMill
 		{
-			get { return m_NeedMill; }
-			set { m_NeedMill = value; }
+			get => m_NeedMill;
+			set => m_NeedMill = value;
 		}
 
-		public Type ItemType
-		{
-			get { return m_Type; }
-		}
+		public Type ItemType => m_Type;
 
 		public int ItemHue
 		{
-			get { return m_ItemHue; }
-			set { m_ItemHue = value; }
+			get => m_ItemHue;
+			set => m_ItemHue = value;
 		}
 
-		public string GroupNameString
-		{
-			get { return m_GroupNameString; }
-		}
+		public string GroupNameString => m_GroupNameString;
 
-		public int GroupNameNumber
-		{
-			get { return m_GroupNameNumber; }
-		}
+		public int GroupNameNumber => m_GroupNameNumber;
 
-		public string NameString
-		{
-			get { return m_NameString; }
-		}
+		public string NameString => m_NameString;
 
-		public int NameNumber
-		{
-			get { return m_NameNumber; }
-		}
+		public int NameNumber => m_NameNumber;
 
-		public CraftResCol Resources
-		{
-			get { return m_arCraftRes; }
-		}
+		public CraftResCol Resources => m_arCraftRes;
 
-		public CraftSkillCol Skills
-		{
-			get { return m_arCraftSkill; }
-		}
+		public CraftSkillCol Skills => m_arCraftSkill;
 
 		public bool ConsumeAttributes( Mobile from, ref object message, bool consume )
 		{

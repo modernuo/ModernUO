@@ -10,8 +10,8 @@ namespace Server.Engines.Quests
 		private Type m_Quest;
 		private Type m_Objective;
 
-		public Type Quest{ get{ return m_Quest ; } }
-		public Type Objective{ get{ return m_Objective; } }
+		public Type Quest => m_Quest;
+		public Type Objective => m_Objective;
 
 		public QuestCompleteObjectiveRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{

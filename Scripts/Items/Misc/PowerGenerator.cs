@@ -62,8 +62,12 @@ namespace Server.Items
 			private int m_X;
 			private int m_Y;
 
-			public int X{ get{ return m_X; } set{ m_X = value; } }
-			public int Y{ get{ return m_Y; } set{ m_Y = value; } }
+			public int X{ get => m_X;
+				set => m_X = value;
+			}
+			public int Y{ get => m_Y;
+				set => m_Y = value;
+			}
 
 			public Node( int x, int y )
 			{
@@ -78,7 +82,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SideLength
 		{
-			get{ return m_SideLength; }
+			get => m_SideLength;
 			set
 			{
 				if ( value < 3 )
@@ -94,12 +98,9 @@ namespace Server.Items
 			}
 		}
 
-		public Node[] Path{	get{ return m_Path; } }
+		public Node[] Path => m_Path;
 
-		public override string DefaultName
-		{
-			get { return "a control panel"; }
-		}
+		public override string DefaultName => "a control panel";
 
 		public ControlPanel( int sideLength ) : base( 0xBDC )
 		{

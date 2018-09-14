@@ -7,8 +7,8 @@ namespace Server.Engines.VeteranRewards
 		private TimeSpan m_Age;
 		private RewardEntry[] m_Entries;
 
-		public TimeSpan Age{ get{ return m_Age; } }
-		public RewardEntry[] Entries{ get{ return m_Entries; } }
+		public TimeSpan Age => m_Age;
+		public RewardEntry[] Entries => m_Entries;
 
 		public RewardList( TimeSpan interval, int index, RewardEntry[] entries )
 		{

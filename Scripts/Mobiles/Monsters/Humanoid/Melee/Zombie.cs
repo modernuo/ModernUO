@@ -63,10 +63,7 @@ namespace Server.Mobiles
 		{
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override void Serialize( GenericWriter writer )
 		{

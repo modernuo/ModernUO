@@ -10,14 +10,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int CookingLevel
 		{
-			get
-			{
-				return m_CookingLevel;
-			}
-			set
-			{
-				m_CookingLevel = value;
-			}
+			get => m_CookingLevel;
+			set => m_CookingLevel = value;
 		}
 
 		public CookableFood( int itemID, int cookingLevel ) : base( itemID )
@@ -706,10 +700,7 @@ namespace Server.Items
 	// ********** BrightlyColoredEggs **********
 	public class BrightlyColoredEggs : CookableFood
 	{
-		public override string DefaultName
-		{
-			get { return "brightly colored eggs"; }
-		}
+		public override string DefaultName => "brightly colored eggs";
 
 		[Constructible]
 		public BrightlyColoredEggs() : base( 0x9B5, 15 )
@@ -848,10 +839,7 @@ namespace Server.Items
 
 	public class RawFishSteak : CookableFood
 	{
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public RawFishSteak() : this( 1 )

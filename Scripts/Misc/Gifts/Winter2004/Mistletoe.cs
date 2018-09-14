@@ -74,10 +74,7 @@ namespace Server.Items
 			}
 		}
 
-		public Item Deed
-		{
-			get{ return new MistletoeDeed( this.Hue ); }
-		}
+		public Item Deed => new MistletoeDeed( this.Hue );
 
 		public override void OnDoubleClick( Mobile from )
 		{

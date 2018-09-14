@@ -10,9 +10,9 @@ namespace Server.Engines.BulkOrders
 		private int m_Number;
 		private int m_Graphic;
 
-		public Type Type{ get{ return m_Type; } }
-		public int Number{ get{ return m_Number; } }
-		public int Graphic{ get{ return m_Graphic; } }
+		public Type Type => m_Type;
+		public int Number => m_Number;
+		public int Graphic => m_Graphic;
 
 		public SmallBulkEntry( Type type, int number, int graphic )
 		{
@@ -21,25 +21,13 @@ namespace Server.Engines.BulkOrders
 			m_Graphic = graphic;
 		}
 
-		public static SmallBulkEntry[] BlacksmithWeapons
-		{
-			get{ return GetEntries( "Blacksmith", "weapons" ); }
-		}
+		public static SmallBulkEntry[] BlacksmithWeapons => GetEntries( "Blacksmith", "weapons" );
 
-		public static SmallBulkEntry[] BlacksmithArmor
-		{
-			get{ return GetEntries( "Blacksmith", "armor" ); }
-		}
+		public static SmallBulkEntry[] BlacksmithArmor => GetEntries( "Blacksmith", "armor" );
 
-		public static SmallBulkEntry[] TailorCloth
-		{
-			get{ return GetEntries( "Tailoring", "cloth" ); }
-		}
+		public static SmallBulkEntry[] TailorCloth => GetEntries( "Tailoring", "cloth" );
 
-		public static SmallBulkEntry[] TailorLeather
-		{
-			get{ return GetEntries( "Tailoring", "leather" ); }
-		}
+		public static SmallBulkEntry[] TailorLeather => GetEntries( "Tailoring", "leather" );
 
 		private static Dictionary<string, Dictionary<string, SmallBulkEntry[]>> m_Cache;
 

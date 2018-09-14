@@ -26,14 +26,11 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
-		public bool FacingSouth
-		{
-			get{ return ( ItemID & 0x1 ) == 0; }
-		}
+		public bool FacingSouth => ( ItemID & 0x1 ) == 0;
 
 		[Constructible]
 		public Banner( int itemID ) : base( itemID )
@@ -121,7 +118,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 		[Constructible]

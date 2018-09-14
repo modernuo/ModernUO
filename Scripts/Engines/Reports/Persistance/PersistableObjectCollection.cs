@@ -32,14 +32,8 @@ namespace Server.Engines.Reports
         /// </summary>
         public Server.Engines.Reports.PersistableObject this[int index]
         {
-            get
-            {
-                return ((Server.Engines.Reports.PersistableObject)(this.List[index]));
-            }
-            set
-            {
-                this.List[index] = value;
-            }
+            get => ((Server.Engines.Reports.PersistableObject)(this.List[index]));
+	        set => this.List[index] = value;
         }
         
         /// <summary>

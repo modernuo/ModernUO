@@ -33,8 +33,8 @@ namespace Server.Items
 		private Type m_Type;
 		private int m_Amount;
 
-		public Type Type{ get{ return m_Type; } }
-		public int Amount{ get{ return m_Amount; } }
+		public Type Type => m_Type;
+		public int Amount => m_Amount;
 
 		private CrystalRechargeInfo( Type type, int amount )
 		{
@@ -55,7 +55,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get{ return this.ItemID == 0x1ECD; }
+			get => this.ItemID == 0x1ECD;
 			set
 			{
 				this.ItemID = value ? 0x1ECD : 0x1ED0;
@@ -66,7 +66,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get{ return m_Charges; }
+			get => m_Charges;
 			set
 			{
 				m_Charges = value;
@@ -74,10 +74,7 @@ namespace Server.Items
 			}
 		}
 
-		public List<ReceiverCrystal> Receivers
-		{
-			get{ return m_Receivers; }
-		}
+		public List<ReceiverCrystal> Receivers => m_Receivers;
 
 		[Constructible]
 		public BroadcastCrystal() : this( 2000 )
@@ -122,10 +119,7 @@ namespace Server.Items
 				LabelTo( from, 1060746, Receivers.Count.ToString() ); // links: ~1_val~
 		}
 
-		public override bool HandlesOnSpeech
-		{
-			get{ return true; }
-		}
+		public override bool HandlesOnSpeech => true;
 
 		public override void OnSpeech( SpeechEventArgs e )
 		{
@@ -304,7 +298,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get{ return this.ItemID == 0x1ED1; }
+			get => this.ItemID == 0x1ED1;
 			set
 			{
 				this.ItemID = value ? 0x1ED1 : 0x1ED0;
@@ -315,7 +309,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BroadcastCrystal Sender
 		{
-			get{ return m_Sender; }
+			get => m_Sender;
 			set
 			{
 				if ( m_Sender != null )

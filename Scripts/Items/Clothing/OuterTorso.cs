@@ -105,10 +105,7 @@ namespace Server.Items
 
 		private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
 
-		public override bool DisplayLootType
-		{
-			get{ return false; }
-		}
+		public override bool DisplayLootType => false;
 
 		[Constructible]
 		public DeathRobe()
@@ -241,14 +238,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; }
+			get => m_IsRewardItem;
+			set => m_IsRewardItem = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Number
 		{
-			get{ return m_LabelNumber; }
+			get => m_LabelNumber;
 			set{ m_LabelNumber = value; InvalidateProperties(); }
 		}
 
@@ -366,14 +363,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; }
+			get => m_IsRewardItem;
+			set => m_IsRewardItem = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Number
 		{
-			get{ return m_LabelNumber; }
+			get => m_LabelNumber;
 			set{ m_LabelNumber = value; InvalidateProperties(); }
 		}
 
@@ -491,22 +488,19 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxArcaneCharges
 		{
-			get{ return m_MaxArcaneCharges; }
+			get => m_MaxArcaneCharges;
 			set{ m_MaxArcaneCharges = value; InvalidateProperties(); Update(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int CurArcaneCharges
 		{
-			get{ return m_CurArcaneCharges; }
+			get => m_CurArcaneCharges;
 			set{ m_CurArcaneCharges = value; InvalidateProperties(); Update(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsArcane
-		{
-			get{ return ( m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0 ); }
-		}
+		public bool IsArcane => ( m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0 );
 
 		public void Update()
 		{

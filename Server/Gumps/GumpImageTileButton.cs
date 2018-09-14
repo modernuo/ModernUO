@@ -62,70 +62,37 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				Delta( ref m_X, value );
-			}
+			get => m_X;
+			set => Delta( ref m_X, value );
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				Delta( ref m_Y, value );
-			}
+			get => m_Y;
+			set => Delta( ref m_Y, value );
 		}
 
 		public int NormalID
 		{
-			get
-			{
-				return m_ID1;
-			}
-			set
-			{
-				Delta( ref m_ID1, value );
-			}
+			get => m_ID1;
+			set => Delta( ref m_ID1, value );
 		}
 
 		public int PressedID
 		{
-			get
-			{
-				return m_ID2;
-			}
-			set
-			{
-				Delta( ref m_ID2, value );
-			}
+			get => m_ID2;
+			set => Delta( ref m_ID2, value );
 		}
 
 		public int ButtonID
 		{
-			get
-			{
-				return m_ButtonID;
-			}
-			set
-			{
-				Delta( ref m_ButtonID, value );
-			}
+			get => m_ButtonID;
+			set => Delta( ref m_ButtonID, value );
 		}
 
 		public GumpButtonType Type
 		{
-			get
-			{
-				return m_Type;
-			}
+			get => m_Type;
 			set
 			{
 				if ( m_Type != value )
@@ -144,74 +111,38 @@ namespace Server.Gumps
 
 		public int Param
 		{
-			get
-			{
-				return m_Param;
-			}
-			set
-			{
-				Delta( ref m_Param, value );
-			}
+			get => m_Param;
+			set => Delta( ref m_Param, value );
 		}
 
 		public int ItemID
 		{
-			get
-			{
-				return m_ItemID;
-			}
-			set
-			{
-				Delta( ref m_ItemID, value );
-			}
+			get => m_ItemID;
+			set => Delta( ref m_ItemID, value );
 		}
 
 		public int Hue
 		{
-			get
-			{
-				return m_Hue;
-			}
-			set
-			{
-				Delta( ref m_Hue, value );
-			}
+			get => m_Hue;
+			set => Delta( ref m_Hue, value );
 		}
 
 		public int Width
 		{
-			get
-			{
-				return m_Width;
-			}
-			set
-			{
-				Delta( ref m_Width, value );
-			}
+			get => m_Width;
+			set => Delta( ref m_Width, value );
 		}
 
 		public int Height
 		{
-			get
-			{
-				return m_Height;
-			}
-			set
-			{
-				Delta( ref m_Height, value );
-			}
+			get => m_Height;
+			set => Delta( ref m_Height, value );
 		}
 
 		public int LocalizedTooltip
 		{
-			get
-			{
-				return m_LocalizedTooltip;
-			}
-			set
-			{
-				m_LocalizedTooltip = value;
-			}
+			get => m_LocalizedTooltip;
+			set => m_LocalizedTooltip = value;
 		}
 
 		public override string Compile( NetState ns )

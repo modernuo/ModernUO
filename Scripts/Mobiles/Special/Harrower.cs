@@ -7,9 +7,9 @@ namespace Server.Mobiles
 {
 	public class Harrower : BaseCreature
 	{
-		public Type[] UniqueList{ get{ return new Type[] { typeof( AcidProofRobe ) }; } }
-		public Type[] SharedList{ get{ return new Type[] { typeof( TheRobeOfBritanniaAri ) }; } }
-		public Type[] DecorativeList{ get{ return new Type[] { typeof( EvilIdolSkull ), typeof( SkullPole ) }; } }
+		public Type[] UniqueList => new Type[] { typeof( AcidProofRobe ) };
+		public Type[] SharedList => new Type[] { typeof( TheRobeOfBritanniaAri ) };
+		public Type[] DecorativeList => new Type[] { typeof( EvilIdolSkull ), typeof( SkullPole ) };
 
 		private bool m_TrueForm;
 		private Item m_GateItem;
@@ -49,7 +49,7 @@ namespace Server.Mobiles
 
 		private static ArrayList m_Instances = new ArrayList();
 
-		public static ArrayList Instances{ get{ return m_Instances; } }
+		public static ArrayList Instances => m_Instances;
 
 		public static Harrower Spawn( Point3D platLoc, Map platMap )
 		{
@@ -67,13 +67,7 @@ namespace Server.Mobiles
 			return harrower;
 		}
 
-		public static bool CanSpawn
-		{
-			get
-			{
-				return ( m_Instances.Count == 0 );
-			}
-		}
+		public static bool CanSpawn => ( m_Instances.Count == 0 );
 
 		public override string DefaultName => "the harrower";
 

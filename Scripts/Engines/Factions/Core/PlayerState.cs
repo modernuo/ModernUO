@@ -21,16 +21,19 @@ namespace Server.Factions
 
 		private DateTime m_LastHonorTime;
 
-		public Mobile Mobile{ get{ return m_Mobile; } }
-		public Faction Faction{ get{ return m_Faction; } }
+		public Mobile Mobile => m_Mobile;
+		public Faction Faction => m_Faction;
 		public List<PlayerState> Owner  => m_Owner;
-		public MerchantTitle MerchantTitle{ get{ return m_MerchantTitle; } set{ m_MerchantTitle = value; Invalidate(); } }
-		public Town Sheriff{ get{ return m_Sheriff; } set{ m_Sheriff = value; Invalidate(); } }
-		public Town Finance{ get{ return m_Finance; } set{ m_Finance = value; Invalidate(); } }
+		public MerchantTitle MerchantTitle{ get => m_MerchantTitle;
+			set{ m_MerchantTitle = value; Invalidate(); } }
+		public Town Sheriff{ get => m_Sheriff;
+			set{ m_Sheriff = value; Invalidate(); } }
+		public Town Finance{ get => m_Finance;
+			set{ m_Finance = value; Invalidate(); } }
 		public List<SilverGivenEntry> SilverGiven  => m_SilverGiven;
 
 		public int KillPoints {
-			get { return m_KillPoints; }
+			get => m_KillPoints;
 			set {
 				if ( m_KillPoints != value ) {
 					if ( value > m_KillPoints ) {
@@ -102,7 +105,8 @@ namespace Server.Factions
 		private bool m_InvalidateRank = true;
 		private int  m_RankIndex = -1;
 
-		public int RankIndex { get { return m_RankIndex; } set { if ( m_RankIndex != value ) { m_RankIndex = value; m_InvalidateRank = true; } } }
+		public int RankIndex { get => m_RankIndex;
+			set { if ( m_RankIndex != value ) { m_RankIndex = value; m_InvalidateRank = true; } } }
 
 		public RankDefinition Rank {
 			get {
@@ -134,11 +138,17 @@ namespace Server.Factions
 			}
 		}
 
-		public DateTime LastHonorTime{ get{ return m_LastHonorTime; } set{ m_LastHonorTime = value; } }
-		public DateTime Leaving{ get{ return m_Leaving; } set{ m_Leaving = value; } }
-		public bool IsLeaving{ get{ return ( m_Leaving > DateTime.MinValue ); } }
+		public DateTime LastHonorTime{ get => m_LastHonorTime;
+			set => m_LastHonorTime = value;
+		}
+		public DateTime Leaving{ get => m_Leaving;
+			set => m_Leaving = value;
+		}
+		public bool IsLeaving => ( m_Leaving > DateTime.MinValue );
 
-		public bool IsActive{ get{ return m_IsActive; } set{ m_IsActive = value; } }
+		public bool IsActive{ get => m_IsActive;
+			set => m_IsActive = value;
+		}
 
 		public bool CanGiveSilverTo( Mobile mob )
 		{

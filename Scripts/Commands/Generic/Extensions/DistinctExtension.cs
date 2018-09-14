@@ -13,10 +13,7 @@ namespace Server.Commands.Generic
 			ExtensionInfo.Register( ExtInfo );
 		}
 
-		public override ExtensionInfo Info
-		{
-			get { return ExtInfo; }
-		}
+		public override ExtensionInfo Info => ExtInfo;
 
 		private List<Property> m_Properties;
 

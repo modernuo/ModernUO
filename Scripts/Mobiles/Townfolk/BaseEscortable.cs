@@ -97,10 +97,7 @@ namespace Server.Mobiles
 
 		private bool m_DeleteCorpse = false;
 
-		public bool IsBeingDeleted
-		{
-			get { return ( m_DeleteTimer != null ); }
-		}
+		public bool IsBeingDeleted => ( m_DeleteTimer != null );
 
 		public override bool Commandable => false; // Our master cannot boss us around!
 		public override bool DeleteCorpseOnDeath => m_DeleteCorpse;
@@ -108,7 +105,7 @@ namespace Server.Mobiles
 		[CommandProperty(AccessLevel.GameMaster)]
 		public string Destination
 		{
-			get { return m_Destination == null ? null : m_Destination.Name; }
+			get => m_Destination == null ? null : m_Destination.Name;
 			set { m_DestinationString = value; m_Destination = EDI.Find(value); }
 		}
 
@@ -236,10 +233,7 @@ namespace Server.Mobiles
 
 		private static Hashtable m_EscortTable = new Hashtable();
 
-		public static Hashtable EscortTable
-		{
-			get { return m_EscortTable; }
-		}
+		public static Hashtable EscortTable => m_EscortTable;
 
 		public virtual bool AcceptEscorter(Mobile m)
 		{
@@ -661,15 +655,9 @@ namespace Server.Mobiles
 		private Region m_Region;
 		//private Rectangle2D[] m_Bounds;
 
-		public string Name
-		{
-			get { return m_Name; }
-		}
+		public string Name => m_Name;
 
-		public Region Region
-		{
-			get { return m_Region; }
-		}
+		public Region Region => m_Region;
 
 		/*public Rectangle2D[] Bounds
 		{

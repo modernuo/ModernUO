@@ -19,7 +19,7 @@ namespace Server.Items.Holiday
 			}
 		}
 
-		public virtual string MaskName { get { return "A Mask"; } }
+		public virtual string MaskName => "A Mask";
 
 		private string m_Staffer;
 

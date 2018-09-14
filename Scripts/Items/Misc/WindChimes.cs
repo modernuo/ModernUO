@@ -11,7 +11,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool TurnedOn
 		{
-			get{ return m_TurnedOn; }
+			get => m_TurnedOn;
 			set{ m_TurnedOn = value; InvalidateProperties(); }
 		}
 
@@ -21,10 +21,7 @@ namespace Server.Items
 
 		private static int[] m_Sounds = new int[] { 0x505, 0x506, 0x507 };
 
-		public static int[] Sounds
-		{
-			get{ return m_Sounds; }
-		}
+		public static int[] Sounds => m_Sounds;
 
 		public override bool HandlesOnMovement => m_TurnedOn && IsLockedDown;
 

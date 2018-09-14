@@ -38,29 +38,29 @@ namespace Server.Engines.Doom
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string TypeName
 		{
-			get{ return m_TypeName; }
-			set{ m_TypeName = value; }
+			get => m_TypeName;
+			set => m_TypeName = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BaseDoor Door
 		{
-			get{ return m_Door; }
-			set{ m_Door = value; }
+			get => m_Door;
+			set => m_Door = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BaseAddon Addon
 		{
-			get{ return m_Addon; }
-			set{ m_Addon = value; }
+			get => m_Addon;
+			set => m_Addon = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public GauntletSpawner Sequence
 		{
-			get{ return m_Sequence; }
-			set{ m_Sequence = value; }
+			get => m_Sequence;
+			set => m_Sequence = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -86,14 +86,14 @@ namespace Server.Engines.Doom
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Rectangle2D RegionBounds
 		{
-			get{ return m_RegionBounds; }
-			set{ m_RegionBounds = value; }
+			get => m_RegionBounds;
+			set => m_RegionBounds = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public GauntletSpawnerState State
 		{
-			get{ return m_State; }
+			get => m_State;
 			set
 			{
 				if ( m_State == value )
@@ -163,20 +163,20 @@ namespace Server.Engines.Doom
 
 		public List<Mobile> Creatures
 		{
-			get{ return m_Creatures; }
-			set{ m_Creatures = value; }
+			get => m_Creatures;
+			set => m_Creatures = value;
 		}
 
 		public List<BaseTrap> Traps
 		{
-			get{ return m_Traps; }
-			set{ m_Traps = value; }
+			get => m_Traps;
+			set => m_Traps = value;
 		}
 
 		public Region Region
 		{
-			get{ return m_Region; }
-			set{ m_Region = value; }
+			get => m_Region;
+			set => m_Region = value;
 		}
 
 		public virtual void CreateRegion()
@@ -380,10 +380,7 @@ namespace Server.Engines.Doom
 			}
 		}
 
-		public override string DefaultName
-		{
-			get { return "doom spawner"; }
-		}
+		public override string DefaultName => "doom spawner";
 
 		[Constructible]
 		public GauntletSpawner() : this( null )

@@ -9,9 +9,11 @@ namespace Server.Commands
 		private static StreamWriter m_Output;
 		private static bool m_Enabled = true;
 
-		public static bool Enabled{ get{ return m_Enabled; } set{ m_Enabled = value; } }
+		public static bool Enabled{ get => m_Enabled;
+			set => m_Enabled = value;
+		}
 
-		public static StreamWriter Output{ get{ return m_Output; } }
+		public static StreamWriter Output => m_Output;
 
 		public static void Initialize()
 		{

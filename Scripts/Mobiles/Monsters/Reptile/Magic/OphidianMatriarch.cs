@@ -50,10 +50,7 @@ namespace Server.Mobiles
 		public override Poison PoisonImmune => Poison.Greater;
 		public override int TreasureMapLevel => 4;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.TerathansAndOphidians; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.TerathansAndOphidians;
 
 		public OphidianMatriarch( Serial serial ) : base( serial )
 		{

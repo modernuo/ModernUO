@@ -30,7 +30,7 @@ namespace Server.Network
 
 		private byte[] m_Buffer;
 
-		public int Length{ get{ return m_Size; } }
+		public int Length => m_Size;
 
 		public ByteQueue()
 		{

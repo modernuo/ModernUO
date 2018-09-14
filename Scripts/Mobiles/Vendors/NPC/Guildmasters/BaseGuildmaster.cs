@@ -8,18 +8,18 @@ namespace Server.Mobiles
 	public abstract class BaseGuildmaster : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override bool IsActiveVendor => false;
 
 		public override bool ClickTitle => false;
 
-		public virtual int JoinCost{ get{ return 500; } }
+		public virtual int JoinCost => 500;
 
-		public virtual TimeSpan JoinAge{ get{ return TimeSpan.FromDays( 0.0 ); } }
-		public virtual TimeSpan JoinGameAge{ get{ return TimeSpan.FromDays( 2.0 ); } }
-		public virtual TimeSpan QuitAge{ get{ return TimeSpan.FromDays( 7.0 ); } }
-		public virtual TimeSpan QuitGameAge{ get{ return TimeSpan.FromDays( 4.0 ); } }
+		public virtual TimeSpan JoinAge => TimeSpan.FromDays( 0.0 );
+		public virtual TimeSpan JoinGameAge => TimeSpan.FromDays( 2.0 );
+		public virtual TimeSpan QuitAge => TimeSpan.FromDays( 7.0 );
+		public virtual TimeSpan QuitGameAge => TimeSpan.FromDays( 4.0 );
 
 		public override void InitSBInfo()
 		{

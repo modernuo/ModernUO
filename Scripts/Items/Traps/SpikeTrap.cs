@@ -38,7 +38,7 @@ namespace Server.Items
 
 		public bool Extended
 		{
-			get{ return ( ItemID == GetExtendedID( this.Type ) ); }
+			get => ( ItemID == GetExtendedID( this.Type ) );
 			set
 			{
 				if ( value )

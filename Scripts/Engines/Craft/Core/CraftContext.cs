@@ -19,11 +19,21 @@ namespace Server.Engines.Craft
 		private CraftMarkOption m_MarkOption;
 
 		public List<CraftItem> Items  => m_Items;
-		public int LastResourceIndex{ get{ return m_LastResourceIndex; } set{ m_LastResourceIndex = value; } }
-		public int LastResourceIndex2{ get{ return m_LastResourceIndex2; } set{ m_LastResourceIndex2 = value; } }
-		public int LastGroupIndex{ get{ return m_LastGroupIndex; } set{ m_LastGroupIndex = value; } }
-		public bool DoNotColor{ get{ return m_DoNotColor; } set{ m_DoNotColor = value; } }
-		public CraftMarkOption MarkOption{ get{ return m_MarkOption; } set{ m_MarkOption = value; } }
+		public int LastResourceIndex{ get => m_LastResourceIndex;
+			set => m_LastResourceIndex = value;
+		}
+		public int LastResourceIndex2{ get => m_LastResourceIndex2;
+			set => m_LastResourceIndex2 = value;
+		}
+		public int LastGroupIndex{ get => m_LastGroupIndex;
+			set => m_LastGroupIndex = value;
+		}
+		public bool DoNotColor{ get => m_DoNotColor;
+			set => m_DoNotColor = value;
+		}
+		public CraftMarkOption MarkOption{ get => m_MarkOption;
+			set => m_MarkOption = value;
+		}
 
 		public CraftContext()
 		{

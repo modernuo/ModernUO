@@ -10,37 +10,28 @@ namespace Server.Gumps
 		protected GumpBackground m_Background;
 		protected GumpImageTiled m_Offset;
 
-		public int CurrentPage
-		{
-			get{ return m_CurrentPage; }
-		}
+		public int CurrentPage => m_CurrentPage;
 
-		public int CurrentX
-		{
-			get{ return m_CurrentX; }
-		}
+		public int CurrentX => m_CurrentX;
 
-		public int CurrentY
-		{
-			get{ return m_CurrentY; }
-		}
+		public int CurrentY => m_CurrentY;
 
 		public BaseGridGump( int x, int y ) : base( x, y )
 		{
 		}
 
-		public virtual int BorderSize{ get{ return 10; } }
-		public virtual int OffsetSize{ get{ return 1; } }
+		public virtual int BorderSize => 10;
+		public virtual int OffsetSize => 1;
 
-		public virtual int EntryHeight{ get{ return 20; } }
+		public virtual int EntryHeight => 20;
 
-		public virtual int OffsetGumpID{ get{ return 0x0A40; } }
-		public virtual int HeaderGumpID{ get{ return 0x0E14; } }
-		public virtual int  EntryGumpID{ get{ return 0x0BBC; } }
-		public virtual int   BackGumpID{ get{ return 0x13BE; } }
+		public virtual int OffsetGumpID => 0x0A40;
+		public virtual int HeaderGumpID => 0x0E14;
+		public virtual int  EntryGumpID => 0x0BBC;
+		public virtual int   BackGumpID => 0x13BE;
 
-		public virtual int TextHue{ get{ return 0; } }
-		public virtual int TextOffsetX{ get{ return 2; } }
+		public virtual int TextHue => 0;
+		public virtual int TextOffsetX => 2;
 
 		public const int ArrowLeftID1 = 0x15E3;
 		public const int ArrowLeftID2 = 0x15E7;

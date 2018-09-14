@@ -75,7 +75,9 @@ namespace Server
 			private int m_LastDamage;
 			private int m_Index;
 
-			public Mobile From{ get{ return m_From; } set{ m_From = value; } }
+			public Mobile From{ get => m_From;
+				set => m_From = value;
+			}
 
 			public PoisonTimer( Mobile m, PoisonImpl p ) : base( p.m_Delay, p.m_Interval )
 			{

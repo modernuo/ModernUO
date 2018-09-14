@@ -29,7 +29,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int State
 		{
-			get{ return m_State; }
+			get => m_State;
 			set
 			{
 				m_State = value;
@@ -45,22 +45,22 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Maintain
 		{
-			get{ return m_Maintain; }
-			set{ m_Maintain = value; }
+			get => m_Maintain;
+			set => m_Maintain = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Improve
 		{
-			get{ return m_Improve; }
-			set{ m_Improve = value; }
+			get => m_Improve;
+			set => m_Improve = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Added
 		{
-			get{ return m_Added; }
-			set{ m_Added = value; }
+			get => m_Added;
+			set => m_Added = value;
 		}
 
 		public AquariumState()

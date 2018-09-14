@@ -14,10 +14,7 @@ namespace Server.Items
 		private int m_LiveCreatures;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int LiveCreatures
-		{
-			get{ return m_LiveCreatures; }
-		}
+		public int LiveCreatures => m_LiveCreatures;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int DeadCreatures
@@ -57,10 +54,7 @@ namespace Server.Items
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsFull
-		{
-			get{ return ( Items.Count >= MaxItems ); }
-		}
+		public bool IsFull => ( Items.Count >= MaxItems );
 
 		// vacation info
 		private int m_VacationLeft;
@@ -68,7 +62,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int VacationLeft
 		{
-			get{ return m_VacationLeft; }
+			get => m_VacationLeft;
 			set{ m_VacationLeft = value; InvalidateProperties(); }
 		}
 
@@ -79,37 +73,31 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AquariumState Food
 		{
-			get{ return m_Food; }
+			get => m_Food;
 			set{ m_Food = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AquariumState Water
 		{
-			get{ return m_Water; }
+			get => m_Water;
 			set{ m_Water = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool OptimalState
-		{
-			get{ return ( m_Food.State == (int) FoodState.Full && m_Water.State == (int) WaterState.Strong ); }
-		}
+		public bool OptimalState => ( m_Food.State == (int) FoodState.Full && m_Water.State == (int) WaterState.Strong );
 
 		// events
 		private List<int> m_Events;
 		private bool m_RewardAvailable;
 		private bool m_EvaluateDay;
 
-		public List<int> Events
-		{
-			get{ return m_Events; }
-		}
+		public List<int> Events => m_Events;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool RewardAvailable
 		{
-			get{ return m_RewardAvailable; }
+			get => m_RewardAvailable;
 			set{ m_RewardAvailable = value; InvalidateProperties(); }
 		}
 
@@ -941,10 +929,8 @@ namespace Server.Items
 			0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
 		};
 
-		public static int[] FishHues
-		{
-			get{ return m_FishHues; }
-		}
+		public static int[] FishHues => m_FishHues;
+
 		#endregion
 
 		#region Context entries

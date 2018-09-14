@@ -34,25 +34,22 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; }
+			get => m_IsRewardItem;
+			set => m_IsRewardItem = value;
 		}
 
 		private MiningCartType m_CartType;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public MiningCartType CartType
-		{
-			get{ return m_CartType; }
-		}
+		public MiningCartType CartType => m_CartType;
 
 		private int m_Gems;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Gems
 		{
-			get{ return m_Gems; }
-			set{ m_Gems = value; }
+			get => m_Gems;
+			set => m_Gems = value;
 		}
 
 		private int m_Ore;
@@ -60,8 +57,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Ore
 		{
-			get{ return m_Ore; }
-			set{ m_Ore = value; }
+			get => m_Ore;
+			set => m_Ore = value;
 		}
 
 		private Timer m_Timer;
@@ -327,7 +324,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
@@ -336,8 +333,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Gems
 		{
-			get{ return m_Gems; }
-			set{ m_Gems = value; }
+			get => m_Gems;
+			set => m_Gems = value;
 		}
 
 		private int m_Ore;
@@ -345,8 +342,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Ore
 		{
-			get{ return m_Ore; }
-			set{ m_Ore = value; }
+			get => m_Ore;
+			set => m_Ore = value;
 		}
 
 		[Constructible]

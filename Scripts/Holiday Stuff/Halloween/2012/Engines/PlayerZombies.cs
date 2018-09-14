@@ -8,7 +8,9 @@ namespace Server.Engines.Events
 {
 	public class HalloweenHauntings
 	{
-		public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get { return m_ReAnimated; } set { m_ReAnimated = value; } }
+		public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get => m_ReAnimated;
+			set => m_ReAnimated = value;
+		}
 
 		private static Timer m_Timer;
 		private static Timer m_ClearTimer;

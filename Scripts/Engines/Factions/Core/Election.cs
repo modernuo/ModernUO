@@ -20,15 +20,16 @@ namespace Server.Factions
 		private ElectionState m_State;
 		private DateTime m_LastStateTime;
 
-		public Faction Faction{ get{ return m_Faction; } }
+		public Faction Faction => m_Faction;
 
 		public List<Candidate> Candidates  => m_Candidates;
 
-		public ElectionState State{ get{ return m_State; } set{ m_State = value; m_LastStateTime = DateTime.UtcNow; } }
-		public DateTime LastStateTime{ get{ return m_LastStateTime; } }
+		public ElectionState State{ get => m_State;
+			set{ m_State = value; m_LastStateTime = DateTime.UtcNow; } }
+		public DateTime LastStateTime => m_LastStateTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public ElectionState CurrentState{ get{ return m_State; } }
+		public ElectionState CurrentState => m_State;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public TimeSpan NextStateTime
@@ -383,25 +384,13 @@ namespace Server.Factions
 		private IPAddress m_Address;
 		private DateTime m_Time;
 
-		public Mobile From
-		{
-			get{ return m_From; }
-		}
+		public Mobile From => m_From;
 
-		public Mobile Candidate
-		{
-			get{ return m_Candidate; }
-		}
+		public Mobile Candidate => m_Candidate;
 
-		public IPAddress Address
-		{
-			get{ return m_Address; }
-		}
+		public IPAddress Address => m_Address;
 
-		public DateTime Time
-		{
-			get{ return m_Time; }
-		}
+		public DateTime Time => m_Time;
 
 		public object[] AcquireFields()
 		{
@@ -480,10 +469,10 @@ namespace Server.Factions
 		private Mobile m_Mobile;
 		private List<Voter> m_Voters;
 
-		public Mobile Mobile{ get{ return m_Mobile; } }
+		public Mobile Mobile => m_Mobile;
 		public List<Voter> Voters  => m_Voters;
 
-		public int Votes{ get{ return m_Voters.Count; } }
+		public int Votes => m_Voters.Count;
 
 		public void CleanMuleVotes()
 		{

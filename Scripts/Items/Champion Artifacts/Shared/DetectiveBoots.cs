@@ -16,7 +16,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Level
 		{
-			get{ return m_Level; }
+			get => m_Level;
 			set{ m_Level = Math.Max( Math.Min( 2, value), 0 ); Attributes.BonusInt = 2 + m_Level; InvalidateProperties(); }
 		}
 

@@ -21,8 +21,10 @@ namespace Server.Factions.AI
 		private Faction m_Faction;
 		private ReactionType m_Type;
 
-		public Faction Faction{ get{ return m_Faction; } }
-		public ReactionType Type{ get{ return m_Type; } set{ m_Type = value; } }
+		public Faction Faction => m_Faction;
+		public ReactionType Type{ get => m_Type;
+			set => m_Type = value;
+		}
 
 		public Reaction( Faction faction, ReactionType type )
 		{
@@ -63,10 +65,14 @@ namespace Server.Factions.AI
 		private MovementType m_Movement;
 		private Mobile m_Follow;
 
-		public BaseFactionGuard Guard{ get{ return m_Guard; } }
+		public BaseFactionGuard Guard => m_Guard;
 
-		public MovementType Movement{ get{ return m_Movement; } set{ m_Movement = value; } }
-		public Mobile Follow{ get{ return m_Follow; } set{ m_Follow = value; } }
+		public MovementType Movement{ get => m_Movement;
+			set => m_Movement = value;
+		}
+		public Mobile Follow{ get => m_Follow;
+			set => m_Follow = value;
+		}
 
 		public Reaction GetReaction( Faction faction )
 		{

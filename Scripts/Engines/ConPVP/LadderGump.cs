@@ -12,14 +12,11 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public LadderController Ladder
 		{
-			get{ return m_Ladder; }
-			set{ m_Ladder = value; }
+			get => m_Ladder;
+			set => m_Ladder = value;
 		}
 
-		public override string DefaultName
-		{
-			get { return "1v1 leaderboard"; }
-		}
+		public override string DefaultName => "1v1 leaderboard";
 
 		[Constructible]
 		public LadderItem() : base( 0x117F )

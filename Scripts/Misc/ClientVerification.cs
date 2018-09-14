@@ -31,62 +31,32 @@ namespace Server.Misc
 
 		public static ClientVersion Required
 		{
-			get
-			{
-				return m_Required;
-			}
-			set
-			{
-				m_Required = value;
-			}
+			get => m_Required;
+			set => m_Required = value;
 		}
 
 		public static bool AllowRegular
 		{
-			get
-			{
-				return m_AllowRegular;
-			}
-			set
-			{
-				m_AllowRegular = value;
-			}
+			get => m_AllowRegular;
+			set => m_AllowRegular = value;
 		}
 
 		public static bool AllowUOTD
 		{
-			get
-			{
-				return m_AllowUOTD;
-			}
-			set
-			{
-				m_AllowUOTD = value;
-			}
+			get => m_AllowUOTD;
+			set => m_AllowUOTD = value;
 		}
 
 		public static bool AllowGod
 		{
-			get
-			{
-				return m_AllowGod;
-			}
-			set
-			{
-				m_AllowGod = value;
-			}
+			get => m_AllowGod;
+			set => m_AllowGod = value;
 		}
 
 		public static TimeSpan KickDelay
 		{
-			get
-			{
-				return m_KickDelay;
-			}
-			set
-			{
-				m_KickDelay = value;
-			}
+			get => m_KickDelay;
+			set => m_KickDelay = value;
 		}
 
 		public static void Initialize()

@@ -14,21 +14,21 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BaseAddonContainer Addon
 		{
-			get { return m_Addon; }
-			set { m_Addon = value; }
+			get => m_Addon;
+			set => m_Addon = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D Offset
 		{
-			get { return m_Offset; }
-			set { m_Offset = value; }
+			get => m_Offset;
+			set => m_Offset = value;
 		}
 
 		[Hue, CommandProperty( AccessLevel.GameMaster )]
 		public override int Hue
 		{
-			get { return base.Hue; }
+			get => base.Hue;
 			set
 			{
 				base.Hue = value;

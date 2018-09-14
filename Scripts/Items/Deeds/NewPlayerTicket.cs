@@ -11,8 +11,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Owner
 		{
-			get{ return m_Owner; }
-			set{ m_Owner = value; }
+			get => m_Owner;
+			set => m_Owner = value;
 		}
 
 		public override int LabelNumber => 1062094; // a young player ticket

@@ -31,7 +31,7 @@ namespace Server.Items
 
 		public int Quantity
 		{
-			get{ return 500; }
+			get => 500;
 			set{}
 		}
 	}

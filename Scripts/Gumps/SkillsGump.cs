@@ -428,8 +428,8 @@ namespace Server.Gumps
 		private string m_Name;
 		private SkillName[] m_Skills;
 
-		public string Name{ get{ return m_Name; } }
-		public SkillName[] Skills{ get{ return m_Skills; } }
+		public string Name => m_Name;
+		public SkillName[] Skills => m_Skills;
 
 		public SkillsGumpGroup( string name, SkillName[] skills )
 		{
@@ -540,9 +540,6 @@ namespace Server.Gumps
 				} )
 			};
 
-		public static SkillsGumpGroup[] Groups
-		{
-			get{ return m_Groups; }
-		}
+		public static SkillsGumpGroup[] Groups => m_Groups;
 	}
 }

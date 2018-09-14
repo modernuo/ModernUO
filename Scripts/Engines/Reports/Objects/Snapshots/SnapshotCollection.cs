@@ -32,14 +32,8 @@ namespace Server.Engines.Reports
         /// </summary>
         public Server.Engines.Reports.Snapshot this[int index]
         {
-            get
-            {
-                return ((Server.Engines.Reports.Snapshot)(this.List[index]));
-            }
-            set
-            {
-                this.List[index] = value;
-            }
+            get => ((Server.Engines.Reports.Snapshot)(this.List[index]));
+	        set => this.List[index] = value;
         }
         
         /// <summary>

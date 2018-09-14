@@ -6,7 +6,7 @@ namespace Server.Mobiles
 	public class Scribe : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override NpcGuild NpcGuild => NpcGuild.MagesGuild;
 
@@ -25,10 +25,7 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBScribe() );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals; }
-		}
+		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
 
 		public override void InitOutfit()
 		{

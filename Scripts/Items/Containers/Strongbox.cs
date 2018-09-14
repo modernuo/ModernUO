@@ -24,10 +24,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Owner
 		{
-			get
-			{
-				return m_Owner;
-			}
+			get => m_Owner;
 			set
 			{
 				m_Owner = value;
@@ -91,13 +88,7 @@ namespace Server.Items
 			}
 		}
 
-		public override TimeSpan DecayTime
-		{
-			get
-			{
-				return TimeSpan.FromMinutes( 30.0 );
-			}
-		}
+		public override TimeSpan DecayTime => TimeSpan.FromMinutes( 30.0 );
 
 		public override void AddNameProperty( ObjectPropertyList list )
 		{

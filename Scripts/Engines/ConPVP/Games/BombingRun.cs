@@ -788,7 +788,8 @@ namespace Server.Engines.ConPVP
 		private bool m_North = false;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool North { get { return m_North; } set { m_North = value; Remake(); } }
+		public bool North { get => m_North;
+			set { m_North = value; Remake(); } }
 
 		private static AddonComponent SetHue( AddonComponent ac, int hue )
 		{
@@ -908,7 +909,7 @@ namespace Server.Engines.ConPVP
 
 		public BRTeamInfo Team
 		{
-			get { return m_Team; }
+			get => m_Team;
 			set
 			{
 				m_Team = value;
@@ -1190,17 +1191,11 @@ namespace Server.Engines.ConPVP
 			return res;
 		}
 
-		public string Name
-		{
-			get { return m_Player.Name; }
-		}
+		public string Name => m_Player.Name;
 
 		public int Kills
 		{
-			get
-			{
-				return m_Kills;
-			}
+			get => m_Kills;
 			set
 			{
 				m_TeamInfo.Kills += ( value - m_Kills );
@@ -1210,10 +1205,7 @@ namespace Server.Engines.ConPVP
 
 		public int Captures
 		{
-			get
-			{
-				return m_Captures;
-			}
+			get => m_Captures;
 			set
 			{
 				m_TeamInfo.Captures += ( value - m_Captures );
@@ -1223,10 +1215,7 @@ namespace Server.Engines.ConPVP
 
 		public int Score
 		{
-			get
-			{
-				return m_Score;
-			}
+			get => m_Score;
 			set
 			{
 				m_TeamInfo.Score += ( value - m_Score );
@@ -1277,38 +1266,40 @@ namespace Server.Engines.ConPVP
 			return res;
 		}
 
-		public string Name
-		{
-			get { return String.Format( "{0} Team", m_Name ); }
-		}
+		public string Name => String.Format( "{0} Team", m_Name );
 
-		public BRGame Game { get { return m_Game; } set { m_Game = value; } }
+		public BRGame Game { get => m_Game;
+			set => m_Game = value;
+		}
 		public int TeamID  => m_TeamID;
 
-		public int Kills { get { return m_Kills; } set { m_Kills = value; } }
-		public int Captures { get { return m_Captures; } set { m_Captures = value; } }
+		public int Kills { get => m_Kills;
+			set => m_Kills = value;
+		}
+		public int Captures { get => m_Captures;
+			set => m_Captures = value;
+		}
 
-		public int Score { get { return m_Score; } set { m_Score = value; } }
+		public int Score { get => m_Score;
+			set => m_Score = value;
+		}
 
 		private BRPlayerInfo m_Leader;
 
 		public BRPlayerInfo Leader
 		{
-			get { return m_Leader; }
-			set { m_Leader = value; }
+			get => m_Leader;
+			set => m_Leader = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BRBoard Board
 		{
-			get { return m_Board; }
-			set { m_Board = value; }
+			get => m_Board;
+			set => m_Board = value;
 		}
 
-		public Hashtable Players
-		{
-			get { return m_Players; }
-		}
+		public Hashtable Players => m_Players;
 
 		public BRPlayerInfo this[Mobile mob]
 		{
@@ -1327,21 +1318,21 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Color
 		{
-			get { return m_Color; }
-			set { m_Color = value; }
+			get => m_Color;
+			set => m_Color = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string TeamName
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BRGoal Goal
 		{
-			get { return m_Goal; }
+			get => m_Goal;
 			set
 			{
 				m_Goal = value;
@@ -1423,29 +1414,33 @@ namespace Server.Engines.ConPVP
 		public BRTeamInfo[] TeamInfo  => m_TeamInfo;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BRTeamInfo Team1 { get { return m_TeamInfo[0]; } set { } }
+		public BRTeamInfo Team1 { get => m_TeamInfo[0];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BRTeamInfo Team2 { get { return m_TeamInfo[1]; } set { } }
+		public BRTeamInfo Team2 { get => m_TeamInfo[1];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BRTeamInfo Team3 { get { return m_TeamInfo[2]; } set { } }
+		public BRTeamInfo Team3 { get => m_TeamInfo[2];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BRTeamInfo Team4 { get { return m_TeamInfo[3]; } set { } }
+		public BRTeamInfo Team4 { get => m_TeamInfo[3];
+			set { } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan Duration
 		{
-			get { return m_Duration; }
-			set { m_Duration = value; }
+			get => m_Duration;
+			set => m_Duration = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D BombHome
 		{
-			get { return m_BombHome; }
-			set { m_BombHome = value; }
+			get => m_BombHome;
+			set => m_BombHome = value;
 		}
 
 		public override string Title => "Bombing Run";

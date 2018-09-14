@@ -5,13 +5,10 @@ namespace Server.Items
 {
 	public abstract class BaseMagicFish : Item
 	{
-		public virtual int Bonus{ get{ return 0; } }
-		public virtual StatType Type{ get{ return StatType.Str; } }
+		public virtual int Bonus => 0;
+		public virtual StatType Type => StatType.Str;
 
-		public override double DefaultWeight
-		{
-			get { return 1.0; }
-		}
+		public override double DefaultWeight => 1.0;
 
 		public BaseMagicFish( int hue ) : base( 0xDD6 )
 		{

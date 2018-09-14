@@ -2,8 +2,8 @@
 {
 	public class GiftBoxHues
 	{
-		public static int RandomGiftBoxHue{ get { return m_NormalHues[Utility.Random(m_NormalHues.Length)]; }}
-		public static int RandomNeonBoxHue{ get { return m_NeonHues[Utility.Random(m_NeonHues.Length)]; }}
+		public static int RandomGiftBoxHue => m_NormalHues[Utility.Random(m_NormalHues.Length)];
+		public static int RandomNeonBoxHue => m_NeonHues[Utility.Random(m_NeonHues.Length)];
 
 		/* there's possibly a couple more, but this is what we could verify on OSI */
 

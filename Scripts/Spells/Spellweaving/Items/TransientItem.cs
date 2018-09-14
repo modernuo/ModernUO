@@ -9,8 +9,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan LifeSpan
 		{
-			get { return m_LifeSpan; }
-			set { m_LifeSpan = value; }
+			get => m_LifeSpan;
+			set => m_LifeSpan = value;
 		}
 
 		private DateTime m_CreationTime;
@@ -18,8 +18,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime CreationTime
 		{
-			get { return m_CreationTime; }
-			set { m_CreationTime = value; }
+			get => m_CreationTime;
+			set => m_CreationTime = value;
 		}
 
 		private Timer m_Timer;

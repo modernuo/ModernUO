@@ -14,22 +14,19 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int TotalDevoured
 		{
-			get { return m_DevourTotal; }
-			set { m_DevourTotal = value; }
+			get => m_DevourTotal;
+			set => m_DevourTotal = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int DevourGoal
 		{
-			get { return ( IsParagon ? m_DevourGoal + 25 : m_DevourGoal ); }
-			set { m_DevourGoal = value; }
+			get => ( IsParagon ? m_DevourGoal + 25 : m_DevourGoal );
+			set => m_DevourGoal = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool HasMetalChest
-		{
-			get { return m_HasMetalChest; }
-		}
+		public bool HasMetalChest => m_HasMetalChest;
 
 		public override string DefaultName => "a plague beast";
 

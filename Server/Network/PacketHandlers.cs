@@ -64,10 +64,7 @@ namespace Server.Network
 		private static EncodedPacketHandler[] m_EncodedHandlersLow;
 		private static Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh;
 
-		public static PacketHandler[] Handlers
-		{
-			get{ return m_Handlers; }
-		}
+		public static PacketHandler[] Handlers => m_Handlers;
 
 		static PacketHandlers()
 		{
@@ -1488,8 +1485,8 @@ namespace Server.Network
 
 		public static bool SingleClickProps
 		{
-			get{ return m_SingleClickProps; }
-			set{ m_SingleClickProps = value; }
+			get => m_SingleClickProps;
+			set => m_SingleClickProps = value;
 		}
 
 		public static void LookReq( NetState state, PacketReader pvSrc )
@@ -1590,7 +1587,9 @@ namespace Server.Network
 				128
 			};
 
-		public static int[] ValidAnimations{ get{ return m_ValidAnimations; } set{ m_ValidAnimations = value; } }
+		public static int[] ValidAnimations{ get => m_ValidAnimations;
+			set => m_ValidAnimations = value;
+		}
 
 		public static void Animate( NetState state, PacketReader pvSrc )
 		{
@@ -2479,8 +2478,8 @@ namespace Server.Network
 
 		public static bool ClientVerification
 		{
-			get{ return m_ClientVerification; }
-			set{ m_ClientVerification = value; }
+			get => m_ClientVerification;
+			set => m_ClientVerification = value;
 		}
 
 		internal struct AuthIDPersistence {

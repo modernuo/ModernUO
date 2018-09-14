@@ -29,10 +29,10 @@ namespace Server.Misc
 			private int angle;
 			private int quadrant;
 			
-			public Point2D Point{ get{ return point; } }
-			public int Angle{ get{ return angle; } }
-			public int Quadrant{ get{ return quadrant; } }
-			
+			public Point2D Point => point;
+			public int Angle => angle;
+			public int Quadrant => quadrant;
+
 			public CirclePoint( Point2D point, int angle, int quadrant )
 			{
 				this.point = point;

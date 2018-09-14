@@ -9,17 +9,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CraftResource Resource
 		{
-			get{ return m_Resource; }
+			get => m_Resource;
 			set{ m_Resource = value; InvalidateProperties(); }
 		}
 
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return true; } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => true;
 
 		public override void Serialize( GenericWriter writer )
 		{

@@ -15,62 +15,35 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Picker
 		{
-			get
-			{
-				return m_Picker;
-			}
-			set
-			{
-				m_Picker = value;
-			}
+			get => m_Picker;
+			set => m_Picker = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxLockLevel
 		{
-			get
-			{
-				return m_MaxLockLevel;
-			}
-			set
-			{
-				m_MaxLockLevel = value;
-			}
+			get => m_MaxLockLevel;
+			set => m_MaxLockLevel = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int LockLevel
 		{
-			get
-			{
-				return m_LockLevel;
-			}
-			set
-			{
-				m_LockLevel = value;
-			}
+			get => m_LockLevel;
+			set => m_LockLevel = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int RequiredSkill
 		{
-			get
-			{
-				return m_RequiredSkill;
-			}
-			set
-			{
-				m_RequiredSkill = value;
-			}
+			get => m_RequiredSkill;
+			set => m_RequiredSkill = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual bool Locked
 		{
-			get
-			{
-				return m_Locked;
-			}
+			get => m_Locked;
 			set
 			{
 				m_Locked = value;
@@ -85,35 +58,17 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public uint KeyValue
 		{
-			get
-			{
-				return m_KeyValue;
-			}
-			set
-			{
-				m_KeyValue = value;
-			}
+			get => m_KeyValue;
+			set => m_KeyValue = value;
 		}
 
-		public override bool TrapOnOpen
-		{
-			get
-			{
-				return !m_TrapOnLockpick;
-			}
-		}
+		public override bool TrapOnOpen => !m_TrapOnLockpick;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool TrapOnLockpick
 		{
-			get
-			{
-				return m_TrapOnLockpick;
-			}
-			set
-			{
-				m_TrapOnLockpick = value;
-			}
+			get => m_TrapOnLockpick;
+			set => m_TrapOnLockpick = value;
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -403,8 +358,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsShipwreckedItem
 		{
-			get { return m_IsShipwreckedItem; }
-			set { m_IsShipwreckedItem = value; }
+			get => m_IsShipwreckedItem;
+			set => m_IsShipwreckedItem = value;
 		}
 		#endregion
 

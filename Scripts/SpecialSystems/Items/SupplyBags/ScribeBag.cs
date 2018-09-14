@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class ScribeBag : Bag
 	{
-		public override string DefaultName
-		{
-			get { return "a Scribe Kit"; }
-		}
+		public override string DefaultName => "a Scribe Kit";
 
 		[Constructible]
 		public ScribeBag() : this( 1 )

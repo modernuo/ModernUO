@@ -25,34 +25,16 @@ namespace Server.Engines.Craft
 			m_Message = message;
 		}
 
-		public Type ItemType
-		{
-			get { return m_Type; }
-		}
+		public Type ItemType => m_Type;
 
-		public string NameString
-		{
-			get { return m_NameString; }
-		}
+		public string NameString => m_NameString;
 
-		public int NameNumber
-		{
-			get { return m_NameNumber; }
-		}
+		public int NameNumber => m_NameNumber;
 
-		public int GenericNameNumber
-		{
-			get { return m_GenericNameNumber; }
-		}
+		public int GenericNameNumber => m_GenericNameNumber;
 
-		public object Message
-		{
-			get { return m_Message; }
-		}
+		public object Message => m_Message;
 
-		public double RequiredSkill
-		{
-			get { return m_ReqSkill; }
-		}
+		public double RequiredSkill => m_ReqSkill;
 	}
 }

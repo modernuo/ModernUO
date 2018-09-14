@@ -13,7 +13,7 @@ namespace Server.Factions
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Faction Faction
 		{
-			get{ return m_Faction; }
+			get => m_Faction;
 			set
 			{
 				m_Faction = value;

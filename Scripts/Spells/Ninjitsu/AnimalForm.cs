@@ -339,7 +339,7 @@ namespace Server.Spells.Ninjitsu
 			public int Tooltip  => m_Tooltip;
 			public double ReqSkill  => m_ReqSkill;
 			public int BodyMod  => m_BodyMod;
-			public int HueMod { get { return Utility.RandomMinMax( m_HueModMin, m_HueModMax ); } }
+			public int HueMod => Utility.RandomMinMax( m_HueModMin, m_HueModMax );
 			public bool StealthBonus  => m_StealthBonus;
 			public bool SpeedBoost  => m_SpeedBoost;
 			public bool StealingBonus  => m_StealingBonus;

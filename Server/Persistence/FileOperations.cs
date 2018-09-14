@@ -46,43 +46,23 @@ namespace Server {
 		private static bool unbuffered = true;
 
 		public static int BufferSize {
-			get {
-				return bufferSize;
-			}
-			set {
-				bufferSize = value;
-			}
+			get => bufferSize;
+			set => bufferSize = value;
 		}
 
 		public static int Concurrency {
-			get {
-				return concurrency;
-			}
-			set {
-				concurrency = value;
-			}
+			get => concurrency;
+			set => concurrency = value;
 		}
 
 		public static bool Unbuffered {
-			get {
-				return unbuffered;
-			}
-			set {
-				unbuffered = value;
-			}
+			get => unbuffered;
+			set => unbuffered = value;
 		}
 
-		public static bool AreSynchronous {
-			get {
-				return ( concurrency < 1 );
-			}
-		}
+		public static bool AreSynchronous => ( concurrency < 1 );
 
-		public static bool AreAsynchronous {
-			get {
-				return ( concurrency > 0 );
-			}
-		}
+		public static bool AreAsynchronous => ( concurrency > 0 );
 
 		public static FileStream OpenSequentialStream( string path, FileMode mode, FileAccess access, FileShare share ) {
 			FileOptions options = FileOptions.SequentialScan;

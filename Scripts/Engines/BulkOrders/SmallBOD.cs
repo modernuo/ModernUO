@@ -16,28 +16,37 @@ namespace Server.Engines.BulkOrders
 		private BulkMaterialType m_Material;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AmountCur{ get{ return m_AmountCur; } set{ m_AmountCur = value; InvalidateProperties(); } }
+		public int AmountCur{ get => m_AmountCur;
+			set{ m_AmountCur = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int AmountMax{ get{ return m_AmountMax; } set{ m_AmountMax = value; InvalidateProperties(); } }
+		public int AmountMax{ get => m_AmountMax;
+			set{ m_AmountMax = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Type Type{ get{ return m_Type; } set{ m_Type = value; } }
+		public Type Type{ get => m_Type;
+			set => m_Type = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Number{ get{ return m_Number; } set{ m_Number = value; InvalidateProperties(); } }
+		public int Number{ get => m_Number;
+			set{ m_Number = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Graphic{ get{ return m_Graphic; } set{ m_Graphic = value; } }
+		public int Graphic{ get => m_Graphic;
+			set => m_Graphic = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool RequireExceptional{ get{ return m_RequireExceptional; } set{ m_RequireExceptional = value; InvalidateProperties(); } }
+		public bool RequireExceptional{ get => m_RequireExceptional;
+			set{ m_RequireExceptional = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public BulkMaterialType Material{ get{ return m_Material; } set{ m_Material = value; InvalidateProperties(); } }
+		public BulkMaterialType Material{ get => m_Material;
+			set{ m_Material = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Complete{ get{ return ( m_AmountCur == m_AmountMax ); } }
+		public bool Complete => ( m_AmountCur == m_AmountMax );
 
 		public override int LabelNumber => 1045151; // a bulk order deed
 

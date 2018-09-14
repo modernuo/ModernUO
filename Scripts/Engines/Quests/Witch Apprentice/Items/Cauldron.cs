@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class Cauldron : Item
 	{
-		public override string DefaultName
-		{
-			get { return "a cauldron"; }
-		}
+		public override string DefaultName => "a cauldron";
 
 		[Constructible]
 		public Cauldron() : base( 0x9ED )

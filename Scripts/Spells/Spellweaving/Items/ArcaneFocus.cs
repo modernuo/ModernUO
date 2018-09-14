@@ -11,8 +11,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int StrengthBonus
 		{
-			get { return m_StrengthBonus; }
-			set { m_StrengthBonus = value; }
+			get => m_StrengthBonus;
+			set => m_StrengthBonus = value;
 		}
 
 		[Constructible]

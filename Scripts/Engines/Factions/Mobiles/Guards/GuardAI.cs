@@ -30,9 +30,9 @@ namespace Server.Factions
 		private TimeSpan m_Hold;
 		private int m_Chance;
 
-		public Type Spell{ get{ return m_Spell; } }
-		public TimeSpan Hold{ get{ return m_Hold; } }
-		public int Chance{ get{ return m_Chance; } }
+		public Type Spell => m_Spell;
+		public TimeSpan Hold => m_Hold;
+		public int Chance => m_Chance;
 
 		public ComboEntry( Type spell ) : this( spell, 100, TimeSpan.Zero )
 		{
@@ -55,8 +55,8 @@ namespace Server.Factions
 		private int m_Mana;
 		private ComboEntry[] m_Entries;
 
-		public int Mana{ get{ return m_Mana; } }
-		public ComboEntry[] Entries{ get{ return m_Entries; } }
+		public int Mana => m_Mana;
+		public ComboEntry[] Entries => m_Entries;
 
 		public SpellCombo( int mana, params ComboEntry[] entries )
 		{
@@ -121,15 +121,9 @@ namespace Server.Factions
 			return ( ( m_Guard.GuardAI & flag ) == flag );
 		}
 
-		public bool IsDamaged
-		{
-			get{ return ( m_Guard.Hits < m_Guard.HitsMax ); }
-		}
+		public bool IsDamaged => ( m_Guard.Hits < m_Guard.HitsMax );
 
-		public bool IsPoisoned
-		{
-			get{ return m_Guard.Poisoned; }
-		}
+		public bool IsPoisoned => m_Guard.Poisoned;
 
 		public TimeSpan TimeUntilBandage
 		{

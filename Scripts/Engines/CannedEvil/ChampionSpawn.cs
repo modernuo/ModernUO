@@ -12,14 +12,8 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SpawnSzMod
 		{
-			get
-			{
-				return ( m_SPawnSzMod < 1 || m_SPawnSzMod > 12 ) ? 12 : m_SPawnSzMod;
-			}
-			set
-			{
-				m_SPawnSzMod = ( value < 1 || value > 12 ) ? 12 : value;
-			}
+			get => ( m_SPawnSzMod < 1 || m_SPawnSzMod > 12 ) ? 12 : m_SPawnSzMod;
+			set => m_SPawnSzMod = ( value < 1 || value > 12 ) ? 12 : value;
 		}
 		private int m_SPawnSzMod;
 
@@ -56,15 +50,15 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool ConfinedRoaming
 		{
-			get { return m_ConfinedRoaming; }
-			set { m_ConfinedRoaming = value; }
+			get => m_ConfinedRoaming;
+			set => m_ConfinedRoaming = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool HasBeenAdvanced
 		{
-			get { return m_HasBeenAdvanced; }
-			set { m_HasBeenAdvanced = value; }
+			get => m_HasBeenAdvanced;
+			set => m_HasBeenAdvanced = value;
 		}
 
 		[Constructible]
@@ -123,17 +117,14 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool RandomizeType
 		{
-			get { return m_RandomizeType; }
-			set { m_RandomizeType = value; }
+			get => m_RandomizeType;
+			set => m_RandomizeType = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Kills
 		{
-			get
-			{
-				return m_Kills;
-			}
+			get => m_Kills;
 			set
 			{
 				m_Kills = value;
@@ -144,10 +135,7 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Rectangle2D SpawnArea
 		{
-			get
-			{
-				return m_SpawnArea;
-			}
+			get => m_SpawnArea;
 			set
 			{
 				m_SpawnArea = value;
@@ -159,58 +147,31 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan RestartDelay
 		{
-			get
-			{
-				return m_RestartDelay;
-			}
-			set
-			{
-				m_RestartDelay = value;
-			}
+			get => m_RestartDelay;
+			set => m_RestartDelay = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime RestartTime
-		{
-			get
-			{
-				return m_RestartTime;
-			}
-		}
+		public DateTime RestartTime => m_RestartTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan ExpireDelay
 		{
-			get
-			{
-				return m_ExpireDelay;
-			}
-			set
-			{
-				m_ExpireDelay = value;
-			}
+			get => m_ExpireDelay;
+			set => m_ExpireDelay = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime ExpireTime
 		{
-			get
-			{
-				return m_ExpireTime;
-			}
-			set
-			{
-				m_ExpireTime = value;
-			}
+			get => m_ExpireTime;
+			set => m_ExpireTime = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ChampionSpawnType Type
 		{
-			get
-			{
-				return m_Type;
-			}
+			get => m_Type;
 			set
 			{
 				m_Type = value;
@@ -221,10 +182,7 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get
-			{
-				return m_Active;
-			}
+			get => m_Active;
 			set
 			{
 				if ( value )
@@ -239,23 +197,14 @@ namespace Server.Engines.CannedEvil
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Champion
 		{
-			get
-			{
-				return m_Champion;
-			}
-			set
-			{
-				m_Champion = value;
-			}
+			get => m_Champion;
+			set => m_Champion = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Level
 		{
-			get
-			{
-				return m_RedSkulls.Count;
-			}
+			get => m_RedSkulls.Count;
 			set
 			{
 				for( int i = m_RedSkulls.Count - 1; i >= value; --i )
@@ -281,13 +230,7 @@ namespace Server.Engines.CannedEvil
 			}
 		}
 
-		public int MaxKills
-		{
-			get
-			{
-				return ( m_SPawnSzMod * ( 250 / 12 ) ) - ( Level * m_SPawnSzMod );
-			}
-		}
+		public int MaxKills => ( m_SPawnSzMod * ( 250 / 12 ) ) - ( Level * m_SPawnSzMod );
 
 		public bool IsChampionSpawn( Mobile m )
 		{
@@ -1254,10 +1197,7 @@ namespace Server.Engines.CannedEvil
 
 		private ChampionSpawn m_Spawn;
 
-		public ChampionSpawn ChampionSpawn
-		{
-			get { return m_Spawn; }
-		}
+		public ChampionSpawn ChampionSpawn => m_Spawn;
 
 		public ChampionSpawnRegion( ChampionSpawn spawn ) : base( null, spawn.Map, Region.Find( spawn.Location, spawn.Map ), spawn.SpawnArea )
 		{
@@ -1282,10 +1222,7 @@ namespace Server.Engines.CannedEvil
 
 		public ChampionSpawn Spawn  => m_Spawn;
 
-		public override string DefaultName
-		{
-			get { return "Idol of the Champion"; }
-		}
+		public override string DefaultName => "Idol of the Champion";
 
 
 		public IdolOfTheChampion( ChampionSpawn spawn ): base( 0x1F18 )

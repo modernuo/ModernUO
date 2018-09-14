@@ -39,42 +39,18 @@ namespace Server.Network
 			m_OnReceive = onReceive;
 		}
 
-		public int PacketID
-		{
-			get
-			{
-				return m_PacketID;
-			}
-		}
+		public int PacketID => m_PacketID;
 
-		public int Length
-		{
-			get
-			{
-				return m_Length;
-			}
-		}
+		public int Length => m_Length;
 
-		public OnPacketReceive OnReceive
-		{
-			get
-			{
-				return m_OnReceive;
-			}
-		}
+		public OnPacketReceive OnReceive => m_OnReceive;
 
 		public ThrottlePacketCallback ThrottleCallback
 		{
-			get{ return m_ThrottleCallback; }
-			set{ m_ThrottleCallback = value; }
+			get => m_ThrottleCallback;
+			set => m_ThrottleCallback = value;
 		}
 
-		public bool Ingame
-		{
-			get
-			{
-				return m_Ingame;
-			}
-		}
+		public bool Ingame => m_Ingame;
 	}
 }

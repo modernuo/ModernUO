@@ -480,21 +480,9 @@ namespace Server.Network
 		private int m_Number;
 		private int m_Charges;
 
-		public int Number
-		{
-			get
-			{
-				return m_Number;
-			}
-		}
+		public int Number => m_Number;
 
-		public int Charges
-		{
-			get
-			{
-				return m_Charges;
-			}
-		}
+		public int Charges => m_Charges;
 
 		public EquipInfoAttribute( int number ) : this( number, -1 )
 		{
@@ -514,37 +502,13 @@ namespace Server.Network
 		private bool m_Unidentified;
 		private EquipInfoAttribute[] m_Attributes;
 
-		public int Number
-		{
-			get
-			{
-				return m_Number;
-			}
-		}
+		public int Number => m_Number;
 
-		public Mobile Crafter
-		{
-			get
-			{
-				return m_Crafter;
-			}
-		}
+		public Mobile Crafter => m_Crafter;
 
-		public bool Unidentified
-		{
-			get
-			{
-				return m_Unidentified;
-			}
-		}
+		public bool Unidentified => m_Unidentified;
 
-		public EquipInfoAttribute[] Attributes
-		{
-			get
-			{
-				return m_Attributes;
-			}
-		}
+		public EquipInfoAttribute[] Attributes => m_Attributes;
 
 		public EquipmentInfo( int number, Mobile crafter, bool unidentified, EquipInfoAttribute[] attributes )
 		{
@@ -2391,8 +2355,12 @@ namespace Server.Network
 	{
 		private int m_TextEntries, m_Switches;
 
-		public int TextEntries { get { return m_TextEntries; } set { m_TextEntries = value; } }
-		public int Switches { get { return m_Switches; } set { m_Switches = value; } }
+		public int TextEntries { get => m_TextEntries;
+			set => m_TextEntries = value;
+		}
+		public int Switches { get => m_Switches;
+			set => m_Switches = value;
+		}
 
 		private Gump m_Gump;
 
@@ -2543,8 +2511,12 @@ namespace Server.Network
 
 		private int m_LayoutLength;
 
-		public int TextEntries{ get{ return m_TextEntries; } set{ m_TextEntries = value; } }
-		public int Switches{ get{ return m_Switches; } set{ m_Switches = value; } }
+		public int TextEntries{ get => m_TextEntries;
+			set => m_TextEntries = value;
+		}
+		public int Switches{ get => m_Switches;
+			set => m_Switches = value;
+		}
 
 		public DisplayGumpFast( Gump g ) : base( 0xB0 )
 		{
@@ -2831,7 +2803,9 @@ namespace Server.Network
 	{
 		private static FeatureFlags m_AdditionalFlags;
 
-		public static FeatureFlags Value{ get{ return m_AdditionalFlags; } set{ m_AdditionalFlags = value; } }
+		public static FeatureFlags Value{ get => m_AdditionalFlags;
+			set => m_AdditionalFlags = value;
+		}
 
 		public static SupportedFeatures Instantiate( NetState ns )
 		{
@@ -2870,14 +2844,14 @@ namespace Server.Network
 
 		public static int Maximum
 		{
-			get{ return m_Maximum; }
-			set{ m_Maximum = value; }
+			get => m_Maximum;
+			set => m_Maximum = value;
 		}
 
 		public static bool Enabled
 		{
-			get{ return m_Enabled; }
-			set{ m_Enabled = value; }
+			get => m_Enabled;
+			set => m_Enabled = value;
 		}
 
 		public static void Write( PacketWriter stream, int cur, int max )
@@ -3917,92 +3891,50 @@ namespace Server.Network
 
 		public string City
 		{
-			get
-			{
-				return m_City;
-			}
-			set
-			{
-				m_City = value;
-			}
+			get => m_City;
+			set => m_City = value;
 		}
 
 		public string Building
 		{
-			get
-			{
-				return m_Building;
-			}
-			set
-			{
-				m_Building = value;
-			}
+			get => m_Building;
+			set => m_Building = value;
 		}
 
 		public int Description
 		{
-			get
-			{
-				return m_Description;
-			}
-			set
-			{
-				m_Description = value;
-			}
+			get => m_Description;
+			set => m_Description = value;
 		}
 
 		public int X
 		{
-			get
-			{
-				return m_Location.X;
-			}
-			set
-			{
-				m_Location.X = value;
-			}
+			get => m_Location.X;
+			set => m_Location.X = value;
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Location.Y;
-			}
-			set
-			{
-				m_Location.Y = value;
-			}
+			get => m_Location.Y;
+			set => m_Location.Y = value;
 		}
 
 		public int Z
 		{
-			get
-			{
-				return m_Location.Z;
-			}
-			set
-			{
-				m_Location.Z = value;
-			}
+			get => m_Location.Z;
+			set => m_Location.Z = value;
 		}
 
 		public Point3D Location
 		{
-			get
-			{
-				return m_Location;
-			}
-			set
-			{
-				m_Location = value;
-			}
+			get => m_Location;
+			set => m_Location = value;
 		}
 
 		public Map Map
 		{
-			get{ return m_Map; }
-			set{ m_Map = value; }
+			get => m_Map;
+			set => m_Map = value;
 		}
 	}
 
@@ -4086,10 +4018,7 @@ namespace Server.Network
 	{
 		private static ThirdPartyFeature m_Disabled = 0;
 
-		public static ThirdPartyFeature DisabledFeatures
-		{
-			get { return m_Disabled; }
-		}
+		public static ThirdPartyFeature DisabledFeatures => m_Disabled;
 
 		public static void Disable( ThirdPartyFeature feature )
 		{
@@ -4206,8 +4135,8 @@ namespace Server.Network
 
 		public static CharacterListFlags AdditionalFlags
 		{
-			get{ return m_AdditionalFlags; }
-			set{ m_AdditionalFlags = value; }
+			get => m_AdditionalFlags;
+			set => m_AdditionalFlags = value;
 		}
 	}
 
@@ -4368,50 +4297,26 @@ namespace Server.Network
 
 		public string Name
 		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		public int FullPercent
 		{
-			get
-			{
-				return m_FullPercent;
-			}
-			set
-			{
-				m_FullPercent = value;
-			}
+			get => m_FullPercent;
+			set => m_FullPercent = value;
 		}
 
 		public int TimeZone
 		{
-			get
-			{
-				return m_TimeZone;
-			}
-			set
-			{
-				m_TimeZone = value;
-			}
+			get => m_TimeZone;
+			set => m_TimeZone = value;
 		}
 
 		public IPEndPoint Address
 		{
-			get
-			{
-				return m_Address;
-			}
-			set
-			{
-				m_Address = value;
-			}
+			get => m_Address;
+			set => m_Address = value;
 		}
 
 		public ServerInfo( string name, int fullPercent, TimeZone tz, IPEndPoint address )
@@ -4517,10 +4422,7 @@ namespace Server.Network
 		private int m_Length;
 		private State m_State;
 
-		public int PacketID
-		{
-			get{ return m_PacketID; }
-		}
+		public int PacketID => m_PacketID;
 
 		protected Packet( int packetID )
 		{
@@ -4553,13 +4455,7 @@ namespace Server.Network
 			}
 		}
 
-		public PacketWriter UnderlyingStream
-		{
-			get
-			{
-				return m_Stream;
-			}
-		}
+		public PacketWriter UnderlyingStream => m_Stream;
 
 		private const int CompressorBufferSize = 0x10000;
 		private static BufferPool m_CompressorBuffers = new BufferPool("Compressor", 4, CompressorBufferSize);

@@ -11,10 +11,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Bonus
 		{
-			get
-			{
-				return m_Bonus;
-			}
+			get => m_Bonus;
 			set
 			{
 				m_Bonus = value;

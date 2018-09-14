@@ -22,10 +22,7 @@ namespace Server.Items
 
 		public override int VirtualDamageBonus => 25;
 
-		public override string DefaultName
-		{
-			get { return "a tribal spear"; }
-		}
+		public override string DefaultName => "a tribal spear";
 
 		[Constructible]
 		public TribalSpear() : base( 0xF62 )

@@ -27,49 +27,49 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SuccessSound
 		{
-			get{ return m_WellSound; }
-			set{ m_WellSound = value; }
+			get => m_WellSound;
+			set => m_WellSound = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int FailureSound
 		{
-			get{ return m_BadlySound; }
-			set{ m_BadlySound = value; }
+			get => m_BadlySound;
+			set => m_BadlySound = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SlayerName Slayer
 		{
-			get{ return m_Slayer; }
+			get => m_Slayer;
 			set{ m_Slayer = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SlayerName Slayer2
 		{
-			get{ return m_Slayer2; }
+			get => m_Slayer2;
 			set{ m_Slayer2 = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public InstrumentQuality Quality
 		{
-			get{ return m_Quality; }
+			get => m_Quality;
 			set{ UnscaleUses(); m_Quality = value; InvalidateProperties(); ScaleUses(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Crafter
 		{
-			get{ return m_Crafter; }
+			get => m_Crafter;
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
 
-		public virtual int InitMinUses{ get{ return 350; } }
-		public virtual int InitMaxUses{ get{ return 450; } }
+		public virtual int InitMinUses => 350;
+		public virtual int InitMaxUses => 450;
 
-		public virtual TimeSpan ChargeReplenishRate { get { return TimeSpan.FromMinutes( 5.0 ); } }
+		public virtual TimeSpan ChargeReplenishRate => TimeSpan.FromMinutes( 5.0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int UsesRemaining
@@ -83,7 +83,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime LastReplenished
 		{
-			get { return m_LastReplenished; }
+			get => m_LastReplenished;
 			set { m_LastReplenished = value; CheckReplenishUses(); }
 		}
 
@@ -91,7 +91,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool ReplenishesCharges
 		{
-			get { return m_ReplenishesCharges; }
+			get => m_ReplenishesCharges;
 			set
 			{
 				if ( value != m_ReplenishesCharges && value )

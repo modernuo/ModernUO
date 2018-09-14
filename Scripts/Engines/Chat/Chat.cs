@@ -11,8 +11,8 @@ namespace Server.Engines.Chat
 
 		public static bool Enabled
 		{
-			get{ return m_Enabled; }
-			set{ m_Enabled = value; }
+			get => m_Enabled;
+			set => m_Enabled = value;
 		}
 
 		public static void Initialize()

@@ -9,7 +9,7 @@ namespace Server.Engines.Quests
 	{
 		private Type m_Quest;
 
-		public Type Quest{ get{ return m_Quest ; } }
+		public Type Quest => m_Quest;
 
 		public QuestOfferRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{

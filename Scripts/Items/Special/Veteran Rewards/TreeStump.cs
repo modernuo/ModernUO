@@ -25,7 +25,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
@@ -34,7 +34,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Logs
 		{
-			get{ return m_Logs; }
+			get => m_Logs;
 			set{ m_Logs = value; InvalidateProperties(); }
 		}
 
@@ -177,7 +177,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
@@ -186,7 +186,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Logs
 		{
-			get{ return m_Logs; }
+			get => m_Logs;
 			set{ m_Logs = value; InvalidateProperties(); }
 		}
 

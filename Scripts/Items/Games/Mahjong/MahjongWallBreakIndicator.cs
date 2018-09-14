@@ -19,10 +19,7 @@ namespace Server.Engines.Mahjong
 			m_Position = position;
 		}
 
-		public MahjongPieceDim Dimensions
-		{
-			get { return GetDimensions( m_Position ); }
-		}
+		public MahjongPieceDim Dimensions => GetDimensions( m_Position );
 
 		public void Move( Point2D position )
 		{

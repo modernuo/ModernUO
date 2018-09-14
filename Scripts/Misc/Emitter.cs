@@ -63,15 +63,9 @@ namespace Server
 
 		private Type[] m_ArgumentTypes;
 
-		public TypeBuilder Type
-		{
-			get { return m_TypeBuilder; }
-		}
+		public TypeBuilder Type => m_TypeBuilder;
 
-		public ILGenerator Generator
-		{
-			get { return m_Generator; }
-		}
+		public ILGenerator Generator => m_Generator;
 
 		private class CallInfo
 		{
@@ -95,10 +89,7 @@ namespace Server
 
 		private Dictionary<Type, Queue<LocalBuilder>> m_Temps;
 
-		public MethodBuilder Method
-		{
-			get { return m_Builder; }
-		}
+		public MethodBuilder Method => m_Builder;
 
 		public MethodEmitter( TypeBuilder typeBuilder )
 		{
@@ -464,10 +455,7 @@ namespace Server
 			m_Generator.Emit( OpCodes.Xor );
 		}
 
-		public Type Active
-		{
-			get { return m_Stack.Peek(); }
-		}
+		public Type Active => m_Stack.Peek();
 
 		public void Chain( Property prop )
 		{

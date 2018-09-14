@@ -63,8 +63,8 @@ namespace Server
 
 		public int Priority
 		{
-			get{ return m_Priority; }
-			set{ m_Priority = value; }
+			get => m_Priority;
+			set => m_Priority = value;
 		}
 
 		public CallPriorityAttribute( int priority )
@@ -117,13 +117,7 @@ namespace Server
 	{
 		private string[] m_Aliases;
 
-		public string[] Aliases
-		{
-			get
-			{
-				return m_Aliases;
-			}
-		}
+		public string[] Aliases => m_Aliases;
 
 		public TypeAliasAttribute( params string[] aliases )
 		{
@@ -144,13 +138,7 @@ namespace Server
 	{
 		private string[] m_Names;
 
-		public string[] Names
-		{
-			get
-			{
-				return m_Names;
-			}
-		}
+		public string[] Names => m_Names;
 
 		public CustomEnumAttribute( string[] names )
 		{
@@ -165,8 +153,8 @@ namespace Server
 
 		public AccessLevel AccessLevel
 		{
-			get { return m_AccessLevel; }
-			set { m_AccessLevel = value; }
+			get => m_AccessLevel;
+			set => m_AccessLevel = value;
 		}
 
 		public ConstructibleAttribute() : this( AccessLevel.Player )	//Lowest accesslevel for current functionality (Level determined by access to [add)
@@ -185,29 +173,11 @@ namespace Server
 		private AccessLevel m_ReadLevel, m_WriteLevel;
 		private bool m_ReadOnly;
 
-		public AccessLevel ReadLevel
-		{
-			get
-			{
-				return m_ReadLevel;
-			}
-		}
+		public AccessLevel ReadLevel => m_ReadLevel;
 
-		public AccessLevel WriteLevel
-		{
-			get
-			{
-				return m_WriteLevel;
-			}
-		}
+		public AccessLevel WriteLevel => m_WriteLevel;
 
-		public bool ReadOnly
-		{
-			get
-			{
-				return m_ReadOnly;
-			}
-		}
+		public bool ReadOnly => m_ReadOnly;
 
 		public CommandPropertyAttribute( AccessLevel level, bool readOnly )
 		{

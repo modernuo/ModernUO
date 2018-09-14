@@ -53,28 +53,10 @@ namespace Server.Gumps
 			}
 		}
 
-		public ParentNode Parent
-		{
-			get
-			{
-				return m_Parent;
-			}
-		}
+		public ParentNode Parent => m_Parent;
 
-		public object[] Children
-		{
-			get
-			{
-				return m_Children;
-			}
-		}
+		public object[] Children => m_Children;
 
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
+		public string Name => m_Name;
 	}
 }

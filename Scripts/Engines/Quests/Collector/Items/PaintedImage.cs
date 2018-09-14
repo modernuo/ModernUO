@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Collector
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ImageType Image
 		{
-			get { return m_Image; }
+			get => m_Image;
 			set { m_Image = value; InvalidateProperties(); } 
 		}
 

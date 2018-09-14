@@ -12,33 +12,33 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int InactiveItemID
 		{
-			get{ return m_InactiveItemID; }
-			set{ m_InactiveItemID = value; }
+			get => m_InactiveItemID;
+			set => m_InactiveItemID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ActiveItemID
 		{
-			get{ return m_ActiveItemID; }
-			set{ m_ActiveItemID = value; }
+			get => m_ActiveItemID;
+			set => m_ActiveItemID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int InRange
 		{
-			get{ return m_InRange; }
+			get => m_InRange;
 			set{ if ( value > 18 ) value = 18; m_InRange = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int OutRange
 		{
-			get{ return m_OutRange; }
+			get => m_OutRange;
 			set{ if ( value > 18 ) value = 18; m_OutRange = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int CurrentRange{ get{ return ItemID == InactiveItemID ? InRange : OutRange; } }
+		public int CurrentRange => ItemID == InactiveItemID ? InRange : OutRange;
 
 		[Constructible]
 		public MorphItem( int inactiveItemID, int activeItemID, int range ) : this( inactiveItemID, activeItemID, range, range )

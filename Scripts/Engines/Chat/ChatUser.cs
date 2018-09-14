@@ -18,29 +18,11 @@ namespace Server.Engines.Chat
 			m_Ignoring = new List<ChatUser>();
 		}
 
-		public Mobile Mobile
-		{
-			get
-			{
-				return m_Mobile;
-			}
-		}
+		public Mobile Mobile => m_Mobile;
 
-		public List<ChatUser> Ignored
-		{
-			get
-			{
-				return m_Ignored;
-			}
-		}
+		public List<ChatUser> Ignored => m_Ignored;
 
-		public List<ChatUser> Ignoring
-		{
-			get
-			{
-				return m_Ignoring;
-			}
-		}
+		public List<ChatUser> Ignoring => m_Ignoring;
 
 		public string Username
 		{
@@ -60,46 +42,22 @@ namespace Server.Engines.Chat
 
 		public Channel CurrentChannel
 		{
-			get
-			{
-				return m_Channel;
-			}
-			set
-			{
-				m_Channel = value;
-			}
+			get => m_Channel;
+			set => m_Channel = value;
 		}
 
-		public bool IsOnline
-		{
-			get
-			{
-				return ( m_Mobile.NetState != null );
-			}
-		}
+		public bool IsOnline => ( m_Mobile.NetState != null );
 
 		public bool Anonymous
 		{
-			get
-			{
-				return m_Anonymous;
-			}
-			set
-			{
-				m_Anonymous = value;
-			}
+			get => m_Anonymous;
+			set => m_Anonymous = value;
 		}
 
 		public bool IgnorePrivateMessage
 		{
-			get
-			{
-				return m_IgnorePrivateMessage;
-			}
-			set
-			{
-				m_IgnorePrivateMessage = value;
-			}
+			get => m_IgnorePrivateMessage;
+			set => m_IgnorePrivateMessage = value;
 		}
 
 		public const char NormalColorCharacter = '0';
@@ -153,13 +111,7 @@ namespace Server.Engines.Chat
 			return m_Ignored.Contains( check );
 		}
 
-		public bool IsModerator
-		{
-			get
-			{
-				return ( m_Channel != null && m_Channel.IsModerator( this ) );
-			}
-		}
+		public bool IsModerator => ( m_Channel != null && m_Channel.IsModerator( this ) );
 
 		public void AddIgnored( ChatUser user )
 		{

@@ -10,8 +10,8 @@ namespace Server
 		private string m_Type;
 		private string[] m_List;
 
-		public string Type{ get{ return m_Type; } }
-		public string[] List{ get{ return m_List; } }
+		public string Type => m_Type;
+		public string[] List => m_List;
 
 		public bool ContainsName( string name )
 		{

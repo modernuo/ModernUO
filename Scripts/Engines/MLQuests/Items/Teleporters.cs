@@ -12,15 +12,15 @@ namespace Server.Engines.MLQuests.Items
 		[CommandProperty(AccessLevel.GameMaster)]
 		public Type QuestType
 		{
-			get { return m_QuestType; }
+			get => m_QuestType;
 			set { m_QuestType = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public TextDefinition Message
 		{
-			get { return m_Message; }
-			set { m_Message = value; }
+			get => m_Message;
+			set => m_Message = value;
 		}
 
 		[Constructible]
@@ -114,15 +114,15 @@ namespace Server.Engines.MLQuests.Items
 		[CommandProperty(AccessLevel.GameMaster)]
 		public Type TicketType
 		{
-			get { return m_TicketType; }
+			get => m_TicketType;
 			set { m_TicketType = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty(AccessLevel.GameMaster)]
 		public TextDefinition Message
 		{
-			get { return m_Message; }
-			set { m_Message = value; }
+			get => m_Message;
+			set => m_Message = value;
 		}
 
 		[Constructible]

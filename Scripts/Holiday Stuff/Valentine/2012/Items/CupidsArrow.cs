@@ -15,21 +15,18 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string From
 		{
-			get { return m_From; }
+			get => m_From;
 			set { m_From = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string To
 		{
-			get { return m_To; }
+			get => m_To;
 			set { m_To = value; InvalidateProperties(); }
 		}
 
-		public bool IsSigned
-		{
-			get { return ( m_From != null && m_To != null ); }
-		}
+		public bool IsSigned => ( m_From != null && m_To != null );
 
 		[Constructible]
 		public CupidsArrow()

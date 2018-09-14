@@ -22,35 +22,32 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Protected
 		{
-			get { return m_Protected; }
-			set { m_Protected = value; }
+			get => m_Protected;
+			set => m_Protected = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Rectangle2D Bounds
 		{
-			get { return m_Bounds; }
-			set { m_Bounds = value; }
+			get => m_Bounds;
+			set => m_Bounds = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Width
 		{
-			get { return m_Width; }
-			set { m_Width = value; }
+			get => m_Width;
+			set => m_Width = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Height
 		{
-			get { return m_Height; }
-			set { m_Height = value; }
+			get => m_Height;
+			set => m_Height = value;
 		}
 
-		public List<Point2D> Pins
-		{
-			get { return m_Pins; }
-		}
+		public List<Point2D> Pins => m_Pins;
 
 		[Constructible]
 		public MapItem() : base( 0x14EC )

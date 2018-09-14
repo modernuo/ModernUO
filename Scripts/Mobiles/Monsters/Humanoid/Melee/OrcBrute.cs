@@ -61,10 +61,7 @@ namespace Server.Mobiles
 		public override Poison PoisonImmune => Poison.Lethal;
 		public override int Meat => 2;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.SavagesAndOrcs; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
 
 		public override bool IsEnemy( Mobile m )
 		{

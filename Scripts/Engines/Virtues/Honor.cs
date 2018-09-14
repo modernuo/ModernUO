@@ -208,8 +208,8 @@ namespace Server
 
 		private InternalTimer m_Timer;
 
-		public PlayerMobile Source{ get{ return m_Source; } }
-		public Mobile Target{ get{ return m_Target; } }
+		public PlayerMobile Source => m_Source;
+		public Mobile Target => m_Target;
 
 		public HonorContext( PlayerMobile source, Mobile target )
 		{
@@ -388,15 +388,9 @@ namespace Server
 			}
 		}
 
-		public int PerfectionDamageBonus
-		{
-			get { return m_Perfection; }
-		}
+		public int PerfectionDamageBonus => m_Perfection;
 
-		public int PerfectionLuckBonus
-		{
-			get{ return (m_Perfection * m_Perfection) / 10; }
-		}
+		public int PerfectionLuckBonus => (m_Perfection * m_Perfection) / 10;
 
 		public bool CheckDistance()
 		{

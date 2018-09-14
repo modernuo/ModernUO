@@ -27,15 +27,17 @@ namespace Server.Mobiles
 		private WayPoint m_WayPoint;
 
 		public override string DefaultName => "Spawner";
-		public bool IsFull{ get{ return ( m_Spawned != null && m_Spawned.Count >= m_Count ); } }
-		public bool IsEmpty{ get{ return ( m_Spawned != null && m_Spawned.Count == 0 ); } }
+		public bool IsFull => ( m_Spawned != null && m_Spawned.Count >= m_Count );
+		public bool IsEmpty => ( m_Spawned != null && m_Spawned.Count == 0 );
 
-		public Point3D HomeLocation{ get{ return Location; } }
-		public bool UnlinkOnTaming{ get{ return true; } }
-		public DateTime End{ get{ return m_End; } set{ m_End = value; } }
+		public Point3D HomeLocation => Location;
+		public bool UnlinkOnTaming => true;
+		public DateTime End{ get => m_End;
+			set => m_End = value;
+		}
 
-		public List<SpawnerEntry> Entries{ get{ return m_Entries; } }
-		public Dictionary<ISpawnable, SpawnerEntry> Spawned{ get{ return m_Spawned; } }
+		public List<SpawnerEntry> Entries => m_Entries;
+		public Dictionary<ISpawnable, SpawnerEntry> Spawned => m_Spawned;
 
 		public override void OnAfterDuped( Item newItem )
 		{
@@ -49,7 +51,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.Developer )]
 		public int Count
 		{
-			get { return m_Count; }
+			get => m_Count;
 			set
 			{
 				m_Count = value;
@@ -65,12 +67,14 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.Developer )]
-		public WayPoint WayPoint{ get{ return m_WayPoint; } set{ m_WayPoint = value; } }
+		public WayPoint WayPoint{ get => m_WayPoint;
+			set => m_WayPoint = value;
+		}
 
 		[CommandProperty( AccessLevel.Developer )]
 		public bool Running
 		{
-			get { return m_Running; }
+			get => m_Running;
 			set
 			{
 				if ( value )
@@ -83,19 +87,24 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.Developer )]
-		public int HomeRange{ get { return m_HomeRange; } set { m_HomeRange = value; InvalidateProperties(); } }
+		public int HomeRange{ get => m_HomeRange;
+			set { m_HomeRange = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.Developer )]
-		public int WalkingRange{ get { return m_WalkingRange; } set { m_WalkingRange = value; InvalidateProperties(); } }
+		public int WalkingRange{ get => m_WalkingRange;
+			set { m_WalkingRange = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.Developer )]
-		public int Team{ get { return m_Team; } set { m_Team = value; InvalidateProperties(); } }
+		public int Team{ get => m_Team;
+			set { m_Team = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.Developer )]
-		public TimeSpan MinDelay{ get { return m_MinDelay; } set { m_MinDelay = value; InvalidateProperties(); } }
+		public TimeSpan MinDelay{ get => m_MinDelay;
+			set { m_MinDelay = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.Developer )]
-		public TimeSpan MaxDelay{ get { return m_MaxDelay; } set { m_MaxDelay = value; InvalidateProperties(); } }
+		public TimeSpan MaxDelay{ get => m_MaxDelay;
+			set { m_MaxDelay = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.Developer )]
 		public TimeSpan NextSpawn
@@ -117,11 +126,11 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.Developer )]
 		public bool Group
 		{
-			get { return m_Group; }
+			get => m_Group;
 			set { m_Group = value; InvalidateProperties(); }
 		}
 
-		Region ISpawner.Region{ get{ return Region.Find( Location, Map ); } }
+		Region ISpawner.Region => Region.Find( Location, Map );
 
 //		[Constructible]
 		public Spawner( int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnedNames ) : base( 0x1f13 )
@@ -1073,38 +1082,40 @@ namespace Server.Mobiles
 
 		public int SpawnedProbability
 		{
-			get { return m_SpawnedProbability; }
-			set { m_SpawnedProbability = value; }
+			get => m_SpawnedProbability;
+			set => m_SpawnedProbability = value;
 		}
 
 		public int SpawnedMaxCount
 		{
-			get { return m_SpawnedMaxCount; }
-			set { m_SpawnedMaxCount = value; }
+			get => m_SpawnedMaxCount;
+			set => m_SpawnedMaxCount = value;
 		}
 
 		public string SpawnedName
 		{
-			get { return m_SpawnedName; }
-			set	{ m_SpawnedName = value; }
+			get => m_SpawnedName;
+			set => m_SpawnedName = value;
 		}
 
 		public string Properties
 		{
-			get { return m_Properties; }
-			set	{ m_Properties = value; }
+			get => m_Properties;
+			set => m_Properties = value;
 		}
 
 		public string Parameters
 		{
-			get { return m_Parameters; }
-			set	{ m_Parameters = value; }
+			get => m_Parameters;
+			set => m_Parameters = value;
 		}
 
-		public EntryFlags Valid{ get{ return m_Valid; } set{ m_Valid = value; } }
+		public EntryFlags Valid{ get => m_Valid;
+			set => m_Valid = value;
+		}
 
 		public List<ISpawnable> Spawned => m_Spawned;
-		public bool IsFull{ get{ return m_Spawned.Count >= m_SpawnedMaxCount; } }
+		public bool IsFull => m_Spawned.Count >= m_SpawnedMaxCount;
 
 		public SpawnerEntry( string name, int probability, int maxcount )
 		{

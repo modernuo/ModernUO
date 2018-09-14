@@ -37,15 +37,9 @@ namespace Server.Engines.Mahjong
 			m_Flipped = flipped;
 		}
 
-		public MahjongPieceDim Dimensions
-		{
-			get { return GetDimensions( m_Position, m_Direction ); }
-		}
+		public MahjongPieceDim Dimensions => GetDimensions( m_Position, m_Direction );
 
-		public bool IsMovable
-		{
-			get	{ return m_Game.GetStackLevel( Dimensions ) <= m_StackLevel; }
-		}
+		public bool IsMovable => m_Game.GetStackLevel( Dimensions ) <= m_StackLevel;
 
 		public void Move( Point2D position, MahjongPieceDirection direction, bool flip, int validHandArea )
 		{

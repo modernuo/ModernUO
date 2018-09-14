@@ -28,10 +28,7 @@ namespace Server.Engines.Mahjong
 			m_Wind = wind;
 		}
 
-		public MahjongPieceDim Dimensions
-		{
-			get { return GetDimensions( m_Position, m_Direction ); }
-		}
+		public MahjongPieceDim Dimensions => GetDimensions( m_Position, m_Direction );
 
 		public void Move( Point2D position, MahjongPieceDirection direction, MahjongWind wind )
 		{

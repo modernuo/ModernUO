@@ -26,7 +26,7 @@ namespace Server.Engines.Quests
 	public abstract class BaseQuester : BaseVendor
 	{
         protected List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override bool IsActiveVendor => false;
 		public override bool IsInvulnerable => true;
@@ -34,7 +34,8 @@ namespace Server.Engines.Quests
 		public override bool ClickTitle => false;
 		public override bool CanTeach => false;
 
-		public virtual int TalkNumber{ get{ return 6146; } } // Talk
+		public virtual int TalkNumber // Talk
+			=> 6146;
 
 		public override void InitSBInfo()
 		{

@@ -54,10 +54,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.UltraRich, 2 );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override void OnDeath( Container c )
 		{

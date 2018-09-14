@@ -9,9 +9,10 @@ namespace Server.Mobiles
 		public override ChampionSkullType SkullType => ChampionSkullType.Death;
 
 		public override Type[] UniqueList => new Type[] { typeof( ShroudOfDeciet ) };
-		public override Type[] SharedList{ get{ return new Type[] { 	typeof( ANecromancerShroud ),
+		public override Type[] SharedList => new Type[] { 	typeof( ANecromancerShroud ),
 
-										typeof( CaptainJohnsHat ) }; } }
+			typeof( CaptainJohnsHat ) };
+
 		public override Type[] DecorativeList => new Type[] { typeof( WallBlood ), typeof( TatteredAncientMummyWrapping ) };
 
 		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
@@ -127,7 +128,7 @@ namespace Server.Mobiles
 
 			public Mobile Rider
 			{
-				get { return m_Item.Rider; }
+				get => m_Item.Rider;
 				set { }
 			}
 
@@ -159,10 +160,7 @@ namespace Server.Mobiles
 				m_Mount = new VirtualMount( this );
 			}
 
-			public IMount Mount
-			{
-				get { return m_Mount; }
-			}
+			public IMount Mount => m_Mount;
 
 			public VirtualMountItem( Serial serial )
 				: base( serial )

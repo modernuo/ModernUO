@@ -8,8 +8,8 @@ namespace Server.Engines.VeteranRewards
 		private string m_NameString;
 		private List<RewardEntry> m_Entries;
 
-		public int Name{ get{ return m_Name; } }
-		public string NameString{ get{ return m_NameString; } }
+		public int Name => m_Name;
+		public string NameString => m_NameString;
 		public List<RewardEntry> Entries  => m_Entries;
 
 		public RewardCategory( int name )

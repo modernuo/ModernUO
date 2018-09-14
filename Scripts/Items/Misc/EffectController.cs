@@ -56,95 +56,144 @@ namespace Server.Items
 		private int m_TriggerRange;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public ECEffectType EffectType{ get{ return m_EffectType; } set{ m_EffectType = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public EffectTriggerType TriggerType{ get{ return m_TriggerType; } set{ m_TriggerType = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public EffectLayer EffectLayer{ get{ return m_EffectLayer; } set{ m_EffectLayer = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan EffectDelay{ get{ return m_EffectDelay; } set{ m_EffectDelay = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan TriggerDelay{ get{ return m_TriggerDelay; } set{ m_TriggerDelay = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan SoundDelay{ get{ return m_SoundDelay; } set{ m_SoundDelay = value; } }
-
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Item SourceItem{ get{ return m_Source as Item; } set{ m_Source = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile SourceMobile{ get{ return m_Source as Mobile; } set{ m_Source = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool SourceNull{ get{ return ( m_Source == null ); } set{ if ( value ) m_Source = null; } }
-
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Item TargetItem{ get{ return m_Target as Item; } set{ m_Target = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile TargetMobile{ get{ return m_Target as Mobile; } set{ m_Target = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool TargetNull{ get{ return ( m_Target == null ); } set{ if ( value ) m_Target = null; } }
-
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public EffectController Sequence{ get{ return m_Trigger; } set{ m_Trigger = value; } }
-
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		private bool FixedDirection{ get{ return m_FixedDirection; } set{ m_FixedDirection = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		private bool Explodes{ get{ return m_Explodes; } set{ m_Explodes = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		private bool PlaySoundAtTrigger{ get{ return m_PlaySoundAtTrigger; } set{ m_PlaySoundAtTrigger = value; } }
-
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int EffectItemID{ get{ return m_ItemID; } set{ m_ItemID = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int EffectHue{ get{ return m_Hue; } set{ m_Hue = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int RenderMode{ get{ return m_RenderMode; } set{ m_RenderMode = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Speed{ get{ return m_Speed; } set{ m_Speed = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Duration{ get{ return m_Duration; } set{ m_Duration = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int ParticleEffect{ get{ return m_ParticleEffect; } set{ m_ParticleEffect = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int ExplodeParticleEffect{ get{ return m_ExplodeParticleEffect; } set{ m_ExplodeParticleEffect = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int ExplodeSound{ get{ return m_ExplodeSound; } set{ m_ExplodeSound = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Unknown{ get{ return m_Unknown; } set{ m_Unknown = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int SoundID{ get{ return m_SoundID; } set{ m_SoundID = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int TriggerRange{ get{ return m_TriggerRange; } set{ m_TriggerRange = value; } }
-
-		public override string DefaultName
-		{
-			get { return "Effect Controller"; }
+		public ECEffectType EffectType{ get => m_EffectType;
+			set => m_EffectType = value;
 		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public EffectTriggerType TriggerType{ get => m_TriggerType;
+			set => m_TriggerType = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public EffectLayer EffectLayer{ get => m_EffectLayer;
+			set => m_EffectLayer = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan EffectDelay{ get => m_EffectDelay;
+			set => m_EffectDelay = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan TriggerDelay{ get => m_TriggerDelay;
+			set => m_TriggerDelay = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public TimeSpan SoundDelay{ get => m_SoundDelay;
+			set => m_SoundDelay = value;
+		}
+
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Item SourceItem{ get => m_Source as Item;
+			set => m_Source = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Mobile SourceMobile{ get => m_Source as Mobile;
+			set => m_Source = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool SourceNull{ get => ( m_Source == null );
+			set{ if ( value ) m_Source = null; } }
+
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Item TargetItem{ get => m_Target as Item;
+			set => m_Target = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public Mobile TargetMobile{ get => m_Target as Mobile;
+			set => m_Target = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public bool TargetNull{ get => ( m_Target == null );
+			set{ if ( value ) m_Target = null; } }
+
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public EffectController Sequence{ get => m_Trigger;
+			set => m_Trigger = value;
+		}
+
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		private bool FixedDirection{ get => m_FixedDirection;
+			set => m_FixedDirection = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		private bool Explodes{ get => m_Explodes;
+			set => m_Explodes = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		private bool PlaySoundAtTrigger{ get => m_PlaySoundAtTrigger;
+			set => m_PlaySoundAtTrigger = value;
+		}
+
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int EffectItemID{ get => m_ItemID;
+			set => m_ItemID = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int EffectHue{ get => m_Hue;
+			set => m_Hue = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int RenderMode{ get => m_RenderMode;
+			set => m_RenderMode = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Speed{ get => m_Speed;
+			set => m_Speed = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Duration{ get => m_Duration;
+			set => m_Duration = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int ParticleEffect{ get => m_ParticleEffect;
+			set => m_ParticleEffect = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int ExplodeParticleEffect{ get => m_ExplodeParticleEffect;
+			set => m_ExplodeParticleEffect = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int ExplodeSound{ get => m_ExplodeSound;
+			set => m_ExplodeSound = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int Unknown{ get => m_Unknown;
+			set => m_Unknown = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int SoundID{ get => m_SoundID;
+			set => m_SoundID = value;
+		}
+
+		[CommandProperty( AccessLevel.GameMaster )]
+		public int TriggerRange{ get => m_TriggerRange;
+			set => m_TriggerRange = value;
+		}
+
+		public override string DefaultName => "Effect Controller";
 
 		[Constructible]
 		public EffectController() : base( 0x1B72 )

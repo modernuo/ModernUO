@@ -57,44 +57,41 @@ namespace Server.Commands.Generic
 
 		public bool SupportsConditionals
 		{
-			get{ return m_SupportsConditionals; }
-			set{ m_SupportsConditionals = value; }
+			get => m_SupportsConditionals;
+			set => m_SupportsConditionals = value;
 		}
 
 		public string[] Accessors
 		{
-			get{ return m_Accessors; }
-			set{ m_Accessors = value; }
+			get => m_Accessors;
+			set => m_Accessors = value;
 		}
 
 		public string Usage
 		{
-			get{ return m_Usage; }
-			set{ m_Usage = value; }
+			get => m_Usage;
+			set => m_Usage = value;
 		}
 
 		public string Description
 		{
-			get{ return m_Description; }
-			set{ m_Description = value; }
+			get => m_Description;
+			set => m_Description = value;
 		}
 
 		public AccessLevel AccessLevel
 		{
-			get{ return m_AccessLevel; }
-			set{ m_AccessLevel = value; }
+			get => m_AccessLevel;
+			set => m_AccessLevel = value;
 		}
 
 		public CommandSupport SupportRequirement
 		{
-			get{ return m_SupportRequirement; }
-			set{ m_SupportRequirement = value; }
+			get => m_SupportRequirement;
+			set => m_SupportRequirement = value;
 		}
 
-		public Dictionary<string, BaseCommand> Commands
-		{
-			get{ return m_Commands; }
-		}
+		public Dictionary<string, BaseCommand> Commands => m_Commands;
 
 		public BaseCommandImplementor()
 		{

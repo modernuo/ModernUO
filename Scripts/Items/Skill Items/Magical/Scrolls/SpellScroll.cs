@@ -8,16 +8,10 @@ namespace Server.Items
 	{
 		private int m_SpellID;
 
-		public int SpellID
-		{
-			get
-			{
-				return m_SpellID;
-			}
-		}
+		public int SpellID => m_SpellID;
 
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return (Core.ML); } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => (Core.ML);
 
 		public SpellScroll( Serial serial ) : base( serial )
 		{

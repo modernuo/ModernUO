@@ -67,15 +67,12 @@ namespace Server.Items
 		private bool m_IsRewardItem;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CannonDirection CannonDirection
-		{
-			get{ return m_CannonDirection; }
-		}
+		public CannonDirection CannonDirection => m_CannonDirection;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get{ return m_Charges; }
+			get => m_Charges;
 			set
 			{
 				m_Charges = value;
@@ -88,7 +85,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set
 			{
 				m_IsRewardItem = value;
@@ -381,14 +378,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get{ return m_Charges; }
+			get => m_Charges;
 			set{ m_Charges = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 

@@ -33,38 +33,38 @@ namespace Server.Factions
 		private RankDefinition[] m_Ranks;
 		private GuardDefinition[] m_Guards;
 
-		public int Sort{ get{ return m_Sort; } }
+		public int Sort => m_Sort;
 
-		public int HuePrimary{ get{ return m_HuePrimary; } }
-		public int HueSecondary{ get{ return m_HueSecondary; } }
-		public int HueJoin{ get{ return m_HueJoin; } }
-		public int HueBroadcast{ get{ return m_HueBroadcast; } }
+		public int HuePrimary => m_HuePrimary;
+		public int HueSecondary => m_HueSecondary;
+		public int HueJoin => m_HueJoin;
+		public int HueBroadcast => m_HueBroadcast;
 
-		public int WarHorseBody{ get{ return m_WarHorseBody; } }
-		public int WarHorseItem{ get{ return m_WarHorseItem; } }
+		public int WarHorseBody => m_WarHorseBody;
+		public int WarHorseItem => m_WarHorseItem;
 
-		public string FriendlyName{ get{ return m_FriendlyName; } }
-		public string Keyword{ get{ return m_Keyword; } }
+		public string FriendlyName => m_FriendlyName;
+		public string Keyword => m_Keyword;
 		public string Abbreviation => m_Abbreviation;
 
-		public TextDefinition Name{ get{ return m_Name; } }
-		public TextDefinition PropName{ get{ return m_PropName; } }
-		public TextDefinition Header{ get{ return m_Header; } }
-		public TextDefinition About{ get{ return m_About; } }
-		public TextDefinition CityControl{ get{ return m_CityControl; } }
-		public TextDefinition SigilControl{ get{ return m_SigilControl; } }
-		public TextDefinition SignupName{ get{ return m_SignupName; } }
-		public TextDefinition FactionStoneName{ get{ return m_FactionStoneName; } }
-		public TextDefinition OwnerLabel{ get{ return m_OwnerLabel; } }
+		public TextDefinition Name => m_Name;
+		public TextDefinition PropName => m_PropName;
+		public TextDefinition Header => m_Header;
+		public TextDefinition About => m_About;
+		public TextDefinition CityControl => m_CityControl;
+		public TextDefinition SigilControl => m_SigilControl;
+		public TextDefinition SignupName => m_SignupName;
+		public TextDefinition FactionStoneName => m_FactionStoneName;
+		public TextDefinition OwnerLabel => m_OwnerLabel;
 
-		public TextDefinition GuardIgnore{ get{ return m_GuardIgnore; } }
-		public TextDefinition GuardWarn{ get{ return m_GuardWarn; } }
-		public TextDefinition GuardAttack{ get{ return m_GuardAttack; } }
+		public TextDefinition GuardIgnore => m_GuardIgnore;
+		public TextDefinition GuardWarn => m_GuardWarn;
+		public TextDefinition GuardAttack => m_GuardAttack;
 
-		public StrongholdDefinition Stronghold{ get{ return m_Stronghold; } }
+		public StrongholdDefinition Stronghold => m_Stronghold;
 
-		public RankDefinition[] Ranks{ get{ return m_Ranks; } }
-		public GuardDefinition[] Guards{ get{ return m_Guards; } }
+		public RankDefinition[] Ranks => m_Ranks;
+		public GuardDefinition[] Guards => m_Guards;
 
 		public FactionDefinition( int sort, int huePrimary, int hueSecondary, int hueJoin, int hueBroadcast, int warHorseBody, int warHorseItem, string friendlyName, string keyword, string abbreviation, TextDefinition name, TextDefinition propName, TextDefinition header, TextDefinition about, TextDefinition cityControl, TextDefinition sigilControl, TextDefinition signupName, TextDefinition factionStoneName, TextDefinition ownerLabel, TextDefinition guardIgnore, TextDefinition guardWarn, TextDefinition guardAttack, StrongholdDefinition stronghold, RankDefinition[] ranks, GuardDefinition[] guards )
 		{

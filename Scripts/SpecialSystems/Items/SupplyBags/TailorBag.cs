@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class TailorBag : Bag
 	{
-		public override string DefaultName
-		{
-			get { return "a Tailoring Kit"; }
-		}
+		public override string DefaultName => "a Tailoring Kit";
 
 		[Constructible]
 		public TailorBag() : this( 1 )

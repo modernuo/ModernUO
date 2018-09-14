@@ -19,7 +19,9 @@ namespace Server.Engines.Quests.Haven
 		public CannonDirection CannonDirection  => m_CannonDirection;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public MilitiaCanoneer Canoneer { get { return m_Canoneer; } set { m_Canoneer = value; } }
+		public MilitiaCanoneer Canoneer { get => m_Canoneer;
+			set => m_Canoneer = value;
+		}
 
 		[Constructible]
 		public Cannon( CannonDirection direction )
@@ -149,7 +151,7 @@ namespace Server.Engines.Quests.Haven
 		[CommandProperty( AccessLevel.GameMaster )]
 		public MilitiaCanoneer Canoneer
 		{
-			get { return Addon is Cannon cannon ? cannon.Canoneer : null; }
+			get => Addon is Cannon cannon ? cannon.Canoneer : null;
 			set { if ( Addon is Cannon cannon ) cannon.Canoneer = value; }
 		}
 

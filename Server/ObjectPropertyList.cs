@@ -32,15 +32,21 @@ namespace Server
 		private int m_Strings;
 		private string m_HeaderArgs;
 
-		public IEntity Entity{ get{ return m_Entity; } }
-		public int Hash{ get{ return 0x40000000 + m_Hash; } }
+		public IEntity Entity => m_Entity;
+		public int Hash => 0x40000000 + m_Hash;
 
-		public int Header{ get{ return m_Header; } set{ m_Header = value; } }
-		public string HeaderArgs{ get{ return m_HeaderArgs; } set{ m_HeaderArgs = value; } }
+		public int Header{ get => m_Header;
+			set => m_Header = value;
+		}
+		public string HeaderArgs{ get => m_HeaderArgs;
+			set => m_HeaderArgs = value;
+		}
 
 		private static bool m_Enabled = false;
 
-		public static bool Enabled{ get{ return m_Enabled; } set{ m_Enabled = value; } }
+		public static bool Enabled{ get => m_Enabled;
+			set => m_Enabled = value;
+		}
 
 		public ObjectPropertyList( IEntity e ) : base( 0xD6 )
 		{

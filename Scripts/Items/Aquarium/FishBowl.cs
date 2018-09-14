@@ -9,10 +9,7 @@ namespace Server.Items
 		public override int LabelNumber => 1074499; // A fish bowl
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Empty
-		{
-			get{ return ( Items.Count == 0 ); }
-		}
+		public bool Empty => ( Items.Count == 0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BaseFish Fish

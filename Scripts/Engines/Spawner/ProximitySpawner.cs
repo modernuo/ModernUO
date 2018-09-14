@@ -11,22 +11,22 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.Developer )]
 		public int TriggerRange
 		{
-			get { return m_TriggerRange; }
-			set { m_TriggerRange = value; }
+			get => m_TriggerRange;
+			set => m_TriggerRange = value;
 		}
 
 		[CommandProperty( AccessLevel.Developer )]
 		public TextDefinition SpawnMessage
 		{
-			get { return m_SpawnMessage; }
-			set { m_SpawnMessage = value; }
+			get => m_SpawnMessage;
+			set => m_SpawnMessage = value;
 		}
 
 		[CommandProperty( AccessLevel.Developer )]
 		public bool InstantFlag
 		{
-			get { return m_InstantFlag; }
-			set { m_InstantFlag = value; }
+			get => m_InstantFlag;
+			set => m_InstantFlag = value;
 		}
 
 		[Constructible]
@@ -68,10 +68,7 @@ namespace Server.Mobiles
 			m_InstantFlag = instantFlag;
 		}
 
-		public override string DefaultName
-		{
-			get { return "Proximity Spawner"; }
-		}
+		public override string DefaultName => "Proximity Spawner";
 
 		public override void DoTimer( TimeSpan delay )
 		{

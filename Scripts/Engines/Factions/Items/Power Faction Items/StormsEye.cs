@@ -5,11 +5,7 @@ using Server.Factions;
 
 namespace Server {
 	public sealed class StormsEye : PowerFactionItem {
-		public override string DefaultName {
-			get {
-				return "storms eye";
-			}
-		}
+		public override string DefaultName => "storms eye";
 
 		public StormsEye()
 			: base( 3967 ) {

@@ -7,15 +7,9 @@ namespace Server.Items
 		private Poison m_Poison;
 		private double m_Chance;
 
-		public Poison Poison
-		{
-			get{ return m_Poison; }
-		}
+		public Poison Poison => m_Poison;
 
-		public double Chance
-		{
-			get{ return m_Chance; }
-		}
+		public double Chance => m_Chance;
 
 		public CureLevelInfo( Poison poison, double chance )
 		{

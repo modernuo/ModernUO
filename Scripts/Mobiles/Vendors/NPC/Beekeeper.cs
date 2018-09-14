@@ -5,7 +5,7 @@ namespace Server.Mobiles
 	public class Beekeeper : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		[Constructible]
 		public Beekeeper() : base( "the beekeeper" )

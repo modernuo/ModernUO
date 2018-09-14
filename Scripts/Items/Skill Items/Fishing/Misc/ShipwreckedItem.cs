@@ -67,10 +67,7 @@ namespace Server.Items
 
 		public bool IsShipwreckedItem
 		{
-			get
-			{
-				return true;	//It's a ShipwreckedItem item.  'Course it's gonna be a Shipwreckeditem
-			}
+			get => true;
 			set
 			{
 			}

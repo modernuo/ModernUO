@@ -20,8 +20,8 @@ namespace Server.Misc
 
 		public static bool SavesEnabled
 		{
-			get{ return m_SavesEnabled; }
-			set{ m_SavesEnabled = value; }
+			get => m_SavesEnabled;
+			set => m_SavesEnabled = value;
 		}
 
 		[Usage( "SetSaves <true | false>" )]

@@ -2,8 +2,8 @@ namespace Server.Items
 {
 	public class BatWing : BaseReagent, ICommodity
 	{
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return true; } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => true;
 
 		[Constructible]
 		public BatWing() : this( 1 )

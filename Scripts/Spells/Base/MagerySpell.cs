@@ -104,12 +104,6 @@ namespace Server.Spells
 			return base.GetCastDelay();
 		}
 
-		public override TimeSpan CastDelayBase
-		{
-			get
-			{
-				return TimeSpan.FromSeconds( (3 + (int)Circle) * CastDelaySecondsPerTick );
-			}
-		}
+		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( (3 + (int)Circle) * CastDelaySecondsPerTick );
 	}
 }

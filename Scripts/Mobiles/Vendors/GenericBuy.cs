@@ -110,9 +110,10 @@ namespace Server.Mobiles
 		private object[] m_Args;
 		private IEntity m_DisplayEntity;
 
-		public virtual int ControlSlots{ get{ return 0; } }
+		public virtual int ControlSlots => 0;
 
-		public virtual bool CanCacheDisplay{ get{ return false; } } //return ( m_Args == null || m_Args.Length == 0 ); }
+		public virtual bool CanCacheDisplay //return ( m_Args == null || m_Args.Length == 0 ); }
+			=> false;
 
 		private bool IsDeleted( IEntity obj )
 		{
@@ -148,24 +149,24 @@ namespace Server.Mobiles
 
 		public Type Type
 		{
-			get{ return m_Type; }
-			set{ m_Type = value; }
+			get => m_Type;
+			set => m_Type = value;
 		}
 
 		public string Name
 		{
-			get{ return m_Name; }
-			set{ m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
-		public int DefaultPrice{ get{ return m_PriceScalar; } }
+		public int DefaultPrice => m_PriceScalar;
 
 		private int m_PriceScalar;
 
 		public int PriceScalar
 		{
-			get{ return m_PriceScalar; }
-			set{ m_PriceScalar = value; }
+			get => m_PriceScalar;
+			set => m_PriceScalar = value;
 		}
 
 		public int Price
@@ -193,37 +194,37 @@ namespace Server.Mobiles
 
 				return m_Price;
 			}
-			set{ m_Price = value; }
+			set => m_Price = value;
 		}
 
 		public int ItemID
 		{
-			get{ return m_ItemID; }
-			set{ m_ItemID = value; }
+			get => m_ItemID;
+			set => m_ItemID = value;
 		}
 
 		public int Hue
 		{
-			get{ return m_Hue; }
-			set{ m_Hue = value; }
+			get => m_Hue;
+			set => m_Hue = value;
 		}
 
 		public int Amount
 		{
-			get{ return m_Amount; }
+			get => m_Amount;
 			set{ if ( value < 0 ) value = 0; m_Amount = value; }
 		}
 
 		public int MaxAmount
 		{
-			get{ return m_MaxAmount; }
-			set{ m_MaxAmount = value; }
+			get => m_MaxAmount;
+			set => m_MaxAmount = value;
 		}
 
 		public object[] Args
 		{
-			get{ return m_Args; }
-			set{ m_Args = value; }
+			get => m_Args;
+			set => m_Args = value;
 		}
 
 		public GenericBuyInfo( Type type, int price, int amount, int itemID, int hue ) : this( null, type, price, amount, itemID, hue, null )

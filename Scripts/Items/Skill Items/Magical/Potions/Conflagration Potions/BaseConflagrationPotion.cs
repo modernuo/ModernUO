@@ -140,10 +140,7 @@ namespace Server.Items
 		{
 			private BaseConflagrationPotion m_Potion;
 
-			public BaseConflagrationPotion Potion
-			{
-				get{ return m_Potion; }
-			}
+			public BaseConflagrationPotion Potion => m_Potion;
 
 			public ThrowTarget( BaseConflagrationPotion potion ) : base( 12, true, TargetFlags.None )
 			{
@@ -185,7 +182,7 @@ namespace Server.Items
 			private DateTime m_End;
 			private Timer m_Timer;
 
-			public Mobile From{ get{ return m_From; } }
+			public Mobile From => m_From;
 
 			public override bool BlocksFit => true;
 

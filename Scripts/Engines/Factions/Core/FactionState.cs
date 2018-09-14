@@ -20,7 +20,9 @@ namespace Server.Factions
 
 		private DateTime[] m_LastBroadcasts = new DateTime[BroadcastsPerPeriod];
 
-		public DateTime LastAtrophy{ get{ return m_LastAtrophy; } set{ m_LastAtrophy = value; } }
+		public DateTime LastAtrophy{ get => m_LastAtrophy;
+			set => m_LastAtrophy = value;
+		}
 
 		public bool FactionMessageReady
 		{
@@ -36,7 +38,7 @@ namespace Server.Factions
 			}
 		}
 
-		public bool IsAtrophyReady{ get{ return DateTime.UtcNow >= (m_LastAtrophy + TimeSpan.FromHours( 47.0 )); } }
+		public bool IsAtrophyReady => DateTime.UtcNow >= (m_LastAtrophy + TimeSpan.FromHours( 47.0 ));
 
 		public int CheckAtrophy()
 		{
@@ -82,25 +84,25 @@ namespace Server.Factions
 
 		public List<FactionItem> FactionItems
 		{
-			get{ return m_FactionItems; }
-			set{ m_FactionItems = value; }
+			get => m_FactionItems;
+			set => m_FactionItems = value;
 		}
 
 		public List<BaseFactionTrap> Traps
 		{
-			get{ return m_FactionTraps; }
-			set{ m_FactionTraps = value; }
+			get => m_FactionTraps;
+			set => m_FactionTraps = value;
 		}
 
 		public Election Election
 		{
-			get{ return m_Election; }
-			set{ m_Election = value; }
+			get => m_Election;
+			set => m_Election = value;
 		}
 
 		public Mobile Commander
 		{
-			get{ return m_Commander; }
+			get => m_Commander;
 			set
 			{
 				if ( m_Commander != null )
@@ -127,20 +129,20 @@ namespace Server.Factions
 
 		public int Tithe
 		{
-			get{ return m_Tithe; }
-			set{ m_Tithe = value; }
+			get => m_Tithe;
+			set => m_Tithe = value;
 		}
 
 		public int Silver
 		{
-			get{ return m_Silver; }
-			set{ m_Silver = value; }
+			get => m_Silver;
+			set => m_Silver = value;
 		}
 
 		public List<PlayerState> Members
 		{
-			get{ return m_Members; }
-			set{ m_Members = value; }
+			get => m_Members;
+			set => m_Members = value;
 		}
 
 		public FactionState( Faction faction )

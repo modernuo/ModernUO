@@ -352,11 +352,11 @@ namespace Server.Gumps
 				return i;
 			}
 
-			public Type Type{ get{ return m_Type; } }
-			public int ItemID{ get{ return m_ItemID; } }
-			public int LocNumber{ get{ return m_LocNum; } }
-			public int ArtNumber{ get{ return m_ArtNum; } }
-			public bool LongText{ get{ return m_LongText; } }
+			public Type Type => m_Type;
+			public int ItemID => m_ItemID;
+			public int LocNumber => m_LocNum;
+			public int ArtNumber => m_ArtNum;
+			public bool LongText => m_LongText;
 		}
 
 		private class CustomCategory
@@ -374,10 +374,10 @@ namespace Server.Gumps
 				m_LocNum = loc;
 			}
 
-			public bool CanDye{ get{ return m_CanDye; } }
-			public CustomItem[] Entries{ get{ return m_Entries; } }
-			public Layer Layer{ get{ return m_Layer; } }
-			public int LocNumber{ get{ return m_LocNum; } }
+			public bool CanDye => m_CanDye;
+			public CustomItem[] Entries => m_Entries;
+			public Layer Layer => m_Layer;
+			public int LocNumber => m_LocNum;
 		}
 
 		private static CustomCategory[] Categories = new CustomCategory[]{
@@ -788,8 +788,8 @@ namespace Server.Gumps
 			private int m_ItemID;
 			private int m_Name;
 
-			public int ItemID{ get{ return m_ItemID; } }
-			public int Name{ get{ return m_Name; } }
+			public int ItemID => m_ItemID;
+			public int Name => m_Name;
 
 			public HairOrBeard( int itemID, int name )
 			{

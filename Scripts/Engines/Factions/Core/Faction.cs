@@ -23,13 +23,13 @@ namespace Server.Factions
 
 		public StrongholdRegion StrongholdRegion
 		{
-			get{ return m_StrongholdRegion; }
-			set{ m_StrongholdRegion = value; }
+			get => m_StrongholdRegion;
+			set => m_StrongholdRegion = value;
 		}
 
 		public FactionDefinition Definition
 		{
-			get{ return m_Definition; }
+			get => m_Definition;
 			set
 			{
 				m_Definition = value;
@@ -39,46 +39,43 @@ namespace Server.Factions
 
 		public FactionState State
 		{
-			get{ return m_State; }
-			set{ m_State = value; }
+			get => m_State;
+			set => m_State = value;
 		}
 
 		public Election Election
 		{
-			get{ return m_State.Election; }
-			set{ m_State.Election = value; }
+			get => m_State.Election;
+			set => m_State.Election = value;
 		}
 
 		public Mobile Commander
 		{
-			get{ return m_State.Commander; }
-			set{ m_State.Commander = value; }
+			get => m_State.Commander;
+			set => m_State.Commander = value;
 		}
 
 		public int Tithe
 		{
-			get{ return m_State.Tithe; }
-			set{ m_State.Tithe = value; }
+			get => m_State.Tithe;
+			set => m_State.Tithe = value;
 		}
 
 		public int Silver
 		{
-			get{ return m_State.Silver; }
-			set{ m_State.Silver = value; }
+			get => m_State.Silver;
+			set => m_State.Silver = value;
 		}
 
 		public List<PlayerState> Members
 		{
-			get{ return m_State.Members; }
-			set{ m_State.Members = value; }
+			get => m_State.Members;
+			set => m_State.Members = value;
 		}
 
 		public static readonly TimeSpan LeavePeriod = TimeSpan.FromDays( 3.0 );
 
-		public bool FactionMessageReady
-		{
-			get{ return m_State.FactionMessageReady; }
-		}
+		public bool FactionMessageReady => m_State.FactionMessageReady;
 
 		public void Broadcast( string text )
 		{
@@ -948,12 +945,12 @@ namespace Server.Factions
 			return silver;
 		}
 
-		public virtual int MaximumTraps{ get{ return 15; } }
+		public virtual int MaximumTraps => 15;
 
 		public List<BaseFactionTrap> Traps
 		{
-			get{ return m_State.Traps; }
-			set{ m_State.Traps = value; }
+			get => m_State.Traps;
+			set => m_State.Traps = value;
 		}
 
 		public const int StabilityFactor = 300; // 300% greater (3 times) than smallest faction
@@ -1219,7 +1216,7 @@ namespace Server.Factions
 			writer.WriteEncodedInt( (int) (idx + 1) );
 		}
 
-		public static List<Faction> Factions{ get{ return Reflector.Factions; } }
+		public static List<Faction> Factions => Reflector.Factions;
 
 		public static Faction ReadReference( GenericReader reader )
 		{

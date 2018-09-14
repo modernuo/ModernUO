@@ -15,8 +15,8 @@ namespace Server.Items
 			Amount = amount;
 		}
 
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return (Core.ML); } }
+		int ICommodity.DescriptionNumber => LabelNumber;
+		bool ICommodity.IsDeedable => (Core.ML);
 
 		public BlankScroll( Serial serial ) : base( serial )
 		{

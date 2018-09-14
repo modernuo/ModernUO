@@ -89,7 +89,7 @@ namespace Server.Engines.Quests.Collector
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Quantity
 		{
-			get { return m_Quantity; }
+			get => m_Quantity;
 			set
 			{
 				if ( value <= 1 )
@@ -113,7 +113,7 @@ namespace Server.Engines.Quests.Collector
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string StatueName
 		{
-			get { return m_StatueName; }
+			get => m_StatueName;
 			set { m_StatueName = value; InvalidateProperties(); }
 		}
 

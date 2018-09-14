@@ -10,10 +10,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Held
 		{
-			get
-			{
-				return m_Held;
-			}
+			get => m_Held;
 			set
 			{
 				if ( m_Held != value )
@@ -28,10 +25,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public PotionEffect Type
 		{
-			get
-			{
-				return m_Type;
-			}
+			get => m_Type;
 			set
 			{
 				m_Type = value;

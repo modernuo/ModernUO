@@ -5,7 +5,7 @@ namespace Server.Mobiles
 	public class Cobbler : BaseVendor 
 	{ 
 		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		[Constructible]
 		public Cobbler() : base( "the cobbler" ) 
@@ -18,10 +18,7 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBCobbler() ); 
 		} 
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes; }
-		}
+		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes;
 
 		public Cobbler( Serial serial ) : base( serial ) 
 		{ 

@@ -40,10 +40,10 @@ namespace Server.Engines.Craft
 
 		public abstract SkillName MainSkill{ get; }
 
-		public virtual int GumpTitleNumber{ get{ return 0; } }
-		public virtual string GumpTitleString{ get{ return ""; } }
+		public virtual int GumpTitleNumber => 0;
+		public virtual string GumpTitleString => "";
 
-		public virtual CraftECA ECA{ get{ return CraftECA.ChanceMinusSixty; } }
+		public virtual CraftECA ECA => CraftECA.ChanceMinusSixty;
 
 		private Dictionary<Mobile, CraftContext> m_ContextTable = new Dictionary<Mobile, CraftContext>();
 
@@ -83,26 +83,26 @@ namespace Server.Engines.Craft
 
 		public bool Resmelt
 		{
-			get { return m_Resmelt; }
-			set { m_Resmelt = value; }
+			get => m_Resmelt;
+			set => m_Resmelt = value;
 		}
 
 		public bool Repair
 		{
-			get{ return m_Repair; }
-			set{ m_Repair = value; }
+			get => m_Repair;
+			set => m_Repair = value;
 		}
 
 		public bool MarkOption
 		{
-			get{ return m_MarkOption; }
-			set{ m_MarkOption = value; }
+			get => m_MarkOption;
+			set => m_MarkOption = value;
 		}
 
 		public bool CanEnhance
 		{
-			get{ return m_CanEnhance; }
-			set{ m_CanEnhance = value; }
+			get => m_CanEnhance;
+			set => m_CanEnhance = value;
 		}
 
 		public CraftSystem( int minCraftEffect, int maxCraftEffect, double delay )

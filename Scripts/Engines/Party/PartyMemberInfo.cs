@@ -5,8 +5,10 @@ namespace Server.Engines.PartySystem
 		private Mobile m_Mobile;
 		private bool m_CanLoot;
 
-		public Mobile Mobile{ get{ return m_Mobile; } }
-		public bool CanLoot{ get{ return m_CanLoot; } set{ m_CanLoot = value; } }
+		public Mobile Mobile => m_Mobile;
+		public bool CanLoot{ get => m_CanLoot;
+			set => m_CanLoot = value;
+		}
 
 		public PartyMemberInfo( Mobile m )
 		{

@@ -2,11 +2,8 @@ namespace Server.Items
 {
 	public class EggBomb : Item
 	{
-		public override int LabelNumber 
-		{
-			get { return 1030249; }
-		}
-		
+		public override int LabelNumber => 1030249;
+
 		[Constructible]
 		public EggBomb() : base( 0x2808 )
 		{

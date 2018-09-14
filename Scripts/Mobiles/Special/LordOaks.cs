@@ -12,16 +12,17 @@ namespace Server.Mobiles
 		public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
 
 		public override Type[] UniqueList => new Type[] { typeof( OrcChieftainHelm ) };
-		public override Type[] SharedList{ get{ return new Type[] { 	typeof( RoyalGuardSurvivalKnife ),
-										typeof( DjinnisRing ),
-										typeof( LieutenantOfTheBritannianRoyalGuard ),
-										typeof( SamaritanRobe ),
-										typeof( DetectiveBoots ),
-										typeof( TheMostKnowledgePerson ) }; } }
-		public override Type[] DecorativeList{ get{ return new Type[] { typeof( WaterTile ),
-										typeof( WindSpirit ),
-										typeof( Pier ),
-										typeof( DirtPatch )}; } }
+		public override Type[] SharedList => new Type[] { 	typeof( RoyalGuardSurvivalKnife ),
+			typeof( DjinnisRing ),
+			typeof( LieutenantOfTheBritannianRoyalGuard ),
+			typeof( SamaritanRobe ),
+			typeof( DetectiveBoots ),
+			typeof( TheMostKnowledgePerson ) };
+
+		public override Type[] DecorativeList => new Type[] { typeof( WaterTile ),
+			typeof( WindSpirit ),
+			typeof( Pier ),
+			typeof( DirtPatch )};
 
 		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 
@@ -73,10 +74,7 @@ namespace Server.Mobiles
 		public override bool BardImmune => !Core.SE;
 		public override bool Unprovokable => Core.SE;
 		public override bool Uncalmable => Core.SE;
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public override Poison PoisonImmune => Poison.Deadly;
 

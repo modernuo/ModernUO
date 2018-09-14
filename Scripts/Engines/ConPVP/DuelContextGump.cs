@@ -9,8 +9,8 @@ namespace Server.Engines.ConPVP
 		private Mobile m_From;
 		private DuelContext m_Context;
 
-		public Mobile From{ get{ return m_From; } } 
-		public DuelContext Context{ get{ return m_Context; } }
+		public Mobile From => m_From;
+		public DuelContext Context => m_Context;
 
 		public string Center( string text )
 		{

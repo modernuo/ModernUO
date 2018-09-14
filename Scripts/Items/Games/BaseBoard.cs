@@ -14,8 +14,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
 		public BaseBoard( int itemID ) : base( itemID )

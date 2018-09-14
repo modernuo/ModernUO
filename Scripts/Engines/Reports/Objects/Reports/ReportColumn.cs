@@ -17,9 +17,15 @@ namespace Server.Engines.Reports
 		private string m_Align;
 		private string m_Name;
 
-		public string Width{ get{ return m_Width; } set{ m_Width = value; } }
-		public string Align{ get{ return m_Align; } set{ m_Align = value; } }
-		public string Name{ get{ return m_Name; } set{ m_Name = value; } }
+		public string Width{ get => m_Width;
+			set => m_Width = value;
+		}
+		public string Align{ get => m_Align;
+			set => m_Align = value;
+		}
+		public string Name{ get => m_Name;
+			set => m_Name = value;
+		}
 
 		private ReportColumn()
 		{

@@ -14,29 +14,29 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string WarningString
 		{
-			get{ return m_WarningString; }
-			set{ m_WarningString = value; }
+			get => m_WarningString;
+			set => m_WarningString = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int WarningNumber
 		{
-			get{ return m_WarningNumber; }
-			set{ m_WarningNumber = value; }
+			get => m_WarningNumber;
+			set => m_WarningNumber = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Range
 		{
-			get{ return m_Range; }
+			get => m_Range;
 			set{ if ( value > 18 ) value = 18; m_Range = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan ResetDelay
 		{
-			get{ return m_ResetDelay; }
-			set{ m_ResetDelay = value; }
+			get => m_ResetDelay;
+			set => m_ResetDelay = value;
 		}
 
 		[Constructible]
@@ -89,7 +89,7 @@ namespace Server.Items
 			}
 		}
 
-		public virtual bool OnlyToTriggerer{ get{ return false; } }
+		public virtual bool OnlyToTriggerer => false;
 		public virtual int NeighborRange  => 5;
 
 		public virtual void Broadcast( Mobile triggerer )
@@ -175,15 +175,15 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string HintString
 		{
-			get{ return m_HintString; }
-			set{ m_HintString = value; }
+			get => m_HintString;
+			set => m_HintString = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int HintNumber
 		{
-			get{ return m_HintNumber; }
-			set{ m_HintNumber = value; }
+			get => m_HintNumber;
+			set => m_HintNumber = value;
 		}
 
 		public override bool OnlyToTriggerer => true;

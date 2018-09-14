@@ -32,74 +32,38 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				Delta( ref m_X, value );
-			}
+			get => m_X;
+			set => Delta( ref m_X, value );
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				Delta( ref m_Y, value );
-			}
+			get => m_Y;
+			set => Delta( ref m_Y, value );
 		}
 
 		public int InactiveID
 		{
-			get
-			{
-				return m_ID1;
-			}
-			set
-			{
-				Delta( ref m_ID1, value );
-			}
+			get => m_ID1;
+			set => Delta( ref m_ID1, value );
 		}
 
 		public int ActiveID
 		{
-			get
-			{
-				return m_ID2;
-			}
-			set
-			{
-				Delta( ref m_ID2, value );
-			}
+			get => m_ID2;
+			set => Delta( ref m_ID2, value );
 		}
 
 		public bool InitialState
 		{
-			get
-			{
-				return m_InitialState;
-			}
-			set
-			{
-				Delta( ref m_InitialState, value );
-			}
+			get => m_InitialState;
+			set => Delta( ref m_InitialState, value );
 		}
 
 		public int SwitchID
 		{
-			get
-			{
-				return m_SwitchID;
-			}
-			set
-			{
-				Delta( ref m_SwitchID, value );
-			}
+			get => m_SwitchID;
+			set => Delta( ref m_SwitchID, value );
 		}
 
 		public GumpCheck( int x, int y, int inactiveID, int activeID, bool initialState, int switchID )

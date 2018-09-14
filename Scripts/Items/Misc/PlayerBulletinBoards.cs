@@ -74,29 +74,26 @@ namespace Server.Items
 		private string m_Title;
 		private SecureLevel m_Level;
 
-		public List<PlayerBBMessage> Messages
-		{
-			get{ return m_Messages; }
-		}
+		public List<PlayerBBMessage> Messages => m_Messages;
 
 		public PlayerBBMessage Greeting
 		{
-			get{ return m_Greeting; }
-			set{ m_Greeting = value; }
+			get => m_Greeting;
+			set => m_Greeting = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Title
 		{
-			get{ return m_Title; }
-			set{ m_Title = value; }
+			get => m_Title;
+			set => m_Title = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
 		public BasePlayerBB( int itemID ) : base( itemID )
@@ -335,22 +332,22 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime Time
 		{
-			get{ return m_Time; }
-			set{ m_Time = value; }
+			get => m_Time;
+			set => m_Time = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Poster
 		{
-			get{ return m_Poster; }
-			set{ m_Poster = value; }
+			get => m_Poster;
+			set => m_Poster = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Message
 		{
-			get{ return m_Message; }
-			set{ m_Message = value; }
+			get => m_Message;
+			set => m_Message = value;
 		}
 
 		public PlayerBBMessage( DateTime time, Mobile poster, string message )

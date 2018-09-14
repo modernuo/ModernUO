@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Naturalist
 		private bool m_Special;
 		private Rectangle2D[] m_Rects;
 
-		public bool Special{ get{ return m_Special; } }
+		public bool Special => m_Special;
 
 		public int ID
 		{

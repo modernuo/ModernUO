@@ -28,29 +28,11 @@ namespace Server
 		private Mobile m_Target;
 		private bool m_Running;
 
-		public Mobile Mobile
-		{
-			get
-			{
-				return m_Mobile;
-			}
-		}
+		public Mobile Mobile => m_Mobile;
 
-		public Mobile Target
-		{
-			get
-			{
-				return m_Target;
-			}
-		}
+		public Mobile Target => m_Target;
 
-		public bool Running
-		{
-			get
-			{
-				return m_Running;
-			}
-		}
+		public bool Running => m_Running;
 
 		public void Update()
 		{

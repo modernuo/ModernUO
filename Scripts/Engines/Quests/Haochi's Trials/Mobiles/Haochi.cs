@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Samurai
 			return 2;
 		}
 
-		public override int TalkNumber{ get	{ return -1; } }
+		public override int TalkNumber => -1;
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )
 		{

@@ -52,10 +52,7 @@ namespace Server.Mobiles
 
 		public override int TreasureMapLevel => 4;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.TerathansAndOphidians; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.TerathansAndOphidians;
 
 		public TerathanMatriarch( Serial serial ) : base( serial )
 		{

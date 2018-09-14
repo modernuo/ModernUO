@@ -13,22 +13,19 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public double MinSkill
 		{
-			get{ return m_MinSkill; }
-			set{ m_MinSkill = value; }
+			get => m_MinSkill;
+			set => m_MinSkill = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public double MaxSkill
 		{
-			get{ return m_MaxSkill; }
-			set{ m_MaxSkill = value; }
+			get => m_MaxSkill;
+			set => m_MaxSkill = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Swinging
-		{
-			get{ return ( m_Timer != null ); }
-		}
+		public bool Swinging => ( m_Timer != null );
 
 		public PickpocketDip( int itemID ) : base( itemID )
 		{

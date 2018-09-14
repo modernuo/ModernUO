@@ -38,8 +38,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string BoardName
 		{
-			get{ return m_BoardName; }
-			set{ m_BoardName = value; }
+			get => m_BoardName;
+			set => m_BoardName = value;
 		}
 
 		public BaseBulletinBoard( int itemID ) : base( itemID )
@@ -368,16 +368,18 @@ namespace Server.Items
 			m_PostedEquip = list.ToArray();
 		}
 
-		public Mobile Poster{ get{ return m_Poster; } }
-		public BulletinMessage Thread{ get{ return m_Thread; } }
-		public string Subject{ get{ return m_Subject; } }
-		public DateTime Time{ get{ return m_Time; } }
-		public DateTime LastPostTime{ get{ return m_LastPostTime; } set{ m_LastPostTime = value; } }
-		public string PostedName{ get{ return m_PostedName; } }
-		public int PostedBody{ get{ return m_PostedBody; } }
-		public int PostedHue{ get{ return m_PostedHue; } }
-		public BulletinEquip[] PostedEquip{ get{ return m_PostedEquip; } }
-		public string[] Lines{ get{ return m_Lines; } }
+		public Mobile Poster => m_Poster;
+		public BulletinMessage Thread => m_Thread;
+		public string Subject => m_Subject;
+		public DateTime Time => m_Time;
+		public DateTime LastPostTime{ get => m_LastPostTime;
+			set => m_LastPostTime = value;
+		}
+		public string PostedName => m_PostedName;
+		public int PostedBody => m_PostedBody;
+		public int PostedHue => m_PostedHue;
+		public BulletinEquip[] PostedEquip => m_PostedEquip;
+		public string[] Lines => m_Lines;
 
 		public BulletinMessage( Serial serial ) : base( serial )
 		{

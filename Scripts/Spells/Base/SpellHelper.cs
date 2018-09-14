@@ -280,8 +280,8 @@ namespace Server.Spells
 
 		public static bool DisableSkillCheck
 		{
-			get { return m_DisableSkillCheck; }
-			set { m_DisableSkillCheck = value; }
+			get => m_DisableSkillCheck;
+			set => m_DisableSkillCheck = value;
 		}
 
 		public static double GetOffsetScalar( Mobile caster, Mobile target, bool curse )

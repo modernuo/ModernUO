@@ -1813,7 +1813,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class Ryuichi : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override string DefaultName => "Ryuichi";
 		public override bool CanShout => true;
@@ -2055,7 +2055,7 @@ namespace Server.Engines.MLQuests.Definitions
 	public class Hamato : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override string DefaultName => "Hamato";
 		public override bool CanShout => true;

@@ -29,7 +29,7 @@ namespace Server.Mobiles
 		public abstract Type[] DecorativeList{ get; }
 		public abstract MonsterStatuetteType[] StatueTypes{ get; }
 
-		public virtual bool NoGoodies{ get{ return false; } }
+		public virtual bool NoGoodies => false;
 
 		public override void Serialize( GenericWriter writer )
 		{

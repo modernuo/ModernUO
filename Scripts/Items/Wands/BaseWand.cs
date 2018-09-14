@@ -43,19 +43,19 @@ namespace Server.Items
 		private WandEffect m_WandEffect;
 		private int m_Charges;
 
-		public virtual TimeSpan GetUseDelay{ get{ return TimeSpan.FromSeconds( 4.0 ); } }
+		public virtual TimeSpan GetUseDelay => TimeSpan.FromSeconds( 4.0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public WandEffect Effect
 		{
-			get{ return m_WandEffect; }
+			get => m_WandEffect;
 			set{ m_WandEffect = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get{ return m_Charges; }
+			get => m_Charges;
 			set{ m_Charges = value; InvalidateProperties(); }
 		}
 

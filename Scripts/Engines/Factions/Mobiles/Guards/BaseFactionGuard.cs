@@ -18,19 +18,16 @@ namespace Server.Factions
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public Faction Faction
 		{
-			get{ return m_Faction; }
+			get => m_Faction;
 			set{ Unregister(); m_Faction = value; Register(); }
 		}
 
-		public Orders Orders
-		{
-			get{ return m_Orders; }
-		}
+		public Orders Orders => m_Orders;
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public Town Town
 		{
-			get{ return m_Town; }
+			get => m_Town;
 			set{ Unregister(); m_Town = value; Register(); }
 		}
 
@@ -48,10 +45,7 @@ namespace Server.Factions
 
 		public abstract GuardAI GuardAI{ get; }
 
-		protected override BaseAI ForcedAI
-		{
-			get { return new FactionGuardAI( this ); }
-		}
+		protected override BaseAI ForcedAI => new FactionGuardAI( this );
 
 		public override TimeSpan ReacquireDelay => TimeSpan.FromSeconds( 2.0 );
 
@@ -442,7 +436,7 @@ namespace Server.Factions
 
 		public Mobile Rider
 		{
-			get{ return m_Item.Rider; }
+			get => m_Item.Rider;
 			set{}
 		}
 
@@ -461,7 +455,7 @@ namespace Server.Factions
 		private Mobile m_Rider;
 		private VirtualMount m_Mount;
 
-		public Mobile Rider{ get{ return m_Rider; } }
+		public Mobile Rider => m_Rider;
 
 		public VirtualMountItem( Mobile mob ) : base( 0x3EA0 )
 		{
@@ -471,10 +465,7 @@ namespace Server.Factions
 			m_Mount = new VirtualMount( this );
 		}
 
-		public IMount Mount
-		{
-			get{ return m_Mount; }
-		}
+		public IMount Mount => m_Mount;
 
 		public VirtualMountItem( Serial serial ) : base( serial )
 		{

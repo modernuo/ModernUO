@@ -660,10 +660,7 @@ namespace Server.Items
 			new InternalTimer( tele ).Start();
 		}
 
-		public override string DefaultName
-		{
-			get { return "a hole"; }
-		}
+		public override string DefaultName => "a hole";
 
 		private GreenThornsSHTeleporter() : base( 0x913 )
 		{

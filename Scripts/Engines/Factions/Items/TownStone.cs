@@ -9,7 +9,7 @@ namespace Server.Factions
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Town Town
 		{
-			get{ return m_Town; }
+			get => m_Town;
 			set
 			{
 				m_Town = value;

@@ -32,14 +32,8 @@ namespace Server.Engines.Reports
         /// </summary>
         public Server.Engines.Reports.ItemValue this[int index]
         {
-            get
-            {
-                return ((Server.Engines.Reports.ItemValue)(this.List[index]));
-            }
-            set
-            {
-                this.List[index] = value;
-            }
+            get => ((Server.Engines.Reports.ItemValue)(this.List[index]));
+	        set => this.List[index] = value;
         }
 
 		public int Add( string value )

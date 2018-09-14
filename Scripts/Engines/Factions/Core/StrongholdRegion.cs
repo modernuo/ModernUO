@@ -9,8 +9,8 @@ namespace Server.Factions
 
 		public Faction Faction
 		{
-			get{ return m_Faction; }
-			set{ m_Faction = value; }
+			get => m_Faction;
+			set => m_Faction = value;
 		}
 
 		public StrongholdRegion( Faction faction ) : base( faction.Definition.FriendlyName, Faction.Facet, Region.DefaultPriority, faction.Definition.Stronghold.Area )

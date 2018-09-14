@@ -8,7 +8,7 @@ namespace Server.Mobiles
 		public override string CorpseName => "a fire beetle corpse";
 		public override bool SubdueBeforeTame => true; // Must be beaten into submission
 		public override bool StatLossAfterTame => true;
-		public virtual double BoostedSpeed{ get{ return 0.1; } }
+		public virtual double BoostedSpeed => 0.1;
 		public override bool ReduceSpeedWithDamage => false;
 
 		[Constructible]

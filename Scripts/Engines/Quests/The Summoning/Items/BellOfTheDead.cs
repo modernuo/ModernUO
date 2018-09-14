@@ -23,22 +23,22 @@ namespace Server.Engines.Quests.Doom
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public Chyloth Chyloth
 		{
-			get{ return m_Chyloth; }
-			set{ m_Chyloth = value; }
+			get => m_Chyloth;
+			set => m_Chyloth = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public SkeletalDragon Dragon
 		{
-			get{ return m_Dragon; }
-			set{ m_Dragon = value; }
+			get => m_Dragon;
+			set => m_Dragon = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
 		public bool Summoning
 		{
-			get{ return m_Summoning; }
-			set{ m_Summoning = value; }
+			get => m_Summoning;
+			set => m_Summoning = value;
 		}
 
 		public override void OnDoubleClick( Mobile from )

@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class AlchemyBag : Bag
 	{
-		public override string DefaultName
-		{
-			get { return "an Alchemy Kit"; }
-		}
+		public override string DefaultName => "an Alchemy Kit";
 
 		[Constructible]
 		public AlchemyBag() : this( 1 )

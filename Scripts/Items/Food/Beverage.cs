@@ -565,7 +565,7 @@ namespace Server.Items
 			}
 		}
 
-		public virtual bool ShowQuantity { get { return ( MaxQuantity > 1 ); } }
+		public virtual bool ShowQuantity => ( MaxQuantity > 1 );
 		public virtual bool Fillable  => true;
 		public virtual bool Pourable  => true;
 
@@ -577,41 +577,32 @@ namespace Server.Items
 		public abstract int ComputeItemID();
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsEmpty
-		{
-			get { return ( m_Quantity <= 0 ); }
-		}
+		public bool IsEmpty => ( m_Quantity <= 0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool ContainsAlchohol
-		{
-			get { return ( !IsEmpty && m_Content != BeverageType.Milk && m_Content != BeverageType.Water ); }
-		}
+		public bool ContainsAlchohol => ( !IsEmpty && m_Content != BeverageType.Milk && m_Content != BeverageType.Water );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsFull
-		{
-			get { return ( m_Quantity >= MaxQuantity ); }
-		}
+		public bool IsFull => ( m_Quantity >= MaxQuantity );
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Poison Poison
 		{
-			get { return m_Poison; }
-			set { m_Poison = value; }
+			get => m_Poison;
+			set => m_Poison = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Poisoner
 		{
-			get { return m_Poisoner; }
-			set { m_Poisoner = value; }
+			get => m_Poisoner;
+			set => m_Poisoner = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BeverageType Content
 		{
-			get { return m_Content; }
+			get => m_Content;
 			set
 			{
 				m_Content = value;
@@ -630,7 +621,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Quantity
 		{
-			get { return m_Quantity; }
+			get => m_Quantity;
 			set
 			{
 				if ( value < 0 )

@@ -8,7 +8,7 @@ namespace Server.Mobiles
 	public abstract class BaseHealer : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override bool IsActiveVendor => false;
 		public override bool IsInvulnerable => false;
@@ -73,7 +73,7 @@ namespace Server.Mobiles
 			AddItem( new Robe( GetRobeColor() ) );
 		}
 
-		public virtual bool HealsYoungPlayers{ get{ return true; } }
+		public virtual bool HealsYoungPlayers => true;
 
 		public virtual bool CheckResurrect( Mobile m )
 		{

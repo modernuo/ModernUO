@@ -17,32 +17,17 @@ namespace Server.Items
 		private int m_DyedHue;
 		private SecureLevel m_SecureLevel;
 
-		public virtual CustomHuePicker CustomHuePicker{ get{ return null; } }
+		public virtual CustomHuePicker CustomHuePicker => null;
 
-		public virtual bool AllowRunebooks
-		{
-			get{ return false; }
-		}
+		public virtual bool AllowRunebooks => false;
 
-		public virtual bool AllowFurniture
-		{
-			get{ return false; }
-		}
+		public virtual bool AllowFurniture => false;
 
-		public virtual bool AllowStatuettes
-		{
-			get{ return false; }
-		}
+		public virtual bool AllowStatuettes => false;
 
-		public virtual bool AllowLeather
-		{
-			get{ return false; }
-		}
+		public virtual bool AllowLeather => false;
 
-		public virtual bool AllowDyables
-		{
-			get{ return true; }
-		}
+		public virtual bool AllowDyables => true;
 
 		public override void Serialize( GenericWriter writer )
 		{
@@ -81,23 +66,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual bool Redyable
 		{
-			get
-			{
-				return m_Redyable;
-			}
-			set
-			{
-				m_Redyable = value;
-			}
+			get => m_Redyable;
+			set => m_Redyable = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int DyedHue
 		{
-			get
-			{
-				return m_DyedHue;
-			}
+			get => m_DyedHue;
 			set
 			{
 				if ( m_Redyable )
@@ -111,14 +87,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get
-			{
-				return m_SecureLevel;
-			}
-			set
-			{
-				m_SecureLevel = value;
-			}
+			get => m_SecureLevel;
+			set => m_SecureLevel = value;
 		}
 
 		[Constructible]
@@ -142,10 +112,10 @@ namespace Server.Items
 		public virtual bool MetallicHues => false;
 
 		// Select the clothing to dye.
-		public virtual int TargetMessage{ get{ return 500859; } }
+		public virtual int TargetMessage => 500859;
 
 		// You can not dye that.
-		public virtual int FailMessage{ get{ return 1042083; } }
+		public virtual int FailMessage => 1042083;
 
 		public override void OnDoubleClick( Mobile from )
 		{

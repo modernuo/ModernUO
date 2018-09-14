@@ -25,11 +25,7 @@ namespace Server.Diagnostics {
 	public class TargetProfile : BaseProfile {
 		private static Dictionary<Type, TargetProfile> _profiles = new Dictionary<Type, TargetProfile>();
 
-		public static IEnumerable<TargetProfile> Profiles {
-			get {
-				return _profiles.Values;
-			}
-		}
+		public static IEnumerable<TargetProfile> Profiles => _profiles.Values;
 
 		public static TargetProfile Acquire( Type type ) {
 			if ( !Core.Profiling ) {

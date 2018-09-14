@@ -9,10 +9,10 @@ namespace Server.Engines.BulkOrders
 		private int m_Number;
 		private int m_Graphic;
 
-		public Type ItemType{ get{ return m_ItemType; } }
-		public int AmountCur{ get{ return m_AmountCur; } }
-		public int Number{ get{ return m_Number; } }
-		public int Graphic{ get{ return m_Graphic; } }
+		public Type ItemType => m_ItemType;
+		public int AmountCur => m_AmountCur;
+		public int Number => m_Number;
+		public int Graphic => m_Graphic;
 
 		public BOBLargeSubEntry( LargeBulkEntry lbe )
 		{

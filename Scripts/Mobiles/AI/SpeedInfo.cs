@@ -16,20 +16,20 @@ namespace Server
 
 		public double ActiveSpeed
 		{
-			get{ return m_ActiveSpeed; }
-			set{ m_ActiveSpeed = value; }
+			get => m_ActiveSpeed;
+			set => m_ActiveSpeed = value;
 		}
 
 		public double PassiveSpeed
 		{
-			get{ return m_PassiveSpeed; }
-			set{ m_PassiveSpeed = value; }
+			get => m_PassiveSpeed;
+			set => m_PassiveSpeed = value;
 		}
 
 		public Type[] Types
 		{
-			get{ return m_Types; }
-			set{ m_Types = value; }
+			get => m_Types;
+			set => m_Types = value;
 		}
 
 		public SpeedInfo( double activeSpeed, double passiveSpeed, Type[] types )

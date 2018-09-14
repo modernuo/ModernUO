@@ -6,8 +6,8 @@ namespace Server.Items
 
 		public BaseBoard Board
 		{
-			get { return m_Board; }
-			set { m_Board = value; }
+			get => m_Board;
+			set => m_Board = value;
 		}
 
 		public override bool IsVirtualItem => true;

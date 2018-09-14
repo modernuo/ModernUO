@@ -2,9 +2,12 @@ namespace Server.Gumps
 {
 	public class BaseConfirmGump : Gump
 	{
-		public virtual int TitleNumber{ get{ return 1075083; } } // <center>Warning!</center>
-		public virtual int LabelNumber{ get{ return 1074975; } } // Are you sure you wish to select this?
-		
+		public virtual int TitleNumber // <center>Warning!</center>
+			=> 1075083;
+
+		public virtual int LabelNumber // Are you sure you wish to select this?
+			=> 1074975;
+
 		private enum Buttons
 		{
 			Close,

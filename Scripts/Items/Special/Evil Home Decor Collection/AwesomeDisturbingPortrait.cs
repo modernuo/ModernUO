@@ -7,7 +7,7 @@ namespace Server.Items
 	public class AwesomeDisturbingPortraitComponent : AddonComponent
 	{
 		public override int LabelNumber => 1074479; // Disturbing portrait
-		public bool FacingSouth { get { return ItemID < 0x2A61; } }
+		public bool FacingSouth => ItemID < 0x2A61;
 
 		private InternalTimer m_Timer;
 

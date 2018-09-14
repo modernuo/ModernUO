@@ -416,39 +416,21 @@ namespace Server.Network
 		/// <summary>
 		/// Gets the total stream length.
 		/// </summary>
-		public long Length
-		{
-			get
-			{
-				return m_Stream.Length;
-			}
-		}
+		public long Length => m_Stream.Length;
 
 		/// <summary>
 		/// Gets or sets the current stream position.
 		/// </summary>
 		public long Position
 		{
-			get
-			{
-				return m_Stream.Position;
-			}
-			set
-			{
-				m_Stream.Position = value;
-			}
+			get => m_Stream.Position;
+			set => m_Stream.Position = value;
 		}
 
 		/// <summary>
 		/// The internal stream used by this PacketWriter instance.
 		/// </summary>
-		public MemoryStream UnderlyingStream
-		{
-			get
-			{
-				return m_Stream;
-			}
-		}
+		public MemoryStream UnderlyingStream => m_Stream;
 
 		/// <summary>
 		/// Offsets the current position from an origin.

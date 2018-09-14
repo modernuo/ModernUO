@@ -63,8 +63,8 @@ namespace Server.Network
 
 		public Listener[] Listeners
 		{
-			get{ return m_Listeners; }
-			set{ m_Listeners = value; }
+			get => m_Listeners;
+			set => m_Listeners = value;
 		}
 
 		public void AddListener( Listener l )

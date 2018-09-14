@@ -18,11 +18,11 @@ namespace Server.Factions
 		private TextDefinition m_Label;
 		private TextDefinition m_Assigned;
 
-		public SkillName Skill{ get{ return m_Skill; } }
-		public double Requirement{ get{ return m_Requirement; } }
-		public TextDefinition Title{ get{ return m_Title; } }
-		public TextDefinition Label{ get{ return m_Label; } }
-		public TextDefinition Assigned{ get{ return m_Assigned; } }
+		public SkillName Skill => m_Skill;
+		public double Requirement => m_Requirement;
+		public TextDefinition Title => m_Title;
+		public TextDefinition Label => m_Label;
+		public TextDefinition Assigned => m_Assigned;
 
 		public MerchantTitleInfo( SkillName skill, double requirement, TextDefinition title, TextDefinition label, TextDefinition assigned )
 		{
@@ -46,7 +46,7 @@ namespace Server.Factions
 				new MerchantTitleInfo( SkillName.Tailoring,		90.0,	new TextDefinition( 1022982, "Tailor" ),		new TextDefinition( 1018300, "TAILOR" ),		new TextDefinition( 1042162, "You now have the faction title of Tailor" ) ),
 			};
 
-		public static MerchantTitleInfo[] Info{ get{ return m_Info; } }
+		public static MerchantTitleInfo[] Info => m_Info;
 
 		public static MerchantTitleInfo GetInfo( MerchantTitle title )
 		{

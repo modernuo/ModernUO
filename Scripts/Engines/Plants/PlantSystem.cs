@@ -58,24 +58,19 @@ namespace Server.Engines.Plants
 
 		public bool FertileDirt
 		{
-			get { return m_FertileDirt; }
-			set { m_FertileDirt = value; }
+			get => m_FertileDirt;
+			set => m_FertileDirt = value;
 		}
 
-		public DateTime NextGrowth
-		{
-			get { return m_NextGrowth; }
-		}
+		public DateTime NextGrowth => m_NextGrowth;
 
-		public PlantGrowthIndicator GrowthIndicator
-		{
-			get { return m_GrowthIndicator; }
-		}
+		public PlantGrowthIndicator GrowthIndicator => m_GrowthIndicator;
 
-		public bool IsFullWater { get { return m_Water >= 4; } }
+		public bool IsFullWater => m_Water >= 4;
+
 		public int Water
 		{
-			get { return m_Water; }
+			get => m_Water;
 			set
 			{
 				if ( value < 0 )
@@ -91,7 +86,7 @@ namespace Server.Engines.Plants
 
 		public int Hits
 		{
-			get { return m_Hits; }
+			get => m_Hits;
 			set
 			{
 				if ( m_Hits == value )
@@ -111,10 +106,7 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public int MaxHits
-		{
-			get	{ return 10 + (int)m_Plant.PlantStatus * 2; }
-		}
+		public int MaxHits => 10 + (int)m_Plant.PlantStatus * 2;
 
 		public PlantHealth Health
 		{
@@ -135,7 +127,7 @@ namespace Server.Engines.Plants
 
 		public int Infestation
 		{
-			get { return m_Infestation; }
+			get => m_Infestation;
 			set
 			{
 				if ( value < 0 )
@@ -149,7 +141,7 @@ namespace Server.Engines.Plants
 
 		public int Fungus
 		{
-			get { return m_Fungus; }
+			get => m_Fungus;
 			set
 			{
 				if ( value < 0 )
@@ -163,7 +155,7 @@ namespace Server.Engines.Plants
 
 		public int Poison
 		{
-			get { return m_Poison; }
+			get => m_Poison;
 			set
 			{
 				if ( value < 0 )
@@ -177,7 +169,7 @@ namespace Server.Engines.Plants
 
 		public int Disease
 		{
-			get { return m_Disease; }
+			get => m_Disease;
 			set
 			{
 				if ( value < 0 )
@@ -189,10 +181,11 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public bool IsFullPoisonPotion { get { return m_PoisonPotion >= 2; } }
+		public bool IsFullPoisonPotion => m_PoisonPotion >= 2;
+
 		public int PoisonPotion
 		{
-			get { return m_PoisonPotion; }
+			get => m_PoisonPotion;
 			set
 			{
 				if ( value < 0 )
@@ -204,10 +197,11 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public bool IsFullCurePotion { get { return m_CurePotion >= 2; } }
+		public bool IsFullCurePotion => m_CurePotion >= 2;
+
 		public int CurePotion
 		{
-			get { return m_CurePotion; }
+			get => m_CurePotion;
 			set
 			{
 				if ( value < 0 )
@@ -219,10 +213,11 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public bool IsFullHealPotion { get { return m_HealPotion >= 2; } }
+		public bool IsFullHealPotion => m_HealPotion >= 2;
+
 		public int HealPotion
 		{
-			get { return m_HealPotion; }
+			get => m_HealPotion;
 			set
 			{
 				if ( value < 0 )
@@ -234,10 +229,11 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public bool IsFullStrengthPotion { get { return m_StrengthPotion >= 2; } }
+		public bool IsFullStrengthPotion => m_StrengthPotion >= 2;
+
 		public int StrengthPotion
 		{
-			get { return m_StrengthPotion; }
+			get => m_StrengthPotion;
 			set
 			{
 				if ( value < 0 )
@@ -249,20 +245,14 @@ namespace Server.Engines.Plants
 			}
 		}
 
-		public bool HasMaladies
-		{
-			get { return Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2; }
-		}
+		public bool HasMaladies => Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2;
 
-		public bool PollenProducing
-		{
-			get { return m_Plant.IsCrossable && m_Plant.PlantStatus >= PlantStatus.FullGrownPlant; }
-		}
+		public bool PollenProducing => m_Plant.IsCrossable && m_Plant.PlantStatus >= PlantStatus.FullGrownPlant;
 
 		public bool Pollinated
 		{
-			get { return m_Pollinated; }
-			set { m_Pollinated = value; }
+			get => m_Pollinated;
+			set => m_Pollinated = value;
 		}
 
 		public PlantType SeedType
@@ -274,7 +264,7 @@ namespace Server.Engines.Plants
 				else
 					return m_Plant.PlantType;
 			}
-			set { m_SeedType = value; }
+			set => m_SeedType = value;
 		}
 
 		public PlantHue SeedHue
@@ -286,30 +276,30 @@ namespace Server.Engines.Plants
 				else
 					return m_Plant.PlantHue;
 			}
-			set { m_SeedHue = value; }
+			set => m_SeedHue = value;
 		}
 
 		public int AvailableSeeds
 		{
-			get { return m_AvailableSeeds; }
+			get => m_AvailableSeeds;
 			set { if ( value >= 0 ) m_AvailableSeeds = value; }
 		}
 
 		public int LeftSeeds
 		{
-			get { return m_LeftSeeds; }
+			get => m_LeftSeeds;
 			set { if ( value >= 0 ) m_LeftSeeds = value; }
 		}
 
 		public int AvailableResources
 		{
-			get { return m_AvailableResources; }
+			get => m_AvailableResources;
 			set { if ( value >= 0 ) m_AvailableResources = value; }
 		}
 
 		public int LeftResources
 		{
-			get { return m_LeftResources; }
+			get => m_LeftResources;
 			set { if ( value >= 0 ) m_LeftResources = value; }
 		}
 

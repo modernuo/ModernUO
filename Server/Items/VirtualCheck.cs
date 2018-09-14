@@ -33,7 +33,7 @@ namespace Server
 		[CommandProperty(AccessLevel.Administrator)]
 		public int Plat
 		{
-			get { return _Plat; }
+			get => _Plat;
 			set
 			{
 				_Plat = value;
@@ -46,7 +46,7 @@ namespace Server
 		[CommandProperty(AccessLevel.Administrator)]
 		public int Gold
 		{
-			get { return _Gold; }
+			get => _Gold;
 			set
 			{
 				_Gold = value;

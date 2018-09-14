@@ -18,8 +18,12 @@ namespace Server.Engines.Reports
 		private DateTime m_TimeStamp;
 		private ObjectCollection m_Children;
 
-		public DateTime TimeStamp{ get{ return m_TimeStamp; } set{ m_TimeStamp = value; } }
-		public ObjectCollection Children{ get{ return m_Children; } set{ m_Children = value; } }
+		public DateTime TimeStamp{ get => m_TimeStamp;
+			set => m_TimeStamp = value;
+		}
+		public ObjectCollection Children{ get => m_Children;
+			set => m_Children = value;
+		}
 
 		public Snapshot()
 		{

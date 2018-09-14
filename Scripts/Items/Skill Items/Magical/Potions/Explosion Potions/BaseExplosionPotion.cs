@@ -166,10 +166,7 @@ namespace Server.Items
 		{
 			private BaseExplosionPotion m_Potion;
 
-			public BaseExplosionPotion Potion
-			{
-				get{ return m_Potion; }
-			}
+			public BaseExplosionPotion Potion => m_Potion;
 
 			public ThrowTarget( BaseExplosionPotion potion ) : base( 12, true, TargetFlags.None )
 			{

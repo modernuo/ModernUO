@@ -29,26 +29,14 @@ namespace Server.Targeting
 
 		public int MultiID
 		{
-			get
-			{
-				return m_MultiID;
-			}
-			set
-			{
-				m_MultiID = value;
-			}
+			get => m_MultiID;
+			set => m_MultiID = value;
 		}
 
 		public Point3D Offset
 		{
-			get
-			{
-				return m_Offset;
-			}
-			set
-			{
-				m_Offset = value;
-			}
+			get => m_Offset;
+			set => m_Offset = value;
 		}
 
 		protected MultiTarget( int multiID, Point3D offset )

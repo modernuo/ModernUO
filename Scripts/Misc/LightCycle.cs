@@ -15,7 +15,7 @@ namespace Server
 
 		public static int LevelOverride
 		{
-			get{ return m_LevelOverride; }
+			get => m_LevelOverride;
 			set
 			{
 				m_LevelOverride = value;

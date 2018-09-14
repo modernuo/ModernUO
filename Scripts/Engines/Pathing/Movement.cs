@@ -17,10 +17,18 @@ namespace Server.Movement
 		private static bool m_IgnoreSpellFields;
 		private static Point3D m_Goal;
 
-		public static bool AlwaysIgnoreDoors{ get{ return m_AlwaysIgnoreDoors; } set{ m_AlwaysIgnoreDoors = value; } }
-		public static bool IgnoreMovableImpassables{ get{ return m_IgnoreMovableImpassables; } set{ m_IgnoreMovableImpassables = value; } }
-		public static bool IgnoreSpellFields{ get{ return m_IgnoreSpellFields; } set{ m_IgnoreSpellFields = value; } }
-		public static Point3D Goal{ get{ return m_Goal; } set{ m_Goal = value; } }
+		public static bool AlwaysIgnoreDoors{ get => m_AlwaysIgnoreDoors;
+			set => m_AlwaysIgnoreDoors = value;
+		}
+		public static bool IgnoreMovableImpassables{ get => m_IgnoreMovableImpassables;
+			set => m_IgnoreMovableImpassables = value;
+		}
+		public static bool IgnoreSpellFields{ get => m_IgnoreSpellFields;
+			set => m_IgnoreSpellFields = value;
+		}
+		public static Point3D Goal{ get => m_Goal;
+			set => m_Goal = value;
+		}
 
 		public static void Configure()
 		{

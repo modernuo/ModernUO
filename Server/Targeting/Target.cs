@@ -31,8 +31,8 @@ namespace Server.Targeting
 
 		public static bool TargetIDValidation
 		{
-			get { return m_TargetIDValidation; }
-			set { m_TargetIDValidation = value; }
+			get => m_TargetIDValidation;
+			set => m_TargetIDValidation = value;
 		}
 
 		private int m_TargetID;
@@ -44,7 +44,7 @@ namespace Server.Targeting
 		private TargetFlags m_Flags;
 		private DateTime m_TimeoutTime;
 
-		public DateTime TimeoutTime{ get{ return m_TimeoutTime; } }
+		public DateTime TimeoutTime => m_TimeoutTime;
 
 		protected Target( int range, bool allowGround, TargetFlags flags )
 		{
@@ -134,47 +134,23 @@ namespace Server.Targeting
 
 		public bool CheckLOS
 		{
-			get
-			{
-				return m_CheckLOS;
-			}
-			set
-			{
-				m_CheckLOS = value;
-			}
+			get => m_CheckLOS;
+			set => m_CheckLOS = value;
 		}
 
 		public bool DisallowMultis
 		{
-			get
-			{
-				return m_DisallowMultis;
-			}
-			set
-			{
-				m_DisallowMultis = value;
-			}
+			get => m_DisallowMultis;
+			set => m_DisallowMultis = value;
 		}
 
 		public bool AllowNonlocal
 		{
-			get
-			{
-				return m_AllowNonlocal;
-			}
-			set
-			{
-				m_AllowNonlocal = value;
-			}
+			get => m_AllowNonlocal;
+			set => m_AllowNonlocal = value;
 		}
 
-		public int TargetID
-		{
-			get
-			{
-				return m_TargetID;
-			}
-		}
+		public int TargetID => m_TargetID;
 
 		public virtual Packet GetPacketFor( NetState ns )
 		{
@@ -350,38 +326,20 @@ namespace Server.Targeting
 
 		public int Range
 		{
-			get
-			{
-				return m_Range;
-			}
-			set
-			{
-				m_Range = value;
-			}
+			get => m_Range;
+			set => m_Range = value;
 		}
 
 		public bool AllowGround
 		{
-			get
-			{
-				return m_AllowGround;
-			}
-			set
-			{
-				m_AllowGround = value;
-			}
+			get => m_AllowGround;
+			set => m_AllowGround = value;
 		}
 
 		public TargetFlags Flags
 		{
-			get
-			{
-				return m_Flags;
-			}
-			set
-			{
-				m_Flags = value;
-			}
+			get => m_Flags;
+			set => m_Flags = value;
 		}
 	}
 }

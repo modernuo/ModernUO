@@ -10,8 +10,8 @@ namespace Server.Menus.Questions
 		private int m_Name;
 		private Point3D[] m_Locations;
 
-		public int Name{ get{ return m_Name; } }
-		public Point3D[] Locations{ get{ return m_Locations; } }
+		public int Name => m_Name;
+		public Point3D[] Locations => m_Locations;
 
 		public StuckMenuEntry( int name, Point3D[] locations )
 		{

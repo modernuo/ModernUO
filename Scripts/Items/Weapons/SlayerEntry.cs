@@ -8,9 +8,11 @@ namespace Server.Items
 		private SlayerName m_Name;
 		private Type[] m_Types;
 
-		public SlayerGroup Group{ get{ return m_Group; } set{ m_Group = value; } }
-		public SlayerName Name{ get{ return m_Name; } }
-		public Type[] Types{ get{ return m_Types; } }
+		public SlayerGroup Group{ get => m_Group;
+			set => m_Group = value;
+		}
+		public SlayerName Name => m_Name;
+		public Type[] Types => m_Types;
 
 		private static int[] m_AosTitles = new int[]
 			{

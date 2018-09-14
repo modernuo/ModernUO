@@ -8,8 +8,8 @@ namespace Server.Factions
 		private GuardDefinition m_Definition;
 		private List<BaseFactionGuard> m_Guards;
 
-		public GuardDefinition Definition{ get{ return m_Definition; } }
-		public List<BaseFactionGuard> Guards{ get{ return m_Guards; } }
+		public GuardDefinition Definition => m_Definition;
+		public List<BaseFactionGuard> Guards => m_Guards;
 
 		public BaseFactionGuard Construct()
 		{

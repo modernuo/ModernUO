@@ -35,29 +35,11 @@
 	public class EarringsOfProtection : BaseJewel
 	{
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual AosElementAttribute Attribute
-		{
-			get
-			{
-				return m_Attribute;
-			}
-		}
+		public virtual AosElementAttribute Attribute => m_Attribute;
 
-		public override int LabelNumber
-		{
-			get
-			{
-				return GetItemData( m_Attribute, true );
-			}
-		}
+		public override int LabelNumber => GetItemData( m_Attribute, true );
 
-		public override int Hue
-		{
-			get
-			{
-				return GetItemData( m_Attribute, false );
-			}
-		}
+		public override int Hue => GetItemData( m_Attribute, false );
 
 		private AosElementAttribute m_Attribute;
 

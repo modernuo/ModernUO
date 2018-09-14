@@ -99,10 +99,7 @@ namespace Server.Engines.Doom
 		private LeverPuzzleController m_Controller;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public UInt16 Code
-		{
-			get{ return m_Code; }
-		}
+		public UInt16 Code => m_Code;
 
 		public LeverPuzzleLever( UInt16 code, LeverPuzzleController controller ) : base( 0x108E )
 		{

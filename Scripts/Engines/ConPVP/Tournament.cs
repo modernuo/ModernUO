@@ -41,7 +41,9 @@ namespace Server.Engines.ConPVP
 		private TournamentController m_Tournament;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentController Tournament{ get{ return m_Tournament; } set{ m_Tournament = value; } }
+		public TournamentController Tournament{ get => m_Tournament;
+			set => m_Tournament = value;
+		}
 
 		[Constructible]
 		public TournamentRegistrar()
@@ -138,15 +140,16 @@ namespace Server.Engines.ConPVP
 		private Mobile m_Registrar;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentController Tournament{ get{ return m_Tournament; } set{ m_Tournament = value; } }
+		public TournamentController Tournament{ get => m_Tournament;
+			set => m_Tournament = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Registrar{ get{ return m_Registrar; } set{ m_Registrar = value; } }
-
-		public override string DefaultName
-		{
-			get { return "tournament signup book"; }
+		public Mobile Registrar{ get => m_Registrar;
+			set => m_Registrar = value;
 		}
+
+		public override string DefaultName => "tournament signup book";
 
 		[Constructible]
 		public TournamentSignupItem() : base( 4029 )
@@ -1186,7 +1189,8 @@ namespace Server.Engines.ConPVP
 		private Tournament m_Tournament;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Tournament Tournament{ get{ return m_Tournament; } set{} }
+		public Tournament Tournament{ get => m_Tournament;
+			set{} }
 
 		private static ArrayList m_Instances = new ArrayList();
 
@@ -1206,10 +1210,7 @@ namespace Server.Engines.ConPVP
 			}
 		}
 
-		public override string DefaultName
-		{
-			get { return "tournament controller"; }
-		}
+		public override string DefaultName => "tournament controller";
 
 		[Constructible]
 		public TournamentController() : base( 0x1B7A )
@@ -1360,139 +1361,132 @@ namespace Server.Engines.ConPVP
 
 		private EventController m_EventController;
 
-		public bool IsNotoRestricted { get { return ( m_TournyType != TournyType.Standard ); } }
+		public bool IsNotoRestricted => ( m_TournyType != TournyType.Standard );
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public EventController EventController
 		{
-			get { return m_EventController; }
-			set { m_EventController = value; }
+			get => m_EventController;
+			set => m_EventController = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int SuddenDeathRounds
 		{
-			get{ return m_SuddenDeathRounds; }
-			set{ m_SuddenDeathRounds = value; }
+			get => m_SuddenDeathRounds;
+			set => m_SuddenDeathRounds = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TournyType TournyType
 		{
-			get{ return m_TournyType; }
-			set{ m_TournyType = value; }
+			get => m_TournyType;
+			set => m_TournyType = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public GroupingType GroupType
 		{
-			get{ return m_GroupType; }
-			set{ m_GroupType = value; }
+			get => m_GroupType;
+			set => m_GroupType = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TieType TieType
 		{
-			get{ return m_TieType; }
-			set{ m_TieType = value; }
+			get => m_TieType;
+			set => m_TieType = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan SuddenDeath
 		{
-			get{ return m_SuddenDeath; }
-			set{ m_SuddenDeath = value; }
+			get => m_SuddenDeath;
+			set => m_SuddenDeath = value;
 		}
 
 		public Ruleset Ruleset
 		{
-			get{ return m_Ruleset; }
-			set{ m_Ruleset = value; }
+			get => m_Ruleset;
+			set => m_Ruleset = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ParticipantsPerMatch
 		{
-			get{ return m_ParticipantsPerMatch; }
+			get => m_ParticipantsPerMatch;
 			set{ if ( value < 2 ) value = 2; else if ( value > 10 ) value = 10; m_ParticipantsPerMatch = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int PlayersPerParticipant
 		{
-			get{ return m_PlayersPerParticipant; }
+			get => m_PlayersPerParticipant;
 			set{ if ( value < 1 ) value = 1; else if ( value > 10 ) value = 10; m_PlayersPerParticipant = value; }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int LevelRequirement
 		{
-			get{ return m_LevelRequirement; }
-			set{ m_LevelRequirement = value; }
+			get => m_LevelRequirement;
+			set => m_LevelRequirement = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool FactionRestricted
 		{
-			get{ return m_FactionRestricted; }
-			set{ m_FactionRestricted = value; }
+			get => m_FactionRestricted;
+			set => m_FactionRestricted = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TimeSpan SignupPeriod
 		{
-			get{ return m_SignupPeriod; }
-			set{ m_SignupPeriod = value; }
+			get => m_SignupPeriod;
+			set => m_SignupPeriod = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime SignupStart
 		{
-			get{ return m_SignupStart; }
-			set{ m_SignupStart = value; }
+			get => m_SignupStart;
+			set => m_SignupStart = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentStage CurrentStage
-		{
-			get{ return m_Stage; }
-		}
+		public TournamentStage CurrentStage => m_Stage;
 
 		public TournamentStage Stage
 		{
-			get{ return m_Stage; }
-			set{ m_Stage = value; }
+			get => m_Stage;
+			set => m_Stage = value;
 		}
 
 		public TournyPyramid Pyramid
 		{
-			get{ return m_Pyramid; }
-			set{ m_Pyramid = value; }
+			get => m_Pyramid;
+			set => m_Pyramid = value;
 		}
 
 		public ArrayList Arenas
 		{
-			get{ return m_Arenas; }
-			set{ m_Arenas = value; }
+			get => m_Arenas;
+			set => m_Arenas = value;
 		}
 
 		public ArrayList Participants
 		{
-			get{ return m_Participants; }
-			set{ m_Participants = value; }
+			get => m_Participants;
+			set => m_Participants = value;
 		}
 
 		public ArrayList Undefeated
 		{
-			get{ return m_Undefeated; }
-			set{ m_Undefeated = value; }
+			get => m_Undefeated;
+			set => m_Undefeated = value;
 		}
 
-		public bool IsFactionRestricted {
-			get {
-				return ( m_FactionRestricted || m_TournyType == TournyType.Faction );
-			}
-		}
+		public bool IsFactionRestricted => ( m_FactionRestricted || m_TournyType == TournyType.Faction );
 
 		public bool HasParticipant( Mobile mob )
 		{
@@ -2255,8 +2249,8 @@ namespace Server.Engines.ConPVP
 
 		public ArrayList Levels
 		{
-			get{ return m_Levels; }
-			set{ m_Levels = value; }
+			get => m_Levels;
+			set => m_Levels = value;
 		}
 
 		public TournyPyramid()
@@ -2443,14 +2437,14 @@ namespace Server.Engines.ConPVP
 
 		public ArrayList Matches
 		{
-			get{ return m_Matches; }
-			set{ m_Matches = value; }
+			get => m_Matches;
+			set => m_Matches = value;
 		}
 
 		public TournyParticipant FreeAdvance
 		{
-			get{ return m_FreeAdvance; }
-			set{ m_FreeAdvance = value; }
+			get => m_FreeAdvance;
+			set => m_FreeAdvance = value;
 		}
 
 		public PyramidLevel()
@@ -2467,26 +2461,23 @@ namespace Server.Engines.ConPVP
 
 		public ArrayList Participants
 		{
-			get{ return m_Participants; }
-			set{ m_Participants = value; }
+			get => m_Participants;
+			set => m_Participants = value;
 		}
 
 		public TournyParticipant Winner
 		{
-			get{ return m_Winner; }
-			set{ m_Winner = value; }
+			get => m_Winner;
+			set => m_Winner = value;
 		}
 
 		public DuelContext Context
 		{
-			get{ return m_Context; }
-			set{ m_Context = value; }
+			get => m_Context;
+			set => m_Context = value;
 		}
 
-		public bool InProgress
-		{
-			get{ return ( m_Context != null && m_Context.Registered ); }
-		}
+		public bool InProgress => ( m_Context != null && m_Context.Registered );
 
 		public void Start( Arena arena, Tournament tourny )
 		{
@@ -2601,20 +2592,20 @@ namespace Server.Engines.ConPVP
 
 		public ArrayList Players
 		{
-			get{ return m_Players; }
-			set{ m_Players = value; }
+			get => m_Players;
+			set => m_Players = value;
 		}
 
 		public ArrayList Log
 		{
-			get{ return m_Log; }
-			set{ m_Log = value; }
+			get => m_Log;
+			set => m_Log = value;
 		}
 
 		public int FreeAdvances
 		{
-			get{ return m_FreeAdvances; }
-			set{ m_FreeAdvances = value; }
+			get => m_FreeAdvances;
+			set => m_FreeAdvances = value;
 		}
 
 		public int TotalLadderXP
@@ -3520,12 +3511,11 @@ namespace Server.Engines.ConPVP
 		private TournamentController m_Tournament;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TournamentController Tournament{ get{ return m_Tournament; } set{ m_Tournament = value; } }
-
-		public override string DefaultName
-		{
-			get { return "tournament bracket"; }
+		public TournamentController Tournament{ get => m_Tournament;
+			set => m_Tournament = value;
 		}
+
+		public override string DefaultName => "tournament bracket";
 
 		[Constructible]
 		public TournamentBracketItem() : base( 3774 )

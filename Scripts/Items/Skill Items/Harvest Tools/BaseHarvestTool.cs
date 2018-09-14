@@ -23,21 +23,21 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Crafter
 		{
-			get{ return m_Crafter; }
+			get => m_Crafter;
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ToolQuality Quality
 		{
-			get{ return m_Quality; }
+			get => m_Quality;
 			set{ UnscaleUses(); m_Quality = value; InvalidateProperties(); ScaleUses(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int UsesRemaining
 		{
-			get { return m_UsesRemaining; }
+			get => m_UsesRemaining;
 			set { m_UsesRemaining = value; InvalidateProperties(); }
 		}
 
@@ -60,7 +60,8 @@ namespace Server.Items
 			return 100;
 		}
 
-		public bool ShowUsesRemaining{ get{ return true; } set{} }
+		public bool ShowUsesRemaining{ get => true;
+			set{} }
 
 		public abstract HarvestSystem HarvestSystem{ get; }
 

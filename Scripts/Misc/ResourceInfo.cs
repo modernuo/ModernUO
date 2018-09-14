@@ -74,31 +74,77 @@ namespace Server.Items
 		private int m_RunicMinIntensity;
 		private int m_RunicMaxIntensity;
 
-		public int WeaponFireDamage{ get{ return m_WeaponFireDamage; } set{ m_WeaponFireDamage = value; } }
-		public int WeaponColdDamage{ get{ return m_WeaponColdDamage; } set{ m_WeaponColdDamage = value; } }
-		public int WeaponPoisonDamage{ get{ return m_WeaponPoisonDamage; } set{ m_WeaponPoisonDamage = value; } }
-		public int WeaponEnergyDamage{ get{ return m_WeaponEnergyDamage; } set{ m_WeaponEnergyDamage = value; } }
-		public int WeaponChaosDamage{ get{ return m_WeaponChaosDamage; } set{ m_WeaponChaosDamage = value; } }
-		public int WeaponDirectDamage{ get{ return m_WeaponDirectDamage; } set{ m_WeaponDirectDamage = value; } }
-		public int WeaponDurability{ get{ return m_WeaponDurability; } set{ m_WeaponDurability = value; } }
-		public int WeaponLuck{ get{ return m_WeaponLuck; } set{ m_WeaponLuck = value; } }
-		public int WeaponGoldIncrease{ get{ return m_WeaponGoldIncrease; } set{ m_WeaponGoldIncrease = value; } }
-		public int WeaponLowerRequirements{ get{ return m_WeaponLowerRequirements; } set{ m_WeaponLowerRequirements = value; } }
+		public int WeaponFireDamage{ get => m_WeaponFireDamage;
+			set => m_WeaponFireDamage = value;
+		}
+		public int WeaponColdDamage{ get => m_WeaponColdDamage;
+			set => m_WeaponColdDamage = value;
+		}
+		public int WeaponPoisonDamage{ get => m_WeaponPoisonDamage;
+			set => m_WeaponPoisonDamage = value;
+		}
+		public int WeaponEnergyDamage{ get => m_WeaponEnergyDamage;
+			set => m_WeaponEnergyDamage = value;
+		}
+		public int WeaponChaosDamage{ get => m_WeaponChaosDamage;
+			set => m_WeaponChaosDamage = value;
+		}
+		public int WeaponDirectDamage{ get => m_WeaponDirectDamage;
+			set => m_WeaponDirectDamage = value;
+		}
+		public int WeaponDurability{ get => m_WeaponDurability;
+			set => m_WeaponDurability = value;
+		}
+		public int WeaponLuck{ get => m_WeaponLuck;
+			set => m_WeaponLuck = value;
+		}
+		public int WeaponGoldIncrease{ get => m_WeaponGoldIncrease;
+			set => m_WeaponGoldIncrease = value;
+		}
+		public int WeaponLowerRequirements{ get => m_WeaponLowerRequirements;
+			set => m_WeaponLowerRequirements = value;
+		}
 
-		public int ArmorPhysicalResist{ get{ return m_ArmorPhysicalResist; } set{ m_ArmorPhysicalResist = value; } }
-		public int ArmorFireResist{ get{ return m_ArmorFireResist; } set{ m_ArmorFireResist = value; } }
-		public int ArmorColdResist{ get{ return m_ArmorColdResist; } set{ m_ArmorColdResist = value; } }
-		public int ArmorPoisonResist{ get{ return m_ArmorPoisonResist; } set{ m_ArmorPoisonResist = value; } }
-		public int ArmorEnergyResist{ get{ return m_ArmorEnergyResist; } set{ m_ArmorEnergyResist = value; } }
-		public int ArmorDurability{ get{ return m_ArmorDurability; } set{ m_ArmorDurability = value; } }
-		public int ArmorLuck{ get{ return m_ArmorLuck; } set{ m_ArmorLuck = value; } }
-		public int ArmorGoldIncrease{ get{ return m_ArmorGoldIncrease; } set{ m_ArmorGoldIncrease = value; } }
-		public int ArmorLowerRequirements{ get{ return m_ArmorLowerRequirements; } set{ m_ArmorLowerRequirements = value; } }
+		public int ArmorPhysicalResist{ get => m_ArmorPhysicalResist;
+			set => m_ArmorPhysicalResist = value;
+		}
+		public int ArmorFireResist{ get => m_ArmorFireResist;
+			set => m_ArmorFireResist = value;
+		}
+		public int ArmorColdResist{ get => m_ArmorColdResist;
+			set => m_ArmorColdResist = value;
+		}
+		public int ArmorPoisonResist{ get => m_ArmorPoisonResist;
+			set => m_ArmorPoisonResist = value;
+		}
+		public int ArmorEnergyResist{ get => m_ArmorEnergyResist;
+			set => m_ArmorEnergyResist = value;
+		}
+		public int ArmorDurability{ get => m_ArmorDurability;
+			set => m_ArmorDurability = value;
+		}
+		public int ArmorLuck{ get => m_ArmorLuck;
+			set => m_ArmorLuck = value;
+		}
+		public int ArmorGoldIncrease{ get => m_ArmorGoldIncrease;
+			set => m_ArmorGoldIncrease = value;
+		}
+		public int ArmorLowerRequirements{ get => m_ArmorLowerRequirements;
+			set => m_ArmorLowerRequirements = value;
+		}
 
-		public int RunicMinAttributes{ get{ return m_RunicMinAttributes; } set{ m_RunicMinAttributes = value; } }
-		public int RunicMaxAttributes{ get{ return m_RunicMaxAttributes; } set{ m_RunicMaxAttributes = value; } }
-		public int RunicMinIntensity{ get{ return m_RunicMinIntensity; } set{ m_RunicMinIntensity = value; } }
-		public int RunicMaxIntensity{ get{ return m_RunicMaxIntensity; } set{ m_RunicMaxIntensity = value; } }
+		public int RunicMinAttributes{ get => m_RunicMinAttributes;
+			set => m_RunicMinAttributes = value;
+		}
+		public int RunicMaxAttributes{ get => m_RunicMaxAttributes;
+			set => m_RunicMaxAttributes = value;
+		}
+		public int RunicMinIntensity{ get => m_RunicMinIntensity;
+			set => m_RunicMinIntensity = value;
+		}
+		public int RunicMaxIntensity{ get => m_RunicMaxIntensity;
+			set => m_RunicMaxIntensity = value;
+		}
 
 		public CraftAttributeInfo()
 		{
@@ -399,12 +445,12 @@ namespace Server.Items
 		private CraftResource m_Resource;
 		private Type[] m_ResourceTypes;
 
-		public int Hue{ get{ return m_Hue; } }
-		public int Number{ get{ return m_Number; } }
-		public string Name{ get{ return m_Name; } }
-		public CraftAttributeInfo AttributeInfo{ get{ return m_AttributeInfo; } }
-		public CraftResource Resource{ get{ return m_Resource; } }
-		public Type[] ResourceTypes{ get{ return m_ResourceTypes; } }
+		public int Hue => m_Hue;
+		public int Number => m_Number;
+		public string Name => m_Name;
+		public CraftAttributeInfo AttributeInfo => m_AttributeInfo;
+		public CraftResource Resource => m_Resource;
+		public Type[] ResourceTypes => m_ResourceTypes;
 
 		public CraftResourceInfo( int hue, int number, string name, CraftAttributeInfo attributeInfo, CraftResource resource, params Type[] resourceTypes )
 		{
@@ -697,28 +743,10 @@ namespace Server.Items
 			m_Name = name;
 		}
 
-		public int Level
-		{
-			get
-			{
-				return m_Level;
-			}
-		}
+		public int Level => m_Level;
 
-		public int Hue
-		{
-			get
-			{
-				return m_Hue;
-			}
-		}
+		public int Hue => m_Hue;
 
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
+		public string Name => m_Name;
 	}
 }

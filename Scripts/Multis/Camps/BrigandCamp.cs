@@ -6,9 +6,9 @@ namespace Server.Multis
 {	
 	public class BrigandCamp : BaseCamp
 	{
-		public virtual Mobile Brigands{ get{ return new Brigand(); } }
-		public virtual Mobile Executioners{ get{ return new Executioner(); } }
-		
+		public virtual Mobile Brigands => new Brigand();
+		public virtual Mobile Executioners => new Executioner();
+
 		private Mobile m_Prisoner;
 		
 		[Constructible]

@@ -19,26 +19,26 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public SkillName Skill
 		{
-			get { return m_Skill; }
-			set { m_Skill = value; }
+			get => m_Skill;
+			set => m_Skill = value;
 		}
 
 		public int ThresholdFixed
 		{
-			get { return m_ThresholdFixed; }
-			set { m_ThresholdFixed = value; }
+			get => m_ThresholdFixed;
+			set => m_ThresholdFixed = value;
 		}
 
 		public bool UseReal
 		{
-			get { return GetFlag( GainSkillObjectiveFlags.UseReal ); }
-			set { SetFlag( GainSkillObjectiveFlags.UseReal, value ); }
+			get => GetFlag( GainSkillObjectiveFlags.UseReal );
+			set => SetFlag( GainSkillObjectiveFlags.UseReal, value );
 		}
 
 		public bool Accelerate
 		{
-			get { return GetFlag( GainSkillObjectiveFlags.Accelerate ); }
-			set { SetFlag( GainSkillObjectiveFlags.Accelerate, value ); }
+			get => GetFlag( GainSkillObjectiveFlags.Accelerate );
+			set => SetFlag( GainSkillObjectiveFlags.Accelerate, value );
 		}
 
 		public GainSkillObjective()
@@ -119,8 +119,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public GainSkillObjective Objective
 		{
-			get { return m_Objective; }
-			set { m_Objective = value; }
+			get => m_Objective;
+			set => m_Objective = value;
 		}
 
 		public GainSkillObjectiveInstance( GainSkillObjective objective, MLQuestInstance instance )

@@ -6,12 +6,9 @@ namespace Server.Factions
 	{
 		private static FactionPersistance m_Instance;
 
-		public static FactionPersistance Instance{ get{ return m_Instance; } }
+		public static FactionPersistance Instance => m_Instance;
 
-		public override string DefaultName
-		{
-			get { return "Faction Persistance - Internal"; }
-		}
+		public override string DefaultName => "Faction Persistance - Internal";
 
 		public FactionPersistance() : base( 1 )
 		{

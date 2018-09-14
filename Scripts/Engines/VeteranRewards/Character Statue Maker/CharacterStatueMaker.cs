@@ -13,14 +13,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public StatueType StatueType
 		{
-			get{ return m_Type; }
+			get => m_Type;
 			set{ m_Type = value; InvalidateHue(); }
 		}
 

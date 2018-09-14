@@ -10,15 +10,15 @@ namespace Server.Engines.ConPVP
 		private bool m_IsPrivate;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Arena Arena{ get{ return m_Arena; } set{} }
+		public Arena Arena{ get => m_Arena;
+			set{} }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsPrivate{ get{ return m_IsPrivate; } set{ m_IsPrivate = value; } }
-
-		public override string DefaultName
-		{
-			get { return "arena controller"; }
+		public bool IsPrivate{ get => m_IsPrivate;
+			set => m_IsPrivate = value;
 		}
+
+		public override string DefaultName => "arena controller";
 
 		[Constructible]
 		public ArenaController() : base( 0x1B7A )
@@ -86,7 +86,9 @@ namespace Server.Engines.ConPVP
 
 		private static List<ArenaController> m_Instances = new List<ArenaController>();
 
-		public static List<ArenaController> Instances{ get{ return m_Instances; } set{ m_Instances = value; } }
+		public static List<ArenaController> Instances{ get => m_Instances;
+			set => m_Instances = value;
+		}
 	}
 
 	[PropertyObject]
@@ -94,31 +96,47 @@ namespace Server.Engines.ConPVP
 	{
 		private Point3D[] m_Points;
 
-		public Point3D[] Points{ get{ return m_Points; } }
+		public Point3D[] Points => m_Points;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D EdgeWest{ get{ return m_Points[0]; } set{ m_Points[0] = value; } }
+		public Point3D EdgeWest{ get => m_Points[0];
+			set => m_Points[0] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D EdgeEast{ get{ return m_Points[1]; } set{ m_Points[1] = value; } }
+		public Point3D EdgeEast{ get => m_Points[1];
+			set => m_Points[1] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D EdgeNorth{ get{ return m_Points[2]; } set{ m_Points[2] = value; } }
+		public Point3D EdgeNorth{ get => m_Points[2];
+			set => m_Points[2] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D EdgeSouth{ get{ return m_Points[3]; } set{ m_Points[3] = value; } }
+		public Point3D EdgeSouth{ get => m_Points[3];
+			set => m_Points[3] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D CornerNW{ get{ return m_Points[4]; } set{ m_Points[4] = value; } }
+		public Point3D CornerNW{ get => m_Points[4];
+			set => m_Points[4] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D CornerSE{ get{ return m_Points[5]; } set{ m_Points[5] = value; } }
+		public Point3D CornerSE{ get => m_Points[5];
+			set => m_Points[5] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D CornerSW{ get{ return m_Points[6]; } set{ m_Points[6] = value; } }
+		public Point3D CornerSW{ get => m_Points[6];
+			set => m_Points[6] = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D CornerNE{ get{ return m_Points[7]; } set{ m_Points[7] = value; } }
+		public Point3D CornerNE{ get => m_Points[7];
+			set => m_Points[7] = value;
+		}
 
 		public override string ToString()
 		{
@@ -179,14 +197,14 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public LadderController Ladder
 		{
-			get{ return m_Ladder; }
-			set{ m_Ladder = value; }
+			get => m_Ladder;
+			set => m_Ladder = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsGuarded
 		{
-			get{ return m_IsGuarded; }
+			get => m_IsGuarded;
 			set
 			{
 				m_IsGuarded = value;
@@ -207,7 +225,7 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TournamentController Tournament
 		{
-			get{ return m_Tournament; }
+			get => m_Tournament;
 			set
 			{
 				if ( m_Tournament != null )
@@ -223,21 +241,21 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Announcer
 		{
-			get{ return m_Announcer; }
-			set{ m_Announcer = value; }
+			get => m_Announcer;
+			set => m_Announcer = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Name
 		{
-			get{ return m_Name; }
+			get => m_Name;
 			set{ m_Name = value; if ( m_Active ) m_Arenas.Sort(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Map Facet
 		{
-			get{ return m_Facet; }
+			get => m_Facet;
 			set
 			{
 				m_Facet = value;
@@ -256,7 +274,9 @@ namespace Server.Engines.ConPVP
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Rectangle2D Bounds{ get{ return m_Bounds; } set{ m_Bounds = value; } }
+		public Rectangle2D Bounds{ get => m_Bounds;
+			set => m_Bounds = value;
+		}
 
 		private SafeZone m_Region;
 
@@ -279,7 +299,7 @@ namespace Server.Engines.ConPVP
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Rectangle2D Zone
 		{
-			get{ return m_Zone; }
+			get => m_Zone;
 			set
 			{
 				m_Zone = value;
@@ -302,31 +322,41 @@ namespace Server.Engines.ConPVP
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Outside{ get{ return m_Outside; } set{ m_Outside = value; } }
+		public Point3D Outside{ get => m_Outside;
+			set => m_Outside = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D GateIn{ get{ return m_GateIn; } set{ m_GateIn = value; } }
+		public Point3D GateIn{ get => m_GateIn;
+			set => m_GateIn = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D GateOut{ get{ return m_GateOut; } set{ m_GateOut = value; if ( m_Teleporter != null ) m_Teleporter.Location = m_GateOut; } }
+		public Point3D GateOut{ get => m_GateOut;
+			set{ m_GateOut = value; if ( m_Teleporter != null ) m_Teleporter.Location = m_GateOut; } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Wall{ get{ return m_Wall; } set{ m_Wall = value; } }
+		public Point3D Wall{ get => m_Wall;
+			set => m_Wall = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsOccupied{ get{ return ( m_Players.Count > 0 ); } }
+		public bool IsOccupied => ( m_Players.Count > 0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public ArenaStartPoints Points{ get{ return m_Points; } set{} }
+		public ArenaStartPoints Points{ get => m_Points;
+			set{} }
 
-		public Item Teleporter{ get{ return m_Teleporter; } set{ m_Teleporter = value; } }
+		public Item Teleporter{ get => m_Teleporter;
+			set => m_Teleporter = value;
+		}
 
-		public List<Mobile> Players{ get{ return m_Players; } }
+		public List<Mobile> Players => m_Players;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Active
 		{
-			get{ return m_Active; }
+			get => m_Active;
 			set
 			{
 				if ( m_Active == value )
@@ -567,7 +597,8 @@ namespace Server.Engines.ConPVP
 		}
 
 		[CommandProperty( AccessLevel.Administrator, AccessLevel.Administrator )]
-		public bool ForceEvict{ get{ return false; } set{ if ( value ) Evict(); } }
+		public bool ForceEvict{ get => false;
+			set{ if ( value ) Evict(); } }
 
 		public void Evict()
 		{
@@ -662,7 +693,7 @@ namespace Server.Engines.ConPVP
 
 		private static List<Arena> m_Arenas = new List<Arena>();
 
-		public static List<Arena> Arenas{ get{ return m_Arenas; } }
+		public static List<Arena> Arenas => m_Arenas;
 
 		public static Arena FindArena( List<Mobile> players )
 		{
@@ -765,20 +796,7 @@ namespace Server.Engines.ConPVP
 			public int m_VotesFor;
 			public int m_VotesAgainst;
 
-			public int Value
-			{
-				get
-				{
-					return m_VotesFor;
-
-					/*if ( m_VotesFor > m_VotesAgainst )
-						return m_VotesFor - m_VotesAgainst;
-					else if ( m_VotesFor > 0 )
-						return 1;
-					else
-						return 0;*/
-				}
-			}
+			public int Value => m_VotesFor;
 
 			public ArenaEntry( Arena arena )
 			{

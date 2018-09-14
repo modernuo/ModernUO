@@ -32,7 +32,7 @@ namespace Server.Engines.Reports
 
 		public StaffInfo Resolver
 		{
-			get{ return m_Resolver; }
+			get => m_Resolver;
 			set
 			{
 				if ( m_Resolver == value )
@@ -53,7 +53,7 @@ namespace Server.Engines.Reports
 
 		public UserInfo Sender
 		{
-			get{ return m_Sender; }
+			get => m_Sender;
 			set
 			{
 				if ( m_Sender == value )
@@ -86,7 +86,7 @@ namespace Server.Engines.Reports
 
 		public StaffHistory History
 		{
-			get{ return m_History; }
+			get => m_History;
 			set
 			{
 				if ( m_History == value )
@@ -108,15 +108,19 @@ namespace Server.Engines.Reports
 			}
 		}
 
-		public PageType PageType{ get{ return m_PageType; } set{ m_PageType = value; } }
-		public PageResolution Resolution{ get{ return m_Resolution; } }
+		public PageType PageType{ get => m_PageType;
+			set => m_PageType = value;
+		}
+		public PageResolution Resolution => m_Resolution;
 
-		public DateTime TimeSent{ get{ return m_TimeSent; } set{ m_TimeSent = value; } }
-		public DateTime TimeResolved{ get{ return m_TimeResolved; } }
+		public DateTime TimeSent{ get => m_TimeSent;
+			set => m_TimeSent = value;
+		}
+		public DateTime TimeResolved => m_TimeResolved;
 
 		public string SentBy
 		{
-			get{ return m_SentBy; }
+			get => m_SentBy;
 			set
 			{
 				m_SentBy = value;
@@ -126,13 +130,14 @@ namespace Server.Engines.Reports
 			}
 		}
 
-		public string ResolvedBy
-		{
-			get{ return m_ResolvedBy; }
-		}
+		public string ResolvedBy => m_ResolvedBy;
 
-		public string Message{ get{ return m_Message; } set{ m_Message = value; } }
-		public ResponseInfoCollection Responses{ get{ return m_Responses; } set{ m_Responses = value; } }
+		public string Message{ get => m_Message;
+			set => m_Message = value;
+		}
+		public ResponseInfoCollection Responses{ get => m_Responses;
+			set => m_Responses = value;
+		}
 
 		public void UpdateResolver()
 		{

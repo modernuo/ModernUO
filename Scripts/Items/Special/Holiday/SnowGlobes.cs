@@ -63,7 +63,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SnowGlobeTypeOne Place
 		{
-			get { return m_Type; }
+			get => m_Type;
 			set { m_Type = value; InvalidateProperties(); }
 		}
 
@@ -165,7 +165,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SnowGlobeTypeTwo Place
 		{
-			get { return m_Type; }
+			get => m_Type;
 			set { m_Type = value; InvalidateProperties(); }
 		}
 
@@ -251,7 +251,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SnowGlobeTypeThree Place
 		{
-			get { return m_Type; }
+			get => m_Type;
 			set { m_Type = value; InvalidateProperties(); }
 		}
 

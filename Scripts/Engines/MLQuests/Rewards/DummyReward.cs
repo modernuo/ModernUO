@@ -10,7 +10,7 @@ namespace Server.Engines.MLQuests.Rewards
 		{
 		}
 
-		protected override int LabelHeight { get { return 180; } }
+		protected override int LabelHeight => 180;
 
 		public override void AddRewardItems( PlayerMobile pm, List<Item> rewards )
 		{

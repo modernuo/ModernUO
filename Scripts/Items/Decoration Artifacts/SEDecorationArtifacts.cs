@@ -1418,8 +1418,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsOn
 		{
-			get{ return this.ItemID == 0x24BF; }
-			set{ this.ItemID = value ? 0x24BF : 0x24C0; }
+			get => this.ItemID == 0x24BF;
+			set => this.ItemID = value ? 0x24BF : 0x24C0;
 		}
 
 		[Constructible]

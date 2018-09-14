@@ -13,19 +13,10 @@ namespace Server.Engines.Craft
 			m_MaxSkill = maxSkill;
 		}
 
-		public SkillName SkillToMake
-		{
-			get { return m_SkillToMake; }
-		}
+		public SkillName SkillToMake => m_SkillToMake;
 
-		public double MinSkill
-		{
-			get { return m_MinSkill; }
-		}
+		public double MinSkill => m_MinSkill;
 
-		public double MaxSkill
-		{
-			get { return m_MaxSkill; }
-		}
+		public double MaxSkill => m_MaxSkill;
 	}
 }

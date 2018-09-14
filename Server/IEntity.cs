@@ -70,41 +70,17 @@ namespace Server
 			m_Deleted = false;
 		}
 
-		public Serial Serial {
-			get {
-				return m_Serial;
-			}
-		}
+		public Serial Serial => m_Serial;
 
-		public Point3D Location {
-			get {
-				return m_Location;
-			}
-		}
+		public Point3D Location => m_Location;
 
-		public int X {
-			get {
-				return m_Location.X;
-			}
-		}
+		public int X => m_Location.X;
 
-		public int Y {
-			get {
-				return m_Location.Y;
-			}
-		}
+		public int Y => m_Location.Y;
 
-		public int Z {
-			get {
-				return m_Location.Z;
-			}
-		}
+		public int Z => m_Location.Z;
 
-		public Map Map {
-			get {
-				return m_Map;
-			}
-		}
+		public Map Map => m_Map;
 
 		public virtual void MoveToWorld(Point3D newLocation, Map map)
 		{
@@ -112,11 +88,7 @@ namespace Server
 			m_Map = map;
 		}
 
-		public bool Deleted {
-			get {
-				return m_Deleted;
-			}
-		}
+		public bool Deleted => m_Deleted;
 
 		public void Delete()
 		{

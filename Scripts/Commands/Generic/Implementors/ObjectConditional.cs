@@ -15,27 +15,15 @@ namespace Server.Commands.Generic
 
 		private IConditional[] m_Conditionals;
 
-		public Type Type
-		{
-			get { return m_ObjectType; }
-		}
+		public Type Type => m_ObjectType;
 
-		public bool IsItem
-		{
-			get { return ( m_ObjectType == null || m_ObjectType == typeofItem || m_ObjectType.IsSubclassOf( typeofItem ) ); }
-		}
+		public bool IsItem => ( m_ObjectType == null || m_ObjectType == typeofItem || m_ObjectType.IsSubclassOf( typeofItem ) );
 
-		public bool IsMobile
-		{
-			get { return ( m_ObjectType == null || m_ObjectType == typeofMobile || m_ObjectType.IsSubclassOf( typeofMobile ) ); }
-		}
+		public bool IsMobile => ( m_ObjectType == null || m_ObjectType == typeofMobile || m_ObjectType.IsSubclassOf( typeofMobile ) );
 
 		public static readonly ObjectConditional Empty = new ObjectConditional( null, null );
 
-		public bool HasCompiled
-		{
-			get { return ( m_Conditionals != null ); }
-		}
+		public bool HasCompiled => ( m_Conditionals != null );
 
 		public void Compile( ref AssemblyEmitter emitter )
 		{

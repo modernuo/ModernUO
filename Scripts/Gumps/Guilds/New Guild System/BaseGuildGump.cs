@@ -11,8 +11,8 @@ namespace Server.Guilds
 		private Guild m_Guild;
 		private PlayerMobile m_Player;
 
-		protected Guild guild{ get{ return m_Guild; } }
-		protected PlayerMobile player{ get{ return m_Player; } }
+		protected Guild guild => m_Guild;
+		protected PlayerMobile player => m_Player;
 
 		public BaseGuildGump( PlayerMobile pm, Guild g ) : this( pm, g, 10, 10 )
 		{

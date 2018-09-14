@@ -26,7 +26,7 @@ namespace Server.Engines.MLQuests.Items
 			}
 		}
 
-		public bool CanGiveMLQuest { get { return ( MLQuests.Count != 0 ); } }
+		public bool CanGiveMLQuest => ( MLQuests.Count != 0 );
 
 		public QuestGiverItem( int itemId )
 			: base( itemId )
@@ -103,7 +103,7 @@ namespace Server.Engines.MLQuests.Items
 			}
 		}
 
-		public bool CanGiveMLQuest { get { return ( MLQuests.Count != 0 ); } }
+		public bool CanGiveMLQuest => ( MLQuests.Count != 0 );
 
 		public TransientQuestGiverItem( int itemId, TimeSpan lifeSpan )
 			: base( itemId, lifeSpan )

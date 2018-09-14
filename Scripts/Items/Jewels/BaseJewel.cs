@@ -31,17 +31,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxHitPoints
 		{
-			get{ return m_MaxHitPoints; }
+			get => m_MaxHitPoints;
 			set{ m_MaxHitPoints = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int HitPoints
 		{
-			get
-			{
-				return m_HitPoints;
-			}
+			get => m_HitPoints;
 			set
 			{
 				if ( value != m_HitPoints && MaxHitPoints > 0 )
@@ -61,35 +58,35 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.Player )]
 		public AosAttributes Attributes
 		{
-			get{ return m_AosAttributes; }
+			get => m_AosAttributes;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosElementAttributes Resistances
 		{
-			get{ return m_AosResistances; }
+			get => m_AosResistances;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public AosSkillBonuses SkillBonuses
 		{
-			get{ return m_AosSkillBonuses; }
+			get => m_AosSkillBonuses;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CraftResource Resource
 		{
-			get{ return m_Resource; }
+			get => m_Resource;
 			set{ m_Resource = value; Hue = CraftResources.GetHue( m_Resource ); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public GemType GemType
 		{
-			get{ return m_GemType; }
+			get => m_GemType;
 			set{ m_GemType = value; InvalidateProperties(); }
 		}
 
@@ -98,10 +95,10 @@ namespace Server.Items
 		public override int ColdResistance => m_AosResistances.Cold;
 		public override int PoisonResistance => m_AosResistances.Poison;
 		public override int EnergyResistance => m_AosResistances.Energy;
-		public virtual int BaseGemTypeNumber{ get{ return 0; } }
+		public virtual int BaseGemTypeNumber => 0;
 
-		public virtual int InitMinHits{ get{ return 0; } }
-		public virtual int InitMaxHits{ get{ return 0; } }
+		public virtual int InitMinHits => 0;
+		public virtual int InitMaxHits => 0;
 
 		public override int LabelNumber
 		{
@@ -124,7 +121,7 @@ namespace Server.Items
 			jewel.m_AosSkillBonuses = new AosSkillBonuses( newItem, m_AosSkillBonuses );
 		}
 
-		public virtual int ArtifactRarity{ get{ return 0; } }
+		public virtual int ArtifactRarity => 0;
 
 		public BaseJewel( int itemID, Layer layer ) : base( itemID )
 		{

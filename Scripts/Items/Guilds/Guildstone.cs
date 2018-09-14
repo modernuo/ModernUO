@@ -16,25 +16,19 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string GuildName
 		{
-			get { return m_GuildName; }
+			get => m_GuildName;
 			set { m_GuildName = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string GuildAbbrev
 		{
-			get { return m_GuildAbbrev; }
+			get => m_GuildAbbrev;
 			set { m_GuildAbbrev = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Guild Guild
-		{
-			get
-			{
-				return m_Guild;
-			}
-		}
+		public Guild Guild => m_Guild;
 
 		public override int LabelNumber => 1041429; // a guildstone
 
@@ -228,10 +222,7 @@ namespace Server.Items
 		}
 
 		#region IAddon Members
-		public Item Deed
-		{
-			get { return new GuildstoneDeed( m_Guild, m_GuildName, m_GuildAbbrev ); }
-		}
+		public Item Deed => new GuildstoneDeed( m_Guild, m_GuildName, m_GuildAbbrev );
 
 		public bool CouldFit( IPoint3D p, Map map )
 		{
@@ -283,25 +274,19 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string GuildName
 		{
-			get { return m_GuildName; }
+			get => m_GuildName;
 			set { m_GuildName = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string GuildAbbrev
 		{
-			get { return m_GuildAbbrev; }
+			get => m_GuildAbbrev;
 			set { m_GuildAbbrev = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Guild Guild
-		{
-			get
-			{
-				return m_Guild;
-			}
-		}
+		public Guild Guild => m_Guild;
 
 		[Constructible]
 		public GuildstoneDeed() : this( null, null )

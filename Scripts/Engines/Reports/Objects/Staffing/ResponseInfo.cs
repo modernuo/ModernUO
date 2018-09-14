@@ -20,10 +20,16 @@ namespace Server.Engines.Reports
 		private string m_SentBy;
 		private string m_Message;
 
-		public DateTime TimeStamp{ get{ return m_TimeStamp; } set{ m_TimeStamp = value; } }
+		public DateTime TimeStamp{ get => m_TimeStamp;
+			set => m_TimeStamp = value;
+		}
 
-		public string SentBy{ get{ return m_SentBy; } set{ m_SentBy = value; } }
-		public string Message{ get{ return m_Message; } set{ m_Message = value; } }
+		public string SentBy{ get => m_SentBy;
+			set => m_SentBy = value;
+		}
+		public string Message{ get => m_Message;
+			set => m_Message = value;
+		}
 
 		public ResponseInfo()
 		{

@@ -8,10 +8,7 @@ namespace Server.Items
 	{
 		public override int LabelNumber => 1053122; // orange petals
 
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public OrangePetals() : this( 1 )
@@ -122,7 +119,7 @@ namespace Server.Items
 		{
 			private Timer m_Timer;
 
-			public Timer Timer{ get{ return m_Timer; } }
+			public Timer Timer => m_Timer;
 
 			public OrangePetalsContext( Timer timer )
 			{

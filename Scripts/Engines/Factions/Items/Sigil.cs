@@ -36,82 +36,70 @@ namespace Server.Factions
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public DateTime LastStolen
 		{
-			get{ return m_LastStolen; }
-			set{ m_LastStolen = value; }
+			get => m_LastStolen;
+			set => m_LastStolen = value;
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public DateTime GraceStart
 		{
-			get{ return m_GraceStart; }
-			set{ m_GraceStart = value; }
+			get => m_GraceStart;
+			set => m_GraceStart = value;
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public DateTime CorruptionStart
 		{
-			get{ return m_CorruptionStart; }
-			set{ m_CorruptionStart = value; }
+			get => m_CorruptionStart;
+			set => m_CorruptionStart = value;
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public DateTime PurificationStart
 		{
-			get{ return m_PurificationStart; }
-			set{ m_PurificationStart = value; }
+			get => m_PurificationStart;
+			set => m_PurificationStart = value;
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Town Town
 		{
-			get{ return m_Town; }
+			get => m_Town;
 			set{ m_Town = value; Update(); }
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Faction Corrupted
 		{
-			get{ return m_Corrupted; }
+			get => m_Corrupted;
 			set{ m_Corrupted = value; Update(); }
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Faction Corrupting
 		{
-			get{ return m_Corrupting; }
+			get => m_Corrupting;
 			set{ m_Corrupting = value; Update(); }
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public BaseMonolith LastMonolith
 		{
-			get{ return m_LastMonolith; }
-			set{ m_LastMonolith = value; }
+			get => m_LastMonolith;
+			set => m_LastMonolith = value;
 		}
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public bool IsBeingCorrupted
-		{
-			get{ return ( m_LastMonolith is StrongholdMonolith && m_LastMonolith.Faction == m_Corrupting && m_Corrupting != null ); }
-		}
+		public bool IsBeingCorrupted => ( m_LastMonolith is StrongholdMonolith && m_LastMonolith.Faction == m_Corrupting && m_Corrupting != null );
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public bool IsCorrupted
-		{
-			get{ return ( m_Corrupted != null ); }
-		}
+		public bool IsCorrupted => ( m_Corrupted != null );
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public bool IsPurifying
-		{
-			get{ return ( m_PurificationStart != DateTime.MinValue ); }
-		}
+		public bool IsPurifying => ( m_PurificationStart != DateTime.MinValue );
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public bool IsCorrupting
-		{
-			get{ return ( m_Corrupting != null && m_Corrupting != m_Corrupted ); }
-		}
+		public bool IsCorrupting => ( m_Corrupting != null && m_Corrupting != m_Corrupted );
 
 		public void Update()
 		{
@@ -456,6 +444,6 @@ namespace Server.Factions
 
 		private static List<Sigil> m_Sigils = new List<Sigil>();
 
-		public static List<Sigil> Sigils{ get{ return m_Sigils; } }
+		public static List<Sigil> Sigils => m_Sigils;
 	}
 }

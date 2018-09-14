@@ -660,18 +660,22 @@ namespace Server.Engines.ConPVP
 		private RulesetLayout m_Parent;
 		private RulesetLayout[] m_Children;
 
-		public string Title{ get{ return m_Title; } }
-		public string Description{ get{ return m_Description; } }
-		public string[] Options{ get{ return m_Options; } }
+		public string Title => m_Title;
+		public string Description => m_Description;
+		public string[] Options => m_Options;
 
-		public int Offset{ get{ return m_Offset; } }
-		public int TotalLength{ get{ return m_TotalLength; } }
+		public int Offset => m_Offset;
+		public int TotalLength => m_TotalLength;
 
-		public RulesetLayout Parent{ get{ return m_Parent; } }
-		public RulesetLayout[] Children{ get{ return m_Children; } }
+		public RulesetLayout Parent => m_Parent;
+		public RulesetLayout[] Children => m_Children;
 
-		public Ruleset[] Defaults{ get{ return m_Defaults; } set{ m_Defaults = value; } }
-		public Ruleset[] Flavors{ get{ return m_Flavors; } set{ m_Flavors = value; } }
+		public Ruleset[] Defaults{ get => m_Defaults;
+			set => m_Defaults = value;
+		}
+		public Ruleset[] Flavors{ get => m_Flavors;
+			set => m_Flavors = value;
+		}
 
 		public RulesetLayout FindByTitle( string title )
 		{

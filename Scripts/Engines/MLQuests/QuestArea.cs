@@ -10,20 +10,20 @@ namespace Server.Engines.MLQuests
 
 		public TextDefinition Name
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		public string RegionName
 		{
-			get { return m_RegionName; }
-			set { m_RegionName = value; }
+			get => m_RegionName;
+			set => m_RegionName = value;
 		}
 
 		public Map ForceMap
 		{
-			get { return m_ForceMap; }
-			set { m_ForceMap = value; }
+			get => m_ForceMap;
+			set => m_ForceMap = value;
 		}
 
 		public QuestArea( TextDefinition name, string region )

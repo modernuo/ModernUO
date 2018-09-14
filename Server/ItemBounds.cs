@@ -27,13 +27,7 @@ namespace Server
 	{
 		private static Rectangle2D[] m_Bounds;
 
-		public static Rectangle2D[] Table
-		{
-			get
-			{
-				return m_Bounds;
-			}
-		}
+		public static Rectangle2D[] Table => m_Bounds;
 
 		static ItemBounds()
 		{

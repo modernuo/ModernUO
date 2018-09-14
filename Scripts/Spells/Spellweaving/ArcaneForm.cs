@@ -30,10 +30,7 @@ namespace Server.Spells.Spellweaving
 			FinishSequence();
 		}
 
-		public virtual double TickRate
-		{
-			get { return 1.0; }
-		}
+		public virtual double TickRate => 1.0;
 
 		public virtual void OnTick( Mobile m )
 		{

@@ -15,8 +15,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool InUse
 		{
-			get{ return m_InUse; }
-			set{ m_InUse = value; }
+			get => m_InUse;
+			set => m_InUse = value;
 		}
 
 		[Constructible]

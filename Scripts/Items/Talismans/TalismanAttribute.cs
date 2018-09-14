@@ -12,35 +12,29 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Type Type
 		{
-			get{ return m_Type; }
-			set{ m_Type = value; }
+			get => m_Type;
+			set => m_Type = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TextDefinition Name
 		{
-			get{ return m_Name; }
-			set{ m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Amount
 		{
-			get { return m_Amount; }
-			set { m_Amount = value; }
+			get => m_Amount;
+			set => m_Amount = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsEmpty
-		{
-			get { return m_Type == null; }
-		}
+		public bool IsEmpty => m_Type == null;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsItem
-		{
-			get { return m_Type != null && m_Type.Namespace.Equals( "Server.Items" ); }
-		}
+		public bool IsItem => m_Type != null && m_Type.Namespace.Equals( "Server.Items" );
 
 		public TalismanAttribute() : this( null, 0, 0 )
 		{

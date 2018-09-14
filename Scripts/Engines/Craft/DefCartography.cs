@@ -5,15 +5,9 @@ namespace Server.Engines.Craft
 {
 	public class DefCartography : CraftSystem
 	{
-		public override SkillName MainSkill
-		{
-			get	{ return SkillName.Cartography; }
-		}
+		public override SkillName MainSkill => SkillName.Cartography;
 
-		public override int GumpTitleNumber
-		{
-			get { return 1044008; } // <CENTER>CARTOGRAPHY MENU</CENTER>
-		}
+		public override int GumpTitleNumber => 1044008;
 
 		public override double GetChanceAtMin( CraftItem item )
 		{

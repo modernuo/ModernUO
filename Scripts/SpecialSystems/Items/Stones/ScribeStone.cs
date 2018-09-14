@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class ScribeStone : Item
 	{
-		public override string DefaultName
-		{
-			get { return "a Scribe Supply Stone"; }
-		}
+		public override string DefaultName => "a Scribe Supply Stone";
 
 		[Constructible]
 		public ScribeStone() : base( 0xED4 )

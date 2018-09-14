@@ -44,23 +44,9 @@ namespace Server.Engines.Quests.Ninja
 
 		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override object Name
-		{
-			get
-			{
-				// Emino's Undertaking
-				return 1063173;
-			}
-		}
+		public override object Name => 1063173;
 
-		public override object OfferMessage
-		{
-			get
-			{
-				// Your value as a Ninja must be proven. Find Daimyo Emino and accept the test he offers.
-				return 1063174;
-			}
-		}
+		public override object OfferMessage => 1063174;
 
 		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
 		public override bool IsTutorial => true;

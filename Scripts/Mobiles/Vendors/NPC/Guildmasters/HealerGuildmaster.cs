@@ -14,10 +14,7 @@ namespace Server.Mobiles
 			SetSkill( SkillName.SpiritSpeak, 65.0, 88.0 );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return VendorShoeType.Sandals; }
-		}
+		public override VendorShoeType ShoeType => VendorShoeType.Sandals;
 
 		public override void InitOutfit()
 		{

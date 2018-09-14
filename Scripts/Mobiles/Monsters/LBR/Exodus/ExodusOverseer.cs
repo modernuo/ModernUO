@@ -6,8 +6,9 @@ namespace Server.Mobiles
 	{
 		public override string CorpseName => "an overseer's corpse";
 		private bool m_FieldActive;
-		public bool FieldActive{ get{ return m_FieldActive; } }
-		public bool CanUseField{ get{ return Hits >= HitsMax * 9 / 10; } } // TODO: an OSI bug prevents to verify this
+		public bool FieldActive => m_FieldActive;
+		public bool CanUseField // TODO: an OSI bug prevents to verify this
+			=> Hits >= HitsMax * 9 / 10;
 
 		public override bool IsScaredOfScaryThings => false;
 		public override bool IsScaryToPets => true;

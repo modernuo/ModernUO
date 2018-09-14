@@ -47,21 +47,21 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public StatueType StatueType
 		{
-			get { return m_Type; }
+			get => m_Type;
 			set { m_Type = value; InvalidateHues(); InvalidatePose(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public StatuePose Pose
 		{
-			get { return m_Pose; }
+			get => m_Pose;
 			set { m_Pose = value; InvalidatePose(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public StatueMaterial Material
 		{
-			get { return m_Material; }
+			get => m_Material;
 			set { m_Material = value; InvalidateHues(); InvalidatePose(); }
 		}
 
@@ -71,23 +71,23 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile SculptedBy
 		{
-			get{ return m_SculptedBy; }
+			get => m_SculptedBy;
 			set{ m_SculptedBy = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime SculptedOn
 		{
-			get{ return m_SculptedOn; }
-			set{ m_SculptedOn = value; }
+			get => m_SculptedOn;
+			set => m_SculptedOn = value;
 		}
 
 		private CharacterStatuePlinth m_Plinth;
 
 		public CharacterStatuePlinth Plinth
 		{
-			get { return m_Plinth; }
-			set { m_Plinth = value; }
+			get => m_Plinth;
+			set => m_Plinth = value;
 		}
 
 		private bool m_IsRewardItem;
@@ -95,8 +95,8 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; }
+			get => m_IsRewardItem;
+			set => m_IsRewardItem = value;
 		}
 
 		public CharacterStatue( Mobile from, StatueType type )
@@ -442,8 +442,8 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CharacterStatue Statue
 		{
-			get { return m_Statue; }
-			set { m_Statue = value; }
+			get => m_Statue;
+			set => m_Statue = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -456,13 +456,13 @@ namespace Server.Mobiles
 
 				return m_Type;
 			}
-			set { m_Type = value; }
+			set => m_Type = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool IsRewardItem
 		{
-			get{ return m_IsRewardItem; }
+			get => m_IsRewardItem;
 			set{ m_IsRewardItem = value; InvalidateProperties(); }
 		}
 

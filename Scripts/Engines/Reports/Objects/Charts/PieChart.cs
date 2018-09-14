@@ -15,7 +15,9 @@ namespace Server.Engines.Reports
 
 		private bool m_ShowPercents;
 
-		public bool ShowPercents{ get{ return m_ShowPercents; } set{ m_ShowPercents = value; } }
+		public bool ShowPercents{ get => m_ShowPercents;
+			set => m_ShowPercents = value;
+		}
 
 		public PieChart( string name, string fileName, bool showPercents )
 		{

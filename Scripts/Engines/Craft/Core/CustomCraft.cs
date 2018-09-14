@@ -12,12 +12,12 @@ namespace Server.Engines.Craft
 		private BaseTool m_Tool;
 		private int m_Quality;
 
-		public Mobile From{ get{ return m_From; } }
-		public CraftItem CraftItem{ get{ return m_CraftItem; } }
-		public CraftSystem CraftSystem{ get{ return m_CraftSystem; } }
-		public Type TypeRes{ get{ return m_TypeRes; } }
-		public BaseTool Tool{ get{ return m_Tool; } }
-		public int Quality{ get{ return m_Quality; } }
+		public Mobile From => m_From;
+		public CraftItem CraftItem => m_CraftItem;
+		public CraftSystem CraftSystem => m_CraftSystem;
+		public Type TypeRes => m_TypeRes;
+		public BaseTool Tool => m_Tool;
+		public int Quality => m_Quality;
 
 		public CustomCraft( Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool, int quality )
 		{

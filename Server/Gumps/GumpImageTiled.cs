@@ -40,62 +40,32 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				Delta( ref m_X, value );
-			}
+			get => m_X;
+			set => Delta( ref m_X, value );
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				Delta( ref m_Y, value );
-			}
+			get => m_Y;
+			set => Delta( ref m_Y, value );
 		}
 
 		public int Width
 		{
-			get
-			{
-				return m_Width;
-			}
-			set
-			{
-				Delta( ref m_Width, value );
-			}
+			get => m_Width;
+			set => Delta( ref m_Width, value );
 		}
 
 		public int Height
 		{
-			get
-			{
-				return m_Height;
-			}
-			set
-			{
-				Delta( ref m_Height, value );
-			}
+			get => m_Height;
+			set => Delta( ref m_Height, value );
 		}
 
 		public int GumpID
 		{
-			get
-			{
-				return m_GumpID;
-			}
-			set
-			{
-				Delta( ref m_GumpID, value );
-			}
+			get => m_GumpID;
+			set => Delta( ref m_GumpID, value );
 		}
 
 		public override string Compile( NetState ns )

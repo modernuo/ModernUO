@@ -10,8 +10,8 @@ namespace Server.Engines.MLQuests.Rewards
 
 		public TextDefinition Name
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		public BaseReward( TextDefinition name )
@@ -19,7 +19,7 @@ namespace Server.Engines.MLQuests.Rewards
 			m_Name = name;
 		}
 
-		protected virtual int LabelHeight { get { return 16; } }
+		protected virtual int LabelHeight => 16;
 
 		public void WriteToGump( Gump g, int x, ref int y )
 		{

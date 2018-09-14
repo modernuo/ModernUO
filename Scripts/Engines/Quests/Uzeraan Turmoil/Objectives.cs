@@ -6,14 +6,7 @@ namespace Server.Engines.Quests.Haven
 {
 	public class FindUzeraanBeginObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				// Find Uzeraan.  Uzeraan will explain what you need to do next.
-				return 1046039;
-			}
-		}
+		public override object Message => 1046039;
 
 		public FindUzeraanBeginObjective()
 		{
@@ -30,18 +23,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class TitheGoldObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Go to the shrine inside of Uzeraan's Mansion, near the front doors and
-				 * <a href = "?ForceTopic109">tithe</a> at least 500 gold.<BR><BR>
-				 *
-				 * Return to Uzeraan when you are done.
-				 */
-				return 1060386;
-			}
-		}
+		public override object Message => 1060386;
 
 		private int m_OldTithingPoints;
 
@@ -71,14 +53,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class FindUzeraanFirstTaskObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				// Return to Uzeraan, now that you have enough tithing points to continue your quest.
-				return 1060387;
-			}
-		}
+		public override object Message => 1060387;
 
 		public FindUzeraanFirstTaskObjective()
 		{
@@ -259,18 +234,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class FindUzeraanAboutReportObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* It's no use... The <I>Horde Minions</I> are too many.
-				 * They are appearing out of nowhere.<BR><BR>
-				 *
-				 * Return to Uzeraan and report your findings.
-				 */
-				return 1049091;
-			}
-		}
+		public override object Message => 1049091;
 
 		public FindUzeraanAboutReportObjective()
 		{
@@ -284,18 +248,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class FindSchmendrickObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Prepare for battle and step onto the teleporter,
-				 * located against the wall in the main hall of Uzeraan's mansion.<BR><BR>
-				 *
-				 * Find Schmendrick within the mines.
-				 */
-				return 1049120;
-			}
-		}
+		public override object Message => 1049120;
 
 		public FindSchmendrickObjective()
 		{
@@ -318,16 +271,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class FindApprenticeObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Find Schmendrick's apprentice who is somewhere in the mining cave.
-				 * The apprentice has the scroll of power needed by Uzeraan.
-				 */
-				return 1049323;
-			}
-		}
+		public override object Message => 1049323;
 
 		public FindApprenticeObjective()
 		{
@@ -341,17 +285,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class ReturnScrollOfPowerObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* You have obtained the scroll of power!  Find your way out of the cave.<BR><BR>
-				 *
-				 * Hand the scroll to Uzeraan (drag and drop) once you arrive in his mansion.
-				 */
-				return 1049324;
-			}
-		}
+		public override object Message => 1049324;
 
 		public ReturnScrollOfPowerObjective()
 		{
@@ -365,18 +299,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class FindDryadObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Find the Dryad in the woods of Haven and get a patch
-				 * of fertile dirt from her.<BR><BR>
-				 *
-				 * Use Uzeraan's teleporter to get there if necessary.
-				 */
-				return 1049358;
-			}
-		}
+		public override object Message => 1049358;
 
 		public FindDryadObjective()
 		{
@@ -390,18 +313,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class ReturnFertileDirtObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* You have acquired the <I>Fertile Dirt</I>!<BR><BR>
-				 *
-				 * Return to the mansion (<a href = "?ForceTopic13">North-East</a>
-				 * of the Dryad's Grove) and hand it to Uzeraan.
-				 */
-				return 1049327;
-			}
-		}
+		public override object Message => 1049327;
 
 		public ReturnFertileDirtObjective()
 		{
@@ -415,18 +327,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class GetDaemonBloodObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Bring back a vial of blood.<BR><BR>
-				 *
-				 * Follow the road leading north from the mansion and walk into the hut
-				 * to find the chest that contains the vial
-				 */
-				return 1049361;
-			}
-		}
+		public override object Message => 1049361;
 
 		private bool m_Ambushed;
 
@@ -479,17 +380,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class ReturnDaemonBloodObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* You have the vial of blood!<BR><BR>
-				 *
-				 * Return to Uzeraan's mansion and hand him the vial.
-				 */
-				return 1049332;
-			}
-		}
+		public override object Message => 1049332;
 
 		public ReturnDaemonBloodObjective()
 		{
@@ -507,8 +398,8 @@ namespace Server.Engines.Quests.Haven
 
 		public Container CorpseWithBone
 		{
-			get { return m_CorpseWithBone; }
-			set { m_CorpseWithBone = value; }
+			get => m_CorpseWithBone;
+			set => m_CorpseWithBone = value;
 		}
 
 		public override object Message
@@ -589,16 +480,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class ReturnDaemonBoneObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Head <a href = "?ForceTopic13">East</a> of here (or use the Horn of Retreat)
-				 * to return to Uzeraan's Mansion and deliver the bone to Uzeraan.
-				 */
-				return 1049334;
-			}
-		}
+		public override object Message => 1049334;
 
 		public ReturnDaemonBoneObjective()
 		{
@@ -612,17 +494,7 @@ namespace Server.Engines.Quests.Haven
 
 	public class CashBankCheckObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Locate the Haven Bank (use the teleporter in Uzeraan's Mansion
-				 * if necessary), which lies <a href = "?ForceTopic13">South-East</a>
-				 * of Uzeraan's Mansion.  Once there, <a href="?ForceTopic86">cash your check</a>.
-				 */
-				return 1049336;
-			}
-		}
+		public override object Message => 1049336;
 
 		public CashBankCheckObjective()
 		{

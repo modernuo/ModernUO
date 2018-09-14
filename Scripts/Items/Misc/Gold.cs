@@ -6,10 +6,7 @@ namespace Server.Items
 {
 	public class Gold : Item
 	{
-		public override double DefaultWeight
-		{
-			get { return ( Core.ML ? ( 0.02 / 3 ) : 0.02 ); }
-		}
+		public override double DefaultWeight => ( Core.ML ? ( 0.02 / 3 ) : 0.02 );
 
 		[Constructible]
 		public Gold() : this( 1 )

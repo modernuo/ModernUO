@@ -17,10 +17,7 @@ namespace Server.Factions
 			SBInfos.Add( new SBFactionBottle() );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals; }
-		}
+		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
 
 		public override void InitOutfit()
 		{

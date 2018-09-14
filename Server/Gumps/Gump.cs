@@ -70,25 +70,13 @@ namespace Server.Gumps
 			//	m_Strings.Clear();
 		}
 
-		public int TypeID
-		{
-			get
-			{
-				return m_TypeID;
-			}
-		}
+		public int TypeID => m_TypeID;
 
-		public List<GumpEntry> Entries
-		{
-			get{ return m_Entries; }
-		}
+		public List<GumpEntry> Entries => m_Entries;
 
 		public int Serial
 		{
-			get
-			{
-				return m_Serial;
-			}
+			get => m_Serial;
 			set
 			{
 				if ( m_Serial != value )
@@ -101,10 +89,7 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
+			get => m_X;
 			set
 			{
 				if ( m_X != value )
@@ -117,10 +102,7 @@ namespace Server.Gumps
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
+			get => m_Y;
 			set
 			{
 				if ( m_Y != value )
@@ -133,10 +115,7 @@ namespace Server.Gumps
 
 		public bool Disposable
 		{
-			get
-			{
-				return m_Disposable;
-			}
+			get => m_Disposable;
 			set
 			{
 				if ( m_Disposable != value )
@@ -149,10 +128,7 @@ namespace Server.Gumps
 
 		public bool Resizable
 		{
-			get
-			{
-				return m_Resizable;
-			}
+			get => m_Resizable;
 			set
 			{
 				if ( m_Resizable != value )
@@ -165,10 +141,7 @@ namespace Server.Gumps
 
 		public bool Dragable
 		{
-			get
-			{
-				return m_Dragable;
-			}
+			get => m_Dragable;
 			set
 			{
 				if ( m_Dragable != value )
@@ -181,10 +154,7 @@ namespace Server.Gumps
 
 		public bool Closable
 		{
-			get
-			{
-				return m_Closable;
-			}
+			get => m_Closable;
 			set
 			{
 				if ( m_Closable != value )

@@ -92,10 +92,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Description
 		{
-			get
-			{
-				return m_Description;
-			}
+			get => m_Description;
 			set
 			{
 				m_Description = value;
@@ -106,24 +103,15 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int MaxRange
 		{
-			get
-			{
-				return m_MaxRange;
-			}
+			get => m_MaxRange;
 
-			set
-			{
-				m_MaxRange = value;
-			}
+			set => m_MaxRange = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public uint KeyValue
 		{
-			get
-			{
-				return m_KeyVal;
-			}
+			get => m_KeyVal;
 
 			set
 			{
@@ -135,15 +123,9 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Item Link
 		{
-			get
-			{
-				return m_Link;
-			}
+			get => m_Link;
 
-			set
-			{
-				m_Link = value;
-			}
+			set => m_Link = value;
 		}
 
 		public override void Serialize( GenericWriter writer )

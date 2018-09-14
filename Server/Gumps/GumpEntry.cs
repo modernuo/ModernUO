@@ -64,10 +64,7 @@ namespace Server.Gumps
 
 		public Gump Parent
 		{
-			get
-			{
-				return m_Parent;
-			}
+			get => m_Parent;
 			set
 			{
 				if ( m_Parent != value )

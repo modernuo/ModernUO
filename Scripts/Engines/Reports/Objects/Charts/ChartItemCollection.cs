@@ -32,15 +32,9 @@ namespace Server.Engines.Reports
         /// </summary>
         public Server.Engines.Reports.ChartItem this[int index]
         {
-            get
-            {
-                return ((Server.Engines.Reports.ChartItem)(this.List[index]));
-            }
-            set
-            {
-                this.List[index] = value;
-            }
-		}
+            get => ((Server.Engines.Reports.ChartItem)(this.List[index]));
+	        set => this.List[index] = value;
+        }
 
 		public int Add( string name, int value )
 		{

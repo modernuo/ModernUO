@@ -11,17 +11,11 @@
 	{
 		private int m_Name;
 
-		public int Name
-		{
-			get { return m_Name; }
-		}
+		public int Name => m_Name;
 
 		private DawnsMusicRarity m_Rarity;
 
-		public DawnsMusicRarity Rarity
-		{
-			get { return m_Rarity; }
-		}
+		public DawnsMusicRarity Rarity => m_Rarity;
 
 		public DawnsMusicInfo( int name, DawnsMusicRarity rarity )
 		{

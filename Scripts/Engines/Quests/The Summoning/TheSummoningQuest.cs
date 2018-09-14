@@ -19,58 +19,17 @@ namespace Server.Engines.Quests.Doom
 		private Victoria m_Victoria;
 		private bool m_WaitForSummon;
 
-		public Victoria Victoria
-		{
-			get{ return m_Victoria; }
-		}
+		public Victoria Victoria => m_Victoria;
 
 		public bool WaitForSummon
 		{
-			get{ return m_WaitForSummon; }
-			set{ m_WaitForSummon = value; }
+			get => m_WaitForSummon;
+			set => m_WaitForSummon = value;
 		}
 
-		public override object Name
-		{
-			get
-			{
-				// The Summoning
-				return 1050025;
-			}
-		}
+		public override object Name => 1050025;
 
-		public override object OfferMessage
-		{
-			get
-			{
-				/* <I>Victoria turns to you and smiles...</I><BR><BR>
-				 *
-				 * Chyloth, eh?  He is the ferry man of lake <I>Mortis</I>, beyond which lies
-				 * the nest of the <I>The Dark Father</I> - the fountainhead of all the evil
-				 * that you see around you here.<BR><BR>
-				 *
-				 * 800 and some years ago, my sisters and I persuaded the ferry man Chyloth
-				 * to take us across the lake to battle the <I>The Dark Father</I>.
-				 * My party was utterly destroyed, except for me.  For my insolence, I was
-				 * cursed by the <I>The Dark Father</I> to wander these halls for eternity,
-				 * unable to die - unable to leave.<BR><BR>
-				 *
-				 * Chyloth usually only crosses over the souls of the undead, but he can be
-				 * persuaded otherwise...with a token of gold, in the form of a human skull.
-				 * Such a gem can be found only in the belly of the hellspawn known as
-				 * <I>the devourer</I>.<BR><BR>
-				 *
-				 * I can help you summon the beast from the depths of the abyss, but I require
-				 * 1000 Daemon bones to do so.  If you accept my help, I will store the Daemon
-				 * bones for you until you have collected all 1000 of them.  Once the bones
-				 * are collected in full, I will summon the beast for you, which you must
-				 * slay to claim your prize.<BR><BR>
-				 *
-				 * Do you accept?
-				 */
-				return 1050020;
-			}
-		}
+		public override object OfferMessage => 1050020;
 
 		public override bool IsTutorial => false;
 		public override TimeSpan RestartDelay => TimeSpan.Zero;

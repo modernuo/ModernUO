@@ -198,36 +198,21 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Locked
 		{
-			get
-			{
-				return m_Locked;
-			}
-			set
-			{
-				m_Locked = value;
-			}
+			get => m_Locked;
+			set => m_Locked = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public uint KeyValue
 		{
-			get
-			{
-				return m_KeyValue;
-			}
-			set
-			{
-				m_KeyValue = value;
-			}
+			get => m_KeyValue;
+			set => m_KeyValue = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Open
 		{
-			get
-			{
-				return m_Open;
-			}
+			get => m_Open;
 			set
 			{
 				if ( m_Open != value )
@@ -317,66 +302,36 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int OpenedID
 		{
-			get
-			{
-				return m_OpenedID;
-			}
-			set
-			{
-				m_OpenedID = value;
-			}
+			get => m_OpenedID;
+			set => m_OpenedID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ClosedID
 		{
-			get
-			{
-				return m_ClosedID;
-			}
-			set
-			{
-				m_ClosedID = value;
-			}
+			get => m_ClosedID;
+			set => m_ClosedID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int OpenedSound
 		{
-			get
-			{
-				return m_OpenedSound;
-			}
-			set
-			{
-				m_OpenedSound = value;
-			}
+			get => m_OpenedSound;
+			set => m_OpenedSound = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ClosedSound
 		{
-			get
-			{
-				return m_ClosedSound;
-			}
-			set
-			{
-				m_ClosedSound = value;
-			}
+			get => m_ClosedSound;
+			set => m_ClosedSound = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Point3D Offset
 		{
-			get
-			{
-				return m_Offset;
-			}
-			set
-			{
-				m_Offset = value;
-			}
+			get => m_Offset;
+			set => m_Offset = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -389,13 +344,10 @@ namespace Server.Items
 
 				return m_Link;
 			}
-			set
-			{
-				m_Link = value;
-			}
+			set => m_Link = value;
 		}
 
-		public virtual bool UseChainedFunctionality{ get{ return false; } }
+		public virtual bool UseChainedFunctionality => false;
 
 		public List<BaseDoor> GetChain()
 		{

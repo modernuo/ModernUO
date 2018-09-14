@@ -6,7 +6,7 @@ namespace Server
 	{
 		private string m_Usage;
 
-		public string Usage{ get{ return m_Usage; } }
+		public string Usage => m_Usage;
 
 		public UsageAttribute( string usage )
 		{
@@ -18,7 +18,7 @@ namespace Server
 	{
 		private string m_Description;
 
-		public string Description{ get{ return m_Description; } }
+		public string Description => m_Description;
 
 		public DescriptionAttribute( string description )
 		{
@@ -30,7 +30,7 @@ namespace Server
 	{
 		private string[] m_Aliases;
 
-		public string[] Aliases{ get{ return m_Aliases; } }
+		public string[] Aliases => m_Aliases;
 
 		public AliasesAttribute( params string[] aliases )
 		{

@@ -16,32 +16,32 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public Type Delivery
 		{
-			get { return m_Delivery; }
-			set { m_Delivery = value; }
+			get => m_Delivery;
+			set => m_Delivery = value;
 		}
 
 		public int Amount
 		{
-			get { return m_Amount; }
-			set { m_Amount = value; }
+			get => m_Amount;
+			set => m_Amount = value;
 		}
 
 		public TextDefinition Name
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		public Type Destination
 		{
-			get { return m_Destination; }
-			set { m_Destination = value; }
+			get => m_Destination;
+			set => m_Destination = value;
 		}
 
 		public bool SpawnsDelivery
 		{
-			get { return m_SpawnsDelivery; }
-			set { m_SpawnsDelivery = value; }
+			get => m_SpawnsDelivery;
+			set => m_SpawnsDelivery = value;
 		}
 
 		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination )
@@ -152,14 +152,14 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public DeliverObjective Objective
 		{
-			get { return m_Objective; }
-			set { m_Objective = value; }
+			get => m_Objective;
+			set => m_Objective = value;
 		}
 
 		public bool HasCompleted
 		{
-			get { return m_HasCompleted; }
-			set { m_HasCompleted = value; }
+			get => m_HasCompleted;
+			set => m_HasCompleted = value;
 		}
 
 		public DeliverObjectiveInstance( DeliverObjective objective, MLQuestInstance instance )

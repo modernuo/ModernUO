@@ -146,8 +146,8 @@ namespace Server
 	public sealed class MultiComponentList
 	{
 		public static bool PostHSFormat {
-			get { return _PostHSFormat; }
-			set { _PostHSFormat = value; }
+			get => _PostHSFormat;
+			set => _PostHSFormat = value;
 		}
 
 		private static bool _PostHSFormat = false;
@@ -159,16 +159,16 @@ namespace Server
 
 		public static readonly MultiComponentList Empty = new MultiComponentList();
 
-		public Point2D Min{ get{ return m_Min; } }
-		public Point2D Max{ get{ return m_Max; } }
+		public Point2D Min => m_Min;
+		public Point2D Max => m_Max;
 
-		public Point2D Center{ get{ return m_Center; } }
+		public Point2D Center => m_Center;
 
-		public int Width{ get{ return m_Width; } }
-		public int Height{ get{ return m_Height; } }
+		public int Width => m_Width;
+		public int Height => m_Height;
 
-		public StaticTile[][][] Tiles{ get{ return m_Tiles; } }
-		public MultiTileEntry[] List{ get{ return m_List; } }
+		public StaticTile[][][] Tiles => m_Tiles;
+		public MultiTileEntry[] List => m_List;
 
 		public void Add( int itemID, int x, int y, int z )
 		{

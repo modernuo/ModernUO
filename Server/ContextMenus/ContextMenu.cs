@@ -35,26 +35,17 @@ namespace Server.ContextMenus
 		/// <summary>
 		/// Gets the <see cref="Mobile" /> who opened this ContextMenu.
 		/// </summary>
-		public Mobile From
-		{
-			get{ return m_From; }
-		}
+		public Mobile From => m_From;
 
 		/// <summary>
 		/// Gets an object of the <see cref="Mobile" /> or <see cref="Item" /> for which this ContextMenu is on.
 		/// </summary>
-		public object Target
-		{
-			get{ return m_Target; }
-		}
+		public object Target => m_Target;
 
 		/// <summary>
 		/// Gets the list of <see cref="ContextMenuEntry">entries</see> contained in this ContextMenu.
 		/// </summary>
-		public ContextMenuEntry[] Entries
-		{
-			get{ return m_Entries; }
-		}
+		public ContextMenuEntry[] Entries => m_Entries;
 
 		/// <summary>
 		/// Instantiates a new ContextMenu instance.

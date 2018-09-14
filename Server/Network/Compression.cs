@@ -243,11 +243,7 @@ namespace Server.Network {
 		public Compressor32() {
 		}
 
-		public string Version {
-			get {
-				return SafeNativeMethods.zlibVersion();
-			}
-		}
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return SafeNativeMethods.compress(dest, ref destLength, source, sourceLength);
@@ -280,11 +276,7 @@ namespace Server.Network {
 		public Compressor64() {
 		}
 
-		public string Version {
-			get {
-				return SafeNativeMethods.zlibVersion();
-			}
-		}
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return SafeNativeMethods.compress(dest, ref destLength, source, sourceLength);
@@ -317,11 +309,7 @@ namespace Server.Network {
 		public CompressorUnix32() {
 		}
 
-		public string Version {
-			get {
-				return SafeNativeMethods.zlibVersion();
-			}
-		}
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			return SafeNativeMethods.compress(dest, ref destLength, source, sourceLength);
@@ -354,11 +342,7 @@ namespace Server.Network {
 		public CompressorUnix64() {
 		}
 
-		public string Version {
-			get {
-				return SafeNativeMethods.zlibVersion();
-			}
-		}
+		public string Version => SafeNativeMethods.zlibVersion();
 
 		public ZLibError Compress( byte[] dest, ref int destLength, byte[] source, int sourceLength ) {
 			ulong destLengthLong = (ulong)destLength;

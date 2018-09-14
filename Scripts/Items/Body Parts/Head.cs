@@ -17,15 +17,15 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string PlayerName
 		{
-			get { return m_PlayerName; }
-			set { m_PlayerName = value; }
+			get => m_PlayerName;
+			set => m_PlayerName = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public HeadType HeadType
 		{
-			get { return m_HeadType; }
-			set { m_HeadType = value; }
+			get => m_HeadType;
+			set => m_HeadType = value;
 		}
 
 		public override string DefaultName

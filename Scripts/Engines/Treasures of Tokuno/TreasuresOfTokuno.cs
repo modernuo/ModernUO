@@ -37,14 +37,14 @@ namespace Server.Misc
 
 		public static TreasuresOfTokunoEra DropEra
 		{
-			get { return _DropEra; }
-			set { _DropEra = value; }
+			get => _DropEra;
+			set => _DropEra = value;
 		}
 
 		public static TreasuresOfTokunoEra RewardEra
 		{
-			get { return _RewardEra; }
-			set { _RewardEra = value; }
+			get => _RewardEra;
+			set => _RewardEra = value;
 		}
 
 		private static Type[][] m_LesserArtifacts = new Type[][]
@@ -77,10 +77,7 @@ namespace Server.Misc
 			}
 		};
 
-		public static Type[] LesserArtifacts
-		{
-			get { return m_LesserArtifacts[(int)RewardEra-1]; }
-		}
+		public static Type[] LesserArtifacts => m_LesserArtifacts[(int)RewardEra-1];
 
 		private static Type[][] m_GreaterArtifacts = null;
 
@@ -191,7 +188,7 @@ namespace Server.Mobiles
 		public override string DefaultName => "Ihara Soko";
 
         protected List<SBInfo> m_SBInfos = new List<SBInfo>();
-        protected override List<SBInfo> SBInfos { get { return m_SBInfos; } }
+        protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override void InitSBInfo()
 		{
@@ -293,8 +290,8 @@ namespace Server.Gumps
 
 		public Item Item
 		{
-			get { return m_Item; }
-			set { m_Item = value; }
+			get => m_Item;
+			set => m_Item = value;
 		}
 
 		public ItemTileButtonInfo( Item i ) : base( i.ItemID, i.Hue, ((i.Name == null || i.Name.Length <= 0)? (TextDefinition)i.LabelNumber : (TextDefinition)i.Name ) )
@@ -423,15 +420,9 @@ namespace Server.Gumps
 
 			public PigmentType Pigment
 			{
-				get
-				{
-					return m_Pigment;
-				}
+				get => m_Pigment;
 
-				set
-				{
-					m_Pigment = value;
-				}
+				set => m_Pigment = value;
 			}
 
 			public PigmentsTileButtonInfo( PigmentType p ) : base( 0xEFF, PigmentsOfTokuno.GetInfo( p )[0], PigmentsOfTokuno.GetInfo( p )[1] )
@@ -484,10 +475,7 @@ namespace Server.Gumps
 		};
 		#endregion
 
-		public static TypeTileButtonInfo[][] NormalRewards
-		{
-			get { return m_NormalRewards; }
-		}
+		public static TypeTileButtonInfo[][] NormalRewards => m_NormalRewards;
 
 		#region ToT Pigment Rewards Table
 		private static PigmentsTileButtonInfo[][] m_PigmentRewards = new PigmentsTileButtonInfo[][]
@@ -533,10 +521,7 @@ namespace Server.Gumps
 		};
 		#endregion
 
-		public static PigmentsTileButtonInfo[][] PigmentRewards
-		{
-			get { return m_PigmentRewards; }
-		}
+		public static PigmentsTileButtonInfo[][] PigmentRewards => m_PigmentRewards;
 
 		private Mobile m_Collector;
 

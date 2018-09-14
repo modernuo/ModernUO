@@ -50,70 +50,37 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				Delta( ref m_X, value );
-			}
+			get => m_X;
+			set => Delta( ref m_X, value );
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				Delta( ref m_Y, value );
-			}
+			get => m_Y;
+			set => Delta( ref m_Y, value );
 		}
 
 		public int NormalID
 		{
-			get
-			{
-				return m_ID1;
-			}
-			set
-			{
-				Delta( ref m_ID1, value );
-			}
+			get => m_ID1;
+			set => Delta( ref m_ID1, value );
 		}
 
 		public int PressedID
 		{
-			get
-			{
-				return m_ID2;
-			}
-			set
-			{
-				Delta( ref m_ID2, value );
-			}
+			get => m_ID2;
+			set => Delta( ref m_ID2, value );
 		}
 
 		public int ButtonID
 		{
-			get
-			{
-				return m_ButtonID;
-			}
-			set
-			{
-				Delta( ref m_ButtonID, value );
-			}
+			get => m_ButtonID;
+			set => Delta( ref m_ButtonID, value );
 		}
 
 		public GumpButtonType Type
 		{
-			get
-			{
-				return m_Type;
-			}
+			get => m_Type;
 			set
 			{
 				if ( m_Type != value )
@@ -132,14 +99,8 @@ namespace Server.Gumps
 
 		public int Param
 		{
-			get
-			{
-				return m_Param;
-			}
-			set
-			{
-				Delta( ref m_Param, value );
-			}
+			get => m_Param;
+			set => Delta( ref m_Param, value );
 		}
 
 		public override string Compile( NetState ns )

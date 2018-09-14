@@ -33,16 +33,30 @@ namespace Server.Engines.Reports
 
 		private BarRegion[] m_Regions;
 
-		public int Ticks{ get{ return m_Ticks; } set{ m_Ticks = value; } }
-		public BarGraphRenderMode RenderMode{ get{ return m_RenderMode; } set{ m_RenderMode = value; } }
+		public int Ticks{ get => m_Ticks;
+			set => m_Ticks = value;
+		}
+		public BarGraphRenderMode RenderMode{ get => m_RenderMode;
+			set => m_RenderMode = value;
+		}
 
-		public string xTitle{ get{ return m_xTitle; } set{ m_xTitle = value; } }
-		public string yTitle{ get{ return m_yTitle; } set{ m_yTitle = value; } }
+		public string xTitle{ get => m_xTitle;
+			set => m_xTitle = value;
+		}
+		public string yTitle{ get => m_yTitle;
+			set => m_yTitle = value;
+		}
 
-		public int FontSize{ get{ return m_FontSize; } set{ m_FontSize = value; } }
-		public int Interval{ get{ return m_Interval; } set{ m_Interval = value; } }
+		public int FontSize{ get => m_FontSize;
+			set => m_FontSize = value;
+		}
+		public int Interval{ get => m_Interval;
+			set => m_Interval = value;
+		}
 
-		public BarRegion[] Regions{ get{ return m_Regions; } set{ m_Regions = value; } }
+		public BarRegion[] Regions{ get => m_Regions;
+			set => m_Regions = value;
+		}
 
 		public BarGraph( string name, string fileName, int ticks, string xTitle, string yTitle, BarGraphRenderMode rm )
 		{

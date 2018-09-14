@@ -6,7 +6,7 @@ namespace Server.Multis
 {
 	public class OrcCamp : BaseCamp
 	{
-		public virtual Mobile Orcs{ get{ return new Orc(); } }
+		public virtual Mobile Orcs => new Orc();
 
 		private Mobile m_Prisoner;
 		

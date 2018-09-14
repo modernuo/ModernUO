@@ -19,35 +19,35 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster)]
 		public AosAttributes Attributes
 		{
-			get{ return m_Attributes; }
+			get => m_Attributes;
 			set{}
 		}
 
 		[CommandProperty( AccessLevel.GameMaster)]
 		public int Capacity
 		{
-			get{ return m_Capacity; }
+			get => m_Capacity;
 			set{ m_Capacity = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster)]
 		public int LowerAmmoCost
 		{
-			get{ return m_LowerAmmoCost; }
+			get => m_LowerAmmoCost;
 			set{ m_LowerAmmoCost = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster)]
 		public int WeightReduction
 		{
-			get{ return m_WeightReduction; }
+			get => m_WeightReduction;
 			set{ m_WeightReduction = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster)]
 		public int DamageIncrease
 		{
-			get{ return m_DamageIncrease; }
+			get => m_DamageIncrease;
 			set{ m_DamageIncrease = value; InvalidateProperties(); }
 		}
 
@@ -57,21 +57,18 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Crafter
 		{
-			get{ return m_Crafter; }
+			get => m_Crafter;
 			set{ m_Crafter = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public ClothingQuality Quality
 		{
-			get{ return m_Quality; }
+			get => m_Quality;
 			set{ m_Quality = value; InvalidateProperties(); }
 		}
 
-		public Item Ammo
-		{
-			get{ return Items.Count > 0 ? Items[ 0 ] : null; }
-		}
+		public Item Ammo => Items.Count > 0 ? Items[ 0 ] : null;
 
 		public BaseQuiver() : this( 0x2FB7 )
 		{

@@ -14,13 +14,16 @@ namespace Server.Items
 		public override int LabelNumber => m_Exceptional ? 1053181 : 1053012; // dragon barding deed
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Crafter{ get{ return m_Crafter; } set{ m_Crafter = value; InvalidateProperties(); } }
+		public Mobile Crafter{ get => m_Crafter;
+			set{ m_Crafter = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Exceptional{ get{ return m_Exceptional; } set{ m_Exceptional = value; InvalidateProperties(); } }
+		public bool Exceptional{ get => m_Exceptional;
+			set{ m_Exceptional = value; InvalidateProperties(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftResource Resource{ get{ return m_Resource; } set{ m_Resource = value; Hue = CraftResources.GetHue( value ); InvalidateProperties(); } }
+		public CraftResource Resource{ get => m_Resource;
+			set{ m_Resource = value; Hue = CraftResources.GetHue( value ); InvalidateProperties(); } }
 
 		public DragonBardingDeed() : base( 0x14F0 )
 		{

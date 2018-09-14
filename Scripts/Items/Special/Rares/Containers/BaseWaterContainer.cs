@@ -9,18 +9,15 @@
 		public override int DefaultGumpID => 0x3e;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool IsEmpty { get { return ( m_Quantity <= 0 ); } }
+		public virtual bool IsEmpty => ( m_Quantity <= 0 );
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool IsFull { get { return ( m_Quantity >= MaxQuantity ); } }
+		public virtual bool IsFull => ( m_Quantity >= MaxQuantity );
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public virtual int Quantity
 		{
-			get
-			{
-				return m_Quantity;
-			}
+			get => m_Quantity;
 			set
 			{
 				if ( value != m_Quantity )

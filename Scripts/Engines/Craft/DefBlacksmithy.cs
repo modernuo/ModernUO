@@ -5,15 +5,9 @@ namespace Server.Engines.Craft
 {
 	public class DefBlacksmithy : CraftSystem
 	{
-		public override SkillName MainSkill
-		{
-			get	{ return SkillName.Blacksmith;	}
-		}
+		public override SkillName MainSkill => SkillName.Blacksmith;
 
-		public override int GumpTitleNumber
-		{
-			get { return 1044002; } // <CENTER>BLACKSMITHY MENU</CENTER>
-		}
+		public override int GumpTitleNumber => 1044002;
 
 		private static CraftSystem m_CraftSystem;
 

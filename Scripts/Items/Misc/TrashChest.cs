@@ -5,10 +5,7 @@ namespace Server.Items
 	{
 		public override int DefaultMaxWeight => 0; // A value of 0 signals unlimited weight
 
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
-		}
+		public override bool IsDecoContainer => false;
 
 		[Constructible]
 		public TrashChest() : base( 0xE41 )

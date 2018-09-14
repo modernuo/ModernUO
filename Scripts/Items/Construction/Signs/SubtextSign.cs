@@ -9,7 +9,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string Subtext
 		{
-			get { return m_Subtext; }
+			get => m_Subtext;
 			set { m_Subtext = value; InvalidateProperties(); }
 		}
 

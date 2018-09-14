@@ -15,9 +15,9 @@ namespace Server.Factions
 		private Faction m_Faction;
 		private DateTime m_Expiration;
 
-		public Item Item{ get{ return m_Item; } }
-		public Faction Faction{ get{ return m_Faction; } }
-		public DateTime Expiration{ get{ return m_Expiration; } }
+		public Item Item => m_Item;
+		public Faction Faction => m_Faction;
+		public DateTime Expiration => m_Expiration;
 
 		public bool HasExpired
 		{

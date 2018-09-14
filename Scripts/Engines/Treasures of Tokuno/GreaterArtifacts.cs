@@ -433,7 +433,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public PigmentType Type
 		{
-			get { return m_Type; }
+			get => m_Type;
 			set
 			{
 				m_Type = value;

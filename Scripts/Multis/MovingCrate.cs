@@ -21,8 +21,8 @@ namespace Server.Multis
 
 		public BaseHouse House
 		{
-			get{ return m_House; }
-			set{ m_House = value; }
+			get => m_House;
+			set => m_House = value;
 		}
 
 		public override int DefaultMaxItems => 0;
@@ -142,10 +142,7 @@ namespace Server.Multis
 			return Point3D.Zero;
 		}
 
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
-		}
+		public override bool IsDecoContainer => false;
 
 		public override bool CheckHold( Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight )
 		{
@@ -279,10 +276,7 @@ namespace Server.Multis
 		public override int DefaultGumpID => 0x4B;
 		public override int DefaultDropSound => 0x42;
 
-		public override Rectangle2D Bounds
-		{
-			get{ return new Rectangle2D( 16, 51, 168, 73 ); }
-		}
+		public override Rectangle2D Bounds => new Rectangle2D( 16, 51, 168, 73 );
 
 		public override int DefaultMaxItems => 0;
 		public override int DefaultMaxWeight => 0;

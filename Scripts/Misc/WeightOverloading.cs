@@ -20,8 +20,8 @@ namespace Server.Misc
 
 		public static DFAlgorithm DFA
 		{
-			get{ return m_DFA; }
-			set{ m_DFA = value; }
+			get => m_DFA;
+			set => m_DFA = value;
 		}
 
 		public static void FatigueOnDamage( Mobile m, int damage )

@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Doom
 
 		public BoneDemon Daemon
 		{
-			get{ return m_Daemon; }
+			get => m_Daemon;
 			set
 			{
 				m_Daemon = value;

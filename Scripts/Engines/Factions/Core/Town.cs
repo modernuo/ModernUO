@@ -14,59 +14,56 @@ namespace Server.Factions
 
 		public TownDefinition Definition
 		{
-			get{ return m_Definition; }
-			set{ m_Definition = value; }
+			get => m_Definition;
+			set => m_Definition = value;
 		}
 
 		public TownState State
 		{
-			get{ return m_State; }
+			get => m_State;
 			set{ m_State = value; ConstructGuardLists(); }
 		}
 
 		public int Silver
 		{
-			get{ return m_State.Silver; }
-			set{ m_State.Silver = value; }
+			get => m_State.Silver;
+			set => m_State.Silver = value;
 		}
 
 		public Faction Owner
 		{
-			get{ return m_State.Owner; }
-			set{ Capture( value ); }
+			get => m_State.Owner;
+			set => Capture( value );
 		}
 
 		public Mobile Sheriff
 		{
-			get{ return m_State.Sheriff; }
-			set{ m_State.Sheriff = value; }
+			get => m_State.Sheriff;
+			set => m_State.Sheriff = value;
 		}
 
 		public Mobile Finance
 		{
-			get{ return m_State.Finance; }
-			set{ m_State.Finance = value; }
+			get => m_State.Finance;
+			set => m_State.Finance = value;
 		}
 
 		public int Tax
 		{
-			get{ return m_State.Tax; }
-			set{ m_State.Tax = value; }
+			get => m_State.Tax;
+			set => m_State.Tax = value;
 		}
 
 		public DateTime LastTaxChange
 		{
-			get{ return m_State.LastTaxChange; }
-			set{ m_State.LastTaxChange = value; }
+			get => m_State.LastTaxChange;
+			set => m_State.LastTaxChange = value;
 		}
 
 		public static readonly TimeSpan TaxChangePeriod = TimeSpan.FromHours( 12.0 );
 		public static readonly TimeSpan IncomePeriod = TimeSpan.FromDays( 1.0 );
 
-		public bool TaxChangeReady
-		{
-			get{ return ( m_State.LastTaxChange + TaxChangePeriod ) < DateTime.UtcNow; }
-		}
+		public bool TaxChangeReady => ( m_State.LastTaxChange + TaxChangePeriod ) < DateTime.UtcNow;
 
 		public static Town FromRegion( Region reg )
 		{
@@ -114,15 +111,9 @@ namespace Server.Factions
 			}
 		}
 
-		public int DailyIncome
-		{
-			get{ return (10000 * (100 + m_State.Tax)) / 100; }
-		}
+		public int DailyIncome => (10000 * (100 + m_State.Tax)) / 100;
 
-		public int NetCashFlow
-		{
-			get{ return DailyIncome - FinanceUpkeep - SheriffUpkeep; }
-		}
+		public int NetCashFlow => DailyIncome - FinanceUpkeep - SheriffUpkeep;
 
 		public TownMonolith Monolith
 		{
@@ -142,8 +133,8 @@ namespace Server.Factions
 
 		public DateTime LastIncome
 		{
-			get{ return m_State.LastIncome; }
-			set{ m_State.LastIncome = value; }
+			get => m_State.LastIncome;
+			set => m_State.LastIncome = value;
 		}
 
 		public void BeginOrderFiring( Mobile from )
@@ -258,14 +249,14 @@ namespace Server.Factions
 
 		public List<VendorList> VendorLists
 		{
-			get{ return m_VendorLists; }
-			set{ m_VendorLists = value; }
+			get => m_VendorLists;
+			set => m_VendorLists = value;
 		}
 
 		public List<GuardList> GuardLists
 		{
-			get{ return m_GuardLists; }
-			set{ m_GuardLists = value; }
+			get => m_GuardLists;
+			set => m_GuardLists = value;
 		}
 
 		public void ConstructGuardLists()

@@ -11,10 +11,7 @@ namespace Server.Engines.Harvest
 
 		HarvestDefinition m_Definition;
 
-		public HarvestDefinition Definition
-		{
-			get { return m_Definition; }
-		}
+		public HarvestDefinition Definition => m_Definition;
 
 		public int Current
 		{
@@ -32,10 +29,7 @@ namespace Server.Engines.Harvest
 				CheckRespawn();
 				return m_Vein;
 			}
-			set
-			{
-				m_Vein = value;
-			}
+			set => m_Vein = value;
 		}
 
 		public HarvestVein DefaultVein

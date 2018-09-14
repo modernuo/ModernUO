@@ -32,86 +32,44 @@ namespace Server.Gumps
 
 		public int X
 		{
-			get
-			{
-				return m_X;
-			}
-			set
-			{
-				Delta( ref m_X, value );
-			}
+			get => m_X;
+			set => Delta( ref m_X, value );
 		}
 
 		public int Y
 		{
-			get
-			{
-				return m_Y;
-			}
-			set
-			{
-				Delta( ref m_Y, value );
-			}
+			get => m_Y;
+			set => Delta( ref m_Y, value );
 		}
 
 		public int Width
 		{
-			get
-			{
-				return m_Width;
-			}
-			set
-			{
-				Delta( ref m_Width, value );
-			}
+			get => m_Width;
+			set => Delta( ref m_Width, value );
 		}
 
 		public int Height
 		{
-			get
-			{
-				return m_Height;
-			}
-			set
-			{
-				Delta( ref m_Height, value );
-			}
+			get => m_Height;
+			set => Delta( ref m_Height, value );
 		}
 
 		public string Text
 		{
-			get
-			{
-				return m_Text;
-			}
-			set
-			{
-				Delta( ref m_Text, value );
-			}
+			get => m_Text;
+			set => Delta( ref m_Text, value );
 		}
 
 		public bool Background
 		{
-			get
-			{
-				return m_Background;
-			}
-			set
-			{
-				Delta( ref m_Background, value );
-			}
+			get => m_Background;
+			set => Delta( ref m_Background, value );
 		}
 
 		public bool Scrollbar
 		{
-			get
-			{
-				return m_Scrollbar;
-			}
-			set
-			{
-				Delta( ref m_Scrollbar, value );
-			}
+			get => m_Scrollbar;
+			set => Delta( ref m_Scrollbar, value );
 		}
 
 		public GumpHtml( int x, int y, int width, int height, string text, bool background, bool scrollbar )

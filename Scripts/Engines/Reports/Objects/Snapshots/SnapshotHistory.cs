@@ -17,7 +17,9 @@ namespace Server.Engines.Reports
 
 		private SnapshotCollection m_Snapshots;
 
-		public SnapshotCollection Snapshots{ get{ return m_Snapshots; } set{ m_Snapshots = value; } }
+		public SnapshotCollection Snapshots{ get => m_Snapshots;
+			set => m_Snapshots = value;
+		}
 
 		public SnapshotHistory()
 		{

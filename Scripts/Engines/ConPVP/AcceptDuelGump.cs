@@ -120,8 +120,8 @@ namespace Server.Engines.ConPVP
 			public Mobile m_Ignored;
 			public DateTime m_Expire;
 
-			public Mobile Ignored{ get{ return m_Ignored; } }
-			public bool Expired{ get{ return ( DateTime.UtcNow >= m_Expire ); } }
+			public Mobile Ignored => m_Ignored;
+			public bool Expired => ( DateTime.UtcNow >= m_Expire );
 
 			private static TimeSpan ExpireDelay = TimeSpan.FromMinutes( 15.0 );
 

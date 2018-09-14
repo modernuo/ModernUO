@@ -8,7 +8,7 @@ namespace Server.Factions
 		private VendorDefinition m_Definition;
 		private List<BaseFactionVendor> m_Vendors;
 
-		public VendorDefinition Definition{ get{ return m_Definition; } }
+		public VendorDefinition Definition => m_Definition;
 		public List<BaseFactionVendor> Vendors  => m_Vendors;
 
 		public BaseFactionVendor Construct( Town town, Faction faction )

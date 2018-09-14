@@ -26,7 +26,9 @@ namespace Server.Network
 	{
 		private static List<BufferPool> m_Pools = new List<BufferPool>();
 
-		public static List<BufferPool> Pools{ get{ return m_Pools; } set{ m_Pools = value; } }
+		public static List<BufferPool> Pools{ get => m_Pools;
+			set => m_Pools = value;
+		}
 
 		private string m_Name;
 

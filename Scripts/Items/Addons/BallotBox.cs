@@ -17,20 +17,11 @@ namespace Server.Items
 		private List<Mobile> m_Yes;
 		private List<Mobile> m_No;
 
-		public string[] Topic
-		{
-			get{ return m_Topic; }
-		}
+		public string[] Topic => m_Topic;
 
-		public List<Mobile> Yes
-		{
-			get{ return m_Yes; }
-		}
+		public List<Mobile> Yes => m_Yes;
 
-		public List<Mobile> No
-		{
-			get{ return m_No; }
-		}
+		public List<Mobile> No => m_No;
 
 		[Constructible]
 		public BallotBox() : base( 0x9A8 )

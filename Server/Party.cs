@@ -24,7 +24,9 @@ namespace Server
 	{
 		private static PartyCommands m_Handler;
 
-		public static PartyCommands Handler{ get{ return m_Handler; } set{ m_Handler = value; } }
+		public static PartyCommands Handler{ get => m_Handler;
+			set => m_Handler = value;
+		}
 
 		public abstract void OnAdd( Mobile from );
 		public abstract void OnRemove( Mobile from, Mobile target );

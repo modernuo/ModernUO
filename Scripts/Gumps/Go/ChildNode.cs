@@ -37,28 +37,10 @@ namespace Server.Gumps
 			m_Location = new Point3D( x, y, z );
 		}
 
-		public ParentNode Parent
-		{
-			get
-			{
-				return m_Parent;
-			}
-		}
+		public ParentNode Parent => m_Parent;
 
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
+		public string Name => m_Name;
 
-		public Point3D Location
-		{
-			get
-			{
-				return m_Location;
-			}
-		}
+		public Point3D Location => m_Location;
 	}
 }

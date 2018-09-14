@@ -323,8 +323,8 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Corrosive
 		{
-			get { return m_Corrosive; }
-			set { m_Corrosive = value; }
+			get => m_Corrosive;
+			set => m_Corrosive = value;
 		}
 
 		[Constructible]

@@ -49,15 +49,11 @@ namespace Server.Guilds
 		}
 
 		[CommandProperty( AccessLevel.Counselor )]
-		public int Id { get { return m_Id; } }
+		public int Id => m_Id;
 
-		int ISerializable.TypeReference {
-			get { return 0; }
-		}
+		int ISerializable.TypeReference => 0;
 
-		int ISerializable.SerialIdentity {
-			get { return m_Id; }
-		}
+		int ISerializable.SerialIdentity => m_Id;
 
 		public abstract void Deserialize( GenericReader reader );
 		public abstract void Serialize( GenericWriter writer );
@@ -71,13 +67,7 @@ namespace Server.Guilds
 		private static Dictionary<int, BaseGuild> m_GuildList = new Dictionary<int, BaseGuild>();
 		private static int m_NextID = 1;
 
-		public static Dictionary<int, BaseGuild> List
-		{
-			get
-			{
-				return m_GuildList;
-			}
-		}
+		public static Dictionary<int, BaseGuild> List => m_GuildList;
 
 		public static BaseGuild Find( int id )
 		{

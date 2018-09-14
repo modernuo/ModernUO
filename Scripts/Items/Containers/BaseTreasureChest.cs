@@ -12,45 +12,27 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TreasureLevel Level
 		{
-			get
-			{
-				return m_TreasureLevel;
-			}
-			set
-			{
-				m_TreasureLevel = value;
-			}
+			get => m_TreasureLevel;
+			set => m_TreasureLevel = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public short MaxSpawnTime
 		{
-			get
-			{
-				return m_MaxSpawnTime;
-			}
-			set
-			{
-				m_MaxSpawnTime = value;
-			}
+			get => m_MaxSpawnTime;
+			set => m_MaxSpawnTime = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public short MinSpawnTime
 		{
-			get
-			{
-				return m_MinSpawnTime;
-			}
-			set
-			{
-				m_MinSpawnTime = value;
-			}
+			get => m_MinSpawnTime;
+			set => m_MinSpawnTime = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public override bool Locked {
-			get { return base.Locked; }
+			get => base.Locked;
 			set {
 				if ( base.Locked != value ) {
 					base.Locked = value;
@@ -61,10 +43,7 @@ namespace Server.Items
 			}
 		}
 
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
-		}
+		public override bool IsDecoContainer => false;
 
 		public BaseTreasureChest( int itemID ) : this( itemID, TreasureLevel.Level2 )
 		{

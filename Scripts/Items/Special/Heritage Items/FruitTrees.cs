@@ -13,7 +13,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Fruits
 		{
-			get { return m_Fruits; }
+			get => m_Fruits;
 			set
 			{
 				if ( value < 0 )

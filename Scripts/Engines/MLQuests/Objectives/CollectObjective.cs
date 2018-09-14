@@ -13,26 +13,23 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public int DesiredAmount
 		{
-			get { return m_DesiredAmount; }
-			set { m_DesiredAmount = value; }
+			get => m_DesiredAmount;
+			set => m_DesiredAmount = value;
 		}
 
 		public Type AcceptedType
 		{
-			get { return m_AcceptedType; }
-			set { m_AcceptedType = value; }
+			get => m_AcceptedType;
+			set => m_AcceptedType = value;
 		}
 
 		public TextDefinition Name
 		{
-			get { return m_Name; }
-			set { m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
-		public virtual bool ShowDetailed
-		{
-			get { return true; }
-		}
+		public virtual bool ShowDetailed => true;
 
 		public CollectObjective()
 			: this( 0, null, null )
@@ -132,8 +129,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public CollectObjective Objective
 		{
-			get { return m_Objective; }
-			set { m_Objective = value; }
+			get => m_Objective;
+			set => m_Objective = value;
 		}
 
 		public CollectObjectiveInstance( CollectObjective objective, MLQuestInstance instance )

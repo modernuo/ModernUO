@@ -14,28 +14,28 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile BardingCrafter
 		{
-			get{ return m_BardingCrafter; }
+			get => m_BardingCrafter;
 			set{ m_BardingCrafter = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool BardingExceptional
 		{
-			get{ return m_BardingExceptional; }
+			get => m_BardingExceptional;
 			set{ m_BardingExceptional = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int BardingHP
 		{
-			get{ return m_BardingHP; }
+			get => m_BardingHP;
 			set{ m_BardingHP = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool HasBarding
 		{
-			get{ return m_HasBarding; }
+			get => m_HasBarding;
 			set
 			{
 				m_HasBarding = value;
@@ -60,7 +60,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public CraftResource BardingResource
 		{
-			get{ return m_BardingResource; }
+			get => m_BardingResource;
 			set
 			{
 				m_BardingResource = value;
@@ -73,10 +73,7 @@ namespace Server.Mobiles
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int BardingMaxHP
-		{
-			get{ return m_BardingExceptional ? 2500 : 1000; }
-		}
+		public int BardingMaxHP => m_BardingExceptional ? 2500 : 1000;
 
 		[Constructible]
 		public SwampDragon() : this( "a swamp dragon" )

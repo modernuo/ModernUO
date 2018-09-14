@@ -83,13 +83,13 @@ namespace Server.Engines.MLQuests
 
 		public MLQuest Quest
 		{
-			get { return m_Quest; }
-			set { m_Quest = value; }
+			get => m_Quest;
+			set => m_Quest = value;
 		}
 
 		public IQuestGiver Quester
 		{
-			get { return m_Quester; }
+			get => m_Quester;
 			set
 			{
 				m_Quester = value;
@@ -97,50 +97,44 @@ namespace Server.Engines.MLQuests
 			}
 		}
 
-		public Type QuesterType
-		{
-			get { return m_QuesterType; }
-		}
+		public Type QuesterType => m_QuesterType;
 
 		public PlayerMobile Player
 		{
-			get { return m_Player; }
-			set { m_Player = value; }
+			get => m_Player;
+			set => m_Player = value;
 		}
 
-		public MLQuestContext PlayerContext
-		{
-			get { return MLQuestSystem.GetOrCreateContext( m_Player ); }
-		}
+		public MLQuestContext PlayerContext => MLQuestSystem.GetOrCreateContext( m_Player );
 
 		public DateTime Accepted
 		{
-			get { return m_Accepted; }
-			set { m_Accepted = value; }
+			get => m_Accepted;
+			set => m_Accepted = value;
 		}
 
 		public bool ClaimReward
 		{
-			get { return GetFlag( MLQuestInstanceFlags.ClaimReward ); }
-			set { SetFlag( MLQuestInstanceFlags.ClaimReward, value ); }
+			get => GetFlag( MLQuestInstanceFlags.ClaimReward );
+			set => SetFlag( MLQuestInstanceFlags.ClaimReward, value );
 		}
 
 		public bool Removed
 		{
-			get { return GetFlag( MLQuestInstanceFlags.Removed ); }
-			set { SetFlag( MLQuestInstanceFlags.Removed, value ); }
+			get => GetFlag( MLQuestInstanceFlags.Removed );
+			set => SetFlag( MLQuestInstanceFlags.Removed, value );
 		}
 
 		public bool Failed
 		{
-			get { return GetFlag( MLQuestInstanceFlags.Failed ); }
-			set { SetFlag( MLQuestInstanceFlags.Failed, value ); }
+			get => GetFlag( MLQuestInstanceFlags.Failed );
+			set => SetFlag( MLQuestInstanceFlags.Failed, value );
 		}
 
 		public BaseObjectiveInstance[] Objectives
 		{
-			get { return m_ObjectiveInstances; }
-			set { m_ObjectiveInstances = value; }
+			get => m_ObjectiveInstances;
+			set => m_ObjectiveInstances = value;
 		}
 
 		public bool AllowsQuestItem( Item item, Type type )
@@ -271,10 +265,7 @@ namespace Server.Engines.MLQuests
 			}
 		}
 
-		public bool SkipReportBack
-		{
-			get { return TextDefinition.IsNullOrEmpty( m_Quest.CompletionMessage ); }
-		}
+		public bool SkipReportBack => TextDefinition.IsNullOrEmpty( m_Quest.CompletionMessage );
 
 		public void SendReportBackGump()
 		{

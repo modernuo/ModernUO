@@ -14,7 +14,7 @@ namespace Server
 		public int Number  => m_Number;
 		public string String  => m_String;
 
-		public bool IsEmpty { get { return ( m_Number <= 0 && m_String == null ); } }
+		public bool IsEmpty => ( m_Number <= 0 && m_String == null );
 
 		public TextDefinition() : this( 0, null )
 		{

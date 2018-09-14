@@ -7,7 +7,7 @@ namespace Server.Items
 		public override bool NeedsWall => true;
 		public override Point3D WallPosition => this.East ? new Point3D( -1, 0, 0 ) : new Point3D( 0, -1, 0 );
 
-		public bool East{ get{ return this.ItemID == 0x1E2F; } }
+		public bool East => this.ItemID == 0x1E2F;
 
 		[Constructible]
 		public DartBoard() : this( true )

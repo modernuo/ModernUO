@@ -58,18 +58,12 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(m_ScoreInterval);
         }
 
-        public Mobile King
-        {
-            get
-            {
-                return m_King;
-            }
-        }
+        public Mobile King => m_King;
 
-        public KHGame Game
+	    public KHGame Game
         {
-            get { return m_Game; }
-            set
+            get => m_Game;
+		    set
             {
                 if (m_Game != value)
                 {
@@ -82,7 +76,9 @@ namespace Server.Engines.ConPVP
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int ScoreInterval { get { return m_ScoreInterval; } set { m_ScoreInterval = value; } }
+        public int ScoreInterval { get => m_ScoreInterval;
+	        set => m_ScoreInterval = value;
+        }
 
         public int CapturesSoFar
         {
@@ -307,8 +303,8 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public KHController Controller
         {
-            get { return m_Controller; }
-            set
+            get => m_Controller;
+	        set
             {
                 if (m_Controller != value)
                 {
@@ -563,11 +559,8 @@ namespace Server.Engines.ConPVP
 
         public int Kills
         {
-            get
-            {
-                return m_Kills;
-            }
-            set
+            get => m_Kills;
+	        set
             {
                 m_TeamInfo.Kills += (value - m_Kills);
                 m_Kills = value;
@@ -576,11 +569,8 @@ namespace Server.Engines.ConPVP
 
         public int Captures
         {
-            get
-            {
-                return m_Captures;
-            }
-            set
+            get => m_Captures;
+	        set
             {
                 m_TeamInfo.Captures += (value - m_Captures);
                 m_Captures = value;
@@ -589,11 +579,8 @@ namespace Server.Engines.ConPVP
 
         public int Score
         {
-            get
-            {
-                return m_Score;
-            }
-            set
+            get => m_Score;
+	        set
             {
                 m_TeamInfo.Score += (value - m_Score);
                 m_Score = value;
@@ -644,27 +631,32 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public KHGame Game { get { return m_Game; } set { m_Game = value; } }
+        public KHGame Game { get => m_Game;
+	        set => m_Game = value;
+        }
         public int TeamID  => m_TeamID;
 
-        public int Kills { get { return m_Kills; } set { m_Kills = value; } }
-        public int Captures { get { return m_Captures; } set { m_Captures = value; } }
-        public int Score { get { return m_Score; } set { m_Score = value; } }
+        public int Kills { get => m_Kills;
+	        set => m_Kills = value;
+        }
+        public int Captures { get => m_Captures;
+	        set => m_Captures = value;
+        }
+        public int Score { get => m_Score;
+	        set => m_Score = value;
+        }
 
         private KHPlayerInfo m_Leader;
 
         public KHPlayerInfo Leader
         {
-            get { return m_Leader; }
-            set { m_Leader = value; }
+            get => m_Leader;
+	        set => m_Leader = value;
         }
 
-        public Hashtable Players
-        {
-            get { return m_Players; }
-        }
+        public Hashtable Players => m_Players;
 
-        public KHPlayerInfo this[Mobile mob]
+	    public KHPlayerInfo this[Mobile mob]
         {
             get
             {
@@ -681,15 +673,15 @@ namespace Server.Engines.ConPVP
         [CommandProperty(AccessLevel.GameMaster)]
         public int Color
         {
-            get { return m_Color; }
-            set { m_Color = value; }
+            get => m_Color;
+	        set => m_Color = value;
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public string TeamName
         {
-            get { return m_Name; }
-            set { m_Name = value; }
+            get => m_Name;
+	        set => m_Name = value;
         }
 
         public KHTeamInfo(int teamID)
@@ -755,58 +747,71 @@ namespace Server.Engines.ConPVP
         public KHTeamInfo[] TeamInfo  => m_TeamInfo;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team1_W { get { return m_TeamInfo[0]; } set { } }
+        public KHTeamInfo Team1_W { get => m_TeamInfo[0];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team2_E { get { return m_TeamInfo[1]; } set { } }
+        public KHTeamInfo Team2_E { get => m_TeamInfo[1];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team3_N { get { return m_TeamInfo[2]; } set { } }
+        public KHTeamInfo Team3_N { get => m_TeamInfo[2];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team4_S { get { return m_TeamInfo[3]; } set { } }
+        public KHTeamInfo Team4_S { get => m_TeamInfo[3];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team5_NW { get { return m_TeamInfo[4]; } set { } }
+        public KHTeamInfo Team5_NW { get => m_TeamInfo[4];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team6_SE { get { return m_TeamInfo[5]; } set { } }
+        public KHTeamInfo Team6_SE { get => m_TeamInfo[5];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team7_SW { get { return m_TeamInfo[6]; } set { } }
+        public KHTeamInfo Team7_SW { get => m_TeamInfo[6];
+	        set { } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public KHTeamInfo Team8_NE { get { return m_TeamInfo[7]; } set { } }
+        public KHTeamInfo Team8_NE { get => m_TeamInfo[7];
+	        set { } }
 
         public HillOfTheKing[] Hills  => m_Hills;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public HillOfTheKing Hill1 { get { return m_Hills[0]; } set { m_Hills[0] = value; } }
+        public HillOfTheKing Hill1 { get => m_Hills[0];
+	        set => m_Hills[0] = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public HillOfTheKing Hill2 { get { return m_Hills[1]; } set { m_Hills[1] = value; } }
+        public HillOfTheKing Hill2 { get => m_Hills[1];
+	        set => m_Hills[1] = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public HillOfTheKing Hill3 { get { return m_Hills[2]; } set { m_Hills[2] = value; } }
+        public HillOfTheKing Hill3 { get => m_Hills[2];
+	        set => m_Hills[2] = value;
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public HillOfTheKing Hill4 { get { return m_Hills[3]; } set { m_Hills[3] = value; } }
+        public HillOfTheKing Hill4 { get => m_Hills[3];
+	        set => m_Hills[3] = value;
+        }
 
         public ArrayList Boards  => m_Boards;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan Duration
         {
-            get { return m_Duration; }
-            set { m_Duration = value; }
+            get => m_Duration;
+	        set => m_Duration = value;
         }
 
-        public override string Title
-        {
-            get { return "King of the Hill"; }
-        }
+        public override string Title => "King of the Hill";
 
-        public override string GetTeamName(int teamID)
+	    public override string GetTeamName(int teamID)
         {
             return m_TeamInfo[teamID % m_TeamInfo.Length].Name;
         }

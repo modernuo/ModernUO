@@ -23,11 +23,19 @@ namespace Server.Engines.Reports
 		private Hashtable m_UserInfo;
 		private Hashtable m_StaffInfo;
 
-		public PageInfoCollection Pages{ get{ return m_Pages; } set{ m_Pages = value; } }
-		public QueueStatusCollection QueueStats{ get{ return m_QueueStats; } set{ m_QueueStats = value; } }
+		public PageInfoCollection Pages{ get => m_Pages;
+			set => m_Pages = value;
+		}
+		public QueueStatusCollection QueueStats{ get => m_QueueStats;
+			set => m_QueueStats = value;
+		}
 
-		public Hashtable UserInfo{ get{ return m_UserInfo; } set{ m_UserInfo = value; } }
-		public Hashtable StaffInfo{ get{ return m_StaffInfo; } set{ m_StaffInfo = value; } }
+		public Hashtable UserInfo{ get => m_UserInfo;
+			set => m_UserInfo = value;
+		}
+		public Hashtable StaffInfo{ get => m_StaffInfo;
+			set => m_StaffInfo = value;
+		}
 
 		public void AddPage( PageInfo info )
 		{

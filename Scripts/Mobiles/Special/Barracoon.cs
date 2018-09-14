@@ -11,10 +11,11 @@ namespace Server.Mobiles
 		public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
 		public override Type[] UniqueList => new Type[] { typeof( FangOfRactus ) };
-		public override Type[] SharedList{ get{ return new Type[] { 	typeof( EmbroideredOakLeafCloak ),
-										typeof( DjinnisRing ),
-										typeof( DetectiveBoots ),
-										typeof( GuantletsOfAnger ) }; } }
+		public override Type[] SharedList => new Type[] { 	typeof( EmbroideredOakLeafCloak ),
+			typeof( DjinnisRing ),
+			typeof( DetectiveBoots ),
+			typeof( GuantletsOfAnger ) };
+
 		public override Type[] DecorativeList => new Type[] { typeof( SwampTile ), typeof( MonsterStatuette ) };
 
 		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { MonsterStatuetteType.Slime };

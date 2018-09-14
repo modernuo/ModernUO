@@ -12,7 +12,7 @@ namespace Server.Mobiles
 	public class Banker : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override NpcGuild NpcGuild => NpcGuild.MerchantsGuild;
 

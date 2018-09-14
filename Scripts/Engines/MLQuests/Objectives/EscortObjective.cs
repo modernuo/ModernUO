@@ -11,8 +11,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public QuestArea Destination
 		{
-			get { return m_Destination; }
-			set { m_Destination = value; }
+			get => m_Destination;
+			set => m_Destination = value;
 		}
 
 		public EscortObjective()
@@ -97,8 +97,8 @@ namespace Server.Engines.MLQuests.Objectives
 
 		public bool HasCompleted
 		{
-			get { return m_HasCompleted; }
-			set { m_HasCompleted = value; }
+			get => m_HasCompleted;
+			set => m_HasCompleted = value;
 		}
 
 		public EscortObjectiveInstance( EscortObjective objective, MLQuestInstance instance )

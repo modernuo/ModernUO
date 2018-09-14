@@ -4,10 +4,7 @@ namespace Server.Items
 {
 	public class GlassblowingBook : Item
 	{
-		public override string DefaultName
-		{
-			get { return "Crafting Glass With Glassblowing"; }
-		}
+		public override string DefaultName => "Crafting Glass With Glassblowing";
 
 		[Constructible]
 		public GlassblowingBook() : base( 0xFF4 )

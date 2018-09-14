@@ -33,16 +33,22 @@ namespace Server.Items
 		private List<Mobile> m_Guardians;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Level{ get{ return m_Level; } set{ m_Level = value; } }
+		public int Level{ get => m_Level;
+			set => m_Level = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner{ get{ return m_Owner; } set{ m_Owner = value; } }
+		public Mobile Owner{ get => m_Owner;
+			set => m_Owner = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime DeleteTime{ get{ return m_DeleteTime; } }
+		public DateTime DeleteTime => m_DeleteTime;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Temporary{ get{ return m_Temporary; } set{ m_Temporary = value; } }
+		public bool Temporary{ get => m_Temporary;
+			set => m_Temporary = value;
+		}
 
 		public List<Mobile> Guardians  => m_Guardians;
 
@@ -332,10 +338,7 @@ namespace Server.Items
 			return false;
 		}
 
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
-		}
+		public override bool IsDecoContainer => false;
 
 		public override bool CheckItemUse( Mobile from, Item item )
 		{

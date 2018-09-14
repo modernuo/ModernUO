@@ -13,14 +13,11 @@ namespace Server.Multis
 		private Timer m_DecayTimer;
 		private TimeSpan m_DecayDelay;
 
-		public virtual int EventRange{ get{ return 10; } }
+		public virtual int EventRange => 10;
 
 		public virtual TimeSpan DecayDelay
 		{
-			get
-			{
-				return m_DecayDelay;
-			}
+			get => m_DecayDelay;
 			set
 			{
 				m_DecayDelay = value;

@@ -17,8 +17,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Poison Poison
 		{
-			get{ return m_Poison; }
-			set{ m_Poison = value; }
+			get => m_Poison;
+			set => m_Poison = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -35,10 +35,7 @@ namespace Server.Items
 
 				return GasTrapType.WestWall;
 			}
-			set
-			{
-				ItemID = GetBaseID( value );
-			}
+			set => ItemID = GetBaseID( value );
 		}
 
 		public static int GetBaseID( GasTrapType type )

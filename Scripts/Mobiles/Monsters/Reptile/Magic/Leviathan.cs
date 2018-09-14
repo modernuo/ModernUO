@@ -10,8 +10,8 @@ namespace Server.Mobiles
 
 		public Mobile Fisher
 		{
-			get{ return m_Fisher; }
-			set{ m_Fisher = value; }
+			get => m_Fisher;
+			set => m_Fisher = value;
 		}
 
 		public override string DefaultName => "a leviathan";

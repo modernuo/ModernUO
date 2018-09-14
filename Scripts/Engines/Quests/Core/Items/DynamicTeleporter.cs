@@ -18,7 +18,8 @@ namespace Server.Engines.Quests
 
 		public abstract bool GetDestination( PlayerMobile player, ref Point3D loc, ref Map map );
 
-		public virtual int NotWorkingMessage{ get{ return 500309; } } // Nothing Happens.
+		public virtual int NotWorkingMessage // Nothing Happens.
+			=> 500309;
 
 		public override bool OnMoveOver( Mobile m )
 		{

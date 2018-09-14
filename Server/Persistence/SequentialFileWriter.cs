@@ -46,12 +46,8 @@ namespace Server {
 		}
 
 		public override long Position {
-			get {
-				return fileQueue.Position;
-			}
-			set {
-				throw new InvalidOperationException();
-			}
+			get => fileQueue.Position;
+			set => throw new InvalidOperationException();
 		}
 
 		private void FileCallback( FileQueue.Chunk chunk ) {

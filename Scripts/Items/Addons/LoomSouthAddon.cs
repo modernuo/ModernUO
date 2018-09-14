@@ -6,7 +6,9 @@ namespace Server.Items
 
 		private int m_Phase;
 
-		public int Phase{ get{ return m_Phase; } set{ m_Phase = value; } }
+		public int Phase{ get => m_Phase;
+			set => m_Phase = value;
+		}
 
 		[Constructible]
 		public LoomSouthAddon()

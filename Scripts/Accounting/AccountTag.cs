@@ -11,8 +11,8 @@ namespace Server.Accounting
 		/// </summary>
 		public string Name
 		{
-			get{ return m_Name; }
-			set{ m_Name = value; }
+			get => m_Name;
+			set => m_Name = value;
 		}
 
 		/// <summary>
@@ -20,8 +20,8 @@ namespace Server.Accounting
 		/// </summary>
 		public string Value
 		{
-			get{ return m_Value; }
-			set{ m_Value = value; }
+			get => m_Value;
+			set => m_Value = value;
 		}
 
 		/// <summary>

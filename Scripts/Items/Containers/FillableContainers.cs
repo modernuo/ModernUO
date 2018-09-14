@@ -26,13 +26,13 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public FillableContentType ContentType
 		{
-			get { return FillableContent.Lookup( m_Content ); }
-			set { Content = FillableContent.Lookup( value ); }
+			get => FillableContent.Lookup( m_Content );
+			set => Content = FillableContent.Lookup( value );
 		}
 
 		public FillableContent Content
 		{
-			get { return m_Content; }
+			get => m_Content;
 			set
 			{
 				if ( m_Content == value )
@@ -701,7 +701,7 @@ namespace Server.Items
 		public int Level  => m_Level;
 		public Type[] Vendors  => m_Vendors;
 
-		public FillableContentType TypeID { get { return Lookup( this ); } }
+		public FillableContentType TypeID => Lookup( this );
 
 		public FillableContent( int level, Type[] vendors, FillableEntry[] entries )
 		{

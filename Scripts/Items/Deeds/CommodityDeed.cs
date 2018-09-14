@@ -14,13 +14,7 @@ namespace Server.Items
 		private Item m_Commodity;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Item Commodity
-		{
-			get
-			{
-				return m_Commodity;
-			}
-		}
+		public Item Commodity => m_Commodity;
 
 		public bool SetCommodity( Item item )
 		{

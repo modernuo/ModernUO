@@ -8,9 +8,15 @@ namespace Server.Engines.Harvest
 		private double m_ReqSkill, m_Chance;
 		private TextDefinition m_SuccessMessage;
 
-		public Type Type { get { return m_Type; } set { m_Type = value; } }
-		public double ReqSkill { get { return m_ReqSkill; } set { m_ReqSkill = value; } }
-		public double Chance { get { return m_Chance; } set { m_Chance = value; } }
+		public Type Type { get => m_Type;
+			set => m_Type = value;
+		}
+		public double ReqSkill { get => m_ReqSkill;
+			set => m_ReqSkill = value;
+		}
+		public double Chance { get => m_Chance;
+			set => m_Chance = value;
+		}
 
 		public TextDefinition SuccessMessage  => m_SuccessMessage;
 

@@ -62,8 +62,12 @@ namespace Server.Spells.First
 		private Type m_Type;
 		private string m_Name;
 
-		public Type Type{ get{ return m_Type; } set{ m_Type = value; } }
-		public string Name{ get{ return m_Name; } set{ m_Name = value; } }
+		public Type Type{ get => m_Type;
+			set => m_Type = value;
+		}
+		public string Name{ get => m_Name;
+			set => m_Name = value;
+		}
 
 		public FoodInfo( Type type, string name )
 		{

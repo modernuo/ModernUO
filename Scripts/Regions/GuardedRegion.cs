@@ -12,7 +12,9 @@ namespace Server.Regions
 		private Type m_GuardType;
 		private bool m_Disabled;
 
-		public bool Disabled{ get{ return m_Disabled; } set{ m_Disabled = value; } }
+		public bool Disabled{ get => m_Disabled;
+			set => m_Disabled = value;
+		}
 
 		public virtual bool IsDisabled()
 		{
@@ -99,7 +101,7 @@ namespace Server.Regions
 			return reg;
 		}
 
-		public virtual bool AllowReds{ get{ return Core.AOS; } }
+		public virtual bool AllowReds => Core.AOS;
 
 		public virtual bool CheckVendorAccess( BaseVendor vendor, Mobile from )
 		{

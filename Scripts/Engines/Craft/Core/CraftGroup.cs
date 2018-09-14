@@ -19,19 +19,10 @@ namespace Server.Engines.Craft
 			m_arCraftItem.Add( craftItem );
 		}
 
-		public CraftItemCol CraftItems
-		{
-			get { return m_arCraftItem; }
-		}
+		public CraftItemCol CraftItems => m_arCraftItem;
 
-		public string NameString
-		{
-			get { return m_NameString; }
-		}
+		public string NameString => m_NameString;
 
-		public int NameNumber
-		{
-			get { return m_NameNumber; }
-		}
+		public int NameNumber => m_NameNumber;
 	}
 }

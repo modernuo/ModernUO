@@ -43,22 +43,22 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int InactiveItemID
 		{
-			get { return m_InactiveItemID; }
-			set { m_InactiveItemID = value; }
+			get => m_InactiveItemID;
+			set => m_InactiveItemID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ActiveItemID
 		{
-			get { return m_ActiveItemID; }
-			set { m_ActiveItemID = value; }
+			get => m_ActiveItemID;
+			set => m_ActiveItemID = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool PlayersCanToggle
 		{
-			get { return m_PlayersCanToggle; }
-			set { m_PlayersCanToggle = value; }
+			get => m_PlayersCanToggle;
+			set => m_PlayersCanToggle = value;
 		}
 
 		[Constructible]

@@ -324,7 +324,7 @@ namespace Server.Engines.Plants
 		public int OffsetY  => m_OffsetY;
 		public PlantType PlantType  => m_PlantType;
 		public PlantCategory PlantCategory  => m_PlantCategory;
-		public int Name { get { return ( m_ItemID < 0x4000 ) ? 1020000 + m_ItemID : 1078872 + m_ItemID; } }
+		public int Name => ( m_ItemID < 0x4000 ) ? 1020000 + m_ItemID : 1078872 + m_ItemID;
 
 		public bool ContainsPlant  => m_ContainsPlant;
 		public bool Flowery  => m_Flowery;

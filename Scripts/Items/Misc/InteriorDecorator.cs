@@ -18,7 +18,8 @@ namespace Server.Items
 		private DecorateCommand m_Command;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DecorateCommand Command{ get{ return m_Command; } set{ m_Command = value; InvalidateProperties(); } }
+		public DecorateCommand Command{ get => m_Command;
+			set{ m_Command = value; InvalidateProperties(); } }
 
 		[Constructible]
 		public InteriorDecorator() : base( 0xFC1 )

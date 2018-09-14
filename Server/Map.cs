@@ -315,7 +315,9 @@ namespace Server
 		private Dictionary<string, Region> m_Regions;
 		private Region m_DefaultRegion;
 
-		public int Season { get { return m_Season; } set { m_Season = value; } }
+		public int Season { get => m_Season;
+			set => m_Season = value;
+		}
 
 		private string m_Name;
 		private MapRules m_Rules;
@@ -1171,22 +1173,13 @@ namespace Server
 
 				return m_DefaultRegion;
 			}
-			set
-			{
-				m_DefaultRegion = value;
-			}
+			set => m_DefaultRegion = value;
 		}
 
 		public MapRules Rules
 		{
-			get
-			{
-				return m_Rules;
-			}
-			set
-			{
-				m_Rules = value;
-			}
+			get => m_Rules;
+			set => m_Rules = value;
 		}
 
 		public Sector InvalidSector => m_InvalidSector;
@@ -1360,8 +1353,8 @@ namespace Server
 
 		public static int MaxLOSDistance
 		{
-			get { return m_MaxLOSDistance; }
-			set { m_MaxLOSDistance = value; }
+			get => m_MaxLOSDistance;
+			set => m_MaxLOSDistance = value;
 		}
 
 		public bool LineOfSight( Point3D org, Point3D dest )
@@ -1621,8 +1614,8 @@ namespace Server
 
 		public static int[] InvalidLandTiles
 		{
-			get { return m_InvalidLandTiles; }
-			set { m_InvalidLandTiles = value; }
+			get => m_InvalidLandTiles;
+			set => m_InvalidLandTiles = value;
 		}
 
 		public int CompareTo( Map other )

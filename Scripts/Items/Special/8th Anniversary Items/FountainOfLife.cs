@@ -56,17 +56,14 @@ namespace Server.Items
 	[FlippableAttribute( 0x2AC0, 0x2AC3 )]
 	public class FountainOfLife : BaseAddonContainer
 	{
-		public override BaseAddonContainerDeed Deed
-		{
-			get { return new FountainOfLifeDeed( m_Charges ); }
-		}
+		public override BaseAddonContainerDeed Deed => new FountainOfLifeDeed( m_Charges );
 
 		public override bool OnDragLift( Mobile from )
 		{
 			return false;
 		}
 
-		public virtual TimeSpan RechargeTime { get { return TimeSpan.FromDays( 1 ); } }
+		public virtual TimeSpan RechargeTime => TimeSpan.FromDays( 1 );
 
 		public override int LabelNumber => 1075197; // Fountain of Life
 		public override int DefaultGumpID => 0x484;
@@ -78,7 +75,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get { return m_Charges; }
+			get => m_Charges;
 			set { m_Charges = Math.Min( value, 10 ); InvalidateProperties(); }
 		}
 
@@ -230,7 +227,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Charges
 		{
-			get { return m_Charges; }
+			get => m_Charges;
 			set { m_Charges = Math.Min( value, 10 ); InvalidateProperties(); }
 		}
 

@@ -65,7 +65,7 @@ namespace Server.Items
 
 		protected TextDefinition Label
 		{
-			get { return m_Label; }
+			get => m_Label;
 			set { m_Label = value; InvalidateProperties(); }
 		}
 
@@ -73,10 +73,8 @@ namespace Server.Items
 		/* DO NOT USE! Only used in serialization of pigments that originally derived from Item */
 		private bool m_InheritsItem;
 
-		protected bool InheritsItem
-		{
-			get{ return m_InheritsItem; }
-		}
+		protected bool InheritsItem => m_InheritsItem;
+
 		#endregion
 
 		public BasePigmentsOfTokuno() : base( 0xEFF )
@@ -248,13 +246,13 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int UsesRemaining
 		{
-			get { return m_UsesRemaining; }
+			get => m_UsesRemaining;
 			set { m_UsesRemaining = value; InvalidateProperties(); }
 		}
 
 		public bool ShowUsesRemaining
 		{
-			get { return true; }
+			get => true;
 			set {}
 		}
 

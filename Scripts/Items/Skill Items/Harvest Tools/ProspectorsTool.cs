@@ -11,11 +11,12 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int UsesRemaining
 		{
-			get { return m_UsesRemaining; }
+			get => m_UsesRemaining;
 			set { m_UsesRemaining = value; InvalidateProperties(); }
 		}
 
-		public bool ShowUsesRemaining{ get{ return true; } set{} }
+		public bool ShowUsesRemaining{ get => true;
+			set{} }
 
 		public override int LabelNumber => 1049065; // prospector's tool
 

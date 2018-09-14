@@ -10,8 +10,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public RaisableItem RaisableItem
 		{
-			get{ return m_RaisableItem; }
-			set{ m_RaisableItem = value; }
+			get => m_RaisableItem;
+			set => m_RaisableItem = value;
 		}
 
 		[Constructible]
@@ -146,7 +146,7 @@ namespace Server.Items
 
 	public class DisappearingRaiseSwitch : RaiseSwitch
 	{
-		public int CurrentRange{ get{ return Visible ? 3 : 2; } }
+		public int CurrentRange => Visible ? 3 : 2;
 
 		[Constructible]
 		public DisappearingRaiseSwitch() : base( 0x108F )

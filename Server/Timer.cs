@@ -68,10 +68,7 @@ namespace Server
 
 		public TimerPriority Priority
 		{
-			get
-			{
-				return m_Priority;
-			}
+			get => m_Priority;
 			set
 			{
 				if ( !m_PrioritySet )
@@ -87,27 +84,23 @@ namespace Server
 			}
 		}
 
-		public DateTime Next
-		{
-			// Obnoxious
-			get { return DateTime.UtcNow + TimeSpan.FromMilliseconds(m_Next-Core.TickCount); }
-		}
+		public DateTime Next => DateTime.UtcNow + TimeSpan.FromMilliseconds(m_Next-Core.TickCount);
 
 		public TimeSpan Delay
 		{
-			get { return TimeSpan.FromMilliseconds(m_Delay); }
-			set { m_Delay = (long)value.TotalMilliseconds; }
+			get => TimeSpan.FromMilliseconds(m_Delay);
+			set => m_Delay = (long)value.TotalMilliseconds;
 		}
 
 		public TimeSpan Interval
 		{
-			get { return TimeSpan.FromMilliseconds(m_Interval); }
-			set { m_Interval = (long)value.TotalMilliseconds; }
+			get => TimeSpan.FromMilliseconds(m_Interval);
+			set => m_Interval = (long)value.TotalMilliseconds;
 		}
 
 		public bool Running
 		{
-			get { return m_Running; }
+			get => m_Running;
 			set {
 				if ( value ) {
 					Start();
@@ -365,7 +358,9 @@ namespace Server
 		private static Queue<Timer> m_Queue = new Queue<Timer>();
 		private static int m_BreakCount = 20000;
 
-		public static int BreakCount{ get{ return m_BreakCount; } set{ m_BreakCount = value; } }
+		public static int BreakCount{ get => m_BreakCount;
+			set => m_BreakCount = value;
+		}
 
 		private static int m_QueueCountAtSlice;
 
@@ -407,10 +402,7 @@ namespace Server
 		{
 		}
 
-		public virtual bool DefRegCreation
-		{
-			get{ return true; }
-		}
+		public virtual bool DefRegCreation => true;
 
 		public void RegCreation()
 		{
@@ -565,7 +557,7 @@ namespace Server
 		{
 			private TimerCallback m_Callback;
 
-			public TimerCallback Callback{ get{ return m_Callback; } }
+			public TimerCallback Callback => m_Callback;
 
 			public override bool DefRegCreation => false;
 
@@ -592,7 +584,7 @@ namespace Server
 			private TimerStateCallback m_Callback;
 			private object m_State;
 
-			public TimerStateCallback Callback{ get{ return m_Callback; } }
+			public TimerStateCallback Callback => m_Callback;
 
 			public override bool DefRegCreation => false;
 
@@ -621,7 +613,7 @@ namespace Server
 			private TimerStateCallback<T> m_Callback;
 			private T m_State;
 
-			public TimerStateCallback<T> Callback { get { return m_Callback; } }
+			public TimerStateCallback<T> Callback => m_Callback;
 
 			public override bool DefRegCreation => false;
 

@@ -54,15 +54,9 @@ namespace Server.Multis
 		private TimeSpan m_MinDuration;
 		private TimeSpan m_MaxDuration;
 
-		public TimeSpan MinDuration
-		{
-			get { return m_MinDuration; }
-		}
+		public TimeSpan MinDuration => m_MinDuration;
 
-		public TimeSpan MaxDuration
-		{
-			get { return m_MaxDuration; }
-		}
+		public TimeSpan MaxDuration => m_MaxDuration;
 
 		public DecayStageInfo( TimeSpan min, TimeSpan max )
 		{

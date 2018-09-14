@@ -46,8 +46,8 @@ namespace Server
 
 		public static ParticleSupportType ParticleSupportType
 		{
-			get{ return m_ParticleSupportType; }
-			set{ m_ParticleSupportType = value; }
+			get => m_ParticleSupportType;
+			set => m_ParticleSupportType = value;
 		}
 
 		public static bool SendParticlesTo( NetState state )

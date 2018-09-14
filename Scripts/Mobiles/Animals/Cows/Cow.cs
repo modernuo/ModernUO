@@ -10,8 +10,8 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime MilkedOn
 		{
-			get { return m_MilkedOn; }
-			set { m_MilkedOn = value; }
+			get => m_MilkedOn;
+			set => m_MilkedOn = value;
 		}
 
 		private int m_Milk;
@@ -19,8 +19,8 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Milk
 		{
-			get { return m_Milk; }
-			set { m_Milk = value; }
+			get => m_Milk;
+			set => m_Milk = value;
 		}
 
 		public override string DefaultName => "a cow";

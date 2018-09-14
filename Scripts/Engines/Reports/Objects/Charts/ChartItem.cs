@@ -16,8 +16,12 @@ namespace Server.Engines.Reports
 		private string m_Name;
 		private int m_Value;
 
-		public string Name{ get{ return m_Name; } set{ m_Name = value; } }
-		public int Value{ get{ return m_Value; } set{ m_Value = value; } }
+		public string Name{ get => m_Name;
+			set => m_Name = value;
+		}
+		public int Value{ get => m_Value;
+			set => m_Value = value;
+		}
 
 		private ChartItem()
 		{

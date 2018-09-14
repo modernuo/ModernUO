@@ -18,16 +18,21 @@ namespace Server.Items
 		private DateTime m_Date;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Title{ get{ return m_Title; } set{ m_Title = value; } }
+		public string Title{ get => m_Title;
+			set => m_Title = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public TrophyRank Rank{ get{ return m_Rank; } set{ m_Rank = value; UpdateStyle(); } }
+		public TrophyRank Rank{ get => m_Rank;
+			set{ m_Rank = value; UpdateStyle(); } }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner{ get{ return m_Owner; } set{ m_Owner = value; } }
+		public Mobile Owner{ get => m_Owner;
+			set => m_Owner = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime Date{ get{ return m_Date; } }
+		public DateTime Date => m_Date;
 
 		[Constructible]
 		public Trophy( string title, TrophyRank rank ) : base( 5020 )

@@ -5,16 +5,7 @@ namespace Server.Engines.Quests.Necro
 {
 	public class AnimateMaabusCorpseObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Re-animate the corpse of Maabus using your <a href="?ForceTopic112">Animate Dead</a>
-				 * spell and question him about the Kronus rituals.
-				 */
-				return 1060102;
-			}
-		}
+		public override object Message => 1060102;
 
 		private static QuestItemInfo[] m_Info = new QuestItemInfo[]
 			{
@@ -35,16 +26,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindCrystalCaveObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Take the teleporter in the corner of Maabus' tomb to
-				 * the crystal cave where the calling scroll is kept.
-				 */
-				return 1060104;
-			}
-		}
+		public override object Message => 1060104;
 
 		public FindCrystalCaveObjective()
 		{
@@ -58,16 +40,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindMardothAboutVaultObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Infiltrate the city of the Paladins and figure out a way into
-				 * the Vault. See Mardoth for help with this objective.
-				 */
-				return 1060106;
-			}
-		}
+		public override object Message => 1060106;
 
 		public FindMardothAboutVaultObjective()
 		{
@@ -81,16 +54,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindMaabusTombObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Step onto the teleporter near Mardoth and follow the path
-				 * of glowing runes to the tomb of Maabus.
-				 */
-				return 1060124;
-			}
-		}
+		public override object Message => 1060124;
 
 		public FindMaabusTombObjective()
 		{
@@ -110,16 +74,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindMaabusCorpseObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* This is the tomb of Maabus.  Enter within and find
-				 * the corpse of the ancient necromancer.
-				 */
-				return 1061142;
-			}
-		}
+		public override object Message => 1061142;
 
 		public FindMaabusCorpseObjective()
 		{
@@ -139,16 +94,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindCityOfLightObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Use the teleporter near Mardoth to be transported
-				 * to the Paladin City of Light.
-				 */
-				return 1060108;
-			}
-		}
+		public override object Message => 1060108;
 
 		public FindCityOfLightObjective()
 		{
@@ -168,18 +114,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindVaultOfSecretsObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Follow the road paved with glowing runes to
-				 * find the Vault of Secrets.  Be careful not
-				 * to give yourself away as a Necromancer while
-				 * in the city.
-				 */
-				return 1060109;
-			}
-		}
+		public override object Message => 1060109;
 
 		private static QuestItemInfo[] m_Info = new QuestItemInfo[]
 			{
@@ -206,14 +141,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FetchAbraxusScrollObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				// <a href="?ForceTopic127">Summon your Horde Minion familiar</a> to fetch the scroll for you.
-				return 1060196;
-			}
-		}
+		public override object Message => 1060196;
 
 		public FetchAbraxusScrollObjective()
 		{
@@ -239,16 +167,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class RetrieveAbraxusScrollObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Double click your Horde Minion to open his pack and retrieve
-				 * the Scroll of Abraxus that he looted for you.
-				 */
-				return 1060199;
-			}
-		}
+		public override object Message => 1060199;
 
 		public RetrieveAbraxusScrollObjective()
 		{
@@ -262,17 +181,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class ReadAbraxusScrollObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Find the Crystal Cave password by reading (double click)
-				 * the golden scroll entitled "Scroll of Abraxus" that you
-				 * got from your familiar..
-				 */
-				return 1060125;
-			}
-		}
+		public override object Message => 1060125;
 
 		public ReadAbraxusScrollObjective()
 		{
@@ -286,17 +195,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class ReturnToCrystalCaveObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Now that you have the password, return to the Crystal Cave
-				 * to speak with the guard there.  Use the teleporter outside
-				 * of the vault to get there if necessary.
-				 */
-				return 1060115;
-			}
-		}
+		public override object Message => 1060115;
 
 		private static QuestItemInfo[] m_Info = new QuestItemInfo[]
 			{
@@ -317,17 +216,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class SpeakCavePasswordObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Speak the secret word that you read in the scroll
-				 * stolen from the Vault to Horus the guard, using
-				 * his <a href="?ForceTopic90">context menu</a>.
-				 */
-				return 1060117;
-			}
-		}
+		public override object Message => 1060117;
 
 		public SpeakCavePasswordObjective()
 		{
@@ -341,16 +230,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindCallingScrollObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Enter the Crystal Cave and find the Scroll of Calling.
-				 * The barrier will now allow you to pass.
-				 */
-				return 1060119;
-			}
-		}
+		public override object Message => 1060119;
 
 		private int m_SkitteringHoppersKilled;
 		private bool m_HealConversationShown;
@@ -414,16 +294,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindHorusAboutRewardObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* You have disposed of the creatures as Horus has asked.
-				 * See him on your way out of the Crystal Cave to claim your reward.
-				 */
-				return 1060126;
-			}
-		}
+		public override object Message => 1060126;
 
 		public FindHorusAboutRewardObjective()
 		{
@@ -437,16 +308,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindMardothAboutKronusObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* You have obtained the scroll of calling. See Mardoth
-				 * for further instructions.
-				 */
-				return 1060127;
-			}
-		}
+		public override object Message => 1060127;
 
 		public FindMardothAboutKronusObjective()
 		{
@@ -460,16 +322,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindWellOfTearsObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Follow the red lanterns to the Well of Tears where
-				 * you will perform the calling of Kronus.
-				 */
-				return 1060128;
-			}
-		}
+		public override object Message => 1060128;
 
 		public FindWellOfTearsObjective()
 		{
@@ -509,17 +362,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class UseCallingScrollObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Use the Scroll of Calling (double click) near the
-				 * Well of Tears to charge the waters for the arrival
-				 * of Kronus.
-				 */
-				return 1060130;
-			}
-		}
+		public override object Message => 1060130;
 
 		public UseCallingScrollObjective()
 		{
@@ -585,17 +428,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class FindBankObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* Use the enchanted sextant in your pack to locate
-				 * the nearest bank.  Go there and speak with the
-				 * Banker.
-				 */
-				return 1060134;
-			}
-		}
+		public override object Message => 1060134;
 
 		public FindBankObjective()
 		{
@@ -615,16 +448,7 @@ namespace Server.Engines.Quests.Necro
 
 	public class CashBankCheckObjective : QuestObjective
 	{
-		public override object Message
-		{
-			get
-			{
-				/* You have arrived at the Bank. <a href="?ForceTopic38">Open your bank box</a>
-				 * and then <a href="?ForceTopic86">cash the check</a> that Mardoth gave you.
-				 */
-				return 1060644;
-			}
-		}
+		public override object Message => 1060644;
 
 		public CashBankCheckObjective()
 		{

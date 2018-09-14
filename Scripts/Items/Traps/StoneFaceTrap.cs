@@ -35,7 +35,7 @@ namespace Server.Items
 
 		public bool Breathing
 		{
-			get{ return ( ItemID == GetFireID( this.Type ) ); }
+			get => ( ItemID == GetFireID( this.Type ) );
 			set
 			{
 				if ( value )

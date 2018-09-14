@@ -14,15 +14,15 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Item Target
 		{
-			get{ return m_Target; }
-			set{ m_Target = value; }
+			get => m_Target;
+			set => m_Target = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
 		[Constructible]

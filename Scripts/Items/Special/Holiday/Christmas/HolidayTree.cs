@@ -18,8 +18,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Placer
 		{
-			get{ return m_Placer; }
-			set{ m_Placer = value; }
+			get => m_Placer;
+			set => m_Placer = value;
 		}
 
 		private class Ornament : Item
@@ -212,10 +212,7 @@ namespace Server.Items
 			return map.CanFit( (Point3D)p, 20 );
 		}
 
-		Item IAddon.Deed
-		{
-			get{ return new HolidayTreeDeed(); }
-		}
+		Item IAddon.Deed => new HolidayTreeDeed();
 
 		public override void Serialize( GenericWriter writer )
 		{

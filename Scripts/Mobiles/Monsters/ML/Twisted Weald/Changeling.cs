@@ -74,7 +74,7 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile MorphedInto
 		{
-			get { return m_MorphedInto; }
+			get => m_MorphedInto;
 			set
 			{
 				if ( value == this )

@@ -9,10 +9,10 @@ namespace Server.Items
 		private string m_NameString;
 		private int[] m_Hues;
 
-		public int Name{ get{ return m_Name; } }
-		public string NameString{ get{ return m_NameString; } }
+		public int Name => m_Name;
+		public string NameString => m_NameString;
 
-		public int[] Hues{ get{ return m_Hues; } }
+		public int[] Hues => m_Hues;
 
 		public CustomHueGroup( int name, int[] hues )
 		{
@@ -34,10 +34,10 @@ namespace Server.Items
 		private int m_Title;
 		private string m_TitleString;
 
-		public bool DefaultSupported{ get{ return m_DefaultSupported; } }
-		public CustomHueGroup[] Groups{ get{ return m_Groups; } }
-		public int Title{ get{ return m_Title; } }
-		public string TitleString{ get{ return m_TitleString; } }
+		public bool DefaultSupported => m_DefaultSupported;
+		public CustomHueGroup[] Groups => m_Groups;
+		public int Title => m_Title;
+		public string TitleString => m_TitleString;
 
 		public CustomHuePicker( CustomHueGroup[] groups, bool defaultSupported )
 		{

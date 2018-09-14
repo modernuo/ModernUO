@@ -11,14 +11,14 @@ namespace Server.Factions
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Town Town
 		{
-			get{ return m_Town; }
+			get => m_Town;
 			set{ Unregister(); m_Town = value; Register(); }
 		}
 
 		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
 		public Faction Faction
 		{
-			get{ return m_Faction; }
+			get => m_Faction;
 			set{ Unregister(); m_Faction = value; Register(); }
 		}
 
@@ -43,7 +43,7 @@ namespace Server.Factions
 		}
 
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		public override void InitSBInfo()
 		{

@@ -38,34 +38,16 @@ namespace Server.Engines.Craft
 				from.SendLocalizedMessage( 502925 ); // You don't have the resources required to make that item.
 		}
 
-		public Type ItemType
-		{
-			get { return m_Type; }
-		}
+		public Type ItemType => m_Type;
 
-		public string MessageString
-		{
-			get { return m_MessageString; }
-		}
+		public string MessageString => m_MessageString;
 
-		public int MessageNumber
-		{
-			get { return m_MessageNumber; }
-		}
+		public int MessageNumber => m_MessageNumber;
 
-		public string NameString
-		{
-			get { return m_NameString; }
-		}
+		public string NameString => m_NameString;
 
-		public int NameNumber
-		{
-			get { return m_NameNumber; }
-		}
+		public int NameNumber => m_NameNumber;
 
-		public int Amount
-		{
-			get { return m_Amount; }
-		}
+		public int Amount => m_Amount;
 	}
 }

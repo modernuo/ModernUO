@@ -10,10 +10,7 @@ namespace Server.Items
 		public override int OldDexterityReq => 80;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsModified
-		{
-			get{ return ( Hue == 0x453 ); }
-		}
+		public bool IsModified => ( Hue == 0x453 );
 
 		[Constructible]
 		public JukaBow()

@@ -12,22 +12,22 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Poisoner
 		{
-			get { return m_Poisoner; }
-			set { m_Poisoner = value; }
+			get => m_Poisoner;
+			set => m_Poisoner = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Poison Poison
 		{
-			get { return m_Poison; }
-			set { m_Poison = value; }
+			get => m_Poison;
+			set => m_Poison = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int FillFactor
 		{
-			get { return m_FillFactor; }
-			set { m_FillFactor = value; }
+			get => m_FillFactor;
+			set => m_FillFactor = value;
 		}
 
 		public Food( int itemID ) : this( 1, itemID )
@@ -280,10 +280,7 @@ namespace Server.Items
 
 	public class FishSteak : Food
 	{
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public FishSteak() : this( 1 )
@@ -317,10 +314,7 @@ namespace Server.Items
 
 	public class CheeseWheel : Food
 	{
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public CheeseWheel() : this( 1 )
@@ -354,10 +348,7 @@ namespace Server.Items
 
 	public class CheeseWedge : Food
 	{
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public CheeseWedge() : this( 1 )
@@ -391,10 +382,7 @@ namespace Server.Items
 
 	public class CheeseSlice : Food
 	{
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		[Constructible]
 		public CheeseSlice() : this( 1 )

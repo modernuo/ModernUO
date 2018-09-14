@@ -8,10 +8,10 @@ namespace Server.Items
 {
 	public abstract class WeaponAbility
 	{
-		public virtual int BaseMana{ get{ return 0; } }
+		public virtual int BaseMana => 0;
 
-		public virtual int AccuracyBonus{ get{ return 0; } }
-		public virtual double DamageScalar{ get{ return 1.0; } }
+		public virtual int AccuracyBonus => 0;
+		public virtual double DamageScalar => 1.0;
 
 		public virtual bool RequiresSE  => false;
 
@@ -285,11 +285,11 @@ namespace Server.Items
 				new Disrobe()
 			};
 
-		public static WeaponAbility[] Abilities{ get{ return m_Abilities; } }
+		public static WeaponAbility[] Abilities => m_Abilities;
 
 		private static Hashtable m_Table = new Hashtable();
 
-		public static Hashtable Table{ get{ return m_Table; } }
+		public static Hashtable Table => m_Table;
 
 		public static readonly WeaponAbility ArmorIgnore		= m_Abilities[ 1];
 		public static readonly WeaponAbility BleedAttack		= m_Abilities[ 2];
@@ -473,7 +473,7 @@ namespace Server.Items
 		{
 			private Timer m_Timer;
 
-			public Timer Timer{ get{ return m_Timer; } }
+			public Timer Timer => m_Timer;
 
 			public WeaponAbilityContext( Timer timer )
 			{

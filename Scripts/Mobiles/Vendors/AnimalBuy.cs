@@ -15,12 +15,6 @@ namespace Server.Mobiles
 			m_ControlSlots = controlSlots;
 		}
 
-		public override int ControlSlots
-		{
-			get
-			{
-				return m_ControlSlots;
-			}
-		}
+		public override int ControlSlots => m_ControlSlots;
 	}
 }

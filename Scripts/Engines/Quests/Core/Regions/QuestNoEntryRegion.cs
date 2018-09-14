@@ -12,10 +12,10 @@ namespace Server.Engines.Quests
 		private Type m_MaxObjective;
 		private int m_Message;
 
-		public Type Quest{ get{ return m_Quest; } }
-		public Type MinObjective{ get{ return m_MinObjective; } }
-		public Type MaxObjective{ get{ return m_MaxObjective; } }
-		public int Message{ get{ return m_Message; } }
+		public Type Quest => m_Quest;
+		public Type MinObjective => m_MinObjective;
+		public Type MaxObjective => m_MaxObjective;
+		public int Message => m_Message;
 
 		public QuestNoEntryRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
 		{

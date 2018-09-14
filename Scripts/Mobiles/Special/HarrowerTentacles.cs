@@ -13,14 +13,8 @@ namespace Server.Mobiles
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Harrower
 		{
-			get
-			{
-				return m_Harrower;
-			}
-			set
-			{
-				m_Harrower = value;
-			}
+			get => m_Harrower;
+			set => m_Harrower = value;
 		}
 
 		public override string DefaultName => "tentacles of the harrower";

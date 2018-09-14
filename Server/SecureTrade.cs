@@ -112,10 +112,10 @@ namespace Server
 			}
 		}
 
-		public SecureTradeInfo From { get { return m_From; } }
-		public SecureTradeInfo To { get { return m_To; } }
+		public SecureTradeInfo From => m_From;
+		public SecureTradeInfo To => m_To;
 
-		public bool Valid { get { return m_Valid; } }
+		public bool Valid => m_Valid;
 
 		public void Cancel()
 		{
@@ -472,8 +472,12 @@ namespace Server
 		public SecureTradeContainer Container { get; private set; }
 		public VirtualCheck VirtualCheck { get; private set; }
 
-		public int Gold { get { return VirtualCheck.Gold; } set { VirtualCheck.Gold = value; } }
-		public int Plat { get { return VirtualCheck.Plat; } set { VirtualCheck.Plat = value; } }
+		public int Gold { get => VirtualCheck.Gold;
+			set => VirtualCheck.Gold = value;
+		}
+		public int Plat { get => VirtualCheck.Plat;
+			set => VirtualCheck.Plat = value;
+		}
 
 		public bool Accepted { get; set; }
 

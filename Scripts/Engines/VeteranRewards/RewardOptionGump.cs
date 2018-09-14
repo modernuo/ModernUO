@@ -76,8 +76,8 @@ namespace Server.Gumps
 		private int m_ID;
 		private int m_Cliloc;
 
-		public int ID{ get{ return m_ID; } }
-		public int Cliloc{ get{ return m_Cliloc; } }
+		public int ID => m_ID;
+		public int Cliloc => m_Cliloc;
 
 		public RewardOption( int id, int cliloc )
 		{

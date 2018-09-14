@@ -12,17 +12,11 @@ namespace Server.Commands.Generic
 			ExtensionInfo.Register( ExtInfo );
 		}
 
-		public override ExtensionInfo Info
-		{
-			get { return ExtInfo; }
-		}
+		public override ExtensionInfo Info => ExtInfo;
 
 		private int m_Limit;
 
-		public int Limit
-		{
-			get { return m_Limit; }
-		}
+		public int Limit => m_Limit;
 
 		public LimitExtension()
 		{

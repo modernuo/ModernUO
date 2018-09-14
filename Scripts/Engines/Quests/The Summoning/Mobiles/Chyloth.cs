@@ -39,14 +39,14 @@ namespace Server.Engines.Quests.Doom
 
 		public BellOfTheDead Bell
 		{
-			get{ return m_Bell; }
-			set{ m_Bell = value; }
+			get => m_Bell;
+			set => m_Bell = value;
 		}
 
 		public Mobile AngryAt
 		{
-			get{ return m_AngryAt; }
-			set{ m_AngryAt = value; }
+			get => m_AngryAt;
+			set => m_AngryAt = value;
 		}
 
 		public virtual void BeginGiveWarning()

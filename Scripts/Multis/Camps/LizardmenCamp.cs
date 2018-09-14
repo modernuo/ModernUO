@@ -6,8 +6,8 @@ namespace Server.Multis
 {   
 	public class LizardmenCamp : BaseCamp
 	{
-		public virtual Mobile Lizardmen{ get{ return new Lizardman(); } }
-		
+		public virtual Mobile Lizardmen => new Lizardman();
+
 		private Mobile m_Prisoner;
 		
 		[Constructible]

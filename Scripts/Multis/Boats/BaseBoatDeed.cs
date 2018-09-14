@@ -11,10 +11,14 @@ namespace Server.Multis
 		private Point3D m_Offset;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int MultiID{ get{ return m_MultiID; } set{ m_MultiID = value; } }
+		public int MultiID{ get => m_MultiID;
+			set => m_MultiID = value;
+		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Offset{ get{ return m_Offset; } set{ m_Offset = value; } }
+		public Point3D Offset{ get => m_Offset;
+			set => m_Offset = value;
+		}
 
 		public BaseBoatDeed( int id, Point3D offset ) : base( 0x14F2 )
 		{

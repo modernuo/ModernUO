@@ -9,7 +9,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public Mobile Fisher
 		{
-			get{ return m_Fisher; }
+			get => m_Fisher;
 			set{ m_Fisher = value; InvalidateProperties(); }
 		}
 

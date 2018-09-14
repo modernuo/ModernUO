@@ -32,26 +32,20 @@ namespace Server.Engines.MLQuests.Objectives
 		private DateTime m_EndTime;
 		private bool m_Expired;
 
-		public MLQuestInstance Instance
-		{
-			get { return m_Instance; }
-		}
+		public MLQuestInstance Instance => m_Instance;
 
-		public bool IsTimed
-		{
-			get { return ( m_EndTime != DateTime.MinValue ); }
-		}
+		public bool IsTimed => ( m_EndTime != DateTime.MinValue );
 
 		public DateTime EndTime
 		{
-			get { return m_EndTime; }
-			set { m_EndTime = value; }
+			get => m_EndTime;
+			set => m_EndTime = value;
 		}
 
 		public bool Expired
 		{
-			get { return m_Expired; }
-			set { m_Expired = value; }
+			get => m_Expired;
+			set => m_Expired = value;
 		}
 
 		public BaseObjectiveInstance( MLQuestInstance instance, BaseObjective obj )

@@ -12,13 +12,17 @@ namespace Server.Engines.ConPVP
 		private ArrayList m_Flavors = new ArrayList();
 		private bool m_Changed;
 
-		public RulesetLayout Layout{ get{ return m_Layout; } }
-		public BitArray Options{ get{ return m_Options; } }
-		public string Title{ get{ return m_Title; } set{ m_Title = value; } }
+		public RulesetLayout Layout => m_Layout;
+		public BitArray Options => m_Options;
+		public string Title{ get => m_Title;
+			set => m_Title = value;
+		}
 
-		public Ruleset Base{ get{ return m_Base; } }
-		public ArrayList Flavors{ get{ return m_Flavors; } }
-		public bool Changed{ get{ return m_Changed; } set{ m_Changed = value; } }
+		public Ruleset Base => m_Base;
+		public ArrayList Flavors => m_Flavors;
+		public bool Changed{ get => m_Changed;
+			set => m_Changed = value;
+		}
 
 		public void ApplyDefault( Ruleset newDefault )
 		{

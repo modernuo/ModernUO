@@ -5,15 +5,9 @@ namespace Server.Engines.Craft
 {
 	public class DefTailoring : CraftSystem
 	{
-		public override SkillName MainSkill
-		{
-			get	{ return SkillName.Tailoring; }
-		}
+		public override SkillName MainSkill => SkillName.Tailoring;
 
-		public override int GumpTitleNumber
-		{
-			get { return 1044005; } // <CENTER>TAILORING MENU</CENTER>
-		}
+		public override int GumpTitleNumber => 1044005;
 
 		private static CraftSystem m_CraftSystem;
 

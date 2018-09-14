@@ -10,8 +10,8 @@ namespace Server.SkillHandlers
 
 		public static bool CombatOverride
 		{
-			get{ return m_CombatOverride; }
-			set{ m_CombatOverride = value; }
+			get => m_CombatOverride;
+			set => m_CombatOverride = value;
 		}
 
 		public static void Initialize()

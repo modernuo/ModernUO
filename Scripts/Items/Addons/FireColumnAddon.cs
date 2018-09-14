@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public class FireColumnAddon : BaseAddon
 	{
-		public override bool ShareHue
-		{
-			get { return false; }
-		}
+		public override bool ShareHue => false;
 
 		[Constructible]
 		public FireColumnAddon()

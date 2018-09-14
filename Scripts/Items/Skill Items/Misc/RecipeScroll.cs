@@ -13,7 +13,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int RecipeID
 		{
-			get { return m_RecipeID; }
+			get => m_RecipeID;
 			set { m_RecipeID = value; InvalidateProperties(); }
 		}
 

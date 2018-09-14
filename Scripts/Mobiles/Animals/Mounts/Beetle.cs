@@ -7,7 +7,7 @@ namespace Server.Mobiles
 	public class Beetle : BaseMount
 	{
 		public override string CorpseName => "a giant beetle corpse";
-		public virtual double BoostedSpeed{ get{ return 0.1; } }
+		public virtual double BoostedSpeed => 0.1;
 
 		[Constructible]
 		public Beetle() : this( "a giant beetle" )

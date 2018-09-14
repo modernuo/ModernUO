@@ -12,27 +12,21 @@ namespace Server.Accounting
 		/// <summary>
 		/// A string representing who added this comment.
 		/// </summary>
-		public string AddedBy
-		{
-			get{ return m_AddedBy; }
-		}
+		public string AddedBy => m_AddedBy;
 
 		/// <summary>
 		/// Gets or sets the body of this comment. Setting this value will reset LastModified.
 		/// </summary>
 		public string Content
 		{
-			get{ return m_Content; }
+			get => m_Content;
 			set{ m_Content = value; m_LastModified = DateTime.UtcNow; }
 		}
 
 		/// <summary>
 		/// The date and time when this account was last modified -or- the comment creation time, if never modified.
 		/// </summary>
-		public DateTime LastModified
-		{
-			get{ return m_LastModified; }
-		}
+		public DateTime LastModified => m_LastModified;
 
 		/// <summary>
 		/// Constructs a new AccountComment instance.

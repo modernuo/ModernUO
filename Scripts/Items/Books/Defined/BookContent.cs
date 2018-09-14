@@ -7,10 +7,10 @@ namespace Server.Items
 
 		private BookPageInfo[] m_Pages;
 
-		public string Title{ get{ return m_Title; } }
-		public string Author{ get{ return m_Author; } }
+		public string Title => m_Title;
+		public string Author => m_Author;
 
-		public BookPageInfo[] Pages{ get{ return m_Pages; } }
+		public BookPageInfo[] Pages => m_Pages;
 
 		public BookContent( string title, string author, params BookPageInfo[] pages )
 		{

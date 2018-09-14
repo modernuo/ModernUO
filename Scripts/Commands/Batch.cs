@@ -15,20 +15,17 @@ namespace Server.Commands
 
 		public BaseCommandImplementor Scope
 		{
-			get{ return m_Scope; }
-			set{ m_Scope = value; }
+			get => m_Scope;
+			set => m_Scope = value;
 		}
 
 		public string Condition
 		{
-			get{ return m_Condition; }
-			set{ m_Condition = value; }
+			get => m_Condition;
+			set => m_Condition = value;
 		}
 
-		public ArrayList BatchCommands
-		{
-			get{ return m_BatchCommands; }
-		}
+		public ArrayList BatchCommands => m_BatchCommands;
 
 		public Batch()
 		{
@@ -200,14 +197,14 @@ namespace Server.Commands
 
 		public string Command
 		{
-			get{ return m_Command; }
-			set{ m_Command = value; }
+			get => m_Command;
+			set => m_Command = value;
 		}
 
 		public string Object
 		{
-			get{ return m_Object; }
-			set{ m_Object = value; }
+			get => m_Object;
+			set => m_Object = value;
 		}
 
 		public void GetDetails( out string command, out string argString, out string[] args )

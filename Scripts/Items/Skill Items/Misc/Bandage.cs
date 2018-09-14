@@ -10,10 +10,7 @@ namespace Server.Items
 	{
 		public static int Range = ( Core.AOS ? 2 : 1 );
 
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		public static void Initialize()
 		{
@@ -165,10 +162,12 @@ namespace Server.Items
 		private int m_Slips;
 		private Timer m_Timer;
 
-		public Mobile Healer{ get{ return m_Healer; } }
-		public Mobile Patient{ get{ return m_Patient; } }
-		public int Slips{ get{ return m_Slips; } set{ m_Slips = value; } }
-		public Timer Timer{ get{ return m_Timer; } }
+		public Mobile Healer => m_Healer;
+		public Mobile Patient => m_Patient;
+		public int Slips{ get => m_Slips;
+			set => m_Slips = value;
+		}
+		public Timer Timer => m_Timer;
 
 		public void Slip()
 		{

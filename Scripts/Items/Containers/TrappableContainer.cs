@@ -20,43 +20,25 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public TrapType TrapType
 		{
-			get
-			{
-				return m_TrapType;
-			}
-			set
-			{
-				m_TrapType = value;
-			}
+			get => m_TrapType;
+			set => m_TrapType = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int TrapPower
 		{
-			get
-			{
-				return m_TrapPower;
-			}
-			set
-			{
-				m_TrapPower = value;
-			}
+			get => m_TrapPower;
+			set => m_TrapPower = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int TrapLevel
 		{
-			get
-			{
-				return m_TrapLevel;
-			}
-			set
-			{
-				m_TrapLevel = value;
-			}
+			get => m_TrapLevel;
+			set => m_TrapLevel = value;
 		}
 
-		public virtual bool TrapOnOpen{ get{ return true; } }
+		public virtual bool TrapOnOpen => true;
 
 		public TrappableContainer( int itemID ) : base( itemID )
 		{

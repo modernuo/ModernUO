@@ -40,8 +40,8 @@ namespace Server.Gumps
 		public int ArtID  => m_Art;
 		public int BodyID  => m_Body;
 		public int LocNumber => m_Num;
-		public int X{ get{ return m_X; } }
-		public int Y{ get{ return m_Y; } }
+		public int X => m_X;
+		public int Y => m_Y;
 	}
 
 

@@ -86,8 +86,8 @@ namespace Server
 
 		public static TimeSpan ExpireDelay
 		{
-			get{ return m_ExpireDelay; }
-			set{ m_ExpireDelay = value; }
+			get => m_ExpireDelay;
+			set => m_ExpireDelay = value;
 		}
 
 		public static void DumpAccess()

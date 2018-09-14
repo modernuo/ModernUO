@@ -9,8 +9,8 @@ namespace Server.Items
 
 		public static Dictionary<Mobile, CandyCaneTimer> ToothAches
 		{
-			get { return m_ToothAches; }
-			set { m_ToothAches = value; }
+			get => m_ToothAches;
+			set => m_ToothAches = value;
 		}
 
 		public static void Initialize()
@@ -24,7 +24,9 @@ namespace Server.Items
 			private Mobile m_Eater;
 
 			public Mobile Eater  => m_Eater;
-			public int Eaten { get { return m_Eaten; } set { m_Eaten = value; } }
+			public int Eaten { get => m_Eaten;
+				set => m_Eaten = value;
+			}
 
 			public CandyCaneTimer( Mobile eater )
 				: base( TimeSpan.FromSeconds( 30 ), TimeSpan.FromSeconds( 30 ) )

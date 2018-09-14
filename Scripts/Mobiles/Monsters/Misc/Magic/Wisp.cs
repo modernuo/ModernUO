@@ -63,10 +63,7 @@ namespace Server.Mobiles
 			AddLoot( LootPack.Average );
 		}
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
 		public Wisp( Serial serial ) : base( serial )
 		{

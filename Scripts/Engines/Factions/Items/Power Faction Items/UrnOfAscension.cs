@@ -4,11 +4,7 @@ using Server.Factions;
 
 namespace Server {
 	public sealed class UrnOfAscension : PowerFactionItem {
-		public override string DefaultName {
-			get {
-				return "urn of ascension";
-			}
-		}
+		public override string DefaultName => "urn of ascension";
 
 		public UrnOfAscension()
 			: base( 9246 ) {

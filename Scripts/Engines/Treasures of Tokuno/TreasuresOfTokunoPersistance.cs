@@ -4,12 +4,9 @@ namespace Server.Misc
 	{
 		private static TreasuresOfTokunoPersistance m_Instance;
 
-		public static TreasuresOfTokunoPersistance Instance{ get{ return m_Instance; } }
+		public static TreasuresOfTokunoPersistance Instance => m_Instance;
 
-		public override string DefaultName
-		{
-			get { return "TreasuresOfTokuno Persistance - Internal"; }
-		}
+		public override string DefaultName => "TreasuresOfTokuno Persistance - Internal";
 
 		public static void Initialize()
 		{

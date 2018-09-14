@@ -20,14 +20,14 @@ namespace Server.Engines.MLQuests
 
 		public bool Deserialized
 		{
-			get { return m_Deserialized; }
-			set { m_Deserialized = value; }
+			get => m_Deserialized;
+			set => m_Deserialized = value;
 		}
 
 		public bool SaveEnabled
 		{
-			get { return m_SaveEnabled; }
-			set { m_SaveEnabled = value; }
+			get => m_SaveEnabled;
+			set => m_SaveEnabled = value;
 		}
 
 		private bool m_Activated;
@@ -50,44 +50,44 @@ namespace Server.Engines.MLQuests
 
 		public bool Activated
 		{
-			get { return m_Activated; }
-			set { m_Activated = value; }
+			get => m_Activated;
+			set => m_Activated = value;
 		}
 
 		public List<BaseObjective> Objectives
 		{
-			get { return m_Objectives; }
-			set { m_Objectives = value; }
+			get => m_Objectives;
+			set => m_Objectives = value;
 		}
 
 		public ObjectiveType ObjectiveType
 		{
-			get { return m_ObjectiveType; }
-			set { m_ObjectiveType = value; }
+			get => m_ObjectiveType;
+			set => m_ObjectiveType = value;
 		}
 
 		public List<BaseReward> Rewards
 		{
-			get { return m_Rewards; }
-			set { m_Rewards = value; }
+			get => m_Rewards;
+			set => m_Rewards = value;
 		}
 
 		public List<MLQuestInstance> Instances
 		{
-			get { return m_Instances; }
-			set { m_Instances = value; }
+			get => m_Instances;
+			set => m_Instances = value;
 		}
 
 		public bool OneTimeOnly
 		{
-			get { return m_OneTimeOnly; }
-			set { m_OneTimeOnly = value; }
+			get => m_OneTimeOnly;
+			set => m_OneTimeOnly = value;
 		}
 
 		public bool HasRestartDelay
 		{
-			get { return m_HasRestartDelay; }
-			set { m_HasRestartDelay = value; }
+			get => m_HasRestartDelay;
+			set => m_HasRestartDelay = value;
 		}
 
 		public bool HasObjective<T>() where T : BaseObjective
@@ -101,35 +101,35 @@ namespace Server.Engines.MLQuests
 			return false;
 		}
 
-		public bool IsEscort
-		{
-			get { return HasObjective<EscortObjective>(); }
-		}
+		public bool IsEscort => HasObjective<EscortObjective>();
 
-		public bool IsSkillTrainer
-		{
-			get { return HasObjective<GainSkillObjective>(); }
-		}
+		public bool IsSkillTrainer => HasObjective<GainSkillObjective>();
 
-		public bool RequiresCollection
-		{
-			get { return HasObjective<CollectObjective>() || HasObjective<DeliverObjective>(); }
-		}
+		public bool RequiresCollection => HasObjective<CollectObjective>() || HasObjective<DeliverObjective>();
 
-		public virtual bool RecordCompletion
-		{
-			get { return ( m_OneTimeOnly || m_HasRestartDelay ); }
-		}
+		public virtual bool RecordCompletion => ( m_OneTimeOnly || m_HasRestartDelay );
 
 		public virtual bool IsChainTriggered  => false;
 		public virtual Type NextQuest  => null;
 
-		public TextDefinition Title { get { return m_Title; } set { m_Title = value; } }
-		public TextDefinition Description { get { return m_Description; } set { m_Description = value; } }
-		public TextDefinition RefusalMessage { get { return m_RefuseMessage; } set { m_RefuseMessage = value; } }
-		public TextDefinition InProgressMessage { get { return m_InProgressMessage; } set { m_InProgressMessage = value; } }
-		public TextDefinition CompletionMessage { get { return m_CompletionMessage; } set { m_CompletionMessage = value; } }
-		public TextDefinition CompletionNotice { get { return m_CompletionNotice; } set { m_CompletionNotice = value; } }
+		public TextDefinition Title { get => m_Title;
+			set => m_Title = value;
+		}
+		public TextDefinition Description { get => m_Description;
+			set => m_Description = value;
+		}
+		public TextDefinition RefusalMessage { get => m_RefuseMessage;
+			set => m_RefuseMessage = value;
+		}
+		public TextDefinition InProgressMessage { get => m_InProgressMessage;
+			set => m_InProgressMessage = value;
+		}
+		public TextDefinition CompletionMessage { get => m_CompletionMessage;
+			set => m_CompletionMessage = value;
+		}
+		public TextDefinition CompletionNotice { get => m_CompletionNotice;
+			set => m_CompletionNotice = value;
+		}
 
 		public static readonly TextDefinition CompletionNoticeDefault = new TextDefinition( 1072273 ); // You've completed a quest!  Don't forget to collect your reward.
 		public static readonly TextDefinition CompletionNoticeShort = new TextDefinition( 1046258 ); // Your quest is complete.

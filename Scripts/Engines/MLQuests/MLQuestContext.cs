@@ -52,53 +52,41 @@ namespace Server.Engines.MLQuests
 		private List<MLQuest> m_ChainOffers;
 		private MLQuestFlag m_Flags;
 
-		public PlayerMobile Owner
-		{
-			get { return m_Owner; }
-		}
+		public PlayerMobile Owner => m_Owner;
 
-		public List<MLQuestInstance> QuestInstances
-		{
-			get { return m_QuestInstances; }
-		}
+		public List<MLQuestInstance> QuestInstances => m_QuestInstances;
 
-		public List<MLQuest> ChainOffers
-		{
-			get { return m_ChainOffers; }
-		}
+		public List<MLQuest> ChainOffers => m_ChainOffers;
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsFull
-		{
-			get { return m_QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests; }
-		}
+		public bool IsFull => m_QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests;
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool Spellweaving
 		{
-			get { return GetFlag( MLQuestFlag.Spellweaving ); }
-			set { SetFlag( MLQuestFlag.Spellweaving, value ); }
+			get => GetFlag( MLQuestFlag.Spellweaving );
+			set => SetFlag( MLQuestFlag.Spellweaving, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool SummonFey
 		{
-			get { return GetFlag( MLQuestFlag.SummonFey ); }
-			set { SetFlag( MLQuestFlag.SummonFey, value ); }
+			get => GetFlag( MLQuestFlag.SummonFey );
+			set => SetFlag( MLQuestFlag.SummonFey, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool SummonFiend
 		{
-			get { return GetFlag( MLQuestFlag.SummonFiend ); }
-			set { SetFlag( MLQuestFlag.SummonFiend, value ); }
+			get => GetFlag( MLQuestFlag.SummonFiend );
+			set => SetFlag( MLQuestFlag.SummonFiend, value );
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool BedlamAccess
 		{
-			get { return GetFlag( MLQuestFlag.BedlamAccess ); }
-			set { SetFlag( MLQuestFlag.BedlamAccess, value ); }
+			get => GetFlag( MLQuestFlag.BedlamAccess );
+			set => SetFlag( MLQuestFlag.BedlamAccess, value );
 		}
 
 		public MLQuestContext( PlayerMobile owner )

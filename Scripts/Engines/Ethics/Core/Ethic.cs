@@ -159,15 +159,9 @@ namespace Server.Ethics
 
 		protected PlayerCollection m_Players;
 
-		public EthicDefinition Definition
-		{
-			get { return m_Definition; }
-		}
+		public EthicDefinition Definition => m_Definition;
 
-		public PlayerCollection Players
-		{
-			get { return m_Players; }
-		}
+		public PlayerCollection Players => m_Players;
 
 		public static Ethic Find( Mobile mob )
 		{

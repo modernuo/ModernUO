@@ -51,7 +51,7 @@ namespace Server.Items
 			}
 		}
 
-		public bool Spinning{ get{ return m_Timer != null; } }
+		public bool Spinning => m_Timer != null;
 
 		public void BeginSpin( SpinCallback callback, Mobile from, int hue )
 		{

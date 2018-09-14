@@ -281,16 +281,16 @@ namespace Server.Items
 		private int m_MultiID;
 		private Point3D m_Offset;
 
-		public Type Type{ get{ return m_Type; } }
+		public Type Type => m_Type;
 
-		public int Description{ get{ return m_Description; } }
-		public int Storage{ get{ return BaseHouse.NewVendorSystem ? m_NewStorage : m_Storage; } }
-		public int Lockdowns{ get{ return BaseHouse.NewVendorSystem ? m_NewLockdowns : m_Lockdowns; } }
-		public int Vendors{ get{ return m_Vendors; } }
-		public int Cost{ get{ return m_Cost; } }
+		public int Description => m_Description;
+		public int Storage => BaseHouse.NewVendorSystem ? m_NewStorage : m_Storage;
+		public int Lockdowns => BaseHouse.NewVendorSystem ? m_NewLockdowns : m_Lockdowns;
+		public int Vendors => m_Vendors;
+		public int Cost => m_Cost;
 
-		public int MultiID{ get{ return m_MultiID; } }
-		public Point3D Offset{ get{ return m_Offset; } }
+		public int MultiID => m_MultiID;
+		public Point3D Offset => m_Offset;
 
 		public HousePlacementEntry( Type type, int description, int storage, int lockdowns, int newStorage, int newLockdowns, int vendors, int cost, int xOffset, int yOffset, int zOffset, int multiID )
 		{
@@ -666,10 +666,7 @@ namespace Server.Items
 				new HousePlacementEntry( typeof( Castle ),				1011314,	4076,	2038,	4688,	2344,	78,	865250,		0, 16,	0,	0x007E	)
 			};
 
-		public static HousePlacementEntry[] ClassicHouses{ get{ return m_ClassicHouses; } }
-
-
-
+		public static HousePlacementEntry[] ClassicHouses => m_ClassicHouses;
 
 
 		private static HousePlacementEntry[] m_TwoStoryFoundations = new HousePlacementEntry[]
@@ -723,10 +720,7 @@ namespace Server.Items
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060319,	1300,	650,	1495,	747,	28,	96500,		0,	7,	0,	0x143A	)  // 13x13 2-Story Customizable House
 			};
 
-		public static HousePlacementEntry[] TwoStoryFoundations{ get{ return m_TwoStoryFoundations; } }
-
-
-
+		public static HousePlacementEntry[] TwoStoryFoundations => m_TwoStoryFoundations;
 
 
 		private static HousePlacementEntry[] m_ThreeStoryFoundations = new HousePlacementEntry[]
@@ -788,6 +782,6 @@ namespace Server.Items
 				new HousePlacementEntry( typeof( HouseFoundation ),		1060384,	2119,	1059,	2437,	1218,	42,	179000,		0,	10,	0,	0x147B	)  // 18x18 3-Story Customizable House
 			};
 
-		public static HousePlacementEntry[] ThreeStoryFoundations{ get{ return m_ThreeStoryFoundations; } }
+		public static HousePlacementEntry[] ThreeStoryFoundations => m_ThreeStoryFoundations;
 	}
 }

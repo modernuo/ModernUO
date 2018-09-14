@@ -5,7 +5,7 @@ namespace Server.Mobiles
 	public class Farmer : BaseVendor
 	{
 		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+		protected override List<SBInfo> SBInfos => m_SBInfos;
 
 		[Constructible]
 		public Farmer() : base( "the farmer" )
@@ -20,10 +20,7 @@ namespace Server.Mobiles
 			m_SBInfos.Add( new SBFarmer() );
 		}
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return VendorShoeType.ThighBoots; }
-		}
+		public override VendorShoeType ShoeType => VendorShoeType.ThighBoots;
 
 		public override int GetShoeHue()
 		{

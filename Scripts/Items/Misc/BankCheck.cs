@@ -15,7 +15,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Worth
 		{
-			get{ return m_Worth; }
+			get => m_Worth;
 			set{ m_Worth = value; InvalidateProperties(); }
 		}
 

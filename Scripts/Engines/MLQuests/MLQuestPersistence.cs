@@ -10,10 +10,7 @@ namespace Server.Engines.MLQuests
 				m_Instance = new MLQuestPersistence();
 		}
 
-		public override string DefaultName
-		{
-			get { return "ML quests persistence - Internal"; }
-		}
+		public override string DefaultName => "ML quests persistence - Internal";
 
 		private MLQuestPersistence()
 			: base( 1 )

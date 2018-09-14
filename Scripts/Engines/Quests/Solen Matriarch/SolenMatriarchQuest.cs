@@ -27,14 +27,7 @@ namespace Server.Engines.Quests.Matriarch
 
 		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override object Name
-		{
-			get
-			{
-				// Solen Matriarch Quest
-				return 1054147;
-			}
-		}
+		public override object Name => 1054147;
 
 		public override object OfferMessage
 		{
@@ -99,7 +92,7 @@ namespace Server.Engines.Quests.Matriarch
 
 		private bool m_RedSolen;
 
-		public bool RedSolen{ get{ return m_RedSolen; } }
+		public bool RedSolen => m_RedSolen;
 
 		public SolenMatriarchQuest( PlayerMobile from, bool redSolen ) : base( from )
 		{

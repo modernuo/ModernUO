@@ -2,10 +2,7 @@ namespace Server.Items
 {
 	public abstract class BaseReagent : Item
 	{
-		public override double DefaultWeight
-		{
-			get { return 0.1; }
-		}
+		public override double DefaultWeight => 0.1;
 
 		public BaseReagent( int itemID ) : this( itemID, 1 )
 		{

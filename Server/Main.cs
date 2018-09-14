@@ -62,15 +62,15 @@ namespace Server
 
 		public static MessagePump MessagePump
 		{
-			get { return m_MessagePump; }
-			set { m_MessagePump = value; }
+			get => m_MessagePump;
+			set => m_MessagePump = value;
 		}
 
 		public static Slice Slice;
 
 		public static bool Profiling
 		{
-			get { return m_Profiling; }
+			get => m_Profiling;
 			set
 			{
 				if ( m_Profiling == value )
@@ -96,16 +96,18 @@ namespace Server
 			}
 		}
 
-		public static bool Service { get { return m_Service; } }
-		public static bool Debug { get { return m_Debug; } }
-		internal static bool HaltOnWarning { get { return m_HaltOnWarning; } }
-		internal static bool VBdotNet { get { return m_VBdotNET; } }
-		public static List<string> DataDirectories { get { return m_DataDirectories; } }
-		public static Assembly Assembly { get { return m_Assembly; } set { m_Assembly = value; } }
-		public static Version Version { get { return m_Assembly.GetName().Version; } }
-		public static Process Process { get { return m_Process; } }
-		public static Thread Thread { get { return m_Thread; } }
-		public static MultiTextWriter MultiConsoleOut { get { return m_MultiConOut; } }
+		public static bool Service => m_Service;
+		public static bool Debug => m_Debug;
+		internal static bool HaltOnWarning => m_HaltOnWarning;
+		internal static bool VBdotNet => m_VBdotNET;
+		public static List<string> DataDirectories => m_DataDirectories;
+		public static Assembly Assembly { get => m_Assembly;
+			set => m_Assembly = value;
+		}
+		public static Version Version => m_Assembly.GetName().Version;
+		public static Process Process => m_Process;
+		public static Thread Thread => m_Thread;
+		public static MultiTextWriter MultiConsoleOut => m_MultiConOut;
 
 		/*
 		 * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
@@ -125,9 +127,9 @@ namespace Server
 
 		private static bool _UseHRT;
 
-		public static bool UsingHighResolutionTiming { get { return _UseHRT && _HighRes && !Unix; } }
+		public static bool UsingHighResolutionTiming => _UseHRT && _HighRes && !Unix;
 
-		public static long TickCount { get { return (long)Ticks; } }
+		public static long TickCount => (long)Ticks;
 
 		public static double Ticks
 		{
@@ -147,12 +149,12 @@ namespace Server
 		private static bool m_MultiProcessor;
 		private static int m_ProcessorCount;
 
-		public static bool MultiProcessor { get { return m_MultiProcessor; } }
-		public static int ProcessorCount { get { return m_ProcessorCount; } }
+		public static bool MultiProcessor => m_MultiProcessor;
+		public static int ProcessorCount => m_ProcessorCount;
 
 		private static bool m_Unix;
 
-		public static bool Unix { get { return m_Unix; } }
+		public static bool Unix => m_Unix;
 
 		public static string FindDataFile( string path )
 		{
@@ -184,66 +186,33 @@ namespace Server
 		private static Expansion m_Expansion;
 		public static Expansion Expansion
 		{
-			get { return m_Expansion; }
-			set { m_Expansion = value; }
+			get => m_Expansion;
+			set => m_Expansion = value;
 		}
 
-		public static bool T2A
-		{
-			get { return m_Expansion >= Expansion.T2A; }
-		}
+		public static bool T2A => m_Expansion >= Expansion.T2A;
 
-		public static bool UOR
-		{
-			get { return m_Expansion >= Expansion.UOR; }
-		}
+		public static bool UOR => m_Expansion >= Expansion.UOR;
 
-		public static bool UOTD
-		{
-			get { return m_Expansion >= Expansion.UOTD; }
-		}
+		public static bool UOTD => m_Expansion >= Expansion.UOTD;
 
-		public static bool LBR
-		{
-			get { return m_Expansion >= Expansion.LBR; }
-		}
+		public static bool LBR => m_Expansion >= Expansion.LBR;
 
-		public static bool AOS
-		{
-			get { return m_Expansion >= Expansion.AOS; }
-		}
+		public static bool AOS => m_Expansion >= Expansion.AOS;
 
-		public static bool SE
-		{
-			get { return m_Expansion >= Expansion.SE; }
-		}
+		public static bool SE => m_Expansion >= Expansion.SE;
 
-		public static bool ML
-		{
-			get { return m_Expansion >= Expansion.ML; }
-		}
+		public static bool ML => m_Expansion >= Expansion.ML;
 
-		public static bool SA
-		{
-			get { return m_Expansion >= Expansion.SA; }
-		}
+		public static bool SA => m_Expansion >= Expansion.SA;
 
-		public static bool HS
-		{
-			get { return m_Expansion >= Expansion.HS; }
-		}
+		public static bool HS => m_Expansion >= Expansion.HS;
 
-		public static bool TOL
-		{
-			get { return m_Expansion >= Expansion.TOL; }
-		}
+		public static bool TOL => m_Expansion >= Expansion.TOL;
 
 		#endregion
 
-		public static string ExePath
-		{
-			get { return m_ExePath ?? (m_ExePath = Assembly.Location); }
-		}
+		public static string ExePath => m_ExePath ?? (m_ExePath = Assembly.Location);
 
 		public static string BaseDirectory
 		{
@@ -345,14 +314,14 @@ namespace Server
 		}
 
 		private static bool m_Closing;
-		public static bool Closing { get { return m_Closing; } }
+		public static bool Closing => m_Closing;
 
 		private static int m_CycleIndex = 1;
 		private static readonly float[] m_CyclesPerSecond = new float[100];
 
-		public static float CyclesPerSecond { get { return m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length]; } }
+		public static float CyclesPerSecond => m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length];
 
-		public static float AverageCPS { get { return m_CyclesPerSecond.Take(m_CycleIndex).Average(); } }
+		public static float AverageCPS => m_CyclesPerSecond.Take(m_CycleIndex).Average();
 
 		public static void Kill()
 		{
@@ -594,22 +563,22 @@ namespace Server
 
 		public static int GlobalUpdateRange
 		{
-			get { return m_GlobalUpdateRange; }
-			set { m_GlobalUpdateRange = value; }
+			get => m_GlobalUpdateRange;
+			set => m_GlobalUpdateRange = value;
 		}
 
 		private static int m_GlobalMaxUpdateRange = 24;
 
 		public static int GlobalMaxUpdateRange
 		{
-			get { return m_GlobalMaxUpdateRange; }
-			set { m_GlobalMaxUpdateRange = value; }
+			get => m_GlobalMaxUpdateRange;
+			set => m_GlobalMaxUpdateRange = value;
 		}
 
 		private static int m_ItemCount, m_MobileCount;
 
-		public static int ScriptItems { get { return m_ItemCount; } }
-		public static int ScriptMobiles { get { return m_MobileCount; } }
+		public static int ScriptItems => m_ItemCount;
+		public static int ScriptMobiles => m_MobileCount;
 
 		public static void VerifySerialization()
 		{

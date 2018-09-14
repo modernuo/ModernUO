@@ -12,25 +12,25 @@ namespace Server.Commands.Generic
 
 		public Property Property
 		{
-			get { return m_Property; }
-			set { m_Property = value; }
+			get => m_Property;
+			set => m_Property = value;
 		}
 
 		public bool IsAscending
 		{
-			get { return ( m_Order > 0 ); }
-			set { m_Order = ( value ? +1 : -1 ); }
+			get => ( m_Order > 0 );
+			set => m_Order = ( value ? +1 : -1 );
 		}
 
 		public bool IsDescending
 		{
-			get { return ( m_Order < 0 ); }
-			set { m_Order = ( value ? -1 : +1 ); }
+			get => ( m_Order < 0 );
+			set => m_Order = ( value ? -1 : +1 );
 		}
 
 		public int Sign
 		{
-			get { return Math.Sign( m_Order ); }
+			get => Math.Sign( m_Order );
 			set
 			{
 				m_Order = Math.Sign( value );

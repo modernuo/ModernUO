@@ -4,10 +4,7 @@ namespace Server.Commands.Generic
 	{
 		private static RangeCommandImplementor m_Instance;
 
-		public static RangeCommandImplementor Instance
-		{
-			get { return m_Instance; }
-		}
+		public static RangeCommandImplementor Instance => m_Instance;
 
 		public RangeCommandImplementor()
 		{

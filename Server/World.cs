@@ -41,9 +41,9 @@ namespace Server {
 
 		private static Queue<IEntity> _addQueue, _deleteQueue;
 
-		public static bool Saving { get { return m_Saving; } }
-		public static bool Loaded { get { return m_Loaded; } }
-		public static bool Loading { get { return m_Loading; } }
+		public static bool Saving => m_Saving;
+		public static bool Loaded => m_Loaded;
+		public static bool Loading => m_Loading;
 
 		public readonly static string MobileIndexPath = Path.Combine( "Saves/Mobiles/", "Mobiles.idx" );
 		public readonly static string MobileTypesPath = Path.Combine( "Saves/Mobiles/", "Mobiles.tdb" );
@@ -125,35 +125,15 @@ namespace Server {
 			private long m_Position;
 			private int m_Length;
 
-			public BaseGuild Guild {
-				get {
-					return m_Guild;
-				}
-			}
+			public BaseGuild Guild => m_Guild;
 
-			public Serial Serial {
-				get {
-					return m_Guild == null ? 0 : m_Guild.Id;
-				}
-			}
+			public Serial Serial => m_Guild == null ? 0 : m_Guild.Id;
 
-			public int TypeID {
-				get {
-					return 0;
-				}
-			}
+			public int TypeID => 0;
 
-			public long Position {
-				get {
-					return m_Position;
-				}
-			}
+			public long Position => m_Position;
 
-			public int Length {
-				get {
-					return m_Length;
-				}
-			}
+			public int Length => m_Length;
 
 			public GuildEntry( BaseGuild g, long pos, int length ) {
 				m_Guild = g;
@@ -169,41 +149,17 @@ namespace Server {
 			private long m_Position;
 			private int m_Length;
 
-			public Item Item {
-				get {
-					return m_Item;
-				}
-			}
+			public Item Item => m_Item;
 
-			public Serial Serial {
-				get {
-					return m_Item == null ? Serial.MinusOne : m_Item.Serial;
-				}
-			}
+			public Serial Serial => m_Item == null ? Serial.MinusOne : m_Item.Serial;
 
-			public int TypeID {
-				get {
-					return m_TypeID;
-				}
-			}
+			public int TypeID => m_TypeID;
 
-			public string TypeName {
-				get {
-					return m_TypeName;
-				}
-			}
+			public string TypeName => m_TypeName;
 
-			public long Position {
-				get {
-					return m_Position;
-				}
-			}
+			public long Position => m_Position;
 
-			public int Length {
-				get {
-					return m_Length;
-				}
-			}
+			public int Length => m_Length;
 
 			public ItemEntry( Item item, int typeID, string typeName, long pos, int length ) {
 				m_Item = item;
@@ -221,41 +177,17 @@ namespace Server {
 			private long m_Position;
 			private int m_Length;
 
-			public Mobile Mobile {
-				get {
-					return m_Mobile;
-				}
-			}
+			public Mobile Mobile => m_Mobile;
 
-			public Serial Serial {
-				get {
-					return m_Mobile == null ? Serial.MinusOne : m_Mobile.Serial;
-				}
-			}
+			public Serial Serial => m_Mobile == null ? Serial.MinusOne : m_Mobile.Serial;
 
-			public int TypeID {
-				get {
-					return m_TypeID;
-				}
-			}
+			public int TypeID => m_TypeID;
 
-			public string TypeName {
-				get {
-					return m_TypeName;
-				}
-			}
+			public string TypeName => m_TypeName;
 
-			public long Position {
-				get {
-					return m_Position;
-				}
-			}
+			public long Position => m_Position;
 
-			public int Length {
-				get {
-					return m_Length;
-				}
-			}
+			public int Length => m_Length;
 
 			public MobileEntry( Mobile mobile, int typeID, string typeName, long pos, int length ) {
 				m_Mobile = mobile;

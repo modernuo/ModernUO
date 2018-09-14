@@ -28,10 +28,7 @@ namespace Server.Items
 
 				return SawTrapType.NorthWall;
 			}
-			set
-			{
-				ItemID = GetBaseID( value );
-			}
+			set => ItemID = GetBaseID( value );
 		}
 
 		public static int GetBaseID( SawTrapType type )

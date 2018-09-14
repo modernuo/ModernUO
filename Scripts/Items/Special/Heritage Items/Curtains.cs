@@ -13,8 +13,8 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int ClosedID
 		{
-			get { return m_ClosedID; }
-			set { m_ClosedID = value; }
+			get => m_ClosedID;
+			set => m_ClosedID = value;
 		}
 
 		public CurtainsComponent( int itemID, int closedID ) : base( itemID )

@@ -53,13 +53,29 @@ namespace Server.Spells
 				m_Amounts[i] = 1;
 		}
 
-		public int Action{ get{ return m_Action; } set{ m_Action = value; } }
-		public bool AllowTown{ get{ return m_AllowTown; } set{ m_AllowTown = value; } }
-		public int[] Amounts{ get{ return m_Amounts; } set{ m_Amounts = value; } }
-		public string Mantra{ get{ return m_Mantra; } set{ m_Mantra = value; } }
-		public string Name{ get{ return m_Name; } set{ m_Name = value; } }
-		public Type[] Reagents{ get{ return m_Reagents; } set{ m_Reagents = value; } }
-		public int LeftHandEffect{ get{ return m_LeftHandEffect; } set{ m_LeftHandEffect = value; } }
-		public int RightHandEffect{ get{ return m_RightHandEffect; } set{ m_RightHandEffect = value; } }
+		public int Action{ get => m_Action;
+			set => m_Action = value;
+		}
+		public bool AllowTown{ get => m_AllowTown;
+			set => m_AllowTown = value;
+		}
+		public int[] Amounts{ get => m_Amounts;
+			set => m_Amounts = value;
+		}
+		public string Mantra{ get => m_Mantra;
+			set => m_Mantra = value;
+		}
+		public string Name{ get => m_Name;
+			set => m_Name = value;
+		}
+		public Type[] Reagents{ get => m_Reagents;
+			set => m_Reagents = value;
+		}
+		public int LeftHandEffect{ get => m_LeftHandEffect;
+			set => m_LeftHandEffect = value;
+		}
+		public int RightHandEffect{ get => m_RightHandEffect;
+			set => m_RightHandEffect = value;
+		}
 	}
 }

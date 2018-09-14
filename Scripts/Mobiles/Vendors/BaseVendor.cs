@@ -48,7 +48,9 @@ namespace Server.Mobiles
 
 		public override bool IsInvulnerable => true;
 
-		public virtual DateTime NextTrickOrTreat { get { return m_NextTrickOrTreat; } set { m_NextTrickOrTreat = value; } }
+		public virtual DateTime NextTrickOrTreat { get => m_NextTrickOrTreat;
+			set => m_NextTrickOrTreat = value;
+		}
 
 		public override bool ShowFameTitle => false;
 
@@ -186,23 +188,11 @@ namespace Server.Mobiles
 
 		public DateTime LastRestock
 		{
-			get
-			{
-				return m_LastRestock;
-			}
-			set
-			{
-				m_LastRestock = value;
-			}
+			get => m_LastRestock;
+			set => m_LastRestock = value;
 		}
 
-		public virtual TimeSpan RestockDelay
-		{
-			get
-			{
-				return TimeSpan.FromHours( 1 );
-			}
-		}
+		public virtual TimeSpan RestockDelay => TimeSpan.FromHours( 1 );
 
 		public Container BuyPack
 		{
@@ -220,7 +210,7 @@ namespace Server.Mobiles
 
 		public abstract void InitSBInfo();
 
-		public virtual bool IsTokunoVendor { get { return ( Map == Map.Tokuno ); } }
+		public virtual bool IsTokunoVendor => ( Map == Map.Tokuno );
 
 		protected void LoadSBInfo()
 		{
@@ -292,10 +282,7 @@ namespace Server.Mobiles
 			return Utility.RandomNeutralHue();
 		}
 
-		public virtual VendorShoeType ShoeType
-		{
-			get { return VendorShoeType.Shoes; }
-		}
+		public virtual VendorShoeType ShoeType => VendorShoeType.Shoes;
 
 		public virtual void CheckMorph()
 		{

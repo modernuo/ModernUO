@@ -111,21 +111,37 @@ namespace Server.Misc
 		private int m_ChanceOfPercipitation;
 		private int m_ChanceOfExtremeTemperature;
 
-		public Map Facet{ get{ return m_Facet; } }
-		public Rectangle2D[] Area{ get{ return m_Area; } set{ m_Area = value; } }
-		public int Temperature{ get{ return m_Temperature; } set{ m_Temperature = value; } }
-		public int ChanceOfPercipitation{ get{ return m_ChanceOfPercipitation; } set{ m_ChanceOfPercipitation = value; } }
-		public int ChanceOfExtremeTemperature{ get{ return m_ChanceOfExtremeTemperature; } set{ m_ChanceOfExtremeTemperature = value; } }
+		public Map Facet => m_Facet;
+		public Rectangle2D[] Area{ get => m_Area;
+			set => m_Area = value;
+		}
+		public int Temperature{ get => m_Temperature;
+			set => m_Temperature = value;
+		}
+		public int ChanceOfPercipitation{ get => m_ChanceOfPercipitation;
+			set => m_ChanceOfPercipitation = value;
+		}
+		public int ChanceOfExtremeTemperature{ get => m_ChanceOfExtremeTemperature;
+			set => m_ChanceOfExtremeTemperature = value;
+		}
 
 		// For dynamic weather:
 		private Rectangle2D m_Bounds;
 		private int m_MoveSpeed;
 		private int m_MoveAngleX, m_MoveAngleY;
 
-		public Rectangle2D Bounds{ get{ return m_Bounds; } set{ m_Bounds = value; } }
-		public int MoveSpeed{ get{ return m_MoveSpeed; } set{ m_MoveSpeed = value; } }
-		public int MoveAngleX{ get{ return m_MoveAngleX; } set{ m_MoveAngleX = value; } }
-		public int MoveAngleY{ get{ return m_MoveAngleY; } set{ m_MoveAngleY = value; } }
+		public Rectangle2D Bounds{ get => m_Bounds;
+			set => m_Bounds = value;
+		}
+		public int MoveSpeed{ get => m_MoveSpeed;
+			set => m_MoveSpeed = value;
+		}
+		public int MoveAngleX{ get => m_MoveAngleX;
+			set => m_MoveAngleX = value;
+		}
+		public int MoveAngleY{ get => m_MoveAngleY;
+			set => m_MoveAngleY = value;
+		}
 
 		public static bool CheckIntersection( Rectangle2D r1, Rectangle2D r2 )
 		{
@@ -337,10 +353,7 @@ namespace Server.Misc
 
 	public class WeatherMap : MapItem
 	{
-		public override string DefaultName
-		{
-			get { return "weather map"; }
-		}
+		public override string DefaultName => "weather map";
 
 		[Constructible]
 		public WeatherMap()

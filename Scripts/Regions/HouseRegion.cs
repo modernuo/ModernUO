@@ -417,12 +417,6 @@ namespace Server.Regions
 			return base.OnSingleClick( from, o );
 		}
 
-		public BaseHouse House
-		{
-			get
-			{
-				return m_House;
-			}
-		}
+		public BaseHouse House => m_House;
 	}
 }

@@ -23,14 +23,14 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level
 		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
+			get => m_Level;
+			set => m_Level = value;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Petals
 		{
-			get{ return m_Petals; }
+			get => m_Petals;
 			set
 			{
 				if ( value >= 10 )

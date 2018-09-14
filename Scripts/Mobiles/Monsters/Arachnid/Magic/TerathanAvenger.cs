@@ -52,10 +52,7 @@ namespace Server.Mobiles
 		public override int TreasureMapLevel => 3;
 		public override int Meat => 2;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.TerathansAndOphidians; }
-		}
+		public override OppositionGroup OppositionGroup => OppositionGroup.TerathansAndOphidians;
 
 		public TerathanAvenger( Serial serial ) : base( serial )
 		{

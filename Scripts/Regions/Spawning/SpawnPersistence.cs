@@ -5,7 +5,7 @@ namespace Server.Regions
 	{
 		private static SpawnPersistence m_Instance;
 
-		public SpawnPersistence Instance{ get{ return m_Instance; } }
+		public SpawnPersistence Instance => m_Instance;
 
 		public static void EnsureExistence()
 		{
@@ -13,10 +13,7 @@ namespace Server.Regions
 				m_Instance = new SpawnPersistence();
 		}
 
-		public override string DefaultName
-		{
-			get { return "Region spawn persistence - Internal"; }
-		}
+		public override string DefaultName => "Region spawn persistence - Internal";
 
 		private SpawnPersistence() : base( 1 )
 		{
